@@ -183,9 +183,16 @@ from cvsrffi.phase1_fcr_types import (
     FCRV2LossOutput,
 )
 from cvsrffi.phase1_fcr_v2_losses import (
+    LossMagnitudeEMA,
+    asymmetric_clean_teacher_loss,
+    complex_physical_gram_loss,
     compute_fcr_v2_losses,
     cross_decode as fcr_v2_cross_decode,
+    fingerprint_separation_loss,
     necessity_loss as fcr_v2_necessity_loss,
+    nuisance_cycle_loss,
+    per_class_tail_cvar_loss,
+    response_surface_smoothness,
 )
 from cvsrffi.phase1_fcr_v2_metadata import build_fcr_v2_metadata
 from cvsrffi.phase1_fcr_v2_pairing import FCRV2PairBuilder
@@ -620,17 +627,21 @@ def set_fcr_v2_optimizer_epoch(optimizer, epoch: int) -> None:
             group["lr"] = 2.0e-4
 
 
-def _fcr_v2_meta_column(metadata: Dict[str, Any], name: str, batch_size: int, default: Any) -> List[Any]:
-    value = metadata.get(name, default)
+def _fcr_v2_meta_column(metadata: Dict[str, Any], name: str, batch_size: int) -> List[Any]:
+    if name not in metadata:
+        raise ValueError(f"FCR-V2 source metadata requires {name}")
+    value = metadata[name]
     if torch.is_tensor(value):
         value = value.detach().cpu().reshape(-1).tolist()
     if isinstance(value, (tuple, list)):
         if len(value) == int(batch_size):
             return list(value)
-        if len(value) == 1:
+        if len(value) == 1 and int(batch_size) == 1:
             return list(value) * int(batch_size)
-        return [default] * int(batch_size)
-    return [value] * int(batch_size)
+        raise ValueError(f"FCR-V2 metadata {name} must contain {batch_size} rows")
+    if int(batch_size) == 1:
+        return [value]
+    raise ValueError(f"FCR-V2 metadata {name} must expose one value per row")
 
 
 def build_fcr_v2_training_pair(
@@ -649,22 +660,22 @@ def build_fcr_v2_training_pair(
         raise ValueError("FCR-V2 requires collated source metadata")
     batch_size = int(clean_iq.size(0))
     physical_ids = tuple(
-        str(value) for value in _fcr_v2_meta_column(batch_metadata, "physical_sample_id", batch_size, "")
+        str(value) for value in _fcr_v2_meta_column(batch_metadata, "physical_sample_id", batch_size)
     )
     if any(not value for value in physical_ids):
         raise ValueError("FCR-V2 source metadata requires physical_sample_id")
     crop = torch.as_tensor(
-        _fcr_v2_meta_column(batch_metadata, "crop_offset", batch_size, -1),
+        _fcr_v2_meta_column(batch_metadata, "crop_offset", batch_size),
         dtype=torch.long,
         device=clean_iq.device,
     )
     rx_i = torch.as_tensor(
-        _fcr_v2_meta_column(batch_metadata, "rx_i", batch_size, -1),
+        _fcr_v2_meta_column(batch_metadata, "rx_i", batch_size),
         dtype=torch.long,
         device=clean_iq.device,
     )
     day_i = torch.as_tensor(
-        _fcr_v2_meta_column(batch_metadata, "day_i", batch_size, -1),
+        _fcr_v2_meta_column(batch_metadata, "day_i", batch_size),
         dtype=torch.long,
         device=clean_iq.device,
     )
@@ -672,33 +683,24 @@ def build_fcr_v2_training_pair(
     tx_id = labels.detach().to(device=clean_iq.device, dtype=torch.long).reshape(-1)
     if not visible:
         tx_id = torch.full_like(tx_id, -1)
-    content_ids = tuple(
-        str(value) for value in _fcr_v2_meta_column(
-            batch_metadata, "content_record_id", batch_size, ""
-        )
-    )
-    content_ids = tuple(value or physical_ids[index] for index, value in enumerate(content_ids))
-    sig_i = _fcr_v2_meta_column(batch_metadata, "sig_i", batch_size, -1)
-    eq_i = _fcr_v2_meta_column(batch_metadata, "eq_i", batch_size, -1)
+    content_ids = tuple(str(value) for value in _fcr_v2_meta_column(batch_metadata, "content_record_id", batch_size))
+    if any(not value for value in content_ids):
+        raise ValueError("FCR-V2 source metadata requires non-empty content_record_id")
     preamble_ids = tuple(
         str(value) for value in _fcr_v2_meta_column(
-            batch_metadata, "common_preamble_id", batch_size, ""
+            batch_metadata, "common_preamble_id", batch_size
         )
-    )
-    preamble_ids = tuple(
-        value or f"preamble:eq{eq_i[index]}:sig{sig_i[index]}:crop{int(crop[index])}"
-        for index, value in enumerate(preamble_ids)
     )
     excitation = torch.as_tensor(
-        _fcr_v2_meta_column(batch_metadata, "excitation_bin", batch_size, 0),
+        _fcr_v2_meta_column(batch_metadata, "excitation_bin", batch_size),
         dtype=torch.long,
         device=clean_iq.device,
     )
     link_condition = tuple(
-        str(value or "source") for value in _fcr_v2_meta_column(
-            batch_metadata, "link_condition", batch_size, "source"
-        )
+        str(value) for value in _fcr_v2_meta_column(batch_metadata, "link_condition", batch_size)
     )
+    if any(not value for value in link_condition):
+        raise ValueError("FCR-V2 source metadata requires non-empty link_condition")
     metadata = build_fcr_v2_metadata(
         {
             "physical_sample_id": physical_ids,
@@ -748,6 +750,11 @@ def _concat_fcr_v2_factors(left: FCRV2FactorOutput, right: FCRV2FactorOutput) ->
             else None
         ),
         response_quality=response_quality,
+        eta_pred=(
+            torch.cat((left.eta_pred, right.eta_pred), dim=0)
+            if torch.is_tensor(left.eta_pred) and torch.is_tensor(right.eta_pred)
+            else None
+        ),
     )
 
 
@@ -765,6 +772,7 @@ def _index_fcr_v2_factors(factors: FCRV2FactorOutput, index: torch.Tensor) -> FC
             if isinstance(factors.response_quality, dict)
             else None
         ),
+        eta_pred=(factors.eta_pred[index] if torch.is_tensor(factors.eta_pred) else None),
     )
 
 
@@ -773,19 +781,9 @@ def _complex_mse(left: torch.Tensor, right: torch.Tensor) -> torch.Tensor:
 
 
 def _fcr_v2_eta_prediction(factors: FCRV2FactorOutput) -> torch.Tensor:
-    nuisance = factors.z_n
-    columns = (
-        nuisance["alpha"].real - 1.0,
-        nuisance["alpha"].imag,
-        nuisance["beta"].real,
-        nuisance["beta"].imag,
-        nuisance["sto"],
-        nuisance["sfo"],
-        nuisance["phase"],
-        nuisance["taps"][:, 1:].real.mean(dim=1),
-        nuisance["taps"][:, 1:].imag.mean(dim=1),
-    )
-    return torch.stack(columns, dim=1)
+    if not torch.is_tensor(factors.eta_pred):
+        raise ValueError("FCR-V2 factor encoder did not expose the named CRRA eta head")
+    return factors.eta_pred
 
 
 def compute_fcr_v2_pair_objective(
@@ -796,6 +794,9 @@ def compute_fcr_v2_pair_objective(
     row: str,
     epoch: int,
     supervised_components: Optional[Dict[str, torch.Tensor]] = None,
+    ema_normalizer: Optional[LossMagnitudeEMA] = None,
+    frozen_identity_classifier: Optional[nn.Module] = None,
+    collect_gradient_evidence: bool = False,
 ) -> FCRLossOutput:
     """Compute the real V2 row objective from Task1-4 public interfaces."""
 
@@ -815,11 +816,27 @@ def compute_fcr_v2_pair_objective(
         capabilities=FCRV2CapabilityState(True, True, True, True, {}),
     ).active_losses
 
-    def paired(name: str, value: torch.Tensor) -> torch.Tensor:
+    def paired(name: str, value) -> torch.Tensor:
         index = pairs[name]
         if int(index.numel()) == 0:
             return zero
         return value(index[:, 0], index[:, 1])
+
+    def as_complex(iq: torch.Tensor) -> torch.Tensor:
+        return torch.complex(iq[:, 0].float(), iq[:, 1].float())
+
+    nuisance_pairs = pairs["nuisance"]
+    forward_rows = [
+        index
+        for index, (source, target) in enumerate(nuisance_pairs.tolist())
+        if metadata.view_type[int(source)] == "clean"
+        and metadata.view_type[int(target)] != "clean"
+    ]
+    if forward_rows:
+        forward_index = torch.tensor(forward_rows, device=nuisance_pairs.device, dtype=torch.long)
+        directed_nuisance_pairs = nuisance_pairs.index_select(0, forward_index)
+    else:
+        directed_nuisance_pairs = nuisance_pairs.new_empty((0, 2))
 
     if "self" not in planned_active or clean_out.get("fcr_decode") is None or leo_out.get("fcr_decode") is None:
         self_loss = zero
@@ -828,26 +845,45 @@ def compute_fcr_v2_pair_objective(
             F.mse_loss(clean_out["fcr_decode"].mu_iq, training_pair["clean_iq"])
             + F.mse_loss(leo_out["fcr_decode"].mu_iq, training_pair["leo_iq"])
         )
-    shared_f = paired("nuisance", lambda source, target: F.mse_loss(factors.z_f_id[source], factors.z_f_id[target])) if "shared_f" in planned_active else zero
+    if "shared_f" in planned_active and int(directed_nuisance_pairs.numel()) > 0:
+        clean_index = directed_nuisance_pairs[:, 0]
+        leo_index = directed_nuisance_pairs[:, 1]
+        shared_f = asymmetric_clean_teacher_loss(
+            factors.z_f_id[clean_index], factors.z_f_id[leo_index]
+        )
+    else:
+        shared_f = zero
     shared_s = paired("content", lambda source, target: F.mse_loss(factors.z_s[source], factors.z_s[target])) if "shared_s" in planned_active else zero
-    response = paired("nuisance", lambda source, target: _complex_mse(factors.delta_f[source], factors.delta_f[target])) if "response" in planned_active else zero
+    if "response" in planned_active and int(directed_nuisance_pairs.numel()) > 0:
+        clean_index = directed_nuisance_pairs[:, 0]
+        leo_index = directed_nuisance_pairs[:, 1]
+        response = _complex_mse(
+            factors.delta_f[leo_index], factors.delta_f[clean_index].detach()
+        )
+    else:
+        response = zero
 
     eta_pred = _fcr_v2_eta_prediction(factors)
     eta_target = metadata.eta.to(device=eta_pred.device, dtype=eta_pred.dtype)
     eta_valid = metadata.eta_valid_mask.to(device=eta_pred.device, dtype=torch.bool)
-    eta_width = min(int(eta_pred.size(1)), int(eta_target.size(1)))
-    valid_eta = eta_valid[:, :eta_width]
+    if eta_pred.shape != eta_target.shape:
+        raise ValueError(
+            f"named CRRA eta prediction/target shape mismatch: {tuple(eta_pred.shape)} != {tuple(eta_target.shape)}"
+        )
+    valid_eta = eta_valid
     eta_loss = (
-        (eta_pred[:, :eta_width] - eta_target[:, :eta_width]).square()[valid_eta].mean()
+        (eta_pred - eta_target).square()[valid_eta].mean()
         if "eta" in planned_active and bool(valid_eta.any())
         else zero
     )
 
-    swap_pairs = pairs["nuisance"]
+    swap_pairs = directed_nuisance_pairs
     swap_loss = zero
     cycle_loss = zero
     need_loss = zero
     transplant_loss = zero
+    swapped = None
+    recycled = None
     if int(swap_pairs.numel()) > 0 and bool(planned_active & {"swap", "cycle", "need"}):
         source_index, target_index = swap_pairs[:, 0], swap_pairs[:, 1]
         source = _index_fcr_v2_factors(factors, source_index)
@@ -856,8 +892,12 @@ def compute_fcr_v2_pair_objective(
         if "swap" in planned_active:
             swap_loss = F.mse_loss(swapped.mu_iq, raw_iq[target_index])
         if "cycle" in planned_active:
-            recycled = raw_model.fcr.forward_identity_only(swapped.mu_iq, source.z_f_dev).factors
-            cycle_loss = F.mse_loss(recycled.z_s, source.z_s) + F.mse_loss(recycled.z_f_id, destination.z_f_id)
+            recycled = raw_model.forward_identity_only(swapped.mu_iq)["fcr_factors"]
+            cycle_loss = (
+                F.mse_loss(recycled.z_s, source.z_s.detach())
+                + F.mse_loss(recycled.z_f_id, destination.z_f_id.detach())
+                + nuisance_cycle_loss(recycled, destination)
+            )
         if "need" in planned_active:
             dropped = raw_model.fcr.decoder(source.s_hat, torch.zeros_like(source.delta_f), destination.z_n)
             full_error = (swapped.mu_iq - raw_iq[target_index]).square().mean(dim=(1, 2))
@@ -865,34 +905,102 @@ def compute_fcr_v2_pair_objective(
             need_loss = fcr_v2_necessity_loss(full_error=full_error, drop_error=drop_error).mean()
 
     fingerprint_pairs = pairs["fingerprint"]
+    transplant_reencoded = None
     if int(fingerprint_pairs.numel()) > 0 and "transplant" in planned_active:
         source_index, target_index = fingerprint_pairs[:, 0], fingerprint_pairs[:, 1]
         source = _index_fcr_v2_factors(factors, source_index)
         destination = _index_fcr_v2_factors(factors, target_index)
         transplanted = fcr_v2_cross_decode(source, destination, raw_model.fcr.decoder)
-        transplant_factors = raw_model.fcr.forward_identity_only(transplanted.mu_iq, destination.z_f_dev).factors
-        transplant_loss = F.mse_loss(transplant_factors.z_f_id, destination.z_f_id) + F.mse_loss(
-            transplant_factors.z_s, source.z_s
+        transplant_reencoded = raw_model.forward_identity_only(transplanted.mu_iq)["fcr_factors"]
+        if frozen_identity_classifier is None:
+            raise ValueError("directed transplant requires the frozen mature ADV3B02 classifier")
+        destination_labels = metadata.tx_id[target_index].to(
+            device=transplanted.mu_iq.device, dtype=torch.long
+        )
+        transplant_logits = frozen_identity_classifier(transplanted.mu_iq)
+        balanced_class_ce = torch.stack(
+            [
+                F.cross_entropy(
+                    transplant_logits[destination_labels == label],
+                    destination_labels[destination_labels == label],
+                )
+                for label in torch.unique(destination_labels, sorted=True)
+            ]
+        ).mean()
+        transplant_loss = (
+            balanced_class_ce
+            + F.mse_loss(transplant_reencoded.z_f_id, destination.z_f_id.detach())
+            + F.mse_loss(transplant_reencoded.z_s, source.z_s.detach())
+            + nuisance_cycle_loss(transplant_reencoded, destination)
         )
 
-    physical_loss = (
-        self_loss
-        + _complex_mse(
-            factors.canonical_residual,
-            factors.canonical_residual.detach() * 0.0,
+    clean_gate_loss = zero
+    leo_gate_loss = zero
+    response_smoothness_loss = zero
+    if "physical" in planned_active and clean_out.get("fcr_decode") is not None and leo_out.get("fcr_decode") is not None:
+        clean_gate_loss = complex_physical_gram_loss(
+            as_complex(clean_out["fcr_decode"].mu_iq), as_complex(training_pair["clean_iq"])
         )
-        if "physical" in planned_active
-        else zero
-    )
-    factor_loss = (
-        shared_f
-        + shared_s
-        + paired(
-            "fingerprint", lambda source, target: (1.0 - F.cosine_similarity(factors.z_f_id[source], factors.z_f_id[target])).mean()
+        leo_gate_loss = complex_physical_gram_loss(
+            as_complex(leo_out["fcr_decode"].mu_iq), as_complex(training_pair["leo_iq"])
         )
-        if "factor" in planned_active
-        else zero
-    )
+        response_smoothness_loss = 0.5 * (
+            response_surface_smoothness(clean.delta_f)
+            + response_surface_smoothness(leo.delta_f)
+        )
+        physical_loss = clean_gate_loss + leo_gate_loss + 0.1 * response_smoothness_loss
+    else:
+        physical_loss = zero
+
+    factor_loss = zero
+    fingerprint_axis = zero
+    content_axis = zero
+    nuisance_axis = zero
+    if "factor" in planned_active and int(fingerprint_pairs.numel()) > 0:
+        source_index, target_index = fingerprint_pairs[:, 0], fingerprint_pairs[:, 1]
+        source = _index_fcr_v2_factors(factors, source_index)
+        destination = _index_fcr_v2_factors(factors, target_index)
+        fingerprint_transplant = fcr_v2_cross_decode(source, destination, raw_model.fcr.decoder)
+        fingerprint_reencoded = raw_model.forward_identity_only(fingerprint_transplant.mu_iq)["fcr_factors"]
+        fingerprint_axis = (
+            F.mse_loss(fingerprint_reencoded.z_s, source.z_s.detach())
+            + F.mse_loss(fingerprint_reencoded.z_f_id, destination.z_f_id.detach())
+            + nuisance_cycle_loss(fingerprint_reencoded, destination)
+            + fingerprint_separation_loss(source.z_f_id, destination.z_f_id)
+        )
+        content_pairs = pairs["content"]
+        if int(content_pairs.numel()) > 0:
+            content_source = _index_fcr_v2_factors(factors, content_pairs[:, 0])
+            content_destination = _index_fcr_v2_factors(factors, content_pairs[:, 1])
+            content_decode = raw_model.fcr.decoder(
+                content_destination.s_hat,
+                content_source.delta_f,
+                content_source.z_n,
+            )
+            content_reencoded = raw_model.forward_identity_only(content_decode.mu_iq)["fcr_factors"]
+            content_axis = (
+                F.mse_loss(content_reencoded.z_s, content_destination.z_s.detach())
+                + F.mse_loss(content_reencoded.z_f_id, content_source.z_f_id.detach())
+                + nuisance_cycle_loss(content_reencoded, content_source)
+            )
+        else:
+            content_axis = zero
+        if swapped is not None:
+            nuisance_reencoded = (
+                recycled
+                if recycled is not None
+                else raw_model.forward_identity_only(swapped.mu_iq)["fcr_factors"]
+            )
+            nuisance_source = _index_fcr_v2_factors(factors, swap_pairs[:, 0])
+            nuisance_destination = _index_fcr_v2_factors(factors, swap_pairs[:, 1])
+            nuisance_axis = (
+                F.mse_loss(nuisance_reencoded.z_s, nuisance_source.z_s.detach())
+                + F.mse_loss(nuisance_reencoded.z_f_id, nuisance_destination.z_f_id.detach())
+                + nuisance_cycle_loss(nuisance_reencoded, nuisance_destination)
+            )
+        else:
+            nuisance_axis = zero
+        factor_loss = fingerprint_axis + content_axis + nuisance_axis
     components = {
         "identity_ce": zero,
         "prototype": zero,
@@ -930,7 +1038,34 @@ def compute_fcr_v2_pair_objective(
         epoch=epoch,
         role=role,
         capabilities=capabilities,
+        ema_normalizer=ema_normalizer,
     )
+    gradient_ratios: Dict[str, float] = {}
+    if collect_gradient_evidence:
+        parameters = [parameter for parameter in raw_model.fcr.parameters() if parameter.requires_grad]
+
+        def gradient_norm(value: torch.Tensor) -> float:
+            if not value.requires_grad:
+                return 0.0
+            gradients = torch.autograd.grad(
+                value,
+                parameters,
+                retain_graph=True,
+                allow_unused=True,
+            )
+            squared = sum(
+                float(gradient.detach().float().square().sum().cpu())
+                for gradient in gradients
+                if gradient is not None
+            )
+            return math.sqrt(max(0.0, squared))
+
+        ce_gradient = gradient_norm(v2.components["identity_ce"])
+        for name in sorted(v2.active_losses):
+            component_gradient = gradient_norm(v2.components[name])
+            gradient_ratios[name] = (
+                component_gradient / ce_gradient if ce_gradient > 1.0e-12 else component_gradient
+            )
     mapped = {
         "id": v2.components["identity_ce"] + v2.components["prototype"] + v2.components["tail"],
         "self": v2.components["self"],
@@ -948,11 +1083,83 @@ def compute_fcr_v2_pair_objective(
         metrics={
             "active_fingerprint_pairs": float(fingerprint_pairs.size(0)),
             "active_nuisance_pairs": float(swap_pairs.size(0)),
+            "active_content_pairs": float(pairs["content"].size(0)),
+            "pair_opportunities": {
+                "nuisance": int(metadata.batch_size),
+                "content": int(metadata.batch_size),
+                "fingerprint": int(metadata.batch_size),
+            },
             "active_losses": ",".join(sorted(v2.active_losses)),
             "blocked": dict(v2.blocked),
+            "effective_weights": dict(v2.weights),
+            "raw_losses": {
+                name: float(value.detach().abs().mean().cpu())
+                for name, value in components.items()
+            },
+            "eta_valid_count_by_dim": [
+                int(value) for value in metadata.eta_valid_mask.sum(dim=0).detach().cpu().tolist()
+            ],
+            "eta_absolute_error_sum_by_dim": [
+                float(value)
+                for value in (
+                    (eta_pred - metadata.eta).abs()
+                    * metadata.eta_valid_mask.to(dtype=eta_pred.dtype)
+                ).sum(dim=0).detach().cpu().tolist()
+            ],
+            "eta_component_opportunities": int(metadata.batch_size),
+            "gradient_ratios_to_identity_ce": gradient_ratios,
+            "physical_clean_gate_loss": float(clean_gate_loss.detach().cpu()),
+            "physical_leo_gate_loss": float(leo_gate_loss.detach().cpu()),
+            "response_surface_smoothness": float(response_smoothness_loss.detach().cpu()),
+            "factor_fingerprint_axis_loss": float(fingerprint_axis.detach().cpu()),
+            "factor_content_axis_loss": float(content_axis.detach().cpu()),
+            "factor_nuisance_axis_loss": float(nuisance_axis.detach().cpu()),
             "role_labeled": float(role == "L_s"),
             "role_unlabeled": float(role == "U_s"),
         },
+    )
+
+
+def update_fcr_v2_training_evidence(
+    evidence: Dict[str, Any],
+    metrics: Dict[str, Any],
+) -> None:
+    """Accumulate only evidence observed on the real V2 training graph."""
+
+    count_keys = {
+        "nuisance": "active_nuisance_pairs",
+        "content": "active_content_pairs",
+        "fingerprint": "active_fingerprint_pairs",
+    }
+    for axis, key in count_keys.items():
+        evidence["pair_counts"][axis] += int(metrics.get(key, 0.0))
+    for axis, value in dict(metrics.get("pair_opportunities", {})).items():
+        evidence["pair_opportunities"][str(axis)] += int(value)
+
+    weights = dict(metrics.get("effective_weights", {}))
+    raw_losses = dict(metrics.get("raw_losses", {}))
+    for name, value in weights.items():
+        key = str(name)
+        weight = float(value)
+        evidence["effective_weights"][key] = max(
+            float(evidence["effective_weights"].get(key, 0.0)), weight
+        )
+        if weight > 0.0 and float(raw_losses.get(key, 0.0)) > 1.0e-12:
+            evidence["nonzero_loss_steps"][key] = (
+                int(evidence["nonzero_loss_steps"].get(key, 0)) + 1
+            )
+    for name, value in dict(metrics.get("gradient_ratios_to_identity_ce", {})).items():
+        key = str(name)
+        evidence["gradient_ratios_to_identity_ce"][key] = max(
+            float(evidence["gradient_ratios_to_identity_ce"].get(key, 0.0)),
+            float(value),
+        )
+    for key in ("eta_valid_count_by_dim", "eta_absolute_error_sum_by_dim"):
+        values = list(metrics.get(key, ()))
+        for index, value in enumerate(values):
+            evidence[key][index] += float(value)
+    evidence["eta_component_opportunities"] += int(
+        metrics.get("eta_component_opportunities", 0)
     )
 
 
@@ -1127,7 +1334,7 @@ def collect_fcr_v2_diagnostic_artifacts(
         for name in (
             "z_f_id", "z_tx_state", "z_s", "tx_labels", "domain_labels",
             "clean_z_f_id", "leo_z_f_id", "gram", "fisher_coverage",
-            "eta_target", "eta_pred", "decode_full", "decode_zero_nuisance",
+            "decode_full", "decode_zero_nuisance",
             "drop_f_error_full", "drop_f_error_without",
         )
     }
@@ -1165,10 +1372,6 @@ def collect_fcr_v2_diagnostic_artifacts(
             gram = complex_gram(clean.s_hat.unsqueeze(-1)).real
             chunks["gram"].append(gram.detach().cpu())
             chunks["fisher_coverage"].append(torch.ones(x.size(0)))
-            eta_target = clean_out["fcr_canonical"].eta_hat.detach().float()
-            eta_pred = _fcr_v2_eta_prediction(clean)[:, : eta_target.size(1)]
-            chunks["eta_target"].append(eta_target.cpu())
-            chunks["eta_pred"].append(eta_pred.detach().cpu())
             for name, value in clean.z_n.items():
                 tensor = torch.view_as_real(value).flatten(1) if torch.is_complex(value) else value.flatten(1) if value.ndim > 1 else value.unsqueeze(1)
                 nuisance_chunks.setdefault(name, []).append(tensor.detach().float().cpu())
@@ -1231,6 +1434,7 @@ def finalize_fcr_v2_diagnostics_before_return(
     epoch_time_s: float | None = None,
     capability_reasons: Dict[str, Any] | None = None,
     active_lambdas: Any = (),
+    training_evidence: Dict[str, Any] | None = None,
 ) -> bool:
     diagnostics_path = str(getattr(args, "fcr_diagnostics_path", "") or "").strip()
     if bool(getattr(args, "fcr_requested", getattr(args, "use_fcr", False))) and diagnostics_path:
@@ -1291,8 +1495,9 @@ def finalize_fcr_v2_diagnostics_before_return(
             diagnostic_resources["epoch_time_s"] = float(epoch_time_s)
         for name, value in dict(grad_stats or {}).items():
             diagnostic_resources[str(name)] = float(value)
+        diagnostic_resources.update(dict(training_evidence or {}))
         diagnostic_resources["capability_reasons"] = dict(capability_reasons or {})
-        diagnostic_resources["active_lambdas"] = [str(name) for name in active_lambdas]
+        diagnostic_resources["configured_lambdas"] = [str(name) for name in active_lambdas]
         write_fcr_v2_diagnostics(
             diagnostics_path,
             str(args.fcr_ablation_row),
@@ -1311,6 +1516,20 @@ def finalize_fcr_v2_diagnostics_before_return(
         )
         return True
     return False
+
+
+def finalize_fcr_diagnostics_with_failure_policy(args, **kwargs) -> bool:
+    """Run final diagnostics and make V2 artifact failure terminal."""
+
+    try:
+        return finalize_fcr_v2_diagnostics_before_return(args, **kwargs)
+    except Exception as exc:
+        print(f"[WARN] final FCR diagnostics failed: {exc}", flush=True)
+        if str(getattr(args, "fcr_version", "v1")) == "v2":
+            raise RuntimeError(
+                "FCR-V2 diagnostics must complete before truth-last handoff"
+            ) from exc
+        return False
 
 
 def validate_fcr_pair_for_role(pair: FCRPairBatch, role: str) -> None:
@@ -4989,6 +5208,21 @@ def main():
             raise RuntimeError("explicit ADV3B02-FCR route did not construct the FCR model")
         fcr_identity_classifier = FrozenADV3B02IdentityClassifier(raw_model).to(device)
         print("[FCR-IDENTITY] frozen_normal_adv3b02_backbone=1", flush=True)
+    fcr_v2_ema_normalizer = (
+        LossMagnitudeEMA()
+        if bool(args.use_fcr) and str(args.fcr_version) == "v2"
+        else None
+    )
+    fcr_v2_training_evidence: Dict[str, Any] = {
+        "pair_counts": {"nuisance": 0, "content": 0, "fingerprint": 0},
+        "pair_opportunities": {"nuisance": 0, "content": 0, "fingerprint": 0},
+        "effective_weights": {},
+        "nonzero_loss_steps": {},
+        "gradient_ratios_to_identity_ce": {},
+        "eta_valid_count_by_dim": [0.0] * 9,
+        "eta_absolute_error_sum_by_dim": [0.0] * 9,
+        "eta_component_opportunities": 0,
+    }
     ema_avg = AveragedModelState("ema", decay=float(args.ema_decay)) if bool(args.use_ema_ckpt) else None
     swa_avg = AveragedModelState("swa") if bool(args.use_swa_ckpt) else None
     swad_avg = AveragedModelState("swad") if bool(args.use_swad_ckpt) else None
@@ -5461,6 +5695,7 @@ def main():
                         "proto_active": int(meta_ssl_proto_bank.active_count()),
                     }
 
+                fcr_v2_step_evidence_metrics: List[Dict[str, Any]] = []
                 fcr_loss = FCRLossOutput(
                     total=z_id.new_zeros(()),
                     components={name: z_id.new_zeros(()) for name in (
@@ -5471,6 +5706,12 @@ def main():
                 if bool(args.use_fcr):
                     raw_model = getattr(model, "_orig_mod", model)
                     if str(args.fcr_version) == "v2":
+                        per_sample_identity_ce = F.cross_entropy(
+                            tx_logits,
+                            y,
+                            reduction="none",
+                            label_smoothing=float(args.label_smoothing),
+                        )
                         labeled_fcr_loss = compute_fcr_v2_pair_objective(
                             model=model,
                             raw_model=raw_model,
@@ -5480,9 +5721,19 @@ def main():
                             supervised_components={
                                 "identity_ce": core["loss_cls"],
                                 "prototype": loss_proto,
-                                "tail": z_id.new_zeros(()),
+                                "tail": per_class_tail_cvar_loss(
+                                    per_sample_identity_ce,
+                                    y,
+                                    tail_fraction=0.25,
+                                ),
                             },
+                            ema_normalizer=fcr_v2_ema_normalizer,
+                            frozen_identity_classifier=fcr_identity_classifier,
+                            collect_gradient_evidence=bool(
+                                epoch == int(args.epochs) and batch_idx < 4
+                            ),
                         )
+                        fcr_v2_step_evidence_metrics.append(labeled_fcr_loss.metrics)
                     else:
                         configured_fcr = FCRLambdaConfig(
                             self_reconstruction=float(args.effective_fcr_lambdas["self"]),
@@ -5513,7 +5764,13 @@ def main():
                                 training_pair=fcr_unlabeled_pair,
                                 row=str(args.fcr_matrix_row),
                                 epoch=epoch,
+                                ema_normalizer=fcr_v2_ema_normalizer,
+                                frozen_identity_classifier=fcr_identity_classifier,
+                                collect_gradient_evidence=bool(
+                                    epoch == int(args.epochs) and batch_idx < 4
+                                ),
                             )
+                            fcr_v2_step_evidence_metrics.append(unlabeled_fcr_loss.metrics)
                         else:
                             unlabeled_fcr_loss = compute_fcr_pair_objective(
                                 model=model,
@@ -5604,6 +5861,11 @@ def main():
             if stepped and ema_avg is not None and epoch >= int(args.ema_start_epoch):
                 ema_avg.update(model, epoch, ema=True)
             if stepped:
+                for evidence_metrics in fcr_v2_step_evidence_metrics:
+                    update_fcr_v2_training_evidence(
+                        fcr_v2_training_evidence,
+                        evidence_metrics,
+                    )
                 optimizer_step_count += 1
 
             bsz = x.size(0)
@@ -6171,37 +6433,39 @@ def main():
         "selection=final_epoch_only target_metrics_consumed=0",
         flush=True,
     )
-    try:
-        if finalize_fcr_v2_diagnostics_before_return(
-            args,
-            model=model,
-            source_loader=val_loader,
-            device=device,
-            training_started_at=training_started_at,
-            grad_stats={
-                "grad_total": meters["grad_total"].avg,
-                "grad_backbone": meters["grad_backbone"].avg,
-                "grad_aux": meters["grad_aux"].avg,
-                "grad_domain": meters["grad_domain"].avg,
-            },
-            epoch_time_s=float(time_stats.get("epoch_time_s", 0.0)),
-            capability_reasons=dict(fcr_capability_reasons_epoch),
-            active_lambdas=(
-                tuple(args.fcr_v2_active_losses)
-                if str(args.fcr_version) == "v2"
-                else () if fcr_stage_state is None else tuple(sorted(fcr_stage_state.active))
-            ),
-        ):
-            return
-    except Exception as e:
-        print(f"[WARN] final FCR diagnostics failed: {e}", flush=True)
-        if bool(getattr(args, "defer_target_evaluation", False)):
-            print(
-                "[TARGET-EVAL-DEFERRED] training_process_target_scoring=0 "
-                "next=independent_prediction_then_truth_sidecar_scorer",
-                flush=True,
-            )
-            return
+    if finalize_fcr_diagnostics_with_failure_policy(
+        args,
+        model=model,
+        source_loader=val_loader,
+        device=device,
+        training_started_at=training_started_at,
+        grad_stats={
+            "grad_total": meters["grad_total"].avg,
+            "grad_backbone": meters["grad_backbone"].avg,
+            "grad_aux": meters["grad_aux"].avg,
+            "grad_domain": meters["grad_domain"].avg,
+        },
+        epoch_time_s=float(time_stats.get("epoch_time_s", 0.0)),
+        capability_reasons=dict(fcr_capability_reasons_epoch),
+        active_lambdas=(
+            tuple(args.fcr_v2_active_losses)
+            if str(args.fcr_version) == "v2"
+            else () if fcr_stage_state is None else tuple(sorted(fcr_stage_state.active))
+        ),
+        training_evidence=(
+            {
+                **fcr_v2_training_evidence,
+                "loss_magnitude_ema": (
+                    fcr_v2_ema_normalizer.state_dict()
+                    if fcr_v2_ema_normalizer is not None
+                    else {}
+                ),
+            }
+            if str(args.fcr_version) == "v2"
+            else None
+        ),
+    ):
+        return
 
     print(f"Training finished. best_joint_val_tx_acc={best_joint_val_tx:.2f}% & best_joint_test_tx_acc={best_joint_test_tx:.2f}% at epoch {best_epoch}")
     print(f"Training finished. best_test_overall_tx_acc={best_test_tx:.2f}% at epoch {best_test_epoch} -> {args.best_test_save_path}")

@@ -187,37 +187,65 @@ def collect_fcr_v2_diagnostics(
     metrics["schema"] = "adv3b02_fcr_diagnostics:v2"
     resources = {} if resources is None else resources
 
-    clean_rows = _feature_matrix(artifacts.get("clean_z_f_id"))
-    leo_rows = _feature_matrix(artifacts.get("leo_z_f_id"))
-    matched_count = min(
-        clean_rows.size(0) if clean_rows is not None else 0,
-        leo_rows.size(0) if leo_rows is not None else 0,
-    )
-    pair_count, pair_coverage, strict_pair_count, strict_pair_coverage = _pair_summary(
-        artifacts.get("tx_labels"),
-        artifacts.get("domain_labels"),
-        matched_count,
-    )
-    if pair_count is None:
-        _unavailable(metrics, "pair_count", "matched clean/LEO rows are unavailable")
-        _unavailable(metrics, "pair_coverage", "matched clean/LEO rows are unavailable")
+    pair_counts = {
+        str(name): max(0, int(value))
+        for name, value in dict(resources.get("pair_counts", {})).items()
+    }
+    pair_opportunities = {
+        str(name): max(0, int(value))
+        for name, value in dict(resources.get("pair_opportunities", {})).items()
+    }
+    if not pair_counts:
+        _unavailable(metrics, "pair_count", "training PairBuilder counts are unavailable")
+        _unavailable(metrics, "pair_coverage", "training PairBuilder opportunities are unavailable")
+        _unavailable(metrics, "same_tx_cross_domain_pair_count", "training nuisance-pair count is unavailable")
+        _unavailable(metrics, "same_tx_cross_domain_pair_coverage", "training nuisance-pair opportunities are unavailable")
     else:
-        metrics["pair_count"] = int(pair_count)
-        if pair_coverage is None:
-            _unavailable(metrics, "pair_coverage", "pair coverage denominator is unavailable")
-        else:
-            metrics["pair_coverage"] = float(pair_coverage)
-    if strict_pair_count is None:
-        _unavailable(metrics, "same_tx_cross_domain_pair_count", "TX/domain labels are unavailable")
-        _unavailable(metrics, "same_tx_cross_domain_pair_coverage", "TX/domain labels are unavailable")
-    else:
-        metrics["same_tx_cross_domain_pair_count"] = int(strict_pair_count)
-        if strict_pair_coverage is None:
-            _unavailable(metrics, "same_tx_cross_domain_pair_coverage", "same-TX cross-domain coverage denominator is unavailable")
-        else:
-            metrics["same_tx_cross_domain_pair_coverage"] = float(strict_pair_coverage)
+        total_pairs = sum(pair_counts.values())
+        total_opportunities = sum(pair_opportunities.values())
+        metrics["pair_count"] = int(total_pairs)
+        metrics["pair_coverage"] = (
+            float(total_pairs / total_opportunities) if total_opportunities > 0 else 0.0
+        )
+        nuisance_count = int(pair_counts.get("nuisance", 0))
+        nuisance_opportunities = int(pair_opportunities.get("nuisance", 0))
+        metrics["same_tx_cross_domain_pair_count"] = nuisance_count
+        metrics["same_tx_cross_domain_pair_coverage"] = (
+            float(nuisance_count / nuisance_opportunities)
+            if nuisance_opportunities > 0
+            else 0.0
+        )
+        metrics["pair_counts_by_axis"] = pair_counts
+        metrics["pair_coverage_by_axis"] = {
+            name: (
+                float(pair_counts.get(name, 0) / opportunities)
+                if opportunities > 0
+                else 0.0
+            )
+            for name, opportunities in pair_opportunities.items()
+        }
 
-    eta_coverage, eta_error, eta_by_dim = _eta_metrics(artifacts.get("eta_pred"), artifacts.get("eta_target"))
+    eta_counts = [float(value) for value in resources.get("eta_valid_count_by_dim", ())]
+    eta_error_sums = [
+        float(value) for value in resources.get("eta_absolute_error_sum_by_dim", ())
+    ]
+    eta_opportunities = int(resources.get("eta_component_opportunities", 0) or 0)
+    if eta_counts and len(eta_counts) == len(eta_error_sums) and eta_opportunities > 0:
+        eta_coverage = float(sum(eta_counts) / (eta_opportunities * len(eta_counts)))
+        eta_by_dim = [
+            (error_sum / count if count > 0.0 else NA_VALUE)
+            for error_sum, count in zip(eta_error_sums, eta_counts)
+        ]
+        finite_eta = [
+            float(value)
+            for value in eta_by_dim
+            if isinstance(value, (int, float)) and math.isfinite(float(value))
+        ]
+        eta_error = float(sum(finite_eta) / len(finite_eta)) if finite_eta else None
+    else:
+        eta_coverage, eta_error, eta_by_dim = _eta_metrics(
+            artifacts.get("eta_pred"), artifacts.get("eta_target")
+        )
     if eta_coverage is None:
         _unavailable(metrics, "eta_valid_coverage", "eta prediction or target artifact is unavailable")
         _unavailable(metrics, "eta_component_error", "eta prediction or target artifact is unavailable")
@@ -284,8 +312,39 @@ def collect_fcr_v2_diagnostics(
         metrics["response_state_norm"] = state_norm
 
     metrics["per_tx_source_metrics"] = _per_tx_source_metrics(artifacts)
+    configured_lambdas = [str(name) for name in resources.get("configured_lambdas", ())]
+    effective_weights = {
+        str(name): float(value)
+        for name, value in dict(resources.get("effective_weights", {})).items()
+    }
+    nonzero_steps = {
+        str(name): int(value)
+        for name, value in dict(resources.get("nonzero_loss_steps", {})).items()
+    }
+    gradient_ratios = {
+        str(name): float(value)
+        for name, value in dict(resources.get("gradient_ratios_to_identity_ce", {})).items()
+    }
+    actual_active: list[str] = []
+    mechanism_status: dict[str, str] = {}
+    for name in configured_lambdas:
+        evidence = (
+            effective_weights.get(name, 0.0) > 0.0
+            and nonzero_steps.get(name, 0) > 0
+            and gradient_ratios.get(name, 0.0) > 0.0
+        )
+        if evidence:
+            actual_active.append(name)
+            mechanism_status[name] = "ACTIVATED_WITH_LOSS_AND_GRADIENT_EVIDENCE"
+        else:
+            mechanism_status[name] = "MECHANISM_NOT_ACTIVATED:no_nonzero_loss_or_gradient_evidence"
     metrics["activation_state"] = {
-        "active_lambdas": [str(name) for name in resources.get("active_lambdas", ())],
+        "configured_lambdas": configured_lambdas,
+        "actual_active_lambdas": actual_active,
+        "mechanism_status": mechanism_status,
+        "effective_weights": effective_weights,
+        "nonzero_loss_steps": nonzero_steps,
+        "gradient_ratios_to_identity_ce": gradient_ratios,
         "capability_reasons": {
             str(name): str(reason)
             for name, reason in dict(resources.get("capability_reasons", {})).items()

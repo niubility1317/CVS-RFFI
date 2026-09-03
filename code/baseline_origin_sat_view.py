@@ -1,39 +1,26 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import hashlib
 import math
 from typing import Any, Callable, Iterable, Mapping, Optional
 
 import torch
 
-from cvsrffi.phase1_fcr_types import FCR_V2_ETA_SCHEMA_VERSION
+from cvsrffi.phase1_fcr_types import (
+    FCR_V2_ETA_FIELDS,
+    FCR_V2_ETA_SCALES,
+    FCR_V2_ETA_SCHEMA_VERSION,
+    FCR_V2_ETA_UNITS,
+)
 
 
 ApplySatFn = Callable[..., tuple]
 
-CRRA_NUISANCE_FIELDS = (
-    "snr_db",
-    "cfo_hz",
-    "residual_cfo_hz",
-    "fD_hz",
-    "pl_db",
-    "K_db",
-    "theta_deg",
-    "h_km",
-    "state",
-)
+CRRA_NUISANCE_FIELDS = FCR_V2_ETA_FIELDS
+CRRA_NUISANCE_UNITS = FCR_V2_ETA_UNITS
 
-CRRA_NUISANCE_SCALES = {
-    "snr_db": 20.0,
-    "cfo_hz": 100_000.0,
-    "residual_cfo_hz": 100_000.0,
-    "fD_hz": 100_000.0,
-    "pl_db": 200.0,
-    "K_db": 20.0,
-    "theta_deg": 90.0,
-    "h_km": 2_000.0,
-    "state": 2.0,
-}
+CRRA_NUISANCE_SCALES = dict(zip(FCR_V2_ETA_FIELDS, FCR_V2_ETA_SCALES))
 
 
 @dataclass(frozen=True)
@@ -60,8 +47,13 @@ class SatViewTransform:
     physical_sample_id: Optional[tuple[str, ...]] = None
     crop_offset: Optional[torch.Tensor] = None
     eta_schema_version: str = FCR_V2_ETA_SCHEMA_VERSION
+    eta_fields: tuple[str, ...] = FCR_V2_ETA_FIELDS
+    eta_units: tuple[str, ...] = FCR_V2_ETA_UNITS
+    eta_scales: tuple[float, ...] = FCR_V2_ETA_SCALES
     eta: Optional[torch.Tensor] = None
     eta_valid_mask: Optional[torch.Tensor] = None
+    scenario_by_sample: tuple[str, ...] = ()
+    applied_mask: Optional[torch.Tensor] = None
 
 
 @dataclass
@@ -302,6 +294,27 @@ class BaselineOriginSatViewAugment:
         gen.manual_seed(self.seed + int(epoch) * 1009 + int(batch_idx))
         return gen
 
+    def _sample_generator(
+        self,
+        device: torch.device,
+        *,
+        epoch: int,
+        physical_sample_id: str,
+        view_type: str,
+    ) -> torch.Generator:
+        """Return a stateless per-record stream, independent of loader order."""
+
+        try:
+            gen = torch.Generator(device=device)
+        except Exception:
+            gen = torch.Generator()
+        payload = (
+            f"{self.seed}:{int(epoch)}:{physical_sample_id}:{view_type}"
+        ).encode("utf-8")
+        sample_seed = int.from_bytes(hashlib.blake2b(payload, digest_size=8).digest(), "big")
+        gen.manual_seed(sample_seed % (2**63 - 1))
+        return gen
+
     def stage_for_epoch(self, epoch: int) -> tuple[int, SatViewStage]:
         cur_index = 0
         for index, stage in enumerate(self.stages):
@@ -331,6 +344,16 @@ class BaselineOriginSatViewAugment:
             batch_meta, batch_size=clean_bsz, device=x.device
         )
         stage_index, stage = self.stage_for_epoch(epoch)
+        if physical_sample_id is not None:
+            return self._transform_per_sample(
+                x,
+                args=args,
+                epoch=epoch,
+                physical_sample_id=physical_sample_id,
+                crop_offset=crop_offset,
+                stage_index=stage_index,
+                stage=stage,
+            )
         gen = self._generator(x.device, epoch, batch_idx)
         p = _clamp_prob(stage.view_prob)
         if p <= 0.0 or float(torch.rand((), device=x.device, generator=gen).item()) > p:
@@ -346,6 +369,8 @@ class BaselineOriginSatViewAugment:
                 pair_id=physical_sample_id,
                 physical_sample_id=physical_sample_id,
                 crop_offset=crop_offset,
+                scenario_by_sample=("clean_duplicate",) * clean_bsz,
+                applied_mask=torch.zeros(clean_bsz, dtype=torch.bool, device=x.device),
             )
         scenario = self._select_scenario(stage, gen, x.device)
         x_sat, raw_meta = self.apply_fn(x, scenario, args, gen=gen, return_meta=True)
@@ -372,6 +397,100 @@ class BaselineOriginSatViewAugment:
             crop_offset=crop_offset,
             eta=nuisance,
             eta_valid_mask=eta_valid_mask,
+            scenario_by_sample=(scenario,) * clean_bsz,
+            applied_mask=torch.ones(clean_bsz, dtype=torch.bool, device=x.device),
+        )
+
+    def _transform_per_sample(
+        self,
+        x: torch.Tensor,
+        *,
+        args: Any,
+        epoch: int,
+        physical_sample_id: tuple[str, ...],
+        crop_offset: Optional[torch.Tensor],
+        stage_index: int,
+        stage: SatViewStage,
+    ) -> SatViewTransform:
+        clean_bsz = int(x.size(0))
+        p = _clamp_prob(stage.view_prob)
+        rows: list[torch.Tensor] = []
+        eta_rows: list[torch.Tensor] = []
+        eta_mask_rows: list[torch.Tensor] = []
+        valid_rows: list[torch.Tensor] = []
+        scenarios: list[str] = []
+        applied_rows: list[bool] = []
+        raw_rows: list[dict[str, Any]] = []
+        for index, sample_id in enumerate(physical_sample_id):
+            gen = self._sample_generator(
+                x.device,
+                epoch=int(epoch),
+                physical_sample_id=str(sample_id),
+                view_type="satellite_view",
+            )
+            apply_row = p > 0.0 and (
+                p >= 1.0 or float(torch.rand((), device=x.device, generator=gen).item()) <= p
+            )
+            if not apply_row:
+                rows.append(x[index : index + 1].clone())
+                eta_rows.append(x.new_zeros((1, len(CRRA_NUISANCE_FIELDS))))
+                eta_mask_rows.append(torch.zeros((1, len(CRRA_NUISANCE_FIELDS)), dtype=torch.bool, device=x.device))
+                valid_rows.append(torch.zeros(1, dtype=torch.bool, device=x.device))
+                scenarios.append("clean_duplicate")
+                applied_rows.append(False)
+                raw_rows.append({"scenario": "clean_duplicate", "valid": False})
+                continue
+            scenario = self._select_scenario(stage, gen, x.device)
+            x_sat, raw_meta = self.apply_fn(
+                x[index : index + 1], scenario, args, gen=gen, return_meta=True
+            )
+            normalized, nuisance, nuisance_valid, nuisance_fields, eta_mask = _normalize_nuisance_meta(
+                raw_meta,
+                scenario=scenario,
+                batch_size=1,
+                device=x.device,
+            )
+            if nuisance is None or eta_mask is None or nuisance_valid is None:
+                nuisance = x.new_zeros((1, len(CRRA_NUISANCE_FIELDS)))
+                eta_mask = torch.zeros_like(nuisance, dtype=torch.bool)
+                nuisance_valid = torch.zeros(1, dtype=torch.bool, device=x.device)
+            if nuisance_fields and tuple(nuisance_fields) != CRRA_NUISANCE_FIELDS:
+                raise ValueError("per-sample CRRA eta field order drift")
+            rows.append(x_sat.to(device=x.device, dtype=x.dtype))
+            eta_rows.append(nuisance)
+            eta_mask_rows.append(eta_mask)
+            valid_rows.append(nuisance_valid)
+            scenarios.append(scenario)
+            applied_rows.append(True)
+            raw_rows.append(dict(normalized or {}))
+        scenario_summary = scenarios[0] if len(set(scenarios)) == 1 else "mixed_per_sample"
+        return SatViewTransform(
+            x=torch.cat(rows, dim=0),
+            scenario=scenario_summary,
+            stage_start_epoch=int(stage.start_epoch),
+            stage_index=int(stage_index),
+            view_prob=p,
+            applied=bool(any(applied_rows)),
+            clean_batch_size=clean_bsz,
+            meta={
+                "scenario": scenario_summary,
+                "scenario_by_sample": tuple(scenarios),
+                "per_sample": tuple(raw_rows),
+                "eta_schema_version": FCR_V2_ETA_SCHEMA_VERSION,
+                "eta_fields": CRRA_NUISANCE_FIELDS,
+                "eta_units": CRRA_NUISANCE_UNITS,
+                "eta_scales": FCR_V2_ETA_SCALES,
+            },
+            nuisance=torch.cat(eta_rows, dim=0),
+            nuisance_valid=torch.cat(valid_rows, dim=0),
+            nuisance_fields=CRRA_NUISANCE_FIELDS,
+            pair_id=physical_sample_id,
+            physical_sample_id=physical_sample_id,
+            crop_offset=crop_offset,
+            eta=torch.cat(eta_rows, dim=0),
+            eta_valid_mask=torch.cat(eta_mask_rows, dim=0),
+            scenario_by_sample=tuple(scenarios),
+            applied_mask=torch.tensor(applied_rows, dtype=torch.bool, device=x.device),
         )
 
     def expand(

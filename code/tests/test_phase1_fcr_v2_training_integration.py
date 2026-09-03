@@ -258,6 +258,10 @@ def _v2_training_pair(model, *, role: str = "L_s"):
     physical_ids = tuple(f"physical:{index}" for index in range(batch))
     metadata = {
         "physical_sample_id": physical_ids,
+        "content_record_id": tuple(f"content:{index}" for index in range(batch)),
+        "common_preamble_id": ("wisig-common-preamble",) * batch,
+        "excitation_bin": torch.zeros(batch, dtype=torch.long),
+        "link_condition": ("eq:0",) * batch,
         "crop_offset": torch.tensor([0, 64, 0, 64]),
         "rx_i": torch.zeros(batch, dtype=torch.long),
         "day_i": torch.zeros(batch, dtype=torch.long),
@@ -272,6 +276,13 @@ def _v2_training_pair(model, *, role: str = "L_s"):
         eta=torch.ones(batch, 9),
         eta_valid_mask=torch.ones(batch, 9, dtype=torch.bool),
         eta_schema_version="fcr-v2/eta-v1",
+        eta_fields=(
+            "snr_db", "cfo_hz", "residual_cfo_hz", "fD_hz", "pl_db",
+            "K_db", "theta_deg", "h_km", "state",
+        ),
+        eta_units=("dB", "Hz", "Hz", "Hz", "dB", "dB", "degree", "km", "category_index"),
+        eta_scales=(20.0, 100000.0, 100000.0, 100000.0, 200.0, 20.0, 90.0, 2000.0, 2.0),
+        scenario_by_sample=("leo_clear_weak",) * batch,
     )
     return train.build_fcr_v2_training_pair(
         clean,
@@ -296,13 +307,78 @@ def test_m6_real_v2_objective_uses_metadata_pairs_and_backpropagates() -> None:
         row="M6",
         epoch=150,
         supervised_components={"identity_ce": torch.tensor(0.5, requires_grad=True)},
+        frozen_identity_classifier=train.FrozenADV3B02IdentityClassifier(model),
+        collect_gradient_evidence=True,
     )
     output.total.backward()
 
     assert torch.isfinite(output.total)
     assert output.metrics["active_nuisance_pairs"] > 0
     assert output.metrics["active_fingerprint_pairs"] > 0
+    assert output.metrics["factor_fingerprint_axis_loss"] > 0.0
+    assert output.metrics["factor_content_axis_loss"] > 0.0
+    assert output.metrics["factor_nuisance_axis_loss"] > 0.0
+    assert output.components["factor"] > 0.0
+    assert output.metrics["gradient_ratios_to_identity_ce"]["factor"] > 0.0
     assert any(parameter.grad is not None for parameter in model.fcr.parameters())
+
+
+@pytest.mark.parametrize(
+    ("row", "component", "raw_loss", "gradient_key"),
+    (
+        ("M2", "latent_cycle", "cycle", "cycle"),
+        ("M4", "transplant", "transplant", "transplant"),
+    ),
+)
+def test_m2_and_m4_use_real_decode_reencode_graphs(
+    row: str,
+    component: str,
+    raw_loss: str,
+    gradient_key: str,
+) -> None:
+    torch.manual_seed(6012)
+    model = _small_model().train()
+    pair = _v2_training_pair(model)
+    classifier = train.FrozenADV3B02IdentityClassifier(model)
+
+    output = train.compute_fcr_v2_pair_objective(
+        model=model,
+        raw_model=model,
+        training_pair=pair,
+        row=row,
+        epoch=150,
+        supervised_components={"identity_ce": torch.tensor(0.5, requires_grad=True)},
+        frozen_identity_classifier=classifier,
+        collect_gradient_evidence=True,
+    )
+
+    assert output.metrics["raw_losses"][raw_loss] > 0.0
+    assert output.components[component] > 0.0
+    assert output.metrics["gradient_ratios_to_identity_ce"][gradient_key] > 0.0
+    assert all(not parameter.requires_grad for parameter in classifier.parameters())
+
+
+def test_m5_physical_gates_and_response_smoothness_are_on_the_real_graph() -> None:
+    torch.manual_seed(6011)
+    model = _small_model().train()
+    pair = _v2_training_pair(model)
+
+    output = train.compute_fcr_v2_pair_objective(
+        model=model,
+        raw_model=model,
+        training_pair=pair,
+        row="M5",
+        epoch=150,
+        supervised_components={"identity_ce": torch.tensor(0.5, requires_grad=True)},
+        frozen_identity_classifier=train.FrozenADV3B02IdentityClassifier(model),
+        collect_gradient_evidence=True,
+    )
+
+    assert output.metrics["physical_clean_gate_loss"] > 0.0
+    assert output.metrics["physical_leo_gate_loss"] > 0.0
+    assert output.metrics["response_surface_smoothness"] > 0.0
+    assert output.components["phys"] > 0.0
+    assert output.metrics["gradient_ratios_to_identity_ce"]["physical"] > 0.0
 
 
 def test_c2_objective_does_not_call_decoder() -> None:

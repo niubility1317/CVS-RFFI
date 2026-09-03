@@ -47,15 +47,15 @@ _ROW_LOSS_REGISTRY: dict[str, frozenset[str]] = {
     "S2": frozenset({"self", "shared_s"}),
     "S3": frozenset({"self", "shared_f", "shared_s"}),
     "S4": frozenset({"self", "shared_f", "shared_s", "swap"}),
-    "M1": frozenset({"self", "shared_f", "shared_s", "response", "eta"}),
-    "M2": frozenset({"self", "shared_f", "shared_s", "response", "eta", "cycle"}),
-    "M3": frozenset({"self", "shared_f", "shared_s", "response", "eta", "cycle", "need"}),
-    "M4": frozenset({"self", "shared_f", "shared_s", "response", "eta", "cycle", "need", "transplant"}),
+    "M1": frozenset({"self", "shared_f", "shared_s", "response", "eta", "swap"}),
+    "M2": frozenset({"self", "shared_f", "shared_s", "response", "eta", "swap", "cycle"}),
+    "M3": frozenset({"self", "shared_f", "shared_s", "response", "eta", "swap", "cycle", "need"}),
+    "M4": frozenset({"self", "shared_f", "shared_s", "response", "eta", "swap", "cycle", "need", "transplant"}),
     "M5": frozenset(
-        {"self", "shared_f", "shared_s", "response", "eta", "cycle", "need", "transplant", "physical"}
+        {"self", "shared_f", "shared_s", "response", "eta", "swap", "cycle", "need", "transplant", "physical"}
     ),
     "M6": frozenset(
-        {"self", "shared_f", "shared_s", "response", "eta", "cycle", "need", "transplant", "physical", "factor"}
+        {"self", "shared_f", "shared_s", "response", "eta", "swap", "cycle", "need", "transplant", "physical", "factor"}
     ),
 }
 
@@ -122,6 +122,8 @@ def _stage_scales(epoch: int) -> tuple[str, dict[str, float]]:
     scales["self"] = 0.25
     scales["shared_f"] = 0.25
     scales["shared_s"] = 0.25
+    for name in ("response", "eta", "swap", "cycle", "need", "transplant", "physical", "factor"):
+        scales[name] = 0.10
     return "E161_200_identity_refinement", scales
 
 
@@ -129,7 +131,7 @@ def _loss_ready(loss_name: str, capabilities: FCRV2CapabilityState) -> tuple[boo
     if loss_name == "eta":
         return bool(capabilities.eta_ready), capabilities.reason_for("eta")
     if loss_name == "shared_f":
-        return bool(capabilities.fingerprint_ready), capabilities.reason_for("fingerprint")
+        return bool(capabilities.swap_ready), capabilities.reason_for("swap")
     if loss_name == "response":
         return bool(capabilities.decoder_ready), capabilities.reason_for("decoder")
     if loss_name == "swap":
@@ -139,7 +141,9 @@ def _loss_ready(loss_name: str, capabilities: FCRV2CapabilityState) -> tuple[boo
         reason = capabilities.reason_for("decoder") or capabilities.reason_for("swap")
         return ready, reason
     if loss_name == "need":
-        return bool(capabilities.fingerprint_ready), capabilities.reason_for("fingerprint")
+        ready = bool(capabilities.decoder_ready and capabilities.swap_ready)
+        reason = capabilities.reason_for("decoder") or capabilities.reason_for("swap")
+        return ready, reason
     if loss_name == "transplant":
         ready = bool(capabilities.decoder_ready and capabilities.fingerprint_ready)
         reason = capabilities.reason_for("decoder") or capabilities.reason_for("fingerprint")

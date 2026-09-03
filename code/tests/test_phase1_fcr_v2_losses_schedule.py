@@ -96,7 +96,9 @@ def test_failed_capability_zeroes_scale_and_records_reason() -> None:
 def test_necessity_is_relative_drop_f_gap() -> None:
     loss = necessity_loss(full_error=torch.tensor(2.0), drop_error=torch.tensor(5.0))
 
-    torch.testing.assert_close(loss, torch.tensor(1.5))
+    torch.testing.assert_close(loss, torch.tensor(0.0))
+    insufficient = necessity_loss(full_error=torch.tensor(2.0), drop_error=torch.tensor(2.0))
+    torch.testing.assert_close(insufficient, torch.tensor(0.05))
 
 
 def test_cross_decode_uses_destination_response_and_nuisance() -> None:

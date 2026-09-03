@@ -48,6 +48,10 @@ def sanitize_fcr_meta(meta: Mapping[str, Any], label_visible: bool = False) -> d
         clean.pop(key, None)
     clean.pop("base_index", None)
     clean["physical_sample_id"] = str(opaque_id or _opaque_sample_id(full_id))
+    if "content_record_id" in clean:
+        # Content-record identity is needed for same-record synchronization but
+        # must not retain the reversible TX-bearing ManySig identifier in U_s.
+        clean["content_record_id"] = clean["physical_sample_id"]
     return clean
 
 

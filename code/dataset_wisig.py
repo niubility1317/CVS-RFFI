@@ -15,6 +15,39 @@ MIN_WISIG_TRAIN_RATIO = 0.001
 MAX_WISIG_TRAIN_RATIO = 0.99
 
 
+def derive_wisig_fcr_metadata(
+    *,
+    tx_i: int,
+    rx_i: int,
+    day_i: int,
+    eq_i: int,
+    sig_i: int,
+    crop_offset: int,
+    equalized_value: Any,
+    physical_sample_id: str,
+) -> dict[str, Any]:
+    """Derive only FCR metadata that the ManySig index actually proves.
+
+    A ManySig index proves physical-record identity and receiver/day/equalizer
+    condition.  It does not prove a shared preamble or an excitation bin across
+    transmitters, so those fields remain explicit unavailable sentinels.  This
+    prevents the pair builder from silently manufacturing M4/M6 coverage.
+    """
+
+    del tx_i, rx_i, day_i, eq_i, sig_i, crop_offset
+    equalized = int(bool(equalized_value))
+    return {
+        "content_record_id": str(physical_sample_id),
+        "common_preamble_id": "",
+        "link_condition": f"eq:{equalized}",
+        "excitation_bin": -1,
+        "content_pair_capability": "VERIFIED_MANY_SIG_DISTINCT_PHYSICAL_RECORDS",
+        "fingerprint_pair_capability": (
+            "MECHANISM_NOT_ACTIVATED:unverifiable_manysig_preamble_and_excitation"
+        ),
+    }
+
+
 def _normalize_strategy(value: str, *, name: str, allowed: Sequence[str]) -> str:
     strategy = str(value or "").strip().lower()
     if strategy not in set(allowed):
@@ -255,6 +288,18 @@ class WiSigCompactDataset(Dataset):
         from cvsrffi.phase1_fcr_interventions import build_physical_sample_id
 
         meta["physical_sample_id"] = build_physical_sample_id(meta)
+        meta.update(
+            derive_wisig_fcr_metadata(
+                tx_i=it.tx_i,
+                rx_i=it.rx_i,
+                day_i=it.day_i,
+                eq_i=it.eq_i,
+                sig_i=it.sig_i,
+                crop_offset=int(crop_offset),
+                equalized_value=meta["equalized"],
+                physical_sample_id=meta["physical_sample_id"],
+            )
+        )
         return x_t, y, d, meta
 
 

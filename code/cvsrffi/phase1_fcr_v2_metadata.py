@@ -5,8 +5,11 @@ from typing import Any, Mapping
 import torch
 
 from cvsrffi.phase1_fcr_types import (
+    FCR_V2_ETA_FIELDS,
+    FCR_V2_ETA_SCALES,
     FCRV2Metadata,
     FCR_V2_ETA_SCHEMA_VERSION,
+    FCR_V2_ETA_UNITS,
 )
 
 
@@ -72,6 +75,17 @@ def _require_augmented_rows(augmentation: Any, *, batch_size: int) -> tuple[torc
     schema = str(getattr(augmentation, "eta_schema_version", FCR_V2_ETA_SCHEMA_VERSION))
     if schema != FCR_V2_ETA_SCHEMA_VERSION:
         raise ValueError(f"eta_schema_version must be {FCR_V2_ETA_SCHEMA_VERSION}, got {schema}")
+    fields = tuple(getattr(augmentation, "eta_fields", ()))
+    units = tuple(getattr(augmentation, "eta_units", ()))
+    scales = tuple(float(value) for value in getattr(augmentation, "eta_scales", ()))
+    if fields != FCR_V2_ETA_FIELDS:
+        raise ValueError(f"eta_fields must be {FCR_V2_ETA_FIELDS}, got {fields}")
+    if units != FCR_V2_ETA_UNITS:
+        raise ValueError(f"eta_units must be {FCR_V2_ETA_UNITS}, got {units}")
+    if scales != FCR_V2_ETA_SCALES:
+        raise ValueError(f"eta_scales must be {FCR_V2_ETA_SCALES}, got {scales}")
+    if int(eta.shape[1]) != len(FCR_V2_ETA_FIELDS):
+        raise ValueError("augmentation eta width does not match the named CRRA schema")
     valid_eta = eta[eta_valid_mask]
     if valid_eta.numel() > 0 and not torch.isfinite(valid_eta).all():
         raise ValueError("eta contains non-finite values under eta_valid_mask")
@@ -119,9 +133,16 @@ def build_fcr_v2_metadata(batch: Mapping[str, Any], augmentation: Any) -> FCRV2M
     rx_i = _long_tensor(batch["rx_i"], name="rx_i", batch_size=batch_size)
     day_i = _long_tensor(batch["day_i"], name="day_i", batch_size=batch_size)
     excitation_bin = _long_tensor(batch["excitation_bin"], name="excitation_bin", batch_size=batch_size)
-    scenario = str(getattr(augmentation, "scenario", "") or "satellite")
+    scenario_by_sample = tuple(getattr(augmentation, "scenario_by_sample", ()))
+    if not scenario_by_sample:
+        scenario = str(getattr(augmentation, "scenario", "") or "satellite")
+        scenario_by_sample = (scenario,) * batch_size
+    if len(scenario_by_sample) != batch_size:
+        raise ValueError("augmentation scenario_by_sample must align with the source batch")
     clean_eta = torch.zeros_like(eta)
-    clean_valid = torch.ones_like(eta_valid_mask, dtype=torch.bool)
+    # Clean IQ has no sampled CRRA parameter observation.  A zero value is a
+    # placeholder under an all-false mask, never a scientific target.
+    clean_valid = torch.zeros_like(eta_valid_mask, dtype=torch.bool)
     return FCRV2Metadata.from_mapping(
         {
             "physical_sample_id": physical_sample_id + physical_sample_id,
@@ -131,10 +152,13 @@ def build_fcr_v2_metadata(batch: Mapping[str, Any], augmentation: Any) -> FCRV2M
             "tx_id": torch.cat([tx_id, tx_id], dim=0),
             "rx_i": torch.cat([rx_i, rx_i], dim=0),
             "day_i": torch.cat([day_i, day_i], dim=0),
-            "view_type": ("clean",) * batch_size + (scenario,) * batch_size,
+            "view_type": ("clean",) * batch_size + tuple(str(value) for value in scenario_by_sample),
             "link_condition": link_condition + link_condition,
             "excitation_bin": torch.cat([excitation_bin, excitation_bin], dim=0),
             "eta_schema_version": FCR_V2_ETA_SCHEMA_VERSION,
+            "eta_fields": FCR_V2_ETA_FIELDS,
+            "eta_units": FCR_V2_ETA_UNITS,
+            "eta_scales": FCR_V2_ETA_SCALES,
             "eta": torch.cat([clean_eta, eta], dim=0),
             "eta_valid_mask": torch.cat([clean_valid, eta_valid_mask], dim=0),
         },

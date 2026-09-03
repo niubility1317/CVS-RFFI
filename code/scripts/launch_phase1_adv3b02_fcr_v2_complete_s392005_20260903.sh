@@ -49,17 +49,12 @@ COMMON_ARGS=(
   --wisig_train_rxs "${SOURCE_RXS}"
   --wisig_test_days "${TARGET_DAYS}"
   --wisig_test_rxs "${TARGET_RXS}"
-  --wisig_allow_day_overlap_if_receiver_disjoint true
+  --wisig_allow_day_overlap_if_receiver_disjoint
   --use_meta_ssl_cvs
   --ssl_labeled_ratio 0.07
   --ssl_unlabeled_ratio 0.63
   --ssl_val_ratio 0.30
-  --phase1_source_role_protocol legacy_l_u_v
-  --checkpoint_selection final_only
-  --best_metric clean_val_tx
-  --enable_joint_safe_guard false
   --test_eval_policy never
-  --phase1_external_final_eval true
   --init_checkpoint "${C0_CHECKPOINT}"
   --init_checkpoint_expected_seed 392005
   --init_checkpoint_expected_epoch 200
@@ -69,19 +64,11 @@ COMMON_ARGS=(
 )
 
 probe_training_contract() {
-  env "PYTHONPATH=${CODE_ROOT}/code:${CODE_ROOT}:${PYTHONPATH:-}" \
-    "${PYTHON}" -u "${CODE_ROOT}/code/train.py" \
-    --phase1_method adv3b02_fcr \
-    --use_fcr \
-    --use_meta_ssl_cvs \
-    --ssl_labeled_ratio 0.07 \
-    --ssl_unlabeled_ratio 0.63 \
-    --ssl_val_ratio 0.30 \
-    --epochs 200 \
-    --seed "${SEED}" \
-    --fcr_ablation_row C1 \
-    --fcr_config_dry_run \
-    > /dev/null 2>&1
+  local row cmd
+  for row in C1 M6; do
+    cmd="$(build_train_command "${row}")"
+    bash -lc "${cmd} --fcr_config_dry_run" > /dev/null 2>&1
+  done
 }
 
 row_gpu() {

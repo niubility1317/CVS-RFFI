@@ -66,16 +66,11 @@ def build_exact_ssdg_model_from_checkpoint(
     merged = ssdg_module._apply_model_cli_args(merged, parsed)
     model = ssdg_module.build_baseline_model(merged, device)
     try:
-        incompatible = model.load_state_dict(state, strict=False)
+        model.load_state_dict(state, strict=True)
     except RuntimeError as exc:
-        raise ValueError(f"strict checkpoint reconstruction shape mismatch: {exc}") from exc
-    missing = list(incompatible.missing_keys)
-    unexpected = list(incompatible.unexpected_keys)
-    if missing or unexpected:
         raise ValueError(
-            "strict checkpoint reconstruction failed: "
-            f"missing={missing} unexpected={unexpected}"
-        )
+            f"strict checkpoint reconstruction failed: {exc}"
+        ) from exc
     audit = {
         "loader": "exact_ssdg_training_architecture_v1",
         "checkpoint_load_strict": True,

@@ -73,13 +73,19 @@ class FCRV2PairBuilder:
             return False
         if int(metadata.crop_offset[source]) != int(metadata.crop_offset[target]):
             return False
-        shared = metadata.eta_valid_mask[source] & metadata.eta_valid_mask[target]
-        if not bool(shared.any()):
+        source_clean = metadata.view_type[source] == "clean"
+        target_clean = metadata.view_type[target] == "clean"
+        if source_clean == target_clean:
             return False
-        delta = torch.abs(metadata.eta[source] - metadata.eta[target])
-        return bool((delta[shared] > 0).any())
+        satellite = target if source_clean else source
+        valid = metadata.eta_valid_mask[satellite]
+        if not bool(valid.any()):
+            return False
+        return bool((metadata.eta[satellite][valid].abs() > 0).any())
 
     def _content_pair(self, metadata: FCRV2Metadata, source: int, target: int) -> bool:
+        if int(metadata.tx_id[source]) < 0 or int(metadata.tx_id[target]) < 0:
+            return False
         if int(metadata.tx_id[source]) != int(metadata.tx_id[target]):
             return False
         if int(metadata.rx_i[source]) != int(metadata.rx_i[target]):
@@ -88,12 +94,23 @@ class FCRV2PairBuilder:
             return False
         if metadata.link_condition[source] != metadata.link_condition[target]:
             return False
-        delta = abs(int(metadata.crop_offset[source]) - int(metadata.crop_offset[target]))
-        overlap = max(0, int(self.crop_span) - delta) / float(self.crop_span)
+        if metadata.view_type[source] != metadata.view_type[target]:
+            return False
+        if metadata.content_record_id[source] != metadata.content_record_id[target]:
+            overlap = 0.0
+        else:
+            delta = abs(int(metadata.crop_offset[source]) - int(metadata.crop_offset[target]))
+            overlap = max(0, int(self.crop_span) - delta) / float(self.crop_span)
         return overlap <= 0.25
 
     @staticmethod
     def _fingerprint_pair(metadata: FCRV2Metadata, source: int, target: int) -> bool:
+        if int(metadata.tx_id[source]) < 0 or int(metadata.tx_id[target]) < 0:
+            return False
+        if not metadata.common_preamble_id[source] or not metadata.common_preamble_id[target]:
+            return False
+        if int(metadata.excitation_bin[source]) < 0 or int(metadata.excitation_bin[target]) < 0:
+            return False
         if metadata.common_preamble_id[source] != metadata.common_preamble_id[target]:
             return False
         if int(metadata.rx_i[source]) != int(metadata.rx_i[target]):
@@ -101,6 +118,8 @@ class FCRV2PairBuilder:
         if int(metadata.day_i[source]) != int(metadata.day_i[target]):
             return False
         if metadata.link_condition[source] != metadata.link_condition[target]:
+            return False
+        if metadata.view_type[source] != metadata.view_type[target]:
             return False
         if int(metadata.excitation_bin[source]) != int(metadata.excitation_bin[target]):
             return False

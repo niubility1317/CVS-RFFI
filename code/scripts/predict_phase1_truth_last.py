@@ -20,6 +20,16 @@ from dataset_wisig import (
 from post_stage_common import load_checkpoint
 
 
+def predict_identity_logits(model, x: torch.Tensor) -> torch.Tensor:
+    """Run the checkpoint's deployable identity route without V2 decoders."""
+
+    if bool(getattr(model, "use_fcr", False)) and str(getattr(model, "fcr_version", "v1")) == "v2":
+        outputs = model.forward_identity_only(x)
+    else:
+        outputs = model(x, y_tx=None, grl_lambda=1.0, return_aux=True)
+    return select_identity_logits(outputs, model=model)
+
+
 class _OpaqueTargetDataset(Dataset):
     """Predictor-only package view: IQ and opaque IDs, with no labels or TX metadata."""
 
@@ -159,8 +169,7 @@ def main() -> None:
                     x, _ = apply_sat_channel_for_scenario(
                         x, scenario, sat_args, gen=generator, return_meta=False
                     )
-                outputs = model(x, y_tx=None, grl_lambda=1.0, return_aux=True)
-                predicted = select_identity_logits(outputs, model=model).argmax(dim=1).cpu().tolist()
+                predicted = predict_identity_logits(model, x).argmax(dim=1).cpu().tolist()
                 for sample_id, predicted_class in zip(meta["physical_sample_id"], predicted):
                     records.append(
                         {

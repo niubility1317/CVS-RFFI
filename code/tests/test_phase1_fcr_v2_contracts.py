@@ -15,7 +15,7 @@ if str(CODE_ROOT) not in sys.path:
 from cvsrffi import phase1_fcr_types as fcr_types  # noqa: E402
 
 
-def _valid_metadata(batch: int = 2, eta_dim: int = 8) -> dict[str, object]:
+def _valid_metadata(batch: int = 2, eta_dim: int = 9) -> dict[str, object]:
     return {
         "physical_sample_id": tuple(f"physical:{index}" for index in range(batch)),
         "content_record_id": tuple(f"content:{index}" for index in range(batch)),
@@ -28,6 +28,9 @@ def _valid_metadata(batch: int = 2, eta_dim: int = 8) -> dict[str, object]:
         "link_condition": tuple("clear" for _ in range(batch)),
         "excitation_bin": torch.zeros(batch, dtype=torch.long),
         "eta_schema_version": "fcr-v2/eta-v1",
+        "eta_fields": fcr_types.FCR_V2_ETA_FIELDS,
+        "eta_units": fcr_types.FCR_V2_ETA_UNITS,
+        "eta_scales": fcr_types.FCR_V2_ETA_SCALES,
         "eta": torch.zeros(batch, eta_dim, dtype=torch.float32),
         "eta_valid_mask": torch.ones(batch, eta_dim, dtype=torch.bool),
     }
@@ -38,8 +41,8 @@ def test_v2_metadata_from_mapping_accepts_valid_contract() -> None:
 
     assert meta.batch_size == 2
     assert meta.eta_schema_version == "fcr-v2/eta-v1"
-    assert meta.eta.shape == (2, 8)
-    assert meta.eta_valid_mask.shape == (2, 8)
+    assert meta.eta.shape == (2, 9)
+    assert meta.eta_valid_mask.shape == (2, 9)
     assert meta.eta_valid_mask.dtype == torch.bool
     assert meta.physical_sample_id == ("physical:0", "physical:1")
     assert meta.view_type == ("leo_clear_weak", "leo_clear_weak")
@@ -47,7 +50,7 @@ def test_v2_metadata_from_mapping_accepts_valid_contract() -> None:
 
 def test_v2_metadata_shape_mismatch_fails_closed() -> None:
     meta = _valid_metadata()
-    meta["eta_valid_mask"] = torch.ones(1, 8, dtype=torch.bool)
+    meta["eta_valid_mask"] = torch.ones(1, 9, dtype=torch.bool)
 
     with pytest.raises(ValueError, match="eta_valid_mask"):
         fcr_types.FCRV2Metadata.from_mapping(meta, batch_size=2)

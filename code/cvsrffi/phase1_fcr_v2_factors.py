@@ -8,6 +8,7 @@ from torch import nn
 
 from .phase1_fcr_factors import ContentGenerator, ContentSequenceEncoder, excitation_features
 from .phase1_fcr_types import FCRConfig, FCRV2FactorOutput
+from .phase1_fcr_types import FCR_V2_ETA_FIELDS
 from .phase1_fcr_v2_physics import complex_gram
 
 
@@ -83,6 +84,13 @@ class FCRV2FactorEncoder(nn.Module):
             nn.Linear(8, 32),
             nn.GELU(),
             nn.Linear(32, 7 + 2 * (self.multipath_taps - 1)),
+        )
+        # CRRA eta is a distinct, named scientific target.  It must not be
+        # decoded by reinterpreting the physics decoder's alpha/STO/tap state.
+        self.eta_head = nn.Sequential(
+            nn.Linear(8, 32),
+            nn.GELU(),
+            nn.Linear(32, len(FCR_V2_ETA_FIELDS)),
         )
 
     def _summary(
@@ -191,4 +199,5 @@ class FCRV2FactorEncoder(nn.Module):
             delta_f=delta_f,
             canonical_residual=canonical_residual,
             response_quality=response_quality,
+            eta_pred=self.eta_head(summary.float()),
         )

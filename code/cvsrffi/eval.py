@@ -10,7 +10,7 @@ from torch.utils.data import DataLoader
 
 from training_controls import sat_channel_config_for_scenario
 from training_test_eval import aggregate_named_stats, format_named_test_lines
-from cvsrffi.checkpoint import FCR_FEATURE_SCHEMA
+from cvsrffi.checkpoint import FCR_FEATURE_SCHEMA, FCR_V2_FEATURE_SCHEMA
 from cvsrffi.tensors import (
     extract_batch_meta,
     extract_domain_from_extra,
@@ -59,8 +59,15 @@ def select_identity_logits(
     logits = outputs.get(key)
     if not torch.is_tensor(logits):
         raise KeyError(f"formal identity output {key!r} is unavailable")
-    if bool(use_fcr) and outputs.get("feature_schema") != FCR_FEATURE_SCHEMA:
-        raise ValueError("formal FCR identity output has an incompatible feature schema")
+    if bool(use_fcr):
+        raw_model = getattr(model, "_orig_mod", model)
+        expected_schema = (
+            FCR_V2_FEATURE_SCHEMA
+            if str(getattr(raw_model, "fcr_version", "v1")) == "v2"
+            else FCR_FEATURE_SCHEMA
+        )
+        if outputs.get("feature_schema") != expected_schema:
+            raise ValueError("formal FCR identity output has an incompatible feature schema")
     return logits
 
 

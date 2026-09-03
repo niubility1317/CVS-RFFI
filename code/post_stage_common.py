@@ -378,6 +378,7 @@ def build_baseline_model(model_args, device: torch.device) -> nn.Module:
         channel_trim_scale=float(getattr(model_args, "channel_trim_scale", 1.0)),
         use_tx_adv_on_zdom=bool(getattr(model_args, "use_tx_adv_on_zdom", False)),
         use_fcr=bool(getattr(model_args, "use_fcr", False)),
+        fcr_version=str(getattr(model_args, "fcr_version", "v1")),
         fcr_config=(
             FCRConfig(
                 input_len=int(getattr(model_args, "input_len", 256)),

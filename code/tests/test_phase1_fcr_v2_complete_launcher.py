@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import subprocess
+import shlex
+import sys
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -123,3 +125,47 @@ def test_launcher_text_orders_target_eval_after_training_waits_and_refuses_overw
     assert text.index("--mode predict") < text.index("--predictions")
     assert "C0_SCORE_JSON" in text
     assert "rows_ready=14" in text
+
+
+def _formal_train_argv(row: str) -> list[str]:
+    text = LAUNCHER.read_text(encoding="utf-8")
+    common_block = text.split("COMMON_ARGS=(", 1)[1].split("\n)", 1)[0]
+    replacements = {
+        "${WISIG_PKL}": "placeholder_manysig.pkl",
+        "${SEED}": "392005",
+        "${SOURCE_DAYS}": "1,2,3",
+        "${SOURCE_RXS}": "1,3,4,6,8",
+        "${TARGET_DAYS}": "0,1,2,3",
+        "${TARGET_RXS}": "0,2,5,7,9,10,11",
+        "${C0_CHECKPOINT}": "placeholder_c0.pth",
+    }
+    common = [replacements.get(token, token) for token in shlex.split(common_block)]
+    return [
+        *common,
+        "--phase1_method", "adv3b02_fcr",
+        "--use_fcr",
+        "--fcr_ablation_row", row,
+        "--run_name", f"formal_{row}",
+        "--final_save_path", f"out/{row}/final.pth",
+        "--log_dir", f"out/{row}/logs",
+        "--fcr_diagnostics_path", f"out/{row}/fcr_diagnostics.json",
+        "--fcr_predictions_path", f"out/{row}/fcr_predictions.json",
+        "--fcr_config_dry_run",
+    ]
+
+
+def test_launcher_c1_and_m6_formal_argv_reach_real_train_parser() -> None:
+    for row in ("C1", "M6"):
+        result = subprocess.run(
+            [sys.executable, str(PROJECT_ROOT / "code" / "train.py"), *_formal_train_argv(row)],
+            cwd=PROJECT_ROOT,
+            text=True,
+            capture_output=True,
+        )
+        assert result.returncode == 0, result.stderr
+        assert f'"fcr_matrix_row": "{row}"' in result.stdout
+
+    text = LAUNCHER.read_text(encoding="utf-8")
+    probe = text.split("probe_training_contract()", 1)[1].split("\n}", 1)[0]
+    assert "build_train_command" in probe
+    assert "C1 M6" in probe

@@ -101,7 +101,12 @@ def test_v2_diagnostics_emit_complete_schema_and_explicit_reasons(tmp_path: Path
             "grad_backbone": 2.0,
             "grad_aux": 1.0,
             "grad_domain": 0.5,
-            "active_lambdas": ("self", "eta", "swap"),
+            "configured_lambdas": ("self", "eta", "swap"),
+            "pair_counts": {"nuisance": 8},
+            "pair_opportunities": {"nuisance": 8},
+            "effective_weights": {"self": 0.1, "eta": 0.05, "swap": 0.05},
+            "nonzero_loss_steps": {"self": 2, "eta": 2, "swap": 2},
+            "gradient_ratios_to_identity_ce": {"self": 0.2, "eta": 0.1, "swap": 0.1},
             "capability_reasons": {"factor": "disabled_by_row"},
         },
         row_id="R8",
@@ -122,7 +127,8 @@ def test_v2_diagnostics_emit_complete_schema_and_explicit_reasons(tmp_path: Path
     assert metrics["grad_domain_to_total_ratio"] == pytest.approx(0.125, rel=1e-6)
     assert metrics["grad_clean_leo_cosine"] == "N/A"
     assert metrics["grad_clean_leo_cosine_reason"]
-    assert metrics["activation_state"]["active_lambdas"] == ["self", "eta", "swap"]
+    assert metrics["activation_state"]["configured_lambdas"] == ["self", "eta", "swap"]
+    assert metrics["activation_state"]["actual_active_lambdas"] == ["self", "eta", "swap"]
     assert metrics["per_tx_source_metrics"]["0"]["count"] == 4
     assert metrics["per_tx_source_metrics"]["1"]["count"] == 4
 
@@ -157,12 +163,15 @@ def test_diagnostics_written_before_deferred_target_return(tmp_path: Path, monke
         model_variant="lite_d",
         fast_infer_when_no_aux=False,
         use_fcr=True,
+        fcr_version="v2",
     )
     iq = torch.randn(8, 2, 64)
     labels = torch.tensor([0, 0, 1, 1, 0, 0, 1, 1])
     domains = torch.tensor([0, 1, 0, 1, 0, 1, 0, 1])
     args = SimpleNamespace(
         use_fcr=True,
+        fcr_requested=True,
+        fcr_version="v2",
         defer_target_evaluation=True,
         fcr_diagnostics_path=str(tmp_path / "diag.json"),
         fcr_diagnostics_max_batches=1,
@@ -187,9 +196,62 @@ def test_diagnostics_written_before_deferred_target_return(tmp_path: Path, monke
         epoch_time_s=0.75,
         capability_reasons={"factor": "disabled_by_row"},
         active_lambdas=("self", "eta", "swap"),
+        training_evidence={
+            "pair_counts": {"nuisance": 8, "content": 0, "fingerprint": 0},
+            "pair_opportunities": {"nuisance": 8, "content": 8, "fingerprint": 8},
+            "effective_weights": {"self": 0.1, "eta": 0.05, "swap": 0.05},
+            "nonzero_loss_steps": {"self": 1, "eta": 1, "swap": 1},
+            "gradient_ratios_to_identity_ce": {"self": 0.2, "eta": 0.1, "swap": 0.1},
+            "eta_valid_count_by_dim": [8.0] * 9,
+            "eta_absolute_error_sum_by_dim": [0.08] * 9,
+            "eta_component_opportunities": 8,
+        },
     )
 
     assert should_return is True
     payload = json.loads((tmp_path / "diag.json").read_text(encoding="utf-8"))
     assert payload["schema"] == "adv3b02_fcr_diagnostics:v2"
     assert payload["eta_valid_coverage"] >= 0.99
+
+
+def test_v2_diagnostics_write_failure_is_not_swallowed_by_truth_last_defer(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    monkeypatch.setattr(
+        train,
+        "collect_fcr_v2_diagnostic_artifacts",
+        lambda *args, **kwargs: ({}, {}),
+    )
+    monkeypatch.setattr(
+        train,
+        "write_fcr_v2_diagnostics",
+        lambda *args, **kwargs: (_ for _ in ()).throw(OSError("injected diagnostics failure")),
+    )
+    args = SimpleNamespace(
+        use_fcr=True,
+        fcr_requested=True,
+        fcr_version="v2",
+        defer_target_evaluation=True,
+        fcr_diagnostics_path=str(tmp_path / "never-written.json"),
+        fcr_diagnostics_max_batches=1,
+        final_save_path="",
+        eval_sat_scenario_list=("leo_clear_weak",),
+        sat_seed=2027,
+        fcr_ablation_row="M6",
+    )
+
+    with pytest.raises(
+        RuntimeError,
+        match="FCR-V2 diagnostics must complete before truth-last handoff",
+    ) as exc_info:
+        train.finalize_fcr_diagnostics_with_failure_policy(
+            args,
+            model=object(),
+            source_loader=[],
+            device=torch.device("cpu"),
+            training_started_at=time.perf_counter(),
+            active_lambdas=("self", "factor"),
+        )
+    assert isinstance(exc_info.value.__cause__, OSError)
+    assert not (tmp_path / "never-written.json").exists()
