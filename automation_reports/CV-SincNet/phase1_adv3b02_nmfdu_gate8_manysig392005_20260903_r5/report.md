@@ -1,0 +1,56 @@
++# ADV3B02-NMFDU-Gate8 ManySig r5最小预登记
+
+## 1.状态与边界
+
+- 当前状态：`LANDED / READY_TO_LAUNCH`。
+- run ID：`phase1_adv3b02_nmfdu_gate8_manysig392005_20260903_r5`。
+- r4已按用户指令精确停止且永久保留；r5使用新的不可覆盖run/log根，不复用r4。
+- 用户已明确确认启动；本轮不加入ADV3B02基线，不改变原冻结E1–E8矩阵、数据、seed、200epochs、损失权重或科学选择规则。
+
+## 2.设计追溯
+
+|ID|设计/协议要求|状态|运行落点与证据|
+|---|---|---|---|
+|D-01|保留ADV3B02成熟主干并做可归因门控比较|verified|`base_candidate=ADV3B02_CORE90_SOFT_E200`，E1–E8仅改变预登记门控消融模式|
+|D-02|样本级soft routing、null分支及样本可信度|verified|`nmfdu_v1`真实checkpoint smoke通过，52个NMFDU state key和23个有限非零梯度组|
+|D-03|联合物理可辨识性、可分性、稳定性、不确定性与有界修正|verified|E2–E8按`i_only/i_d/i_d_s/physical_fixed/physical_full/full_no_null/full`逐级消融|
+|D-04|分阶段训练并保留分支能力、路由、物理、配对、校准和平衡损失|verified|Stage1/2/3边界为80/120/200；launcher固定对应损失与学习率比例|
+|D-05|null概率校准保持softmax后概率BCE语义且兼容CUDA AMP|verified|提交`1f56a830df9ebf7bbc58ad6e62f32f4dcae87a87`；6个受影响候选CUDA回归和57项聚焦测试通过|
+|D-06|source-only训练、单一V、target/query不参与训练与选择|verified|`L_s/U_s/V=0.07/0.63/0.30`，source/target接收机互斥，真实checkpoint无query smoke通过|
+|D-07|局部时频门控与参数方向子头|deferred|属于设计报告后续扩展，不并入NMFDU-V1|
+|D-08|多burst Fisher累积|deferred|当前数据和V1矩阵未预登记多burst机制|
+|D-09|报告列出的完整扩展`e_id^*`全部特征|deferred|V1只声明当前已实现并测试的物理统计组，不宣称完整最终形态|
+
+追溯统计：verified=6，deferred=3，rejected=0，blocked=0。本轮是严格NMFDU-V1设计边界，不是对设计报告全部后续扩展的完整实现。
+
+## 3.冻结实验配置
+
+- 数据：`Dataset_WigSig/ManySig.pkl`，`equalized=true`，`split_mode=tx_rx_day_1_7_2`，split seed=`392005`。
+- source：receivers=`[1,3,4,6,8]`，days=`[1,2,3]`，`L_s/U_s/V=6300/56700/27000`。
+- target test：receivers=`[0,2,5,7,9,10,11]`，days=`[0,1,2,3]`，TX=`[0,1,2,3,4,5]`；仅最终测试。
+- 矩阵：E1 equal、E2 i_only、E3 i_d、E4 i_d_s、E5 physical_fixed、E6 physical_full、E7 full_no_null、E8 full。
+- 训练：200epochs；Stage1/2/3=`80/120/200`；`concat_sat_ce_only=true`、`lambda_sat_cls=0.68`、`lambda_sat_cons=0`。
+- 最终评估：clean、`leo_clear_weak`、`leo_low_elev_weak`、`leo_rain_weak`分别报告。
+
+## 4.版本、环境与路径
+
+- 代码提交：`1f56a830df9ebf7bbc58ad6e62f32f4dcae87a87`。
+- Git工作分支：`work/adv3b02-nmfdu-gate-v1`；预登记前本地HEAD与远端OID均为`1340ed6f03f2da4bba2d9d5f5d550ccab47c22fd`。
+- N607环境：普通账户，Conda环境`ssr-gpu`；release CWD由launcher绑定。
+- release：`/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_nmfdu_gate8_manysig392005_1f56a830`。
+- release归档本地→远端：`E:\type10-7\local_artifacts\releases\adv3b02_nmfdu_gate8_manysig392005_1f56a830.tar.gz`→`/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_nmfdu_gate8_manysig392005_1f56a830.tar.gz`。
+- 归档SHA256已一次核对：`ade39216eb638e39f533dc98ebe3d2a4a9ce89fe31dddb682b88ed76d7842042`；远端编译及真实checkpoint无query smoke已通过，同一release不重复制造额外gate。
+- 输出根：`/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_nmfdu_gate8_manysig392005_20260903_r5`。
+- 日志根：`/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_nmfdu_gate8_manysig392005_20260903_r5`。
+- GPU映射：E1→0、E2→1、E3→2、E4→3、E5→4、E6→5、E7→6、E8→7。
+- 实时预检：`2026-09-03 11:52:16 +0800`；run/log根均为ABSENT；GPU0–7已有计算进程数为`1/0/1/1/1/1/2/1`，新增后预期为`2/1/2/2/2/2/3/2`，不超过用户已授权上限4。
+
+## 5.启动命令与停止规则
+
+启动命令：
+
+`env ROOT=/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_nmfdu_gate8_manysig392005_1f56a830 WISIG_PKL=/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl RUN_ID=phase1_adv3b02_nmfdu_gate8_manysig392005_20260903_r5 RUNS_ROOT=/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_nmfdu_gate8_manysig392005_20260903_r5 LOG_ROOT=/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_nmfdu_gate8_manysig392005_20260903_r5 MAX_ACTIVE_PER_GPU=4 bash /home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_nmfdu_gate8_manysig392005_1f56a830/code/scripts/launch_phase1_adv3b02_nmfdu_gate8_manysig392005_20260902.sh`
+
+停止规则：只在数据/query越权、错误split/receiver/seed/场景、输出覆盖、错误release/CWD、进程归属不清、无prediction闭合、OOM或同一确定性系统异常导致合法artifact无法产生时，绑定并停止仅属于r5的进程树；不因性能低停止。
+
+预期artifact：每行训练日志、结构化metrics、最终checkpoint、clean及三个`leo_*_weak`逐场景评估、prediction和独立评分结果。
