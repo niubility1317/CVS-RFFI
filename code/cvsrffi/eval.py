@@ -60,14 +60,21 @@ def select_identity_logits(
     if not torch.is_tensor(logits):
         raise KeyError(f"formal identity output {key!r} is unavailable")
     if bool(use_fcr):
-        raw_model = getattr(model, "_orig_mod", model)
-        expected_schema = (
-            FCR_V2_FEATURE_SCHEMA
-            if str(getattr(raw_model, "fcr_version", "v1")) == "v2"
-            else FCR_FEATURE_SCHEMA
-        )
-        if outputs.get("feature_schema") != expected_schema:
-            raise ValueError("formal FCR identity output has an incompatible feature schema")
+        if model is None:
+            expected_schemas = (FCR_FEATURE_SCHEMA, FCR_V2_FEATURE_SCHEMA)
+        else:
+            raw_model = getattr(model, "_orig_mod", model)
+            expected_schemas = (
+                FCR_V2_FEATURE_SCHEMA
+                if str(getattr(raw_model, "fcr_version", "v1")) == "v2"
+                else FCR_FEATURE_SCHEMA,
+            )
+        actual_schema = outputs.get("feature_schema")
+        if actual_schema not in expected_schemas:
+            raise ValueError(
+                "formal FCR identity output has an incompatible feature schema: "
+                f"expected={expected_schemas} actual={actual_schema!r}"
+            )
     return logits
 
 

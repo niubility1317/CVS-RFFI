@@ -110,6 +110,58 @@ def test_v1_row_contract_is_unchanged() -> None:
     assert resolved.fcr_three_axis_intervention is False
 
 
+@pytest.mark.parametrize(
+    ("row", "identity_only"),
+    (
+        ("C2", True),
+        ("C3", False),
+        ("S0", True),
+        ("S1", False),
+        ("S2", False),
+        ("S3", False),
+        ("S4", False),
+    ),
+)
+def test_pre_m1_v2_rows_route_their_real_formal_identity_schema(
+    row: str,
+    identity_only: bool,
+) -> None:
+    args = train.resolve_fcr_training_options(_args(row=row))
+    model = _small_model().eval()
+    with torch.no_grad():
+        outputs = model(
+            torch.randn(2, 2, 64),
+            return_aux=True,
+            fcr_identity_only=bool(args.fcr_identity_only),
+        )
+
+    assert args.fcr_identity_only is identity_only
+    assert outputs["feature_schema"] == "ADV3B02:FCR:z_f_id:unit_l2:160:v2"
+    assert outputs["fcr_tx_logits"].shape == (2, 3)
+    assert outputs["z_f_id"].shape == (2, 160)
+    assert (outputs["fcr_decode"] is None) is identity_only
+    legacy_logits = outputs["tx_logits"]
+
+    routed = train.route_formal_identity_outputs(outputs, use_fcr=True)
+
+    assert routed["tx_logits"] is outputs["fcr_tx_logits"]
+    assert routed["z_id"] is outputs["z_f_id"]
+    assert outputs["tx_logits"] is legacy_logits
+
+
+def test_formal_identity_route_without_model_still_rejects_unknown_schema() -> None:
+    outputs = {
+        "tx_logits": torch.zeros(2, 3),
+        "fcr_tx_logits": torch.ones(2, 3),
+        "z_id": torch.zeros(2, 160),
+        "z_f_id": torch.ones(2, 160),
+        "feature_schema": "ADV3B02:FCR:unknown",
+    }
+
+    with pytest.raises(ValueError, match="incompatible feature schema"):
+        train.route_formal_identity_outputs(outputs, use_fcr=True)
+
+
 def test_forward_identity_only_does_not_run_decoder() -> None:
     torch.manual_seed(6001)
     model = _small_model().eval()
