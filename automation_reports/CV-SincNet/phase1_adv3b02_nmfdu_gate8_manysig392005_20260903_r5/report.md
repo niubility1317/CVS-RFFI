@@ -2,7 +2,7 @@
 
 ## 1.状态与边界
 
-- 当前状态：`LANDED / READY_TO_LAUNCH`。
+- 当前状态：`RUNNING`。
 - run ID：`phase1_adv3b02_nmfdu_gate8_manysig392005_20260903_r5`。
 - r4已按用户指令精确停止且永久保留；r5使用新的不可覆盖run/log根，不复用r4。
 - 用户已明确确认启动；本轮不加入ADV3B02基线，不改变原冻结E1–E8矩阵、数据、seed、200epochs、损失权重或科学选择规则。
@@ -54,3 +54,13 @@
 停止规则：只在数据/query越权、错误split/receiver/seed/场景、输出覆盖、错误release/CWD、进程归属不清、无prediction闭合、OOM或同一确定性系统异常导致合法artifact无法产生时，绑定并停止仅属于r5的进程树；不因性能低停止。
 
 预期artifact：每行训练日志、结构化metrics、最终checkpoint、clean及三个`leo_*_weak`逐场景评估、prediction和独立评分结果。
+
+## 6.启动与独立读回
+
+- 启动时间：`2026-09-03 11:58:56 +0800`。
+- dispatcher PID：`669310`。
+- 行PID/GPU：E1=`669381/GPU0`、E2=`669378/GPU1`、E3=`669380/GPU2`、E4=`669385/GPU3`、E5=`669370/GPU4`、E6=`669373/GPU5`、E7=`669388/GPU6`、E8=`669391/GPU7`。
+- PID/CWD/cmdline：dispatcher与8个训练主进程均存活；CWD均为`/home/szu2070436088`；每行命令均绑定固定release、r5 run ID、对应E行输出目录及split seed=`392005`。
+- GPU读回：E1–E8分别位于GPU0–7；启动后GPU0–7计算进程数为`2/1/2/2/2/2/3/2`，不超过授权上限4。
+- 日志读回：E1–E8共8份`.out`均为6325bytes，全部出现`[SSDG-TRAIN]`标记；初始扫描未发现`Traceback`、`RuntimeError`、OOM或CUDA error。
+- 当前最高交付状态：`RUNNING`。尚未产生epoch结果、最终checkpoint、四场景评估、prediction或独立评分，因此没有性能结论。
