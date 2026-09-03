@@ -114,4 +114,40 @@ def test_v2_loss_output_tracks_active_losses_and_weights() -> None:
 
 
 def test_cross_decode_uses_destination_fingerprint() -> None:
-    pytest.importorskip("cvsrffi.phase1_fcr_v2_losses", reason="cross_decode lands in Task 4")
+    losses = pytest.importorskip("cvsrffi.phase1_fcr_v2_losses", reason="cross_decode lands in Task 4")
+
+    class _Decoder:
+        def __call__(self, s_hat: torch.Tensor, delta_f: torch.Tensor, z_n: dict[str, torch.Tensor]):
+            self.last_s_hat = s_hat
+            self.last_delta_f = delta_f
+            self.last_z_n = z_n
+            return fcr_types.FCRDecodeOutput(
+                mu_iq=torch.zeros(2, 2, 64),
+                log_variance=torch.zeros(2, 64),
+                delta_f=delta_f,
+            )
+
+    decoder = _Decoder()
+    source = fcr_types.FCRV2FactorOutput(
+        z_s=torch.zeros(2, 4, 16),
+        z_f_id=torch.nn.functional.normalize(torch.randn(2, 160), dim=1),
+        z_f_dev=torch.randn(2, 160),
+        z_n={"src": torch.ones(2, 2)},
+        s_hat=torch.ones(2, 2, 64, dtype=torch.complex64),
+        delta_f=torch.ones(2, 2, 64, dtype=torch.complex64),
+    )
+    destination = fcr_types.FCRV2FactorOutput(
+        z_s=torch.zeros(2, 4, 16),
+        z_f_id=torch.nn.functional.normalize(torch.randn(2, 160), dim=1),
+        z_f_dev=torch.randn(2, 160),
+        z_n={"dst": torch.full((2, 2), 3.0)},
+        s_hat=torch.zeros(2, 2, 64, dtype=torch.complex64),
+        delta_f=torch.full((2, 2, 64), 5.0 + 0.0j, dtype=torch.complex64),
+    )
+
+    decoded = losses.cross_decode(source, destination, decoder)
+
+    assert decoder.last_s_hat is source.s_hat
+    assert decoder.last_delta_f is destination.delta_f
+    assert decoder.last_z_n is destination.z_n
+    assert decoded.delta_f is destination.delta_f

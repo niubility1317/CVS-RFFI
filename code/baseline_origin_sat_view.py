@@ -6,6 +6,8 @@ from typing import Any, Callable, Iterable, Mapping, Optional
 
 import torch
 
+from cvsrffi.phase1_fcr_types import FCR_V2_ETA_SCHEMA_VERSION
+
 
 ApplySatFn = Callable[..., tuple]
 
@@ -57,6 +59,9 @@ class SatViewTransform:
     pair_id: Optional[tuple[str, ...]] = None
     physical_sample_id: Optional[tuple[str, ...]] = None
     crop_offset: Optional[torch.Tensor] = None
+    eta_schema_version: str = FCR_V2_ETA_SCHEMA_VERSION
+    eta: Optional[torch.Tensor] = None
+    eta_valid_mask: Optional[torch.Tensor] = None
 
 
 @dataclass
@@ -188,32 +193,40 @@ def _normalize_nuisance_meta(
     scenario: str,
     batch_size: int,
     device: torch.device,
-) -> tuple[Optional[dict[str, Any]], Optional[torch.Tensor], Optional[torch.Tensor], tuple[str, ...]]:
+) -> tuple[
+    Optional[dict[str, Any]],
+    Optional[torch.Tensor],
+    Optional[torch.Tensor],
+    tuple[str, ...],
+    Optional[torch.Tensor],
+]:
     if not isinstance(meta, Mapping):
-        return {"scenario": str(scenario), "valid": False}, None, None, ()
+        return {"scenario": str(scenario), "valid": False}, None, None, (), None
     raw = dict(meta)
     raw.setdefault("scenario", str(scenario))
     if "residual_cfo_hz" not in raw and "cfo_hz" in raw:
         raw["residual_cfo_hz"] = raw["cfo_hz"]
     columns = []
+    valid_columns = []
     missing_fields = []
     for field in CRRA_NUISANCE_FIELDS:
         column = _batch_meta_column(raw.get(field), int(batch_size), device)
         if column is None:
             missing_fields.append(field)
             column = torch.zeros(int(batch_size), device=device, dtype=torch.float32)
+            valid_columns.append(torch.zeros(int(batch_size), dtype=torch.bool, device=device))
+        else:
+            valid_columns.append(torch.isfinite(column))
         columns.append(column / float(CRRA_NUISANCE_SCALES[field]))
     nuisance = torch.stack(columns, dim=1)
-    finite_valid = torch.isfinite(nuisance).all(dim=1)
-    valid = (
-        torch.zeros(int(batch_size), dtype=torch.bool, device=device)
-        if missing_fields
-        else finite_valid
-    )
+    eta_valid_mask = torch.stack(valid_columns, dim=1)
+    finite_valid = torch.isfinite(nuisance)
+    eta_valid_mask = eta_valid_mask & finite_valid
+    valid = eta_valid_mask.all(dim=1)
     nuisance = torch.nan_to_num(nuisance, nan=0.0, posinf=0.0, neginf=0.0)
     raw["valid"] = bool(valid.any().item())
     raw["missing_fields"] = tuple(missing_fields)
-    return raw, nuisance, valid, CRRA_NUISANCE_FIELDS
+    return raw, nuisance, valid, CRRA_NUISANCE_FIELDS, eta_valid_mask
 
 
 normalize_crra_nuisance_meta = _normalize_nuisance_meta
@@ -336,7 +349,7 @@ class BaselineOriginSatViewAugment:
             )
         scenario = self._select_scenario(stage, gen, x.device)
         x_sat, raw_meta = self.apply_fn(x, scenario, args, gen=gen, return_meta=True)
-        meta, nuisance, nuisance_valid, nuisance_fields = _normalize_nuisance_meta(
+        meta, nuisance, nuisance_valid, nuisance_fields, eta_valid_mask = _normalize_nuisance_meta(
             raw_meta,
             scenario=scenario,
             batch_size=clean_bsz,
@@ -357,6 +370,8 @@ class BaselineOriginSatViewAugment:
             pair_id=physical_sample_id,
             physical_sample_id=physical_sample_id,
             crop_offset=crop_offset,
+            eta=nuisance,
+            eta_valid_mask=eta_valid_mask,
         )
 
     def expand(
