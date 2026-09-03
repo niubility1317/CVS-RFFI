@@ -1,0 +1,7 @@
+row,mode,last_completed_epoch,traceback_line,fatal_line,fingerprint,source_call,trigger,final_checkpoint_present
+E2,i_only,80,3619,3630,RuntimeError: torch.nn.functional.binary_cross_entropy and torch.nn.BCELoss are unsafe to autocast.,code/cvsrffi/nmfdu_training.py:363 F.binary_cross_entropy,first Stage2/null-calibration batch after epoch80,False
+E3,i_d,80,3619,3630,RuntimeError: torch.nn.functional.binary_cross_entropy and torch.nn.BCELoss are unsafe to autocast.,code/cvsrffi/nmfdu_training.py:363 F.binary_cross_entropy,first Stage2/null-calibration batch after epoch80,False
+E4,i_d_s,80,3619,3630,RuntimeError: torch.nn.functional.binary_cross_entropy and torch.nn.BCELoss are unsafe to autocast.,code/cvsrffi/nmfdu_training.py:363 F.binary_cross_entropy,first Stage2/null-calibration batch after epoch80,False
+E5,physical_fixed,80,3619,3630,RuntimeError: torch.nn.functional.binary_cross_entropy and torch.nn.BCELoss are unsafe to autocast.,code/cvsrffi/nmfdu_training.py:363 F.binary_cross_entropy,first Stage2/null-calibration batch after epoch80,False
+E6,physical_full,80,3619,3630,RuntimeError: torch.nn.functional.binary_cross_entropy and torch.nn.BCELoss are unsafe to autocast.,code/cvsrffi/nmfdu_training.py:363 F.binary_cross_entropy,first Stage2/null-calibration batch after epoch80,False
+E8,full,80,3619,3630,RuntimeError: torch.nn.functional.binary_cross_entropy and torch.nn.BCELoss are unsafe to autocast.,code/cvsrffi/nmfdu_training.py:363 F.binary_cross_entropy,first Stage2/null-calibration batch after epoch80,False

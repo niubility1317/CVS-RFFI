@@ -135,3 +135,105 @@
 - `common_epoch_36_20260902_1009.csv`：共同epoch36的公平横比数据。
 
 最终详细实验报告将在8行完成训练、四场景评估、prediction和独立评分后追加；当前阶段不作候选晋级判断。
+
+## 2026-09-03 09:55系统技术失败报告
+
+### 最终状态判定
+
+本次8行矩阵没有跑完，整体判定为`FAILED`。E2、E3、E4、E5、E6、E8在epoch80后因同一确定性AMP异常退出；E1和E7仍在运行。当前没有任何一行形成最终checkpoint、target clean与三个LEO弱场景评估、prediction或独立评分，因此本run不能进入`ARTIFACTS_COMPLETE`或`ANALYZED`。
+
+|对象|判定|最高已证状态|证据|缺口|
+|---|---|---|---|---|
+|E1 equal|`PARTIAL`|`RUNNING`|PID`3921488`存活，完成epoch163|epoch200、最终checkpoint、四场景评估与评分|
+|E2 i_only|`FAILED`|`RUNNING→STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE`|完成epoch80后AMP BCE异常|未完成epoch81–200及全部最终artifact|
+|E3 i_d|`FAILED`|`RUNNING→STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE`|同一异常|同上|
+|E4 i_d_s|`FAILED`|`RUNNING→STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE`|同一异常|同上|
+|E5 physical_fixed|`FAILED`|`RUNNING→STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE`|同一异常|同上|
+|E6 physical_full|`FAILED`|`RUNNING→STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE`|同一异常|同上|
+|E7 full_no_null|`PARTIAL`|`RUNNING`|PID`3921506`存活，完成epoch133|epoch200、最终checkpoint、四场景评估与评分|
+|E8 full|`FAILED`|`RUNNING→STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE`|同一异常|未完成epoch81–200及全部最终artifact|
+|整体矩阵|`FAILED`|6行技术失败、2行运行中|8行均只有`metrics_epoch.csv/jsonl`|完整8行同row结果不存在|
+
+### 故障指纹与根因
+
+6行日志在同一位置出现：
+
+```text
+RuntimeError: torch.nn.functional.binary_cross_entropy and torch.nn.BCELoss are unsafe to autocast.
+```
+
+完整traceback将异常定位到release提交`aa0eaf4ba3a63c88cae6147e542bb0d6b69e36e9`中的`code/cvsrffi/nmfdu_training.py:363`：
+
+```python
+null_cal = F.binary_cross_entropy(
+    diagnostics["null_weight"].clamp(1e-6, 1.0 - 1e-6),
+    null_target,
+)
+```
+
+epoch80是卫星辅助CE开始生效的第一个完整epoch；epoch80结束后，NMFDU从Stage1切换到启用路由与null校准的Stage2。除`equal`和`full_no_null`外，其余6种模式都会进入null校准分支。该分支在CUDA autocast仍开启时调用概率形式的`binary_cross_entropy`，PyTorch明确拒绝这一组合，所以6行在第一个Stage2 batch上确定性退出。
+
+E1没有进入可学习null校准，E7显式禁用null，因此两行绕过该调用并继续训练。这个分流与代码条件、异常行集合和epoch边界完全一致，根因已经闭合。
+
+设计忠实的最小修复不是把已经softmax后的`null_weight`直接误当logit传给`binary_cross_entropy_with_logits`。应保持现有概率校准语义，将`null_weight`与`null_target`转为FP32，并在局部关闭autocast后计算BCE；同时增加一次“Stage2+null启用+CUDA autocast”的回归测试。此次请求是状态核验和报告，本轮未修改代码、未停止仍在运行的E1/E7，也未原地复用失败输出目录。
+
+### 数据完整性
+
+- 快照覆盖E1–E8全部8份stdout日志、8份`metrics_epoch.jsonl`和8份`metrics_epoch.csv`。
+- 共解析776条epoch记录；每行epoch从1连续到最新epoch，JSONL与CSV记录数一致。
+- 结构化记录中数值型NaN/Inf计数为0，日志UTF-8解码无替换字符。
+- 6个失败行各有且仅有1个Traceback和1个相同RuntimeError；E1、E7没有Traceback、RuntimeError、OOM或Killed。
+- 每行run目录都只有`metrics_epoch.csv`和`metrics_epoch.jsonl`。8行均无`final_ssdg.pth`，无target clean结果，无`leo_clear_weak`、`leo_low_elev_weak`、`leo_rain_weak`独立结果，无prediction和独立score。
+
+### 数据协议核对
+
+本次实际参数仍是ManySig equalized=`true`、source RX=`[1,3,4,6,8]`、source day=`[1,2,3]`、TX=`[0,1,2,3,4,5]`、split seed=`392005`；source使用`L_s/U_s/V=6300/56700/27000`。target RX=`[0,2,5,7,9,10,11]`、day=`[0,1,2,3]`以及clean和三个LEO弱场景只登记为最终评估目标。当前artifact中没有target结果，也没有target参与训练、选模或反馈的运行证据。
+
+### 共同epoch80公平对比
+
+所有8行都完整结束了epoch80，因此epoch80是当前最后一个可作同进度比较的节点。该节点仍是NMFDU Stage1；Fisher路由和null校准尚未在结构化epoch结果中产生有效差异。
+
+|行|模式|train loss|train TX Acc(%)|source clean Acc(%)|source LEO mean(%)|source LEO floor(%)|source HMean(%)|sat CE raw|
+|---|---|---:|---:|---:|---:|---:|---:|---:|
+|E1|equal|13.6518|66.2468|96.6778|53.4914|52.6444|68.1687|7.8832|
+|E2|i_only|13.6420|66.1511|96.6815|53.6160|52.6556|68.1789|7.8791|
+|E3|i_d|13.6289|66.3265|96.6593|53.5321|52.5815|68.1113|7.8777|
+|E4|i_d_s|13.6456|66.1990|96.6704|53.6012|52.6741|68.1917|7.8836|
+|E5|physical_fixed|13.6317|66.1990|96.6630|53.5938|52.6222|68.1463|7.8815|
+|E6|physical_full|13.6623|65.9439|96.7148|53.6519|52.7630|68.2772|7.8925|
+|E7|full_no_null|13.6401|66.3265|96.6667|53.5420|52.6185|68.1442|7.8844|
+|E8|full|13.6436|66.3903|96.6667|53.6309|52.6296|68.1535|7.8786|
+
+epoch80的source HMean范围为68.1113%–68.2772%，极差0.1659个百分点。8行几乎重合，符合Stage1等权分支稳定训练；这组数值不能证明任一Fisher门控消融优于其他行。
+
+### 两个存活行的最新诊断
+
+|行|模式|最新epoch|train loss|train TX Acc(%)|source clean Acc(%)|source LEO mean(%)|source LEO floor(%)|source HMean(%)|
+|---|---|---:|---:|---:|---:|---:|---:|---:|
+|E1|equal|163|9.4932|80.7079|98.0963|81.8358|80.5370|88.4536|
+|E7|full_no_null|133|13.2912|67.3948|97.5704|58.3975|56.8370|71.8309|
+
+两行处于不同模式和不同epoch，不能把88.45%与71.83%作为公平排名。它们仍只是source validation诊断，不是target test性能。
+
+E1的equal消融始终保持NMFDU Stage1式等权路由：entropy=`1.609438≈ln(5)`、null mean=`0`、route/phys/balance损失均为0。E7已经进入NMFDU Stage3：entropy=`1.282402`、route loss=`1.490259`、phys loss=`0.008814`、balance loss=`0.019596`，说明非null Fisher路由已经实际激活；null loss按`full_no_null`定义保持0。
+
+卫星辅助CE均从epoch80开始，E1与E7最新raw sat CE分别为4.9924和8.1942。伪标签路径均从epoch131开始，最新unlabeled loss约为`1×10^-6`和`9×10^-6`，`q_unlabeled`分别为0.4490和0.3673。调度实际落地与预登记一致。
+
+### 数值稳定性更新
+
+上一份10:09快照只能证明epoch33之前的情况；新增数据推翻了“epoch33后未复发”的时限外推。8行都在epoch74再次记录非有限梯度跳过，E1还在epoch122和137再次出现。所有行`train_skipped_nonfinite_loss=0`，结构化loss均为有限值，后续optimizer仍有更新。它们没有直接导致本次6行退出，但说明梯度稳定性问题不是只发生在训练初期，后续修复验证应保留这一独立诊断。
+
+### 时间与下一步边界
+
+从09:55快照按最近5个epoch中位耗时估计，E1剩余37个epoch约需9.8小时，E7剩余67个epoch约需16.4小时；这只估计两条存活训练，不包含最终四场景评估。由于其余6行已经确定性失败，原先“2026-09-04完成完整矩阵”的预计失效，当前无法给出本run的8行完整完成时间。
+
+若继续该实验谱系，必须先在本地Git工作树修复AMP BCE、加入针对性回归测试并完成限定P0/P1复审，然后以新commit、新release和全新不可覆盖run ID重跑冻结矩阵。r3的6个失败输出必须保留，不能热补丁、原地续跑或覆盖。
+
+### 本次数据文件
+
+- `status_summary_20260903_0955.json`：整体状态、8行完整摘要、artifact闭合状态与故障事件。
+- `row_summary_20260903_0955.csv`：每行最新/最优source指标、阶段损失、异常计数和artifact清单。
+- `epoch_curves_20260903_0955.csv`：8行共776条逐epoch结构化曲线。
+- `common_epoch_80_20260903_0955.csv`：最后共同epoch80的同进度比较。
+- `failure_events_20260903_0955.csv`：6行同指纹故障位置、触发边界和checkpoint状态。
+- 完整日志与原始metrics只读快照保存在`E:\type10-7\local_artifacts\nmfdu_r3_analysis_20260903_0955`，不作为Git仓库中的大文件交付。
