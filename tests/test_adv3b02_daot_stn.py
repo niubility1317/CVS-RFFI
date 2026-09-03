@@ -10,6 +10,7 @@ import pytest
 import torch
 from torch import nn
 
+import SSDG.train_ssdg as train_ssdg_module
 from model_dual_cvsincnet import NuisanceHeteroscedasticHead, build_dual_model
 from SSDG.train_ssdg import (
     _compute_daot_labeled_step,
@@ -53,6 +54,7 @@ from cvsrffi.orbit_teacher import (
 )
 from cvsrffi.receiver_conditioned_alignment import GroupTailRiskEMA
 from cvsrffi.receiver_style_bank import OnlineReceiverStyleBank
+from cvsrffi.selective_nuisance_subspace import SelectiveNuisanceSubspace
 from cvsrffi.selective_tangent import (
     angular_sensitivity,
     fingerprint_keep_loss,
@@ -75,6 +77,22 @@ class _CheckpointResizeProbe(nn.Module):
         self.adv_head.net = nn.Sequential(
             nn.Linear(4, 4), nn.ReLU(), nn.Identity(), nn.Linear(4, num_domains)
         )
+
+
+class _IdentityOnlyBatchProbe(nn.Module):
+    def __init__(self) -> None:
+        super().__init__()
+        self.identity_calls = 0
+        self.full_calls = 0
+
+    def forward_identity_only(self, x: torch.Tensor, **_kwargs):
+        self.identity_calls += 1
+        scalar = x.reshape(x.shape[0], -1).mean(dim=1, keepdim=True)
+        return {"z_id": torch.cat([scalar, scalar + 1.0], dim=1), "tx_logits": scalar + 2.0}
+
+    def forward(self, *_args, **_kwargs):
+        self.full_calls += 1
+        raise AssertionError("E1 teacher path must not execute the full dual forward")
 
 
 def test_checkpoint_load_reinitializes_only_resized_domain_outputs() -> None:
@@ -714,6 +732,91 @@ def test_daot_rx_v2_is_opt_in_and_uses_two_fresh_views_plus_memory() -> None:
         "leo_low_elev_weak",
         "leo_rain_weak",
     )
+
+
+def test_e1_efficiency_mode_is_explicit_and_disabled_by_default() -> None:
+    parser = build_arg_parser()
+    default_args = parser.parse_args(["--output_dir", "run"])
+    e1_args = parser.parse_args(
+        [
+            "--output_dir",
+            "run",
+            "--use_adv3b02_daot_stn_rx_v2",
+            "true",
+            "--daot_efficiency_mode",
+            "e1",
+        ]
+    )
+
+    assert default_args.daot_efficiency_mode == "legacy"
+    assert e1_args.daot_efficiency_mode == "e1"
+
+
+def test_e1_batches_teacher_views_into_one_identity_only_forward() -> None:
+    model = _IdentityOnlyBatchProbe()
+    clean = torch.full((2, 2, 4), 1.0)
+    channel = torch.full((2, 2, 4), 3.0)
+
+    outputs, diagnostics = train_ssdg_module._forward_daot_teacher_views(
+        model,
+        [clean, channel],
+        domain_labels=torch.tensor([0, 1]),
+        efficiency_mode="e1",
+    )
+
+    assert model.identity_calls == 1
+    assert model.full_calls == 0
+    assert diagnostics == {
+        "identity_only_used": 1.0,
+        "identity_only_fallback": 0.0,
+        "batched_view_count": 2.0,
+    }
+    assert torch.equal(outputs[0]["z_id"], torch.tensor([[1.0, 2.0], [1.0, 2.0]]))
+    assert torch.equal(outputs[1]["z_id"], torch.tensor([[3.0, 4.0], [3.0, 4.0]]))
+
+
+@pytest.mark.filterwarnings("ignore:.*torch.cuda.amp.autocast.*:FutureWarning")
+def test_real_dual_model_identity_only_forward_skips_domain_backbone() -> None:
+    model = build_dual_model(3, 2, model_size="S", input_len=256)
+    model.eval()
+    domain_calls = 0
+
+    def count_domain_call(_module, _inputs):
+        nonlocal domain_calls
+        domain_calls += 1
+
+    handle = model.dom_backbone.register_forward_pre_hook(count_domain_call)
+    try:
+        with torch.no_grad():
+            output = model.forward_identity_only(torch.randn(2, 2, 256))
+    finally:
+        handle.remove()
+
+    assert domain_calls == 0
+    assert output["z_id"].shape == (2, model.emb_dim)
+    assert output["tx_logits"].shape == (2, 3)
+    assert output["identity_only"] is True
+
+
+def test_r1_subspace_rejects_nonfinite_update_and_preserves_last_basis() -> None:
+    state = SelectiveNuisanceSubspace(feature_dim=4, max_rank=2, weight=0.05)
+    nuisance = torch.tensor(
+        [[1.0, 0.0, 0.0, 0.0], [-1.0, 0.0, 0.0, 0.0], [0.0, 1.0, 0.0, 0.0], [0.0, -1.0, 0.0, 0.0]]
+    )
+    fingerprint = torch.tensor(
+        [[0.0, 0.0, 1.0, 0.0], [0.0, 0.0, -1.0, 0.0], [0.0, 0.0, 0.0, 1.0], [0.0, 0.0, 0.0, -1.0]]
+    )
+    assert state.update(nuisance, fingerprint) is True
+    previous_basis = state.basis.clone()
+
+    invalid = nuisance.clone()
+    invalid[0, 0] = float("nan")
+    assert state.update(invalid, fingerprint) is False
+    assert torch.equal(state.basis, previous_basis)
+
+    rank_deficient = torch.zeros(8, 4)
+    assert state.update(rank_deficient, rank_deficient) is False
+    assert torch.equal(state.basis, previous_basis)
 
 
 def test_daot_rx_v2_rejects_non_leo_weak_evaluation_scenarios() -> None:

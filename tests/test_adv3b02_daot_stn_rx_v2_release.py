@@ -14,6 +14,10 @@ EXPANDED_LAUNCHER = (
     ROOT
     / "code/scripts/launch_phase1_adv3b02_daot_stn_rx_v2_p1_p5_manysig_s392005_20260903.sh"
 )
+OPTIONAL_LAUNCHER = (
+    ROOT
+    / "code/scripts/launch_phase1_adv3b02_daot_stn_rx_v2_e1_r1_manysig_s392005_20260903.sh"
+)
 CONFIG = ROOT / "configs/phase1_adv3b02_daot_stn_rx_v2_s392005.json"
 
 
@@ -89,5 +93,35 @@ def test_expanded_release_follows_the_nested_p1_to_p5_design_matrix() -> None:
     assert 'V2-P4) tangent="0.035"; route="0.05"; rx="0.075"; tail="0" ;;' in launcher
     assert 'V2-P5) tangent="0.035"; route="0.05"; rx="0.075"; tail="0.10" ;;' in launcher
     assert "DAOT_LAMBDA_SUBSPACE=0" in launcher
+    assert "baseline=excluded_by_user" in launcher
+    assert "non_leo_weak=excluded_by_user" in launcher
+
+
+def test_optional_release_freezes_e1_and_r1_without_touching_mainline_rows() -> None:
+    worker = WORKER.read_text(encoding="utf-8")
+    launcher = OPTIONAL_LAUNCHER.read_text(encoding="utf-8")
+
+    assert 'DAOT_EFFICIENCY_MODE="${DAOT_EFFICIENCY_MODE:-legacy}"' in worker
+    assert '--daot_efficiency_mode "${DAOT_EFFICIENCY_MODE}"' in worker
+    assert 'DAOT_SUBSPACE_RANK="${DAOT_SUBSPACE_RANK:-8}"' in worker
+    assert 'DAOT_SUBSPACE_UPDATE_INTERVAL="${DAOT_SUBSPACE_UPDATE_INTERVAL:-5}"' in worker
+    assert '--daot_subspace_rank "${DAOT_SUBSPACE_RANK}"' in worker
+    assert '--daot_subspace_update_interval "${DAOT_SUBSPACE_UPDATE_INTERVAL}"' in worker
+    assert "ROWS=(V2-E1 V2-R1)" in launcher
+    assert "GPUS=(3 5)" in launcher
+    assert 'V2-E1) subspace="0" ;;' in launcher
+    assert 'V2-R1) subspace="0.05" ;;' in launcher
+    assert "DAOT_EFFICIENCY_MODE=e1" in launcher
+    assert "DAOT_SUBSPACE_RANK=8" in launcher
+    assert "DAOT_SUBSPACE_UPDATE_INTERVAL=5" in launcher
+    for setting in (
+        "DAOT_LAMBDA_TANGENT=0.035",
+        "DAOT_LAMBDA_ROUTE=0.05",
+        "DAOT_LAMBDA_RX=0.075",
+        "DAOT_LAMBDA_TAIL=0.10",
+        "DAOT_LAMBDA_NUISANCE=0",
+        "DAOT_LAMBDA_FINGERPRINT=0",
+    ):
+        assert setting in launcher
     assert "baseline=excluded_by_user" in launcher
     assert "non_leo_weak=excluded_by_user" in launcher

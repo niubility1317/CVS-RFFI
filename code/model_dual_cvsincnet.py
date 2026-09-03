@@ -4,7 +4,7 @@ from __future__ import annotations
 import math
 from pathlib import Path
 import sys
-from typing import Dict, Optional, Sequence, Tuple
+from typing import Any, Dict, Optional, Sequence, Tuple
 
 import torch
 import torch.nn as nn
@@ -846,6 +846,55 @@ class DualCVSincNetDisentangle(nn.Module):
 
     def _pick_z_dom(self, aux: Dict[str, torch.Tensor]) -> torch.Tensor:
         return self._pick_from_keys(aux, self.dom_feature_key, ("feat_imp", "feat_pa", "feat_dac", "base", "feat_con", "feat_cls", "feat_joint"))
+
+    def forward_identity_only(
+        self,
+        x: torch.Tensor,
+        y_tx: Optional[torch.Tensor] = None,
+        domain_labels: Optional[torch.Tensor] = None,
+        crra_epoch: Optional[int] = None,
+    ) -> Dict[str, Any]:
+        """Run only the identity backbone for auxiliary DAOT views."""
+        aux_id = backbone_forward_compat(
+            self.id_backbone,
+            x,
+            y=y_tx,
+            return_aux=True,
+            domain_labels=domain_labels,
+            crra_epoch=crra_epoch,
+            update_crra_support=False,
+            crra_support_mask=None,
+            update_nmfdu_support=False,
+            return_physical_gate_diag=False,
+        )
+        tx_logits = aux_id["logits"]
+        base_z_id = self._pick_z_id(aux_id)
+        if self.representation_mode == "single_parameter_matched":
+            z_id, correction = self.identity_capacity(base_z_id)
+            tx_logits = tx_logits + correction
+        else:
+            z_id = base_z_id
+        if self.sat_anchor_identity_adapter is not None:
+            z_id, correction = self.sat_anchor_identity_adapter(z_id, detach_backbone=False)
+            tx_logits = tx_logits + correction
+        out = {
+            "tx_logits": tx_logits,
+            "z_id": z_id,
+            "identity_only": True,
+        }
+        for name, key in {
+            "id_feat_cls": "feat_cls",
+            "id_feat_imp": "feat_imp",
+            "id_feat_dac": "feat_dac",
+            "id_feat_pa": "feat_pa",
+            "id_feat_joint": "feat_joint",
+            "id_feat_con": "feat_con",
+            "id_base": "base",
+        }.items():
+            value = aux_id.get(key)
+            if torch.is_tensor(value):
+                out[name] = value
+        return out
 
     def forward(
         self,

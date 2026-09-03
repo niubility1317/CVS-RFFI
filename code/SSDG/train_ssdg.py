@@ -455,6 +455,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
         choices=["three_view", "temporal_memory", "temporal_memory_rx"],
     )
     parser.add_argument("--daot_teacher_view_count", type=int, default=3, choices=[2, 3])
+    parser.add_argument("--daot_efficiency_mode", type=str, default="legacy", choices=["legacy", "e1"])
     parser.add_argument("--daot_aggregation", type=str, default="robust_deployment", choices=["mean", "robust_deployment"])
     parser.add_argument("--daot_tangent_mode", type=str, default="branch_selective", choices=["off", "single_parameter", "covariance", "branch_selective"])
     parser.add_argument("--daot_lambda_orbit_z", type=float, default=0.50)
@@ -1966,6 +1967,8 @@ def _apply_model_cli_args(model_args, args):
 
 def _validate_daot_config(args) -> None:
     rx_v2_enabled = bool(getattr(args, "use_adv3b02_daot_stn_rx_v2", False))
+    if str(getattr(args, "daot_efficiency_mode", "legacy")) == "e1" and not rx_v2_enabled:
+        raise ValueError("--daot_efficiency_mode e1 is reserved for ADV3B02-DAOT-STN-RX-V2")
     ablation_id = str(getattr(args, "daot_ablation", "") or "").upper().strip()
     if rx_v2_enabled and ablation_id:
         raise ValueError("RX-V2 and the historical A0-A8 ablation matrix are separate routes")
@@ -2059,6 +2062,77 @@ def _daot_memory_step(*, epoch: int, batch_idx: int) -> int:
     return int(epoch)
 
 
+def _forward_daot_teacher_views(
+    teacher_model,
+    views: Sequence[torch.Tensor],
+    *,
+    domain_labels: Optional[torch.Tensor],
+    efficiency_mode: str,
+) -> Tuple[List[Dict[str, Any]], Dict[str, float]]:
+    """Evaluate fixed teacher views with an opt-in identity-only batched path."""
+
+    if not views:
+        raise ValueError("DAOT teacher views cannot be empty")
+    mode = str(efficiency_mode).lower().strip()
+    if mode not in {"legacy", "e1"}:
+        raise ValueError(f"Unsupported DAOT efficiency mode: {efficiency_mode}")
+    batch_size = int(views[0].shape[0])
+    if any(int(view.shape[0]) != batch_size for view in views):
+        raise ValueError("DAOT teacher views must share the same batch size")
+
+    if mode == "legacy":
+        outputs = [
+            teacher_model(view, y_tx=None, grl_lambda=1.0, return_aux=True, domain_labels=domain_labels)
+            for view in views
+        ]
+        return outputs, {
+            "identity_only_used": 0.0,
+            "identity_only_fallback": 0.0,
+            "batched_view_count": 1.0,
+        }
+
+    batched = torch.cat(list(views), dim=0)
+    batched_domains = (
+        domain_labels.repeat((len(views),) + (1,) * (domain_labels.ndim - 1))
+        if domain_labels is not None
+        else None
+    )
+    identity_forward = getattr(teacher_model, "forward_identity_only", None)
+    if callable(identity_forward):
+        combined = identity_forward(batched, domain_labels=batched_domains)
+        identity_only_used = 1.0
+        identity_only_fallback = 0.0
+    else:
+        combined = teacher_model(
+            batched,
+            y_tx=None,
+            grl_lambda=1.0,
+            return_aux=True,
+            domain_labels=batched_domains,
+        )
+        identity_only_used = 0.0
+        identity_only_fallback = 1.0
+
+    outputs: List[Dict[str, Any]] = []
+    total = batch_size * len(views)
+    for view_index in range(len(views)):
+        start = view_index * batch_size
+        end = start + batch_size
+        outputs.append(
+            {
+                key: value[start:end]
+                if torch.is_tensor(value) and value.ndim > 0 and int(value.shape[0]) == total
+                else value
+                for key, value in combined.items()
+            }
+        )
+    return outputs, {
+        "identity_only_used": identity_only_used,
+        "identity_only_fallback": identity_only_fallback,
+        "batched_view_count": float(len(views)),
+    }
+
+
 def _compute_daot_labeled_step(
     *,
     model,
@@ -2142,15 +2216,16 @@ def _compute_daot_labeled_step(
         domain_labels=d_clean,
     )
     ema_model.eval()
+    teacher_inputs = [x_clean, x_medium]
+    if x_hard is not None:
+        teacher_inputs.append(x_hard)
     with torch.no_grad():
-        teacher_views = [
-            ema_model(x_clean, y_tx=None, grl_lambda=1.0, return_aux=True, domain_labels=d_clean),
-            ema_model(x_medium, y_tx=None, grl_lambda=1.0, return_aux=True, domain_labels=d_clean),
-        ]
-        if x_hard is not None:
-            teacher_views.append(
-                ema_model(x_hard, y_tx=None, grl_lambda=1.0, return_aux=True, domain_labels=d_clean)
-            )
+        teacher_views, teacher_efficiency = _forward_daot_teacher_views(
+            ema_model,
+            teacher_inputs,
+            domain_labels=d_clean,
+            efficiency_mode=str(getattr(args, "daot_efficiency_mode", "legacy")),
+        )
     memory_found = None
     if str(args.daot_teacher_mode) in {"temporal_memory", "temporal_memory_rx"}:
         if orbit_memory is None or memory_keys is None:
@@ -2503,6 +2578,7 @@ def _compute_daot_labeled_step(
             "tangent_direction": tangent_direction_name,
             "rx_pair_count": rx_pair_count,
             "receiver_style_ready": bool(receiver_style_bank is not None and receiver_style_bank.ready),
+            **teacher_efficiency,
             **route_diagnostics,
             "memory_hit_rate": float(memory_found.float().mean().item()) if torch.is_tensor(memory_found) else 0.0,
             "named_nuisance_sensitivity": named_sensitivity,
@@ -2591,15 +2667,18 @@ def _compute_daot_unlabeled_step(
         domain_labels=d_unlabeled,
     )
     ema_model.eval()
+    teacher_inputs = [x_medium]
+    if x_hard is not None:
+        teacher_inputs.append(x_hard)
     with torch.no_grad():
-        teacher_medium = ema_model(
-            x_medium, y_tx=None, grl_lambda=1.0, return_aux=True, domain_labels=d_unlabeled
+        teacher_channel_views, teacher_efficiency = _forward_daot_teacher_views(
+            ema_model,
+            teacher_inputs,
+            domain_labels=d_unlabeled,
+            efficiency_mode=str(getattr(args, "daot_efficiency_mode", "legacy")),
         )
-        teacher_hard = (
-            ema_model(x_hard, y_tx=None, grl_lambda=1.0, return_aux=True, domain_labels=d_unlabeled)
-            if x_hard is not None
-            else None
-        )
+    teacher_medium = teacher_channel_views[0]
+    teacher_hard = teacher_channel_views[1] if len(teacher_channel_views) > 1 else None
     teacher_views = [teacher_clean, teacher_medium]
     memory_found = None
     memory_features = None
@@ -2743,6 +2822,7 @@ def _compute_daot_unlabeled_step(
             "teacher_mode": str(args.daot_teacher_mode),
             "medium_scenario": medium_scenario,
             "hard_scenario": hard_scenario,
+            **teacher_efficiency,
             "orbit_scale": orbit_scale,
             "memory_hit_rate": float(memory_found.float().mean().item()) if torch.is_tensor(memory_found) else 0.0,
             "trust_mean": float(trust.mean().detach().item()),

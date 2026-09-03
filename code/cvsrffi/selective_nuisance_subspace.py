@@ -36,18 +36,30 @@ class SelectiveNuisanceSubspace:
             raise ValueError("subspace deltas must be rank-2 with feature_dim columns")
         if min(nuisance.shape[0], fingerprint.shape[0]) < 2:
             return False
+        if not bool(torch.isfinite(nuisance).all()) or not bool(torch.isfinite(fingerprint).all()):
+            return False
         nuisance = nuisance - nuisance.mean(dim=0)
         fingerprint = fingerprint - fingerprint.mean(dim=0)
         c_n = nuisance.t() @ nuisance / max(1, nuisance.shape[0] - 1)
         c_f = fingerprint.t() @ fingerprint / max(1, fingerprint.shape[0] - 1)
         eye = torch.eye(self.feature_dim, device=c_n.device)
-        f_value, f_vector = torch.linalg.eigh(c_f + self.regularization * eye)
-        whitening = f_vector @ torch.diag(f_value.clamp_min(self.regularization).rsqrt()) @ f_vector.t()
-        whitened = whitening @ c_n @ whitening
-        values, vectors = torch.linalg.eigh(whitened)
+        try:
+            f_value, f_vector = torch.linalg.eigh(c_f + self.regularization * eye)
+            whitening = f_vector @ torch.diag(f_value.clamp_min(self.regularization).rsqrt()) @ f_vector.t()
+            whitened = whitening @ c_n @ whitening
+            values, vectors = torch.linalg.eigh(whitened)
+        except RuntimeError:
+            return False
+        tolerance = torch.finfo(values.dtype).eps * max(1, self.feature_dim) * values.abs().max().clamp_min(1.0)
+        positive = values > tolerance
+        if int(positive.sum().item()) < self.max_rank:
+            return False
         order = values.argsort(descending=True)[: self.max_rank]
-        basis = whitening @ vectors[:, order]
-        basis, _ = torch.linalg.qr(basis, mode="reduced")
+        try:
+            basis = whitening @ vectors[:, order]
+            basis, _ = torch.linalg.qr(basis, mode="reduced")
+        except RuntimeError:
+            return False
         if not bool(torch.isfinite(basis).all()):
             return False
         self.basis = basis.detach()
