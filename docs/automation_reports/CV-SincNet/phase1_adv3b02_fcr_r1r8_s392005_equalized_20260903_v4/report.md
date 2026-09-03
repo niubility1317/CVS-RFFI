@@ -28,4 +28,9 @@
 - GPU：GPU0；用户已明确允许在现有进程数上继续增加实验，不停止或干预现有任务。
 - 预期artifact：`truth/truth_sidecar.json`、`inputs/iq.npy`、`inputs/manifest.json`、`prediction/predictions.json`、`prediction/score.json`及各阶段日志。
 - 技术停止规则：仅在路径覆盖风险、checkpoint/数据绑定错误、prediction不完整、scorer连接错误、确定性异常、OOM或非有限输出时停止本评估；不因性能高低停止。
-- 当前状态：`LOCAL_VERIFIED`。
+- v1结果：prepare完成并生成168000条无标签输入及独立truth sidecar；predict在首批DataLoader读取时确定性失败，错误为`TypeError: expected np.ndarray (got numpy.ndarray)`；未生成prediction，未执行scorer，状态为`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。v1全部现场保留。
+- 根因：N607的NumPy2.2.5与PyTorch2.1.0组合无法通过`torch.from_numpy`转换普通连续`float32 ndarray`；predictor绕过了项目已有兼容转换入口。
+- 修复：`_OpaqueTargetDataset`复用`dataset_wisig._safe_to_torch_float_tensor`，当`torch.from_numpy`和`torch.as_tensor`均失败时以plain-list构造tensor；不改变数据、模型、场景或truth-last边界。
+- 验证：新增ABI回归测试先RED后GREEN；聚焦测试20/20通过；Python编译与diff检查通过；原问题定点P0/P1复审结论为FIXED。
+- v2 eval_id：`phase1_adv3b02_fcr_r1r8_s392005_equalized_20260903_v4_ADV3B02_baseline_eval_v2`；使用全新`baseline_eval_v2`输出根，重新执行prepare→predict→独立scorer，不覆盖或复用v1输出根。
+- 当前状态：`LOCAL_VERIFIED`（v2待发布）。

@@ -12,7 +12,11 @@ from torch.utils.data import DataLoader, Dataset
 from cvsrffi.checkpoint_loading import build_exact_ssdg_model_from_checkpoint
 from cvsrffi.eval import FCR_PREDICTION_SCENARIOS, apply_sat_channel_for_scenario, select_identity_logits
 from cvsrffi.truth_last import build_truth_sidecar, stable_sample_id
-from dataset_wisig import WiSigCompactDataset, load_wisig_compact_pkl
+from dataset_wisig import (
+    WiSigCompactDataset,
+    _safe_to_torch_float_tensor,
+    load_wisig_compact_pkl,
+)
 from post_stage_common import load_checkpoint
 
 
@@ -30,7 +34,7 @@ class _OpaqueTargetDataset(Dataset):
         return len(self.sample_ids)
 
     def __getitem__(self, index: int):
-        x = torch.from_numpy(np.asarray(self.iq[index]).copy())
+        x = _safe_to_torch_float_tensor(self.iq[index])
         return x, -1, 0, {"physical_sample_id": self.sample_ids[index]}
 
 

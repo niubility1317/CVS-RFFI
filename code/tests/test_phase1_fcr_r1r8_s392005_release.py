@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 from types import SimpleNamespace
 
+import numpy as np
 import pytest
 import torch
 
@@ -109,6 +110,36 @@ def test_predictor_process_reads_only_label_free_package() -> None:
     assert predict_blocks
     for block in predict_blocks:
         assert "--wisig-pkl" not in block.split("--mode", 1)[0]
+
+
+def test_opaque_predictor_dataset_survives_numpy_torch_abi_mismatch(monkeypatch) -> None:
+    from scripts.predict_phase1_truth_last import _OpaqueTargetDataset
+
+    dataset = object.__new__(_OpaqueTargetDataset)
+    dataset.iq = [np.zeros((2, 256), dtype=np.float32)]
+    dataset.sample_ids = ["opaque-sample-id"]
+    monkeypatch.setattr(
+        torch,
+        "from_numpy",
+        lambda _array: (_ for _ in ()).throw(
+            TypeError("expected np.ndarray (got numpy.ndarray)")
+        ),
+    )
+    monkeypatch.setattr(
+        torch,
+        "as_tensor",
+        lambda *_args, **_kwargs: (_ for _ in ()).throw(
+            TypeError("expected np.ndarray (got numpy.ndarray)")
+        ),
+    )
+
+    x, label, domain, metadata = dataset[0]
+
+    assert x.shape == (2, 256)
+    assert x.dtype == torch.float32
+    assert label == -1
+    assert domain == 0
+    assert metadata == {"physical_sample_id": "opaque-sample-id"}
 
 
 def test_legacy_checkpoint_model_defaults_use_valid_physical_sources(monkeypatch) -> None:
