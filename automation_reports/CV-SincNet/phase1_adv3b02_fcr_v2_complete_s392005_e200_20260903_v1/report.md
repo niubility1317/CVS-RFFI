@@ -25,3 +25,13 @@
 - 本地验证：`phase1_fcr`173项通过；训练图/诊断/launcher49项通过；checkpoint→predictor→scorer26项通过
 - release映射：本地`release_archives/phase1_adv3b02_fcr_v2_complete_s392005_e200_20260903_v1.tar.gz`→远端`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_fcr_v2_complete_s392005_e200_20260903_v1.tar.gz`
 
+## 启动结果
+
+- 最终状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
+- 启动时间：2026-09-03 18:11 CST
+- launcher PID：`838673`，已自行退出；检查时没有本run存活进程
+- 失败范围：wave1的C1、C2、C3、S0、S1、S2、S3、S4均在训练开始前以相同指纹退出；wave2未发布
+- 确定性指纹：`RuntimeError: locked mature identity checkpoint is incomplete: missing_mature_identity=42`
+- 根因：launcher漏传基线的`branch_ablation=no_dac`和`domain_branch_ablation=no_stats`，错误构建额外DAC身份路径并把它判为旧checkpoint缺失
+- 处置：保留全部日志和空训练目录，不原地修改、不覆盖、不复用run ID；修复提交`524f835536b5f467a72055975fd2d2b415b6843a`后改用v2重发
+
