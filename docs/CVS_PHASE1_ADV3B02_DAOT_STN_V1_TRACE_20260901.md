@@ -6,7 +6,7 @@
 - 方法ID：`ADV3B02-DAOT-STN-V1`。
 - 当前协议：Phase1 source-only，保持`L_s/U_s/V=0.07/0.63/0.30`、V只读、query不可达。
 - 基线边界：保留`ADV3B02_FASTTRUST_EFF`的hard集合、class-balanced cap、source prior和`hard∩sat_mask`路径。
-- 用户修订：新方法默认使用性能优先的三教师视图`clean+medium+hard`；Temporal Orbit Memory仅作为A8效率对照。
+- 用户修订：性能优先的三教师视图`clean+medium+hard`只用于A2/A3上界体系及其机制消融，不直接作为部署默认；高效默认路线需要Temporal Orbit Memory或等价低前向实现的独立运行证据。
 - 声明边界：没有真实LEO参数统计时只称为`deployment-proxy matched`。
 - 隔离交付：实现位于工作树`.worktrees/adv3b02-daot-stn-v1`和分支`codex/adv3b02-daot-stn-v1-20260901`，不与并行方法改动混合。
 - 执行边界：r1已在N607启动，但8行均在训练前因域输出头14→15维checkpoint不兼容而系统性技术失败；没有性能结果。修复后只允许以新run ID和新输出根发布r2。
@@ -22,7 +22,7 @@
 | OT-05 | 9.4、9.6 | coverage floor、Huber残差权重、鲁棒球面均值 | `code/cvsrffi/orbit_teacher.py` | verified | coverage、Huber、单位球及`N_eff`测试通过 | `gamma_cov=0.15`、`beta_min=0.30` |
 | OT-06 | 9.7 | `L_orb,z/logit/proto/rel`四层目标 | `code/cvsrffi/orbit_teacher.py`、`code/cvsrffi/daot_training.py` | verified | 四类损失行为测试通过 | relation默认关闭 |
 | OT-07 | 9.8 | U的feature目标不依赖伪标签，logit/proto仅高共识U | `code/SSDG/train_ssdg.py` | verified | U函数无label/pseudo输入且反传测试通过 | 不改变FastTrust路由选择集合 |
-| OT-08 | 9.19.1 | 默认三教师视图`clean+medium+hard` | `code/cvsrffi/deployment_orbit.py`、`code/SSDG/train_ssdg.py` | verified | 默认配置与真实调用计数测试通过 | 用户当前明确修订 |
+| OT-08 | 9.19.1 | 性能上界三教师视图`clean+medium+hard` | `code/cvsrffi/deployment_orbit.py`、`code/SSDG/train_ssdg.py` | verified | 配置与真实调用计数测试通过 | A2/A3及其机制消融使用；不直接作为部署默认 |
 | OT-09 | 9.19.2 | Temporal Orbit Memory效率实现 | `code/cvsrffi/orbit_teacher.py` | verified | 更新、查找、保存、恢复测试通过 | 仅A8默认使用 |
 | TG-01 | 9.9、9.10 | 无量纲信道坐标和部署协方差联合方向 | `code/cvsrffi/deployment_orbit.py` | verified | 稀疏协方差方向及8类单参数方向的确定性、稀疏度和单位范数测试通过 | 联合训练方向每样本最多3个活跃坐标 |
 | TG-02 | 9.11～9.14 | 全部署区域基点、参数分型、共同随机数、低维物理基 | `code/cvsrffi/deployment_orbit.py` | verified | 固定received-IQ基点、无新增随机信道、8类方向重放测试通过 | clipping/quantization未进入tangent基 |
@@ -68,10 +68,18 @@
 | ID | 来源 | 要求 | 目标文件 | 状态 | 验证 | 备注 |
 |---|---|---|---|---|---|---|
 | REL-01 | 用户数据配置、`项目.md`4节 | `L_s/U_s/V=0.07/0.63/0.30`，单一V只读 | `train_ssdg.py`、worker | verified | 单一V参数与artifact记录测试通过 | 用户已批准合并原`V_cal/V_select` |
-| REL-02 | 用户批准矩阵、报告9.23 | 只发布A0～A7，共8行，GPU0～7 | ManySig专用launcher | verified | 冻结矩阵测试通过 | 不发布A8 Temporal Memory效率行 |
+| REL-02 | 用户批准矩阵、报告9.23 | r3只发布A1～A7，共7行，GPU1～7 | ManySig专用launcher | verified | 冻结矩阵和启动记录通过 | A0按用户要求移除；A8未发布 |
 | REL-03 | 用户target配置 | source第1/2/3天与target第0/1/2/3天可重叠，但接收机必须不相交 | `dataset_wisig.py`、`train_ssdg.py` | verified | receiver交叠负测及同日正测通过 | 目标全集命名为`test_all_day_unseen_rx` |
-| REL-04 | 用户target配置 | 每个clean/LEO场景覆盖7接收机×4天×6TX×1000=168000样本 | evaluator、worker | implemented | 合成数据全集计数测试通过 | N607真实ManySig计数待启动日志回读 |
-| REL-05 | 最小实验流程 | 不可覆盖run root、真实checkpoint smoke、远端编译和启动绑定 | launcher、实验报告 | pending | 本地smoke已通过 | 提交、N607预检及启动后证据待完成 |
+| REL-04 | 用户target配置 | 每个clean/LEO场景覆盖7接收机×4天×6TX×1000=168000样本 | evaluator、worker | verified | A1～A7四场景均完成168000样本，28份指标闭合 | 总计4704000次target预测 |
+| REL-05 | 最小实验流程 | 不可覆盖run root、真实checkpoint smoke、远端编译和启动绑定 | launcher、实验报告 | verified | r3完成发布、启动绑定、E200 checkpoint与四场景artifact闭合 | 最终状态`ANALYZED` |
+
+## A1～A7最终证据回填
+
+- r3最终状态：`ANALYZED`。A1～A7均完成E200及clean、`leo_clear_weak`、`leo_low_elev_weak`、`leo_rain_weak`评测。
+- 结构化结果：`automation_reports/CV-SincNet/phase1_adv3b02_daot_stn_a1_a7_manysig_s392005_20260902_r3/final_results_20260903.json`。
+- 完整报告：`docs/CVS_PHASE1_ADV3B02_DAOT_STN_A1_A7_FULL_REPORT_20260903.md`。
+- 运行证据支持A4为三教师上界体系内的平衡参照、A7为下界参照；不支持把三教师路径直接晋级为部署默认。
+- A0、A8和独立损失消融没有在r3运行。它们属于已实现但无本run性能证据的路径，不得从A1～A7外推数值。
 
 ## r1系统性技术失败与r2修复边界
 
