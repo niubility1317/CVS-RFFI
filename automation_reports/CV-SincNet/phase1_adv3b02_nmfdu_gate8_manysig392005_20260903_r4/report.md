@@ -14,7 +14,7 @@
 |FIX-01|null概率校准在CUDA AMP下可执行且有限|VERIFIED|本机CUDA FP16 autocast下6个受影响候选均通过|
 |FIX-02|保留概率BCE语义及门控梯度|VERIFIED|逐候选与显式概率BCE对值，sample gate梯度存在且有限|
 |FIX-03|无证据不改非有限梯度相关算法|NONBLOCKING_MONITOR|跳步发生于共享Stage1，loss有限且现有保护有效|
-|FIX-04|新run ID重发，不覆盖r3|RUNNING|新r4输出根、8个绑定PID和GPU映射已读回|
+|FIX-04|新run ID重发，不覆盖r3|STOPPED_BY_USER|r4曾完成启动绑定，随后按用户指令精确停止；无性能结果，后续不得复用r4 run ID|
 
 ## 3.修复与本地验证
 
@@ -39,9 +39,9 @@ r3只持久化了每轮聚合的`train_skipped_nonfinite_grad`，没有首个异
 - 停止规则：只对协议/路径/覆盖、确定性系统异常或无法产生合法prediction等技术失败停止；不因性能低停止。
 - 预期artifact：每行最终checkpoint、训练日志、clean和3个LEO弱场景评估、prediction与独立评分。
 
-## 5.N607发布与启动
+## 5.N607发布、启动与暂停
 
-- 状态：`RUNNING`。
+- 状态：`STOPPED_BY_USER_BEFORE_EPOCH1 / NO_PERFORMANCE_RESULT / PAUSED_AWAITING_CONFIRMATION`。
 - release归档：`E:\type10-7\local_artifacts\releases\adv3b02_nmfdu_gate8_manysig392005_1f56a830.tar.gz`→`/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_nmfdu_gate8_manysig392005_1f56a830.tar.gz`。
 - release SHA256：`ade39216eb638e39f533dc98ebe3d2a4a9ce89fe31dddb682b88ed76d7842042`，本地与远端一致。
 - release目录：`/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_nmfdu_gate8_manysig392005_1f56a830`；远端关键模块编译通过。
@@ -54,3 +54,14 @@ r3只持久化了每轮聚合的`train_skipped_nonfinite_grad`，没有首个异
 - PID/CWD/cmdline读回：dispatcher及8个训练PID均存活；CWD均为`/home/szu2070436088`，cmdline绑定新release、r4输出根、ManySig、split seed=`392005`及对应消融模式。
 - 8份独立日志和PID文件已生成；初始扫描没有`Traceback`、`RuntimeError`或OOM。
 - r3未续跑、覆盖、停止或删除。
+
+## 6.用户暂停指令与停止闭合
+
+- 用户在r4完成启动后明确要求“先别启动实验，等我确认后再启动实验”。收到该指令后，没有继续等待训练，也没有启动其他实验。
+- 停止时间：`2026-09-03 10:30:36 +0800`前完成TERM停止与读回核验。
+- 归属核验：以dispatcher PID=`611221`为根解析完整父子进程树，并逐项核对固定release路径、固定launcher或r4 run ID；共锁定81个r4归属进程，包括dispatcher、8个行包装进程、8个训练主进程及其数据加载子进程。
+- 停止范围：仅向上述81个精确PID发送信号；未使用`pkill`、模糊进程名或跨实验终止命令。
+- 独立读回：上述81个PID均已不存在；GPU上仅剩启动r4前已存在的r3、FCR和ECRS进程，未影响无关任务。
+- artifact状态：8份启动日志均以6325bytes原样保留；r4输出根尚未产生checkpoint、metrics、prediction或评分文件，因此本次没有可解释的性能数据。
+- 不可复用约束：r4 run ID及其输出根视为已使用并永久保留。待用户明确确认后，只能以新的不可覆盖run ID（预期r5）启动原冻结8行矩阵。
+- 修复状态：代码、回归测试、Git提交、release归档及真实checkpoint无query smoke仍保持`VERIFIED`；当前暂停仅来自用户调度指令，不是技术失败或低性能停止。
