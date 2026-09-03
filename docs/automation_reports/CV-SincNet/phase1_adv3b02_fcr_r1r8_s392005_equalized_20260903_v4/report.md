@@ -182,3 +182,81 @@ ADV3B02基线为clean=76.2268%、LEO均值=60.1397%、LEO下界=59.4637%、四�
 - 之前显示的R7=`92.90%/82.22%/79.22%/79.03%`不是本次truth-last测试结果。本次可追溯的R7最终结果是`78.3542%/64.4476%/62.6518%/62.4833%`。
 - 机器可读完整结果：[r1r8_target_eval_v2_summary.json](r1r8_target_eval_v2_summary.json)。
 - 最终状态：`ANALYZED`。
+
+## 历史高分截图完整溯源
+
+### 结论
+
+截图中的R1-R8数值可逐项追溯到`phase1_adv3b02_fcr_r1r8_s392002_20260902_v6`报告第52-59行。该批与本run不是同一checkpoint、同一source/target划分、同一测试集合或同一checkpoint选择规则，不能直接比较。旧表高出约12.78-17.77pp的主要原因是旧“overall test”混合了训练已见接收机、训练已见日期和双未见子集；它不是本次规定的7个接收机全部作为receiver-disjoint target的168000条测试。
+
+### 两批实验的关键差异
+
+|项目|历史截图v6|当前v4|
+|---|---|---|
+|FCR run|`phase1_adv3b02_fcr_r1r8_s392002_20260902_v6`|`phase1_adv3b02_fcr_r1r8_s392005_equalized_20260903_v4`|
+|初始化模型|`ADV3B03_MU10_ALPHA20_E200`|新训练`ADV3B02_CORE90_SOFT_E200`|
+|初始化seed|392002|392005|
+|初始化checkpoint|`.../phase1_adv3b03_core90seed_near3_day123_e200_20260830_r1/S392002_ADV3B03_MU10_ALPHA20_E200/final_ssdg.pth`|`.../phase1_adv3b02_fcr_r1r8_s392005_equalized_20260903_v4/ADV3B02/ADV3B02_CORE90_SOFT_E200/final_ssdg.pth`|
+|checkpoint大小/时间|15035743字节；2026-08-30 06:15|15039647字节；2026-09-03 08:00|
+|source receiver|`[0,1,2,3,4,5,6]`|`[1,3,4,6,8]`|
+|source day|`[0,1]`|`[1,2,3]`|
+|source池及角色|84000；L/U/V=`5880/52920/25200`|90000；L/U/V=`6300/56700/27000`|
+|旧overall组成|84000条未见日×已见RX+60000条已见日×未见RX+60000条未见日×未见RX|7个receiver-disjoint target×4天×6类×1000条|
+|每场景样本数|204000|168000|
+|测试接收机口径|未见RX仅`[7,8,9,10,11]`，overall还包含已见RX`[0..6]`|固定target=`[0,2,5,7,9,10,11]`|
+|训练期间target可见性|每个epoch运行有标签`[TEST]`和`[SAT-TEST]`并保存test-best checkpoint|`test_eval_policy=never`；E200冻结后才生成prediction|
+|正式报告checkpoint|`best_joint.pth`，按source-val选择；R7为E146|只使用E200最后一个`final.pth`|
+|评分闭环|内置有标签评测；prediction随机HMAC ID且无可连接truth sidecar，独立评分未闭合|无标签prediction先固定，之后独立scorer连接truth sidecar，闭环完成|
+
+旧v6把当前target中的receiver0、2、5当作训练已见receiver；这3个receiver占当前目标集合3/7。旧overall的204000条中，84000条（41.18%）直接来自训练已见receiver，只是日期未见；另有60000条（29.41%）来自训练已见日期，只是receiver未见；真正receiver和day同时未见的只有60000条（29.41%）。因此旧overall天然比当前全receiver-disjoint target容易。
+
+旧v6的双未见子集也不能与当前target等同：它只含receiver`[7,8,9,10,11]`，其中receiver8在当前协议是source；当前target额外包含receiver`[0,2,5]`，其中`14-7`是已知最困难接收机。因此即使比较旧表的`strict_udu`，也仍然不是同一测试集。
+
+### 截图数值与当前truth-last结果差值
+
+|行|Δclean|Δclear|Δlow-elev|Δrain|
+|---|---:|---:|---:|---:|
+|R1|+14.9785pp|+17.3944pp|+16.3121pp|+16.4398pp|
+|R2|+15.0810pp|+17.6067pp|+16.2237pp|+16.3340pp|
+|R3|+14.5765pp|+16.4831pp|+14.9836pp|+15.2844pp|
+|R4|+15.1758pp|+16.6332pp|+15.5912pp|+15.7888pp|
+|R5|+14.6871pp|+14.2764pp|+12.7762pp|+12.8020pp|
+|R6|+14.5399pp|+17.0476pp|+15.7293pp|+15.8046pp|
+|R7|+14.5458pp|+17.7724pp|+16.5682pp|+16.5467pp|
+|R8|+14.7931pp|+17.0525pp|+15.7996pp|+15.8694pp|
+
+### 历史初始化checkpoint的真实身份与配置
+
+历史截图使用的初始化checkpoint并不是ADV3B02。其真实身份为：
+
+- 生成run：`phase1_adv3b03_core90seed_near3_day123_e200_20260830_r1`。
+- candidate：`S392002_ADV3B03_MU10_ALPHA20_E200`。
+- checkpoint：`final_ssdg.pth`，epoch200，15035743字节。
+- 代码提交：`42df44e70f79e76072b4a98a568870c460cc35d6`。
+- 训练方式：`from_scratch=true`，没有加载ADV3B02权重；仅复用了历史ADV3B02 CORE90的seed中心392002。
+- 数据：ManySig equalized；`split_mode=tx_rx_day_1_7_2`；source receiver=`[1,3,4,6,8]`、day=`[1,2,3]`；L/U/V=`0.07/0.63/0.30`；batch128；E200。
+- 训练阶段：label130epoch+pseudo70epoch；EMA teacher；`lambda_u=0.16`、`lambda_ent=0.01`、`lambda_domain=1`、`lambda_adv=0.35`、`lambda_group_ce=0.16`、`lambda_fishr=0.04`。
+- ADV3B03新增损失：`lambda_proto=0.0032`、`lambda_open_world_feat=0.0024`、`lambda_zid_compact=0.032`、`lambda_proxy_unknown=0.0050`、`lambda_soft_unknown_mixup=0.0045`、`lambda_source_episode=0.0035`。
+- 星地增强：concat masked/CE-only，权重1.0；E1-40 clear概率0.30，E41-90 low/rain概率0.60，E91-200三场景概率0.80；`lambda_sat_cls=0.68`、`lambda_sat_cons=0`，sat start E80。
+- source侧E200评测：clean97.8741%、clear88.4963%、low84.7185%、rain85.7926%；这是source留出结果，不是目标receiver结果。
+- 该ADV3B03实验的冻结冠军其实是seed392005，不是392002；seed392002排名第2。
+
+### 判定主要问题
+
+1. **首要问题是测试定义改变**：旧overall把已见receiver/已见day混合进总分；当前是固定7个receiver-disjoint target。它解释了绝大部分15-18pp差距。
+2. **其次是训练/测试隔离不合格**：旧训练日志每个epoch读取有标签target并保存多种test-best checkpoint。虽然截图报告加载的是source-val选择的`best_joint.pth`，没有证据表明target标签直接反向传播，但存在确定的test peeking和跨R1-R8人工筛选风险，不能作为无偏最终测试。
+3. **checkpoint身份误标**：旧FCR批次名含`adv3b02`，但实际初始化来自从头训练的ADV3B03 seed392002；把它称为“ADV3B02 checkpoint”不准确。
+4. **checkpoint选择规则不同但不是主因**：旧R7报告值来自E146 source-val最优checkpoint；同一日志E200约为clean92.99%、clear81.97%、low79.07%、rain78.98%，与截图仅差-0.09/+0.25/+0.15/+0.05pp，无法解释15-18pp主差距。
+5. **旧prediction不可独立复分**：随机HMAC `sample_id`没有同步truth sidecar，所以截图只可视为可追溯的旧内置评测，不是当前truth-last正式测试。
+
+### 交叉验证
+
+最直接的反证是历史ADV3B03冻结seed392005已按当前同一7个target receiver×4天×每场景168000条做过零适配测试，结果为clean78.4363%、clear62.8625%、low60.9440%、rain60.8655%。它与当前R1-R8的约78%/64%/63%/62%处于同一量级，而不是旧截图的约93%/82%/79%/79%。因此当前低分不是一次异常崩塌；旧表与当前表的评测协议不一致才是主因。
+
+### 证据状态
+
+- 历史截图数字来源：`VERIFIED`，逐项匹配v6报告和R7完整日志。
+- 历史初始化checkpoint身份、路径、大小和config：`VERIFIED`，已在N607只读回查。
+- 当前v4结果：`VERIFIED`，8行均有672000条prediction及独立truth-last score。
+- 旧v6独立truth-last评分：`FAILED/未闭合`，不能补算或伪造。
+- 是否存在target梯度更新：未发现证据；是否存在训练期间test peeking：`VERIFIED`。
