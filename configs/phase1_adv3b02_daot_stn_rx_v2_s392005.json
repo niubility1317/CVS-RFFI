@@ -1,6 +1,6 @@
 {
   "schema": "cvs.phase1.adv3b02_daot_stn_rx_v2.v1",
-  "status": "IMPLEMENTED_NOT_LAUNCHED",
+  "status": "RELEASE_AUTHORIZED",
   "seed": 392005,
   "epochs": 200,
   "dataset": {
@@ -12,7 +12,7 @@
     "source_receivers": [1, 3, 4, 6, 8],
     "source_days": [1, 2, 3],
     "pool_size": 90000,
-    "roles": {"L_s": 6300, "U_s": 56700, "V_cal": 13500, "V_select": 13500}
+    "roles": {"L_s": 6300, "U_s": 56700, "V": 27000}
   },
   "method": {
     "use_adv3b02_daot_stn": true,
@@ -44,5 +44,10 @@
     "prior_checkpoint_non_leo_weak_test": true,
     "non_weak_scenarios": ["clear_leo", "low_elev_leo", "rain_leo", "storm_mp", "mixed_orbit", "geo_clear"]
   },
-  "launch": {"authorized": false, "experiment_started": false}
+  "launch": {
+    "authorized": true,
+    "experiment_started": false,
+    "run_id": "phase1_adv3b02_daot_stn_rx_v2_p1_p2_manysig_s392005_20260903_r1",
+    "rows": ["V2-P1", "V2-P2"]
+  }
 }

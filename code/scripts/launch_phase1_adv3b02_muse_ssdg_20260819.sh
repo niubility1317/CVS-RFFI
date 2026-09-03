@@ -95,6 +95,14 @@ RC4_NONFINITE_GUARD_MIN_COUNT="${RC4_NONFINITE_GUARD_MIN_COUNT:-8}"
 RC4_NONFINITE_GUARD_FRACTION="${RC4_NONFINITE_GUARD_FRACTION:-0.05}"
 DAOT_ABLATION="${DAOT_ABLATION:-}"
 DAOT_LOSS_ABLATION="${DAOT_LOSS_ABLATION:-none}"
+DAOT_RX_V2="${DAOT_RX_V2:-false}"
+DAOT_LAMBDA_TANGENT="${DAOT_LAMBDA_TANGENT:-}"
+DAOT_LAMBDA_ROUTE="${DAOT_LAMBDA_ROUTE:-}"
+DAOT_LAMBDA_RX="${DAOT_LAMBDA_RX:-}"
+DAOT_LAMBDA_TAIL="${DAOT_LAMBDA_TAIL:-}"
+DAOT_LAMBDA_NUISANCE="${DAOT_LAMBDA_NUISANCE:-}"
+DAOT_LAMBDA_FINGERPRINT="${DAOT_LAMBDA_FINGERPRINT:-}"
+DAOT_LAMBDA_SUBSPACE="${DAOT_LAMBDA_SUBSPACE:-}"
 DRY_RUN=0
 ONLY_CANDIDATES="M0,M1,M2,M3"
 
@@ -153,6 +161,18 @@ validate_ablation() {
     none|no_z|no_logit|no_proto|relation_on) ;;
     *) echo "[MUSE-ERROR] unknown DAOT loss ablation: ${DAOT_LOSS_ABLATION}" >&2; return 2 ;;
   esac
+  case "${DAOT_RX_V2}" in
+    true|false) ;;
+    *) echo "[MUSE-ERROR] DAOT_RX_V2 must be true or false" >&2; return 2 ;;
+  esac
+  if [[ "${DAOT_RX_V2}" == "true" && "${ONLY_CANDIDATES}" != "M3" ]]; then
+    echo "[MUSE-ERROR] DAOT RX-V2 requires --only=M3" >&2
+    return 2
+  fi
+  if [[ "${DAOT_RX_V2}" == "true" && -n "${DAOT_ABLATION}" ]]; then
+    echo "[MUSE-ERROR] DAOT RX-V2 cannot be combined with legacy DAOT_ABLATION" >&2
+    return 2
+  fi
 }
 
 build_ablation_args() {
@@ -516,6 +536,16 @@ build_train_command() {
   if [[ -n "${DAOT_ABLATION}" ]]; then
     TRAIN_CMD+=(--daot_ablation "${DAOT_ABLATION}")
   fi
+  if [[ "${DAOT_RX_V2}" == "true" ]]; then
+    TRAIN_CMD+=(--use_adv3b02_daot_stn_rx_v2 true)
+  fi
+  [[ -z "${DAOT_LAMBDA_TANGENT}" ]] || TRAIN_CMD+=(--daot_lambda_tangent "${DAOT_LAMBDA_TANGENT}")
+  [[ -z "${DAOT_LAMBDA_ROUTE}" ]] || TRAIN_CMD+=(--daot_lambda_route "${DAOT_LAMBDA_ROUTE}")
+  [[ -z "${DAOT_LAMBDA_RX}" ]] || TRAIN_CMD+=(--daot_lambda_rx "${DAOT_LAMBDA_RX}")
+  [[ -z "${DAOT_LAMBDA_TAIL}" ]] || TRAIN_CMD+=(--daot_lambda_tail "${DAOT_LAMBDA_TAIL}")
+  [[ -z "${DAOT_LAMBDA_NUISANCE}" ]] || TRAIN_CMD+=(--daot_lambda_nuisance "${DAOT_LAMBDA_NUISANCE}")
+  [[ -z "${DAOT_LAMBDA_FINGERPRINT}" ]] || TRAIN_CMD+=(--daot_lambda_fingerprint "${DAOT_LAMBDA_FINGERPRINT}")
+  [[ -z "${DAOT_LAMBDA_SUBSPACE}" ]] || TRAIN_CMD+=(--daot_lambda_subspace "${DAOT_LAMBDA_SUBSPACE}")
   TRAIN_CMD+=(--daot_loss_ablation "${DAOT_LOSS_ABLATION}")
 }
 

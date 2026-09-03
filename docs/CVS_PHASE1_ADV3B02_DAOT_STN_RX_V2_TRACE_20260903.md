@@ -3,9 +3,9 @@
 ## 1.交付状态
 
 - 方法ID：`ADV3B02-DAOT-STN-RX-V2`。
-- 当前状态：`LOCAL_VERIFIED/IMPLEMENTED_NOT_LAUNCHED`。
+- 当前状态：`LOCAL_VERIFIED/RELEASE_AUTHORIZED`；首轮发布矩阵为`V2-P1/V2-P2`。
 - 工作树：`.worktrees/adv3b02-daot-stn-v1`，分支：`codex/adv3b02-daot-stn-v1-20260901`。
-- 本轮只完成报告落地实现、测试和真实checkpoint无query smoke；未启动训练、评估或N607任务。
+- 实现、测试和真实checkpoint无query smoke已完成；用户随后授权发布实验，运行证据以独立实验报告为准。
 - 部署默认教师为`clean+rotating channel/receiver fresh+Temporal Orbit Memory`，即每步两次新鲜教师前向；三次新鲜教师前向仅保留给A2/A3上界实验。
 - 用户明确排除“使用上一轮checkpoint执行非LEO_WEAK测试”，本实现未提供、未调用这一路径。
 
@@ -14,7 +14,7 @@
 - 数据集：`Dataset_WigSig/ManySig.pkl`，equalized=`true`。
 - split：`tx_rx_day_1_7_2`，seed=`392005`。
 - source receiver：`[1,3,4,6,8]`；source day：`[1,2,3]`。
-- source pool：90000；`L_s=6300`、`U_s=56700`、`V_cal=13500`、`V_select=13500`。
+- source pool：90000；`L_s=6300`、`U_s=56700`、单一`V=27000`。不再拆分`V_cal/V_select`。
 - 最终评估白名单仅为`clean`、`leo_clear_weak`、`leo_low_elev_weak`、`leo_rain_weak`。
 - 非LEO_WEAK跨族测试状态：`REJECTED_BY_USER_SCOPE`。
 
