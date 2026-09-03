@@ -24,3 +24,12 @@
 - 本地验证：独立运行`phase1_fcr`175项通过；修复前回归精确复现missing=42，修复后聚焦46项通过
 - release映射：本地`release_archives/phase1_adv3b02_fcr_v2_complete_s392005_e200_20260903_v2.tar.gz`→远端`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_fcr_v2_complete_s392005_e200_20260903_v2.tar.gz`
 
+## 运行结论
+
+- 最终状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
+- 启动PID：`848020`；初始PID/CWD/cmdline/GPU/log增长绑定通过。
+- 故障范围：C1已完成第1个epoch并继续运行；C2、C3、S0、S1、S2、S3、S4均在首个训练步触发同一确定性异常，wave2未发布。
+- 故障指纹：`route_formal_identity_outputs -> select_identity_logits -> ValueError: formal FCR identity output has an incompatible feature schema`。
+- 处置：触发“至少两行出现同一确定性预prediction异常”的预登记停止规则。复核进程组`848018`内成员均绑定本run后，仅向该进程组发送`SIGTERM`；随后按run ID独立查询无残留进程。未触碰其他任务。
+- artifact：V2全部日志及部分训练产物原位保留；没有形成完整prediction，因此不得评分，也没有性能结果。
+- 下一步：本地复现各ablation row输出schema差异，加入定点回归并最小修复；通过聚焦验证后使用新提交、新release和新run ID发布V3，禁止复用V2输出根。
