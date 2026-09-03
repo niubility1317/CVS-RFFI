@@ -24,4 +24,13 @@
 - V1修复：恢复基线`no_dac/no_stats`架构锁，真实checkpoint完整加载。
 - V2修复：formal identity无模型路由只接受已定义的V1/V2正式schema，未知schema继续拒绝；不改变模型、损失、数据或矩阵。
 - 本地验证：修复者聚焦45项及完整`phase1_fcr`183项通过；主流程独立运行V2训练集成38项通过。
+- Git/release：运行提交`bb9e60ba3416dfded81f4c61444133f6dbaaf1e9`已推送且远端OID一致；release归档本地→远端SHA256均为`5689442a1762488dca531b70b1844728bddb548a8b141933675b8ea6696f5610`，远端编译通过。
+- 真实checkpoint无query smoke：`loaded=195`、`skipped=0`、`incompatible_source_mature_identity=0`，seed=`392005`、epoch=`200`、candidate=`ADV3B02_CORE90_SOFT_E200`，V2 schema与`(2,6)`正式logits路由通过。
 
+## 启动状态
+
+- 当前状态：`RUNNING`
+- 提交shell PID：`858714`；正式launcher PID/PGID：`858715`；wave1训练PID：C1=`859501`、C2=`859511`、C3=`859520`、S0=`859533`、S1=`859547`、S2=`859561`、S3=`859570`、S4=`859583`。
+- 初始绑定：8个训练进程的CWD/代码路径/run root/seed/E200/final-only/checkpoint均与预登记一致，GPU0-7各绑定1行；日志均已创建并增长。
+- 初始健康：C1已连续完成多个epoch；C2、C3、S0-S4均已越过V2的schema崩溃点，无`Traceback/RuntimeError/ValueError/OOM/Killed`。各行在AMP初始动态缩放期出现3次有限unsafe-step跳过，进程CPU/GPU持续活跃；后续监控需确认转入有效optimizer step与epoch推进。
+- 监控策略：每30分钟短连接只读检查进程归属、行数/epoch、日志增长、GPU和确定性故障指纹；状态无变化时保持安静，完成、失败或需要用户处置时通知。
