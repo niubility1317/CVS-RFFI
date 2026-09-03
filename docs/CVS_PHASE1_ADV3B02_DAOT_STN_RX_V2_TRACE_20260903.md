@@ -3,7 +3,7 @@
 ## 1.交付状态
 
 - 方法ID：`ADV3B02-DAOT-STN-RX-V2`。
-- 当前状态：`LOCAL_VERIFIED/RELEASE_AUTHORIZED`；首轮发布矩阵为`V2-P1/V2-P2`。
+- 当前状态：`LOCAL_VERIFIED/RELEASE_AUTHORIZED`；用户追加授权扩展确认，发布矩阵为`V2-P1～V2-P5`。
 - 工作树：`.worktrees/adv3b02-daot-stn-v1`，分支：`codex/adv3b02-daot-stn-v1-20260901`。
 - 实现、测试和真实checkpoint无query smoke已完成；用户随后授权发布实验，运行证据以独立实验报告为准。
 - 部署默认教师为`clean+rotating channel/receiver fresh+Temporal Orbit Memory`，即每步两次新鲜教师前向；三次新鲜教师前向仅保留给A2/A3上界实验。

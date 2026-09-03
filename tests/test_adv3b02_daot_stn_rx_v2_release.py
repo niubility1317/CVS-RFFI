@@ -10,6 +10,10 @@ LAUNCHER = (
     ROOT
     / "code/scripts/launch_phase1_adv3b02_daot_stn_rx_v2_p1_p2_manysig_s392005_20260903.sh"
 )
+EXPANDED_LAUNCHER = (
+    ROOT
+    / "code/scripts/launch_phase1_adv3b02_daot_stn_rx_v2_p1_p5_manysig_s392005_20260903.sh"
+)
 CONFIG = ROOT / "configs/phase1_adv3b02_daot_stn_rx_v2_s392005.json"
 
 
@@ -69,3 +73,21 @@ def test_release_freezes_single_v_protocol_and_required_eval_scenarios() -> None
         "leo_low_elev_weak",
         "leo_rain_weak",
     ]
+
+
+def test_expanded_release_follows_the_nested_p1_to_p5_design_matrix() -> None:
+    launcher = EXPANDED_LAUNCHER.read_text(encoding="utf-8")
+
+    assert "ROWS=(V2-P1 V2-P2 V2-P3 V2-P4 V2-P5)" in launcher
+    assert "GPUS=(1 7 0 2 4)" in launcher
+    assert "P3 adds randomized single-TX plus routing" in launcher
+    assert "P4 adds TX-conditioned RX alignment" in launcher
+    assert "P5 adds receiver-by-channel tail CVaR" in launcher
+    assert 'V2-P1) tangent="0"; route="0"; rx="0"; tail="0" ;;' in launcher
+    assert 'V2-P2) tangent="0.035"; route="0"; rx="0"; tail="0" ;;' in launcher
+    assert 'V2-P3) tangent="0.035"; route="0.05"; rx="0"; tail="0" ;;' in launcher
+    assert 'V2-P4) tangent="0.035"; route="0.05"; rx="0.075"; tail="0" ;;' in launcher
+    assert 'V2-P5) tangent="0.035"; route="0.05"; rx="0.075"; tail="0.10" ;;' in launcher
+    assert "DAOT_LAMBDA_SUBSPACE=0" in launcher
+    assert "baseline=excluded_by_user" in launcher
+    assert "non_leo_weak=excluded_by_user" in launcher
