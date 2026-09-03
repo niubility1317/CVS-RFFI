@@ -175,7 +175,7 @@ from cvsrffi.phase1_fcr_transplant import (
     freeze_identity_classifier,
 )
 from cvsrffi.phase1_fcr_types import FCRConfig, FCRLossOutput, FCRPairBatch
-from cvsrffi.phase1_fcr_diagnostics import compute_fcr_diagnostics, write_fcr_diagnostics_json
+from cvsrffi.phase1_fcr_v2_diagnostics import write_fcr_v2_diagnostics
 from cvsrffi.tensors import (
     batch_domain_stats,
     build_domain_label_map,
@@ -418,6 +418,7 @@ def collect_fcr_diagnostic_artifacts(
     model.eval()
     chunks: Dict[str, List[torch.Tensor]] = {
         "z_f_id": [],
+        "z_tx_state": [],
         "z_s": [],
         "tx_labels": [],
         "domain_labels": [],
@@ -427,12 +428,21 @@ def collect_fcr_diagnostic_artifacts(
         "drop_f_error_without": [],
         "gram": [],
         "fisher_coverage": [],
+        "eta_target": [],
+        "eta_pred": [],
+        "decode_full": [],
+        "decode_zero_nuisance": [],
+        "decode_swap": [],
     }
     nuisance_chunks: Dict[str, List[torch.Tensor]] = {
         "channel": [],
         "receiver": [],
         "sync": [],
         "gain": [],
+    }
+    response_quality_chunks: Dict[str, List[torch.Tensor]] = {
+        "energy_ratio": [],
+        "state_norm": [],
     }
     latency_samples: List[float] = []
     try:
@@ -461,15 +471,41 @@ def collect_fcr_diagnostic_artifacts(
             basis = fixed_response_basis(aggregate.content.s_hat.detach())
             gram = torch.matmul(basis.conj().transpose(-2, -1), basis).real
             gate = FisherIdentifiabilityGate()(x, gram, snr_db=None)
+            zero_nuisance = NuisanceOutput(
+                z_ch=torch.zeros_like(aggregate.nuisance.z_ch),
+                z_rx=torch.zeros_like(aggregate.nuisance.z_rx),
+                z_sync=torch.zeros_like(aggregate.nuisance.z_sync),
+                z_gain=torch.zeros_like(aggregate.nuisance.z_gain),
+                eta_pred=torch.zeros_like(aggregate.nuisance.eta_pred),
+            )
             dropped = raw_model.fcr.decoder(
                 aggregate.content.s_hat,
                 torch.zeros_like(aggregate.response.delta_f),
                 aggregate.nuisance,
             )
+            zero_nuisance_decode = raw_model.fcr.decoder(
+                aggregate.content.s_hat,
+                aggregate.response.delta_f,
+                zero_nuisance,
+            )
+            swapped_decode = None
+            if int(x.size(0)) > 1:
+                swapped_decode = raw_model.fcr.decoder(
+                    aggregate.content.s_hat.roll(1, dims=0),
+                    aggregate.response.delta_f.roll(1, dims=0),
+                    NuisanceOutput(
+                        z_ch=aggregate.nuisance.z_ch.roll(1, dims=0),
+                        z_rx=aggregate.nuisance.z_rx.roll(1, dims=0),
+                        z_sync=aggregate.nuisance.z_sync.roll(1, dims=0),
+                        z_gain=aggregate.nuisance.z_gain.roll(1, dims=0),
+                        eta_pred=aggregate.nuisance.eta_pred.roll(1, dims=0),
+                    ),
+                )
             full_error = (aggregate.decode.mu_iq - x).float().square().mean(dim=(1, 2))
             drop_error = (dropped.mu_iq - x).float().square().mean(dim=(1, 2))
 
             chunks["z_f_id"].append(clean_out["z_f_id"].detach().cpu())
+            chunks["z_tx_state"].append(aggregate.factors.z_tx_state.detach().cpu())
             chunks["z_s"].append(clean_out["z_s"].detach().cpu())
             chunks["tx_labels"].append(y.detach().cpu())
             chunks["domain_labels"].append(d_raw.detach().long().cpu())
@@ -479,8 +515,16 @@ def collect_fcr_diagnostic_artifacts(
             chunks["drop_f_error_without"].append(drop_error.detach().cpu())
             chunks["gram"].append(gram.detach().cpu())
             chunks["fisher_coverage"].append(gate.quality["excitation_coverage"].detach().cpu())
+            chunks["eta_target"].append(aggregate.canonical.eta_hat.detach().cpu())
+            chunks["eta_pred"].append(aggregate.nuisance.eta_pred.detach().cpu())
+            chunks["decode_full"].append(aggregate.decode.mu_iq.detach().cpu())
+            chunks["decode_zero_nuisance"].append(zero_nuisance_decode.mu_iq.detach().cpu())
+            if swapped_decode is not None:
+                chunks["decode_swap"].append(swapped_decode.mu_iq.detach().cpu())
             for name in nuisance_chunks:
                 nuisance_chunks[name].append(clean_out["z_n"][name].detach().cpu())
+            for name in response_quality_chunks:
+                response_quality_chunks[name].append(aggregate.response.response_quality[name].detach().cpu())
     finally:
         model.train(was_training)
 
@@ -492,6 +536,9 @@ def collect_fcr_diagnostic_artifacts(
     artifacts["z_n"] = {
         name: torch.cat(values, dim=0) for name, values in nuisance_chunks.items()
     }
+    artifacts["response_quality"] = {
+        name: torch.cat(values, dim=0) for name, values in response_quality_chunks.items()
+    }
     artifacts["decoder_mode"] = str(raw_model.fcr.decoder.mode)
     row_count = int(artifacts["z_f_id"].size(0))
     row_index = torch.arange(row_count)
@@ -501,6 +548,83 @@ def collect_fcr_diagnostic_artifacts(
         "latency_ms": float(sum(latency_samples) / max(1, len(latency_samples))),
     }
     return artifacts, resources
+
+
+def finalize_fcr_v2_diagnostics_before_return(
+    args,
+    *,
+    model: nn.Module,
+    source_loader,
+    device: torch.device,
+    training_started_at: float,
+    grad_stats: Dict[str, float] | None = None,
+    epoch_time_s: float | None = None,
+    capability_reasons: Dict[str, Any] | None = None,
+    active_lambdas: Any = (),
+) -> bool:
+    diagnostics_path = str(getattr(args, "fcr_diagnostics_path", "") or "").strip()
+    if bool(args.use_fcr) and diagnostics_path:
+        best_save_path = str(getattr(args, "best_save_path", "") or "").strip()
+        if best_save_path and os.path.isfile(best_save_path):
+            ckpt = torch.load(best_save_path, map_location=device, weights_only=False)
+            validate_fcr_bundle_for_model(ckpt, model)
+            model.load_state_dict(ckpt["model"], strict=True)
+        diagnostic_scenarios = tuple(getattr(args, "eval_sat_scenario_list", ()))
+        if not diagnostic_scenarios:
+            diagnostic_scenarios = tuple(SAT_EVAL_SCENARIOS_DEFAULT.split(","))
+
+        def diagnostic_leo_transform(clean_iq, batch_index, _extra):
+            scenario = diagnostic_scenarios[int(batch_index) % len(diagnostic_scenarios)]
+            generator = make_torch_generator(
+                clean_iq.device,
+                int(args.sat_seed) + 700_001 + int(batch_index),
+            )
+            received, _ = apply_sat_channel_for_scenario(
+                clean_iq,
+                scenario,
+                args,
+                gen=generator,
+                return_meta=False,
+            )
+            return received
+
+        diagnostic_artifacts, diagnostic_resources = collect_fcr_diagnostic_artifacts(
+            model,
+            source_loader,
+            device,
+            leo_transform=diagnostic_leo_transform,
+            max_batches=int(getattr(args, "fcr_diagnostics_max_batches", 4)),
+        )
+        diagnostic_resources["train_time_s"] = float(time.perf_counter() - training_started_at)
+        diagnostic_resources["peak_vram_mb"] = (
+            float(torch.cuda.max_memory_allocated(device)) / (1024.0 * 1024.0)
+            if device.type == "cuda"
+            else 0.0
+        )
+        if epoch_time_s is not None:
+            diagnostic_resources["epoch_time_s"] = float(epoch_time_s)
+        for name, value in dict(grad_stats or {}).items():
+            diagnostic_resources[str(name)] = float(value)
+        diagnostic_resources["capability_reasons"] = dict(capability_reasons or {})
+        diagnostic_resources["active_lambdas"] = [str(name) for name in active_lambdas]
+        write_fcr_v2_diagnostics(
+            diagnostics_path,
+            str(args.fcr_ablation_row),
+            diagnostic_artifacts,
+            resources=diagnostic_resources,
+        )
+        print(
+            f"[FCR-DIAGNOSTICS] row={args.fcr_ablation_row} path={diagnostics_path}",
+            flush=True,
+        )
+    if bool(getattr(args, "defer_target_evaluation", False)):
+        print(
+            "[TARGET-EVAL-DEFERRED] training_process_target_scoring=0 "
+            "next=independent_prediction_then_truth_sidecar_scorer",
+            flush=True,
+        )
+        return True
+    return False
 
 
 def validate_fcr_pair_for_role(pair: FCRPairBatch, role: str) -> None:
@@ -5230,13 +5354,35 @@ def main():
         "selection=final_epoch_only target_metrics_consumed=0",
         flush=True,
     )
-    if bool(getattr(args, "defer_target_evaluation", False)):
-        print(
-            "[TARGET-EVAL-DEFERRED] training_process_target_scoring=0 "
-            "next=independent_prediction_then_truth_sidecar_scorer",
-            flush=True,
-        )
-        return
+    try:
+        if finalize_fcr_v2_diagnostics_before_return(
+            args,
+            model=model,
+            source_loader=val_loader,
+            device=device,
+            training_started_at=training_started_at,
+            grad_stats={
+                "grad_total": meters["grad_total"].avg,
+                "grad_backbone": meters["grad_backbone"].avg,
+                "grad_aux": meters["grad_aux"].avg,
+                "grad_domain": meters["grad_domain"].avg,
+            },
+            epoch_time_s=float(time_stats.get("epoch_time_s", 0.0)),
+            capability_reasons=dict(fcr_capability_reasons_epoch),
+            active_lambdas=()
+            if fcr_stage_state is None
+            else tuple(sorted(fcr_stage_state.active)),
+        ):
+            return
+    except Exception as e:
+        print(f"[WARN] final FCR diagnostics failed: {e}", flush=True)
+        if bool(getattr(args, "defer_target_evaluation", False)):
+            print(
+                "[TARGET-EVAL-DEFERRED] training_process_target_scoring=0 "
+                "next=independent_prediction_then_truth_sidecar_scorer",
+                flush=True,
+            )
+            return
 
     print(f"Training finished. best_joint_val_tx_acc={best_joint_val_tx:.2f}% & best_joint_test_tx_acc={best_joint_test_tx:.2f}% at epoch {best_epoch}")
     print(f"Training finished. best_test_overall_tx_acc={best_test_tx:.2f}% at epoch {best_test_epoch} -> {args.best_test_save_path}")
@@ -5288,51 +5434,6 @@ def main():
             print(
                 f"[FCR-PREDICTIONS-READY] row={args.fcr_ablation_row} "
                 f"records={prediction_validation['record_count']} path={predictions_path}",
-                flush=True,
-            )
-        diagnostics_path = str(getattr(args, "fcr_diagnostics_path", "") or "").strip()
-        if bool(args.use_fcr) and diagnostics_path:
-            diagnostic_scenarios = tuple(getattr(args, "eval_sat_scenario_list", ()))
-            if not diagnostic_scenarios:
-                diagnostic_scenarios = tuple(SAT_EVAL_SCENARIOS_DEFAULT.split(","))
-
-            def diagnostic_leo_transform(clean_iq, batch_index, _extra):
-                scenario = diagnostic_scenarios[int(batch_index) % len(diagnostic_scenarios)]
-                generator = make_torch_generator(
-                    clean_iq.device,
-                    int(args.sat_seed) + 700_001 + int(batch_index),
-                )
-                received, _ = apply_sat_channel_for_scenario(
-                    clean_iq,
-                    scenario,
-                    args,
-                    gen=generator,
-                    return_meta=False,
-                )
-                return received
-
-            diagnostic_artifacts, diagnostic_resources = collect_fcr_diagnostic_artifacts(
-                model,
-                val_loader,
-                device,
-                leo_transform=diagnostic_leo_transform,
-                max_batches=int(getattr(args, "fcr_diagnostics_max_batches", 4)),
-            )
-            diagnostic_resources["train_time_s"] = float(time.perf_counter() - training_started_at)
-            diagnostic_resources["peak_vram_mb"] = (
-                float(torch.cuda.max_memory_allocated(device)) / (1024.0 * 1024.0)
-                if device.type == "cuda"
-                else 0.0
-            )
-            diagnostic_metrics = compute_fcr_diagnostics(
-                diagnostic_artifacts,
-                resources=diagnostic_resources,
-                row_id=str(args.fcr_ablation_row),
-            )
-            diagnostic_metrics["decoder_mode"] = str(diagnostic_artifacts["decoder_mode"])
-            write_fcr_diagnostics_json(diagnostics_path, diagnostic_metrics)
-            print(
-                f"[FCR-DIAGNOSTICS] row={args.fcr_ablation_row} path={diagnostics_path}",
                 flush=True,
             )
     except Exception as e:
