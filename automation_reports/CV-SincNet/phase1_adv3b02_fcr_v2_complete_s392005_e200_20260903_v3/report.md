@@ -32,6 +32,6 @@
 - 当前状态：`RUNNING`
 - 提交shell PID：`858714`；正式launcher PID/PGID：`858715`；wave1训练PID：C1=`859501`、C2=`859511`、C3=`859520`、S0=`859533`、S1=`859547`、S2=`859561`、S3=`859570`、S4=`859583`。
 - 初始绑定：8个训练进程的CWD/代码路径/run root/seed/E200/final-only/checkpoint均与预登记一致，GPU0-7各绑定1行；日志均已创建并增长。
-- 初始健康：C1已连续完成多个epoch；C2、C3、S0-S4均已越过V2的schema崩溃点，无`Traceback/RuntimeError/ValueError/OOM/Killed`。各行在AMP初始动态缩放期出现3次有限unsafe-step跳过，进程CPU/GPU持续活跃；后续监控需确认转入有效optimizer step与epoch推进。
+- 初始健康：C1已连续完成15个epoch；C2、C3、S0-S4均已越过V2的schema崩溃点，无`Traceback/RuntimeError/ValueError/OOM/Killed`。各FCR行在AMP初始动态缩放期出现3次有限unsafe-step跳过，之后跳过计数保持不变且CPU/GPU持续活跃，已转入有效optimizer step；完整epoch由后续监控确认。
 - 监控策略：每30分钟短连接只读检查进程归属、行数/epoch、日志增长、GPU和确定性故障指纹；状态无变化时保持安静，完成、失败或需要用户处置时通知。
 - 监控自动化：`fcr-v2-v3`，状态`ACTIVE`；每次由`luna_worker`执行边界明确的只读检查，禁止修改、停止、重启或清理。
