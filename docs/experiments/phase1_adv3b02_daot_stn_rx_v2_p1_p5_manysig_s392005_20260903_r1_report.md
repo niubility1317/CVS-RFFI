@@ -3,7 +3,7 @@
 ## 1.状态
 
 - run ID：`phase1_adv3b02_daot_stn_rx_v2_p1_p5_manysig_s392005_20260903_r1`
-- 当前状态：`RUNNING`
+- 当前状态（2026-09-05更新）：P1～P4为ANALYZED；P5为STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT
 - Git分支：`codex/adv3b02-daot-stn-v1-20260901`
 - 首次实现提交：`c34e812f3236d1e167fc4d2508718db9104341a5`
 - P1/P2发布入口提交：`4e2acba7b504c8c282f073ae40cdc64feb1bd905`
@@ -65,3 +65,20 @@
 - 启动后GPU占用：GPU0/1/2/4/7约5353/5179/9740/9660/5369MiB；已有任务未被停止或修改。
 - 启动日志中的协议读回一致：`L/U/V=6300/56700/27000`、`legacy_l_u_v`、130+70=200epoch、seed392005；异常扫描为0个`Traceback/CUDA out of memory/RuntimeError/Killed`。
 - 当前尚无完整epoch指标和最终评估，不得形成性能或晋级结论。
+
+
+## 2026-09-05最终只读核验与结果
+
+P1～P4为ANALYZED；P5为STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT。当前本run无活动进程。
+
+|行|clean|leo_clear_weak|leo_low_elev_weak|leo_rain_weak|leo_mean|scene_floor|rx_scene_floor|
+|---|---|---|---|---|---|---|---|
+|P1|82.521|73.215|71.812|71.965|72.331|71.812|61.992|
+|P2|81.715|73.167|71.742|71.905|72.271|71.742|61.921|
+|P3|83.167|73.564|72.162|72.353|72.693|72.162|62.304|
+|P4|82.510|72.586|71.273|71.424|71.761|71.273|60.779|
+|P5|N/A|N/A|N/A|N/A|N/A|N/A|N/A|
+
+完整解析全部epoch日志并重新核算逐RX正确数。prototype loss全程0；不能把配置权重当成实际贡献。P5于E10/B122触发RC4_SYSTEMIC_NONFINITE_BATCH_GUARD，8个非有限批次、比例0.065574，缺少最终checkpoint及四场景评估；不是低性能停止。
+
+综合报告：`../ADV3B02_TWO_BATCH_FULL_REPORT_20260905.md`；机器可读附件：`adv3b02_two_batch_20260905/`。本次只更新报告，没有改动或重启实验。

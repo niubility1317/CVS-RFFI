@@ -3,7 +3,7 @@
 ## 1.状态与预登记
 
 - run ID：`phase1_adv3b02_daot_stn_rx_v2_e1_r1_manysig_s392005_20260903_r1`
-- 当前状态：`RUNNING`
+- 当前状态（2026-09-05更新）：E1/R1的最终性能artifact为ANALYZED；R1子空间未实际生效
 - 数据：ManySig equalized，`split_mode=tx_rx_day_1_7_2`，seed=`392005`
 - source：RX=`[1,3,4,6,8]`，day=`[1,2,3]`，`L_s/U_s/V=6300/56700/27000`
 - target test：RX=`[0,2,5,7,9,10,11]`，day=`[0,1,2,3]`
@@ -60,3 +60,17 @@
 - V2-R1主训练PID：`858539`，物理GPU5；cmdline含`--daot_efficiency_mode e1 --daot_lambda_subspace 0.05`。
 - 两行均已生成独立`config.json`与增长中的`train.log`；首次异常指纹扫描未见`Traceback`、OOM、`RuntimeError`或worker失败标记。
 - 既有P1～P5进程保持运行，未停止、重启或修改。
+
+
+## 2026-09-05最终只读核验与结果
+
+E1/R1的最终性能artifact为ANALYZED；R1子空间未实际生效。当前本run无活动进程。
+
+|行|clean|leo_clear_weak|leo_low_elev_weak|leo_rain_weak|leo_mean|scene_floor|rx_scene_floor|
+|---|---|---|---|---|---|---|---|
+|E1|82.664|73.511|72.026|72.288|72.608|72.026|61.725|
+|R1|82.743|73.511|72.050|72.165|72.576|72.050|62.638|
+
+完整解析全部epoch日志并重新核算逐RX正确数。prototype loss全程0；不能把配置权重当成实际贡献。R1最终checkpoint的basis/eigenvalues均为null，subspace loss全程0，不能将其下界差值归因于子空间投影。P5缺少完整结果，E1精确加速收益未知。
+
+综合报告：`../ADV3B02_TWO_BATCH_FULL_REPORT_20260905.md`；机器可读附件：`adv3b02_two_batch_20260905/`。本次只更新报告，没有改动或重启实验。
