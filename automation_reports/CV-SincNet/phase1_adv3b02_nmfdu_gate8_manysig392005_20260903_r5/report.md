@@ -88,3 +88,27 @@
 - 对应完成窗口：约为`2026-09-05 01:00–12:15 +0800`；较可能集中在`2026-09-05 04:45–06:45 +0800`。
 - 主要不确定性：E2预计最早在当日约20:30进入epoch81，这是修复后的null概率BCE首次在正式Stage2长跑中触发；当前估算假设该已通过CUDA回归的修复在正式运行中继续成立。GPU上其他任务结束或负载变化会使实际时间前后波动。
 - 本节是截至最新解析epoch的运行中估算，不是完成状态或性能结果。
+
+## 8.运行进度与阶段性结果（2026-09-05 09:04快照）
+
+- 当前最高交付状态仍为`RUNNING`：E1–E8均已完成200/200epochs并生成`final_ssdg.pth`；E1、E2、E3、E4、E5、E7、E8共7行已经生成`frozen_phase1_heldout_eval.json`和`phase1_resource_summary.json`，E6正在执行最终冻结held-out评估。
+- 进程读回：仅E6训练主进程树仍存活，主PID=`669373`；主进程CPU占用约100%，无异常退出证据。其余7行训练进程已正常退出并形成完整评测artifact。
+- E6于约08:38生成最终checkpoint；已完成7行从checkpoint到四场景评测的耗时范围为32.6–41.0分钟，中位数39.4分钟。09:04时E6已运行该阶段约26.8分钟，据此预计还需约6–15分钟。
+- 完整性：8行CSV/JSONL均为200条且逐行对齐，epoch序列均为1–200连续；全部loss字段为有限值；完整stdout未发现Traceback、RuntimeError、OOM、CUDA error或Killed。
+- 数值保护：`train_skipped_nonfinite_loss`全程为0；优化器有效step比例E1为99.796%，其余各行为99.837%。这些少量非有限梯度step均被既有保护逻辑跳过，未中断训练，但应在最终分析中作为稳定性现象保留，不解释为零异常。
+- 修复有效性：E2–E6、E8均越过Stage2并完成Stage3；带null候选末轮`train_nmfdu_loss_null_cal`为有限值，未复现此前CUDA BCE边界错误。E7按预登记`full_no_null`为0，E1按`equal`保持Stage1语义。
+
+|行|门控模式|训练|冻结评测|clean|leo_clear_weak|leo_low_elev_weak|leo_rain_weak|LEO均值|
+|---|---|---:|---|---:|---:|---:|---:|---:|
+|E1|equal|200/200|COMPLETE|78.047%|63.895%|61.927%|62.233%|62.685%|
+|E2|i_only|200/200|COMPLETE|80.044%|48.861%|46.997%|47.210%|47.689%|
+|E3|i_d|200/200|COMPLETE|78.504%|44.996%|42.996%|43.298%|43.763%|
+|E4|i_d_s|200/200|COMPLETE|74.607%|38.329%|36.488%|36.605%|37.141%|
+|E5|physical_fixed|200/200|COMPLETE|74.167%|38.708%|36.917%|37.030%|37.552%|
+|E6|physical_full|200/200|EVALUATING|N/A|N/A|N/A|N/A|N/A|
+|E7|full_no_null|200/200|COMPLETE|79.849%|51.357%|49.411%|49.561%|50.110%|
+|E8|full|200/200|COMPLETE|79.932%|51.458%|49.515%|49.699%|50.224%|
+
+- 阶段性观察仅限已完成7行：clean最高为E2=`80.044%`；LEO均值最高为E1=`62.685%`；E8相对E7在clean和三个LEO场景均小幅提高，但E6尚未完成，因此当前不得给出最终候选排序或晋级结论。
+- artifact缺口：E6的四场景冻结评测及资源摘要尚未生成；整组尚未达到`ARTIFACTS_COMPLETE`。预登记中的独立prediction/scorer闭合也尚未完成，因此更不能标记`ANALYZED`。
+- 本次只读快照保存于`E:\type10-7\local_artifacts\nmfdu_r5_status_20260905_090349`。
