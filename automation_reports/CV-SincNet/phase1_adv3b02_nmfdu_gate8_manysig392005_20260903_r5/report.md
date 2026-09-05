@@ -1,114 +1,307 @@
-+# ADV3B02-NMFDU-Gate8 ManySig r5最小预登记
+# ADV3B02-NMFDU-Gate8 ManySig r5完整实验报告
 
-## 1.状态与边界
+## 0.结论先行
 
-- 当前状态：`RUNNING`。
-- run ID：`phase1_adv3b02_nmfdu_gate8_manysig392005_20260903_r5`。
-- r4已按用户指令精确停止且永久保留；r5使用新的不可覆盖run/log根，不复用r4。
-- 用户已明确确认启动；本轮不加入ADV3B02基线，不改变原冻结E1–E8矩阵、数据、seed、200epochs、损失权重或科学选择规则。
+本轮`phase1_adv3b02_nmfdu_gate8_manysig392005_20260903_r5`已完成预登记E1–E8全部8行：每行200epochs、最终checkpoint、clean与三个`leo_*_weak`冻结held-out评测、资源摘要和终态文件均存在。8行共1600条逐轮CSV与1600条JSONL记录连续对齐，未出现loss非有限、Traceback、RuntimeError、OOM、CUDA error或Killed。就“训练和评测产物是否闭合”而言，状态为`ARTIFACTS_COMPLETE`。
 
-## 2.设计追溯
+科学结论是`NO_PROMOTION_TO_DEFAULT`：完整NMFDU行E8取得clean=79.9315%，比五分支等权容量控制E1高1.8845个百分点；但E8三个LEO弱扰动场景均值为50.2238%，比E1低12.4609个百分点，最差场景也低12.4119个百分点。E1仍是LEO均值与LEO最差场景第一名。当前证据不支持“NMFDU提高LEO鲁棒性”，也不支持将E8替换为默认门控。
 
-|ID|设计/协议要求|状态|运行落点与证据|
-|---|---|---|---|
-|D-01|保留ADV3B02成熟主干并做可归因门控比较|verified|`base_candidate=ADV3B02_CORE90_SOFT_E200`，E1–E8仅改变预登记门控消融模式|
-|D-02|样本级soft routing、null分支及样本可信度|verified|`nmfdu_v1`真实checkpoint smoke通过，52个NMFDU state key和23个有限非零梯度组|
-|D-03|联合物理可辨识性、可分性、稳定性、不确定性与有界修正|verified|E2–E8按`i_only/i_d/i_d_s/physical_fixed/physical_full/full_no_null/full`逐级消融|
-|D-04|分阶段训练并保留分支能力、路由、物理、配对、校准和平衡损失|verified|Stage1/2/3边界为80/120/200；launcher固定对应损失与学习率比例|
-|D-05|null概率校准保持softmax后概率BCE语义且兼容CUDA AMP|verified|提交`1f56a830df9ebf7bbc58ad6e62f32f4dcae87a87`；6个受影响候选CUDA回归和57项聚焦测试通过|
-|D-06|source-only训练、单一V、target/query不参与训练与选择|verified|`L_s/U_s/V=0.07/0.63/0.30`，source/target接收机互斥，真实checkpoint无query smoke通过|
-|D-07|局部时频门控与参数方向子头|deferred|属于设计报告后续扩展，不并入NMFDU-V1|
-|D-08|多burst Fisher累积|deferred|当前数据和V1矩阵未预登记多burst机制|
-|D-09|报告列出的完整扩展`e_id^*`全部特征|deferred|V1只声明当前已实现并测试的物理统计组，不宣称完整最终形态|
+本轮同时暴露两个关键机制问题：
 
-追溯统计：verified=6，deferred=3，rejected=0，blocked=0。本轮是严格NMFDU-V1设计边界，不是对设计报告全部后续扩展的完整实现。
+1. `lambda_nmfdu_fused_pair=0.2`与`lambda_nmfdu_branch_pair=0.1`虽已实现并配置，但本次`concat_sat_ce_only`运行路径没有扩展clean–LEO成对主batch，1600条记录中的两项loss全部精确为0，属于“代码已实现、参数已配置、运行未激活”。
+2. E2–E6与E8在无标签阶段的`Q_sample`为0，伪标签选择为0/439040；null路由把全部无标签样本拒绝了。E7去掉null后只选择2673/439040=0.6088%，E1选择2952/439040=0.6724%。这说明完整门控没有获得预期的有效无标签学习增益。
 
-## 3.冻结实验配置
+因此，本报告把“设计目标”“代码实现”“本次实际启用”“有运行证据”分开陈述，不用本地单测或配置项替代真实运行证据。
 
-- 数据：`Dataset_WigSig/ManySig.pkl`，`equalized=true`，`split_mode=tx_rx_day_1_7_2`，split seed=`392005`。
-- source：receivers=`[1,3,4,6,8]`，days=`[1,2,3]`，`L_s/U_s/V=6300/56700/27000`。
-- target test：receivers=`[0,2,5,7,9,10,11]`，days=`[0,1,2,3]`，TX=`[0,1,2,3,4,5]`；仅最终测试。
-- 矩阵：E1 equal、E2 i_only、E3 i_d、E4 i_d_s、E5 physical_fixed、E6 physical_full、E7 full_no_null、E8 full。
-- 训练：200epochs；Stage1/2/3=`80/120/200`；`concat_sat_ce_only=true`、`lambda_sat_cls=0.68`、`lambda_sat_cons=0`。
-- 最终评估：clean、`leo_clear_weak`、`leo_low_elev_weak`、`leo_rain_weak`分别报告。
+## 1.任务、版本与证据范围
 
-## 4.版本、环境与路径
+|项目|内容|
+|---|---|
+|实验目标|在固定ADV3B02成熟骨干上，以同数据、同seed、同200epochs比较NMFDU内部8种门控消融|
+|run ID|`phase1_adv3b02_nmfdu_gate8_manysig392005_20260903_r5`|
+|代码提交|`1f56a830df9ebf7bbc58ad6e62f32f4dcae87a87`|
+|Git分支|`work/adv3b02-nmfdu-gate-v1`|
+|固定骨干标识|`ADV3B02_CORE90_SOFT_E200`|
+|训练方式|`from_scratch=true`，AdamW，基础学习率`2e-4`，weight decay=`1e-4`，AMP开启|
+|选择规则|`checkpoint_selection=final_only`；epoch200最终模型固定后执行held-out评测|
+|本地终态快照|`local_artifacts/nmfdu_r5_status_20260905_234244`|
+|报告数据来源|8份`metrics_epoch.csv`、8份`metrics_epoch.jsonl`、8份stdout、8份`frozen_phase1_heldout_eval.json`、8份资源与终态文件|
 
-- 代码提交：`1f56a830df9ebf7bbc58ad6e62f32f4dcae87a87`。
-- Git工作分支：`work/adv3b02-nmfdu-gate-v1`；预登记前本地HEAD与远端OID均为`1340ed6f03f2da4bba2d9d5f5d550ccab47c22fd`。
-- N607环境：普通账户，Conda环境`ssr-gpu`；release CWD由launcher绑定。
-- release：`/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_nmfdu_gate8_manysig392005_1f56a830`。
-- release归档本地→远端：`E:\type10-7\local_artifacts\releases\adv3b02_nmfdu_gate8_manysig392005_1f56a830.tar.gz`→`/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_nmfdu_gate8_manysig392005_1f56a830.tar.gz`。
-- 归档SHA256已一次核对：`ade39216eb638e39f533dc98ebe3d2a4a9ce89fe31dddb682b88ed76d7842042`；远端编译及真实checkpoint无query smoke已通过，同一release不重复制造额外gate。
-- 输出根：`/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_nmfdu_gate8_manysig392005_20260903_r5`。
-- 日志根：`/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_nmfdu_gate8_manysig392005_20260903_r5`。
-- GPU映射：E1→0、E2→1、E3→2、E4→3、E5→4、E6→5、E7→6、E8→7。
-- 实时预检：`2026-09-03 11:52:16 +0800`；run/log根均为ABSENT；GPU0–7已有计算进程数为`1/0/1/1/1/1/2/1`，新增后预期为`2/1/2/2/2/2/3/2`，不超过用户已授权上限4。
+代码演进的主要落点依次包括：门控契约、身份路径接入、三阶段训练、诊断/多burst API、Gate8矩阵、CUDA AMP线性代数修复和null BCE的AMP修复；r5实际运行代码固定在`1f56a830`。本报告不把后续报告整理视为模型代码变化。
 
-## 5.启动命令与停止规则
+## 2.数据与科学协议
 
-启动命令：
+### 2.1数据划分
 
-`env ROOT=/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_nmfdu_gate8_manysig392005_1f56a830 WISIG_PKL=/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl RUN_ID=phase1_adv3b02_nmfdu_gate8_manysig392005_20260903_r5 RUNS_ROOT=/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_nmfdu_gate8_manysig392005_20260903_r5 LOG_ROOT=/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_nmfdu_gate8_manysig392005_20260903_r5 MAX_ACTIVE_PER_GPU=4 bash /home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_nmfdu_gate8_manysig392005_1f56a830/code/scripts/launch_phase1_adv3b02_nmfdu_gate8_manysig392005_20260902.sh`
+|角色|接收机|日期|样本数|用途|
+|---|---|---|---:|---|
+|源域标注集`L_s`|1、3、4、6、8|1、2、3|6300|监督训练与分支判别性统计|
+|源域无标签集`U_s`|同上|同上|56700|epoch131–200伪标签训练|
+|单一源域验证集`V`|同上|同上|27000|源域训练诊断；不用于本轮checkpoint选择|
+|目标held-out test|0、2、5、7、9、10、11|0、1、2、3|168000/场景|最终clean及三个LEO弱扰动场景评测|
 
-停止规则：只在数据/query越权、错误split/receiver/seed/场景、输出覆盖、错误release/CWD、进程归属不清、无prediction闭合、OOM或同一确定性系统异常导致合法artifact无法产生时，绑定并停止仅属于r5的进程树；不因性能低停止。
+共同设置为`Dataset_WigSig/ManySig.pkl`、`equalized=true`、`split_mode=tx_rx_day_1_7_2`、split/train seed=`392005`、全部6个TX。源域与目标域接收机互斥，source/target receiver overlap=0。源池共90000条，`L_s:U_s:V=7%:63%:30%`；在可训练源子集`L_s+U_s`内部，实际标注比例为10%。
 
-预期artifact：每行训练日志、结构化metrics、最终checkpoint、clean及三个`leo_*_weak`逐场景评估、prediction和独立评分结果。
+### 2.2LEO场景的含义
 
-## 6.启动与独立读回
+训练与评测均使用`leo_clear_weak`、`leo_low_elev_weak`、`leo_rain_weak`，三者属于相同的`simplified_leo_residual_weak_v1`合成扰动家族。训练场景调度为：epoch1起0.30概率使用clear；epoch41起0.60概率使用low-elevation/rain；epoch91起0.80概率在三场景间循环。
 
-- 启动时间：`2026-09-03 11:58:56 +0800`。
-- dispatcher PID：`669310`。
-- 行PID/GPU：E1=`669381/GPU0`、E2=`669378/GPU1`、E3=`669380/GPU2`、E4=`669385/GPU3`、E5=`669370/GPU4`、E6=`669373/GPU5`、E7=`669388/GPU6`、E8=`669391/GPU7`。
-- PID/CWD/cmdline：dispatcher与8个训练主进程均存活；CWD均为`/home/szu2070436088`；每行命令均绑定固定release、r5 run ID、对应E行输出目录及split seed=`392005`。
-- GPU读回：E1–E8分别位于GPU0–7；启动后GPU0–7计算进程数为`2/1/2/2/2/2/3/2`，不超过授权上限4。
-- 日志读回：E1–E8共8份`.out`均为6325bytes，全部出现`[SSDG-TRAIN]`标记；初始扫描未发现`Traceback`、`RuntimeError`、OOM或CUDA error。
-- 启动读回时的最高交付状态：`RUNNING`。当时尚未产生epoch结果、最终checkpoint、四场景评估、prediction或独立评分，因此没有性能结论。
-+
-## 7.预计完成时间（2026-09-03 14:50快照）
+因此，这些结果只能解释为“相同合成弱扰动家族下的held-out样本表现”，不能外推为真实卫星信道验证，也不能写成对未见LEO信道家族的泛化。
 
-- 当前状态：8行均为`RUNNING`；GPU持续计算。
-- 证据范围：完整解析r5的8份stdout、8份`metrics_epoch.csv`和8份`metrics_epoch.jsonl`，合计146个连续epoch；同时解析同配置r3中仍覆盖后期阶段的E1共189epoch和E7共155epoch作为阶段耗时参照。
-- 数据完整性：各行CSV/JSONL记录数一致、epoch从1连续到最新轮次；训练loss均为有限值；`train_skipped_nonfinite_loss=0`、`train_skipped_nonfinite_grad=0`；完整stdout中未发现Traceback、RuntimeError、OOM、CUDA error或Killed。
-- 估算方法：当前Stage1实测每轮均值用于缩放；E1后续阶段采用r3-E1实测阶段耗时，E2–E8采用最接近完整门控路径的r3-E7阶段耗时比例；整体完成时间取最慢行，并为GPU竞争与最终评估保留区间。
+## 3.NMFDU方法落地
 
-|行|最新epoch|当前平均秒/epoch|训练剩余点估计|
+`NMFDU`全称为`Nuisance-Marginalized Fisher–Discriminability–Uncertainty`。它的目标不是学习一个全局平均最优分支，而是对每个样本回答：哪个物理身份分支在当前条件下仍有可辨识、可判别且稳定的证据；若所有分支都不可靠，则允许走null路由。
+
+### 3.1五个身份分支
+
+|分支|主要物理信息|本次V1证据|
+|---|---|---|
+|`raw`|原始IQ及IQ非圆性/镜像方向|由重建的理想激励估计β、ρ及方向可靠性，并边缘化增益、公共相位与线性趋势|
+|`hom`|频谱/同态结构|有效带宽、占用、边缘能量、谱熵与频点能量等|
+|`phase`|相位结构|先投影公共相位、线性/二次相位干扰，再评价残差稳定性与cycle-slip风险|
+|`pa`|功放非线性|归一化记忆多项式Gram谱、秩/体积、功率覆盖，并辅以μ4、μ6、幅度熵、动态范围、PAPR和削顶率|
+|`hos`|高阶统计|高阶累积量、分段方差与置信度，避免把短窗高方差误当可靠证据|
+
+共享规范化激励链为`NuisanceEstimator→AnalyticCanonicalizer→ContentExcitationEstimator`。它先估计并处理增益、公共相位、CFO和粗时移，再产生重建激励`ŝ`与不确定度。物理证据模块不读取TX/query标签；判别性`D_b`只在训练模式、Stage1和显式support更新时由clean `L_s`更新。
+
+### 3.2四类门控证据
+
+对样本`x`和分支`b`，门控使用：
+
+- `I_b(x)`：可辨识性。当前激励和观测是否足以估计该分支相关硬件参数。
+- `D_b`：判别性。该分支在源域标注数据上是否真正区分设备身份；它与物理可辨识性分开。
+- `S_b(x)`：稳定性。局部区域、分段统计或参数方向是否稳定。
+- `U_b(x)`：不确定性。模型失配、秩亏、短窗方差等风险。
+
+固定物理形式为：
+
+`ℓ_b^phys=log(I_b+ε)+log(D_b+ε)+log(S_b+ε)-U_b`。
+
+可学习系数版本为：
+
+`ℓ_b^phys=a_b log(I_b+ε)+b_b log(D_b+ε)+c_b log(S_b+ε)-d_b U_b`，其中`a_b,b_b,c_b,d_b>0`由softplus保证。
+
+完整版本再加入有界学习校正：
+
+`δ_b=0.15·tanh(MLP_b(stopgrad(e_b)))·I_bD_bS_b(1-U_b)`，
+
+`ℓ_b=ℓ_b^phys+δ_b`。
+
+校正上下文被截断梯度，校正绝对值受0.15上界及物理质量乘子限制，因而不能在无物理证据时凭空制造高门权。
+
+### 3.3null路由、样本质量与归一化融合
+
+物理质量定义为`q_b=I_bD_bS_b(1-U_b)`，null logit为`ℓ_null=2-6·max_b q_b`。六路概率由`softmax([ℓ_null,ℓ_1,…,ℓ_5]/T)`得到：
+
+- `g_null`：null概率；
+- `g_b`：五个身份分支的非条件门权；
+- `Q_sample=1-g_null=Σ_b g_b`：该样本可用身份信息的总体质量。
+
+每个分支先线性投影到160维并做L2归一化，再按条件门权`g_b/Q_sample`融合。融合结果与可学习null方向按`Q_sample`混合，经LayerNorm与L2归一化得到最终身份表示。这防止单一大范数分支仅靠尺度垄断融合。
+
+### 3.4八行消融矩阵
+
+|行|模式|实际比较内容|
+|---|---|---|
+|E1|`equal`|五个非null分支恒等权；sample gate冻结；作为容量控制|
+|E2|`i_only`|只用`log I`|
+|E3|`i_d`|加入`log D`|
+|E4|`i_d_s`|再加入`log S`|
+|E5|`physical_fixed`|加入`-U`，四项系数固定为1|
+|E6|`physical_full`|I/D/S/U的正系数可学习，无样本级校正|
+|E7|`full_no_null`|在E6上加入有界样本校正，但强制`g_null=0`|
+|E8|`full`|可学习系数+有界样本校正+null路由|
+
+E1–E8只改变NMFDU消融模式，其余数据、骨干、seed、训练预算、损失和评测规则相同，因此可作同轮次、同数据的内部消融。它不是ADV3B02基线对比，因为用户明确排除了该额外基线。
+
+## 4.训练流程与损失
+
+### 4.1三阶段训练
+
+|阶段|epoch|参数状态|门控语义|
+|---|---:|---|---|
+|Stage1|1–80|骨干/五分支训练，sample gate冻结；基础学习率`2e-4`|五分支等权，null关闭；更新`D_b` EMA|
+|Stage2|81–120|骨干与分支冻结，仅sample gate训练；门学习率=`1e-4`|物理证据+null感知门控；`D_b`冻结|
+|Stage3-L|121–130|联合微调；骨干学习率=`2e-5`，门/分支学习率=`1e-4`|恢复端到端联合适配，仅`L_s`|
+|Stage3-U|131–200|同Stage3并开启`U_s`伪标签|置信度与无标签loss均乘`Q_sample`|
+
+E1是特殊容量控制：200轮都保持Stage1/equal语义，不进入学习门控。优化器始终保留全部参数组和AdamW状态，只改变`requires_grad`及参数组学习率，避免重建优化器造成状态不连续。
+
+### 4.2NMFDU专用监督
+
+本次配置权重为：分支辅助分类0.2、门控route KL 0.1、物理先验0.1、融合配对0.2、分支可靠配对0.1、null校准0.05、使用率平衡0.01，oracle temperature=0.5。
+
+- 分支辅助分类：保证各分支自身保有身份能力。
+- route KL：把门权靠近“真实类margin−不确定度”得到的软oracle，而非硬选单支。
+- 物理先验：约束学习门与I/D/S/U物理排序相容。
+- null校准：用分类可用性校准`g_null`。
+- 使用率平衡：抑制分支饥饿或单支垄断。
+- 融合配对：clean与LEO门权可不同，但最终身份表示应一致，以双方`Q_sample`最小值加权。
+- 分支配对：仅在clean与LEO双方都可靠的分支上做余弦一致性。
+
+### 4.3ADV3B02共同损失与伪标签
+
+所有行共同保留：domain=1、adversarial=0.35、group CE=0.16、Fishr=0.04、satellite classification=0.68、`U_s`=0.16、entropy=0.01；另有prototype=0.0032、open-world feature=0.0024、ZID compact=0.032、proxy unknown=0.0045、soft unknown mixup=0.0045、source episode=0.0035。伪标签阈值使用receiver/day quantile，`tau_min=0.92`、`tau_max=0.97`、quantile=0.86，并使用EMA teacher、domain gate、temporal gate与strong agreement。
+
+### 4.4机制状态审计
+
+|机制|代码状态|本次配置|真实运行证据|结论|
+|---|---|---|---|---|
+|五分支、I/D/S/U、归一化融合|已实现|E1–E8启用|Stage1均有branch auxiliary；E2–E8有物理/route/null等遥测|已落地且实际启用|
+|可学习正系数|已实现|E6–E8启用|E6相对E5出现明显结果变化|已落地且实际启用|
+|有界样本校正|已实现|E7、E8启用|E7/E8相对E6有小幅变化|已启用，但净效应很小|
+|null与`Q_sample`|已实现|E2–E6、E8启用；E1/E7关闭|末轮null及伪标签行为有完整遥测|已落地且实际启用|
+|三阶段冻结/学习率调度|已实现|80/120/200|epoch80→81、120→121出现结构性跃迁|已落地且实际启用|
+|clean–LEO融合配对|已实现|权重0.2|1600/1600轮loss=0|配置了但未激活|
+|可靠分支配对|已实现|权重0.1|1600/1600轮loss=0|配置了但未激活|
+|逐样本/逐场景门权与I/D/S/U导出|已实现诊断API|正式运行未请求导出|没有对应文件|无本轮运行证据|
+|多burst Fisher累积|已实现并通过本地测试|矩阵未启用|没有多burst输入或产物|未进入本轮实验|
+|更完整的局部时频mask/广义参数方向子头及完整`e_id^*`扩展|设计报告后续项|V1未纳入|无运行证据|明确延期，不宣称完成|
+
+配对loss未激活的直接原因是：launcher选择`concat_sat_ce_only`；训练器返回clean主batch和单独的`sat_view`，`train/concat_sat_expanded=0`且主batch仍为128，而NMFDU配对目标只在`expanded>0`、`clean_count>0`且总batch为`2×clean_count`时计算。训练器最终向NMFDU目标传入`clean_count=0`，所以两项配对loss为0。这不是“权重太小导致接近0”，而是执行条件未满足。
+
+## 5.最终实验数据
+
+所有准确率均来自epoch200最终checkpoint的冻结held-out评测；每个clean/LEO场景各168000个目标样本。单位为%。
+
+|行|clean|clear weak|low-elev weak|rain weak|LEO均值|LEO最差|clean排名|LEO均值排名|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+|E1 equal|78.0470|63.8946|61.9268|62.2327|62.6847|61.9268|6|1|
+|E2 I|**80.0440**|48.8613|46.9970|47.2095|47.6893|46.9970|**1**|5|
+|E3 I+D|78.5036|44.9958|42.9964|43.2982|43.7635|42.9964|5|6|
+|E4 I+D+S|74.6065|38.3292|36.4881|36.6054|37.1409|36.4881|7|8|
+|E5 fixed I+D+S−U|74.1673|38.7077|36.9173|37.0304|37.5518|36.9173|8|7|
+|E6 learned coefficients|79.9286|51.4345|49.4905|49.6482|50.1911|49.4905|3|3|
+|E7 correction/no-null|79.8494|51.3565|49.4107|49.5613|50.1095|49.4107|4|4|
+|E8 full|79.9315|51.4577|49.5149|49.6988|**50.2238**|**49.5149**|2|2|
+
+这里E8的加粗只表示学习门控行内部的最高LEO值；全矩阵LEO冠军仍是E1。
+
+### 5.1同一矩阵内的可归因差值
+
+|对比|新增因素|Δclean|ΔLEO均值|解释|
+|---|---|---:|---:|---|
+|E3−E2|加入D|-1.5405|-3.9258|本轮D没有带来收益|
+|E4−E3|加入S|-3.8970|-6.6226|S造成最大一段退化|
+|E5−E4|加入U|-0.4393|+0.4109|LEO轻微回升，clean略降|
+|E6−E5|固定系数→可学习正系数|+5.7613|+12.6393|学习系数显著修复固定组合的失配|
+|E8−E6|加入样本校正，null相同|+0.0030|+0.0327|净效应近乎为零|
+|E8−E7|加入null，校正相同|+0.0821|+0.1143|null带来极小正差|
+|E8−E1|完整门控对等权控制|+1.8845|-12.4609|clean增益不能抵消LEO显著退化|
+
+E6/E7/E8差异只有0.00–0.11个百分点，且本轮未保存逐样本预测，不能做配对显著性检验；不应把这些微小差异解释成稳定优势。E2的clean第一也不能替代LEO目标，因其LEO均值比E1低14.9954个百分点。
+
+## 6.训练日记与动力学
+
+完整逐行关键节点见`training_diary.md`，1600条可筛选逐轮数据见`epoch_key_metrics.csv`，32个“行×阶段”聚合见`stage_summary.csv`。以下摘录最重要的训练现象。
+
+### 6.1阶段切换
+
+E2–E8在epoch80→81从等权分支预训练切换到冻结骨干的门控训练后，源V与源V-LEO均出现骤降。完整E8分别下降26.630和31.399个百分点；E5最严重，源V下降47.352个百分点。说明由物理门控直接替代等权融合时产生了明显分布/表示冲击。
+
+epoch120→121进入联合微调后出现快速恢复。E8源V回升11.400个百分点、源V-LEO均值回升16.883个百分点；E6回升11.667和17.025个百分点。到epoch200，E6–E8源V-LEO均值恢复至约66.6%，但目标held-out LEO仍只有约50.1–50.2%，未恢复E1的62.68%。
+
+### 6.2null、质量与无标签路径
+
+|行|epoch200 `g_null`|epoch200 `Q_labeled`|epoch200 `Q_unlabeled`|epoch131–200伪标签选择|
+|---|---:|---:|---:|---:|
+|E1|0.0000|1.0000|0.3265|2952/439040=0.6724%|
+|E2|0.1991|0.8009|0.0000|0/439040|
+|E3|0.6875|0.3125|0.0000|0/439040|
+|E4|0.8644|0.1356|0.0000|0/439040|
+|E5|0.9140|0.0860|0.0000|0/439040|
+|E6|0.8589|0.1411|0.0000|0/439040|
+|E7|0.0000|1.0000|0.3469|2673/439040=0.6088%|
+|E8|0.8593|0.1407|0.0000|0/439040|
+
+从E2→E5，加入D、S和U后null逐步升高，E5达到0.9140；学习正系数在E6/E8中将null略降到约0.859，但仍将全部`U_s`质量压为0。`Q_sample`本应让不可靠样本减权；本轮却表现为对无标签路径的完全关闭。它在安全意义上避免了错误伪标签，但也让Stage3-U基本失去适应作用。
+
+### 6.3数值稳定性
+
+- 8份CSV和8份JSONL均为200条，epoch1–200连续且两种格式逐轮对齐，共1600条。
+- 所有loss字段均为有限值，`train_skipped_nonfinite_loss=0`。
+- `train_optimizer_step_applied`逐轮均值：E1=99.7959%，E2–E8=99.8367%；少量非有限梯度由既有保护逻辑跳过，没有导致run失败。
+- 8份完整stdout均未发现Traceback、RuntimeError、OOM、CUDA error或Killed。
+- 8行均有`final_ssdg.pth`、冻结评测、资源摘要和终态文件。
+
+## 7.资源开销
+
+|行|逐轮训练时间|总wall time|后处理时间|峰值CUDA allocated|参数量|
+|---|---:|---:|---:|---:|---:|
+|E1|37.57h|38.34h|0.76h|9.513GiB|1,192,333|
+|E2|33.23h|34.01h|0.78h|9.515GiB|1,192,333|
+|E3|42.16h|42.94h|0.79h|9.513GiB|1,192,333|
+|E4|43.48h|44.27h|0.79h|9.513GiB|1,192,333|
+|E5|37.35h|38.00h|0.65h|9.513GiB|1,192,333|
+|E6|44.52h|45.34h|0.81h|9.515GiB|1,192,333|
+|E7|42.48h|43.29h|0.81h|9.513GiB|1,192,333|
+|E8|36.87h|37.69h|0.82h|9.514GiB|1,192,333|
+
+这些是共享N607调度环境中的端到端观测，不是隔离的单模型延迟基准；行间wall time不能仅归因于消融模式。
+
+## 8.泄漏探针与可解释性边界
+
+对最终身份表示`z_id`执行源训练到源验证的线性泄漏探针，balanced accuracy如下：
+
+|行|receiver|day|channel|
 |---|---:|---:|---:|
-|E1|16|616.2|36.9小时|
-|E2|27|373.1|16.1小时|
-|E3|17|594.2|27.4小时|
-|E4|17|598.8|27.6小时|
-|E5|17|595.5|27.4小时|
-|E6|17|593.6|27.3小时|
-|E7|14|714.5|33.5小时|
-|E8|21|483.0|21.7小时|
+|E1|0.9005|0.5618|0.9347|
+|E8|0.9015|0.5793|0.9394|
+|随机机会|0.2000|0.3333|0.5000|
 
-- 训练全部结束预计还需：`33–42小时`，点估计约`37小时`。
-- 最终checkpoint、clean与三个`leo_*_weak`评估、prediction及独立评分全部闭合预计还需：`34–45小时`。
-- 对应完成窗口：约为`2026-09-05 01:00–12:15 +0800`；较可能集中在`2026-09-05 04:45–06:45 +0800`。
-- 主要不确定性：E2预计最早在当日约20:30进入epoch81，这是修复后的null概率BCE首次在正式Stage2长跑中触发；当前估算假设该已通过CUDA回归的修复在正式运行中继续成立。GPU上其他任务结束或负载变化会使实际时间前后波动。
-- 本节是截至最新解析epoch的运行中估算，不是完成状态或性能结果。
+E8没有比E1降低receiver/day/channel可解码性，三个探针反而都略高。因此不能宣称完整NMFDU已学到更强的接收机、日期或信道不变表示。
 
-## 8.运行进度与阶段性结果（2026-09-05 09:04快照）
+正式run没有导出逐样本、逐场景、逐分支的`g_b`、I/D/S/U、局部mask或参数方向摘要，所以无法验证“clean时哪些分支上升、低仰角/雨衰时哪些分支下降、null是否在预期样本上升”等NMFDU-22行为。当前只有全局均值遥测，不能把它替代为样本级解释性证据。
 
-- 当前最高交付状态仍为`RUNNING`：E1–E8均已完成200/200epochs并生成`final_ssdg.pth`；E1、E2、E3、E4、E5、E7、E8共7行已经生成`frozen_phase1_heldout_eval.json`和`phase1_resource_summary.json`，E6正在执行最终冻结held-out评估。
-- 进程读回：仅E6训练主进程树仍存活，主PID=`669373`；主进程CPU占用约100%，无异常退出证据。其余7行训练进程已正常退出并形成完整评测artifact。
-- E6于约08:38生成最终checkpoint；已完成7行从checkpoint到四场景评测的耗时范围为32.6–41.0分钟，中位数39.4分钟。09:04时E6已运行该阶段约26.8分钟，据此预计还需约6–15分钟。
-- 完整性：8行CSV/JSONL均为200条且逐行对齐，epoch序列均为1–200连续；全部loss字段为有限值；完整stdout未发现Traceback、RuntimeError、OOM、CUDA error或Killed。
-- 数值保护：`train_skipped_nonfinite_loss`全程为0；优化器有效step比例E1为99.796%，其余各行为99.837%。这些少量非有限梯度step均被既有保护逻辑跳过，未中断训练，但应在最终分析中作为稳定性现象保留，不解释为零异常。
-- 修复有效性：E2–E6、E8均越过Stage2并完成Stage3；带null候选末轮`train_nmfdu_loss_null_cal`为有限值，未复现此前CUDA BCE边界错误。E7按预登记`full_no_null`为0，E1按`equal`保持Stage1语义。
+## 9.终态、失败层与晋级边界
 
-|行|门控模式|训练|冻结评测|clean|leo_clear_weak|leo_low_elev_weak|leo_rain_weak|LEO均值|
-|---|---|---:|---|---:|---:|---:|---:|---:|
-|E1|equal|200/200|COMPLETE|78.047%|63.895%|61.927%|62.233%|62.685%|
-|E2|i_only|200/200|COMPLETE|80.044%|48.861%|46.997%|47.210%|47.689%|
-|E3|i_d|200/200|COMPLETE|78.504%|44.996%|42.996%|43.298%|43.763%|
-|E4|i_d_s|200/200|COMPLETE|74.607%|38.329%|36.488%|36.605%|37.141%|
-|E5|physical_fixed|200/200|COMPLETE|74.167%|38.708%|36.917%|37.030%|37.552%|
-|E6|physical_full|200/200|EVALUATING|N/A|N/A|N/A|N/A|N/A|
-|E7|full_no_null|200/200|COMPLETE|79.849%|51.357%|49.411%|49.561%|50.110%|
-|E8|full|200/200|COMPLETE|79.932%|51.458%|49.515%|49.699%|50.224%|
+8行终态文件均为：
 
-- 阶段性观察仅限已完成7行：clean最高为E2=`80.044%`；LEO均值最高为E1=`62.685%`；E8相对E7在clean和三个LEO场景均小幅提高，但E6尚未完成，因此当前不得给出最终候选排序或晋级结论。
-- artifact缺口：E6的四场景冻结评测及资源摘要尚未生成；整组尚未达到`ARTIFACTS_COMPLETE`。预登记中的独立prediction/scorer闭合也尚未完成，因此更不能标记`ANALYZED`。
-- 本次只读快照保存于`E:\type10-7\local_artifacts\nmfdu_r5_status_20260905_090349`。
+- `status=NON_PROMOTABLE_P0_DISABLED`
+- `exit_code=8`
+- `promotion_ready=false`
+- completion receipt中的`phase1_training_complete=false`
+
+这不是训练崩溃。训练、checkpoint和held-out评测均完成；终态失败发生在通用Phase1正式晋级控制层，因为本轮有意未启用`phase1_v2_hard_gates`、OS budget/controller、endpoint identity闭合等P0机制。故应同时写成：
+
+- 计算与评测产物：`ARTIFACTS_COMPLETE`；
+- 正式控制面终态：`NON_PROMOTABLE_P0_DISABLED`；
+- 科学选择：`NO_PROMOTION_TO_DEFAULT`。
+
+本轮不是Stage2已注册old/new竞争实验，不包含query truth-last预测封存或独立scorer闭环，也没有prototype/endpoint部署包。held-out准确率是Phase1最终checkpoint冻结评测，不得外推为开放集注册/未知类能力。
+
+## 10.综合判断与后续边界
+
+### 10.1能够成立的结论
+
+1. NMFDU-V1五分支、I/D/S/U门控、可学习正系数、有界校正、null、归一化融合和三阶段训练均进入真实ManySig 200epoch运行。
+2. 可学习正系数是本矩阵中最有价值的修复：E6相对E5提升clean 5.7613个百分点、LEO均值12.6393个百分点。
+3. 有界样本校正与null的边际增益很小，E8相对E6只增加0.0030/0.0327个百分点。
+4. 物理学习门控没有战胜等权容量控制的LEO鲁棒性；E8比E1低12.4609个百分点。
+5. 当前null校准把`U_s`路径完全关断，配对一致性又未被运行路径激活，两者共同削弱了设计所期望的LEO适应机制。
+
+### 10.2不能成立的结论
+
+- 不能宣称NMFDU提高LEO鲁棒性或优于默认ADV3B02。
+- 不能宣称全部设计报告机制已完整落地。
+- 不能把非零配置权重写成实际生效，尤其是两项配对loss。
+- 不能宣称逐场景门控行为已经得到解释性验证。
+- 不能宣称真实卫星信道、跨信道家族、开放集注册或部署性能。
+- 不能把E6/E7/E8的极小差异写成统计显著。
+
+### 10.3若继续探索，最小可归因顺序
+
+本轮报告不自动修改代码或重跑实验。若用户授权下一版，建议只做最小同row修复：先让clean–LEO配对batch实际进入NMFDU目标并验证两项loss非零；再单独校准null/`Q_sample`，避免`U_s`全部被拒绝；最后增加逐样本逐场景门权/I/D/S/U导出。三项必须分开做同seed控制，不能一次混改，否则无法判断是哪项恢复了LEO性能。
+
+## 11.交付物索引
+
+|文件|内容|
+|---|---|
+|`report.md`|本完整方法、结果、训练与边界报告|
+|`final_results.csv`|8行最终clean/三LEO、排名、差值、探针、资源、checkpoint及终态|
+|`stage_summary.csv`|8行×4阶段=32行聚合统计|
+|`epoch_key_metrics.csv`|8行×200epoch=1600行关键训练遥测|
+|`analysis_summary.json`|机器可读汇总、完整字段分析及证据检查|
+|`training_diary.md`|逐行epoch1/40/80/81/100/120/121/130/131/150/180/200关键节点训练日记|
+
+原始终态证据保存在本地快照`E:\type10-7\local_artifacts\nmfdu_r5_status_20260905_234244`；报告目录仅收录可复核的汇总，不复制大型checkpoint或全部原始日志。
