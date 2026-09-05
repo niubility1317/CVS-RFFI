@@ -45,4 +45,12 @@ run_id：`phase1_adv3b02_pair24_manysig_e200_20260905_r1`。
 
 启动命令：上述Python执行`releases/<run_id>/tools/pair_matrix_start.py releases/<run_id>/configs/phase1_adv3b02_pair24_manifest.json`。状态见输出根目录`status.json`，每行`process.log`、`metrics_epoch.jsonl`和最终checkpoint。
 
-当前记录阶段：本地验证与发布准备；实际启动证据在发布后补充。没有准确率结果，尚不能判断改革是否改善性能。
+发布状态：VERIFIED。运行代码提交为`b020a79f0e1b5aa52940d1e4f0f85b925501050c`，已push并独立读回远端OID。发布包本地／远端SHA256一致：`b4b95ee45279645617c313dc88fe9f42d881c4075fed7ab5ae3017f924431a6f`；远端编译及清单读回通过。
+
+启动状态：VERIFIED，调度器PID2141267。24个训练进程全部RUNNING，待发0，每GPU恰好3个新任务，/proc存活及cwd读回与固定release一致。8张卡均已实际进入GPU计算；启动抽查显存约6.9—11.2GiB、利用率99%。没有结束或修改原有任务。详细PID/显卡见同目录`startup_status.json`，这是启动时快照而非实时状态。
+
+真实CORE90 checkpoint检查：VERIFIED，保存epoch194，missing/unexpected均为空；point、safe、asymmetric、tangent_only、route_only、memory六路径全部通过真实前后向和优化步检查；memory第二步命中率1；query/target输入均为0，teacher domain前向0。证据见`checkpoint_smoke.json`。
+
+本地验证：24条完整argv通过真实parser、DAOT配置、epoch schedule和MUSE配置解析；`conda run -n ssr-gpu python -m pytest tests/test_pair_matrix_dispatch.py tests/test_pair_matrix_manifest.py tests/test_pair_reform_checkpoint_smoke.py -q`共11项通过（2条既有AMP弃用警告）；新增发布/启动脚本编译通过，Git diff检查通过。独立P0/P1发布审查PASS，无阻断项。
+
+科学结果状态：训练进行中，尚未获得E200最终准确率，不能据此判断改革是否有效。配对机制按epoch11/21才正式启用，启动成功不等于机制已完成训练验证。代码实现的逐项追踪仍见`analysis/adv3b02_pair_reform_traceability.md`：此前13项已验证、3项待实际实验或后续阶段验证；本次已补真实权重执行及实验启动证据，性能、多seed结果与效率结论仍待训练完成。

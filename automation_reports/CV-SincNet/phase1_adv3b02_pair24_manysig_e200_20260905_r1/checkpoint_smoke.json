@@ -1,0 +1,124 @@
+{
+  "schema": "cvs.phase1.adv3b02_pair_reform_checkpoint_smoke.v1",
+  "status": "VERIFIED",
+  "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth",
+  "checkpoint_epoch": 194,
+  "checkpoint_compatibility": {
+    "missing": [],
+    "unexpected": []
+  },
+  "input_role": "source_shaped_synthetic_smoke_only",
+  "query_inputs": 0,
+  "target_inputs": 0,
+  "teacher_domain_forwards": 0,
+  "teacher_identity_forwards": 8,
+  "fixed_head_consistency": "VERIFIED",
+  "classifier_weight_shape": [
+    6,
+    160
+  ],
+  "rows": {
+    "point": {
+      "status": "VERIFIED",
+      "optimizer_steps": 1,
+      "parameters_changed": true,
+      "steps": [
+        {
+          "loss": 4.475488662719727,
+          "pair_loss": 0.39283642172813416,
+          "components": [
+            "orbit_z"
+          ],
+          "student_extra_samples": 0
+        }
+      ]
+    },
+    "safe": {
+      "status": "VERIFIED",
+      "optimizer_steps": 1,
+      "parameters_changed": true,
+      "steps": [
+        {
+          "loss": 1.8941969871520996,
+          "pair_loss": 0.6368324160575867,
+          "components": [
+            "orbit_z"
+          ],
+          "student_extra_samples": 0
+        }
+      ]
+    },
+    "asymmetric": {
+      "status": "VERIFIED",
+      "optimizer_steps": 1,
+      "parameters_changed": true,
+      "steps": [
+        {
+          "loss": 5.855806350708008,
+          "pair_loss": 0.4436607360839844,
+          "components": [
+            "orbit_z"
+          ],
+          "student_extra_samples": 0
+        }
+      ]
+    },
+    "tangent_only": {
+      "status": "VERIFIED",
+      "optimizer_steps": 1,
+      "parameters_changed": true,
+      "steps": [
+        {
+          "loss": 5.501335620880127,
+          "pair_loss": 0.5466799736022949,
+          "components": [
+            "orbit_z",
+            "tangent"
+          ],
+          "student_extra_samples": 4
+        }
+      ]
+    },
+    "route_only": {
+      "status": "VERIFIED",
+      "optimizer_steps": 1,
+      "parameters_changed": true,
+      "steps": [
+        {
+          "loss": 1.071210265159607,
+          "pair_loss": 0.7038636207580566,
+          "components": [
+            "orbit_z",
+            "route"
+          ],
+          "student_extra_samples": 8
+        }
+      ]
+    },
+    "memory": {
+      "status": "VERIFIED",
+      "optimizer_steps": 2,
+      "parameters_changed": true,
+      "steps": [
+        {
+          "loss": 2.464083671569824,
+          "pair_loss": 0.36234018206596375,
+          "components": [
+            "orbit_z"
+          ],
+          "student_extra_samples": 0
+        },
+        {
+          "loss": 3.3687965869903564,
+          "pair_loss": 0.4681733250617981,
+          "components": [
+            "orbit_z"
+          ],
+          "student_extra_samples": 0
+        }
+      ],
+      "memory_hit_rate": 1.0
+    }
+  },
+  "claim_boundary": "Runtime correctness only; synthetic labels, no measured scientific accuracy or throughput."
+}
