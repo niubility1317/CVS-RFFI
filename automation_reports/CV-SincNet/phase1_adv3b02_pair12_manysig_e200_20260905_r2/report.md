@@ -35,6 +35,14 @@
 
 远端项目：`/home/szu2070436088/2510044040/CV-SincNet`，新代码`releases/<恢复run>`，新产物`runs/<恢复run>`。启动使用远端CVS-RFFI环境Python执行新release的`tools/pair_matrix_start.py`及恢复清单。禁止复用r1或已有输出目录。
 
-状态：本地修复及验证完成，等待本次聚焦审查、Git发布和远端执行读回。发布后补充真实checkpoint AMP检查、PID/cwd/日志与Git远端OID证据。
+发布状态：VERIFIED。运行代码提交`e9b7709da3368e25e68d6b8a84b0cae39098868d`，Git push后独立远端OID读回一致。发布包SHA256本地／远端一致：`a4f5c4faeb7b11400d609c142c7dc73988872538b82cd20e61dcdd845c50ccc1`。远端编译和完整manifest读回通过。聚焦P0/P1审查PASS，无阻断项。
+
+真实N607检查：VERIFIED，CORE90权重epoch194、missing/unexpected均为空；`amp=true`，六种机制各完成L/U两次成功优化步，teacher domain前向0、query/target输入0、memory命中率1。详见`checkpoint_smoke.json`。本次直接覆盖已失败的AMP／真实参数入口。
+
+重新启动：VERIFIED，恢复调度器PID2176400，12行全部RUNNING、待发0，12份日志均已生成。逐一读取/proc核实有效24行的实际argv、父进程和cwd，全部匹配对应固定release与run；合并GPU0—7各3行。恢复PID及启动快照见`startup_readback.json`。旧健康12行PID未变化，没有停止或热补丁。
+
+监控更新：VERIFIED，`luna-adv3b02`保持ACTIVE、每小时一次，已通过应用工具更新并独立读回为r1健康12行＋r2恢复12行。检查将重点确认r2越过E11后无相同指纹复发。
+
+结果边界：当前已证明修复入口的CUDA执行及重新启动，恢复正式训练尚未再次到达E11，不能将启动读回当作E200稳定性或性能结论。技术失败历史仍保留，后续以有效24行的正式训练日志和最终产物报告效果。
 
 每小时Luna监控将同时跟踪r1健康12行与r2替代12行；历史r1故障不反复报警。仅当有效24行全部终态后暂停监控，运行中不声称最终效果已验证。
