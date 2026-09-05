@@ -38,6 +38,12 @@
 
 远端项目`/home/szu2070436088/2510044040/CV-SincNet`；代码`releases/<新run>`，输出`runs/<新run>`。现场确认新目录均不存在，Python3.10.19/PyTorch2.1.0+cu121、CUDA、数据和CORE90权重有效。
 
-当前为本地验证完成，等待聚焦审查和远端发布读回。新发布首步执行真实CORE90的EMA＋CUDA AMP smoke，通过后立即发放3行；不会启动第二份健康任务。
+发布状态VERIFIED。聚焦P0/P1审查PASS。运行代码提交`9b38eed83293ca9a253185eeb5a44f7df36ef0a6`，push后远端OID独立读回一致；发布包SHA256本地／远端一致：`c6c1145012c36c7326c832b093679c5bb428504d2492c801cb83a716f3f69aed`。远端编译及完整清单读回通过。
+
+真实CORE90 EMA＋CUDA AMP检查VERIFIED：六机制的L/U两步均完成，12次EMA更新后的实际头一致性检查全部通过，query/target输入0，teacher domain前向0。证据`checkpoint_smoke.json`。
+
+重新启动VERIFIED：调度器PID2223678，B_SAFE三个seed对应PID2223830、2223835、2223840，分别GPU1、2、3。3行RUNNING、待发0，日志均已生成；/proc实际argv、父进程、cwd与固定release和run全部吻合。见`startup_readback.json`。正式训练尚未再次到达E11，不把启动成功描述为E200稳定性或性能验证。
+
+Luna监控更新VERIFIED：应用自动任务`luna-adv3b02`保持ACTIVE、每小时一次，工具更新后独立读回已含r3及12＋9＋3有效行映射。每次检查最多3分钟，超时报告UNKNOWN、不触碰训练，避免上次worker长时间无结果。
 
 Luna每小时检查将跟踪r1有效12行＋r2有效9行＋r3有效3行；历史B_SAFE失败不反复报警。本次只证明修复和执行，正式E11及E200稳定性需后续日志验证。

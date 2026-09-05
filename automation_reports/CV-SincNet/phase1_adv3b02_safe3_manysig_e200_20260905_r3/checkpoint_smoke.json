@@ -1,0 +1,232 @@
+{
+  "schema": "cvs.phase1.adv3b02_pair_reform_checkpoint_smoke.v1",
+  "status": "VERIFIED",
+  "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth",
+  "checkpoint_epoch": 194,
+  "checkpoint_compatibility": {
+    "missing": [],
+    "unexpected": []
+  },
+  "input_role": "source_shaped_synthetic_smoke_only",
+  "query_inputs": 0,
+  "target_inputs": 0,
+  "teacher_domain_forwards": 0,
+  "teacher_identity_forwards": 25,
+  "fixed_head_consistency": "VERIFIED",
+  "classifier_weight_shape": [
+    6,
+    160
+  ],
+  "rows": {
+    "point": {
+      "status": "VERIFIED",
+      "optimizer_steps": 2,
+      "parameters_changed": true,
+      "steps": [
+        {
+          "loss": 2.139711618423462,
+          "pair_loss": 0.5317018032073975,
+          "ema_updated": true,
+          "post_ema_head_consistency": "VERIFIED",
+          "role": "L",
+          "epoch": 21,
+          "amp": true,
+          "components": [
+            "orbit_z"
+          ],
+          "student_extra_samples": 0
+        },
+        {
+          "loss": 7.002223491668701,
+          "pair_loss": 1.1718802452087402,
+          "ema_updated": true,
+          "post_ema_head_consistency": "VERIFIED",
+          "role": "U",
+          "epoch": 22,
+          "amp": true,
+          "components": [
+            "orbit_logit",
+            "orbit_z"
+          ],
+          "student_extra_samples": 0
+        }
+      ]
+    },
+    "safe": {
+      "status": "VERIFIED",
+      "optimizer_steps": 2,
+      "parameters_changed": true,
+      "steps": [
+        {
+          "loss": 6.654519081115723,
+          "pair_loss": 0.5229427814483643,
+          "ema_updated": true,
+          "post_ema_head_consistency": "VERIFIED",
+          "role": "L",
+          "epoch": 21,
+          "amp": true,
+          "components": [
+            "orbit_z"
+          ],
+          "student_extra_samples": 0
+        },
+        {
+          "loss": 3.8705625534057617,
+          "pair_loss": 1.464214563369751,
+          "ema_updated": true,
+          "post_ema_head_consistency": "VERIFIED",
+          "role": "U",
+          "epoch": 22,
+          "amp": true,
+          "components": [
+            "orbit_logit",
+            "orbit_z"
+          ],
+          "student_extra_samples": 0
+        }
+      ]
+    },
+    "asymmetric": {
+      "status": "VERIFIED",
+      "optimizer_steps": 2,
+      "parameters_changed": true,
+      "steps": [
+        {
+          "loss": 2.9798171520233154,
+          "pair_loss": 0.6881563067436218,
+          "ema_updated": true,
+          "post_ema_head_consistency": "VERIFIED",
+          "role": "L",
+          "epoch": 21,
+          "amp": true,
+          "components": [
+            "orbit_z"
+          ],
+          "student_extra_samples": 0
+        },
+        {
+          "loss": 3.5726571083068848,
+          "pair_loss": 1.2823452949523926,
+          "ema_updated": true,
+          "post_ema_head_consistency": "VERIFIED",
+          "role": "U",
+          "epoch": 22,
+          "amp": true,
+          "components": [
+            "orbit_logit",
+            "orbit_z"
+          ],
+          "student_extra_samples": 0
+        }
+      ]
+    },
+    "tangent_only": {
+      "status": "VERIFIED",
+      "optimizer_steps": 2,
+      "parameters_changed": true,
+      "steps": [
+        {
+          "loss": 4.56791877746582,
+          "pair_loss": 0.4816257953643799,
+          "ema_updated": true,
+          "post_ema_head_consistency": "VERIFIED",
+          "role": "L",
+          "epoch": 21,
+          "amp": true,
+          "components": [
+            "orbit_z",
+            "tangent"
+          ],
+          "student_extra_samples": 4
+        },
+        {
+          "loss": 4.475754261016846,
+          "pair_loss": 1.29362952709198,
+          "ema_updated": true,
+          "post_ema_head_consistency": "VERIFIED",
+          "role": "U",
+          "epoch": 22,
+          "amp": true,
+          "components": [
+            "orbit_logit",
+            "orbit_z"
+          ],
+          "student_extra_samples": 0
+        }
+      ]
+    },
+    "route_only": {
+      "status": "VERIFIED",
+      "optimizer_steps": 2,
+      "parameters_changed": true,
+      "steps": [
+        {
+          "loss": 0.4807997941970825,
+          "pair_loss": 0.47829684615135193,
+          "ema_updated": true,
+          "post_ema_head_consistency": "VERIFIED",
+          "role": "L",
+          "epoch": 21,
+          "amp": true,
+          "components": [
+            "orbit_z",
+            "route"
+          ],
+          "student_extra_samples": 8
+        },
+        {
+          "loss": 0.45203134417533875,
+          "pair_loss": 0.3639169931411743,
+          "ema_updated": true,
+          "post_ema_head_consistency": "VERIFIED",
+          "role": "U",
+          "epoch": 22,
+          "amp": true,
+          "components": [
+            "orbit_logit",
+            "orbit_z"
+          ],
+          "student_extra_samples": 0
+        }
+      ]
+    },
+    "memory": {
+      "status": "VERIFIED",
+      "optimizer_steps": 2,
+      "parameters_changed": true,
+      "steps": [
+        {
+          "loss": 3.468097686767578,
+          "pair_loss": 0.6033512353897095,
+          "ema_updated": true,
+          "post_ema_head_consistency": "VERIFIED",
+          "role": "L",
+          "epoch": 21,
+          "amp": true,
+          "components": [
+            "orbit_z"
+          ],
+          "student_extra_samples": 0
+        },
+        {
+          "loss": 0.347481906414032,
+          "pair_loss": 0.3454304337501526,
+          "ema_updated": true,
+          "post_ema_head_consistency": "VERIFIED",
+          "role": "U",
+          "epoch": 22,
+          "amp": true,
+          "components": [
+            "orbit_logit",
+            "orbit_z"
+          ],
+          "student_extra_samples": 0
+        }
+      ],
+      "memory_hit_rate": 1.0
+    }
+  },
+  "amp": true,
+  "training_manifest": "/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_safe3_manysig_e200_20260905_r3/configs/phase1_adv3b02_safe3_recovery_manifest.json",
+  "claim_boundary": "Runtime correctness only; synthetic labels, no measured scientific accuracy or throughput."
+}
