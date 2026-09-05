@@ -70,6 +70,7 @@ def coverage_mixture_weights(
     *,
     prior: torch.Tensor,
     coverage_floor: float,
+    valid_mask: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     """Mix evidence weights with an explicit deployment-view coverage prior."""
 
@@ -81,15 +82,24 @@ def coverage_mixture_weights(
     if not 0.0 <= gamma < 1.0:
         raise ValueError("coverage_floor must be in [0,1)")
     prior = torch.as_tensor(prior, device=recoverability.device, dtype=torch.float32).reshape(-1)
-    if prior.numel() != recoverability.shape[1] or bool((prior < 0.0).any()) or float(prior.sum()) <= 0.0:
+    if prior.numel() != recoverability.shape[1] or not bool(torch.isfinite(prior).all()) or bool((prior < 0.0).any()) or float(prior.sum()) <= 0.0:
         raise ValueError("prior must provide non-negative mass for every view")
-    prior = prior / prior.sum()
+    if valid_mask is None:
+        valid_mask = torch.ones_like(recoverability, dtype=torch.bool)
+    if valid_mask.shape != recoverability.shape:
+        raise ValueError("valid_mask must align with batch and views")
+    valid_mask = valid_mask.to(device=recoverability.device, dtype=torch.bool)
+    prior = prior.unsqueeze(0) * valid_mask
+    prior_mass = prior.sum(dim=1, keepdim=True)
+    uniform = valid_mask.float() / valid_mask.sum(dim=1, keepdim=True).clamp_min(1)
+    prior = torch.where(prior_mass > 0, prior / prior_mass.clamp_min(1e-12), uniform)
     evidence = torch.nan_to_num(recoverability.float(), nan=0.0).clamp_min(0.0)
     evidence = evidence * torch.nan_to_num(deployment_weight.float(), nan=0.0).clamp_min(0.0)
+    evidence = evidence.masked_fill(~valid_mask, 0.0)
     evidence_mass = evidence.sum(dim=1, keepdim=True)
     normalized = evidence / evidence_mass.clamp_min(1e-12)
-    normalized = torch.where(evidence_mass > 0.0, normalized, prior.unsqueeze(0).expand_as(evidence))
-    return (1.0 - gamma) * normalized + gamma * prior.unsqueeze(0)
+    normalized = torch.where(evidence_mass > 0.0, normalized, prior)
+    return (1.0 - gamma) * normalized + gamma * prior
 
 
 def _sphere_log_map(base: torch.Tensor, point: torch.Tensor) -> torch.Tensor:
@@ -320,6 +330,7 @@ class TensorTemporalOrbitMemory:
         capacity: int,
         base_momentum: float = 0.85,
         ttl: int = 64,
+        min_reliability: float = 0.1,
     ) -> None:
         if int(feature_dim) <= 0 or int(capacity) <= 0:
             raise ValueError("feature_dim and capacity must be positive")
@@ -331,6 +342,9 @@ class TensorTemporalOrbitMemory:
         self.capacity = int(capacity)
         self.base_momentum = float(base_momentum)
         self.ttl = int(ttl)
+        if not 0.0 <= float(min_reliability) <= 1.0:
+            raise ValueError("min_reliability must be in [0,1]")
+        self.min_reliability = float(min_reliability)
         self.keys = torch.full((self.capacity,), -1, dtype=torch.long)
         self.features = torch.zeros((self.capacity, self.feature_dim), dtype=torch.float32)
         self.reliability = torch.zeros(self.capacity, dtype=torch.float32)
@@ -372,13 +386,19 @@ class TensorTemporalOrbitMemory:
             raise ValueError("memory metadata must align with keys")
         values = F.normalize(values, dim=-1)
         for index, key in enumerate(flat_keys.tolist()):
+            if not bool(torch.isfinite(confidence[index])) or float(confidence[index]) <= 0.0:
+                continue
+            if not bool(torch.isfinite(values[index]).all()) or float(values[index].norm()) == 0.0:
+                continue
             slot = self._slot_for_update(int(key))
             is_new = int(self.keys[slot]) != int(key)
+            if is_new and float(confidence[index]) < self.min_reliability:
+                continue
             if is_new:
                 merged = values[index]
             else:
-                momentum = self.base_momentum * float(confidence[index])
-                merged = momentum * self.features[slot] + (1.0 - momentum) * values[index]
+                eta = (1.0 - self.base_momentum) * float(confidence[index])
+                merged = (1.0 - eta) * self.features[slot] + eta * values[index]
             self.keys[slot] = int(key)
             self.features[slot] = F.normalize(merged.reshape(1, -1), dim=-1).reshape(-1)
             self.reliability[slot] = confidence[index]
@@ -421,6 +441,7 @@ class TensorTemporalOrbitMemory:
             "capacity": self.capacity,
             "base_momentum": self.base_momentum,
             "ttl": self.ttl,
+            "min_reliability": self.min_reliability,
             "keys": self.keys.clone(),
             "features": self.features.clone(),
             "reliability": self.reliability.clone(),
@@ -441,7 +462,163 @@ class TensorTemporalOrbitMemory:
             target.copy_(value)
         self.base_momentum = float(state["base_momentum"])
         self.ttl = int(state["ttl"])
+        self.min_reliability = float(state.get("min_reliability", 0.1))
         self._next_slot = int(state.get("next_slot", 0)) % self.capacity
+
+
+class DenseTemporalOrbitMemory:
+    """TRAIN-only fixed physical-ID map with batched tensor reads and writes.
+
+    Duplicate observations contribute a confidence-weighted mean direction and
+    mean confidence, once per physical ID per update. Conflicting metadata is
+    recorded as unknown (-1). Zero-quality observations never refresh the TTL.
+    Callers bind IDs from the TRAIN dataset, never from TX labels or query data.
+    """
+
+    def __init__(self, *, train_physical_ids: torch.Tensor, feature_dim: int,
+                 base_momentum: float = 0.85, ttl: int = 64,
+                 min_reliability: float = 0.1, role: str = "TRAIN",
+                 device: Any = "cpu") -> None:
+        self._check_role(role)
+        ids = torch.as_tensor(train_physical_ids)
+        if ids.ndim != 1 or ids.numel() == 0 or ids.is_floating_point() or ids.dtype == torch.bool:
+            raise ValueError("TRAIN physical IDs must be a non-empty integer vector")
+        ids = ids.to(device=device, dtype=torch.long).sort().values
+        if bool((ids < 0).any()) or ids.unique().numel() != ids.numel():
+            raise ValueError("TRAIN physical IDs must be non-negative and unique")
+        self._validate_config(feature_dim, base_momentum, ttl, min_reliability)
+        self.feature_dim, self.capacity = int(feature_dim), ids.numel()
+        self.base_momentum, self.ttl = float(base_momentum), int(ttl)
+        self.min_reliability = float(min_reliability)
+        self.keys = ids.clone()
+        self.features = torch.zeros((self.capacity, self.feature_dim), device=device)
+        self.reliability = torch.zeros(self.capacity, device=device)
+        self.scenario_bin = torch.full_like(ids, -1)
+        self.receiver_bin = torch.full_like(ids, -1)
+        self.last_seen = torch.full_like(ids, -1)
+
+    @staticmethod
+    def _check_role(role: str) -> None:
+        if role != "TRAIN":
+            raise ValueError("orbit memory accepts TRAIN role only")
+
+    @staticmethod
+    def _validate_config(feature_dim: int, momentum: float, ttl: int, minimum: float) -> None:
+        if int(feature_dim) <= 0 or not 0.0 <= float(momentum) < 1.0:
+            raise ValueError("invalid memory dimensions or momentum")
+        if int(ttl) < 0 or not 0.0 <= float(minimum) <= 1.0:
+            raise ValueError("invalid memory TTL or minimum reliability")
+
+    def _slots(self, keys: torch.Tensor, role: str) -> torch.Tensor:
+        self._check_role(role)
+        if keys.is_floating_point() or keys.dtype == torch.bool:
+            raise ValueError("physical IDs must be integers")
+        requested = keys.detach().reshape(-1).to(self.keys.device, dtype=torch.long)
+        slots = torch.searchsorted(self.keys, requested)
+        safe = slots.clamp_max(self.capacity - 1)
+        if bool(((slots >= self.capacity) | (self.keys[safe] != requested)).any()):
+            raise ValueError("unknown physical ID outside bound TRAIN map")
+        return slots
+
+    @torch.no_grad()
+    def update(self, *, keys: torch.Tensor, features: torch.Tensor,
+               reliability: torch.Tensor, scenario_bin: torch.Tensor,
+               receiver_bin: torch.Tensor, step: int, role: str = "TRAIN") -> None:
+        slots = self._slots(keys, role)
+        if int(step) < 0:
+            raise ValueError("step must be non-negative")
+        device = self.features.device
+        values = features.detach().to(device=device, dtype=torch.float32)
+        confidence = reliability.detach().reshape(-1).to(device=device, dtype=torch.float32)
+        scenarios = scenario_bin.detach().reshape(-1).to(device=device, dtype=torch.long)
+        receivers = receiver_bin.detach().reshape(-1).to(device=device, dtype=torch.long)
+        count = slots.numel()
+        if values.shape != (count, self.feature_dim) or any(t.numel() != count for t in (confidence, scenarios, receivers)):
+            raise ValueError("memory features and metadata must align with physical IDs")
+        # Invalid observations cannot create entries or refresh historical ones.
+        keep = torch.isfinite(values).all(-1) & (values.norm(dim=-1) > 1e-12)
+        keep &= torch.isfinite(confidence) & (confidence > 0) & (confidence <= 1)
+        slots, values, confidence = slots[keep], values[keep], confidence[keep]
+        scenarios, receivers = scenarios[keep], receivers[keep]
+        if not slots.numel():
+            return
+        unique, inverse, counts = slots.unique(sorted=True, return_inverse=True, return_counts=True)
+        # Reduction is over the batch only, never a scan of the capacity table.
+        mass = torch.zeros(unique.numel(), device=device, dtype=torch.float64)
+        mass.index_add_(0, inverse, confidence.double())
+        sums = torch.zeros((unique.numel(), self.feature_dim), device=device, dtype=torch.float64)
+        sums.index_add_(0, inverse, F.normalize(values, dim=-1).double() * confidence.double().unsqueeze(-1))
+        fresh = F.normalize(sums.float(), dim=-1)
+        quality = (mass / counts).float()
+        old_seen = self.last_seen[unique]
+        if bool((old_seen > int(step)).any()):
+            raise ValueError("update step predates stored observation")
+        existing = (old_seen >= 0) & (int(step) - old_seen <= self.ttl)
+        admit = (existing | (quality >= self.min_reliability)) & (sums.norm(dim=-1) > 1e-12)
+        eta = ((1.0 - self.base_momentum) * quality).unsqueeze(-1)
+        merged = F.normalize((1 - eta) * self.features[unique] + eta * fresh, dim=-1)
+        merged = torch.where(existing.unsqueeze(-1), merged, fresh)
+        admit &= merged.norm(dim=-1) > 1e-12
+        destination = unique[admit]
+        self.features[destination] = merged[admit]
+        self.reliability[destination] = quality[admit]
+        self.last_seen[destination] = int(step)
+        for name, source in (("scenario_bin", scenarios), ("receiver_bin", receivers)):
+            low = torch.full_like(unique, torch.iinfo(torch.long).max)
+            high = torch.full_like(unique, torch.iinfo(torch.long).min)
+            low.scatter_reduce_(0, inverse, source, reduce="amin", include_self=True)
+            high.scatter_reduce_(0, inverse, source, reduce="amax", include_self=True)
+            metadata = torch.where(low == high, low, torch.full_like(low, -1))
+            getattr(self, name)[destination] = metadata[admit]
+
+    @torch.no_grad()
+    def lookup(self, keys: torch.Tensor, *, step: int, role: str = "TRAIN"
+               ) -> tuple[torch.Tensor, torch.Tensor, dict[str, torch.Tensor]]:
+        slots = self._slots(keys, role)
+        if int(step) < 0:
+            raise ValueError("step must be non-negative")
+        age = int(step) - self.last_seen[slots]
+        found = (self.last_seen[slots] >= 0) & (age >= 0) & (age <= self.ttl)
+        values = self.features[slots].masked_fill(~found.unsqueeze(-1), 0)
+        metadata = {}
+        for name in ("reliability", "scenario_bin", "receiver_bin", "last_seen"):
+            value = getattr(self, name)[slots]
+            metadata[name] = value.masked_fill(~found, 0 if name == "reliability" else -1).to(keys.device)
+        return values.to(keys.device), found.to(keys.device), metadata
+
+    def state_dict(self) -> dict[str, Any]:
+        state = {name: getattr(self, name).clone() for name in
+                 ("keys", "features", "reliability", "scenario_bin", "receiver_bin", "last_seen")}
+        state.update(version=1, role="TRAIN", feature_dim=self.feature_dim, capacity=self.capacity,
+                     base_momentum=self.base_momentum, ttl=self.ttl, min_reliability=self.min_reliability)
+        return state
+
+    def load_state_dict(self, state: Mapping[str, Any]) -> None:
+        self._check_role(state.get("role", ""))
+        if state.get("version") != 1 or state.get("feature_dim") != self.feature_dim or state.get("capacity") != self.capacity:
+            raise ValueError("memory state dimensions/version do not match")
+        self._validate_config(self.feature_dim, state["base_momentum"], state["ttl"], state["min_reliability"])
+        staged = {}
+        for name in ("keys", "features", "reliability", "scenario_bin", "receiver_bin", "last_seen"):
+            target = getattr(self, name)
+            raw = torch.as_tensor(state[name])
+            if raw.shape != target.shape or raw.dtype != target.dtype or not bool(torch.isfinite(raw).all()):
+                raise ValueError(f"invalid memory state field {name}")
+            staged[name] = raw.to(target.device)
+        if not torch.equal(staged["keys"], self.keys):
+            raise ValueError("memory physical ID map does not match bound TRAIN map")
+        quality, seen = staged["reliability"], staged["last_seen"]
+        if bool(((quality < 0) | (quality > 1) | (seen < -1)).any()):
+            raise ValueError("invalid memory quality or timestamp")
+        active = seen >= 0
+        if bool((active & ((quality <= 0) | ((staged['features'].norm(dim=-1) - 1).abs() > 1e-4))).any()):
+            raise ValueError("invalid active memory feature or confidence")
+        # All checks precede writes, so a rejected restore is atomic.
+        for name, value in staged.items():
+            getattr(self, name).copy_(value)
+        self.base_momentum = float(state["base_momentum"])
+        self.ttl = int(state["ttl"])
+        self.min_reliability = float(state["min_reliability"])
 
 
 class EMALossScaleNormalizer:

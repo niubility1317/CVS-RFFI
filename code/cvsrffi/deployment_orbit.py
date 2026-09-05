@@ -2,9 +2,199 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 import hashlib
+import math
 from typing import Any, Iterator, Mapping, Sequence
 
 import torch
+
+
+# Explicit opt-in version. The historical DAOT APIs below remain replayable.
+PAIR_REFORM_NUISANCE_NAMES = ('sto', 'rx_filter', 'multipath', 'noise_strength', 'agc')
+PAIR_REFORM_PROBE_NAMES = ('amplitude_nonlinearity', 'iq_gain')
+
+
+@dataclass(frozen=True)
+class PhysicalProbeSpec:
+    name: str
+    kind: str
+    unit: str
+    equation: str
+    location: str = 'received_iq_post_channel'
+
+
+def physical_probe_registry() -> Mapping[str, PhysicalProbeSpec]:
+    """Unique operator families, not claims of identifiable TX generation.
+
+    ``hardware_probe`` directions have no mandatory identity-sensitivity floor.
+    CFO/phase/clock are mixed-source observations and excluded from route pairs.
+    Amounts below are in the declared units, not hidden standardized multiples.
+    """
+    rows = (
+        ('amplitude_nonlinearity', 'hardware_probe', 'dimensionless', 'x*(1+a*min(abs(x)^2,4))'),
+        ('iq_gain', 'hardware_probe', 'relative_gain', '(1+a)*I+j*(1-a)*Q'),
+        ('common_phase', 'mixed', 'rad', 'x*exp(j*a)'),
+        ('net_cfo', 'mixed', 'Hz', 'x*exp(j*2*pi*a*n/fs)'),
+        ('sampling_clock', 'mixed', 'ppm', 'interp(x,n-a*1e-6*(n-(N-1)/2))'),
+        ('sto', 'nuisance', 'sample', 'interp(x,n-a)'),
+        ('rx_filter', 'nuisance', 'dimensionless', 'x+a*(previous(x)-x)'),
+        ('multipath', 'nuisance', 'relative_echo_amplitude', 'x+a*zero_extended_delay(x,3)'),
+        ('noise_strength', 'nuisance', 'IQ_amplitude', 'x+a*fixed_independent_noise'),
+        ('agc', 'nuisance', 'dB', 'x*10^(a/20)'),
+    )
+    return {row[0]: PhysicalProbeSpec(*row) for row in rows}
+
+
+def _continuous_sample_iq(x: torch.Tensor, positions: torch.Tensor, boundary: str) -> torch.Tensor:
+    """Linear interpolation of zero-extended or endpoint-extended samples.
+
+    Zero extension applies to each interpolation neighbour, not to the whole
+    output coordinate. Consequently crossing an endpoint is continuous.
+    Neither boundary mode assumes periodic signal structure.
+    """
+    if boundary not in {'zero', 'edge'}:
+        raise ValueError('boundary must be zero or edge')
+    batch, channels, length = x.shape
+    lower = positions.floor()
+    fraction = (positions - lower).unsqueeze(1)
+    values = []
+    for index in (lower, lower + 1):
+        value = x.gather(2, index.clamp(0, length - 1).long().unsqueeze(1).expand(batch, channels, length))
+        if boundary == 'zero':
+            value = value * ((index >= 0) & (index < length)).unsqueeze(1)
+        values.append(value)
+    return values[0] * (1 - fraction) + values[1] * fraction
+
+
+def apply_physical_probe(
+    received_iq: torch.Tensor, *, name: str, amount: float | torch.Tensor,
+    sample_rate_hz: float, fixed_noise: torch.Tensor | None = None,
+    boundary: str = 'zero',
+) -> torch.Tensor:
+    """Apply one audited received-waveform probe in explicit physical units.
+
+    Noise must be an independently drawn, externally fixed realization, reused
+    across finite-difference evaluations. It is never derived from the signal.
+    """
+    if received_iq.ndim != 3 or received_iq.shape[1] != 2 or received_iq.shape[-1] < 1:
+        raise ValueError('received_iq must have shape [batch,2,time] with nonempty time')
+    if not received_iq.is_floating_point():
+        raise ValueError('received_iq must be floating point')
+    if not math.isfinite(sample_rate_hz) or sample_rate_hz <= 0:
+        raise ValueError('sample_rate_hz must be positive and finite')
+    if name not in physical_probe_registry():
+        raise ValueError(f'unknown physical probe: {name}')
+    dtype = torch.float64 if received_iq.dtype == torch.float64 else torch.float32
+    x = received_iq.to(dtype=dtype)
+    batch, _, length = x.shape
+    a = torch.as_tensor(amount, device=x.device, dtype=dtype).reshape(-1)
+    if a.numel() == 1:
+        a = a.expand(batch)
+    if a.numel() != batch or not torch.isfinite(a).all():
+        raise ValueError('amount must be finite and scalar or one per sample')
+    n = torch.arange(length, device=x.device, dtype=dtype)
+    if name in {'sto', 'sampling_clock'}:
+        offset = a[:, None] if name == 'sto' else a[:, None] * 1e-6 * (n - (length-1)/2)
+        return _continuous_sample_iq(x, n[None, :] - offset, boundary).to(received_iq.dtype)
+    if name == 'noise_strength':
+        if fixed_noise is None or fixed_noise.shape != x.shape or not torch.isfinite(fixed_noise).all():
+            raise ValueError('fixed_noise must be finite with the received_iq shape')
+        return (x + a[:, None, None] * fixed_noise.to(device=x.device, dtype=dtype).detach()).to(received_iq.dtype)
+    z = torch.complex(x[:, 0], x[:, 1])
+    a = a[:, None]
+    if name == 'amplitude_nonlinearity':
+        y = z * (1 + a * z.abs().square().clamp_max(4))
+    elif name == 'iq_gain':
+        y = torch.complex((1+a)*z.real, (1-a)*z.imag)
+    elif name == 'common_phase':
+        y = z * torch.exp(1j*a)
+    elif name == 'net_cfo':
+        y = z * torch.exp(1j*2*torch.pi*a*n[None, :]/sample_rate_hz)
+    elif name == 'agc':
+        y = z * torch.pow(10., a/20)
+    else:
+        shift = 3 if name == 'multipath' else 1
+        previous = torch.zeros_like(z)
+        if length > shift:
+            previous[:, shift:] = z[:, :-shift]
+        if name == 'rx_filter':
+            previous[:, 0] = z[:, 0]
+            y = z + a*(previous-z)
+        else:
+            y = z + a*previous
+    return torch.stack((y.real, y.imag), dim=1).to(received_iq.dtype)
+
+
+def sample_pair_reform_probe(
+    received_iq: torch.Tensor, *, seed: int, strength: float, sample_rate_hz: float,
+) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+    """Replayable two-family hardware-style probe; not a new TX identity."""
+    if not math.isfinite(strength) or strength < 0:
+        raise ValueError('strength must be finite and non-negative')
+    generator = torch.Generator(device=received_iq.device).manual_seed(int(seed))
+    batch = received_iq.shape[0]
+    ids = torch.randint(len(PAIR_REFORM_PROBE_NAMES), (batch,), device=received_iq.device, generator=generator)
+    signs = torch.randint(2, (batch,), device=received_iq.device, generator=generator).float()*2-1
+    candidates = [apply_physical_probe(received_iq, name=name, amount=signs*strength, sample_rate_hz=sample_rate_hz) for name in PAIR_REFORM_PROBE_NAMES]
+    return torch.where(ids[:, None, None].eq(0), candidates[0], candidates[1]), ids, signs
+
+
+def apply_pair_reform_nuisance(
+    received_iq: torch.Tensor, directions: torch.Tensor, *, delta: float,
+    sample_rate_hz: float, fixed_noise: torch.Tensor | None = None,
+) -> torch.Tensor:
+    """Five conflict-free coordinates; no CFO, phase or sampling-clock claim.
+
+    Coordinates use registry units. Noise is mandatory even for a zero step so
+    callers cannot accidentally switch to a signal-derived pseudo-noise path.
+    """
+    if directions.shape != (received_iq.shape[0], len(PAIR_REFORM_NUISANCE_NAMES)):
+        raise ValueError('directions must have shape [batch,5]')
+    if not math.isfinite(delta) or delta < 0:
+        raise ValueError('delta must be finite and non-negative')
+    x = received_iq
+    for index, name in enumerate(PAIR_REFORM_NUISANCE_NAMES):
+        x = apply_physical_probe(x, name=name, amount=delta*directions[:, index], sample_rate_hz=sample_rate_hz, fixed_noise=fixed_noise)
+    return x
+
+
+def physical_reliability(
+    meta: Mapping[str, Any], *, batch_size: int, device: torch.device,
+) -> tuple[torch.Tensor, torch.Tensor]:
+    """Physical score and per-row validity; unknown quality is NaN, not 0/1.
+
+    Consumers must choose and disclose an unknown-quality policy before loss
+    weighting. Invalid fields do not become artificial zero-error evidence.
+    """
+    transforms = {
+        'snr_db': lambda v: torch.sigmoid((v-14)/5),
+        'theta_deg': lambda v: (v/90).clamp(.05, 1),
+        'K_db': lambda v: torch.sigmoid((v-6)/5),
+        'deep_fade_ratio': lambda v: torch.exp(-2*v.clamp_min(0)),
+        'clip_ratio': lambda v: torch.exp(-3*v.clamp_min(0)),
+        **{name: lambda v: torch.exp(-v.abs()) for name in ('occupancy_error', 'canonical_error', 'phase_error', 'spectral_error')},
+    }
+    log_sum = torch.zeros(batch_size, device=device)
+    count = torch.zeros_like(log_sum)
+    for name, transform in transforms.items():
+        try:
+            values = torch.as_tensor(meta.get(name), device=device, dtype=torch.float32).reshape(-1)
+        except (ValueError, TypeError, RuntimeError):
+            continue
+        if values.numel() == 1:
+            values = values.expand(batch_size)
+        if values.numel() != batch_size:
+            continue
+        valid = torch.isfinite(values)
+        if name in {'deep_fade_ratio', 'clip_ratio'}:
+            valid = valid & (values >= 0) & (values <= 1)
+        elif name == 'theta_deg':
+            valid = valid & (values >= 0) & (values <= 90)
+        factors = transform(torch.where(valid, values, torch.zeros_like(values)))
+        log_sum += torch.where(valid, factors.clamp_min(1e-6).log(), torch.zeros_like(values))
+        count += valid
+    valid = count > 0
+    scores = torch.exp(log_sum / count.clamp_min(1)).clamp(0, 1)
+    return torch.where(valid, scores, torch.full_like(scores, float('nan'))), valid
 
 
 DAOT_NUISANCE_TANGENT_NAMES = (

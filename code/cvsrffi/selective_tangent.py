@@ -27,43 +27,67 @@ def chordal_sensitivity(
     perturbed: torch.Tensor,
     *,
     delta: float | torch.Tensor,
+    reference_scale: float | torch.Tensor | None = None,
 ) -> torch.Tensor:
-    """Squared directional energy using the stable spherical chord length."""
+    """Squared chord energy over q², where q=delta/reference_scale.
+
+    Omitting reference_scale preserves the historical delta² denominator.
+    Direct squared differences avoid cancellation at identical features.
+    """
 
     if base.shape != perturbed.shape:
         raise ValueError("base and perturbed features must have identical shape")
     delta_value = torch.as_tensor(delta, device=base.device, dtype=torch.float32)
-    if bool((delta_value <= 0.0).any()):
-        raise ValueError("finite-difference delta must be positive")
-    cosine = (F.normalize(base.float(), dim=-1) * F.normalize(perturbed.float(), dim=-1)).sum(dim=-1)
-    while delta_value.ndim < cosine.ndim:
+    if bool(((delta_value <= 0.0) | ~torch.isfinite(delta_value)).any()):
+        raise ValueError("finite-difference delta must be positive and finite")
+    if reference_scale is not None:
+        scale = torch.as_tensor(reference_scale, device=base.device, dtype=torch.float32)
+        if bool(((scale <= 0) | ~torch.isfinite(scale)).any()):
+            raise ValueError('reference_scale must be positive and finite')
+        delta_value = delta_value / scale
+    energy = (F.normalize(base.float(), dim=-1) - F.normalize(perturbed.float(), dim=-1)).square().sum(dim=-1)
+    while delta_value.ndim < energy.ndim:
         delta_value = delta_value.unsqueeze(-1)
-    return 2.0 * (1.0 - cosine.clamp(-1.0, 1.0)) / delta_value.square()
+    return energy / delta_value.square()
 
 
 def _cosine_distance(left: torch.Tensor, right: torch.Tensor) -> torch.Tensor:
     if left.shape != right.shape:
         raise ValueError("routing feature pairs must have identical shape")
-    return 1.0 - (F.normalize(left.float(), dim=-1) * F.normalize(right.float(), dim=-1)).sum(dim=-1)
+    return .5 * (F.normalize(left.float(), dim=-1) - F.normalize(right.float(), dim=-1)).square().sum(dim=-1)
 
 
 def directional_routing_loss(
     *,
-    base_id: torch.Tensor,
+    base_id: torch.Tensor | None = None,
     nuisance_id: torch.Tensor,
     fingerprint_id: torch.Tensor,
-    base_dom: torch.Tensor,
+    base_dom: torch.Tensor | None = None,
     nuisance_dom: torch.Tensor,
     fingerprint_dom: torch.Tensor,
     nuisance_margin: float,
     fingerprint_margin: float,
+    nuisance_base_id: torch.Tensor | None = None,
+    nuisance_base_dom: torch.Tensor | None = None,
+    fingerprint_base_id: torch.Tensor | None = None,
+    fingerprint_base_dom: torch.Tensor | None = None,
 ) -> dict[str, torch.Tensor]:
-    """Route nuisance changes to z_dom and TX changes to z_id."""
+    """Compare each intervention to its own starting observation.
 
-    delta_nui_id = _cosine_distance(base_id, nuisance_id)
-    delta_nui_dom = _cosine_distance(base_dom, nuisance_dom)
-    delta_fp_id = _cosine_distance(base_id, fingerprint_id)
-    delta_fp_dom = _cosine_distance(base_dom, fingerprint_dom)
+    Hardware-style probes do not establish a true TX physical intervention.
+    Legacy base_id/base_dom remain fallback references for historical callers.
+    """
+
+    nuisance_base_id = base_id if nuisance_base_id is None else nuisance_base_id
+    nuisance_base_dom = base_dom if nuisance_base_dom is None else nuisance_base_dom
+    fingerprint_base_id = base_id if fingerprint_base_id is None else fingerprint_base_id
+    fingerprint_base_dom = base_dom if fingerprint_base_dom is None else fingerprint_base_dom
+    if any(value is None for value in (nuisance_base_id, nuisance_base_dom, fingerprint_base_id, fingerprint_base_dom)):
+        raise ValueError('all four starting feature references are required')
+    delta_nui_id = _cosine_distance(nuisance_base_id, nuisance_id)
+    delta_nui_dom = _cosine_distance(nuisance_base_dom, nuisance_dom)
+    delta_fp_id = _cosine_distance(fingerprint_base_id, fingerprint_id)
+    delta_fp_dom = _cosine_distance(fingerprint_base_dom, fingerprint_dom)
     nuisance_violation = (float(nuisance_margin) + delta_nui_id - delta_nui_dom).clamp_min(0.0)
     fingerprint_violation = (float(fingerprint_margin) + delta_fp_dom - delta_fp_id).clamp_min(0.0)
     return {
@@ -82,9 +106,13 @@ def selective_tangent_loss(
     *,
     budgets: torch.Tensor,
     valid: torch.Tensor,
+    penalty: str = 'squared',
 ) -> torch.Tensor:
+    """Budget excess penalty; opt-in linear avoids squaring the energy again."""
+    if penalty not in {'linear', 'squared'}:
+        raise ValueError('penalty must be linear or squared')
     excess = (sensitivity.float() - budgets.to(device=sensitivity.device, dtype=torch.float32)).clamp_min(0.0)
-    return _masked_mean(excess.square(), valid)
+    return _masked_mean(excess if penalty == 'linear' else excess.square(), valid)
 
 
 def fingerprint_keep_loss(

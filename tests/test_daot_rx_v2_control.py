@@ -164,6 +164,9 @@ def test_structured_batch_allocation_keeps_three_receivers_and_report_ratios() -
 
 def test_training_gradient_controller_projects_only_after_persistent_identity_conflict() -> None:
     class IdentityScaler:
+        def get_scale(self):
+            return 1.0
+
         def scale(self, value):
             return value
 
@@ -200,6 +203,9 @@ def test_training_gradient_controller_projects_only_after_persistent_identity_co
 
 def test_training_gradient_controller_preserves_external_optimizer_head_gradient() -> None:
     class IdentityScaler:
+        def get_scale(self):
+            return 1.0
+
         def scale(self, value):
             return value
 
