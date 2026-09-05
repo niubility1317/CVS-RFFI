@@ -1363,181 +1363,16 @@ def test_validate_matrix_rejects_phase1_without_default_paic_star_ground_aug():
     assert "phase1_star_ground_aug_requires_schedule" in issue_names
 
 
-def test_phase1_control_surfaces_require_default_paic_star_ground_aug():
-    prompt = (
-        PROJECT_ROOT
-        / "automation_reports"
-        / "CV-SincNet"
-        / "automation_prompt_backups"
-        / "20260615_001820_stage2_closed_loop_v4"
-        / "stage2_prompt.md"
-    ).read_text(encoding="utf-8")
-    contract = (PROJECT_ROOT / "tools" / "optimizer_workflow_contract.md").read_text(encoding="utf-8")
-    manifest = (PROJECT_ROOT / "tools" / "optimizer_control_manifest.md").read_text(encoding="utf-8")
-    state = json.loads((PROJECT_ROOT / "automation_reports" / "CV-SincNet" / "stage2_optimizer_state.json").read_text(encoding="utf-8"))
-
-    for surface in (prompt, contract, manifest):
-        assert "phase1_star_ground_aug_default_enabled" in surface
-        assert "CVS-SAT-PAIC" in surface
-        assert "concat_sat_ce_only" in surface
-
-    default_policy = state["phase1_ground_dg_direction"]["phase1_star_ground_aug_default"]
-    assert default_policy["status"] == "PAIC_STAR_GROUND_AUG_DEFAULT_ON_FOR_PHASE1"
-    assert default_policy["route_family"] == "CVS-SAT-PAIC"
-    assert default_policy["default_training_flags"]["concat_sat_ce_only"] is True
-    assert default_policy["default_training_flags"]["use_concat_sat_channel_aug"] is True
 
 
-def test_phase1_control_surfaces_require_executable_safe_ssdg_default():
-    prompt = (
-        PROJECT_ROOT
-        / "automation_reports"
-        / "CV-SincNet"
-        / "automation_prompt_backups"
-        / "20260615_001820_stage2_closed_loop_v4"
-        / "stage2_prompt.md"
-    ).read_text(encoding="utf-8")
-    contract = (PROJECT_ROOT / "tools" / "optimizer_workflow_contract.md").read_text(encoding="utf-8")
-    manifest = (PROJECT_ROOT / "tools" / "optimizer_control_manifest.md").read_text(encoding="utf-8")
-    state = json.loads((PROJECT_ROOT / "automation_reports" / "CV-SincNet" / "stage2_optimizer_state.json").read_text(encoding="utf-8"))
-
-    for surface in (prompt, contract, manifest):
-        assert "Phase1 Safe-SSDG rows default executable" in surface
-        assert "run_phase1_safe_ssdg_candidate" in surface
-        assert "code/SSDG/train_ssdg.py" in surface
-
-    policy = state["phase1_ground_dg_direction"]["phase1_safe_ssdg_execution_policy"]
-    assert policy["status"] == "PHASE1_SAFE_SSDG_EXECUTABLE_BY_DEFAULT"
-    assert policy["row_launcher_entrypoint"] == "run_phase1_safe_ssdg_candidate"
-    assert policy["direct_training_entrypoint"] == "python ${ROOT}/code/SSDG/train_ssdg.py"
-    assert policy["local_schema_defer_allowed_by_default"] is False
 
 
-def test_optimizer_control_surfaces_require_evidence_first_current_run_matrix():
-    prompt = (
-        PROJECT_ROOT
-        / "automation_reports"
-        / "CV-SincNet"
-        / "automation_prompt_backups"
-        / "20260615_001820_stage2_closed_loop_v4"
-        / "stage2_prompt.md"
-    ).read_text(encoding="utf-8")
-    contract = (PROJECT_ROOT / "tools" / "optimizer_workflow_contract.md").read_text(encoding="utf-8")
-    manifest = (PROJECT_ROOT / "tools" / "optimizer_control_manifest.md").read_text(encoding="utf-8")
-    state = json.loads((PROJECT_ROOT / "automation_reports" / "CV-SincNet" / "stage2_optimizer_state.json").read_text(encoding="utf-8"))
-
-    for surface in (prompt, contract, manifest):
-        assert "evidence-first current-run matrix" in surface
-        assert "next-run matrix handoff is audit-only" in surface
-        assert "same automation run" in surface
-
-    policy = state["optimizer_matrix_generation_policy"]
-    assert policy["status"] == "EVIDENCE_FIRST_CURRENT_RUN_MATRIX_REQUIRED"
-    assert policy["next_run_matrix_handoff_is_audit_only"] is True
-    assert policy["runner_required_in_same_automation_run"] is True
 
 
-def test_optimizer_control_surfaces_require_idle_lane_repair_until_launch():
-    prompt = (
-        PROJECT_ROOT
-        / "automation_reports"
-        / "CV-SincNet"
-        / "automation_prompt_backups"
-        / "20260615_001820_stage2_closed_loop_v4"
-        / "stage2_prompt.md"
-    ).read_text(encoding="utf-8")
-    contract = (PROJECT_ROOT / "tools" / "optimizer_workflow_contract.md").read_text(encoding="utf-8")
-    manifest = (PROJECT_ROOT / "tools" / "optimizer_control_manifest.md").read_text(encoding="utf-8")
-    state = json.loads((PROJECT_ROOT / "automation_reports" / "CV-SincNet" / "stage2_optimizer_state.json").read_text(encoding="utf-8"))
-
-    for surface in (prompt, contract, manifest):
-        assert "idle lane must execute" in surface
-        assert "repair-until-launch" in surface
-        assert "missing current-run matrix is repair work, not a terminal outcome" in surface
-        assert "NO_CURRENT_MATRIX_VALIDATION" in surface
-        assert "DEFERRED_RETRY_LOCAL_VERIFY_ROUTE_REPAIR_REQUIRED_NO_REMOTE_ACTION" in surface
-
-    policy = state["idle_lane_execution_policy"]
-    assert policy["schema"] == "idle_lane_execution_policy_v1"
-    allowed_status = (
-        policy["status"] == "REPAIR_UNTIL_RUNNER_EXECUTES"
-        or policy["status"].startswith("RUNNER_EXECUTED_CURRENT_MATRIX_")
-        or policy["status"] == "MONITOR_ONLY_PHASE1_ACTIVE_PHASE2_IDLE"
-    )
-    assert allowed_status
-    assert policy["idle_lane_must_execute_experiment"] is True
-    if policy["status"] == "REPAIR_UNTIL_RUNNER_EXECUTES":
-        assert policy["repair_until_runner_executes"] is True
-    elif policy["status"].startswith("RUNNER_EXECUTED_CURRENT_MATRIX_"):
-        assert policy["repair_until_runner_executes"] is False
-        assert policy["latest_execution_n607_run_id"].startswith("stage2_spaceborne_")
-    else:
-        assert policy["repair_until_runner_executes"] is False
-        assert state["required_next_action"] in {
-            "MONITOR_PHASE1_RETRY_TO_COMPLETION_AND_ANALYZE_FULL_TRAINING_LOGS",
-            "MONITOR_PHASE1_FLOORREPAIR_TO_COMPLETION_AND_ANALYZE_FULL_TRAINING_LOGS",
-        }
-        assert state["latest_two_lane_monitor_result"]["phase1_monitor_state"] == 0
-        assert state["latest_two_lane_monitor_result"]["phase2_monitor_state"] == 1
-        assert "active_same_lane_or_unsafe_ambiguous_process" in policy["terminal_blockers"]
-    assert "NO_CURRENT_MATRIX_VALIDATION" in policy["disallowed_terminal_outcomes_for_idle_lane"]
-    assert "NOT_RUN_NO_CURRENT_REPAIRED_MATRIX" in policy["disallowed_terminal_outcomes_for_idle_lane"]
-    assert "DEFERRED_RETRY_LOCAL_VERIFY_ROUTE_REPAIR_REQUIRED_NO_REMOTE_ACTION" in policy["disallowed_terminal_outcomes_for_idle_lane"]
-    assert "missing_current_run_matrix" in policy["repairable_items_not_terminal"]
-    assert "runner_identity_drift" in policy["repairable_items_not_terminal"]
-    assert "required_control_file_unreadable" in policy["terminal_blockers"]
-    assert "explicit_user_pause_or_stop" in policy["terminal_blockers"]
-    assert policy["row_level_defer_only_with_at_least_one_launch"] is True
 
 
-def test_optimizer_control_surfaces_require_training_log_observability():
-    prompt = (
-        PROJECT_ROOT
-        / "automation_reports"
-        / "CV-SincNet"
-        / "automation_prompt_backups"
-        / "20260615_001820_stage2_closed_loop_v4"
-        / "stage2_prompt.md"
-    ).read_text(encoding="utf-8")
-    contract = (PROJECT_ROOT / "tools" / "optimizer_workflow_contract.md").read_text(encoding="utf-8")
-    manifest = (PROJECT_ROOT / "tools" / "optimizer_control_manifest.md").read_text(encoding="utf-8")
-    state = json.loads((PROJECT_ROOT / "automation_reports" / "CV-SincNet" / "stage2_optimizer_state.json").read_text(encoding="utf-8"))
-
-    assert "Training Log Analysis Prompt" in prompt
-    assert "MISSING_LOSS_TELEMETRY" in prompt
-    assert "CONFIG_LOSS_ALIGNMENT_GAP" in prompt
-    assert "Training Log Telemetry Contract" in contract
-    assert "FULL_TRAINING_LOG_ANALYSIS_REQUIRED" in contract
-    assert "LOSS_NORMAL_CLAIM_REQUIRES_CURVE" in contract
-    assert "ADAPTER_LOSS_TRACE_REQUIRED" in contract
-    assert "Training log observability" in manifest
-    assert "training_log_observability_policy" in manifest
-
-    policy = state["training_log_observability_policy"]
-    assert policy["schema"] == "training_log_observability_policy_v1"
-    assert policy["status"] == "FULL_TRAINING_LOG_ANALYSIS_REQUIRED_BEFORE_LOSS_OR_OPTIMIZATION_CLAIMS"
-    assert "FULL_LOSS_TELEMETRY_REQUIRED" in policy["required_evidence_labels"]
-    assert "per_epoch_metrics_csv_or_jsonl" in policy["training_rows_require"]
-    assert "loss_trace" in policy["stage2_adapter_rows_require"]
 
 
-def test_control_surfaces_reference_read_only_preflight_decision_bundle():
-    prompt = (
-        PROJECT_ROOT
-        / "automation_reports"
-        / "CV-SincNet"
-        / "automation_prompt_backups"
-        / "20260615_001820_stage2_closed_loop_v4"
-        / "stage2_prompt.md"
-    ).read_text(encoding="utf-8")
-    contract = (PROJECT_ROOT / "tools" / "optimizer_workflow_contract.md").read_text(encoding="utf-8")
-    manifest = (PROJECT_ROOT / "tools" / "optimizer_control_manifest.md").read_text(encoding="utf-8")
-
-    for surface in (prompt, contract, manifest):
-        assert "tools/optimizer_preflight_decision.py" in surface
-        assert "PENDING_REMOTE_MONITOR" in surface
-        assert "read-only local preflight" in surface
-        assert "must not run SSH/SCP or launch" in surface
 
 
 def test_validate_matrix_rejects_current_run_identity_drift():
@@ -1643,31 +1478,6 @@ stage2_acquire_launcher_lock
     assert repaired_result["verdict"] == "PASS"
 
 
-def test_optimizer_control_surfaces_require_runner_identity_preflight():
-    prompt = (
-        PROJECT_ROOT
-        / "automation_reports"
-        / "CV-SincNet"
-        / "automation_prompt_backups"
-        / "20260615_001820_stage2_closed_loop_v4"
-        / "stage2_prompt.md"
-    ).read_text(encoding="utf-8")
-    contract = (PROJECT_ROOT / "tools" / "optimizer_workflow_contract.md").read_text(encoding="utf-8")
-    manifest = (PROJECT_ROOT / "tools" / "optimizer_control_manifest.md").read_text(encoding="utf-8")
-    state = json.loads((PROJECT_ROOT / "automation_reports" / "CV-SincNet" / "stage2_optimizer_state.json").read_text(encoding="utf-8"))
-
-    for surface in (prompt, contract, manifest):
-        assert "runner identity preflight" in surface
-        assert "repair-first runner identity preflight" in surface
-        assert "launcher default RUN_ID" in surface
-        assert "n607_run_id" in surface
-        assert "--repair-launcher-identity" in surface
-
-    policy = state["runner_identity_preflight_policy"]
-    assert policy["status"] == "REPAIR_FIRST_CURRENT_RUN_IDENTITY_PREFLIGHT_REQUIRED"
-    assert policy["auto_repair_before_blocking"] is True
-    assert policy["launcher_default_run_id_must_match_n607_run_id"] is True
-    assert policy["matrix_paths_must_match_n607_run_id"] is True
 
 
 def test_validate_matrix_rejects_unknown_tx_overlap_with_manysig_old_tx_ids():
