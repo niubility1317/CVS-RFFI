@@ -1,0 +1,12 @@
+rung,severity,category,epoch,detail
+R1,WARN,skipped_backward_batches,200,累计跳过反向批次=31
+R2,WARN,skipped_backward_batches,200,累计跳过反向批次=29
+R3,WARN,skipped_backward_batches,200,累计跳过反向批次=30
+R4,WARN,skipped_backward_batches,200,累计跳过反向批次=31
+R5,WARN,skipped_backward_batches,200,累计跳过反向批次=30
+R6,WARN,skipped_backward_batches,200,累计跳过反向批次=29
+R7,INFO,snapshot_cutoff,194,该快照尚未包含训练终点；不能据此给出最终性能。
+R7,WARN,skipped_backward_batches,194,累计跳过反向批次=30
+R8,FATAL,runtime_exception,106,Traceback (most recent call last):
+R8,FATAL,runtime_exception,106,RuntimeError: torch.nn.functional.binary_cross_entropy and torch.nn.BCELoss are unsafe to autocast.
+R8,WARN,skipped_backward_batches,106,累计跳过反向批次=10

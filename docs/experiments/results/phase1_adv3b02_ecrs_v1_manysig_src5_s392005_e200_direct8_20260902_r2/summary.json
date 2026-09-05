@@ -1,0 +1,35 @@
+{
+  "schema": "adv3b02_ecrs_v1_analysis_v1",
+  "run_id": "phase1_adv3b02_ecrs_v1_manysig_src5_s392005_e200_direct8_20260902_r2",
+  "source_snapshot": "E:\\type10-7\\automation_reports\\CV-SincNet\\phase1_adv3b02_ecrs_v1_manysig_src5_s392005_e200_direct8_20260902_r2\\data\\snapshot_20260905_2340",
+  "log_root": "E:\\type10-7\\automation_reports\\CV-SincNet\\phase1_adv3b02_ecrs_v1_manysig_src5_s392005_e200_direct8_20260902_r2\\data\\snapshot_20260905_2340\\phase1_adv3b02_ecrs_v1_manysig_src5_s392005_e200_direct8_20260902_r2",
+  "row_count": 8,
+  "epoch_record_count": 1500,
+  "evaluation_record_count": 72,
+  "receiver_record_count": 168,
+  "diagnostic_rungs": [
+    "R1",
+    "R2",
+    "R3",
+    "R4",
+    "R5",
+    "R6"
+  ],
+  "probe_method": "deterministic SHA1 group 80/20 split; train-standardized nearest centroid; paired views share split",
+  "limitations": [
+    "Probe scores are descriptive source-only diagnostics, not registered target-query results.",
+    "Snapshot-incomplete rows have no final-performance claim.",
+    "NaN in disabled/inapplicable telemetry is preserved as blank rather than classified as a numerical failure."
+  ],
+  "files": [
+    "run_summary.csv",
+    "epoch_metrics_full.csv",
+    "stage_summary.csv",
+    "training_diary.csv",
+    "evaluations.csv",
+    "receiver_results.csv",
+    "diagnostics_summary.csv",
+    "probe_results.csv",
+    "anomalies.csv"
+  ]
+}

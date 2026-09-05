@@ -3,13 +3,14 @@
 ## 1.状态与变更边界
 
 - run_id：`phase1_adv3b02_ecrs_v1_manysig_src5_s392005_e200_direct8_20260902_r2`
-- 当前状态：`RUNNING`；2026-09-02约11:11（Asia/Hong_Kong）按用户即时指令启动
+- 当前状态：`PARTIAL_CLOSURE`；R1–R6已闭合，R7在2026-09-05 23:40快照为194/200且仍运行，R8在E106发生系统性技术失败
 - 正式实验：R1–R8，共8个
 - code_commit：`1fb9fe05d9dcaba5cd21e8fed16270d0745e2e72`
 - Git分支：`codex/adv3b02-ecrs-v1-parity-fix-20260901`
 - 用户覆盖：不运行共享R0；R1–R8分别从随机初始化开始端到端训练
 - 设计一致性：ECRS模块、rung递进、loss、数据、seed、epoch和评测保持报告V1配置；仅共享收敛R0前置被用户明确移除
 - 声明边界：这是`USER_OVERRIDE_NON_SHARED_BASELINE`近似，不能用R1–R8差值声明严格共享基线下的单机制因果增益
+- 最新全面实现、实验数据和训练日记：[`phase1_adv3b02_ecrs_v1_manysig_src5_s392005_e200_direct8_20260902_r2_comprehensive_report_20260905.md`](phase1_adv3b02_ecrs_v1_manysig_src5_s392005_e200_direct8_20260902_r2_comprehensive_report_20260905.md)
 
 ## 2.冻结数据
 
@@ -262,3 +263,16 @@ clean结果存在明显receiver异质性：seen-day范围为65.31%–93.63%，un
 当前证据支持三个结论。第一，八卡run仍在运行，不能宣称实验跑完。第二，R1/R2已经证明ECRS两种固定基在clean target上约79%，但三LEO场景仅约51%，相对clean下降约28个百分点。第三，R1/R2差异小于0.5个百分点且缺少共享初始化，现阶段没有足够证据判定样条基优于Memory Polynomial。
 
 完整闭合仍需：R1完成selected-best三LEO复评；R3–R8达到E200；8个row分别保存selected final checkpoint的clean与三个LEO结果；确认最终artifact身份；随后才能进行八row同口径比较并将run推进至`ARTIFACTS_COMPLETE→ANALYZED`。
+
+## 21.2026-09-05全面快照更新
+
+早期章节按时间保留当时可观察状态；本节与链接的全面报告覆盖其状态结论。
+
+- R1–R6均已达到E200，当前checkpoint和source-val selected-best checkpoint的clean＋三类LEO评测闭合，且各有98条source-only终轮诊断记录。
+- R1–R6 clean总体为78.37%–79.43%，主分数为76.94–77.71；三LEO总体均值为50.88%–52.87%。R3的clean/主分数描述性最高，R4的LEO均值描述性最高。
+- R7冻结快照为194/200，无fatal异常且仍在运行；不报告最终性能。
+- R8在E106因CUDA AMP下`binary_cross_entropy`不安全而确定性中止；保留checkpoint但没有最终四场景结果。该状态是技术失败，不是性能失败。
+- 运行后接线审计发现R6的same-TX loss被`resp_cls`外层条件挡住，实际为零；R7才同时首次执行same-TX、response CE与different-TX。设计追溯表已将相关项从`verified`调整为`partial`。
+- 2026-09-05快照的1500条逐epoch记录、72条场景/分组评测、168条receiver结果和R1–R6诊断汇总位于[`results/phase1_adv3b02_ecrs_v1_manysig_src5_s392005_e200_direct8_20260902_r2/`](results/phase1_adv3b02_ecrs_v1_manysig_src5_s392005_e200_direct8_20260902_r2/)。
+
+详细机制、公式、训练阶段、完整结果、probe解释及科学边界以[全面报告](phase1_adv3b02_ecrs_v1_manysig_src5_s392005_e200_direct8_20260902_r2_comprehensive_report_20260905.md)为准。由于没有共享R0、R6接线不完整、R7未完成且R8技术中止，本run不形成晋级结论。
