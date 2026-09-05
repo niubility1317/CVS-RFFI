@@ -19,7 +19,7 @@ from post_stage_common import build_baseline_model
 from cvsrffi import pair_reform_runtime as runtime
 from cvsrffi.deployment_orbit import stable_orbit_key_tensor
 from cvsrffi.orbit_teacher import DenseTemporalOrbitMemory
-from SSDG.train_ssdg import build_arg_parser
+from SSDG.train_ssdg import build_arg_parser, _update_ema_model
 
 
 def load_model(checkpoint: Path, device: torch.device):
@@ -78,6 +78,7 @@ def run_smoke(checkpoint: Path, device: torch.device, *, amp=False, training_man
         labels = teacher_clean['tx_logits'].argmax(-1)
         for name in ('point', 'safe', 'asymmetric', 'tangent_only', 'route_only', 'memory'):
             model.load_state_dict(initial, strict=True)
+            teacher.load_state_dict(initial, strict=True)
             model.train()
             selected = next((r for r in manifest_rows if r['candidate']==names[name]),None)
             # Use the real training namespace; artificial fields concealed the E11 failure.
@@ -131,7 +132,12 @@ def run_smoke(checkpoint: Path, device: torch.device, *, amp=False, training_man
                     transaction.finish(applied=False)
                     raise RuntimeError(f'{name}: optimizer produced nonfinite parameters')
                 transaction.finish(applied=True)
+                _update_ema_model(teacher,model,.5)
+                with torch.no_grad(), torch.autocast(device_type=device.type,dtype=torch.float16,enabled=amp):
+                    refreshed=teacher.forward_identity_only(clean,domain_labels=domains)
+                    runtime._fixed_head_weights(teacher,refreshed)
                 step_rows.append({'loss':float(loss.detach()), 'pair_loss':float(result['loss'].detach()),
+                    'ema_updated':True,'post_ema_head_consistency':'VERIFIED',
                     'role':'L' if step==0 else 'U','epoch':epoch,'amp':amp,
                     'components':sorted(result['weighted_components']),
                     'student_extra_samples':int(result['diagnostics']['student_extra_views'])})

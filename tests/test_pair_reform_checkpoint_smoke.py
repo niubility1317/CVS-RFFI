@@ -54,4 +54,5 @@ def test_checkpoint_smoke_cuda_amp_real_namespace_l_and_u(checkpoint):
     for row in result['rows'].values():
         assert [s['role'] for s in row['steps']]==['L','U']
         assert all(s['amp'] for s in row['steps'])
+        assert all(s['ema_updated'] and s['post_ema_head_consistency']=='VERIFIED' for s in row['steps'])
         assert 'orbit_logit' in row['steps'][1]['components']

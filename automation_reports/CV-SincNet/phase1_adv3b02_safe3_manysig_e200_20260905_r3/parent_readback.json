@@ -1,0 +1,355 @@
+{
+  "status": "STOPPED_NEW_ROWS_WAITING_HEALTHY",
+  "dispatcher_pid": 2176400,
+  "dispatcher_alive": true,
+  "smoke": {
+    "schema": "cvs.phase1.adv3b02_pair_reform_checkpoint_smoke.v1",
+    "status": "VERIFIED",
+    "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth",
+    "checkpoint_epoch": 194,
+    "checkpoint_compatibility": {
+      "missing": [],
+      "unexpected": []
+    },
+    "input_role": "source_shaped_synthetic_smoke_only",
+    "query_inputs": 0,
+    "target_inputs": 0,
+    "teacher_domain_forwards": 0,
+    "teacher_identity_forwards": 13,
+    "fixed_head_consistency": "VERIFIED",
+    "classifier_weight_shape": [
+      6,
+      160
+    ],
+    "rows": {
+      "point": {
+        "status": "VERIFIED",
+        "optimizer_steps": 2,
+        "parameters_changed": true,
+        "steps": [
+          {
+            "loss": 2.139711618423462,
+            "pair_loss": 0.5317018032073975,
+            "role": "L",
+            "epoch": 21,
+            "amp": true,
+            "components": [
+              "orbit_z"
+            ],
+            "student_extra_samples": 0
+          },
+          {
+            "loss": 7.00048828125,
+            "pair_loss": 1.1701451539993286,
+            "role": "U",
+            "epoch": 22,
+            "amp": true,
+            "components": [
+              "orbit_logit",
+              "orbit_z"
+            ],
+            "student_extra_samples": 0
+          }
+        ]
+      },
+      "safe": {
+        "status": "VERIFIED",
+        "optimizer_steps": 2,
+        "parameters_changed": true,
+        "steps": [
+          {
+            "loss": 6.654519081115723,
+            "pair_loss": 0.5229427814483643,
+            "role": "L",
+            "epoch": 21,
+            "amp": true,
+            "components": [
+              "orbit_z"
+            ],
+            "student_extra_samples": 0
+          },
+          {
+            "loss": 3.870182752609253,
+            "pair_loss": 1.4638347625732422,
+            "role": "U",
+            "epoch": 22,
+            "amp": true,
+            "components": [
+              "orbit_logit",
+              "orbit_z"
+            ],
+            "student_extra_samples": 0
+          }
+        ]
+      },
+      "asymmetric": {
+        "status": "VERIFIED",
+        "optimizer_steps": 2,
+        "parameters_changed": true,
+        "steps": [
+          {
+            "loss": 2.9798171520233154,
+            "pair_loss": 0.6881563067436218,
+            "role": "L",
+            "epoch": 21,
+            "amp": true,
+            "components": [
+              "orbit_z"
+            ],
+            "student_extra_samples": 0
+          },
+          {
+            "loss": 3.572437286376953,
+            "pair_loss": 1.282125473022461,
+            "role": "U",
+            "epoch": 22,
+            "amp": true,
+            "components": [
+              "orbit_logit",
+              "orbit_z"
+            ],
+            "student_extra_samples": 0
+          }
+        ]
+      },
+      "tangent_only": {
+        "status": "VERIFIED",
+        "optimizer_steps": 2,
+        "parameters_changed": true,
+        "steps": [
+          {
+            "loss": 4.56791877746582,
+            "pair_loss": 0.4816257953643799,
+            "role": "L",
+            "epoch": 21,
+            "amp": true,
+            "components": [
+              "orbit_z",
+              "tangent"
+            ],
+            "student_extra_samples": 4
+          },
+          {
+            "loss": 4.475435733795166,
+            "pair_loss": 1.2933111190795898,
+            "role": "U",
+            "epoch": 22,
+            "amp": true,
+            "components": [
+              "orbit_logit",
+              "orbit_z"
+            ],
+            "student_extra_samples": 0
+          }
+        ]
+      },
+      "route_only": {
+        "status": "VERIFIED",
+        "optimizer_steps": 2,
+        "parameters_changed": true,
+        "steps": [
+          {
+            "loss": 0.4807997941970825,
+            "pair_loss": 0.47829684615135193,
+            "role": "L",
+            "epoch": 21,
+            "amp": true,
+            "components": [
+              "orbit_z",
+              "route"
+            ],
+            "student_extra_samples": 8
+          },
+          {
+            "loss": 0.45274481177330017,
+            "pair_loss": 0.36463046073913574,
+            "role": "U",
+            "epoch": 22,
+            "amp": true,
+            "components": [
+              "orbit_logit",
+              "orbit_z"
+            ],
+            "student_extra_samples": 0
+          }
+        ]
+      },
+      "memory": {
+        "status": "VERIFIED",
+        "optimizer_steps": 2,
+        "parameters_changed": true,
+        "steps": [
+          {
+            "loss": 3.468097686767578,
+            "pair_loss": 0.6033512353897095,
+            "role": "L",
+            "epoch": 21,
+            "amp": true,
+            "components": [
+              "orbit_z"
+            ],
+            "student_extra_samples": 0
+          },
+          {
+            "loss": 0.348681777715683,
+            "pair_loss": 0.3466303050518036,
+            "role": "U",
+            "epoch": 22,
+            "amp": true,
+            "components": [
+              "orbit_logit",
+              "orbit_z"
+            ],
+            "student_extra_samples": 0
+          }
+        ],
+        "memory_hit_rate": 1.0
+      }
+    },
+    "amp": true,
+    "training_manifest": "/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair12_manysig_e200_20260905_r2/configs/phase1_adv3b02_pair12_recovery_manifest.json",
+    "claim_boundary": "Runtime correctness only; synthetic labels, no measured scientific accuracy or throughput."
+  },
+  "counts": {
+    "TECHNICAL_FAILURE": 3,
+    "RUNNING": 9
+  },
+  "unlaunched": 0,
+  "rows": [
+    {
+      "row_id": "B_SAFE_S392005",
+      "pid": 2176962,
+      "gpu": 1,
+      "status": "TECHNICAL_FAILURE",
+      "exit_code": 1,
+      "alive": false,
+      "cwd": null,
+      "log_bytes": 64799,
+      "last_epoch": 10,
+      "tail": "eason=\n[PROTO-TX] enabled=1 audit_only=0 lambda_tx_proto=0 module_import=1\n[PROTO-RX] enabled=1 lambda_rx_proto=0 module_import=1\n[MASK] enabled=1 lambda_mask_aux=0 module_import=1\n[BATCH-GEOM] balanced_sampler=0 geometry_losses=1 lambda_txrx_rect=0 sampler_import=1 geometry_import=1\n[TXRX-ANOVA] status=audit_marker_only active_loss=1\n[ZID-FEATURE-SPACE] proto_memory=1 lambda_proto=0.0032 open_world_feat=1 lambda_open_world_feat=0.0024 zid_compact=1 lambda_zid_compact=0.032 proxy_unknown=1 lambda_proxy_unknown=0.0045 soft_unknown_mixup=1 lambda_soft_unknown_mixup=0.0045 source_episode=1 lambda_source_episode=0.0035 phase2_export=1\n[BEST-SOURCE-VAL] val_tx=97.60% @ E006 heldout_test=not_evaluated_on_frozen_best\n[TAIL-CONTROL] state=-1 action=-1 reference_ready=0 reference_saved=0 rollback_applied=0 final_blocked=0\n[CKPT]  latest -> /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_pair12_manysig_e200_20260905_r2/B_SAFE_S392005/NOT_SAVED_FINAL_ONLY (recovery) | final_only -> /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_pair12_manysig_e200_20260905_r2/B_SAFE_S392005/final_ssdg.pth (written after training; telemetry_best=0)\n[EPOCH-END] E010/200\n====================================================================================================================================\nTraceback (most recent call last):\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair12_manysig_e200_20260905_r2/code/SSDG/train_ssdg.py\", line 14598, in <module>\n    raise SystemExit(main())\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair12_manysig_e200_20260905_r2/code/SSDG/train_ssdg.py\", line 14594, in main\n    return train(args)\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair12_manysig_e200_20260905_r2/code/SSDG/train_ssdg.py\", line 10680, in train\n    pair_result=compute_pair_batch(model=model,teacher=ema_model,\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair12_manysig_e200_20260905_r2/code/cvsrffi/pair_reform_runtime.py\", line 198, in compute_pair_batch\n    w=_fixed_head_weights(teacher,tc)\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair12_manysig_e200_20260905_r2/code/cvsrffi/pair_reform_runtime.py\", line 106, in _fixed_head_weights\n    raise ValueError('safe region z_id and actual teacher classifier feature spaces differ')\nValueError: safe region z_id and actual teacher classifier feature spaces differ\n"
+    },
+    {
+      "row_id": "TANGENT_S392005",
+      "pid": 2176967,
+      "gpu": 3,
+      "status": "RUNNING",
+      "exit_code": null,
+      "alive": true,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair12_manysig_e200_20260905_r2",
+      "log_bytes": 103561,
+      "last_epoch": 17
+    },
+    {
+      "row_id": "ROUTE_S392005",
+      "pid": 2176972,
+      "gpu": 4,
+      "status": "RUNNING",
+      "exit_code": null,
+      "alive": true,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair12_manysig_e200_20260905_r2",
+      "log_bytes": 92073,
+      "last_epoch": 15
+    },
+    {
+      "row_id": "TANGENT_ROUTE_S392005",
+      "pid": 2176977,
+      "gpu": 5,
+      "status": "RUNNING",
+      "exit_code": null,
+      "alive": true,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair12_manysig_e200_20260905_r2",
+      "log_bytes": 92377,
+      "last_epoch": 15
+    },
+    {
+      "row_id": "B_SAFE_S392006",
+      "pid": 2176982,
+      "gpu": 2,
+      "status": "TECHNICAL_FAILURE",
+      "exit_code": 1,
+      "alive": false,
+      "cwd": null,
+      "log_bytes": 64799,
+      "last_epoch": 10,
+      "tail": "eason=\n[PROTO-TX] enabled=1 audit_only=0 lambda_tx_proto=0 module_import=1\n[PROTO-RX] enabled=1 lambda_rx_proto=0 module_import=1\n[MASK] enabled=1 lambda_mask_aux=0 module_import=1\n[BATCH-GEOM] balanced_sampler=0 geometry_losses=1 lambda_txrx_rect=0 sampler_import=1 geometry_import=1\n[TXRX-ANOVA] status=audit_marker_only active_loss=1\n[ZID-FEATURE-SPACE] proto_memory=1 lambda_proto=0.0032 open_world_feat=1 lambda_open_world_feat=0.0024 zid_compact=1 lambda_zid_compact=0.032 proxy_unknown=1 lambda_proxy_unknown=0.0045 soft_unknown_mixup=1 lambda_soft_unknown_mixup=0.0045 source_episode=1 lambda_source_episode=0.0035 phase2_export=1\n[BEST-SOURCE-VAL] val_tx=98.18% @ E010 heldout_test=not_evaluated_on_frozen_best\n[TAIL-CONTROL] state=-1 action=-1 reference_ready=0 reference_saved=0 rollback_applied=0 final_blocked=0\n[CKPT]  latest -> /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_pair12_manysig_e200_20260905_r2/B_SAFE_S392006/NOT_SAVED_FINAL_ONLY (recovery) | final_only -> /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_pair12_manysig_e200_20260905_r2/B_SAFE_S392006/final_ssdg.pth (written after training; telemetry_best=1)\n[EPOCH-END] E010/200\n====================================================================================================================================\nTraceback (most recent call last):\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair12_manysig_e200_20260905_r2/code/SSDG/train_ssdg.py\", line 14598, in <module>\n    raise SystemExit(main())\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair12_manysig_e200_20260905_r2/code/SSDG/train_ssdg.py\", line 14594, in main\n    return train(args)\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair12_manysig_e200_20260905_r2/code/SSDG/train_ssdg.py\", line 10680, in train\n    pair_result=compute_pair_batch(model=model,teacher=ema_model,\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair12_manysig_e200_20260905_r2/code/cvsrffi/pair_reform_runtime.py\", line 198, in compute_pair_batch\n    w=_fixed_head_weights(teacher,tc)\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair12_manysig_e200_20260905_r2/code/cvsrffi/pair_reform_runtime.py\", line 106, in _fixed_head_weights\n    raise ValueError('safe region z_id and actual teacher classifier feature spaces differ')\nValueError: safe region z_id and actual teacher classifier feature spaces differ\n"
+    },
+    {
+      "row_id": "TANGENT_S392006",
+      "pid": 2176987,
+      "gpu": 4,
+      "status": "RUNNING",
+      "exit_code": null,
+      "alive": true,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair12_manysig_e200_20260905_r2",
+      "log_bytes": 92149,
+      "last_epoch": 15
+    },
+    {
+      "row_id": "ROUTE_S392006",
+      "pid": 2176994,
+      "gpu": 5,
+      "status": "RUNNING",
+      "exit_code": null,
+      "alive": true,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair12_manysig_e200_20260905_r2",
+      "log_bytes": 92073,
+      "last_epoch": 15
+    },
+    {
+      "row_id": "TANGENT_ROUTE_S392006",
+      "pid": 2177000,
+      "gpu": 6,
+      "status": "RUNNING",
+      "exit_code": null,
+      "alive": true,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair12_manysig_e200_20260905_r2",
+      "log_bytes": 86664,
+      "last_epoch": 14
+    },
+    {
+      "row_id": "B_SAFE_S392007",
+      "pid": 2177006,
+      "gpu": 3,
+      "status": "TECHNICAL_FAILURE",
+      "exit_code": 1,
+      "alive": false,
+      "cwd": null,
+      "log_bytes": 64799,
+      "last_epoch": 10,
+      "tail": "eason=\n[PROTO-TX] enabled=1 audit_only=0 lambda_tx_proto=0 module_import=1\n[PROTO-RX] enabled=1 lambda_rx_proto=0 module_import=1\n[MASK] enabled=1 lambda_mask_aux=0 module_import=1\n[BATCH-GEOM] balanced_sampler=0 geometry_losses=1 lambda_txrx_rect=0 sampler_import=1 geometry_import=1\n[TXRX-ANOVA] status=audit_marker_only active_loss=1\n[ZID-FEATURE-SPACE] proto_memory=1 lambda_proto=0.0032 open_world_feat=1 lambda_open_world_feat=0.0024 zid_compact=1 lambda_zid_compact=0.032 proxy_unknown=1 lambda_proxy_unknown=0.0045 soft_unknown_mixup=1 lambda_soft_unknown_mixup=0.0045 source_episode=1 lambda_source_episode=0.0035 phase2_export=1\n[BEST-SOURCE-VAL] val_tx=97.74% @ E009 heldout_test=not_evaluated_on_frozen_best\n[TAIL-CONTROL] state=-1 action=-1 reference_ready=0 reference_saved=0 rollback_applied=0 final_blocked=0\n[CKPT]  latest -> /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_pair12_manysig_e200_20260905_r2/B_SAFE_S392007/NOT_SAVED_FINAL_ONLY (recovery) | final_only -> /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_pair12_manysig_e200_20260905_r2/B_SAFE_S392007/final_ssdg.pth (written after training; telemetry_best=0)\n[EPOCH-END] E010/200\n====================================================================================================================================\nTraceback (most recent call last):\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair12_manysig_e200_20260905_r2/code/SSDG/train_ssdg.py\", line 14598, in <module>\n    raise SystemExit(main())\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair12_manysig_e200_20260905_r2/code/SSDG/train_ssdg.py\", line 14594, in main\n    return train(args)\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair12_manysig_e200_20260905_r2/code/SSDG/train_ssdg.py\", line 10680, in train\n    pair_result=compute_pair_batch(model=model,teacher=ema_model,\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair12_manysig_e200_20260905_r2/code/cvsrffi/pair_reform_runtime.py\", line 198, in compute_pair_batch\n    w=_fixed_head_weights(teacher,tc)\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair12_manysig_e200_20260905_r2/code/cvsrffi/pair_reform_runtime.py\", line 106, in _fixed_head_weights\n    raise ValueError('safe region z_id and actual teacher classifier feature spaces differ')\nValueError: safe region z_id and actual teacher classifier feature spaces differ\n"
+    },
+    {
+      "row_id": "TANGENT_S392007",
+      "pid": 2177012,
+      "gpu": 5,
+      "status": "RUNNING",
+      "exit_code": null,
+      "alive": true,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair12_manysig_e200_20260905_r2",
+      "log_bytes": 92149,
+      "last_epoch": 15
+    },
+    {
+      "row_id": "ROUTE_S392007",
+      "pid": 2177018,
+      "gpu": 6,
+      "status": "RUNNING",
+      "exit_code": null,
+      "alive": true,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair12_manysig_e200_20260905_r2",
+      "log_bytes": 86376,
+      "last_epoch": 14
+    },
+    {
+      "row_id": "TANGENT_ROUTE_S392007",
+      "pid": 2177025,
+      "gpu": 7,
+      "status": "RUNNING",
+      "exit_code": null,
+      "alive": true,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair12_manysig_e200_20260905_r2",
+      "log_bytes": 92377,
+      "last_epoch": 15
+    }
+  ]
+}

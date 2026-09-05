@@ -1927,7 +1927,8 @@ def _temporal_bank_mask_tensor(
 def _update_ema_model(ema_model, model, decay: float) -> None:
     with torch.no_grad():
         for ema_p, p in zip(ema_model.parameters(), model.parameters()):
-            ema_p.data.mul_(float(decay)).add_(p.data, alpha=1.0 - float(decay))
+            # Preserve Parameter version updates so inference weight caches expire.
+            ema_p.mul_(float(decay)).add_(p, alpha=1.0 - float(decay))
         for ema_b, b in zip(ema_model.buffers(), model.buffers()):
             ema_b.copy_(b)
 
