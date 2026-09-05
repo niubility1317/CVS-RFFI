@@ -88,3 +88,6 @@ git diff --check
 ```
 
 Git交付使用当前独立分支，不合并默认分支；最终提交OID与远端读回结果见本次任务回复。
+# E11技术恢复补充（2026-09-05）
+
+原24行中12行在机制启用时暴露AMP头校验和缺失采样率字段错误；修复前5个回归测试复现，修复后通过。真实parser＋CUDA AMP＋L/U checkpoint smoke替代原人工namespace／纯CPU覆盖。新run仅恢复失败12行、其余健康12行继续；完整映射与证据见`automation_reports/CV-SincNet/phase1_adv3b02_pair12_manysig_e200_20260905_r2/report.md`。实际性能、多seed结论仍待E200完成。

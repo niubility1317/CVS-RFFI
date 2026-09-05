@@ -21,9 +21,11 @@ def remote(source):
 def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('action',choices=['preflight','release','observe'])
+    parser.add_argument('--manifest',type=Path,default=MANIFEST)
     args=parser.parse_args()
-    m=json.loads(MANIFEST.read_text(encoding='utf-8'))
-    prefix='import json, pathlib, subprocess, os\nm='+repr(m)+'\n'
+    m=json.loads(args.manifest.read_text(encoding='utf-8'))
+    manifest_relative=str(args.manifest.resolve().relative_to(ROOT).as_posix())
+    prefix='import json, pathlib, subprocess, os\nm='+repr(m)+'\nmanifest_relative='+repr(manifest_relative)+'\n'
     if args.action=='preflight':
         remote(prefix+"""
 print(json.dumps({k:{'exists':pathlib.Path(m[k]).exists(),'path':m[k]} for k in ('python','checkpoint','dataset','code_root','output_root')}))
@@ -53,7 +55,7 @@ with tarfile.open(archive) as bundle:
     bundle.extractall(p)
 files=['tools/pair_matrix_dispatch.py','tools/pair_matrix_start.py','tools/pair_matrix_manifest.py','code/scripts/smoke_adv3b02_pair_reform.py','code/SSDG/train_ssdg.py','code/cvsrffi/pair_reform.py','code/cvsrffi/pair_reform_runtime.py']
 subprocess.run([m['python'],'-m','py_compile']+files,cwd=p,check=True)
-saved=json.loads((p/'configs/phase1_adv3b02_pair24_manifest.json').read_text()); assert saved==m
+saved=json.loads((p/manifest_relative).read_text()); assert saved==m
 print(json.dumps({'release':'VERIFIED','sha256':actual,'rows':len(saved['rows'])}))
 """)
     else:

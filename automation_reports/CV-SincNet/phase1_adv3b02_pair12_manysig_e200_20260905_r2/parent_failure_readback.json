@@ -1,0 +1,412 @@
+{
+  "status": "STOPPED_NEW_ROWS_WAITING_HEALTHY",
+  "dispatcher_pid": 2141267,
+  "dispatcher_alive": true,
+  "smoke": {
+    "schema": "cvs.phase1.adv3b02_pair_reform_checkpoint_smoke.v1",
+    "status": "VERIFIED",
+    "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth",
+    "checkpoint_epoch": 194,
+    "checkpoint_compatibility": {
+      "missing": [],
+      "unexpected": []
+    },
+    "input_role": "source_shaped_synthetic_smoke_only",
+    "query_inputs": 0,
+    "target_inputs": 0,
+    "teacher_domain_forwards": 0,
+    "teacher_identity_forwards": 8,
+    "fixed_head_consistency": "VERIFIED",
+    "classifier_weight_shape": [
+      6,
+      160
+    ],
+    "rows": {
+      "point": {
+        "status": "VERIFIED",
+        "optimizer_steps": 1,
+        "parameters_changed": true,
+        "steps": [
+          {
+            "loss": 4.475488662719727,
+            "pair_loss": 0.39283642172813416,
+            "components": [
+              "orbit_z"
+            ],
+            "student_extra_samples": 0
+          }
+        ]
+      },
+      "safe": {
+        "status": "VERIFIED",
+        "optimizer_steps": 1,
+        "parameters_changed": true,
+        "steps": [
+          {
+            "loss": 1.8941969871520996,
+            "pair_loss": 0.6368324160575867,
+            "components": [
+              "orbit_z"
+            ],
+            "student_extra_samples": 0
+          }
+        ]
+      },
+      "asymmetric": {
+        "status": "VERIFIED",
+        "optimizer_steps": 1,
+        "parameters_changed": true,
+        "steps": [
+          {
+            "loss": 5.855806350708008,
+            "pair_loss": 0.4436607360839844,
+            "components": [
+              "orbit_z"
+            ],
+            "student_extra_samples": 0
+          }
+        ]
+      },
+      "tangent_only": {
+        "status": "VERIFIED",
+        "optimizer_steps": 1,
+        "parameters_changed": true,
+        "steps": [
+          {
+            "loss": 5.501335620880127,
+            "pair_loss": 0.5466799736022949,
+            "components": [
+              "orbit_z",
+              "tangent"
+            ],
+            "student_extra_samples": 4
+          }
+        ]
+      },
+      "route_only": {
+        "status": "VERIFIED",
+        "optimizer_steps": 1,
+        "parameters_changed": true,
+        "steps": [
+          {
+            "loss": 1.071210265159607,
+            "pair_loss": 0.7038636207580566,
+            "components": [
+              "orbit_z",
+              "route"
+            ],
+            "student_extra_samples": 8
+          }
+        ]
+      },
+      "memory": {
+        "status": "VERIFIED",
+        "optimizer_steps": 2,
+        "parameters_changed": true,
+        "steps": [
+          {
+            "loss": 2.464083671569824,
+            "pair_loss": 0.36234018206596375,
+            "components": [
+              "orbit_z"
+            ],
+            "student_extra_samples": 0
+          },
+          {
+            "loss": 3.3687965869903564,
+            "pair_loss": 0.4681733250617981,
+            "components": [
+              "orbit_z"
+            ],
+            "student_extra_samples": 0
+          }
+        ],
+        "memory_hit_rate": 1.0
+      }
+    },
+    "claim_boundary": "Runtime correctness only; synthetic labels, no measured scientific accuracy or throughput."
+  },
+  "counts": {
+    "RUNNING": 12,
+    "TECHNICAL_FAILURE": 12
+  },
+  "unlaunched": 0,
+  "rows": [
+    {
+      "row_id": "A_POINT_S392005",
+      "pid": 2141469,
+      "gpu": 0,
+      "status": "RUNNING",
+      "exit_code": null,
+      "alive": true,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1",
+      "log_bytes": 75046,
+      "last_epoch": 12
+    },
+    {
+      "row_id": "B_SAFE_S392005",
+      "pid": 2141474,
+      "gpu": 1,
+      "status": "TECHNICAL_FAILURE",
+      "exit_code": 1,
+      "alive": false,
+      "cwd": null,
+      "log_bytes": 64755,
+      "last_epoch": 10,
+      "tail": "required=0 drop=0 paic=0 cooldown_active=0 reason=\n[PROTO-TX] enabled=1 audit_only=0 lambda_tx_proto=0 module_import=1\n[PROTO-RX] enabled=1 lambda_rx_proto=0 module_import=1\n[MASK] enabled=1 lambda_mask_aux=0 module_import=1\n[BATCH-GEOM] balanced_sampler=0 geometry_losses=1 lambda_txrx_rect=0 sampler_import=1 geometry_import=1\n[TXRX-ANOVA] status=audit_marker_only active_loss=1\n[ZID-FEATURE-SPACE] proto_memory=1 lambda_proto=0.0032 open_world_feat=1 lambda_open_world_feat=0.0024 zid_compact=1 lambda_zid_compact=0.032 proxy_unknown=1 lambda_proxy_unknown=0.0045 soft_unknown_mixup=1 lambda_soft_unknown_mixup=0.0045 source_episode=1 lambda_source_episode=0.0035 phase2_export=1\n[BEST-SOURCE-VAL] val_tx=98.00% @ E008 heldout_test=not_evaluated_on_frozen_best\n[TAIL-CONTROL] state=-1 action=-1 reference_ready=0 reference_saved=0 rollback_applied=0 final_blocked=0\n[CKPT]  latest -> /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_pair24_manysig_e200_20260905_r1/B_SAFE_S392005/NOT_SAVED_FINAL_ONLY (recovery) | final_only -> /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_pair24_manysig_e200_20260905_r1/B_SAFE_S392005/final_ssdg.pth (written after training; telemetry_best=0)\n[EPOCH-END] E010/200\n====================================================================================================================================\nTraceback (most recent call last):\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1/code/SSDG/train_ssdg.py\", line 14598, in <module>\n    raise SystemExit(main())\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1/code/SSDG/train_ssdg.py\", line 14594, in main\n    return train(args)\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1/code/SSDG/train_ssdg.py\", line 10680, in train\n    pair_result=compute_pair_batch(model=model,teacher=ema_model,\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1/code/cvsrffi/pair_reform_runtime.py\", line 196, in compute_pair_batch\n    w=_fixed_head_weights(teacher,tc)\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1/code/cvsrffi/pair_reform_runtime.py\", line 103, in _fixed_head_weights\n    if not torch.allclose(expected,teacher_clean['tx_logits'].float(),atol=.03,rtol=.002):\nRuntimeError: Half did not match Float\n"
+    },
+    {
+      "row_id": "ASYMMETRIC_S392005",
+      "pid": 2141479,
+      "gpu": 2,
+      "status": "RUNNING",
+      "exit_code": null,
+      "alive": true,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1",
+      "log_bytes": 80849,
+      "last_epoch": 13
+    },
+    {
+      "row_id": "TANGENT_S392005",
+      "pid": 2141484,
+      "gpu": 3,
+      "status": "TECHNICAL_FAILURE",
+      "exit_code": 1,
+      "alive": false,
+      "cwd": null,
+      "log_bytes": 65135,
+      "last_epoch": 10,
+      "tail": "_marker_only active_loss=1\n[ZID-FEATURE-SPACE] proto_memory=1 lambda_proto=0.0032 open_world_feat=1 lambda_open_world_feat=0.0024 zid_compact=1 lambda_zid_compact=0.032 proxy_unknown=1 lambda_proxy_unknown=0.0045 soft_unknown_mixup=1 lambda_soft_unknown_mixup=0.0045 source_episode=1 lambda_source_episode=0.0035 phase2_export=1\n[BEST-SOURCE-VAL] val_tx=97.96% @ E008 heldout_test=not_evaluated_on_frozen_best\n[TAIL-CONTROL] state=-1 action=-1 reference_ready=0 reference_saved=0 rollback_applied=0 final_blocked=0\n[CKPT]  latest -> /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_pair24_manysig_e200_20260905_r1/TANGENT_S392005/NOT_SAVED_FINAL_ONLY (recovery) | final_only -> /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_pair24_manysig_e200_20260905_r1/TANGENT_S392005/final_ssdg.pth (written after training; telemetry_best=0)\n[EPOCH-END] E010/200\n====================================================================================================================================\nTraceback (most recent call last):\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1/code/SSDG/train_ssdg.py\", line 14598, in <module>\n    raise SystemExit(main())\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1/code/SSDG/train_ssdg.py\", line 14594, in main\n    return train(args)\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1/code/SSDG/train_ssdg.py\", line 10680, in train\n    pair_result=compute_pair_batch(model=model,teacher=ema_model,\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1/code/cvsrffi/pair_reform_runtime.py\", line 218, in compute_pair_batch\n    directions=direction_objectives(model,clean,channel,domain_labels=domains,\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1/code/cvsrffi/pair_reform_runtime.py\", line 64, in direction_objectives\n    base_n, changed_n = deterministic_pair(model, x, nuisance_transform(x), domain_labels=domains)\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1/code/cvsrffi/pair_reform_runtime.py\", line 221, in <lambda>\n    nuisance_transform=lambda x: apply_physical_probe(x,name='sto',amount=delta,sample_rate_hz=args.sat_fs_hz),\nAttributeError: 'Namespace' object has no attribute 'sat_fs_hz'\n"
+    },
+    {
+      "row_id": "ROUTE_S392005",
+      "pid": 2141489,
+      "gpu": 4,
+      "status": "TECHNICAL_FAILURE",
+      "exit_code": 1,
+      "alive": false,
+      "cwd": null,
+      "log_bytes": 65079,
+      "last_epoch": 10,
+      "tail": "udit_marker_only active_loss=1\n[ZID-FEATURE-SPACE] proto_memory=1 lambda_proto=0.0032 open_world_feat=1 lambda_open_world_feat=0.0024 zid_compact=1 lambda_zid_compact=0.032 proxy_unknown=1 lambda_proxy_unknown=0.0045 soft_unknown_mixup=1 lambda_soft_unknown_mixup=0.0045 source_episode=1 lambda_source_episode=0.0035 phase2_export=1\n[BEST-SOURCE-VAL] val_tx=97.60% @ E009 heldout_test=not_evaluated_on_frozen_best\n[TAIL-CONTROL] state=-1 action=-1 reference_ready=0 reference_saved=0 rollback_applied=0 final_blocked=0\n[CKPT]  latest -> /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_pair24_manysig_e200_20260905_r1/ROUTE_S392005/NOT_SAVED_FINAL_ONLY (recovery) | final_only -> /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_pair24_manysig_e200_20260905_r1/ROUTE_S392005/final_ssdg.pth (written after training; telemetry_best=0)\n[EPOCH-END] E010/200\n====================================================================================================================================\nTraceback (most recent call last):\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1/code/SSDG/train_ssdg.py\", line 14598, in <module>\n    raise SystemExit(main())\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1/code/SSDG/train_ssdg.py\", line 14594, in main\n    return train(args)\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1/code/SSDG/train_ssdg.py\", line 10680, in train\n    pair_result=compute_pair_batch(model=model,teacher=ema_model,\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1/code/cvsrffi/pair_reform_runtime.py\", line 218, in compute_pair_batch\n    directions=direction_objectives(model,clean,channel,domain_labels=domains,\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1/code/cvsrffi/pair_reform_runtime.py\", line 64, in direction_objectives\n    base_n, changed_n = deterministic_pair(model, x, nuisance_transform(x), domain_labels=domains)\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1/code/cvsrffi/pair_reform_runtime.py\", line 221, in <lambda>\n    nuisance_transform=lambda x: apply_physical_probe(x,name='sto',amount=delta,sample_rate_hz=args.sat_fs_hz),\nAttributeError: 'Namespace' object has no attribute 'sat_fs_hz'\n"
+    },
+    {
+      "row_id": "TANGENT_ROUTE_S392005",
+      "pid": 2141495,
+      "gpu": 5,
+      "status": "TECHNICAL_FAILURE",
+      "exit_code": 1,
+      "alive": false,
+      "cwd": null,
+      "log_bytes": 65303,
+      "last_epoch": 10,
+      "tail": " active_loss=1\n[ZID-FEATURE-SPACE] proto_memory=1 lambda_proto=0.0032 open_world_feat=1 lambda_open_world_feat=0.0024 zid_compact=1 lambda_zid_compact=0.032 proxy_unknown=1 lambda_proxy_unknown=0.0045 soft_unknown_mixup=1 lambda_soft_unknown_mixup=0.0045 source_episode=1 lambda_source_episode=0.0035 phase2_export=1\n[BEST-SOURCE-VAL] val_tx=97.62% @ E009 heldout_test=not_evaluated_on_frozen_best\n[TAIL-CONTROL] state=-1 action=-1 reference_ready=0 reference_saved=0 rollback_applied=0 final_blocked=0\n[CKPT]  latest -> /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_pair24_manysig_e200_20260905_r1/TANGENT_ROUTE_S392005/NOT_SAVED_FINAL_ONLY (recovery) | final_only -> /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_pair24_manysig_e200_20260905_r1/TANGENT_ROUTE_S392005/final_ssdg.pth (written after training; telemetry_best=0)\n[EPOCH-END] E010/200\n====================================================================================================================================\nTraceback (most recent call last):\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1/code/SSDG/train_ssdg.py\", line 14598, in <module>\n    raise SystemExit(main())\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1/code/SSDG/train_ssdg.py\", line 14594, in main\n    return train(args)\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1/code/SSDG/train_ssdg.py\", line 10680, in train\n    pair_result=compute_pair_batch(model=model,teacher=ema_model,\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1/code/cvsrffi/pair_reform_runtime.py\", line 218, in compute_pair_batch\n    directions=direction_objectives(model,clean,channel,domain_labels=domains,\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1/code/cvsrffi/pair_reform_runtime.py\", line 64, in direction_objectives\n    base_n, changed_n = deterministic_pair(model, x, nuisance_transform(x), domain_labels=domains)\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1/code/cvsrffi/pair_reform_runtime.py\", line 221, in <lambda>\n    nuisance_transform=lambda x: apply_physical_probe(x,name='sto',amount=delta,sample_rate_hz=args.sat_fs_hz),\nAttributeError: 'Namespace' object has no attribute 'sat_fs_hz'\n"
+    },
+    {
+      "row_id": "POINT_MEMORY_S392005",
+      "pid": 2141501,
+      "gpu": 6,
+      "status": "RUNNING",
+      "exit_code": null,
+      "alive": true,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1",
+      "log_bytes": 80917,
+      "last_epoch": 13
+    },
+    {
+      "row_id": "MATCHED_ZERO_S392005",
+      "pid": 2141507,
+      "gpu": 7,
+      "status": "RUNNING",
+      "exit_code": null,
+      "alive": true,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1",
+      "log_bytes": 120865,
+      "last_epoch": 20
+    },
+    {
+      "row_id": "A_POINT_S392006",
+      "pid": 2141512,
+      "gpu": 1,
+      "status": "RUNNING",
+      "exit_code": null,
+      "alive": true,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1",
+      "log_bytes": 80747,
+      "last_epoch": 13
+    },
+    {
+      "row_id": "B_SAFE_S392006",
+      "pid": 2141519,
+      "gpu": 2,
+      "status": "TECHNICAL_FAILURE",
+      "exit_code": 1,
+      "alive": false,
+      "cwd": null,
+      "log_bytes": 64755,
+      "last_epoch": 10,
+      "tail": "required=0 drop=0 paic=0 cooldown_active=0 reason=\n[PROTO-TX] enabled=1 audit_only=0 lambda_tx_proto=0 module_import=1\n[PROTO-RX] enabled=1 lambda_rx_proto=0 module_import=1\n[MASK] enabled=1 lambda_mask_aux=0 module_import=1\n[BATCH-GEOM] balanced_sampler=0 geometry_losses=1 lambda_txrx_rect=0 sampler_import=1 geometry_import=1\n[TXRX-ANOVA] status=audit_marker_only active_loss=1\n[ZID-FEATURE-SPACE] proto_memory=1 lambda_proto=0.0032 open_world_feat=1 lambda_open_world_feat=0.0024 zid_compact=1 lambda_zid_compact=0.032 proxy_unknown=1 lambda_proxy_unknown=0.0045 soft_unknown_mixup=1 lambda_soft_unknown_mixup=0.0045 source_episode=1 lambda_source_episode=0.0035 phase2_export=1\n[BEST-SOURCE-VAL] val_tx=98.13% @ E009 heldout_test=not_evaluated_on_frozen_best\n[TAIL-CONTROL] state=-1 action=-1 reference_ready=0 reference_saved=0 rollback_applied=0 final_blocked=0\n[CKPT]  latest -> /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_pair24_manysig_e200_20260905_r1/B_SAFE_S392006/NOT_SAVED_FINAL_ONLY (recovery) | final_only -> /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_pair24_manysig_e200_20260905_r1/B_SAFE_S392006/final_ssdg.pth (written after training; telemetry_best=0)\n[EPOCH-END] E010/200\n====================================================================================================================================\nTraceback (most recent call last):\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1/code/SSDG/train_ssdg.py\", line 14598, in <module>\n    raise SystemExit(main())\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1/code/SSDG/train_ssdg.py\", line 14594, in main\n    return train(args)\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1/code/SSDG/train_ssdg.py\", line 10680, in train\n    pair_result=compute_pair_batch(model=model,teacher=ema_model,\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1/code/cvsrffi/pair_reform_runtime.py\", line 196, in compute_pair_batch\n    w=_fixed_head_weights(teacher,tc)\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1/code/cvsrffi/pair_reform_runtime.py\", line 103, in _fixed_head_weights\n    if not torch.allclose(expected,teacher_clean['tx_logits'].float(),atol=.03,rtol=.002):\nRuntimeError: Half did not match Float\n"
+    },
+    {
+      "row_id": "ASYMMETRIC_S392006",
+      "pid": 2141524,
+      "gpu": 3,
+      "status": "RUNNING",
+      "exit_code": null,
+      "alive": true,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1",
+      "log_bytes": 97971,
+      "last_epoch": 16
+    },
+    {
+      "row_id": "TANGENT_S392006",
+      "pid": 2141533,
+      "gpu": 4,
+      "status": "TECHNICAL_FAILURE",
+      "exit_code": 1,
+      "alive": false,
+      "cwd": null,
+      "log_bytes": 65135,
+      "last_epoch": 10,
+      "tail": "_marker_only active_loss=1\n[ZID-FEATURE-SPACE] proto_memory=1 lambda_proto=0.0032 open_world_feat=1 lambda_open_world_feat=0.0024 zid_compact=1 lambda_zid_compact=0.032 proxy_unknown=1 lambda_proxy_unknown=0.0045 soft_unknown_mixup=1 lambda_soft_unknown_mixup=0.0045 source_episode=1 lambda_source_episode=0.0035 phase2_export=1\n[BEST-SOURCE-VAL] val_tx=98.03% @ E009 heldout_test=not_evaluated_on_frozen_best\n[TAIL-CONTROL] state=-1 action=-1 reference_ready=0 reference_saved=0 rollback_applied=0 final_blocked=0\n[CKPT]  latest -> /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_pair24_manysig_e200_20260905_r1/TANGENT_S392006/NOT_SAVED_FINAL_ONLY (recovery) | final_only -> /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_pair24_manysig_e200_20260905_r1/TANGENT_S392006/final_ssdg.pth (written after training; telemetry_best=0)\n[EPOCH-END] E010/200\n====================================================================================================================================\nTraceback (most recent call last):\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1/code/SSDG/train_ssdg.py\", line 14598, in <module>\n    raise SystemExit(main())\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1/code/SSDG/train_ssdg.py\", line 14594, in main\n    return train(args)\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1/code/SSDG/train_ssdg.py\", line 10680, in train\n    pair_result=compute_pair_batch(model=model,teacher=ema_model,\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1/code/cvsrffi/pair_reform_runtime.py\", line 218, in compute_pair_batch\n    directions=direction_objectives(model,clean,channel,domain_labels=domains,\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1/code/cvsrffi/pair_reform_runtime.py\", line 64, in direction_objectives\n    base_n, changed_n = deterministic_pair(model, x, nuisance_transform(x), domain_labels=domains)\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1/code/cvsrffi/pair_reform_runtime.py\", line 221, in <lambda>\n    nuisance_transform=lambda x: apply_physical_probe(x,name='sto',amount=delta,sample_rate_hz=args.sat_fs_hz),\nAttributeError: 'Namespace' object has no attribute 'sat_fs_hz'\n"
+    },
+    {
+      "row_id": "ROUTE_S392006",
+      "pid": 2141540,
+      "gpu": 5,
+      "status": "TECHNICAL_FAILURE",
+      "exit_code": 1,
+      "alive": false,
+      "cwd": null,
+      "log_bytes": 65079,
+      "last_epoch": 10,
+      "tail": "udit_marker_only active_loss=1\n[ZID-FEATURE-SPACE] proto_memory=1 lambda_proto=0.0032 open_world_feat=1 lambda_open_world_feat=0.0024 zid_compact=1 lambda_zid_compact=0.032 proxy_unknown=1 lambda_proxy_unknown=0.0045 soft_unknown_mixup=1 lambda_soft_unknown_mixup=0.0045 source_episode=1 lambda_source_episode=0.0035 phase2_export=1\n[BEST-SOURCE-VAL] val_tx=98.06% @ E009 heldout_test=not_evaluated_on_frozen_best\n[TAIL-CONTROL] state=-1 action=-1 reference_ready=0 reference_saved=0 rollback_applied=0 final_blocked=0\n[CKPT]  latest -> /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_pair24_manysig_e200_20260905_r1/ROUTE_S392006/NOT_SAVED_FINAL_ONLY (recovery) | final_only -> /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_pair24_manysig_e200_20260905_r1/ROUTE_S392006/final_ssdg.pth (written after training; telemetry_best=0)\n[EPOCH-END] E010/200\n====================================================================================================================================\nTraceback (most recent call last):\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1/code/SSDG/train_ssdg.py\", line 14598, in <module>\n    raise SystemExit(main())\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1/code/SSDG/train_ssdg.py\", line 14594, in main\n    return train(args)\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1/code/SSDG/train_ssdg.py\", line 10680, in train\n    pair_result=compute_pair_batch(model=model,teacher=ema_model,\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1/code/cvsrffi/pair_reform_runtime.py\", line 218, in compute_pair_batch\n    directions=direction_objectives(model,clean,channel,domain_labels=domains,\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1/code/cvsrffi/pair_reform_runtime.py\", line 64, in direction_objectives\n    base_n, changed_n = deterministic_pair(model, x, nuisance_transform(x), domain_labels=domains)\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1/code/cvsrffi/pair_reform_runtime.py\", line 221, in <lambda>\n    nuisance_transform=lambda x: apply_physical_probe(x,name='sto',amount=delta,sample_rate_hz=args.sat_fs_hz),\nAttributeError: 'Namespace' object has no attribute 'sat_fs_hz'\n"
+    },
+    {
+      "row_id": "TANGENT_ROUTE_S392006",
+      "pid": 2141548,
+      "gpu": 6,
+      "status": "TECHNICAL_FAILURE",
+      "exit_code": 1,
+      "alive": false,
+      "cwd": null,
+      "log_bytes": 65303,
+      "last_epoch": 10,
+      "tail": " active_loss=1\n[ZID-FEATURE-SPACE] proto_memory=1 lambda_proto=0.0032 open_world_feat=1 lambda_open_world_feat=0.0024 zid_compact=1 lambda_zid_compact=0.032 proxy_unknown=1 lambda_proxy_unknown=0.0045 soft_unknown_mixup=1 lambda_soft_unknown_mixup=0.0045 source_episode=1 lambda_source_episode=0.0035 phase2_export=1\n[BEST-SOURCE-VAL] val_tx=98.02% @ E010 heldout_test=not_evaluated_on_frozen_best\n[TAIL-CONTROL] state=-1 action=-1 reference_ready=0 reference_saved=0 rollback_applied=0 final_blocked=0\n[CKPT]  latest -> /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_pair24_manysig_e200_20260905_r1/TANGENT_ROUTE_S392006/NOT_SAVED_FINAL_ONLY (recovery) | final_only -> /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_pair24_manysig_e200_20260905_r1/TANGENT_ROUTE_S392006/final_ssdg.pth (written after training; telemetry_best=1)\n[EPOCH-END] E010/200\n====================================================================================================================================\nTraceback (most recent call last):\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1/code/SSDG/train_ssdg.py\", line 14598, in <module>\n    raise SystemExit(main())\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1/code/SSDG/train_ssdg.py\", line 14594, in main\n    return train(args)\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1/code/SSDG/train_ssdg.py\", line 10680, in train\n    pair_result=compute_pair_batch(model=model,teacher=ema_model,\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1/code/cvsrffi/pair_reform_runtime.py\", line 218, in compute_pair_batch\n    directions=direction_objectives(model,clean,channel,domain_labels=domains,\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1/code/cvsrffi/pair_reform_runtime.py\", line 64, in direction_objectives\n    base_n, changed_n = deterministic_pair(model, x, nuisance_transform(x), domain_labels=domains)\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1/code/cvsrffi/pair_reform_runtime.py\", line 221, in <lambda>\n    nuisance_transform=lambda x: apply_physical_probe(x,name='sto',amount=delta,sample_rate_hz=args.sat_fs_hz),\nAttributeError: 'Namespace' object has no attribute 'sat_fs_hz'\n"
+    },
+    {
+      "row_id": "POINT_MEMORY_S392006",
+      "pid": 2141555,
+      "gpu": 7,
+      "status": "RUNNING",
+      "exit_code": null,
+      "alive": true,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1",
+      "log_bytes": 86628,
+      "last_epoch": 14
+    },
+    {
+      "row_id": "MATCHED_ZERO_S392006",
+      "pid": 2141563,
+      "gpu": 0,
+      "status": "RUNNING",
+      "exit_code": null,
+      "alive": true,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1",
+      "log_bytes": 109439,
+      "last_epoch": 18
+    },
+    {
+      "row_id": "A_POINT_S392007",
+      "pid": 2141570,
+      "gpu": 2,
+      "status": "RUNNING",
+      "exit_code": null,
+      "alive": true,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1",
+      "log_bytes": 80747,
+      "last_epoch": 13
+    },
+    {
+      "row_id": "B_SAFE_S392007",
+      "pid": 2141581,
+      "gpu": 3,
+      "status": "TECHNICAL_FAILURE",
+      "exit_code": 1,
+      "alive": false,
+      "cwd": null,
+      "log_bytes": 64755,
+      "last_epoch": 10,
+      "tail": "required=0 drop=0 paic=0 cooldown_active=0 reason=\n[PROTO-TX] enabled=1 audit_only=0 lambda_tx_proto=0 module_import=1\n[PROTO-RX] enabled=1 lambda_rx_proto=0 module_import=1\n[MASK] enabled=1 lambda_mask_aux=0 module_import=1\n[BATCH-GEOM] balanced_sampler=0 geometry_losses=1 lambda_txrx_rect=0 sampler_import=1 geometry_import=1\n[TXRX-ANOVA] status=audit_marker_only active_loss=1\n[ZID-FEATURE-SPACE] proto_memory=1 lambda_proto=0.0032 open_world_feat=1 lambda_open_world_feat=0.0024 zid_compact=1 lambda_zid_compact=0.032 proxy_unknown=1 lambda_proxy_unknown=0.0045 soft_unknown_mixup=1 lambda_soft_unknown_mixup=0.0045 source_episode=1 lambda_source_episode=0.0035 phase2_export=1\n[BEST-SOURCE-VAL] val_tx=97.77% @ E009 heldout_test=not_evaluated_on_frozen_best\n[TAIL-CONTROL] state=-1 action=-1 reference_ready=0 reference_saved=0 rollback_applied=0 final_blocked=0\n[CKPT]  latest -> /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_pair24_manysig_e200_20260905_r1/B_SAFE_S392007/NOT_SAVED_FINAL_ONLY (recovery) | final_only -> /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_pair24_manysig_e200_20260905_r1/B_SAFE_S392007/final_ssdg.pth (written after training; telemetry_best=0)\n[EPOCH-END] E010/200\n====================================================================================================================================\nTraceback (most recent call last):\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1/code/SSDG/train_ssdg.py\", line 14598, in <module>\n    raise SystemExit(main())\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1/code/SSDG/train_ssdg.py\", line 14594, in main\n    return train(args)\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1/code/SSDG/train_ssdg.py\", line 10680, in train\n    pair_result=compute_pair_batch(model=model,teacher=ema_model,\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1/code/cvsrffi/pair_reform_runtime.py\", line 196, in compute_pair_batch\n    w=_fixed_head_weights(teacher,tc)\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1/code/cvsrffi/pair_reform_runtime.py\", line 103, in _fixed_head_weights\n    if not torch.allclose(expected,teacher_clean['tx_logits'].float(),atol=.03,rtol=.002):\nRuntimeError: Half did not match Float\n"
+    },
+    {
+      "row_id": "ASYMMETRIC_S392007",
+      "pid": 2141588,
+      "gpu": 4,
+      "status": "RUNNING",
+      "exit_code": null,
+      "alive": true,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1",
+      "log_bytes": 97971,
+      "last_epoch": 16
+    },
+    {
+      "row_id": "TANGENT_S392007",
+      "pid": 2141595,
+      "gpu": 5,
+      "status": "TECHNICAL_FAILURE",
+      "exit_code": 1,
+      "alive": false,
+      "cwd": null,
+      "log_bytes": 65135,
+      "last_epoch": 10,
+      "tail": "_marker_only active_loss=1\n[ZID-FEATURE-SPACE] proto_memory=1 lambda_proto=0.0032 open_world_feat=1 lambda_open_world_feat=0.0024 zid_compact=1 lambda_zid_compact=0.032 proxy_unknown=1 lambda_proxy_unknown=0.0045 soft_unknown_mixup=1 lambda_soft_unknown_mixup=0.0045 source_episode=1 lambda_source_episode=0.0035 phase2_export=1\n[BEST-SOURCE-VAL] val_tx=97.67% @ E009 heldout_test=not_evaluated_on_frozen_best\n[TAIL-CONTROL] state=-1 action=-1 reference_ready=0 reference_saved=0 rollback_applied=0 final_blocked=0\n[CKPT]  latest -> /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_pair24_manysig_e200_20260905_r1/TANGENT_S392007/NOT_SAVED_FINAL_ONLY (recovery) | final_only -> /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_pair24_manysig_e200_20260905_r1/TANGENT_S392007/final_ssdg.pth (written after training; telemetry_best=0)\n[EPOCH-END] E010/200\n====================================================================================================================================\nTraceback (most recent call last):\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1/code/SSDG/train_ssdg.py\", line 14598, in <module>\n    raise SystemExit(main())\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1/code/SSDG/train_ssdg.py\", line 14594, in main\n    return train(args)\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1/code/SSDG/train_ssdg.py\", line 10680, in train\n    pair_result=compute_pair_batch(model=model,teacher=ema_model,\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1/code/cvsrffi/pair_reform_runtime.py\", line 218, in compute_pair_batch\n    directions=direction_objectives(model,clean,channel,domain_labels=domains,\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1/code/cvsrffi/pair_reform_runtime.py\", line 64, in direction_objectives\n    base_n, changed_n = deterministic_pair(model, x, nuisance_transform(x), domain_labels=domains)\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1/code/cvsrffi/pair_reform_runtime.py\", line 221, in <lambda>\n    nuisance_transform=lambda x: apply_physical_probe(x,name='sto',amount=delta,sample_rate_hz=args.sat_fs_hz),\nAttributeError: 'Namespace' object has no attribute 'sat_fs_hz'\n"
+    },
+    {
+      "row_id": "ROUTE_S392007",
+      "pid": 2141602,
+      "gpu": 6,
+      "status": "TECHNICAL_FAILURE",
+      "exit_code": 1,
+      "alive": false,
+      "cwd": null,
+      "log_bytes": 65079,
+      "last_epoch": 10,
+      "tail": "udit_marker_only active_loss=1\n[ZID-FEATURE-SPACE] proto_memory=1 lambda_proto=0.0032 open_world_feat=1 lambda_open_world_feat=0.0024 zid_compact=1 lambda_zid_compact=0.032 proxy_unknown=1 lambda_proxy_unknown=0.0045 soft_unknown_mixup=1 lambda_soft_unknown_mixup=0.0045 source_episode=1 lambda_source_episode=0.0035 phase2_export=1\n[BEST-SOURCE-VAL] val_tx=97.91% @ E009 heldout_test=not_evaluated_on_frozen_best\n[TAIL-CONTROL] state=-1 action=-1 reference_ready=0 reference_saved=0 rollback_applied=0 final_blocked=0\n[CKPT]  latest -> /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_pair24_manysig_e200_20260905_r1/ROUTE_S392007/NOT_SAVED_FINAL_ONLY (recovery) | final_only -> /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_pair24_manysig_e200_20260905_r1/ROUTE_S392007/final_ssdg.pth (written after training; telemetry_best=0)\n[EPOCH-END] E010/200\n====================================================================================================================================\nTraceback (most recent call last):\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1/code/SSDG/train_ssdg.py\", line 14598, in <module>\n    raise SystemExit(main())\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1/code/SSDG/train_ssdg.py\", line 14594, in main\n    return train(args)\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1/code/SSDG/train_ssdg.py\", line 10680, in train\n    pair_result=compute_pair_batch(model=model,teacher=ema_model,\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1/code/cvsrffi/pair_reform_runtime.py\", line 218, in compute_pair_batch\n    directions=direction_objectives(model,clean,channel,domain_labels=domains,\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1/code/cvsrffi/pair_reform_runtime.py\", line 64, in direction_objectives\n    base_n, changed_n = deterministic_pair(model, x, nuisance_transform(x), domain_labels=domains)\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1/code/cvsrffi/pair_reform_runtime.py\", line 221, in <lambda>\n    nuisance_transform=lambda x: apply_physical_probe(x,name='sto',amount=delta,sample_rate_hz=args.sat_fs_hz),\nAttributeError: 'Namespace' object has no attribute 'sat_fs_hz'\n"
+    },
+    {
+      "row_id": "TANGENT_ROUTE_S392007",
+      "pid": 2141609,
+      "gpu": 7,
+      "status": "TECHNICAL_FAILURE",
+      "exit_code": 1,
+      "alive": false,
+      "cwd": null,
+      "log_bytes": 65303,
+      "last_epoch": 10,
+      "tail": " active_loss=1\n[ZID-FEATURE-SPACE] proto_memory=1 lambda_proto=0.0032 open_world_feat=1 lambda_open_world_feat=0.0024 zid_compact=1 lambda_zid_compact=0.032 proxy_unknown=1 lambda_proxy_unknown=0.0045 soft_unknown_mixup=1 lambda_soft_unknown_mixup=0.0045 source_episode=1 lambda_source_episode=0.0035 phase2_export=1\n[BEST-SOURCE-VAL] val_tx=97.86% @ E009 heldout_test=not_evaluated_on_frozen_best\n[TAIL-CONTROL] state=-1 action=-1 reference_ready=0 reference_saved=0 rollback_applied=0 final_blocked=0\n[CKPT]  latest -> /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_pair24_manysig_e200_20260905_r1/TANGENT_ROUTE_S392007/NOT_SAVED_FINAL_ONLY (recovery) | final_only -> /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_pair24_manysig_e200_20260905_r1/TANGENT_ROUTE_S392007/final_ssdg.pth (written after training; telemetry_best=0)\n[EPOCH-END] E010/200\n====================================================================================================================================\nTraceback (most recent call last):\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1/code/SSDG/train_ssdg.py\", line 14598, in <module>\n    raise SystemExit(main())\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1/code/SSDG/train_ssdg.py\", line 14594, in main\n    return train(args)\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1/code/SSDG/train_ssdg.py\", line 10680, in train\n    pair_result=compute_pair_batch(model=model,teacher=ema_model,\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1/code/cvsrffi/pair_reform_runtime.py\", line 218, in compute_pair_batch\n    directions=direction_objectives(model,clean,channel,domain_labels=domains,\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1/code/cvsrffi/pair_reform_runtime.py\", line 64, in direction_objectives\n    base_n, changed_n = deterministic_pair(model, x, nuisance_transform(x), domain_labels=domains)\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1/code/cvsrffi/pair_reform_runtime.py\", line 221, in <lambda>\n    nuisance_transform=lambda x: apply_physical_probe(x,name='sto',amount=delta,sample_rate_hz=args.sat_fs_hz),\nAttributeError: 'Namespace' object has no attribute 'sat_fs_hz'\n"
+    },
+    {
+      "row_id": "POINT_MEMORY_S392007",
+      "pid": 2141616,
+      "gpu": 0,
+      "status": "RUNNING",
+      "exit_code": null,
+      "alive": true,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1",
+      "log_bytes": 75206,
+      "last_epoch": 12
+    },
+    {
+      "row_id": "MATCHED_ZERO_S392007",
+      "pid": 2141623,
+      "gpu": 1,
+      "status": "RUNNING",
+      "exit_code": null,
+      "alive": true,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1",
+      "log_bytes": 115149,
+      "last_epoch": 19
+    }
+  ]
+}

@@ -45,3 +45,13 @@ def test_reject_incompatible_checkpoint_without_silent_head_injection(checkpoint
     torch.save(payload, checkpoint)
     with pytest.raises(RuntimeError, match='compatibility'):
         SMOKE.load_model(checkpoint, torch.device('cpu'))
+
+
+@pytest.mark.skipif(not torch.cuda.is_available(),reason='requires CUDA AMP')
+def test_checkpoint_smoke_cuda_amp_real_namespace_l_and_u(checkpoint):
+    result=SMOKE.run_smoke(checkpoint,torch.device('cuda'),amp=True)
+    assert result['amp'] and result['status']=='VERIFIED'
+    for row in result['rows'].values():
+        assert [s['role'] for s in row['steps']]==['L','U']
+        assert all(s['amp'] for s in row['steps'])
+        assert 'orbit_logit' in row['steps'][1]['components']

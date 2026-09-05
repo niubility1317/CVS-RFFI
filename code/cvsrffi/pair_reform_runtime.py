@@ -99,7 +99,9 @@ def _fixed_head_weights(teacher, teacher_clean):
     if head is None or type(head).__name__ != 'CosFaceHead':
         raise ValueError('safe region requires the verified bias-free CosFaceHead')
     w = head.weight.detach().float()
-    expected = F.normalize(teacher_clean['z_id'].float(),dim=-1) @ F.normalize(w,dim=-1).t() * float(head.s)
+    # float() inputs alone do not prevent autocast from recasting the matmul.
+    with torch.autocast(device_type=w.device.type, enabled=False):
+        expected = F.normalize(teacher_clean['z_id'].float(),dim=-1) @ F.normalize(w,dim=-1).t() * float(head.s)
     if not torch.allclose(expected,teacher_clean['tx_logits'].float(),atol=.03,rtol=.002):
         raise ValueError('safe region z_id and actual teacher classifier feature spaces differ')
     return w
@@ -218,8 +220,8 @@ def compute_pair_batch(*,model,teacher,clean,channel,student_clean,student_chann
         directions=direction_objectives(model,clean,channel,domain_labels=domains,
             tangent_weight=tw,route_weight=rw,ratio=args.pair_direction_ratio,seed=seed,
             delta=delta,reference_scale=args.pair_direction_scale,budget=args.pair_direction_budget,
-            nuisance_transform=lambda x: apply_physical_probe(x,name='sto',amount=delta,sample_rate_hz=args.sat_fs_hz),
-            probe_transform=lambda x: sample_pair_reform_probe(x,seed=seed+1,strength=delta,sample_rate_hz=args.sat_fs_hz)[0])
+            nuisance_transform=lambda x: apply_physical_probe(x,name='sto',amount=delta,sample_rate_hz=float(getattr(args,'sat_fs_hz',25e6))),
+            probe_transform=lambda x: sample_pair_reform_probe(x,seed=seed+1,strength=delta,sample_rate_hz=float(getattr(args,'sat_fs_hz',25e6)))[0])
         weighted.update(directions['weighted_components'])
         diag.update(directions['diagnostics'])
         diag['student_extra_views']=directions['forward_samples']

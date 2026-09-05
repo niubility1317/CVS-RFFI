@@ -26,3 +26,19 @@ def test_frozen_matrix_balanced_and_source_only():
         assert value('checkpoint_selection')=='final_only'
         assert '\\' not in argv[2]
         assert row['epochs']==200
+
+
+def test_recovery_preserves_science_and_combined_gpu_balance():
+    from pair_recovery_manifest import build_recovery, FAILED
+    old=json.loads((ROOT/'configs/phase1_adv3b02_pair24_manifest.json').read_text(encoding='utf-8'))
+    new=json.loads((ROOT/'configs/phase1_adv3b02_pair12_recovery_manifest.json').read_text(encoding='utf-8'))
+    assert build_recovery(old)==new
+    assert len(new['rows'])==12
+    for row in new['rows']:
+        original=next(r for r in old['rows'] if r['row_id']==row['row_id'])
+        assert row['argv']==[v.replace(old['run_id'],new['run_id']) for v in original['argv']]
+        assert row['assigned_gpu']==original['assigned_gpu']
+    healthy=[r for r in old['rows'] if r['candidate'] not in FAILED]
+    assert len(healthy)==12
+    assert Counter(r['assigned_gpu'] for r in healthy+new['rows'])==dict.fromkeys(range(8),3)
+    assert '--amp' in new['smoke_argv'] and '--training-manifest' in new['smoke_argv']
