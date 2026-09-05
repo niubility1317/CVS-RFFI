@@ -1,0 +1,73 @@
+{
+  "schema": "cvs.pair24.source_only.v1",
+  "run_id": "phase1_adv3b02_pair24_manysig_e200_20260905_r1",
+  "seeds": [
+    392005,
+    392006,
+    392007
+  ],
+  "sensitivity_seed": 392005,
+  "epochs": 200,
+  "initialization": "shared_frozen_CORE90_continuation_not_independent_pretraining",
+  "selection": {
+    "inputs": "final_epoch_source_V_only",
+    "primary": "equal_scene_mean_accuracy_of_three_LEO_weak_scenes",
+    "unit": "paired_training_seed",
+    "eligible": "three_complete_seeds_in_core_rows_only",
+    "reference": "A_POINT",
+    "minimum_mean_gain_pp": 0.5,
+    "maximum_clean_mean_drop_pp": 0.5,
+    "paired_gain_lower_95ci_must_exceed": 0.0,
+    "t_critical_df2": 4.30265273,
+    "tie_break": [
+      "lexicographic_candidate_id"
+    ],
+    "selected_checkpoint_seed": 392005,
+    "target_policy": "No target scoring or candidate reranking in this matrix. Freeze one source-selected candidate before separate truth-last confirmation.",
+    "confirmatory_comparison": "B_SAFE_vs_A_POINT_only; other comparisons exploratory"
+  },
+  "common_overrides": {
+    "num_workers": 2,
+    "muse_external_final_eval": true,
+    "phase1_source_val_selection_only": true,
+    "checkpoint_selection": "final_only"
+  },
+  "core": {
+    "A_POINT": {
+      "base": "M0",
+      "overrides": {}
+    },
+    "B_SAFE": {
+      "base": "B_SAFE",
+      "overrides": {}
+    },
+    "ASYMMETRIC": {
+      "base": "ASYMMETRIC",
+      "overrides": {}
+    },
+    "TANGENT": {
+      "base": "M1",
+      "overrides": {}
+    },
+    "ROUTE": {
+      "base": "M2",
+      "overrides": {}
+    },
+    "TANGENT_ROUTE": {
+      "base": "M3",
+      "overrides": {}
+    },
+    "POINT_MEMORY": {
+      "base": "POINT_MEMORY",
+      "overrides": {}
+    },
+    "MATCHED_ZERO": {
+      "base": "M0",
+      "overrides": {
+        "pair_weight": 0.0,
+        "pair_pseudo_weight": 0.0
+      }
+    }
+  },
+  "sensitivity": {}
+}
