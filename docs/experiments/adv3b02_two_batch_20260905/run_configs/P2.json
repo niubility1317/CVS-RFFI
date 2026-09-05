@@ -1,0 +1,22 @@
+{
+  "run_id": "phase1_adv3b02_daot_stn_rx_v2_p1_p5_manysig_s392005_20260903_r1",
+  "candidate": "ADV3B02_DAOT_STN_RX_V2_P2_MANYSIG_S392005",
+  "muse_level": "M3",
+  "ablation": "NONE",
+  "init_mode": "adv3b02_core90",
+  "base_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth",
+  "base_candidate": "ADV3B02_CORE90_SOFT_E200",
+  "capabilities": "BASE_FUSION_HML_SATELLITE_CROSSRX_PROTO",
+  "seed": 392005,
+  "epochs": 200,
+  "labeled_batch_size": 128,
+  "unlabeled_batch_size": 256,
+  "ratios": {"L_s": 0.07, "U_s": 0.63, "V": 0.30},
+  "source_role_protocol": "legacy_l_u_v",
+  "source_days": "1,2,3",
+  "target_days": "0,1,2,3",
+  "source_receivers": "1,3,4,6,8",
+  "target_receivers": "0,2,5,7,9,10,11",
+  "checkpoint_selection": "final_only",
+  "final_evaluation": ["clean", "leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak"]
+}
