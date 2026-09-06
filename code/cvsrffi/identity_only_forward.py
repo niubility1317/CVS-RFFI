@@ -29,6 +29,9 @@ def identity_only_feature_forward(
     """
     if not can_use_identity_only_forward(model, feature_name):
         return None
+    if getattr(model, "ecrs", None) is not None:
+        out = model.forward_identity(x)
+        return out["z_id"].float(), out["tx_logits"].float()
     aux_id: dict[str, Any] = backbone_forward_compat(
         model.id_backbone,
         x,

@@ -753,6 +753,8 @@ def satellite_auxiliary_losses(
 
 def effective_concat_sat_ce_weight(args, epoch: int) -> float:
     """Keep ECRS paired views active while delaying Core90 satellite auxiliary CE."""
+    if getattr(args, "ecrs_leo_ce_mode", "legacy") == "linear_early":
+        return float(getattr(args, "concat_sat_ce_weight", .68)) * min(1., max(0., epoch / 40.))
     if int(epoch) < int(getattr(args, "concat_sat_ce_start_epoch", 1)):
         return 0.0
     return float(getattr(args, "concat_sat_ce_weight", 1.0))
@@ -938,9 +940,12 @@ def compute_ecrs_paired_losses(
         label_mask = pair_meta["label_mask"].to(device=reference.device).bool()
         valid = label_mask & (labels_both >= 0)
         if bool(valid.any()):
-            raw_ce = ce_tx(out_clean["tx_logits_raw"].float(), labels)
-            if bool(stage_state.get("resp_cls", False)):
+            clean_valid = valid[:labels.numel()]
+            if bool(clean_valid.any()):
+                raw_ce = ce_tx(out_clean["tx_logits_raw"][clean_valid].float(), labels[clean_valid])
+            if bool(stage_state.get("resp_cls", False)) and getattr(args, "ecrs_version", "v1") == "v1":
                 resp_ce = ce_tx(combined["resp_tx_logits"][valid].float(), labels_both[valid])
+            if bool(stage_state.get("same_tx_cross", False)):
                 same_tx = same_tx_cross_response_loss(
                     combined["resp_coef"],
                     combined["response_design"],
@@ -951,6 +956,7 @@ def compute_ecrs_paired_losses(
                     pair_meta["day_id"],
                     valid,
                 )
+            if bool(stage_state.get("diff_tx", False)):
                 diff_tx = different_tx_response_ranking_loss(
                     combined["resp_anchor"],
                     variance,
@@ -976,10 +982,18 @@ def compute_ecrs_paired_losses(
                     list(pair_meta["view_type"]),
                     valid,
                 )
-                raw_correct = combined["tx_logits_raw"].argmax(dim=1).eq(labels_both)
-                fused_correct = combined["tx_logits"].argmax(dim=1).eq(labels_both)
+            if bool(stage_state.get("gate_calibration", False)):
+                raw_infer = torch.cat([out_clean.get("tx_logits_raw_infer", out_clean["tx_logits_raw"]),
+                                       out_leo.get("tx_logits_raw_infer", out_leo["tx_logits_raw"])])
+                fused_infer = torch.cat([out_clean.get("tx_logits_fused", out_clean["tx_logits"]),
+                                         out_leo.get("tx_logits_fused", out_leo["tx_logits"])])
+                raw_correct = raw_infer.argmax(dim=1).eq(labels_both)
+                fused_correct = fused_infer.argmax(dim=1).eq(labels_both)
+                help_logit = (torch.cat([out_clean["help_logit"], out_leo["help_logit"]])[valid]
+                              if "help_logit" in out_clean else None)
                 gate_calibration, _ = response_gate_calibration_loss(
-                    combined["rho_resp"], raw_correct, fused_correct, rho_max=0.25
+                    combined["rho_resp"][valid], raw_correct[valid], fused_correct[valid], rho_max=0.25,
+                    help_logit=help_logit,
                 )
 
     total = (
@@ -1065,7 +1079,8 @@ def _ecrs_s_hat_summary(s_hat: torch.Tensor) -> torch.Tensor:
 
 def _ecrs_to_cpu(value: Any) -> Any:
     if torch.is_tensor(value):
-        return value.detach().cpu()
+        # Complex tensors and real views cannot share typed storage in torch.save.
+        return value.detach().cpu().clone()
     if isinstance(value, dict):
         return {str(key): _ecrs_to_cpu(item) for key, item in value.items()}
     if isinstance(value, (list, tuple)):
@@ -2673,7 +2688,7 @@ def main():
                  "Enable deferred Stage6 FastTrust structure", "Keep Stage6 FastTrust disabled")
     add_bool_arg(parser, "ecrs_teacher_stable", False,
                  "Declare the Stage6 teacher stable", "Do not authorize Stage6 pseudo-label structure")
-    parser.add_argument("--ecrs_raw_ce_weight", type=float, default=0.30)
+    parser.add_argument("--ecrs_raw_ce_weight", type=float, default=None)
     parser.add_argument("--ecrs_alpha_resp", type=float, default=0.15)
     parser.add_argument("--ecrs_rung", type=str, default="R8",
                         choices=[f"R{i}" for i in range(9)])
@@ -3124,8 +3139,10 @@ def main():
     parser.add_argument("--swad_tolerance", type=float, default=2.0,
                         help="Collect epochs whose primary OOD score is within this margin of the best-so-far score.")
     parser.add_argument("--swad_save_path", type=str, default="")
-    args = parser.parse_args()
-    if bool(args.use_ecrs) and not (0.10 <= float(args.ecrs_alpha_resp) <= 0.25):
+    from cvsrffi.ecrs_config import add_ecrs_revision_arguments, validate_ecrs_revision_args, ecrs_model_config, should_validate_source
+    add_ecrs_revision_arguments(parser)
+    args = validate_ecrs_revision_args(parser.parse_args())
+    if bool(args.use_ecrs) and args.ecrs_version == "v1" and not (0.10 <= float(args.ecrs_alpha_resp) <= 0.25):
         parser.error("--ecrs_alpha_resp must stay within the report range [0.10, 0.25]")
     explicit_group_ce_min_domains = None
     explicit_fishr_min_domains = None
@@ -3155,6 +3172,17 @@ def main():
     args = apply_training_test_eval_defaults(args)
     args = enforce_federated_sat_eval_args(args)
     args = apply_force_ce_grl_only(args)
+    validate_ecrs_revision_args(args)
+    source_screen = bool(args.ecrs_source_screen_only)
+    revision = bool(args.use_ecrs) and args.ecrs_version != "v1"
+    if revision and not source_screen:
+        raise ValueError("Revision training must select on source only; target confirmation uses a frozen checkpoint separately")
+    if source_screen and (args.dataset != "wisig" or not bool(args.use_meta_ssl_cvs)):
+        raise ValueError("ECRS source screening requires the explicit WiSig source L/U/V split")
+    if revision and bool(args.compile_model):
+        raise ValueError("ECRS revision torch.compile is deferred; use eager execution")
+    if revision and bool(args.use_concat_sat_channel_aug) and not bool(args.concat_sat_ce_only):
+        raise ValueError("ECRS revision requires concat_sat_ce_only to preserve physical metadata alignment")
     args.runtime_thread_info = configure_torch_thread_runtime(
         cpu_threads=args.cpu_threads if int(args.cpu_threads) > 0 else None,
         cpu_interop_threads=args.cpu_interop_threads if int(args.cpu_interop_threads) > 0 else None,
@@ -3191,7 +3219,7 @@ def main():
         raise ValueError("--concat_sat_ce_weight must be >= 0")
     if int(getattr(args, "concat_sat_ce_start_epoch", 1)) < 1:
         raise ValueError("--concat_sat_ce_start_epoch must be >= 1")
-    if bool(getattr(args, "use_ecrs", False)):
+    if bool(getattr(args, "use_ecrs", False)) and args.ecrs_version == "v1":
         validate_ecrs_v1_hyperparameters(args)
     if float(getattr(args, "fl_baseline_view_ce_weight", 1.0)) < 0.0:
         raise ValueError("--fl_baseline_view_ce_weight must be >= 0")
@@ -3326,7 +3354,14 @@ def main():
 
         eq2 = "both" if str(args.wisig_equalized).lower() == "both" else int(args.wisig_equalized)
         protocol = str(getattr(args, "wisig_protocol", "cvs_day_rx")).lower()
-        if protocol == "drift_day1":
+        if source_screen:
+            # Screening constructs only L/U/V below; target availability is irrelevant.
+            protocol = "source_screen"
+            split_info = {"train_days_label": parse_csv_indices(args.wisig_train_days),
+                "train_rxs_idx": parse_csv_indices(args.wisig_train_rxs),
+                "test_days_label": [], "test_rxs_idx": [], "named_test_sizes": {},
+                "source_only": True}
+        elif protocol == "drift_day1":
             paper_day_values = parse_csv_indices(args.wisig_paper_day) or [0]
             train_ds, val_ds, test_ds, named_tests, named_test_meta, split_info = make_wisig_drift_day1_split(
                 ds_w,
@@ -3465,6 +3500,20 @@ def main():
         print("[WARN] ORALCE currently has no separate val set in this script; val=test only for compatibility.")
 
     train_loader = make_loader(train_ds, args.batch_size, True, args.num_workers, device, bool(args.train_drop_last), args.prefetch_factor)
+    train_generator = None
+    if source_screen:
+        train_generator = torch.Generator().manual_seed(int(args.seed) + 391)
+        train_loader.generator = train_generator
+        train_loader.sampler.generator = train_generator
+    from cvsrffi.ecrs_data_runtime import make_revision_l_loader
+    matched_loader = make_revision_l_loader(train_ds, args)
+    if matched_loader is not None:
+        train_loader = matched_loader
+    legacy_source_u_queue = None
+    if source_screen and args.use_ecrs and not revision and meta_ssl_unlabeled_ds is not None:
+        from cvsrffi.ecrs_sampling import RXDayBalancedQueue
+        legacy_source_u_queue = RXDayBalancedQueue([it.rx_i for it in meta_ssl_unlabeled_ds.index],
+            [it.day_i for it in meta_ssl_unlabeled_ds.index], seed=int(args.seed))
     meta_ssl_unlabeled_loader = None
     if meta_ssl_unlabeled_ds is not None and len(meta_ssl_unlabeled_ds) > 0:
         meta_ssl_unlabeled_loader = make_loader(
@@ -3608,13 +3657,7 @@ def main():
                                use_tx_adv_on_zdom=bool(args.use_tx_adv_on_zdom or str(args.train_mode).lower() == "fedcvs_vmb"),
                                arch_family=str(args.arch_family),
                                use_ecrs=bool(args.use_ecrs),
-                               ecrs_config={
-                                   "response_basis_dim": 28,
-                                   "response_dim": 64,
-                                   "rho_max": 0.25,
-                                   "ridge_alpha": float(args.ecrs_ridge_alpha),
-                                   "basis_mode": str(args.ecrs_basis_mode),
-                               } if bool(args.use_ecrs) else None).to(device)
+                               ecrs_config=ecrs_model_config(args) if bool(args.use_ecrs) else None).to(device)
     load_init_checkpoint_weights(
         model,
         str(getattr(args, "init_checkpoint", "") or ""),
@@ -3769,7 +3812,45 @@ def main():
             f"curve={args.aug_ramp_curve:.2f} | base_p_dac={args.aug_p_dac:.2f} base_p_pa={args.aug_p_pa:.2f}"
         )
 
-    optimizer = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=args.wd)
+    ecrs_runtime = None
+    if revision:
+        from cvsrffi.ecrs_runtime import ECRSRuntime
+        groups = {name: [] for name in ("base", "physical", "response", "fusion")}
+        response_parameter_ids = {id(p) for p in model.response_encoder().parameters()}
+        for name, param in model.named_parameters():
+            group = "base"
+            if name.startswith("ecrs."):
+                group = "response" if id(param) in response_parameter_ids else "physical"
+                if "projection" in name or "resp_to_id" in name:
+                    group = "fusion"
+            elif name.startswith("ecrs_response_head."):
+                group = "response"
+            elif name.startswith("ecrs_fused_head."):
+                group = "fusion"
+            groups[group].append(param)
+        param_groups = [{"params": values, "name": name} for name, values in groups.items() if values]
+        optimizer = torch.optim.AdamW(param_groups, lr=args.lr, weight_decay=args.wd)
+        steps_per_epoch = int(args.train_steps_per_epoch) or len(train_loader)
+        group_configs = {}
+        for i, group in enumerate(param_groups):
+            if group["name"] == "base":
+                continue
+            active_epochs = args.epochs
+            if group["name"] == "fusion":
+                active_epochs = max(1, args.epochs - args.ecrs_fusion_start_epoch + 1)
+            total_steps = max(1, active_epochs * steps_per_epoch)
+            group_configs[i] = {"peak_lr": float(args.lr), "min_lr": float(args.lr_min),
+                "warmup_steps": min(5 * steps_per_epoch, max(0, total_steps - 1)), "total_steps": total_steps}
+        ecrs_runtime = ECRSRuntime(model, weights={"resp_ce": float(args.ecrs_alpha_resp),
+            "cross_rx": float(args.lambda_ecrs_cross_rx), "u_pair": float(args.lambda_ecrs_u_pair),
+            "fused_ce": float(args.lambda_ecrs_fusion)}, ema_decay=args.ecrs_ema_decay, margin=args.ecrs_cross_rx_margin,
+            optimizer=optimizer, group_configs=group_configs if args.ecrs_lr_clock == "effective_step" else None,
+            u_rx=[it.rx_i for it in meta_ssl_unlabeled_ds.index] if meta_ssl_unlabeled_ds is not None else None,
+            u_day=[it.day_i for it in meta_ssl_unlabeled_ds.index] if meta_ssl_unlabeled_ds is not None else None,
+            seed=int(args.seed), compute_only=args.ecrs_compute_only)
+        model._ecrs_runtime = ecrs_runtime
+    else:
+        optimizer = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=args.wd)
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=max(1, args.epochs), eta_min=args.lr_min)
     scaler = torch.cuda.amp.GradScaler(enabled=use_amp)
     ce_tx = nn.CrossEntropyLoss(label_smoothing=float(args.label_smoothing))
@@ -3864,11 +3945,45 @@ def main():
     swad_avg = AveragedModelState("swad") if bool(args.use_swad_ckpt) else None
     ecrs_final_diagnostic_records: List[Dict[str, Any]] = []
 
-    for epoch in range(1, args.epochs + 1):
+    best_source_score = float("-inf")
+    start_epoch = 1
+    if args.ecrs_resume:
+        if not source_screen:
+            raise ValueError("Revision resume requires source-only screening")
+        resume = torch.load(args.ecrs_resume, map_location=device, weights_only=False)
+        if resume["args"].get("ecrs_version", "v1") != args.ecrs_version:
+            raise ValueError("Resume ECRS version mismatch")
+        resume_keys = {k for k in vars(args) if k.startswith(("ecrs_", "lambda_ecrs_", "wisig_", "ssl_")) and k != "ecrs_resume"}
+        resume_keys.update(("seed", "epochs", "batch_size", "train_steps_per_epoch", "lr", "lr_min", "wd",
+                            "concat_sat_ce_weight", "concat_sat_ce_start_epoch", "sat_view_schedule"))
+        changed = [k for k in sorted(resume_keys) if k in resume["args"] and getattr(args, k) != resume["args"][k]]
+        if changed:
+            raise ValueError("Resume changes training configuration: " + ", ".join(changed))
+        model.load_state_dict(resume["model"], strict=True)
+        optimizer.load_state_dict(resume["optimizer"])
+        scheduler.load_state_dict(resume["scheduler"])
+        scaler.load_state_dict(resume["scaler"])
+        if ecrs_runtime is not None:
+            ecrs_runtime.load_state_dict(resume["ecrs_runtime"])
+        data_state = resume.get("training_data_state", {})
+        if train_generator is not None and "train_generator" in data_state:
+            train_generator.set_state(data_state["train_generator"].cpu())
+        if matched_loader is not None:
+            matched_loader.load_state_dict(data_state["matched_loader"])
+        if legacy_source_u_queue is not None:
+            legacy_source_u_queue.load_state_dict(data_state["legacy_u_queue"])
+        if "rng" in data_state:
+            from cvsrffi.ecrs_training import restore_rng_state
+            restore_rng_state(data_state["rng"])
+        start_epoch = int(resume["epoch"]) + 1
+        best_source_score = float(resume["stats"].get("best_source_score", float("-inf")))
+        best_joint_val_tx = float(resume["stats"].get("best_joint_val_tx", -1.))
+        best_epoch = int(resume["stats"].get("best_epoch", -1))
+    for epoch in range(start_epoch, args.epochs + 1):
         model.train()
         if meta_ssl_teacher is not None:
             meta_ssl_teacher.eval()
-        meta_ssl_unlabeled_iter = iter(meta_ssl_unlabeled_loader) if meta_ssl_unlabeled_loader is not None else None
+        meta_ssl_unlabeled_iter = iter(meta_ssl_unlabeled_loader) if meta_ssl_unlabeled_loader is not None and not source_screen else None
         skipped_before_epoch = int(skipped_backward_batches)
         diag_sat_cls_active_epoch = False
         diag_sat_cons_active_epoch = False
@@ -3902,6 +4017,8 @@ def main():
         cons_cos_vals = []
         mixstyle_state = configure_mixstyle_for_epoch(model, args, epoch)
         ecrs_stage_state = configure_ecrs_for_epoch(model, epoch, args)
+        if ecrs_runtime is not None:
+            ecrs_runtime.set_epoch(epoch, ecrs_stage_state)
         aug_state = configure_augmentor_for_epoch(augmentor, aug_base_cfg, epoch, args) if augmentor is not None else None
         aux_scale = ramp_value(epoch, args.epochs, int(args.aux_warmup_epochs), int(args.aux_ramp_epochs), 0.0, 1.0, 1.0)
         stage_state = build_stage_state(epoch, args)
@@ -3914,7 +4031,13 @@ def main():
             d_raw = extract_domain_from_extra(extra, device)
             sample_meta = extract_meta_from_extra(extra)
             meta_ssl_batch = None
-            if meta_ssl_unlabeled_iter is not None:
+            if ecrs_runtime is not None and meta_ssl_unlabeled_ds is not None and not args.ecrs_compute_only:
+                from torch.utils.data import default_collate
+                meta_ssl_batch = default_collate([meta_ssl_unlabeled_ds[i] for i in ecrs_runtime.next_u_indices(len(y))])
+            elif legacy_source_u_queue is not None:
+                from torch.utils.data import default_collate
+                meta_ssl_batch = default_collate([meta_ssl_unlabeled_ds[i] for i in legacy_source_u_queue.take(len(y))])
+            elif meta_ssl_unlabeled_iter is not None and not revision:
                 try:
                     meta_ssl_batch = next(meta_ssl_unlabeled_iter)
                 except StopIteration:
@@ -4136,7 +4259,7 @@ def main():
                     diag_sat_cons_active_epoch = diag_sat_cons_active_epoch or bool(sat_aux_losses["diag_sat_cons_active"])
                     sat_pair_meta = concat_sat_ce_view.pair_meta
 
-                if bool(args.use_ecrs) and out_sat is not None and sat_pair_meta is not None:
+                if bool(args.use_ecrs) and args.ecrs_version != "v2" and not args.ecrs_compute_only and out_sat is not None and sat_pair_meta is not None:
                     out_ecrs_clean = forward_main(
                         model, x, y, float(args.grl_lambda), domain_labels=d_raw
                     )
@@ -4172,6 +4295,8 @@ def main():
 
                 if (
                     bool(args.use_ecrs)
+                    and args.ecrs_version != "v2"
+                    and not args.ecrs_compute_only
                     and x_meta_ssl is not None
                     and sample_meta_ssl is not None
                     and concat_sat_aug is not None
@@ -4222,6 +4347,29 @@ def main():
                                 include_negative_controls=(len(ecrs_final_diagnostic_records) == 0),
                             )
                         )
+
+                revision_loss_info = None
+                if ecrs_runtime is not None:
+                    # Reuse existing clean output: do not run the raw backbone again.
+                    clean_response = out_main
+                    if x_main is not x and args.ecrs_version == "v2" and not args.ecrs_compute_only:
+                        clean_response = model.forward_response(x)
+                        clean_response["resp_tx_logits"] = model.ecrs_response_head(clean_response["z_resp"])
+                        clean_response["tx_logits_fused"] = out_main.get("tx_logits_fused")
+                    u_leo = None
+                    if args.ecrs_u_pair_enabled and x_meta_ssl is not None:
+                        if concat_sat_aug is None:
+                            raise ValueError("U pairing requires synchronized LEO augmentation")
+                        with torch.no_grad():
+                            u_view = concat_sat_aug.transform(x_meta_ssl, args=args, epoch=epoch,
+                                batch_idx=batch_idx + 1000003, use_ecrs=True,
+                                sample_meta=sample_meta_ssl,
+                                label_mask=torch.zeros(len(x_meta_ssl), device=device, dtype=torch.bool))
+                            u_leo = safe_iq_tensor(u_view.x)
+                    revision_loss_info = ecrs_runtime.revision_losses(model, clean_response, x, y,
+                        sample_meta or {}, x_leo=x_sat_train if out_sat is not None else None,
+                        out_leo=out_sat, u_clean=x_meta_ssl if u_leo is not None else None, u_leo=u_leo)
+                    loss_ecrs = loss_ecrs + revision_loss_info["total"]
 
                 dg_feat = select_generalization_feature(out_main, str(args.generalization_feature))
                 loss_proto = z_id.new_tensor(0.0)
@@ -4356,10 +4504,24 @@ def main():
                     + float(args.lambda_ssl_proto) * sanitize_loss("meta_ssl_proto", loss_meta_ssl_proto, z_id, loss_warn_counts)
                     + float(args.lambda_meta_ssl) * sanitize_loss("meta_ssl_dom", loss_meta_ssl_dom, z_id, loss_warn_counts)
                     + float(args.lambda_meta_ssl) * sanitize_loss("meta_ssl_adv", loss_meta_ssl_adv, z_id, loss_warn_counts)
-                    + sanitize_loss("ecrs", loss_ecrs, z_id, loss_warn_counts)
+                    + (loss_ecrs if revision else sanitize_loss("ecrs", loss_ecrs, z_id, loss_warn_counts))
                 )
 
+            step_lrs = [g["lr"] for g in optimizer.param_groups]
             stepped, grad_stats = safe_backward_step(model, optimizer, scaler, loss, args, use_amp)
+            if ecrs_runtime is not None:
+                step_info = ecrs_runtime.after_optimizer_step(model, successful=stepped)
+                telemetry_path = os.path.join(os.path.dirname(os.path.abspath(args.latest_save_path)), "ecrs_training.jsonl")
+                os.makedirs(os.path.dirname(telemetry_path), exist_ok=True)
+                with open(telemetry_path, "a", encoding="utf-8") as stream:
+                    stream.write(json.dumps({"epoch": epoch, "batch": batch_idx,
+                        "successful_step": stepped, "losses": revision_loss_info["telemetry"],
+                        "step": step_info, "l_sampler": matched_loader.last_counts if matched_loader is not None else None,
+                        "u_coverage": ecrs_runtime.u_queue.coverage if ecrs_runtime.u_queue is not None else None,
+                        "groups": [{"name": g.get("name"), "lr_used": step_lrs[i], "lr_next": g["lr"],
+                        "trainable": sum(p.numel() for p in g["params"] if p.requires_grad),
+                        "grad_norm": sum(float(p.grad.detach().float().square().sum()) for p in g["params"] if p.grad is not None) ** .5}
+                        for i, g in enumerate(optimizer.param_groups)]}, ensure_ascii=False) + "\n")
             if not stepped:
                 skipped_backward_batches += 1
                 print(f"[WARN][E{epoch:03d}] unsafe backward/step skipped #{skipped_backward_batches}", flush=True)
@@ -4468,7 +4630,7 @@ def main():
             meters["grad_aux"].update(grad_stats["grad_aux"], bsz)
             meters["grad_domain"].update(grad_stats["grad_domain"], bsz)
 
-        if bool(args.use_ecrs) and epoch == int(args.epochs):
+        if bool(args.use_ecrs) and args.ecrs_version != "v2" and not args.ecrs_compute_only and epoch == int(args.epochs):
             if not ecrs_final_diagnostic_records:
                 raise RuntimeError(
                     "ECRS V1 final epoch produced no synchronized clean/LEO diagnostic records"
@@ -4490,22 +4652,47 @@ def main():
             )
             print(f"[ECRS-DIAGNOSTICS] saved={ecrs_diagnostic_path}", flush=True)
 
+        managed_lrs = {i: g["lr"] for i, g in enumerate(optimizer.param_groups)
+                       if revision and args.ecrs_lr_clock == "effective_step" and g.get("name") != "base"}
         scheduler.step()
+        for i, lr in managed_lrs.items():
+            optimizer.param_groups[i]["lr"] = lr
         train_time_s = time.perf_counter() - epoch_t0
 
         cons_cos_epoch = float(np.mean(cons_cos_vals)) if len(cons_cos_vals) > 0 else float("nan")
 
         val_t0 = time.perf_counter()
-        val_stats = evaluate_loader(
-            model,
-            val_loader,
-            device,
-            domain_label_map=domain_label_map,
-            max_batches=int(args.eval_max_batches),
-        )
+        source_results = None
+        source_score = None
+        if source_screen:
+            val_stats = {"tx_acc": float("nan"), "dom_acc": float("nan"),
+                         "probe_dom_acc": float("nan"), "tx_correct": 0, "tx_total": 0}
+            if should_validate_source(epoch, args.epochs, args.ecrs_source_val_interval):
+                from cvsrffi.ecrs_evaluation import evaluate_revision_paths, choose_source_score, LEO_SCENARIOS
+                source_results = {}
+                for scene in ("clean",) + LEO_SCENARIOS:
+                    def transform_source(x_val, batch_id, scenario=scene):
+                        gen = torch.Generator(device=device).manual_seed(int(args.seed) + 710003 + batch_id)
+                        return apply_sat_channel_for_scenario(x_val, scenario, args, gen=gen, return_meta=False)[0]
+                    source_results[scene] = evaluate_revision_paths(model, val_loader, device,
+                        scenario=scene, transform=None if scene == "clean" else transform_source,
+                        max_batches=int(args.eval_max_batches))
+                declared_path = "fused" if args.ecrs_fusion_mode == "fixed" else "raw"
+                source_score = choose_source_score(source_results, declared_path)
+                val_stats.update(source_results["clean"]["paths"]["raw"])
+                source_path = os.path.join(os.path.dirname(os.path.abspath(args.latest_save_path)), "ecrs_source_validation.jsonl")
+                os.makedirs(os.path.dirname(source_path), exist_ok=True)
+                with open(source_path, "a", encoding="utf-8") as stream:
+                    stream.write(json.dumps({"epoch": epoch, "declared_path": declared_path,
+                        "score": source_score, "scenarios": source_results}, ensure_ascii=False) + "\n")
+        else:
+            val_stats = evaluate_loader(model, val_loader, device, domain_label_map=domain_label_map,
+                                        max_batches=int(args.eval_max_batches))
         val_time_s = time.perf_counter() - val_t0
-        is_best = (val_stats["tx_acc"] > best_joint_val_tx)
-        test_ran_this_epoch = should_run_training_test(
+        is_best = (source_score is not None and source_score > best_source_score) if source_screen else (val_stats["tx_acc"] > best_joint_val_tx)
+        if source_screen and is_best:
+            best_source_score = source_score
+        test_ran_this_epoch = (not source_screen) and should_run_training_test(
             args.test_eval_policy,
             epoch=epoch,
             epochs=args.epochs,
@@ -4731,6 +4918,15 @@ def main():
             "best_save_path": str(args.best_save_path),
         })
 
+        if source_screen:
+            from cvsrffi.ecrs_training import capture_rng_state
+            model._ecrs_training_data_state = {"rng": capture_rng_state(),
+                "train_generator": train_generator.get_state() if train_generator is not None else None,
+                "matched_loader": matched_loader.state_dict() if matched_loader is not None else None,
+                "legacy_u_queue": legacy_source_u_queue.state_dict() if legacy_source_u_queue is not None else None}
+        common_stats.update({"best_source_score": best_source_score, "source_score": source_score,
+                             "best_epoch": epoch if is_best else best_epoch,
+                             "source_only": source_screen, "best_joint_val_tx": val_stats["tx_acc"] if is_best else best_joint_val_tx})
         if is_best:
             best_joint_val_tx = val_stats["tx_acc"]
             best_joint_test_tx = test_stats["tx_acc"]
@@ -4738,7 +4934,7 @@ def main():
             stats = dict(common_stats)
             stats.update({
                 "best_epoch": epoch,
-                "best_rule": "val_tx_acc",
+                "best_rule": "source_three_leo_mean_declared_path" if source_screen else "val_tx_acc",
                 "best_val_tx_acc": best_joint_val_tx,
                 "paired_test_tx_acc_at_best_val": best_joint_test_tx,
             })
@@ -4924,6 +5120,41 @@ def main():
             flush=True,
         )
 
+    if source_screen:
+        final_source_summary = None
+        if best_source_score > float("-inf"):
+            from cvsrffi.ecrs_evaluation import evaluate_revision_paths, LEO_SCENARIOS
+            final_source_path = os.path.join(os.path.dirname(os.path.abspath(args.latest_save_path)), "ecrs_final_source_evaluation.json")
+            if os.path.isfile(final_source_path) and start_epoch > args.epochs:
+                with open(final_source_path, encoding="utf-8") as stream:
+                    final_source_summary = json.load(stream)
+            else:
+                import tempfile
+                selected = torch.load(args.best_save_path, map_location=device, weights_only=False)
+                model.load_state_dict(selected["model"], strict=True)
+                prediction_dir = tempfile.mkdtemp(prefix=f"source_predictions_E{selected['epoch']:03d}_",
+                    dir=os.path.dirname(os.path.abspath(args.latest_save_path)))
+                final_source_summary = {"selected_epoch": selected["epoch"], "source_only": True,
+                                        "full_validation": True, "scenarios": {}}
+                for scene in ("clean",) + LEO_SCENARIOS:
+                    def final_source_transform(x_val, batch_id, scenario=scene):
+                        gen = torch.Generator(device=device).manual_seed(int(args.seed) + 710003 + batch_id)
+                        return apply_sat_channel_for_scenario(x_val, scenario, args, gen=gen, return_meta=False)[0]
+                    final_source_summary["scenarios"][scene] = evaluate_revision_paths(model, val_loader, device,
+                        scenario=scene, transform=None if scene == "clean" else final_source_transform,
+                        output_path=os.path.join(prediction_dir, scene + ".jsonl"), max_batches=0)
+                with open(final_source_path, "w", encoding="utf-8") as stream:
+                    json.dump(final_source_summary, stream, ensure_ascii=False, allow_nan=False, indent=2)
+        result = {"status": "SOURCE_SCREEN_COMPLETE", "best_source_score": best_source_score if math.isfinite(best_source_score) else None,
+                  "best_epoch": best_epoch, "selected_checkpoint": args.best_save_path if best_source_score > float("-inf") else None,
+                  "latest_checkpoint": args.latest_save_path, "target_used_for_selection": False,
+                  "promotion": "NOT_EVALUATED", "resume_boundary": "epoch",
+                  "final_source_evaluation": final_source_summary}
+        result_path = os.path.join(os.path.dirname(os.path.abspath(args.latest_save_path)), "ecrs_source_screen_result.json")
+        with open(result_path, "w", encoding="utf-8") as stream:
+            json.dump(result, stream, ensure_ascii=False, indent=2)
+        print("[ECRS-SOURCE-SCREEN] " + json.dumps(result, ensure_ascii=False), flush=True)
+        return
     print(f"Training finished. best_joint_val_tx_acc={best_joint_val_tx:.2f}% & best_joint_test_tx_acc={best_joint_test_tx:.2f}% at epoch {best_epoch}")
     print(f"Training finished. best_test_overall_tx_acc={best_test_tx:.2f}% at epoch {best_test_epoch} -> {args.best_test_save_path}")
     print(f"Training finished. best_primary_ood_score={best_primary_score:.2f} at epoch {best_primary_epoch} -> {args.best_primary_save_path}")

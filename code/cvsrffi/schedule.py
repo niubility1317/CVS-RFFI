@@ -235,8 +235,36 @@ def configure_ecrs_for_epoch(model, epoch: int, args) -> Dict[str, Any]:
     branch = getattr(raw_model, "ecrs", None)
     if not bool(getattr(args, "use_ecrs", False)) or branch is None:
         return {"stage": -1, "enabled": False, "active_rho_max": 0.0}
+    version = str(getattr(args, "ecrs_version", "v1"))
+    compute_only = bool(getattr(args, "ecrs_compute_only", False))
+    if version == "v2":
+        fusion = (str(getattr(args, "ecrs_fusion_mode", "off")) == "fixed"
+                  and int(epoch) >= int(getattr(args, "ecrs_fusion_start_epoch", 91)) and not compute_only)
+        state = {
+            "enabled": not compute_only, "version": version, "stage": 4 if fusion else 3,
+            "resp_cls": bool(getattr(args, "ecrs_resp_ce_enabled", True)) and not compute_only,
+            "cross_rx": bool(getattr(args, "ecrs_cross_rx_enabled", False)) and not compute_only,
+            "u_pair": bool(getattr(args, "ecrs_u_pair_enabled", False)) and not compute_only,
+            "fusion": fusion, "active_rho_max": float(getattr(args, "ecrs_fixed_rho", .05)) if fusion else 0.0,
+        }
+        for parameter in branch.parameters():
+            parameter.requires_grad_(False)
+        learn_response = state["resp_cls"] or state["cross_rx"] or state["u_pair"] or (
+            fusion and bool(getattr(args, "ecrs_update_resp_from_fusion", False)))
+        for parameter in branch.encoder.parameters():
+            parameter.requires_grad_(learn_response)
+        for parameter in branch.response_projection.parameters():
+            parameter.requires_grad_(fusion)
+        for parameter in raw_model.ecrs_response_head.parameters():
+            parameter.requires_grad_(state["resp_cls"])
+        for parameter in raw_model.ecrs_fused_head.parameters():
+            parameter.requires_grad_(fusion)
+        branch.set_active_fusion(state["active_rho_max"], "fixed" if fusion else "off")
+        if fusion:
+            raw_model.initialize_ecrs_fusion_head()
+        return state
     state = ecrs_stage_for_epoch(
-        epoch,
+        min(int(epoch), 200) if version == "v1r" else epoch,
         enable_learnable_basis=bool(
             getattr(args, "ecrs_enable_learnable_basis", False)
         ),
@@ -244,6 +272,20 @@ def configure_ecrs_for_epoch(model, epoch: int, args) -> Dict[str, Any]:
         teacher_stable=bool(getattr(args, "ecrs_teacher_stable", False)),
     )
     state = apply_ecrs_rung_mask(state, getattr(args, "ecrs_rung", "R8"))
+    if version == "v1r":
+        state["resp_cls"] = state["resp_cls"] and bool(getattr(args, "ecrs_resp_ce_enabled", True))
+        state["resp_cls_scale"] = float(state["resp_cls"])
+        state["gate_calibration"] = bool(getattr(args, "ecrs_gate_calibration_enabled", False))
+        state["active_rho_max"] = 0.0
+        state["version"] = version
+    if getattr(args, "ecrs_gate_calibration_enabled", None) is not None:
+        state["gate_calibration"] = bool(args.ecrs_gate_calibration_enabled) and state["stage"] >= 4
+    if compute_only:
+        for key, value in list(state.items()):
+            if isinstance(value, bool):
+                state[key] = False
+            elif key.endswith("_scale") or key == "active_rho_max":
+                state[key] = 0.0
     for parameter in branch.parameters():
         parameter.requires_grad_(False)
     if state["canonical"]:
@@ -252,7 +294,7 @@ def configure_ecrs_for_epoch(model, epoch: int, args) -> Dict[str, Any]:
     if state["content"]:
         for parameter in branch.content_estimator.parameters():
             parameter.requires_grad_(True)
-    if state["pair_surface"]:
+    if state["pair_surface"] or (version == "v1r" and state["resp_cls"]):
         for parameter in branch.anchor_encoder.encoder.parameters():
             parameter.requires_grad_(True)
     if state["resp_cls"]:
@@ -262,7 +304,17 @@ def configure_ecrs_for_epoch(model, epoch: int, args) -> Dict[str, Any]:
     branch.detach_identification_for_identity = True
     branch.weighted_ridge.set_block_shrinkage(bool(state["identifiability_shrinkage"]))
     branch.fusion_gate.set_active_rho_max(float(state["active_rho_max"]))
-    state["enabled"] = True
+    if version == "v1r":
+        for parameter in raw_model.ecrs_response_head.parameters():
+            parameter.requires_grad_(bool(state["resp_cls"]))
+        for parameter in raw_model.ecrs_fused_head.parameters():
+            parameter.requires_grad_(False)
+        # Projection/gate have no objective while V1R fusion is off.
+        for parameter in branch.response_projection.parameters():
+            parameter.requires_grad_(False)
+        for parameter in branch.fusion_gate.parameters():
+            parameter.requires_grad_(bool(state["gate_calibration"]))
+    state["enabled"] = not compute_only
     return state
 
 

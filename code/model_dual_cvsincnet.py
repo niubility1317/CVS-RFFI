@@ -2,6 +2,8 @@
 from __future__ import annotations
 
 import math
+from copy import deepcopy
+from contextlib import nullcontext
 from pathlib import Path
 import sys
 from typing import Dict, Mapping, Optional, Sequence, Tuple
@@ -259,14 +261,15 @@ class ResponseBasis(nn.Module):
         width = self.amplitude_width.to(device=amplitude.device, dtype=amplitude.dtype)
         return torch.exp(-0.5 * ((amplitude.unsqueeze(-1) - centers) / width) ** 2)
 
-    def forward(self, s_hat: torch.Tensor) -> torch.Tensor:
+    def forward(self, s_hat: torch.Tensor, *, amplitude_scale=None, history=None, history2=None) -> torch.Tensor:
         if not torch.is_complex(s_hat) or s_hat.ndim != 2:
             raise ValueError("s_hat must be a complex tensor with shape [batch, time]")
         s_hat = s_hat.to(torch.complex64)
-        scale = torch.quantile(s_hat.abs().float(), 0.95, dim=1, keepdim=True).clamp_min(1e-4)
+        scale = (torch.quantile(s_hat.abs().float(), 0.95, dim=1, keepdim=True).clamp_min(1e-4)
+                 if amplitude_scale is None else amplitude_scale.to(s_hat.real).clamp_min(1e-4))
         amplitude = s_hat.abs().float() / scale
-        s_prev = self._delay(s_hat, 1)
-        amp_prev = self._delay(amplitude, 1)
+        s_prev = self._delay(s_hat, 1) if history is None else history.to(s_hat)
+        amp_prev = self._delay(amplitude, 1) if history is None else history.abs().float()/scale
         if self.mode == "fixed_mp":
             powers = torch.tensor([0.0, 2.0, 4.0], device=s_hat.device)
             b_now_135 = amplitude.unsqueeze(-1).pow(powers).to(torch.complex64)
@@ -285,11 +288,35 @@ class ResponseBasis(nn.Module):
         )
         cross = s_hat.unsqueeze(-1) * b_prev
         delta = s_hat - s_prev
-        acceleration = delta - self._delay(delta, 1)
+        acceleration = delta - self._delay(delta, 1) if history2 is None else s_hat-2*s_prev+history2.to(s_hat)
         slew = torch.cat(
             [delta.unsqueeze(-1) * b_now, acceleration.unsqueeze(-1) * b_now], dim=-1
         )
         return torch.cat([pa, iq, cross, slew], dim=-1).to(torch.complex64)
+
+
+class FrozenLegacyECRSReference(nn.Module):
+    """Bridge-only reuse of the old canonicalizer/content architecture.
+
+    The default is its fixed initialization, not a claim that a trained V1
+    content checkpoint was imported. State is serialized with the V2 model.
+    """
+    dependency_radius = 5  # nuisance convolution radius 3 + content radius 2
+
+    def __init__(self):
+        super().__init__()
+        self.nuisance_estimator = NuisanceEstimator()
+        self.canonicalizer = AnalyticCanonicalizer()
+        self.content_estimator = ContentEstimator()
+        self.requires_grad_(False)
+
+    def forward(self, observation, fit_observation):
+        fit_iq = complex_to_iq(fit_observation)
+        nuisance = self.nuisance_estimator(fit_iq)
+        fit_canonical = self.canonicalizer(fit_iq, nuisance)
+        reference, _ = self.content_estimator(fit_canonical)
+        canonical = self.canonicalizer(complex_to_iq(observation), nuisance)
+        return {"reference": reference, "observation": iq_to_complex(canonical)}
 
 
 class WeightedRidgeLayer(nn.Module):
@@ -546,6 +573,8 @@ class SurfaceAnchorEncoder(nn.Module):
         resp_coef: torch.Tensor,
         resp_cov_diag: torch.Tensor,
         coverage: torch.Tensor,
+        *,
+        detach_features: bool = False,
     ) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
         design = self.anchor_design.to(device=resp_coef.device, dtype=torch.complex64)
         anchor = torch.einsum("qk,bk->bq", design, resp_coef.to(torch.complex64))
@@ -557,6 +586,8 @@ class SurfaceAnchorEncoder(nn.Module):
         )
         weighted_anchor = anchor * reliability.sqrt().to(torch.complex64)
         anchor_features = torch.cat([weighted_anchor.real, weighted_anchor.imag], dim=1).float()
+        if detach_features:
+            anchor_features = anchor_features.detach()
         z_resp = self.encoder(anchor_features)
         z_resp = torch.nn.functional.normalize(z_resp.float(), dim=1, eps=1e-6)
         return anchor, z_resp, variance, reliability
@@ -592,6 +623,8 @@ class ResponseFusionGate(nn.Module):
         quality: Mapping[str, torch.Tensor],
         resp_cov_diag: torch.Tensor,
         sample_count: int,
+        *,
+        return_logit: bool = False,
     ) -> torch.Tensor:
         values = torch.stack(
             [
@@ -605,9 +638,9 @@ class ResponseFusionGate(nn.Module):
             ],
             dim=1,
         ).detach()
-        return self._active_rho_max.to(device=values.device) * torch.sigmoid(
-            self.net(values).squeeze(-1)
-        )
+        logit = self.net(values).squeeze(-1)
+        rho = self._active_rho_max.to(device=values.device) * torch.sigmoid(logit)
+        return (rho, logit) if return_logit else rho
 
 
 class ResponseSurfaceBranch(nn.Module):
@@ -623,6 +656,7 @@ class ResponseSurfaceBranch(nn.Module):
         rho_max: float = 0.25,
         ridge_alpha: float = 0.01,
         basis_mode: str = "fixed_spline",
+        revision: str = "v1",
     ):
         super().__init__()
         if int(identity_dim) != 160:
@@ -632,6 +666,7 @@ class ResponseSurfaceBranch(nn.Module):
         if int(response_dim) != 64:
             raise ValueError("ADV3B02-ECRS-V1 fixes response_dim=64")
         self.identity_dim = int(identity_dim)
+        self.revision = str(revision)
         self.num_classes = int(num_classes)
         self.response_basis = ResponseBasis(mode=basis_mode)
         self.nuisance_estimator = NuisanceEstimator()
@@ -662,7 +697,7 @@ class ResponseSurfaceBranch(nn.Module):
 
     def export_bundle(self) -> Dict[str, object]:
         return {
-            "version": "v1",
+            "version": self.revision,
             "basis": {
                 "type": self.response_basis.mode,
                 "dimension": 28,
@@ -686,26 +721,31 @@ class ResponseSurfaceBranch(nn.Module):
             "single_view_inference": True,
         }
 
-    def forward(self, x: torch.Tensor, z_id_raw: torch.Tensor) -> Dict[str, object]:
+    def forward(self, x: torch.Tensor, z_id_raw: torch.Tensor, *, return_diagnostics: bool = True) -> Dict[str, object]:
         nuisance_coef = self.nuisance_estimator(x)
         canonical_iq = self.canonicalizer(x, nuisance_coef)
         s_hat, content_confidence = self.content_estimator(canonical_iq)
         content_mask = (torch.arange(x.size(-1), device=x.device) % 4 == 0).reshape(1, -1)
-        masked_iq = canonical_iq.masked_fill(content_mask.unsqueeze(1), 0.0)
-        masked_s_hat, _ = self.content_estimator(masked_iq)
-        cycle_iq = self.canonicalizer.inverse(canonical_iq, nuisance_coef)
+        if return_diagnostics:
+            masked_iq = canonical_iq.masked_fill(content_mask.unsqueeze(1), 0.0)
+            masked_s_hat, _ = self.content_estimator(masked_iq)
+            cycle_iq = self.canonicalizer.inverse(canonical_iq, nuisance_coef)
+        else:
+            masked_s_hat, cycle_iq = None, None
         design = self.response_basis(s_hat)
         ridge = self.weighted_ridge(
             design, iq_to_complex(canonical_iq), content_confidence, s_hat=s_hat
         )
         quality = dict(ridge["resp_quality"])
         quality["snr_db"] = -10.0 * torch.log10(quality["nmse"].clamp_min(1e-8))
+        quality["fit_residual_score_db"] = quality["snr_db"]
         anchor, z_resp, anchor_variance, anchor_reliability = self.anchor_encoder(
-            ridge["resp_coef"], ridge["resp_cov_diag"], quality["coverage"]
+            ridge["resp_coef"], ridge["resp_cov_diag"], quality["coverage"],
+            detach_features=self.revision != "v1",
         )
         quality["anchor_variance"] = anchor_variance
         quality["anchor_reliability"] = anchor_reliability
-        rho = self.fusion_gate(quality, ridge["resp_cov_diag"], int(x.size(-1)))
+        rho, help_logit = self.fusion_gate(quality, ridge["resp_cov_diag"], int(x.size(-1)), return_logit=True)
         identity_response = (
             z_resp.detach() if bool(self.detach_identification_for_identity) else z_resp
         )
@@ -738,6 +778,7 @@ class ResponseSurfaceBranch(nn.Module):
             "response_weights": ridge["weights"],
             "ridge_info": ridge["ridge_info"],
             "rho_resp": rho,
+            "help_logit": help_logit,
             "z_resp_projected": z_resp_projected,
         }
 
@@ -1299,6 +1340,11 @@ class DualCVSincNetDisentangle(nn.Module):
             self._share_early_stem()
 
         self.emb_dim = self._infer_emb_dim(self.id_backbone)
+        self.ecrs_version = str(self.ecrs_config.get("version", "v1"))
+        self.ecrs_compute_only = bool(self.ecrs_config.get("compute_only", False))
+        self.ecrs_response_head = None
+        self.ecrs_fused_head = None
+        self.register_buffer("_ecrs_fusion_head_initialized", torch.tensor(False), persistent=self.ecrs_version != "v1")
         if self.use_ecrs:
             if self.representation_mode != "dual":
                 raise ValueError("ADV3B02-ECRS-V1 requires the existing dual ADV3B02 backbone")
@@ -1308,19 +1354,60 @@ class DualCVSincNetDisentangle(nn.Module):
                 "rho_max",
                 "ridge_alpha",
                 "basis_mode",
+                "version", "compute_only", "reference_mode", "protocol_reference_path",
+                "protocol_reference_metadata", "solver_mode", "anchor_mode", "fusion_mode",
+                "fixed_rho", "rho_cap", "update_resp_from_fusion", "cache_fixed_operator",
+                "protocol_reference_tensor", "estimator_variant",
             }
             unknown_ecrs_keys = sorted(set(self.ecrs_config) - allowed_ecrs_keys)
             if unknown_ecrs_keys:
-                raise ValueError(f"unsupported ECRS-V1 config keys: {unknown_ecrs_keys}")
-            self.ecrs = ResponseSurfaceBranch(
-                self.emb_dim,
-                self.num_classes,
-                response_basis_dim=int(self.ecrs_config.get("response_basis_dim", 28)),
-                response_dim=int(self.ecrs_config.get("response_dim", 64)),
-                rho_max=float(self.ecrs_config.get("rho_max", 0.25)),
-                ridge_alpha=float(self.ecrs_config.get("ridge_alpha", 1e-4)),
-                basis_mode=str(self.ecrs_config.get("basis_mode", "fixed_spline")),
-            )
+                raise ValueError(f"unsupported ECRS config keys: {unknown_ecrs_keys}")
+            # Additional modules must not alter initialization of any baseline module.
+            rng_context = torch.random.fork_rng(devices=[]) if self.ecrs_version != "v1" else nullcontext()
+            with rng_context:
+                if self.ecrs_version == "v2":
+                    from cvsrffi.ecrs_v2 import ECRSV2Branch
+                    # Internal checkpoint restoration uses the persisted public
+                    # waveform, not a possibly moved external training artifact.
+                    public_reference = self.ecrs_config.get("protocol_reference_tensor")
+                    reference_path = self.ecrs_config.get("protocol_reference_path", "")
+                    if public_reference is None and reference_path:
+                        import numpy as np
+                        public_reference = torch.as_tensor(np.load(str(reference_path), allow_pickle=False))
+                    estimator_variant = self.ecrs_config.get("estimator_variant", "compact8")
+                    # Provider construction must not shift the common response
+                    # encoder/head initialization across the three bridge rows.
+                    with torch.random.fork_rng(devices=[]):
+                        legacy_reference = FrozenLegacyECRSReference() if estimator_variant == "legacy28_old_reference" else None
+                        legacy_basis = ResponseBasis(mode=self.ecrs_config.get("basis_mode", "fixed_spline")) if estimator_variant != "compact8" else None
+                    self.ecrs = ECRSV2Branch(
+                        raw_dim=self.emb_dim, resp_dim=64,
+                        reference_mode=("public_reference" if self.ecrs_config.get("reference_mode") == "protocol_reference"
+                                        else self.ecrs_config.get("reference_mode", "estimated_reference")),
+                        anchor_mode=self.ecrs_config.get("anchor_mode", "complex24"),
+                        alpha_eta=float(self.ecrs_config.get("ridge_alpha", 0.01)),
+                        alpha_theta=float(self.ecrs_config.get("ridge_alpha", 0.01)),
+                        fixed_rho=float(self.ecrs_config.get("fixed_rho", 0.05)),
+                        fusion_mode=str(self.ecrs_config.get("fusion_mode", "off")),
+                        update_resp_from_fusion=bool(self.ecrs_config.get("update_resp_from_fusion", False)),
+                        public_reference=public_reference,
+                        cache_fixed_operator=bool(self.ecrs_config.get("cache_fixed_operator", True)),
+                        estimator_variant=estimator_variant,
+                        legacy_reference_provider=legacy_reference, legacy_basis=legacy_basis,
+                    )
+                else:
+                    self.ecrs = ResponseSurfaceBranch(
+                        self.emb_dim, self.num_classes,
+                        response_basis_dim=int(self.ecrs_config.get("response_basis_dim", 28)),
+                        response_dim=int(self.ecrs_config.get("response_dim", 64)),
+                        rho_max=float(self.ecrs_config.get("rho_max", 0.25)),
+                        ridge_alpha=float(self.ecrs_config.get("ridge_alpha", 0.01)),
+                        basis_mode=str(self.ecrs_config.get("basis_mode", "fixed_spline")),
+                        revision=self.ecrs_version,
+                    )
+                if self.ecrs_version != "v1":
+                    self.ecrs_response_head = nn.Linear(64, self.num_classes)
+                    self.ecrs_fused_head = deepcopy(self.id_backbone.cls_head.head)
         self.sat_anchor_identity_adapter = (
             SatAnchorIdentityAdapter(
                 self.emb_dim,
@@ -1401,7 +1488,35 @@ class DualCVSincNetDisentangle(nn.Module):
     def export_ecrs_bundle(self) -> Optional[Dict[str, object]]:
         if self.ecrs is None:
             return None
-        return self.ecrs.export_bundle()
+        bundle = self.ecrs.export_bundle()
+        if self.ecrs_version != "v1":
+            bundle["identity_backbone_state"] = {k: v.detach().cpu().clone() for k, v in self.id_backbone.state_dict().items()}
+            bundle["identity_feature_key"] = self.id_feature_key
+            bundle["response_head"] = {k: v.detach().cpu().clone() for k, v in self.ecrs_response_head.state_dict().items()}
+            bundle["fused_head"] = {k: v.detach().cpu().clone() for k, v in self.ecrs_fused_head.state_dict().items()}
+            bundle["feature_schema"] = f"ADV3B02:ECRS:z_fused:unit_l2:160:{self.ecrs_version}"
+        return bundle
+
+    def response_encoder(self):
+        if self.ecrs_version == "v2":
+            return self.ecrs.encoder
+        return self.ecrs.anchor_encoder.encoder
+
+    def initialize_ecrs_fusion_head(self) -> None:
+        if self.ecrs_fused_head is not None and not bool(self._ecrs_fusion_head_initialized):
+            self.ecrs_fused_head.load_state_dict(self.id_backbone.cls_head.head.state_dict())
+            self._ecrs_fusion_head_initialized.fill_(True)
+
+    def forward_response(self, x: torch.Tensor) -> Dict[str, object]:
+        """Unlabeled response learning does not execute either identity or domain backbone."""
+        if self.ecrs_version != "v2" or self.ecrs is None:
+            raise ValueError("response-only forward is an ECRS V2 interface")
+        out = self.ecrs(x, None, return_diagnostics=False)
+        out["resp_tx_logits"] = self.ecrs_response_head(out["z_resp"])
+        return out
+
+    def forward_identity(self, x: torch.Tensor) -> Dict[str, object]:
+        return self.forward(x, return_aux=True, identity_only=True)
 
     def _share_early_stem(self) -> None:
         """Share the lowest-level IQ/filterbank stem only for Lite-B.
@@ -1475,6 +1590,7 @@ class DualCVSincNetDisentangle(nn.Module):
         update_crra_support: bool = False,
         crra_support_mask: Optional[torch.Tensor] = None,
         sat_anchor_detach_backbone: bool = False,
+        identity_only: bool = False,
     ):
         if self.representation_mode == "single_parameter_matched":
             aux_id = backbone_forward_compat(
@@ -1555,7 +1671,8 @@ class DualCVSincNetDisentangle(nn.Module):
             update_crra_support=update_crra_support,
             crra_support_mask=crra_support_mask,
         )
-        aux_dom = backbone_forward_compat(
+        skip_domain = identity_only or (not return_aux and self.ecrs_version != "v1")
+        aux_dom = {} if skip_domain else backbone_forward_compat(
             self.dom_backbone,
             x,
             y=None,
@@ -1584,12 +1701,37 @@ class DualCVSincNetDisentangle(nn.Module):
         z_id_raw = z_id
         ecrs_out = None
         if self.ecrs is not None:
-            ecrs_out = self.ecrs(x, z_id_raw)
-            z_id = ecrs_out["z_id_fused"]
-            tx_logits = self._classify_identity_feature(z_id, y_tx)
-            ecrs_out["resp_tx_logits"] = self._classify_identity_feature(
-                ecrs_out["z_resp_projected"], y_tx
-            )
+            if self.ecrs_compute_only:
+                with torch.no_grad():
+                    ecrs_out = self.ecrs(x, z_id_raw.detach(), return_diagnostics=False)
+                ecrs_out["z_id_fused"] = z_id_raw
+            else:
+                ecrs_out = self.ecrs(
+                    x, z_id_raw.detach() if self.ecrs_version != "v1" else z_id_raw,
+                    return_diagnostics=(self.ecrs_version == "v1" and return_aux and not identity_only)
+                    or (self.training and self.ecrs_version == "v1r"),
+                )
+            if self.ecrs_version == "v1":
+                z_id = ecrs_out["z_id_fused"]
+                tx_logits = self._classify_identity_feature(z_id, y_tx)
+                ecrs_out["resp_tx_logits"] = self._classify_identity_feature(ecrs_out["z_resp_projected"], y_tx)
+            else:
+                ecrs_out["resp_tx_logits"] = self.ecrs_response_head(ecrs_out["z_resp"])
+                ecrs_out["tx_logits_raw_infer"] = self._classify_identity_feature(z_id_raw, None)
+                ecrs_out["tx_logits_fused"] = self.ecrs_fused_head(ecrs_out["z_id_fused"], labels=None)
+                if not self.training and bool(self._ecrs_fusion_head_initialized) and not self.ecrs_compute_only:
+                    z_id = ecrs_out["z_id_fused"]
+                    tx_logits = ecrs_out["tx_logits_fused"]
+                # During training baseline losses keep their raw feature/head path.
+        if skip_domain:
+            if not return_aux:
+                return tx_logits
+            out = {"tx_logits": tx_logits, "tx_logits_raw": tx_logits_raw,
+                   "z_id": z_id, "z_id_raw": z_id_raw, "aux_id": aux_id}
+            if ecrs_out is not None:
+                out.update(ecrs_out)
+                out["z_id"] = z_id
+            return out
         z_dom_raw = self._pick_z_dom(aux_dom)
         z_dom, z_dom_rcn = self.dom_enhancer(z_dom_raw, x)
 
@@ -1643,7 +1785,7 @@ class DualCVSincNetDisentangle(nn.Module):
             out.update(ecrs_out)
             out["tx_logits_raw"] = tx_logits_raw
             out["z_id_raw"] = z_id_raw
-            out["z_id_fused"] = z_id
+            out["z_id_fused"] = ecrs_out["z_id_fused"]
             out["z_id"] = z_id
         if torch.is_tensor(tx_adv_logits):
             out["tx_adv_logits"] = tx_adv_logits

@@ -4852,16 +4852,18 @@ def response_gate_calibration_loss(
     fused_correct: torch.Tensor,
     *,
     rho_max: float = 0.25,
+    help_logit: Optional[torch.Tensor] = None,
 ) -> Tuple[torch.Tensor, Dict[str, int]]:
     rescue = (~raw_correct.bool()) & fused_correct.bool()
     harm = raw_correct.bool() & (~fused_correct.bool())
     active = rescue | harm
     probability = (rho.float() / float(rho_max)).clamp(1e-5, 1.0 - 1e-5)
+    logit = torch.logit(probability) if help_logit is None else help_logit.float()
     target = rescue.float()
     loss = (
-        F.binary_cross_entropy(probability[active], target[active])
+        F.binary_cross_entropy_with_logits(logit[active], target[active])
         if bool(active.any())
-        else probability.sum() * 0.0
+        else logit.sum() * 0.0
     )
     return loss, {
         "rescue": int(rescue.sum().item()),

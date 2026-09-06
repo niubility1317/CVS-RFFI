@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+from copy import deepcopy
 from typing import Dict, List
 
 import torch
@@ -24,6 +25,9 @@ class AveragedModelState:
         state = getattr(model, "_orig_mod", model).state_dict()
         with torch.no_grad():
             for k, v in state.items():
+                if not torch.is_tensor(v):
+                    self.non_float[k] = deepcopy(v)
+                    continue
                 vv = v.detach()
                 if torch.is_floating_point(vv):
                     vf = vv.float().clone()
@@ -45,7 +49,9 @@ class AveragedModelState:
         ref_state = getattr(model, "_orig_mod", model).state_dict()
         out = {}
         for k, v in ref_state.items():
-            if k in self.avg:
+            if not torch.is_tensor(v):
+                out[k] = deepcopy(self.non_float.get(k, v))
+            elif k in self.avg:
                 out[k] = self.avg[k].to(device=v.device, dtype=v.dtype)
             elif k in self.non_float:
                 out[k] = self.non_float[k].to(device=v.device, dtype=v.dtype)
@@ -54,7 +60,8 @@ class AveragedModelState:
         return out
 
     def cpu_state_dict(self, model) -> Dict[str, torch.Tensor]:
-        return {k: v.detach().cpu().clone() for k, v in self.averaged_state_dict(model).items()}
+        return {k: v.detach().cpu().clone() if torch.is_tensor(v) else deepcopy(v)
+                for k, v in self.averaged_state_dict(model).items()}
 
 
 def save_checkpoint(path: str, *, model, optimizer, scheduler, scaler, epoch: int, args, split_info, stats: dict):
@@ -69,7 +76,7 @@ def save_checkpoint(path: str, *, model, optimizer, scheduler, scaler, epoch: in
         else None
     )
     feature_schema = (
-        ECRS_FEATURE_SCHEMA
+        str((ecrs_bundle or {}).get("feature_schema", ECRS_FEATURE_SCHEMA))
         if use_ecrs
         else str(getattr(args, "feature_schema", "ADV3B02:z_id:legacy"))
     )
@@ -79,11 +86,14 @@ def save_checkpoint(path: str, *, model, optimizer, scheduler, scaler, epoch: in
         "scheduler": scheduler.state_dict() if scheduler is not None else None,
         "scaler": scaler.state_dict() if scaler is not None else None,
         "epoch": int(epoch),
-        "args": vars(args),
+        "args": {key: value for key, value in vars(args).items() if not key.startswith("_")},
         "split_info": split_info,
         "stats": stats,
         "feature_schema": feature_schema,
         "ecrs_bundle": ecrs_bundle,
+        "ecrs_runtime": (deepcopy(state_model._ecrs_runtime.state_dict())
+                         if getattr(state_model, "_ecrs_runtime", None) is not None else None),
+        "training_data_state": deepcopy(getattr(state_model, "_ecrs_training_data_state", {})),
     }
     torch.save(payload, path)
 

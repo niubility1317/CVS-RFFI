@@ -1,0 +1,198 @@
+{
+  "schema": "ecrs_v2_synthetic_profile_v1",
+  "synthetic": true,
+  "claim_scope": "component timing and diagnostic arithmetic only; no real-IQ accuracy, identifiability or speedup claim",
+  "full_inference_scope": "ECRSV2Branch with synthetic raw embedding; ADV3B02 backbones excluded",
+  "train_scope": "forward+backward, without optimizer step or data loading",
+  "hardware": {
+    "device": "cuda",
+    "actual_gpu": "NVIDIA GeForce RTX 5070 Ti",
+    "torch": "2.10.0+cu128",
+    "cuda_runtime": "12.8",
+    "platform": "Windows-10-10.0.26200-SP0"
+  },
+  "config": {
+    "batch": 2,
+    "input_shape": [
+      2,
+      2,
+      64
+    ],
+    "raw_shape": [
+      2,
+      160
+    ],
+    "warmup": 1,
+    "steps": 3,
+    "physical_precision": "float32/complex64",
+    "neural_precision": "float32",
+    "amp": false
+  },
+  "timings": {
+    "physical": {
+      "p50_ms": 23.54534339904785,
+      "p95_ms": 23.76900444030762,
+      "samples_ms": [
+        23.54534339904785,
+        23.523487091064453,
+        23.793855667114258
+      ],
+      "peak_vram_allocated_bytes": 12891648,
+      "baseline_vram_allocated_bytes": 9694208,
+      "incremental_peak_vram_bytes": 3197440,
+      "timer": "cuda_events"
+    },
+    "crossfit_two_directions": {
+      "p50_ms": 78.5953598022461,
+      "p95_ms": 94.73018341064453,
+      "samples_ms": [
+        96.52294158935547,
+        70.62767791748047,
+        78.5953598022461
+      ],
+      "peak_vram_allocated_bytes": 13086720,
+      "baseline_vram_allocated_bytes": 9694208,
+      "incremental_peak_vram_bytes": 3392512,
+      "timer": "cuda_events"
+    },
+    "response_encoder": {
+      "p50_ms": 0.2775680124759674,
+      "p95_ms": 0.36189441084861756,
+      "samples_ms": [
+        0.3712640106678009,
+        0.2775680124759674,
+        0.27055999636650085
+      ],
+      "peak_vram_allocated_bytes": 9696256,
+      "baseline_vram_allocated_bytes": 9694208,
+      "incremental_peak_vram_bytes": 2048,
+      "timer": "cuda_events"
+    },
+    "full_inference": {
+      "p50_ms": 25.193504333496094,
+      "p95_ms": 34.19203491210938,
+      "samples_ms": [
+        25.08095932006836,
+        25.193504333496094,
+        35.191871643066406
+      ],
+      "peak_vram_allocated_bytes": 12891648,
+      "baseline_vram_allocated_bytes": 9694208,
+      "incremental_peak_vram_bytes": 3197440,
+      "timer": "cuda_events"
+    },
+    "train_forward_backward": {
+      "p50_ms": 27.498592376708984,
+      "p95_ms": 28.580665016174315,
+      "samples_ms": [
+        26.90598487854004,
+        28.700895309448242,
+        27.498592376708984
+      ],
+      "peak_vram_allocated_bytes": 22197248,
+      "baseline_vram_allocated_bytes": 18298880,
+      "incremental_peak_vram_bytes": 3898368,
+      "timer": "cuda_events"
+    }
+  },
+  "crossfit": [
+    {
+      "delta_pred": [
+        -0.0704038143157959,
+        0.32987380027770996
+      ],
+      "nmse_full": [
+        2.4201295375823975,
+        1.7507798671722412
+      ],
+      "nmse_nuisance_only": [
+        2.3497257232666016,
+        2.080653667449951
+      ],
+      "denominator_energy": [
+        57.284629821777344,
+        67.2298583984375
+      ],
+      "evaluation_valid": [
+        true,
+        true
+      ],
+      "fit_quality_valid": [
+        true,
+        true
+      ],
+      "effective_points": 30,
+      "discarded_boundary_points": 4,
+      "guard": 2
+    },
+    {
+      "delta_pred": [
+        0.040531814098358154,
+        0.09849691390991211
+      ],
+      "nmse_full": [
+        0.9932408928871155,
+        3.859502077102661
+      ],
+      "nmse_nuisance_only": [
+        1.0337727069854736,
+        3.9579989910125732
+      ],
+      "denominator_energy": [
+        63.77178955078125,
+        65.02986907958984
+      ],
+      "evaluation_valid": [
+        true,
+        true
+      ],
+      "fit_quality_valid": [
+        true,
+        true
+      ],
+      "effective_points": 30,
+      "discarded_boundary_points": 4,
+      "guard": 2
+    }
+  ],
+  "metadata": {
+    "version": "ecrs_v2",
+    "reference_mode": "estimated_reference",
+    "reference_version": "ecrs_v2_ref_v1",
+    "public_reference_verified_by_module": false,
+    "fir_kernel": [
+      0.25,
+      0.5,
+      0.25
+    ],
+    "scale": "fixed_input_units_fit_only_column_rms",
+    "nuisance_parameters": [
+      "real_gain",
+      "real_phase",
+      "real_normalized_cfo"
+    ],
+    "complex_response_basis": [
+      "direct_cubic_m0",
+      "direct_quintic_m0",
+      "direct_cubic_m1",
+      "direct_quintic_m1",
+      "conjugate_linear_m0",
+      "conjugate_cubic_m0",
+      "conjugate_linear_m1",
+      "conjugate_cubic_m1"
+    ],
+    "anchor_mode": "complex24",
+    "alpha_eta": 0.01,
+    "alpha_theta": 0.01,
+    "uncertainty_kind": "ridge_sensitivity",
+    "cross_fit": "diagnostic_only",
+    "alignment": "no_packet_alignment_estimator; nuisance_linearization_only",
+    "raw_dim": 160,
+    "resp_dim": 64,
+    "fusion_mode": "fixed",
+    "fixed_rho": 0.05,
+    "update_resp_from_fusion": false,
+    "physical_gradient": "detached_before_encoder",
+    "fusion_raw_gradient": "detached"
+  }
+}

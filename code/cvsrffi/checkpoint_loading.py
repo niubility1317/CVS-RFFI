@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 from pathlib import Path
+import inspect
+from types import SimpleNamespace
 from typing import Any, Mapping
 
 import torch
@@ -45,6 +47,8 @@ def build_exact_ssdg_model_from_checkpoint(
     if "args" not in checkpoint or "model" not in checkpoint:
         raise KeyError("checkpoint must contain 'args' and 'model'")
     checkpoint_args = dict(checkpoint.get("args") or {})
+    if bool(checkpoint_args.get("use_ecrs", False)):
+        return build_exact_ecrs_model_from_checkpoint(checkpoint, input_len=input_len, device=device)
     state = strip_module_prefix(checkpoint["model"])
     num_domains = infer_num_domains_from_state(state)
     if ssdg_module is None:
@@ -88,3 +92,45 @@ def build_exact_ssdg_model_from_checkpoint(
         "input_len": int(input_len),
     }
     return model, audit
+
+
+def build_exact_ecrs_model_from_checkpoint(checkpoint, *, input_len, device):
+    """Rebuild ECRS through its explicit revision route, never the SSDG baseline.
+
+    Protocol-reference waveforms are restored from the checkpoint buffer; the
+    original training paths remain provenance and never select a replacement.
+    """
+    from model_dual_cvsincnet import build_dual_model
+    from .ecrs_config import ecrs_model_config
+
+    args = dict(checkpoint["args"])
+    if not bool(args.get("use_ecrs", False)):
+        raise ValueError("ECRS reconstruction requires use_ecrs=true")
+    state = strip_module_prefix(checkpoint["model"])
+    version = str(args.get("ecrs_version", "v1"))
+    expected_schema = "ADV3B02:ECRS:z_fused:unit_l2:160:" + version
+    if checkpoint.get("feature_schema") != expected_schema:
+        raise ValueError("ECRS feature schema/version mismatch")
+    config = ecrs_model_config(SimpleNamespace(**args), require_reference_files=False)
+    if config["reference_mode"] == "protocol_reference":
+        reference = state.get("ecrs.physical.public_reference")
+        if not torch.is_tensor(reference) or reference.numel() == 0:
+            raise ValueError("protocol-reference checkpoint is missing its public waveform")
+        config["protocol_reference_tensor"] = reference.detach().cpu().clone()
+    kwargs = {key: args[key] for key in inspect.signature(build_dual_model).parameters if key in args}
+    kwargs.update(num_classes=int(args["num_classes"]),
+                  num_domains=infer_num_domains_from_state(state), input_len=int(input_len),
+                  mixstyle_on=bool(args.get("use_mixstyle", args.get("mixstyle_on", False))),
+                  ecrs_config=config)
+    if isinstance(kwargs.get("pa_orders"), str):
+        value = kwargs["pa_orders"].strip()
+        kwargs["pa_orders"] = [int(v.strip()) for v in value.split(",") if v.strip()] if value else None
+    model = build_dual_model(**kwargs).to(device)
+    try:
+        model.load_state_dict(state, strict=True)
+    except RuntimeError as exc:
+        raise ValueError("strict ECRS reconstruction failed: " + str(exc)) from exc
+    return model, {"loader": "exact_ecrs_revision_architecture_v1", "ecrs_version": version,
+                   "feature_schema": expected_schema, "checkpoint_load_strict": True,
+                   "missing_keys": 0, "unexpected_keys": 0, "skipped_mismatch": 0,
+                   "num_domains_from_state": kwargs["num_domains"], "input_len": int(input_len)}
