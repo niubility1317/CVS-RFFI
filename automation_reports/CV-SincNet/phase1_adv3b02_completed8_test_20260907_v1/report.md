@@ -1,0 +1,15 @@
+# 已完成8行的冻结诊断测试
+
+用户于2026-09-07明确要求对已完成行测试并提供详细数据。本次冻结07:34UTC已完成E200的8行：A_POINT的392005/392006，POINT_MEMORY的392006/392007，MATCHED_ZERO三个seed，以及TANGENT_ROUTE的392007。其他15行训练继续，B_SAFE392005的E109技术失败不重启。
+
+本次用户请求覆盖原矩阵的target评估延期，仅进行这8个最终checkpoint的诊断测试；不做候选重排、调参、重训或默认晋升。NO_PROMOTION。r3与旧代码混合版本比较边界仍保留。
+
+测试使用各行原始release严格重建学生模型，final_only/E200，FP32、eval模式、无适配、无标签前向。固定ManySig、equalized=1、长度256、目标接收机0/2/5/7/9/10/11、日期0/1/2/3；覆盖固定test_all_day_unseen_rx全量，不设batch上限。输出clean诊断对照和三种正式LEO弱场景。每个物理样本通过opaque ID散列固定分配一个LEO场景，只生成一次received IQ，8个模型共享同一份received；三场景样本互斥。sat_seed=2027，生成与预测batch=256。
+
+数据builder准备输入与单独truth文件；predictor只读公开输入、opaque ID及冻结checkpoint，禁止读取truth。全部8行prediction固定后，独立scorer进程通过opaque ID连接truth。报告总体、每场景、每接收机、每天、每类和混淆矩阵。无真实新类/unknown输入，因此不能声明注册或拒识性能。
+
+脚本tools/pair_completed_test.py；配置configs/phase1_adv3b02_completed8_test_manifest.json。每个真实checkpoint无query smoke检查严格加载和批次/单样本一致性。系统错误立即结束本测试队列并保留全部partial产物；不影响训练进程。输出root不可覆盖。
+
+环境：普通账户N607；Python=/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python；项目=/home/szu2070436088/2510044040/CV-SincNet；新测试release和runs目录均为phase1_adv3b02_completed8_test_20260907_v1；使用空闲GPU1，一个测试进程，顺序预测8行。运行命令：python -u pair_completed_test.py --manifest manifest.json --root <project>/runs/phase1_adv3b02_completed8_test_20260907_v1 --mode queue。
+
+本地7项聚焦验证通过：opaque ID乱序连接、重复/缺失ID拒绝、场景子集计数、prediction不完整时禁止truth评分、输出不可覆盖。独立P0/P1审查和远端启动状态将在读回后追加。
