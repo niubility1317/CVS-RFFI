@@ -3,6 +3,7 @@ from __future__ import annotations
 import inspect
 from collections import OrderedDict
 
+import numpy as np
 import pytest
 import torch
 from torch import nn
@@ -165,6 +166,14 @@ def test_production_selection_uses_exact_d92_identity160_fft96(monkeypatch) -> N
         "make_fft96",
         lambda iq: torch.zeros(len(iq), 96).numpy(),
     )
+    real_as_tensor = torch.as_tensor
+
+    def reject_numpy_as_tensor(values, *args, **kwargs):
+        if isinstance(values, np.ndarray):
+            raise RuntimeError("Could not infer dtype of numpy.float32")
+        return real_as_tensor(values, *args, **kwargs)
+
+    monkeypatch.setattr(torch, "as_tensor", reject_numpy_as_tensor)
     model = Model()
     state = model.state_dict()
     fit_iq = torch.randn(6, 2, 256)

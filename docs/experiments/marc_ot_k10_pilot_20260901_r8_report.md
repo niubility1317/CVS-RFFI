@@ -14,3 +14,9 @@
 - 预期artifact：18份`support_frozen_state.pt`和回执、`support_collection.json`、18份prediction和回执、`pilot_result.json`、独立`score/score_collection.json`。
 - truth-last：18份support冻结态全部完成后才能`freeze-collection`；prediction全部固定前不得连接truth。
 
+## 2026-09-08 00:16远端smoke终态
+
+- release归档本地/远端SHA256一致：`4ec209c2dc1e186d674e56c33b66a97656a1e592ceb7589040d11dc1d9a747f2`；远端编译通过。
+- r7的autograd断链已消失；真实checkpoint、无query smoke继续运行到D92评分张量桥接时失败：`RuntimeError: Could not infer dtype of numpy.float32`，位置为`stage2_marc_ot_runner.py:463 torch.as_tensor(...)`。
+- formal adapt-unit为`0/15`，未创建support collection、未打开query、未生成prediction、未连接truth、未评分；没有性能结果。
+- r8终态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。保留release和smoke产物，不覆盖、不原地修补或重启；修复旧版PyTorch/NumPy数组桥接后使用新提交、新release和新run ID。

@@ -460,10 +460,15 @@ def _default_fold_metrics(
                     seed=int(seed),
                     device=fit_features.device,
                 )
-            logits = torch.as_tensor(
+            score_values = np.asarray(
                 fitted.score(
                     validation_features.detach().cpu().numpy(), make_fft96(validation_np)
                 ),
+                dtype=np.float32,
+            )
+            logits = torch.tensor(
+                score_values.tolist(),
+                dtype=torch.float32,
                 device=validation_labels.device,
             )
             predictions = logits.argmax(dim=1)
