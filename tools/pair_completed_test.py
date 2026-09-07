@@ -69,7 +69,7 @@ def prepare(manifest, root):
         x = x.to(device)
         result = torch.empty_like(x)
         for scene_index, scenario in enumerate(SCENES):
-            mask = torch.from_numpy(assigned == scene_index).to(device)
+            mask = torch.tensor((assigned == scene_index).tolist(), dtype=torch.bool, device=device)
             if bool(mask.any()):
                 result[mask], _ = apply_sat_channel_for_scenario(
                     x[mask], scenario, args, gen=generators[scene_index], return_meta=False)
@@ -107,7 +107,11 @@ def load_for_inference(manifest, index):
     row = manifest['rows'][index]
     code_paths(row['release'])
     from smoke_adv3b02_pair_reform import load_model
+    from cvsrffi.tensors import numpy_to_tensor_compat
     device = torch.device('cuda:0')
+    bridge = numpy_to_tensor_compat(np.arange(6, dtype=np.float32).reshape(3, 2),
+                                    numpy_dtype=np.float32, torch_dtype=torch.float32)
+    assert bridge.tolist() == [[0., 1.], [2., 3.], [4., 5.]]
     payload, model, model_args, compatibility = load_model(Path(row['checkpoint']), device)
     assert payload['epoch'] == 200 and payload['checkpoint_selection'] == 'final_only'
     model.eval().requires_grad_(False)
@@ -127,6 +131,7 @@ def predict(manifest, root, index):
     import torch
     row = manifest['rows'][index]
     payload, model, compatibility, state = load_for_inference(manifest, index)
+    from cvsrffi.tensors import numpy_to_tensor_compat
     device = torch.device('cuda:0')
     public = np.load(root / 'inputs/public.npz', allow_pickle=False)
     ids = public['ids']
@@ -137,7 +142,8 @@ def predict(manifest, root, index):
             inputs = np.load(root / f'inputs/{view}.npy', mmap_mode='r')
             values = []
             for pos in range(0, len(ids), manifest['batch_size']):
-                x = torch.from_numpy(np.array(inputs[pos:pos+manifest['batch_size']], copy=True)).to(device)
+                x = numpy_to_tensor_compat(inputs[pos:pos+manifest['batch_size']],
+                                           numpy_dtype=np.float32, torch_dtype=torch.float32).to(device)
                 out = model(x, y_tx=None, grl_lambda=1.0, return_aux=True)['tx_logits']
                 if not bool(torch.isfinite(out).all()):
                     raise RuntimeError('nonfinite prediction logits')

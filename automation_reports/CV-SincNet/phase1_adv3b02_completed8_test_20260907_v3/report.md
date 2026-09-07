@@ -19,3 +19,5 @@ v1运行提交bc2dc7af，远端OID读回一致。两文件同步SHA及编译通�
 实际执行root和release为phase1_adv3b02_completed8_test_20260907_v2。
 
 运行e0af64e6完成全部8个checkpoint无query smoke；prepare首批mask转换失败。远端PyTorch2.1.0+cu121/NumPy2.2.5的torch.from_numpy报expected np.ndarray (got numpy.ndarray)。无query矩阵对照证实仓库numpy_to_tensor_compat缓冲接口数值完全一致。复用已有接口处理预测输入，bool mask使用显式列表转换，不修改模型/数据/配置。v2没有prediction或评分，保留partial输入。新v3继续相同8行。
+
+实际执行root和release为phase1_adv3b02_completed8_test_20260907_v3。
