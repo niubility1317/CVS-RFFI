@@ -1,7 +1,7 @@
 # ECRS V1R首批N607实验
 
 run_id：`phase1_ecrs_v1r_firstbatch_s392005_e200_20260908_r1`。
-状态：`LOCAL_VERIFIED`，启动后追加读回结果。用户于2026-09-08明确授权启动实验。
+状态：`RUNNING / VERIFIED`，启动读回见末节。用户于2026-09-08明确授权启动实验。
 
 ## 冻结矩阵与版本
 
@@ -42,3 +42,24 @@ helper先严格重建现有真实R7 checkpoint，用合成IQ执行无query有限
 低准确率不停止健康训练。仅既定协议/输入/checkout错误、输出碰撞、无法执行、不能形成合法prediction等技术故障触发处理；只处理本run所属进程并保留所有产物，禁止广泛停止或重启。dispatcher只记录退出，不自动重跑、不干预其他行。
 
 预期每row输出best/latest checkpoint、完整训练指标和ECRS诊断（适用行）、source clean及三LEO逐样本prediction和汇总、选择配置及恢复状态。source行完成记`SOURCE_SCREEN_COMPLETE`，不冒充最终target `ARTIFACTS_COMPLETE`。同row与B0差值、RX/day分层和实际机制激活分别报告；单seed不晋级默认配置，不使用target结果调参。训练总时长待真实进度估计，不用历史耗时作保证。
+
+
+## 启动独立读回
+
+运行代码提交：`9b4a16c383106386e879cdc3506a9156fe288775`，GitHub分支OID已独立读回一致。
+release归档SHA256：`d747ad2a212b14bab1ed10c55bd8eb9473d07ee5e884a60a4ff563394f56d33d`，本地/远端一致；远端编译通过。
+真实R7 checkpoint smoke通过：strict load，missing/unexpected/skipped mismatch均为0；合成IQ前向有限，不读取query，不用于正式训练初始化。
+dispatch PID=3515639。三行实际cmdline、CWD、CUDA_VISIBLE_DEVICES、GPU计算进程及日志已从远端独立读取，均匹配发布计划。完整证据见[evidence目录](ECRS_V1R_FIRST_BATCH_20260908_evidence/startup_readback.json)。
+
+快照时间：服务器本地`2026-09-08T00:17:11.879551`（UTC+8）。
+
+|行|GPU|PID|快照进度|安全跳步警告累计|
+|---|---|---|---|---|
+|B0|0|3515807|完成E18/200|4|
+|B2-V1|1|3515808|E1尚未写出epoch汇总；进程/GPU活跃|2|
+|B2|2|3515809|E1尚未写出epoch汇总；进程/GPU活跃；49条批次记录/47次成功更新|2|
+
+
+初期安全跳步已如实记录，不能笼统声称零数值异常；B2后续已有成功参数更新，当前无持续全批跳步或进程退出证据。未因该现象更改AMP、损失或重启任何行。B2-V1在此快照尚未完成首轮汇总，不据进程活跃声称其首轮评测完成。
+
+这是启动状态快照，非完整训练日志分析或性能结论。GPU计算PID共4个，其中3个训练进程、1个保留CUDA上下文的dispatcher；每卡训练数分别1/1/1，其余0。日志根保存stdout与常规metrics；现有训练器的ECRS逐批遥测仍随对应row checkpoint写入runs，路径保留不迁移。未创建周期监控或自动补跑。

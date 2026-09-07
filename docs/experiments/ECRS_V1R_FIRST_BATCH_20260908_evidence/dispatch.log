@@ -1,0 +1,4 @@
+{"smoke": "PASS", "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_ecrs_v1_manysig_src5_s392005_e200_direct8_20260902_r2/ADV3B02_ECRS_R7/best.pth", "query_access": false, "audit": {"loader": "exact_ecrs_revision_architecture_v1", "ecrs_version": "v1", "feature_schema": "ADV3B02:ECRS:z_fused:unit_l2:160:v1", "checkpoint_load_strict": true, "missing_keys": 0, "unexpected_keys": 0, "skipped_mismatch": 0, "num_domains_from_state": 15, "input_len": 256}}
+RUNNING row=B0 pid=3515807 gpu=0
+RUNNING row=B2-V1 pid=3515808 gpu=1
+RUNNING row=B2 pid=3515809 gpu=2
