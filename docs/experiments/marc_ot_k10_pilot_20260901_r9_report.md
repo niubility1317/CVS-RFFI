@@ -14,3 +14,10 @@
 - 预期artifact：18份`support_frozen_state.pt`和回执、`support_collection.json`、18份prediction和回执、`pilot_result.json`、独立`score/score_collection.json`。
 - truth-last：18份support冻结态全部完成后才能`freeze-collection`；prediction全部固定前不得连接truth。
 
+## 2026-09-08 00:27运行状态
+
+- release归档本地/远端SHA256一致：`f6d4d238741077bb9e58d55d4832826510a521077fcb2f00ce92ad693f0d11fe`；远端编译通过。
+- 真实checkpoint、`leo_clear_weak/R8`无query smoke通过：`status=PASS`、`query_opened=false`、`query_rows_used=0`；训练审计显示24个optimizer step，四阶段参数均实际到达。
+- 容量核验时N607有4个既有计算进程；在每GPU最多2个训练实验的限制内，已启动12/15个正式适配单元：3个场景的R1/R2，以及`leo_clear_weak`和`leo_low_elev_weak`的R4/R6/R8。其余`leo_rain_weak/R4,R6,R8`等待至少3个合规槽位。
+- 一次启动命令曾使用无效场景名`leo_rician_weak`和`leo_shadowed_weak`，7个进程由argparse在正式输出创建前退出；失败日志已保留。随后使用预注册场景`leo_low_elev_weak`和`leo_rain_weak`启动对应单元，未覆盖失败日志。
+- 当前状态：`RUNNING_SUPPORT_ONLY`；尚未freeze collection、未打开query、未生成prediction、未连接truth、未评分。
