@@ -13,3 +13,10 @@
 - 停止规则：仅协议/query越界、错误split/receiver/seed/K/scene、输出冲突、错误checkout、无prediction闭合或确定性系统故障；低性能不得停止。
 - 预期artifact：18份`support_frozen_state.pt`和回执、`support_collection.json`、18份prediction和回执、`pilot_result.json`、独立`score/score_collection.json`。
 - truth-last：18份support冻结态全部完成后才能`freeze-collection`；prediction全部固定前不得连接truth。
+
+## 2026-09-07 23:02远端smoke终态
+
+- release归档本地/远端SHA256一致：`12ca3e71a371df0af18f2fa73a8d40635fd55fb1f3ddc50efc4583927e20fcd7`；远端编译通过。
+- 真实checkpoint、无query smoke在`leo_clear_weak/R8`的support-only D92 fold评估阶段失败：`RuntimeError: element 0 of tensors does not require grad and does not have a grad_fn`，位置为`stage2_d42_unified_shrinkage_lda.py:196 loss.backward()`。
+- formal adapt-unit为`0/15`，未创建support collection、未打开query、未生成prediction、未连接truth、未评分；没有性能结果。
+- r7终态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。保留release和smoke产物，不覆盖、不原地修补或重启；下一步在本地复现并修复该autograd断链，新提交、新release和新run ID后再运行。
