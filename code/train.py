@@ -3953,12 +3953,8 @@ def main():
         resume = torch.load(args.ecrs_resume, map_location=device, weights_only=False)
         if resume["args"].get("ecrs_version", "v1") != args.ecrs_version:
             raise ValueError("Resume ECRS version mismatch")
-        resume_keys = {k for k in vars(args) if k.startswith(("ecrs_", "lambda_ecrs_", "wisig_", "ssl_")) and k != "ecrs_resume"}
-        resume_keys.update(("seed", "epochs", "batch_size", "train_steps_per_epoch", "lr", "lr_min", "wd",
-                            "concat_sat_ce_weight", "concat_sat_ce_start_epoch", "sat_view_schedule"))
-        changed = [k for k in sorted(resume_keys) if k in resume["args"] and getattr(args, k) != resume["args"][k]]
-        if changed:
-            raise ValueError("Resume changes training configuration: " + ", ".join(changed))
+        from cvsrffi.ecrs_config import validate_ecrs_resume_args
+        validate_ecrs_resume_args(args, resume["args"])
         model.load_state_dict(resume["model"], strict=True)
         optimizer.load_state_dict(resume["optimizer"])
         scheduler.load_state_dict(resume["scheduler"])
@@ -4031,7 +4027,9 @@ def main():
             d_raw = extract_domain_from_extra(extra, device)
             sample_meta = extract_meta_from_extra(extra)
             meta_ssl_batch = None
-            if ecrs_runtime is not None and meta_ssl_unlabeled_ds is not None and not args.ecrs_compute_only:
+            if (ecrs_runtime is not None and meta_ssl_unlabeled_ds is not None and not args.ecrs_compute_only
+                    and (args.ecrs_version == "v1r" or meta_ssl_loss_enabled
+                         or (args.ecrs_u_pair_enabled and args.lambda_ecrs_u_pair > 0))):
                 from torch.utils.data import default_collate
                 meta_ssl_batch = default_collate([meta_ssl_unlabeled_ds[i] for i in ecrs_runtime.next_u_indices(len(y))])
             elif legacy_source_u_queue is not None:
@@ -4259,6 +4257,7 @@ def main():
                     diag_sat_cons_active_epoch = diag_sat_cons_active_epoch or bool(sat_aux_losses["diag_sat_cons_active"])
                     sat_pair_meta = concat_sat_ce_view.pair_meta
 
+                out_ecrs_clean = None
                 if bool(args.use_ecrs) and args.ecrs_version != "v2" and not args.ecrs_compute_only and out_sat is not None and sat_pair_meta is not None:
                     out_ecrs_clean = forward_main(
                         model, x, y, float(args.grl_lambda), domain_labels=d_raw
@@ -4351,7 +4350,7 @@ def main():
                 revision_loss_info = None
                 if ecrs_runtime is not None:
                     # Reuse existing clean output: do not run the raw backbone again.
-                    clean_response = out_main
+                    clean_response = out_ecrs_clean if out_ecrs_clean is not None else out_main
                     if x_main is not x and args.ecrs_version == "v2" and not args.ecrs_compute_only:
                         clean_response = model.forward_response(x)
                         clean_response["resp_tx_logits"] = model.ecrs_response_head(clean_response["z_resp"])
@@ -4365,7 +4364,9 @@ def main():
                                 batch_idx=batch_idx + 1000003, use_ecrs=True,
                                 sample_meta=sample_meta_ssl,
                                 label_mask=torch.zeros(len(x_meta_ssl), device=device, dtype=torch.bool))
-                            u_leo = safe_iq_tensor(u_view.x)
+                            # The scheduled clean duplicate is not an applied
+                            # LEO pair; do not silently train clean-to-clean EMA.
+                            u_leo = safe_iq_tensor(u_view.x) if u_view.applied else None
                     revision_loss_info = ecrs_runtime.revision_losses(model, clean_response, x, y,
                         sample_meta or {}, x_leo=x_sat_train if out_sat is not None else None,
                         out_leo=out_sat, u_clean=x_meta_ssl if u_leo is not None else None, u_leo=u_leo)
@@ -4518,6 +4519,7 @@ def main():
                         "successful_step": stepped, "losses": revision_loss_info["telemetry"],
                         "step": step_info, "l_sampler": matched_loader.last_counts if matched_loader is not None else None,
                         "u_coverage": ecrs_runtime.u_queue.coverage if ecrs_runtime.u_queue is not None else None,
+                        "u_coverage_scope": "sampled_indices_not_successful_leo_updates",
                         "groups": [{"name": g.get("name"), "lr_used": step_lrs[i], "lr_next": g["lr"],
                         "trainable": sum(p.numel() for p in g["params"] if p.requires_grad),
                         "grad_norm": sum(float(p.grad.detach().float().square().sum()) for p in g["params"] if p.grad is not None) ** .5}

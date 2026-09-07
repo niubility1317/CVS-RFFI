@@ -157,7 +157,7 @@ class ECRSRuntime:
             enabled=enabled, margin=self.margin)
         fused_enabled = active and bool(self.stage.get('fusion', False))
         fused_weight = float(self.weights['fused_ce'])
-        fused = z.reshape(-1)[:0].sum()
+        fused = z.detach().new_zeros(())
         count = 0
         if fused_enabled and fused_weight != 0:
             fused_outputs = [o['tx_logits_fused'] for o in outputs if 'tx_logits_fused' in o]
@@ -167,7 +167,7 @@ class ECRSRuntime:
                 fused_logits = torch.cat(fused_outputs)
                 fused, count = masked_response_ce(fused_logits, y.repeat(len(fused_outputs)), base_mask.repeat(len(fused_outputs)))
         result['losses']['fused_ce'] = fused
-        result['total'] = result['total'] + fused_weight * fused
+        result['total'] = result['total'] + fused_weight * (fused if count else fused.detach())
         result['telemetry']['fused_ce'] = {'configured': fused_enabled, 'executed': bool(count),
             'valid_count': count, 'raw_loss': float(fused.detach()),
             'weighted_loss': float((fused_weight * fused).detach()),
@@ -187,7 +187,8 @@ class ECRSRuntime:
         return {'ema_updated': ema_updated, 'advanced_groups': advanced}
 
     def state_dict(self):
-        return copy.deepcopy({'version': self.version, 'compute_only': self.compute_only, 'weights': self.weights, 'margin': self.margin,
+        return copy.deepcopy({'training_semantics': 'ecrs_revision_20260907',
+            'version': self.version, 'compute_only': self.compute_only, 'weights': self.weights, 'margin': self.margin,
             'epoch': self.epoch, 'batch_index': self.batch_index, 'stage': self.stage,
             'ema': self.ema.state_dict() if self.ema is not None else None,
             'u_queue': self.u_queue.state_dict() if self.u_queue is not None else None,
@@ -195,6 +196,8 @@ class ECRSRuntime:
             'rng': capture_rng_state()})
 
     def load_state_dict(self, state, restore_rng=True):
+        if state.get('training_semantics') != 'ecrs_revision_20260907':
+            raise ValueError('ECRS training semantics changed; use model-only initialization in a new run, not exact resume')
         if state['version'] != self.version or state.get('compute_only', False) != self.compute_only or state['weights'] != self.weights or state['margin'] != self.margin:
             raise ValueError('Runtime revision/objective configuration differs from checkpoint')
         for name, value in [('ema', self.ema), ('u_queue', self.u_queue), ('clock', self.clock)]:

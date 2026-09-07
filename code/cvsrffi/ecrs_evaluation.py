@@ -54,6 +54,7 @@ def evaluate_revision_paths(model, loader, device, scenario="clean", transform=N
                                   "per_day": defaultdict(lambda: [0, 0]),
                                   "per_rx_day": defaultdict(lambda: [0, 0])})
     rescue = harm = total = 0
+    gain_groups = {key: defaultdict(lambda: [0, 0, 0]) for key in ("per_rx", "per_day", "per_rx_day")}
     output = None
     seen_ids = set()
     fusion_active = bool(getattr(model, "_ecrs_fusion_head_initialized", True))
@@ -119,8 +120,17 @@ def evaluate_revision_paths(model, loader, device, scenario="clean", transform=N
                                     cell[0] += hit
                                     cell[1] += 1
                         if "fused" in correct:
-                            rescue += int(not correct["raw"] and correct["fused"])
-                            harm += int(correct["raw"] and not correct["fused"])
+                            rescued = int(not correct["raw"] and correct["fused"])
+                            harmed = int(correct["raw"] and not correct["fused"])
+                            rescue += rescued
+                            harm += harmed
+                            for key, group in (("per_rx", receivers[i]), ("per_day", days[i]),
+                                    ("per_rx_day", f"{receivers[i]}:{days[i]}" if receivers[i] is not None and days[i] is not None else None)):
+                                if group is not None:
+                                    cell = gain_groups[key][str(group)]
+                                    cell[0] += rescued
+                                    cell[1] += harmed
+                                    cell[2] += 1
                     if output is not None:
                         record = {"physical_sample_id": sample_id, "receiver_id": receivers[i],
                                   "day_id": days[i], "scenario": scenario,
@@ -156,6 +166,9 @@ def evaluate_revision_paths(model, loader, device, scenario="clean", transform=N
             "rescue": rescue if source_metrics else None, "harm": harm if source_metrics else None,
             "net": rescue - harm if source_metrics else None,
             "net_pp": 100. * (rescue - harm) / scored if scored else None,
+            "gain_by_group": {key: {group: {"rescue": r, "harm": h, "count": n,
+                "net": r - h, "net_pp": 100. * (r - h) / n} for group, (r, h, n) in cells.items()}
+                for key, cells in gain_groups.items()} if source_metrics else None,
             "fusion_active": fusion_active, "output_path": str(output_path) if output_path else None}
 
 

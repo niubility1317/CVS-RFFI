@@ -19,6 +19,26 @@ SOURCE_RX = (1, 3, 4, 6, 8)
 SOURCE_DAY = (1, 2, 3)
 
 
+@pytest.mark.parametrize('mode', ['disabled_u', 'clean_duplicate'])
+def test_v2_u_sampling_and_applied_view_contract(tmp_path, mode):
+    argv = command(tmp_path)
+    if mode == 'disabled_u':
+        argv += ['--no_ecrs_u_pair_enabled']
+    else:
+        argv += ['--sat_view_schedule', '1@0.0:leo_clear_weak']
+    run = subprocess.run(argv, cwd=ROOT/'code',
+        env=dict(os.environ, PYTHONPATH=str(ROOT/'code'), PYTHONIOENCODING='utf-8'),
+        encoding='utf-8', stdout=subprocess.PIPE, stderr=subprocess.STDOUT, timeout=180)
+    (tmp_path/'cli_output.txt').write_text(run.stdout, encoding='utf-8')
+    assert run.returncode == 0, run.stdout[-12000:]
+    record = json.loads((tmp_path/'ecrs_training.jsonl').read_text(encoding='utf-8').splitlines()[0])
+    assert record['successful_step']
+    assert record['losses']['u_pair']['executed'] is False
+    assert record['losses']['u_pair']['valid_count'] == 0
+    assert record['u_coverage']['draw_count'] == (0 if mode == 'disabled_u' else 4)
+    assert record['u_coverage_scope'] == 'sampled_indices_not_successful_leo_updates'
+
+
 @pytest.mark.parametrize("row", ["B0", "B1", "B2", "B2-V1"])
 def test_legacy_and_zero_effect_source_entrypoints(tmp_path, row):
     version = "v1" if row == "B2-V1" else "v1r"

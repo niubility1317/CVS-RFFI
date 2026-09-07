@@ -94,7 +94,9 @@ def assemble_ecrs_losses(*, logits, z_resp, labels, label_mask=None,
     weights = dict({'resp_ce': .15, 'cross_rx': .05, 'u_pair': .03}, **(weights or {}))
     enabled = enabled or {}
     losses, telemetry = {}, {}
-    total = _zero(z_resp)
+    # Empty objectives must not materialize zero parameter gradients: AdamW
+    # would still apply momentum/weight decay and advance the update clock.
+    total = z_resp.detach().new_zeros(())
     for name in ('resp_ce', 'cross_rx', 'u_pair'):
         configured = bool(enabled.get(name, True))
         weight = float(weights[name])
@@ -113,7 +115,7 @@ def assemble_ecrs_losses(*, logits, z_resp, labels, label_mask=None,
                 reason = 'no_u_pairs'
             if not count and not reason:
                 reason = 'empty_legal_set'
-        weighted = loss * weight
+        weighted = loss * weight if count else loss.detach() * weight
         total = total + weighted
         losses[name] = loss
         telemetry[name] = {'configured': configured, 'executed': bool(count),

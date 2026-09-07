@@ -96,6 +96,9 @@ def validate_ecrs_revision_args(args, *, require_reference_files=True):
             raise ValueError("compute-only control requires all revision objectives and fusion off")
     if args.ecrs_version != "v2" and (args.ecrs_cross_rx_enabled or args.ecrs_u_pair_enabled):
         raise ValueError("cross-RX and U representation learning require v2")
+    if (args.ecrs_u_pair_enabled and args.lambda_ecrs_u_pair > 0
+            and not bool(getattr(args, 'use_concat_sat_channel_aug', True))):
+        raise ValueError('U LEO consistency requires synchronized concat satellite augmentation')
     if args.ecrs_version != "v2" and args.ecrs_estimator_variant != "compact8":
         raise ValueError("estimator bridges require v2")
     if args.ecrs_version == "v1r" and args.ecrs_fusion_mode != "off":
@@ -129,6 +132,33 @@ def should_validate_source(epoch, epochs, interval=5, boundaries=(40, 80, 90)):
     special = {1, epochs - 1, epochs}
     special.update(b + offset for b in boundaries for offset in (-1, 0, 1))
     return 1 <= epoch <= epochs and (epoch % interval == 0 or epoch in special)
+
+
+def validate_ecrs_resume_args(args, saved):
+    """Exact continuation allows output/runtime changes, not new objectives.
+
+    Check all saved training arguments, including ordinary baseline/augmentation
+    flags; checking only the ECRS prefix silently permits a different experiment.
+    """
+    current = vars(args) if hasattr(args, '__dict__') else dict(args)
+    runtime_only = {'ecrs_resume', 'output_dir', 'log_dir', 'run_name', 'device',
+        'num_workers', 'prefetch_factor', 'cpu_threads', 'cpu_interop_threads',
+        'runtime_thread_info'}
+    changed = [key for key in sorted(current.keys() & saved.keys())
+        if not key.startswith('_') and key not in runtime_only and not key.endswith('_save_path')
+        and current[key] != saved[key]]
+    if changed:
+        raise ValueError('Resume changes training configuration: ' + ', '.join(changed))
+    # These optional trainer objects currently have no checkpoint state. Reject
+    # an exact-resume claim instead of silently reinitializing their memories.
+    unsupported = [key for key in ('use_ema_ckpt', 'use_swa_ckpt', 'use_swad_ckpt', 'use_proto_memory')
+                   if current.get(key, False)]
+    unsupported += [key for key in ('lambda_proto', 'lambda_ssl_tx', 'lambda_ssl_proto', 'lambda_meta_ssl')
+                    if float(current.get(key, 0)) > 0]
+    if float(current.get('lambda_group_ce', 0)) > 0 and current.get('group_ce_mode') not in ('hard', 'top', 'topk', None):
+        unsupported.append('smooth_groupdro')
+    if unsupported:
+        raise ValueError('Exact resume has no saved auxiliary state for: ' + ', '.join(unsupported))
 
 
 SOURCE_PROTOCOL = {"source_rxs": [1, 3, 4, 6, 8], "source_days": [1, 2, 3],
