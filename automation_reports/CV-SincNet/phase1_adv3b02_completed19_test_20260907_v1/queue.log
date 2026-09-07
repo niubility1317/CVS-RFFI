@@ -1,0 +1,87 @@
+REUSED_PREDICTION A_POINT_S392005
+REUSED_PREDICTION MATCHED_ZERO_S392005
+REUSED_PREDICTION A_POINT_S392006
+REUSED_PREDICTION POINT_MEMORY_S392006
+REUSED_PREDICTION MATCHED_ZERO_S392006
+REUSED_PREDICTION POINT_MEMORY_S392007
+REUSED_PREDICTION MATCHED_ZERO_S392007
+REUSED_PREDICTION TANGENT_ROUTE_S392007
+START smoke ['--index', '1']
+SMOKE_PASS ASYMMETRIC_S392005
+START smoke ['--index', '2']
+SMOKE_PASS POINT_MEMORY_S392005
+START smoke ['--index', '5']
+SMOKE_PASS ASYMMETRIC_S392006
+START smoke ['--index', '8']
+SMOKE_PASS A_POINT_S392007
+START smoke ['--index', '9']
+SMOKE_PASS ASYMMETRIC_S392007
+START smoke ['--index', '12']
+SMOKE_PASS TANGENT_S392005
+START smoke ['--index', '13']
+SMOKE_PASS ROUTE_S392005
+START smoke ['--index', '14']
+SMOKE_PASS TANGENT_S392006
+START smoke ['--index', '15']
+SMOKE_PASS TANGENT_S392007
+START smoke ['--index', '17']
+SMOKE_PASS B_SAFE_S392006
+START smoke ['--index', '18']
+SMOKE_PASS B_SAFE_S392007
+START predict ['--index', '1']
+SMOKE_PASS ASYMMETRIC_S392005
+/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1/code/cvsrffi/tensors.py:21: UserWarning: The given buffer is not writable, and PyTorch does not support non-writable tensors. This means you can write to the underlying (supposedly non-writable) buffer using the tensor. You may want to copy the buffer to protect its data or make it writable before converting it to a tensor. This type of warning will be suppressed for the rest of this program. (Triggered internally at ../torch/csrc/utils/tensor_new.cpp:1508.)
+  tensor = torch.frombuffer(
+PREDICTION_COMPLETE ASYMMETRIC_S392005 n=168000
+START predict ['--index', '2']
+SMOKE_PASS POINT_MEMORY_S392005
+/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1/code/cvsrffi/tensors.py:21: UserWarning: The given buffer is not writable, and PyTorch does not support non-writable tensors. This means you can write to the underlying (supposedly non-writable) buffer using the tensor. You may want to copy the buffer to protect its data or make it writable before converting it to a tensor. This type of warning will be suppressed for the rest of this program. (Triggered internally at ../torch/csrc/utils/tensor_new.cpp:1508.)
+  tensor = torch.frombuffer(
+PREDICTION_COMPLETE POINT_MEMORY_S392005 n=168000
+START predict ['--index', '5']
+SMOKE_PASS ASYMMETRIC_S392006
+/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1/code/cvsrffi/tensors.py:21: UserWarning: The given buffer is not writable, and PyTorch does not support non-writable tensors. This means you can write to the underlying (supposedly non-writable) buffer using the tensor. You may want to copy the buffer to protect its data or make it writable before converting it to a tensor. This type of warning will be suppressed for the rest of this program. (Triggered internally at ../torch/csrc/utils/tensor_new.cpp:1508.)
+  tensor = torch.frombuffer(
+PREDICTION_COMPLETE ASYMMETRIC_S392006 n=168000
+START predict ['--index', '8']
+SMOKE_PASS A_POINT_S392007
+/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1/code/cvsrffi/tensors.py:21: UserWarning: The given buffer is not writable, and PyTorch does not support non-writable tensors. This means you can write to the underlying (supposedly non-writable) buffer using the tensor. You may want to copy the buffer to protect its data or make it writable before converting it to a tensor. This type of warning will be suppressed for the rest of this program. (Triggered internally at ../torch/csrc/utils/tensor_new.cpp:1508.)
+  tensor = torch.frombuffer(
+PREDICTION_COMPLETE A_POINT_S392007 n=168000
+START predict ['--index', '9']
+SMOKE_PASS ASYMMETRIC_S392007
+/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1/code/cvsrffi/tensors.py:21: UserWarning: The given buffer is not writable, and PyTorch does not support non-writable tensors. This means you can write to the underlying (supposedly non-writable) buffer using the tensor. You may want to copy the buffer to protect its data or make it writable before converting it to a tensor. This type of warning will be suppressed for the rest of this program. (Triggered internally at ../torch/csrc/utils/tensor_new.cpp:1508.)
+  tensor = torch.frombuffer(
+PREDICTION_COMPLETE ASYMMETRIC_S392007 n=168000
+START predict ['--index', '12']
+SMOKE_PASS TANGENT_S392005
+/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair12_manysig_e200_20260905_r2/code/cvsrffi/tensors.py:21: UserWarning: The given buffer is not writable, and PyTorch does not support non-writable tensors. This means you can write to the underlying (supposedly non-writable) buffer using the tensor. You may want to copy the buffer to protect its data or make it writable before converting it to a tensor. This type of warning will be suppressed for the rest of this program. (Triggered internally at ../torch/csrc/utils/tensor_new.cpp:1508.)
+  tensor = torch.frombuffer(
+PREDICTION_COMPLETE TANGENT_S392005 n=168000
+START predict ['--index', '13']
+SMOKE_PASS ROUTE_S392005
+/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair12_manysig_e200_20260905_r2/code/cvsrffi/tensors.py:21: UserWarning: The given buffer is not writable, and PyTorch does not support non-writable tensors. This means you can write to the underlying (supposedly non-writable) buffer using the tensor. You may want to copy the buffer to protect its data or make it writable before converting it to a tensor. This type of warning will be suppressed for the rest of this program. (Triggered internally at ../torch/csrc/utils/tensor_new.cpp:1508.)
+  tensor = torch.frombuffer(
+PREDICTION_COMPLETE ROUTE_S392005 n=168000
+START predict ['--index', '14']
+SMOKE_PASS TANGENT_S392006
+/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair12_manysig_e200_20260905_r2/code/cvsrffi/tensors.py:21: UserWarning: The given buffer is not writable, and PyTorch does not support non-writable tensors. This means you can write to the underlying (supposedly non-writable) buffer using the tensor. You may want to copy the buffer to protect its data or make it writable before converting it to a tensor. This type of warning will be suppressed for the rest of this program. (Triggered internally at ../torch/csrc/utils/tensor_new.cpp:1508.)
+  tensor = torch.frombuffer(
+PREDICTION_COMPLETE TANGENT_S392006 n=168000
+START predict ['--index', '15']
+SMOKE_PASS TANGENT_S392007
+/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair12_manysig_e200_20260905_r2/code/cvsrffi/tensors.py:21: UserWarning: The given buffer is not writable, and PyTorch does not support non-writable tensors. This means you can write to the underlying (supposedly non-writable) buffer using the tensor. You may want to copy the buffer to protect its data or make it writable before converting it to a tensor. This type of warning will be suppressed for the rest of this program. (Triggered internally at ../torch/csrc/utils/tensor_new.cpp:1508.)
+  tensor = torch.frombuffer(
+PREDICTION_COMPLETE TANGENT_S392007 n=168000
+START predict ['--index', '17']
+SMOKE_PASS B_SAFE_S392006
+/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_safe3_manysig_e200_20260905_r3/code/cvsrffi/tensors.py:21: UserWarning: The given buffer is not writable, and PyTorch does not support non-writable tensors. This means you can write to the underlying (supposedly non-writable) buffer using the tensor. You may want to copy the buffer to protect its data or make it writable before converting it to a tensor. This type of warning will be suppressed for the rest of this program. (Triggered internally at ../torch/csrc/utils/tensor_new.cpp:1508.)
+  tensor = torch.frombuffer(
+PREDICTION_COMPLETE B_SAFE_S392006 n=168000
+START predict ['--index', '18']
+SMOKE_PASS B_SAFE_S392007
+/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_safe3_manysig_e200_20260905_r3/code/cvsrffi/tensors.py:21: UserWarning: The given buffer is not writable, and PyTorch does not support non-writable tensors. This means you can write to the underlying (supposedly non-writable) buffer using the tensor. You may want to copy the buffer to protect its data or make it writable before converting it to a tensor. This type of warning will be suppressed for the rest of this program. (Triggered internally at ../torch/csrc/utils/tensor_new.cpp:1508.)
+  tensor = torch.frombuffer(
+PREDICTION_COMPLETE B_SAFE_S392007 n=168000
+START score []
+SCORED 19
