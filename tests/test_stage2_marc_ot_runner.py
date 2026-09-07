@@ -155,6 +155,8 @@ def test_production_selection_uses_exact_d92_identity160_fft96(monkeypatch) -> N
 
     def fake_fit(identity, fft, labels, **kwargs):
         observed["fit_geometry"] = (identity.shape, fft.shape, tuple(kwargs["class_ids"]))
+        observed["fit_grad_enabled"] = torch.is_grad_enabled()
+        observed["fit_inference_mode"] = torch.is_inference_mode_enabled()
         return Fit()
 
     monkeypatch.setattr(d92_module, "exact_d92_fit", fake_fit)
@@ -181,6 +183,36 @@ def test_production_selection_uses_exact_d92_identity160_fft96(monkeypatch) -> N
     assert result["safe"] is True
     assert observed["fit_geometry"] == ((6, 160), (6, 96), tuple(range(6)))
     assert observed["score_geometry"] == ((6, 160), (6, 96))
+    assert observed["fit_grad_enabled"] is True
+    assert observed["fit_inference_mode"] is False
+
+
+def test_production_selection_exact_d92_runs_real_backward(monkeypatch) -> None:
+    import cvsrffi.stage2_d42_unified_shrinkage_lda as d42_module
+
+    class Model(nn.Module):
+        def forward(self, values, return_aux=True):
+            identity = values.reshape(len(values), -1)[:, :160]
+            return {"tx_logits": identity[:, :6], "z_id": identity}
+
+    monkeypatch.setattr(d42_module, "METRIC_EPOCHS", 1)
+    torch.manual_seed(713102)
+    fit_iq = torch.randn(12, 2, 256)
+    validation_iq = torch.randn(6, 2, 256)
+    fit_labels = torch.arange(6).repeat_interleave(2)
+    validation_labels = torch.arange(6)
+    result = runner_subject._default_fold_metrics(
+        Model(),
+        {},
+        fit_iq,
+        fit_labels,
+        validation_iq,
+        validation_labels,
+        selection_mode="EXACT_D92_OLD_ONLY",
+        seed=713102,
+    )
+    assert result["safe"] is True
+    assert result["per_class_rows"] == (1, 1, 1, 1, 1, 1)
 
 
 @pytest.mark.parametrize(

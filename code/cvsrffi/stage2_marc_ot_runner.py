@@ -450,15 +450,16 @@ def _default_fold_metrics(
 
             fit_np = np.asarray(fit_iq.detach().cpu().tolist(), dtype=np.float32)
             validation_np = np.asarray(validation_iq.detach().cpu().tolist(), dtype=np.float32)
-            fitted = exact_d92_fit(
-                fit_features.detach().cpu().numpy(),
-                make_fft96(fit_np),
-                fit_labels.detach().cpu().numpy(),
-                class_ids=tuple(range(6)),
-                old_class_count=6,
-                seed=int(seed),
-                device=fit_features.device,
-            )
+            with torch.inference_mode(False), torch.enable_grad():
+                fitted = exact_d92_fit(
+                    fit_features.detach().cpu().numpy(),
+                    make_fft96(fit_np),
+                    fit_labels.detach().cpu().numpy(),
+                    class_ids=tuple(range(6)),
+                    old_class_count=6,
+                    seed=int(seed),
+                    device=fit_features.device,
+                )
             logits = torch.as_tensor(
                 fitted.score(
                     validation_features.detach().cpu().numpy(), make_fft96(validation_np)
