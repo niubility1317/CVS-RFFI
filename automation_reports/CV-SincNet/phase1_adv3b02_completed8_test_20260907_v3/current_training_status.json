@@ -1,0 +1,221 @@
+{
+  "checked_at_utc": "2026-09-07T07:56:26.578880+00:00",
+  "rows": [
+    {
+      "run": "phase1_adv3b02_pair24_manysig_e200_20260905_r1",
+      "row": "A_POINT_S392005",
+      "status": "TRAINING_COMPLETE_SOURCE_ONLY",
+      "alive": false,
+      "epoch": 200,
+      "root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_pair24_manysig_e200_20260905_r1/A_POINT_S392005",
+      "checkpoint": true
+    },
+    {
+      "run": "phase1_adv3b02_pair24_manysig_e200_20260905_r1",
+      "row": "ASYMMETRIC_S392005",
+      "status": "RUNNING",
+      "alive": true,
+      "epoch": 191,
+      "root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_pair24_manysig_e200_20260905_r1/ASYMMETRIC_S392005",
+      "checkpoint": false
+    },
+    {
+      "run": "phase1_adv3b02_pair24_manysig_e200_20260905_r1",
+      "row": "POINT_MEMORY_S392005",
+      "status": "RUNNING",
+      "alive": true,
+      "epoch": 184,
+      "root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_pair24_manysig_e200_20260905_r1/POINT_MEMORY_S392005",
+      "checkpoint": false
+    },
+    {
+      "run": "phase1_adv3b02_pair24_manysig_e200_20260905_r1",
+      "row": "MATCHED_ZERO_S392005",
+      "status": "TRAINING_COMPLETE_SOURCE_ONLY",
+      "alive": false,
+      "epoch": 200,
+      "root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_pair24_manysig_e200_20260905_r1/MATCHED_ZERO_S392005",
+      "checkpoint": true
+    },
+    {
+      "run": "phase1_adv3b02_pair24_manysig_e200_20260905_r1",
+      "row": "A_POINT_S392006",
+      "status": "TRAINING_COMPLETE_SOURCE_ONLY",
+      "alive": false,
+      "epoch": 200,
+      "root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_pair24_manysig_e200_20260905_r1/A_POINT_S392006",
+      "checkpoint": true
+    },
+    {
+      "run": "phase1_adv3b02_pair24_manysig_e200_20260905_r1",
+      "row": "ASYMMETRIC_S392006",
+      "status": "RUNNING",
+      "alive": true,
+      "epoch": 193,
+      "root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_pair24_manysig_e200_20260905_r1/ASYMMETRIC_S392006",
+      "checkpoint": false
+    },
+    {
+      "run": "phase1_adv3b02_pair24_manysig_e200_20260905_r1",
+      "row": "POINT_MEMORY_S392006",
+      "status": "TRAINING_COMPLETE_SOURCE_ONLY",
+      "alive": false,
+      "epoch": 200,
+      "root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_pair24_manysig_e200_20260905_r1/POINT_MEMORY_S392006",
+      "checkpoint": true
+    },
+    {
+      "run": "phase1_adv3b02_pair24_manysig_e200_20260905_r1",
+      "row": "MATCHED_ZERO_S392006",
+      "status": "TRAINING_COMPLETE_SOURCE_ONLY",
+      "alive": false,
+      "epoch": 200,
+      "root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_pair24_manysig_e200_20260905_r1/MATCHED_ZERO_S392006",
+      "checkpoint": true
+    },
+    {
+      "run": "phase1_adv3b02_pair24_manysig_e200_20260905_r1",
+      "row": "A_POINT_S392007",
+      "status": "RUNNING",
+      "alive": true,
+      "epoch": 192,
+      "root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_pair24_manysig_e200_20260905_r1/A_POINT_S392007",
+      "checkpoint": false
+    },
+    {
+      "run": "phase1_adv3b02_pair24_manysig_e200_20260905_r1",
+      "row": "ASYMMETRIC_S392007",
+      "status": "RUNNING",
+      "alive": true,
+      "epoch": 190,
+      "root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_pair24_manysig_e200_20260905_r1/ASYMMETRIC_S392007",
+      "checkpoint": false
+    },
+    {
+      "run": "phase1_adv3b02_pair24_manysig_e200_20260905_r1",
+      "row": "POINT_MEMORY_S392007",
+      "status": "TRAINING_COMPLETE_SOURCE_ONLY",
+      "alive": false,
+      "epoch": 200,
+      "root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_pair24_manysig_e200_20260905_r1/POINT_MEMORY_S392007",
+      "checkpoint": true
+    },
+    {
+      "run": "phase1_adv3b02_pair24_manysig_e200_20260905_r1",
+      "row": "MATCHED_ZERO_S392007",
+      "status": "TRAINING_COMPLETE_SOURCE_ONLY",
+      "alive": false,
+      "epoch": 200,
+      "root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_pair24_manysig_e200_20260905_r1/MATCHED_ZERO_S392007",
+      "checkpoint": true
+    },
+    {
+      "run": "phase1_adv3b02_pair12_manysig_e200_20260905_r2",
+      "row": "TANGENT_S392005",
+      "status": "RUNNING",
+      "alive": true,
+      "epoch": 182,
+      "root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_pair12_manysig_e200_20260905_r2/TANGENT_S392005",
+      "checkpoint": false
+    },
+    {
+      "run": "phase1_adv3b02_pair12_manysig_e200_20260905_r2",
+      "row": "ROUTE_S392005",
+      "status": "RUNNING",
+      "alive": true,
+      "epoch": 169,
+      "root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_pair12_manysig_e200_20260905_r2/ROUTE_S392005",
+      "checkpoint": false
+    },
+    {
+      "run": "phase1_adv3b02_pair12_manysig_e200_20260905_r2",
+      "row": "TANGENT_ROUTE_S392005",
+      "status": "RUNNING",
+      "alive": true,
+      "epoch": 168,
+      "root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_pair12_manysig_e200_20260905_r2/TANGENT_ROUTE_S392005",
+      "checkpoint": false
+    },
+    {
+      "run": "phase1_adv3b02_pair12_manysig_e200_20260905_r2",
+      "row": "TANGENT_S392006",
+      "status": "RUNNING",
+      "alive": true,
+      "epoch": 179,
+      "root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_pair12_manysig_e200_20260905_r2/TANGENT_S392006",
+      "checkpoint": false
+    },
+    {
+      "run": "phase1_adv3b02_pair12_manysig_e200_20260905_r2",
+      "row": "ROUTE_S392006",
+      "status": "RUNNING",
+      "alive": true,
+      "epoch": 169,
+      "root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_pair12_manysig_e200_20260905_r2/ROUTE_S392006",
+      "checkpoint": false
+    },
+    {
+      "run": "phase1_adv3b02_pair12_manysig_e200_20260905_r2",
+      "row": "TANGENT_ROUTE_S392006",
+      "status": "RUNNING",
+      "alive": true,
+      "epoch": 169,
+      "root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_pair12_manysig_e200_20260905_r2/TANGENT_ROUTE_S392006",
+      "checkpoint": false
+    },
+    {
+      "run": "phase1_adv3b02_pair12_manysig_e200_20260905_r2",
+      "row": "TANGENT_S392007",
+      "status": "RUNNING",
+      "alive": true,
+      "epoch": 178,
+      "root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_pair12_manysig_e200_20260905_r2/TANGENT_S392007",
+      "checkpoint": false
+    },
+    {
+      "run": "phase1_adv3b02_pair12_manysig_e200_20260905_r2",
+      "row": "ROUTE_S392007",
+      "status": "RUNNING",
+      "alive": true,
+      "epoch": 169,
+      "root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_pair12_manysig_e200_20260905_r2/ROUTE_S392007",
+      "checkpoint": false
+    },
+    {
+      "run": "phase1_adv3b02_pair12_manysig_e200_20260905_r2",
+      "row": "TANGENT_ROUTE_S392007",
+      "status": "TRAINING_COMPLETE_SOURCE_ONLY",
+      "alive": false,
+      "epoch": 200,
+      "root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_pair12_manysig_e200_20260905_r2/TANGENT_ROUTE_S392007",
+      "checkpoint": true
+    },
+    {
+      "run": "phase1_adv3b02_safe3_manysig_e200_20260905_r3",
+      "row": "B_SAFE_S392005",
+      "status": "TECHNICAL_FAILURE",
+      "alive": false,
+      "epoch": 109,
+      "root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_safe3_manysig_e200_20260905_r3/B_SAFE_S392005",
+      "checkpoint": false
+    },
+    {
+      "run": "phase1_adv3b02_safe3_manysig_e200_20260905_r3",
+      "row": "B_SAFE_S392006",
+      "status": "RUNNING",
+      "alive": true,
+      "epoch": 178,
+      "root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_safe3_manysig_e200_20260905_r3/B_SAFE_S392006",
+      "checkpoint": false
+    },
+    {
+      "run": "phase1_adv3b02_safe3_manysig_e200_20260905_r3",
+      "row": "B_SAFE_S392007",
+      "status": "RUNNING",
+      "alive": true,
+      "epoch": 177,
+      "root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_safe3_manysig_e200_20260905_r3/B_SAFE_S392007",
+      "checkpoint": false
+    }
+  ]
+}

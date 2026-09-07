@@ -1,0 +1,58 @@
+{
+  "run_id": "phase1_adv3b02_completed8_test_20260907_v3",
+  "authorization": "User 2026-09-07: test completed rows and give detailed data. Overrides source-only target deferral for these eight completed checkpoints; diagnostic only, no reranking, tuning, training feedback, or promotion.",
+  "snapshot_utc": "2026-09-07T07:34:00Z",
+  "batch_size": 256,
+  "sat_seed": 2027,
+  "gpu": 1,
+  "rows": [
+    {
+      "row_id": "A_POINT_S392005",
+      "training_run": "phase1_adv3b02_pair24_manysig_e200_20260905_r1",
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_pair24_manysig_e200_20260905_r1/A_POINT_S392005/final_ssdg.pth",
+      "release": "/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1"
+    },
+    {
+      "row_id": "MATCHED_ZERO_S392005",
+      "training_run": "phase1_adv3b02_pair24_manysig_e200_20260905_r1",
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_pair24_manysig_e200_20260905_r1/MATCHED_ZERO_S392005/final_ssdg.pth",
+      "release": "/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1"
+    },
+    {
+      "row_id": "A_POINT_S392006",
+      "training_run": "phase1_adv3b02_pair24_manysig_e200_20260905_r1",
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_pair24_manysig_e200_20260905_r1/A_POINT_S392006/final_ssdg.pth",
+      "release": "/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1"
+    },
+    {
+      "row_id": "POINT_MEMORY_S392006",
+      "training_run": "phase1_adv3b02_pair24_manysig_e200_20260905_r1",
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_pair24_manysig_e200_20260905_r1/POINT_MEMORY_S392006/final_ssdg.pth",
+      "release": "/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1"
+    },
+    {
+      "row_id": "MATCHED_ZERO_S392006",
+      "training_run": "phase1_adv3b02_pair24_manysig_e200_20260905_r1",
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_pair24_manysig_e200_20260905_r1/MATCHED_ZERO_S392006/final_ssdg.pth",
+      "release": "/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1"
+    },
+    {
+      "row_id": "POINT_MEMORY_S392007",
+      "training_run": "phase1_adv3b02_pair24_manysig_e200_20260905_r1",
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_pair24_manysig_e200_20260905_r1/POINT_MEMORY_S392007/final_ssdg.pth",
+      "release": "/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1"
+    },
+    {
+      "row_id": "MATCHED_ZERO_S392007",
+      "training_run": "phase1_adv3b02_pair24_manysig_e200_20260905_r1",
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_pair24_manysig_e200_20260905_r1/MATCHED_ZERO_S392007/final_ssdg.pth",
+      "release": "/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair24_manysig_e200_20260905_r1"
+    },
+    {
+      "row_id": "TANGENT_ROUTE_S392007",
+      "training_run": "phase1_adv3b02_pair12_manysig_e200_20260905_r2",
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_pair12_manysig_e200_20260905_r2/TANGENT_ROUTE_S392007/final_ssdg.pth",
+      "release": "/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_pair12_manysig_e200_20260905_r2"
+    }
+  ]
+}
