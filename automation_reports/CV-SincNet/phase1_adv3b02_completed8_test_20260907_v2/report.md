@@ -15,3 +15,5 @@
 本地7项聚焦验证通过：opaque ID乱序连接、重复/缺失ID拒绝、场景子集计数、prediction不完整时禁止truth评分、输出不可覆盖。独立P0/P1审查通过；queue在prepare之前先检查全部8个真实checkpoint。
 
 v1运行提交bc2dc7af，远端OID读回一致。两文件同步SHA及编译通过，队列PID3298999。首个无query smoke在prepare前失败：默认TF32时batch/single logits最大差0.00218582；独立无query对照关闭TF32后为0.00000524521，argmax一致。v1未读取target输入、未生成预测；保留队列日志。修复仅关闭matmul/cudnn TF32，保持FP32声明与1e-4容差。新v2目录恢复相同8行，不覆盖v1。
+
+实际执行root和release为phase1_adv3b02_completed8_test_20260907_v2。

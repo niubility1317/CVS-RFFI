@@ -30,7 +30,8 @@ def code_paths(release):
 def prepare(manifest, root):
     """Data-builder alone sees labels. The predictor never opens truth.npz."""
     import torch
-    from types import SimpleNamespace
+    torch.backends.cuda.matmul.allow_tf32 = False
+    torch.backends.cudnn.allow_tf32 = False
     row = manifest['rows'][0]
     code_paths(row['release'])
     from SSDG.train_ssdg import build_arg_parser, _build_ssdg_wisig_data
@@ -99,6 +100,10 @@ def prepare(manifest, root):
 
 def load_for_inference(manifest, index):
     import torch
+    # TF32 convolution algorithms have batch-shape-dependent rounding on RTX3090.
+    # Keep the declared FP32 evaluation and the unchanged independence tolerance.
+    torch.backends.cuda.matmul.allow_tf32 = False
+    torch.backends.cudnn.allow_tf32 = False
     row = manifest['rows'][index]
     code_paths(row['release'])
     from smoke_adv3b02_pair_reform import load_model
