@@ -231,8 +231,31 @@ def queue(manifest_path, manifest, root):
     write_json(root / 'manifest.json', manifest)
     script = str(Path(__file__).resolve())
     common = [sys.executable, '-u', script, '--manifest', str(manifest_path), '--root', str(root)]
-    stages = [('smoke', ['--index', str(i)]) for i in range(len(manifest['rows']))]
-    stages += [('prepare', [])] + [('predict', ['--index', str(i)]) for i in range(len(manifest['rows']))] + [('score', [])]
+    pending = list(range(len(manifest['rows'])))
+    reuse = manifest.get('reuse_root')
+    if reuse:
+        previous = Path(reuse)
+        old = json.loads((previous / 'manifest.json').read_text())
+        old_rows = {r['row_id']: r for r in old['rows']}
+        assert old['sat_seed'] == manifest['sat_seed'] and old['batch_size'] == manifest['batch_size']
+        assert (previous / 'done.json').is_file()
+        for name in ['inputs', 'truth.npz']:
+            assert (previous / name).exists()
+            (root / name).symlink_to(previous / name, target_is_directory=name == 'inputs')
+        pending = []
+        for i, row in enumerate(manifest['rows']):
+            if row['row_id'] not in old_rows:
+                pending.append(i)
+                continue
+            assert row['checkpoint'] == old_rows[row['row_id']]['checkpoint']
+            source = previous / 'predictions' / row['row_id']
+            assert (source / 'complete.json').is_file() and (source / 'prediction.npz').is_file()
+            (root / 'predictions' / row['row_id']).symlink_to(source, target_is_directory=True)
+            print('REUSED_PREDICTION', row['row_id'], flush=True)
+    stages = [('smoke', ['--index', str(i)]) for i in pending]
+    if not reuse:
+        stages += [('prepare', [])]
+    stages += [('predict', ['--index', str(i)]) for i in pending] + [('score', [])]
     for mode, extra in stages:
         print('START', mode, extra, flush=True)
         subprocess.run(common + ['--mode', mode] + extra, check=True)
