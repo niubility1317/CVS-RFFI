@@ -1,7 +1,7 @@
 # ECRS V2第二批桥接实验
 
 当前run_id：`phase1_ecrs_v2_bridge_s392005_e200_20260908_r2`。
-状态：`LOCAL_VERIFIED`，r1启动前smoke失败，r2修复后发布；部署后追加进程与队列证据。
+状态：`RUNNING + QUEUED / VERIFIED`。r1启动前smoke失败；r2修复后B3a已运行，B3b/B3c/B4等待容量。
 
 ## 授权与矩阵
 
@@ -46,3 +46,19 @@
 r1代码`a116d79219271f149205ecd188c2d857d30d21d4`在无query smoke触发`TypeError: all() received an invalid combination of arguments - got (dim=tuple)`，位置为`ecrs_v2.py`的Cholesky有限值检查。PyTorch2.1不支持该多维Tensor.all接口。r1 dispatcher PID3534572已退出，正式run root不存在，四行均未创建训练进程；失败logs和release保留，状态`FAILED / NO_PERFORMANCE_RESULT`。首批训练未被干预。
 
 本地使用PyTorch2.1单维all接口约束重现了2个失败，随后只将两处最后两个维度的布尔归约改为`flatten(-2).all(dim=-1)`，保留同一集合上的all语义，不改变系数、loss或矩阵。兼容回归、Schur数值/物理及桥接测试共18项通过。针对两行修复执行一次原问题定点复审；r2使用新release/run/log目录，不复用r1 root。静态API审查未覆盖这一版本差异，真实远端smoke提供了决定性证据。
+
+
+## r2实际启动与排队读回
+
+运行代码提交：`b59ba14f3602b68747b4ec3312256419c2a9bdb7`，远端Git OID与本地一致。
+release：`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_ecrs_v2_bridge_s392005_e200_20260908_r2_b59ba14f`。
+归档SHA256：`574cc2d6bd291e7a2c67930a480c62d9eca3dc93b810c8deafce0e9201f9b02b`，本地/远端一致；一次远端编译通过。
+真实R7严格重建检查及B3a/B3b/B3c/B4四种响应前向/梯度检查均在实际torch2.1环境PASS，原tuple归约错误不再出现。smoke子进程退出后才派发训练，不占额外训练名额。
+
+队列dispatcher PID=3537313；B3a PID=3537463，GPU0。独立读回验证该PID的CWD、完整cmdline、CUDA_VISIBLE_DEVICES及nvidia-smi进程一致。快照B3a首轮已写出3条批次记录、2次成功更新、1次安全跳步，未出现技术退出；不能由初始成功更新声称训练效果或最终产物完成。
+
+当前B3b/B3c/B4为QUEUED，未启动。现有其他任务占满其余容量，队列会在24小时启动窗口内自动补位，达到截止后记录未启动行，不扩大实验范围。当前GPU0为B0+B3a两个训练；首批dispatcher CUDA上下文不是额外训练。第一批B0/B2-V1/B2未被干预。
+
+证据：[启动独立快照](ECRS_V2_BRIDGE_BATCH_20260908_evidence/r2_startup_readback.json)、[实际展开计划](ECRS_V2_BRIDGE_BATCH_20260908_evidence/r2_launch_plan.json)、[smoke与派发日志](ECRS_V2_BRIDGE_BATCH_20260908_evidence/r2_dispatch.txt)、[队列快照](ECRS_V2_BRIDGE_BATCH_20260908_evidence/r2_queue_status.json)。本地报告镜像位于`automation_reports/CV-SincNet/phase1_ecrs_v2_bridge_s392005_e200_20260908_r2/report.md`。
+
+上述启动进度快照时间：`2026-09-08T00:50:39.854540`，服务器本地UTC+8。

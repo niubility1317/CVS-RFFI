@@ -1,0 +1,6 @@
+{"response_smoke": "B3a", "status": "PASS", "query_access": false}
+{"response_smoke": "B3b", "status": "PASS", "query_access": false}
+{"response_smoke": "B3c", "status": "PASS", "query_access": false}
+{"response_smoke": "B4", "status": "PASS", "query_access": false}
+{"checkpoint_smoke": "PASS", "audit": {"loader": "exact_ecrs_revision_architecture_v1", "ecrs_version": "v1", "feature_schema": "ADV3B02:ECRS:z_fused:unit_l2:160:v1", "checkpoint_load_strict": true, "missing_keys": 0, "unexpected_keys": 0, "skipped_mismatch": 0, "num_domains_from_state": 15, "input_len": 256}}
+RUNNING row=B3a pid=3537463 gpu=0
