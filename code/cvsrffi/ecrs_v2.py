@@ -75,7 +75,7 @@ def probe_response(theta: Tensor, mode: str = "complex24") -> Tensor:
 def _chol_solve(a: Tensor, b: Tensor) -> tuple[Tensor, Tensor]:
     """One batched factorization and one bounded fallback for its failed subset."""
     factor, info = torch.linalg.cholesky_ex(a)
-    failed = info.ne(0) | ~torch.isfinite(factor).all(dim=(-2, -1))
+    failed = info.ne(0) | ~torch.isfinite(factor).flatten(-2).all(dim=-1)
     status = failed.to(torch.int64)
     if failed.any():
         sub = a[failed]
@@ -144,7 +144,7 @@ def schur_ridge(y: Tensor, nuisance: Tensor, response: Tensor, *,
         theta, status_p = _chol_solve(ae, rhs)
         eta = nny - nc@theta
         status = torch.maximum(status_n, status_p)
-        valid = valid & status.lt(2) & torch.isfinite(theta).all(dim=(-2, -1))
+        valid = valid & status.lt(2) & torch.isfinite(theta).flatten(-2).all(dim=-1)
         theta = torch.where(valid[:, None], theta.squeeze(-1)/ps, 0)
         eta = torch.where(valid[:, None], eta.squeeze(-1)/ns, 0)
         out = {"theta": theta, "eta": eta, "valid": valid,

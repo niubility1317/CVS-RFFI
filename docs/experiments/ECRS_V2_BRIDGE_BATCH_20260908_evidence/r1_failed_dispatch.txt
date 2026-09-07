@@ -1,0 +1,39 @@
+Traceback (most recent call last):
+  File "/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_ecrs_v2_bridge_s392005_e200_20260908_r1_a116d792/code/scripts/run_ecrs_v2_bridge_batch_20260908.py", line 169, in <module>
+    raise SystemExit(main())
+  File "/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_ecrs_v2_bridge_s392005_e200_20260908_r1_a116d792/code/scripts/run_ecrs_v2_bridge_batch_20260908.py", line 95, in main
+    smoke(args.smoke_checkpoint)
+  File "/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_ecrs_v2_bridge_s392005_e200_20260908_r1_a116d792/code/scripts/run_ecrs_v2_bridge_batch_20260908.py", line 75, in smoke
+    out = model.forward_response(torch.randn(3, 2, 256, device=device))
+  File "/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_ecrs_v2_bridge_s392005_e200_20260908_r1_a116d792/code/model_dual_cvsincnet.py", line 1514, in forward_response
+    out = self.ecrs(x, None, return_diagnostics=False)
+  File "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1518, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1527, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_ecrs_v2_bridge_s392005_e200_20260908_r1_a116d792/code/cvsrffi/ecrs_v2.py", line 515, in forward
+    out = self.physical(x, return_diagnostics=return_diagnostics)
+  File "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1518, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1527, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_ecrs_v2_bridge_s392005_e200_20260908_r1_a116d792/code/cvsrffi/ecrs_v2.py", line 354, in forward
+    fit = schur_ridge(y, n, p, diagnostics=return_diagnostics, **args)
+  File "/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_ecrs_v2_bridge_s392005_e200_20260908_r1_a116d792/code/cvsrffi/ecrs_v2.py", line 139, in schur_ridge
+    solved, status_n = _chol_solve(gn, torch.cat((c, ny), -1))
+  File "/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_ecrs_v2_bridge_s392005_e200_20260908_r1_a116d792/code/cvsrffi/ecrs_v2.py", line 78, in _chol_solve
+    failed = info.ne(0) | ~torch.isfinite(factor).all(dim=(-2, -1))
+TypeError: all() received an invalid combination of arguments - got (dim=tuple, ), but expected one of:
+ * ()
+      didn't match because some of the keywords were incorrect: dim
+ * (int dim, bool keepdim)
+ * (name dim, bool keepdim)
+
+Traceback (most recent call last):
+  File "/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_ecrs_v2_bridge_s392005_e200_20260908_r1_a116d792/code/scripts/run_ecrs_v2_bridge_batch_20260908.py", line 169, in <module>
+    raise SystemExit(main())
+  File "/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_ecrs_v2_bridge_s392005_e200_20260908_r1_a116d792/code/scripts/run_ecrs_v2_bridge_batch_20260908.py", line 143, in main
+    subprocess.run(argv + ['--smoke-only'], cwd=root, stdin=subprocess.DEVNULL,
+  File "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/subprocess.py", line 526, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python', '-u', '/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_ecrs_v2_bridge_s392005_e200_20260908_r1_a116d792/code/scripts/run_ecrs_v2_bridge_batch_20260908.py', '--project-root', '/home/szu2070436088/2510044040/CV-SincNet', '--run-id', 'phase1_ecrs_v2_bridge_s392005_e200_20260908_r1', '--smoke-checkpoint', '/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_ecrs_v1_manysig_src5_s392005_e200_direct8_20260902_r2/ADV3B02_ECRS_R7/best.pth', '--smoke-only']' returned non-zero exit status 1.

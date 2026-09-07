@@ -1,7 +1,7 @@
 # ECRS V2第二批桥接实验
 
-run_id：`phase1_ecrs_v2_bridge_s392005_e200_20260908_r1`。
-状态：`LOCAL_VERIFIED`，部署后追加进程与队列证据。
+当前run_id：`phase1_ecrs_v2_bridge_s392005_e200_20260908_r2`。
+状态：`LOCAL_VERIFIED`，r1启动前smoke失败，r2修复后发布；部署后追加进程与队列证据。
 
 ## 授权与矩阵
 
@@ -30,7 +30,7 @@ run_id：`phase1_ecrs_v2_bridge_s392005_e200_20260908_r1`。
 仅在队列启动后的24小时内派发这四行；到期未启动者写入unstarted.json，不自动重新派发。logs下创建`STOP_LAUNCHING`可取消剩余未启动行，已运行任务继续。失败只记录，不自动重启、不停止其他行。唯一launch owner为当前主Agent。
 
 ```text
-<python> -u <release>/code/scripts/run_ecrs_v2_bridge_batch_20260908.py --project-root <project-root> --run-id phase1_ecrs_v2_bridge_s392005_e200_20260908_r1 --smoke-checkpoint <project-root>/runs/phase1_adv3b02_ecrs_v1_manysig_src5_s392005_e200_direct8_20260902_r2/ADV3B02_ECRS_R7/best.pth --detach
+<python> -u <release>/code/scripts/run_ecrs_v2_bridge_batch_20260908.py --project-root <project-root> --run-id phase1_ecrs_v2_bridge_s392005_e200_20260908_r2 --smoke-checkpoint <project-root>/runs/phase1_adv3b02_ecrs_v1_manysig_src5_s392005_e200_direct8_20260902_r2/ADV3B02_ECRS_R7/best.pth --detach
 ```
 
 首次派发前，以单独子进程严格重建真实R7 checkpoint作无query合成IQ前向，同时检查四种V2响应路径的有限loss、encoder梯度及物理侧无梯度。检查子进程退出释放CUDA上下文，再核实容量并启动正式行。该旧checkpoint不用于正式行初始化，不创建smoke许可artifact。
@@ -40,3 +40,9 @@ run_id：`phase1_ecrs_v2_bridge_s392005_e200_20260908_r1`。
 复用已完成的36项相关回归及真实parser展开检查。此次四候选共享真实V2训练路径一次P0/P1审查、新队列helper一次定点审查均无阻断。新增4项测试通过：dispatcher排除、CUDA可见前预留、PID去重及精确四行范围；CLI检查通过。发布时本地Git固定代码、push读回、一次release SHA比较、一次远端编译与实际smoke。
 
 低性能不停止健康训练；既定协议/路径错误、输出碰撞、无法执行/产生合法prediction等技术故障才处理所属run，保留产物。最终source输出需包含选定checkpoint、clean及三LEO逐样本prediction、训练/响应诊断和资源；source完成记SOURCE_SCREEN_COMPLETE，不冒充target确认闭合或默认方案晋级。当前仅启动授权，不含周期监控、无界候选或自动技术修复。
+
+## r1失败与r2兼容修复
+
+r1代码`a116d79219271f149205ecd188c2d857d30d21d4`在无query smoke触发`TypeError: all() received an invalid combination of arguments - got (dim=tuple)`，位置为`ecrs_v2.py`的Cholesky有限值检查。PyTorch2.1不支持该多维Tensor.all接口。r1 dispatcher PID3534572已退出，正式run root不存在，四行均未创建训练进程；失败logs和release保留，状态`FAILED / NO_PERFORMANCE_RESULT`。首批训练未被干预。
+
+本地使用PyTorch2.1单维all接口约束重现了2个失败，随后只将两处最后两个维度的布尔归约改为`flatten(-2).all(dim=-1)`，保留同一集合上的all语义，不改变系数、loss或矩阵。兼容回归、Schur数值/物理及桥接测试共18项通过。针对两行修复执行一次原问题定点复审；r2使用新release/run/log目录，不复用r1 root。静态API审查未覆盖这一版本差异，真实远端smoke提供了决定性证据。
