@@ -1,7 +1,7 @@
 # Tweak配置可移植性复现实验V2修复发布
 
 - run_id：`tweak_config2_portability_20260908_v2`
-- 当前状态：`REMOTE_VERIFIED_READY_TO_LAUNCH`
+- 当前状态：`RUNNING_HEALTHY_THROUGH_LATEST_PROBE`
 - 上一运行：`tweak_config2_portability_20260908_v1`在N607的NumPy2.2.5/PyTorch2.1数组接口处确定性失败；保留其日志和空输出根，不复用。
 - 修复与代码提交：`c266304406078bc4c1391a46b2a9b20396b6c0d8`以`torch.frombuffer(memoryview(...))`替代不兼容的`torch.from_numpy`路径，并新增先失败后通过的回归测试。
 - 本地验证：23项Tweak聚焦测试及两个模块编译检查通过。
@@ -12,3 +12,5 @@
 - N607输出目录：`/home/szu2070436088/2510044040/CV-SincNet/runs/tweak_config2_portability_20260908_v2/official_config2_full`
 - N607日志：`/home/szu2070436088/2510044040/CV-SincNet/logs/tweak_config2_portability_20260908_v2/train.log`
 - 启动规则：用户已明确允许每卡增加实验；启动前仍记录实际GPU、PID、命令、日志增长和输出根。仅本run的确定性技术故障可触发修复，低性能不停止。
+- 启动记录：于GPU0启动，PID=`3791806`，完整命令未传入smoke限制。启动后真实进程、命令行、GPU绑定和唯一输出根均已读回一致。
+- 最新健康探针：运行约2分钟，CPU约105%，GPU0利用率约19%，显存456MiB/24,576MiB，进程持续运行且无异常输出。当前日志为0字节：该训练器按每个完整epoch才写入一行，而首个完整epoch尚未结束；因此状态仅表示“运行健康至最近探针”，不表示完成、产物闭合或已有性能结果。
