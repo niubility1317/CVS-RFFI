@@ -18,6 +18,16 @@ class DomainCalibrationBank:
     by_domain: dict[Hashable, CalibrationState]
 
 
+@dataclass(frozen=True)
+class MultipleDomainCalibrationState:
+    """Algorithm-1 states retained separately when one model serves several domains."""
+
+    labels: torch.Tensor
+    centroids: torch.Tensor
+    radii: torch.Tensor
+    domains: tuple[Hashable, ...]
+
+
 @torch.no_grad()
 def calibrate(features: torch.Tensor, labels: torch.Tensor) -> CalibrationState:
     """Store the paper's per-class mean embedding and mean L2 radius."""
@@ -91,6 +101,26 @@ def calibrate_domains(
                 raise ValueError(f"domain {domain!r}, class {int(label)} must contain exactly {samples_per_class} samples")
         by_domain[domain] = calibrate(domain_features, domain_labels)
     return DomainCalibrationBank(by_domain=by_domain)
+
+
+@torch.no_grad()
+def calibrate_multiple_domains(
+    features: torch.Tensor,
+    labels: torch.Tensor,
+    domains: Sequence[Hashable],
+    *,
+    samples_per_class: int,
+) -> MultipleDomainCalibrationState:
+    """Repeat Algorithm 1 per domain and retain every device/domain centroid-radius pair."""
+    bank = calibrate_domains(features, labels, domains, samples_per_class=samples_per_class)
+    ordered_domains = list(dict.fromkeys(domains))
+    states = [bank.by_domain[domain] for domain in ordered_domains]
+    return MultipleDomainCalibrationState(
+        labels=torch.cat([state.labels for state in states]),
+        centroids=torch.cat([state.centroids for state in states]),
+        radii=torch.cat([state.radii for state in states]),
+        domains=tuple(domain for domain, state in zip(ordered_domains, states) for _ in state.labels),
+    )
 
 
 @torch.no_grad()

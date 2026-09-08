@@ -21,6 +21,17 @@
       "value": [0.01, 0.001, 0.0001, 0.00001, 0.000001],
       "status": "UNPUBLISHED_DEFAULT",
       "rationale": "This discrete decade grid operationalizes the paper's stated 1e-2 to 1e-6 search range."
+    },
+    "official_lora_runner": {
+      "value": {
+        "known_transmitter_ids": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+        "batch_composition": {"classes_per_batch": 8, "samples_per_class": 8},
+        "frame_order": "per-device deterministic affine permutation; at most three of 117187 source frames are omitted per device per epoch to preserve batch_size=64",
+        "checkpoint_selection": "lowest complete-epoch mean batch-hard training loss",
+        "random_seed": 20260908
+      },
+      "status": "UNPUBLISHED_DEFAULT",
+      "rationale": "The paper fixes 10 known devices, batch size, hard-negative mining and the best epoch, but does not identify device IDs, batch class composition, sample order or the exact best-checkpoint criterion."
     }
   }
 }
