@@ -24,4 +24,4 @@
 - 系统技术停止规则：仅当本run绑定的进程出现确定性启动/数据读取/训练异常、输出根冲突、checkpoint或`results.json`无法闭合时，停止该run自己的进程树并保留partial artifacts；低性能不停止。
 - 已完成验证：本地官方`cf32`读取、64×`[2,128]`输入、12维前向、batch-hard反传、22项Tweak聚焦测试和两份模块编译检查均通过；N607的CUDA可用、代码模块编译通过。该远端环境未安装`pytest`，因此未在远端重复执行pytest套件。
 - 失败证据：远端日志`train.log`记录运行在第一次训练批次的数据读取处退出，位于`official_lora.py:88`的`torch.from_numpy(np.stack(...))`；异常为`TypeError: expected np.ndarray (got numpy.ndarray)`。失败发生在第一个epoch输出之前，未生成`best_checkpoint.pt`或`results.json`，失败输出根为空。该现象表明远端PyTorch/NumPy数组接口存在待复现的技术兼容问题；尚未把它归因于代码或数据本身。
-- 处置：按技术失败规则保留日志与失败输出根，不重启、不覆盖、不删除。后台启动自动化已暂停；只有取得修复授权并在本地复现后，才新建递增run ID进行替代发布。
+- 处置：按技术失败规则保留日志与失败输出根，不重启、不覆盖、不删除。用户随后已授权修复；替代实验已使用独立的`v2`release/run ID发布，具体过程与后续状态见`../tweak_config2_portability_20260908_v2/report.md`。
