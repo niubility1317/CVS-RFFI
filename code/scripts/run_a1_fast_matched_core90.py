@@ -117,11 +117,12 @@ def main():
     write_json(run_root/'pipeline_state.json',state)
     try:
         # Fresh initialization smoke obeys the no-historical-checkpoint instruction.
-        wait_for_slot(0)
+        core_gpu=int(matrix['core90_gpu'])
+        wait_for_slot(core_gpu)
         subprocess.run([sys.executable,str(RELEASE/'code/scripts/check_a1_fast_execution.py'),
                         '--output',str(log_root/'fresh_execution_check.json'),'--device','cuda:0'],
-                       cwd=RELEASE,env=environment(0),check=True)
-        process,log=launch_train(core_command,row_id='CORE90_MATCHED_FRESH',gpu=0,run_root=run_root,log_root=log_root)
+                       cwd=RELEASE,env=environment(core_gpu),check=True)
+        process,log=launch_train(core_command,row_id='CORE90_MATCHED_FRESH',gpu=core_gpu,run_root=run_root,log_root=log_root)
         state['status']='CORE90_RUNNING'; state['core90_pid']=process.pid
         write_json(run_root/'pipeline_state.json',state)
         code=process.wait(); log.close()
@@ -134,7 +135,7 @@ def main():
         # This is the first checkpoint loaded by the A1 dependency: produced above.
         subprocess.run([sys.executable,str(RELEASE/'code/scripts/check_a1_fast_execution.py'),
                         '--checkpoint',str(fresh),'--output',str(log_root/'fresh_core90_execution_check.json'),'--device','cuda:0'],
-                       cwd=RELEASE,env=environment(0),check=True)
+                       cwd=RELEASE,env=environment(core_gpu),check=True)
         processes=[]
         for row in matrix['rows']:
             process,log=launch_train(commands[row['id']],row_id=row['id'],gpu=row['gpu'],run_root=run_root,log_root=log_root)

@@ -12,10 +12,10 @@
 
 |阶段|设置|GPU|预算|依赖|
 |---|---|---|---|---|
-|CORE90_MATCHED_FRESH|CORE90 base目标，从零，MUSE/RC4/DAOT关闭|0|E200|无checkpoint|
-|A1_REFERENCE|原A1执行路径，RC4锚点保留|0|E200|本轮CORE90 final|
-|A1_FAST_SEQUENTIAL|尺度及日志批量读回、逐视图身份教师、mean无用中间量跳过|1|E200|同一新CORE90|
-|A1_FAST_BATCHED|上一组加教师batch合并|2|E200|同一新CORE90|
+|CORE90_MATCHED_FRESH|CORE90 base目标，从零，MUSE/RC4/DAOT关闭|3|E200|无checkpoint|
+|A1_REFERENCE|原A1执行路径，RC4锚点保留|4|E200|本轮CORE90 final|
+|A1_FAST_SEQUENTIAL|尺度及日志批量读回、逐视图身份教师、mean无用中间量跳过|5|E200|同一新CORE90|
+|A1_FAST_BATCHED|上一组加教师batch合并|6|E200|同一新CORE90|
 
 共同条件：seed392005；ManySig equalized；source RX=`1,3,4,6,8`、day=`1,2,3`；target RX=`0,2,5,7,9,10,11`、day=`0,1,2,3`；`L/U/V=0.07/0.63/0.30`，预期6300/56700/27000，训练标注比例0.1；L batch128，A1 U batch256；M规格lite_c双分支，6个source TX类，E200 final-only。CORE90共享数据/模型/seed/预算，但其base算法与后续A1的附加机制不同，不能写成两阶段算法相同。CORE90的历史target-based选择规则不沿用。
 

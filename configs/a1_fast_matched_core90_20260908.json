@@ -439,21 +439,21 @@
   "rows": [
     {
       "id": "A1_REFERENCE",
-      "gpu": 0,
+      "gpu": 4,
       "daot_efficiency_mode": "legacy",
       "daot_batched_scale_readback": "false",
       "daot_skip_mean_metadata": "false"
     },
     {
       "id": "A1_FAST_SEQUENTIAL",
-      "gpu": 1,
+      "gpu": 5,
       "daot_efficiency_mode": "identity_sequential",
       "daot_batched_scale_readback": "true",
       "daot_skip_mean_metadata": "true"
     },
     {
       "id": "A1_FAST_BATCHED",
-      "gpu": 2,
+      "gpu": 6,
       "daot_efficiency_mode": "identity_batched",
       "daot_batched_scale_readback": "true",
       "daot_skip_mean_metadata": "true"
@@ -461,5 +461,6 @@
   ],
   "primary_paired_comparison": "A1_FAST_SEQUENTIAL minus A1_REFERENCE",
   "secondary_comparison": "A1_FAST_BATCHED minus A1_FAST_SEQUENTIAL; no target-based selection",
-  "promotion": "No speed or nondegradation claim before full paired E200 source/target results; no default promotion from single seed"
+  "promotion": "No speed or nondegradation claim before full paired E200 source/target results; no default promotion from single seed",
+  "core90_gpu": 3
 }
