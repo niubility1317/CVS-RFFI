@@ -6,6 +6,7 @@ import os
 from pathlib import Path
 import subprocess
 import sys
+sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
 from run_a1_fast_matched_core90 import (RELEASE, build_train_command, environment,
     launch_train, verify_checkpoint, wait_for_slot, write_json)
 
