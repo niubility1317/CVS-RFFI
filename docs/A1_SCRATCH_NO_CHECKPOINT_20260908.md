@@ -58,7 +58,27 @@ self=双路平均复高斯NLL+平均MR-STFT+平均相位增量；swap=双向重�
 |无checkpoint训练|scratch guard、runner、随机M/lite_d与RC4真实函数检查|本地通过，checkpoint_loads=0|
 |R3身份统一|a1_r3_model、model_dual、post_stage_common|主输出/identity-only/非aux/exact重建检查通过|
 |source辅助loss|a1_r3_objective与SSDG L/U主loss接线|各阶段、有限梯度、零权重对照检查通过|
-|执行配对|check_a1_scratch_execution、check_a1_fast_execution --use-a1-r3|CPU教师误差0；E1/E21/E161更新对比通过，EMA修复后复验|
+|执行配对|check_a1_scratch_execution、check_a1_fast_execution --use-a1-r3|EMA修复后CPU/CUDA通过，FP32/AMP教师误差0；E1/E21/E161更新对比通过|
 |独立P0/P1|本候选有界审查|1项EMA缓存P1已修复并定点闭合，91项测试通过，无剩余P0/P1|
-|Git与N607|验证后提交push，再发布与GPU/log/PID读回|待发布证据|
+|Git与N607|验证后提交push，再发布与GPU/log/PID读回|VERIFIED，详见下方启动记录|
 |科学结果|完整E200日志与最终prediction/score|未完成，启动不等于结论|
+
+## N607启动记录（2026-09-08）
+
+状态：`RUNNING`，发布`VERIFIED`；三组E1均已完成。运行代码commit=`9b16413edd0d2031d7d6a43a1c687117a0cb47d3`，远端分支已独立读回一致；release=`releases/a1_r3_scratch_9b16413e`，归档SHA256=`ad1c42c010d6d4cc93a36626765b6a96728bf3c62993ec22523b26d792606f84`，本地/远端一致。
+
+dispatcher PID=3850390。三行PID/CWD、实际GPU进程、启动日志、CUDA执行检查及首轮CSV已独立读回，完整证据见`analysis/a1_r3_n607_startup.json`。服务器PyTorch2.1.0+cu121，R3 AMP自重构/交换/共享真实函数的有限梯度检查通过；此为合成执行正确性证据，不是泛化结果。
+
+|行|GPU|PID|E1秒数|E1 R3 L/U加权loss|有效更新|
+|---|---:|---:|---:|---|---|
+|R3_STRUCTURE_CONTROL|1|3850661|123.33|0/0|221/222|
+|R3_REFERENCE|2|3850666|115.45|28.449008/28.448537|221/222|
+|R3_FAST_SEQUENTIAL|3|3850671|116.37|28.449069/28.448600|221/222|
+
+三组E1首batch出现一次非有限梯度，首次位置`id_backbone.sinc.low_hz_`，loss均有限；既有AMP保护跳过该次更新并将scale降到32768，随后221步成功，未出现非有限loss。`first_rc4_anomaly.pt`保留在各行输出目录，没有加载它恢复训练或重启任务。这里不能把“CUDA合成检查通过”写成“真实训练零异常”。零星AMP降尺度由现有训练器处理；持续非有限数或无法有效更新才属于需恢复的执行失败。
+
+真实E1的REF/FAST有微小浮点差异，不能据合成输入误差0宣称跨GPU全程逐位相同；首轮速度也未显示加速，因为DAOT尚未进入E21后的有效日程。后续需按完整日志检查耗时、收敛与运行时机制。swap/shared将在后续日程开启，η仍明确为0。
+
+GPU4/5原selected-checkpoint进程3823617/3823622仍在运行，本次未修改其release、参数或输出。新实验尚无E200结果、prediction/score或科学晋级结论。
+
+最终交付前读回已到E2：CONTROL有效更新222/222，REF/FAST各221/222（各再跳过一次非有限梯度），三组非有限loss均为0且进程仍运行。E2 R3 L/U加权loss：CONTROL=0/0，REF=15.216146/15.213927，FAST=15.219982/15.217772。当前异常属于已自动跳过的零星梯度事件，不能宣称零异常，也不能据此称持续技术失败；保留原保护、异常包和所有输出，不重启或干预健康任务。最新JSON包含E2快照，表格保留E1初次启动证据。
