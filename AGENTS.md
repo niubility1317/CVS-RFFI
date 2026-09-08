@@ -1,5 +1,12 @@
 # Project Instructions
 
+## Checkpoint复用硬禁令（2026-09-08）
+
+- 正式CVS实验必须执行数据协议“Checkpoint训练数据一致性与继承污染禁令”。禁止加载训练数据契约不一致、上游来源不明、或曾利用目标数据训练/选模的checkpoint及其派生状态；同名数据集、split、架构或历史“成熟基座”不能证明合规。
+- 在加载任何初始化/resume/teacher/EMA/蒸馏来源前，核对实际数据角色与物理ID、完整继承来源、选模依据，并在现有run报告记录结论。部分加载、冻结骨干、重置头/optimizer、改seed或重做LEO增强均不能绕过。
+- CHECKPOINT_DATA_CONTRACT_MISMATCH、CHECKPOINT_PROVENANCE_UNVERIFIED、CHECKPOINT_TARGET_CONTAMINATED均阻止使用该来源；无合规权重时仅在已有授权内按本次契约从零训练，不得静默回退旧权重。历史产物保留，污染结果不得用于干净泛化或晋级。
+- 本检查属于最小流程第1项“输入权限”，不是REJECTED_EXTRA_GATE；checkpoint兼容性与VALIDATED_ONCE数据复用分别判断。不新增数据重验、签名/receipt链、固定审批或重复审查。旧规则中“不因checkpoint变化做provenance检查”仅限重复数据验证，不得解释为免查模型来源。
+
 ## Exclusive Minimal Experiment Workflow
 
 - This section is the highest-priority workflow rule for all CVS-RFFI/CV-SincNet research, implementation, N607 release, monitoring, scoring, and reporting. It supersedes extra reviews, gates, seals, signatures, hash layers, and approval systems in older goals, reports, specs, briefs, checklists, and conversations.

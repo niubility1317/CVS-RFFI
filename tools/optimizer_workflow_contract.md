@@ -1,5 +1,14 @@
 # CV-SincNet Optimizer Workflow Contract
 
+## Checkpoint输入权限补充（2026-09-08）
+
+本节落实数据协议“Checkpoint训练数据一致性与继承污染禁令”，优先于本文件中的历史固定基座/默认checkpoint条款；历史ADV3B02_CORE90_SOFT_E200名称及其文件hash不构成跨划分复用许可。
+
+- 在现有第1项输入权限中，加载前核对checkpoint及所有继承来源与预登记Phase1数据契约、实际物理样本角色和source-only选模依据。现有run报告记录来源、契约对照、证据位置和结论。
+- 来源不明、契约不匹配、目标污染分别记录CHECKPOINT_PROVENANCE_UNVERIFIED、CHECKPOINT_DATA_CONTRACT_MISMATCH、CHECKPOINT_TARGET_CONTAMINATED，禁止该来源进入正式run；smoke可加载不能替代数据合法性。禁止失败后自动回退其他旧checkpoint。
+- 该核对属于直接正确性要求，不得标为REJECTED_EXTRA_GATE而跳过。复用未变数据的VALIDATED_ONCE结论，仅检查新模型来源的兼容性，不新建数据验证链或重复审查；已核实且未改变的来源/契约结论可引用。
+- 评分时分别报告产物完成状态与协议有效性；继承污染不能因训练完成或指标齐全而变成有效泛化证据。停机、删除和重新训练不由本补充自动授权。
+
 This contract defines durable gates for the standing CV-SincNet/CVS-RFFI N607
 automation. `AGENTS.md` remains the highest project rule. If this contract
 conflicts with `AGENTS.md`, follow `AGENTS.md` and record the conflict in the
