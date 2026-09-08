@@ -85,7 +85,8 @@ def read_iq_frames(record: OfficialLoRaRecord, *, frame_indices: Iterable[int]) 
         _MEMMAPS[record.data_path] = raw
     offsets = np.asarray(indices, dtype=np.int64)[:, None] * FRAME_LENGTH + np.arange(FRAME_LENGTH, dtype=np.int64)
     selected = np.asarray(raw[offsets])
-    return torch.from_numpy(np.stack((selected.real, selected.imag), axis=1).astype(np.float32, copy=False))
+    iq = np.ascontiguousarray(np.stack((selected.real, selected.imag), axis=1), dtype=np.float32)
+    return torch.frombuffer(memoryview(iq), dtype=torch.float32).reshape(iq.shape)
 
 
 def split_record_frames(

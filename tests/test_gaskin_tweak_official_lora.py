@@ -40,6 +40,24 @@ def test_official_cf32_reader_keeps_iq_order_and_uses_nonoverlapping_128_sample_
     assert torch.equal(frames[1, 0], 128 + torch.arange(128, dtype=torch.float32))
 
 
+def test_official_cf32_reader_does_not_require_torch_from_numpy_abi_bridge(tmp_path, monkeypatch):
+    # Break caught: N607's NumPy 2 / Torch 2.1 pair rejects torch.from_numpy(np.ndarray).
+    values = np.arange(128, dtype=np.float32) + 1j * (500 + np.arange(128, dtype=np.float32))
+    _write_record(tmp_path, "Config1", 1, values)
+    record = load_configuration_records(tmp_path, "Config1", device_ids=[1])[0]
+
+    def reject_numpy_bridge(_array):
+        raise TypeError("expected np.ndarray (got numpy.ndarray)")
+
+    monkeypatch.setattr(torch, "from_numpy", reject_numpy_bridge)
+
+    frames = read_iq_frames(record, frame_indices=[0])
+
+    assert tuple(frames.shape) == (1, 2, 128)
+    assert torch.equal(frames[0, 0], torch.arange(128, dtype=torch.float32))
+    assert torch.equal(frames[0, 1], 500 + torch.arange(128, dtype=torch.float32))
+
+
 def test_official_lora_split_matches_paper_75_25_split_and_n_is_ten_percent_of_training():
     # Break caught: calibration leaking into the held-out 25% test region.
     split = split_record_frames(total_samples=20_000_000)
