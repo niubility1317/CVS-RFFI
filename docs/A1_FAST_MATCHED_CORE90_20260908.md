@@ -48,3 +48,7 @@ checkpoint/指标在`runs/<run-id>/`，日志/诊断在`logs/<run-id>/`。已存
 ## GPU数值核验与r2发布
 
 r1在训练前smoke失败，CORE90没有启动，产物保留。定点诊断确认逐视图identity-only在GPU FP32和AMP下z_id/logits差值均为0；仅batch合并在FP32有z_id约9.62e-5、logits约1.55e-4差值，超出原容差。未放宽门槛：r2只运行REFERENCE与FAST_SEQUENTIAL，batch实现保留为独立后续实验。总预算为新CORE90 E200加两个A1 E200。
+
+## r2技术故障与r3修复
+
+r2通过GPU执行等价检查，从零初始化并读取6300/56700/27000样本，但首批共享遥测引用了MUSE关闭路径未初始化的`rc4_route`，训练退出且pipeline状态FAILED，两个进程均已退出；未完成epoch，不复用其产物。已将该变量在每批入口初始化为None，RC4启用时仍由原路由覆盖，训练目标不变。新增测试直接执行真实初始化与遥测表达式，70项相关测试通过。r3使用全新目录`a1_fast_matched_core90_s392005_20260908_r3`重新从零运行，矩阵、seed和预算保持不变。

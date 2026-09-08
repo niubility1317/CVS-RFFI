@@ -134,6 +134,26 @@ def test_core90_technical_completion_is_not_all_mechanism_promotion():
     assert result=='COMPLETE'
 
 
+def test_source_only_batch_initializes_rc4_telemetry_without_muse():
+    import ast
+    from pathlib import Path
+    tree = ast.parse((Path(__file__).resolve().parents[1]/'code/SSDG/train_ssdg.py').read_text(encoding='utf-8'))
+    loop = next(node for node in ast.walk(tree) if isinstance(node, ast.For)
+                and isinstance(node.target, ast.Tuple)
+                and isinstance(node.target.elts[0], ast.Name)
+                and node.target.elts[0].id == 'batch_idx')
+    # Execute unconditional batch initialization and the real telemetry expression.
+    assignments = [node for node in loop.body if isinstance(node, ast.Assign)
+                   and any(isinstance(t, ast.Name) and t.id == 'rc4_route' for t in node.targets)]
+    telemetry = next(node for node in ast.walk(loop) if isinstance(node, ast.Dict)
+                     and any(isinstance(k, ast.Constant) and k.value == 'rc4/hard_count' for k in node.keys))
+    index = next(i for i,k in enumerate(telemetry.keys) if isinstance(k,ast.Constant) and k.value=='rc4/hard_count')
+    module = ast.Module(body=assignments + [ast.Assign(targets=[ast.Name(id='actual',ctx=ast.Store())],value=telemetry.values[index])],type_ignores=[])
+    scope = {}
+    exec(compile(ast.fix_missing_locations(module), '<core90-telemetry>', 'exec'),scope)
+    assert scope['actual'] == 0.0
+
+
 def test_matched_core90_pipeline_has_no_historical_checkpoint_and_equal_data():
     import importlib.util
     import json

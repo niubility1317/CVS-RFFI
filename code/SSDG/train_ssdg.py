@@ -8779,6 +8779,8 @@ def train(args) -> int:
             use_unlabeled_step_budget=bool(getattr(args, "use_muse_ssdg", False)),
         )
         for batch_idx, (labeled_batch, muse_unlabeled_batch) in enumerate(epoch_pairs, start=1):
+            # The source-only CORE90 path also emits the shared RC4 telemetry.
+            rc4_route = None
             muse_identity_grad_norm = float("nan")
             sat_anchor_pair_grad_norm = float("nan")
             sat_anchor_sat_grad_norm = float("nan")
