@@ -52,3 +52,13 @@ r1在训练前smoke失败，CORE90没有启动，产物保留。定点诊断确�
 ## r2技术故障与r3修复
 
 r2通过GPU执行等价检查，从零初始化并读取6300/56700/27000样本，但首批共享遥测引用了MUSE关闭路径未初始化的`rc4_route`，训练退出且pipeline状态FAILED，两个进程均已退出；未完成epoch，不复用其产物。已将该变量在每批入口初始化为None，RC4启用时仍由原路由覆盖，训练目标不变。新增测试直接执行真实初始化与遥测表达式，70项相关测试通过。r3使用全新目录`a1_fast_matched_core90_s392005_20260908_r3`重新从零运行，矩阵、seed和预算保持不变。
+
+## r3发布读回：VERIFIED / RUNNING
+
+发布代码提交：`ab8a5778bb3e2914908ede60a65fca9a10134e7d`，远端Git分支OID独立核对一致。release为`/home/szu2070436088/2510044040/CV-SincNet/releases/a1_fast_matched_ab8a5778`。传输归档SHA256=`f2355a88290459c10c1db8052b8edc061bb2bd013c01dc97000fd0e90995239a`，远端一致且compileall通过。
+
+2026-09-08发布读回：pipeline PID3812777，CORE90 PID3813334，CWD与上述release一致。命令含`--from_scratch true`且无baseline/teacher checkpoint。日志确认`init=scratch`、L/U/V=6300/56700/27000和`[EPOCH-END] E001/200`；GPU3该训练进程约3800MiB，读回GPU利用率23%。全机当时两个唯一compute PID，本轮只使用GPU3，不干预另一个进程。
+
+新初始化GPU检查PASS：逐视图FP32/AMP教师输出最大绝对差0，E1/E21/E161实际DAOT更新对照通过，证据为[GPU执行检查](../analysis/a1_fast_r3_gpu_execution.json)。独立审查额外执行54项关闭MUSE的实际共享遥测表达式，均无异常。本轮70项相关测试通过。
+
+当前为CORE90_RUNNING，A1_REFERENCE和A1_FAST_SEQUENTIAL尚未启动，自动等待本轮CORE90 E200及新权重检查；尚无本轮完整精度或端到端加速结论。r1/r2失败产物均保留。追踪为8项verified、2项implemented、5项deferred；保留的原EMA/CosFace缓存缺陷是已知限制，修复与Fast执行优化分开，详见追踪表。

@@ -24,4 +24,6 @@
 
 本轮为执行优化与匹配重训流水线，不是长期重构全部完成。最高风险是保留的原EMA缓存缺陷和批量kernel差异；科学结论等待配对E200，不允许默认掉点，不用target反馈调参或重跑。
 
-GPU补充：逐视图FP32/AMP exact；batch FP32偏差超预设容差，排除r2正式矩阵。r1仅smoke失败未训练；r2为匹配CORE90+两个A1。
+GPU补充：逐视图FP32/AMP exact；batch FP32偏差超预设容差，排除正式矩阵。r1仅smoke失败未训练；r2遇到CORE90关闭MUSE后的共享遥测未初始化故障，已修复并通过70项测试及定点审查。r3已通过GPU检查并从零启动CORE90，两个A1等待本轮新CORE90 E200；启动不代表正式结果完成。
+
+追踪统计：8项verified、2项implemented、5项deferred。verified表示已完成相应有界检查，不等于E200性能验证；正式训练和评分仍在进行中。
