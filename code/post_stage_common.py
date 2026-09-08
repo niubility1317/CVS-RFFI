@@ -400,15 +400,24 @@ def move_batch(batch, device: torch.device):
     return x.to(device, non_blocking=True), y.to(device, non_blocking=True), extra
 
 
-def mean_logs(log_items: Iterable[Mapping[str, Any]]) -> Dict[str, float]:
+def mean_logs(log_items: Iterable[Mapping[str, Any]], *, batched_readback: bool = False) -> Dict[str, float]:
     acc: Dict[str, float] = {}
     count: Dict[str, int] = {}
     for logs in log_items:
+        scalar_values = {}
+        if batched_readback:
+            groups = {}
+            for key, value in logs.items():
+                if torch.is_tensor(value) and value.numel() == 1:
+                    groups.setdefault((value.device, value.dtype), []).append((key, value))
+            for entries in groups.values():
+                values = torch.stack([value.detach().reshape(()) for _, value in entries]).cpu().tolist()
+                scalar_values.update((key, float(value)) for (key, _), value in zip(entries, values))
         for key, value in logs.items():
             if torch.is_tensor(value):
                 if value.numel() != 1:
                     continue
-                val = float(value.detach().cpu())
+                val = scalar_values[key] if batched_readback else float(value.detach().cpu())
             else:
                 try:
                     val = float(value)

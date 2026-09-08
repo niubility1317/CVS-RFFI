@@ -205,7 +205,7 @@ class TemporalOrbitMemory:
 class EMALossScaleNormalizer:
     """Normalize heterogeneous DAOT auxiliaries without changing their gradients."""
 
-    def __init__(self, *, momentum: float = 0.95, epsilon: float = 1e-6) -> None:
+    def __init__(self, *, momentum: float = 0.95, epsilon: float = 1e-6, batched_readback: bool = False) -> None:
         if not (0.0 <= float(momentum) < 1.0):
             raise ValueError("loss-scale momentum must be in [0,1)")
         if float(epsilon) <= 0.0:
@@ -213,6 +213,7 @@ class EMALossScaleNormalizer:
         self.momentum = float(momentum)
         self.epsilon = float(epsilon)
         self._scales: dict[str, float] = {}
+        self.batched_readback = bool(batched_readback)
 
     def normalize(
         self,
@@ -222,9 +223,20 @@ class EMALossScaleNormalizer:
     ) -> tuple[dict[str, torch.Tensor], dict[str, float]]:
         normalized: dict[str, torch.Tensor] = {}
         reported: dict[str, float] = {}
+        currents = {}
+        if self.batched_readback:
+            # Keep Python float EMA arithmetic and insertion order. Group by device
+            # for callers with mixed devices; the training path uses one GPU.
+            groups = {}
+            for name, loss in components.items():
+                if active is None or bool(active.get(name, False)):
+                    groups.setdefault(loss.device, []).append((name, loss))
+            for entries in groups.values():
+                values = torch.stack([loss.detach().float().abs().reshape(()) for _, loss in entries]).cpu().tolist()
+                currents.update((name, float(value)) for (name, _), value in zip(entries, values))
         for name, loss in components.items():
             enabled = True if active is None else bool(active.get(name, False))
-            current = float(loss.detach().float().abs().cpu().item())
+            current = currents.get(name, 0.0) if self.batched_readback else float(loss.detach().float().abs().cpu().item())
             old = self._scales.get(str(name))
             if enabled and current > self.epsilon:
                 scale = current if old is None else self.momentum * old + (1.0 - self.momentum) * current

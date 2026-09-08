@@ -396,6 +396,10 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--use_ema_teacher", type=str2bool, default=False)
     parser.add_argument("--ema_decay", type=float, default=0.999)
     parser.add_argument("--use_adv3b02_daot_stn", type=str2bool, default=False)
+    parser.add_argument("--daot_efficiency_mode", choices=["legacy", "identity_sequential", "identity_batched"], default="legacy")
+    parser.add_argument("--daot_batched_scale_readback", type=str2bool, default=False)
+    parser.add_argument("--daot_skip_mean_metadata", type=str2bool, default=False)
+    parser.add_argument("--a1_scratch_only", type=str2bool, default=False)
     parser.add_argument("--daot_ablation", type=str, default="", choices=["", "A0", "A1", "A2", "A3", "A4", "A5", "A6", "A7", "A8"])
     parser.add_argument(
         "--daot_loss_ablation",
@@ -1958,6 +1962,88 @@ def _validate_daot_config(args) -> None:
         raise ValueError("ADV3B02-DAOT-STN currently binds exactly nine standardized nuisance fields")
 
 
+def _forward_daot_teacher_views(
+    teacher_model,
+    views: Sequence[torch.Tensor],
+    *,
+    domain_labels: Optional[torch.Tensor],
+    efficiency_mode: str,
+) -> Tuple[List[Dict[str, Any]], Dict[str, float]]:
+    """Evaluate fixed teacher views with an opt-in identity-only batched path."""
+
+    if not views:
+        raise ValueError("DAOT teacher views cannot be empty")
+    mode = str(efficiency_mode).lower().strip()
+    if mode not in {"legacy", "identity_sequential", "identity_batched"}:
+        raise ValueError(f"Unsupported DAOT efficiency mode: {efficiency_mode}")
+    batch_size = int(views[0].shape[0])
+    if any(int(view.shape[0]) != batch_size for view in views):
+        raise ValueError("DAOT teacher views must share the same batch size")
+
+    if mode == "legacy":
+        outputs = [
+            teacher_model(view, y_tx=None, grl_lambda=1.0, return_aux=True, domain_labels=domain_labels)
+            for view in views
+        ]
+        return outputs, {
+            "identity_only_used": 0.0,
+            "identity_only_fallback": 0.0,
+            "batched_view_count": 1.0,
+        }
+
+    if mode in {"identity_sequential", "identity_batched"}:
+        if teacher_model.training:
+            raise ValueError("A1 identity teacher requires eval mode")
+        if not callable(getattr(teacher_model, "forward_identity_only", None)):
+            raise ValueError("A1 identity teacher requires forward_identity_only")
+        if mode == "identity_sequential":
+            return [teacher_model.forward_identity_only(view, domain_labels=domain_labels) for view in views], {
+                "identity_only_used": 1.0, "identity_only_fallback": 0.0, "batched_view_count": 1.0,
+            }
+        if any(isinstance(module, torch.nn.modules.batchnorm._BatchNorm) and not module.track_running_stats for module in teacher_model.modules()):
+            raise ValueError("Batched identity teacher cannot use batch-dependent BatchNorm")
+    batched = torch.cat(list(views), dim=0)
+    batched_domains = (
+        domain_labels.repeat((len(views),) + (1,) * (domain_labels.ndim - 1))
+        if domain_labels is not None
+        else None
+    )
+    identity_forward = getattr(teacher_model, "forward_identity_only", None)
+    if callable(identity_forward):
+        combined = identity_forward(batched, domain_labels=batched_domains)
+        identity_only_used = 1.0
+        identity_only_fallback = 0.0
+    else:
+        combined = teacher_model(
+            batched,
+            y_tx=None,
+            grl_lambda=1.0,
+            return_aux=True,
+            domain_labels=batched_domains,
+        )
+        identity_only_used = 0.0
+        identity_only_fallback = 1.0
+
+    outputs: List[Dict[str, Any]] = []
+    total = batch_size * len(views)
+    for view_index in range(len(views)):
+        start = view_index * batch_size
+        end = start + batch_size
+        outputs.append(
+            {
+                key: value[start:end]
+                if torch.is_tensor(value) and value.ndim > 0 and int(value.shape[0]) == total
+                else value
+                for key, value in combined.items()
+            }
+        )
+    return outputs, {
+        "identity_only_used": identity_only_used,
+        "identity_only_fallback": identity_only_fallback,
+        "batched_view_count": float(len(views)),
+    }
+
+
 def _compute_daot_labeled_step(
     *,
     model,
@@ -2028,14 +2114,11 @@ def _compute_daot_labeled_step(
     )
     ema_model.eval()
     with torch.no_grad():
-        teacher_views = [
-            ema_model(x_clean, y_tx=None, grl_lambda=1.0, return_aux=True, domain_labels=d_clean),
-            ema_model(x_medium, y_tx=None, grl_lambda=1.0, return_aux=True, domain_labels=d_clean),
-        ]
-        if x_hard is not None:
-            teacher_views.append(
-                ema_model(x_hard, y_tx=None, grl_lambda=1.0, return_aux=True, domain_labels=d_clean)
-            )
+        teacher_inputs = [x_clean, x_medium] + ([x_hard] if x_hard is not None else [])
+        teacher_views, teacher_efficiency = _forward_daot_teacher_views(
+            ema_model, teacher_inputs, domain_labels=d_clean,
+            efficiency_mode=str(getattr(args, "daot_efficiency_mode", "legacy")),
+        )
     memory_found = None
     if str(args.daot_teacher_mode) == "temporal_memory":
         if orbit_memory is None or memory_keys is None:
@@ -2052,22 +2135,27 @@ def _compute_daot_labeled_step(
             )
 
     batch_size = int(x_clean.shape[0])
-    reliability_columns = [
-        torch.ones(batch_size, device=x_clean.device),
-        physical_reliability_from_meta(medium_meta or {}, batch_size=batch_size, device=x_clean.device),
-    ]
-    if hard_meta is not None:
-        reliability_columns.append(
-            physical_reliability_from_meta(hard_meta, batch_size=batch_size, device=x_clean.device)
-        )
-    reliability = torch.stack(reliability_columns, dim=1)
-    importance = teacher_importance_matrix(batch_size=batch_size, device=x_clean.device)[:, :teacher_view_count]
-    if len(teacher_views) > int(reliability.shape[1]):
-        reliability = torch.cat([reliability, memory_found.float().unsqueeze(1)], dim=1)
-        importance = torch.cat([importance, torch.ones((batch_size, 1), device=x_clean.device)], dim=1)
-    if str(getattr(args, "daot_aggregation", "robust_deployment")) == "mean":
-        reliability = torch.ones_like(reliability)
-        importance = torch.ones_like(importance)
+    if bool(getattr(args, "daot_skip_mean_metadata", False)) and str(getattr(args, "daot_aggregation", "")) == "mean":
+        width = teacher_view_count + (1 if len(teacher_views) > teacher_view_count else 0)
+        reliability = torch.ones((batch_size, width), device=x_clean.device)
+        importance = torch.ones_like(reliability)
+    else:
+        reliability_columns = [
+            torch.ones(batch_size, device=x_clean.device),
+            physical_reliability_from_meta(medium_meta or {}, batch_size=batch_size, device=x_clean.device),
+        ]
+        if hard_meta is not None:
+            reliability_columns.append(
+                physical_reliability_from_meta(hard_meta, batch_size=batch_size, device=x_clean.device)
+            )
+        reliability = torch.stack(reliability_columns, dim=1)
+        importance = teacher_importance_matrix(batch_size=batch_size, device=x_clean.device)[:, :teacher_view_count]
+        if len(teacher_views) > int(reliability.shape[1]):
+            reliability = torch.cat([reliability, memory_found.float().unsqueeze(1)], dim=1)
+            importance = torch.cat([importance, torch.ones((batch_size, 1), device=x_clean.device)], dim=1)
+        if str(getattr(args, "daot_aggregation", "robust_deployment")) == "mean":
+            reliability = torch.ones_like(reliability)
+            importance = torch.ones_like(importance)
     recoverability = reliability[:, 1:].mean(dim=1).clamp(0.05, 1.0)
 
     tangent_outputs = None
@@ -2238,6 +2326,11 @@ def _compute_daot_labeled_step(
             features=teacher_views[1]["z_id"].detach(),
             valid=recoverability > 0.05,
         )
+    objective["diagnostics"].update(teacher_efficiency)
+    objective["diagnostics"]["prototype_input_available"] = float(prototype_matrix is not None)
+    objective["diagnostics"]["teacher_labeled_accuracy"] = teacher_views[0]["tx_logits"].detach().argmax(dim=1).eq(y_clean).float().mean()
+    objective["diagnostics"]["teacher_labeled_confidence"] = torch.softmax(teacher_views[0]["tx_logits"].detach().float(), dim=1).max(dim=1).values.mean()
+
     return objective
 
 
@@ -2298,14 +2391,14 @@ def _compute_daot_unlabeled_step(
     )
     ema_model.eval()
     with torch.no_grad():
-        teacher_medium = ema_model(
-            x_medium, y_tx=None, grl_lambda=1.0, return_aux=True, domain_labels=d_unlabeled
+        # The upstream clean teacher is already available; never recompute it.
+        fresh_views, teacher_efficiency = _forward_daot_teacher_views(
+            ema_model, [x_medium] + ([x_hard] if x_hard is not None else []),
+            domain_labels=d_unlabeled,
+            efficiency_mode=str(getattr(args, "daot_efficiency_mode", "legacy")),
         )
-        teacher_hard = (
-            ema_model(x_hard, y_tx=None, grl_lambda=1.0, return_aux=True, domain_labels=d_unlabeled)
-            if x_hard is not None
-            else None
-        )
+        teacher_medium = fresh_views[0]
+        teacher_hard = fresh_views[1] if x_hard is not None else None
     teacher_views = [teacher_clean, teacher_medium]
     memory_found = None
     if str(args.daot_teacher_mode) == "temporal_memory":
@@ -2320,22 +2413,27 @@ def _compute_daot_unlabeled_step(
             )
             teacher_views.append({"z_id": memory_features, "tx_logits": teacher_medium["tx_logits"]})
     batch_size = int(x_unlabeled.shape[0])
-    reliability_columns = [
-        torch.ones(batch_size, device=x_unlabeled.device),
-        physical_reliability_from_meta(medium_meta or {}, batch_size=batch_size, device=x_unlabeled.device),
-    ]
-    if hard_meta is not None:
-        reliability_columns.append(
-            physical_reliability_from_meta(hard_meta, batch_size=batch_size, device=x_unlabeled.device)
-        )
-    reliability = torch.stack(reliability_columns, dim=1)
-    importance = teacher_importance_matrix(batch_size=batch_size, device=x_unlabeled.device)[:, :teacher_view_count]
-    if len(teacher_views) > int(reliability.shape[1]):
-        reliability = torch.cat([reliability, memory_found.float().unsqueeze(1)], dim=1)
-        importance = torch.cat([importance, torch.ones((batch_size, 1), device=x_unlabeled.device)], dim=1)
-    if str(getattr(args, "daot_aggregation", "robust_deployment")) == "mean":
-        reliability = torch.ones_like(reliability)
-        importance = torch.ones_like(importance)
+    if bool(getattr(args, "daot_skip_mean_metadata", False)) and str(getattr(args, "daot_aggregation", "")) == "mean":
+        width = teacher_view_count + (1 if len(teacher_views) > teacher_view_count else 0)
+        reliability = torch.ones((batch_size, width), device=x_unlabeled.device)
+        importance = torch.ones_like(reliability)
+    else:
+        reliability_columns = [
+            torch.ones(batch_size, device=x_unlabeled.device),
+            physical_reliability_from_meta(medium_meta or {}, batch_size=batch_size, device=x_unlabeled.device),
+        ]
+        if hard_meta is not None:
+            reliability_columns.append(
+                physical_reliability_from_meta(hard_meta, batch_size=batch_size, device=x_unlabeled.device)
+            )
+        reliability = torch.stack(reliability_columns, dim=1)
+        importance = teacher_importance_matrix(batch_size=batch_size, device=x_unlabeled.device)[:, :teacher_view_count]
+        if len(teacher_views) > int(reliability.shape[1]):
+            reliability = torch.cat([reliability, memory_found.float().unsqueeze(1)], dim=1)
+            importance = torch.cat([importance, torch.ones((batch_size, 1), device=x_unlabeled.device)], dim=1)
+        if str(getattr(args, "daot_aggregation", "robust_deployment")) == "mean":
+            reliability = torch.ones_like(reliability)
+            importance = torch.ones_like(importance)
     recoverability = reliability[:, 1:].mean(dim=1).clamp(0.05, 1.0)
     if teacher_hard is not None:
         teacher_views.append(teacher_hard)
@@ -2388,6 +2486,8 @@ def _compute_daot_unlabeled_step(
             features=teacher_medium["z_id"].detach(),
             valid=recoverability > 0.05,
         )
+    result["diagnostics"].update(teacher_efficiency)
+
     return result
 
 
@@ -3967,6 +4067,15 @@ def _rc4_requested(args) -> bool:
 
 def _frozen_teacher_requested(args) -> bool:
     return _teacher_distill_requested(args) or _sat_anchor_requested(args) or _rc4_requested(args)
+
+
+def _validate_a1_scratch_only(args) -> None:
+    if not bool(getattr(args, "a1_scratch_only", False)):
+        return
+    if not bool(args.from_scratch) or any(str(getattr(args, key, "")).strip() for key in ("baseline_ckpt", "teacher_ckpt")):
+        raise ValueError("A1 scratch-only forbids baseline/teacher checkpoints")
+    if _frozen_teacher_requested(args):
+        raise ValueError("A1 scratch-only forbids pretrained anchor/distillation objectives")
 
 
 def _stage_gate_scale(epoch: int, *, start_epoch: int = 1, warmup_epochs: int = 0) -> float:
@@ -8138,6 +8247,7 @@ def train(args) -> int:
     safe_best_path = Path(str(args.safe_best_path).strip()) if str(args.safe_best_path).strip() else out_dir / default_safe_best_name
     safe_latest_path = Path(str(args.safe_latest_path).strip()) if str(args.safe_latest_path).strip() else out_dir / "latest_safe_ssdg.pth"
     phase2_audit_state = _phase2_audit_state(args)
+    _validate_a1_scratch_only(args)
     data_ctx = _build_ssdg_wisig_data(args, device)
     use_ckpt = bool(str(args.baseline_ckpt).strip()) and not bool(args.from_scratch)
     ckpt = load_checkpoint(args.baseline_ckpt, device) if use_ckpt else {"model": None, "args": {}, "stats": {}, "split_info": None}
@@ -8167,7 +8277,7 @@ def train(args) -> int:
             daot_orbit_memory.load_state_dict(ckpt["daot_orbit_memory"])
     daot_loss_normalizer = None
     if bool(getattr(args, "use_adv3b02_daot_stn", False)) and bool(args.daot_scale_normalization):
-        daot_loss_normalizer = EMALossScaleNormalizer(momentum=float(args.daot_scale_momentum))
+        daot_loss_normalizer = EMALossScaleNormalizer(momentum=float(args.daot_scale_momentum), batched_readback=bool(args.daot_batched_scale_readback))
         if use_ckpt and ckpt.get("daot_loss_normalizer") is not None:
             daot_loss_normalizer.load_state_dict(ckpt["daot_loss_normalizer"])
     trainable_params = int(sum(p.numel() for p in _optimizer_parameters(model, muse_state)))
@@ -11414,6 +11524,14 @@ def train(args) -> int:
                     "train/daot_orbit_scale": float(daot_diagnostics.get("orbit_scale", 0.0)),
                     "train/daot_tangent_scale": float(daot_diagnostics.get("tangent_scale", 0.0)),
                     "train/daot_teacher_view_count": float(daot_diagnostics.get("teacher_view_count", 0.0)),
+                    "train/daot_identity_only_used": float(daot_diagnostics.get("identity_only_used", 0.0)),
+                    "train/daot_batched_view_count": float(daot_diagnostics.get("batched_view_count", 0.0)),
+                    "train/daot_teacher_labeled_accuracy": daot_diagnostics.get("teacher_labeled_accuracy", float("nan")),
+                    "train/daot_teacher_labeled_confidence": daot_diagnostics.get("teacher_labeled_confidence", float("nan")),
+                    "train/daot_scale_batched_enabled": float(args.daot_batched_scale_readback),
+                    "train/daot_mean_metadata_skip_enabled": float(args.daot_skip_mean_metadata),
+                    "train/daot_objective_computed": float(bool(daot_diagnostics.get("orbit_scale", 0.0) > 0.0)),
+                    "train/daot_proto_input_available": float(daot_diagnostics.get("prototype_input_available", 0.0)),
                     "train/daot_orbit_dispersion": (
                         daot_diagnostics.get("orbit_dispersion", zero_sat).detach().float().mean()
                         if torch.is_tensor(daot_diagnostics.get("orbit_dispersion"))
@@ -12379,7 +12497,7 @@ def train(args) -> int:
             )
         else:
             named_stats = {}
-        train_logs = mean_logs(epoch_logs)
+        train_logs = mean_logs(epoch_logs, batched_readback=bool(args.daot_batched_scale_readback))
         if _fasttrust_lr_enabled(args):
             fasttrust_zero_step_streak = _next_fasttrust_zero_step_streak(
                 train_logs, fasttrust_zero_step_streak
@@ -13404,7 +13522,9 @@ def train(args) -> int:
         p0_mechanisms_ready=bool(p0_mechanisms_ready),
         p1_mechanisms_ready=bool(p1_mechanisms_ready),
         endpoint_export_ready=bool(endpoint_export_ready),
-        mechanism_gates_required=not muse_external_eval,
+        # Matched CORE90 is a training dependency, not a candidate claiming all
+        # later mechanisms. Their scientific promotion gates cannot reject it.
+        mechanism_gates_required=not muse_external_eval and not bool(args.a1_scratch_only),
         endpoint_export_required=(
             bool(getattr(args, "endpoint_require_artifact_on_export", True))
             and not muse_external_eval
