@@ -44,3 +44,13 @@ run_id=`a1_fast_selected_adv3b02_s392005_20260908_r1`。
 E200后复用已经验证的`target_inputs`无标签包。复用提交`0cc19956`中已修复NumPy兼容问题的predictor、scorer和truth_last实现，但运行在本轮支持A1新头的模型release中；显式选择A1的tx_logits。旧评估release不支持新增头，直接调用会严格加载失败，已在发布前审查中发现并修正。新增真实lite_d+A1头完整重建及相同logits测试。prediction完成后独立scorer连接`target_truth/truth_sidecar.json`。每场景168000条，四场景672000条；输出为各行新`target_prediction`。不覆盖旧prediction，不把分数反馈训练。
 
 预期artifact：两行E200 checkpoint、完整CSV/JSONL、GPU执行检查、四场景prediction/score及日志；最终仅标AWAITING_ARTIFACT_ANALYSIS，待全量激活、资源与性能解释。当前本地真实checkpoint CPU执行检查PASS；正式启动状态在发布读回后追加。
+
+## 发布读回：VERIFIED / A1_RUNNING
+
+发布代码提交`c53cabeadba6167d5f15036127b71659e5e94121`，本地与远端分支OID独立核对一致。release=`/home/szu2070436088/2510044040/CV-SincNet/releases/a1_fast_selected_c53cabea`，归档SHA256=`ef22a479615275b5e811ddb6ccaef42b25c67032ec649986881a5b2ef0d2e31a`，本地远端一致；远端编译通过。
+
+旧r3 dispatcher PID3812777和CORE90 PID3813334已退出，独立ps读回无进程，pipeline状态SUPERSEDED_BY_USER，全部产物保留。新的dispatcher PID3823003；A1_REFERENCE PID3823617/GPU4，A1_FAST_SEQUENTIAL PID3823622/GPU5。两个训练进程PPID均为3823003，CWD均匹配新release。
+
+实际launch_config读回逐项一致：seed392005、lite_d、equalized=1、receiver/day、L/U/V比例及baseline/teacher checkpoint。两个日志均确认指定权重路径与L/U/V=6300/56700/27000。发布快照GPU4约1966MiB、利用率39%；GPU5约2034MiB、利用率44%。其他GPU0进程保持运行，旧GPU3已释放。
+
+实际checkpoint GPU检查PASS：FP32/AMP逐视图教师z_id/logits最大差均为0，E1/E21/E161执行更新检查通过。见[GPU检查](../analysis/a1_selected_checkpoint_gpu_execution.json)。验证包含71项相关测试通过，随后新增评估重建测试所在12项聚焦测试通过；定点独立审查关闭参数兼容及评估新头重建问题。当前仅证明正确启动，尚无本轮E200性能或总加速结论。

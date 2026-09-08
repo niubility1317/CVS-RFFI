@@ -1,0 +1,57 @@
+{
+  "status": "PASS",
+  "input_role": "source_shaped_synthetic_no_query",
+  "target_inputs": 0,
+  "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_fcr_r1r8_s392005_equalized_20260903_v4/ADV3B02/ADV3B02_CORE90_SOFT_E200/final_ssdg.pth",
+  "initialization": "supplied_E200_checkpoint",
+  "new_a1_parameters": [
+    "daot_nuisance_head.net.0.weight",
+    "daot_nuisance_head.net.0.bias",
+    "daot_nuisance_head.net.2.weight",
+    "daot_nuisance_head.net.2.bias"
+  ],
+  "torch": "2.1.0+cu121",
+  "device": "cuda:0",
+  "teacher_comparisons": [
+    {
+      "mode": "identity_sequential",
+      "amp": false,
+      "max_abs_error": {
+        "z_id": 0.0,
+        "tx_logits": 0.0
+      }
+    },
+    {
+      "mode": "identity_sequential",
+      "amp": true,
+      "max_abs_error": {
+        "z_id": 0.0,
+        "tx_logits": 0.0
+      }
+    }
+  ],
+  "step_comparisons": [
+    {
+      "epoch": 1,
+      "mode": "identity_sequential",
+      "status": "PASS"
+    },
+    {
+      "epoch": 21,
+      "mode": "identity_sequential",
+      "status": "PASS"
+    },
+    {
+      "epoch": 161,
+      "mode": "identity_sequential",
+      "status": "PASS"
+    }
+  ],
+  "timing_scope": "teacher-only microbenchmark; not end-to-end speedup",
+  "teacher_timing_ms": {
+    "legacy_b128": 27.029093937017024,
+    "identity_sequential_b128": 9.898431482724845,
+    "legacy_b256": 27.075446560047567,
+    "identity_sequential_b256": 9.930343017913401
+  }
+}

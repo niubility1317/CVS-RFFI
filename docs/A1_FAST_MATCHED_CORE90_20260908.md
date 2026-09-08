@@ -1,5 +1,7 @@
 # A1-Fast匹配CORE90重训实验
 
+更新：用户随后指定使用已完成独立评分的ADV3B02 E200权重，seed392005。本r3已定向停止并保留产物，状态SUPERSEDED_BY_USER；当前续训见[A1指定权重续训](A1_FAST_SELECTED_ADV3B02_20260908.md)。下文RUNNING均为此前历史快照。
+
 状态：LOCAL_VERIFIED，尚未启动。运行ID：`a1_fast_matched_core90_s392005_20260908_r2`。唯一launch owner：本任务主Agent。Git分支：`codex/a1-fast-original-20260908`。
 
 ## 用户范围和源码
