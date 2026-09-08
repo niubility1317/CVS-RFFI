@@ -1,0 +1,81 @@
+{
+  "time": "2026-09-08T10:43:25.699831",
+  "remaining_processes": [],
+  "rows": {
+    "B2-V1": {
+      "status": "USER_CANCELLED",
+      "checkpoints": {
+        "best": 12151887,
+        "latest": 12178221
+      },
+      "logs_preserved": true
+    },
+    "B2": {
+      "status": "USER_CANCELLED",
+      "checkpoints": {
+        "best": 13725675,
+        "latest": 13756721
+      },
+      "logs_preserved": true
+    },
+    "B3a": {
+      "status": "USER_CANCELLED",
+      "checkpoints": {
+        "best": 13600355,
+        "latest": 13631289
+      },
+      "logs_preserved": true
+    },
+    "B3b": {
+      "status": "USER_CANCELLED",
+      "checkpoints": {
+        "best": 13594566,
+        "latest": 13625486
+      },
+      "logs_preserved": true
+    }
+  },
+  "exit_status": {
+    "phase1_ecrs_v1r_firstbatch_s392005_e200_20260908_r1": [
+      {
+        "row": "B0",
+        "pid": 3515807,
+        "exit_code": 0
+      },
+      {
+        "row": "B2-V1",
+        "pid": 3515808,
+        "exit_code": -15
+      },
+      {
+        "row": "B2",
+        "pid": 3515809,
+        "exit_code": -15
+      }
+    ],
+    "phase1_ecrs_v2_bridge_s392005_e200_20260908_r2": [
+      {
+        "row": "B3c",
+        "pid": 3566338,
+        "exit_code": 0
+      },
+      {
+        "row": "B4",
+        "pid": 3567298,
+        "exit_code": 0
+      },
+      {
+        "row": "B3a",
+        "pid": 3537463,
+        "exit_code": -15
+      },
+      {
+        "row": "B3b",
+        "pid": 3547432,
+        "exit_code": -15
+      }
+    ]
+  },
+  "gpu": "0, 0, 1\n1, 25, 3510\n2, 27, 4088\n3, 90, 8231\n4, 99, 11989\n5, 99, 7019\n6, 92, 9407\n7, 88, 7597\n",
+  "status": "VERIFIED"
+}
