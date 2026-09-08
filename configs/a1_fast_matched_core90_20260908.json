@@ -450,7 +450,13 @@
       "daot_efficiency_mode": "identity_sequential",
       "daot_batched_scale_readback": "true",
       "daot_skip_mean_metadata": "true"
-    },
+    }
+  ],
+  "primary_paired_comparison": "A1_FAST_SEQUENTIAL minus A1_REFERENCE",
+  "secondary_comparison": "Deferred: batched teacher excluded before training; no tolerance relaxation",
+  "promotion": "No speed or nondegradation claim before full paired E200 source/target results; no default promotion from single seed",
+  "core90_gpu": 3,
+  "deferred_rows": [
     {
       "id": "A1_FAST_BATCHED",
       "gpu": 6,
@@ -459,8 +465,5 @@
       "daot_skip_mean_metadata": "true"
     }
   ],
-  "primary_paired_comparison": "A1_FAST_SEQUENTIAL minus A1_REFERENCE",
-  "secondary_comparison": "A1_FAST_BATCHED minus A1_FAST_SEQUENTIAL; no target-based selection",
-  "promotion": "No speed or nondegradation claim before full paired E200 source/target results; no default promotion from single seed",
-  "core90_gpu": 3
+  "batching_deferral": "GPU FP32 z_id delta 9.620189666748047e-05 and logits delta 0.0001552104949951172 exceed predeclared strict parity; sequential FP32 and AMP both exact"
 }

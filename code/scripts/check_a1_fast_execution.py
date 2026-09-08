@@ -21,6 +21,7 @@ def main():
     p.add_argument('--checkpoint',type=Path)
     p.add_argument('--output',type=Path,required=True)
     p.add_argument('--device',default='cpu')
+    p.add_argument('--include-batched',action='store_true',help='Separate numerical experiment; excluded from strict first-round parity')
     cli=p.parse_args()
     torch.set_num_threads(2)
     torch.manual_seed(392005)
@@ -46,7 +47,7 @@ def main():
             'initialization':'this_run_CORE90' if cli.checkpoint else 'fresh_random',
             'torch':torch.__version__,'device':str(device),'teacher_comparisons':[], 'step_comparisons':[],
             'timing_scope':'teacher-only microbenchmark; not end-to-end speedup'}
-    modes=['legacy','identity_sequential','identity_batched']
+    modes=['legacy','identity_sequential'] + (['identity_batched'] if cli.include_batched else [])
     for amp in ([False,True] if device.type=='cuda' else [False]):
         outputs={}
         rng=torch.get_rng_state().clone()

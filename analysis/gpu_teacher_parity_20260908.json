@@ -1,0 +1,16 @@
+{
+  "identity_sequential": {
+    "fp32_z_id": 0,
+    "fp32_logits": 0,
+    "amp_z_id": 0,
+    "amp_logits": 0
+  },
+  "identity_batched": {
+    "fp32_z_id": 9.620189666748047e-05,
+    "fp32_logits": 0.0001552104949951172,
+    "amp_z_id": 0,
+    "amp_logits": 0
+  },
+  "decision": "DEFER_BATCHED_NO_TOLERANCE_RELAXATION",
+  "r1_training_started": false
+}
