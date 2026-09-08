@@ -21,3 +21,11 @@
 - 容量核验时N607有4个既有计算进程；在每GPU最多2个训练实验的限制内，已启动12/15个正式适配单元：3个场景的R1/R2，以及`leo_clear_weak`和`leo_low_elev_weak`的R4/R6/R8。其余`leo_rain_weak/R4,R6,R8`等待至少3个合规槽位。
 - 一次启动命令曾使用无效场景名`leo_rician_weak`和`leo_shadowed_weak`，7个进程由argparse在正式输出创建前退出；失败日志已保留。随后使用预注册场景`leo_low_elev_weak`和`leo_rain_weak`启动对应单元，未覆盖失败日志。
 - 当前状态：`RUNNING_SUPPORT_ONLY`；尚未freeze collection、未打开query、未生成prediction、未连接truth、未评分。
+
+## 2026-09-08 10:47用户暂停终态
+
+- 用户明确要求“任务先停止”；仅向仍存活的12个r9 `adapt-unit`进程发送`TERM`，随后以完整r9命令指纹独立核验存活进程为0。
+- 已保留3份完成态：`leo_clear_weak/R1`、`leo_low_elev_weak/R1`、`leo_rain_weak/R1`；其`support_state_receipt.json`均已存在。其余12个单元未形成完成回执，不宣称完成。
+- release、日志、3份冻结态和所有中间产物均保留，未删除、未覆盖；未干预其他任务。
+- query始终未打开；尚未freeze collection、未生成prediction、未连接truth、未评分，没有可报告的最终性能结果。
+- r9当前状态：`PAUSED_BY_USER / PARTIAL_SUPPORT_ARTIFACTS / NO_FINAL_PERFORMANCE_RESULT`；自动续跑已暂停。只有用户再次明确授权恢复后，才可先核实产物和容量并制定不覆盖既有产物的恢复方案。
