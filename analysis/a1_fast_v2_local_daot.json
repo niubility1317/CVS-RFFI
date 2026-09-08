@@ -1,0 +1,52 @@
+{
+  "status": "PASS",
+  "input_role": "source_shaped_synthetic_no_query",
+  "target_inputs": 0,
+  "checkpoint": null,
+  "initialization": "fresh_random",
+  "new_a1_parameters": [],
+  "torch": "2.10.0+cu128",
+  "device": "cuda:0",
+  "teacher_comparisons": [
+    {
+      "mode": "identity_sequential",
+      "amp": false,
+      "max_abs_error": {
+        "z_id": 0.0,
+        "tx_logits": 0.0
+      }
+    },
+    {
+      "mode": "identity_sequential",
+      "amp": true,
+      "max_abs_error": {
+        "z_id": 0.0,
+        "tx_logits": 0.0
+      }
+    }
+  ],
+  "step_comparisons": [
+    {
+      "epoch": 1,
+      "mode": "identity_sequential",
+      "status": "PASS"
+    },
+    {
+      "epoch": 21,
+      "mode": "identity_sequential",
+      "status": "PASS"
+    },
+    {
+      "epoch": 161,
+      "mode": "identity_sequential",
+      "status": "PASS"
+    }
+  ],
+  "timing_scope": "teacher-only microbenchmark; not end-to-end speedup",
+  "teacher_timing_ms": {
+    "legacy_b128": 55.35132499062456,
+    "identity_sequential_b128": 23.603874986292794,
+    "legacy_b256": 45.801825006492436,
+    "identity_sequential_b256": 16.443050000816584
+  }
+}

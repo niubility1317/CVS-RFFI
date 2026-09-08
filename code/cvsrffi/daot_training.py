@@ -67,6 +67,7 @@ def compute_daot_batch_objective(
     fingerprint_minimum: float = 0.50,
     relation_pairs: Optional[torch.Tensor] = None,
     loss_normalizer=None,
+    logit_coverage_weighting: bool = False,
 ) -> dict[str, Any]:
     """Compose DAOT-STN losses without consulting TX labels or pseudo labels."""
 
@@ -176,9 +177,14 @@ def compute_daot_batch_objective(
                 for name in components
             },
         )
+    effective_logit_coverage = (consensus.float() * confidence.detach()).mean().detach()
+    logit_contribution = float(weights.get("orbit_logit", 0.0)) * normalized_components["orbit_logit"]
+    if bool(logit_coverage_weighting):
+        # Apply after EMA scale normalization; otherwise normalization cancels it.
+        logit_contribution = logit_contribution * effective_logit_coverage
     total = float(orbit_scale) * (
         float(weights.get("orbit_z", 0.0)) * normalized_components["orbit_z"]
-        + float(weights.get("orbit_logit", 0.0)) * normalized_components["orbit_logit"]
+        + logit_contribution
         + float(weights.get("orbit_proto", 0.0)) * normalized_components["orbit_proto"]
         + float(weights.get("orbit_relation", 0.0)) * normalized_components["orbit_relation"]
         + float(weights.get("nuisance", 0.0)) * normalized_components["nuisance"]
@@ -188,6 +194,9 @@ def compute_daot_batch_objective(
         **aggregate_diag,
         "consensus_mask": consensus,
         "teacher_confidence": confidence,
+        "effective_logit_coverage": effective_logit_coverage,
+        "logit_coverage_weighting": float(bool(logit_coverage_weighting)),
+        "weighted_logit_contribution": (float(orbit_scale) * logit_contribution).detach(),
         "nuisance_sensitivity": nuisance_sensitivity,
         "fingerprint_sensitivity": fingerprint_sensitivity_value,
         "fingerprint_selectivity": fingerprint_selectivity(

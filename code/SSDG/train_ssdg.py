@@ -400,6 +400,10 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--daot_batched_scale_readback", type=str2bool, default=False)
     parser.add_argument("--daot_skip_mean_metadata", type=str2bool, default=False)
     parser.add_argument("--a1_scratch_only", type=str2bool, default=False)
+    parser.add_argument("--a1_runtime_fast", type=str2bool, default=False)
+    parser.add_argument("--a1_ema_versioned_updates", type=str2bool, default=False)
+    parser.add_argument("--a1_ema_startup_average", type=str2bool, default=False)
+    parser.add_argument("--a1_logit_coverage_weighting", type=str2bool, default=False)
     parser.add_argument("--use_a1_r3", type=str2bool, default=False)
     parser.add_argument("--a1_r3_aux_scale", type=float, choices=(0.0, 1.0), default=1.0)
     parser.add_argument("--daot_ablation", type=str, default="", choices=["", "A0", "A1", "A2", "A3", "A4", "A5", "A6", "A7", "A8"])
@@ -1851,10 +1855,20 @@ def _temporal_bank_mask_tensor(
     return torch.as_tensor(passed, dtype=torch.bool, device=device)
 
 
-def _update_ema_model(ema_model, model, decay: float) -> None:
+def _effective_a1_ema_decay(decay: float, successful_updates: int, startup_average: bool) -> float:
+    if not 0.0 <= float(decay) <= 1.0:
+        raise ValueError("EMA decay must be in [0,1]")
+    if not startup_average:
+        return float(decay)
+    if int(successful_updates) < 1:
+        raise ValueError("EMA startup average needs a positive successful-update count")
+    return min(float(decay), float(successful_updates - 1) / float(successful_updates))
+
+
+def _update_ema_model(ema_model, model, decay: float, *, versioned: bool = False) -> None:
     with torch.no_grad():
         for ema_p, p in zip(ema_model.parameters(), model.parameters()):
-            if bool(getattr(ema_model, "use_a1_r3", False)):
+            if versioned or bool(getattr(ema_model, "use_a1_r3", False)):
                 # Increment the parameter version so eval CosFace caches refresh.
                 ema_p.mul_(float(decay)).add_(p, alpha=1.0 - float(decay))
             else:
@@ -2254,6 +2268,7 @@ def _compute_daot_labeled_step(
         fingerprint_minimum=float(args.daot_fingerprint_min_sensitivity),
         relation_pairs=relation_pairs,
         loss_normalizer=loss_normalizer,
+        logit_coverage_weighting=bool(getattr(args, "a1_logit_coverage_weighting", False)),
     )
     diagnostic_epochs = {
         int(value)
@@ -2475,6 +2490,7 @@ def _compute_daot_unlabeled_step(
             else None
         ),
         loss_normalizer=loss_normalizer,
+        logit_coverage_weighting=bool(getattr(args, "a1_logit_coverage_weighting", False)),
     )
     result["diagnostics"].update(
         {
@@ -8800,6 +8816,7 @@ def train(args) -> int:
         for batch_idx, (labeled_batch, muse_unlabeled_batch) in enumerate(epoch_pairs, start=1):
             # The source-only CORE90 path also emits the shared RC4 telemetry.
             rc4_route = None
+            a1_effective_ema_decay = float("nan")
             muse_identity_grad_norm = float("nan")
             sat_anchor_pair_grad_norm = float("nan")
             sat_anchor_sat_grad_norm = float("nan")
@@ -10071,11 +10088,17 @@ def train(args) -> int:
                             )
                             combined_w = torch.cat([x_u, x_w2], dim=0)
                             combined_d = torch.cat([d_u, d_u], dim=0)
-                            combined_out = pseudo_source(
-                                combined_w, y_tx=None,
-                                grl_lambda=float(schedule.grl_lambda), return_aux=True,
-                                domain_labels=combined_d,
-                            )
+                            if bool(args.a1_runtime_fast):
+                                combined_out = _forward_daot_teacher_views(
+                                    pseudo_source, [combined_w], domain_labels=combined_d,
+                                    efficiency_mode="identity_sequential",
+                                )[0][0]
+                            else:
+                                combined_out = pseudo_source(
+                                    combined_w, y_tx=None,
+                                    grl_lambda=float(schedule.grl_lambda), return_aux=True,
+                                    domain_labels=combined_d,
+                                )
                             out_w, out_w2 = _split_muse_output(
                                 combined_out, unlabeled_count, int(combined_w.shape[0])
                             )
@@ -10143,6 +10166,7 @@ def train(args) -> int:
                             )
                             rc4_route = route_fasttrust_rc4(
                                 anchor_logits, out_w["tx_logits"], out_w2["tx_logits"],
+                                batched_readback=bool(args.a1_runtime_fast),
                                 domains=d_u, receivers=receiver_u,
                                 z_norm=out_w["z_id"].float().norm(dim=-1),
                                 calibration=calibration,
@@ -11280,15 +11304,24 @@ def train(args) -> int:
                 else:
                     scaler.scale(loss).backward()
                 scaler.unscale_(optimizer)
-                first_nonfinite_gradient = _first_nonfinite_gradient(model)
+                gradient_snapshot = None
+                if bool(args.a1_runtime_fast):
+                    from cvsrffi.a1_fast_runtime import GradientSnapshot
+                    gradient_snapshot = GradientSnapshot.capture(model)
+                    first_nonfinite_gradient = gradient_snapshot.first_nonfinite()
+                else:
+                    first_nonfinite_gradient = _first_nonfinite_gradient(model)
                 if first_nonfinite_gradient is None and muse_state is not None:
-                    first_nonfinite_gradient = _first_nonfinite_gradient(muse_state["heads"])
+                    first_nonfinite_gradient = (
+                        GradientSnapshot.capture(muse_state["heads"]).first_nonfinite()
+                        if bool(args.a1_runtime_fast) else _first_nonfinite_gradient(muse_state["heads"])
+                    )
                     if first_nonfinite_gradient is not None:
                         first_nonfinite_gradient = dict(first_nonfinite_gradient)
                         first_nonfinite_gradient["parameter_name"] = (
                             "muse_heads." + str(first_nonfinite_gradient["parameter_name"])
                         )
-                grad_norm_before_clip = _grad_norm(model)
+                grad_norm_before_clip = gradient_snapshot.norm() if gradient_snapshot is not None else _grad_norm(model)
                 grads_finite = first_nonfinite_gradient is None
                 if grads_finite and float(getattr(args, "max_grad_norm", 0.0)) > 0.0:
                     torch.nn.utils.clip_grad_norm_(
@@ -11296,10 +11329,17 @@ def train(args) -> int:
                         max_norm=float(args.max_grad_norm),
                         error_if_nonfinite=False,
                     )
-                grad_total = _grad_norm(model)
-                grad_backbone = _grad_norm(model, lambda name: "backbone" in name)
-                grad_aux = _grad_norm(model, lambda name: "aux" in name)
-                grad_domain = _grad_norm(model, lambda name: "dom" in name or "domain" in name)
+                if bool(args.a1_runtime_fast):
+                    post_clip = GradientSnapshot.capture(model)
+                    grad_total = post_clip.norm()
+                    grad_backbone = post_clip.norm(lambda name: "backbone" in name)
+                    grad_aux = post_clip.norm(lambda name: "aux" in name)
+                    grad_domain = post_clip.norm(lambda name: "dom" in name or "domain" in name)
+                else:
+                    grad_total = _grad_norm(model)
+                    grad_backbone = _grad_norm(model, lambda name: "backbone" in name)
+                    grad_aux = _grad_norm(model, lambda name: "aux" in name)
+                    grad_domain = _grad_norm(model, lambda name: "dom" in name or "domain" in name)
                 if grads_finite:
                     scaler.step(optimizer)
                     optimizer_step_applied = True
@@ -11309,7 +11349,10 @@ def train(args) -> int:
                             if muse_state is not None
                             else float(args.ema_decay)
                         )
-                        _update_ema_model(ema_model, model, ema_decay)
+                        a1_effective_ema_decay = _effective_a1_ema_decay(
+                            ema_decay, r3_optimizer_steps + 1, bool(args.a1_ema_startup_average))
+                        _update_ema_model(ema_model, model, a1_effective_ema_decay,
+                                          versioned=bool(args.a1_ema_versioned_updates))
                 else:
                     skipped_nonfinite_grad = 1
                     optimizer.zero_grad(set_to_none=True)
@@ -11412,6 +11455,9 @@ def train(args) -> int:
                 {
                     **r3_l_logs,
                     **r3_u_logs,
+                    "train/a1_runtime_fast": float(bool(args.a1_runtime_fast)),
+                    "train/a1_ema_effective_decay": a1_effective_ema_decay,
+                    "train/a1_ema_successful_updates": float(r3_optimizer_steps),
                     "train/loss": loss.detach(),
                     "train/loss_labeled": loss_l.detach(),
                     "train/loss_closed_group": loss_closed.detach(),
@@ -11598,6 +11644,9 @@ def train(args) -> int:
                         if torch.is_tensor(daot_diagnostics.get("consensus_mask"))
                         else float("nan")
                     ),
+                    "train/daot_logit_coverage": daot_diagnostics.get("effective_logit_coverage", float("nan")),
+                    "train/daot_logit_coverage_weighting": float(bool(args.a1_logit_coverage_weighting)),
+                    "train/daot_logit_weighted_contribution": daot_diagnostics.get("weighted_logit_contribution", zero_sat),
                     "train/daot_nuisance_sensitivity": (
                         daot_diagnostics.get("nuisance_sensitivity", zero_sat).detach().float().mean()
                         if torch.is_tensor(daot_diagnostics.get("nuisance_sensitivity"))
@@ -11720,6 +11769,8 @@ def train(args) -> int:
                     "train/loss_unlabeled": loss_u.detach(),
                     "train/loss_daot_unlabeled": loss_daot_u.detach(),
                     "train/daot_u_orbit_scale": float(daot_u_diagnostics.get("orbit_scale", 0.0)),
+                    "train/daot_u_logit_coverage": daot_u_diagnostics.get("effective_logit_coverage", float("nan")),
+                    "train/daot_u_logit_weighted_contribution": daot_u_diagnostics.get("weighted_logit_contribution", zero_sat),
                     "train/daot_u_orbit_dispersion": (
                         daot_u_diagnostics.get("orbit_dispersion", zero_sat).detach().float().mean()
                         if torch.is_tensor(daot_u_diagnostics.get("orbit_dispersion"))
@@ -12587,6 +12638,8 @@ def train(args) -> int:
         payload = {
             "checkpoint_schema": "ssdg_phase1_training_state_v2",
             "checkpoint_role": "training_epoch_state_in_memory",
+            "a1_ema_successful_updates": int(r3_optimizer_steps),
+            "a1_ema_startup_average": bool(args.a1_ema_startup_average),
             "checkpoint_selection": str(args.checkpoint_selection),
             "run_id": str(getattr(args, "run_id", "")),
             "candidate_id": str(getattr(args, "candidate_id", "")),

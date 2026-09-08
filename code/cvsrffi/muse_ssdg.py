@@ -1179,6 +1179,7 @@ def apply_rc4_quality_budget(
     weights: torch.Tensor,
     *,
     total_budget: float,
+    batched_readback: bool = False,
 ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
     """Apply one exact H-first effective budget and let P fill only the residual."""
 
@@ -1196,6 +1197,31 @@ def apply_rc4_quality_budget(
     kept_hard = torch.zeros_like(hard)
     kept_partial = torch.zeros_like(partial)
     remaining = float(adjusted.numel()) * fraction
+
+    if batched_readback:
+        values = adjusted.detach().cpu().tolist()
+        masks = torch.stack((hard, partial)).detach().cpu().tolist()
+        kept_masks = []
+        for mask_values in masks:
+            kept_values = [False] * len(values)
+            ordered = sorted(
+                (index for index, active in enumerate(mask_values) if active),
+                key=lambda index: (-float(values[index]), int(index)),
+            )
+            for index in ordered:
+                value = float(values[index])
+                if value <= 0.0 or remaining <= 1e-12:
+                    values[index] = 0.0
+                    continue
+                used = min(value, remaining)
+                values[index] = used
+                kept_values[index] = True
+                remaining -= used
+            kept_masks.append(torch.tensor(kept_values, device=weights.device, dtype=torch.bool))
+        kept_hard, kept_partial = kept_masks
+        adjusted = adjusted.new_tensor(values)
+        adjusted = torch.where(kept_hard | kept_partial, adjusted, torch.zeros_like(adjusted))
+        return kept_hard, kept_partial, adjusted
 
     def consume(mask: torch.Tensor, kept: torch.Tensor) -> None:
         nonlocal remaining
@@ -1217,6 +1243,43 @@ def apply_rc4_quality_budget(
     consume(partial, kept_partial)
     adjusted = torch.where(kept_hard | kept_partial, adjusted, torch.zeros_like(adjusted))
     return kept_hard, kept_partial, adjusted
+
+
+def _rc4_effective_budget_batched(
+    mask: torch.Tensor, weights: torch.Tensor, budget_fraction: float,
+) -> torch.Tensor:
+    """Same CPU greedy budget, with one readback per vector instead of per row.
+
+    Like the legacy route helper, this may lower the fallback row's weight.
+    Read weights anew on every invocation because an earlier budget can mutate it.
+    """
+    budget_fraction = float(budget_fraction)
+    if not math.isfinite(budget_fraction) or not 0.0 <= budget_fraction <= 1.0:
+        raise ValueError("RC4 effective budget must be finite and in [0,1]")
+    selected = torch.zeros_like(mask)
+    budget = float(mask.numel()) * budget_fraction
+    if budget <= 0.0:
+        return selected
+    candidates = mask.nonzero(as_tuple=False).reshape(-1).detach().cpu().tolist()
+    if not candidates:
+        return selected
+    values = weights.detach().cpu().tolist()
+    ordered = sorted(candidates, key=lambda index: (-float(values[index]), int(index)))
+    used = 0.0
+    selected_ids = []
+    for index in ordered:
+        value = float(values[index])
+        if value <= 0.0:
+            continue
+        if used + value <= budget + 1e-12:
+            selected_ids.append(index)
+            used += value
+    if not selected_ids and ordered and budget > 0.0:
+        selected_ids.append(ordered[0])
+        weights[ordered[0]] = min(float(values[ordered[0]]), budget)
+    if selected_ids:
+        selected[torch.as_tensor(selected_ids, device=mask.device, dtype=torch.long)] = True
+    return selected
 
 
 def route_fasttrust_rc4(
@@ -1242,6 +1305,7 @@ def route_fasttrust_rc4(
     class_receiver_cap: bool = True,
     class_receiver_effective_budget: float = 0.0,
     use_calibrated_risk: bool = True,
+    batched_readback: bool = False,
 ) -> RC4Route:
     """Apply stage-frozen source risk rules to U rows without reading TX truth."""
 
@@ -1422,6 +1486,8 @@ def route_fasttrust_rc4(
                     weights[cell_mask] = weights[cell_mask] * (cell_cap / mass.clamp_min(1e-12))
 
     def apply_effective_budget(mask: torch.Tensor, budget_fraction: float) -> torch.Tensor:
+        if batched_readback:
+            return _rc4_effective_budget_batched(mask, weights, budget_fraction)
         budget_fraction = float(budget_fraction)
         if not math.isfinite(budget_fraction) or not 0.0 <= budget_fraction <= 1.0:
             raise ValueError("RC4 effective budget must be finite and in [0,1]")
@@ -1454,6 +1520,7 @@ def route_fasttrust_rc4(
             partial,
             weights,
             total_budget=float(total_identity_effective_budget),
+            batched_readback=batched_readback,
         )
         negative = torch.zeros_like(negative)
         cap_mask = cap_mask & hard

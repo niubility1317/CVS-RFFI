@@ -1,0 +1,53 @@
+{
+  "status": "PASS",
+  "initialization": "fresh_random",
+  "checkpoint_loads": 0,
+  "target_inputs": 0,
+  "paired_initial_parameters_and_rng": "EXACT",
+  "model_variant": "lite_d",
+  "teacher_checks": [
+    {
+      "amp": false,
+      "batch": 512,
+      "teacher_route_buffers_rng": "EXACT"
+    },
+    {
+      "amp": true,
+      "batch": 512,
+      "teacher_route_buffers_rng": "EXACT"
+    }
+  ],
+  "rc4_steps": [
+    {
+      "epoch": 1,
+      "loss": 4.443976402282715,
+      "finite": true,
+      "feature_anchor": 0.0
+    },
+    {
+      "epoch": 21,
+      "loss": 4.1740593910217285,
+      "finite": true,
+      "feature_anchor": 0.0
+    },
+    {
+      "epoch": 61,
+      "loss": 3.639981746673584,
+      "finite": true,
+      "feature_anchor": 0.0
+    },
+    {
+      "epoch": 161,
+      "loss": 3.2163939476013184,
+      "finite": true,
+      "feature_anchor": 0.0
+    }
+  ],
+  "teacher_timing_ms": {
+    "legacy_ampFalse_b512_ms": 27.04013333035012,
+    "identity_sequential_ampFalse_b512_ms": 8.394066671219965,
+    "legacy_ampTrue_b512_ms": 29.10716664822151,
+    "identity_sequential_ampTrue_b512_ms": 10.15903331184139
+  },
+  "timing_scope": "teacher only; end-to-end improvement requires training measurements"
+}
