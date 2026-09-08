@@ -54,3 +54,7 @@ E200后复用已经验证的`target_inputs`无标签包。复用提交`0cc19956`
 实际launch_config读回逐项一致：seed392005、lite_d、equalized=1、receiver/day、L/U/V比例及baseline/teacher checkpoint。两个日志均确认指定权重路径与L/U/V=6300/56700/27000。发布快照GPU4约1966MiB、利用率39%；GPU5约2034MiB、利用率44%。其他GPU0进程保持运行，旧GPU3已释放。
 
 实际checkpoint GPU检查PASS：FP32/AMP逐视图教师z_id/logits最大差均为0，E1/E21/E161执行更新检查通过。见[GPU检查](../analysis/a1_selected_checkpoint_gpu_execution.json)。验证包含71项相关测试通过，随后新增评估重建测试所在12项聚焦测试通过；定点独立审查关闭参数兼容及评估新头重建问题。当前仅证明正确启动，尚无本轮E200性能或总加速结论。
+
+## 2026-09-09测试闭合与协议状态更新
+
+两行E200和672000条/行四场景prediction/score已完成，独立复算一致。LEO均值分别67.6333%和67.6740%。依据新checkpoint输入权限规则，旧args/split_info一致不能替代实际物理ID与完整祖先证明；来源暂为CHECKPOINT_PROVENANCE_UNVERIFIED，结果为PROTOCOL_VALIDITY_UNVERIFIED，不进入干净泛化或晋级结论。保留历史产物，本次不重新加载旧权重。详见[A1测试状态](A1_TEST_STATUS_20260909.md)及其机器可读附件。

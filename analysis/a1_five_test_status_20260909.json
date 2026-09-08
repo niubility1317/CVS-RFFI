@@ -1,0 +1,257 @@
+{
+  "state": {
+    "status": "AWAITING_ARTIFACT_ANALYSIS",
+    "pid": 3823003,
+    "release": "/home/szu2070436088/2510044040/CV-SincNet/releases/a1_fast_selected_c53cabea",
+    "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_fcr_r1r8_s392005_equalized_20260903_v4/ADV3B02/ADV3B02_CORE90_SOFT_E200/final_ssdg.pth",
+    "seed": 392005,
+    "rows": {
+      "A1_REFERENCE": {
+        "status": "SCORED_PENDING_ANALYSIS",
+        "pid": 3823617,
+        "gpu": 4,
+        "exit": 0
+      },
+      "A1_FAST_SEQUENTIAL": {
+        "status": "SCORED_PENDING_ANALYSIS",
+        "pid": 3823622,
+        "gpu": 5,
+        "exit": 0
+      }
+    },
+    "dataset_config": {
+      "seed": 392005,
+      "model_variant": "lite_d",
+      "model_size": "M",
+      "representation_mode": "dual",
+      "wisig_equalized": "1",
+      "wisig_train_rxs": "1,3,4,6,8",
+      "wisig_test_rxs": "0,2,5,7,9,10,11",
+      "wisig_train_days": "1,2,3",
+      "wisig_test_days": "0,1,2,3",
+      "num_classes": 6,
+      "wisig_out_len": 256,
+      "split_mode": "tx_rx_day_1_7_2",
+      "labeled_ratio": 0.07,
+      "unlabeled_ratio": 0.63,
+      "source_val_ratio": 0.3
+    }
+  },
+  "rows": {
+    "A1_REFERENCE": {
+      "status": "ARTIFACTS_COMPLETE_SCORE_VERIFIED",
+      "protocol_validity": "PROTOCOL_VALIDITY_UNVERIFIED",
+      "score": {
+        "metrics": {
+          "clean": {
+            "accuracy": 0.7673392857142857,
+            "correct": 128913,
+            "per_class_accuracy": {
+              "0": 0.9249642857142857,
+              "1": 0.42992857142857144,
+              "2": 0.6961071428571428,
+              "3": 0.68225,
+              "4": 0.9951785714285715,
+              "5": 0.8756071428571428
+            },
+            "total": 168000
+          },
+          "leo_clear_weak": {
+            "accuracy": 0.6888988095238096,
+            "correct": 115735,
+            "per_class_accuracy": {
+              "0": 0.8178928571428571,
+              "1": 0.3409285714285714,
+              "2": 0.5965357142857143,
+              "3": 0.6041428571428571,
+              "4": 0.9593928571428572,
+              "5": 0.8145
+            },
+            "total": 168000
+          },
+          "leo_low_elev_weak": {
+            "accuracy": 0.669327380952381,
+            "correct": 112447,
+            "per_class_accuracy": {
+              "0": 0.7913928571428571,
+              "1": 0.32825,
+              "2": 0.5616785714285715,
+              "3": 0.573,
+              "4": 0.9423214285714285,
+              "5": 0.8193214285714285
+            },
+            "total": 168000
+          },
+          "leo_rain_weak": {
+            "accuracy": 0.6707738095238095,
+            "correct": 112690,
+            "per_class_accuracy": {
+              "0": 0.7976428571428571,
+              "1": 0.3414285714285714,
+              "2": 0.5554642857142857,
+              "3": 0.5586071428571429,
+              "4": 0.9369285714285714,
+              "5": 0.8345714285714285
+            },
+            "total": 168000
+          }
+        },
+        "prediction_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/a1_fast_selected_adv3b02_s392005_20260908_r1/A1_REFERENCE/target_prediction/predictions.json",
+        "record_count": 672000,
+        "schema": "cvs.phase1.truth_last_score.v1",
+        "truth_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_fcr_r1r8_s392005_equalized_20260903_v4/target_truth/truth_sidecar.json"
+      },
+      "prediction_counts": {
+        "clean": 168000,
+        "leo_clear_weak": 168000,
+        "leo_low_elev_weak": 168000,
+        "leo_rain_weak": 168000
+      },
+      "independent_rescore_matches": true,
+      "artifact_stats": {
+        "final_ssdg.pth": {
+          "bytes": 16024296,
+          "mtime": 1788884996.906469
+        },
+        "predictions.json": {
+          "bytes": 177576228,
+          "mtime": 1788885033.2794716
+        },
+        "score.json": {
+          "bytes": 1764,
+          "mtime": 1788885036.560472
+        }
+      },
+      "leo_mean": 0.6763333333333333
+    },
+    "A1_FAST_SEQUENTIAL": {
+      "status": "ARTIFACTS_COMPLETE_SCORE_VERIFIED",
+      "protocol_validity": "PROTOCOL_VALIDITY_UNVERIFIED",
+      "score": {
+        "metrics": {
+          "clean": {
+            "accuracy": 0.7662142857142857,
+            "correct": 128724,
+            "per_class_accuracy": {
+              "0": 0.9216785714285715,
+              "1": 0.4257142857142857,
+              "2": 0.6953214285714285,
+              "3": 0.6829642857142857,
+              "4": 0.9959642857142857,
+              "5": 0.8756428571428572
+            },
+            "total": 168000
+          },
+          "leo_clear_weak": {
+            "accuracy": 0.689202380952381,
+            "correct": 115786,
+            "per_class_accuracy": {
+              "0": 0.826,
+              "1": 0.3335,
+              "2": 0.6049285714285715,
+              "3": 0.6046071428571429,
+              "4": 0.9606071428571429,
+              "5": 0.8055714285714286
+            },
+            "total": 168000
+          },
+          "leo_low_elev_weak": {
+            "accuracy": 0.669345238095238,
+            "correct": 112450,
+            "per_class_accuracy": {
+              "0": 0.7975,
+              "1": 0.32242857142857145,
+              "2": 0.5692857142857143,
+              "3": 0.57225,
+              "4": 0.9430714285714286,
+              "5": 0.8115357142857142
+            },
+            "total": 168000
+          },
+          "leo_rain_weak": {
+            "accuracy": 0.6716726190476191,
+            "correct": 112841,
+            "per_class_accuracy": {
+              "0": 0.8051785714285714,
+              "1": 0.33517857142857144,
+              "2": 0.5647142857142857,
+              "3": 0.5581428571428572,
+              "4": 0.9403928571428571,
+              "5": 0.8264285714285714
+            },
+            "total": 168000
+          }
+        },
+        "prediction_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/a1_fast_selected_adv3b02_s392005_20260908_r1/A1_FAST_SEQUENTIAL/target_prediction/predictions.json",
+        "record_count": 672000,
+        "schema": "cvs.phase1.truth_last_score.v1",
+        "truth_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_fcr_r1r8_s392005_equalized_20260903_v4/target_truth/truth_sidecar.json"
+      },
+      "prediction_counts": {
+        "clean": 168000,
+        "leo_clear_weak": 168000,
+        "leo_low_elev_weak": 168000,
+        "leo_rain_weak": 168000
+      },
+      "independent_rescore_matches": true,
+      "artifact_stats": {
+        "final_ssdg.pth": {
+          "bytes": 16024296,
+          "mtime": 1788883570.7733681
+        },
+        "predictions.json": {
+          "bytes": 181608234,
+          "mtime": 1788885070.3344743
+        },
+        "score.json": {
+          "bytes": 1769,
+          "mtime": 1788885073.6814744
+        }
+      },
+      "leo_mean": 0.6767400793650794
+    }
+  },
+  "r3": {
+    "state": {
+      "status": "SCRATCH_RUNNING",
+      "pid": 3850390,
+      "release": "/home/szu2070436088/2510044040/CV-SincNet/releases/a1_r3_scratch_9b16413e",
+      "checkpoint": null,
+      "seed": 392005,
+      "rows": {
+        "R3_STRUCTURE_CONTROL": {
+          "status": "RUNNING",
+          "pid": 3850661,
+          "gpu": 1
+        },
+        "R3_REFERENCE": {
+          "status": "RUNNING",
+          "pid": 3850666,
+          "gpu": 2
+        },
+        "R3_FAST_SEQUENTIAL": {
+          "status": "RUNNING",
+          "pid": 3850671,
+          "gpu": 3
+        }
+      },
+      "initialization": "random_no_checkpoint"
+    },
+    "dispatcher_alive": true,
+    "existing_e200_prediction_score_dispatch_verified": true,
+    "rows": {
+      "R3_STRUCTURE_CONTROL": {
+        "epoch": 177,
+        "latest_seconds": 270.91703939437866
+      },
+      "R3_REFERENCE": {
+        "epoch": 182,
+        "latest_seconds": 262.2641382217407
+      },
+      "R3_FAST_SEQUENTIAL": {
+        "epoch": 183,
+        "latest_seconds": 265.21082186698914
+      }
+    }
+  }
+}
