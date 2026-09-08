@@ -1,0 +1,35 @@
+{
+  "run_id": "phase1_ecrs_completed_target_test_20260908_r1",
+  "scope": "Phase1 closed-set target test; no target selection or optimization",
+  "wisig_pkl": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+  "receiver_ids": [0, 2, 5, 7, 9, 10, 11],
+  "day_ids": [0, 1, 2, 3],
+  "tx_ids": [0, 1, 2, 3, 4, 5],
+  "equalized": 1,
+  "count_per_scenario": 168000,
+  "scenarios": ["clean", "leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak"],
+  "batch_size": 256,
+  "sat_seed": 2027,
+  "scenario_seed_stride": 1009,
+  "declared_decision_path": "raw",
+  "rows": [
+    {
+      "row": "B0",
+      "selected_epoch": 199,
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_ecrs_v1r_firstbatch_s392005_e200_20260908_r1/B0/best.pth",
+      "source_result": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_ecrs_v1r_firstbatch_s392005_e200_20260908_r1/B0/ecrs_source_screen_result.json"
+    },
+    {
+      "row": "B3c",
+      "selected_epoch": 195,
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_ecrs_v2_bridge_s392005_e200_20260908_r2/B3c/best.pth",
+      "source_result": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_ecrs_v2_bridge_s392005_e200_20260908_r2/B3c/ecrs_source_screen_result.json"
+    },
+    {
+      "row": "B4",
+      "selected_epoch": 195,
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_ecrs_v2_bridge_s392005_e200_20260908_r2/B4/best.pth",
+      "source_result": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_ecrs_v2_bridge_s392005_e200_20260908_r2/B4/ecrs_source_screen_result.json"
+    }
+  ]
+}
