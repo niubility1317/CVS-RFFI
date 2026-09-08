@@ -87,8 +87,12 @@ def main(root):
         values = [r['leo_equal_scene_mean'] for r in items]
         groups.append({'method': family, 'completed_seeds': len(items),
                        'clean_mean': statistics.mean(r['clean'] for r in items),
+                       'clean_seed_sample_std': statistics.stdev(r['clean'] for r in items) if len(items) > 1 else None,
                        'leo_mean': statistics.mean(values),
                        'leo_seed_sample_std': statistics.stdev(values) if len(values) > 1 else None,
+                       'train_hours_mean': statistics.mean(r['train_hours'] for r in items),
+                       'train_peak_allocated_gib_mean': statistics.mean(r['train_peak_allocated_gib'] for r in items),
+                       'worst_leo_receiver_acc_mean': statistics.mean(r['worst_leo_receiver_acc'] for r in items),
                        'paired_leo_mean_delta_pp': statistics.mean(r['leo_mean_delta_pp'] for r in paired) if paired else 0.0,
                        'paired_clean_mean_delta_pp': statistics.mean(r['clean_delta_pp'] for r in paired) if paired else 0.0})
     csv_file(root / 'method_summary.csv', groups)
@@ -116,10 +120,10 @@ def main(root):
     for r in summary:
         lines.append(f'|{r["row_id"]}|{r["clean"]:.4f}%|{r[SCENES[0]]:.4f}%|{r[SCENES[1]]:.4f}%|{r[SCENES[2]]:.4f}%|{r["leo_equal_scene_mean"]:.4f}%|')
     lines += ['', '## 方法组汇总', '', '均值仅覆盖本轮已完成seed；标准差是seed间样本标准差，单seed不计算。配对差值按每行对应同seed的MATCHED_ZERO计算，不混用全体对照均值。B_SAFE另有EMA版本混杂，禁止作为纯机制收益。', '',
-              '|方法|已完成seed数|Clean均值|LEO均值|LEO seed标准差|配对LEO差值/百分点|', '|---|---:|---:|---:|---:|---:|']
+              '|方法|已完成seed数|Clean均值|LEO均值|LEO seed标准差|配对LEO差值/百分点|平均训练小时|', '|---|---:|---:|---:|---:|---:|---:|']
     for g in groups:
         sd = '—' if g['leo_seed_sample_std'] is None else f'{g["leo_seed_sample_std"]:.4f}'
-        lines.append(f'|{g["method"]}|{g["completed_seeds"]}|{g["clean_mean"]:.4f}%|{g["leo_mean"]:.4f}%|{sd}|{g["paired_leo_mean_delta_pp"]:+.4f}|')
+        lines.append(f'|{g["method"]}|{g["completed_seeds"]}|{g["clean_mean"]:.4f}%|{g["leo_mean"]:.4f}%|{sd}|{g["paired_leo_mean_delta_pp"]:+.4f}|{g["train_hours_mean"]:.3f}|')
     lines += ['', '## 同seed相对MATCHED_ZERO的差值', '', '|行|Clean差值/百分点|LEO均值差值/百分点|', '|---|---:|---:|']
     for r in deltas:
         lines.append(f'|{r["row_id"]}|{r["clean_delta_pp"]:+.4f}|{r["leo_mean_delta_pp"]:+.4f}|')

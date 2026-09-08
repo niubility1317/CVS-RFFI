@@ -1,0 +1,31 @@
+{
+  "n": 168000,
+  "num_classes": 6,
+  "class_id_to_tx": [
+    "14-10",
+    "14-7",
+    "20-15",
+    "20-19",
+    "6-15",
+    "8-20"
+  ],
+  "source_receivers": "1,3,4,6,8",
+  "target_receivers": "0,2,5,7,9,10,11",
+  "source_days": "1,2,3",
+  "target_days": "0,1,2,3",
+  "loader": "test_all_day_unseen_rx",
+  "scenes": [
+    "leo_clear_weak",
+    "leo_low_elev_weak",
+    "leo_rain_weak"
+  ],
+  "scene_counts": [
+    56164,
+    56095,
+    55741
+  ],
+  "observation": "one immutable LEO received observation per physical sample; clean diagnostic control",
+  "scene_assignment": "opaque physical ID digest modulo 3; independent of class and model",
+  "sat_seed": 2027,
+  "batch_size": 256
+}
