@@ -48,10 +48,10 @@
 |EX3|规范8|复用已有forward，O(B²)配对，FP32稳定计算|helper/训练入口|verified|helper不接收模型、不新建forward；CPU/CUDA/AMP验证；整体耗时待正式训练|
 |EX4|规范2.1、5|空合法集合、U隐藏标签、跳过LEO语义|helper/入口|verified|无效标签、缺metadata、空集断图和副本排除通过|
 |EX5|用户明确要求|无历史checkpoint、单因素，资源上限由EX10覆盖|runner/报告|verified|八行真实parser与随机模型/heads/RNG一致|
-|EX6|规范9|记录configured/executed/count/gradient/成功更新|训练日志|implemented|源码接线和实际入口非零梯度通过，正式日志在run报告追加|
+|EX6|规范9|记录configured/executed/count/gradient/成功更新|训练日志|verified|八行完成首轮；X1—X7有正式非零身份梯度/weighted loss，日志字段见run报告|
 |EX7|规范3、4、7|物理估计/复杂锚点/固定融合|本轮不实现|deferred|增加求解与推理成本，互补性未证明；不在加速主线中整树合并|
 |EX8|用户追加/规范6|固定batch128的TX/RX-day结构化采样|既有sampler/新矩阵|verified|真实subset取值，合成完整90格点、每批128合法anchor；运行guard阻止缺格点空转|
 |EX9|用户追加/QB3设计|有界域混淆与梯度隔离|既有bounded_domain_confusion/入口|verified|7项边界/梯度测试、L/U实际权重核对、X7主入口通过|
-|EX10|用户追加|每卡两个训练、8行预登记组合|runner/报告|implemented|容量检测及detach参数/防重派测试通过，remote读回待run报告追加|
+|EX10|用户追加|每卡两个训练、8行预登记组合|runner/报告|verified|8卡各2个PID；新8行实际argv/CWD/PPID/GPU/scratch划分与日志增长均独立核验|
 
 本轮只检验新适配是否有效，不能预先称为已有效创新。最终按同row clean、三LEO、弱RX、耗时、显存和跳步报告；单seed不晋级默认。最终prediction固定后独立评分，不反馈调参或重跑。

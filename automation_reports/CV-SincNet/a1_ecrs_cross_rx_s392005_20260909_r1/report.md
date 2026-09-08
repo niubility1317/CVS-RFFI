@@ -52,3 +52,28 @@ X5/X7保持batch128但改变L采样轨迹；采样器直接检查各TX/domain ce
 每行E200后只加载本行`final_ssdg.pth`，复用已验证opaque目标输入包。prediction完成后由独立scorer连接truth，clean及三个LEO weak场景完整才标记ARTIFACTS_COMPLETE。source日志记录新损失raw/weighted、合法anchor、实际LEO数量、身份梯度诊断与成功更新次数。单seed结果仅描述同row性能、弱RX、耗时、显存和稳定性，不晋级默认、不从target回流调参/重跑/候选重排。
 
 低性能不停止。仅所属run发生协议越界、错split/stage/release、输出碰撞、无法执行、prediction或scorer无法合法闭合等技术故障时按预登记边界处理；保留所有产物，禁止影响其他任务。
+
+## N607启动及首轮核验：RUNNING/VERIFIED
+
+代码commit`def66f05eb87601c48441b156204a6263027e3eb`已push并独立核对远端OID。release=`releases/a1_ecrs_def66f05`，本地/远端归档SHA256一致：`0bd44828c2ecf8e9e8429b64cf498c6e53cc0be8a0d70a2970bde9caa4c64eb6`。远端编译及完整fresh/source-only执行检查PASS，实际组合入口完成4次成功更新后按测试约定退出，无checkpoint/target输入。
+
+dispatcher PID4187454。独立读取`/proc`核对新八行PID、父PID、实际argv、CWD及`CUDA_VISIBLE_DEVICES`，与预登记一致；八卡实际compute PID数各为2，总16个，旧8项均保留。
+
+|行|GPU|训练PID|首轮状态|跨RX weighted loss|身份梯度探针范数|
+|---|---:|---:|---|---:|---:|
+|X0_A1_RUNTIME|0|4187605|E1完成|关闭|N/A|
+|X1_CROSS_RX_CLEAN|1|4187610|E1完成|0.01007015|0.00047777|
+|X2_CROSS_RX_VIEWS|2|4187615|E1完成|0.01007003|0.00047778|
+|X3_WARM_EMA|3|4187620|E1完成|0.01006976|0.00047777|
+|X4_COVERAGE_KL|4|4187625|E1完成|0.01006988|0.00047778|
+|X5_BALANCED_L|5|4187693|E1完成|0.01005605|0.00036892|
+|X6_BOUNDED_DOMAIN|6|4187761|E1完成|0.01004057|0.00047778|
+|X7_COMBINED|7|4187834|E1完成|0.01006067|0.00036891|
+
+上述为服务器2026-09-09 02:10左右读回。八行均`init=scratch`，实际L/U/V=6300/56700/27000；首轮成功更新率99.5495%，loss非有限跳步为0，gradient跳步比例0.45045%，首批AMP异常诊断已保留。不宣称“全程无跳步”。此后健康训练继续，不因初期指标停止或改参。
+
+X5/X7实际检查到90个非空L cell、6TX、15RX/day、batch128，首轮每批128个合法anchor；其余启用行平均约127.941个。X3/X7首轮EMA有效decay均值约0.971053，其他行0.99，启动平均实际改变教师更新。成功步计数在epoch日志中经过均值归约，110.5不是epoch末的更新次数，不作错误解读。
+
+E1尚未执行单独LEO学生前向，所以所有行`leo_count=0`符合固定课程。LEO视图约束的正式激活证据须等待该路径实际启用；当前只证明clean跨RX已进入身份梯度，不把配置开关等同于后续课程完成。coverage蒸馏的实际非零贡献同样须在其原DAOT课程展开后分析。
+
+首轮log均从启动输出增长为完整epoch记录。完整证据：`analysis/a1_ecrs_remote_startup.json`、`analysis/a1_ecrs_remote_first_epoch.json`；包含原始实际参数、进程、GPU、运行检查和机制字段。最高剩余科学风险仍是准确率及综合资源收益未证实。追溯9项verified、1项deferred（物理响应/融合）、0项blocked；这是有明确范围的ECRS判别适配，非完整物理响应设计复现。

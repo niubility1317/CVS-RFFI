@@ -21,7 +21,7 @@ result={'captured_utc':datetime.now(timezone.utc).isoformat(),'pipeline':state,
         'matrix':read_json(root/'effective_matrix.json'),'rows':{},
         'gpu':subprocess.check_output(['nvidia-smi','--query-gpu=index,uuid,utilization.gpu,memory.used','--format=csv,noheader,nounits'],text=True),
         'compute':subprocess.check_output(['nvidia-smi','--query-compute-apps=gpu_uuid,pid,used_memory','--format=csv,noheader,nounits'],text=True),
-        'cuda_execution':read_json(logs/'scratch_execution.json')}
+        'cuda_execution':read_json(logs/'execution_check.json') or read_json(logs/'scratch_execution.json')}
 for name,entry in state['rows'].items():
     folder=root/name; pid=int(entry['pid']); proc=Path('/proc')/str(pid)
     log=logs/(name+'.train.log')
@@ -30,13 +30,20 @@ for name,entry in state['rows'].items():
          'process':read_json(folder/'process.json'),'launch_config':read_json(folder/'launch_config.json'),
          'initialization':[line for line in lines if line.startswith('[SSDG-TRAIN]')],
          'log_tail':lines[-8:],'metrics_rows':0}
+    if proc.exists():
+        row['actual_argv']=(proc/'cmdline').read_bytes().decode().strip('\0').split('\0')
+        row['parent_pid']=int(next(line.split(':',1)[1].strip() for line in (proc/'status').read_text().splitlines() if line.startswith('PPid:')))
+        environment=dict(part.split('=',1) for part in (proc/'environ').read_bytes().decode().split('\0') if '=' in part)
+        row['cuda_visible_devices']=environment.get('CUDA_VISIBLE_DEVICES')
+    row['log_bytes']=log.stat().st_size if log.exists() else 0
+    row['ecrs_batch']=[line for line in lines if line.startswith('[ECRS-BATCH]')]
     metrics=folder/'metrics_epoch.csv'
     if metrics.is_file():
         records=list(csv.DictReader(metrics.open()))
         row['metrics_rows']=len(records)
         if records:
             row['latest_metrics']={k:v for k,v in records[-1].items() if
-                'r3_' in k or 'nonfinite' in k or 'optimizer_step' in k or k in ('epoch','train_loss','epoch_time_s')}
+                'r3_' in k or 'a1_' in k or 'ecrs_' in k or 'nonfinite' in k or 'optimizer_step' in k or k in ('epoch','train_loss','epoch_time_s')}
             row['latest_nan_keys']=[k for k,v in records[-1].items() if str(v).lower() in ('nan','inf','-inf')]
     anomaly=folder/'first_rc4_anomaly.pt'
     if anomaly.is_file():
