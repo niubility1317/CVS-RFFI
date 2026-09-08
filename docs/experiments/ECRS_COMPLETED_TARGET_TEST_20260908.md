@@ -1,6 +1,6 @@
 # 已完成ECRS候选的冻结target测试
 
-run_id：`phase1_ecrs_completed_target_test_20260908_r1`。状态：`LOCAL_VERIFIED`，发布后追加运行/结果证据。
+run_id：`phase1_ecrs_completed_target_test_20260908_r1`。状态：`TARGET_TEST_COMPLETE / VERIFIED`。3组四场景共2016000条预测和独立评分已完成，详见[完整结果报告](ECRS_FULL_RESULTS_20260908.md)。
 用户在询问完整实验数据后，明确要求“跑完的进行测试”。本次仅测试已完成的B0、B3c、B4，不训练、不适配、不重选checkpoint。
 
 ## 固定输入与声明
@@ -9,7 +9,7 @@ run_id：`phase1_ecrs_completed_target_test_20260908_r1`。状态：`LOCAL_VERIF
 
 这是Phase1已见TX闭集target检验：ManySig equalized=1，TX0—5，RX0/2/5/7/9/10/11，day0—3，每场景168000个物理样本。固定clean及三个LEO_WEAK场景；raw为预先声明的决策路径，response/fused仅作分路径诊断，不事后切换最优头。该测试不声明new/unknown、Stage2适配或真实在轨性能。
 
-单一target索引内physical_sample_id为sample:k，三行/四场景复用完全相同索引；不与source同名sample:k连接。预处理固定center crop到256、RMS normalize、不减均值。每个LEO场景的GPU generator种子为2027+scenario_index×1009，三行一致，batch=256、shuffle=False；这是本次统一target评估流，不声称与历史named-loader子集的逐样本LEO扰动完全一致。
+单一target索引内physical_sample_id为sample:k，三行/四场景复用完全相同索引；不与source同名sample:k连接。预处理固定center crop到256、RMS normalize、不减均值。LEO clear/low_elev/rain场景的GPU generator种子分别为2027/3036/4045，三行一致，batch=256、shuffle=False；这是本次统一target评估流，不声称与历史named-loader子集的逐样本LEO扰动完全一致。
 
 ## 执行与安全边界
 
@@ -17,7 +17,7 @@ run_id：`phase1_ecrs_completed_target_test_20260908_r1`。状态：`LOCAL_VERIF
 
 输出：项目根`runs/phase1_ecrs_completed_target_test_20260908_r1`，包含frozen_manifest、target_truth、三行四场景无truth JSONL、prediction_resources、独立target_test_summary。logs根同run_id保存stdout/PID。输出目录独占创建，保留partial，不覆盖已有结果、不自动重跑。预测与truth文件分开；不存在任何target结果→训练/选模调用路径。
 
-Python：`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`。CWD：本次独立release根。使用GPU2做单进程顺序推理，训练/适配任务不停止或迁移；本任务没有optimizer，不增加每卡训练实验数。当前显存可容纳推理，仍需启动读回验证实际PID/GPU/日志。不得把共享负载下耗时当独占GPU基准。
+Python：`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`。CWD：本次独立release根。使用GPU2做单进程顺序推理，训练/适配任务不停止或迁移；本任务没有optimizer，不增加每卡训练实验数。实际启动PID3750265、GPU2与release CWD已读回验证；三组真实checkpoint严格重载检查均通过。不得把共享负载下耗时当独占GPU基准。
 
 ```text
 CUDA_VISIBLE_DEVICES=2 <python> -u <release>/code/scripts/eval_ecrs_completed_target_20260908.py predict --manifest <release>/docs/experiments/ECRS_COMPLETED_TARGET_TEST_20260908.json --output <project>/runs/phase1_ecrs_completed_target_test_20260908_r1 --device cuda:0

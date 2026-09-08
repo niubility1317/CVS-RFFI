@@ -1,0 +1,704 @@
+{
+  "rows": [
+    {
+      "row": "B0",
+      "run": "phase1_ecrs_v1r_firstbatch_s392005_e200_20260908_r1",
+      "status": "SOURCE_SCREEN_COMPLETE",
+      "epoch": 200,
+      "best_epoch": 199,
+      "best_source_leo_mean": 74.19876543209877,
+      "latest_source_leo_mean": 74.18395061728394,
+      "latest_source_epoch": 200,
+      "latest_train_loss": 8.825858062627365,
+      "latest_train_tx_acc": 83.97640306122449,
+      "train_hours": 0.8630830048191517,
+      "epoch_hours": 0.9758374181912384,
+      "recent_epoch_seconds_median": 20.533672485500574,
+      "recent_epoch_seconds_mean": 22.713750488311053,
+      "eta_hours_at_recent_speed": 0.0,
+      "skipped_batches": 15,
+      "unsafe_warning_count": 15,
+      "tracebacks": 0,
+      "activation": {}
+    },
+    {
+      "row": "B2",
+      "run": "phase1_ecrs_v1r_firstbatch_s392005_e200_20260908_r1",
+      "status": "RUNNING",
+      "epoch": 62,
+      "best_epoch": 55,
+      "best_source_leo_mean": 52.150617283950616,
+      "latest_source_leo_mean": 50.727160493827164,
+      "latest_source_epoch": 60,
+      "latest_train_loss": 7.147971990157147,
+      "latest_train_tx_acc": 71.7952806122449,
+      "train_hours": 7.137166402354681,
+      "epoch_hours": 8.728655561451903,
+      "recent_epoch_seconds_median": 781.838353194762,
+      "recent_epoch_seconds_mean": 857.5160870247055,
+      "eta_hours_at_recent_speed": 32.87145000261371,
+      "skipped_batches": 6,
+      "unsafe_warning_count": 7,
+      "tracebacks": 0,
+      "activation": {
+        "resp_ce": {
+          "executed_valid_batches": 0,
+          "successful_valid_batches": 0,
+          "valid_sample_views": 0,
+          "first_epoch": null,
+          "nonzero_weighted_batches": 0
+        },
+        "cross_rx": {
+          "executed_valid_batches": 0,
+          "successful_valid_batches": 0,
+          "valid_sample_views": 0,
+          "first_epoch": null,
+          "nonzero_weighted_batches": 0
+        },
+        "u_pair": {
+          "executed_valid_batches": 0,
+          "successful_valid_batches": 0,
+          "valid_sample_views": 0,
+          "first_epoch": null,
+          "nonzero_weighted_batches": 0
+        },
+        "fused_ce": {
+          "executed_valid_batches": 0,
+          "successful_valid_batches": 0,
+          "valid_sample_views": 0,
+          "first_epoch": null,
+          "nonzero_weighted_batches": 0
+        },
+        "total_batches": 3069,
+        "successful_steps": 3062,
+        "ema_updates": 0
+      }
+    },
+    {
+      "row": "B2-V1",
+      "run": "phase1_ecrs_v1r_firstbatch_s392005_e200_20260908_r1",
+      "status": "RUNNING",
+      "epoch": 64,
+      "best_epoch": 55,
+      "best_source_leo_mean": 52.42962962962963,
+      "latest_source_leo_mean": 51.586419753086425,
+      "latest_source_epoch": 60,
+      "latest_train_loss": 7.0598355458707225,
+      "latest_train_tx_acc": 74.18686224489795,
+      "train_hours": 7.187395609101384,
+      "epoch_hours": 8.730241354974245,
+      "recent_epoch_seconds_median": 783.6246999513824,
+      "recent_epoch_seconds_mean": 857.803899301635,
+      "eta_hours_at_recent_speed": 32.40592508472844,
+      "skipped_batches": 9,
+      "unsafe_warning_count": 10,
+      "tracebacks": 0,
+      "activation": {}
+    },
+    {
+      "row": "B3a",
+      "run": "phase1_ecrs_v2_bridge_s392005_e200_20260908_r2",
+      "status": "RUNNING",
+      "epoch": 118,
+      "best_epoch": 115,
+      "best_source_leo_mean": 69.72962962962964,
+      "latest_source_leo_mean": 69.72962962962964,
+      "latest_source_epoch": 115,
+      "latest_train_loss": 8.869196317633804,
+      "latest_train_tx_acc": 85.41135204081633,
+      "train_hours": 4.735729434328257,
+      "epoch_hours": 8.23805134373523,
+      "recent_epoch_seconds_median": 154.63624905445613,
+      "recent_epoch_seconds_mean": 238.10786381228826,
+      "eta_hours_at_recent_speed": 5.423568009057677,
+      "skipped_batches": 8,
+      "unsafe_warning_count": 8,
+      "tracebacks": 0,
+      "activation": {
+        "resp_ce": {
+          "executed_valid_batches": 5798,
+          "successful_valid_batches": 5790,
+          "valid_sample_views": 1484288,
+          "first_epoch": 1,
+          "nonzero_weighted_batches": 5798
+        },
+        "cross_rx": {
+          "executed_valid_batches": 0,
+          "successful_valid_batches": 0,
+          "valid_sample_views": 0,
+          "first_epoch": null,
+          "nonzero_weighted_batches": 0
+        },
+        "u_pair": {
+          "executed_valid_batches": 0,
+          "successful_valid_batches": 0,
+          "valid_sample_views": 0,
+          "first_epoch": null,
+          "nonzero_weighted_batches": 0
+        },
+        "fused_ce": {
+          "executed_valid_batches": 0,
+          "successful_valid_batches": 0,
+          "valid_sample_views": 0,
+          "first_epoch": null,
+          "nonzero_weighted_batches": 0
+        },
+        "total_batches": 5798,
+        "successful_steps": 5790,
+        "ema_updates": 5790
+      }
+    },
+    {
+      "row": "B3b",
+      "run": "phase1_ecrs_v2_bridge_s392005_e200_20260908_r2",
+      "status": "RUNNING",
+      "epoch": 111,
+      "best_epoch": 105,
+      "best_source_leo_mean": 66.72839506172839,
+      "latest_source_leo_mean": 65.93827160493827,
+      "latest_source_epoch": 110,
+      "latest_train_loss": 9.765186703934962,
+      "latest_train_tx_acc": 82.42984693877551,
+      "train_hours": 4.464411858915765,
+      "epoch_hours": 7.883496371309739,
+      "recent_epoch_seconds_median": 152.6549416182097,
+      "recent_epoch_seconds_mean": 238.01548881246708,
+      "eta_hours_at_recent_speed": 5.8842718067526585,
+      "skipped_batches": 9,
+      "unsafe_warning_count": 9,
+      "tracebacks": 0,
+      "activation": {
+        "resp_ce": {
+          "executed_valid_batches": 5439,
+          "successful_valid_batches": 5430,
+          "valid_sample_views": 1392384,
+          "first_epoch": 1,
+          "nonzero_weighted_batches": 5439
+        },
+        "cross_rx": {
+          "executed_valid_batches": 0,
+          "successful_valid_batches": 0,
+          "valid_sample_views": 0,
+          "first_epoch": null,
+          "nonzero_weighted_batches": 0
+        },
+        "u_pair": {
+          "executed_valid_batches": 0,
+          "successful_valid_batches": 0,
+          "valid_sample_views": 0,
+          "first_epoch": null,
+          "nonzero_weighted_batches": 0
+        },
+        "fused_ce": {
+          "executed_valid_batches": 0,
+          "successful_valid_batches": 0,
+          "valid_sample_views": 0,
+          "first_epoch": null,
+          "nonzero_weighted_batches": 0
+        },
+        "total_batches": 5439,
+        "successful_steps": 5430,
+        "ema_updates": 5430
+      }
+    },
+    {
+      "row": "B3c",
+      "run": "phase1_ecrs_v2_bridge_s392005_e200_20260908_r2",
+      "status": "SOURCE_SCREEN_COMPLETE",
+      "epoch": 200,
+      "best_epoch": 195,
+      "best_source_leo_mean": 73.93456790123457,
+      "latest_source_leo_mean": 73.89876543209876,
+      "latest_source_epoch": 200,
+      "latest_train_loss": 9.073211275801366,
+      "latest_train_tx_acc": 84.1358418367347,
+      "train_hours": 2.302621288290635,
+      "epoch_hours": 3.333860208782393,
+      "recent_epoch_seconds_median": 43.32028361293487,
+      "recent_epoch_seconds_mean": 67.02070246003568,
+      "eta_hours_at_recent_speed": 0.0,
+      "skipped_batches": 12,
+      "unsafe_warning_count": 12,
+      "tracebacks": 0,
+      "activation": {
+        "resp_ce": {
+          "executed_valid_batches": 9800,
+          "successful_valid_batches": 9788,
+          "valid_sample_views": 2508800,
+          "first_epoch": 1,
+          "nonzero_weighted_batches": 9800
+        },
+        "cross_rx": {
+          "executed_valid_batches": 0,
+          "successful_valid_batches": 0,
+          "valid_sample_views": 0,
+          "first_epoch": null,
+          "nonzero_weighted_batches": 0
+        },
+        "u_pair": {
+          "executed_valid_batches": 0,
+          "successful_valid_batches": 0,
+          "valid_sample_views": 0,
+          "first_epoch": null,
+          "nonzero_weighted_batches": 0
+        },
+        "fused_ce": {
+          "executed_valid_batches": 0,
+          "successful_valid_batches": 0,
+          "valid_sample_views": 0,
+          "first_epoch": null,
+          "nonzero_weighted_batches": 0
+        },
+        "total_batches": 9800,
+        "successful_steps": 9788,
+        "ema_updates": 9788
+      }
+    },
+    {
+      "row": "B4",
+      "run": "phase1_ecrs_v2_bridge_s392005_e200_20260908_r2",
+      "status": "SOURCE_SCREEN_COMPLETE",
+      "epoch": 200,
+      "best_epoch": 195,
+      "best_source_leo_mean": 74.41851851851852,
+      "latest_source_leo_mean": 74.34814814814814,
+      "latest_source_epoch": 200,
+      "latest_train_loss": 9.018274346176458,
+      "latest_train_tx_acc": 83.75318877551021,
+      "train_hours": 2.369211488486552,
+      "epoch_hours": 3.4394252333861206,
+      "recent_epoch_seconds_median": 43.49191642575897,
+      "recent_epoch_seconds_mean": 67.34750782842748,
+      "eta_hours_at_recent_speed": 0.0,
+      "skipped_batches": 12,
+      "unsafe_warning_count": 12,
+      "tracebacks": 0,
+      "activation": {
+        "resp_ce": {
+          "executed_valid_batches": 9800,
+          "successful_valid_batches": 9788,
+          "valid_sample_views": 2508800,
+          "first_epoch": 1,
+          "nonzero_weighted_batches": 9800
+        },
+        "cross_rx": {
+          "executed_valid_batches": 0,
+          "successful_valid_batches": 0,
+          "valid_sample_views": 0,
+          "first_epoch": null,
+          "nonzero_weighted_batches": 0
+        },
+        "u_pair": {
+          "executed_valid_batches": 0,
+          "successful_valid_batches": 0,
+          "valid_sample_views": 0,
+          "first_epoch": null,
+          "nonzero_weighted_batches": 0
+        },
+        "fused_ce": {
+          "executed_valid_batches": 0,
+          "successful_valid_batches": 0,
+          "valid_sample_views": 0,
+          "first_epoch": null,
+          "nonzero_weighted_batches": 0
+        },
+        "total_batches": 9800,
+        "successful_steps": 9788,
+        "ema_updates": 9788
+      }
+    }
+  ],
+  "files": [
+    {
+      "file": "logs\\phase1_ecrs_v1r_firstbatch_s392005_e200_20260908_r1\\B0\\logs.jsonl",
+      "bytes": 396920,
+      "lines": 200,
+      "parsed": true
+    },
+    {
+      "file": "logs\\phase1_ecrs_v1r_firstbatch_s392005_e200_20260908_r1\\B0\\metrics.csv",
+      "bytes": 135570,
+      "lines": 201,
+      "parsed": true
+    },
+    {
+      "file": "logs\\phase1_ecrs_v1r_firstbatch_s392005_e200_20260908_r1\\B0.stdout.log",
+      "bytes": 742722,
+      "lines": 6623,
+      "parsed": true
+    },
+    {
+      "file": "logs\\phase1_ecrs_v1r_firstbatch_s392005_e200_20260908_r1\\B2\\logs.jsonl",
+      "bytes": 123027,
+      "lines": 62,
+      "parsed": true
+    },
+    {
+      "file": "logs\\phase1_ecrs_v1r_firstbatch_s392005_e200_20260908_r1\\B2\\metrics.csv",
+      "bytes": 42739,
+      "lines": 63,
+      "parsed": true
+    },
+    {
+      "file": "logs\\phase1_ecrs_v1r_firstbatch_s392005_e200_20260908_r1\\B2-V1\\logs.jsonl",
+      "bytes": 126636,
+      "lines": 64,
+      "parsed": true
+    },
+    {
+      "file": "logs\\phase1_ecrs_v1r_firstbatch_s392005_e200_20260908_r1\\B2-V1\\metrics.csv",
+      "bytes": 43722,
+      "lines": 65,
+      "parsed": true
+    },
+    {
+      "file": "logs\\phase1_ecrs_v1r_firstbatch_s392005_e200_20260908_r1\\B2-V1.stdout.log",
+      "bytes": 239199,
+      "lines": 2162,
+      "parsed": true
+    },
+    {
+      "file": "logs\\phase1_ecrs_v1r_firstbatch_s392005_e200_20260908_r1\\B2.stdout.log",
+      "bytes": 230896,
+      "lines": 2093,
+      "parsed": true
+    },
+    {
+      "file": "logs\\phase1_ecrs_v1r_firstbatch_s392005_e200_20260908_r1\\children.jsonl",
+      "bytes": 12303,
+      "lines": 3,
+      "parsed": true
+    },
+    {
+      "file": "logs\\phase1_ecrs_v1r_firstbatch_s392005_e200_20260908_r1\\dispatch.log",
+      "bytes": 603,
+      "lines": 5,
+      "parsed": true
+    },
+    {
+      "file": "logs\\phase1_ecrs_v1r_firstbatch_s392005_e200_20260908_r1\\dispatch_owner.json",
+      "bytes": 138,
+      "lines": 1,
+      "parsed": true
+    },
+    {
+      "file": "logs\\phase1_ecrs_v1r_firstbatch_s392005_e200_20260908_r1\\exit_status.jsonl",
+      "bytes": 46,
+      "lines": 1,
+      "parsed": true
+    },
+    {
+      "file": "logs\\phase1_ecrs_v1r_firstbatch_s392005_e200_20260908_r1\\launch_plan.json",
+      "bytes": 29294,
+      "lines": 937,
+      "parsed": true
+    },
+    {
+      "file": "logs\\phase1_ecrs_v2_bridge_s392005_e200_20260908_r1\\dispatch.log",
+      "bytes": 4100,
+      "lines": 39,
+      "parsed": true
+    },
+    {
+      "file": "logs\\phase1_ecrs_v2_bridge_s392005_e200_20260908_r1\\dispatch_owner.json",
+      "bytes": 133,
+      "lines": 1,
+      "parsed": true
+    },
+    {
+      "file": "logs\\phase1_ecrs_v2_bridge_s392005_e200_20260908_r1\\launch_plan.json",
+      "bytes": 38826,
+      "lines": 1223,
+      "parsed": true
+    },
+    {
+      "file": "logs\\phase1_ecrs_v2_bridge_s392005_e200_20260908_r2\\B3a\\logs.jsonl",
+      "bytes": 233311,
+      "lines": 118,
+      "parsed": true
+    },
+    {
+      "file": "logs\\phase1_ecrs_v2_bridge_s392005_e200_20260908_r2\\B3a\\metrics.csv",
+      "bytes": 79555,
+      "lines": 119,
+      "parsed": true
+    },
+    {
+      "file": "logs\\phase1_ecrs_v2_bridge_s392005_e200_20260908_r2\\B3a.stdout.log",
+      "bytes": 432073,
+      "lines": 3927,
+      "parsed": true
+    },
+    {
+      "file": "logs\\phase1_ecrs_v2_bridge_s392005_e200_20260908_r2\\B3b\\logs.jsonl",
+      "bytes": 219457,
+      "lines": 111,
+      "parsed": true
+    },
+    {
+      "file": "logs\\phase1_ecrs_v2_bridge_s392005_e200_20260908_r2\\B3b\\metrics.csv",
+      "bytes": 74888,
+      "lines": 112,
+      "parsed": true
+    },
+    {
+      "file": "logs\\phase1_ecrs_v2_bridge_s392005_e200_20260908_r2\\B3b.stdout.log",
+      "bytes": 406629,
+      "lines": 3698,
+      "parsed": true
+    },
+    {
+      "file": "logs\\phase1_ecrs_v2_bridge_s392005_e200_20260908_r2\\B3c\\logs.jsonl",
+      "bytes": 395362,
+      "lines": 200,
+      "parsed": true
+    },
+    {
+      "file": "logs\\phase1_ecrs_v2_bridge_s392005_e200_20260908_r2\\B3c\\metrics.csv",
+      "bytes": 134012,
+      "lines": 201,
+      "parsed": true
+    },
+    {
+      "file": "logs\\phase1_ecrs_v2_bridge_s392005_e200_20260908_r2\\B3c.stdout.log",
+      "bytes": 768331,
+      "lines": 6620,
+      "parsed": true
+    },
+    {
+      "file": "logs\\phase1_ecrs_v2_bridge_s392005_e200_20260908_r2\\B4\\logs.jsonl",
+      "bytes": 394725,
+      "lines": 200,
+      "parsed": true
+    },
+    {
+      "file": "logs\\phase1_ecrs_v2_bridge_s392005_e200_20260908_r2\\B4\\metrics.csv",
+      "bytes": 133375,
+      "lines": 201,
+      "parsed": true
+    },
+    {
+      "file": "logs\\phase1_ecrs_v2_bridge_s392005_e200_20260908_r2\\B4.stdout.log",
+      "bytes": 767286,
+      "lines": 6620,
+      "parsed": true
+    },
+    {
+      "file": "logs\\phase1_ecrs_v2_bridge_s392005_e200_20260908_r2\\children.jsonl",
+      "bytes": 16287,
+      "lines": 4,
+      "parsed": true
+    },
+    {
+      "file": "logs\\phase1_ecrs_v2_bridge_s392005_e200_20260908_r2\\dispatch.log",
+      "bytes": 714,
+      "lines": 9,
+      "parsed": true
+    },
+    {
+      "file": "logs\\phase1_ecrs_v2_bridge_s392005_e200_20260908_r2\\dispatch_owner.json",
+      "bytes": 133,
+      "lines": 1,
+      "parsed": true
+    },
+    {
+      "file": "logs\\phase1_ecrs_v2_bridge_s392005_e200_20260908_r2\\exit_status.jsonl",
+      "bytes": 93,
+      "lines": 2,
+      "parsed": true
+    },
+    {
+      "file": "logs\\phase1_ecrs_v2_bridge_s392005_e200_20260908_r2\\launch_plan.json",
+      "bytes": 38826,
+      "lines": 1223,
+      "parsed": true
+    },
+    {
+      "file": "logs\\phase1_ecrs_v2_bridge_s392005_e200_20260908_r2\\queue_status.json",
+      "bytes": 179,
+      "lines": 1,
+      "parsed": true
+    },
+    {
+      "file": "runs\\phase1_ecrs_v1r_firstbatch_s392005_e200_20260908_r1\\B0\\ecrs_final_source_evaluation.json",
+      "bytes": 16465,
+      "lines": 591,
+      "parsed": true
+    },
+    {
+      "file": "runs\\phase1_ecrs_v1r_firstbatch_s392005_e200_20260908_r1\\B0\\ecrs_source_screen_result.json",
+      "bytes": 18157,
+      "lines": 601,
+      "parsed": true
+    },
+    {
+      "file": "runs\\phase1_ecrs_v1r_firstbatch_s392005_e200_20260908_r1\\B0\\ecrs_source_validation.jsonl",
+      "bytes": 414479,
+      "lines": 48,
+      "parsed": true
+    },
+    {
+      "file": "runs\\phase1_ecrs_v1r_firstbatch_s392005_e200_20260908_r1\\B0\\source_predictions_E199_e5xd6zjl\\clean.jsonl",
+      "bytes": 7526562,
+      "lines": 27000,
+      "parsed": true
+    },
+    {
+      "file": "runs\\phase1_ecrs_v1r_firstbatch_s392005_e200_20260908_r1\\B0\\source_predictions_E199_e5xd6zjl\\leo_clear_weak.jsonl",
+      "bytes": 7779455,
+      "lines": 27000,
+      "parsed": true
+    },
+    {
+      "file": "runs\\phase1_ecrs_v1r_firstbatch_s392005_e200_20260908_r1\\B0\\source_predictions_E199_e5xd6zjl\\leo_low_elev_weak.jsonl",
+      "bytes": 7862064,
+      "lines": 27000,
+      "parsed": true
+    },
+    {
+      "file": "runs\\phase1_ecrs_v1r_firstbatch_s392005_e200_20260908_r1\\B0\\source_predictions_E199_e5xd6zjl\\leo_rain_weak.jsonl",
+      "bytes": 7754966,
+      "lines": 27000,
+      "parsed": true
+    },
+    {
+      "file": "runs\\phase1_ecrs_v1r_firstbatch_s392005_e200_20260908_r1\\B2\\ecrs_source_validation.jsonl",
+      "bytes": 568764,
+      "lines": 15,
+      "parsed": true
+    },
+    {
+      "file": "runs\\phase1_ecrs_v1r_firstbatch_s392005_e200_20260908_r1\\B2\\ecrs_training.jsonl",
+      "bytes": 4430391,
+      "lines": 3069,
+      "parsed": true
+    },
+    {
+      "file": "runs\\phase1_ecrs_v1r_firstbatch_s392005_e200_20260908_r1\\B2-V1\\ecrs_source_validation.jsonl",
+      "bytes": 567816,
+      "lines": 15,
+      "parsed": true
+    },
+    {
+      "file": "runs\\phase1_ecrs_v2_bridge_s392005_e200_20260908_r2\\B3a\\ecrs_source_validation.jsonl",
+      "bytes": 1137168,
+      "lines": 30,
+      "parsed": true
+    },
+    {
+      "file": "runs\\phase1_ecrs_v2_bridge_s392005_e200_20260908_r2\\B3a\\ecrs_training.jsonl",
+      "bytes": 8376542,
+      "lines": 5798,
+      "parsed": true
+    },
+    {
+      "file": "runs\\phase1_ecrs_v2_bridge_s392005_e200_20260908_r2\\B3b\\ecrs_source_validation.jsonl",
+      "bytes": 1101303,
+      "lines": 29,
+      "parsed": true
+    },
+    {
+      "file": "runs\\phase1_ecrs_v2_bridge_s392005_e200_20260908_r2\\B3b\\ecrs_training.jsonl",
+      "bytes": 7178918,
+      "lines": 5439,
+      "parsed": true
+    },
+    {
+      "file": "runs\\phase1_ecrs_v2_bridge_s392005_e200_20260908_r2\\B3c\\ecrs_final_source_evaluation.json",
+      "bytes": 74056,
+      "lines": 2783,
+      "parsed": true
+    },
+    {
+      "file": "runs\\phase1_ecrs_v2_bridge_s392005_e200_20260908_r2\\B3c\\ecrs_source_screen_result.json",
+      "bytes": 80124,
+      "lines": 2793,
+      "parsed": true
+    },
+    {
+      "file": "runs\\phase1_ecrs_v2_bridge_s392005_e200_20260908_r2\\B3c\\ecrs_source_validation.jsonl",
+      "bytes": 1820363,
+      "lines": 48,
+      "parsed": true
+    },
+    {
+      "file": "runs\\phase1_ecrs_v2_bridge_s392005_e200_20260908_r2\\B3c\\ecrs_training.jsonl",
+      "bytes": 12930209,
+      "lines": 9800,
+      "parsed": true
+    },
+    {
+      "file": "runs\\phase1_ecrs_v2_bridge_s392005_e200_20260908_r2\\B3c\\source_predictions_E195_xr9ixni1\\clean.jsonl",
+      "bytes": 19754601,
+      "lines": 27000,
+      "parsed": true
+    },
+    {
+      "file": "runs\\phase1_ecrs_v2_bridge_s392005_e200_20260908_r2\\B3c\\source_predictions_E195_xr9ixni1\\leo_clear_weak.jsonl",
+      "bytes": 20042769,
+      "lines": 27000,
+      "parsed": true
+    },
+    {
+      "file": "runs\\phase1_ecrs_v2_bridge_s392005_e200_20260908_r2\\B3c\\source_predictions_E195_xr9ixni1\\leo_low_elev_weak.jsonl",
+      "bytes": 20130140,
+      "lines": 27000,
+      "parsed": true
+    },
+    {
+      "file": "runs\\phase1_ecrs_v2_bridge_s392005_e200_20260908_r2\\B3c\\source_predictions_E195_xr9ixni1\\leo_rain_weak.jsonl",
+      "bytes": 20023982,
+      "lines": 27000,
+      "parsed": true
+    },
+    {
+      "file": "runs\\phase1_ecrs_v2_bridge_s392005_e200_20260908_r2\\B4\\ecrs_final_source_evaluation.json",
+      "bytes": 73997,
+      "lines": 2783,
+      "parsed": true
+    },
+    {
+      "file": "runs\\phase1_ecrs_v2_bridge_s392005_e200_20260908_r2\\B4\\ecrs_source_screen_result.json",
+      "bytes": 80063,
+      "lines": 2793,
+      "parsed": true
+    },
+    {
+      "file": "runs\\phase1_ecrs_v2_bridge_s392005_e200_20260908_r2\\B4\\ecrs_source_validation.jsonl",
+      "bytes": 1821669,
+      "lines": 48,
+      "parsed": true
+    },
+    {
+      "file": "runs\\phase1_ecrs_v2_bridge_s392005_e200_20260908_r2\\B4\\ecrs_training.jsonl",
+      "bytes": 12937627,
+      "lines": 9800,
+      "parsed": true
+    },
+    {
+      "file": "runs\\phase1_ecrs_v2_bridge_s392005_e200_20260908_r2\\B4\\source_predictions_E195_82rcpj7z\\clean.jsonl",
+      "bytes": 19767383,
+      "lines": 27000,
+      "parsed": true
+    },
+    {
+      "file": "runs\\phase1_ecrs_v2_bridge_s392005_e200_20260908_r2\\B4\\source_predictions_E195_82rcpj7z\\leo_clear_weak.jsonl",
+      "bytes": 20045258,
+      "lines": 27000,
+      "parsed": true
+    },
+    {
+      "file": "runs\\phase1_ecrs_v2_bridge_s392005_e200_20260908_r2\\B4\\source_predictions_E195_82rcpj7z\\leo_low_elev_weak.jsonl",
+      "bytes": 20130309,
+      "lines": 27000,
+      "parsed": true
+    },
+    {
+      "file": "runs\\phase1_ecrs_v2_bridge_s392005_e200_20260908_r2\\B4\\source_predictions_E195_82rcpj7z\\leo_rain_weak.jsonl",
+      "bytes": 20023478,
+      "lines": 27000,
+      "parsed": true
+    }
+  ],
+  "source_prediction_rows_recounted": 324000
+}

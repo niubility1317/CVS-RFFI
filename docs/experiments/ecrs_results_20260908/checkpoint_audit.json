@@ -1,0 +1,1994 @@
+{
+  "B0": {
+    "best": {
+      "epoch": 199,
+      "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_ecrs_v1r_firstbatch_s392005_e200_20260908_r1/B0/best.pth",
+      "size_bytes": 10761546,
+      "feature_schema": "ADV3B02:z_id:legacy",
+      "optimizer_step_histogram": {
+        "9736.0": 160,
+        "9004.0": 4
+      },
+      "scaler": {
+        "scale": 4.0,
+        "growth_factor": 2.0,
+        "backoff_factor": 0.5,
+        "growth_interval": 2000,
+        "_growth_tracker": 429
+      },
+      "split_info": {
+        "train_days_label": [
+          1,
+          2,
+          3
+        ],
+        "train_rxs_idx": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "test_days_label": [],
+        "test_rxs_idx": [],
+        "named_test_sizes": {},
+        "source_only": true,
+        "meta_ssl_source_split": {
+          "mode": "meta_ssl_source_only_0p07L_0p63U_0p3Val",
+          "source_ssl_split": "0.07L/0.63U/0.3Val",
+          "ground_dg_claim_scope": "source_only",
+          "labeled_ratio": 0.07,
+          "unlabeled_ratio": 0.63,
+          "val_ratio": 0.3,
+          "train_days_idx": [
+            1,
+            2,
+            3
+          ],
+          "train_days_label": [
+            "2021_03_08",
+            "2021_03_15",
+            "2021_03_23"
+          ],
+          "holdout_days_idx": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "train_rxs_idx": [
+            1,
+            3,
+            4,
+            6,
+            8
+          ],
+          "train_rxs_label": [
+            "1-19",
+            "18-2",
+            "19-2",
+            "2-19",
+            "3-19"
+          ],
+          "holdout_rxs_idx": [
+            0,
+            2,
+            5,
+            7,
+            9,
+            10,
+            11
+          ],
+          "receiver_sets_disjoint": true,
+          "base_source_pool_size": 90000,
+          "labeled_size": 6300,
+          "unlabeled_size": 56700,
+          "source_val_size": 27000,
+          "effective_labeled_ratio": 0.07,
+          "effective_unlabeled_ratio": 0.63,
+          "effective_val_ratio": 0.3,
+          "group_count": 90,
+          "overlap_count": 0,
+          "tx_label_policy": {
+            "labeled_train": "visible",
+            "unlabeled_source": "masked_y_minus_1_no_tx_truth_in_training_metadata",
+            "source_val": "visible_eval_only"
+          },
+          "seed": 392005
+        }
+      },
+      "configuration": {
+        "wisig_train_ratio": 0.1,
+        "ssl_labeled_ratio": 0.07,
+        "ssl_unlabeled_ratio": 0.63,
+        "ssl_val_ratio": 0.3,
+        "epochs": 200,
+        "use_ecrs": false,
+        "ecrs_enable_learnable_basis": false,
+        "ecrs_enable_fasttrust": false,
+        "ecrs_teacher_stable": false,
+        "ecrs_raw_ce_weight": 0.0,
+        "ecrs_alpha_resp": 0.0,
+        "ecrs_rung": "R7",
+        "ecrs_basis_mode": "fixed_spline",
+        "ecrs_ridge_alpha": 0.01,
+        "sat_view_schedule": "1@0.30:leo_clear_weak;41@0.60:leo_low_elev_weak,leo_rain_weak;91@0.80:leo_clear_weak,leo_low_elev_weak,leo_rain_weak",
+        "seed": 392005,
+        "ecrs_version": "v1r",
+        "ecrs_reference_mode": "estimated_reference",
+        "ecrs_solver_mode": "schur",
+        "ecrs_anchor_mode": "complex24",
+        "ecrs_protocol_reference_path": "",
+        "ecrs_protocol_reference_metadata": "",
+        "ecrs_resp_ce_enabled": false,
+        "ecrs_cross_rx_enabled": false,
+        "ecrs_u_pair_enabled": false,
+        "ecrs_fusion_mode": "off",
+        "ecrs_fixed_rho": 0.05,
+        "ecrs_rho_cap": 0.25,
+        "ecrs_update_resp_from_fusion": false,
+        "ecrs_gate_calibration_enabled": false,
+        "ecrs_compute_only": false,
+        "ecrs_source_screen_only": true,
+        "ecrs_source_val_interval": 5,
+        "ecrs_fusion_start_epoch": 91,
+        "ecrs_lr_clock": "epoch",
+        "ecrs_leo_ce_mode": "legacy",
+        "ecrs_sampler_mode": "legacy",
+        "ecrs_cross_rx_margin": 0.2,
+        "ecrs_ema_decay": 0.99,
+        "ecrs_resume": "",
+        "ecrs_estimator_variant": "compact8"
+      }
+    },
+    "latest": {
+      "epoch": 200,
+      "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_ecrs_v1r_firstbatch_s392005_e200_20260908_r1/B0/latest.pth",
+      "size_bytes": 10786666,
+      "feature_schema": "ADV3B02:z_id:legacy",
+      "optimizer_step_histogram": {
+        "9785.0": 160,
+        "9053.0": 4
+      },
+      "scaler": {
+        "scale": 4.0,
+        "growth_factor": 2.0,
+        "backoff_factor": 0.5,
+        "growth_interval": 2000,
+        "_growth_tracker": 478
+      },
+      "split_info": {
+        "train_days_label": [
+          1,
+          2,
+          3
+        ],
+        "train_rxs_idx": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "test_days_label": [],
+        "test_rxs_idx": [],
+        "named_test_sizes": {},
+        "source_only": true,
+        "meta_ssl_source_split": {
+          "mode": "meta_ssl_source_only_0p07L_0p63U_0p3Val",
+          "source_ssl_split": "0.07L/0.63U/0.3Val",
+          "ground_dg_claim_scope": "source_only",
+          "labeled_ratio": 0.07,
+          "unlabeled_ratio": 0.63,
+          "val_ratio": 0.3,
+          "train_days_idx": [
+            1,
+            2,
+            3
+          ],
+          "train_days_label": [
+            "2021_03_08",
+            "2021_03_15",
+            "2021_03_23"
+          ],
+          "holdout_days_idx": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "train_rxs_idx": [
+            1,
+            3,
+            4,
+            6,
+            8
+          ],
+          "train_rxs_label": [
+            "1-19",
+            "18-2",
+            "19-2",
+            "2-19",
+            "3-19"
+          ],
+          "holdout_rxs_idx": [
+            0,
+            2,
+            5,
+            7,
+            9,
+            10,
+            11
+          ],
+          "receiver_sets_disjoint": true,
+          "base_source_pool_size": 90000,
+          "labeled_size": 6300,
+          "unlabeled_size": 56700,
+          "source_val_size": 27000,
+          "effective_labeled_ratio": 0.07,
+          "effective_unlabeled_ratio": 0.63,
+          "effective_val_ratio": 0.3,
+          "group_count": 90,
+          "overlap_count": 0,
+          "tx_label_policy": {
+            "labeled_train": "visible",
+            "unlabeled_source": "masked_y_minus_1_no_tx_truth_in_training_metadata",
+            "source_val": "visible_eval_only"
+          },
+          "seed": 392005
+        }
+      },
+      "configuration": {
+        "wisig_train_ratio": 0.1,
+        "ssl_labeled_ratio": 0.07,
+        "ssl_unlabeled_ratio": 0.63,
+        "ssl_val_ratio": 0.3,
+        "epochs": 200,
+        "use_ecrs": false,
+        "ecrs_enable_learnable_basis": false,
+        "ecrs_enable_fasttrust": false,
+        "ecrs_teacher_stable": false,
+        "ecrs_raw_ce_weight": 0.0,
+        "ecrs_alpha_resp": 0.0,
+        "ecrs_rung": "R7",
+        "ecrs_basis_mode": "fixed_spline",
+        "ecrs_ridge_alpha": 0.01,
+        "sat_view_schedule": "1@0.30:leo_clear_weak;41@0.60:leo_low_elev_weak,leo_rain_weak;91@0.80:leo_clear_weak,leo_low_elev_weak,leo_rain_weak",
+        "seed": 392005,
+        "ecrs_version": "v1r",
+        "ecrs_reference_mode": "estimated_reference",
+        "ecrs_solver_mode": "schur",
+        "ecrs_anchor_mode": "complex24",
+        "ecrs_protocol_reference_path": "",
+        "ecrs_protocol_reference_metadata": "",
+        "ecrs_resp_ce_enabled": false,
+        "ecrs_cross_rx_enabled": false,
+        "ecrs_u_pair_enabled": false,
+        "ecrs_fusion_mode": "off",
+        "ecrs_fixed_rho": 0.05,
+        "ecrs_rho_cap": 0.25,
+        "ecrs_update_resp_from_fusion": false,
+        "ecrs_gate_calibration_enabled": false,
+        "ecrs_compute_only": false,
+        "ecrs_source_screen_only": true,
+        "ecrs_source_val_interval": 5,
+        "ecrs_fusion_start_epoch": 91,
+        "ecrs_lr_clock": "epoch",
+        "ecrs_leo_ce_mode": "legacy",
+        "ecrs_sampler_mode": "legacy",
+        "ecrs_cross_rx_margin": 0.2,
+        "ecrs_ema_decay": 0.99,
+        "ecrs_resume": "",
+        "ecrs_estimator_variant": "compact8"
+      }
+    }
+  },
+  "B2-V1": {
+    "best": {
+      "epoch": 55,
+      "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_ecrs_v1r_firstbatch_s392005_e200_20260908_r1/B2-V1/best.pth",
+      "size_bytes": 12151887,
+      "feature_schema": "ADV3B02:ECRS:z_fused:unit_l2:160:v1",
+      "optimizer_step_histogram": {
+        "2688.0": 165,
+        "1956.0": 4,
+        "732.0": 3
+      },
+      "scaler": {
+        "scale": 512.0,
+        "growth_factor": 2.0,
+        "backoff_factor": 0.5,
+        "growth_interval": 2000,
+        "_growth_tracker": 223
+      },
+      "split_info": {
+        "train_days_label": [
+          1,
+          2,
+          3
+        ],
+        "train_rxs_idx": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "test_days_label": [],
+        "test_rxs_idx": [],
+        "named_test_sizes": {},
+        "source_only": true,
+        "meta_ssl_source_split": {
+          "mode": "meta_ssl_source_only_0p07L_0p63U_0p3Val",
+          "source_ssl_split": "0.07L/0.63U/0.3Val",
+          "ground_dg_claim_scope": "source_only",
+          "labeled_ratio": 0.07,
+          "unlabeled_ratio": 0.63,
+          "val_ratio": 0.3,
+          "train_days_idx": [
+            1,
+            2,
+            3
+          ],
+          "train_days_label": [
+            "2021_03_08",
+            "2021_03_15",
+            "2021_03_23"
+          ],
+          "holdout_days_idx": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "train_rxs_idx": [
+            1,
+            3,
+            4,
+            6,
+            8
+          ],
+          "train_rxs_label": [
+            "1-19",
+            "18-2",
+            "19-2",
+            "2-19",
+            "3-19"
+          ],
+          "holdout_rxs_idx": [
+            0,
+            2,
+            5,
+            7,
+            9,
+            10,
+            11
+          ],
+          "receiver_sets_disjoint": true,
+          "base_source_pool_size": 90000,
+          "labeled_size": 6300,
+          "unlabeled_size": 56700,
+          "source_val_size": 27000,
+          "effective_labeled_ratio": 0.07,
+          "effective_unlabeled_ratio": 0.63,
+          "effective_val_ratio": 0.3,
+          "group_count": 90,
+          "overlap_count": 0,
+          "tx_label_policy": {
+            "labeled_train": "visible",
+            "unlabeled_source": "masked_y_minus_1_no_tx_truth_in_training_metadata",
+            "source_val": "visible_eval_only"
+          },
+          "seed": 392005
+        }
+      },
+      "configuration": {
+        "wisig_train_ratio": 0.1,
+        "ssl_labeled_ratio": 0.07,
+        "ssl_unlabeled_ratio": 0.63,
+        "ssl_val_ratio": 0.3,
+        "epochs": 200,
+        "use_ecrs": true,
+        "ecrs_enable_learnable_basis": false,
+        "ecrs_enable_fasttrust": false,
+        "ecrs_teacher_stable": false,
+        "ecrs_raw_ce_weight": 0.3,
+        "ecrs_alpha_resp": 0.15,
+        "ecrs_rung": "R7",
+        "ecrs_basis_mode": "fixed_spline",
+        "ecrs_ridge_alpha": 0.01,
+        "sat_view_schedule": "1@0.30:leo_clear_weak;41@0.60:leo_low_elev_weak,leo_rain_weak;91@0.80:leo_clear_weak,leo_low_elev_weak,leo_rain_weak",
+        "seed": 392005,
+        "ecrs_version": "v1",
+        "ecrs_reference_mode": "estimated_reference",
+        "ecrs_solver_mode": "schur",
+        "ecrs_anchor_mode": "complex24",
+        "ecrs_protocol_reference_path": "",
+        "ecrs_protocol_reference_metadata": "",
+        "ecrs_resp_ce_enabled": true,
+        "ecrs_cross_rx_enabled": false,
+        "ecrs_u_pair_enabled": false,
+        "ecrs_fusion_mode": "off",
+        "ecrs_fixed_rho": 0.05,
+        "ecrs_rho_cap": 0.25,
+        "ecrs_update_resp_from_fusion": false,
+        "ecrs_gate_calibration_enabled": false,
+        "ecrs_compute_only": false,
+        "ecrs_source_screen_only": true,
+        "ecrs_source_val_interval": 5,
+        "ecrs_fusion_start_epoch": 91,
+        "ecrs_lr_clock": "epoch",
+        "ecrs_leo_ce_mode": "legacy",
+        "ecrs_sampler_mode": "legacy",
+        "ecrs_cross_rx_margin": 0.2,
+        "ecrs_ema_decay": 0.99,
+        "ecrs_resume": "",
+        "ecrs_estimator_variant": "compact8"
+      }
+    },
+    "latest": {
+      "epoch": 60,
+      "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_ecrs_v1r_firstbatch_s392005_e200_20260908_r1/B2-V1/latest.pth",
+      "size_bytes": 12178221,
+      "feature_schema": "ADV3B02:ECRS:z_fused:unit_l2:160:v1",
+      "optimizer_step_histogram": {
+        "2932.0": 165,
+        "2200.0": 4,
+        "976.0": 3
+      },
+      "scaler": {
+        "scale": 256.0,
+        "growth_factor": 2.0,
+        "backoff_factor": 0.5,
+        "growth_interval": 2000,
+        "_growth_tracker": 109
+      },
+      "split_info": {
+        "train_days_label": [
+          1,
+          2,
+          3
+        ],
+        "train_rxs_idx": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "test_days_label": [],
+        "test_rxs_idx": [],
+        "named_test_sizes": {},
+        "source_only": true,
+        "meta_ssl_source_split": {
+          "mode": "meta_ssl_source_only_0p07L_0p63U_0p3Val",
+          "source_ssl_split": "0.07L/0.63U/0.3Val",
+          "ground_dg_claim_scope": "source_only",
+          "labeled_ratio": 0.07,
+          "unlabeled_ratio": 0.63,
+          "val_ratio": 0.3,
+          "train_days_idx": [
+            1,
+            2,
+            3
+          ],
+          "train_days_label": [
+            "2021_03_08",
+            "2021_03_15",
+            "2021_03_23"
+          ],
+          "holdout_days_idx": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "train_rxs_idx": [
+            1,
+            3,
+            4,
+            6,
+            8
+          ],
+          "train_rxs_label": [
+            "1-19",
+            "18-2",
+            "19-2",
+            "2-19",
+            "3-19"
+          ],
+          "holdout_rxs_idx": [
+            0,
+            2,
+            5,
+            7,
+            9,
+            10,
+            11
+          ],
+          "receiver_sets_disjoint": true,
+          "base_source_pool_size": 90000,
+          "labeled_size": 6300,
+          "unlabeled_size": 56700,
+          "source_val_size": 27000,
+          "effective_labeled_ratio": 0.07,
+          "effective_unlabeled_ratio": 0.63,
+          "effective_val_ratio": 0.3,
+          "group_count": 90,
+          "overlap_count": 0,
+          "tx_label_policy": {
+            "labeled_train": "visible",
+            "unlabeled_source": "masked_y_minus_1_no_tx_truth_in_training_metadata",
+            "source_val": "visible_eval_only"
+          },
+          "seed": 392005
+        }
+      },
+      "configuration": {
+        "wisig_train_ratio": 0.1,
+        "ssl_labeled_ratio": 0.07,
+        "ssl_unlabeled_ratio": 0.63,
+        "ssl_val_ratio": 0.3,
+        "epochs": 200,
+        "use_ecrs": true,
+        "ecrs_enable_learnable_basis": false,
+        "ecrs_enable_fasttrust": false,
+        "ecrs_teacher_stable": false,
+        "ecrs_raw_ce_weight": 0.3,
+        "ecrs_alpha_resp": 0.15,
+        "ecrs_rung": "R7",
+        "ecrs_basis_mode": "fixed_spline",
+        "ecrs_ridge_alpha": 0.01,
+        "sat_view_schedule": "1@0.30:leo_clear_weak;41@0.60:leo_low_elev_weak,leo_rain_weak;91@0.80:leo_clear_weak,leo_low_elev_weak,leo_rain_weak",
+        "seed": 392005,
+        "ecrs_version": "v1",
+        "ecrs_reference_mode": "estimated_reference",
+        "ecrs_solver_mode": "schur",
+        "ecrs_anchor_mode": "complex24",
+        "ecrs_protocol_reference_path": "",
+        "ecrs_protocol_reference_metadata": "",
+        "ecrs_resp_ce_enabled": true,
+        "ecrs_cross_rx_enabled": false,
+        "ecrs_u_pair_enabled": false,
+        "ecrs_fusion_mode": "off",
+        "ecrs_fixed_rho": 0.05,
+        "ecrs_rho_cap": 0.25,
+        "ecrs_update_resp_from_fusion": false,
+        "ecrs_gate_calibration_enabled": false,
+        "ecrs_compute_only": false,
+        "ecrs_source_screen_only": true,
+        "ecrs_source_val_interval": 5,
+        "ecrs_fusion_start_epoch": 91,
+        "ecrs_lr_clock": "epoch",
+        "ecrs_leo_ce_mode": "legacy",
+        "ecrs_sampler_mode": "legacy",
+        "ecrs_cross_rx_margin": 0.2,
+        "ecrs_ema_decay": 0.99,
+        "ecrs_resume": "",
+        "ecrs_estimator_variant": "compact8"
+      }
+    }
+  },
+  "B2": {
+    "best": {
+      "epoch": 55,
+      "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_ecrs_v1r_firstbatch_s392005_e200_20260908_r1/B2/best.pth",
+      "size_bytes": 13725803,
+      "feature_schema": "ADV3B02:ECRS:z_fused:unit_l2:160:v1r",
+      "optimizer_step_histogram": {
+        "2690.0": 165,
+        "1958.0": 4,
+        "734.0": 3
+      },
+      "scaler": {
+        "scale": 2048.0,
+        "growth_factor": 2.0,
+        "backoff_factor": 0.5,
+        "growth_interval": 2000,
+        "_growth_tracker": 351
+      },
+      "split_info": {
+        "train_days_label": [
+          1,
+          2,
+          3
+        ],
+        "train_rxs_idx": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "test_days_label": [],
+        "test_rxs_idx": [],
+        "named_test_sizes": {},
+        "source_only": true,
+        "meta_ssl_source_split": {
+          "mode": "meta_ssl_source_only_0p07L_0p63U_0p3Val",
+          "source_ssl_split": "0.07L/0.63U/0.3Val",
+          "ground_dg_claim_scope": "source_only",
+          "labeled_ratio": 0.07,
+          "unlabeled_ratio": 0.63,
+          "val_ratio": 0.3,
+          "train_days_idx": [
+            1,
+            2,
+            3
+          ],
+          "train_days_label": [
+            "2021_03_08",
+            "2021_03_15",
+            "2021_03_23"
+          ],
+          "holdout_days_idx": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "train_rxs_idx": [
+            1,
+            3,
+            4,
+            6,
+            8
+          ],
+          "train_rxs_label": [
+            "1-19",
+            "18-2",
+            "19-2",
+            "2-19",
+            "3-19"
+          ],
+          "holdout_rxs_idx": [
+            0,
+            2,
+            5,
+            7,
+            9,
+            10,
+            11
+          ],
+          "receiver_sets_disjoint": true,
+          "base_source_pool_size": 90000,
+          "labeled_size": 6300,
+          "unlabeled_size": 56700,
+          "source_val_size": 27000,
+          "effective_labeled_ratio": 0.07,
+          "effective_unlabeled_ratio": 0.63,
+          "effective_val_ratio": 0.3,
+          "group_count": 90,
+          "overlap_count": 0,
+          "tx_label_policy": {
+            "labeled_train": "visible",
+            "unlabeled_source": "masked_y_minus_1_no_tx_truth_in_training_metadata",
+            "source_val": "visible_eval_only"
+          },
+          "seed": 392005
+        }
+      },
+      "configuration": {
+        "wisig_train_ratio": 0.1,
+        "ssl_labeled_ratio": 0.07,
+        "ssl_unlabeled_ratio": 0.63,
+        "ssl_val_ratio": 0.3,
+        "epochs": 200,
+        "use_ecrs": true,
+        "ecrs_enable_learnable_basis": false,
+        "ecrs_enable_fasttrust": false,
+        "ecrs_teacher_stable": false,
+        "ecrs_raw_ce_weight": 0.0,
+        "ecrs_alpha_resp": 0.15,
+        "ecrs_rung": "R7",
+        "ecrs_basis_mode": "fixed_spline",
+        "ecrs_ridge_alpha": 0.01,
+        "sat_view_schedule": "1@0.30:leo_clear_weak;41@0.60:leo_low_elev_weak,leo_rain_weak;91@0.80:leo_clear_weak,leo_low_elev_weak,leo_rain_weak",
+        "seed": 392005,
+        "ecrs_version": "v1r",
+        "ecrs_reference_mode": "estimated_reference",
+        "ecrs_solver_mode": "schur",
+        "ecrs_anchor_mode": "complex24",
+        "ecrs_protocol_reference_path": "",
+        "ecrs_protocol_reference_metadata": "",
+        "ecrs_resp_ce_enabled": true,
+        "ecrs_cross_rx_enabled": false,
+        "ecrs_u_pair_enabled": false,
+        "ecrs_fusion_mode": "off",
+        "ecrs_fixed_rho": 0.05,
+        "ecrs_rho_cap": 0.25,
+        "ecrs_update_resp_from_fusion": false,
+        "ecrs_gate_calibration_enabled": false,
+        "ecrs_compute_only": false,
+        "ecrs_source_screen_only": true,
+        "ecrs_source_val_interval": 5,
+        "ecrs_fusion_start_epoch": 91,
+        "ecrs_lr_clock": "epoch",
+        "ecrs_leo_ce_mode": "legacy",
+        "ecrs_sampler_mode": "legacy",
+        "ecrs_cross_rx_margin": 0.2,
+        "ecrs_ema_decay": 0.99,
+        "ecrs_resume": "",
+        "ecrs_estimator_variant": "compact8"
+      }
+    },
+    "latest": {
+      "epoch": 60,
+      "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_ecrs_v1r_firstbatch_s392005_e200_20260908_r1/B2/latest.pth",
+      "size_bytes": 13756849,
+      "feature_schema": "ADV3B02:ECRS:z_fused:unit_l2:160:v1r",
+      "optimizer_step_histogram": {
+        "2934.0": 165,
+        "2202.0": 4,
+        "978.0": 3
+      },
+      "scaler": {
+        "scale": 1024.0,
+        "growth_factor": 2.0,
+        "backoff_factor": 0.5,
+        "growth_interval": 2000,
+        "_growth_tracker": 22
+      },
+      "split_info": {
+        "train_days_label": [
+          1,
+          2,
+          3
+        ],
+        "train_rxs_idx": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "test_days_label": [],
+        "test_rxs_idx": [],
+        "named_test_sizes": {},
+        "source_only": true,
+        "meta_ssl_source_split": {
+          "mode": "meta_ssl_source_only_0p07L_0p63U_0p3Val",
+          "source_ssl_split": "0.07L/0.63U/0.3Val",
+          "ground_dg_claim_scope": "source_only",
+          "labeled_ratio": 0.07,
+          "unlabeled_ratio": 0.63,
+          "val_ratio": 0.3,
+          "train_days_idx": [
+            1,
+            2,
+            3
+          ],
+          "train_days_label": [
+            "2021_03_08",
+            "2021_03_15",
+            "2021_03_23"
+          ],
+          "holdout_days_idx": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "train_rxs_idx": [
+            1,
+            3,
+            4,
+            6,
+            8
+          ],
+          "train_rxs_label": [
+            "1-19",
+            "18-2",
+            "19-2",
+            "2-19",
+            "3-19"
+          ],
+          "holdout_rxs_idx": [
+            0,
+            2,
+            5,
+            7,
+            9,
+            10,
+            11
+          ],
+          "receiver_sets_disjoint": true,
+          "base_source_pool_size": 90000,
+          "labeled_size": 6300,
+          "unlabeled_size": 56700,
+          "source_val_size": 27000,
+          "effective_labeled_ratio": 0.07,
+          "effective_unlabeled_ratio": 0.63,
+          "effective_val_ratio": 0.3,
+          "group_count": 90,
+          "overlap_count": 0,
+          "tx_label_policy": {
+            "labeled_train": "visible",
+            "unlabeled_source": "masked_y_minus_1_no_tx_truth_in_training_metadata",
+            "source_val": "visible_eval_only"
+          },
+          "seed": 392005
+        }
+      },
+      "configuration": {
+        "wisig_train_ratio": 0.1,
+        "ssl_labeled_ratio": 0.07,
+        "ssl_unlabeled_ratio": 0.63,
+        "ssl_val_ratio": 0.3,
+        "epochs": 200,
+        "use_ecrs": true,
+        "ecrs_enable_learnable_basis": false,
+        "ecrs_enable_fasttrust": false,
+        "ecrs_teacher_stable": false,
+        "ecrs_raw_ce_weight": 0.0,
+        "ecrs_alpha_resp": 0.15,
+        "ecrs_rung": "R7",
+        "ecrs_basis_mode": "fixed_spline",
+        "ecrs_ridge_alpha": 0.01,
+        "sat_view_schedule": "1@0.30:leo_clear_weak;41@0.60:leo_low_elev_weak,leo_rain_weak;91@0.80:leo_clear_weak,leo_low_elev_weak,leo_rain_weak",
+        "seed": 392005,
+        "ecrs_version": "v1r",
+        "ecrs_reference_mode": "estimated_reference",
+        "ecrs_solver_mode": "schur",
+        "ecrs_anchor_mode": "complex24",
+        "ecrs_protocol_reference_path": "",
+        "ecrs_protocol_reference_metadata": "",
+        "ecrs_resp_ce_enabled": true,
+        "ecrs_cross_rx_enabled": false,
+        "ecrs_u_pair_enabled": false,
+        "ecrs_fusion_mode": "off",
+        "ecrs_fixed_rho": 0.05,
+        "ecrs_rho_cap": 0.25,
+        "ecrs_update_resp_from_fusion": false,
+        "ecrs_gate_calibration_enabled": false,
+        "ecrs_compute_only": false,
+        "ecrs_source_screen_only": true,
+        "ecrs_source_val_interval": 5,
+        "ecrs_fusion_start_epoch": 91,
+        "ecrs_lr_clock": "epoch",
+        "ecrs_leo_ce_mode": "legacy",
+        "ecrs_sampler_mode": "legacy",
+        "ecrs_cross_rx_margin": 0.2,
+        "ecrs_ema_decay": 0.99,
+        "ecrs_resume": "",
+        "ecrs_estimator_variant": "compact8"
+      }
+    }
+  },
+  "B3a": {
+    "best": {
+      "epoch": 115,
+      "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_ecrs_v2_bridge_s392005_e200_20260908_r2/B3a/best.pth",
+      "size_bytes": 13600291,
+      "feature_schema": "ADV3B02:ECRS:z_fused:unit_l2:160:v2",
+      "optimizer_step_histogram": {
+        "5627.0": 166,
+        "4895.0": 4
+      },
+      "scaler": {
+        "scale": 512.0,
+        "growth_factor": 2.0,
+        "backoff_factor": 0.5,
+        "growth_interval": 2000,
+        "_growth_tracker": 86
+      },
+      "split_info": {
+        "train_days_label": [
+          1,
+          2,
+          3
+        ],
+        "train_rxs_idx": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "test_days_label": [],
+        "test_rxs_idx": [],
+        "named_test_sizes": {},
+        "source_only": true,
+        "meta_ssl_source_split": {
+          "mode": "meta_ssl_source_only_0p07L_0p63U_0p3Val",
+          "source_ssl_split": "0.07L/0.63U/0.3Val",
+          "ground_dg_claim_scope": "source_only",
+          "labeled_ratio": 0.07,
+          "unlabeled_ratio": 0.63,
+          "val_ratio": 0.3,
+          "train_days_idx": [
+            1,
+            2,
+            3
+          ],
+          "train_days_label": [
+            "2021_03_08",
+            "2021_03_15",
+            "2021_03_23"
+          ],
+          "holdout_days_idx": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "train_rxs_idx": [
+            1,
+            3,
+            4,
+            6,
+            8
+          ],
+          "train_rxs_label": [
+            "1-19",
+            "18-2",
+            "19-2",
+            "2-19",
+            "3-19"
+          ],
+          "holdout_rxs_idx": [
+            0,
+            2,
+            5,
+            7,
+            9,
+            10,
+            11
+          ],
+          "receiver_sets_disjoint": true,
+          "base_source_pool_size": 90000,
+          "labeled_size": 6300,
+          "unlabeled_size": 56700,
+          "source_val_size": 27000,
+          "effective_labeled_ratio": 0.07,
+          "effective_unlabeled_ratio": 0.63,
+          "effective_val_ratio": 0.3,
+          "group_count": 90,
+          "overlap_count": 0,
+          "tx_label_policy": {
+            "labeled_train": "visible",
+            "unlabeled_source": "masked_y_minus_1_no_tx_truth_in_training_metadata",
+            "source_val": "visible_eval_only"
+          },
+          "seed": 392005
+        }
+      },
+      "configuration": {
+        "wisig_train_ratio": 0.1,
+        "ssl_labeled_ratio": 0.07,
+        "ssl_unlabeled_ratio": 0.63,
+        "ssl_val_ratio": 0.3,
+        "epochs": 200,
+        "use_ecrs": true,
+        "ecrs_enable_learnable_basis": false,
+        "ecrs_enable_fasttrust": false,
+        "ecrs_teacher_stable": false,
+        "ecrs_raw_ce_weight": 0.0,
+        "ecrs_alpha_resp": 0.15,
+        "ecrs_rung": "R7",
+        "ecrs_basis_mode": "fixed_spline",
+        "ecrs_ridge_alpha": 0.01,
+        "sat_view_schedule": "1@0.30:leo_clear_weak;41@0.60:leo_low_elev_weak,leo_rain_weak;91@0.80:leo_clear_weak,leo_low_elev_weak,leo_rain_weak",
+        "seed": 392005,
+        "ecrs_version": "v2",
+        "ecrs_reference_mode": "estimated_reference",
+        "ecrs_solver_mode": "schur",
+        "ecrs_anchor_mode": "real8",
+        "ecrs_protocol_reference_path": "",
+        "ecrs_protocol_reference_metadata": "",
+        "ecrs_resp_ce_enabled": true,
+        "ecrs_cross_rx_enabled": false,
+        "ecrs_u_pair_enabled": false,
+        "ecrs_fusion_mode": "off",
+        "ecrs_fixed_rho": 0.05,
+        "ecrs_rho_cap": 0.25,
+        "ecrs_update_resp_from_fusion": false,
+        "ecrs_gate_calibration_enabled": false,
+        "ecrs_compute_only": false,
+        "ecrs_source_screen_only": true,
+        "ecrs_source_val_interval": 5,
+        "ecrs_fusion_start_epoch": 91,
+        "ecrs_lr_clock": "epoch",
+        "ecrs_leo_ce_mode": "legacy",
+        "ecrs_sampler_mode": "legacy",
+        "ecrs_cross_rx_margin": 0.2,
+        "ecrs_ema_decay": 0.99,
+        "ecrs_resume": "",
+        "ecrs_estimator_variant": "legacy28_old_reference"
+      }
+    },
+    "latest": {
+      "epoch": 115,
+      "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_ecrs_v2_bridge_s392005_e200_20260908_r2/B3a/latest.pth",
+      "size_bytes": 13631225,
+      "feature_schema": "ADV3B02:ECRS:z_fused:unit_l2:160:v2",
+      "optimizer_step_histogram": {
+        "5627.0": 166,
+        "4895.0": 4
+      },
+      "scaler": {
+        "scale": 512.0,
+        "growth_factor": 2.0,
+        "backoff_factor": 0.5,
+        "growth_interval": 2000,
+        "_growth_tracker": 86
+      },
+      "split_info": {
+        "train_days_label": [
+          1,
+          2,
+          3
+        ],
+        "train_rxs_idx": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "test_days_label": [],
+        "test_rxs_idx": [],
+        "named_test_sizes": {},
+        "source_only": true,
+        "meta_ssl_source_split": {
+          "mode": "meta_ssl_source_only_0p07L_0p63U_0p3Val",
+          "source_ssl_split": "0.07L/0.63U/0.3Val",
+          "ground_dg_claim_scope": "source_only",
+          "labeled_ratio": 0.07,
+          "unlabeled_ratio": 0.63,
+          "val_ratio": 0.3,
+          "train_days_idx": [
+            1,
+            2,
+            3
+          ],
+          "train_days_label": [
+            "2021_03_08",
+            "2021_03_15",
+            "2021_03_23"
+          ],
+          "holdout_days_idx": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "train_rxs_idx": [
+            1,
+            3,
+            4,
+            6,
+            8
+          ],
+          "train_rxs_label": [
+            "1-19",
+            "18-2",
+            "19-2",
+            "2-19",
+            "3-19"
+          ],
+          "holdout_rxs_idx": [
+            0,
+            2,
+            5,
+            7,
+            9,
+            10,
+            11
+          ],
+          "receiver_sets_disjoint": true,
+          "base_source_pool_size": 90000,
+          "labeled_size": 6300,
+          "unlabeled_size": 56700,
+          "source_val_size": 27000,
+          "effective_labeled_ratio": 0.07,
+          "effective_unlabeled_ratio": 0.63,
+          "effective_val_ratio": 0.3,
+          "group_count": 90,
+          "overlap_count": 0,
+          "tx_label_policy": {
+            "labeled_train": "visible",
+            "unlabeled_source": "masked_y_minus_1_no_tx_truth_in_training_metadata",
+            "source_val": "visible_eval_only"
+          },
+          "seed": 392005
+        }
+      },
+      "configuration": {
+        "wisig_train_ratio": 0.1,
+        "ssl_labeled_ratio": 0.07,
+        "ssl_unlabeled_ratio": 0.63,
+        "ssl_val_ratio": 0.3,
+        "epochs": 200,
+        "use_ecrs": true,
+        "ecrs_enable_learnable_basis": false,
+        "ecrs_enable_fasttrust": false,
+        "ecrs_teacher_stable": false,
+        "ecrs_raw_ce_weight": 0.0,
+        "ecrs_alpha_resp": 0.15,
+        "ecrs_rung": "R7",
+        "ecrs_basis_mode": "fixed_spline",
+        "ecrs_ridge_alpha": 0.01,
+        "sat_view_schedule": "1@0.30:leo_clear_weak;41@0.60:leo_low_elev_weak,leo_rain_weak;91@0.80:leo_clear_weak,leo_low_elev_weak,leo_rain_weak",
+        "seed": 392005,
+        "ecrs_version": "v2",
+        "ecrs_reference_mode": "estimated_reference",
+        "ecrs_solver_mode": "schur",
+        "ecrs_anchor_mode": "real8",
+        "ecrs_protocol_reference_path": "",
+        "ecrs_protocol_reference_metadata": "",
+        "ecrs_resp_ce_enabled": true,
+        "ecrs_cross_rx_enabled": false,
+        "ecrs_u_pair_enabled": false,
+        "ecrs_fusion_mode": "off",
+        "ecrs_fixed_rho": 0.05,
+        "ecrs_rho_cap": 0.25,
+        "ecrs_update_resp_from_fusion": false,
+        "ecrs_gate_calibration_enabled": false,
+        "ecrs_compute_only": false,
+        "ecrs_source_screen_only": true,
+        "ecrs_source_val_interval": 5,
+        "ecrs_fusion_start_epoch": 91,
+        "ecrs_lr_clock": "epoch",
+        "ecrs_leo_ce_mode": "legacy",
+        "ecrs_sampler_mode": "legacy",
+        "ecrs_cross_rx_margin": 0.2,
+        "ecrs_ema_decay": 0.99,
+        "ecrs_resume": "",
+        "ecrs_estimator_variant": "legacy28_old_reference"
+      }
+    }
+  },
+  "B3b": {
+    "best": {
+      "epoch": 105,
+      "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_ecrs_v2_bridge_s392005_e200_20260908_r2/B3b/best.pth",
+      "size_bytes": 13594566,
+      "feature_schema": "ADV3B02:ECRS:z_fused:unit_l2:160:v2",
+      "optimizer_step_histogram": {
+        "5136.0": 166,
+        "4404.0": 4
+      },
+      "scaler": {
+        "scale": 256.0,
+        "growth_factor": 2.0,
+        "backoff_factor": 0.5,
+        "growth_interval": 2000,
+        "_growth_tracker": 917
+      },
+      "split_info": {
+        "train_days_label": [
+          1,
+          2,
+          3
+        ],
+        "train_rxs_idx": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "test_days_label": [],
+        "test_rxs_idx": [],
+        "named_test_sizes": {},
+        "source_only": true,
+        "meta_ssl_source_split": {
+          "mode": "meta_ssl_source_only_0p07L_0p63U_0p3Val",
+          "source_ssl_split": "0.07L/0.63U/0.3Val",
+          "ground_dg_claim_scope": "source_only",
+          "labeled_ratio": 0.07,
+          "unlabeled_ratio": 0.63,
+          "val_ratio": 0.3,
+          "train_days_idx": [
+            1,
+            2,
+            3
+          ],
+          "train_days_label": [
+            "2021_03_08",
+            "2021_03_15",
+            "2021_03_23"
+          ],
+          "holdout_days_idx": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "train_rxs_idx": [
+            1,
+            3,
+            4,
+            6,
+            8
+          ],
+          "train_rxs_label": [
+            "1-19",
+            "18-2",
+            "19-2",
+            "2-19",
+            "3-19"
+          ],
+          "holdout_rxs_idx": [
+            0,
+            2,
+            5,
+            7,
+            9,
+            10,
+            11
+          ],
+          "receiver_sets_disjoint": true,
+          "base_source_pool_size": 90000,
+          "labeled_size": 6300,
+          "unlabeled_size": 56700,
+          "source_val_size": 27000,
+          "effective_labeled_ratio": 0.07,
+          "effective_unlabeled_ratio": 0.63,
+          "effective_val_ratio": 0.3,
+          "group_count": 90,
+          "overlap_count": 0,
+          "tx_label_policy": {
+            "labeled_train": "visible",
+            "unlabeled_source": "masked_y_minus_1_no_tx_truth_in_training_metadata",
+            "source_val": "visible_eval_only"
+          },
+          "seed": 392005
+        }
+      },
+      "configuration": {
+        "wisig_train_ratio": 0.1,
+        "ssl_labeled_ratio": 0.07,
+        "ssl_unlabeled_ratio": 0.63,
+        "ssl_val_ratio": 0.3,
+        "epochs": 200,
+        "use_ecrs": true,
+        "ecrs_enable_learnable_basis": false,
+        "ecrs_enable_fasttrust": false,
+        "ecrs_teacher_stable": false,
+        "ecrs_raw_ce_weight": 0.0,
+        "ecrs_alpha_resp": 0.15,
+        "ecrs_rung": "R7",
+        "ecrs_basis_mode": "fixed_spline",
+        "ecrs_ridge_alpha": 0.01,
+        "sat_view_schedule": "1@0.30:leo_clear_weak;41@0.60:leo_low_elev_weak,leo_rain_weak;91@0.80:leo_clear_weak,leo_low_elev_weak,leo_rain_weak",
+        "seed": 392005,
+        "ecrs_version": "v2",
+        "ecrs_reference_mode": "estimated_reference",
+        "ecrs_solver_mode": "schur",
+        "ecrs_anchor_mode": "real8",
+        "ecrs_protocol_reference_path": "",
+        "ecrs_protocol_reference_metadata": "",
+        "ecrs_resp_ce_enabled": true,
+        "ecrs_cross_rx_enabled": false,
+        "ecrs_u_pair_enabled": false,
+        "ecrs_fusion_mode": "off",
+        "ecrs_fixed_rho": 0.05,
+        "ecrs_rho_cap": 0.25,
+        "ecrs_update_resp_from_fusion": false,
+        "ecrs_gate_calibration_enabled": false,
+        "ecrs_compute_only": false,
+        "ecrs_source_screen_only": true,
+        "ecrs_source_val_interval": 5,
+        "ecrs_fusion_start_epoch": 91,
+        "ecrs_lr_clock": "epoch",
+        "ecrs_leo_ce_mode": "legacy",
+        "ecrs_sampler_mode": "legacy",
+        "ecrs_cross_rx_margin": 0.2,
+        "ecrs_ema_decay": 0.99,
+        "ecrs_resume": "",
+        "ecrs_estimator_variant": "legacy28_estimated_reference"
+      }
+    },
+    "latest": {
+      "epoch": 110,
+      "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_ecrs_v2_bridge_s392005_e200_20260908_r2/B3b/latest.pth",
+      "size_bytes": 13625358,
+      "feature_schema": "ADV3B02:ECRS:z_fused:unit_l2:160:v2",
+      "optimizer_step_histogram": {
+        "5381.0": 166,
+        "4649.0": 4
+      },
+      "scaler": {
+        "scale": 256.0,
+        "growth_factor": 2.0,
+        "backoff_factor": 0.5,
+        "growth_interval": 2000,
+        "_growth_tracker": 1162
+      },
+      "split_info": {
+        "train_days_label": [
+          1,
+          2,
+          3
+        ],
+        "train_rxs_idx": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "test_days_label": [],
+        "test_rxs_idx": [],
+        "named_test_sizes": {},
+        "source_only": true,
+        "meta_ssl_source_split": {
+          "mode": "meta_ssl_source_only_0p07L_0p63U_0p3Val",
+          "source_ssl_split": "0.07L/0.63U/0.3Val",
+          "ground_dg_claim_scope": "source_only",
+          "labeled_ratio": 0.07,
+          "unlabeled_ratio": 0.63,
+          "val_ratio": 0.3,
+          "train_days_idx": [
+            1,
+            2,
+            3
+          ],
+          "train_days_label": [
+            "2021_03_08",
+            "2021_03_15",
+            "2021_03_23"
+          ],
+          "holdout_days_idx": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "train_rxs_idx": [
+            1,
+            3,
+            4,
+            6,
+            8
+          ],
+          "train_rxs_label": [
+            "1-19",
+            "18-2",
+            "19-2",
+            "2-19",
+            "3-19"
+          ],
+          "holdout_rxs_idx": [
+            0,
+            2,
+            5,
+            7,
+            9,
+            10,
+            11
+          ],
+          "receiver_sets_disjoint": true,
+          "base_source_pool_size": 90000,
+          "labeled_size": 6300,
+          "unlabeled_size": 56700,
+          "source_val_size": 27000,
+          "effective_labeled_ratio": 0.07,
+          "effective_unlabeled_ratio": 0.63,
+          "effective_val_ratio": 0.3,
+          "group_count": 90,
+          "overlap_count": 0,
+          "tx_label_policy": {
+            "labeled_train": "visible",
+            "unlabeled_source": "masked_y_minus_1_no_tx_truth_in_training_metadata",
+            "source_val": "visible_eval_only"
+          },
+          "seed": 392005
+        }
+      },
+      "configuration": {
+        "wisig_train_ratio": 0.1,
+        "ssl_labeled_ratio": 0.07,
+        "ssl_unlabeled_ratio": 0.63,
+        "ssl_val_ratio": 0.3,
+        "epochs": 200,
+        "use_ecrs": true,
+        "ecrs_enable_learnable_basis": false,
+        "ecrs_enable_fasttrust": false,
+        "ecrs_teacher_stable": false,
+        "ecrs_raw_ce_weight": 0.0,
+        "ecrs_alpha_resp": 0.15,
+        "ecrs_rung": "R7",
+        "ecrs_basis_mode": "fixed_spline",
+        "ecrs_ridge_alpha": 0.01,
+        "sat_view_schedule": "1@0.30:leo_clear_weak;41@0.60:leo_low_elev_weak,leo_rain_weak;91@0.80:leo_clear_weak,leo_low_elev_weak,leo_rain_weak",
+        "seed": 392005,
+        "ecrs_version": "v2",
+        "ecrs_reference_mode": "estimated_reference",
+        "ecrs_solver_mode": "schur",
+        "ecrs_anchor_mode": "real8",
+        "ecrs_protocol_reference_path": "",
+        "ecrs_protocol_reference_metadata": "",
+        "ecrs_resp_ce_enabled": true,
+        "ecrs_cross_rx_enabled": false,
+        "ecrs_u_pair_enabled": false,
+        "ecrs_fusion_mode": "off",
+        "ecrs_fixed_rho": 0.05,
+        "ecrs_rho_cap": 0.25,
+        "ecrs_update_resp_from_fusion": false,
+        "ecrs_gate_calibration_enabled": false,
+        "ecrs_compute_only": false,
+        "ecrs_source_screen_only": true,
+        "ecrs_source_val_interval": 5,
+        "ecrs_fusion_start_epoch": 91,
+        "ecrs_lr_clock": "epoch",
+        "ecrs_leo_ce_mode": "legacy",
+        "ecrs_sampler_mode": "legacy",
+        "ecrs_cross_rx_margin": 0.2,
+        "ecrs_ema_decay": 0.99,
+        "ecrs_resume": "",
+        "ecrs_estimator_variant": "legacy28_estimated_reference"
+      }
+    }
+  },
+  "B3c": {
+    "best": {
+      "epoch": 195,
+      "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_ecrs_v2_bridge_s392005_e200_20260908_r2/B3c/best.pth",
+      "size_bytes": 13593104,
+      "feature_schema": "ADV3B02:ECRS:z_fused:unit_l2:160:v2",
+      "optimizer_step_histogram": {
+        "9543.0": 166,
+        "8811.0": 4
+      },
+      "scaler": {
+        "scale": 16.0,
+        "growth_factor": 2.0,
+        "backoff_factor": 0.5,
+        "growth_interval": 2000,
+        "_growth_tracker": 1566
+      },
+      "split_info": {
+        "train_days_label": [
+          1,
+          2,
+          3
+        ],
+        "train_rxs_idx": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "test_days_label": [],
+        "test_rxs_idx": [],
+        "named_test_sizes": {},
+        "source_only": true,
+        "meta_ssl_source_split": {
+          "mode": "meta_ssl_source_only_0p07L_0p63U_0p3Val",
+          "source_ssl_split": "0.07L/0.63U/0.3Val",
+          "ground_dg_claim_scope": "source_only",
+          "labeled_ratio": 0.07,
+          "unlabeled_ratio": 0.63,
+          "val_ratio": 0.3,
+          "train_days_idx": [
+            1,
+            2,
+            3
+          ],
+          "train_days_label": [
+            "2021_03_08",
+            "2021_03_15",
+            "2021_03_23"
+          ],
+          "holdout_days_idx": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "train_rxs_idx": [
+            1,
+            3,
+            4,
+            6,
+            8
+          ],
+          "train_rxs_label": [
+            "1-19",
+            "18-2",
+            "19-2",
+            "2-19",
+            "3-19"
+          ],
+          "holdout_rxs_idx": [
+            0,
+            2,
+            5,
+            7,
+            9,
+            10,
+            11
+          ],
+          "receiver_sets_disjoint": true,
+          "base_source_pool_size": 90000,
+          "labeled_size": 6300,
+          "unlabeled_size": 56700,
+          "source_val_size": 27000,
+          "effective_labeled_ratio": 0.07,
+          "effective_unlabeled_ratio": 0.63,
+          "effective_val_ratio": 0.3,
+          "group_count": 90,
+          "overlap_count": 0,
+          "tx_label_policy": {
+            "labeled_train": "visible",
+            "unlabeled_source": "masked_y_minus_1_no_tx_truth_in_training_metadata",
+            "source_val": "visible_eval_only"
+          },
+          "seed": 392005
+        }
+      },
+      "configuration": {
+        "wisig_train_ratio": 0.1,
+        "ssl_labeled_ratio": 0.07,
+        "ssl_unlabeled_ratio": 0.63,
+        "ssl_val_ratio": 0.3,
+        "epochs": 200,
+        "use_ecrs": true,
+        "ecrs_enable_learnable_basis": false,
+        "ecrs_enable_fasttrust": false,
+        "ecrs_teacher_stable": false,
+        "ecrs_raw_ce_weight": 0.0,
+        "ecrs_alpha_resp": 0.15,
+        "ecrs_rung": "R7",
+        "ecrs_basis_mode": "fixed_spline",
+        "ecrs_ridge_alpha": 0.01,
+        "sat_view_schedule": "1@0.30:leo_clear_weak;41@0.60:leo_low_elev_weak,leo_rain_weak;91@0.80:leo_clear_weak,leo_low_elev_weak,leo_rain_weak",
+        "seed": 392005,
+        "ecrs_version": "v2",
+        "ecrs_reference_mode": "estimated_reference",
+        "ecrs_solver_mode": "schur",
+        "ecrs_anchor_mode": "real8",
+        "ecrs_protocol_reference_path": "",
+        "ecrs_protocol_reference_metadata": "",
+        "ecrs_resp_ce_enabled": true,
+        "ecrs_cross_rx_enabled": false,
+        "ecrs_u_pair_enabled": false,
+        "ecrs_fusion_mode": "off",
+        "ecrs_fixed_rho": 0.05,
+        "ecrs_rho_cap": 0.25,
+        "ecrs_update_resp_from_fusion": false,
+        "ecrs_gate_calibration_enabled": false,
+        "ecrs_compute_only": false,
+        "ecrs_source_screen_only": true,
+        "ecrs_source_val_interval": 5,
+        "ecrs_fusion_start_epoch": 91,
+        "ecrs_lr_clock": "epoch",
+        "ecrs_leo_ce_mode": "legacy",
+        "ecrs_sampler_mode": "legacy",
+        "ecrs_cross_rx_margin": 0.2,
+        "ecrs_ema_decay": 0.99,
+        "ecrs_resume": "",
+        "ecrs_estimator_variant": "compact8"
+      }
+    },
+    "latest": {
+      "epoch": 200,
+      "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_ecrs_v2_bridge_s392005_e200_20260908_r2/B3c/latest.pth",
+      "size_bytes": 13624276,
+      "feature_schema": "ADV3B02:ECRS:z_fused:unit_l2:160:v2",
+      "optimizer_step_histogram": {
+        "9788.0": 166,
+        "9056.0": 4
+      },
+      "scaler": {
+        "scale": 16.0,
+        "growth_factor": 2.0,
+        "backoff_factor": 0.5,
+        "growth_interval": 2000,
+        "_growth_tracker": 1811
+      },
+      "split_info": {
+        "train_days_label": [
+          1,
+          2,
+          3
+        ],
+        "train_rxs_idx": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "test_days_label": [],
+        "test_rxs_idx": [],
+        "named_test_sizes": {},
+        "source_only": true,
+        "meta_ssl_source_split": {
+          "mode": "meta_ssl_source_only_0p07L_0p63U_0p3Val",
+          "source_ssl_split": "0.07L/0.63U/0.3Val",
+          "ground_dg_claim_scope": "source_only",
+          "labeled_ratio": 0.07,
+          "unlabeled_ratio": 0.63,
+          "val_ratio": 0.3,
+          "train_days_idx": [
+            1,
+            2,
+            3
+          ],
+          "train_days_label": [
+            "2021_03_08",
+            "2021_03_15",
+            "2021_03_23"
+          ],
+          "holdout_days_idx": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "train_rxs_idx": [
+            1,
+            3,
+            4,
+            6,
+            8
+          ],
+          "train_rxs_label": [
+            "1-19",
+            "18-2",
+            "19-2",
+            "2-19",
+            "3-19"
+          ],
+          "holdout_rxs_idx": [
+            0,
+            2,
+            5,
+            7,
+            9,
+            10,
+            11
+          ],
+          "receiver_sets_disjoint": true,
+          "base_source_pool_size": 90000,
+          "labeled_size": 6300,
+          "unlabeled_size": 56700,
+          "source_val_size": 27000,
+          "effective_labeled_ratio": 0.07,
+          "effective_unlabeled_ratio": 0.63,
+          "effective_val_ratio": 0.3,
+          "group_count": 90,
+          "overlap_count": 0,
+          "tx_label_policy": {
+            "labeled_train": "visible",
+            "unlabeled_source": "masked_y_minus_1_no_tx_truth_in_training_metadata",
+            "source_val": "visible_eval_only"
+          },
+          "seed": 392005
+        }
+      },
+      "configuration": {
+        "wisig_train_ratio": 0.1,
+        "ssl_labeled_ratio": 0.07,
+        "ssl_unlabeled_ratio": 0.63,
+        "ssl_val_ratio": 0.3,
+        "epochs": 200,
+        "use_ecrs": true,
+        "ecrs_enable_learnable_basis": false,
+        "ecrs_enable_fasttrust": false,
+        "ecrs_teacher_stable": false,
+        "ecrs_raw_ce_weight": 0.0,
+        "ecrs_alpha_resp": 0.15,
+        "ecrs_rung": "R7",
+        "ecrs_basis_mode": "fixed_spline",
+        "ecrs_ridge_alpha": 0.01,
+        "sat_view_schedule": "1@0.30:leo_clear_weak;41@0.60:leo_low_elev_weak,leo_rain_weak;91@0.80:leo_clear_weak,leo_low_elev_weak,leo_rain_weak",
+        "seed": 392005,
+        "ecrs_version": "v2",
+        "ecrs_reference_mode": "estimated_reference",
+        "ecrs_solver_mode": "schur",
+        "ecrs_anchor_mode": "real8",
+        "ecrs_protocol_reference_path": "",
+        "ecrs_protocol_reference_metadata": "",
+        "ecrs_resp_ce_enabled": true,
+        "ecrs_cross_rx_enabled": false,
+        "ecrs_u_pair_enabled": false,
+        "ecrs_fusion_mode": "off",
+        "ecrs_fixed_rho": 0.05,
+        "ecrs_rho_cap": 0.25,
+        "ecrs_update_resp_from_fusion": false,
+        "ecrs_gate_calibration_enabled": false,
+        "ecrs_compute_only": false,
+        "ecrs_source_screen_only": true,
+        "ecrs_source_val_interval": 5,
+        "ecrs_fusion_start_epoch": 91,
+        "ecrs_lr_clock": "epoch",
+        "ecrs_leo_ce_mode": "legacy",
+        "ecrs_sampler_mode": "legacy",
+        "ecrs_cross_rx_margin": 0.2,
+        "ecrs_ema_decay": 0.99,
+        "ecrs_resume": "",
+        "ecrs_estimator_variant": "compact8"
+      }
+    }
+  },
+  "B4": {
+    "best": {
+      "epoch": 195,
+      "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_ecrs_v2_bridge_s392005_e200_20260908_r2/B4/best.pth",
+      "size_bytes": 13642192,
+      "feature_schema": "ADV3B02:ECRS:z_fused:unit_l2:160:v2",
+      "optimizer_step_histogram": {
+        "9543.0": 166,
+        "8811.0": 4
+      },
+      "scaler": {
+        "scale": 32.0,
+        "growth_factor": 2.0,
+        "backoff_factor": 0.5,
+        "growth_interval": 2000,
+        "_growth_tracker": 866
+      },
+      "split_info": {
+        "train_days_label": [
+          1,
+          2,
+          3
+        ],
+        "train_rxs_idx": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "test_days_label": [],
+        "test_rxs_idx": [],
+        "named_test_sizes": {},
+        "source_only": true,
+        "meta_ssl_source_split": {
+          "mode": "meta_ssl_source_only_0p07L_0p63U_0p3Val",
+          "source_ssl_split": "0.07L/0.63U/0.3Val",
+          "ground_dg_claim_scope": "source_only",
+          "labeled_ratio": 0.07,
+          "unlabeled_ratio": 0.63,
+          "val_ratio": 0.3,
+          "train_days_idx": [
+            1,
+            2,
+            3
+          ],
+          "train_days_label": [
+            "2021_03_08",
+            "2021_03_15",
+            "2021_03_23"
+          ],
+          "holdout_days_idx": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "train_rxs_idx": [
+            1,
+            3,
+            4,
+            6,
+            8
+          ],
+          "train_rxs_label": [
+            "1-19",
+            "18-2",
+            "19-2",
+            "2-19",
+            "3-19"
+          ],
+          "holdout_rxs_idx": [
+            0,
+            2,
+            5,
+            7,
+            9,
+            10,
+            11
+          ],
+          "receiver_sets_disjoint": true,
+          "base_source_pool_size": 90000,
+          "labeled_size": 6300,
+          "unlabeled_size": 56700,
+          "source_val_size": 27000,
+          "effective_labeled_ratio": 0.07,
+          "effective_unlabeled_ratio": 0.63,
+          "effective_val_ratio": 0.3,
+          "group_count": 90,
+          "overlap_count": 0,
+          "tx_label_policy": {
+            "labeled_train": "visible",
+            "unlabeled_source": "masked_y_minus_1_no_tx_truth_in_training_metadata",
+            "source_val": "visible_eval_only"
+          },
+          "seed": 392005
+        }
+      },
+      "configuration": {
+        "wisig_train_ratio": 0.1,
+        "ssl_labeled_ratio": 0.07,
+        "ssl_unlabeled_ratio": 0.63,
+        "ssl_val_ratio": 0.3,
+        "epochs": 200,
+        "use_ecrs": true,
+        "ecrs_enable_learnable_basis": false,
+        "ecrs_enable_fasttrust": false,
+        "ecrs_teacher_stable": false,
+        "ecrs_raw_ce_weight": 0.0,
+        "ecrs_alpha_resp": 0.15,
+        "ecrs_rung": "R7",
+        "ecrs_basis_mode": "fixed_spline",
+        "ecrs_ridge_alpha": 0.01,
+        "sat_view_schedule": "1@0.30:leo_clear_weak;41@0.60:leo_low_elev_weak,leo_rain_weak;91@0.80:leo_clear_weak,leo_low_elev_weak,leo_rain_weak",
+        "seed": 392005,
+        "ecrs_version": "v2",
+        "ecrs_reference_mode": "estimated_reference",
+        "ecrs_solver_mode": "schur",
+        "ecrs_anchor_mode": "complex24",
+        "ecrs_protocol_reference_path": "",
+        "ecrs_protocol_reference_metadata": "",
+        "ecrs_resp_ce_enabled": true,
+        "ecrs_cross_rx_enabled": false,
+        "ecrs_u_pair_enabled": false,
+        "ecrs_fusion_mode": "off",
+        "ecrs_fixed_rho": 0.05,
+        "ecrs_rho_cap": 0.25,
+        "ecrs_update_resp_from_fusion": false,
+        "ecrs_gate_calibration_enabled": false,
+        "ecrs_compute_only": false,
+        "ecrs_source_screen_only": true,
+        "ecrs_source_val_interval": 5,
+        "ecrs_fusion_start_epoch": 91,
+        "ecrs_lr_clock": "epoch",
+        "ecrs_leo_ce_mode": "legacy",
+        "ecrs_sampler_mode": "legacy",
+        "ecrs_cross_rx_margin": 0.2,
+        "ecrs_ema_decay": 0.99,
+        "ecrs_resume": "",
+        "ecrs_estimator_variant": "compact8"
+      }
+    },
+    "latest": {
+      "epoch": 200,
+      "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_ecrs_v2_bridge_s392005_e200_20260908_r2/B4/latest.pth",
+      "size_bytes": 13673428,
+      "feature_schema": "ADV3B02:ECRS:z_fused:unit_l2:160:v2",
+      "optimizer_step_histogram": {
+        "9788.0": 166,
+        "9056.0": 4
+      },
+      "scaler": {
+        "scale": 32.0,
+        "growth_factor": 2.0,
+        "backoff_factor": 0.5,
+        "growth_interval": 2000,
+        "_growth_tracker": 1111
+      },
+      "split_info": {
+        "train_days_label": [
+          1,
+          2,
+          3
+        ],
+        "train_rxs_idx": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "test_days_label": [],
+        "test_rxs_idx": [],
+        "named_test_sizes": {},
+        "source_only": true,
+        "meta_ssl_source_split": {
+          "mode": "meta_ssl_source_only_0p07L_0p63U_0p3Val",
+          "source_ssl_split": "0.07L/0.63U/0.3Val",
+          "ground_dg_claim_scope": "source_only",
+          "labeled_ratio": 0.07,
+          "unlabeled_ratio": 0.63,
+          "val_ratio": 0.3,
+          "train_days_idx": [
+            1,
+            2,
+            3
+          ],
+          "train_days_label": [
+            "2021_03_08",
+            "2021_03_15",
+            "2021_03_23"
+          ],
+          "holdout_days_idx": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "train_rxs_idx": [
+            1,
+            3,
+            4,
+            6,
+            8
+          ],
+          "train_rxs_label": [
+            "1-19",
+            "18-2",
+            "19-2",
+            "2-19",
+            "3-19"
+          ],
+          "holdout_rxs_idx": [
+            0,
+            2,
+            5,
+            7,
+            9,
+            10,
+            11
+          ],
+          "receiver_sets_disjoint": true,
+          "base_source_pool_size": 90000,
+          "labeled_size": 6300,
+          "unlabeled_size": 56700,
+          "source_val_size": 27000,
+          "effective_labeled_ratio": 0.07,
+          "effective_unlabeled_ratio": 0.63,
+          "effective_val_ratio": 0.3,
+          "group_count": 90,
+          "overlap_count": 0,
+          "tx_label_policy": {
+            "labeled_train": "visible",
+            "unlabeled_source": "masked_y_minus_1_no_tx_truth_in_training_metadata",
+            "source_val": "visible_eval_only"
+          },
+          "seed": 392005
+        }
+      },
+      "configuration": {
+        "wisig_train_ratio": 0.1,
+        "ssl_labeled_ratio": 0.07,
+        "ssl_unlabeled_ratio": 0.63,
+        "ssl_val_ratio": 0.3,
+        "epochs": 200,
+        "use_ecrs": true,
+        "ecrs_enable_learnable_basis": false,
+        "ecrs_enable_fasttrust": false,
+        "ecrs_teacher_stable": false,
+        "ecrs_raw_ce_weight": 0.0,
+        "ecrs_alpha_resp": 0.15,
+        "ecrs_rung": "R7",
+        "ecrs_basis_mode": "fixed_spline",
+        "ecrs_ridge_alpha": 0.01,
+        "sat_view_schedule": "1@0.30:leo_clear_weak;41@0.60:leo_low_elev_weak,leo_rain_weak;91@0.80:leo_clear_weak,leo_low_elev_weak,leo_rain_weak",
+        "seed": 392005,
+        "ecrs_version": "v2",
+        "ecrs_reference_mode": "estimated_reference",
+        "ecrs_solver_mode": "schur",
+        "ecrs_anchor_mode": "complex24",
+        "ecrs_protocol_reference_path": "",
+        "ecrs_protocol_reference_metadata": "",
+        "ecrs_resp_ce_enabled": true,
+        "ecrs_cross_rx_enabled": false,
+        "ecrs_u_pair_enabled": false,
+        "ecrs_fusion_mode": "off",
+        "ecrs_fixed_rho": 0.05,
+        "ecrs_rho_cap": 0.25,
+        "ecrs_update_resp_from_fusion": false,
+        "ecrs_gate_calibration_enabled": false,
+        "ecrs_compute_only": false,
+        "ecrs_source_screen_only": true,
+        "ecrs_source_val_interval": 5,
+        "ecrs_fusion_start_epoch": 91,
+        "ecrs_lr_clock": "epoch",
+        "ecrs_leo_ce_mode": "legacy",
+        "ecrs_sampler_mode": "legacy",
+        "ecrs_cross_rx_margin": 0.2,
+        "ecrs_ema_decay": 0.99,
+        "ecrs_resume": "",
+        "ecrs_estimator_variant": "compact8"
+      }
+    }
+  }
+}

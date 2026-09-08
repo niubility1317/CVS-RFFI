@@ -1,0 +1,82 @@
+[
+  {
+    "row": "B3c",
+    "reference": "B0",
+    "scene": "clean",
+    "count": 27000,
+    "rescue": 52,
+    "harm": 34,
+    "disagreed": 121,
+    "net_pp": 0.06666666666666667
+  },
+  {
+    "row": "B4",
+    "reference": "B0",
+    "scene": "clean",
+    "count": 27000,
+    "rescue": 44,
+    "harm": 49,
+    "disagreed": 135,
+    "net_pp": -0.018518518518518517
+  },
+  {
+    "row": "B3c",
+    "reference": "B0",
+    "scene": "leo_clear_weak",
+    "count": 27000,
+    "rescue": 557,
+    "harm": 667,
+    "disagreed": 1777,
+    "net_pp": -0.4074074074074074
+  },
+  {
+    "row": "B4",
+    "reference": "B0",
+    "scene": "leo_clear_weak",
+    "count": 27000,
+    "rescue": 649,
+    "harm": 620,
+    "disagreed": 1867,
+    "net_pp": 0.10740740740740741
+  },
+  {
+    "row": "B3c",
+    "reference": "B0",
+    "scene": "leo_low_elev_weak",
+    "count": 27000,
+    "rescue": 699,
+    "harm": 749,
+    "disagreed": 2189,
+    "net_pp": -0.18518518518518517
+  },
+  {
+    "row": "B4",
+    "reference": "B0",
+    "scene": "leo_low_elev_weak",
+    "count": 27000,
+    "rescue": 792,
+    "harm": 670,
+    "disagreed": 2165,
+    "net_pp": 0.45185185185185184
+  },
+  {
+    "row": "B3c",
+    "reference": "B0",
+    "scene": "leo_rain_weak",
+    "count": 27000,
+    "rescue": 675,
+    "harm": 729,
+    "disagreed": 2067,
+    "net_pp": -0.2
+  },
+  {
+    "row": "B4",
+    "reference": "B0",
+    "scene": "leo_rain_weak",
+    "count": 27000,
+    "rescue": 798,
+    "harm": 771,
+    "disagreed": 2269,
+    "net_pp": 0.1
+  }
+]
