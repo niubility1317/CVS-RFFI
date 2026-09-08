@@ -1,0 +1,22 @@
+{
+  "status": "VERIFIED",
+  "checks": {
+    "verified_v2_source_files": 22,
+    "early_archive_files": 278,
+    "pair_archive_files": 258,
+    "full_fields": 1191,
+    "epoch_rows": 7318,
+    "test_rows": 38,
+    "test_complete": 36,
+    "loss_rows": 7318,
+    "max_chart_dataset_rows": 1600,
+    "datasets": 24,
+    "artifact_bytes": 2541739,
+    "report_characters": 22037
+  },
+  "limitations": [
+    "HTML rendering validation saved separately",
+    "No new target evaluation or training",
+    "Early original A1 release identity unresolved; historical reference labeled"
+  ]
+}

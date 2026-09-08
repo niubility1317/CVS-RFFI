@@ -1,0 +1,285 @@
+[
+  {
+    "dataset": "test_scatter",
+    "sql": "SELECT \"row\", \"family\", \"clean\", \"LEO\", \"hours\", \"n_clean\" FROM \"test_scatter\" ORDER BY rowid;",
+    "upstream_files": [
+      "all_test_results.csv",
+      "pair_test_all_counts_confusions.json",
+      "early_receiver_scenario.csv",
+      "pair_receiver_day_breakdown.csv",
+      "pair_per_class.csv"
+    ]
+  },
+  {
+    "dataset": "pair_delta",
+    "sql": "SELECT \"method\", \"n\", \"clean\", \"leo\", \"sd\", \"delta_clean\", \"delta_leo\", \"hours\", \"positive\" FROM \"pair_delta\" ORDER BY rowid;",
+    "upstream_files": [
+      "all_test_results.csv",
+      "pair_test_all_counts_confusions.json",
+      "early_receiver_scenario.csv",
+      "pair_receiver_day_breakdown.csv",
+      "pair_per_class.csv"
+    ]
+  },
+  {
+    "dataset": "v1_clean",
+    "sql": "SELECT \"e\", \"row\", \"value\" FROM \"v1_clean\" ORDER BY rowid;",
+    "upstream_files": [
+      "training_all_fields.csv.gz",
+      "training_losses.csv",
+      "training_health.csv",
+      "loss_statistics.csv",
+      "all_numeric_statistics.csv",
+      "log_scan.json"
+    ]
+  },
+  {
+    "dataset": "v1_leo",
+    "sql": "SELECT \"e\", \"row\", \"value\" FROM \"v1_leo\" ORDER BY rowid;",
+    "upstream_files": [
+      "training_all_fields.csv.gz",
+      "training_losses.csv",
+      "training_health.csv",
+      "loss_statistics.csv",
+      "all_numeric_statistics.csv",
+      "log_scan.json"
+    ]
+  },
+  {
+    "dataset": "v1_loss",
+    "sql": "SELECT \"e\", \"row\", \"value\" FROM \"v1_loss\" ORDER BY rowid;",
+    "upstream_files": [
+      "training_all_fields.csv.gz",
+      "training_losses.csv",
+      "training_health.csv",
+      "loss_statistics.csv",
+      "all_numeric_statistics.csv",
+      "log_scan.json"
+    ]
+  },
+  {
+    "dataset": "v2_clean",
+    "sql": "SELECT \"e\", \"row\", \"value\" FROM \"v2_clean\" ORDER BY rowid;",
+    "upstream_files": [
+      "training_all_fields.csv.gz",
+      "training_losses.csv",
+      "training_health.csv",
+      "loss_statistics.csv",
+      "all_numeric_statistics.csv",
+      "log_scan.json"
+    ]
+  },
+  {
+    "dataset": "v2_leo",
+    "sql": "SELECT \"e\", \"row\", \"value\" FROM \"v2_leo\" ORDER BY rowid;",
+    "upstream_files": [
+      "training_all_fields.csv.gz",
+      "training_losses.csv",
+      "training_health.csv",
+      "loss_statistics.csv",
+      "all_numeric_statistics.csv",
+      "log_scan.json"
+    ]
+  },
+  {
+    "dataset": "v2_loss",
+    "sql": "SELECT \"e\", \"row\", \"value\" FROM \"v2_loss\" ORDER BY rowid;",
+    "upstream_files": [
+      "training_all_fields.csv.gz",
+      "training_losses.csv",
+      "training_health.csv",
+      "loss_statistics.csv",
+      "all_numeric_statistics.csv",
+      "log_scan.json"
+    ]
+  },
+  {
+    "dataset": "pair392005_clean",
+    "sql": "SELECT \"e\", \"row\", \"value\" FROM \"pair392005_clean\" ORDER BY rowid;",
+    "upstream_files": [
+      "training_all_fields.csv.gz",
+      "training_losses.csv",
+      "training_health.csv",
+      "loss_statistics.csv",
+      "all_numeric_statistics.csv",
+      "log_scan.json"
+    ]
+  },
+  {
+    "dataset": "pair392005_leo",
+    "sql": "SELECT \"e\", \"row\", \"value\" FROM \"pair392005_leo\" ORDER BY rowid;",
+    "upstream_files": [
+      "training_all_fields.csv.gz",
+      "training_losses.csv",
+      "training_health.csv",
+      "loss_statistics.csv",
+      "all_numeric_statistics.csv",
+      "log_scan.json"
+    ]
+  },
+  {
+    "dataset": "pair392005_loss",
+    "sql": "SELECT \"e\", \"row\", \"value\" FROM \"pair392005_loss\" ORDER BY rowid;",
+    "upstream_files": [
+      "training_all_fields.csv.gz",
+      "training_losses.csv",
+      "training_health.csv",
+      "loss_statistics.csv",
+      "all_numeric_statistics.csv",
+      "log_scan.json"
+    ]
+  },
+  {
+    "dataset": "pair392006_clean",
+    "sql": "SELECT \"e\", \"row\", \"value\" FROM \"pair392006_clean\" ORDER BY rowid;",
+    "upstream_files": [
+      "training_all_fields.csv.gz",
+      "training_losses.csv",
+      "training_health.csv",
+      "loss_statistics.csv",
+      "all_numeric_statistics.csv",
+      "log_scan.json"
+    ]
+  },
+  {
+    "dataset": "pair392006_leo",
+    "sql": "SELECT \"e\", \"row\", \"value\" FROM \"pair392006_leo\" ORDER BY rowid;",
+    "upstream_files": [
+      "training_all_fields.csv.gz",
+      "training_losses.csv",
+      "training_health.csv",
+      "loss_statistics.csv",
+      "all_numeric_statistics.csv",
+      "log_scan.json"
+    ]
+  },
+  {
+    "dataset": "pair392006_loss",
+    "sql": "SELECT \"e\", \"row\", \"value\" FROM \"pair392006_loss\" ORDER BY rowid;",
+    "upstream_files": [
+      "training_all_fields.csv.gz",
+      "training_losses.csv",
+      "training_health.csv",
+      "loss_statistics.csv",
+      "all_numeric_statistics.csv",
+      "log_scan.json"
+    ]
+  },
+  {
+    "dataset": "pair392007_clean",
+    "sql": "SELECT \"e\", \"row\", \"value\" FROM \"pair392007_clean\" ORDER BY rowid;",
+    "upstream_files": [
+      "training_all_fields.csv.gz",
+      "training_losses.csv",
+      "training_health.csv",
+      "loss_statistics.csv",
+      "all_numeric_statistics.csv",
+      "log_scan.json"
+    ]
+  },
+  {
+    "dataset": "pair392007_leo",
+    "sql": "SELECT \"e\", \"row\", \"value\" FROM \"pair392007_leo\" ORDER BY rowid;",
+    "upstream_files": [
+      "training_all_fields.csv.gz",
+      "training_losses.csv",
+      "training_health.csv",
+      "loss_statistics.csv",
+      "all_numeric_statistics.csv",
+      "log_scan.json"
+    ]
+  },
+  {
+    "dataset": "pair392007_loss",
+    "sql": "SELECT \"e\", \"row\", \"value\" FROM \"pair392007_loss\" ORDER BY rowid;",
+    "upstream_files": [
+      "training_all_fields.csv.gz",
+      "training_losses.csv",
+      "training_health.csv",
+      "loss_statistics.csv",
+      "all_numeric_statistics.csv",
+      "log_scan.json"
+    ]
+  },
+  {
+    "dataset": "a1_domain",
+    "sql": "SELECT \"e\", \"row\", \"value\" FROM \"a1_domain\" ORDER BY rowid;",
+    "upstream_files": [
+      "training_all_fields.csv.gz",
+      "training_losses.csv",
+      "training_health.csv",
+      "loss_statistics.csv",
+      "all_numeric_statistics.csv",
+      "log_scan.json"
+    ]
+  },
+  {
+    "dataset": "base_weights",
+    "sql": "SELECT \"item\", \"A1\", \"A4\", \"P3\", \"A_POINT_S392005\", \"B_SAFE_S392006\" FROM \"base_weights\" ORDER BY rowid;",
+    "upstream_files": [
+      "training_all_fields.csv.gz",
+      "training_losses.csv",
+      "training_health.csv",
+      "loss_statistics.csv",
+      "all_numeric_statistics.csv",
+      "log_scan.json"
+    ]
+  },
+  {
+    "dataset": "pair_config",
+    "sql": "SELECT \"method\", \"pair_weight\", \"pair_pseudo_weight\", \"pair_tangent_weight\", \"pair_route_weight\", \"memory\", \"reform\" FROM \"pair_config\" ORDER BY rowid;",
+    "upstream_files": [
+      "configurations.json",
+      "raw_pair_training_logs.tar.gz",
+      "early_release_sources.tar.gz",
+      "early_historical_git_reference.zip",
+      "prior_two_batch_report.md",
+      "prior_a1_report.md"
+    ]
+  },
+  {
+    "dataset": "early_results",
+    "sql": "SELECT \"row_id\", \"family\", \"seed\", \"status\", \"clean\", \"leo_clear_weak\", \"leo_low_elev_weak\", \"leo_rain_weak\", \"leo_mean\", \"train_hours\", \"time_kind\", \"peak_allocated_gib\", \"leo_observation_protocol\" FROM \"early_results\" ORDER BY rowid;",
+    "upstream_files": [
+      "all_test_results.csv",
+      "pair_test_all_counts_confusions.json",
+      "early_receiver_scenario.csv",
+      "pair_receiver_day_breakdown.csv",
+      "pair_per_class.csv"
+    ]
+  },
+  {
+    "dataset": "pair_results",
+    "sql": "SELECT \"row_id\", \"family\", \"seed\", \"status\", \"clean\", \"leo_clear_weak\", \"leo_low_elev_weak\", \"leo_rain_weak\", \"leo_mean\", \"train_hours\", \"time_kind\", \"peak_allocated_gib\", \"leo_observation_protocol\" FROM \"pair_results\" ORDER BY rowid;",
+    "upstream_files": [
+      "all_test_results.csv",
+      "pair_test_all_counts_confusions.json",
+      "early_receiver_scenario.csv",
+      "pair_receiver_day_breakdown.csv",
+      "pair_per_class.csv"
+    ]
+  },
+  {
+    "dataset": "method_results",
+    "sql": "SELECT \"method\", \"n\", \"clean\", \"leo\", \"sd\", \"delta_clean\", \"delta_leo\", \"hours\", \"positive\" FROM \"method_results\" ORDER BY rowid;",
+    "upstream_files": [
+      "all_test_results.csv",
+      "pair_test_all_counts_confusions.json",
+      "early_receiver_scenario.csv",
+      "pair_receiver_day_breakdown.csv",
+      "pair_per_class.csv"
+    ]
+  },
+  {
+    "dataset": "health",
+    "sql": "SELECT \"row_id\", \"family\", \"epochs\", \"status\", \"source_clean_final\", \"source_leo_final\", \"source_clean_min\", \"source_leo_min\", \"source_clean_max\", \"source_leo_max\", \"loss_final\", \"loss_max\", \"loss_max_epoch\", \"weighted_domain_loss_final\", \"source_domain_acc_final\", \"grad_skip_epochs\", \"grad_skip_max_fraction\", \"loss_skip_epochs\", \"zero_optimizer_epochs\", \"train_hours\", \"time_kind\", \"peak_allocated_gib\", \"parameters\" FROM \"health\" ORDER BY rowid;",
+    "upstream_files": [
+      "training_all_fields.csv.gz",
+      "training_losses.csv",
+      "training_health.csv",
+      "loss_statistics.csv",
+      "all_numeric_statistics.csv",
+      "log_scan.json"
+    ]
+  }
+]

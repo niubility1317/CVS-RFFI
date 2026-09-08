@@ -1,0 +1,49 @@
+{
+  "ok": true,
+  "results": [
+    {
+      "counts": {
+        "blocks": 39,
+        "charts": 18,
+        "html": 0,
+        "metrics": 0,
+        "tables": 6
+      },
+      "ok": true,
+      "sourceInteraction": "semantic_click",
+      "timings": {
+        "readerReadyMs": 3172.4,
+        "contentChecksMs": 1172.2,
+        "sourceDialogMs": 2248.3,
+        "totalMs": 6593.6
+      },
+      "viewport": {
+        "name": "desktop",
+        "width": 1440,
+        "height": 1000
+      }
+    },
+    {
+      "counts": {
+        "blocks": 39,
+        "charts": 18,
+        "html": 0,
+        "metrics": 0,
+        "tables": 6
+      },
+      "ok": true,
+      "sourceInteraction": "not_applicable",
+      "timings": {
+        "readerReadyMs": 4189,
+        "contentChecksMs": 2244.5,
+        "sourceDialogMs": 0,
+        "totalMs": 6433.9
+      },
+      "viewport": {
+        "name": "mobile",
+        "width": 390,
+        "height": 844
+      }
+    }
+  ]
+}
