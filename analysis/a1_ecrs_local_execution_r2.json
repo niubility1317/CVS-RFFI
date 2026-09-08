@@ -1,0 +1,130 @@
+{
+  "status": "PASS",
+  "checkpoint_loads": 0,
+  "target_inputs": 0,
+  "initialization": "fresh_random",
+  "paired_model_heads_rng": "EXACT",
+  "synthetic_gradient_checks": [
+    {
+      "scope": "clean",
+      "leo_applied": false,
+      "amp": false,
+      "valid_anchors": 30,
+      "leo_count": 0,
+      "loss": 0.010110198520123959,
+      "identity_gradient": "nonzero_finite"
+    },
+    {
+      "scope": "clean",
+      "leo_applied": false,
+      "amp": true,
+      "valid_anchors": 30,
+      "leo_count": 0,
+      "loss": 0.009787476621568203,
+      "identity_gradient": "nonzero_finite"
+    },
+    {
+      "scope": "clean",
+      "leo_applied": true,
+      "amp": false,
+      "valid_anchors": 30,
+      "leo_count": 0,
+      "loss": 0.010035580955445766,
+      "identity_gradient": "nonzero_finite"
+    },
+    {
+      "scope": "clean",
+      "leo_applied": true,
+      "amp": true,
+      "valid_anchors": 30,
+      "leo_count": 0,
+      "loss": 0.0093406205996871,
+      "identity_gradient": "nonzero_finite"
+    },
+    {
+      "scope": "clean_leo",
+      "leo_applied": false,
+      "amp": false,
+      "valid_anchors": 30,
+      "leo_count": 0,
+      "loss": 0.01052970252931118,
+      "identity_gradient": "nonzero_finite"
+    },
+    {
+      "scope": "clean_leo",
+      "leo_applied": false,
+      "amp": true,
+      "valid_anchors": 30,
+      "leo_count": 0,
+      "loss": 0.010348280891776085,
+      "identity_gradient": "nonzero_finite"
+    },
+    {
+      "scope": "clean_leo",
+      "leo_applied": true,
+      "amp": false,
+      "valid_anchors": 60,
+      "leo_count": 30,
+      "loss": 0.009815806522965431,
+      "identity_gradient": "nonzero_finite"
+    },
+    {
+      "scope": "clean_leo",
+      "leo_applied": true,
+      "amp": true,
+      "valid_anchors": 60,
+      "leo_count": 30,
+      "loss": 0.010492296889424324,
+      "identity_gradient": "nonzero_finite"
+    }
+  ],
+  "actual_train_entry_successful_steps": 4,
+  "actual_train_entry_objectives": [
+    {
+      "configured": 1.0,
+      "executed": 1.0,
+      "valid_anchors": 128,
+      "clean_count": 128,
+      "leo_count": 0,
+      "raw_loss": 0.20299264788627625,
+      "weighted_loss": 0.010149632580578327
+    },
+    {
+      "configured": 1.0,
+      "executed": 1.0,
+      "valid_anchors": 128,
+      "clean_count": 128,
+      "leo_count": 0,
+      "raw_loss": 0.20123505592346191,
+      "weighted_loss": 0.01006175298243761
+    },
+    {
+      "configured": 1.0,
+      "executed": 1.0,
+      "valid_anchors": 128,
+      "clean_count": 128,
+      "leo_count": 0,
+      "raw_loss": 0.19984373450279236,
+      "weighted_loss": 0.009992186911404133
+    },
+    {
+      "configured": 1.0,
+      "executed": 1.0,
+      "valid_anchors": 128,
+      "clean_count": 128,
+      "leo_count": 0,
+      "raw_loss": 0.20388442277908325,
+      "weighted_loss": 0.010194221511483192
+    },
+    {
+      "configured": 1.0,
+      "executed": 1.0,
+      "valid_anchors": 128,
+      "clean_count": 128,
+      "leo_count": 0,
+      "raw_loss": 0.19630759954452515,
+      "weighted_loss": 0.009815379977226257
+    }
+  ],
+  "entry_scope": "actual matrix combined candidate E1 source loader; target-loader builder replaced with empty mapping; stop after four successful optimizer steps; no formal training result"
+}

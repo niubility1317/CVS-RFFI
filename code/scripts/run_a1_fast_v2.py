@@ -43,14 +43,33 @@ def gpu_compute_pids(gpu):
         if ',' in line and line.split(',')[0].strip()==mapping[gpu]}
 
 
-def main():
+def predecessor_complete(matrix, project):
+    predecessor = matrix.get('after_run')
+    if not predecessor:
+        return True
+    if not predecessor.replace('_','').isalnum():
+        raise ValueError('Invalid predecessor run ID')
+    path = project/'runs'/predecessor/'pipeline_state.json'
+    try:
+        state = json.loads(path.read_text(encoding='utf-8'))
+    except json.JSONDecodeError:
+        # The predecessor's existing writer may be between truncate and write.
+        return False
+    terminal = {'SCORED_PENDING_ANALYSIS','EVAL_FAILED','TRAIN_FAILED'}
+    return bool(state.get('rows')) and all(row.get('status') in terminal for row in state['rows'].values())
+
+
+def main(matrix_factory=v2_matrix, check_script='check_a1_fast_v2.py'):
     parser=argparse.ArgumentParser()
     parser.add_argument('--project-root',type=Path,required=True)
     parser.add_argument('--run-id',required=True)
     parser.add_argument('--dry-run',action='store_true')
+    parser.add_argument('--detach',action='store_true')
     args=parser.parse_args()
     if not args.run_id.replace('_','').isalnum(): raise ValueError('Invalid run ID')
-    matrix=v2_matrix(); project=args.project_root
+    matrix=matrix_factory(); project=args.project_root
+    capacity=int(matrix.get('max_gpu_processes',1))
+    if capacity not in (1,2): raise ValueError('GPU training capacity must be one or two')
     root=project/'runs'/args.run_id; logs=project/'logs'/args.run_id
     commands={row['id']:v2_command(matrix,project_root=project,run_root=root,row=row) for row in matrix['rows']}
     if args.dry_run:
@@ -59,20 +78,34 @@ def main():
     for path in (project/'Dataset_WigSig/ManySig.pkl',project/'runs'/BASE_RUN/'target_inputs/manifest.json',
                  project/'runs'/BASE_RUN/'target_truth/truth_sidecar.json'):
         if not path.is_file(): raise FileNotFoundError(path)
+    if args.detach:
+        argv=[sys.executable,'-u',str(Path(sys.argv[0]).resolve()),
+              '--project-root',str(project),'--run-id',args.run_id]
+        with (RELEASE/'dispatcher.log').open('x',encoding='utf-8') as output:
+            process=subprocess.Popen(argv,cwd=RELEASE,stdin=subprocess.DEVNULL,
+                stdout=output,stderr=subprocess.STDOUT,start_new_session=True)
+        write_json(RELEASE/'dispatcher_process.json',{'pid':process.pid,'argv':argv,'cwd':str(RELEASE)})
+        print(json.dumps({'status':'DISPATCHED','pid':process.pid}),flush=True)
+        return
     root.mkdir(); logs.mkdir()
     state={'status':'GPU_CHECK','pid':os.getpid(),'release':str(RELEASE),'seed':392005,
-           'checkpoint':None,'initialization':'random_no_checkpoint','rows':{}}
+           'checkpoint':None,'initialization':'random_no_checkpoint','rows':{},
+           'after_run':matrix.get('after_run'),'max_gpu_processes':capacity,
+           'waiting_rows':[r['id'] for r in matrix['rows']]}
     write_json(root/'pipeline_state.json',state); write_json(root/'effective_matrix.json',matrix)
     try:
         first_gpu=matrix['rows'][0]['gpu']
-        while gpu_compute_pids(first_gpu): time.sleep(30)
-        subprocess.run([sys.executable,str(RELEASE/'code/scripts/check_a1_fast_v2.py'),
+        while not predecessor_complete(matrix,project) or len(gpu_compute_pids(first_gpu))>=capacity:
+            state['status']='WAITING_FOR_PREDECESSOR_OR_GPU'; write_json(root/'pipeline_state.json',state)
+            time.sleep(30)
+        state['status']='GPU_CHECK'; write_json(root/'pipeline_state.json',state)
+        subprocess.run([sys.executable,str(RELEASE/'code/scripts'/check_script),
             '--device','cuda:0','--output',str(logs/'execution_check.json')],
             cwd=RELEASE,env=environment(first_gpu),check=True)
         pending=list(matrix['rows']); running={}; failed=False
         while pending or running:
             for row in list(pending):
-                if gpu_compute_pids(row['gpu']): continue
+                if len(gpu_compute_pids(row['gpu']))>=capacity: continue
                 folder=root/row['id']; folder.mkdir()
                 info={'gpu':row['gpu'],'cwd':str(RELEASE),'argv':commands[row['id']],'created':time.time()}
                 write_json(folder/'launch_config.json',info)

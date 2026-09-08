@@ -404,6 +404,9 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--a1_ema_versioned_updates", type=str2bool, default=False)
     parser.add_argument("--a1_ema_startup_average", type=str2bool, default=False)
     parser.add_argument("--a1_logit_coverage_weighting", type=str2bool, default=False)
+    parser.add_argument("--a1_ecrs_cross_rx_weight", type=float, default=0.0)
+    parser.add_argument("--a1_ecrs_cross_rx_margin", type=float, default=0.2)
+    parser.add_argument("--a1_ecrs_cross_rx_scope", choices=("clean", "clean_leo"), default="clean")
     parser.add_argument("--use_a1_r3", type=str2bool, default=False)
     parser.add_argument("--a1_r3_aux_scale", type=float, choices=(0.0, 1.0), default=1.0)
     parser.add_argument("--daot_ablation", type=str, default="", choices=["", "A0", "A1", "A2", "A3", "A4", "A5", "A6", "A7", "A8"])
@@ -2785,6 +2788,18 @@ def _build_ssdg_wisig_data(args, device: torch.device):
             domain_key="rx_day",
             drop_last=True,
         )
+        if float(getattr(args, "a1_ecrs_cross_rx_weight", 0.0)) > 0.0:
+            missing_cells = [(tx, dom) for tx in balanced_sampler.tx_values
+                             for dom in balanced_sampler.domain_values
+                             if not balanced_sampler.cells.get((tx, dom))]
+            if (missing_cells or len(balanced_sampler.tx_values) < balanced_sampler.tx_per_batch
+                    or len(balanced_sampler.domain_values) < balanced_sampler.domain_per_batch):
+                raise ValueError("A1 ECRS balanced L requires nonempty selected TX/domain cells; refusing empty batches")
+            if balanced_sampler.batch_size != int(args.batch_size):
+                raise ValueError("A1 ECRS balanced L must preserve the registered labeled batch size")
+            print(f"[ECRS-BATCH] labeled_cells={len(balanced_sampler.cells)} "
+                  f"tx={len(balanced_sampler.tx_values)} rx_day={len(balanced_sampler.domain_values)} "
+                  f"batch={balanced_sampler.batch_size} replacement={int(balanced_sampler.replacement)}",flush=True)
         loader_kwargs = {
             "batch_sampler": balanced_sampler,
             "num_workers": int(args.num_workers),
@@ -4107,6 +4122,13 @@ def _validate_a1_scratch_only(args) -> None:
         raise ValueError("A1 scratch-only forbids baseline/teacher checkpoints")
     if _frozen_teacher_requested(args):
         raise ValueError("A1 scratch-only forbids pretrained anchor/distillation objectives")
+
+
+def _validate_a1_ecrs_config(args) -> None:
+    for name in ("a1_ecrs_cross_rx_weight", "a1_ecrs_cross_rx_margin"):
+        value = float(getattr(args, name, 0.0))
+        if not math.isfinite(value) or value < 0.0:
+            raise ValueError(name + " must be finite and nonnegative")
 
 
 def _stage_gate_scale(epoch: int, *, start_epoch: int = 1, warmup_epochs: int = 0) -> float:
@@ -8282,6 +8304,7 @@ def train(args) -> int:
     safe_latest_path = Path(str(args.safe_latest_path).strip()) if str(args.safe_latest_path).strip() else out_dir / "latest_safe_ssdg.pth"
     phase2_audit_state = _phase2_audit_state(args)
     _validate_a1_scratch_only(args)
+    _validate_a1_ecrs_config(args)
     data_ctx = _build_ssdg_wisig_data(args, device)
     use_ckpt = bool(str(args.baseline_ckpt).strip()) and not bool(args.from_scratch)
     ckpt = load_checkpoint(args.baseline_ckpt, device) if use_ckpt else {"model": None, "args": {}, "stats": {}, "split_info": None}
@@ -8712,6 +8735,7 @@ def train(args) -> int:
             )
         )
     r3_optimizer_steps = 0
+    ecrs_cross_rx_successful_steps = 0
     for epoch in range(1, total_epochs + 1):
         if direct_metric_reference_bank is not None:
             direct_metric_reference_bank.maybe_promote(epoch)
@@ -8825,6 +8849,8 @@ def train(args) -> int:
             x_l, y_l, extra_l = move_batch(labeled_batch, device)
             r3_x_l = x_l
             r3_l_logs, r3_u_logs = {}, {}
+            ecrs_cross_rx_logs = {}
+            ecrs_cross_rx_valid_anchors = 0
             if muse_state is not None:
                 _assert_muse_open_geometry_role("L_s")
             labeled_clean_count = int(y_l.numel())
@@ -10039,6 +10065,25 @@ def train(args) -> int:
                         role="L_s", args=args, epoch=epoch, batch_idx=batch_idx,
                         optimizer_step=r3_optimizer_steps, apply_sat_fn=apply_sat_channel_for_scenario)
                     loss_closed_l = loss_closed_l + r3_l_loss
+                if float(args.a1_ecrs_cross_rx_weight) > 0.0:
+                    from cvsrffi.a1_ecrs_cross_rx import labeled_cross_rx_objective
+                    ecrs_clean_z = out_l["z_id"][:labeled_clean_count]
+                    loss_ecrs_cross_rx, ecrs_stats = labeled_cross_rx_objective(
+                        ecrs_clean_z, y_l[:labeled_clean_count], receiver_l_base, day_l_base,
+                        z_leo=sat_z_id_l,
+                        leo_applied=sat_zid_pair_applied,
+                        scope=str(args.a1_ecrs_cross_rx_scope),
+                        weight=float(args.a1_ecrs_cross_rx_weight),
+                        margin=float(args.a1_ecrs_cross_rx_margin), num_classes=int(args.num_classes))
+                    loss_closed_l = loss_closed_l + loss_ecrs_cross_rx
+                    ecrs_cross_rx_valid_anchors = int(ecrs_stats["valid_anchors"])
+                    ecrs_cross_rx_logs = {"train/ecrs_cross_rx_" + k: v for k, v in ecrs_stats.items()}
+                    # One source-only embedding probe per epoch. It does not
+                    # update parameters or add another backbone forward.
+                    if batch_idx == 1 and ecrs_cross_rx_valid_anchors:
+                        ecrs_probe = torch.autograd.grad(loss_ecrs_cross_rx, ecrs_clean_z,
+                            retain_graph=True, allow_unused=False)[0]
+                        ecrs_cross_rx_logs["train/ecrs_cross_rx_identity_grad_norm"] = ecrs_probe.detach().float().norm()
                 loss_l = loss_closed_l + loss_open_l
                 daot_grad_ratios: Dict[str, float] = {}
                 daot_diagnostic_epochs = {
@@ -11451,10 +11496,14 @@ def train(args) -> int:
                 u_tri_outside_reject_count = max(0.0, u_tri_query_count - u_tri_ambiguous_tail_count)
             if optimizer_step_applied:
                 r3_optimizer_steps += 1
+                if ecrs_cross_rx_valid_anchors:
+                    ecrs_cross_rx_successful_steps += 1
             epoch_logs.append(_detach_log_mapping(
                 {
                     **r3_l_logs,
                     **r3_u_logs,
+                    **ecrs_cross_rx_logs,
+                    "train/ecrs_cross_rx_successful_steps": float(ecrs_cross_rx_successful_steps),
                     "train/a1_runtime_fast": float(bool(args.a1_runtime_fast)),
                     "train/a1_ema_effective_decay": a1_effective_ema_decay,
                     "train/a1_ema_successful_updates": float(r3_optimizer_steps),
@@ -12639,6 +12688,7 @@ def train(args) -> int:
             "checkpoint_schema": "ssdg_phase1_training_state_v2",
             "checkpoint_role": "training_epoch_state_in_memory",
             "a1_ema_successful_updates": int(r3_optimizer_steps),
+            "a1_ecrs_cross_rx_successful_steps": int(ecrs_cross_rx_successful_steps),
             "a1_ema_startup_average": bool(args.a1_ema_startup_average),
             "checkpoint_selection": str(args.checkpoint_selection),
             "run_id": str(getattr(args, "run_id", "")),
