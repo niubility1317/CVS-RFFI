@@ -1,0 +1,95 @@
+{
+  "time": "2026-09-08T10:41:09.479717",
+  "stopped_pids": [
+    3537463,
+    3537597,
+    3537601,
+    3537605,
+    3537609,
+    3538478,
+    3538479,
+    3538480,
+    3538481,
+    3547432,
+    3547505,
+    3547509,
+    3547513,
+    3547517,
+    3547954,
+    3547955,
+    3547956,
+    3547957
+  ],
+  "remaining_active": [],
+  "preserved_running": {
+    "3515808": true,
+    "3515809": true
+  },
+  "rows": {
+    "B3a": {
+      "last_complete_epoch": 140,
+      "source_complete": false,
+      "checkpoints": {
+        "best": {
+          "epoch": 140,
+          "bytes": 13600355,
+          "readable": true
+        },
+        "latest": {
+          "epoch": 140,
+          "bytes": 13631289,
+          "readable": true
+        }
+      },
+      "files_preserved": true
+    },
+    "B3b": {
+      "last_complete_epoch": 134,
+      "source_complete": false,
+      "checkpoints": {
+        "best": {
+          "epoch": 130,
+          "bytes": 13594566,
+          "readable": true
+        },
+        "latest": {
+          "epoch": 130,
+          "bytes": 13625486,
+          "readable": true
+        }
+      },
+      "files_preserved": true
+    }
+  },
+  "queue": {
+    "pending": [],
+    "active": [],
+    "smoke_done": true,
+    "remaining_launch_window_s": 50996.084062174894
+  },
+  "exit_status": [
+    {
+      "row": "B3c",
+      "pid": 3566338,
+      "exit_code": 0
+    },
+    {
+      "row": "B4",
+      "pid": 3567298,
+      "exit_code": 0
+    },
+    {
+      "row": "B3a",
+      "pid": 3537463,
+      "exit_code": -15
+    },
+    {
+      "row": "B3b",
+      "pid": 3547432,
+      "exit_code": -15
+    }
+  ],
+  "gpu": "0, 0, 390\n1, 99, 7693\n2, 99, 8585\n3, 61, 8231\n4, 99, 11989\n5, 99, 7019\n6, 92, 9407\n7, 98, 7597\n",
+  "compute": "3515639, GPU-56adac86-77cd-36c9-8770-dbf002650461, 380\n3515808, GPU-a2d039ff-1792-4222-2b47-140429e10f94, 4178\n3669467, GPU-a2d039ff-1792-4222-2b47-140429e10f94, 3500\n3515809, GPU-4fb45b9a-894a-536b-0e0a-09f7c1341562, 4492\n3523064, GPU-4fb45b9a-894a-536b-0e0a-09f7c1341562, 4078\n3523066, GPU-7b4bacb3-4901-6845-a414-0dfdfeeade97, 4108\n3523065, GPU-7b4bacb3-4901-6845-a414-0dfdfeeade97, 4108\n3523067, GPU-95d925a1-7218-ca7b-adef-164241f4f491, 6352\n3694521, GPU-95d925a1-7218-ca7b-adef-164241f4f491, 5622\n3525491, GPU-ef5f59f2-e03e-fe6e-ea6b-3e03afc9b331, 3516\n3525490, GPU-ef5f59f2-e03e-fe6e-ea6b-3e03afc9b331, 3488\n3525493, GPU-5463e082-259e-537b-603a-01575d45801c, 5876\n3525492, GPU-5463e082-259e-537b-603a-01575d45801c, 3516\n3525495, GPU-9c4eb614-ca19-a390-aaf4-801f8980b6a9, 4078\n3594193, GPU-9c4eb614-ca19-a390-aaf4-801f8980b6a9, 3504\n",
+  "status": "VERIFIED"
+}
