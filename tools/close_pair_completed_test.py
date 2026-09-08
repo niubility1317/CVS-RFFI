@@ -1,6 +1,7 @@
 """Collect the fixed pair24 terminal state and completed-row test evidence."""
 import argparse
 import datetime
+import hashlib
 import json
 from pathlib import Path
 import subprocess
@@ -75,6 +76,45 @@ print(json.dumps({'predictions':preds,'all_sealed_before_scoring':all(r['sealed_
     (ROOT/'queue.log').write_text(remote('import pathlib;print(pathlib.Path('+repr(BASE+'/logs/'+RUN+'/queue.log')+').read_text())'),encoding='utf-8')
     print('VERIFIED SCORED',len(evidence['predictions']),evidence['all_sealed_before_scoring'])
 
+def deploy():
+    head=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()
+    remote_head=subprocess.check_output(['git','ls-remote','origin','refs/heads/codex/adv3b02-daot-stn-v1-20260901'],text=True).split()[0]
+    assert head==remote_head
+    release=BASE+'/releases/'+RUN
+    output=BASE+'/runs/'+RUN
+    logdir=BASE+'/logs/'+RUN
+    print(remote('''import pathlib,shutil
+p=pathlib.Path('''+repr(release)+''');r=pathlib.Path('''+repr(output)+''');l=pathlib.Path('''+repr(logdir)+''')
+assert not p.exists() and not r.exists() and not l.exists(), 'existing output: reconcile before retry'
+assert shutil.disk_usage(p.parent).free>2*1024**3
+p.mkdir();l.mkdir()
+print('NEW_RELEASE_CREATED')
+'''))
+    files=[Path('tools/pair_completed_test.py'),Path('configs/phase1_adv3b02_completed23_test_manifest.json')]
+    expected={p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in files}
+    for p in files:
+        subprocess.run(['scp','-F','E:/type10-7/tools/n607_ssh_config',str(p),'N607:'+release+'/'+p.name],check=True,timeout=45)
+    compiled=remote('''import pathlib,hashlib,json,py_compile
+p=pathlib.Path('''+repr(release)+''');expected=json.loads('''+repr(json.dumps(expected))+''')
+assert all(hashlib.sha256((p/n).read_bytes()).hexdigest()==v for n,v in expected.items())
+py_compile.compile(str(p/'pair_completed_test.py'),doraise=True)
+print('TRANSFER_AND_COMPILE_VERIFIED')
+''')
+    launched=json.loads(remote('''import pathlib,subprocess,os,json
+release='''+repr(release)+'''
+output='''+repr(output)+'''
+logdir='''+repr(logdir)+'''
+assert not pathlib.Path(output).exists()
+env=dict(os.environ,CUDA_VISIBLE_DEVICES='1',OMP_NUM_THREADS='2',MKL_NUM_THREADS='2',PYTHONUNBUFFERED='1')
+cmd=['/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python','-u',release+'/pair_completed_test.py','--manifest',release+'/phase1_adv3b02_completed23_test_manifest.json','--root',output,'--mode','queue']
+with open(logdir+'/queue.log','x') as log:
+ p=subprocess.Popen(cmd,cwd=release,env=env,stdout=log,stderr=subprocess.STDOUT,start_new_session=True)
+print(json.dumps({'pid':p.pid,'cmd':cmd,'cwd':release,'gpu':1,'output':output,'logdir':logdir}))
+'''))
+    launched.update(runtime_commit=head,transfer_sha256=expected,compile_verification=compiled.strip())
+    save('launch_evidence.json',launched)
+    print(json.dumps(launched))
+
 if __name__=='__main__':
-    ap=argparse.ArgumentParser();ap.add_argument('mode',choices=['inventory','collect']);args=ap.parse_args()
-    (inventory if args.mode=='inventory' else collect)()
+    ap=argparse.ArgumentParser();ap.add_argument('mode',choices=['inventory','collect','deploy']);args=ap.parse_args()
+    {'inventory':inventory,'collect':collect,'deploy':deploy}[args.mode]()
