@@ -178,3 +178,45 @@ def test_matched_core90_pipeline_has_no_historical_checkpoint_and_equal_data():
     core.baseline_ckpt='old.pth'
     with pytest.raises(ValueError,match='forbids'):
         _validate_a1_scratch_only(core)
+
+
+def test_selected_adv3b02_pair_uses_same_weight_seed_and_lite_d():
+    import sys
+    from pathlib import Path
+    sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'code/scripts'))
+    from run_a1_fast_selected_adv3b02 import selected_matrix, validate_selected_checkpoint
+    from run_a1_fast_matched_core90 import build_train_command
+    matrix=selected_matrix()
+    for row in matrix['rows']:
+        command=build_train_command(matrix,project_root=Path('/p'),run_root=Path('/new'),
+                                    row_id=row['id'],row=row,checkpoint=Path('/selected/final_ssdg.pth'))
+        args=build_arg_parser().parse_args(command[3:])
+        assert args.seed==392005 and args.model_variant=='lite_d'
+        assert args.baseline_ckpt==args.teacher_ckpt==str(Path('/selected/final_ssdg.pth'))
+        assert args.epochs==200 and not args.from_scratch
+        assert args.test_eval_policy=='interval_final' and args.muse_external_final_eval
+        assert args.test_eval_start_epoch>args.epochs and args.test_eval_interval==0
+        _validate_daot_config(args)
+    with pytest.raises(ValueError,match='seed'):
+        validate_selected_checkpoint({'args':{'seed':39005}},matrix)
+
+
+def test_truth_last_reconstructs_lite_d_with_a1_head_exactly():
+    from SSDG import train_ssdg as train
+    from cvsrffi.checkpoint_loading import build_exact_ssdg_model_from_checkpoint
+    from predict_phase1_truth_last import select_identity_logits
+    args=build_arg_parser().parse_args(['--output_dir','unused','--daot_ablation','A1',
+                                      '--num_classes','6','--model_variant','lite_d'])
+    _validate_daot_config(args)
+    merged=train._apply_model_cli_args(train.merge_checkpoint_args({},args,input_len=256,num_domains=15),args)
+    model=train.build_baseline_model(merged,torch.device('cpu')).eval()
+    assert any(k.startswith('daot_nuisance_head.') for k in model.state_dict())
+    rebuilt,audit=build_exact_ssdg_model_from_checkpoint({'args':vars(args),'model':model.state_dict()},
+                                                        input_len=256,device=torch.device('cpu'))
+    rebuilt.eval()
+    assert audit['missing_keys']==audit['unexpected_keys']==0
+    with torch.no_grad():
+        x=torch.randn(2,2,256)
+        original=select_identity_logits(model(x,return_aux=True))
+        copied=select_identity_logits(rebuilt(x,return_aux=True))
+    assert torch.equal(original,copied)

@@ -1,0 +1,49 @@
+{
+  "status": "PASS",
+  "input_role": "source_shaped_synthetic_no_query",
+  "target_inputs": 0,
+  "checkpoint": "E:\\type10-7\\automation_reports\\CV-SincNet\\a1_fast_matched_core90_s392005_20260908_r3\\user_selected_adv3b02_final.pth",
+  "initialization": "supplied_E200_checkpoint",
+  "new_a1_parameters": [
+    "daot_nuisance_head.net.0.weight",
+    "daot_nuisance_head.net.0.bias",
+    "daot_nuisance_head.net.2.weight",
+    "daot_nuisance_head.net.2.bias"
+  ],
+  "torch": "2.10.0+cu128",
+  "device": "cpu",
+  "teacher_comparisons": [
+    {
+      "mode": "identity_sequential",
+      "amp": false,
+      "max_abs_error": {
+        "z_id": 0.0,
+        "tx_logits": 0.0
+      }
+    }
+  ],
+  "step_comparisons": [
+    {
+      "epoch": 1,
+      "mode": "identity_sequential",
+      "status": "PASS"
+    },
+    {
+      "epoch": 21,
+      "mode": "identity_sequential",
+      "status": "PASS"
+    },
+    {
+      "epoch": 161,
+      "mode": "identity_sequential",
+      "status": "PASS"
+    }
+  ],
+  "timing_scope": "teacher-only microbenchmark; not end-to-end speedup",
+  "teacher_timing_ms": {
+    "legacy_b128": 632.6812999905087,
+    "identity_sequential_b128": 188.61524999374524,
+    "legacy_b256": 1368.3231250033714,
+    "identity_sequential_b256": 383.05067498004064
+  }
+}

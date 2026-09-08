@@ -19,6 +19,7 @@ from cvsrffi.orbit_teacher import EMALossScaleNormalizer
 def main():
     p=argparse.ArgumentParser()
     p.add_argument('--checkpoint',type=Path)
+    p.add_argument('--model-variant',default='lite_c')
     p.add_argument('--output',type=Path,required=True)
     p.add_argument('--device',default='cpu')
     p.add_argument('--include-batched',action='store_true',help='Separate numerical experiment; excluded from strict first-round parity')
@@ -26,7 +27,7 @@ def main():
     torch.set_num_threads(2)
     torch.manual_seed(392005)
     device=torch.device(cli.device)
-    args=train.build_arg_parser().parse_args(['--output_dir','unused','--daot_ablation','A1','--num_classes','6'])
+    args=train.build_arg_parser().parse_args(['--output_dir','unused','--daot_ablation','A1','--num_classes','6','--model_variant',cli.model_variant])
     train._validate_daot_config(args)
     args.daot_diagnostic_epochs=''
     model_args=train._apply_model_cli_args(merge_checkpoint_args({},args,input_len=256,num_domains=15),args)
@@ -34,8 +35,14 @@ def main():
     if cli.checkpoint is not None:
         ckpt=torch.load(cli.checkpoint,map_location='cpu',weights_only=False)
         if int(ckpt.get('epoch',-1))!=200 or not ckpt.get('args',{}).get('from_scratch'):
-            raise ValueError('Expected this-run fresh CORE90 E200 checkpoint')
-        train._load_baseline_state_allowing_domain_output_resize(template,ckpt['model'])
+            raise ValueError('Expected an E200 checkpoint originally trained from scratch')
+        loaded=template.load_state_dict(ckpt['model'],strict=False)
+        # A1 adds this diagnostic head to the selected base checkpoint.
+        if loaded.unexpected_keys or any(not k.startswith('daot_nuisance_head.') for k in loaded.missing_keys):
+            raise ValueError(f'Incomplete backbone load: {loaded}')
+        for key,value in ckpt['model'].items():
+            if not torch.equal(template.state_dict()[key].cpu(),value.cpu()):
+                raise ValueError(f'Checkpoint tensor not loaded exactly: {key}')
         del ckpt
     teacher=deepcopy(template).eval()
     for param in teacher.parameters(): param.requires_grad=False
@@ -44,7 +51,8 @@ def main():
     labels=torch.arange(8,device=device)%6
     result={'status':'PASS','input_role':'source_shaped_synthetic_no_query','target_inputs':0,
             'checkpoint':str(cli.checkpoint) if cli.checkpoint else None,
-            'initialization':'this_run_CORE90' if cli.checkpoint else 'fresh_random',
+            'initialization':'supplied_E200_checkpoint' if cli.checkpoint else 'fresh_random',
+            'new_a1_parameters':loaded.missing_keys if cli.checkpoint else [],
             'torch':torch.__version__,'device':str(device),'teacher_comparisons':[], 'step_comparisons':[],
             'timing_scope':'teacher-only microbenchmark; not end-to-end speedup'}
     modes=['legacy','identity_sequential'] + (['identity_batched'] if cli.include_batched else [])

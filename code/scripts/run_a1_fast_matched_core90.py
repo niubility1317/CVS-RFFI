@@ -18,7 +18,7 @@ def write_json(path, value):
     path.write_text(json.dumps(value, indent=2, ensure_ascii=False)+'\n', encoding='utf-8')
 
 
-def build_train_command(matrix, *, project_root, run_root, row_id, core90=False, row=None):
+def build_train_command(matrix, *, project_root, run_root, row_id, core90=False, row=None, checkpoint=None):
     options = dict(matrix['core90_options' if core90 else 'a1_options'])
     output = run_root / row_id
     options.update({'--output_dir':str(output),'--run_id':run_root.name,'--candidate_id':row_id,
@@ -27,7 +27,7 @@ def build_train_command(matrix, *, project_root, run_root, row_id, core90=False,
         if options.get('--from_scratch') != 'true' or any(k in options for k in ('--baseline_ckpt','--teacher_ckpt')):
             raise ValueError('CORE90 must be fresh, without historical weights')
     else:
-        checkpoint = run_root/'CORE90_MATCHED_FRESH'/'final_ssdg.pth'
+        checkpoint = checkpoint or run_root/'CORE90_MATCHED_FRESH'/'final_ssdg.pth'
         options.update({'--from_scratch':'false','--a1_scratch_only':'false',
                         '--baseline_ckpt':str(checkpoint),'--teacher_ckpt':str(checkpoint)})
         for key in ['daot_efficiency_mode','daot_batched_scale_readback','daot_skip_mean_metadata']:
