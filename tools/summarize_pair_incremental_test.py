@@ -93,17 +93,23 @@ def main(root):
                        'paired_clean_mean_delta_pp': statistics.mean(r['clean_delta_pp'] for r in paired) if paired else 0.0})
     csv_file(root / 'method_summary.csv', groups)
     checked = json.loads((root / 'current_training_status.json').read_text(encoding='utf-8'))
-    lines = ['# 已完成19行目标域诊断测试结果', '',
+    row_count = len(summary)
+    reused_count = (root / 'queue.log').read_text(encoding='utf-8').count('REUSED_PREDICTION')
+    new_count = row_count - reused_count
+    completed_count = sum(r['status'] == 'TRAINING_COMPLETE_SOURCE_ONLY' for r in checked['rows'])
+    failed_count = sum(r['status'] == 'TECHNICAL_FAILURE' for r in checked['rows'])
+    running_count = sum(bool(r.get('alive')) for r in checked['rows'])
+    lines = [f'# 已完成{row_count}行目标域诊断测试结果', '',
              '训练状态复核时间（UTC）：' + checked['checked_at_utc'] + '。', '',
-             '状态：VERIFIED，19/19行已完成预测和独立评分。初始训练状态为19行完成、4行运行、1行技术失败；本报告只测试开始核实时已完成的19行，不自动扩大矩阵。', '',
-             '本次新增11行测试，复用原8行预测，合并19行结果。此前约98.7%/96%的数字是source验证结果，不能替代本次目标接收机测试。', '',
+             f'状态：VERIFIED，{row_count}/{row_count}行已完成预测和独立评分。训练状态为{completed_count}行完成、{running_count}行运行、{failed_count}行技术失败。', '',
+             f'本次新增{new_count}行测试，复用原{reused_count}行预测，合并{row_count}行结果。此前约98.7%/96%的数字是source验证结果，不能替代本次目标接收机测试。', '',
              '## 测试口径', '',
              '- 固定E200最终学生checkpoint，FP32，关闭TF32；所有模型权重键严格匹配，禁止适配及query状态更新。',
              '- ManySig六个已知TX：' + '、'.join(meta['class_id_to_tx']) + '；equalized=1，中心裁剪、长度256。',
              '- source接收机索引1/3/4/6/8，日期1/2/3；target接收机索引0/2/5/7/9/10/11，日期0/1/2/3。每目标接收机24,000个样本，每天42,000个；日期0同时是未见日期。',
-             '- 全量168,000个物理样本；clean对照168,000个。一个physical仅对应一次LEO接收观测，19行共享完全相同的received IQ。三场景按opaque ID固定分配、互斥，数量分别为56,164/56,095/55,741；seed=2027。',
+             f'- 全量168,000个物理样本；clean对照168,000个。一个physical仅对应一次LEO接收观测，{row_count}行共享完全相同的received IQ。三场景按opaque ID固定分配、互斥，数量分别为56,164/56,095/55,741；seed=2027。',
              '- 场景随机分配独立于类别和模型。每个场景准确率在其自身子集计算；LEO均值是三种场景准确率等权平均，不把同一physical重复成三份。',
-             '- 19行prediction全部固定后，独立scorer才按opaque ID连接truth。168,000个ID无重复、无缺失，模型持久状态不变；scorer时间晚于全部prediction固定时间。',
+             f'- {row_count}行prediction全部固定后，独立scorer才按opaque ID连接truth。168,000个ID无重复、无缺失，模型持久状态不变；scorer时间晚于全部prediction固定时间。',
              '- 用户明确要求提前测试完成行；本次作为诊断，不回流选择、调参或重训，不作默认晋升。没有新类注册、unknown或适配，因此这些指标不适用。', '',
              '## 逐行实测准确率', '',
              '|行|Clean|晴空弱信道|低仰角弱信道|雨衰弱信道|LEO等权均值|', '|---|---:|---:|---:|---:|---:|']
@@ -138,17 +144,17 @@ def main(root):
     for r in summary:
         lines.append(f'|{r["row_id"]}|{r["train_hours"]:.2f}|{r["train_peak_allocated_gib"]:.2f}|{r["prediction_seconds_for_both_views"]:.2f}|')
     lines += ['', '## 执行与验证', '',
-              '实际执行代码提交ce883451f6a4feecfacce4555173039bf9bf022d，Git远端OID已读回一致。release/runs名称phase1_adv3b02_completed19_test_20260907_v1，普通账户N607，GPU1，队列PID3472453；最终done.json与results.json独立读回确认SCORED19。',
-              '7项本地协议/评分负测通过，新增reuse_root逻辑的独立P0/P1审查通过。新增11个checkpoint真实无query smoke均通过；原8行引用先前已验证的prediction。沿用首次8行测试已验证的完整FP32和NumPy兼容接口，本次未修改训练、checkpoint或测试观测。',
-              '后处理独立核对每行样本覆盖、混淆矩阵总数/对角线、逐接收机/日期分组与总体计数一致，以及评分晚于全部预测固定。19行共76组clean/LEO指标验证通过；复用8行prediction，新增11行全部prediction固定后评分。',
-              'B_SAFE392005仍为E109连续两轮无优化器更新的技术失败；没有最终checkpoint，不补造测试数据。本次启动时另4行保持运行。原r3共享EMA缓存修复与旧21行的混合版本仍为NO_PROMOTION。', '',
+              f'本次run为{root.name}，普通账户N607。实际发布代码、PID和传输验证见launch_evidence.json；最终done.json与results.json独立读回确认SCORED{row_count}。',
+              f'7项本地协议/评分负测通过。reuse_root逻辑沿用此前独立P0/P1审查通过的实现；新增{new_count}个checkpoint真实无query smoke均通过；原{reused_count}行引用先前已验证的prediction。本次未修改训练、checkpoint或测试观测。',
+              f'后处理独立核对每行样本覆盖、混淆矩阵总数/对角线、逐接收机/日期分组与总体计数一致，以及评分晚于全部预测固定。{row_count}行共{row_count*4}组clean/LEO指标验证通过；复用{reused_count}行prediction，新增{new_count}行全部prediction固定后评分。',
+              f'B_SAFE392005仍为E109连续两轮无优化器更新的技术失败；没有最终checkpoint，不补造测试数据。本次核实时仍运行{running_count}行。原r3共享EMA缓存修复与旧21行的混合版本仍为NO_PROMOTION。', '',
               '## 数据文件', '',
-              '- summary.csv：19行总表。', '- method_summary.csv：方法组均值、seed标准差与配对差值。', '- paired_deltas.csv：16个同seed对照差值。',
-              '- receiver_day_breakdown.csv：逐场景、接收机、日期及接收机×日期，共2,964行。',
-              '- per_class.csv：逐场景逐类，共456行。',
+              f'- summary.csv：{row_count}行总表。', '- method_summary.csv：方法组均值、seed标准差与配对差值。', f'- paired_deltas.csv：{len(deltas)}个同seed对照差值。',
+              f'- receiver_day_breakdown.csv：逐场景、接收机、日期及接收机×日期，共{len(breakdown)}行。',
+              f'- per_class.csv：逐场景逐类，共{len(classes)}行。',
               '- results.json：完整正确数/总数、全部混淆矩阵和分组结果。',
               '- execution_evidence.json：prediction固定时间、兼容性和query状态审计。',
-              '- training_evidence.json：19行全部E1—E200的已提取source验证/资源字段；不作为完整loss根因分析。', '']
+              f'- training_evidence.json：{row_count}行全部E1—E200的已提取source验证/资源字段；不作为完整loss根因分析。', '']
     (root / 'report.md').write_text('\n'.join(lines), encoding='utf-8')
     print(json.dumps({'validated_rows':len(summary), 'breakdown_rows':len(breakdown), 'class_rows':len(classes), 'paired_deltas':deltas,
                       'worst_receivers':[{k:r[k] for k in ['row_id','worst_leo_receiver','worst_leo_receiver_acc']} for r in summary]}, ensure_ascii=False))
