@@ -4,7 +4,8 @@ from __future__ import annotations
 import math
 from pathlib import Path
 import sys
-from typing import Dict, Optional, Sequence, Tuple
+from typing import Any, Dict, Optional, Sequence, Tuple
+from copy import deepcopy
 
 import torch
 import torch.nn as nn
@@ -601,6 +602,7 @@ class DualCVSincNetDisentangle(nn.Module):
         physical_gate_variant: str = "none",
         use_daot_nuisance_head: bool = False,
         daot_nuisance_dim: int = 9,
+        use_a1_r3: bool = False,
     ):
         super().__init__()
         self.num_classes = int(num_classes)
@@ -714,6 +716,19 @@ class DualCVSincNetDisentangle(nn.Module):
             self._share_early_stem()
 
         self.emb_dim = self._infer_emb_dim(self.id_backbone)
+        self.use_a1_r3 = bool(use_a1_r3)
+        self.a1_r3 = None
+        self.a1_r3_identity_head = None
+        if self.use_a1_r3:
+            from cvsrffi.a1_r3_model import ADV3B02FactorizedCrossReconstruction
+            from cvsrffi.phase1_fcr_types import FCRConfig
+
+            if self.emb_dim != 160 or self.representation_mode != "dual":
+                raise ValueError("A1 R3 requires the 160-dimensional dual identity backbone")
+            self.a1_r3 = ADV3B02FactorizedCrossReconstruction(
+                FCRConfig(input_len=int(input_len), decoder_mode="control")
+            )
+            self.a1_r3_identity_head = deepcopy(self.id_backbone.cls_head.head)
         self.sat_anchor_identity_adapter = (
             SatAnchorIdentityAdapter(
                 self.emb_dim,
@@ -847,6 +862,23 @@ class DualCVSincNetDisentangle(nn.Module):
     def _pick_z_dom(self, aux: Dict[str, torch.Tensor]) -> torch.Tensor:
         return self._pick_from_keys(aux, self.dom_feature_key, ("feat_imp", "feat_pa", "feat_dac", "base", "feat_con", "feat_cls", "feat_joint"))
 
+    def forward_r3_factors(self, x: torch.Tensor):
+        """Factorize raw backbone/adapter identity without recursive model forward."""
+        if self.a1_r3 is None:
+            raise RuntimeError("forward_r3_factors requires use_a1_r3=True")
+        aux_id = backbone_forward_compat(
+            self.id_backbone, x, y=None, return_aux=True,
+            domain_labels=None, update_crra_support=False,
+            crra_support_mask=None, update_nmfdu_support=False,
+            return_physical_gate_diag=False,
+        )
+        raw_z_id = self._pick_z_id(aux_id)
+        if self.sat_anchor_identity_adapter is not None:
+            raw_z_id, _ = self.sat_anchor_identity_adapter(
+                raw_z_id, detach_backbone=False
+            )
+        return self.a1_r3(x, raw_z_id)
+
     def forward_identity_only(
         self,
         x: torch.Tensor,
@@ -877,6 +909,9 @@ class DualCVSincNetDisentangle(nn.Module):
         if self.sat_anchor_identity_adapter is not None:
             z_id, correction = self.sat_anchor_identity_adapter(z_id, detach_backbone=False)
             tx_logits = tx_logits + correction
+        if self.a1_r3 is not None:
+            z_id = self.a1_r3.identity_only(x, z_id)
+            tx_logits = self.a1_r3_identity_head(z_id, y_tx)
         out = {
             "tx_logits": tx_logits,
             "z_id": z_id,
@@ -968,6 +1003,7 @@ class DualCVSincNetDisentangle(nn.Module):
             (not return_aux)
             and self.fast_infer_when_no_aux
             and self.sat_anchor_identity_adapter is None
+            and not self.use_a1_r3
         ):
             return backbone_forward_compat(
                 self.id_backbone,
@@ -1020,6 +1056,10 @@ class DualCVSincNetDisentangle(nn.Module):
                 else tx_logits
             )
             tx_logits = base_tx_logits + sat_correction
+        z_id_raw = z_id
+        if self.a1_r3 is not None:
+            z_id = self.a1_r3.identity_only(x, z_id_raw)
+            tx_logits = self.a1_r3_identity_head(z_id, y_tx)
         z_dom_raw = self._pick_z_dom(aux_dom)
         z_dom, z_dom_rcn = self.dom_enhancer(z_dom_raw, x)
         daot_nuisance_mean = daot_nuisance_log_variance = None
@@ -1074,6 +1114,10 @@ class DualCVSincNetDisentangle(nn.Module):
         }
         if torch.is_tensor(tx_adv_logits):
             out["tx_adv_logits"] = tx_adv_logits
+        if self.a1_r3 is not None:
+            out["z_id_raw"] = z_id_raw
+            out["z_f_id"] = z_id
+            out["z_id_key"] = "z_f_id"
         if torch.is_tensor(crra_condition_tx_adv_logits):
             out["crra_condition_tx_adv_logits"] = crra_condition_tx_adv_logits
         if torch.is_tensor(z_dom_rcn):
@@ -1165,6 +1209,7 @@ def build_dual_model(
     physical_gate_variant: str = "none",
     use_daot_nuisance_head: bool = False,
     daot_nuisance_dim: int = 9,
+    use_a1_r3: bool = False,
 ) -> DualCVSincNetDisentangle:
     return DualCVSincNetDisentangle(
         num_classes=num_classes,
@@ -1221,4 +1266,5 @@ def build_dual_model(
         physical_gate_variant=physical_gate_variant,
         use_daot_nuisance_head=use_daot_nuisance_head,
         daot_nuisance_dim=daot_nuisance_dim,
+        use_a1_r3=use_a1_r3,
     )

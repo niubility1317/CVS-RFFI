@@ -400,6 +400,8 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--daot_batched_scale_readback", type=str2bool, default=False)
     parser.add_argument("--daot_skip_mean_metadata", type=str2bool, default=False)
     parser.add_argument("--a1_scratch_only", type=str2bool, default=False)
+    parser.add_argument("--use_a1_r3", type=str2bool, default=False)
+    parser.add_argument("--a1_r3_aux_scale", type=float, choices=(0.0, 1.0), default=1.0)
     parser.add_argument("--daot_ablation", type=str, default="", choices=["", "A0", "A1", "A2", "A3", "A4", "A5", "A6", "A7", "A8"])
     parser.add_argument(
         "--daot_loss_ablation",
@@ -1852,7 +1854,11 @@ def _temporal_bank_mask_tensor(
 def _update_ema_model(ema_model, model, decay: float) -> None:
     with torch.no_grad():
         for ema_p, p in zip(ema_model.parameters(), model.parameters()):
-            ema_p.data.mul_(float(decay)).add_(p.data, alpha=1.0 - float(decay))
+            if bool(getattr(ema_model, "use_a1_r3", False)):
+                # Increment the parameter version so eval CosFace caches refresh.
+                ema_p.mul_(float(decay)).add_(p, alpha=1.0 - float(decay))
+            else:
+                ema_p.data.mul_(float(decay)).add_(p.data, alpha=1.0 - float(decay))
         for ema_b, b in zip(ema_model.buffers(), model.buffers()):
             ema_b.copy_(b)
 
@@ -1900,6 +1906,7 @@ def _apply_model_cli_args(model_args, args):
         "sat_anchor_adapter",
         "sat_anchor_adapter_rank",
         "use_daot_nuisance_head",
+        "use_a1_r3",
         "daot_nuisance_dim",
     ):
         if hasattr(args, key):
@@ -4065,8 +4072,16 @@ def _rc4_requested(args) -> bool:
     )
 
 
+def _rc4_anchor_requested(args) -> bool:
+    return _rc4_requested(args) and (
+        bool(getattr(args, "rc4_use_anchor", True))
+        or bool(getattr(args, "rc4_cache_anchor_logits", False))
+        or float(getattr(args, "rc4_lambda_feature_anchor", 0.0)) > 0.0
+    )
+
+
 def _frozen_teacher_requested(args) -> bool:
-    return _teacher_distill_requested(args) or _sat_anchor_requested(args) or _rc4_requested(args)
+    return _teacher_distill_requested(args) or _sat_anchor_requested(args) or _rc4_anchor_requested(args)
 
 
 def _validate_a1_scratch_only(args) -> None:
@@ -6828,7 +6843,10 @@ def _calibrate_rc4_vcal(
 
     anchor_logits, ema_1_logits, ema_2_logits = [], [], []
     labels, domains, receivers, z_norms = [], [], [], []
-    anchor_model.eval()
+    if bool(args.rc4_use_anchor):
+        if anchor_model is None:
+            raise ValueError("RC4 frozen anchor is required when rc4_use_anchor=true")
+        anchor_model.eval()
     ema_model.eval()
     with torch.no_grad():
         for batch in calibration_loader:
@@ -8677,6 +8695,7 @@ def train(args) -> int:
                 reference_requires_absolute_safe=bool(args.tail_safety_reference_requires_absolute_safe),
             )
         )
+    r3_optimizer_steps = 0
     for epoch in range(1, total_epochs + 1):
         if direct_metric_reference_bank is not None:
             direct_metric_reference_bank.maybe_promote(epoch)
@@ -8787,6 +8806,8 @@ def train(args) -> int:
             sat_anchor_anchor_grad_norm = float("nan")
             sat_anchor_pair_sat_grad_cos = float("nan")
             x_l, y_l, extra_l = move_batch(labeled_batch, device)
+            r3_x_l = x_l
+            r3_l_logs, r3_u_logs = {}, {}
             if muse_state is not None:
                 _assert_muse_open_geometry_role("L_s")
             labeled_clean_count = int(y_l.numel())
@@ -9992,6 +10013,15 @@ def train(args) -> int:
                     "ssdg_source_episode", loss_source_episode_l, z_id_l, loss_warn_counts
                 )
                 loss_open_l = loss_open_invariant_l + loss_open_boundary_l + loss_open_source_l
+                if bool(args.use_a1_r3):
+                    from cvsrffi.a1_r3_objective import r3_pair_objective
+                    r3_l_loss, r3_l_logs = r3_pair_objective(
+                        model=model, clean_iq=r3_x_l,
+                        domains=domain_from_extra(extra_l, data_ctx["domain_label_map"], device),
+                        physical_ids=stable_sample_keys(_meta_from_extra(extra_l) or {}),
+                        role="L_s", args=args, epoch=epoch, batch_idx=batch_idx,
+                        optimizer_step=r3_optimizer_steps, apply_sat_fn=apply_sat_channel_for_scenario)
+                    loss_closed_l = loss_closed_l + r3_l_loss
                 loss_l = loss_closed_l + loss_open_l
                 daot_grad_ratios: Dict[str, float] = {}
                 daot_diagnostic_epochs = {
@@ -10056,7 +10086,10 @@ def train(args) -> int:
                                 domain_labels=d_u,
                             )
                         out_anchor = None
-                        if bool(muse_state.get("sat_anchor_ssl", False)):
+                        if bool(muse_state.get("sat_anchor_ssl", False)) and (
+                            not bool(muse_state.get("fasttrust_rc4", False))
+                            or _rc4_anchor_requested(args)
+                        ):
                             if teacher_model is None:
                                 raise RuntimeError("SAT_ANCHOR_FROZEN_TEACHER_MISSING")
                             anchor_cache = muse_state.get("anchor_logit_cache")
@@ -10421,6 +10454,13 @@ def train(args) -> int:
                     pseudo = muse_losses["pseudo"]
                     zero_u = out_s["tx_logits"].sum() * 0.0
                     loss_u = muse_losses["total"] + loss_daot_u
+                    if bool(args.use_a1_r3):
+                        r3_u_loss, r3_u_logs = r3_pair_objective(
+                            model=model, clean_iq=x_u, domains=d_u,
+                            physical_ids=stable_sample_keys(_meta_from_extra(extra_u) or {}),
+                            role="U_s", args=args, epoch=epoch, batch_idx=batch_idx,
+                            optimizer_step=r3_optimizer_steps, apply_sat_fn=apply_sat_channel_for_scenario)
+                        loss_u = loss_u + r3_u_loss
                     loss_ent = zero_u
                     loss_u_domain = zero_u
                     loss_u_adv = zero_u
@@ -11366,8 +11406,12 @@ def train(args) -> int:
                     u_tri_accept_rate = 0.0
                 u_tri_ambiguous_tail_count = max(0.0, u_tri_query_count * max(0.0, min(1.0, u_tri_accept_rate)))
                 u_tri_outside_reject_count = max(0.0, u_tri_query_count - u_tri_ambiguous_tail_count)
+            if optimizer_step_applied:
+                r3_optimizer_steps += 1
             epoch_logs.append(_detach_log_mapping(
                 {
+                    **r3_l_logs,
+                    **r3_u_logs,
                     "train/loss": loss.detach(),
                     "train/loss_labeled": loss_l.detach(),
                     "train/loss_closed_group": loss_closed.detach(),

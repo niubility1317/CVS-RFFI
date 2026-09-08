@@ -1,0 +1,44 @@
+{
+  "status": "PASS",
+  "input_role": "source_shaped_synthetic_no_query",
+  "target_inputs": 0,
+  "checkpoint": null,
+  "initialization": "fresh_random",
+  "new_a1_parameters": [],
+  "torch": "2.10.0+cu128",
+  "device": "cpu",
+  "teacher_comparisons": [
+    {
+      "mode": "identity_sequential",
+      "amp": false,
+      "max_abs_error": {
+        "z_id": 0.0,
+        "tx_logits": 0.0
+      }
+    }
+  ],
+  "step_comparisons": [
+    {
+      "epoch": 1,
+      "mode": "identity_sequential",
+      "status": "PASS"
+    },
+    {
+      "epoch": 21,
+      "mode": "identity_sequential",
+      "status": "PASS"
+    },
+    {
+      "epoch": 161,
+      "mode": "identity_sequential",
+      "status": "PASS"
+    }
+  ],
+  "timing_scope": "teacher-only microbenchmark; not end-to-end speedup",
+  "teacher_timing_ms": {
+    "legacy_b128": 628.3179250021931,
+    "identity_sequential_b128": 221.28662499017082,
+    "legacy_b256": 1332.6725750230253,
+    "identity_sequential_b256": 428.6723749828525
+  }
+}

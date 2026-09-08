@@ -1,0 +1,103 @@
+{
+  "status": "PASS",
+  "checkpoint_loads": 0,
+  "initialization": "fresh_random",
+  "r3_amp_steps": [
+    {
+      "epoch": 1,
+      "optimizer_step": 2,
+      "amp": false,
+      "loss": 61.99308395385742,
+      "r3_loss": 49.255401611328125,
+      "finite": true
+    },
+    {
+      "epoch": 90,
+      "optimizer_step": 2,
+      "amp": false,
+      "loss": 65.03488159179688,
+      "r3_loss": 52.16627502441406,
+      "finite": true
+    },
+    {
+      "epoch": 91,
+      "optimizer_step": 3,
+      "amp": false,
+      "loss": 12.084439277648926,
+      "r3_loss": 0.0,
+      "finite": true
+    },
+    {
+      "epoch": 161,
+      "optimizer_step": 2,
+      "amp": false,
+      "loss": 25.65206527709961,
+      "r3_loss": 12.923088073730469,
+      "finite": true
+    }
+  ],
+  "paired_initial_parameters_and_cpu_rng_equal": true,
+  "model_variant": "lite_d",
+  "calibration_anchor": "EMA weak1 in existing RC4 no-anchor formula",
+  "source_shaped_synthetic_no_query": true,
+  "rc4_steps": [
+    {
+      "epoch": 1,
+      "loss": 0.8403216600418091,
+      "gradients_finite": true,
+      "feature_anchor": 0.0,
+      "identity_enabled": false
+    },
+    {
+      "epoch": 21,
+      "loss": 0.8638259172439575,
+      "gradients_finite": true,
+      "feature_anchor": 0.0,
+      "identity_enabled": true
+    }
+  ],
+  "daot_execution": {
+    "status": "PASS",
+    "input_role": "source_shaped_synthetic_no_query",
+    "target_inputs": 0,
+    "checkpoint": null,
+    "initialization": "fresh_random",
+    "new_a1_parameters": [],
+    "torch": "2.10.0+cu128",
+    "device": "cpu",
+    "teacher_comparisons": [
+      {
+        "mode": "identity_sequential",
+        "amp": false,
+        "max_abs_error": {
+          "z_id": 0.0,
+          "tx_logits": 0.0
+        }
+      }
+    ],
+    "step_comparisons": [
+      {
+        "epoch": 1,
+        "mode": "identity_sequential",
+        "status": "PASS"
+      },
+      {
+        "epoch": 21,
+        "mode": "identity_sequential",
+        "status": "PASS"
+      },
+      {
+        "epoch": 161,
+        "mode": "identity_sequential",
+        "status": "PASS"
+      }
+    ],
+    "timing_scope": "teacher-only microbenchmark; not end-to-end speedup",
+    "teacher_timing_ms": {
+      "legacy_b128": 628.3179250021931,
+      "identity_sequential_b128": 221.28662499017082,
+      "legacy_b256": 1332.6725750230253,
+      "identity_sequential_b256": 428.6723749828525
+    }
+  }
+}

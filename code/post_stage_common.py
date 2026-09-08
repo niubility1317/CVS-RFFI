@@ -356,6 +356,7 @@ def build_baseline_model(model_args, device: torch.device) -> nn.Module:
             getattr(model_args, "use_daot_nuisance_head", False)
         ),
         daot_nuisance_dim=int(getattr(model_args, "daot_nuisance_dim", 9)),
+        use_a1_r3=bool(getattr(model_args, "use_a1_r3", False)),
         fast_infer_when_no_aux=bool(getattr(model_args, "fast_infer_when_no_aux", True)),
         arch_family=str(getattr(model_args, "arch_family", "cvsincnet")),
         representation_mode=str(

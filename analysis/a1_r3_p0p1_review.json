@@ -1,0 +1,23 @@
+{
+  "candidate": "A1 R3 scratch seed392005 E200 three-row experiment",
+  "source_r3_commit": "8f1de7971853aa9650e4f83d6ad979f359c434c2",
+  "independent_reviewer": "a1_p0_review",
+  "status": "PASS_AFTER_FIX",
+  "findings": [
+    {
+      "priority": "P1",
+      "issue": "EMA .data updates did not invalidate CosFace eval normalization caches",
+      "fix": "R3-only EMA branch updates original Parameters under no_grad, incrementing version",
+      "validation": "test_ema_formal_head_refreshes_after_cached_calibration passed; focused reviewer closed finding"
+    }
+  ],
+  "remaining_p0_p1": 0,
+  "checked": ["L/U loss reaches optimizer", "new factors and formal head optimized", "exact checkpoint reconstruction", "U labels absent", "query/V rejected", "no historical checkpoint dependency", "three-row configuration", "truth-last evaluation"],
+  "retained_original_behavior": "R3 auxiliary objectives are zero on odd optimizer counts during E91-E150",
+  "local_tests": {
+    "command": "conda run -n ssr-gpu python -m pytest tests/test_a1_r3.py tests/test_a1_scratch.py tests/test_a1_fast.py tests/test_adv3b02_daot_stn.py -q",
+    "passed": 91,
+    "failed": 0
+  },
+  "scientific_result": "NOT_YET_AVAILABLE"
+}

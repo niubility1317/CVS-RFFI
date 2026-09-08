@@ -20,6 +20,7 @@ def main():
     p=argparse.ArgumentParser()
     p.add_argument('--checkpoint',type=Path)
     p.add_argument('--model-variant',default='lite_c')
+    p.add_argument('--use-a1-r3',action='store_true')
     p.add_argument('--output',type=Path,required=True)
     p.add_argument('--device',default='cpu')
     p.add_argument('--include-batched',action='store_true',help='Separate numerical experiment; excluded from strict first-round parity')
@@ -29,6 +30,7 @@ def main():
     device=torch.device(cli.device)
     args=train.build_arg_parser().parse_args(['--output_dir','unused','--daot_ablation','A1','--num_classes','6','--model_variant',cli.model_variant])
     train._validate_daot_config(args)
+    args.use_a1_r3=cli.use_a1_r3
     args.daot_diagnostic_epochs=''
     model_args=train._apply_model_cli_args(merge_checkpoint_args({},args,input_len=256,num_domains=15),args)
     template=build_baseline_model(model_args,device)
@@ -96,6 +98,14 @@ def main():
                 student_strong=strong,x_unlabeled=inputs[1],d_unlabeled=domains,args=args,epoch=epoch,batch_idx=2,
                 apply_sat_fn=train.apply_sat_channel_for_scenario,prototype_matrix=None,loss_normalizer=norm)
             loss=l['loss']+u['loss']+torch.nn.functional.cross_entropy(clean['tx_logits'],labels)
+            if cli.use_a1_r3:
+                from cvsrffi.a1_r3_objective import r3_pair_objective
+                args.a1_r3_aux_scale=1.
+                for i,role in enumerate(('L_s','U_s')):
+                    auxiliary,_=r3_pair_objective(model=model,clean_iq=inputs[i],domains=domains,
+                        physical_ids=tuple(str(j) for j in range(8)),role=role,args=args,epoch=epoch,
+                        batch_idx=2,optimizer_step=2,apply_sat_fn=train.apply_sat_channel_for_scenario)
+                    loss=loss+auxiliary
             loss.backward()
             grads={n:None if p.grad is None else p.grad.detach().clone() for n,p in model.named_parameters()}
             opt.step(); train._update_ema_model(ema,model,.99)
