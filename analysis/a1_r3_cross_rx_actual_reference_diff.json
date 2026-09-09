@@ -1,0 +1,26 @@
+{
+  "status": "PASS",
+  "reference_source": "actual N607 launch_config argv",
+  "differences": {
+    "output_dir": {
+      "reference": "/home/szu2070436088/2510044040/CV-SincNet/runs/a1_r3_scratch_s392005_20260908_r1/R3_REFERENCE",
+      "new": "/new/R3_REFERENCE_CLEAN_CROSS_RX"
+    },
+    "a1_ecrs_cross_rx_weight": {
+      "reference": 0.0,
+      "new": 0.05
+    },
+    "run_id": {
+      "reference": "a1_r3_scratch_s392005_20260908_r1",
+      "new": "new"
+    },
+    "candidate_id": {
+      "reference": "R3_REFERENCE",
+      "new": "R3_REFERENCE_CLEAN_CROSS_RX"
+    },
+    "phase2_export_path": {
+      "reference": "/home/szu2070436088/2510044040/CV-SincNet/runs/a1_r3_scratch_s392005_20260908_r1/R3_REFERENCE/phase2_zid_prototypes.pt",
+      "new": "/new/R3_REFERENCE_CLEAN_CROSS_RX/phase2_zid_prototypes.pt"
+    }
+  }
+}

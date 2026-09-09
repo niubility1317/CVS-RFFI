@@ -59,6 +59,34 @@ def predecessor_complete(matrix, project):
     return bool(state.get('rows')) and all(row.get('status') in terminal for row in state['rows'].values())
 
 
+def evaluation_mode(matrix):
+    mode = matrix.get('final_evaluation', 'truth_last')
+    if mode not in ('truth_last', 'source_only'):
+        raise ValueError('Unknown final evaluation mode')
+    return mode
+
+
+def required_inputs(matrix, project):
+    paths = [project/'Dataset_WigSig/ManySig.pkl']
+    if evaluation_mode(matrix) == 'truth_last':
+        paths.extend((project/'runs'/BASE_RUN/'target_inputs/manifest.json',
+                      project/'runs'/BASE_RUN/'target_truth/truth_sidecar.json'))
+    return paths
+
+
+def complete_row(matrix, row, *, project, root, logs):
+    # Only this row's completed E200 artifact is loaded; no training inheritance.
+    checkpoint = verify_checkpoint(root/row['id']/'final_ssdg.pth')
+    saved = checkpoint['args']
+    if not saved.get('from_scratch') or saved.get('baseline_ckpt') or saved.get('teacher_ckpt'):
+        raise ValueError('Unexpected checkpoint inheritance')
+    del checkpoint
+    if evaluation_mode(matrix) == 'source_only':
+        return 'SOURCE_TRAINED_PENDING_ANALYSIS'
+    evaluate(row, project=project, run_root=root, log_root=logs)
+    return 'SCORED_PENDING_ANALYSIS'
+
+
 def main(matrix_factory=v2_matrix, check_script='check_a1_fast_v2.py'):
     parser=argparse.ArgumentParser()
     parser.add_argument('--project-root',type=Path,required=True)
@@ -75,8 +103,7 @@ def main(matrix_factory=v2_matrix, check_script='check_a1_fast_v2.py'):
     if args.dry_run:
         print(json.dumps(commands,indent=2)); return
     if root.exists() or logs.exists(): raise FileExistsError('Refusing existing run or log root')
-    for path in (project/'Dataset_WigSig/ManySig.pkl',project/'runs'/BASE_RUN/'target_inputs/manifest.json',
-                 project/'runs'/BASE_RUN/'target_truth/truth_sidecar.json'):
+    for path in required_inputs(matrix, project):
         if not path.is_file(): raise FileNotFoundError(path)
     if args.detach:
         argv=[sys.executable,'-u',str(Path(sys.argv[0]).resolve()),
@@ -91,6 +118,7 @@ def main(matrix_factory=v2_matrix, check_script='check_a1_fast_v2.py'):
     state={'status':'GPU_CHECK','pid':os.getpid(),'release':str(RELEASE),'seed':392005,
            'checkpoint':None,'initialization':'random_no_checkpoint','rows':{},
            'after_run':matrix.get('after_run'),'max_gpu_processes':capacity,
+           'final_evaluation':evaluation_mode(matrix),
            'waiting_rows':[r['id'] for r in matrix['rows']]}
     write_json(root/'pipeline_state.json',state); write_json(root/'effective_matrix.json',matrix)
     try:
@@ -126,15 +154,8 @@ def main(matrix_factory=v2_matrix, check_script='check_a1_fast_v2.py'):
                     failed=True; state['rows'][name]['status']='TRAIN_FAILED'
                 else:
                     try:
-                        # First model-weight load occurs only after this row's own E200 training.
-                        checkpoint=verify_checkpoint(root/name/'final_ssdg.pth')
-                        saved=checkpoint['args']
-                        if not saved.get('from_scratch') or saved.get('baseline_ckpt') or saved.get('teacher_ckpt'):
-                            raise ValueError('Unexpected checkpoint inheritance')
-                        del checkpoint
-                        state['rows'][name]['status']='EVALUATING'; write_json(root/'pipeline_state.json',state)
-                        evaluate(row,project=project,run_root=root,log_root=logs)
-                        state['rows'][name]['status']='SCORED_PENDING_ANALYSIS'
+                        state['rows'][name]['status']='FINALIZING'; write_json(root/'pipeline_state.json',state)
+                        state['rows'][name]['status']=complete_row(matrix,row,project=project,root=root,logs=logs)
                     except Exception as error:
                         failed=True; state['rows'][name].update(status='EVAL_FAILED',error=repr(error))
                 del running[name]; write_json(root/'pipeline_state.json',state)

@@ -17,10 +17,10 @@ from run_a1_ecrs_cross_rx import ecrs_matrix
 from run_a1_fast_v2 import v2_command
 
 
-def run_check(device, folder):
+def run_check(device, folder, matrix_factory=ecrs_matrix):
     torch.set_num_threads(2)
     folder.mkdir(parents=True,exist_ok=False)
-    matrix=ecrs_matrix()
+    matrix=matrix_factory()
     initial=[]
     for row in matrix['rows']:
         args=train.build_arg_parser().parse_args(v2_command(matrix,project_root=folder,run_root=folder,row=row)[3:])
