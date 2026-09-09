@@ -69,6 +69,22 @@ def test_official_lora_split_matches_paper_75_25_split_and_n_is_ten_percent_of_t
     assert set(split.calibration).isdisjoint(split.testing)
 
 
+def test_official_lora_seeded_split_maps_logical_roles_to_a_full_nonchronological_physical_partition():
+    # Break caught: applying 75/25 to chronological physical frames lets time drift define train versus test.
+    split = split_record_frames(total_samples=20_000_000, seed=20260908)
+
+    assert split.physical_indices([0, 1, 2, 117_186, 117_187, 156_249]) == [104_658, 53_197, 1_736, 64_662, 13_201, 156_119]
+    training = set(split.physical_indices(split.training))
+    calibration = set(split.physical_indices(split.calibration))
+    testing = set(split.physical_indices(split.testing))
+    assert len(training) == 117_187
+    assert len(calibration) == 11_718
+    assert len(testing) == 39_063
+    assert calibration <= training
+    assert training.isdisjoint(testing)
+    assert training | testing == set(range(156_250))
+
+
 def test_multiple_configuration_calibration_keeps_one_centroid_radius_pair_per_device_and_domain():
     # Break caught: pooling configurations into one centroid instead of preserving Algorithm 1's repeated calibration.
     features = torch.tensor([[0.0], [2.0], [10.0], [12.0], [100.0], [102.0], [110.0], [112.0]])

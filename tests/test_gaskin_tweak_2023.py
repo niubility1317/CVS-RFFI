@@ -5,6 +5,7 @@ from paper_reproduction.gaskin_tweak_2023.calibration import calibrate, closed_s
 from paper_reproduction.gaskin_tweak_2023.metrics import average_trials
 from paper_reproduction.gaskin_tweak_2023.model import TweakEncoder
 from paper_reproduction.gaskin_tweak_2023.triplet import batch_hard_triplet_loss, hard_positive_negative_indices
+from paper_reproduction.gaskin_tweak_2023.triplet import margin_violating_triplet_loss, random_triplet_indices
 
 
 def test_encoder_produces_paper_embedding_shape():
@@ -32,6 +33,33 @@ def test_batch_hard_triplet_loss_uses_paper_margin():
     assert loss.item() == pytest.approx(1.6, abs=1e-6)
     loss.backward()
     assert embeddings.grad is not None
+
+
+def test_margin_violating_triplet_loss_discards_random_candidates_that_already_meet_the_margin():
+    # Break caught: averaging every candidate, including easy ones, changes the cited online hard-negative rule.
+    embeddings = torch.tensor([[0.0], [0.3], [0.4], [0.1]], requires_grad=True)
+    loss = margin_violating_triplet_loss(
+        embeddings,
+        anchors=torch.tensor([0, 1]),
+        positives=torch.tensor([1, 0]),
+        negatives=torch.tensor([2, 3]),
+        margin=0.1,
+    )
+
+    assert loss.item() == pytest.approx(0.2, abs=1e-6)
+    loss.backward()
+    assert embeddings.grad is not None
+
+
+def test_random_triplet_indices_choose_a_same_class_positive_and_different_class_negative():
+    # Break caught: online mining must sample candidates, not silently revert to batch extrema.
+    labels = torch.tensor([0, 0, 1, 1])
+    anchors, positives, negatives = random_triplet_indices(labels, generator=torch.Generator().manual_seed(7))
+
+    assert anchors.tolist() == [0, 1, 2, 3]
+    assert torch.equal(labels[positives], labels[anchors])
+    assert torch.all(positives.ne(anchors))
+    assert torch.all(labels[negatives].ne(labels[anchors]))
 
 
 def test_calibration_uses_centroid_and_mean_radius_without_gradients():

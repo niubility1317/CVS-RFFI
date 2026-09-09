@@ -24,7 +24,7 @@ from .calibration import (
 from .method_config import load_method_config
 from .model import TweakEncoder
 from .official_lora import OfficialLoRaRecord, RecordFrameSplit, load_configuration_records, read_iq_frames, split_record_frames
-from .triplet import batch_hard_triplet_loss
+from .triplet import margin_violating_triplet_loss, random_triplet_indices
 
 
 @dataclass(frozen=True)
@@ -97,7 +97,7 @@ def _source_training_batches(
                 for item in range(samples_per_class)
             ]
             used[class_index] += samples_per_class
-            frames.append(read_iq_frames(records[class_index], frame_indices=positions))
+            frames.append(read_iq_frames(records[class_index], frame_indices=split.physical_indices(positions)))
             labels.append(torch.full((samples_per_class,), records[class_index].device_id, dtype=torch.long))
         yield torch.cat(frames), torch.cat(labels)
 
@@ -138,7 +138,11 @@ def _train_encoder(
             ):
                 iq, labels = iq.to(device, non_blocking=True), labels.to(device, non_blocking=True)
                 optimizer.zero_grad(set_to_none=True)
-                loss = batch_hard_triplet_loss(model(iq), labels)
+                anchors, positives, negatives = random_triplet_indices(
+                    labels,
+                    generator=torch.Generator(device=device).manual_seed(seed + 1_000_000 * lr_position + 10_000 * epoch + batches),
+                )
+                loss = margin_violating_triplet_loss(model(iq), anchors=anchors, positives=positives, negatives=negatives)
                 loss.backward()
                 optimizer.step()
                 running_loss += float(loss.detach())
@@ -167,6 +171,7 @@ def _embed_record_frames(
     model: TweakEncoder,
     record: OfficialLoRaRecord,
     frame_range: range,
+    split: RecordFrameSplit,
     *,
     device: torch.device,
     batch_size: int,
@@ -174,7 +179,7 @@ def _embed_record_frames(
     features: list[torch.Tensor] = []
     for start in range(frame_range.start, frame_range.stop, batch_size):
         indices = range(start, min(start + batch_size, frame_range.stop))
-        features.append(model(read_iq_frames(record, frame_indices=indices).to(device)).cpu())
+        features.append(model(read_iq_frames(record, frame_indices=split.physical_indices(indices)).to(device)).cpu())
     return torch.cat(features)
 
 
@@ -188,7 +193,7 @@ def _calibrate_configuration(
     batch_size: int,
 ) -> tuple[torch.Tensor, torch.Tensor]:
     model.eval()
-    features = [_embed_record_frames(model, record, split.calibration, device=device, batch_size=batch_size) for record in records]
+    features = [_embed_record_frames(model, record, split.calibration, split, device=device, batch_size=batch_size) for record in records]
     labels = torch.cat([torch.full((feature.shape[0],), record.device_id, dtype=torch.long) for record, feature in zip(records, features)])
     return torch.cat(features), labels
 
@@ -207,7 +212,7 @@ def _evaluate_configuration(
     model.eval()
     points, labels = [], []
     for record in records:
-        embeddings = _embed_record_frames(model, record, split.testing, device=device, batch_size=batch_size)
+        embeddings = _embed_record_frames(model, record, split.testing, split, device=device, batch_size=batch_size)
         usable = (embeddings.shape[0] // group_size) * group_size
         points.append(aggregate_embeddings(embeddings[:usable], group_size=group_size))
         labels.append(torch.full((usable // group_size,), record.device_id, dtype=torch.long))
@@ -240,7 +245,7 @@ def run_configuration_portability(
         configuration: load_configuration_records(Path(data_root), configuration, device_ids=plan.device_ids)
         for configuration in plan.calibration_configurations
     }
-    splits = [split_record_frames(total_samples=record.total_samples) for records in records_by_configuration.values() for record in records]
+    splits = [split_record_frames(total_samples=record.total_samples, seed=seed) for records in records_by_configuration.values() for record in records]
     if len({(split.total_frames, split.training.stop, split.calibration.stop, split.testing.start) for split in splits}) != 1:
         raise ValueError("all selected public LoRa records must share the paper's frame layout")
     split = splits[0]
@@ -300,6 +305,12 @@ def run_configuration_portability(
             "training_frames_per_record": len(split.training),
             "calibration_frames_per_record": len(split.calibration),
             "testing_frames_per_record": len(split.testing),
+            "physical_frame_partition": {
+                "kind": "seeded_affine_full_record_permutation",
+                "seed": split.seed,
+                "stride": split.permutation_stride,
+                "offset": split.permutation_offset,
+            },
         },
         "training": training,
         "checkpoint": str(checkpoint_path),

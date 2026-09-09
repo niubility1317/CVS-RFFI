@@ -8,7 +8,7 @@ from typing import Iterable
 from torch import nn
 
 from .method_config import load_method_config
-from .triplet import batch_hard_triplet_loss
+from .triplet import margin_violating_triplet_loss, random_triplet_indices
 
 
 def shared_triplet_loss(
@@ -42,9 +42,20 @@ class TweakTrainingResult:
 
 
 @torch.no_grad()
-def _validation_loss(encoder: nn.Module, batches: Iterable[tuple[torch.Tensor, torch.Tensor]]) -> float:
+def _validation_loss(
+    encoder: nn.Module,
+    batches: Iterable[tuple[torch.Tensor, torch.Tensor]],
+    *,
+    seed: int,
+) -> float:
     encoder.eval()
-    values = [float(batch_hard_triplet_loss(encoder(iq), labels)) for iq, labels in batches]
+    values = []
+    for batch_index, (iq, labels) in enumerate(batches):
+        anchors, positives, negatives = random_triplet_indices(
+            labels,
+            generator=torch.Generator(device=labels.device).manual_seed(seed + batch_index),
+        )
+        values.append(float(margin_violating_triplet_loss(encoder(iq), anchors=anchors, positives=positives, negatives=negatives)))
     if not values:
         raise ValueError("validation batches must be nonempty")
     return sum(values) / len(values)
@@ -73,12 +84,18 @@ def fit_tweak(
         optimizer = build_sgd_optimizer(encoder, float(learning_rate))
         for epoch in range(1, max_epochs + 1):
             encoder.train()
-            for iq, labels in train_rows:
+            for batch_index, (iq, labels) in enumerate(train_rows):
                 optimizer.zero_grad(set_to_none=True)
-                loss = batch_hard_triplet_loss(encoder(iq), labels)
+                anchors, positives, negatives = random_triplet_indices(
+                    labels,
+                    generator=torch.Generator(device=labels.device).manual_seed(
+                        20_260_908 + 1_000_000 * int(float(learning_rate) * 1_000_000) + 10_000 * epoch + batch_index
+                    ),
+                )
+                loss = margin_violating_triplet_loss(encoder(iq), anchors=anchors, positives=positives, negatives=negatives)
                 loss.backward()
                 optimizer.step()
-            validation_loss = _validation_loss(encoder, validation_rows)
+            validation_loss = _validation_loss(encoder, validation_rows, seed=20_260_908 + epoch)
             if validation_loss < best_loss:
                 best_epoch, best_learning_rate, best_loss = epoch, float(learning_rate), validation_loss
                 best_state = deepcopy(encoder.state_dict())

@@ -13,9 +13,12 @@
       "rationale": "The paper specifies layer topology but not parameter initialization or bias policy."
     },
     "triplet_mining": {
-      "value": "batch_hard_farthest_positive_nearest_negative",
+      "value": {
+        "candidate_sampling": "one_uniform_same_class_positive_and_different_class_negative_per_anchor",
+        "hardness_filter": "retain_only_triplets_violating_fixed_margin_0.1"
+      },
       "status": "UNPUBLISHED_DEFAULT",
-      "rationale": "The paper requires hard-negative mining but does not publish a complete triplet sampler."
+      "rationale": "Tweak cites PVSNet for hard-negative mining; that reference samples random negative candidates online and retains margin-violating triplets. Tweak fixes margin=0.1 but does not publish its candidate count or random stream, so one candidate per anchor and the deterministic seed are disclosed defaults."
     },
     "learning_rate_grid": {
       "value": [0.01, 0.001, 0.0001, 0.00001, 0.000001],
@@ -26,12 +29,13 @@
       "value": {
         "known_transmitter_ids": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
         "batch_composition": {"classes_per_batch": 8, "samples_per_class": 8},
-        "frame_order": "per-device deterministic affine permutation; at most three of 117187 source frames are omitted per device per epoch to preserve batch_size=64",
-        "checkpoint_selection": "lowest complete-epoch mean batch-hard training loss",
+        "frame_partition": "seeded affine permutation of every physical record frame before the paper's 75/25 role split; calibration remains the first 10% of the logical training partition",
+        "frame_order": "per-device deterministic affine permutation of logical training positions; at most three of 117187 source frames are omitted per device per epoch to preserve batch_size=64",
+        "checkpoint_selection": "lowest complete-epoch mean margin-violating sampled-triplet training loss",
         "random_seed": 20260908
       },
       "status": "UNPUBLISHED_DEFAULT",
-      "rationale": "The paper fixes 10 known devices, batch size, hard-negative mining and the best epoch, but does not identify device IDs, batch class composition, sample order or the exact best-checkpoint criterion."
+      "rationale": "The paper fixes 10 known devices, batch size, hard-negative mining and the best epoch, but does not identify device IDs, the physical 75/25 frame selection, batch class composition, sample order or the exact best-checkpoint criterion."
     }
   }
 }

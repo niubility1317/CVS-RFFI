@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 from dataclasses import dataclass
+from math import gcd
 from pathlib import Path
 from typing import Iterable, Sequence
 
@@ -30,6 +31,23 @@ class RecordFrameSplit:
     training: range
     calibration: range
     testing: range
+    seed: int
+    permutation_stride: int
+    permutation_offset: int
+
+    def physical_indices(self, logical_indices: Iterable[int]) -> list[int]:
+        """Map a role's logical frame positions through its deterministic full-record permutation."""
+        indices = [int(index) for index in logical_indices]
+        if indices and (min(indices) < 0 or max(indices) >= self.total_frames):
+            raise IndexError("logical frame index is outside the record split")
+        return [((self.permutation_stride * index) + self.permutation_offset) % self.total_frames for index in indices]
+
+
+def _coprime_stride(size: int, seed: int) -> int:
+    candidate = (seed % (size - 1)) + 1
+    while gcd(candidate, size) != 1:
+        candidate = candidate % (size - 1) + 1
+    return candidate
 
 
 def _metadata_datatype(metadata_path: Path) -> str:
@@ -92,6 +110,7 @@ def read_iq_frames(record: OfficialLoRaRecord, *, frame_indices: Iterable[int]) 
 def split_record_frames(
     *,
     total_samples: int,
+    seed: int = 20260908,
     training_fraction: float = 0.75,
     calibration_fraction_of_training: float = 0.10,
 ) -> RecordFrameSplit:
@@ -110,4 +129,7 @@ def split_record_frames(
         training=range(0, training_end),
         calibration=range(0, calibration_end),
         testing=range(training_end, total_frames),
+        seed=int(seed),
+        permutation_stride=_coprime_stride(total_frames, int(seed)),
+        permutation_offset=int(seed) % total_frames,
     )
