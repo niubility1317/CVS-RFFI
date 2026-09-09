@@ -43,3 +43,14 @@ ECRS采用历史V2的固定FIR参考、紧凑Schur估计及24个复锚点，编�
 先在同一源域V比较clean、三种LEO、最弱接收机、训练时间、峰值显存与稳定性，报告各组相对其指定参照的完整差异。优先保留在上述维度非劣且至少一项改善的增量；存在性能与成本权衡时保留Pareto候选并明确代价，不用目标结果作裁决。只组合具有源域支持且功能不冲突的跨家族增量，再从零训练验证交互作用。当前不盲目启动跨家族组合，不将单seed筛选作为晋级或干净目标泛化结论。目标预测及独立truth-last评分属于冻结选择后的后续阶段。
 
 本报告发布时正式训练性能尚未知；启动状态由独立进程与日志证据另行记录。
+
+## N607发布记录
+训练代码提交：`75c07e4682a5489e2b04b62fd8213b81287cb7ff`，已独立核对GitHub分支OID。初次包遗漏根目录configs，矩阵解析失败，独立核实未创建run、未产生dispatcher；保留该release。第二版仅修正归档范围，使用同一提交，传输SHA256为`4a6dae30a8830a679464f18da35ff2d96d48043e385f57c63e8d1f3d39a17f0f`，两端一致。
+
+正式release：`releases/a1_mechanism_screen_75c07e46_r2`；run：`a1_mechanism_screen_s392005_20260910_r2`；dispatcher PID=593473。远端编译、矩阵解析、16组FP32/AMP与新状态重载、四项后期DAOT、四类真实入口全部通过。
+
+2026-09-10约01:12(HKT)核实13组新训练进程存活、CWD/PPID/GPU匹配、argv为scratch-only及source-screen-only；初始化日志明确`init=scratch`和L/U/V=6300/56700/27000。保留原有PID523456/328173/350383，8张卡各两个GPU进程。F1_R3_CONTINUOUS、F2_R3_IDENTITY、G0_EQUAL_BRANCH等待相应GPU名额，由已有dispatcher自动补位。审计初稿的固定步长argv解析受到无值开关影响，已改为按选项位置读取；不是训练参数错误，最终证据采用v2及后续记录。
+
+启动核实是VERIFIED，正式E200性能及机制收益仍为PENDING。后续只读核实脚本为`code/scripts/audit_a1_mechanism_launch.py`，原始进程/参数/检查证据为`analysis/a1_mechanism_remote_launch_v2.json`。
+
+后续快照`analysis/a1_mechanism_remote_progress_v4.json`确认9组至少完成E1，D1已完成E2；G1及E0/E1/E2仍处首轮。13个进程持续存活，3组仍排队，没有报告TRAIN_FAILED。此为启动进展抽查，不是全量日志分析或后期机制激活结论。
