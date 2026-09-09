@@ -26,11 +26,12 @@ def test_hard_mining_selects_farthest_positive_and_nearest_negative():
     assert negative.tolist() == [2, 2, 0, 1]
 
 
-def test_batch_hard_triplet_loss_uses_paper_margin():
+def test_batch_hard_triplet_loss_uses_paper_squared_l2_distances_and_margin():
     embeddings = torch.tensor([[0.0], [2.0], [1.0], [5.0]], requires_grad=True)
     labels = torch.tensor([0, 0, 1, 1])
     loss = batch_hard_triplet_loss(embeddings, labels, margin=0.1)
-    assert loss.item() == pytest.approx(1.6, abs=1e-6)
+    # Break caught: Equation (1) squares each L2 distance rather than using raw L2 distance.
+    assert loss.item() == pytest.approx(7.1, abs=1e-6)
     loss.backward()
     assert embeddings.grad is not None
 
@@ -46,7 +47,7 @@ def test_margin_violating_triplet_loss_discards_random_candidates_that_already_m
         margin=0.1,
     )
 
-    assert loss.item() == pytest.approx(0.2, abs=1e-6)
+    assert loss.item() == pytest.approx(0.09, abs=1e-6)
     loss.backward()
     assert embeddings.grad is not None
 
@@ -90,7 +91,7 @@ def test_strict_hard_mining_keeps_triplets_with_negative_closer_than_positive():
     )
 
     assert has_hard_triplets
-    assert loss.item() == pytest.approx(1.1)
+    assert loss.item() == pytest.approx(3.1)
     loss.backward()
     assert embeddings.grad is not None
 

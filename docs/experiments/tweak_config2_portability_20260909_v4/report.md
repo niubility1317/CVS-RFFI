@@ -1,7 +1,7 @@
 # Tweak配置可移植性复现实验V4：严格hard-mining与高效学习率选择预登记
 
 - run_id：`tweak_config2_portability_20260909_v4`
-- 当前状态：`RUNNING_HEALTHY_THROUGH_LATEST_PROBE`
+- 当前状态：`ARTIFACTS_COMPLETE_NUMERICAL_MISMATCH_PRESERVED`
 - 唯一launch owner：Codex主Agent
 - Git提交：`d5472a9403417c7e88b0f643e0ff7a07d2568b07`；已push且远端分支OID独立一致。
 - 前序产物：V1数组接口技术失败、V2完整但表征塌缩、V3在确认方法定义不符后由唯一owner停止；三者均保留，V4绝不复用任何旧输出根。
@@ -33,6 +33,13 @@
 - 源归档：提交`4958069a89003e171f1d45b88f73628dd05640c5`导出`source.tar`，本地与远端SHA-256均为`ff1a48173e50390e139c94232d762ab3ee221d6cb037e703cb5821ebac0dc5c2`；远端解包及三个改动模块编译通过。
 - 远端独立CUDA读回：真实Config2批为`[64,2,128]→[64,12]`，strict-hard loss=`0.32596352696`有限，16组梯度存在；向量化采样200批=`0.1342s`。这证明启动前运行链路，不等于实验结果。
 - 启动：2026-09-09 16:13 CST，以预登记完整命令启动PID=`358516`。15秒后独立probe显示PID存活（PPID=1、CPU125%）、CWD与cmdline均为本V4 release/run、CUDA可见进程占446MiB；log尚为0字节符合每epoch才打印的实现，无异常或最终产物。该证据仅证明初始健康。
+
+## V4完整产物与数值结论
+
+- PID已自然退出；完整日志106行（5个probe、100个正式epoch、1个complete事件），每行18,310批且`active_batches=18,310`，没有异常/NaN。`best_checkpoint.pt`（8,891,428字节）和`results.json`（40,869字节）均在唯一V4输出根内，独立读回通过。
+- 选中LR=`0.01`，最佳epoch=98，best strict-hard训练loss=`0.1000012426`。图13b同配置对角准确率为Config1=27.921%、Config2=10.218%、Config3=9.974%、Config4=11.009%；图14四配置联合校准为27.632%、9.877%、10.164%、10.433%。除Config1外接近10类随机水平，远低于论文图的约68—90%（Fig.13b对角）及约53—82%（Fig.14），因此V4不是数值复现。
+- checkpoint独立几何抽样（每个Config2设备1,024个calibration帧）：平均类内半径=`3.341e-6`、平均类中心距=`1.818e-6`、最小中心距=`3.043e-7`、embedding平均范数=`0.125938`且标准差=`1.25e-6`。这是更强的表征塌缩证据，不是校准组合造成。
+- V4严格`dAN<dAP`和向量化采样均已实际启用，但没有解决塌缩。复核论文原PDF第6页Equation(1)的视觉公式发现明确是`||f(A)-f(P)||² - ||f(A)-f(N)||² + α`；V1—V4的`triplet.py`却使用未平方L2距离。这是下一次单变量V5修复的确定性公式失配，V4产物保留，不作覆盖或删除。
 
 ## 本地验证读回
 

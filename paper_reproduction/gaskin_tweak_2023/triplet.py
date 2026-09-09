@@ -20,11 +20,11 @@ def hard_positive_negative_indices(embeddings: torch.Tensor, labels: torch.Tenso
 
 
 def batch_hard_triplet_loss(embeddings: torch.Tensor, labels: torch.Tensor, margin: float = 0.1) -> torch.Tensor:
-    """Mean max(||A-P||-||A-N||+margin,0) after batch-hard mining."""
+    """Mean max(||A-P||²-||A-N||²+margin,0) after batch-hard mining."""
     positive, negative = hard_positive_negative_indices(embeddings, labels)
     anchors = torch.arange(embeddings.shape[0], device=embeddings.device)
-    positive_distance = torch.linalg.vector_norm(embeddings[anchors] - embeddings[positive], dim=1)
-    negative_distance = torch.linalg.vector_norm(embeddings[anchors] - embeddings[negative], dim=1)
+    positive_distance = (embeddings[anchors] - embeddings[positive]).square().sum(dim=1)
+    negative_distance = (embeddings[anchors] - embeddings[negative]).square().sum(dim=1)
     return F.relu(positive_distance - negative_distance + margin).mean()
 
 
@@ -67,8 +67,8 @@ def margin_violating_triplet_loss(
         raise ValueError("anchor, positive, and negative indices must be equally shaped vectors")
     if not anchors.numel() or min(int(index.min()) for index in (anchors, positives, negatives)) < 0 or max(int(index.max()) for index in (anchors, positives, negatives)) >= embeddings.shape[0]:
         raise ValueError("triplet indices must be nonempty and within the embedding batch")
-    positive_distance = torch.linalg.vector_norm(embeddings[anchors] - embeddings[positives], dim=1)
-    negative_distance = torch.linalg.vector_norm(embeddings[anchors] - embeddings[negatives], dim=1)
+    positive_distance = (embeddings[anchors] - embeddings[positives]).square().sum(dim=1)
+    negative_distance = (embeddings[anchors] - embeddings[negatives]).square().sum(dim=1)
     losses = F.relu(positive_distance - negative_distance + margin)
     violating = losses > torch.finfo(losses.dtype).eps
     return losses[violating].mean() if bool(violating.any()) else embeddings.sum() * 0
@@ -89,8 +89,8 @@ def strict_hard_triplet_loss(
         raise ValueError("anchor, positive, and negative indices must be equally shaped vectors")
     if not anchors.numel() or min(int(index.min()) for index in (anchors, positives, negatives)) < 0 or max(int(index.max()) for index in (anchors, positives, negatives)) >= embeddings.shape[0]:
         raise ValueError("triplet indices must be nonempty and within the embedding batch")
-    positive_distance = torch.linalg.vector_norm(embeddings[anchors] - embeddings[positives], dim=1)
-    negative_distance = torch.linalg.vector_norm(embeddings[anchors] - embeddings[negatives], dim=1)
+    positive_distance = (embeddings[anchors] - embeddings[positives]).square().sum(dim=1)
+    negative_distance = (embeddings[anchors] - embeddings[negatives]).square().sum(dim=1)
     hard = negative_distance < positive_distance
     if not bool(hard.any()):
         return embeddings.sum() * 0, False

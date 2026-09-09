@@ -16,11 +16,11 @@
       "value": {
         "candidate_sampling": "one_uniform_same_class_positive_and_different_class_negative_per_anchor",
         "hardness_filter": "retain_only_triplets_where_negative_distance_is_strictly_less_than_positive_distance",
-        "loss_after_filter": "mean_relu(positive_distance-negative_distance+0.1)",
+        "loss_after_filter": "mean_relu(squared_l2(anchor,positive)-squared_l2(anchor,negative)+0.1)",
         "no_hard_triplets": "skip_optimizer_step"
       },
       "status": "UNPUBLISHED_DEFAULT",
-      "rationale": "Tweak IV-A explicitly selects triplets where A is closer to N than P, then applies its fixed 0.1-margin loss. The paper does not publish its candidate count or random stream, so one uniformly sampled candidate per anchor and the deterministic seed are disclosed defaults."
+      "rationale": "Tweak IV-A explicitly selects triplets where A is closer to N than P, and Equation (1) applies its fixed 0.1-margin loss to squared L2 distances. The paper does not publish its candidate count or random stream, so one uniformly sampled candidate per anchor and the deterministic seed are disclosed defaults."
     },
     "learning_rate_grid": {
       "value": [0.01, 0.001, 0.0001, 0.00001, 0.000001],
