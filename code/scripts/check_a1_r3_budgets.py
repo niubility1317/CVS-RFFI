@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 import sys
 from unittest.mock import patch
+import numpy as np  # Initialize MKL before torch/libgomp on the N607 runtime.
 import torch
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
 from cvsrffi import a1_r3_objective as r3
