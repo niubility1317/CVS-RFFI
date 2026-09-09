@@ -24,7 +24,7 @@ from .calibration import (
 from .method_config import load_method_config
 from .model import TweakEncoder
 from .official_lora import OfficialLoRaRecord, RecordFrameSplit, load_configuration_records, read_iq_frames, split_record_frames
-from .triplet import random_triplet_indices, strict_hard_triplet_loss
+from .triplet import all_strict_hard_triplet_loss
 
 
 @dataclass(frozen=True)
@@ -136,12 +136,7 @@ def _run_training_epoch(
     for iq, labels in _source_training_batches(records, split, seed=seed, max_batches=max_batches_per_epoch):
         iq, labels = iq.to(device, non_blocking=True), labels.to(device, non_blocking=True)
         optimizer.zero_grad(set_to_none=True)
-        anchors, positives, negatives = random_triplet_indices(
-            labels, generator=torch.Generator(device=device).manual_seed(seed + batches)
-        )
-        loss, has_hard_triplets = strict_hard_triplet_loss(
-            model(iq), anchors=anchors, positives=positives, negatives=negatives
-        )
+        loss, has_hard_triplets = all_strict_hard_triplet_loss(model(iq), labels)
         if has_hard_triplets:
             loss.backward()
             optimizer.step()

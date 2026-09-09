@@ -1,7 +1,7 @@
 # Tweak配置可移植性复现实验V5：平方L2 triplet公式修复预登记
 
 - run_id：`tweak_config2_portability_20260909_v5`
-- 当前状态：`RUNNING_HEALTHY_THROUGH_LATEST_PROBE`
+- 当前状态：`ARTIFACTS_COMPLETE_NUMERICAL_MISMATCH_PRESERVED`
 - 唯一launch owner：Codex主Agent
 - Git代码提交：`8e87a6cc94b1f18b63bb1cf8f2d61c8cc0f3f69f`，已push且远端OID独立一致。
 
@@ -28,3 +28,10 @@
 - 源归档从提交`f11cf0bab5c9fc65ebf7e3e71a1654008fe34157`导出；本地和远端SHA-256均为`6e5c1a97aab4e51969d184aa795ad24dd22420e99954fd240e1068a020f41138`，解包和三个改动模块编译通过。解包时仅出现远端时钟较本机归档时间略早的tar时间戳warning，不影响SHA、文件或编译核验。
 - 远端真实CUDA验证：`[64,2,128]→[64,12]`，平方strict-hard loss=`0.3845960796`有限，16组参数梯度存在，启动前唯一V5输出根仍为空。
 - 2026-09-09 22:35 CST在物理GPU0以完整默认命令启动PID=`523456`。15秒独立probe确认PPID=1、CWD与cmdline为本V5 release/run、GPU进程占466MiB；log尚为空符合每epoch打印，无异常或最终产物。此为初始健康证据，不是完成或数值结论。
+
+## V5完整产物与数值结论
+
+- PID自然退出；完整日志106行（5个probe、100个epoch、1个complete），每行18,310批且`active_batches=18,310`，无异常/NaN。`best_checkpoint.pt`（8,891,428字节）及`results.json`（41,017字节）在唯一V5输出根，独立读回成功。
+- 平方L2修复显著优于V4：图13b同配置对角为Config1=40.855%、Config2=46.697%、Config3=41.124%、Config4=27.355%；图14联合为24.247%、34.931%、21.605%、17.642%。但仍低于论文图13b约68—90%与图14约53—82%，不能称为数值复现。
+- 选择LR=`0.001`、best epoch=99、best loss=`0.1000036816`。checkpoint抽样（每设备1,024个Config2 calibration帧）平均类内半径=`1.432e-3`、平均类中心距=`6.417e-4`、最小中心距=`1.135e-4`；较V4大幅恢复尺度，却仍是类内半径大于类间中心距的塌缩几何。
+- 余下直接方法差异是在线hard mining：V5对每anchor只随机抽取一个同类正/异类负候选后过滤，而论文写明从mini-batch后“selecting triplets”且未允许把候选空间缩成一个随机三元组。V6将把这一未公开且未证实的随机候选默认替换为mini-batch内全部符合`dAN<dAP`的triplet集合；数据、模型、平方损失、优化器、LR选择和评估均保持不变。

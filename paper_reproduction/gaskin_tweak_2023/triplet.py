@@ -95,3 +95,23 @@ def strict_hard_triplet_loss(
     if not bool(hard.any()):
         return embeddings.sum() * 0, False
     return F.relu(positive_distance[hard] - negative_distance[hard] + margin).mean(), True
+
+
+def all_strict_hard_triplet_loss(
+    embeddings: torch.Tensor,
+    labels: torch.Tensor,
+    margin: float = 0.1,
+) -> tuple[torch.Tensor, bool]:
+    """Mine every valid mini-batch triplet whose negative is closer than its positive."""
+    if embeddings.ndim != 2 or labels.ndim != 1 or embeddings.shape[0] != labels.shape[0]:
+        raise ValueError("embeddings must be [batch, dim] and labels must be [batch]")
+    squared_distances = (embeddings[:, None, :] - embeddings[None, :, :]).square().sum(dim=2)
+    same = labels[:, None].eq(labels[None, :])
+    same.fill_diagonal_(False)
+    different = ~labels[:, None].eq(labels[None, :])
+    valid = same[:, :, None] & different[:, None, :]
+    losses = F.relu(squared_distances[:, :, None] - squared_distances[:, None, :] + margin)
+    hard = valid & (squared_distances[:, None, :] < squared_distances[:, :, None])
+    if not bool(hard.any()):
+        return embeddings.sum() * 0, False
+    return losses[hard].mean(), True

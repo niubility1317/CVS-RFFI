@@ -5,7 +5,7 @@ from paper_reproduction.gaskin_tweak_2023.calibration import calibrate, closed_s
 from paper_reproduction.gaskin_tweak_2023.metrics import average_trials
 from paper_reproduction.gaskin_tweak_2023.model import TweakEncoder
 from paper_reproduction.gaskin_tweak_2023.triplet import batch_hard_triplet_loss, hard_positive_negative_indices
-from paper_reproduction.gaskin_tweak_2023.triplet import margin_violating_triplet_loss, random_triplet_indices, strict_hard_triplet_loss
+from paper_reproduction.gaskin_tweak_2023.triplet import all_strict_hard_triplet_loss, margin_violating_triplet_loss, random_triplet_indices, strict_hard_triplet_loss
 
 
 def test_encoder_produces_paper_embedding_shape():
@@ -92,6 +92,20 @@ def test_strict_hard_mining_keeps_triplets_with_negative_closer_than_positive():
 
     assert has_hard_triplets
     assert loss.item() == pytest.approx(3.1)
+    loss.backward()
+    assert embeddings.grad is not None
+
+
+def test_all_strict_hard_mining_uses_every_and_only_batch_triplet_with_negative_closer_than_positive():
+    # Break caught: reducing online mining to one random candidate per anchor omits nearly all hard mini-batch triplets.
+    embeddings = torch.tensor([[0.0], [3.0], [1.0], [5.0]], requires_grad=True)
+    labels = torch.tensor([0, 0, 1, 1])
+
+    loss, has_hard_triplets = all_strict_hard_triplet_loss(embeddings, labels, margin=0.1)
+
+    # The six strict-hard directed triplets have squared-loss values 8.1, 5.1, 5.1, 15.1, 12.1, 12.1.
+    assert has_hard_triplets
+    assert loss.item() == pytest.approx(9.6)
     loss.backward()
     assert embeddings.grad is not None
 
