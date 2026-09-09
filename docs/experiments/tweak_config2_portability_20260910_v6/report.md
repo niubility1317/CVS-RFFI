@@ -3,6 +3,7 @@
 - run_id：`tweak_config2_portability_20260910_v6`
 - 当前状态：`LOCAL_DIAGNOSTIC_VERIFIED_RELEASE_PENDING`
 - 唯一launch owner：Codex主Agent
+- Git代码提交：`a234e6e6136e558fda0b47b910037662b36d3bd4`，已push且远端OID独立一致。
 
 ## 依据与单变量假设
 
@@ -16,3 +17,8 @@
 - RED：新增4样本批测试，枚举得到6个strict-hard有向三元组及平方损失均值9.6；实现前以`ImportError`失败。
 - GREEN：在`triplet.py`增加pairwise平方距离和3D布尔mask的全量miner；official runner和通用训练入口均改用它。30项相关Tweak/config测试、三个模块编译通过。
 - 本地真实Config2受控诊断（不写正式输出）：以V5相同seed、模型、SGD、LR=.001、物理75/25和`N/M`，只训练3,000个source batch后，10设备×102个M=10 held-out决策取得568/1,020=`55.686%`，loss从0.5870到0.1019。它不能替代完整100epoch/论文矩阵，但首次提供了不再接近随机的、方向正确的V6依据。
+
+## 已预登记的N607落地
+
+- 数据根80个输入文件已读回；新的release=`releases/tweak_config2_portability_20260910_v6/source`、run=`runs/tweak_config2_portability_20260910_v6/official_config2_full`、log=`logs/tweak_config2_portability_20260910_v6/train.log`均不存在。
+- 启动前全部GPU已有其他用户计算任务；按用户已明确允许每卡加挂实验，选择显存占用最低的物理GPU4（约5.6GiB/24GiB），不触碰其他PID。完整命令使用`CUDA_VISIBLE_DEVICES=4`与runner内`--device cuda:0`、默认1+100和100epoch，不传smoke限制。
