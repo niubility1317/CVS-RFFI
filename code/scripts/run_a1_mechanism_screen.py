@@ -1,6 +1,7 @@
 """Source-only single-mechanism screen before any cross-family combination."""
 from copy import deepcopy
 from run_a1_fast_v2 import v2_matrix, main
+from run_a1_fast_selected_adv3b02 import BASE_RUN
 
 
 def mechanism_matrix():
@@ -9,6 +10,9 @@ def mechanism_matrix():
                  '--a1_logit_coverage_weighting': 'false', '--epochs': '200',
                  '--base_candidate': 'A1_MECHANISM_SCREEN_RANDOM'})
     base['--a1_source_screen_only'] = 'true'
+    base.update({'--a1_periodic_target_start': '80',
+        '--a1_periodic_target_inputs': '{project_root}/runs/'+BASE_RUN+'/target_inputs',
+        '--a1_periodic_target_truth': '{project_root}/runs/'+BASE_RUN+'/target_truth/truth_sidecar.json'})
     definitions = [
         ('B0_FIXED', {}, 'common corrected baseline'),
         ('B1_TAIL_LR', {'--a1_tail_lr': 'continuous'}, 'full-budget cosine without trunk tail freeze'),
@@ -30,7 +34,7 @@ def mechanism_matrix():
     rows = [{'id': name, 'gpu': i % 8, 'options': options, 'hypothesis': hypothesis}
             for i, (name, options, hypothesis) in enumerate(definitions)]
     return {'seed': 392005, 'initialization': 'random_no_checkpoint', 'core90_options': base,
-            'rows': rows, 'max_gpu_processes': 2, 'final_evaluation': 'source_only',
+            'rows': rows, 'max_gpu_processes': 2, 'final_evaluation': 'exploratory_periodic_target',
             'stage': 'individual_mechanism_screen', 'cross_family_combination': 'pending_source_results',
             'target_feedback_allowed': False}
 

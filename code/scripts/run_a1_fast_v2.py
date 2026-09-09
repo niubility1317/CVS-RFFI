@@ -79,6 +79,7 @@ def required_inputs(matrix, project):
     paths = [project/'Dataset_WigSig/ManySig.pkl']
     if evaluation_mode(matrix) != 'source_only':
         paths.extend((project/'runs'/BASE_RUN/'target_inputs/manifest.json',
+                      project/'runs'/BASE_RUN/'target_inputs/iq.npy',
                       project/'runs'/BASE_RUN/'target_truth/truth_sidecar.json'))
     return paths
 
@@ -96,6 +97,17 @@ def complete_row(matrix, row, *, project, root, logs):
     if evaluation_mode(matrix) == 'source_only':
         return 'SOURCE_TRAINED_PENDING_ANALYSIS'
     if evaluation_mode(matrix) == 'exploratory_periodic_target':
+        start = int(options.get('--a1_periodic_target_start', 0))
+        if start:
+            from cvsrffi.a1_periodic_target import due
+            for epoch in range(1, expected+1):
+                if not due(epoch, start, expected): continue
+                folder = root/row['id']/'target_epochs'/f'E{epoch:03d}'
+                summary = json.loads((folder/'score.json').read_text(encoding='utf-8'))
+                if summary.get('record_count') != 672000:
+                    raise ValueError(f'Incomplete target coverage at epoch {epoch}')
+                if not (folder/'evaluation_scope.json').is_file():
+                    raise FileNotFoundError(folder/'evaluation_scope.json')
         return 'EXPLORATORY_SCORED_PENDING_ANALYSIS'
     evaluate(row, project=project, run_root=root, log_root=logs)
     return 'SCORED_PENDING_ANALYSIS'

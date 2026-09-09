@@ -417,6 +417,9 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--a1_fisher_supervision", type=str2bool, default=False)
     parser.add_argument("--a1_fisher_equal", type=str2bool, default=False)
     parser.add_argument("--a1_source_screen_only", type=str2bool, default=False)
+    parser.add_argument("--a1_periodic_target_start", type=int, default=0)
+    parser.add_argument("--a1_periodic_target_inputs", type=str, default="")
+    parser.add_argument("--a1_periodic_target_truth", type=str, default="")
     parser.add_argument("--a1_rc4_reliability_weight", choices=("margin_squared", "calibrated_probability"), default="margin_squared")
     parser.add_argument("--a1_r3_schedule", choices=("legacy", "continuous"), default="legacy")
     parser.add_argument("--a1_r3_source_fingerprint", type=str2bool, default=False)
@@ -13123,6 +13126,10 @@ def train(args) -> int:
                     "role": "source_validation", "clean": val_stats, "satellite": source_val_sat_stats,
                     "source_validation_fresh": bool(source_val_heavy_eval_ran),
                 }, default=str, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        if int(args.a1_periodic_target_start) > 0:
+            from cvsrffi.a1_periodic_target import run_epoch as run_periodic_target_epoch
+            train_logs["time/periodic_target_seconds"] = run_periodic_target_epoch(
+                args, epoch, out_dir, payload, save_payload, device)
         safe_checkpoint_saved = False
         is_best = False
         best_metric_name = str(args.best_metric)

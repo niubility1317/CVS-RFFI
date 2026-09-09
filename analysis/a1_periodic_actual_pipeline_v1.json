@@ -1,0 +1,14 @@
+{
+  "status": "PASS",
+  "same_training_model_unchanged": true,
+  "records": 48,
+  "scenarios": [
+    "clean",
+    "leo_clear_weak",
+    "leo_low_elev_weak",
+    "leo_rain_weak"
+  ],
+  "seconds": 2.515000000130385,
+  "historical_checkpoints": 0,
+  "boundary": "synthetic fixture; actual predictor and separate CPU scorer; no performance claim"
+}

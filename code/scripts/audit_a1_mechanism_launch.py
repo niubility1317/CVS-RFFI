@@ -44,9 +44,15 @@ print(json.dumps(result))
 if __name__ == '__main__':
     parser=argparse.ArgumentParser()
     parser.add_argument('--output',type=Path,required=True)
+    parser.add_argument('--run-id',default='a1_mechanism_screen_s392005_20260910_r2')
+    parser.add_argument('--release-name',default='a1_mechanism_screen_75c07e46_r2')
     args=parser.parse_args()
+    if not args.run_id.replace('_','').isalnum() or not args.release_name.replace('_','').isalnum():
+        raise ValueError('Invalid run or release name')
+    source=REMOTE.replace('a1_mechanism_screen_s392005_20260910_r2',args.run_id).replace(
+        'a1_mechanism_screen_75c07e46_r2',args.release_name)
     result=subprocess.run(['ssh','-o','BatchMode=yes','-o','ConnectTimeout=10','N607','python3 -'],
-                          input=REMOTE,text=True,encoding='utf-8',capture_output=True,timeout=45,check=True)
+                          input=source,text=True,encoding='utf-8',capture_output=True,timeout=45,check=True)
     value=json.loads(result.stdout)
     args.output.write_text(json.dumps(value,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
     print(json.dumps({'status':value['state']['status'],'rows':len(value['rows']),

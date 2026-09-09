@@ -82,9 +82,10 @@ def run_models(device, folder):
         artifact = folder / (row['id'] + '.fresh.pth')
         torch.save({'model': model.state_dict(), 'args': vars(args), 'lineage': 'this_check_fresh_random'}, artifact)
         del model
-        reloaded = build(args, device)
         saved = torch.load(artifact, map_location=device, weights_only=False)
-        reloaded.load_state_dict(saved['model'], strict=True)
+        from cvsrffi.checkpoint_loading import build_exact_ssdg_model_from_checkpoint
+        reloaded, load_audit = build_exact_ssdg_model_from_checkpoint(saved, input_len=256, device=device)
+        assert load_audit['checkpoint_load_strict']
         reloaded.eval()
         with torch.no_grad():
             torch.testing.assert_close(reloaded(x, return_aux=True)['z_id'], expected, rtol=2e-4, atol=2e-5)

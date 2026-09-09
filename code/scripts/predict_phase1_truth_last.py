@@ -52,7 +52,7 @@ def _ids_and_truth(base: WiSigCompactDataset, split_binding: str):
         yield {"physical_id": physical, "label": int(item.tx_i)}
 
 
-def main() -> None:
+def main(argv=None) -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--checkpoint", required=True)
     parser.add_argument("--wisig-pkl", default="")
@@ -67,7 +67,7 @@ def main() -> None:
     parser.add_argument("--num-workers", type=int, default=4)
     parser.add_argument("--device", default="cuda:0")
     parser.add_argument("--mode", choices=["prepare", "predict"], required=True)
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     output_root = Path(args.output_root)
     input_package = Path(args.input_package)
