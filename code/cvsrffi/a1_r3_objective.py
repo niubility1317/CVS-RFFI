@@ -6,6 +6,7 @@ No TX labels enter this auxiliary API. Eta metadata is explicitly unavailable.
 from __future__ import annotations
 
 import torch
+from .a1_budget_schedule import reference_epoch
 
 from .phase1_fcr_losses import compute_cross_losses, mrstft_loss, phase_increment_loss
 from .phase1_fcr_schedule import permission_for_role, stage_for_epoch
@@ -22,10 +23,11 @@ def r3_pair_objective(*, model, clean_iq, domains, physical_ids, role,
     n = int(clean_iq.size(0))
     if len(physical_ids) != n:
         raise ValueError('R3 requires one physical ID for each source row')
-    stage = stage_for_epoch(epoch, optimizer_step=optimizer_step)
+    schedule_epoch = reference_epoch(args, epoch)
+    stage = stage_for_epoch(schedule_epoch, optimizer_step=optimizer_step)
     # Match the original source curriculum; every auxiliary row is a paired view.
-    scenarios = (('leo_clear_weak',) if epoch <= 40 else
-                 ('leo_low_elev_weak', 'leo_rain_weak') if epoch <= 90 else
+    scenarios = (('leo_clear_weak',) if schedule_epoch <= 40 else
+                 ('leo_low_elev_weak', 'leo_rain_weak') if schedule_epoch <= 90 else
                  ('leo_clear_weak', 'leo_low_elev_weak', 'leo_rain_weak'))
     scenario = scenarios[(epoch + batch_idx - 1) % len(scenarios)]
     generator = torch.Generator(device=clean_iq.device)

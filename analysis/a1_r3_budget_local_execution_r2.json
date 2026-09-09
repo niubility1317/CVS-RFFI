@@ -1,0 +1,379 @@
+{
+  "status": "PASS",
+  "budgets": [
+    {
+      "status": "PASS",
+      "checkpoint_loads": 0,
+      "target_inputs": 0,
+      "initialization": "fresh_random",
+      "paired_model_heads_rng": "EXACT",
+      "synthetic_gradient_checks": [
+        {
+          "scope": "clean",
+          "leo_applied": false,
+          "amp": false,
+          "valid_anchors": 30,
+          "leo_count": 0,
+          "loss": 0.010110199451446533,
+          "identity_gradient": "nonzero_finite"
+        },
+        {
+          "scope": "clean",
+          "leo_applied": false,
+          "amp": true,
+          "valid_anchors": 30,
+          "leo_count": 0,
+          "loss": 0.009787476621568203,
+          "identity_gradient": "nonzero_finite"
+        },
+        {
+          "scope": "clean",
+          "leo_applied": true,
+          "amp": false,
+          "valid_anchors": 30,
+          "leo_count": 0,
+          "loss": 0.010035580955445766,
+          "identity_gradient": "nonzero_finite"
+        },
+        {
+          "scope": "clean",
+          "leo_applied": true,
+          "amp": true,
+          "valid_anchors": 30,
+          "leo_count": 0,
+          "loss": 0.0093406205996871,
+          "identity_gradient": "nonzero_finite"
+        },
+        {
+          "scope": "clean_leo",
+          "leo_applied": false,
+          "amp": false,
+          "valid_anchors": 30,
+          "leo_count": 0,
+          "loss": 0.010529703460633755,
+          "identity_gradient": "nonzero_finite"
+        },
+        {
+          "scope": "clean_leo",
+          "leo_applied": false,
+          "amp": true,
+          "valid_anchors": 30,
+          "leo_count": 0,
+          "loss": 0.010348280891776085,
+          "identity_gradient": "nonzero_finite"
+        },
+        {
+          "scope": "clean_leo",
+          "leo_applied": true,
+          "amp": false,
+          "valid_anchors": 60,
+          "leo_count": 30,
+          "loss": 0.009815806522965431,
+          "identity_gradient": "nonzero_finite"
+        },
+        {
+          "scope": "clean_leo",
+          "leo_applied": true,
+          "amp": true,
+          "valid_anchors": 60,
+          "leo_count": 30,
+          "loss": 0.010492296889424324,
+          "identity_gradient": "nonzero_finite"
+        }
+      ],
+      "actual_train_entry_successful_steps": 4,
+      "actual_train_entry_objectives": [],
+      "entry_scope": "actual matrix combined candidate E1 source loader; target-loader builder replaced with empty mapping; stop after four successful optimizer steps; no formal training result",
+      "row": "R3_B120",
+      "actual_entry_r3_calls": [
+        {
+          "role": "L_s",
+          "epoch": 1,
+          "loss": 46.14592742919922
+        },
+        {
+          "role": "U_s",
+          "epoch": 1,
+          "loss": 46.0311393737793
+        },
+        {
+          "role": "L_s",
+          "epoch": 1,
+          "loss": 46.082252502441406
+        },
+        {
+          "role": "U_s",
+          "epoch": 1,
+          "loss": 45.94047927856445
+        },
+        {
+          "role": "L_s",
+          "epoch": 1,
+          "loss": 45.804927825927734
+        },
+        {
+          "role": "U_s",
+          "epoch": 1,
+          "loss": 45.84128189086914
+        },
+        {
+          "role": "L_s",
+          "epoch": 1,
+          "loss": 45.84550476074219
+        },
+        {
+          "role": "U_s",
+          "epoch": 1,
+          "loss": 45.80484390258789
+        },
+        {
+          "role": "L_s",
+          "epoch": 1,
+          "loss": 45.82230758666992
+        },
+        {
+          "role": "U_s",
+          "epoch": 1,
+          "loss": 45.74470901489258
+        }
+      ],
+      "late_r3_checks": [
+        {
+          "epoch": 31,
+          "reference_epoch": 51,
+          "role": "L_s",
+          "loss": 48.939064025878906
+        },
+        {
+          "epoch": 31,
+          "reference_epoch": 51,
+          "role": "U_s",
+          "loss": 49.08650207519531
+        },
+        {
+          "epoch": 61,
+          "reference_epoch": 101,
+          "role": "L_s",
+          "loss": 51.99422073364258
+        },
+        {
+          "epoch": 61,
+          "reference_epoch": 101,
+          "role": "U_s",
+          "loss": 51.9042854309082
+        },
+        {
+          "epoch": 91,
+          "reference_epoch": 151,
+          "role": "L_s",
+          "loss": 12.92711353302002
+        },
+        {
+          "epoch": 91,
+          "reference_epoch": 151,
+          "role": "U_s",
+          "loss": 12.91304874420166
+        },
+        {
+          "epoch": 120,
+          "reference_epoch": 200,
+          "role": "L_s",
+          "loss": 12.992806434631348
+        },
+        {
+          "epoch": 120,
+          "reference_epoch": 200,
+          "role": "U_s",
+          "loss": 12.980876922607422
+        }
+      ]
+    },
+    {
+      "status": "PASS",
+      "checkpoint_loads": 0,
+      "target_inputs": 0,
+      "initialization": "fresh_random",
+      "paired_model_heads_rng": "EXACT",
+      "synthetic_gradient_checks": [
+        {
+          "scope": "clean",
+          "leo_applied": false,
+          "amp": false,
+          "valid_anchors": 30,
+          "leo_count": 0,
+          "loss": 0.010110833682119846,
+          "identity_gradient": "nonzero_finite"
+        },
+        {
+          "scope": "clean",
+          "leo_applied": false,
+          "amp": true,
+          "valid_anchors": 30,
+          "leo_count": 0,
+          "loss": 0.00978745799511671,
+          "identity_gradient": "nonzero_finite"
+        },
+        {
+          "scope": "clean",
+          "leo_applied": true,
+          "amp": false,
+          "valid_anchors": 30,
+          "leo_count": 0,
+          "loss": 0.010035427287220955,
+          "identity_gradient": "nonzero_finite"
+        },
+        {
+          "scope": "clean",
+          "leo_applied": true,
+          "amp": true,
+          "valid_anchors": 30,
+          "leo_count": 0,
+          "loss": 0.009340289048850536,
+          "identity_gradient": "nonzero_finite"
+        },
+        {
+          "scope": "clean_leo",
+          "leo_applied": false,
+          "amp": false,
+          "valid_anchors": 30,
+          "leo_count": 0,
+          "loss": 0.010529591701924801,
+          "identity_gradient": "nonzero_finite"
+        },
+        {
+          "scope": "clean_leo",
+          "leo_applied": false,
+          "amp": true,
+          "valid_anchors": 30,
+          "leo_count": 0,
+          "loss": 0.010348226875066757,
+          "identity_gradient": "nonzero_finite"
+        },
+        {
+          "scope": "clean_leo",
+          "leo_applied": true,
+          "amp": false,
+          "valid_anchors": 60,
+          "leo_count": 30,
+          "loss": 0.009815449826419353,
+          "identity_gradient": "nonzero_finite"
+        },
+        {
+          "scope": "clean_leo",
+          "leo_applied": true,
+          "amp": true,
+          "valid_anchors": 60,
+          "leo_count": 30,
+          "loss": 0.010492474772036076,
+          "identity_gradient": "nonzero_finite"
+        }
+      ],
+      "actual_train_entry_successful_steps": 4,
+      "actual_train_entry_objectives": [],
+      "entry_scope": "actual matrix combined candidate E1 source loader; target-loader builder replaced with empty mapping; stop after four successful optimizer steps; no formal training result",
+      "row": "R3_B160",
+      "actual_entry_r3_calls": [
+        {
+          "role": "L_s",
+          "epoch": 1,
+          "loss": 46.14592742919922
+        },
+        {
+          "role": "U_s",
+          "epoch": 1,
+          "loss": 46.0311393737793
+        },
+        {
+          "role": "L_s",
+          "epoch": 1,
+          "loss": 46.082252502441406
+        },
+        {
+          "role": "U_s",
+          "epoch": 1,
+          "loss": 45.94047927856445
+        },
+        {
+          "role": "L_s",
+          "epoch": 1,
+          "loss": 45.80492401123047
+        },
+        {
+          "role": "U_s",
+          "epoch": 1,
+          "loss": 45.84127426147461
+        },
+        {
+          "role": "L_s",
+          "epoch": 1,
+          "loss": 45.845516204833984
+        },
+        {
+          "role": "U_s",
+          "epoch": 1,
+          "loss": 45.80484390258789
+        },
+        {
+          "role": "L_s",
+          "epoch": 1,
+          "loss": 45.82229995727539
+        },
+        {
+          "role": "U_s",
+          "epoch": 1,
+          "loss": 45.74631118774414
+        }
+      ],
+      "late_r3_checks": [
+        {
+          "epoch": 41,
+          "reference_epoch": 51,
+          "role": "L_s",
+          "loss": 48.835411071777344
+        },
+        {
+          "epoch": 41,
+          "reference_epoch": 51,
+          "role": "U_s",
+          "loss": 49.217735290527344
+        },
+        {
+          "epoch": 81,
+          "reference_epoch": 101,
+          "role": "L_s",
+          "loss": 51.75100326538086
+        },
+        {
+          "epoch": 81,
+          "reference_epoch": 101,
+          "role": "U_s",
+          "loss": 51.84901809692383
+        },
+        {
+          "epoch": 121,
+          "reference_epoch": 151,
+          "role": "L_s",
+          "loss": 12.933357238769531
+        },
+        {
+          "epoch": 121,
+          "reference_epoch": 151,
+          "role": "U_s",
+          "loss": 12.969231605529785
+        },
+        {
+          "epoch": 160,
+          "reference_epoch": 200,
+          "role": "L_s",
+          "loss": 12.910613059997559
+        },
+        {
+          "epoch": 160,
+          "reference_epoch": 200,
+          "role": "U_s",
+          "loss": 12.92161750793457
+        }
+      ]
+    }
+  ]
+}

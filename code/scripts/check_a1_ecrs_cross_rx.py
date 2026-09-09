@@ -17,7 +17,7 @@ from run_a1_ecrs_cross_rx import ecrs_matrix
 from run_a1_fast_v2 import v2_command
 
 
-def run_check(device, folder, matrix_factory=ecrs_matrix):
+def run_check(device, folder, matrix_factory=ecrs_matrix, expect_cross_rx=True):
     torch.set_num_threads(2)
     folder.mkdir(parents=True,exist_ok=False)
     matrix=matrix_factory()
@@ -101,9 +101,12 @@ def run_check(device, folder, matrix_factory=ecrs_matrix):
                 train.train(args)
             except CheckedTrainingStop:
                 reached=True
-    assert reached and len(steps)==4 and observations
-    assert all(r['valid_anchors']>0 and r['weighted_loss']>0 for r in observations)
-    assert all(r['leo_count']==0 for r in observations), 'E1 has no separately executed LEO student under the fixed course'
+    assert reached and len(steps)==4
+    if expect_cross_rx:
+        assert observations and all(r['valid_anchors']>0 and r['weighted_loss']>0 for r in observations)
+        assert all(r['leo_count']==0 for r in observations), 'E1 has no separately executed LEO student under the fixed course'
+    else:
+        assert not observations, 'Reference budget must keep cross-RX disabled'
     return {'status':'PASS','checkpoint_loads':0,'target_inputs':0,'initialization':'fresh_random',
         'paired_model_heads_rng':'EXACT','synthetic_gradient_checks':checks,
         'actual_train_entry_successful_steps':len(steps),'actual_train_entry_objectives':observations,

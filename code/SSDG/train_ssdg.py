@@ -20,6 +20,7 @@ if __package__ in (None, ""):
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from post_stage_cli import add_common_data_args, add_sat_eval_args, str2bool
+from cvsrffi.a1_budget_schedule import reference_epoch, reference_total, save_budget_snapshot, u_satellite_scenario
 from cvsrffi.phase1_ablation_factory import (
     apply_phase1_ablation,
     phase1_ablation_config,
@@ -408,6 +409,9 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--a1_ecrs_cross_rx_margin", type=float, default=0.2)
     parser.add_argument("--a1_ecrs_cross_rx_scope", choices=("clean", "clean_leo"), default="clean")
     parser.add_argument("--use_a1_r3", type=str2bool, default=False)
+    parser.add_argument("--a1_r3_budget_mode", type=str2bool, default=False)
+    parser.add_argument("--a1_budget_snapshot_epochs", type=str, default="")
+    parser.add_argument("--a1_budget_evaluation_start_epoch", type=int, default=0)
     parser.add_argument("--a1_r3_aux_scale", type=float, choices=(0.0, 1.0), default=1.0)
     parser.add_argument("--daot_ablation", type=str, default="", choices=["", "A0", "A1", "A2", "A3", "A4", "A5", "A6", "A7", "A8"])
     parser.add_argument(
@@ -2087,7 +2091,7 @@ def _compute_daot_labeled_step(
 ) -> Dict[str, Any]:
     if ema_model is None:
         raise RuntimeError("ADV3B02-DAOT-STN requires an EMA orbit teacher")
-    schedule = adv3b02_daot_schedule(int(epoch), total_epochs=int(args.epochs or 200))
+    schedule = adv3b02_daot_schedule(reference_epoch(args, epoch), total_epochs=reference_total(args))
     zero = student_clean["z_id"].sum() * 0.0
     if float(schedule.orbit_scale) <= 0.0:
         return {
@@ -2376,7 +2380,7 @@ def _compute_daot_unlabeled_step(
     memory_keys: Optional[torch.Tensor] = None,
     loss_normalizer=None,
 ) -> Dict[str, Any]:
-    schedule = adv3b02_daot_schedule(int(epoch), total_epochs=int(args.epochs or 200))
+    schedule = adv3b02_daot_schedule(reference_epoch(args, epoch), total_epochs=reference_total(args))
     zero = student_strong["z_id"].sum() * 0.0
     if float(schedule.orbit_scale) <= 0.0:
         return {"loss": zero, "components": {}, "diagnostics": {"route": "warmup", "orbit_scale": 0.0}}
@@ -7149,7 +7153,7 @@ def _compute_rc4_unlabeled_losses(
     hard_scale, partial_set_scale, partial_conditional_scale = rc4_identity_tail_scales(
         int(epoch),
         start_epoch=int(args.rc4_consolidation_start_epoch),
-        end_epoch=200,
+        end_epoch=int(args.epochs) if bool(getattr(args, "a1_r3_budget_mode", False)) else 200,
         hard_final=float(args.rc4_identity_tail_hard_final),
         partial_set_final=float(args.rc4_identity_tail_partial_set_final),
         partial_conditional_final=float(args.rc4_identity_tail_partial_conditional_final),
@@ -8748,7 +8752,7 @@ def train(args) -> int:
         if _fasttrust_lr_enabled(args) and device.type == "cuda":
             torch.cuda.reset_peak_memory_stats(device)
         if _fasttrust_lr_enabled(args):
-            _apply_fasttrust_lr(optimizer, base_lr=float(args.lr), epoch=int(epoch))
+            _apply_fasttrust_lr(optimizer, base_lr=float(args.lr), epoch=reference_epoch(args, epoch))
         if muse_state is not None:
             _configure_muse_epoch_state(muse_state, int(epoch))
             if bool(muse_state.get("fasttrust_rc4", False)):
@@ -10192,11 +10196,10 @@ def train(args) -> int:
                         )
                     )
                     u_sat_probability, _ = adv3b02_core90_u_satellite_policy(
-                        int(epoch)
+                        reference_epoch(args, epoch)
                     )
-                    u_sat_scenario = select_adv3b02_u_satellite_scenario(
-                        int(epoch), int(batch_idx), int(args.seed)
-                    )
+                    u_sat_scenario = (u_satellite_scenario(args, epoch, batch_idx) if args.a1_r3_budget_mode else
+                        select_adv3b02_u_satellite_scenario(int(epoch), int(batch_idx), int(args.seed)))
                     sat_anchor_route = None
                     rc4_route = None
                     sat_anchor_pair_active = False
@@ -13041,6 +13044,22 @@ def train(args) -> int:
                 recovery_saved = True
         train_logs["rc4/recovery_checkpoint_saved"] = 1.0 if recovery_saved else 0.0
         train_logs["rc4/first_anomaly_packet_written"] = 1.0 if rc4_anomaly_written else 0.0
+        if bool(args.a1_r3_budget_mode):
+            snapshot_started = time.time()
+            snapshot_path = save_budget_snapshot(args, epoch, out_dir, payload, save_payload)
+            checkpoint_io_seconds += time.time() - snapshot_started
+            stage_state["budget_reference_epoch"] = float(reference_epoch(args, epoch))
+            stage_state["budget_snapshot_saved"] = float(snapshot_path is not None)
+            if epoch >= int(args.a1_budget_evaluation_start_epoch) and (epoch % 10 == 0 or epoch == total_epochs):
+                report_path = out_dir / f"source_eval_epoch_{int(epoch):03d}.json"
+                if report_path.exists():
+                    raise FileExistsError(f"Refusing to overwrite source evaluation: {report_path}")
+                report_path.write_text(json.dumps({
+                    "schema": "cvs.r3.budget.source_evaluation.v1", "epoch": int(epoch),
+                    "reference_epoch": reference_epoch(args, epoch), "checkpoint": snapshot_path,
+                    "role": "source_validation", "clean": val_stats, "satellite": source_val_sat_stats,
+                    "source_validation_fresh": bool(source_val_heavy_eval_ran),
+                }, default=str, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         safe_checkpoint_saved = False
         is_best = False
         best_metric_name = str(args.best_metric)

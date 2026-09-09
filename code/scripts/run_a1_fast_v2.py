@@ -61,14 +61,14 @@ def predecessor_complete(matrix, project):
 
 def evaluation_mode(matrix):
     mode = matrix.get('final_evaluation', 'truth_last')
-    if mode not in ('truth_last', 'source_only'):
+    if mode not in ('truth_last', 'source_only', 'exploratory_periodic_target'):
         raise ValueError('Unknown final evaluation mode')
     return mode
 
 
 def required_inputs(matrix, project):
     paths = [project/'Dataset_WigSig/ManySig.pkl']
-    if evaluation_mode(matrix) == 'truth_last':
+    if evaluation_mode(matrix) != 'source_only':
         paths.extend((project/'runs'/BASE_RUN/'target_inputs/manifest.json',
                       project/'runs'/BASE_RUN/'target_truth/truth_sidecar.json'))
     return paths
@@ -76,18 +76,23 @@ def required_inputs(matrix, project):
 
 def complete_row(matrix, row, *, project, root, logs):
     # Only this row's completed E200 artifact is loaded; no training inheritance.
-    checkpoint = verify_checkpoint(root/row['id']/'final_ssdg.pth')
+    options = {**matrix.get('core90_options', {}), **row.get('options', {})}
+    expected = int(options.get('--epochs', 200))
+    checkpoint = (verify_checkpoint(root/row['id']/'final_ssdg.pth') if expected == 200 else
+                  verify_checkpoint(root/row['id']/'final_ssdg.pth', expected_epoch=expected))
     saved = checkpoint['args']
     if not saved.get('from_scratch') or saved.get('baseline_ckpt') or saved.get('teacher_ckpt'):
         raise ValueError('Unexpected checkpoint inheritance')
     del checkpoint
     if evaluation_mode(matrix) == 'source_only':
         return 'SOURCE_TRAINED_PENDING_ANALYSIS'
+    if evaluation_mode(matrix) == 'exploratory_periodic_target':
+        return 'EXPLORATORY_SCORED_PENDING_ANALYSIS'
     evaluate(row, project=project, run_root=root, log_root=logs)
     return 'SCORED_PENDING_ANALYSIS'
 
 
-def main(matrix_factory=v2_matrix, check_script='check_a1_fast_v2.py'):
+def main(matrix_factory=v2_matrix, check_script='check_a1_fast_v2.py', periodic_callback=None):
     parser=argparse.ArgumentParser()
     parser.add_argument('--project-root',type=Path,required=True)
     parser.add_argument('--run-id',required=True)
@@ -147,13 +152,35 @@ def main(matrix_factory=v2_matrix, check_script='check_a1_fast_v2.py'):
             state['status']='RUNNING'; state['waiting_rows']=[r['id'] for r in pending]
             write_json(root/'pipeline_state.json',state)
             for name,(row,process,log) in list(running.items()):
+                if periodic_callback is not None and not state['rows'][name].get('periodic_error'):
+                    try:
+                        ready=periodic_callback(row,project=project,root=root,logs=logs,
+                            row_state=state['rows'][name],capacity=capacity)
+                    except Exception as error:
+                        failed=True;ready=False
+                        state['rows'][name]['periodic_error']=repr(error)
+                    write_json(root/'pipeline_state.json',state)
+                else:
+                    ready=True
                 code=process.poll()
                 if code is None: continue
+                if periodic_callback is not None and code==0 and not ready and not state['rows'][name].get('periodic_error'):
+                    total=int(row['options']['--epochs'])
+                    start=int(row['options']['--a1_budget_evaluation_start_epoch'])
+                    missing=[epoch for epoch in range(start,total+1,10)
+                             if not (root/name/f'source_eval_epoch_{epoch:03d}.json').is_file()
+                             or not (root/name/f'epoch_{epoch:03d}_ssdg.pth').is_file()]
+                    if not missing:
+                        continue  # Completed artifacts may still await GPU capacity.
+                    failed=True
+                    state['rows'][name]['periodic_error']=f'Training exited without planned snapshots/markers: {missing}'
                 log.close(); state['rows'][name]['exit']=code
                 if code:
                     failed=True; state['rows'][name]['status']='TRAIN_FAILED'
                 else:
                     try:
+                        if state['rows'][name].get('periodic_error'):
+                            raise RuntimeError(state['rows'][name]['periodic_error'])
                         state['rows'][name]['status']='FINALIZING'; write_json(root/'pipeline_state.json',state)
                         state['rows'][name]['status']=complete_row(matrix,row,project=project,root=root,logs=logs)
                     except Exception as error:
