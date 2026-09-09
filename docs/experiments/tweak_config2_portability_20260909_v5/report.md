@@ -3,6 +3,7 @@
 - run_id：`tweak_config2_portability_20260909_v5`
 - 当前状态：`LOCAL_VERIFIED_RELEASE_PENDING`
 - 唯一launch owner：Codex主Agent
+- Git代码提交：`8e87a6cc94b1f18b63bb1cf8f2d61c8cc0f3f69f`，已push且远端OID独立一致。
 
 ## 确定性根因与单变量修复
 
@@ -15,3 +16,9 @@
 - RED：把batch-hard、margin-violating和strict-hard三个真实损失数值的期望改为平方L2后，旧实现分别产出1.6/0.2/1.1而不是应有的7.1/0.09/3.1，三项均按预期失败。
 - GREEN：只将`triplet.py`三个loss路径的正/负距离改为`(embedding difference).square().sum(dim=1)`；严格筛选语义、采样、优化器控制和校准/决策代码未改。29项相关测试、三个模块编译通过。
 - 真实官方Config2只读首批为`[64,2,128]→[64,12]`，平方strict-hard loss=`0.4830861688`有限，16组参数梯度存在；尚未启动V5。
+
+## 已预登记的N607落地
+
+- 远端项目：`/home/szu2070436088/2510044040/CV-SincNet`；数据根80个输入文件已读回。新的release=`releases/tweak_config2_portability_20260909_v5/source`、run=`runs/tweak_config2_portability_20260909_v5/official_config2_full`、log=`logs/tweak_config2_portability_20260909_v5/train.log`在启动前均不存在。
+- 启动前GPU0空闲（约1MiB）；完整命令以`CUDA_VISIBLE_DEVICES=0`绑定物理GPU0、runner内`--device cuda:0`。不传smoke限制，使用原有100epoch与1+100 LR方案。
+- 启动后将独立核验PID/PPID/CWD/cmdline/GPU/log；低性能保留为科学结果，只有确定性技术故障触发有界修复。
