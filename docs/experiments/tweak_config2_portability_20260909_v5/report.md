@@ -1,7 +1,7 @@
 # Tweak配置可移植性复现实验V5：平方L2 triplet公式修复预登记
 
 - run_id：`tweak_config2_portability_20260909_v5`
-- 当前状态：`LOCAL_VERIFIED_RELEASE_PENDING`
+- 当前状态：`RUNNING_HEALTHY_THROUGH_LATEST_PROBE`
 - 唯一launch owner：Codex主Agent
 - Git代码提交：`8e87a6cc94b1f18b63bb1cf8f2d61c8cc0f3f69f`，已push且远端OID独立一致。
 
@@ -22,3 +22,9 @@
 - 远端项目：`/home/szu2070436088/2510044040/CV-SincNet`；数据根80个输入文件已读回。新的release=`releases/tweak_config2_portability_20260909_v5/source`、run=`runs/tweak_config2_portability_20260909_v5/official_config2_full`、log=`logs/tweak_config2_portability_20260909_v5/train.log`在启动前均不存在。
 - 启动前GPU0空闲（约1MiB）；完整命令以`CUDA_VISIBLE_DEVICES=0`绑定物理GPU0、runner内`--device cuda:0`。不传smoke限制，使用原有100epoch与1+100 LR方案。
 - 启动后将独立核验PID/PPID/CWD/cmdline/GPU/log；低性能保留为科学结果，只有确定性技术故障触发有界修复。
+
+## 已验证发布与启动
+
+- 源归档从提交`f11cf0bab5c9fc65ebf7e3e71a1654008fe34157`导出；本地和远端SHA-256均为`6e5c1a97aab4e51969d184aa795ad24dd22420e99954fd240e1068a020f41138`，解包和三个改动模块编译通过。解包时仅出现远端时钟较本机归档时间略早的tar时间戳warning，不影响SHA、文件或编译核验。
+- 远端真实CUDA验证：`[64,2,128]→[64,12]`，平方strict-hard loss=`0.3845960796`有限，16组参数梯度存在，启动前唯一V5输出根仍为空。
+- 2026-09-09 22:35 CST在物理GPU0以完整默认命令启动PID=`523456`。15秒独立probe确认PPID=1、CWD与cmdline为本V5 release/run、GPU进程占466MiB；log尚为空符合每epoch打印，无异常或最终产物。此为初始健康证据，不是完成或数值结论。
