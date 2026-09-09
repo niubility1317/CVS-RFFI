@@ -1,7 +1,7 @@
 # Tweak配置可移植性复现实验V3：数值失配定位与候选修复预登记
 
 - run_id：`tweak_config2_portability_20260909_v3`
-- 当前状态：`LOCAL_REPAIR_VERIFIED_RELEASE_PENDING`
+- 当前状态：`RUNNING_THROUGH_INITIAL_REMOTE_PROBE`
 - 唯一launch owner：Codex主Agent
 - 前序运行：V1是已保留的NumPy/PyTorch数组接口技术失败；V2完整闭合但陷入embedding塌缩，Config2同域闭集准确率仅11.677%，不能视为论文数值复现。
 - 数据和矩阵边界：继续只使用已经核验的Config1—4、设备ID1—10、共80个官方`cf32`文件；仅复现Config2训练、图13b的4×4单域校准矩阵和图14的四配置联合校准。V3不复用V1/V2输出根，也不运行vanilla、消融或硬件可移植性实验。
@@ -14,8 +14,8 @@
 | T2 | 论文Eq.(1)、VI-A | 使用triplet loss、margin=0.1、SGD momentum=.9、batch=64、100epoch | `triplet.py`、`official_lora_experiment.py` | verified | V2完整500epoch日志和配置已读回 | 学习率具体离散值及checkpoint判据仍是论文未公开默认。 |
 | T3 | 论文IV-A“hard-negative mining”；引用[35]PVSNet | 在线从随机负候选中保留违反margin的triplet；不得以farthest-positive/nearest-negative极值替代该引用策略 | `triplet.py`、`official_lora_experiment.py`、`tests/test_gaskin_tweak_2023.py` | verified | 新增的margin过滤和同类正/异类负随机候选测试先红后绿；26项Tweak聚焦测试通过 | PVSNet的adaptive margin不移植：Tweak本身明确固定margin=0.1。随机候选数量未公开，固定为每anchor一个候选并在结果中披露。 |
 | T4 | 论文VI-C | 每个单次传输保留75%训练、25%测试，N=训练集10%，M=10 | `official_lora.py`、`official_lora_experiment.py`、`tests/test_gaskin_tweak_official_lora.py` | verified | 新增固定seed物理索引、全覆盖、无交集测试先红后绿；实际Config2文件读入的train/test物理索引无交集 | 论文未说明75/25的物理帧选择顺序。V2连续前75/后25导致显著时段失配；候选采用run seed派生的全记录双射，严格保留比例和N/M，标为`PAPER_UNDERSPECIFIED_SPLIT_CHOICE`而非宣称作者原始实现。 |
-| T5 | 论文VI-C、Fig.13b、Fig.14 | 同一Config2模型形成4×4单域校准和四配置联合校准；输出不覆盖 | `official_lora_experiment.py`、V3报告 | local_verified_release_pending | 26项聚焦测试和`Config2`真实数据`[64,2,128]→[64,12]`前反传均通过；N607新release/run/output尚未创建 | 仅在Git发布读回后启动。 |
-| T6 | AGENTS/N607技术失败规则 | 保存V1/V2产物，不覆盖；任何V3使用新release和唯一output root | 本报告、N607发布路径 | verified | V1/V2报告及远端已完成产物保留 | 低性能不作为技术停止条件。 |
+| T5 | 论文VI-C、Fig.13b、Fig.14 | 同一Config2模型形成4×4单域校准和四配置联合校准；输出不覆盖 | `official_lora_experiment.py`、V3报告 | running | 26项聚焦测试和`Config2`真实数据`[64,2,128]→[64,12]`前反传均通过；N607已在GPU0启动，初始probe中PID223093存活并有CPU/GPU负载，无异常日志 | 最终只以`best_checkpoint.pt`、`results.json`和独立读回闭合。 |
+| T6 | AGENTS/N607技术失败规则 | 保存V1/V2产物，不覆盖；任何V3使用新release和唯一output root | 本报告、N607发布路径 | verified | V1/V2产物保留；V3使用独立release/run/log/output目录，源归档SHA-256已读回 | 低性能不作为技术停止条件。 |
 
 ## 已完成定位证据
 
@@ -24,6 +24,12 @@
 - 将挖掘改为随机候选、只更新违反0.1margin的triplet后，连续75/25的一完整18,310批epoch仍只有16.667%（170/1020）；说明连续物理时间段也是独立失配。
 - 对由seed=20260908确定的全记录双射（stride=104789、offset=104658）使用相同随机违反margin挖掘，3,000批达到53.529%（546/1020），一完整epoch为48.333%（493/1020）。这证明两项修复均有因果贡献，但尚未达到论文同域条形图约68—90%的量级，不能提前声称数值复现。
 - 修复后的真实官方`Config2`数据前反传读回：10个设备记录、`[64,2,128]→[64,12]`、loss=0.317624且有限、16组模型参数均取得梯度；seeded physical train/test索引无交集。该检查只读取数据，不写入实验输出。
+
+## N607发布与启动证据
+
+- Git代码提交`76bcb3bbe426f57f1519de7739eb739e214939e7`已push，远端分支OID独立读回一致；由此提交导出的V3源归档SHA-256为`22ecc93225834d2058b0ec47358b74da5ba7481672a1232746f0b20dd010f7f6`，上传至N607后再次读回一致，并在`/home/szu2070436088/2510044040/CV-SincNet/releases/tweak_config2_portability_20260909_v3/source`解包、编译检查通过。
+- N607数据根`datasets/tweak_official_lora_configurations_20260908/Diff_Configurations_Setup`独立核验为80个所需`.dat`/`.sigmf-meta`文件；远端CUDA前反传同样得到`[64,2,128]→[64,12]`、有限loss和16组参数梯度。
+- 唯一输出为`/home/szu2070436088/2510044040/CV-SincNet/runs/tweak_config2_portability_20260909_v3/official_config2_full`，日志为`/home/szu2070436088/2510044040/CV-SincNet/logs/tweak_config2_portability_20260909_v3/train.log`。以`CUDA_VISIBLE_DEVICES=0`和完整默认100epoch×五学习率启动，PID=`223093`。启动后约15秒的独立probe显示该PID存活、CPU139%、GPU0 88%/3855MiB，尚无错误日志或最终产物；这仅证明初始运行健康，不代表完成。
 
 ## V3拟定不变项和停止规则
 
