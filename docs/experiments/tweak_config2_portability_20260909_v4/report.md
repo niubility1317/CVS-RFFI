@@ -1,7 +1,7 @@
 # Tweak配置可移植性复现实验V4：严格hard-mining与高效学习率选择预登记
 
 - run_id：`tweak_config2_portability_20260909_v4`
-- 当前状态：`LOCAL_VERIFIED_RELEASE_PENDING`
+- 当前状态：`RUNNING_HEALTHY_THROUGH_LATEST_PROBE`
 - 唯一launch owner：Codex主Agent
 - Git提交：`d5472a9403417c7e88b0f643e0ff7a07d2568b07`；已push且远端分支OID独立一致。
 - 前序产物：V1数组接口技术失败、V2完整但表征塌缩、V3在确认方法定义不符后由唯一owner停止；三者均保留，V4绝不复用任何旧输出根。
@@ -30,6 +30,9 @@
 - 新release：`releases/tweak_config2_portability_20260909_v4/source`；新run：`runs/tweak_config2_portability_20260909_v4/official_config2_full`；新log：`logs/tweak_config2_portability_20260909_v4/train.log`。预flight已确认三者均不存在，故无覆盖风险。
 - 资源选择：GPU3（启动前探测约3.7GiB/24GiB）；既有用户许可允许本任务在每卡加挂实验，但不会触碰其他任务。实际PID/CWD/cmdline/GPU/log增长必须启动后独立读回。
 - 计划命令：`CUDA_VISIBLE_DEVICES=3 PYTHONPATH=<release>/source <CVS-RFFI-python> -m paper_reproduction.gaskin_tweak_2023.official_lora_experiment --data-root <data> --output-dir <run> --device cuda:0`；不传smoke限制，使用默认100epoch与1+100选择方案。
+- 源归档：提交`4958069a89003e171f1d45b88f73628dd05640c5`导出`source.tar`，本地与远端SHA-256均为`ff1a48173e50390e139c94232d762ab3ee221d6cb037e703cb5821ebac0dc5c2`；远端解包及三个改动模块编译通过。
+- 远端独立CUDA读回：真实Config2批为`[64,2,128]→[64,12]`，strict-hard loss=`0.32596352696`有限，16组梯度存在；向量化采样200批=`0.1342s`。这证明启动前运行链路，不等于实验结果。
+- 启动：2026-09-09 16:13 CST，以预登记完整命令启动PID=`358516`。15秒后独立probe显示PID存活（PPID=1、CPU125%）、CWD与cmdline均为本V4 release/run、CUDA可见进程占446MiB；log尚为0字节符合每epoch才打印的实现，无异常或最终产物。该证据仅证明初始健康。
 
 ## 本地验证读回
 
