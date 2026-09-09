@@ -67,4 +67,28 @@ ManySig equalized；split=`tx_rx_day_1_7_2`、source RX=1,3,4,6,8/day=1,2,3；�
 
 独立P0/P1审查PASS，无阻断项。审查确认source_only不调用外部预测/评分，训练器内部最终target评估由既有`muse_external_final_eval=true`委托给launcher，也不会绕过此边界。非阻断事项：通用前序状态列表尚未包含SOURCE_TRAINED_PENDING_ANALYSIS，本次没有after_run或后继依赖，不影响执行。
 
-代码commit、传输/编译、远端GPU执行检查、PID/CWD/argv和日志读回将在实际完成后追加。
+## N607发布与首轮读回（2026-09-09 15:15）
+
+状态：`RUNNING`；发布与启动核验：`VERIFIED`。代码commit=`8df3de21a69e01842d0c96d50975d715ec44eef4`，分支`codex/a1-fast-v2-20260909`，push后远端OID与本地一致。
+
+release=`/home/szu2070436088/2510044040/CV-SincNet/releases/a1_r3_cross_rx_8df3de21`；归档35,990,967字节，SHA256=`404cd20b32175e965605e44e421f8d9be056e6fb390ac22eb4eb832ba384755e`。本地/远端一次比较一致，四个受影响入口远端编译通过。远端组合CUDA检查PASS，12种阶段/精度、真实source入口4次成功更新均通过。
+
+dispatcher PID=327909；训练PID=328173，GPU1。实际argv与process.json一致，CWD为上述release，PPID等于dispatcher，CUDA_VISIBLE_DEVICES=1。训练日志确认`init=scratch`及L/U/V=6300/56700/27000；pipeline读回`final_evaluation=source_only`。未触碰其他run。
+
+|首轮证据|值|
+|---|---:|
+|完成epoch|1/200|
+|epoch耗时|120.25秒|
+|有效optimizer更新|221/222|
+|非有限loss跳步|0|
+|R3 L_s/U_s加权辅助loss|28.448744/28.448279|
+|跨RX原始/加权loss|0.201328/0.010066|
+|跨RX有效anchor均值|127.864865|
+|跨RX身份梯度范数（首batch探针）|0.002577071|
+|跨RX clean/LEO样本数|128/0|
+
+首batch的`id_backbone.sinc.low_hz_`出现一次非有限梯度，loss有限，既有AMP保护跳过更新并将scale降至32768，后续221步成功；异常包保留。不能把有效运行写为零数值异常。跨RX成功步日志110.5是累计计数的epoch均值，不是最终成功步数。
+
+启动日志从6374字节增长到12058字节，进程仍存活。新组合R3 E1仅self阶段有效，swap/shared按原日程后续开启；本次首轮证据不提前声称它们已在正式数据上激活。无E200结果、target预测或性能改进结论。
+
+证据：`analysis/a1_r3_cross_rx_release.json`、`analysis/a1_r3_cross_rx_remote_startup.json`、`analysis/a1_r3_cross_rx_remote_progress_e1.json`。本地合成夹具与完整检查日志保留于analysis/a1_r3_cross_rx_local_execution/，不纳入正式数据结果。
