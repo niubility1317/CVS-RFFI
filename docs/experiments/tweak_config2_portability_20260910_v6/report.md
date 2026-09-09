@@ -1,7 +1,7 @@
 # Tweak配置可移植性复现实验V6：mini-batch全量严格hard mining预登记
 
 - run_id：`tweak_config2_portability_20260910_v6`
-- 当前状态：`LOCAL_DIAGNOSTIC_VERIFIED_RELEASE_PENDING`
+- 当前状态：`RUNNING_HEALTHY_THROUGH_LATEST_PROBE`
 - 唯一launch owner：Codex主Agent
 - Git代码提交：`a234e6e6136e558fda0b47b910037662b36d3bd4`，已push且远端OID独立一致。
 
@@ -22,3 +22,9 @@
 
 - 数据根80个输入文件已读回；新的release=`releases/tweak_config2_portability_20260910_v6/source`、run=`runs/tweak_config2_portability_20260910_v6/official_config2_full`、log=`logs/tweak_config2_portability_20260910_v6/train.log`均不存在。
 - 启动前全部GPU已有其他用户计算任务；按用户已明确允许每卡加挂实验，选择显存占用最低的物理GPU4（约5.6GiB/24GiB），不触碰其他PID。完整命令使用`CUDA_VISIBLE_DEVICES=4`与runner内`--device cuda:0`、默认1+100和100epoch，不传smoke限制。
+
+## 已验证发布与启动
+
+- 源归档由提交`1fe76128a7f4ec33c0277bf6281c7074ad7cdc32`导出，本地/远端SHA-256均为`73c00d7968a796339395cd3d31440780c96e9e932e43c9ffc8b9523e763c0f14`；解包及三个改动模块编译通过。
+- N607真实Config2 CUDA前反传为`[64,2,128]→[64,12]`，全量hard loss=`0.4420853555`有限、16组梯度存在，启动前输出根为空。
+- 2026-09-10 04:26 CST在物理GPU4启动PID=`696325`。15秒独立probe核验PPID=1、CWD/cmdline/run-root均为V6、GPU进程占448MiB；空log符合每epoch打印且无异常/最终产物。仅证明初始健康。
