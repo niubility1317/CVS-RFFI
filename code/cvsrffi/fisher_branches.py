@@ -76,7 +76,16 @@ class FisherBranchBank(nn.Module):
                 f"{name}_embedding must have shape [B,{self.embedding_dim}]"
             )
 
-    def forward(
+    def forward(self, canonical_iq, s_hat, *, raw_embedding, hom_embedding, pa_embedding,
+                content_confidence=None, valid_mask=None):
+        # linalg and Fisher evidence must remain FP32 even inside backbone AMP.
+        with torch.autocast(device_type=canonical_iq.device.type, enabled=False):
+            return self._forward_fp32(canonical_iq.float(), s_hat.to(torch.complex64),
+                raw_embedding=raw_embedding.float(), hom_embedding=hom_embedding.float(),
+                pa_embedding=pa_embedding.float(), content_confidence=content_confidence,
+                valid_mask=valid_mask)
+
+    def _forward_fp32(
         self,
         canonical_iq: torch.Tensor,
         s_hat: torch.Tensor,

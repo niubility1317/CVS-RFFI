@@ -1,0 +1,62 @@
+{
+  "status": "PASS",
+  "models": [],
+  "entries": [],
+  "late_daot": [
+    {
+      "id": "B0_FIXED",
+      "epoch": 65,
+      "components": {
+        "orbit_z": 0.18475019931793213,
+        "orbit_logit": 5.136447906494141,
+        "orbit_proto": 0.0,
+        "orbit_relation": 0.0,
+        "tangent": 0.0,
+        "nuisance": 0.5526334047317505,
+        "fingerprint": 0.0
+      }
+    },
+    {
+      "id": "D1_THREE_VIEW",
+      "epoch": 65,
+      "components": {
+        "orbit_z": 0.18472114205360413,
+        "orbit_logit": 4.637472152709961,
+        "orbit_proto": 0.0,
+        "orbit_relation": 0.0,
+        "tangent": 0.0,
+        "nuisance": 0.5526334047317505,
+        "fingerprint": 0.0
+      }
+    },
+    {
+      "id": "D2_PHYSICAL_ORBIT",
+      "epoch": 65,
+      "components": {
+        "orbit_z": 0.18585002422332764,
+        "orbit_logit": 4.680757522583008,
+        "orbit_proto": 0.0,
+        "orbit_relation": 0.0,
+        "tangent": 0.0,
+        "nuisance": 0.5526334047317505,
+        "fingerprint": 0.0
+      }
+    },
+    {
+      "id": "D3_TANGENT",
+      "epoch": 65,
+      "components": {
+        "orbit_z": 0.18585002422332764,
+        "orbit_logit": 4.680757522583008,
+        "orbit_proto": 0.0,
+        "orbit_relation": 0.0,
+        "tangent": 311.37652587890625,
+        "nuisance": 0.5526334047317505,
+        "fingerprint": 0.0
+      }
+    }
+  ],
+  "historical_checkpoint_loads": 0,
+  "target_inputs": 0,
+  "boundary": "synthetic activation and fresh checkpoint round trip; no performance claim"
+}

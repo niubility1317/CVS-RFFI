@@ -102,6 +102,10 @@ class ExcitationConditionedFingerprintOperator(nn.Module):
         self.response_head = nn.Linear(config.tx_state_dim, 8)
         self.residual_local = nn.Conv1d(4, residual_rank, kernel_size=3, padding=1, bias=False)
         self.residual_state = nn.Linear(config.tx_state_dim, residual_rank, bias=False)
+        self.identity_state = None
+        if config.identity_response_coupling:
+            with torch.random.fork_rng(devices=[]):
+                self.identity_state = nn.Linear(160, config.tx_state_dim, bias=False)
 
     def bounded_residual(self, excitation: torch.Tensor, z_tx_state: torch.Tensor) -> torch.Tensor:
         """Return a real short-receptive-field amplitude residual from allowed inputs only."""
@@ -144,6 +148,9 @@ class ExcitationConditionedFingerprintOperator(nn.Module):
         with torch.autocast(device_type=s_hat.device.type, enabled=False):
             s_hat_fp32 = s_hat.to(torch.complex64)
             z_tx_state_fp32 = factor.z_tx_state.float()
+            if self.identity_state is not None:
+                z_tx_state_fp32 = z_tx_state_fp32 + 0.1 * torch.tanh(
+                    self.identity_state(factor.z_f_id.float()))
             excitation = excitation_features(s_hat_fp32)
             response_coef = self._response_coefficients(z_tx_state_fp32)
             basis = fixed_response_basis(s_hat_fp32)

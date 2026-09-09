@@ -29,6 +29,7 @@ class FCRConfig:
     variance_floor: float = 1e-4
     variance_ceiling: float = 1.0
     decoder_mode: str = "full_physics"
+    identity_response_coupling: bool = False
 
 
 @dataclass

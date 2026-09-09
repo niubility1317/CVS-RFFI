@@ -94,7 +94,9 @@ def run_check(device, folder, matrix_factory=ecrs_matrix, expect_cross_rx=True):
     with (folder/'actual_entry.log').open('x',encoding='utf-8') as stream:
         with contextlib.redirect_stdout(stream), contextlib.redirect_stderr(stream), \
              patch.object(train,'load_checkpoint',side_effect=AssertionError('Unexpected checkpoint load')), \
-             patch.object(train,'make_wisig_trainval_test_by_day_rx',return_value=(None,None,None,{},{},{})), \
+             patch.object(train,'make_wisig_trainval_test_by_day_rx',
+                          side_effect=AssertionError('Source screen constructed target loader') if getattr(args,'a1_source_screen_only',False) else None,
+                          return_value=(None,None,None,{},{},{})), \
              patch.object(cross,'labeled_cross_rx_objective',side_effect=observed_objective), \
              patch.object(torch.optim.AdamW,'step',observed_step):
             try:

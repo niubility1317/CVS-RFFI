@@ -862,6 +862,12 @@ def _rc4_risk_threshold(
         & worst.ge(float(precision_target))
         & all_seen
     )
+    # Runtime uses score >= threshold: an equal-score group is indivisible.
+    # A prefix ending inside a tie can falsely certify a precision target.
+    ordered_scores = scores[ids]
+    tie_end = torch.ones_like(valid)
+    tie_end[:-1] = ordered_scores[:-1] != ordered_scores[1:]
+    valid &= tie_end
     if not bool(valid.any()):
         return 1.0, 0.0, 0.0, 0.0, False
     end = int(valid.nonzero(as_tuple=False)[-1].item())
@@ -927,8 +933,11 @@ def _fit_rc4_logistic(design: torch.Tensor, target: torch.Tensor, l2: float) -> 
 def _rc4_calibrated_probability(design: torch.Tensor, weight: torch.Tensor) -> torch.Tensor:
     """Return a finite, non-saturated calibrated event probability."""
 
-    logit = design @ weight.to(design.device, design.dtype)
-    return torch.sigmoid(logit.clamp(-12.0, 12.0)).clamp(1e-4, 1.0 - 1e-4)
+    # Explicit .float() alone does not protect matmul from ambient AMP.
+    # Near-one risk thresholds require the same arithmetic as source fitting.
+    with torch.autocast(device_type=design.device.type, enabled=False):
+        logit = design.float() @ weight.to(design.device, torch.float32)
+        return torch.sigmoid(logit.clamp(-12.0, 12.0)).clamp(1e-4, 1.0 - 1e-4)
 
 
 def _rc4_quantile(values: torch.Tensor, coverage: float) -> float:
@@ -1306,6 +1315,7 @@ def route_fasttrust_rc4(
     class_receiver_effective_budget: float = 0.0,
     use_calibrated_risk: bool = True,
     batched_readback: bool = False,
+    reliability_weight_mode: str = "margin_squared",
 ) -> RC4Route:
     """Apply stage-frozen source risk rules to U rows without reading TX truth."""
 
@@ -1454,6 +1464,10 @@ def route_fasttrust_rc4(
         ),
     )
     risk_weight = ((route_probability - risk_floor) / (1.0 - risk_floor).clamp_min(1e-6)).clamp(0.0, 1.0).square()
+    if reliability_weight_mode == "calibrated_probability":
+        risk_weight = route_probability.clamp(0., 1.)
+    elif reliability_weight_mode != "margin_squared":
+        raise ValueError("Unknown RC4 reliability weight mode")
     agree_weight = torch.exp(-2.0 * disagreement)
     set_weight = set_size.clamp_min(1).to(fused.dtype).reciprocal()
     balance = torch.ones_like(risk)

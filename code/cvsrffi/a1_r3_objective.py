@@ -13,6 +13,21 @@ from .phase1_fcr_schedule import permission_for_role, stage_for_epoch
 from .phase1_fcr_types import FCRPairBatch
 
 
+def objective_stage(epoch, optimizer_step, mode='legacy'):
+    if mode == 'legacy':
+        return stage_for_epoch(epoch, optimizer_step=optimizer_step)
+    if mode != 'continuous':
+        raise ValueError('Unknown R3 schedule')
+    # R3 has no necessity-only objective: preserve active reconstruction on
+    # every step and ramp cross-view constraints before late identity refinement.
+    from .phase1_fcr_schedule import FCRStageState
+    ramp = min(1., max(0., (epoch - 20) / 40.))
+    reconstruction = 1. if epoch <= 100 else max(.25, 1. - .75 * (epoch - 100) / 60.)
+    scales = {'self': reconstruction, 'swap': ramp * reconstruction,
+              'shared': ramp, 'eta': 0.}
+    return FCRStageState('continuous', frozenset(k for k, v in scales.items() if v > 0), scales, False)
+
+
 def r3_pair_objective(*, model, clean_iq, domains, physical_ids, role,
                       args, epoch, batch_idx, optimizer_step, apply_sat_fn):
     permission = permission_for_role(role)
@@ -24,7 +39,7 @@ def r3_pair_objective(*, model, clean_iq, domains, physical_ids, role,
     if len(physical_ids) != n:
         raise ValueError('R3 requires one physical ID for each source row')
     schedule_epoch = reference_epoch(args, epoch)
-    stage = stage_for_epoch(schedule_epoch, optimizer_step=optimizer_step)
+    stage = objective_stage(schedule_epoch, optimizer_step, getattr(args, 'a1_r3_schedule', 'legacy'))
     # Match the original source curriculum; every auxiliary row is a paired view.
     scenarios = (('leo_clear_weak',) if schedule_epoch <= 40 else
                  ('leo_low_elev_weak', 'leo_rain_weak') if schedule_epoch <= 90 else
@@ -44,7 +59,8 @@ def r3_pair_objective(*, model, clean_iq, domains, physical_ids, role,
         fcr = model.a1_r3
 
         def cross_decode(source, destination):
-            response = fcr.fingerprint_operator(source.content.s_hat.detach(), destination.fingerprint)
+            fingerprint = source.fingerprint if getattr(args, 'a1_r3_source_fingerprint', False) else destination.fingerprint
+            response = fcr.fingerprint_operator(source.content.s_hat.detach(), fingerprint)
             return fcr.decoder(source.content.s_hat, response.delta_f, destination.nuisance)
 
         c2l, l2c = cross_decode(clean, leo), cross_decode(leo, clean)

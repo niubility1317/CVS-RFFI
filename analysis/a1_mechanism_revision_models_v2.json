@@ -1,0 +1,289 @@
+{
+  "status": "PASS",
+  "models": [
+    {
+      "id": "B0_FIXED",
+      "status": "PASS",
+      "seconds": 3.593000000109896,
+      "checks": [
+        {
+          "amp": false,
+          "loss": 13.50821304321289
+        },
+        {
+          "amp": true,
+          "loss": 13.34228229522705
+        }
+      ]
+    },
+    {
+      "id": "B1_TAIL_LR",
+      "status": "PASS",
+      "seconds": 0.375,
+      "checks": [
+        {
+          "amp": false,
+          "loss": 13.50821304321289
+        },
+        {
+          "amp": true,
+          "loss": 13.34228229522705
+        }
+      ]
+    },
+    {
+      "id": "B2_RC4_WEIGHT",
+      "status": "PASS",
+      "seconds": 0.35999999986961484,
+      "checks": [
+        {
+          "amp": false,
+          "loss": 13.50821304321289
+        },
+        {
+          "amp": true,
+          "loss": 13.34228229522705
+        }
+      ]
+    },
+    {
+      "id": "D0_NO_ORBIT",
+      "status": "PASS",
+      "seconds": 0.39000000013038516,
+      "checks": [
+        {
+          "amp": false,
+          "loss": 13.50821304321289
+        },
+        {
+          "amp": true,
+          "loss": 13.34228229522705
+        }
+      ]
+    },
+    {
+      "id": "D1_THREE_VIEW",
+      "status": "PASS",
+      "seconds": 0.35999999986961484,
+      "checks": [
+        {
+          "amp": false,
+          "loss": 13.50821304321289
+        },
+        {
+          "amp": true,
+          "loss": 13.34228229522705
+        }
+      ]
+    },
+    {
+      "id": "D2_PHYSICAL_ORBIT",
+      "status": "PASS",
+      "seconds": 0.39000000013038516,
+      "checks": [
+        {
+          "amp": false,
+          "loss": 13.50821304321289
+        },
+        {
+          "amp": true,
+          "loss": 13.34228229522705
+        }
+      ]
+    },
+    {
+      "id": "D3_TANGENT",
+      "status": "PASS",
+      "seconds": 0.375,
+      "checks": [
+        {
+          "amp": false,
+          "loss": 13.50821304321289
+        },
+        {
+          "amp": true,
+          "loss": 13.34228229522705
+        }
+      ]
+    },
+    {
+      "id": "F0_R3_REFERENCE",
+      "status": "PASS",
+      "seconds": 2.156999999890104,
+      "checks": [
+        {
+          "amp": false,
+          "loss": 64.8642578125,
+          "r3_loss": 51.356040954589844
+        },
+        {
+          "amp": true,
+          "loss": 64.2873306274414,
+          "r3_loss": 51.356353759765625
+        }
+      ]
+    },
+    {
+      "id": "F1_R3_CONTINUOUS",
+      "status": "PASS",
+      "seconds": 0.6559999999590218,
+      "checks": [
+        {
+          "amp": false,
+          "loss": 66.67778015136719,
+          "r3_loss": 53.1695671081543
+        },
+        {
+          "amp": true,
+          "loss": 66.10118103027344,
+          "r3_loss": 53.17020797729492
+        }
+      ]
+    },
+    {
+      "id": "F2_R3_IDENTITY",
+      "status": "PASS",
+      "seconds": 0.6410000000614673,
+      "checks": [
+        {
+          "amp": false,
+          "loss": 64.86225891113281,
+          "r3_loss": 51.35404586791992
+        },
+        {
+          "amp": true,
+          "loss": 64.28404998779297,
+          "r3_loss": 51.35307312011719
+        }
+      ]
+    },
+    {
+      "id": "F3_R3_SWAP",
+      "status": "PASS",
+      "seconds": 0.6399999998975545,
+      "checks": [
+        {
+          "amp": false,
+          "loss": 64.86425018310547,
+          "r3_loss": 51.35603332519531
+        },
+        {
+          "amp": true,
+          "loss": 64.28732299804688,
+          "r3_loss": 51.356346130371094
+        }
+      ]
+    },
+    {
+      "id": "G0_EQUAL_BRANCH",
+      "status": "PASS",
+      "seconds": 1.4380000000819564,
+      "checks": [
+        {
+          "amp": false,
+          "loss": 15.82133960723877,
+          "train/fisher_branch_ce": 13.804518699645996,
+          "train/fisher_route_kl": 0.523996114730835,
+          "train/fisher_loss_weighted": 1.3909318447113037,
+          "train/fisher_source_evidence_updates": 1.0,
+          "train/fisher_null_mean": 0.0
+        },
+        {
+          "amp": true,
+          "loss": 15.356663703918457,
+          "train/fisher_branch_ce": 13.852487564086914,
+          "train/fisher_route_kl": 0.5042837858200073,
+          "train/fisher_loss_weighted": 1.3953344821929932,
+          "train/fisher_source_evidence_updates": 2.0,
+          "train/fisher_null_mean": 0.0
+        }
+      ]
+    },
+    {
+      "id": "G1_FISHER_GATE",
+      "status": "PASS",
+      "seconds": 1.077999999979511,
+      "checks": [
+        {
+          "amp": false,
+          "loss": 14.081489562988281,
+          "train/fisher_branch_ce": 13.804518699645996,
+          "train/fisher_route_kl": 2.250296115875244,
+          "train/fisher_loss_weighted": 1.4254578351974487,
+          "train/fisher_source_evidence_updates": 1.0,
+          "train/fisher_null_mean": 0.9999909400939941
+        },
+        {
+          "amp": true,
+          "loss": 13.81515884399414,
+          "train/fisher_branch_ce": 13.852487564086914,
+          "train/fisher_route_kl": 2.3012146949768066,
+          "train/fisher_loss_weighted": 1.431273102760315,
+          "train/fisher_source_evidence_updates": 2.0,
+          "train/fisher_null_mean": 0.8694340586662292
+        }
+      ]
+    },
+    {
+      "id": "E0_RESPONSE_ONLY",
+      "status": "PASS",
+      "seconds": 1.5150000001303852,
+      "checks": [
+        {
+          "amp": false,
+          "loss": 13.777207374572754,
+          "response_pair_count": 12,
+          "response_pair": 9.765227878233418e-05
+        },
+        {
+          "amp": true,
+          "loss": 12.785146713256836,
+          "response_pair_count": 12,
+          "response_pair": 7.590154564240947e-05
+        }
+      ]
+    },
+    {
+      "id": "E1_RESPONSE_FUSED",
+      "status": "PASS",
+      "seconds": 0.703999999910593,
+      "checks": [
+        {
+          "amp": false,
+          "loss": 13.777207374572754,
+          "response_pair_count": 12,
+          "response_pair": 9.765227878233418e-05
+        },
+        {
+          "amp": true,
+          "loss": 12.785146713256836,
+          "response_pair_count": 12,
+          "response_pair": 7.590154564240947e-05
+        }
+      ]
+    },
+    {
+      "id": "E2_RESPONSE_PAIR",
+      "status": "PASS",
+      "seconds": 0.6869999999180436,
+      "checks": [
+        {
+          "amp": false,
+          "loss": 13.777207374572754,
+          "response_pair_count": 12,
+          "response_pair": 9.765227878233418e-05
+        },
+        {
+          "amp": true,
+          "loss": 12.785146713256836,
+          "response_pair_count": 12,
+          "response_pair": 7.590154564240947e-05
+        }
+      ]
+    }
+  ],
+  "entries": [],
+  "historical_checkpoint_loads": 0,
+  "target_inputs": 0,
+  "boundary": "synthetic activation and fresh checkpoint round trip; no performance claim"
+}

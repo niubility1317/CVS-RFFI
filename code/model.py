@@ -1005,6 +1005,10 @@ class NMFDUFeatureGateContract(nn.Module):
         gate = self.sample_gate(
             evidence, correction_context=correction_context
         )
+        if getattr(self, 'equal_fusion', False):
+            gate['weights'] = torch.full_like(gate['weights'], 1. / len(self.branch_names))
+            gate['null_weight'] = torch.zeros_like(gate['null_weight'])
+            gate['q_sample'] = torch.ones_like(gate['q_sample'])
         fused, fusion_diagnostics = self.fusion(embeddings, gate["weights"])
         branch_logits = {
             name: self.branch_heads[name](embeddings[name], labels=labels)

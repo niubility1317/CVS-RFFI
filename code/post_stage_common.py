@@ -357,6 +357,10 @@ def build_baseline_model(model_args, device: torch.device) -> nn.Module:
         ),
         daot_nuisance_dim=int(getattr(model_args, "daot_nuisance_dim", 9)),
         use_a1_r3=bool(getattr(model_args, "use_a1_r3", False)),
+        a1_r3_identity_coupling=bool(getattr(model_args, "a1_r3_identity_coupling", False)),
+        a1_response_surface=bool(getattr(model_args, "a1_response_surface", False)),
+        a1_response_rho=float(getattr(model_args, "a1_response_rho", .05)),
+        a1_fisher_equal=bool(getattr(model_args, "a1_fisher_equal", False)),
         fast_infer_when_no_aux=bool(getattr(model_args, "fast_infer_when_no_aux", True)),
         arch_family=str(getattr(model_args, "arch_family", "cvsincnet")),
         representation_mode=str(

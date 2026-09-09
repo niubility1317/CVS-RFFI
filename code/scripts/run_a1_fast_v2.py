@@ -43,6 +43,15 @@ def gpu_compute_pids(gpu):
         if ',' in line and line.split(',')[0].strip()==mapping[gpu]}
 
 
+def occupied_gpu_pids(gpu, running, compute_pids=None):
+    # A newly spawned process may not have a CUDA context yet. Reserve its
+    # slot immediately, and deduplicate it once nvidia-smi reports it.
+    occupied = set(gpu_compute_pids(gpu) if compute_pids is None else compute_pids)
+    occupied.update(str(process.pid) for row, process, _ in running.values()
+                    if int(row['gpu']) == int(gpu) and process.poll() is None)
+    return occupied
+
+
 def predecessor_complete(matrix, project):
     predecessor = matrix.get('after_run')
     if not predecessor:
@@ -138,7 +147,7 @@ def main(matrix_factory=v2_matrix, check_script='check_a1_fast_v2.py', periodic_
         pending=list(matrix['rows']); running={}; failed=False
         while pending or running:
             for row in list(pending):
-                if len(gpu_compute_pids(row['gpu']))>=capacity: continue
+                if len(occupied_gpu_pids(row['gpu'], running))>=capacity: continue
                 folder=root/row['id']; folder.mkdir()
                 info={'gpu':row['gpu'],'cwd':str(RELEASE),'argv':commands[row['id']],'created':time.time()}
                 write_json(folder/'launch_config.json',info)

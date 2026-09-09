@@ -603,6 +603,10 @@ class DualCVSincNetDisentangle(nn.Module):
         use_daot_nuisance_head: bool = False,
         daot_nuisance_dim: int = 9,
         use_a1_r3: bool = False,
+        a1_r3_identity_coupling: bool = False,
+        a1_response_surface: bool = False,
+        a1_response_rho: float = .05,
+        a1_fisher_equal: bool = False,
     ):
         super().__init__()
         self.num_classes = int(num_classes)
@@ -716,6 +720,13 @@ class DualCVSincNetDisentangle(nn.Module):
             self._share_early_stem()
 
         self.emb_dim = self._infer_emb_dim(self.id_backbone)
+        if getattr(self.id_backbone, 'nmfdu_gate', None) is not None:
+            self.id_backbone.nmfdu_gate.equal_fusion = bool(a1_fisher_equal)
+        self.a1_response = None
+        if a1_response_surface:
+            from cvsrffi.a1_response_surface import A1ResponseSurface
+            with torch.random.fork_rng(devices=[]):
+                self.a1_response = A1ResponseSurface(self.num_classes, self.emb_dim, rho=a1_response_rho)
         self.use_a1_r3 = bool(use_a1_r3)
         self.a1_r3 = None
         self.a1_r3_identity_head = None
@@ -726,7 +737,8 @@ class DualCVSincNetDisentangle(nn.Module):
             if self.emb_dim != 160 or self.representation_mode != "dual":
                 raise ValueError("A1 R3 requires the 160-dimensional dual identity backbone")
             self.a1_r3 = ADV3B02FactorizedCrossReconstruction(
-                FCRConfig(input_len=int(input_len), decoder_mode="control")
+                FCRConfig(input_len=int(input_len), decoder_mode="control",
+                          identity_response_coupling=bool(a1_r3_identity_coupling))
             )
             self.a1_r3_identity_head = deepcopy(self.id_backbone.cls_head.head)
         self.sat_anchor_identity_adapter = (
@@ -917,6 +929,12 @@ class DualCVSincNetDisentangle(nn.Module):
             "z_id": z_id,
             "identity_only": True,
         }
+        if self.a1_response is not None:
+            response = self.a1_response(x, z_id)
+            out.update(response)
+            out['z_id'] = response['z_fused']
+            head = self.a1_r3_identity_head if self.a1_r3 is not None else self.id_backbone.cls_head.head
+            out['tx_logits'] = head(out['z_id'], y_tx)
         for name, key in {
             "id_feat_cls": "feat_cls",
             "id_feat_imp": "feat_imp",
@@ -1061,6 +1079,12 @@ class DualCVSincNetDisentangle(nn.Module):
             z_id = self.a1_r3.identity_only(x, z_id_raw)
             tx_logits = self.a1_r3_identity_head(z_id, y_tx)
         z_dom_raw = self._pick_z_dom(aux_dom)
+        response = None
+        if self.a1_response is not None:
+            response = self.a1_response(x, z_id)
+            z_id = response['z_fused']
+            head = self.a1_r3_identity_head if self.a1_r3 is not None else self.id_backbone.cls_head.head
+            tx_logits = head(z_id, y_tx)
         z_dom, z_dom_rcn = self.dom_enhancer(z_dom_raw, x)
         daot_nuisance_mean = daot_nuisance_log_variance = None
         if self.daot_nuisance_head is not None:
@@ -1114,6 +1138,9 @@ class DualCVSincNetDisentangle(nn.Module):
         }
         if torch.is_tensor(tx_adv_logits):
             out["tx_adv_logits"] = tx_adv_logits
+        if response is not None:
+            out.update(response)
+            out['z_id_key'] = 'z_response_fused'
         if self.a1_r3 is not None:
             out["z_id_raw"] = z_id_raw
             out["z_f_id"] = z_id
@@ -1210,6 +1237,10 @@ def build_dual_model(
     use_daot_nuisance_head: bool = False,
     daot_nuisance_dim: int = 9,
     use_a1_r3: bool = False,
+    a1_r3_identity_coupling: bool = False,
+    a1_response_surface: bool = False,
+    a1_response_rho: float = .05,
+    a1_fisher_equal: bool = False,
 ) -> DualCVSincNetDisentangle:
     return DualCVSincNetDisentangle(
         num_classes=num_classes,
@@ -1267,4 +1298,8 @@ def build_dual_model(
         use_daot_nuisance_head=use_daot_nuisance_head,
         daot_nuisance_dim=daot_nuisance_dim,
         use_a1_r3=use_a1_r3,
+        a1_r3_identity_coupling=a1_r3_identity_coupling,
+        a1_response_surface=a1_response_surface,
+        a1_response_rho=a1_response_rho,
+        a1_fisher_equal=a1_fisher_equal,
     )

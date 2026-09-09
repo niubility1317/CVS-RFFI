@@ -409,10 +409,22 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--a1_ecrs_cross_rx_margin", type=float, default=0.2)
     parser.add_argument("--a1_ecrs_cross_rx_scope", choices=("clean", "clean_leo"), default="clean")
     parser.add_argument("--use_a1_r3", type=str2bool, default=False)
+    parser.add_argument("--a1_r3_identity_coupling", type=str2bool, default=False)
+    parser.add_argument("--a1_response_surface", type=str2bool, default=False)
+    parser.add_argument("--a1_response_rho", type=float, default=.05)
+    parser.add_argument("--a1_response_ce", type=float, default=.15)
+    parser.add_argument("--a1_response_pair", type=float, default=0.)
+    parser.add_argument("--a1_fisher_supervision", type=str2bool, default=False)
+    parser.add_argument("--a1_fisher_equal", type=str2bool, default=False)
+    parser.add_argument("--a1_source_screen_only", type=str2bool, default=False)
+    parser.add_argument("--a1_rc4_reliability_weight", choices=("margin_squared", "calibrated_probability"), default="margin_squared")
+    parser.add_argument("--a1_r3_schedule", choices=("legacy", "continuous"), default="legacy")
+    parser.add_argument("--a1_r3_source_fingerprint", type=str2bool, default=False)
     parser.add_argument("--a1_r3_budget_mode", type=str2bool, default=False)
     parser.add_argument("--a1_budget_snapshot_epochs", type=str, default="")
     parser.add_argument("--a1_budget_evaluation_start_epoch", type=int, default=0)
-    parser.add_argument("--a1_r3_aux_scale", type=float, choices=(0.0, 1.0), default=1.0)
+    parser.add_argument("--a1_r3_aux_scale", type=float, default=1.0)
+    parser.add_argument("--a1_tail_lr", choices=("legacy", "continuous"), default="legacy")
     parser.add_argument("--daot_ablation", type=str, default="", choices=["", "A0", "A1", "A2", "A3", "A4", "A5", "A6", "A7", "A8"])
     parser.add_argument(
         "--daot_loss_ablation",
@@ -1928,6 +1940,10 @@ def _apply_model_cli_args(model_args, args):
         "sat_anchor_adapter_rank",
         "use_daot_nuisance_head",
         "use_a1_r3",
+        "a1_r3_identity_coupling",
+        "a1_response_surface",
+        "a1_response_rho",
+        "a1_fisher_equal",
         "daot_nuisance_dim",
     ):
         if hasattr(args, key):
@@ -2759,25 +2775,29 @@ def _build_ssdg_wisig_data(args, device: torch.device):
     cal_ds = WiSigSubsetDataset(source_base, source_cal_idx, split_source="ssdg_source_v_cal")
     val_ds = WiSigSubsetDataset(source_base, val_idx, split_source="ssdg_source_v_select")
 
-    _, _, _, named_tests, named_meta, test_split_info = make_wisig_trainval_test_by_day_rx(
-        ds_w,
-        equalized=eq,
-        out_len=int(args.wisig_out_len),
-        domain=str(args.wisig_domain),
-        normalize=True,
-        crop_mode="center",
-        train_ratio=0.5,
-        guard_gap=int(args.wisig_guard_gap),
-        train_days=train_days,
-        test_days=test_days,
-        train_rxs=train_rxs,
-        test_rxs=test_rxs,
-        max_samples_per_combo_test=None if int(args.wisig_max_test_per_combo) <= 0 else int(args.wisig_max_test_per_combo),
-        seed=int(args.seed),
-        allow_source_target_day_overlap=bool(
-            getattr(args, "allow_source_target_day_overlap", False)
-        ),
-    )
+    if bool(getattr(args, 'a1_source_screen_only', False)):
+        named_tests, named_meta = {}, {}
+        test_split_info = {'status': 'NOT_CONSTRUCTED_SOURCE_SCREEN'}
+    else:
+        _, _, _, named_tests, named_meta, test_split_info = make_wisig_trainval_test_by_day_rx(
+            ds_w,
+            equalized=eq,
+            out_len=int(args.wisig_out_len),
+            domain=str(args.wisig_domain),
+            normalize=True,
+            crop_mode="center",
+            train_ratio=0.5,
+            guard_gap=int(args.wisig_guard_gap),
+            train_days=train_days,
+            test_days=test_days,
+            train_rxs=train_rxs,
+            test_rxs=test_rxs,
+            max_samples_per_combo_test=None if int(args.wisig_max_test_per_combo) <= 0 else int(args.wisig_max_test_per_combo),
+            seed=int(args.seed),
+            allow_source_target_day_overlap=bool(
+                getattr(args, "allow_source_target_day_overlap", False)
+            ),
+        )
     balanced_sampler = None
     if bool(getattr(args, "use_tx_rx_balanced_sampler", False)):
         if BalancedTxDomainBatchSampler is None or DataLoader is None:
@@ -4129,10 +4149,17 @@ def _validate_a1_scratch_only(args) -> None:
 
 
 def _validate_a1_ecrs_config(args) -> None:
-    for name in ("a1_ecrs_cross_rx_weight", "a1_ecrs_cross_rx_margin"):
+    for name in ("a1_ecrs_cross_rx_weight", "a1_ecrs_cross_rx_margin", "a1_r3_aux_scale",
+                 "a1_response_rho", "a1_response_ce", "a1_response_pair"):
         value = float(getattr(args, name, 0.0))
         if not math.isfinite(value) or value < 0.0:
             raise ValueError(name + " must be finite and nonnegative")
+    if getattr(args, 'a1_response_rho', .05) > .25:
+        raise ValueError('a1_response_rho exceeds .25')
+    if getattr(args, 'a1_fisher_supervision', False) and args.physical_gate_variant != 'nmfdu_v1':
+        raise ValueError('Fisher supervision requires nmfdu_v1')
+    if getattr(args, 'a1_r3_identity_coupling', False) and not args.use_a1_r3:
+        raise ValueError('Identity response coupling requires R3')
 
 
 def _stage_gate_scale(epoch: int, *, start_epoch: int = 1, warmup_epochs: int = 0) -> float:
@@ -6616,8 +6643,15 @@ def _fasttrust_lr_scales(epoch: int) -> Tuple[float, float]:
     return float(global_scale), float(backbone_tail)
 
 
-def _apply_fasttrust_lr(optimizer, *, base_lr: float, epoch: int) -> None:
+def _apply_fasttrust_lr(optimizer, *, base_lr: float, epoch: int, tail_mode: str = "legacy") -> None:
     global_scale, backbone_tail = _fasttrust_lr_scales(int(epoch))
+    if tail_mode == "continuous":
+        # One cosine over the full budget; no additional 5x/20x trunk freeze.
+        progress = max(0., (int(epoch) - 6) / 194.)
+        global_scale = int(epoch) / 5. if epoch <= 5 else .05 + .95 * .5 * (1. + math.cos(math.pi * progress))
+        backbone_tail = 1.
+    elif tail_mode != "legacy":
+        raise ValueError("Unknown A1 tail learning rate mode")
     for group in optimizer.param_groups:
         role_scale = backbone_tail if group.get("fasttrust_role") == "backbone" else 1.0
         group["lr"] = float(base_lr) * global_scale * role_scale
@@ -8752,7 +8786,7 @@ def train(args) -> int:
         if _fasttrust_lr_enabled(args) and device.type == "cuda":
             torch.cuda.reset_peak_memory_stats(device)
         if _fasttrust_lr_enabled(args):
-            _apply_fasttrust_lr(optimizer, base_lr=float(args.lr), epoch=reference_epoch(args, epoch))
+            _apply_fasttrust_lr(optimizer, base_lr=float(args.lr), epoch=reference_epoch(args, epoch), tail_mode=args.a1_tail_lr)
         if muse_state is not None:
             _configure_muse_epoch_state(muse_state, int(epoch))
             if bool(muse_state.get("fasttrust_rc4", False)):
@@ -8916,6 +8950,7 @@ def train(args) -> int:
                         else 1.0
                     ),
                     return_aux=True,
+                    return_physical_gate_diag=bool(args.a1_fisher_supervision),
                     domain_labels=d_l,
                     update_crra_support=bool(getattr(args, "use_crra", False)),
                     crra_support_mask=(
@@ -10069,6 +10104,18 @@ def train(args) -> int:
                         role="L_s", args=args, epoch=epoch, batch_idx=batch_idx,
                         optimizer_step=r3_optimizer_steps, apply_sat_fn=apply_sat_channel_for_scenario)
                     loss_closed_l = loss_closed_l + r3_l_loss
+                if bool(args.a1_response_surface):
+                    response_logits = out_l['response_logits'][:labeled_clean_count]
+                    response_loss = F.cross_entropy(response_logits, y_l[:labeled_clean_count]) * args.a1_response_ce
+                    loss_closed_l = loss_closed_l + response_loss
+                    r3_l_logs['train/response_ce_weighted'] = response_loss.detach()
+                    r3_l_logs['train/response_valid_count'] = out_l['response_valid'].float().sum().detach()
+                if bool(args.a1_fisher_supervision):
+                    from cvsrffi.a1_fisher_training import fisher_labeled_objective
+                    fisher_loss, fisher_logs = fisher_labeled_objective(
+                        model, out_l['aux_id'], y_l, labeled_clean_count, reference_epoch(args, epoch))
+                    loss_closed_l = loss_closed_l + fisher_loss
+                    r3_l_logs.update(fisher_logs)
                 if float(args.a1_ecrs_cross_rx_weight) > 0.0:
                     from cvsrffi.a1_ecrs_cross_rx import labeled_cross_rx_objective
                     ecrs_clean_z = out_l["z_id"][:labeled_clean_count]
@@ -10215,6 +10262,7 @@ def train(args) -> int:
                             rc4_route = route_fasttrust_rc4(
                                 anchor_logits, out_w["tx_logits"], out_w2["tx_logits"],
                                 batched_readback=bool(args.a1_runtime_fast),
+                                reliability_weight_mode=args.a1_rc4_reliability_weight,
                                 domains=d_u, receivers=receiver_u,
                                 z_norm=out_w["z_id"].float().norm(dim=-1),
                                 calibration=calibration,
@@ -10526,12 +10574,27 @@ def train(args) -> int:
                     pseudo = muse_losses["pseudo"]
                     zero_u = out_s["tx_logits"].sum() * 0.0
                     loss_u = muse_losses["total"] + loss_daot_u
+                    if bool(args.a1_response_surface) and float(args.a1_response_pair) > 0:
+                        from cvsrffi.a1_response_surface import response_pair_loss
+                        pair_scale = min(1., max(0., (reference_epoch(args, epoch) - 20) / 20.))
+                        if pair_scale > 0:
+                            response_gen = torch.Generator(device=x_u.device)
+                            response_gen.manual_seed(int(args.seed) + epoch * 1000003 + batch_idx * 97 + 700000009)
+                            response_leo, _ = apply_sat_channel_for_scenario(
+                                x_u, 'leo_clear_weak' if epoch <= 40 else u_sat_scenario,
+                                args, gen=response_gen, return_meta=True)
+                            response_pair, response_count = response_pair_loss(model.a1_response, x_u, response_leo)
+                            response_pair = response_pair * float(args.a1_response_pair) * pair_scale
+                            loss_u = loss_u + response_pair
+                            r3_u_logs['train/response_pair_weighted'] = response_pair.detach()
+                            r3_u_logs['train/response_pair_count'] = float(response_count)
                     if bool(args.use_a1_r3):
-                        r3_u_loss, r3_u_logs = r3_pair_objective(
+                        r3_u_loss, r3_aux_logs = r3_pair_objective(
                             model=model, clean_iq=x_u, domains=d_u,
                             physical_ids=stable_sample_keys(_meta_from_extra(extra_u) or {}),
                             role="U_s", args=args, epoch=epoch, batch_idx=batch_idx,
                             optimizer_step=r3_optimizer_steps, apply_sat_fn=apply_sat_channel_for_scenario)
+                        r3_u_logs.update(r3_aux_logs)
                         loss_u = loss_u + r3_u_loss
                     loss_ent = zero_u
                     loss_u_domain = zero_u
