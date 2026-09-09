@@ -15,15 +15,22 @@
     "triplet_mining": {
       "value": {
         "candidate_sampling": "one_uniform_same_class_positive_and_different_class_negative_per_anchor",
-        "hardness_filter": "retain_only_triplets_violating_fixed_margin_0.1"
+        "hardness_filter": "retain_only_triplets_where_negative_distance_is_strictly_less_than_positive_distance",
+        "loss_after_filter": "mean_relu(positive_distance-negative_distance+0.1)",
+        "no_hard_triplets": "skip_optimizer_step"
       },
       "status": "UNPUBLISHED_DEFAULT",
-      "rationale": "Tweak cites PVSNet for hard-negative mining; that reference samples random negative candidates online and retains margin-violating triplets. Tweak fixes margin=0.1 but does not publish its candidate count or random stream, so one candidate per anchor and the deterministic seed are disclosed defaults."
+      "rationale": "Tweak IV-A explicitly selects triplets where A is closer to N than P, then applies its fixed 0.1-margin loss. The paper does not publish its candidate count or random stream, so one uniformly sampled candidate per anchor and the deterministic seed are disclosed defaults."
     },
     "learning_rate_grid": {
       "value": [0.01, 0.001, 0.0001, 0.00001, 0.000001],
       "status": "UNPUBLISHED_DEFAULT",
       "rationale": "This discrete decade grid operationalizes the paper's stated 1e-2 to 1e-6 search range."
+    },
+    "learning_rate_selection": {
+      "value": "five_fresh_one_epoch_source_only_probes_then_lowest_mean_loss_among_active_probes_with_last_window_lower_than_first_window",
+      "status": "UNPUBLISHED_DEFAULT",
+      "rationale": "The paper says it searched the typical 1e-2 to 1e-6 range to ensure decreasing loss, but does not prescribe a grid duration or tie-break. One source-only epoch per fresh candidate followed by a fresh 100-epoch selected-rate run implements that stated criterion without using target-test data."
     },
     "official_lora_runner": {
       "value": {
@@ -31,7 +38,7 @@
         "batch_composition": {"classes_per_batch": 8, "samples_per_class": 8},
         "frame_partition": "seeded affine permutation of every physical record frame before the paper's 75/25 role split; calibration remains the first 10% of the logical training partition",
         "frame_order": "per-device deterministic affine permutation of logical training positions; at most three of 117187 source frames are omitted per device per epoch to preserve batch_size=64",
-        "checkpoint_selection": "lowest complete-epoch mean margin-violating sampled-triplet training loss",
+        "checkpoint_selection": "lowest complete-epoch mean strict-hard sampled-triplet training loss",
         "random_seed": 20260908
       },
       "status": "UNPUBLISHED_DEFAULT",

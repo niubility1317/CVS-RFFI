@@ -24,7 +24,7 @@ from .calibration import (
 from .method_config import load_method_config
 from .model import TweakEncoder
 from .official_lora import OfficialLoRaRecord, RecordFrameSplit, load_configuration_records, read_iq_frames, split_record_frames
-from .triplet import margin_violating_triplet_loss, random_triplet_indices
+from .triplet import random_triplet_indices, strict_hard_triplet_loss
 
 
 @dataclass(frozen=True)
@@ -106,6 +106,62 @@ def _copy_state_dict(state: dict[str, torch.Tensor]) -> dict[str, torch.Tensor]:
     return {name: value.detach().cpu().clone() for name, value in state.items()}
 
 
+def select_learning_rate_from_probes(probes: list[dict[str, float | int]]) -> float:
+    """Apply the paper's source-only decreasing-loss criterion to one-epoch probes."""
+    eligible = [
+        row for row in probes
+        if int(row["active_batches"]) > 0
+        and float(row["last_window_mean_loss"]) < float(row["first_window_mean_loss"])
+    ]
+    if not eligible:
+        raise RuntimeError("no learning-rate probe had active strict-hard triplets and decreasing loss")
+    selected = min(eligible, key=lambda row: (float(row["mean_training_loss"]), float(row["learning_rate"])))
+    return float(selected["learning_rate"])
+
+
+def _run_training_epoch(
+    model: TweakEncoder,
+    optimizer: torch.optim.Optimizer,
+    records: list[OfficialLoRaRecord],
+    split: RecordFrameSplit,
+    *,
+    device: torch.device,
+    seed: int,
+    max_batches_per_epoch: int | None,
+) -> dict[str, float | int]:
+    """Train exactly one source-only epoch, skipping momentum updates with no strict-hard triplet."""
+    losses: list[float] = []
+    batches, active_batches = 0, 0
+    model.train()
+    for iq, labels in _source_training_batches(records, split, seed=seed, max_batches=max_batches_per_epoch):
+        iq, labels = iq.to(device, non_blocking=True), labels.to(device, non_blocking=True)
+        optimizer.zero_grad(set_to_none=True)
+        anchors, positives, negatives = random_triplet_indices(
+            labels, generator=torch.Generator(device=device).manual_seed(seed + batches)
+        )
+        loss, has_hard_triplets = strict_hard_triplet_loss(
+            model(iq), anchors=anchors, positives=positives, negatives=negatives
+        )
+        if has_hard_triplets:
+            loss.backward()
+            optimizer.step()
+            losses.append(float(loss.detach()))
+            active_batches += 1
+        batches += 1
+    if not batches:
+        raise RuntimeError("source training produced no batches")
+    if not losses:
+        return {"batches": batches, "active_batches": 0, "mean_training_loss": float("inf"), "first_window_mean_loss": float("inf"), "last_window_mean_loss": float("inf")}
+    window = min(100, len(losses))
+    return {
+        "batches": batches,
+        "active_batches": active_batches,
+        "mean_training_loss": sum(losses) / len(losses),
+        "first_window_mean_loss": sum(losses[:window]) / window,
+        "last_window_mean_loss": sum(losses[-window:]) / window,
+    }
+
+
 def _train_encoder(
     records: list[OfficialLoRaRecord],
     split: RecordFrameSplit,
@@ -115,51 +171,44 @@ def _train_encoder(
     seed: int,
     max_batches_per_epoch: int | None,
 ) -> tuple[TweakEncoder, dict[str, object]]:
-    """Run the paper's SGD/triplet training with its configured five-rate search."""
+    """Probe five source-only rates for one epoch, then train a fresh selected model for 100 epochs."""
     metadata = load_method_config().method_metadata()
     learning_rates = [float(value) for value in metadata["unpublished_defaults"]["learning_rate_grid"]["value"]]
     torch.manual_seed(seed)
     model = TweakEncoder().to(device)
     initial_state = _copy_state_dict(model.state_dict())
-    best_state: dict[str, torch.Tensor] | None = None
-    best_loss, best_epoch, best_lr = float("inf"), 0, 0.0
-    epoch_rows: list[dict[str, float | int]] = []
-    for lr_position, learning_rate in enumerate(learning_rates):
+    probe_rows: list[dict[str, float | int]] = []
+    for learning_rate in learning_rates:
         model.load_state_dict(initial_state)
         optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate, momentum=0.9)
-        for epoch in range(1, epochs + 1):
-            model.train()
-            running_loss, batches = 0.0, 0
-            for iq, labels in _source_training_batches(
-                records,
-                split,
-                seed=seed + 10_000 * lr_position + epoch,
-                max_batches=max_batches_per_epoch,
-            ):
-                iq, labels = iq.to(device, non_blocking=True), labels.to(device, non_blocking=True)
-                optimizer.zero_grad(set_to_none=True)
-                anchors, positives, negatives = random_triplet_indices(
-                    labels,
-                    generator=torch.Generator(device=device).manual_seed(seed + 1_000_000 * lr_position + 10_000 * epoch + batches),
-                )
-                loss = margin_violating_triplet_loss(model(iq), anchors=anchors, positives=positives, negatives=negatives)
-                loss.backward()
-                optimizer.step()
-                running_loss += float(loss.detach())
-                batches += 1
-            mean_loss = running_loss / batches
-            epoch_rows.append({"learning_rate": learning_rate, "epoch": epoch, "mean_training_loss": mean_loss, "batches": batches})
-            print(json.dumps({"event": "epoch", **epoch_rows[-1]}, sort_keys=True), flush=True)
-            if mean_loss < best_loss:
-                best_loss, best_epoch, best_lr = mean_loss, epoch, learning_rate
-                best_state = _copy_state_dict(model.state_dict())
+        probe_rows.append({"learning_rate": learning_rate, **_run_training_epoch(
+            model, optimizer, records, split, device=device, seed=seed, max_batches_per_epoch=max_batches_per_epoch
+        )})
+        print(json.dumps({"event": "learning_rate_probe", **probe_rows[-1]}, sort_keys=True), flush=True)
+    selected_lr = select_learning_rate_from_probes(probe_rows)
+    model.load_state_dict(initial_state)
+    optimizer = torch.optim.SGD(model.parameters(), lr=selected_lr, momentum=0.9)
+    best_state: dict[str, torch.Tensor] | None = None
+    best_loss, best_epoch = float("inf"), 0
+    epoch_rows: list[dict[str, float | int]] = []
+    for epoch in range(1, epochs + 1):
+        row = {"learning_rate": selected_lr, "epoch": epoch, **_run_training_epoch(
+            model, optimizer, records, split, device=device, seed=seed + epoch, max_batches_per_epoch=max_batches_per_epoch
+        )}
+        epoch_rows.append(row)
+        print(json.dumps({"event": "epoch", **row}, sort_keys=True), flush=True)
+        if int(row["active_batches"]) and float(row["mean_training_loss"]) < best_loss:
+            best_loss, best_epoch = float(row["mean_training_loss"]), epoch
+            best_state = _copy_state_dict(model.state_dict())
     if best_state is None:
         raise RuntimeError("training produced no checkpoint")
     model.load_state_dict(best_state)
     return model, {
         "best_epoch": best_epoch,
-        "best_learning_rate": best_lr,
+        "best_learning_rate": selected_lr,
         "best_mean_training_loss": best_loss,
+        "learning_rate_probes": probe_rows,
+        "learning_rate_selection": "five_fresh_one_epoch_source_only_probes_then_lowest_mean_loss_among_decreasing_active_probes",
         "epoch_rows": epoch_rows,
         "batch_size": 64,
         "batch_composition": {"classes_per_batch": 8, "samples_per_class": 8},

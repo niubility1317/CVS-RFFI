@@ -8,7 +8,7 @@ from typing import Iterable
 from torch import nn
 
 from .method_config import load_method_config
-from .triplet import margin_violating_triplet_loss, random_triplet_indices
+from .triplet import random_triplet_indices, strict_hard_triplet_loss
 
 
 def shared_triplet_loss(
@@ -55,10 +55,12 @@ def _validation_loss(
             labels,
             generator=torch.Generator(device=labels.device).manual_seed(seed + batch_index),
         )
-        values.append(float(margin_violating_triplet_loss(encoder(iq), anchors=anchors, positives=positives, negatives=negatives)))
-    if not values:
-        raise ValueError("validation batches must be nonempty")
-    return sum(values) / len(values)
+        loss, has_hard_triplets = strict_hard_triplet_loss(encoder(iq), anchors=anchors, positives=positives, negatives=negatives)
+        if has_hard_triplets:
+            values.append(float(loss))
+    # A valid validation batch can contain no strict-hard candidates after training.
+    # It contributes the zero strict-hard objective without inventing a momentum update.
+    return sum(values) / len(values) if values else 0.0
 
 
 def fit_tweak(
@@ -92,9 +94,10 @@ def fit_tweak(
                         20_260_908 + 1_000_000 * int(float(learning_rate) * 1_000_000) + 10_000 * epoch + batch_index
                     ),
                 )
-                loss = margin_violating_triplet_loss(encoder(iq), anchors=anchors, positives=positives, negatives=negatives)
-                loss.backward()
-                optimizer.step()
+                loss, has_hard_triplets = strict_hard_triplet_loss(encoder(iq), anchors=anchors, positives=positives, negatives=negatives)
+                if has_hard_triplets:
+                    loss.backward()
+                    optimizer.step()
             validation_loss = _validation_loss(encoder, validation_rows, seed=20_260_908 + epoch)
             if validation_loss < best_loss:
                 best_epoch, best_learning_rate, best_loss = epoch, float(learning_rate), validation_loss
