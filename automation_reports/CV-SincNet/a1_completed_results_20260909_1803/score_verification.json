@@ -1,0 +1,56 @@
+[
+  {
+    "run": "a1_ecrs_cross_rx_s392005_20260909_r1",
+    "row": "X0_A1_RUNTIME",
+    "scores_match": true,
+    "record_count": 672000,
+    "prediction_metadata": {
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/a1_ecrs_cross_rx_s392005_20260909_r1/X0_A1_RUNTIME/final_ssdg.pth",
+      "record_count": 672000,
+      "schema": "cvs.phase1.predictions.v1"
+    },
+    "record_keys": [
+      "predicted_class",
+      "row_id",
+      "run_id",
+      "sample_id",
+      "scenario"
+    ]
+  },
+  {
+    "run": "a1_fast_v2_s392005_20260909_r1",
+    "row": "F1_RUNTIME",
+    "scores_match": true,
+    "record_count": 672000,
+    "prediction_metadata": {
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/a1_fast_v2_s392005_20260909_r1/F1_RUNTIME/final_ssdg.pth",
+      "record_count": 672000,
+      "schema": "cvs.phase1.predictions.v1"
+    },
+    "record_keys": [
+      "predicted_class",
+      "row_id",
+      "run_id",
+      "sample_id",
+      "scenario"
+    ]
+  },
+  {
+    "run": "a1_fast_v2_s392005_20260909_r1",
+    "row": "F3_COVERAGE_KL",
+    "scores_match": true,
+    "record_count": 672000,
+    "prediction_metadata": {
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/a1_fast_v2_s392005_20260909_r1/F3_COVERAGE_KL/final_ssdg.pth",
+      "record_count": 672000,
+      "schema": "cvs.phase1.predictions.v1"
+    },
+    "record_keys": [
+      "predicted_class",
+      "row_id",
+      "run_id",
+      "sample_id",
+      "scenario"
+    ]
+  }
+]
