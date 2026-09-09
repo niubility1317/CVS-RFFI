@@ -1,0 +1,102 @@
+{
+  "reference_run": "a1_r3_scratch_s392005_20260908_r1/R3_REFERENCE",
+  "seed": 392005,
+  "records": 200,
+  "all_source_heavy_evaluations_fresh": true,
+  "target_results_used_for_budget_design": false,
+  "checkpoint_inventory_live": [
+    "final_ssdg.pth"
+  ],
+  "points": [
+    {
+      "epoch": 40,
+      "source_clean": 98.06666666666666,
+      "source_leo_mean": 70.98888888888888,
+      "source_leo_worst_scenario": 69.5111111111111,
+      "last10_clean": 97.98851851851852,
+      "last10_leo_mean": 65.75604938271604,
+      "elapsed_epoch_hours": 1.9911047350035773,
+      "saved_epoch_time_percent": 85.67779286598125
+    },
+    {
+      "epoch": 60,
+      "source_clean": 98.43333333333334,
+      "source_leo_mean": 79.60000000000001,
+      "source_leo_worst_scenario": 78.12962962962963,
+      "last10_clean": 98.40629629629629,
+      "last10_leo_mean": 78.70222222222222,
+      "elapsed_epoch_hours": 3.42249752038055,
+      "saved_epoch_time_percent": 75.38164741370689
+    },
+    {
+      "epoch": 80,
+      "source_clean": 98.58888888888889,
+      "source_leo_mean": 85.75061728395063,
+      "source_leo_worst_scenario": 84.41851851851852,
+      "last10_clean": 98.42888888888889,
+      "last10_leo_mean": 83.91037037037037,
+      "elapsed_epoch_hours": 4.868697503937615,
+      "saved_epoch_time_percent": 64.97899236619047
+    },
+    {
+      "epoch": 100,
+      "source_clean": 98.52222222222223,
+      "source_leo_mean": 90.06666666666666,
+      "source_leo_worst_scenario": 89.01481481481481,
+      "last10_clean": 98.47962962962963,
+      "last10_leo_mean": 89.39777777777778,
+      "elapsed_epoch_hours": 6.338665491143862,
+      "saved_epoch_time_percent": 54.405371791124814
+    },
+    {
+      "epoch": 120,
+      "source_clean": 98.49259259259259,
+      "source_leo_mean": 91.35802469135803,
+      "source_leo_worst_scenario": 90.42592592592592,
+      "last10_clean": 98.47814814814815,
+      "last10_leo_mean": 91.51938271604938,
+      "elapsed_epoch_hours": 7.80820707294676,
+      "saved_epoch_time_percent": 43.83481839098092
+    },
+    {
+      "epoch": 140,
+      "source_clean": 98.50740740740741,
+      "source_leo_mean": 92.6567901234568,
+      "source_leo_worst_scenario": 91.72962962962963,
+      "last10_clean": 98.50925925925927,
+      "last10_leo_mean": 92.44160493827161,
+      "elapsed_epoch_hours": 9.2838264825609,
+      "saved_epoch_time_percent": 33.22054659305152
+    },
+    {
+      "epoch": 160,
+      "source_clean": 98.52592592592593,
+      "source_leo_mean": 92.90987654320988,
+      "source_leo_worst_scenario": 92.07407407407408,
+      "last10_clean": 98.50333333333333,
+      "last10_leo_mean": 92.84395061728395,
+      "elapsed_epoch_hours": 10.738045475549168,
+      "saved_epoch_time_percent": 22.760210042365394
+    },
+    {
+      "epoch": 180,
+      "source_clean": 98.51851851851852,
+      "source_leo_mean": 93.22839506172839,
+      "source_leo_worst_scenario": 92.42592592592592,
+      "last10_clean": 98.52185185185185,
+      "last10_leo_mean": 93.1658024691358,
+      "elapsed_epoch_hours": 12.204272985988194,
+      "saved_epoch_time_percent": 12.21349507507533
+    },
+    {
+      "epoch": 200,
+      "source_clean": 98.5037037037037,
+      "source_leo_mean": 93.12469135802469,
+      "source_leo_worst_scenario": 92.34444444444445,
+      "last10_clean": 98.5111111111111,
+      "last10_leo_mean": 93.18407407407408,
+      "elapsed_epoch_hours": 13.902219932807816,
+      "saved_epoch_time_percent": 0.0
+    }
+  ]
+}
