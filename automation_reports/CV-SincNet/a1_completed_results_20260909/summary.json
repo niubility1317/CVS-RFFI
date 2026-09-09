@@ -1,0 +1,465 @@
+{
+  "captured_utc": "2026-09-09T01:35:49.352416+00:00",
+  "completed": {
+    "R3_STRUCTURE_CONTROL": {
+      "run": "a1_r3_scratch_s392005_20260908_r1",
+      "score": {
+        "metrics": {
+          "clean": {
+            "accuracy": 0.7798869047619048,
+            "correct": 131021,
+            "per_class_accuracy": {
+              "0": 0.9058571428571428,
+              "1": 0.43507142857142855,
+              "2": 0.7200714285714286,
+              "3": 0.6958571428571428,
+              "4": 0.9978928571428571,
+              "5": 0.9245714285714286
+            },
+            "total": 168000
+          },
+          "leo_clear_weak": {
+            "accuracy": 0.686422619047619,
+            "correct": 115319,
+            "per_class_accuracy": {
+              "0": 0.7123928571428572,
+              "1": 0.3266428571428571,
+              "2": 0.6256071428571428,
+              "3": 0.6411071428571429,
+              "4": 0.9464285714285714,
+              "5": 0.8663571428571428
+            },
+            "total": 168000
+          },
+          "leo_low_elev_weak": {
+            "accuracy": 0.6694940476190476,
+            "correct": 112475,
+            "per_class_accuracy": {
+              "0": 0.7025714285714286,
+              "1": 0.3149642857142857,
+              "2": 0.5963928571428572,
+              "3": 0.6052857142857143,
+              "4": 0.9246428571428571,
+              "5": 0.8731071428571429
+            },
+            "total": 168000
+          },
+          "leo_rain_weak": {
+            "accuracy": 0.6711190476190476,
+            "correct": 112748,
+            "per_class_accuracy": {
+              "0": 0.7178214285714286,
+              "1": 0.32035714285714284,
+              "2": 0.5975,
+              "3": 0.5902142857142857,
+              "4": 0.9214285714285714,
+              "5": 0.8793928571428572
+            },
+            "total": 168000
+          }
+        },
+        "prediction_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/a1_r3_scratch_s392005_20260908_r1/R3_STRUCTURE_CONTROL/target_prediction/predictions.json",
+        "record_count": 672000,
+        "schema": "cvs.phase1.truth_last_score.v1",
+        "truth_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_fcr_r1r8_s392005_equalized_20260903_v4/target_truth/truth_sidecar.json"
+      },
+      "resources": {
+        "ablation_id": "",
+        "device_type": "cuda",
+        "peak_cuda_memory_allocated_bytes": 3526907904,
+        "peak_cuda_memory_reserved_bytes": 3607101440,
+        "resource_claim": "THROUGHPUT_SCHEDULE_OBSERVATION_NOT_ISOLATED_LATENCY",
+        "row_key": "",
+        "run_id": "a1_r3_scratch_s392005_20260908_r1",
+        "schema": "cvs.phase1.resource_summary.v1",
+        "total_parameter_count": 1142978,
+        "train_seed": 392005,
+        "trainable_parameter_count": 1142978,
+        "wall_time_seconds": 52394.54629445076
+      },
+      "epochs": 200,
+      "log_lines": 9020,
+      "nonfinite_loss_skip_max": 0.0,
+      "gradient_skip_epochs": 20,
+      "mean_gradient_skip_fraction": 0.000472972972972973
+    },
+    "R3_REFERENCE": {
+      "run": "a1_r3_scratch_s392005_20260908_r1",
+      "score": {
+        "metrics": {
+          "clean": {
+            "accuracy": 0.791125,
+            "correct": 132909,
+            "per_class_accuracy": {
+              "0": 0.8994642857142857,
+              "1": 0.4332857142857143,
+              "2": 0.7664285714285715,
+              "3": 0.6958214285714286,
+              "4": 0.9980357142857142,
+              "5": 0.9537142857142857
+            },
+            "total": 168000
+          },
+          "leo_clear_weak": {
+            "accuracy": 0.6956964285714285,
+            "correct": 116877,
+            "per_class_accuracy": {
+              "0": 0.7057857142857142,
+              "1": 0.3439285714285714,
+              "2": 0.6435714285714286,
+              "3": 0.6356071428571428,
+              "4": 0.9572142857142857,
+              "5": 0.8880714285714286
+            },
+            "total": 168000
+          },
+          "leo_low_elev_weak": {
+            "accuracy": 0.6781904761904762,
+            "correct": 113936,
+            "per_class_accuracy": {
+              "0": 0.6967857142857142,
+              "1": 0.3354642857142857,
+              "2": 0.6107142857142858,
+              "3": 0.5983571428571428,
+              "4": 0.9385714285714286,
+              "5": 0.88925
+            },
+            "total": 168000
+          },
+          "leo_rain_weak": {
+            "accuracy": 0.6815119047619047,
+            "correct": 114494,
+            "per_class_accuracy": {
+              "0": 0.7101785714285714,
+              "1": 0.34089285714285716,
+              "2": 0.6118214285714285,
+              "3": 0.5852142857142857,
+              "4": 0.9386785714285715,
+              "5": 0.9022857142857142
+            },
+            "total": 168000
+          }
+        },
+        "prediction_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/a1_r3_scratch_s392005_20260908_r1/R3_REFERENCE/target_prediction/predictions.json",
+        "record_count": 672000,
+        "schema": "cvs.phase1.truth_last_score.v1",
+        "truth_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_fcr_r1r8_s392005_equalized_20260903_v4/target_truth/truth_sidecar.json"
+      },
+      "resources": {
+        "ablation_id": "",
+        "device_type": "cuda",
+        "peak_cuda_memory_allocated_bytes": 3518519296,
+        "peak_cuda_memory_reserved_bytes": 3667918848,
+        "resource_claim": "THROUGHPUT_SCHEDULE_OBSERVATION_NOT_ISOLATED_LATENCY",
+        "row_key": "",
+        "run_id": "a1_r3_scratch_s392005_20260908_r1",
+        "schema": "cvs.phase1.resource_summary.v1",
+        "total_parameter_count": 1142978,
+        "train_seed": 392005,
+        "trainable_parameter_count": 1142978,
+        "wall_time_seconds": 50097.54313635826
+      },
+      "epochs": 200,
+      "log_lines": 9020,
+      "nonfinite_loss_skip_max": 0.0,
+      "gradient_skip_epochs": 21,
+      "mean_gradient_skip_fraction": 0.0004954954954954955
+    },
+    "R3_FAST_SEQUENTIAL": {
+      "run": "a1_r3_scratch_s392005_20260908_r1",
+      "score": {
+        "metrics": {
+          "clean": {
+            "accuracy": 0.7861488095238095,
+            "correct": 132073,
+            "per_class_accuracy": {
+              "0": 0.9049642857142857,
+              "1": 0.43807142857142856,
+              "2": 0.7366428571428572,
+              "3": 0.6956428571428571,
+              "4": 0.9981785714285715,
+              "5": 0.9433928571428571
+            },
+            "total": 168000
+          },
+          "leo_clear_weak": {
+            "accuracy": 0.6927380952380953,
+            "correct": 116380,
+            "per_class_accuracy": {
+              "0": 0.7120714285714286,
+              "1": 0.34685714285714286,
+              "2": 0.62425,
+              "3": 0.6356785714285714,
+              "4": 0.9707857142857143,
+              "5": 0.8667857142857143
+            },
+            "total": 168000
+          },
+          "leo_low_elev_weak": {
+            "accuracy": 0.6751309523809523,
+            "correct": 113422,
+            "per_class_accuracy": {
+              "0": 0.6969285714285715,
+              "1": 0.33725,
+              "2": 0.5914642857142857,
+              "3": 0.5997857142857143,
+              "4": 0.9531785714285714,
+              "5": 0.8721785714285715
+            },
+            "total": 168000
+          },
+          "leo_rain_weak": {
+            "accuracy": 0.6791011904761904,
+            "correct": 114089,
+            "per_class_accuracy": {
+              "0": 0.70875,
+              "1": 0.34675,
+              "2": 0.5953571428571428,
+              "3": 0.5885714285714285,
+              "4": 0.9523571428571429,
+              "5": 0.8828214285714285
+            },
+            "total": 168000
+          }
+        },
+        "prediction_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/a1_r3_scratch_s392005_20260908_r1/R3_FAST_SEQUENTIAL/target_prediction/predictions.json",
+        "record_count": 672000,
+        "schema": "cvs.phase1.truth_last_score.v1",
+        "truth_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_fcr_r1r8_s392005_equalized_20260903_v4/target_truth/truth_sidecar.json"
+      },
+      "resources": {
+        "ablation_id": "",
+        "device_type": "cuda",
+        "peak_cuda_memory_allocated_bytes": 3413992960,
+        "peak_cuda_memory_reserved_bytes": 3523215360,
+        "resource_claim": "THROUGHPUT_SCHEDULE_OBSERVATION_NOT_ISOLATED_LATENCY",
+        "row_key": "",
+        "run_id": "a1_r3_scratch_s392005_20260908_r1",
+        "schema": "cvs.phase1.resource_summary.v1",
+        "total_parameter_count": 1142978,
+        "train_seed": 392005,
+        "trainable_parameter_count": 1142978,
+        "wall_time_seconds": 49686.629742860794
+      },
+      "epochs": 200,
+      "log_lines": 9020,
+      "nonfinite_loss_skip_max": 0.0,
+      "gradient_skip_epochs": 19,
+      "mean_gradient_skip_fraction": 0.000472972972972973
+    },
+    "A1_REFERENCE": {
+      "run": "a1_fast_selected_adv3b02_s392005_20260908_r1",
+      "score": {
+        "metrics": {
+          "clean": {
+            "accuracy": 0.7673392857142857,
+            "correct": 128913,
+            "per_class_accuracy": {
+              "0": 0.9249642857142857,
+              "1": 0.42992857142857144,
+              "2": 0.6961071428571428,
+              "3": 0.68225,
+              "4": 0.9951785714285715,
+              "5": 0.8756071428571428
+            },
+            "total": 168000
+          },
+          "leo_clear_weak": {
+            "accuracy": 0.6888988095238096,
+            "correct": 115735,
+            "per_class_accuracy": {
+              "0": 0.8178928571428571,
+              "1": 0.3409285714285714,
+              "2": 0.5965357142857143,
+              "3": 0.6041428571428571,
+              "4": 0.9593928571428572,
+              "5": 0.8145
+            },
+            "total": 168000
+          },
+          "leo_low_elev_weak": {
+            "accuracy": 0.669327380952381,
+            "correct": 112447,
+            "per_class_accuracy": {
+              "0": 0.7913928571428571,
+              "1": 0.32825,
+              "2": 0.5616785714285715,
+              "3": 0.573,
+              "4": 0.9423214285714285,
+              "5": 0.8193214285714285
+            },
+            "total": 168000
+          },
+          "leo_rain_weak": {
+            "accuracy": 0.6707738095238095,
+            "correct": 112690,
+            "per_class_accuracy": {
+              "0": 0.7976428571428571,
+              "1": 0.3414285714285714,
+              "2": 0.5554642857142857,
+              "3": 0.5586071428571429,
+              "4": 0.9369285714285714,
+              "5": 0.8345714285714285
+            },
+            "total": 168000
+          }
+        },
+        "prediction_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/a1_fast_selected_adv3b02_s392005_20260908_r1/A1_REFERENCE/target_prediction/predictions.json",
+        "record_count": 672000,
+        "schema": "cvs.phase1.truth_last_score.v1",
+        "truth_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_fcr_r1r8_s392005_equalized_20260903_v4/target_truth/truth_sidecar.json"
+      },
+      "resources": {
+        "ablation_id": "",
+        "device_type": "cuda",
+        "peak_cuda_memory_allocated_bytes": 3014395904,
+        "peak_cuda_memory_reserved_bytes": 3814719488,
+        "resource_claim": "THROUGHPUT_SCHEDULE_OBSERVATION_NOT_ISOLATED_LATENCY",
+        "row_key": "",
+        "run_id": "a1_fast_selected_adv3b02_s392005_20260908_r1",
+        "schema": "cvs.phase1.resource_summary.v1",
+        "total_parameter_count": 1130809,
+        "train_seed": 392005,
+        "trainable_parameter_count": 1130809,
+        "wall_time_seconds": 45467.38981294632
+      },
+      "epochs": 200,
+      "log_lines": 9020,
+      "nonfinite_loss_skip_max": 0.0,
+      "gradient_skip_epochs": 33,
+      "mean_gradient_skip_fraction": 0.0011261261261261261
+    },
+    "A1_FAST_SEQUENTIAL": {
+      "run": "a1_fast_selected_adv3b02_s392005_20260908_r1",
+      "score": {
+        "metrics": {
+          "clean": {
+            "accuracy": 0.7662142857142857,
+            "correct": 128724,
+            "per_class_accuracy": {
+              "0": 0.9216785714285715,
+              "1": 0.4257142857142857,
+              "2": 0.6953214285714285,
+              "3": 0.6829642857142857,
+              "4": 0.9959642857142857,
+              "5": 0.8756428571428572
+            },
+            "total": 168000
+          },
+          "leo_clear_weak": {
+            "accuracy": 0.689202380952381,
+            "correct": 115786,
+            "per_class_accuracy": {
+              "0": 0.826,
+              "1": 0.3335,
+              "2": 0.6049285714285715,
+              "3": 0.6046071428571429,
+              "4": 0.9606071428571429,
+              "5": 0.8055714285714286
+            },
+            "total": 168000
+          },
+          "leo_low_elev_weak": {
+            "accuracy": 0.669345238095238,
+            "correct": 112450,
+            "per_class_accuracy": {
+              "0": 0.7975,
+              "1": 0.32242857142857145,
+              "2": 0.5692857142857143,
+              "3": 0.57225,
+              "4": 0.9430714285714286,
+              "5": 0.8115357142857142
+            },
+            "total": 168000
+          },
+          "leo_rain_weak": {
+            "accuracy": 0.6716726190476191,
+            "correct": 112841,
+            "per_class_accuracy": {
+              "0": 0.8051785714285714,
+              "1": 0.33517857142857144,
+              "2": 0.5647142857142857,
+              "3": 0.5581428571428572,
+              "4": 0.9403928571428571,
+              "5": 0.8264285714285714
+            },
+            "total": 168000
+          }
+        },
+        "prediction_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/a1_fast_selected_adv3b02_s392005_20260908_r1/A1_FAST_SEQUENTIAL/target_prediction/predictions.json",
+        "record_count": 672000,
+        "schema": "cvs.phase1.truth_last_score.v1",
+        "truth_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_fcr_r1r8_s392005_equalized_20260903_v4/target_truth/truth_sidecar.json"
+      },
+      "resources": {
+        "ablation_id": "",
+        "device_type": "cuda",
+        "peak_cuda_memory_allocated_bytes": 2920810496,
+        "peak_cuda_memory_reserved_bytes": 3122659328,
+        "resource_claim": "THROUGHPUT_SCHEDULE_OBSERVATION_NOT_ISOLATED_LATENCY",
+        "row_key": "",
+        "run_id": "a1_fast_selected_adv3b02_s392005_20260908_r1",
+        "schema": "cvs.phase1.resource_summary.v1",
+        "total_parameter_count": 1130809,
+        "train_seed": 392005,
+        "trainable_parameter_count": 1130809,
+        "wall_time_seconds": 44041.32546067238
+      },
+      "epochs": 200,
+      "log_lines": 9020,
+      "nonfinite_loss_skip_max": 0.0,
+      "gradient_skip_epochs": 19,
+      "mean_gradient_skip_fraction": 0.0004954954954954955
+    }
+  },
+  "running": {
+    "X0_A1_RUNTIME": {
+      "run": "a1_ecrs_cross_rx_s392005_20260909_r1",
+      "epoch": 107
+    },
+    "X1_CROSS_RX_CLEAN": {
+      "run": "a1_ecrs_cross_rx_s392005_20260909_r1",
+      "epoch": 124
+    },
+    "X2_CROSS_RX_VIEWS": {
+      "run": "a1_ecrs_cross_rx_s392005_20260909_r1",
+      "epoch": 129
+    },
+    "X3_WARM_EMA": {
+      "run": "a1_ecrs_cross_rx_s392005_20260909_r1",
+      "epoch": 129
+    },
+    "X4_COVERAGE_KL": {
+      "run": "a1_ecrs_cross_rx_s392005_20260909_r1",
+      "epoch": 95
+    },
+    "X5_BALANCED_L": {
+      "run": "a1_ecrs_cross_rx_s392005_20260909_r1",
+      "epoch": 145
+    },
+    "X6_BOUNDED_DOMAIN": {
+      "run": "a1_ecrs_cross_rx_s392005_20260909_r1",
+      "epoch": 94
+    },
+    "X7_COMBINED": {
+      "run": "a1_ecrs_cross_rx_s392005_20260909_r1",
+      "epoch": 143
+    },
+    "F0_FIXED_BASE": {
+      "run": "a1_fast_v2_s392005_20260909_r1",
+      "epoch": 94
+    },
+    "F1_RUNTIME": {
+      "run": "a1_fast_v2_s392005_20260909_r1",
+      "epoch": 101
+    },
+    "F2_WARM_EMA": {
+      "run": "a1_fast_v2_s392005_20260909_r1",
+      "epoch": 102
+    },
+    "F3_COVERAGE_KL": {
+      "run": "a1_fast_v2_s392005_20260909_r1",
+      "epoch": 100
+    }
+  }
+}

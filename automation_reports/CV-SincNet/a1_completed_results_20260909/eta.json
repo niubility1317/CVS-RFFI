@@ -1,0 +1,125 @@
+{
+  "as_of": "2026-09-09T09:35:49.352416+08:00",
+  "rows": {
+    "X0_A1_RUNTIME": {
+      "epoch": 107,
+      "median_last_10_epoch_seconds": 231.24982118606567,
+      "remaining_train_hours": 5.973953713973363,
+      "estimated_score_time": "2026-09-09T15:44:15.585786+08:00",
+      "planning_range": [
+        "2026-09-09T14:14:39.027444+08:00",
+        "2026-09-09T17:13:52.144129+08:00"
+      ]
+    },
+    "X1_CROSS_RX_CLEAN": {
+      "epoch": 124,
+      "median_last_10_epoch_seconds": 230.02033591270447,
+      "remaining_train_hours": 4.855984869268205,
+      "estimated_score_time": "2026-09-09T14:37:10.897945+08:00",
+      "planning_range": [
+        "2026-09-09T13:24:20.511563+08:00",
+        "2026-09-09T15:50:01.284328+08:00"
+      ]
+    },
+    "X2_CROSS_RX_VIEWS": {
+      "epoch": 129,
+      "median_last_10_epoch_seconds": 227.03481209278107,
+      "remaining_train_hours": 4.477631016274294,
+      "estimated_score_time": "2026-09-09T14:14:28.824075+08:00",
+      "planning_range": [
+        "2026-09-09T13:07:18.956160+08:00",
+        "2026-09-09T15:21:38.691989+08:00"
+      ]
+    },
+    "X3_WARM_EMA": {
+      "epoch": 129,
+      "median_last_10_epoch_seconds": 226.58019983768463,
+      "remaining_train_hours": 4.468665052354336,
+      "estimated_score_time": "2026-09-09T14:13:56.546604+08:00",
+      "planning_range": [
+        "2026-09-09T13:06:54.748057+08:00",
+        "2026-09-09T15:20:58.345152+08:00"
+      ]
+    },
+    "X4_COVERAGE_KL": {
+      "epoch": 95,
+      "median_last_10_epoch_seconds": 337.7532603740692,
+      "remaining_train_hours": 9.851136760910352,
+      "estimated_score_time": "2026-09-09T19:36:53.444755+08:00",
+      "planning_range": [
+        "2026-09-09T17:09:07.421670+08:00",
+        "2026-09-09T22:04:39.467840+08:00"
+      ]
+    },
+    "X5_BALANCED_L": {
+      "epoch": 145,
+      "median_last_10_epoch_seconds": 200.7297488451004,
+      "remaining_train_hours": 3.0667044962445895,
+      "estimated_score_time": "2026-09-09T12:49:49.488602+08:00",
+      "planning_range": [
+        "2026-09-09T12:03:49.454556+08:00",
+        "2026-09-09T13:35:49.522649+08:00"
+      ]
+    },
+    "X6_BOUNDED_DOMAIN": {
+      "epoch": 94,
+      "median_last_10_epoch_seconds": 338.2668105363846,
+      "remaining_train_hours": 9.960078310237991,
+      "estimated_score_time": "2026-09-09T19:43:25.634333+08:00",
+      "planning_range": [
+        "2026-09-09T17:14:01.563854+08:00",
+        "2026-09-09T22:12:49.704812+08:00"
+      ]
+    },
+    "X7_COMBINED": {
+      "epoch": 143,
+      "median_last_10_epoch_seconds": 204.36217999458313,
+      "remaining_train_hours": 3.2357345165808997,
+      "estimated_score_time": "2026-09-09T12:59:57.996676+08:00",
+      "planning_range": [
+        "2026-09-09T12:11:25.835611+08:00",
+        "2026-09-09T13:48:30.157741+08:00"
+      ]
+    },
+    "F0_FIXED_BASE": {
+      "epoch": 94,
+      "median_last_10_epoch_seconds": 365.77823173999786,
+      "remaining_train_hours": 10.770136823455493,
+      "estimated_score_time": "2026-09-09T20:32:01.844980+08:00",
+      "planning_range": [
+        "2026-09-09T17:50:28.721839+08:00",
+        "2026-09-09T23:13:34.968122+08:00"
+      ]
+    },
+    "F1_RUNTIME": {
+      "epoch": 101,
+      "median_last_10_epoch_seconds": 334.7000415325165,
+      "remaining_train_hours": 9.204251142144203,
+      "estimated_score_time": "2026-09-09T18:58:04.656528+08:00",
+      "planning_range": [
+        "2026-09-09T16:40:00.830500+08:00",
+        "2026-09-09T21:16:08.482556+08:00"
+      ]
+    },
+    "F2_WARM_EMA": {
+      "epoch": 102,
+      "median_last_10_epoch_seconds": 328.6389708518982,
+      "remaining_train_hours": 8.946283095412785,
+      "estimated_score_time": "2026-09-09T18:42:35.971559+08:00",
+      "planning_range": [
+        "2026-09-09T16:28:24.316774+08:00",
+        "2026-09-09T20:56:47.626345+08:00"
+      ]
+    },
+    "F3_COVERAGE_KL": {
+      "epoch": 100,
+      "median_last_10_epoch_seconds": 339.67936623096466,
+      "remaining_train_hours": 9.43553795086013,
+      "estimated_score_time": "2026-09-09T19:11:57.289039+08:00",
+      "planning_range": [
+        "2026-09-09T16:50:25.304883+08:00",
+        "2026-09-09T21:33:29.273195+08:00"
+      ]
+    }
+  }
+}

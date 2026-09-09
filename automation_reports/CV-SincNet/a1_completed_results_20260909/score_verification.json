@@ -1,0 +1,92 @@
+[
+  {
+    "run": "a1_fast_selected_adv3b02_s392005_20260908_r1",
+    "row": "A1_REFERENCE",
+    "scores_match": true,
+    "record_count": 672000,
+    "prediction_metadata": {
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/a1_fast_selected_adv3b02_s392005_20260908_r1/A1_REFERENCE/final_ssdg.pth",
+      "record_count": 672000,
+      "schema": "cvs.phase1.predictions.v1"
+    },
+    "record_keys": [
+      "predicted_class",
+      "row_id",
+      "run_id",
+      "sample_id",
+      "scenario"
+    ]
+  },
+  {
+    "run": "a1_fast_selected_adv3b02_s392005_20260908_r1",
+    "row": "A1_FAST_SEQUENTIAL",
+    "scores_match": true,
+    "record_count": 672000,
+    "prediction_metadata": {
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/a1_fast_selected_adv3b02_s392005_20260908_r1/A1_FAST_SEQUENTIAL/final_ssdg.pth",
+      "record_count": 672000,
+      "schema": "cvs.phase1.predictions.v1"
+    },
+    "record_keys": [
+      "predicted_class",
+      "row_id",
+      "run_id",
+      "sample_id",
+      "scenario"
+    ]
+  },
+  {
+    "run": "a1_r3_scratch_s392005_20260908_r1",
+    "row": "R3_STRUCTURE_CONTROL",
+    "scores_match": true,
+    "record_count": 672000,
+    "prediction_metadata": {
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/a1_r3_scratch_s392005_20260908_r1/R3_STRUCTURE_CONTROL/final_ssdg.pth",
+      "record_count": 672000,
+      "schema": "cvs.phase1.predictions.v1"
+    },
+    "record_keys": [
+      "predicted_class",
+      "row_id",
+      "run_id",
+      "sample_id",
+      "scenario"
+    ]
+  },
+  {
+    "run": "a1_r3_scratch_s392005_20260908_r1",
+    "row": "R3_REFERENCE",
+    "scores_match": true,
+    "record_count": 672000,
+    "prediction_metadata": {
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/a1_r3_scratch_s392005_20260908_r1/R3_REFERENCE/final_ssdg.pth",
+      "record_count": 672000,
+      "schema": "cvs.phase1.predictions.v1"
+    },
+    "record_keys": [
+      "predicted_class",
+      "row_id",
+      "run_id",
+      "sample_id",
+      "scenario"
+    ]
+  },
+  {
+    "run": "a1_r3_scratch_s392005_20260908_r1",
+    "row": "R3_FAST_SEQUENTIAL",
+    "scores_match": true,
+    "record_count": 672000,
+    "prediction_metadata": {
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/a1_r3_scratch_s392005_20260908_r1/R3_FAST_SEQUENTIAL/final_ssdg.pth",
+      "record_count": 672000,
+      "schema": "cvs.phase1.predictions.v1"
+    },
+    "record_keys": [
+      "predicted_class",
+      "row_id",
+      "run_id",
+      "sample_id",
+      "scenario"
+    ]
+  }
+]
