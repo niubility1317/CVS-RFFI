@@ -1,0 +1,143 @@
+{
+  "captured_utc": "2026-09-09T16:00:48.709700+00:00",
+  "progress": [
+    {
+      "row": "R3_B120",
+      "run": "a1_r3_budget_s392005_20260909_r2",
+      "epoch": 113,
+      "total": 120,
+      "alive": true,
+      "gpu": 2,
+      "source_clean": 98.44444444444444,
+      "recent_epoch_seconds": 271.0947675704956,
+      "linear_training_eta": "2026-09-10T00:32:26.373073+08:00",
+      "epochs_parsed": 113,
+      "stdout_lines": 5103,
+      "fatal_markers": [],
+      "nonfinite_loss_max": 0.0,
+      "last10_gradient_skip_mean": 0.00045045045045045046
+    },
+    {
+      "row": "R3_B160",
+      "run": "a1_r3_budget_s392005_20260909_r2",
+      "epoch": 95,
+      "total": 160,
+      "alive": true,
+      "gpu": 3,
+      "source_clean": 98.5,
+      "recent_epoch_seconds": 263.43570029735565,
+      "linear_training_eta": "2026-09-10T04:46:12.030219+08:00",
+      "epochs_parsed": 95,
+      "stdout_lines": 4293,
+      "fatal_markers": [],
+      "nonfinite_loss_max": 0.0,
+      "last10_gradient_skip_mean": 0.00045045045045045046
+    },
+    {
+      "row": "R3_REFERENCE_CLEAN_CROSS_RX",
+      "run": "a1_r3_clean_cross_rx_s392005_20260909_r1",
+      "epoch": 128,
+      "total": 200,
+      "alive": true,
+      "gpu": 1,
+      "source_clean": 98.56296296296296,
+      "recent_epoch_seconds": 268.4440783262253,
+      "linear_training_eta": "2026-09-10T05:22:56.683339+08:00",
+      "epochs_parsed": 128,
+      "stdout_lines": 5778,
+      "fatal_markers": [],
+      "nonfinite_loss_max": 0.0,
+      "last10_gradient_skip_mean": 0.00045045045045045046
+    }
+  ],
+  "scores": [
+    {
+      "row": "R3_B120",
+      "epoch": 60,
+      "clean": 79.09226190476191,
+      "leo_clear_weak": 63.3827380952381,
+      "leo_low_elev_weak": 61.70535714285714,
+      "leo_rain_weak": 61.738095238095234,
+      "leo_mean": 62.275396825396825,
+      "prediction_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/a1_r3_budget_s392005_20260909_r2/R3_B120/target_epochs/E060/predictions.json",
+      "record_count": 672000
+    },
+    {
+      "row": "R3_B120",
+      "epoch": 70,
+      "clean": 76.90119047619048,
+      "leo_clear_weak": 62.05357142857143,
+      "leo_low_elev_weak": 60.96488095238095,
+      "leo_rain_weak": 61.06607142857143,
+      "leo_mean": 61.36150793650794,
+      "prediction_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/a1_r3_budget_s392005_20260909_r2/R3_B120/target_epochs/E070/predictions.json",
+      "record_count": 672000
+    },
+    {
+      "row": "R3_B120",
+      "epoch": 80,
+      "clean": 77.45178571428572,
+      "leo_clear_weak": 63.986309523809524,
+      "leo_low_elev_weak": 62.728571428571435,
+      "leo_rain_weak": 62.87619047619047,
+      "leo_mean": 63.19702380952381,
+      "prediction_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/a1_r3_budget_s392005_20260909_r2/R3_B120/target_epochs/E080/predictions.json",
+      "record_count": 672000
+    },
+    {
+      "row": "R3_B120",
+      "epoch": 90,
+      "clean": 77.96726190476191,
+      "leo_clear_weak": 63.906547619047615,
+      "leo_low_elev_weak": 62.73273809523809,
+      "leo_rain_weak": 62.84642857142857,
+      "leo_mean": 63.16190476190476,
+      "prediction_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/a1_r3_budget_s392005_20260909_r2/R3_B120/target_epochs/E090/predictions.json",
+      "record_count": 672000
+    },
+    {
+      "row": "R3_B120",
+      "epoch": 100,
+      "clean": 77.23690476190475,
+      "leo_clear_weak": 64.8625,
+      "leo_low_elev_weak": 63.62738095238095,
+      "leo_rain_weak": 63.72023809523809,
+      "leo_mean": 64.07003968253969,
+      "prediction_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/a1_r3_budget_s392005_20260909_r2/R3_B120/target_epochs/E100/predictions.json",
+      "record_count": 672000
+    },
+    {
+      "row": "R3_B120",
+      "epoch": 110,
+      "clean": 77.34107142857142,
+      "leo_clear_weak": 64.6422619047619,
+      "leo_low_elev_weak": 63.451190476190476,
+      "leo_rain_weak": 63.60654761904762,
+      "leo_mean": 63.9,
+      "prediction_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/a1_r3_budget_s392005_20260909_r2/R3_B120/target_epochs/E110/predictions.json",
+      "record_count": 672000
+    },
+    {
+      "row": "R3_B160",
+      "epoch": 80,
+      "clean": 78.52559523809524,
+      "leo_clear_weak": 64.83214285714286,
+      "leo_low_elev_weak": 63.26130952380953,
+      "leo_rain_weak": 63.525595238095235,
+      "leo_mean": 63.87301587301587,
+      "prediction_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/a1_r3_budget_s392005_20260909_r2/R3_B160/target_epochs/E080/predictions.json",
+      "record_count": 672000
+    },
+    {
+      "row": "R3_B160",
+      "epoch": 90,
+      "clean": 78.72678571428573,
+      "leo_clear_weak": 64.43511904761905,
+      "leo_low_elev_weak": 62.96904761904762,
+      "leo_rain_weak": 63.23333333333333,
+      "leo_mean": 63.545833333333334,
+      "prediction_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/a1_r3_budget_s392005_20260909_r2/R3_B160/target_epochs/E090/predictions.json",
+      "record_count": 672000
+    }
+  ]
+}
