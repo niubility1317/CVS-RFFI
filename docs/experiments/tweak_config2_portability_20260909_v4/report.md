@@ -3,6 +3,7 @@
 - run_id：`tweak_config2_portability_20260909_v4`
 - 当前状态：`LOCAL_VERIFIED_RELEASE_PENDING`
 - 唯一launch owner：Codex主Agent
+- Git提交：`d5472a9403417c7e88b0f643e0ff7a07d2568b07`；已push且远端分支OID独立一致。
 - 前序产物：V1数组接口技术失败、V2完整但表征塌缩、V3在确认方法定义不符后由唯一owner停止；三者均保留，V4绝不复用任何旧输出根。
 
 ## 已冻结的实验边界
@@ -22,6 +23,13 @@
 
 - V4仅在本地聚焦/完整测试、模块编译、真实官方Config2前反传、Git提交/push/远端OID读回、N607源/数据读回全部完成后，以新的release、run、log和output目录启动。
 - 训练期间只会因可复现的技术错误停止；低指标将完整保留并做数值解释。正式结果出现前，不声称与论文Fig.13b/Fig.14一致。
+
+## 已预登记的N607落地
+
+- 远端项目根：`/home/szu2070436088/2510044040/CV-SincNet`；数据根：`datasets/tweak_official_lora_configurations_20260908/Diff_Configurations_Setup`（80个所需输入文件已只读复核）。
+- 新release：`releases/tweak_config2_portability_20260909_v4/source`；新run：`runs/tweak_config2_portability_20260909_v4/official_config2_full`；新log：`logs/tweak_config2_portability_20260909_v4/train.log`。预flight已确认三者均不存在，故无覆盖风险。
+- 资源选择：GPU3（启动前探测约3.7GiB/24GiB）；既有用户许可允许本任务在每卡加挂实验，但不会触碰其他任务。实际PID/CWD/cmdline/GPU/log增长必须启动后独立读回。
+- 计划命令：`CUDA_VISIBLE_DEVICES=3 PYTHONPATH=<release>/source <CVS-RFFI-python> -m paper_reproduction.gaskin_tweak_2023.official_lora_experiment --data-root <data> --output-dir <run> --device cuda:0`；不传smoke限制，使用默认100epoch与1+100选择方案。
 
 ## 本地验证读回
 
