@@ -1,0 +1,32 @@
+{
+  "status": "VERIFIED",
+  "captured_utc": "2026-09-09T08:00:33.229614+00:00",
+  "rows": [
+    {
+      "row": "R3_B120",
+      "pid": 350378,
+      "gpu": 2,
+      "epoch": "1",
+      "epoch_time_s": "122.71036887168884",
+      "r3_l": "28.44914842725874",
+      "r3_u": "28.448676942705035",
+      "skipped_grad": "0.0045045045045045045",
+      "from_scratch": true,
+      "argv_cwd_ppid_gpu": "VERIFIED",
+      "log_growth": "VERIFIED"
+    },
+    {
+      "row": "R3_B160",
+      "pid": 350383,
+      "gpu": 3,
+      "epoch": "1",
+      "epoch_time_s": "117.90695571899414",
+      "r3_l": "28.449251157743436",
+      "r3_u": "28.448787182301015",
+      "skipped_grad": "0.0045045045045045045",
+      "from_scratch": true,
+      "argv_cwd_ppid_gpu": "VERIFIED",
+      "log_growth": "VERIFIED"
+    }
+  ]
+}
