@@ -1,0 +1,102 @@
+[
+  {
+    "run": "a1_ecrs_cross_rx_s392005_20260909_r1",
+    "row": "X4_COVERAGE_KL",
+    "score_artifact": "target_prediction/score.json",
+    "kind": "final",
+    "scores_match": true,
+    "record_count": 672000,
+    "prediction_metadata": {
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/a1_ecrs_cross_rx_s392005_20260909_r1/X4_COVERAGE_KL/final_ssdg.pth",
+      "record_count": 672000,
+      "schema": "cvs.phase1.predictions.v1"
+    },
+    "record_keys": [
+      "predicted_class",
+      "row_id",
+      "run_id",
+      "sample_id",
+      "scenario"
+    ]
+  },
+  {
+    "run": "a1_ecrs_cross_rx_s392005_20260909_r1",
+    "row": "X6_BOUNDED_DOMAIN",
+    "score_artifact": "target_prediction/score.json",
+    "kind": "final",
+    "scores_match": true,
+    "record_count": 672000,
+    "prediction_metadata": {
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/a1_ecrs_cross_rx_s392005_20260909_r1/X6_BOUNDED_DOMAIN/final_ssdg.pth",
+      "record_count": 672000,
+      "schema": "cvs.phase1.predictions.v1"
+    },
+    "record_keys": [
+      "predicted_class",
+      "row_id",
+      "run_id",
+      "sample_id",
+      "scenario"
+    ]
+  },
+  {
+    "run": "a1_fast_v2_s392005_20260909_r1",
+    "row": "F0_FIXED_BASE",
+    "score_artifact": "target_prediction/score.json",
+    "kind": "final",
+    "scores_match": true,
+    "record_count": 672000,
+    "prediction_metadata": {
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/a1_fast_v2_s392005_20260909_r1/F0_FIXED_BASE/final_ssdg.pth",
+      "record_count": 672000,
+      "schema": "cvs.phase1.predictions.v1"
+    },
+    "record_keys": [
+      "predicted_class",
+      "row_id",
+      "run_id",
+      "sample_id",
+      "scenario"
+    ]
+  },
+  {
+    "run": "a1_fast_v2_s392005_20260909_r1",
+    "row": "F2_WARM_EMA",
+    "score_artifact": "target_prediction/score.json",
+    "kind": "final",
+    "scores_match": true,
+    "record_count": 672000,
+    "prediction_metadata": {
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/a1_fast_v2_s392005_20260909_r1/F2_WARM_EMA/final_ssdg.pth",
+      "record_count": 672000,
+      "schema": "cvs.phase1.predictions.v1"
+    },
+    "record_keys": [
+      "predicted_class",
+      "row_id",
+      "run_id",
+      "sample_id",
+      "scenario"
+    ]
+  },
+  {
+    "run": "a1_r3_budget_s392005_20260909_r2",
+    "row": "R3_B120",
+    "score_artifact": "target_epochs/E060/score.json",
+    "kind": "periodic",
+    "scores_match": true,
+    "record_count": 672000,
+    "prediction_metadata": {
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/a1_r3_budget_s392005_20260909_r2/R3_B120/epoch_060_ssdg.pth",
+      "record_count": 672000,
+      "schema": "cvs.phase1.predictions.v1"
+    },
+    "record_keys": [
+      "predicted_class",
+      "row_id",
+      "run_id",
+      "sample_id",
+      "scenario"
+    ]
+  }
+]
