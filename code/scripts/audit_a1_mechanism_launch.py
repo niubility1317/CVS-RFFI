@@ -38,6 +38,20 @@ result['execution_check']=json.loads(check.read_text()) if check.exists() else N
 result['dispatcher_tail']=(release/'dispatcher.log').read_text(errors='replace').splitlines()[-10:]
 result['gpu_processes']=subprocess.check_output(['nvidia-smi','--query-compute-apps=gpu_uuid,pid','--format=csv,noheader'],text=True).splitlines()
 result['gpu_map']=subprocess.check_output(['nvidia-smi','--query-gpu=index,uuid','--format=csv,noheader'],text=True).splitlines()
+periodic=release/'periodic_execution_check.json'
+result['periodic_execution_check']=json.loads(periodic.read_text()) if periodic.exists() else None
+result['external_gpu_jobs']=[]
+owned={str(row['pid']) for row in state['rows'].values()}
+for line in result['gpu_processes']:
+    number=line.split(',')[1].strip()
+    if number in owned: continue
+    try:
+        proc=Path('/proc')/number
+        argv=(proc/'cmdline').read_bytes().decode().split('\0')[:-1]
+        selected={key:argv[i+1] for i,key in enumerate(argv[:-1]) if key in
+            ('--run_id','--candidate_id','--output_dir','--output-dir','--epochs')}
+        result['external_gpu_jobs'].append({'pid':int(number),'cwd':os.readlink(proc/'cwd'),'options':selected})
+    except FileNotFoundError: pass
 print(json.dumps(result))
 '''
 
