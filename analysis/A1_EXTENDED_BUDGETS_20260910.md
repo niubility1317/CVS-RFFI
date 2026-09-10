@@ -41,3 +41,13 @@
 本地19项聚焦测试PASS，覆盖拉伸时钟、阶段边界、scratch约束、旧120/160预算回归、20轮执行和终态闭合、独立预测评分与RNG恢复。独立P0/P1只读审查PASS。真实入口检查与远端启动证据在后续状态段追加。
 
 本地真实训练入口PASS：X2_E400、X2_E600、R3_CLEAN_RX_E400各4次有效optimizer更新，无checkpoint加载；E201及中后期检查参数更新与有限梯度PASS，证据为analysis/a1_extended_local_execution.json。
+
+## 发布与启动
+
+VERIFIED：训练提交1b3c0002eeb2c6bd9c283d45d44bcb99c865eccd已push并独立核对GitHub分支OID。release=/home/szu2070436088/2510044040/CV-SincNet/releases/a1_extended_1b3c0002，归档SHA256=09cf571d06c15ea83cd3e17042737c179c9da121f36bffb412c7c0fe6b408018，传输校验与远端编译PASS。发布前空闲磁盘约7.77TB。
+
+远端三行真实入口与后期梯度检查PASS，每行4次有效optimizer更新。dispatcher PID839257；X2_E400 PID839936/GPU6、X2_E600 PID839941/GPU3均已核对PPID、CWD、argv、run-root和scratch初始化日志。R3_CLEAN_RX_E400已在同一dispatcher等待GPU0空位；不停止任何健康实验。当前GPU计算进程16个、每卡2个。
+
+实际argv确认E400从E200、E600从E300开始，每20轮测试一次。训练L_s/U_s/V分别6300/56700/27000，label/pseudo分别260/140、390/210。目前为RUNNING，不是训练完成或性能结果；来源结论仍需完成后由自身最终checkpoint元数据闭合。
+
+启动后独立复核VERIFIED：两行均已完成E1，日志由约6.1KB增长至11.8KB；X2_E400首轮130.2秒、X2_E600首轮126.4秒。PID与GPU占位仍正常，尚无本次目标测试结果。证据为analysis/a1_extended_remote_progress.json。

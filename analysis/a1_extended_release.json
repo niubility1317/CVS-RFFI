@@ -1,0 +1,15 @@
+{
+  "status": "LANDED",
+  "release": "/home/szu2070436088/2510044040/CV-SincNet/releases/a1_extended_1b3c0002",
+  "commit": "1b3c0002eeb2c6bd9c283d45d44bcb99c865eccd",
+  "sha256": "09cf571d06c15ea83cd3e17042737c179c9da121f36bffb412c7c0fe6b408018",
+  "compiled": [
+    "code/SSDG/train_ssdg.py",
+    "code/cvsrffi/a1_budget_schedule.py",
+    "code/cvsrffi/a1_periodic_target.py",
+    "code/scripts/run_a1_fast_v2.py",
+    "code/scripts/run_a1_extended_budgets.py",
+    "code/scripts/check_a1_extended_budgets.py"
+  ],
+  "local_archive": "E:\\type10-7\\code\\snapshots\\a1_extended_1b3c0002.tar.gz"
+}
