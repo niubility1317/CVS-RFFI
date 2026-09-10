@@ -44,6 +44,14 @@
 
 ## 发布与启动
 
+### 2026-09-10待启动R3改派
+
+用户要求将R3安排在最早可用GPU。12:17只读核实GPU7因旧E2退出已有一个空位，R3仍唯一排队，X2两行仍为原PID。改派GPU0→GPU7，其余方法、预算、数据、seed、测试频率及输出root不变。
+
+原dispatcher不支持动态修改pending GPU；使用本地版本化的reassign_a1_pending_gpu.py --gpu 7接管调度。仅暂停并退出核对所有权后的原dispatcher839257，新调度器ready后再交接；保留训练PID839936、839941，绝不重新启动X2。新调度器按同一原release构造R3命令，独占创建输出目录，GPU7容量不足则继续等位。继承进程无法取得exit code时明确记UNKNOWN，通过原complete_row检查最终checkpoint与全部固定期次判断产物完整性。
+
+3项聚焦模拟测试PASS，覆盖仅修改pending GPU、成功交接不向训练PID发信号、replacement未ready时恢复原dispatcher。初次Windows测试缺少Linux信号常量，已在测试fixture显式模拟；运行脚本限定N607 Linux。独立P0/P1审查PASS。正式切换后核对新dispatcher、两条原X2 PID、R3唯一PID和GPU7绑定。
+
 VERIFIED：训练提交1b3c0002eeb2c6bd9c283d45d44bcb99c865eccd已push并独立核对GitHub分支OID。release=/home/szu2070436088/2510044040/CV-SincNet/releases/a1_extended_1b3c0002，归档SHA256=09cf571d06c15ea83cd3e17042737c179c9da121f36bffb412c7c0fe6b408018，传输校验与远端编译PASS。发布前空闲磁盘约7.77TB。
 
 远端三行真实入口与后期梯度检查PASS，每行4次有效optimizer更新。dispatcher PID839257；X2_E400 PID839936/GPU6、X2_E600 PID839941/GPU3均已核对PPID、CWD、argv、run-root和scratch初始化日志。R3_CLEAN_RX_E400已在同一dispatcher等待GPU0空位；不停止任何健康实验。当前GPU计算进程16个、每卡2个。
