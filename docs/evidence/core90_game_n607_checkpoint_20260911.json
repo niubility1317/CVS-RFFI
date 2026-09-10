@@ -1,0 +1,37 @@
+{
+  "schema": "core90_game_epoch_boundary_v1",
+  "epoch": 2,
+  "step": 98,
+  "initialization": "scratch_only",
+  "checkpoint_selection": "final_only",
+  "resume_boundary": "epoch_end; source sampler deterministically seeded by epoch",
+  "target_contact": false,
+  "source_contract": {
+    "source_rxs": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "counts": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "V": 27000
+    },
+    "ratios": [
+      0.07,
+      0.63,
+      0.3
+    ],
+    "split_seed": 392002,
+    "num_classes": 6,
+    "checkpoint_init": "scratch_only",
+    "target_access_before_freeze": false
+  }
+}

@@ -88,3 +88,18 @@ R13的完整非对抗参考是当前labeled clean目标，不包含该参考批�
 本地新增兼容工厂，旧版使用`torch.cuda.amp.GradScaler`，新版路径保留。缺失统一AMP工厂的回归测试由失败转为通过，连同连续/恢复及审计非侵入性两项复测共3项通过。累计独立测试用例103项；本次仅重跑受影响测试。发布smoke增加真实source完整E1目标及一次optimizer更新；两项预测前失败后停止后续派发并保存pending，避免扩大同类故障。定点独立P0/P1复查无新问题。该smoke不冒充远端AMP/EG/后期伪标签的完整验收。
 
 修复后使用全新release/run-root，参数矩阵、seed、E200预算和source-only科学边界不变；不复用失败root或旧checkpoint。
+
+## 修复后发布独立核验：VERIFIED
+
+训练代码Git OID：`d5f7e5db802c5d2a6431b3cb7b65f93d18c8f42b`；远端GitHub分支独立读取与本地一致。N607 release为`/home/szu2070436088/2510044040/CV-SincNet/releases/core90_game_20260911_d5f7e5db`，run-root为`/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_source_20260911_d5f7e5db`。
+
+- 传输SHA256=`069ab9bf3d39c63f304e73a680b2b6fce9b39b9765f4921d17507bbd0c766949`；编译通过。
+- 远端Torch2.1.0+cu121真实源数据scratch checkpoint重载、完整CORE90 E1目标及optimizer更新均PASS；query_access=false。
+- dispatcher PID=1236490。第二次独立快照10行运行、12行排队、0失败；运行PID1236524—1236533全部PPID/CWD/完整argv/GPU UUID相符，全部日志持续增长。此为时间点快照，后续容量变化会继续派发。
+- 首次GPU独立读回8卡各2个计算进程；第二次为7卡各2个、GPU2为1个，未超每卡2个上限。已有健康进程未被本任务停止。
+- 运行行已完成E2—E4，已完成epoch均49/49主更新接受。B4逐步记录2个头step，B5逐步记录2次完整场求值；不是仅有DISPATCHED或初始化日志。
+- 下载B0_seed392002实际E2 checkpoint独立读取：epoch=2、step=98、scratch_only、final_only、target_contact=false；source RX=`1,3,4,6,8`、day=`1,2,3`，L/U/V计数6300/56700/27000、比例`.07/.63/.30`，注册TX=6，split seed392002。正式模型15个RX×day域、1049827参数。
+
+[启动进程证据](evidence/core90_game_n607_launch_20260911.json)、[日志增长证据](evidence/core90_game_n607_progress_20260911.json)、[实际checkpoint元数据](evidence/core90_game_n607_checkpoint_20260911.json)。
+
+完成状态是“代码实现、聚焦验收和实验发布已完成；训练正在运行”。真实E200、全部22行评分、自然触发频次及同成本科学比较尚未完成，不能宣称性能提升或干净目标域泛化晋级。未开启的进阶/控制模块仍须按对应run日志区分配置、激活与闭合结果。

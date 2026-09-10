@@ -1,0 +1,156 @@
+{
+  "updated_unix": 1789061126.0770488,
+  "state": "RUNNING",
+  "active": 10,
+  "pending": 12,
+  "failed": 0,
+  "all_bindings_verified": true,
+  "gpu_counts": {
+    "GPU-56adac86-77cd-36c9-8770-dbf002650461": 2,
+    "GPU-a2d039ff-1792-4222-2b47-140429e10f94": 2,
+    "GPU-4fb45b9a-894a-536b-0e0a-09f7c1341562": 1,
+    "GPU-7b4bacb3-4901-6845-a414-0dfdfeeade97": 2,
+    "GPU-95d925a1-7218-ca7b-adef-164241f4f491": 2,
+    "GPU-ef5f59f2-e03e-fe6e-ea6b-3e03afc9b331": 2,
+    "GPU-5463e082-259e-537b-603a-01575d45801c": 2,
+    "GPU-9c4eb614-ca19-a390-aaf4-801f8980b6a9": 2
+  },
+  "processes": [
+    {
+      "run_id": "B0_seed392002",
+      "pid": 1236524,
+      "gpu": 0,
+      "epochs": 4,
+      "actions": 196,
+      "actions_grew": true,
+      "stdout_tail": [
+        "[EPOCH-END] E001/200 accepted=49/49 loss=16.87887682233538 seconds=27.5",
+        "[EPOCH-END] E002/200 accepted=49/49 loss=16.107375339585907 seconds=26.6",
+        "[EPOCH-END] E003/200 accepted=49/49 loss=14.095689481618454 seconds=26.5",
+        "[EPOCH-END] E004/200 accepted=49/49 loss=12.152188787654955 seconds=27.0"
+      ]
+    },
+    {
+      "run_id": "B0_seed392003",
+      "pid": 1236525,
+      "gpu": 0,
+      "epochs": 4,
+      "actions": 196,
+      "actions_grew": true,
+      "stdout_tail": [
+        "[EPOCH-END] E001/200 accepted=49/49 loss=16.831904236151246 seconds=27.5",
+        "[EPOCH-END] E002/200 accepted=49/49 loss=15.88258525303432 seconds=27.0",
+        "[EPOCH-END] E003/200 accepted=49/49 loss=14.214742913538096 seconds=26.4",
+        "[EPOCH-END] E004/200 accepted=49/49 loss=12.642524952791176 seconds=26.9"
+      ]
+    },
+    {
+      "run_id": "B1_seed392002",
+      "pid": 1236526,
+      "gpu": 1,
+      "epochs": 4,
+      "actions": 196,
+      "actions_grew": true,
+      "stdout_tail": [
+        "[EPOCH-END] E001/200 accepted=49/49 loss=16.87942936955666 seconds=27.7",
+        "[EPOCH-END] E002/200 accepted=49/49 loss=16.106850293217875 seconds=26.3",
+        "[EPOCH-END] E003/200 accepted=49/49 loss=14.01981562011096 seconds=26.8",
+        "[EPOCH-END] E004/200 accepted=49/49 loss=11.922329552319585 seconds=27.1"
+      ]
+    },
+    {
+      "run_id": "B1_seed392003",
+      "pid": 1236527,
+      "gpu": 1,
+      "epochs": 4,
+      "actions": 200,
+      "actions_grew": true,
+      "stdout_tail": [
+        "[EPOCH-END] E001/200 accepted=49/49 loss=16.83292174825863 seconds=27.9",
+        "[EPOCH-END] E002/200 accepted=49/49 loss=15.88900412345419 seconds=26.6",
+        "[EPOCH-END] E003/200 accepted=49/49 loss=14.212617115098602 seconds=26.4",
+        "[EPOCH-END] E004/200 accepted=49/49 loss=12.52491300933215 seconds=25.8"
+      ]
+    },
+    {
+      "run_id": "B2_seed392002",
+      "pid": 1236528,
+      "gpu": 2,
+      "epochs": 3,
+      "actions": 168,
+      "actions_grew": true,
+      "stdout_tail": [
+        "[CORE90-GAME-INIT] scratch_only=true domains=15 params=1049827 solver=adamw_isolated_predictor_raw_gradient_simultaneous",
+        "[EPOCH-END] E001/200 accepted=49/49 loss=16.212751719416403 seconds=28.5",
+        "[EPOCH-END] E002/200 accepted=49/49 loss=15.436796091040787 seconds=31.4",
+        "[EPOCH-END] E003/200 accepted=49/49 loss=13.361329370615433 seconds=41.2"
+      ]
+    },
+    {
+      "run_id": "B2_seed392003",
+      "pid": 1236529,
+      "gpu": 3,
+      "epochs": 3,
+      "actions": 193,
+      "actions_grew": true,
+      "stdout_tail": [
+        "[CORE90-GAME-INIT] scratch_only=true domains=15 params=1049827 solver=adamw_isolated_predictor_raw_gradient_simultaneous",
+        "[EPOCH-END] E001/200 accepted=49/49 loss=16.171222336438237 seconds=30.2",
+        "[EPOCH-END] E002/200 accepted=49/49 loss=15.220022006910675 seconds=27.5",
+        "[EPOCH-END] E003/200 accepted=49/49 loss=13.522984971805494 seconds=26.7"
+      ]
+    },
+    {
+      "run_id": "B4_seed392002",
+      "pid": 1236530,
+      "gpu": 4,
+      "epochs": 2,
+      "actions": 100,
+      "actions_grew": true,
+      "stdout_tail": [
+        "[CORE90-GAME-INIT] scratch_only=true domains=15 params=1049827 solver=adamw_isolated_predictor_raw_gradient_alternating",
+        "[EPOCH-END] E001/200 accepted=49/49 loss=16.908720600361725 seconds=53.0",
+        "[EPOCH-END] E002/200 accepted=49/49 loss=16.131210638552297 seconds=52.8"
+      ]
+    },
+    {
+      "run_id": "B4_seed392003",
+      "pid": 1236531,
+      "gpu": 5,
+      "epochs": 2,
+      "actions": 101,
+      "actions_grew": true,
+      "stdout_tail": [
+        "[CORE90-GAME-INIT] scratch_only=true domains=15 params=1049827 solver=adamw_isolated_predictor_raw_gradient_alternating",
+        "[EPOCH-END] E001/200 accepted=49/49 loss=16.8141535544882 seconds=53.7",
+        "[EPOCH-END] E002/200 accepted=49/49 loss=15.897930553981237 seconds=51.4"
+      ]
+    },
+    {
+      "run_id": "B5_seed392002",
+      "pid": 1236532,
+      "gpu": 6,
+      "epochs": 2,
+      "actions": 127,
+      "actions_grew": true,
+      "stdout_tail": [
+        "[CORE90-GAME-INIT] scratch_only=true domains=15 params=1049827 solver=adamw_isolated_predictor_raw_gradient_extragradient",
+        "[EPOCH-END] E001/200 accepted=49/49 loss=16.827649797712052 seconds=43.2",
+        "[EPOCH-END] E002/200 accepted=49/49 loss=15.926816045021525 seconds=41.2"
+      ]
+    },
+    {
+      "run_id": "B5_seed392003",
+      "pid": 1236533,
+      "gpu": 7,
+      "epochs": 2,
+      "actions": 121,
+      "actions_grew": true,
+      "stdout_tail": [
+        "[CORE90-GAME-INIT] scratch_only=true domains=15 params=1049827 solver=adamw_isolated_predictor_raw_gradient_extragradient",
+        "[EPOCH-END] E001/200 accepted=49/49 loss=16.797900530756735 seconds=44.8",
+        "[EPOCH-END] E002/200 accepted=49/49 loss=15.684185884436783 seconds=43.6"
+      ]
+    }
+  ]
+}
