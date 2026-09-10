@@ -155,31 +155,31 @@ U1/U2/U3/U4采用相同完整块/角色序列、隔离策略、batch及更新预
 
 ## 7.报告追踪表
 
-全部状态为pending，表示尚未实施；本轮已完成的是设计追踪而非下表功能验证。路径以下述cross_response包为相对根，集成文件见第4节。
+实施更新：下表`verified_local`表示代码及对应本地数学/运行行为已验证，不代表正式E200结果或性能晋级。逐项文件、实际梯度、AMP、续训与truth-last证据见[实现验证报告](CORE90_CROSS_RESPONSE_IMPLEMENTATION_VERIFICATION_20260911.md)。路径以cross_response包为相对根，集成文件见第4节。
 
 |ID|报告章节|要求|目标文件|状态|验收证据|说明|
 |---|---|---|---|---|---|---|
-|CR01|1—2|两支职责、交互非解耦、补角非新监督|tensor_ops.py/tests|pending|加性混合反例、补角等价|不以J=0宣称解耦|
-|CR02|3.1/7|完整张量、真实物理K及视图索引|schema.py/sampler.py|pending|缺角/重复/角色负测|不复制补齐|
-|CR03|3.2/7.2|双向供体排除与最小查询矩形|roles.py|pending|集合互斥、P/Q边界|2×2输入限制声明|
-|CR04|3.3|波形响应读出与跨组合复用|readouts.py|pending|无ID查表、共享描述|仅约束响应读出|
-|CR05|3.4|真实固定统计与源尺度|statistics.py|pending|解析输入、零能量、尺度冻结|主配置单统计族|
-|CR06|3.4|自相关/IQ/条件事件可选目标|statistics.py|pending|独立目标开关及元数据检查|事件缺失时不得启用|
-|CR07|3.5|加性与低秩双线性|predictor.py|pending|形状/共享参数/秩与梯度|先加性后双线性|
-|CR08|3.6|观测/预测交互及可选误差加权|tensor_ops.py|pending|双重中心化恒等式|重加权默认关闭|
-|CR09|4.1/8.1|身份交互诊断与压零对照|tensor_ops.py/config|pending|Ux独立启用|不混入主方案|
-|CR10|4.2|实际分类裕量与稳健参照|decision.py/model.py|pending|无margin logits、单侧零梯度|低质量缺参照仍做基线|
-|CR11|4.3|仅两项新增主损失|training.py|pending|各项开关与loss重算|不堆叠概念损失|
-|CR12|5.1—5.2|warmup/受控身份梯度/共享参数|training.py|pending|逐损失分组梯度、实际开放|不经GRL|
-|CR13|5.3/7.3|训练期辅助及部署移除|integration.py/export|pending|前向计数、部署输出回归|不加域校正器|
-|CR14|6.1|联合矩形与定向角色覆盖|coverage.py|pending|反向迁移独立计数|稀疏模板|
-|CR15|6.2|可靠性、增K及失配处理|scheduler.py|pending|噪声高误差不无限强化|预算内有限K菜单|
-|CR16|6.3|历史反馈/探索/成本感知|scheduler.py|pending|概率/成本/频率与resume|不伪称重要性修正|
-|CR17|7.4|条件统计、事件隔离、BN/MixStyle|integration.py/tests|pending|替换查询IQ不改预测|不宣称同步IQ重构|
-|CR18|8.1—8.2|U0—U5、Ux、配对联动量|config/analysis|pending|矩阵检查、配对区间|单seed不晋级|
-|CR19|8.3|更换/打乱供体、head-only检验|source_eval.py|pending|独立源验证机制表|不以RX准确率替代|
-|CR20|8.4|身份性能、成本、完整证据边界|logging.py/run报告|pending|四场景预测与独立评分|不以辅助拟合宣布成功|
+|CR01|1—2|两支职责、交互非解耦、补角非新监督|tensor_ops.py/tests|verified_local|加性混合反例、补角等价|不以J=0宣称解耦|
+|CR02|3.1/7|完整张量、真实物理K及视图索引|schema.py/sampler.py|verified_local|缺角/重复/角色负测|不复制补齐|
+|CR03|3.2/7.2|双向供体排除与最小查询矩形|roles.py|verified_local|集合互斥、P/Q边界|2×2输入限制声明|
+|CR04|3.3|波形响应读出与跨组合复用|readouts.py|verified_local|无ID查表、共享描述|仅约束响应读出|
+|CR05|3.4|真实固定统计与源尺度|statistics.py|verified_local|解析输入、零能量、尺度冻结|主配置单统计族|
+|CR06|3.4|自相关/IQ/条件事件可选目标|statistics.py|verified_local|独立目标开关及元数据检查|事件缺失时不得启用|
+|CR07|3.5|加性与低秩双线性|predictor.py|verified_local|形状/共享参数/秩与梯度|先加性后双线性|
+|CR08|3.6|观测/预测交互及可选误差加权|tensor_ops.py|verified_local|双重中心化恒等式|重加权默认关闭|
+|CR09|4.1/8.1|身份交互诊断与压零对照|tensor_ops.py/config|verified_local|Ux独立启用|不混入主方案|
+|CR10|4.2|实际分类裕量与稳健参照|decision.py/model.py|verified_local|无margin logits、单侧零梯度|低质量缺参照仍做基线|
+|CR11|4.3|仅两项新增主损失|training.py|verified_local|各项开关与loss重算|不堆叠概念损失|
+|CR12|5.1—5.2|warmup/受控身份梯度/共享参数|training.py|verified_local|逐损失分组梯度、实际开放|不经GRL|
+|CR13|5.3/7.3|训练期辅助及部署移除|integration.py/export|verified_local|前向计数、部署输出回归|不加域校正器|
+|CR14|6.1|联合矩形与定向角色覆盖|coverage.py|verified_local|反向迁移独立计数|稀疏模板|
+|CR15|6.2|可靠性、增K及失配处理|scheduler.py|verified_local|噪声高误差不无限强化|预算内有限K菜单|
+|CR16|6.3|历史反馈/探索/成本感知|scheduler.py|verified_local|概率/成本/频率与resume|不伪称重要性修正|
+|CR17|7.4|条件统计、事件隔离、BN/MixStyle|integration.py/tests|verified_local|替换查询IQ不改预测|不宣称同步IQ重构|
+|CR18|8.1—8.2|U0—U5、Ux、配对联动量|config/analysis|verified_local|矩阵检查、配对区间|单seed不晋级|
+|CR19|8.3|更换/打乱供体、head-only检验|source_eval.py|verified_local|独立源验证机制表|不以RX准确率替代|
+|CR20|8.4|身份性能、成本、完整证据边界|logging.py/run报告|verified_local|四场景预测与独立评分|不以辅助拟合宣布成功|
 
-状态统计：pending=20、implemented=0、verified=0、deferred=0、rejected=0、blocked=0。可选项已经规划但默认不开启；事件目标受真实元数据条件限制。最高风险是共享前端和跨样本混合使名义上的供体排除/身份停止梯度失真，其次是采样改变原CORE90曝光与损失分布。两者均在核心集成验收中处理。
+本地实现状态：verified_local=20、pending=0。可选项按实际配置明确关闭，事件目标仍受真实元数据条件限制；正式E200性能与多seed结论未验证。共享参数身份、跨样本混合、独立K、采样预算、数据继承契约、梯度开放与失活状态均已纳入本地验收。
 
-本轮实际核查：完整附件读取；项目协议及流程读取；历史launcher/技术报告/训练快照与当前模型和采样器定点检查；Git状态检查。没有执行训练测试、N607操作或性能实验。计划按本附件严格追踪；建议维数、rank、阈值策略等未定细节均为实现提案，不冒充报告既定参数。
+初版计划阶段完成附件、协议、历史入口及Git核查；随后按用户实施授权完成本地实现和验证，详见上述报告。未执行N607操作或正式性能实验。维数、rank、阈值等建议值已成为显式实现配置，仍不冒充原设计报告的既定参数。

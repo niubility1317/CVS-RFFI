@@ -1,0 +1,360 @@
+{
+  "status": "COMPLETE",
+  "test": {
+    "tx_acc": 25.0,
+    "tx_correct": 2,
+    "tx_total": 8
+  },
+  "named_test": {
+    "test_unseen_day_unseen_rx": {
+      "tx_acc": 25.0,
+      "tx_correct": 2,
+      "tx_total": 8,
+      "dom_acc": NaN,
+      "probe_dom_acc": NaN
+    },
+    "test_unseen_day_rx_4": {
+      "tx_acc": 25.0,
+      "tx_correct": 2,
+      "tx_total": 8,
+      "dom_acc": NaN,
+      "probe_dom_acc": NaN
+    }
+  },
+  "sat_test_named": {
+    "leo_clear_weak": {
+      "aggregate": {
+        "tx_acc": 25.0,
+        "tx_correct": 2,
+        "tx_total": 8
+      },
+      "named": {
+        "test_unseen_day_unseen_rx": {
+          "tx_acc": 25.0,
+          "tx_correct": 2,
+          "tx_total": 8,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_unseen_day_rx_4": {
+          "tx_acc": 25.0,
+          "tx_correct": 2,
+          "tx_total": 8,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        }
+      },
+      "strict_udu": 25.0,
+      "selected_names": [
+        "test_unseen_day_unseen_rx",
+        "test_unseen_day_rx_4"
+      ],
+      "receiver_named": {
+        "test_unseen_day_rx_4": {
+          "tx_acc": 25.0,
+          "tx_correct": 2,
+          "tx_total": 8,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        }
+      },
+      "receiver_seen_day_named": {},
+      "receiver_strict_named": {
+        "test_unseen_day_rx_4": {
+          "tx_acc": 25.0,
+          "tx_correct": 2,
+          "tx_total": 8,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        }
+      },
+      "receiver_floor": 25.0,
+      "receiver_seen_day_floor": NaN,
+      "receiver_strict_floor": 25.0,
+      "evaluation_seed": {
+        "base": 2027,
+        "policy": "one_view_per_physical_record"
+      }
+    },
+    "leo_low_elev_weak": {
+      "aggregate": {
+        "tx_acc": 25.0,
+        "tx_correct": 2,
+        "tx_total": 8
+      },
+      "named": {
+        "test_unseen_day_unseen_rx": {
+          "tx_acc": 25.0,
+          "tx_correct": 2,
+          "tx_total": 8,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_unseen_day_rx_4": {
+          "tx_acc": 25.0,
+          "tx_correct": 2,
+          "tx_total": 8,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        }
+      },
+      "strict_udu": 25.0,
+      "selected_names": [
+        "test_unseen_day_unseen_rx",
+        "test_unseen_day_rx_4"
+      ],
+      "receiver_named": {
+        "test_unseen_day_rx_4": {
+          "tx_acc": 25.0,
+          "tx_correct": 2,
+          "tx_total": 8,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        }
+      },
+      "receiver_seen_day_named": {},
+      "receiver_strict_named": {
+        "test_unseen_day_rx_4": {
+          "tx_acc": 25.0,
+          "tx_correct": 2,
+          "tx_total": 8,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        }
+      },
+      "receiver_floor": 25.0,
+      "receiver_seen_day_floor": NaN,
+      "receiver_strict_floor": 25.0,
+      "evaluation_seed": {
+        "base": 3036,
+        "policy": "one_view_per_physical_record"
+      }
+    },
+    "leo_rain_weak": {
+      "aggregate": {
+        "tx_acc": 37.5,
+        "tx_correct": 3,
+        "tx_total": 8
+      },
+      "named": {
+        "test_unseen_day_unseen_rx": {
+          "tx_acc": 37.5,
+          "tx_correct": 3,
+          "tx_total": 8,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_unseen_day_rx_4": {
+          "tx_acc": 37.5,
+          "tx_correct": 3,
+          "tx_total": 8,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        }
+      },
+      "strict_udu": 37.5,
+      "selected_names": [
+        "test_unseen_day_unseen_rx",
+        "test_unseen_day_rx_4"
+      ],
+      "receiver_named": {
+        "test_unseen_day_rx_4": {
+          "tx_acc": 37.5,
+          "tx_correct": 3,
+          "tx_total": 8,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        }
+      },
+      "receiver_seen_day_named": {},
+      "receiver_strict_named": {
+        "test_unseen_day_rx_4": {
+          "tx_acc": 37.5,
+          "tx_correct": 3,
+          "tx_total": 8,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        }
+      },
+      "receiver_floor": 37.5,
+      "receiver_seen_day_floor": NaN,
+      "receiver_strict_floor": 37.5,
+      "evaluation_seed": {
+        "base": 4045,
+        "policy": "one_view_per_physical_record"
+      }
+    }
+  },
+  "per_receiver": {
+    "clean": {
+      "4": {
+        "tx_acc": 25.0,
+        "tx_correct": 2,
+        "tx_total": 8,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      }
+    },
+    "leo_clear_weak": {
+      "4": {
+        "tx_acc": 25.0,
+        "tx_correct": 2,
+        "tx_total": 8,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      }
+    },
+    "leo_low_elev_weak": {
+      "4": {
+        "tx_acc": 25.0,
+        "tx_correct": 2,
+        "tx_total": 8,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      }
+    },
+    "leo_rain_weak": {
+      "4": {
+        "tx_acc": 37.5,
+        "tx_correct": 3,
+        "tx_total": 8,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      }
+    }
+  },
+  "per_class": {
+    "clean": {
+      "0": {
+        "tx_acc": 0.0,
+        "tx_correct": 0,
+        "tx_total": 2,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "1": {
+        "tx_acc": 100.0,
+        "tx_correct": 2,
+        "tx_total": 2,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "2": {
+        "tx_acc": 0.0,
+        "tx_correct": 0,
+        "tx_total": 2,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "3": {
+        "tx_acc": 0.0,
+        "tx_correct": 0,
+        "tx_total": 2,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      }
+    },
+    "leo_clear_weak": {
+      "0": {
+        "tx_acc": 0.0,
+        "tx_correct": 0,
+        "tx_total": 2,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "1": {
+        "tx_acc": 100.0,
+        "tx_correct": 2,
+        "tx_total": 2,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "2": {
+        "tx_acc": 0.0,
+        "tx_correct": 0,
+        "tx_total": 2,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "3": {
+        "tx_acc": 0.0,
+        "tx_correct": 0,
+        "tx_total": 2,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      }
+    },
+    "leo_low_elev_weak": {
+      "0": {
+        "tx_acc": 0.0,
+        "tx_correct": 0,
+        "tx_total": 2,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "1": {
+        "tx_acc": 100.0,
+        "tx_correct": 2,
+        "tx_total": 2,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "2": {
+        "tx_acc": 0.0,
+        "tx_correct": 0,
+        "tx_total": 2,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "3": {
+        "tx_acc": 0.0,
+        "tx_correct": 0,
+        "tx_total": 2,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      }
+    },
+    "leo_rain_weak": {
+      "0": {
+        "tx_acc": 50.0,
+        "tx_correct": 1,
+        "tx_total": 2,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "1": {
+        "tx_acc": 100.0,
+        "tx_correct": 2,
+        "tx_total": 2,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "2": {
+        "tx_acc": 0.0,
+        "tx_correct": 0,
+        "tx_total": 2,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "3": {
+        "tx_acc": 0.0,
+        "tx_correct": 0,
+        "tx_total": 2,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      }
+    }
+  },
+  "truth_last": true,
+  "scenarios": [
+    "clean",
+    "leo_clear_weak",
+    "leo_low_elev_weak",
+    "leo_rain_weak"
+  ],
+  "unique_records": 8,
+  "prediction_rows": 32,
+  "prediction_artifacts": "analysis\\synthetic_cross_response_final_scoring_20260911a\\final_predictions",
+  "selection_source": "final_only",
+  "claim": "FROZEN_PREDICTIONS_INDEPENDENT_TRUTH_LAST_SCORING"
+}

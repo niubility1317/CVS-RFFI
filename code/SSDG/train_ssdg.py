@@ -236,6 +236,9 @@ except ModuleNotFoundError:
 
 def build_arg_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Train two-stage SSDG from a Stable-SAT baseline checkpoint.")
+    parser.add_argument("--cross_response_config", type=str, default="")
+    parser.add_argument("--cross_response_variant", type=str, default="")
+    parser.add_argument("--cross_response_resume", type=str, default="", help="Resume only a matching scratch-lineage cross-response training state.")
     parser.add_argument("--baseline_ckpt", type=str, default="", help="Optional checkpoint. Empty means train SSDG from scratch.")
     parser.add_argument("--from_scratch", type=str2bool, default=True)
     parser.add_argument("--split_mode", type=str, default="tx_rx_day_1_6_3", choices=["tx_rx_day_1_6_3", "tx_rx_day_1_7_2"])
@@ -1971,7 +1974,8 @@ def _build_ssdg_wisig_data(args, device: torch.device):
     test_days = _resolve_days(day_list, parse_csv_indices(args.wisig_test_days), [len(day_list) - 1])
     train_rxs = _resolve_rxs(rx_list, parse_csv_indices(args.wisig_train_rxs), list(range(len(rx_list))))
     test_rxs = _resolve_rxs(rx_list, parse_csv_indices(args.wisig_test_rxs), [])
-    train_days = [d for d in train_days if d not in test_days]
+    if not getattr(args, "_cross_response_resolved", None):
+        train_days = [d for d in train_days if d not in test_days]
     train_rxs = [r for r in train_rxs if r not in test_rxs]
 
     source_base = WiSigCompactDataset(
@@ -3050,6 +3054,18 @@ def _evaluate_frozen_phase1_checkpoint(args, model, data_ctx, device, checkpoint
             path,
         )
         _load_phase1_checkpoint_strict(model, checkpoint, path)
+        if getattr(args, "_cross_response_resolved", None) is not None:
+            from cvsrffi.cross_response.final_scoring import evaluate_final_truth_last
+            if str(args.checkpoint_selection) != "final_only":
+                raise ValueError("cross-response target scoring requires final_only selection")
+            result = evaluate_final_truth_last(model, args, data_ctx, device, path.parent)
+            result.update(checkpoint=str(path), checkpoint_sha256=_sha256_file(path),
+                          checkpoint_epoch=int(checkpoint.get("epoch", -1)))
+            result["protected_metrics"] = protected_metric_snapshot(
+                val_stats=(checkpoint.get("stats", {}) or {}).get("val", {}),
+                test_stats=result["test"], named_test_stats=result["named_test"],
+                sat_test_stats=result["sat_test_named"])
+            return result
         named = evaluate_named_loaders(
             model,
             data_ctx["named_test_loaders"],
@@ -7126,6 +7142,23 @@ def _compose_unlabeled_closed_loss(
 
 
 def train(args) -> int:
+    from cvsrffi.cross_response.config import apply_configuration
+    from cvsrffi.cross_response.baseline_compat import training_bindings
+    from cvsrffi.cross_response.integration import CrossResponseRuntime, forward_labeled
+    cr_config = apply_configuration(args)
+    bindings = training_bindings() if cr_config is not None else {}
+    # Local bindings preserve other training tasks in this interpreter.
+    PrototypeMemoryBank = bindings.get("PrototypeMemoryBank", globals()["PrototypeMemoryBank"])
+    compute_core_losses = bindings.get("compute_core_losses", globals()["compute_core_losses"])
+    fishr_logit_gradient_variance_loss = bindings.get("fishr_logit_gradient_variance_loss", globals()["fishr_logit_gradient_variance_loss"])
+    make_soft_unknown_mixup = bindings.get("make_soft_unknown_mixup", globals()["make_soft_unknown_mixup"])
+    open_world_feature_space_loss = bindings.get("open_world_feature_space_loss", globals()["open_world_feature_space_loss"])
+    one_way_kl_from_teacher = bindings.get("one_way_kl_from_teacher", globals()["one_way_kl_from_teacher"])
+    sanitize_loss = bindings.get("sanitize_loss", globals()["sanitize_loss"])
+    soft_unknown_mixup_loss = bindings.get("soft_unknown_mixup_loss", globals()["soft_unknown_mixup_loss"])
+    zid_compactness_loss = bindings.get("zid_compactness_loss", globals()["zid_compactness_loss"])
+    proxy_unknown_energy_loss = bindings.get("proxy_unknown_energy_loss", globals()["proxy_unknown_energy_loss"])
+    source_episode_three_sigma_loss = bindings.get("source_episode_three_sigma_loss", globals()["source_episode_three_sigma_loss"])
     training_wall_started = time.time()
     muse_capabilities = _muse_level_capabilities(getattr(args, "muse_level", "M0"))
     muse_active = bool(getattr(args, "use_muse_ssdg", False)) and muse_capabilities["base"]
@@ -7452,12 +7485,19 @@ def train(args) -> int:
     safe_best_path = Path(str(args.safe_best_path).strip()) if str(args.safe_best_path).strip() else out_dir / default_safe_best_name
     safe_latest_path = Path(str(args.safe_latest_path).strip()) if str(args.safe_latest_path).strip() else out_dir / "latest_safe_ssdg.pth"
     phase2_audit_state = _phase2_audit_state(args)
-    data_ctx = _build_ssdg_wisig_data(args, device)
+    if cr_config is not None:
+        data_args = deepcopy(args)
+        data_args.seed = int(cr_config["data_seed"])
+        data_ctx = _build_ssdg_wisig_data(data_args, device)
+        args.num_classes = data_args.num_classes
+    else:
+        data_ctx = _build_ssdg_wisig_data(args, device)
     use_ckpt = bool(str(args.baseline_ckpt).strip()) and not bool(args.from_scratch)
     ckpt = load_checkpoint(args.baseline_ckpt, device) if use_ckpt else {"model": None, "args": {}, "stats": {}, "split_info": None}
     model_args = merge_checkpoint_args(ckpt, args, input_len=int(data_ctx["input_len"]), num_domains=int(data_ctx["num_domains"]))
     model_args = _apply_model_cli_args(model_args, args)
     model = build_baseline_model(model_args, device)
+    cr_runtime = CrossResponseRuntime(model, data_ctx, cr_config, args, device) if cr_config is not None else None
     if use_ckpt:
         model.load_state_dict(ckpt["model"], strict=False)
     if bool(args.freeze_backbone):
@@ -7554,6 +7594,8 @@ def train(args) -> int:
         lr=float(args.lr),
         weight_decay=float(args.weight_decay),
     )
+    if cr_runtime is not None and cr_runtime.parameters():
+        optimizer.add_param_group({"params": cr_runtime.parameters()})
     scaler = GradScaler(enabled=bool(args.amp and device.type == "cuda"))
     proto_bank = None
     if bool(getattr(args, "use_proto_memory", False)) or float(getattr(args, "lambda_proto", 0.0)) > 0.0:
@@ -7864,7 +7906,34 @@ def train(args) -> int:
                 reference_requires_absolute_safe=bool(args.tail_safety_reference_requires_absolute_safe),
             )
         )
-    for epoch in range(1, total_epochs + 1):
+    cr_start_epoch = 1
+    if cr_runtime is not None and str(args.cross_response_resume):
+        resume_payload = torch.load(args.cross_response_resume, map_location="cpu", weights_only=False)
+        cr_runtime.validate_checkpoint(resume_payload, args)
+        cr_start_epoch = int(resume_payload["epoch"]) + 1
+        if cr_start_epoch > total_epochs:
+            raise ValueError("cross-response resume has no remaining registered epochs")
+        model.load_state_dict(resume_payload["model"], strict=True)
+        if ema_model is not None:
+            ema_model.load_state_dict(resume_payload["ema_model"], strict=True)
+        optimizer.load_state_dict(resume_payload["optimizer"])
+        scaler.load_state_dict(resume_payload["scaler"])
+        if proto_bank is not None:
+            proto_bank.load_state_dict({key: value.to(device) if torch.is_tensor(value) else value
+                for key, value in resume_payload["prototype_memory"].items()})
+        cr_runtime.load_state_dict(resume_payload["cross_response"])
+        pseudo_temporal_bank = deepcopy(resume_payload["pseudo_temporal_bank"])
+        continuation = resume_payload["cross_response_continuation"]
+        best_score, best_val, best_test, best_epoch = (continuation[key] for key in ("best_score", "best_val", "best_test", "best_epoch"))
+        previous_train_logs = deepcopy(continuation["previous_train_logs"])
+        previous_protected_metrics = deepcopy(continuation["previous_protected_metrics"])
+        paic_cooldown_remaining = continuation["paic_cooldown_remaining"]
+        tail_rollback_cooldown_remaining = continuation["tail_rollback_cooldown_remaining"]
+        dg_health_best_val = continuation["dg_health_best_val"]
+        telemetry_rows = deepcopy(continuation["telemetry_rows"])
+        _restore_training_rng_state(resume_payload["rng_state"], sat_gen)
+        print(f"[CROSS-RESPONSE-RESUME] source={args.cross_response_resume} next_epoch={cr_start_epoch} lineage=scratch contract=matched", flush=True)
+    for epoch in range(cr_start_epoch, total_epochs + 1):
         if direct_metric_reference_bank is not None:
             direct_metric_reference_bank.maybe_promote(epoch)
 
@@ -7966,12 +8035,14 @@ def train(args) -> int:
             use_unlabeled_step_budget=bool(getattr(args, "use_muse_ssdg", False)),
         )
         for batch_idx, (labeled_batch, muse_unlabeled_batch) in enumerate(epoch_pairs, start=1):
+            rc4_route = None
             muse_identity_grad_norm = float("nan")
             sat_anchor_pair_grad_norm = float("nan")
             sat_anchor_sat_grad_norm = float("nan")
             sat_anchor_anchor_grad_norm = float("nan")
             sat_anchor_pair_sat_grad_cos = float("nan")
             x_l, y_l, extra_l = move_batch(labeled_batch, device)
+            cr_plan = cr_runtime.begin_batch(extra_l) if cr_runtime is not None else None
             if muse_state is not None:
                 _assert_muse_open_geometry_role("L_s")
             labeled_clean_count = int(y_l.numel())
@@ -8024,7 +8095,7 @@ def train(args) -> int:
                 x_l_main = x_l
             optimizer.zero_grad(set_to_none=True)
             with autocast(enabled=bool(args.amp and device.type == "cuda")):
-                out_l = model(
+                out_l = forward_labeled(model, cr_runtime, cr_plan,
                     x_l_main,
                     y_tx=y_l,
                     grl_lambda=(
@@ -10216,6 +10287,13 @@ def train(args) -> int:
                     "rc4/cos_Pcond_to_labeled": gradient_cosines.get("partial_conditional", float("nan")),
                     "rc4/gradient_telemetry_active": 1.0,
                 }
+            cr_terms = cr_runtime.losses(model, out_l, y_l, cr_plan) if cr_runtime is not None else None
+            cr_baseline_loss = loss
+            if cr_runtime is not None and cr_runtime.active:
+                cr_response, cr_decision, cr_cross = cr_terms
+                loss = loss + (float(cr_config["lambda_resp"]) * cr_response if cr_config["response_enabled"] else 0.)
+                loss = loss + (float(cr_config["lambda_dec"]) * cr_decision if cr_config["decision_enabled"] else 0.)
+                loss = loss + (float(cr_config["lambda_cross"]) * cr_cross if cr_config["identity_interaction_enabled"] else 0.)
             loss_is_finite = bool(torch.isfinite(loss.detach()).item())
             skipped_nonfinite_loss = 0
             skipped_nonfinite_grad = 0
@@ -10314,9 +10392,14 @@ def train(args) -> int:
                         + float(os_grad_info["os_scale"]) * scaled_open_loss
                     )
                 else:
-                    scaler.scale(loss).backward()
+                    if cr_runtime is not None:
+                        cr_runtime.backward(model, cr_baseline_loss, loss_tx_l, cr_terms, scaler)
+                    else:
+                        scaler.scale(loss).backward()
                 scaler.unscale_(optimizer)
                 first_nonfinite_gradient = _first_nonfinite_gradient(model)
+                if first_nonfinite_gradient is None and cr_runtime is not None:
+                    first_nonfinite_gradient = cr_runtime.finite_gradients()
                 if first_nonfinite_gradient is None and muse_state is not None:
                     first_nonfinite_gradient = _first_nonfinite_gradient(muse_state["heads"])
                     if first_nonfinite_gradient is not None:
@@ -10328,7 +10411,7 @@ def train(args) -> int:
                 grads_finite = first_nonfinite_gradient is None
                 if grads_finite and float(getattr(args, "max_grad_norm", 0.0)) > 0.0:
                     torch.nn.utils.clip_grad_norm_(
-                        _optimizer_parameters(model, muse_state),
+                        _optimizer_parameters(model, muse_state) + (cr_runtime.parameters() if cr_runtime is not None else []),
                         max_norm=float(args.max_grad_norm),
                         error_if_nonfinite=False,
                     )
@@ -10442,8 +10525,11 @@ def train(args) -> int:
                     u_tri_accept_rate = 0.0
                 u_tri_ambiguous_tail_count = max(0.0, u_tri_query_count * max(0.0, min(1.0, u_tri_accept_rate)))
                 u_tri_outside_reject_count = max(0.0, u_tri_query_count - u_tri_ambiguous_tail_count)
+            if cr_runtime is not None:
+                cr_runtime.commit(optimizer_step_applied)
             epoch_logs.append(_detach_log_mapping(
                 {
+                    **({"cross_response/" + key: value for key, value in cr_runtime.logs.items() if value is not None} if cr_runtime is not None else {}),
                     "train/loss": loss.detach(),
                     "train/loss_labeled": loss_l.detach(),
                     "train/loss_closed_group": loss_closed.detach(),
@@ -11384,6 +11470,8 @@ def train(args) -> int:
         train_batches_seconds = time.time() - t0
         base_validation_started = time.time()
         val_stats = evaluate_loader(model, data_ctx["val_loader"], device, data_ctx["domain_label_map"], max_batches=int(args.eval_max_batches))
+        if cr_runtime is not None:
+            cr_runtime.evaluate_source(model, data_ctx, epoch)
         base_validation_seconds = time.time() - base_validation_started
         current_source_val = float(val_stats.get("tx_acc", float("nan")))
         if math.isfinite(current_source_val):
@@ -11533,6 +11621,10 @@ def train(args) -> int:
             "stats": stats,
         }
         payload.update(_muse_checkpoint_state(muse_state))
+        if cr_runtime is not None:
+            payload["cross_response"] = cr_runtime.state_dict()
+            payload["pseudo_temporal_bank"] = deepcopy(pseudo_temporal_bank)
+            cr_runtime.write_report()
         latest_path = out_dir / "NOT_SAVED_FINAL_ONLY"
         best_path = final_path
         protected_metrics = protected_metric_snapshot(
@@ -11975,6 +12067,21 @@ def train(args) -> int:
             previous_protected_metrics = dict(protected_metrics)
         if not tail_rollback_applied:
             previous_train_logs = dict(train_logs)
+        if cr_runtime is not None:
+            resume_payload = dict(payload)
+            resume_payload.update(checkpoint_role="cross_response_epoch_resume",
+                model=model.state_dict(), ema_model=ema_model.state_dict() if ema_model is not None else None,
+                optimizer=optimizer.state_dict(), scaler=scaler.state_dict(),
+                prototype_memory=proto_bank.state_dict() if proto_bank is not None else None,
+                cross_response=cr_runtime.state_dict(), pseudo_temporal_bank=deepcopy(pseudo_temporal_bank),
+                rng_state=_capture_training_rng_state(sat_gen),
+                cross_response_continuation=dict(best_score=best_score, best_val=best_val, best_test=best_test,
+                    best_epoch=best_epoch, previous_train_logs=deepcopy(previous_train_logs),
+                    previous_protected_metrics=deepcopy(previous_protected_metrics),
+                    paic_cooldown_remaining=paic_cooldown_remaining,
+                    tail_rollback_cooldown_remaining=tail_rollback_cooldown_remaining,
+                    dg_health_best_val=dg_health_best_val, telemetry_rows=deepcopy(telemetry_rows)))
+            save_payload(out_dir / "cross_response_training_state.pth", resume_payload)
         if tail_early_stop_requested or dg_health_early_stop_requested:
             print(
                 f"[PHASE1-V2] training_stopped=1 epoch={int(epoch)} "
@@ -12022,6 +12129,10 @@ def train(args) -> int:
         }
     )
     final_payload.update(_muse_checkpoint_state(muse_state))
+    if cr_runtime is not None:
+        final_payload["cross_response"] = cr_runtime.state_dict()
+        final_payload["pseudo_temporal_bank"] = deepcopy(pseudo_temporal_bank)
+        cr_runtime.write_report()
     final_payload.setdefault("stats", {})
     final_payload["stats"]["source_val_tail_geometry"] = final_source_val_tail
     final_payload["stats"]["zid_leakage_probe"] = final_zid_leakage_probe
@@ -12477,13 +12588,17 @@ def train(args) -> int:
         p0_mechanisms_ready=bool(p0_mechanisms_ready),
         p1_mechanisms_ready=bool(p1_mechanisms_ready),
         endpoint_export_ready=bool(endpoint_export_ready),
-        mechanism_gates_required=not muse_external_eval,
+        mechanism_gates_required=not (muse_external_eval or cr_runtime is not None),
         endpoint_export_required=(
             bool(getattr(args, "endpoint_require_artifact_on_export", True))
-            and not muse_external_eval
+            and not muse_external_eval and cr_runtime is None
         ),
     )
     terminal_exit_code = int(exit_code)
+    if cr_runtime is not None:
+        print("[CROSS-RESPONSE] REJECTED_EXTRA_GATE: unrelated Phase1-v2 P0/P1/endpoint mechanism switches", flush=True)
+        if terminal_status == "COMPLETE" and cr_runtime.activation_report()["missing"]:
+            terminal_status = "CROSS_RESPONSE_ACTIVATION_INCOMPLETE"
     if terminal_exit_code == 0 and terminal_status != "COMPLETE":
         terminal_exit_code = {
             "STOPPED_TAIL": 4,
@@ -12493,6 +12608,7 @@ def train(args) -> int:
             "NON_PROMOTABLE_P0_DISABLED": 8,
             "NON_PROMOTABLE_P1_DISABLED": 11,
             "NON_PROMOTABLE_ENDPOINT_NOT_EXPORTED": 9,
+            "CROSS_RESPONSE_ACTIVATION_INCOMPLETE": 12,
         }.get(terminal_status, 10)
     resource_summary = {
         "schema": "cvs.phase1.resource_summary.v1",

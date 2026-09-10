@@ -481,6 +481,25 @@ class MixStyle1D(nn.Module):
 
         tx = self._label_vector(tx_labels, batch_size, device)
         d = self._label_vector(domain_labels, batch_size, device)
+        allowed = getattr(self, "_cross_response_allowed", None)
+        if allowed is not None:
+            if allowed.shape != (batch_size, batch_size) or allowed.dtype != torch.bool:
+                raise ValueError("cross-response MixStyle mask must match the actual view batch")
+            allowed = allowed.to(device=device)
+            perm = idx_all.clone()
+            valid = torch.zeros(batch_size, device=device, dtype=torch.bool)
+            for i in range(batch_size):
+                mask = allowed[i] & (idx_all != i)
+                if self.mix in ("same_tx", "same_tx_crossdomain"):
+                    mask = mask & (tx == tx[i]) if tx is not None else torch.zeros_like(mask)
+                if self.mix in ("crossdomain", "same_tx_crossdomain"):
+                    mask = mask & (d != d[i]) if d is not None else torch.zeros_like(mask)
+                candidates = idx_all[mask]
+                if candidates.numel():
+                    perm[i] = candidates[torch.randint(candidates.numel(), (1,), device=device)]
+                    valid[i] = True
+            # No random fallback may bypass donor/view exclusion.
+            return perm, valid
         if self.mix == "random":
             perm = self._random_perm(batch_size, device)
             return perm, perm != idx_all

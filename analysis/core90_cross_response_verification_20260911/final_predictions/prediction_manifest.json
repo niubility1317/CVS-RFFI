@@ -1,0 +1,87 @@
+{
+  "schema": "cross_response_fixed_predictions_v1",
+  "state": "PREDICTIONS_FIXED",
+  "scenarios": [
+    "clean",
+    "leo_clear_weak",
+    "leo_low_elev_weak",
+    "leo_rain_weak"
+  ],
+  "registered_class_count": 4,
+  "record_ids": [
+    "wisig_record_0000000000",
+    "wisig_record_0000000001",
+    "wisig_record_0000000002",
+    "wisig_record_0000000003",
+    "wisig_record_0000000004",
+    "wisig_record_0000000005",
+    "wisig_record_0000000006",
+    "wisig_record_0000000007"
+  ],
+  "named_ids": {
+    "test_unseen_day_unseen_rx": [
+      "wisig_record_0000000000",
+      "wisig_record_0000000001",
+      "wisig_record_0000000002",
+      "wisig_record_0000000003",
+      "wisig_record_0000000004",
+      "wisig_record_0000000005",
+      "wisig_record_0000000006",
+      "wisig_record_0000000007"
+    ],
+    "test_unseen_day_rx_4": [
+      "wisig_record_0000000000",
+      "wisig_record_0000000001",
+      "wisig_record_0000000002",
+      "wisig_record_0000000003",
+      "wisig_record_0000000004",
+      "wisig_record_0000000005",
+      "wisig_record_0000000006",
+      "wisig_record_0000000007"
+    ]
+  },
+  "record_metadata": {
+    "wisig_record_0000000000": {
+      "receiver": 4,
+      "day": 1
+    },
+    "wisig_record_0000000001": {
+      "receiver": 4,
+      "day": 1
+    },
+    "wisig_record_0000000002": {
+      "receiver": 4,
+      "day": 1
+    },
+    "wisig_record_0000000003": {
+      "receiver": 4,
+      "day": 1
+    },
+    "wisig_record_0000000004": {
+      "receiver": 4,
+      "day": 1
+    },
+    "wisig_record_0000000005": {
+      "receiver": 4,
+      "day": 1
+    },
+    "wisig_record_0000000006": {
+      "receiver": 4,
+      "day": 1
+    },
+    "wisig_record_0000000007": {
+      "receiver": 4,
+      "day": 1
+    }
+  },
+  "scene_seeds": {
+    "clean": null,
+    "leo_clear_weak": 2027,
+    "leo_low_elev_weak": 3036,
+    "leo_rain_weak": 4045
+  },
+  "model_inputs": "received_iq_only",
+  "truth_accessed": false,
+  "record_count": 8,
+  "rows_written": 32
+}
