@@ -60,3 +60,16 @@ CWD为RELEASE。根目录排他创建；实际子进程argv、PID、GPU、log位
 只因本run的协议越界、契约不一致、无法执行、数值失败、输出冲突、缺少合法预测闭合或明确系统异常阻断后续阶段；低准确率、负收益不停止。无自动重跑、无旧checkpoint回退。失败保留本root所有产物和traceback，不影响其他任务；若必须终止，只针对核实PID/CWD/argv的本run进程。相同异常不盲目重复发布。
 
 状态推进：LOCAL_VERIFIED→LANDED→RUNNING→ARTIFACTS_COMPLETE→ANALYZED。首批启动后核实PID/PPID/CWD/argv/GPU/log增长。E1只证明开始训练，E200及预测/独立评分完成前不宣称实验完成。
+
+## 落地与启动读回：VERIFIED
+
+- 发布代码：`edca15a6d79187872190a5008a58250a8da9d015`；release为`/home/szu2070436088/2510044040/CV-SincNet/releases/core90_evidence_392005_edca15a6`。本地/远端归档SHA256均为`05d2e03965932508f554b41c196e89f2bbb56f477b05108911fe926e7650e706`，远端compileall通过。
+- 普通账户独占dispatcher由`f04a121b`记录。Coordinator PID=1342406，H0训练PID=1343028、PPID=1342406；`/proc/1343028/cwd`为上述release，`CUDA_VISIBLE_DEVICES=2`，GPU进程表确认约3046MiB。本次没有停止旧任务。
+- `data_summary.json`实际数量：L_s=6300、U_s=56700、V=27000、target=168000，source/target接收机及day均与预登记一致。启动metrics实际seed=392005、from_scratch=true、baseline_ckpt为空；外部teacher为none。单一V的两个历史兼容名称指向同一组27000物理记录，不是额外划分。
+- source checkpoint保存/重载/前向smoke通过，日志明确其不作为正式训练初始化。H0正式状态`H0_TRAINING`，已完成E2/200；日志由6200字节增长至17445字节。E1/E2实际train_loss分别约16.9309/16.3173，未发生nonfinite loss；E1有1/49个batch的非有限梯度跳过，E2为0，训练继续且无系统失败。保留该现象，不把“成功启动”写成长期数值稳定证明。
+- N607环境没有pytest，未安装或修改环境；改用本地版本`60d7bf61`的独立、无需pytest的source-only检查脚本。单文件SHA核对后运行，`remote_head_runtime.json`读回PASS：H1/H2/H3/H4实际前向及反向梯度有限，H4有效support查询12，冻结骨干未更新。仅24个L_s样本、独立scratch技术夹具，未修改正式训练权重或初始化。
+- H1–H4正式拟合仍等待H0 E200；H5保持未启动。当前是RUNNING，不是ARTIFACTS_COMPLETE，也没有目标确认指标。
+
+随机种子说明：本次实验/数据划分/模型及冻结头seed为392005；CORE90内部固定的增强子流常量仍按历史方法保留（启动日志`concat_sat_seed=2027`），不是加载其他seed模型。目标确认的逐物理样本信道子流由本次392005及scene/opaque ID确定，对全部候选相同。
+
+本地启动证据：`data_summary.json`、`remote_head_runtime.json`和`startup_metrics_epoch.jsonl`。后者是启动时E1–E2快照，完整日志继续保存在远端run/H0。后续结论须读取完整可用产物，不能由此快照推断最终性能。

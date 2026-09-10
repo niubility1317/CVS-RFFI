@@ -1,0 +1,41 @@
+{
+  "status": "PASS",
+  "torch": "2.1.0+cu121",
+  "role": "L_s_only",
+  "formal_checkpoint_modified": false,
+  "formal_training_initialization": false,
+  "results": [
+    {
+      "variant": "H1",
+      "loss": 0.33526837825775146,
+      "seconds": 0.4068342889659107,
+      "peak_cuda_mib": 144.0146484375,
+      "finite_gradients": true,
+      "support_effective_queries": 0
+    },
+    {
+      "variant": "H2",
+      "loss": 0.3464474678039551,
+      "seconds": 0.24794586608186364,
+      "peak_cuda_mib": 152.1435546875,
+      "finite_gradients": true,
+      "support_effective_queries": 0
+    },
+    {
+      "variant": "H3",
+      "loss": 0.33872687816619873,
+      "seconds": 0.21842383686453104,
+      "peak_cuda_mib": 152.1435546875,
+      "finite_gradients": true,
+      "support_effective_queries": 0
+    },
+    {
+      "variant": "H4",
+      "loss": 2.1677188873291016,
+      "seconds": 0.9559934260323644,
+      "peak_cuda_mib": 278.958984375,
+      "finite_gradients": true,
+      "support_effective_queries": 12
+    }
+  ]
+}
