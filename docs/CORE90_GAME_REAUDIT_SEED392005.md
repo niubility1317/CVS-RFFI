@@ -63,3 +63,9 @@ VERIFIED：SSH普通账户及项目身份正确；队列仍为16运行、10排�
 J1共4次审计，3次有效；step500经预登记3次缩步后仍跨2个ReLU区域，误差486.12，正确记录invalid，没有放宽容差或丢弃失败记录；step1000/1500恢复有效。H1共7次条件响应尝试，5次接受、2次source monitor拒绝，属于接受规则正常执行。主训练持续，无需修复重发布。
 
 独立读取B0实际E36 checkpoint，step1764，scratch_only/final_only/target_contact=false，源契约未变。外部任务新增计算进程后全机每GPU为5—6进程、显存用量约10.7—13.1GiB；本队列未新增派发，保护所有健康进程。完整解析摘要见[本次检查证据](evidence/core90_game_392005_heartbeat_0233.json)。继续半小时检查，正常进度不触发用户通知。
+
+## E80阶段检查：2026-09-11 04:07 HKT
+
+VERIFIED：16运行、10排队、0失败，全部进程绑定与日志增长正常，当前E50—E85。完整动作记录每行2452—4203次主更新，无拒绝。10行已完成E80以后epoch，实际sat_cls为2.9028—5.9503；其余6行未到E80，sat_cls=0符合日程。全部尚未到E131，unlabeled_unique_samples=0属于阶段等待，不是U采样失活。B0实际E84 checkpoint来源及契约仍符合scratch-only、final-only、target_contact=false。
+
+J1累计8次审计、4次有效、4次按既定规则判invalid；H1累计15次响应尝试、8次接受、7次source monitor拒绝。保留这些诊断失败，不修改容差或以此停止健康训练。无需修复重发布。[完整检查摘要](evidence/core90_game_392005_heartbeat_0407.json)。
