@@ -1,6 +1,6 @@
 # Tweak V8：参考文献引导的margin采样解释验证
 
-状态：LOCAL_VERIFIED；待Git固定、N607源码发布与启动核验。用户于2026-09-10要求继续定位、优化并发布实验验证。
+状态：RUNNING / PROCESS_START_VERIFIED；已发布并读回进程身份，完整训练和评分未完成。用户于2026-09-10要求继续定位、优化并发布实验验证。
 
 ## 结论与单变量假设
 
@@ -38,10 +38,18 @@ step3000的loss分别为.1021685和.1256986，二者选集不同，不能以loss
 
 ## 发布与技术停止
 
-代码commit在发布后补记。N607根=`/home/szu2070436088/2510044040/CV-SincNet`；release=`releases/tweak_config2_margin_reference_20260910_v8/source`，run=`runs/tweak_config2_margin_reference_20260910_v8/official_config2_full`，log=`logs/tweak_config2_margin_reference_20260910_v8/train.log`。数据=`datasets/tweak_official_lora_configurations_20260908/Diff_Configurations_Setup`。
+代码commit=`d69640e12acc3a9792b01a9c0f5a07d1953a20e3`，push后独立读取远端branch OID与本地HEAD一致。N607根=`/home/szu2070436088/2510044040/CV-SincNet`；release=`releases/tweak_config2_margin_reference_20260910_v8/source`，run=`runs/tweak_config2_margin_reference_20260910_v8/official_config2_full`，log=`logs/tweak_config2_margin_reference_20260910_v8/train.log`。数据=`datasets/tweak_official_lora_configurations_20260908/Diff_Configurations_Setup`。
 
 计划使用物理GPU2，preflight21:31 CST显示空闲（1MiB）；启动前再次核对该卡进程，最多2个训练实验，保护其他GPU上的健康作业。唯一launch owner为当前主Agent。
 
 命令：`CUDA_VISIBLE_DEVICES=2 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -m paper_reproduction.gaskin_tweak_2023.official_lora_experiment --data-root /home/szu2070436088/2510044040/CV-SincNet/datasets/tweak_official_lora_configurations_20260908/Diff_Configurations_Setup --output-dir /home/szu2070436088/2510044040/CV-SincNet/runs/tweak_config2_margin_reference_20260910_v8/official_config2_full --device cuda:0 --triplet-mining margin_violating`。
 
 仅本run确定性系统故障、非有限训练、输入越界、输出碰撞或无法形成合法预测可触发技术停止；低性能不停止，不影响其他进程。新release和output不可覆盖。预期产物42个：checkpoint、results、20prediction和20truth，另有完整训练日志。训练日志每个probe/epoch记录首batch的hard、半难及实际选中数，作为机制实际启用证据。
+
+## 实际落地与启动读回
+
+- 源归档81,920字节，本地/远端SHA256均为`e7c1405cdcbfb831c0bb26b89e1c9ae3913b7947341b6a941a2071388bee7775`。40条数据及metadata存在，远端10个模块与诊断工具编译成功。
+- N607真实CUDA source前反传：`[64,2,128]→[64,12]`，loss=.4642926455，16组参数梯度有限；25,088个有效triplet中，12,570个严格hard、3,758个半难，实际margin选中16,328个。这是source smoke，不是目标准确率。
+- 启动前GPU2已有另一个PID1139396，未干预；确认该卡不足2个compute进程后添加本run。正式PID1140324，PPID1，物理GPU2；41秒独立读回CWD、cmdline及GPU UUID一致，CPU115%、448MiB显存。同卡两个训练进程，未超上限。
+- 实际argv包含`--triplet-mining margin_violating`，没有checkpoint/resume入口，没有smoke batch或epoch限制。首次读回log为0字节：runner整epoch输出，首probe尚未完成；因此目前仅验证进程启动，不将空日志视为训练完成或完整健康证据。
+- 已创建30分钟监控`tweak-v8`：健康/无可行动变化时静默，完成后下载全部42个产物和完整日志、独立复算20行并更新本报告；完成交付后关闭监控。不会因低分自动启动V9。
