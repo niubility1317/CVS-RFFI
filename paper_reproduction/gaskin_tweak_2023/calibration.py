@@ -36,7 +36,7 @@ def calibrate(features: torch.Tensor, labels: torch.Tensor) -> CalibrationState:
     classes = torch.unique(labels, sorted=True)
     centroids, radii = [], []
     for label in classes:
-        members = features[labels.eq(label)]
+        members = features[labels.eq(label)].double()
         centroid = members.mean(dim=0)
         centroids.append(centroid)
         radii.append(torch.linalg.vector_norm(members - centroid, dim=1).mean())
@@ -50,7 +50,10 @@ def calibrate(features: torch.Tensor, labels: torch.Tensor) -> CalibrationState:
 def _distances(points: torch.Tensor, state: CalibrationState) -> torch.Tensor:
     if points.ndim != 2 or points.shape[1] != state.centroids.shape[1]:
         raise ValueError("points must be [samples, embedding_dim]")
-    return torch.cdist(points, state.centroids, p=2)
+    # Avoid the default cdist MM identity: ||x||^2+||y||^2-2<x,y>
+    # catastrophically cancels for small separations around a common offset.
+    return torch.cdist(points.double(), state.centroids.double(), p=2,
+                       compute_mode="donot_use_mm_for_euclid_dist")
 
 
 @torch.no_grad()

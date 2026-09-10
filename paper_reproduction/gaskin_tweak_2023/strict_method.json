@@ -20,7 +20,7 @@
         "no_hard_triplets": "skip_optimizer_step"
       },
       "status": "UNPUBLISHED_DEFAULT",
-      "rationale": "Tweak IV-A explicitly selects triplets where A is closer to N than P after a mini-batch passes through the network, and Equation (1) applies its fixed 0.1-margin loss to squared L2 distances. Enumerating every valid mini-batch triplet implements that stated online selection without reducing it to an unsupported random candidate subset."
+      "rationale": "The strict inequality and squared L2 margin follow IV-A and Equation (1). The exhaustive aggregation is an unpublished reconstruction choice, not a uniquely specified author miner. V7 preserves V6 mining to isolate stable distance and source selection repairs; this objective still admits a shrinking-scale direction."
     },
     "learning_rate_grid": {
       "value": [0.01, 0.001, 0.0001, 0.00001, 0.000001],
@@ -28,9 +28,9 @@
       "rationale": "This discrete decade grid operationalizes the paper's stated 1e-2 to 1e-6 search range."
     },
     "learning_rate_selection": {
-      "value": "five_fresh_one_epoch_source_only_probes_then_lowest_mean_loss_among_active_probes_with_last_window_lower_than_first_window",
+      "value": "five_fresh_one_epoch_source_only_probes_then_highest_fixed_source_training_pool_monitor_accuracy_among_decreasing_active_probes",
       "status": "UNPUBLISHED_DEFAULT",
-      "rationale": "The paper says it searched the typical 1e-2 to 1e-6 range to ensure decreasing loss, but does not prescribe a grid duration or tie-break. One source-only epoch per fresh candidate followed by a fresh 100-epoch selected-rate run implements that stated criterion without using target-test data."
+      "rationale": "The paper specifies a decreasing-loss search but omits its duration and tie-break. V7 ranks eligible probes by a fixed source training-pool identity diagnostic, then mean loss and LR. This avoids ranking exclusively by a shrinking strict-hard objective. It is not an independent validation score or an author-verified rule."
     },
     "official_lora_runner": {
       "value": {
@@ -38,7 +38,9 @@
         "batch_composition": {"classes_per_batch": 8, "samples_per_class": 8},
         "frame_partition": "seeded affine permutation of every physical record frame before the paper's 75/25 role split; calibration remains the first 10% of the logical training partition",
         "frame_order": "per-device deterministic affine permutation of logical training positions; at most three of 117187 source frames are omitted per device per epoch to preserve batch_size=64",
-        "checkpoint_selection": "lowest complete-epoch mean strict-hard sampled-triplet training loss",
+        "checkpoint_selection": "highest_fixed_source_training_pool_monitor_accuracy_first_epoch_wins_ties",
+        "source_monitor": {"configuration": "Config2", "reference_logical_frames": [0, 256], "monitor_logical_frames": [256, 506], "role": "training_pool_diagnostic_not_independent_validation", "group_size": 10},
+        "distance_precision": "float64 calibration and grouping; direct non-MM Euclidean scoring",
         "random_seed": 20260908
       },
       "status": "UNPUBLISHED_DEFAULT",

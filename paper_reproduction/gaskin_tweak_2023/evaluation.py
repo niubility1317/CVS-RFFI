@@ -77,8 +77,8 @@ def open_set_trial_metrics(
     """Compute the paper's open-set score and Algorithm-3 operating metrics."""
     if known_points.ndim != 2 or unknown_points.ndim != 2 or known_labels.shape != (known_points.shape[0],):
         raise ValueError("known points, unknown points and known labels must align")
-    known_distances = torch.cdist(known_points, state.centroids, p=2).amin(dim=1)
-    unknown_distances = torch.cdist(unknown_points, state.centroids, p=2).amin(dim=1)
+    known_distances = torch.cdist(known_points.double(), state.centroids.double(), p=2, compute_mode="donot_use_mm_for_euclid_dist").amin(dim=1)
+    unknown_distances = torch.cdist(unknown_points.double(), state.centroids.double(), p=2, compute_mode="donot_use_mm_for_euclid_dist").amin(dim=1)
     known_admit = open_set_admit(known_points, state)
     unknown_admit = open_set_admit(unknown_points, state)
     known_prediction = closed_set_predict(known_points, state)

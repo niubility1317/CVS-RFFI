@@ -123,9 +123,9 @@ def test_configuration_portability_plan_is_config2_source_with_four_single_domai
 def test_learning_rate_selection_requires_a_decreasing_source_only_probe_and_chooses_the_lowest_probe_loss():
     # Break caught: five full 100-epoch grids are not required by the paper's stated decreasing-loss tuning criterion.
     probes = [
-        {"learning_rate": 0.01, "first_window_mean_loss": 0.30, "last_window_mean_loss": 0.20, "mean_training_loss": 0.24, "active_batches": 10},
-        {"learning_rate": 0.001, "first_window_mean_loss": 0.30, "last_window_mean_loss": 0.25, "mean_training_loss": 0.23, "active_batches": 10},
-        {"learning_rate": 0.0001, "first_window_mean_loss": 0.20, "last_window_mean_loss": 0.21, "mean_training_loss": 0.19, "active_batches": 10},
+        {"learning_rate": 0.01, "first_window_mean_loss": 0.30, "last_window_mean_loss": 0.20, "mean_training_loss": 0.24, "active_batches": 10, "source_monitor_accuracy": .7},
+        {"learning_rate": 0.001, "first_window_mean_loss": 0.30, "last_window_mean_loss": 0.25, "mean_training_loss": 0.23, "active_batches": 10, "source_monitor_accuracy": .7},
+        {"learning_rate": 0.0001, "first_window_mean_loss": 0.20, "last_window_mean_loss": 0.21, "mean_training_loss": 0.19, "active_batches": 10, "source_monitor_accuracy": .9},
     ]
 
     assert select_learning_rate_from_probes(probes) == pytest.approx(0.001)

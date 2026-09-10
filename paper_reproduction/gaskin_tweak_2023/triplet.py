@@ -8,7 +8,7 @@ def hard_positive_negative_indices(embeddings: torch.Tensor, labels: torch.Tenso
     """Mine one hardest positive and nearest negative for every anchor."""
     if embeddings.ndim != 2 or labels.ndim != 1 or embeddings.shape[0] != labels.shape[0]:
         raise ValueError("embeddings must be [batch, dim] and labels must be [batch]")
-    distances = torch.cdist(embeddings, embeddings, p=2)
+    distances = (embeddings[:, None, :] - embeddings[None, :, :]).square().sum(dim=2)
     same = labels[:, None].eq(labels[None, :])
     same.fill_diagonal_(False)
     different = ~labels[:, None].eq(labels[None, :])

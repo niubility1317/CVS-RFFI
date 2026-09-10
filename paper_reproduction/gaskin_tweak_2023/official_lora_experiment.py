@@ -115,8 +115,35 @@ def select_learning_rate_from_probes(probes: list[dict[str, float | int]]) -> fl
     ]
     if not eligible:
         raise RuntimeError("no learning-rate probe had active strict-hard triplets and decreasing loss")
-    selected = min(eligible, key=lambda row: (float(row["mean_training_loss"]), float(row["learning_rate"])))
+    selected = min(eligible, key=lambda row: (-float(row["source_monitor_accuracy"]), float(row["mean_training_loss"]), float(row["learning_rate"])))
     return float(selected["learning_rate"])
+
+
+@torch.no_grad()
+def _source_monitor(model, records, split, *, device):
+    """Fixed training-pool diagnostic; never an independent validation/test score."""
+    if split.training.stop < 512 or any(record.configuration != "Config2" for record in records):
+        raise ValueError("source monitor requires Config2 and 512 source training frames")
+    model.eval()
+    reference, points, labels = [], [], []
+    for record in records:
+        iq = read_iq_frames(record, frame_indices=split.physical_indices(range(512)))
+        features = model(iq.to(device)).cpu().double()
+        reference.append(features[:256])
+        points.append(aggregate_embeddings(features[256:506], group_size=10))
+        labels.append(record.device_id)
+    reference_labels = torch.tensor(labels).repeat_interleave(256)
+    state = calibrate(torch.cat(reference), reference_labels)
+    predicted = closed_set_predict(torch.cat(points), state)
+    expected = torch.tensor(labels).repeat_interleave(25)
+    centers = state.centroids
+    center_distances = (centers[:, None, :] - centers[None, :, :]).square().sum(-1).sqrt()
+    off_diagonal = ~torch.eye(len(labels), dtype=torch.bool)
+    return {
+        "source_monitor_accuracy": float(predicted.eq(expected).double().mean()),
+        "source_monitor_centroid_distance": float(center_distances[off_diagonal].mean()),
+        "source_monitor_radius": float(state.radii.mean()),
+    }
 
 
 def _run_training_epoch(
@@ -178,21 +205,22 @@ def _train_encoder(
         optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate, momentum=0.9)
         probe_rows.append({"learning_rate": learning_rate, **_run_training_epoch(
             model, optimizer, records, split, device=device, seed=seed, max_batches_per_epoch=max_batches_per_epoch
-        )})
+        ), **_source_monitor(model, records, split, device=device)})
         print(json.dumps({"event": "learning_rate_probe", **probe_rows[-1]}, sort_keys=True), flush=True)
     selected_lr = select_learning_rate_from_probes(probe_rows)
     model.load_state_dict(initial_state)
     optimizer = torch.optim.SGD(model.parameters(), lr=selected_lr, momentum=0.9)
     best_state: dict[str, torch.Tensor] | None = None
-    best_loss, best_epoch = float("inf"), 0
+    best_loss, best_epoch, best_accuracy = float("inf"), 0, -1.0
     epoch_rows: list[dict[str, float | int]] = []
     for epoch in range(1, epochs + 1):
         row = {"learning_rate": selected_lr, "epoch": epoch, **_run_training_epoch(
             model, optimizer, records, split, device=device, seed=seed + epoch, max_batches_per_epoch=max_batches_per_epoch
-        )}
+        ), **_source_monitor(model, records, split, device=device)}
         epoch_rows.append(row)
         print(json.dumps({"event": "epoch", **row}, sort_keys=True), flush=True)
-        if int(row["active_batches"]) and float(row["mean_training_loss"]) < best_loss:
+        if float(row["source_monitor_accuracy"]) > best_accuracy:
+            best_accuracy = float(row["source_monitor_accuracy"])
             best_loss, best_epoch = float(row["mean_training_loss"]), epoch
             best_state = _copy_state_dict(model.state_dict())
     if best_state is None:
@@ -202,8 +230,11 @@ def _train_encoder(
         "best_epoch": best_epoch,
         "best_learning_rate": selected_lr,
         "best_mean_training_loss": best_loss,
+        "best_source_monitor_accuracy": best_accuracy,
         "learning_rate_probes": probe_rows,
-        "learning_rate_selection": "five_fresh_one_epoch_source_only_probes_then_lowest_mean_loss_among_decreasing_active_probes",
+        "learning_rate_selection": "five_fresh_one_epoch_probes_then_max_source_monitor_accuracy_among_decreasing_active_probes",
+        "checkpoint_selection": "highest_fixed_source_training_pool_monitor_accuracy_first_epoch_wins_ties",
+        "source_monitor": {"configuration": "Config2", "reference_logical_frames": [0, 256], "monitor_logical_frames": [256, 506], "role": "training_pool_diagnostic_not_independent_validation", "group_size": 10},
         "epoch_rows": epoch_rows,
         "batch_size": 64,
         "batch_composition": {"classes_per_batch": 8, "samples_per_class": 8},
@@ -223,7 +254,7 @@ def _embed_record_frames(
     features: list[torch.Tensor] = []
     for start in range(frame_range.start, frame_range.stop, batch_size):
         indices = range(start, min(start + batch_size, frame_range.stop))
-        features.append(model(read_iq_frames(record, frame_indices=split.physical_indices(indices)).to(device)).cpu())
+        features.append(model(read_iq_frames(record, frame_indices=split.physical_indices(indices)).to(device)).cpu().double())
     return torch.cat(features)
 
 
@@ -252,6 +283,7 @@ def _evaluate_configuration(
     device: torch.device,
     batch_size: int,
     group_size: int,
+    prediction_path: Path | None = None,
 ) -> dict[str, int | float]:
     model.eval()
     points, labels = [], []
@@ -262,6 +294,14 @@ def _evaluate_configuration(
         labels.append(torch.full((usable // group_size,), record.device_id, dtype=torch.long))
     point_tensor, label_tensor = torch.cat(points), torch.cat(labels)
     predictions = closed_set_predict(point_tensor, state)
+    if prediction_path is not None:
+        # Freeze decisions before truth comparison; keep inputs for independent rescoring.
+        with prediction_path.open("xb") as stream:
+            torch.save({"query_ids": torch.arange(predictions.numel()), "predictions": predictions,
+                        "points": point_tensor, "centroids": state.centroids,
+                        "radii": state.radii, "registered_labels": state.labels}, stream)
+        with prediction_path.with_suffix(".truth.pt").open("xb") as stream:
+            torch.save({"query_ids": torch.arange(label_tensor.numel()), "labels": label_tensor}, stream)
     return {
         "accuracy": float(predictions.eq(label_tensor).float().mean()),
         "correct_decisions": int(predictions.eq(label_tensor).sum()),
@@ -319,6 +359,7 @@ def run_configuration_portability(
         result = _evaluate_configuration(
             model, records_by_configuration[row.test_configuration], split, calibration_states[row.calibration_configuration],
             device=device, batch_size=inference_batch_size, group_size=plan.group_size,
+            prediction_path=output_dir / f"predictions_{row.calibration_configuration}_{row.test_configuration}.pt",
         )
         single_rows.append({**asdict(row), **result})
     multiple_rows = [
@@ -327,6 +368,7 @@ def run_configuration_portability(
             **_evaluate_configuration(
                 model, records_by_configuration[configuration], split, multiple_state,
                 device=device, batch_size=inference_batch_size, group_size=plan.group_size,
+                prediction_path=output_dir / f"predictions_multi_{configuration}.pt",
             ),
         }
         for configuration in plan.test_configurations

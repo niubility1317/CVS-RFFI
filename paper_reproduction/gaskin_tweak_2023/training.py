@@ -23,8 +23,8 @@ def shared_triplet_loss(
     anchor_embedding = encoder(anchor)
     positive_embedding = encoder(positive)
     negative_embedding = encoder(negative)
-    positive_distance = torch.linalg.vector_norm(anchor_embedding - positive_embedding, dim=1)
-    negative_distance = torch.linalg.vector_norm(anchor_embedding - negative_embedding, dim=1)
+    positive_distance = (anchor_embedding - positive_embedding).square().sum(dim=1)
+    negative_distance = (anchor_embedding - negative_embedding).square().sum(dim=1)
     return F.relu(positive_distance - negative_distance + margin).mean()
 
 
