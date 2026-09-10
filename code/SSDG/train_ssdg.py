@@ -240,6 +240,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--from_scratch", type=str2bool, default=True)
     parser.add_argument("--evidence_config", type=str, default="", help="Embedded strict JSON H1--H5 config; empty preserves CORE90")
     parser.add_argument("--evidence_data_contract", type=str, default="", help="Actual physical source/target roles for scratch evidence training")
+    parser.add_argument("--evidence_external_final_eval", type=str2bool, default=False)
     parser.add_argument("--split_mode", type=str, default="tx_rx_day_1_6_3", choices=["tx_rx_day_1_6_3", "tx_rx_day_1_7_2"])
     parser.add_argument("--labeled_ratio", type=float, default=0.08)
     parser.add_argument("--unlabeled_ratio", type=float, default=0.72)
@@ -3030,6 +3031,12 @@ def _run_final_heldout_evaluation(
 ) -> Dict[str, Any]:
     """Delegate MUSE target evaluation to its launcher while preserving legacy behavior."""
 
+    if bool(getattr(args, "evidence_external_final_eval", False)):
+        if not getattr(args,"evidence_data_contract","") or getattr(args,"phase1_terminal_policy","")!="core90_research":
+            raise ValueError("evidence external evaluation requires CORE90 research data contract")
+        return {"status":"DELEGATED_TO_EVIDENCE_LAUNCHER","checkpoint":str(checkpoint_path),
+                "selection_source":str(args.checkpoint_selection),
+                "claim":"ALL_CANDIDATES_FROZEN_BEFORE_TARGET_PREDICTION_AND_SCORING"}
     if bool(getattr(args, "use_muse_ssdg", False)) and bool(
         getattr(args, "muse_external_final_eval", False)
     ):
@@ -3150,7 +3157,7 @@ def _resolve_phase1_terminal_status(
         return "NO_SAFE_CHECKPOINT"
     heldout_status = str(heldout_eval_status).upper()
     heldout_complete = heldout_status == "COMPLETE" or (
-        bool(external_final_eval) and heldout_status == "DELEGATED_TO_MUSE_LAUNCHER"
+        bool(external_final_eval) and heldout_status in {"DELEGATED_TO_MUSE_LAUNCHER","DELEGATED_TO_EVIDENCE_LAUNCHER"}
     )
     if not heldout_complete:
         return "HELDOUT_EVAL_INCOMPLETE"
@@ -12266,7 +12273,7 @@ def train(args) -> int:
         }
     heldout_eval_path = out_dir / (
         "external_final_eval_pending.json"
-        if str(frozen_eval.get("status", "")).upper() == "DELEGATED_TO_MUSE_LAUNCHER"
+        if str(frozen_eval.get("status", "")).upper() in {"DELEGATED_TO_MUSE_LAUNCHER","DELEGATED_TO_EVIDENCE_LAUNCHER"}
         else "frozen_phase1_heldout_eval.json"
     )
     heldout_eval_path.write_text(
@@ -12528,7 +12535,7 @@ def train(args) -> int:
         final_blocked=bool(phase1_v2_final_blocked),
         selected_checkpoint_exists=bool(selected_checkpoint_exists),
         heldout_eval_status=str(frozen_eval.get("status", "")),
-        external_final_eval=bool(getattr(args, "muse_external_final_eval", False)),
+        external_final_eval=bool(getattr(args, "muse_external_final_eval", False)) or bool(getattr(args,"evidence_external_final_eval",False)),
         p0_mechanisms_ready=bool(p0_mechanisms_ready),
         p1_mechanisms_ready=bool(p1_mechanisms_ready),
         endpoint_export_ready=bool(endpoint_export_ready),

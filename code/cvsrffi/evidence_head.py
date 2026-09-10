@@ -154,6 +154,7 @@ class EvidenceHead(nn.Module):
         reg=sum(p.square().mean() for p in self.response.parameters())
         episode=result["scores"].sum()*0
         pairs=0
+        competing_classes=0
         if self.stage>=4:
             if physical_ids is None:
                 raise ValueError("H4/H5 source episodes require physical IDs")
@@ -164,7 +165,8 @@ class EvidenceHead(nn.Module):
                 ids=torch.where((labels==y)&valid)[0]
                 if len(ids)>=2:
                     support.extend(ids[::2].tolist()); held.extend(ids[1::2].tolist())
-            if held:
+            competing_classes=len(set(labels[support].tolist()))
+            if held and competing_classes>=2:
                 # Only episode-registered classes compete. These episodes are
                 # source training, never evidence of truly unseen target identity.
                 episode_classes=sorted(set(labels[support].tolist()))
@@ -184,6 +186,7 @@ class EvidenceHead(nn.Module):
                 pairs=len(held)
         total=self.config.nll_weight*nll+self.config.response_regularization*reg+self.config.support_weight*episode
         return total,{"nll":nll.detach(),"response_regularization":reg.detach(),"support_loss":episode.detach(),"support_queries":pairs,
+                      "support_competing_classes":competing_classes,"support_effective_queries":pairs,
                       "observed_fraction":float(result["observed"].float().mean().detach()),
                       "outside_state_fraction":float((~result["state_in_domain"]).float().mean().detach()),
                       "observation_active":float(result["observation_variance"].mean().detach()),

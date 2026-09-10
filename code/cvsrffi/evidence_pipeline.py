@@ -42,7 +42,17 @@ def _validate_source_tensors(data,contract):
     return ids
 
 
-def fit_frozen_head(payload,source,contract,config,*,epochs=20,batch_size=64,learning_rate=.001,device="cpu"):
+def class_interleaved_order(labels, seed):
+    """Consume each physical row once while mixing TX-sorted input for episodes."""
+    generator=torch.Generator().manual_seed(int(seed))
+    groups=[]
+    for label in labels.cpu().unique(sorted=True):
+        group=torch.where(labels.cpu()==label)[0]
+        groups.append(group[torch.randperm(len(group),generator=generator)].tolist())
+    return [group[i] for i in range(max(map(len,groups),default=0)) for group in groups if i<len(group)]
+
+
+def fit_frozen_head(payload,source,contract,config,*,epochs=20,batch_size=64,learning_rate=.001,device="cpu",seed=392002):
     """Same compliant CORE90 weights for H1--H5; no target or V accepted."""
     from post_stage_common import build_baseline_model
     verify_checkpoint_contract(payload,contract)
@@ -53,6 +63,7 @@ def fit_frozen_head(payload,source,contract,config,*,epochs=20,batch_size=64,lea
     model=build_baseline_model(args,torch.device(device))
     model.load_state_dict(payload["model"],strict=True)
     model.requires_grad_(False)
+    torch.manual_seed(int(seed))
     attach_evidence_head(model,config)
     x,y=source["x"].to(device),source["y"].long().to(device)
     if epochs<1 or batch_size<2 or learning_rate<=0: raise ValueError("invalid fitting budget")
@@ -64,11 +75,13 @@ def fit_frozen_head(payload,source,contract,config,*,epochs=20,batch_size=64,lea
     for epoch in range(epochs):
         model.eval(); model.evidence_head.train()
         total=0.; stats_sum={}
+        order=class_interleaved_order(y,seed+epoch)
         for start in range(0,len(x),batch_size):
             end=min(start+batch_size,len(x))
-            out=model(x[start:end],y_tx=y[start:end],return_aux=True)
-            aux,stats=supervised_evidence_loss(model,out,y[start:end],{"physical_sample_id":ids[start:end]},end-start)
-            loss=F.cross_entropy(out["tx_logits"],y[start:end])+aux
+            take=order[start:end]
+            out=model(x[take],y_tx=y[take],return_aux=True)
+            aux,stats=supervised_evidence_loss(model,out,y[take],{"physical_sample_id":[ids[i] for i in take]},end-start)
+            loss=F.cross_entropy(out["tx_logits"],y[take])+aux
             if not torch.isfinite(loss): raise FloatingPointError("nonfinite head loss")
             optimizer.zero_grad(set_to_none=True);loss.backward()
             for name,p in model.evidence_head.named_parameters():
@@ -80,10 +93,11 @@ def fit_frozen_head(payload,source,contract,config,*,epochs=20,batch_size=64,lea
         from .evidence_head_training import assert_epoch_activation
         assert_epoch_activation(model.evidence_head,stats_sum)
         history.append({"epoch":epoch+1,"loss":total/len(batches),**stats_sum})
+        print('[EVIDENCE-FIT] '+json.dumps({'variant':model.evidence_head.config.variant,**history[-1]}),flush=True)
     assert all(torch.equal(v,model.state_dict()[k]) for k,v in frozen_before.items())
     model.eval()
     args.evidence_config=json.dumps(config if isinstance(config,dict) else json.loads(config))
-    return model,{"baseline_args":vars(args),"model":model.state_dict(),"history":history,
+    return model,{"baseline_args":vars(args),"model":model.state_dict(),"history":history,"fit_seed":int(seed),
                    "activation":mechanism_manifest(model.evidence_head),
                    "training_data_contract":contract,"checkpoint_lineage":{
                        "from_scratch":False,"upstream":["verified_same_contract_CORE90_H0"],

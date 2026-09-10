@@ -62,3 +62,15 @@ def test_shared_new_prior_label_name_invariance_and_missing_evidence():
     torch.testing.assert_close(first.predict(result)['scores'],renamed.predict(result)['scores'])
     empty={**result,'observed':torch.zeros_like(result['observed'])}
     assert (first.predict(empty)['scores']==0).all()
+
+
+def test_outside_support_does_not_gain_precision_from_clipping():
+    head,result=setup()
+    inside={**result,'state':torch.ones_like(result['state'])}
+    outside={**result,'state':torch.ones_like(result['state'])*10}
+    args=(['old','new'],['p','q'],['old','new'])
+    a=fit_registered_evidence(head,inside,*args,source_class_labels=['old',70])
+    b=fit_registered_evidence(head,outside,*args,source_class_labels=['old',70])
+    va=a.predict(inside)['support_covariance'].diagonal(dim1=-2,dim2=-1)
+    vb=b.predict(inside)['support_covariance'].diagonal(dim1=-2,dim2=-1)
+    assert (vb>va).all()

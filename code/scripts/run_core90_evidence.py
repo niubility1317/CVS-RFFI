@@ -24,12 +24,14 @@ def parser():
     t.add_argument("--seed",type=int,default=392002)
     t.add_argument("--device",default="cuda:0")
     t.add_argument("--dry-run",action="store_true")
+    t.add_argument("--external-final-eval",action="store_true",help="Experiment runner seals all candidates before target scoring")
     f=sub.add_parser("fit")
     for name in ("checkpoint","source-tensors","contract","config","output"):
         f.add_argument("--"+name,required=True)
     f.add_argument("--epochs",type=int,default=20)
     f.add_argument("--batch-size",type=int,default=64)
     f.add_argument("--device",default="cuda:0")
+    f.add_argument("--seed",type=int,default=392002)
     pr=sub.add_parser("predict")
     for name in ("bundle","received","output"): pr.add_argument("--"+name,required=True)
     pr.add_argument("--support")
@@ -49,6 +51,7 @@ def main(argv=None):
         cmd=core90_arguments(a.dataset,a.contract,a.output,variant=a.variant,seed=a.seed,device=a.device,
                     source_rxs=a.source_rxs,source_days=a.source_days,target_rxs=a.target_rxs,target_days=a.target_days)
         args=build_arg_parser().parse_args(cmd)
+        args.evidence_external_final_eval=a.external_final_eval
         if a.dry_run:
             print(json.dumps(vars(args),ensure_ascii=False,sort_keys=True));return 0
         result=train(args)
@@ -62,7 +65,7 @@ def main(argv=None):
         source=torch.load(a.source_tensors,map_location=a.device,weights_only=True)
         contract=json.loads(Path(a.contract).read_text(encoding="utf-8"))
         config=json.loads(Path(a.config).read_text(encoding="utf-8"))
-        model,trained=fit_frozen_head(payload,source,contract,config,epochs=a.epochs,batch_size=a.batch_size,device=a.device)
+        model,trained=fit_frozen_head(payload,source,contract,config,epochs=a.epochs,batch_size=a.batch_size,device=a.device,seed=a.seed)
         # A unique output directory separates ground provenance from deployment state.
         Path(a.output).mkdir(parents=True,exist_ok=False)
         torch.save(trained,Path(a.output)/"ground_checkpoint.pt")

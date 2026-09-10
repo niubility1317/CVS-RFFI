@@ -122,7 +122,7 @@ def supervised_evidence_loss(model,out,labels,extra,clean_count):
 def assert_epoch_activation(head,logs):
     required=["observation_active"]
     if head.stage>=2: required.append("correlation_energy")
-    if head.stage>=4: required.append("support_queries")
+    if head.stage>=4: required.extend(("support_queries","support_effective_queries"))
     for key in required:
         if float(logs.get("evidence/"+key,0))<=0:
             raise RuntimeError("configured evidence mechanism never executed: "+key)
@@ -155,7 +155,9 @@ def validate_evidence_training_args(args):
 def validate_data_contract(data_ctx,contract_path):
     contract=json.loads(Path(contract_path).read_text(encoding="utf-8"))
     required={"dataset_id","source_receivers","target_receivers","roles"}
-    if set(contract)!=required or not contract["dataset_id"]:
+    optional={"split_seed","equalized","source_days","actual_target_days","tx_mapping","ratios",
+              "source_selection","checkpoint_initialization","upstream"}
+    if not required<=set(contract) or set(contract)-required-optional or not contract["dataset_id"]:
         raise ValueError("invalid evidence data contract keys")
     if contract["dataset_id"]!=data_ctx.get("dataset_id"):
         raise ValueError("dataset identity differs from actual loaded dataset")
@@ -168,6 +170,7 @@ def validate_data_contract(data_ctx,contract_path):
         ids=set(physical_support_ids(ids))
         if seen & ids: raise ValueError("physical role overlap: "+role)
         seen |= ids
+    source_days=set();equalized_values=set()
     for role,key in (("L_s","train_loader"),("U_s","unlabeled_loader"),("V","val_loader")):
         ds=data_ctx[key].dataset
         actual={f"{i.tx_i}:{i.rx_i}:{i.day_i}:{i.sig_i}" for i in ds.index}
@@ -175,6 +178,12 @@ def validate_data_contract(data_ctx,contract_path):
         if actual!=set(roles[role]): raise ValueError("actual physical role mismatch: "+role)
         if not {int(i.rx_i) for i in ds.index}<=set(contract["source_receivers"]):
             raise ValueError("source receiver contract mismatch")
+        source_days.update(int(i.day_i) for i in ds.index)
+        if "equalized" in contract:
+            base=ds
+            while not hasattr(base,"eq_list") and hasattr(base,"base"): base=base.base
+            if not hasattr(base,"eq_list"): raise ValueError("actual equalized mapping unavailable")
+            equalized_values.update(int(base.eq_list[i.eq_i]) for i in ds.index)
     actual_target_rxs=set(data_ctx["split_info"]["test"]["test_rxs_idx"])
     if actual_target_rxs!=set(contract["target_receivers"]):
         raise ValueError("actual target receiver contract mismatch")
@@ -185,5 +194,36 @@ def validate_data_contract(data_ctx,contract_path):
             for i in ds.index:
                 if int(i.rx_i) in actual_target_rxs:
                     actual_target.add(f"{i.tx_i}:{i.rx_i}:{i.day_i}:{i.sig_i}")
+                    if "equalized" in contract:
+                        base=ds
+                        while not hasattr(base,"eq_list") and hasattr(base,"base"): base=base.base
+                        if not hasattr(base,"eq_list"): raise ValueError("actual equalized mapping unavailable")
+                        equalized_values.add(int(base.eq_list[i.eq_i]))
     if actual_target!=set(roles["target"]): raise ValueError("actual target physical contract mismatch")
+    if "equalized" in contract and equalized_values!={contract["equalized"]}:
+        raise ValueError("actual equalized contract mismatch")
+    if "source_days" in contract and set(contract["source_days"])!=source_days:
+        raise ValueError("actual source days contract mismatch")
+    if "actual_target_days" in contract and set(contract["actual_target_days"])!={int(i.split(':')[2]) for i in actual_target}:
+        raise ValueError("actual target days contract mismatch")
+    receipt=data_ctx.get("split_info",{}).get("source_split_receipt",{})
+    if "split_seed" in contract and contract["split_seed"]!=receipt.get("seed"):
+        raise ValueError("actual split seed contract mismatch")
+    if "tx_mapping" in contract and contract["tx_mapping"]!=data_ctx.get("class_id_to_tx"):
+        raise ValueError("actual TX mapping contract mismatch")
+    if "ratios" in contract:
+        ratios=contract["ratios"]
+        if set(ratios)!={"L_s","U_s","V"}: raise ValueError("invalid role ratios")
+        for role,key in (("L_s","requested_labeled_ratio"),("U_s","requested_unlabeled_ratio"),("V","requested_source_val_ratio")):
+            if key not in receipt or abs(float(ratios[role])-float(receipt[key]))>1e-8:
+                raise ValueError("actual requested role ratio contract mismatch: "+role)
+        nl,nu,nv=(len(roles[k]) for k in ("L_s","U_s","V"))
+        rho=nl/max(1,nl+nu);val_fraction=nv/max(1,nl+nu+nv)
+        expected_rho=float(ratios['L_s'])/(float(ratios['L_s'])+float(ratios['U_s']))
+        if abs(rho-expected_rho)>float(receipt.get('realized_rho_tolerance',0))+1e-12:
+            raise ValueError("actual labeled ratio outside contract tolerance")
+        if abs(val_fraction-float(ratios['V']))>float(receipt.get('realized_source_val_tolerance',0))+1e-12:
+            raise ValueError("actual validation ratio outside contract tolerance")
+    for key,expected in (("source_selection","final_only"),("checkpoint_initialization","from_scratch"),("upstream",[])):
+        if key in contract and contract[key]!=expected: raise ValueError("invalid evidence contract "+key)
     return contract

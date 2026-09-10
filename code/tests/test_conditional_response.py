@@ -136,3 +136,21 @@ def test_fp32_large_correlated_precision_snapshot_and_strict_input_symmetry():
     invalid[0,0,1]+=.001
     with pytest.raises(ValueError,match='symmetric'):
         fit_support_response(z,phi,invalid,observed,['a','b'])
+
+
+def test_state_uncertainty_direction_changes_decision_not_only_temperature():
+    from cvsrffi.partial_gaussian_head import gaussian_scores
+    response=ConditionalResponse(2,2,2).double()
+    response.fit_state_domain(torch.tensor([[-1.,-1.],[1.,1.]],dtype=torch.double),source_training=True)
+    with torch.no_grad():
+        response.mean.copy_(torch.eye(2,dtype=torch.double))
+        response.shared_slopes.copy_(torch.eye(2,dtype=torch.double))
+    state=torch.zeros(1,2,dtype=torch.double)
+    z=torch.zeros(1,2,dtype=torch.double)
+    mask=torch.ones(1,2,dtype=torch.bool)
+    base=torch.eye(2,dtype=torch.double)*.1
+    u=torch.diag(torch.tensor([1.,.01],dtype=torch.double))[None]
+    first=gaussian_scores(z,response(state),base+response.state_uncertainty(state,u),mask)['scores']
+    second=gaussian_scores(z,response(state),base+response.state_uncertainty(state,u.flip(-1).flip(-2)),mask)['scores']
+    assert first.argmax(-1).item()==0
+    assert second.argmax(-1).item()==1

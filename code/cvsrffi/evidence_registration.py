@@ -154,6 +154,12 @@ def fit_registered_evidence(head, support_result, support_labels, physical_ids, 
         prior = coefficients[old] if old is not None else coefficients.mean(0)
         j = jac[take,old] if old is not None else jac[take].mean(1)
         covariance = response_cov+torch.diag_embed(obsvar[take])+j@frozen_head.state_error@j.transpose(-1,-2)
+        # The same supported-state policy applies to support likelihoods and
+        # query likelihoods. Out-of-domain support must not acquire artificially
+        # high precision merely because clipping set its Jacobian to zero.
+        outside = frozen_head.response.domain_diagnostics(support_result['state'][take])['outside_distance']
+        covariance = covariance + (outside.square()*head.config.response_variance)[:,None,None]*torch.eye(
+            head.feature_dim,device=covariance.device,dtype=covariance.dtype)
         posts.append(fit_support_response(support_result['z'][take],basis[take],covariance,
                      support_result['observed'][take],[physical_ids[i] for i in take],
                      prior_mean=prior,prior_precision=head.config.prior_precision))

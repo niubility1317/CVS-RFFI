@@ -109,16 +109,21 @@ class ConditionAwareCalibrator:
             available[mask] = True
         standardized = mahalanobis.gather(1,top[:,None]).squeeze(1) / observed_count.clamp_min(1)
         consistent = available & (standardized <= limits)
+        # A poor fit for the top-scoring class is not evidence against every
+        # registered identity (class covariance volume or H5 can change rank).
+        # Report model mismatch only when ALL candidates fail consistency.
+        best_standardized = mahalanobis.amin(-1) / observed_count.clamp_min(1)
         coverage = self._coverage(state_coverage, logits.shape[0], logits.device)
         sufficient = (observed_count > 0) & coverage & (confidence >= self.min_confidence)
         accepted = sufficient & consistent
-        mismatch = available & (observed_count > 0) & coverage & ~consistent
+        mismatch = available & (observed_count > 0) & coverage & (best_standardized > limits)
         status = ['identify' if a else 'model_mismatch_candidate' if m else 'defer'
                   for a,m in zip(accepted.tolist(),mismatch.tolist())]
         return dict(top_class=top, accepted=accepted, status=status,
                     evidence_sufficiency=sufficient, consistency=consistent,
                     calibration_available=available, consistency_limit=limits,
-                    standardized_mahalanobis=standardized, probabilities=probabilities)
+                    standardized_mahalanobis=standardized,
+                    best_known_standardized_mahalanobis=best_standardized, probabilities=probabilities)
 
     def state_dict(self):
         return dict(version=1, quality_bins=self.quality_bins,

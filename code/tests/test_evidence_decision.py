@@ -42,6 +42,14 @@ class DecisionTests(unittest.TestCase):
         self.assertEqual(json.dumps(restored.state_dict(),sort_keys=True),state)
         self.assertTrue(all(not isinstance(v,torch.Tensor) for v in restored.__dict__.values()))
 
+    def test_top_class_inconsistent_does_not_imply_all_known_mismatch(self):
+        cal = self.fitted()
+        out = cal.predict(torch.tensor([[3.,0.],[3.,0.]]),
+                          torch.tensor([[20.,.5],[20.,30.]]),
+                          torch.ones(2,dtype=torch.long),torch.tensor([[.1],[.1]]))
+        self.assertEqual(out['status'],['defer','model_mismatch_candidate'])
+        self.assertFalse(out['accepted'][0])
+
     def test_rejects_wrong_and_curve_ties(self):
         logits = torch.tensor([[2.,0.],[2.,0.],[0.,2.]])
         labels = torch.tensor([0,1,1])

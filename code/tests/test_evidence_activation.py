@@ -46,9 +46,13 @@ def test_active_configuration_parameters_change_consumed_values():
     assert 0<partial['observed'].sum()<partial['observed'].numel()
     manifest=mechanism_manifest(h)
     assert manifest['inactive_by_ablation']==[]
-    assert_epoch_activation(h,{'evidence/observation_active':1,'evidence/correlation_energy':1,'evidence/support_queries':3})
+    assert_epoch_activation(h,{'evidence/observation_active':1,'evidence/correlation_energy':1,'evidence/support_queries':3,
+                               'evidence/support_effective_queries':3})
     with pytest.raises(RuntimeError,match='support_queries'):
         assert_epoch_activation(h,{'evidence/observation_active':1,'evidence/correlation_energy':1})
+    with pytest.raises(RuntimeError,match='support_effective_queries'):
+        assert_epoch_activation(h,{'evidence/observation_active':1,'evidence/correlation_energy':1,
+                                  'evidence/support_queries':3,'evidence/support_effective_queries':0})
 
 
 def test_source_probes_and_same_feature_strong_baselines():
