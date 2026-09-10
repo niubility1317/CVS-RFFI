@@ -1,0 +1,80 @@
+from __future__ import annotations
+import json
+from pathlib import Path
+from .legacy.options import build_arg_parser
+
+SCENES = ('leo_clear_weak', 'leo_low_elev_weak', 'leo_rain_weak')
+
+def parser():
+    p = build_arg_parser()
+    argv = json.loads((Path(__file__).resolve().parents[2] / 'configs/core90_game_historical_argv.json').read_text(encoding='utf-8'))
+    defaults = vars(p.parse_args(argv))
+    defaults.update(labeled_ratio=.07, unlabeled_ratio=.63, source_val_ratio=.30,
+                    wisig_train_rxs='1,3,4,6,8', wisig_test_rxs='0,2,5,7,9,10,11',
+                    wisig_train_days='1,2,3', wisig_test_days='0,1,2,3',
+                    best_metric='clean_val_tx', enable_joint_safe_guard=False,
+                    paic_guard_enabled=False, baseline_ckpt='', from_scratch=True,
+                    amp=False, use_concat_sat_channel_aug=True, concat_sat_ce_only=True)
+    p.set_defaults(**defaults)
+    p.add_argument('--game_solver', choices=('simultaneous','alternating','extragradient','heun','optimistic','head_lookahead'), default='simultaneous')
+    p.add_argument('--game_optimizer', choices=('adamw','sgd'), default='adamw')
+    p.add_argument('--game_control', choices=('off','catchup','correction','both','random','fixed','replay'), default='off')
+    p.add_argument('--game_curriculum', choices=('fixed','capability'), default='fixed')
+    p.add_argument('--game_head_scale', choices=('legacy_weighted','separate_head_scale'), default='legacy_weighted')
+    p.add_argument('--game_head_lr_ratio', type=float, default=1.)
+    p.add_argument('--game_fixed_head_steps', type=int, default=0)
+    p.add_argument('--game_audit_interval', type=int, default=250)
+    p.add_argument('--game_audit_samples_per_capture', type=int, default=4)
+    p.add_argument('--game_probe_steps', type=int, default=40)
+    p.add_argument('--game_independent_probe_every', type=int, default=4)
+    p.add_argument('--game_max_extra_head', type=int, default=3)
+    p.add_argument('--game_correction_fraction', type=float, default=.20)
+    p.add_argument('--game_actions_replay', default='')
+    p.add_argument('--game_jacobian_interval', type=int, default=0)
+    p.add_argument('--game_response_tracking', action='store_true')
+    p.add_argument('--game_max_grad_norm', type=float, default=5.)
+    p.add_argument('--game_max_steps_per_epoch', type=int, default=0)
+    p.add_argument('--game_time_budget_s', type=float, default=0.)
+    p.add_argument('--game_resume', default='')
+    p.add_argument('--game_synthetic', action='store_true')
+    p.add_argument('--game_split_seed', type=int, default=392002)
+    p.add_argument('--game_source_calibration_steps', type=int, default=500)
+    p.add_argument('--game_no_audit', action='store_true')
+    p.add_argument('--game_export_source_predictions', action='store_true')
+    p.add_argument('--game_skip_final_eval', action='store_true')
+    p.add_argument('--game_config_json', default='')
+    return p
+
+def parse_args(argv=None):
+    p = parser()
+    pre, _ = p.parse_known_args(argv)
+    if pre.game_config_json:
+        overrides = json.loads(Path(pre.game_config_json).read_text(encoding='utf-8'))
+        known = {a.dest for a in p._actions}
+        if set(overrides) - known:
+            raise ValueError('Unknown configuration keys: ' + str(set(overrides) - known))
+        p.set_defaults(**overrides)
+    args = p.parse_args(argv)
+    validate(args)
+    return args
+
+def validate(a):
+    if a.baseline_ckpt or not a.from_scratch:
+        raise ValueError('CHECKPOINT_PROVENANCE_UNVERIFIED: initial training must be scratch-only')
+    if a.best_metric != 'clean_val_tx' or a.enable_joint_safe_guard or a.paic_guard_enabled:
+        raise ValueError('Source-only fixed-final selection required; legacy test guards are prohibited')
+    if [a.labeled_ratio, a.unlabeled_ratio, a.source_val_ratio] != [.07,.63,.30]:
+        raise ValueError('Phase1 source roles must be .07/.63/.30')
+    if not a.use_concat_sat_channel_aug or not a.concat_sat_ce_only or a.lambda_sat_cons != 0:
+        raise ValueError('CORE90 matched rows require concat satellite CE-only')
+    source = set(a.wisig_train_rxs.split(','))
+    if source & set(a.wisig_test_rxs.split(',')):
+        raise ValueError('source/target RX overlap')
+    if a.game_control == 'replay' and not a.game_actions_replay:
+        raise ValueError('replay requires a previously source-generated schedule')
+    if a.game_max_steps_per_epoch and not a.game_synthetic:
+        raise ValueError('Step truncation is restricted to synthetic functional acceptance')
+    if a.game_fixed_head_steps < 0 or a.game_probe_steps < 1 or a.game_head_lr_ratio <= 0:
+        raise ValueError('Invalid update budget')
+    if a.epochs <= 0:
+        raise ValueError('epochs must be positive')

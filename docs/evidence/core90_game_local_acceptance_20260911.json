@@ -1,0 +1,263 @@
+{
+  "completion.json": {
+    "status": "SOURCE_ARTIFACTS_COMPLETE",
+    "epoch": 1,
+    "step": 1,
+    "target_evaluated": false,
+    "scientific_verdict": "SOURCE_ONLY_NO_PROMOTION"
+  },
+  "jacobian_audit.jsonl": [
+    {
+      "step": 0,
+      "valid": true,
+      "scope": "selected_parameter_block_full_CORE90_current_objective",
+      "field_kind": "explicit_signed_no_GRL",
+      "direction_seed": 392002,
+      "loss_terms": [
+        "tx",
+        "dom",
+        "adv",
+        "orth",
+        "cons",
+        "group_ce",
+        "fishr",
+        "proto",
+        "open_world_feat",
+        "zid_compact",
+        "proxy_unknown",
+        "soft_unknown_mixup",
+        "source_episode",
+        "sat_cls"
+      ],
+      "excluded_loss_terms": [],
+      "model_forwards": 12,
+      "head_forwards": 12,
+      "field_evaluations": 6,
+      "reason": "",
+      "rotation_ratio": 0.018624376505613327,
+      "jvp_norm": 0.7212561368942261,
+      "vjp_norm": 0.7196857929229736,
+      "parameter_norm": 13.791802406311035,
+      "parameter_names": [
+        "id_backbone.fuse.0.weight",
+        "id_backbone.fuse.0.bias",
+        "adv_head.net.0.weight",
+        "adv_head.net.0.bias",
+        "adv_head.net.3.weight",
+        "adv_head.net.3.bias"
+      ],
+      "parameter_count": 65129,
+      "finite_difference_relative_error": 0.009900647215545177,
+      "finite_difference_step": 0.00025,
+      "finite_difference_trials": [
+        {
+          "step": 0.001,
+          "relative_error": 77.51239776611328,
+          "relu_region_changes": 1
+        },
+        {
+          "step": 0.00025,
+          "relative_error": 0.009900647215545177,
+          "relu_region_changes": 0
+        }
+      ],
+      "finite_difference_tolerance": 0.1,
+      "effective_weights": {
+        "tx": 1.0,
+        "dom": 1.0,
+        "adv": 0.24499999999999997,
+        "orth": 0.025,
+        "cons": 0.0,
+        "group_ce": 0.08,
+        "fishr": 0.04,
+        "proto": 0.0032,
+        "open_world_feat": 0.0,
+        "zid_compact": 0.0,
+        "proxy_unknown": 0.0,
+        "soft_unknown_mixup": 0.0,
+        "source_episode": 0.0,
+        "sat_cls": 0.0
+      },
+      "stage_epoch": 1,
+      "stop_gradient_semantics": "two_variable_reference_target_response",
+      "stochastic_semantics": "fixed_context_replayed_rng_and_original_buffers",
+      "model_mode": "preserved_per_module",
+      "derivative_scope": "piecewise_local_autograd_with_dynamic_detached_targets",
+      "internal_stage_scales": {
+        "open_world_feat": 0.0,
+        "zid_compact": 0.0,
+        "proxy_unknown": 0.0,
+        "source_episode": 0.0,
+        "soft_unknown_mixup": 0.0,
+        "sat_cls": 0.0
+      },
+      "prototype_snapshot_available": true,
+      "relu_region_changes_per_field": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "pseudo_mask_origin_initialized": false,
+      "active_weight_terms": [
+        "tx",
+        "dom",
+        "adv",
+        "orth",
+        "group_ce",
+        "fishr",
+        "proto"
+      ],
+      "encoder_adversarial_scale": 0.24499999999999997,
+      "head_adversarial_scale": 0.24499999999999997,
+      "stage_scaled_term_values": {
+        "tx": 12.660690307617188,
+        "dom": 2.3098256587982178,
+        "adv": 2.14825177192688,
+        "orth": 0.004507073201239109,
+        "cons": 0.0,
+        "group_ce": 13.598234176635742,
+        "fishr": 0.011917879804968834,
+        "proto": 0.0,
+        "open_world_feat": 0.0,
+        "zid_compact": 0.0,
+        "proxy_unknown": 0.0,
+        "soft_unknown_mixup": 0.0,
+        "source_episode": 0.0,
+        "sat_cls": -0.0
+      },
+      "weighted_contributions": {
+        "tx": 12.660690307617188,
+        "dom": 2.3098256587982178,
+        "adv": 0.5263216841220855,
+        "orth": 0.00011267683003097774,
+        "cons": 0.0,
+        "group_ce": 1.0878587341308594,
+        "fishr": 0.0004767151921987534,
+        "proto": 0.0,
+        "open_world_feat": 0.0,
+        "zid_compact": 0.0,
+        "proxy_unknown": 0.0,
+        "soft_unknown_mixup": 0.0,
+        "source_episode": 0.0,
+        "sat_cls": -0.0
+      },
+      "reference_objective_evaluations": 6,
+      "stop_gradient_targets": 40,
+      "elapsed_seconds": 1.4820967999985442
+    }
+  ],
+  "response_tracking.jsonl": [
+    {
+      "step": 0,
+      "valid": true,
+      "accepted": true,
+      "reason": "accepted_source_monitor_nonworsening",
+      "iterations": 5,
+      "hvp_iterations": 5,
+      "model_forwards": 2,
+      "head_forwards": 3,
+      "damping": 0.1,
+      "scope": "final_linear_layer_conditional_response_approximation",
+      "optimizer_moments_updated": false,
+      "separate_compensation_update": true,
+      "residual_norm": 8.043217007980275e-07,
+      "negative_curvature": false,
+      "head_parameter_names": [
+        "adv_head.net.3.weight",
+        "adv_head.net.3.bias"
+      ],
+      "encoder_parameter_count": 316705,
+      "encoder_displacement_norm": 0.09608224034309387,
+      "monitor_ce_before": 2.1952943801879883,
+      "monitor_ce_after": 2.19492244720459,
+      "compensation_norm": 0.07889258861541748,
+      "elapsed_seconds": 0.29430349999893224
+    }
+  ],
+  "resource_summary.json": {
+    "total_seconds": 4.507998799999768,
+    "budget": {
+      "config": {
+        "window_steps": 100,
+        "max_head_steps": 20,
+        "max_field_evaluations": 20,
+        "max_audit_seconds": 120.0,
+        "max_correction_fraction": 0.2
+      },
+      "events": [
+        {
+          "head_steps": 0,
+          "field_evaluations": 0,
+          "audit_seconds": 1.884856699994998,
+          "corrections": 0,
+          "base_steps": 0,
+          "step": 0
+        },
+        {
+          "head_steps": 0,
+          "field_evaluations": 0,
+          "audit_seconds": 1.4820967999985442,
+          "corrections": 0,
+          "base_steps": 0,
+          "step": 0
+        },
+        {
+          "head_steps": 0,
+          "field_evaluations": 0,
+          "audit_seconds": 0,
+          "corrections": 0,
+          "base_steps": 0,
+          "step": 0
+        },
+        {
+          "head_steps": 0,
+          "field_evaluations": 0,
+          "audit_seconds": 0,
+          "corrections": 0,
+          "base_steps": 1,
+          "step": 0
+        },
+        {
+          "head_steps": 0,
+          "field_evaluations": 0,
+          "audit_seconds": 0.29430349999893224,
+          "corrections": 0,
+          "base_steps": 0,
+          "step": 0
+        }
+      ],
+      "lifetime": {
+        "head_steps": 0,
+        "field_evaluations": 0,
+        "audit_seconds": 3.6612569999924744,
+        "corrections": 0,
+        "base_steps": 1
+      },
+      "last_step": 0
+    },
+    "epochs": 1,
+    "full_budget_completed": true,
+    "checkpoint": "local_artifacts\\core90_game_advanced_field_refinement_20260911\\final_ssdg.pth",
+    "source_only": true
+  },
+  "source_final_eval/source_prediction_manifest.json": {
+    "schema": "core90_game_source_predictions_v1",
+    "complete": true,
+    "source_only": true,
+    "counts": {
+      "clean": 108,
+      "leo_clear_weak": 108,
+      "leo_low_elev_weak": 108,
+      "leo_rain_weak": 108
+    },
+    "num_classes": 6,
+    "prediction_scope": "all_registered_classes_argmax",
+    "truth_used_for_prediction": false,
+    "prediction_file_closed_before_scoring": true,
+    "augmentation_seed": 392002,
+    "synthetic": true
+  }
+}
