@@ -75,3 +75,9 @@ J1累计8次审计、4次有效、4次按既定规则判invalid；H1累计15次�
 VERIFIED：仍为16运行、10排队、0失败，全部进程绑定正确、动作数持续增长，各行累计3637—6552次主更新均接受。B0/B1/B2/C1/S1/S3共6行已完成E131—E133，实际每epoch消费6268—6272条不同U样本，unlabeled_ce=0.001148—0.002988、unlabeled_entropy=0.010032—0.018764，说明U分支确已参与训练；6268来自含124条的末尾窗口，不是漏掉4条。跨epoch全池覆盖仍待累计足够epoch实测，不以单epoch计数代替覆盖证明。B7尚在E116，伪标签阶段的Optimistic历史待其到E131后核验。
 
 B0实际E132 checkpoint的scratch-only/final-only/target_contact=false及数据契约保持正确。J1累计12次审计，7次有效；H1累计24次响应，12次接受、9次source monitor拒绝、3次CG迭代预算耗尽，主更新继续健康。无须修复或重发布。[完整检查摘要](evidence/core90_game_392005_heartbeat_0539.json)。
+
+## U轮转及Optimistic修复实测：2026-09-11 06:11 HKT
+
+VERIFIED：16运行、10排队、0失败，全部PID绑定正确，已完成E82—E151，各行所有主更新均接受。完整下载并解析B0/B7的game_actions.jsonl：B0从E131开始的前443个U batch覆盖443个不同窗口起始ID，实际消费样本数合计56700，最后一个窗口发生于E140，与全U池及确定性连续窗口轮转一致。B7的正式E131共49次更新全部接受，47次实际使用Optimistic历史，发生1次伪标签显著变化重置；未再出现每batch清历史导致全阶段退化。原A01/A02修复获得正式运行证据。
+
+原始只读下载保留在Git工作树local_artifacts/core90_reaudit_392005/B0_actions_0611.jsonl及B7_actions_0611.jsonl。B0独立E146 checkpoint仍符合scratch-only/final-only/target_contact=false。J1累计13次审计7次有效，H1累计26次响应12次接受、9次source monitor拒绝、5次迭代预算耗尽，均保留记录，健康训练未停止。无需修复重发布。[当前完整解析摘要](evidence/core90_game_392005_heartbeat_0611.json)。
