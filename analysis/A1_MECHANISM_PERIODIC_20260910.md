@@ -23,3 +23,15 @@
 独立启动快照确认13组新进程运行，scratch-only、source-screen-only、周期起点E80、PID/PPID/CWD/GPU逐个匹配；三组等待：GPU0的F1_R3_CONTINUOUS、GPU1的F2_R3_IDENTITY、GPU3的G0_EQUAL_BRANCH。8张卡各两个GPU进程。证据：a1_periodic_remote_checking_v2.json、a1_screen_reconfiguration_stop_result.json。
 
 仍保留的旧任务为PID523456的tweak_config2_portability_20260909_v5/official_config2_full、PID328173的R3_REFERENCE_CLEAN_CROSS_RX、PID350383的R3_B160。已向用户询问是否终止这三项并保留产物；截至本次记录未获答复，不能将超时视为同意。因此16组已全部编入自动启动队列，尚不能声明16组同时运行。周期配置与13组启动为VERIFIED，余下3组的同时启动等待资源或用户停机答复；正式E80评分仍未发生。
+
+## 2026-09-10 09:13完整状态与测试更新
+
+上述旧任务已自然完成，等待的3组随后自动启动，原停旧任务询问已无必要。当前本轮为14组运行、2组失败、0组完成E200；9组已完成17次四场景目标测试，已到达的固定测试轮次没有缺口。
+
+E1_RESPONSE_FUSED在E43/batch38以8个非有限batch、比例21.05%触发保护，最后完成E42；G0_EQUAL_BRANCH在E1/batch8以8/8非有限batch触发保护，未完成首轮。它们不会自动恢复。本次只读状态查询未停机、未修复或重跑健康/失败实验。
+
+新增完成的R3_B160已封存E160状态并完成全部9次目标测试，最终clean78.58%、clear67.79%、low-elev66.11%、rain66.38%，LEO均值66.76%。R3_REFERENCE_CLEAN_CROSS_RX完成E200源域训练，无target评分；LoRa Config2完成100轮及20项独立测试。
+
+基于最近完整epoch和实测周期评分耗时，基础/DAOT/R3大部分还需约5–20小时，E0/E2约25–46小时；G1每轮约38分钟，中心估计约6天，工程区间约5–9天。两项失败使整批16组的完成时间暂不可确定。
+
+全量分析587个文件、241011条文本/结构化记录，48条CVS训练轨迹共5095个epoch记录；提供全部50份CVS四场景评分、1200条逐类结果及20项LoRa测试。无解析错误、重复或中间缺失epoch。完整报告及CSV位于`analysis/a1_status_full_20260910_0912/`，本机交付目录为`E:/type10-7/automation_reports/CV-SincNet/a1_status_full_20260910_0912/`。完整结果提交为`0101f987ac9994620fe0a494765a5f12b34a464e`。所有target观察仍不反馈调参、选模或组合选择。
