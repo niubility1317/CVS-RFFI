@@ -1,0 +1,385 @@
+{
+  "status": "PASS",
+  "rows": [
+    {
+      "status": "PASS",
+      "checkpoint_loads": 0,
+      "target_inputs": 0,
+      "initialization": "fresh_random",
+      "paired_model_heads_rng": "EXACT",
+      "synthetic_gradient_checks": [
+        {
+          "scope": "clean",
+          "leo_applied": false,
+          "amp": false,
+          "valid_anchors": 30,
+          "leo_count": 0,
+          "loss": 0.009618738666176796,
+          "identity_gradient": "nonzero_finite"
+        },
+        {
+          "scope": "clean",
+          "leo_applied": true,
+          "amp": false,
+          "valid_anchors": 30,
+          "leo_count": 0,
+          "loss": 0.009432593360543251,
+          "identity_gradient": "nonzero_finite"
+        },
+        {
+          "scope": "clean_leo",
+          "leo_applied": false,
+          "amp": false,
+          "valid_anchors": 30,
+          "leo_count": 0,
+          "loss": 0.010481951758265495,
+          "identity_gradient": "nonzero_finite"
+        },
+        {
+          "scope": "clean_leo",
+          "leo_applied": true,
+          "amp": false,
+          "valid_anchors": 60,
+          "leo_count": 30,
+          "loss": 0.010420416481792927,
+          "identity_gradient": "nonzero_finite"
+        }
+      ],
+      "actual_train_entry_successful_steps": 4,
+      "actual_train_entry_objectives": [
+        {
+          "configured": 1.0,
+          "executed": 1.0,
+          "valid_anchors": 128,
+          "clean_count": 128,
+          "leo_count": 0,
+          "raw_loss": 0.20263227820396423,
+          "weighted_loss": 0.010131614282727242
+        },
+        {
+          "configured": 1.0,
+          "executed": 1.0,
+          "valid_anchors": 128,
+          "clean_count": 128,
+          "leo_count": 0,
+          "raw_loss": 0.20219409465789795,
+          "weighted_loss": 0.010109704919159412
+        },
+        {
+          "configured": 1.0,
+          "executed": 1.0,
+          "valid_anchors": 125,
+          "clean_count": 128,
+          "leo_count": 0,
+          "raw_loss": 0.20088604092597961,
+          "weighted_loss": 0.010044301860034466
+        },
+        {
+          "configured": 1.0,
+          "executed": 1.0,
+          "valid_anchors": 128,
+          "clean_count": 128,
+          "leo_count": 0,
+          "raw_loss": 0.20273858308792114,
+          "weighted_loss": 0.010136929340660572
+        }
+      ],
+      "entry_scope": "actual matrix combined candidate E1 source loader; target-loader builder replaced with empty mapping; stop after four successful optimizer steps; no formal training result",
+      "row": "X2_E400",
+      "late_checks": [
+        {
+          "epoch": 201,
+          "reference_epoch": 101,
+          "lr": 7.768975701371612e-05,
+          "loss": 7.787994384765625
+        },
+        {
+          "epoch": 201,
+          "reference_epoch": 101,
+          "lr": 7.768975701371612e-05,
+          "loss": 5.515544891357422
+        },
+        {
+          "epoch": 399,
+          "reference_epoch": 200,
+          "lr": 1.0000000000000002e-06,
+          "loss": 4.849836349487305
+        },
+        {
+          "epoch": 400,
+          "reference_epoch": 200,
+          "lr": 1.0000000000000002e-06,
+          "loss": 4.684302806854248
+        }
+      ],
+      "evaluation_epochs": [
+        200,
+        220,
+        240,
+        260,
+        280,
+        300,
+        320,
+        340,
+        360,
+        380,
+        400
+      ]
+    },
+    {
+      "status": "PASS",
+      "checkpoint_loads": 0,
+      "target_inputs": 0,
+      "initialization": "fresh_random",
+      "paired_model_heads_rng": "EXACT",
+      "synthetic_gradient_checks": [
+        {
+          "scope": "clean",
+          "leo_applied": false,
+          "amp": false,
+          "valid_anchors": 30,
+          "leo_count": 0,
+          "loss": 0.009618738666176796,
+          "identity_gradient": "nonzero_finite"
+        },
+        {
+          "scope": "clean",
+          "leo_applied": true,
+          "amp": false,
+          "valid_anchors": 30,
+          "leo_count": 0,
+          "loss": 0.009432593360543251,
+          "identity_gradient": "nonzero_finite"
+        },
+        {
+          "scope": "clean_leo",
+          "leo_applied": false,
+          "amp": false,
+          "valid_anchors": 30,
+          "leo_count": 0,
+          "loss": 0.010481951758265495,
+          "identity_gradient": "nonzero_finite"
+        },
+        {
+          "scope": "clean_leo",
+          "leo_applied": true,
+          "amp": false,
+          "valid_anchors": 60,
+          "leo_count": 30,
+          "loss": 0.010420416481792927,
+          "identity_gradient": "nonzero_finite"
+        }
+      ],
+      "actual_train_entry_successful_steps": 4,
+      "actual_train_entry_objectives": [
+        {
+          "configured": 1.0,
+          "executed": 1.0,
+          "valid_anchors": 128,
+          "clean_count": 128,
+          "leo_count": 0,
+          "raw_loss": 0.20263227820396423,
+          "weighted_loss": 0.010131614282727242
+        },
+        {
+          "configured": 1.0,
+          "executed": 1.0,
+          "valid_anchors": 128,
+          "clean_count": 128,
+          "leo_count": 0,
+          "raw_loss": 0.20219409465789795,
+          "weighted_loss": 0.010109704919159412
+        },
+        {
+          "configured": 1.0,
+          "executed": 1.0,
+          "valid_anchors": 125,
+          "clean_count": 128,
+          "leo_count": 0,
+          "raw_loss": 0.20088604092597961,
+          "weighted_loss": 0.010044301860034466
+        },
+        {
+          "configured": 1.0,
+          "executed": 1.0,
+          "valid_anchors": 128,
+          "clean_count": 128,
+          "leo_count": 0,
+          "raw_loss": 0.20273858308792114,
+          "weighted_loss": 0.010136929340660572
+        }
+      ],
+      "entry_scope": "actual matrix combined candidate E1 source loader; target-loader builder replaced with empty mapping; stop after four successful optimizer steps; no formal training result",
+      "row": "X2_E600",
+      "late_checks": [
+        {
+          "epoch": 201,
+          "reference_epoch": 67,
+          "lr": 0.0001388571014497462,
+          "loss": 7.787994384765625
+        },
+        {
+          "epoch": 301,
+          "reference_epoch": 101,
+          "lr": 7.768975701371612e-05,
+          "loss": 4.929850101470947
+        },
+        {
+          "epoch": 599,
+          "reference_epoch": 200,
+          "lr": 1.0000000000000002e-06,
+          "loss": 4.332175254821777
+        },
+        {
+          "epoch": 600,
+          "reference_epoch": 200,
+          "lr": 1.0000000000000002e-06,
+          "loss": 4.277254104614258
+        }
+      ],
+      "evaluation_epochs": [
+        300,
+        320,
+        340,
+        360,
+        380,
+        400,
+        420,
+        440,
+        460,
+        480,
+        500,
+        520,
+        540,
+        560,
+        580,
+        600
+      ]
+    },
+    {
+      "status": "PASS",
+      "checkpoint_loads": 0,
+      "target_inputs": 0,
+      "initialization": "fresh_random",
+      "paired_model_heads_rng": "EXACT",
+      "synthetic_gradient_checks": [
+        {
+          "scope": "clean",
+          "leo_applied": false,
+          "amp": false,
+          "valid_anchors": 30,
+          "leo_count": 0,
+          "loss": 0.009894235990941525,
+          "identity_gradient": "nonzero_finite"
+        },
+        {
+          "scope": "clean",
+          "leo_applied": true,
+          "amp": false,
+          "valid_anchors": 30,
+          "leo_count": 0,
+          "loss": 0.01047631073743105,
+          "identity_gradient": "nonzero_finite"
+        },
+        {
+          "scope": "clean_leo",
+          "leo_applied": false,
+          "amp": false,
+          "valid_anchors": 30,
+          "leo_count": 0,
+          "loss": 0.009672529064118862,
+          "identity_gradient": "nonzero_finite"
+        },
+        {
+          "scope": "clean_leo",
+          "leo_applied": true,
+          "amp": false,
+          "valid_anchors": 60,
+          "leo_count": 30,
+          "loss": 0.010036933235824108,
+          "identity_gradient": "nonzero_finite"
+        }
+      ],
+      "actual_train_entry_successful_steps": 4,
+      "actual_train_entry_objectives": [
+        {
+          "configured": 1.0,
+          "executed": 1.0,
+          "valid_anchors": 128,
+          "clean_count": 128,
+          "leo_count": 0,
+          "raw_loss": 0.20120763778686523,
+          "weighted_loss": 0.010060382075607777
+        },
+        {
+          "configured": 1.0,
+          "executed": 1.0,
+          "valid_anchors": 128,
+          "clean_count": 128,
+          "leo_count": 0,
+          "raw_loss": 0.20220108330249786,
+          "weighted_loss": 0.010110054165124893
+        },
+        {
+          "configured": 1.0,
+          "executed": 1.0,
+          "valid_anchors": 128,
+          "clean_count": 128,
+          "leo_count": 0,
+          "raw_loss": 0.20611000061035156,
+          "weighted_loss": 0.010305500589311123
+        },
+        {
+          "configured": 1.0,
+          "executed": 1.0,
+          "valid_anchors": 128,
+          "clean_count": 128,
+          "leo_count": 0,
+          "raw_loss": 0.19695189595222473,
+          "weighted_loss": 0.009847595356404781
+        }
+      ],
+      "entry_scope": "actual matrix combined candidate E1 source loader; target-loader builder replaced with empty mapping; stop after four successful optimizer steps; no formal training result",
+      "row": "R3_CLEAN_RX_E400",
+      "late_checks": [
+        {
+          "epoch": 201,
+          "reference_epoch": 101,
+          "lr": 7.768975701371612e-05,
+          "loss": 63.848873138427734
+        },
+        {
+          "epoch": 201,
+          "reference_epoch": 101,
+          "lr": 7.768975701371612e-05,
+          "loss": 61.90940856933594
+        },
+        {
+          "epoch": 399,
+          "reference_epoch": 200,
+          "lr": 1.0000000000000002e-06,
+          "loss": 22.818092346191406
+        },
+        {
+          "epoch": 400,
+          "reference_epoch": 200,
+          "lr": 1.0000000000000002e-06,
+          "loss": 23.040987014770508
+        }
+      ],
+      "evaluation_epochs": [
+        200,
+        220,
+        240,
+        260,
+        280,
+        300,
+        320,
+        340,
+        360,
+        380,
+        400
+      ]
+    }
+  ]
+}

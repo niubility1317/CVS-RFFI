@@ -20,7 +20,7 @@ if __package__ in (None, ""):
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from post_stage_cli import add_common_data_args, add_sat_eval_args, str2bool
-from cvsrffi.a1_budget_schedule import reference_epoch, reference_total, save_budget_snapshot, u_satellite_scenario
+from cvsrffi.a1_budget_schedule import reference_epoch, reference_total, reference_clock_enabled, save_budget_snapshot, u_satellite_scenario
 from cvsrffi.phase1_ablation_factory import (
     apply_phase1_ablation,
     phase1_ablation_config,
@@ -418,6 +418,8 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--a1_fisher_equal", type=str2bool, default=False)
     parser.add_argument("--a1_source_screen_only", type=str2bool, default=False)
     parser.add_argument("--a1_periodic_target_start", type=int, default=0)
+    parser.add_argument("--a1_periodic_target_interval", type=int, default=10)
+    parser.add_argument("--a1_extended_budget_mode", type=str2bool, default=False)
     parser.add_argument("--a1_periodic_target_inputs", type=str, default="")
     parser.add_argument("--a1_periodic_target_truth", type=str, default="")
     parser.add_argument("--a1_rc4_reliability_weight", choices=("margin_squared", "calibrated_probability"), default="margin_squared")
@@ -7190,7 +7192,7 @@ def _compute_rc4_unlabeled_losses(
     hard_scale, partial_set_scale, partial_conditional_scale = rc4_identity_tail_scales(
         int(epoch),
         start_epoch=int(args.rc4_consolidation_start_epoch),
-        end_epoch=int(args.epochs) if bool(getattr(args, "a1_r3_budget_mode", False)) else 200,
+        end_epoch=int(args.epochs) if reference_clock_enabled(args) else 200,
         hard_final=float(args.rc4_identity_tail_hard_final),
         partial_set_final=float(args.rc4_identity_tail_partial_set_final),
         partial_conditional_final=float(args.rc4_identity_tail_partial_conditional_final),
@@ -10248,7 +10250,7 @@ def train(args) -> int:
                     u_sat_probability, _ = adv3b02_core90_u_satellite_policy(
                         reference_epoch(args, epoch)
                     )
-                    u_sat_scenario = (u_satellite_scenario(args, epoch, batch_idx) if args.a1_r3_budget_mode else
+                    u_sat_scenario = (u_satellite_scenario(args, epoch, batch_idx) if reference_clock_enabled(args) else
                         select_adv3b02_u_satellite_scenario(int(epoch), int(batch_idx), int(args.seed)))
                     sat_anchor_route = None
                     rc4_route = None

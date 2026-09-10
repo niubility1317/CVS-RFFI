@@ -12,9 +12,11 @@ import numpy as np
 import torch
 
 
-def due(epoch, start, total):
-    return int(start) > 0 and int(epoch) >= int(start) and (
-        (int(epoch) - int(start)) % 10 == 0 or int(epoch) == int(total))
+def due(epoch, start, total, interval=10):
+    if int(interval) <= 0:
+        raise ValueError('Periodic target interval must be positive')
+    return int(start) > 0 and int(start) <= int(epoch) <= int(total) and (
+        (int(epoch) - int(start)) % int(interval) == 0 or int(epoch) == int(total))
 
 
 def evaluate_checkpoint(checkpoint, *, output, input_package, truth, run_id, row_id,
@@ -64,7 +66,8 @@ def evaluate_checkpoint(checkpoint, *, output, input_package, truth, run_id, row
 
 
 def run_epoch(args, epoch, output_dir, payload, save_fn, device):
-    if not due(epoch, args.a1_periodic_target_start, args.epochs):
+    if not due(epoch, args.a1_periodic_target_start, args.epochs,
+               getattr(args, 'a1_periodic_target_interval', 10)):
         return 0.0
     checkpoint = Path(output_dir)/f'epoch_{int(epoch):03d}_ssdg.pth'
     temporary = checkpoint.with_suffix('.pth.writing')

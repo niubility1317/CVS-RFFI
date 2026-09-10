@@ -3,18 +3,23 @@ from pathlib import Path
 import hashlib
 
 
+def reference_clock_enabled(args):
+    return bool(getattr(args, 'a1_r3_budget_mode', False) or getattr(args, 'a1_extended_budget_mode', False))
+
+
 def reference_epoch(args, epoch):
-    if not bool(getattr(args, 'a1_r3_budget_mode', False)):
+    if not reference_clock_enabled(args):
         return int(epoch)
     total=int(args.epochs)
-    if total not in (120,160,200) or not 1 <= int(epoch) <= total:
-        raise ValueError('R3 budget epoch outside registered 120/160/200 budget')
+    allowed = (400,600) if getattr(args, 'a1_extended_budget_mode', False) else (120,160,200)
+    if total not in allowed or not 1 <= int(epoch) <= total:
+        raise ValueError('Epoch outside registered training budget')
     if int(epoch)==total:return 200
     return ((int(epoch)-1)*200)//total+1
 
 
 def reference_total(args):
-    return 200 if bool(getattr(args,'a1_r3_budget_mode',False)) else int(args.epochs or 200)
+    return 200 if reference_clock_enabled(args) else int(args.epochs or 200)
 
 
 def u_satellite_scenario(args, epoch, batch_index):
@@ -33,7 +38,7 @@ def scale_duration(value,total):
 
 
 def compressed_options(reference_args, base_options, total):
-    if total not in (120,160,200):raise ValueError('Unregistered R3 budget')
+    if total not in (120,160,200,400,600):raise ValueError('Unregistered training budget')
     options=dict(base_options)
     for name,value in vars(reference_args).items():
         if name.startswith(('test_eval_','source_val_heavy_eval_')):continue
@@ -48,7 +53,7 @@ def compressed_options(reference_args, base_options, total):
             elif name.endswith('_epochs'):
                 options['--'+name]=str(scale_duration(value,total))
     for name in ('rc4_calibration_update_epochs','rc4_gradient_telemetry_epochs','daot_diagnostic_epochs'):
-        values=[scale_start(int(v),total) for v in str(getattr(reference_args,name)).split(',') if v.strip()]
+        values=[total if int(v)==200 else scale_start(int(v),total) for v in str(getattr(reference_args,name)).split(',') if v.strip()]
         options['--'+name]=','.join(str(v) for v in sorted(set(values)))
     parts=[]
     for item in str(reference_args.sat_view_schedule).split(';'):
@@ -59,6 +64,10 @@ def compressed_options(reference_args, base_options, total):
         '--label_epochs':str(round(130*total/200)), '--pseudo_epochs':str(total-round(130*total/200)),
         '--a1_budget_snapshot_epochs':','.join(str(v) for v in points),
         '--a1_budget_evaluation_start_epoch':str(total//2)})
+    if total > 200:
+        # Extended runs use the same-PID evaluator; avoid a second writer for its snapshots.
+        options.update({'--a1_r3_budget_mode':'false', '--a1_extended_budget_mode':'true',
+            '--a1_budget_snapshot_epochs':'', '--a1_budget_evaluation_start_epoch':'0'})
     return options
 
 

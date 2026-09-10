@@ -101,7 +101,7 @@ def complete_row(matrix, row, *, project, root, logs):
         if start:
             from cvsrffi.a1_periodic_target import due
             for epoch in range(1, expected+1):
-                if not due(epoch, start, expected): continue
+                if not due(epoch, start, expected, int(options.get('--a1_periodic_target_interval', 10))): continue
                 folder = root/row['id']/'target_epochs'/f'E{epoch:03d}'
                 summary = json.loads((folder/'score.json').read_text(encoding='utf-8'))
                 if summary.get('record_count') != 672000:
