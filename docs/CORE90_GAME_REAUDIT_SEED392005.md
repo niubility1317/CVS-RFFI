@@ -81,3 +81,9 @@ B0实际E132 checkpoint的scratch-only/final-only/target_contact=false及数据�
 VERIFIED：16运行、10排队、0失败，全部PID绑定正确，已完成E82—E151，各行所有主更新均接受。完整下载并解析B0/B7的game_actions.jsonl：B0从E131开始的前443个U batch覆盖443个不同窗口起始ID，实际消费样本数合计56700，最后一个窗口发生于E140，与全U池及确定性连续窗口轮转一致。B7的正式E131共49次更新全部接受，47次实际使用Optimistic历史，发生1次伪标签显著变化重置；未再出现每batch清历史导致全阶段退化。原A01/A02修复获得正式运行证据。
 
 原始只读下载保留在Git工作树local_artifacts/core90_reaudit_392005/B0_actions_0611.jsonl及B7_actions_0611.jsonl。B0独立E146 checkpoint仍符合scratch-only/final-only/target_contact=false。J1累计13次审计7次有效，H1累计26次响应12次接受、9次source monitor拒绝、5次迭代预算耗尽，均保留记录，健康训练未停止。无需修复重发布。[当前完整解析摘要](evidence/core90_game_392005_heartbeat_0611.json)。
+
+## 首批E200闭合：2026-09-11 07:44 HKT
+
+VERIFIED：S1/S3均完成E200、9800次主更新全部接受，completion为SOURCE_ARTIFACTS_COMPLETE且target_evaluated=false。分别独立读取prediction manifest及source_scores.json，四场景各27000条，complete=true、synthetic=false、预测文件在评分前关闭；wc独立读回两份预测各108000行。仅源域结果，不作性能晋级或跨seed稳定性结论。
+
+队列现为2完成、17运行、7排队、0失败；B3_adv_low/B3_adv_high已自然接续派发，其余进程绑定及日志增长正常。保留已有release与全部健康进程，本轮无修复重发布。整个26行矩阵尚未完成，半小时任务继续。[首批完成证据](evidence/core90_game_392005_completion_0744.json)。

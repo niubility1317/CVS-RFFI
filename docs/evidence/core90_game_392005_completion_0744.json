@@ -1,0 +1,45 @@
+{
+  "time": "2026-09-11 07:44 HKT",
+  "queue": {
+    "running": 17,
+    "pending": 7,
+    "failed": 0,
+    "completed": 2
+  },
+  "completed": [
+    {
+      "row": "S1_seed392005",
+      "epochs": 200,
+      "steps": 9800,
+      "prediction_line_count_independent": 108000,
+      "scoring_complete": true,
+      "source_only": true,
+      "prediction_count": 108000,
+      "samples_per_scene": 27000,
+      "scenes": [
+        "clean",
+        "leo_clear_weak",
+        "leo_low_elev_weak",
+        "leo_rain_weak"
+      ],
+      "synthetic": false
+    },
+    {
+      "row": "S3_seed392005",
+      "epochs": 200,
+      "steps": 9800,
+      "prediction_line_count_independent": 108000,
+      "scoring_complete": true,
+      "source_only": true,
+      "prediction_count": 108000,
+      "samples_per_scene": 27000,
+      "scenes": [
+        "clean",
+        "leo_clear_weak",
+        "leo_low_elev_weak",
+        "leo_rain_weak"
+      ],
+      "synthetic": false
+    }
+  ]
+}
