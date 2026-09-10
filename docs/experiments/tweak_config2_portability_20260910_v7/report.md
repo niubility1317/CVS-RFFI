@@ -1,6 +1,6 @@
 # Tweak V7：稳定欧氏距离与source侧选模
 
-状态：LOCAL_VERIFIED / RELEASE_PENDING。用户于2026-09-10授权修复并重新发布。
+状态：RUNNING / STARTUP_VERIFIED。用户于2026-09-10授权修复并重新发布。
 
 ## 修复范围与实验假设
 
@@ -10,7 +10,7 @@
 | V7-2 | 公共`shared_triplet_loss`统一平方L2，修正文档陈旧miner描述 | verified | Eq.(1)独立手算3.1，旧代码1.1失败，新代码通过 |
 | V7-3 | 固定source训练池监控替代最低hard loss的LR/checkpoint排序 | verified | 高source识别率优先于margin-floor loss；test区NaN投毒不影响source监控；probe完整状态重置和best恢复测试通过 |
 | V7-4 | 保存预测与opaque ID，再统计accuracy，保留用于独立复算的校准状态 | implemented | 本地预测与truth对齐、结果可复算、拒绝覆盖通过；正式20行独立scorer须待训练完成 |
-| V7-5 | 新release/run/log；保留V1—V6 | pending | 本地测试、N607真实数据前反传和启动读回 |
+| V7-5 | 新release/run/log；保留V1—V6 | verified | 本地测试、N607真实数据前反传、PID/CWD/argv/GPU启动读回通过；完整训练未结束 |
 
 V6审计中的uniform缩尺度方向对所有只保留严格hard的目标都成立，并非全量miner独有，也不能单凭该方向证明更换miner能够解决塌缩。当前没有足够证据推出作者的准确miner；V7保留V6平方L2严格hard集合、网络和物理split，只修复已实证的欧氏距离相消，并修复选模对最小尺度的偏好。不新增normalization、CE或未经验证的loss。
 
@@ -29,3 +29,11 @@ N607根：`/home/szu2070436088/2510044040/CV-SincNet`。release=`releases/tweak_
 三个已确认回归先RED再GREEN；含source边界、预测拒绝覆盖和状态重置/最佳checkpoint恢复的相关测试共36项，编译通过。真实Config2 source诊断在同一seed、LR=.001下执行3,000batch，16组梯度有限，source训练池监控准确率在step1/100/1000/3000为16.0%/26.4%/56.0%/55.6%。最后loss=.101575，中心距=.033419、半径=.055210；这并不证明消除塌缩，V7保留source表现最佳的epoch，后续以正式完整结果判断。
 
 冻结V6 checkpoint在修复后的source监控上为62.8%，说明非常小的embedding差异仍保有身份信号；不能单凭小绝对尺度断言已丢失全部可分信息。此前报告把评分可重复等同于排除数值评分错误、把strict-hard缩尺度方向归为全量miner独有，结论过强，本报告据回归实证修正。独立P0/P1审查无发布阻断，提醒监控不是独立validation、正式预测仍须完整后独立评分。
+
+## 已发布与运行证据
+
+- 代码提交：`03ad828e320a563d2088cb65864982ae71dcb433`，push及远端branch OID读回一致；源码tar为81,920字节，本地/远端SHA-256均为`0a2a0995bc0e7c96245ba5b69741aacc41c34918b29cfde87ab824c5fee875ad`。
+- N607真实source CUDA前反传：`[64,2,128]→[64,12]`、平方strict-hard loss=.5866077542、16组梯度有限；source monitor实际执行成功。远端10个模块和诊断工具编译通过，40条正式数据记录及对应metadata存在。
+- 正式PID=`852891`、PPID=1、物理GPU3（`CUDA_VISIBLE_DEVICES=3`，进程内`cuda:0`）。首次41秒读回PID存活、CWD及argv匹配新release，CPU115%、GPU448MiB。train.log当时0字节：按整epoch输出，尚未完成首个probe，不作为训练完成或最终健康保证。
+- 实际命令：`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -m paper_reproduction.gaskin_tweak_2023.official_lora_experiment --data-root /home/szu2070436088/2510044040/CV-SincNet/datasets/tweak_official_lora_configurations_20260908/Diff_Configurations_Setup --output-dir /home/szu2070436088/2510044040/CV-SincNet/runs/tweak_config2_portability_20260910_v7/official_config2_full --device cuda:0`。未使用smoke限制，5×1epoch LR probe后fresh100epoch，保留20行原矩阵。
+- 已创建30分钟自动监控`tweak-n607-v7`；状态不变时安静，完成后用保存的20行prediction和独立truth进行复算再写最终报告。V1—V6均保留。
