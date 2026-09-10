@@ -6,7 +6,7 @@ import torch
 from paper_reproduction.gaskin_tweak_2023.model import TweakEncoder
 from paper_reproduction.gaskin_tweak_2023.official_lora import load_configuration_records, split_record_frames
 from paper_reproduction.gaskin_tweak_2023.official_lora_experiment import _source_training_batches, _source_monitor
-from paper_reproduction.gaskin_tweak_2023.triplet import all_strict_hard_triplet_loss
+from paper_reproduction.gaskin_tweak_2023.triplet import all_strict_hard_triplet_loss, all_margin_violating_triplet_loss, triplet_mining_counts
 
 
 def main():
@@ -15,6 +15,7 @@ def main():
     parser.add_argument('--checkpoint', type=Path)
     parser.add_argument('--batches', type=int, default=1)
     parser.add_argument('--lr', type=float, default=.001)
+    parser.add_argument('--triplet-mining', choices=('strict_hard', 'margin_violating'), default='strict_hard')
     args = parser.parse_args()
     torch.manual_seed(20260908)
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -30,7 +31,8 @@ def main():
         model.train()
         optimizer.zero_grad(set_to_none=True)
         embeddings = model(iq.to(device))
-        loss, active = all_strict_hard_triplet_loss(embeddings, labels.to(device))
+        criterion = all_strict_hard_triplet_loss if args.triplet_mining == 'strict_hard' else all_margin_violating_triplet_loss
+        loss, active = criterion(embeddings, labels.to(device))
         if not bool(torch.isfinite(loss)):
             raise RuntimeError(f'nonfinite loss at {step}')
         if active:
@@ -40,6 +42,8 @@ def main():
             optimizer.step()
         if step in (1, 100, 1000, 3000, args.batches):
             print(json.dumps({'step': step, 'loss': float(loss.detach()), 'shape': list(embeddings.shape),
+                              'triplet_mining': args.triplet_mining,
+                              'mining_counts': triplet_mining_counts(embeddings, labels.to(device)),
                               'gradient_tensors': sum(p.grad is not None for p in model.parameters()),
                               **_source_monitor(model, records, split, device=device)}), flush=True)
 

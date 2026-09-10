@@ -24,7 +24,27 @@ from .calibration import (
 from .method_config import load_method_config
 from .model import TweakEncoder
 from .official_lora import OfficialLoRaRecord, RecordFrameSplit, load_configuration_records, read_iq_frames, split_record_frames
-from .triplet import all_strict_hard_triplet_loss
+from .triplet import all_strict_hard_triplet_loss, all_margin_violating_triplet_loss, triplet_mining_counts
+
+
+def method_metadata_for_mining(triplet_mining: str) -> dict[str, object]:
+    """Keep the literal reproduction and reference-guided diagnostic distinguishable."""
+    if triplet_mining not in ("strict_hard", "margin_violating"):
+        raise ValueError("unknown triplet mining strategy")
+    metadata = deepcopy(load_method_config().method_metadata())
+    if triplet_mining == "margin_violating":
+        metadata["parity_status"] = "REFERENCE_GUIDED_MINING_DIAGNOSTIC_NOT_STRICT_REPRODUCTION"
+        mining = metadata["unpublished_defaults"]["triplet_mining"]
+        mining["value"]["hardness_filter"] = "positive_squared_distance-negative_squared_distance+0.1>0"
+        mining["value"]["no_hard_triplets"] = "skip_optimizer_step_only_when_no_margin_violating_triplet"
+        mining["status"] = "REFERENCE_GUIDED_DIAGNOSTIC"
+        mining["rationale"] = (
+            "Tweak IV-A describes dAN<dAP, whereas its cited PVSNet reference (arXiv:1812.06271, "
+            "Section 2.3) selects margin-violating negatives. This opt-in experiment tests that "
+            "interpretation alone, including semi-hard triplets; it is not verified author code "
+            "or strict Tweak reproduction. Network, raw embeddings, margin=.1 and scoring remain unchanged."
+        )
+    return metadata
 
 
 @dataclass(frozen=True)
@@ -155,15 +175,26 @@ def _run_training_epoch(
     device: torch.device,
     seed: int,
     max_batches_per_epoch: int | None,
+    triplet_mining: str = "strict_hard",
 ) -> dict[str, float | int]:
-    """Train exactly one source-only epoch, skipping momentum updates with no strict-hard triplet."""
+    """Train one source-only epoch, skipping momentum updates when the selected set is empty."""
+    criteria = {"strict_hard": all_strict_hard_triplet_loss, "margin_violating": all_margin_violating_triplet_loss}
+    if triplet_mining not in criteria:
+        raise ValueError("unknown triplet mining strategy")
+    criterion = criteria[triplet_mining]
     losses: list[float] = []
     batches, active_batches = 0, 0
+    first_batch_mining = {}
     model.train()
     for iq, labels in _source_training_batches(records, split, seed=seed, max_batches=max_batches_per_epoch):
         iq, labels = iq.to(device, non_blocking=True), labels.to(device, non_blocking=True)
         optimizer.zero_grad(set_to_none=True)
-        loss, has_hard_triplets = all_strict_hard_triplet_loss(model(iq), labels)
+        embeddings = model(iq)
+        loss, has_hard_triplets = criterion(embeddings, labels)
+        if batches == 0:
+            first_batch_mining = triplet_mining_counts(embeddings, labels)
+            first_batch_mining["selected_triplets"] = first_batch_mining[
+                "strict_hard_triplets" if triplet_mining == "strict_hard" else "margin_violating_triplets"]
         if has_hard_triplets:
             loss.backward()
             optimizer.step()
@@ -173,7 +204,7 @@ def _run_training_epoch(
     if not batches:
         raise RuntimeError("source training produced no batches")
     if not losses:
-        return {"batches": batches, "active_batches": 0, "mean_training_loss": float("inf"), "first_window_mean_loss": float("inf"), "last_window_mean_loss": float("inf")}
+        return {"batches": batches, "active_batches": 0, "mean_training_loss": float("inf"), "first_window_mean_loss": float("inf"), "last_window_mean_loss": float("inf"), "first_batch_mining": first_batch_mining}
     window = min(100, len(losses))
     return {
         "batches": batches,
@@ -181,6 +212,7 @@ def _run_training_epoch(
         "mean_training_loss": sum(losses) / len(losses),
         "first_window_mean_loss": sum(losses[:window]) / window,
         "last_window_mean_loss": sum(losses[-window:]) / window,
+        "first_batch_mining": first_batch_mining,
     }
 
 
@@ -192,9 +224,10 @@ def _train_encoder(
     epochs: int,
     seed: int,
     max_batches_per_epoch: int | None,
+    triplet_mining: str = "strict_hard",
 ) -> tuple[TweakEncoder, dict[str, object]]:
     """Probe five source-only rates for one epoch, then train a fresh selected model for 100 epochs."""
-    metadata = load_method_config().method_metadata()
+    metadata = method_metadata_for_mining(triplet_mining)
     learning_rates = [float(value) for value in metadata["unpublished_defaults"]["learning_rate_grid"]["value"]]
     torch.manual_seed(seed)
     model = TweakEncoder().to(device)
@@ -204,7 +237,7 @@ def _train_encoder(
         model.load_state_dict(initial_state)
         optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate, momentum=0.9)
         probe_rows.append({"learning_rate": learning_rate, **_run_training_epoch(
-            model, optimizer, records, split, device=device, seed=seed, max_batches_per_epoch=max_batches_per_epoch
+            model, optimizer, records, split, device=device, seed=seed, max_batches_per_epoch=max_batches_per_epoch, triplet_mining=triplet_mining
         ), **_source_monitor(model, records, split, device=device)})
         print(json.dumps({"event": "learning_rate_probe", **probe_rows[-1]}, sort_keys=True), flush=True)
     selected_lr = select_learning_rate_from_probes(probe_rows)
@@ -215,7 +248,7 @@ def _train_encoder(
     epoch_rows: list[dict[str, float | int]] = []
     for epoch in range(1, epochs + 1):
         row = {"learning_rate": selected_lr, "epoch": epoch, **_run_training_epoch(
-            model, optimizer, records, split, device=device, seed=seed + epoch, max_batches_per_epoch=max_batches_per_epoch
+            model, optimizer, records, split, device=device, seed=seed + epoch, max_batches_per_epoch=max_batches_per_epoch, triplet_mining=triplet_mining
         ), **_source_monitor(model, records, split, device=device)}
         epoch_rows.append(row)
         print(json.dumps({"event": "epoch", **row}, sort_keys=True), flush=True)
@@ -227,6 +260,9 @@ def _train_encoder(
         raise RuntimeError("training produced no checkpoint")
     model.load_state_dict(best_state)
     return model, {
+        "initialization": "scratch",
+        "triplet_mining": triplet_mining,
+        "parity_status": metadata["parity_status"],
         "best_epoch": best_epoch,
         "best_learning_rate": selected_lr,
         "best_mean_training_loss": best_loss,
@@ -318,9 +354,11 @@ def run_configuration_portability(
     epochs: int,
     max_train_batches_per_epoch: int | None,
     inference_batch_size: int,
+    triplet_mining: str = "strict_hard",
 ) -> dict[str, object]:
     """Run Figure-13b and Figure-14 without the vanilla or ablation arms."""
     plan = build_configuration_portability_plan()
+    method_metadata = method_metadata_for_mining(triplet_mining)
     if epochs <= 0 or inference_batch_size <= 0:
         raise ValueError("epochs and inference_batch_size must be positive")
     output_dir = Path(output_dir)
@@ -336,6 +374,7 @@ def run_configuration_portability(
     model, training = _train_encoder(
         records_by_configuration[plan.source_configuration], split, device=device, epochs=epochs, seed=seed,
         max_batches_per_epoch=max_train_batches_per_epoch,
+        triplet_mining=triplet_mining,
     )
     checkpoint_path = output_dir / "best_checkpoint.pt"
     torch.save({"state_dict": _copy_state_dict(model.state_dict()), "training": training}, checkpoint_path)
@@ -378,9 +417,8 @@ def run_configuration_portability(
     smoke_features, _ = _calibrate_configuration(
         model, records_by_configuration[plan.source_configuration][:1], split, device=device, batch_size=inference_batch_size
     )
-    method_metadata = load_method_config().method_metadata()
     result: dict[str, object] = {
-        "status": "PAPER_METHOD_PARITY_WITH_UNPUBLISHED_DEFAULTS" if max_train_batches_per_epoch is None else "NONPAPER_SMOKE_LIMIT",
+        "status": method_metadata["parity_status"] if max_train_batches_per_epoch is None else "NONPAPER_SMOKE_LIMIT",
         "method_metadata": method_metadata,
         "plan": asdict(plan),
         "data": {
@@ -417,6 +455,7 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument("--epochs", default=100, type=int)
     parser.add_argument("--inference-batch-size", default=1024, type=int)
     parser.add_argument("--max-train-batches-per-epoch", type=int)
+    parser.add_argument("--triplet-mining", choices=("strict_hard", "margin_violating"), default="strict_hard")
     return parser.parse_args()
 
 
@@ -430,6 +469,7 @@ def main() -> None:
         epochs=args.epochs,
         max_train_batches_per_epoch=args.max_train_batches_per_epoch,
         inference_batch_size=args.inference_batch_size,
+        triplet_mining=args.triplet_mining,
     )
     print(json.dumps({"event": "complete", "status": result["status"], "output": str(args.output_dir)}, ensure_ascii=False), flush=True)
 
