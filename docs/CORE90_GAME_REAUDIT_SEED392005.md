@@ -38,3 +38,20 @@ A04尚未满足发布依赖：严格跨seed C4以及匹配动作计数的固定/
 新26行矩阵：J1、H1、B7、B8、C2、S4、S3、S1、C1、B0、B1、B2、B3、B3_lr_high、B3_head_slow、B3_head_fast、B3_head_scale、B3_adv_low、B3_adv_high、B4、B4_fixedk、B5、B6、S2、S2_random、C3。训练seed均392005，固定split seed392002不属于训练seed或checkpoint复用。
 
 最终本地相关测试107项全部通过，覆盖activation、analysis、audit/control、compat、field、integration、matrix、reaudit、replay、resume、solvers；只有既有AMP弃用警告。独立定点审查无新P0/P1。发布后的进程与实际激活证据另附，不以本地功能测试替代远端观察。
+
+## N607发布与实际机制读回：VERIFIED
+
+训练代码提交`300ff4a9f3789a846312f00c19b44c9dde1f54fa`已推送，独立读取GitHub分支OID一致。归档SHA256=`efe1c3b27571f791aa914db98327d8bbf043b00b0ae7be2373cc0199086ab5c6`，远端核对后新建release。没有复用前轮checkpoint。
+
+- release：`/home/szu2070436088/2510044040/CV-SincNet/releases/core90_game_392005_300ff4a9`。
+- run-root：`/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9`；dispatcher PID1329605。
+- 远端Torch2.1.0+cu121真实源数据scratch checkpoint重载和optimizer更新PASS，query_access=false。
+- 两次进程快照确认16行运行、10行排队、0失败；16行CWD、PPID、完整argv、GPU UUID、seed392005、E200、from_scratch=true、空baseline/resume一致，日志实际增长。首快照8卡各4进程；第二快照GPU2增为5个，其他7卡各4个。独立ps确认新增PID1343028属于另一个`core90_evidence_frozen_392005_20260911/H0`任务，PPID1342406，不属于本dispatcher1329605；未干预。GPU2仍有14548MiB空闲。本队列容量4限制其派发，不能约束其他队列事后启动；本轮及已有PID均保持存在。
+- 正式日志快照已到E1—E2，16行84—124次更新均接受。B7的124次更新中123次使用乐观历史；B8的84次更新均执行两次场求值。
+- J1实际执行完整当前有效目标的局部有符号场审计，valid=true；按预登记缩步至6.25e-5消除ReLU跨区，有限差分相对误差0.0771318<0.1。
+- H1条件最终线性层补偿实际执行7次HVP，残差2.79e-7，source monitor CE从2.69067降至2.67351，accepted=true。该数值仅说明局部补偿接受，不是研究性能提升。
+- 独立读取正式B0的E2 checkpoint：step98、scratch_only、final_only、target_contact=false；L/U/V=6300/56700/27000，source RX=`1,3,4,6,8`、days=`1,2,3`、6个TX、15个RX×day域，契约符合本轮设置。
+
+[启动证据](evidence/core90_game_392005_launch.json)、[进程与增长证据](evidence/core90_game_392005_progress.json)、[完整当前动作日志汇总及机制/checkpoint证据](evidence/core90_game_392005_activation.json)、[上一轮完整日志快照分析](evidence/core90_game_previous_snapshot_392005.md)。
+
+本次结论为：已修复两个实际缺陷，相关功能验收通过，26行修复版实验已发布，部分高级机制已实际执行。A01/A02功能验证完成；A03/A05发布验证完成；A06逐项核对完成；A04跨seed严格对照仍待donor授权及完成。E80/E131机制、自然控制触发、E200预测评分尚在后续阶段，不宣称已全部激活或获得性能收益。

@@ -1,0 +1,908 @@
+{
+  "root": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9",
+  "queue": {
+    "owner_pid": 1329605,
+    "release": "/home/szu2070436088/2510044040/CV-SincNet/releases/core90_game_392005_300ff4a9",
+    "pending": [
+      "B3_head_scale_seed392005",
+      "B3_adv_low_seed392005",
+      "B3_adv_high_seed392005",
+      "B4_seed392005",
+      "B4_fixedk_seed392005",
+      "B5_seed392005",
+      "B6_seed392005",
+      "S2_seed392005",
+      "S2_random_seed392005",
+      "C3_seed392005"
+    ],
+    "max_processes_per_gpu": 4,
+    "min_free_memory_mib": 4096,
+    "active": [
+      {
+        "run_id": "J1_seed392005",
+        "pid": 1330106,
+        "gpu": 0,
+        "gpu_uuid": "GPU-56adac86-77cd-36c9-8770-dbf002650461",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "code/SSDG/train_core90_game.py",
+          "--output_dir",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/runs/J1_seed392005",
+          "--game_config_json",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/matrix/J1_seed392005.json",
+          "--device",
+          "cuda:0"
+        ],
+        "output_dir": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/runs/J1_seed392005",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/J1_seed392005.stdout.log",
+        "started_unix": 1789062313.004903
+      },
+      {
+        "run_id": "H1_seed392005",
+        "pid": 1330107,
+        "gpu": 0,
+        "gpu_uuid": "GPU-56adac86-77cd-36c9-8770-dbf002650461",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "code/SSDG/train_core90_game.py",
+          "--output_dir",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/runs/H1_seed392005",
+          "--game_config_json",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/matrix/H1_seed392005.json",
+          "--device",
+          "cuda:0"
+        ],
+        "output_dir": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/runs/H1_seed392005",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/H1_seed392005.stdout.log",
+        "started_unix": 1789062313.0063913
+      },
+      {
+        "run_id": "B7_seed392005",
+        "pid": 1330108,
+        "gpu": 1,
+        "gpu_uuid": "GPU-a2d039ff-1792-4222-2b47-140429e10f94",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "code/SSDG/train_core90_game.py",
+          "--output_dir",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/runs/B7_seed392005",
+          "--game_config_json",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/matrix/B7_seed392005.json",
+          "--device",
+          "cuda:0"
+        ],
+        "output_dir": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/runs/B7_seed392005",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/B7_seed392005.stdout.log",
+        "started_unix": 1789062313.0082574
+      },
+      {
+        "run_id": "B8_seed392005",
+        "pid": 1330109,
+        "gpu": 1,
+        "gpu_uuid": "GPU-a2d039ff-1792-4222-2b47-140429e10f94",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "code/SSDG/train_core90_game.py",
+          "--output_dir",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/runs/B8_seed392005",
+          "--game_config_json",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/matrix/B8_seed392005.json",
+          "--device",
+          "cuda:0"
+        ],
+        "output_dir": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/runs/B8_seed392005",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/B8_seed392005.stdout.log",
+        "started_unix": 1789062313.011469
+      },
+      {
+        "run_id": "C2_seed392005",
+        "pid": 1330110,
+        "gpu": 2,
+        "gpu_uuid": "GPU-4fb45b9a-894a-536b-0e0a-09f7c1341562",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "code/SSDG/train_core90_game.py",
+          "--output_dir",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/runs/C2_seed392005",
+          "--game_config_json",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/matrix/C2_seed392005.json",
+          "--device",
+          "cuda:0"
+        ],
+        "output_dir": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/runs/C2_seed392005",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/C2_seed392005.stdout.log",
+        "started_unix": 1789062313.0132341
+      },
+      {
+        "run_id": "S4_seed392005",
+        "pid": 1330111,
+        "gpu": 2,
+        "gpu_uuid": "GPU-4fb45b9a-894a-536b-0e0a-09f7c1341562",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "code/SSDG/train_core90_game.py",
+          "--output_dir",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/runs/S4_seed392005",
+          "--game_config_json",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/matrix/S4_seed392005.json",
+          "--device",
+          "cuda:0"
+        ],
+        "output_dir": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/runs/S4_seed392005",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/S4_seed392005.stdout.log",
+        "started_unix": 1789062313.0151417
+      },
+      {
+        "run_id": "S3_seed392005",
+        "pid": 1330112,
+        "gpu": 3,
+        "gpu_uuid": "GPU-7b4bacb3-4901-6845-a414-0dfdfeeade97",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "code/SSDG/train_core90_game.py",
+          "--output_dir",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/runs/S3_seed392005",
+          "--game_config_json",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/matrix/S3_seed392005.json",
+          "--device",
+          "cuda:0"
+        ],
+        "output_dir": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/runs/S3_seed392005",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/S3_seed392005.stdout.log",
+        "started_unix": 1789062313.0170186
+      },
+      {
+        "run_id": "S1_seed392005",
+        "pid": 1330113,
+        "gpu": 3,
+        "gpu_uuid": "GPU-7b4bacb3-4901-6845-a414-0dfdfeeade97",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "code/SSDG/train_core90_game.py",
+          "--output_dir",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/runs/S1_seed392005",
+          "--game_config_json",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/matrix/S1_seed392005.json",
+          "--device",
+          "cuda:0"
+        ],
+        "output_dir": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/runs/S1_seed392005",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/S1_seed392005.stdout.log",
+        "started_unix": 1789062313.0188878
+      },
+      {
+        "run_id": "C1_seed392005",
+        "pid": 1330114,
+        "gpu": 4,
+        "gpu_uuid": "GPU-95d925a1-7218-ca7b-adef-164241f4f491",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "code/SSDG/train_core90_game.py",
+          "--output_dir",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/runs/C1_seed392005",
+          "--game_config_json",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/matrix/C1_seed392005.json",
+          "--device",
+          "cuda:0"
+        ],
+        "output_dir": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/runs/C1_seed392005",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/C1_seed392005.stdout.log",
+        "started_unix": 1789062313.020874
+      },
+      {
+        "run_id": "B0_seed392005",
+        "pid": 1330115,
+        "gpu": 4,
+        "gpu_uuid": "GPU-95d925a1-7218-ca7b-adef-164241f4f491",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "code/SSDG/train_core90_game.py",
+          "--output_dir",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/runs/B0_seed392005",
+          "--game_config_json",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/matrix/B0_seed392005.json",
+          "--device",
+          "cuda:0"
+        ],
+        "output_dir": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/runs/B0_seed392005",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/B0_seed392005.stdout.log",
+        "started_unix": 1789062313.0229015
+      },
+      {
+        "run_id": "B1_seed392005",
+        "pid": 1330116,
+        "gpu": 5,
+        "gpu_uuid": "GPU-ef5f59f2-e03e-fe6e-ea6b-3e03afc9b331",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "code/SSDG/train_core90_game.py",
+          "--output_dir",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/runs/B1_seed392005",
+          "--game_config_json",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/matrix/B1_seed392005.json",
+          "--device",
+          "cuda:0"
+        ],
+        "output_dir": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/runs/B1_seed392005",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/B1_seed392005.stdout.log",
+        "started_unix": 1789062313.025017
+      },
+      {
+        "run_id": "B2_seed392005",
+        "pid": 1330117,
+        "gpu": 5,
+        "gpu_uuid": "GPU-ef5f59f2-e03e-fe6e-ea6b-3e03afc9b331",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "code/SSDG/train_core90_game.py",
+          "--output_dir",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/runs/B2_seed392005",
+          "--game_config_json",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/matrix/B2_seed392005.json",
+          "--device",
+          "cuda:0"
+        ],
+        "output_dir": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/runs/B2_seed392005",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/B2_seed392005.stdout.log",
+        "started_unix": 1789062313.0271602
+      },
+      {
+        "run_id": "B3_seed392005",
+        "pid": 1330118,
+        "gpu": 6,
+        "gpu_uuid": "GPU-5463e082-259e-537b-603a-01575d45801c",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "code/SSDG/train_core90_game.py",
+          "--output_dir",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/runs/B3_seed392005",
+          "--game_config_json",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/matrix/B3_seed392005.json",
+          "--device",
+          "cuda:0"
+        ],
+        "output_dir": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/runs/B3_seed392005",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/B3_seed392005.stdout.log",
+        "started_unix": 1789062313.0293176
+      },
+      {
+        "run_id": "B3_lr_high_seed392005",
+        "pid": 1330119,
+        "gpu": 6,
+        "gpu_uuid": "GPU-5463e082-259e-537b-603a-01575d45801c",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "code/SSDG/train_core90_game.py",
+          "--output_dir",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/runs/B3_lr_high_seed392005",
+          "--game_config_json",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/matrix/B3_lr_high_seed392005.json",
+          "--device",
+          "cuda:0"
+        ],
+        "output_dir": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/runs/B3_lr_high_seed392005",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/B3_lr_high_seed392005.stdout.log",
+        "started_unix": 1789062313.0315483
+      },
+      {
+        "run_id": "B3_head_slow_seed392005",
+        "pid": 1330120,
+        "gpu": 7,
+        "gpu_uuid": "GPU-9c4eb614-ca19-a390-aaf4-801f8980b6a9",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "code/SSDG/train_core90_game.py",
+          "--output_dir",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/runs/B3_head_slow_seed392005",
+          "--game_config_json",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/matrix/B3_head_slow_seed392005.json",
+          "--device",
+          "cuda:0"
+        ],
+        "output_dir": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/runs/B3_head_slow_seed392005",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/B3_head_slow_seed392005.stdout.log",
+        "started_unix": 1789062313.0338693
+      },
+      {
+        "run_id": "B3_head_fast_seed392005",
+        "pid": 1330121,
+        "gpu": 7,
+        "gpu_uuid": "GPU-9c4eb614-ca19-a390-aaf4-801f8980b6a9",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "code/SSDG/train_core90_game.py",
+          "--output_dir",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/runs/B3_head_fast_seed392005",
+          "--game_config_json",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/matrix/B3_head_fast_seed392005.json",
+          "--device",
+          "cuda:0"
+        ],
+        "output_dir": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/runs/B3_head_fast_seed392005",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/B3_head_fast_seed392005.stdout.log",
+        "started_unix": 1789062313.0362575
+      }
+    ],
+    "completed": [],
+    "failed": [],
+    "state": "RUNNING",
+    "updated_unix": 1789062495.4908798
+  },
+  "smoke": {
+    "status": "PASS",
+    "source_role": "L_s",
+    "query_access": false,
+    "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/scratch_smoke/scratch_smoke.pth",
+    "initialization": "scratch_only",
+    "target_contact": false,
+    "logit_shape": [
+      2,
+      6
+    ],
+    "torch_version": "2.1.0+cu121",
+    "optimizer_step_accepted": true
+  },
+  "processes": [
+    {
+      "run_id": "J1_seed392005",
+      "pid": 1330106,
+      "expected_gpu": 0,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/core90_game_392005_300ff4a9",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "code/SSDG/train_core90_game.py",
+        "--output_dir",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/runs/J1_seed392005",
+        "--game_config_json",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/matrix/J1_seed392005.json",
+        "--device",
+        "cuda:0"
+      ],
+      "cuda_visible_devices": "GPU-56adac86-77cd-36c9-8770-dbf002650461",
+      "ppid": "1329605",
+      "binding_verified": true,
+      "initialization": {
+        "from_scratch": true,
+        "baseline_ckpt": "",
+        "resume": "",
+        "seed": 392005,
+        "epochs": 200
+      },
+      "stdout_bytes": 339,
+      "stdout_tail": [
+        "[CORE90-GAME-INIT] scratch_only=true domains=15 params=1049827 solver=adamw_isolated_predictor_raw_gradient_simultaneous",
+        "[EPOCH-END] E001/200 accepted=49/49 loss=16.92628202632982 seconds=60.1",
+        "[EPOCH-END] E002/200 accepted=49/49 loss=16.173512225248377 seconds=50.5",
+        "[EPOCH-END] E003/200 accepted=49/49 loss=14.646031710566307 seconds=52.0"
+      ],
+      "completed_epochs": 3,
+      "action_rows": 160
+    },
+    {
+      "run_id": "H1_seed392005",
+      "pid": 1330107,
+      "expected_gpu": 0,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/core90_game_392005_300ff4a9",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "code/SSDG/train_core90_game.py",
+        "--output_dir",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/runs/H1_seed392005",
+        "--game_config_json",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/matrix/H1_seed392005.json",
+        "--device",
+        "cuda:0"
+      ],
+      "cuda_visible_devices": "GPU-56adac86-77cd-36c9-8770-dbf002650461",
+      "ppid": "1329605",
+      "binding_verified": true,
+      "initialization": {
+        "from_scratch": true,
+        "baseline_ckpt": "",
+        "resume": "",
+        "seed": 392005,
+        "epochs": 200
+      },
+      "stdout_bytes": 339,
+      "stdout_tail": [
+        "[CORE90-GAME-INIT] scratch_only=true domains=15 params=1049827 solver=adamw_isolated_predictor_raw_gradient_simultaneous",
+        "[EPOCH-END] E001/200 accepted=49/49 loss=16.924740577230647 seconds=55.1",
+        "[EPOCH-END] E002/200 accepted=49/49 loss=16.18059086313053 seconds=50.6",
+        "[EPOCH-END] E003/200 accepted=49/49 loss=14.644192286900111 seconds=52.2"
+      ],
+      "completed_epochs": 3,
+      "action_rows": 166
+    },
+    {
+      "run_id": "B7_seed392005",
+      "pid": 1330108,
+      "expected_gpu": 1,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/core90_game_392005_300ff4a9",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "code/SSDG/train_core90_game.py",
+        "--output_dir",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/runs/B7_seed392005",
+        "--game_config_json",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/matrix/B7_seed392005.json",
+        "--device",
+        "cuda:0"
+      ],
+      "cuda_visible_devices": "GPU-a2d039ff-1792-4222-2b47-140429e10f94",
+      "ppid": "1329605",
+      "binding_verified": true,
+      "initialization": {
+        "from_scratch": true,
+        "baseline_ckpt": "",
+        "resume": "",
+        "seed": 392005,
+        "epochs": 200
+      },
+      "stdout_bytes": 337,
+      "stdout_tail": [
+        "[CORE90-GAME-INIT] scratch_only=true domains=15 params=1049827 solver=adamw_isolated_predictor_raw_gradient_optimistic",
+        "[EPOCH-END] E001/200 accepted=49/49 loss=17.050342053783183 seconds=54.5",
+        "[EPOCH-END] E002/200 accepted=49/49 loss=16.51975982043208 seconds=49.6",
+        "[EPOCH-END] E003/200 accepted=49/49 loss=16.185312952314103 seconds=51.3"
+      ],
+      "completed_epochs": 3,
+      "action_rows": 170
+    },
+    {
+      "run_id": "B8_seed392005",
+      "pid": 1330109,
+      "expected_gpu": 1,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/core90_game_392005_300ff4a9",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "code/SSDG/train_core90_game.py",
+        "--output_dir",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/runs/B8_seed392005",
+        "--game_config_json",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/matrix/B8_seed392005.json",
+        "--device",
+        "cuda:0"
+      ],
+      "cuda_visible_devices": "GPU-a2d039ff-1792-4222-2b47-140429e10f94",
+      "ppid": "1329605",
+      "binding_verified": true,
+      "initialization": {
+        "from_scratch": true,
+        "baseline_ckpt": "",
+        "resume": "",
+        "seed": 392005,
+        "epochs": 200
+      },
+      "stdout_bytes": 266,
+      "stdout_tail": [
+        "[CORE90-GAME-INIT] scratch_only=true domains=15 params=1049827 solver=adamw_isolated_predictor_raw_gradient_head_lookahead",
+        "[EPOCH-END] E001/200 accepted=49/49 loss=16.92694749637526 seconds=77.6",
+        "[EPOCH-END] E002/200 accepted=49/49 loss=16.1725428639626 seconds=71.6"
+      ],
+      "completed_epochs": 2,
+      "action_rows": 117
+    },
+    {
+      "run_id": "C2_seed392005",
+      "pid": 1330110,
+      "expected_gpu": 2,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/core90_game_392005_300ff4a9",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "code/SSDG/train_core90_game.py",
+        "--output_dir",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/runs/C2_seed392005",
+        "--game_config_json",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/matrix/C2_seed392005.json",
+        "--device",
+        "cuda:0"
+      ],
+      "cuda_visible_devices": "GPU-4fb45b9a-894a-536b-0e0a-09f7c1341562",
+      "ppid": "1329605",
+      "binding_verified": true,
+      "initialization": {
+        "from_scratch": true,
+        "baseline_ckpt": "",
+        "resume": "",
+        "seed": 392005,
+        "epochs": 200
+      },
+      "stdout_bytes": 339,
+      "stdout_tail": [
+        "[CORE90-GAME-INIT] scratch_only=true domains=15 params=1049827 solver=adamw_isolated_predictor_raw_gradient_simultaneous",
+        "[EPOCH-END] E001/200 accepted=49/49 loss=16.92733336468132 seconds=53.7",
+        "[EPOCH-END] E002/200 accepted=49/49 loss=16.182343521896673 seconds=49.7",
+        "[EPOCH-END] E003/200 accepted=49/49 loss=14.695684024265834 seconds=64.7"
+      ],
+      "completed_epochs": 3,
+      "action_rows": 154
+    },
+    {
+      "run_id": "S4_seed392005",
+      "pid": 1330111,
+      "expected_gpu": 2,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/core90_game_392005_300ff4a9",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "code/SSDG/train_core90_game.py",
+        "--output_dir",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/runs/S4_seed392005",
+        "--game_config_json",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/matrix/S4_seed392005.json",
+        "--device",
+        "cuda:0"
+      ],
+      "cuda_visible_devices": "GPU-4fb45b9a-894a-536b-0e0a-09f7c1341562",
+      "ppid": "1329605",
+      "binding_verified": true,
+      "initialization": {
+        "from_scratch": true,
+        "baseline_ckpt": "",
+        "resume": "",
+        "seed": 392005,
+        "epochs": 200
+      },
+      "stdout_bytes": 340,
+      "stdout_tail": [
+        "[CORE90-GAME-INIT] scratch_only=true domains=15 params=1049827 solver=adamw_isolated_predictor_raw_gradient_simultaneous",
+        "[EPOCH-END] E001/200 accepted=49/49 loss=16.926675212626556 seconds=53.9",
+        "[EPOCH-END] E002/200 accepted=49/49 loss=16.183887325987524 seconds=49.2",
+        "[EPOCH-END] E003/200 accepted=49/49 loss=14.699037668656329 seconds=64.5"
+      ],
+      "completed_epochs": 3,
+      "action_rows": 155
+    },
+    {
+      "run_id": "S3_seed392005",
+      "pid": 1330112,
+      "expected_gpu": 3,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/core90_game_392005_300ff4a9",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "code/SSDG/train_core90_game.py",
+        "--output_dir",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/runs/S3_seed392005",
+        "--game_config_json",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/matrix/S3_seed392005.json",
+        "--device",
+        "cuda:0"
+      ],
+      "cuda_visible_devices": "GPU-7b4bacb3-4901-6845-a414-0dfdfeeade97",
+      "ppid": "1329605",
+      "binding_verified": true,
+      "initialization": {
+        "from_scratch": true,
+        "baseline_ckpt": "",
+        "resume": "",
+        "seed": 392005,
+        "epochs": 200
+      },
+      "stdout_bytes": 340,
+      "stdout_tail": [
+        "[CORE90-GAME-INIT] scratch_only=true domains=15 params=1049827 solver=adamw_isolated_predictor_raw_gradient_simultaneous",
+        "[EPOCH-END] E001/200 accepted=49/49 loss=16.926232162786988 seconds=59.4",
+        "[EPOCH-END] E002/200 accepted=49/49 loss=16.181454055163325 seconds=51.6",
+        "[EPOCH-END] E003/200 accepted=49/49 loss=14.654519295205874 seconds=52.9"
+      ],
+      "completed_epochs": 3,
+      "action_rows": 161
+    },
+    {
+      "run_id": "S1_seed392005",
+      "pid": 1330113,
+      "expected_gpu": 3,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/core90_game_392005_300ff4a9",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "code/SSDG/train_core90_game.py",
+        "--output_dir",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/runs/S1_seed392005",
+        "--game_config_json",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/matrix/S1_seed392005.json",
+        "--device",
+        "cuda:0"
+      ],
+      "cuda_visible_devices": "GPU-7b4bacb3-4901-6845-a414-0dfdfeeade97",
+      "ppid": "1329605",
+      "binding_verified": true,
+      "initialization": {
+        "from_scratch": true,
+        "baseline_ckpt": "",
+        "resume": "",
+        "seed": 392005,
+        "epochs": 200
+      },
+      "stdout_bytes": 337,
+      "stdout_tail": [
+        "[CORE90-GAME-INIT] scratch_only=true domains=15 params=1049827 solver=adamw_isolated_predictor_raw_gradient_simultaneous",
+        "[EPOCH-END] E001/200 accepted=49/49 loss=16.926090435105927 seconds=58.5",
+        "[EPOCH-END] E002/200 accepted=49/49 loss=16.1780251483528 seconds=51.5",
+        "[EPOCH-END] E003/200 accepted=49/49 loss=14.66134228998301 seconds=52.8"
+      ],
+      "completed_epochs": 3,
+      "action_rows": 160
+    },
+    {
+      "run_id": "C1_seed392005",
+      "pid": 1330114,
+      "expected_gpu": 4,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/core90_game_392005_300ff4a9",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "code/SSDG/train_core90_game.py",
+        "--output_dir",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/runs/C1_seed392005",
+        "--game_config_json",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/matrix/C1_seed392005.json",
+        "--device",
+        "cuda:0"
+      ],
+      "cuda_visible_devices": "GPU-95d925a1-7218-ca7b-adef-164241f4f491",
+      "ppid": "1329605",
+      "binding_verified": true,
+      "initialization": {
+        "from_scratch": true,
+        "baseline_ckpt": "",
+        "resume": "",
+        "seed": 392005,
+        "epochs": 200
+      },
+      "stdout_bytes": 339,
+      "stdout_tail": [
+        "[CORE90-GAME-INIT] scratch_only=true domains=15 params=1049827 solver=adamw_isolated_predictor_raw_gradient_simultaneous",
+        "[EPOCH-END] E001/200 accepted=49/49 loss=16.92660798831862 seconds=56.0",
+        "[EPOCH-END] E002/200 accepted=49/49 loss=16.182352143891002 seconds=51.6",
+        "[EPOCH-END] E003/200 accepted=49/49 loss=14.664205745774872 seconds=53.2"
+      ],
+      "completed_epochs": 3,
+      "action_rows": 162
+    },
+    {
+      "run_id": "B0_seed392005",
+      "pid": 1330115,
+      "expected_gpu": 4,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/core90_game_392005_300ff4a9",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "code/SSDG/train_core90_game.py",
+        "--output_dir",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/runs/B0_seed392005",
+        "--game_config_json",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/matrix/B0_seed392005.json",
+        "--device",
+        "cuda:0"
+      ],
+      "cuda_visible_devices": "GPU-95d925a1-7218-ca7b-adef-164241f4f491",
+      "ppid": "1329605",
+      "binding_verified": true,
+      "initialization": {
+        "from_scratch": true,
+        "baseline_ckpt": "",
+        "resume": "",
+        "seed": 392005,
+        "epochs": 200
+      },
+      "stdout_bytes": 340,
+      "stdout_tail": [
+        "[CORE90-GAME-INIT] scratch_only=true domains=15 params=1049827 solver=adamw_isolated_predictor_raw_gradient_simultaneous",
+        "[EPOCH-END] E001/200 accepted=49/49 loss=16.926882607596262 seconds=54.3",
+        "[EPOCH-END] E002/200 accepted=49/49 loss=16.179496881913167 seconds=51.3",
+        "[EPOCH-END] E003/200 accepted=49/49 loss=14.675652854296626 seconds=53.2"
+      ],
+      "completed_epochs": 3,
+      "action_rows": 164
+    },
+    {
+      "run_id": "B1_seed392005",
+      "pid": 1330116,
+      "expected_gpu": 5,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/core90_game_392005_300ff4a9",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "code/SSDG/train_core90_game.py",
+        "--output_dir",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/runs/B1_seed392005",
+        "--game_config_json",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/matrix/B1_seed392005.json",
+        "--device",
+        "cuda:0"
+      ],
+      "cuda_visible_devices": "GPU-ef5f59f2-e03e-fe6e-ea6b-3e03afc9b331",
+      "ppid": "1329605",
+      "binding_verified": true,
+      "initialization": {
+        "from_scratch": true,
+        "baseline_ckpt": "",
+        "resume": "",
+        "seed": 392005,
+        "epochs": 200
+      },
+      "stdout_bytes": 339,
+      "stdout_tail": [
+        "[CORE90-GAME-INIT] scratch_only=true domains=15 params=1049827 solver=adamw_isolated_predictor_raw_gradient_simultaneous",
+        "[EPOCH-END] E001/200 accepted=49/49 loss=16.92576902739856 seconds=55.3",
+        "[EPOCH-END] E002/200 accepted=49/49 loss=16.180390786151495 seconds=51.4",
+        "[EPOCH-END] E003/200 accepted=49/49 loss=14.677914210728236 seconds=52.8"
+      ],
+      "completed_epochs": 3,
+      "action_rows": 164
+    },
+    {
+      "run_id": "B2_seed392005",
+      "pid": 1330117,
+      "expected_gpu": 5,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/core90_game_392005_300ff4a9",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "code/SSDG/train_core90_game.py",
+        "--output_dir",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/runs/B2_seed392005",
+        "--game_config_json",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/matrix/B2_seed392005.json",
+        "--device",
+        "cuda:0"
+      ],
+      "cuda_visible_devices": "GPU-ef5f59f2-e03e-fe6e-ea6b-3e03afc9b331",
+      "ppid": "1329605",
+      "binding_verified": true,
+      "initialization": {
+        "from_scratch": true,
+        "baseline_ckpt": "",
+        "resume": "",
+        "seed": 392005,
+        "epochs": 200
+      },
+      "stdout_bytes": 340,
+      "stdout_tail": [
+        "[CORE90-GAME-INIT] scratch_only=true domains=15 params=1049827 solver=adamw_isolated_predictor_raw_gradient_simultaneous",
+        "[EPOCH-END] E001/200 accepted=49/49 loss=16.261249094593282 seconds=54.1",
+        "[EPOCH-END] E002/200 accepted=49/49 loss=15.513724404938367 seconds=50.4",
+        "[EPOCH-END] E003/200 accepted=49/49 loss=13.994677134922572 seconds=51.1"
+      ],
+      "completed_epochs": 3,
+      "action_rows": 168
+    },
+    {
+      "run_id": "B3_seed392005",
+      "pid": 1330118,
+      "expected_gpu": 6,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/core90_game_392005_300ff4a9",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "code/SSDG/train_core90_game.py",
+        "--output_dir",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/runs/B3_seed392005",
+        "--game_config_json",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/matrix/B3_seed392005.json",
+        "--device",
+        "cuda:0"
+      ],
+      "cuda_visible_devices": "GPU-5463e082-259e-537b-603a-01575d45801c",
+      "ppid": "1329605",
+      "binding_verified": true,
+      "initialization": {
+        "from_scratch": true,
+        "baseline_ckpt": "",
+        "resume": "",
+        "seed": 392005,
+        "epochs": 200
+      },
+      "stdout_bytes": 337,
+      "stdout_tail": [
+        "[CORE90-GAME-INIT] scratch_only=true domains=15 params=1049827 solver=adamw_isolated_predictor_raw_gradient_simultaneous",
+        "[EPOCH-END] E001/200 accepted=49/49 loss=17.13264290167361 seconds=56.4",
+        "[EPOCH-END] E002/200 accepted=49/49 loss=16.57748662209024 seconds=52.0",
+        "[EPOCH-END] E003/200 accepted=49/49 loss=16.23833769194934 seconds=53.7"
+      ],
+      "completed_epochs": 3,
+      "action_rows": 160
+    },
+    {
+      "run_id": "B3_lr_high_seed392005",
+      "pid": 1330119,
+      "expected_gpu": 6,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/core90_game_392005_300ff4a9",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "code/SSDG/train_core90_game.py",
+        "--output_dir",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/runs/B3_lr_high_seed392005",
+        "--game_config_json",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/matrix/B3_lr_high_seed392005.json",
+        "--device",
+        "cuda:0"
+      ],
+      "cuda_visible_devices": "GPU-5463e082-259e-537b-603a-01575d45801c",
+      "ppid": "1329605",
+      "binding_verified": true,
+      "initialization": {
+        "from_scratch": true,
+        "baseline_ckpt": "",
+        "resume": "",
+        "seed": 392005,
+        "epochs": 200
+      },
+      "stdout_bytes": 340,
+      "stdout_tail": [
+        "[CORE90-GAME-INIT] scratch_only=true domains=15 params=1049827 solver=adamw_isolated_predictor_raw_gradient_simultaneous",
+        "[EPOCH-END] E001/200 accepted=49/49 loss=16.699484260714783 seconds=56.8",
+        "[EPOCH-END] E002/200 accepted=49/49 loss=14.740392918489418 seconds=52.0",
+        "[EPOCH-END] E003/200 accepted=49/49 loss=11.901312964303154 seconds=53.7"
+      ],
+      "completed_epochs": 3,
+      "action_rows": 160
+    },
+    {
+      "run_id": "B3_head_slow_seed392005",
+      "pid": 1330120,
+      "expected_gpu": 7,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/core90_game_392005_300ff4a9",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "code/SSDG/train_core90_game.py",
+        "--output_dir",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/runs/B3_head_slow_seed392005",
+        "--game_config_json",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/matrix/B3_head_slow_seed392005.json",
+        "--device",
+        "cuda:0"
+      ],
+      "cuda_visible_devices": "GPU-9c4eb614-ca19-a390-aaf4-801f8980b6a9",
+      "ppid": "1329605",
+      "binding_verified": true,
+      "initialization": {
+        "from_scratch": true,
+        "baseline_ckpt": "",
+        "resume": "",
+        "seed": 392005,
+        "epochs": 200
+      },
+      "stdout_bytes": 340,
+      "stdout_tail": [
+        "[CORE90-GAME-INIT] scratch_only=true domains=15 params=1049827 solver=adamw_isolated_predictor_raw_gradient_simultaneous",
+        "[EPOCH-END] E001/200 accepted=49/49 loss=16.927272874481822 seconds=61.1",
+        "[EPOCH-END] E002/200 accepted=49/49 loss=16.182673571061116 seconds=53.0",
+        "[EPOCH-END] E003/200 accepted=49/49 loss=14.676803549941706 seconds=54.1"
+      ],
+      "completed_epochs": 3,
+      "action_rows": 156
+    },
+    {
+      "run_id": "B3_head_fast_seed392005",
+      "pid": 1330121,
+      "expected_gpu": 7,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/core90_game_392005_300ff4a9",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "code/SSDG/train_core90_game.py",
+        "--output_dir",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/runs/B3_head_fast_seed392005",
+        "--game_config_json",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_392005_300ff4a9/matrix/B3_head_fast_seed392005.json",
+        "--device",
+        "cuda:0"
+      ],
+      "cuda_visible_devices": "GPU-9c4eb614-ca19-a390-aaf4-801f8980b6a9",
+      "ppid": "1329605",
+      "binding_verified": true,
+      "initialization": {
+        "from_scratch": true,
+        "baseline_ckpt": "",
+        "resume": "",
+        "seed": 392005,
+        "epochs": 200
+      },
+      "stdout_bytes": 339,
+      "stdout_tail": [
+        "[CORE90-GAME-INIT] scratch_only=true domains=15 params=1049827 solver=adamw_isolated_predictor_raw_gradient_simultaneous",
+        "[EPOCH-END] E001/200 accepted=49/49 loss=16.925312353640187 seconds=61.5",
+        "[EPOCH-END] E002/200 accepted=49/49 loss=16.175881132787588 seconds=52.9",
+        "[EPOCH-END] E003/200 accepted=49/49 loss=14.62587342943464 seconds=54.2"
+      ],
+      "completed_epochs": 3,
+      "action_rows": 155
+    }
+  ],
+  "gpu_processes": "GPU-56adac86-77cd-36c9-8770-dbf002650461, 1236525, 1638\nGPU-56adac86-77cd-36c9-8770-dbf002650461, 1236524, 1638\nGPU-56adac86-77cd-36c9-8770-dbf002650461, 1330107, 1654\nGPU-56adac86-77cd-36c9-8770-dbf002650461, 1330106, 1626\nGPU-a2d039ff-1792-4222-2b47-140429e10f94, 1236527, 1626\nGPU-a2d039ff-1792-4222-2b47-140429e10f94, 1236526, 1626\nGPU-a2d039ff-1792-4222-2b47-140429e10f94, 1330108, 1624\nGPU-a2d039ff-1792-4222-2b47-140429e10f94, 1330109, 1624\nGPU-4fb45b9a-894a-536b-0e0a-09f7c1341562, 1236528, 1626\nGPU-4fb45b9a-894a-536b-0e0a-09f7c1341562, 1248540, 1630\nGPU-4fb45b9a-894a-536b-0e0a-09f7c1341562, 1330111, 1622\nGPU-4fb45b9a-894a-536b-0e0a-09f7c1341562, 1330110, 1622\nGPU-4fb45b9a-894a-536b-0e0a-09f7c1341562, 1343028, 3044\nGPU-7b4bacb3-4901-6845-a414-0dfdfeeade97, 839941, 4962\nGPU-7b4bacb3-4901-6845-a414-0dfdfeeade97, 1236529, 1626\nGPU-7b4bacb3-4901-6845-a414-0dfdfeeade97, 1330112, 1622\nGPU-7b4bacb3-4901-6845-a414-0dfdfeeade97, 1330113, 1622\nGPU-95d925a1-7218-ca7b-adef-164241f4f491, 612456, 3394\nGPU-95d925a1-7218-ca7b-adef-164241f4f491, 1236530, 1624\nGPU-95d925a1-7218-ca7b-adef-164241f4f491, 1330114, 1622\nGPU-95d925a1-7218-ca7b-adef-164241f4f491, 1330115, 1632\nGPU-ef5f59f2-e03e-fe6e-ea6b-3e03afc9b331, 612533, 4558\nGPU-ef5f59f2-e03e-fe6e-ea6b-3e03afc9b331, 1236531, 1624\nGPU-ef5f59f2-e03e-fe6e-ea6b-3e03afc9b331, 1330116, 1622\nGPU-ef5f59f2-e03e-fe6e-ea6b-3e03afc9b331, 1330117, 1620\nGPU-5463e082-259e-537b-603a-01575d45801c, 839936, 5314\nGPU-5463e082-259e-537b-603a-01575d45801c, 1236532, 1630\nGPU-5463e082-259e-537b-603a-01575d45801c, 1330119, 1622\nGPU-5463e082-259e-537b-603a-01575d45801c, 1330118, 1622\nGPU-9c4eb614-ca19-a390-aaf4-801f8980b6a9, 907259, 3740\nGPU-9c4eb614-ca19-a390-aaf4-801f8980b6a9, 1236533, 1630\nGPU-9c4eb614-ca19-a390-aaf4-801f8980b6a9, 1330120, 1622\nGPU-9c4eb614-ca19-a390-aaf4-801f8980b6a9, 1330121, 1622\n",
+  "dispatcher_tail": []
+}
