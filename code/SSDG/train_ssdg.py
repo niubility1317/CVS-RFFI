@@ -238,6 +238,8 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Train two-stage SSDG from a Stable-SAT baseline checkpoint.")
     parser.add_argument("--baseline_ckpt", type=str, default="", help="Optional checkpoint. Empty means train SSDG from scratch.")
     parser.add_argument("--from_scratch", type=str2bool, default=True)
+    parser.add_argument("--evidence_config", type=str, default="", help="Embedded strict JSON H1--H5 config; empty preserves CORE90")
+    parser.add_argument("--evidence_data_contract", type=str, default="", help="Actual physical source/target roles for scratch evidence training")
     parser.add_argument("--split_mode", type=str, default="tx_rx_day_1_6_3", choices=["tx_rx_day_1_6_3", "tx_rx_day_1_7_2"])
     parser.add_argument("--labeled_ratio", type=float, default=0.08)
     parser.add_argument("--unlabeled_ratio", type=float, default=0.72)
@@ -555,11 +557,13 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--safe_best_path", type=str, default="", help="Optional path for the guarded best checkpoint.")
     parser.add_argument("--safe_latest_path", type=str, default="", help="Optional path for the latest guarded checkpoint.")
     parser.add_argument("--phase1_source_val_selection_only", type=str2bool, default=True)
+    parser.add_argument("--phase1_terminal_policy", choices=["mechanism_gated", "core90_research"],
+                        default="mechanism_gated", help="CORE90 research completion retains artifact/protocol checks without claiming later P0/P1 promotion.")
     parser.add_argument(
         "--test_eval_policy",
         type=str,
         default="every_epoch",
-        choices=["every_epoch", "val_improved_final", "interval_final"],
+        choices=["every_epoch", "val_improved_final", "interval_final", "final_only"],
         help="Legacy compatibility option; Phase1 source-only training never evaluates held-out tests by epoch.",
     )
     parser.add_argument(
@@ -1783,6 +1787,7 @@ def _resolve_epoch_schedule(args) -> int:
 
 def _apply_model_cli_args(model_args, args):
     for key in (
+        "evidence_config",
         "model_size",
         "model_variant",
         "representation_mode",
@@ -2142,6 +2147,7 @@ def _build_ssdg_wisig_data(args, device: torch.device):
     )
     return {
         "train_loader": labeled_loader,
+        "dataset_id": str(ds_w.get("dataset_id", str(Path(args.wisig_pkl).resolve()))),
         "balanced_train_sampler": balanced_sampler,
         "probe_train_loader": probe_train_loader,
         "unlabeled_loader": unlabeled_loader,
@@ -3104,6 +3110,14 @@ def _evaluate_checkpoint_source_val_tail_geometry(args, model, data_ctx, device,
         return result
     finally:
         model.load_state_dict(restore_state, strict=True)
+
+
+def _core90_research_export_complete(export_status: Mapping[str, Any]) -> bool:
+    """Research completion still requires both requested prototype artifacts."""
+    return str(export_status.get("status", "")) == "COMPLETE" and all(
+        bool(export_status.get(key)) and Path(str(export_status[key])).is_file()
+        for key in ("prototype_path", "prototype_json_path")
+    )
 
 
 def _resolve_phase1_terminal_status(
@@ -7126,6 +7140,8 @@ def _compose_unlabeled_closed_loss(
 
 
 def train(args) -> int:
+    from cvsrffi.evidence_head_training import validate_evidence_training_args
+    validate_evidence_training_args(args)
     training_wall_started = time.time()
     muse_capabilities = _muse_level_capabilities(getattr(args, "muse_level", "M0"))
     muse_active = bool(getattr(args, "use_muse_ssdg", False)) and muse_capabilities["base"]
@@ -7453,6 +7469,10 @@ def train(args) -> int:
     safe_latest_path = Path(str(args.safe_latest_path).strip()) if str(args.safe_latest_path).strip() else out_dir / "latest_safe_ssdg.pth"
     phase2_audit_state = _phase2_audit_state(args)
     data_ctx = _build_ssdg_wisig_data(args, device)
+    evidence_contract = None
+    if str(getattr(args, "evidence_data_contract", "")).strip():
+        from cvsrffi.evidence_head_training import validate_data_contract
+        evidence_contract = validate_data_contract(data_ctx, args.evidence_data_contract)
     use_ckpt = bool(str(args.baseline_ckpt).strip()) and not bool(args.from_scratch)
     ckpt = load_checkpoint(args.baseline_ckpt, device) if use_ckpt else {"model": None, "args": {}, "stats": {}, "split_info": None}
     model_args = merge_checkpoint_args(ckpt, args, input_len=int(data_ctx["input_len"]), num_domains=int(data_ctx["num_domains"]))
@@ -7460,6 +7480,10 @@ def train(args) -> int:
     model = build_baseline_model(model_args, device)
     if use_ckpt:
         model.load_state_dict(ckpt["model"], strict=False)
+    if hasattr(model, "evidence_head"):
+        from cvsrffi.evidence_head_training import initialize_from_source
+        evidence_init = initialize_from_source(model, data_ctx["probe_train_loader"] if "probe_train_loader" in data_ctx else data_ctx["train_loader"])
+        print("[EVIDENCE-INIT] " + json.dumps(evidence_init, sort_keys=True), flush=True)
     if bool(args.freeze_backbone):
         for name, param in model.named_parameters():
             param.requires_grad = any(key in name for key in ("cls_head", "dom_head", "adv_head"))
@@ -7966,6 +7990,7 @@ def train(args) -> int:
             use_unlabeled_step_budget=bool(getattr(args, "use_muse_ssdg", False)),
         )
         for batch_idx, (labeled_batch, muse_unlabeled_batch) in enumerate(epoch_pairs, start=1):
+            rc4_route = None  # Non-MUSE CORE90 must not read an uninitialized optional route in telemetry.
             muse_identity_grad_norm = float("nan")
             sat_anchor_pair_grad_norm = float("nan")
             sat_anchor_sat_grad_norm = float("nan")
@@ -10157,6 +10182,13 @@ def train(args) -> int:
                     "reason_code": 0.0,
                 }
                 scaled_closed_loss = float(tail_closed_scale) * loss_closed
+                evidence_stats = {}
+                if hasattr(model, "evidence_head"):
+                    from cvsrffi.evidence_head_training import supervised_evidence_loss
+                    evidence_loss, evidence_stats = supervised_evidence_loss(
+                        model, out_l, y_l, extra_l, labeled_clean_count)
+                    loss_closed = loss_closed + evidence_loss
+                    scaled_closed_loss = float(tail_closed_scale) * loss_closed
                 scaled_open_loss = float(dg_health_open_scale) * loss_open
                 loss = scaled_closed_loss + scaled_open_loss
             telemetry_epochs = {
@@ -10444,6 +10476,7 @@ def train(args) -> int:
                 u_tri_outside_reject_count = max(0.0, u_tri_query_count - u_tri_ambiguous_tail_count)
             epoch_logs.append(_detach_log_mapping(
                 {
+                    **evidence_stats,
                     "train/loss": loss.detach(),
                     "train/loss_labeled": loss_l.detach(),
                     "train/loss_closed_group": loss_closed.detach(),
@@ -11382,6 +11415,16 @@ def train(args) -> int:
                     )
 
         train_batches_seconds = time.time() - t0
+        train_logs = mean_logs(epoch_logs)
+        if hasattr(model, "evidence_head"):
+            from cvsrffi.evidence_head_training import assert_epoch_activation, initialize_from_source
+            assert_epoch_activation(model.evidence_head, train_logs)
+            # Refresh on L_s before V so saved weights and reported V scores
+            # describe the same calibrated model after the backbone update.
+            calibration = initialize_from_source(model, data_ctx["probe_train_loader"], initialize_response=False)
+            train_logs["evidence/quality_recalibration_pairs"] = calibration["calibration_pairs"]
+            if ema_model is not None:
+                initialize_from_source(ema_model, data_ctx["probe_train_loader"], initialize_response=False)
         base_validation_started = time.time()
         val_stats = evaluate_loader(model, data_ctx["val_loader"], device, data_ctx["domain_label_map"], max_batches=int(args.eval_max_batches))
         base_validation_seconds = time.time() - base_validation_started
@@ -11458,7 +11501,6 @@ def train(args) -> int:
             )
         else:
             named_stats = {}
-        train_logs = mean_logs(epoch_logs)
         if _fasttrust_lr_enabled(args):
             fasttrust_zero_step_streak = _next_fasttrust_zero_step_streak(
                 train_logs, fasttrust_zero_step_streak
@@ -11500,6 +11542,13 @@ def train(args) -> int:
             "sat_test_named": sat_test_stats,
         }
         payload = {
+            "training_data_contract": evidence_contract,
+            "checkpoint_lineage": {
+                "from_scratch": bool(args.from_scratch) and not use_ckpt and teacher_model is None,
+                "upstream": [] if not use_ckpt and teacher_model is None else [str(args.baseline_ckpt), str(getattr(args, "teacher_ckpt", ""))],
+                "selection": str(args.checkpoint_selection),
+                "target_feedback": False,
+            } if evidence_contract is not None else None,
             "checkpoint_schema": "ssdg_phase1_training_state_v2",
             "checkpoint_role": "training_epoch_state_in_memory",
             "checkpoint_selection": str(args.checkpoint_selection),
@@ -12467,9 +12516,15 @@ def train(args) -> int:
     muse_external_eval = bool(getattr(args, "use_muse_ssdg", False)) and bool(
         getattr(args, "muse_external_final_eval", False)
     )
+    core90_research_completion = str(getattr(args, "phase1_terminal_policy", "mechanism_gated")) == "core90_research"
+    research_export_failed = (
+        core90_research_completion
+        and bool(getattr(args, "phase2_export_prototypes", False))
+        and not _core90_research_export_complete(export_status)
+    )
     terminal_status = _resolve_phase1_terminal_status(
         tail_stopped=bool(tail_early_stop_requested),
-        export_failed=bool(exit_code),
+        export_failed=bool(exit_code) or research_export_failed,
         final_blocked=bool(phase1_v2_final_blocked),
         selected_checkpoint_exists=bool(selected_checkpoint_exists),
         heldout_eval_status=str(frozen_eval.get("status", "")),
@@ -12477,7 +12532,7 @@ def train(args) -> int:
         p0_mechanisms_ready=bool(p0_mechanisms_ready),
         p1_mechanisms_ready=bool(p1_mechanisms_ready),
         endpoint_export_ready=bool(endpoint_export_ready),
-        mechanism_gates_required=not muse_external_eval,
+        mechanism_gates_required=not muse_external_eval and not core90_research_completion,
         endpoint_export_required=(
             bool(getattr(args, "endpoint_require_artifact_on_export", True))
             and not muse_external_eval
@@ -12600,7 +12655,9 @@ def train(args) -> int:
         },
         "p1_mechanisms_ready": bool(p1_mechanisms_ready),
         "endpoint_export_ready": bool(endpoint_export_ready),
-        "promotion_ready": terminal_status == "COMPLETE",
+        "terminal_policy": str(getattr(args, "phase1_terminal_policy", "mechanism_gated")),
+        "promotion_ready": terminal_status == "COMPLETE" and not core90_research_completion,
+        "scientific_promotion_claim": False,
         "claim": "PHASE1_SOURCE_ONLY_NO_TRUE_UNKNOWN_SUCCESS_CLAIM",
     }
     (out_dir / "phase1_terminal_status.json").write_text(
@@ -12683,7 +12740,7 @@ def train(args) -> int:
     )
     print(
         f"[PHASE1-TERMINAL] status={terminal_status} exit_code={int(terminal_exit_code)} "
-        f"promotion_ready={int(terminal_status == 'COMPLETE')} "
+        f"promotion_ready={int(terminal_status == 'COMPLETE' and not core90_research_completion)} "
         f"endpoint_export_ready={int(endpoint_export_ready)}",
         flush=True,
     )

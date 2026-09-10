@@ -912,6 +912,7 @@ class DualCVSincNetDisentangle(nn.Module):
             (not return_aux)
             and self.fast_infer_when_no_aux
             and self.sat_anchor_identity_adapter is None
+            and not hasattr(self, "evidence_head")
         ):
             return backbone_forward_compat(
                 self.id_backbone,
@@ -977,6 +978,18 @@ class DualCVSincNetDisentangle(nn.Module):
             else None
         )
 
+        evidence_result = None
+        if hasattr(self, "evidence_head"):
+            # Labels remain outside the probability score itself. On U_s only the
+            # feature extractor receives its gradient; pseudo labels do not fit
+            # class response/covariance/quality models.
+            with torch.autocast(device_type=x.device.type, enabled=False):
+                evidence_result = self.evidence_head(
+                    x.float(), aux_id,
+                    detach_parameters=bool(self.training and y_tx is None),
+                )
+            tx_logits = evidence_result["scores"]
+
         if not return_aux:
             return tx_logits
 
@@ -1013,6 +1026,9 @@ class DualCVSincNetDisentangle(nn.Module):
             "crra_nuisance_pred": aux_id.get("crra_nuisance_pred", None),
             "crra_condition_tx_adv_logits": crra_condition_tx_adv_logits,
         }
+        if evidence_result is not None:
+            out["evidence"] = evidence_result
+            out["evidence_base_tx_logits"] = aux_id["logits"]
         if torch.is_tensor(tx_adv_logits):
             out["tx_adv_logits"] = tx_adv_logits
         if torch.is_tensor(crra_condition_tx_adv_logits):

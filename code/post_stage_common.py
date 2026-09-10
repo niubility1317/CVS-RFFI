@@ -309,7 +309,7 @@ def merge_checkpoint_args(ckpt: Mapping[str, Any], cli_args, *, input_len: int, 
 
 
 def build_baseline_model(model_args, device: torch.device) -> nn.Module:
-    return build_dual_model(
+    model = build_dual_model(
         int(model_args.num_classes),
         int(model_args.num_domains),
         model_size=str(getattr(model_args, "model_size", "M")),
@@ -361,6 +361,11 @@ def build_baseline_model(model_args, device: torch.device) -> nn.Module:
             getattr(model_args, "physical_gate_variant", "none")
         ),
     ).to(device)
+    evidence_config = getattr(model_args, "evidence_config", "")
+    if evidence_config:
+        from cvsrffi.evidence_head_training import attach_evidence_head
+        model = attach_evidence_head(model, evidence_config)
+    return model
 
 
 def load_baseline_from_checkpoint(
