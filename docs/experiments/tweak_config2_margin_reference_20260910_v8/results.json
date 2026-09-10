@@ -1,0 +1,2370 @@
+{
+  "status": "REFERENCE_GUIDED_MINING_DIAGNOSTIC_NOT_STRICT_REPRODUCTION",
+  "method_metadata": {
+    "method": "gaskin_tweak_2023",
+    "parity_status": "REFERENCE_GUIDED_MINING_DIAGNOSTIC_NOT_STRICT_REPRODUCTION",
+    "unpublished_defaults": {
+      "activation_and_normalization": {
+        "value": {
+          "leaky_relu_negative_slope": 0.01,
+          "batch_norm_eps": 1e-05,
+          "batch_norm_momentum": 0.1
+        },
+        "status": "UNPUBLISHED_DEFAULT",
+        "rationale": "PyTorch module defaults provide a deterministic, widely used interpretation where the paper omits these values."
+      },
+      "initialization_and_bias": {
+        "value": {
+          "bias": true,
+          "initialization": "torch_default_kaiming_uniform"
+        },
+        "status": "UNPUBLISHED_DEFAULT",
+        "rationale": "The paper specifies layer topology but not parameter initialization or bias policy."
+      },
+      "triplet_mining": {
+        "value": {
+          "candidate_sampling": "all_valid_same_class_positive_and_different_class_negative_triplets_per_minibatch",
+          "hardness_filter": "positive_squared_distance-negative_squared_distance+0.1>0",
+          "loss_after_filter": "mean_relu(squared_l2(anchor,positive)-squared_l2(anchor,negative)+0.1)",
+          "no_hard_triplets": "skip_optimizer_step_only_when_no_margin_violating_triplet"
+        },
+        "status": "REFERENCE_GUIDED_DIAGNOSTIC",
+        "rationale": "Tweak IV-A describes dAN<dAP, whereas its cited PVSNet reference (arXiv:1812.06271, Section 2.3) selects margin-violating negatives. This opt-in experiment tests that interpretation alone, including semi-hard triplets; it is not verified author code or strict Tweak reproduction. Network, raw embeddings, margin=.1 and scoring remain unchanged."
+      },
+      "learning_rate_grid": {
+        "value": [
+          0.01,
+          0.001,
+          0.0001,
+          1e-05,
+          1e-06
+        ],
+        "status": "UNPUBLISHED_DEFAULT",
+        "rationale": "This discrete decade grid operationalizes the paper's stated 1e-2 to 1e-6 search range."
+      },
+      "learning_rate_selection": {
+        "value": "five_fresh_one_epoch_source_only_probes_then_highest_fixed_source_training_pool_monitor_accuracy_among_decreasing_active_probes",
+        "status": "UNPUBLISHED_DEFAULT",
+        "rationale": "The paper specifies a decreasing-loss search but omits its duration and tie-break. V7 ranks eligible probes by a fixed source training-pool identity diagnostic, then mean loss and LR. This avoids ranking exclusively by a shrinking strict-hard objective. It is not an independent validation score or an author-verified rule."
+      },
+      "official_lora_runner": {
+        "value": {
+          "known_transmitter_ids": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "batch_composition": {
+            "classes_per_batch": 8,
+            "samples_per_class": 8
+          },
+          "frame_partition": "seeded affine permutation of every physical record frame before the paper's 75/25 role split; calibration remains the first 10% of the logical training partition",
+          "frame_order": "per-device deterministic affine permutation of logical training positions; at most three of 117187 source frames are omitted per device per epoch to preserve batch_size=64",
+          "checkpoint_selection": "highest_fixed_source_training_pool_monitor_accuracy_first_epoch_wins_ties",
+          "source_monitor": {
+            "configuration": "Config2",
+            "reference_logical_frames": [
+              0,
+              256
+            ],
+            "monitor_logical_frames": [
+              256,
+              506
+            ],
+            "role": "training_pool_diagnostic_not_independent_validation",
+            "group_size": 10
+          },
+          "distance_precision": "float64 calibration and grouping; direct non-MM Euclidean scoring",
+          "random_seed": 20260908
+        },
+        "status": "UNPUBLISHED_DEFAULT",
+        "rationale": "The paper fixes 10 known devices, batch size, hard-negative mining and the best epoch, but does not identify device IDs, the physical 75/25 frame selection, batch class composition, sample order or the exact best-checkpoint criterion."
+      }
+    }
+  },
+  "plan": {
+    "source_configuration": "Config2",
+    "device_ids": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+    ],
+    "calibration_configurations": [
+      "Config1",
+      "Config2",
+      "Config3",
+      "Config4"
+    ],
+    "test_configurations": [
+      "Config1",
+      "Config2",
+      "Config3",
+      "Config4"
+    ],
+    "single_domain_rows": [
+      {
+        "calibration_configuration": "Config1",
+        "test_configuration": "Config1"
+      },
+      {
+        "calibration_configuration": "Config1",
+        "test_configuration": "Config2"
+      },
+      {
+        "calibration_configuration": "Config1",
+        "test_configuration": "Config3"
+      },
+      {
+        "calibration_configuration": "Config1",
+        "test_configuration": "Config4"
+      },
+      {
+        "calibration_configuration": "Config2",
+        "test_configuration": "Config1"
+      },
+      {
+        "calibration_configuration": "Config2",
+        "test_configuration": "Config2"
+      },
+      {
+        "calibration_configuration": "Config2",
+        "test_configuration": "Config3"
+      },
+      {
+        "calibration_configuration": "Config2",
+        "test_configuration": "Config4"
+      },
+      {
+        "calibration_configuration": "Config3",
+        "test_configuration": "Config1"
+      },
+      {
+        "calibration_configuration": "Config3",
+        "test_configuration": "Config2"
+      },
+      {
+        "calibration_configuration": "Config3",
+        "test_configuration": "Config3"
+      },
+      {
+        "calibration_configuration": "Config3",
+        "test_configuration": "Config4"
+      },
+      {
+        "calibration_configuration": "Config4",
+        "test_configuration": "Config1"
+      },
+      {
+        "calibration_configuration": "Config4",
+        "test_configuration": "Config2"
+      },
+      {
+        "calibration_configuration": "Config4",
+        "test_configuration": "Config3"
+      },
+      {
+        "calibration_configuration": "Config4",
+        "test_configuration": "Config4"
+      }
+    ],
+    "group_size": 10,
+    "epochs": 100
+  },
+  "data": {
+    "root": "/home/szu2070436088/2510044040/CV-SincNet/datasets/tweak_official_lora_configurations_20260908/Diff_Configurations_Setup",
+    "source_configuration": "Config2",
+    "raw_iq_datatype": "cf32",
+    "frames_per_record": 156250,
+    "training_frames_per_record": 117187,
+    "calibration_frames_per_record": 11718,
+    "testing_frames_per_record": 39063,
+    "physical_frame_partition": {
+      "kind": "seeded_affine_full_record_permutation",
+      "seed": 20260908,
+      "stride": 104789,
+      "offset": 104658
+    }
+  },
+  "training": {
+    "initialization": "scratch",
+    "triplet_mining": "margin_violating",
+    "parity_status": "REFERENCE_GUIDED_MINING_DIAGNOSTIC_NOT_STRICT_REPRODUCTION",
+    "best_epoch": 83,
+    "best_learning_rate": 0.0001,
+    "best_mean_training_loss": 0.09999591636444492,
+    "best_source_monitor_accuracy": 0.884,
+    "learning_rate_probes": [
+      {
+        "learning_rate": 0.01,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.1023262912013829,
+        "first_window_mean_loss": 0.22687704637646675,
+        "last_window_mean_loss": 0.10084650218486786,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 12016,
+          "semihard_triplets": 3349,
+          "margin_violating_triplets": 15365,
+          "selected_triplets": 15365
+        },
+        "source_monitor_accuracy": 0.764,
+        "source_monitor_centroid_distance": 0.1838295931427496,
+        "source_monitor_radius": 0.13998517658710147
+      },
+      {
+        "learning_rate": 0.001,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10293041671163915,
+        "first_window_mean_loss": 0.16109467715024947,
+        "last_window_mean_loss": 0.10099248051643371,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 12016,
+          "semihard_triplets": 3349,
+          "margin_violating_triplets": 15365,
+          "selected_triplets": 15365
+        },
+        "source_monitor_accuracy": 0.76,
+        "source_monitor_centroid_distance": 0.2142841340038436,
+        "source_monitor_radius": 0.1749976416980047
+      },
+      {
+        "learning_rate": 0.0001,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10532372340861075,
+        "first_window_mean_loss": 0.19297804951667785,
+        "last_window_mean_loss": 0.10240225225687027,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 12016,
+          "semihard_triplets": 3349,
+          "margin_violating_triplets": 15365,
+          "selected_triplets": 15365
+        },
+        "source_monitor_accuracy": 0.776,
+        "source_monitor_centroid_distance": 0.21319980833869231,
+        "source_monitor_radius": 0.19378391206718917
+      },
+      {
+        "learning_rate": 1e-05,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.1144132252019621,
+        "first_window_mean_loss": 0.3006898011267185,
+        "last_window_mean_loss": 0.10657821461558342,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 12016,
+          "semihard_triplets": 3349,
+          "margin_violating_triplets": 15365,
+          "selected_triplets": 15365
+        },
+        "source_monitor_accuracy": 0.704,
+        "source_monitor_centroid_distance": 0.21715156434853297,
+        "source_monitor_radius": 0.21551849307917753
+      },
+      {
+        "learning_rate": 1e-06,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.15061997151208797,
+        "first_window_mean_loss": 0.3625252777338028,
+        "last_window_mean_loss": 0.1197416589409113,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 12016,
+          "semihard_triplets": 3349,
+          "margin_violating_triplets": 15365,
+          "selected_triplets": 15365
+        },
+        "source_monitor_accuracy": 0.604,
+        "source_monitor_centroid_distance": 0.1868308836694109,
+        "source_monitor_radius": 0.25920350987936613
+      }
+    ],
+    "learning_rate_selection": "five_fresh_one_epoch_probes_then_max_source_monitor_accuracy_among_decreasing_active_probes",
+    "checkpoint_selection": "highest_fixed_source_training_pool_monitor_accuracy_first_epoch_wins_ties",
+    "source_monitor": {
+      "configuration": "Config2",
+      "reference_logical_frames": [
+        0,
+        256
+      ],
+      "monitor_logical_frames": [
+        256,
+        506
+      ],
+      "role": "training_pool_diagnostic_not_independent_validation",
+      "group_size": 10
+    },
+    "epoch_rows": [
+      {
+        "learning_rate": 0.0001,
+        "epoch": 1,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10532419211523641,
+        "first_window_mean_loss": 0.18444385714828967,
+        "last_window_mean_loss": 0.1029132340848446,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 12570,
+          "semihard_triplets": 3758,
+          "margin_violating_triplets": 16328,
+          "selected_triplets": 16328
+        },
+        "source_monitor_accuracy": 0.8,
+        "source_monitor_centroid_distance": 0.20800881974367538,
+        "source_monitor_radius": 0.18693650556558267
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 2,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10176718715580352,
+        "first_window_mean_loss": 0.1036026667803526,
+        "last_window_mean_loss": 0.10134260110557079,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 9655,
+          "semihard_triplets": 10115,
+          "margin_violating_triplets": 19770,
+          "selected_triplets": 19770
+        },
+        "source_monitor_accuracy": 0.808,
+        "source_monitor_centroid_distance": 0.23359912537794084,
+        "source_monitor_radius": 0.1862340972840201
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 3,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10135904373626511,
+        "first_window_mean_loss": 0.10001314394176006,
+        "last_window_mean_loss": 0.1014916793256998,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 9389,
+          "semihard_triplets": 10937,
+          "margin_violating_triplets": 20326,
+          "selected_triplets": 20326
+        },
+        "source_monitor_accuracy": 0.8,
+        "source_monitor_centroid_distance": 0.24671203977029457,
+        "source_monitor_radius": 0.18646453254490497
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 4,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10085946773974899,
+        "first_window_mean_loss": 0.10174946613609791,
+        "last_window_mean_loss": 0.10119528867304325,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 9377,
+          "semihard_triplets": 10647,
+          "margin_violating_triplets": 20024,
+          "selected_triplets": 20024
+        },
+        "source_monitor_accuracy": 0.82,
+        "source_monitor_centroid_distance": 0.24733640076956853,
+        "source_monitor_radius": 0.18329109693399503
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 5,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10078324200855064,
+        "first_window_mean_loss": 0.10047632053494454,
+        "last_window_mean_loss": 0.10084453545510769,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 10350,
+          "semihard_triplets": 9986,
+          "margin_violating_triplets": 20336,
+          "selected_triplets": 20336
+        },
+        "source_monitor_accuracy": 0.836,
+        "source_monitor_centroid_distance": 0.2354883369507157,
+        "source_monitor_radius": 0.17709196125413615
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 6,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.1008768344937876,
+        "first_window_mean_loss": 0.10144119001924992,
+        "last_window_mean_loss": 0.1010195841640234,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 10060,
+          "semihard_triplets": 9526,
+          "margin_violating_triplets": 19586,
+          "selected_triplets": 19586
+        },
+        "source_monitor_accuracy": 0.824,
+        "source_monitor_centroid_distance": 0.23479621700619882,
+        "source_monitor_radius": 0.17394169312258884
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 7,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10059123294258104,
+        "first_window_mean_loss": 0.10028081424534321,
+        "last_window_mean_loss": 0.10075045920908451,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 8851,
+          "semihard_triplets": 9718,
+          "margin_violating_triplets": 18569,
+          "selected_triplets": 18569
+        },
+        "source_monitor_accuracy": 0.824,
+        "source_monitor_centroid_distance": 0.24216556224560165,
+        "source_monitor_radius": 0.18245663604830242
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 8,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10042424926677732,
+        "first_window_mean_loss": 0.10006793357431888,
+        "last_window_mean_loss": 0.10069361008703709,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 9117,
+          "semihard_triplets": 11785,
+          "margin_violating_triplets": 20902,
+          "selected_triplets": 20902
+        },
+        "source_monitor_accuracy": 0.844,
+        "source_monitor_centroid_distance": 0.2323558836875595,
+        "source_monitor_radius": 0.1753670251115131
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 9,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10067154323465508,
+        "first_window_mean_loss": 0.1019823744148016,
+        "last_window_mean_loss": 0.10059102356433869,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 9580,
+          "semihard_triplets": 10905,
+          "margin_violating_triplets": 20485,
+          "selected_triplets": 20485
+        },
+        "source_monitor_accuracy": 0.836,
+        "source_monitor_centroid_distance": 0.24184131661999622,
+        "source_monitor_radius": 0.1761479765617621
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 10,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10040917003874177,
+        "first_window_mean_loss": 0.10110646530985833,
+        "last_window_mean_loss": 0.10045963071286679,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 8794,
+          "semihard_triplets": 9438,
+          "margin_violating_triplets": 18232,
+          "selected_triplets": 18232
+        },
+        "source_monitor_accuracy": 0.852,
+        "source_monitor_centroid_distance": 0.24138446121526563,
+        "source_monitor_radius": 0.1777871833161449
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 11,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10042156755785875,
+        "first_window_mean_loss": 0.10007225513458252,
+        "last_window_mean_loss": 0.10093142226338386,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 8265,
+          "semihard_triplets": 11171,
+          "margin_violating_triplets": 19436,
+          "selected_triplets": 19436
+        },
+        "source_monitor_accuracy": 0.824,
+        "source_monitor_centroid_distance": 0.22859804958840466,
+        "source_monitor_radius": 0.17522571557678993
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 12,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10059291493617596,
+        "first_window_mean_loss": 0.10099877275526524,
+        "last_window_mean_loss": 0.10075565204024314,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 8786,
+          "semihard_triplets": 10083,
+          "margin_violating_triplets": 18869,
+          "selected_triplets": 18869
+        },
+        "source_monitor_accuracy": 0.84,
+        "source_monitor_centroid_distance": 0.2556312205149471,
+        "source_monitor_radius": 0.18509990266860749
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 13,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10022291890963514,
+        "first_window_mean_loss": 0.09823500826954841,
+        "last_window_mean_loss": 0.10015565291047096,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 8700,
+          "semihard_triplets": 9191,
+          "margin_violating_triplets": 17891,
+          "selected_triplets": 17891
+        },
+        "source_monitor_accuracy": 0.824,
+        "source_monitor_centroid_distance": 0.25061079274668546,
+        "source_monitor_radius": 0.18272112720134687
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 14,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10047382418003192,
+        "first_window_mean_loss": 0.10087602727115154,
+        "last_window_mean_loss": 0.10007027968764305,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 7343,
+          "semihard_triplets": 9153,
+          "margin_violating_triplets": 16496,
+          "selected_triplets": 16496
+        },
+        "source_monitor_accuracy": 0.836,
+        "source_monitor_centroid_distance": 0.25666288123418873,
+        "source_monitor_radius": 0.19251080697107253
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 15,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10056856695719263,
+        "first_window_mean_loss": 0.10110553205013276,
+        "last_window_mean_loss": 0.10064369037747384,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 8996,
+          "semihard_triplets": 9312,
+          "margin_violating_triplets": 18308,
+          "selected_triplets": 18308
+        },
+        "source_monitor_accuracy": 0.832,
+        "source_monitor_centroid_distance": 0.24804863346587433,
+        "source_monitor_radius": 0.18646021769853555
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 16,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.1004681516277992,
+        "first_window_mean_loss": 0.10165548533201217,
+        "last_window_mean_loss": 0.10023619309067726,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 7967,
+          "semihard_triplets": 10359,
+          "margin_violating_triplets": 18326,
+          "selected_triplets": 18326
+        },
+        "source_monitor_accuracy": 0.832,
+        "source_monitor_centroid_distance": 0.24605068395191607,
+        "source_monitor_radius": 0.18075949978980377
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 17,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10022427547318176,
+        "first_window_mean_loss": 0.09911267518997192,
+        "last_window_mean_loss": 0.09955095216631889,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 7758,
+          "semihard_triplets": 9866,
+          "margin_violating_triplets": 17624,
+          "selected_triplets": 17624
+        },
+        "source_monitor_accuracy": 0.816,
+        "source_monitor_centroid_distance": 0.2589094024159493,
+        "source_monitor_radius": 0.18660531545622086
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 18,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10040220654992248,
+        "first_window_mean_loss": 0.10030439607799053,
+        "last_window_mean_loss": 0.1005451387912035,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 8226,
+          "semihard_triplets": 9810,
+          "margin_violating_triplets": 18036,
+          "selected_triplets": 18036
+        },
+        "source_monitor_accuracy": 0.82,
+        "source_monitor_centroid_distance": 0.2468016205732015,
+        "source_monitor_radius": 0.17952913128100162
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 19,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10018130155297526,
+        "first_window_mean_loss": 0.1013150717318058,
+        "last_window_mean_loss": 0.09976948484778404,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 9070,
+          "semihard_triplets": 8680,
+          "margin_violating_triplets": 17750,
+          "selected_triplets": 17750
+        },
+        "source_monitor_accuracy": 0.82,
+        "source_monitor_centroid_distance": 0.2371232940400185,
+        "source_monitor_radius": 0.17388508107087608
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 20,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10031141478106469,
+        "first_window_mean_loss": 0.1011511417478323,
+        "last_window_mean_loss": 0.09988646149635315,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 8351,
+          "semihard_triplets": 10276,
+          "margin_violating_triplets": 18627,
+          "selected_triplets": 18627
+        },
+        "source_monitor_accuracy": 0.82,
+        "source_monitor_centroid_distance": 0.24866695920766996,
+        "source_monitor_radius": 0.18185839021315336
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 21,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10011235771203289,
+        "first_window_mean_loss": 0.09993750967085362,
+        "last_window_mean_loss": 0.10027188330888748,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 8372,
+          "semihard_triplets": 8680,
+          "margin_violating_triplets": 17052,
+          "selected_triplets": 17052
+        },
+        "source_monitor_accuracy": 0.824,
+        "source_monitor_centroid_distance": 0.2536284056324667,
+        "source_monitor_radius": 0.17678512850472022
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 22,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.1001605058150953,
+        "first_window_mean_loss": 0.10042763352394105,
+        "last_window_mean_loss": 0.0999438589066267,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 8389,
+          "semihard_triplets": 10753,
+          "margin_violating_triplets": 19142,
+          "selected_triplets": 19142
+        },
+        "source_monitor_accuracy": 0.812,
+        "source_monitor_centroid_distance": 0.24199890730769652,
+        "source_monitor_radius": 0.17439540165263065
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 23,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10014359681968282,
+        "first_window_mean_loss": 0.10042878963053227,
+        "last_window_mean_loss": 0.09986479356884956,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 8987,
+          "semihard_triplets": 9545,
+          "margin_violating_triplets": 18532,
+          "selected_triplets": 18532
+        },
+        "source_monitor_accuracy": 0.828,
+        "source_monitor_centroid_distance": 0.24636982766790158,
+        "source_monitor_radius": 0.17383907917735758
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 24,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.1002675433198101,
+        "first_window_mean_loss": 0.10074381209909916,
+        "last_window_mean_loss": 0.09963172771036626,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 7671,
+          "semihard_triplets": 9831,
+          "margin_violating_triplets": 17502,
+          "selected_triplets": 17502
+        },
+        "source_monitor_accuracy": 0.828,
+        "source_monitor_centroid_distance": 0.24200502278470667,
+        "source_monitor_radius": 0.17257589345019403
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 25,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10016049776106242,
+        "first_window_mean_loss": 0.101077032238245,
+        "last_window_mean_loss": 0.1004523415863514,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 8283,
+          "semihard_triplets": 10492,
+          "margin_violating_triplets": 18775,
+          "selected_triplets": 18775
+        },
+        "source_monitor_accuracy": 0.844,
+        "source_monitor_centroid_distance": 0.24910748378350936,
+        "source_monitor_radius": 0.17895099333937906
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 26,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10028233274630287,
+        "first_window_mean_loss": 0.1009554485976696,
+        "last_window_mean_loss": 0.10092035643756389,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 10056,
+          "semihard_triplets": 10127,
+          "margin_violating_triplets": 20183,
+          "selected_triplets": 20183
+        },
+        "source_monitor_accuracy": 0.836,
+        "source_monitor_centroid_distance": 0.25696691232141067,
+        "source_monitor_radius": 0.17985312452664665
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 27,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10014947450702989,
+        "first_window_mean_loss": 0.09960881859064102,
+        "last_window_mean_loss": 0.0999723981320858,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 7639,
+          "semihard_triplets": 8799,
+          "margin_violating_triplets": 16438,
+          "selected_triplets": 16438
+        },
+        "source_monitor_accuracy": 0.824,
+        "source_monitor_centroid_distance": 0.2505825271670275,
+        "source_monitor_radius": 0.17729909176070402
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 28,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10016517915657672,
+        "first_window_mean_loss": 0.10023161850869655,
+        "last_window_mean_loss": 0.10048519052565098,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 7175,
+          "semihard_triplets": 10300,
+          "margin_violating_triplets": 17475,
+          "selected_triplets": 17475
+        },
+        "source_monitor_accuracy": 0.832,
+        "source_monitor_centroid_distance": 0.2547639637254818,
+        "source_monitor_radius": 0.18195915810116556
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 29,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10023478302292847,
+        "first_window_mean_loss": 0.10105858720839024,
+        "last_window_mean_loss": 0.10046631291508674,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 9430,
+          "semihard_triplets": 9069,
+          "margin_violating_triplets": 18499,
+          "selected_triplets": 18499
+        },
+        "source_monitor_accuracy": 0.84,
+        "source_monitor_centroid_distance": 0.2556342203905947,
+        "source_monitor_radius": 0.17976670897651661
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 30,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10028001562184093,
+        "first_window_mean_loss": 0.10030630066990852,
+        "last_window_mean_loss": 0.10013743489980698,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 8855,
+          "semihard_triplets": 10047,
+          "margin_violating_triplets": 18902,
+          "selected_triplets": 18902
+        },
+        "source_monitor_accuracy": 0.812,
+        "source_monitor_centroid_distance": 0.25240698945062245,
+        "source_monitor_radius": 0.18061817243547
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 31,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.1003313822711445,
+        "first_window_mean_loss": 0.1000049365311861,
+        "last_window_mean_loss": 0.10093374356627464,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 5727,
+          "semihard_triplets": 10759,
+          "margin_violating_triplets": 16486,
+          "selected_triplets": 16486
+        },
+        "source_monitor_accuracy": 0.832,
+        "source_monitor_centroid_distance": 0.2601990842913226,
+        "source_monitor_radius": 0.18533861160107537
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 32,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.1002847645047224,
+        "first_window_mean_loss": 0.09827348478138447,
+        "last_window_mean_loss": 0.09925063394010067,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 9874,
+          "semihard_triplets": 9515,
+          "margin_violating_triplets": 19389,
+          "selected_triplets": 19389
+        },
+        "source_monitor_accuracy": 0.824,
+        "source_monitor_centroid_distance": 0.2621250083327264,
+        "source_monitor_radius": 0.19030639612070482
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 33,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10041010129824485,
+        "first_window_mean_loss": 0.10170867025852204,
+        "last_window_mean_loss": 0.09992752514779568,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 7839,
+          "semihard_triplets": 8259,
+          "margin_violating_triplets": 16098,
+          "selected_triplets": 16098
+        },
+        "source_monitor_accuracy": 0.828,
+        "source_monitor_centroid_distance": 0.25622263386100214,
+        "source_monitor_radius": 0.18147397657722492
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 34,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.1000696104180611,
+        "first_window_mean_loss": 0.09997481323778629,
+        "last_window_mean_loss": 0.10022405982017517,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 8396,
+          "semihard_triplets": 9473,
+          "margin_violating_triplets": 17869,
+          "selected_triplets": 17869
+        },
+        "source_monitor_accuracy": 0.832,
+        "source_monitor_centroid_distance": 0.25421716857301124,
+        "source_monitor_radius": 0.1797888313760917
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 35,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10023578905598639,
+        "first_window_mean_loss": 0.09890102542936802,
+        "last_window_mean_loss": 0.10108464911580085,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 8409,
+          "semihard_triplets": 11046,
+          "margin_violating_triplets": 19455,
+          "selected_triplets": 19455
+        },
+        "source_monitor_accuracy": 0.828,
+        "source_monitor_centroid_distance": 0.26214539649703616,
+        "source_monitor_radius": 0.1860684268992187
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 36,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10013374001324861,
+        "first_window_mean_loss": 0.10135200306773186,
+        "last_window_mean_loss": 0.09961105838418007,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 7786,
+          "semihard_triplets": 9329,
+          "margin_violating_triplets": 17115,
+          "selected_triplets": 17115
+        },
+        "source_monitor_accuracy": 0.812,
+        "source_monitor_centroid_distance": 0.2499823133595005,
+        "source_monitor_radius": 0.17849586253670088
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 37,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10042727887589771,
+        "first_window_mean_loss": 0.10017358221113681,
+        "last_window_mean_loss": 0.1002242386341095,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 8322,
+          "semihard_triplets": 10126,
+          "margin_violating_triplets": 18448,
+          "selected_triplets": 18448
+        },
+        "source_monitor_accuracy": 0.852,
+        "source_monitor_centroid_distance": 0.263481394214717,
+        "source_monitor_radius": 0.18405759318015075
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 38,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10002718526139603,
+        "first_window_mean_loss": 0.1009241808205843,
+        "last_window_mean_loss": 0.10040455065667629,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 7295,
+          "semihard_triplets": 9239,
+          "margin_violating_triplets": 16534,
+          "selected_triplets": 16534
+        },
+        "source_monitor_accuracy": 0.848,
+        "source_monitor_centroid_distance": 0.2563538940815384,
+        "source_monitor_radius": 0.1788359788228619
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 39,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10007574277365879,
+        "first_window_mean_loss": 0.09994019389152527,
+        "last_window_mean_loss": 0.09998382531106471,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 10405,
+          "semihard_triplets": 9426,
+          "margin_violating_triplets": 19831,
+          "selected_triplets": 19831
+        },
+        "source_monitor_accuracy": 0.84,
+        "source_monitor_centroid_distance": 0.25576784094480015,
+        "source_monitor_radius": 0.17822431766294974
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 40,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10011952354820422,
+        "first_window_mean_loss": 0.10016712069511413,
+        "last_window_mean_loss": 0.10044262252748012,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 9067,
+          "semihard_triplets": 8998,
+          "margin_violating_triplets": 18065,
+          "selected_triplets": 18065
+        },
+        "source_monitor_accuracy": 0.82,
+        "source_monitor_centroid_distance": 0.2572232922794249,
+        "source_monitor_radius": 0.18044167828307583
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 41,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10021485980296968,
+        "first_window_mean_loss": 0.10036858089268208,
+        "last_window_mean_loss": 0.1004177712649107,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 9052,
+          "semihard_triplets": 10340,
+          "margin_violating_triplets": 19392,
+          "selected_triplets": 19392
+        },
+        "source_monitor_accuracy": 0.828,
+        "source_monitor_centroid_distance": 0.24761333304252464,
+        "source_monitor_radius": 0.1769805631074421
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 42,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.09990730002717788,
+        "first_window_mean_loss": 0.0992774360626936,
+        "last_window_mean_loss": 0.09966526061296463,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 7468,
+          "semihard_triplets": 10115,
+          "margin_violating_triplets": 17583,
+          "selected_triplets": 17583
+        },
+        "source_monitor_accuracy": 0.824,
+        "source_monitor_centroid_distance": 0.25890924085334494,
+        "source_monitor_radius": 0.1863440945157724
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 43,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.100274452541465,
+        "first_window_mean_loss": 0.10103232383728028,
+        "last_window_mean_loss": 0.0993209558725357,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 8047,
+          "semihard_triplets": 8780,
+          "margin_violating_triplets": 16827,
+          "selected_triplets": 16827
+        },
+        "source_monitor_accuracy": 0.824,
+        "source_monitor_centroid_distance": 0.2537264973140666,
+        "source_monitor_radius": 0.1870679646209757
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 44,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.0999984988121795,
+        "first_window_mean_loss": 0.10075512424111366,
+        "last_window_mean_loss": 0.10028284475207329,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 7451,
+          "semihard_triplets": 10137,
+          "margin_violating_triplets": 17588,
+          "selected_triplets": 17588
+        },
+        "source_monitor_accuracy": 0.848,
+        "source_monitor_centroid_distance": 0.2668595132389248,
+        "source_monitor_radius": 0.18485874109098754
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 45,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10018905130836041,
+        "first_window_mean_loss": 0.10035056509077549,
+        "last_window_mean_loss": 0.10072464257478714,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 8414,
+          "semihard_triplets": 9550,
+          "margin_violating_triplets": 17964,
+          "selected_triplets": 17964
+        },
+        "source_monitor_accuracy": 0.816,
+        "source_monitor_centroid_distance": 0.248245740129217,
+        "source_monitor_radius": 0.18631285104175313
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 46,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10028411988423276,
+        "first_window_mean_loss": 0.10046333029866218,
+        "last_window_mean_loss": 0.09988189972937107,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 7850,
+          "semihard_triplets": 9129,
+          "margin_violating_triplets": 16979,
+          "selected_triplets": 16979
+        },
+        "source_monitor_accuracy": 0.828,
+        "source_monitor_centroid_distance": 0.2653551469870598,
+        "source_monitor_radius": 0.18663626056193122
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 47,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10021232906779846,
+        "first_window_mean_loss": 0.10171367786824703,
+        "last_window_mean_loss": 0.09961152218282222,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 8654,
+          "semihard_triplets": 8912,
+          "margin_violating_triplets": 17566,
+          "selected_triplets": 17566
+        },
+        "source_monitor_accuracy": 0.836,
+        "source_monitor_centroid_distance": 0.26500839495856143,
+        "source_monitor_radius": 0.18610972389769936
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 48,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10015350936061043,
+        "first_window_mean_loss": 0.09900795690715312,
+        "last_window_mean_loss": 0.10075951002538204,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 7773,
+          "semihard_triplets": 9599,
+          "margin_violating_triplets": 17372,
+          "selected_triplets": 17372
+        },
+        "source_monitor_accuracy": 0.824,
+        "source_monitor_centroid_distance": 0.25793224537472687,
+        "source_monitor_radius": 0.18787217011481164
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 49,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.1002235692850981,
+        "first_window_mean_loss": 0.10074258469045162,
+        "last_window_mean_loss": 0.09895325988531113,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 9342,
+          "semihard_triplets": 9434,
+          "margin_violating_triplets": 18776,
+          "selected_triplets": 18776
+        },
+        "source_monitor_accuracy": 0.852,
+        "source_monitor_centroid_distance": 0.2621193499386797,
+        "source_monitor_radius": 0.19027896657142152
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 50,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10027396605802259,
+        "first_window_mean_loss": 0.10259311370551587,
+        "last_window_mean_loss": 0.1004334556311369,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 9780,
+          "semihard_triplets": 8725,
+          "margin_violating_triplets": 18505,
+          "selected_triplets": 18505
+        },
+        "source_monitor_accuracy": 0.824,
+        "source_monitor_centroid_distance": 0.2568316073860874,
+        "source_monitor_radius": 0.186221480567048
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 51,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10007216050643077,
+        "first_window_mean_loss": 0.09987958863377572,
+        "last_window_mean_loss": 0.10053410664200783,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 8512,
+          "semihard_triplets": 9184,
+          "margin_violating_triplets": 17696,
+          "selected_triplets": 17696
+        },
+        "source_monitor_accuracy": 0.86,
+        "source_monitor_centroid_distance": 0.25628833637940923,
+        "source_monitor_radius": 0.18286079671431782
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 52,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10001508710261969,
+        "first_window_mean_loss": 0.09802677601575852,
+        "last_window_mean_loss": 0.10084938369691372,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 9707,
+          "semihard_triplets": 10130,
+          "margin_violating_triplets": 19837,
+          "selected_triplets": 19837
+        },
+        "source_monitor_accuracy": 0.848,
+        "source_monitor_centroid_distance": 0.26796528400957653,
+        "source_monitor_radius": 0.19148396449328653
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 53,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10022420321801268,
+        "first_window_mean_loss": 0.10340553797781467,
+        "last_window_mean_loss": 0.10003559745848178,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 7936,
+          "semihard_triplets": 9231,
+          "margin_violating_triplets": 17167,
+          "selected_triplets": 17167
+        },
+        "source_monitor_accuracy": 0.844,
+        "source_monitor_centroid_distance": 0.25504444626774414,
+        "source_monitor_radius": 0.18253979505615217
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 54,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10034816151414655,
+        "first_window_mean_loss": 0.09972000882029533,
+        "last_window_mean_loss": 0.09967144973576068,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 8859,
+          "semihard_triplets": 10455,
+          "margin_violating_triplets": 19314,
+          "selected_triplets": 19314
+        },
+        "source_monitor_accuracy": 0.84,
+        "source_monitor_centroid_distance": 0.2614196589905374,
+        "source_monitor_radius": 0.18790563648501585
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 55,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.1000997002360145,
+        "first_window_mean_loss": 0.100632813423872,
+        "last_window_mean_loss": 0.10001540295779705,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 7512,
+          "semihard_triplets": 9216,
+          "margin_violating_triplets": 16728,
+          "selected_triplets": 16728
+        },
+        "source_monitor_accuracy": 0.844,
+        "source_monitor_centroid_distance": 0.2649400363073898,
+        "source_monitor_radius": 0.18426495444285693
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 56,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.1002243330721514,
+        "first_window_mean_loss": 0.09940156809985638,
+        "last_window_mean_loss": 0.10064438208937646,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 7939,
+          "semihard_triplets": 8911,
+          "margin_violating_triplets": 16850,
+          "selected_triplets": 16850
+        },
+        "source_monitor_accuracy": 0.848,
+        "source_monitor_centroid_distance": 0.25580681880345973,
+        "source_monitor_radius": 0.18081145774088486
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 57,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10009014216571607,
+        "first_window_mean_loss": 0.10016396895051002,
+        "last_window_mean_loss": 0.10178580820560455,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 8382,
+          "semihard_triplets": 9869,
+          "margin_violating_triplets": 18251,
+          "selected_triplets": 18251
+        },
+        "source_monitor_accuracy": 0.848,
+        "source_monitor_centroid_distance": 0.2601804483628645,
+        "source_monitor_radius": 0.1805842047849469
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 58,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10010969127700799,
+        "first_window_mean_loss": 0.099367560967803,
+        "last_window_mean_loss": 0.10007334128022194,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 10379,
+          "semihard_triplets": 9314,
+          "margin_violating_triplets": 19693,
+          "selected_triplets": 19693
+        },
+        "source_monitor_accuracy": 0.868,
+        "source_monitor_centroid_distance": 0.26489918125076806,
+        "source_monitor_radius": 0.1856304492970386
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 59,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.1001869191816926,
+        "first_window_mean_loss": 0.10050912283360958,
+        "last_window_mean_loss": 0.10004007838666439,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 7708,
+          "semihard_triplets": 9582,
+          "margin_violating_triplets": 17290,
+          "selected_triplets": 17290
+        },
+        "source_monitor_accuracy": 0.852,
+        "source_monitor_centroid_distance": 0.26156345504240136,
+        "source_monitor_radius": 0.18741085929856108
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 60,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10012115517937376,
+        "first_window_mean_loss": 0.10105025492608548,
+        "last_window_mean_loss": 0.10025244116783143,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 8592,
+          "semihard_triplets": 8699,
+          "margin_violating_triplets": 17291,
+          "selected_triplets": 17291
+        },
+        "source_monitor_accuracy": 0.844,
+        "source_monitor_centroid_distance": 0.26293950859750126,
+        "source_monitor_radius": 0.18500689197492742
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 61,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10009148901950005,
+        "first_window_mean_loss": 0.09950231276452541,
+        "last_window_mean_loss": 0.10039869375526905,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 6434,
+          "semihard_triplets": 8657,
+          "margin_violating_triplets": 15091,
+          "selected_triplets": 15091
+        },
+        "source_monitor_accuracy": 0.848,
+        "source_monitor_centroid_distance": 0.2640161628418665,
+        "source_monitor_radius": 0.18424859472456653
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 62,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10012939694286174,
+        "first_window_mean_loss": 0.10131650939583778,
+        "last_window_mean_loss": 0.100187606215477,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 7354,
+          "semihard_triplets": 10896,
+          "margin_violating_triplets": 18250,
+          "selected_triplets": 18250
+        },
+        "source_monitor_accuracy": 0.848,
+        "source_monitor_centroid_distance": 0.27409950586763226,
+        "source_monitor_radius": 0.18734126358991954
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 63,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.1001113850417878,
+        "first_window_mean_loss": 0.10034682504832744,
+        "last_window_mean_loss": 0.10018322341144086,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 7203,
+          "semihard_triplets": 8972,
+          "margin_violating_triplets": 16175,
+          "selected_triplets": 16175
+        },
+        "source_monitor_accuracy": 0.852,
+        "source_monitor_centroid_distance": 0.2554929106458735,
+        "source_monitor_radius": 0.18352881832519782
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 64,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10031942471837424,
+        "first_window_mean_loss": 0.10087096773087978,
+        "last_window_mean_loss": 0.09989275485277176,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 8635,
+          "semihard_triplets": 10311,
+          "margin_violating_triplets": 18946,
+          "selected_triplets": 18946
+        },
+        "source_monitor_accuracy": 0.848,
+        "source_monitor_centroid_distance": 0.26546649360591196,
+        "source_monitor_radius": 0.18501635766376384
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 65,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.1001419181159811,
+        "first_window_mean_loss": 0.09924443319439888,
+        "last_window_mean_loss": 0.09991807371377945,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 8508,
+          "semihard_triplets": 10089,
+          "margin_violating_triplets": 18597,
+          "selected_triplets": 18597
+        },
+        "source_monitor_accuracy": 0.852,
+        "source_monitor_centroid_distance": 0.26616880628637385,
+        "source_monitor_radius": 0.19096155377882887
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 66,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10017766133032166,
+        "first_window_mean_loss": 0.10152702629566193,
+        "last_window_mean_loss": 0.10142924770712852,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 9816,
+          "semihard_triplets": 8685,
+          "margin_violating_triplets": 18501,
+          "selected_triplets": 18501
+        },
+        "source_monitor_accuracy": 0.848,
+        "source_monitor_centroid_distance": 0.24813943157062243,
+        "source_monitor_radius": 0.1913965072740638
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 67,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10038304700999882,
+        "first_window_mean_loss": 0.1016901357471943,
+        "last_window_mean_loss": 0.1003987880051136,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 8258,
+          "semihard_triplets": 11212,
+          "margin_violating_triplets": 19470,
+          "selected_triplets": 19470
+        },
+        "source_monitor_accuracy": 0.848,
+        "source_monitor_centroid_distance": 0.2615281800768438,
+        "source_monitor_radius": 0.18497995391664904
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 68,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10006174936581348,
+        "first_window_mean_loss": 0.10072032272815705,
+        "last_window_mean_loss": 0.10013248920440673,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 8079,
+          "semihard_triplets": 9597,
+          "margin_violating_triplets": 17676,
+          "selected_triplets": 17676
+        },
+        "source_monitor_accuracy": 0.836,
+        "source_monitor_centroid_distance": 0.2592879504247117,
+        "source_monitor_radius": 0.1831149156961714
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 69,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10016150669256303,
+        "first_window_mean_loss": 0.0999915336817503,
+        "last_window_mean_loss": 0.10044813245534896,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 7958,
+          "semihard_triplets": 9694,
+          "margin_violating_triplets": 17652,
+          "selected_triplets": 17652
+        },
+        "source_monitor_accuracy": 0.856,
+        "source_monitor_centroid_distance": 0.2602600353514662,
+        "source_monitor_radius": 0.18738208867438635
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 70,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10014624604227958,
+        "first_window_mean_loss": 0.10096021503210068,
+        "last_window_mean_loss": 0.09968792296946048,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 7544,
+          "semihard_triplets": 9999,
+          "margin_violating_triplets": 17543,
+          "selected_triplets": 17543
+        },
+        "source_monitor_accuracy": 0.828,
+        "source_monitor_centroid_distance": 0.2637741512659185,
+        "source_monitor_radius": 0.18521866338756537
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 71,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10011910230271286,
+        "first_window_mean_loss": 0.10047910891473294,
+        "last_window_mean_loss": 0.10031179808080197,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 9124,
+          "semihard_triplets": 8898,
+          "margin_violating_triplets": 18022,
+          "selected_triplets": 18022
+        },
+        "source_monitor_accuracy": 0.864,
+        "source_monitor_centroid_distance": 0.26466023086712753,
+        "source_monitor_radius": 0.1858121825485626
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 72,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10011766073418601,
+        "first_window_mean_loss": 0.09954912476241588,
+        "last_window_mean_loss": 0.10010898344218731,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 7904,
+          "semihard_triplets": 9953,
+          "margin_violating_triplets": 17857,
+          "selected_triplets": 17857
+        },
+        "source_monitor_accuracy": 0.88,
+        "source_monitor_centroid_distance": 0.26763899305138306,
+        "source_monitor_radius": 0.18806628727429436
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 73,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10017095032259456,
+        "first_window_mean_loss": 0.09974400788545608,
+        "last_window_mean_loss": 0.10029961109161377,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 8644,
+          "semihard_triplets": 9319,
+          "margin_violating_triplets": 17963,
+          "selected_triplets": 17963
+        },
+        "source_monitor_accuracy": 0.856,
+        "source_monitor_centroid_distance": 0.2678128900609039,
+        "source_monitor_radius": 0.19094837477156307
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 74,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10001375222347722,
+        "first_window_mean_loss": 0.10025849513709545,
+        "last_window_mean_loss": 0.1002763719856739,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 8533,
+          "semihard_triplets": 9879,
+          "margin_violating_triplets": 18412,
+          "selected_triplets": 18412
+        },
+        "source_monitor_accuracy": 0.86,
+        "source_monitor_centroid_distance": 0.2651574624893853,
+        "source_monitor_radius": 0.18300650174297176
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 75,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10015435974977825,
+        "first_window_mean_loss": 0.10029637284576892,
+        "last_window_mean_loss": 0.10075416378676891,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 8610,
+          "semihard_triplets": 10314,
+          "margin_violating_triplets": 18924,
+          "selected_triplets": 18924
+        },
+        "source_monitor_accuracy": 0.844,
+        "source_monitor_centroid_distance": 0.2630378393439701,
+        "source_monitor_radius": 0.18646822767029952
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 76,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10011356910889035,
+        "first_window_mean_loss": 0.09975190185010434,
+        "last_window_mean_loss": 0.10062234908342362,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 8284,
+          "semihard_triplets": 9065,
+          "margin_violating_triplets": 17349,
+          "selected_triplets": 17349
+        },
+        "source_monitor_accuracy": 0.86,
+        "source_monitor_centroid_distance": 0.26309473905188696,
+        "source_monitor_radius": 0.1877622256302231
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 77,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10010843057692019,
+        "first_window_mean_loss": 0.10093535117805004,
+        "last_window_mean_loss": 0.10056672714650632,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 6739,
+          "semihard_triplets": 10220,
+          "margin_violating_triplets": 16959,
+          "selected_triplets": 16959
+        },
+        "source_monitor_accuracy": 0.86,
+        "source_monitor_centroid_distance": 0.25793946616594143,
+        "source_monitor_radius": 0.18430185301939245
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 78,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.09996992308933314,
+        "first_window_mean_loss": 0.09928558990359307,
+        "last_window_mean_loss": 0.10029190726578235,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 7912,
+          "semihard_triplets": 9277,
+          "margin_violating_triplets": 17189,
+          "selected_triplets": 17189
+        },
+        "source_monitor_accuracy": 0.856,
+        "source_monitor_centroid_distance": 0.26385335882630745,
+        "source_monitor_radius": 0.1859745004515451
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 79,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10030688409317653,
+        "first_window_mean_loss": 0.10071069240570069,
+        "last_window_mean_loss": 0.10062777005136013,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 6120,
+          "semihard_triplets": 10965,
+          "margin_violating_triplets": 17085,
+          "selected_triplets": 17085
+        },
+        "source_monitor_accuracy": 0.86,
+        "source_monitor_centroid_distance": 0.270622518671856,
+        "source_monitor_radius": 0.18840627826180897
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 80,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10010005600022072,
+        "first_window_mean_loss": 0.0995484409481287,
+        "last_window_mean_loss": 0.0999202211201191,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 6781,
+          "semihard_triplets": 10068,
+          "margin_violating_triplets": 16849,
+          "selected_triplets": 16849
+        },
+        "source_monitor_accuracy": 0.856,
+        "source_monitor_centroid_distance": 0.26998175548803466,
+        "source_monitor_radius": 0.1887197862769104
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 81,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10021859040796138,
+        "first_window_mean_loss": 0.10100311651825905,
+        "last_window_mean_loss": 0.10109215721487999,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 7638,
+          "semihard_triplets": 8837,
+          "margin_violating_triplets": 16475,
+          "selected_triplets": 16475
+        },
+        "source_monitor_accuracy": 0.864,
+        "source_monitor_centroid_distance": 0.2684326532873022,
+        "source_monitor_radius": 0.18491537531577007
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 82,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.1002824195217624,
+        "first_window_mean_loss": 0.09965529188513755,
+        "last_window_mean_loss": 0.10065270587801933,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 8502,
+          "semihard_triplets": 9033,
+          "margin_violating_triplets": 17535,
+          "selected_triplets": 17535
+        },
+        "source_monitor_accuracy": 0.848,
+        "source_monitor_centroid_distance": 0.27714718661416254,
+        "source_monitor_radius": 0.19063859352949875
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 83,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.09999591636444492,
+        "first_window_mean_loss": 0.09978533253073692,
+        "last_window_mean_loss": 0.10057750351727009,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 8100,
+          "semihard_triplets": 9772,
+          "margin_violating_triplets": 17872,
+          "selected_triplets": 17872
+        },
+        "source_monitor_accuracy": 0.884,
+        "source_monitor_centroid_distance": 0.2687930483716891,
+        "source_monitor_radius": 0.1945856779045106
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 84,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10026726684182606,
+        "first_window_mean_loss": 0.10204978570342065,
+        "last_window_mean_loss": 0.09960909806191921,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 8786,
+          "semihard_triplets": 8556,
+          "margin_violating_triplets": 17342,
+          "selected_triplets": 17342
+        },
+        "source_monitor_accuracy": 0.864,
+        "source_monitor_centroid_distance": 0.26853671023045667,
+        "source_monitor_radius": 0.18991764775799855
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 85,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10022682719693557,
+        "first_window_mean_loss": 0.10036931000649929,
+        "last_window_mean_loss": 0.09995703764259815,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 9447,
+          "semihard_triplets": 8584,
+          "margin_violating_triplets": 18031,
+          "selected_triplets": 18031
+        },
+        "source_monitor_accuracy": 0.848,
+        "source_monitor_centroid_distance": 0.26222566431721306,
+        "source_monitor_radius": 0.18436660178816275
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 86,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10021055947311715,
+        "first_window_mean_loss": 0.10054773926734924,
+        "last_window_mean_loss": 0.09993285477161408,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 7285,
+          "semihard_triplets": 8961,
+          "margin_violating_triplets": 16246,
+          "selected_triplets": 16246
+        },
+        "source_monitor_accuracy": 0.86,
+        "source_monitor_centroid_distance": 0.24333943621618212,
+        "source_monitor_radius": 0.18130188585059462
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 87,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.09995029794346239,
+        "first_window_mean_loss": 0.10160988576710224,
+        "last_window_mean_loss": 0.10040604665875436,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 9058,
+          "semihard_triplets": 9149,
+          "margin_violating_triplets": 18207,
+          "selected_triplets": 18207
+        },
+        "source_monitor_accuracy": 0.848,
+        "source_monitor_centroid_distance": 0.2687125179968336,
+        "source_monitor_radius": 0.18553519789990452
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 88,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.1004834062289111,
+        "first_window_mean_loss": 0.10003052555024623,
+        "last_window_mean_loss": 0.10046265065670014,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 9379,
+          "semihard_triplets": 9781,
+          "margin_violating_triplets": 19160,
+          "selected_triplets": 19160
+        },
+        "source_monitor_accuracy": 0.848,
+        "source_monitor_centroid_distance": 0.26910262100164994,
+        "source_monitor_radius": 0.18809830683054582
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 89,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.0999347919102805,
+        "first_window_mean_loss": 0.09927541978657245,
+        "last_window_mean_loss": 0.10067440152168274,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 6415,
+          "semihard_triplets": 9240,
+          "margin_violating_triplets": 15655,
+          "selected_triplets": 15655
+        },
+        "source_monitor_accuracy": 0.864,
+        "source_monitor_centroid_distance": 0.26317172394175853,
+        "source_monitor_radius": 0.18749532531808533
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 90,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.1000521106746176,
+        "first_window_mean_loss": 0.10089460484683514,
+        "last_window_mean_loss": 0.10031042486429215,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 7676,
+          "semihard_triplets": 10192,
+          "margin_violating_triplets": 17868,
+          "selected_triplets": 17868
+        },
+        "source_monitor_accuracy": 0.856,
+        "source_monitor_centroid_distance": 0.2632285551701042,
+        "source_monitor_radius": 0.1844031315515388
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 91,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.1000090058130003,
+        "first_window_mean_loss": 0.09943727873265744,
+        "last_window_mean_loss": 0.10020664617419243,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 9347,
+          "semihard_triplets": 10510,
+          "margin_violating_triplets": 19857,
+          "selected_triplets": 19857
+        },
+        "source_monitor_accuracy": 0.86,
+        "source_monitor_centroid_distance": 0.26791730000801606,
+        "source_monitor_radius": 0.1833303788281216
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 92,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10003767806745695,
+        "first_window_mean_loss": 0.09992784962058067,
+        "last_window_mean_loss": 0.09963698215782642,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 9028,
+          "semihard_triplets": 9904,
+          "margin_violating_triplets": 18932,
+          "selected_triplets": 18932
+        },
+        "source_monitor_accuracy": 0.868,
+        "source_monitor_centroid_distance": 0.2676207913916482,
+        "source_monitor_radius": 0.18741338740305133
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 93,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.0998699789283902,
+        "first_window_mean_loss": 0.0995034996420145,
+        "last_window_mean_loss": 0.10044608511030674,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 8604,
+          "semihard_triplets": 9716,
+          "margin_violating_triplets": 18320,
+          "selected_triplets": 18320
+        },
+        "source_monitor_accuracy": 0.864,
+        "source_monitor_centroid_distance": 0.27003125326610644,
+        "source_monitor_radius": 0.19435986342959535
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 94,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10037783885233263,
+        "first_window_mean_loss": 0.1023197764903307,
+        "last_window_mean_loss": 0.10068200625479222,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 7776,
+          "semihard_triplets": 9417,
+          "margin_violating_triplets": 17193,
+          "selected_triplets": 17193
+        },
+        "source_monitor_accuracy": 0.852,
+        "source_monitor_centroid_distance": 0.266226633767177,
+        "source_monitor_radius": 0.1829992909570538
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 95,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.09995304244641136,
+        "first_window_mean_loss": 0.09991078861057759,
+        "last_window_mean_loss": 0.10022979564964771,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 7564,
+          "semihard_triplets": 10230,
+          "margin_violating_triplets": 17794,
+          "selected_triplets": 17794
+        },
+        "source_monitor_accuracy": 0.836,
+        "source_monitor_centroid_distance": 0.26146614921839184,
+        "source_monitor_radius": 0.18312673100512145
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 96,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10006697866953768,
+        "first_window_mean_loss": 0.09946341790258885,
+        "last_window_mean_loss": 0.10074034117162228,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 6105,
+          "semihard_triplets": 10057,
+          "margin_violating_triplets": 16162,
+          "selected_triplets": 16162
+        },
+        "source_monitor_accuracy": 0.868,
+        "source_monitor_centroid_distance": 0.2652641294956124,
+        "source_monitor_radius": 0.18951887234258266
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 97,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10033619463167055,
+        "first_window_mean_loss": 0.10151047572493553,
+        "last_window_mean_loss": 0.10058021694421768,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 7361,
+          "semihard_triplets": 9260,
+          "margin_violating_triplets": 16621,
+          "selected_triplets": 16621
+        },
+        "source_monitor_accuracy": 0.86,
+        "source_monitor_centroid_distance": 0.2717028718888297,
+        "source_monitor_radius": 0.19047063611900703
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 98,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10025527709286308,
+        "first_window_mean_loss": 0.10072636678814888,
+        "last_window_mean_loss": 0.09978694327175618,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 7113,
+          "semihard_triplets": 9651,
+          "margin_violating_triplets": 16764,
+          "selected_triplets": 16764
+        },
+        "source_monitor_accuracy": 0.86,
+        "source_monitor_centroid_distance": 0.26902621239836966,
+        "source_monitor_radius": 0.1907373007774301
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 99,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10013843697278568,
+        "first_window_mean_loss": 0.1004420929402113,
+        "last_window_mean_loss": 0.09985067643225193,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 7470,
+          "semihard_triplets": 9908,
+          "margin_violating_triplets": 17378,
+          "selected_triplets": 17378
+        },
+        "source_monitor_accuracy": 0.86,
+        "source_monitor_centroid_distance": 0.2720309786598852,
+        "source_monitor_radius": 0.19734478564193342
+      },
+      {
+        "learning_rate": 0.0001,
+        "epoch": 100,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10034072366545657,
+        "first_window_mean_loss": 0.10153712697327137,
+        "last_window_mean_loss": 0.09911291025578976,
+        "first_batch_mining": {
+          "valid_triplets": 25088,
+          "strict_hard_triplets": 10211,
+          "semihard_triplets": 9052,
+          "margin_violating_triplets": 19263,
+          "selected_triplets": 19263
+        },
+        "source_monitor_accuracy": 0.844,
+        "source_monitor_centroid_distance": 0.26589266131496386,
+        "source_monitor_radius": 0.19010659465356952
+      }
+    ],
+    "batch_size": 64,
+    "batch_composition": {
+      "classes_per_batch": 8,
+      "samples_per_class": 8
+    }
+  },
+  "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/tweak_config2_margin_reference_20260910_v8/official_config2_full/best_checkpoint.pt",
+  "checkpoint_no_query_smoke": {
+    "passed": true,
+    "embedding_count": 11718
+  },
+  "single_domain_calibration_4x4": [
+    {
+      "calibration_configuration": "Config1",
+      "test_configuration": "Config1",
+      "accuracy": 0.7959805130958557,
+      "correct_decisions": 31091,
+      "decisions": 39060
+    },
+    {
+      "calibration_configuration": "Config1",
+      "test_configuration": "Config2",
+      "accuracy": 0.11141832917928696,
+      "correct_decisions": 4352,
+      "decisions": 39060
+    },
+    {
+      "calibration_configuration": "Config1",
+      "test_configuration": "Config3",
+      "accuracy": 0.14912953972816467,
+      "correct_decisions": 5825,
+      "decisions": 39060
+    },
+    {
+      "calibration_configuration": "Config1",
+      "test_configuration": "Config4",
+      "accuracy": 0.00012800819240510464,
+      "correct_decisions": 5,
+      "decisions": 39060
+    },
+    {
+      "calibration_configuration": "Config2",
+      "test_configuration": "Config1",
+      "accuracy": 0.13804402947425842,
+      "correct_decisions": 5392,
+      "decisions": 39060
+    },
+    {
+      "calibration_configuration": "Config2",
+      "test_configuration": "Config2",
+      "accuracy": 0.8596262335777283,
+      "correct_decisions": 33577,
+      "decisions": 39060
+    },
+    {
+      "calibration_configuration": "Config2",
+      "test_configuration": "Config3",
+      "accuracy": 0.10560675710439682,
+      "correct_decisions": 4125,
+      "decisions": 39060
+    },
+    {
+      "calibration_configuration": "Config2",
+      "test_configuration": "Config4",
+      "accuracy": 0.10000000149011612,
+      "correct_decisions": 3906,
+      "decisions": 39060
+    },
+    {
+      "calibration_configuration": "Config3",
+      "test_configuration": "Config1",
+      "accuracy": 0.17155657708644867,
+      "correct_decisions": 6701,
+      "decisions": 39060
+    },
+    {
+      "calibration_configuration": "Config3",
+      "test_configuration": "Config2",
+      "accuracy": 0.18666154146194458,
+      "correct_decisions": 7291,
+      "decisions": 39060
+    },
+    {
+      "calibration_configuration": "Config3",
+      "test_configuration": "Config3",
+      "accuracy": 0.7297235131263733,
+      "correct_decisions": 28503,
+      "decisions": 39060
+    },
+    {
+      "calibration_configuration": "Config3",
+      "test_configuration": "Config4",
+      "accuracy": 0.1048131063580513,
+      "correct_decisions": 4094,
+      "decisions": 39060
+    },
+    {
+      "calibration_configuration": "Config4",
+      "test_configuration": "Config1",
+      "accuracy": 0.09982078522443771,
+      "correct_decisions": 3899,
+      "decisions": 39060
+    },
+    {
+      "calibration_configuration": "Config4",
+      "test_configuration": "Config2",
+      "accuracy": 0.10000000149011612,
+      "correct_decisions": 3906,
+      "decisions": 39060
+    },
+    {
+      "calibration_configuration": "Config4",
+      "test_configuration": "Config3",
+      "accuracy": 0.13067075610160828,
+      "correct_decisions": 5104,
+      "decisions": 39060
+    },
+    {
+      "calibration_configuration": "Config4",
+      "test_configuration": "Config4",
+      "accuracy": 0.6509984731674194,
+      "correct_decisions": 25428,
+      "decisions": 39060
+    }
+  ],
+  "multiple_configuration_calibration": [
+    {
+      "test_configuration": "Config1",
+      "accuracy": 0.5409114360809326,
+      "correct_decisions": 21128,
+      "decisions": 39060
+    },
+    {
+      "test_configuration": "Config2",
+      "accuracy": 0.7986174821853638,
+      "correct_decisions": 31194,
+      "decisions": 39060
+    },
+    {
+      "test_configuration": "Config3",
+      "accuracy": 0.49055299162864685,
+      "correct_decisions": 19161,
+      "decisions": 39060
+    },
+    {
+      "test_configuration": "Config4",
+      "accuracy": 0.49805426597595215,
+      "correct_decisions": 19454,
+      "decisions": 39060
+    }
+  ]
+}
