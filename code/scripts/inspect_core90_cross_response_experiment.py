@@ -18,6 +18,8 @@ def inspect(project, run_id):
             continue
         try:
             argv = (path / 'cmdline').read_bytes().decode(errors='replace').split('\0')
+            if argv and argv[-1] == '':
+                argv.pop()
             if not any(run_id in arg for arg in argv):
                 continue
             environment = (path / 'environ').read_bytes().decode(errors='replace').split('\0')
@@ -25,7 +27,7 @@ def inspect(project, run_id):
             status = (path / 'status').read_text()
             ppid = int(next(v.split()[1] for v in status.splitlines() if v.startswith('PPid:')))
             result['processes'].append({'pid': int(path.name), 'ppid': ppid,
-                'cwd': str((path / 'cwd').resolve()), 'argv': [v for v in argv if v], 'cuda_visible_devices': cuda})
+                'cwd': str((path / 'cwd').resolve()), 'argv': argv, 'cuda_visible_devices': cuda})
         except (PermissionError, FileNotFoundError, ProcessLookupError):
             continue
     state = root / 'pipeline.json'

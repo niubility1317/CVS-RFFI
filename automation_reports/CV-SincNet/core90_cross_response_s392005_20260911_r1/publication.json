@@ -1,0 +1,13 @@
+{
+  "status": "VERIFIED",
+  "release_commit": "54afc2bce417de321bd639059f8087ab51436f8e",
+  "branch": "codex/core90-cross-response-20260911",
+  "archive_sha256": "a96d2f2db7f717d823d646c6df73173028e98980a0494d9f5673b7fa58c82f83",
+  "remote_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/core90_cross_response_392005_54afc2bc",
+  "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python /home/szu2070436088/2510044040/CV-SincNet/releases/core90_cross_response_392005_54afc2bc/code/scripts/run_core90_cross_response_experiment.py --project-root /home/szu2070436088/2510044040/CV-SincNet --run-id core90_cross_response_s392005_20260911_r1 --dataset /home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl --config /home/szu2070436088/2510044040/CV-SincNet/releases/core90_cross_response_392005_54afc2bc/code/configs/phase1_core90_cross_response_s392005_20260911.json --python /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python --devices GPU-56adac86-77cd-36c9-8770-dbf002650461 GPU-a2d039ff-1792-4222-2b47-140429e10f94 GPU-4fb45b9a-894a-536b-0e0a-09f7c1341562 GPU-7b4bacb3-4901-6845-a414-0dfdfeeade97 GPU-95d925a1-7218-ca7b-adef-164241f4f491 GPU-ef5f59f2-e03e-fe6e-ea6b-3e03afc9b331 GPU-5463e082-259e-537b-603a-01575d45801c GPU-9c4eb614-ca19-a390-aaf4-801f8980b6a9 --seed 392005 --min-free-mib 6500 --new-per-gpu 2 --detach",
+  "dispatcher_pid": 1496875,
+  "run_id": "core90_cross_response_s392005_20260911_r1",
+  "local_focused_tests_passed": 13,
+  "independent_review": "P0/P1_ACCEPTED",
+  "remote_compile": "PASS"
+}

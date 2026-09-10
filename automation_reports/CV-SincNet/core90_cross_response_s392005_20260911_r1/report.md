@@ -18,7 +18,7 @@
 
 ## 验收与发布状态
 
-状态：LOCAL_ACCEPTED_PENDING_REMOTE_PREFLIGHT。设计附件与既有CR01—CR20计划重新对照；本轮独立P0/P1审查覆盖实际配置可达性、输入权限、真实源K、终态prediction/scorer与新launcher。原实现提交54f2d94c7f7841199b1dec880251146b8820700a，本轮发布提交在验收后固定。
+状态：RUNNING_VERIFIED。设计附件与既有CR01—CR20计划重新对照；本轮独立P0/P1审查覆盖实际配置可达性、输入权限、真实源K、终态prediction/scorer与新launcher。原实现提交54f2d94c7f7841199b1dec880251146b8820700a，本轮发布提交在验收后固定。
 
 本轮发现并修正旧U_s路径仍把真实标签用于pseudo_correct统计的问题：正式交叉响应路径在数据接口返回y=-1，仅保留RX/day/eq/signal物理定位元数据，禁用真标签伪标签正确率统计；真实标签不进入损失或诊断。U0和U4_bilinear实际CUDA两轮验证覆盖label与pseudo阶段，均通过，证据为`analysis/cross_response_unlabeled_recheck_20260911/synthetic_verification_summary.json`。这是合成正确性验证，不是正式性能结果。
 
@@ -39,3 +39,34 @@ run ID=`core90_cross_response_s392005_20260911_r1`；输出`runs/<run-id>`，日
 协议/数据契约错误、输出碰撞、错误CWD/参数、无法执行或无法生成合法prediction属于技术失败。失败row不自动重启、不覆盖产物、不回退权重。两个相同预测前异常指纹停止派发后续pending行，已运行健康行继续。持续无有效更新、系统性非有限、OOM等需核对所属PID/日志后处理；不会因低准确率、门未自然达标或负收益杀进程。若正式门始终不达标，报告联合梯度未激活，不能放宽本次冻结门槛。
 
 只允许终止验证属于本run的错误进程，不使用广泛pkill，不干预其他实验。启动结果不明先只读核对原PID/root，不重复提交。后续运行完成按同row评分、资源和机制证据判断，单seed不晋级。
+
+## 发布与启动证据
+
+2026-09-11约02:14（UTC+8）完成发布并启动。代码提交`54afc2bce417de321bd639059f8087ab51436f8e`已push至`codex/core90-cross-response-20260911`，独立ls-remote与本地HEAD相同。Git代码归档SHA256为`a96d2f2db7f717d823d646c6df73173028e98980a0494d9f5673b7fa58c82f83`，远端读回一致、定点compile通过。实际训练release为`/home/szu2070436088/2510044040/CV-SincNet/releases/core90_cross_response_392005_54afc2bc`。完整冻结命令见本目录`publication.json`。
+
+真实source preflight为VERIFIED：L_s6300、U_s56700、V_s27000；L/V逐TX/RX/day/eq格满足K=2，源训练与源验证均16/16完整块。候选搜索按冻结上限128执行、并非穷尽搜索。实际源前向4个有效块，响应/决策损失有限；响应头梯度范数0.012250、域分支0.016015、身份响应梯度0，源门保持关闭。随机模型保存与strict-load前向精确一致，没有构建target loader或执行target IQ前向；smoke权重没有作为训练输入。详见`source_preflight.json`。
+
+独立读取/proc和nvidia-smi确认10/10训练PID存在、PPID=1496875、逐字argv（包含空参数）匹配、CWD均为上述release/code、CUDA_VISIBLE_DEVICES与实际GPU UUID相同。每行均`seed392005/from_scratch=true/baseline_ckpt=''`，并有`init=scratch`日志。首次检查器过滤了argv内部空字符串，已修正只去掉末尾NUL，并以只读stdin重取，未变更正在运行代码。核验结果见`startup_verification.json`，原始证据见`inspection_2.json`。
+
+|变体|PID|GPU索引|
+|---|---:|---:|
+|U0|1497827|1|
+|U1|1497828|0|
+|U2|1497829|4|
+|U3|1497830|7|
+|U4_additive|1497831|5|
+|U4_bilinear|1497832|2|
+|U5|1497833|3|
+|Ux|1497834|6|
+|head_only|1497835|1|
+|permanent_detach|1497836|0|
+
+这属于发布和启动验证，不代表E200完成。首轮结果与实际激活计数见后续启动观察；门未自然满足时不能称身份联合梯度已激活，未进入计划epoch的基线正则项也不能称默认失效。
+
+## 首轮训练观察（02:18，UTC+8）
+
+第三次只读观察确认10/10仍RUNNING，所有日志相对首次观察增长，全部写出E1或E2，实际optimizer_step_applied=1、skipped_nonfinite_grad/loss均0。U0/U1/U2/Ux/head_only已记录E2；其余行记录E1。证据为`inspection_3.json`和`initial_training_progress.json`，只作启动健康判断，未分析或反馈目标准确率。
+
+U4_bilinear的E1响应头/域分支梯度范数为0.011521/0.010726，决策身份梯度16.773690；U4_additive、U5和permanent_detach亦记录各自非零响应与决策梯度。U2仅响应路径非零；U3仅决策路径非零；Ux身份交互梯度11.076079；head_only仅辅助头响应梯度0.012377、域/身份响应梯度0，均符合本行定义。U1有完整块但关闭附加损失，U0关闭交叉响应。
+
+所有启用行当前每批4个完整块、K=2；响应身份联合门仍关闭，共享前端及身份响应梯度仍为0。后续必须由冻结的源验证标准自然开启，不能把当前预热等同于已联合激活。本次未停止或重启任何已有进程；未完成项为E200、终态四场景预测/独立评分与全程激活/稳定性/成本证据。
