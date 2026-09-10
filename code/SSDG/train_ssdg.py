@@ -2021,6 +2021,9 @@ def _build_ssdg_wisig_data(args, device: torch.device):
         source_select_idx = []
     labeled_ds = WiSigSubsetDataset(source_base, labeled_idx, split_source="ssdg_labeled_tx_visible")
     unlabeled_ds = WiSigSubsetDataset(source_base, unlabeled_idx, split_source="ssdg_unlabeled_tx_hidden")
+    if getattr(args, "_cross_response_resolved", None) is not None:
+        from cvsrffi.cross_response.unlabeled import UnlabeledSourceView
+        unlabeled_ds = UnlabeledSourceView(unlabeled_ds)
     if bool(getattr(args, "use_muse_ssdg", False)) and _muse_level_capabilities(
         getattr(args, "muse_level", "M0")
     )["base"]:
@@ -9663,8 +9666,8 @@ def train(args) -> int:
                     mask = base_mask & strong_mask
                     pseudo_total = int(pseudo.numel())
                     pseudo_selected = int(mask.sum().detach().item())
-                    pseudo_correct = int(((pseudo == y_u) & mask).sum().detach().item())
-                    pseudo_truth_available = 1.0
+                    pseudo_truth_available = float(cr_config is None)
+                    pseudo_correct = int(((pseudo == y_u) & mask).sum().detach().item()) if pseudo_truth_available else 0
                     if bool(mask.any()):
                         loss_u = F.cross_entropy(out_s["tx_logits"][mask], pseudo[mask])
                     else:
@@ -9948,7 +9951,7 @@ def train(args) -> int:
                         pseudo_selected = int(routed_pseudo_mask.sum().detach().item())
                         pseudo_correct = int(
                             ((pseudo == y_u) & routed_pseudo_mask).sum().detach().item()
-                        )
+                        ) if pseudo_truth_available else 0
                         mask = routed_pseudo_mask
                         loss_ent = (
                             entropy_per_sample[u_geometry_core_mask].mean()

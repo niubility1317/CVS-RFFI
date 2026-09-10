@@ -17,6 +17,12 @@ def test_actual_matrix_names_produce_separate_joint_effects():
     assert reports['U4_additive']['scenarios']['clean']['mean']==pytest.approx(.02)
     assert reports['U4_bilinear']['scenarios']['clean']['mean']==pytest.approx(.05)
     assert all(r['scenarios']['clean']['paired_seed_count']==2 for r in reports.values())
+    assert reports['U4_additive']['matched_factorial']
+    assert reports['U4_additive']['scenarios']['clean']['confidence_interval'] is not None
+    assert reports['U4_bilinear']['capacity_confounded']
+    assert not reports['U4_bilinear']['matched_factorial']
+    assert reports['U4_bilinear']['scenarios']['clean']['confidence_interval'] is None
+    assert reports['U4_bilinear']['scenarios']['clean']['interpretation']=='descriptive_only'
 
 
 def test_resume_binds_identical_local_record_ids_to_actual_dataset(tmp_path):

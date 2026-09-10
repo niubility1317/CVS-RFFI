@@ -12,8 +12,9 @@ def paired_joint_effect(rows, metric='accuracy', *, scenarios=SCENARIOS,
 
     Bootstrap independent paired training seeds, never query samples. Missing
     variants/scenarios are reported, not imputed. One seed has no valid CI.
-    Select the actual registered U4_additive or U4_bilinear row explicitly;
-    these are distinct capacity comparisons and must never be pooled.
+    Only U4_additive forms a matched factorial with the registered additive U2.
+    U4_bilinear changes predictor capacity too: retain its descriptive difference
+    but never report a pure task-synergy confidence interval or interpretation.
     """
     if bootstrap_samples < 1 or not 0 < confidence < 1:
         raise ValueError('invalid bootstrap parameters')
@@ -26,6 +27,7 @@ def paired_joint_effect(rows, metric='accuracy', *, scenarios=SCENARIOS,
             raise ValueError('duplicate variant/seed row')
         indexed[key] = row
     variants = ('U1','U2','U3',joint_variant)
+    matched_factorial = joint_variant == 'U4_additive'
     seeds = sorted({s for v,s in indexed if v in variants},key=str)
     paired = [s for s in seeds if all((v,s) in indexed for v in variants)]
     rng = random.Random(seed)
@@ -45,7 +47,7 @@ def paired_joint_effect(rows, metric='accuracy', *, scenarios=SCENARIOS,
             values.append((s,u4-u2-u3+u1))
         estimate = sum(v for _,v in values)/len(values) if values else None
         interval = None
-        if len(values)>1:
+        if len(values)>1 and matched_factorial:
             samples = sorted(sum(rng.choice(values)[1] for _ in values)/len(values) for _ in range(bootstrap_samples))
             def quantile(q):
                 pos = q*(len(samples)-1)
@@ -54,7 +56,8 @@ def paired_joint_effect(rows, metric='accuracy', *, scenarios=SCENARIOS,
             interval = [quantile((1-confidence)/2),quantile((1+confidence)/2)]
         effects[scenario] = dict(mean=estimate,confidence_interval=interval,paired_seed_count=len(values),
                                  per_seed=[dict(seed=s,effect=v) for s,v in values],missing_metric_seeds=missing,
-                                 interpretation='paired_seed_estimate' if len(values)>1 else 'descriptive_only')
+                                 interpretation='paired_seed_estimate' if len(values)>1 and matched_factorial else 'descriptive_only',
+                                 capacity_confounded=not matched_factorial)
     costs = []
     required_costs = ('training_seconds','peak_memory_bytes','optimizer_steps','physical_record_exposures')
     for (variant,s),row in indexed.items():
@@ -62,10 +65,13 @@ def paired_joint_effect(rows, metric='accuracy', *, scenarios=SCENARIOS,
         costs.append(dict(variant=variant,seed=s,values=supplied,
                           missing=[key for key in required_costs if supplied.get(key) is None]))
     return dict(metric=metric,joint_variant=joint_variant,effect_formula=f'{joint_variant}-U2-U3+U1',scenarios=effects,
+                matched_factorial=matched_factorial,capacity_confounded=not matched_factorial,
                 unpaired_seeds=[s for s in seeds if s not in paired],costs=costs,
                 all_costs_complete=bool(costs) and all(not row['missing'] for row in costs),
                 complete_four_scenarios=len(scenarios)==4 and all(e['paired_seed_count']==len(paired) and len(paired)>0 for e in effects.values()),
-                claim='No automatic promotion; assess identity performance, costs and paired uncertainty.')
+                claim=('Matched additive factorial; no automatic promotion, assess identity performance, costs and paired uncertainty.'
+                       if matched_factorial else
+                       'Descriptive capacity-confounded comparison: U2 is additive and U4 is bilinear; this difference is not pure task synergy.'))
 
 
 def paired_joint_effects_by_variant(rows, metric='accuracy', **kwargs):
