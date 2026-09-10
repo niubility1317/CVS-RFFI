@@ -20,7 +20,12 @@ def scratch_checkpoint_smoke(row,release,output,gpu):
     sys.path.insert(0,str(Path(release)/'code'))
     import torch
     from cvsrffi.game_tracking.config import parse_args
-    from cvsrffi.game_tracking.runtime import build_model,json_write
+    from cvsrffi.game_tracking.runtime import build_model,json_write,make_grad_scaler
+    from cvsrffi.game_tracking.solvers import GameSolver
+    from cvsrffi.game_tracking.step_context import prepare_context,Core90Objective
+    from cvsrffi.game_tracking.legacy.losses import PrototypeMemoryBank
+    from cvsrffi.game_tracking.legacy.options import _loss_weights
+    from cvsrffi.schedule import build_stage_state
     from cvsrffi.game_tracking.data import build_source
     args=parse_args(['--game_config_json',row['config_path'],'--output_dir',str(output),'--device','cuda:0'])
     source=build_source(args)
@@ -33,7 +38,15 @@ def scratch_checkpoint_smoke(row,release,output,gpu):
     model.load_state_dict(loaded['model'])
     with torch.no_grad(): logits=model(x.cuda(),return_aux=True)['tx_logits']
     if logits.shape!=(2,args.num_classes) or not torch.isfinite(logits).all(): raise ValueError('Source checkpoint smoke failed')
-    json_write(output/'result.json',dict(status='PASS',source_role='L_s',query_access=False,checkpoint=str(path),initialization=loaded['initialization'],target_contact=loaded['target_contact'],logit_shape=list(logits.shape)))
+    model.train()
+    optimizer=torch.optim.AdamW(model.parameters(),lr=args.lr)
+    scaler=make_grad_scaler(torch.device('cuda:0'),args.amp)
+    proto=PrototypeMemoryBank(args.num_classes,len(source.domains));proto._lazy_init(160,torch.device('cuda:0'),torch.float32)
+    ctx=prepare_context((x,y,d,meta),None,model,None,args,1,1,_loss_weights(args,build_stage_state(1,args)),torch.Generator(device='cuda:0').manual_seed(args.seed))
+    solver=GameSolver(model,optimizer,'simultaneous',scaler=scaler,max_grad_norm=args.game_max_grad_norm)
+    result=solver.step(lambda:Core90Objective(model,args,proto)(ctx))
+    if not result.accepted: raise RuntimeError('Source optimizer smoke did not commit a finite update')
+    json_write(output/'result.json',dict(status='PASS',source_role='L_s',query_access=False,checkpoint=str(path),initialization=loaded['initialization'],target_contact=loaded['target_contact'],logit_shape=list(logits.shape),torch_version=torch.__version__,optimizer_step_accepted=result.accepted))
     del model,source,loaded,x,logits
     torch.cuda.empty_cache()
 
@@ -75,7 +88,7 @@ def main():
     manifest=json.loads(Path(a.matrix).read_text())
     if not manifest.get('source_development_only') or manifest.get('target_evaluation'):
         raise ValueError('Only authorized source matrix is accepted')
-    pending=list(manifest['runs']); active={}; completed=[]; failed=[]
+    pending=list(manifest['runs']); active={}; completed=[]; failed=[]; blocked=False
     for row in pending:
         if Path(row['config']['output_dir']).exists():
             raise FileExistsError(row['config']['output_dir'])
@@ -89,7 +102,7 @@ def main():
     def save():
         state=dict(owner_pid=os.getpid(),release=str(Path(a.release).resolve()),pending=[r['run_id'] for r in pending],
                    active=[v['record'] for v in active.values()],completed=completed,failed=failed,
-                   state='RUNNING' if pending or active else 'COMPLETE',updated_unix=time.time())
+                   state='TECHNICAL_FAILURE_PENDING_INSPECTION' if blocked else ('RUNNING' if pending or active else 'COMPLETE'),updated_unix=time.time())
         temp=status.with_suffix('.tmp');temp.write_text(json.dumps(state,indent=2));temp.replace(status)
     while pending or active:
         for pid,entry in list(active.items()):
@@ -100,6 +113,14 @@ def main():
             record=dict(entry['record'],exit_code=code,artifact_verified=verified)
             (completed if verified else failed).append(record)
             entry['stream'].close();del active[pid]
+        # Two failed pre-prediction rows are the registered technical stop
+        # condition. Preserve pending rows and all artifacts; never kill peers.
+        blocked=blocked or sum(not (Path(r['output_dir'])/'source_final_eval/source_prediction_manifest.json').exists() for r in failed)>=2
+        if blocked:
+            save()
+            if not active: break
+            time.sleep(a.poll_seconds)
+            continue
         counts,seen,mapping=inventory()
         seen_pids={pid for _,pid in seen}
         # Reserve slots during Python startup before CUDA context appears.

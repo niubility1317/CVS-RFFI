@@ -78,3 +78,13 @@ R13的完整非对抗参考是当前labeled clean目标，不包含该参考批�
 初始发布矩阵是B0/B1/B2/B4/B5/B6/S1/S3/S4/C1/C2×seed392002/392003，共22行，每行E200，scratch-only。它是source开发探索，不立即派发全部调优菜单；B3调优、离线donor成本对照和进阶H1后续按冻结假设执行，不能拿首轮target结果选择。
 
 队列只利用空位并保留其他健康实验；每卡最多2个训练进程，启动期尚未创建CUDA上下文的PID仍占位。实际源数据scratch checkpoint smoke通过后才启动矩阵，失败保留产物且不盲目重试。运行完成还需E200与四场景真实数据评分，启动日志不能替代这些证据。
+
+## 首次发布技术故障与修复
+
+代码`1c495c1741c73736bc5dc1e972f3433602b10885`已推送且独立比对远端OID一致。N607首次release为`releases/core90_game_20260911_1c495c17`，run-root为`runs/core90_game_source_20260911_1c495c17`。传输SHA256、编译及真实源数据scratch checkpoint重载均通过；真实source有6个注册TX。
+
+训练初始化失败：远端PyTorch为2.1.0+cu121，缺少新版`torch.amp.GradScaler`。完整读取22份日志确认全部相同异常，均未产生有效训练；队列active=0、failed=22，dispatcher独立进程查询不存在。旧目录和checkpoint/log全部保留。原队列状态COMPLETE仅表示队列结束，不是训练成功。
+
+本地新增兼容工厂，旧版使用`torch.cuda.amp.GradScaler`，新版路径保留。缺失统一AMP工厂的回归测试由失败转为通过，连同连续/恢复及审计非侵入性两项复测共3项通过。累计独立测试用例103项；本次仅重跑受影响测试。发布smoke增加真实source完整E1目标及一次optimizer更新；两项预测前失败后停止后续派发并保存pending，避免扩大同类故障。定点独立P0/P1复查无新问题。该smoke不冒充远端AMP/EG/后期伪标签的完整验收。
+
+修复后使用全新release/run-root，参数矩阵、seed、E200预算和source-only科学边界不变；不复用失败root或旧checkpoint。

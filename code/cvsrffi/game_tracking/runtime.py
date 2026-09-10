@@ -31,6 +31,14 @@ from .budget import ComputeBudget,BudgetConfig
 
 SCHEMA = 'core90_game_epoch_boundary_v1'
 
+
+def make_grad_scaler(device,enabled):
+    if hasattr(torch.amp,'GradScaler'):
+        return torch.amp.GradScaler(device.type,enabled=enabled)
+    if enabled and device.type!='cuda':
+        raise ValueError('This PyTorch version supports GradScaler only on CUDA')
+    return torch.cuda.amp.GradScaler(enabled=bool(enabled and device.type=='cuda'))
+
 def plain(value):
     if torch.is_tensor(value): return plain(value.detach().cpu().tolist())
     if isinstance(value,dict): return {str(k):plain(v) for k,v in value.items()}
@@ -207,7 +215,7 @@ def train(args):
               dict(params=list(model.adv_head.parameters()),lr=args.lr*args.game_head_lr_ratio)]
     optimizer_cls = torch.optim.AdamW if args.game_optimizer=='adamw' else torch.optim.SGD
     optimizer = optimizer_cls(groups,lr=args.lr,weight_decay=args.weight_decay)
-    scaler = torch.amp.GradScaler(device.type,enabled=args.amp)
+    scaler = make_grad_scaler(device,args.amp)
     solver = GameSolver(model,optimizer,args.game_solver,nonfinite='skip',max_grad_norm=args.game_max_grad_norm,scaler=scaler)
     proto = PrototypeMemoryBank(args.num_classes,len(source.domains),momentum=args.proto_momentum,
                                 margin=args.proto_margin,domain_align_weight=args.proto_domain_align_weight,
