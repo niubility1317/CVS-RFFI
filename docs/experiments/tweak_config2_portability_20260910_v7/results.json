@@ -1,0 +1,1632 @@
+{
+  "status": "PAPER_METHOD_PARITY_WITH_UNPUBLISHED_DEFAULTS",
+  "method_metadata": {
+    "method": "gaskin_tweak_2023",
+    "parity_status": "PAPER_METHOD_PARITY_WITH_UNPUBLISHED_DEFAULTS",
+    "unpublished_defaults": {
+      "activation_and_normalization": {
+        "value": {
+          "leaky_relu_negative_slope": 0.01,
+          "batch_norm_eps": 1e-05,
+          "batch_norm_momentum": 0.1
+        },
+        "status": "UNPUBLISHED_DEFAULT",
+        "rationale": "PyTorch module defaults provide a deterministic, widely used interpretation where the paper omits these values."
+      },
+      "initialization_and_bias": {
+        "value": {
+          "bias": true,
+          "initialization": "torch_default_kaiming_uniform"
+        },
+        "status": "UNPUBLISHED_DEFAULT",
+        "rationale": "The paper specifies layer topology but not parameter initialization or bias policy."
+      },
+      "triplet_mining": {
+        "value": {
+          "candidate_sampling": "all_valid_same_class_positive_and_different_class_negative_triplets_per_minibatch",
+          "hardness_filter": "retain_only_triplets_where_negative_distance_is_strictly_less_than_positive_distance",
+          "loss_after_filter": "mean_relu(squared_l2(anchor,positive)-squared_l2(anchor,negative)+0.1)",
+          "no_hard_triplets": "skip_optimizer_step"
+        },
+        "status": "UNPUBLISHED_DEFAULT",
+        "rationale": "The strict inequality and squared L2 margin follow IV-A and Equation (1). The exhaustive aggregation is an unpublished reconstruction choice, not a uniquely specified author miner. V7 preserves V6 mining to isolate stable distance and source selection repairs; this objective still admits a shrinking-scale direction."
+      },
+      "learning_rate_grid": {
+        "value": [
+          0.01,
+          0.001,
+          0.0001,
+          1e-05,
+          1e-06
+        ],
+        "status": "UNPUBLISHED_DEFAULT",
+        "rationale": "This discrete decade grid operationalizes the paper's stated 1e-2 to 1e-6 search range."
+      },
+      "learning_rate_selection": {
+        "value": "five_fresh_one_epoch_source_only_probes_then_highest_fixed_source_training_pool_monitor_accuracy_among_decreasing_active_probes",
+        "status": "UNPUBLISHED_DEFAULT",
+        "rationale": "The paper specifies a decreasing-loss search but omits its duration and tie-break. V7 ranks eligible probes by a fixed source training-pool identity diagnostic, then mean loss and LR. This avoids ranking exclusively by a shrinking strict-hard objective. It is not an independent validation score or an author-verified rule."
+      },
+      "official_lora_runner": {
+        "value": {
+          "known_transmitter_ids": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "batch_composition": {
+            "classes_per_batch": 8,
+            "samples_per_class": 8
+          },
+          "frame_partition": "seeded affine permutation of every physical record frame before the paper's 75/25 role split; calibration remains the first 10% of the logical training partition",
+          "frame_order": "per-device deterministic affine permutation of logical training positions; at most three of 117187 source frames are omitted per device per epoch to preserve batch_size=64",
+          "checkpoint_selection": "highest_fixed_source_training_pool_monitor_accuracy_first_epoch_wins_ties",
+          "source_monitor": {
+            "configuration": "Config2",
+            "reference_logical_frames": [
+              0,
+              256
+            ],
+            "monitor_logical_frames": [
+              256,
+              506
+            ],
+            "role": "training_pool_diagnostic_not_independent_validation",
+            "group_size": 10
+          },
+          "distance_precision": "float64 calibration and grouping; direct non-MM Euclidean scoring",
+          "random_seed": 20260908
+        },
+        "status": "UNPUBLISHED_DEFAULT",
+        "rationale": "The paper fixes 10 known devices, batch size, hard-negative mining and the best epoch, but does not identify device IDs, the physical 75/25 frame selection, batch class composition, sample order or the exact best-checkpoint criterion."
+      }
+    }
+  },
+  "plan": {
+    "source_configuration": "Config2",
+    "device_ids": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+    ],
+    "calibration_configurations": [
+      "Config1",
+      "Config2",
+      "Config3",
+      "Config4"
+    ],
+    "test_configurations": [
+      "Config1",
+      "Config2",
+      "Config3",
+      "Config4"
+    ],
+    "single_domain_rows": [
+      {
+        "calibration_configuration": "Config1",
+        "test_configuration": "Config1"
+      },
+      {
+        "calibration_configuration": "Config1",
+        "test_configuration": "Config2"
+      },
+      {
+        "calibration_configuration": "Config1",
+        "test_configuration": "Config3"
+      },
+      {
+        "calibration_configuration": "Config1",
+        "test_configuration": "Config4"
+      },
+      {
+        "calibration_configuration": "Config2",
+        "test_configuration": "Config1"
+      },
+      {
+        "calibration_configuration": "Config2",
+        "test_configuration": "Config2"
+      },
+      {
+        "calibration_configuration": "Config2",
+        "test_configuration": "Config3"
+      },
+      {
+        "calibration_configuration": "Config2",
+        "test_configuration": "Config4"
+      },
+      {
+        "calibration_configuration": "Config3",
+        "test_configuration": "Config1"
+      },
+      {
+        "calibration_configuration": "Config3",
+        "test_configuration": "Config2"
+      },
+      {
+        "calibration_configuration": "Config3",
+        "test_configuration": "Config3"
+      },
+      {
+        "calibration_configuration": "Config3",
+        "test_configuration": "Config4"
+      },
+      {
+        "calibration_configuration": "Config4",
+        "test_configuration": "Config1"
+      },
+      {
+        "calibration_configuration": "Config4",
+        "test_configuration": "Config2"
+      },
+      {
+        "calibration_configuration": "Config4",
+        "test_configuration": "Config3"
+      },
+      {
+        "calibration_configuration": "Config4",
+        "test_configuration": "Config4"
+      }
+    ],
+    "group_size": 10,
+    "epochs": 100
+  },
+  "data": {
+    "root": "/home/szu2070436088/2510044040/CV-SincNet/datasets/tweak_official_lora_configurations_20260908/Diff_Configurations_Setup",
+    "source_configuration": "Config2",
+    "raw_iq_datatype": "cf32",
+    "frames_per_record": 156250,
+    "training_frames_per_record": 117187,
+    "calibration_frames_per_record": 11718,
+    "testing_frames_per_record": 39063,
+    "physical_frame_partition": {
+      "kind": "seeded_affine_full_record_permutation",
+      "seed": 20260908,
+      "stride": 104789,
+      "offset": 104658
+    }
+  },
+  "training": {
+    "best_epoch": 79,
+    "best_learning_rate": 0.001,
+    "best_mean_training_loss": 0.10000599963760388,
+    "best_source_monitor_accuracy": 0.644,
+    "learning_rate_probes": [
+      {
+        "learning_rate": 0.01,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10119858795765774,
+        "first_window_mean_loss": 0.30788698226213457,
+        "last_window_mean_loss": 0.10000501833856106,
+        "source_monitor_accuracy": 0.58,
+        "source_monitor_centroid_distance": 0.001019240796677323,
+        "source_monitor_radius": 0.0020356284942428535
+      },
+      {
+        "learning_rate": 0.001,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10197204592846769,
+        "first_window_mean_loss": 0.19278182402253152,
+        "last_window_mean_loss": 0.10044923819601535,
+        "source_monitor_accuracy": 0.608,
+        "source_monitor_centroid_distance": 0.00961843434054058,
+        "source_monitor_radius": 0.016564050150428937
+      },
+      {
+        "learning_rate": 0.0001,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10853708179546535,
+        "first_window_mean_loss": 0.23155928269028664,
+        "last_window_mean_loss": 0.1034893310815096,
+        "source_monitor_accuracy": 0.536,
+        "source_monitor_centroid_distance": 0.028066705407802296,
+        "source_monitor_radius": 0.05962167290924383
+      },
+      {
+        "learning_rate": 1e-05,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.1268589669684938,
+        "first_window_mean_loss": 0.367034849524498,
+        "last_window_mean_loss": 0.11312836132943631,
+        "source_monitor_accuracy": 0.528,
+        "source_monitor_centroid_distance": 0.047825362990267344,
+        "source_monitor_radius": 0.1098859964682791
+      },
+      {
+        "learning_rate": 1e-06,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.17669099224014143,
+        "first_window_mean_loss": 0.4530999532341957,
+        "last_window_mean_loss": 0.1385715574026108,
+        "source_monitor_accuracy": 0.492,
+        "source_monitor_centroid_distance": 0.07945034058102732,
+        "source_monitor_radius": 0.19177770181547288
+      }
+    ],
+    "learning_rate_selection": "five_fresh_one_epoch_probes_then_max_source_monitor_accuracy_among_decreasing_active_probes",
+    "checkpoint_selection": "highest_fixed_source_training_pool_monitor_accuracy_first_epoch_wins_ties",
+    "source_monitor": {
+      "configuration": "Config2",
+      "reference_logical_frames": [
+        0,
+        256
+      ],
+      "monitor_logical_frames": [
+        256,
+        506
+      ],
+      "role": "training_pool_diagnostic_not_independent_validation",
+      "group_size": 10
+    },
+    "epoch_rows": [
+      {
+        "learning_rate": 0.001,
+        "epoch": 1,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10200229301633632,
+        "first_window_mean_loss": 0.1861793201416731,
+        "last_window_mean_loss": 0.10046922713518143,
+        "source_monitor_accuracy": 0.576,
+        "source_monitor_centroid_distance": 0.011003952222065929,
+        "source_monitor_radius": 0.01645945921600481
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 2,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10032477297625342,
+        "first_window_mean_loss": 0.1004494409263134,
+        "last_window_mean_loss": 0.10023160509765149,
+        "source_monitor_accuracy": 0.484,
+        "source_monitor_centroid_distance": 0.008444696779341987,
+        "source_monitor_radius": 0.011388608713666279
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 3,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10019708850681945,
+        "first_window_mean_loss": 0.10025130890309811,
+        "last_window_mean_loss": 0.10016517557203769,
+        "source_monitor_accuracy": 0.48,
+        "source_monitor_centroid_distance": 0.006436981340219702,
+        "source_monitor_radius": 0.009236433586651254
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 4,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10013526240043273,
+        "first_window_mean_loss": 0.10016361154615878,
+        "last_window_mean_loss": 0.1001182709634304,
+        "source_monitor_accuracy": 0.448,
+        "source_monitor_centroid_distance": 0.005209907915405061,
+        "source_monitor_radius": 0.0076986924496032505
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 5,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10010666430590584,
+        "first_window_mean_loss": 0.10011464715003968,
+        "last_window_mean_loss": 0.10009415365755558,
+        "source_monitor_accuracy": 0.508,
+        "source_monitor_centroid_distance": 0.004892447088406412,
+        "source_monitor_radius": 0.006891357474244497
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 6,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10008748516253212,
+        "first_window_mean_loss": 0.10009518742561341,
+        "last_window_mean_loss": 0.10007794186472893,
+        "source_monitor_accuracy": 0.468,
+        "source_monitor_centroid_distance": 0.004231142413930867,
+        "source_monitor_radius": 0.006200273634289964
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 7,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10007253289792396,
+        "first_window_mean_loss": 0.1000781324505806,
+        "last_window_mean_loss": 0.10007039070129395,
+        "source_monitor_accuracy": 0.46,
+        "source_monitor_centroid_distance": 0.0034680932383102697,
+        "source_monitor_radius": 0.005541453365239866
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 8,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10006452232053994,
+        "first_window_mean_loss": 0.10006576083600521,
+        "last_window_mean_loss": 0.10005820155143738,
+        "source_monitor_accuracy": 0.444,
+        "source_monitor_centroid_distance": 0.004253538490007019,
+        "source_monitor_radius": 0.005492672627195635
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 9,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10005767854069961,
+        "first_window_mean_loss": 0.10006125189363957,
+        "last_window_mean_loss": 0.10005244284868241,
+        "source_monitor_accuracy": 0.456,
+        "source_monitor_centroid_distance": 0.004174210493615906,
+        "source_monitor_radius": 0.005262136818715774
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 10,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10004989382048438,
+        "first_window_mean_loss": 0.10005364827811718,
+        "last_window_mean_loss": 0.10004669040441513,
+        "source_monitor_accuracy": 0.484,
+        "source_monitor_centroid_distance": 0.0034777060983616015,
+        "source_monitor_radius": 0.004910404439661976
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 11,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10004608110040995,
+        "first_window_mean_loss": 0.10004819609224797,
+        "last_window_mean_loss": 0.10004481971263886,
+        "source_monitor_accuracy": 0.476,
+        "source_monitor_centroid_distance": 0.003145338405610841,
+        "source_monitor_radius": 0.0045553981912003355
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 12,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10004278204517245,
+        "first_window_mean_loss": 0.1000468759983778,
+        "last_window_mean_loss": 0.10004198648035527,
+        "source_monitor_accuracy": 0.512,
+        "source_monitor_centroid_distance": 0.0030705094214064136,
+        "source_monitor_radius": 0.004423892001817355
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 13,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10003777212829032,
+        "first_window_mean_loss": 0.10004159428179264,
+        "last_window_mean_loss": 0.10003663063049316,
+        "source_monitor_accuracy": 0.416,
+        "source_monitor_centroid_distance": 0.0031554390182644467,
+        "source_monitor_radius": 0.004236430854104592
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 14,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10003779306316037,
+        "first_window_mean_loss": 0.10003905214369296,
+        "last_window_mean_loss": 0.10003587499260902,
+        "source_monitor_accuracy": 0.524,
+        "source_monitor_centroid_distance": 0.0022793268170575964,
+        "source_monitor_radius": 0.003866582249000234
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 15,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10003442882897423,
+        "first_window_mean_loss": 0.10003436461091042,
+        "last_window_mean_loss": 0.10003295943140983,
+        "source_monitor_accuracy": 0.504,
+        "source_monitor_centroid_distance": 0.002661319816667407,
+        "source_monitor_radius": 0.003849052466170796
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 16,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10003100593865796,
+        "first_window_mean_loss": 0.1000320266932249,
+        "last_window_mean_loss": 0.10003124132752418,
+        "source_monitor_accuracy": 0.52,
+        "source_monitor_centroid_distance": 0.002296069387318108,
+        "source_monitor_radius": 0.0037060637264686733
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 17,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10002907638721359,
+        "first_window_mean_loss": 0.10003443986177445,
+        "last_window_mean_loss": 0.10002869665622711,
+        "source_monitor_accuracy": 0.496,
+        "source_monitor_centroid_distance": 0.002250230593526746,
+        "source_monitor_radius": 0.003559064387112297
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 18,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.1000287566372666,
+        "first_window_mean_loss": 0.10002849757671356,
+        "last_window_mean_loss": 0.10003089614212513,
+        "source_monitor_accuracy": 0.548,
+        "source_monitor_centroid_distance": 0.002382070649913977,
+        "source_monitor_radius": 0.003495324000852695
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 19,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10002524879283425,
+        "first_window_mean_loss": 0.10002749547362327,
+        "last_window_mean_loss": 0.10002393133938313,
+        "source_monitor_accuracy": 0.56,
+        "source_monitor_centroid_distance": 0.0019016906089281116,
+        "source_monitor_radius": 0.0032924331016712565
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 20,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10002498497229206,
+        "first_window_mean_loss": 0.10002532705664635,
+        "last_window_mean_loss": 0.10002468533813953,
+        "source_monitor_accuracy": 0.532,
+        "source_monitor_centroid_distance": 0.0023181149814323256,
+        "source_monitor_radius": 0.003318315801211236
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 21,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10002283319456534,
+        "first_window_mean_loss": 0.10002326734364032,
+        "last_window_mean_loss": 0.1000235154479742,
+        "source_monitor_accuracy": 0.544,
+        "source_monitor_centroid_distance": 0.0022392961617423504,
+        "source_monitor_radius": 0.003234514626342104
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 22,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10002189988137138,
+        "first_window_mean_loss": 0.10002188101410865,
+        "last_window_mean_loss": 0.10002043627202511,
+        "source_monitor_accuracy": 0.536,
+        "source_monitor_centroid_distance": 0.0019072105696040142,
+        "source_monitor_radius": 0.0030223324585839442
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 23,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10002089827023915,
+        "first_window_mean_loss": 0.10002145864069462,
+        "last_window_mean_loss": 0.1000204986333847,
+        "source_monitor_accuracy": 0.512,
+        "source_monitor_centroid_distance": 0.0019686908428832536,
+        "source_monitor_radius": 0.002989408566103589
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 24,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10002064877466905,
+        "first_window_mean_loss": 0.10001968689262868,
+        "last_window_mean_loss": 0.100019690990448,
+        "source_monitor_accuracy": 0.572,
+        "source_monitor_centroid_distance": 0.002375321950734264,
+        "source_monitor_radius": 0.0031055997877922703
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 25,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10001929388353566,
+        "first_window_mean_loss": 0.10001957476139069,
+        "last_window_mean_loss": 0.1000195737183094,
+        "source_monitor_accuracy": 0.516,
+        "source_monitor_centroid_distance": 0.0021184242899670797,
+        "source_monitor_radius": 0.0029440029602588944
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 26,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10001896127757318,
+        "first_window_mean_loss": 0.1000192229449749,
+        "last_window_mean_loss": 0.10001869179308415,
+        "source_monitor_accuracy": 0.592,
+        "source_monitor_centroid_distance": 0.0021250564494672253,
+        "source_monitor_radius": 0.0029713814941410414
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 27,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10001808601542941,
+        "first_window_mean_loss": 0.10001819752156735,
+        "last_window_mean_loss": 0.10001780830323696,
+        "source_monitor_accuracy": 0.564,
+        "source_monitor_centroid_distance": 0.0023255139874655685,
+        "source_monitor_radius": 0.0029453694536073867
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 28,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.1000171601699064,
+        "first_window_mean_loss": 0.10001787833869458,
+        "last_window_mean_loss": 0.10001654364168644,
+        "source_monitor_accuracy": 0.564,
+        "source_monitor_centroid_distance": 0.0020712400257154547,
+        "source_monitor_radius": 0.002839008883629626
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 29,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10001695836537657,
+        "first_window_mean_loss": 0.10001777499914169,
+        "last_window_mean_loss": 0.1000168177485466,
+        "source_monitor_accuracy": 0.564,
+        "source_monitor_centroid_distance": 0.002269321092676245,
+        "source_monitor_radius": 0.0028988009839609145
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 30,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10001621654268368,
+        "first_window_mean_loss": 0.10001671761274337,
+        "last_window_mean_loss": 0.10001652136445045,
+        "source_monitor_accuracy": 0.504,
+        "source_monitor_centroid_distance": 0.002103982537871074,
+        "source_monitor_radius": 0.0027377152414031804
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 31,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10001580523360563,
+        "first_window_mean_loss": 0.10001565344631672,
+        "last_window_mean_loss": 0.10001544877886773,
+        "source_monitor_accuracy": 0.536,
+        "source_monitor_centroid_distance": 0.0020776723954433504,
+        "source_monitor_radius": 0.002670996610356015
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 32,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10001549067994013,
+        "first_window_mean_loss": 0.10001588381826877,
+        "last_window_mean_loss": 0.10001516103744507,
+        "source_monitor_accuracy": 0.552,
+        "source_monitor_centroid_distance": 0.0019604706942012266,
+        "source_monitor_radius": 0.0026605847932191897
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 33,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10001495165545911,
+        "first_window_mean_loss": 0.10001498214900494,
+        "last_window_mean_loss": 0.10001485876739025,
+        "source_monitor_accuracy": 0.576,
+        "source_monitor_centroid_distance": 0.0019762811828073043,
+        "source_monitor_radius": 0.0026603330809901113
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 34,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.1000142566298182,
+        "first_window_mean_loss": 0.10001419134438037,
+        "last_window_mean_loss": 0.10001347541809082,
+        "source_monitor_accuracy": 0.484,
+        "source_monitor_centroid_distance": 0.0016556550092232452,
+        "source_monitor_radius": 0.0024531548854666964
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 35,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10001432756129866,
+        "first_window_mean_loss": 0.10001448974013329,
+        "last_window_mean_loss": 0.10001382909715176,
+        "source_monitor_accuracy": 0.576,
+        "source_monitor_centroid_distance": 0.002208158711941825,
+        "source_monitor_radius": 0.002662397342854448
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 36,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10001329399120411,
+        "first_window_mean_loss": 0.10001426212489604,
+        "last_window_mean_loss": 0.1000130058079958,
+        "source_monitor_accuracy": 0.616,
+        "source_monitor_centroid_distance": 0.0016727042110519356,
+        "source_monitor_radius": 0.0024370088132126136
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 37,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10001337870035844,
+        "first_window_mean_loss": 0.10001410745084285,
+        "last_window_mean_loss": 0.10001271896064282,
+        "source_monitor_accuracy": 0.632,
+        "source_monitor_centroid_distance": 0.001685943487738065,
+        "source_monitor_radius": 0.002494431649459836
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 38,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.1000126119119134,
+        "first_window_mean_loss": 0.10001268684864044,
+        "last_window_mean_loss": 0.10001221284270287,
+        "source_monitor_accuracy": 0.62,
+        "source_monitor_centroid_distance": 0.0018079724457189434,
+        "source_monitor_radius": 0.002452329991385714
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 39,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10001217961832189,
+        "first_window_mean_loss": 0.10001191355288029,
+        "last_window_mean_loss": 0.10001202650368214,
+        "source_monitor_accuracy": 0.524,
+        "source_monitor_centroid_distance": 0.0017132732955619432,
+        "source_monitor_radius": 0.0023890855114201207
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 40,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10001183625560911,
+        "first_window_mean_loss": 0.10001211874186992,
+        "last_window_mean_loss": 0.10001206286251545,
+        "source_monitor_accuracy": 0.58,
+        "source_monitor_centroid_distance": 0.0019055527213355952,
+        "source_monitor_radius": 0.0024128091182330906
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 41,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10001175886926464,
+        "first_window_mean_loss": 0.10001150168478488,
+        "last_window_mean_loss": 0.10001211032271386,
+        "source_monitor_accuracy": 0.596,
+        "source_monitor_centroid_distance": 0.0018660578565214108,
+        "source_monitor_radius": 0.002385628192557489
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 42,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10001128265224214,
+        "first_window_mean_loss": 0.10001142404973506,
+        "last_window_mean_loss": 0.10001139327883721,
+        "source_monitor_accuracy": 0.568,
+        "source_monitor_centroid_distance": 0.0014735746854195712,
+        "source_monitor_radius": 0.002209536048610776
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 43,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10001120038904303,
+        "first_window_mean_loss": 0.10001087240874768,
+        "last_window_mean_loss": 0.10001088775694371,
+        "source_monitor_accuracy": 0.592,
+        "source_monitor_centroid_distance": 0.0018337418662086004,
+        "source_monitor_radius": 0.0023517077926911087
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 44,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10001073766607589,
+        "first_window_mean_loss": 0.10001056484878063,
+        "last_window_mean_loss": 0.10001057252287865,
+        "source_monitor_accuracy": 0.588,
+        "source_monitor_centroid_distance": 0.0016738311244828164,
+        "source_monitor_radius": 0.002247662688092696
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 45,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10001047673746577,
+        "first_window_mean_loss": 0.10001116894185542,
+        "last_window_mean_loss": 0.10001068018376827,
+        "source_monitor_accuracy": 0.6,
+        "source_monitor_centroid_distance": 0.0019556367148848524,
+        "source_monitor_radius": 0.002333069909050169
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 46,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10001040800779261,
+        "first_window_mean_loss": 0.10001022458076476,
+        "last_window_mean_loss": 0.10001014620065689,
+        "source_monitor_accuracy": 0.544,
+        "source_monitor_centroid_distance": 0.0018048912407160136,
+        "source_monitor_radius": 0.0022307954450482537
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 47,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10001014648102008,
+        "first_window_mean_loss": 0.10001004658639431,
+        "last_window_mean_loss": 0.10001039907336234,
+        "source_monitor_accuracy": 0.624,
+        "source_monitor_centroid_distance": 0.0015366121698403945,
+        "source_monitor_radius": 0.002142188954684871
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 48,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10000990851370771,
+        "first_window_mean_loss": 0.1000102023780346,
+        "last_window_mean_loss": 0.1000101550668478,
+        "source_monitor_accuracy": 0.572,
+        "source_monitor_centroid_distance": 0.0014317191508362568,
+        "source_monitor_radius": 0.0020841351798558463
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 49,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10000989211469904,
+        "first_window_mean_loss": 0.10000988751649857,
+        "last_window_mean_loss": 0.1000099729001522,
+        "source_monitor_accuracy": 0.552,
+        "source_monitor_centroid_distance": 0.0015528405399412423,
+        "source_monitor_radius": 0.002090424034216016
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 50,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.1000095388847482,
+        "first_window_mean_loss": 0.10000977255403995,
+        "last_window_mean_loss": 0.10000892505049705,
+        "source_monitor_accuracy": 0.592,
+        "source_monitor_centroid_distance": 0.0014622665575243097,
+        "source_monitor_radius": 0.0020556021913431624
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 51,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10000917418187984,
+        "first_window_mean_loss": 0.10000897727906705,
+        "last_window_mean_loss": 0.10000918164849282,
+        "source_monitor_accuracy": 0.552,
+        "source_monitor_centroid_distance": 0.0015744753419299287,
+        "source_monitor_radius": 0.002089593574568566
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 52,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10000936116378273,
+        "first_window_mean_loss": 0.10000929079949855,
+        "last_window_mean_loss": 0.10000899836421012,
+        "source_monitor_accuracy": 0.608,
+        "source_monitor_centroid_distance": 0.0016456175678765974,
+        "source_monitor_radius": 0.002107675580956539
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 53,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10000901417994942,
+        "first_window_mean_loss": 0.10000951550900936,
+        "last_window_mean_loss": 0.10000947006046772,
+        "source_monitor_accuracy": 0.56,
+        "source_monitor_centroid_distance": 0.00147434714569697,
+        "source_monitor_radius": 0.001995384590622672
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 54,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10000880250574004,
+        "first_window_mean_loss": 0.10000870689749718,
+        "last_window_mean_loss": 0.10000858202576637,
+        "source_monitor_accuracy": 0.552,
+        "source_monitor_centroid_distance": 0.001508902184964816,
+        "source_monitor_radius": 0.00200682117047657
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 55,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10000862930232485,
+        "first_window_mean_loss": 0.10000834077596664,
+        "last_window_mean_loss": 0.10000869549810887,
+        "source_monitor_accuracy": 0.572,
+        "source_monitor_centroid_distance": 0.0014405870901285534,
+        "source_monitor_radius": 0.0019424607554431067
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 56,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10000843781019611,
+        "first_window_mean_loss": 0.1000079545378685,
+        "last_window_mean_loss": 0.10000892095267773,
+        "source_monitor_accuracy": 0.556,
+        "source_monitor_centroid_distance": 0.0013441505498138916,
+        "source_monitor_radius": 0.0019403738978881417
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 57,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10000815435365079,
+        "first_window_mean_loss": 0.1000081779807806,
+        "last_window_mean_loss": 0.10000798486173153,
+        "source_monitor_accuracy": 0.604,
+        "source_monitor_centroid_distance": 0.0012399205243958412,
+        "source_monitor_radius": 0.0019052884325964942
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 58,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10000819610782753,
+        "first_window_mean_loss": 0.1000082866102457,
+        "last_window_mean_loss": 0.10000773459672928,
+        "source_monitor_accuracy": 0.544,
+        "source_monitor_centroid_distance": 0.0012079299299315917,
+        "source_monitor_radius": 0.0018509941506346151
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 59,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10000819610864135,
+        "first_window_mean_loss": 0.10000805407762528,
+        "last_window_mean_loss": 0.1000081417709589,
+        "source_monitor_accuracy": 0.584,
+        "source_monitor_centroid_distance": 0.0013577319239712695,
+        "source_monitor_radius": 0.0018915679806595742
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 60,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10000774618024581,
+        "first_window_mean_loss": 0.10000866942107678,
+        "last_window_mean_loss": 0.10000794395804405,
+        "source_monitor_accuracy": 0.58,
+        "source_monitor_centroid_distance": 0.0011955255738214992,
+        "source_monitor_radius": 0.0018335549009900489
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 61,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10000761351189542,
+        "first_window_mean_loss": 0.10000788323581218,
+        "last_window_mean_loss": 0.100008132904768,
+        "source_monitor_accuracy": 0.572,
+        "source_monitor_centroid_distance": 0.0011975885496135156,
+        "source_monitor_radius": 0.0018225605702063663
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 62,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10000775811378908,
+        "first_window_mean_loss": 0.10000797249376774,
+        "last_window_mean_loss": 0.10000745795667171,
+        "source_monitor_accuracy": 0.596,
+        "source_monitor_centroid_distance": 0.001329700251294433,
+        "source_monitor_radius": 0.0018353291590190869
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 63,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10000740547304854,
+        "first_window_mean_loss": 0.10000758618116379,
+        "last_window_mean_loss": 0.10000710807740688,
+        "source_monitor_accuracy": 0.576,
+        "source_monitor_centroid_distance": 0.0013587930028459846,
+        "source_monitor_radius": 0.0018187744954295017
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 64,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10000734358968988,
+        "first_window_mean_loss": 0.1000070995092392,
+        "last_window_mean_loss": 0.10000761054456234,
+        "source_monitor_accuracy": 0.568,
+        "source_monitor_centroid_distance": 0.0014465746256015618,
+        "source_monitor_radius": 0.001815851276352576
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 65,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10000728946942114,
+        "first_window_mean_loss": 0.10000739082694053,
+        "last_window_mean_loss": 0.10000705108046531,
+        "source_monitor_accuracy": 0.58,
+        "source_monitor_centroid_distance": 0.001463155831669986,
+        "source_monitor_radius": 0.001846942517116775
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 66,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10000709515657014,
+        "first_window_mean_loss": 0.10000766925513745,
+        "last_window_mean_loss": 0.10000695273280144,
+        "source_monitor_accuracy": 0.532,
+        "source_monitor_centroid_distance": 0.0011322275015688754,
+        "source_monitor_radius": 0.0017486158334366925
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 67,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10000696947369857,
+        "first_window_mean_loss": 0.10000695139169694,
+        "last_window_mean_loss": 0.10000707946717739,
+        "source_monitor_accuracy": 0.588,
+        "source_monitor_centroid_distance": 0.00139844245567977,
+        "source_monitor_radius": 0.0017881810993386176
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 68,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10000688093427033,
+        "first_window_mean_loss": 0.10000665158033371,
+        "last_window_mean_loss": 0.1000067076086998,
+        "source_monitor_accuracy": 0.624,
+        "source_monitor_centroid_distance": 0.0014101931424706615,
+        "source_monitor_radius": 0.0018131279926539598
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 69,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10000668155535006,
+        "first_window_mean_loss": 0.10000666297972202,
+        "last_window_mean_loss": 0.10000651508569718,
+        "source_monitor_accuracy": 0.604,
+        "source_monitor_centroid_distance": 0.0014916337343570674,
+        "source_monitor_radius": 0.001827465595821293
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 70,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10000665220470131,
+        "first_window_mean_loss": 0.10000690065324307,
+        "last_window_mean_loss": 0.10000627018511295,
+        "source_monitor_accuracy": 0.6,
+        "source_monitor_centroid_distance": 0.001205458630047273,
+        "source_monitor_radius": 0.0017063469891149534
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 71,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10000664572501561,
+        "first_window_mean_loss": 0.10000675670802593,
+        "last_window_mean_loss": 0.10000617817044258,
+        "source_monitor_accuracy": 0.584,
+        "source_monitor_centroid_distance": 0.0013244324737084596,
+        "source_monitor_radius": 0.0017170255754854207
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 72,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10000641666828837,
+        "first_window_mean_loss": 0.10000620402395725,
+        "last_window_mean_loss": 0.10000617906451226,
+        "source_monitor_accuracy": 0.608,
+        "source_monitor_centroid_distance": 0.0013280540988981617,
+        "source_monitor_radius": 0.0017257749788898275
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 73,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10000645468618817,
+        "first_window_mean_loss": 0.10000633880496025,
+        "last_window_mean_loss": 0.10000660926103593,
+        "source_monitor_accuracy": 0.532,
+        "source_monitor_centroid_distance": 0.0013319186679062913,
+        "source_monitor_radius": 0.0017154818457749538
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 74,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10000626884567679,
+        "first_window_mean_loss": 0.10000610768795014,
+        "last_window_mean_loss": 0.10000620394945145,
+        "source_monitor_accuracy": 0.552,
+        "source_monitor_centroid_distance": 0.0011435018239695919,
+        "source_monitor_radius": 0.00172166832189492
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 75,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10000620956330726,
+        "first_window_mean_loss": 0.10000615909695626,
+        "last_window_mean_loss": 0.10000601105391979,
+        "source_monitor_accuracy": 0.572,
+        "source_monitor_centroid_distance": 0.0013195675145892514,
+        "source_monitor_radius": 0.0017065998226280545
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 76,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10000625542893493,
+        "first_window_mean_loss": 0.10000612445175648,
+        "last_window_mean_loss": 0.10000615529716014,
+        "source_monitor_accuracy": 0.564,
+        "source_monitor_centroid_distance": 0.0010455041555649457,
+        "source_monitor_radius": 0.0016380850991321975
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 77,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10000604702590073,
+        "first_window_mean_loss": 0.10000589780509472,
+        "last_window_mean_loss": 0.10000626608729363,
+        "source_monitor_accuracy": 0.612,
+        "source_monitor_centroid_distance": 0.0012070878305797765,
+        "source_monitor_radius": 0.0016748432671742411
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 78,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10000590846178507,
+        "first_window_mean_loss": 0.10000600144267083,
+        "last_window_mean_loss": 0.10000619672238827,
+        "source_monitor_accuracy": 0.628,
+        "source_monitor_centroid_distance": 0.0011273278179337145,
+        "source_monitor_radius": 0.0016252300298146428
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 79,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10000599963760388,
+        "first_window_mean_loss": 0.10000624679028988,
+        "last_window_mean_loss": 0.10000563263893128,
+        "source_monitor_accuracy": 0.644,
+        "source_monitor_centroid_distance": 0.0012094836557782023,
+        "source_monitor_radius": 0.0016326699294961
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 80,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10000580845147387,
+        "first_window_mean_loss": 0.10000605493783951,
+        "last_window_mean_loss": 0.10000613681972027,
+        "source_monitor_accuracy": 0.58,
+        "source_monitor_centroid_distance": 0.0011411687876016648,
+        "source_monitor_radius": 0.001632873158083745
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 81,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10000575741113112,
+        "first_window_mean_loss": 0.10000578932464123,
+        "last_window_mean_loss": 0.1000055257230997,
+        "source_monitor_accuracy": 0.592,
+        "source_monitor_centroid_distance": 0.0012363722688654428,
+        "source_monitor_radius": 0.0016393404178814935
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 82,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10000573357985294,
+        "first_window_mean_loss": 0.10000597588717937,
+        "last_window_mean_loss": 0.10000575974583625,
+        "source_monitor_accuracy": 0.608,
+        "source_monitor_centroid_distance": 0.0012172692378603597,
+        "source_monitor_radius": 0.0016064584825133438
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 83,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10000559035007059,
+        "first_window_mean_loss": 0.10000565908849239,
+        "last_window_mean_loss": 0.10000586323440075,
+        "source_monitor_accuracy": 0.588,
+        "source_monitor_centroid_distance": 0.0011427602284639442,
+        "source_monitor_radius": 0.001580806328206236
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 84,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10000562134017259,
+        "first_window_mean_loss": 0.10000516064465045,
+        "last_window_mean_loss": 0.1000054806470871,
+        "source_monitor_accuracy": 0.56,
+        "source_monitor_centroid_distance": 0.0012953461526673201,
+        "source_monitor_radius": 0.0016333005259702113
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 85,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10000557341800564,
+        "first_window_mean_loss": 0.10000556692481041,
+        "last_window_mean_loss": 0.10000535242259502,
+        "source_monitor_accuracy": 0.532,
+        "source_monitor_centroid_distance": 0.001250563667568688,
+        "source_monitor_radius": 0.001577415177487055
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 86,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10000538136596435,
+        "first_window_mean_loss": 0.10000527761876583,
+        "last_window_mean_loss": 0.10000573970377445,
+        "source_monitor_accuracy": 0.62,
+        "source_monitor_centroid_distance": 0.0011648901547800297,
+        "source_monitor_radius": 0.0016806128233801537
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 87,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10000529616932802,
+        "first_window_mean_loss": 0.10000522285699845,
+        "last_window_mean_loss": 0.10000530235469342,
+        "source_monitor_accuracy": 0.604,
+        "source_monitor_centroid_distance": 0.0011447857896135214,
+        "source_monitor_radius": 0.0015680200946187877
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 88,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10000537596297095,
+        "first_window_mean_loss": 0.1000056605041027,
+        "last_window_mean_loss": 0.10000553756952285,
+        "source_monitor_accuracy": 0.576,
+        "source_monitor_centroid_distance": 0.0012006740602242504,
+        "source_monitor_radius": 0.0016016202046853576
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 89,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10000516340372538,
+        "first_window_mean_loss": 0.10000508919358253,
+        "last_window_mean_loss": 0.10000514276325703,
+        "source_monitor_accuracy": 0.584,
+        "source_monitor_centroid_distance": 0.0011666087096539686,
+        "source_monitor_radius": 0.0015435940624854158
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 90,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10000518822827865,
+        "first_window_mean_loss": 0.1000051449239254,
+        "last_window_mean_loss": 0.10000486634671688,
+        "source_monitor_accuracy": 0.62,
+        "source_monitor_centroid_distance": 0.001096281376015294,
+        "source_monitor_radius": 0.0015111859420027306
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 91,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10000502204126767,
+        "first_window_mean_loss": 0.10000544242560863,
+        "last_window_mean_loss": 0.1000047680735588,
+        "source_monitor_accuracy": 0.588,
+        "source_monitor_centroid_distance": 0.0011539507728345539,
+        "source_monitor_radius": 0.0015123598790934773
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 92,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.1000049771436865,
+        "first_window_mean_loss": 0.10000512562692165,
+        "last_window_mean_loss": 0.10000533290207386,
+        "source_monitor_accuracy": 0.612,
+        "source_monitor_centroid_distance": 0.001052601784001177,
+        "source_monitor_radius": 0.0014915054999329208
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 93,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10000497973572355,
+        "first_window_mean_loss": 0.1000050301104784,
+        "last_window_mean_loss": 0.10000488601624966,
+        "source_monitor_accuracy": 0.64,
+        "source_monitor_centroid_distance": 0.0011937877250600486,
+        "source_monitor_radius": 0.0015209550935048756
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 94,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10000505882866197,
+        "first_window_mean_loss": 0.10000507853925228,
+        "last_window_mean_loss": 0.1000048416107893,
+        "source_monitor_accuracy": 0.572,
+        "source_monitor_centroid_distance": 0.000981333031105343,
+        "source_monitor_radius": 0.0014594623156954428
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 95,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10000481651063371,
+        "first_window_mean_loss": 0.10000473663210868,
+        "last_window_mean_loss": 0.10000479139387608,
+        "source_monitor_accuracy": 0.6,
+        "source_monitor_centroid_distance": 0.0011370396134198124,
+        "source_monitor_radius": 0.0015102406459349435
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 96,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.1000049163756769,
+        "first_window_mean_loss": 0.1000050388276577,
+        "last_window_mean_loss": 0.10000502474606038,
+        "source_monitor_accuracy": 0.62,
+        "source_monitor_centroid_distance": 0.0010958994112323453,
+        "source_monitor_radius": 0.001468478218175814
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 97,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10000491006363942,
+        "first_window_mean_loss": 0.10000500224530696,
+        "last_window_mean_loss": 0.10000501744449139,
+        "source_monitor_accuracy": 0.62,
+        "source_monitor_centroid_distance": 0.0009549390398733769,
+        "source_monitor_radius": 0.0014386445103462158
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 98,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10000468872361402,
+        "first_window_mean_loss": 0.10000461101531982,
+        "last_window_mean_loss": 0.10000447757542133,
+        "source_monitor_accuracy": 0.584,
+        "source_monitor_centroid_distance": 0.0010338232072573765,
+        "source_monitor_radius": 0.0014306896855350488
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 99,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10000475037218377,
+        "first_window_mean_loss": 0.10000431150197983,
+        "last_window_mean_loss": 0.10000482857227326,
+        "source_monitor_accuracy": 0.564,
+        "source_monitor_centroid_distance": 0.0011957766585195735,
+        "source_monitor_radius": 0.001464795501691398
+      },
+      {
+        "learning_rate": 0.001,
+        "epoch": 100,
+        "batches": 18310,
+        "active_batches": 18310,
+        "mean_training_loss": 0.10000493739966093,
+        "first_window_mean_loss": 0.1000050064176321,
+        "last_window_mean_loss": 0.10000513061881065,
+        "source_monitor_accuracy": 0.612,
+        "source_monitor_centroid_distance": 0.0012731461846913522,
+        "source_monitor_radius": 0.001521358118652163
+      }
+    ],
+    "batch_size": 64,
+    "batch_composition": {
+      "classes_per_batch": 8,
+      "samples_per_class": 8
+    }
+  },
+  "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/tweak_config2_portability_20260910_v7/official_config2_full/best_checkpoint.pt",
+  "checkpoint_no_query_smoke": {
+    "passed": true,
+    "embedding_count": 11718
+  },
+  "single_domain_calibration_4x4": [
+    {
+      "calibration_configuration": "Config1",
+      "test_configuration": "Config1",
+      "accuracy": 0.457731693983078,
+      "correct_decisions": 17879,
+      "decisions": 39060
+    },
+    {
+      "calibration_configuration": "Config1",
+      "test_configuration": "Config2",
+      "accuracy": 0.04372759908437729,
+      "correct_decisions": 1708,
+      "decisions": 39060
+    },
+    {
+      "calibration_configuration": "Config1",
+      "test_configuration": "Config3",
+      "accuracy": 0.13013312220573425,
+      "correct_decisions": 5083,
+      "decisions": 39060
+    },
+    {
+      "calibration_configuration": "Config1",
+      "test_configuration": "Config4",
+      "accuracy": 0.0024577572476118803,
+      "correct_decisions": 96,
+      "decisions": 39060
+    },
+    {
+      "calibration_configuration": "Config2",
+      "test_configuration": "Config1",
+      "accuracy": 0.07695852220058441,
+      "correct_decisions": 3006,
+      "decisions": 39060
+    },
+    {
+      "calibration_configuration": "Config2",
+      "test_configuration": "Config2",
+      "accuracy": 0.6290578842163086,
+      "correct_decisions": 24571,
+      "decisions": 39060
+    },
+    {
+      "calibration_configuration": "Config2",
+      "test_configuration": "Config3",
+      "accuracy": 0.15176650881767273,
+      "correct_decisions": 5928,
+      "decisions": 39060
+    },
+    {
+      "calibration_configuration": "Config2",
+      "test_configuration": "Config4",
+      "accuracy": 0.12002047896385193,
+      "correct_decisions": 4688,
+      "decisions": 39060
+    },
+    {
+      "calibration_configuration": "Config3",
+      "test_configuration": "Config1",
+      "accuracy": 0.16039426624774933,
+      "correct_decisions": 6265,
+      "decisions": 39060
+    },
+    {
+      "calibration_configuration": "Config3",
+      "test_configuration": "Config2",
+      "accuracy": 0.02137736789882183,
+      "correct_decisions": 835,
+      "decisions": 39060
+    },
+    {
+      "calibration_configuration": "Config3",
+      "test_configuration": "Config3",
+      "accuracy": 0.3101126551628113,
+      "correct_decisions": 12113,
+      "decisions": 39060
+    },
+    {
+      "calibration_configuration": "Config3",
+      "test_configuration": "Config4",
+      "accuracy": 0.12058372050523758,
+      "correct_decisions": 4710,
+      "decisions": 39060
+    },
+    {
+      "calibration_configuration": "Config4",
+      "test_configuration": "Config1",
+      "accuracy": 0.05419866740703583,
+      "correct_decisions": 2117,
+      "decisions": 39060
+    },
+    {
+      "calibration_configuration": "Config4",
+      "test_configuration": "Config2",
+      "accuracy": 0.07606247067451477,
+      "correct_decisions": 2971,
+      "decisions": 39060
+    },
+    {
+      "calibration_configuration": "Config4",
+      "test_configuration": "Config3",
+      "accuracy": 0.12424474954605103,
+      "correct_decisions": 4853,
+      "decisions": 39060
+    },
+    {
+      "calibration_configuration": "Config4",
+      "test_configuration": "Config4",
+      "accuracy": 0.280901163816452,
+      "correct_decisions": 10972,
+      "decisions": 39060
+    }
+  ],
+  "multiple_configuration_calibration": [
+    {
+      "test_configuration": "Config1",
+      "accuracy": 0.293292373418808,
+      "correct_decisions": 11456,
+      "decisions": 39060
+    },
+    {
+      "test_configuration": "Config2",
+      "accuracy": 0.4627240002155304,
+      "correct_decisions": 18074,
+      "decisions": 39060
+    },
+    {
+      "test_configuration": "Config3",
+      "accuracy": 0.1836661547422409,
+      "correct_decisions": 7174,
+      "decisions": 39060
+    },
+    {
+      "test_configuration": "Config4",
+      "accuracy": 0.17905786633491516,
+      "correct_decisions": 6994,
+      "decisions": 39060
+    }
+  ]
+}
