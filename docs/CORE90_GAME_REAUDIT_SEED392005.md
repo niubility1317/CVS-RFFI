@@ -69,3 +69,9 @@ J1共4次审计，3次有效；step500经预登记3次缩步后仍跨2个ReLU区
 VERIFIED：16运行、10排队、0失败，全部进程绑定与日志增长正常，当前E50—E85。完整动作记录每行2452—4203次主更新，无拒绝。10行已完成E80以后epoch，实际sat_cls为2.9028—5.9503；其余6行未到E80，sat_cls=0符合日程。全部尚未到E131，unlabeled_unique_samples=0属于阶段等待，不是U采样失活。B0实际E84 checkpoint来源及契约仍符合scratch-only、final-only、target_contact=false。
 
 J1累计8次审计、4次有效、4次按既定规则判invalid；H1累计15次响应尝试、8次接受、7次source monitor拒绝。保留这些诊断失败，不修改容差或以此停止健康训练。无需修复重发布。[完整检查摘要](evidence/core90_game_392005_heartbeat_0407.json)。
+
+## E131阶段检查：2026-09-11 05:39 HKT
+
+VERIFIED：仍为16运行、10排队、0失败，全部进程绑定正确、动作数持续增长，各行累计3637—6552次主更新均接受。B0/B1/B2/C1/S1/S3共6行已完成E131—E133，实际每epoch消费6268—6272条不同U样本，unlabeled_ce=0.001148—0.002988、unlabeled_entropy=0.010032—0.018764，说明U分支确已参与训练；6268来自含124条的末尾窗口，不是漏掉4条。跨epoch全池覆盖仍待累计足够epoch实测，不以单epoch计数代替覆盖证明。B7尚在E116，伪标签阶段的Optimistic历史待其到E131后核验。
+
+B0实际E132 checkpoint的scratch-only/final-only/target_contact=false及数据契约保持正确。J1累计12次审计，7次有效；H1累计24次响应，12次接受、9次source monitor拒绝、3次CG迭代预算耗尽，主更新继续健康。无须修复或重发布。[完整检查摘要](evidence/core90_game_392005_heartbeat_0539.json)。
