@@ -39,6 +39,27 @@ def make_grad_scaler(device,enabled):
         raise ValueError('This PyTorch version supports GradScaler only on CUDA')
     return torch.cuda.amp.GradScaler(enabled=bool(enabled and device.type=='cuda'))
 
+
+def update_pseudo_problem(solver,ctx,num_classes,threshold,window=1):
+    if ctx.pseudo is None: return False
+    mask=ctx.base_mask
+    counts=torch.bincount(ctx.pseudo[mask],minlength=num_classes).float()
+    current=counts.cpu().tolist()
+    acc=solver.pseudo_accumulator or dict(batches=0,samples=0,selected=0,counts=[0.]*num_classes)
+    acc['batches']+=1;acc['samples']+=len(mask);acc['selected']+=int(mask.sum())
+    acc['counts']=[a+b for a,b in zip(acc['counts'],current)]
+    solver.pseudo_accumulator=acc
+    if acc['batches']<window: return False
+    histogram=[v/max(1,acc['selected']) for v in acc['counts']]
+    signature=dict(selected_fraction=acc['selected']/acc['samples'],histogram=histogram)
+    solver.pseudo_accumulator=None
+    previous=solver.pseudo_signature
+    changed=previous is not None and max(abs(signature['selected_fraction']-previous['selected_fraction']),
+                .5*sum(abs(a-b) for a,b in zip(histogram,previous['histogram'])))>threshold
+    if changed: solver.reset_history('significant_teacher_pseudo_distribution_change')
+    solver.pseudo_signature=signature
+    return changed
+
 def plain(value):
     if torch.is_tensor(value): return plain(value.detach().cpu().tolist())
     if isinstance(value,dict): return {str(k):plain(v) for k,v in value.items()}
@@ -293,9 +314,10 @@ def train(args):
         previous_weights=dict(weights)
         if epoch in (41,91,args.label_epochs+1,args.sat_cons_start_epoch): solver.reset_history('scheduled_problem_change')
         loader=source.loader('train',args.batch_size,seed=args.seed+epoch,shuffle=True,workers=args.num_workers,drop_last=True)
-        uloader=source.loader('unlabeled',args.batch_size,seed=args.seed+epoch,workers=args.num_workers,drop_last=True)
+        uloader=source.unlabeled_epoch_loader(args.batch_size,epoch_index=max(0,epoch-args.label_epochs-1),
+                         steps=len(loader),seed=args.seed,workers=args.num_workers)
         uit=iter(uloader) if epoch>args.label_epochs and args.use_unlabeled else None
-        rows=[]; accepted=0
+        rows=[]; accepted=0;u_seen=set()
         for batch_idx,batch in enumerate(loader,1):
             if args.game_max_steps_per_epoch and batch_idx>args.game_max_steps_per_epoch: break
             sets=None
@@ -345,8 +367,10 @@ def train(args):
             if uit is not None:
                 try: ubatch=next(uit)
                 except StopIteration: uit=iter(uloader);ubatch=next(uit)
+                u_seen.update(ubatch[3]['sample_id'])
             level=curriculum.level if curriculum is not None and args.game_curriculum=='capability' else (0. if args.game_curriculum=='capability' else None)
             ctx=prepare_context(batch,ubatch,model,ema,args,epoch,batch_idx,weights,gen,augmentor,level)
+            pseudo_problem_changed=update_pseudo_problem(solver,ctx,args.num_classes,args.game_optimistic_pseudo_change,args.game_pseudo_change_window)
             if sets is not None and args.game_jacobian_interval and step%args.game_jacobian_interval==0:
                 from .field import audit_core90_field
                 if budget.can_afford(step,audit_seconds=1.)[0]:
@@ -364,6 +388,7 @@ def train(args):
             solver.mode=mode
             reference=deepcopy(model).eval() if args.game_response_tracking and sets is not None and budget.can_afford(step,audit_seconds=1.)[0] else None
             with torch.autocast(device_type=device.type,enabled=args.amp):
+                optimistic_history_used=mode=='optimistic' and solver.previous is not None
                 result=solver.step(lambda:objective(ctx),exclude_head=(mode=='alternating'))
             if result.accepted:
                 version+=1;accepted+=1
@@ -379,10 +404,6 @@ def train(args):
             if result.accepted:
                 if ema is not None: _update_ema_model(ema,model,args.ema_decay)
                 proto.update(ctx.origin_features,ctx.y,ctx.domain)
-            if ctx.strong is not None:
-                # Active-set objectives vary by batch; stale optimistic fields
-                # cannot be extrapolated across a new pseudo-label selection.
-                solver.reset_history('pseudo_active_set_may_change_next_batch')
             if curriculum is not None and args.game_curriculum=='capability' and sets is not None:
                 # Audit belongs to the pre-step state. Evaluate curriculum against that state,
                 # apply it only to the next batch, never in a predictor/corrector pair.
@@ -391,6 +412,10 @@ def train(args):
                 if event['changed']: solver.reset_history('capability_curriculum_change');metrics={}
             action=dict(step=step,epoch=epoch,encoder_version=version,action=decision['action'],reason=decision['reason'],
                         elapsed_seconds=prior_elapsed+time.perf_counter()-started,
+                        optimistic_history_used=optimistic_history_used,pseudo_problem_changed=pseudo_problem_changed,
+                        unlabeled_samples=0 if ubatch is None else len(ubatch[0]),
+                        unlabeled_first_id=None if ubatch is None else ubatch[3]['sample_id'][0],
+                        unlabeled_last_id=None if ubatch is None else ubatch[3]['sample_id'][-1],
                         requested_head_steps=count,committed_head_steps=head_steps,main_solver=mode,
                         accepted=result.accepted,field_evaluations=result.field_evaluations,algorithm=result.algorithm,
                         forward_calls=ctx.forward_calls+head_enc,head_feature_cache_version=version-int(result.accepted),
@@ -403,6 +428,7 @@ def train(args):
         last_epoch=epoch
         consecutive_empty=consecutive_empty+1 if accepted==0 else 0
         record=dict(epoch=epoch,steps=len(rows),accepted=accepted,total_step=step,epoch_seconds=time.perf_counter()-epoch_start,
+                    unlabeled_unique_samples=len(u_seen),unlabeled_sampling='permuted_contiguous_windows_cross_epoch_rotation',
                     mean_loss=float(np.mean([r['loss'] for r in rows])) if rows else None,
                     terms={k:float(np.mean([r['terms'].get(k,0.) for r in rows])) for k in (rows[0]['terms'] if rows else [])},
                     source_only=True,peak_memory_bytes=torch.cuda.max_memory_allocated(device) if device.type=='cuda' else 0,

@@ -64,6 +64,11 @@ def inventory():
     return counts,seen,mapping
 
 
+def free_memory():
+    rows=subprocess.check_output(['nvidia-smi','--query-gpu=index,memory.free','--format=csv,noheader,nounits'],text=True)
+    return {int(index):int(memory) for index,memory in csv.reader(io.StringIO(rows))}
+
+
 def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--matrix',required=True)
@@ -72,7 +77,11 @@ def main():
     p.add_argument('--poll-seconds',type=int,default=20)
     p.add_argument('--snapshot',action='store_true')
     p.add_argument('--smoke-gpu')
+    p.add_argument('--max-processes-per-gpu',type=int,default=2)
+    p.add_argument('--min-free-memory-mib',type=int,default=4096)
+    p.add_argument('--startup-reserve-mib',type=int,default=3072)
     a=p.parse_args()
+    if a.max_processes_per_gpu<1 or min(a.min_free_memory_mib,a.startup_reserve_mib)<0: raise ValueError('Invalid GPU capacity')
     if a.smoke_gpu is not None:
         row=json.loads(Path(a.matrix).read_text())['runs'][0]
         scratch_checkpoint_smoke(row,a.release,Path(a.status),a.smoke_gpu)
@@ -93,7 +102,8 @@ def main():
         if Path(row['config']['output_dir']).exists():
             raise FileExistsError(row['config']['output_dir'])
     initial_counts,_,initial_mapping=inventory()
-    available=next((gpu for gpu,count in sorted(initial_counts.items()) if count<2),None)
+    memory=free_memory()
+    available=next((gpu for gpu,count in sorted(initial_counts.items()) if count<a.max_processes_per_gpu and memory[gpu]>=a.min_free_memory_mib),None)
     if available is None: raise RuntimeError('No capacity for initial source checkpoint smoke')
     # Isolate CUDA context so the scheduler itself consumes no training slot.
     smoke_uuid=next(uuid for uuid,index in initial_mapping.items() if index==available)
@@ -101,6 +111,7 @@ def main():
     if smoke.returncode: raise RuntimeError('Initial source checkpoint smoke failed')
     def save():
         state=dict(owner_pid=os.getpid(),release=str(Path(a.release).resolve()),pending=[r['run_id'] for r in pending],
+                   max_processes_per_gpu=a.max_processes_per_gpu,min_free_memory_mib=a.min_free_memory_mib,
                    active=[v['record'] for v in active.values()],completed=completed,failed=failed,
                    state='TECHNICAL_FAILURE_PENDING_INSPECTION' if blocked else ('RUNNING' if pending or active else 'COMPLETE'),updated_unix=time.time())
         temp=status.with_suffix('.tmp');temp.write_text(json.dumps(state,indent=2));temp.replace(status)
@@ -122,12 +133,15 @@ def main():
             time.sleep(a.poll_seconds)
             continue
         counts,seen,mapping=inventory()
+        memory=free_memory()
         seen_pids={pid for _,pid in seen}
         # Reserve slots during Python startup before CUDA context appears.
         for pid,entry in active.items():
-            if pid not in seen_pids: counts[entry['record']['gpu']]+=1
+            if pid not in seen_pids:
+                counts[entry['record']['gpu']]+=1
+                memory[entry['record']['gpu']]-=a.startup_reserve_mib
         for gpu in sorted(counts):
-            while counts[gpu]<2 and pending:
+            while counts[gpu]<a.max_processes_per_gpu and memory[gpu]>=a.min_free_memory_mib and pending:
                 row=pending.pop(0)
                 out=Path(row['config']['output_dir'])
                 if out.exists(): raise FileExistsError('Run appeared during dispatch: '+str(out))
@@ -139,7 +153,7 @@ def main():
                 process=subprocess.Popen(argv,cwd=a.release,env=env,stdout=stream,stderr=subprocess.STDOUT,start_new_session=True)
                 record=dict(run_id=row['run_id'],pid=process.pid,gpu=gpu,gpu_uuid=uuid,argv=argv,output_dir=str(out),log=str(log),started_unix=time.time())
                 active[process.pid]=dict(process=process,record=record,stream=stream)
-                counts[gpu]+=1;save()
+                counts[gpu]+=1;memory[gpu]-=a.startup_reserve_mib;save()
         save()
         if pending or active: time.sleep(a.poll_seconds)
     save()

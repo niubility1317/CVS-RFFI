@@ -46,6 +46,19 @@ class SourceData:
                           num_workers=workers, drop_last=drop_last, generator=gen,
                           persistent_workers=False)
 
+    def unlabeled_epoch_loader(self,batch,*,epoch_index,steps,seed,workers=0):
+        # Permute contiguous windows once, then rotate through that order over
+        # epochs. This covers the full U pool while retaining temporal neighbors;
+        # it never groups/sorts/stratifies using hidden TX labels.
+        blocks=[list(range(i,min(i+batch,len(self.unlabeled)))) for i in range(0,len(self.unlabeled),batch)]
+        if not blocks: raise ValueError('Empty unlabeled pool')
+        if len(blocks)>1 and len(blocks[-1])==1:
+            blocks[-2].extend(blocks.pop())
+        order=torch.randperm(len(blocks),generator=torch.Generator().manual_seed(seed+810019)).tolist()
+        chosen=[blocks[order[(epoch_index*steps+i)%len(blocks)]] for i in range(steps)]
+        return DataLoader(self.unlabeled,batch_sampler=chosen,num_workers=workers,
+                          generator=torch.Generator().manual_seed(seed+epoch_index),persistent_workers=False)
+
 def build_source(args):
     if args.game_synthetic:
         return synthetic_source(args)

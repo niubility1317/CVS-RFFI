@@ -56,6 +56,8 @@ class GameSolver:
         if mode == "head_lookahead" and not self.head_ids:
             raise ValueError("head_lookahead requires an identified adversarial head")
         self.previous = None
+        self.pseudo_signature = None
+        self.pseudo_accumulator = None
         self.reset_reasons = []
         self.steps = 0
 
@@ -66,6 +68,8 @@ class GameSolver:
     def state_dict(self):
         return copy.deepcopy({"version": 1, "mode": self.mode, "names": self.names,
                               "previous": self.previous, "steps": self.steps,
+                              "pseudo_signature": self.pseudo_signature,
+                              "pseudo_accumulator": self.pseudo_accumulator,
                               "reset_reasons": self.reset_reasons})
 
     def load_state_dict(self, state):
@@ -80,6 +84,8 @@ class GameSolver:
             if any(g is not None and g.shape != p.shape for p, g in zip(self.parameters, previous)):
                 raise ValueError("Optimistic history has incorrect shapes")
         self.previous = previous
+        self.pseudo_signature=copy.deepcopy(state.get('pseudo_signature'))
+        self.pseudo_accumulator=copy.deepcopy(state.get('pseudo_accumulator'))
         self.steps, self.reset_reasons = int(state["steps"]), copy.deepcopy(state["reset_reasons"])
 
     def _evaluate(self, closure, stage):

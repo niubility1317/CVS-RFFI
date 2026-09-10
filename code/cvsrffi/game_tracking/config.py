@@ -33,6 +33,8 @@ def parser():
     p.add_argument('--game_jacobian_interval', type=int, default=0)
     p.add_argument('--game_response_tracking', action='store_true')
     p.add_argument('--game_max_grad_norm', type=float, default=5.)
+    p.add_argument('--game_optimistic_pseudo_change',type=float,default=.25)
+    p.add_argument('--game_pseudo_change_window',type=int,default=20)
     p.add_argument('--game_max_steps_per_epoch', type=int, default=0)
     p.add_argument('--game_time_budget_s', type=float, default=0.)
     p.add_argument('--game_resume', default='')
@@ -78,3 +80,5 @@ def validate(a):
         raise ValueError('Invalid update budget')
     if a.epochs <= 0:
         raise ValueError('epochs must be positive')
+    if not 0<a.game_optimistic_pseudo_change<=1 or a.game_pseudo_change_window<1:
+        raise ValueError('Invalid pseudo distribution change window/threshold')

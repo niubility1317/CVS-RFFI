@@ -21,6 +21,9 @@ def main():
     p.add_argument('--release',required=True)
     p.add_argument('--runs-root',required=True)
     p.add_argument('--commit',required=True)
+    p.add_argument('--seeds',default='392002,392003')
+    p.add_argument('--rows',default='B0,B1,B2,B4,B5,B6,S1,S3,S4,C1,C2')
+    p.add_argument('--max-processes-per-gpu',type=int,default=2)
     a=p.parse_args()
     project=Path(a.project).resolve()
     release=Path(a.release).resolve()
@@ -44,10 +47,10 @@ def main():
     (release/'release.json').write_text(json.dumps(dict(commit=a.commit,archive_sha256=a.sha256,source_only=True,project=str(project)),indent=2))
     subprocess.run([sys.executable,'-m','compileall','-q','code/cvsrffi/game_tracking','code/SSDG/train_core90_game.py','code/scripts/dispatch_core90_game.py'],cwd=release,check=True)
     subprocess.run([sys.executable,'code/scripts/build_core90_game_matrix.py','--output-dir',str(runs/'matrix'),
-                    '--runs-root',str(runs/'runs'),'--dataset-path',str(dataset)],cwd=release,check=True)
+                    '--runs-root',str(runs/'runs'),'--dataset-path',str(dataset),'--seeds',a.seeds,'--rows',a.rows],cwd=release,check=True)
     log=(runs/'dispatcher.stdout.log').open('x')
     argv=[sys.executable,'code/scripts/dispatch_core90_game.py','--matrix',str(runs/'matrix/matrix.json'),
-          '--release',str(release),'--status',str(runs/'queue_status.json')]
+          '--release',str(release),'--status',str(runs/'queue_status.json'),'--max-processes-per-gpu',str(a.max_processes_per_gpu)]
     process=subprocess.Popen(argv,cwd=release,stdin=subprocess.DEVNULL,stdout=log,stderr=subprocess.STDOUT,start_new_session=True,
                              env=dict(os.environ,OMP_NUM_THREADS='4',MKL_NUM_THREADS='4'))
     log.close()

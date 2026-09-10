@@ -14,6 +14,7 @@ from cvsrffi.game_tracking.config import parser as training_parser, validate
 
 DEFAULT_ROWS = ("B0", "B1", "B2", "B4", "B5", "B6", "S1", "S3", "S4", "C1", "C2")
 DEFAULT_SEEDS = (392002, 392003)
+REAUDIT_PRIORITY = ('J1','H1','B7','B8','C2','S4','S3','S1','C1')
 
 
 def row_menu(replay_path=""):
@@ -26,6 +27,7 @@ def row_menu(replay_path=""):
         "B3_lr_high": ("source learning-rate candidate: twice baseline", {"lr": 4e-4}),
         "B3_head_slow": ("source head-timescale candidate", {"game_head_lr_ratio": .5}),
         "B3_head_fast": ("source head-timescale candidate", {"game_head_lr_ratio": 2.}),
+        "B3_head_scale": ("separate head CE scale; encoder keeps adversarial coefficient", {"game_head_scale":"separate_head_scale"}),
         "B3_adv_low": ("source adversarial-scale candidate", {"lambda_adv": .175}),
         "B3_adv_high": ("source adversarial-scale candidate", {"lambda_adv": .7}),
         "B4": ("alternating with two total head steps", {"game_solver": "alternating", "game_fixed_head_steps": 2}),
@@ -43,6 +45,7 @@ def row_menu(replay_path=""):
         "C2": ("source capability curriculum and both controls", {"game_control": "both", "game_curriculum": "capability"}),
         "C3": ("capability curriculum with random correction timing", {"game_control": "random", "game_curriculum": "capability"}),
         "H1": ("optional implicit head-response experiment", {"game_response_tracking": True}),
+        "J1": ("full active-objective local Jacobian diagnostic", {"game_jacobian_interval":500}),
     }
     if replay_path:
         rows["C4"] = ("cross-seed replay of a frozen source action schedule",
@@ -131,7 +134,9 @@ def main(argv=None):
     p.add_argument("--dataset-path")
     p.add_argument("--device", default="cuda:0")
     a = p.parse_args(argv)
-    rows = tuple(row_menu(a.replay_path)) if a.rows == "all" else tuple(a.rows.split(","))
+    rows = (tuple(row_menu(a.replay_path)) if a.rows == "all" else
+            REAUDIT_PRIORITY+tuple(r for r in row_menu(a.replay_path) if r not in REAUDIT_PRIORITY)
+            if a.rows=='reaudit' else tuple(a.rows.split(",")))
     manifest = write_matrix(a.output_dir, rows=rows, seeds=tuple(int(v) for v in a.seeds.split(",")),
                             runs_root=a.runs_root, replay_path=a.replay_path,
                             dataset_path=a.dataset_path, device=a.device)
