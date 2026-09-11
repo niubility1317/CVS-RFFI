@@ -4,7 +4,7 @@ from pathlib import Path
 from build_core90_game_matrix import build_matrix,V2_ROWS,V2_SEEDS,STRONG_SOURCE_ROWS,STRONG_SELECTION_RULE
 from cvsrffi.game_tracking.config import parse_args
 
-RUN='core90_game_v2_20260911_r1'
+RUN='core90_game_v2_20260911_r2'
 ROOT='/home/szu2070436088/2510044040/CV-SincNet'
 RELEASE=ROOT+'/releases/'+RUN
 
