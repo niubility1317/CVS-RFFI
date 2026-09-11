@@ -64,12 +64,15 @@ def main(argv=None):
     parser.add_argument('--run-root', required=True)
     parser.add_argument('--output-dir', required=True)
     parser.add_argument('--device', default='cuda:0')
+    parser.add_argument('--rows', nargs='+', choices=ROWS+('B8',), default=list(ROWS))
     opts = parser.parse_args(argv)
+    rows = tuple(opts.rows)
+    if len(set(rows)) != len(rows): raise ValueError('Duplicate requested row')
     root, out = Path(opts.run_root), Path(opts.output_dir)
     out.mkdir(parents=True, exist_ok=False)
     # Freeze and verify every candidate before opening target data.
     checkpoints = {}
-    for row in ROWS:
+    for row in rows:
         candidates = list(root.glob('runs/' + row + '_seed392005/final_ssdg.pth'))
         if len(candidates) != 1:
             raise ValueError(f'Expected exactly one final checkpoint for {row}: {candidates}')
@@ -109,7 +112,7 @@ def main(argv=None):
                               crop_mode='center', normalize=True, equalized=args.wisig_equalized,
                               rx_keep=rxs, day_keep=days, domain='rx_day', seed=args.game_split_seed)
     check_target(base, reference, rxs, days)
-    manifest = dict(schema='core90_target_frozen_15_v1', rows=list(ROWS), seed=392005,
+    manifest = dict(schema='core90_target_frozen_15_v1', rows=list(rows), seed=392005,
                     checkpoints={k:str(v) for k,v in checkpoints.items()}, target_rxs=rxs,
                     target_days=days, samples_per_scene=len(base), scenes=list(EVAL_SCENES),
                     batch_size=256, augmentation_seed=args.game_split_seed,
@@ -120,7 +123,7 @@ def main(argv=None):
     counts = {}
     started = time.perf_counter()
     with ExitStack() as stack, torch.inference_mode():
-        streams = {row: stack.enter_context((out/(row+'_predictions.jsonl')).open('x',encoding='utf-8')) for row in ROWS}
+        streams = {row: stack.enter_context((out/(row+'_predictions.jsonl')).open('x',encoding='utf-8')) for row in rows}
         for si, scene in enumerate(EVAL_SCENES):
             gen = torch.Generator(device=opts.device).manual_seed(args.game_split_seed+100003*si)
             loader = DataLoader(TargetInputs(base), batch_size=256, shuffle=False, num_workers=0)
@@ -144,21 +147,21 @@ def main(argv=None):
     for row, model in models.items():
         if any(not torch.equal(v,dict(model.named_buffers())[k]) for k,v in buffers[row].items()):
             raise ValueError('Evaluation mutated buffers: '+row)
-    _write_json(out/'predictions_complete.json',dict(complete=True,rows=list(ROWS),counts=counts,
+    _write_json(out/'predictions_complete.json',dict(complete=True,rows=list(rows),counts=counts,
                 prediction_seconds=time.perf_counter()-started,truth_accessed_for_scoring=False))
     # A separate scorer consumes only closed artifacts and builder-side truth.
     truth_path = out/'target_truth.jsonl'
     with truth_path.open('x',encoding='utf-8') as stream:
         for item in base.index:
             stream.write(json.dumps(dict(sample_id=opaque_id(item),truth=item.tx_i,rx_i=item.rx_i,day_i=item.day_i))+'\n')
-    for row in ROWS:
+    for row in rows:
         scores = score_source_predictions(out/(row+'_predictions.jsonl'),truth_path,
                     expected_samples=len(base),num_classes=args.num_classes)
         scores.update(schema='core90_game_target_scores_v1',source_only=False,target_evaluated=True,
                       scope=manifest['scope'],row=row,seed=392005,selection_permitted=False)
         _write_json(out/(row+'_target_scores.json'),scores)
         print(json.dumps(dict(stage='scored',row=row)),flush=True)
-    _write_json(out/'complete.json',dict(complete=True,rows=list(ROWS),manifest='frozen_manifest.json',
+    _write_json(out/'complete.json',dict(complete=True,rows=list(rows),manifest='frozen_manifest.json',
                 total_seconds=time.perf_counter()-started))
 
 if __name__ == '__main__': main()
