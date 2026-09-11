@@ -1,0 +1,27 @@
+{
+  "status": "VERIFIED",
+  "metric_rows": 936,
+  "summary_rows": 16,
+  "physical_records": 198000,
+  "target_records": 168000,
+  "cells": 33,
+  "related_reports": 128,
+  "fcr_prediction_rows": 672000,
+  "source_members_equal": {
+    "L_s": {
+      "game_count": 6300,
+      "heads_count": 6300,
+      "same_physical_members": true
+    },
+    "U_s": {
+      "game_count": 56700,
+      "heads_count": 56700,
+      "same_physical_members": true
+    },
+    "V": {
+      "game_count": 27000,
+      "heads_count": 27000,
+      "same_physical_members": true
+    }
+  }
+}

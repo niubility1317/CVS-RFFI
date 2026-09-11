@@ -1,0 +1,17 @@
+﻿method,scope,scene,dimension,value,total,correct,accuracy_pct,macro_f1_pct
+FCR_ADV3B02,target168k,clean,overall,all,168000,128061,76.22678571428571,76.09812430647328
+FCR_ADV3B02,target168k,leo_clear_weak,overall,all,168000,103098,61.36785714285714,61.959033217387635
+FCR_ADV3B02,target168k,leo_low_elev_weak,overall,all,168000,100107,59.587500000000006,60.13048178822405
+FCR_ADV3B02,target168k,leo_rain_weak,overall,all,168000,99899,59.46369047619048,59.92398941871705
+GAME_B0,target168k,clean,overall,all,168000,124932,74.36428571428571,73.8400331844962
+GAME_B0,target168k,leo_clear_weak,overall,all,168000,105735,62.9375,62.995565025585734
+GAME_B0,target168k,leo_low_elev_weak,overall,all,168000,103043,61.335119047619045,61.152483301058865
+GAME_B0,target168k,leo_rain_weak,overall,all,168000,102705,61.13392857142858,60.89066760101459
+CROSS_U0,heldout198k,clean,overall,all,198000,153055,77.30050505050505,
+CROSS_U0,target168k,clean,overall,all,168000,125550,74.73214285714286,
+CROSS_U0,heldout198k,leo_clear_weak,overall,all,198000,124430,62.843434343434346,
+CROSS_U0,target168k,leo_clear_weak,overall,all,168000,101049,60.14821428571429,
+CROSS_U0,heldout198k,leo_low_elev_weak,overall,all,198000,120370,60.7929292929293,
+CROSS_U0,target168k,leo_low_elev_weak,overall,all,168000,98031,58.35178571428571,
+CROSS_U0,heldout198k,leo_rain_weak,overall,all,198000,121323,61.274242424242416,
+CROSS_U0,target168k,leo_rain_weak,overall,all,168000,98662,58.72738095238095,
