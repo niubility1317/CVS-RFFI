@@ -1,6 +1,6 @@
 # CORE90锚定角度几何与净收益融合：设计实现计划
 
-日期：2026-09-11。状态：**PLAN_READY，尚未实现、训练或发布新实验。**
+日期：2026-09-11。计划编制状态为PLAN_READY；后续按用户授权完成T1–T9适用实现，当前为**IMPLEMENTATION_VERIFIED**。见[实现与确认验收](core90_anchored_geometry_acceptance_20260911.md)。未执行完整source矩阵或独立确认实验；下面保留设计定义和原实施顺序。
 
 目标：在冻结H0身份骨干和原始部署判别定义的前提下，实现有界低秩角度头G、物理样本配对的source缓存训练、H0正确样本间隔保留和经过交叉拟合检验的概率融合；部分证据E作为独立扩展。
 
@@ -8,7 +8,7 @@
 
 技术栈：现有PyTorch/NumPy、项目`ssr-gpu`环境、Windows原生本地开发、既有N607发布流程。此计划不引入新服务、训练框架或强制安装依赖。
 
-执行方式：按下面任务顺序在当前隔离Git承载面实施。每个任务完成直接相关检查；不默认派生Agent、不额外增加固定审批或重复审查。用户本次仅要求计划，生产代码保持不变。
+执行方式：按下面任务顺序在当前隔离Git承载面实施。每个任务完成直接相关检查；不默认派生Agent、不额外增加固定审批或重复审查。计划编制时仅获计划授权，后续用户明确授权严格实施并验收；实际完成证据记于验收报告。
 
 ## 1.设计判断与实施范围
 
@@ -345,14 +345,14 @@ G拟合返回`ExpertArtifact`：参数、配置、train_rx、head_seed、实际�
 
 ## 11.逐任务实施与验收
 
-下面测试代码为计划中的可执行测试目标，**当前尚未新增这些生产模块或执行测试**。实施使用已验证`ssr-gpu`解释器；每个任务先补能揭示目标错误的测试，完成后只跑相关文件及受影响旧接口回归。
+下面保留计划中的可执行测试目标。对应生产模块与测试现已实现；勾选表示适用实现和技术验收通过，不代表正式source矩阵完成。实施使用已验证`ssr-gpu`解释器；每个任务先补能揭示目标错误的测试，完成后只跑相关文件及受影响旧接口回归。
 
 ### T1：真实H0身份前向与角色化缓存（R01–R06）
 
-- [ ] 新建`anchored_cache.py`与`test_anchored_cache.py`，定义第3节数据结构、manifest不匹配错误和只接受L_s/V的入口。
-- [ ] 比较原H0完整部署/fast/identity aux路径，覆盖clean及三种source弱LEO实际IQ；验证无label margin、无参数/BN统计更新、domain分支调用数0。
-- [ ] 实现一次提取和view配对；缓存重载后训练一个weight检查梯度可用；拒绝同键重复、角色交叉和预处理/权重不匹配。
-- [ ] 测试必须有：
+- [x] 新建`anchored_cache.py`与`test_anchored_cache.py`，定义第3节数据结构、manifest不匹配错误和只接受L_s/V的入口。
+- [x] 比较原H0完整部署/fast/identity aux路径，覆盖clean及三种source弱LEO实际IQ；验证无label margin、无参数/BN统计更新、domain分支调用数0。
+- [x] 实现一次提取和view配对；缓存重载后训练一个weight检查梯度可用；拒绝同键重复、角色交叉和预处理/权重不匹配。
+- [x] 测试必须有：
 
 ```python
 def test_anchor_uses_deployment_logits(anchor, source_iq):
@@ -367,9 +367,9 @@ def test_anchor_uses_deployment_logits(anchor, source_iq):
 
 ### T2：有界低秩G（R07–R11）
 
-- [ ] 新建`anchored_geometry.py`与`test_anchored_geometry.py`；实现QR/tanh参数化和低秩公式。
-- [ ] 测a=0等价、随机有效输入正缩放不变、cond≤2、W/tau冻结、b首步可学习、导出重载和类列置换。
-- [ ] 稠密M参考只在测试里构造；比较forward及B/b梯度，检查极小范数、秩亏输入和非有限数错误。
+- [x] 新建`anchored_geometry.py`与`test_anchored_geometry.py`；实现QR/tanh参数化和低秩公式。
+- [x] 测a=0等价、随机有效输入正缩放不变、cond≤2、W/tau冻结、b首步可学习、导出重载和类列置换。
+- [x] 稠密M参考只在测试里构造；比较forward及B/b梯度，检查极小范数、秩亏输入和非有限数错误。
 
 ```python
 def test_identity_metric_and_trainable_scale(head, h, w0, tau0):
@@ -383,9 +383,9 @@ def test_identity_metric_and_trainable_scale(head, h, w0, tau0):
 
 ### T3：配对训练与预算遥测（R12–R16）
 
-- [ ] 新建`anchored_fit.py`、`test_anchored_fit.py`，实现35批物理分层遍历、clean/LEO权重和三个loss。
-- [ ] 验证6300个physical每轮各访问一次；复制一个view并分摊权重不改变该样本总loss；H0错误样本keep=0，无正确样本batch可反传。
-- [ ] 对加权CE/keep/metric分别提取梯度，不增加step；记录optimizer步数和`converged/budget_exhausted`。
+- [x] 新建`anchored_fit.py`、`test_anchored_fit.py`，实现35批物理分层遍历、clean/LEO权重和三个loss。
+- [x] 验证6300个physical每轮各访问一次；复制一个view并分摊权重不改变该样本总loss；H0错误样本keep=0，无正确样本batch可反传。
+- [x] 对加权CE/keep/metric分别提取梯度，不增加step；记录optimizer步数和`converged/budget_exhausted`。
 
 ```python
 def test_keep_does_not_distill_h0_errors(keep_loss):
@@ -402,9 +402,9 @@ def test_keep_does_not_distill_h0_errors(keep_loss):
 
 ### T4：source OOF与嵌套融合评价（R17–R19）
 
-- [ ] 新建`anchored_crossfit.py`、`test_anchored_crossfit.py`；以RX及physical ID生成排除集合，所有views随同一physical移动。
-- [ ] 在每个OOF行保存专家fit_rx；外层门控的训练记录不得含heldout RX；标准化/quality fit遵守相同边界。
-- [ ] 用计数模拟器验证5个4RX、10个3RX、1个最终模型的缓存复用，不执行重复拟合；预算选择只在内部折进行。
+- [x] 新建`anchored_crossfit.py`、`test_anchored_crossfit.py`；以RX及physical ID生成排除集合，所有views随同一physical移动。
+- [x] 在每个OOF行保存专家fit_rx；外层门控的训练记录不得含heldout RX；标准化/quality fit遵守相同边界。
+- [x] 用计数模拟器验证5个4RX、10个3RX、1个最终模型的缓存复用，不执行重复拟合；预算选择只在内部折进行。
 
 ```python
 def test_oof_is_disjoint_at_physical_level(oof):
@@ -418,9 +418,9 @@ def test_oof_is_disjoint_at_physical_level(oof):
 
 ### T5：固定融合、utility和保护边界（R20–R25）
 
-- [ ] 新建`anchored_fusion.py`、`test_anchored_fusion.py`；实现稳定概率混合、所有实际动作、utility标签及小线性门控。
-- [ ] 测第三类获胜、alpha端点、零utility回退、utility并列、小alpha优先、保护区严格边界、并列H0处理和保护后动作标签一致。
-- [ ] 用禁止字段变异测试证明RX/TX/day/ID/scenario不能流入phi；验证专家tensor无梯度、类别置换时共享门控不变。
+- [x] 新建`anchored_fusion.py`、`test_anchored_fusion.py`；实现稳定概率混合、所有实际动作、utility标签及小线性门控。
+- [x] 测第三类获胜、alpha端点、零utility回退、utility并列、小alpha优先、保护区严格边界、并列H0处理和保护后动作标签一致。
+- [x] 用禁止字段变异测试证明RX/TX/day/ID/scenario不能流入phi；验证专家tensor无梯度、类别置换时共享门控不变。
 
 ```python
 def test_mixture_can_predict_neither_expert():
@@ -435,8 +435,8 @@ def test_mixture_can_predict_neither_expert():
 
 ### T6：一致的最终校准（R26–R28）
 
-- [ ] 新建`anchored_calibration.py`、`test_anchored_calibration.py`；只接受V最终log probabilities，拒绝重复fit或fit后改专家版本。
-- [ ] 验证正温度不改唯一argmax、alpha混合前后顺序、物理配对权重、概率下溢、ties实际覆盖；温度拟合不接受RX/TX专属参数。
+- [x] 新建`anchored_calibration.py`、`test_anchored_calibration.py`；只接受V最终log probabilities，拒绝重复fit或fit后改专家版本。
+- [x] 验证正温度不改唯一argmax、alpha混合前后顺序、物理配对权重、概率下溢、ties实际覆盖；温度拟合不接受RX/TX专属参数。
 
 ```python
 def test_final_temperature_preserves_decision(log_mix):
@@ -449,10 +449,10 @@ def test_final_temperature_preserves_decision(log_mix):
 
 ### T7：source协调器、导出与预测接口（R29–R32）
 
-- [ ] 新建`anchored_pipeline.py`、配置和CLI；阶段为`cache/fit/oof/fuse/calibrate/export/profile`，默认不提供自动target串联。
-- [ ] 配置验证未知字段、角色、矩阵ID、后续分支开关、缓存身份、预算和输出占用；已经存在的输出报错，恢复只认本run未完成阶段。
-- [ ] 导出无cache/labels/RX/day数据路径；重载后alpha0与H0一致，候选顺序/批次切分/单样本预测不改变结果，前后state逐tensor不变。
-- [ ] source各阶段先用小型合法L_s样本完成端到端技术测试；不创建smoke审批文件。正式N607执行留待实现验收及相应实验授权，不因空闲GPU自动启动。
+- [x] 新建`anchored_pipeline.py`、配置和CLI；阶段为`cache/fit/oof/fuse/calibrate/export/profile`，默认不提供自动target串联。
+- [x] 配置验证未知字段、角色、矩阵ID、后续分支开关、缓存身份、预算和输出占用；已经存在的输出报错，恢复只认本run未完成阶段。
+- [x] 导出无cache/labels/RX/day数据路径；重载后alpha0与H0一致，候选顺序/批次切分/单样本预测不改变结果，前后state逐tensor不变。
+- [x] source各阶段先用小型合法L_s样本完成端到端技术测试；不创建smoke审批文件。正式N607执行留待实现验收及相应实验授权，不因空闲GPU自动启动。
 
 ```python
 def test_export_contains_no_training_rows(bundle):
@@ -465,9 +465,9 @@ def test_export_contains_no_training_rows(bundle):
 
 ### T8：独立P1和模式校准（R33–R38）
 
-- [ ] 新增E拟合器、pattern schema、版本化校准；复用既有边缘化和Schur实现，保持旧H1–H4路径不变。
-- [ ] 使用实际block schema生成full/单块缺失/全缺失，源V与评价保持同机制；低秩score只求解一次，NLL从结果复用。
-- [ ] 缺失位置填NaN/极值不影响观测结果；相同维数不同pattern不能共享阈值；未覆盖模式defer；块内原坐标不随mask重缩放。
+- [x] 新增E拟合器、pattern schema、版本化校准；复用既有边缘化和Schur实现，保持旧H1–H4路径不变。
+- [x] 使用实际block schema生成full/单块缺失/全缺失，源V与评价保持同机制；低秩score只求解一次，NLL从结果复用。
+- [x] 缺失位置填NaN/极值不影响观测结果；相同维数不同pattern不能共享阈值；未覆盖模式defer；块内原坐标不随mask重缩放。
 
 ```python
 def test_missing_values_do_not_become_zero_evidence(score, z, mask):
@@ -480,10 +480,10 @@ def test_missing_values_do_not_become_zero_evidence(score, z, mask):
 
 ### T9：完整诊断、成本与文档交付（R39–R42）
 
-- [ ] 汇总第12节所有文件；用合成已知计数的预测验证rescue/harm、precision/recall/流入错误、各分组加权汇总一致。
-- [ ] 独占/受控profile分开IQ增强、身份骨干、head、fusion/calibration、保存；同步CUDA计时并报告warmup/重复次数和环境，峰值显存按阶段reset/readback。
-- [ ] 将参数/损失激活、源开发收益、未执行分支和科学限制写入同一run报告；检查完整产物后才记录完成。
-- [ ] 聚焦验证、一次适用P0/P1独立实验审查后，按AGENTS显式stage本次路径、commit/push并独立比对远端OID；文档检查不重新触发GPU实验。
+- [x] 汇总第12节所有文件；用合成已知计数的预测验证rescue/harm、precision/recall/流入错误、各分组加权汇总一致。
+- [x] 独占/受控profile分开IQ增强、身份骨干、head、fusion/calibration、保存；同步CUDA计时并报告warmup/重复次数和环境，峰值显存按阶段reset/readback。
+- [x] 将参数/损失激活、源开发收益、未执行分支和科学限制写入同一run报告；检查完整产物后才记录完成。
+- [x] 聚焦验证、一次适用P0/P1独立实验审查后，按AGENTS显式stage本次路径、commit/push并独立比对远端OID；文档检查不重新触发GPU实验。
 
 运行：`python -m pytest code/tests/test_anchored_reporting.py -q`；`git diff --check`。通过产物：完整source开发报告及可复核部署产物，不含虚构的确认结果。
 
@@ -505,8 +505,8 @@ def test_missing_values_do_not_become_zero_evidence(score, z, mask):
 
 完成分层：
 
-- **PLAN_READY（本次）**：完整报告要求已有去向，文件接口、默认起点、步骤和验收明确，文档已验证并Git交付。
-- **IMPLEMENTATION_VERIFIED（未来）**：T1–T9适用代码和直接正确性测试通过；deferred分支不冒充已实现。
+- **PLAN_READY（已完成）**：完整报告要求已有去向，文件接口、默认起点、步骤和验收明确，文档已验证并Git交付。
+- **IMPLEMENTATION_VERIFIED（本次已完成）**：T1–T9适用代码和直接正确性测试通过；deferred分支不冒充已实现，实际证据见验收报告。
 - **SOURCE_ANALYZED（未来）**：实际source预算结束、全部source OOF与最终校准产物闭合；未收敛明确标注。
 - **CONFIRMATION_COMPLETE（另行具备条件后）**：合法独立确认数据、冻结候选、先预测后评分以及完整性能/稳定性/成本证据。当前不存在这一结果。
 
@@ -516,4 +516,4 @@ def test_missing_values_do_not_become_zero_evidence(score, z, mask):
 
 最高科学风险是把已有target启发的新设计再次在同一target评分后，称为未见目标的独立确认。该风险无法靠重置head seed、从零重训或增加哈希消除。
 
-本次只核对原报告全文、现有源码接口、计划覆盖、链接、编码和Git diff；没有运行新方法测试，没有访问N607，没有改训练代码、生成训练cache、启动实验或恢复自动监控。所有性能数值仍来自上一轮报告；本计划中的超参数与门槛均明确为建议起点。
+计划编制阶段仅核对报告、源码、覆盖、链接、编码与Git diff。后续实施阶段的代码、测试、只读N607取证和有界技术缓存/拟合均另记于验收报告；未启动正式source矩阵或恢复自动监控。本计划中的超参数与门槛仍是建议起点，技术验收不赋予性能最优性或独立确认结论。

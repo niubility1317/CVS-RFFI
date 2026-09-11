@@ -1,0 +1,75 @@
+{
+  "status": "REAL_H0_TECHNICAL_VERIFIED",
+  "scope": "Bounded implementation test only: 180 legal L_s physical records, 2 head steps; not SOURCE_ANALYZED.",
+  "checkpoint_sha256": "e2905467945db6c1a98c62f67d13a527c0cca3e55a5a7ec6697b8aa3d099478d",
+  "contract_sha256": "37d80ee312cf67744081298840fbff1c2895876a0b3ecde2243dad6a8f9ff0fb",
+  "lineage": {
+    "from_scratch": true,
+    "upstream": [],
+    "selection": "final_only",
+    "target_feedback": false
+  },
+  "parity": [
+    {
+      "scene": "clean",
+      "rows": 18,
+      "max_abs_full": 0.0,
+      "max_abs_fast": 0.0,
+      "max_abs_metric_identity": 1.9073486328125e-06,
+      "domain_calls_identity": 0,
+      "unique_argmax_equal": true,
+      "near_ties": 0,
+      "valid_rows": 18
+    },
+    {
+      "scene": "leo_clear_weak",
+      "rows": 18,
+      "max_abs_full": 0.0,
+      "max_abs_fast": 0.0,
+      "max_abs_metric_identity": 1.9073486328125e-06,
+      "domain_calls_identity": 0,
+      "unique_argmax_equal": true,
+      "near_ties": 0,
+      "valid_rows": 18
+    },
+    {
+      "scene": "leo_low_elev_weak",
+      "rows": 18,
+      "max_abs_full": 0.0,
+      "max_abs_fast": 0.0,
+      "max_abs_metric_identity": 9.5367431640625e-07,
+      "domain_calls_identity": 0,
+      "unique_argmax_equal": true,
+      "near_ties": 0,
+      "valid_rows": 18
+    },
+    {
+      "scene": "leo_rain_weak",
+      "rows": 18,
+      "max_abs_full": 0.0,
+      "max_abs_fast": 0.0,
+      "max_abs_metric_identity": 2.86102294921875e-06,
+      "domain_calls_identity": 0,
+      "unique_argmax_equal": true,
+      "near_ties": 0,
+      "valid_rows": 18
+    }
+  ],
+  "backbone_state_unchanged": true,
+  "physical_count": 180,
+  "cache_rows": 360,
+  "head_optimizer_steps": 2,
+  "a": [
+    -0.0006931283278390765,
+    -0.0006931181414984167,
+    0.000693132053129375,
+    0.0006931123789399862
+  ],
+  "stop_status": "budget_exhausted",
+  "data_roles_read": [
+    "L_s"
+  ],
+  "V_used": false,
+  "target_used": false,
+  "source_training_budget_completed": false
+}

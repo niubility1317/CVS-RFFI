@@ -1,0 +1,101 @@
+{
+  "stages": {
+    "IQ_augmentation": {
+      "seconds_mean": 0.03190543333281918,
+      "seconds_min": 0.02960490000259597,
+      "seconds_max": 0.034507200005464256,
+      "samples_seconds": [
+        0.03160419999039732,
+        0.02960490000259597,
+        0.034507200005464256
+      ],
+      "warmup": 1,
+      "repeats": 3,
+      "peak_allocated_bytes": null
+    },
+    "identity_backbone": {
+      "seconds_mean": 0.01929356666611663,
+      "seconds_min": 0.016994199992041104,
+      "seconds_max": 0.0217531000089366,
+      "samples_seconds": [
+        0.0217531000089366,
+        0.016994199992041104,
+        0.01913339999737218
+      ],
+      "warmup": 1,
+      "repeats": 3,
+      "peak_allocated_bytes": null
+    },
+    "head": {
+      "seconds_mean": 0.00038500000664498657,
+      "seconds_min": 0.00022810000518802553,
+      "seconds_max": 0.0006531000108225271,
+      "samples_seconds": [
+        0.00027380000392440706,
+        0.00022810000518802553,
+        0.0006531000108225271
+      ],
+      "warmup": 1,
+      "repeats": 3,
+      "peak_allocated_bytes": null
+    },
+    "fusion": {
+      "seconds_mean": 0.01821699999951913,
+      "seconds_min": 0.015580399995087646,
+      "seconds_max": 0.019785800002864562,
+      "samples_seconds": [
+        0.019785800002864562,
+        0.019284800000605173,
+        0.015580399995087646
+      ],
+      "warmup": 1,
+      "repeats": 3,
+      "peak_allocated_bytes": null
+    },
+    "final_temperature_operator": {
+      "seconds_mean": 3.443334329252442e-05,
+      "seconds_min": 6.400005077011883e-06,
+      "seconds_max": 8.940001134760678e-05,
+      "samples_seconds": [
+        8.940001134760678e-05,
+        7.50001345295459e-06,
+        6.400005077011883e-06
+      ],
+      "warmup": 1,
+      "repeats": 3,
+      "peak_allocated_bytes": null
+    },
+    "save": {
+      "seconds_mean": 0.011829833340016194,
+      "seconds_min": 0.010982300009345636,
+      "seconds_max": 0.01286400000390131,
+      "samples_seconds": [
+        0.01286400000390131,
+        0.010982300009345636,
+        0.011643200006801635
+      ],
+      "warmup": 1,
+      "repeats": 3,
+      "peak_allocated_bytes": null
+    }
+  },
+  "device": "cpu",
+  "pytorch": "2.10.0+cu128",
+  "python": "3.10.19",
+  "platform": "Windows-10-10.0.26200-SP0",
+  "cache_hit": true,
+  "cuda_synchronized": false,
+  "torch_threads": 4,
+  "load_scope": "controlled local call; no claim of exclusive GPU ownership",
+  "cuda_available": true,
+  "batch_size": 18,
+  "calibration_scope": "Timing operator at T=1 only; no V fit and no calibrated scientific result.",
+  "stage_devices": {
+    "IQ_augmentation": "cpu",
+    "identity_backbone": "cpu",
+    "head": "cpu",
+    "fusion": "cpu",
+    "final_temperature_operator": "cpu",
+    "save": "cpu"
+  }
+}

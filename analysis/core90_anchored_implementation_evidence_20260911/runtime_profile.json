@@ -1,0 +1,39 @@
+{
+  "stages": {
+    "identity_backbone": {
+      "seconds_mean": 0.023057599998234462,
+      "seconds_min": 0.017126999999163672,
+      "seconds_max": 0.03202679999230895,
+      "samples_seconds": [
+        0.03202679999230895,
+        0.020019000003230758,
+        0.017126999999163672
+      ],
+      "warmup": 1,
+      "repeats": 3,
+      "peak_allocated_bytes": null
+    },
+    "head": {
+      "seconds_mean": 0.0015827999983836587,
+      "seconds_min": 0.0012374999932944775,
+      "seconds_max": 0.0018533999973442405,
+      "samples_seconds": [
+        0.0018533999973442405,
+        0.0012374999932944775,
+        0.0016575000045122579
+      ],
+      "warmup": 1,
+      "repeats": 3,
+      "peak_allocated_bytes": null
+    }
+  },
+  "device": "cpu",
+  "pytorch": "2.10.0+cu128",
+  "python": "3.10.19",
+  "platform": "Windows-10-10.0.26200-SP0",
+  "cache_hit": true,
+  "cuda_synchronized": false,
+  "torch_threads": 4,
+  "load_scope": "controlled local call; no claim of exclusive GPU ownership",
+  "cuda_available": true
+}
