@@ -1,0 +1,47 @@
+{
+  "U0": {
+    "epochs": 200,
+    "log_lines": 8820,
+    "final_source_val_accuracy": 97.83333333333333,
+    "final_train_accuracy": 89.71619897959184,
+    "errors": [],
+    "successful_steps": 9790,
+    "skipped_steps": 10
+  },
+  "U1": {
+    "epochs": 200,
+    "log_lines": 8820,
+    "final_source_val_accuracy": 98.08518518518518,
+    "final_train_accuracy": 86.28826530612245,
+    "errors": [],
+    "successful_steps": 9790,
+    "skipped_steps": 10
+  },
+  "U2": {
+    "epochs": 200,
+    "log_lines": 8820,
+    "final_source_val_accuracy": 98.11481481481482,
+    "final_train_accuracy": 86.65497448979592,
+    "errors": [],
+    "successful_steps": 9789,
+    "skipped_steps": 11
+  },
+  "Ux": {
+    "epochs": 200,
+    "log_lines": 8820,
+    "final_source_val_accuracy": 98.05185185185185,
+    "final_train_accuracy": 85.20408163265306,
+    "errors": [],
+    "successful_steps": 9775,
+    "skipped_steps": 25
+  },
+  "head_only": {
+    "epochs": 200,
+    "log_lines": 8820,
+    "final_source_val_accuracy": 97.93333333333334,
+    "final_train_accuracy": 86.67091836734694,
+    "errors": [],
+    "successful_steps": 9792,
+    "skipped_steps": 8
+  }
+}

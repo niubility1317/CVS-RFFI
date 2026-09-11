@@ -84,3 +84,11 @@ VERIFIED：10项持续RUNNING，独立/proc完整argv、PPID、CWD、GPU绑定�
 U0、U2、Ux已完成E200、四场景固定预测和独立评分；本次读取三项全部600轮日志及2376000条预测，每项148组评分计数复算完全一致。当前详细测试数据见[已完成三项报告](completed_detail/completed_results.md)及[全部评分CSV](completed_detail/scores_long.csv)。这是固定快照，不代表其他7项此后状态；自动检查继续覆盖完整矩阵。
 
 clean准确率U0/U2/Ux=77.3005/77.8970/78.3717%，三LEO均值61.6369/61.9975/61.9860%。U2的clean未知日期＋未知RX子集从U0的74.0214%下降至71.2071%，雨衰总体亦略退化；Ux的该clean子集74.9143%，但部分LEO子集及类别仍有退化。单seed结果仅描述，不作晋级，不反馈调参或重跑。所有训练继续沿原冻结矩阵执行。
+
+## 新增完成与ETA（2026-09-11，11:55–11:58，UTC+8）
+
+新增U1和head_only完成，共5/10项。新增两项及U0参考均再次逐条读取四场景预测、先验证完整覆盖再读既有truth，148组/项评分计数全部一致；两项E1–E200及stdout完整解析通过。详细数据见[五项测试报告](completed_detail/five_completed_results.md)、[740行评分CSV](completed_detail/five_completed_scores.csv)和`completed_detail/new_prediction_audit.json`。
+
+U1的clean/三LEO均值79.3389/63.1215%，head_only为77.6712/62.7311%。U1四场景总体均高于其他已完成项；U2相对U1的clean/三LEO均值下降1.4419/1.1241个百分点，Ux下降0.9672/1.1355个百分点。目前不支持附加损失优于完整块运行对照的结论，也不能把U1−U0全部归因于单一采样因素；单seed不作晋级。
+
+剩余U3 E164、U4_additive E171、U4_bilinear E169、U5 E172、permanent_detach E162，均处pseudo阶段并正常更新。最近10轮均时给出训练剩余约0.97–1.61小时，更长窗口最慢约1.9小时；考虑终态预测/评分，估计14:00–14:30完成全部闭合，非保证时间。未修复、重启或改变训练；继续半小时检查。
