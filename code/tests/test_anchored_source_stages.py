@@ -65,7 +65,17 @@ def test_explicit_source_cli_stages_and_partial_bundle(tmp_path):
         expert.save(path/'expert.pt')
         expert.predict=lambda data:data.baseline_inference_logits.clone()
         return expert
-    run_expert_oof(rows,FitConfig.parse(config['fit']),392005,tmp_path/'oof',w0=anchor.w0,tau0=anchor.tau0,fit_fn=trainer)
+    from unittest.mock import patch
+    with patch('cvsrffi.anchored_source.run_expert_oof',side_effect=lambda *a,**kw:run_expert_oof(*a,**kw,fit_fn=trainer)):
+        stage('oof','A4','oof',cache='gLs')
+    assert len(list((tmp_path/'oof').glob('*/expert.pt')))==6
+    with patch('cvsrffi.anchored_source.fit_expert',side_effect=AssertionError('must reuse OOF final expert')):
+        stage('calibrate','A4','oofcal',cache='gV',input='oof/system_state.pt')
+        stage('export','A4','oofexport',input='oofcal/system_state.pt')
+    final=ExpertArtifact.load(tmp_path/'oof/all_source/expert.pt')
+    exported=torch.load(tmp_path/'oofexport/frozen_system.pt',weights_only=True)
+    from cvsrffi.anchored_pipeline import state_identity
+    assert state_identity(final.state)==state_identity(exported['expert'])
     inactive=stage('fuse','A6','a6_inactive',cache='gLs',input='oof')
     assert json.loads((inactive/'activation.json').read_text())['status']=='NOT_ACTIVATED_NO_SOURCE_UTILITY'
     assert not (inactive/'system_state.pt').exists()

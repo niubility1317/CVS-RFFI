@@ -34,7 +34,8 @@ class FinalProbabilityCalibrator:
             if loss(a)<=loss(b):right=b
             else:left=a
         t=math.exp((left+right)/2);final=(x/t).log_softmax(-1)
-        if not torch.equal(final.argmax(-1),x.argmax(-1)):raise FloatingPointError('temperature changed the final decision')
+        # A positive temperature calibrates confidence; the frozen decision is
+        # retained separately when normalization rounds a unique gap to a tie.
         confidence=final.exp().amax(-1);order=confidence.argsort(descending=True,stable=True)
         index=int(torch.searchsorted(w[order].cumsum(0),torch.tensor(self.target_coverage,device=x.device,dtype=x.dtype)).clamp_max(len(x)-1))
         threshold=float(confidence[order[index]])
@@ -43,15 +44,16 @@ class FinalProbabilityCalibrator:
         self.nll_before=loss(0.);self.nll_after=loss(math.log(t));self.fitted=True
         return self
 
-    def predict(self,log_probs,*,system_identity):
+    def predict(self,log_probs,*,system_identity,decision=None):
         if not self.fitted:raise RuntimeError('fit source V before prediction')
         if system_identity!=self.system_identity:raise ValueError('frozen system identity mismatch')
         if log_probs.ndim!=2 or not torch.isfinite(log_probs).all():raise ValueError('finite final scores required')
         result=(log_probs.detach().double()/self.temperature).log_softmax(-1)
-        if not torch.equal(result.argmax(-1),log_probs.argmax(-1)):raise FloatingPointError('calibration changed argmax')
+        decision=log_probs.argmax(-1) if decision is None else decision
+        if decision.shape!=(len(log_probs),) or decision.dtype!=torch.long or (decision<0).any() or (decision>=log_probs.shape[1]).any():raise ValueError('invalid frozen decision')
         confidence=result.exp().amax(-1)
         return dict(log_probabilities=result,probabilities=result.exp(),confidence=confidence,
-                    accepted=confidence>=self.threshold,top_class=result.argmax(-1))
+                    accepted=confidence>=self.threshold,top_class=decision)
 
     def state_dict(self):
         if not self.fitted:raise RuntimeError('cannot export unfitted final calibration')

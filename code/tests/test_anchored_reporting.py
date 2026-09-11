@@ -22,10 +22,8 @@ def test_risk_curve_keeps_ties_and_profile_is_measured():
 
 
 def test_source_promotion_requires_complete_three_seed_group_evidence():
-    records=[dict(candidate='A6',group='all',value='all',weighted_net=.01)]
-    records += [dict(candidate='A6',group='RX',value=str(rx),weighted_net=.01) for rx in (1,3,4,6,8)]
-    records += [dict(candidate='A6',group='TX',value=str(y),weighted_net=.01) for y in range(6)]
-    records += [dict(candidate='A6',group='view',value='clean',weighted_net=0.)]
+    from test_anchored_recheck_fixes import complete_records
+    records=complete_records()
     assert not assess_source_promotion({392005:records})['passed']
     result=assess_source_promotion({seed:records for seed in (392005,392006,392007)})
     assert result['passed'] and not result['confirmation']

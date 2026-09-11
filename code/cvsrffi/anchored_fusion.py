@@ -24,22 +24,28 @@ def mix_log_probs(log0,logg,alpha):
 
 @torch.no_grad()
 def realize_actions(log0,logg,*,protection_threshold,valid=None):
+    """Accept raw logits; convert to FP64 before normalization in every caller.
+
+    Pre-normalizing FP32 scores changes boundary decisions and utility labels.
+    """
     if log0.ndim!=2 or logg.shape!=log0.shape or not torch.isfinite(log0).all():raise ValueError('finite H0 scores required')
     expert_valid=torch.isfinite(logg).all(-1)
     logg=torch.where(expert_valid[:,None],logg,log0)
+    raw_top=log0.argmax(-1);expert_top=logg.argmax(-1)
+    raw_unique=(log0==log0.amax(-1,keepdim=True)).sum(-1)==1
     log0,logg=_log_pairs(log0,logg);p0,pg=log0.exp(),logg.exp();n,c=p0.shape
     if not math.isfinite(float(protection_threshold)) or protection_threshold<0:raise ValueError('invalid protection threshold')
     valid=torch.ones(n,dtype=torch.bool,device=p0.device) if valid is None else valid.to(p0.device)
     if valid.shape!=(n,) or valid.dtype!=torch.bool:raise ValueError('valid must be bool [N]')
     valid=valid&expert_valid.to(valid.device)
-    top=p0.argmax(-1);topval=p0.gather(1,top[:,None]);unique=(p0==topval).sum(-1)==1
+    top=raw_top;topval=p0.gather(1,top[:,None]);unique=raw_unique
     margin=p0.topk(2,dim=-1).values.diff(dim=-1).squeeze(-1).neg()
     protected=(margin>=protection_threshold)&unique&valid
     m=topval-p0;d=pg.gather(1,top[:,None])-pg
     negative=(d<0)&(m>0)
     boundary=torch.where(negative,m/(m-d).clamp_min(torch.finfo(p0.dtype).tiny),torch.full_like(m,float('inf'))).amin(-1)
     safe=torch.nextafter(boundary,torch.zeros_like(boundary)).clamp_max(1.)
-    actions=[];alphas=[];reasons=[]
+    actions=[];alphas=[];reasons=[];predictions=[]
     for requested in ALPHAS:
         actual=p0.new_full((n,),requested)
         actual=torch.where(~valid|~unique,0.,actual)
@@ -59,16 +65,23 @@ def realize_actions(log0,logg,*,protection_threshold,valid=None):
         mix=mix_log_probs(log0,logg,actual)
         reason=torch.zeros(n,dtype=torch.long,device=p0.device)
         reason[protected&(actual<requested)]=1;reason[~unique]=2;reason[~valid]=3
+        mix=torch.where((actual==0)[:,None],log0,mix)
+        # Normalization may erase a tiny unique logit gap. Endpoint decisions
+        # remain the original experts' decisions, including their tie policy.
+        prediction=torch.where(actual==0,raw_top,torch.where(actual==1,expert_top,mix.argmax(-1)))
         actions.append(mix);alphas.append(actual);reasons.append(reason)
+        predictions.append(prediction)
     return dict(log_probabilities=torch.stack(actions,1),alpha=torch.stack(alphas,1),
-                protected=protected,reason=torch.stack(reasons,1),requested_alpha=p0.new_tensor(ALPHAS))
+                predictions=torch.stack(predictions,1),protected=protected,reason=torch.stack(reasons,1),requested_alpha=p0.new_tensor(ALPHAS))
 
 
-def action_utilities(action_log_probs,labels,baseline_predictions,lambda_h=2.):
+def action_utilities(action_log_probs,labels,baseline_predictions,lambda_h=2.,*,predictions=None):
     if action_log_probs.ndim!=3 or action_log_probs.shape[1]!=len(ALPHAS) or not math.isfinite(lambda_h) or lambda_h<1:
         raise ValueError('invalid realized actions/utility cost')
     if labels.shape!=(len(action_log_probs),) or baseline_predictions.shape!=labels.shape:raise ValueError('utility label shape mismatch')
-    correct=action_log_probs.argmax(-1).eq(labels[:,None]);base=baseline_predictions.eq(labels)[:,None]
+    predictions=action_log_probs.argmax(-1) if predictions is None else predictions
+    if predictions.shape!=action_log_probs.shape[:2] or predictions.dtype!=torch.long or (predictions<0).any() or (predictions>=action_log_probs.shape[-1]).any():raise ValueError('invalid action predictions')
+    correct=predictions.eq(labels[:,None]);base=baseline_predictions.eq(labels)[:,None]
     utility=(correct&~base).double()-lambda_h*(~correct&base).double()
     if utility[:,0].abs().any():raise ValueError('zero action must be the actual baseline')
     return utility.detach()

@@ -2,7 +2,7 @@
 
 日期：2026-09-11。来源：[用户设计报告全文](core90_anchored_geometry_design_source_20260911.md)；实施说明：[设计实现计划](core90_anchored_geometry_implementation_plan_20260911.md)。代码基线`7fd06087`。
 
-本表已按再次审查修订：36项`verified`、6项`implemented`但存在已复现缺口、6项`deferred`，0项`pending`/`blocked`/`rejected`。缺口涉及R19/R25/R31/R39/R41/R42，详见[复查报告](core90_anchored_geometry_recheck_20260911.md)。此前57项测试通过不构成完整设计符合性证明；当前不再维持全量验收通过结论。科学收益与独立确认仍未完成。
+本表已按修复与再审查更新：42项`verified`、6项`deferred`，0项`implemented`/`pending`/`blocked`/`rejected`。上一轮R19/R25/R31/R39/R41/R42缺口及新增两处边界问题均已修复，77项相关测试通过，独立审查无剩余发现。详见[修复与再审查报告](core90_anchored_geometry_fix_review_20260911.md)。验证范围是适用设计实现，不表示正式source收益或独立确认已经完成。
 
 `deferred`均有报告规定的分阶段原因；不因缺少后续实验数据阻止当前source主线实现。source章节编号来自原报告，所列文件均相对当前隔离Git承载面。
 
@@ -26,19 +26,19 @@
 |R16|3.5|预算与收敛分开|`anchored_fit.py`，T3|verified|固定上限、稳定窗口、converged/budget_exhausted输出|只用source内部诊断|
 |R17|3.4|五折source RX头部OOF|`anchored_crossfit.py`，T4|verified|fit/heldout RX与physical集合互斥|骨干见过所有source RX|
 |R18|3.1、3.4、10.3|门控训练/评估诚实隔离|`anchored_crossfit.py`，T4|verified|嵌套外5/内4折；预处理/阈值也隔离|设计必要展开，不用OOF门控训练集自评|
-|R19|3.4–3.5|最终5RX重拟合与预算冻结|`anchored_crossfit.py`，T4|implemented|final专家来源、预算、seed；3RX训练集合去重|head seed不等于backbone seed|
+|R19|3.4–3.5|最终5RX重拟合与预算冻结|`anchored_crossfit.py`，T4|verified|final专家来源、预算、seed；3RX训练集合去重|head seed不等于backbone seed|
 |R20|5.1|先固定概率混合5动作|`anchored_fusion.py`，T5|verified|alpha端点、概率归一化、全动作审计|不是独立似然乘积|
 |R21|5.2|监督实际混合的rescue/harm|`anchored_fusion.py`，T5|verified|三类示例混合选第三种决定|不能只判两专家谁正确|
 |R22|5.2–5.3|小共享utility门控|`anchored_fusion.py`，T5|verified|成本敏感utility、类别置换、输入禁用字段|lambda_H=2为计划起点|
 |R23|5.3|不足收益时回alpha0、专家detach|`anchored_fusion.py`，T5|verified|全非正utility回退、并列小动作优先、无专家梯度|低quality不自动采用G|
 |R24|5.4|可计算H0保护边界|`anchored_fusion.py`，T5|verified|每类边界、严格不等式、浮点/并列、实际argmax|保护H0决定不保证其正确|
-|R25|5.2、5.4–5.5|utility动作与部署动作一致|`realize_actions()`，T5|implemented|保护裁剪后的概率用于训练label和推理|不以原alpha训练再部署降档|
+|R25|5.2、5.4–5.5|utility动作与部署动作一致|`realize_actions()`，T5|verified|保护裁剪后的概率用于训练label和推理|不以原alpha训练再部署降档|
 |R26|5.5|固定内部尺度后校准最终输出|`anchored_calibration.py`，T6|verified|冻结后禁止改T0/TG/专家；正TF不改唯一argmax|V不训练门控|
 |R27|5.5、10.1|所有候选匹配最终校准|`anchored_calibration.py`，T6|verified|同V、同physical权重、同TF约束|H0/cosine/G/fusion都覆盖|
 |R28|10.3|部署选择与置信排序分开|`anchored_calibration.py`、reporting，T6/T9|verified|实际覆盖/ties/有效准确率、两条曲线单独输出|target阈值不回写|
 |R29|2.1、8|严格冻结骨干与alpha0回原H0|`anchored_pipeline.py`，T7|verified|前后state相等、alpha0直接锚点、导出重载|共享骨干改动不允许继续称严格回退|
 |R30|3.1–3.2、10.3|缓存、训练态与部署态分离|`anchored_pipeline.py`，T7|verified|禁止cache/label/RX/ID/数据路径；stage声明|不自动授予Phase2运行权限|
-|R31|10.1、10.3|独立source协调器与候选冻结|新CLI/config，T7|implemented|字段全消费、存在输出拒绝、阶段不隐式target|不复用旧自动预测全链|
+|R31|10.1、10.3|独立source协调器与候选冻结|新CLI/config，T7|verified|字段全消费、存在输出拒绝、阶段不隐式target|不复用旧自动预测全链|
 |R32|10.3、项目协议|预测只读、逐样本全类竞争|`anchored_pipeline.py`，T7|verified|query批次/顺序不变、无参数/统计更新、truth分离|实现能力不等于确认数据已经可用|
 |R33|6.1|固定坐标尺度与观测语义|`partial_evidence_fit.py`，T8|verified|mask不改保留坐标；命名块schema|IQ缺失不冒充joint局部mask|
 |R34|6.2、4.3|简化E分阶段拟合共享协方差|`partial_evidence_fit.py`，T8|verified|无state/support/class covariance；观测模型单独拟合|不继续堆联合density总loss|
@@ -46,10 +46,10 @@
 |R36|6.3|可靠性与新增身份价值分开|`pairwise_evidence.py`＋reporting，T8|verified|Schur/J全部类对；对应source跨RX风险|诊断不替代实验，不伪造Bayes去重|
 |R37|6.4|pattern而非只按维数校准|`mask_pattern_calibration.py`，T8|verified|相同维数不同模式、匹配V视图、physical支持计数|旧v1状态不静默重解释|
 |R38|6.4|未知模式defer/缺失不等于unknown|`mask_pattern_calibration.py`，T8|verified|未覆盖/少支持/全缺失；正确拒绝计错|首版不放行粗组fallback|
-|R39|10.1|A0–A6/P1及匹配普通角度对照|config/CLI/report，T9|implemented|矩阵ID和开关一一对应；端点复用不重复训练|C_angle与A1不同|
+|R39|10.1|A0–A6/P1及匹配普通角度对照|config/CLI/report，T9|verified|矩阵ID和开关一一对应；端点复用不重复训练|C_angle与A1不同|
 |R40|9.3、10.2|成本拆分和所有类流量诊断|reporting/profile，T9|verified|各阶段计时/显存；所有类precision/recall/流入错误|不对历史类3设置专属规则|
-|R41|10.2|六类指定报告文件和必要补充|reporting，T9|implemented|计数/分组/梯度/geometry/cache/协议完整|全部实际预算和缺项如实记录|
-|R42|10.3|净收益→分组/seed→等覆盖→成本判定|report，T9|implemented|完整source输出与分层verdict|单head seed或0.1pp不自动晋级|
+|R41|10.2|六类指定报告文件和必要补充|reporting，T9|verified|计数/分组/梯度/geometry/cache/协议完整|全部实际预算和缺项如实记录|
+|R42|10.3|净收益→分组/seed→等覆盖→成本判定|report，T9|verified|完整source输出与分层verdict|单head seed或0.1pp不自动晋级|
 |R43|2.3|有限类别方向修正|计划第8节|deferred|以后检查共同角度上限与M/W分开消融|先证明共享M有效|
 |R44|7.1|共享响应→类响应，均值/协方差分开|计划第8节，未来conditional响应扩展|deferred|source跨RX收益、RX/TX关联、均值-only/cov-only|首轮G/E均不加入|
 |R45|7.1、9.2|相关状态误差残差与低秩传播|计划第8节|deferred|配对delta残差偏置/方向/协方差；JL_e低秩|不默认z/e误差独立|
@@ -63,4 +63,7 @@
 - 五项实施补充已显式标为计划决定：eps边界、嵌套门控评价、保护后动作utility、具体默认预算/超参、source-only默认协调器。
 - 最高实现风险：margin、温度、保护裁剪或OOF处理导致utility与部署实际动作不一致。
 - 最高科学风险：把已观察target启发的开发研究当作新的干净确认。
-- 本次逐条状态由代码、直接测试和真实H0技术证据支持；涉及source收益的条目仅验证计算/报告能力，不虚构未运行的矩阵结果。57项测试记录见验收报告；三个P1接线问题及一个P2数值回退问题均已修复并定点复核。
+- 本次逐条状态由代码、直接测试和真实H0技术证据支持；涉及source收益的条目仅验证计算/报告能力，不虚构未运行的矩阵结果。当前77项测试记录及本轮全部缺口闭环见修复与再审查报告；旧验收与复查产物保留历史。
+## 2026-09-11复审问题修复完成
+
+本次授权修复F1–F4：R19/R31/R39接通OOF最终专家到校准/导出；R25统一原始logits动作入口；R41/R42接通三seed汇总并验证完整唯一的RX/TX/day分组。上述项已通过针对性验证及独立审查，状态为verified；未更改科学参数，未启动正式矩阵。

@@ -90,7 +90,10 @@ def run_stage(args,config):
     architecture=payload['baseline_args']
     if stage=='oof':
         if args.candidate not in {'A2','A3','A4','C_angle','C_angle_keep'}:raise ValueError('OOF stage requires trainable expert')
-        run_expert_oof(rows,cfg,args.seed,output,**kwargs)
+        oof=run_expert_oof(rows,cfg,args.seed,output,**kwargs)
+        system=FrozenAnchoredSystem(anchor,oof.final_expert.state,fixed_action=4,protection_threshold=1.,
+                                    architecture=architecture,class_labels=contract.get('tx_mapping'),mode='expert')
+        _save_system(system,output/'system_state.pt')
     elif stage=='fit':
         if args.candidate=='P1':
             from .partial_evidence_fit import fit_partial_evidence
@@ -129,7 +132,9 @@ def run_stage(args,config):
                 _stage_report(output,args,config,'NOT_ACTIVATED_NO_SOURCE_UTILITY');return
             nested=run_nested_fusion_audit(rows,oof,cfg,args.seed,output/'nested',**kwargs,**f)
             nested_metrics=nested_reports(rows,nested,output)
-            save_json(output/'source_promotion.json',assess_source_promotion({args.seed:nested_metrics}))
+            save_json(output/'source_promotion.json',assess_source_promotion({args.seed:nested_metrics},
+                required_seeds=config['head_seeds'],required_rx=config['source_receivers'],
+                required_tx=range(anchor.class_count),required_days=config['source_days']))
             system=FrozenAnchoredSystem(anchor,oof.final_expert.state,gate_state=nested['final_gate_state'],
                                         protection_threshold=nested['final_protection_threshold'],architecture=architecture,class_labels=contract.get('tx_mapping'))
             save_json(output/'activation.json',dict(status='SOURCE_NESTED_EVALUATED',promotion='requires all RX/TX/clean and three-seed assessment; not automatic'))
@@ -207,7 +212,7 @@ def _verify_anchor(system,anchor):
 def _verify_stage_input(args,config,identity):
     """Use the existing stage manifest; never relabel an input as another arm."""
     manifest=json.loads((Path(args.input).parent/'protocol_manifest.json').read_text(encoding='utf-8'))
-    allowed={'calibrate':{'fit','fuse'},'export':{'calibrate'},'profile':{'calibrate','export'}}
+    allowed={'calibrate':{'fit','oof','fuse'},'export':{'calibrate'},'profile':{'calibrate','export'}}
     if manifest.get('stage') not in allowed[args.stage] or manifest.get('candidate')!=args.candidate or manifest.get('head_seed')!=args.seed:
         raise ValueError('input stage/candidate/head seed mismatch')
     old=manifest.get('cache_identity',{})

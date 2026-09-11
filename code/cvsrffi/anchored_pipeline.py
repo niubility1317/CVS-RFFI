@@ -114,18 +114,21 @@ class FrozenAnchoredSystem:
         p0=s0.double().log_softmax(-1)
         if self.mode=='expert':
             logp=sg.cpu().double().log_softmax(-1);choice=torch.full((n,),4,dtype=torch.long)
+            decision=sg.cpu().argmax(-1)
             alpha=torch.ones(n,dtype=torch.double);reason=torch.zeros(n,dtype=torch.long)
         elif self.gate is None and self.fixed_action==0:
             # Exact original H0 decision, no alternate readout on the fallback.
             logp=p0;choice=torch.zeros(n,dtype=torch.long);alpha=torch.zeros(n,dtype=torch.double);reason=torch.zeros(n,dtype=torch.long)
+            decision=s0.argmax(-1)
         else:
-            sg=sg.cpu();actions=realize_actions(p0,sg.double().log_softmax(-1),protection_threshold=self.protection_threshold,valid=valid)
+            sg=sg.cpu();actions=realize_actions(s0,sg,protection_threshold=self.protection_threshold,valid=valid)
             safe_sg=torch.where(torch.isfinite(sg).all(-1)[:,None],sg,s0)
             choice=(self.gate.choose(utility_features(s0,safe_sg,quality,torch.ones(n)))['action'] if self.gate is not None else torch.full((n,),self.fixed_action,dtype=torch.long))
             index=torch.arange(n);logp=actions['log_probabilities'][index,choice]
             alpha=actions['alpha'][index,choice];reason=actions['reason'][index,choice]
-        result=(self.calibrator.predict(logp,system_identity=self.identity) if self.calibrator is not None else
-                dict(log_probabilities=logp,probabilities=logp.exp(),confidence=logp.exp().amax(-1),accepted=valid.clone(),top_class=logp.argmax(-1)))
+            decision=actions['predictions'][index,choice]
+        result=(self.calibrator.predict(logp,system_identity=self.identity,decision=decision) if self.calibrator is not None else
+                dict(log_probabilities=logp,probabilities=logp.exp(),confidence=logp.exp().amax(-1),accepted=valid.clone(),top_class=decision))
         result['accepted']&=valid
         result.update(action=choice,realized_alpha=alpha,protection_reason=reason,baseline_top_class=s0.argmax(-1))
         result['predicted_labels']=[self.class_labels[i] for i in result['top_class'].tolist()]

@@ -1,0 +1,33 @@
+{
+  "status": "VERIFIED",
+  "tests": {
+    "name": "pytest",
+    "errors": "0",
+    "failures": "0",
+    "skipped": "0",
+    "tests": "77",
+    "time": "39.992",
+    "timestamp": "2026-09-11T18:13:30.652285+08:00",
+    "hostname": "DESKTOP-8RI2J69"
+  },
+  "traceability": {
+    "verified": 42,
+    "implemented": 0,
+    "deferred": 6,
+    "pending": 0,
+    "blocked": 0,
+    "rejected": 0
+  },
+  "mirrored_files": [
+    "analysis\\core90_anchored_geometry_implementation_plan_20260911.md",
+    "analysis\\core90_anchored_geometry_acceptance_20260911.md",
+    "analysis\\core90_anchored_geometry_traceability.md",
+    "analysis\\core90_anchored_geometry_recheck_20260911.md",
+    "analysis\\core90_anchored_geometry_fix_review_20260911.md",
+    "analysis\\core90_anchored_fix_evidence_20260911\\acceptance_tests.xml",
+    "analysis\\core90_anchored_fix_evidence_20260911\\final_tests.xml",
+    "analysis\\core90_anchored_fix_evidence_20260911\\review_followup_tests.xml"
+  ],
+  "new_report_links": 7,
+  "utf8": true
+}

@@ -80,9 +80,9 @@ def run_expert_oof(cache,config,seed,output,*,w0,tau0,device='cpu',fit_fn=fit_ex
 def _gate_training(rows,sg,lambda_h,ridge,utility_margin,quantile):
     s0=rows.baseline_inference_logits.cpu();sg=sg.cpu()
     threshold=protection_quantile(s0,quantile)
-    actions=realize_actions(s0.log_softmax(-1),sg.log_softmax(-1),protection_threshold=threshold,valid=rows.valid.cpu())
+    actions=realize_actions(s0,sg,protection_threshold=threshold,valid=rows.valid.cpu())
     phi=utility_features(s0,sg,rows.quality.cpu(),rows.observed.float().mean(-1).cpu())
-    u=action_utilities(actions['log_probabilities'],rows.labels.cpu(),s0.argmax(-1),lambda_h)
+    u=action_utilities(actions['log_probabilities'],rows.labels.cpu(),s0.argmax(-1),lambda_h,predictions=actions['predictions'])
     weights=paired_weights(rows,True).cpu()
     gate=UtilityGate(ridge,utility_margin).fit(phi,u,weights=weights)
     # Physical-weighted actual utility, tie breaks toward smaller action.
@@ -98,13 +98,13 @@ def outer_fixed_actions(cache,oof,protection_q=.9):
     """
     n,c=oof.scores.shape
     result=dict(log_probabilities=torch.empty(n,5,c,dtype=torch.double),alpha=torch.empty(n,5,dtype=torch.double),
-                reason=torch.empty(n,5,dtype=torch.long),protected=torch.empty(n,dtype=torch.bool),requested_alpha=torch.tensor(ALPHAS,dtype=torch.double))
+                reason=torch.empty(n,5,dtype=torch.long),predictions=torch.empty(n,5,dtype=torch.long),protected=torch.empty(n,dtype=torch.bool),requested_alpha=torch.tensor(ALPHAS,dtype=torch.double))
     audit=[]
     for fold in oof.folds:
         train=torch.where(cache.receiver!=fold.heldout_rx)[0];held=torch.where(cache.receiver==fold.heldout_rx)[0]
         threshold=protection_quantile(cache.baseline_inference_logits[train],protection_q)
         actual=realize_actions(cache.baseline_inference_logits[held],oof.scores[held],protection_threshold=threshold,valid=cache.valid[held])
-        for key in ('log_probabilities','alpha','reason','protected'):result[key][held]=actual[key]
+        for key in ('log_probabilities','alpha','reason','protected','predictions'):result[key][held]=actual[key]
         audit.append(dict(heldout_rx=fold.heldout_rx,protection_train_rx=list(fold.train_rx),threshold=threshold))
     return result,audit
 
@@ -118,7 +118,8 @@ def run_nested_fusion_audit(cache,oof,config,seed,output,*,w0,tau0,lambda_h=2.,r
     output=Path(output);output.mkdir(parents=True,exist_ok=False)
     fitted=dict(oof.experts);selected=torch.zeros(len(cache),dtype=torch.long)
     mixture=torch.empty((len(cache),cache.baseline_inference_logits.shape[1]),dtype=torch.double)
-    fixed_mixture=torch.empty_like(mixture);audits=[];all_rx=tuple(sorted(set(cache.receiver.tolist())))
+    fixed_mixture=torch.empty_like(mixture);decisions=torch.empty(len(cache),dtype=torch.long);fixed_decisions=torch.empty_like(decisions)
+    audits=[];all_rx=tuple(sorted(set(cache.receiver.tolist())))
     for fold in oof.folds:
         inner_indices=torch.where(cache.receiver.cpu()!=fold.heldout_rx)[0];inner=cache.take(inner_indices)
         inner_scores=torch.empty_like(inner.baseline_inference_logits);seen=torch.zeros(len(inner),dtype=torch.bool)
@@ -133,16 +134,19 @@ def run_nested_fusion_audit(cache,oof,config,seed,output,*,w0,tau0,lambda_h=2.,r
         held_indices=torch.where(cache.receiver.cpu()==fold.heldout_rx)[0];held_rows=cache.take(held_indices)
         s0=held_rows.baseline_inference_logits.cpu();sg=oof.scores[held_indices]
         phi=utility_features(s0,sg,held_rows.quality.cpu(),held_rows.observed.float().mean(-1).cpu())
-        actions=realize_actions(s0.log_softmax(-1),sg.log_softmax(-1),protection_threshold=threshold,valid=held_rows.valid.cpu())
+        actions=realize_actions(s0,sg,protection_threshold=threshold,valid=held_rows.valid.cpu())
         choice=gate.choose(phi)['action'];selected[held_indices]=choice
         mixture[held_indices]=actions['log_probabilities'][torch.arange(len(choice)),choice]
         fixed_mixture[held_indices]=actions['log_probabilities'][:,fixed]
+        decisions[held_indices]=actions['predictions'][torch.arange(len(choice)),choice]
+        fixed_decisions[held_indices]=actions['predictions'][:,fixed]
         audits.append(dict(heldout_rx=fold.heldout_rx,expert_train_rx=list(fold.train_rx),gate_train_rx=list(fold.train_rx),
                            gate_train_physical_ids=list(fold.train_physical_ids),predict_physical_ids=list(fold.predict_physical_ids),
                            protection_threshold=threshold,inner_fixed_action=fixed,inner_action_utilities=means.tolist()))
     gate,threshold,fixed,means,final_actions=_gate_training(cache,oof.scores,lambda_h,ridge,utility_margin,protection_q)
     result=dict(schema='nested_head_only_gate_audit_v1',folds=audits,selected_actions=selected,
                 nested_log_probabilities=mixture,nested_fixed_log_probabilities=fixed_mixture,
+                nested_predictions=decisions,nested_fixed_predictions=fixed_decisions,
                 final_gate_state=gate.state_dict(),final_protection_threshold=threshold,final_fixed_action=fixed,
                 final_oof_action_utilities=means,training_set_count=len(fitted),
                 interpretation='Head-only RX holdout; frozen H0 backbone saw all source RX; final gate OOF is its training data.')
