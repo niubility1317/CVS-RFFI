@@ -1,0 +1,80 @@
+{
+  "boundary_rows": 10000,
+  "training_deployment_argmax_mismatches": 3600,
+  "example": {
+    "s0": [
+      2.3246395587921143,
+      0.6250216364860535,
+      -0.42559346556663513,
+      -0.35049644112586975,
+      0.24510030448436737,
+      0.12681417167186737
+    ],
+    "sG": [
+      0.5189337134361267,
+      1.7220417261123657,
+      -3.257131338119507,
+      -3.562248945236206,
+      -3.1975040435791016,
+      -2.98956036567688
+    ],
+    "train_prediction": 0,
+    "deploy_prediction": 1,
+    "train_prob": [
+      0.43525560518859596,
+      0.43525560099533583,
+      0.023185166935342418,
+      0.02411052245801342,
+      0.043025541736739836,
+      0.03916756268597263
+    ],
+    "deploy_prob": [
+      0.4352555977707533,
+      0.4352555978521553,
+      0.02318516664239215,
+      0.02411052585360058,
+      0.04302554523182005,
+      0.03916756664927851
+    ]
+  },
+  "oof_to_calibrate_error": "input stage/candidate/head seed mismatch",
+  "singleton_seed_assessment": {
+    "status": "PENDING_ALL_HEAD_SEEDS",
+    "passed": false,
+    "available_seeds": [
+      392005
+    ]
+  },
+  "missing_five_TX_assessment": {
+    "status": "SOURCE_DEVELOPMENT_SUPPORTED",
+    "passed": true,
+    "seeds": [
+      {
+        "head_seed": 392005,
+        "passed": true,
+        "group_counts": {
+          "RX": 5,
+          "TX": 1
+        }
+      },
+      {
+        "head_seed": 392006,
+        "passed": true,
+        "group_counts": {
+          "RX": 5,
+          "TX": 1
+        }
+      },
+      {
+        "head_seed": 392007,
+        "passed": true,
+        "group_counts": {
+          "RX": 5,
+          "TX": 1
+        }
+      }
+    ],
+    "confirmation": false,
+    "backbone_seed_replications": 1
+  }
+}

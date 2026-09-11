@@ -1,5 +1,7 @@
 # CORE90锚定角度几何：实现与确认验收
 
+> 后续复查更新：已发现2项P1、2项P2，下面保留的全量通过结论不再代表当前状态。此前测试通过事实保留，当前缺口及机制开启证据以[再次审查报告](core90_anchored_geometry_recheck_20260911.md)和修订追踪表为准。生产代码尚未修复这些新增问题。
+
 日期：2026-09-11。结论：**IMPLEMENTATION_VERIFIED**。本次完成设计实现计划T1–T9适用代码及技术验收；R01–R42为实现验证通过，R43–R48仍按计划延期。**没有完成正式source矩阵，也没有独立确认结果。**
 
 依据：[设计实现计划](core90_anchored_geometry_implementation_plan_20260911.md)、[用户设计报告全文](core90_anchored_geometry_design_source_20260911.md)、[逐项追踪表](core90_anchored_geometry_traceability.md)。起始提交`d72a5bc083f4ef320fa2ce7d8f3ab0cb9b5ddc57`；隔离Git承载面为`E:/type10-7/code/snapshots/core90_evidence_20260911_wt`，分支`codex/core90-evidence-head-20260911`。既有H0/H1–H4生产入口与既有结果未改写。
