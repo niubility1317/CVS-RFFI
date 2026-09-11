@@ -64,7 +64,8 @@ def main(argv=None):
     parser.add_argument('--run-root', required=True)
     parser.add_argument('--output-dir', required=True)
     parser.add_argument('--device', default='cuda:0')
-    parser.add_argument('--rows', nargs='+', choices=ROWS+('B8',), default=list(ROWS))
+    parser.add_argument('--rows', nargs='+', choices=ROWS+('B8','B3_head_scale','B3_adv_low',
+        'B3_adv_high','B4','B4_fixedk','B5','S2','S2_random','C3'), default=list(ROWS))
     opts = parser.parse_args(argv)
     rows = tuple(opts.rows)
     if len(set(rows)) != len(rows): raise ValueError('Duplicate requested row')
