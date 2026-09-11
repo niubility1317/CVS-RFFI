@@ -207,6 +207,7 @@ def fit_expert(cache,train_rx,config,seed,output,*,w0,tau0,validation_rx=(),devi
                     **{k:v/epoch_physical for k,v in totals.items()},**gradstats,validation_ce=vce,
                     metric_relative_change=metric_change,a_max_change=a_change,epoch_seconds=time.perf_counter()-begin)
         history.append(record)
+        print('[ANCHORED-EPOCH] '+json.dumps(record,allow_nan=False),flush=True)
         geometry.append(dict(candidate=config.candidate,head_seed=int(seed),epoch=epoch,condition_number=diagnostic['condition_number'],
                              orthogonality_error=diagnostic['orthogonality_error'],eigenvalues=json.dumps(diagnostic['eigenvalues']),
                              direction_angles_deg=json.dumps(diagnostic['direction_angles_deg']),a=json.dumps(a),
