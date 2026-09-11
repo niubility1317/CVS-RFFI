@@ -13,6 +13,7 @@ from dataclasses import dataclass
 from typing import Dict, Optional, Tuple, Any
 
 import torch
+from torch_compat import deterministic_cumsum
 
 C = 299_792_458.0  # m/s
 MU_EARTH = 3.986004418e14  # m^3/s^2
@@ -74,15 +75,7 @@ def complex_awgn_like(y: torch.Tensor, snr_db: torch.Tensor, gen: Optional[torch
 
 def wiener_phase_noise(B: int, T: int, sigma_rad: torch.Tensor, device, dtype, gen: Optional[torch.Generator]=None) -> torch.Tensor:
     inc = torch.randn((B, T), device=device, dtype=dtype, generator=gen) * sigma_rad.unsqueeze(1)
-    try:
-        phi = torch.cumsum(inc, dim=1)
-    except RuntimeError as exc:
-        # PyTorch 2.1 CUDA lacks deterministic cumsum. Keep the same sampled
-        # increments and RNG stream; perform only this prefix sum on CPU.
-        if not (inc.is_cuda and torch.are_deterministic_algorithms_enabled()
-                and 'cumsum_cuda_kernel does not have a deterministic implementation' in str(exc)):
-            raise
-        phi = torch.cumsum(inc.cpu(), dim=1).to(inc.device)
+    phi = deterministic_cumsum(inc, dim=1)
     return torch.exp(1j * phi)
 
 def apply_iq_imbalance(y: torch.Tensor, amp_db: torch.Tensor, phase_deg: torch.Tensor) -> torch.Tensor:

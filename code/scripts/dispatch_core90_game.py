@@ -26,7 +26,7 @@ def scratch_checkpoint_smoke(row,release,output,gpu):
     from cvsrffi.game_tracking.step_context import prepare_context,Core90Objective
     from cvsrffi.game_tracking.legacy.losses import PrototypeMemoryBank
     from cvsrffi.game_tracking.legacy.options import _loss_weights
-    from cvsrffi.schedule import build_stage_state
+    from cvsrffi.schedule import build_stage_state,build_aug_base_cfg,make_augmentor,configure_augmentor_for_epoch
     from cvsrffi.game_tracking.data import build_source
     args=parse_args(['--game_config_json',row['config_path'],'--output_dir',str(output),'--device','cuda:0'])
     backend=configure_determinism(args)
@@ -50,10 +50,14 @@ def scratch_checkpoint_smoke(row,release,output,gpu):
     proto=PrototypeMemoryBank(args.num_classes,len(source.domains));proto._lazy_init(160,torch.device('cuda:0'),torch.float32)
     teacher=deepcopy(model).eval();teacher.requires_grad_(False)
     ub=next(iter(source.loader('unlabeled',2)))
+    aug_cfg=build_aug_base_cfg(args) if args.use_aug else None
+    augmentor=make_augmentor(aug_cfg) if aug_cfg else None
+    if augmentor is not None and hasattr(augmentor,'to'):augmentor=augmentor.to('cuda:0')
     stages=[]
     for epoch in (1,80,131):
+        if augmentor is not None:configure_augmentor_for_epoch(augmentor,aug_cfg,min(epoch,args.label_epochs),args)
         for mode,impl in (('simultaneous','reference'),('head_lookahead','head_grad_only'),('extragradient','reference')):
-            ctx=prepare_context((x,y,d,meta),ub if epoch>=131 else None,model,teacher,args,epoch,1,_loss_weights(args,build_stage_state(epoch,args)),torch.Generator(device='cuda:0').manual_seed(args.seed))
+            ctx=prepare_context((x,y,d,meta),ub if epoch>=131 else None,model,teacher,args,epoch,1,_loss_weights(args,build_stage_state(epoch,args)),torch.Generator(device='cuda:0').manual_seed(args.seed),augmentor)
             solver=GameSolver(model,optimizer,mode,scaler=scaler,max_grad_norm=args.game_max_grad_norm,b8_impl=impl)
             result=solver.step(lambda:Core90Objective(model,args,proto)(ctx))
             if not result.accepted: raise RuntimeError(f'Source optimizer smoke failed: E{epoch} {mode}')

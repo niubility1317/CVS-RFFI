@@ -32,6 +32,7 @@ from dataclasses import dataclass
 from typing import Optional, Tuple, Dict, Any
 
 import torch
+from torch_compat import deterministic_cumsum
 import torch.nn.functional as F
 
 
@@ -126,7 +127,7 @@ def _apply_phase_noise(z: torch.Tensor, sigma_step: torch.Tensor) -> torch.Tenso
     # Wiener phase noise: phi[n] = phi[n-1] + e[n], e~N(0, sigma_step^2)
     B, L = z.shape
     e = torch.randn(B, L, device=z.device, dtype=z.real.dtype) * sigma_step  # [B,L]
-    phi = torch.cumsum(e, dim=1)
+    phi = deterministic_cumsum(e, dim=1)
     rot = torch.complex(torch.cos(phi), torch.sin(phi))
     return z * rot
 
@@ -586,7 +587,7 @@ class RFFIAugmentor:
         dz2 = dz * scale
         y = torch.zeros_like(z)
         y[:, 0] = z[:, 0]
-        y[:, 1:] = z[:, 0:1] + torch.cumsum(dz2, dim=1)
+        y[:, 1:] = z[:, 0:1] + deterministic_cumsum(dz2, dim=1)
         return y
 
     def simulate_dac(

@@ -7,16 +7,16 @@
 - 矩阵：V2_A-F×392005/392006/392007共18行，加392005的3个ordinary source LR候选，共21行。A/B为ordinary，C/D为head-only lookahead D1，E/F为完整EG；每对lambda_adv=0/.35。全部E200、FP32、确定性计算、固定课程、no-audit、control=off；这些关闭项是F1对照设计。strong候选LR=1e-4/2e-4/4e-4，完成后按预定四source场景平均macro-F1选一次，同分取低LR；本次不自动追加确认实验。
 - 权限：source-only开发。固定split_seed=392002，沿用既有数据划分和物理角色，不改变数据schema。不访问target prediction/truth；训练末尾仅生成source四场景预测与评分。固定final E200，不按target或历史分数选checkpoint。
 - 初始化：21行全部from_scratch=true，baseline_ckpt和game_resume为空。无teacher/EMA外部继承；EMA由本run fresh model复制。启动smoke仅对当场随机初始化状态save/load，不加载历史checkpoint。
-- 本地基线修复：7b1b64cd；实际发布commit为包含本报告和code/configs/core90_game_v2_20260911_r2的Git提交，部署时记录完整OID。
+- 本地基线修复：7b1b64cd；实际发布commit为包含本报告和code/configs/core90_game_v2_20260911_r3的Git提交，部署时记录完整OID。
 - 发布修复：smoke在CUDA初始化前配置确定性；使用实际双参数组AdamW，验证E1/E80/E131及ordinary/D1/EG九次有限更新，E131读取U_s；调度CLI拒绝每卡>2，损坏completion归入技术失败。smoke只验证执行兼容性，不证明训练效果或自然伪标签非零。
 - 本地验证：21个持久化JSON重新parse通过；16项矩阵/容量聚焦测试通过。独立P0/P1发布审查通过，限定这21行及每卡2进程；先前76项复审回归、B8的18个长轨迹端点证据继续有效。
 - 环境：N607/dell-DSS8440，用户szu2070436088，Python=/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python，PyTorch2.1.0+cu121。2026-09-11直连preflight VERIFIED；/home剩余7.1T。
 - 数据：/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl，已读回存在。
-- release/CWD：/home/szu2070436088/2510044040/CV-SincNet/releases/core90_game_v2_20260911_r2。
-- run root：/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_v2_20260911_r2。
-- logs/status：/home/szu2070436088/2510044040/CV-SincNet/logs/core90_game_v2_20260911_r2/queue_status.json及同目录各row.stdout.log。
+- release/CWD：/home/szu2070436088/2510044040/CV-SincNet/releases/core90_game_v2_20260911_r3。
+- run root：/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_v2_20260911_r3。
+- logs/status：/home/szu2070436088/2510044040/CV-SincNet/logs/core90_game_v2_20260911_r3/queue_status.json及同目录各row.stdout.log。
 - 唯一launch owner：本任务/root。全服务器GPU现存计算PID计入容量，每卡最多2个训练进程；健康任务保留。
-- 精确命令（由本地Git归档落地后在release执行）：`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u code/scripts/dispatch_core90_game.py --matrix code/configs/core90_game_v2_20260911_r2/matrix.json --release /home/szu2070436088/2510044040/CV-SincNet/releases/core90_game_v2_20260911_r2 --status /home/szu2070436088/2510044040/CV-SincNet/logs/core90_game_v2_20260911_r2/queue_status.json --max-processes-per-gpu 2`。
+- 精确命令（由本地Git归档落地后在release执行）：`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u code/scripts/dispatch_core90_game.py --matrix code/configs/core90_game_v2_20260911_r3/matrix.json --release /home/szu2070436088/2510044040/CV-SincNet/releases/core90_game_v2_20260911_r3 --status /home/szu2070436088/2510044040/CV-SincNet/logs/core90_game_v2_20260911_r3/queue_status.json --max-processes-per-gpu 2`。
 - 技术停止：两个pre-prediction失败停止新派发，保留pending和产物，等待健康active完成；无自动重试，无性能停机。协议/路径/输出碰撞或启动层故障立即停止派发并核实；不干预其他run。
 - 预期artifact：resolved_config.json、backend_configuration.json、全epoch日志、final checkpoint、source_final_eval/source_prediction_manifest.json、四source场景scores及completion.json。仅exit0且SOURCE_ARTIFACTS_COMPLETE判该row完成。
 - 科学判定：比较配对seed的solver×adv效应，同时报告实际field/head次数及wall time；3个source LR候选尚未构成已确认强基线。F2/F3需要新source donor证据，本次不扩展。现有probe TRANSFER_FAILURE保持失败事实，不将关闭的自适应控制标成激活。
@@ -27,4 +27,4 @@ LOCAL_VERIFIED。远端归档、编译、smoke和启动后读回待执行；不�
 
 Recovery: CPU prefix-sum fallback only for exact deterministic CUDA cumsum error. Same sampled increments, RNG stream and channel formula; deterministic flag retained. Local reproduced RED then 2 regression and 4 capacity tests PASS. All 21 configs differ from r1 only in output and config paths. No historical checkpoint used.
 
-FAILED: Nine-step smoke PASS, but actual normal augmentation hit another CUDA cumsum call. Queue stopped after 6 pre-prediction failures, dispatcher exited, no remaining owned workers. All artifacts preserved; no performance result.
+Second-site investigation: r2 smoke omitted the normal augmentor. Audited F1 call chain and covered all three prefix-sum sites (satellite phase, normal phase, complex slew) with shared torch_compat.deterministic_cumsum. Smoke now builds and stage-configures the real augmentor. Forced-old-CUDA local regression passes actual augmentation, complex prefix sum and all nine stage/solver smoke updates; RNG and unrelated error checks also pass. No determinism relaxation, no blind restart or reuse of failed roots. F1 audit-disabled capability path is outside this release coverage.
