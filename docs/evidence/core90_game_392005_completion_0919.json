@@ -1,0 +1,171 @@
+{
+  "time": "2026-09-11 09:19 HKT",
+  "queue": {
+    "completed": 15,
+    "active": 11,
+    "pending": 0,
+    "failed": 0
+  },
+  "new_completed": [
+    {
+      "row": "J1_seed392005",
+      "completion": {
+        "status": "SOURCE_ARTIFACTS_COMPLETE",
+        "epoch": 200,
+        "step": 9800,
+        "target_evaluated": false,
+        "scientific_verdict": "SOURCE_ONLY_NO_PROMOTION"
+      },
+      "manifest": {
+        "schema": "core90_game_source_predictions_v1",
+        "complete": true,
+        "source_only": true,
+        "counts": {
+          "clean": 27000,
+          "leo_clear_weak": 27000,
+          "leo_low_elev_weak": 27000,
+          "leo_rain_weak": 27000
+        },
+        "num_classes": 6,
+        "prediction_scope": "all_registered_classes_argmax",
+        "truth_used_for_prediction": false,
+        "prediction_file_closed_before_scoring": true,
+        "augmentation_seed": 392002,
+        "synthetic": false
+      },
+      "score": {
+        "complete": true,
+        "prediction_count": 108000,
+        "scenes": [
+          "clean",
+          "leo_clear_weak",
+          "leo_low_elev_weak",
+          "leo_rain_weak"
+        ],
+        "source_only": true,
+        "synthetic": false
+      },
+      "prediction_lines_independently_counted": 108000
+    },
+    {
+      "row": "B7_seed392005",
+      "completion": {
+        "status": "SOURCE_ARTIFACTS_COMPLETE",
+        "epoch": 200,
+        "step": 9800,
+        "target_evaluated": false,
+        "scientific_verdict": "SOURCE_ONLY_NO_PROMOTION"
+      },
+      "manifest": {
+        "schema": "core90_game_source_predictions_v1",
+        "complete": true,
+        "source_only": true,
+        "counts": {
+          "clean": 27000,
+          "leo_clear_weak": 27000,
+          "leo_low_elev_weak": 27000,
+          "leo_rain_weak": 27000
+        },
+        "num_classes": 6,
+        "prediction_scope": "all_registered_classes_argmax",
+        "truth_used_for_prediction": false,
+        "prediction_file_closed_before_scoring": true,
+        "augmentation_seed": 392002,
+        "synthetic": false
+      },
+      "score": {
+        "complete": true,
+        "prediction_count": 108000,
+        "scenes": [
+          "clean",
+          "leo_clear_weak",
+          "leo_low_elev_weak",
+          "leo_rain_weak"
+        ],
+        "source_only": true,
+        "synthetic": false
+      },
+      "prediction_lines_independently_counted": 108000
+    },
+    {
+      "row": "C2_seed392005",
+      "completion": {
+        "status": "SOURCE_ARTIFACTS_COMPLETE",
+        "epoch": 200,
+        "step": 9800,
+        "target_evaluated": false,
+        "scientific_verdict": "SOURCE_ONLY_NO_PROMOTION"
+      },
+      "manifest": {
+        "schema": "core90_game_source_predictions_v1",
+        "complete": true,
+        "source_only": true,
+        "counts": {
+          "clean": 27000,
+          "leo_clear_weak": 27000,
+          "leo_low_elev_weak": 27000,
+          "leo_rain_weak": 27000
+        },
+        "num_classes": 6,
+        "prediction_scope": "all_registered_classes_argmax",
+        "truth_used_for_prediction": false,
+        "prediction_file_closed_before_scoring": true,
+        "augmentation_seed": 392002,
+        "synthetic": false
+      },
+      "score": {
+        "complete": true,
+        "prediction_count": 108000,
+        "scenes": [
+          "clean",
+          "leo_clear_weak",
+          "leo_low_elev_weak",
+          "leo_rain_weak"
+        ],
+        "source_only": true,
+        "synthetic": false
+      },
+      "prediction_lines_independently_counted": 108000
+    },
+    {
+      "row": "S4_seed392005",
+      "completion": {
+        "status": "SOURCE_ARTIFACTS_COMPLETE",
+        "epoch": 200,
+        "step": 9800,
+        "target_evaluated": false,
+        "scientific_verdict": "SOURCE_ONLY_NO_PROMOTION"
+      },
+      "manifest": {
+        "schema": "core90_game_source_predictions_v1",
+        "complete": true,
+        "source_only": true,
+        "counts": {
+          "clean": 27000,
+          "leo_clear_weak": 27000,
+          "leo_low_elev_weak": 27000,
+          "leo_rain_weak": 27000
+        },
+        "num_classes": 6,
+        "prediction_scope": "all_registered_classes_argmax",
+        "truth_used_for_prediction": false,
+        "prediction_file_closed_before_scoring": true,
+        "augmentation_seed": 392002,
+        "synthetic": false
+      },
+      "score": {
+        "complete": true,
+        "prediction_count": 108000,
+        "scenes": [
+          "clean",
+          "leo_clear_weak",
+          "leo_low_elev_weak",
+          "leo_rain_weak"
+        ],
+        "source_only": true,
+        "synthetic": false
+      },
+      "prediction_lines_independently_counted": 108000
+    }
+  ]
+}
