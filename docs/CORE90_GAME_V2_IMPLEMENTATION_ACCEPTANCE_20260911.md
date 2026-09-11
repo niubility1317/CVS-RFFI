@@ -1,5 +1,7 @@
 # CORE90博弈优化V2实施与验收记录
 
+> 后续再审查发现并修复控制/课程及静默配置遗漏，当前结论以[设计实施与机制开启再审查](CORE90_GAME_V2_DESIGN_ACTIVATION_REAUDIT_20260911.md)为补充。本文件保留此前有界验收及原始失败证据。
+
 当前授权：严格按新设计报告和实施计划实现并确认验收；不派发新的正式训练矩阵。
 
 依据：[实施计划](CORE90_GAME_V2_REPAIR_IMPLEMENTATION_PLAN_20260911.md)与[设计原文](design_refs/CORE90_GAME_V2_DESIGN_REVIEW_20260911.txt)。起点提交9ed1c49e。当前隔离工作树`code/snapshots/core90_game_20260911_wt`；保留无关未提交`report_core90_target_test.py`。

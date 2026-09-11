@@ -1,0 +1,293 @@
+{
+  "status": "VERIFIED_FOCUSED_REGRESSION",
+  "unique_passed": 76,
+  "unresolved_failures": 0,
+  "runs": [
+    {
+      "file": "config_runtime_green.xml",
+      "tests": 32
+    },
+    {
+      "file": "controller_runtime_green.xml",
+      "tests": 15
+    },
+    {
+      "file": "curriculum_green.xml",
+      "tests": 11
+    },
+    {
+      "file": "policy_runtime_green.xml",
+      "tests": 25
+    },
+    {
+      "file": "zero_head_green.xml",
+      "tests": 28
+    }
+  ],
+  "cases": {
+    "code.tests.test_game_tracking_config_v2.test_no_audit_cannot_silently_disable_requested_v2_mechanism[options0]": [
+      "config_runtime_green.xml"
+    ],
+    "code.tests.test_game_tracking_config_v2.test_no_audit_cannot_silently_disable_requested_v2_mechanism[options1]": [
+      "config_runtime_green.xml"
+    ],
+    "code.tests.test_game_tracking_config_v2.test_no_audit_cannot_silently_disable_requested_v2_mechanism[options2]": [
+      "config_runtime_green.xml"
+    ],
+    "code.tests.test_game_tracking_config_v2.test_no_audit_cannot_silently_disable_requested_v2_mechanism[options3]": [
+      "config_runtime_green.xml"
+    ],
+    "code.tests.test_game_tracking_config_v2.test_no_audit_cannot_silently_disable_requested_v2_mechanism[options4]": [
+      "config_runtime_green.xml"
+    ],
+    "code.tests.test_game_tracking_config_v2.test_no_audit_cannot_silently_disable_requested_v2_mechanism[options5]": [
+      "config_runtime_green.xml"
+    ],
+    "code.tests.test_game_tracking_config_v2.test_no_audit_cannot_silently_disable_requested_v2_mechanism[options6]": [
+      "config_runtime_green.xml"
+    ],
+    "code.tests.test_game_tracking_config_v2.test_no_audit_keeps_independent_b8_solver_available": [
+      "config_runtime_green.xml"
+    ],
+    "code.tests.test_game_tracking_config_v2.test_negative_extra_head_budget_is_invalid_at_parse_time": [
+      "config_runtime_green.xml"
+    ],
+    "code.tests.test_game_tracking_matrix.test_v2_factorial_has_six_paired_rows_with_no_audit": [
+      "config_runtime_green.xml"
+    ],
+    "code.tests.test_game_tracking_matrix.test_strong_source_selection_frozen_rule_and_missing_runs_deferred": [
+      "config_runtime_green.xml"
+    ],
+    "code.tests.test_game_tracking_matrix.test_default_matrix_paired_seed_scratch_source_only": [
+      "config_runtime_green.xml"
+    ],
+    "code.tests.test_game_tracking_matrix.test_all_configs_parse_and_replay_is_explicit": [
+      "config_runtime_green.xml"
+    ],
+    "code.tests.test_game_tracking_matrix.test_evaluator_closes_all_predictions_before_truth_and_preserves_state": [
+      "config_runtime_green.xml"
+    ],
+    "code.tests.test_game_tracking_matrix.test_independent_group_metrics_and_completeness": [
+      "config_runtime_green.xml"
+    ],
+    "code.tests.test_game_tracking_matrix.test_prediction_artifact_negative_cases[duplicate]": [
+      "config_runtime_green.xml"
+    ],
+    "code.tests.test_game_tracking_matrix.test_prediction_artifact_negative_cases[hidden_truth]": [
+      "config_runtime_green.xml"
+    ],
+    "code.tests.test_game_tracking_matrix.test_prediction_artifact_negative_cases[target_id]": [
+      "config_runtime_green.xml"
+    ],
+    "code.tests.test_game_tracking_matrix.test_prediction_artifact_negative_cases[nan]": [
+      "config_runtime_green.xml"
+    ],
+    "code.tests.test_game_tracking_matrix.test_prediction_artifact_negative_cases[bad_class]": [
+      "config_runtime_green.xml"
+    ],
+    "code.tests.test_game_tracking_matrix.test_default_physical_leo_evaluation_is_deterministic": [
+      "config_runtime_green.xml"
+    ],
+    "code.tests.test_game_tracking_determinism.test_explicit_deterministic_runtime_sets_backend_before_seed": [
+      "config_runtime_green.xml"
+    ],
+    "code.tests.test_game_tracking_determinism.test_inactive_determinism_does_not_reconfigure_backend": [
+      "config_runtime_green.xml"
+    ],
+    "code.tests.test_game_tracking_runtime_v2.test_v2_replay_records_requested_but_rejects_untrusted_state": [
+      "config_runtime_green.xml",
+      "controller_runtime_green.xml",
+      "policy_runtime_green.xml"
+    ],
+    "code.tests.test_game_tracking_runtime_v2.test_v2_rejects_legacy_online_random_schedule": [
+      "config_runtime_green.xml",
+      "controller_runtime_green.xml",
+      "policy_runtime_green.xml"
+    ],
+    "code.tests.test_game_tracking_runtime_v2.test_v2_context_records_exact_mask_seed_and_replays_received_view": [
+      "config_runtime_green.xml",
+      "controller_runtime_green.xml",
+      "policy_runtime_green.xml"
+    ],
+    "code.tests.test_game_tracking_runtime_v2.test_v2_no_audit_runtime_persists_new_implementation_and_exposure": [
+      "config_runtime_green.xml",
+      "controller_runtime_green.xml",
+      "policy_runtime_green.xml"
+    ],
+    "code.tests.test_game_tracking_runtime_v2.test_v2_audit_only_and_epoch_resume_preserve_actual_training": [
+      "config_runtime_green.xml",
+      "controller_runtime_green.xml",
+      "policy_runtime_green.xml"
+    ],
+    "code.tests.test_game_tracking_runtime_v2.test_runtime_consumes_frozen_actual_exposure_schedule": [
+      "config_runtime_green.xml",
+      "controller_runtime_green.xml",
+      "policy_runtime_green.xml"
+    ],
+    "code.tests.test_game_tracking_runtime_v2.test_objective_stage_boundary_expires_prior_game_evidence": [
+      "config_runtime_green.xml",
+      "controller_runtime_green.xml",
+      "policy_runtime_green.xml"
+    ],
+    "code.tests.test_game_tracking_runtime_v2.test_e91_resets_only_the_course_that_changes_training_policy[capability-False]": [
+      "config_runtime_green.xml",
+      "policy_runtime_green.xml"
+    ],
+    "code.tests.test_game_tracking_runtime_v2.test_e91_resets_only_the_course_that_changes_training_policy[fixed-True]": [
+      "config_runtime_green.xml",
+      "policy_runtime_green.xml"
+    ],
+    "code.tests.test_game_tracking_controller_v2.test_failed_probe_cannot_correct_or_reduce_cadence": [
+      "controller_runtime_green.xml",
+      "zero_head_green.xml"
+    ],
+    "code.tests.test_game_tracking_controller_v2.test_single_observation_one_action_survives_resume": [
+      "controller_runtime_green.xml",
+      "zero_head_green.xml"
+    ],
+    "code.tests.test_game_tracking_controller_v2.test_future_stale_or_clean_subset_gradients_do_not_correct": [
+      "controller_runtime_green.xml",
+      "zero_head_green.xml"
+    ],
+    "code.tests.test_game_tracking_controller_v2.test_budget_denial_does_not_claim_committed_action": [
+      "controller_runtime_green.xml",
+      "zero_head_green.xml"
+    ],
+    "code.tests.test_game_tracking_controller_v2.test_legacy_capability_cannot_be_wrapped_as_v2_control_evidence": [
+      "controller_runtime_green.xml",
+      "zero_head_green.xml"
+    ],
+    "code.tests.test_game_tracking_controller_v2.test_source_calibration_cannot_relabel_reliable_high_gap_as_low": [
+      "controller_runtime_green.xml",
+      "zero_head_green.xml"
+    ],
+    "code.tests.test_game_tracking_activation.test_actual_runtime_catchup_correction_and_curriculum": [
+      "controller_runtime_green.xml",
+      "policy_runtime_green.xml"
+    ],
+    "code.tests.test_game_tracking_activation.test_v2_typed_evidence_commits_real_actions_once": [
+      "controller_runtime_green.xml",
+      "policy_runtime_green.xml"
+    ],
+    "code.tests.test_game_tracking_curriculum_v2.test_effective_continuous_policy_changes_at_each_increment": [
+      "curriculum_green.xml",
+      "policy_runtime_green.xml"
+    ],
+    "code.tests.test_game_tracking_curriculum_v2.test_capability_clock_does_not_require_lag_or_cosine_and_resumes_exactly": [
+      "curriculum_green.xml",
+      "policy_runtime_green.xml"
+    ],
+    "code.tests.test_game_tracking_curriculum_v2.test_high_cosine_random_identity_or_invalid_next_view_cannot_upgrade": [
+      "curriculum_green.xml",
+      "policy_runtime_green.xml"
+    ],
+    "code.tests.test_game_tracking_curriculum_v2.test_old_schema_cannot_silently_drive_new_curriculum": [
+      "curriculum_green.xml",
+      "policy_runtime_green.xml"
+    ],
+    "code.tests.test_game_tracking_curriculum_v2.test_v2_hysteresis_band_retains_readiness_but_resets_enter_confirmation": [
+      "curriculum_green.xml",
+      "policy_runtime_green.xml"
+    ],
+    "code.tests.test_game_tracking_curriculum_v2.test_v2_hysteresis_exit_resets_all_confirmations[identity-0.49]": [
+      "curriculum_green.xml",
+      "policy_runtime_green.xml"
+    ],
+    "code.tests.test_game_tracking_curriculum_v2.test_v2_hysteresis_exit_resets_all_confirmations[margin--0.051]": [
+      "curriculum_green.xml",
+      "policy_runtime_green.xml"
+    ],
+    "code.tests.test_game_tracking_curriculum_v2.test_v2_hysteresis_exit_resets_all_confirmations[next_identity-0.44]": [
+      "curriculum_green.xml",
+      "policy_runtime_green.xml"
+    ],
+    "code.tests.test_game_tracking_curriculum_v2.test_v2_hysteresis_respects_cooldown_and_new_evidence": [
+      "curriculum_green.xml",
+      "policy_runtime_green.xml"
+    ],
+    "code.tests.test_game_tracking_curriculum_v2.test_same_identity_head_measures_current_and_next_view_without_fitting_monitor": [
+      "curriculum_green.xml",
+      "policy_runtime_green.xml"
+    ],
+    "code.tests.test_game_tracking_curriculum_v2.test_invalid_current_view_returns_unavailable_consistency": [
+      "curriculum_green.xml",
+      "policy_runtime_green.xml"
+    ],
+    "code.tests.test_game_tracking_coordinator_v2.test_independent_clocks_and_resume": [
+      "policy_runtime_green.xml"
+    ],
+    "code.tests.test_game_tracking_coordinator_v2.test_capability_calibration_does_not_need_reliable_lag": [
+      "policy_runtime_green.xml"
+    ],
+    "code.tests.test_game_tracking_coordinator_v2.test_fixed_course_capability_reads_actual_epoch_policy": [
+      "policy_runtime_green.xml"
+    ],
+    "code.tests.test_game_tracking_controller_v2.test_zero_extra_head_budget_does_not_disable_correction_calibration": [
+      "zero_head_green.xml"
+    ],
+    "code.tests.test_game_tracking_audit_control.test_recovery_analytical_and_no_online_or_rng_mutation": [
+      "zero_head_green.xml"
+    ],
+    "code.tests.test_game_tracking_audit_control.test_group_split_and_overlap_and_unverified": [
+      "zero_head_green.xml"
+    ],
+    "code.tests.test_game_tracking_audit_control.test_imbalanced_metrics_are_not_chance_accuracy": [
+      "zero_head_green.xml"
+    ],
+    "code.tests.test_game_tracking_audit_control.test_native_domain_task_is_not_rx_and_single_class_is_invalid": [
+      "zero_head_green.xml"
+    ],
+    "code.tests.test_game_tracking_audit_control.test_probe_cannot_fit_validation_or_missing_monitor_classes": [
+      "zero_head_green.xml"
+    ],
+    "code.tests.test_game_tracking_audit_control.test_gradient_conflict_and_zero_norm_invalid": [
+      "zero_head_green.xml"
+    ],
+    "code.tests.test_game_tracking_audit_control.test_capability_cross_rx_margin_and_collapse_counterexample": [
+      "zero_head_green.xml"
+    ],
+    "code.tests.test_game_tracking_audit_control.test_margin_missing_coverage_and_branch_interface": [
+      "zero_head_green.xml"
+    ],
+    "code.tests.test_game_tracking_audit_control.test_controller_confirmation_stale_budget_and_resume": [
+      "zero_head_green.xml"
+    ],
+    "code.tests.test_game_tracking_audit_control.test_controller_correct_and_hold_states_and_hysteresis": [
+      "zero_head_green.xml"
+    ],
+    "code.tests.test_game_tracking_audit_control.test_budget_actual_cost_window_cap_fraction_and_resume": [
+      "zero_head_green.xml"
+    ],
+    "code.tests.test_game_tracking_audit_control.test_curriculum_no_flapping_forced_upgrade_or_repeated_evidence": [
+      "zero_head_green.xml"
+    ],
+    "code.tests.test_game_tracking_audit_control.test_coverage_forbids_hidden_tx_and_reports_association": [
+      "zero_head_green.xml"
+    ],
+    "code.tests.test_game_tracking_audit_control.test_curriculum_requires_measured_finite_enter_consistency[-0.4]": [
+      "zero_head_green.xml"
+    ],
+    "code.tests.test_game_tracking_audit_control.test_curriculum_requires_measured_finite_enter_consistency[0.59]": [
+      "zero_head_green.xml"
+    ],
+    "code.tests.test_game_tracking_audit_control.test_curriculum_requires_measured_finite_enter_consistency[0.79]": [
+      "zero_head_green.xml"
+    ],
+    "code.tests.test_game_tracking_audit_control.test_curriculum_requires_measured_finite_enter_consistency[nan]": [
+      "zero_head_green.xml"
+    ],
+    "code.tests.test_game_tracking_audit_control.test_curriculum_requires_measured_finite_enter_consistency[inf]": [
+      "zero_head_green.xml"
+    ],
+    "code.tests.test_game_tracking_audit_control.test_curriculum_requires_measured_finite_enter_consistency[None]": [
+      "zero_head_green.xml"
+    ],
+    "code.tests.test_game_tracking_audit_control.test_curriculum_requires_measured_finite_enter_consistency[missing]": [
+      "zero_head_green.xml"
+    ],
+    "code.tests.test_game_tracking_audit_control.test_curriculum_consistency_hysteresis_and_resume": [
+      "zero_head_green.xml"
+    ]
+  },
+  "scope": "Combined targeted runs; not one full-suite invocation. Original red tests preserved."
+}

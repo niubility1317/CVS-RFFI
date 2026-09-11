@@ -146,8 +146,9 @@ class CapabilityCurriculumV2:
             enter=(metrics['identity']>=c.identity_enter and metrics['margin']>=c.margin_enter and
                    metrics['next_identity']>=c.next_identity_enter and metrics['next_margin']>=c.next_margin_enter and
                    metrics['next_worst_tx']>=c.next_worst_tx_enter)
-            # Exit thresholds keep a confirmed direction from chattering in the
-            # middle band. Next-margin/worst-TX remain hard safety floors because
+            # Exit thresholds keep readiness from chattering in the middle
+            # band, but promotion needs consecutive observations above ENTER.
+            # Next-margin/worst-TX remain hard safety floors because
             # this source-frozen configuration declares no exit thresholds for them.
             exit_band=(metrics['identity']<c.identity_exit or metrics['margin']<c.margin_exit or
                        metrics['next_identity']<c.next_identity_exit or
@@ -156,7 +157,7 @@ class CapabilityCurriculumV2:
                 self.ready=False;self.streak=0;reason='capability_exit_threshold'
             elif enter:
                 self.ready=True
-            if self.ready:
+            if enter and not exit_band:
                 self.streak+=1
             else:
                 self.streak=0

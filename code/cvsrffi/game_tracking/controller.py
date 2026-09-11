@@ -26,7 +26,7 @@ class ControllerConfig:
     def __post_init__(self):
         if self.lag_enter <= self.lag_exit or self.imbalance_enter <= self.imbalance_exit:
             raise ValueError('enter thresholds must exceed exit thresholds')
-        if min(self.confirmation_windows, self.catchup_steps, self.audit_interval) < 1:
+        if min(self.confirmation_windows, self.audit_interval) < 1 or self.catchup_steps < 0:
             raise ValueError('invalid controller window or action budget')
         if min(self.cooldown_steps, self.max_age_steps, self.max_version_lag) < 0:
             raise ValueError('invalid controller freshness')
@@ -74,7 +74,7 @@ class GameController:
         high_imbalance = (isinstance(imbalance, (int, float)) and math.isfinite(imbalance) and
                           metrics.get('gradient_valid', False) and
                           imbalance >= (c.imbalance_exit if self.state == 'CORRECT' else c.imbalance_enter))
-        desired = ('CATCHUP' if high_lag and readable >= c.readable_min else
+        desired = ('CATCHUP' if c.catchup_steps > 0 and high_lag and readable >= c.readable_min else
                    'CORRECT' if lag <= c.lag_exit and high_imbalance else 'NORMAL')
         observation = (metrics['step'], metrics['encoder_version'])
         if observation != self.last_observation:
@@ -156,9 +156,12 @@ class GameControllerV2:
         grad_ok=bool(gradient.get('valid') and gradient.get('representative') and
                      gradient.get('scope')=='full_current_training_objective' and
                      isinstance(imbalance,(int,float)) and math.isfinite(imbalance))
-        high=value >= (c.lag_exit if self.state=='CATCHUP' else c.lag_enter)
-        desired=('CATCHUP' if high and readable>=c.readable_min else 'CORRECT'
-                 if value<=c.lag_exit and grad_ok and imbalance >= (c.imbalance_exit if self.state=='CORRECT' else c.imbalance_enter)
+        # Source-calibrated numerical thresholds cannot change the estimand's
+        # quality state: HIGH proves recoverable improvement, not convergence.
+        high=(lag['status']=='RELIABLE_HIGH_GAP' and
+              value >= (c.lag_exit if self.state=='CATCHUP' else c.lag_enter))
+        desired=('CATCHUP' if c.catchup_steps > 0 and high and readable>=c.readable_min else 'CORRECT'
+                 if lag['status']=='RELIABLE_LOW_GAP' and value<=c.lag_exit and grad_ok and imbalance >= (c.imbalance_exit if self.state=='CORRECT' else c.imbalance_enter)
                  else 'NORMAL')
         if obs!=self.last_observation:
             self.streak=self.streak+1 if self.pending==desired else 1

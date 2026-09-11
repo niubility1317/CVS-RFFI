@@ -143,3 +143,31 @@ def test_objective_stage_boundary_expires_prior_game_evidence(tmp_path):
     assert 'objective_or_stage_changed' in state['last_metrics']['lag']['reason_codes']
     assert state['next_game_audit_step']==250
     assert state['capability_metrics']['step']==0
+
+
+@pytest.mark.parametrize('course,expected_reset',[('capability',False),('fixed',True)])
+def test_e91_resets_only_the_course_that_changes_training_policy(tmp_path,monkeypatch,course,expected_reset):
+    from cvsrffi.game_tracking import runtime_control as rc
+    torch.set_num_threads(2)
+    args=_v2_args(tmp_path/course)
+    args.game_curriculum=course;args.game_solver='optimistic';args.epochs=91
+    # Two actual updates in boundary contexts, not a claim of E1-to-E91 training.
+    import builtins
+    monkeypatch.setattr(runtime,'range',lambda *bounds:
+        iter((90,91)) if bounds==(1,92) else builtins.range(*bounds),raising=False)
+    monkeypatch.setattr(rc,'capability_audit_v2',lambda *a,**kw:
+        dict(schema='game_capability_v2',step=kw['step'],encoder_version=kw['version'],
+             valid=False,elapsed_seconds=0.))
+    monkeypatch.setattr(rc,'game_audit_v2',lambda *a,**kw:
+        (dict(schema='game_audit_v2',step=kw['step'],encoder_version=kw['version'],
+              lag={'status':'OPTIMIZATION_FAILURE'},elapsed_seconds=0.),{}))
+    resets=[]
+    original=runtime.GameSolver.reset_history
+    def reset(self,reason):
+        resets.append(reason);return original(self,reason)
+    monkeypatch.setattr(runtime.GameSolver,'reset_history',reset)
+    assert runtime.train(args)==0
+    rows=[json.loads(line) for line in (tmp_path/course/'game_actions.jsonl').read_text().splitlines()]
+    assert [r['epoch'] for r in rows]==[90,91]
+    assert ('scheduled_problem_change' in resets) is expected_reset
+    assert rows[-1]['optimistic_history_used'] is (not expected_reset)

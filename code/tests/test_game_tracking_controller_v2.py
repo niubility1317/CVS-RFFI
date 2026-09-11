@@ -59,3 +59,46 @@ def test_legacy_capability_cannot_be_wrapped_as_v2_control_evidence():
     c=controller.GameControllerV2(controller.ControllerConfig(confirmation_windows=1))
     m=evidence(0);m['capability'].pop('schema')
     assert c.decide(m,step=0,encoder_version=0)['action']=='NORMAL'
+
+
+def test_source_calibration_cannot_relabel_reliable_high_gap_as_low():
+    from types import SimpleNamespace
+    from cvsrffi.game_tracking.runtime_control import calibrate_game_v2
+    history = [evidence(step) for step in (0, 250, 500)]
+    for m in history:
+        m['lag'].update(status='RELIABLE_HIGH_GAP',gap_normalized=1.,
+                        stationary=False,plateau=False)
+        m['capability'].update(next_identity=.9,next_margin=.3,next_worst_tx=.8)
+    c = calibrate_game_v2(history,[m['capability'] for m in history],
+        SimpleNamespace(num_classes=6,game_max_extra_head=3,game_audit_interval=250))
+    assert c.config.lag_exit == .5
+    for step in (750, 1000):
+        m = evidence(step)
+        m['lag'].update(status='RELIABLE_HIGH_GAP',gap_normalized=.2,
+                        stationary=False,plateau=False)
+        assert c.decide(m,step=step,encoder_version=step)['action'] == 'NORMAL'
+    assert not c.requested_observations
+    # The same calibrated controller can still accept genuinely reliable LOW evidence.
+    assert c.decide(evidence(1250),step=1250,encoder_version=1250)['action']=='NORMAL'
+    assert c.decide(evidence(1500),step=1500,encoder_version=1500)['action']=='CORRECT'
+
+
+def test_zero_extra_head_budget_does_not_disable_correction_calibration():
+    from cvsrffi.game_tracking.config import parse_args
+    from cvsrffi.game_tracking.runtime_control import calibrate_game_v2
+    args = parse_args(['--output_dir','unused','--game_control','correction',
+                       '--game_max_extra_head','0'])
+    history = [evidence(step) for step in (0,250,500)]
+    for m in history:
+        m['capability'].update(next_identity=.9,next_margin=.3,next_worst_tx=.8)
+    c = calibrate_game_v2(history,[m['capability'] for m in history],args)
+    assert c is not None
+    assert c.config.catchup_steps == 0
+    assert c.decide(evidence(750),step=750,encoder_version=750)['action']=='NORMAL'
+    assert c.decide(evidence(1000),step=1000,encoder_version=1000)['action']=='CORRECT'
+    c.record_outcome('obs1000',accepted=True)
+    for step in (1250,1500):
+        high = evidence(step)
+        high['lag'].update(status='RELIABLE_HIGH_GAP',gap_normalized=.8)
+        assert c.decide(high,step=step,encoder_version=step)['action']=='NORMAL'
+    assert not c.requested_observations

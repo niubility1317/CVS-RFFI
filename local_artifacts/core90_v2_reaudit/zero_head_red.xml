@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="4.546" timestamp="2026-09-11T19:46:21.723962+08:00" hostname="DESKTOP-8RI2J69"><testcase classname="code.tests.test_game_tracking_controller_v2" name="test_zero_extra_head_budget_does_not_disable_correction_calibration" time="4.177"><failure message="assert None is not None">def test_zero_extra_head_budget_does_not_disable_correction_calibration():
+        from cvsrffi.game_tracking.config import parse_args
+        from cvsrffi.game_tracking.runtime_control import calibrate_game_v2
+        args = parse_args(['--output_dir','unused','--game_control','correction',
+                           '--game_max_extra_head','0'])
+        history = [evidence(step) for step in (0,250,500)]
+        for m in history:
+            m['capability'].update(next_identity=.9,next_margin=.3,next_worst_tx=.8)
+        c = calibrate_game_v2(history,[m['capability'] for m in history],args)
+&gt;       assert c is not None
+E       assert None is not None
+
+code\tests\test_game_tracking_controller_v2.py:95: AssertionError</failure></testcase></testsuite></testsuites>

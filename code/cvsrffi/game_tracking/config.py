@@ -73,6 +73,10 @@ def parse_args(argv=None):
 def validate(a):
     if a.game_evidence_version==2 and a.game_control in ('fixed','random'):
         raise ValueError('V2 requires independent source donor frozen replay; online fixed/random is legacy v1 only')
+    if a.game_evidence_version==2 and a.game_no_audit and (
+            a.game_control!='off' or a.game_curriculum=='capability' or
+            a.game_response_tracking or a.game_jacobian_interval):
+        raise ValueError('Requested V2 mechanism requires source audits; remove --game_no_audit')
     if a.baseline_ckpt or not a.from_scratch:
         raise ValueError('CHECKPOINT_PROVENANCE_UNVERIFIED: initial training must be scratch-only')
     if a.best_metric != 'clean_val_tx' or a.enable_joint_safe_guard or a.paic_guard_enabled:
@@ -88,7 +92,7 @@ def validate(a):
         raise ValueError('replay requires a previously source-generated schedule')
     if a.game_max_steps_per_epoch and not a.game_synthetic:
         raise ValueError('Step truncation is restricted to synthetic functional acceptance')
-    if a.game_fixed_head_steps < 0 or a.game_probe_steps < 1 or a.game_head_lr_ratio <= 0:
+    if a.game_fixed_head_steps < 0 or a.game_max_extra_head < 0 or a.game_probe_steps < 1 or a.game_head_lr_ratio <= 0:
         raise ValueError('Invalid update budget')
     if a.epochs <= 0:
         raise ValueError('epochs must be positive')

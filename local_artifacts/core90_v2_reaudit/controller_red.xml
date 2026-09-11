@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="4.531" timestamp="2026-09-11T19:44:38.347844+08:00" hostname="DESKTOP-8RI2J69"><testcase classname="code.tests.test_game_tracking_controller_v2" name="test_source_calibration_cannot_relabel_reliable_high_gap_as_low" time="4.182"><failure message="AssertionError: assert 'CORRECT' == 'NORMAL'&#10;  &#10;  - NORMAL&#10;  + CORRECT">def test_source_calibration_cannot_relabel_reliable_high_gap_as_low():
+        from types import SimpleNamespace
+        from cvsrffi.game_tracking.runtime_control import calibrate_game_v2
+        history = [evidence(step) for step in (0, 250, 500)]
+        for m in history:
+            m['lag'].update(status='RELIABLE_HIGH_GAP',gap_normalized=1.,
+                            stationary=False,plateau=False)
+            m['capability'].update(next_identity=.9,next_margin=.3,next_worst_tx=.8)
+        c = calibrate_game_v2(history,[m['capability'] for m in history],
+            SimpleNamespace(num_classes=6,game_max_extra_head=3,game_audit_interval=250))
+        assert c.config.lag_exit == .5
+        for step in (750, 1000):
+            m = evidence(step)
+            m['lag'].update(status='RELIABLE_HIGH_GAP',gap_normalized=.2,
+                            stationary=False,plateau=False)
+&gt;           assert c.decide(m,step=step,encoder_version=step)['action'] == 'NORMAL'
+E           AssertionError: assert 'CORRECT' == 'NORMAL'
+E             
+E             - NORMAL
+E             + CORRECT
+
+code\tests\test_game_tracking_controller_v2.py:79: AssertionError</failure></testcase></testsuite></testsuites>

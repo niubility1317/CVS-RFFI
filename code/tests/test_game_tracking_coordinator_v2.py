@@ -40,3 +40,26 @@ def test_capability_calibration_does_not_need_reliable_lag():
     curriculum=calibrate_capability_v2(observations,args)
     assert curriculum is not None
     assert curriculum.config.calibration_id.startswith('source_capability_')
+
+
+def test_fixed_course_capability_reads_actual_epoch_policy():
+    from cvsrffi.game_tracking.config import parse_args
+    from cvsrffi.game_tracking.data import build_source,audit_indices_v2
+    from cvsrffi.game_tracking.runtime import build_model
+    from cvsrffi.game_tracking.runtime_control import V2Coordinator
+    torch.set_num_threads(2)
+    args=parse_args(['--output_dir','unused','--game_synthetic','--device','cpu',
+                    '--game_probe_steps','1','--game_curriculum','fixed'])
+    source=build_source(args)
+    model=build_model(args,len(source.domains),torch.device('cpu'))
+    indices=audit_indices_v2(source,args.game_audit_samples_per_capture,args.seed)
+    for epoch,probability,weights in ((41,.6,[0.,.5,.5]),(131,.8,[1/3]*3)):
+        coordinator=V2Coordinator(model,source,args,None,None,
+            ComputeBudget(BudgetConfig(max_audit_seconds=100.)),indices)
+        coordinator.next_game_audit_step=10**6
+        coordinator.observe(None,step=0,version=0,epoch=epoch)
+        m=coordinator.capability_metrics
+        assert m['current_policy']['probability']==probability
+        assert m['current_policy']['weights']==weights
+        assert m['next_policy']==m['current_policy']
+        assert m['next_policy_role']=='fixed_policy_no_adaptive_candidate'

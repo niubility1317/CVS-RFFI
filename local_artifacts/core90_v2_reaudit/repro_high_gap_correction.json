@@ -1,0 +1,33 @@
+{
+  "lag_enter": 1.0,
+  "lag_exit": 0.5,
+  "evidence_lag": {
+    "status": "RELIABLE_HIGH_GAP",
+    "quality_pass": true,
+    "control_ready": true,
+    "gap_normalized": 0.2,
+    "readability": 0.4,
+    "convergence": {
+      "stationary": false,
+      "plateau": false
+    }
+  },
+  "first": {
+    "action": "NORMAL",
+    "reason": "confirmation_or_cooldown",
+    "catchup_steps": 0,
+    "hold_curriculum": false,
+    "main_solver": "normal",
+    "next_audit_interval": 250
+  },
+  "second": {
+    "action": "CORRECT",
+    "reason": "trusted_correct",
+    "catchup_steps": 0,
+    "hold_curriculum": false,
+    "main_solver": "eg",
+    "next_audit_interval": 250,
+    "observation_id": "new2"
+  },
+  "defect_reproduced": true
+}

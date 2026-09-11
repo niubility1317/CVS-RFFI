@@ -1,0 +1,518 @@
+{
+  "one_enter_two_middle_band": [
+    {
+      "input": {
+        "schema": "game_capability_v2",
+        "valid": true,
+        "identity_valid": true,
+        "collapsed": false,
+        "step": 0,
+        "encoder_version": 0,
+        "policy_level": 0.0,
+        "identity": 0.95,
+        "margin": 0.3,
+        "next_identity": 0.95,
+        "next_margin": 0.1,
+        "next_worst_tx": 0.5
+      },
+      "event": {
+        "level": 0.0,
+        "previous_level": 0.0,
+        "changed": false,
+        "ready": true,
+        "reason": "capability_hold",
+        "curriculum_version": 0,
+        "policy": {
+          "probability": 0.3,
+          "weights": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "scenarios": [
+            "leo_clear_weak",
+            "leo_low_elev_weak",
+            "leo_rain_weak"
+          ],
+          "physical_config_version": "leo_weak_unchanged_v1"
+        },
+        "previous_policy": {
+          "probability": 0.3,
+          "weights": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "scenarios": [
+            "leo_clear_weak",
+            "leo_low_elev_weak",
+            "leo_rain_weak"
+          ],
+          "physical_config_version": "leo_weak_unchanged_v1"
+        },
+        "invalidate_feature_cache": false,
+        "reset_optimistic": false,
+        "reset_reason": null
+      },
+      "streak": 1
+    },
+    {
+      "input": {
+        "schema": "game_capability_v2",
+        "valid": true,
+        "identity_valid": true,
+        "collapsed": false,
+        "step": 250,
+        "encoder_version": 250,
+        "policy_level": 0.0,
+        "identity": 0.6,
+        "margin": -0.02,
+        "next_identity": 0.55,
+        "next_margin": 0.1,
+        "next_worst_tx": 0.5
+      },
+      "event": {
+        "level": 0.0,
+        "previous_level": 0.0,
+        "changed": false,
+        "ready": true,
+        "reason": "capability_hold",
+        "curriculum_version": 0,
+        "policy": {
+          "probability": 0.3,
+          "weights": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "scenarios": [
+            "leo_clear_weak",
+            "leo_low_elev_weak",
+            "leo_rain_weak"
+          ],
+          "physical_config_version": "leo_weak_unchanged_v1"
+        },
+        "previous_policy": {
+          "probability": 0.3,
+          "weights": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "scenarios": [
+            "leo_clear_weak",
+            "leo_low_elev_weak",
+            "leo_rain_weak"
+          ],
+          "physical_config_version": "leo_weak_unchanged_v1"
+        },
+        "invalidate_feature_cache": false,
+        "reset_optimistic": false,
+        "reset_reason": null
+      },
+      "streak": 2
+    },
+    {
+      "input": {
+        "schema": "game_capability_v2",
+        "valid": true,
+        "identity_valid": true,
+        "collapsed": false,
+        "step": 500,
+        "encoder_version": 500,
+        "policy_level": 0.0,
+        "identity": 0.6,
+        "margin": -0.02,
+        "next_identity": 0.55,
+        "next_margin": 0.1,
+        "next_worst_tx": 0.5
+      },
+      "event": {
+        "level": 0.1,
+        "previous_level": 0.0,
+        "changed": true,
+        "ready": false,
+        "reason": "confirmed_direct_identity_capability",
+        "curriculum_version": 1,
+        "policy": {
+          "probability": 0.35,
+          "weights": [
+            0.9333333333333333,
+            0.03333333333333333,
+            0.03333333333333333
+          ],
+          "scenarios": [
+            "leo_clear_weak",
+            "leo_low_elev_weak",
+            "leo_rain_weak"
+          ],
+          "physical_config_version": "leo_weak_unchanged_v1"
+        },
+        "previous_policy": {
+          "probability": 0.3,
+          "weights": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "scenarios": [
+            "leo_clear_weak",
+            "leo_low_elev_weak",
+            "leo_rain_weak"
+          ],
+          "physical_config_version": "leo_weak_unchanged_v1"
+        },
+        "invalidate_feature_cache": true,
+        "reset_optimistic": true,
+        "reset_reason": "effective_satellite_policy_change"
+      },
+      "streak": 0
+    }
+  ],
+  "unchanged_stage_resets": [
+    {
+      "epochs": [
+        40,
+        41
+      ],
+      "weights_equal": false,
+      "augmentation_equal": true,
+      "augmentation": [
+        {
+          "scale": 0.35,
+          "p_dac": 0.0,
+          "p_pa": 0.049,
+          "p_time_shift": 0.12249999999999998,
+          "p_cfo": 0.12249999999999998,
+          "p_awgn": 0.13999999999999999,
+          "p_multipath": 0.063,
+          "max_time_shift": 11,
+          "cfo_max": 0.00014,
+          "phase_noise_sigma_max": 0.0021
+        },
+        {
+          "scale": 0.35,
+          "p_dac": 0.0,
+          "p_pa": 0.049,
+          "p_time_shift": 0.12249999999999998,
+          "p_cfo": 0.12249999999999998,
+          "p_awgn": 0.13999999999999999,
+          "p_multipath": 0.063,
+          "max_time_shift": 11,
+          "cfo_max": 0.00014,
+          "phase_noise_sigma_max": 0.0021
+        }
+      ],
+      "mixstyle_equal": true,
+      "mixstyle": [
+        {
+          "enabled": true,
+          "p": 0.18,
+          "strength": 0.7,
+          "phase": "base",
+          "anneal_t": 0.0
+        },
+        {
+          "enabled": true,
+          "p": 0.18,
+          "strength": 0.7,
+          "phase": "base",
+          "anneal_t": 0.0
+        }
+      ],
+      "actual_capability_policy": {
+        "probability": 0.3,
+        "weights": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "scenarios": [
+          "leo_clear_weak",
+          "leo_low_elev_weak",
+          "leo_rain_weak"
+        ],
+        "physical_config_version": "leo_weak_unchanged_v1"
+      },
+      "runtime_stage_changed": true
+    },
+    {
+      "epochs": [
+        90,
+        91
+      ],
+      "weights_equal": true,
+      "augmentation_equal": true,
+      "augmentation": [
+        {
+          "scale": 0.35,
+          "p_dac": 0.0,
+          "p_pa": 0.049,
+          "p_time_shift": 0.12249999999999998,
+          "p_cfo": 0.12249999999999998,
+          "p_awgn": 0.13999999999999999,
+          "p_multipath": 0.063,
+          "max_time_shift": 11,
+          "cfo_max": 0.00014,
+          "phase_noise_sigma_max": 0.0021
+        },
+        {
+          "scale": 0.35,
+          "p_dac": 0.0,
+          "p_pa": 0.049,
+          "p_time_shift": 0.12249999999999998,
+          "p_cfo": 0.12249999999999998,
+          "p_awgn": 0.13999999999999999,
+          "p_multipath": 0.063,
+          "max_time_shift": 11,
+          "cfo_max": 0.00014,
+          "phase_noise_sigma_max": 0.0021
+        }
+      ],
+      "mixstyle_equal": true,
+      "mixstyle": [
+        {
+          "enabled": true,
+          "p": 0.18,
+          "strength": 0.7,
+          "phase": "base",
+          "anneal_t": 0.0
+        },
+        {
+          "enabled": true,
+          "p": 0.18,
+          "strength": 0.7,
+          "phase": "base",
+          "anneal_t": 0.0
+        }
+      ],
+      "actual_capability_policy": {
+        "probability": 0.3,
+        "weights": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "scenarios": [
+          "leo_clear_weak",
+          "leo_low_elev_weak",
+          "leo_rain_weak"
+        ],
+        "physical_config_version": "leo_weak_unchanged_v1"
+      },
+      "runtime_stage_changed": true
+    }
+  ],
+  "fixed_current_view_mismatch": {
+    "training_fixed_policy": [
+      [
+        "leo_clear_weak",
+        "leo_low_elev_weak",
+        "leo_rain_weak"
+      ],
+      0.8
+    ],
+    "observed_policy_level": 0.0,
+    "observed_policy": {
+      "probability": 0.3,
+      "weights": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "scenarios": [
+        "leo_clear_weak",
+        "leo_low_elev_weak",
+        "leo_rain_weak"
+      ],
+      "physical_config_version": "leo_weak_unchanged_v1"
+    }
+  },
+  "b8_actual_core90_E131_one_step": [
+    {
+      "impl": "reference",
+      "accepted": true,
+      "algorithm": "adamw_isolated_predictor_raw_gradient_head_lookahead_reference",
+      "forward_calls": 5,
+      "telemetry": {
+        "roles": {
+          "adversarial_head": {
+            "raw_grad_norm": 0.2500004119160651,
+            "clipped_grad_norm": 0.007212957170138732,
+            "update_norm": 0.019434372861634686,
+            "origin_raw_grad_norm": 0.25486186874537464,
+            "predictor_clipped_grad_norm": 0.25486186874537464,
+            "virtual_update_norm": 0.019576730436666405
+          },
+          "domain_head": {
+            "raw_grad_norm": 2.150199006939631,
+            "clipped_grad_norm": 0.06203707089300563,
+            "update_norm": 0.02302801002520671,
+            "origin_raw_grad_norm": 2.150199006939631,
+            "predictor_clipped_grad_norm": 0.0,
+            "virtual_update_norm": 0.0
+          },
+          "encoder_or_auxiliary": {
+            "raw_grad_norm": 173.27212626617606,
+            "clipped_grad_norm": 4.9992094402592455,
+            "update_norm": 0.10131090637022815,
+            "origin_raw_grad_norm": 173.27208808396708,
+            "predictor_clipped_grad_norm": 0.0,
+            "virtual_update_norm": 0.0
+          },
+          "domain_branch": {
+            "raw_grad_norm": 2.1938699541858155,
+            "clipped_grad_norm": 0.06329705554283185,
+            "update_norm": 0.11483128171859656,
+            "origin_raw_grad_norm": 2.1938699541858155,
+            "predictor_clipped_grad_norm": 0.0,
+            "virtual_update_norm": 0.0
+          },
+          "shared_frontend": {
+            "raw_grad_norm": 6.032508747633748e-07,
+            "clipped_grad_norm": 1.7404862013817855e-08,
+            "update_norm": 25.34590441775326,
+            "origin_raw_grad_norm": 6.034715236111659e-07,
+            "predictor_clipped_grad_norm": 0.0,
+            "virtual_update_norm": 0.0
+          }
+        },
+        "origin_scope": "all",
+        "b8_impl": "reference",
+        "formal_clip_ratio": 0.028851780998988923,
+        "field_evaluations": 2,
+        "backward_calls": 2,
+        "gradient_component_diagnostics": "AVAILABLE",
+        "online_predictor_adv_cosine": 0.9903372522556304,
+        "nonadv_gradient_change_norm": 0.0,
+        "component_scope": "all_nonhead_parameters_full_current_objective",
+        "telemetry_backward_calls": 4
+      }
+    },
+    {
+      "impl": "head_grad_only",
+      "accepted": true,
+      "algorithm": "adamw_isolated_predictor_raw_gradient_head_lookahead_head_grad_only",
+      "forward_calls": 5,
+      "telemetry": {
+        "roles": {
+          "adversarial_head": {
+            "raw_grad_norm": 0.2500004119160651,
+            "clipped_grad_norm": 0.007212957170138732,
+            "update_norm": 0.019434372861634686,
+            "origin_raw_grad_norm": 0.25486186874537464,
+            "predictor_clipped_grad_norm": 0.25486186874537464,
+            "virtual_update_norm": 0.019576730436666405
+          },
+          "domain_head": {
+            "raw_grad_norm": 2.150199006939631,
+            "clipped_grad_norm": 0.06203707089300563,
+            "update_norm": 0.02302801002520671,
+            "origin_raw_grad_norm": 0.0,
+            "predictor_clipped_grad_norm": 0.0,
+            "virtual_update_norm": 0.0
+          },
+          "encoder_or_auxiliary": {
+            "raw_grad_norm": 173.27212626617606,
+            "clipped_grad_norm": 4.9992094402592455,
+            "update_norm": 0.10131090637022815,
+            "origin_raw_grad_norm": 0.0,
+            "predictor_clipped_grad_norm": 0.0,
+            "virtual_update_norm": 0.0
+          },
+          "domain_branch": {
+            "raw_grad_norm": 2.1938699541858155,
+            "clipped_grad_norm": 0.06329705554283185,
+            "update_norm": 0.11483128171859656,
+            "origin_raw_grad_norm": 0.0,
+            "predictor_clipped_grad_norm": 0.0,
+            "virtual_update_norm": 0.0
+          },
+          "shared_frontend": {
+            "raw_grad_norm": 6.032508747633748e-07,
+            "clipped_grad_norm": 1.7404862013817855e-08,
+            "update_norm": 25.34590441775326,
+            "origin_raw_grad_norm": 0.0,
+            "predictor_clipped_grad_norm": 0.0,
+            "virtual_update_norm": 0.0
+          }
+        },
+        "origin_scope": "head_only",
+        "b8_impl": "head_grad_only",
+        "formal_clip_ratio": 0.028851780998988923,
+        "field_evaluations": 2,
+        "backward_calls": 2,
+        "gradient_component_diagnostics": "AVAILABLE",
+        "online_predictor_adv_cosine": 0.9903372522556304,
+        "nonadv_gradient_change_norm": 0.0,
+        "component_scope": "all_nonhead_parameters_full_current_objective",
+        "telemetry_backward_calls": 4
+      }
+    },
+    {
+      "impl": "graph_reuse",
+      "accepted": true,
+      "algorithm": "adamw_isolated_predictor_raw_gradient_head_lookahead_graph_reuse",
+      "forward_calls": 3,
+      "telemetry": {
+        "roles": {
+          "adversarial_head": {
+            "raw_grad_norm": 0.2500004119160651,
+            "clipped_grad_norm": 0.007212957170138732,
+            "update_norm": 0.019434372861634686,
+            "origin_raw_grad_norm": 0.25486186874537464,
+            "predictor_clipped_grad_norm": 0.25486186874537464,
+            "virtual_update_norm": 0.019576730436666405
+          },
+          "domain_head": {
+            "raw_grad_norm": 2.150199006939631,
+            "clipped_grad_norm": 0.06203707089300563,
+            "update_norm": 0.02302801002520671,
+            "origin_raw_grad_norm": 0.0,
+            "predictor_clipped_grad_norm": 0.0,
+            "virtual_update_norm": 0.0
+          },
+          "encoder_or_auxiliary": {
+            "raw_grad_norm": 173.27212626617606,
+            "clipped_grad_norm": 4.9992094402592455,
+            "update_norm": 0.10131090637022815,
+            "origin_raw_grad_norm": 0.0,
+            "predictor_clipped_grad_norm": 0.0,
+            "virtual_update_norm": 0.0
+          },
+          "domain_branch": {
+            "raw_grad_norm": 2.1938699541858155,
+            "clipped_grad_norm": 0.06329705554283185,
+            "update_norm": 0.11483128171859656,
+            "origin_raw_grad_norm": 0.0,
+            "predictor_clipped_grad_norm": 0.0,
+            "virtual_update_norm": 0.0
+          },
+          "shared_frontend": {
+            "raw_grad_norm": 6.032508747633748e-07,
+            "clipped_grad_norm": 1.7404862013817855e-08,
+            "update_norm": 25.34590441775326,
+            "origin_raw_grad_norm": 0.0,
+            "predictor_clipped_grad_norm": 0.0,
+            "virtual_update_norm": 0.0
+          }
+        },
+        "origin_scope": "head_only",
+        "b8_impl": "graph_reuse",
+        "formal_clip_ratio": 0.028851780998988923,
+        "field_evaluations": 2,
+        "backward_calls": 2,
+        "gradient_component_diagnostics": "AVAILABLE",
+        "online_predictor_adv_cosine": 0.9903372522556304,
+        "nonadv_gradient_change_norm": 0.0,
+        "component_scope": "all_nonhead_parameters_full_current_objective",
+        "telemetry_backward_calls": 4
+      }
+    }
+  ],
+  "b8_parameter_differences": {
+    "reference": 0.0,
+    "head_grad_only": 0.0,
+    "graph_reuse": 0.0
+  }
+}

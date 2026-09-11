@@ -422,7 +422,9 @@ def train(args):
         weights_changed=previous_weights is not None and weights!=previous_weights
         if weights_changed: solver.reset_history('objective_weights_change')
         previous_weights=dict(weights)
-        stage_changed=epoch in (41,91,args.label_epochs+1,args.sat_cons_start_epoch)
+        fixed_course_boundary=(epoch in (41,91) and
+                               (not version2 or args.game_curriculum=='fixed'))
+        stage_changed=fixed_course_boundary or epoch in (args.label_epochs+1,args.sat_cons_start_epoch)
         if stage_changed: solver.reset_history('scheduled_problem_change')
         if coordinator is not None and (weights_changed or stage_changed):
             coordinator.invalidate_game_evidence(reason='objective_or_stage_changed')

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="8" skipped="0" tests="9" time="4.567" timestamp="2026-09-11T19:52:18.560493+08:00" hostname="DESKTOP-8RI2J69"><testcase classname="code.tests.test_game_tracking_config_v2" name="test_no_audit_cannot_silently_disable_requested_v2_mechanism[options0]" time="0.022"><failure message="Failed: DID NOT RAISE &lt;class 'ValueError'&gt;">options = ['--game_control', 'catchup']
+
+    @pytest.mark.parametrize('options',[
+        ['--game_control','catchup'],
+        ['--game_control','correction'],
+        ['--game_control','both'],
+        ['--game_control','replay','--game_actions_replay','source_schedule.jsonl'],
+        ['--game_curriculum','capability'],
+        ['--game_response_tracking'],
+        ['--game_jacobian_interval','500'],
+    ])
+    def test_no_audit_cannot_silently_disable_requested_v2_mechanism(options):
+&gt;       with pytest.raises(ValueError,match='requires source audits'):
+E       Failed: DID NOT RAISE &lt;class 'ValueError'&gt;
+
+code\tests\test_game_tracking_config_v2.py:15: Failed</failure></testcase><testcase classname="code.tests.test_game_tracking_config_v2" name="test_no_audit_cannot_silently_disable_requested_v2_mechanism[options1]" time="0.026"><failure message="Failed: DID NOT RAISE &lt;class 'ValueError'&gt;">options = ['--game_control', 'correction']
+
+    @pytest.mark.parametrize('options',[
+        ['--game_control','catchup'],
+        ['--game_control','correction'],
+        ['--game_control','both'],
+        ['--game_control','replay','--game_actions_replay','source_schedule.jsonl'],
+        ['--game_curriculum','capability'],
+        ['--game_response_tracking'],
+        ['--game_jacobian_interval','500'],
+    ])
+    def test_no_audit_cannot_silently_disable_requested_v2_mechanism(options):
+&gt;       with pytest.raises(ValueError,match='requires source audits'):
+E       Failed: DID NOT RAISE &lt;class 'ValueError'&gt;
+
+code\tests\test_game_tracking_config_v2.py:15: Failed</failure></testcase><testcase classname="code.tests.test_game_tracking_config_v2" name="test_no_audit_cannot_silently_disable_requested_v2_mechanism[options2]" time="0.026"><failure message="Failed: DID NOT RAISE &lt;class 'ValueError'&gt;">options = ['--game_control', 'both']
+
+    @pytest.mark.parametrize('options',[
+        ['--game_control','catchup'],
+        ['--game_control','correction'],
+        ['--game_control','both'],
+        ['--game_control','replay','--game_actions_replay','source_schedule.jsonl'],
+        ['--game_curriculum','capability'],
+        ['--game_response_tracking'],
+        ['--game_jacobian_interval','500'],
+    ])
+    def test_no_audit_cannot_silently_disable_requested_v2_mechanism(options):
+&gt;       with pytest.raises(ValueError,match='requires source audits'):
+E       Failed: DID NOT RAISE &lt;class 'ValueError'&gt;
+
+code\tests\test_game_tracking_config_v2.py:15: Failed</failure></testcase><testcase classname="code.tests.test_game_tracking_config_v2" name="test_no_audit_cannot_silently_disable_requested_v2_mechanism[options3]" time="0.025"><failure message="Failed: DID NOT RAISE &lt;class 'ValueError'&gt;">options = ['--game_control', 'replay', '--game_actions_replay', 'source_schedule.jsonl']
+
+    @pytest.mark.parametrize('options',[
+        ['--game_control','catchup'],
+        ['--game_control','correction'],
+        ['--game_control','both'],
+        ['--game_control','replay','--game_actions_replay','source_schedule.jsonl'],
+        ['--game_curriculum','capability'],
+        ['--game_response_tracking'],
+        ['--game_jacobian_interval','500'],
+    ])
+    def test_no_audit_cannot_silently_disable_requested_v2_mechanism(options):
+&gt;       with pytest.raises(ValueError,match='requires source audits'):
+E       Failed: DID NOT RAISE &lt;class 'ValueError'&gt;
+
+code\tests\test_game_tracking_config_v2.py:15: Failed</failure></testcase><testcase classname="code.tests.test_game_tracking_config_v2" name="test_no_audit_cannot_silently_disable_requested_v2_mechanism[options4]" time="0.023"><failure message="Failed: DID NOT RAISE &lt;class 'ValueError'&gt;">options = ['--game_curriculum', 'capability']
+
+    @pytest.mark.parametrize('options',[
+        ['--game_control','catchup'],
+        ['--game_control','correction'],
+        ['--game_control','both'],
+        ['--game_control','replay','--game_actions_replay','source_schedule.jsonl'],
+        ['--game_curriculum','capability'],
+        ['--game_response_tracking'],
+        ['--game_jacobian_interval','500'],
+    ])
+    def test_no_audit_cannot_silently_disable_requested_v2_mechanism(options):
+&gt;       with pytest.raises(ValueError,match='requires source audits'):
+E       Failed: DID NOT RAISE &lt;class 'ValueError'&gt;
+
+code\tests\test_game_tracking_config_v2.py:15: Failed</failure></testcase><testcase classname="code.tests.test_game_tracking_config_v2" name="test_no_audit_cannot_silently_disable_requested_v2_mechanism[options5]" time="0.021"><failure message="Failed: DID NOT RAISE &lt;class 'ValueError'&gt;">options = ['--game_response_tracking']
+
+    @pytest.mark.parametrize('options',[
+        ['--game_control','catchup'],
+        ['--game_control','correction'],
+        ['--game_control','both'],
+        ['--game_control','replay','--game_actions_replay','source_schedule.jsonl'],
+        ['--game_curriculum','capability'],
+        ['--game_response_tracking'],
+        ['--game_jacobian_interval','500'],
+    ])
+    def test_no_audit_cannot_silently_disable_requested_v2_mechanism(options):
+&gt;       with pytest.raises(ValueError,match='requires source audits'):
+E       Failed: DID NOT RAISE &lt;class 'ValueError'&gt;
+
+code\tests\test_game_tracking_config_v2.py:15: Failed</failure></testcase><testcase classname="code.tests.test_game_tracking_config_v2" name="test_no_audit_cannot_silently_disable_requested_v2_mechanism[options6]" time="0.022"><failure message="Failed: DID NOT RAISE &lt;class 'ValueError'&gt;">options = ['--game_jacobian_interval', '500']
+
+    @pytest.mark.parametrize('options',[
+        ['--game_control','catchup'],
+        ['--game_control','correction'],
+        ['--game_control','both'],
+        ['--game_control','replay','--game_actions_replay','source_schedule.jsonl'],
+        ['--game_curriculum','capability'],
+        ['--game_response_tracking'],
+        ['--game_jacobian_interval','500'],
+    ])
+    def test_no_audit_cannot_silently_disable_requested_v2_mechanism(options):
+&gt;       with pytest.raises(ValueError,match='requires source audits'):
+E       Failed: DID NOT RAISE &lt;class 'ValueError'&gt;
+
+code\tests\test_game_tracking_config_v2.py:15: Failed</failure></testcase><testcase classname="code.tests.test_game_tracking_config_v2" name="test_no_audit_keeps_independent_b8_solver_available" time="0.018" /><testcase classname="code.tests.test_game_tracking_config_v2" name="test_negative_extra_head_budget_is_invalid_at_parse_time" time="0.023"><failure message="Failed: DID NOT RAISE &lt;class 'ValueError'&gt;">def test_negative_extra_head_budget_is_invalid_at_parse_time():
+&gt;       with pytest.raises(ValueError,match='budget'):
+E       Failed: DID NOT RAISE &lt;class 'ValueError'&gt;
+
+code\tests\test_game_tracking_config_v2.py:26: Failed</failure></testcase></testsuite></testsuites>

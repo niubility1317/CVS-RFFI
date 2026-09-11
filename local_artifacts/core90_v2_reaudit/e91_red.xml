@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="2" time="10.218" timestamp="2026-09-11T19:50:18.364129+08:00" hostname="DESKTOP-8RI2J69"><testcase classname="code.tests.test_game_tracking_runtime_v2" name="test_e91_resets_only_the_course_that_changes_training_policy[capability-False]" time="4.310"><failure message="AssertionError: assert ('scheduled_problem_change' in ['scheduled_problem_change']) is False">tmp_path = WindowsPath('C:/Users/lh594/AppData/Local/Temp/pytest-of-lh594/pytest-7040/test_e91_resets_only_the_cours0')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x00000292CBFA6A70&gt;
+course = 'capability', expected_reset = False
+
+    @pytest.mark.parametrize('course,expected_reset',[('capability',False),('fixed',True)])
+    def test_e91_resets_only_the_course_that_changes_training_policy(tmp_path,monkeypatch,course,expected_reset):
+        from cvsrffi.game_tracking import runtime_control as rc
+        torch.set_num_threads(2)
+        args=_v2_args(tmp_path/course)
+        args.game_curriculum=course;args.game_solver='optimistic';args.epochs=91
+        # Two actual updates in boundary contexts, not a claim of E1-to-E91 training.
+        import builtins
+        monkeypatch.setattr(runtime,'range',lambda *bounds:
+            iter((90,91)) if bounds==(1,92) else builtins.range(*bounds),raising=False)
+        monkeypatch.setattr(rc,'capability_audit_v2',lambda *a,**kw:
+            dict(schema='game_capability_v2',step=kw['step'],encoder_version=kw['version'],
+                 valid=False,elapsed_seconds=0.))
+        monkeypatch.setattr(rc,'game_audit_v2',lambda *a,**kw:
+            (dict(schema='game_audit_v2',step=kw['step'],encoder_version=kw['version'],
+                  lag={'status':'OPTIMIZATION_FAILURE'},elapsed_seconds=0.),{}))
+        resets=[]
+        original=runtime.GameSolver.reset_history
+        def reset(self,reason):
+            resets.append(reason);return original(self,reason)
+        monkeypatch.setattr(runtime.GameSolver,'reset_history',reset)
+        assert runtime.train(args)==0
+        rows=[json.loads(line) for line in (tmp_path/course/'game_actions.jsonl').read_text().splitlines()]
+        assert [r['epoch'] for r in rows]==[90,91]
+&gt;       assert ('scheduled_problem_change' in resets) is expected_reset
+E       AssertionError: assert ('scheduled_problem_change' in ['scheduled_problem_change']) is False
+
+code\tests\test_game_tracking_runtime_v2.py:172: AssertionError</failure></testcase><testcase classname="code.tests.test_game_tracking_runtime_v2" name="test_e91_resets_only_the_course_that_changes_training_policy[fixed-True]" time="1.500" /></testsuite></testsuites>

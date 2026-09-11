@@ -56,7 +56,7 @@ def test_old_schema_cannot_silently_drive_new_curriculum():
     with pytest.raises(ValueError): c.load_state_dict(dict(config={},level=.1))
 
 
-def test_v2_hysteresis_band_retains_readiness_but_cannot_enter():
+def test_v2_hysteresis_band_retains_readiness_but_resets_enter_confirmation():
     c=curriculum.CapabilityCurriculumV2()
     def band(step):
         m=capability(step,identity=.6,margin=-.02)
@@ -65,12 +65,15 @@ def test_v2_hysteresis_band_retains_readiness_but_cannot_enter():
     assert not c.update(band(0),step=0,encoder_version=0)['ready']
     assert c.update(capability(250),step=250,encoder_version=250)['ready']
     middle=c.update(band(500),step=500,encoder_version=500)
-    assert middle['ready'] and not middle['changed'] and c.streak==2
+    assert middle['ready'] and not middle['changed'] and c.streak==0
     assert not c.update(band(500),step=500,encoder_version=500)['changed']
     resumed=curriculum.CapabilityCurriculumV2(c.config);resumed.load_state_dict(deepcopy(c.state_dict()))
     event=c.update(band(750),step=750,encoder_version=750)
     assert event==resumed.update(band(750),step=750,encoder_version=750)
-    assert event['changed'] and event['reset_optimistic'] and not event['ready']
+    assert not event['changed'] and not event['reset_optimistic'] and event['ready']
+    for step in (1000,1250):
+        assert not c.update(capability(step),step=step,encoder_version=step)['changed']
+    assert c.update(capability(1500),step=1500,encoder_version=1500)['changed']
 
 
 @pytest.mark.parametrize('field,value',[('identity',.49),('margin',-.051),('next_identity',.44)])

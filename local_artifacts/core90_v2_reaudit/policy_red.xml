@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="3" skipped="0" tests="3" time="8.572" timestamp="2026-09-11T19:49:57.555753+08:00" hostname="DESKTOP-8RI2J69"><testcase classname="code.tests.test_game_tracking_runtime_v2" name="test_e91_resets_only_the_course_that_changes_training_policy[capability-False]" time="2.969"><failure message="TypeError: test_e91_resets_only_the_course_that_changes_training_policy.&lt;locals&gt;.&lt;lambda&gt;() missing 1 required positional argument: 'stop'">tmp_path = WindowsPath('C:/Users/lh594/AppData/Local/Temp/pytest-of-lh594/pytest-7039/test_e91_resets_only_the_cours0')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x0000021A209A66E0&gt;
+course = 'capability', expected_reset = False
+
+    @pytest.mark.parametrize('course,expected_reset',[('capability',False),('fixed',True)])
+    def test_e91_resets_only_the_course_that_changes_training_policy(tmp_path,monkeypatch,course,expected_reset):
+        from cvsrffi.game_tracking import runtime_control as rc
+        torch.set_num_threads(2)
+        args=_v2_args(tmp_path/course)
+        args.game_curriculum=course;args.game_solver='optimistic';args.epochs=91
+        # Two actual updates in boundary contexts, not a claim of E1-to-E91 training.
+        monkeypatch.setattr(runtime,'range',lambda start,stop: iter((90,91)),raising=False)
+        monkeypatch.setattr(rc,'capability_audit_v2',lambda *a,**kw:
+            dict(schema='game_capability_v2',step=kw['step'],encoder_version=kw['version'],
+                 valid=False,elapsed_seconds=0.))
+        monkeypatch.setattr(rc,'game_audit_v2',lambda *a,**kw:
+            (dict(schema='game_audit_v2',step=kw['step'],encoder_version=kw['version'],
+                  lag={'status':'OPTIMIZATION_FAILURE'},elapsed_seconds=0.),{}))
+        resets=[]
+        original=runtime.GameSolver.reset_history
+        def reset(self,reason):
+            resets.append(reason);return original(self,reason)
+        monkeypatch.setattr(runtime.GameSolver,'reset_history',reset)
+&gt;       assert runtime.train(args)==0
+
+code\tests\test_game_tracking_runtime_v2.py:167: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+args = Namespace(baseline_ckpt='', from_scratch=True, split_mode='tx_rx_day_1_7_2', labeled_ratio=0.07, unlabeled_ratio=0.63,...n_steps=500, game_no_audit=False, game_export_source_predictions=False, game_skip_final_eval=True, game_config_json='')
+
+    def train(args):
+        output = Path(args.output_dir)
+        if output.exists() and any(output.iterdir()) and not args.game_resume:
+            raise FileExistsError('Output exists; refusing to overwrite '+str(output))
+        output.mkdir(parents=True,exist_ok=True)
+        if args.dry_run:
+            json_write(output/'resolved_config.json',vars(args)); return 0
+        backend=configure_determinism(args)
+        json_write(output/'backend_configuration.json',backend)
+        set_seed(args.seed)
+        device = torch.device(args.device if torch.cuda.is_available() else 'cpu')
+        source = build_source(args)
+        version2=getattr(args,'game_evidence_version',1)==2
+        if version2:
+            if getattr(args,'game_data_contract',None) and args.game_data_contract != plain(source.info):
+                raise ValueError('CHECKPOINT_DATA_CONTRACT_MISMATCH: configured vs actual source')
+            args.game_data_contract=plain(source.info)
+        model = build_model(args,len(source.domains),device)
+        ema = deepcopy(model).eval() if args.use_ema_teacher else None
+        if ema is not None:
+            for p in ema.parameters(): p.requires_grad_(False)
+        head_ids = {id(p) for p in model.adv_head.parameters()}
+        groups = [dict(params=[p for p in model.parameters() if id(p) not in head_ids],lr=args.lr),
+                  dict(params=list(model.adv_head.parameters()),lr=args.lr*args.game_head_lr_ratio)]
+        optimizer_cls = torch.optim.AdamW if args.game_optimizer=='adamw' else torch.optim.SGD
+        optimizer = optimizer_cls(groups,lr=args.lr,weight_decay=args.weight_decay)
+        scaler = make_grad_scaler(device,args.amp)
+        solver = GameSolver(model,optimizer,args.game_solver,nonfinite='skip',max_grad_norm=args.game_max_grad_norm,scaler=scaler,
+                            b8_impl=getattr(args,'game_b8_impl','reference'),telemetry_interval=getattr(args,'game_telemetry_interval',0))
+        proto = PrototypeMemoryBank(args.num_classes,len(source.domains),momentum=args.proto_momentum,
+                                    margin=args.proto_margin,domain_align_weight=args.proto_domain_align_weight,
+                                    push_weight=args.proto_push_weight,min_count=args.proto_min_count)
+        # Initialization happens outside any loss transaction.
+        proto._lazy_init(160,device,torch.float32)
+        objective = Core90Objective(model,args,proto)
+        auditor = SourceAuditor(AuditConfig(steps=args.game_probe_steps,independent_interval=args.game_independent_probe_every))
+        budget = ComputeBudget(BudgetConfig(window_steps=100,max_head_steps=20,max_field_evaluations=20,
+                                           max_audit_seconds=120.,max_correction_fraction=args.game_correction_fraction))
+        controller=curriculum=None
+        observations=[]; metrics={}; step=version=0; first_epoch=1; prior_elapsed=0.
+        gen = torch.Generator(device=device).manual_seed(args.seed+991)
+        saved = None
+        if args.game_resume:
+            saved = torch.load(args.game_resume,map_location='cpu',weights_only=False)
+            expected_schema='core90_game_epoch_boundary_v2' if version2 else SCHEMA
+            if saved.get('schema')!=expected_schema or saved.get('initialization')!='scratch_only' or saved.get('target_contact'):
+                raise ValueError('CHECKPOINT_PROVENANCE_UNVERIFIED: only this scratch lineage epoch-boundary resume is allowed')
+            if saved['source_info'] != source.info:
+                raise ValueError('CHECKPOINT_DATA_CONTRACT_MISMATCH')
+            allowed = {'game_resume','output_dir','game_skip_final_eval'}
+            changed = {k for k,v in vars(args).items() if k not in allowed and saved['args'].get(k)!=v}
+            if changed: raise ValueError('Resume changes training contract: '+str(changed))
+            model.load_state_dict(saved['model']); optimizer.load_state_dict(saved['optimizer']); scaler.load_state_dict(saved['scaler'])
+            if ema is not None: ema.load_state_dict(saved['ema'])
+            vars(proto).update({k:v.to(device) if torch.is_tensor(v) else v for k,v in saved['prototype'].items()}); solver.load_state_dict(saved['solver']); budget.load_state_dict(saved['budget']); auditor.load_state_dict(saved['auditor'])
+            if saved['controller'] and not version2:
+                controller=GameController(ControllerConfig(**saved['controller']['config']));controller.load_state_dict(saved['controller'])
+                curriculum=CapabilityCurriculum(CurriculumConfig(**saved['curriculum']['config']));curriculum.load_state_dict(saved['curriculum'])
+            observations=saved['calibration_observations']; metrics=saved['last_metrics']; step=saved['step'];version=saved['encoder_version']
+            first_epoch=saved['epoch']+1;prior_elapsed=saved['elapsed_seconds']
+            gen.set_state(saved['satellite_generator'].cpu());saved['rng'].restore()
+        indexes = (audit_indices_v2(source,args.game_audit_samples_per_capture,args.seed) if version2 else
+                   audit_indices(source,args.game_audit_samples_per_capture)) if not args.game_no_audit else None
+        coordinator=None
+        if version2 and indexes is not None:
+            from .runtime_control import V2Coordinator
+            coordinator=V2Coordinator(model,source,args,proto,auditor,budget,indexes)
+            if saved is not None:
+                if saved.get('v2_coordinator') is None: raise ValueError('V2 coordinator state missing on resume')
+                coordinator.load_state_dict(saved['v2_coordinator'])
+            controller,curriculum=coordinator.controller,coordinator.curriculum
+        json_write(output/'resolved_config.json',vars(args)); json_write(output/'source_contract.json',source.info)
+        json_write(output/'parameter_roles.json',role_manifest(model))
+        from .coverage_audit import coverage_audit
+        from .data import SourceRoleDataset
+        if isinstance(source.train,SourceRoleDataset):
+            records=[source.train.base.index[i] for i in source.train.indices]
+            coverage=coverage_audit([r.rx_i for r in records],tx=[r.tx_i for r in records],day=[r.day_i for r in records],grouping_kind='whole_tx_rx_day_container')
+        else:
+&gt;           records=[source.train[i] for i in range(len(source.train))]
+E           TypeError: test_e91_resets_only_the_course_that_changes_training_policy.&lt;locals&gt;.&lt;lambda&gt;() missing 1 required positional argument: 'stop'
+
+code\cvsrffi\game_tracking\runtime.py:373: TypeError</failure></testcase><testcase classname="code.tests.test_game_tracking_runtime_v2" name="test_e91_resets_only_the_course_that_changes_training_policy[fixed-True]" time="0.158"><failure message="TypeError: test_e91_resets_only_the_course_that_changes_training_policy.&lt;locals&gt;.&lt;lambda&gt;() missing 1 required positional argument: 'stop'">tmp_path = WindowsPath('C:/Users/lh594/AppData/Local/Temp/pytest-of-lh594/pytest-7039/test_e91_resets_only_the_cours1')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x0000021A26317A30&gt;
+course = 'fixed', expected_reset = True
+
+    @pytest.mark.parametrize('course,expected_reset',[('capability',False),('fixed',True)])
+    def test_e91_resets_only_the_course_that_changes_training_policy(tmp_path,monkeypatch,course,expected_reset):
+        from cvsrffi.game_tracking import runtime_control as rc
+        torch.set_num_threads(2)
+        args=_v2_args(tmp_path/course)
+        args.game_curriculum=course;args.game_solver='optimistic';args.epochs=91
+        # Two actual updates in boundary contexts, not a claim of E1-to-E91 training.
+        monkeypatch.setattr(runtime,'range',lambda start,stop: iter((90,91)),raising=False)
+        monkeypatch.setattr(rc,'capability_audit_v2',lambda *a,**kw:
+            dict(schema='game_capability_v2',step=kw['step'],encoder_version=kw['version'],
+                 valid=False,elapsed_seconds=0.))
+        monkeypatch.setattr(rc,'game_audit_v2',lambda *a,**kw:
+            (dict(schema='game_audit_v2',step=kw['step'],encoder_version=kw['version'],
+                  lag={'status':'OPTIMIZATION_FAILURE'},elapsed_seconds=0.),{}))
+        resets=[]
+        original=runtime.GameSolver.reset_history
+        def reset(self,reason):
+            resets.append(reason);return original(self,reason)
+        monkeypatch.setattr(runtime.GameSolver,'reset_history',reset)
+&gt;       assert runtime.train(args)==0
+
+code\tests\test_game_tracking_runtime_v2.py:167: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+args = Namespace(baseline_ckpt='', from_scratch=True, split_mode='tx_rx_day_1_7_2', labeled_ratio=0.07, unlabeled_ratio=0.63,...n_steps=500, game_no_audit=False, game_export_source_predictions=False, game_skip_final_eval=True, game_config_json='')
+
+    def train(args):
+        output = Path(args.output_dir)
+        if output.exists() and any(output.iterdir()) and not args.game_resume:
+            raise FileExistsError('Output exists; refusing to overwrite '+str(output))
+        output.mkdir(parents=True,exist_ok=True)
+        if args.dry_run:
+            json_write(output/'resolved_config.json',vars(args)); return 0
+        backend=configure_determinism(args)
+        json_write(output/'backend_configuration.json',backend)
+        set_seed(args.seed)
+        device = torch.device(args.device if torch.cuda.is_available() else 'cpu')
+        source = build_source(args)
+        version2=getattr(args,'game_evidence_version',1)==2
+        if version2:
+            if getattr(args,'game_data_contract',None) and args.game_data_contract != plain(source.info):
+                raise ValueError('CHECKPOINT_DATA_CONTRACT_MISMATCH: configured vs actual source')
+            args.game_data_contract=plain(source.info)
+        model = build_model(args,len(source.domains),device)
+        ema = deepcopy(model).eval() if args.use_ema_teacher else None
+        if ema is not None:
+            for p in ema.parameters(): p.requires_grad_(False)
+        head_ids = {id(p) for p in model.adv_head.parameters()}
+        groups = [dict(params=[p for p in model.parameters() if id(p) not in head_ids],lr=args.lr),
+                  dict(params=list(model.adv_head.parameters()),lr=args.lr*args.game_head_lr_ratio)]
+        optimizer_cls = torch.optim.AdamW if args.game_optimizer=='adamw' else torch.optim.SGD
+        optimizer = optimizer_cls(groups,lr=args.lr,weight_decay=args.weight_decay)
+        scaler = make_grad_scaler(device,args.amp)
+        solver = GameSolver(model,optimizer,args.game_solver,nonfinite='skip',max_grad_norm=args.game_max_grad_norm,scaler=scaler,
+                            b8_impl=getattr(args,'game_b8_impl','reference'),telemetry_interval=getattr(args,'game_telemetry_interval',0))
+        proto = PrototypeMemoryBank(args.num_classes,len(source.domains),momentum=args.proto_momentum,
+                                    margin=args.proto_margin,domain_align_weight=args.proto_domain_align_weight,
+                                    push_weight=args.proto_push_weight,min_count=args.proto_min_count)
+        # Initialization happens outside any loss transaction.
+        proto._lazy_init(160,device,torch.float32)
+        objective = Core90Objective(model,args,proto)
+        auditor = SourceAuditor(AuditConfig(steps=args.game_probe_steps,independent_interval=args.game_independent_probe_every))
+        budget = ComputeBudget(BudgetConfig(window_steps=100,max_head_steps=20,max_field_evaluations=20,
+                                           max_audit_seconds=120.,max_correction_fraction=args.game_correction_fraction))
+        controller=curriculum=None
+        observations=[]; metrics={}; step=version=0; first_epoch=1; prior_elapsed=0.
+        gen = torch.Generator(device=device).manual_seed(args.seed+991)
+        saved = None
+        if args.game_resume:
+            saved = torch.load(args.game_resume,map_location='cpu',weights_only=False)
+            expected_schema='core90_game_epoch_boundary_v2' if version2 else SCHEMA
+            if saved.get('schema')!=expected_schema or saved.get('initialization')!='scratch_only' or saved.get('target_contact'):
+                raise ValueError('CHECKPOINT_PROVENANCE_UNVERIFIED: only this scratch lineage epoch-boundary resume is allowed')
+            if saved['source_info'] != source.info:
+                raise ValueError('CHECKPOINT_DATA_CONTRACT_MISMATCH')
+            allowed = {'game_resume','output_dir','game_skip_final_eval'}
+            changed = {k for k,v in vars(args).items() if k not in allowed and saved['args'].get(k)!=v}
+            if changed: raise ValueError('Resume changes training contract: '+str(changed))
+            model.load_state_dict(saved['model']); optimizer.load_state_dict(saved['optimizer']); scaler.load_state_dict(saved['scaler'])
+            if ema is not None: ema.load_state_dict(saved['ema'])
+            vars(proto).update({k:v.to(device) if torch.is_tensor(v) else v for k,v in saved['prototype'].items()}); solver.load_state_dict(saved['solver']); budget.load_state_dict(saved['budget']); auditor.load_state_dict(saved['auditor'])
+            if saved['controller'] and not version2:
+                controller=GameController(ControllerConfig(**saved['controller']['config']));controller.load_state_dict(saved['controller'])
+                curriculum=CapabilityCurriculum(CurriculumConfig(**saved['curriculum']['config']));curriculum.load_state_dict(saved['curriculum'])
+            observations=saved['calibration_observations']; metrics=saved['last_metrics']; step=saved['step'];version=saved['encoder_version']
+            first_epoch=saved['epoch']+1;prior_elapsed=saved['elapsed_seconds']
+            gen.set_state(saved['satellite_generator'].cpu());saved['rng'].restore()
+        indexes = (audit_indices_v2(source,args.game_audit_samples_per_capture,args.seed) if version2 else
+                   audit_indices(source,args.game_audit_samples_per_capture)) if not args.game_no_audit else None
+        coordinator=None
+        if version2 and indexes is not None:
+            from .runtime_control import V2Coordinator
+            coordinator=V2Coordinator(model,source,args,proto,auditor,budget,indexes)
+            if saved is not None:
+                if saved.get('v2_coordinator') is None: raise ValueError('V2 coordinator state missing on resume')
+                coordinator.load_state_dict(saved['v2_coordinator'])
+            controller,curriculum=coordinator.controller,coordinator.curriculum
+        json_write(output/'resolved_config.json',vars(args)); json_write(output/'source_contract.json',source.info)
+        json_write(output/'parameter_roles.json',role_manifest(model))
+        from .coverage_audit import coverage_audit
+        from .data import SourceRoleDataset
+        if isinstance(source.train,SourceRoleDataset):
+            records=[source.train.base.index[i] for i in source.train.indices]
+            coverage=coverage_audit([r.rx_i for r in records],tx=[r.tx_i for r in records],day=[r.day_i for r in records],grouping_kind='whole_tx_rx_day_container')
+        else:
+&gt;           records=[source.train[i] for i in range(len(source.train))]
+E           TypeError: test_e91_resets_only_the_course_that_changes_training_policy.&lt;locals&gt;.&lt;lambda&gt;() missing 1 required positional argument: 'stop'
+
+code\cvsrffi\game_tracking\runtime.py:373: TypeError</failure></testcase><testcase classname="code.tests.test_game_tracking_coordinator_v2" name="test_fixed_course_capability_reads_actual_epoch_policy" time="0.750"><failure message="assert 0.3 == 0.6">def test_fixed_course_capability_reads_actual_epoch_policy():
+        from cvsrffi.game_tracking.config import parse_args
+        from cvsrffi.game_tracking.data import build_source,audit_indices_v2
+        from cvsrffi.game_tracking.runtime import build_model
+        from cvsrffi.game_tracking.runtime_control import V2Coordinator
+        torch.set_num_threads(2)
+        args=parse_args(['--output_dir','unused','--game_synthetic','--device','cpu',
+                        '--game_probe_steps','1','--game_curriculum','fixed'])
+        source=build_source(args)
+        model=build_model(args,len(source.domains),torch.device('cpu'))
+        indices=audit_indices_v2(source,args.game_audit_samples_per_capture,args.seed)
+        for epoch,probability,weights in ((41,.6,[0.,.5,.5]),(131,.8,[1/3]*3)):
+            coordinator=V2Coordinator(model,source,args,None,None,
+                ComputeBudget(BudgetConfig(max_audit_seconds=100.)),indices)
+            coordinator.next_game_audit_step=10**6
+            coordinator.observe(None,step=0,version=0,epoch=epoch)
+            m=coordinator.capability_metrics
+&gt;           assert m['current_policy']['probability']==probability
+E           assert 0.3 == 0.6
+
+code\tests\test_game_tracking_coordinator_v2.py:62: AssertionError</failure></testcase></testsuite></testsuites>

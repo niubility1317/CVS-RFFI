@@ -54,6 +54,14 @@ def satellite_policy(level):
                 scenarios=['leo_clear_weak','leo_low_elev_weak','leo_rain_weak'],
                 physical_config_version='leo_weak_unchanged_v1')
 
+
+def fixed_satellite_policy(epoch):
+    active,probability=satellite_stage(epoch)
+    policy=satellite_policy(0.)
+    policy['probability']=probability
+    policy['weights']=[1./len(active) if scene in active else 0. for scene in policy['scenarios']]
+    return policy
+
 @dataclass
 class StepContext:
     x: torch.Tensor

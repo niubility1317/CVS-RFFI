@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="4.814" timestamp="2026-09-11T19:47:52.451470+08:00" hostname="DESKTOP-8RI2J69"><testcase classname="code.tests.test_game_tracking_curriculum_v2" name="test_v2_hysteresis_band_retains_readiness_but_resets_enter_confirmation" time="0.001"><failure message="assert (True and not False and 2 == 0)&#10; +  where 2 = &lt;cvsrffi.game_tracking.curriculum.CapabilityCurriculumV2 object at 0x0000029349D74610&gt;.streak">def test_v2_hysteresis_band_retains_readiness_but_resets_enter_confirmation():
+        c=curriculum.CapabilityCurriculumV2()
+        def band(step):
+            m=capability(step,identity=.6,margin=-.02)
+            m.update(next_identity=.55,next_margin=.1,next_worst_tx=.5)
+            return m
+        assert not c.update(band(0),step=0,encoder_version=0)['ready']
+        assert c.update(capability(250),step=250,encoder_version=250)['ready']
+        middle=c.update(band(500),step=500,encoder_version=500)
+&gt;       assert middle['ready'] and not middle['changed'] and c.streak==0
+E       assert (True and not False and 2 == 0)
+E        +  where 2 = &lt;cvsrffi.game_tracking.curriculum.CapabilityCurriculumV2 object at 0x0000029349D74610&gt;.streak
+
+code\tests\test_game_tracking_curriculum_v2.py:68: AssertionError</failure></testcase></testsuite></testsuites>

@@ -12,7 +12,7 @@ from .capability import CapabilityConfig, evaluate_capability_v2
 from .controller import ControllerConfig, GameControllerV2
 from .curriculum import CurriculumConfigV2, CapabilityCurriculumV2
 from .source_audit import isolated_rng
-from .step_context import satellite_policy
+from .step_context import satellite_policy, fixed_satellite_policy
 
 
 def game_audit_v2(*args, **kwargs):
@@ -20,11 +20,14 @@ def game_audit_v2(*args, **kwargs):
     return run(*args, **kwargs)
 
 
-def capability_audit_v2(model,source,indexes,args,*,step,version,policy_level):
+def capability_audit_v2(model,source,indexes,args,*,step,version,policy_level,epoch=1):
     """Fit once on L_s fit containers; test same monitor on two policies."""
     from .runtime import extract
     from cvsrffi.eval import apply_sat_channel_for_scenario
     started=time.perf_counter()
+    adaptive=args.game_curriculum=='capability'
+    current_policy=satellite_policy(policy_level) if adaptive else fixed_satellite_policy(epoch)
+    next_policy=satellite_policy(min(1.,policy_level+.1)) if adaptive else deepcopy(current_policy)
     with isolated_rng(2718):
         owned=deepcopy(model).eval()
         fit=extract(owned,source.train,indexes['capability_fit'],args.eval_batch_size)
@@ -42,8 +45,7 @@ def capability_audit_v2(model,source,indexes,args,*,step,version,policy_level):
                 channel_gen=torch.Generator(device=device).manual_seed(92718+i)
                 channel_views.append(apply_sat_channel_for_scenario(mon['x'],scene,args,
                                      gen=channel_gen,return_meta=False)[0])
-            for name,level in [('current',policy_level),('next',min(1.,policy_level+.1))]:
-                policy=satellite_policy(level)
+            for name,policy in [('current',current_policy),('next',next_policy)]:
                 boundary=torch.tensor(policy['weights'],device=device).cumsum(0)
                 category=torch.searchsorted(boundary,mixture).clamp_max(2)
                 x=mon['x'].clone()
@@ -59,8 +61,9 @@ def capability_audit_v2(model,source,indexes,args,*,step,version,policy_level):
             policy_level=policy_level,config=CapabilityConfig(steps=args.game_probe_steps,
                 lr=args.game_capability_lr),step=step,encoder_version=version,
             independence_verified=True)
-        result.update(current_policy=satellite_policy(policy_level),
-                      next_policy=satellite_policy(min(1.,policy_level+.1)),
+        result.update(current_policy=current_policy,next_policy=next_policy,
+                      policy_kind='adaptive' if adaptive else 'fixed',
+                      next_policy_role='adaptive_level_plus_0.1' if adaptive else 'fixed_policy_no_adaptive_candidate',
                       source_role='L_s',readout_head_shared=True,
                       elapsed_seconds=time.perf_counter()-started)
     return result
@@ -97,7 +100,7 @@ def calibrate_game_v2(observations,capabilities,args):
         m['lag'].get('status') in ('RELIABLE_HIGH_GAP','RELIABLE_LOW_GAP') and
         isinstance(m['lag'].get('gap_normalized'),(float,int)) and math.isfinite(m['lag']['gap_normalized'])]
     caps=_valid_capabilities(capabilities)
-    if len(valid)<3 or len(caps)<3 or args.game_max_extra_head<1:return None
+    if len(valid)<3 or len(caps)<3:return None
     values=[m['gap_normalized'] for m in valid]
     threshold=max(.01,float(np.quantile(values,.75)+np.std(values)))
     freshness=max(1,min(10,args.game_audit_interval//10))
@@ -129,7 +132,8 @@ class V2Coordinator:
             forecast=max(.001,self.capability_metrics.get('elapsed_seconds',1.) or 1.)
             if self.budget.can_afford(step,audit_seconds=forecast)[0]:
                 self.capability_metrics=capability_audit_v2(self.model,self.source,self.indexes,self.args,
-                    step=step,version=version,policy_level=self.curriculum.level if self.curriculum else 0.)
+                    step=step,version=version,epoch=epoch,
+                    policy_level=self.curriculum.level if self.curriculum else 0.)
                 self.budget.commit(step,audit_seconds=self.capability_metrics['elapsed_seconds'])
             else:
                 self.capability_metrics=dict(schema='game_capability_v2',step=step,encoder_version=version,
