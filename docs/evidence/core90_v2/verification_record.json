@@ -1,0 +1,980 @@
+{
+  "kind": "combined_regression_record_not_one_all_green_invocation",
+  "initial_run": {
+    "passed": 187,
+    "failed": 1,
+    "seconds": 147.59
+  },
+  "final_unique_cases": 193,
+  "unresolved_failures": 0,
+  "collection_count_verified": 192,
+  "additional_matrix_checks": "12 matrix plus 2 determinism passed; later strong-source selection 1 passed",
+  "cases": [
+    {
+      "id": "code.tests.test_game_tracking_activation.test_actual_runtime_catchup_correction_and_curriculum",
+      "status": "PASS_AFTER_FIX",
+      "evidence": "focused activation run: 2 passed; legacy fixture explicitly selects v1"
+    },
+    {
+      "id": "code.tests.test_game_tracking_analysis.test_missing_artifacts_are_pending_not_zero",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_analysis.test_full_stream_reads_late_rows_and_survives_corrupt_tail",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_analysis.test_actual_activation_failure_and_resource_totals",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_analysis.test_incomplete_counter_does_not_silently_underreport",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_analysis.test_capability_uses_epoch_upper_bound_not_audit_duration",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_analysis.test_pairing_is_same_seed_not_false_compute_matching",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_analysis.test_duplicate_seed_row_rejected_and_duplicate_log_not_complete",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_analysis.test_cli_writes_reviewable_json_markdown_without_overwrite",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_analysis_v2.test_conditional_shared_subset_and_opaque_join",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_analysis_v2.test_truth_not_opened_before_complete_prediction_validation[missing]",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_analysis_v2.test_truth_not_opened_before_complete_prediction_validation[duplicate]",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_analysis_v2.test_truth_not_opened_before_complete_prediction_validation[unclosed]",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_analysis_v2.test_truth_not_opened_before_complete_prediction_validation[wrong_count]",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_analysis_v2.test_truth_not_opened_before_complete_prediction_validation[wrong_ids]",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_analysis_v2.test_truth_not_opened_before_complete_prediction_validation[truth_leak]",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_analysis_v2.test_factorial_is_per_seed_and_does_not_mix_missing_rows",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_analysis_v2.test_native_target_manifest_requires_every_declared_model_closed",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_analysis_v2.test_dense_source_metrics_include_worst_rx_tx_and_histogram",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_analysis_v2.test_failure_diagnostics_do_not_invent_collapse_from_loss",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_audit_control.test_recovery_analytical_and_no_online_or_rng_mutation",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_audit_control.test_group_split_and_overlap_and_unverified",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_audit_control.test_imbalanced_metrics_are_not_chance_accuracy",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_audit_control.test_native_domain_task_is_not_rx_and_single_class_is_invalid",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_audit_control.test_probe_cannot_fit_validation_or_missing_monitor_classes",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_audit_control.test_gradient_conflict_and_zero_norm_invalid",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_audit_control.test_capability_cross_rx_margin_and_collapse_counterexample",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_audit_control.test_margin_missing_coverage_and_branch_interface",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_audit_control.test_controller_confirmation_stale_budget_and_resume",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_audit_control.test_controller_correct_and_hold_states_and_hysteresis",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_audit_control.test_budget_actual_cost_window_cap_fraction_and_resume",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_audit_control.test_curriculum_no_flapping_forced_upgrade_or_repeated_evidence",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_audit_control.test_coverage_forbids_hidden_tx_and_reports_association",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_audit_control.test_curriculum_requires_measured_finite_enter_consistency[-0.4]",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_audit_control.test_curriculum_requires_measured_finite_enter_consistency[0.59]",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_audit_control.test_curriculum_requires_measured_finite_enter_consistency[0.79]",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_audit_control.test_curriculum_requires_measured_finite_enter_consistency[nan]",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_audit_control.test_curriculum_requires_measured_finite_enter_consistency[inf]",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_audit_control.test_curriculum_requires_measured_finite_enter_consistency[None]",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_audit_control.test_curriculum_requires_measured_finite_enter_consistency[missing]",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_audit_control.test_curriculum_consistency_hysteresis_and_resume",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_b8_fastpath.test_head_gradient_scope_exact_state[True]",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_b8_fastpath.test_head_gradient_scope_exact_state[False]",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_b8_fastpath.test_graph_requires_objective_contract",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_b8_fastpath.test_full_core_objective[False-head_grad_only-1]",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_b8_fastpath.test_full_core_objective[False-head_grad_only-80]",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_b8_fastpath.test_full_core_objective[False-head_grad_only-131]",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_b8_fastpath.test_full_core_objective[False-graph_reuse-1]",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_b8_fastpath.test_full_core_objective[False-graph_reuse-80]",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_b8_fastpath.test_full_core_objective[False-graph_reuse-131]",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_b8_fastpath.test_full_core_objective[True-head_grad_only-1]",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_b8_fastpath.test_full_core_objective[True-head_grad_only-80]",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_b8_fastpath.test_full_core_objective[True-head_grad_only-131]",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_b8_fastpath.test_full_core_objective[True-graph_reuse-1]",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_b8_fastpath.test_full_core_objective[True-graph_reuse-80]",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_b8_fastpath.test_full_core_objective[True-graph_reuse-131]",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_b8_fastpath.test_graph_existing_moments_and_failure_atomicity",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_catchup_v2.test_v2_catchup_uses_combined_training_head_and_only_commits_head",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_compat.test_scaler_on_torch_without_unified_amp_factory",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_controller_v2.test_failed_probe_cannot_correct_or_reduce_cadence",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_controller_v2.test_single_observation_one_action_survives_resume",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_controller_v2.test_future_stale_or_clean_subset_gradients_do_not_correct",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_controller_v2.test_budget_denial_does_not_claim_committed_action",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_controller_v2.test_legacy_capability_cannot_be_wrapped_as_v2_control_evidence",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_coordinator_v2.test_independent_clocks_and_resume",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_coordinator_v2.test_capability_calibration_does_not_need_reliable_lag",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_curriculum_v2.test_effective_continuous_policy_changes_at_each_increment",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_curriculum_v2.test_capability_clock_does_not_require_lag_or_cosine_and_resumes_exactly",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_curriculum_v2.test_high_cosine_random_identity_or_invalid_next_view_cannot_upgrade",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_curriculum_v2.test_old_schema_cannot_silently_drive_new_curriculum",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_curriculum_v2.test_v2_hysteresis_band_retains_readiness_but_cannot_enter",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_curriculum_v2.test_v2_hysteresis_exit_resets_all_confirmations[identity-0.49]",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_curriculum_v2.test_v2_hysteresis_exit_resets_all_confirmations[margin--0.051]",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_curriculum_v2.test_v2_hysteresis_exit_resets_all_confirmations[next_identity-0.44]",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_curriculum_v2.test_v2_hysteresis_respects_cooldown_and_new_evidence",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_curriculum_v2.test_same_identity_head_measures_current_and_next_view_without_fitting_monitor",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_curriculum_v2.test_invalid_current_view_returns_unavailable_consistency",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_evidence_v2.test_near_optimal_zero_improvement_is_reliable_low",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_evidence_v2.test_underfit_head_recovers_and_preserves_state",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_evidence_v2.test_incomplete_budget_and_unstable_are_unknown_not_zero",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_evidence_v2.test_train_mode_requires_fixed_random_state_and_surrogate_never_controls",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_evidence_v2.test_schema_explicitly_rejects_v1",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_evidence_v2.test_cross_tx_two_folds_and_monitor_never_selects_endpoint",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_evidence_v2.test_large_lr_finite_divergence_is_failure_and_weighted_target_exact",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_evidence_v2.test_monitor_changes_cannot_select_or_backprop_and_transfer_is_separate",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_evidence_v2.test_training_bn_dropout_owned_copy_preserves_buffers_and_mixed_modes",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_evidence_v2.test_objective_scale_zero_inactive_and_scaled_gradient_reported",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_field.test_actual_local_field_signed_derivatives_and_jvp_finite_difference",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_field.test_local_audit_preserves_model_buffers_gradients_flags_and_rng",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_field.test_unsupported_actual_model_returns_precise_invalid_without_discard",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_field.test_fishr_value_and_first_derivative_match_legacy",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_field.test_fishr_second_derivative_matches_gradient_finite_difference",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_field.test_response_uses_actual_displacement_and_only_final_layer_commit",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_field.test_response_monitor_rejection_preserves_live_model_and_bad_delta_invalid",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_field.test_response_spd_and_logit_linear_contract_fail_closed",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_field.test_dynamic_target_response_preserves_first_field_and_correct_jacobian[False]",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_field.test_dynamic_target_response_preserves_first_field_and_correct_jacobian[True]",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_field.test_dynamic_target_no_grad_random_draws_replay_same_problem",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_field.test_full_core90_field_matches_actual_grl_first_update_all_aux_fishr_and_dropout[legacy_weighted]",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_field.test_full_core90_field_matches_actual_grl_first_update_all_aux_fishr_and_dropout[separate_head_scale]",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_field.test_full_core90_field_jvp_agrees_with_first_field_finite_difference",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_field.test_full_field_audit_fails_closed_for_unsupported_aux_operator",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_field.test_real_frozen_legacy_backbone_full_field_audit",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_integration.test_hidden_metadata_and_capture_grouping",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_integration.test_real_core90_all_stage_terms_and_transactions[1-simultaneous]",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_integration.test_real_core90_all_stage_terms_and_transactions[41-extragradient]",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_integration.test_real_core90_all_stage_terms_and_transactions[80-heun]",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_integration.test_real_core90_all_stage_terms_and_transactions[131-extragradient]",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_integration.test_real_core90_all_stage_terms_and_transactions[200-optimistic]",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_integration.test_actual_audit_preserves_training_state_and_maps_gradient_fields",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_integration.test_checkpoint_initialization_permission",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_matrix.test_v2_factorial_has_six_paired_rows_with_no_audit",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_matrix.test_strong_source_selection_frozen_rule_and_missing_runs_deferred",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_matrix.test_default_matrix_paired_seed_scratch_source_only",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_matrix.test_all_configs_parse_and_replay_is_explicit",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_matrix.test_evaluator_closes_all_predictions_before_truth_and_preserves_state",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_matrix.test_independent_group_metrics_and_completeness",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_matrix.test_prediction_artifact_negative_cases[duplicate]",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_matrix.test_prediction_artifact_negative_cases[hidden_truth]",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_matrix.test_prediction_artifact_negative_cases[target_id]",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_matrix.test_prediction_artifact_negative_cases[nan]",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_matrix.test_prediction_artifact_negative_cases[bad_class]",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_matrix.test_default_physical_leo_evaluation_is_deterministic",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_negative_controls.test_v2_audit_no_action_boundary_trajectory[epochs0-None]",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_negative_controls.test_v2_audit_no_action_boundary_trajectory[epochs1-None]",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_negative_controls.test_v2_audit_no_action_boundary_trajectory[epochs2-None]",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_negative_controls.test_v2_audit_no_action_boundary_trajectory[epochs3-None]",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_negative_controls.test_v2_audit_no_action_boundary_trajectory[epochs4-masks4]",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_negative_controls.test_first_difference_reports_exact_state_path",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_negative_controls.test_v2_runtime_checkpoint_trajectory_audit_and_disabled_actions",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_probe_development.test_candidate_selection_is_frozen_source_fit_only",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_reaudit.test_u_epoch_rotation_covers_pool_and_preserves_neighbors",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_reaudit.test_optimistic_pseudo_history_only_resets_on_large_change",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_reaudit.test_rotated_u_blocks_allow_temporal_gate_without_hidden_tx",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_reaudit.test_pseudo_window_retains_history_between_observations",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_reference_coverage.test_reference_balanced_covers_all_ninety_containers_without_rng_side_effect",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_reference_coverage.test_reference_rejects_hidden_target_and_missing_container_metadata",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_reference_coverage.test_v2_reference_uses_whole_containers_and_keeps_h1_sides_disjoint",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_replay.test_replay_fixed_random_preserve_joint_action_counts",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_replay.test_invalid_or_incomplete_donor_fails_closed[same_seed]",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_replay.test_invalid_or_incomplete_donor_fails_closed[target]",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_replay.test_invalid_or_incomplete_donor_fails_closed[missing_source_evidence]",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_replay.test_invalid_or_incomplete_donor_fails_closed[partial_epoch]",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_replay.test_invalid_or_incomplete_donor_fails_closed[truncated_config]",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_replay.test_invalid_or_incomplete_donor_fails_closed[missing_step]",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_replay.test_invalid_or_incomplete_donor_fails_closed[duplicate_step]",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_replay.test_invalid_or_incomplete_donor_fails_closed[epoch_hole]",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_replay.test_invalid_or_incomplete_donor_fails_closed[unknown_action]",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_replay.test_invalid_or_incomplete_donor_fails_closed[bad_committed]",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_replay.test_invalid_or_incomplete_donor_fails_closed[target_guard]",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_replay.test_invalid_or_incomplete_donor_fails_closed[invalid_lineage]",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_replay.test_invalid_or_incomplete_donor_fails_closed[missing_acceptance]",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_replay.test_persisted_runtime_schedule_and_optional_curriculum_interface",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_replay.test_missing_resource_cost_is_unknown_and_zero_active_schedule_valid",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_replay.test_curriculum_outside_complete_horizon_is_rejected",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_replay.test_v2_requires_lawful_donor_and_matching_contract",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_replay.test_exposure_masks_and_phase_counts_are_realized_not_probabilities",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_resume.test_epoch_checkpoint_resume_matches_uninterrupted_actual_training",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_resume.test_audit_only_matches_no_audit_actual_training_trajectory",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_runtime_audit_v2.test_missing_capture_cannot_claim_representative_coverage",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_runtime_audit_v2.test_v2_train_head_same_target_and_no_caller_mutation",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_runtime_audit_v2.test_full_objective_gradient_replay_and_head_scale_sign_equivalence",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_runtime_audit_v2.test_reference_head_ce_deterioration_cannot_authorize_direction",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_runtime_v2.test_v2_replay_records_requested_but_rejects_untrusted_state",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_runtime_v2.test_v2_rejects_legacy_online_random_schedule",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_runtime_v2.test_v2_context_records_exact_mask_seed_and_replays_received_view",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_runtime_v2.test_v2_no_audit_runtime_persists_new_implementation_and_exposure",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_runtime_v2.test_v2_audit_only_and_epoch_resume_preserve_actual_training",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_runtime_v2.test_runtime_consumes_frozen_actual_exposure_schedule",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_solvers.test_bilinear_exact_radius[simultaneous-<lambda>]",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_solvers.test_bilinear_exact_radius[extragradient-<lambda>]",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_solvers.test_bilinear_exact_radius[heun-<lambda>]",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_solvers.test_adamw_predictor_uses_old_state_and_one_formal_step[extragradient]",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_solvers.test_adamw_predictor_uses_old_state_and_one_formal_step[heun]",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_solvers.test_adamw_predictor_uses_old_state_and_one_formal_step[head_lookahead]",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_solvers.test_shared_parameters_have_one_owner_and_inactive_grad_none",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_solvers.test_bn_and_dropout_replay_commit_entire_first_closure_only",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_solvers.test_nonfinite_corrector_rolls_back_weights_moments_buffers_rng",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_solvers.test_optimistic_resume_and_reset",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_solvers.test_alternating_updates_head_once_preserves_encoder_input_gradient",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_solvers.test_explicit_jacobian_bilinear_and_finite_difference",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_solvers.test_implicit_response_matches_regularized_linear_solution",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_solvers.test_response_non_pd_and_budget_fallback",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_solvers.test_scaler_growth_once_and_atomic_backoff",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_solvers.test_frozen_head_keeps_input_derivative",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_solvers.test_plain_mode_matches_native_adamw_update",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_solvers.test_alternating_linear_map_unit_determinant_and_bounded_eigenvalues",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_solvers.test_full_predictor_cannot_silently_exclude_head",
+      "status": "PASS",
+      "evidence": "pytest_integration.xml"
+    },
+    {
+      "id": "code.tests.test_game_tracking_activation.test_v2_typed_evidence_commits_real_actions_once",
+      "status": "PASS_FOCUSED",
+      "evidence": "subsequent focused execution; stdout retained in task"
+    },
+    {
+      "id": "code.tests.test_game_tracking_runtime_v2.test_objective_stage_boundary_expires_prior_game_evidence",
+      "status": "PASS_FOCUSED",
+      "evidence": "subsequent focused execution; stdout retained in task"
+    },
+    {
+      "id": "code.tests.test_game_tracking_determinism.test_explicit_deterministic_runtime_sets_backend_before_seed",
+      "status": "PASS_FOCUSED",
+      "evidence": "subsequent focused execution; stdout retained in task"
+    },
+    {
+      "id": "code.tests.test_game_tracking_determinism.test_inactive_determinism_does_not_reconfigure_backend",
+      "status": "PASS_FOCUSED",
+      "evidence": "subsequent focused execution; stdout retained in task"
+    },
+    {
+      "id": "code.tests.test_game_tracking_b8_fastpath.test_graph_amp_is_rejected_before_any_update",
+      "status": "PASS_FOCUSED",
+      "evidence": "new AMP/CUDA and CPU-autocast rejection test; red then green"
+    }
+  ],
+  "additional_collected_case": "one subsequent graph AMP support-boundary test"
+}

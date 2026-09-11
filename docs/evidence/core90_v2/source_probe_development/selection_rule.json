@@ -1,0 +1,28 @@
+{
+  "rule": "complete_reliable_control_ready_then_minimum_same_target_fit_endpoint_CE; old_lr_reference_excluded",
+  "candidates": [
+    [
+      0.0002,
+      40
+    ],
+    [
+      0.0002,
+      120
+    ],
+    [
+      0.002,
+      40
+    ],
+    [
+      0.002,
+      120
+    ],
+    [
+      0.02,
+      40
+    ]
+  ],
+  "source_only": true,
+  "checkpoint_loaded": false,
+  "target_access": false
+}

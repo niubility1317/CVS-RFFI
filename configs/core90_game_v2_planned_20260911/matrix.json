@@ -1,7 +1,7 @@
 {
   "schema": "core90_game_matrix_v2",
   "status": "CONFIGURED_NOT_LAUNCHED",
-  "b8_implementation_acceptance": "PENDING_B8_LONG_TRAJECTORY_ACCEPTANCE",
+  "b8_implementation_acceptance": "VERIFIED_LOCAL_DETERMINISTIC_FIXED_CONTEXT_AND_TIMED_ENDPOINTS",
   "source_development_only": true,
   "target_evaluation": false,
   "checkpoint_selection": "fixed_final_E200",
@@ -904,5 +904,6 @@
       ]
     }
   ],
-  "backend_requirement": "explicit deterministic CUDA backend on every paired row"
+  "backend_requirement": "explicit deterministic CUDA backend on every paired row",
+  "acceptance_scope": "Local functional acceptance; formal E200 and performance confirmation not launched"
 }

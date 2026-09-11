@@ -1,0 +1,696 @@
+{
+  "schema": "core90_b8_first_divergence_v2",
+  "torch": "2.10.0+cu128",
+  "device": "NVIDIA GeForce RTX 5070 Ti",
+  "atol": 1e-06,
+  "rtol": 1e-05,
+  "stage": 131,
+  "steps_budget": 8,
+  "source_path": "E:/type10-7/local_artifacts/cvs_publication_inputs_20260713/ManySig.pkl",
+  "source_counts": {
+    "L_s": 6300,
+    "U_s": 56700,
+    "V": 27000
+  },
+  "rows": [
+    {
+      "deterministic": true,
+      "left": "reference",
+      "right": "graph_reuse",
+      "steps": [
+        {
+          "step": 0,
+          "loss_left": 28.894962310791016,
+          "loss_right": 28.894962310791016,
+          "checks": {
+            "parameters_buffers": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "optimizer": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "RNG": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "mask": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "prototype": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "predictor_clipped": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "corrector": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "formal_clipped": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "virtual_update": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "formal_update": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "origin_head_raw": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            }
+          }
+        },
+        {
+          "step": 1,
+          "loss_left": 28.201560974121094,
+          "loss_right": 28.201560974121094,
+          "checks": {
+            "parameters_buffers": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "optimizer": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "RNG": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "mask": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "prototype": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "predictor_clipped": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "corrector": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "formal_clipped": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "virtual_update": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "formal_update": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "origin_head_raw": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            }
+          }
+        },
+        {
+          "step": 2,
+          "loss_left": 28.054790496826172,
+          "loss_right": 28.054790496826172,
+          "checks": {
+            "parameters_buffers": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "optimizer": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "RNG": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "mask": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "prototype": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "predictor_clipped": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "corrector": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "formal_clipped": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "virtual_update": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "formal_update": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "origin_head_raw": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            }
+          }
+        },
+        {
+          "step": 3,
+          "loss_left": 27.186168670654297,
+          "loss_right": 27.186168670654297,
+          "checks": {
+            "parameters_buffers": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "optimizer": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "RNG": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "mask": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "prototype": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "predictor_clipped": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "corrector": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "formal_clipped": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "virtual_update": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "formal_update": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "origin_head_raw": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            }
+          }
+        },
+        {
+          "step": 4,
+          "loss_left": 27.213415145874023,
+          "loss_right": 27.213415145874023,
+          "checks": {
+            "parameters_buffers": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "optimizer": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "RNG": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "mask": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "prototype": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "predictor_clipped": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "corrector": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "formal_clipped": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "virtual_update": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "formal_update": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "origin_head_raw": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            }
+          }
+        },
+        {
+          "step": 5,
+          "loss_left": 27.16708755493164,
+          "loss_right": 27.16708755493164,
+          "checks": {
+            "parameters_buffers": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "optimizer": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "RNG": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "mask": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "prototype": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "predictor_clipped": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "corrector": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "formal_clipped": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "virtual_update": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "formal_update": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "origin_head_raw": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            }
+          }
+        },
+        {
+          "step": 6,
+          "loss_left": 27.093555450439453,
+          "loss_right": 27.093555450439453,
+          "checks": {
+            "parameters_buffers": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "optimizer": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "RNG": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "mask": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "prototype": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "predictor_clipped": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "corrector": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "formal_clipped": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "virtual_update": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "formal_update": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "origin_head_raw": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            }
+          }
+        },
+        {
+          "step": 7,
+          "loss_left": 27.32891273498535,
+          "loss_right": 27.32891273498535,
+          "checks": {
+            "parameters_buffers": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "optimizer": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "RNG": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "mask": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "prototype": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "predictor_clipped": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "corrector": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "formal_clipped": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "virtual_update": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "formal_update": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            },
+            "origin_head_raw": {
+              "exact": true,
+              "within_tolerance": true,
+              "first_exact_difference": [],
+              "first_tolerance_failure": [],
+              "different_tensors": 0
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

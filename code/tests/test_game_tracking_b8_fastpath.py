@@ -28,6 +28,24 @@ class Small(nn.Module):
         return z.square().mean()+(h.square().mean() if adv else z.sum()*0)
 
 
+def test_graph_amp_is_rejected_before_any_update():
+    from types import SimpleNamespace
+    from cvsrffi.game_tracking.config import parse_args
+    with pytest.raises(ValueError,match='FP32'):
+        parse_args(['--output_dir','unused','--game_solver','head_lookahead',
+                    '--game_b8_impl','graph_reuse','--amp','true'])
+    model=Small();optimizer=torch.optim.AdamW(model.parameters())
+    solver=GameSolver(model,optimizer,'head_lookahead',b8_impl='graph_reuse',
+                      scaler=SimpleNamespace(is_enabled=lambda:True))
+    with pytest.raises(ValueError,match='FP32'):
+        solver.step(SimpleNamespace(corrector=lambda:None))
+    assert not optimizer.state
+    solver.scaler=None
+    with torch.autocast('cpu',dtype=torch.bfloat16):
+        with pytest.raises(ValueError,match='FP32'):
+            solver.step(SimpleNamespace(corrector=lambda:None))
+
+
 @pytest.mark.parametrize('adv',[True,False])
 def test_head_gradient_scope_exact_state(adv):
     torch.set_num_threads(2); torch.manual_seed(12)

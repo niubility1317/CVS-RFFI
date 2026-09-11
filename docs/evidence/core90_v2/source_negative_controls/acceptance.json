@@ -1,0 +1,108 @@
+{
+  "kind": "source_functional_stage_jump_replay_not_formal_training",
+  "initialization": "scratch_only",
+  "epochs": [
+    1,
+    40,
+    41,
+    79,
+    80,
+    130,
+    131
+  ],
+  "target_access": false,
+  "validation_fit": false,
+  "comparison": "exact_all_tensors_rng_integer_masks_no_tolerance",
+  "comparisons": [
+    {
+      "branch": "audit_only",
+      "step": 0,
+      "epoch": 1,
+      "first_difference": null
+    },
+    {
+      "branch": "audit_only",
+      "step": 1,
+      "epoch": 40,
+      "first_difference": null
+    },
+    {
+      "branch": "audit_only",
+      "step": 2,
+      "epoch": 41,
+      "first_difference": null
+    },
+    {
+      "branch": "audit_only",
+      "step": 3,
+      "epoch": 79,
+      "first_difference": null
+    },
+    {
+      "branch": "audit_only",
+      "step": 4,
+      "epoch": 80,
+      "first_difference": null
+    },
+    {
+      "branch": "audit_only",
+      "step": 5,
+      "epoch": 130,
+      "first_difference": null
+    },
+    {
+      "branch": "audit_only",
+      "step": 6,
+      "epoch": 131,
+      "first_difference": null
+    },
+    {
+      "branch": "no_action_controller",
+      "step": 0,
+      "epoch": 1,
+      "first_difference": null
+    },
+    {
+      "branch": "no_action_controller",
+      "step": 1,
+      "epoch": 40,
+      "first_difference": null
+    },
+    {
+      "branch": "no_action_controller",
+      "step": 2,
+      "epoch": 41,
+      "first_difference": null
+    },
+    {
+      "branch": "no_action_controller",
+      "step": 3,
+      "epoch": 79,
+      "first_difference": null
+    },
+    {
+      "branch": "no_action_controller",
+      "step": 4,
+      "epoch": 80,
+      "first_difference": null
+    },
+    {
+      "branch": "no_action_controller",
+      "step": 5,
+      "epoch": 130,
+      "first_difference": null
+    },
+    {
+      "branch": "no_action_controller",
+      "step": 6,
+      "epoch": 131,
+      "first_difference": null
+    }
+  ],
+  "probe_config": null,
+  "probe_steps": 2,
+  "probe_lr": 0.002,
+  "audit_samples_per_capture": 2,
+  "scope_note": "This replay budget is independent of the separately selected source probe budget.",
+  "status": "VERIFIED"
+}

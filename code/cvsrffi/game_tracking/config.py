@@ -96,6 +96,8 @@ def validate(a):
         raise ValueError('Invalid pseudo distribution change window/threshold')
     if a.game_evidence_version not in (1,2) or a.game_b8_impl not in ('reference','head_grad_only','graph_reuse'):
         raise ValueError('Unknown game evidence or B8 implementation version')
+    if a.game_solver=='head_lookahead' and a.game_b8_impl=='graph_reuse' and a.amp:
+        raise ValueError('graph_reuse is validated for FP32 only; AMP is not supported')
     if a.game_capability_interval<1 or a.game_audit_interval<1 or min(a.game_probe_lr,a.game_capability_lr)<=0:
         raise ValueError('Invalid independent audit/capability configuration')
     if a.game_telemetry_interval<0 or a.game_data_order_seed < -1 or not isinstance(a.game_data_contract,dict):

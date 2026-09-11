@@ -173,6 +173,14 @@ class GameSolver:
         if exclude_head and self.mode in {"extragradient", "heun", "head_lookahead"}:
             raise ValueError("Coupled predictor modes must include all active head parameters")
         graph = self.mode == "head_lookahead" and self.b8_impl == "graph_reuse"
+        autocast_active = torch.is_autocast_enabled()
+        if graph and self.parameters and self.parameters[0].device.type == 'cpu':
+            try:
+                autocast_active = autocast_active or torch.is_autocast_enabled('cpu')
+            except TypeError:  # PyTorch 2.1 lacks the device argument.
+                autocast_active = autocast_active or torch.is_autocast_cpu_enabled()
+        if graph and ((self.scaler is not None and self.scaler.is_enabled()) or autocast_active):
+            raise ValueError("graph_reuse is validated for FP32 only; AMP is not supported")
         if graph and not hasattr(closure, "corrector"):
             raise NotImplementedError("graph_reuse requires a validated reusable objective")
         if predictor_grad_scope not in (None, "all", "head_only"):

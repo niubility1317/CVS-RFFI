@@ -1,0 +1,8 @@
+{
+  "selection_rule": "complete_reliable_control_ready_then_minimum_same_target_fit_endpoint_CE; old_lr_reference_excluded",
+  "evidence": "development.json",
+  "selected": "lr0.002_steps120",
+  "source_only": true,
+  "target_used_for_selection": false,
+  "scope": "frozen_source_development_configuration_not_default_parser_change"
+}

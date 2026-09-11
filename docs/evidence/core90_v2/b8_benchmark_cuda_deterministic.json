@@ -1,0 +1,746 @@
+{
+  "schema": "core90_b8_benchmark_v2",
+  "device": "cuda",
+  "torch": "2.10.0+cu128",
+  "source_kind": "REAL_SOURCE_FIXED_CONTEXT",
+  "checkpoint": "scratch_only",
+  "budgets": {
+    "implementation": "all",
+    "stage": "all",
+    "warmup": 20,
+    "steps": 100,
+    "repeats": 3,
+    "batch_size": 90,
+    "device": "cuda",
+    "wisig_pkl": "E:/type10-7/local_artifacts/cvs_publication_inputs_20260713/ManySig.pkl",
+    "synthetic": false,
+    "isolated_device": false,
+    "allow_nondeterministic": false,
+    "telemetry_interval": 0,
+    "output": "local_artifacts\\core90_v2\\b8_benchmark_cuda_deterministic.json"
+  },
+  "determinism": {
+    "algorithms": true,
+    "cudnn_deterministic": true,
+    "cudnn_benchmark": false,
+    "cublas_workspace_config": ":4096:8",
+    "matmul_allow_tf32": false,
+    "cudnn_allow_tf32": true
+  },
+  "source_counts": {
+    "L_s": 6300,
+    "U_s": 56700,
+    "V": 27000
+  },
+  "wallclock_attribution": "UNKNOWN_SHARED_LOAD",
+  "rows": [
+    {
+      "stage": 1,
+      "implementation": "reference",
+      "equivalence": "PASSED_ATOL_1e-6_RTOL_1e-5",
+      "equivalence_scope": "single_same_initial_state_step_before_timing",
+      "timed_endpoint_equivalence": "REFERENCE_BASELINE",
+      "seconds_per_step": [
+        1.1979425690000063,
+        1.2647438549999788,
+        1.3897222630000032
+      ],
+      "median": 1.2647438549999788,
+      "range": [
+        1.1979425690000063,
+        1.3897222630000032
+      ],
+      "peaks": [
+        {
+          "allocated": 674848256,
+          "reserved": 744488960,
+          "baseline_allocated": 101797888,
+          "baseline_reserved": 744488960,
+          "incremental_allocated": 573050368
+        },
+        {
+          "allocated": 674848256,
+          "reserved": 744488960,
+          "baseline_allocated": 101797888,
+          "baseline_reserved": 744488960,
+          "incremental_allocated": 573050368
+        },
+        {
+          "allocated": 674848256,
+          "reserved": 744488960,
+          "baseline_allocated": 101797888,
+          "baseline_reserved": 744488960,
+          "incremental_allocated": 573050368
+        }
+      ],
+      "counts": [
+        {
+          "model_forward": 200,
+          "head_forward": 200,
+          "field_backward": 200,
+          "telemetry_backward": 0
+        },
+        {
+          "model_forward": 200,
+          "head_forward": 200,
+          "field_backward": 200,
+          "telemetry_backward": 0
+        },
+        {
+          "model_forward": 200,
+          "head_forward": 200,
+          "field_backward": 200,
+          "telemetry_backward": 0
+        }
+      ],
+      "telemetry_interval": 0,
+      "pseudo_selected": 0,
+      "origin_terms": {
+        "tx": 5.83523416519165,
+        "dom": 1.7483669519424438,
+        "adv": 2.6504290103912354,
+        "orth": 0.0013512761797755957,
+        "cons": 0.0,
+        "group_ce": 7.616568565368652,
+        "fishr": 0.00862301979213953,
+        "proto": 0.0,
+        "open_world_feat": 0.0,
+        "zid_compact": 0.0,
+        "proxy_unknown": 0.0,
+        "soft_unknown_mixup": 0.0,
+        "source_episode": 0.0,
+        "sat_cls": -0.0
+      }
+    },
+    {
+      "stage": 1,
+      "implementation": "head_grad_only",
+      "equivalence": "PASSED_ATOL_1e-6_RTOL_1e-5",
+      "equivalence_scope": "single_same_initial_state_step_before_timing",
+      "timed_endpoint_equivalence": "PASSED_ATOL_1e-6_RTOL_1e-5",
+      "seconds_per_step": [
+        1.1554993980001018,
+        1.1791791899999953,
+        1.1790208650000569
+      ],
+      "median": 1.1790208650000569,
+      "range": [
+        1.1554993980001018,
+        1.1791791899999953
+      ],
+      "peaks": [
+        {
+          "allocated": 671756288,
+          "reserved": 744488960,
+          "baseline_allocated": 101797888,
+          "baseline_reserved": 744488960,
+          "incremental_allocated": 569958400
+        },
+        {
+          "allocated": 671756288,
+          "reserved": 744488960,
+          "baseline_allocated": 101797888,
+          "baseline_reserved": 744488960,
+          "incremental_allocated": 569958400
+        },
+        {
+          "allocated": 671756288,
+          "reserved": 744488960,
+          "baseline_allocated": 101797888,
+          "baseline_reserved": 744488960,
+          "incremental_allocated": 569958400
+        }
+      ],
+      "counts": [
+        {
+          "model_forward": 200,
+          "head_forward": 200,
+          "field_backward": 200,
+          "telemetry_backward": 0
+        },
+        {
+          "model_forward": 200,
+          "head_forward": 200,
+          "field_backward": 200,
+          "telemetry_backward": 0
+        },
+        {
+          "model_forward": 200,
+          "head_forward": 200,
+          "field_backward": 200,
+          "telemetry_backward": 0
+        }
+      ],
+      "telemetry_interval": 0,
+      "pseudo_selected": 0,
+      "origin_terms": {
+        "tx": 5.83523416519165,
+        "dom": 1.7483669519424438,
+        "adv": 2.6504290103912354,
+        "orth": 0.0013512761797755957,
+        "cons": 0.0,
+        "group_ce": 7.616568565368652,
+        "fishr": 0.00862301979213953,
+        "proto": 0.0,
+        "open_world_feat": 0.0,
+        "zid_compact": 0.0,
+        "proxy_unknown": 0.0,
+        "soft_unknown_mixup": 0.0,
+        "source_episode": 0.0,
+        "sat_cls": -0.0
+      }
+    },
+    {
+      "stage": 1,
+      "implementation": "graph_reuse",
+      "equivalence": "PASSED_ATOL_1e-6_RTOL_1e-5",
+      "equivalence_scope": "single_same_initial_state_step_before_timing",
+      "timed_endpoint_equivalence": "PASSED_ATOL_1e-6_RTOL_1e-5",
+      "seconds_per_step": [
+        0.769824329999974,
+        0.7667080010000791,
+        0.7557050480000908
+      ],
+      "median": 0.7667080010000791,
+      "range": [
+        0.7557050480000908,
+        0.769824329999974
+      ],
+      "peaks": [
+        {
+          "allocated": 671639040,
+          "reserved": 744488960,
+          "baseline_allocated": 101797888,
+          "baseline_reserved": 744488960,
+          "incremental_allocated": 569841152
+        },
+        {
+          "allocated": 671639040,
+          "reserved": 744488960,
+          "baseline_allocated": 101797888,
+          "baseline_reserved": 744488960,
+          "incremental_allocated": 569841152
+        },
+        {
+          "allocated": 671639040,
+          "reserved": 744488960,
+          "baseline_allocated": 101797888,
+          "baseline_reserved": 744488960,
+          "incremental_allocated": 569841152
+        }
+      ],
+      "counts": [
+        {
+          "model_forward": 100,
+          "head_forward": 200,
+          "field_backward": 200,
+          "telemetry_backward": 0
+        },
+        {
+          "model_forward": 100,
+          "head_forward": 200,
+          "field_backward": 200,
+          "telemetry_backward": 0
+        },
+        {
+          "model_forward": 100,
+          "head_forward": 200,
+          "field_backward": 200,
+          "telemetry_backward": 0
+        }
+      ],
+      "telemetry_interval": 0,
+      "pseudo_selected": 0,
+      "origin_terms": {
+        "tx": 5.83523416519165,
+        "dom": 1.7483669519424438,
+        "adv": 2.6504290103912354,
+        "orth": 0.0013512761797755957,
+        "cons": 0.0,
+        "group_ce": 7.616568565368652,
+        "fishr": 0.00862301979213953,
+        "proto": 0.0,
+        "open_world_feat": 0.0,
+        "zid_compact": 0.0,
+        "proxy_unknown": 0.0,
+        "soft_unknown_mixup": 0.0,
+        "source_episode": 0.0,
+        "sat_cls": -0.0
+      }
+    },
+    {
+      "stage": 80,
+      "implementation": "reference",
+      "equivalence": "PASSED_ATOL_1e-6_RTOL_1e-5",
+      "equivalence_scope": "single_same_initial_state_step_before_timing",
+      "timed_endpoint_equivalence": "REFERENCE_BASELINE",
+      "seconds_per_step": [
+        3.708622245000006,
+        3.091145220000035,
+        3.5311123110000335
+      ],
+      "median": 3.5311123110000335,
+      "range": [
+        3.091145220000035,
+        3.708622245000006
+      ],
+      "peaks": [
+        {
+          "allocated": 674848256,
+          "reserved": 746586112,
+          "baseline_allocated": 101797888,
+          "baseline_reserved": 746586112,
+          "incremental_allocated": 573050368
+        },
+        {
+          "allocated": 674848256,
+          "reserved": 746586112,
+          "baseline_allocated": 101797888,
+          "baseline_reserved": 746586112,
+          "incremental_allocated": 573050368
+        },
+        {
+          "allocated": 674848256,
+          "reserved": 746586112,
+          "baseline_allocated": 101797888,
+          "baseline_reserved": 746586112,
+          "incremental_allocated": 573050368
+        }
+      ],
+      "counts": [
+        {
+          "model_forward": 200,
+          "head_forward": 200,
+          "field_backward": 200,
+          "telemetry_backward": 0
+        },
+        {
+          "model_forward": 200,
+          "head_forward": 200,
+          "field_backward": 200,
+          "telemetry_backward": 0
+        },
+        {
+          "model_forward": 200,
+          "head_forward": 200,
+          "field_backward": 200,
+          "telemetry_backward": 0
+        }
+      ],
+      "telemetry_interval": 0,
+      "pseudo_selected": 0,
+      "origin_terms": {
+        "tx": 5.929538249969482,
+        "dom": 1.729085922241211,
+        "adv": 2.6326792240142822,
+        "orth": 0.001418478786945343,
+        "cons": 0.3365919589996338,
+        "group_ce": 7.745471954345703,
+        "fishr": 0.009024212136864662,
+        "proto": 0.0,
+        "open_world_feat": 0.09707248210906982,
+        "zid_compact": 1.4475336074829102,
+        "proxy_unknown": 12.969514846801758,
+        "soft_unknown_mixup": 4.354313373565674,
+        "source_episode": 0.03156182914972305,
+        "sat_cls": 7.164690017700195
+      }
+    },
+    {
+      "stage": 80,
+      "implementation": "head_grad_only",
+      "equivalence": "PASSED_ATOL_1e-6_RTOL_1e-5",
+      "equivalence_scope": "single_same_initial_state_step_before_timing",
+      "timed_endpoint_equivalence": "PASSED_ATOL_1e-6_RTOL_1e-5",
+      "seconds_per_step": [
+        2.928274844999978,
+        2.8912300459999822,
+        3.0739363819999563
+      ],
+      "median": 2.928274844999978,
+      "range": [
+        2.8912300459999822,
+        3.0739363819999563
+      ],
+      "peaks": [
+        {
+          "allocated": 671756288,
+          "reserved": 746586112,
+          "baseline_allocated": 101797888,
+          "baseline_reserved": 746586112,
+          "incremental_allocated": 569958400
+        },
+        {
+          "allocated": 671756288,
+          "reserved": 746586112,
+          "baseline_allocated": 101797888,
+          "baseline_reserved": 746586112,
+          "incremental_allocated": 569958400
+        },
+        {
+          "allocated": 671756288,
+          "reserved": 746586112,
+          "baseline_allocated": 101797888,
+          "baseline_reserved": 746586112,
+          "incremental_allocated": 569958400
+        }
+      ],
+      "counts": [
+        {
+          "model_forward": 200,
+          "head_forward": 200,
+          "field_backward": 200,
+          "telemetry_backward": 0
+        },
+        {
+          "model_forward": 200,
+          "head_forward": 200,
+          "field_backward": 200,
+          "telemetry_backward": 0
+        },
+        {
+          "model_forward": 200,
+          "head_forward": 200,
+          "field_backward": 200,
+          "telemetry_backward": 0
+        }
+      ],
+      "telemetry_interval": 0,
+      "pseudo_selected": 0,
+      "origin_terms": {
+        "tx": 5.929538249969482,
+        "dom": 1.729085922241211,
+        "adv": 2.6326792240142822,
+        "orth": 0.001418478786945343,
+        "cons": 0.3365919589996338,
+        "group_ce": 7.745471954345703,
+        "fishr": 0.009024212136864662,
+        "proto": 0.0,
+        "open_world_feat": 0.09707248210906982,
+        "zid_compact": 1.4475336074829102,
+        "proxy_unknown": 12.969514846801758,
+        "soft_unknown_mixup": 4.354313373565674,
+        "source_episode": 0.03156182914972305,
+        "sat_cls": 7.164690017700195
+      }
+    },
+    {
+      "stage": 80,
+      "implementation": "graph_reuse",
+      "equivalence": "PASSED_ATOL_1e-6_RTOL_1e-5",
+      "equivalence_scope": "single_same_initial_state_step_before_timing",
+      "timed_endpoint_equivalence": "PASSED_ATOL_1e-6_RTOL_1e-5",
+      "seconds_per_step": [
+        1.9365648439999494,
+        2.0821975530000056,
+        2.0603356039999925
+      ],
+      "median": 2.0603356039999925,
+      "range": [
+        1.9365648439999494,
+        2.0821975530000056
+      ],
+      "peaks": [
+        {
+          "allocated": 671639040,
+          "reserved": 746586112,
+          "baseline_allocated": 101797888,
+          "baseline_reserved": 746586112,
+          "incremental_allocated": 569841152
+        },
+        {
+          "allocated": 671639040,
+          "reserved": 746586112,
+          "baseline_allocated": 101797888,
+          "baseline_reserved": 746586112,
+          "incremental_allocated": 569841152
+        },
+        {
+          "allocated": 671639040,
+          "reserved": 746586112,
+          "baseline_allocated": 101797888,
+          "baseline_reserved": 746586112,
+          "incremental_allocated": 569841152
+        }
+      ],
+      "counts": [
+        {
+          "model_forward": 100,
+          "head_forward": 200,
+          "field_backward": 200,
+          "telemetry_backward": 0
+        },
+        {
+          "model_forward": 100,
+          "head_forward": 200,
+          "field_backward": 200,
+          "telemetry_backward": 0
+        },
+        {
+          "model_forward": 100,
+          "head_forward": 200,
+          "field_backward": 200,
+          "telemetry_backward": 0
+        }
+      ],
+      "telemetry_interval": 0,
+      "pseudo_selected": 0,
+      "origin_terms": {
+        "tx": 5.929538249969482,
+        "dom": 1.729085922241211,
+        "adv": 2.6326792240142822,
+        "orth": 0.001418478786945343,
+        "cons": 0.3365919589996338,
+        "group_ce": 7.745471954345703,
+        "fishr": 0.009024212136864662,
+        "proto": 0.0,
+        "open_world_feat": 0.09707248210906982,
+        "zid_compact": 1.4475336074829102,
+        "proxy_unknown": 12.969514846801758,
+        "soft_unknown_mixup": 4.354313373565674,
+        "source_episode": 0.03156182914972305,
+        "sat_cls": 7.164690017700195
+      }
+    },
+    {
+      "stage": 131,
+      "implementation": "reference",
+      "equivalence": "PASSED_ATOL_1e-6_RTOL_1e-5",
+      "equivalence_scope": "single_same_initial_state_step_before_timing",
+      "timed_endpoint_equivalence": "REFERENCE_BASELINE",
+      "seconds_per_step": [
+        3.9275565570000617,
+        3.895713257000025,
+        3.539947513000079
+      ],
+      "median": 3.895713257000025,
+      "range": [
+        3.539947513000079,
+        3.9275565570000617
+      ],
+      "peaks": [
+        {
+          "allocated": 953616896,
+          "reserved": 973078528,
+          "baseline_allocated": 102186496,
+          "baseline_reserved": 973078528,
+          "incremental_allocated": 851430400
+        },
+        {
+          "allocated": 953616896,
+          "reserved": 973078528,
+          "baseline_allocated": 102186496,
+          "baseline_reserved": 973078528,
+          "incremental_allocated": 851430400
+        },
+        {
+          "allocated": 953616896,
+          "reserved": 973078528,
+          "baseline_allocated": 102186496,
+          "baseline_reserved": 973078528,
+          "incremental_allocated": 851430400
+        }
+      ],
+      "counts": [
+        {
+          "model_forward": 400,
+          "head_forward": 400,
+          "field_backward": 200,
+          "telemetry_backward": 0
+        },
+        {
+          "model_forward": 400,
+          "head_forward": 400,
+          "field_backward": 200,
+          "telemetry_backward": 0
+        },
+        {
+          "model_forward": 400,
+          "head_forward": 400,
+          "field_backward": 200,
+          "telemetry_backward": 0
+        }
+      ],
+      "telemetry_interval": 0,
+      "pseudo_selected": 0,
+      "origin_terms": {
+        "tx": 6.317784786224365,
+        "dom": 1.750553011894226,
+        "adv": 2.6383674144744873,
+        "orth": 0.0013759529683738947,
+        "cons": 0.3392983376979828,
+        "group_ce": 8.037288665771484,
+        "fishr": 0.009909108281135559,
+        "proto": 0.0,
+        "open_world_feat": 0.10387324541807175,
+        "zid_compact": 1.4652618169784546,
+        "proxy_unknown": 14.133028984069824,
+        "soft_unknown_mixup": 4.552364826202393,
+        "source_episode": 0.03267393633723259,
+        "sat_cls": 7.707728862762451,
+        "unlabeled_ce": 0.0,
+        "unlabeled_entropy": 0.7080647349357605
+      }
+    },
+    {
+      "stage": 131,
+      "implementation": "head_grad_only",
+      "equivalence": "PASSED_ATOL_1e-6_RTOL_1e-5",
+      "equivalence_scope": "single_same_initial_state_step_before_timing",
+      "timed_endpoint_equivalence": "PASSED_ATOL_1e-6_RTOL_1e-5",
+      "seconds_per_step": [
+        3.106830756999989,
+        3.198053423999954,
+        2.9929180859999907
+      ],
+      "median": 3.106830756999989,
+      "range": [
+        2.9929180859999907,
+        3.198053423999954
+      ],
+      "peaks": [
+        {
+          "allocated": 950524928,
+          "reserved": 973078528,
+          "baseline_allocated": 102186496,
+          "baseline_reserved": 973078528,
+          "incremental_allocated": 848338432
+        },
+        {
+          "allocated": 950524928,
+          "reserved": 973078528,
+          "baseline_allocated": 102186496,
+          "baseline_reserved": 973078528,
+          "incremental_allocated": 848338432
+        },
+        {
+          "allocated": 950524928,
+          "reserved": 973078528,
+          "baseline_allocated": 102186496,
+          "baseline_reserved": 973078528,
+          "incremental_allocated": 848338432
+        }
+      ],
+      "counts": [
+        {
+          "model_forward": 400,
+          "head_forward": 400,
+          "field_backward": 200,
+          "telemetry_backward": 0
+        },
+        {
+          "model_forward": 400,
+          "head_forward": 400,
+          "field_backward": 200,
+          "telemetry_backward": 0
+        },
+        {
+          "model_forward": 400,
+          "head_forward": 400,
+          "field_backward": 200,
+          "telemetry_backward": 0
+        }
+      ],
+      "telemetry_interval": 0,
+      "pseudo_selected": 0,
+      "origin_terms": {
+        "tx": 6.317784786224365,
+        "dom": 1.750553011894226,
+        "adv": 2.6383674144744873,
+        "orth": 0.0013759529683738947,
+        "cons": 0.3392983376979828,
+        "group_ce": 8.037288665771484,
+        "fishr": 0.009909108281135559,
+        "proto": 0.0,
+        "open_world_feat": 0.10387324541807175,
+        "zid_compact": 1.4652618169784546,
+        "proxy_unknown": 14.133028984069824,
+        "soft_unknown_mixup": 4.552364826202393,
+        "source_episode": 0.03267393633723259,
+        "sat_cls": 7.707728862762451,
+        "unlabeled_ce": 0.0,
+        "unlabeled_entropy": 0.7080647349357605
+      }
+    },
+    {
+      "stage": 131,
+      "implementation": "graph_reuse",
+      "equivalence": "PASSED_ATOL_1e-6_RTOL_1e-5",
+      "equivalence_scope": "single_same_initial_state_step_before_timing",
+      "timed_endpoint_equivalence": "PASSED_ATOL_1e-6_RTOL_1e-5",
+      "seconds_per_step": [
+        1.929544220000098,
+        1.9246275600000808,
+        1.9094668490000186
+      ],
+      "median": 1.9246275600000808,
+      "range": [
+        1.9094668490000186,
+        1.929544220000098
+      ],
+      "peaks": [
+        {
+          "allocated": 950407680,
+          "reserved": 973078528,
+          "baseline_allocated": 102186496,
+          "baseline_reserved": 973078528,
+          "incremental_allocated": 848221184
+        },
+        {
+          "allocated": 950407680,
+          "reserved": 973078528,
+          "baseline_allocated": 102186496,
+          "baseline_reserved": 973078528,
+          "incremental_allocated": 848221184
+        },
+        {
+          "allocated": 950407680,
+          "reserved": 973078528,
+          "baseline_allocated": 102186496,
+          "baseline_reserved": 973078528,
+          "incremental_allocated": 848221184
+        }
+      ],
+      "counts": [
+        {
+          "model_forward": 200,
+          "head_forward": 300,
+          "field_backward": 200,
+          "telemetry_backward": 0
+        },
+        {
+          "model_forward": 200,
+          "head_forward": 300,
+          "field_backward": 200,
+          "telemetry_backward": 0
+        },
+        {
+          "model_forward": 200,
+          "head_forward": 300,
+          "field_backward": 200,
+          "telemetry_backward": 0
+        }
+      ],
+      "telemetry_interval": 0,
+      "pseudo_selected": 0,
+      "origin_terms": {
+        "tx": 6.317784786224365,
+        "dom": 1.750553011894226,
+        "adv": 2.6383674144744873,
+        "orth": 0.0013759529683738947,
+        "cons": 0.3392983376979828,
+        "group_ce": 8.037288665771484,
+        "fishr": 0.009909108281135559,
+        "proto": 0.0,
+        "open_world_feat": 0.10387324541807175,
+        "zid_compact": 1.4652618169784546,
+        "proxy_unknown": 14.133028984069824,
+        "soft_unknown_mixup": 4.552364826202393,
+        "source_episode": 0.03267393633723259,
+        "sat_cls": 7.707728862762451,
+        "unlabeled_ce": 0.0,
+        "unlabeled_entropy": 0.7080647349357605
+      }
+    }
+  ]
+}

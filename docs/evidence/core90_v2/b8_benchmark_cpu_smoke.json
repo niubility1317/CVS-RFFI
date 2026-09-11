@@ -1,0 +1,162 @@
+{
+  "schema": "core90_b8_benchmark_v2",
+  "device": "cpu",
+  "torch": "2.10.0+cu128",
+  "source_kind": "SYNTHETIC_FUNCTIONAL",
+  "checkpoint": "scratch_only",
+  "budgets": {
+    "implementation": "all",
+    "stage": "131",
+    "warmup": 1,
+    "steps": 1,
+    "repeats": 1,
+    "batch_size": 12,
+    "device": "cpu",
+    "wisig_pkl": null,
+    "synthetic": true,
+    "isolated_device": false,
+    "telemetry_interval": 0,
+    "output": "local_artifacts\\core90_v2\\b8_benchmark_cpu_smoke.json"
+  },
+  "wallclock_attribution": "UNKNOWN_SHARED_LOAD",
+  "rows": [
+    {
+      "stage": 131,
+      "implementation": "reference",
+      "equivalence": "PASSED_ATOL_1e-6_RTOL_1e-5",
+      "seconds_per_step": [
+        1.079663900003652
+      ],
+      "median": 1.079663900003652,
+      "range": [
+        1.079663900003652,
+        1.079663900003652
+      ],
+      "peaks": [
+        {
+          "allocated": null,
+          "reserved": null
+        }
+      ],
+      "counts": [
+        {
+          "model_forward": 4,
+          "head_forward": 4,
+          "field_backward": 2
+        }
+      ],
+      "telemetry_interval": 0,
+      "pseudo_selected": 0,
+      "origin_terms": {
+        "tx": 12.946011543273926,
+        "dom": 2.14963436126709,
+        "adv": 2.155054807662964,
+        "orth": 0.003611953230574727,
+        "cons": 0.5284655690193176,
+        "group_ce": 13.971712112426758,
+        "fishr": 0.016082750633358955,
+        "proto": 0.0,
+        "open_world_feat": 0.028737880289554596,
+        "zid_compact": 0.9529830813407898,
+        "proxy_unknown": 7.955681800842285,
+        "soft_unknown_mixup": 5.506385326385498,
+        "source_episode": 0.7641705274581909,
+        "sat_cls": 13.184001922607422,
+        "unlabeled_ce": -0.0,
+        "unlabeled_entropy": 0.9393684267997742
+      }
+    },
+    {
+      "stage": 131,
+      "implementation": "head_grad_only",
+      "equivalence": "PASSED_ATOL_1e-6_RTOL_1e-5",
+      "seconds_per_step": [
+        0.8801621000020532
+      ],
+      "median": 0.8801621000020532,
+      "range": [
+        0.8801621000020532,
+        0.8801621000020532
+      ],
+      "peaks": [
+        {
+          "allocated": null,
+          "reserved": null
+        }
+      ],
+      "counts": [
+        {
+          "model_forward": 4,
+          "head_forward": 4,
+          "field_backward": 2
+        }
+      ],
+      "telemetry_interval": 0,
+      "pseudo_selected": 0,
+      "origin_terms": {
+        "tx": 12.946011543273926,
+        "dom": 2.14963436126709,
+        "adv": 2.155054807662964,
+        "orth": 0.003611953230574727,
+        "cons": 0.5284655690193176,
+        "group_ce": 13.971712112426758,
+        "fishr": 0.016082750633358955,
+        "proto": 0.0,
+        "open_world_feat": 0.028737880289554596,
+        "zid_compact": 0.9529830813407898,
+        "proxy_unknown": 7.955681800842285,
+        "soft_unknown_mixup": 5.506385326385498,
+        "source_episode": 0.7641705274581909,
+        "sat_cls": 13.184001922607422,
+        "unlabeled_ce": -0.0,
+        "unlabeled_entropy": 0.9393684267997742
+      }
+    },
+    {
+      "stage": 131,
+      "implementation": "graph_reuse",
+      "equivalence": "PASSED_ATOL_1e-6_RTOL_1e-5",
+      "seconds_per_step": [
+        0.5894977999996627
+      ],
+      "median": 0.5894977999996627,
+      "range": [
+        0.5894977999996627,
+        0.5894977999996627
+      ],
+      "peaks": [
+        {
+          "allocated": null,
+          "reserved": null
+        }
+      ],
+      "counts": [
+        {
+          "model_forward": 2,
+          "head_forward": 3,
+          "field_backward": 2
+        }
+      ],
+      "telemetry_interval": 0,
+      "pseudo_selected": 0,
+      "origin_terms": {
+        "tx": 12.946011543273926,
+        "dom": 2.14963436126709,
+        "adv": 2.155054807662964,
+        "orth": 0.003611953230574727,
+        "cons": 0.5284655690193176,
+        "group_ce": 13.971712112426758,
+        "fishr": 0.016082750633358955,
+        "proto": 0.0,
+        "open_world_feat": 0.028737880289554596,
+        "zid_compact": 0.9529830813407898,
+        "proxy_unknown": 7.955681800842285,
+        "soft_unknown_mixup": 5.506385326385498,
+        "source_episode": 0.7641705274581909,
+        "sat_cls": 13.184001922607422,
+        "unlabeled_ce": -0.0,
+        "unlabeled_entropy": 0.9393684267997742
+      }
+    }
+  ]
+}

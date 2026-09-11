@@ -1,0 +1,453 @@
+{
+  "schema": "b8_untimed_autograd_api_count_v2",
+  "device": "cpu",
+  "batch_size": 90,
+  "source_counts": {
+    "L_s": 6300,
+    "U_s": 56700,
+    "V": 27000
+  },
+  "rows": [
+    {
+      "stage": 1,
+      "implementation": "reference",
+      "field_evaluations": 2,
+      "autograd_grad_total": 2,
+      "create_graph_true": 0,
+      "objective_internal_grad_calls": 0,
+      "tensor_backward_api_calls": 0,
+      "explicit_extra_hvp_calls": 0,
+      "model_forward": 2,
+      "calls": [
+        {
+          "scope": "solver_origin",
+          "stage": "origin",
+          "create_graph": false,
+          "targets": 185,
+          "head_targets": 4,
+          "caller": "solvers.py:_evaluate:112"
+        },
+        {
+          "scope": "solver_corrector",
+          "stage": "corrector",
+          "create_graph": false,
+          "targets": 185,
+          "head_targets": 4,
+          "caller": "solvers.py:_evaluate:112"
+        }
+      ],
+      "origin_terms": {
+        "tx": 13.767905235290527,
+        "dom": 2.729278802871704,
+        "adv": 2.719996213912964,
+        "orth": 0.0006522333715111017,
+        "cons": 0.0,
+        "group_ce": 14.411083221435547,
+        "fishr": 0.016725262627005577,
+        "proto": 0.0,
+        "open_world_feat": 0.0,
+        "zid_compact": 0.0,
+        "proxy_unknown": 0.0,
+        "soft_unknown_mixup": 0.0,
+        "source_episode": 0.0,
+        "sat_cls": -0.0
+      },
+      "pseudo_selected": 0,
+      "prepare_teacher_forward": 0,
+      "solver_model_forward": 2
+    },
+    {
+      "stage": 1,
+      "implementation": "head_grad_only",
+      "field_evaluations": 2,
+      "autograd_grad_total": 2,
+      "create_graph_true": 0,
+      "objective_internal_grad_calls": 0,
+      "tensor_backward_api_calls": 0,
+      "explicit_extra_hvp_calls": 0,
+      "model_forward": 2,
+      "calls": [
+        {
+          "scope": "solver_origin",
+          "stage": "origin",
+          "create_graph": false,
+          "targets": 4,
+          "head_targets": 4,
+          "caller": "solvers.py:_evaluate:112"
+        },
+        {
+          "scope": "solver_corrector",
+          "stage": "corrector",
+          "create_graph": false,
+          "targets": 185,
+          "head_targets": 4,
+          "caller": "solvers.py:_evaluate:112"
+        }
+      ],
+      "origin_terms": {
+        "tx": 13.767905235290527,
+        "dom": 2.729278802871704,
+        "adv": 2.719996213912964,
+        "orth": 0.0006522333715111017,
+        "cons": 0.0,
+        "group_ce": 14.411083221435547,
+        "fishr": 0.016725262627005577,
+        "proto": 0.0,
+        "open_world_feat": 0.0,
+        "zid_compact": 0.0,
+        "proxy_unknown": 0.0,
+        "soft_unknown_mixup": 0.0,
+        "source_episode": 0.0,
+        "sat_cls": -0.0
+      },
+      "pseudo_selected": 0,
+      "prepare_teacher_forward": 0,
+      "solver_model_forward": 2
+    },
+    {
+      "stage": 1,
+      "implementation": "graph_reuse",
+      "field_evaluations": 2,
+      "autograd_grad_total": 2,
+      "create_graph_true": 0,
+      "objective_internal_grad_calls": 0,
+      "tensor_backward_api_calls": 0,
+      "explicit_extra_hvp_calls": 0,
+      "model_forward": 1,
+      "calls": [
+        {
+          "scope": "solver_origin",
+          "stage": "origin",
+          "create_graph": false,
+          "targets": 4,
+          "head_targets": 4,
+          "caller": "solvers.py:_evaluate:112"
+        },
+        {
+          "scope": "solver_graph_corrector",
+          "stage": null,
+          "create_graph": false,
+          "targets": 185,
+          "head_targets": 4,
+          "caller": "head_lookahead.py:corrector:89"
+        }
+      ],
+      "origin_terms": {
+        "tx": 13.767905235290527,
+        "dom": 2.729278802871704,
+        "adv": 2.719996213912964,
+        "orth": 0.0006522333715111017,
+        "cons": 0.0,
+        "group_ce": 14.411083221435547,
+        "fishr": 0.016725262627005577,
+        "proto": 0.0,
+        "open_world_feat": 0.0,
+        "zid_compact": 0.0,
+        "proxy_unknown": 0.0,
+        "soft_unknown_mixup": 0.0,
+        "source_episode": 0.0,
+        "sat_cls": -0.0
+      },
+      "pseudo_selected": 0,
+      "prepare_teacher_forward": 0,
+      "solver_model_forward": 1
+    },
+    {
+      "stage": 80,
+      "implementation": "reference",
+      "field_evaluations": 2,
+      "autograd_grad_total": 2,
+      "create_graph_true": 0,
+      "objective_internal_grad_calls": 0,
+      "tensor_backward_api_calls": 0,
+      "explicit_extra_hvp_calls": 0,
+      "model_forward": 2,
+      "calls": [
+        {
+          "scope": "solver_origin",
+          "stage": "origin",
+          "create_graph": false,
+          "targets": 185,
+          "head_targets": 4,
+          "caller": "solvers.py:_evaluate:112"
+        },
+        {
+          "scope": "solver_corrector",
+          "stage": "corrector",
+          "create_graph": false,
+          "targets": 185,
+          "head_targets": 4,
+          "caller": "solvers.py:_evaluate:112"
+        }
+      ],
+      "origin_terms": {
+        "tx": 13.767905235290527,
+        "dom": 2.729278802871704,
+        "adv": 2.719996213912964,
+        "orth": 0.0006522333715111017,
+        "cons": 0.390578031539917,
+        "group_ce": 14.411083221435547,
+        "fishr": 0.016725262627005577,
+        "proto": 0.0,
+        "open_world_feat": 0.21405376493930817,
+        "zid_compact": 1.7032594680786133,
+        "proxy_unknown": 9.988107681274414,
+        "soft_unknown_mixup": 6.08431339263916,
+        "source_episode": 0.04906680807471275,
+        "sat_cls": 13.72291374206543
+      },
+      "pseudo_selected": 0,
+      "prepare_teacher_forward": 0,
+      "solver_model_forward": 2
+    },
+    {
+      "stage": 80,
+      "implementation": "head_grad_only",
+      "field_evaluations": 2,
+      "autograd_grad_total": 2,
+      "create_graph_true": 0,
+      "objective_internal_grad_calls": 0,
+      "tensor_backward_api_calls": 0,
+      "explicit_extra_hvp_calls": 0,
+      "model_forward": 2,
+      "calls": [
+        {
+          "scope": "solver_origin",
+          "stage": "origin",
+          "create_graph": false,
+          "targets": 4,
+          "head_targets": 4,
+          "caller": "solvers.py:_evaluate:112"
+        },
+        {
+          "scope": "solver_corrector",
+          "stage": "corrector",
+          "create_graph": false,
+          "targets": 185,
+          "head_targets": 4,
+          "caller": "solvers.py:_evaluate:112"
+        }
+      ],
+      "origin_terms": {
+        "tx": 13.767905235290527,
+        "dom": 2.729278802871704,
+        "adv": 2.719996213912964,
+        "orth": 0.0006522333715111017,
+        "cons": 0.390578031539917,
+        "group_ce": 14.411083221435547,
+        "fishr": 0.016725262627005577,
+        "proto": 0.0,
+        "open_world_feat": 0.21405376493930817,
+        "zid_compact": 1.7032594680786133,
+        "proxy_unknown": 9.988107681274414,
+        "soft_unknown_mixup": 6.08431339263916,
+        "source_episode": 0.04906680807471275,
+        "sat_cls": 13.72291374206543
+      },
+      "pseudo_selected": 0,
+      "prepare_teacher_forward": 0,
+      "solver_model_forward": 2
+    },
+    {
+      "stage": 80,
+      "implementation": "graph_reuse",
+      "field_evaluations": 2,
+      "autograd_grad_total": 2,
+      "create_graph_true": 0,
+      "objective_internal_grad_calls": 0,
+      "tensor_backward_api_calls": 0,
+      "explicit_extra_hvp_calls": 0,
+      "model_forward": 1,
+      "calls": [
+        {
+          "scope": "solver_origin",
+          "stage": "origin",
+          "create_graph": false,
+          "targets": 4,
+          "head_targets": 4,
+          "caller": "solvers.py:_evaluate:112"
+        },
+        {
+          "scope": "solver_graph_corrector",
+          "stage": null,
+          "create_graph": false,
+          "targets": 185,
+          "head_targets": 4,
+          "caller": "head_lookahead.py:corrector:89"
+        }
+      ],
+      "origin_terms": {
+        "tx": 13.767905235290527,
+        "dom": 2.729278802871704,
+        "adv": 2.719996213912964,
+        "orth": 0.0006522333715111017,
+        "cons": 0.390578031539917,
+        "group_ce": 14.411083221435547,
+        "fishr": 0.016725262627005577,
+        "proto": 0.0,
+        "open_world_feat": 0.21405376493930817,
+        "zid_compact": 1.7032594680786133,
+        "proxy_unknown": 9.988107681274414,
+        "soft_unknown_mixup": 6.08431339263916,
+        "source_episode": 0.04906680807471275,
+        "sat_cls": 13.72291374206543
+      },
+      "pseudo_selected": 0,
+      "prepare_teacher_forward": 0,
+      "solver_model_forward": 1
+    },
+    {
+      "stage": 131,
+      "implementation": "reference",
+      "field_evaluations": 2,
+      "autograd_grad_total": 2,
+      "create_graph_true": 0,
+      "objective_internal_grad_calls": 0,
+      "tensor_backward_api_calls": 0,
+      "explicit_extra_hvp_calls": 0,
+      "model_forward": 5,
+      "calls": [
+        {
+          "scope": "solver_origin",
+          "stage": "origin",
+          "create_graph": false,
+          "targets": 185,
+          "head_targets": 4,
+          "caller": "solvers.py:_evaluate:112"
+        },
+        {
+          "scope": "solver_corrector",
+          "stage": "corrector",
+          "create_graph": false,
+          "targets": 185,
+          "head_targets": 4,
+          "caller": "solvers.py:_evaluate:112"
+        }
+      ],
+      "origin_terms": {
+        "tx": 13.701834678649902,
+        "dom": 2.7459604740142822,
+        "adv": 2.721203327178955,
+        "orth": 0.0006703452672809362,
+        "cons": 0.37247467041015625,
+        "group_ce": 14.405792236328125,
+        "fishr": 0.016305819153785706,
+        "proto": 0.0,
+        "open_world_feat": 0.20839963853359222,
+        "zid_compact": 1.6881502866744995,
+        "proxy_unknown": 10.349682807922363,
+        "soft_unknown_mixup": 5.930187702178955,
+        "source_episode": 0.04536253213882446,
+        "sat_cls": 13.95534896850586,
+        "unlabeled_ce": -0.0,
+        "unlabeled_entropy": 1.135879397392273
+      },
+      "pseudo_selected": 0,
+      "prepare_teacher_forward": 1,
+      "solver_model_forward": 4
+    },
+    {
+      "stage": 131,
+      "implementation": "head_grad_only",
+      "field_evaluations": 2,
+      "autograd_grad_total": 2,
+      "create_graph_true": 0,
+      "objective_internal_grad_calls": 0,
+      "tensor_backward_api_calls": 0,
+      "explicit_extra_hvp_calls": 0,
+      "model_forward": 5,
+      "calls": [
+        {
+          "scope": "solver_origin",
+          "stage": "origin",
+          "create_graph": false,
+          "targets": 4,
+          "head_targets": 4,
+          "caller": "solvers.py:_evaluate:112"
+        },
+        {
+          "scope": "solver_corrector",
+          "stage": "corrector",
+          "create_graph": false,
+          "targets": 185,
+          "head_targets": 4,
+          "caller": "solvers.py:_evaluate:112"
+        }
+      ],
+      "origin_terms": {
+        "tx": 13.701834678649902,
+        "dom": 2.7459604740142822,
+        "adv": 2.721203327178955,
+        "orth": 0.0006703452672809362,
+        "cons": 0.37247467041015625,
+        "group_ce": 14.405792236328125,
+        "fishr": 0.016305819153785706,
+        "proto": 0.0,
+        "open_world_feat": 0.20839963853359222,
+        "zid_compact": 1.6881502866744995,
+        "proxy_unknown": 10.349682807922363,
+        "soft_unknown_mixup": 5.930187702178955,
+        "source_episode": 0.04536253213882446,
+        "sat_cls": 13.95534896850586,
+        "unlabeled_ce": -0.0,
+        "unlabeled_entropy": 1.135879397392273
+      },
+      "pseudo_selected": 0,
+      "prepare_teacher_forward": 1,
+      "solver_model_forward": 4
+    },
+    {
+      "stage": 131,
+      "implementation": "graph_reuse",
+      "field_evaluations": 2,
+      "autograd_grad_total": 2,
+      "create_graph_true": 0,
+      "objective_internal_grad_calls": 0,
+      "tensor_backward_api_calls": 0,
+      "explicit_extra_hvp_calls": 0,
+      "model_forward": 3,
+      "calls": [
+        {
+          "scope": "solver_origin",
+          "stage": "origin",
+          "create_graph": false,
+          "targets": 4,
+          "head_targets": 4,
+          "caller": "solvers.py:_evaluate:112"
+        },
+        {
+          "scope": "solver_graph_corrector",
+          "stage": null,
+          "create_graph": false,
+          "targets": 185,
+          "head_targets": 4,
+          "caller": "head_lookahead.py:corrector:89"
+        }
+      ],
+      "origin_terms": {
+        "tx": 13.701834678649902,
+        "dom": 2.7459604740142822,
+        "adv": 2.721203327178955,
+        "orth": 0.0006703452672809362,
+        "cons": 0.37247467041015625,
+        "group_ce": 14.405792236328125,
+        "fishr": 0.016305819153785706,
+        "proto": 0.0,
+        "open_world_feat": 0.20839963853359222,
+        "zid_compact": 1.6881502866744995,
+        "proxy_unknown": 10.349682807922363,
+        "soft_unknown_mixup": 5.930187702178955,
+        "source_episode": 0.04536253213882446,
+        "sat_cls": 13.95534896850586,
+        "unlabeled_ce": -0.0,
+        "unlabeled_entropy": 1.135879397392273
+      },
+      "pseudo_selected": 0,
+      "prepare_teacher_forward": 1,
+      "solver_model_forward": 2
+    }
+  ],
+  "scope": "API call counts, not CUDA kernels or all internal backward operators",
+  "explicit_extra_hvp_calls": 0,
+  "model_forward_scope": "ctx.forward_calls includes one prepare_context teacher forward at E131; solver_model_forward subtracts it"
+}
