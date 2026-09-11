@@ -1,0 +1,1793 @@
+{
+  "status": "COMPLETE",
+  "test": {
+    "tx_acc": 77.30050505050505,
+    "tx_correct": 153055,
+    "tx_total": 198000,
+    "dom_acc": NaN,
+    "probe_dom_acc": NaN
+  },
+  "named_test": {
+    "test_unseen_day_seen_rx": {
+      "tx_acc": 91.68333333333334,
+      "tx_correct": 27505,
+      "tx_total": 30000,
+      "dom_acc": NaN,
+      "probe_dom_acc": NaN
+    },
+    "test_day_0": {
+      "tx_acc": 91.68333333333334,
+      "tx_correct": 27505,
+      "tx_total": 30000,
+      "dom_acc": NaN,
+      "probe_dom_acc": NaN
+    },
+    "test_seen_day_unseen_rx": {
+      "tx_acc": 74.96904761904761,
+      "tx_correct": 94461,
+      "tx_total": 126000,
+      "dom_acc": NaN,
+      "probe_dom_acc": NaN
+    },
+    "test_rx_0": {
+      "tx_acc": 84.91111111111111,
+      "tx_correct": 15284,
+      "tx_total": 18000,
+      "dom_acc": NaN,
+      "probe_dom_acc": NaN
+    },
+    "test_rx_2": {
+      "tx_acc": 55.82222222222222,
+      "tx_correct": 10048,
+      "tx_total": 18000,
+      "dom_acc": NaN,
+      "probe_dom_acc": NaN
+    },
+    "test_rx_5": {
+      "tx_acc": 86.12222222222222,
+      "tx_correct": 15502,
+      "tx_total": 18000,
+      "dom_acc": NaN,
+      "probe_dom_acc": NaN
+    },
+    "test_rx_7": {
+      "tx_acc": 57.638888888888886,
+      "tx_correct": 10375,
+      "tx_total": 18000,
+      "dom_acc": NaN,
+      "probe_dom_acc": NaN
+    },
+    "test_rx_9": {
+      "tx_acc": 81.71111111111111,
+      "tx_correct": 14708,
+      "tx_total": 18000,
+      "dom_acc": NaN,
+      "probe_dom_acc": NaN
+    },
+    "test_rx_10": {
+      "tx_acc": 80.82222222222222,
+      "tx_correct": 14548,
+      "tx_total": 18000,
+      "dom_acc": NaN,
+      "probe_dom_acc": NaN
+    },
+    "test_rx_11": {
+      "tx_acc": 77.75555555555556,
+      "tx_correct": 13996,
+      "tx_total": 18000,
+      "dom_acc": NaN,
+      "probe_dom_acc": NaN
+    },
+    "test_unseen_day_unseen_rx": {
+      "tx_acc": 74.02142857142857,
+      "tx_correct": 31089,
+      "tx_total": 42000,
+      "dom_acc": NaN,
+      "probe_dom_acc": NaN
+    },
+    "test_unseen_day_rx_0": {
+      "tx_acc": 66.28333333333333,
+      "tx_correct": 3977,
+      "tx_total": 6000,
+      "dom_acc": NaN,
+      "probe_dom_acc": NaN
+    },
+    "test_unseen_day_rx_2": {
+      "tx_acc": 60.88333333333333,
+      "tx_correct": 3653,
+      "tx_total": 6000,
+      "dom_acc": NaN,
+      "probe_dom_acc": NaN
+    },
+    "test_unseen_day_rx_5": {
+      "tx_acc": 84.68333333333334,
+      "tx_correct": 5081,
+      "tx_total": 6000,
+      "dom_acc": NaN,
+      "probe_dom_acc": NaN
+    },
+    "test_unseen_day_rx_7": {
+      "tx_acc": 87.46666666666667,
+      "tx_correct": 5248,
+      "tx_total": 6000,
+      "dom_acc": NaN,
+      "probe_dom_acc": NaN
+    },
+    "test_unseen_day_rx_9": {
+      "tx_acc": 59.78333333333333,
+      "tx_correct": 3587,
+      "tx_total": 6000,
+      "dom_acc": NaN,
+      "probe_dom_acc": NaN
+    },
+    "test_unseen_day_rx_10": {
+      "tx_acc": 80.25,
+      "tx_correct": 4815,
+      "tx_total": 6000,
+      "dom_acc": NaN,
+      "probe_dom_acc": NaN
+    },
+    "test_unseen_day_rx_11": {
+      "tx_acc": 78.8,
+      "tx_correct": 4728,
+      "tx_total": 6000,
+      "dom_acc": NaN,
+      "probe_dom_acc": NaN
+    }
+  },
+  "sat_test_named": {
+    "leo_clear_weak": {
+      "aggregate": {
+        "tx_acc": 62.843434343434346,
+        "tx_correct": 124430,
+        "tx_total": 198000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "named": {
+        "test_unseen_day_seen_rx": {
+          "tx_acc": 77.93666666666667,
+          "tx_correct": 23381,
+          "tx_total": 30000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_day_0": {
+          "tx_acc": 77.93666666666667,
+          "tx_correct": 23381,
+          "tx_total": 30000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_seen_day_unseen_rx": {
+          "tx_acc": 60.42063492063492,
+          "tx_correct": 76130,
+          "tx_total": 126000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_rx_0": {
+          "tx_acc": 70.15,
+          "tx_correct": 12627,
+          "tx_total": 18000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_rx_2": {
+          "tx_acc": 39.32222222222222,
+          "tx_correct": 7078,
+          "tx_total": 18000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_rx_5": {
+          "tx_acc": 74.93333333333334,
+          "tx_correct": 13488,
+          "tx_total": 18000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_rx_7": {
+          "tx_acc": 43.83888888888889,
+          "tx_correct": 7891,
+          "tx_total": 18000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_rx_9": {
+          "tx_acc": 70.43333333333334,
+          "tx_correct": 12678,
+          "tx_total": 18000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_rx_10": {
+          "tx_acc": 62.766666666666666,
+          "tx_correct": 11298,
+          "tx_total": 18000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_rx_11": {
+          "tx_acc": 61.5,
+          "tx_correct": 11070,
+          "tx_total": 18000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_unseen_day_unseen_rx": {
+          "tx_acc": 59.33095238095238,
+          "tx_correct": 24919,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_unseen_day_rx_0": {
+          "tx_acc": 60.88333333333333,
+          "tx_correct": 3653,
+          "tx_total": 6000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_unseen_day_rx_2": {
+          "tx_acc": 34.4,
+          "tx_correct": 2064,
+          "tx_total": 6000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_unseen_day_rx_5": {
+          "tx_acc": 64.88333333333334,
+          "tx_correct": 3893,
+          "tx_total": 6000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_unseen_day_rx_7": {
+          "tx_acc": 62.65,
+          "tx_correct": 3759,
+          "tx_total": 6000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_unseen_day_rx_9": {
+          "tx_acc": 55.9,
+          "tx_correct": 3354,
+          "tx_total": 6000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_unseen_day_rx_10": {
+          "tx_acc": 71.28333333333333,
+          "tx_correct": 4277,
+          "tx_total": 6000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_unseen_day_rx_11": {
+          "tx_acc": 65.31666666666666,
+          "tx_correct": 3919,
+          "tx_total": 6000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        }
+      },
+      "strict_udu": 59.33095238095238,
+      "selected_names": [
+        "test_unseen_day_seen_rx",
+        "test_day_0",
+        "test_seen_day_unseen_rx",
+        "test_rx_0",
+        "test_rx_2",
+        "test_rx_5",
+        "test_rx_7",
+        "test_rx_9",
+        "test_rx_10",
+        "test_rx_11",
+        "test_unseen_day_unseen_rx",
+        "test_unseen_day_rx_0",
+        "test_unseen_day_rx_2",
+        "test_unseen_day_rx_5",
+        "test_unseen_day_rx_7",
+        "test_unseen_day_rx_9",
+        "test_unseen_day_rx_10",
+        "test_unseen_day_rx_11"
+      ],
+      "receiver_named": {
+        "test_rx_0": {
+          "tx_acc": 70.15,
+          "tx_correct": 12627,
+          "tx_total": 18000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_rx_2": {
+          "tx_acc": 39.32222222222222,
+          "tx_correct": 7078,
+          "tx_total": 18000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_rx_5": {
+          "tx_acc": 74.93333333333334,
+          "tx_correct": 13488,
+          "tx_total": 18000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_rx_7": {
+          "tx_acc": 43.83888888888889,
+          "tx_correct": 7891,
+          "tx_total": 18000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_rx_9": {
+          "tx_acc": 70.43333333333334,
+          "tx_correct": 12678,
+          "tx_total": 18000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_rx_10": {
+          "tx_acc": 62.766666666666666,
+          "tx_correct": 11298,
+          "tx_total": 18000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_rx_11": {
+          "tx_acc": 61.5,
+          "tx_correct": 11070,
+          "tx_total": 18000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_unseen_day_rx_0": {
+          "tx_acc": 60.88333333333333,
+          "tx_correct": 3653,
+          "tx_total": 6000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_unseen_day_rx_2": {
+          "tx_acc": 34.4,
+          "tx_correct": 2064,
+          "tx_total": 6000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_unseen_day_rx_5": {
+          "tx_acc": 64.88333333333334,
+          "tx_correct": 3893,
+          "tx_total": 6000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_unseen_day_rx_7": {
+          "tx_acc": 62.65,
+          "tx_correct": 3759,
+          "tx_total": 6000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_unseen_day_rx_9": {
+          "tx_acc": 55.9,
+          "tx_correct": 3354,
+          "tx_total": 6000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_unseen_day_rx_10": {
+          "tx_acc": 71.28333333333333,
+          "tx_correct": 4277,
+          "tx_total": 6000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_unseen_day_rx_11": {
+          "tx_acc": 65.31666666666666,
+          "tx_correct": 3919,
+          "tx_total": 6000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        }
+      },
+      "receiver_seen_day_named": {
+        "test_rx_0": {
+          "tx_acc": 70.15,
+          "tx_correct": 12627,
+          "tx_total": 18000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_rx_2": {
+          "tx_acc": 39.32222222222222,
+          "tx_correct": 7078,
+          "tx_total": 18000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_rx_5": {
+          "tx_acc": 74.93333333333334,
+          "tx_correct": 13488,
+          "tx_total": 18000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_rx_7": {
+          "tx_acc": 43.83888888888889,
+          "tx_correct": 7891,
+          "tx_total": 18000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_rx_9": {
+          "tx_acc": 70.43333333333334,
+          "tx_correct": 12678,
+          "tx_total": 18000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_rx_10": {
+          "tx_acc": 62.766666666666666,
+          "tx_correct": 11298,
+          "tx_total": 18000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_rx_11": {
+          "tx_acc": 61.5,
+          "tx_correct": 11070,
+          "tx_total": 18000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        }
+      },
+      "receiver_strict_named": {
+        "test_unseen_day_rx_0": {
+          "tx_acc": 60.88333333333333,
+          "tx_correct": 3653,
+          "tx_total": 6000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_unseen_day_rx_2": {
+          "tx_acc": 34.4,
+          "tx_correct": 2064,
+          "tx_total": 6000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_unseen_day_rx_5": {
+          "tx_acc": 64.88333333333334,
+          "tx_correct": 3893,
+          "tx_total": 6000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_unseen_day_rx_7": {
+          "tx_acc": 62.65,
+          "tx_correct": 3759,
+          "tx_total": 6000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_unseen_day_rx_9": {
+          "tx_acc": 55.9,
+          "tx_correct": 3354,
+          "tx_total": 6000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_unseen_day_rx_10": {
+          "tx_acc": 71.28333333333333,
+          "tx_correct": 4277,
+          "tx_total": 6000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_unseen_day_rx_11": {
+          "tx_acc": 65.31666666666666,
+          "tx_correct": 3919,
+          "tx_total": 6000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        }
+      },
+      "receiver_floor": 34.4,
+      "receiver_seen_day_floor": 39.32222222222222,
+      "receiver_strict_floor": 34.4,
+      "evaluation_seed": {
+        "base": 2027,
+        "policy": "one_view_per_physical_record"
+      }
+    },
+    "leo_low_elev_weak": {
+      "aggregate": {
+        "tx_acc": 60.792929292929294,
+        "tx_correct": 120370,
+        "tx_total": 198000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "named": {
+        "test_unseen_day_seen_rx": {
+          "tx_acc": 74.46333333333334,
+          "tx_correct": 22339,
+          "tx_total": 30000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_day_0": {
+          "tx_acc": 74.46333333333334,
+          "tx_correct": 22339,
+          "tx_total": 30000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_seen_day_unseen_rx": {
+          "tx_acc": 58.60634920634921,
+          "tx_correct": 73844,
+          "tx_total": 126000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_rx_0": {
+          "tx_acc": 67.49444444444444,
+          "tx_correct": 12149,
+          "tx_total": 18000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_rx_2": {
+          "tx_acc": 39.68333333333333,
+          "tx_correct": 7143,
+          "tx_total": 18000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_rx_5": {
+          "tx_acc": 71.95555555555555,
+          "tx_correct": 12952,
+          "tx_total": 18000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_rx_7": {
+          "tx_acc": 43.611111111111114,
+          "tx_correct": 7850,
+          "tx_total": 18000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_rx_9": {
+          "tx_acc": 68.37222222222222,
+          "tx_correct": 12307,
+          "tx_total": 18000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_rx_10": {
+          "tx_acc": 59.65555555555556,
+          "tx_correct": 10738,
+          "tx_total": 18000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_rx_11": {
+          "tx_acc": 59.47222222222222,
+          "tx_correct": 10705,
+          "tx_total": 18000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_unseen_day_unseen_rx": {
+          "tx_acc": 57.588095238095235,
+          "tx_correct": 24187,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_unseen_day_rx_0": {
+          "tx_acc": 59.11666666666667,
+          "tx_correct": 3547,
+          "tx_total": 6000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_unseen_day_rx_2": {
+          "tx_acc": 35.86666666666667,
+          "tx_correct": 2152,
+          "tx_total": 6000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_unseen_day_rx_5": {
+          "tx_acc": 62.93333333333333,
+          "tx_correct": 3776,
+          "tx_total": 6000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_unseen_day_rx_7": {
+          "tx_acc": 58.583333333333336,
+          "tx_correct": 3515,
+          "tx_total": 6000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_unseen_day_rx_9": {
+          "tx_acc": 56.9,
+          "tx_correct": 3414,
+          "tx_total": 6000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_unseen_day_rx_10": {
+          "tx_acc": 66.45,
+          "tx_correct": 3987,
+          "tx_total": 6000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_unseen_day_rx_11": {
+          "tx_acc": 63.266666666666666,
+          "tx_correct": 3796,
+          "tx_total": 6000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        }
+      },
+      "strict_udu": 57.588095238095235,
+      "selected_names": [
+        "test_unseen_day_seen_rx",
+        "test_day_0",
+        "test_seen_day_unseen_rx",
+        "test_rx_0",
+        "test_rx_2",
+        "test_rx_5",
+        "test_rx_7",
+        "test_rx_9",
+        "test_rx_10",
+        "test_rx_11",
+        "test_unseen_day_unseen_rx",
+        "test_unseen_day_rx_0",
+        "test_unseen_day_rx_2",
+        "test_unseen_day_rx_5",
+        "test_unseen_day_rx_7",
+        "test_unseen_day_rx_9",
+        "test_unseen_day_rx_10",
+        "test_unseen_day_rx_11"
+      ],
+      "receiver_named": {
+        "test_rx_0": {
+          "tx_acc": 67.49444444444444,
+          "tx_correct": 12149,
+          "tx_total": 18000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_rx_2": {
+          "tx_acc": 39.68333333333333,
+          "tx_correct": 7143,
+          "tx_total": 18000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_rx_5": {
+          "tx_acc": 71.95555555555555,
+          "tx_correct": 12952,
+          "tx_total": 18000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_rx_7": {
+          "tx_acc": 43.611111111111114,
+          "tx_correct": 7850,
+          "tx_total": 18000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_rx_9": {
+          "tx_acc": 68.37222222222222,
+          "tx_correct": 12307,
+          "tx_total": 18000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_rx_10": {
+          "tx_acc": 59.65555555555556,
+          "tx_correct": 10738,
+          "tx_total": 18000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_rx_11": {
+          "tx_acc": 59.47222222222222,
+          "tx_correct": 10705,
+          "tx_total": 18000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_unseen_day_rx_0": {
+          "tx_acc": 59.11666666666667,
+          "tx_correct": 3547,
+          "tx_total": 6000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_unseen_day_rx_2": {
+          "tx_acc": 35.86666666666667,
+          "tx_correct": 2152,
+          "tx_total": 6000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_unseen_day_rx_5": {
+          "tx_acc": 62.93333333333333,
+          "tx_correct": 3776,
+          "tx_total": 6000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_unseen_day_rx_7": {
+          "tx_acc": 58.583333333333336,
+          "tx_correct": 3515,
+          "tx_total": 6000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_unseen_day_rx_9": {
+          "tx_acc": 56.9,
+          "tx_correct": 3414,
+          "tx_total": 6000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_unseen_day_rx_10": {
+          "tx_acc": 66.45,
+          "tx_correct": 3987,
+          "tx_total": 6000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_unseen_day_rx_11": {
+          "tx_acc": 63.266666666666666,
+          "tx_correct": 3796,
+          "tx_total": 6000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        }
+      },
+      "receiver_seen_day_named": {
+        "test_rx_0": {
+          "tx_acc": 67.49444444444444,
+          "tx_correct": 12149,
+          "tx_total": 18000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_rx_2": {
+          "tx_acc": 39.68333333333333,
+          "tx_correct": 7143,
+          "tx_total": 18000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_rx_5": {
+          "tx_acc": 71.95555555555555,
+          "tx_correct": 12952,
+          "tx_total": 18000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_rx_7": {
+          "tx_acc": 43.611111111111114,
+          "tx_correct": 7850,
+          "tx_total": 18000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_rx_9": {
+          "tx_acc": 68.37222222222222,
+          "tx_correct": 12307,
+          "tx_total": 18000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_rx_10": {
+          "tx_acc": 59.65555555555556,
+          "tx_correct": 10738,
+          "tx_total": 18000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_rx_11": {
+          "tx_acc": 59.47222222222222,
+          "tx_correct": 10705,
+          "tx_total": 18000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        }
+      },
+      "receiver_strict_named": {
+        "test_unseen_day_rx_0": {
+          "tx_acc": 59.11666666666667,
+          "tx_correct": 3547,
+          "tx_total": 6000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_unseen_day_rx_2": {
+          "tx_acc": 35.86666666666667,
+          "tx_correct": 2152,
+          "tx_total": 6000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_unseen_day_rx_5": {
+          "tx_acc": 62.93333333333333,
+          "tx_correct": 3776,
+          "tx_total": 6000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_unseen_day_rx_7": {
+          "tx_acc": 58.583333333333336,
+          "tx_correct": 3515,
+          "tx_total": 6000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_unseen_day_rx_9": {
+          "tx_acc": 56.9,
+          "tx_correct": 3414,
+          "tx_total": 6000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_unseen_day_rx_10": {
+          "tx_acc": 66.45,
+          "tx_correct": 3987,
+          "tx_total": 6000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_unseen_day_rx_11": {
+          "tx_acc": 63.266666666666666,
+          "tx_correct": 3796,
+          "tx_total": 6000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        }
+      },
+      "receiver_floor": 35.86666666666667,
+      "receiver_seen_day_floor": 39.68333333333333,
+      "receiver_strict_floor": 35.86666666666667,
+      "evaluation_seed": {
+        "base": 3036,
+        "policy": "one_view_per_physical_record"
+      }
+    },
+    "leo_rain_weak": {
+      "aggregate": {
+        "tx_acc": 61.27424242424242,
+        "tx_correct": 121323,
+        "tx_total": 198000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "named": {
+        "test_unseen_day_seen_rx": {
+          "tx_acc": 75.53666666666666,
+          "tx_correct": 22661,
+          "tx_total": 30000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_day_0": {
+          "tx_acc": 75.53666666666666,
+          "tx_correct": 22661,
+          "tx_total": 30000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_seen_day_unseen_rx": {
+          "tx_acc": 59.08968253968254,
+          "tx_correct": 74453,
+          "tx_total": 126000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_rx_0": {
+          "tx_acc": 66.23333333333333,
+          "tx_correct": 11922,
+          "tx_total": 18000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_rx_2": {
+          "tx_acc": 39.85,
+          "tx_correct": 7173,
+          "tx_total": 18000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_rx_5": {
+          "tx_acc": 73.4888888888889,
+          "tx_correct": 13228,
+          "tx_total": 18000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_rx_7": {
+          "tx_acc": 44.111111111111114,
+          "tx_correct": 7940,
+          "tx_total": 18000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_rx_9": {
+          "tx_acc": 69.7,
+          "tx_correct": 12546,
+          "tx_total": 18000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_rx_10": {
+          "tx_acc": 59.78888888888889,
+          "tx_correct": 10762,
+          "tx_total": 18000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_rx_11": {
+          "tx_acc": 60.455555555555556,
+          "tx_correct": 10882,
+          "tx_total": 18000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_unseen_day_unseen_rx": {
+          "tx_acc": 57.64047619047619,
+          "tx_correct": 24209,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_unseen_day_rx_0": {
+          "tx_acc": 57.15,
+          "tx_correct": 3429,
+          "tx_total": 6000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_unseen_day_rx_2": {
+          "tx_acc": 36.4,
+          "tx_correct": 2184,
+          "tx_total": 6000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_unseen_day_rx_5": {
+          "tx_acc": 63.45,
+          "tx_correct": 3807,
+          "tx_total": 6000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_unseen_day_rx_7": {
+          "tx_acc": 59.733333333333334,
+          "tx_correct": 3584,
+          "tx_total": 6000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_unseen_day_rx_9": {
+          "tx_acc": 55.71666666666667,
+          "tx_correct": 3343,
+          "tx_total": 6000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_unseen_day_rx_10": {
+          "tx_acc": 68.9,
+          "tx_correct": 4134,
+          "tx_total": 6000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_unseen_day_rx_11": {
+          "tx_acc": 62.13333333333333,
+          "tx_correct": 3728,
+          "tx_total": 6000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        }
+      },
+      "strict_udu": 57.64047619047619,
+      "selected_names": [
+        "test_unseen_day_seen_rx",
+        "test_day_0",
+        "test_seen_day_unseen_rx",
+        "test_rx_0",
+        "test_rx_2",
+        "test_rx_5",
+        "test_rx_7",
+        "test_rx_9",
+        "test_rx_10",
+        "test_rx_11",
+        "test_unseen_day_unseen_rx",
+        "test_unseen_day_rx_0",
+        "test_unseen_day_rx_2",
+        "test_unseen_day_rx_5",
+        "test_unseen_day_rx_7",
+        "test_unseen_day_rx_9",
+        "test_unseen_day_rx_10",
+        "test_unseen_day_rx_11"
+      ],
+      "receiver_named": {
+        "test_rx_0": {
+          "tx_acc": 66.23333333333333,
+          "tx_correct": 11922,
+          "tx_total": 18000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_rx_2": {
+          "tx_acc": 39.85,
+          "tx_correct": 7173,
+          "tx_total": 18000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_rx_5": {
+          "tx_acc": 73.4888888888889,
+          "tx_correct": 13228,
+          "tx_total": 18000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_rx_7": {
+          "tx_acc": 44.111111111111114,
+          "tx_correct": 7940,
+          "tx_total": 18000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_rx_9": {
+          "tx_acc": 69.7,
+          "tx_correct": 12546,
+          "tx_total": 18000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_rx_10": {
+          "tx_acc": 59.78888888888889,
+          "tx_correct": 10762,
+          "tx_total": 18000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_rx_11": {
+          "tx_acc": 60.455555555555556,
+          "tx_correct": 10882,
+          "tx_total": 18000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_unseen_day_rx_0": {
+          "tx_acc": 57.15,
+          "tx_correct": 3429,
+          "tx_total": 6000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_unseen_day_rx_2": {
+          "tx_acc": 36.4,
+          "tx_correct": 2184,
+          "tx_total": 6000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_unseen_day_rx_5": {
+          "tx_acc": 63.45,
+          "tx_correct": 3807,
+          "tx_total": 6000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_unseen_day_rx_7": {
+          "tx_acc": 59.733333333333334,
+          "tx_correct": 3584,
+          "tx_total": 6000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_unseen_day_rx_9": {
+          "tx_acc": 55.71666666666667,
+          "tx_correct": 3343,
+          "tx_total": 6000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_unseen_day_rx_10": {
+          "tx_acc": 68.9,
+          "tx_correct": 4134,
+          "tx_total": 6000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_unseen_day_rx_11": {
+          "tx_acc": 62.13333333333333,
+          "tx_correct": 3728,
+          "tx_total": 6000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        }
+      },
+      "receiver_seen_day_named": {
+        "test_rx_0": {
+          "tx_acc": 66.23333333333333,
+          "tx_correct": 11922,
+          "tx_total": 18000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_rx_2": {
+          "tx_acc": 39.85,
+          "tx_correct": 7173,
+          "tx_total": 18000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_rx_5": {
+          "tx_acc": 73.4888888888889,
+          "tx_correct": 13228,
+          "tx_total": 18000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_rx_7": {
+          "tx_acc": 44.111111111111114,
+          "tx_correct": 7940,
+          "tx_total": 18000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_rx_9": {
+          "tx_acc": 69.7,
+          "tx_correct": 12546,
+          "tx_total": 18000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_rx_10": {
+          "tx_acc": 59.78888888888889,
+          "tx_correct": 10762,
+          "tx_total": 18000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_rx_11": {
+          "tx_acc": 60.455555555555556,
+          "tx_correct": 10882,
+          "tx_total": 18000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        }
+      },
+      "receiver_strict_named": {
+        "test_unseen_day_rx_0": {
+          "tx_acc": 57.15,
+          "tx_correct": 3429,
+          "tx_total": 6000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_unseen_day_rx_2": {
+          "tx_acc": 36.4,
+          "tx_correct": 2184,
+          "tx_total": 6000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_unseen_day_rx_5": {
+          "tx_acc": 63.45,
+          "tx_correct": 3807,
+          "tx_total": 6000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_unseen_day_rx_7": {
+          "tx_acc": 59.733333333333334,
+          "tx_correct": 3584,
+          "tx_total": 6000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_unseen_day_rx_9": {
+          "tx_acc": 55.71666666666667,
+          "tx_correct": 3343,
+          "tx_total": 6000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_unseen_day_rx_10": {
+          "tx_acc": 68.9,
+          "tx_correct": 4134,
+          "tx_total": 6000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "test_unseen_day_rx_11": {
+          "tx_acc": 62.13333333333333,
+          "tx_correct": 3728,
+          "tx_total": 6000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        }
+      },
+      "receiver_floor": 36.4,
+      "receiver_seen_day_floor": 39.85,
+      "receiver_strict_floor": 36.4,
+      "evaluation_seed": {
+        "base": 4045,
+        "policy": "one_view_per_physical_record"
+      }
+    }
+  },
+  "per_receiver": {
+    "clean": {
+      "0": {
+        "tx_acc": 80.25416666666666,
+        "tx_correct": 19261,
+        "tx_total": 24000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "1": {
+        "tx_acc": 73.76666666666667,
+        "tx_correct": 4426,
+        "tx_total": 6000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "2": {
+        "tx_acc": 57.0875,
+        "tx_correct": 13701,
+        "tx_total": 24000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "3": {
+        "tx_acc": 94.95,
+        "tx_correct": 5697,
+        "tx_total": 6000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "4": {
+        "tx_acc": 97.76666666666667,
+        "tx_correct": 5866,
+        "tx_total": 6000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "5": {
+        "tx_acc": 85.7625,
+        "tx_correct": 20583,
+        "tx_total": 24000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "6": {
+        "tx_acc": 98.25,
+        "tx_correct": 5895,
+        "tx_total": 6000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "7": {
+        "tx_acc": 65.09583333333333,
+        "tx_correct": 15623,
+        "tx_total": 24000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "8": {
+        "tx_acc": 93.68333333333334,
+        "tx_correct": 5621,
+        "tx_total": 6000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "9": {
+        "tx_acc": 76.22916666666667,
+        "tx_correct": 18295,
+        "tx_total": 24000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "10": {
+        "tx_acc": 80.67916666666666,
+        "tx_correct": 19363,
+        "tx_total": 24000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "11": {
+        "tx_acc": 78.01666666666667,
+        "tx_correct": 18724,
+        "tx_total": 24000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      }
+    },
+    "leo_clear_weak": {
+      "0": {
+        "tx_acc": 67.83333333333333,
+        "tx_correct": 16280,
+        "tx_total": 24000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "1": {
+        "tx_acc": 68.56666666666666,
+        "tx_correct": 4114,
+        "tx_total": 6000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "2": {
+        "tx_acc": 38.09166666666667,
+        "tx_correct": 9142,
+        "tx_total": 24000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "3": {
+        "tx_acc": 75.85,
+        "tx_correct": 4551,
+        "tx_total": 6000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "4": {
+        "tx_acc": 83.5,
+        "tx_correct": 5010,
+        "tx_total": 6000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "5": {
+        "tx_acc": 72.42083333333333,
+        "tx_correct": 17381,
+        "tx_total": 24000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "6": {
+        "tx_acc": 81.53333333333333,
+        "tx_correct": 4892,
+        "tx_total": 6000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "7": {
+        "tx_acc": 48.541666666666664,
+        "tx_correct": 11650,
+        "tx_total": 24000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "8": {
+        "tx_acc": 80.23333333333333,
+        "tx_correct": 4814,
+        "tx_total": 6000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "9": {
+        "tx_acc": 66.8,
+        "tx_correct": 16032,
+        "tx_total": 24000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "10": {
+        "tx_acc": 64.89583333333333,
+        "tx_correct": 15575,
+        "tx_total": 24000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "11": {
+        "tx_acc": 62.454166666666666,
+        "tx_correct": 14989,
+        "tx_total": 24000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      }
+    },
+    "leo_low_elev_weak": {
+      "0": {
+        "tx_acc": 65.4,
+        "tx_correct": 15696,
+        "tx_total": 24000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "1": {
+        "tx_acc": 65.88333333333334,
+        "tx_correct": 3953,
+        "tx_total": 6000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "2": {
+        "tx_acc": 38.729166666666664,
+        "tx_correct": 9295,
+        "tx_total": 24000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "3": {
+        "tx_acc": 71.95,
+        "tx_correct": 4317,
+        "tx_total": 6000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "4": {
+        "tx_acc": 81.1,
+        "tx_correct": 4866,
+        "tx_total": 6000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "5": {
+        "tx_acc": 69.7,
+        "tx_correct": 16728,
+        "tx_total": 24000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "6": {
+        "tx_acc": 78.75,
+        "tx_correct": 4725,
+        "tx_total": 6000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "7": {
+        "tx_acc": 47.354166666666664,
+        "tx_correct": 11365,
+        "tx_total": 24000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "8": {
+        "tx_acc": 74.63333333333334,
+        "tx_correct": 4478,
+        "tx_total": 6000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "9": {
+        "tx_acc": 65.50416666666666,
+        "tx_correct": 15721,
+        "tx_total": 24000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "10": {
+        "tx_acc": 61.354166666666664,
+        "tx_correct": 14725,
+        "tx_total": 24000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "11": {
+        "tx_acc": 60.420833333333334,
+        "tx_correct": 14501,
+        "tx_total": 24000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      }
+    },
+    "leo_rain_weak": {
+      "0": {
+        "tx_acc": 63.9625,
+        "tx_correct": 15351,
+        "tx_total": 24000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "1": {
+        "tx_acc": 65.96666666666667,
+        "tx_correct": 3958,
+        "tx_total": 6000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "2": {
+        "tx_acc": 38.9875,
+        "tx_correct": 9357,
+        "tx_total": 24000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "3": {
+        "tx_acc": 72.55,
+        "tx_correct": 4353,
+        "tx_total": 6000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "4": {
+        "tx_acc": 82.68333333333334,
+        "tx_correct": 4961,
+        "tx_total": 6000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "5": {
+        "tx_acc": 70.97916666666667,
+        "tx_correct": 17035,
+        "tx_total": 24000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "6": {
+        "tx_acc": 79.31666666666666,
+        "tx_correct": 4759,
+        "tx_total": 6000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "7": {
+        "tx_acc": 48.016666666666666,
+        "tx_correct": 11524,
+        "tx_total": 24000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "8": {
+        "tx_acc": 77.16666666666667,
+        "tx_correct": 4630,
+        "tx_total": 6000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "9": {
+        "tx_acc": 66.20416666666667,
+        "tx_correct": 15889,
+        "tx_total": 24000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "10": {
+        "tx_acc": 62.06666666666667,
+        "tx_correct": 14896,
+        "tx_total": 24000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "11": {
+        "tx_acc": 60.875,
+        "tx_correct": 14610,
+        "tx_total": 24000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      }
+    }
+  },
+  "per_class": {
+    "clean": {
+      "0": {
+        "tx_acc": 90.18787878787879,
+        "tx_correct": 29762,
+        "tx_total": 33000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "1": {
+        "tx_acc": 51.08181818181818,
+        "tx_correct": 16857,
+        "tx_total": 33000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "2": {
+        "tx_acc": 62.46666666666667,
+        "tx_correct": 20614,
+        "tx_total": 33000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "3": {
+        "tx_acc": 68.71515151515152,
+        "tx_correct": 22676,
+        "tx_total": 33000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "4": {
+        "tx_acc": 99.67878787878787,
+        "tx_correct": 32894,
+        "tx_total": 33000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "5": {
+        "tx_acc": 91.67272727272727,
+        "tx_correct": 30252,
+        "tx_total": 33000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      }
+    },
+    "leo_clear_weak": {
+      "0": {
+        "tx_acc": 49.86363636363637,
+        "tx_correct": 16455,
+        "tx_total": 33000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "1": {
+        "tx_acc": 28.36060606060606,
+        "tx_correct": 9359,
+        "tx_total": 33000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "2": {
+        "tx_acc": 51.27272727272727,
+        "tx_correct": 16920,
+        "tx_total": 33000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "3": {
+        "tx_acc": 69.77272727272727,
+        "tx_correct": 23025,
+        "tx_total": 33000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "4": {
+        "tx_acc": 87.53030303030303,
+        "tx_correct": 28885,
+        "tx_total": 33000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "5": {
+        "tx_acc": 90.26060606060607,
+        "tx_correct": 29786,
+        "tx_total": 33000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      }
+    },
+    "leo_low_elev_weak": {
+      "0": {
+        "tx_acc": 48.166666666666664,
+        "tx_correct": 15895,
+        "tx_total": 33000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "1": {
+        "tx_acc": 25.94848484848485,
+        "tx_correct": 8563,
+        "tx_total": 33000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "2": {
+        "tx_acc": 48.21212121212121,
+        "tx_correct": 15910,
+        "tx_total": 33000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "3": {
+        "tx_acc": 67.38787878787879,
+        "tx_correct": 22238,
+        "tx_total": 33000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "4": {
+        "tx_acc": 85.12121212121212,
+        "tx_correct": 28090,
+        "tx_total": 33000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "5": {
+        "tx_acc": 89.92121212121212,
+        "tx_correct": 29674,
+        "tx_total": 33000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      }
+    },
+    "leo_rain_weak": {
+      "0": {
+        "tx_acc": 50.093939393939394,
+        "tx_correct": 16531,
+        "tx_total": 33000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "1": {
+        "tx_acc": 26.55151515151515,
+        "tx_correct": 8762,
+        "tx_total": 33000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "2": {
+        "tx_acc": 49.306060606060605,
+        "tx_correct": 16271,
+        "tx_total": 33000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "3": {
+        "tx_acc": 66.4939393939394,
+        "tx_correct": 21943,
+        "tx_total": 33000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "4": {
+        "tx_acc": 84.55151515151515,
+        "tx_correct": 27902,
+        "tx_total": 33000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      },
+      "5": {
+        "tx_acc": 90.64848484848486,
+        "tx_correct": 29914,
+        "tx_total": 33000,
+        "dom_acc": NaN,
+        "probe_dom_acc": NaN
+      }
+    }
+  },
+  "truth_last": true,
+  "scenarios": [
+    "clean",
+    "leo_clear_weak",
+    "leo_low_elev_weak",
+    "leo_rain_weak"
+  ],
+  "unique_records": 198000,
+  "prediction_rows": 792000,
+  "prediction_artifacts": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_cross_response_s392005_20260911_r1/U0/final_predictions",
+  "selection_source": "final_only",
+  "claim": "FROZEN_PREDICTIONS_INDEPENDENT_TRUTH_LAST_SCORING",
+  "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_cross_response_s392005_20260911_r1/U0/final_ssdg.pth",
+  "checkpoint_sha256": "71beb130862e6b54997a036dd273e6a28980f57cf3586cf8a913c041c655cbfe",
+  "checkpoint_epoch": 200,
+  "protected_metrics": {
+    "val_tx": 97.83333333333333,
+    "overall_tx": 77.30050505050505,
+    "strict_udu": 74.02142857142857,
+    "receiver_floor": 55.82222222222222,
+    "sat_mean_tx": 61.63686868686869,
+    "sat_floor_tx": 60.792929292929294,
+    "sat_strict_mean": 58.18650793650793,
+    "sat_strict_floor": 57.588095238095235,
+    "sat_receiver_floor": 34.4,
+    "sat_receiver_seen_day_floor": 39.32222222222222,
+    "sat_receiver_strict_floor": 34.4
+  }
+}
