@@ -8,6 +8,45 @@ from typing import Mapping
 import torch
 
 
+class IndependentAuxiliaryTransaction:
+    """A head-only optimizer whose overflow/clip/scale cannot affect the model."""
+    def __init__(self, parameters, *, lr, weight_decay, amp=False, max_grad_norm=0.):
+        self.parameters = list(parameters)
+        self.optimizer = torch.optim.AdamW(self.parameters, lr=lr, weight_decay=weight_decay)
+        self.scaler = torch.amp.GradScaler("cuda", enabled=amp)
+        self.max_grad_norm = float(max_grad_norm)
+
+    def step(self, loss):
+        self.optimizer.zero_grad(set_to_none=True)
+        scale = float(self.scaler.get_scale())
+        gradients = torch.autograd.grad(self.scaler.scale(loss), self.parameters,
+                                        allow_unused=True, retain_graph=True)
+        present = [g for g in gradients if g is not None]
+        for p, g in zip(self.parameters, gradients):
+            p.grad = g.detach() if g is not None else None
+        finite = bool(present) and bool(torch.isfinite(loss.detach())) and all(
+            bool(torch.isfinite(g).all()) for g in present)
+        norm = float(_norm([g / scale for g in present]))
+        if present:
+            self.scaler.unscale_(self.optimizer)
+            if finite:
+                if self.max_grad_norm > 0:
+                    torch.nn.utils.clip_grad_norm_(self.parameters, self.max_grad_norm)
+                self.scaler.step(self.optimizer)
+            self.scaler.update()
+        self.optimizer.zero_grad(set_to_none=True)
+        return {"auxiliary_step_applied": float(finite), "auxiliary_scale": scale,
+                "auxiliary_nonfinite": float(not finite),
+                "response_grad_auxiliary": norm if math.isfinite(norm) else None}
+
+    def state_dict(self):
+        return {"optimizer": self.optimizer.state_dict(), "scaler": self.scaler.state_dict()}
+
+    def load_state_dict(self, state):
+        self.optimizer.load_state_dict(state["optimizer"])
+        self.scaler.load_state_dict(state["scaler"])
+
+
 @dataclass
 class SourceResponseGate:
     min_blocks: int = 16
@@ -92,7 +131,7 @@ def _norm(grads):
 
 def response_backward(*, baseline_loss, identity_loss, response_loss, decision_loss,
                       cross_loss, roles, scaler, lambda_resp, lambda_dec, lambda_cross,
-                      joint_open, gradient_cap, head_only=False):
+                      joint_open, gradient_cap, head_only=False, response_group_losses=None):
     """One backward transaction; caller performs one finite-checked optimizer step.
 
     Loss scalars are unscaled for routing/cap diagnostics. All assigned gradients
@@ -111,7 +150,17 @@ def response_backward(*, baseline_loss, identity_loss, response_loss, decision_l
     # Scale before autograd traverses fp16 activations, then unscale the returned
     # fp32 parameter gradients for routing/caps. Scaling only at assignment is
     # too late to prevent intermediate-gradient underflow.
-    resp_grad = _grad(weighted_resp, params, scale=scale) if lambda_resp else tuple(None for _ in params)
+    if response_group_losses is not None and lambda_resp:
+        if set(response_group_losses) != {"predictor_full", "identity", "domain"}:
+            raise ValueError("decomposed routing requires exactly three independent objectives")
+        gradients_by_id = {}
+        for role, objective in (("auxiliary", "predictor_full"), ("domain", "domain"), ("identity_tail", "identity")):
+            selected = [(name, p) for name, p in roles[role] if any(p is q for _, q in eligible)]
+            gradients = _grad(float(lambda_resp)*response_group_losses[objective], [p for _, p in selected], scale=scale)
+            gradients_by_id.update({id(p): g for (_,p),g in zip(selected, gradients)})
+        resp_grad = tuple(gradients_by_id.get(id(p)) for p in params)
+    else:
+        resp_grad = _grad(weighted_resp, params, scale=scale) if lambda_resp else tuple(None for _ in params)
     tail_ids = {id(p) for _, p in roles["identity_tail"]}
     tail_resp = [g for (_, p), g in zip(eligible, resp_grad) if id(p) in tail_ids]
     tail_params = [p for _, p in roles["identity_tail"]]
