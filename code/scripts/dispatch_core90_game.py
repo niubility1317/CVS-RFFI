@@ -20,7 +20,8 @@ def scratch_checkpoint_smoke(row,release,output,gpu):
     sys.path.insert(0,str(Path(release)/'code'))
     import torch
     from cvsrffi.game_tracking.config import parse_args
-    from cvsrffi.game_tracking.runtime import build_model,json_write,make_grad_scaler
+    from cvsrffi.game_tracking.runtime import build_model,json_write,make_grad_scaler,configure_determinism
+    from copy import deepcopy
     from cvsrffi.game_tracking.solvers import GameSolver
     from cvsrffi.game_tracking.step_context import prepare_context,Core90Objective
     from cvsrffi.game_tracking.legacy.losses import PrototypeMemoryBank
@@ -28,6 +29,8 @@ def scratch_checkpoint_smoke(row,release,output,gpu):
     from cvsrffi.schedule import build_stage_state
     from cvsrffi.game_tracking.data import build_source
     args=parse_args(['--game_config_json',row['config_path'],'--output_dir',str(output),'--device','cuda:0'])
+    backend=configure_determinism(args)
+    torch.manual_seed(args.seed)
     source=build_source(args)
     model=build_model(args,len(source.domains),torch.device('cuda:0')).eval()
     x,y,d,meta=next(iter(source.loader('train',2)))
@@ -39,14 +42,23 @@ def scratch_checkpoint_smoke(row,release,output,gpu):
     with torch.no_grad(): logits=model(x.cuda(),return_aux=True)['tx_logits']
     if logits.shape!=(2,args.num_classes) or not torch.isfinite(logits).all(): raise ValueError('Source checkpoint smoke failed')
     model.train()
-    optimizer=torch.optim.AdamW(model.parameters(),lr=args.lr)
+    head_ids={id(p) for p in model.adv_head.parameters()}
+    groups=[dict(params=[p for p in model.parameters() if id(p) not in head_ids],lr=args.lr),
+            dict(params=list(model.adv_head.parameters()),lr=args.lr*args.game_head_lr_ratio)]
+    optimizer=torch.optim.AdamW(groups,lr=args.lr,weight_decay=args.weight_decay)
     scaler=make_grad_scaler(torch.device('cuda:0'),args.amp)
     proto=PrototypeMemoryBank(args.num_classes,len(source.domains));proto._lazy_init(160,torch.device('cuda:0'),torch.float32)
-    ctx=prepare_context((x,y,d,meta),None,model,None,args,1,1,_loss_weights(args,build_stage_state(1,args)),torch.Generator(device='cuda:0').manual_seed(args.seed))
-    solver=GameSolver(model,optimizer,'simultaneous',scaler=scaler,max_grad_norm=args.game_max_grad_norm)
-    result=solver.step(lambda:Core90Objective(model,args,proto)(ctx))
-    if not result.accepted: raise RuntimeError('Source optimizer smoke did not commit a finite update')
-    json_write(output/'result.json',dict(status='PASS',source_role='L_s',query_access=False,checkpoint=str(path),initialization=loaded['initialization'],target_contact=loaded['target_contact'],logit_shape=list(logits.shape),torch_version=torch.__version__,optimizer_step_accepted=result.accepted))
+    teacher=deepcopy(model).eval();teacher.requires_grad_(False)
+    ub=next(iter(source.loader('unlabeled',2)))
+    stages=[]
+    for epoch in (1,80,131):
+        for mode,impl in (('simultaneous','reference'),('head_lookahead','head_grad_only'),('extragradient','reference')):
+            ctx=prepare_context((x,y,d,meta),ub if epoch>=131 else None,model,teacher,args,epoch,1,_loss_weights(args,build_stage_state(epoch,args)),torch.Generator(device='cuda:0').manual_seed(args.seed))
+            solver=GameSolver(model,optimizer,mode,scaler=scaler,max_grad_norm=args.game_max_grad_norm,b8_impl=impl)
+            result=solver.step(lambda:Core90Objective(model,args,proto)(ctx))
+            if not result.accepted: raise RuntimeError(f'Source optimizer smoke failed: E{epoch} {mode}')
+            stages.append(dict(epoch=epoch,solver=mode,b8_impl=impl,accepted=result.accepted))
+    json_write(output/'result.json',dict(status='PASS',source_role='L_s/U_s',query_access=False,checkpoint=str(path),initialization=loaded['initialization'],target_contact=loaded['target_contact'],logit_shape=list(logits.shape),torch_version=torch.__version__,backend=backend,stages=stages))
     del model,source,loaded,x,logits
     torch.cuda.empty_cache()
 
@@ -81,9 +93,10 @@ def main():
     p.add_argument('--min-free-memory-mib',type=int,default=4096)
     p.add_argument('--startup-reserve-mib',type=int,default=3072)
     a=p.parse_args()
-    if a.max_processes_per_gpu<1 or min(a.min_free_memory_mib,a.startup_reserve_mib)<0: raise ValueError('Invalid GPU capacity')
+    if not 1<=a.max_processes_per_gpu<=2 or min(a.min_free_memory_mib,a.startup_reserve_mib)<0: raise ValueError('Invalid GPU capacity: maximum two processes per GPU')
     if a.smoke_gpu is not None:
-        row=json.loads(Path(a.matrix).read_text())['runs'][0]
+        rows=json.loads(Path(a.matrix).read_text())['runs']
+        row=next((r for r in rows if r['row']=='V2_D'),rows[0])
         scratch_checkpoint_smoke(row,a.release,Path(a.status),a.smoke_gpu)
         return
     if a.snapshot:
@@ -120,7 +133,10 @@ def main():
             code=entry['process'].poll()
             if code is None: continue
             completion=Path(entry['record']['output_dir'])/'completion.json'
-            verified=code==0 and completion.exists() and json.loads(completion.read_text()).get('status')=='SOURCE_ARTIFACTS_COMPLETE'
+            try:
+                verified=code==0 and completion.exists() and json.loads(completion.read_text()).get('status')=='SOURCE_ARTIFACTS_COMPLETE'
+            except (OSError,ValueError):
+                verified=False
             record=dict(entry['record'],exit_code=code,artifact_verified=verified)
             (completed if verified else failed).append(record)
             entry['stream'].close();del active[pid]
