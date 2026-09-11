@@ -1,0 +1,1777 @@
+{
+  "status": "COMPLETE",
+  "test": {
+    "tx_acc": 78.97626262626262,
+    "tx_correct": 156373,
+    "tx_total": 198000,
+    "dom_acc": null,
+    "probe_dom_acc": null
+  },
+  "named_test": {
+    "test_unseen_day_seen_rx": {
+      "tx_acc": 93.40333333333334,
+      "tx_correct": 28021,
+      "tx_total": 30000,
+      "dom_acc": null,
+      "probe_dom_acc": null
+    },
+    "test_day_0": {
+      "tx_acc": 93.40333333333334,
+      "tx_correct": 28021,
+      "tx_total": 30000,
+      "dom_acc": null,
+      "probe_dom_acc": null
+    },
+    "test_seen_day_unseen_rx": {
+      "tx_acc": 77.2063492063492,
+      "tx_correct": 97280,
+      "tx_total": 126000,
+      "dom_acc": null,
+      "probe_dom_acc": null
+    },
+    "test_rx_0": {
+      "tx_acc": 86.59444444444445,
+      "tx_correct": 15587,
+      "tx_total": 18000,
+      "dom_acc": null,
+      "probe_dom_acc": null
+    },
+    "test_rx_2": {
+      "tx_acc": 58.37777777777778,
+      "tx_correct": 10508,
+      "tx_total": 18000,
+      "dom_acc": null,
+      "probe_dom_acc": null
+    },
+    "test_rx_5": {
+      "tx_acc": 87.89444444444445,
+      "tx_correct": 15821,
+      "tx_total": 18000,
+      "dom_acc": null,
+      "probe_dom_acc": null
+    },
+    "test_rx_7": {
+      "tx_acc": 65.35,
+      "tx_correct": 11763,
+      "tx_total": 18000,
+      "dom_acc": null,
+      "probe_dom_acc": null
+    },
+    "test_rx_9": {
+      "tx_acc": 84.17222222222222,
+      "tx_correct": 15151,
+      "tx_total": 18000,
+      "dom_acc": null,
+      "probe_dom_acc": null
+    },
+    "test_rx_10": {
+      "tx_acc": 81.17222222222222,
+      "tx_correct": 14611,
+      "tx_total": 18000,
+      "dom_acc": null,
+      "probe_dom_acc": null
+    },
+    "test_rx_11": {
+      "tx_acc": 76.88333333333334,
+      "tx_correct": 13839,
+      "tx_total": 18000,
+      "dom_acc": null,
+      "probe_dom_acc": null
+    },
+    "test_unseen_day_unseen_rx": {
+      "tx_acc": 73.98095238095237,
+      "tx_correct": 31072,
+      "tx_total": 42000,
+      "dom_acc": null,
+      "probe_dom_acc": null
+    },
+    "test_unseen_day_rx_0": {
+      "tx_acc": 67.73333333333333,
+      "tx_correct": 4064,
+      "tx_total": 6000,
+      "dom_acc": null,
+      "probe_dom_acc": null
+    },
+    "test_unseen_day_rx_2": {
+      "tx_acc": 51.18333333333333,
+      "tx_correct": 3071,
+      "tx_total": 6000,
+      "dom_acc": null,
+      "probe_dom_acc": null
+    },
+    "test_unseen_day_rx_5": {
+      "tx_acc": 84.38333333333334,
+      "tx_correct": 5063,
+      "tx_total": 6000,
+      "dom_acc": null,
+      "probe_dom_acc": null
+    },
+    "test_unseen_day_rx_7": {
+      "tx_acc": 87.88333333333334,
+      "tx_correct": 5273,
+      "tx_total": 6000,
+      "dom_acc": null,
+      "probe_dom_acc": null
+    },
+    "test_unseen_day_rx_9": {
+      "tx_acc": 67.36666666666666,
+      "tx_correct": 4042,
+      "tx_total": 6000,
+      "dom_acc": null,
+      "probe_dom_acc": null
+    },
+    "test_unseen_day_rx_10": {
+      "tx_acc": 80.9,
+      "tx_correct": 4854,
+      "tx_total": 6000,
+      "dom_acc": null,
+      "probe_dom_acc": null
+    },
+    "test_unseen_day_rx_11": {
+      "tx_acc": 78.41666666666667,
+      "tx_correct": 4705,
+      "tx_total": 6000,
+      "dom_acc": null,
+      "probe_dom_acc": null
+    }
+  },
+  "sat_test_named": {
+    "leo_clear_weak": {
+      "aggregate": {
+        "tx_acc": 62.96969696969697,
+        "tx_correct": 124680,
+        "tx_total": 198000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      },
+      "named": {
+        "test_unseen_day_seen_rx": {
+          "tx_acc": 78.55333333333333,
+          "tx_correct": 23566,
+          "tx_total": 30000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_day_0": {
+          "tx_acc": 78.55333333333333,
+          "tx_correct": 23566,
+          "tx_total": 30000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_seen_day_unseen_rx": {
+          "tx_acc": 60.55793650793651,
+          "tx_correct": 76303,
+          "tx_total": 126000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_rx_0": {
+          "tx_acc": 73.86666666666666,
+          "tx_correct": 13296,
+          "tx_total": 18000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_rx_2": {
+          "tx_acc": 42.766666666666666,
+          "tx_correct": 7698,
+          "tx_total": 18000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_rx_5": {
+          "tx_acc": 73.84444444444445,
+          "tx_correct": 13292,
+          "tx_total": 18000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_rx_7": {
+          "tx_acc": 39.31666666666667,
+          "tx_correct": 7077,
+          "tx_total": 18000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_rx_9": {
+          "tx_acc": 70.16111111111111,
+          "tx_correct": 12629,
+          "tx_total": 18000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_rx_10": {
+          "tx_acc": 60.96111111111111,
+          "tx_correct": 10973,
+          "tx_total": 18000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_rx_11": {
+          "tx_acc": 62.98888888888889,
+          "tx_correct": 11338,
+          "tx_total": 18000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_unseen_day_unseen_rx": {
+          "tx_acc": 59.07380952380952,
+          "tx_correct": 24811,
+          "tx_total": 42000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_unseen_day_rx_0": {
+          "tx_acc": 62.333333333333336,
+          "tx_correct": 3740,
+          "tx_total": 6000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_unseen_day_rx_2": {
+          "tx_acc": 34.56666666666667,
+          "tx_correct": 2074,
+          "tx_total": 6000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_unseen_day_rx_5": {
+          "tx_acc": 63.266666666666666,
+          "tx_correct": 3796,
+          "tx_total": 6000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_unseen_day_rx_7": {
+          "tx_acc": 55.583333333333336,
+          "tx_correct": 3335,
+          "tx_total": 6000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_unseen_day_rx_9": {
+          "tx_acc": 61.15,
+          "tx_correct": 3669,
+          "tx_total": 6000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_unseen_day_rx_10": {
+          "tx_acc": 71.73333333333333,
+          "tx_correct": 4304,
+          "tx_total": 6000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_unseen_day_rx_11": {
+          "tx_acc": 64.88333333333334,
+          "tx_correct": 3893,
+          "tx_total": 6000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        }
+      },
+      "strict_udu": 59.07380952380952,
+      "selected_names": [
+        "test_unseen_day_seen_rx",
+        "test_day_0",
+        "test_seen_day_unseen_rx",
+        "test_rx_0",
+        "test_rx_2",
+        "test_rx_5",
+        "test_rx_7",
+        "test_rx_9",
+        "test_rx_10",
+        "test_rx_11",
+        "test_unseen_day_unseen_rx",
+        "test_unseen_day_rx_0",
+        "test_unseen_day_rx_2",
+        "test_unseen_day_rx_5",
+        "test_unseen_day_rx_7",
+        "test_unseen_day_rx_9",
+        "test_unseen_day_rx_10",
+        "test_unseen_day_rx_11"
+      ],
+      "receiver_named": {
+        "test_rx_0": {
+          "tx_acc": 73.86666666666666,
+          "tx_correct": 13296,
+          "tx_total": 18000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_rx_2": {
+          "tx_acc": 42.766666666666666,
+          "tx_correct": 7698,
+          "tx_total": 18000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_rx_5": {
+          "tx_acc": 73.84444444444445,
+          "tx_correct": 13292,
+          "tx_total": 18000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_rx_7": {
+          "tx_acc": 39.31666666666667,
+          "tx_correct": 7077,
+          "tx_total": 18000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_rx_9": {
+          "tx_acc": 70.16111111111111,
+          "tx_correct": 12629,
+          "tx_total": 18000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_rx_10": {
+          "tx_acc": 60.96111111111111,
+          "tx_correct": 10973,
+          "tx_total": 18000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_rx_11": {
+          "tx_acc": 62.98888888888889,
+          "tx_correct": 11338,
+          "tx_total": 18000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_unseen_day_rx_0": {
+          "tx_acc": 62.333333333333336,
+          "tx_correct": 3740,
+          "tx_total": 6000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_unseen_day_rx_2": {
+          "tx_acc": 34.56666666666667,
+          "tx_correct": 2074,
+          "tx_total": 6000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_unseen_day_rx_5": {
+          "tx_acc": 63.266666666666666,
+          "tx_correct": 3796,
+          "tx_total": 6000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_unseen_day_rx_7": {
+          "tx_acc": 55.583333333333336,
+          "tx_correct": 3335,
+          "tx_total": 6000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_unseen_day_rx_9": {
+          "tx_acc": 61.15,
+          "tx_correct": 3669,
+          "tx_total": 6000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_unseen_day_rx_10": {
+          "tx_acc": 71.73333333333333,
+          "tx_correct": 4304,
+          "tx_total": 6000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_unseen_day_rx_11": {
+          "tx_acc": 64.88333333333334,
+          "tx_correct": 3893,
+          "tx_total": 6000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        }
+      },
+      "receiver_seen_day_named": {
+        "test_rx_0": {
+          "tx_acc": 73.86666666666666,
+          "tx_correct": 13296,
+          "tx_total": 18000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_rx_2": {
+          "tx_acc": 42.766666666666666,
+          "tx_correct": 7698,
+          "tx_total": 18000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_rx_5": {
+          "tx_acc": 73.84444444444445,
+          "tx_correct": 13292,
+          "tx_total": 18000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_rx_7": {
+          "tx_acc": 39.31666666666667,
+          "tx_correct": 7077,
+          "tx_total": 18000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_rx_9": {
+          "tx_acc": 70.16111111111111,
+          "tx_correct": 12629,
+          "tx_total": 18000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_rx_10": {
+          "tx_acc": 60.96111111111111,
+          "tx_correct": 10973,
+          "tx_total": 18000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_rx_11": {
+          "tx_acc": 62.98888888888889,
+          "tx_correct": 11338,
+          "tx_total": 18000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        }
+      },
+      "receiver_strict_named": {
+        "test_unseen_day_rx_0": {
+          "tx_acc": 62.333333333333336,
+          "tx_correct": 3740,
+          "tx_total": 6000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_unseen_day_rx_2": {
+          "tx_acc": 34.56666666666667,
+          "tx_correct": 2074,
+          "tx_total": 6000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_unseen_day_rx_5": {
+          "tx_acc": 63.266666666666666,
+          "tx_correct": 3796,
+          "tx_total": 6000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_unseen_day_rx_7": {
+          "tx_acc": 55.583333333333336,
+          "tx_correct": 3335,
+          "tx_total": 6000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_unseen_day_rx_9": {
+          "tx_acc": 61.15,
+          "tx_correct": 3669,
+          "tx_total": 6000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_unseen_day_rx_10": {
+          "tx_acc": 71.73333333333333,
+          "tx_correct": 4304,
+          "tx_total": 6000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_unseen_day_rx_11": {
+          "tx_acc": 64.88333333333334,
+          "tx_correct": 3893,
+          "tx_total": 6000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        }
+      },
+      "receiver_floor": 34.56666666666667,
+      "receiver_seen_day_floor": 39.31666666666667,
+      "receiver_strict_floor": 34.56666666666667,
+      "evaluation_seed": {
+        "base": 2027,
+        "policy": "one_view_per_physical_record"
+      }
+    },
+    "leo_low_elev_weak": {
+      "aggregate": {
+        "tx_acc": 60.96515151515152,
+        "tx_correct": 120711,
+        "tx_total": 198000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      },
+      "named": {
+        "test_unseen_day_seen_rx": {
+          "tx_acc": 75.44666666666667,
+          "tx_correct": 22634,
+          "tx_total": 30000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_day_0": {
+          "tx_acc": 75.44666666666667,
+          "tx_correct": 22634,
+          "tx_total": 30000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_seen_day_unseen_rx": {
+          "tx_acc": 58.703968253968256,
+          "tx_correct": 73967,
+          "tx_total": 126000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_rx_0": {
+          "tx_acc": 70.16111111111111,
+          "tx_correct": 12629,
+          "tx_total": 18000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_rx_2": {
+          "tx_acc": 43.111111111111114,
+          "tx_correct": 7760,
+          "tx_total": 18000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_rx_5": {
+          "tx_acc": 70.66111111111111,
+          "tx_correct": 12719,
+          "tx_total": 18000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_rx_7": {
+          "tx_acc": 39.0,
+          "tx_correct": 7020,
+          "tx_total": 18000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_rx_9": {
+          "tx_acc": 68.29444444444445,
+          "tx_correct": 12293,
+          "tx_total": 18000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_rx_10": {
+          "tx_acc": 58.18333333333333,
+          "tx_correct": 10473,
+          "tx_total": 18000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_rx_11": {
+          "tx_acc": 61.516666666666666,
+          "tx_correct": 11073,
+          "tx_total": 18000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_unseen_day_unseen_rx": {
+          "tx_acc": 57.404761904761905,
+          "tx_correct": 24110,
+          "tx_total": 42000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_unseen_day_rx_0": {
+          "tx_acc": 59.63333333333333,
+          "tx_correct": 3578,
+          "tx_total": 6000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_unseen_day_rx_2": {
+          "tx_acc": 37.46666666666667,
+          "tx_correct": 2248,
+          "tx_total": 6000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_unseen_day_rx_5": {
+          "tx_acc": 59.9,
+          "tx_correct": 3594,
+          "tx_total": 6000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_unseen_day_rx_7": {
+          "tx_acc": 52.766666666666666,
+          "tx_correct": 3166,
+          "tx_total": 6000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_unseen_day_rx_9": {
+          "tx_acc": 61.2,
+          "tx_correct": 3672,
+          "tx_total": 6000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_unseen_day_rx_10": {
+          "tx_acc": 66.91666666666667,
+          "tx_correct": 4015,
+          "tx_total": 6000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_unseen_day_rx_11": {
+          "tx_acc": 63.95,
+          "tx_correct": 3837,
+          "tx_total": 6000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        }
+      },
+      "strict_udu": 57.404761904761905,
+      "selected_names": [
+        "test_unseen_day_seen_rx",
+        "test_day_0",
+        "test_seen_day_unseen_rx",
+        "test_rx_0",
+        "test_rx_2",
+        "test_rx_5",
+        "test_rx_7",
+        "test_rx_9",
+        "test_rx_10",
+        "test_rx_11",
+        "test_unseen_day_unseen_rx",
+        "test_unseen_day_rx_0",
+        "test_unseen_day_rx_2",
+        "test_unseen_day_rx_5",
+        "test_unseen_day_rx_7",
+        "test_unseen_day_rx_9",
+        "test_unseen_day_rx_10",
+        "test_unseen_day_rx_11"
+      ],
+      "receiver_named": {
+        "test_rx_0": {
+          "tx_acc": 70.16111111111111,
+          "tx_correct": 12629,
+          "tx_total": 18000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_rx_2": {
+          "tx_acc": 43.111111111111114,
+          "tx_correct": 7760,
+          "tx_total": 18000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_rx_5": {
+          "tx_acc": 70.66111111111111,
+          "tx_correct": 12719,
+          "tx_total": 18000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_rx_7": {
+          "tx_acc": 39.0,
+          "tx_correct": 7020,
+          "tx_total": 18000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_rx_9": {
+          "tx_acc": 68.29444444444445,
+          "tx_correct": 12293,
+          "tx_total": 18000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_rx_10": {
+          "tx_acc": 58.18333333333333,
+          "tx_correct": 10473,
+          "tx_total": 18000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_rx_11": {
+          "tx_acc": 61.516666666666666,
+          "tx_correct": 11073,
+          "tx_total": 18000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_unseen_day_rx_0": {
+          "tx_acc": 59.63333333333333,
+          "tx_correct": 3578,
+          "tx_total": 6000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_unseen_day_rx_2": {
+          "tx_acc": 37.46666666666667,
+          "tx_correct": 2248,
+          "tx_total": 6000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_unseen_day_rx_5": {
+          "tx_acc": 59.9,
+          "tx_correct": 3594,
+          "tx_total": 6000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_unseen_day_rx_7": {
+          "tx_acc": 52.766666666666666,
+          "tx_correct": 3166,
+          "tx_total": 6000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_unseen_day_rx_9": {
+          "tx_acc": 61.2,
+          "tx_correct": 3672,
+          "tx_total": 6000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_unseen_day_rx_10": {
+          "tx_acc": 66.91666666666667,
+          "tx_correct": 4015,
+          "tx_total": 6000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_unseen_day_rx_11": {
+          "tx_acc": 63.95,
+          "tx_correct": 3837,
+          "tx_total": 6000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        }
+      },
+      "receiver_seen_day_named": {
+        "test_rx_0": {
+          "tx_acc": 70.16111111111111,
+          "tx_correct": 12629,
+          "tx_total": 18000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_rx_2": {
+          "tx_acc": 43.111111111111114,
+          "tx_correct": 7760,
+          "tx_total": 18000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_rx_5": {
+          "tx_acc": 70.66111111111111,
+          "tx_correct": 12719,
+          "tx_total": 18000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_rx_7": {
+          "tx_acc": 39.0,
+          "tx_correct": 7020,
+          "tx_total": 18000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_rx_9": {
+          "tx_acc": 68.29444444444445,
+          "tx_correct": 12293,
+          "tx_total": 18000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_rx_10": {
+          "tx_acc": 58.18333333333333,
+          "tx_correct": 10473,
+          "tx_total": 18000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_rx_11": {
+          "tx_acc": 61.516666666666666,
+          "tx_correct": 11073,
+          "tx_total": 18000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        }
+      },
+      "receiver_strict_named": {
+        "test_unseen_day_rx_0": {
+          "tx_acc": 59.63333333333333,
+          "tx_correct": 3578,
+          "tx_total": 6000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_unseen_day_rx_2": {
+          "tx_acc": 37.46666666666667,
+          "tx_correct": 2248,
+          "tx_total": 6000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_unseen_day_rx_5": {
+          "tx_acc": 59.9,
+          "tx_correct": 3594,
+          "tx_total": 6000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_unseen_day_rx_7": {
+          "tx_acc": 52.766666666666666,
+          "tx_correct": 3166,
+          "tx_total": 6000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_unseen_day_rx_9": {
+          "tx_acc": 61.2,
+          "tx_correct": 3672,
+          "tx_total": 6000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_unseen_day_rx_10": {
+          "tx_acc": 66.91666666666667,
+          "tx_correct": 4015,
+          "tx_total": 6000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_unseen_day_rx_11": {
+          "tx_acc": 63.95,
+          "tx_correct": 3837,
+          "tx_total": 6000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        }
+      },
+      "receiver_floor": 37.46666666666667,
+      "receiver_seen_day_floor": 39.0,
+      "receiver_strict_floor": 37.46666666666667,
+      "evaluation_seed": {
+        "base": 3036,
+        "policy": "one_view_per_physical_record"
+      }
+    },
+    "leo_rain_weak": {
+      "aggregate": {
+        "tx_acc": 61.33080808080808,
+        "tx_correct": 121435,
+        "tx_total": 198000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      },
+      "named": {
+        "test_unseen_day_seen_rx": {
+          "tx_acc": 76.1,
+          "tx_correct": 22830,
+          "tx_total": 30000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_day_0": {
+          "tx_acc": 76.1,
+          "tx_correct": 22830,
+          "tx_total": 30000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_seen_day_unseen_rx": {
+          "tx_acc": 59.2,
+          "tx_correct": 74592,
+          "tx_total": 126000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_rx_0": {
+          "tx_acc": 70.16666666666667,
+          "tx_correct": 12630,
+          "tx_total": 18000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_rx_2": {
+          "tx_acc": 43.522222222222226,
+          "tx_correct": 7834,
+          "tx_total": 18000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_rx_5": {
+          "tx_acc": 72.12222222222222,
+          "tx_correct": 12982,
+          "tx_total": 18000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_rx_7": {
+          "tx_acc": 39.74444444444445,
+          "tx_correct": 7154,
+          "tx_total": 18000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_rx_9": {
+          "tx_acc": 68.94444444444444,
+          "tx_correct": 12410,
+          "tx_total": 18000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_rx_10": {
+          "tx_acc": 57.916666666666664,
+          "tx_correct": 10425,
+          "tx_total": 18000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_rx_11": {
+          "tx_acc": 61.983333333333334,
+          "tx_correct": 11157,
+          "tx_total": 18000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_unseen_day_unseen_rx": {
+          "tx_acc": 57.173809523809524,
+          "tx_correct": 24013,
+          "tx_total": 42000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_unseen_day_rx_0": {
+          "tx_acc": 57.96666666666667,
+          "tx_correct": 3478,
+          "tx_total": 6000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_unseen_day_rx_2": {
+          "tx_acc": 37.65,
+          "tx_correct": 2259,
+          "tx_total": 6000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_unseen_day_rx_5": {
+          "tx_acc": 61.166666666666664,
+          "tx_correct": 3670,
+          "tx_total": 6000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_unseen_day_rx_7": {
+          "tx_acc": 52.45,
+          "tx_correct": 3147,
+          "tx_total": 6000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_unseen_day_rx_9": {
+          "tx_acc": 60.5,
+          "tx_correct": 3630,
+          "tx_total": 6000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_unseen_day_rx_10": {
+          "tx_acc": 68.66666666666667,
+          "tx_correct": 4120,
+          "tx_total": 6000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_unseen_day_rx_11": {
+          "tx_acc": 61.81666666666667,
+          "tx_correct": 3709,
+          "tx_total": 6000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        }
+      },
+      "strict_udu": 57.173809523809524,
+      "selected_names": [
+        "test_unseen_day_seen_rx",
+        "test_day_0",
+        "test_seen_day_unseen_rx",
+        "test_rx_0",
+        "test_rx_2",
+        "test_rx_5",
+        "test_rx_7",
+        "test_rx_9",
+        "test_rx_10",
+        "test_rx_11",
+        "test_unseen_day_unseen_rx",
+        "test_unseen_day_rx_0",
+        "test_unseen_day_rx_2",
+        "test_unseen_day_rx_5",
+        "test_unseen_day_rx_7",
+        "test_unseen_day_rx_9",
+        "test_unseen_day_rx_10",
+        "test_unseen_day_rx_11"
+      ],
+      "receiver_named": {
+        "test_rx_0": {
+          "tx_acc": 70.16666666666667,
+          "tx_correct": 12630,
+          "tx_total": 18000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_rx_2": {
+          "tx_acc": 43.522222222222226,
+          "tx_correct": 7834,
+          "tx_total": 18000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_rx_5": {
+          "tx_acc": 72.12222222222222,
+          "tx_correct": 12982,
+          "tx_total": 18000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_rx_7": {
+          "tx_acc": 39.74444444444445,
+          "tx_correct": 7154,
+          "tx_total": 18000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_rx_9": {
+          "tx_acc": 68.94444444444444,
+          "tx_correct": 12410,
+          "tx_total": 18000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_rx_10": {
+          "tx_acc": 57.916666666666664,
+          "tx_correct": 10425,
+          "tx_total": 18000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_rx_11": {
+          "tx_acc": 61.983333333333334,
+          "tx_correct": 11157,
+          "tx_total": 18000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_unseen_day_rx_0": {
+          "tx_acc": 57.96666666666667,
+          "tx_correct": 3478,
+          "tx_total": 6000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_unseen_day_rx_2": {
+          "tx_acc": 37.65,
+          "tx_correct": 2259,
+          "tx_total": 6000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_unseen_day_rx_5": {
+          "tx_acc": 61.166666666666664,
+          "tx_correct": 3670,
+          "tx_total": 6000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_unseen_day_rx_7": {
+          "tx_acc": 52.45,
+          "tx_correct": 3147,
+          "tx_total": 6000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_unseen_day_rx_9": {
+          "tx_acc": 60.5,
+          "tx_correct": 3630,
+          "tx_total": 6000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_unseen_day_rx_10": {
+          "tx_acc": 68.66666666666667,
+          "tx_correct": 4120,
+          "tx_total": 6000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_unseen_day_rx_11": {
+          "tx_acc": 61.81666666666667,
+          "tx_correct": 3709,
+          "tx_total": 6000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        }
+      },
+      "receiver_seen_day_named": {
+        "test_rx_0": {
+          "tx_acc": 70.16666666666667,
+          "tx_correct": 12630,
+          "tx_total": 18000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_rx_2": {
+          "tx_acc": 43.522222222222226,
+          "tx_correct": 7834,
+          "tx_total": 18000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_rx_5": {
+          "tx_acc": 72.12222222222222,
+          "tx_correct": 12982,
+          "tx_total": 18000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_rx_7": {
+          "tx_acc": 39.74444444444445,
+          "tx_correct": 7154,
+          "tx_total": 18000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_rx_9": {
+          "tx_acc": 68.94444444444444,
+          "tx_correct": 12410,
+          "tx_total": 18000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_rx_10": {
+          "tx_acc": 57.916666666666664,
+          "tx_correct": 10425,
+          "tx_total": 18000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_rx_11": {
+          "tx_acc": 61.983333333333334,
+          "tx_correct": 11157,
+          "tx_total": 18000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        }
+      },
+      "receiver_strict_named": {
+        "test_unseen_day_rx_0": {
+          "tx_acc": 57.96666666666667,
+          "tx_correct": 3478,
+          "tx_total": 6000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_unseen_day_rx_2": {
+          "tx_acc": 37.65,
+          "tx_correct": 2259,
+          "tx_total": 6000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_unseen_day_rx_5": {
+          "tx_acc": 61.166666666666664,
+          "tx_correct": 3670,
+          "tx_total": 6000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_unseen_day_rx_7": {
+          "tx_acc": 52.45,
+          "tx_correct": 3147,
+          "tx_total": 6000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_unseen_day_rx_9": {
+          "tx_acc": 60.5,
+          "tx_correct": 3630,
+          "tx_total": 6000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_unseen_day_rx_10": {
+          "tx_acc": 68.66666666666667,
+          "tx_correct": 4120,
+          "tx_total": 6000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        },
+        "test_unseen_day_rx_11": {
+          "tx_acc": 61.81666666666667,
+          "tx_correct": 3709,
+          "tx_total": 6000,
+          "dom_acc": null,
+          "probe_dom_acc": null
+        }
+      },
+      "receiver_floor": 37.65,
+      "receiver_seen_day_floor": 39.74444444444445,
+      "receiver_strict_floor": 37.65,
+      "evaluation_seed": {
+        "base": 4045,
+        "policy": "one_view_per_physical_record"
+      }
+    }
+  },
+  "per_receiver": {
+    "clean": {
+      "0": {
+        "tx_acc": 81.87916666666666,
+        "tx_correct": 19651,
+        "tx_total": 24000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      },
+      "1": {
+        "tx_acc": 81.58333333333333,
+        "tx_correct": 4895,
+        "tx_total": 6000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      },
+      "2": {
+        "tx_acc": 56.579166666666666,
+        "tx_correct": 13579,
+        "tx_total": 24000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      },
+      "3": {
+        "tx_acc": 95.33333333333333,
+        "tx_correct": 5720,
+        "tx_total": 6000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      },
+      "4": {
+        "tx_acc": 97.51666666666667,
+        "tx_correct": 5851,
+        "tx_total": 6000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      },
+      "5": {
+        "tx_acc": 87.01666666666667,
+        "tx_correct": 20884,
+        "tx_total": 24000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      },
+      "6": {
+        "tx_acc": 98.75,
+        "tx_correct": 5925,
+        "tx_total": 6000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      },
+      "7": {
+        "tx_acc": 70.98333333333333,
+        "tx_correct": 17036,
+        "tx_total": 24000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      },
+      "8": {
+        "tx_acc": 93.83333333333333,
+        "tx_correct": 5630,
+        "tx_total": 6000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      },
+      "9": {
+        "tx_acc": 79.97083333333333,
+        "tx_correct": 19193,
+        "tx_total": 24000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      },
+      "10": {
+        "tx_acc": 81.10416666666667,
+        "tx_correct": 19465,
+        "tx_total": 24000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      },
+      "11": {
+        "tx_acc": 77.26666666666667,
+        "tx_correct": 18544,
+        "tx_total": 24000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      }
+    },
+    "leo_clear_weak": {
+      "0": {
+        "tx_acc": 70.98333333333333,
+        "tx_correct": 17036,
+        "tx_total": 24000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      },
+      "1": {
+        "tx_acc": 72.88333333333334,
+        "tx_correct": 4373,
+        "tx_total": 6000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      },
+      "2": {
+        "tx_acc": 40.71666666666667,
+        "tx_correct": 9772,
+        "tx_total": 24000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      },
+      "3": {
+        "tx_acc": 74.05,
+        "tx_correct": 4443,
+        "tx_total": 6000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      },
+      "4": {
+        "tx_acc": 84.78333333333333,
+        "tx_correct": 5087,
+        "tx_total": 6000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      },
+      "5": {
+        "tx_acc": 71.2,
+        "tx_correct": 17088,
+        "tx_total": 24000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      },
+      "6": {
+        "tx_acc": 83.15,
+        "tx_correct": 4989,
+        "tx_total": 6000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      },
+      "7": {
+        "tx_acc": 43.38333333333333,
+        "tx_correct": 10412,
+        "tx_total": 24000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      },
+      "8": {
+        "tx_acc": 77.9,
+        "tx_correct": 4674,
+        "tx_total": 6000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      },
+      "9": {
+        "tx_acc": 67.90833333333333,
+        "tx_correct": 16298,
+        "tx_total": 24000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      },
+      "10": {
+        "tx_acc": 63.65416666666667,
+        "tx_correct": 15277,
+        "tx_total": 24000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      },
+      "11": {
+        "tx_acc": 63.4625,
+        "tx_correct": 15231,
+        "tx_total": 24000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      }
+    },
+    "leo_low_elev_weak": {
+      "0": {
+        "tx_acc": 67.52916666666667,
+        "tx_correct": 16207,
+        "tx_total": 24000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      },
+      "1": {
+        "tx_acc": 70.03333333333333,
+        "tx_correct": 4202,
+        "tx_total": 6000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      },
+      "2": {
+        "tx_acc": 41.7,
+        "tx_correct": 10008,
+        "tx_total": 24000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      },
+      "3": {
+        "tx_acc": 70.38333333333334,
+        "tx_correct": 4223,
+        "tx_total": 6000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      },
+      "4": {
+        "tx_acc": 83.01666666666667,
+        "tx_correct": 4981,
+        "tx_total": 6000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      },
+      "5": {
+        "tx_acc": 67.97083333333333,
+        "tx_correct": 16313,
+        "tx_total": 24000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      },
+      "6": {
+        "tx_acc": 80.5,
+        "tx_correct": 4830,
+        "tx_total": 6000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      },
+      "7": {
+        "tx_acc": 42.44166666666667,
+        "tx_correct": 10186,
+        "tx_total": 24000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      },
+      "8": {
+        "tx_acc": 73.3,
+        "tx_correct": 4398,
+        "tx_total": 6000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      },
+      "9": {
+        "tx_acc": 66.52083333333333,
+        "tx_correct": 15965,
+        "tx_total": 24000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      },
+      "10": {
+        "tx_acc": 60.36666666666667,
+        "tx_correct": 14488,
+        "tx_total": 24000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      },
+      "11": {
+        "tx_acc": 62.125,
+        "tx_correct": 14910,
+        "tx_total": 24000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      }
+    },
+    "leo_rain_weak": {
+      "0": {
+        "tx_acc": 67.11666666666666,
+        "tx_correct": 16108,
+        "tx_total": 24000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      },
+      "1": {
+        "tx_acc": 70.08333333333333,
+        "tx_correct": 4205,
+        "tx_total": 6000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      },
+      "2": {
+        "tx_acc": 42.05416666666667,
+        "tx_correct": 10093,
+        "tx_total": 24000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      },
+      "3": {
+        "tx_acc": 70.43333333333334,
+        "tx_correct": 4226,
+        "tx_total": 6000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      },
+      "4": {
+        "tx_acc": 84.46666666666667,
+        "tx_correct": 5068,
+        "tx_total": 6000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      },
+      "5": {
+        "tx_acc": 69.38333333333334,
+        "tx_correct": 16652,
+        "tx_total": 24000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      },
+      "6": {
+        "tx_acc": 81.01666666666667,
+        "tx_correct": 4861,
+        "tx_total": 6000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      },
+      "7": {
+        "tx_acc": 42.920833333333334,
+        "tx_correct": 10301,
+        "tx_total": 24000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      },
+      "8": {
+        "tx_acc": 74.5,
+        "tx_correct": 4470,
+        "tx_total": 6000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      },
+      "9": {
+        "tx_acc": 66.83333333333333,
+        "tx_correct": 16040,
+        "tx_total": 24000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      },
+      "10": {
+        "tx_acc": 60.604166666666664,
+        "tx_correct": 14545,
+        "tx_total": 24000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      },
+      "11": {
+        "tx_acc": 61.94166666666667,
+        "tx_correct": 14866,
+        "tx_total": 24000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      }
+    }
+  },
+  "per_class": {
+    "clean": {
+      "0": {
+        "tx_acc": 95.24242424242425,
+        "tx_correct": 31430,
+        "tx_total": 33000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      },
+      "1": {
+        "tx_acc": 48.233333333333334,
+        "tx_correct": 15917,
+        "tx_total": 33000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      },
+      "2": {
+        "tx_acc": 67.64242424242424,
+        "tx_correct": 22322,
+        "tx_total": 33000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      },
+      "3": {
+        "tx_acc": 69.62424242424242,
+        "tx_correct": 22976,
+        "tx_total": 33000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      },
+      "4": {
+        "tx_acc": 99.06060606060606,
+        "tx_correct": 32690,
+        "tx_total": 33000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      },
+      "5": {
+        "tx_acc": 94.05454545454545,
+        "tx_correct": 31038,
+        "tx_total": 33000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      }
+    },
+    "leo_clear_weak": {
+      "0": {
+        "tx_acc": 62.89393939393939,
+        "tx_correct": 20755,
+        "tx_total": 33000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      },
+      "1": {
+        "tx_acc": 33.02121212121212,
+        "tx_correct": 10897,
+        "tx_total": 33000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      },
+      "2": {
+        "tx_acc": 48.696969696969695,
+        "tx_correct": 16070,
+        "tx_total": 33000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      },
+      "3": {
+        "tx_acc": 64.77878787878788,
+        "tx_correct": 21377,
+        "tx_total": 33000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      },
+      "4": {
+        "tx_acc": 79.57575757575758,
+        "tx_correct": 26260,
+        "tx_total": 33000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      },
+      "5": {
+        "tx_acc": 88.85151515151514,
+        "tx_correct": 29321,
+        "tx_total": 33000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      }
+    },
+    "leo_low_elev_weak": {
+      "0": {
+        "tx_acc": 63.96969696969697,
+        "tx_correct": 21110,
+        "tx_total": 33000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      },
+      "1": {
+        "tx_acc": 30.48787878787879,
+        "tx_correct": 10061,
+        "tx_total": 33000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      },
+      "2": {
+        "tx_acc": 46.63333333333333,
+        "tx_correct": 15389,
+        "tx_total": 33000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      },
+      "3": {
+        "tx_acc": 60.5,
+        "tx_correct": 19965,
+        "tx_total": 33000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      },
+      "4": {
+        "tx_acc": 75.92727272727272,
+        "tx_correct": 25056,
+        "tx_total": 33000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      },
+      "5": {
+        "tx_acc": 88.27272727272727,
+        "tx_correct": 29130,
+        "tx_total": 33000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      }
+    },
+    "leo_rain_weak": {
+      "0": {
+        "tx_acc": 65.98181818181818,
+        "tx_correct": 21774,
+        "tx_total": 33000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      },
+      "1": {
+        "tx_acc": 30.848484848484848,
+        "tx_correct": 10180,
+        "tx_total": 33000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      },
+      "2": {
+        "tx_acc": 47.121212121212125,
+        "tx_correct": 15550,
+        "tx_total": 33000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      },
+      "3": {
+        "tx_acc": 59.24242424242424,
+        "tx_correct": 19550,
+        "tx_total": 33000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      },
+      "4": {
+        "tx_acc": 75.66060606060606,
+        "tx_correct": 24968,
+        "tx_total": 33000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      },
+      "5": {
+        "tx_acc": 89.13030303030303,
+        "tx_correct": 29413,
+        "tx_total": 33000,
+        "dom_acc": null,
+        "probe_dom_acc": null
+      }
+    }
+  },
+  "truth_last": true,
+  "scenarios": [
+    "clean",
+    "leo_clear_weak",
+    "leo_low_elev_weak",
+    "leo_rain_weak"
+  ],
+  "unique_records": 198000,
+  "prediction_rows": 792000,
+  "prediction_artifacts": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_cross_response_s392005_20260911_r1/permanent_detach/final_predictions",
+  "selection_source": "final_only",
+  "claim": "FROZEN_PREDICTIONS_INDEPENDENT_TRUTH_LAST_SCORING"
+}
