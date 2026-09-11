@@ -18,7 +18,7 @@ CODE = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(CODE))
 from core90_game_evaluate import EVAL_SCENES, score_source_predictions, _write_json
 from cvsrffi.game_tracking.data import build_source, opaque_id
-from cvsrffi.game_tracking.runtime import build_model
+from cvsrffi.game_tracking.runtime import build_model, configure_determinism
 from cvsrffi.eval import apply_sat_channel_for_scenario
 from dataset_wisig import WiSigCompactDataset
 
@@ -27,14 +27,14 @@ ROWS = ('B0','B1','B2','B3','B3_lr_high','B3_head_slow','B3_head_fast',
 CONTRACT_KEYS = ('source_rxs','source_days','domain_map','role_ids','num_classes',
                  'counts','split_rule','split_seed')
 
-def check_checkpoint(checkpoint, reference=None):
+def check_checkpoint(checkpoint, reference=None, *, expected_seed=392005):
     if (checkpoint.get('epoch') != 200 or checkpoint.get('initialization') != 'scratch_only'
         or checkpoint.get('checkpoint_selection') != 'final_only'
         or checkpoint.get('target_contact') is not False):
         raise ValueError('Checkpoint is not a clean frozen scratch E200 final')
     args = checkpoint['args']
     info = checkpoint['source_info']
-    if args['seed'] != 392005 or args.get('game_synthetic') or info.get('checkpoint_init') != 'scratch_only' or info.get('target_access_before_freeze') is not False:
+    if args['seed'] != expected_seed or args.get('game_synthetic') or info.get('checkpoint_init') != 'scratch_only' or info.get('target_access_before_freeze') is not False:
         raise ValueError('Checkpoint provenance is unverified')
     if reference is not None:
         for key in CONTRACT_KEYS:
@@ -61,30 +61,52 @@ def check_target(base, source_info, rxs, days):
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--run-root', required=True)
+    inputs=parser.add_mutually_exclusive_group(required=True)
+    inputs.add_argument('--run-root')
+    inputs.add_argument('--input-manifest',help='Frozen explicit completed E200 checkpoints and training seeds')
     parser.add_argument('--output-dir', required=True)
     parser.add_argument('--device', default='cuda:0')
     parser.add_argument('--rows', nargs='+', choices=ROWS+('B8','B3_head_scale','B3_adv_low',
         'B3_adv_high','B4','B4_fixedk','B5','S2','S2_random','C3'), default=list(ROWS))
     opts = parser.parse_args(argv)
-    rows = tuple(opts.rows)
+    explicit=json.loads(Path(opts.input_manifest).read_text()) if opts.input_manifest else None
+    if explicit is not None:
+        if explicit.get('scope')!='frozen_completed_v2_target_recheck' or explicit.get('selection_permitted') is not False:
+            raise ValueError('Invalid frozen target input scope')
+        rows=tuple(r['run_id'] for r in explicit['models'])
+        seeds={r['run_id']:r['seed'] for r in explicit['models']}
+        if not rows or any(type(s) is not int or s<0 for s in seeds.values()):raise ValueError('Invalid frozen training seeds')
+        if any(not row.startswith('V2_') or not row.endswith('_seed'+str(seeds[row])) for row in rows):
+            raise ValueError('Frozen V2 run ID and training seed disagree')
+    else:
+        rows = tuple(opts.rows);seeds={r:392005 for r in rows}
     if len(set(rows)) != len(rows): raise ValueError('Duplicate requested row')
-    root, out = Path(opts.run_root), Path(opts.output_dir)
+    root, out = Path(opts.run_root) if opts.run_root else None, Path(opts.output_dir)
     out.mkdir(parents=True, exist_ok=False)
     # Freeze and verify every candidate before opening target data.
     checkpoints = {}
     for row in rows:
-        candidates = list(root.glob('runs/' + row + '_seed392005/final_ssdg.pth'))
+        if explicit is not None:
+            entry=next(r for r in explicit['models'] if r['run_id']==row)
+            path=Path(entry['checkpoint'])
+            if path.name!='final_ssdg.pth' or path.parent.name!=row or not path.is_file():
+                raise ValueError('Expected existing final checkpoint for '+row)
+            completion=json.loads((path.parent/'completion.json').read_text())
+            if completion.get('status')!='SOURCE_ARTIFACTS_COMPLETE' or completion.get('epoch')!=200 or completion.get('target_evaluated') is not False:
+                raise ValueError('Incomplete source row: '+row)
+            candidates=[path]
+        else:candidates = list(root.glob('runs/' + row + '_seed392005/final_ssdg.pth'))
         if len(candidates) != 1:
             raise ValueError(f'Expected exactly one final checkpoint for {row}: {candidates}')
         checkpoints[row] = candidates[0]
     models, buffers, reference, args = {}, {}, None, None
     for row, path in checkpoints.items():
         saved = torch.load(path, map_location='cpu', weights_only=False)
-        check_checkpoint(saved, reference)
+        check_checkpoint(saved, reference, expected_seed=seeds[row])
         if reference is None:
             reference = saved['source_info']
             args = SimpleNamespace(**saved['args'])
+            configure_determinism(args)
         for key in ('wisig_test_rxs','wisig_test_days','wisig_out_len','wisig_equalized','game_split_seed'):
             if saved['args'][key] != getattr(args,key):
                 raise ValueError('Test configuration differs: ' + key)
@@ -109,11 +131,15 @@ def main(argv=None):
     print('SOURCE_CHECKPOINT_SMOKE_PASS',flush=True)
     rxs = [int(v) for v in args.wisig_test_rxs.split(',')]
     days = [int(v) for v in args.wisig_test_days.split(',')]
+    if explicit is not None and (rxs!=explicit['target_rxs'] or days!=explicit['target_days'] or args.game_split_seed!=explicit['augmentation_seed']):
+        raise ValueError('Frozen target test configuration mismatch')
     base = WiSigCompactDataset(source.train.base.ds, out_len=args.wisig_out_len,
                               crop_mode='center', normalize=True, equalized=args.wisig_equalized,
                               rx_keep=rxs, day_keep=days, domain='rx_day', seed=args.game_split_seed)
     check_target(base, reference, rxs, days)
-    manifest = dict(schema='core90_target_frozen_15_v1', rows=list(rows), seed=392005,
+    if explicit is not None and len(base)!=explicit['samples_per_scene']:raise ValueError('Frozen target count mismatch')
+    manifest = dict(schema='core90_target_frozen_multiseed_v2' if explicit else 'core90_target_frozen_15_v1', rows=list(rows), seed=392005 if not explicit else None,
+                    training_seeds=seeds,target_exposure_status='previously_exposed_benchmark_recheck',
                     checkpoints={k:str(v) for k,v in checkpoints.items()}, target_rxs=rxs,
                     target_days=days, samples_per_scene=len(base), scenes=list(EVAL_SCENES),
                     batch_size=256, augmentation_seed=args.game_split_seed,
@@ -159,7 +185,7 @@ def main(argv=None):
         scores = score_source_predictions(out/(row+'_predictions.jsonl'),truth_path,
                     expected_samples=len(base),num_classes=args.num_classes)
         scores.update(schema='core90_game_target_scores_v1',source_only=False,target_evaluated=True,
-                      scope=manifest['scope'],row=row,seed=392005,selection_permitted=False)
+                      scope=manifest['scope'],row=row,seed=seeds[row],selection_permitted=False)
         _write_json(out/(row+'_target_scores.json'),scores)
         print(json.dumps(dict(stage='scored',row=row)),flush=True)
     _write_json(out/'complete.json',dict(complete=True,rows=list(rows),manifest='frozen_manifest.json',

@@ -1,0 +1,75 @@
+{
+  "scope": "frozen_completed_v2_target_recheck",
+  "selection_permitted": false,
+  "models": [
+    {
+      "run_id": "V2_A_seed392005",
+      "seed": 392005,
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_v2_20260911_r3/V2_A_seed392005/final_ssdg.pth"
+    },
+    {
+      "run_id": "V2_A_seed392006",
+      "seed": 392006,
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_v2_20260911_r3/V2_A_seed392006/final_ssdg.pth"
+    },
+    {
+      "run_id": "V2_A_seed392007",
+      "seed": 392007,
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_v2_20260911_r3/V2_A_seed392007/final_ssdg.pth"
+    },
+    {
+      "run_id": "V2_B_seed392005",
+      "seed": 392005,
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_v2_20260911_r3/V2_B_seed392005/final_ssdg.pth"
+    },
+    {
+      "run_id": "V2_B_seed392006",
+      "seed": 392006,
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_v2_20260911_r3/V2_B_seed392006/final_ssdg.pth"
+    },
+    {
+      "run_id": "V2_B_seed392007",
+      "seed": 392007,
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_v2_20260911_r3/V2_B_seed392007/final_ssdg.pth"
+    },
+    {
+      "run_id": "V2_C_seed392005",
+      "seed": 392005,
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_v2_20260911_r3/V2_C_seed392005/final_ssdg.pth"
+    },
+    {
+      "run_id": "V2_C_seed392006",
+      "seed": 392006,
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_v2_20260911_r3/V2_C_seed392006/final_ssdg.pth"
+    },
+    {
+      "run_id": "V2_C_seed392007",
+      "seed": 392007,
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_v2_20260911_r3/V2_C_seed392007/final_ssdg.pth"
+    },
+    {
+      "run_id": "V2_D_seed392005",
+      "seed": 392005,
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_v2_20260911_r3/V2_D_seed392005/final_ssdg.pth"
+    }
+  ],
+  "target_rxs": [
+    0,
+    2,
+    5,
+    7,
+    9,
+    10,
+    11
+  ],
+  "target_days": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "samples_per_scene": 168000,
+  "augmentation_seed": 392002,
+  "source_release_commit": "5bd1665631b15b1ed97fae0f6b0ed57f25b68ec9",
+  "target_exposure_status": "previously_exposed_benchmark_recheck"
+}
