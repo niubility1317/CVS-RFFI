@@ -35,3 +35,10 @@ E300至E600每20epoch按既有流程独立输出完整target prediction后评分
 - 独立P0/P1审查已完成，无阻断项；检查了实际GPU环境映射、context前预留、AMP开关、scratch权重拒绝、唯一输出路径和prediction先于scorer。审查未运行第二轮GPU检查，不把静态审查当作长期稳定性证据。远端发布读回结果在交付补充中记录。
 
 本地短程通过仅证明配置和已复现异常的缓解，不保证长期性能、显存峰值或所有晚期目标均无异常。同一技术指纹若在本次修复后再现，保留产物并报告，不盲目重复重启；低准确率不触发停机。
+
+## 远端交付读回（2026-09-11 11:26:28，UTC+8）
+
+- **VERIFIED：代码发布。**release为`/home/szu2070436088/2510044040/CV-SincNet/releases/a1_e600_repair_c54c9996`，代码提交`c54c999633ce3404812a6a9937c11001bc9ca695`。本地HEAD、GitHub分支OID及远端`release_commit.txt`一致；传输归档SHA256一致，远端编译通过。
+- **VERIFIED：排队调度已运行。**独立读取`/proc/3813164`确认dispatcher存活、PPID=1，CWD和argv均指向上述不可变release及本次run。run-root及两行effective options已生成。证据见[落地信息](release.json)与[独立状态读回](postlaunch_02.json)。
+- **尚未开始训练。**状态`WAITING_FOR_PREDECESSOR_OR_GPU`，`after_run=null`，两行均在waiting_rows，没有训练PID和epoch记录；原因是GPU0–7的保守CUDA进程占用均至少2个。远端GPU入口检查同样等待空位，不能把本地PASS写成远端PASS。
+- dispatcher每30秒检查容量，空位出现后执行远端入口检查，再自动安排两行，启动期间再次核对容量并预留名额。现有健康run和旧失败产物没有修改。新实验实际PID、GPU绑定和日志增长仍须待启动后核实，当前不宣称已完成此项。
