@@ -1,5 +1,11 @@
 # CORE90交叉响应复验与正式实验发布
 
+## 最终状态（2026-09-11，14:44，UTC+8）
+
+VERIFIED：全部10项完成E200、final checkpoint、四场景固定预测及独立评分。相对最早三项快照新增7项；相对11:58五项快照新增U3、U4_additive、U4_bilinear、U5、permanent_detach五项。全部2000轮日志和7920000条预测完成核对，1480组评分计数复算一致。完整数据见[十项最终测试报告](completed_detail/all_results.md)、[1480行评分CSV](completed_detail/all_scores_long.csv)及[对照差值](completed_detail/all_contrasts.json)。下文保留各时点历史快照，以本段及最终报告为准。
+
+总体clean最高为U3的79.9268%，三LEO均值最高为U1的63.1215%。U4_additive匹配双因素差值为clean+0.4848、LEO均值+0.1394个百分点，但没有超过最强单任务/采样对照。正式梯度按各变体定义实际激活，未因性能较低修改或重发实验；单seed不作统计显著性或晋级结论。半小时自动任务core90-3已读回确认为PAUSED。
+
 日期2026-09-11。用户授权：再次对照设计报告及计划检查实现和参数/机制激活，验收后发布实验；seed392005；允许突破每GPU两个实验的限制。唯一launch owner为本任务主Agent，其他审查/实现Agent不启动远端进程。
 
 ## 预登记矩阵与边界

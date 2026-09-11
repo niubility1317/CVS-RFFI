@@ -341,7 +341,7 @@ U0：原基线；U1：完整块采样/交叉前向对照、不加附加任务；
 
 总体clean最高为U3；三LEO均值最高为U1。U1已经超过U0，说明原先仅比较U2/Ux对U0不足以证明附加任务收益。U2相对U1在四个总体场景均下降；Ux相对U1同样四场景均下降。U3相对U1改善clean，但三个LEO总体均下降。
 
-U4_additive的匹配双因素差值在clean为正，但实际clean低于U3与U1；LEO均值的双因素差值为负。U4_bilinear低于U4_additive，且比permanent_detach的clean低；本次结果不支持双线性响应向身份传播带来稳定收益。
+U4_additive的匹配双因素差值在clean为+0.4848个百分点、LEO均值为+0.1394个百分点；晴空LEO为负，低仰角和雨衰为正。该小幅正交互不等于超过单任务：其clean仍低于U3与U1，LEO均值也低于二者。U4_bilinear低于U4_additive，且比permanent_detach的clean低；本次结果不支持双线性响应向身份传播带来稳定收益。
 
 U5较U4_bilinear恢复了clean和LEO表现，说明反馈调度在此对照下有描述性改善；但仍未超过U1的总体clean/LEO均值，不能据此称完整方案胜出。弱RX和类别仍存在明显不均衡，详见上述全表。
 

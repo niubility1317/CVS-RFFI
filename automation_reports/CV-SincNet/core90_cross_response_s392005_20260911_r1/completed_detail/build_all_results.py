@@ -70,7 +70,7 @@ for v in VARIANTS:
 rows += ['', '墙钟时间受同机并发和评估影响，是本次调度环境观察，不是隔离速度基准；峰值是进程PyTorch allocated，不是整卡总量。全部2000轮、完整stdout均已解析：无Traceback/OOM/非有限loss跳步，少量非有限梯度跳步后仍完成E200。所有交叉响应专用激活报告为ACTIVE_VERIFIED；共享前端及身份前部响应梯度最大值均0。U2/U4_additive/U5从E7、U4_bilinear从E6记录身份响应联合梯度；head_only和permanent_detach的身份响应梯度步数保持0。', '',
          '## 科学解释', '',
          '总体clean最高为U3；三LEO均值最高为U1。U1已经超过U0，说明原先仅比较U2/Ux对U0不足以证明附加任务收益。U2相对U1在四个总体场景均下降；Ux相对U1同样四场景均下降。U3相对U1改善clean，但三个LEO总体均下降。', '',
-         'U4_additive的匹配双因素差值在clean为正，但实际clean低于U3与U1；LEO均值的双因素差值为负。U4_bilinear低于U4_additive，且比permanent_detach的clean低；本次结果不支持双线性响应向身份传播带来稳定收益。', '',
+         'U4_additive的匹配双因素差值在clean为+0.4848个百分点、LEO均值为+0.1394个百分点；晴空LEO为负，低仰角和雨衰为正。该小幅正交互不等于超过单任务：其clean仍低于U3与U1，LEO均值也低于二者。U4_bilinear低于U4_additive，且比permanent_detach的clean低；本次结果不支持双线性响应向身份传播带来稳定收益。', '',
          'U5较U4_bilinear恢复了clean和LEO表现，说明反馈调度在此对照下有描述性改善；但仍未超过U1的总体clean/LEO均值，不能据此称完整方案胜出。弱RX和类别仍存在明显不均衡，详见上述全表。', '',
          '全部结果是单seed描述，无统计显著性、干净开放集识别或科学晋级主张。旧通用终态promotion_ready等字段不作晋级依据。所有预测先固定、评分独立，结果不反馈调参、选模或选择性重跑；没有因性能较低停止或重发任何行。', '',
          '## 可复核文件', '',
