@@ -1,0 +1,25 @@
+{
+  "status": "RUNNING",
+  "dispatcher_pid": 982320,
+  "dispatcher_error": null,
+  "rows": [
+    {
+      "variant": "head_only",
+      "status": "RUNNING",
+      "pid": 982997,
+      "gpu": "GPU-4fb45b9a-894a-536b-0e0a-09f7c1341562",
+      "checks": {
+        "pid_present": true,
+        "argv": true,
+        "cwd": true,
+        "ppid": true,
+        "cuda": true,
+        "registered": true
+      },
+      "log_bytes": 6274,
+      "epochs": null,
+      "init_scratch": true
+    }
+  ],
+  "verified_running": true
+}

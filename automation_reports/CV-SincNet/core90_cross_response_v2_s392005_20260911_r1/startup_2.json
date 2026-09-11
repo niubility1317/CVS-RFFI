@@ -1,0 +1,144 @@
+{
+  "status": "RUNNING",
+  "dispatcher_pid": 977619,
+  "dispatcher_error": null,
+  "rows": [
+    {
+      "variant": "U0",
+      "status": "RUNNING",
+      "pid": 978194,
+      "gpu": "GPU-4fb45b9a-894a-536b-0e0a-09f7c1341562",
+      "checks": {
+        "pid_present": true,
+        "argv": true,
+        "cwd": true,
+        "ppid": true,
+        "cuda": true,
+        "registered": true
+      },
+      "log_bytes": 28502,
+      "epochs": 4,
+      "init_scratch": true
+    },
+    {
+      "variant": "U1",
+      "status": "RUNNING",
+      "pid": 978195,
+      "gpu": "GPU-7b4bacb3-4901-6845-a414-0dfdfeeade97",
+      "checks": {
+        "pid_present": true,
+        "argv": true,
+        "cwd": true,
+        "ppid": true,
+        "cuda": true,
+        "registered": true
+      },
+      "log_bytes": 22926,
+      "epochs": 3,
+      "init_scratch": true
+    },
+    {
+      "variant": "U1_mask_off",
+      "status": "RUNNING",
+      "pid": 978196,
+      "gpu": "GPU-a2d039ff-1792-4222-2b47-140429e10f94",
+      "checks": {
+        "pid_present": true,
+        "argv": true,
+        "cwd": true,
+        "ppid": true,
+        "cuda": true,
+        "registered": true
+      },
+      "log_bytes": 23051,
+      "epochs": 3,
+      "init_scratch": true
+    },
+    {
+      "variant": "U3",
+      "status": "RUNNING",
+      "pid": 978197,
+      "gpu": "GPU-ef5f59f2-e03e-fe6e-ea6b-3e03afc9b331",
+      "checks": {
+        "pid_present": true,
+        "argv": true,
+        "cwd": true,
+        "ppid": true,
+        "cuda": true,
+        "registered": true
+      },
+      "log_bytes": 17356,
+      "epochs": 2,
+      "init_scratch": true
+    },
+    {
+      "variant": "Ux",
+      "status": "RUNNING",
+      "pid": 978198,
+      "gpu": "GPU-56adac86-77cd-36c9-8770-dbf002650461",
+      "checks": {
+        "pid_present": true,
+        "argv": true,
+        "cwd": true,
+        "ppid": true,
+        "cuda": true,
+        "registered": true
+      },
+      "log_bytes": 17356,
+      "epochs": 2,
+      "init_scratch": true
+    },
+    {
+      "variant": "Ux_normalized",
+      "status": "RUNNING",
+      "pid": 978199,
+      "gpu": "GPU-95d925a1-7218-ca7b-adef-164241f4f491",
+      "checks": {
+        "pid_present": true,
+        "argv": true,
+        "cwd": true,
+        "ppid": true,
+        "cuda": true,
+        "registered": true
+      },
+      "log_bytes": 17488,
+      "epochs": 2,
+      "init_scratch": true
+    },
+    {
+      "variant": "head_only",
+      "status": "FAILED",
+      "pid": 978200,
+      "gpu": "GPU-9c4eb614-ca19-a390-aaf4-801f8980b6a9",
+      "checks": {
+        "pid_present": false,
+        "argv": false,
+        "cwd": false,
+        "ppid": false,
+        "cuda": false,
+        "registered": false
+      },
+      "log_bytes": 1183,
+      "epochs": null,
+      "init_scratch": false
+    },
+    {
+      "variant": "permanent_detach",
+      "status": "RUNNING",
+      "pid": 978201,
+      "gpu": "GPU-5463e082-259e-537b-603a-01575d45801c",
+      "checks": {
+        "pid_present": true,
+        "argv": true,
+        "cwd": true,
+        "ppid": true,
+        "cuda": true,
+        "registered": true
+      },
+      "log_bytes": 11926,
+      "epochs": 1,
+      "init_scratch": true
+    }
+  ],
+  "verified_running": false
+}

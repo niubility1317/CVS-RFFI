@@ -1,0 +1,177 @@
+{
+  "status": "SEVEN_RUNNING_ONE_REPLACED",
+  "code_commit": "e5bffaa39a525def07787870d85dd57c36aca924",
+  "archive_sha256": "65234f9f5399c1ffb37dd2ae93640380124ac49dd6e4337b12e4270090d3f101",
+  "remote_archive_sha256_match": true,
+  "remote_compile": "PASSED",
+  "dispatcher_pid": 977619,
+  "exact_dispatcher_argv": [
+    "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "/home/szu2070436088/2510044040/CV-SincNet/releases/core90_cross_response_v2_392005_e5bffaa3/code/scripts/run_core90_cross_response_experiment.py",
+    "--project-root",
+    "/home/szu2070436088/2510044040/CV-SincNet",
+    "--run-id",
+    "core90_cross_response_v2_s392005_20260911_r1",
+    "--dataset",
+    "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+    "--config",
+    "/home/szu2070436088/2510044040/CV-SincNet/releases/core90_cross_response_v2_392005_e5bffaa3/code/configs/phase1_core90_cross_response_v2_s392005_20260911.json",
+    "--python",
+    "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "--seed",
+    "392005",
+    "--new-per-gpu",
+    "2",
+    "--min-free-mib",
+    "6500",
+    "--variants",
+    "U0",
+    "U1",
+    "U1_mask_off",
+    "U3",
+    "Ux",
+    "Ux_normalized",
+    "head_only",
+    "permanent_detach"
+  ],
+  "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/core90_cross_response_v2_392005_e5bffaa3",
+  "rows": [
+    {
+      "variant": "U0",
+      "status": "RUNNING",
+      "pid": 978194,
+      "gpu": "GPU-4fb45b9a-894a-536b-0e0a-09f7c1341562",
+      "checks": {
+        "pid_present": true,
+        "argv": true,
+        "cwd": true,
+        "ppid": true,
+        "cuda": true,
+        "registered": true
+      },
+      "log_bytes": 73107,
+      "epochs": 12,
+      "init_scratch": true
+    },
+    {
+      "variant": "U1",
+      "status": "RUNNING",
+      "pid": 978195,
+      "gpu": "GPU-7b4bacb3-4901-6845-a414-0dfdfeeade97",
+      "checks": {
+        "pid_present": true,
+        "argv": true,
+        "cwd": true,
+        "ppid": true,
+        "cuda": true,
+        "registered": true
+      },
+      "log_bytes": 61944,
+      "epochs": 10,
+      "init_scratch": true
+    },
+    {
+      "variant": "U1_mask_off",
+      "status": "RUNNING",
+      "pid": 978196,
+      "gpu": "GPU-a2d039ff-1792-4222-2b47-140429e10f94",
+      "checks": {
+        "pid_present": true,
+        "argv": true,
+        "cwd": true,
+        "ppid": true,
+        "cuda": true,
+        "registered": true
+      },
+      "log_bytes": 67784,
+      "epochs": 11,
+      "init_scratch": true
+    },
+    {
+      "variant": "U3",
+      "status": "RUNNING",
+      "pid": 978197,
+      "gpu": "GPU-ef5f59f2-e03e-fe6e-ea6b-3e03afc9b331",
+      "checks": {
+        "pid_present": true,
+        "argv": true,
+        "cwd": true,
+        "ppid": true,
+        "cuda": true,
+        "registered": true
+      },
+      "log_bytes": 50800,
+      "epochs": 8,
+      "init_scratch": true
+    },
+    {
+      "variant": "Ux",
+      "status": "RUNNING",
+      "pid": 978198,
+      "gpu": "GPU-56adac86-77cd-36c9-8770-dbf002650461",
+      "checks": {
+        "pid_present": true,
+        "argv": true,
+        "cwd": true,
+        "ppid": true,
+        "cuda": true,
+        "registered": true
+      },
+      "log_bytes": 56372,
+      "epochs": 9,
+      "init_scratch": true
+    },
+    {
+      "variant": "Ux_normalized",
+      "status": "RUNNING",
+      "pid": 978199,
+      "gpu": "GPU-95d925a1-7218-ca7b-adef-164241f4f491",
+      "checks": {
+        "pid_present": true,
+        "argv": true,
+        "cwd": true,
+        "ppid": true,
+        "cuda": true,
+        "registered": true
+      },
+      "log_bytes": 45468,
+      "epochs": 7,
+      "init_scratch": true
+    },
+    {
+      "variant": "head_only",
+      "status": "FAILED",
+      "pid": 978200,
+      "gpu": "GPU-9c4eb614-ca19-a390-aaf4-801f8980b6a9",
+      "checks": {
+        "pid_present": false,
+        "argv": false,
+        "cwd": false,
+        "ppid": false,
+        "cuda": false,
+        "registered": false
+      },
+      "log_bytes": 1183,
+      "epochs": null,
+      "init_scratch": false
+    },
+    {
+      "variant": "permanent_detach",
+      "status": "RUNNING",
+      "pid": 978201,
+      "gpu": "GPU-5463e082-259e-537b-603a-01575d45801c",
+      "checks": {
+        "pid_present": true,
+        "argv": true,
+        "cwd": true,
+        "ppid": true,
+        "cuda": true,
+        "registered": true
+      },
+      "log_bytes": 34329,
+      "epochs": 5,
+      "init_scratch": true
+    }
+  ],
+  "target_results_used": false
+}

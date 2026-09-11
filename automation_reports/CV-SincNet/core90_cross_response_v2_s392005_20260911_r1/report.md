@@ -1,6 +1,6 @@
 # CORE90交叉响应V2矩阵启动
 
-状态：LOCAL_VERIFIED。日期2026-09-11。用户授权“启动实验矩阵，数据配置和之前一致”。本次唯一launch owner为主Agent；不停止其他健康任务。
+状态：EIGHT_CONTROLS_RUNNING_VERIFIED。日期2026-09-11。用户授权“启动实验矩阵，数据配置和之前一致”。本次唯一launch owner为主Agent；不停止其他健康任务。
 
 ## 范围与机制
 
@@ -44,3 +44,26 @@ launcher先真实源随机checkpoint保存/严格加载smoke，PASS后立即派�
 最终每行必须有E200日志、final_ssdg.pth、实际activation、四场景prediction_manifest和独立scores；启动不等于实验完成。
 
 独立审查已完成：8行build_matrix与runtime配置均通过，无新增P0/P1；未放宽激活或truth-last闭合要求。本次dispatcher/matrix/integration聚焦验证及数据配置逐字段比对见validation.json。
+
+## 最终启动核验
+
+VERIFIED：8个已选对照均在训练，逐字argv、PID/PPID、release/code CWD、CUDA UUID与nvidia-smi一致，均有init=scratch、首次实际更新及日志增长。汇总见matrix_startup_verified.json，完整读回在inspection_3.json和inspection_r2_3.json。
+
+|行|PID|GPU|已写训练轮|run|
+|---|---:|---:|---:|---|
+|U0|978194|2|E12|r1|
+|U1|978195|3|E10|r1|
+|U1_mask_off|978196|1|E11|r1|
+|U3|978197|5|E8|r1|
+|Ux|978198|0|E9|r1|
+|Ux_normalized|978199|4|E7|r1|
+|permanent_detach|978201|6|E5|r1|
+|head_only|982997|2|E1|r2|
+
+r1代码e5bffaa3，经归档SHA读回和远端compile后派发。r1 head_only因PyTorch2.1缺少统一GradScaler接口，在初始化退出；原日志head_only_initial_failure.log与失败root保留。已本地复现、14项定点验证及独立复审，仅在新release40c1c205、新r2输出重发head_only，另外7行未中断。r1 dispatcher终态会保留该原始失败；完整逻辑矩阵采用r1七行+r2 head_only，不能把r1失败抹除或拼接两次head_only训练。
+
+真实源smoke为VERIFIED，L_s/U_s/V=6300/56700/27000，与前次相同；strict-load精确一致，无target loader/target IQ前向。候选上限128不是穷尽搜索；不能把smoke的域/头非零梯度称为正式联合激活。
+
+剩余8个条件行尚未启动。当前为E200训练初期，无最终性能结论；后续仍需四场景固定预测、独立评分、实际激活与成本报告。本次未创建自动监控任务。
+
+最新轮U3、Ux_normalized、permanent_detach各有1/49非有限梯度跳步，其余48/49更新；其他已选行最新轮更新率1。没有非有限loss跳步，不属于持续无更新，不据此停机或重发。
