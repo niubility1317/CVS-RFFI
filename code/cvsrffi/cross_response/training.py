@@ -13,7 +13,11 @@ class IndependentAuxiliaryTransaction:
     def __init__(self, parameters, *, lr, weight_decay, amp=False, max_grad_norm=0.):
         self.parameters = list(parameters)
         self.optimizer = torch.optim.AdamW(self.parameters, lr=lr, weight_decay=weight_decay)
-        self.scaler = torch.amp.GradScaler("cuda", enabled=amp)
+        # N607 uses PyTorch 2.1, before the unified torch.amp scaler API.
+        if hasattr(torch.amp, "GradScaler"):
+            self.scaler = torch.amp.GradScaler("cuda", enabled=amp)
+        else:
+            self.scaler = torch.cuda.amp.GradScaler(enabled=amp)
         self.max_grad_norm = float(max_grad_norm)
 
     def step(self, loss):

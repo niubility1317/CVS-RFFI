@@ -6,6 +6,16 @@ from cvsrffi.cross_response.training import IndependentAuxiliaryTransaction
 from cvsrffi.cross_response.cache import FixedStatisticCache
 
 
+def test_legacy_torch_without_unified_amp_scaler(monkeypatch):
+    monkeypatch.delattr(torch.amp, 'GradScaler')
+    head = torch.nn.Linear(2, 1)
+    transaction = IndependentAuxiliaryTransaction(head.parameters(), lr=.01, weight_decay=0., amp=False)
+    before = head.weight.detach().clone()
+    result = transaction.step(head(torch.ones(2, 2)).square().mean())
+    assert result['auxiliary_step_applied'] == 1
+    assert not torch.equal(before, head.weight)
+
+
 @pytest.mark.parametrize("bad", [None, float("nan"), float("inf")])
 def test_head_only_main_update_isolated(bad):
     torch.manual_seed(39)
