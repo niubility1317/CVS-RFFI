@@ -1,0 +1,104 @@
+{
+  "U0": {
+    "epochs": 200,
+    "stdout_lines": 8820,
+    "windows": {
+      "E1-20": {
+        "decision_gap": 0.0,
+        "decision_valid_fraction": 0.0,
+        "loss_decision": 0.0,
+        "decision_identity_grad_norm": 0.0,
+        "auxiliary_step_seconds": 0.0
+      },
+      "E21-79": {
+        "decision_gap": 0.0,
+        "decision_valid_fraction": 0.0,
+        "loss_decision": 0.0,
+        "decision_identity_grad_norm": 0.0,
+        "auxiliary_step_seconds": 0.0
+      },
+      "E80-130": {
+        "decision_gap": 0.0,
+        "decision_valid_fraction": 0.0,
+        "loss_decision": 0.0,
+        "decision_identity_grad_norm": 0.0,
+        "auxiliary_step_seconds": 0.0
+      },
+      "E131-200": {
+        "decision_gap": 0.0,
+        "decision_valid_fraction": 0.0,
+        "loss_decision": 0.0,
+        "decision_identity_grad_norm": 0.0,
+        "auxiliary_step_seconds": 0.0
+      }
+    }
+  },
+  "U1": {
+    "epochs": 200,
+    "stdout_lines": 8820,
+    "windows": {
+      "E1-20": {
+        "decision_gap": 0.0,
+        "decision_valid_fraction": 0.0,
+        "loss_decision": 0.0,
+        "decision_identity_grad_norm": 0.0,
+        "auxiliary_step_seconds": 1.0522406484062157
+      },
+      "E21-79": {
+        "decision_gap": 0.0,
+        "decision_valid_fraction": 0.0,
+        "loss_decision": 0.0,
+        "decision_identity_grad_norm": 0.0,
+        "auxiliary_step_seconds": 1.8200060617662226
+      },
+      "E80-130": {
+        "decision_gap": 0.0,
+        "decision_valid_fraction": 0.0,
+        "loss_decision": 0.0,
+        "decision_identity_grad_norm": 0.0,
+        "auxiliary_step_seconds": 1.8413114308904324
+      },
+      "E131-200": {
+        "decision_gap": 0.0,
+        "decision_valid_fraction": 0.0,
+        "loss_decision": 0.0,
+        "decision_identity_grad_norm": 0.0,
+        "auxiliary_step_seconds": 1.4801750049941278
+      }
+    }
+  },
+  "U3": {
+    "epochs": 200,
+    "stdout_lines": 8820,
+    "windows": {
+      "E1-20": {
+        "decision_gap": 2.776842248576636,
+        "decision_valid_fraction": 0.6912149234693878,
+        "loss_decision": 31.42685585175546,
+        "decision_identity_grad_norm": 248.33388696169055,
+        "auxiliary_step_seconds": 2.6671020369568117
+      },
+      "E21-79": {
+        "decision_gap": 3.111355489459428,
+        "decision_valid_fraction": 0.8960729418886199,
+        "loss_decision": 41.59942736851638,
+        "decision_identity_grad_norm": 297.1690760944121,
+        "auxiliary_step_seconds": 3.705111961173933
+      },
+      "E80-130": {
+        "decision_gap": 2.655357789121518,
+        "decision_valid_fraction": 0.9465036014405764,
+        "loss_decision": 35.58885926797705,
+        "decision_identity_grad_norm": 230.244810807189,
+        "auxiliary_step_seconds": 3.3996759649962796
+      },
+      "E131-200": {
+        "decision_gap": 2.254271368875708,
+        "decision_valid_fraction": 0.9796738338192418,
+        "loss_decision": 30.41427875593869,
+        "decision_identity_grad_norm": 185.41586361236094,
+        "auxiliary_step_seconds": 2.735907436681248
+      }
+    }
+  }
+}
