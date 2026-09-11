@@ -62,3 +62,31 @@
 root/log/PID存在即拒绝重复dispatch；输出不覆盖，不自动重试，不回退旧权重。协议越界、来源/数据身份不一致、源IQ处理不一致、无法执行、数值非有限、输出冲突或无法闭合合法source产物记TECHNICAL_FAILURE，保留日志和部分产物；低性能、负收益或未达到收敛阈值不停止固定80轮。其他正在运行的同批健康worker正常结束，不对无关PID操作。SSH超时先读回既有run/PID，不重发。
 
 当前预登记状态：LOCAL_VERIFIED，等待固定Git版本、落地和实际启动读回；未把预登记写作已运行。
+
+## 落地与正式启动读回：VERIFIED
+
+上述预登记后的实际状态为**RUNNING / EXPERT_OOF_FITS**，不是实验完成。
+
+- 实际代码commit：`1afa43a75c76b728d4e6352ba8e44acae44f277b`；GitHub远端分支OID与本地HEAD独立读回一致。
+- release：`/home/szu2070436088/2510044040/CV-SincNet/releases/core90_anchored_392005_1afa43a7`。发布归档5482816字节，本地/远端SHA256均为`98430a43545b967b0929a47747b627a50b2b25db8663410fa63bd7ad7e9f43bf`，一次远端compileall通过。
+- coordinator PID=`966219`、PPID=1，`/proc`实际CWD/argv与release和本run完全一致。dispatcher只执行一次，没有超时重发。
+- source_inputs.json确认L_s=6300、V=27000，全部L_s的IQ/labels/physical ID及顺序与上轮逐tensor一致。真实H0/L_s六类smoke打印PASS，未使用该smoke梯度作为正式专家初始化。
+- joint与blocks的L_s/V四份缓存全部完成，每布局L_s=12600行、V=54000行；源物理集合和角色匹配。
+
+启动快照的正式worker状态如下（各自在首个heldout RX=1折，随后继续其余折和全source拟合）：
+
+|候选|GPU|PID/PPID|快照epoch/80|optimizer_steps|
+|---|---|---|---|---|
+|A2|0|967800/966219|27|945|
+|A3|1|967805/966219|19|665|
+|A4|2|967810/966219|19|665|
+|C_angle|3|967815/966219|26|910|
+|C_angle_keep|5|967823/966219|23|805|
+
+所有worker的`/proc`CWD为本release，实际argv包含`--stage oof --seed 392005`及本run输出；`CUDA_VISIBLE_DEVICES`分别为0/1/2/3/5，nvidia-smi实际PID显存记录对应362–396MiB。其他原有GPU4/6/7任务保持运行，本次没有终止或修改它们。
+
+日志从启动警告推进到多条连续epoch记录。A4快照E19的CE/keep/metric加权梯度范数分别约0.190869、0.000109683、0.00184518；`a_max_change≈0.0064003`，机制确实参与当前优化。A2/A3的keep为0、普通角度对照的metric为0均是设计分支，不属于漏开。此处只证明启动和实际接线，不能据此推断收益、收敛或晋级。
+
+读回的全部当前日志无Traceback，status仍为EXPERT_OOF_FITS、target_access=false。证据为`analysis/core90_anchored_launch_evidence_392005_20260911/startup_snapshot_1.json`与`startup_snapshot_2.json`，含实际OS进程信息、GPU记录、缓存计数、日志末两条及source输入核对。完整epoch日志继续保留远端logs目录；以上数值是启动快照，不是最终结果。
+
+后续由同一个coordinator自动执行剩余OOF、全部source校准/导出、P1、A5及条件性A6；本任务没有另外创建定时监控，也未启动target或另两个seed。

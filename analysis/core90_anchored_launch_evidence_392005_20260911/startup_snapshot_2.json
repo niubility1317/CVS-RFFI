@@ -1,0 +1,357 @@
+{
+  "time": 1789123107.0274165,
+  "status": {
+    "stage": "EXPERT_OOF_FITS",
+    "pid": 966219,
+    "time": 1789123091.3584473,
+    "seed": 392005,
+    "target_access": false,
+    "base_fit_budget": 30,
+    "max_fit_budget": 40
+  },
+  "coordinator": {
+    "pid": 966219,
+    "ppid": 1,
+    "state": "S (sleeping)",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/core90_anchored_392005_1afa43a7",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/core90_anchored_392005_1afa43a7/code/scripts/run_core90_anchored_experiment.py",
+      "--root",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1",
+      "--logs",
+      "/home/szu2070436088/2510044040/CV-SincNet/logs/core90_anchored_s392005_20260911_r1",
+      "--ground",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_evidence_frozen_392005_20260911/H0/ground_checkpoint.pt",
+      "--contract",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_evidence_frozen_392005_20260911/data_contract.json",
+      "--previous-source",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_evidence_frozen_392005_20260911/source_training.pt",
+      "--dataset",
+      "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "--seed",
+      "392005",
+      "--gpus",
+      "0,1,2,3,5",
+      "--threads",
+      "4"
+    ],
+    "CUDA_VISIBLE_DEVICES": ""
+  },
+  "workers": [
+    {
+      "label": "A2_oof",
+      "pid": 967800,
+      "ppid": 966219,
+      "state": "R (running)",
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/core90_anchored_392005_1afa43a7",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/core90_anchored_392005_1afa43a7/code/scripts/run_core90_anchored_geometry.py",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/core90_anchored_392005_1afa43a7/code/configs/core90_anchored_geometry_v1.json",
+        "--stage",
+        "oof",
+        "--candidate",
+        "A2",
+        "--seed",
+        "392005",
+        "--ground",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_evidence_frozen_392005_20260911/H0/ground_checkpoint.pt",
+        "--contract",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_evidence_frozen_392005_20260911/data_contract.json",
+        "--device",
+        "cuda:0",
+        "--threads",
+        "4",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/oof/A2",
+        "--cache",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/cache/joint_L_s"
+      ],
+      "CUDA_VISIBLE_DEVICES": "0"
+    },
+    {
+      "label": "A3_oof",
+      "pid": 967805,
+      "ppid": 966219,
+      "state": "S (sleeping)",
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/core90_anchored_392005_1afa43a7",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/core90_anchored_392005_1afa43a7/code/scripts/run_core90_anchored_geometry.py",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/core90_anchored_392005_1afa43a7/code/configs/core90_anchored_geometry_v1.json",
+        "--stage",
+        "oof",
+        "--candidate",
+        "A3",
+        "--seed",
+        "392005",
+        "--ground",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_evidence_frozen_392005_20260911/H0/ground_checkpoint.pt",
+        "--contract",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_evidence_frozen_392005_20260911/data_contract.json",
+        "--device",
+        "cuda:0",
+        "--threads",
+        "4",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/oof/A3",
+        "--cache",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/cache/joint_L_s"
+      ],
+      "CUDA_VISIBLE_DEVICES": "1"
+    },
+    {
+      "label": "A4_oof",
+      "pid": 967810,
+      "ppid": 966219,
+      "state": "R (running)",
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/core90_anchored_392005_1afa43a7",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/core90_anchored_392005_1afa43a7/code/scripts/run_core90_anchored_geometry.py",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/core90_anchored_392005_1afa43a7/code/configs/core90_anchored_geometry_v1.json",
+        "--stage",
+        "oof",
+        "--candidate",
+        "A4",
+        "--seed",
+        "392005",
+        "--ground",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_evidence_frozen_392005_20260911/H0/ground_checkpoint.pt",
+        "--contract",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_evidence_frozen_392005_20260911/data_contract.json",
+        "--device",
+        "cuda:0",
+        "--threads",
+        "4",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/oof/A4",
+        "--cache",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/cache/joint_L_s"
+      ],
+      "CUDA_VISIBLE_DEVICES": "2"
+    },
+    {
+      "label": "C_angle_oof",
+      "pid": 967815,
+      "ppid": 966219,
+      "state": "R (running)",
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/core90_anchored_392005_1afa43a7",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/core90_anchored_392005_1afa43a7/code/scripts/run_core90_anchored_geometry.py",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/core90_anchored_392005_1afa43a7/code/configs/core90_anchored_geometry_v1.json",
+        "--stage",
+        "oof",
+        "--candidate",
+        "C_angle",
+        "--seed",
+        "392005",
+        "--ground",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_evidence_frozen_392005_20260911/H0/ground_checkpoint.pt",
+        "--contract",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_evidence_frozen_392005_20260911/data_contract.json",
+        "--device",
+        "cuda:0",
+        "--threads",
+        "4",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/oof/C_angle",
+        "--cache",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/cache/joint_L_s"
+      ],
+      "CUDA_VISIBLE_DEVICES": "3"
+    },
+    {
+      "label": "C_angle_keep_oof",
+      "pid": 967823,
+      "ppid": 966219,
+      "state": "R (running)",
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/core90_anchored_392005_1afa43a7",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/core90_anchored_392005_1afa43a7/code/scripts/run_core90_anchored_geometry.py",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/core90_anchored_392005_1afa43a7/code/configs/core90_anchored_geometry_v1.json",
+        "--stage",
+        "oof",
+        "--candidate",
+        "C_angle_keep",
+        "--seed",
+        "392005",
+        "--ground",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_evidence_frozen_392005_20260911/H0/ground_checkpoint.pt",
+        "--contract",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_evidence_frozen_392005_20260911/data_contract.json",
+        "--device",
+        "cuda:0",
+        "--threads",
+        "4",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/oof/C_angle_keep",
+        "--cache",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/cache/joint_L_s"
+      ],
+      "CUDA_VISIBLE_DEVICES": "5"
+    }
+  ],
+  "logs": [
+    {
+      "label": "prepare",
+      "size": 561,
+      "tail": [
+        "[SOURCE-INPUT] {\"role\": \"L_s\", \"count\": 6300, \"target_access\": false}",
+        "[SOURCE-INPUT] {\"role\": \"V\", \"count\": 27000, \"target_access\": false}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "smoke",
+      "size": 539,
+      "tail": [
+        "  return self.fget.__get__(instance, owner)()",
+        "[REAL-CHECKPOINT-SMOKE] {\"status\": \"PASS\", \"rows\": 6, \"target_access\": false, \"formal_head_initialization\": \"fresh\"}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "joint_L_s",
+      "size": 588,
+      "tail": [
+        "  return self.fget.__get__(instance, owner)()",
+        "{\"status\": \"SOURCE_STAGE_COMPLETE\", \"stage\": \"cache\", \"output\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/cache/joint_L_s\"}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "joint_V",
+      "size": 586,
+      "tail": [
+        "  return self.fget.__get__(instance, owner)()",
+        "{\"status\": \"SOURCE_STAGE_COMPLETE\", \"stage\": \"cache\", \"output\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/cache/joint_V\"}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "blocks_L_s",
+      "size": 589,
+      "tail": [
+        "  return self.fget.__get__(instance, owner)()",
+        "{\"status\": \"SOURCE_STAGE_COMPLETE\", \"stage\": \"cache\", \"output\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/cache/blocks_L_s\"}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "blocks_V",
+      "size": 587,
+      "tail": [
+        "  return self.fget.__get__(instance, owner)()",
+        "{\"status\": \"SOURCE_STAGE_COMPLETE\", \"stage\": \"cache\", \"output\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/cache/blocks_V\"}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "A2_oof",
+      "size": 18512,
+      "tail": [
+        "[ANCHORED-EPOCH] {\"candidate\": \"A2\", \"train_rx\": \"3,4,6,8\", \"head_seed\": 392005, \"epoch\": 26, \"optimizer_steps\": 910, \"physical_visits_total\": 131040, \"view_visits_total\": 131040, \"ce_clean\": 0.10142649582386574, \"ce_leo\": 0.0, \"keep_raw\": 0.0, \"metric_raw\": 0.14409427557672774, \"loss\": 0.10286743859427848, \"grad_norm_ce\": 0.04144982993602753, \"grad_norm_keep\": 0.0, \"grad_norm_metric\": 0.001822344260290265, \"grad_cos_ce_keep\": null, \"grad_cos_ce_metric\": -0.4043744206428528, \"grad_cos_keep_metric\": null, \"validation_ce\": 0.36281174421310425, \"metric_relative_change\": 0.001382516580633819, \"a_max_change\": 0.004550367593765259, \"epoch_seconds\": 0.40933986101299524}",
+        "[ANCHORED-EPOCH] {\"candidate\": \"A2\", \"train_rx\": \"3,4,6,8\", \"head_seed\": 392005, \"epoch\": 27, \"optimizer_steps\": 945, \"physical_visits_total\": 136080, \"view_visits_total\": 136080, \"ce_clean\": 0.10089718120861611, \"ce_leo\": 0.0, \"keep_raw\": 0.0, \"metric_raw\": 0.14994204682963236, \"loss\": 0.10239660174452833, \"grad_norm_ce\": 0.04054104909300804, \"grad_norm_keep\": 0.0, \"grad_norm_metric\": 0.0018280993681401014, \"grad_cos_ce_keep\": null, \"grad_cos_ce_metric\": -0.20212186872959137, \"grad_cos_keep_metric\": null, \"validation_ce\": 0.361629843711853, \"metric_relative_change\": 0.001912549720145762, \"a_max_change\": 0.004749462008476257, \"epoch_seconds\": 0.41361972223967314}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "A3_oof",
+      "size": 13357,
+      "tail": [
+        "[ANCHORED-EPOCH] {\"candidate\": \"A3\", \"train_rx\": \"3,4,6,8\", \"head_seed\": 392005, \"epoch\": 18, \"optimizer_steps\": 630, \"physical_visits_total\": 90720, \"view_visits_total\": 181440, \"ce_clean\": 0.10603470273692404, \"ce_leo\": 1.13513149363654, \"keep_raw\": 0.0, \"metric_raw\": 0.16015825697353908, \"loss\": 0.6221846835953849, \"grad_norm_ce\": 0.1842883676290512, \"grad_norm_keep\": 0.0, \"grad_norm_metric\": 0.0018451298819854856, \"grad_cos_ce_keep\": null, \"grad_cos_ce_metric\": -0.8481228947639465, \"grad_cos_keep_metric\": null, \"validation_ce\": 0.3232893645763397, \"metric_relative_change\": 0.0016698658000677824, \"a_max_change\": 0.00704975426197052, \"epoch_seconds\": 0.47379880445078015}",
+        "[ANCHORED-EPOCH] {\"candidate\": \"A3\", \"train_rx\": \"3,4,6,8\", \"head_seed\": 392005, \"epoch\": 19, \"optimizer_steps\": 665, \"physical_visits_total\": 95760, \"view_visits_total\": 191520, \"ce_clean\": 0.10553184568272107, \"ce_leo\": 1.124293235370091, \"keep_raw\": 0.0, \"metric_raw\": 0.1700810717684882, \"loss\": 0.6166133505957467, \"grad_norm_ce\": 0.1908547431230545, \"grad_norm_keep\": 0.0, \"grad_norm_metric\": 0.0018451755167916417, \"grad_cos_ce_keep\": null, \"grad_cos_ce_metric\": -0.7867760062217712, \"grad_cos_keep_metric\": null, \"validation_ce\": 0.3205479085445404, \"metric_relative_change\": 0.001978992484509945, \"a_max_change\": 0.006400495767593384, \"epoch_seconds\": 0.4722251729108393}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "A4_oof",
+      "size": 14568,
+      "tail": [
+        "[ANCHORED-EPOCH] {\"candidate\": \"A4\", \"train_rx\": \"3,4,6,8\", \"head_seed\": 392005, \"epoch\": 18, \"optimizer_steps\": 630, \"physical_visits_total\": 90720, \"view_visits_total\": 181440, \"ce_clean\": 0.10603311652676553, \"ce_leo\": 1.13514735187803, \"keep_raw\": 0.032774775259063714, \"metric_raw\": 0.16014161237648555, \"loss\": 0.6222280630043575, \"grad_norm_ce\": 0.1843118816614151, \"grad_norm_keep\": 0.00026539131067693233, \"grad_norm_metric\": 0.0018451212672516704, \"grad_cos_ce_keep\": -0.16057488322257996, \"grad_cos_ce_metric\": -0.848107099533081, \"grad_cos_keep_metric\": 0.18899832665920258, \"validation_ce\": 0.3232821822166443, \"metric_relative_change\": 0.001670164056122303, \"a_max_change\": 0.007049396634101868, \"epoch_seconds\": 0.5062292260117829}",
+        "[ANCHORED-EPOCH] {\"candidate\": \"A4\", \"train_rx\": \"3,4,6,8\", \"head_seed\": 392005, \"epoch\": 19, \"optimizer_steps\": 665, \"physical_visits_total\": 95760, \"view_visits_total\": 191520, \"ce_clean\": 0.10553031590307001, \"ce_leo\": 1.1243082438196454, \"keep_raw\": 0.03548157719509878, \"metric_raw\": 0.17006278250898635, \"loss\": 0.6166593389851707, \"grad_norm_ce\": 0.19086898863315582, \"grad_norm_keep\": 0.0001096826745197177, \"grad_norm_metric\": 0.0018451751675456762, \"grad_cos_ce_keep\": -0.10135643184185028, \"grad_cos_ce_metric\": -0.7868143320083618, \"grad_cos_keep_metric\": 0.17126160860061646, \"validation_ce\": 0.3205417990684509, \"metric_relative_change\": 0.001977156847715378, \"a_max_change\": 0.00640028715133667, \"epoch_seconds\": 0.47047617100179195}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "C_angle_oof",
+      "size": 16208,
+      "tail": [
+        "[ANCHORED-EPOCH] {\"candidate\": \"C_angle\", \"train_rx\": \"3,4,6,8\", \"head_seed\": 392005, \"epoch\": 25, \"optimizer_steps\": 875, \"physical_visits_total\": 126000, \"view_visits_total\": 252000, \"ce_clean\": 0.039145923432494914, \"ce_leo\": 0.35718879614557536, \"keep_raw\": 0.0, \"metric_raw\": 0.0, \"loss\": 0.1981673615319388, \"grad_norm_ce\": 1.0332038402557373, \"grad_norm_keep\": 0.0, \"grad_norm_metric\": 0.0, \"grad_cos_ce_keep\": null, \"grad_cos_ce_metric\": null, \"grad_cos_keep_metric\": null, \"validation_ce\": 0.12253335118293762, \"metric_relative_change\": 0.0, \"a_max_change\": 0.0, \"epoch_seconds\": 0.35448358906432986}",
+        "[ANCHORED-EPOCH] {\"candidate\": \"C_angle\", \"train_rx\": \"3,4,6,8\", \"head_seed\": 392005, \"epoch\": 26, \"optimizer_steps\": 910, \"physical_visits_total\": 131040, \"view_visits_total\": 262080, \"ce_clean\": 0.039456075456525595, \"ce_leo\": 0.3555385661976678, \"keep_raw\": 0.0, \"metric_raw\": 0.0, \"loss\": 0.19749731932367598, \"grad_norm_ce\": 1.0919655561447144, \"grad_norm_keep\": 0.0, \"grad_norm_metric\": 0.0, \"grad_cos_ce_keep\": null, \"grad_cos_ce_metric\": null, \"grad_cos_keep_metric\": null, \"validation_ce\": 0.12485084682703018, \"metric_relative_change\": 0.0, \"a_max_change\": 0.0, \"epoch_seconds\": 0.35278937220573425}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "C_angle_keep_oof",
+      "size": 15564,
+      "tail": [
+        "[ANCHORED-EPOCH] {\"candidate\": \"C_angle_keep\", \"train_rx\": \"3,4,6,8\", \"head_seed\": 392005, \"epoch\": 22, \"optimizer_steps\": 770, \"physical_visits_total\": 110880, \"view_visits_total\": 221760, \"ce_clean\": 0.039610248617827894, \"ce_leo\": 0.3575753152370453, \"keep_raw\": 0.2926203348806926, \"metric_raw\": 0.0, \"loss\": 0.19891791428838457, \"grad_norm_ce\": 1.0382779836654663, \"grad_norm_keep\": 0.009416957385838032, \"grad_norm_metric\": 0.0, \"grad_cos_ce_keep\": 0.29973527789115906, \"grad_cos_ce_metric\": null, \"grad_cos_keep_metric\": null, \"validation_ce\": 0.12605035305023193, \"metric_relative_change\": 0.0, \"a_max_change\": 0.0, \"epoch_seconds\": 0.4005517140030861}",
+        "[ANCHORED-EPOCH] {\"candidate\": \"C_angle_keep\", \"train_rx\": \"3,4,6,8\", \"head_seed\": 392005, \"epoch\": 23, \"optimizer_steps\": 805, \"physical_visits_total\": 115920, \"view_visits_total\": 231840, \"ce_clean\": 0.03825960497238806, \"ce_leo\": 0.35861316323280334, \"keep_raw\": 0.2916192812579019, \"metric_raw\": 0.0, \"loss\": 0.19876040475709097, \"grad_norm_ce\": 1.5004159212112427, \"grad_norm_keep\": 0.011120852082967758, \"grad_norm_metric\": 0.0, \"grad_cos_ce_keep\": -0.1296337991952896, \"grad_cos_ce_metric\": null, \"grad_cos_keep_metric\": null, \"validation_ce\": 0.12993872165679932, \"metric_relative_change\": 0.0, \"a_max_change\": 0.0, \"epoch_seconds\": 0.40178066305816174}"
+      ],
+      "traceback": false
+    }
+  ],
+  "caches": {
+    "blocks_L_s": {
+      "rows": 12600,
+      "role": "L_s"
+    },
+    "joint_L_s": {
+      "rows": 12600,
+      "role": "L_s"
+    },
+    "blocks_V": {
+      "rows": 54000,
+      "role": "V"
+    },
+    "joint_V": {
+      "rows": 54000,
+      "role": "V"
+    }
+  },
+  "gpu_processes": [
+    "GPU-56adac86-77cd-36c9-8770-dbf002650461, 967800, 396",
+    "GPU-a2d039ff-1792-4222-2b47-140429e10f94, 967805, 396",
+    "GPU-4fb45b9a-894a-536b-0e0a-09f7c1341562, 967810, 396",
+    "GPU-7b4bacb3-4901-6845-a414-0dfdfeeade97, 967815, 362",
+    "GPU-95d925a1-7218-ca7b-adef-164241f4f491, 612456, 3396",
+    "GPU-ef5f59f2-e03e-fe6e-ea6b-3e03afc9b331, 967823, 362",
+    "GPU-5463e082-259e-537b-603a-01575d45801c, 839936, 6002",
+    "GPU-9c4eb614-ca19-a390-aaf4-801f8980b6a9, 907259, 5040"
+  ],
+  "source_inputs": {
+    "counts": {
+      "L_s": 6300,
+      "V": 27000
+    },
+    "source_roles": [
+      "L_s",
+      "V"
+    ],
+    "target_access": false,
+    "previous_L_s_bitwise_equal": true,
+    "checkpoint_lineage": {
+      "from_scratch": true,
+      "upstream": [],
+      "selection": "final_only",
+      "target_feedback": false
+    },
+    "contract_reused": true
+  }
+}

@@ -1,0 +1,204 @@
+{
+  "time": 1789123054.8779647,
+  "status": {
+    "stage": "EXTRACTING_SOURCE_CACHES",
+    "pid": 966219,
+    "time": 1789122999.860715,
+    "seed": 392005,
+    "target_access": false
+  },
+  "coordinator": {
+    "pid": 966219,
+    "ppid": 1,
+    "state": "S (sleeping)",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/core90_anchored_392005_1afa43a7",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/core90_anchored_392005_1afa43a7/code/scripts/run_core90_anchored_experiment.py",
+      "--root",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1",
+      "--logs",
+      "/home/szu2070436088/2510044040/CV-SincNet/logs/core90_anchored_s392005_20260911_r1",
+      "--ground",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_evidence_frozen_392005_20260911/H0/ground_checkpoint.pt",
+      "--contract",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_evidence_frozen_392005_20260911/data_contract.json",
+      "--previous-source",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_evidence_frozen_392005_20260911/source_training.pt",
+      "--dataset",
+      "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "--seed",
+      "392005",
+      "--gpus",
+      "0,1,2,3,5",
+      "--threads",
+      "4"
+    ],
+    "CUDA_VISIBLE_DEVICES": ""
+  },
+  "workers": [
+    {
+      "label": "blocks_L_s",
+      "pid": 967168,
+      "ppid": 966219,
+      "state": "R (running)",
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/core90_anchored_392005_1afa43a7",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/core90_anchored_392005_1afa43a7/code/scripts/run_core90_anchored_geometry.py",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/core90_anchored_392005_1afa43a7/code/configs/core90_anchored_geometry_v1.json",
+        "--stage",
+        "cache",
+        "--candidate",
+        "P1",
+        "--seed",
+        "392005",
+        "--ground",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_evidence_frozen_392005_20260911/H0/ground_checkpoint.pt",
+        "--contract",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_evidence_frozen_392005_20260911/data_contract.json",
+        "--device",
+        "cuda:0",
+        "--threads",
+        "4",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/cache/blocks_L_s",
+        "--source",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/inputs/L_s.pt",
+        "--role",
+        "L_s"
+      ],
+      "CUDA_VISIBLE_DEVICES": "0"
+    },
+    {
+      "label": "blocks_V",
+      "pid": 967173,
+      "ppid": 966219,
+      "state": "R (running)",
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/core90_anchored_392005_1afa43a7",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/core90_anchored_392005_1afa43a7/code/scripts/run_core90_anchored_geometry.py",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/core90_anchored_392005_1afa43a7/code/configs/core90_anchored_geometry_v1.json",
+        "--stage",
+        "cache",
+        "--candidate",
+        "P1",
+        "--seed",
+        "392005",
+        "--ground",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_evidence_frozen_392005_20260911/H0/ground_checkpoint.pt",
+        "--contract",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_evidence_frozen_392005_20260911/data_contract.json",
+        "--device",
+        "cuda:0",
+        "--threads",
+        "4",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/cache/blocks_V",
+        "--source",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/inputs/V.pt",
+        "--role",
+        "V"
+      ],
+      "CUDA_VISIBLE_DEVICES": "1"
+    }
+  ],
+  "logs": [
+    {
+      "label": "prepare",
+      "size": 561,
+      "tail": [
+        "[SOURCE-INPUT] {\"role\": \"L_s\", \"count\": 6300, \"target_access\": false}",
+        "[SOURCE-INPUT] {\"role\": \"V\", \"count\": 27000, \"target_access\": false}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "smoke",
+      "size": 539,
+      "tail": [
+        "  return self.fget.__get__(instance, owner)()",
+        "[REAL-CHECKPOINT-SMOKE] {\"status\": \"PASS\", \"rows\": 6, \"target_access\": false, \"formal_head_initialization\": \"fresh\"}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "joint_L_s",
+      "size": 588,
+      "tail": [
+        "  return self.fget.__get__(instance, owner)()",
+        "{\"status\": \"SOURCE_STAGE_COMPLETE\", \"stage\": \"cache\", \"output\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/cache/joint_L_s\"}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "joint_V",
+      "size": 586,
+      "tail": [
+        "  return self.fget.__get__(instance, owner)()",
+        "{\"status\": \"SOURCE_STAGE_COMPLETE\", \"stage\": \"cache\", \"output\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/cache/joint_V\"}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "blocks_L_s",
+      "size": 422,
+      "tail": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()",
+        "  return self.fget.__get__(instance, owner)()"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "blocks_V",
+      "size": 422,
+      "tail": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()",
+        "  return self.fget.__get__(instance, owner)()"
+      ],
+      "traceback": false
+    }
+  ],
+  "caches": {
+    "joint_L_s": {
+      "rows": 12600,
+      "role": "L_s"
+    },
+    "joint_V": {
+      "rows": 54000,
+      "role": "V"
+    }
+  },
+  "gpu_processes": [
+    "GPU-56adac86-77cd-36c9-8770-dbf002650461, 967168, 524",
+    "GPU-a2d039ff-1792-4222-2b47-140429e10f94, 967173, 524",
+    "GPU-95d925a1-7218-ca7b-adef-164241f4f491, 612456, 3396",
+    "GPU-5463e082-259e-537b-603a-01575d45801c, 839936, 6002",
+    "GPU-9c4eb614-ca19-a390-aaf4-801f8980b6a9, 907259, 5040"
+  ],
+  "source_inputs": {
+    "counts": {
+      "L_s": 6300,
+      "V": 27000
+    },
+    "source_roles": [
+      "L_s",
+      "V"
+    ],
+    "target_access": false,
+    "previous_L_s_bitwise_equal": true,
+    "checkpoint_lineage": {
+      "from_scratch": true,
+      "upstream": [],
+      "selection": "final_only",
+      "target_feedback": false
+    },
+    "contract_reused": true
+  }
+}
