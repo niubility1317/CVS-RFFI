@@ -1,3 +1,7 @@
+## 完成结果（2026-09-12）
+
+VERIFIED：head_only完成E200、四场景预测及评分；纳入[八行完整测试报告](../core90_cross_response_v2_s392005_20260911_r1/completed_detail_20260912/completed_results.md)。原r1初始化失败不参与结果。
+
 # V2 head_only单行兼容修复重发
 
 状态：RUNNING_VERIFIED。所属矩阵为[原r1预登记](../core90_cross_response_v2_s392005_20260911_r1/report.md)。r1其余7行保持健康运行，数据、seed392005、E200、scratch、预算与选择规则完全沿用；仅重发head_only，不追加其他行。

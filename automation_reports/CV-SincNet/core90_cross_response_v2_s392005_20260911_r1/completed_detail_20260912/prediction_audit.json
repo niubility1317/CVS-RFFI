@@ -1,0 +1,2845 @@
+{
+  "U0": {
+    "status": "VERIFIED",
+    "records": 198000,
+    "prediction_rows": 792000,
+    "registered_classes": 6,
+    "compared_score_groups": 148,
+    "same_physical_records_roles_and_scene_seeds": true,
+    "same_truth_mapping": true,
+    "all_predictions_validated_before_truth_read": true,
+    "confusion_matrices": {
+      "clean": [
+        [
+          31852,
+          101,
+          399,
+          575,
+          41,
+          32
+        ],
+        [
+          1096,
+          16359,
+          37,
+          15399,
+          68,
+          41
+        ],
+        [
+          2683,
+          1250,
+          22392,
+          903,
+          407,
+          5365
+        ],
+        [
+          4636,
+          7307,
+          181,
+          20732,
+          68,
+          76
+        ],
+        [
+          36,
+          10,
+          32,
+          8,
+          32863,
+          51
+        ],
+        [
+          16,
+          64,
+          83,
+          12,
+          820,
+          32005
+        ]
+      ],
+      "leo_clear_weak": [
+        [
+          25823,
+          1844,
+          540,
+          4606,
+          136,
+          51
+        ],
+        [
+          3578,
+          11690,
+          125,
+          17113,
+          439,
+          55
+        ],
+        [
+          3476,
+          2135,
+          19077,
+          1265,
+          1689,
+          5358
+        ],
+        [
+          8131,
+          4791,
+          1163,
+          18362,
+          306,
+          247
+        ],
+        [
+          593,
+          3004,
+          239,
+          2638,
+          26407,
+          119
+        ],
+        [
+          76,
+          456,
+          242,
+          24,
+          1408,
+          30794
+        ]
+      ],
+      "leo_low_elev_weak": [
+        [
+          25307,
+          2119,
+          587,
+          4684,
+          225,
+          78
+        ],
+        [
+          5116,
+          10899,
+          166,
+          16126,
+          615,
+          78
+        ],
+        [
+          4040,
+          2296,
+          17785,
+          1476,
+          1871,
+          5532
+        ],
+        [
+          9398,
+          4831,
+          1203,
+          16757,
+          544,
+          267
+        ],
+        [
+          892,
+          3214,
+          307,
+          3109,
+          25313,
+          165
+        ],
+        [
+          179,
+          498,
+          389,
+          39,
+          1384,
+          30511
+        ]
+      ],
+      "leo_rain_weak": [
+        [
+          25576,
+          2175,
+          578,
+          4372,
+          237,
+          62
+        ],
+        [
+          5620,
+          11078,
+          159,
+          15436,
+          630,
+          77
+        ],
+        [
+          4166,
+          2138,
+          17889,
+          1416,
+          1736,
+          5655
+        ],
+        [
+          10304,
+          4749,
+          1172,
+          16008,
+          481,
+          286
+        ],
+        [
+          960,
+          3149,
+          347,
+          3174,
+          25172,
+          198
+        ],
+        [
+          151,
+          430,
+          336,
+          26,
+          1298,
+          30759
+        ]
+      ]
+    },
+    "confusion_orientation": "rows=true, columns=predicted",
+    "per_day": {
+      "clean": {
+        "0": {
+          "tx_acc": 82.03055555555555,
+          "tx_correct": 59062,
+          "tx_total": 72000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "1": {
+          "tx_acc": 80.41904761904762,
+          "tx_correct": 33776,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "2": {
+          "tx_acc": 72.90238095238095,
+          "tx_correct": 30619,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "3": {
+          "tx_acc": 77.96666666666667,
+          "tx_correct": 32746,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        }
+      },
+      "leo_clear_weak": {
+        "0": {
+          "tx_acc": 70.09027777777777,
+          "tx_correct": 50465,
+          "tx_total": 72000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "1": {
+          "tx_acc": 66.79285714285714,
+          "tx_correct": 28053,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "2": {
+          "tx_acc": 62.18333333333333,
+          "tx_correct": 26117,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "3": {
+          "tx_acc": 65.51904761904763,
+          "tx_correct": 27518,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        }
+      },
+      "leo_low_elev_weak": {
+        "0": {
+          "tx_acc": 66.9486111111111,
+          "tx_correct": 48203,
+          "tx_total": 72000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "1": {
+          "tx_acc": 63.94285714285714,
+          "tx_correct": 26856,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "2": {
+          "tx_acc": 59.55952380952381,
+          "tx_correct": 25015,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "3": {
+          "tx_acc": 63.09047619047619,
+          "tx_correct": 26498,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        }
+      },
+      "leo_rain_weak": {
+        "0": {
+          "tx_acc": 66.8,
+          "tx_correct": 48096,
+          "tx_total": 72000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "1": {
+          "tx_acc": 64.16666666666667,
+          "tx_correct": 26950,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "2": {
+          "tx_acc": 59.96666666666667,
+          "tx_correct": 25186,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "3": {
+          "tx_acc": 62.5,
+          "tx_correct": 26250,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        }
+      }
+    },
+    "diagnostics": {
+      "all_lines_parsed": 0,
+      "successful_lines": 0,
+      "events": {},
+      "steps_per_event": {},
+      "nonfinite_reasons": {},
+      "bytes": 0
+    },
+    "checkpoint_exists": true,
+    "checkpoint_bytes": 16670368,
+    "no_remote_writes": true,
+    "run": "core90_cross_response_v2_s392005_20260911_r1"
+  },
+  "U1": {
+    "status": "VERIFIED",
+    "records": 198000,
+    "prediction_rows": 792000,
+    "registered_classes": 6,
+    "compared_score_groups": 148,
+    "same_physical_records_roles_and_scene_seeds": true,
+    "same_truth_mapping": true,
+    "all_predictions_validated_before_truth_read": true,
+    "confusion_matrices": {
+      "clean": [
+        [
+          31592,
+          120,
+          299,
+          896,
+          46,
+          47
+        ],
+        [
+          812,
+          15261,
+          49,
+          16728,
+          65,
+          85
+        ],
+        [
+          3189,
+          374,
+          20330,
+          2165,
+          793,
+          6149
+        ],
+        [
+          3945,
+          5863,
+          295,
+          22689,
+          86,
+          122
+        ],
+        [
+          37,
+          224,
+          24,
+          88,
+          32555,
+          72
+        ],
+        [
+          89,
+          13,
+          55,
+          28,
+          1496,
+          31319
+        ]
+      ],
+      "leo_clear_weak": [
+        [
+          24136,
+          1647,
+          428,
+          6494,
+          209,
+          86
+        ],
+        [
+          2243,
+          10367,
+          43,
+          19736,
+          526,
+          85
+        ],
+        [
+          3614,
+          2527,
+          15190,
+          2431,
+          3429,
+          5809
+        ],
+        [
+          5985,
+          4944,
+          595,
+          20887,
+          282,
+          307
+        ],
+        [
+          332,
+          2409,
+          76,
+          4137,
+          25892,
+          154
+        ],
+        [
+          141,
+          223,
+          67,
+          18,
+          2163,
+          30388
+        ]
+      ],
+      "leo_low_elev_weak": [
+        [
+          23906,
+          1808,
+          518,
+          6361,
+          289,
+          118
+        ],
+        [
+          3479,
+          9574,
+          72,
+          19009,
+          755,
+          111
+        ],
+        [
+          3625,
+          2701,
+          14423,
+          2570,
+          3507,
+          6174
+        ],
+        [
+          7552,
+          4956,
+          629,
+          18971,
+          522,
+          370
+        ],
+        [
+          464,
+          2711,
+          87,
+          4747,
+          24772,
+          219
+        ],
+        [
+          272,
+          245,
+          158,
+          21,
+          2160,
+          30144
+        ]
+      ],
+      "leo_rain_weak": [
+        [
+          24381,
+          1930,
+          511,
+          5778,
+          301,
+          99
+        ],
+        [
+          3847,
+          9813,
+          71,
+          18347,
+          811,
+          111
+        ],
+        [
+          3705,
+          2625,
+          14425,
+          2489,
+          3440,
+          6316
+        ],
+        [
+          8198,
+          4770,
+          657,
+          18466,
+          523,
+          386
+        ],
+        [
+          490,
+          2681,
+          97,
+          4723,
+          24778,
+          231
+        ],
+        [
+          206,
+          187,
+          128,
+          22,
+          2162,
+          30295
+        ]
+      ]
+    },
+    "confusion_orientation": "rows=true, columns=predicted",
+    "per_day": {
+      "clean": {
+        "0": {
+          "tx_acc": 80.49444444444444,
+          "tx_correct": 57956,
+          "tx_total": 72000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "1": {
+          "tx_acc": 79.8952380952381,
+          "tx_correct": 33556,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "2": {
+          "tx_acc": 71.68571428571428,
+          "tx_correct": 30108,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "3": {
+          "tx_acc": 76.49047619047619,
+          "tx_correct": 32126,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        }
+      },
+      "leo_clear_weak": {
+        "0": {
+          "tx_acc": 67.525,
+          "tx_correct": 48618,
+          "tx_total": 72000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "1": {
+          "tx_acc": 63.2952380952381,
+          "tx_correct": 26584,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "2": {
+          "tx_acc": 59.069047619047616,
+          "tx_correct": 24809,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "3": {
+          "tx_acc": 63.92619047619048,
+          "tx_correct": 26849,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        }
+      },
+      "leo_low_elev_weak": {
+        "0": {
+          "tx_acc": 64.86527777777778,
+          "tx_correct": 46703,
+          "tx_total": 72000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "1": {
+          "tx_acc": 60.85476190476191,
+          "tx_correct": 25559,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "2": {
+          "tx_acc": 56.707142857142856,
+          "tx_correct": 23817,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "3": {
+          "tx_acc": 61.21666666666667,
+          "tx_correct": 25711,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        }
+      },
+      "leo_rain_weak": {
+        "0": {
+          "tx_acc": 64.89583333333333,
+          "tx_correct": 46725,
+          "tx_total": 72000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "1": {
+          "tx_acc": 61.21904761904762,
+          "tx_correct": 25712,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "2": {
+          "tx_acc": 57.14523809523809,
+          "tx_correct": 24001,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "3": {
+          "tx_acc": 61.23809523809524,
+          "tx_correct": 25720,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        }
+      }
+    },
+    "diagnostics": {
+      "all_lines_parsed": 503,
+      "successful_lines": 489,
+      "events": {
+        "identity_geometry": 1960,
+        "nonfinite_diagnostic": 28
+      },
+      "steps_per_event": {
+        "identity_geometry": 490,
+        "nonfinite_diagnostic": 14
+      },
+      "nonfinite_reasons": {
+        "nonfinite_main_gradient": 14,
+        "main_update_not_applied": 14
+      },
+      "bytes": 2958927
+    },
+    "checkpoint_exists": true,
+    "checkpoint_bytes": 33388512,
+    "no_remote_writes": true,
+    "run": "core90_cross_response_v2_s392005_20260911_r1"
+  },
+  "U1_mask_off": {
+    "status": "VERIFIED",
+    "records": 198000,
+    "prediction_rows": 792000,
+    "registered_classes": 6,
+    "compared_score_groups": 148,
+    "same_physical_records_roles_and_scene_seeds": true,
+    "same_truth_mapping": true,
+    "all_predictions_validated_before_truth_read": true,
+    "confusion_matrices": {
+      "clean": [
+        [
+          30727,
+          150,
+          357,
+          1661,
+          62,
+          43
+        ],
+        [
+          511,
+          15018,
+          33,
+          17207,
+          179,
+          52
+        ],
+        [
+          1224,
+          576,
+          21323,
+          3057,
+          1275,
+          5545
+        ],
+        [
+          1935,
+          5969,
+          173,
+          24720,
+          70,
+          133
+        ],
+        [
+          26,
+          11,
+          26,
+          10,
+          32859,
+          68
+        ],
+        [
+          24,
+          22,
+          57,
+          26,
+          1867,
+          31004
+        ]
+      ],
+      "leo_clear_weak": [
+        [
+          19799,
+          1925,
+          484,
+          10497,
+          226,
+          69
+        ],
+        [
+          1302,
+          8996,
+          66,
+          22257,
+          308,
+          71
+        ],
+        [
+          2998,
+          1395,
+          16558,
+          4072,
+          2569,
+          5408
+        ],
+        [
+          3949,
+          4308,
+          848,
+          23431,
+          187,
+          277
+        ],
+        [
+          239,
+          1022,
+          133,
+          5115,
+          26343,
+          148
+        ],
+        [
+          112,
+          148,
+          120,
+          48,
+          1123,
+          31449
+        ]
+      ],
+      "leo_low_elev_weak": [
+        [
+          19462,
+          2119,
+          557,
+          10336,
+          403,
+          123
+        ],
+        [
+          1875,
+          8629,
+          84,
+          21729,
+          595,
+          88
+        ],
+        [
+          3089,
+          1650,
+          15401,
+          4269,
+          2834,
+          5757
+        ],
+        [
+          4627,
+          4698,
+          874,
+          22066,
+          427,
+          308
+        ],
+        [
+          339,
+          1393,
+          170,
+          5505,
+          25394,
+          199
+        ],
+        [
+          164,
+          224,
+          237,
+          68,
+          1212,
+          31095
+        ]
+      ],
+      "leo_rain_weak": [
+        [
+          20087,
+          2156,
+          562,
+          9670,
+          431,
+          94
+        ],
+        [
+          2192,
+          8772,
+          74,
+          21217,
+          655,
+          90
+        ],
+        [
+          3078,
+          1478,
+          15655,
+          4183,
+          2711,
+          5895
+        ],
+        [
+          5205,
+          4566,
+          850,
+          21608,
+          438,
+          333
+        ],
+        [
+          382,
+          1406,
+          196,
+          5466,
+          25342,
+          208
+        ],
+        [
+          142,
+          198,
+          175,
+          60,
+          1196,
+          31229
+        ]
+      ]
+    },
+    "confusion_orientation": "rows=true, columns=predicted",
+    "per_day": {
+      "clean": {
+        "0": {
+          "tx_acc": 82.80555555555556,
+          "tx_correct": 59620,
+          "tx_total": 72000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "1": {
+          "tx_acc": 79.93571428571428,
+          "tx_correct": 33573,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "2": {
+          "tx_acc": 72.34285714285714,
+          "tx_correct": 30384,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "3": {
+          "tx_acc": 76.36666666666666,
+          "tx_correct": 32074,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        }
+      },
+      "leo_clear_weak": {
+        "0": {
+          "tx_acc": 67.64027777777778,
+          "tx_correct": 48701,
+          "tx_total": 72000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "1": {
+          "tx_acc": 63.05714285714286,
+          "tx_correct": 26484,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "2": {
+          "tx_acc": 60.19761904761905,
+          "tx_correct": 25283,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "3": {
+          "tx_acc": 62.161904761904765,
+          "tx_correct": 26108,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        }
+      },
+      "leo_low_elev_weak": {
+        "0": {
+          "tx_acc": 65.01944444444445,
+          "tx_correct": 46814,
+          "tx_total": 72000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "1": {
+          "tx_acc": 60.82380952380952,
+          "tx_correct": 25546,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "2": {
+          "tx_acc": 58.1,
+          "tx_correct": 24402,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "3": {
+          "tx_acc": 60.20238095238095,
+          "tx_correct": 25285,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        }
+      },
+      "leo_rain_weak": {
+        "0": {
+          "tx_acc": 65.52083333333333,
+          "tx_correct": 47175,
+          "tx_total": 72000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "1": {
+          "tx_acc": 61.02857142857143,
+          "tx_correct": 25632,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "2": {
+          "tx_acc": 58.48571428571429,
+          "tx_correct": 24564,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "3": {
+          "tx_acc": 60.29047619047619,
+          "tx_correct": 25322,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        }
+      }
+    },
+    "diagnostics": {
+      "all_lines_parsed": 498,
+      "successful_lines": 488,
+      "events": {
+        "identity_geometry": 1960,
+        "nonfinite_diagnostic": 20
+      },
+      "steps_per_event": {
+        "identity_geometry": 490,
+        "nonfinite_diagnostic": 10
+      },
+      "nonfinite_reasons": {
+        "nonfinite_main_gradient": 10,
+        "main_update_not_applied": 10
+      },
+      "bytes": 2954909
+    },
+    "checkpoint_exists": true,
+    "checkpoint_bytes": 33391520,
+    "no_remote_writes": true,
+    "run": "core90_cross_response_v2_s392005_20260911_r1"
+  },
+  "U3": {
+    "status": "VERIFIED",
+    "records": 198000,
+    "prediction_rows": 792000,
+    "registered_classes": 6,
+    "compared_score_groups": 148,
+    "same_physical_records_roles_and_scene_seeds": true,
+    "same_truth_mapping": true,
+    "all_predictions_validated_before_truth_read": true,
+    "confusion_matrices": {
+      "clean": [
+        [
+          31226,
+          164,
+          242,
+          1287,
+          50,
+          31
+        ],
+        [
+          749,
+          14043,
+          33,
+          18066,
+          61,
+          48
+        ],
+        [
+          3577,
+          611,
+          21787,
+          1863,
+          617,
+          4545
+        ],
+        [
+          3764,
+          5182,
+          422,
+          23466,
+          82,
+          84
+        ],
+        [
+          40,
+          78,
+          29,
+          167,
+          32639,
+          47
+        ],
+        [
+          121,
+          20,
+          89,
+          32,
+          2442,
+          30296
+        ]
+      ],
+      "leo_clear_weak": [
+        [
+          23139,
+          1696,
+          333,
+          7559,
+          225,
+          48
+        ],
+        [
+          2158,
+          9477,
+          39,
+          20667,
+          604,
+          55
+        ],
+        [
+          3926,
+          1968,
+          16971,
+          2292,
+          3923,
+          3920
+        ],
+        [
+          5545,
+          4543,
+          574,
+          21706,
+          427,
+          205
+        ],
+        [
+          275,
+          2038,
+          71,
+          4137,
+          26374,
+          105
+        ],
+        [
+          197,
+          324,
+          235,
+          31,
+          3668,
+          28545
+        ]
+      ],
+      "leo_low_elev_weak": [
+        [
+          22929,
+          1839,
+          383,
+          7409,
+          371,
+          69
+        ],
+        [
+          3255,
+          8880,
+          76,
+          19879,
+          846,
+          64
+        ],
+        [
+          4118,
+          2180,
+          15894,
+          2578,
+          4071,
+          4159
+        ],
+        [
+          6883,
+          4536,
+          631,
+          19987,
+          738,
+          225
+        ],
+        [
+          397,
+          2235,
+          94,
+          4742,
+          25406,
+          126
+        ],
+        [
+          339,
+          401,
+          362,
+          41,
+          3690,
+          28167
+        ]
+      ],
+      "leo_rain_weak": [
+        [
+          23410,
+          1885,
+          397,
+          6862,
+          391,
+          55
+        ],
+        [
+          3514,
+          9038,
+          61,
+          19397,
+          921,
+          69
+        ],
+        [
+          4218,
+          1981,
+          16086,
+          2427,
+          3922,
+          4366
+        ],
+        [
+          7375,
+          4413,
+          632,
+          19620,
+          712,
+          248
+        ],
+        [
+          423,
+          2237,
+          116,
+          4816,
+          25262,
+          146
+        ],
+        [
+          264,
+          306,
+          325,
+          44,
+          3525,
+          28536
+        ]
+      ]
+    },
+    "confusion_orientation": "rows=true, columns=predicted",
+    "per_day": {
+      "clean": {
+        "0": {
+          "tx_acc": 80.52638888888889,
+          "tx_correct": 57979,
+          "tx_total": 72000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "1": {
+          "tx_acc": 80.27619047619048,
+          "tx_correct": 33716,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "2": {
+          "tx_acc": 71.98571428571428,
+          "tx_correct": 30234,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "3": {
+          "tx_acc": 75.06666666666666,
+          "tx_correct": 31528,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        }
+      },
+      "leo_clear_weak": {
+        "0": {
+          "tx_acc": 67.49027777777778,
+          "tx_correct": 48593,
+          "tx_total": 72000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "1": {
+          "tx_acc": 63.23095238095238,
+          "tx_correct": 26557,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "2": {
+          "tx_acc": 59.04761904761905,
+          "tx_correct": 24800,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "3": {
+          "tx_acc": 62.52857142857143,
+          "tx_correct": 26262,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        }
+      },
+      "leo_low_elev_weak": {
+        "0": {
+          "tx_acc": 64.75138888888888,
+          "tx_correct": 46621,
+          "tx_total": 72000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "1": {
+          "tx_acc": 60.77142857142857,
+          "tx_correct": 25524,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "2": {
+          "tx_acc": 56.483333333333334,
+          "tx_correct": 23723,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "3": {
+          "tx_acc": 60.464285714285715,
+          "tx_correct": 25395,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        }
+      },
+      "leo_rain_weak": {
+        "0": {
+          "tx_acc": 64.9,
+          "tx_correct": 46728,
+          "tx_total": 72000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "1": {
+          "tx_acc": 61.26428571428571,
+          "tx_correct": 25731,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "2": {
+          "tx_acc": 57.180952380952384,
+          "tx_correct": 24016,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "3": {
+          "tx_acc": 60.65952380952381,
+          "tx_correct": 25477,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        }
+      }
+    },
+    "diagnostics": {
+      "all_lines_parsed": 496,
+      "successful_lines": 489,
+      "events": {
+        "identity_geometry": 1960,
+        "weighted_decision_parameter_gradients": 1960,
+        "nonfinite_diagnostic": 14
+      },
+      "steps_per_event": {
+        "identity_geometry": 490,
+        "weighted_decision_parameter_gradients": 490,
+        "nonfinite_diagnostic": 7
+      },
+      "nonfinite_reasons": {
+        "nonfinite_main_gradient": 7,
+        "main_update_not_applied": 7
+      },
+      "bytes": 1284625962
+    },
+    "checkpoint_exists": true,
+    "checkpoint_bytes": 33397024,
+    "no_remote_writes": true,
+    "run": "core90_cross_response_v2_s392005_20260911_r1"
+  },
+  "Ux": {
+    "status": "VERIFIED",
+    "records": 198000,
+    "prediction_rows": 792000,
+    "registered_classes": 6,
+    "compared_score_groups": 148,
+    "same_physical_records_roles_and_scene_seeds": true,
+    "same_truth_mapping": true,
+    "all_predictions_validated_before_truth_read": true,
+    "confusion_matrices": {
+      "clean": [
+        [
+          31454,
+          172,
+          320,
+          954,
+          45,
+          55
+        ],
+        [
+          695,
+          17012,
+          35,
+          15119,
+          65,
+          74
+        ],
+        [
+          2268,
+          941,
+          20727,
+          1412,
+          804,
+          6848
+        ],
+        [
+          3642,
+          6618,
+          178,
+          22360,
+          104,
+          98
+        ],
+        [
+          42,
+          749,
+          20,
+          164,
+          31939,
+          86
+        ],
+        [
+          83,
+          25,
+          34,
+          23,
+          1000,
+          31835
+        ]
+      ],
+      "leo_clear_weak": [
+        [
+          21945,
+          1768,
+          439,
+          8620,
+          152,
+          76
+        ],
+        [
+          1623,
+          10065,
+          32,
+          20869,
+          333,
+          78
+        ],
+        [
+          2670,
+          2659,
+          14898,
+          3267,
+          3511,
+          5995
+        ],
+        [
+          4930,
+          5372,
+          411,
+          21758,
+          222,
+          307
+        ],
+        [
+          278,
+          2550,
+          62,
+          5060,
+          24899,
+          151
+        ],
+        [
+          150,
+          244,
+          56,
+          34,
+          1683,
+          30833
+        ]
+      ],
+      "leo_low_elev_weak": [
+        [
+          20991,
+          2095,
+          494,
+          9083,
+          238,
+          99
+        ],
+        [
+          2165,
+          9493,
+          57,
+          20704,
+          487,
+          94
+        ],
+        [
+          2740,
+          3117,
+          13852,
+          3476,
+          3628,
+          6187
+        ],
+        [
+          5505,
+          5563,
+          445,
+          20768,
+          380,
+          339
+        ],
+        [
+          348,
+          2886,
+          79,
+          5926,
+          23557,
+          204
+        ],
+        [
+          241,
+          327,
+          140,
+          35,
+          1721,
+          30536
+        ]
+      ],
+      "leo_rain_weak": [
+        [
+          21440,
+          2194,
+          508,
+          8520,
+          254,
+          84
+        ],
+        [
+          2438,
+          9593,
+          50,
+          20323,
+          505,
+          91
+        ],
+        [
+          2760,
+          3014,
+          13845,
+          3478,
+          3502,
+          6401
+        ],
+        [
+          6036,
+          5403,
+          436,
+          20419,
+          354,
+          352
+        ],
+        [
+          341,
+          2888,
+          76,
+          6080,
+          23384,
+          231
+        ],
+        [
+          190,
+          261,
+          113,
+          32,
+          1669,
+          30735
+        ]
+      ]
+    },
+    "confusion_orientation": "rows=true, columns=predicted",
+    "per_day": {
+      "clean": {
+        "0": {
+          "tx_acc": 81.58194444444445,
+          "tx_correct": 58739,
+          "tx_total": 72000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "1": {
+          "tx_acc": 79.81428571428572,
+          "tx_correct": 33522,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "2": {
+          "tx_acc": 73.64047619047619,
+          "tx_correct": 30929,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "3": {
+          "tx_acc": 76.51666666666667,
+          "tx_correct": 32137,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        }
+      },
+      "leo_clear_weak": {
+        "0": {
+          "tx_acc": 66.88333333333334,
+          "tx_correct": 48156,
+          "tx_total": 72000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "1": {
+          "tx_acc": 61.32380952380952,
+          "tx_correct": 25756,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "2": {
+          "tx_acc": 58.12380952380953,
+          "tx_correct": 24412,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "3": {
+          "tx_acc": 62.08095238095238,
+          "tx_correct": 26074,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        }
+      },
+      "leo_low_elev_weak": {
+        "0": {
+          "tx_acc": 63.830555555555556,
+          "tx_correct": 45958,
+          "tx_total": 72000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "1": {
+          "tx_acc": 59.07142857142857,
+          "tx_correct": 24810,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "2": {
+          "tx_acc": 55.59047619047619,
+          "tx_correct": 23348,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "3": {
+          "tx_acc": 59.71666666666667,
+          "tx_correct": 25081,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        }
+      },
+      "leo_rain_weak": {
+        "0": {
+          "tx_acc": 63.92777777777778,
+          "tx_correct": 46028,
+          "tx_total": 72000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "1": {
+          "tx_acc": 59.17142857142857,
+          "tx_correct": 24852,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "2": {
+          "tx_acc": 55.99285714285714,
+          "tx_correct": 23517,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "3": {
+          "tx_acc": 59.569047619047616,
+          "tx_correct": 25019,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        }
+      }
+    },
+    "diagnostics": {
+      "all_lines_parsed": 509,
+      "successful_lines": 490,
+      "events": {
+        "identity_geometry": 1960,
+        "nonfinite_diagnostic": 38
+      },
+      "steps_per_event": {
+        "identity_geometry": 490,
+        "nonfinite_diagnostic": 19
+      },
+      "nonfinite_reasons": {
+        "nonfinite_main_gradient": 19,
+        "main_update_not_applied": 19
+      },
+      "bytes": 2963696
+    },
+    "checkpoint_exists": true,
+    "checkpoint_bytes": 33383136,
+    "no_remote_writes": true,
+    "run": "core90_cross_response_v2_s392005_20260911_r1"
+  },
+  "Ux_normalized": {
+    "status": "VERIFIED",
+    "records": 198000,
+    "prediction_rows": 792000,
+    "registered_classes": 6,
+    "compared_score_groups": 148,
+    "same_physical_records_roles_and_scene_seeds": true,
+    "same_truth_mapping": true,
+    "all_predictions_validated_before_truth_read": true,
+    "confusion_matrices": {
+      "clean": [
+        [
+          31591,
+          140,
+          390,
+          795,
+          47,
+          37
+        ],
+        [
+          820,
+          17286,
+          43,
+          14706,
+          84,
+          61
+        ],
+        [
+          2284,
+          452,
+          23314,
+          2048,
+          217,
+          4685
+        ],
+        [
+          3380,
+          6092,
+          326,
+          23004,
+          103,
+          95
+        ],
+        [
+          44,
+          114,
+          35,
+          156,
+          32589,
+          62
+        ],
+        [
+          123,
+          31,
+          84,
+          19,
+          1395,
+          31348
+        ]
+      ],
+      "leo_clear_weak": [
+        [
+          24180,
+          1578,
+          521,
+          6392,
+          271,
+          58
+        ],
+        [
+          2674,
+          9748,
+          61,
+          19795,
+          657,
+          65
+        ],
+        [
+          3319,
+          1228,
+          18388,
+          2387,
+          3310,
+          4368
+        ],
+        [
+          6914,
+          3998,
+          889,
+          20525,
+          421,
+          253
+        ],
+        [
+          342,
+          2021,
+          114,
+          3595,
+          26819,
+          109
+        ],
+        [
+          216,
+          264,
+          246,
+          23,
+          1679,
+          30572
+        ]
+      ],
+      "leo_low_elev_weak": [
+        [
+          23412,
+          1809,
+          599,
+          6637,
+          461,
+          82
+        ],
+        [
+          3667,
+          8935,
+          107,
+          19252,
+          962,
+          77
+        ],
+        [
+          3339,
+          1424,
+          17597,
+          2642,
+          3428,
+          4570
+        ],
+        [
+          8080,
+          4041,
+          918,
+          18864,
+          798,
+          299
+        ],
+        [
+          492,
+          2259,
+          147,
+          4138,
+          25805,
+          159
+        ],
+        [
+          323,
+          309,
+          385,
+          36,
+          1621,
+          30326
+        ]
+      ],
+      "leo_rain_weak": [
+        [
+          23886,
+          1835,
+          631,
+          6148,
+          437,
+          63
+        ],
+        [
+          4074,
+          9137,
+          78,
+          18614,
+          1011,
+          86
+        ],
+        [
+          3390,
+          1256,
+          17626,
+          2611,
+          3374,
+          4743
+        ],
+        [
+          8753,
+          3847,
+          958,
+          18347,
+          784,
+          311
+        ],
+        [
+          514,
+          2249,
+          168,
+          4241,
+          25652,
+          176
+        ],
+        [
+          290,
+          252,
+          322,
+          31,
+          1627,
+          30478
+        ]
+      ]
+    },
+    "confusion_orientation": "rows=true, columns=predicted",
+    "per_day": {
+      "clean": {
+        "0": {
+          "tx_acc": 82.43194444444444,
+          "tx_correct": 59351,
+          "tx_total": 72000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "1": {
+          "tx_acc": 81.78333333333333,
+          "tx_correct": 34349,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "2": {
+          "tx_acc": 74.21666666666667,
+          "tx_correct": 31171,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "3": {
+          "tx_acc": 81.57380952380953,
+          "tx_correct": 34261,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        }
+      },
+      "leo_clear_weak": {
+        "0": {
+          "tx_acc": 69.05833333333334,
+          "tx_correct": 49722,
+          "tx_total": 72000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "1": {
+          "tx_acc": 65.41190476190476,
+          "tx_correct": 27473,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "2": {
+          "tx_acc": 60.80238095238095,
+          "tx_correct": 25537,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "3": {
+          "tx_acc": 65.47619047619048,
+          "tx_correct": 27500,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        }
+      },
+      "leo_low_elev_weak": {
+        "0": {
+          "tx_acc": 66.0125,
+          "tx_correct": 47529,
+          "tx_total": 72000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "1": {
+          "tx_acc": 62.75238095238095,
+          "tx_correct": 26356,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "2": {
+          "tx_acc": 58.31190476190476,
+          "tx_correct": 24491,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "3": {
+          "tx_acc": 63.24523809523809,
+          "tx_correct": 26563,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        }
+      },
+      "leo_rain_weak": {
+        "0": {
+          "tx_acc": 66.09166666666667,
+          "tx_correct": 47586,
+          "tx_total": 72000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "1": {
+          "tx_acc": 62.766666666666666,
+          "tx_correct": 26362,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "2": {
+          "tx_acc": 58.76428571428571,
+          "tx_correct": 24681,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "3": {
+          "tx_acc": 63.088095238095235,
+          "tx_correct": 26497,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        }
+      }
+    },
+    "diagnostics": {
+      "all_lines_parsed": 502,
+      "successful_lines": 490,
+      "events": {
+        "identity_geometry": 1960,
+        "nonfinite_diagnostic": 24
+      },
+      "steps_per_event": {
+        "identity_geometry": 490,
+        "nonfinite_diagnostic": 12
+      },
+      "nonfinite_reasons": {
+        "nonfinite_main_gradient": 12,
+        "main_update_not_applied": 12
+      },
+      "bytes": 2959848
+    },
+    "checkpoint_exists": true,
+    "checkpoint_bytes": 33390688,
+    "no_remote_writes": true,
+    "run": "core90_cross_response_v2_s392005_20260911_r1"
+  },
+  "head_only": {
+    "status": "VERIFIED",
+    "records": 198000,
+    "prediction_rows": 792000,
+    "registered_classes": 6,
+    "compared_score_groups": 148,
+    "same_physical_records_roles_and_scene_seeds": true,
+    "same_truth_mapping": true,
+    "all_predictions_validated_before_truth_read": true,
+    "confusion_matrices": {
+      "clean": [
+        [
+          31599,
+          190,
+          506,
+          592,
+          48,
+          65
+        ],
+        [
+          726,
+          16491,
+          81,
+          15540,
+          88,
+          74
+        ],
+        [
+          1090,
+          1018,
+          22684,
+          1741,
+          756,
+          5711
+        ],
+        [
+          4522,
+          5702,
+          735,
+          21834,
+          92,
+          115
+        ],
+        [
+          33,
+          189,
+          39,
+          144,
+          32523,
+          72
+        ],
+        [
+          64,
+          19,
+          70,
+          14,
+          1931,
+          30902
+        ]
+      ],
+      "leo_clear_weak": [
+        [
+          21853,
+          3207,
+          589,
+          6786,
+          490,
+          75
+        ],
+        [
+          1849,
+          12262,
+          78,
+          17944,
+          797,
+          70
+        ],
+        [
+          1689,
+          2175,
+          17652,
+          2206,
+          4443,
+          4835
+        ],
+        [
+          5056,
+          6913,
+          970,
+          19254,
+          526,
+          281
+        ],
+        [
+          178,
+          2546,
+          110,
+          3144,
+          26894,
+          128
+        ],
+        [
+          81,
+          294,
+          173,
+          24,
+          2601,
+          29827
+        ]
+      ],
+      "leo_low_elev_weak": [
+        [
+          21020,
+          3476,
+          702,
+          7025,
+          670,
+          107
+        ],
+        [
+          2657,
+          11672,
+          120,
+          17420,
+          1046,
+          85
+        ],
+        [
+          1875,
+          2468,
+          16972,
+          2342,
+          4214,
+          5129
+        ],
+        [
+          5967,
+          7001,
+          1004,
+          17810,
+          881,
+          337
+        ],
+        [
+          236,
+          3074,
+          165,
+          3716,
+          25633,
+          176
+        ],
+        [
+          177,
+          334,
+          286,
+          41,
+          2531,
+          29631
+        ]
+      ],
+      "leo_rain_weak": [
+        [
+          21384,
+          3472,
+          720,
+          6670,
+          659,
+          95
+        ],
+        [
+          2974,
+          11820,
+          114,
+          16906,
+          1096,
+          90
+        ],
+        [
+          1854,
+          2352,
+          16970,
+          2317,
+          4184,
+          5323
+        ],
+        [
+          6463,
+          7036,
+          994,
+          17266,
+          895,
+          346
+        ],
+        [
+          297,
+          3017,
+          189,
+          3766,
+          25542,
+          189
+        ],
+        [
+          138,
+          255,
+          234,
+          28,
+          2447,
+          29898
+        ]
+      ]
+    },
+    "confusion_orientation": "rows=true, columns=predicted",
+    "per_day": {
+      "clean": {
+        "0": {
+          "tx_acc": 82.13333333333334,
+          "tx_correct": 59136,
+          "tx_total": 72000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "1": {
+          "tx_acc": 79.43809523809524,
+          "tx_correct": 33364,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "2": {
+          "tx_acc": 73.17380952380952,
+          "tx_correct": 30733,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "3": {
+          "tx_acc": 78.0952380952381,
+          "tx_correct": 32800,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        }
+      },
+      "leo_clear_weak": {
+        "0": {
+          "tx_acc": 68.24722222222222,
+          "tx_correct": 49138,
+          "tx_total": 72000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "1": {
+          "tx_acc": 63.09047619047619,
+          "tx_correct": 26498,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "2": {
+          "tx_acc": 59.57857142857143,
+          "tx_correct": 25023,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "3": {
+          "tx_acc": 64.48333333333333,
+          "tx_correct": 27083,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        }
+      },
+      "leo_low_elev_weak": {
+        "0": {
+          "tx_acc": 65.34166666666667,
+          "tx_correct": 47046,
+          "tx_total": 72000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "1": {
+          "tx_acc": 60.80238095238095,
+          "tx_correct": 25537,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "2": {
+          "tx_acc": 57.44761904761905,
+          "tx_correct": 24128,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "3": {
+          "tx_acc": 61.96904761904762,
+          "tx_correct": 26027,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        }
+      },
+      "leo_rain_weak": {
+        "0": {
+          "tx_acc": 65.29444444444445,
+          "tx_correct": 47012,
+          "tx_total": 72000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "1": {
+          "tx_acc": 60.98095238095238,
+          "tx_correct": 25612,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "2": {
+          "tx_acc": 57.56428571428572,
+          "tx_correct": 24177,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "3": {
+          "tx_acc": 62.09285714285714,
+          "tx_correct": 26079,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        }
+      }
+    },
+    "diagnostics": {
+      "all_lines_parsed": 506,
+      "successful_lines": 488,
+      "events": {
+        "identity_geometry": 1960,
+        "nonfinite_diagnostic": 36
+      },
+      "steps_per_event": {
+        "identity_geometry": 490,
+        "nonfinite_diagnostic": 18
+      },
+      "nonfinite_reasons": {
+        "nonfinite_main_gradient": 18,
+        "main_update_not_applied": 18
+      },
+      "bytes": 2961951
+    },
+    "checkpoint_exists": true,
+    "checkpoint_bytes": 33726478,
+    "no_remote_writes": true,
+    "run": "core90_cross_response_v2_s392005_20260911_r2"
+  },
+  "permanent_detach": {
+    "status": "VERIFIED",
+    "records": 198000,
+    "prediction_rows": 792000,
+    "registered_classes": 6,
+    "compared_score_groups": 148,
+    "same_physical_records_roles_and_scene_seeds": true,
+    "same_truth_mapping": true,
+    "all_predictions_validated_before_truth_read": true,
+    "confusion_matrices": {
+      "clean": [
+        [
+          32000,
+          107,
+          224,
+          561,
+          50,
+          58
+        ],
+        [
+          785,
+          17736,
+          35,
+          14318,
+          56,
+          70
+        ],
+        [
+          3232,
+          745,
+          20659,
+          687,
+          176,
+          7501
+        ],
+        [
+          3907,
+          6139,
+          273,
+          22473,
+          98,
+          110
+        ],
+        [
+          44,
+          210,
+          14,
+          20,
+          32649,
+          63
+        ],
+        [
+          79,
+          20,
+          42,
+          10,
+          875,
+          31974
+        ]
+      ],
+      "leo_clear_weak": [
+        [
+          23665,
+          2225,
+          397,
+          6167,
+          468,
+          78
+        ],
+        [
+          2313,
+          11328,
+          48,
+          18390,
+          839,
+          82
+        ],
+        [
+          3595,
+          2388,
+          15672,
+          1345,
+          3966,
+          6034
+        ],
+        [
+          6018,
+          5573,
+          649,
+          19864,
+          608,
+          288
+        ],
+        [
+          313,
+          2413,
+          70,
+          2835,
+          27221,
+          148
+        ],
+        [
+          179,
+          182,
+          89,
+          11,
+          2358,
+          30181
+        ]
+      ],
+      "leo_low_elev_weak": [
+        [
+          23344,
+          2213,
+          440,
+          6227,
+          657,
+          119
+        ],
+        [
+          3321,
+          10412,
+          74,
+          17902,
+          1185,
+          106
+        ],
+        [
+          3704,
+          2522,
+          14978,
+          1508,
+          4044,
+          6244
+        ],
+        [
+          7228,
+          5527,
+          686,
+          18232,
+          989,
+          338
+        ],
+        [
+          450,
+          2655,
+          105,
+          3465,
+          26139,
+          186
+        ],
+        [
+          319,
+          238,
+          191,
+          19,
+          2328,
+          29905
+        ]
+      ],
+      "leo_rain_weak": [
+        [
+          23728,
+          2327,
+          434,
+          5748,
+          661,
+          102
+        ],
+        [
+          3675,
+          10539,
+          76,
+          17409,
+          1195,
+          106
+        ],
+        [
+          3756,
+          2489,
+          14988,
+          1459,
+          3821,
+          6487
+        ],
+        [
+          7854,
+          5433,
+          686,
+          17682,
+          984,
+          361
+        ],
+        [
+          482,
+          2624,
+          128,
+          3642,
+          25886,
+          238
+        ],
+        [
+          255,
+          166,
+          151,
+          16,
+          2212,
+          30200
+        ]
+      ]
+    },
+    "confusion_orientation": "rows=true, columns=predicted",
+    "per_day": {
+      "clean": {
+        "0": {
+          "tx_acc": 82.9875,
+          "tx_correct": 59751,
+          "tx_total": 72000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "1": {
+          "tx_acc": 80.61190476190477,
+          "tx_correct": 33857,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "2": {
+          "tx_acc": 74.34761904761905,
+          "tx_correct": 31226,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "3": {
+          "tx_acc": 77.7547619047619,
+          "tx_correct": 32657,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        }
+      },
+      "leo_clear_weak": {
+        "0": {
+          "tx_acc": 68.66527777777777,
+          "tx_correct": 49439,
+          "tx_total": 72000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "1": {
+          "tx_acc": 63.35,
+          "tx_correct": 26607,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "2": {
+          "tx_acc": 59.43333333333333,
+          "tx_correct": 24962,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "3": {
+          "tx_acc": 64.10238095238095,
+          "tx_correct": 26923,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        }
+      },
+      "leo_low_elev_weak": {
+        "0": {
+          "tx_acc": 65.6361111111111,
+          "tx_correct": 47258,
+          "tx_total": 72000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "1": {
+          "tx_acc": 61.319047619047616,
+          "tx_correct": 25754,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "2": {
+          "tx_acc": 57.14047619047619,
+          "tx_correct": 23999,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "3": {
+          "tx_acc": 61.90238095238095,
+          "tx_correct": 25999,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        }
+      },
+      "leo_rain_weak": {
+        "0": {
+          "tx_acc": 65.74583333333334,
+          "tx_correct": 47337,
+          "tx_total": 72000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "1": {
+          "tx_acc": 61.38095238095238,
+          "tx_correct": 25780,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "2": {
+          "tx_acc": 57.326190476190476,
+          "tx_correct": 24077,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        },
+        "3": {
+          "tx_acc": 61.49761904761905,
+          "tx_correct": 25829,
+          "tx_total": 42000,
+          "dom_acc": NaN,
+          "probe_dom_acc": NaN
+        }
+      }
+    },
+    "diagnostics": {
+      "all_lines_parsed": 496,
+      "successful_lines": 489,
+      "events": {
+        "identity_geometry": 1960,
+        "weighted_decision_parameter_gradients": 1960,
+        "nonfinite_diagnostic": 14
+      },
+      "steps_per_event": {
+        "identity_geometry": 490,
+        "weighted_decision_parameter_gradients": 490,
+        "nonfinite_diagnostic": 7
+      },
+      "nonfinite_reasons": {
+        "nonfinite_main_gradient": 7,
+        "main_update_not_applied": 7
+      },
+      "bytes": 743052547
+    },
+    "checkpoint_exists": true,
+    "checkpoint_bytes": 33740814,
+    "no_remote_writes": true,
+    "run": "core90_cross_response_v2_s392005_20260911_r1"
+  }
+}

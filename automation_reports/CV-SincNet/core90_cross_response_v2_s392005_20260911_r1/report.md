@@ -1,3 +1,7 @@
+## 完成结果（2026-09-12）
+
+VERIFIED：已选8行全部完成E200、final checkpoint、四场景固定预测及独立评分，逻辑矩阵为r1七行＋r2 head_only；r1原失败保留。全量1600轮日志、6336000条预测、1184组评分计数核验通过。详见[完整测试报告](completed_detail_20260912/completed_results.md)与[分组CSV](completed_detail_20260912/scores_long.csv)。其余8个条件行未运行。下文保留启动历史。
+
 # CORE90交叉响应V2矩阵启动
 
 状态：EIGHT_CONTROLS_RUNNING_VERIFIED。日期2026-09-11。用户授权“启动实验矩阵，数据配置和之前一致”。本次唯一launch owner为主Agent；不停止其他健康任务。
