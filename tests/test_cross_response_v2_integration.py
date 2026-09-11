@@ -42,6 +42,13 @@ class Model(nn.Module):
         return dict(z_id=zi, z_dom=zd, tx_logits=self.id_backbone.cls_head.head(zi), aux_id={"feat_joint":zi})
 
 
+def mechanism_controls():
+    """Explicit synthetic controls, never production source-frozen parameters."""
+    return dict(source_audit_enabled=True, source_baseline_fit_steps=2, source_baseline_fit_lr=.001,
+        mechanism_audit=dict(interval_steps=1, pairs_per_observation=2, query_records_per_cell=1,
+                             seed=392005, identity_scope='cls_head'))
+
+
 def runtime(tmp_path, variant="U1", **overrides):
     torch.manual_seed(392005)
     model = Model()
@@ -52,6 +59,8 @@ def runtime(tmp_path, variant="U1", **overrides):
         eval_batch_size=16, seed=392005, wisig_pkl=str(artifact), lr=.01, weight_decay=.01,
         amp=False, max_grad_norm=1.)
     c = resolve_variant(configuration(), variant)
+    if overrides.get('mechanism_gate') is not None:
+        c.update(mechanism_controls())
     c.update(target_family="iq", target_dim=5, source_fit_max_records=32, source_eval_max_blocks=1,
              gate_min_blocks=1, **overrides)
     validate_runtime_config(c)
@@ -126,10 +135,15 @@ def test_extension_scope_cannot_be_reopened_by_head_only_evidence(tmp_path):
     config = make_gate(1).config
     config["terminal_identity_module"] = "time_fuse"
     model,rt,_ = runtime(tmp_path,"U2",mechanism_gate=config)
-    assert rt.observe_source_mechanism(model,evidence(0,"time_fuse"),extension="time_fuse")["authorized"]
+    def local_evidence(index, scope='cls_head'):
+        row = evidence(index, scope)
+        row['update_value'].update(training_physical_ids=list(rt.source_contract['train'])[:2],
+                                  query_physical_ids=list(rt.source_contract['validation'])[:4])
+        return row
+    assert rt.observe_source_mechanism(model,local_evidence(0,"time_fuse"),extension="time_fuse")["authorized"]
     assert rt.joint_open
     assert any(n.startswith("id_backbone.time_fuse.") for n,_ in rt.roles["identity_tail"])
-    assert rt.observe_source_mechanism(model,evidence(1))["authorized"]
+    assert rt.observe_source_mechanism(model,local_evidence(1))["authorized"]
     assert rt.joint_open and rt.extended_identity_module is None
     assert not any(n.startswith("id_backbone.time_fuse.") for n,_ in rt.roles["identity_tail"])
     # Even inconsistent external state cannot turn head-scope evidence into an extension.

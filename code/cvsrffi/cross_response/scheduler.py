@@ -27,6 +27,8 @@ class FeedbackScheduler:
         if gain_strategy not in ("legacy_gain", "reliable_evidence"):
             raise ValueError("unknown feedback gain strategy")
         self.gain_strategy = gain_strategy
+        self.qualification_provider = None
+        self.qualification_scope = None
         self.evidence_config = copy.deepcopy(evidence_config)
         if gain_strategy == "reliable_evidence":
             if mode != "guided" or feedback_version != "transaction_v2":
@@ -66,6 +68,16 @@ class FeedbackScheduler:
         gate = source.get("gate_result", {})
         if not isinstance(gate, dict) or gate.get("source_role") != "source_validation":
             raise ValueError("reliable_evidence requires source_validation gate evidence")
+        if (gate.get("authorized") is not True or gate.get("passed") is not True
+                or type(gate.get("stable_observations")) is not int
+                or type(gate.get("required_stable_observations")) is not int
+                or gate['required_stable_observations'] < 1
+                or gate["stable_observations"] < gate['required_stable_observations']):
+            raise ValueError("reliable_evidence requires an authorized stable source gate result")
+        if (not isinstance(source.get('source_contract'), dict) or not source['source_contract']
+                or not isinstance(source.get('joint_objective'), dict) or not source['joint_objective']
+                or gate.get('scope') != source['joint_objective'].get('scope')):
+            raise ValueError('source contract and same-scope joint objective binding required')
         for name in ("capability", "necessity", "update_value"):
             row = gate.get(name, {})
             if not isinstance(row, dict):
@@ -96,6 +108,23 @@ class FeedbackScheduler:
         if (not isinstance(reliability, (int, float)) or isinstance(reliability, bool)
                 or not math.isfinite(reliability) or not 0 <= reliability <= 1):
             raise ValueError("unknown_reliability must be explicit and bounded")
+
+    def bind_qualification(self, *, source_contract, joint_objective, provider):
+        """Bind immutable source evidence to this runtime and read its live gate."""
+        def canonical(value):
+            if isinstance(value, dict):
+                return {key: canonical(item) for key, item in value.items()}
+            if isinstance(value, (tuple, list)):
+                return tuple(canonical(item) for item in value)
+            return value
+        source = self.evidence_config['source_evidence']
+        if (canonical(source.get('source_contract')) != canonical(source_contract)
+                or canonical(source.get('joint_objective')) != canonical(joint_objective)):
+            raise ValueError('source contract or joint objective does not match the current runtime')
+        if not callable(provider):
+            raise ValueError('live joint qualification provider required')
+        self.qualification_provider = provider
+        self.qualification_scope = joint_objective['scope']
 
     def probabilities(self, candidates, rotation, remaining_records, *, role_plans=None,
                       candidate_evidence=None, step_id=None):
@@ -128,6 +157,15 @@ class FeedbackScheduler:
     def _evidence_probabilities(self, candidates, role_plans, candidate_evidence, step_id):
         # Freeze is checked again in case caller mutated public config after init.
         self._validate_evidence_config()
+        if self.qualification_provider is None:
+            raise ValueError('reliable evidence requires binding to a live joint qualification')
+        qualification = self.qualification_provider()
+        if (not isinstance(qualification, dict) or qualification.get('authorized') is not True
+                or qualification.get('scope') != self.qualification_scope):
+            self.last_probability_audit = [dict(candidate=repr(c.key), probability=1/len(candidates),
+                qualification='CLOSED_UNIFORM', reason='current_joint_gate_not_authorized_for_frozen_scope')
+                for c in candidates]
+            return [1/len(candidates)] * len(candidates)
         if role_plans is None or candidate_evidence is None:
             raise ValueError("reliable_evidence requires prospective roles and physical metadata")
         step = self.last_finished_step + 1 if step_id is None else step_id

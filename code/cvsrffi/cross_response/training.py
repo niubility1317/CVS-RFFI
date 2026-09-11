@@ -129,15 +129,13 @@ def _norm(grads):
     return torch.stack(terms).sum().sqrt() if terms else torch.tensor(0.)
 
 
-def response_backward(*, baseline_loss, identity_loss, response_loss, decision_loss,
-                      cross_loss, roles, scaler, lambda_resp, lambda_dec, lambda_cross,
-                      joint_open, gradient_cap, head_only=False, response_group_losses=None):
-    """One backward transaction; caller performs one finite-checked optimizer step.
+def routed_response_gradients(*, identity_loss, response_loss, roles, scale,
+                              lambda_resp, joint_open, gradient_cap, head_only=False,
+                              response_group_losses=None):
+    """Compute the exact routed/capped contributions without changing .grad.
 
-    Loss scalars are unscaled for routing/cap diagnostics. All assigned gradients
-    use the same GradScaler scale before the caller unscales the optimizer.
-    Shared/front/GRL classifier parameters receive only the baseline/decision
-    contribution, never the response loss. No permanent requires_grad mutation.
+    Used by both the main update and disposable actual-loss counterfactuals.
+    Returns unscaled contributions; assignment must use add_(..., alpha=scale).
     """
     eligible = list(roles["auxiliary"])
     if not head_only:
@@ -145,7 +143,7 @@ def response_backward(*, baseline_loss, identity_loss, response_loss, decision_l
         if joint_open:
             eligible += roles["identity_tail"]
     params = [p for _, p in eligible]
-    scale = float(scaler.get_scale())
+    scale = float(scale)
     weighted_resp = float(lambda_resp) * response_loss
     # Scale before autograd traverses fp16 activations, then unscale the returned
     # fp32 parameter gradients for routing/caps. Scaling only at assignment is
@@ -171,10 +169,9 @@ def response_backward(*, baseline_loss, identity_loss, response_loss, decision_l
     coefficient = min(1., float(limit / response_norm.clamp_min(1e-12)))
     if float(reference_norm) <= 1e-12:
         coefficient = 0.
-    aux_loss = baseline_loss + float(lambda_dec) * decision_loss + float(lambda_cross) * cross_loss
-    scaler.scale(aux_loss).backward()
     by_role = {key: {id(p) for _, p in value} for key, value in roles.items()}
     actual = {key: [] for key in roles}
+    contributions = []
     for (_, p), g in zip(eligible, resp_grad):
         if g is None:
             continue
@@ -182,10 +179,7 @@ def response_backward(*, baseline_loss, identity_loss, response_loss, decision_l
         for role, ids in by_role.items():
             if id(p) in ids:
                 actual[role].append(contribution)
-        if p.grad is None:
-            p.grad = contribution.detach() * scale
-        else:
-            p.grad.add_(contribution.detach(), alpha=scale)
+        contributions.append((p, contribution.detach()))
     dot = sum((a.detach().float() * b.detach().float()).sum()
               for a, b in zip(tail_resp, reference) if a is not None and b is not None) if len(tail_resp) == len(reference) else 0.
     denominator = float(response_norm * reference_norm)
@@ -196,4 +190,23 @@ def response_backward(*, baseline_loss, identity_loss, response_loss, decision_l
             "response_identity_cosine": float(dot) / denominator if denominator > 1e-12 else None,
             "response_joint_open": float(joint_open)}
     logs.update({f"response_grad_{key}": float(_norm(value)) for key, value in actual.items()})
+    return contributions, logs
+
+
+def response_backward(*, baseline_loss, identity_loss, response_loss, decision_loss,
+                      cross_loss, roles, scaler, lambda_resp, lambda_dec, lambda_cross,
+                      joint_open, gradient_cap, head_only=False, response_group_losses=None):
+    """One backward transaction followed by one caller-owned optimizer step."""
+    scale = float(scaler.get_scale())
+    contributions, logs = routed_response_gradients(identity_loss=identity_loss,
+        response_loss=response_loss, roles=roles, scale=scale, lambda_resp=lambda_resp,
+        joint_open=joint_open, gradient_cap=gradient_cap, head_only=head_only,
+        response_group_losses=response_group_losses)
+    aux_loss = baseline_loss + float(lambda_dec) * decision_loss + float(lambda_cross) * cross_loss
+    scaler.scale(aux_loss).backward()
+    for p, contribution in contributions:
+        if p.grad is None:
+            p.grad = contribution * scale
+        else:
+            p.grad.add_(contribution, alpha=scale)
     return logs

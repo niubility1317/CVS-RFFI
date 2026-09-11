@@ -8031,6 +8031,8 @@ def train(args) -> int:
             if legacy_unlabeled_active
             else None
         )
+        if cr_runtime is not None:
+            cr_runtime.prepare_training_phase(epoch=epoch, phase=phase)
         epoch_pairs = _muse_epoch_pairs(
             data_ctx["train_loader"],
             data_ctx["unlabeled_loader"],
@@ -8045,7 +8047,7 @@ def train(args) -> int:
             sat_anchor_anchor_grad_norm = float("nan")
             sat_anchor_pair_sat_grad_cos = float("nan")
             x_l, y_l, extra_l = move_batch(labeled_batch, device)
-            cr_plan = cr_runtime.begin_batch(extra_l) if cr_runtime is not None else None
+            cr_plan = cr_runtime.begin_batch(extra_l, epoch=epoch, phase=phase) if cr_runtime is not None else None
             if muse_state is not None:
                 _assert_muse_open_geometry_role("L_s")
             labeled_clean_count = int(y_l.numel())
@@ -10292,6 +10294,13 @@ def train(args) -> int:
                 }
             cr_terms = cr_runtime.losses(model, out_l, y_l, cr_plan) if cr_runtime is not None else None
             cr_baseline_loss = loss
+            if cr_runtime is not None and cr_runtime.mechanism_audit_due:
+                cr_runtime.audit_source_update(model, optimizer, scaler, cr_baseline_loss, loss_tx_l, cr_terms,
+                    training_context=dict(epoch=epoch, phase=phase, unlabeled_active=legacy_unlabeled_active,
+                        ema_teacher_present=ema_model is not None, prototype_bank_present=proto_bank is not None,
+                        pseudo_temporal_entries=len(pseudo_temporal_bank),
+                        available_scalar_loss_terms={k: v for k, v in locals().items()
+                            if k.startswith('loss_') and torch.is_tensor(v) and v.numel() == 1}))
             if cr_runtime is not None and getattr(cr_runtime, "replay_observer", None) is not None:
                 cr_runtime.audit_event("baseline_losses", total=cr_baseline_loss,
                     components={k: v for k, v in locals().items() if k.startswith("loss_")
@@ -10302,6 +10311,8 @@ def train(args) -> int:
                 loss = loss + (float(cr_config["lambda_dec"]) * cr_decision if cr_config["decision_enabled"] else 0.)
                 loss = loss + (float(cr_config["lambda_cross"]) * cr_cross if cr_config["identity_interaction_enabled"] else 0.)
             loss_is_finite = bool(torch.isfinite(loss.detach()).item())
+            if cr_runtime is not None and not loss_is_finite:
+                cr_runtime.force_diagnostic("nonfinite_complete_training_loss")
             skipped_nonfinite_loss = 0
             skipped_nonfinite_grad = 0
             optimizer_step_applied = False
@@ -10407,6 +10418,8 @@ def train(args) -> int:
                 first_nonfinite_gradient = _first_nonfinite_gradient(model)
                 if first_nonfinite_gradient is None and cr_runtime is not None:
                     first_nonfinite_gradient = cr_runtime.finite_gradients()
+                if first_nonfinite_gradient is not None and cr_runtime is not None:
+                    cr_runtime.force_diagnostic("nonfinite_main_gradient", **first_nonfinite_gradient)
                 if first_nonfinite_gradient is None and muse_state is not None:
                     first_nonfinite_gradient = _first_nonfinite_gradient(muse_state["heads"])
                     if first_nonfinite_gradient is not None:

@@ -1,0 +1,7 @@
+# 独立修复审查
+
+审查范围：R1完整loss/AdamW接线与成功commit后门观测；R2当前契约、联合目标、实时资格；R3冻结竞争类；源查询隔离、失败关闭与phase时序。
+
+独立审查未发现新增P0/P1。发现P2：旧phase资格在新phase首批ticket采样后才撤销。已修复为train_ssdg在epoch_pairs构造/迭代前调用prepare_training_phase；独立审查者再次检查该项并独立运行新增定点测试通过，VERIFIED，可关闭。未重复整体审查。
+
+非阻断口径：training_physical_ids字段列响应块有标记录，pseudo完整baseline还可能读取U_s。全源L_s/U_s/V初始化互斥保证输入边界，但不能称该字段列全baseline输入。

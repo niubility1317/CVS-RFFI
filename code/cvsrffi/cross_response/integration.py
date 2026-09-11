@@ -26,9 +26,12 @@ from .tensor_ops import response_loss, identity_interaction_loss, double_center,
 from .gate_v2 import SourceMechanismGate
 from .gradient_audit import audit_decision_parameter_gradients
 from .decision import decision_margin_loss, decision_margin_loss_vectorized
-from .decision_calibration import calibrated_decision_tensors
+from .decision_calibration import calibrated_decision_tensors, validate_decision_calibration
 from .training import SourceResponseGate, parameter_roles, response_backward, IndependentAuxiliaryTransaction
 from .source_eval import raw_received_iq, event_metadata_from_records, evaluate_source_response, evaluate_source_response_v2
+from .source_mechanism import (paired_actual_optimizer_update, joint_objective_contract,
+    source_prediction_measurements, prepare_source_query, aggregate_source_observation)
+from .replay_audit import capture_rng_state, restore_rng_state
 
 
 def _scalar(value):
@@ -75,6 +78,8 @@ class CrossResponseRuntime:
     def __init__(self, model, data_ctx, config, args, device):
         self.config, self.device = deepcopy(config), device
         self._model = model
+        self._args = args
+        self._domain_label_map = data_ctx.get('domain_label_map', {})
         self.v2 = config.get("implementation_version", 1) == 2
         self.auxiliary_transaction = None
         self.statistics = self.normalizer = None
@@ -117,11 +122,8 @@ class CrossResponseRuntime:
         self.decision_calibration = None
         if config.get("decision_mode") in ("delta", "delta_pairs"):
             self.decision_calibration = torch.load(config["decision_calibration"], map_location="cpu", weights_only=False)
-            if self.decision_calibration.get("source_contract") != self.source_contract:
-                raise ValueError("SOURCE_CALIBRATION_DATA_CONTRACT_MISMATCH")
-            validation = self.decision_calibration.get("validation_evidence", {})
-            if validation.get("source_role") != "V" or validation.get("target_used") is not False or not validation.get("metrics"):
-                raise ValueError("delta freeze requires explicit single-source-V risk/coverage evidence")
+            validate_decision_calibration(self.decision_calibration, mode=config["decision_mode"],
+                source_contract=self.source_contract, num_classes=model.id_backbone.cls_head.head.weight.shape[0])
         self.output = Path(args.output_dir)
         self.output.mkdir(parents=True, exist_ok=True)
         self.auxiliary = None
@@ -130,6 +132,12 @@ class CrossResponseRuntime:
         self.gate = SourceResponseGate(config["gate_min_blocks"], config["gate_error_ratio"], config["gate_stable_checks"])
         self.mechanism_gate = SourceMechanismGate(**config["mechanism_gate"]) if self.v2 and config.get("mechanism_gate") else None
         self.extended_identity_module = None
+        self.mechanism_audit_state = dict(window=[], observations=[], attempts=0, paired_updates=0,
+                                         phase=None, scope='cls_head', last_status=None)
+        self.pending_source_update = None
+        self.mechanism_audit_due = False
+        self.joint_objective = joint_objective_contract(config,
+            (config.get('mechanism_audit') or {}).get('identity_scope', 'cls_head'))
         self.counts = {"batches": 0, "successful_steps": 0, "effective_blocks": 0,
                        "response_batches": 0, "decision_batches": 0, "cross_batches": 0,
                        "joint_gradient_steps": 0, "domain_gradient_steps": 0, "head_gradient_steps": 0,
@@ -152,6 +160,13 @@ class CrossResponseRuntime:
             role_policy_version="balanced_partitions_v2" if self.v2 else "legacy_halves_v1",
             direction_shrinkage=config.get("direction_shrinkage", 0.),
             gain_strategy=config.get("gain_strategy", "legacy_gain"), evidence_config=config.get("evidence_config"))
+        if config.get('gain_strategy') == 'reliable_evidence':
+            if self.mechanism_gate is None:
+                raise ValueError('reliable feedback requires a live joint mechanism gate')
+            if config['evidence_config']['source_evidence']['gate_result'].get('source_freeze_id') != self.mechanism_gate.config['source_freeze_id']:
+                raise ValueError('feedback gate source freeze does not match the current joint objective')
+            scheduler.bind_qualification(source_contract=self.source_contract, joint_objective=self.joint_objective,
+                provider=lambda: dict(authorized=self.joint_open, scope=self.extended_identity_module or 'cls_head'))
         old_loader = data_ctx["train_loader"]
         self.sampler = CrossBlockSampler(self.records, P=config["P"], Q=config["Q"],
             k_menu=config["k_menu"], batch_size=int(args.batch_size), seed=int(config["data_seed"]),
@@ -242,37 +257,68 @@ class CrossResponseRuntime:
     def observe_source_mechanism(self, model, evidence, *, extension=None):
         if not self.v2 or self.mechanism_gate is None:
             raise ValueError("source mechanism thresholds are not frozen")
-        if extension is None:
-            result = self.mechanism_gate.observe(evidence)
-            self.extended_identity_module = None
-            self.roles = parameter_roles(model, self.auxiliary, self.config["gradient_tail_prefixes"])
-        else:
-            # Only a single terminal feature module may augment the original
-            # classifier scope. Model topology, not a name alone, excludes shared parameters.
-            if extension not in ("time_fuse", "freq_fuse"):
-                raise ValueError("only one explicitly verified terminal feature fusion module is eligible")
-            module = model.id_backbone.get_submodule(extension)
-            parameters = list(module.parameters())
-            domain_ids = {id(p) for p in model.dom_backbone.parameters()}
-            if not parameters or any(id(p) in domain_ids for p in parameters):
-                raise ValueError("extension must have exclusive identity parameters")
-            if self.extended_identity_module not in (None, extension):
-                raise ValueError("simultaneous expansion to multiple identity modules is forbidden")
-            result = self.mechanism_gate.request_extension(extension, evidence)
-            if result["authorized"]:
-                self.extended_identity_module = extension
-                self.roles = parameter_roles(model, self.auxiliary,
-                    list(self.config["gradient_tail_prefixes"]) + ["id_backbone." + extension + "."])
+        scope = extension or 'cls_head'
+        try:
+            proposed_roles = self._response_roles_for_scope(model, scope)
+            if not isinstance(evidence, dict):
+                raise ValueError('structured source mechanism evidence required')
+            # All measurements are generated against this run's established data
+            # roles, not merely a caller-supplied source_role string.
+            update = evidence.get('update_value', {})
+            train_ids, query_ids = set(update.get('training_physical_ids', ())), set(update.get('query_physical_ids', ()))
+            if not train_ids <= set(self.source_contract['train']) | set(self.source_contract['unlabeled']) or not query_ids <= set(self.source_contract['validation']):
+                raise ValueError('source mechanism evidence does not match current physical data roles')
+            result = (self.mechanism_gate.observe(evidence) if extension is None
+                      else self.mechanism_gate.request_extension(extension, evidence))
+        except (ValueError, TypeError, KeyError):
+            self._close_source_mechanism('invalid_source_measurement', scope=scope)
+            raise
+        self.extended_identity_module = extension if result['authorized'] else None
+        self.roles = proposed_roles if result['authorized'] else self._response_roles_for_scope(model, 'cls_head')
         return result
 
-    def begin_batch(self, extra):
+    def _response_roles_for_scope(self, model, scope):
+        prefixes = list(self.config['gradient_tail_prefixes'])
+        if scope != 'cls_head':
+            if (scope not in ('time_fuse', 'freq_fuse') or self.mechanism_gate is None
+                    or scope != self.mechanism_gate.config['terminal_identity_module']):
+                raise ValueError('only one registered terminal identity feature module is eligible')
+            parameters = list(model.id_backbone.get_submodule(scope).parameters())
+            domain_ids = {id(p) for p in model.dom_backbone.parameters()}
+            if not parameters or any(id(p) in domain_ids for p in parameters):
+                raise ValueError('extension must have exclusive identity parameters')
+            prefixes.append('id_backbone.' + scope + '.')
+        return parameter_roles(model, self.auxiliary, prefixes)
+
+    def _close_source_mechanism(self, reason, *, scope='cls_head'):
+        if self.mechanism_gate is not None:
+            self.mechanism_gate.invalidate(reason, scope=scope)
+            self.extended_identity_module = None
+            self.roles = self._response_roles_for_scope(self._model, 'cls_head')
+
+    def prepare_training_phase(self, *, epoch=None, phase=None):
+        """Invalidate old qualification before the loader draws its first ticket."""
+        self.current_epoch = epoch
+        if phase is not None and self.mechanism_audit_state['phase'] != phase:
+            if self.mechanism_audit_state['phase'] is not None:
+                self._close_source_mechanism('training_phase_changed_requires_fresh_source_measurement')
+            self.mechanism_audit_state.update(phase=phase, scope='cls_head', window=[])
+
+    def begin_batch(self, extra, *, epoch=None, phase=None):
         self.logs, self.pending_blocks = {}, []
         self.detailed_audits, self.decision_audit_inputs = [], []
+        self.pending_source_update = None
+        self.audit_response_term = self.audit_response_group_terms = None
+        self.prepare_training_phase(epoch=epoch, phase=phase)
         self.counts["batches"] += 1
         self.audit_due = not self.v2 or (self.counts["batches"] - 1) % self.config.get("diagnostic_interval", 20) == 0
+        audit_config = self.config.get('mechanism_audit')
+        self.mechanism_audit_due = bool(self.v2 and self.mechanism_gate is not None and audit_config
+            and (self.counts['batches'] - 1) % audit_config['interval_steps'] == 0)
         if not self.active:
             return None
         plan = extract_batch_plan(extra)
+        self.current_plan = plan
         self.logs.update(effective_blocks=len(plan.blocks), independent_records=sum(len(b.records) for b in plan.blocks),
                          skipped_blocks=float(not plan.blocks), role_rotation_enabled=float(self.config["role_rotation"]))
         self.logs["selection_probability"] = [b.selection_probability for b in plan.blocks]
@@ -318,10 +364,25 @@ class CrossResponseRuntime:
         c = self.config
         resp, dec, cross = [], [], []
         response_groups = {key: [] for key in ("predictor_full", "identity", "domain")}
+        audit_responses = []
+        audit_groups = {key: [] for key in response_groups}
         inference_logits = None
         if c["decision_enabled"]:
             feat = out["aux_id"]["feat_joint"]
             inference_logits = model.id_backbone.cls_head.head(feat.float(), labels=None)
+        if self.v2:
+            checked = {key: out[key] for key in ('z_id', 'z_dom', 'tx_logits')}
+            if inference_logits is not None:
+                checked['inference_logits'] = inference_logits
+            invalid = [key for key, value in checked.items() if not torch.isfinite(value).all()]
+            if invalid:
+                self.force_diagnostic('nonfinite_forward', tensors=invalid)
+                # Preserve the main finite-loss transaction instead of failing
+                # inside a pure geometry diagnostic before it can record the fault.
+                invalid_loss = sum(value.sum() for key, value in checked.items() if key in invalid)
+                self.response_term = self.decision_term = self.cross_term = invalid_loss
+                self.response_group_terms = None
+                return invalid_loss, invalid_loss, invalid_loss
         for block in plan.blocks:
             cand, role = block.candidate, block.roles
             p, q, k = len(cand.tx_ids), len(cand.rx_ids), cand.k
@@ -342,8 +403,15 @@ class CrossResponseRuntime:
             if c["response_enabled"]:
                 t, d = self.auxiliary["readouts"](zi, zd, qt, qr, dt, dr, detach_identity=not self.joint_open)
                 prediction = self.auxiliary["predictor"](t, d)
-                term, diagnostic = response_loss(prediction, target[qt][:, qr], c["interaction_weight"])
-                if c.get("response_routing") == "decomposed":
+                response_finite = bool(torch.isfinite(prediction).all() and torch.isfinite(target[qt][:, qr]).all())
+                if self.v2 and not response_finite:
+                    self.force_diagnostic('nonfinite_response', candidate=repr(cand.key))
+                    term = prediction.sum() + target[qt][:, qr].sum()
+                    diagnostic = {key: float('nan') for key in ('total_error', 'interaction_error',
+                                                              'tx_main_effect_error', 'rx_main_effect_error')}
+                else:
+                    term, diagnostic = response_loss(prediction, target[qt][:, qr], c["interaction_weight"])
+                if c.get("response_routing") == "decomposed" and response_finite:
                     routed, decomposition = decomposed_response_losses(prediction, target[qt][:, qr],
                         **{key: c["response_decomposition"][key] for key in
                            ("alpha", "beta", "interaction_reliability", "weight_bounds")})
@@ -352,6 +420,24 @@ class CrossResponseRuntime:
                         response_groups[key].append(value)
                     for key, value in decomposition["component_energies"].items():
                         self._accumulate("response_component_" + key, value)
+                if self.mechanism_audit_due and response_finite:
+                    if self.joint_open:
+                        audit_prediction = prediction
+                    else:
+                        # A disposable hypothetical identity update needs a live
+                        # identity graph, even while the actual main gate is closed.
+                        at, ad = self.auxiliary['readouts'](zi, zd, qt, qr, dt, dr, detach_identity=False)
+                        audit_prediction = self.auxiliary['predictor'](at, ad)
+                        self._accumulate('source_audit_extra_predictor_forwards', 1)
+                    audit_term, _ = response_loss(audit_prediction, target[qt][:, qr], c['interaction_weight'])
+                    if c.get('response_routing') == 'decomposed':
+                        routed_audit, _ = decomposed_response_losses(audit_prediction, target[qt][:, qr],
+                            **{key: c['response_decomposition'][key] for key in
+                               ('alpha', 'beta', 'interaction_reliability', 'weight_bounds')})
+                        audit_term = routed_audit['predictor_full']
+                        for key, value in routed_audit.items():
+                            audit_groups[key].append(value)
+                    audit_responses.append(audit_term)
                 resp.append(term)
                 r_value = float(diagnostic["total_error"])
                 self._accumulate("response_mse", r_value)
@@ -417,10 +503,112 @@ class CrossResponseRuntime:
         self.decision_term = torch.stack(dec).mean() if dec else zero
         self.cross_term = torch.stack(cross).mean() if cross else zero
         self.response_group_terms = {key: torch.stack(values).mean() for key,values in response_groups.items()} if response_groups["predictor_full"] else None
+        if self.mechanism_audit_due and len(audit_responses) == len(plan.blocks) and audit_responses:
+            self.audit_response_term = torch.stack(audit_responses).mean()
+            self.audit_response_group_terms = {key: torch.stack(values).mean() for key,values in audit_groups.items()} if audit_groups['predictor_full'] else None
         self.logs.update(loss_response=float(self.response_term.detach()), loss_decision=float(self.decision_term.detach()),
                          loss_cross=float(self.cross_term.detach()))
         self.logs["diagnostics_audited"] = float(self.audit_due)
         return self.response_term, self.decision_term, self.cross_term
+
+    def force_diagnostic(self, reason, **details):
+        """Record numerical faults even outside the low-frequency audit schedule."""
+        if not self.v2 or not self.active:
+            return
+        if not self.audit_due:
+            self.counts['forced_audit_steps'] += 1
+        self.audit_due = True
+        self.logs['diagnostics_audited'] = 1.
+        self.detailed_audits.append(dict(kind='nonfinite_diagnostic', reason=reason, **details))
+
+    def audit_source_update(self, model, optimizer, scaler, baseline, identity, terms, *, training_context):
+        """Called by the real trainer before backward; only copied states step."""
+        if not self.mechanism_audit_due:
+            return
+        started = time.perf_counter()
+        rng = capture_rng_state()
+        state, cfg = self.mechanism_audit_state, self.config['mechanism_audit']
+        state['attempts'] += 1
+        step = self.counts['batches'] - 1
+        pending = dict(step=step, scope=state['scope'], status='UNAVAILABLE',
+                       training_context=_json_evidence(training_context))
+        try:
+            if self.audit_response_term is None or not torch.isfinite(baseline.detach()):
+                raise ValueError('finite complete baseline and complete response audit blocks required')
+            source = evaluate_source_response_v2(model, self.auxiliary['readouts'], self.auxiliary['predictor'],
+                self.statistics, self.normalizer, self.validation_dataset, self.config, self.device,
+                self._domain_label_map, source_role='source_validation', source_train_dataset=self.source_dataset)
+            pending['prediction_audit'] = source
+            measurements = source_prediction_measurements(source)
+            evaluate, query_ids, query_cost = prepare_source_query(self.validation_dataset,
+                self.validation_records, per_cell=cfg['query_records_per_cell'], seed=cfg['seed'] + step,
+                num_classes=model.id_backbone.cls_head.head.weight.shape[0], device=self.device,
+                domain_label_map=self._domain_label_map, args=self._args, batch_size=int(self._args.eval_batch_size))
+            train_ids = {r.physical_sample_id for b in self.current_plan.blocks for r in b.records}
+            if train_ids & set(query_ids):
+                raise ValueError('actual training and source query physical IDs overlap')
+            c = self.config
+            updates = paired_actual_optimizer_update(model, self.auxiliary, optimizer, scaler,
+                baseline_loss=baseline, identity_loss=identity, response_loss=self.audit_response_term,
+                decision_loss=terms[1], cross_loss=terms[2],
+                roles=self._response_roles_for_scope(model, state['scope']),
+                lambda_resp=c['lambda_resp'], lambda_dec=c['lambda_dec'] if c['decision_enabled'] else 0.,
+                lambda_cross=c['lambda_cross'] if c['identity_interaction_enabled'] else 0.,
+                gradient_cap=c['gradient_cap'], max_grad_norm=float(getattr(self._args, 'max_grad_norm', 0.)),
+                evaluate=evaluate, response_group_losses=self.audit_response_group_terms)
+            pending.update(updates=updates, query_cost=query_cost)
+            if not all(updates[key]['step_applied'] for key in ('base', 'base_response')):
+                raise ValueError('source counterfactual has a nonfinite or unapplied optimizer update')
+            pending.update(status='MEASURED', measurement=dict(measurements, step=step, scope=state['scope'],
+                training_physical_ids=sorted(train_ids, key=repr), query_physical_ids=query_ids,
+                risks={key: updates[key]['risk'] for key in ('initial', 'base', 'base_response')}))
+        except ValueError as error:
+            pending['reason'] = str(error)
+        finally:
+            restore_rng_state(rng)
+            pending['audit_seconds'] = time.perf_counter() - started
+            self.pending_source_update = pending
+
+    def _finish_source_update_audit(self, success):
+        pending = self.pending_source_update
+        if pending is None:
+            if not success and self.mechanism_gate is not None:
+                self.mechanism_audit_state['window'] = []
+                self._close_source_mechanism('main_update_not_applied', scope=self.mechanism_audit_state['scope'])
+            return
+        state = self.mechanism_audit_state
+        pending['main_step_applied'] = bool(success)
+        state['last_status'] = pending['status']
+        if success and pending['status'] == 'MEASURED':
+            state['paired_updates'] += 1
+            state['window'].append(pending['measurement'])
+            if len(state['window']) == self.config['mechanism_audit']['pairs_per_observation']:
+                try:
+                    evidence = aggregate_source_observation(state['window'], scope=state['scope'],
+                        source_freeze_id=self.mechanism_gate.config['source_freeze_id'])
+                    result = self.observe_source_mechanism(self._model, evidence,
+                        extension=None if state['scope'] == 'cls_head' else state['scope'])
+                    observation = dict(evidence=evidence, result=result, applied_from_step=pending['step'] + 1)
+                    state['observations'].append(observation)
+                    pending['gate_observation'] = observation
+                    # A feature extension never inherits base-head stability.
+                    if result['authorized'] and state['scope'] == 'cls_head':
+                        state['scope'] = self.config['mechanism_audit']['identity_scope']
+                except ValueError as error:
+                    pending.update(status='UNAVAILABLE', reason=str(error))
+                    state['last_status'] = 'UNAVAILABLE'
+                    self._close_source_mechanism(str(error), scope=state['scope'])
+                finally:
+                    state['window'] = []
+        else:
+            state['window'] = []
+            self._close_source_mechanism(pending.get('reason', 'main_update_not_applied'), scope=state['scope'])
+        self.detailed_audits.append(dict(kind='actual_source_update', audit=pending))
+        self.logs['source_mechanism_audit_attempts'] = state['attempts']
+        self.logs['source_mechanism_paired_updates'] = state['paired_updates']
+        self.logs['source_mechanism_authorized_next_step'] = float(self.joint_open)
+        self.pending_source_update = None
+        self.audit_response_term = self.audit_response_group_terms = None
 
     def _accumulate(self, key, value):
         number = _scalar(value)
@@ -435,6 +623,8 @@ class CrossResponseRuntime:
             return
         if self.auxiliary_transaction is not None:
             self.logs.update(self.auxiliary_transaction.step(float(c["lambda_resp"]) * response))
+            if self.logs.get('auxiliary_nonfinite'):
+                self.force_diagnostic('nonfinite_auxiliary_transaction')
             main_loss = baseline
             if c["decision_enabled"]:
                 main_loss = main_loss + float(c["lambda_dec"]) * decision
@@ -486,6 +676,8 @@ class CrossResponseRuntime:
         self.counts["successful_steps"] += int(success)
         if not self.active:
             return
+        if not success:
+            self.force_diagnostic('main_update_not_applied')
         if self.v2:
             self.counts["audited_steps"] += int(self.audit_due)
             self.counts["audited_successful_steps"] += int(self.audit_due and success)
@@ -520,6 +712,7 @@ class CrossResponseRuntime:
             self.counts["decision_gradient_steps"] += int(self.logs.get("decision_identity_grad_norm", 0) > 0)
             self.counts["cross_gradient_steps"] += int(self.logs.get("cross_identity_grad_norm", 0) > 0)
         self.logs["auxiliary_step_seconds"] = time.perf_counter() - self.batch_started
+        self._finish_source_update_audit(success)
         if self.v2 and self.detailed_audits:
             with (self.output / "cross_response_diagnostics.jsonl").open("a", encoding="utf-8") as handle:
                 handle.write(json.dumps(_json_evidence({"step": self.counts["batches"] - 1,
@@ -544,9 +737,13 @@ class CrossResponseRuntime:
                 self.auxiliary["readouts"], self.auxiliary["predictor"], self.statistics, self.normalizer,
                 self.validation_dataset, self.config, self.device, data_ctx["domain_label_map"],
                 source_role="source_validation", source_train_dataset=self.source_dataset)
-        result.update(self.gate.observe(response_error=result["response_mse"] if result["response_mse"] is not None else math.inf,
+        legacy_result = self.gate.observe(response_error=result["response_mse"] if result["response_mse"] is not None else math.inf,
             constant_error=result["constant_mse"] if result["constant_mse"] is not None else 0.,
-            blocks=result["valid_blocks"], source_role="source_validation"))
+            blocks=result["valid_blocks"], source_role="source_validation")
+        result.update({'legacy_' + key: value for key, value in legacy_result.items()} if self.v2 else legacy_result)
+        if self.v2:
+            result['response_joint_open'] = self.joint_open
+            result['source_mechanism_gate'] = deepcopy(self.mechanism_gate.last_result) if self.mechanism_gate else None
         self.source_evaluations.append(result)
         self.write_report()
         return result
@@ -558,6 +755,7 @@ class CrossResponseRuntime:
                 "maxima": deepcopy(self.maxima), "rotation_counts": deepcopy(self.rotation_counts),
                 "source_evaluations": deepcopy(self.source_evaluations), "gate": self.gate.state_dict(),
                 "mechanism_gate": self.mechanism_gate.state_dict() if self.mechanism_gate else None,
+                "source_mechanism_audit": deepcopy(self.mechanism_audit_state),
                 "extended_identity_module": self.extended_identity_module,
                 "auxiliary": self.auxiliary.state_dict() if self.auxiliary is not None else None,
                 "auxiliary_transaction": self.auxiliary_transaction.state_dict() if self.auxiliary_transaction else None,
@@ -574,6 +772,10 @@ class CrossResponseRuntime:
         self.gate.load_state_dict(state["gate"])
         if self.mechanism_gate is not None:
             self.mechanism_gate.load_state_dict(state["mechanism_gate"])
+            if 'source_mechanism_audit' not in state:
+                raise ValueError('missing source mechanism audit window on resume')
+        if 'source_mechanism_audit' in state:
+            self.mechanism_audit_state = deepcopy(state['source_mechanism_audit'])
         self.extended_identity_module = state.get("extended_identity_module")
         if self.extended_identity_module is not None:
             if self.mechanism_gate is None or self.extended_identity_module != self.mechanism_gate.config["terminal_identity_module"]:
@@ -638,6 +840,8 @@ class CrossResponseRuntime:
                 "missing": missing, "counts": deepcopy(n), "maxima": deepcopy(self.maxima),
                 "gate": self.gate.state_dict(), "rotation_counts": deepcopy(self.rotation_counts),
                 "mechanism_gate": self.mechanism_gate.state_dict() if self.mechanism_gate else {"status": "SOURCE_PARAMETERS_UNFROZEN"},
+                "source_mechanism_audit": deepcopy(self.mechanism_audit_state),
+                "joint_objective": deepcopy(self.joint_objective),
                 "extended_identity_module": self.extended_identity_module,
                 "config": deepcopy(c), "source_evaluations": deepcopy(self.source_evaluations),
                 "auxiliary_parameters": sum(p.numel() for p in self.parameters()),

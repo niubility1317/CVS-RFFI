@@ -45,15 +45,20 @@ class SourceMechanismGate:
             raise ValueError('finite source metric required: ' + name)
         return float(value)
 
+    def invalidate(self, reason, *, scope='cls_head'):
+        self.streak = 0
+        self.scope = scope
+        self.last_result = dict(authorized=False, passed=False, scope=scope,
+                                failed_conditions=[reason])
+        return copy.deepcopy(self.last_result)
+
     def observe(self, evidence, *, scope='cls_head'):
         try:
             return self._observe(evidence, scope=scope)
         except (ValueError, TypeError, KeyError):
             # Malformed/stale/missing evidence cannot leave an earlier open
             # result visible to the training integration.
-            self.streak = 0
-            self.last_result = dict(authorized=False, passed=False, scope=scope,
-                                    failed_conditions=['invalid_or_missing_source_evidence'])
+            self.invalidate('invalid_or_missing_source_evidence', scope=scope)
             raise
 
     def _observe(self, evidence, *, scope):
@@ -84,7 +89,9 @@ class SourceMechanismGate:
                 raise ValueError('explicit source sample_count required')
             rows[name] = row
         capability = self._finite(rows['capability'], 'baseline_error') - self._finite(rows['capability'], 'full_error')
-        necessity = self._finite(rows['necessity'], 'shuffled_tx_error') - self._finite(rows['necessity'], 'full_error')
+        necessity = min(self._finite(rows['necessity'], name)
+                        for name in ('shuffled_tx_error', 'rx_only_error', 'head_only_error')) \
+                    - self._finite(rows['necessity'], 'full_error')
         update = rows['update_value']
         improvement = self._finite(update, 'base_risk') - self._finite(update, 'joint_risk')
         train_ids, query_ids = update.get('training_physical_ids'), update.get('query_physical_ids')
@@ -124,6 +131,7 @@ class SourceMechanismGate:
         result = dict(source_role='source_validation', source_freeze_id=self.config['source_freeze_id'],
                       observation_id=observation_id, scope=scope,
                       passed=all(passed.values()), stable_observations=self.streak,
+                      required_stable_observations=self.config['stable_observations'],
                       authorized=self.streak >= self.config['stable_observations'],
                       failed_conditions=[name for name in passed if not passed[name]])
         for name in passed:

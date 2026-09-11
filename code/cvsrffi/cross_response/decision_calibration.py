@@ -40,6 +40,39 @@ def _inputs(logits, labels, records):
     return x, y, x.gather(1,y[:,None]) - x
 
 
+def validate_decision_calibration(artifact, *, mode, source_contract, num_classes):
+    """Reject mislabeled conditional branches before constructing a training run."""
+    if mode not in ('delta', 'delta_pairs') or not isinstance(artifact, dict):
+        raise ValueError('structured delta calibration artifact required')
+    if artifact.get('source_contract') != source_contract:
+        raise ValueError('SOURCE_CALIBRATION_DATA_CONTRACT_MISMATCH')
+    validation = artifact.get('validation_evidence', {})
+    metrics = validation.get('metrics') if isinstance(validation, dict) else None
+    if (not isinstance(validation, dict) or validation.get('source_role') != 'V'
+            or validation.get('target_used') is not False or not isinstance(metrics, dict)
+            or not metrics or any(isinstance(v, bool) or not isinstance(v, (int, float))
+                                  or not math.isfinite(v) for v in metrics.values())):
+        raise ValueError('delta freeze requires finite single-source-V risk/coverage evidence')
+    noise = artifact.get('noise')
+    if (not isinstance(noise, dict) or noise.get('source_role') != 'L_s'
+            or noise.get('source_frozen') is not True or noise.get('num_classes') != num_classes):
+        raise ValueError('frozen L_s noise must match the current classifier classes')
+    if mode == 'delta_pairs':
+        pairs = artifact.get('competitors')
+        if (not isinstance(pairs, dict) or pairs.get('source_role') != 'V'
+                or pairs.get('source_frozen') is not True or pairs.get('num_classes') != num_classes):
+            raise ValueError('delta_pairs requires frozen V competitor selection for every classifier class')
+        selected = pairs.get('selected')
+        if not isinstance(selected, dict) or set(selected) != set(range(num_classes)):
+            raise ValueError('competitor selection must explicitly cover every classifier class')
+        for target, competitors in selected.items():
+            if (not isinstance(competitors, (list, tuple))
+                    or any(type(b) is not int or not 0 <= b < num_classes or b == target for b in competitors)
+                    or len(set(competitors)) != len(competitors)):
+                raise ValueError('invalid competitor selection; empty evidence must be an explicit empty list')
+    return artifact
+
+
 def estimate_source_noise(logits, labels, records, config, *, source_role):
     """L_s repeats: same TX/RX/day/condition, disjoint equally sized groups.
 

@@ -23,8 +23,14 @@ def block(direction=0, block_id=0):
 
 
 def scheduler(**kwargs):
-    return FeedbackScheduler(update_interval=20, feedback_version="transaction_v2",
-                             role_policy_version="balanced_partitions_v2", **kwargs)
+    result = FeedbackScheduler(update_interval=20, feedback_version="transaction_v2",
+                               role_policy_version="balanced_partitions_v2", **kwargs)
+    if result.gain_strategy == 'reliable_evidence':
+        source = result.evidence_config['source_evidence']
+        result.bind_qualification(source_contract=source['source_contract'],
+            joint_objective=source['joint_objective'],
+            provider=lambda: dict(authorized=True, scope=source['joint_objective']['scope']))
+    return result
 
 
 def run_fixture(reverse=False, resume_at=None):
@@ -148,7 +154,9 @@ def evidence_config():
     names = ("coverage", "query_gap", "new_physical", "staleness", "decision", "response")
     return dict(frozen=True, source_evidence=dict(source_only=True, target_used=False,
                 joint_objective_validated=True, evidence_id="SYNTHETIC_TEST_ONLY",
-                gate_result=dict(source_role="source_validation", **{
+                source_contract={'source': 'fixture'}, joint_objective={'scope': 'cls_head', 'response_enabled': True},
+                gate_result=dict(source_role="source_validation", authorized=True, passed=True,
+                    stable_observations=2, required_stable_observations=2, scope='cls_head', **{
                     name: dict(passed=True, sample_count=8, metrics={"synthetic_margin": 1.})
                     for name in ("capability", "necessity", "update_value")})),
                 weights={name: 1. for name in names},

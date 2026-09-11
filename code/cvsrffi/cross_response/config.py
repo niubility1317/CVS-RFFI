@@ -23,7 +23,7 @@ V2_KEYS = {"implementation_version", "direction_shrinkage", "diagnostic_interval
            "gain_strategy", "evidence_config", "decision_mode", "decision_calibration",
            "interaction_mode", "response_routing", "mechanism_gate", "response_decomposition",
            "source_audit_enabled", "source_baseline_fit_steps", "source_baseline_fit_lr"}
-V2_KEYS.add("geometry_min_norm")
+V2_KEYS.update(("geometry_min_norm", "mechanism_audit"))
 
 
 def validate_runtime_config(c):
@@ -45,6 +45,30 @@ def validate_runtime_config(c):
         raise ValueError("SOURCE_PARAMETERS_UNFROZEN: delta requires source calibration and validation evidence")
     if c.get("source_audit_enabled") and (c.get("source_baseline_fit_steps") is None or c.get("source_baseline_fit_lr") is None):
         raise ValueError("source baseline fit budget must be explicit")
+    if c.get("gain_strategy") == "reliable_evidence":
+        if not c["response_enabled"] or c["head_only"] or c["permanent_detach"]:
+            raise ValueError("reliable feedback requires a current joint response objective")
+        if c.get('mechanism_gate') is None:
+            raise ValueError('SOURCE_PARAMETERS_UNFROZEN: reliable feedback requires a current joint mechanism gate')
+    audit = c.get('mechanism_audit')
+    if c.get('mechanism_gate') is not None:
+        if not c['response_enabled'] or c['head_only'] or c['permanent_detach']:
+            raise ValueError('source mechanism gate requires a current joint response objective')
+        if not c.get('source_audit_enabled') or not isinstance(audit, dict):
+            raise ValueError('source mechanism gate requires explicit source audit budgets')
+        required = {'interval_steps', 'pairs_per_observation', 'query_records_per_cell', 'seed', 'identity_scope'}
+        if set(audit) != required:
+            raise ValueError('all source mechanism audit controls must be explicit')
+        for key in required - {'identity_scope'}:
+            if type(audit[key]) is not int or audit[key] < (0 if key == 'seed' else 1):
+                raise ValueError('invalid source mechanism audit control: ' + key)
+        if audit['pairs_per_observation'] < 2:
+            raise ValueError('source update utility requires multiple paired batches')
+        terminal = c['mechanism_gate'].get('terminal_identity_module')
+        if terminal not in ('time_fuse', 'freq_fuse') or audit['identity_scope'] not in ('cls_head', terminal):
+            raise ValueError('source mechanism audit permits cls_head then one verified terminal module')
+    elif audit is not None:
+        raise ValueError('mechanism audit requires explicit source gate thresholds')
     if c.get("implementation_version") == 2 and c["gradient_tail_prefixes"] != ["id_backbone.cls_head"]:
         raise ValueError("V2 starts at cls_head; one feature-module extension requires fresh source gate evidence")
     if c.get("response_routing", "full_error") not in ("full_error", "decomposed"):

@@ -107,7 +107,7 @@ def evidence(index, scope='cls_head'):
     return dict(observation_id=str(index), scope=scope, source_freeze_id='SYNTHETIC_TEST_ONLY',
         source_role='source_validation', target_used=False,
         capability=dict(sample_count=4, baseline_error=2., full_error=1.),
-        necessity=dict(sample_count=4, shuffled_tx_error=2., full_error=1.),
+        necessity=dict(sample_count=4, shuffled_tx_error=2., rx_only_error=2., head_only_error=2., full_error=1.),
         update_value=dict(sample_count=4, base_risk=1., joint_risk=.95,
             training_physical_ids=['t1', 't2'], query_physical_ids=['q1', 'q2', 'q3', 'q4'],
             hard_groups={'weak_rx': copy.deepcopy(group)}, leo_groups={'leo_weak': copy.deepcopy(group)}))

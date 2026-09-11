@@ -1,0 +1,4870 @@
+{
+  "variant": "U2",
+  "status": "ACTIVATION_INCOMPLETE",
+  "missing": [
+    "JOINT_IDENTITY_GRADIENT_NOT_OBSERVED"
+  ],
+  "counts": {
+    "batches": 8,
+    "successful_steps": 3,
+    "effective_blocks": 12,
+    "response_batches": 3,
+    "decision_batches": 0,
+    "cross_batches": 0,
+    "joint_gradient_steps": 0,
+    "domain_gradient_steps": 3,
+    "head_gradient_steps": 3,
+    "decision_gradient_steps": 0,
+    "cross_gradient_steps": 0,
+    "forward_calls": 8,
+    "audited_steps": 5,
+    "audited_successful_steps": 0,
+    "forced_audit_steps": 4
+  },
+  "maxima": {
+    "effective_blocks": 4.0,
+    "independent_records": 128.0,
+    "skipped_blocks": 0.0,
+    "role_rotation_enabled": 1.0,
+    "selection_probability": 0.013333333333333334,
+    "physical_k": 2.0,
+    "duplicate_physical_fraction": 0.0,
+    "source_audit_extra_predictor_forwards": 1.0,
+    "response_mse": 31292.17252984643,
+    "interaction_error": 0.1543790902942419,
+    "tx_main_effect_error": 15659.415689960122,
+    "rx_main_effect_error": 0.28539000265300274,
+    "response_tx_variance": 28991.44101716252,
+    "response_rx_variance": 0.03198953019455075,
+    "identity_interaction": 4029574.2737684846,
+    "identity_scale": 626.6301530599594,
+    "identity_between_tx": 21054.101521447767,
+    "geometry_available": 1.0,
+    "geometry_invalid_records": 0.0,
+    "geometry_min_norm": 1e-08,
+    "geometry_raw_norm_mean": 626.6301530599594,
+    "geometry_raw_norm_p50": 5.733995676040649,
+    "geometry_raw_norm_p95": 4690.134189128876,
+    "geometry_raw_interaction": 4029574.2737684846,
+    "geometry_raw_interaction_per_160_dimensions": 4029574.523768544,
+    "geometry_raw_relative_interaction": 0.29586227610707283,
+    "geometry_unit_interaction": 0.13279068283736706,
+    "geometry_classification_records": 32.0,
+    "loss_response": 31292.173828125,
+    "loss_decision": -0.0,
+    "loss_cross": -0.0,
+    "diagnostics_audited": 1.0,
+    "response_identity_reference_norm": 0.0,
+    "response_identity_raw_norm": 0.0,
+    "response_identity_cap_scale": 0.0,
+    "response_identity_clipped": 0.0,
+    "response_joint_open": 0.0,
+    "response_grad_shared": 0.0,
+    "response_grad_identity_tail": 0.0,
+    "response_grad_identity_front": 0.0,
+    "response_grad_domain": 3.828526735305786,
+    "response_grad_other": 0.0,
+    "response_grad_auxiliary": 4068.38134765625,
+    "invalid_feedback_blocks": 0.0,
+    "auxiliary_step_seconds": 5.012283200005186,
+    "source_mechanism_audit_attempts": 8.0,
+    "source_mechanism_paired_updates": 2.0,
+    "source_mechanism_authorized_next_step": 0.0,
+    "peak_memory_bytes": 4991773696.0
+  },
+  "gate": {
+    "min_blocks": 1,
+    "error_ratio": 0.95,
+    "stable_checks": 3,
+    "consecutive": 0,
+    "checks": 4,
+    "opened": false,
+    "last_ratio": 1.030424120234834
+  },
+  "rotation_counts": {
+    "5": 1,
+    "32": 1,
+    "4": 1,
+    "22": 1,
+    "15": 1,
+    "25": 1,
+    "19": 1,
+    "8": 1,
+    "13": 1,
+    "27": 1,
+    "17": 1,
+    "20": 1
+  },
+  "mechanism_gate": {
+    "state_version": 1,
+    "config": {
+      "thresholds": {
+        "capability_min_improvement": 1000000.0,
+        "necessity_min_gap": 1000000.0,
+        "update_min_improvement": 1000000.0,
+        "max_hard_group_degradation": 1000000.0,
+        "max_leo_degradation": 1000000.0
+      },
+      "stable_observations": 1,
+      "min_samples": 2,
+      "source_freeze_id": "SYNTHETIC_INTEGRATION_TEST_ONLY",
+      "source_frozen": true,
+      "terminal_identity_module": "time_fuse"
+    },
+    "scope": "cls_head",
+    "streak": 0,
+    "seen_observation_ids": [],
+    "last_result": {
+      "authorized": false,
+      "passed": false,
+      "scope": "cls_head",
+      "failed_conditions": [
+        "source counterfactual has a nonfinite or unapplied optimizer update"
+      ]
+    }
+  },
+  "source_mechanism_audit": {
+    "window": [],
+    "observations": [],
+    "attempts": 8,
+    "paired_updates": 2,
+    "phase": "pseudo",
+    "scope": "cls_head",
+    "last_status": "UNAVAILABLE"
+  },
+  "joint_objective": {
+    "base_method": "matched_CORE90",
+    "scope": "cls_head",
+    "parameters": {
+      "implementation_version": 2,
+      "response_enabled": true,
+      "decision_enabled": false,
+      "identity_interaction_enabled": false,
+      "head_only": false,
+      "permanent_detach": false,
+      "P": 4,
+      "Q": 4,
+      "K": 2,
+      "view_policy": "clean_only",
+      "target_family": "fft",
+      "target_dim": 8,
+      "statistics_epsilon": 1e-08,
+      "readout_dim": 16,
+      "predictor_mode": "additive",
+      "rank": 4,
+      "lambda_resp": 0.01,
+      "lambda_dec": 0.01,
+      "lambda_cross": 0.01,
+      "decision_delta": 0.0,
+      "decision_min_records": 2,
+      "interaction_weight": 0.0,
+      "role_rotation": true,
+      "normalization_policy": "frozen_source",
+      "mixstyle_role_policy": "donor_only",
+      "gradient_cap": 0.1,
+      "response_routing": "full_error",
+      "response_decomposition": null,
+      "decision_mode": "vectorized",
+      "decision_calibration": null,
+      "interaction_mode": "raw"
+    }
+  },
+  "extended_identity_module": null,
+  "config": {
+    "enabled": true,
+    "response_enabled": true,
+    "decision_enabled": false,
+    "identity_interaction_enabled": false,
+    "head_only": false,
+    "permanent_detach": false,
+    "P": 4,
+    "Q": 4,
+    "K": 2,
+    "view_policy": "clean_only",
+    "target_family": "fft",
+    "target_dim": 8,
+    "statistics_epsilon": 1e-08,
+    "readout_dim": 16,
+    "predictor_mode": "additive",
+    "rank": 4,
+    "lambda_resp": 0.01,
+    "lambda_dec": 0.01,
+    "lambda_cross": 0.01,
+    "decision_delta": 0.0,
+    "decision_min_records": 2,
+    "interaction_weight": 0.0,
+    "role_rotation": true,
+    "normalization_policy": "frozen_source",
+    "mixstyle_role_policy": "donor_only",
+    "gradient_stage": "warmup",
+    "gradient_cap": 0.1,
+    "gate_min_blocks": 1,
+    "gate_error_ratio": 0.95,
+    "gate_stable_checks": 3,
+    "scheduler_mode": "uniform",
+    "exploration": 0.1,
+    "update_interval": 20,
+    "feedback_clip": 10.0,
+    "scheduler_alpha": 1.0,
+    "scheduler_beta": 1.0,
+    "data_seed": 392005,
+    "lags": [
+      1,
+      2,
+      4
+    ],
+    "gate_interval_epochs": 1,
+    "source_fit_max_records": 128,
+    "source_eval_max_blocks": 1,
+    "k_menu": [
+      2
+    ],
+    "gradient_tail_prefixes": [
+      "id_backbone.cls_head"
+    ],
+    "scheduler_candidate_limit": 128,
+    "implementation_version": 2,
+    "diagnostic_interval": 20,
+    "statistics_audit": false,
+    "geometry_min_norm": 1e-08,
+    "direction_shrinkage": 0.0,
+    "gain_strategy": "legacy_gain",
+    "evidence_config": null,
+    "decision_mode": "vectorized",
+    "decision_calibration": null,
+    "interaction_mode": "raw",
+    "response_routing": "full_error",
+    "mechanism_gate": {
+      "thresholds": {
+        "capability_min_improvement": 1000000.0,
+        "necessity_min_gap": 1000000.0,
+        "update_min_improvement": 1000000.0,
+        "max_hard_group_degradation": 1000000.0,
+        "max_leo_degradation": 1000000.0
+      },
+      "stable_observations": 1,
+      "min_samples": 2,
+      "source_freeze_id": "SYNTHETIC_INTEGRATION_TEST_ONLY",
+      "source_frozen": true,
+      "terminal_identity_module": "time_fuse"
+    },
+    "mechanism_audit": {
+      "interval_steps": 1,
+      "pairs_per_observation": 2,
+      "query_records_per_cell": 1,
+      "seed": 392005,
+      "identity_scope": "cls_head"
+    },
+    "response_decomposition": null,
+    "source_audit_enabled": true,
+    "source_baseline_fit_steps": 2,
+    "source_baseline_fit_lr": 0.001
+  },
+  "source_evaluations": [
+    {
+      "source_role": "source_validation",
+      "split_source": "ssdg_source_v_select",
+      "valid_blocks": 1,
+      "valid_role_tasks": 36,
+      "independent_query_tasks": 36,
+      "changed_donor_tasks": 72,
+      "shuffled_rx_tasks": 36,
+      "records_read": 32,
+      "backbone_forwards": 1,
+      "response_mse": 1.1499861751993496,
+      "constant_mse": 1.1057298597362306,
+      "shuffled_rx_mse": 1.127494090133243,
+      "shuffled_reference_mse": 1.1499861751993496,
+      "changed_donor_reference_mse": 1.1499861751993496,
+      "changed_donor_tx_mse": 1.1572827560206254,
+      "interaction_mse": 0.07110153973270725,
+      "per_rotation": {
+        "0": 1.4693117141723633,
+        "1": 1.7010055780410767,
+        "2": 1.4391865730285645,
+        "3": 1.517756700515747,
+        "4": 1.25618314743042,
+        "5": 1.488987684249878,
+        "6": 1.6251440048217773,
+        "7": 1.6256457567214966,
+        "8": 1.2521198987960815,
+        "9": 1.4674925804138184,
+        "10": 1.0939290523529053,
+        "11": 1.0960623025894165,
+        "12": 1.2869551181793213,
+        "13": 1.351407527923584,
+        "14": 1.0941380262374878,
+        "15": 1.136851191520691,
+        "16": 0.8796919584274292,
+        "17": 0.9458836317062378,
+        "18": 1.3218879699707031,
+        "19": 1.3942413330078125,
+        "20": 1.4054369926452637,
+        "21": 1.0211269855499268,
+        "22": 1.0328199863433838,
+        "23": 1.1053028106689453,
+        "24": 0.9369183778762817,
+        "25": 1.0764045715332031,
+        "26": 1.2235136032104492,
+        "27": 0.6570923924446106,
+        "28": 0.8048801422119141,
+        "29": 0.9445728063583374,
+        "30": 1.0837886333465576,
+        "31": 0.9536013603210449,
+        "32": 0.9670008420944214,
+        "33": 0.6151822805404663,
+        "34": 0.6286833882331848,
+        "35": 0.4992953836917877
+      },
+      "constant_definition": "frozen_source_training_location",
+      "status": "VERIFIED",
+      "role_policy": "balanced_partitions_v2",
+      "predictor_forwards": 144,
+      "readout_forwards": 108,
+      "skipped_blocks": 0,
+      "skipped_roles": 0,
+      "skip_reasons": {},
+      "candidate_count": 75,
+      "candidate_search_complete": true,
+      "reason": "source_mechanism_metrics_only",
+      "constant_improvement": -0.044256315463119034,
+      "unique_physical_records_read": 32,
+      "reduced_donor_count_mse": 1.1572827560206254,
+      "reduced_donor_count_tasks": 72,
+      "changed_donor_legacy_field_definition": "reduced_donor_count_not_equal_size_reuse",
+      "epoch": 1,
+      "v2_source_mechanisms": {
+        "version": "source_response_v2",
+        "source_role": "source_validation",
+        "status": "VERIFIED",
+        "necessity_gate_passed": null,
+        "reuse": {
+          "tx_reuse": {
+            "status": "AVAILABLE",
+            "reason": null,
+            "query_shape": [
+              2,
+              2
+            ],
+            "independent_query_interaction": true,
+            "tasks": [
+              {
+                "query_tx": [
+                  0,
+                  1
+                ],
+                "query_rx": [
+                  0,
+                  1
+                ],
+                "query_physical_ids": [
+                  [
+                    0,
+                    0,
+                    0,
+                    0,
+                    100
+                  ],
+                  [
+                    0,
+                    0,
+                    0,
+                    0,
+                    101
+                  ],
+                  [
+                    0,
+                    1,
+                    0,
+                    0,
+                    100
+                  ],
+                  [
+                    0,
+                    1,
+                    0,
+                    0,
+                    101
+                  ],
+                  [
+                    1,
+                    0,
+                    0,
+                    0,
+                    100
+                  ],
+                  [
+                    1,
+                    0,
+                    0,
+                    0,
+                    101
+                  ],
+                  [
+                    1,
+                    1,
+                    0,
+                    0,
+                    100
+                  ],
+                  [
+                    1,
+                    1,
+                    0,
+                    0,
+                    101
+                  ]
+                ],
+                "day": 0,
+                "condition": 0,
+                "K": 2,
+                "branches": [
+                  {
+                    "pretrained_full": {
+                      "mse": 1.462944800564516,
+                      "grand_mse": 0.6926473783881895,
+                      "tx_mse": 0.13351131804242236,
+                      "rx_mse": 0.5889143927653531,
+                      "interaction_mse": 0.047871711368551104
+                    },
+                    "constant_frozen_source_location": {
+                      "mse": 1.3585660965655144,
+                      "grand_mse": 0.5821706329153896,
+                      "tx_mse": 0.13225796084647662,
+                      "rx_mse": 0.5962657904807638,
+                      "interaction_mse": 0.04787171232288425
+                    },
+                    "shuffled_tx": {
+                      "mse": 1.4605134823927095,
+                      "grand_mse": 0.6926473899727049,
+                      "tx_mse": 0.1310799675462929,
+                      "rx_mse": 0.5889144109552058,
+                      "interaction_mse": 0.04787171391850582
+                    },
+                    "shuffled_rx": {
+                      "mse": 1.4778088926161002,
+                      "grand_mse": 0.6926473836399303,
+                      "tx_mse": 0.13351131316925818,
+                      "rx_mse": 0.6037784905085635,
+                      "interaction_mse": 0.047871705298348076
+                    },
+                    "donor_tx": [
+                      2,
+                      3
+                    ],
+                    "donor_rx": [
+                      2,
+                      3
+                    ],
+                    "donor_records": 16,
+                    "donor_physical_ids": [
+                      [
+                        0,
+                        2,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        0,
+                        2,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        0,
+                        3,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        0,
+                        3,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        1,
+                        2,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        1,
+                        2,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        1,
+                        3,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        1,
+                        3,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        2,
+                        0,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        2,
+                        0,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        2,
+                        1,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        2,
+                        1,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        3,
+                        0,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        3,
+                        0,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        3,
+                        1,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        3,
+                        1,
+                        0,
+                        0,
+                        101
+                      ]
+                    ]
+                  },
+                  {
+                    "pretrained_full": {
+                      "mse": 1.4722586695639508,
+                      "grand_mse": 0.6942698668762511,
+                      "tx_mse": 0.1336119785218661,
+                      "rx_mse": 0.5965051093045982,
+                      "interaction_mse": 0.04787171486123535
+                    },
+                    "constant_frozen_source_location": {
+                      "mse": 1.3585660965655144,
+                      "grand_mse": 0.5821706329153896,
+                      "tx_mse": 0.13225796084647662,
+                      "rx_mse": 0.5962657904807638,
+                      "interaction_mse": 0.04787171232288425
+                    },
+                    "shuffled_tx": {
+                      "mse": 1.4696290053824212,
+                      "grand_mse": 0.6942698676081025,
+                      "tx_mse": 0.13098230946746894,
+                      "rx_mse": 0.5965051128058874,
+                      "interaction_mse": 0.04787171550096252
+                    },
+                    "shuffled_rx": {
+                      "mse": 1.472691237529024,
+                      "grand_mse": 0.6942698669348426,
+                      "tx_mse": 0.13361197315059586,
+                      "rx_mse": 0.5969376880951409,
+                      "interaction_mse": 0.04787170934844448
+                    },
+                    "donor_tx": [
+                      4,
+                      5
+                    ],
+                    "donor_rx": [
+                      2,
+                      3
+                    ],
+                    "donor_records": 16,
+                    "donor_physical_ids": [
+                      [
+                        0,
+                        2,
+                        0,
+                        0,
+                        102
+                      ],
+                      [
+                        0,
+                        2,
+                        0,
+                        0,
+                        103
+                      ],
+                      [
+                        0,
+                        3,
+                        0,
+                        0,
+                        102
+                      ],
+                      [
+                        0,
+                        3,
+                        0,
+                        0,
+                        103
+                      ],
+                      [
+                        1,
+                        2,
+                        0,
+                        0,
+                        102
+                      ],
+                      [
+                        1,
+                        2,
+                        0,
+                        0,
+                        103
+                      ],
+                      [
+                        1,
+                        3,
+                        0,
+                        0,
+                        102
+                      ],
+                      [
+                        1,
+                        3,
+                        0,
+                        0,
+                        103
+                      ],
+                      [
+                        4,
+                        0,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        4,
+                        0,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        4,
+                        1,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        4,
+                        1,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        5,
+                        0,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        5,
+                        0,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        5,
+                        1,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        5,
+                        1,
+                        0,
+                        0,
+                        101
+                      ]
+                    ]
+                  }
+                ],
+                "prediction_reuse_mse": 0.020245257765054703
+              }
+            ]
+          },
+          "rx_reuse": {
+            "status": "AVAILABLE",
+            "reason": null,
+            "query_shape": [
+              2,
+              1
+            ],
+            "independent_query_interaction": false,
+            "tasks": [
+              {
+                "query_tx": [
+                  0,
+                  1
+                ],
+                "query_rx": [
+                  0
+                ],
+                "query_physical_ids": [
+                  [
+                    0,
+                    0,
+                    0,
+                    0,
+                    100
+                  ],
+                  [
+                    0,
+                    0,
+                    0,
+                    0,
+                    101
+                  ],
+                  [
+                    1,
+                    0,
+                    0,
+                    0,
+                    100
+                  ],
+                  [
+                    1,
+                    0,
+                    0,
+                    0,
+                    101
+                  ]
+                ],
+                "day": 0,
+                "condition": 0,
+                "K": 2,
+                "branches": [
+                  {
+                    "pretrained_full": {
+                      "mse": 1.6181108214483948,
+                      "grand_mse": 1.4504068939346317,
+                      "tx_mse": 0.16770392751376306,
+                      "rx_mse": 0.0,
+                      "interaction_mse": null
+                    },
+                    "constant_frozen_source_location": {
+                      "mse": 1.8945647121987135,
+                      "grand_mse": 1.7266142424377233,
+                      "tx_mse": 0.16795046976099004,
+                      "rx_mse": 0.0,
+                      "interaction_mse": null
+                    },
+                    "shuffled_tx": {
+                      "mse": 1.61869884523728,
+                      "grand_mse": 1.4504069198998293,
+                      "tx_mse": 0.16829192533745063,
+                      "rx_mse": 0.0,
+                      "interaction_mse": null
+                    },
+                    "shuffled_rx": null,
+                    "donor_tx": [
+                      2,
+                      3
+                    ],
+                    "donor_rx": [
+                      1,
+                      2
+                    ],
+                    "donor_records": 12,
+                    "donor_physical_ids": [
+                      [
+                        0,
+                        1,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        0,
+                        1,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        0,
+                        2,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        0,
+                        2,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        1,
+                        1,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        1,
+                        1,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        1,
+                        2,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        1,
+                        2,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        2,
+                        0,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        2,
+                        0,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        3,
+                        0,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        3,
+                        0,
+                        0,
+                        0,
+                        101
+                      ]
+                    ]
+                  },
+                  {
+                    "pretrained_full": {
+                      "mse": 1.5835344134786529,
+                      "grand_mse": 1.4124747684639674,
+                      "tx_mse": 0.1710596450146855,
+                      "rx_mse": 0.0,
+                      "interaction_mse": null
+                    },
+                    "constant_frozen_source_location": {
+                      "mse": 1.8945647121987135,
+                      "grand_mse": 1.7266142424377233,
+                      "tx_mse": 0.16795046976099004,
+                      "rx_mse": 0.0,
+                      "interaction_mse": null
+                    },
+                    "shuffled_tx": {
+                      "mse": 1.5774292995611403,
+                      "grand_mse": 1.412474793961237,
+                      "tx_mse": 0.16495450559990332,
+                      "rx_mse": 0.0,
+                      "interaction_mse": null
+                    },
+                    "shuffled_rx": null,
+                    "donor_tx": [
+                      2,
+                      3
+                    ],
+                    "donor_rx": [
+                      3,
+                      4
+                    ],
+                    "donor_records": 12,
+                    "donor_physical_ids": [
+                      [
+                        0,
+                        3,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        0,
+                        3,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        0,
+                        4,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        0,
+                        4,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        1,
+                        3,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        1,
+                        3,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        1,
+                        4,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        1,
+                        4,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        2,
+                        0,
+                        0,
+                        0,
+                        102
+                      ],
+                      [
+                        2,
+                        0,
+                        0,
+                        0,
+                        103
+                      ],
+                      [
+                        3,
+                        0,
+                        0,
+                        0,
+                        102
+                      ],
+                      [
+                        3,
+                        0,
+                        0,
+                        0,
+                        103
+                      ]
+                    ]
+                  }
+                ],
+                "prediction_reuse_mse": 0.0005578187992796302
+              }
+            ]
+          }
+        },
+        "cost": {
+          "backbone_forwards": 8,
+          "model_input_records": 112,
+          "raw_statistic_records": 24,
+          "predictor_forwards": 10,
+          "auxiliary_fit_forwards": 6,
+          "auxiliary_eval_forwards": 12,
+          "fit_unique_physical_records": 48,
+          "eval_unique_physical_records": 48
+        },
+        "fit_split": "ssdg_labeled_tx_visible",
+        "eval_split": "ssdg_source_v_select",
+        "frozen_parameter_counts": {
+          "backbone": 1048207,
+          "readouts": 5152,
+          "pretrained_predictor": 264
+        },
+        "matched_fits": {
+          "full_matched_fit": {
+            "errors": [
+              {
+                "mse": 1.4401468409808351,
+                "grand_mse": 0.670032940949033,
+                "tx_mse": 0.13338973472378426,
+                "rx_mse": 0.5888524518248512,
+                "interaction_mse": 0.047871713483166704
+              },
+              {
+                "mse": 1.4498865842065098,
+                "grand_mse": 0.6721988193304865,
+                "tx_mse": 0.13348676056345873,
+                "rx_mse": 0.5963292948829233,
+                "interaction_mse": 0.04787170942964113
+              },
+              {
+                "mse": 1.592117950564887,
+                "grand_mse": 1.424516619211663,
+                "tx_mse": 0.1676013313532242,
+                "rx_mse": 0.0,
+                "interaction_mse": null
+              },
+              {
+                "mse": 1.5579840049029405,
+                "grand_mse": 1.3870614237303613,
+                "tx_mse": 0.1709225811725792,
+                "rx_mse": 0.0,
+                "interaction_mse": null
+              }
+            ],
+            "parameter_count": 264,
+            "fit_steps": 2,
+            "fit_task_indices": [
+              0,
+              1
+            ],
+            "fit_query_cells": 8,
+            "lr": 0.001,
+            "optimizer": "AdamW",
+            "weight_decay": 0.0,
+            "optimizer_betas": [
+              0.9,
+              0.999
+            ],
+            "backbone_frozen": true,
+            "readouts_frozen": true,
+            "architecture": "SharedResponsePredictor",
+            "descriptor_dim": 16,
+            "target_dim": 8,
+            "predictor_mode": "additive",
+            "initialization": "copy_supplied_source_predictor_corresponding_branches"
+          },
+          "tx_only": {
+            "errors": [
+              {
+                "mse": 1.3442149601880866,
+                "grand_mse": 0.566616252520286,
+                "tx_mse": 0.133461215384722,
+                "rx_mse": 0.5962657849939635,
+                "interaction_mse": 0.047871707289114884
+              },
+              {
+                "mse": 1.3437793442073707,
+                "grand_mse": 0.5660734767184336,
+                "tx_mse": 0.13356837844238467,
+                "rx_mse": 0.5962657797887058,
+                "interaction_mse": 0.047871709257846604
+              },
+              {
+                "mse": 1.8466219638289783,
+                "grand_mse": 1.6789638908802456,
+                "tx_mse": 0.1676580729487327,
+                "rx_mse": 0.0,
+                "interaction_mse": null
+              },
+              {
+                "mse": 1.8456536562555608,
+                "grand_mse": 1.6746940770169334,
+                "tx_mse": 0.17095957923862726,
+                "rx_mse": 0.0,
+                "interaction_mse": null
+              }
+            ],
+            "parameter_count": 136,
+            "fit_steps": 2,
+            "fit_task_indices": [
+              0,
+              1
+            ],
+            "fit_query_cells": 8,
+            "lr": 0.001,
+            "optimizer": "AdamW",
+            "weight_decay": 0.0,
+            "optimizer_betas": [
+              0.9,
+              0.999
+            ],
+            "backbone_frozen": true,
+            "readouts_frozen": true,
+            "architecture": "RestrictedResponseHead",
+            "descriptor_dim": 16,
+            "target_dim": 8,
+            "predictor_mode": "tx_only",
+            "initialization": "copy_supplied_source_predictor_corresponding_branches"
+          },
+          "rx_only": {
+            "errors": [
+              {
+                "mse": 1.418963368427046,
+                "grand_mse": 0.649962724488074,
+                "tx_mse": 0.13225796690755057,
+                "rx_mse": 0.5888709632175898,
+                "interaction_mse": 0.04787171381383168
+              },
+              {
+                "mse": 1.4235023410801184,
+                "grand_mse": 0.6469981491695519,
+                "tx_mse": 0.13225796312032675,
+                "rx_mse": 0.5963745154604141,
+                "interaction_mse": 0.04787171332982541
+              },
+              {
+                "mse": 1.6002459369942468,
+                "grand_mse": 1.4322954587344787,
+                "tx_mse": 0.16795047825976805,
+                "rx_mse": 0.0,
+                "interaction_mse": null
+              },
+              {
+                "mse": 1.565987610727576,
+                "grand_mse": 1.398037140966586,
+                "tx_mse": 0.16795046976099004,
+                "rx_mse": 0.0,
+                "interaction_mse": null
+              }
+            ],
+            "parameter_count": 136,
+            "fit_steps": 2,
+            "fit_task_indices": [
+              0,
+              1
+            ],
+            "fit_query_cells": 8,
+            "lr": 0.001,
+            "optimizer": "AdamW",
+            "weight_decay": 0.0,
+            "optimizer_betas": [
+              0.9,
+              0.999
+            ],
+            "backbone_frozen": true,
+            "readouts_frozen": true,
+            "architecture": "RestrictedResponseHead",
+            "descriptor_dim": 16,
+            "target_dim": 8,
+            "predictor_mode": "rx_only",
+            "initialization": "copy_supplied_source_predictor_corresponding_branches"
+          },
+          "head_only": {
+            "errors": [
+              {
+                "mse": 1.4401468409808351,
+                "grand_mse": 0.670032940949033,
+                "tx_mse": 0.13338973472378426,
+                "rx_mse": 0.5888524518248512,
+                "interaction_mse": 0.047871713483166704
+              },
+              {
+                "mse": 1.4498865842065098,
+                "grand_mse": 0.6721988193304865,
+                "tx_mse": 0.13348676056345873,
+                "rx_mse": 0.5963292948829233,
+                "interaction_mse": 0.04787170942964113
+              },
+              {
+                "mse": 1.592117950564887,
+                "grand_mse": 1.424516619211663,
+                "tx_mse": 0.1676013313532242,
+                "rx_mse": 0.0,
+                "interaction_mse": null
+              },
+              {
+                "mse": 1.5579840049029405,
+                "grand_mse": 1.3870614237303613,
+                "tx_mse": 0.1709225811725792,
+                "rx_mse": 0.0,
+                "interaction_mse": null
+              }
+            ],
+            "parameter_count": 264,
+            "fit_steps": 2,
+            "fit_task_indices": [
+              0,
+              1
+            ],
+            "fit_query_cells": 8,
+            "lr": 0.001,
+            "optimizer": "AdamW",
+            "weight_decay": 0.0,
+            "optimizer_betas": [
+              0.9,
+              0.999
+            ],
+            "backbone_frozen": true,
+            "readouts_frozen": true,
+            "architecture": "SharedResponsePredictor",
+            "descriptor_dim": 16,
+            "target_dim": 8,
+            "predictor_mode": "additive",
+            "initialization": "copy_supplied_source_predictor_corresponding_branches",
+            "alias_of": "full_matched_fit",
+            "independent_evidence": false
+          },
+          "metadata": {
+            "fit_unique_physical_ids": 48,
+            "eval_unique_physical_ids": 48,
+            "necessity_gate_passed": null,
+            "seed": 392005,
+            "scope": "source_frozen_representation_matched_head_fit"
+          }
+        },
+        "scope": "source_metrics_only_not_necessity_or_update_value_acceptance",
+        "identity_risk": {
+          "status": "N/A",
+          "reason": "response_MSE_is_not_identity_CE_use_disposable_counterfactual_with_independent_source_LEO_probe"
+        }
+      },
+      "legacy_gate_open": 0.0,
+      "legacy_gate_pass": 0.0,
+      "legacy_gate_checks": 1,
+      "legacy_gate_consecutive": 0,
+      "legacy_gate_ratio": 1.040024527757328,
+      "legacy_gate_blocks": 1,
+      "response_joint_open": false,
+      "source_mechanism_gate": {
+        "authorized": false,
+        "passed": false,
+        "scope": "cls_head",
+        "failed_conditions": [
+          "source counterfactual has a nonfinite or unapplied optimizer update"
+        ]
+      }
+    },
+    {
+      "source_role": "source_validation",
+      "split_source": "ssdg_source_v_select",
+      "valid_blocks": 1,
+      "valid_role_tasks": 36,
+      "independent_query_tasks": 36,
+      "changed_donor_tasks": 72,
+      "shuffled_rx_tasks": 36,
+      "records_read": 32,
+      "backbone_forwards": 1,
+      "response_mse": 1.1372299070159595,
+      "constant_mse": 1.1057298597362306,
+      "shuffled_rx_mse": 1.1136054082049265,
+      "shuffled_reference_mse": 1.1372299070159595,
+      "changed_donor_reference_mse": 1.1372299070159595,
+      "changed_donor_tx_mse": 1.1438337100876703,
+      "interaction_mse": 0.07110154048617308,
+      "per_rotation": {
+        "0": 1.4744391441345215,
+        "1": 1.68072509765625,
+        "2": 1.4501171112060547,
+        "3": 1.4021958112716675,
+        "4": 1.1719324588775635,
+        "5": 1.379563570022583,
+        "6": 1.6434122323989868,
+        "7": 1.6326453685760498,
+        "8": 1.2864422798156738,
+        "9": 1.4141873121261597,
+        "10": 1.0681270360946655,
+        "11": 1.0590670108795166,
+        "12": 1.3314387798309326,
+        "13": 1.3671594858169556,
+        "14": 1.1350483894348145,
+        "15": 1.0777519941329956,
+        "16": 0.8459639549255371,
+        "17": 0.8840171694755554,
+        "18": 1.352626919746399,
+        "19": 1.4029127359390259,
+        "20": 1.396885633468628,
+        "21": 0.9932689666748047,
+        "22": 0.9877606630325317,
+        "23": 1.0385687351226807,
+        "24": 0.9959352016448975,
+        "25": 1.0959203243255615,
+        "26": 1.2242426872253418,
+        "27": 0.624144971370697,
+        "28": 0.7531753778457642,
+        "29": 0.8542914390563965,
+        "30": 1.1618887186050415,
+        "31": 1.0034101009368896,
+        "32": 0.9965258836746216,
+        "33": 0.6415221095085144,
+        "34": 0.6349536180496216,
+        "35": 0.47800835967063904
+      },
+      "constant_definition": "frozen_source_training_location",
+      "status": "VERIFIED",
+      "role_policy": "balanced_partitions_v2",
+      "predictor_forwards": 144,
+      "readout_forwards": 108,
+      "skipped_blocks": 0,
+      "skipped_roles": 0,
+      "skip_reasons": {},
+      "candidate_count": 75,
+      "candidate_search_complete": true,
+      "reason": "source_mechanism_metrics_only",
+      "constant_improvement": -0.03150004727972888,
+      "unique_physical_records_read": 32,
+      "reduced_donor_count_mse": 1.1438337100876703,
+      "reduced_donor_count_tasks": 72,
+      "changed_donor_legacy_field_definition": "reduced_donor_count_not_equal_size_reuse",
+      "epoch": 2,
+      "v2_source_mechanisms": {
+        "version": "source_response_v2",
+        "source_role": "source_validation",
+        "status": "VERIFIED",
+        "necessity_gate_passed": null,
+        "reuse": {
+          "tx_reuse": {
+            "status": "AVAILABLE",
+            "reason": null,
+            "query_shape": [
+              2,
+              2
+            ],
+            "independent_query_interaction": true,
+            "tasks": [
+              {
+                "query_tx": [
+                  0,
+                  1
+                ],
+                "query_rx": [
+                  0,
+                  1
+                ],
+                "query_physical_ids": [
+                  [
+                    0,
+                    0,
+                    0,
+                    0,
+                    100
+                  ],
+                  [
+                    0,
+                    0,
+                    0,
+                    0,
+                    101
+                  ],
+                  [
+                    0,
+                    1,
+                    0,
+                    0,
+                    100
+                  ],
+                  [
+                    0,
+                    1,
+                    0,
+                    0,
+                    101
+                  ],
+                  [
+                    1,
+                    0,
+                    0,
+                    0,
+                    100
+                  ],
+                  [
+                    1,
+                    0,
+                    0,
+                    0,
+                    101
+                  ],
+                  [
+                    1,
+                    1,
+                    0,
+                    0,
+                    100
+                  ],
+                  [
+                    1,
+                    1,
+                    0,
+                    0,
+                    101
+                  ]
+                ],
+                "day": 0,
+                "condition": 0,
+                "K": 2,
+                "branches": [
+                  {
+                    "pretrained_full": {
+                      "mse": 1.464192222362325,
+                      "grand_mse": 0.6946360225014911,
+                      "tx_mse": 0.13356756213024962,
+                      "rx_mse": 0.588116925448936,
+                      "interaction_mse": 0.047871712281648236
+                    },
+                    "constant_frozen_source_location": {
+                      "mse": 1.3585660965655144,
+                      "grand_mse": 0.5821706329153896,
+                      "tx_mse": 0.13225796084647662,
+                      "rx_mse": 0.5962657904807638,
+                      "interaction_mse": 0.04787171232288425
+                    },
+                    "shuffled_tx": {
+                      "mse": 1.4616441260853186,
+                      "grand_mse": 0.6946360422708473,
+                      "tx_mse": 0.13101945109344237,
+                      "rx_mse": 0.5881169229746145,
+                      "interaction_mse": 0.04787170974641442
+                    },
+                    "shuffled_rx": {
+                      "mse": 1.4806642606652654,
+                      "grand_mse": 0.6946360446220583,
+                      "tx_mse": 0.13356756713667994,
+                      "rx_mse": 0.604588931872528,
+                      "interaction_mse": 0.04787171703399897
+                    },
+                    "donor_tx": [
+                      2,
+                      3
+                    ],
+                    "donor_rx": [
+                      2,
+                      3
+                    ],
+                    "donor_records": 16,
+                    "donor_physical_ids": [
+                      [
+                        0,
+                        2,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        0,
+                        2,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        0,
+                        3,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        0,
+                        3,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        1,
+                        2,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        1,
+                        2,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        1,
+                        3,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        1,
+                        3,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        2,
+                        0,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        2,
+                        0,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        2,
+                        1,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        2,
+                        1,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        3,
+                        0,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        3,
+                        0,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        3,
+                        1,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        3,
+                        1,
+                        0,
+                        0,
+                        101
+                      ]
+                    ]
+                  },
+                  {
+                    "pretrained_full": {
+                      "mse": 1.4637118982378556,
+                      "grand_mse": 0.6879763967771034,
+                      "tx_mse": 0.13410461583154734,
+                      "rx_mse": 0.5937591746741011,
+                      "interaction_mse": 0.04787171095510378
+                    },
+                    "constant_frozen_source_location": {
+                      "mse": 1.3585660965655144,
+                      "grand_mse": 0.5821706329153896,
+                      "tx_mse": 0.13225796084647662,
+                      "rx_mse": 0.5962657904807638,
+                      "interaction_mse": 0.04787171232288425
+                    },
+                    "shuffled_tx": {
+                      "mse": 1.4600941050160596,
+                      "grand_mse": 0.6879763790119919,
+                      "tx_mse": 0.13048685405097357,
+                      "rx_mse": 0.5937591605450908,
+                      "interaction_mse": 0.047871711408003434
+                    },
+                    "shuffled_rx": {
+                      "mse": 1.4697867805766933,
+                      "grand_mse": 0.6879763974530168,
+                      "tx_mse": 0.1341046136363936,
+                      "rx_mse": 0.5998340603681587,
+                      "interaction_mse": 0.04787170911912432
+                    },
+                    "donor_tx": [
+                      4,
+                      5
+                    ],
+                    "donor_rx": [
+                      2,
+                      3
+                    ],
+                    "donor_records": 16,
+                    "donor_physical_ids": [
+                      [
+                        0,
+                        2,
+                        0,
+                        0,
+                        102
+                      ],
+                      [
+                        0,
+                        2,
+                        0,
+                        0,
+                        103
+                      ],
+                      [
+                        0,
+                        3,
+                        0,
+                        0,
+                        102
+                      ],
+                      [
+                        0,
+                        3,
+                        0,
+                        0,
+                        103
+                      ],
+                      [
+                        1,
+                        2,
+                        0,
+                        0,
+                        102
+                      ],
+                      [
+                        1,
+                        2,
+                        0,
+                        0,
+                        103
+                      ],
+                      [
+                        1,
+                        3,
+                        0,
+                        0,
+                        102
+                      ],
+                      [
+                        1,
+                        3,
+                        0,
+                        0,
+                        103
+                      ],
+                      [
+                        4,
+                        0,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        4,
+                        0,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        4,
+                        1,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        4,
+                        1,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        5,
+                        0,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        5,
+                        0,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        5,
+                        1,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        5,
+                        1,
+                        0,
+                        0,
+                        101
+                      ]
+                    ]
+                  }
+                ],
+                "prediction_reuse_mse": 0.01891777664422989
+              }
+            ]
+          },
+          "rx_reuse": {
+            "status": "AVAILABLE",
+            "reason": null,
+            "query_shape": [
+              2,
+              1
+            ],
+            "independent_query_interaction": false,
+            "tasks": [
+              {
+                "query_tx": [
+                  0,
+                  1
+                ],
+                "query_rx": [
+                  0
+                ],
+                "query_physical_ids": [
+                  [
+                    0,
+                    0,
+                    0,
+                    0,
+                    100
+                  ],
+                  [
+                    0,
+                    0,
+                    0,
+                    0,
+                    101
+                  ],
+                  [
+                    1,
+                    0,
+                    0,
+                    0,
+                    100
+                  ],
+                  [
+                    1,
+                    0,
+                    0,
+                    0,
+                    101
+                  ]
+                ],
+                "day": 0,
+                "condition": 0,
+                "K": 2,
+                "branches": [
+                  {
+                    "pretrained_full": {
+                      "mse": 1.7170154035993137,
+                      "grand_mse": 1.5492261483574055,
+                      "tx_mse": 0.16778925524190813,
+                      "rx_mse": 0.0,
+                      "interaction_mse": null
+                    },
+                    "constant_frozen_source_location": {
+                      "mse": 1.8945647121987135,
+                      "grand_mse": 1.7266142424377233,
+                      "tx_mse": 0.16795046976099004,
+                      "rx_mse": 0.0,
+                      "interaction_mse": null
+                    },
+                    "shuffled_tx": {
+                      "mse": 1.717421543114021,
+                      "grand_mse": 1.5492261668650569,
+                      "tx_mse": 0.16819537624896397,
+                      "rx_mse": 0.0,
+                      "interaction_mse": null
+                    },
+                    "shuffled_rx": null,
+                    "donor_tx": [
+                      2,
+                      3
+                    ],
+                    "donor_rx": [
+                      1,
+                      2
+                    ],
+                    "donor_records": 12,
+                    "donor_physical_ids": [
+                      [
+                        0,
+                        1,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        0,
+                        1,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        0,
+                        2,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        0,
+                        2,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        1,
+                        1,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        1,
+                        1,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        1,
+                        2,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        1,
+                        2,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        2,
+                        0,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        2,
+                        0,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        3,
+                        0,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        3,
+                        0,
+                        0,
+                        0,
+                        101
+                      ]
+                    ]
+                  },
+                  {
+                    "pretrained_full": {
+                      "mse": 1.677136123484274,
+                      "grand_mse": 1.5057699249463754,
+                      "tx_mse": 0.1713661985378988,
+                      "rx_mse": 0.0,
+                      "interaction_mse": null
+                    },
+                    "constant_frozen_source_location": {
+                      "mse": 1.8945647121987135,
+                      "grand_mse": 1.7266142424377233,
+                      "tx_mse": 0.16795046976099004,
+                      "rx_mse": 0.0,
+                      "interaction_mse": null
+                    },
+                    "shuffled_tx": {
+                      "mse": 1.6704070207780812,
+                      "grand_mse": 1.5057698995864253,
+                      "tx_mse": 0.16463712119165608,
+                      "rx_mse": 0.0,
+                      "interaction_mse": null
+                    },
+                    "shuffled_rx": null,
+                    "donor_tx": [
+                      2,
+                      3
+                    ],
+                    "donor_rx": [
+                      3,
+                      4
+                    ],
+                    "donor_records": 12,
+                    "donor_physical_ids": [
+                      [
+                        0,
+                        3,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        0,
+                        3,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        0,
+                        4,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        0,
+                        4,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        1,
+                        3,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        1,
+                        3,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        1,
+                        4,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        1,
+                        4,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        2,
+                        0,
+                        0,
+                        0,
+                        102
+                      ],
+                      [
+                        2,
+                        0,
+                        0,
+                        0,
+                        103
+                      ],
+                      [
+                        3,
+                        0,
+                        0,
+                        0,
+                        102
+                      ],
+                      [
+                        3,
+                        0,
+                        0,
+                        0,
+                        103
+                      ]
+                    ]
+                  }
+                ],
+                "prediction_reuse_mse": 0.0006094642449170351
+              }
+            ]
+          }
+        },
+        "cost": {
+          "backbone_forwards": 8,
+          "model_input_records": 112,
+          "raw_statistic_records": 24,
+          "predictor_forwards": 10,
+          "auxiliary_fit_forwards": 6,
+          "auxiliary_eval_forwards": 12,
+          "fit_unique_physical_records": 48,
+          "eval_unique_physical_records": 48
+        },
+        "fit_split": "ssdg_labeled_tx_visible",
+        "eval_split": "ssdg_source_v_select",
+        "frozen_parameter_counts": {
+          "backbone": 1048207,
+          "readouts": 5152,
+          "pretrained_predictor": 264
+        },
+        "matched_fits": {
+          "full_matched_fit": {
+            "errors": [
+              {
+                "mse": 1.4423008706383231,
+                "grand_mse": 0.6729208411708314,
+                "tx_mse": 0.13344217710948017,
+                "rx_mse": 0.5880661444122499,
+                "interaction_mse": 0.0478717079457616
+              },
+              {
+                "mse": 1.4418854601304885,
+                "grand_mse": 0.6665976557666043,
+                "tx_mse": 0.13397561343976405,
+                "rx_mse": 0.5934404775404721,
+                "interaction_mse": 0.04787171338364772
+              },
+              {
+                "mse": 1.687469795592053,
+                "grand_mse": 1.5197750955663474,
+                "tx_mse": 0.16769470002570552,
+                "rx_mse": 0.0,
+                "interaction_mse": null
+              },
+              {
+                "mse": 1.6479755986345377,
+                "grand_mse": 1.476746208963969,
+                "tx_mse": 0.17122938967056878,
+                "rx_mse": 0.0,
+                "interaction_mse": null
+              }
+            ],
+            "parameter_count": 264,
+            "fit_steps": 2,
+            "fit_task_indices": [
+              0,
+              1
+            ],
+            "fit_query_cells": 8,
+            "lr": 0.001,
+            "optimizer": "AdamW",
+            "weight_decay": 0.0,
+            "optimizer_betas": [
+              0.9,
+              0.999
+            ],
+            "backbone_frozen": true,
+            "readouts_frozen": true,
+            "architecture": "SharedResponsePredictor",
+            "descriptor_dim": 16,
+            "target_dim": 8,
+            "predictor_mode": "additive",
+            "initialization": "copy_supplied_source_predictor_corresponding_branches"
+          },
+          "tx_only": {
+            "errors": [
+              {
+                "mse": 1.3551386677561443,
+                "grand_mse": 0.5774780785901735,
+                "tx_mse": 0.13352309135896104,
+                "rx_mse": 0.5962657863722098,
+                "interaction_mse": 0.047871711434799964
+              },
+              {
+                "mse": 1.3550820009111006,
+                "grand_mse": 0.5768743302324182,
+                "tx_mse": 0.13407016908701838,
+                "rx_mse": 0.596265791047176,
+                "interaction_mse": 0.047871710544488
+              },
+              {
+                "mse": 1.8642775606541806,
+                "grand_mse": 1.6965272662064619,
+                "tx_mse": 0.1677502944477186,
+                "rx_mse": 0.0,
+                "interaction_mse": null
+              },
+              {
+                "mse": 1.8648047666464596,
+                "grand_mse": 1.693522490751456,
+                "tx_mse": 0.17128227589500344,
+                "rx_mse": 0.0,
+                "interaction_mse": null
+              }
+            ],
+            "parameter_count": 136,
+            "fit_steps": 2,
+            "fit_task_indices": [
+              0,
+              1
+            ],
+            "fit_query_cells": 8,
+            "lr": 0.001,
+            "optimizer": "AdamW",
+            "weight_decay": 0.0,
+            "optimizer_betas": [
+              0.9,
+              0.999
+            ],
+            "backbone_frozen": true,
+            "readouts_frozen": true,
+            "architecture": "RestrictedResponseHead",
+            "descriptor_dim": 16,
+            "target_dim": 8,
+            "predictor_mode": "tx_only",
+            "initialization": "copy_supplied_source_predictor_corresponding_branches"
+          },
+          "rx_only": {
+            "errors": [
+              {
+                "mse": 1.4188290994199564,
+                "grand_mse": 0.6506430681379508,
+                "tx_mse": 0.1322579624114551,
+                "rx_mse": 0.5880563564698282,
+                "interaction_mse": 0.04787171240072216
+              },
+              {
+                "mse": 1.4109411539771957,
+                "grand_mse": 0.6372702882394269,
+                "tx_mse": 0.13225796461879982,
+                "rx_mse": 0.5935411865204588,
+                "interaction_mse": 0.04787171459851018
+              },
+              {
+                "mse": 1.6875925570290937,
+                "grand_mse": 1.5196420872681036,
+                "tx_mse": 0.16795046976099004,
+                "rx_mse": 0.0,
+                "interaction_mse": null
+              },
+              {
+                "mse": 1.646976514552201,
+                "grand_mse": 1.479026044714567,
+                "tx_mse": 0.16795046983763406,
+                "rx_mse": 0.0,
+                "interaction_mse": null
+              }
+            ],
+            "parameter_count": 136,
+            "fit_steps": 2,
+            "fit_task_indices": [
+              0,
+              1
+            ],
+            "fit_query_cells": 8,
+            "lr": 0.001,
+            "optimizer": "AdamW",
+            "weight_decay": 0.0,
+            "optimizer_betas": [
+              0.9,
+              0.999
+            ],
+            "backbone_frozen": true,
+            "readouts_frozen": true,
+            "architecture": "RestrictedResponseHead",
+            "descriptor_dim": 16,
+            "target_dim": 8,
+            "predictor_mode": "rx_only",
+            "initialization": "copy_supplied_source_predictor_corresponding_branches"
+          },
+          "head_only": {
+            "errors": [
+              {
+                "mse": 1.4423008706383231,
+                "grand_mse": 0.6729208411708314,
+                "tx_mse": 0.13344217710948017,
+                "rx_mse": 0.5880661444122499,
+                "interaction_mse": 0.0478717079457616
+              },
+              {
+                "mse": 1.4418854601304885,
+                "grand_mse": 0.6665976557666043,
+                "tx_mse": 0.13397561343976405,
+                "rx_mse": 0.5934404775404721,
+                "interaction_mse": 0.04787171338364772
+              },
+              {
+                "mse": 1.687469795592053,
+                "grand_mse": 1.5197750955663474,
+                "tx_mse": 0.16769470002570552,
+                "rx_mse": 0.0,
+                "interaction_mse": null
+              },
+              {
+                "mse": 1.6479755986345377,
+                "grand_mse": 1.476746208963969,
+                "tx_mse": 0.17122938967056878,
+                "rx_mse": 0.0,
+                "interaction_mse": null
+              }
+            ],
+            "parameter_count": 264,
+            "fit_steps": 2,
+            "fit_task_indices": [
+              0,
+              1
+            ],
+            "fit_query_cells": 8,
+            "lr": 0.001,
+            "optimizer": "AdamW",
+            "weight_decay": 0.0,
+            "optimizer_betas": [
+              0.9,
+              0.999
+            ],
+            "backbone_frozen": true,
+            "readouts_frozen": true,
+            "architecture": "SharedResponsePredictor",
+            "descriptor_dim": 16,
+            "target_dim": 8,
+            "predictor_mode": "additive",
+            "initialization": "copy_supplied_source_predictor_corresponding_branches",
+            "alias_of": "full_matched_fit",
+            "independent_evidence": false
+          },
+          "metadata": {
+            "fit_unique_physical_ids": 48,
+            "eval_unique_physical_ids": 48,
+            "necessity_gate_passed": null,
+            "seed": 392005,
+            "scope": "source_frozen_representation_matched_head_fit"
+          }
+        },
+        "scope": "source_metrics_only_not_necessity_or_update_value_acceptance",
+        "identity_risk": {
+          "status": "N/A",
+          "reason": "response_MSE_is_not_identity_CE_use_disposable_counterfactual_with_independent_source_LEO_probe"
+        }
+      },
+      "legacy_gate_open": 0.0,
+      "legacy_gate_pass": 0.0,
+      "legacy_gate_checks": 2,
+      "legacy_gate_consecutive": 0,
+      "legacy_gate_ratio": 1.028488013597863,
+      "legacy_gate_blocks": 1,
+      "response_joint_open": false,
+      "source_mechanism_gate": {
+        "authorized": false,
+        "passed": false,
+        "scope": "cls_head",
+        "failed_conditions": [
+          "source counterfactual has a nonfinite or unapplied optimizer update"
+        ]
+      }
+    },
+    {
+      "source_role": "source_validation",
+      "split_source": "ssdg_source_v_select",
+      "valid_blocks": 1,
+      "valid_role_tasks": 36,
+      "independent_query_tasks": 36,
+      "changed_donor_tasks": 72,
+      "shuffled_rx_tasks": 36,
+      "records_read": 32,
+      "backbone_forwards": 1,
+      "response_mse": 1.1372299070159595,
+      "constant_mse": 1.1057298597362306,
+      "shuffled_rx_mse": 1.1136054082049265,
+      "shuffled_reference_mse": 1.1372299070159595,
+      "changed_donor_reference_mse": 1.1372299070159595,
+      "changed_donor_tx_mse": 1.1438337100876703,
+      "interaction_mse": 0.07110154048617308,
+      "per_rotation": {
+        "0": 1.4744391441345215,
+        "1": 1.68072509765625,
+        "2": 1.4501171112060547,
+        "3": 1.4021958112716675,
+        "4": 1.1719324588775635,
+        "5": 1.379563570022583,
+        "6": 1.6434122323989868,
+        "7": 1.6326453685760498,
+        "8": 1.2864422798156738,
+        "9": 1.4141873121261597,
+        "10": 1.0681270360946655,
+        "11": 1.0590670108795166,
+        "12": 1.3314387798309326,
+        "13": 1.3671594858169556,
+        "14": 1.1350483894348145,
+        "15": 1.0777519941329956,
+        "16": 0.8459639549255371,
+        "17": 0.8840171694755554,
+        "18": 1.352626919746399,
+        "19": 1.4029127359390259,
+        "20": 1.396885633468628,
+        "21": 0.9932689666748047,
+        "22": 0.9877606630325317,
+        "23": 1.0385687351226807,
+        "24": 0.9959352016448975,
+        "25": 1.0959203243255615,
+        "26": 1.2242426872253418,
+        "27": 0.624144971370697,
+        "28": 0.7531753778457642,
+        "29": 0.8542914390563965,
+        "30": 1.1618887186050415,
+        "31": 1.0034101009368896,
+        "32": 0.9965258836746216,
+        "33": 0.6415221095085144,
+        "34": 0.6349536180496216,
+        "35": 0.47800835967063904
+      },
+      "constant_definition": "frozen_source_training_location",
+      "status": "VERIFIED",
+      "role_policy": "balanced_partitions_v2",
+      "predictor_forwards": 144,
+      "readout_forwards": 108,
+      "skipped_blocks": 0,
+      "skipped_roles": 0,
+      "skip_reasons": {},
+      "candidate_count": 75,
+      "candidate_search_complete": true,
+      "reason": "source_mechanism_metrics_only",
+      "constant_improvement": -0.03150004727972888,
+      "unique_physical_records_read": 32,
+      "reduced_donor_count_mse": 1.1438337100876703,
+      "reduced_donor_count_tasks": 72,
+      "changed_donor_legacy_field_definition": "reduced_donor_count_not_equal_size_reuse",
+      "epoch": 3,
+      "v2_source_mechanisms": {
+        "version": "source_response_v2",
+        "source_role": "source_validation",
+        "status": "VERIFIED",
+        "necessity_gate_passed": null,
+        "reuse": {
+          "tx_reuse": {
+            "status": "AVAILABLE",
+            "reason": null,
+            "query_shape": [
+              2,
+              2
+            ],
+            "independent_query_interaction": true,
+            "tasks": [
+              {
+                "query_tx": [
+                  0,
+                  1
+                ],
+                "query_rx": [
+                  0,
+                  1
+                ],
+                "query_physical_ids": [
+                  [
+                    0,
+                    0,
+                    0,
+                    0,
+                    100
+                  ],
+                  [
+                    0,
+                    0,
+                    0,
+                    0,
+                    101
+                  ],
+                  [
+                    0,
+                    1,
+                    0,
+                    0,
+                    100
+                  ],
+                  [
+                    0,
+                    1,
+                    0,
+                    0,
+                    101
+                  ],
+                  [
+                    1,
+                    0,
+                    0,
+                    0,
+                    100
+                  ],
+                  [
+                    1,
+                    0,
+                    0,
+                    0,
+                    101
+                  ],
+                  [
+                    1,
+                    1,
+                    0,
+                    0,
+                    100
+                  ],
+                  [
+                    1,
+                    1,
+                    0,
+                    0,
+                    101
+                  ]
+                ],
+                "day": 0,
+                "condition": 0,
+                "K": 2,
+                "branches": [
+                  {
+                    "pretrained_full": {
+                      "mse": 1.464192222362325,
+                      "grand_mse": 0.6946360225014911,
+                      "tx_mse": 0.13356756213024962,
+                      "rx_mse": 0.588116925448936,
+                      "interaction_mse": 0.047871712281648236
+                    },
+                    "constant_frozen_source_location": {
+                      "mse": 1.3585660965655144,
+                      "grand_mse": 0.5821706329153896,
+                      "tx_mse": 0.13225796084647662,
+                      "rx_mse": 0.5962657904807638,
+                      "interaction_mse": 0.04787171232288425
+                    },
+                    "shuffled_tx": {
+                      "mse": 1.4616441260853186,
+                      "grand_mse": 0.6946360422708473,
+                      "tx_mse": 0.13101945109344237,
+                      "rx_mse": 0.5881169229746145,
+                      "interaction_mse": 0.04787170974641442
+                    },
+                    "shuffled_rx": {
+                      "mse": 1.4806642606652654,
+                      "grand_mse": 0.6946360446220583,
+                      "tx_mse": 0.13356756713667994,
+                      "rx_mse": 0.604588931872528,
+                      "interaction_mse": 0.04787171703399897
+                    },
+                    "donor_tx": [
+                      2,
+                      3
+                    ],
+                    "donor_rx": [
+                      2,
+                      3
+                    ],
+                    "donor_records": 16,
+                    "donor_physical_ids": [
+                      [
+                        0,
+                        2,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        0,
+                        2,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        0,
+                        3,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        0,
+                        3,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        1,
+                        2,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        1,
+                        2,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        1,
+                        3,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        1,
+                        3,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        2,
+                        0,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        2,
+                        0,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        2,
+                        1,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        2,
+                        1,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        3,
+                        0,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        3,
+                        0,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        3,
+                        1,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        3,
+                        1,
+                        0,
+                        0,
+                        101
+                      ]
+                    ]
+                  },
+                  {
+                    "pretrained_full": {
+                      "mse": 1.4637118982378556,
+                      "grand_mse": 0.6879763967771034,
+                      "tx_mse": 0.13410461583154734,
+                      "rx_mse": 0.5937591746741011,
+                      "interaction_mse": 0.04787171095510378
+                    },
+                    "constant_frozen_source_location": {
+                      "mse": 1.3585660965655144,
+                      "grand_mse": 0.5821706329153896,
+                      "tx_mse": 0.13225796084647662,
+                      "rx_mse": 0.5962657904807638,
+                      "interaction_mse": 0.04787171232288425
+                    },
+                    "shuffled_tx": {
+                      "mse": 1.4600941050160596,
+                      "grand_mse": 0.6879763790119919,
+                      "tx_mse": 0.13048685405097357,
+                      "rx_mse": 0.5937591605450908,
+                      "interaction_mse": 0.047871711408003434
+                    },
+                    "shuffled_rx": {
+                      "mse": 1.4697867805766933,
+                      "grand_mse": 0.6879763974530168,
+                      "tx_mse": 0.1341046136363936,
+                      "rx_mse": 0.5998340603681587,
+                      "interaction_mse": 0.04787170911912432
+                    },
+                    "donor_tx": [
+                      4,
+                      5
+                    ],
+                    "donor_rx": [
+                      2,
+                      3
+                    ],
+                    "donor_records": 16,
+                    "donor_physical_ids": [
+                      [
+                        0,
+                        2,
+                        0,
+                        0,
+                        102
+                      ],
+                      [
+                        0,
+                        2,
+                        0,
+                        0,
+                        103
+                      ],
+                      [
+                        0,
+                        3,
+                        0,
+                        0,
+                        102
+                      ],
+                      [
+                        0,
+                        3,
+                        0,
+                        0,
+                        103
+                      ],
+                      [
+                        1,
+                        2,
+                        0,
+                        0,
+                        102
+                      ],
+                      [
+                        1,
+                        2,
+                        0,
+                        0,
+                        103
+                      ],
+                      [
+                        1,
+                        3,
+                        0,
+                        0,
+                        102
+                      ],
+                      [
+                        1,
+                        3,
+                        0,
+                        0,
+                        103
+                      ],
+                      [
+                        4,
+                        0,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        4,
+                        0,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        4,
+                        1,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        4,
+                        1,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        5,
+                        0,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        5,
+                        0,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        5,
+                        1,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        5,
+                        1,
+                        0,
+                        0,
+                        101
+                      ]
+                    ]
+                  }
+                ],
+                "prediction_reuse_mse": 0.01891777664422989
+              }
+            ]
+          },
+          "rx_reuse": {
+            "status": "AVAILABLE",
+            "reason": null,
+            "query_shape": [
+              2,
+              1
+            ],
+            "independent_query_interaction": false,
+            "tasks": [
+              {
+                "query_tx": [
+                  0,
+                  1
+                ],
+                "query_rx": [
+                  0
+                ],
+                "query_physical_ids": [
+                  [
+                    0,
+                    0,
+                    0,
+                    0,
+                    100
+                  ],
+                  [
+                    0,
+                    0,
+                    0,
+                    0,
+                    101
+                  ],
+                  [
+                    1,
+                    0,
+                    0,
+                    0,
+                    100
+                  ],
+                  [
+                    1,
+                    0,
+                    0,
+                    0,
+                    101
+                  ]
+                ],
+                "day": 0,
+                "condition": 0,
+                "K": 2,
+                "branches": [
+                  {
+                    "pretrained_full": {
+                      "mse": 1.7170154035993137,
+                      "grand_mse": 1.5492261483574055,
+                      "tx_mse": 0.16778925524190813,
+                      "rx_mse": 0.0,
+                      "interaction_mse": null
+                    },
+                    "constant_frozen_source_location": {
+                      "mse": 1.8945647121987135,
+                      "grand_mse": 1.7266142424377233,
+                      "tx_mse": 0.16795046976099004,
+                      "rx_mse": 0.0,
+                      "interaction_mse": null
+                    },
+                    "shuffled_tx": {
+                      "mse": 1.717421543114021,
+                      "grand_mse": 1.5492261668650569,
+                      "tx_mse": 0.16819537624896397,
+                      "rx_mse": 0.0,
+                      "interaction_mse": null
+                    },
+                    "shuffled_rx": null,
+                    "donor_tx": [
+                      2,
+                      3
+                    ],
+                    "donor_rx": [
+                      1,
+                      2
+                    ],
+                    "donor_records": 12,
+                    "donor_physical_ids": [
+                      [
+                        0,
+                        1,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        0,
+                        1,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        0,
+                        2,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        0,
+                        2,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        1,
+                        1,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        1,
+                        1,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        1,
+                        2,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        1,
+                        2,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        2,
+                        0,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        2,
+                        0,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        3,
+                        0,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        3,
+                        0,
+                        0,
+                        0,
+                        101
+                      ]
+                    ]
+                  },
+                  {
+                    "pretrained_full": {
+                      "mse": 1.677136123484274,
+                      "grand_mse": 1.5057699249463754,
+                      "tx_mse": 0.1713661985378988,
+                      "rx_mse": 0.0,
+                      "interaction_mse": null
+                    },
+                    "constant_frozen_source_location": {
+                      "mse": 1.8945647121987135,
+                      "grand_mse": 1.7266142424377233,
+                      "tx_mse": 0.16795046976099004,
+                      "rx_mse": 0.0,
+                      "interaction_mse": null
+                    },
+                    "shuffled_tx": {
+                      "mse": 1.6704070207780812,
+                      "grand_mse": 1.5057698995864253,
+                      "tx_mse": 0.16463712119165608,
+                      "rx_mse": 0.0,
+                      "interaction_mse": null
+                    },
+                    "shuffled_rx": null,
+                    "donor_tx": [
+                      2,
+                      3
+                    ],
+                    "donor_rx": [
+                      3,
+                      4
+                    ],
+                    "donor_records": 12,
+                    "donor_physical_ids": [
+                      [
+                        0,
+                        3,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        0,
+                        3,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        0,
+                        4,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        0,
+                        4,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        1,
+                        3,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        1,
+                        3,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        1,
+                        4,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        1,
+                        4,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        2,
+                        0,
+                        0,
+                        0,
+                        102
+                      ],
+                      [
+                        2,
+                        0,
+                        0,
+                        0,
+                        103
+                      ],
+                      [
+                        3,
+                        0,
+                        0,
+                        0,
+                        102
+                      ],
+                      [
+                        3,
+                        0,
+                        0,
+                        0,
+                        103
+                      ]
+                    ]
+                  }
+                ],
+                "prediction_reuse_mse": 0.0006094642449170351
+              }
+            ]
+          }
+        },
+        "cost": {
+          "backbone_forwards": 8,
+          "model_input_records": 112,
+          "raw_statistic_records": 24,
+          "predictor_forwards": 10,
+          "auxiliary_fit_forwards": 6,
+          "auxiliary_eval_forwards": 12,
+          "fit_unique_physical_records": 48,
+          "eval_unique_physical_records": 48
+        },
+        "fit_split": "ssdg_labeled_tx_visible",
+        "eval_split": "ssdg_source_v_select",
+        "frozen_parameter_counts": {
+          "backbone": 1048207,
+          "readouts": 5152,
+          "pretrained_predictor": 264
+        },
+        "matched_fits": {
+          "full_matched_fit": {
+            "errors": [
+              {
+                "mse": 1.4423008706383231,
+                "grand_mse": 0.6729208411708314,
+                "tx_mse": 0.13344217710948017,
+                "rx_mse": 0.5880661444122499,
+                "interaction_mse": 0.0478717079457616
+              },
+              {
+                "mse": 1.4418854601304885,
+                "grand_mse": 0.6665976557666043,
+                "tx_mse": 0.13397561343976405,
+                "rx_mse": 0.5934404775404721,
+                "interaction_mse": 0.04787171338364772
+              },
+              {
+                "mse": 1.687469795592053,
+                "grand_mse": 1.5197750955663474,
+                "tx_mse": 0.16769470002570552,
+                "rx_mse": 0.0,
+                "interaction_mse": null
+              },
+              {
+                "mse": 1.6479755986345377,
+                "grand_mse": 1.476746208963969,
+                "tx_mse": 0.17122938967056878,
+                "rx_mse": 0.0,
+                "interaction_mse": null
+              }
+            ],
+            "parameter_count": 264,
+            "fit_steps": 2,
+            "fit_task_indices": [
+              0,
+              1
+            ],
+            "fit_query_cells": 8,
+            "lr": 0.001,
+            "optimizer": "AdamW",
+            "weight_decay": 0.0,
+            "optimizer_betas": [
+              0.9,
+              0.999
+            ],
+            "backbone_frozen": true,
+            "readouts_frozen": true,
+            "architecture": "SharedResponsePredictor",
+            "descriptor_dim": 16,
+            "target_dim": 8,
+            "predictor_mode": "additive",
+            "initialization": "copy_supplied_source_predictor_corresponding_branches"
+          },
+          "tx_only": {
+            "errors": [
+              {
+                "mse": 1.3551386677561443,
+                "grand_mse": 0.5774780785901735,
+                "tx_mse": 0.13352309135896104,
+                "rx_mse": 0.5962657863722098,
+                "interaction_mse": 0.047871711434799964
+              },
+              {
+                "mse": 1.3550820009111006,
+                "grand_mse": 0.5768743302324182,
+                "tx_mse": 0.13407016908701838,
+                "rx_mse": 0.596265791047176,
+                "interaction_mse": 0.047871710544488
+              },
+              {
+                "mse": 1.8642775606541806,
+                "grand_mse": 1.6965272662064619,
+                "tx_mse": 0.1677502944477186,
+                "rx_mse": 0.0,
+                "interaction_mse": null
+              },
+              {
+                "mse": 1.8648047666464596,
+                "grand_mse": 1.693522490751456,
+                "tx_mse": 0.17128227589500344,
+                "rx_mse": 0.0,
+                "interaction_mse": null
+              }
+            ],
+            "parameter_count": 136,
+            "fit_steps": 2,
+            "fit_task_indices": [
+              0,
+              1
+            ],
+            "fit_query_cells": 8,
+            "lr": 0.001,
+            "optimizer": "AdamW",
+            "weight_decay": 0.0,
+            "optimizer_betas": [
+              0.9,
+              0.999
+            ],
+            "backbone_frozen": true,
+            "readouts_frozen": true,
+            "architecture": "RestrictedResponseHead",
+            "descriptor_dim": 16,
+            "target_dim": 8,
+            "predictor_mode": "tx_only",
+            "initialization": "copy_supplied_source_predictor_corresponding_branches"
+          },
+          "rx_only": {
+            "errors": [
+              {
+                "mse": 1.4188290994199564,
+                "grand_mse": 0.6506430681379508,
+                "tx_mse": 0.1322579624114551,
+                "rx_mse": 0.5880563564698282,
+                "interaction_mse": 0.04787171240072216
+              },
+              {
+                "mse": 1.4109411539771957,
+                "grand_mse": 0.6372702882394269,
+                "tx_mse": 0.13225796461879982,
+                "rx_mse": 0.5935411865204588,
+                "interaction_mse": 0.04787171459851018
+              },
+              {
+                "mse": 1.6875925570290937,
+                "grand_mse": 1.5196420872681036,
+                "tx_mse": 0.16795046976099004,
+                "rx_mse": 0.0,
+                "interaction_mse": null
+              },
+              {
+                "mse": 1.646976514552201,
+                "grand_mse": 1.479026044714567,
+                "tx_mse": 0.16795046983763406,
+                "rx_mse": 0.0,
+                "interaction_mse": null
+              }
+            ],
+            "parameter_count": 136,
+            "fit_steps": 2,
+            "fit_task_indices": [
+              0,
+              1
+            ],
+            "fit_query_cells": 8,
+            "lr": 0.001,
+            "optimizer": "AdamW",
+            "weight_decay": 0.0,
+            "optimizer_betas": [
+              0.9,
+              0.999
+            ],
+            "backbone_frozen": true,
+            "readouts_frozen": true,
+            "architecture": "RestrictedResponseHead",
+            "descriptor_dim": 16,
+            "target_dim": 8,
+            "predictor_mode": "rx_only",
+            "initialization": "copy_supplied_source_predictor_corresponding_branches"
+          },
+          "head_only": {
+            "errors": [
+              {
+                "mse": 1.4423008706383231,
+                "grand_mse": 0.6729208411708314,
+                "tx_mse": 0.13344217710948017,
+                "rx_mse": 0.5880661444122499,
+                "interaction_mse": 0.0478717079457616
+              },
+              {
+                "mse": 1.4418854601304885,
+                "grand_mse": 0.6665976557666043,
+                "tx_mse": 0.13397561343976405,
+                "rx_mse": 0.5934404775404721,
+                "interaction_mse": 0.04787171338364772
+              },
+              {
+                "mse": 1.687469795592053,
+                "grand_mse": 1.5197750955663474,
+                "tx_mse": 0.16769470002570552,
+                "rx_mse": 0.0,
+                "interaction_mse": null
+              },
+              {
+                "mse": 1.6479755986345377,
+                "grand_mse": 1.476746208963969,
+                "tx_mse": 0.17122938967056878,
+                "rx_mse": 0.0,
+                "interaction_mse": null
+              }
+            ],
+            "parameter_count": 264,
+            "fit_steps": 2,
+            "fit_task_indices": [
+              0,
+              1
+            ],
+            "fit_query_cells": 8,
+            "lr": 0.001,
+            "optimizer": "AdamW",
+            "weight_decay": 0.0,
+            "optimizer_betas": [
+              0.9,
+              0.999
+            ],
+            "backbone_frozen": true,
+            "readouts_frozen": true,
+            "architecture": "SharedResponsePredictor",
+            "descriptor_dim": 16,
+            "target_dim": 8,
+            "predictor_mode": "additive",
+            "initialization": "copy_supplied_source_predictor_corresponding_branches",
+            "alias_of": "full_matched_fit",
+            "independent_evidence": false
+          },
+          "metadata": {
+            "fit_unique_physical_ids": 48,
+            "eval_unique_physical_ids": 48,
+            "necessity_gate_passed": null,
+            "seed": 392005,
+            "scope": "source_frozen_representation_matched_head_fit"
+          }
+        },
+        "scope": "source_metrics_only_not_necessity_or_update_value_acceptance",
+        "identity_risk": {
+          "status": "N/A",
+          "reason": "response_MSE_is_not_identity_CE_use_disposable_counterfactual_with_independent_source_LEO_probe"
+        }
+      },
+      "legacy_gate_open": 0.0,
+      "legacy_gate_pass": 0.0,
+      "legacy_gate_checks": 3,
+      "legacy_gate_consecutive": 0,
+      "legacy_gate_ratio": 1.028488013597863,
+      "legacy_gate_blocks": 1,
+      "response_joint_open": false,
+      "source_mechanism_gate": {
+        "authorized": false,
+        "passed": false,
+        "scope": "cls_head",
+        "failed_conditions": [
+          "source counterfactual has a nonfinite or unapplied optimizer update"
+        ]
+      }
+    },
+    {
+      "source_role": "source_validation",
+      "split_source": "ssdg_source_v_select",
+      "valid_blocks": 1,
+      "valid_role_tasks": 36,
+      "independent_query_tasks": 36,
+      "changed_donor_tasks": 72,
+      "shuffled_rx_tasks": 36,
+      "records_read": 32,
+      "backbone_forwards": 1,
+      "response_mse": 1.139370717936092,
+      "constant_mse": 1.1057298597362306,
+      "shuffled_rx_mse": 1.1150768200556438,
+      "shuffled_reference_mse": 1.139370717936092,
+      "changed_donor_reference_mse": 1.139370717936092,
+      "changed_donor_tx_mse": 1.1443069680697389,
+      "interaction_mse": 0.07110154069636741,
+      "per_rotation": {
+        "0": 1.4787442684173584,
+        "1": 1.6792339086532593,
+        "2": 1.461846113204956,
+        "3": 1.3657124042510986,
+        "4": 1.1482830047607422,
+        "5": 1.3486356735229492,
+        "6": 1.6595654487609863,
+        "7": 1.6426587104797363,
+        "8": 1.3037569522857666,
+        "9": 1.4092634916305542,
+        "10": 1.0698931217193604,
+        "11": 1.0537350177764893,
+        "12": 1.3478630781173706,
+        "13": 1.3710930347442627,
+        "14": 1.1487313508987427,
+        "15": 1.0609827041625977,
+        "16": 0.8385579586029053,
+        "17": 0.8637253046035767,
+        "18": 1.3682056665420532,
+        "19": 1.4108260869979858,
+        "20": 1.3991752862930298,
+        "21": 0.9919476509094238,
+        "22": 0.9805780649185181,
+        "23": 1.0224435329437256,
+        "24": 1.0251697301864624,
+        "25": 1.108933925628662,
+        "26": 1.2308868169784546,
+        "27": 0.6183838844299316,
+        "28": 0.7409771680831909,
+        "29": 0.8251973390579224,
+        "30": 1.1954751014709473,
+        "31": 1.030287265777588,
+        "32": 1.0151917934417725,
+        "33": 0.6650426387786865,
+        "34": 0.6500815153121948,
+        "35": 0.4862608313560486
+      },
+      "constant_definition": "frozen_source_training_location",
+      "status": "VERIFIED",
+      "role_policy": "balanced_partitions_v2",
+      "predictor_forwards": 144,
+      "readout_forwards": 108,
+      "skipped_blocks": 0,
+      "skipped_roles": 0,
+      "skip_reasons": {},
+      "candidate_count": 75,
+      "candidate_search_complete": true,
+      "reason": "source_mechanism_metrics_only",
+      "constant_improvement": -0.03364085819986129,
+      "unique_physical_records_read": 32,
+      "reduced_donor_count_mse": 1.1443069680697389,
+      "reduced_donor_count_tasks": 72,
+      "changed_donor_legacy_field_definition": "reduced_donor_count_not_equal_size_reuse",
+      "epoch": 4,
+      "v2_source_mechanisms": {
+        "version": "source_response_v2",
+        "source_role": "source_validation",
+        "status": "VERIFIED",
+        "necessity_gate_passed": null,
+        "reuse": {
+          "tx_reuse": {
+            "status": "AVAILABLE",
+            "reason": null,
+            "query_shape": [
+              2,
+              2
+            ],
+            "independent_query_interaction": true,
+            "tasks": [
+              {
+                "query_tx": [
+                  0,
+                  1
+                ],
+                "query_rx": [
+                  0,
+                  1
+                ],
+                "query_physical_ids": [
+                  [
+                    0,
+                    0,
+                    0,
+                    0,
+                    100
+                  ],
+                  [
+                    0,
+                    0,
+                    0,
+                    0,
+                    101
+                  ],
+                  [
+                    0,
+                    1,
+                    0,
+                    0,
+                    100
+                  ],
+                  [
+                    0,
+                    1,
+                    0,
+                    0,
+                    101
+                  ],
+                  [
+                    1,
+                    0,
+                    0,
+                    0,
+                    100
+                  ],
+                  [
+                    1,
+                    0,
+                    0,
+                    0,
+                    101
+                  ],
+                  [
+                    1,
+                    1,
+                    0,
+                    0,
+                    100
+                  ],
+                  [
+                    1,
+                    1,
+                    0,
+                    0,
+                    101
+                  ]
+                ],
+                "day": 0,
+                "condition": 0,
+                "K": 2,
+                "branches": [
+                  {
+                    "pretrained_full": {
+                      "mse": 1.4635948022725656,
+                      "grand_mse": 0.6926975246287617,
+                      "tx_mse": 0.13250109926587642,
+                      "rx_mse": 0.5905244692711684,
+                      "interaction_mse": 0.04787170910675888
+                    },
+                    "constant_frozen_source_location": {
+                      "mse": 1.3585660965655144,
+                      "grand_mse": 0.5821706329153896,
+                      "tx_mse": 0.13225796084647662,
+                      "rx_mse": 0.5962657904807638,
+                      "interaction_mse": 0.04787171232288425
+                    },
+                    "shuffled_tx": {
+                      "mse": 1.4631545508231811,
+                      "grand_mse": 0.6926975192770894,
+                      "tx_mse": 0.13206083706838526,
+                      "rx_mse": 0.5905244840018895,
+                      "interaction_mse": 0.047871710475817
+                    },
+                    "shuffled_rx": {
+                      "mse": 1.47518111257763,
+                      "grand_mse": 0.6926975235609862,
+                      "tx_mse": 0.13250111134965412,
+                      "rx_mse": 0.6021107657904308,
+                      "interaction_mse": 0.047871711876558795
+                    },
+                    "donor_tx": [
+                      2,
+                      3
+                    ],
+                    "donor_rx": [
+                      2,
+                      3
+                    ],
+                    "donor_records": 16,
+                    "donor_physical_ids": [
+                      [
+                        0,
+                        2,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        0,
+                        2,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        0,
+                        3,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        0,
+                        3,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        1,
+                        2,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        1,
+                        2,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        1,
+                        3,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        1,
+                        3,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        2,
+                        0,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        2,
+                        0,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        2,
+                        1,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        2,
+                        1,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        3,
+                        0,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        3,
+                        0,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        3,
+                        1,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        3,
+                        1,
+                        0,
+                        0,
+                        101
+                      ]
+                    ]
+                  },
+                  {
+                    "pretrained_full": {
+                      "mse": 1.4310709267953865,
+                      "grand_mse": 0.6547637334091891,
+                      "tx_mse": 0.13272299902241863,
+                      "rx_mse": 0.5957124803721352,
+                      "interaction_mse": 0.047871713991643416
+                    },
+                    "constant_frozen_source_location": {
+                      "mse": 1.3585660965655144,
+                      "grand_mse": 0.5821706329153896,
+                      "tx_mse": 0.13225796084647662,
+                      "rx_mse": 0.5962657904807638,
+                      "interaction_mse": 0.04787171232288425
+                    },
+                    "shuffled_tx": {
+                      "mse": 1.4301957045861837,
+                      "grand_mse": 0.6547637284430863,
+                      "tx_mse": 0.13184779714910597,
+                      "rx_mse": 0.5957124645723857,
+                      "interaction_mse": 0.047871714421605635
+                    },
+                    "shuffled_rx": {
+                      "mse": 1.4331896936396922,
+                      "grand_mse": 0.6547637276889272,
+                      "tx_mse": 0.13272299453517145,
+                      "rx_mse": 0.5978312612899871,
+                      "interaction_mse": 0.047871710125606336
+                    },
+                    "donor_tx": [
+                      4,
+                      5
+                    ],
+                    "donor_rx": [
+                      2,
+                      3
+                    ],
+                    "donor_records": 16,
+                    "donor_physical_ids": [
+                      [
+                        0,
+                        2,
+                        0,
+                        0,
+                        102
+                      ],
+                      [
+                        0,
+                        2,
+                        0,
+                        0,
+                        103
+                      ],
+                      [
+                        0,
+                        3,
+                        0,
+                        0,
+                        102
+                      ],
+                      [
+                        0,
+                        3,
+                        0,
+                        0,
+                        103
+                      ],
+                      [
+                        1,
+                        2,
+                        0,
+                        0,
+                        102
+                      ],
+                      [
+                        1,
+                        2,
+                        0,
+                        0,
+                        103
+                      ],
+                      [
+                        1,
+                        3,
+                        0,
+                        0,
+                        102
+                      ],
+                      [
+                        1,
+                        3,
+                        0,
+                        0,
+                        103
+                      ],
+                      [
+                        4,
+                        0,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        4,
+                        0,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        4,
+                        1,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        4,
+                        1,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        5,
+                        0,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        5,
+                        0,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        5,
+                        1,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        5,
+                        1,
+                        0,
+                        0,
+                        101
+                      ]
+                    ]
+                  }
+                ],
+                "prediction_reuse_mse": 0.01199836190789938
+              }
+            ]
+          },
+          "rx_reuse": {
+            "status": "AVAILABLE",
+            "reason": null,
+            "query_shape": [
+              2,
+              1
+            ],
+            "independent_query_interaction": false,
+            "tasks": [
+              {
+                "query_tx": [
+                  0,
+                  1
+                ],
+                "query_rx": [
+                  0
+                ],
+                "query_physical_ids": [
+                  [
+                    0,
+                    0,
+                    0,
+                    0,
+                    100
+                  ],
+                  [
+                    0,
+                    0,
+                    0,
+                    0,
+                    101
+                  ],
+                  [
+                    1,
+                    0,
+                    0,
+                    0,
+                    100
+                  ],
+                  [
+                    1,
+                    0,
+                    0,
+                    0,
+                    101
+                  ]
+                ],
+                "day": 0,
+                "condition": 0,
+                "K": 2,
+                "branches": [
+                  {
+                    "pretrained_full": {
+                      "mse": 1.749350154108815,
+                      "grand_mse": 1.582474966834122,
+                      "tx_mse": 0.16687518727469308,
+                      "rx_mse": 0.0,
+                      "interaction_mse": null
+                    },
+                    "constant_frozen_source_location": {
+                      "mse": 1.8945647121987135,
+                      "grand_mse": 1.7266142424377233,
+                      "tx_mse": 0.16795046976099004,
+                      "rx_mse": 0.0,
+                      "interaction_mse": null
+                    },
+                    "shuffled_tx": {
+                      "mse": 1.7515627652921146,
+                      "grand_mse": 1.582474966834122,
+                      "tx_mse": 0.1690877984579927,
+                      "rx_mse": 0.0,
+                      "interaction_mse": null
+                    },
+                    "shuffled_rx": null,
+                    "donor_tx": [
+                      2,
+                      3
+                    ],
+                    "donor_rx": [
+                      1,
+                      2
+                    ],
+                    "donor_records": 12,
+                    "donor_physical_ids": [
+                      [
+                        0,
+                        1,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        0,
+                        1,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        0,
+                        2,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        0,
+                        2,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        1,
+                        1,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        1,
+                        1,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        1,
+                        2,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        1,
+                        2,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        2,
+                        0,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        2,
+                        0,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        3,
+                        0,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        3,
+                        0,
+                        0,
+                        0,
+                        101
+                      ]
+                    ]
+                  },
+                  {
+                    "pretrained_full": {
+                      "mse": 1.7058932644228897,
+                      "grand_mse": 1.5367915684659663,
+                      "tx_mse": 0.16910169595692326,
+                      "rx_mse": 0.0,
+                      "interaction_mse": null
+                    },
+                    "constant_frozen_source_location": {
+                      "mse": 1.8945647121987135,
+                      "grand_mse": 1.7266142424377233,
+                      "tx_mse": 0.16795046976099004,
+                      "rx_mse": 0.0,
+                      "interaction_mse": null
+                    },
+                    "shuffled_tx": {
+                      "mse": 1.7036640178078672,
+                      "grand_mse": 1.5367915807647803,
+                      "tx_mse": 0.16687243704308685,
+                      "rx_mse": 0.0,
+                      "interaction_mse": null
+                    },
+                    "shuffled_rx": null,
+                    "donor_tx": [
+                      2,
+                      3
+                    ],
+                    "donor_rx": [
+                      3,
+                      4
+                    ],
+                    "donor_records": 12,
+                    "donor_physical_ids": [
+                      [
+                        0,
+                        3,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        0,
+                        3,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        0,
+                        4,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        0,
+                        4,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        1,
+                        3,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        1,
+                        3,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        1,
+                        4,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        1,
+                        4,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        2,
+                        0,
+                        0,
+                        0,
+                        102
+                      ],
+                      [
+                        2,
+                        0,
+                        0,
+                        0,
+                        103
+                      ],
+                      [
+                        3,
+                        0,
+                        0,
+                        0,
+                        102
+                      ],
+                      [
+                        3,
+                        0,
+                        0,
+                        0,
+                        103
+                      ]
+                    ]
+                  }
+                ],
+                "prediction_reuse_mse": 0.0005368565325625241
+              }
+            ]
+          }
+        },
+        "cost": {
+          "backbone_forwards": 8,
+          "model_input_records": 112,
+          "raw_statistic_records": 24,
+          "predictor_forwards": 10,
+          "auxiliary_fit_forwards": 6,
+          "auxiliary_eval_forwards": 12,
+          "fit_unique_physical_records": 48,
+          "eval_unique_physical_records": 48
+        },
+        "fit_split": "ssdg_labeled_tx_visible",
+        "eval_split": "ssdg_source_v_select",
+        "frozen_parameter_counts": {
+          "backbone": 1048207,
+          "readouts": 5152,
+          "pretrained_predictor": 264
+        },
+        "matched_fits": {
+          "full_matched_fit": {
+            "errors": [
+              {
+                "mse": 1.4407564966382052,
+                "grand_mse": 0.6699463035595385,
+                "tx_mse": 0.13239486733771183,
+                "rx_mse": 0.5905436118581826,
+                "interaction_mse": 0.04787171388277223
+              },
+              {
+                "mse": 1.4090242122671013,
+                "grand_mse": 0.6331792171562998,
+                "tx_mse": 0.1326127844471971,
+                "rx_mse": 0.5953604961449591,
+                "interaction_mse": 0.04787171451864517
+              },
+              {
+                "mse": 1.7176245664020926,
+                "grand_mse": 1.5508079155124814,
+                "tx_mse": 0.16681665088961117,
+                "rx_mse": 0.0,
+                "interaction_mse": null
+              },
+              {
+                "mse": 1.674683067489014,
+                "grand_mse": 1.5056863655507162,
+                "tx_mse": 0.16899670193829797,
+                "rx_mse": 0.0,
+                "interaction_mse": null
+              }
+            ],
+            "parameter_count": 264,
+            "fit_steps": 2,
+            "fit_task_indices": [
+              0,
+              1
+            ],
+            "fit_query_cells": 8,
+            "lr": 0.001,
+            "optimizer": "AdamW",
+            "weight_decay": 0.0,
+            "optimizer_betas": [
+              0.9,
+              0.999
+            ],
+            "backbone_frozen": true,
+            "readouts_frozen": true,
+            "architecture": "SharedResponsePredictor",
+            "descriptor_dim": 16,
+            "target_dim": 8,
+            "predictor_mode": "additive",
+            "initialization": "copy_supplied_source_predictor_corresponding_branches"
+          },
+          "tx_only": {
+            "errors": [
+              {
+                "mse": 1.367276396743108,
+                "grand_mse": 0.5906743713595868,
+                "tx_mse": 0.13246452866471078,
+                "rx_mse": 0.5962657859100758,
+                "interaction_mse": 0.0478717108087346
+              },
+              {
+                "mse": 1.3670151276909497,
+                "grand_mse": 0.5901870994641679,
+                "tx_mse": 0.13269052118610086,
+                "rx_mse": 0.5962657955200511,
+                "interaction_mse": 0.04787171152062971
+              },
+              {
+                "mse": 1.8853749641902546,
+                "grand_mse": 1.7185065269474356,
+                "tx_mse": 0.16686843724281897,
+                "rx_mse": 0.0,
+                "interaction_mse": null
+              },
+              {
+                "mse": 1.8831342252008487,
+                "grand_mse": 1.7140918584633134,
+                "tx_mse": 0.1690423667375354,
+                "rx_mse": 0.0,
+                "interaction_mse": null
+              }
+            ],
+            "parameter_count": 136,
+            "fit_steps": 2,
+            "fit_task_indices": [
+              0,
+              1
+            ],
+            "fit_query_cells": 8,
+            "lr": 0.001,
+            "optimizer": "AdamW",
+            "weight_decay": 0.0,
+            "optimizer_betas": [
+              0.9,
+              0.999
+            ],
+            "backbone_frozen": true,
+            "readouts_frozen": true,
+            "architecture": "RestrictedResponseHead",
+            "descriptor_dim": 16,
+            "target_dim": 8,
+            "predictor_mode": "tx_only",
+            "initialization": "copy_supplied_source_predictor_corresponding_branches"
+          },
+          "rx_only": {
+            "errors": [
+              {
+                "mse": 1.4105393869197047,
+                "grand_mse": 0.6398780935982535,
+                "tx_mse": 0.1322579598731771,
+                "rx_mse": 0.5905316220749676,
+                "interaction_mse": 0.04787171137330634
+              },
+              {
+                "mse": 1.3760420291589721,
+                "grand_mse": 0.6004764768780654,
+                "tx_mse": 0.13225795595665424,
+                "rx_mse": 0.5954358880897189,
+                "interaction_mse": 0.04787170823453352
+              },
+              {
+                "mse": 1.6998036615504895,
+                "grand_mse": 1.5318531835833542,
+                "tx_mse": 0.16795047796713514,
+                "rx_mse": 0.0,
+                "interaction_mse": null
+              },
+              {
+                "mse": 1.6600831193638401,
+                "grand_mse": 1.492132658547547,
+                "tx_mse": 0.16795046081629306,
+                "rx_mse": 0.0,
+                "interaction_mse": null
+              }
+            ],
+            "parameter_count": 136,
+            "fit_steps": 2,
+            "fit_task_indices": [
+              0,
+              1
+            ],
+            "fit_query_cells": 8,
+            "lr": 0.001,
+            "optimizer": "AdamW",
+            "weight_decay": 0.0,
+            "optimizer_betas": [
+              0.9,
+              0.999
+            ],
+            "backbone_frozen": true,
+            "readouts_frozen": true,
+            "architecture": "RestrictedResponseHead",
+            "descriptor_dim": 16,
+            "target_dim": 8,
+            "predictor_mode": "rx_only",
+            "initialization": "copy_supplied_source_predictor_corresponding_branches"
+          },
+          "head_only": {
+            "errors": [
+              {
+                "mse": 1.4407564966382052,
+                "grand_mse": 0.6699463035595385,
+                "tx_mse": 0.13239486733771183,
+                "rx_mse": 0.5905436118581826,
+                "interaction_mse": 0.04787171388277223
+              },
+              {
+                "mse": 1.4090242122671013,
+                "grand_mse": 0.6331792171562998,
+                "tx_mse": 0.1326127844471971,
+                "rx_mse": 0.5953604961449591,
+                "interaction_mse": 0.04787171451864517
+              },
+              {
+                "mse": 1.7176245664020926,
+                "grand_mse": 1.5508079155124814,
+                "tx_mse": 0.16681665088961117,
+                "rx_mse": 0.0,
+                "interaction_mse": null
+              },
+              {
+                "mse": 1.674683067489014,
+                "grand_mse": 1.5056863655507162,
+                "tx_mse": 0.16899670193829797,
+                "rx_mse": 0.0,
+                "interaction_mse": null
+              }
+            ],
+            "parameter_count": 264,
+            "fit_steps": 2,
+            "fit_task_indices": [
+              0,
+              1
+            ],
+            "fit_query_cells": 8,
+            "lr": 0.001,
+            "optimizer": "AdamW",
+            "weight_decay": 0.0,
+            "optimizer_betas": [
+              0.9,
+              0.999
+            ],
+            "backbone_frozen": true,
+            "readouts_frozen": true,
+            "architecture": "SharedResponsePredictor",
+            "descriptor_dim": 16,
+            "target_dim": 8,
+            "predictor_mode": "additive",
+            "initialization": "copy_supplied_source_predictor_corresponding_branches",
+            "alias_of": "full_matched_fit",
+            "independent_evidence": false
+          },
+          "metadata": {
+            "fit_unique_physical_ids": 48,
+            "eval_unique_physical_ids": 48,
+            "necessity_gate_passed": null,
+            "seed": 392005,
+            "scope": "source_frozen_representation_matched_head_fit"
+          }
+        },
+        "scope": "source_metrics_only_not_necessity_or_update_value_acceptance",
+        "identity_risk": {
+          "status": "N/A",
+          "reason": "response_MSE_is_not_identity_CE_use_disposable_counterfactual_with_independent_source_LEO_probe"
+        }
+      },
+      "legacy_gate_open": 0.0,
+      "legacy_gate_pass": 0.0,
+      "legacy_gate_checks": 4,
+      "legacy_gate_consecutive": 0,
+      "legacy_gate_ratio": 1.030424120234834,
+      "legacy_gate_blocks": 1,
+      "response_joint_open": false,
+      "source_mechanism_gate": {
+        "authorized": false,
+        "passed": false,
+        "scope": "cls_head",
+        "failed_conditions": [
+          "source counterfactual has a nonfinite or unapplied optimizer update"
+        ]
+      }
+    }
+  ],
+  "auxiliary_parameters": 5416,
+  "fixed_statistics_cache": {
+    "entries": 269,
+    "hits": 883,
+    "misses": 269,
+    "value_bytes": 8608,
+    "key_utf8_bytes": 46537,
+    "python_container_overhead_included": false,
+    "contents": "detached raw waveform statistics only"
+  },
+  "gradient_counter_semantics": {
+    "decision_gradient_steps": "positive among audited_successful_steps",
+    "cross_gradient_steps": "positive among audited_successful_steps",
+    "response_gradient_steps": "every successful routed update; required routing never sampled"
+  },
+  "parameter_groups": {
+    "shared": [
+      "id_backbone.sinc.low_hz_",
+      "id_backbone.sinc.band_hz_"
+    ],
+    "identity_tail": [
+      "id_backbone.cls_head.id_proj.0.weight",
+      "id_backbone.cls_head.id_proj.0.bias",
+      "id_backbone.cls_head.pa_proj.0.weight",
+      "id_backbone.cls_head.pa_proj.0.bias",
+      "id_backbone.cls_head.id_gate.0.weight",
+      "id_backbone.cls_head.id_gate.0.bias",
+      "id_backbone.cls_head.joint_proj.0.weight",
+      "id_backbone.cls_head.joint_proj.0.bias",
+      "id_backbone.cls_head.imp_merge.0.weight",
+      "id_backbone.cls_head.imp_merge.0.bias",
+      "id_backbone.cls_head.head.weight",
+      "id_backbone.cls_head.pa_head.0.weight",
+      "id_backbone.cls_head.pa_head.0.bias",
+      "id_backbone.cls_head.pa_head.2.weight",
+      "id_backbone.cls_head.pa_head.2.bias"
+    ],
+    "identity_front": [
+      "id_backbone.time_fuse.0.weight",
+      "id_backbone.time_fuse.1.weight",
+      "id_backbone.time_fuse.1.bias",
+      "id_backbone.t1.dw.weight",
+      "id_backbone.t1.pw.weight",
+      "id_backbone.t1.norm.weight",
+      "id_backbone.t1.norm.bias",
+      "id_backbone.t2.dw.weight",
+      "id_backbone.t2.pw.weight",
+      "id_backbone.t2.norm.weight",
+      "id_backbone.t2.norm.bias",
+      "id_backbone.t3.dw.weight",
+      "id_backbone.t3.pw.weight",
+      "id_backbone.t3.norm.weight",
+      "id_backbone.t3.norm.bias",
+      "id_backbone.t_proj.weight",
+      "id_backbone.t_proj.bias",
+      "id_backbone.f1.dw.weight",
+      "id_backbone.f1.pw.weight",
+      "id_backbone.f1.norm.weight",
+      "id_backbone.f1.norm.bias",
+      "id_backbone.f2.dw.weight",
+      "id_backbone.f2.pw.weight",
+      "id_backbone.f2.norm.weight",
+      "id_backbone.f2.norm.bias",
+      "id_backbone.f3.dw.weight",
+      "id_backbone.f3.pw.weight",
+      "id_backbone.f3.norm.weight",
+      "id_backbone.f3.norm.bias",
+      "id_backbone.f_proj.weight",
+      "id_backbone.f_proj.bias",
+      "id_backbone.freq_gate.conv.weight",
+      "id_backbone.freq_gate.conv.bias",
+      "id_backbone.freq_stats_proj.0.weight",
+      "id_backbone.freq_stats_proj.0.bias",
+      "id_backbone.pa_stats_proj.0.weight",
+      "id_backbone.pa_stats_proj.0.bias",
+      "id_backbone.pa_gate.net.weight",
+      "id_backbone.pa_gate.net.bias",
+      "id_backbone.pa_b1.conv.weight",
+      "id_backbone.pa_b1.norm.weight",
+      "id_backbone.pa_b1.norm.bias",
+      "id_backbone.pa_b2.conv.weight",
+      "id_backbone.pa_b2.norm.weight",
+      "id_backbone.pa_b2.norm.bias",
+      "id_backbone.pa_b3.conv.weight",
+      "id_backbone.pa_b3.norm.weight",
+      "id_backbone.pa_b3.norm.bias",
+      "id_backbone.pa_proj.0.weight",
+      "id_backbone.pa_proj.0.bias",
+      "id_backbone.fuse.0.weight",
+      "id_backbone.fuse.0.bias",
+      "id_backbone.con_proj.0.weight",
+      "id_backbone.con_proj.0.bias"
+    ],
+    "domain": [
+      "dom_backbone.time_fuse.0.weight",
+      "dom_backbone.time_fuse.1.weight",
+      "dom_backbone.time_fuse.1.bias",
+      "dom_backbone.t1.dw.weight",
+      "dom_backbone.t1.pw.weight",
+      "dom_backbone.t1.norm.weight",
+      "dom_backbone.t1.norm.bias",
+      "dom_backbone.t2.dw.weight",
+      "dom_backbone.t2.pw.weight",
+      "dom_backbone.t2.norm.weight",
+      "dom_backbone.t2.norm.bias",
+      "dom_backbone.t3.dw.weight",
+      "dom_backbone.t3.pw.weight",
+      "dom_backbone.t3.norm.weight",
+      "dom_backbone.t3.norm.bias",
+      "dom_backbone.t_proj.weight",
+      "dom_backbone.t_proj.bias",
+      "dom_backbone.dac_hf_proj.0.weight",
+      "dom_backbone.dac_hf_proj.1.weight",
+      "dom_backbone.dac_hf_proj.1.bias",
+      "dom_backbone.dac_b1.conv.wr.weight",
+      "dom_backbone.dac_b1.conv.wi.weight",
+      "dom_backbone.dac_b1.conv.vr.weight",
+      "dom_backbone.dac_b1.conv.vi.weight",
+      "dom_backbone.dac_b1.norm.weight",
+      "dom_backbone.dac_b1.norm.bias",
+      "dom_backbone.dac_b2.conv.wr.weight",
+      "dom_backbone.dac_b2.conv.wi.weight",
+      "dom_backbone.dac_b2.conv.vr.weight",
+      "dom_backbone.dac_b2.conv.vi.weight",
+      "dom_backbone.dac_b2.norm.weight",
+      "dom_backbone.dac_b2.norm.bias",
+      "dom_backbone.dac_b2.res_proj.0.weight",
+      "dom_backbone.dac_b3.conv.wr.weight",
+      "dom_backbone.dac_b3.conv.wi.weight",
+      "dom_backbone.dac_b3.conv.vr.weight",
+      "dom_backbone.dac_b3.conv.vi.weight",
+      "dom_backbone.dac_b3.norm.weight",
+      "dom_backbone.dac_b3.norm.bias",
+      "dom_backbone.dac_b3.res_proj.0.weight",
+      "dom_backbone.dac_proj.0.weight",
+      "dom_backbone.dac_proj.0.bias",
+      "dom_backbone.f1.dw.weight",
+      "dom_backbone.f1.pw.weight",
+      "dom_backbone.f1.norm.weight",
+      "dom_backbone.f1.norm.bias",
+      "dom_backbone.f2.dw.weight",
+      "dom_backbone.f2.pw.weight",
+      "dom_backbone.f2.norm.weight",
+      "dom_backbone.f2.norm.bias",
+      "dom_backbone.f3.dw.weight",
+      "dom_backbone.f3.pw.weight",
+      "dom_backbone.f3.norm.weight",
+      "dom_backbone.f3.norm.bias",
+      "dom_backbone.f_proj.weight",
+      "dom_backbone.f_proj.bias",
+      "dom_backbone.freq_gate.conv.weight",
+      "dom_backbone.freq_gate.conv.bias",
+      "dom_backbone.pa_gate.net.weight",
+      "dom_backbone.pa_gate.net.bias",
+      "dom_backbone.pa_b1.conv.weight",
+      "dom_backbone.pa_b1.norm.weight",
+      "dom_backbone.pa_b1.norm.bias",
+      "dom_backbone.pa_b2.conv.weight",
+      "dom_backbone.pa_b2.norm.weight",
+      "dom_backbone.pa_b2.norm.bias",
+      "dom_backbone.pa_b3.conv.weight",
+      "dom_backbone.pa_b3.norm.weight",
+      "dom_backbone.pa_b3.norm.bias",
+      "dom_backbone.pa_proj.0.weight",
+      "dom_backbone.pa_proj.0.bias",
+      "dom_backbone.fuse.0.weight",
+      "dom_backbone.fuse.0.bias",
+      "dom_backbone.con_proj.0.weight",
+      "dom_backbone.con_proj.0.bias",
+      "dom_backbone.cls_head.id_proj.0.weight",
+      "dom_backbone.cls_head.id_proj.0.bias",
+      "dom_backbone.cls_head.dac_proj.0.weight",
+      "dom_backbone.cls_head.dac_proj.0.bias",
+      "dom_backbone.cls_head.pa_proj.0.weight",
+      "dom_backbone.cls_head.pa_proj.0.bias",
+      "dom_backbone.cls_head.id_gate.0.weight",
+      "dom_backbone.cls_head.id_gate.0.bias",
+      "dom_backbone.cls_head.joint_proj.0.weight",
+      "dom_backbone.cls_head.joint_proj.0.bias",
+      "dom_backbone.cls_head.imp_merge.0.weight",
+      "dom_backbone.cls_head.imp_merge.0.bias",
+      "dom_backbone.cls_head.head.weight",
+      "dom_backbone.cls_head.dac_head.0.weight",
+      "dom_backbone.cls_head.dac_head.0.bias",
+      "dom_backbone.cls_head.dac_head.2.weight",
+      "dom_backbone.cls_head.dac_head.2.bias",
+      "dom_backbone.cls_head.pa_head.0.weight",
+      "dom_backbone.cls_head.pa_head.0.bias",
+      "dom_backbone.cls_head.pa_head.2.weight",
+      "dom_backbone.cls_head.pa_head.2.bias",
+      "dom_enhancer.stat_encoder.net.0.weight",
+      "dom_enhancer.stat_encoder.net.0.bias",
+      "dom_enhancer.stat_encoder.net.1.weight",
+      "dom_enhancer.stat_encoder.net.1.bias",
+      "dom_enhancer.stat_encoder.net.4.weight",
+      "dom_enhancer.stat_encoder.net.4.bias",
+      "dom_enhancer.gate.0.weight",
+      "dom_enhancer.gate.0.bias",
+      "dom_enhancer.norm.weight",
+      "dom_enhancer.norm.bias"
+    ],
+    "other": [
+      "dom_head.net.0.weight",
+      "dom_head.net.0.bias",
+      "dom_head.net.3.weight",
+      "dom_head.net.3.bias",
+      "adv_head.net.0.weight",
+      "adv_head.net.0.bias",
+      "adv_head.net.3.weight",
+      "adv_head.net.3.bias"
+    ],
+    "auxiliary": [
+      "readouts.tx.weight",
+      "readouts.tx.bias",
+      "readouts.rx.weight",
+      "readouts.rx.bias",
+      "predictor.bias",
+      "predictor.tx.weight",
+      "predictor.rx.weight"
+    ]
+  },
+  "optional_controls": {
+    "target_family": "fft",
+    "bilinear_rank_active": null,
+    "interaction_reweighting_active": false,
+    "adaptive_k_configured": false,
+    "response_identity_permanently_detached": false
+  },
+  "candidate_count": 75,
+  "candidate_search_complete": true,
+  "sampling_evidence": {
+    "feedback_history_entries": 0,
+    "pending_feedback_entries": 11,
+    "joint_rectangles": 143,
+    "directed_transfers": 23,
+    "observed_rectangles": 143,
+    "response_query_rectangles": 11,
+    "directed_response_transfers": 23,
+    "actual_candidate_pool_reachable": {
+      "observed_rectangles": 150,
+      "response_query_rectangles": 150,
+      "directed_response_transfers": 1350
+    },
+    "direction_history_entries": 0,
+    "flush_count": 0,
+    "last_step_event": {
+      "step_id": 7,
+      "success": true,
+      "collected_blocks": 4,
+      "accepted_blocks": 4,
+      "flushed": false,
+      "flush_count": 0,
+      "new_physical_records": 0,
+      "block_physical_evidence": [
+        {
+          "block_id": 29,
+          "candidate_key": [
+            [
+              0,
+              1,
+              3,
+              4
+            ],
+            [
+              0,
+              2,
+              3,
+              4
+            ],
+            0,
+            0,
+            2
+          ],
+          "direction_key": [
+            [
+              [
+                0,
+                1,
+                3,
+                4
+              ],
+              [
+                0,
+                2,
+                3,
+                4
+              ],
+              0,
+              0,
+              2
+            ],
+            [
+              1,
+              4
+            ],
+            [
+              2,
+              3
+            ],
+            [
+              0,
+              3
+            ],
+            [
+              0,
+              4
+            ],
+            0,
+            "balanced_partitions_v2"
+          ],
+          "actual_new_physical": 0,
+          "success": true
+        },
+        {
+          "block_id": 31,
+          "candidate_key": [
+            [
+              0,
+              1,
+              3,
+              5
+            ],
+            [
+              0,
+              2,
+              3,
+              4
+            ],
+            0,
+            0,
+            2
+          ],
+          "direction_key": [
+            [
+              [
+                0,
+                1,
+                3,
+                5
+              ],
+              [
+                0,
+                2,
+                3,
+                4
+              ],
+              0,
+              0,
+              2
+            ],
+            [
+              1,
+              3
+            ],
+            [
+              0,
+              4
+            ],
+            [
+              0,
+              5
+            ],
+            [
+              2,
+              3
+            ],
+            0,
+            "balanced_partitions_v2"
+          ],
+          "actual_new_physical": 0,
+          "success": true
+        },
+        {
+          "block_id": 28,
+          "candidate_key": [
+            [
+              0,
+              1,
+              4,
+              5
+            ],
+            [
+              1,
+              2,
+              3,
+              4
+            ],
+            0,
+            0,
+            2
+          ],
+          "direction_key": [
+            [
+              [
+                0,
+                1,
+                4,
+                5
+              ],
+              [
+                1,
+                2,
+                3,
+                4
+              ],
+              0,
+              0,
+              2
+            ],
+            [
+              0,
+              5
+            ],
+            [
+              1,
+              3
+            ],
+            [
+              1,
+              4
+            ],
+            [
+              2,
+              4
+            ],
+            0,
+            "balanced_partitions_v2"
+          ],
+          "actual_new_physical": 0,
+          "success": true
+        },
+        {
+          "block_id": 30,
+          "candidate_key": [
+            [
+              2,
+              3,
+              4,
+              5
+            ],
+            [
+              0,
+              1,
+              2,
+              3
+            ],
+            0,
+            0,
+            2
+          ],
+          "direction_key": [
+            [
+              [
+                2,
+                3,
+                4,
+                5
+              ],
+              [
+                0,
+                1,
+                2,
+                3
+              ],
+              0,
+              0,
+              2
+            ],
+            [
+              2,
+              5
+            ],
+            [
+              2,
+              3
+            ],
+            [
+              3,
+              4
+            ],
+            [
+              0,
+              1
+            ],
+            0,
+            "balanced_partitions_v2"
+          ],
+          "actual_new_physical": 0,
+          "success": true
+        }
+      ]
+    },
+    "last_probability_audit": [],
+    "unique_exposed_physical": 269,
+    "skip_counts": {},
+    "distribution_adaptation_testable": true,
+    "cost_views": 1
+  },
+  "loader_workers": 0,
+  "normalization_layers_fixed_in_labeled_forward": [],
+  "performance_claim": "NOT_EVALUATED"
+}

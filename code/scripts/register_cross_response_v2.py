@@ -12,7 +12,7 @@ def configuration():
         diagnostic_interval=20, statistics_audit=False, geometry_min_norm=1e-8,
         direction_shrinkage=0., gain_strategy="legacy_gain", evidence_config=None,
         decision_mode="vectorized", decision_calibration=None, interaction_mode="raw",
-        response_routing="full_error", mechanism_gate=None, response_decomposition=None,
+        response_routing="full_error", mechanism_gate=None, mechanism_audit=None, response_decomposition=None,
         source_audit_enabled=False, source_baseline_fit_steps=None, source_baseline_fit_lr=None)
     v = c["variants"]
     v["U1_mask_off"] = dict(v["U1"], mixstyle_role_policy="original_mask")
