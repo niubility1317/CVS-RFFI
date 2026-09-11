@@ -41,3 +41,11 @@ Second-site investigation: r2 smoke omitted the normal augmentor. Audited F1 cal
 - V2_B_seed392006：PID=1024354，GPU=7，已接受49步，当前E1。
 - r1首次smoke失败，r2普通增强分支失败，均保留；r2的6个失败worker及调度均已退出。修复源码及发布审查已完成，未复用旧root。
 - 证据：[启动快照](initial_poststate.json)、[增长快照](verified_poststate.json)、[交付核验](delivery_verification.json)。当前仅启动验证，不作完整训练效果结论；16个待排队行尚无实际训练激活证据。
+
+## 2026-09-12已完成行全量测试汇总
+
+截至07:04:53，7/21行完成E200及source四场景预测评分，14行仍在训练或评分。完整解析3357条epoch和164780条动作记录；已完成行覆盖1400个epoch、68600次接受更新，独立复算756000条预测，与保存评分完全一致。
+
+ordinary的adv=0与adv=0.35三seed平均LEO Accuracy分别为85.414%和85.911%，配对平均变化+0.497pp，逐seed方向并不一致。B8-D1、adv=0、seed392005与同seed ordinary的全部预测及置信度相同。全部数据仅属source V，尚无本批target测试或完整solver×adv结论。
+
+详细数据：[逐实验、场景、TX/RX/day、混淆矩阵及训练轨迹报告](results_20260912_0700/report.md)。当前状态为PARTIAL_MATRIX_ANALYSIS / COMPLETED_ROWS_VERIFIED；健康实验继续运行，本次仅只读分析。
