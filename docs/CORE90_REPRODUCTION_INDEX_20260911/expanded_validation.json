@@ -1,0 +1,63 @@
+{
+  "status": "VERIFIED",
+  "training_epoch_rows": 1200,
+  "source_metric_rows": 180,
+  "control_metric_rows": 336,
+  "additional_target_rows": 6,
+  "receiver_contribution_rows": 56,
+  "inventory_rows": 26,
+  "C0_FCR_all_four_counts_equal": true,
+  "health": {
+    "FCR": {
+      "epochs": 200,
+      "attempted_updates": 9800,
+      "accepted_updates": 9789,
+      "nonfinite_grad_skips": 11,
+      "nonfinite_loss_skips": 0,
+      "first_val": 30.71851851851852,
+      "final_val": 98.14444444444445,
+      "best_val": 98.23333333333333,
+      "first_nonzero_sat_ce_epoch": 80
+    },
+    "U0": {
+      "epochs": 200,
+      "attempted_updates": 9800,
+      "accepted_updates": 9790,
+      "nonfinite_grad_skips": 10,
+      "nonfinite_loss_skips": 0,
+      "first_val": 33.27037037037037,
+      "final_val": 97.83333333333333,
+      "best_val": 98.14814814814815,
+      "first_nonzero_sat_ce_epoch": 80
+    },
+    "H0": {
+      "epochs": 200,
+      "attempted_updates": 9800,
+      "accepted_updates": 9790,
+      "nonfinite_grad_skips": 10,
+      "nonfinite_loss_skips": 0,
+      "first_val": 31.362962962962964,
+      "final_val": 97.85925925925926,
+      "best_val": 98.20370370370371,
+      "first_nonzero_sat_ce_epoch": 80
+    },
+    "B0_392005": {
+      "epochs": 200,
+      "attempted_updates": 9800,
+      "accepted_updates": 9800,
+      "failed_updates": 0
+    },
+    "B0_392002": {
+      "epochs": 200,
+      "attempted_updates": 9800,
+      "accepted_updates": 9800,
+      "failed_updates": 0
+    },
+    "B0_392003": {
+      "epochs": 200,
+      "attempted_updates": 9800,
+      "accepted_updates": 9800,
+      "failed_updates": 0
+    }
+  }
+}
