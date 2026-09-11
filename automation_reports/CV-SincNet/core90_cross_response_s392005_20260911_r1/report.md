@@ -1,5 +1,7 @@
 # CORE90交叉响应复验与正式实验发布
 
+完整实现与全部实验总报告：[Markdown](CORE90_CROSS_RESPONSE_FULL_REPORT_20260911.md)｜[HTML阅读版](CORE90_CROSS_RESPONSE_FULL_REPORT_20260911.html)。覆盖20项实现追踪、10变体、2000轮日志、源机制检验、全部接收机/类别评分、成本、完整配置和证据索引；以该总报告为综合解释入口。
+
 ## 最终状态（2026-09-11，14:44，UTC+8）
 
 VERIFIED：全部10项完成E200、final checkpoint、四场景固定预测及独立评分。相对最早三项快照新增7项；相对11:58五项快照新增U3、U4_additive、U4_bilinear、U5、permanent_detach五项。全部2000轮日志和7920000条预测完成核对，1480组评分计数复算一致。完整数据见[十项最终测试报告](completed_detail/all_results.md)、[1480行评分CSV](completed_detail/all_scores_long.csv)及[对照差值](completed_detail/all_contrasts.json)。下文保留各时点历史快照，以本段及最终报告为准。

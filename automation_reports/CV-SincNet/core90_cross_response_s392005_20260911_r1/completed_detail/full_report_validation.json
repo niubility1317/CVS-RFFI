@@ -1,0 +1,63 @@
+{
+  "status": "VERIFIED_LOCAL_REPORT",
+  "variants": 10,
+  "epochs": 2000,
+  "score_groups": 1480,
+  "logs": {
+    "U0": {
+      "epochs": 200,
+      "stdout_lines": 8820,
+      "successful_steps": 9790
+    },
+    "U1": {
+      "epochs": 200,
+      "stdout_lines": 8820,
+      "successful_steps": 9790
+    },
+    "U2": {
+      "epochs": 200,
+      "stdout_lines": 8820,
+      "successful_steps": 9789
+    },
+    "U3": {
+      "epochs": 200,
+      "stdout_lines": 8820,
+      "successful_steps": 9791
+    },
+    "U4_additive": {
+      "epochs": 200,
+      "stdout_lines": 8820,
+      "successful_steps": 9793
+    },
+    "U4_bilinear": {
+      "epochs": 200,
+      "stdout_lines": 8820,
+      "successful_steps": 9790
+    },
+    "U5": {
+      "epochs": 200,
+      "stdout_lines": 8820,
+      "successful_steps": 9792
+    },
+    "Ux": {
+      "epochs": 200,
+      "stdout_lines": 8820,
+      "successful_steps": 9775
+    },
+    "head_only": {
+      "epochs": 200,
+      "stdout_lines": 8820,
+      "successful_steps": 9792
+    },
+    "permanent_detach": {
+      "epochs": 200,
+      "stdout_lines": 8820,
+      "successful_steps": 9793
+    }
+  },
+  "broken_local_links": [],
+  "report_characters": 55216,
+  "report_lines": 1283,
+  "evidence_cutoff": "2026-09-11T14:44:00+08:00",
+  "new_training_or_target_inference": false
+}
