@@ -73,3 +73,8 @@ CWD为RELEASE。根目录排他创建；实际子进程argv、PID、GPU、log位
 随机种子说明：本次实验/数据划分/模型及冻结头seed为392005；CORE90内部固定的增强子流常量仍按历史方法保留（启动日志`concat_sat_seed=2027`），不是加载其他seed模型。目标确认的逐物理样本信道子流由本次392005及scene/opaque ID确定，对全部候选相同。
 
 本地启动证据：`data_summary.json`、`remote_head_runtime.json`和`startup_metrics_epoch.jsonl`。后者是启动时E1–E2快照，完整日志继续保存在远端run/H0。后续结论须读取完整可用产物，不能由此快照推断最终性能。
+
+
+## 完整结果：2026-09-11
+
+全部32组目标预测与独立评分于12:09完成，状态ARTIFACTS_COMPLETE。H0完整200轮日志已读取，17份执行日志均无Python traceback。详细数据见[detailed_results.md](detailed_results.md)、[metrics.csv](metrics.csv)及[grouped_metrics.csv](grouped_metrics.csv)。全部2784个分组的计数、加权准确率和相对H0配对净变化已交叉核对。H1–H4四场景闭集准确率均低于H0；cosine仅小幅描述性改善。单seed不晋级，不回流目标调参。H5保持未启动。
