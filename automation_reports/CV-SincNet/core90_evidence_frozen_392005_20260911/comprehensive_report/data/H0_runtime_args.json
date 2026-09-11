@@ -1,0 +1,16 @@
+{
+  "dataset": "wisig",
+  "num_classes": 6,
+  "sample_rate_hz": 25000000.0,
+  "input_len": 256,
+  "num_domains": 15,
+  "evidence_config": "",
+  "model_size": "M",
+  "model_variant": "lite_d",
+  "representation_mode": "dual",
+  "id_feature_key": "feat_joint",
+  "branch_ablation": "no_dac",
+  "domain_branch_ablation": "no_stats",
+  "domain_enhancer": "rcn_stats",
+  "domain_enhancer_strength": 0.35
+}

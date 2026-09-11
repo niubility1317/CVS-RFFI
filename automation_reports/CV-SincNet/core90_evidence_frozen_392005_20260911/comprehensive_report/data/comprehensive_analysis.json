@@ -1,0 +1,5703 @@
+{
+  "target": {
+    "H0": {
+      "clean": {
+        "correct_count": 127684,
+        "wrong_count": 40316,
+        "accepted_correct": 127684,
+        "accepted_wrong": 40316,
+        "rejected_correct": 0,
+        "rejected_wrong": 0,
+        "closed_set_confusion": [
+          [
+            25092,
+            513,
+            183,
+            2156,
+            41,
+            15
+          ],
+          [
+            376,
+            15469,
+            17,
+            11982,
+            126,
+            30
+          ],
+          [
+            1717,
+            2927,
+            16136,
+            1749,
+            613,
+            4858
+          ],
+          [
+            2189,
+            7767,
+            37,
+            17923,
+            47,
+            37
+          ],
+          [
+            6,
+            9,
+            17,
+            3,
+            27959,
+            6
+          ],
+          [
+            6,
+            91,
+            62,
+            21,
+            2715,
+            25105
+          ]
+        ],
+        "mean_confidence": 0.9918943643569946,
+        "max_softmax_one_count": 127876,
+        "prediction_class_counts": [
+          29386,
+          26776,
+          16452,
+          33834,
+          31501,
+          30051
+        ],
+        "seen_days_1_2_3": {
+          "count": 126000,
+          "accuracy": 0.766182541847229,
+          "effective_accuracy": 0.766182541847229,
+          "coverage": 1.0
+        },
+        "unseen_day_0": {
+          "count": 42000,
+          "accuracy": 0.7415476441383362,
+          "effective_accuracy": 0.7415476441383362,
+          "coverage": 1.0
+        },
+        "tie_grouped_right_rectangle_aurc": 0.16206321630314013,
+        "risk_at_coverage": {
+          "0.1": {
+            "requested_coverage": 0.1,
+            "attained_coverage": 0.7611666666666667,
+            "risk": 0.15195971097000216,
+            "threshold": 1.0
+          },
+          "0.2": {
+            "requested_coverage": 0.2,
+            "attained_coverage": 0.7611666666666667,
+            "risk": 0.15195971097000216,
+            "threshold": 1.0
+          },
+          "0.3": {
+            "requested_coverage": 0.3,
+            "attained_coverage": 0.7611666666666667,
+            "risk": 0.15195971097000216,
+            "threshold": 1.0
+          },
+          "0.4": {
+            "requested_coverage": 0.4,
+            "attained_coverage": 0.7611666666666667,
+            "risk": 0.15195971097000216,
+            "threshold": 1.0
+          },
+          "0.5": {
+            "requested_coverage": 0.5,
+            "attained_coverage": 0.7611666666666667,
+            "risk": 0.15195971097000216,
+            "threshold": 1.0
+          },
+          "0.6": {
+            "requested_coverage": 0.6,
+            "attained_coverage": 0.7611666666666667,
+            "risk": 0.15195971097000216,
+            "threshold": 1.0
+          },
+          "0.7": {
+            "requested_coverage": 0.7,
+            "attained_coverage": 0.7611666666666667,
+            "risk": 0.15195971097000216,
+            "threshold": 1.0
+          },
+          "0.8": {
+            "requested_coverage": 0.8,
+            "attained_coverage": 0.8015714285714286,
+            "risk": 0.16362947781144177,
+            "threshold": 0.9999998807907104
+          },
+          "0.9": {
+            "requested_coverage": 0.9,
+            "attained_coverage": 0.9000238095238096,
+            "risk": 0.1991349435200127,
+            "threshold": 0.9999444484710693
+          },
+          "0.95": {
+            "requested_coverage": 0.95,
+            "attained_coverage": 0.95,
+            "risk": 0.21900375939849626,
+            "threshold": 0.9924127459526062
+          },
+          "1.0": {
+            "requested_coverage": 1.0,
+            "attained_coverage": 1.0,
+            "risk": 0.23997619047619045,
+            "threshold": 0.2269621640443802
+          }
+        }
+      },
+      "leo_clear_weak": {
+        "correct_count": 99831,
+        "wrong_count": 68169,
+        "accepted_correct": 99831,
+        "accepted_wrong": 68169,
+        "rejected_correct": 0,
+        "rejected_wrong": 0,
+        "closed_set_confusion": [
+          [
+            12367,
+            5442,
+            196,
+            9705,
+            259,
+            31
+          ],
+          [
+            322,
+            11641,
+            21,
+            15455,
+            523,
+            38
+          ],
+          [
+            948,
+            4444,
+            11187,
+            2389,
+            4283,
+            4749
+          ],
+          [
+            1648,
+            8649,
+            392,
+            16598,
+            503,
+            210
+          ],
+          [
+            25,
+            3057,
+            37,
+            1289,
+            23567,
+            25
+          ],
+          [
+            38,
+            443,
+            253,
+            34,
+            2761,
+            24471
+          ]
+        ],
+        "mean_confidence": 0.9802773594856262,
+        "max_softmax_one_count": 74265,
+        "prediction_class_counts": [
+          15348,
+          33676,
+          12086,
+          45470,
+          31896,
+          29524
+        ],
+        "seen_days_1_2_3": {
+          "count": 126000,
+          "accuracy": 0.6018254160881042,
+          "effective_accuracy": 0.6018254160881042,
+          "coverage": 1.0
+        },
+        "unseen_day_0": {
+          "count": 42000,
+          "accuracy": 0.5714523792266846,
+          "effective_accuracy": 0.5714523792266846,
+          "coverage": 1.0
+        },
+        "tie_grouped_right_rectangle_aurc": 0.2639349158071629,
+        "risk_at_coverage": {
+          "0.1": {
+            "requested_coverage": 0.1,
+            "attained_coverage": 0.44205357142857143,
+            "risk": 0.19333467986265396,
+            "threshold": 1.0
+          },
+          "0.2": {
+            "requested_coverage": 0.2,
+            "attained_coverage": 0.44205357142857143,
+            "risk": 0.19333467986265396,
+            "threshold": 1.0
+          },
+          "0.3": {
+            "requested_coverage": 0.3,
+            "attained_coverage": 0.44205357142857143,
+            "risk": 0.19333467986265396,
+            "threshold": 1.0
+          },
+          "0.4": {
+            "requested_coverage": 0.4,
+            "attained_coverage": 0.44205357142857143,
+            "risk": 0.19333467986265396,
+            "threshold": 1.0
+          },
+          "0.5": {
+            "requested_coverage": 0.5,
+            "attained_coverage": 0.5603988095238095,
+            "risk": 0.2532210266923003,
+            "threshold": 0.9999998807907104
+          },
+          "0.6": {
+            "requested_coverage": 0.6,
+            "attained_coverage": 0.6049940476190476,
+            "risk": 0.2752388354863783,
+            "threshold": 0.9999997615814209
+          },
+          "0.7": {
+            "requested_coverage": 0.7,
+            "attained_coverage": 0.7007857142857142,
+            "risk": 0.31271871708626375,
+            "threshold": 0.9999978542327881
+          },
+          "0.8": {
+            "requested_coverage": 0.8,
+            "attained_coverage": 0.8000059523809524,
+            "risk": 0.34569683261285256,
+            "threshold": 0.9999206066131592
+          },
+          "0.9": {
+            "requested_coverage": 0.9,
+            "attained_coverage": 0.9,
+            "risk": 0.37563492063492065,
+            "threshold": 0.9890313744544983
+          },
+          "0.95": {
+            "requested_coverage": 0.95,
+            "attained_coverage": 0.95,
+            "risk": 0.39030075187969926,
+            "threshold": 0.87735915184021
+          },
+          "1.0": {
+            "requested_coverage": 1.0,
+            "attained_coverage": 1.0,
+            "risk": 0.4057678571428571,
+            "threshold": 0.1666666716337204
+          }
+        }
+      },
+      "leo_low_elev_weak": {
+        "correct_count": 97093,
+        "wrong_count": 70907,
+        "accepted_correct": 97093,
+        "accepted_wrong": 70907,
+        "rejected_correct": 0,
+        "rejected_wrong": 0,
+        "closed_set_confusion": [
+          [
+            11949,
+            5686,
+            224,
+            9626,
+            461,
+            54
+          ],
+          [
+            506,
+            11577,
+            24,
+            15049,
+            794,
+            50
+          ],
+          [
+            1030,
+            4459,
+            10690,
+            2442,
+            4248,
+            5131
+          ],
+          [
+            2038,
+            8601,
+            466,
+            15816,
+            826,
+            253
+          ],
+          [
+            46,
+            3512,
+            43,
+            1767,
+            22578,
+            54
+          ],
+          [
+            60,
+            478,
+            308,
+            61,
+            2610,
+            24483
+          ]
+        ],
+        "mean_confidence": 0.9759304523468018,
+        "max_softmax_one_count": 68274,
+        "prediction_class_counts": [
+          15629,
+          34313,
+          11755,
+          44761,
+          31517,
+          30025
+        ],
+        "seen_days_1_2_3": {
+          "count": 126000,
+          "accuracy": 0.5852142572402954,
+          "effective_accuracy": 0.5852142572402954,
+          "coverage": 1.0
+        },
+        "unseen_day_0": {
+          "count": 42000,
+          "accuracy": 0.5560952425003052,
+          "effective_accuracy": 0.5560952425003052,
+          "coverage": 1.0
+        },
+        "tie_grouped_right_rectangle_aurc": 0.27534359304927936,
+        "risk_at_coverage": {
+          "0.1": {
+            "requested_coverage": 0.1,
+            "attained_coverage": 0.40639285714285717,
+            "risk": 0.19552098895626446,
+            "threshold": 1.0
+          },
+          "0.2": {
+            "requested_coverage": 0.2,
+            "attained_coverage": 0.40639285714285717,
+            "risk": 0.19552098895626446,
+            "threshold": 1.0
+          },
+          "0.3": {
+            "requested_coverage": 0.3,
+            "attained_coverage": 0.40639285714285717,
+            "risk": 0.19552098895626446,
+            "threshold": 1.0
+          },
+          "0.4": {
+            "requested_coverage": 0.4,
+            "attained_coverage": 0.40639285714285717,
+            "risk": 0.19552098895626446,
+            "threshold": 1.0
+          },
+          "0.5": {
+            "requested_coverage": 0.5,
+            "attained_coverage": 0.516327380952381,
+            "risk": 0.2543721107178677,
+            "threshold": 0.9999998807907104
+          },
+          "0.6": {
+            "requested_coverage": 0.6,
+            "attained_coverage": 0.6094404761904761,
+            "risk": 0.29752114546910713,
+            "threshold": 0.9999994039535522
+          },
+          "0.7": {
+            "requested_coverage": 0.7,
+            "attained_coverage": 0.7000714285714286,
+            "risk": 0.33039145665408287,
+            "threshold": 0.9999942779541016
+          },
+          "0.8": {
+            "requested_coverage": 0.8,
+            "attained_coverage": 0.8000238095238095,
+            "risk": 0.3622585637332222,
+            "threshold": 0.9997655749320984
+          },
+          "0.9": {
+            "requested_coverage": 0.9,
+            "attained_coverage": 0.9,
+            "risk": 0.39134259259259263,
+            "threshold": 0.9764040112495422
+          },
+          "0.95": {
+            "requested_coverage": 0.95,
+            "attained_coverage": 0.95,
+            "risk": 0.4058082706766918,
+            "threshold": 0.8186590671539307
+          },
+          "1.0": {
+            "requested_coverage": 1.0,
+            "attained_coverage": 1.0,
+            "risk": 0.4220654761904762,
+            "threshold": 0.1666666716337204
+          }
+        }
+      },
+      "leo_rain_weak": {
+        "correct_count": 97667,
+        "wrong_count": 70333,
+        "accepted_correct": 97667,
+        "accepted_wrong": 70333,
+        "rejected_correct": 0,
+        "rejected_wrong": 0,
+        "closed_set_confusion": [
+          [
+            12298,
+            5625,
+            241,
+            9352,
+            434,
+            50
+          ],
+          [
+            636,
+            11695,
+            28,
+            14735,
+            865,
+            41
+          ],
+          [
+            1111,
+            4598,
+            10681,
+            2219,
+            4135,
+            5256
+          ],
+          [
+            2147,
+            8766,
+            470,
+            15475,
+            889,
+            253
+          ],
+          [
+            46,
+            3460,
+            56,
+            1678,
+            22700,
+            60
+          ],
+          [
+            71,
+            408,
+            284,
+            50,
+            2369,
+            24818
+          ]
+        ],
+        "mean_confidence": 0.9754271507263184,
+        "max_softmax_one_count": 68538,
+        "prediction_class_counts": [
+          16309,
+          34552,
+          11760,
+          43509,
+          31392,
+          30478
+        ],
+        "seen_days_1_2_3": {
+          "count": 126000,
+          "accuracy": 0.5891746282577515,
+          "effective_accuracy": 0.5891746282577515,
+          "coverage": 1.0
+        },
+        "unseen_day_0": {
+          "count": 42000,
+          "accuracy": 0.5578809380531311,
+          "effective_accuracy": 0.5578809380531311,
+          "coverage": 1.0
+        },
+        "tie_grouped_right_rectangle_aurc": 0.271069611552329,
+        "risk_at_coverage": {
+          "0.1": {
+            "requested_coverage": 0.1,
+            "attained_coverage": 0.4079642857142857,
+            "risk": 0.19047827482564417,
+            "threshold": 1.0
+          },
+          "0.2": {
+            "requested_coverage": 0.2,
+            "attained_coverage": 0.4079642857142857,
+            "risk": 0.19047827482564417,
+            "threshold": 1.0
+          },
+          "0.3": {
+            "requested_coverage": 0.3,
+            "attained_coverage": 0.4079642857142857,
+            "risk": 0.19047827482564417,
+            "threshold": 1.0
+          },
+          "0.4": {
+            "requested_coverage": 0.4,
+            "attained_coverage": 0.4079642857142857,
+            "risk": 0.19047827482564417,
+            "threshold": 1.0
+          },
+          "0.5": {
+            "requested_coverage": 0.5,
+            "attained_coverage": 0.516547619047619,
+            "risk": 0.24973496197280476,
+            "threshold": 0.9999998807907104
+          },
+          "0.6": {
+            "requested_coverage": 0.6,
+            "attained_coverage": 0.6001904761904762,
+            "risk": 0.2893922564265312,
+            "threshold": 0.9999995231628418
+          },
+          "0.7": {
+            "requested_coverage": 0.7,
+            "attained_coverage": 0.700625,
+            "risk": 0.3271059003440805,
+            "threshold": 0.999994158744812
+          },
+          "0.8": {
+            "requested_coverage": 0.8,
+            "attained_coverage": 0.8,
+            "risk": 0.35858630952380954,
+            "threshold": 0.9997686743736267
+          },
+          "0.9": {
+            "requested_coverage": 0.9,
+            "attained_coverage": 0.9,
+            "risk": 0.388452380952381,
+            "threshold": 0.9766284227371216
+          },
+          "0.95": {
+            "requested_coverage": 0.95,
+            "attained_coverage": 0.95,
+            "risk": 0.40272556390977443,
+            "threshold": 0.8120025396347046
+          },
+          "1.0": {
+            "requested_coverage": 1.0,
+            "attained_coverage": 1.0,
+            "risk": 0.41864880952380956,
+            "threshold": 0.1666666716337204
+          }
+        }
+      }
+    },
+    "H1": {
+      "clean": {
+        "correct_count": 121547,
+        "wrong_count": 46453,
+        "accepted_correct": 113804,
+        "accepted_wrong": 28139,
+        "rejected_correct": 7743,
+        "rejected_wrong": 18314,
+        "closed_set_confusion": [
+          [
+            24573,
+            343,
+            143,
+            2931,
+            7,
+            3
+          ],
+          [
+            307,
+            13095,
+            9,
+            14557,
+            28,
+            4
+          ],
+          [
+            779,
+            713,
+            13078,
+            12182,
+            25,
+            1223
+          ],
+          [
+            1744,
+            6481,
+            16,
+            19742,
+            10,
+            7
+          ],
+          [
+            3,
+            17,
+            11,
+            175,
+            27793,
+            1
+          ],
+          [
+            22,
+            8,
+            35,
+            3102,
+            1567,
+            23266
+          ]
+        ],
+        "mean_confidence": 0.8419462442398071,
+        "max_softmax_one_count": 13019,
+        "prediction_class_counts": [
+          27428,
+          20657,
+          13292,
+          52689,
+          29430,
+          24504
+        ],
+        "observed_count_histogram": {
+          "160": 168000
+        },
+        "calibration_available_count": 168000,
+        "seen_days_1_2_3": {
+          "count": 126000,
+          "accuracy": 0.7252539396286011,
+          "effective_accuracy": 0.6838253736495972,
+          "coverage": 0.850174605846405
+        },
+        "unseen_day_0": {
+          "count": 42000,
+          "accuracy": 0.7182142734527588,
+          "effective_accuracy": 0.6581428647041321,
+          "coverage": 0.8290714025497437
+        },
+        "tie_grouped_right_rectangle_aurc": 0.09360781679374833,
+        "risk_at_coverage": {
+          "0.1": {
+            "requested_coverage": 0.1,
+            "attained_coverage": 0.10256547619047619,
+            "risk": 5.803493703204765e-05,
+            "threshold": 0.9999994039535522
+          },
+          "0.2": {
+            "requested_coverage": 0.2,
+            "attained_coverage": 0.20001190476190475,
+            "risk": 0.0005356823998571292,
+            "threshold": 0.9998922348022461
+          },
+          "0.3": {
+            "requested_coverage": 0.3,
+            "attained_coverage": 0.3000059523809524,
+            "risk": 0.007678419078986476,
+            "threshold": 0.9983780384063721
+          },
+          "0.4": {
+            "requested_coverage": 0.4,
+            "attained_coverage": 0.4,
+            "risk": 0.047812500000000036,
+            "threshold": 0.993638813495636
+          },
+          "0.5": {
+            "requested_coverage": 0.5,
+            "attained_coverage": 0.5,
+            "risk": 0.08003571428571432,
+            "threshold": 0.9741843342781067
+          },
+          "0.6": {
+            "requested_coverage": 0.6,
+            "attained_coverage": 0.6,
+            "risk": 0.1177976190476191,
+            "threshold": 0.9166183471679688
+          },
+          "0.7": {
+            "requested_coverage": 0.7,
+            "attained_coverage": 0.7,
+            "risk": 0.15308673469387757,
+            "threshold": 0.8004832863807678
+          },
+          "0.8": {
+            "requested_coverage": 0.8,
+            "attained_coverage": 0.8,
+            "risk": 0.17781994047619043,
+            "threshold": 0.6229819655418396
+          },
+          "0.9": {
+            "requested_coverage": 0.9,
+            "attained_coverage": 0.9,
+            "risk": 0.21579365079365076,
+            "threshold": 0.4398108422756195
+          },
+          "0.95": {
+            "requested_coverage": 0.95,
+            "attained_coverage": 0.95,
+            "risk": 0.24820802005012532,
+            "threshold": 0.39485567808151245
+          },
+          "1.0": {
+            "requested_coverage": 1.0,
+            "attained_coverage": 1.0,
+            "risk": 0.27650595238095244,
+            "threshold": 0.22939123213291168
+          }
+        }
+      },
+      "leo_clear_weak": {
+        "correct_count": 87225,
+        "wrong_count": 80775,
+        "accepted_correct": 74076,
+        "accepted_wrong": 39819,
+        "rejected_correct": 13149,
+        "rejected_wrong": 40956,
+        "closed_set_confusion": [
+          [
+            9707,
+            2554,
+            118,
+            15609,
+            7,
+            5
+          ],
+          [
+            134,
+            7600,
+            10,
+            20220,
+            27,
+            9
+          ],
+          [
+            274,
+            1157,
+            8887,
+            16097,
+            199,
+            1386
+          ],
+          [
+            827,
+            4340,
+            275,
+            22456,
+            14,
+            88
+          ],
+          [
+            5,
+            2276,
+            26,
+            8058,
+            17633,
+            2
+          ],
+          [
+            77,
+            100,
+            209,
+            5689,
+            983,
+            20942
+          ]
+        ],
+        "mean_confidence": 0.6894071102142334,
+        "max_softmax_one_count": 1069,
+        "prediction_class_counts": [
+          11024,
+          18027,
+          9525,
+          88129,
+          18863,
+          22432
+        ],
+        "observed_count_histogram": {
+          "160": 168000
+        },
+        "calibration_available_count": 168000,
+        "seen_days_1_2_3": {
+          "count": 126000,
+          "accuracy": 0.5262619256973267,
+          "effective_accuracy": 0.4496746063232422,
+          "coverage": 0.6836825609207153
+        },
+        "unseen_day_0": {
+          "count": 42000,
+          "accuracy": 0.49799999594688416,
+          "effective_accuracy": 0.41469046473503113,
+          "coverage": 0.6607381105422974
+        },
+        "tie_grouped_right_rectangle_aurc": 0.24948048085928082,
+        "risk_at_coverage": {
+          "0.1": {
+            "requested_coverage": 0.1,
+            "attained_coverage": 0.10000595238095238,
+            "risk": 0.009880364264031938,
+            "threshold": 0.9977339506149292
+          },
+          "0.2": {
+            "requested_coverage": 0.2,
+            "attained_coverage": 0.2,
+            "risk": 0.07107142857142856,
+            "threshold": 0.9582130312919617
+          },
+          "0.3": {
+            "requested_coverage": 0.3,
+            "attained_coverage": 0.3,
+            "risk": 0.15696428571428567,
+            "threshold": 0.8900574445724487
+          },
+          "0.4": {
+            "requested_coverage": 0.4,
+            "attained_coverage": 0.4,
+            "risk": 0.2204613095238095,
+            "threshold": 0.7950239181518555
+          },
+          "0.5": {
+            "requested_coverage": 0.5,
+            "attained_coverage": 0.5,
+            "risk": 0.27055952380952386,
+            "threshold": 0.6875724196434021
+          },
+          "0.6": {
+            "requested_coverage": 0.6,
+            "attained_coverage": 0.6,
+            "risk": 0.31437499999999996,
+            "threshold": 0.5768923163414001
+          },
+          "0.7": {
+            "requested_coverage": 0.7,
+            "attained_coverage": 0.7,
+            "risk": 0.35806972789115643,
+            "threshold": 0.4828152656555176
+          },
+          "0.8": {
+            "requested_coverage": 0.8,
+            "attained_coverage": 0.8,
+            "risk": 0.4067261904761905,
+            "threshold": 0.4365435540676117
+          },
+          "0.9": {
+            "requested_coverage": 0.9,
+            "attained_coverage": 0.9,
+            "risk": 0.44727513227513227,
+            "threshold": 0.40569138526916504
+          },
+          "0.95": {
+            "requested_coverage": 0.95,
+            "attained_coverage": 0.95,
+            "risk": 0.4647180451127819,
+            "threshold": 0.37075987458229065
+          },
+          "1.0": {
+            "requested_coverage": 1.0,
+            "attained_coverage": 1.0,
+            "risk": 0.48080357142857144,
+            "threshold": 0.22118081152439117
+          }
+        }
+      },
+      "leo_low_elev_weak": {
+        "correct_count": 83695,
+        "wrong_count": 84305,
+        "accepted_correct": 69100,
+        "accepted_wrong": 38668,
+        "rejected_correct": 14595,
+        "rejected_wrong": 45637,
+        "closed_set_confusion": [
+          [
+            9045,
+            2414,
+            139,
+            16369,
+            25,
+            8
+          ],
+          [
+            210,
+            7236,
+            13,
+            20475,
+            55,
+            11
+          ],
+          [
+            304,
+            1194,
+            8464,
+            16228,
+            300,
+            1510
+          ],
+          [
+            966,
+            4140,
+            318,
+            22439,
+            36,
+            101
+          ],
+          [
+            13,
+            2360,
+            26,
+            9832,
+            15757,
+            12
+          ],
+          [
+            159,
+            96,
+            246,
+            5901,
+            844,
+            20754
+          ]
+        ],
+        "mean_confidence": 0.666641354560852,
+        "max_softmax_one_count": 795,
+        "prediction_class_counts": [
+          10697,
+          17440,
+          9206,
+          91244,
+          17017,
+          22396
+        ],
+        "observed_count_histogram": {
+          "160": 168000
+        },
+        "calibration_available_count": 168000,
+        "seen_days_1_2_3": {
+          "count": 126000,
+          "accuracy": 0.5068730115890503,
+          "effective_accuracy": 0.4200237989425659,
+          "coverage": 0.6458650827407837
+        },
+        "unseen_day_0": {
+          "count": 42000,
+          "accuracy": 0.4721190333366394,
+          "effective_accuracy": 0.3851666748523712,
+          "coverage": 0.6283095479011536
+        },
+        "tie_grouped_right_rectangle_aurc": 0.2685980997208066,
+        "risk_at_coverage": {
+          "0.1": {
+            "requested_coverage": 0.1,
+            "attained_coverage": 0.1,
+            "risk": 0.014821428571428541,
+            "threshold": 0.9970815777778625
+          },
+          "0.2": {
+            "requested_coverage": 0.2,
+            "attained_coverage": 0.2,
+            "risk": 0.08357142857142852,
+            "threshold": 0.9439188838005066
+          },
+          "0.3": {
+            "requested_coverage": 0.3,
+            "attained_coverage": 0.3,
+            "risk": 0.17619047619047623,
+            "threshold": 0.8538118004798889
+          },
+          "0.4": {
+            "requested_coverage": 0.4,
+            "attained_coverage": 0.4,
+            "risk": 0.24257440476190473,
+            "threshold": 0.7465545535087585
+          },
+          "0.5": {
+            "requested_coverage": 0.5,
+            "attained_coverage": 0.5,
+            "risk": 0.2929166666666667,
+            "threshold": 0.636614203453064
+          },
+          "0.6": {
+            "requested_coverage": 0.6,
+            "attained_coverage": 0.6,
+            "risk": 0.33938492063492065,
+            "threshold": 0.5363792181015015
+          },
+          "0.7": {
+            "requested_coverage": 0.7,
+            "attained_coverage": 0.7,
+            "risk": 0.38474489795918365,
+            "threshold": 0.4609556794166565
+          },
+          "0.8": {
+            "requested_coverage": 0.8,
+            "attained_coverage": 0.8,
+            "risk": 0.4329464285714286,
+            "threshold": 0.4302018880844116
+          },
+          "0.9": {
+            "requested_coverage": 0.9,
+            "attained_coverage": 0.9,
+            "risk": 0.4703439153439154,
+            "threshold": 0.39927148818969727
+          },
+          "0.95": {
+            "requested_coverage": 0.95,
+            "attained_coverage": 0.95,
+            "risk": 0.4866604010025063,
+            "threshold": 0.3657749891281128
+          },
+          "1.0": {
+            "requested_coverage": 1.0,
+            "attained_coverage": 1.0,
+            "risk": 0.5018154761904762,
+            "threshold": 0.22500894963741302
+          }
+        }
+      },
+      "leo_rain_weak": {
+        "correct_count": 84386,
+        "wrong_count": 83614,
+        "accepted_correct": 69491,
+        "accepted_wrong": 37929,
+        "rejected_correct": 14895,
+        "rejected_wrong": 45685,
+        "closed_set_confusion": [
+          [
+            9310,
+            2428,
+            141,
+            16092,
+            21,
+            8
+          ],
+          [
+            253,
+            7207,
+            16,
+            20448,
+            66,
+            10
+          ],
+          [
+            330,
+            1172,
+            8422,
+            16195,
+            244,
+            1637
+          ],
+          [
+            1052,
+            4121,
+            287,
+            22394,
+            37,
+            109
+          ],
+          [
+            5,
+            2283,
+            27,
+            9912,
+            15765,
+            8
+          ],
+          [
+            171,
+            92,
+            236,
+            5395,
+            818,
+            21288
+          ]
+        ],
+        "mean_confidence": 0.6666328310966492,
+        "max_softmax_one_count": 780,
+        "prediction_class_counts": [
+          11121,
+          17303,
+          9129,
+          90436,
+          16951,
+          23060
+        ],
+        "observed_count_histogram": {
+          "160": 168000
+        },
+        "calibration_available_count": 168000,
+        "seen_days_1_2_3": {
+          "count": 126000,
+          "accuracy": 0.5116984248161316,
+          "effective_accuracy": 0.42338889837265015,
+          "coverage": 0.6449682712554932
+        },
+        "unseen_day_0": {
+          "count": 42000,
+          "accuracy": 0.4740952253341675,
+          "effective_accuracy": 0.384380966424942,
+          "coverage": 0.6227142810821533
+        },
+        "tie_grouped_right_rectangle_aurc": 0.2653807667566373,
+        "risk_at_coverage": {
+          "0.1": {
+            "requested_coverage": 0.1,
+            "attained_coverage": 0.1,
+            "risk": 0.015833333333333366,
+            "threshold": 0.9973228573799133
+          },
+          "0.2": {
+            "requested_coverage": 0.2,
+            "attained_coverage": 0.2,
+            "risk": 0.08235119047619044,
+            "threshold": 0.9452323317527771
+          },
+          "0.3": {
+            "requested_coverage": 0.3,
+            "attained_coverage": 0.3,
+            "risk": 0.17265873015873012,
+            "threshold": 0.8542123436927795
+          },
+          "0.4": {
+            "requested_coverage": 0.4,
+            "attained_coverage": 0.4,
+            "risk": 0.2371875,
+            "threshold": 0.7464858889579773
+          },
+          "0.5": {
+            "requested_coverage": 0.5,
+            "attained_coverage": 0.5,
+            "risk": 0.2875238095238095,
+            "threshold": 0.6354308724403381
+          },
+          "0.6": {
+            "requested_coverage": 0.6,
+            "attained_coverage": 0.6,
+            "risk": 0.3348214285714286,
+            "threshold": 0.5345425605773926
+          },
+          "0.7": {
+            "requested_coverage": 0.7,
+            "attained_coverage": 0.7,
+            "risk": 0.3799489795918367,
+            "threshold": 0.4597896337509155
+          },
+          "0.8": {
+            "requested_coverage": 0.8,
+            "attained_coverage": 0.8,
+            "risk": 0.4292113095238095,
+            "threshold": 0.42989349365234375
+          },
+          "0.9": {
+            "requested_coverage": 0.9,
+            "attained_coverage": 0.9,
+            "risk": 0.46666005291005286,
+            "threshold": 0.3993459641933441
+          },
+          "0.95": {
+            "requested_coverage": 0.95,
+            "attained_coverage": 0.95,
+            "risk": 0.4827944862155389,
+            "threshold": 0.3661540448665619
+          },
+          "1.0": {
+            "requested_coverage": 1.0,
+            "attained_coverage": 1.0,
+            "risk": 0.49770238095238095,
+            "threshold": 0.2180478721857071
+          }
+        }
+      }
+    },
+    "H2": {
+      "clean": {
+        "correct_count": 123123,
+        "wrong_count": 44877,
+        "accepted_correct": 115408,
+        "accepted_wrong": 26064,
+        "rejected_correct": 7715,
+        "rejected_wrong": 18813,
+        "closed_set_confusion": [
+          [
+            24226,
+            255,
+            174,
+            2827,
+            514,
+            4
+          ],
+          [
+            268,
+            12482,
+            13,
+            14645,
+            585,
+            7
+          ],
+          [
+            377,
+            434,
+            14908,
+            1912,
+            8491,
+            1878
+          ],
+          [
+            1551,
+            6165,
+            34,
+            19038,
+            1199,
+            13
+          ],
+          [
+            1,
+            8,
+            17,
+            3,
+            27970,
+            1
+          ],
+          [
+            0,
+            4,
+            57,
+            11,
+            3429,
+            24499
+          ]
+        ],
+        "mean_confidence": 0.833090603351593,
+        "max_softmax_one_count": 0,
+        "prediction_class_counts": [
+          26423,
+          19348,
+          15203,
+          38436,
+          42188,
+          26402
+        ],
+        "observed_count_histogram": {
+          "160": 168000
+        },
+        "calibration_available_count": 168000,
+        "seen_days_1_2_3": {
+          "count": 126000,
+          "accuracy": 0.735880970954895,
+          "effective_accuracy": 0.6899206638336182,
+          "coverage": 0.8437301516532898
+        },
+        "unseen_day_0": {
+          "count": 42000,
+          "accuracy": 0.7238571643829346,
+          "effective_accuracy": 0.6780475974082947,
+          "coverage": 0.8371904492378235
+        },
+        "tie_grouped_right_rectangle_aurc": 0.10651275814842448,
+        "risk_at_coverage": {
+          "0.1": {
+            "requested_coverage": 0.1,
+            "attained_coverage": 0.1,
+            "risk": 0.002619047619047632,
+            "threshold": 0.9997820258140564
+          },
+          "0.2": {
+            "requested_coverage": 0.2,
+            "attained_coverage": 0.20000595238095237,
+            "risk": 0.03979048242611827,
+            "threshold": 0.9991771578788757
+          },
+          "0.3": {
+            "requested_coverage": 0.3,
+            "attained_coverage": 0.3,
+            "risk": 0.06585317460317464,
+            "threshold": 0.9974737763404846
+          },
+          "0.4": {
+            "requested_coverage": 0.4,
+            "attained_coverage": 0.4,
+            "risk": 0.07968750000000002,
+            "threshold": 0.9924387335777283
+          },
+          "0.5": {
+            "requested_coverage": 0.5,
+            "attained_coverage": 0.5,
+            "risk": 0.09515476190476191,
+            "threshold": 0.9747852683067322
+          },
+          "0.6": {
+            "requested_coverage": 0.6,
+            "attained_coverage": 0.6,
+            "risk": 0.12148809523809523,
+            "threshold": 0.9207567572593689
+          },
+          "0.7": {
+            "requested_coverage": 0.7,
+            "attained_coverage": 0.7,
+            "risk": 0.1484863945578231,
+            "threshold": 0.7990997433662415
+          },
+          "0.8": {
+            "requested_coverage": 0.8,
+            "attained_coverage": 0.8,
+            "risk": 0.17389136904761904,
+            "threshold": 0.5978569984436035
+          },
+          "0.9": {
+            "requested_coverage": 0.9,
+            "attained_coverage": 0.9,
+            "risk": 0.20713624338624337,
+            "threshold": 0.3917470872402191
+          },
+          "0.95": {
+            "requested_coverage": 0.95,
+            "attained_coverage": 0.95,
+            "risk": 0.23785714285714288,
+            "threshold": 0.34497690200805664
+          },
+          "1.0": {
+            "requested_coverage": 1.0,
+            "attained_coverage": 1.0,
+            "risk": 0.26712499999999995,
+            "threshold": 0.24553005397319794
+          }
+        }
+      },
+      "leo_clear_weak": {
+        "correct_count": 89512,
+        "wrong_count": 78488,
+        "accepted_correct": 74174,
+        "accepted_wrong": 30853,
+        "rejected_correct": 15338,
+        "rejected_wrong": 47635,
+        "closed_set_confusion": [
+          [
+            8297,
+            1790,
+            156,
+            12119,
+            5632,
+            6
+          ],
+          [
+            83,
+            6576,
+            26,
+            19555,
+            1746,
+            14
+          ],
+          [
+            88,
+            611,
+            10176,
+            2039,
+            13277,
+            1809
+          ],
+          [
+            570,
+            3243,
+            422,
+            19077,
+            4572,
+            116
+          ],
+          [
+            2,
+            1466,
+            38,
+            3091,
+            23397,
+            6
+          ],
+          [
+            1,
+            37,
+            252,
+            31,
+            5690,
+            21989
+          ]
+        ],
+        "mean_confidence": 0.6538681387901306,
+        "max_softmax_one_count": 0,
+        "prediction_class_counts": [
+          9041,
+          13723,
+          11070,
+          55912,
+          54314,
+          23940
+        ],
+        "observed_count_histogram": {
+          "160": 168000
+        },
+        "calibration_available_count": 168000,
+        "seen_days_1_2_3": {
+          "count": 126000,
+          "accuracy": 0.5406349301338196,
+          "effective_accuracy": 0.45003968477249146,
+          "coverage": 0.6289047598838806
+        },
+        "unseen_day_0": {
+          "count": 42000,
+          "accuracy": 0.5093333125114441,
+          "effective_accuracy": 0.41592857241630554,
+          "coverage": 0.6139285564422607
+        },
+        "tie_grouped_right_rectangle_aurc": 0.24663706983509,
+        "risk_at_coverage": {
+          "0.1": {
+            "requested_coverage": 0.1,
+            "attained_coverage": 0.1,
+            "risk": 0.050000000000000044,
+            "threshold": 0.9887667298316956
+          },
+          "0.2": {
+            "requested_coverage": 0.2,
+            "attained_coverage": 0.2,
+            "risk": 0.12297619047619046,
+            "threshold": 0.9440447688102722
+          },
+          "0.3": {
+            "requested_coverage": 0.3,
+            "attained_coverage": 0.3,
+            "risk": 0.1730357142857143,
+            "threshold": 0.8737710118293762
+          },
+          "0.4": {
+            "requested_coverage": 0.4,
+            "attained_coverage": 0.4,
+            "risk": 0.21104166666666668,
+            "threshold": 0.773101270198822
+          },
+          "0.5": {
+            "requested_coverage": 0.5,
+            "attained_coverage": 0.5,
+            "risk": 0.2473333333333333,
+            "threshold": 0.6544236540794373
+          },
+          "0.6": {
+            "requested_coverage": 0.6,
+            "attained_coverage": 0.6,
+            "risk": 0.2851785714285714,
+            "threshold": 0.5315262675285339
+          },
+          "0.7": {
+            "requested_coverage": 0.7,
+            "attained_coverage": 0.7,
+            "risk": 0.3281207482993197,
+            "threshold": 0.4273744821548462
+          },
+          "0.8": {
+            "requested_coverage": 0.8,
+            "attained_coverage": 0.8,
+            "risk": 0.3826636904761904,
+            "threshold": 0.3695371747016907
+          },
+          "0.9": {
+            "requested_coverage": 0.9,
+            "attained_coverage": 0.9,
+            "risk": 0.4335582010582011,
+            "threshold": 0.3312937617301941
+          },
+          "0.95": {
+            "requested_coverage": 0.95,
+            "attained_coverage": 0.95,
+            "risk": 0.45333333333333337,
+            "threshold": 0.3071652948856354
+          },
+          "1.0": {
+            "requested_coverage": 1.0,
+            "attained_coverage": 1.0,
+            "risk": 0.46719047619047616,
+            "threshold": 0.2421952337026596
+          }
+        }
+      },
+      "leo_low_elev_weak": {
+        "correct_count": 86283,
+        "wrong_count": 81717,
+        "accepted_correct": 68864,
+        "accepted_wrong": 28913,
+        "rejected_correct": 17419,
+        "rejected_wrong": 52804,
+        "closed_set_confusion": [
+          [
+            7561,
+            1686,
+            216,
+            11310,
+            7215,
+            12
+          ],
+          [
+            130,
+            6047,
+            46,
+            19143,
+            2618,
+            16
+          ],
+          [
+            110,
+            638,
+            9725,
+            1879,
+            13681,
+            1967
+          ],
+          [
+            655,
+            2955,
+            503,
+            18158,
+            5608,
+            121
+          ],
+          [
+            5,
+            1524,
+            52,
+            3451,
+            22948,
+            20
+          ],
+          [
+            0,
+            44,
+            304,
+            36,
+            5772,
+            21844
+          ]
+        ],
+        "mean_confidence": 0.6285740733146667,
+        "max_softmax_one_count": 0,
+        "prediction_class_counts": [
+          8461,
+          12894,
+          10846,
+          53977,
+          57842,
+          23980
+        ],
+        "observed_count_histogram": {
+          "160": 168000
+        },
+        "calibration_available_count": 168000,
+        "seen_days_1_2_3": {
+          "count": 126000,
+          "accuracy": 0.5218571424484253,
+          "effective_accuracy": 0.4180317521095276,
+          "coverage": 0.5846190452575684
+        },
+        "unseen_day_0": {
+          "count": 42000,
+          "accuracy": 0.4887857139110565,
+          "effective_accuracy": 0.38552379608154297,
+          "coverage": 0.5741666555404663
+        },
+        "tie_grouped_right_rectangle_aurc": 0.2600155072879098,
+        "risk_at_coverage": {
+          "0.1": {
+            "requested_coverage": 0.1,
+            "attained_coverage": 0.1,
+            "risk": 0.047083333333333366,
+            "threshold": 0.9868566393852234
+          },
+          "0.2": {
+            "requested_coverage": 0.2,
+            "attained_coverage": 0.2,
+            "risk": 0.12428571428571433,
+            "threshold": 0.9275212287902832
+          },
+          "0.3": {
+            "requested_coverage": 0.3,
+            "attained_coverage": 0.3000059523809524,
+            "risk": 0.18061149580365465,
+            "threshold": 0.8351092338562012
+          },
+          "0.4": {
+            "requested_coverage": 0.4,
+            "attained_coverage": 0.4,
+            "risk": 0.22352678571428575,
+            "threshold": 0.7198706269264221
+          },
+          "0.5": {
+            "requested_coverage": 0.5,
+            "attained_coverage": 0.5,
+            "risk": 0.2632738095238095,
+            "threshold": 0.5972288846969604
+          },
+          "0.6": {
+            "requested_coverage": 0.6,
+            "attained_coverage": 0.6,
+            "risk": 0.3040178571428571,
+            "threshold": 0.4855917990207672
+          },
+          "0.7": {
+            "requested_coverage": 0.7,
+            "attained_coverage": 0.7,
+            "risk": 0.35225340136054417,
+            "threshold": 0.40327325463294983
+          },
+          "0.8": {
+            "requested_coverage": 0.8,
+            "attained_coverage": 0.8,
+            "risk": 0.40755208333333337,
+            "threshold": 0.3604952096939087
+          },
+          "0.9": {
+            "requested_coverage": 0.9,
+            "attained_coverage": 0.9,
+            "risk": 0.45499338624338626,
+            "threshold": 0.3268841803073883
+          },
+          "0.95": {
+            "requested_coverage": 0.95,
+            "attained_coverage": 0.95,
+            "risk": 0.47297619047619044,
+            "threshold": 0.30495214462280273
+          },
+          "1.0": {
+            "requested_coverage": 1.0,
+            "attained_coverage": 1.0,
+            "risk": 0.48641071428571425,
+            "threshold": 0.24357202649116516
+          }
+        }
+      },
+      "leo_rain_weak": {
+        "correct_count": 86822,
+        "wrong_count": 81178,
+        "accepted_correct": 69345,
+        "accepted_wrong": 28189,
+        "rejected_correct": 17477,
+        "rejected_wrong": 52989,
+        "closed_set_confusion": [
+          [
+            7774,
+            1677,
+            196,
+            10909,
+            7433,
+            11
+          ],
+          [
+            161,
+            6024,
+            54,
+            18853,
+            2897,
+            11
+          ],
+          [
+            131,
+            638,
+            9752,
+            1872,
+            13525,
+            2082
+          ],
+          [
+            709,
+            2917,
+            471,
+            17909,
+            5865,
+            129
+          ],
+          [
+            1,
+            1474,
+            53,
+            3389,
+            23071,
+            12
+          ],
+          [
+            3,
+            39,
+            281,
+            28,
+            5357,
+            22292
+          ]
+        ],
+        "mean_confidence": 0.6282346248626709,
+        "max_softmax_one_count": 0,
+        "prediction_class_counts": [
+          8779,
+          12769,
+          10807,
+          52960,
+          58148,
+          24537
+        ],
+        "observed_count_histogram": {
+          "160": 168000
+        },
+        "calibration_available_count": 168000,
+        "seen_days_1_2_3": {
+          "count": 126000,
+          "accuracy": 0.5258333086967468,
+          "effective_accuracy": 0.4211746156215668,
+          "coverage": 0.5832539796829224
+        },
+        "unseen_day_0": {
+          "count": 42000,
+          "accuracy": 0.48969048261642456,
+          "effective_accuracy": 0.3875476121902466,
+          "coverage": 0.5724762082099915
+        },
+        "tie_grouped_right_rectangle_aurc": 0.25609855645015456,
+        "risk_at_coverage": {
+          "0.1": {
+            "requested_coverage": 0.1,
+            "attained_coverage": 0.1,
+            "risk": 0.04613095238095233,
+            "threshold": 0.9874200224876404
+          },
+          "0.2": {
+            "requested_coverage": 0.2,
+            "attained_coverage": 0.2,
+            "risk": 0.12092261904761903,
+            "threshold": 0.9288796186447144
+          },
+          "0.3": {
+            "requested_coverage": 0.3,
+            "attained_coverage": 0.3,
+            "risk": 0.1766468253968254,
+            "threshold": 0.8359424471855164
+          },
+          "0.4": {
+            "requested_coverage": 0.4,
+            "attained_coverage": 0.4,
+            "risk": 0.2181547619047619,
+            "threshold": 0.7196922898292542
+          },
+          "0.5": {
+            "requested_coverage": 0.5,
+            "attained_coverage": 0.5,
+            "risk": 0.258547619047619,
+            "threshold": 0.5964439511299133
+          },
+          "0.6": {
+            "requested_coverage": 0.6,
+            "attained_coverage": 0.6,
+            "risk": 0.298343253968254,
+            "threshold": 0.4825531840324402
+          },
+          "0.7": {
+            "requested_coverage": 0.7,
+            "attained_coverage": 0.7,
+            "risk": 0.34671768707482997,
+            "threshold": 0.40127038955688477
+          },
+          "0.8": {
+            "requested_coverage": 0.8,
+            "attained_coverage": 0.8,
+            "risk": 0.4029166666666667,
+            "threshold": 0.3603300452232361
+          },
+          "0.9": {
+            "requested_coverage": 0.9,
+            "attained_coverage": 0.9,
+            "risk": 0.4508994708994709,
+            "threshold": 0.32671868801116943
+          },
+          "0.95": {
+            "requested_coverage": 0.95,
+            "attained_coverage": 0.95,
+            "risk": 0.46946115288220547,
+            "threshold": 0.3047770857810974
+          },
+          "1.0": {
+            "requested_coverage": 1.0,
+            "attained_coverage": 1.0,
+            "risk": 0.483202380952381,
+            "threshold": 0.24162647128105164
+          }
+        }
+      }
+    },
+    "H3": {
+      "clean": {
+        "correct_count": 118708,
+        "wrong_count": 49292,
+        "accepted_correct": 101917,
+        "accepted_wrong": 23724,
+        "rejected_correct": 16791,
+        "rejected_wrong": 25568,
+        "closed_set_confusion": [
+          [
+            23203,
+            75,
+            145,
+            4566,
+            8,
+            3
+          ],
+          [
+            190,
+            8788,
+            14,
+            18985,
+            17,
+            6
+          ],
+          [
+            161,
+            5,
+            12516,
+            13334,
+            21,
+            1963
+          ],
+          [
+            1206,
+            4841,
+            15,
+            21916,
+            10,
+            12
+          ],
+          [
+            3,
+            11,
+            13,
+            305,
+            27667,
+            1
+          ],
+          [
+            0,
+            0,
+            39,
+            1820,
+            1523,
+            24618
+          ]
+        ],
+        "mean_confidence": 0.850731372833252,
+        "max_softmax_one_count": 24413,
+        "prediction_class_counts": [
+          24763,
+          13720,
+          12742,
+          60926,
+          29246,
+          26603
+        ],
+        "observed_count_histogram": {
+          "160": 168000
+        },
+        "calibration_available_count": 168000,
+        "seen_days_1_2_3": {
+          "count": 126000,
+          "accuracy": 0.7077777981758118,
+          "effective_accuracy": 0.6140396595001221,
+          "coverage": 0.7554603219032288
+        },
+        "unseen_day_0": {
+          "count": 42000,
+          "accuracy": 0.7030476331710815,
+          "effective_accuracy": 0.5844761729240417,
+          "coverage": 0.7250714302062988
+        },
+        "tie_grouped_right_rectangle_aurc": 0.10514912219258438,
+        "risk_at_coverage": {
+          "0.1": {
+            "requested_coverage": 0.1,
+            "attained_coverage": 0.1453154761904762,
+            "risk": 0.00032769426125422996,
+            "threshold": 1.0
+          },
+          "0.2": {
+            "requested_coverage": 0.2,
+            "attained_coverage": 0.2001547619047619,
+            "risk": 0.0006245167429964615,
+            "threshold": 0.9999877214431763
+          },
+          "0.3": {
+            "requested_coverage": 0.3,
+            "attained_coverage": 0.30001190476190476,
+            "risk": 0.020515058926233065,
+            "threshold": 0.9994609951972961
+          },
+          "0.4": {
+            "requested_coverage": 0.4,
+            "attained_coverage": 0.4,
+            "risk": 0.0591666666666667,
+            "threshold": 0.9970421195030212
+          },
+          "0.5": {
+            "requested_coverage": 0.5,
+            "attained_coverage": 0.5,
+            "risk": 0.09020238095238098,
+            "threshold": 0.9821709394454956
+          },
+          "0.6": {
+            "requested_coverage": 0.6,
+            "attained_coverage": 0.6,
+            "risk": 0.1288690476190476,
+            "threshold": 0.9246739745140076
+          },
+          "0.7": {
+            "requested_coverage": 0.7,
+            "attained_coverage": 0.7,
+            "risk": 0.1668962585034014,
+            "threshold": 0.789368212223053
+          },
+          "0.8": {
+            "requested_coverage": 0.8,
+            "attained_coverage": 0.8,
+            "risk": 0.19845982142857144,
+            "threshold": 0.6044383645057678
+          },
+          "0.9": {
+            "requested_coverage": 0.9,
+            "attained_coverage": 0.9,
+            "risk": 0.24602513227513223,
+            "threshold": 0.5024139285087585
+          },
+          "0.95": {
+            "requested_coverage": 0.95,
+            "attained_coverage": 0.95,
+            "risk": 0.2684210526315789,
+            "threshold": 0.4556278884410858
+          },
+          "1.0": {
+            "requested_coverage": 1.0,
+            "attained_coverage": 1.0,
+            "risk": 0.29340476190476195,
+            "threshold": 0.2661159634590149
+          }
+        }
+      },
+      "leo_clear_weak": {
+        "correct_count": 81509,
+        "wrong_count": 86491,
+        "accepted_correct": 52952,
+        "accepted_wrong": 31973,
+        "rejected_correct": 28557,
+        "rejected_wrong": 54518,
+        "closed_set_confusion": [
+          [
+            5980,
+            276,
+            120,
+            21610,
+            8,
+            6
+          ],
+          [
+            48,
+            2631,
+            20,
+            25267,
+            21,
+            13
+          ],
+          [
+            54,
+            58,
+            8631,
+            17210,
+            84,
+            1963
+          ],
+          [
+            353,
+            743,
+            354,
+            26413,
+            16,
+            121
+          ],
+          [
+            4,
+            339,
+            30,
+            12207,
+            15413,
+            7
+          ],
+          [
+            25,
+            4,
+            238,
+            4440,
+            852,
+            22441
+          ]
+        ],
+        "mean_confidence": 0.7199575304985046,
+        "max_softmax_one_count": 3252,
+        "prediction_class_counts": [
+          6464,
+          4051,
+          9393,
+          107147,
+          16394,
+          24551
+        ],
+        "observed_count_histogram": {
+          "160": 168000
+        },
+        "calibration_available_count": 168000,
+        "seen_days_1_2_3": {
+          "count": 126000,
+          "accuracy": 0.4919603168964386,
+          "effective_accuracy": 0.32302379608154297,
+          "coverage": 0.5088412761688232
+        },
+        "unseen_day_0": {
+          "count": 42000,
+          "accuracy": 0.4648095369338989,
+          "effective_accuracy": 0.291690468788147,
+          "coverage": 0.49549999833106995
+        },
+        "tie_grouped_right_rectangle_aurc": 0.2860507105302822,
+        "risk_at_coverage": {
+          "0.1": {
+            "requested_coverage": 0.1,
+            "attained_coverage": 0.1,
+            "risk": 0.014940476190476226,
+            "threshold": 0.9983510971069336
+          },
+          "0.2": {
+            "requested_coverage": 0.2,
+            "attained_coverage": 0.2,
+            "risk": 0.0959523809523809,
+            "threshold": 0.9690616726875305
+          },
+          "0.3": {
+            "requested_coverage": 0.3,
+            "attained_coverage": 0.3,
+            "risk": 0.18482142857142858,
+            "threshold": 0.9119957685470581
+          },
+          "0.4": {
+            "requested_coverage": 0.4,
+            "attained_coverage": 0.4,
+            "risk": 0.2618601190476191,
+            "threshold": 0.8180815577507019
+          },
+          "0.5": {
+            "requested_coverage": 0.5,
+            "attained_coverage": 0.5,
+            "risk": 0.3192380952380952,
+            "threshold": 0.6955710649490356
+          },
+          "0.6": {
+            "requested_coverage": 0.6,
+            "attained_coverage": 0.6,
+            "risk": 0.36925595238095243,
+            "threshold": 0.604176938533783
+          },
+          "0.7": {
+            "requested_coverage": 0.7,
+            "attained_coverage": 0.7,
+            "risk": 0.4155697278911564,
+            "threshold": 0.5541977286338806
+          },
+          "0.8": {
+            "requested_coverage": 0.8,
+            "attained_coverage": 0.8,
+            "risk": 0.45517113095238093,
+            "threshold": 0.5083478093147278
+          },
+          "0.9": {
+            "requested_coverage": 0.9,
+            "attained_coverage": 0.9,
+            "risk": 0.48883597883597885,
+            "threshold": 0.45622965693473816
+          },
+          "0.95": {
+            "requested_coverage": 0.95,
+            "attained_coverage": 0.95,
+            "risk": 0.5027568922305765,
+            "threshold": 0.4154178500175476
+          },
+          "1.0": {
+            "requested_coverage": 1.0,
+            "attained_coverage": 1.0,
+            "risk": 0.5148273809523809,
+            "threshold": 0.23028302192687988
+          }
+        }
+      },
+      "leo_low_elev_weak": {
+        "correct_count": 77871,
+        "wrong_count": 90129,
+        "accepted_correct": 50767,
+        "accepted_wrong": 31495,
+        "rejected_correct": 27104,
+        "rejected_wrong": 58634,
+        "closed_set_confusion": [
+          [
+            5592,
+            215,
+            167,
+            21991,
+            21,
+            14
+          ],
+          [
+            79,
+            2088,
+            36,
+            25736,
+            44,
+            17
+          ],
+          [
+            74,
+            61,
+            8300,
+            17324,
+            123,
+            2118
+          ],
+          [
+            418,
+            638,
+            443,
+            26337,
+            32,
+            132
+          ],
+          [
+            2,
+            328,
+            39,
+            14293,
+            13316,
+            22
+          ],
+          [
+            53,
+            6,
+            338,
+            4615,
+            750,
+            22238
+          ]
+        ],
+        "mean_confidence": 0.6964825987815857,
+        "max_softmax_one_count": 2447,
+        "prediction_class_counts": [
+          6218,
+          3336,
+          9323,
+          110296,
+          14286,
+          24541
+        ],
+        "observed_count_histogram": {
+          "160": 168000
+        },
+        "calibration_available_count": 168000,
+        "seen_days_1_2_3": {
+          "count": 126000,
+          "accuracy": 0.47084125876426697,
+          "effective_accuracy": 0.30806347727775574,
+          "coverage": 0.4911666810512543
+        },
+        "unseen_day_0": {
+          "count": 42000,
+          "accuracy": 0.4415476322174072,
+          "effective_accuracy": 0.2845476269721985,
+          "coverage": 0.4851190447807312
+        },
+        "tie_grouped_right_rectangle_aurc": 0.3060923040806979,
+        "risk_at_coverage": {
+          "0.1": {
+            "requested_coverage": 0.1,
+            "attained_coverage": 0.1,
+            "risk": 0.01863095238095236,
+            "threshold": 0.9972233772277832
+          },
+          "0.2": {
+            "requested_coverage": 0.2,
+            "attained_coverage": 0.2,
+            "risk": 0.11113095238095239,
+            "threshold": 0.9541307687759399
+          },
+          "0.3": {
+            "requested_coverage": 0.3,
+            "attained_coverage": 0.3,
+            "risk": 0.20817460317460312,
+            "threshold": 0.87408047914505
+          },
+          "0.4": {
+            "requested_coverage": 0.4,
+            "attained_coverage": 0.4,
+            "risk": 0.28433035714285715,
+            "threshold": 0.7615728378295898
+          },
+          "0.5": {
+            "requested_coverage": 0.5,
+            "attained_coverage": 0.5,
+            "risk": 0.3418809523809524,
+            "threshold": 0.644464373588562
+          },
+          "0.6": {
+            "requested_coverage": 0.6,
+            "attained_coverage": 0.6,
+            "risk": 0.3957440476190476,
+            "threshold": 0.581648051738739
+          },
+          "0.7": {
+            "requested_coverage": 0.7,
+            "attained_coverage": 0.7,
+            "risk": 0.4414030612244898,
+            "threshold": 0.5373916625976562
+          },
+          "0.8": {
+            "requested_coverage": 0.8,
+            "attained_coverage": 0.8,
+            "risk": 0.48071428571428576,
+            "threshold": 0.4940817654132843
+          },
+          "0.9": {
+            "requested_coverage": 0.9,
+            "attained_coverage": 0.9,
+            "risk": 0.5125462962962963,
+            "threshold": 0.4419986307621002
+          },
+          "0.95": {
+            "requested_coverage": 0.95,
+            "attained_coverage": 0.95,
+            "risk": 0.5249812030075187,
+            "threshold": 0.40222182869911194
+          },
+          "1.0": {
+            "requested_coverage": 1.0,
+            "attained_coverage": 1.0,
+            "risk": 0.5364821428571429,
+            "threshold": 0.22254320979118347
+          }
+        }
+      },
+      "leo_rain_weak": {
+        "correct_count": 78395,
+        "wrong_count": 89605,
+        "accepted_correct": 51127,
+        "accepted_wrong": 31022,
+        "rejected_correct": 27268,
+        "rejected_wrong": 58583,
+        "closed_set_confusion": [
+          [
+            5731,
+            228,
+            147,
+            21866,
+            17,
+            11
+          ],
+          [
+            82,
+            2043,
+            35,
+            25788,
+            40,
+            12
+          ],
+          [
+            80,
+            57,
+            8245,
+            17315,
+            91,
+            2212
+          ],
+          [
+            457,
+            586,
+            385,
+            26415,
+            25,
+            132
+          ],
+          [
+            1,
+            289,
+            37,
+            14424,
+            13232,
+            17
+          ],
+          [
+            43,
+            1,
+            289,
+            4244,
+            694,
+            22729
+          ]
+        ],
+        "mean_confidence": 0.6991503834724426,
+        "max_softmax_one_count": 2436,
+        "prediction_class_counts": [
+          6394,
+          3204,
+          9138,
+          110052,
+          14099,
+          25113
+        ],
+        "observed_count_histogram": {
+          "160": 168000
+        },
+        "calibration_available_count": 168000,
+        "seen_days_1_2_3": {
+          "count": 126000,
+          "accuracy": 0.47423017024993896,
+          "effective_accuracy": 0.3111031651496887,
+          "coverage": 0.49026983976364136
+        },
+        "unseen_day_0": {
+          "count": 42000,
+          "accuracy": 0.4438571333885193,
+          "effective_accuracy": 0.2840000092983246,
+          "coverage": 0.4851190447807312
+        },
+        "tie_grouped_right_rectangle_aurc": 0.3026771009020022,
+        "risk_at_coverage": {
+          "0.1": {
+            "requested_coverage": 0.1,
+            "attained_coverage": 0.1,
+            "risk": 0.018750000000000044,
+            "threshold": 0.9974802136421204
+          },
+          "0.2": {
+            "requested_coverage": 0.2,
+            "attained_coverage": 0.2,
+            "risk": 0.10750000000000004,
+            "threshold": 0.9548994302749634
+          },
+          "0.3": {
+            "requested_coverage": 0.3,
+            "attained_coverage": 0.3,
+            "risk": 0.20498015873015873,
+            "threshold": 0.8750157356262207
+          },
+          "0.4": {
+            "requested_coverage": 0.4,
+            "attained_coverage": 0.4,
+            "risk": 0.27919642857142857,
+            "threshold": 0.7649534940719604
+          },
+          "0.5": {
+            "requested_coverage": 0.5,
+            "attained_coverage": 0.5,
+            "risk": 0.3361547619047619,
+            "threshold": 0.648079514503479
+          },
+          "0.6": {
+            "requested_coverage": 0.6,
+            "attained_coverage": 0.6,
+            "risk": 0.3910515873015873,
+            "threshold": 0.5837757587432861
+          },
+          "0.7": {
+            "requested_coverage": 0.7,
+            "attained_coverage": 0.7,
+            "risk": 0.4374659863945578,
+            "threshold": 0.5404589772224426
+          },
+          "0.8": {
+            "requested_coverage": 0.8,
+            "attained_coverage": 0.8,
+            "risk": 0.47737351190476196,
+            "threshold": 0.49773260951042175
+          },
+          "0.9": {
+            "requested_coverage": 0.9,
+            "attained_coverage": 0.9,
+            "risk": 0.5093981481481482,
+            "threshold": 0.446935772895813
+          },
+          "0.95": {
+            "requested_coverage": 0.95,
+            "attained_coverage": 0.95,
+            "risk": 0.5223558897243108,
+            "threshold": 0.4075931906700134
+          },
+          "1.0": {
+            "requested_coverage": 1.0,
+            "attained_coverage": 1.0,
+            "risk": 0.5333630952380952,
+            "threshold": 0.22204704582691193
+          }
+        }
+      }
+    },
+    "H4": {
+      "clean": {
+        "correct_count": 120484,
+        "wrong_count": 47516,
+        "accepted_correct": 115411,
+        "accepted_wrong": 38307,
+        "rejected_correct": 5073,
+        "rejected_wrong": 9209,
+        "closed_set_confusion": [
+          [
+            24244,
+            140,
+            141,
+            3464,
+            7,
+            4
+          ],
+          [
+            270,
+            11133,
+            10,
+            16562,
+            21,
+            4
+          ],
+          [
+            420,
+            110,
+            12764,
+            13317,
+            20,
+            1369
+          ],
+          [
+            1537,
+            5468,
+            15,
+            20964,
+            9,
+            7
+          ],
+          [
+            2,
+            27,
+            14,
+            349,
+            27607,
+            1
+          ],
+          [
+            0,
+            1,
+            35,
+            3030,
+            1162,
+            23772
+          ]
+        ],
+        "mean_confidence": 0.8586894273757935,
+        "max_softmax_one_count": 22797,
+        "prediction_class_counts": [
+          26473,
+          16879,
+          12979,
+          57686,
+          28826,
+          25157
+        ],
+        "observed_count_histogram": {
+          "160": 168000
+        },
+        "calibration_available_count": 168000,
+        "seen_days_1_2_3": {
+          "count": 126000,
+          "accuracy": 0.7189206480979919,
+          "effective_accuracy": 0.6926825642585754,
+          "coverage": 0.9199841022491455
+        },
+        "unseen_day_0": {
+          "count": 42000,
+          "accuracy": 0.711904764175415,
+          "effective_accuracy": 0.6698333621025085,
+          "coverage": 0.8999999761581421
+        },
+        "tie_grouped_right_rectangle_aurc": 0.09649366822752549,
+        "risk_at_coverage": {
+          "0.1": {
+            "requested_coverage": 0.1,
+            "attained_coverage": 0.13569642857142858,
+            "risk": 0.00026319252533224535,
+            "threshold": 1.0
+          },
+          "0.2": {
+            "requested_coverage": 0.2,
+            "attained_coverage": 0.20008333333333334,
+            "risk": 0.0006544892009281433,
+            "threshold": 0.9999686479568481
+          },
+          "0.3": {
+            "requested_coverage": 0.3,
+            "attained_coverage": 0.3000059523809524,
+            "risk": 0.0028174044165790724,
+            "threshold": 0.9990251064300537
+          },
+          "0.4": {
+            "requested_coverage": 0.4,
+            "attained_coverage": 0.4,
+            "risk": 0.044300595238095264,
+            "threshold": 0.9956364035606384
+          },
+          "0.5": {
+            "requested_coverage": 0.5,
+            "attained_coverage": 0.5,
+            "risk": 0.07897619047619042,
+            "threshold": 0.9810943603515625
+          },
+          "0.6": {
+            "requested_coverage": 0.6,
+            "attained_coverage": 0.6,
+            "risk": 0.11692460317460318,
+            "threshold": 0.927653968334198
+          },
+          "0.7": {
+            "requested_coverage": 0.7,
+            "attained_coverage": 0.7,
+            "risk": 0.1556207482993197,
+            "threshold": 0.8108410239219666
+          },
+          "0.8": {
+            "requested_coverage": 0.8,
+            "attained_coverage": 0.8,
+            "risk": 0.1863541666666667,
+            "threshold": 0.629859209060669
+          },
+          "0.9": {
+            "requested_coverage": 0.9,
+            "attained_coverage": 0.9,
+            "risk": 0.23719576719576718,
+            "threshold": 0.5297210216522217
+          },
+          "0.95": {
+            "requested_coverage": 0.95,
+            "attained_coverage": 0.95,
+            "risk": 0.2601065162907268,
+            "threshold": 0.47820669412612915
+          },
+          "1.0": {
+            "requested_coverage": 1.0,
+            "attained_coverage": 1.0,
+            "risk": 0.2828333333333334,
+            "threshold": 0.2571490705013275
+          }
+        }
+      },
+      "leo_clear_weak": {
+        "correct_count": 83239,
+        "wrong_count": 84761,
+        "accepted_correct": 73531,
+        "accepted_wrong": 69310,
+        "rejected_correct": 9708,
+        "rejected_wrong": 15451,
+        "closed_set_confusion": [
+          [
+            8293,
+            776,
+            115,
+            18803,
+            7,
+            6
+          ],
+          [
+            88,
+            4591,
+            11,
+            23277,
+            21,
+            12
+          ],
+          [
+            116,
+            192,
+            8728,
+            17358,
+            81,
+            1525
+          ],
+          [
+            565,
+            1505,
+            263,
+            25558,
+            12,
+            97
+          ],
+          [
+            4,
+            803,
+            28,
+            12439,
+            14724,
+            2
+          ],
+          [
+            18,
+            9,
+            204,
+            5632,
+            792,
+            21345
+          ]
+        ],
+        "mean_confidence": 0.7404168248176575,
+        "max_softmax_one_count": 2850,
+        "prediction_class_counts": [
+          9084,
+          7876,
+          9349,
+          103067,
+          15637,
+          22987
+        ],
+        "observed_count_histogram": {
+          "160": 168000
+        },
+        "calibration_available_count": 168000,
+        "seen_days_1_2_3": {
+          "count": 126000,
+          "accuracy": 0.5036587119102478,
+          "effective_accuracy": 0.44603967666625977,
+          "coverage": 0.8530714511871338
+        },
+        "unseen_day_0": {
+          "count": 42000,
+          "accuracy": 0.47090476751327515,
+          "effective_accuracy": 0.41261905431747437,
+          "coverage": 0.8417618870735168
+        },
+        "tie_grouped_right_rectangle_aurc": 0.278583158890631,
+        "risk_at_coverage": {
+          "0.1": {
+            "requested_coverage": 0.1,
+            "attained_coverage": 0.1,
+            "risk": 0.008511904761904776,
+            "threshold": 0.9987686276435852
+          },
+          "0.2": {
+            "requested_coverage": 0.2,
+            "attained_coverage": 0.2,
+            "risk": 0.08172619047619045,
+            "threshold": 0.9697868824005127
+          },
+          "0.3": {
+            "requested_coverage": 0.3,
+            "attained_coverage": 0.3,
+            "risk": 0.17658730158730163,
+            "threshold": 0.920769989490509
+          },
+          "0.4": {
+            "requested_coverage": 0.4,
+            "attained_coverage": 0.4,
+            "risk": 0.25200892857142854,
+            "threshold": 0.840694010257721
+          },
+          "0.5": {
+            "requested_coverage": 0.5,
+            "attained_coverage": 0.5,
+            "risk": 0.3105714285714286,
+            "threshold": 0.728188157081604
+          },
+          "0.6": {
+            "requested_coverage": 0.6,
+            "attained_coverage": 0.6,
+            "risk": 0.3592559523809524,
+            "threshold": 0.6234457492828369
+          },
+          "0.7": {
+            "requested_coverage": 0.7,
+            "attained_coverage": 0.7,
+            "risk": 0.4100510204081632,
+            "threshold": 0.5800212621688843
+          },
+          "0.8": {
+            "requested_coverage": 0.8,
+            "attained_coverage": 0.8,
+            "risk": 0.45273065476190477,
+            "threshold": 0.5468183755874634
+          },
+          "0.9": {
+            "requested_coverage": 0.9,
+            "attained_coverage": 0.9,
+            "risk": 0.48238095238095235,
+            "threshold": 0.4925015866756439
+          },
+          "0.95": {
+            "requested_coverage": 0.95,
+            "attained_coverage": 0.95,
+            "risk": 0.493765664160401,
+            "threshold": 0.4548071026802063
+          },
+          "1.0": {
+            "requested_coverage": 1.0,
+            "attained_coverage": 1.0,
+            "risk": 0.504529761904762,
+            "threshold": 0.2537422776222229
+          }
+        }
+      },
+      "leo_low_elev_weak": {
+        "correct_count": 79298,
+        "wrong_count": 88702,
+        "accepted_correct": 70108,
+        "accepted_wrong": 72214,
+        "rejected_correct": 9190,
+        "rejected_wrong": 16488,
+        "closed_set_confusion": [
+          [
+            7572,
+            658,
+            135,
+            19609,
+            17,
+            9
+          ],
+          [
+            133,
+            3802,
+            13,
+            24002,
+            37,
+            13
+          ],
+          [
+            149,
+            182,
+            8288,
+            17598,
+            132,
+            1651
+          ],
+          [
+            653,
+            1327,
+            311,
+            25572,
+            28,
+            109
+          ],
+          [
+            6,
+            770,
+            27,
+            14355,
+            12828,
+            14
+          ],
+          [
+            16,
+            9,
+            254,
+            5762,
+            723,
+            21236
+          ]
+        ],
+        "mean_confidence": 0.7244364023208618,
+        "max_softmax_one_count": 2145,
+        "prediction_class_counts": [
+          8529,
+          6748,
+          9028,
+          106898,
+          13765,
+          23032
+        ],
+        "observed_count_histogram": {
+          "160": 168000
+        },
+        "calibration_available_count": 168000,
+        "seen_days_1_2_3": {
+          "count": 126000,
+          "accuracy": 0.4801825284957886,
+          "effective_accuracy": 0.4251111149787903,
+          "coverage": 0.8476587533950806
+        },
+        "unseen_day_0": {
+          "count": 42000,
+          "accuracy": 0.44749999046325684,
+          "effective_accuracy": 0.39390477538108826,
+          "coverage": 0.8456428647041321
+        },
+        "tie_grouped_right_rectangle_aurc": 0.29954562748860747,
+        "risk_at_coverage": {
+          "0.1": {
+            "requested_coverage": 0.1,
+            "attained_coverage": 0.1,
+            "risk": 0.013571428571428568,
+            "threshold": 0.9982694387435913
+          },
+          "0.2": {
+            "requested_coverage": 0.2,
+            "attained_coverage": 0.2,
+            "risk": 0.0971428571428572,
+            "threshold": 0.9592633247375488
+          },
+          "0.3": {
+            "requested_coverage": 0.3,
+            "attained_coverage": 0.3,
+            "risk": 0.19946428571428576,
+            "threshold": 0.8938586711883545
+          },
+          "0.4": {
+            "requested_coverage": 0.4,
+            "attained_coverage": 0.4,
+            "risk": 0.27644345238095236,
+            "threshold": 0.7985265254974365
+          },
+          "0.5": {
+            "requested_coverage": 0.5,
+            "attained_coverage": 0.5,
+            "risk": 0.33544047619047623,
+            "threshold": 0.6867979168891907
+          },
+          "0.6": {
+            "requested_coverage": 0.6,
+            "attained_coverage": 0.6,
+            "risk": 0.3878869047619048,
+            "threshold": 0.6041344404220581
+          },
+          "0.7": {
+            "requested_coverage": 0.7,
+            "attained_coverage": 0.7,
+            "risk": 0.4390391156462585,
+            "threshold": 0.5751901865005493
+          },
+          "0.8": {
+            "requested_coverage": 0.8,
+            "attained_coverage": 0.8,
+            "risk": 0.47898065476190477,
+            "threshold": 0.541158139705658
+          },
+          "0.9": {
+            "requested_coverage": 0.9,
+            "attained_coverage": 0.9,
+            "risk": 0.5069708994708995,
+            "threshold": 0.4870643615722656
+          },
+          "0.95": {
+            "requested_coverage": 0.95,
+            "attained_coverage": 0.95,
+            "risk": 0.518139097744361,
+            "threshold": 0.4478745460510254
+          },
+          "1.0": {
+            "requested_coverage": 1.0,
+            "attained_coverage": 1.0,
+            "risk": 0.5279880952380953,
+            "threshold": 0.22138307988643646
+          }
+        }
+      },
+      "leo_rain_weak": {
+        "correct_count": 79911,
+        "wrong_count": 88089,
+        "accepted_correct": 70590,
+        "accepted_wrong": 72195,
+        "rejected_correct": 9321,
+        "rejected_wrong": 15894,
+        "closed_set_confusion": [
+          [
+            7799,
+            681,
+            135,
+            19364,
+            15,
+            6
+          ],
+          [
+            160,
+            3807,
+            16,
+            23971,
+            35,
+            11
+          ],
+          [
+            160,
+            166,
+            8254,
+            17545,
+            95,
+            1780
+          ],
+          [
+            712,
+            1280,
+            275,
+            25599,
+            21,
+            113
+          ],
+          [
+            3,
+            690,
+            30,
+            14568,
+            12699,
+            10
+          ],
+          [
+            9,
+            7,
+            230,
+            5341,
+            660,
+            21753
+          ]
+        ],
+        "mean_confidence": 0.7252161502838135,
+        "max_softmax_one_count": 2180,
+        "prediction_class_counts": [
+          8843,
+          6631,
+          8940,
+          106388,
+          13525,
+          23673
+        ],
+        "observed_count_histogram": {
+          "160": 168000
+        },
+        "calibration_available_count": 168000,
+        "seen_days_1_2_3": {
+          "count": 126000,
+          "accuracy": 0.4850793778896332,
+          "effective_accuracy": 0.42914286255836487,
+          "coverage": 0.851190447807312
+        },
+        "unseen_day_0": {
+          "count": 42000,
+          "accuracy": 0.44740477204322815,
+          "effective_accuracy": 0.39328572154045105,
+          "coverage": 0.8460714221000671
+        },
+        "tie_grouped_right_rectangle_aurc": 0.2967219077767636,
+        "risk_at_coverage": {
+          "0.1": {
+            "requested_coverage": 0.1,
+            "attained_coverage": 0.1,
+            "risk": 0.014880952380952328,
+            "threshold": 0.9984180927276611
+          },
+          "0.2": {
+            "requested_coverage": 0.2,
+            "attained_coverage": 0.2,
+            "risk": 0.09467261904761903,
+            "threshold": 0.9601607918739319
+          },
+          "0.3": {
+            "requested_coverage": 0.3,
+            "attained_coverage": 0.3,
+            "risk": 0.19712301587301584,
+            "threshold": 0.894077718257904
+          },
+          "0.4": {
+            "requested_coverage": 0.4,
+            "attained_coverage": 0.4,
+            "risk": 0.2716517857142857,
+            "threshold": 0.7996002435684204
+          },
+          "0.5": {
+            "requested_coverage": 0.5,
+            "attained_coverage": 0.5,
+            "risk": 0.32944047619047623,
+            "threshold": 0.6866136193275452
+          },
+          "0.6": {
+            "requested_coverage": 0.6,
+            "attained_coverage": 0.6,
+            "risk": 0.38338293650793653,
+            "threshold": 0.603621244430542
+          },
+          "0.7": {
+            "requested_coverage": 0.7,
+            "attained_coverage": 0.7,
+            "risk": 0.4357908163265306,
+            "threshold": 0.5761122703552246
+          },
+          "0.8": {
+            "requested_coverage": 0.8,
+            "attained_coverage": 0.8,
+            "risk": 0.4755059523809524,
+            "threshold": 0.5427610278129578
+          },
+          "0.9": {
+            "requested_coverage": 0.9,
+            "attained_coverage": 0.9,
+            "risk": 0.504563492063492,
+            "threshold": 0.4895288944244385
+          },
+          "0.95": {
+            "requested_coverage": 0.95,
+            "attained_coverage": 0.95,
+            "risk": 0.5147744360902256,
+            "threshold": 0.4510556161403656
+          },
+          "1.0": {
+            "requested_coverage": 1.0,
+            "attained_coverage": 1.0,
+            "risk": 0.5243392857142857,
+            "threshold": 0.2366734892129898
+          }
+        }
+      }
+    },
+    "cosine": {
+      "clean": {
+        "correct_count": 127860,
+        "wrong_count": 40140,
+        "accepted_correct": 127860,
+        "accepted_wrong": 40140,
+        "rejected_correct": 0,
+        "rejected_wrong": 0,
+        "closed_set_confusion": [
+          [
+            25100,
+            500,
+            183,
+            2157,
+            40,
+            20
+          ],
+          [
+            380,
+            15406,
+            14,
+            12038,
+            124,
+            38
+          ],
+          [
+            1877,
+            2822,
+            16200,
+            1620,
+            306,
+            5175
+          ],
+          [
+            2207,
+            7736,
+            36,
+            17930,
+            51,
+            40
+          ],
+          [
+            4,
+            8,
+            18,
+            2,
+            27960,
+            8
+          ],
+          [
+            6,
+            85,
+            63,
+            15,
+            2567,
+            25264
+          ]
+        ],
+        "mean_confidence": 0.33692416548728943,
+        "max_softmax_one_count": 0,
+        "prediction_class_counts": [
+          29574,
+          26557,
+          16514,
+          33762,
+          31048,
+          30545
+        ],
+        "seen_days_1_2_3": {
+          "count": 126000,
+          "accuracy": 0.767198383808136,
+          "effective_accuracy": 0.767198383808136,
+          "coverage": 1.0
+        },
+        "unseen_day_0": {
+          "count": 42000,
+          "accuracy": 0.7426905035972595,
+          "effective_accuracy": 0.7426905035972595,
+          "coverage": 1.0
+        },
+        "tie_grouped_right_rectangle_aurc": 0.12006152466728792,
+        "risk_at_coverage": {
+          "0.1": {
+            "requested_coverage": 0.1,
+            "attained_coverage": 0.1,
+            "risk": 0.0942857142857143,
+            "threshold": 0.3518775701522827
+          },
+          "0.2": {
+            "requested_coverage": 0.2,
+            "attained_coverage": 0.20000595238095237,
+            "risk": 0.10919317877444124,
+            "threshold": 0.35164618492126465
+          },
+          "0.3": {
+            "requested_coverage": 0.3,
+            "attained_coverage": 0.3000059523809524,
+            "risk": 0.08478006388762127,
+            "threshold": 0.3515227437019348
+          },
+          "0.4": {
+            "requested_coverage": 0.4,
+            "attained_coverage": 0.40001190476190474,
+            "risk": 0.08094997172703189,
+            "threshold": 0.35128480195999146
+          },
+          "0.5": {
+            "requested_coverage": 0.5,
+            "attained_coverage": 0.5,
+            "risk": 0.09413095238095237,
+            "threshold": 0.35072603821754456
+          },
+          "0.6": {
+            "requested_coverage": 0.6,
+            "attained_coverage": 0.6,
+            "risk": 0.12346230158730154,
+            "threshold": 0.3493492305278778
+          },
+          "0.7": {
+            "requested_coverage": 0.7,
+            "attained_coverage": 0.7000059523809524,
+            "risk": 0.1425242982627699,
+            "threshold": 0.34587475657463074
+          },
+          "0.8": {
+            "requested_coverage": 0.8,
+            "attained_coverage": 0.8,
+            "risk": 0.16474702380952377,
+            "threshold": 0.3341927230358124
+          },
+          "0.9": {
+            "requested_coverage": 0.9,
+            "attained_coverage": 0.9,
+            "risk": 0.19843915343915342,
+            "threshold": 0.2941267490386963
+          },
+          "0.95": {
+            "requested_coverage": 0.95,
+            "attained_coverage": 0.95,
+            "risk": 0.2170864661654135,
+            "threshold": 0.2602440416812897
+          },
+          "1.0": {
+            "requested_coverage": 1.0,
+            "attained_coverage": 1.0,
+            "risk": 0.23892857142857138,
+            "threshold": 0.16782647371292114
+          }
+        }
+      },
+      "leo_clear_weak": {
+        "correct_count": 100347,
+        "wrong_count": 67653,
+        "accepted_correct": 100347,
+        "accepted_wrong": 67653,
+        "rejected_correct": 0,
+        "rejected_wrong": 0,
+        "closed_set_confusion": [
+          [
+            12625,
+            5310,
+            195,
+            9551,
+            282,
+            37
+          ],
+          [
+            358,
+            11469,
+            24,
+            15545,
+            558,
+            46
+          ],
+          [
+            1102,
+            4211,
+            11322,
+            1982,
+            4282,
+            5101
+          ],
+          [
+            1851,
+            8418,
+            409,
+            16511,
+            584,
+            227
+          ],
+          [
+            22,
+            3012,
+            39,
+            1254,
+            23645,
+            28
+          ],
+          [
+            43,
+            401,
+            246,
+            22,
+            2513,
+            24775
+          ]
+        ],
+        "mean_confidence": 0.3165871202945709,
+        "max_softmax_one_count": 0,
+        "prediction_class_counts": [
+          16001,
+          32821,
+          12235,
+          44865,
+          31864,
+          30214
+        ],
+        "seen_days_1_2_3": {
+          "count": 126000,
+          "accuracy": 0.6050634980201721,
+          "effective_accuracy": 0.6050634980201721,
+          "coverage": 1.0
+        },
+        "unseen_day_0": {
+          "count": 42000,
+          "accuracy": 0.5740237832069397,
+          "effective_accuracy": 0.5740237832069397,
+          "coverage": 1.0
+        },
+        "tie_grouped_right_rectangle_aurc": 0.21909221255978553,
+        "risk_at_coverage": {
+          "0.1": {
+            "requested_coverage": 0.1,
+            "attained_coverage": 0.1,
+            "risk": 0.06166666666666665,
+            "threshold": 0.3510560095310211
+          },
+          "0.2": {
+            "requested_coverage": 0.2,
+            "attained_coverage": 0.2,
+            "risk": 0.09532738095238091,
+            "threshold": 0.34926527738571167
+          },
+          "0.3": {
+            "requested_coverage": 0.3,
+            "attained_coverage": 0.3000059523809524,
+            "risk": 0.1329735521120613,
+            "threshold": 0.34603151679039
+          },
+          "0.4": {
+            "requested_coverage": 0.4,
+            "attained_coverage": 0.4,
+            "risk": 0.17677083333333332,
+            "threshold": 0.34206622838974
+          },
+          "0.5": {
+            "requested_coverage": 0.5,
+            "attained_coverage": 0.5,
+            "risk": 0.2213452380952381,
+            "threshold": 0.33631014823913574
+          },
+          "0.6": {
+            "requested_coverage": 0.6,
+            "attained_coverage": 0.6,
+            "risk": 0.26456349206349206,
+            "threshold": 0.3268667459487915
+          },
+          "0.7": {
+            "requested_coverage": 0.7,
+            "attained_coverage": 0.7000059523809524,
+            "risk": 0.3036028605198935,
+            "threshold": 0.3109380602836609
+          },
+          "0.8": {
+            "requested_coverage": 0.8,
+            "attained_coverage": 0.8,
+            "risk": 0.33737351190476195,
+            "threshold": 0.2842552959918976
+          },
+          "0.9": {
+            "requested_coverage": 0.9,
+            "attained_coverage": 0.9,
+            "risk": 0.36764550264550266,
+            "threshold": 0.2471560835838318
+          },
+          "0.95": {
+            "requested_coverage": 0.95,
+            "attained_coverage": 0.95,
+            "risk": 0.38368421052631574,
+            "threshold": 0.2192031741142273
+          },
+          "1.0": {
+            "requested_coverage": 1.0,
+            "attained_coverage": 1.0,
+            "risk": 0.4026964285714286,
+            "threshold": 0.1666666716337204
+          }
+        }
+      },
+      "leo_low_elev_weak": {
+        "correct_count": 97717,
+        "wrong_count": 70283,
+        "accepted_correct": 97717,
+        "accepted_wrong": 70283,
+        "rejected_correct": 0,
+        "rejected_wrong": 0,
+        "closed_set_confusion": [
+          [
+            12340,
+            5530,
+            228,
+            9293,
+            533,
+            76
+          ],
+          [
+            594,
+            11365,
+            29,
+            15072,
+            880,
+            60
+          ],
+          [
+            1235,
+            4190,
+            10846,
+            1900,
+            4320,
+            5509
+          ],
+          [
+            2329,
+            8314,
+            492,
+            15600,
+            983,
+            282
+          ],
+          [
+            56,
+            3431,
+            50,
+            1655,
+            22751,
+            57
+          ],
+          [
+            41,
+            417,
+            311,
+            30,
+            2386,
+            24815
+          ]
+        ],
+        "mean_confidence": 0.3115840554237366,
+        "max_softmax_one_count": 0,
+        "prediction_class_counts": [
+          16595,
+          33247,
+          11956,
+          43550,
+          31853,
+          30799
+        ],
+        "seen_days_1_2_3": {
+          "count": 126000,
+          "accuracy": 0.5891825556755066,
+          "effective_accuracy": 0.5891825556755066,
+          "coverage": 1.0
+        },
+        "unseen_day_0": {
+          "count": 42000,
+          "accuracy": 0.5590476393699646,
+          "effective_accuracy": 0.5590476393699646,
+          "coverage": 1.0
+        },
+        "tie_grouped_right_rectangle_aurc": 0.23034205763698706,
+        "risk_at_coverage": {
+          "0.1": {
+            "requested_coverage": 0.1,
+            "attained_coverage": 0.10000595238095238,
+            "risk": 0.05719897625141357,
+            "threshold": 0.35094496607780457
+          },
+          "0.2": {
+            "requested_coverage": 0.2,
+            "attained_coverage": 0.2,
+            "risk": 0.09979166666666661,
+            "threshold": 0.34859371185302734
+          },
+          "0.3": {
+            "requested_coverage": 0.3,
+            "attained_coverage": 0.3,
+            "risk": 0.14301587301587304,
+            "threshold": 0.3447238504886627
+          },
+          "0.4": {
+            "requested_coverage": 0.4,
+            "attained_coverage": 0.4,
+            "risk": 0.19229166666666664,
+            "threshold": 0.33982744812965393
+          },
+          "0.5": {
+            "requested_coverage": 0.5,
+            "attained_coverage": 0.5,
+            "risk": 0.23841666666666672,
+            "threshold": 0.33220168948173523
+          },
+          "0.6": {
+            "requested_coverage": 0.6,
+            "attained_coverage": 0.6,
+            "risk": 0.28258928571428577,
+            "threshold": 0.32064351439476013
+          },
+          "0.7": {
+            "requested_coverage": 0.7,
+            "attained_coverage": 0.7,
+            "risk": 0.3209013605442177,
+            "threshold": 0.30183684825897217
+          },
+          "0.8": {
+            "requested_coverage": 0.8,
+            "attained_coverage": 0.8,
+            "risk": 0.35405505952380956,
+            "threshold": 0.27324122190475464
+          },
+          "0.9": {
+            "requested_coverage": 0.9,
+            "attained_coverage": 0.9,
+            "risk": 0.3839285714285714,
+            "threshold": 0.23622961342334747
+          },
+          "0.95": {
+            "requested_coverage": 0.95,
+            "attained_coverage": 0.95,
+            "risk": 0.4002192982456141,
+            "threshold": 0.20720510184764862
+          },
+          "1.0": {
+            "requested_coverage": 1.0,
+            "attained_coverage": 1.0,
+            "risk": 0.4183511904761905,
+            "threshold": 0.1666666716337204
+          }
+        }
+      },
+      "leo_rain_weak": {
+        "correct_count": 98212,
+        "wrong_count": 69788,
+        "accepted_correct": 98212,
+        "accepted_wrong": 69788,
+        "rejected_correct": 0,
+        "rejected_wrong": 0,
+        "closed_set_confusion": [
+          [
+            12677,
+            5481,
+            247,
+            9033,
+            489,
+            73
+          ],
+          [
+            717,
+            11537,
+            30,
+            14727,
+            931,
+            58
+          ],
+          [
+            1337,
+            4342,
+            10784,
+            1729,
+            4175,
+            5633
+          ],
+          [
+            2456,
+            8488,
+            505,
+            15273,
+            996,
+            282
+          ],
+          [
+            60,
+            3373,
+            66,
+            1607,
+            22831,
+            63
+          ],
+          [
+            53,
+            356,
+            287,
+            22,
+            2172,
+            25110
+          ]
+        ],
+        "mean_confidence": 0.3117085099220276,
+        "max_softmax_one_count": 0,
+        "prediction_class_counts": [
+          17300,
+          33577,
+          11919,
+          42391,
+          31594,
+          31219
+        ],
+        "seen_days_1_2_3": {
+          "count": 126000,
+          "accuracy": 0.5926983952522278,
+          "effective_accuracy": 0.5926983952522278,
+          "coverage": 1.0
+        },
+        "unseen_day_0": {
+          "count": 42000,
+          "accuracy": 0.5602856874465942,
+          "effective_accuracy": 0.5602856874465942,
+          "coverage": 1.0
+        },
+        "tie_grouped_right_rectangle_aurc": 0.22830577751111072,
+        "risk_at_coverage": {
+          "0.1": {
+            "requested_coverage": 0.1,
+            "attained_coverage": 0.1,
+            "risk": 0.05958333333333332,
+            "threshold": 0.3509673774242401
+          },
+          "0.2": {
+            "requested_coverage": 0.2,
+            "attained_coverage": 0.2,
+            "risk": 0.09717261904761909,
+            "threshold": 0.34868699312210083
+          },
+          "0.3": {
+            "requested_coverage": 0.3,
+            "attained_coverage": 0.3,
+            "risk": 0.13956349206349206,
+            "threshold": 0.34484001994132996
+          },
+          "0.4": {
+            "requested_coverage": 0.4,
+            "attained_coverage": 0.4,
+            "risk": 0.18938988095238096,
+            "threshold": 0.3399278521537781
+          },
+          "0.5": {
+            "requested_coverage": 0.5,
+            "attained_coverage": 0.5,
+            "risk": 0.23442857142857143,
+            "threshold": 0.33239760994911194
+          },
+          "0.6": {
+            "requested_coverage": 0.6,
+            "attained_coverage": 0.6,
+            "risk": 0.28004960317460315,
+            "threshold": 0.32083556056022644
+          },
+          "0.7": {
+            "requested_coverage": 0.7,
+            "attained_coverage": 0.7,
+            "risk": 0.3176615646258504,
+            "threshold": 0.3020089268684387
+          },
+          "0.8": {
+            "requested_coverage": 0.8,
+            "attained_coverage": 0.8,
+            "risk": 0.35078869047619043,
+            "threshold": 0.2736242413520813
+          },
+          "0.9": {
+            "requested_coverage": 0.9,
+            "attained_coverage": 0.9,
+            "risk": 0.380978835978836,
+            "threshold": 0.23642295598983765
+          },
+          "0.95": {
+            "requested_coverage": 0.95,
+            "attained_coverage": 0.95,
+            "risk": 0.39770676691729323,
+            "threshold": 0.2071658968925476
+          },
+          "1.0": {
+            "requested_coverage": 1.0,
+            "attained_coverage": 1.0,
+            "risk": 0.41540476190476194,
+            "threshold": 0.1666666716337204
+          }
+        }
+      }
+    },
+    "diagonal_gaussian": {
+      "clean": {
+        "correct_count": 109419,
+        "wrong_count": 58581,
+        "accepted_correct": 109419,
+        "accepted_wrong": 58581,
+        "rejected_correct": 0,
+        "rejected_wrong": 0,
+        "closed_set_confusion": [
+          [
+            22268,
+            291,
+            69,
+            5370,
+            0,
+            2
+          ],
+          [
+            150,
+            12972,
+            5,
+            14864,
+            7,
+            2
+          ],
+          [
+            51,
+            467,
+            6903,
+            20343,
+            10,
+            226
+          ],
+          [
+            841,
+            6354,
+            6,
+            20795,
+            2,
+            2
+          ],
+          [
+            0,
+            23,
+            4,
+            1591,
+            26381,
+            1
+          ],
+          [
+            0,
+            5,
+            9,
+            7864,
+            22,
+            20100
+          ]
+        ],
+        "mean_confidence": 0.9988282918930054,
+        "max_softmax_one_count": 163196,
+        "prediction_class_counts": [
+          23310,
+          20112,
+          6996,
+          70827,
+          26422,
+          20333
+        ],
+        "seen_days_1_2_3": {
+          "count": 126000,
+          "accuracy": 0.6551428437232971,
+          "effective_accuracy": 0.6551428437232971,
+          "coverage": 1.0
+        },
+        "unseen_day_0": {
+          "count": 42000,
+          "accuracy": 0.6397857069969177,
+          "effective_accuracy": 0.6397857069969177,
+          "coverage": 1.0
+        },
+        "tie_grouped_right_rectangle_aurc": 0.3427686145736081,
+        "risk_at_coverage": {
+          "0.1": {
+            "requested_coverage": 0.1,
+            "attained_coverage": 0.9714047619047619,
+            "risk": 0.34267996764626585,
+            "threshold": 1.0
+          },
+          "0.2": {
+            "requested_coverage": 0.2,
+            "attained_coverage": 0.9714047619047619,
+            "risk": 0.34267996764626585,
+            "threshold": 1.0
+          },
+          "0.3": {
+            "requested_coverage": 0.3,
+            "attained_coverage": 0.9714047619047619,
+            "risk": 0.34267996764626585,
+            "threshold": 1.0
+          },
+          "0.4": {
+            "requested_coverage": 0.4,
+            "attained_coverage": 0.9714047619047619,
+            "risk": 0.34267996764626585,
+            "threshold": 1.0
+          },
+          "0.5": {
+            "requested_coverage": 0.5,
+            "attained_coverage": 0.9714047619047619,
+            "risk": 0.34267996764626585,
+            "threshold": 1.0
+          },
+          "0.6": {
+            "requested_coverage": 0.6,
+            "attained_coverage": 0.9714047619047619,
+            "risk": 0.34267996764626585,
+            "threshold": 1.0
+          },
+          "0.7": {
+            "requested_coverage": 0.7,
+            "attained_coverage": 0.9714047619047619,
+            "risk": 0.34267996764626585,
+            "threshold": 1.0
+          },
+          "0.8": {
+            "requested_coverage": 0.8,
+            "attained_coverage": 0.9714047619047619,
+            "risk": 0.34267996764626585,
+            "threshold": 1.0
+          },
+          "0.9": {
+            "requested_coverage": 0.9,
+            "attained_coverage": 0.9714047619047619,
+            "risk": 0.34267996764626585,
+            "threshold": 1.0
+          },
+          "0.95": {
+            "requested_coverage": 0.95,
+            "attained_coverage": 0.9714047619047619,
+            "risk": 0.34267996764626585,
+            "threshold": 1.0
+          },
+          "1.0": {
+            "requested_coverage": 1.0,
+            "attained_coverage": 1.0,
+            "risk": 0.3486964285714286,
+            "threshold": 0.500030517578125
+          }
+        }
+      },
+      "leo_clear_weak": {
+        "correct_count": 63846,
+        "wrong_count": 104154,
+        "accepted_correct": 63846,
+        "accepted_wrong": 104154,
+        "rejected_correct": 0,
+        "rejected_wrong": 0,
+        "closed_set_confusion": [
+          [
+            3989,
+            2091,
+            54,
+            21863,
+            0,
+            3
+          ],
+          [
+            27,
+            7069,
+            2,
+            20894,
+            2,
+            6
+          ],
+          [
+            14,
+            773,
+            5454,
+            21128,
+            4,
+            627
+          ],
+          [
+            151,
+            3740,
+            89,
+            23962,
+            2,
+            56
+          ],
+          [
+            0,
+            1628,
+            12,
+            19982,
+            6376,
+            2
+          ],
+          [
+            0,
+            42,
+            77,
+            10856,
+            29,
+            16996
+          ]
+        ],
+        "mean_confidence": 0.9980750679969788,
+        "max_softmax_one_count": 160504,
+        "prediction_class_counts": [
+          4181,
+          15343,
+          5688,
+          118685,
+          6413,
+          17690
+        ],
+        "seen_days_1_2_3": {
+          "count": 126000,
+          "accuracy": 0.3896825313568115,
+          "effective_accuracy": 0.3896825313568115,
+          "coverage": 1.0
+        },
+        "unseen_day_0": {
+          "count": 42000,
+          "accuracy": 0.3510952293872833,
+          "effective_accuracy": 0.3510952293872833,
+          "coverage": 1.0
+        },
+        "tie_grouped_right_rectangle_aurc": 0.6190107840184801,
+        "risk_at_coverage": {
+          "0.1": {
+            "requested_coverage": 0.1,
+            "attained_coverage": 0.9553809523809523,
+            "risk": 0.6189876887803419,
+            "threshold": 1.0
+          },
+          "0.2": {
+            "requested_coverage": 0.2,
+            "attained_coverage": 0.9553809523809523,
+            "risk": 0.6189876887803419,
+            "threshold": 1.0
+          },
+          "0.3": {
+            "requested_coverage": 0.3,
+            "attained_coverage": 0.9553809523809523,
+            "risk": 0.6189876887803419,
+            "threshold": 1.0
+          },
+          "0.4": {
+            "requested_coverage": 0.4,
+            "attained_coverage": 0.9553809523809523,
+            "risk": 0.6189876887803419,
+            "threshold": 1.0
+          },
+          "0.5": {
+            "requested_coverage": 0.5,
+            "attained_coverage": 0.9553809523809523,
+            "risk": 0.6189876887803419,
+            "threshold": 1.0
+          },
+          "0.6": {
+            "requested_coverage": 0.6,
+            "attained_coverage": 0.9553809523809523,
+            "risk": 0.6189876887803419,
+            "threshold": 1.0
+          },
+          "0.7": {
+            "requested_coverage": 0.7,
+            "attained_coverage": 0.9553809523809523,
+            "risk": 0.6189876887803419,
+            "threshold": 1.0
+          },
+          "0.8": {
+            "requested_coverage": 0.8,
+            "attained_coverage": 0.9553809523809523,
+            "risk": 0.6189876887803419,
+            "threshold": 1.0
+          },
+          "0.9": {
+            "requested_coverage": 0.9,
+            "attained_coverage": 0.9553809523809523,
+            "risk": 0.6189876887803419,
+            "threshold": 1.0
+          },
+          "0.95": {
+            "requested_coverage": 0.95,
+            "attained_coverage": 0.9553809523809523,
+            "risk": 0.6189876887803419,
+            "threshold": 1.0
+          },
+          "1.0": {
+            "requested_coverage": 1.0,
+            "attained_coverage": 1.0,
+            "risk": 0.6199642857142857,
+            "threshold": 0.5001029968261719
+          }
+        }
+      },
+      "leo_low_elev_weak": {
+        "correct_count": 61479,
+        "wrong_count": 106521,
+        "accepted_correct": 61479,
+        "accepted_wrong": 106521,
+        "rejected_correct": 0,
+        "rejected_wrong": 0,
+        "closed_set_confusion": [
+          [
+            3504,
+            1971,
+            58,
+            22464,
+            0,
+            3
+          ],
+          [
+            34,
+            6578,
+            4,
+            21374,
+            2,
+            8
+          ],
+          [
+            22,
+            784,
+            5152,
+            21370,
+            1,
+            671
+          ],
+          [
+            156,
+            3458,
+            82,
+            24240,
+            0,
+            64
+          ],
+          [
+            1,
+            1711,
+            12,
+            21255,
+            5018,
+            3
+          ],
+          [
+            0,
+            50,
+            97,
+            10831,
+            35,
+            16987
+          ]
+        ],
+        "mean_confidence": 0.9981655478477478,
+        "max_softmax_one_count": 160622,
+        "prediction_class_counts": [
+          3717,
+          14552,
+          5405,
+          121534,
+          5056,
+          17736
+        ],
+        "seen_days_1_2_3": {
+          "count": 126000,
+          "accuracy": 0.37546032667160034,
+          "effective_accuracy": 0.37546032667160034,
+          "coverage": 1.0
+        },
+        "unseen_day_0": {
+          "count": 42000,
+          "accuracy": 0.3374047577381134,
+          "effective_accuracy": 0.3374047577381134,
+          "coverage": 1.0
+        },
+        "tie_grouped_right_rectangle_aurc": 0.6337569279289621,
+        "risk_at_coverage": {
+          "0.1": {
+            "requested_coverage": 0.1,
+            "attained_coverage": 0.9560833333333333,
+            "risk": 0.6337488015340365,
+            "threshold": 1.0
+          },
+          "0.2": {
+            "requested_coverage": 0.2,
+            "attained_coverage": 0.9560833333333333,
+            "risk": 0.6337488015340365,
+            "threshold": 1.0
+          },
+          "0.3": {
+            "requested_coverage": 0.3,
+            "attained_coverage": 0.9560833333333333,
+            "risk": 0.6337488015340365,
+            "threshold": 1.0
+          },
+          "0.4": {
+            "requested_coverage": 0.4,
+            "attained_coverage": 0.9560833333333333,
+            "risk": 0.6337488015340365,
+            "threshold": 1.0
+          },
+          "0.5": {
+            "requested_coverage": 0.5,
+            "attained_coverage": 0.9560833333333333,
+            "risk": 0.6337488015340365,
+            "threshold": 1.0
+          },
+          "0.6": {
+            "requested_coverage": 0.6,
+            "attained_coverage": 0.9560833333333333,
+            "risk": 0.6337488015340365,
+            "threshold": 1.0
+          },
+          "0.7": {
+            "requested_coverage": 0.7,
+            "attained_coverage": 0.9560833333333333,
+            "risk": 0.6337488015340365,
+            "threshold": 1.0
+          },
+          "0.8": {
+            "requested_coverage": 0.8,
+            "attained_coverage": 0.9560833333333333,
+            "risk": 0.6337488015340365,
+            "threshold": 1.0
+          },
+          "0.9": {
+            "requested_coverage": 0.9,
+            "attained_coverage": 0.9560833333333333,
+            "risk": 0.6337488015340365,
+            "threshold": 1.0
+          },
+          "0.95": {
+            "requested_coverage": 0.95,
+            "attained_coverage": 0.9560833333333333,
+            "risk": 0.6337488015340365,
+            "threshold": 1.0
+          },
+          "1.0": {
+            "requested_coverage": 1.0,
+            "attained_coverage": 1.0,
+            "risk": 0.6340535714285714,
+            "threshold": 0.5002059936523438
+          }
+        }
+      },
+      "leo_rain_weak": {
+        "correct_count": 62085,
+        "wrong_count": 105915,
+        "accepted_correct": 62085,
+        "accepted_wrong": 105915,
+        "rejected_correct": 0,
+        "rejected_wrong": 0,
+        "closed_set_confusion": [
+          [
+            3710,
+            1974,
+            62,
+            22249,
+            1,
+            4
+          ],
+          [
+            30,
+            6543,
+            7,
+            21410,
+            2,
+            8
+          ],
+          [
+            22,
+            777,
+            5167,
+            21232,
+            5,
+            797
+          ],
+          [
+            203,
+            3417,
+            94,
+            24224,
+            4,
+            58
+          ],
+          [
+            0,
+            1662,
+            9,
+            21365,
+            4958,
+            6
+          ],
+          [
+            1,
+            36,
+            92,
+            10360,
+            28,
+            17483
+          ]
+        ],
+        "mean_confidence": 0.9981656670570374,
+        "max_softmax_one_count": 160540,
+        "prediction_class_counts": [
+          3966,
+          14409,
+          5431,
+          120840,
+          4998,
+          18356
+        ],
+        "seen_days_1_2_3": {
+          "count": 126000,
+          "accuracy": 0.380436509847641,
+          "effective_accuracy": 0.380436509847641,
+          "coverage": 1.0
+        },
+        "unseen_day_0": {
+          "count": 42000,
+          "accuracy": 0.33690476417541504,
+          "effective_accuracy": 0.33690476417541504,
+          "coverage": 1.0
+        },
+        "tie_grouped_right_rectangle_aurc": 0.6303956921018601,
+        "risk_at_coverage": {
+          "0.1": {
+            "requested_coverage": 0.1,
+            "attained_coverage": 0.955595238095238,
+            "risk": 0.630397408745484,
+            "threshold": 1.0
+          },
+          "0.2": {
+            "requested_coverage": 0.2,
+            "attained_coverage": 0.955595238095238,
+            "risk": 0.630397408745484,
+            "threshold": 1.0
+          },
+          "0.3": {
+            "requested_coverage": 0.3,
+            "attained_coverage": 0.955595238095238,
+            "risk": 0.630397408745484,
+            "threshold": 1.0
+          },
+          "0.4": {
+            "requested_coverage": 0.4,
+            "attained_coverage": 0.955595238095238,
+            "risk": 0.630397408745484,
+            "threshold": 1.0
+          },
+          "0.5": {
+            "requested_coverage": 0.5,
+            "attained_coverage": 0.955595238095238,
+            "risk": 0.630397408745484,
+            "threshold": 1.0
+          },
+          "0.6": {
+            "requested_coverage": 0.6,
+            "attained_coverage": 0.955595238095238,
+            "risk": 0.630397408745484,
+            "threshold": 1.0
+          },
+          "0.7": {
+            "requested_coverage": 0.7,
+            "attained_coverage": 0.955595238095238,
+            "risk": 0.630397408745484,
+            "threshold": 1.0
+          },
+          "0.8": {
+            "requested_coverage": 0.8,
+            "attained_coverage": 0.955595238095238,
+            "risk": 0.630397408745484,
+            "threshold": 1.0
+          },
+          "0.9": {
+            "requested_coverage": 0.9,
+            "attained_coverage": 0.955595238095238,
+            "risk": 0.630397408745484,
+            "threshold": 1.0
+          },
+          "0.95": {
+            "requested_coverage": 0.95,
+            "attained_coverage": 0.955595238095238,
+            "risk": 0.630397408745484,
+            "threshold": 1.0
+          },
+          "1.0": {
+            "requested_coverage": 1.0,
+            "attained_coverage": 1.0,
+            "risk": 0.6304464285714286,
+            "threshold": 0.500457763671875
+          }
+        }
+      }
+    },
+    "linear_ridge": {
+      "clean": {
+        "correct_count": 125124,
+        "wrong_count": 42876,
+        "accepted_correct": 125124,
+        "accepted_wrong": 42876,
+        "rejected_correct": 0,
+        "rejected_wrong": 0,
+        "closed_set_confusion": [
+          [
+            24797,
+            309,
+            141,
+            2716,
+            21,
+            16
+          ],
+          [
+            462,
+            14033,
+            21,
+            13418,
+            34,
+            32
+          ],
+          [
+            2840,
+            1986,
+            16331,
+            2108,
+            106,
+            4629
+          ],
+          [
+            2507,
+            7122,
+            68,
+            18251,
+            14,
+            38
+          ],
+          [
+            6,
+            35,
+            22,
+            12,
+            27919,
+            6
+          ],
+          [
+            39,
+            75,
+            76,
+            19,
+            3998,
+            23793
+          ]
+        ],
+        "mean_confidence": 0.3066895306110382,
+        "max_softmax_one_count": 0,
+        "prediction_class_counts": [
+          30651,
+          23560,
+          16659,
+          36524,
+          32092,
+          28514
+        ],
+        "seen_days_1_2_3": {
+          "count": 126000,
+          "accuracy": 0.7497777938842773,
+          "effective_accuracy": 0.7497777938842773,
+          "coverage": 1.0
+        },
+        "unseen_day_0": {
+          "count": 42000,
+          "accuracy": 0.7298095226287842,
+          "effective_accuracy": 0.7298095226287842,
+          "coverage": 1.0
+        },
+        "tie_grouped_right_rectangle_aurc": 0.2592042367949542,
+        "risk_at_coverage": {
+          "0.1": {
+            "requested_coverage": 0.1,
+            "attained_coverage": 0.1,
+            "risk": 0.36869047619047624,
+            "threshold": 0.3596223294734955
+          },
+          "0.2": {
+            "requested_coverage": 0.2,
+            "attained_coverage": 0.2,
+            "risk": 0.3001190476190476,
+            "threshold": 0.3454681932926178
+          },
+          "0.3": {
+            "requested_coverage": 0.3,
+            "attained_coverage": 0.3,
+            "risk": 0.2510515873015873,
+            "threshold": 0.33435630798339844
+          },
+          "0.4": {
+            "requested_coverage": 0.4,
+            "attained_coverage": 0.4,
+            "risk": 0.22303571428571434,
+            "threshold": 0.32396599650382996
+          },
+          "0.5": {
+            "requested_coverage": 0.5,
+            "attained_coverage": 0.5,
+            "risk": 0.21120238095238097,
+            "threshold": 0.31250855326652527
+          },
+          "0.6": {
+            "requested_coverage": 0.6,
+            "attained_coverage": 0.6,
+            "risk": 0.20620039682539681,
+            "threshold": 0.30031895637512207
+          },
+          "0.7": {
+            "requested_coverage": 0.7,
+            "attained_coverage": 0.7,
+            "risk": 0.20789115646258505,
+            "threshold": 0.2852875888347626
+          },
+          "0.8": {
+            "requested_coverage": 0.8,
+            "attained_coverage": 0.8,
+            "risk": 0.21610863095238098,
+            "threshold": 0.26800936460494995
+          },
+          "0.9": {
+            "requested_coverage": 0.9,
+            "attained_coverage": 0.9,
+            "risk": 0.22503306878306883,
+            "threshold": 0.2439706027507782
+          },
+          "0.95": {
+            "requested_coverage": 0.95,
+            "attained_coverage": 0.95,
+            "risk": 0.23629699248120306,
+            "threshold": 0.22228026390075684
+          },
+          "1.0": {
+            "requested_coverage": 1.0,
+            "attained_coverage": 1.0,
+            "risk": 0.2552142857142857,
+            "threshold": 0.170009046792984
+          }
+        }
+      },
+      "leo_clear_weak": {
+        "correct_count": 88906,
+        "wrong_count": 79094,
+        "accepted_correct": 88906,
+        "accepted_wrong": 79094,
+        "rejected_correct": 0,
+        "rejected_wrong": 0,
+        "closed_set_confusion": [
+          [
+            13345,
+            4024,
+            168,
+            10392,
+            40,
+            31
+          ],
+          [
+            621,
+            9771,
+            47,
+            17438,
+            79,
+            44
+          ],
+          [
+            2519,
+            5589,
+            11429,
+            2890,
+            1045,
+            4528
+          ],
+          [
+            3197,
+            6692,
+            539,
+            17272,
+            91,
+            209
+          ],
+          [
+            307,
+            5551,
+            66,
+            7670,
+            14380,
+            26
+          ],
+          [
+            232,
+            788,
+            310,
+            41,
+            3920,
+            22709
+          ]
+        ],
+        "mean_confidence": 0.2728366553783417,
+        "max_softmax_one_count": 0,
+        "prediction_class_counts": [
+          20221,
+          32415,
+          12559,
+          55703,
+          19555,
+          27547
+        ],
+        "seen_days_1_2_3": {
+          "count": 126000,
+          "accuracy": 0.5360237956047058,
+          "effective_accuracy": 0.5360237956047058,
+          "coverage": 1.0
+        },
+        "unseen_day_0": {
+          "count": 42000,
+          "accuracy": 0.508738100528717,
+          "effective_accuracy": 0.508738100528717,
+          "coverage": 1.0
+        },
+        "tie_grouped_right_rectangle_aurc": 0.4193549453417885,
+        "risk_at_coverage": {
+          "0.1": {
+            "requested_coverage": 0.1,
+            "attained_coverage": 0.1,
+            "risk": 0.45571428571428574,
+            "threshold": 0.3431711494922638
+          },
+          "0.2": {
+            "requested_coverage": 0.2,
+            "attained_coverage": 0.2,
+            "risk": 0.4195238095238095,
+            "threshold": 0.3175662159919739
+          },
+          "0.3": {
+            "requested_coverage": 0.3,
+            "attained_coverage": 0.3,
+            "risk": 0.3981944444444444,
+            "threshold": 0.29972246289253235
+          },
+          "0.4": {
+            "requested_coverage": 0.4,
+            "attained_coverage": 0.4,
+            "risk": 0.38763392857142853,
+            "threshold": 0.28447312116622925
+          },
+          "0.5": {
+            "requested_coverage": 0.5,
+            "attained_coverage": 0.5,
+            "risk": 0.3858095238095238,
+            "threshold": 0.2700469493865967
+          },
+          "0.6": {
+            "requested_coverage": 0.6,
+            "attained_coverage": 0.6,
+            "risk": 0.39010912698412703,
+            "threshold": 0.2557733356952667
+          },
+          "0.7": {
+            "requested_coverage": 0.7,
+            "attained_coverage": 0.7,
+            "risk": 0.3999829931972789,
+            "threshold": 0.24080593883991241
+          },
+          "0.8": {
+            "requested_coverage": 0.8,
+            "attained_coverage": 0.8,
+            "risk": 0.41540178571428577,
+            "threshold": 0.22409355640411377
+          },
+          "0.9": {
+            "requested_coverage": 0.9,
+            "attained_coverage": 0.9,
+            "risk": 0.4381481481481482,
+            "threshold": 0.20237182080745697
+          },
+          "0.95": {
+            "requested_coverage": 0.95,
+            "attained_coverage": 0.95,
+            "risk": 0.45333333333333337,
+            "threshold": 0.1901533603668213
+          },
+          "1.0": {
+            "requested_coverage": 1.0,
+            "attained_coverage": 1.0,
+            "risk": 0.4707976190476191,
+            "threshold": 0.16872413456439972
+          }
+        }
+      },
+      "leo_low_elev_weak": {
+        "correct_count": 87153,
+        "wrong_count": 80847,
+        "accepted_correct": 87153,
+        "accepted_wrong": 80847,
+        "rejected_correct": 0,
+        "rejected_wrong": 0,
+        "closed_set_confusion": [
+          [
+            13508,
+            4219,
+            238,
+            9902,
+            75,
+            58
+          ],
+          [
+            1024,
+            9861,
+            69,
+            16831,
+            158,
+            57
+          ],
+          [
+            2833,
+            5388,
+            11008,
+            2666,
+            1214,
+            4891
+          ],
+          [
+            3782,
+            6741,
+            628,
+            16421,
+            171,
+            257
+          ],
+          [
+            361,
+            6353,
+            110,
+            7613,
+            13498,
+            65
+          ],
+          [
+            263,
+            846,
+            394,
+            68,
+            3572,
+            22857
+          ]
+        ],
+        "mean_confidence": 0.268139511346817,
+        "max_softmax_one_count": 0,
+        "prediction_class_counts": [
+          21771,
+          33408,
+          12447,
+          53501,
+          18688,
+          28185
+        ],
+        "seen_days_1_2_3": {
+          "count": 126000,
+          "accuracy": 0.525341272354126,
+          "effective_accuracy": 0.525341272354126,
+          "coverage": 1.0
+        },
+        "unseen_day_0": {
+          "count": 42000,
+          "accuracy": 0.4990476071834564,
+          "effective_accuracy": 0.4990476071834564,
+          "coverage": 1.0
+        },
+        "tie_grouped_right_rectangle_aurc": 0.4158881933800253,
+        "risk_at_coverage": {
+          "0.1": {
+            "requested_coverage": 0.1,
+            "attained_coverage": 0.1,
+            "risk": 0.42500000000000004,
+            "threshold": 0.3369702100753784
+          },
+          "0.2": {
+            "requested_coverage": 0.2,
+            "attained_coverage": 0.2,
+            "risk": 0.397797619047619,
+            "threshold": 0.31241145730018616
+          },
+          "0.3": {
+            "requested_coverage": 0.3,
+            "attained_coverage": 0.3,
+            "risk": 0.3838492063492064,
+            "threshold": 0.2948763966560364
+          },
+          "0.4": {
+            "requested_coverage": 0.4,
+            "attained_coverage": 0.4,
+            "risk": 0.3823511904761905,
+            "threshold": 0.27962034940719604
+          },
+          "0.5": {
+            "requested_coverage": 0.5,
+            "attained_coverage": 0.5,
+            "risk": 0.3889880952380952,
+            "threshold": 0.2649836540222168
+          },
+          "0.6": {
+            "requested_coverage": 0.6,
+            "attained_coverage": 0.6,
+            "risk": 0.3979365079365079,
+            "threshold": 0.2506248950958252
+          },
+          "0.7": {
+            "requested_coverage": 0.7,
+            "attained_coverage": 0.7,
+            "risk": 0.4106802721088435,
+            "threshold": 0.23577964305877686
+          },
+          "0.8": {
+            "requested_coverage": 0.8,
+            "attained_coverage": 0.8,
+            "risk": 0.4281026785714286,
+            "threshold": 0.21953018009662628
+          },
+          "0.9": {
+            "requested_coverage": 0.9,
+            "attained_coverage": 0.9,
+            "risk": 0.450026455026455,
+            "threshold": 0.20015400648117065
+          },
+          "0.95": {
+            "requested_coverage": 0.95,
+            "attained_coverage": 0.95,
+            "risk": 0.46464912280701753,
+            "threshold": 0.18942487239837646
+          },
+          "1.0": {
+            "requested_coverage": 1.0,
+            "attained_coverage": 1.0,
+            "risk": 0.4812321428571429,
+            "threshold": 0.16944140195846558
+          }
+        }
+      },
+      "leo_rain_weak": {
+        "correct_count": 87885,
+        "wrong_count": 80115,
+        "accepted_correct": 87885,
+        "accepted_wrong": 80115,
+        "rejected_correct": 0,
+        "rejected_wrong": 0,
+        "closed_set_confusion": [
+          [
+            13919,
+            4099,
+            237,
+            9612,
+            81,
+            52
+          ],
+          [
+            1215,
+            9900,
+            80,
+            16574,
+            180,
+            51
+          ],
+          [
+            3010,
+            5292,
+            10917,
+            2600,
+            1096,
+            5085
+          ],
+          [
+            4035,
+            6624,
+            623,
+            16292,
+            163,
+            263
+          ],
+          [
+            405,
+            6396,
+            123,
+            7421,
+            13595,
+            60
+          ],
+          [
+            254,
+            749,
+            351,
+            39,
+            3345,
+            23262
+          ]
+        ],
+        "mean_confidence": 0.2687488794326782,
+        "max_softmax_one_count": 0,
+        "prediction_class_counts": [
+          22838,
+          33060,
+          12331,
+          52538,
+          18460,
+          28773
+        ],
+        "seen_days_1_2_3": {
+          "count": 126000,
+          "accuracy": 0.5310317277908325,
+          "effective_accuracy": 0.5310317277908325,
+          "coverage": 1.0
+        },
+        "unseen_day_0": {
+          "count": 42000,
+          "accuracy": 0.49940475821495056,
+          "effective_accuracy": 0.49940475821495056,
+          "coverage": 1.0
+        },
+        "tie_grouped_right_rectangle_aurc": 0.40702055825599615,
+        "risk_at_coverage": {
+          "0.1": {
+            "requested_coverage": 0.1,
+            "attained_coverage": 0.1,
+            "risk": 0.41327380952380954,
+            "threshold": 0.33749836683273315
+          },
+          "0.2": {
+            "requested_coverage": 0.2,
+            "attained_coverage": 0.2,
+            "risk": 0.387172619047619,
+            "threshold": 0.31309905648231506
+          },
+          "0.3": {
+            "requested_coverage": 0.3,
+            "attained_coverage": 0.3,
+            "risk": 0.37422619047619043,
+            "threshold": 0.2958731949329376
+          },
+          "0.4": {
+            "requested_coverage": 0.4,
+            "attained_coverage": 0.4,
+            "risk": 0.37422619047619043,
+            "threshold": 0.2807272970676422
+          },
+          "0.5": {
+            "requested_coverage": 0.5,
+            "attained_coverage": 0.5000059523809524,
+            "risk": 0.37970976535993617,
+            "threshold": 0.2661486268043518
+          },
+          "0.6": {
+            "requested_coverage": 0.6,
+            "attained_coverage": 0.6,
+            "risk": 0.3894940476190476,
+            "threshold": 0.2517235577106476
+          },
+          "0.7": {
+            "requested_coverage": 0.7,
+            "attained_coverage": 0.7,
+            "risk": 0.40319727891156465,
+            "threshold": 0.23653799295425415
+          },
+          "0.8": {
+            "requested_coverage": 0.8,
+            "attained_coverage": 0.8,
+            "risk": 0.42154017857142856,
+            "threshold": 0.21984878182411194
+          },
+          "0.9": {
+            "requested_coverage": 0.9,
+            "attained_coverage": 0.9,
+            "risk": 0.4453571428571429,
+            "threshold": 0.20004522800445557
+          },
+          "0.95": {
+            "requested_coverage": 0.95,
+            "attained_coverage": 0.95,
+            "risk": 0.46055764411027567,
+            "threshold": 0.18913906812667847
+          },
+          "1.0": {
+            "requested_coverage": 1.0,
+            "attained_coverage": 1.0,
+            "risk": 0.47687500000000005,
+            "threshold": 0.16904060542583466
+          }
+        }
+      }
+    }
+  },
+  "H0_training": {
+    "epochs": 200,
+    "first_loss": 16.930914353351202,
+    "last_loss": 6.4370920171543045,
+    "sum_epoch_seconds": 30827.571033239365,
+    "min_epoch_seconds": 83.88361883163452,
+    "max_epoch_seconds": 187.20293593406677,
+    "median_epoch_seconds": 173.46785151958466,
+    "best_V": 98.20370370370371,
+    "best_V_epoch": 172,
+    "final_V": 97.85925925925926,
+    "gradient_skip_epochs": [
+      {
+        "epoch": 1,
+        "fraction": 0.02040816326530612,
+        "estimated_steps": 1
+      },
+      {
+        "epoch": 6,
+        "fraction": 0.04081632653061224,
+        "estimated_steps": 2
+      },
+      {
+        "epoch": 28,
+        "fraction": 0.02040816326530612,
+        "estimated_steps": 1
+      },
+      {
+        "epoch": 67,
+        "fraction": 0.02040816326530612,
+        "estimated_steps": 1
+      },
+      {
+        "epoch": 108,
+        "fraction": 0.02040816326530612,
+        "estimated_steps": 1
+      },
+      {
+        "epoch": 116,
+        "fraction": 0.02040816326530612,
+        "estimated_steps": 1
+      },
+      {
+        "epoch": 133,
+        "fraction": 0.02040816326530612,
+        "estimated_steps": 1
+      },
+      {
+        "epoch": 146,
+        "fraction": 0.02040816326530612,
+        "estimated_steps": 1
+      },
+      {
+        "epoch": 174,
+        "fraction": 0.02040816326530612,
+        "estimated_steps": 1
+      }
+    ],
+    "nonfinite_loss_epochs": [],
+    "target_metrics_nonnull_epochs": [],
+    "pseudo_selected_total": 2854.0,
+    "pseudo_processed_total": 439040.0,
+    "stages": {
+      "S1_core": {
+        "first": 1,
+        "last": 16,
+        "seconds": 1429.4693500995636,
+        "loss_first": 16.930914353351202,
+        "loss_last": 8.16478578411803,
+        "mean_pseudo_selected": 0.0
+      },
+      "S2_stabilize_aux": {
+        "first": 17,
+        "last": 68,
+        "seconds": 8998.456140756607,
+        "loss_first": 8.12533187866211,
+        "loss_last": 5.812678225186406,
+        "mean_pseudo_selected": 0.0
+      },
+      "S3_refine_aux": {
+        "first": 69,
+        "last": 130,
+        "seconds": 11166.25164437294,
+        "loss_first": 6.326824397456889,
+        "loss_last": 8.032771952298223,
+        "mean_pseudo_selected": 0.0
+      },
+      "SSDG_pseudo": {
+        "first": 131,
+        "last": 200,
+        "seconds": 9233.393898010254,
+        "loss_first": 8.478007958859813,
+        "loss_last": 6.4370920171543045,
+        "mean_pseudo_selected": 40.77142857142857
+      }
+    },
+    "null_metric_names_final": [
+      "best_test_tx",
+      "protected_overall_tx",
+      "protected_receiver_floor",
+      "protected_sat_floor_tx",
+      "protected_sat_mean_tx",
+      "protected_sat_receiver_floor",
+      "protected_sat_receiver_seen_day_floor",
+      "protected_sat_receiver_strict_floor",
+      "protected_sat_strict_floor",
+      "protected_sat_strict_mean",
+      "protected_strict_udu",
+      "test_tx_acc",
+      "train_dm_accept_proxy_vaccept",
+      "train_dm_accept_zid_p95_deg",
+      "train_dm_accept_zid_p99_deg",
+      "train_dm_accept_zid_tail_cvar_deg",
+      "val_probe_dom_acc"
+    ]
+  },
+  "H0_mechanisms": [
+    {
+      "metric": "train_loss_tx_labeled",
+      "nonzero_epochs": 200,
+      "first_nonzero_epoch": 1,
+      "last": 1.2611015645825132,
+      "maximum": 12.512151640288684
+    },
+    {
+      "metric": "train_loss_domain_labeled",
+      "nonzero_epochs": 200,
+      "first_nonzero_epoch": 1,
+      "last": 0.6318010693910171,
+      "maximum": 2.714809009007045
+    },
+    {
+      "metric": "train_loss_adv_labeled",
+      "nonzero_epochs": 200,
+      "first_nonzero_epoch": 1,
+      "last": 2.668622829476181,
+      "maximum": 2.718823257757693
+    },
+    {
+      "metric": "train_loss_cons_labeled",
+      "nonzero_epochs": 184,
+      "first_nonzero_epoch": 17,
+      "last": 0.2624661192602041,
+      "maximum": 0.4471908880739796
+    },
+    {
+      "metric": "train_loss_orth_labeled",
+      "nonzero_epochs": 200,
+      "first_nonzero_epoch": 1,
+      "last": 0.007054504083127392,
+      "maximum": 0.00751266674119599
+    },
+    {
+      "metric": "train_loss_fishr_labeled",
+      "nonzero_epochs": 200,
+      "first_nonzero_epoch": 1,
+      "last": 0.0022584205215359678,
+      "maximum": 0.01367684984009485
+    },
+    {
+      "metric": "train_loss_group_ce_labeled",
+      "nonzero_epochs": 200,
+      "first_nonzero_epoch": 1,
+      "last": 2.5830832719802856,
+      "maximum": 12.95465699020697
+    },
+    {
+      "metric": "train_loss_proto_labeled",
+      "nonzero_epochs": 200,
+      "first_nonzero_epoch": 1,
+      "last": 0.21208282240799495,
+      "maximum": 0.42678726206020434
+    },
+    {
+      "metric": "train_loss_open_world_feat",
+      "nonzero_epochs": 189,
+      "first_nonzero_epoch": 12,
+      "last": 0.06824619577703428,
+      "maximum": 0.15899912298333888
+    },
+    {
+      "metric": "train_loss_zid_compact",
+      "nonzero_epochs": 193,
+      "first_nonzero_epoch": 8,
+      "last": 1.5023279311705608,
+      "maximum": 1.754365592586751
+    },
+    {
+      "metric": "train_loss_proxy_unknown",
+      "nonzero_epochs": 156,
+      "first_nonzero_epoch": 45,
+      "last": 6.484859456821364,
+      "maximum": 9.996403441137197
+    },
+    {
+      "metric": "train_loss_soft_unknown_mixup",
+      "nonzero_epochs": 176,
+      "first_nonzero_epoch": 25,
+      "last": 2.1287677579996536,
+      "maximum": 3.5718884808676585
+    },
+    {
+      "metric": "train_loss_source_episode",
+      "nonzero_epochs": 181,
+      "first_nonzero_epoch": 20,
+      "last": 0.056852830821002016,
+      "maximum": 0.11755451575225713
+    },
+    {
+      "metric": "train_loss_sat_cls_labeled",
+      "nonzero_epochs": 121,
+      "first_nonzero_epoch": 80,
+      "last": 4.540395884185421,
+      "maximum": 7.35782431339731
+    },
+    {
+      "metric": "train_loss_sat_cons_labeled",
+      "nonzero_epochs": 0,
+      "first_nonzero_epoch": null,
+      "last": 0.0,
+      "maximum": 0.0
+    },
+    {
+      "metric": "train_loss_unlabeled",
+      "nonzero_epochs": 70,
+      "first_nonzero_epoch": 131,
+      "last": 2.065883897148292e-07,
+      "maximum": 0.005342024523593613
+    }
+  ],
+  "heads": {
+    "H1": {
+      "fit_seconds": 1103.195162984077,
+      "epochs": 20,
+      "batches_per_epoch": 99,
+      "backbone_tensors_identical_to_H0": true,
+      "deployed_bytes": 4281550,
+      "config": {
+        "variant": "H1",
+        "configured": {
+          "variant": "H1",
+          "layout": "joint",
+          "covariance_rank": 0,
+          "observation_floor": 1e-05,
+          "observation_ceiling": 1.0,
+          "response_variance": 0.02,
+          "state_error_variance": 0.01,
+          "prior_precision": 1.0,
+          "pair_strength": 0.1,
+          "pair_anchor": 1.0,
+          "nll_weight": 0.01,
+          "response_regularization": 0.001,
+          "support_weight": 0.1,
+          "partial_dropout": 0.15
+        },
+        "inactive_by_ablation": [
+          "state_error_variance",
+          "prior_precision",
+          "support_weight",
+          "pair_strength",
+          "pair_anchor"
+        ],
+        "state_semantics": "received_proxy_not_transmitter_excitation",
+        "quality_semantics": "source_controlled_degradation_error_proxy",
+        "quality_calibrated": true,
+        "head_parameters": 3360,
+        "trainable_groups": [
+          "raw_diagonal",
+          "factor",
+          "response.mean"
+        ]
+      },
+      "diag_variance_min": 0.0030577664729207754,
+      "diag_variance_max": 0.02399900183081627,
+      "factor_squared_norm": 0.0,
+      "slopes_squared_norm": 0.0,
+      "observation_calibration_bias_norm": 0.059363409876823425,
+      "state_lower": [
+        0.23416028916835785,
+        0.023079639300704002
+      ],
+      "state_upper": [
+        0.7969900965690613,
+        0.6306862831115723
+      ],
+      "state_center": [
+        0.3745938539505005,
+        0.30111780762672424
+      ],
+      "head_trainable_count": 1120,
+      "H0_model_tensor_count": 195
+    },
+    "H2": {
+      "fit_seconds": 809.9136358289979,
+      "epochs": 20,
+      "batches_per_epoch": 99,
+      "backbone_tensors_identical_to_H0": true,
+      "deployed_bytes": 4284174,
+      "config": {
+        "variant": "H2",
+        "configured": {
+          "variant": "H2",
+          "layout": "joint",
+          "covariance_rank": 4,
+          "observation_floor": 1e-05,
+          "observation_ceiling": 1.0,
+          "response_variance": 0.02,
+          "state_error_variance": 0.01,
+          "prior_precision": 1.0,
+          "pair_strength": 0.1,
+          "pair_anchor": 1.0,
+          "nll_weight": 0.01,
+          "response_regularization": 0.001,
+          "support_weight": 0.1,
+          "partial_dropout": 0.15
+        },
+        "inactive_by_ablation": [
+          "state_error_variance",
+          "prior_precision",
+          "support_weight",
+          "pair_strength",
+          "pair_anchor"
+        ],
+        "state_semantics": "received_proxy_not_transmitter_excitation",
+        "quality_semantics": "source_controlled_degradation_error_proxy",
+        "quality_calibrated": true,
+        "head_parameters": 4000,
+        "trainable_groups": [
+          "raw_diagonal",
+          "factor",
+          "response.mean"
+        ]
+      },
+      "diag_variance_min": 0.0030704729724675417,
+      "diag_variance_max": 0.006376325618475676,
+      "factor_squared_norm": 0.2717522382736206,
+      "slopes_squared_norm": 0.0,
+      "observation_calibration_bias_norm": 0.059363409876823425,
+      "state_lower": [
+        0.23416028916835785,
+        0.023079639300704002
+      ],
+      "state_upper": [
+        0.7969900965690613,
+        0.6306862831115723
+      ],
+      "state_center": [
+        0.3745938539505005,
+        0.30111780762672424
+      ],
+      "head_trainable_count": 1760,
+      "H0_model_tensor_count": 195
+    },
+    "H3": {
+      "fit_seconds": 1036.94516461296,
+      "epochs": 20,
+      "batches_per_epoch": 99,
+      "backbone_tensors_identical_to_H0": true,
+      "deployed_bytes": 4284174,
+      "config": {
+        "variant": "H3",
+        "configured": {
+          "variant": "H3",
+          "layout": "joint",
+          "covariance_rank": 4,
+          "observation_floor": 1e-05,
+          "observation_ceiling": 1.0,
+          "response_variance": 0.02,
+          "state_error_variance": 0.01,
+          "prior_precision": 1.0,
+          "pair_strength": 0.1,
+          "pair_anchor": 1.0,
+          "nll_weight": 0.01,
+          "response_regularization": 0.001,
+          "support_weight": 0.1,
+          "partial_dropout": 0.15
+        },
+        "inactive_by_ablation": [
+          "prior_precision",
+          "support_weight",
+          "pair_strength",
+          "pair_anchor"
+        ],
+        "state_semantics": "received_proxy_not_transmitter_excitation",
+        "quality_semantics": "source_controlled_degradation_error_proxy",
+        "quality_calibrated": true,
+        "head_parameters": 4000,
+        "trainable_groups": [
+          "raw_diagonal",
+          "factor",
+          "response.mean",
+          "response.shared_slopes",
+          "response.class_slopes"
+        ]
+      },
+      "diag_variance_min": 0.003069032449275255,
+      "diag_variance_max": 0.005830229260027409,
+      "factor_squared_norm": 0.011233692057430744,
+      "slopes_squared_norm": 19.124242782592773,
+      "observation_calibration_bias_norm": 0.059363409876823425,
+      "state_lower": [
+        0.23416028916835785,
+        0.023079639300704002
+      ],
+      "state_upper": [
+        0.7969900965690613,
+        0.6306862831115723
+      ],
+      "state_center": [
+        0.3745938539505005,
+        0.30111780762672424
+      ],
+      "head_trainable_count": 4000,
+      "H0_model_tensor_count": 195
+    },
+    "H4": {
+      "fit_seconds": 2488.2899846909568,
+      "epochs": 20,
+      "batches_per_epoch": 99,
+      "backbone_tensors_identical_to_H0": true,
+      "deployed_bytes": 4284174,
+      "config": {
+        "variant": "H4",
+        "configured": {
+          "variant": "H4",
+          "layout": "joint",
+          "covariance_rank": 4,
+          "observation_floor": 1e-05,
+          "observation_ceiling": 1.0,
+          "response_variance": 0.02,
+          "state_error_variance": 0.01,
+          "prior_precision": 1.0,
+          "pair_strength": 0.1,
+          "pair_anchor": 1.0,
+          "nll_weight": 0.01,
+          "response_regularization": 0.001,
+          "support_weight": 0.1,
+          "partial_dropout": 0.15
+        },
+        "inactive_by_ablation": [
+          "pair_strength",
+          "pair_anchor"
+        ],
+        "state_semantics": "received_proxy_not_transmitter_excitation",
+        "quality_semantics": "source_controlled_degradation_error_proxy",
+        "quality_calibrated": true,
+        "head_parameters": 4000,
+        "trainable_groups": [
+          "raw_diagonal",
+          "factor",
+          "response.mean",
+          "response.shared_slopes",
+          "response.class_slopes"
+        ]
+      },
+      "diag_variance_min": 0.0035497506614774466,
+      "diag_variance_max": 0.00817264337092638,
+      "factor_squared_norm": 0.0745352953672409,
+      "slopes_squared_norm": 13.924083709716797,
+      "observation_calibration_bias_norm": 0.059363409876823425,
+      "state_lower": [
+        0.23416028916835785,
+        0.023079639300704002
+      ],
+      "state_upper": [
+        0.7969900965690613,
+        0.6306862831115723
+      ],
+      "state_center": [
+        0.3745938539505005,
+        0.30111780762672424
+      ],
+      "head_trainable_count": 4000,
+      "H0_model_tensor_count": 195
+    }
+  },
+  "log_audit": [
+    {
+      "file": "H0_train.log",
+      "bytes": 1143988,
+      "lines": 9022,
+      "counts": {
+        "traceback": 0,
+        "oom": 0,
+        "warnings": 1,
+        "nan_lines": 800,
+        "error_lines": 0
+      },
+      "warning_examples": [
+        {
+          "line": 9021,
+          "text": "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()"
+        }
+      ],
+      "error_examples": [],
+      "nan_interpretation": "H0 inactive diagnostics and intentionally deferred test metrics; inspect structured skip counters separately"
+    },
+    {
+      "file": "prepare_main.log",
+      "bytes": 405,
+      "lines": 1,
+      "counts": {
+        "traceback": 0,
+        "oom": 0,
+        "warnings": 0,
+        "nan_lines": 0,
+        "error_lines": 0
+      },
+      "warning_examples": [],
+      "error_examples": [],
+      "nan_interpretation": null
+    },
+    {
+      "file": "score_main.log",
+      "bytes": 422,
+      "lines": 2,
+      "counts": {
+        "traceback": 0,
+        "oom": 0,
+        "warnings": 1,
+        "nan_lines": 0,
+        "error_lines": 0
+      },
+      "warning_examples": [
+        {
+          "line": 1,
+          "text": "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()"
+        }
+      ],
+      "error_examples": [],
+      "nan_interpretation": null
+    },
+    {
+      "file": "smoke_main.log",
+      "bytes": 504,
+      "lines": 3,
+      "counts": {
+        "traceback": 0,
+        "oom": 0,
+        "warnings": 1,
+        "nan_lines": 0,
+        "error_lines": 0
+      },
+      "warning_examples": [
+        {
+          "line": 1,
+          "text": "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()"
+        }
+      ],
+      "error_examples": [],
+      "nan_interpretation": null
+    },
+    {
+      "file": "source_H0.log",
+      "bytes": 521,
+      "lines": 3,
+      "counts": {
+        "traceback": 0,
+        "oom": 0,
+        "warnings": 1,
+        "nan_lines": 0,
+        "error_lines": 0
+      },
+      "warning_examples": [
+        {
+          "line": 1,
+          "text": "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()"
+        }
+      ],
+      "error_examples": [],
+      "nan_interpretation": null
+    },
+    {
+      "file": "source_H1.log",
+      "bytes": 11986,
+      "lines": 23,
+      "counts": {
+        "traceback": 0,
+        "oom": 0,
+        "warnings": 1,
+        "nan_lines": 0,
+        "error_lines": 0
+      },
+      "warning_examples": [
+        {
+          "line": 1,
+          "text": "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()"
+        }
+      ],
+      "error_examples": [],
+      "nan_interpretation": null
+    },
+    {
+      "file": "source_H2.log",
+      "bytes": 12276,
+      "lines": 23,
+      "counts": {
+        "traceback": 0,
+        "oom": 0,
+        "warnings": 1,
+        "nan_lines": 0,
+        "error_lines": 0
+      },
+      "warning_examples": [
+        {
+          "line": 1,
+          "text": "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()"
+        }
+      ],
+      "error_examples": [],
+      "nan_interpretation": null
+    },
+    {
+      "file": "source_H3.log",
+      "bytes": 12557,
+      "lines": 23,
+      "counts": {
+        "traceback": 0,
+        "oom": 0,
+        "warnings": 1,
+        "nan_lines": 0,
+        "error_lines": 0
+      },
+      "warning_examples": [
+        {
+          "line": 1,
+          "text": "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()"
+        }
+      ],
+      "error_examples": [],
+      "nan_interpretation": null
+    },
+    {
+      "file": "source_H4.log",
+      "bytes": 13004,
+      "lines": 23,
+      "counts": {
+        "traceback": 0,
+        "oom": 0,
+        "warnings": 1,
+        "nan_lines": 0,
+        "error_lines": 0
+      },
+      "warning_examples": [
+        {
+          "line": 1,
+          "text": "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()"
+        }
+      ],
+      "error_examples": [],
+      "nan_interpretation": null
+    },
+    {
+      "file": "target_cosine.log",
+      "bytes": 445,
+      "lines": 3,
+      "counts": {
+        "traceback": 0,
+        "oom": 0,
+        "warnings": 1,
+        "nan_lines": 0,
+        "error_lines": 0
+      },
+      "warning_examples": [
+        {
+          "line": 1,
+          "text": "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()"
+        }
+      ],
+      "error_examples": [],
+      "nan_interpretation": null
+    },
+    {
+      "file": "target_diagonal_gaussian.log",
+      "bytes": 456,
+      "lines": 3,
+      "counts": {
+        "traceback": 0,
+        "oom": 0,
+        "warnings": 1,
+        "nan_lines": 0,
+        "error_lines": 0
+      },
+      "warning_examples": [
+        {
+          "line": 1,
+          "text": "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()"
+        }
+      ],
+      "error_examples": [],
+      "nan_interpretation": null
+    },
+    {
+      "file": "target_H0.log",
+      "bytes": 441,
+      "lines": 3,
+      "counts": {
+        "traceback": 0,
+        "oom": 0,
+        "warnings": 1,
+        "nan_lines": 0,
+        "error_lines": 0
+      },
+      "warning_examples": [
+        {
+          "line": 1,
+          "text": "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()"
+        }
+      ],
+      "error_examples": [],
+      "nan_interpretation": null
+    },
+    {
+      "file": "target_H1.log",
+      "bytes": 441,
+      "lines": 3,
+      "counts": {
+        "traceback": 0,
+        "oom": 0,
+        "warnings": 1,
+        "nan_lines": 0,
+        "error_lines": 0
+      },
+      "warning_examples": [
+        {
+          "line": 1,
+          "text": "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()"
+        }
+      ],
+      "error_examples": [],
+      "nan_interpretation": null
+    },
+    {
+      "file": "target_H2.log",
+      "bytes": 441,
+      "lines": 3,
+      "counts": {
+        "traceback": 0,
+        "oom": 0,
+        "warnings": 1,
+        "nan_lines": 0,
+        "error_lines": 0
+      },
+      "warning_examples": [
+        {
+          "line": 1,
+          "text": "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()"
+        }
+      ],
+      "error_examples": [],
+      "nan_interpretation": null
+    },
+    {
+      "file": "target_H3.log",
+      "bytes": 441,
+      "lines": 3,
+      "counts": {
+        "traceback": 0,
+        "oom": 0,
+        "warnings": 1,
+        "nan_lines": 0,
+        "error_lines": 0
+      },
+      "warning_examples": [
+        {
+          "line": 1,
+          "text": "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()"
+        }
+      ],
+      "error_examples": [],
+      "nan_interpretation": null
+    },
+    {
+      "file": "target_H4.log",
+      "bytes": 441,
+      "lines": 3,
+      "counts": {
+        "traceback": 0,
+        "oom": 0,
+        "warnings": 1,
+        "nan_lines": 0,
+        "error_lines": 0
+      },
+      "warning_examples": [
+        {
+          "line": 1,
+          "text": "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()"
+        }
+      ],
+      "error_examples": [],
+      "nan_interpretation": null
+    },
+    {
+      "file": "target_linear_ridge.log",
+      "bytes": 451,
+      "lines": 3,
+      "counts": {
+        "traceback": 0,
+        "oom": 0,
+        "warnings": 1,
+        "nan_lines": 0,
+        "error_lines": 0
+      },
+      "warning_examples": [
+        {
+          "line": 1,
+          "text": "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()"
+        }
+      ],
+      "error_examples": [],
+      "nan_interpretation": null
+    }
+  ],
+  "H0_baseline_args": {
+    "dataset": "wisig",
+    "num_classes": 6,
+    "sample_rate_hz": 25000000.0,
+    "input_len": 256,
+    "num_domains": 15,
+    "evidence_config": "",
+    "model_size": "M",
+    "model_variant": "lite_d",
+    "representation_mode": "dual",
+    "id_feature_key": "feat_joint",
+    "branch_ablation": "no_dac",
+    "domain_branch_ablation": "no_stats",
+    "domain_enhancer": "rcn_stats",
+    "domain_enhancer_strength": 0.35
+  },
+  "validation": {
+    "all_32_predictions_full_read": true,
+    "all_prediction_ids_same_order": true,
+    "all_truth_ids_exact_match": true,
+    "all_scores_finite": true,
+    "all_summary_accuracy_recomputed": true,
+    "backbones_bitwise_identical": true
+  },
+  "resource": {
+    "ablation_id": "",
+    "device_type": "cuda",
+    "peak_cuda_memory_allocated_bytes": 10210387968,
+    "peak_cuda_memory_reserved_bytes": 10672406528,
+    "resource_claim": "THROUGHPUT_SCHEDULE_OBSERVATION_NOT_ISOLATED_LATENCY",
+    "row_key": "",
+    "run_id": "core90_evidence",
+    "schema": "cvs.phase1.resource_summary.v1",
+    "total_parameter_count": 1049827,
+    "train_seed": 392005,
+    "trainable_parameter_count": 1049827,
+    "wall_time_seconds": 30877.55314230919
+  }
+}

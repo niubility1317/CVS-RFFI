@@ -1,0 +1,28 @@
+{
+  "status": "VERIFIED",
+  "csv_rows": {
+    "metrics.csv": 32,
+    "grouped_metrics.csv": 2784,
+    "confusion_matrices.csv": 1152,
+    "decision_counts.csv": 32,
+    "risk_coverage_points.csv": 352,
+    "reliability_bins.csv": 480,
+    "H0_training_history.csv": 200,
+    "head_training_history.csv": 80,
+    "H0_mechanism_activation.csv": 16
+  },
+  "markdown_links_checked": 32,
+  "all_32_confusion_and_decision_counts_match": true,
+  "all_2784_groups_match": true,
+  "prior_full_tensor_audit": {
+    "all_32_predictions_full_read": true,
+    "all_prediction_ids_same_order": true,
+    "all_truth_ids_exact_match": true,
+    "all_scores_finite": true,
+    "all_summary_accuracy_recomputed": true,
+    "backbones_bitwise_identical": true
+  },
+  "embedded_figures": 4,
+  "html_tables": 39,
+  "notes": "Document checks and audited artifact arithmetic; no new training, target tuning, or GPU tests."
+}

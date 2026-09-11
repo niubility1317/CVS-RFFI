@@ -78,3 +78,8 @@ CWD为RELEASE。根目录排他创建；实际子进程argv、PID、GPU、log位
 ## 完整结果：2026-09-11
 
 全部32组目标预测与独立评分于12:09完成，状态ARTIFACTS_COMPLETE。H0完整200轮日志已读取，17份执行日志均无Python traceback。详细数据见[detailed_results.md](detailed_results.md)、[metrics.csv](metrics.csv)及[grouped_metrics.csv](grouped_metrics.csv)。全部2784个分组的计数、加权准确率和相对H0配对净变化已交叉核对。H1–H4四场景闭集准确率均低于H0；cosine仅小幅描述性改善。单seed不晋级，不回流目标调参。H5保持未启动。
+
+
+## 全面实验报告：2026-09-11
+
+已补充方法机制、原设计追踪、完整训练激活、数据契约、8×4指标、全部RX/日期/TX分解、配对错误、校准与覆盖率、资源和科学边界。阅读[全面报告HTML](comprehensive_report/report.html)或[Markdown](comprehensive_report/report.md)。附20份数据文件、4组PNG/SVG图及独立计数复核记录。H1–H4整体未超过H0；目标缺失证据与target K-shot未执行，单seed不晋级。

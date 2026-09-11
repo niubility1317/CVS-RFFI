@@ -1,0 +1,24 @@
+{
+  "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+  "seed": 392005,
+  "train_gpu": 2,
+  "head_gpus": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "source_rxs": "1,3,4,6,8",
+  "source_days": "1,2,3",
+  "target_rxs": "0,2,5,7,9,10,11",
+  "heldout_days": "0",
+  "h0_epochs": 200,
+  "head_epochs": 20,
+  "head_batch_size": 64,
+  "eval_batch_size": 64,
+  "initialization": "scratch_H0_then_same_frozen_backbone",
+  "state_semantics": "receiver_proxy_not_physical_excitation",
+  "per_gpu_two_process_limit_overridden_by_user": true,
+  "H5": "DEFERRED_PENDING_SOURCE_EVIDENCE"
+}

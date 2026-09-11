@@ -1,0 +1,596 @@
+{
+  "H0": {
+    "schema": "core90_source_evaluation_v1",
+    "role": "V",
+    "fit_role": "L_s",
+    "count_train": 6300,
+    "count_val": 27000,
+    "target_access": false,
+    "scientific_promotion_claim": false,
+    "interpretation": "source V calibration and diagnostics on the same V; descriptive, not independent risk certification",
+    "missing_diagnostics": [
+      "H0 has no observed covariance or quality head: no invented Gaussian consistency calibration",
+      "state/quality/mask probes unavailable for H0"
+    ],
+    "raw_head": {
+      "accuracy": 0.9786296296296296,
+      "closed_set_accuracy": 0.9786296486854553,
+      "accepted_risk": 0.021370351314544678,
+      "coverage": 1.0,
+      "nll": 0.24792465567588806,
+      "brier": 0.040334880352020264,
+      "ece": 0.019508032381963858,
+      "count": 27000,
+      "accepted_count": 27000
+    },
+    "baselines": {
+      "cosine": {
+        "accuracy": 0.9779629629629629,
+        "closed_set_accuracy": 0.9779629707336426,
+        "accepted_risk": 0.022037029266357422,
+        "coverage": 1.0,
+        "nll": 1.0667399168014526,
+        "brier": 0.5143442749977112,
+        "ece": 0.6287327289319364,
+        "count": 27000,
+        "accepted_count": 27000
+      },
+      "diagonal_gaussian": {
+        "accuracy": 0.9745555555555555,
+        "closed_set_accuracy": 0.9745555520057678,
+        "accepted_risk": 0.025444447994232178,
+        "coverage": 1.0,
+        "nll": 6.383080959320068,
+        "brier": 0.050779201090335846,
+        "ece": 0.02538042329979362,
+        "count": 27000,
+        "accepted_count": 27000
+      },
+      "linear_ridge": {
+        "accuracy": 0.9814444444444445,
+        "closed_set_accuracy": 0.9814444184303284,
+        "accepted_risk": 0.01855558156967163,
+        "coverage": 1.0,
+        "nll": 1.0767149925231934,
+        "brier": 0.5194542407989502,
+        "ece": 0.636471714833533,
+        "count": 27000,
+        "accepted_count": 27000
+      }
+    },
+    "condition_probes": {},
+    "resources": {
+      "extraction_seconds": 11.901912309695035,
+      "total_seconds": 12.25622348068282,
+      "rows_per_second": 2797.869714841921,
+      "covariance_retained": false,
+      "device": "cuda:0"
+    },
+    "artifacts": {
+      "source_evaluation.json": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_evidence_frozen_392005_20260911/H0/source/source_evaluation.json",
+      "source_scores.pt": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_evidence_frozen_392005_20260911/H0/source/source_scores.pt",
+      "source_curves.json": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_evidence_frozen_392005_20260911/H0/source/source_curves.json",
+      "source_readouts.pt": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_evidence_frozen_392005_20260911/H0/source/source_readouts.pt"
+    }
+  },
+  "H1": {
+    "schema": "core90_source_evaluation_v1",
+    "role": "V",
+    "fit_role": "L_s",
+    "count_train": 6300,
+    "count_val": 27000,
+    "target_access": false,
+    "scientific_promotion_claim": false,
+    "interpretation": "source V calibration and diagnostics on the same V; descriptive, not independent risk certification",
+    "missing_diagnostics": [],
+    "raw_head": {
+      "accuracy": 0.9801481481481481,
+      "closed_set_accuracy": 0.9801481366157532,
+      "accepted_risk": 0.019851863384246826,
+      "coverage": 1.0,
+      "nll": 0.11796960234642029,
+      "brier": 0.030438529327511787,
+      "ece": 0.011786013157689013,
+      "count": 27000,
+      "accepted_count": 27000
+    },
+    "calibrated_head": {
+      "accuracy": 0.9259259259259259,
+      "closed_set_accuracy": 0.9801481366157532,
+      "accepted_risk": 0.009194672107696533,
+      "coverage": 0.9345185185185185,
+      "nll": 0.07379322499036789,
+      "brier": 0.027883345261216164,
+      "ece": 0.005778025846666424,
+      "count": 27000,
+      "accepted_count": 25232
+    },
+    "calibration": {
+      "temperature": 2.4782028993429788,
+      "groups": 3,
+      "available_fraction": 1.0,
+      "state_in_domain_fraction": 1.0,
+      "statuses": {
+        "identify": 25232,
+        "defer": 452,
+        "model_mismatch_candidate": 1316
+      }
+    },
+    "baselines": {
+      "cosine": {
+        "accuracy": 0.9779629629629629,
+        "closed_set_accuracy": 0.9779629707336426,
+        "accepted_risk": 0.022037029266357422,
+        "coverage": 1.0,
+        "nll": 1.0667399168014526,
+        "brier": 0.5143442749977112,
+        "ece": 0.6287327289319364,
+        "count": 27000,
+        "accepted_count": 27000
+      },
+      "diagonal_gaussian": {
+        "accuracy": 0.9712592592592593,
+        "closed_set_accuracy": 0.9712592363357544,
+        "accepted_risk": 0.028740763664245605,
+        "coverage": 1.0,
+        "nll": 0.5276081562042236,
+        "brier": 0.04951654002070427,
+        "ece": 0.021075875351016293,
+        "count": 27000,
+        "accepted_count": 27000
+      },
+      "linear_ridge": {
+        "accuracy": 0.9815185185185186,
+        "closed_set_accuracy": 0.9815185070037842,
+        "accepted_risk": 0.01848149299621582,
+        "coverage": 1.0,
+        "nll": 1.0848898887634277,
+        "brier": 0.5235788226127625,
+        "ece": 0.639518167674396,
+        "count": 27000,
+        "accepted_count": 27000
+      }
+    },
+    "condition_probes": {
+      "state_TX": {
+        "accuracy": 0.1666666716337204,
+        "classes": 6,
+        "majority_reference": 0.1666666716337204,
+        "interpretation": "acquisition association diagnostic, not physical identity disentanglement"
+      },
+      "state_RX": {
+        "accuracy": 0.20000000298023224,
+        "classes": 5,
+        "majority_reference": 0.20000000298023224,
+        "interpretation": "acquisition association diagnostic, not physical identity disentanglement"
+      },
+      "quality_TX": {
+        "accuracy": 0.2926296293735504,
+        "classes": 6,
+        "majority_reference": 0.1666666716337204,
+        "interpretation": "acquisition association diagnostic, not physical identity disentanglement"
+      },
+      "quality_RX": {
+        "accuracy": 0.44955554604530334,
+        "classes": 5,
+        "majority_reference": 0.20000000298023224,
+        "interpretation": "acquisition association diagnostic, not physical identity disentanglement"
+      },
+      "observed_TX": {
+        "accuracy": 0.1666666716337204,
+        "classes": 6,
+        "majority_reference": 0.1666666716337204,
+        "interpretation": "acquisition association diagnostic, not physical identity disentanglement"
+      },
+      "observed_RX": {
+        "accuracy": 0.20000000298023224,
+        "classes": 5,
+        "majority_reference": 0.20000000298023224,
+        "interpretation": "acquisition association diagnostic, not physical identity disentanglement"
+      }
+    },
+    "resources": {
+      "extraction_seconds": 84.8347595538944,
+      "total_seconds": 85.50337481917813,
+      "rows_per_second": 392.52778195056885,
+      "covariance_retained": false,
+      "device": "cuda:0"
+    },
+    "artifacts": {
+      "source_evaluation.json": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_evidence_frozen_392005_20260911/H1/source/source_evaluation.json",
+      "source_scores.pt": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_evidence_frozen_392005_20260911/H1/source/source_scores.pt",
+      "source_curves.json": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_evidence_frozen_392005_20260911/H1/source/source_curves.json",
+      "source_calibrator.json": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_evidence_frozen_392005_20260911/H1/source/source_calibrator.json"
+    }
+  },
+  "H2": {
+    "schema": "core90_source_evaluation_v1",
+    "role": "V",
+    "fit_role": "L_s",
+    "count_train": 6300,
+    "count_val": 27000,
+    "target_access": false,
+    "scientific_promotion_claim": false,
+    "interpretation": "source V calibration and diagnostics on the same V; descriptive, not independent risk certification",
+    "missing_diagnostics": [],
+    "raw_head": {
+      "accuracy": 0.9794814814814815,
+      "closed_set_accuracy": 0.9794814586639404,
+      "accepted_risk": 0.02051854133605957,
+      "coverage": 1.0,
+      "nll": 0.08617360144853592,
+      "brier": 0.030123379081487656,
+      "ece": 0.008942001506511588,
+      "count": 27000,
+      "accepted_count": 27000
+    },
+    "calibrated_head": {
+      "accuracy": 0.944037037037037,
+      "closed_set_accuracy": 0.9794814586639404,
+      "accepted_risk": 0.007824063301086426,
+      "coverage": 0.9514814814814815,
+      "nll": 0.0704067051410675,
+      "brier": 0.028965797275304794,
+      "ece": 0.004458016913304164,
+      "count": 27000,
+      "accepted_count": 25690
+    },
+    "calibration": {
+      "temperature": 1.7476267869657724,
+      "groups": 3,
+      "available_fraction": 1.0,
+      "state_in_domain_fraction": 1.0,
+      "statuses": {
+        "identify": 25690,
+        "defer": 189,
+        "model_mismatch_candidate": 1121
+      }
+    },
+    "baselines": {
+      "cosine": {
+        "accuracy": 0.9779629629629629,
+        "closed_set_accuracy": 0.9779629707336426,
+        "accepted_risk": 0.022037029266357422,
+        "coverage": 1.0,
+        "nll": 1.0667399168014526,
+        "brier": 0.5143442749977112,
+        "ece": 0.6287327289319364,
+        "count": 27000,
+        "accepted_count": 27000
+      },
+      "diagonal_gaussian": {
+        "accuracy": 0.9712592592592593,
+        "closed_set_accuracy": 0.9712592363357544,
+        "accepted_risk": 0.028740763664245605,
+        "coverage": 1.0,
+        "nll": 0.5276081562042236,
+        "brier": 0.04951654002070427,
+        "ece": 0.021075875351016293,
+        "count": 27000,
+        "accepted_count": 27000
+      },
+      "linear_ridge": {
+        "accuracy": 0.9815185185185186,
+        "closed_set_accuracy": 0.9815185070037842,
+        "accepted_risk": 0.01848149299621582,
+        "coverage": 1.0,
+        "nll": 1.0848898887634277,
+        "brier": 0.5235788226127625,
+        "ece": 0.639518167674396,
+        "count": 27000,
+        "accepted_count": 27000
+      }
+    },
+    "condition_probes": {
+      "state_TX": {
+        "accuracy": 0.1666666716337204,
+        "classes": 6,
+        "majority_reference": 0.1666666716337204,
+        "interpretation": "acquisition association diagnostic, not physical identity disentanglement"
+      },
+      "state_RX": {
+        "accuracy": 0.20000000298023224,
+        "classes": 5,
+        "majority_reference": 0.20000000298023224,
+        "interpretation": "acquisition association diagnostic, not physical identity disentanglement"
+      },
+      "quality_TX": {
+        "accuracy": 0.2926296293735504,
+        "classes": 6,
+        "majority_reference": 0.1666666716337204,
+        "interpretation": "acquisition association diagnostic, not physical identity disentanglement"
+      },
+      "quality_RX": {
+        "accuracy": 0.44955554604530334,
+        "classes": 5,
+        "majority_reference": 0.20000000298023224,
+        "interpretation": "acquisition association diagnostic, not physical identity disentanglement"
+      },
+      "observed_TX": {
+        "accuracy": 0.1666666716337204,
+        "classes": 6,
+        "majority_reference": 0.1666666716337204,
+        "interpretation": "acquisition association diagnostic, not physical identity disentanglement"
+      },
+      "observed_RX": {
+        "accuracy": 0.20000000298023224,
+        "classes": 5,
+        "majority_reference": 0.20000000298023224,
+        "interpretation": "acquisition association diagnostic, not physical identity disentanglement"
+      }
+    },
+    "resources": {
+      "extraction_seconds": 83.80587408971041,
+      "total_seconds": 84.48890497395769,
+      "rows_per_second": 397.34684903296693,
+      "covariance_retained": false,
+      "device": "cuda:0"
+    },
+    "artifacts": {
+      "source_evaluation.json": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_evidence_frozen_392005_20260911/H2/source/source_evaluation.json",
+      "source_scores.pt": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_evidence_frozen_392005_20260911/H2/source/source_scores.pt",
+      "source_curves.json": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_evidence_frozen_392005_20260911/H2/source/source_curves.json",
+      "source_calibrator.json": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_evidence_frozen_392005_20260911/H2/source/source_calibrator.json"
+    }
+  },
+  "H3": {
+    "schema": "core90_source_evaluation_v1",
+    "role": "V",
+    "fit_role": "L_s",
+    "count_train": 6300,
+    "count_val": 27000,
+    "target_access": false,
+    "scientific_promotion_claim": false,
+    "interpretation": "source V calibration and diagnostics on the same V; descriptive, not independent risk certification",
+    "missing_diagnostics": [],
+    "raw_head": {
+      "accuracy": 0.9809629629629629,
+      "closed_set_accuracy": 0.9809629917144775,
+      "accepted_risk": 0.01903700828552246,
+      "coverage": 1.0,
+      "nll": 0.08781768381595612,
+      "brier": 0.028455182909965515,
+      "ece": 0.007627880688232835,
+      "count": 27000,
+      "accepted_count": 27000
+    },
+    "calibrated_head": {
+      "accuracy": 0.943925925925926,
+      "closed_set_accuracy": 0.9809629917144775,
+      "accepted_risk": 0.006509959697723389,
+      "coverage": 0.9501111111111111,
+      "nll": 0.07124916464090347,
+      "brier": 0.02769911102950573,
+      "ece": 0.00488132966665944,
+      "count": 27000,
+      "accepted_count": 25653
+    },
+    "calibration": {
+      "temperature": 1.7812289976114735,
+      "groups": 3,
+      "available_fraction": 1.0,
+      "state_in_domain_fraction": 0.9989259243011475,
+      "statuses": {
+        "identify": 25653,
+        "defer": 223,
+        "model_mismatch_candidate": 1124
+      }
+    },
+    "baselines": {
+      "cosine": {
+        "accuracy": 0.9779629629629629,
+        "closed_set_accuracy": 0.9779629707336426,
+        "accepted_risk": 0.022037029266357422,
+        "coverage": 1.0,
+        "nll": 1.0667399168014526,
+        "brier": 0.5143442749977112,
+        "ece": 0.6287327289319364,
+        "count": 27000,
+        "accepted_count": 27000
+      },
+      "diagonal_gaussian": {
+        "accuracy": 0.9712592592592593,
+        "closed_set_accuracy": 0.9712592363357544,
+        "accepted_risk": 0.028740763664245605,
+        "coverage": 1.0,
+        "nll": 0.5276081562042236,
+        "brier": 0.04951654002070427,
+        "ece": 0.021075875351016293,
+        "count": 27000,
+        "accepted_count": 27000
+      },
+      "linear_ridge": {
+        "accuracy": 0.9815185185185186,
+        "closed_set_accuracy": 0.9815185070037842,
+        "accepted_risk": 0.01848149299621582,
+        "coverage": 1.0,
+        "nll": 1.0848898887634277,
+        "brier": 0.5235788226127625,
+        "ece": 0.639518167674396,
+        "count": 27000,
+        "accepted_count": 27000
+      }
+    },
+    "condition_probes": {
+      "state_TX": {
+        "accuracy": 0.2577036917209625,
+        "classes": 6,
+        "majority_reference": 0.1666666716337204,
+        "interpretation": "acquisition association diagnostic, not physical identity disentanglement"
+      },
+      "state_RX": {
+        "accuracy": 0.43977779150009155,
+        "classes": 5,
+        "majority_reference": 0.20000000298023224,
+        "interpretation": "acquisition association diagnostic, not physical identity disentanglement"
+      },
+      "quality_TX": {
+        "accuracy": 0.2926296293735504,
+        "classes": 6,
+        "majority_reference": 0.1666666716337204,
+        "interpretation": "acquisition association diagnostic, not physical identity disentanglement"
+      },
+      "quality_RX": {
+        "accuracy": 0.44955554604530334,
+        "classes": 5,
+        "majority_reference": 0.20000000298023224,
+        "interpretation": "acquisition association diagnostic, not physical identity disentanglement"
+      },
+      "observed_TX": {
+        "accuracy": 0.1666666716337204,
+        "classes": 6,
+        "majority_reference": 0.1666666716337204,
+        "interpretation": "acquisition association diagnostic, not physical identity disentanglement"
+      },
+      "observed_RX": {
+        "accuracy": 0.20000000298023224,
+        "classes": 5,
+        "majority_reference": 0.20000000298023224,
+        "interpretation": "acquisition association diagnostic, not physical identity disentanglement"
+      }
+    },
+    "resources": {
+      "extraction_seconds": 104.93357111699879,
+      "total_seconds": 105.58606499386951,
+      "rows_per_second": 317.34362650129555,
+      "covariance_retained": false,
+      "device": "cuda:0"
+    },
+    "artifacts": {
+      "source_evaluation.json": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_evidence_frozen_392005_20260911/H3/source/source_evaluation.json",
+      "source_scores.pt": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_evidence_frozen_392005_20260911/H3/source/source_scores.pt",
+      "source_curves.json": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_evidence_frozen_392005_20260911/H3/source/source_curves.json",
+      "source_calibrator.json": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_evidence_frozen_392005_20260911/H3/source/source_calibrator.json"
+    }
+  },
+  "H4": {
+    "schema": "core90_source_evaluation_v1",
+    "role": "V",
+    "fit_role": "L_s",
+    "count_train": 6300,
+    "count_val": 27000,
+    "target_access": false,
+    "scientific_promotion_claim": false,
+    "interpretation": "source V calibration and diagnostics on the same V; descriptive, not independent risk certification",
+    "missing_diagnostics": [],
+    "raw_head": {
+      "accuracy": 0.9808148148148148,
+      "closed_set_accuracy": 0.9808148145675659,
+      "accepted_risk": 0.019185185432434082,
+      "coverage": 1.0,
+      "nll": 0.11779971420764923,
+      "brier": 0.03140302747488022,
+      "ece": 0.013221291479567299,
+      "count": 27000,
+      "accepted_count": 27000
+    },
+    "calibrated_head": {
+      "accuracy": 0.9420740740740741,
+      "closed_set_accuracy": 0.9808148145675659,
+      "accepted_risk": 0.011887192726135254,
+      "coverage": 0.9534074074074074,
+      "nll": 0.07144961506128311,
+      "brier": 0.027407929301261902,
+      "ece": 0.007479278687242186,
+      "count": 27000,
+      "accepted_count": 25742
+    },
+    "calibration": {
+      "temperature": 2.512529490449236,
+      "groups": 3,
+      "available_fraction": 1.0,
+      "state_in_domain_fraction": 0.9989259243011475,
+      "statuses": {
+        "identify": 25742,
+        "defer": 204,
+        "model_mismatch_candidate": 1054
+      }
+    },
+    "baselines": {
+      "cosine": {
+        "accuracy": 0.9779629629629629,
+        "closed_set_accuracy": 0.9779629707336426,
+        "accepted_risk": 0.022037029266357422,
+        "coverage": 1.0,
+        "nll": 1.0667399168014526,
+        "brier": 0.5143442749977112,
+        "ece": 0.6287327289319364,
+        "count": 27000,
+        "accepted_count": 27000
+      },
+      "diagonal_gaussian": {
+        "accuracy": 0.9712592592592593,
+        "closed_set_accuracy": 0.9712592363357544,
+        "accepted_risk": 0.028740763664245605,
+        "coverage": 1.0,
+        "nll": 0.5276081562042236,
+        "brier": 0.04951654002070427,
+        "ece": 0.021075875351016293,
+        "count": 27000,
+        "accepted_count": 27000
+      },
+      "linear_ridge": {
+        "accuracy": 0.9815185185185186,
+        "closed_set_accuracy": 0.9815185070037842,
+        "accepted_risk": 0.01848149299621582,
+        "coverage": 1.0,
+        "nll": 1.0848898887634277,
+        "brier": 0.5235788226127625,
+        "ece": 0.639518167674396,
+        "count": 27000,
+        "accepted_count": 27000
+      }
+    },
+    "condition_probes": {
+      "state_TX": {
+        "accuracy": 0.2577036917209625,
+        "classes": 6,
+        "majority_reference": 0.1666666716337204,
+        "interpretation": "acquisition association diagnostic, not physical identity disentanglement"
+      },
+      "state_RX": {
+        "accuracy": 0.43977779150009155,
+        "classes": 5,
+        "majority_reference": 0.20000000298023224,
+        "interpretation": "acquisition association diagnostic, not physical identity disentanglement"
+      },
+      "quality_TX": {
+        "accuracy": 0.2926296293735504,
+        "classes": 6,
+        "majority_reference": 0.1666666716337204,
+        "interpretation": "acquisition association diagnostic, not physical identity disentanglement"
+      },
+      "quality_RX": {
+        "accuracy": 0.44955554604530334,
+        "classes": 5,
+        "majority_reference": 0.20000000298023224,
+        "interpretation": "acquisition association diagnostic, not physical identity disentanglement"
+      },
+      "observed_TX": {
+        "accuracy": 0.1666666716337204,
+        "classes": 6,
+        "majority_reference": 0.1666666716337204,
+        "interpretation": "acquisition association diagnostic, not physical identity disentanglement"
+      },
+      "observed_RX": {
+        "accuracy": 0.20000000298023224,
+        "classes": 5,
+        "majority_reference": 0.20000000298023224,
+        "interpretation": "acquisition association diagnostic, not physical identity disentanglement"
+      }
+    },
+    "resources": {
+      "extraction_seconds": 74.45621040090919,
+      "total_seconds": 75.19728313200176,
+      "rows_per_second": 447.2427460475933,
+      "covariance_retained": false,
+      "device": "cuda:0"
+    },
+    "artifacts": {
+      "source_evaluation.json": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_evidence_frozen_392005_20260911/H4/source/source_evaluation.json",
+      "source_scores.pt": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_evidence_frozen_392005_20260911/H4/source/source_scores.pt",
+      "source_curves.json": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_evidence_frozen_392005_20260911/H4/source/source_curves.json",
+      "source_calibrator.json": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_evidence_frozen_392005_20260911/H4/source/source_calibrator.json"
+    }
+  }
+}

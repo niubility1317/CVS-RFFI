@@ -1,0 +1,54 @@
+{
+  "dataset_id": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+  "source_receivers": [
+    1,
+    3,
+    4,
+    6,
+    8
+  ],
+  "target_receivers": [
+    0,
+    2,
+    5,
+    7,
+    9,
+    10,
+    11
+  ],
+  "split_seed": 392005,
+  "equalized": 1,
+  "source_days": [
+    1,
+    2,
+    3
+  ],
+  "actual_target_days": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "tx_mapping": [
+    "14-10",
+    "14-7",
+    "20-15",
+    "20-19",
+    "6-15",
+    "8-20"
+  ],
+  "ratios": {
+    "L_s": 0.07,
+    "U_s": 0.63,
+    "V": 0.3
+  },
+  "source_selection": "final_only",
+  "checkpoint_initialization": "from_scratch",
+  "upstream": [],
+  "role_counts": {
+    "L_s": 6300,
+    "U_s": 56700,
+    "V": 27000,
+    "target": 168000
+  }
+}
