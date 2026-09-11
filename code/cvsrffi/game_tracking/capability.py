@@ -69,7 +69,7 @@ def cross_rx_margin(fit_z, fit_tx, fit_rx, monitor_z, monitor_tx, monitor_rx, *,
 
 def evaluate_capability(fit_z, fit_tx, fit_rx, monitor_z, monitor_tx, monitor_rx,
                         *, fit_groups, monitor_groups, config=CapabilityConfig(), monitor_aug=None,
-                        step=0, encoder_version=0, independence_verified=False, source_role='train'):
+                        step=0, encoder_version=0, independence_verified=False, source_role='train',return_head=False):
     """Fit a separate linear TX head; features remain detached from the encoder."""
     if source_role != 'train':
         raise ValueError('capability fitting requires labeled source training data')
@@ -107,11 +107,54 @@ def evaluate_capability(fit_z, fit_tx, fit_rx, monitor_z, monitor_tx, monitor_rx
         reason = reason or 'insufficient_cross_rx_margin_coverage'
     if performed != config.steps:
         reason = reason or 'readout_budget_not_completed'
-    return dict(valid=not reason, reason=reason, step=int(step), encoder_version=int(encoder_version),
+    result=dict(valid=not reason, reason=reason, step=int(step), encoder_version=int(encoder_version),
                 identity_valid=not reason, identity=readout['balanced_accuracy'], margin=margin['low_quantile'],
                 readout=readout, cross_rx=margin, feature_variance=variance, collapsed=bool(collapsed),
                 consistency=consistency, probe_steps=performed, elapsed_seconds=time.perf_counter() - started,
                 independence_verified=bool(independence_verified))
+    return (result,head) if return_head else result
+
+
+def evaluate_capability_v2(fit_z,fit_tx,fit_rx,monitor_z,monitor_tx,monitor_rx,*,
+                          fit_groups,monitor_groups,monitor_views,policy_level,
+                          config=CapabilityConfig(),step=0,encoder_version=0,
+                          independence_verified=False,source_role='train'):
+    """One fit-only TX head evaluates clean/current/next difficulty, no refitting."""
+    started=time.perf_counter()
+    result,head=evaluate_capability(fit_z,fit_tx,fit_rx,monitor_z,monitor_tx,monitor_rx,
+         fit_groups=fit_groups,monitor_groups=monitor_groups,config=config,step=step,
+         encoder_version=encoder_version,independence_verified=independence_verified,
+         source_role=source_role,return_head=True)
+    result.update(schema='game_capability_v2',policy_level=float(policy_level),views={})
+    head.eval()
+    with torch.no_grad():
+        for name in ('clean','current','next'):
+            features=monitor_z if name=='clean' else monitor_views.get(name)
+            if features is None or features.shape!=monitor_z.shape or not torch.isfinite(features).all():
+                result['valid']=result['identity_valid']=False
+                result['reason']='missing_or_invalid_difficulty_features'
+                result[name+'_identity']=result[name+'_margin']=None
+                continue
+            logits=head(features.detach());readout=classification_metrics(logits,monitor_tx)
+            prediction=logits.argmax(-1)
+            truth_logit=logits.gather(1,monitor_tx[:,None]).squeeze(1)
+            other=logits.clone();other.scatter_(1,monitor_tx[:,None],float('-inf'))
+            margin=truth_logit-other.max(1).values
+            per_tx={str(int(t)):float((prediction[monitor_tx==t]==t).float().mean()) for t in monitor_tx.unique()}
+            per_rx_tx={f'{int(r)}:{int(t)}':dict(count=int(((monitor_rx==r)&(monitor_tx==t)).sum()),
+                          accuracy=float((prediction[(monitor_rx==r)&(monitor_tx==t)]==t).float().mean()))
+                       for r in monitor_rx.unique() for t in monitor_tx.unique() if ((monitor_rx==r)&(monitor_tx==t)).any()}
+            detail=dict(**readout,margin=float(margin.quantile(config.margin_quantile)),per_tx=per_tx,
+                        per_rx_tx=per_rx_tx,worst_tx=min(per_tx.values()),
+                        worst_rx_tx=min(v['accuracy'] for v in per_rx_tx.values()))
+            result['views'][name]=detail
+            result[name+'_identity']=readout['balanced_accuracy'];result[name+'_margin']=detail['margin']
+            result[name+'_worst_tx']=detail['worst_tx']
+        if 'current' in result['views']:
+            result['consistency']=float(F.cosine_similarity(monitor_z,monitor_views['current'],dim=-1).mean())
+    result['elapsed_seconds']=time.perf_counter()-started
+    result['readout_fit_scope']='L_s_fit_groups_only_single_head_for_all_views'
+    return result
 
 
 class BranchCapabilityRegistry:

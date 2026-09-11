@@ -135,3 +135,42 @@ def test_curriculum_outside_complete_horizon_is_rejected(donor):
     (donor / 'curriculum_events.jsonl').write_text(json.dumps(dict(step=12, level=.3)) + '\n', encoding='utf-8')
     with pytest.raises(ValueError, match='horizon'):
         build_schedules(donor, 392003, include_curriculum=True)
+
+
+def test_v2_requires_lawful_donor_and_matching_contract(donor):
+    config = json.loads((donor / 'resolved_config.json').read_text())
+    recipient = dict(config, seed=392003)
+    with pytest.raises(ValueError, match='v2'):
+        build_schedules(donor, 392003, version=2, recipient_config=recipient)
+    config.update(game_evidence_version=2, game_resume='', game_data_contract={'source': 'contract-1'})
+    recipient.update(config, seed=392003)
+    _write(donor / 'resolved_config.json', config)
+    schedules, metadata, _ = build_schedules(donor, 392003, version=2, recipient_config=recipient)
+    assert metadata['schema'].endswith('_v2')
+    assert not metadata['strict_realized_action_match']
+    recipient['game_data_contract'] = {'source': 'other'}
+    with pytest.raises(ValueError, match='contract'):
+        build_schedules(donor, 392003, version=2, recipient_config=recipient)
+
+
+def test_exposure_masks_and_phase_counts_are_realized_not_probabilities():
+    from scripts.build_core90_game_exposure_replay import permute_exposure_schedule, validate_exposure_schedule
+    rows = [dict(step=i, epoch=1 if i<2 else 80, sample_ids=[str(i)+'a', str(i)+'b'],
+                 scenario='leo_clear_weak' if i%2 else 'leo_rain_weak', selected_mask=[True, bool(i%2)],
+                 channel_seed=i) for i in range(4)]
+    schedule = dict(schema='core90_exposure_schedule_v2', source_only=True, target_evaluated=False,
+                    donor_seed=1, recipient_seed=2, data_contract={'source': 'L_s'}, horizon=4, records=rows)
+    validated = validate_exposure_schedule(schedule, recipient_seed=2, data_contract={'source': 'L_s'})
+    randomized = permute_exposure_schedule(schedule, seed=4, mode='count')
+    assert randomized['matching_scope'] == 'actual_count_only'
+    assert not randomized['exact_sample_assignment']
+    assert randomized['actual_counts'] == validated['actual_counts']
+    assert [r['sample_ids'] for r in randomized['records']] == [r['sample_ids'] for r in rows]
+    exact = permute_exposure_schedule(schedule, seed=4, mode='exact')
+    assert exact['nontrivial'] is False
+    with pytest.raises(ValueError, match='physical channel'):
+        validate_exposure_schedule(schedule, recipient_seed=2, data_contract={'source': 'L_s'},
+                                   channel_config={'scene': 'actual changed physical parameters'})
+    schedule['records'][0]['selected_mask'] = [True]
+    with pytest.raises(ValueError, match='mask'):
+        validate_exposure_schedule(schedule, recipient_seed=2, data_contract={'source': 'L_s'})

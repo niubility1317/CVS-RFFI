@@ -5,11 +5,13 @@ import argparse
 from collections import Counter
 import json
 import math
+import statistics
 from pathlib import Path
 
 
 STREAMS = {'epochs': 'logs.jsonl', 'actions': 'game_actions.jsonl',
            'audits': 'game_audit.jsonl', 'curriculum': 'curriculum_events.jsonl',
+           'capability_audits': 'capability_audit.jsonl',
            'response': 'response_tracking.jsonl', 'jacobian': 'jacobian_audit.jsonl'}
 
 
@@ -56,7 +58,7 @@ def counted(rows, key, evidence):
 
 
 def first_capability(audits, events, epochs, calibration):
-    config = (calibration or {}).get('curriculum', {})
+    config = (calibration or {}).get('curriculum') or {}
     threshold_keys = ('identity_enter', 'margin_enter', 'lag_max', 'consistency_enter')
     if not all(finite(config.get(k)) for k in threshold_keys):
         return {'status': 'pending', 'reason': 'complete_frozen_capability_thresholds_unavailable'}
@@ -101,6 +103,11 @@ def analyze_run(directory, *, row=None, seed=None):
     total_steps = max((e['total_step'] for e in epochs if finite(e.get('total_step'))), default=None)
     closed = complete_actions and all(isinstance(a.get('accepted'), bool) for a in actions) and total_steps is not None and len(actions) == total_steps and set(a.get('step') for a in actions) == set(range(total_steps))
     mechanism = {
+        'requested_action_counts': dict(Counter(a['requested_action'] for a in actions)) if complete_actions and all('requested_action' in a for a in actions) else None,
+        'decided_action_counts': dict(Counter(a.get('action', 'unknown') for a in actions)) if complete_actions else None,
+        'committed_correct_actions': sum(a.get('action') == 'CORRECT' and a.get('field_evaluations', 0) > 1 for a in accepted) if complete_actions else None,
+        'accepted_action_counts': dict(Counter(a.get('action', 'unknown') for a in accepted)) if complete_actions else None,
+        'rejected_action_counts': dict(Counter(a.get('action', 'unknown') for a in actions if a.get('accepted') is False)) if complete_actions else None,
         'accepted_main_updates': len(accepted) if complete_actions else None,
         'actual_solver_updates': dict(Counter(a.get('algorithm', a.get('main_solver', 'unknown')) for a in accepted)) if complete_actions else None,
         'committed_head_steps': counted(actions, 'committed_head_steps', evidence['actions']),
@@ -117,6 +124,25 @@ def analyze_run(directory, *, row=None, seed=None):
                            'activated_or_valid': sum(predicate(r) for r in streams[name]) if evidence[name]['status'] == 'read_complete' else None}
     sources = objects['scores']
     scores = sources if sources and sources.get('complete') is True and sources.get('source_only') is True else None
+    prediction_paths = [directory/'source_final_eval'/name for name in
+                        ('source_predictions.jsonl', 'source_prediction_manifest.json', 'source_truth.jsonl')]
+    if scores and all(p.exists() for p in prediction_paths):
+        try:
+            try:
+                from scripts.analyze_core90_conditional_robustness import closed_source_metrics
+            except ModuleNotFoundError:
+                from analyze_core90_conditional_robustness import closed_source_metrics
+            supplements = closed_source_metrics(*prediction_paths)
+            for scene, metrics in supplements.items(): scores['scenes'][scene].update(metrics)
+            evidence['detailed_source_metrics'] = {'status': 'read_complete'}
+        except (ValueError, KeyError, TypeError) as error:
+            evidence['detailed_source_metrics'] = {'status': 'incomplete', 'error': str(error)}
+    else:
+        evidence['detailed_source_metrics'] = {'status': 'pending'}
+        if scores:
+            for scene in scores.get('scenes', {}).values():
+                recalls = [v for rx in scene.get('per_rx', {}).values() for v in rx.get('per_tx_accuracy', {}).values() if finite(v)]
+                scene.setdefault('worst_rx_tx_accuracy', min(recalls) if recalls else None)
     totals = {
         'training_wall_seconds': resource.get('total_seconds'),
         'source_evaluation_wall_seconds': (scores or {}).get('resources', {}).get('total_wall_seconds'),
@@ -124,6 +150,7 @@ def analyze_run(directory, *, row=None, seed=None):
         'main_field_evaluations': counted(actions, 'field_evaluations', evidence['actions']),
         'logged_training_forward_calls': counted(actions, 'forward_calls', evidence['actions']),
         'main_backward_evaluations': counted(actions, 'main_backward_evaluations', evidence['actions']),
+        'telemetry_backward_evaluations': counted(actions, 'telemetry_backward_evaluations', evidence['actions']),
         'extra_head_forward_backward_evaluations': counted(actions, 'extra_head_forward_backward_evaluations', evidence['actions']),
         'audit_model_forwards': counted(streams['audits'], 'model_forwards', evidence['audits']),
         'audit_gradient_backward_evaluations': counted(streams['audits'], 'gradient_backward_evaluations', evidence['audits']),
@@ -164,6 +191,8 @@ def analyze_run(directory, *, row=None, seed=None):
             'evidence': evidence, 'log_closure': {'actions_match_epoch_total': closed, 'duplicate_steps': duplicate_steps,
                                                'duplicate_epochs': duplicate_epochs},
             'mechanisms': mechanism, 'resources': totals,
+            'quality_and_exposure': quality_and_exposure(streams, evidence),
+            'failure_diagnostics': failure_diagnostics(actions, stream_complete=closed),
             'capability': first_capability(streams['audits'], streams['curriculum'], epochs, objects['calibration']) if evidence['audits']['status'] == 'read_complete' else {'status': 'pending', 'reason': 'source_audit_stream_missing_or_incomplete'},
             'coverage': objects['coverage'],
             'deployment': {'path': str(directory/'deployment.pth'),
@@ -192,7 +221,7 @@ def paired_differences(runs, baseline='B0'):
             a = (base['source_performance'] or {}).get('scenes', {}).get(scene, {})
             b = (run['source_performance'] or {}).get('scenes', {}).get(scene, {})
             deltas[scene] = {k: b[k]-a[k] if finite(a.get(k)) and finite(b.get(k)) else None
-                             for k in ('accuracy', 'macro_recall', 'macro_f1', 'worst_rx_accuracy', 'worst_tx_accuracy')}
+                             for k in ('accuracy', 'macro_recall', 'macro_f1', 'worst_rx_accuracy', 'worst_tx_accuracy', 'worst_rx_tx_accuracy')}
         costs = {k: {'baseline': base['resources'].get(k), 'candidate': run['resources'].get(k)}
                  for k in ('training_wall_seconds', 'main_field_evaluations', 'sample_presentations')}
         for value in costs.values():
@@ -204,9 +233,95 @@ def paired_differences(runs, baseline='B0'):
     return pairs
 
 
+def failure_diagnostics(actions, *, stream_complete):
+    """Observable pathology timelines, never a root-cause claim from final accuracy."""
+    histograms = [r for r in actions if isinstance(r.get('prediction_histogram'), list)
+                  and r['prediction_histogram'] and all(finite(v) and v >= 0 for v in r['prediction_histogram'])
+                  and sum(r['prediction_histogram']) > 0]
+    collapse = next((r for r in histograms if max(r['prediction_histogram']) / sum(r['prediction_histogram']) >= .99), None)
+    first = dict(status='observed' if collapse else 'not_observed_at_logged_samples' if histograms else 'UNKNOWN',
+                 criterion='descriptive dominant predicted class share >= 0.99; not a causal or identity-collapse verdict',
+                 histogram_observations=len(histograms), first_observed_step=collapse.get('step') if collapse else None,
+                 first_observed_epoch=collapse.get('epoch') if collapse else None,
+                 exact_first_collapse_established=bool(collapse and stream_complete and len(histograms) == len(actions)))
+    cosine_values = [r['history_next_gradient_cosine'] for r in actions if finite(r.get('history_next_gradient_cosine'))]
+    history = [r for r in actions if type(r.get('optimistic_history_used')) is bool]
+    return dict(first_collapse=first, complete_stream=stream_complete,
+        optimistic=dict(history_used_observations=sum(r['optimistic_history_used'] for r in history) if history else None,
+            history_observations=len(history),
+            history_reset_reasons=dict(Counter(r['history_reset_reason'] for r in actions if r.get('history_reset_reason'))),
+            gradient_predictive_value=dict(status='observed' if cosine_values else 'UNKNOWN', values=cosine_values,
+                mean=statistics.mean(cosine_values) if cosine_values else None),
+            direction_records=[{k:r[k] for k in ('step','epoch','raw_optimistic_cosine','tx_adv_gradient_ratio','prediction_entropy') if k in r}
+                               for r in actions if any(k in r for k in ('raw_optimistic_cosine','tx_adv_gradient_ratio','prediction_entropy'))],
+            stage_boundary_records=[r for r in actions if r.get('stage_boundary') is True]),
+        root_cause='UNKNOWN; observations alone do not authorize B4/B7 repair experiments')
+
+
+def quality_and_exposure(streams, evidence):
+    audits = streams['audits']
+    quality = None
+    if evidence['audits']['status'] == 'read_complete':
+        quality = {}
+        for estimand in ('lag', 'cross_tx_readout', 'gradient', 'capability'):
+            records = (streams.get('capability_audits', []) if estimand=='capability' else
+                       [r.get(estimand, {}) for r in audits if r.get('schema') == 'game_audit_v2'])
+            quality[estimand] = dict(status_counts=dict(Counter(r.get('status', 'UNAVAILABLE') for r in records)),
+                reason_counts=dict(Counter(code for r in records for code in r.get('reason_codes', []))),
+                v2_observations=len(records))
+        quality['legacy_v1_observations'] = sum(r.get('schema') != 'game_audit_v2' for r in audits)
+    events = streams['curriculum']
+    changes = sum(r.get('effective_policy_changed') is True for r in events) if evidence['curriculum']['status'] == 'read_complete' and all('effective_policy_changed' in r for r in events) else None
+    # Actual counts must be explicitly logged; configuration probabilities are not exposure.
+    exposure = {}
+    for name, predicate in [('pre_E80_bn', lambda r: r.get('epoch', 0) < 80), ('E80_plus_direct_ce', lambda r: r.get('epoch', 0) >= 80)]:
+        rows = [r for r in streams['actions'] if predicate(r)]
+        valid = evidence['actions']['status'] == 'read_complete' and all('epoch' in r and isinstance(r.get('actual_scenario_counts'), dict) for r in rows)
+        counts = Counter()
+        if valid:
+            for r in rows:
+                if not all(finite(v) and v >= 0 for v in r['actual_scenario_counts'].values()): valid = False; break
+                counts.update(r['actual_scenario_counts'])
+        exposure[name] = dict(counts) if valid else None
+    return dict(probe_quality=quality, effective_policy_changes=changes, actual_exposure=exposure)
+
+
+def factorial_differences(runs):
+    indexed = {}
+    for r in runs:
+        key = r['seed'], r['row']
+        if key in indexed: raise ValueError('Duplicate seed/row in factorial analysis')
+        indexed[key] = r
+    per_seed = []
+    aggregate = {}
+    for seed in sorted({r['seed'] for r in runs if r['row'].startswith('V2_')}, key=str):
+        missing = [c for c in 'ABCDEF' if (seed, 'V2_'+c) not in indexed]
+        if missing:
+            per_seed.append(dict(seed=seed, status='pending_rows', missing_rows=missing)); continue
+        scenes = {}
+        for scene in ('clean', 'leo_clear_weak', 'leo_low_elev_weak', 'leo_rain_weak'):
+            scenes[scene] = {}
+            for metric in ('accuracy', 'macro_f1', 'worst_rx_accuracy', 'worst_tx_accuracy', 'worst_rx_tx_accuracy'):
+                values = [(indexed[seed, 'V2_'+c].get('source_performance') or {}).get('scenes', {}).get(scene, {}).get(metric) for c in 'ABCDEF']
+                if all(finite(v) for v in values):
+                    a,b,c,d,e,f = values
+                    contrasts = dict(b8_interaction=(d-c)-(b-a), eg_interaction=(f-e)-(b-a),
+                                     d_minus_b=d-b, ordinary_adv=b-a, b8_zero_adv=c-a)
+                    for name, value in contrasts.items(): aggregate.setdefault((scene, metric, name), []).append(value)
+                    scenes[scene][metric] = contrasts
+                else: scenes[scene][metric] = None
+        per_seed.append(dict(seed=seed, status='paired_rows_present', scenes=scenes))
+    summaries = [dict(scene=s, metric=m, contrast=c, n=len(v), mean=statistics.mean(v),
+                      sample_std=statistics.stdev(v) if len(v)>1 else None, values=v)
+                 for (s,m,c),v in sorted(aggregate.items())]
+    return dict(per_seed=per_seed, aggregate=summaries,
+                precision_note='paired seed descriptive dispersion only; no target selection or statistical certainty claim')
+
+
 def report(runs, baseline='B0'):
     return {'schema': 'core90_game_full_artifact_analysis_v1', 'runs': runs,
             'paired_differences': paired_differences(runs, baseline),
+            'factorial_differences': factorial_differences(runs),
             'budget_interpretation': {
                 'fixed_epochs': 'Compare at recorded epochs/sample presentations; solver/probe compute may differ.',
                 'fixed_wall_time': 'Epoch-end stopping can overshoot; compare actual measured time, not requested caps.',

@@ -17,6 +17,16 @@ def parser():
                     amp=False, use_concat_sat_channel_aug=True, concat_sat_ce_only=True)
     p.set_defaults(**defaults)
     p.add_argument('--game_solver', choices=('simultaneous','alternating','extragradient','heun','optimistic','head_lookahead'), default='simultaneous')
+    p.add_argument('--game_evidence_version',type=int,choices=(1,2),default=2)
+    p.add_argument('--game_deterministic',action='store_true',help='Use the explicitly accepted deterministic backend path')
+    p.add_argument('--game_b8_impl',choices=('reference','head_grad_only','graph_reuse'),default='reference')
+    p.add_argument('--game_telemetry_interval',type=int,default=250)
+    p.add_argument('--game_capability_interval',type=int,default=250)
+    p.add_argument('--game_probe_lr',type=float,default=.002)
+    p.add_argument('--game_capability_lr',type=float,default=.002)
+    p.add_argument('--game_data_order_seed',type=int,default=-1)
+    p.add_argument('--game_data_contract',type=json.loads,default={})
+    p.add_argument('--game_exposure_replay',default='')
     p.add_argument('--game_optimizer', choices=('adamw','sgd'), default='adamw')
     p.add_argument('--game_control', choices=('off','catchup','correction','both','random','fixed','replay'), default='off')
     p.add_argument('--game_curriculum', choices=('fixed','capability'), default='fixed')
@@ -61,6 +71,8 @@ def parse_args(argv=None):
     return args
 
 def validate(a):
+    if a.game_evidence_version==2 and a.game_control in ('fixed','random'):
+        raise ValueError('V2 requires independent source donor frozen replay; online fixed/random is legacy v1 only')
     if a.baseline_ckpt or not a.from_scratch:
         raise ValueError('CHECKPOINT_PROVENANCE_UNVERIFIED: initial training must be scratch-only')
     if a.best_metric != 'clean_val_tx' or a.enable_joint_safe_guard or a.paic_guard_enabled:
@@ -82,3 +94,11 @@ def validate(a):
         raise ValueError('epochs must be positive')
     if not 0<a.game_optimistic_pseudo_change<=1 or a.game_pseudo_change_window<1:
         raise ValueError('Invalid pseudo distribution change window/threshold')
+    if a.game_evidence_version not in (1,2) or a.game_b8_impl not in ('reference','head_grad_only','graph_reuse'):
+        raise ValueError('Unknown game evidence or B8 implementation version')
+    if a.game_capability_interval<1 or a.game_audit_interval<1 or min(a.game_probe_lr,a.game_capability_lr)<=0:
+        raise ValueError('Invalid independent audit/capability configuration')
+    if a.game_telemetry_interval<0 or a.game_data_order_seed < -1 or not isinstance(a.game_data_contract,dict):
+        raise ValueError('Invalid telemetry/data contract configuration')
+    if a.game_exposure_replay and (a.game_evidence_version!=2 or a.game_curriculum!='fixed'):
+        raise ValueError('Frozen exposure replay requires v2 and fixed curriculum')

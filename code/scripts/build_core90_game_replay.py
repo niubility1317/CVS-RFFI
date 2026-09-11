@@ -52,13 +52,29 @@ def _no_target_contact(record):
         raise ValueError('donor is not source-only')
 
 
-def load_donor(donor_dir, recipient_seed):
+def load_donor(donor_dir, recipient_seed, *, version=1, recipient_config=None):
     """Check a completed, untruncated source donor's mutually consistent files."""
     donor_dir = Path(donor_dir)
     config = _json(donor_dir / 'resolved_config.json')
     completion = _json(donor_dir / 'completion.json')
     rows = _jsonl(donor_dir / 'game_actions.jsonl')
     donor_seed = _count(config.get('seed'), 'donor seed')
+    if version not in (1, 2): raise ValueError('unsupported replay version')
+    if version == 2:
+        if config.get('game_evidence_version') != 2:
+            raise ValueError('v2 replay requires repaired v2 donor; legacy U-defect donors excluded')
+        if config.get('game_resume') or config.get('game_synthetic'):
+            raise ValueError('v2 donor must be real source scratch without inherited resume')
+        for key in ('teacher_ckpt', 'ema_ckpt', 'init_ckpt', 'pretrained_ckpt'):
+            if config.get(key): raise ValueError('donor has unverified inherited checkpoint: '+key)
+        if not isinstance(recipient_config, dict) or recipient_config.get('seed') != recipient_seed:
+            raise ValueError('v2 requires explicit recipient configuration')
+        contract = config.get('game_data_contract')
+        if not isinstance(contract, dict) or not contract or contract != recipient_config.get('game_data_contract'):
+            raise ValueError('donor and recipient data contract mismatch or unverified')
+        for key in ('game_split_seed', 'epochs', 'game_data_order_seed'):
+            if config.get(key) != recipient_config.get(key):
+                raise ValueError('donor/recipient schedule contract mismatch: '+key)
     _count(recipient_seed, 'recipient seed')
     if donor_seed == recipient_seed:
         raise ValueError('donor_seed and recipient_seed must differ; no same-seed future replay')
@@ -162,14 +178,15 @@ def _costs(donor_dir, rows):
     return result
 
 
-def build_schedules(donor_dir, recipient_seed, *, schedule_seed=None, include_curriculum=False):
+def build_schedules(donor_dir, recipient_seed, *, schedule_seed=None, include_curriculum=False,
+                    version=1, recipient_config=None):
     """Create replay, uniformly spaced fixed, and independently shuffled packets.
 
     Keeping whole packets preserves requested AND donor-committed catch-up
     counts jointly, including mixed correction/head actions and rejected work.
     The donor committed count is evidence only, never a claimed recipient result.
     """
-    config, completion, rows = load_donor(donor_dir, recipient_seed)
+    config, completion, rows = load_donor(donor_dir, recipient_seed, version=version, recipient_config=recipient_config)
     donor_seed, horizon = config['seed'], len(rows)
     if schedule_seed is None:
         schedule_seed = recipient_seed * 1000003 + donor_seed
@@ -199,7 +216,10 @@ def build_schedules(donor_dir, recipient_seed, *, schedule_seed=None, include_cu
             if not previous < step < horizon:
                 raise ValueError('curriculum steps must be unique, ordered and inside donor horizon')
             previous = step
-    metadata = dict(schema=SCHEMA, status='FROZEN_SCHEDULES_NOT_EXECUTED', donor_seed=donor_seed,
+    metadata = dict(schema=SCHEMA if version == 1 else SCHEMA.replace('_v1', '_v2'), status='FROZEN_SCHEDULES_NOT_EXECUTED', donor_seed=donor_seed,
+                    execution_mode='state_checked' if version==2 else 'legacy_budget_checked',
+                    strict_realized_action_match=False, matched_compute_claim=False,
+                    data_contract=config.get('game_data_contract'),
                     recipient_seed=recipient_seed, schedule_seed=schedule_seed, source_only=True,
                     target_evaluated=False, horizon=horizon, epochs=config['epochs'],
                     steps_per_epoch=horizon // config['epochs'], game_split_seed=config.get('game_split_seed'),
@@ -224,9 +244,11 @@ def build_schedules(donor_dir, recipient_seed, *, schedule_seed=None, include_cu
     return schedules, metadata, curriculum
 
 
-def write_schedules(donor_dir, output_dir, recipient_seed, *, schedule_seed=None, include_curriculum=False):
+def write_schedules(donor_dir, output_dir, recipient_seed, *, schedule_seed=None, include_curriculum=False,
+                    version=1, recipient_config=None):
     schedules, metadata, curriculum = build_schedules(donor_dir, recipient_seed,
-        schedule_seed=schedule_seed, include_curriculum=include_curriculum)
+        schedule_seed=schedule_seed, include_curriculum=include_curriculum,
+        version=version, recipient_config=recipient_config)
     output = Path(output_dir)
     filenames = [name + '.jsonl' for name in schedules] + ['metadata.json']
     if include_curriculum:
@@ -263,9 +285,12 @@ def main(argv=None):
     parser.add_argument('--recipient-seed', required=True, type=int)
     parser.add_argument('--schedule-seed', type=int)
     parser.add_argument('--include-curriculum', action='store_true')
+    parser.add_argument('--version', type=int, choices=(1,2), default=1)
+    parser.add_argument('--recipient-config')
     args = parser.parse_args(argv)
     metadata = write_schedules(args.donor_dir, args.output_dir, args.recipient_seed,
-                              schedule_seed=args.schedule_seed, include_curriculum=args.include_curriculum)
+                              schedule_seed=args.schedule_seed, include_curriculum=args.include_curriculum,
+                              version=args.version, recipient_config=_json(args.recipient_config) if args.recipient_config else None)
     print(json.dumps(dict(status=metadata['status'], horizon=metadata['horizon'],
                          recipient_seed=metadata['recipient_seed'], metadata=str((Path(args.output_dir) / 'metadata.json').resolve()))))
     return 0

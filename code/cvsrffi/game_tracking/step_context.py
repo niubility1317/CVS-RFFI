@@ -1,6 +1,7 @@
 from __future__ import annotations
 from dataclasses import dataclass, field
 from collections import defaultdict
+import math
 import torch
 import torch.nn.functional as F
 from cvsrffi.eval import apply_sat_channel_for_scenario
@@ -44,6 +45,15 @@ def satellite_stage(epoch, capability_level=None):
     if epoch <= 90: return ['leo_low_elev_weak','leo_rain_weak'], .60
     return ['leo_clear_weak','leo_low_elev_weak','leo_rain_weak'], .80
 
+
+def satellite_policy(level):
+    level=float(level)
+    if not math.isfinite(level) or not 0 <= level <= 1:
+        raise ValueError('capability level must be finite inside [0,1]')
+    return dict(probability=.30+.50*level,weights=[1.-2.*level/3.,level/3.,level/3.],
+                scenarios=['leo_clear_weak','leo_low_elev_weak','leo_rain_weak'],
+                physical_config_version='leo_weak_unchanged_v1')
+
 @dataclass
 class StepContext:
     x: torch.Tensor
@@ -64,19 +74,52 @@ class StepContext:
     origin_terms: dict = field(default_factory=dict)
     forward_calls: int = 0
     pseudo_selected: int = 0
+    satellite_selected_mask: torch.Tensor | None = None
+    satellite_channel_seed: int | None = None
+    satellite_probability: float | None = None
+    satellite_policy_weights: list | None = None
+    capability_level: float | None = None
 
-def prepare_context(batch, unlabeled_batch, model, ema, args, epoch, batch_index, weights, gen, augmentor=None, capability_level=None):
+def prepare_context(batch, unlabeled_batch, model, ema, args, epoch, batch_index, weights, gen, augmentor=None, capability_level=None, *, exposure_record=None):
     device = next(model.parameters()).device
     x,y,d,meta = batch
     x,y,d = x.to(device),y.to(device),d.to(device)
     x_main = augmentor(x,labels=y,no_pa=not bool(args.aug_enable_pa_normal)) if augmentor is not None else x
     scenarios, probability = satellite_stage(epoch,capability_level)
     scenario = scenarios[(epoch+batch_index-2)%len(scenarios)]
+    policy_weights = None
+    version2 = getattr(args,'game_evidence_version',1) == 2
+    if version2 and capability_level is not None:
+        policy = satellite_policy(capability_level)
+        probability, policy_weights = policy['probability'], policy['weights']
+        selected_scenario = int(torch.multinomial(torch.tensor(policy_weights,device=device),1,generator=gen))
+        scenario = policy['scenarios'][selected_scenario]
+    channel_seed = None
     with torch.no_grad():
-        sat,_ = apply_sat_channel_for_scenario(x,scenario,args,gen=gen,return_meta=False)
-        selected = torch.rand(len(x),device=device,generator=gen) < probability
+        if version2:
+            channel_seed = int(torch.randint(0,2**31-1,(),device=device,generator=gen))
+            selected = torch.rand(len(x),device=device,generator=gen) < probability
+            if exposure_record is not None:
+                if exposure_record.get('sample_ids') != list(meta['sample_id']) or exposure_record.get('epoch') != epoch:
+                    raise ValueError('exposure replay sample stream/epoch mismatch')
+                mask = exposure_record.get('selected_mask')
+                if not isinstance(mask,list) or len(mask)!=len(x) or any(type(v) is not bool for v in mask):
+                    raise ValueError('exposure replay selected mask mismatch')
+                scenario, channel_seed = exposure_record.get('scenario'), exposure_record.get('channel_seed')
+                if scenario not in satellite_policy(1.)['scenarios'] or type(channel_seed) is not int or channel_seed<0:
+                    raise ValueError('exposure replay scenario/channel seed invalid')
+                selected = torch.tensor(mask,device=device,dtype=torch.bool)
+            channel_gen = torch.Generator(device=device).manual_seed(channel_seed)
+            sat,_ = apply_sat_channel_for_scenario(x,scenario,args,gen=channel_gen,return_meta=False)
+        else:
+            if exposure_record is not None: raise ValueError('exposure replay requires V2')
+            sat,_ = apply_sat_channel_for_scenario(x,scenario,args,gen=gen,return_meta=False)
+            selected = torch.rand(len(x),device=device,generator=gen) < probability
         sat = torch.where(selected[:,None,None],sat,x)
     ctx = StepContext(x_main.detach(),sat.detach(),y,d,dict(weights),epoch,batch_index,list(meta['sample_id']),scenario,int(selected.sum()))
+    ctx.satellite_selected_mask=selected.detach().clone()
+    ctx.satellite_channel_seed=channel_seed;ctx.satellite_probability=probability
+    ctx.satellite_policy_weights=policy_weights;ctx.capability_level=capability_level
     if unlabeled_batch is not None:
         ux,hidden,ud,umeta = unlabeled_batch
         if not bool((hidden == -1).all()) or any('tx' in k.lower() for k in umeta):
@@ -100,6 +143,9 @@ def prepare_context(batch, unlabeled_batch, model, ema, args, epoch, batch_index
 class Core90Objective:
     def __init__(self,model,args,proto_bank):
         self.model,self.args,self.proto = model,args,proto_bank
+    def prepare_reusable_graph(self,ctx):
+        from .head_lookahead import Core90ReusableGraph
+        return Core90ReusableGraph(self,ctx)
     def __call__(self,ctx):
         n = len(ctx.y)
         separate = self.args.game_head_scale == 'separate_head_scale'

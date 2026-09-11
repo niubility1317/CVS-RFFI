@@ -12,6 +12,36 @@ from scripts.build_core90_game_matrix import DEFAULT_ROWS, build_matrix, row_men
 import scripts.core90_game_evaluate as evaluation
 
 
+def test_v2_factorial_has_six_paired_rows_with_no_audit():
+    matrix = build_matrix(rows=tuple('V2_'+r for r in 'ABCDEF'), seeds=[392005])
+    assert len(matrix) == 6
+    for r in matrix:
+        c = r['config']
+        assert c['game_no_audit'] and c['game_curriculum'] == 'fixed'
+        assert c['from_scratch'] and c['epochs'] == 200
+        assert c['lambda_adv'] == (0. if r['row'][-1] in 'ACE' else .35)
+        if r['row'][-1] in 'CD': assert c['game_b8_impl'] == 'head_grad_only'
+
+
+def test_strong_source_selection_frozen_rule_and_missing_runs_deferred(tmp_path):
+    from scripts.build_core90_game_matrix import STRONG_SOURCE_ROWS, select_strong_ordinary, build_strong_confirmation
+    candidates=build_matrix(rows=STRONG_SOURCE_ROWS,seeds=[392005],runs_root=tmp_path/'runs')
+    assert sorted(c['config']['lr'] for c in candidates)==[1e-4,2e-4,4e-4]
+    assert select_strong_ordinary(candidates)['status']=='DEFERRED_INCOMPLETE_SOURCE_CANDIDATES'
+    for candidate in candidates:
+        root=Path(candidate['config']['output_dir']);root.mkdir(parents=True)
+        (root/'resolved_config.json').write_text(json.dumps(candidate['config']),encoding='utf-8')
+        (root/'completion.json').write_text(json.dumps(dict(status='SOURCE_ARTIFACTS_COMPLETE',epoch=200,target_evaluated=False)),encoding='utf-8')
+        scores=root/'source_final_eval';scores.mkdir()
+        (scores/'source_scores.json').write_text(json.dumps(dict(complete=True,source_only=True,
+            scenes={s:dict(macro_f1=.7) for s in evaluation.EVAL_SCENES})),encoding='utf-8')
+    selection=select_strong_ordinary(candidates)
+    assert selection['selected_lr']==1e-4
+    confirmation=build_strong_confirmation(selection,seeds=[392006,392007])
+    assert all(r['config']['lr']==1e-4 for r in confirmation)
+    assert {r['seed'] for r in confirmation}=={392006,392007}
+
+
 def test_default_matrix_paired_seed_scratch_source_only():
     matrix = build_matrix()
     assert len(matrix) == 22

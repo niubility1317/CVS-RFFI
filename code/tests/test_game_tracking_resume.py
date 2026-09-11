@@ -21,7 +21,7 @@ def _args(output, *, audit=True, resume=None):
             '--epochs', '2', '--batch_size', '18', '--num_workers', '0',
             '--game_max_steps_per_epoch', '1', '--game_probe_steps', '2',
             '--game_audit_interval', '1', '--game_audit_samples_per_capture', '2',
-            '--game_skip_final_eval']
+            '--game_skip_final_eval','--game_evidence_version','1']
     if not audit:
         argv.append('--game_no_audit')
     if resume is not None:

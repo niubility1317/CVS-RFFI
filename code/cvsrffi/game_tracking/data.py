@@ -152,3 +152,71 @@ def audit_indices(source, per_capture=4):
         result['domain_fit' if t in fit_tx else 'domain_monitor'].extend(chosen)
         result['capability_fit' if d in fit_days else 'capability_monitor'].extend(chosen)
     return result
+
+
+def labeled_source_records(source):
+    """Metadata-only view of L_s. Never inspect U_s to construct TX groups."""
+    rows = []
+    for i in range(len(source.train)):
+        if isinstance(source.train, SourceRoleDataset):
+            item = source.train.base.index[source.train.indices[i]]
+            tx, rx, day = int(item.tx_i), int(item.rx_i), int(item.day_i)
+            # Selection identity is the legal L_s index; opaque IDs are read by loader.
+            identity = str(source.train.indices[i])
+        else:
+            _, tx, _, meta = source.train[i]
+            tx, rx, day = int(tx), int(meta['rx_i']), int(meta['day_i'])
+            identity = str(meta['sample_id'])
+        rows.append(dict(index=i,tx=tx,rx=rx,day=day,capture_group=f'{tx}:{rx}:{day}',
+                         sample_id=identity,role='train'))
+    return rows
+
+
+def balanced_reference_indices(records, samples_per_group=1, seed=0):
+    """Choose every available capture container, without global RNG mutation.
+
+    Whole-container coverage is reported, not invented independent acquisitions.
+    Caller compares available coverage with the source contract when required.
+    """
+    import hashlib
+    if samples_per_group < 1 or not records:
+        raise ValueError('nonempty labeled source reference and positive samples required')
+    groups = defaultdict(list)
+    identities = set()
+    for row in records:
+        if row.get('role') != 'train' or int(row.get('tx',-1)) < 0 or not row.get('capture_group'):
+            raise ValueError('reference requires legal labeled source capture metadata')
+        if row['sample_id'] in identities:
+            raise ValueError('duplicate reference sample identity')
+        identities.add(row['sample_id'])
+        groups[(int(row['tx']),int(row['rx']),int(row['day']))].append(row)
+    chosen=[]
+    for key,values in sorted(groups.items()):
+        order=sorted(values,key=lambda r:hashlib.sha256(f"{seed}:{r['sample_id']}".encode()).digest())
+        chosen.extend(r['index'] for r in order[:samples_per_group])
+    coverage=dict(valid=True,groups=len(groups),samples=len(chosen),
+                  domains=len({(r,d) for t,r,d in groups}),txs=len({t for t,r,d in groups}),
+                  rxs=sorted({r for t,r,d in groups}),days=sorted({d for t,r,d in groups}),
+                  group_counts={f'{t}:{r}:{d}':min(len(v),samples_per_group) for (t,r,d),v in groups.items()},
+                  grouping_kind='whole_tx_rx_day_container',independent_repeat_claim=False)
+    return chosen,coverage
+
+
+def audit_indices_v2(source, per_capture=4, seed=0):
+    records=labeled_source_records(source)
+    lag,_=balanced_reference_indices(records,per_capture,seed)
+    reference,_=balanced_reference_indices(records,1,seed+1)
+    txs=sorted({r['tx'] for r in records});days=sorted({r['day'] for r in records})
+    if len(txs)<2 or len(days)<2:
+        raise ValueError('source diagnostics need multiple TX and day containers')
+    fit_tx=set(txs[:len(txs)//2]);fit_days=set(days[:-1])
+    by_index={r['index']:r for r in records}
+    result=dict(lag_reference=lag,gradient_reference=reference)
+    for name,predicate in [('domain_fit',lambda r:r['tx'] in fit_tx),
+                           ('domain_monitor',lambda r:r['tx'] not in fit_tx),
+                           ('capability_fit',lambda r:r['day'] in fit_days),
+                           ('capability_monitor',lambda r:r['day'] not in fit_days)]:
+        result[name]=[i for i in lag if predicate(by_index[i])]
+    result['response_fit']=[i for i in reference if by_index[i]['tx'] in fit_tx]
+    result['response_monitor']=[i for i in reference if by_index[i]['tx'] not in fit_tx]
+    return result

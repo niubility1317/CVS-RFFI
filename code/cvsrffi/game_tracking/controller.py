@@ -112,3 +112,85 @@ class GameController:
             setattr(self, key, state[key])
         if self.last_observation is not None:
             self.last_observation = tuple(self.last_observation)
+
+
+class GameControllerV2:
+    """Consume typed, trusted evidence once; failures never certify health."""
+    def __init__(self,config=ControllerConfig()):
+        self.config=config;self.state='NORMAL';self.pending=None;self.streak=0
+        self.last_observation=None;self.last_change=-10**12
+        self.consumed_observations=set();self.requested_observations=set();self.accepted_events=0
+
+    def _normal(self,reason):
+        return dict(action='NORMAL',reason=reason,catchup_steps=0,hold_curriculum=False,
+                    main_solver='normal',next_audit_interval=self.config.audit_interval)
+
+    def decide(self,m,*,step,encoder_version,budget=None):
+        c=self.config
+        if not m or m.get('schema')!='game_audit_v2':return self._normal('v2_evidence_required')
+        if not m.get('data_valid') or not m.get('coverage_valid'):return self._normal('invalid_data_or_coverage')
+        age=step-m.get('step',step+1);version_lag=encoder_version-m.get('encoder_version',encoder_version+1)
+        if not 0<=age<=c.max_age_steps or not 0<=version_lag<=c.max_version_lag:
+            return self._normal('stale_or_future_evidence')
+        obs=m.get('observation_id')
+        if not isinstance(obs,str) or not obs:return self._normal('missing_observation_id')
+        if obs in self.consumed_observations or obs in self.requested_observations:
+            return self._normal('observation_already_consumed')
+        lag=m.get('lag',{})
+        value=lag.get('gap_normalized');readable=lag.get('readability')
+        reliable=lag.get('status') in ('RELIABLE_HIGH_GAP','RELIABLE_LOW_GAP')
+        if (not reliable or not lag.get('quality_pass') or not lag.get('control_ready') or
+            not isinstance(value,(int,float)) or not math.isfinite(value) or
+            not isinstance(readable,(int,float)) or not math.isfinite(readable)):
+            self.pending=None;self.streak=0
+            return self._normal('untrusted_lag_evidence')
+        cap=m.get('capability',{})
+        cap_age=step-cap.get('step',step+1);cap_version=encoder_version-cap.get('encoder_version',encoder_version+1)
+        if (cap.get('schema')!='game_capability_v2' or not cap.get('valid') or not cap.get('identity_valid') or cap.get('collapsed',True) or
+            not 0<=cap_age<=c.max_age_steps or not 0<=cap_version<=c.max_version_lag or
+            not all(isinstance(cap.get(k),(int,float)) and math.isfinite(cap[k]) for k in ('identity','margin')) or
+            cap['identity']<c.identity_min or cap['margin']<c.margin_min):
+            self.pending=None;self.streak=0
+            return self._normal('identity_protection_unavailable')
+        gradient=m.get('gradient',{});imbalance=gradient.get('direction_imbalance')
+        grad_ok=bool(gradient.get('valid') and gradient.get('representative') and
+                     gradient.get('scope')=='full_current_training_objective' and
+                     isinstance(imbalance,(int,float)) and math.isfinite(imbalance))
+        high=value >= (c.lag_exit if self.state=='CATCHUP' else c.lag_enter)
+        desired=('CATCHUP' if high and readable>=c.readable_min else 'CORRECT'
+                 if value<=c.lag_exit and grad_ok and imbalance >= (c.imbalance_exit if self.state=='CORRECT' else c.imbalance_enter)
+                 else 'NORMAL')
+        if obs!=self.last_observation:
+            self.streak=self.streak+1 if self.pending==desired else 1
+            self.pending=desired;self.last_observation=obs
+        if desired=='NORMAL':return self._normal('no_trusted_action_condition')
+        if self.streak<c.confirmation_windows or step-self.last_change<c.cooldown_steps:
+            return self._normal('confirmation_or_cooldown')
+        k=c.catchup_steps if desired=='CATCHUP' else 0
+        costs=dict(head_steps=k) if k else dict(field_evaluations=1,corrections=1,base_steps=1)
+        if budget is not None and not budget.can_afford(step,**costs)[0]:
+            self.consumed_observations.add(obs)
+            return self._normal('action_budget_exhausted')
+        self.requested_observations.add(obs);self.state=desired;self.last_change=step
+        return dict(action=desired,reason='trusted_'+desired.lower(),catchup_steps=k,hold_curriculum=False,
+                    main_solver='eg' if desired=='CORRECT' else 'normal',next_audit_interval=c.audit_interval,
+                    observation_id=obs)
+
+    def record_outcome(self,observation_id,*,accepted,committed_head_steps=0):
+        if observation_id not in self.requested_observations:
+            raise ValueError('outcome requires one outstanding observation action')
+        self.requested_observations.remove(observation_id);self.consumed_observations.add(observation_id)
+        self.accepted_events+=int(bool(accepted) or committed_head_steps>0)
+
+    def state_dict(self):
+        return dict(schema='game_controller_v2',config=asdict(self.config),state=self.state,pending=self.pending,
+                    streak=self.streak,last_observation=self.last_observation,last_change=self.last_change,
+                    consumed_observations=sorted(self.consumed_observations),
+                    requested_observations=sorted(self.requested_observations),accepted_events=self.accepted_events)
+
+    def load_state_dict(self,state):
+        if state.get('schema')!='game_controller_v2' or state.get('config')!=asdict(self.config):
+            raise ValueError('v2 controller schema/config mismatch')
+        for k in ('state','pending','streak','last_observation','last_change','accepted_events'):setattr(self,k,state[k])
+        self.consumed_observations=set(state['consumed_observations'])
+        self.requested_observations=set(state['requested_observations'])

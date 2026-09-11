@@ -17,7 +17,7 @@ from cvsrffi.schedule import build_stage_state
 
 def setup():
     torch.set_num_threads(2)
-    a=parse_args(['--output_dir','unused','--game_synthetic','--batch_size','18','--num_workers','0','--game_probe_steps','2'])
+    a=parse_args(['--output_dir','unused','--game_synthetic','--batch_size','18','--num_workers','0','--game_probe_steps','2','--game_evidence_version','1'])
     data=build_source(a)
     device=torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     model=build_model(a,len(data.domains),device).train()
