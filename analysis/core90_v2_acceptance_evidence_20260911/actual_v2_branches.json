@@ -1,0 +1,3410 @@
+[
+  {
+    "variant": "U3",
+    "status": "TRAIN_EXECUTED",
+    "activation": {
+      "variant": "U3",
+      "status": "ACTIVE_VERIFIED",
+      "missing": [],
+      "counts": {
+        "batches": 4,
+        "successful_steps": 4,
+        "effective_blocks": 16,
+        "response_batches": 0,
+        "decision_batches": 4,
+        "cross_batches": 0,
+        "joint_gradient_steps": 0,
+        "domain_gradient_steps": 0,
+        "head_gradient_steps": 0,
+        "decision_gradient_steps": 1,
+        "cross_gradient_steps": 0,
+        "forward_calls": 4,
+        "audited_steps": 1,
+        "audited_successful_steps": 1,
+        "forced_audit_steps": 0
+      },
+      "maxima": {
+        "effective_blocks": 4.0,
+        "independent_records": 128.0,
+        "skipped_blocks": 0.0,
+        "role_rotation_enabled": 1.0,
+        "selection_probability": 0.013333333333333334,
+        "physical_k": 2.0,
+        "duplicate_physical_fraction": 0.0,
+        "decision_valid_comparisons": 17.5,
+        "decision_valid_fraction": 0.109375,
+        "decision_gap": 0.7804415822029114,
+        "decision_possible_comparisons": 160.0,
+        "decision_mean_gap": 0.7804415822029114,
+        "decision_positive_gap_comparisons": 12.0,
+        "decision_positive_gap_fraction_valid": 0.33958333333333335,
+        "decision_positive_gap_fraction_all": 0.075,
+        "decision_gap_p50": 0.7493869066238403,
+        "decision_gap_p90": 1.9249903559684753,
+        "decision_gap_p95": 2.0548048615455627,
+        "identity_interaction": 4570862.27044791,
+        "identity_scale": 664.1073662042618,
+        "identity_between_tx": 25162.255066825775,
+        "geometry_available": 1.0,
+        "geometry_invalid_records": 0.0,
+        "geometry_min_norm": 1e-08,
+        "geometry_raw_norm_mean": 664.1073662042618,
+        "geometry_raw_norm_p50": 5.5455082654953,
+        "geometry_raw_norm_p95": 4555.325097680092,
+        "geometry_raw_interaction": 4570862.27044791,
+        "geometry_raw_interaction_per_160_dimensions": 4570862.27044791,
+        "geometry_raw_relative_interaction": 0.29705022647976875,
+        "geometry_unit_interaction": 0.13630709424614906,
+        "geometry_classification_records": 32.0,
+        "loss_response": -0.0,
+        "loss_decision": 3.5024659633636475,
+        "loss_cross": -0.0,
+        "diagnostics_audited": 1.0,
+        "decision_identity_grad_norm": 185.78320963213338,
+        "response_identity_reference_norm": 0.0,
+        "response_identity_raw_norm": 0.0,
+        "response_identity_cap_scale": 0.0,
+        "response_identity_clipped": 0.0,
+        "response_joint_open": 0.0,
+        "response_grad_shared": 0.0,
+        "response_grad_identity_tail": 0.0,
+        "response_grad_identity_front": 0.0,
+        "response_grad_domain": 0.0,
+        "response_grad_other": 0.0,
+        "response_grad_auxiliary": 0.0,
+        "invalid_feedback_blocks": 0.0,
+        "auxiliary_step_seconds": 12.443774900006247,
+        "peak_memory_bytes": 9350676992.0
+      },
+      "gate": {
+        "min_blocks": 1,
+        "error_ratio": 0.95,
+        "stable_checks": 3,
+        "consecutive": 0,
+        "checks": 0,
+        "opened": false,
+        "last_ratio": null
+      },
+      "rotation_counts": {
+        "9": 1,
+        "14": 2,
+        "27": 3,
+        "32": 2,
+        "25": 2,
+        "20": 1,
+        "13": 1,
+        "6": 1,
+        "5": 1,
+        "4": 1,
+        "22": 1
+      },
+      "mechanism_gate": {
+        "status": "SOURCE_PARAMETERS_UNFROZEN"
+      },
+      "extended_identity_module": null,
+      "config": {
+        "enabled": true,
+        "response_enabled": false,
+        "decision_enabled": true,
+        "identity_interaction_enabled": false,
+        "head_only": false,
+        "permanent_detach": false,
+        "P": 4,
+        "Q": 4,
+        "K": 2,
+        "view_policy": "clean_only",
+        "target_family": "fft",
+        "target_dim": 8,
+        "statistics_epsilon": 1e-08,
+        "readout_dim": 16,
+        "predictor_mode": "additive",
+        "rank": 4,
+        "lambda_resp": 0.01,
+        "lambda_dec": 0.01,
+        "lambda_cross": 0.01,
+        "decision_delta": 0.0,
+        "decision_min_records": 2,
+        "interaction_weight": 0.0,
+        "role_rotation": true,
+        "normalization_policy": "frozen_source",
+        "mixstyle_role_policy": "donor_only",
+        "gradient_stage": "warmup",
+        "gradient_cap": 0.1,
+        "gate_min_blocks": 1,
+        "gate_error_ratio": 0.95,
+        "gate_stable_checks": 3,
+        "scheduler_mode": "uniform",
+        "exploration": 0.1,
+        "update_interval": 20,
+        "feedback_clip": 10.0,
+        "scheduler_alpha": 1.0,
+        "scheduler_beta": 1.0,
+        "data_seed": 392005,
+        "lags": [
+          1,
+          2,
+          4
+        ],
+        "gate_interval_epochs": 1,
+        "source_fit_max_records": 128,
+        "source_eval_max_blocks": 1,
+        "k_menu": [
+          2
+        ],
+        "gradient_tail_prefixes": [
+          "id_backbone.cls_head"
+        ],
+        "scheduler_candidate_limit": 128,
+        "implementation_version": 2,
+        "diagnostic_interval": 20,
+        "statistics_audit": false,
+        "geometry_min_norm": 1e-08,
+        "direction_shrinkage": 0.0,
+        "gain_strategy": "legacy_gain",
+        "evidence_config": null,
+        "decision_mode": "vectorized",
+        "decision_calibration": null,
+        "interaction_mode": "raw",
+        "response_routing": "full_error",
+        "mechanism_gate": null,
+        "response_decomposition": null,
+        "source_audit_enabled": true,
+        "source_baseline_fit_steps": 2,
+        "source_baseline_fit_lr": 0.001
+      },
+      "source_evaluations": [],
+      "auxiliary_parameters": 0,
+      "fixed_statistics_cache": {
+        "entries": 0,
+        "hits": 0,
+        "misses": 0,
+        "value_bytes": 0,
+        "key_utf8_bytes": 0,
+        "python_container_overhead_included": false,
+        "contents": "detached raw waveform statistics only"
+      },
+      "gradient_counter_semantics": {
+        "decision_gradient_steps": "positive among audited_successful_steps",
+        "cross_gradient_steps": "positive among audited_successful_steps",
+        "response_gradient_steps": "every successful routed update; required routing never sampled"
+      },
+      "parameter_groups": {
+        "shared": [
+          "id_backbone.sinc.low_hz_",
+          "id_backbone.sinc.band_hz_"
+        ],
+        "identity_tail": [
+          "id_backbone.cls_head.id_proj.0.weight",
+          "id_backbone.cls_head.id_proj.0.bias",
+          "id_backbone.cls_head.pa_proj.0.weight",
+          "id_backbone.cls_head.pa_proj.0.bias",
+          "id_backbone.cls_head.id_gate.0.weight",
+          "id_backbone.cls_head.id_gate.0.bias",
+          "id_backbone.cls_head.joint_proj.0.weight",
+          "id_backbone.cls_head.joint_proj.0.bias",
+          "id_backbone.cls_head.imp_merge.0.weight",
+          "id_backbone.cls_head.imp_merge.0.bias",
+          "id_backbone.cls_head.head.weight",
+          "id_backbone.cls_head.pa_head.0.weight",
+          "id_backbone.cls_head.pa_head.0.bias",
+          "id_backbone.cls_head.pa_head.2.weight",
+          "id_backbone.cls_head.pa_head.2.bias"
+        ],
+        "identity_front": [
+          "id_backbone.time_fuse.0.weight",
+          "id_backbone.time_fuse.1.weight",
+          "id_backbone.time_fuse.1.bias",
+          "id_backbone.t1.dw.weight",
+          "id_backbone.t1.pw.weight",
+          "id_backbone.t1.norm.weight",
+          "id_backbone.t1.norm.bias",
+          "id_backbone.t2.dw.weight",
+          "id_backbone.t2.pw.weight",
+          "id_backbone.t2.norm.weight",
+          "id_backbone.t2.norm.bias",
+          "id_backbone.t3.dw.weight",
+          "id_backbone.t3.pw.weight",
+          "id_backbone.t3.norm.weight",
+          "id_backbone.t3.norm.bias",
+          "id_backbone.t_proj.weight",
+          "id_backbone.t_proj.bias",
+          "id_backbone.f1.dw.weight",
+          "id_backbone.f1.pw.weight",
+          "id_backbone.f1.norm.weight",
+          "id_backbone.f1.norm.bias",
+          "id_backbone.f2.dw.weight",
+          "id_backbone.f2.pw.weight",
+          "id_backbone.f2.norm.weight",
+          "id_backbone.f2.norm.bias",
+          "id_backbone.f3.dw.weight",
+          "id_backbone.f3.pw.weight",
+          "id_backbone.f3.norm.weight",
+          "id_backbone.f3.norm.bias",
+          "id_backbone.f_proj.weight",
+          "id_backbone.f_proj.bias",
+          "id_backbone.freq_gate.conv.weight",
+          "id_backbone.freq_gate.conv.bias",
+          "id_backbone.freq_stats_proj.0.weight",
+          "id_backbone.freq_stats_proj.0.bias",
+          "id_backbone.pa_stats_proj.0.weight",
+          "id_backbone.pa_stats_proj.0.bias",
+          "id_backbone.pa_gate.net.weight",
+          "id_backbone.pa_gate.net.bias",
+          "id_backbone.pa_b1.conv.weight",
+          "id_backbone.pa_b1.norm.weight",
+          "id_backbone.pa_b1.norm.bias",
+          "id_backbone.pa_b2.conv.weight",
+          "id_backbone.pa_b2.norm.weight",
+          "id_backbone.pa_b2.norm.bias",
+          "id_backbone.pa_b3.conv.weight",
+          "id_backbone.pa_b3.norm.weight",
+          "id_backbone.pa_b3.norm.bias",
+          "id_backbone.pa_proj.0.weight",
+          "id_backbone.pa_proj.0.bias",
+          "id_backbone.fuse.0.weight",
+          "id_backbone.fuse.0.bias",
+          "id_backbone.con_proj.0.weight",
+          "id_backbone.con_proj.0.bias"
+        ],
+        "domain": [
+          "dom_backbone.time_fuse.0.weight",
+          "dom_backbone.time_fuse.1.weight",
+          "dom_backbone.time_fuse.1.bias",
+          "dom_backbone.t1.dw.weight",
+          "dom_backbone.t1.pw.weight",
+          "dom_backbone.t1.norm.weight",
+          "dom_backbone.t1.norm.bias",
+          "dom_backbone.t2.dw.weight",
+          "dom_backbone.t2.pw.weight",
+          "dom_backbone.t2.norm.weight",
+          "dom_backbone.t2.norm.bias",
+          "dom_backbone.t3.dw.weight",
+          "dom_backbone.t3.pw.weight",
+          "dom_backbone.t3.norm.weight",
+          "dom_backbone.t3.norm.bias",
+          "dom_backbone.t_proj.weight",
+          "dom_backbone.t_proj.bias",
+          "dom_backbone.dac_hf_proj.0.weight",
+          "dom_backbone.dac_hf_proj.1.weight",
+          "dom_backbone.dac_hf_proj.1.bias",
+          "dom_backbone.dac_b1.conv.wr.weight",
+          "dom_backbone.dac_b1.conv.wi.weight",
+          "dom_backbone.dac_b1.conv.vr.weight",
+          "dom_backbone.dac_b1.conv.vi.weight",
+          "dom_backbone.dac_b1.norm.weight",
+          "dom_backbone.dac_b1.norm.bias",
+          "dom_backbone.dac_b2.conv.wr.weight",
+          "dom_backbone.dac_b2.conv.wi.weight",
+          "dom_backbone.dac_b2.conv.vr.weight",
+          "dom_backbone.dac_b2.conv.vi.weight",
+          "dom_backbone.dac_b2.norm.weight",
+          "dom_backbone.dac_b2.norm.bias",
+          "dom_backbone.dac_b2.res_proj.0.weight",
+          "dom_backbone.dac_b3.conv.wr.weight",
+          "dom_backbone.dac_b3.conv.wi.weight",
+          "dom_backbone.dac_b3.conv.vr.weight",
+          "dom_backbone.dac_b3.conv.vi.weight",
+          "dom_backbone.dac_b3.norm.weight",
+          "dom_backbone.dac_b3.norm.bias",
+          "dom_backbone.dac_b3.res_proj.0.weight",
+          "dom_backbone.dac_proj.0.weight",
+          "dom_backbone.dac_proj.0.bias",
+          "dom_backbone.f1.dw.weight",
+          "dom_backbone.f1.pw.weight",
+          "dom_backbone.f1.norm.weight",
+          "dom_backbone.f1.norm.bias",
+          "dom_backbone.f2.dw.weight",
+          "dom_backbone.f2.pw.weight",
+          "dom_backbone.f2.norm.weight",
+          "dom_backbone.f2.norm.bias",
+          "dom_backbone.f3.dw.weight",
+          "dom_backbone.f3.pw.weight",
+          "dom_backbone.f3.norm.weight",
+          "dom_backbone.f3.norm.bias",
+          "dom_backbone.f_proj.weight",
+          "dom_backbone.f_proj.bias",
+          "dom_backbone.freq_gate.conv.weight",
+          "dom_backbone.freq_gate.conv.bias",
+          "dom_backbone.pa_gate.net.weight",
+          "dom_backbone.pa_gate.net.bias",
+          "dom_backbone.pa_b1.conv.weight",
+          "dom_backbone.pa_b1.norm.weight",
+          "dom_backbone.pa_b1.norm.bias",
+          "dom_backbone.pa_b2.conv.weight",
+          "dom_backbone.pa_b2.norm.weight",
+          "dom_backbone.pa_b2.norm.bias",
+          "dom_backbone.pa_b3.conv.weight",
+          "dom_backbone.pa_b3.norm.weight",
+          "dom_backbone.pa_b3.norm.bias",
+          "dom_backbone.pa_proj.0.weight",
+          "dom_backbone.pa_proj.0.bias",
+          "dom_backbone.fuse.0.weight",
+          "dom_backbone.fuse.0.bias",
+          "dom_backbone.con_proj.0.weight",
+          "dom_backbone.con_proj.0.bias",
+          "dom_backbone.cls_head.id_proj.0.weight",
+          "dom_backbone.cls_head.id_proj.0.bias",
+          "dom_backbone.cls_head.dac_proj.0.weight",
+          "dom_backbone.cls_head.dac_proj.0.bias",
+          "dom_backbone.cls_head.pa_proj.0.weight",
+          "dom_backbone.cls_head.pa_proj.0.bias",
+          "dom_backbone.cls_head.id_gate.0.weight",
+          "dom_backbone.cls_head.id_gate.0.bias",
+          "dom_backbone.cls_head.joint_proj.0.weight",
+          "dom_backbone.cls_head.joint_proj.0.bias",
+          "dom_backbone.cls_head.imp_merge.0.weight",
+          "dom_backbone.cls_head.imp_merge.0.bias",
+          "dom_backbone.cls_head.head.weight",
+          "dom_backbone.cls_head.dac_head.0.weight",
+          "dom_backbone.cls_head.dac_head.0.bias",
+          "dom_backbone.cls_head.dac_head.2.weight",
+          "dom_backbone.cls_head.dac_head.2.bias",
+          "dom_backbone.cls_head.pa_head.0.weight",
+          "dom_backbone.cls_head.pa_head.0.bias",
+          "dom_backbone.cls_head.pa_head.2.weight",
+          "dom_backbone.cls_head.pa_head.2.bias",
+          "dom_enhancer.stat_encoder.net.0.weight",
+          "dom_enhancer.stat_encoder.net.0.bias",
+          "dom_enhancer.stat_encoder.net.1.weight",
+          "dom_enhancer.stat_encoder.net.1.bias",
+          "dom_enhancer.stat_encoder.net.4.weight",
+          "dom_enhancer.stat_encoder.net.4.bias",
+          "dom_enhancer.gate.0.weight",
+          "dom_enhancer.gate.0.bias",
+          "dom_enhancer.norm.weight",
+          "dom_enhancer.norm.bias"
+        ],
+        "other": [
+          "dom_head.net.0.weight",
+          "dom_head.net.0.bias",
+          "dom_head.net.3.weight",
+          "dom_head.net.3.bias",
+          "adv_head.net.0.weight",
+          "adv_head.net.0.bias",
+          "adv_head.net.3.weight",
+          "adv_head.net.3.bias"
+        ],
+        "auxiliary": []
+      },
+      "optional_controls": {
+        "target_family": "fft",
+        "bilinear_rank_active": null,
+        "interaction_reweighting_active": false,
+        "adaptive_k_configured": false,
+        "response_identity_permanently_detached": false
+      },
+      "candidate_count": 75,
+      "candidate_search_complete": true,
+      "sampling_evidence": {
+        "feedback_history_entries": 0,
+        "pending_feedback_entries": 14,
+        "joint_rectangles": 149,
+        "directed_transfers": 31,
+        "unique_exposed_physical": 242,
+        "skip_counts": {},
+        "distribution_adaptation_testable": true,
+        "cost_views": 1
+      },
+      "loader_workers": 0,
+      "normalization_layers_fixed_in_labeled_forward": [],
+      "performance_claim": "NOT_EVALUATED"
+    },
+    "train_exit_code": 7,
+    "terminal_status": "HELDOUT_EVAL_INCOMPLETE",
+    "elapsed_seconds": 22.656000000002678,
+    "log_path": "E:\\type10-7\\logs\\core90_v2_acceptance_20260911\\branches_fp32_01\\U3_s392002\\synthetic_entrypoint.log",
+    "checkpoint_path": "E:\\type10-7\\logs\\core90_v2_acceptance_20260911\\branches_fp32_01\\U3_s392002\\final_ssdg.pth",
+    "test_overrides": {
+      "epochs": 2,
+      "label_epochs": 1,
+      "pseudo_epochs": 1,
+      "eval_max_batches": 1,
+      "zid_leakage_probe_max_batches": 1,
+      "source_val_heavy_eval_start_epoch": 3,
+      "source_val_heavy_eval_final_window": 0,
+      "stage1_epochs": 1,
+      "stage2_epochs": 1,
+      "stage3_ramp_epochs": 1,
+      "zid_compact_start_epoch": 1,
+      "zid_compact_warmup_epochs": 0,
+      "ow_feat_start_epoch": 1,
+      "ow_feat_warmup_epochs": 0,
+      "proxy_unknown_start_epoch": 1,
+      "proxy_unknown_warmup_epochs": 0,
+      "soft_unknown_mixup_start_epoch": 1,
+      "soft_unknown_mixup_warmup_epochs": 0,
+      "source_episode_start_epoch": 1,
+      "source_episode_warmup_epochs": 0,
+      "sat_cons_start_epoch": 1
+    },
+    "training_state_path": "E:\\type10-7\\logs\\core90_v2_acceptance_20260911\\branches_fp32_01\\U3_s392002\\cross_response_training_state.pth",
+    "epoch1_training_state_path": "E:\\type10-7\\logs\\core90_v2_acceptance_20260911\\branches_fp32_01\\U3_s392002\\epoch1_training_state.pth",
+    "resume_from": null,
+    "deterministic_cuda_fixture": true,
+    "amp_enabled": false,
+    "runtime_disabled_reference": false,
+    "records_per_cell": 128,
+    "nonfinite_gradient_events": [],
+    "parameter_changes": {
+      "identity_squared_delta": 0.10749274581722174,
+      "domain_squared_delta": 0.07960632713820814,
+      "all_parameters_finite": true
+    },
+    "boundaries": {
+      "dataset": "entirely synthetic, never actual source/target records",
+      "model": "real CORE90 lite_d dual backbone",
+      "epochs": "bounded fixture override after authoritative method configuration",
+      "gate": "lenient synthetic activation threshold; not a scientific activation claim",
+      "tail_and_leakage": "unrelated expensive reports omitted by test patch",
+      "heldout_evaluation": "omitted; no target selection or target score claim",
+      "initialization": "scratch only; no external checkpoint loaded"
+    },
+    "formal_experiment": false
+  },
+  {
+    "variant": "Ux_normalized",
+    "status": "TRAIN_EXECUTED",
+    "activation": {
+      "variant": "Ux_normalized",
+      "status": "ACTIVE_VERIFIED",
+      "missing": [],
+      "counts": {
+        "batches": 4,
+        "successful_steps": 4,
+        "effective_blocks": 16,
+        "response_batches": 0,
+        "decision_batches": 0,
+        "cross_batches": 4,
+        "joint_gradient_steps": 0,
+        "domain_gradient_steps": 0,
+        "head_gradient_steps": 0,
+        "decision_gradient_steps": 0,
+        "cross_gradient_steps": 1,
+        "forward_calls": 4,
+        "audited_steps": 1,
+        "audited_successful_steps": 1,
+        "forced_audit_steps": 0
+      },
+      "maxima": {
+        "effective_blocks": 4.0,
+        "independent_records": 128.0,
+        "skipped_blocks": 0.0,
+        "role_rotation_enabled": 1.0,
+        "selection_probability": 0.013333333333333334,
+        "physical_k": 2.0,
+        "duplicate_physical_fraction": 0.0,
+        "identity_interaction": 4570862.27044791,
+        "identity_scale": 664.1073662042618,
+        "identity_between_tx": 25162.255066825775,
+        "geometry_available": 1.0,
+        "geometry_invalid_records": 0.0,
+        "geometry_min_norm": 1e-08,
+        "geometry_raw_norm_mean": 664.1073662042618,
+        "geometry_raw_norm_p50": 5.5455082654953,
+        "geometry_raw_norm_p95": 4555.325097680092,
+        "geometry_raw_interaction": 4570862.27044791,
+        "geometry_raw_interaction_per_160_dimensions": 4570862.27044791,
+        "geometry_raw_relative_interaction": 0.29705022647976875,
+        "geometry_unit_interaction": 0.13630709424614906,
+        "geometry_classification_records": 32.0,
+        "loss_response": -0.0,
+        "loss_decision": -0.0,
+        "loss_cross": 0.13630709052085876,
+        "diagnostics_audited": 1.0,
+        "cross_identity_grad_norm": 0.16610277444892593,
+        "response_identity_reference_norm": 0.0,
+        "response_identity_raw_norm": 0.0,
+        "response_identity_cap_scale": 0.0,
+        "response_identity_clipped": 0.0,
+        "response_joint_open": 0.0,
+        "response_grad_shared": 0.0,
+        "response_grad_identity_tail": 0.0,
+        "response_grad_identity_front": 0.0,
+        "response_grad_domain": 0.0,
+        "response_grad_other": 0.0,
+        "response_grad_auxiliary": 0.0,
+        "invalid_feedback_blocks": 0.0,
+        "auxiliary_step_seconds": 1.3704791999916779,
+        "peak_memory_bytes": 1540302848.0
+      },
+      "gate": {
+        "min_blocks": 1,
+        "error_ratio": 0.95,
+        "stable_checks": 3,
+        "consecutive": 0,
+        "checks": 0,
+        "opened": false,
+        "last_ratio": null
+      },
+      "rotation_counts": {
+        "9": 1,
+        "14": 2,
+        "27": 3,
+        "32": 2,
+        "25": 2,
+        "20": 1,
+        "13": 1,
+        "6": 1,
+        "5": 1,
+        "4": 1,
+        "22": 1
+      },
+      "mechanism_gate": {
+        "status": "SOURCE_PARAMETERS_UNFROZEN"
+      },
+      "extended_identity_module": null,
+      "config": {
+        "enabled": true,
+        "response_enabled": false,
+        "decision_enabled": false,
+        "identity_interaction_enabled": true,
+        "head_only": false,
+        "permanent_detach": false,
+        "P": 4,
+        "Q": 4,
+        "K": 2,
+        "view_policy": "clean_only",
+        "target_family": "fft",
+        "target_dim": 8,
+        "statistics_epsilon": 1e-08,
+        "readout_dim": 16,
+        "predictor_mode": "additive",
+        "rank": 4,
+        "lambda_resp": 0.01,
+        "lambda_dec": 0.01,
+        "lambda_cross": 0.01,
+        "decision_delta": 0.0,
+        "decision_min_records": 2,
+        "interaction_weight": 0.0,
+        "role_rotation": true,
+        "normalization_policy": "frozen_source",
+        "mixstyle_role_policy": "donor_only",
+        "gradient_stage": "warmup",
+        "gradient_cap": 0.1,
+        "gate_min_blocks": 1,
+        "gate_error_ratio": 0.95,
+        "gate_stable_checks": 3,
+        "scheduler_mode": "uniform",
+        "exploration": 0.1,
+        "update_interval": 20,
+        "feedback_clip": 10.0,
+        "scheduler_alpha": 1.0,
+        "scheduler_beta": 1.0,
+        "data_seed": 392005,
+        "lags": [
+          1,
+          2,
+          4
+        ],
+        "gate_interval_epochs": 1,
+        "source_fit_max_records": 128,
+        "source_eval_max_blocks": 1,
+        "k_menu": [
+          2
+        ],
+        "gradient_tail_prefixes": [
+          "id_backbone.cls_head"
+        ],
+        "scheduler_candidate_limit": 128,
+        "implementation_version": 2,
+        "diagnostic_interval": 20,
+        "statistics_audit": false,
+        "geometry_min_norm": 1e-08,
+        "direction_shrinkage": 0.0,
+        "gain_strategy": "legacy_gain",
+        "evidence_config": null,
+        "decision_mode": "vectorized",
+        "decision_calibration": null,
+        "interaction_mode": "normalized",
+        "response_routing": "full_error",
+        "mechanism_gate": null,
+        "response_decomposition": null,
+        "source_audit_enabled": true,
+        "source_baseline_fit_steps": 2,
+        "source_baseline_fit_lr": 0.001
+      },
+      "source_evaluations": [],
+      "auxiliary_parameters": 0,
+      "fixed_statistics_cache": {
+        "entries": 0,
+        "hits": 0,
+        "misses": 0,
+        "value_bytes": 0,
+        "key_utf8_bytes": 0,
+        "python_container_overhead_included": false,
+        "contents": "detached raw waveform statistics only"
+      },
+      "gradient_counter_semantics": {
+        "decision_gradient_steps": "positive among audited_successful_steps",
+        "cross_gradient_steps": "positive among audited_successful_steps",
+        "response_gradient_steps": "every successful routed update; required routing never sampled"
+      },
+      "parameter_groups": {
+        "shared": [
+          "id_backbone.sinc.low_hz_",
+          "id_backbone.sinc.band_hz_"
+        ],
+        "identity_tail": [
+          "id_backbone.cls_head.id_proj.0.weight",
+          "id_backbone.cls_head.id_proj.0.bias",
+          "id_backbone.cls_head.pa_proj.0.weight",
+          "id_backbone.cls_head.pa_proj.0.bias",
+          "id_backbone.cls_head.id_gate.0.weight",
+          "id_backbone.cls_head.id_gate.0.bias",
+          "id_backbone.cls_head.joint_proj.0.weight",
+          "id_backbone.cls_head.joint_proj.0.bias",
+          "id_backbone.cls_head.imp_merge.0.weight",
+          "id_backbone.cls_head.imp_merge.0.bias",
+          "id_backbone.cls_head.head.weight",
+          "id_backbone.cls_head.pa_head.0.weight",
+          "id_backbone.cls_head.pa_head.0.bias",
+          "id_backbone.cls_head.pa_head.2.weight",
+          "id_backbone.cls_head.pa_head.2.bias"
+        ],
+        "identity_front": [
+          "id_backbone.time_fuse.0.weight",
+          "id_backbone.time_fuse.1.weight",
+          "id_backbone.time_fuse.1.bias",
+          "id_backbone.t1.dw.weight",
+          "id_backbone.t1.pw.weight",
+          "id_backbone.t1.norm.weight",
+          "id_backbone.t1.norm.bias",
+          "id_backbone.t2.dw.weight",
+          "id_backbone.t2.pw.weight",
+          "id_backbone.t2.norm.weight",
+          "id_backbone.t2.norm.bias",
+          "id_backbone.t3.dw.weight",
+          "id_backbone.t3.pw.weight",
+          "id_backbone.t3.norm.weight",
+          "id_backbone.t3.norm.bias",
+          "id_backbone.t_proj.weight",
+          "id_backbone.t_proj.bias",
+          "id_backbone.f1.dw.weight",
+          "id_backbone.f1.pw.weight",
+          "id_backbone.f1.norm.weight",
+          "id_backbone.f1.norm.bias",
+          "id_backbone.f2.dw.weight",
+          "id_backbone.f2.pw.weight",
+          "id_backbone.f2.norm.weight",
+          "id_backbone.f2.norm.bias",
+          "id_backbone.f3.dw.weight",
+          "id_backbone.f3.pw.weight",
+          "id_backbone.f3.norm.weight",
+          "id_backbone.f3.norm.bias",
+          "id_backbone.f_proj.weight",
+          "id_backbone.f_proj.bias",
+          "id_backbone.freq_gate.conv.weight",
+          "id_backbone.freq_gate.conv.bias",
+          "id_backbone.freq_stats_proj.0.weight",
+          "id_backbone.freq_stats_proj.0.bias",
+          "id_backbone.pa_stats_proj.0.weight",
+          "id_backbone.pa_stats_proj.0.bias",
+          "id_backbone.pa_gate.net.weight",
+          "id_backbone.pa_gate.net.bias",
+          "id_backbone.pa_b1.conv.weight",
+          "id_backbone.pa_b1.norm.weight",
+          "id_backbone.pa_b1.norm.bias",
+          "id_backbone.pa_b2.conv.weight",
+          "id_backbone.pa_b2.norm.weight",
+          "id_backbone.pa_b2.norm.bias",
+          "id_backbone.pa_b3.conv.weight",
+          "id_backbone.pa_b3.norm.weight",
+          "id_backbone.pa_b3.norm.bias",
+          "id_backbone.pa_proj.0.weight",
+          "id_backbone.pa_proj.0.bias",
+          "id_backbone.fuse.0.weight",
+          "id_backbone.fuse.0.bias",
+          "id_backbone.con_proj.0.weight",
+          "id_backbone.con_proj.0.bias"
+        ],
+        "domain": [
+          "dom_backbone.time_fuse.0.weight",
+          "dom_backbone.time_fuse.1.weight",
+          "dom_backbone.time_fuse.1.bias",
+          "dom_backbone.t1.dw.weight",
+          "dom_backbone.t1.pw.weight",
+          "dom_backbone.t1.norm.weight",
+          "dom_backbone.t1.norm.bias",
+          "dom_backbone.t2.dw.weight",
+          "dom_backbone.t2.pw.weight",
+          "dom_backbone.t2.norm.weight",
+          "dom_backbone.t2.norm.bias",
+          "dom_backbone.t3.dw.weight",
+          "dom_backbone.t3.pw.weight",
+          "dom_backbone.t3.norm.weight",
+          "dom_backbone.t3.norm.bias",
+          "dom_backbone.t_proj.weight",
+          "dom_backbone.t_proj.bias",
+          "dom_backbone.dac_hf_proj.0.weight",
+          "dom_backbone.dac_hf_proj.1.weight",
+          "dom_backbone.dac_hf_proj.1.bias",
+          "dom_backbone.dac_b1.conv.wr.weight",
+          "dom_backbone.dac_b1.conv.wi.weight",
+          "dom_backbone.dac_b1.conv.vr.weight",
+          "dom_backbone.dac_b1.conv.vi.weight",
+          "dom_backbone.dac_b1.norm.weight",
+          "dom_backbone.dac_b1.norm.bias",
+          "dom_backbone.dac_b2.conv.wr.weight",
+          "dom_backbone.dac_b2.conv.wi.weight",
+          "dom_backbone.dac_b2.conv.vr.weight",
+          "dom_backbone.dac_b2.conv.vi.weight",
+          "dom_backbone.dac_b2.norm.weight",
+          "dom_backbone.dac_b2.norm.bias",
+          "dom_backbone.dac_b2.res_proj.0.weight",
+          "dom_backbone.dac_b3.conv.wr.weight",
+          "dom_backbone.dac_b3.conv.wi.weight",
+          "dom_backbone.dac_b3.conv.vr.weight",
+          "dom_backbone.dac_b3.conv.vi.weight",
+          "dom_backbone.dac_b3.norm.weight",
+          "dom_backbone.dac_b3.norm.bias",
+          "dom_backbone.dac_b3.res_proj.0.weight",
+          "dom_backbone.dac_proj.0.weight",
+          "dom_backbone.dac_proj.0.bias",
+          "dom_backbone.f1.dw.weight",
+          "dom_backbone.f1.pw.weight",
+          "dom_backbone.f1.norm.weight",
+          "dom_backbone.f1.norm.bias",
+          "dom_backbone.f2.dw.weight",
+          "dom_backbone.f2.pw.weight",
+          "dom_backbone.f2.norm.weight",
+          "dom_backbone.f2.norm.bias",
+          "dom_backbone.f3.dw.weight",
+          "dom_backbone.f3.pw.weight",
+          "dom_backbone.f3.norm.weight",
+          "dom_backbone.f3.norm.bias",
+          "dom_backbone.f_proj.weight",
+          "dom_backbone.f_proj.bias",
+          "dom_backbone.freq_gate.conv.weight",
+          "dom_backbone.freq_gate.conv.bias",
+          "dom_backbone.pa_gate.net.weight",
+          "dom_backbone.pa_gate.net.bias",
+          "dom_backbone.pa_b1.conv.weight",
+          "dom_backbone.pa_b1.norm.weight",
+          "dom_backbone.pa_b1.norm.bias",
+          "dom_backbone.pa_b2.conv.weight",
+          "dom_backbone.pa_b2.norm.weight",
+          "dom_backbone.pa_b2.norm.bias",
+          "dom_backbone.pa_b3.conv.weight",
+          "dom_backbone.pa_b3.norm.weight",
+          "dom_backbone.pa_b3.norm.bias",
+          "dom_backbone.pa_proj.0.weight",
+          "dom_backbone.pa_proj.0.bias",
+          "dom_backbone.fuse.0.weight",
+          "dom_backbone.fuse.0.bias",
+          "dom_backbone.con_proj.0.weight",
+          "dom_backbone.con_proj.0.bias",
+          "dom_backbone.cls_head.id_proj.0.weight",
+          "dom_backbone.cls_head.id_proj.0.bias",
+          "dom_backbone.cls_head.dac_proj.0.weight",
+          "dom_backbone.cls_head.dac_proj.0.bias",
+          "dom_backbone.cls_head.pa_proj.0.weight",
+          "dom_backbone.cls_head.pa_proj.0.bias",
+          "dom_backbone.cls_head.id_gate.0.weight",
+          "dom_backbone.cls_head.id_gate.0.bias",
+          "dom_backbone.cls_head.joint_proj.0.weight",
+          "dom_backbone.cls_head.joint_proj.0.bias",
+          "dom_backbone.cls_head.imp_merge.0.weight",
+          "dom_backbone.cls_head.imp_merge.0.bias",
+          "dom_backbone.cls_head.head.weight",
+          "dom_backbone.cls_head.dac_head.0.weight",
+          "dom_backbone.cls_head.dac_head.0.bias",
+          "dom_backbone.cls_head.dac_head.2.weight",
+          "dom_backbone.cls_head.dac_head.2.bias",
+          "dom_backbone.cls_head.pa_head.0.weight",
+          "dom_backbone.cls_head.pa_head.0.bias",
+          "dom_backbone.cls_head.pa_head.2.weight",
+          "dom_backbone.cls_head.pa_head.2.bias",
+          "dom_enhancer.stat_encoder.net.0.weight",
+          "dom_enhancer.stat_encoder.net.0.bias",
+          "dom_enhancer.stat_encoder.net.1.weight",
+          "dom_enhancer.stat_encoder.net.1.bias",
+          "dom_enhancer.stat_encoder.net.4.weight",
+          "dom_enhancer.stat_encoder.net.4.bias",
+          "dom_enhancer.gate.0.weight",
+          "dom_enhancer.gate.0.bias",
+          "dom_enhancer.norm.weight",
+          "dom_enhancer.norm.bias"
+        ],
+        "other": [
+          "dom_head.net.0.weight",
+          "dom_head.net.0.bias",
+          "dom_head.net.3.weight",
+          "dom_head.net.3.bias",
+          "adv_head.net.0.weight",
+          "adv_head.net.0.bias",
+          "adv_head.net.3.weight",
+          "adv_head.net.3.bias"
+        ],
+        "auxiliary": []
+      },
+      "optional_controls": {
+        "target_family": "fft",
+        "bilinear_rank_active": null,
+        "interaction_reweighting_active": false,
+        "adaptive_k_configured": false,
+        "response_identity_permanently_detached": false
+      },
+      "candidate_count": 75,
+      "candidate_search_complete": true,
+      "sampling_evidence": {
+        "feedback_history_entries": 0,
+        "pending_feedback_entries": 14,
+        "joint_rectangles": 149,
+        "directed_transfers": 31,
+        "unique_exposed_physical": 242,
+        "skip_counts": {},
+        "distribution_adaptation_testable": true,
+        "cost_views": 1
+      },
+      "loader_workers": 0,
+      "normalization_layers_fixed_in_labeled_forward": [],
+      "performance_claim": "NOT_EVALUATED"
+    },
+    "train_exit_code": 7,
+    "terminal_status": "HELDOUT_EVAL_INCOMPLETE",
+    "elapsed_seconds": 7.109000000011292,
+    "log_path": "E:\\type10-7\\logs\\core90_v2_acceptance_20260911\\branches_fp32_01\\Ux_normalized_s392002\\synthetic_entrypoint.log",
+    "checkpoint_path": "E:\\type10-7\\logs\\core90_v2_acceptance_20260911\\branches_fp32_01\\Ux_normalized_s392002\\final_ssdg.pth",
+    "test_overrides": {
+      "epochs": 2,
+      "label_epochs": 1,
+      "pseudo_epochs": 1,
+      "eval_max_batches": 1,
+      "zid_leakage_probe_max_batches": 1,
+      "source_val_heavy_eval_start_epoch": 3,
+      "source_val_heavy_eval_final_window": 0,
+      "stage1_epochs": 1,
+      "stage2_epochs": 1,
+      "stage3_ramp_epochs": 1,
+      "zid_compact_start_epoch": 1,
+      "zid_compact_warmup_epochs": 0,
+      "ow_feat_start_epoch": 1,
+      "ow_feat_warmup_epochs": 0,
+      "proxy_unknown_start_epoch": 1,
+      "proxy_unknown_warmup_epochs": 0,
+      "soft_unknown_mixup_start_epoch": 1,
+      "soft_unknown_mixup_warmup_epochs": 0,
+      "source_episode_start_epoch": 1,
+      "source_episode_warmup_epochs": 0,
+      "sat_cons_start_epoch": 1
+    },
+    "training_state_path": "E:\\type10-7\\logs\\core90_v2_acceptance_20260911\\branches_fp32_01\\Ux_normalized_s392002\\cross_response_training_state.pth",
+    "epoch1_training_state_path": "E:\\type10-7\\logs\\core90_v2_acceptance_20260911\\branches_fp32_01\\Ux_normalized_s392002\\epoch1_training_state.pth",
+    "resume_from": null,
+    "deterministic_cuda_fixture": true,
+    "amp_enabled": false,
+    "runtime_disabled_reference": false,
+    "records_per_cell": 128,
+    "nonfinite_gradient_events": [],
+    "parameter_changes": {
+      "identity_squared_delta": 0.1073163327469982,
+      "domain_squared_delta": 0.07960829704731509,
+      "all_parameters_finite": true
+    },
+    "boundaries": {
+      "dataset": "entirely synthetic, never actual source/target records",
+      "model": "real CORE90 lite_d dual backbone",
+      "epochs": "bounded fixture override after authoritative method configuration",
+      "gate": "lenient synthetic activation threshold; not a scientific activation claim",
+      "tail_and_leakage": "unrelated expensive reports omitted by test patch",
+      "heldout_evaluation": "omitted; no target selection or target score claim",
+      "initialization": "scratch only; no external checkpoint loaded"
+    },
+    "formal_experiment": false
+  },
+  {
+    "variant": "head_only",
+    "status": "TRAIN_EXECUTED",
+    "activation": {
+      "variant": "head_only",
+      "status": "ACTIVE_VERIFIED",
+      "missing": [],
+      "counts": {
+        "batches": 4,
+        "successful_steps": 4,
+        "effective_blocks": 16,
+        "response_batches": 4,
+        "decision_batches": 0,
+        "cross_batches": 0,
+        "joint_gradient_steps": 0,
+        "domain_gradient_steps": 0,
+        "head_gradient_steps": 4,
+        "decision_gradient_steps": 0,
+        "cross_gradient_steps": 0,
+        "forward_calls": 4,
+        "audited_steps": 1,
+        "audited_successful_steps": 1,
+        "forced_audit_steps": 0
+      },
+      "maxima": {
+        "effective_blocks": 4.0,
+        "independent_records": 128.0,
+        "skipped_blocks": 0.0,
+        "role_rotation_enabled": 1.0,
+        "selection_probability": 0.013333333333333334,
+        "physical_k": 2.0,
+        "duplicate_physical_fraction": 0.0,
+        "response_mse": 25655.192292779684,
+        "interaction_error": 15.166208724491298,
+        "tx_main_effect_error": 12813.286622270942,
+        "rx_main_effect_error": 16.11905763298273,
+        "response_tx_variance": 20030.94796198327,
+        "response_rx_variance": 0.027486667037010193,
+        "identity_interaction": 4570862.27044791,
+        "identity_scale": 664.1073662042618,
+        "identity_between_tx": 25162.255066825775,
+        "geometry_available": 1.0,
+        "geometry_invalid_records": 0.0,
+        "geometry_min_norm": 1e-08,
+        "geometry_raw_norm_mean": 664.1073662042618,
+        "geometry_raw_norm_p50": 5.5455082654953,
+        "geometry_raw_norm_p95": 4555.325097680092,
+        "geometry_raw_interaction": 4570862.27044791,
+        "geometry_raw_interaction_per_160_dimensions": 4570862.27044791,
+        "geometry_raw_relative_interaction": 0.29705022647976875,
+        "geometry_unit_interaction": 0.13630709424614906,
+        "geometry_classification_records": 32.0,
+        "loss_response": 25655.193359375,
+        "loss_decision": -0.0,
+        "loss_cross": -0.0,
+        "diagnostics_audited": 1.0,
+        "auxiliary_step_applied": 1.0,
+        "auxiliary_scale": 1.0,
+        "auxiliary_nonfinite": 0.0,
+        "response_grad_auxiliary": 3924.1591796875,
+        "invalid_feedback_blocks": 0.0,
+        "auxiliary_step_seconds": 1.649114499989082,
+        "peak_memory_bytes": 4576449024.0
+      },
+      "gate": {
+        "min_blocks": 1,
+        "error_ratio": 0.95,
+        "stable_checks": 3,
+        "consecutive": 0,
+        "checks": 2,
+        "opened": false,
+        "last_ratio": 1.0211333646841279
+      },
+      "rotation_counts": {
+        "9": 1,
+        "14": 2,
+        "27": 3,
+        "32": 2,
+        "25": 2,
+        "20": 1,
+        "13": 1,
+        "6": 1,
+        "5": 1,
+        "4": 1,
+        "22": 1
+      },
+      "mechanism_gate": {
+        "status": "SOURCE_PARAMETERS_UNFROZEN"
+      },
+      "extended_identity_module": null,
+      "config": {
+        "enabled": true,
+        "response_enabled": true,
+        "decision_enabled": false,
+        "identity_interaction_enabled": false,
+        "head_only": true,
+        "permanent_detach": false,
+        "P": 4,
+        "Q": 4,
+        "K": 2,
+        "view_policy": "clean_only",
+        "target_family": "fft",
+        "target_dim": 8,
+        "statistics_epsilon": 1e-08,
+        "readout_dim": 16,
+        "predictor_mode": "bilinear",
+        "rank": 4,
+        "lambda_resp": 0.01,
+        "lambda_dec": 0.01,
+        "lambda_cross": 0.01,
+        "decision_delta": 0.0,
+        "decision_min_records": 2,
+        "interaction_weight": 0.0,
+        "role_rotation": true,
+        "normalization_policy": "frozen_source",
+        "mixstyle_role_policy": "donor_only",
+        "gradient_stage": "warmup",
+        "gradient_cap": 0.1,
+        "gate_min_blocks": 1,
+        "gate_error_ratio": 0.95,
+        "gate_stable_checks": 3,
+        "scheduler_mode": "uniform",
+        "exploration": 0.1,
+        "update_interval": 20,
+        "feedback_clip": 10.0,
+        "scheduler_alpha": 1.0,
+        "scheduler_beta": 1.0,
+        "data_seed": 392005,
+        "lags": [
+          1,
+          2,
+          4
+        ],
+        "gate_interval_epochs": 1,
+        "source_fit_max_records": 128,
+        "source_eval_max_blocks": 1,
+        "k_menu": [
+          2
+        ],
+        "gradient_tail_prefixes": [
+          "id_backbone.cls_head"
+        ],
+        "scheduler_candidate_limit": 128,
+        "implementation_version": 2,
+        "diagnostic_interval": 20,
+        "statistics_audit": false,
+        "geometry_min_norm": 1e-08,
+        "direction_shrinkage": 0.0,
+        "gain_strategy": "legacy_gain",
+        "evidence_config": null,
+        "decision_mode": "vectorized",
+        "decision_calibration": null,
+        "interaction_mode": "raw",
+        "response_routing": "full_error",
+        "mechanism_gate": null,
+        "response_decomposition": null,
+        "source_audit_enabled": true,
+        "source_baseline_fit_steps": 2,
+        "source_baseline_fit_lr": 0.001
+      },
+      "source_evaluations": [
+        {
+          "source_role": "source_validation",
+          "split_source": "ssdg_source_v_select",
+          "valid_blocks": 1,
+          "valid_role_tasks": 36,
+          "independent_query_tasks": 36,
+          "changed_donor_tasks": 72,
+          "shuffled_rx_tasks": 36,
+          "records_read": 32,
+          "backbone_forwards": 1,
+          "response_mse": 1.1490621690948803,
+          "constant_mse": 1.1057298597362306,
+          "shuffled_rx_mse": 1.130490435494317,
+          "shuffled_reference_mse": 1.1490621690948803,
+          "changed_donor_reference_mse": 1.1490621690948803,
+          "changed_donor_tx_mse": 1.1548803742561076,
+          "interaction_mse": 0.07109980342728603,
+          "per_rotation": {
+            "0": 1.4762325286865234,
+            "1": 1.6978061199188232,
+            "2": 1.447127342224121,
+            "3": 1.4967241287231445,
+            "4": 1.2452576160430908,
+            "5": 1.467130184173584,
+            "6": 1.6327544450759888,
+            "7": 1.6240103244781494,
+            "8": 1.263188362121582,
+            "9": 1.4583516120910645,
+            "10": 1.0962297916412354,
+            "11": 1.0884151458740234,
+            "12": 1.300398588180542,
+            "13": 1.3475327491760254,
+            "14": 1.10111665725708,
+            "15": 1.1185762882232666,
+            "16": 0.8713164329528809,
+            "17": 0.920472264289856,
+            "18": 1.3383307456970215,
+            "19": 1.4018478393554688,
+            "20": 1.4020498991012573,
+            "21": 1.0168267488479614,
+            "22": 1.0172568559646606,
+            "23": 1.080542802810669,
+            "24": 0.9609941244125366,
+            "25": 1.0856444835662842,
+            "26": 1.2232255935668945,
+            "27": 0.6467798948287964,
+            "28": 0.7851403951644897,
+            "29": 0.9106608629226685,
+            "30": 1.1256701946258545,
+            "31": 0.9811396598815918,
+            "32": 0.9808732271194458,
+            "33": 0.633269190788269,
+            "34": 0.6332248449325562,
+            "35": 0.49012014269828796
+          },
+          "constant_definition": "frozen_source_training_location",
+          "status": "VERIFIED",
+          "role_policy": "balanced_partitions_v2",
+          "predictor_forwards": 144,
+          "readout_forwards": 108,
+          "skipped_blocks": 0,
+          "skipped_roles": 0,
+          "skip_reasons": {},
+          "candidate_count": 75,
+          "candidate_search_complete": true,
+          "reason": "source_mechanism_metrics_only",
+          "constant_improvement": -0.043332309358649734,
+          "unique_physical_records_read": 32,
+          "reduced_donor_count_mse": 1.1548803742561076,
+          "reduced_donor_count_tasks": 72,
+          "changed_donor_legacy_field_definition": "reduced_donor_count_not_equal_size_reuse",
+          "epoch": 1,
+          "v2_source_mechanisms": {
+            "version": "source_response_v2",
+            "source_role": "source_validation",
+            "status": "VERIFIED",
+            "necessity_gate_passed": null,
+            "reuse": {
+              "tx_reuse": {
+                "status": "AVAILABLE",
+                "reason": null,
+                "query_shape": [
+                  2,
+                  2
+                ],
+                "independent_query_interaction": true,
+                "tasks": [
+                  {
+                    "query_tx": [
+                      0,
+                      1
+                    ],
+                    "query_rx": [
+                      0,
+                      1
+                    ],
+                    "query_physical_ids": [
+                      [
+                        0,
+                        0,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        0,
+                        0,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        0,
+                        1,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        0,
+                        1,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        1,
+                        0,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        1,
+                        0,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        1,
+                        1,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        1,
+                        1,
+                        0,
+                        0,
+                        101
+                      ]
+                    ],
+                    "day": 0,
+                    "condition": 0,
+                    "K": 2,
+                    "branches": [
+                      {
+                        "pretrained_full": {
+                          "mse": 1.4579282124699804,
+                          "grand_mse": 0.6878298310305206,
+                          "tx_mse": 0.13139397738238173,
+                          "rx_mse": 0.5908300419176269,
+                          "interaction_mse": 0.0478743621394511
+                        },
+                        "constant_frozen_source_location": {
+                          "mse": 1.3585660965655144,
+                          "grand_mse": 0.5821706329153896,
+                          "tx_mse": 0.13225796084647662,
+                          "rx_mse": 0.5962657904807638,
+                          "interaction_mse": 0.04787171232288425
+                        },
+                        "shuffled_tx": {
+                          "mse": 1.4597196150607958,
+                          "grand_mse": 0.6878298308226597,
+                          "tx_mse": 0.13319069349553356,
+                          "rx_mse": 0.5908300293478954,
+                          "interaction_mse": 0.047869061394707146
+                        },
+                        "shuffled_rx": {
+                          "mse": 1.468969347092206,
+                          "grand_mse": 0.6878298321840131,
+                          "tx_mse": 0.13139397142645876,
+                          "rx_mse": 0.6018764771165749,
+                          "interaction_mse": 0.04786906636515934
+                        },
+                        "donor_tx": [
+                          2,
+                          3
+                        ],
+                        "donor_rx": [
+                          2,
+                          3
+                        ],
+                        "donor_records": 16,
+                        "donor_physical_ids": [
+                          [
+                            0,
+                            2,
+                            0,
+                            0,
+                            100
+                          ],
+                          [
+                            0,
+                            2,
+                            0,
+                            0,
+                            101
+                          ],
+                          [
+                            0,
+                            3,
+                            0,
+                            0,
+                            100
+                          ],
+                          [
+                            0,
+                            3,
+                            0,
+                            0,
+                            101
+                          ],
+                          [
+                            1,
+                            2,
+                            0,
+                            0,
+                            100
+                          ],
+                          [
+                            1,
+                            2,
+                            0,
+                            0,
+                            101
+                          ],
+                          [
+                            1,
+                            3,
+                            0,
+                            0,
+                            100
+                          ],
+                          [
+                            1,
+                            3,
+                            0,
+                            0,
+                            101
+                          ],
+                          [
+                            2,
+                            0,
+                            0,
+                            0,
+                            100
+                          ],
+                          [
+                            2,
+                            0,
+                            0,
+                            0,
+                            101
+                          ],
+                          [
+                            2,
+                            1,
+                            0,
+                            0,
+                            100
+                          ],
+                          [
+                            2,
+                            1,
+                            0,
+                            0,
+                            101
+                          ],
+                          [
+                            3,
+                            0,
+                            0,
+                            0,
+                            100
+                          ],
+                          [
+                            3,
+                            0,
+                            0,
+                            0,
+                            101
+                          ],
+                          [
+                            3,
+                            1,
+                            0,
+                            0,
+                            100
+                          ],
+                          [
+                            3,
+                            1,
+                            0,
+                            0,
+                            101
+                          ]
+                        ]
+                      },
+                      {
+                        "pretrained_full": {
+                          "mse": 1.4456111350222298,
+                          "grand_mse": 0.6689509375732339,
+                          "tx_mse": 0.13182878483966226,
+                          "rx_mse": 0.5969657386072401,
+                          "interaction_mse": 0.047865674002093635
+                        },
+                        "constant_frozen_source_location": {
+                          "mse": 1.3585660965655144,
+                          "grand_mse": 0.5821706329153896,
+                          "tx_mse": 0.13225796084647662,
+                          "rx_mse": 0.5962657904807638,
+                          "interaction_mse": 0.04787171232288425
+                        },
+                        "shuffled_tx": {
+                          "mse": 1.4465541573014007,
+                          "grand_mse": 0.6689509523489188,
+                          "tx_mse": 0.13275971260815309,
+                          "rx_mse": 0.5969657406443644,
+                          "interaction_mse": 0.04787775169996471
+                        },
+                        "shuffled_rx": {
+                          "mse": 1.4450125758414605,
+                          "grand_mse": 0.6689509374103497,
+                          "tx_mse": 0.1318287863915233,
+                          "rx_mse": 0.5963550984794254,
+                          "interaction_mse": 0.04787775356016233
+                        },
+                        "donor_tx": [
+                          4,
+                          5
+                        ],
+                        "donor_rx": [
+                          2,
+                          3
+                        ],
+                        "donor_records": 16,
+                        "donor_physical_ids": [
+                          [
+                            0,
+                            2,
+                            0,
+                            0,
+                            102
+                          ],
+                          [
+                            0,
+                            2,
+                            0,
+                            0,
+                            103
+                          ],
+                          [
+                            0,
+                            3,
+                            0,
+                            0,
+                            102
+                          ],
+                          [
+                            0,
+                            3,
+                            0,
+                            0,
+                            103
+                          ],
+                          [
+                            1,
+                            2,
+                            0,
+                            0,
+                            102
+                          ],
+                          [
+                            1,
+                            2,
+                            0,
+                            0,
+                            103
+                          ],
+                          [
+                            1,
+                            3,
+                            0,
+                            0,
+                            102
+                          ],
+                          [
+                            1,
+                            3,
+                            0,
+                            0,
+                            103
+                          ],
+                          [
+                            4,
+                            0,
+                            0,
+                            0,
+                            100
+                          ],
+                          [
+                            4,
+                            0,
+                            0,
+                            0,
+                            101
+                          ],
+                          [
+                            4,
+                            1,
+                            0,
+                            0,
+                            100
+                          ],
+                          [
+                            4,
+                            1,
+                            0,
+                            0,
+                            101
+                          ],
+                          [
+                            5,
+                            0,
+                            0,
+                            0,
+                            100
+                          ],
+                          [
+                            5,
+                            0,
+                            0,
+                            0,
+                            101
+                          ],
+                          [
+                            5,
+                            1,
+                            0,
+                            0,
+                            100
+                          ],
+                          [
+                            5,
+                            1,
+                            0,
+                            0,
+                            101
+                          ]
+                        ]
+                      }
+                    ],
+                    "prediction_reuse_mse": 0.012394697405397892
+                  }
+                ]
+              },
+              "rx_reuse": {
+                "status": "AVAILABLE",
+                "reason": null,
+                "query_shape": [
+                  2,
+                  1
+                ],
+                "independent_query_interaction": false,
+                "tasks": [
+                  {
+                    "query_tx": [
+                      0,
+                      1
+                    ],
+                    "query_rx": [
+                      0
+                    ],
+                    "query_physical_ids": [
+                      [
+                        0,
+                        0,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        0,
+                        0,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        1,
+                        0,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        1,
+                        0,
+                        0,
+                        0,
+                        101
+                      ]
+                    ],
+                    "day": 0,
+                    "condition": 0,
+                    "K": 2,
+                    "branches": [
+                      {
+                        "pretrained_full": {
+                          "mse": 1.6341290953976457,
+                          "grand_mse": 1.4689194030251267,
+                          "tx_mse": 0.16520969237251892,
+                          "rx_mse": 0.0,
+                          "interaction_mse": null
+                        },
+                        "constant_frozen_source_location": {
+                          "mse": 1.8945647121987135,
+                          "grand_mse": 1.7266142424377233,
+                          "tx_mse": 0.16795046976099004,
+                          "rx_mse": 0.0,
+                          "interaction_mse": null
+                        },
+                        "shuffled_tx": {
+                          "mse": 1.639693311974848,
+                          "grand_mse": 1.468919374705785,
+                          "tx_mse": 0.1707739372690631,
+                          "rx_mse": 0.0,
+                          "interaction_mse": null
+                        },
+                        "shuffled_rx": null,
+                        "donor_tx": [
+                          2,
+                          3
+                        ],
+                        "donor_rx": [
+                          1,
+                          2
+                        ],
+                        "donor_records": 12,
+                        "donor_physical_ids": [
+                          [
+                            0,
+                            1,
+                            0,
+                            0,
+                            100
+                          ],
+                          [
+                            0,
+                            1,
+                            0,
+                            0,
+                            101
+                          ],
+                          [
+                            0,
+                            2,
+                            0,
+                            0,
+                            100
+                          ],
+                          [
+                            0,
+                            2,
+                            0,
+                            0,
+                            101
+                          ],
+                          [
+                            1,
+                            1,
+                            0,
+                            0,
+                            100
+                          ],
+                          [
+                            1,
+                            1,
+                            0,
+                            0,
+                            101
+                          ],
+                          [
+                            1,
+                            2,
+                            0,
+                            0,
+                            100
+                          ],
+                          [
+                            1,
+                            2,
+                            0,
+                            0,
+                            101
+                          ],
+                          [
+                            2,
+                            0,
+                            0,
+                            0,
+                            100
+                          ],
+                          [
+                            2,
+                            0,
+                            0,
+                            0,
+                            101
+                          ],
+                          [
+                            3,
+                            0,
+                            0,
+                            0,
+                            100
+                          ],
+                          [
+                            3,
+                            0,
+                            0,
+                            0,
+                            101
+                          ]
+                        ]
+                      },
+                      {
+                        "pretrained_full": {
+                          "mse": 1.6000087109171135,
+                          "grand_mse": 1.4323975024147817,
+                          "tx_mse": 0.1676112085023318,
+                          "rx_mse": 0.0,
+                          "interaction_mse": null
+                        },
+                        "constant_frozen_source_location": {
+                          "mse": 1.8945647121987135,
+                          "grand_mse": 1.7266142424377233,
+                          "tx_mse": 0.16795046976099004,
+                          "rx_mse": 0.0,
+                          "interaction_mse": null
+                        },
+                        "shuffled_tx": {
+                          "mse": 1.6007735859539443,
+                          "grand_mse": 1.4323975024147817,
+                          "tx_mse": 0.16837608353916256,
+                          "rx_mse": 0.0,
+                          "interaction_mse": null
+                        },
+                        "shuffled_rx": null,
+                        "donor_tx": [
+                          2,
+                          3
+                        ],
+                        "donor_rx": [
+                          3,
+                          4
+                        ],
+                        "donor_records": 12,
+                        "donor_physical_ids": [
+                          [
+                            0,
+                            3,
+                            0,
+                            0,
+                            100
+                          ],
+                          [
+                            0,
+                            3,
+                            0,
+                            0,
+                            101
+                          ],
+                          [
+                            0,
+                            4,
+                            0,
+                            0,
+                            100
+                          ],
+                          [
+                            0,
+                            4,
+                            0,
+                            0,
+                            101
+                          ],
+                          [
+                            1,
+                            3,
+                            0,
+                            0,
+                            100
+                          ],
+                          [
+                            1,
+                            3,
+                            0,
+                            0,
+                            101
+                          ],
+                          [
+                            1,
+                            4,
+                            0,
+                            0,
+                            100
+                          ],
+                          [
+                            1,
+                            4,
+                            0,
+                            0,
+                            101
+                          ],
+                          [
+                            2,
+                            0,
+                            0,
+                            0,
+                            102
+                          ],
+                          [
+                            2,
+                            0,
+                            0,
+                            0,
+                            103
+                          ],
+                          [
+                            3,
+                            0,
+                            0,
+                            0,
+                            102
+                          ],
+                          [
+                            3,
+                            0,
+                            0,
+                            0,
+                            103
+                          ]
+                        ]
+                      }
+                    ],
+                    "prediction_reuse_mse": 0.0003921537136193365
+                  }
+                ]
+              }
+            },
+            "cost": {
+              "backbone_forwards": 8,
+              "model_input_records": 112,
+              "raw_statistic_records": 24,
+              "predictor_forwards": 10,
+              "auxiliary_fit_forwards": 6,
+              "auxiliary_eval_forwards": 12,
+              "fit_unique_physical_records": 48,
+              "eval_unique_physical_records": 48
+            },
+            "fit_split": "ssdg_labeled_tx_visible",
+            "eval_split": "ssdg_source_v_select",
+            "frozen_parameter_counts": {
+              "backbone": 1048207,
+              "readouts": 5152,
+              "pretrained_predictor": 424
+            },
+            "matched_fits": {
+              "full_matched_fit": {
+                "errors": [
+                  {
+                    "mse": 1.4334763861657922,
+                    "grand_mse": 0.6634965657802572,
+                    "tx_mse": 0.13126220090768254,
+                    "rx_mse": 0.5908431823572,
+                    "interaction_mse": 0.04787443712065252
+                  },
+                  {
+                    "mse": 1.4208093826714143,
+                    "grand_mse": 0.6444751309400713,
+                    "tx_mse": 0.13170401032044737,
+                    "rx_mse": 0.5967645009562119,
+                    "interaction_mse": 0.04786574045468368
+                  },
+                  {
+                    "mse": 1.6061204283606856,
+                    "grand_mse": 1.4410280831017848,
+                    "tx_mse": 0.1650923452589007,
+                    "rx_mse": 0.0,
+                    "interaction_mse": null
+                  },
+                  {
+                    "mse": 1.572321702288129,
+                    "grand_mse": 1.4048547354885483,
+                    "tx_mse": 0.16746696679958073,
+                    "rx_mse": 0.0,
+                    "interaction_mse": null
+                  }
+                ],
+                "parameter_count": 424,
+                "fit_steps": 2,
+                "fit_task_indices": [
+                  0,
+                  1
+                ],
+                "fit_query_cells": 8,
+                "lr": 0.001,
+                "optimizer": "AdamW",
+                "weight_decay": 0.0,
+                "optimizer_betas": [
+                  0.9,
+                  0.999
+                ],
+                "backbone_frozen": true,
+                "readouts_frozen": true,
+                "architecture": "SharedResponsePredictor",
+                "descriptor_dim": 16,
+                "target_dim": 8,
+                "predictor_mode": "bilinear",
+                "initialization": "copy_supplied_source_predictor_corresponding_branches"
+              },
+              "tx_only": {
+                "errors": [
+                  {
+                    "mse": 1.3576230973673524,
+                    "grand_mse": 0.581188490953792,
+                    "tx_mse": 0.1322970993779183,
+                    "rx_mse": 0.5962657956373698,
+                    "interaction_mse": 0.04787171139827232
+                  },
+                  {
+                    "mse": 1.3572878068301448,
+                    "grand_mse": 0.5805946929068047,
+                    "tx_mse": 0.13255559419210566,
+                    "rx_mse": 0.5962658044708502,
+                    "interaction_mse": 0.04787171526038454
+                  },
+                  {
+                    "mse": 1.86576272607691,
+                    "grand_mse": 1.699517059940519,
+                    "tx_mse": 0.16624566613639102,
+                    "rx_mse": 0.0,
+                    "interaction_mse": null
+                  },
+                  {
+                    "mse": 1.8632671151325262,
+                    "grand_mse": 1.6944304726508976,
+                    "tx_mse": 0.16883664248162855,
+                    "rx_mse": 0.0,
+                    "interaction_mse": null
+                  }
+                ],
+                "parameter_count": 136,
+                "fit_steps": 2,
+                "fit_task_indices": [
+                  0,
+                  1
+                ],
+                "fit_query_cells": 8,
+                "lr": 0.001,
+                "optimizer": "AdamW",
+                "weight_decay": 0.0,
+                "optimizer_betas": [
+                  0.9,
+                  0.999
+                ],
+                "backbone_frozen": true,
+                "readouts_frozen": true,
+                "architecture": "RestrictedResponseHead",
+                "descriptor_dim": 16,
+                "target_dim": 8,
+                "predictor_mode": "tx_only",
+                "initialization": "copy_supplied_source_predictor_corresponding_branches"
+              },
+              "rx_only": {
+                "errors": [
+                  {
+                    "mse": 1.3971788837945827,
+                    "grand_mse": 0.6262835047323639,
+                    "tx_mse": 0.13225795875612828,
+                    "rx_mse": 0.5907657086331166,
+                    "interaction_mse": 0.04787171167297366
+                  },
+                  {
+                    "mse": 1.3837998867753671,
+                    "grand_mse": 0.6067867363055438,
+                    "tx_mse": 0.13225796184381955,
+                    "rx_mse": 0.5968834777270428,
+                    "interaction_mse": 0.04787171089896108
+                  },
+                  {
+                    "mse": 1.592659092495323,
+                    "grand_mse": 1.4247086227343329,
+                    "tx_mse": 0.16795046976099004,
+                    "rx_mse": 0.0,
+                    "interaction_mse": null
+                  },
+                  {
+                    "mse": 1.5628600381171194,
+                    "grand_mse": 1.3949095769315503,
+                    "tx_mse": 0.1679504611855691,
+                    "rx_mse": 0.0,
+                    "interaction_mse": null
+                  }
+                ],
+                "parameter_count": 136,
+                "fit_steps": 2,
+                "fit_task_indices": [
+                  0,
+                  1
+                ],
+                "fit_query_cells": 8,
+                "lr": 0.001,
+                "optimizer": "AdamW",
+                "weight_decay": 0.0,
+                "optimizer_betas": [
+                  0.9,
+                  0.999
+                ],
+                "backbone_frozen": true,
+                "readouts_frozen": true,
+                "architecture": "RestrictedResponseHead",
+                "descriptor_dim": 16,
+                "target_dim": 8,
+                "predictor_mode": "rx_only",
+                "initialization": "copy_supplied_source_predictor_corresponding_branches"
+              },
+              "head_only": {
+                "errors": [
+                  {
+                    "mse": 1.4334763861657922,
+                    "grand_mse": 0.6634965657802572,
+                    "tx_mse": 0.13126220090768254,
+                    "rx_mse": 0.5908431823572,
+                    "interaction_mse": 0.04787443712065252
+                  },
+                  {
+                    "mse": 1.4208093826714143,
+                    "grand_mse": 0.6444751309400713,
+                    "tx_mse": 0.13170401032044737,
+                    "rx_mse": 0.5967645009562119,
+                    "interaction_mse": 0.04786574045468368
+                  },
+                  {
+                    "mse": 1.6061204283606856,
+                    "grand_mse": 1.4410280831017848,
+                    "tx_mse": 0.1650923452589007,
+                    "rx_mse": 0.0,
+                    "interaction_mse": null
+                  },
+                  {
+                    "mse": 1.572321702288129,
+                    "grand_mse": 1.4048547354885483,
+                    "tx_mse": 0.16746696679958073,
+                    "rx_mse": 0.0,
+                    "interaction_mse": null
+                  }
+                ],
+                "parameter_count": 424,
+                "fit_steps": 2,
+                "fit_task_indices": [
+                  0,
+                  1
+                ],
+                "fit_query_cells": 8,
+                "lr": 0.001,
+                "optimizer": "AdamW",
+                "weight_decay": 0.0,
+                "optimizer_betas": [
+                  0.9,
+                  0.999
+                ],
+                "backbone_frozen": true,
+                "readouts_frozen": true,
+                "architecture": "SharedResponsePredictor",
+                "descriptor_dim": 16,
+                "target_dim": 8,
+                "predictor_mode": "bilinear",
+                "initialization": "copy_supplied_source_predictor_corresponding_branches",
+                "alias_of": "full_matched_fit",
+                "independent_evidence": false
+              },
+              "metadata": {
+                "fit_unique_physical_ids": 48,
+                "eval_unique_physical_ids": 48,
+                "necessity_gate_passed": null,
+                "seed": 392005,
+                "scope": "source_frozen_representation_matched_head_fit"
+              }
+            },
+            "scope": "source_metrics_only_not_necessity_or_update_value_acceptance",
+            "identity_risk": {
+              "status": "N/A",
+              "reason": "response_MSE_is_not_identity_CE_use_disposable_counterfactual_with_independent_source_LEO_probe"
+            }
+          },
+          "gate_open": 0.0,
+          "gate_pass": 0.0,
+          "gate_checks": 1,
+          "gate_consecutive": 0,
+          "gate_ratio": 1.0391888750919565,
+          "gate_blocks": 1
+        },
+        {
+          "source_role": "source_validation",
+          "split_source": "ssdg_source_v_select",
+          "valid_blocks": 1,
+          "valid_role_tasks": 36,
+          "independent_query_tasks": 36,
+          "changed_donor_tasks": 72,
+          "shuffled_rx_tasks": 36,
+          "records_read": 32,
+          "backbone_forwards": 1,
+          "response_mse": 1.1290976521041658,
+          "constant_mse": 1.1057298597362306,
+          "shuffled_rx_mse": 1.1128423114617665,
+          "shuffled_reference_mse": 1.1290976521041658,
+          "changed_donor_reference_mse": 1.1290976521041658,
+          "changed_donor_tx_mse": 1.1339803760250409,
+          "interaction_mse": 0.07109996879525068,
+          "per_rotation": {
+            "0": 1.435595154762268,
+            "1": 1.656173825263977,
+            "2": 1.406055212020874,
+            "3": 1.4477486610412598,
+            "4": 1.1965904235839844,
+            "5": 1.4172035455703735,
+            "6": 1.6170847415924072,
+            "7": 1.6052532196044922,
+            "8": 1.2470380067825317,
+            "9": 1.4353985786437988,
+            "10": 1.0755958557128906,
+            "11": 1.0642409324645996,
+            "12": 1.292354702949524,
+            "13": 1.3341928720474243,
+            "14": 1.0877599716186523,
+            "15": 1.0980985164642334,
+            "16": 0.8505857586860657,
+            "17": 0.8936843872070312,
+            "18": 1.3242192268371582,
+            "19": 1.3794217109680176,
+            "20": 1.375531792640686,
+            "21": 0.9904562830924988,
+            "22": 0.9865648746490479,
+            "23": 1.0416189432144165,
+            "24": 0.9558419585227966,
+            "25": 1.0701497793197632,
+            "26": 1.1998580694198608,
+            "27": 0.6251345872879028,
+            "28": 0.7554185390472412,
+            "29": 0.8703570365905762,
+            "30": 1.1540577411651611,
+            "31": 0.998764157295227,
+            "32": 0.9917833805084229,
+            "33": 0.6453409194946289,
+            "34": 0.6383192539215088,
+            "35": 0.484022855758667
+          },
+          "constant_definition": "frozen_source_training_location",
+          "status": "VERIFIED",
+          "role_policy": "balanced_partitions_v2",
+          "predictor_forwards": 144,
+          "readout_forwards": 108,
+          "skipped_blocks": 0,
+          "skipped_roles": 0,
+          "skip_reasons": {},
+          "candidate_count": 75,
+          "candidate_search_complete": true,
+          "reason": "source_mechanism_metrics_only",
+          "constant_improvement": -0.02336779236793518,
+          "unique_physical_records_read": 32,
+          "reduced_donor_count_mse": 1.1339803760250409,
+          "reduced_donor_count_tasks": 72,
+          "changed_donor_legacy_field_definition": "reduced_donor_count_not_equal_size_reuse",
+          "epoch": 2,
+          "v2_source_mechanisms": {
+            "version": "source_response_v2",
+            "source_role": "source_validation",
+            "status": "VERIFIED",
+            "necessity_gate_passed": null,
+            "reuse": {
+              "tx_reuse": {
+                "status": "AVAILABLE",
+                "reason": null,
+                "query_shape": [
+                  2,
+                  2
+                ],
+                "independent_query_interaction": true,
+                "tasks": [
+                  {
+                    "query_tx": [
+                      0,
+                      1
+                    ],
+                    "query_rx": [
+                      0,
+                      1
+                    ],
+                    "query_physical_ids": [
+                      [
+                        0,
+                        0,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        0,
+                        0,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        0,
+                        1,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        0,
+                        1,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        1,
+                        0,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        1,
+                        0,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        1,
+                        1,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        1,
+                        1,
+                        0,
+                        0,
+                        101
+                      ]
+                    ],
+                    "day": 0,
+                    "condition": 0,
+                    "K": 2,
+                    "branches": [
+                      {
+                        "pretrained_full": {
+                          "mse": 1.4157926760696649,
+                          "grand_mse": 0.6472183107230322,
+                          "tx_mse": 0.13065603135781884,
+                          "rx_mse": 0.5900471991950502,
+                          "interaction_mse": 0.047871134793763676
+                        },
+                        "constant_frozen_source_location": {
+                          "mse": 1.3585660965655144,
+                          "grand_mse": 0.5821706329153896,
+                          "tx_mse": 0.13225796084647662,
+                          "rx_mse": 0.5962657904807638,
+                          "interaction_mse": 0.04787171232288425
+                        },
+                        "shuffled_tx": {
+                          "mse": 1.4190612714950075,
+                          "grand_mse": 0.6472183228373887,
+                          "tx_mse": 0.13392346546333428,
+                          "rx_mse": 0.5900471903768465,
+                          "interaction_mse": 0.0478722928174379
+                        },
+                        "shuffled_rx": {
+                          "mse": 1.428364143516407,
+                          "grand_mse": 0.6472183082447427,
+                          "tx_mse": 0.1306560325662573,
+                          "rx_mse": 0.6026175038951824,
+                          "interaction_mse": 0.047872298810224374
+                        },
+                        "donor_tx": [
+                          2,
+                          3
+                        ],
+                        "donor_rx": [
+                          2,
+                          3
+                        ],
+                        "donor_records": 16,
+                        "donor_physical_ids": [
+                          [
+                            0,
+                            2,
+                            0,
+                            0,
+                            100
+                          ],
+                          [
+                            0,
+                            2,
+                            0,
+                            0,
+                            101
+                          ],
+                          [
+                            0,
+                            3,
+                            0,
+                            0,
+                            100
+                          ],
+                          [
+                            0,
+                            3,
+                            0,
+                            0,
+                            101
+                          ],
+                          [
+                            1,
+                            2,
+                            0,
+                            0,
+                            100
+                          ],
+                          [
+                            1,
+                            2,
+                            0,
+                            0,
+                            101
+                          ],
+                          [
+                            1,
+                            3,
+                            0,
+                            0,
+                            100
+                          ],
+                          [
+                            1,
+                            3,
+                            0,
+                            0,
+                            101
+                          ],
+                          [
+                            2,
+                            0,
+                            0,
+                            0,
+                            100
+                          ],
+                          [
+                            2,
+                            0,
+                            0,
+                            0,
+                            101
+                          ],
+                          [
+                            2,
+                            1,
+                            0,
+                            0,
+                            100
+                          ],
+                          [
+                            2,
+                            1,
+                            0,
+                            0,
+                            101
+                          ],
+                          [
+                            3,
+                            0,
+                            0,
+                            0,
+                            100
+                          ],
+                          [
+                            3,
+                            0,
+                            0,
+                            0,
+                            101
+                          ],
+                          [
+                            3,
+                            1,
+                            0,
+                            0,
+                            100
+                          ],
+                          [
+                            3,
+                            1,
+                            0,
+                            0,
+                            101
+                          ]
+                        ]
+                      },
+                      {
+                        "pretrained_full": {
+                          "mse": 1.4099236019275407,
+                          "grand_mse": 0.6344365479592572,
+                          "tx_mse": 0.13116908852302236,
+                          "rx_mse": 0.5964520590250273,
+                          "interaction_mse": 0.0478659064202339
+                        },
+                        "constant_frozen_source_location": {
+                          "mse": 1.3585660965655144,
+                          "grand_mse": 0.5821706329153896,
+                          "tx_mse": 0.13225796084647662,
+                          "rx_mse": 0.5962657904807638,
+                          "interaction_mse": 0.04787171232288425
+                        },
+                        "shuffled_tx": {
+                          "mse": 1.4121892711956203,
+                          "grand_mse": 0.634436559697674,
+                          "tx_mse": 0.13342314226640975,
+                          "rx_mse": 0.5964520453031696,
+                          "interaction_mse": 0.04787752392836712
+                        },
+                        "shuffled_rx": {
+                          "mse": 1.410185403964126,
+                          "grand_mse": 0.6344365695337244,
+                          "tx_mse": 0.13116908049284476,
+                          "rx_mse": 0.5967022347873848,
+                          "interaction_mse": 0.047877519150172014
+                        },
+                        "donor_tx": [
+                          4,
+                          5
+                        ],
+                        "donor_rx": [
+                          2,
+                          3
+                        ],
+                        "donor_records": 16,
+                        "donor_physical_ids": [
+                          [
+                            0,
+                            2,
+                            0,
+                            0,
+                            102
+                          ],
+                          [
+                            0,
+                            2,
+                            0,
+                            0,
+                            103
+                          ],
+                          [
+                            0,
+                            3,
+                            0,
+                            0,
+                            102
+                          ],
+                          [
+                            0,
+                            3,
+                            0,
+                            0,
+                            103
+                          ],
+                          [
+                            1,
+                            2,
+                            0,
+                            0,
+                            102
+                          ],
+                          [
+                            1,
+                            2,
+                            0,
+                            0,
+                            103
+                          ],
+                          [
+                            1,
+                            3,
+                            0,
+                            0,
+                            102
+                          ],
+                          [
+                            1,
+                            3,
+                            0,
+                            0,
+                            103
+                          ],
+                          [
+                            4,
+                            0,
+                            0,
+                            0,
+                            100
+                          ],
+                          [
+                            4,
+                            0,
+                            0,
+                            0,
+                            101
+                          ],
+                          [
+                            4,
+                            1,
+                            0,
+                            0,
+                            100
+                          ],
+                          [
+                            4,
+                            1,
+                            0,
+                            0,
+                            101
+                          ],
+                          [
+                            5,
+                            0,
+                            0,
+                            0,
+                            100
+                          ],
+                          [
+                            5,
+                            0,
+                            0,
+                            0,
+                            101
+                          ],
+                          [
+                            5,
+                            1,
+                            0,
+                            0,
+                            100
+                          ],
+                          [
+                            5,
+                            1,
+                            0,
+                            0,
+                            101
+                          ]
+                        ]
+                      }
+                    ],
+                    "prediction_reuse_mse": 0.009215875528752804
+                  }
+                ]
+              },
+              "rx_reuse": {
+                "status": "AVAILABLE",
+                "reason": null,
+                "query_shape": [
+                  2,
+                  1
+                ],
+                "independent_query_interaction": false,
+                "tasks": [
+                  {
+                    "query_tx": [
+                      0,
+                      1
+                    ],
+                    "query_rx": [
+                      0
+                    ],
+                    "query_physical_ids": [
+                      [
+                        0,
+                        0,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        0,
+                        0,
+                        0,
+                        0,
+                        101
+                      ],
+                      [
+                        1,
+                        0,
+                        0,
+                        0,
+                        100
+                      ],
+                      [
+                        1,
+                        0,
+                        0,
+                        0,
+                        101
+                      ]
+                    ],
+                    "day": 0,
+                    "condition": 0,
+                    "K": 2,
+                    "branches": [
+                      {
+                        "pretrained_full": {
+                          "mse": 1.600643938266487,
+                          "grand_mse": 1.436545848430212,
+                          "tx_mse": 0.16409808983627494,
+                          "rx_mse": 0.0,
+                          "interaction_mse": null
+                        },
+                        "constant_frozen_source_location": {
+                          "mse": 1.8945647121987135,
+                          "grand_mse": 1.7266142424377233,
+                          "tx_mse": 0.16795046976099004,
+                          "rx_mse": 0.0,
+                          "interaction_mse": null
+                        },
+                        "shuffled_tx": {
+                          "mse": 1.6084379001791234,
+                          "grand_mse": 1.4365458451018576,
+                          "tx_mse": 0.17189205507726568,
+                          "rx_mse": 0.0,
+                          "interaction_mse": null
+                        },
+                        "shuffled_rx": null,
+                        "donor_tx": [
+                          2,
+                          3
+                        ],
+                        "donor_rx": [
+                          1,
+                          2
+                        ],
+                        "donor_records": 12,
+                        "donor_physical_ids": [
+                          [
+                            0,
+                            1,
+                            0,
+                            0,
+                            100
+                          ],
+                          [
+                            0,
+                            1,
+                            0,
+                            0,
+                            101
+                          ],
+                          [
+                            0,
+                            2,
+                            0,
+                            0,
+                            100
+                          ],
+                          [
+                            0,
+                            2,
+                            0,
+                            0,
+                            101
+                          ],
+                          [
+                            1,
+                            1,
+                            0,
+                            0,
+                            100
+                          ],
+                          [
+                            1,
+                            1,
+                            0,
+                            0,
+                            101
+                          ],
+                          [
+                            1,
+                            2,
+                            0,
+                            0,
+                            100
+                          ],
+                          [
+                            1,
+                            2,
+                            0,
+                            0,
+                            101
+                          ],
+                          [
+                            2,
+                            0,
+                            0,
+                            0,
+                            100
+                          ],
+                          [
+                            2,
+                            0,
+                            0,
+                            0,
+                            101
+                          ],
+                          [
+                            3,
+                            0,
+                            0,
+                            0,
+                            100
+                          ],
+                          [
+                            3,
+                            0,
+                            0,
+                            0,
+                            101
+                          ]
+                        ]
+                      },
+                      {
+                        "pretrained_full": {
+                          "mse": 1.5705163737021794,
+                          "grand_mse": 1.4051133660328137,
+                          "tx_mse": 0.16540300766936578,
+                          "rx_mse": 0.0,
+                          "interaction_mse": null
+                        },
+                        "constant_frozen_source_location": {
+                          "mse": 1.8945647121987135,
+                          "grand_mse": 1.7266142424377233,
+                          "tx_mse": 0.16795046976099004,
+                          "rx_mse": 0.0,
+                          "interaction_mse": null
+                        },
+                        "shuffled_tx": {
+                          "mse": 1.5757248348730637,
+                          "grand_mse": 1.4051133660328137,
+                          "tx_mse": 0.17061146884025002,
+                          "rx_mse": 0.0,
+                          "interaction_mse": null
+                        },
+                        "shuffled_rx": null,
+                        "donor_tx": [
+                          2,
+                          3
+                        ],
+                        "donor_rx": [
+                          3,
+                          4
+                        ],
+                        "donor_records": 12,
+                        "donor_physical_ids": [
+                          [
+                            0,
+                            3,
+                            0,
+                            0,
+                            100
+                          ],
+                          [
+                            0,
+                            3,
+                            0,
+                            0,
+                            101
+                          ],
+                          [
+                            0,
+                            4,
+                            0,
+                            0,
+                            100
+                          ],
+                          [
+                            0,
+                            4,
+                            0,
+                            0,
+                            101
+                          ],
+                          [
+                            1,
+                            3,
+                            0,
+                            0,
+                            100
+                          ],
+                          [
+                            1,
+                            3,
+                            0,
+                            0,
+                            101
+                          ],
+                          [
+                            1,
+                            4,
+                            0,
+                            0,
+                            100
+                          ],
+                          [
+                            1,
+                            4,
+                            0,
+                            0,
+                            101
+                          ],
+                          [
+                            2,
+                            0,
+                            0,
+                            0,
+                            102
+                          ],
+                          [
+                            2,
+                            0,
+                            0,
+                            0,
+                            103
+                          ],
+                          [
+                            3,
+                            0,
+                            0,
+                            0,
+                            102
+                          ],
+                          [
+                            3,
+                            0,
+                            0,
+                            0,
+                            103
+                          ]
+                        ]
+                      }
+                    ],
+                    "prediction_reuse_mse": 0.00034788690390996635
+                  }
+                ]
+              }
+            },
+            "cost": {
+              "backbone_forwards": 8,
+              "model_input_records": 112,
+              "raw_statistic_records": 24,
+              "predictor_forwards": 10,
+              "auxiliary_fit_forwards": 6,
+              "auxiliary_eval_forwards": 12,
+              "fit_unique_physical_records": 48,
+              "eval_unique_physical_records": 48
+            },
+            "fit_split": "ssdg_labeled_tx_visible",
+            "eval_split": "ssdg_source_v_select",
+            "frozen_parameter_counts": {
+              "backbone": 1048207,
+              "readouts": 5152,
+              "pretrained_predictor": 424
+            },
+            "matched_fits": {
+              "full_matched_fit": {
+                "errors": [
+                  {
+                    "mse": 1.391745246716654,
+                    "grand_mse": 0.6232964851816174,
+                    "tx_mse": 0.13052844891817428,
+                    "rx_mse": 0.5900491532929925,
+                    "interaction_mse": 0.04787115932387
+                  },
+                  {
+                    "mse": 1.385566871761593,
+                    "grand_mse": 0.6103994826331447,
+                    "tx_mse": 0.13104253585514805,
+                    "rx_mse": 0.5962592926423466,
+                    "interaction_mse": 0.04786556063095363
+                  },
+                  {
+                    "mse": 1.5722994418306566,
+                    "grand_mse": 1.4083155850266824,
+                    "tx_mse": 0.1639838568039742,
+                    "rx_mse": 0.0,
+                    "interaction_mse": null
+                  },
+                  {
+                    "mse": 1.5425089304485244,
+                    "grand_mse": 1.3772403453518907,
+                    "tx_mse": 0.1652685850966339,
+                    "rx_mse": 0.0,
+                    "interaction_mse": null
+                  }
+                ],
+                "parameter_count": 424,
+                "fit_steps": 2,
+                "fit_task_indices": [
+                  0,
+                  1
+                ],
+                "fit_query_cells": 8,
+                "lr": 0.001,
+                "optimizer": "AdamW",
+                "weight_decay": 0.0,
+                "optimizer_betas": [
+                  0.9,
+                  0.999
+                ],
+                "backbone_frozen": true,
+                "readouts_frozen": true,
+                "architecture": "SharedResponsePredictor",
+                "descriptor_dim": 16,
+                "target_dim": 8,
+                "predictor_mode": "bilinear",
+                "initialization": "copy_supplied_source_predictor_corresponding_branches"
+              },
+              "tx_only": {
+                "errors": [
+                  {
+                    "mse": 1.3659069656776666,
+                    "grand_mse": 0.590200019026002,
+                    "tx_mse": 0.13156944190301095,
+                    "rx_mse": 0.5962657897438395,
+                    "interaction_mse": 0.04787171500481385
+                  },
+                  {
+                    "mse": 1.3659764831519943,
+                    "grand_mse": 0.5899698605071053,
+                    "tx_mse": 0.1318691104319909,
+                    "rx_mse": 0.5962657983152699,
+                    "interaction_mse": 0.04787171389762814
+                  },
+                  {
+                    "mse": 1.8786382916254567,
+                    "grand_mse": 1.713519038369927,
+                    "tx_mse": 0.1651192532555297,
+                    "rx_mse": 0.0,
+                    "interaction_mse": null
+                  },
+                  {
+                    "mse": 1.8740797575374808,
+                    "grand_mse": 1.7074906469230258,
+                    "tx_mse": 0.16658911061445503,
+                    "rx_mse": 0.0,
+                    "interaction_mse": null
+                  }
+                ],
+                "parameter_count": 136,
+                "fit_steps": 2,
+                "fit_task_indices": [
+                  0,
+                  1
+                ],
+                "fit_query_cells": 8,
+                "lr": 0.001,
+                "optimizer": "AdamW",
+                "weight_decay": 0.0,
+                "optimizer_betas": [
+                  0.9,
+                  0.999
+                ],
+                "backbone_frozen": true,
+                "readouts_frozen": true,
+                "architecture": "RestrictedResponseHead",
+                "descriptor_dim": 16,
+                "target_dim": 8,
+                "predictor_mode": "tx_only",
+                "initialization": "copy_supplied_source_predictor_corresponding_branches"
+              },
+              "rx_only": {
+                "errors": [
+                  {
+                    "mse": 1.3537647946482856,
+                    "grand_mse": 0.5836814308441068,
+                    "tx_mse": 0.13225796856839123,
+                    "rx_mse": 0.5899536801938005,
+                    "interaction_mse": 0.04787171504198709
+                  },
+                  {
+                    "mse": 1.3473510239213757,
+                    "grand_mse": 0.5708029313169518,
+                    "tx_mse": 0.13225795524722803,
+                    "rx_mse": 0.5964184284943637,
+                    "interaction_mse": 0.047871708862832235
+                  },
+                  {
+                    "mse": 1.5495352870114163,
+                    "grand_mse": 1.3815848172504261,
+                    "tx_mse": 0.16795046976099004,
+                    "rx_mse": 0.0,
+                    "interaction_mse": null
+                  },
+                  {
+                    "mse": 1.5251930903088513,
+                    "grand_mse": 1.357242628295717,
+                    "tx_mse": 0.16795046201313424,
+                    "rx_mse": 0.0,
+                    "interaction_mse": null
+                  }
+                ],
+                "parameter_count": 136,
+                "fit_steps": 2,
+                "fit_task_indices": [
+                  0,
+                  1
+                ],
+                "fit_query_cells": 8,
+                "lr": 0.001,
+                "optimizer": "AdamW",
+                "weight_decay": 0.0,
+                "optimizer_betas": [
+                  0.9,
+                  0.999
+                ],
+                "backbone_frozen": true,
+                "readouts_frozen": true,
+                "architecture": "RestrictedResponseHead",
+                "descriptor_dim": 16,
+                "target_dim": 8,
+                "predictor_mode": "rx_only",
+                "initialization": "copy_supplied_source_predictor_corresponding_branches"
+              },
+              "head_only": {
+                "errors": [
+                  {
+                    "mse": 1.391745246716654,
+                    "grand_mse": 0.6232964851816174,
+                    "tx_mse": 0.13052844891817428,
+                    "rx_mse": 0.5900491532929925,
+                    "interaction_mse": 0.04787115932387
+                  },
+                  {
+                    "mse": 1.385566871761593,
+                    "grand_mse": 0.6103994826331447,
+                    "tx_mse": 0.13104253585514805,
+                    "rx_mse": 0.5962592926423466,
+                    "interaction_mse": 0.04786556063095363
+                  },
+                  {
+                    "mse": 1.5722994418306566,
+                    "grand_mse": 1.4083155850266824,
+                    "tx_mse": 0.1639838568039742,
+                    "rx_mse": 0.0,
+                    "interaction_mse": null
+                  },
+                  {
+                    "mse": 1.5425089304485244,
+                    "grand_mse": 1.3772403453518907,
+                    "tx_mse": 0.1652685850966339,
+                    "rx_mse": 0.0,
+                    "interaction_mse": null
+                  }
+                ],
+                "parameter_count": 424,
+                "fit_steps": 2,
+                "fit_task_indices": [
+                  0,
+                  1
+                ],
+                "fit_query_cells": 8,
+                "lr": 0.001,
+                "optimizer": "AdamW",
+                "weight_decay": 0.0,
+                "optimizer_betas": [
+                  0.9,
+                  0.999
+                ],
+                "backbone_frozen": true,
+                "readouts_frozen": true,
+                "architecture": "SharedResponsePredictor",
+                "descriptor_dim": 16,
+                "target_dim": 8,
+                "predictor_mode": "bilinear",
+                "initialization": "copy_supplied_source_predictor_corresponding_branches",
+                "alias_of": "full_matched_fit",
+                "independent_evidence": false
+              },
+              "metadata": {
+                "fit_unique_physical_ids": 48,
+                "eval_unique_physical_ids": 48,
+                "necessity_gate_passed": null,
+                "seed": 392005,
+                "scope": "source_frozen_representation_matched_head_fit"
+              }
+            },
+            "scope": "source_metrics_only_not_necessity_or_update_value_acceptance",
+            "identity_risk": {
+              "status": "N/A",
+              "reason": "response_MSE_is_not_identity_CE_use_disposable_counterfactual_with_independent_source_LEO_probe"
+            }
+          },
+          "gate_open": 0.0,
+          "gate_pass": 0.0,
+          "gate_checks": 2,
+          "gate_consecutive": 0,
+          "gate_ratio": 1.0211333646841279,
+          "gate_blocks": 1
+        }
+      ],
+      "auxiliary_parameters": 5576,
+      "fixed_statistics_cache": {
+        "entries": 256,
+        "hits": 384,
+        "misses": 256,
+        "value_bytes": 8192,
+        "key_utf8_bytes": 44288,
+        "python_container_overhead_included": false,
+        "contents": "detached raw waveform statistics only"
+      },
+      "gradient_counter_semantics": {
+        "decision_gradient_steps": "positive among audited_successful_steps",
+        "cross_gradient_steps": "positive among audited_successful_steps",
+        "response_gradient_steps": "every successful routed update; required routing never sampled"
+      },
+      "parameter_groups": {
+        "shared": [
+          "id_backbone.sinc.low_hz_",
+          "id_backbone.sinc.band_hz_"
+        ],
+        "identity_tail": [
+          "id_backbone.cls_head.id_proj.0.weight",
+          "id_backbone.cls_head.id_proj.0.bias",
+          "id_backbone.cls_head.pa_proj.0.weight",
+          "id_backbone.cls_head.pa_proj.0.bias",
+          "id_backbone.cls_head.id_gate.0.weight",
+          "id_backbone.cls_head.id_gate.0.bias",
+          "id_backbone.cls_head.joint_proj.0.weight",
+          "id_backbone.cls_head.joint_proj.0.bias",
+          "id_backbone.cls_head.imp_merge.0.weight",
+          "id_backbone.cls_head.imp_merge.0.bias",
+          "id_backbone.cls_head.head.weight",
+          "id_backbone.cls_head.pa_head.0.weight",
+          "id_backbone.cls_head.pa_head.0.bias",
+          "id_backbone.cls_head.pa_head.2.weight",
+          "id_backbone.cls_head.pa_head.2.bias"
+        ],
+        "identity_front": [
+          "id_backbone.time_fuse.0.weight",
+          "id_backbone.time_fuse.1.weight",
+          "id_backbone.time_fuse.1.bias",
+          "id_backbone.t1.dw.weight",
+          "id_backbone.t1.pw.weight",
+          "id_backbone.t1.norm.weight",
+          "id_backbone.t1.norm.bias",
+          "id_backbone.t2.dw.weight",
+          "id_backbone.t2.pw.weight",
+          "id_backbone.t2.norm.weight",
+          "id_backbone.t2.norm.bias",
+          "id_backbone.t3.dw.weight",
+          "id_backbone.t3.pw.weight",
+          "id_backbone.t3.norm.weight",
+          "id_backbone.t3.norm.bias",
+          "id_backbone.t_proj.weight",
+          "id_backbone.t_proj.bias",
+          "id_backbone.f1.dw.weight",
+          "id_backbone.f1.pw.weight",
+          "id_backbone.f1.norm.weight",
+          "id_backbone.f1.norm.bias",
+          "id_backbone.f2.dw.weight",
+          "id_backbone.f2.pw.weight",
+          "id_backbone.f2.norm.weight",
+          "id_backbone.f2.norm.bias",
+          "id_backbone.f3.dw.weight",
+          "id_backbone.f3.pw.weight",
+          "id_backbone.f3.norm.weight",
+          "id_backbone.f3.norm.bias",
+          "id_backbone.f_proj.weight",
+          "id_backbone.f_proj.bias",
+          "id_backbone.freq_gate.conv.weight",
+          "id_backbone.freq_gate.conv.bias",
+          "id_backbone.freq_stats_proj.0.weight",
+          "id_backbone.freq_stats_proj.0.bias",
+          "id_backbone.pa_stats_proj.0.weight",
+          "id_backbone.pa_stats_proj.0.bias",
+          "id_backbone.pa_gate.net.weight",
+          "id_backbone.pa_gate.net.bias",
+          "id_backbone.pa_b1.conv.weight",
+          "id_backbone.pa_b1.norm.weight",
+          "id_backbone.pa_b1.norm.bias",
+          "id_backbone.pa_b2.conv.weight",
+          "id_backbone.pa_b2.norm.weight",
+          "id_backbone.pa_b2.norm.bias",
+          "id_backbone.pa_b3.conv.weight",
+          "id_backbone.pa_b3.norm.weight",
+          "id_backbone.pa_b3.norm.bias",
+          "id_backbone.pa_proj.0.weight",
+          "id_backbone.pa_proj.0.bias",
+          "id_backbone.fuse.0.weight",
+          "id_backbone.fuse.0.bias",
+          "id_backbone.con_proj.0.weight",
+          "id_backbone.con_proj.0.bias"
+        ],
+        "domain": [
+          "dom_backbone.time_fuse.0.weight",
+          "dom_backbone.time_fuse.1.weight",
+          "dom_backbone.time_fuse.1.bias",
+          "dom_backbone.t1.dw.weight",
+          "dom_backbone.t1.pw.weight",
+          "dom_backbone.t1.norm.weight",
+          "dom_backbone.t1.norm.bias",
+          "dom_backbone.t2.dw.weight",
+          "dom_backbone.t2.pw.weight",
+          "dom_backbone.t2.norm.weight",
+          "dom_backbone.t2.norm.bias",
+          "dom_backbone.t3.dw.weight",
+          "dom_backbone.t3.pw.weight",
+          "dom_backbone.t3.norm.weight",
+          "dom_backbone.t3.norm.bias",
+          "dom_backbone.t_proj.weight",
+          "dom_backbone.t_proj.bias",
+          "dom_backbone.dac_hf_proj.0.weight",
+          "dom_backbone.dac_hf_proj.1.weight",
+          "dom_backbone.dac_hf_proj.1.bias",
+          "dom_backbone.dac_b1.conv.wr.weight",
+          "dom_backbone.dac_b1.conv.wi.weight",
+          "dom_backbone.dac_b1.conv.vr.weight",
+          "dom_backbone.dac_b1.conv.vi.weight",
+          "dom_backbone.dac_b1.norm.weight",
+          "dom_backbone.dac_b1.norm.bias",
+          "dom_backbone.dac_b2.conv.wr.weight",
+          "dom_backbone.dac_b2.conv.wi.weight",
+          "dom_backbone.dac_b2.conv.vr.weight",
+          "dom_backbone.dac_b2.conv.vi.weight",
+          "dom_backbone.dac_b2.norm.weight",
+          "dom_backbone.dac_b2.norm.bias",
+          "dom_backbone.dac_b2.res_proj.0.weight",
+          "dom_backbone.dac_b3.conv.wr.weight",
+          "dom_backbone.dac_b3.conv.wi.weight",
+          "dom_backbone.dac_b3.conv.vr.weight",
+          "dom_backbone.dac_b3.conv.vi.weight",
+          "dom_backbone.dac_b3.norm.weight",
+          "dom_backbone.dac_b3.norm.bias",
+          "dom_backbone.dac_b3.res_proj.0.weight",
+          "dom_backbone.dac_proj.0.weight",
+          "dom_backbone.dac_proj.0.bias",
+          "dom_backbone.f1.dw.weight",
+          "dom_backbone.f1.pw.weight",
+          "dom_backbone.f1.norm.weight",
+          "dom_backbone.f1.norm.bias",
+          "dom_backbone.f2.dw.weight",
+          "dom_backbone.f2.pw.weight",
+          "dom_backbone.f2.norm.weight",
+          "dom_backbone.f2.norm.bias",
+          "dom_backbone.f3.dw.weight",
+          "dom_backbone.f3.pw.weight",
+          "dom_backbone.f3.norm.weight",
+          "dom_backbone.f3.norm.bias",
+          "dom_backbone.f_proj.weight",
+          "dom_backbone.f_proj.bias",
+          "dom_backbone.freq_gate.conv.weight",
+          "dom_backbone.freq_gate.conv.bias",
+          "dom_backbone.pa_gate.net.weight",
+          "dom_backbone.pa_gate.net.bias",
+          "dom_backbone.pa_b1.conv.weight",
+          "dom_backbone.pa_b1.norm.weight",
+          "dom_backbone.pa_b1.norm.bias",
+          "dom_backbone.pa_b2.conv.weight",
+          "dom_backbone.pa_b2.norm.weight",
+          "dom_backbone.pa_b2.norm.bias",
+          "dom_backbone.pa_b3.conv.weight",
+          "dom_backbone.pa_b3.norm.weight",
+          "dom_backbone.pa_b3.norm.bias",
+          "dom_backbone.pa_proj.0.weight",
+          "dom_backbone.pa_proj.0.bias",
+          "dom_backbone.fuse.0.weight",
+          "dom_backbone.fuse.0.bias",
+          "dom_backbone.con_proj.0.weight",
+          "dom_backbone.con_proj.0.bias",
+          "dom_backbone.cls_head.id_proj.0.weight",
+          "dom_backbone.cls_head.id_proj.0.bias",
+          "dom_backbone.cls_head.dac_proj.0.weight",
+          "dom_backbone.cls_head.dac_proj.0.bias",
+          "dom_backbone.cls_head.pa_proj.0.weight",
+          "dom_backbone.cls_head.pa_proj.0.bias",
+          "dom_backbone.cls_head.id_gate.0.weight",
+          "dom_backbone.cls_head.id_gate.0.bias",
+          "dom_backbone.cls_head.joint_proj.0.weight",
+          "dom_backbone.cls_head.joint_proj.0.bias",
+          "dom_backbone.cls_head.imp_merge.0.weight",
+          "dom_backbone.cls_head.imp_merge.0.bias",
+          "dom_backbone.cls_head.head.weight",
+          "dom_backbone.cls_head.dac_head.0.weight",
+          "dom_backbone.cls_head.dac_head.0.bias",
+          "dom_backbone.cls_head.dac_head.2.weight",
+          "dom_backbone.cls_head.dac_head.2.bias",
+          "dom_backbone.cls_head.pa_head.0.weight",
+          "dom_backbone.cls_head.pa_head.0.bias",
+          "dom_backbone.cls_head.pa_head.2.weight",
+          "dom_backbone.cls_head.pa_head.2.bias",
+          "dom_enhancer.stat_encoder.net.0.weight",
+          "dom_enhancer.stat_encoder.net.0.bias",
+          "dom_enhancer.stat_encoder.net.1.weight",
+          "dom_enhancer.stat_encoder.net.1.bias",
+          "dom_enhancer.stat_encoder.net.4.weight",
+          "dom_enhancer.stat_encoder.net.4.bias",
+          "dom_enhancer.gate.0.weight",
+          "dom_enhancer.gate.0.bias",
+          "dom_enhancer.norm.weight",
+          "dom_enhancer.norm.bias"
+        ],
+        "other": [
+          "dom_head.net.0.weight",
+          "dom_head.net.0.bias",
+          "dom_head.net.3.weight",
+          "dom_head.net.3.bias",
+          "adv_head.net.0.weight",
+          "adv_head.net.0.bias",
+          "adv_head.net.3.weight",
+          "adv_head.net.3.bias"
+        ],
+        "auxiliary": [
+          "readouts.tx.weight",
+          "readouts.tx.bias",
+          "readouts.rx.weight",
+          "readouts.rx.bias",
+          "predictor.bias",
+          "predictor.tx.weight",
+          "predictor.rx.weight",
+          "predictor.bt.weight",
+          "predictor.br.weight",
+          "predictor.u.weight"
+        ]
+      },
+      "optional_controls": {
+        "target_family": "fft",
+        "bilinear_rank_active": 4,
+        "interaction_reweighting_active": false,
+        "adaptive_k_configured": false,
+        "response_identity_permanently_detached": true
+      },
+      "candidate_count": 75,
+      "candidate_search_complete": true,
+      "sampling_evidence": {
+        "feedback_history_entries": 0,
+        "pending_feedback_entries": 14,
+        "joint_rectangles": 149,
+        "directed_transfers": 31,
+        "unique_exposed_physical": 242,
+        "skip_counts": {},
+        "distribution_adaptation_testable": true,
+        "cost_views": 1
+      },
+      "loader_workers": 0,
+      "normalization_layers_fixed_in_labeled_forward": [],
+      "performance_claim": "NOT_EVALUATED"
+    },
+    "train_exit_code": 7,
+    "terminal_status": "HELDOUT_EVAL_INCOMPLETE",
+    "elapsed_seconds": 12.156000000002678,
+    "log_path": "E:\\type10-7\\logs\\core90_v2_acceptance_20260911\\branches_fp32_01\\head_only_s392002\\synthetic_entrypoint.log",
+    "checkpoint_path": "E:\\type10-7\\logs\\core90_v2_acceptance_20260911\\branches_fp32_01\\head_only_s392002\\final_ssdg.pth",
+    "test_overrides": {
+      "epochs": 2,
+      "label_epochs": 1,
+      "pseudo_epochs": 1,
+      "eval_max_batches": 1,
+      "zid_leakage_probe_max_batches": 1,
+      "source_val_heavy_eval_start_epoch": 3,
+      "source_val_heavy_eval_final_window": 0,
+      "stage1_epochs": 1,
+      "stage2_epochs": 1,
+      "stage3_ramp_epochs": 1,
+      "zid_compact_start_epoch": 1,
+      "zid_compact_warmup_epochs": 0,
+      "ow_feat_start_epoch": 1,
+      "ow_feat_warmup_epochs": 0,
+      "proxy_unknown_start_epoch": 1,
+      "proxy_unknown_warmup_epochs": 0,
+      "soft_unknown_mixup_start_epoch": 1,
+      "soft_unknown_mixup_warmup_epochs": 0,
+      "source_episode_start_epoch": 1,
+      "source_episode_warmup_epochs": 0,
+      "sat_cons_start_epoch": 1
+    },
+    "training_state_path": "E:\\type10-7\\logs\\core90_v2_acceptance_20260911\\branches_fp32_01\\head_only_s392002\\cross_response_training_state.pth",
+    "epoch1_training_state_path": "E:\\type10-7\\logs\\core90_v2_acceptance_20260911\\branches_fp32_01\\head_only_s392002\\epoch1_training_state.pth",
+    "resume_from": null,
+    "deterministic_cuda_fixture": true,
+    "amp_enabled": false,
+    "runtime_disabled_reference": false,
+    "records_per_cell": 128,
+    "nonfinite_gradient_events": [],
+    "parameter_changes": {
+      "identity_squared_delta": 0.10730413407496797,
+      "domain_squared_delta": 0.07960634063172733,
+      "all_parameters_finite": true
+    },
+    "boundaries": {
+      "dataset": "entirely synthetic, never actual source/target records",
+      "model": "real CORE90 lite_d dual backbone",
+      "epochs": "bounded fixture override after authoritative method configuration",
+      "gate": "lenient synthetic activation threshold; not a scientific activation claim",
+      "tail_and_leakage": "unrelated expensive reports omitted by test patch",
+      "heldout_evaluation": "omitted; no target selection or target score claim",
+      "initialization": "scratch only; no external checkpoint loaded"
+    },
+    "formal_experiment": false
+  }
+]

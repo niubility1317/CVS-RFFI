@@ -1,0 +1,10 @@
+{
+  "status": "FAILED",
+  "scope": "isolated fixed-logit CUDA acceptance benchmark; not formal training",
+  "stage": "reference function on actual torch.float16 CUDA logits under torch.autocast(cuda)",
+  "exception": "RuntimeError: quantile() input tensor must be either float or double dtype",
+  "source": "code/cvsrffi/cross_response/decision.py: decision_margin_loss_reference, good.quantile(0.5)",
+  "finding": "CPU BF16 autocast promotes quantile, but CUDA FP16 autocast did not in torch 2.10.0+cu128. The original reference half-logit path was not executable.",
+  "repair": "Explicitly promote half/bfloat16 reference quantile input to float32, then assign back to the reference tensor dtype; FP32 reference behavior unchanged.",
+  "followup_artifact": "decision_cuda_benchmark_20260911.json"
+}

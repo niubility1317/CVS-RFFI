@@ -1,0 +1,38 @@
+{
+  "status": "EXACT_MAIN_TRAJECTORY_PARITY",
+  "first_divergence": null,
+  "events_per_branch": {
+    "U1": 40,
+    "head_only": 40
+  },
+  "steps": 8,
+  "amp": true,
+  "device": "cuda:0",
+  "auxiliary_injection": "nan",
+  "implementation_version": 2,
+  "amp_overflow_steps": {
+    "U1": [
+      8
+    ],
+    "head_only": [
+      8
+    ]
+  },
+  "atol": 0,
+  "rtol": 0,
+  "runs": [
+    {
+      "variant": "U1",
+      "training_state_path": "E:\\type10-7\\logs\\core90_v2_acceptance_20260911\\amp_02\\U1_s392002\\cross_response_training_state.pth",
+      "elapsed_seconds": 27.921000000002095,
+      "train_exit_code": 7
+    },
+    {
+      "variant": "head_only",
+      "training_state_path": "E:\\type10-7\\logs\\core90_v2_acceptance_20260911\\amp_02\\head_only_s392002\\cross_response_training_state.pth",
+      "elapsed_seconds": 15.60899999999674,
+      "train_exit_code": 7
+    }
+  ],
+  "scope": "actual two-epoch CORE90 loop; synthetic source IQ; no target scoring; no formal weights"
+}
