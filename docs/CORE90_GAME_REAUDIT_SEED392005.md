@@ -91,3 +91,7 @@ VERIFIED：S1/S3均完成E200、9800次主更新全部接受，completion为SOUR
 ## 完成进度：2026-09-11 08:16 HKT
 
 VERIFIED：新增B0/B1/B2/C1完成E200及9800次全部接受的主更新；独立读取各行completion、prediction manifest、source_scores并以wc核实，每行四场景各27000条、总108000条预测，评分complete=true、source_only=true、target_evaluated=false。累计6完成，15运行，5排队，0失败。B4及B4_fixedk已自然接续派发，进程绑定正确且持续更新；健康任务不干预。全矩阵尚未完成，继续半小时检查。[新增四行完成证据](evidence/core90_game_392005_completion_0816.json)。
+
+## 完成进度：2026-09-11 08:48 HKT
+
+VERIFIED：新增B3/B3_lr_high/B3_head_slow/B3_head_fast/H1完成E200；逐行completion、prediction manifest、source_scores及独立行数检查通过，各有四场景共108000条预测，source-only评分完成。累计11完成、13运行、2排队、0失败。全部主更新均接受；H1最终40次补偿尝试中13次接受、12次monitor拒绝、15次迭代预算耗尽，不能把全部尝试称有效补偿。B5/B6实际双场更新、S2已接续启动。无需修复重发布，自动检查继续。[新增五行证据](evidence/core90_game_392005_completion_0848.json)。
