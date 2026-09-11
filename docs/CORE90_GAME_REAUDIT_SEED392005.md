@@ -87,3 +87,7 @@ VERIFIED：16运行、10排队、0失败，全部PID绑定正确，已完成E82�
 VERIFIED：S1/S3均完成E200、9800次主更新全部接受，completion为SOURCE_ARTIFACTS_COMPLETE且target_evaluated=false。分别独立读取prediction manifest及source_scores.json，四场景各27000条，complete=true、synthetic=false、预测文件在评分前关闭；wc独立读回两份预测各108000行。仅源域结果，不作性能晋级或跨seed稳定性结论。
 
 队列现为2完成、17运行、7排队、0失败；B3_adv_low/B3_adv_high已自然接续派发，其余进程绑定及日志增长正常。保留已有release与全部健康进程，本轮无修复重发布。整个26行矩阵尚未完成，半小时任务继续。[首批完成证据](evidence/core90_game_392005_completion_0744.json)。
+
+## 完成进度：2026-09-11 08:16 HKT
+
+VERIFIED：新增B0/B1/B2/C1完成E200及9800次全部接受的主更新；独立读取各行completion、prediction manifest、source_scores并以wc核实，每行四场景各27000条、总108000条预测，评分complete=true、source_only=true、target_evaluated=false。累计6完成，15运行，5排队，0失败。B4及B4_fixedk已自然接续派发，进程绑定正确且持续更新；健康任务不干预。全矩阵尚未完成，继续半小时检查。[新增四行完成证据](evidence/core90_game_392005_completion_0816.json)。
