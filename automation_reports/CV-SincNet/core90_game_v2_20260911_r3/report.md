@@ -23,8 +23,21 @@
 
 ## 当前状态
 
-LOCAL_VERIFIED。远端归档、编译、smoke和启动后读回待执行；不得将本条写成训练完成。
+RUNNING，启动后态VERIFIED；尚未完成E200或最终评分。
 
 Recovery: CPU prefix-sum fallback only for exact deterministic CUDA cumsum error. Same sampled increments, RNG stream and channel formula; deterministic flag retained. Local reproduced RED then 2 regression and 4 capacity tests PASS. All 21 configs differ from r1 only in output and config paths. No historical checkpoint used.
 
 Second-site investigation: r2 smoke omitted the normal augmentor. Audited F1 call chain and covered all three prefix-sum sites (satellite phase, normal phase, complex slew) with shared torch_compat.deterministic_cumsum. Smoke now builds and stage-configures the real augmentor. Forced-old-CUDA local regression passes actual augmentation, complex prefix sum and all nine stage/solver smoke updates; RNG and unrelated error checks also pass. No determinism relaxation, no blind restart or reuse of failed roots. F1 audit-disabled capability path is outside this release coverage.
+
+## 实际发布与后态
+
+- 采集时间：2026-09-11T20:21:09.038010+08:00。发布commit：`5bd1665631b15b1ed97fae0f6b0ed57f25b68ec9`；本地/远端归档SHA256一致，远端编译PASS。
+- r3真实L_s/U_s九项smoke PASS，实际增强器已接入，确定性保持开启；首批5行运行，16行排队，0失败。
+- 调度PID=1024212，PPID=1；5个worker的PID/PPID/CWD/argv/GPU UUID与配置逐项读回一致，全服务器每卡2个计算进程。两次快照动作记录持续增长，全部已记录更新accepted且loss有限。
+- V2_A_seed392005：PID=1024350，GPU=0，已接受54步，当前E2。
+- V2_A_seed392006：PID=1024351，GPU=1，已接受54步，当前E2。
+- V2_A_seed392007：PID=1024352，GPU=3，已接受54步，当前E2。
+- V2_B_seed392005：PID=1024353，GPU=5，已接受52步，当前E2。
+- V2_B_seed392006：PID=1024354，GPU=7，已接受49步，当前E1。
+- r1首次smoke失败，r2普通增强分支失败，均保留；r2的6个失败worker及调度均已退出。修复源码及发布审查已完成，未复用旧root。
+- 证据：[启动快照](initial_poststate.json)、[增长快照](verified_poststate.json)、[交付核验](delivery_verification.json)。当前仅启动验证，不作完整训练效果结论；16个待排队行尚无实际训练激活证据。

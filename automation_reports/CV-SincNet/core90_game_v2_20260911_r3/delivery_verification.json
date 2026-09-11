@@ -1,0 +1,59 @@
+{
+  "status": "VERIFIED",
+  "release_commit": "5bd1665631b15b1ed97fae0f6b0ed57f25b68ec9",
+  "archive_sha256": "d013ba63d4b10a22151c8cf813218807cb63eb04209cf14e2eff4e258219ad74",
+  "captured_at": "2026-09-11T20:21:09.038010+08:00",
+  "active": 5,
+  "pending": 16,
+  "failed": 0,
+  "owner_pid": 1024212,
+  "rows": [
+    {
+      "run_id": "V2_A_seed392005",
+      "pid": 1024350,
+      "gpu": 0,
+      "accepted_steps": 54,
+      "epoch": 2
+    },
+    {
+      "run_id": "V2_A_seed392006",
+      "pid": 1024351,
+      "gpu": 1,
+      "accepted_steps": 54,
+      "epoch": 2
+    },
+    {
+      "run_id": "V2_A_seed392007",
+      "pid": 1024352,
+      "gpu": 3,
+      "accepted_steps": 54,
+      "epoch": 2
+    },
+    {
+      "run_id": "V2_B_seed392005",
+      "pid": 1024353,
+      "gpu": 5,
+      "accepted_steps": 52,
+      "epoch": 2
+    },
+    {
+      "run_id": "V2_B_seed392006",
+      "pid": 1024354,
+      "gpu": 7,
+      "accepted_steps": 49,
+      "epoch": 1
+    }
+  ],
+  "gpu_process_counts": {
+    "GPU-56adac86-77cd-36c9-8770-dbf002650461": 2,
+    "GPU-a2d039ff-1792-4222-2b47-140429e10f94": 2,
+    "GPU-4fb45b9a-894a-536b-0e0a-09f7c1341562": 2,
+    "GPU-7b4bacb3-4901-6845-a414-0dfdfeeade97": 2,
+    "GPU-95d925a1-7218-ca7b-adef-164241f4f491": 2,
+    "GPU-ef5f59f2-e03e-fe6e-ea6b-3e03afc9b331": 2,
+    "GPU-5463e082-259e-537b-603a-01575d45801c": 2,
+    "GPU-9c4eb614-ca19-a390-aaf4-801f8980b6a9": 2
+  },
+  "stage": "RUNNING_NOT_ARTIFACTS_COMPLETE",
+  "target_evaluated": false
+}
