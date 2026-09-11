@@ -1,0 +1,64 @@
+[
+  {
+    "amp": true,
+    "successful_steps": 4,
+    "scaler_updates": [
+      {
+        "before": 65536.0,
+        "after": 32768.0,
+        "overflow_skip": true
+      },
+      {
+        "before": 32768.0,
+        "after": 32768.0,
+        "overflow_skip": false
+      },
+      {
+        "before": 32768.0,
+        "after": 32768.0,
+        "overflow_skip": false
+      },
+      {
+        "before": 32768.0,
+        "after": 32768.0,
+        "overflow_skip": false
+      }
+    ],
+    "first_anomaly": {
+      "epoch": 1,
+      "batch_index": 1,
+      "loss_finite": true,
+      "first_nonfinite_gradient": {
+        "parameter_name": "id_backbone.sinc.low_hz_",
+        "nonfinite_elements": 24,
+        "nan_elements": 24,
+        "posinf_elements": 0,
+        "neginf_elements": 0
+      }
+    },
+    "source_only_no_checkpoint": true
+  },
+  {
+    "amp": false,
+    "successful_steps": 4,
+    "scaler_updates": [
+      {
+        "before": 1.0,
+        "after": 1.0,
+        "overflow_skip": false
+      },
+      {
+        "before": 1.0,
+        "after": 1.0,
+        "overflow_skip": false
+      },
+      {
+        "before": 1.0,
+        "after": 1.0,
+        "overflow_skip": false
+      }
+    ],
+    "first_anomaly": null,
+    "source_only_no_checkpoint": true
+  }
+]

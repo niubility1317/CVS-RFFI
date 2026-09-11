@@ -52,6 +52,17 @@ def occupied_gpu_pids(gpu, running, compute_pids=None):
     return occupied
 
 
+def available_gpu(matrix, row, running):
+    """Optional pool is conservative: count every CUDA process plus pending contexts."""
+    capacity = int(matrix.get('max_gpu_processes', 1))
+    pool = matrix.get('gpu_pool', [row['gpu']])
+    if not pool or len(set(pool)) != len(pool) or any(type(g) is not int or g < 0 for g in pool):
+        raise ValueError('Invalid GPU pool')
+    candidates = [(len(occupied_gpu_pids(gpu, running)), gpu) for gpu in pool]
+    count, gpu = min(candidates)
+    return gpu if count < capacity else None
+
+
 def predecessor_complete(matrix, project):
     predecessor = matrix.get('after_run')
     if not predecessor:
@@ -148,10 +159,11 @@ def main(matrix_factory=v2_matrix, check_script='check_a1_fast_v2.py', periodic_
            'waiting_rows':[r['id'] for r in matrix['rows']]}
     write_json(root/'pipeline_state.json',state); write_json(root/'effective_matrix.json',matrix)
     try:
-        first_gpu=matrix['rows'][0]['gpu']
-        while not predecessor_complete(matrix,project) or len(gpu_compute_pids(first_gpu))>=capacity:
+        first_gpu=available_gpu(matrix,matrix['rows'][0],{})
+        while not predecessor_complete(matrix,project) or first_gpu is None:
             state['status']='WAITING_FOR_PREDECESSOR_OR_GPU'; write_json(root/'pipeline_state.json',state)
             time.sleep(30)
+            first_gpu=available_gpu(matrix,matrix['rows'][0],{})
         state['status']='GPU_CHECK'; write_json(root/'pipeline_state.json',state)
         subprocess.run([sys.executable,str(RELEASE/'code/scripts'/check_script),
             '--device','cuda:0','--output',str(logs/'execution_check.json')],
@@ -159,7 +171,9 @@ def main(matrix_factory=v2_matrix, check_script='check_a1_fast_v2.py', periodic_
         pending=list(matrix['rows']); running={}; failed=False
         while pending or running:
             for row in list(pending):
-                if len(occupied_gpu_pids(row['gpu'], running))>=capacity: continue
+                selected_gpu=available_gpu(matrix,row,running)
+                if selected_gpu is None: continue
+                row['gpu']=selected_gpu
                 folder=root/row['id']; folder.mkdir()
                 info={'gpu':row['gpu'],'cwd':str(RELEASE),'argv':commands[row['id']],'created':time.time()}
                 write_json(folder/'launch_config.json',info)
@@ -170,7 +184,7 @@ def main(matrix_factory=v2_matrix, check_script='check_a1_fast_v2.py', periodic_
                 state['rows'][row['id']]={'status':'RUNNING','pid':process.pid,'gpu':row['gpu']}
                 running[row['id']]=(row,process,log); pending.remove(row)
                 print(json.dumps({'state':'RUNNING','row':row['id'],'pid':process.pid,'gpu':row['gpu']}),flush=True)
-            state['status']='RUNNING'; state['waiting_rows']=[r['id'] for r in pending]
+            state['status']='RUNNING' if running else 'WAITING_FOR_GPU'; state['waiting_rows']=[r['id'] for r in pending]
             write_json(root/'pipeline_state.json',state)
             for name,(row,process,log) in list(running.items()):
                 if periodic_callback is not None and not state['rows'][name].get('periodic_error'):
