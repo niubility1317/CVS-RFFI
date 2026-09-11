@@ -18,3 +18,9 @@
 - 技术停止：checkpoint/契约不符、错误维度/非有限logits、输出冲突、预测不完整、buffer改变直接报错，保留产物，不自动重试；不因性能低停止或干预训练。
 
 当前：LOCAL_VERIFIED，目标测试尚未完成。
+
+## 实际启动后态
+
+发布commit：0f8d7a40f5b2c0e36592e68be0ba92d5dd0908d2，Git远端OID读回一致。归档SHA256=90b36ad1be61e002141c22875e1bbbd792ac71a32e5b958db84754621915c0c3，本地/远端一致；远端编译PASS。
+
+运行PID=2493804，PPID=1，CWD为本次release，命令行对应冻结manifest。实际GPU UUID=GPU-56adac86-77cd-36c9-8770-dbf002650461；同卡原训练PID1812772继续运行，总计算进程2个。SOURCE_CHECKPOINT_SMOKE_PASS，10个模型进入同一批目标预测，clean输出持续增长。状态RUNNING，尚不报告分数。

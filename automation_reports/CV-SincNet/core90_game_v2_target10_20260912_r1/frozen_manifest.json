@@ -1,0 +1,71 @@
+{
+  "schema": "core90_target_frozen_multiseed_v2",
+  "rows": [
+    "V2_A_seed392005",
+    "V2_A_seed392006",
+    "V2_A_seed392007",
+    "V2_B_seed392005",
+    "V2_B_seed392006",
+    "V2_B_seed392007",
+    "V2_C_seed392005",
+    "V2_C_seed392006",
+    "V2_C_seed392007",
+    "V2_D_seed392005"
+  ],
+  "seed": null,
+  "training_seeds": {
+    "V2_A_seed392005": 392005,
+    "V2_A_seed392006": 392006,
+    "V2_A_seed392007": 392007,
+    "V2_B_seed392005": 392005,
+    "V2_B_seed392006": 392006,
+    "V2_B_seed392007": 392007,
+    "V2_C_seed392005": 392005,
+    "V2_C_seed392006": 392006,
+    "V2_C_seed392007": 392007,
+    "V2_D_seed392005": 392005
+  },
+  "target_exposure_status": "previously_exposed_benchmark_recheck",
+  "checkpoints": {
+    "V2_A_seed392005": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_v2_20260911_r3/V2_A_seed392005/final_ssdg.pth",
+    "V2_A_seed392006": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_v2_20260911_r3/V2_A_seed392006/final_ssdg.pth",
+    "V2_A_seed392007": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_v2_20260911_r3/V2_A_seed392007/final_ssdg.pth",
+    "V2_B_seed392005": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_v2_20260911_r3/V2_B_seed392005/final_ssdg.pth",
+    "V2_B_seed392006": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_v2_20260911_r3/V2_B_seed392006/final_ssdg.pth",
+    "V2_B_seed392007": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_v2_20260911_r3/V2_B_seed392007/final_ssdg.pth",
+    "V2_C_seed392005": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_v2_20260911_r3/V2_C_seed392005/final_ssdg.pth",
+    "V2_C_seed392006": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_v2_20260911_r3/V2_C_seed392006/final_ssdg.pth",
+    "V2_C_seed392007": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_v2_20260911_r3/V2_C_seed392007/final_ssdg.pth",
+    "V2_D_seed392005": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_v2_20260911_r3/V2_D_seed392005/final_ssdg.pth"
+  },
+  "target_rxs": [
+    0,
+    2,
+    5,
+    7,
+    9,
+    10,
+    11
+  ],
+  "target_days": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "samples_per_scene": 168000,
+  "scenes": [
+    "clean",
+    "leo_clear_weak",
+    "leo_low_elev_weak",
+    "leo_rain_weak"
+  ],
+  "batch_size": 256,
+  "augmentation_seed": 392002,
+  "num_classes": 6,
+  "source_only": false,
+  "scope": "four_view_closed_set_target_diagnostic",
+  "fitting": false,
+  "selection": false,
+  "all_rows_predicted_before_truth": true
+}
