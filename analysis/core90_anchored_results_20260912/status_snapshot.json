@@ -1,0 +1,632 @@
+{
+  "time": 1789167599.605507,
+  "status": {
+    "stage": "SOURCE_SYSTEM_FROZEN",
+    "pid": 966219,
+    "time": 1789124168.386654,
+    "seed": 392005,
+    "target_access": false,
+    "completed_candidates": 14,
+    "source_promotion": "PENDING_ALL_HEAD_SEEDS",
+    "confirmation": false
+  },
+  "coordinator": {
+    "pid": 966219,
+    "state": "EXITED"
+  },
+  "workers": [],
+  "logs": [
+    {
+      "label": "prepare",
+      "size": 561,
+      "tail": [
+        "[SOURCE-INPUT] {\"role\": \"L_s\", \"count\": 6300, \"target_access\": false}",
+        "[SOURCE-INPUT] {\"role\": \"V\", \"count\": 27000, \"target_access\": false}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "smoke",
+      "size": 539,
+      "tail": [
+        "  return self.fget.__get__(instance, owner)()",
+        "[REAL-CHECKPOINT-SMOKE] {\"status\": \"PASS\", \"rows\": 6, \"target_access\": false, \"formal_head_initialization\": \"fresh\"}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "joint_L_s",
+      "size": 588,
+      "tail": [
+        "  return self.fget.__get__(instance, owner)()",
+        "{\"status\": \"SOURCE_STAGE_COMPLETE\", \"stage\": \"cache\", \"output\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/cache/joint_L_s\"}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "joint_V",
+      "size": 586,
+      "tail": [
+        "  return self.fget.__get__(instance, owner)()",
+        "{\"status\": \"SOURCE_STAGE_COMPLETE\", \"stage\": \"cache\", \"output\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/cache/joint_V\"}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "blocks_L_s",
+      "size": 589,
+      "tail": [
+        "  return self.fget.__get__(instance, owner)()",
+        "{\"status\": \"SOURCE_STAGE_COMPLETE\", \"stage\": \"cache\", \"output\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/cache/blocks_L_s\"}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "blocks_V",
+      "size": 587,
+      "tail": [
+        "  return self.fget.__get__(instance, owner)()",
+        "{\"status\": \"SOURCE_STAGE_COMPLETE\", \"stage\": \"cache\", \"output\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/cache/blocks_V\"}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "A2_oof",
+      "size": 322384,
+      "tail": [
+        "[ANCHORED-EPOCH] {\"candidate\": \"A2\", \"train_rx\": \"1,3,4,6,8\", \"head_seed\": 392005, \"epoch\": 80, \"optimizer_steps\": 2800, \"physical_visits_total\": 504000, \"view_visits_total\": 504000, \"ce_clean\": 0.0782649628283772, \"ce_leo\": 0.0, \"keep_raw\": 0.0, \"metric_raw\": 0.35577662416866845, \"loss\": 0.08182272880471178, \"grad_norm_ce\": 0.037496503442525864, \"grad_norm_keep\": 0.0, \"grad_norm_metric\": 0.0010884443763643503, \"grad_cos_ce_keep\": null, \"grad_cos_ce_metric\": -0.12672492861747742, \"grad_cos_keep_metric\": null, \"validation_ce\": null, \"metric_relative_change\": 0.002079494995996356, \"a_max_change\": 0.0014568567276000977, \"epoch_seconds\": 0.39709959272295237}",
+        "{\"status\": \"SOURCE_STAGE_COMPLETE\", \"stage\": \"oof\", \"output\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/oof/A2\"}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "A3_oof",
+      "size": 328559,
+      "tail": [
+        "[ANCHORED-EPOCH] {\"candidate\": \"A3\", \"train_rx\": \"1,3,4,6,8\", \"head_seed\": 392005, \"epoch\": 80, \"optimizer_steps\": 2800, \"physical_visits_total\": 504000, \"view_visits_total\": 1008000, \"ce_clean\": 0.08888929131539304, \"ce_leo\": 0.8376262085778373, \"keep_raw\": 0.0, \"metric_raw\": 0.41896861451012746, \"loss\": 0.46744743585586546, \"grad_norm_ce\": 0.11876960843801498, \"grad_norm_keep\": 0.0, \"grad_norm_metric\": 0.0005868917214684188, \"grad_cos_ce_keep\": null, \"grad_cos_ce_metric\": -0.13122819364070892, \"grad_cos_keep_metric\": null, \"validation_ce\": null, \"metric_relative_change\": 0.0016709592891857028, \"a_max_change\": 0.0006407499313354492, \"epoch_seconds\": 0.5046021454036236}",
+        "{\"status\": \"SOURCE_STAGE_COMPLETE\", \"stage\": \"oof\", \"output\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/oof/A3\"}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "A4_oof",
+      "size": 358872,
+      "tail": [
+        "[ANCHORED-EPOCH] {\"candidate\": \"A4\", \"train_rx\": \"1,3,4,6,8\", \"head_seed\": 392005, \"epoch\": 80, \"optimizer_steps\": 2800, \"physical_visits_total\": 504000, \"view_visits_total\": 1008000, \"ce_clean\": 0.08888645909986995, \"ce_leo\": 0.8376331925392151, \"keep_raw\": 0.06604618544557266, \"metric_raw\": 0.41895695924758913, \"loss\": 0.46752278464181085, \"grad_norm_ce\": 0.1188923791050911, \"grad_norm_keep\": 0.000504710478708148, \"grad_norm_metric\": 0.0005869917804375291, \"grad_cos_ce_keep\": -0.20737773180007935, \"grad_cos_ce_metric\": -0.1312391459941864, \"grad_cos_keep_metric\": 0.03778418153524399, \"validation_ce\": null, \"metric_relative_change\": 0.0016716619720682502, \"a_max_change\": 0.000640869140625, \"epoch_seconds\": 0.5349050723016262}",
+        "{\"status\": \"SOURCE_STAGE_COMPLETE\", \"stage\": \"oof\", \"output\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/oof/A4\"}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "C_angle_oof",
+      "size": 291572,
+      "tail": [
+        "[ANCHORED-EPOCH] {\"candidate\": \"C_angle\", \"train_rx\": \"1,3,4,6,8\", \"head_seed\": 392005, \"epoch\": 80, \"optimizer_steps\": 2800, \"physical_visits_total\": 504000, \"view_visits_total\": 1008000, \"ce_clean\": 0.03486579579434224, \"ce_leo\": 0.31859796685831887, \"keep_raw\": 0.0, \"metric_raw\": 0.0, \"loss\": 0.17673187979630062, \"grad_norm_ce\": 0.6107361912727356, \"grad_norm_keep\": 0.0, \"grad_norm_metric\": 0.0, \"grad_cos_ce_keep\": null, \"grad_cos_ce_metric\": null, \"grad_cos_keep_metric\": null, \"validation_ce\": null, \"metric_relative_change\": 0.0, \"a_max_change\": 0.0, \"epoch_seconds\": 0.40404646983370185}",
+        "{\"status\": \"SOURCE_STAGE_COMPLETE\", \"stage\": \"oof\", \"output\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/oof/C_angle\"}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "C_angle_keep_oof",
+      "size": 316721,
+      "tail": [
+        "[ANCHORED-EPOCH] {\"candidate\": \"C_angle_keep\", \"train_rx\": \"1,3,4,6,8\", \"head_seed\": 392005, \"epoch\": 80, \"optimizer_steps\": 2800, \"physical_visits_total\": 504000, \"view_visits_total\": 1008000, \"ce_clean\": 0.03487409527546593, \"ce_leo\": 0.3185870302574975, \"keep_raw\": 0.26679811605385373, \"metric_raw\": 0.0, \"loss\": 0.17702700623444148, \"grad_norm_ce\": 0.6128929853439331, \"grad_norm_keep\": 0.006227394100278616, \"grad_norm_metric\": 0.0, \"grad_cos_ce_keep\": -0.2552960515022278, \"grad_cos_ce_metric\": null, \"grad_cos_keep_metric\": null, \"validation_ce\": null, \"metric_relative_change\": 0.0, \"a_max_change\": 0.0, \"epoch_seconds\": 0.43690135795623064}",
+        "{\"status\": \"SOURCE_STAGE_COMPLETE\", \"stage\": \"oof\", \"output\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/oof/C_angle_keep\"}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "A2_calibrate",
+      "size": 600,
+      "tail": [
+        "  return self.fget.__get__(instance, owner)()",
+        "{\"status\": \"SOURCE_STAGE_COMPLETE\", \"stage\": \"calibrate\", \"output\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/candidates/A2/calibrate\"}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "A2_export",
+      "size": 594,
+      "tail": [
+        "  return self.fget.__get__(instance, owner)()",
+        "{\"status\": \"SOURCE_STAGE_COMPLETE\", \"stage\": \"export\", \"output\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/candidates/A2/export\"}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "A2_profile",
+      "size": 596,
+      "tail": [
+        "  return self.fget.__get__(instance, owner)()",
+        "{\"status\": \"SOURCE_STAGE_COMPLETE\", \"stage\": \"profile\", \"output\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/candidates/A2/profile\"}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "A3_calibrate",
+      "size": 600,
+      "tail": [
+        "  return self.fget.__get__(instance, owner)()",
+        "{\"status\": \"SOURCE_STAGE_COMPLETE\", \"stage\": \"calibrate\", \"output\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/candidates/A3/calibrate\"}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "A3_export",
+      "size": 594,
+      "tail": [
+        "  return self.fget.__get__(instance, owner)()",
+        "{\"status\": \"SOURCE_STAGE_COMPLETE\", \"stage\": \"export\", \"output\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/candidates/A3/export\"}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "A3_profile",
+      "size": 596,
+      "tail": [
+        "  return self.fget.__get__(instance, owner)()",
+        "{\"status\": \"SOURCE_STAGE_COMPLETE\", \"stage\": \"profile\", \"output\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/candidates/A3/profile\"}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "A4_calibrate",
+      "size": 600,
+      "tail": [
+        "  return self.fget.__get__(instance, owner)()",
+        "{\"status\": \"SOURCE_STAGE_COMPLETE\", \"stage\": \"calibrate\", \"output\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/candidates/A4/calibrate\"}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "A4_export",
+      "size": 594,
+      "tail": [
+        "  return self.fget.__get__(instance, owner)()",
+        "{\"status\": \"SOURCE_STAGE_COMPLETE\", \"stage\": \"export\", \"output\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/candidates/A4/export\"}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "A4_profile",
+      "size": 596,
+      "tail": [
+        "  return self.fget.__get__(instance, owner)()",
+        "{\"status\": \"SOURCE_STAGE_COMPLETE\", \"stage\": \"profile\", \"output\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/candidates/A4/profile\"}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "C_angle_calibrate",
+      "size": 605,
+      "tail": [
+        "  return self.fget.__get__(instance, owner)()",
+        "{\"status\": \"SOURCE_STAGE_COMPLETE\", \"stage\": \"calibrate\", \"output\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/candidates/C_angle/calibrate\"}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "C_angle_export",
+      "size": 599,
+      "tail": [
+        "  return self.fget.__get__(instance, owner)()",
+        "{\"status\": \"SOURCE_STAGE_COMPLETE\", \"stage\": \"export\", \"output\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/candidates/C_angle/export\"}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "C_angle_profile",
+      "size": 601,
+      "tail": [
+        "  return self.fget.__get__(instance, owner)()",
+        "{\"status\": \"SOURCE_STAGE_COMPLETE\", \"stage\": \"profile\", \"output\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/candidates/C_angle/profile\"}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "C_angle_keep_calibrate",
+      "size": 610,
+      "tail": [
+        "  return self.fget.__get__(instance, owner)()",
+        "{\"status\": \"SOURCE_STAGE_COMPLETE\", \"stage\": \"calibrate\", \"output\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/candidates/C_angle_keep/calibrate\"}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "C_angle_keep_export",
+      "size": 604,
+      "tail": [
+        "  return self.fget.__get__(instance, owner)()",
+        "{\"status\": \"SOURCE_STAGE_COMPLETE\", \"stage\": \"export\", \"output\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/candidates/C_angle_keep/export\"}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "C_angle_keep_profile",
+      "size": 606,
+      "tail": [
+        "  return self.fget.__get__(instance, owner)()",
+        "{\"status\": \"SOURCE_STAGE_COMPLETE\", \"stage\": \"profile\", \"output\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/candidates/C_angle_keep/profile\"}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "A0_fit",
+      "size": 588,
+      "tail": [
+        "  return self.fget.__get__(instance, owner)()",
+        "{\"status\": \"SOURCE_STAGE_COMPLETE\", \"stage\": \"fit\", \"output\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/candidates/A0/fit\"}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "A0_calibrate",
+      "size": 600,
+      "tail": [
+        "  return self.fget.__get__(instance, owner)()",
+        "{\"status\": \"SOURCE_STAGE_COMPLETE\", \"stage\": \"calibrate\", \"output\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/candidates/A0/calibrate\"}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "A0_export",
+      "size": 594,
+      "tail": [
+        "  return self.fget.__get__(instance, owner)()",
+        "{\"status\": \"SOURCE_STAGE_COMPLETE\", \"stage\": \"export\", \"output\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/candidates/A0/export\"}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "A0_profile",
+      "size": 596,
+      "tail": [
+        "  return self.fget.__get__(instance, owner)()",
+        "{\"status\": \"SOURCE_STAGE_COMPLETE\", \"stage\": \"profile\", \"output\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/candidates/A0/profile\"}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "A1_fit",
+      "size": 588,
+      "tail": [
+        "  return self.fget.__get__(instance, owner)()",
+        "{\"status\": \"SOURCE_STAGE_COMPLETE\", \"stage\": \"fit\", \"output\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/candidates/A1/fit\"}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "A1_calibrate",
+      "size": 600,
+      "tail": [
+        "  return self.fget.__get__(instance, owner)()",
+        "{\"status\": \"SOURCE_STAGE_COMPLETE\", \"stage\": \"calibrate\", \"output\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/candidates/A1/calibrate\"}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "A1_export",
+      "size": 594,
+      "tail": [
+        "  return self.fget.__get__(instance, owner)()",
+        "{\"status\": \"SOURCE_STAGE_COMPLETE\", \"stage\": \"export\", \"output\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/candidates/A1/export\"}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "A1_profile",
+      "size": 596,
+      "tail": [
+        "  return self.fget.__get__(instance, owner)()",
+        "{\"status\": \"SOURCE_STAGE_COMPLETE\", \"stage\": \"profile\", \"output\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/candidates/A1/profile\"}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "P1_fit",
+      "size": 588,
+      "tail": [
+        "  return self.fget.__get__(instance, owner)()",
+        "{\"status\": \"SOURCE_STAGE_COMPLETE\", \"stage\": \"fit\", \"output\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/candidates/P1/fit\"}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "P1_calibrate",
+      "size": 600,
+      "tail": [
+        "  return self.fget.__get__(instance, owner)()",
+        "{\"status\": \"SOURCE_STAGE_COMPLETE\", \"stage\": \"calibrate\", \"output\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/candidates/P1/calibrate\"}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "P1_export",
+      "size": 594,
+      "tail": [
+        "  return self.fget.__get__(instance, owner)()",
+        "{\"status\": \"SOURCE_STAGE_COMPLETE\", \"stage\": \"export\", \"output\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/candidates/P1/export\"}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "P1_profile",
+      "size": 596,
+      "tail": [
+        "  return self.fget.__get__(instance, owner)()",
+        "{\"status\": \"SOURCE_STAGE_COMPLETE\", \"stage\": \"profile\", \"output\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/candidates/P1/profile\"}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "A5-0_fuse",
+      "size": 592,
+      "tail": [
+        "  return self.fget.__get__(instance, owner)()",
+        "{\"status\": \"SOURCE_STAGE_COMPLETE\", \"stage\": \"fuse\", \"output\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/candidates/A5-0/fuse\"}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "A5-0_calibrate",
+      "size": 602,
+      "tail": [
+        "  return self.fget.__get__(instance, owner)()",
+        "{\"status\": \"SOURCE_STAGE_COMPLETE\", \"stage\": \"calibrate\", \"output\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/candidates/A5-0/calibrate\"}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "A5-0_export",
+      "size": 596,
+      "tail": [
+        "  return self.fget.__get__(instance, owner)()",
+        "{\"status\": \"SOURCE_STAGE_COMPLETE\", \"stage\": \"export\", \"output\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/candidates/A5-0/export\"}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "A5-0_profile",
+      "size": 598,
+      "tail": [
+        "  return self.fget.__get__(instance, owner)()",
+        "{\"status\": \"SOURCE_STAGE_COMPLETE\", \"stage\": \"profile\", \"output\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/candidates/A5-0/profile\"}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "A5-25_fuse",
+      "size": 593,
+      "tail": [
+        "  return self.fget.__get__(instance, owner)()",
+        "{\"status\": \"SOURCE_STAGE_COMPLETE\", \"stage\": \"fuse\", \"output\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/candidates/A5-25/fuse\"}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "A5-25_calibrate",
+      "size": 603,
+      "tail": [
+        "  return self.fget.__get__(instance, owner)()",
+        "{\"status\": \"SOURCE_STAGE_COMPLETE\", \"stage\": \"calibrate\", \"output\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/candidates/A5-25/calibrate\"}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "A5-25_export",
+      "size": 597,
+      "tail": [
+        "  return self.fget.__get__(instance, owner)()",
+        "{\"status\": \"SOURCE_STAGE_COMPLETE\", \"stage\": \"export\", \"output\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/candidates/A5-25/export\"}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "A5-25_profile",
+      "size": 599,
+      "tail": [
+        "  return self.fget.__get__(instance, owner)()",
+        "{\"status\": \"SOURCE_STAGE_COMPLETE\", \"stage\": \"profile\", \"output\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/candidates/A5-25/profile\"}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "A5-50_fuse",
+      "size": 593,
+      "tail": [
+        "  return self.fget.__get__(instance, owner)()",
+        "{\"status\": \"SOURCE_STAGE_COMPLETE\", \"stage\": \"fuse\", \"output\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/candidates/A5-50/fuse\"}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "A5-50_calibrate",
+      "size": 603,
+      "tail": [
+        "  return self.fget.__get__(instance, owner)()",
+        "{\"status\": \"SOURCE_STAGE_COMPLETE\", \"stage\": \"calibrate\", \"output\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/candidates/A5-50/calibrate\"}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "A5-50_export",
+      "size": 597,
+      "tail": [
+        "  return self.fget.__get__(instance, owner)()",
+        "{\"status\": \"SOURCE_STAGE_COMPLETE\", \"stage\": \"export\", \"output\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/candidates/A5-50/export\"}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "A5-50_profile",
+      "size": 599,
+      "tail": [
+        "  return self.fget.__get__(instance, owner)()",
+        "{\"status\": \"SOURCE_STAGE_COMPLETE\", \"stage\": \"profile\", \"output\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/candidates/A5-50/profile\"}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "A5-75_fuse",
+      "size": 593,
+      "tail": [
+        "  return self.fget.__get__(instance, owner)()",
+        "{\"status\": \"SOURCE_STAGE_COMPLETE\", \"stage\": \"fuse\", \"output\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/candidates/A5-75/fuse\"}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "A5-75_calibrate",
+      "size": 603,
+      "tail": [
+        "  return self.fget.__get__(instance, owner)()",
+        "{\"status\": \"SOURCE_STAGE_COMPLETE\", \"stage\": \"calibrate\", \"output\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/candidates/A5-75/calibrate\"}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "A5-75_export",
+      "size": 597,
+      "tail": [
+        "  return self.fget.__get__(instance, owner)()",
+        "{\"status\": \"SOURCE_STAGE_COMPLETE\", \"stage\": \"export\", \"output\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/candidates/A5-75/export\"}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "A5-75_profile",
+      "size": 599,
+      "tail": [
+        "  return self.fget.__get__(instance, owner)()",
+        "{\"status\": \"SOURCE_STAGE_COMPLETE\", \"stage\": \"profile\", \"output\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/candidates/A5-75/profile\"}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "A5-100_fuse",
+      "size": 594,
+      "tail": [
+        "  return self.fget.__get__(instance, owner)()",
+        "{\"status\": \"SOURCE_STAGE_COMPLETE\", \"stage\": \"fuse\", \"output\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/candidates/A5-100/fuse\"}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "A5-100_calibrate",
+      "size": 604,
+      "tail": [
+        "  return self.fget.__get__(instance, owner)()",
+        "{\"status\": \"SOURCE_STAGE_COMPLETE\", \"stage\": \"calibrate\", \"output\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/candidates/A5-100/calibrate\"}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "A5-100_export",
+      "size": 598,
+      "tail": [
+        "  return self.fget.__get__(instance, owner)()",
+        "{\"status\": \"SOURCE_STAGE_COMPLETE\", \"stage\": \"export\", \"output\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/candidates/A5-100/export\"}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "A5-100_profile",
+      "size": 600,
+      "tail": [
+        "  return self.fget.__get__(instance, owner)()",
+        "{\"status\": \"SOURCE_STAGE_COMPLETE\", \"stage\": \"profile\", \"output\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/candidates/A5-100/profile\"}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "A6_fuse",
+      "size": 583551,
+      "tail": [
+        "[ANCHORED-EPOCH] {\"candidate\": \"A4\", \"train_rx\": \"1,3,4\", \"head_seed\": 392005, \"epoch\": 80, \"optimizer_steps\": 2800, \"physical_visits_total\": 302400, \"view_visits_total\": 604800, \"ce_clean\": 0.10719593712117005, \"ce_leo\": 0.8651764290673393, \"keep_raw\": 0.06334898733933057, \"metric_raw\": 0.41199951001576013, \"loss\": 0.49037658103874754, \"grad_norm_ce\": 0.23263554275035858, \"grad_norm_keep\": 0.00036350786103866994, \"grad_norm_metric\": 0.0006500263116322458, \"grad_cos_ce_keep\": -0.057880792766809464, \"grad_cos_ce_metric\": -0.04901739954948425, \"grad_cos_keep_metric\": 0.030444836243987083, \"validation_ce\": null, \"metric_relative_change\": 0.0023137633688747883, \"a_max_change\": 0.0007210075855255127, \"epoch_seconds\": 0.5476806927472353}",
+        "{\"status\": \"SOURCE_STAGE_COMPLETE\", \"stage\": \"fuse\", \"output\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/candidates/A6/fuse\"}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "A6_calibrate",
+      "size": 600,
+      "tail": [
+        "  return self.fget.__get__(instance, owner)()",
+        "{\"status\": \"SOURCE_STAGE_COMPLETE\", \"stage\": \"calibrate\", \"output\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/candidates/A6/calibrate\"}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "A6_export",
+      "size": 594,
+      "tail": [
+        "  return self.fget.__get__(instance, owner)()",
+        "{\"status\": \"SOURCE_STAGE_COMPLETE\", \"stage\": \"export\", \"output\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/candidates/A6/export\"}"
+      ],
+      "traceback": false
+    },
+    {
+      "label": "A6_profile",
+      "size": 596,
+      "tail": [
+        "  return self.fget.__get__(instance, owner)()",
+        "{\"status\": \"SOURCE_STAGE_COMPLETE\", \"stage\": \"profile\", \"output\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/core90_anchored_s392005_20260911_r1/candidates/A6/profile\"}"
+      ],
+      "traceback": false
+    }
+  ],
+  "caches": {
+    "blocks_L_s": {
+      "rows": 12600,
+      "role": "L_s"
+    },
+    "joint_L_s": {
+      "rows": 12600,
+      "role": "L_s"
+    },
+    "blocks_V": {
+      "rows": 54000,
+      "role": "V"
+    },
+    "joint_V": {
+      "rows": 54000,
+      "role": "V"
+    }
+  },
+  "gpu_processes": [
+    "GPU-56adac86-77cd-36c9-8770-dbf002650461, 1224813, 2734",
+    "GPU-56adac86-77cd-36c9-8770-dbf002650461, 1812772, 1788",
+    "GPU-a2d039ff-1792-4222-2b47-140429e10f94, 1208926, 2730",
+    "GPU-a2d039ff-1792-4222-2b47-140429e10f94, 1811002, 1788",
+    "GPU-4fb45b9a-894a-536b-0e0a-09f7c1341562, 1367899, 1938",
+    "GPU-7b4bacb3-4901-6845-a414-0dfdfeeade97, 1215380, 2732",
+    "GPU-7b4bacb3-4901-6845-a414-0dfdfeeade97, 1811548, 1788",
+    "GPU-95d925a1-7218-ca7b-adef-164241f4f491, 612456, 3396",
+    "GPU-95d925a1-7218-ca7b-adef-164241f4f491, 1303890, 2734",
+    "GPU-ef5f59f2-e03e-fe6e-ea6b-3e03afc9b331, 1300611, 2732",
+    "GPU-ef5f59f2-e03e-fe6e-ea6b-3e03afc9b331, 1799620, 1788",
+    "GPU-5463e082-259e-537b-603a-01575d45801c, 1468573, 1930",
+    "GPU-5463e082-259e-537b-603a-01575d45801c, 1825365, 1918",
+    "GPU-9c4eb614-ca19-a390-aaf4-801f8980b6a9, 1870236, 1918",
+    "GPU-9c4eb614-ca19-a390-aaf4-801f8980b6a9, 2228434, 1768"
+  ],
+  "source_inputs": {
+    "counts": {
+      "L_s": 6300,
+      "V": 27000
+    },
+    "source_roles": [
+      "L_s",
+      "V"
+    ],
+    "target_access": false,
+    "previous_L_s_bitwise_equal": true,
+    "checkpoint_lineage": {
+      "from_scratch": true,
+      "upstream": [],
+      "selection": "final_only",
+      "target_feedback": false
+    },
+    "contract_reused": true
+  }
+}

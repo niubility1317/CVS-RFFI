@@ -90,3 +90,9 @@ root/log/PID存在即拒绝重复dispatch；输出不覆盖，不自动重试，
 读回的全部当前日志无Traceback，status仍为EXPERT_OOF_FITS、target_access=false。证据为`analysis/core90_anchored_launch_evidence_392005_20260911/startup_snapshot_1.json`与`startup_snapshot_2.json`，含实际OS进程信息、GPU记录、缓存计数、日志末两条及source输入核对。完整epoch日志继续保留远端logs目录；以上数值是启动快照，不是最终结果。
 
 后续由同一个coordinator自动执行剩余OOF、全部source校准/导出、P1、A5及条件性A6；本任务没有另外创建定时监控，也未启动target或另两个seed。
+
+## 2026-09-12完成结果读回：VERIFIED
+
+2026-09-11 18:56:08已完成14候选source冻结；本轮40次拟合全部E80、3200个epoch。全量日志无运行错误，V重算与已存policy一致，嵌套OOF重算与已存计数一致。A3/A4头部OOF均92.5159%（H0为92.2302%）；A6嵌套OOF92.1190%，救回8、损伤22，净−14。本seed收益与分组保底未通过；多seed仍PENDING_ALL_HEAD_SEEDS。未运行target或新增seed。
+
+详见[detailed_results_20260912.md](detailed_results_20260912.md)；完整统计和文本证据位于analysis/core90_anchored_results_20260912，source_text_evidence.zip含397份原始文本。

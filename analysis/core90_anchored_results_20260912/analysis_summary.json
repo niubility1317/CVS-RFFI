@@ -1,0 +1,40 @@
+{
+  "full_parse": {
+    "json": 148,
+    "jsonl": 62,
+    "csv": 124,
+    "csv_rows": 925338,
+    "log": 63,
+    "log_lines": 3394
+  },
+  "inventory_files": 649,
+  "collected_text_files": 397,
+  "histories": 40,
+  "epochs": 3200,
+  "optimizer_steps": 112000,
+  "warnings": {
+    "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()": 62
+  },
+  "errors": [],
+  "verification": "VERIFIED",
+  "V_recomputed_matches_saved_policy": true,
+  "nested_recomputed_matches_saved_counts": true,
+  "gate": {
+    "action_counts": [
+      2510,
+      614,
+      1537,
+      772,
+      7167
+    ],
+    "final_fixed_action": 0,
+    "final_oof_action_utilities": [
+      0.0,
+      -0.0007936507608974352,
+      -0.0012698412174358964,
+      -0.0015873015217948705,
+      -0.0030952379674999975
+    ],
+    "training_set_count": 16
+  }
+}
