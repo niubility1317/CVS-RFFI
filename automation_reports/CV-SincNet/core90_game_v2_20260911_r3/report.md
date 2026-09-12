@@ -49,3 +49,11 @@ Second-site investigation: r2 smoke omitted the normal augmentor. Audited F1 cal
 ordinary的adv=0与adv=0.35三seed平均LEO Accuracy分别为85.414%和85.911%，配对平均变化+0.497pp，逐seed方向并不一致。B8-D1、adv=0、seed392005与同seed ordinary的全部预测及置信度相同。全部数据仅属source V，尚无本批target测试或完整solver×adv结论。
 
 详细数据：[逐实验、场景、TX/RX/day、混淆矩阵及训练轨迹报告](results_20260912_0700/report.md)。当前状态为PARTIAL_MATRIX_ANALYSIS / COMPLETED_ROWS_VERIFIED；健康实验继续运行，本次仅只读分析。
+
+## 2026-09-12 23:47完整矩阵结果
+
+21/21行均完成E200及四source场景预测评分，无失败。全量4200个epoch、205800次更新和2268000条预测已核查，独立复算与保存评分误差为0。全部更新接受，未发现非有限loss或stdout异常。
+
+固定lr=2e-4时，A/B/C/D/E/F的三seed平均LEO Accuracy依次为85.414%/85.911%/85.414%/84.470%/87.682%/86.786%。E−A为+2.268pp，D−B为−1.441pp，F−E为−0.896pp。C与A三个seed的全部预测及置信度一致。source学习率候选中lr=4e-4按预登记四场景Macro-F1均值胜出，但只有单seed，未进行多seed确认。
+
+[完整21行详细数据、逐TX/RX/day与计算量](results_20260912_2347/report.md)。状态：FULL_MATRIX_SOURCE_ANALYZED。本批没有target评估，也不作目标域泛化或科学晋级声明；本次未新增训练或修改远端状态。

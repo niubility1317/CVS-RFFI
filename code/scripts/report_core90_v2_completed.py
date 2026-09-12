@@ -84,7 +84,7 @@ def main():
         '这些数据是source验证集V的冻结final E200评估，不是目标接收机测试。source RX=1/3/4/6/8，day=1/2/3，6个已知TX标签0—5；15个RX×day域。L_s/U_s/V=6300/56700/27000，标签训练占训练池10%。每场景27000个样本，每TX4500、每RX5400、每day9000。四场景为同一批物理样本的不同视图，不能当作108000个独立物理样本。','',
         f"全量解析21行共{summary['epoch_records']}条epoch记录、{summary['action_records']}条动作记录，并扫描全部stdout。已完成行覆盖{summary['completed_epoch_records']}个epoch、{summary['completed_action_records']}次更新；独立重算{summary['prediction_records']}条预测，先验证prediction完整性再连接truth，重复ID/缺样本/越界类别/非法置信度均未发现。与原scorer主指标及RX/day/TX指标最大绝对误差={summary['max_score_error']:.3g}。",'',
         '## 2. 已完成行：四场景Accuracy','',
-        '以下所有性能数值单位为%；LEO均值只平均三个LEO场景，四场景均值包含clean。A=ordinary、adv=0；B=ordinary、adv=0.35；C=B8-D1 head_grad_only、adv=0。','',
+        '以下所有性能数值单位为%；LEO均值只平均三个LEO场景，四场景均值包含clean。A/B=ordinary；C/D=B8-D1 head_grad_only；E/F=完整EG。每对前者adv=0，后者adv=0.35。STRONG_SOURCE为ordinary+adv的单seed学习率候选，LOW/BASE/HIGH分别为1e-4/2e-4/4e-4。','',
         table(['实验','seed','clean','clear','low_elev','rain','LEO均值','四场景均值'],[[r['row'],r['seed'],*[pct(byid[r['run_id']]['independent_scores']['scenes'][s]['accuracy']) for s in SCENES],pct(r['mean_leo_accuracy']),pct(r['mean_four_accuracy'])] for r in run_rows]),
         '## 3. 四场景Macro-F1','',
         table(['实验','seed','clean','clear','low_elev','rain','LEO均值'],[[r['row'],r['seed'],*[pct(byid[r['run_id']]['independent_scores']['scenes'][s]['macro_f1']) for s in SCENES],pct(r['mean_leo_macro_f1'])] for r in run_rows]),
@@ -103,7 +103,7 @@ def main():
         '## 7. 训练轨迹、计算量与实际机制','',
         table(['实验/seed','训练记录耗时h','E1 loss','E200 loss','接受更新','field评估','遥测反向','伪标签通过/曝光'],[[r['run_id'],f"{r['train_seconds']/3600:.3f}",f"{r['initial_loss']:.5f}",f"{r['final_loss']:.5f}",r['accepted_steps'],r['field_evaluations'],r['telemetry_backward_evaluations'],f"{r['pseudo_selected']}/{r['unlabeled_exposures']}"] for r in run_rows]),
         '每行200×49=9800个训练更新全部接受，无非有限loss、无拒绝更新。耗时来自resource_summary的训练计时，包含共享服务器负载影响，不作为隔离吞吐基准。不同目标项/阶段的总loss定义不同，不能用B比A的总loss高判定性能退化。','',
-        '共用配置：scratch、AdamW、lr=2e-4、weight_decay=1e-4、batch=128、eval_batch=256、FP32、确定性开启；固定课程、正常增强和EMA开启。game_no_audit=true、control=off是F1设计要求，因此不声称自适应CORRECT/CATCHUP/capability已经激活。','',
+        '共用配置：scratch、AdamW、weight_decay=1e-4、batch=128、eval_batch=256、FP32、确定性开启；A-F的lr=2e-4，学习率候选按LOW/BASE/HIGH取1e-4/2e-4/4e-4。固定课程、正常增强和EMA开启。game_no_audit=true、control=off是F1设计要求，因此不声称自适应CORRECT/CATCHUP/capability已经激活。','',
         '以下是完整日志观测到的首次非零epoch，空值表示整个训练期未出现非零。非零项用于确认执行，不单独证明有益。','',
         table(['实验/seed',*['adv','dom','fishr','proto','sat_cls','cons'],'U/伪标签起点'],[[r['run_id'],*[next(x['first_nonzero_epoch'] for x in activation if x['run_id']==r['run_id'] and x['term']==term) for term in ['adv','dom','fishr','proto','sat_cls','cons']],f"E{r['actions']['first_u_epoch']}/E{r['actions']['first_pseudo_epoch']}"] for r in completed]),
         'E1—79、E80—130、E131—200各loss均值及全部epoch曲线见mechanism_terms.csv和epoch_metrics_all_rows.csv。早期loss最低点不作为checkpoint选择，所有最终分数来自固定E200。','',
@@ -114,12 +114,12 @@ def main():
             lines.append(f"- {pair['variant']}相对{pair['baseline']}：108000条预测中{differences}条不同，最大置信度差={conf}。该adv=0负对照不能证明B8在adv开启时有性能收益。")
     deltas=[r['accuracy_delta_pp'] for r in paired if r['scene']=='LEO_mean']
     lines+=['',f"ordinary加入adv后，3个配对seed的LEO均值Accuracy平均变化为{st.mean(deltas):+.3f}pp；逐seed变化为"+'、'.join(f'{x:+.3f}pp' for x in deltas)+'。这是当前source验证集上的描述性结果，不能推断目标域泛化或统计显著收益。',
-        '尚未完整获得D/E/F与strong-source候选结果，不能给出完整solver×adv结论，也不能宣布已确认强基线或科学晋级。无target结果回流调参；本次只读分析未重训或干预任何健康任务。','',
+        ('全部21行已闭合，完整solver×adv对比见下方补充；学习率候选仅为单seed source选择证据，不是多seed强基线确认。' if len(completed)==21 else '尚未完整获得全部矩阵结果，不能宣布已确认强基线或科学晋级。')+'无target结果回流调参；本次只读分析未重训或干预任何健康任务。','',
         '## 9. 未完成行','',
         table(['实验','最近完整epoch','当前动作epoch','累计步数','进程存活'],[[r['run_id'],r['last_complete_epoch'],r['latest_action_epoch'],r['steps'],r['process_alive']] for r in progress if r['state']!='completed']),
         'E200日志存在但最终prediction/scorer/completion未闭合的行仍列为未完成。上述运行数据来自采集时间窗口，各文件为顺序读取，并非原子快照。','',
         '## 10. 可下载数据','',*['- ['+name+']('+name+')' for name in files],f'- [完整审计JSON]({path.name})','- [统计摘要](summary.json)','',
-        '状态：PARTIAL_MATRIX_ANALYSIS / COMPLETED_ROWS_VERIFIED。代码发布版本5bd1665631b15b1ed97fae0f6b0ed57f25b68ec9；本报告不修改远端release。']
+        ('状态：FULL_MATRIX_SOURCE_ANALYZED / COMPLETED_ROWS_VERIFIED。' if len(completed)==21 else '状态：PARTIAL_MATRIX_ANALYSIS / COMPLETED_ROWS_VERIFIED。')+'代码发布版本5bd1665631b15b1ed97fae0f6b0ed57f25b68ec9；本报告不修改远端release。']
     (out/'report.md').write_text('\n'.join(lines)+'\n',encoding='utf-8')
     print(json.dumps({k:v for k,v in summary.items() if k not in ('run_summary','seed_aggregates','paired_deltas')},indent=2))
     print(json.dumps(dict(leo_adv_delta_pp=st.mean(deltas),per_seed_deltas=deltas),indent=2))
