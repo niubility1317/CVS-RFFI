@@ -1,0 +1,265 @@
+{
+  "time": 1789240565.397057,
+  "status": "TRAINING",
+  "rows": {
+    "M00": {
+      "status": "RUNNING",
+      "lines": {
+        "actions.jsonl": 1732,
+        "logs.jsonl": 35
+      },
+      "numerical_errors": 0,
+      "unaccepted_steps": 0,
+      "actions": {
+        "NORMAL": 1732
+      },
+      "native_nonfinite_max": {},
+      "completed_epoch": 35,
+      "fatal_markers": [],
+      "latest_checkpoint_present": true,
+      "final_checkpoint_present": false
+    },
+    "M01": {
+      "status": "RUNNING",
+      "lines": {
+        "actions.jsonl": 1671,
+        "logs.jsonl": 34
+      },
+      "numerical_errors": 0,
+      "unaccepted_steps": 0,
+      "actions": {
+        "NORMAL": 1671
+      },
+      "native_nonfinite_max": {},
+      "completed_epoch": 34,
+      "fatal_markers": [],
+      "latest_checkpoint_present": true,
+      "final_checkpoint_present": false
+    },
+    "M02": {
+      "status": "RUNNING",
+      "lines": {
+        "actions.jsonl": 1666,
+        "logs.jsonl": 33
+      },
+      "numerical_errors": 0,
+      "unaccepted_steps": 0,
+      "actions": {
+        "NORMAL": 1666
+      },
+      "native_nonfinite_max": {},
+      "completed_epoch": 33,
+      "fatal_markers": [],
+      "latest_checkpoint_present": true,
+      "final_checkpoint_present": false
+    },
+    "M03": {
+      "status": "RUNNING",
+      "lines": {
+        "actions.jsonl": 1750,
+        "logs.jsonl": 35
+      },
+      "numerical_errors": 0,
+      "unaccepted_steps": 0,
+      "actions": {
+        "NORMAL": 1750
+      },
+      "native_nonfinite_max": {},
+      "completed_epoch": 35,
+      "fatal_markers": [],
+      "latest_checkpoint_present": true,
+      "final_checkpoint_present": false
+    },
+    "M04": {
+      "status": "RUNNING",
+      "lines": {
+        "actions.jsonl": 1718,
+        "logs.jsonl": 35
+      },
+      "numerical_errors": 0,
+      "unaccepted_steps": 0,
+      "actions": {
+        "NORMAL": 1674,
+        "HOLD_CURRICULUM": 11,
+        "CORRECT": 33
+      },
+      "native_nonfinite_max": {},
+      "completed_epoch": 35,
+      "fatal_markers": [],
+      "latest_checkpoint_present": true,
+      "final_checkpoint_present": false
+    },
+    "M05": {
+      "status": "RUNNING",
+      "lines": {
+        "actions.jsonl": 1675,
+        "logs.jsonl": 34
+      },
+      "numerical_errors": 0,
+      "unaccepted_steps": 0,
+      "actions": {
+        "NORMAL": 1675
+      },
+      "native_nonfinite_max": {},
+      "completed_epoch": 34,
+      "fatal_markers": [],
+      "latest_checkpoint_present": true,
+      "final_checkpoint_present": false
+    },
+    "M06": {
+      "status": "RUNNING",
+      "lines": {
+        "actions.jsonl": 1699,
+        "logs.jsonl": 34
+      },
+      "numerical_errors": 0,
+      "unaccepted_steps": 0,
+      "actions": {
+        "NORMAL": 1666,
+        "CORRECT": 33
+      },
+      "native_nonfinite_max": {},
+      "completed_epoch": 34,
+      "fatal_markers": [],
+      "latest_checkpoint_present": true,
+      "final_checkpoint_present": false
+    },
+    "M07": {
+      "status": "RUNNING",
+      "lines": {
+        "actions.jsonl": 1678,
+        "logs.jsonl": 34
+      },
+      "numerical_errors": 0,
+      "unaccepted_steps": 0,
+      "actions": {
+        "NORMAL": 1645,
+        "HOLD_CURRICULUM": 11,
+        "CORRECT": 22
+      },
+      "native_nonfinite_max": {},
+      "completed_epoch": 34,
+      "fatal_markers": [],
+      "latest_checkpoint_present": true,
+      "final_checkpoint_present": false
+    },
+    "M08": {
+      "status": "RUNNING",
+      "lines": {
+        "actions.jsonl": 1666,
+        "logs.jsonl": 34
+      },
+      "numerical_errors": 0,
+      "unaccepted_steps": 0,
+      "actions": {
+        "NORMAL": 1633,
+        "CORRECT": 33
+      },
+      "native_nonfinite_max": {},
+      "completed_epoch": 34,
+      "fatal_markers": [],
+      "latest_checkpoint_present": true,
+      "final_checkpoint_present": false
+    },
+    "M09": {
+      "status": "RUNNING",
+      "lines": {
+        "metrics_epoch.jsonl": 12
+      },
+      "numerical_errors": 0,
+      "unaccepted_steps": 0,
+      "actions": {},
+      "native_nonfinite_max": {},
+      "native_epoch": 12,
+      "completed_epoch": 12,
+      "fatal_markers": [],
+      "latest_checkpoint_present": false,
+      "final_checkpoint_present": false
+    },
+    "M10": {
+      "status": "RUNNING",
+      "lines": {
+        "metrics_epoch.jsonl": 13
+      },
+      "numerical_errors": 0,
+      "unaccepted_steps": 0,
+      "actions": {},
+      "native_nonfinite_max": {},
+      "native_epoch": 13,
+      "completed_epoch": 13,
+      "fatal_markers": [],
+      "latest_checkpoint_present": false,
+      "final_checkpoint_present": false
+    },
+    "M11": {
+      "status": "RUNNING",
+      "lines": {
+        "actions.jsonl": 1717,
+        "logs.jsonl": 35
+      },
+      "numerical_errors": 0,
+      "unaccepted_steps": 0,
+      "actions": {
+        "NORMAL": 1673,
+        "CORRECT": 44
+      },
+      "native_nonfinite_max": {},
+      "completed_epoch": 35,
+      "fatal_markers": [],
+      "latest_checkpoint_present": true,
+      "final_checkpoint_present": false
+    },
+    "M12": {
+      "status": "RUNNING",
+      "lines": {
+        "actions.jsonl": 1666,
+        "logs.jsonl": 34
+      },
+      "numerical_errors": 0,
+      "unaccepted_steps": 0,
+      "actions": {
+        "NORMAL": 1666
+      },
+      "native_nonfinite_max": {},
+      "completed_epoch": 34,
+      "fatal_markers": [],
+      "latest_checkpoint_present": true,
+      "final_checkpoint_present": false
+    },
+    "M13": {
+      "status": "RUNNING",
+      "lines": {
+        "actions.jsonl": 1666,
+        "logs.jsonl": 34
+      },
+      "numerical_errors": 0,
+      "unaccepted_steps": 0,
+      "actions": {
+        "NORMAL": 1666
+      },
+      "native_nonfinite_max": {},
+      "completed_epoch": 34,
+      "fatal_markers": [],
+      "latest_checkpoint_present": true,
+      "final_checkpoint_present": false
+    },
+    "M14": {
+      "status": "RUNNING",
+      "lines": {
+        "actions.jsonl": 1467,
+        "logs.jsonl": 29
+      },
+      "numerical_errors": 0,
+      "unaccepted_steps": 0,
+      "actions": {
+        "NORMAL": 1467
+      },
+      "native_nonfinite_max": {},
+      "completed_epoch": 29,
+      "fatal_markers": [],
+      "latest_checkpoint_present": true,
+      "final_checkpoint_present": false
+    }
+  },
+  "errors": []
+}

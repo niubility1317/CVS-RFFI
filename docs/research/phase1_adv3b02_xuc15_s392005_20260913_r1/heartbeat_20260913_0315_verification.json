@@ -1,0 +1,100 @@
+{
+  "status": "VERIFIED_HEALTHY",
+  "rows": {
+    "M00": {
+      "pid_identity": "VERIFIED",
+      "gpu": 0,
+      "completed_epoch": 35,
+      "log_growth": true
+    },
+    "M01": {
+      "pid_identity": "VERIFIED",
+      "gpu": 1,
+      "completed_epoch": 34,
+      "log_growth": true
+    },
+    "M02": {
+      "pid_identity": "VERIFIED",
+      "gpu": 2,
+      "completed_epoch": 33,
+      "log_growth": true
+    },
+    "M03": {
+      "pid_identity": "VERIFIED",
+      "gpu": 3,
+      "completed_epoch": 35,
+      "log_growth": true
+    },
+    "M04": {
+      "pid_identity": "VERIFIED",
+      "gpu": 5,
+      "completed_epoch": 35,
+      "log_growth": true
+    },
+    "M05": {
+      "pid_identity": "VERIFIED",
+      "gpu": 6,
+      "completed_epoch": 34,
+      "log_growth": true
+    },
+    "M06": {
+      "pid_identity": "VERIFIED",
+      "gpu": 7,
+      "completed_epoch": 34,
+      "log_growth": true
+    },
+    "M07": {
+      "pid_identity": "VERIFIED",
+      "gpu": 5,
+      "completed_epoch": 34,
+      "log_growth": true
+    },
+    "M08": {
+      "pid_identity": "VERIFIED",
+      "gpu": 7,
+      "completed_epoch": 34,
+      "log_growth": true
+    },
+    "M09": {
+      "pid_identity": "VERIFIED",
+      "gpu": 0,
+      "completed_epoch": 12,
+      "log_growth": true
+    },
+    "M10": {
+      "pid_identity": "VERIFIED",
+      "gpu": 1,
+      "completed_epoch": 13,
+      "log_growth": true
+    },
+    "M11": {
+      "pid_identity": "VERIFIED",
+      "gpu": 2,
+      "completed_epoch": 35,
+      "log_growth": true
+    },
+    "M12": {
+      "pid_identity": "VERIFIED",
+      "gpu": 3,
+      "completed_epoch": 34,
+      "log_growth": true
+    },
+    "M13": {
+      "pid_identity": "VERIFIED",
+      "gpu": 6,
+      "completed_epoch": 34,
+      "log_growth": true
+    },
+    "M14": {
+      "pid_identity": "VERIFIED",
+      "gpu": 4,
+      "completed_epoch": 29,
+      "log_growth": true
+    }
+  },
+  "gpu_max_processes": 2,
+  "intervention": false,
+  "target_prediction_started": false,
+  "native_checkpoint_policy": "final_only_missing_before_E200_is_expected",
+  "native_nonfinite_counter_available": false
+}

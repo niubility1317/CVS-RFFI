@@ -84,3 +84,9 @@ M00/M08/M12真实入口CPU一步训练均成功，checkpoint由本次synthetic s
 后续唯一监控：heartbeat xuc15，每小时一次，已更新到实际run/commit并读回。主发布已结束，后续由该heartbeat沿本报告执行健康检查和授权的技术恢复；先核实旧owner及所有关联进程，禁止重复提交。原生A1使用final_only，在E200以前没有latest checkpoint属于预期；现有监控helper对超过20KB的native单行telemetry可能标partial_write，此时用完整metrics_epoch.jsonl或EPOCH-END日志确认，不能据此判训练失败。
 
 证据：launch_identity_verification.json、progress_growth_verification.json、remote_source_smoke.json、remote_snapshot_1/2/3.json、automation_verification.json、delivery/landing.stdout。训练尚未E200，prediction/scoring尚未执行；最终评分由dispatcher按已登记链路接续，全部闭合后暂停heartbeat。
+
+## 每小时监控：2026-09-13 03:15—03:16
+
+VERIFIED_HEALTHY：15/15行保持RUNNING，实际PID/PPID/CWD/GPU/scratch核对通过，每GPU仍为2个compute进程，所有行日志相对前次读回增长。CORE90行已完成E29—E35；native M09/M10已完成E12/E13。已扫描全部可用actions/logs/metrics_epoch结构化记录和完整训练日志，CORE90非有限loss/grad与未接受更新均为0，未发现Traceback、CUDA OOM或异常退出。native非有限skip计数未暴露于现有epoch字段，不将缺失计数写成0；完整日志无致命标记且epoch正常推进。native尚无checkpoint符合final_only。
+
+原C2比较分支已自然出现CORRECT，C*未触发仍按既定门槛运行，不为激活改阈值；这不是性能结论。未干预、未重发、未访问target truth。保留每小时监控；证据heartbeat_20260913_0315*.json及heartbeat_scan.py。
