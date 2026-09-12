@@ -1,0 +1,265 @@
+{
+  "time": 1789251496.365111,
+  "status": "TRAINING",
+  "rows": {
+    "M00": {
+      "status": "TRAINING_COMPLETE",
+      "lines": {
+        "actions.jsonl": 9800,
+        "logs.jsonl": 200
+      },
+      "numerical_errors": 0,
+      "unaccepted_steps": 0,
+      "actions": {
+        "NORMAL": 9800
+      },
+      "native_nonfinite_max": {},
+      "completed_epoch": 200,
+      "fatal_markers": [],
+      "latest_checkpoint_present": true,
+      "final_checkpoint_present": true
+    },
+    "M01": {
+      "status": "TRAINING_COMPLETE",
+      "lines": {
+        "actions.jsonl": 9800,
+        "logs.jsonl": 200
+      },
+      "numerical_errors": 0,
+      "unaccepted_steps": 0,
+      "actions": {
+        "NORMAL": 9800
+      },
+      "native_nonfinite_max": {},
+      "completed_epoch": 200,
+      "fatal_markers": [],
+      "latest_checkpoint_present": true,
+      "final_checkpoint_present": true
+    },
+    "M02": {
+      "status": "TRAINING_COMPLETE",
+      "lines": {
+        "actions.jsonl": 9800,
+        "logs.jsonl": 200
+      },
+      "numerical_errors": 0,
+      "unaccepted_steps": 0,
+      "actions": {
+        "NORMAL": 9800
+      },
+      "native_nonfinite_max": {},
+      "completed_epoch": 200,
+      "fatal_markers": [],
+      "latest_checkpoint_present": true,
+      "final_checkpoint_present": true
+    },
+    "M03": {
+      "status": "TRAINING_COMPLETE",
+      "lines": {
+        "actions.jsonl": 9800,
+        "logs.jsonl": 200
+      },
+      "numerical_errors": 0,
+      "unaccepted_steps": 0,
+      "actions": {
+        "NORMAL": 9800
+      },
+      "native_nonfinite_max": {},
+      "completed_epoch": 200,
+      "fatal_markers": [],
+      "latest_checkpoint_present": true,
+      "final_checkpoint_present": true
+    },
+    "M04": {
+      "status": "TRAINING_COMPLETE",
+      "lines": {
+        "actions.jsonl": 9800,
+        "logs.jsonl": 200
+      },
+      "numerical_errors": 0,
+      "unaccepted_steps": 0,
+      "actions": {
+        "NORMAL": 9423,
+        "HOLD_CURRICULUM": 11,
+        "CORRECT": 366
+      },
+      "native_nonfinite_max": {},
+      "completed_epoch": 200,
+      "fatal_markers": [],
+      "latest_checkpoint_present": true,
+      "final_checkpoint_present": true
+    },
+    "M05": {
+      "status": "TRAINING_COMPLETE",
+      "lines": {
+        "actions.jsonl": 9800,
+        "logs.jsonl": 200
+      },
+      "numerical_errors": 0,
+      "unaccepted_steps": 0,
+      "actions": {
+        "NORMAL": 9800
+      },
+      "native_nonfinite_max": {},
+      "completed_epoch": 200,
+      "fatal_markers": [],
+      "latest_checkpoint_present": true,
+      "final_checkpoint_present": true
+    },
+    "M06": {
+      "status": "TRAINING_COMPLETE",
+      "lines": {
+        "actions.jsonl": 9800,
+        "logs.jsonl": 200
+      },
+      "numerical_errors": 0,
+      "unaccepted_steps": 0,
+      "actions": {
+        "NORMAL": 9499,
+        "CORRECT": 301
+      },
+      "native_nonfinite_max": {},
+      "completed_epoch": 200,
+      "fatal_markers": [],
+      "latest_checkpoint_present": true,
+      "final_checkpoint_present": true
+    },
+    "M07": {
+      "status": "TRAINING_COMPLETE",
+      "lines": {
+        "actions.jsonl": 9800,
+        "logs.jsonl": 200
+      },
+      "numerical_errors": 0,
+      "unaccepted_steps": 0,
+      "actions": {
+        "NORMAL": 9577,
+        "HOLD_CURRICULUM": 11,
+        "CORRECT": 212
+      },
+      "native_nonfinite_max": {},
+      "completed_epoch": 200,
+      "fatal_markers": [],
+      "latest_checkpoint_present": true,
+      "final_checkpoint_present": true
+    },
+    "M08": {
+      "status": "TRAINING_COMPLETE",
+      "lines": {
+        "actions.jsonl": 9800,
+        "logs.jsonl": 200
+      },
+      "numerical_errors": 0,
+      "unaccepted_steps": 0,
+      "actions": {
+        "NORMAL": 9510,
+        "CORRECT": 290
+      },
+      "native_nonfinite_max": {},
+      "completed_epoch": 200,
+      "fatal_markers": [],
+      "latest_checkpoint_present": true,
+      "final_checkpoint_present": true
+    },
+    "M09": {
+      "status": "RUNNING",
+      "lines": {
+        "metrics_epoch.jsonl": 55
+      },
+      "numerical_errors": 0,
+      "unaccepted_steps": 0,
+      "actions": {},
+      "native_nonfinite_max": {},
+      "native_epoch": 55,
+      "completed_epoch": 55,
+      "fatal_markers": [],
+      "latest_checkpoint_present": false,
+      "final_checkpoint_present": false
+    },
+    "M10": {
+      "status": "RUNNING",
+      "lines": {
+        "metrics_epoch.jsonl": 57
+      },
+      "numerical_errors": 0,
+      "unaccepted_steps": 0,
+      "actions": {},
+      "native_nonfinite_max": {},
+      "native_epoch": 57,
+      "completed_epoch": 57,
+      "fatal_markers": [],
+      "latest_checkpoint_present": false,
+      "final_checkpoint_present": false
+    },
+    "M11": {
+      "status": "TRAINING_COMPLETE",
+      "lines": {
+        "actions.jsonl": 9800,
+        "logs.jsonl": 200
+      },
+      "numerical_errors": 0,
+      "unaccepted_steps": 0,
+      "actions": {
+        "NORMAL": 9520,
+        "CORRECT": 280
+      },
+      "native_nonfinite_max": {},
+      "completed_epoch": 200,
+      "fatal_markers": [],
+      "latest_checkpoint_present": true,
+      "final_checkpoint_present": true
+    },
+    "M12": {
+      "status": "TRAINING_COMPLETE",
+      "lines": {
+        "actions.jsonl": 9800,
+        "logs.jsonl": 200
+      },
+      "numerical_errors": 0,
+      "unaccepted_steps": 0,
+      "actions": {
+        "NORMAL": 9800
+      },
+      "native_nonfinite_max": {},
+      "completed_epoch": 200,
+      "fatal_markers": [],
+      "latest_checkpoint_present": true,
+      "final_checkpoint_present": true
+    },
+    "M13": {
+      "status": "TRAINING_COMPLETE",
+      "lines": {
+        "actions.jsonl": 9800,
+        "logs.jsonl": 200
+      },
+      "numerical_errors": 0,
+      "unaccepted_steps": 0,
+      "actions": {
+        "NORMAL": 9800
+      },
+      "native_nonfinite_max": {},
+      "completed_epoch": 200,
+      "fatal_markers": [],
+      "latest_checkpoint_present": true,
+      "final_checkpoint_present": true
+    },
+    "M14": {
+      "status": "RUNNING",
+      "lines": {
+        "actions.jsonl": 9677,
+        "logs.jsonl": 197
+      },
+      "numerical_errors": 0,
+      "unaccepted_steps": 0,
+      "actions": {
+        "NORMAL": 9677
+      },
+      "native_nonfinite_max": {},
+      "completed_epoch": 197,
+      "fatal_markers": [],
+      "latest_checkpoint_present": true,
+      "final_checkpoint_present": false
+    }
+  },
+  "errors": []
+}

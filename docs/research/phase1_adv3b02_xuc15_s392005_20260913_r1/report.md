@@ -102,3 +102,11 @@ VERIFIED_HEALTHY：15/15行仍在原PID运行，PID/PPID/CWD/GPU/scratch全部�
 VERIFIED_HEALTHY：15/15行保持原PID运行，PID/PPID/CWD/GPU/scratch均匹配，每GPU仍为2个compute进程，所有日志相对04:16均增长。CORE90行已完成E150—E166，native M09/M10完成E42/E43。全部CORE90行已进入含U_s的后段训练，实际日志仍持续推进；扫描所有可用结构化记录和完整训练日志，未发现非有限主loss/grad、未接受CORE90更新、Traceback、OOM或异常退出。native未构造target测试的nan占位及final_only无中途checkpoint按既定边界处理。
 
 仍处TRAINING，尚无最终预测/评分。未停机、未改参、未重发、未读取target truth。继续原每小时监控；本轮无需要通知的故障或任务状态变化。证据heartbeat_20260913_0517*.json。
+
+## 每小时监控：2026-09-13 06:17—06:19
+
+VERIFIED_PARTIAL_TRAINING_COMPLETE：12行（M00—M08、M11—M13）完成E200；独立读取最终checkpoint，确认epochs=200、step=9800、seed392005、FP32、scratch-only、source物理角色EXACT_MATCH、模型状态全部有限且target_contact=false。M14完成E197后继续，native M09/M10完成E55/E57后继续。3条活跃训练进程及dispatcher身份、CWD、GPU绑定核对通过；每GPU最多2进程，其他健康任务未动。
+
+全量可用结构化日志和完整训练日志未发现非有限主loss/grad、未接受CORE90更新、Traceback/OOM或异常退出。M12/M13最终完成记录为CONTROL_NOT_ACTIVATED，两行C*整程0次CATCHUP/0次CORRECT；这是自然激活缺失的科学证据，不属于授权重跑条件，也不能宣称三机制协同已验证。M05本为passive，仅记录审计，不将其无动作视作缺陷。原C2行已有实际CORRECT。
+
+总体仍处TRAINING，等待全部15行最终checkpoint后才进入统一预测与独立评分。未改参、未停健康进程、未重发、未读取target truth。临时只读checkpoint核验脚本首次缺少release导入路径，补上后12行全部通过；该问题不属于实验训练故障。保留原错误输出，后续监控直接使用修正脚本。证据heartbeat_20260913_0617*.json及verify_completed_checkpoints.py。

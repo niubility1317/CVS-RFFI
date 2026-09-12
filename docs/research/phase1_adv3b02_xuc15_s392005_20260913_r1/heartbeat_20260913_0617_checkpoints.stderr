@@ -1,0 +1,9 @@
+Traceback (most recent call last):
+  File "<stdin>", line 13, in <module>
+  File "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/serialization.py", line 1014, in load
+    return _load(opened_zipfile,
+  File "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/serialization.py", line 1422, in _load
+    result = unpickler.load()
+  File "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/serialization.py", line 1415, in find_class
+    return super().find_class(mod_name, name)
+ModuleNotFoundError: No module named 'cvsrffi'
