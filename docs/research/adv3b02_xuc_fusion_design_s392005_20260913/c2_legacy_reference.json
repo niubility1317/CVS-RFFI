@@ -1,0 +1,45 @@
+{
+  "source": "code/snapshots/core90_game_20260911_wt/docs/evidence/core90_c2_s4_full_analysis.json",
+  "training_commit": "300ff4a9",
+  "historical_game_settings": {
+    "game_solver": "simultaneous",
+    "game_optimizer": "adamw",
+    "game_control": "both",
+    "game_curriculum": "capability",
+    "game_head_scale": "legacy_weighted",
+    "game_head_lr_ratio": 1.0,
+    "game_fixed_head_steps": 0,
+    "game_audit_interval": 250,
+    "game_audit_samples_per_capture": 4,
+    "game_probe_steps": 40,
+    "game_independent_probe_every": 4,
+    "game_max_extra_head": 3,
+    "game_correction_fraction": 0.2,
+    "game_jacobian_interval": 0,
+    "game_response_tracking": false,
+    "game_max_grad_norm": 5.0,
+    "game_optimistic_pseudo_change": 0.25,
+    "game_pseudo_change_window": 20,
+    "game_max_steps_per_epoch": 0,
+    "game_time_budget_s": 0.0,
+    "game_synthetic": false,
+    "game_split_seed": 392002,
+    "game_source_calibration_steps": 500,
+    "game_no_audit": false,
+    "game_export_source_predictions": true,
+    "game_skip_final_eval": false
+  },
+  "required_overrides": {
+    "game_split_seed": 392005,
+    "seed": 392005,
+    "game_resume": ""
+  },
+  "historical_implicit_settings": {
+    "recovery_lr": 0.02,
+    "recovery_steps": 40,
+    "recovery_source": "online adv_head copy with fresh AdamW state",
+    "recovered_monitor_degradation_was_not_a_validity_rejection": true,
+    "lag_negative_difference_clamped_to_zero": true
+  },
+  "note": "Historical mechanism settings, not permissions. Runtime, data adapter and output paths must be explicitly integrated. No historical calibration thresholds or state are inherited."
+}

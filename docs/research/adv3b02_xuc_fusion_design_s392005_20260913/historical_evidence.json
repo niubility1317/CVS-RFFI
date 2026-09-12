@@ -1,0 +1,630 @@
+{
+  "status": "VERIFIED_AGGREGATE_RECOMPUTATION",
+  "primary_files": [
+    "automation_reports/CV-SincNet/core90_cross_response_v2_s392005_20260911_r1/completed_detail_20260912/completed_summary.json",
+    "code/snapshots/core90_game_20260911_wt/docs/evidence/core90_target25_392005_20260911.json",
+    "code/snapshots/core90_game_20260911_wt/docs/evidence/core90_c2_s4_full_analysis.json",
+    "automation_reports/CV-SincNet/mechanism_activation_audit_20260910/ecrs_effects.csv"
+  ],
+  "limitation": "Existing complete-log analyses and saved scoring counts were inspected; this task did not reparse remote raw predictions or every original stdout.",
+  "history": [
+    {
+      "family": "A1_X",
+      "row": "X0_A1_RUNTIME",
+      "scope": "target_RX_only",
+      "n_per_scene": 168000,
+      "clean": 78.46964285714286,
+      "leo_mean": 68.12460317460318,
+      "source_file": "automation_reports/CV-SincNet/mechanism_activation_audit_20260910/ecrs_effects.csv",
+      "evidence_kind": "published_aggregate"
+    },
+    {
+      "family": "A1_X",
+      "row": "X1_CROSS_RX_CLEAN",
+      "scope": "target_RX_only",
+      "n_per_scene": 168000,
+      "clean": 79.1327380952381,
+      "leo_mean": 68.51666666666667,
+      "source_file": "automation_reports/CV-SincNet/mechanism_activation_audit_20260910/ecrs_effects.csv",
+      "evidence_kind": "published_aggregate"
+    },
+    {
+      "family": "A1_X",
+      "row": "X2_CROSS_RX_VIEWS",
+      "scope": "target_RX_only",
+      "n_per_scene": 168000,
+      "clean": 78.42023809523809,
+      "leo_mean": 68.20734126984128,
+      "source_file": "automation_reports/CV-SincNet/mechanism_activation_audit_20260910/ecrs_effects.csv",
+      "evidence_kind": "published_aggregate"
+    },
+    {
+      "family": "CROSS_RESPONSE_V2",
+      "row": "U0",
+      "scope": "mixed_RX_and_day",
+      "n_per_scene": 198000,
+      "clean": 78.89040404040404,
+      "leo_mean": 64.8496632996633,
+      "scenes": {
+        "clean": 78.89040404040404,
+        "leo_clear_weak": 66.74393939393939,
+        "leo_low_elev_weak": 63.92525252525253,
+        "leo_rain_weak": 63.87979797979798
+      },
+      "counts": {
+        "clean": {
+          "correct": 156203,
+          "total": 198000
+        },
+        "leo_clear_weak": {
+          "correct": 132153,
+          "total": 198000
+        },
+        "leo_low_elev_weak": {
+          "correct": 126572,
+          "total": 198000
+        },
+        "leo_rain_weak": {
+          "correct": 126482,
+          "total": 198000
+        }
+      },
+      "source_file": "automation_reports/CV-SincNet/core90_cross_response_v2_s392005_20260911_r1/completed_detail_20260912/completed_summary.json",
+      "evidence_kind": "recomputed_disjoint_group_counts"
+    },
+    {
+      "family": "CROSS_RESPONSE_V2",
+      "row": "U0",
+      "scope": "target_RX_only",
+      "n_per_scene": 168000,
+      "clean": 76.49642857142858,
+      "leo_mean": 62.393055555555556,
+      "scenes": {
+        "clean": 76.49642857142858,
+        "leo_clear_weak": 64.18333333333334,
+        "leo_low_elev_weak": 61.54226190476191,
+        "leo_rain_weak": 61.45357142857143
+      },
+      "counts": {
+        "clean": {
+          "correct": 128514,
+          "total": 168000
+        },
+        "leo_clear_weak": {
+          "correct": 107828,
+          "total": 168000
+        },
+        "leo_low_elev_weak": {
+          "correct": 103391,
+          "total": 168000
+        },
+        "leo_rain_weak": {
+          "correct": 103242,
+          "total": 168000
+        }
+      },
+      "source_file": "automation_reports/CV-SincNet/core90_cross_response_v2_s392005_20260911_r1/completed_detail_20260912/completed_summary.json",
+      "evidence_kind": "recomputed_disjoint_group_counts"
+    },
+    {
+      "family": "CROSS_RESPONSE_V2",
+      "row": "U1",
+      "scope": "mixed_RX_and_day",
+      "n_per_scene": 198000,
+      "clean": 77.64949494949495,
+      "leo_mean": 62.42558922558923,
+      "scenes": {
+        "clean": 77.64949494949495,
+        "leo_clear_weak": 64.07070707070707,
+        "leo_low_elev_weak": 61.51010101010102,
+        "leo_rain_weak": 61.69595959595959
+      },
+      "counts": {
+        "clean": {
+          "correct": 153746,
+          "total": 198000
+        },
+        "leo_clear_weak": {
+          "correct": 126860,
+          "total": 198000
+        },
+        "leo_low_elev_weak": {
+          "correct": 121790,
+          "total": 198000
+        },
+        "leo_rain_weak": {
+          "correct": 122158,
+          "total": 198000
+        }
+      },
+      "source_file": "automation_reports/CV-SincNet/core90_cross_response_v2_s392005_20260911_r1/completed_detail_20260912/completed_summary.json",
+      "evidence_kind": "recomputed_disjoint_group_counts"
+    },
+    {
+      "family": "CROSS_RESPONSE_V2",
+      "row": "U1",
+      "scope": "target_RX_only",
+      "n_per_scene": 168000,
+      "clean": 74.96011904761905,
+      "leo_mean": 59.82579365079365,
+      "scenes": {
+        "clean": 74.96011904761905,
+        "leo_clear_weak": 61.32678571428571,
+        "leo_low_elev_weak": 59.010714285714286,
+        "leo_rain_weak": 59.13988095238095
+      },
+      "counts": {
+        "clean": {
+          "correct": 125933,
+          "total": 168000
+        },
+        "leo_clear_weak": {
+          "correct": 103029,
+          "total": 168000
+        },
+        "leo_low_elev_weak": {
+          "correct": 99138,
+          "total": 168000
+        },
+        "leo_rain_weak": {
+          "correct": 99355,
+          "total": 168000
+        }
+      },
+      "source_file": "automation_reports/CV-SincNet/core90_cross_response_v2_s392005_20260911_r1/completed_detail_20260912/completed_summary.json",
+      "evidence_kind": "recomputed_disjoint_group_counts"
+    },
+    {
+      "family": "CROSS_RESPONSE_V2",
+      "row": "Ux",
+      "scope": "mixed_RX_and_day",
+      "n_per_scene": 198000,
+      "clean": 78.4479797979798,
+      "leo_mean": 61.11296296296297,
+      "scenes": {
+        "clean": 78.4479797979798,
+        "leo_clear_weak": 62.82727272727273,
+        "leo_low_elev_weak": 60.20050505050505,
+        "leo_rain_weak": 60.31111111111112
+      },
+      "counts": {
+        "clean": {
+          "correct": 155327,
+          "total": 198000
+        },
+        "leo_clear_weak": {
+          "correct": 124398,
+          "total": 198000
+        },
+        "leo_low_elev_weak": {
+          "correct": 119197,
+          "total": 198000
+        },
+        "leo_rain_weak": {
+          "correct": 119416,
+          "total": 198000
+        }
+      },
+      "source_file": "automation_reports/CV-SincNet/core90_cross_response_v2_s392005_20260911_r1/completed_detail_20260912/completed_summary.json",
+      "evidence_kind": "recomputed_disjoint_group_counts"
+    },
+    {
+      "family": "CROSS_RESPONSE_V2",
+      "row": "Ux",
+      "scope": "target_RX_only",
+      "n_per_scene": 168000,
+      "clean": 75.91130952380952,
+      "leo_mean": 58.393452380952375,
+      "scenes": {
+        "clean": 75.91130952380952,
+        "leo_clear_weak": 60.00357142857143,
+        "leo_low_elev_weak": 57.55833333333334,
+        "leo_rain_weak": 57.61845238095238
+      },
+      "counts": {
+        "clean": {
+          "correct": 127531,
+          "total": 168000
+        },
+        "leo_clear_weak": {
+          "correct": 100806,
+          "total": 168000
+        },
+        "leo_low_elev_weak": {
+          "correct": 96698,
+          "total": 168000
+        },
+        "leo_rain_weak": {
+          "correct": 96799,
+          "total": 168000
+        }
+      },
+      "source_file": "automation_reports/CV-SincNet/core90_cross_response_v2_s392005_20260911_r1/completed_detail_20260912/completed_summary.json",
+      "evidence_kind": "recomputed_disjoint_group_counts"
+    },
+    {
+      "family": "CROSS_RESPONSE_V2",
+      "row": "Ux_normalized",
+      "scope": "mixed_RX_and_day",
+      "n_per_scene": 198000,
+      "clean": 80.36969696969697,
+      "leo_mean": 64.02306397306397,
+      "scenes": {
+        "clean": 80.36969696969697,
+        "leo_clear_weak": 65.77373737373738,
+        "leo_low_elev_weak": 63.10050505050505,
+        "leo_rain_weak": 63.19494949494949
+      },
+      "counts": {
+        "clean": {
+          "correct": 159132,
+          "total": 198000
+        },
+        "leo_clear_weak": {
+          "correct": 130232,
+          "total": 198000
+        },
+        "leo_low_elev_weak": {
+          "correct": 124939,
+          "total": 198000
+        },
+        "leo_rain_weak": {
+          "correct": 125126,
+          "total": 198000
+        }
+      },
+      "source_file": "automation_reports/CV-SincNet/core90_cross_response_v2_s392005_20260911_r1/completed_detail_20260912/completed_summary.json",
+      "evidence_kind": "recomputed_disjoint_group_counts"
+    },
+    {
+      "family": "CROSS_RESPONSE_V2",
+      "row": "Ux_normalized",
+      "scope": "target_RX_only",
+      "n_per_scene": 168000,
+      "clean": 78.1827380952381,
+      "leo_mean": 61.66607142857143,
+      "scenes": {
+        "clean": 78.1827380952381,
+        "leo_clear_weak": 63.300595238095234,
+        "leo_low_elev_weak": 60.826190476190476,
+        "leo_rain_weak": 60.871428571428574
+      },
+      "counts": {
+        "clean": {
+          "correct": 131347,
+          "total": 168000
+        },
+        "leo_clear_weak": {
+          "correct": 106345,
+          "total": 168000
+        },
+        "leo_low_elev_weak": {
+          "correct": 102188,
+          "total": 168000
+        },
+        "leo_rain_weak": {
+          "correct": 102264,
+          "total": 168000
+        }
+      },
+      "source_file": "automation_reports/CV-SincNet/core90_cross_response_v2_s392005_20260911_r1/completed_detail_20260912/completed_summary.json",
+      "evidence_kind": "recomputed_disjoint_group_counts"
+    },
+    {
+      "family": "GAME_LEGACY",
+      "row": "B0",
+      "scope": "target_RX_only",
+      "n_per_scene": 168000,
+      "clean": 74.36428571428571,
+      "leo_mean": 61.80218253968254,
+      "scenes": {
+        "clean": 74.36428571428571,
+        "leo_clear_weak": 62.9375,
+        "leo_low_elev_weak": 61.335119047619045,
+        "leo_rain_weak": 61.13392857142858
+      },
+      "source_file": "code/snapshots/core90_game_20260911_wt/docs/evidence/core90_target25_392005_20260911.json",
+      "evidence_kind": "published_scorer_fractions"
+    },
+    {
+      "family": "GAME_LEGACY",
+      "row": "B1",
+      "scope": "target_RX_only",
+      "n_per_scene": 168000,
+      "clean": 73.62619047619047,
+      "leo_mean": 62.75039682539682,
+      "scenes": {
+        "clean": 73.62619047619047,
+        "leo_clear_weak": 64.38809523809523,
+        "leo_low_elev_weak": 62.15714285714286,
+        "leo_rain_weak": 61.705952380952375
+      },
+      "source_file": "code/snapshots/core90_game_20260911_wt/docs/evidence/core90_target25_392005_20260911.json",
+      "evidence_kind": "published_scorer_fractions"
+    },
+    {
+      "family": "GAME_LEGACY",
+      "row": "C1",
+      "scope": "target_RX_only",
+      "n_per_scene": 168000,
+      "clean": 78.74285714285715,
+      "leo_mean": 62.12301587301587,
+      "scenes": {
+        "clean": 78.74285714285715,
+        "leo_clear_weak": 63.41547619047619,
+        "leo_low_elev_weak": 61.590476190476195,
+        "leo_rain_weak": 61.363095238095234
+      },
+      "source_file": "code/snapshots/core90_game_20260911_wt/docs/evidence/core90_target25_392005_20260911.json",
+      "evidence_kind": "published_scorer_fractions"
+    },
+    {
+      "family": "GAME_LEGACY",
+      "row": "C2",
+      "scope": "target_RX_only",
+      "n_per_scene": 168000,
+      "clean": 78.9952380952381,
+      "leo_mean": 62.356150793650784,
+      "scenes": {
+        "clean": 78.9952380952381,
+        "leo_clear_weak": 64.1625,
+        "leo_low_elev_weak": 61.68214285714285,
+        "leo_rain_weak": 61.22380952380952
+      },
+      "source_file": "code/snapshots/core90_game_20260911_wt/docs/evidence/core90_target25_392005_20260911.json",
+      "evidence_kind": "published_scorer_fractions"
+    },
+    {
+      "family": "GAME_LEGACY",
+      "row": "S4",
+      "scope": "target_RX_only",
+      "n_per_scene": 168000,
+      "clean": 76.71190476190476,
+      "leo_mean": 63.76904761904762,
+      "scenes": {
+        "clean": 76.71190476190476,
+        "leo_clear_weak": 65.08392857142857,
+        "leo_low_elev_weak": 63.224999999999994,
+        "leo_rain_weak": 62.99821428571428
+      },
+      "source_file": "code/snapshots/core90_game_20260911_wt/docs/evidence/core90_target25_392005_20260911.json",
+      "evidence_kind": "published_scorer_fractions"
+    }
+  ],
+  "contrasts": [
+    {
+      "family": "A1_X",
+      "comparison": "X1_CROSS_RX_CLEAN - X0_A1_RUNTIME",
+      "scope": "target_RX_only",
+      "clean_pp": 0.663095238095238,
+      "leo_pp": 0.39206349206348534
+    },
+    {
+      "family": "CROSS_RESPONSE_V2",
+      "comparison": "Ux_normalized - U1",
+      "scope": "target_RX_only",
+      "clean_pp": 3.222619047619048,
+      "leo_pp": 1.8402777777777786
+    },
+    {
+      "family": "CROSS_RESPONSE_V2",
+      "comparison": "Ux_normalized - U0",
+      "scope": "target_RX_only",
+      "clean_pp": 1.6863095238095127,
+      "leo_pp": -0.726984126984128
+    },
+    {
+      "family": "CROSS_RESPONSE_V2",
+      "comparison": "Ux_normalized - Ux",
+      "scope": "target_RX_only",
+      "clean_pp": 2.2714285714285722,
+      "leo_pp": 3.2726190476190524
+    },
+    {
+      "family": "GAME_LEGACY",
+      "comparison": "C2 - B0",
+      "scope": "target_RX_only",
+      "clean_pp": 4.63095238095238,
+      "leo_pp": 0.5539682539682431
+    },
+    {
+      "family": "GAME_LEGACY",
+      "comparison": "C2 - S4",
+      "scope": "target_RX_only",
+      "clean_pp": 2.2833333333333314,
+      "leo_pp": -1.4128968253968353
+    }
+  ],
+  "c2_activation": {
+    "epochs": 200,
+    "steps": 9800,
+    "actions": {
+      "NORMAL": 612,
+      "HOLD_CURRICULUM": 9021,
+      "CORRECT": 167
+    },
+    "head_steps": 0,
+    "audit_count": 31,
+    "recovery_improved": 0,
+    "stages": {
+      "E1_40": {
+        "epochs": 40,
+        "mean_loss": 8.210607261317117,
+        "terms": {
+          "adv": 2.6779752891890856,
+          "cons": 0.23520928160572538,
+          "dom": 1.565807990973093,
+          "fishr": 0.008501294052836542,
+          "group_ce": 7.371846112122341,
+          "open_world_feat": 0.05657707315475243,
+          "orth": 0.0009726309583649189,
+          "proto": 0.34977813918067485,
+          "proxy_unknown": 0.0,
+          "sat_cls": 0.0,
+          "soft_unknown_mixup": 0.42515366765081275,
+          "source_episode": 0.02191457942684124,
+          "tx": 5.208784737057832,
+          "zid_compact": 0.8872772383864741
+        },
+        "actions": {
+          "NORMAL": 522,
+          "HOLD_CURRICULUM": 1394,
+          "CORRECT": 44
+        },
+        "corrections": 44,
+        "head_steps": 0,
+        "satellite_scenario_steps": {
+          "leo_clear_weak": 1960
+        },
+        "sample_count": 250880,
+        "satellite_count": 75228,
+        "pseudo_selected": 0,
+        "unlabeled_samples": 0,
+        "epoch_seconds": 102.99410985780415
+      },
+      "E41_79": {
+        "epochs": 39,
+        "mean_loss": 5.840477542687561,
+        "terms": {
+          "adv": 2.6678946807957145,
+          "cons": 0.33931908451219556,
+          "dom": 1.0489774185409726,
+          "fishr": 0.004853485912480062,
+          "group_ce": 4.902805060818831,
+          "open_world_feat": 0.1217069666587062,
+          "orth": 0.002627755961951127,
+          "proto": 0.31606929779271065,
+          "proxy_unknown": 4.776034988989261,
+          "sat_cls": 0.0,
+          "soft_unknown_mixup": 2.748268957040748,
+          "source_episode": 0.0851946094997855,
+          "tx": 3.1149523989465586,
+          "zid_compact": 1.6532966534795717
+        },
+        "actions": {
+          "HOLD_CURRICULUM": 1856,
+          "CORRECT": 33,
+          "NORMAL": 22
+        },
+        "corrections": 33,
+        "head_steps": 0,
+        "satellite_scenario_steps": {
+          "leo_clear_weak": 1911
+        },
+        "sample_count": 244608,
+        "satellite_count": 73247,
+        "pseudo_selected": 0,
+        "unlabeled_samples": 0,
+        "epoch_seconds": 139.6633908167386
+      },
+      "E80_90": {
+        "epochs": 11,
+        "mean_loss": 7.211820026939123,
+        "terms": {
+          "adv": 2.6795550113706286,
+          "cons": 0.31825462293315243,
+          "dom": 0.9052767861973156,
+          "fishr": 0.003955907161249943,
+          "group_ce": 4.225416804178305,
+          "open_world_feat": 0.10815283564888702,
+          "orth": 0.004001578056554088,
+          "proto": 0.2903065097851744,
+          "proxy_unknown": 7.688293737471657,
+          "sat_cls": 2.8854777801899387,
+          "soft_unknown_mixup": 2.6382628672640487,
+          "source_episode": 0.07853279133881952,
+          "tx": 2.605420992607752,
+          "zid_compact": 1.6199363288720154
+        },
+        "actions": {
+          "HOLD_CURRICULUM": 528,
+          "NORMAL": 11
+        },
+        "corrections": 0,
+        "head_steps": 0,
+        "satellite_scenario_steps": {
+          "leo_clear_weak": 539
+        },
+        "sample_count": 68992,
+        "satellite_count": 20468,
+        "pseudo_selected": 0,
+        "unlabeled_samples": 0,
+        "epoch_seconds": 138.74647278385237
+      },
+      "E91_130": {
+        "epochs": 40,
+        "mean_loss": 6.5050098829123435,
+        "terms": {
+          "adv": 2.6828171334704574,
+          "cons": 0.3043691185968263,
+          "dom": 0.8394249222260348,
+          "fishr": 0.0035339032569324017,
+          "group_ce": 3.7911217383584197,
+          "open_world_feat": 0.093182170033759,
+          "orth": 0.005366610709661844,
+          "proto": 0.26832705232865955,
+          "proxy_unknown": 7.355023918103199,
+          "sat_cls": 2.508023535353797,
+          "soft_unknown_mixup": 2.5256112144917857,
+          "source_episode": 0.07315287086875083,
+          "tx": 2.2933000919694195,
+          "zid_compact": 1.584469121755386
+        },
+        "actions": {
+          "HOLD_CURRICULUM": 1904,
+          "NORMAL": 45,
+          "CORRECT": 11
+        },
+        "corrections": 11,
+        "head_steps": 0,
+        "satellite_scenario_steps": {
+          "leo_clear_weak": 1960
+        },
+        "sample_count": 250880,
+        "satellite_count": 75427,
+        "pseudo_selected": 0,
+        "unlabeled_samples": 0,
+        "epoch_seconds": 136.41551309271017
+      },
+      "E131_200": {
+        "epochs": 70,
+        "mean_loss": 5.534671594241618,
+        "terms": {
+          "adv": 2.679886902525543,
+          "cons": 0.28680798055566087,
+          "dom": 0.7318060206949885,
+          "fishr": 0.002975802200489953,
+          "group_ce": 3.1494740474458687,
+          "open_world_feat": 0.07693774749228932,
+          "orth": 0.007922985590188275,
+          "proto": 0.2347603130097292,
+          "proxy_unknown": 6.6664875781223305,
+          "sat_cls": 2.156028607635387,
+          "soft_unknown_mixup": 2.342321411583236,
+          "source_episode": 0.06631849310971774,
+          "tx": 1.7804803546029346,
+          "unlabeled_ce": 0.0008606422160262162,
+          "unlabeled_entropy": 0.009431310410658195,
+          "zid_compact": 1.5315651076875691
+        },
+        "actions": {
+          "HOLD_CURRICULUM": 3339,
+          "CORRECT": 79,
+          "NORMAL": 12
+        },
+        "corrections": 79,
+        "head_steps": 0,
+        "satellite_scenario_steps": {
+          "leo_clear_weak": 2881,
+          "leo_rain_weak": 275,
+          "leo_low_elev_weak": 274
+        },
+        "sample_count": 439040,
+        "satellite_count": 152902,
+        "pseudo_selected": 348243,
+        "unlabeled_samples": 439008,
+        "epoch_seconds": 147.21731741359858
+      }
+    }
+  }
+}
