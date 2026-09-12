@@ -1,0 +1,120 @@
+{
+  "status": "VERIFIED",
+  "scope": "existing_kernel_tests_and_synthetic_probes_only",
+  "interpreter": "C:\\Users\\lh594\\.conda\\envs\\ssr-gpu\\python.exe",
+  "conda_prefix": "C:\\Users\\lh594\\.conda\\envs\\ssr-gpu",
+  "jobs": [
+    {
+      "name": "x_unit_tests",
+      "returncode": 0,
+      "elapsed_seconds": 38.438,
+      "command": [
+        "C:\\Users\\lh594\\.conda\\envs\\ssr-gpu\\python.exe",
+        "-m",
+        "pytest",
+        "-o",
+        "addopts=",
+        "-q",
+        "tests/test_a1_ecrs_cross_rx.py",
+        "--junitxml=E:\\type10-7\\automation_reports\\CV-SincNet\\adv3b02_xuc_acceptance_s392005_20260913\\x_unit_tests.xml"
+      ],
+      "cwd": "E:\\type10-7\\code\\snapshots\\a1_fast_v2_20260909_wt",
+      "log": "x_unit_tests.log"
+    },
+    {
+      "name": "u_normalized_tests",
+      "returncode": 0,
+      "elapsed_seconds": 4.859,
+      "command": [
+        "C:\\Users\\lh594\\.conda\\envs\\ssr-gpu\\python.exe",
+        "-m",
+        "pytest",
+        "-o",
+        "addopts=",
+        "-q",
+        "tests/test_cross_response_v2_geometry_gate.py",
+        "-k",
+        "unit_records or invalid_norm or normalized_candidate or reduced_precision",
+        "--junitxml=E:\\type10-7\\automation_reports\\CV-SincNet\\adv3b02_xuc_acceptance_s392005_20260913\\u_normalized_tests.xml"
+      ],
+      "cwd": "E:\\type10-7\\code\\snapshots\\core90_cross_response_v2_20260911_wt",
+      "log": "u_normalized_tests.log"
+    },
+    {
+      "name": "native_factory",
+      "returncode": 0,
+      "elapsed_seconds": 0.25,
+      "command": [
+        "C:\\Users\\lh594\\.conda\\envs\\ssr-gpu\\python.exe",
+        "E:\\type10-7\\automation_reports\\CV-SincNet\\adv3b02_xuc_acceptance_s392005_20260913\\acceptance_probe.py",
+        "--mode",
+        "native"
+      ],
+      "cwd": "E:\\type10-7\\code\\snapshots\\a1_fast_v2_20260909_wt",
+      "log": "native_factory.log"
+    },
+    {
+      "name": "kernel_probe",
+      "returncode": 0,
+      "elapsed_seconds": 5.875,
+      "command": [
+        "C:\\Users\\lh594\\.conda\\envs\\ssr-gpu\\python.exe",
+        "E:\\type10-7\\automation_reports\\CV-SincNet\\adv3b02_xuc_acceptance_s392005_20260913\\acceptance_probe.py",
+        "--mode",
+        "kernel"
+      ],
+      "cwd": "E:\\type10-7\\code\\snapshots\\core90_cross_response_v2_20260911_wt",
+      "log": "kernel_probe.log"
+    },
+    {
+      "name": "u_roles_tests",
+      "returncode": 0,
+      "elapsed_seconds": 4.422,
+      "command": [
+        "C:\\Users\\lh594\\.conda\\envs\\ssr-gpu\\python.exe",
+        "-m",
+        "pytest",
+        "-o",
+        "addopts=",
+        "-q",
+        "tests/test_cross_response_v2_roles.py",
+        "--junitxml=E:\\type10-7\\automation_reports\\CV-SincNet\\adv3b02_xuc_acceptance_s392005_20260913\\u_roles_tests.xml"
+      ],
+      "cwd": "E:\\type10-7\\code\\snapshots\\core90_cross_response_v2_20260911_wt",
+      "log": "u_roles_tests.log"
+    },
+    {
+      "name": "u_runtime_probe",
+      "returncode": 0,
+      "elapsed_seconds": 6.016,
+      "command": [
+        "C:\\Users\\lh594\\.conda\\envs\\ssr-gpu\\python.exe",
+        "E:\\type10-7\\automation_reports\\CV-SincNet\\adv3b02_xuc_acceptance_s392005_20260913\\acceptance_probe.py",
+        "--mode",
+        "runtime"
+      ],
+      "cwd": "E:\\type10-7\\code\\snapshots\\core90_cross_response_v2_20260911_wt",
+      "log": "u_runtime_probe.log"
+    },
+    {
+      "name": "game_solver_tests",
+      "returncode": 0,
+      "elapsed_seconds": 6.844,
+      "command": [
+        "C:\\Users\\lh594\\.conda\\envs\\ssr-gpu\\python.exe",
+        "-m",
+        "pytest",
+        "-o",
+        "addopts=",
+        "-q",
+        "code/tests/test_game_tracking_solvers.py",
+        "-k",
+        "bilinear_exact or adamw_predictor or shared_parameters or bn_and_dropout or nonfinite_corrector or frozen_head or plain_mode or full_predictor",
+        "--junitxml=E:\\type10-7\\automation_reports\\CV-SincNet\\adv3b02_xuc_acceptance_s392005_20260913\\game_solver_tests.xml"
+      ],
+      "cwd": "E:\\type10-7\\code\\snapshots\\core90_game_20260911_wt",
+      "log": "game_solver_tests.log"
+    }
+  ],
+  "remote_or_training_actions": false
+}

@@ -1,0 +1,21 @@
+{
+  "status": "VERIFIED",
+  "scope": "existing_Ux_normalized_runtime_synthetic_model_only",
+  "response_enabled": false,
+  "decision_enabled": false,
+  "interaction_enabled": true,
+  "interaction_mode": "normalized",
+  "lambda_cross": 0.01,
+  "cross_loss": 1.6354582612621016e-06,
+  "successful_steps": 1,
+  "blocks": 1,
+  "changed_parameters": [
+    "id_backbone.time_fuse.weight",
+    "id_backbone.time_fuse.bias",
+    "id_backbone.cls_head.proj.weight",
+    "id_backbone.cls_head.proj.bias",
+    "id_backbone.cls_head.head.weight",
+    "id_backbone.cls_head.head.bias"
+  ],
+  "cstar_or_fusion_tested": false
+}

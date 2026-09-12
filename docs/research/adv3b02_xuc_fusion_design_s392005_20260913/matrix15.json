@@ -88,7 +88,7 @@
       "scheduler": "uniform",
       "role_policy": "balanced_partitions_v2",
       "mixstyle_role_policy": "donor_only",
-      "normalization": "freeze BN running-state in labeled clean+sat forward, as V2; preserve other baseline forwards",
+      "normalization": "freeze existing _BatchNorm in labeled clean+sat forward; inspected M/lite_d has zero BatchNorm modules, so N/A on this model; preserve other baseline forwards",
       "loss_view": "clean_only",
       "near_zero_norm_threshold": 1e-08
     }
@@ -128,13 +128,41 @@
       "leo_cosine": "current >= calibration q10"
     },
     "geometry_confirmation": 3,
+    "observation_clock": {
+      "unit": "unique increasing audit observation_id; never count repeated main-step reads",
+      "confirmation": "count consecutive eligible audit observations; an invalid or failing observation resets its own streak",
+      "freshness": "age<=10 permits action; expiration disables action but is not a new failed observation",
+      "calibration": "all fixed calibration observations required; no geometry confirmation before thresholds freeze; invalid calibration means unavailable",
+      "geometry": "three post-calibration eligible observations required; independent validity from recovery head",
+      "consumption": "each observation can authorize at most one head/EG action; resume preserves IDs, streaks and cooldown"
+    },
     "curriculum_window_epochs": 10,
     "window_boundaries_split_at_epochs": [
+      8,
+      12,
+      20,
+      25,
       41,
+      45,
       80,
       91,
       131
     ],
+    "boundary_rule": "also derive every objective/augmentation enable-disable boundary from the resolved recipe; listed epochs are a minimum",
+    "ticket_schedule": {
+      "fields": [
+        "origin_epoch",
+        "origin_batch_index",
+        "origin_main_step",
+        "objective_stage_weights",
+        "augmentation_stage",
+        "loss_rng_inputs"
+      ],
+      "objective_clock": "immutable origin_epoch/index and deterministic stage weights travel with ticket, including warmup weights and holdout schedules",
+      "live_clock": "optimizer LR, EMA, controller age and commit counters use baseline monotonic execution clocks, never rewind to ticket origin",
+      "adaptive_state": "online teacher/pseudo/prototype decisions computed at consumption and frozen for both EG evaluations; never use future learned state",
+      "verification": "compare full ticket multiset including origin schedule, source IDs, masks and channel RNG; fixed order must reproduce baseline schedule"
+    },
     "curriculum_identity": "reorder immutable full-batch tickets inside each window, preserve exact source IDs, applied masks and LEO scene exposure multiset",
     "curriculum_choice": "when capability confirmed, choose hardest remaining ticket; otherwise easiest; tie by canonical ticket_id; every ticket consumed once",
     "difficulty_score": "source-clean L_s audit per-scene TX CE excess times applied_mask_fraction; no target score; canonical scene order tie-break",
@@ -166,6 +194,10 @@
       "steps_per_epoch": 49,
       "labeled_batch": 128,
       "unlabeled_batch": 128,
+      "recipe_reference": "core90_recipe_reference.json",
+      "source_audit_policy": "baseline_only",
+      "cstar_action_enabled": false,
+      "ticket_curriculum_enabled": false,
       "purpose": "CORE90方法基线，标准loader、原BN/MixStyle"
     },
     {
@@ -191,6 +223,10 @@
       "steps_per_epoch": 49,
       "labeled_batch": 128,
       "unlabeled_batch": 128,
+      "recipe_reference": "core90_recipe_reference.json",
+      "source_audit_policy": "baseline_only",
+      "cstar_action_enabled": false,
+      "ticket_curriculum_enabled": false,
       "purpose": "共同执行载体；隔离网格、BN和MixStyle角色策略"
     },
     {
@@ -216,6 +252,10 @@
       "steps_per_epoch": 49,
       "labeled_batch": 128,
       "unlabeled_batch": 128,
+      "recipe_reference": "core90_recipe_reference.json",
+      "source_audit_policy": "baseline_only",
+      "cstar_action_enabled": false,
+      "ticket_curriculum_enabled": false,
       "purpose": "X1判别约束的CORE90移植"
     },
     {
@@ -241,6 +281,10 @@
       "steps_per_epoch": 49,
       "labeled_batch": 128,
       "unlabeled_batch": 128,
+      "recipe_reference": "core90_recipe_reference.json",
+      "source_audit_policy": "baseline_only",
+      "cstar_action_enabled": false,
+      "ticket_curriculum_enabled": false,
       "purpose": "Ux_normalized机制复现，统一数值环境"
     },
     {
@@ -266,6 +310,10 @@
       "steps_per_epoch": 49,
       "labeled_batch": 128,
       "unlabeled_batch": 128,
+      "recipe_reference": "core90_recipe_reference.json",
+      "source_audit_policy": "legacy_c2",
+      "cstar_action_enabled": false,
+      "ticket_curriculum_enabled": false,
       "purpose": "C2原控制/课程移植到共同载体"
     },
     {
@@ -291,6 +339,10 @@
       "steps_per_epoch": 49,
       "labeled_batch": 128,
       "unlabeled_batch": 128,
+      "recipe_reference": "core90_recipe_reference.json",
+      "source_audit_policy": "cstar_isolated_passive_or_active",
+      "cstar_action_enabled": false,
+      "ticket_curriculum_enabled": false,
       "purpose": "几何双模块；第二个2x2的无控制无课程基点"
     },
     {
@@ -316,6 +368,10 @@
       "steps_per_epoch": 49,
       "labeled_batch": 128,
       "unlabeled_batch": 128,
+      "recipe_reference": "core90_recipe_reference.json",
+      "source_audit_policy": "legacy_c2",
+      "cstar_action_enabled": false,
+      "ticket_curriculum_enabled": false,
       "purpose": "X与原C2联合"
     },
     {
@@ -341,6 +397,10 @@
       "steps_per_epoch": 49,
       "labeled_batch": 128,
       "unlabeled_batch": 128,
+      "recipe_reference": "core90_recipe_reference.json",
+      "source_audit_policy": "legacy_c2",
+      "cstar_action_enabled": false,
+      "ticket_curriculum_enabled": false,
       "purpose": "U与原C2联合"
     },
     {
@@ -366,6 +426,10 @@
       "steps_per_epoch": 49,
       "labeled_batch": 128,
       "unlabeled_batch": 128,
+      "recipe_reference": "core90_recipe_reference.json",
+      "source_audit_policy": "legacy_c2",
+      "cstar_action_enabled": false,
+      "ticket_curriculum_enabled": false,
       "purpose": "直接三模块组合，检验叠加是否已经足够"
     },
     {
@@ -391,6 +455,10 @@
       "steps_per_epoch": 222,
       "labeled_batch": 128,
       "unlabeled_batch": 256,
+      "recipe_reference": "a1_native_recipe_reference.json",
+      "source_audit_policy": "baseline_only",
+      "cstar_action_enabled": false,
+      "ticket_curriculum_enabled": false,
       "purpose": "X0训练体系桥接；保留原FT/DAOT及步数"
     },
     {
@@ -416,6 +484,10 @@
       "steps_per_epoch": 222,
       "labeled_batch": 128,
       "unlabeled_batch": 256,
+      "recipe_reference": "a1_native_recipe_reference.json",
+      "source_audit_policy": "baseline_only",
+      "cstar_action_enabled": false,
+      "ticket_curriculum_enabled": false,
       "purpose": "X1训练体系桥接，只与M09隔离X效应"
     },
     {
@@ -441,6 +513,10 @@
       "steps_per_epoch": 49,
       "labeled_batch": 128,
       "unlabeled_batch": 128,
+      "recipe_reference": "core90_recipe_reference.json",
+      "source_audit_policy": "legacy_c2",
+      "cstar_action_enabled": false,
+      "ticket_curriculum_enabled": false,
       "purpose": "C2方法桥接；同一新数据契约，不加载旧权重"
     },
     {
@@ -466,6 +542,10 @@
       "steps_per_epoch": 49,
       "labeled_batch": 128,
       "unlabeled_batch": 128,
+      "recipe_reference": "core90_recipe_reference.json",
+      "source_audit_policy": "cstar_isolated_passive_or_active",
+      "cstar_action_enabled": true,
+      "ticket_curriculum_enabled": true,
       "purpose": "预先指定的完整融合主候选"
     },
     {
@@ -491,6 +571,10 @@
       "steps_per_epoch": 49,
       "labeled_batch": 128,
       "unlabeled_batch": 128,
+      "recipe_reference": "core90_recipe_reference.json",
+      "source_audit_policy": "cstar_isolated_passive_or_active",
+      "cstar_action_enabled": true,
+      "ticket_curriculum_enabled": false,
       "purpose": "保留可靠动作控制，移除能力课程重排"
     },
     {
@@ -516,6 +600,10 @@
       "steps_per_epoch": 49,
       "labeled_batch": 128,
       "unlabeled_batch": 128,
+      "recipe_reference": "core90_recipe_reference.json",
+      "source_audit_policy": "cstar_isolated_passive_or_active",
+      "cstar_action_enabled": false,
+      "ticket_curriculum_enabled": true,
       "purpose": "保留能力课程重排，移除动作控制"
     }
   ],

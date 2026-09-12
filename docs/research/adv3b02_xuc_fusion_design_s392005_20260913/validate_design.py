@@ -38,6 +38,20 @@ def validate(root):
     assert set(second.values())=={'M05','M12','M13','M14'}
     assert {(by_id[i]['control']=='reliable_both',by_id[i]['curriculum']=='exposure_matched_capability') for i in second.values()}==set(itertools.product((False,True),repeat=2))
     assert all(by_id[i]['x_enabled'] and by_id[i]['u_enabled'] for i in second.values())
+    assert all(by_id[i]['source_audit_policy']=='cstar_isolated_passive_or_active' for i in second.values())
+    assert all(r['cstar_action_enabled']==(r['control']=='reliable_both') for r in runs)
+    assert all(r['ticket_curriculum_enabled']==(r['curriculum']=='exposure_matched_capability') for r in runs)
+    assert set(matrix['cstar']['window_boundaries_split_at_epochs']) >= {8,12,20,25,41,45,80,91,131}
+    assert set(matrix['cstar']['ticket_schedule']['fields']) >= {'origin_epoch','origin_batch_index','origin_main_step','objective_stage_weights'}
+    assert 'observation_id' in matrix['cstar']['observation_clock']['unit']
+    native=json.loads((root/'a1_native_recipe_reference.json').read_text(encoding='utf-8'))
+    for rid,weight in [('M09','0'),('M10','0.05')]:
+        assert by_id[rid]['recipe_reference']=='a1_native_recipe_reference.json'
+        options=native['rows'][rid]['reference_options']
+        assert options['--use_muse_ssdg']=='true' and options['--a1_runtime_fast']=='true'
+        assert options['--a1_ecrs_cross_rx_scope']=='clean' and options['--a1_ecrs_cross_rx_weight']==weight
+        assert options['--amp']=='false' and options['--from_scratch']=='true'
+        assert not options['--baseline_ckpt'] and not options['--teacher_ckpt']
     assert all(sum(v.values())==0 and set(v)<=set(by_id) for v in matrix['interaction_contrasts'].values())
     assert matrix['expected_all_predictions']==15*168000*4==10080000
     assert matrix['nominal_main_update_opportunities']==sum(r['epochs']*r['steps_per_epoch'] for r in runs)==216200

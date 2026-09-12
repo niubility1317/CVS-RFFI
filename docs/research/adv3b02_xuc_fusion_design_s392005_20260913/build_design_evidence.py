@@ -5,6 +5,7 @@ import argparse
 import csv
 import json
 from pathlib import Path
+import sys
 
 SCENES = ['clean', 'leo_clear_weak', 'leo_low_elev_weak', 'leo_rain_weak']
 
@@ -15,6 +16,32 @@ def read(path):
 
 def write(path, data):
     path.write_text(json.dumps(data, ensure_ascii=False, indent=2, allow_nan=False) + '\n', encoding='utf-8', newline='\n')
+
+
+def native_reference(root):
+    """Resolve the observed X0/X1 factory only; never call its launcher."""
+    scripts = root / 'code/snapshots/a1_fast_v2_20260909_wt/code/scripts'
+    original_path = list(sys.path)
+    try:
+        sys.path.insert(0, str(scripts))
+        from run_a1_ecrs_cross_rx import ecrs_matrix
+        native = ecrs_matrix()
+    finally:
+        sys.path[:] = original_path
+    overrides = {'--seed': '392005', '--amp': 'false', '--lr': '0.0002', '--weight_decay': '0.0001',
+        '--max_grad_norm': '5', '--baseline_ckpt': '', '--teacher_ckpt': '', '--from_scratch': 'true',
+        '--test_eval_start_epoch': '999999', '--test_eval_interval': '0', '--test_eval_final_window': '0',
+        '--test_eval_final_interval': '0', '--phase2_export_prototypes': 'false', '--enable_joint_safe_guard': 'false'}
+    rows = {}
+    for destination, historical in zip(('M09', 'M10'), native['rows'][:2]):
+        effective = {**native['core90_options'], **historical['options'], **overrides}
+        rows[destination] = dict(source_row=historical['id'], reference_options=effective)
+    return dict(artifact_kind='native_reference_arguments_not_executable_config',
+        source_factory=str(scripts.relative_to(root) / 'run_a1_ecrs_cross_rx.py'), rows=rows,
+        common_overrides=overrides, pending=['shared physical L/U/V role-index injection',
+            'actual parser/default and stage-schedule readback', 'train path must not construct target loader',
+            'M09/M10 unlabeled-loader step budget readback'],
+        semantics='A1/FT/DAOT native factory plus explicit requested FP32/scratch overrides; not a bitwise historical rerun')
 
 
 def build(root, out):
@@ -102,6 +129,10 @@ def build(root, out):
             control=control,curriculum=curriculum,amp=False,primary=(rid=='M12'),
             steps_per_epoch=222 if pipeline=='a1_fasttrust_daot' else 49,
             labeled_batch=128,unlabeled_batch=256 if pipeline=='a1_fasttrust_daot' else 128,
+            recipe_reference='a1_native_recipe_reference.json' if pipeline=='a1_fasttrust_daot' else 'core90_recipe_reference.json',
+            source_audit_policy='cstar_isolated_passive_or_active' if rid in {'M05','M12','M13','M14'} else ('legacy_c2' if control=='legacy_both' else 'baseline_only'),
+            cstar_action_enabled=control=='reliable_both',
+            ticket_curriculum_enabled=curriculum=='exposure_matched_capability',
             purpose=purpose))
     common = dict(dataset='ManySig.pkl',equalized=1,source_receivers=[1,3,4,6,8],source_days=[1,2,3],
         target_receivers=[0,2,5,7,9,10,11],target_days=[0,1,2,3],old_class_count=6,
@@ -118,7 +149,7 @@ def build(root, out):
         max_grad_norm=5.,amp=False,lambda_adv=.35,lambda_sat_cls=.68,lambda_sat_cons=0.,sat_ce_start_epoch=80,
         grid=dict(P=4,Q=4,K=2,blocks_per_batch=4,within_block_same_day=True,within_block_same_condition=True,
                   scheduler='uniform',role_policy='balanced_partitions_v2',mixstyle_role_policy='donor_only',
-                  normalization='freeze BN running-state in labeled clean+sat forward, as V2; preserve other baseline forwards',
+                  normalization='freeze existing _BatchNorm in labeled clean+sat forward; inspected M/lite_d has zero BatchNorm modules, so N/A on this model; preserve other baseline forwards',
                   loss_view='clean_only',near_zero_norm_threshold=1e-8))
     cstar = dict(status='NEW_DESIGN_NOT_IMPLEMENTED',geometry_losses_unchanged=True,
         audit_every_main_steps=250,audit_max_age_steps=10,calibration_steps=[0,250,500],
@@ -134,7 +165,19 @@ def build(root, out):
                         'tx_main_energy':'current >= calibration q10','unit_interaction':'current <= calibration q90',
                         'leo_cosine':'current >= calibration q10'},
         geometry_confirmation=3,
-        curriculum_window_epochs=10,window_boundaries_split_at_epochs=[41,80,91,131],
+        observation_clock=dict(unit='unique increasing audit observation_id; never count repeated main-step reads',
+            confirmation='count consecutive eligible audit observations; an invalid or failing observation resets its own streak',
+            freshness='age<=10 permits action; expiration disables action but is not a new failed observation',
+            calibration='all fixed calibration observations required; no geometry confirmation before thresholds freeze; invalid calibration means unavailable',
+            geometry='three post-calibration eligible observations required; independent validity from recovery head',
+            consumption='each observation can authorize at most one head/EG action; resume preserves IDs, streaks and cooldown'),
+        curriculum_window_epochs=10,window_boundaries_split_at_epochs=[8,12,20,25,41,45,80,91,131],
+        boundary_rule='also derive every objective/augmentation enable-disable boundary from the resolved recipe; listed epochs are a minimum',
+        ticket_schedule=dict(fields=['origin_epoch','origin_batch_index','origin_main_step','objective_stage_weights','augmentation_stage','loss_rng_inputs'],
+            objective_clock='immutable origin_epoch/index and deterministic stage weights travel with ticket, including warmup weights and holdout schedules',
+            live_clock='optimizer LR, EMA, controller age and commit counters use baseline monotonic execution clocks, never rewind to ticket origin',
+            adaptive_state='online teacher/pseudo/prototype decisions computed at consumption and frozen for both EG evaluations; never use future learned state',
+            verification='compare full ticket multiset including origin schedule, source IDs, masks and channel RNG; fixed order must reproduce baseline schedule'),
         curriculum_identity='reorder immutable full-batch tickets inside each window, preserve exact source IDs, applied masks and LEO scene exposure multiset',
         curriculum_choice='when capability confirmed, choose hardest remaining ticket; otherwise easiest; tie by canonical ticket_id; every ticket consumed once',
         difficulty_score='source-clean L_s audit per-scene TX CE excess times applied_mask_fraction; no target score; canonical scene order tie-break',
@@ -156,6 +199,7 @@ def build(root, out):
                                'reliable source evidence classification','exposure-matched ticket curriculum','single truth-last scorer'],
         expected_all_predictions=15*672000,nominal_main_update_opportunities=sum(r['epochs']*r['steps_per_epoch'] for r in runs))
     write(out/'matrix15.json',matrix)
+    write(out/'a1_native_recipe_reference.json',native_reference(root))
     with (out/'matrix15.csv').open('w',encoding='utf-8',newline='') as stream:
         writer=csv.DictWriter(stream,fieldnames=list(runs[0]));writer.writeheader();writer.writerows(runs)
     recipe = read(recipepath)['baseline_args']
