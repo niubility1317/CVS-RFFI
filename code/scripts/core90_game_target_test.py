@@ -6,6 +6,7 @@ All models finish all four scenes before a separate artifact scorer sees truth.
 from __future__ import annotations
 import argparse
 from contextlib import ExitStack
+from concurrent.futures import ThreadPoolExecutor
 import json
 from pathlib import Path
 import sys
@@ -59,6 +60,24 @@ def check_target(base, source_info, rxs, days):
     if len(set(ids)) != len(ids) or source_ids.intersection(ids):
         raise ValueError('Duplicate or overlapping target physical sample')
 
+def assign_devices(rows, devices):
+    if not devices or len(set(devices)) != len(devices):
+        raise ValueError('Expected distinct evaluation devices')
+    return {row: devices[i % len(devices)] for i, row in enumerate(rows)}
+
+def predict_group(items, x, device, num_classes):
+    # Inference mode is thread-local; each GPU worker must enter it itself.
+    with torch.inference_mode():
+        local_x = x.to(device)
+        result = {}
+        for row, model in items:
+            logits = model(local_x, return_aux=True)['tx_logits']
+            if logits.shape != (len(local_x), num_classes) or not torch.isfinite(logits).all():
+                raise ValueError('Invalid all-class logits: '+row)
+            conf, pred = logits.float().softmax(-1).max(-1)
+            result[row] = (conf.cpu().tolist(), pred.cpu().tolist())
+        return result
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     inputs=parser.add_mutually_exclusive_group(required=True)
@@ -66,6 +85,7 @@ def main(argv=None):
     inputs.add_argument('--input-manifest',help='Frozen explicit completed E200 checkpoints and training seeds')
     parser.add_argument('--output-dir', required=True)
     parser.add_argument('--device', default='cuda:0')
+    parser.add_argument('--devices', nargs='+', help='Balanced model placement; shared augmentation stays on --device')
     parser.add_argument('--rows', nargs='+', choices=ROWS+('B8','B3_head_scale','B3_adv_low',
         'B3_adv_high','B4','B4_fixedk','B5','S2','S2_random','C3'), default=list(ROWS))
     opts = parser.parse_args(argv)
@@ -81,6 +101,8 @@ def main(argv=None):
     else:
         rows = tuple(opts.rows);seeds={r:392005 for r in rows}
     if len(set(rows)) != len(rows): raise ValueError('Duplicate requested row')
+    devices = opts.devices or [opts.device]
+    row_devices = assign_devices(rows, devices)
     root, out = Path(opts.run_root) if opts.run_root else None, Path(opts.output_dir)
     out.mkdir(parents=True, exist_ok=False)
     # Freeze and verify every candidate before opening target data.
@@ -111,8 +133,8 @@ def main(argv=None):
             if saved['args'][key] != getattr(args,key):
                 raise ValueError('Test configuration differs: ' + key)
         row_args = SimpleNamespace(**saved['args'])
-        row_args.device = opts.device
-        model = build_model(row_args, len(reference['domain_map']), torch.device(opts.device))
+        row_args.device = row_devices[row]
+        model = build_model(row_args, len(reference['domain_map']), torch.device(row_devices[row]))
         model.load_state_dict(saved['model'], strict=True)
         model.eval().requires_grad_(False)
         models[row] = model
@@ -125,9 +147,20 @@ def main(argv=None):
     with torch.inference_mode():
         smoke_x = next(iter(source.loader('val', 16)))[0].to(opts.device)
         for row, model in models.items():
-            logits = model(smoke_x, return_aux=True)['tx_logits']
+            logits = model(smoke_x.to(row_devices[row]), return_aux=True)['tx_logits']
             if logits.shape != (16,args.num_classes) or not torch.isfinite(logits).all():
                 raise ValueError('Source-only checkpoint smoke failed: '+row)
+    groups = {device: [(row, model) for row, model in models.items() if row_devices[row] == device] for device in devices}
+    if smoke_x.is_cuda: torch.cuda.synchronize(smoke_x.device)
+    reference_predictions = {}
+    for device, items in groups.items():
+        reference_predictions.update(predict_group(items, smoke_x, device, args.num_classes))
+    with ThreadPoolExecutor(max_workers=len(devices)) as smoke_pool:
+        smoke_futures = [smoke_pool.submit(predict_group, items, smoke_x, device, args.num_classes) for device, items in groups.items()]
+        parallel_predictions = {}
+        for future in smoke_futures: parallel_predictions.update(future.result())
+    if parallel_predictions != reference_predictions:
+        raise ValueError('Parallel source checkpoint smoke differs from serial inference')
     print('SOURCE_CHECKPOINT_SMOKE_PASS',flush=True)
     rxs = [int(v) for v in args.wisig_test_rxs.split(',')]
     days = [int(v) for v in args.wisig_test_days.split(',')]
@@ -146,10 +179,12 @@ def main(argv=None):
                     num_classes=args.num_classes, source_only=False,
                     scope='four_view_closed_set_target_diagnostic', fitting=False,
                     selection=False, all_rows_predicted_before_truth=True)
+    manifest['model_devices'] = row_devices
     _write_json(out/'frozen_manifest.json', manifest)
     counts = {}
     started = time.perf_counter()
     with ExitStack() as stack, torch.inference_mode():
+        pool = stack.enter_context(ThreadPoolExecutor(max_workers=len(devices)))
         streams = {row: stack.enter_context((out/(row+'_predictions.jsonl')).open('x',encoding='utf-8')) for row in rows}
         for si, scene in enumerate(EVAL_SCENES):
             gen = torch.Generator(device=opts.device).manual_seed(args.game_split_seed+100003*si)
@@ -159,12 +194,13 @@ def main(argv=None):
                 x = x.to(opts.device)
                 if scene != 'clean':
                     x = apply_sat_channel_for_scenario(x, scene, args, gen=gen)[0]
-                for row, model in models.items():
-                    logits = model(x, return_aux=True)['tx_logits']
-                    if logits.shape != (len(x),args.num_classes) or not torch.isfinite(logits).all():
-                        raise ValueError('Invalid all-class logits: '+row)
-                    conf, pred = logits.float().softmax(-1).max(-1)
-                    conf, pred = conf.cpu().tolist(), pred.cpu().tolist()
+                # Finish the one shared view before worker streams consume it.
+                if x.is_cuda: torch.cuda.synchronize(x.device)
+                futures = [pool.submit(predict_group, items, x, device, args.num_classes) for device, items in groups.items()]
+                predictions = {}
+                for future in futures: predictions.update(future.result())
+                for row in rows:
+                    conf, pred = predictions[row]
                     streams[row].writelines(json.dumps(dict(sample_id=meta['sample_id'][j],scene=scene,
                         rx_i=int(meta['rx_i'][j]),day_i=int(meta['day_i'][j]),prediction=pred[j],confidence=conf[j]))+'\n' for j in range(len(x)))
                 counts[scene] += len(x)

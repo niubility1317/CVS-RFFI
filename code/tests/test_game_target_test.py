@@ -6,7 +6,7 @@ import tempfile
 import json
 import torch
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scripts'))
-from core90_game_target_test import check_checkpoint, check_target, TargetInputs
+from core90_game_target_test import check_checkpoint, check_target, TargetInputs, assign_devices, predict_group
 from dataset_wisig import WiSigIndex
 
 class FakeBase:
@@ -16,6 +16,29 @@ class FakeBase:
         return torch.ones(2,256),0,0,{'tx_i':0,'truth':0}
 
 class TargetTests(unittest.TestCase):
+    def test_balanced_device_assignment(self):
+        from collections import Counter
+        counts = Counter(assign_devices(list(range(11)), ['cuda:'+str(i) for i in range(7)]).values())
+        self.assertEqual(sorted(counts.values()), [1,1,1,2,2,2,2])
+        with self.assertRaises(ValueError): assign_devices([1], ['cuda:0','cuda:0'])
+
+    def test_worker_inference_mode_shared_input_and_invalid_logits(self):
+        from concurrent.futures import ThreadPoolExecutor
+        class Model(torch.nn.Module):
+            def forward(self, x, return_aux=False):
+                assert torch.is_inference_mode_enabled()
+                return {'tx_logits': x}
+        x=torch.tensor([[1.,2.],[3.,1.]])
+        original=x.clone()
+        with ThreadPoolExecutor(2) as pool:
+            futures=[pool.submit(predict_group,[(str(i),Model())],x,'cpu',2) for i in range(2)]
+            a,b=[f.result() for f in futures]
+        self.assertEqual(a['0'], b['1'])
+        self.assertEqual(a['0'][1], [1,0])
+        self.assertTrue(torch.equal(x,original))
+        with self.assertRaisesRegex(ValueError,'Invalid all-class'):
+            predict_group([('bad',Model())],torch.tensor([[float('nan'),0.]]),'cpu',2)
+
     def test_truth_is_removed(self):
         x, meta = TargetInputs(FakeBase())[0]
         self.assertEqual(set(meta),{'sample_id','rx_i','day_i'})
