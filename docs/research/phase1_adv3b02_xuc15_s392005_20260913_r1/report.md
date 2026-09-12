@@ -1,6 +1,6 @@
 # XUC15发布与监控记录
 
-状态：LOCAL_VERIFIED，正在固定Git版本并发布。当前任务已授权15组实验、每小时监控、技术故障修复后重发；正式训练尚待远端读回确认。
+状态：RUNNING / VERIFIED。15/15行已在N607启动，实际PID/PPID/CWD/argv/GPU/scratch全部核对，连续日志增长已验证。每小时监控ACTIVE。正式结果未完成。
 
 唯一launch owner：线程01a096a4-aa1c-7ac3-8a58-414b9ba959cc；实施期间监控不得重复提交。hourly heartbeat `xuc15`已ACTIVE，周期1小时，已读回automation.toml。
 
@@ -26,7 +26,7 @@ M00/M08/M12真实入口CPU一步训练均成功，checkpoint由本次synthetic s
 
 |ID|验收要求|状态及证据|
 |---|---|---|
-|T01|实际L/U/V角色与U隐藏|实现及接口测试通过；远端实际source contract待发布读回|
+|T01|实际L/U/V角色与U隐藏|实现、接口与远端实际source contract通过；native两行EXACT_MATCH|
 |T02|完整CORE90目标|E1/E80/E131数值一致通过|
 |T03|X/U真实梯度及EG闭包|真实M/lite_d、两个非零梯度、4块、两次完整field通过|
 |T04|V2 grid、donor mask、BN|采样与真实mask路径审查通过；BN不存在为N/A|
@@ -36,7 +36,7 @@ M00/M08/M12真实入口CPU一步训练均成功，checkpoint由本次synthetic s
 |T08|完整事务|EG一次AdamW、一次票据；EMA/prototype accepted后更新审查通过|
 |T09|15行及native|argv/架构/seed/E200/scratch/source-only验证通过|
 |T10|scratch、truth-last|本次自生成checkpoint通过；训练不构造target；统一predict独立score已实现|
-|T11|远端发布与运行|待固定提交、落地、PID/CWD/argv/GPU/log增长读回|
+|T11|远端发布与运行|VERIFIED：15行PID/PPID/CWD/argv/GPU/scratch匹配且日志增长|
 |T12|每小时监控恢复|heartbeat xuc15 ACTIVE，1小时一次已读回|
 
 ## 发布、运行及恢复
@@ -52,3 +52,35 @@ M00/M08/M12真实入口CPU一步训练均成功，checkpoint由本次synthetic s
 用户授权的技术恢复：确认明确执行/协议/数值/产物故障，保留全部历史产物及健康进程；本地复现、定点修复、相关验证、提交push并读回后以新run/release恢复。若旧owner/健康行还活跃，先保留其运行，不重复发布。待旧owner退出后以`--recovery-from <旧ID> --retry-rows <失败行>`仅重训失败行；健康E200仅复用于推理。预测/评分故障可空retry-rows恢复冻结产物。接口拒绝健康E200重训，并保留跨恢复prediction引用。无低分驱动重跑，无强制激活，合法排队/自然不激活不算异常。同异常指纹修复一次仍复发则通知用户、停止盲目重启。
 
 完成边界：本次发布任务以正式进程及日志增长读回为RUNNING；15行E200、四场景冻结预测、独立评分闭合后才为ARTIFACTS_COMPLETE，不能提前声称融合有性能提升。每小时heartbeat在无实质变化时安静，完成/失败/修复重发时通知，全部闭合后暂停。
+
+## 发布结果与当前交接
+
+最后读回时间：2026-09-13T02:54:57.159522+08:00。执行提交：`2a71f5d92d8830b9880415f4e45dafa5e6032598`，GitHub分支已独立ls-remote核对一致，无ahead/behind。release：`/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc15_2a71f5d92d`。dispatcher PID：3316498，PPID=1，实际CWD及argv与发布记录匹配。
+
+正式15行均RUNNING，13个CORE90行已完成E2—E6范围内的epoch，两条native均完成E1；所有行连续进度检查通过。GPU0—7各2个compute PID，其中GPU4的原任务PID612456保留，本任务使用其余15个名额。没有确认的训练故障，无需重发。
+
+|行|PID|GPU|已完成epoch|
+|---|---:|---:|---:|
+|M00|3316514|0|6|
+|M01|3316590|1|5|
+|M02|3317046|2|5|
+|M03|3317143|3|5|
+|M04|3317218|5|4|
+|M05|3317294|6|4|
+|M06|3317425|7|4|
+|M07|3317501|5|4|
+|M08|3317574|7|3|
+|M09|3317646|0|1|
+|M10|3317657|1|1|
+|M11|3317668|2|4|
+|M12|3317743|3|3|
+|M13|3317817|6|3|
+|M14|3318296|4|2|
+
+实际source contract已读回L6300/U56700/V27000、6TX、15个RX/day域；M09/M10初始化记录source_roles=EXACT_MATCH。CUDA smoke已从自生成checkpoint strict重建为4×6 logits，source-only。X开启行128个合法锚点，U开启行4个有效块、0个不可用块。该计数只证明路径在真实训练中可用，不能证明性能提升。C*尚处早期校准，未自然触发动作不属于技术故障；不为强制触发调整阈值。
+
+独立P0/P1审查及恢复定点复核全部通过，当前无未解决P0/P1。16项本地测试及3行真实入口/自生成checkpoint检查通过；已完成一份发布归档SHA比较和一次远端编译。
+
+后续唯一监控：heartbeat xuc15，每小时一次，已更新到实际run/commit并读回。主发布已结束，后续由该heartbeat沿本报告执行健康检查和授权的技术恢复；先核实旧owner及所有关联进程，禁止重复提交。原生A1使用final_only，在E200以前没有latest checkpoint属于预期；现有监控helper对超过20KB的native单行telemetry可能标partial_write，此时用完整metrics_epoch.jsonl或EPOCH-END日志确认，不能据此判训练失败。
+
+证据：launch_identity_verification.json、progress_growth_verification.json、remote_source_smoke.json、remote_snapshot_1/2/3.json、automation_verification.json、delivery/landing.stdout。训练尚未E200，prediction/scoring尚未执行；最终评分由dispatcher按已登记链路接续，全部闭合后暂停heartbeat。

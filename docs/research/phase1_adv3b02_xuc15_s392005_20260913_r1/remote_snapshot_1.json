@@ -1,0 +1,563 @@
+{
+  "time": 1789239148.1852732,
+  "state": {
+    "status": "TRAINING",
+    "run_id": "phase1_adv3b02_xuc15_s392005_20260913_r1",
+    "pid": 3316498,
+    "release": "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc15_2a71f5d92d",
+    "commit": "2a71f5d92d8830b9880415f4e45dafa5e6032598",
+    "seed": 392005,
+    "epochs": 200,
+    "created": 1789239116.1212897,
+    "rows": {
+      "M00": {
+        "status": "RUNNING",
+        "pid": 3316514,
+        "gpu": 0,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc15_2a71f5d92d/code/scripts/train_xuc.py",
+          "--matrix",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc15_2a71f5d92d/configs/matrix15.json",
+          "--recipe",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc15_2a71f5d92d/configs/core90_recipe_reference.json",
+          "--row",
+          "M00",
+          "--dataset",
+          "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+          "--output",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_xuc15_s392005_20260913_r1/M00",
+          "--source-contract",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_xuc15_s392005_20260913_r1/source_contract.json"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc15_2a71f5d92d",
+        "started": 1789239120.0473318
+      },
+      "M01": {
+        "status": "RUNNING",
+        "pid": 3316590,
+        "gpu": 1,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc15_2a71f5d92d/code/scripts/train_xuc.py",
+          "--matrix",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc15_2a71f5d92d/configs/matrix15.json",
+          "--recipe",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc15_2a71f5d92d/configs/core90_recipe_reference.json",
+          "--row",
+          "M01",
+          "--dataset",
+          "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+          "--output",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_xuc15_s392005_20260913_r1/M01",
+          "--source-contract",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_xuc15_s392005_20260913_r1/source_contract.json"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc15_2a71f5d92d",
+        "started": 1789239125.2384832
+      },
+      "M02": {
+        "status": "RUNNING",
+        "pid": 3317046,
+        "gpu": 2,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc15_2a71f5d92d/code/scripts/train_xuc.py",
+          "--matrix",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc15_2a71f5d92d/configs/matrix15.json",
+          "--recipe",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc15_2a71f5d92d/configs/core90_recipe_reference.json",
+          "--row",
+          "M02",
+          "--dataset",
+          "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+          "--output",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_xuc15_s392005_20260913_r1/M02",
+          "--source-contract",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_xuc15_s392005_20260913_r1/source_contract.json"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc15_2a71f5d92d",
+        "started": 1789239130.4198656
+      },
+      "M03": {
+        "status": "RUNNING",
+        "pid": 3317143,
+        "gpu": 3,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc15_2a71f5d92d/code/scripts/train_xuc.py",
+          "--matrix",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc15_2a71f5d92d/configs/matrix15.json",
+          "--recipe",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc15_2a71f5d92d/configs/core90_recipe_reference.json",
+          "--row",
+          "M03",
+          "--dataset",
+          "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+          "--output",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_xuc15_s392005_20260913_r1/M03",
+          "--source-contract",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_xuc15_s392005_20260913_r1/source_contract.json"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc15_2a71f5d92d",
+        "started": 1789239135.6069334
+      },
+      "M04": {
+        "status": "RUNNING",
+        "pid": 3317218,
+        "gpu": 5,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc15_2a71f5d92d/code/scripts/train_xuc.py",
+          "--matrix",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc15_2a71f5d92d/configs/matrix15.json",
+          "--recipe",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc15_2a71f5d92d/configs/core90_recipe_reference.json",
+          "--row",
+          "M04",
+          "--dataset",
+          "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+          "--output",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_xuc15_s392005_20260913_r1/M04",
+          "--source-contract",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_xuc15_s392005_20260913_r1/source_contract.json"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc15_2a71f5d92d",
+        "started": 1789239140.7841098
+      },
+      "M05": {
+        "status": "RUNNING",
+        "pid": 3317294,
+        "gpu": 6,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc15_2a71f5d92d/code/scripts/train_xuc.py",
+          "--matrix",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc15_2a71f5d92d/configs/matrix15.json",
+          "--recipe",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc15_2a71f5d92d/configs/core90_recipe_reference.json",
+          "--row",
+          "M05",
+          "--dataset",
+          "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+          "--output",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_xuc15_s392005_20260913_r1/M05",
+          "--source-contract",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_xuc15_s392005_20260913_r1/source_contract.json"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc15_2a71f5d92d",
+        "started": 1789239145.9570327
+      },
+      "M06": {
+        "status": "QUEUED"
+      },
+      "M07": {
+        "status": "QUEUED"
+      },
+      "M08": {
+        "status": "QUEUED"
+      },
+      "M09": {
+        "status": "QUEUED"
+      },
+      "M10": {
+        "status": "QUEUED"
+      },
+      "M11": {
+        "status": "QUEUED"
+      },
+      "M12": {
+        "status": "QUEUED"
+      },
+      "M13": {
+        "status": "QUEUED"
+      },
+      "M14": {
+        "status": "QUEUED"
+      }
+    },
+    "recovery_from": "",
+    "retry_rows": []
+  },
+  "processes": {
+    "dispatcher": {
+      "pid": 3316498,
+      "ppid": "1",
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc15_2a71f5d92d",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc15_2a71f5d92d/code/scripts/dispatch_xuc15.py",
+        "--project",
+        "/home/szu2070436088/2510044040/CV-SincNet",
+        "--run-id",
+        "phase1_adv3b02_xuc15_s392005_20260913_r1",
+        "--commit",
+        "2a71f5d92d8830b9880415f4e45dafa5e6032598",
+        ""
+      ],
+      "gpu": "0"
+    },
+    "M00": {
+      "pid": 3316514,
+      "ppid": "3316498",
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc15_2a71f5d92d",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc15_2a71f5d92d/code/scripts/train_xuc.py",
+        "--matrix",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc15_2a71f5d92d/configs/matrix15.json",
+        "--recipe",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc15_2a71f5d92d/configs/core90_recipe_reference.json",
+        "--row",
+        "M00",
+        "--dataset",
+        "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_xuc15_s392005_20260913_r1/M00",
+        "--source-contract",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_xuc15_s392005_20260913_r1/source_contract.json",
+        ""
+      ],
+      "gpu": "0"
+    },
+    "M01": {
+      "pid": 3316590,
+      "ppid": "3316498",
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc15_2a71f5d92d",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc15_2a71f5d92d/code/scripts/train_xuc.py",
+        "--matrix",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc15_2a71f5d92d/configs/matrix15.json",
+        "--recipe",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc15_2a71f5d92d/configs/core90_recipe_reference.json",
+        "--row",
+        "M01",
+        "--dataset",
+        "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_xuc15_s392005_20260913_r1/M01",
+        "--source-contract",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_xuc15_s392005_20260913_r1/source_contract.json",
+        ""
+      ],
+      "gpu": "1"
+    },
+    "M02": {
+      "pid": 3317046,
+      "ppid": "3316498",
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc15_2a71f5d92d",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc15_2a71f5d92d/code/scripts/train_xuc.py",
+        "--matrix",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc15_2a71f5d92d/configs/matrix15.json",
+        "--recipe",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc15_2a71f5d92d/configs/core90_recipe_reference.json",
+        "--row",
+        "M02",
+        "--dataset",
+        "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_xuc15_s392005_20260913_r1/M02",
+        "--source-contract",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_xuc15_s392005_20260913_r1/source_contract.json",
+        ""
+      ],
+      "gpu": "2"
+    },
+    "M03": {
+      "pid": 3317143,
+      "ppid": "3316498",
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc15_2a71f5d92d",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc15_2a71f5d92d/code/scripts/train_xuc.py",
+        "--matrix",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc15_2a71f5d92d/configs/matrix15.json",
+        "--recipe",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc15_2a71f5d92d/configs/core90_recipe_reference.json",
+        "--row",
+        "M03",
+        "--dataset",
+        "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_xuc15_s392005_20260913_r1/M03",
+        "--source-contract",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_xuc15_s392005_20260913_r1/source_contract.json",
+        ""
+      ],
+      "gpu": "3"
+    },
+    "M04": {
+      "pid": 3317218,
+      "ppid": "3316498",
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc15_2a71f5d92d",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc15_2a71f5d92d/code/scripts/train_xuc.py",
+        "--matrix",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc15_2a71f5d92d/configs/matrix15.json",
+        "--recipe",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc15_2a71f5d92d/configs/core90_recipe_reference.json",
+        "--row",
+        "M04",
+        "--dataset",
+        "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_xuc15_s392005_20260913_r1/M04",
+        "--source-contract",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_xuc15_s392005_20260913_r1/source_contract.json",
+        ""
+      ],
+      "gpu": "5"
+    },
+    "M05": {
+      "pid": 3317294,
+      "ppid": "3316498",
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc15_2a71f5d92d",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc15_2a71f5d92d/code/scripts/train_xuc.py",
+        "--matrix",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc15_2a71f5d92d/configs/matrix15.json",
+        "--recipe",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc15_2a71f5d92d/configs/core90_recipe_reference.json",
+        "--row",
+        "M05",
+        "--dataset",
+        "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_xuc15_s392005_20260913_r1/M05",
+        "--source-contract",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_xuc15_s392005_20260913_r1/source_contract.json",
+        ""
+      ],
+      "gpu": "6"
+    }
+  },
+  "artifacts": {
+    "dispatcher": {},
+    "M00": {
+      "initialization.json": {
+        "bytes": 241,
+        "mtime": 1789239124.107544,
+        "content": {
+          "scratch_only": true,
+          "checkpoint_sources": [],
+          "seed": 392005,
+          "parameter_count": 1049827,
+          "batchnorm_modules": [],
+          "mixstyle_modules": [
+            "id_backbone.mixstyle",
+            "dom_backbone.mixstyle"
+          ],
+          "target_contact": false
+        }
+      },
+      "logs.jsonl": {
+        "bytes": 637,
+        "mtime": 1789239143.4135454,
+        "last": {
+          "epoch": 1,
+          "mean_loss": 16.86753378109056
+        }
+      },
+      "actions.jsonl": {
+        "bytes": 372260,
+        "mtime": 1789239147.9255457,
+        "last": {
+          "step": 62,
+          "execution_epoch": 2,
+          "origin_epoch": 2,
+          "action": "NORMAL",
+          "loss": 16.89691734313965,
+          "field_evaluations": 1,
+          "fusion": {
+            "x_enabled": false,
+            "u_enabled": false,
+            "legal_anchors": 0,
+            "normalized_valid_blocks": 0,
+            "normalized_unavailable_blocks": 0
+          }
+        }
+      },
+      "latest_ssdg.pth": {
+        "bytes": 18149182,
+        "mtime": 1789239143.7125454
+      },
+      "train.log": {
+        "bytes": 126,
+        "mtime": 1789239143.7135453,
+        "tail": "[XUC-INIT] row=M00 scratch_only=true seed=392005 domains=15 steps_per_epoch=49\n[EPOCH-END] E001/200 accepted=49 loss=16.86753\n"
+      }
+    },
+    "M01": {
+      "initialization.json": {
+        "bytes": 241,
+        "mtime": 1789239129.3925443,
+        "content": {
+          "scratch_only": true,
+          "checkpoint_sources": [],
+          "seed": 392005,
+          "parameter_count": 1049827,
+          "batchnorm_modules": [],
+          "mixstyle_modules": [
+            "id_backbone.mixstyle",
+            "dom_backbone.mixstyle"
+          ],
+          "target_contact": false
+        }
+      },
+      "actions.jsonl": {
+        "bytes": 112255,
+        "mtime": 1789239148.1205456,
+        "last": {
+          "step": 18,
+          "execution_epoch": 1,
+          "origin_epoch": 1,
+          "action": "NORMAL",
+          "loss": 16.932004928588867,
+          "field_evaluations": 1,
+          "fusion": {
+            "x_enabled": false,
+            "u_enabled": false,
+            "legal_anchors": 0,
+            "normalized_valid_blocks": 0,
+            "normalized_unavailable_blocks": 0
+          }
+        }
+      },
+      "train.log": {
+        "bytes": 79,
+        "mtime": 1789239129.3915443,
+        "tail": "[XUC-INIT] row=M01 scratch_only=true seed=392005 domains=15 steps_per_epoch=49\n"
+      }
+    },
+    "M02": {
+      "initialization.json": {
+        "bytes": 241,
+        "mtime": 1789239134.4975445,
+        "content": {
+          "scratch_only": true,
+          "checkpoint_sources": [],
+          "seed": 392005,
+          "parameter_count": 1049827,
+          "batchnorm_modules": [],
+          "mixstyle_modules": [
+            "id_backbone.mixstyle",
+            "dom_backbone.mixstyle"
+          ],
+          "target_contact": false
+        }
+      },
+      "actions.jsonl": {
+        "bytes": 11951,
+        "mtime": 1789239148.1745455,
+        "last": {
+          "step": 1,
+          "execution_epoch": 1,
+          "origin_epoch": 1,
+          "action": "NORMAL",
+          "loss": 17.8481502532959,
+          "field_evaluations": 1,
+          "fusion": {
+            "x_enabled": true,
+            "u_enabled": false,
+            "legal_anchors": 128,
+            "normalized_valid_blocks": 0,
+            "normalized_unavailable_blocks": 0
+          }
+        }
+      },
+      "train.log": {
+        "bytes": 79,
+        "mtime": 1789239134.4955447,
+        "tail": "[XUC-INIT] row=M02 scratch_only=true seed=392005 domains=15 steps_per_epoch=49\n"
+      }
+    },
+    "M03": {
+      "initialization.json": {
+        "bytes": 241,
+        "mtime": 1789239139.786545,
+        "content": {
+          "scratch_only": true,
+          "checkpoint_sources": [],
+          "seed": 392005,
+          "parameter_count": 1049827,
+          "batchnorm_modules": [],
+          "mixstyle_modules": [
+            "id_backbone.mixstyle",
+            "dom_backbone.mixstyle"
+          ],
+          "target_contact": false
+        }
+      },
+      "train.log": {
+        "bytes": 79,
+        "mtime": 1789239139.784545,
+        "tail": "[XUC-INIT] row=M03 scratch_only=true seed=392005 domains=15 steps_per_epoch=49\n"
+      }
+    },
+    "M04": {
+      "initialization.json": {
+        "bytes": 241,
+        "mtime": 1789239144.9015453,
+        "content": {
+          "scratch_only": true,
+          "checkpoint_sources": [],
+          "seed": 392005,
+          "parameter_count": 1049827,
+          "batchnorm_modules": [],
+          "mixstyle_modules": [
+            "id_backbone.mixstyle",
+            "dom_backbone.mixstyle"
+          ],
+          "target_contact": false
+        }
+      },
+      "train.log": {
+        "bytes": 79,
+        "mtime": 1789239144.8995454,
+        "tail": "[XUC-INIT] row=M04 scratch_only=true seed=392005 domains=15 steps_per_epoch=49\n"
+      }
+    },
+    "M05": {
+      "train.log": {
+        "bytes": 0,
+        "mtime": 1789239145.9545455,
+        "tail": ""
+      }
+    },
+    "M06": {},
+    "M07": {},
+    "M08": {},
+    "M09": {},
+    "M10": {},
+    "M11": {},
+    "M12": {},
+    "M13": {},
+    "M14": {}
+  },
+  "gpu": [
+    "GPU-56adac86-77cd-36c9-8770-dbf002650461, 3316514, 1632",
+    "GPU-a2d039ff-1792-4222-2b47-140429e10f94, 3316590, 1632",
+    "GPU-4fb45b9a-894a-536b-0e0a-09f7c1341562, 3317046, 1630",
+    "GPU-7b4bacb3-4901-6845-a414-0dfdfeeade97, 3317143, 308",
+    "GPU-95d925a1-7218-ca7b-adef-164241f4f491, 612456, 4716",
+    "GPU-ef5f59f2-e03e-fe6e-ea6b-3e03afc9b331, 3317218, 308"
+  ]
+}
