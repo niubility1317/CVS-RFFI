@@ -1,3 +1,5 @@
+最新只读复核（2026-09-12 23:47起）：8行E200和四场景评分全部完成；重新核验6336000条预测、1184组计数和1600轮日志。见[完整详细报告](detailed_refresh_20260912_2347/detailed_results.md)及[全部评分CSV](detailed_refresh_20260912_2347/scores_long.csv)。Ux_normalized的clean最高80.3697%，U0的三LEO均值最高64.8497%；其余8个条件行仍未启动。
+
 ## 完成结果（2026-09-12）
 
 VERIFIED：已选8行全部完成E200、final checkpoint、四场景固定预测及独立评分，逻辑矩阵为r1七行＋r2 head_only；r1原失败保留。全量1600轮日志、6336000条预测、1184组评分计数核验通过。详见[完整测试报告](completed_detail_20260912/completed_results.md)与[分组CSV](completed_detail_20260912/scores_long.csv)。其余8个条件行未运行。下文保留启动历史。
