@@ -1,0 +1,54 @@
+{
+  "time": 1789255146.77265,
+  "status": "TRAINING",
+  "rows": {
+    "M09": {
+      "status": "RUNNING",
+      "lines": {
+        "metrics_epoch.jsonl": 71
+      },
+      "numerical_errors": 0,
+      "unaccepted_steps": 0,
+      "actions": {},
+      "native_nonfinite_max": {},
+      "native_epoch": 71,
+      "completed_epoch": 71,
+      "fatal_markers": [],
+      "latest_checkpoint_present": false,
+      "final_checkpoint_present": false
+    },
+    "M10": {
+      "status": "RUNNING",
+      "lines": {
+        "metrics_epoch.jsonl": 75
+      },
+      "numerical_errors": 0,
+      "unaccepted_steps": 0,
+      "actions": {},
+      "native_nonfinite_max": {},
+      "native_epoch": 75,
+      "completed_epoch": 75,
+      "fatal_markers": [],
+      "latest_checkpoint_present": false,
+      "final_checkpoint_present": false
+    },
+    "M14": {
+      "status": "TRAINING_COMPLETE",
+      "lines": {
+        "actions.jsonl": 9800,
+        "logs.jsonl": 200
+      },
+      "numerical_errors": 0,
+      "unaccepted_steps": 0,
+      "actions": {
+        "NORMAL": 9800
+      },
+      "native_nonfinite_max": {},
+      "completed_epoch": 200,
+      "fatal_markers": [],
+      "latest_checkpoint_present": true,
+      "final_checkpoint_present": true
+    }
+  },
+  "errors": []
+}

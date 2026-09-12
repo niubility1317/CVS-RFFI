@@ -1,9 +1,11 @@
 """Read-only operational scan. No target truth or model states are loaded."""
-import json,math,re,time
+import argparse,json,math,re,time
 from pathlib import Path
 project=Path('/home/szu2070436088/2510044040/CV-SincNet')
 run=project/'runs/phase1_adv3b02_xuc15_s392005_20260913_r1'
 state=json.loads((run/'pipeline_state.json').read_text())
+parser=argparse.ArgumentParser();parser.add_argument('--rows',default='')
+selected=set(parser.parse_args().rows.split(','))-{''}
 result={'time':time.time(),'status':state['status'],'rows':{},'errors':[]}
 
 def counters(obj,result):
@@ -16,6 +18,7 @@ def counters(obj,result):
         for value in obj:counters(value,result)
 
 for rid,entry in state['rows'].items():
+    if selected and rid not in selected:continue
     row={'status':entry['status'],'lines':{},'numerical_errors':0,'unaccepted_steps':0,'actions':{},'native_nonfinite_max':{}}
     folder=run/rid
     for name in ('actions.jsonl','logs.jsonl','metrics_epoch.jsonl'):

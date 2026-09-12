@@ -110,3 +110,11 @@ VERIFIED_PARTIAL_TRAINING_COMPLETE：12行（M00—M08、M11—M13）完成E200�
 全量可用结构化日志和完整训练日志未发现非有限主loss/grad、未接受CORE90更新、Traceback/OOM或异常退出。M12/M13最终完成记录为CONTROL_NOT_ACTIVATED，两行C*整程0次CATCHUP/0次CORRECT；这是自然激活缺失的科学证据，不属于授权重跑条件，也不能宣称三机制协同已验证。M05本为passive，仅记录审计，不将其无动作视作缺陷。原C2行已有实际CORRECT。
 
 总体仍处TRAINING，等待全部15行最终checkpoint后才进入统一预测与独立评分。未改参、未停健康进程、未重发、未读取target truth。临时只读checkpoint核验脚本首次缺少release导入路径，补上后12行全部通过；该问题不属于实验训练故障。保留原错误输出，后续监控直接使用修正脚本。证据heartbeat_20260913_0617*.json及verify_completed_checkpoints.py。
+
+## 每小时监控：2026-09-13 07:18
+
+VERIFIED_CORE90_TRAINING_COMPLETE：13个CORE90行均完成E200。新完成M14的checkpoint独立读取通过：200epoch/9800主更新/seed392005/FP32/scratch-only/source角色EXACT_MATCH/模型状态有限；前12行已验证checkpoint的size/mtime未变化，沿用06:19结论，不重复加载。M14完整9800条actions及200条epoch记录无未接受更新或非有限主loss/grad。
+
+仅native M09/M10继续训练，分别完成E71/E75；PID/PPID/CWD/GPU/scratch及日志增长核对通过，两行全部可用epoch记录和完整训练日志无致命异常。当前每GPU至多1个compute进程，GPU4原有健康任务保留。M14本来关闭C*动作、仅保留暴露课程，其无控制动作按设计处理。
+
+矩阵整体仍为TRAINING，等待两条原生对照完成E200后统一预测/评分。未停机、未改参、未重发、未读取target truth。只读监控脚本新增--rows筛选，以后仅扫描仍增长的行并沿用未变完成产物的验证。原每小时监控保持ACTIVE。证据heartbeat_20260913_0718*.json。

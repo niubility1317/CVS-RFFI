@@ -1,0 +1,100 @@
+{
+  "status": "VERIFIED_CORE90_TRAINING_COMPLETE",
+  "rows": {
+    "M00": {
+      "status": "TRAINING_COMPLETE",
+      "gpu": 0,
+      "completed_epoch": 200,
+      "verified": true
+    },
+    "M01": {
+      "status": "TRAINING_COMPLETE",
+      "gpu": 1,
+      "completed_epoch": 200,
+      "verified": true
+    },
+    "M02": {
+      "status": "TRAINING_COMPLETE",
+      "gpu": 2,
+      "completed_epoch": 200,
+      "verified": true
+    },
+    "M03": {
+      "status": "TRAINING_COMPLETE",
+      "gpu": 3,
+      "completed_epoch": 200,
+      "verified": true
+    },
+    "M04": {
+      "status": "TRAINING_COMPLETE",
+      "gpu": 5,
+      "completed_epoch": 200,
+      "verified": true
+    },
+    "M05": {
+      "status": "TRAINING_COMPLETE",
+      "gpu": 6,
+      "completed_epoch": 200,
+      "verified": true
+    },
+    "M06": {
+      "status": "TRAINING_COMPLETE",
+      "gpu": 7,
+      "completed_epoch": 200,
+      "verified": true
+    },
+    "M07": {
+      "status": "TRAINING_COMPLETE",
+      "gpu": 5,
+      "completed_epoch": 200,
+      "verified": true
+    },
+    "M08": {
+      "status": "TRAINING_COMPLETE",
+      "gpu": 7,
+      "completed_epoch": 200,
+      "verified": true
+    },
+    "M09": {
+      "status": "RUNNING",
+      "gpu": 0,
+      "completed_epoch": 71,
+      "verified": true
+    },
+    "M10": {
+      "status": "RUNNING",
+      "gpu": 1,
+      "completed_epoch": 75,
+      "verified": true
+    },
+    "M11": {
+      "status": "TRAINING_COMPLETE",
+      "gpu": 2,
+      "completed_epoch": 200,
+      "verified": true
+    },
+    "M12": {
+      "status": "TRAINING_COMPLETE",
+      "gpu": 3,
+      "completed_epoch": 200,
+      "verified": true
+    },
+    "M13": {
+      "status": "TRAINING_COMPLETE",
+      "gpu": 6,
+      "completed_epoch": 200,
+      "verified": true
+    },
+    "M14": {
+      "status": "TRAINING_COMPLETE",
+      "gpu": 4,
+      "completed_epoch": 200,
+      "verified": true
+    }
+  },
+  "e200_verified": 13,
+  "still_running": 2,
+  "gpu_max_processes": 1,
+  "intervention": false,
+  "target_prediction_started": false
+}

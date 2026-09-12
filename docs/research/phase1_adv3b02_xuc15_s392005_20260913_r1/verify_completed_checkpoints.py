@@ -1,5 +1,5 @@
 """Read-only validation of this run's E200 artifacts; no model training or truth."""
-import json,time,sys
+import argparse,json,time,sys
 from pathlib import Path
 import torch
 torch.set_num_threads(2)
@@ -8,7 +8,10 @@ state=json.loads((root/'pipeline_state.json').read_text())
 sys.path.insert(0,str(Path(state['release'])/'code'))
 contract=json.loads((root/'source_contract.json').read_text())
 results={}
+parser=argparse.ArgumentParser();parser.add_argument('--rows',default='')
+selected=set(parser.parse_args().rows.split(','))-{''}
 for rid,entry in state['rows'].items():
+    if selected and rid not in selected:continue
     if entry['status']!='TRAINING_COMPLETE':continue
     path=root/rid/'final_ssdg.pth'
     saved=torch.load(path,map_location='cpu',weights_only=False)
