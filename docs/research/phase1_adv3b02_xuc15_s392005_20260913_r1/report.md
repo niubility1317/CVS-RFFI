@@ -96,3 +96,9 @@ VERIFIED_HEALTHY：15/15行保持RUNNING，实际PID/PPID/CWD/GPU/scratch核对�
 VERIFIED_HEALTHY：15/15行仍在原PID运行，PID/PPID/CWD/GPU/scratch全部匹配，8张GPU每卡2个compute进程，日志较03:15检查均增长。CORE90行完成E91—E107，native M09/M10完成E28/E29。扫描当前全部结构化日志及完整训练日志，CORE90非有限loss/grad、未接受更新均为0，无Traceback或CUDA OOM，无异常退出。native TEST/JOINT-METRIC中的nan是未构造target测试loader时的预期占位，不是训练数值异常；native final_only在E200以前不保存checkpoint也属预期。
 
 保持原训练、参数、seed及数据契约，未修复/重发，未读取target truth。C*无自然动作不作为异常处理。heartbeat继续每小时检查；本轮无需要通知的状态变化。证据heartbeat_20260913_0416*.json。
+
+## 每小时监控：2026-09-13 05:17
+
+VERIFIED_HEALTHY：15/15行保持原PID运行，PID/PPID/CWD/GPU/scratch均匹配，每GPU仍为2个compute进程，所有日志相对04:16均增长。CORE90行已完成E150—E166，native M09/M10完成E42/E43。全部CORE90行已进入含U_s的后段训练，实际日志仍持续推进；扫描所有可用结构化记录和完整训练日志，未发现非有限主loss/grad、未接受CORE90更新、Traceback、OOM或异常退出。native未构造target测试的nan占位及final_only无中途checkpoint按既定边界处理。
+
+仍处TRAINING，尚无最终预测/评分。未停机、未改参、未重发、未读取target truth。继续原每小时监控；本轮无需要通知的故障或任务状态变化。证据heartbeat_20260913_0517*.json。
