@@ -1,0 +1,18 @@
+/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()
+  return self.fget.__get__(instance, owner)()
+REAL_CHECKPOINT_SOURCE_SMOKE_PASS
+{"scene": "clean", "rows": 128, "seconds": 0.2312304973602295}
+{"scene": "clean", "rows": 12928, "seconds": 18.157026529312134}
+{"scene": "clean", "rows": 25728, "seconds": 36.02603006362915}
+{"scene": "clean", "rows": 38528, "seconds": 53.89845824241638}
+{"scene": "clean", "rows": 51328, "seconds": 71.76257753372192}
+{"scene": "clean", "rows": 64128, "seconds": 89.61751747131348}
+{"scene": "clean", "rows": 76928, "seconds": 107.45265507698059}
+{"scene": "clean", "rows": 89728, "seconds": 125.28248977661133}
+{"scene": "clean", "rows": 102528, "seconds": 143.10976600646973}
+{"scene": "clean", "rows": 115328, "seconds": 160.92098355293274}
+{"scene": "clean", "rows": 128128, "seconds": 178.71903443336487}
+{"scene": "clean", "rows": 140928, "seconds": 196.53921365737915}
+{"scene": "clean", "rows": 153728, "seconds": 214.5171275138855}
+{"scene": "clean", "rows": 166528, "seconds": 232.1271457672119}
+SEALED clean

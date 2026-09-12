@@ -1,0 +1,18 @@
+/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()
+  return self.fget.__get__(instance, owner)()
+REAL_CHECKPOINT_SOURCE_SMOKE_PASS
+{"scene": "leo_clear_weak", "rows": 128, "seconds": 0.39645838737487793}
+{"scene": "leo_clear_weak", "rows": 12928, "seconds": 34.98688459396362}
+{"scene": "leo_clear_weak", "rows": 25728, "seconds": 69.1949896812439}
+{"scene": "leo_clear_weak", "rows": 38528, "seconds": 103.39231634140015}
+{"scene": "leo_clear_weak", "rows": 51328, "seconds": 137.68133354187012}
+{"scene": "leo_clear_weak", "rows": 64128, "seconds": 172.1218616962433}
+{"scene": "leo_clear_weak", "rows": 76928, "seconds": 206.5891308784485}
+{"scene": "leo_clear_weak", "rows": 89728, "seconds": 240.90460562705994}
+{"scene": "leo_clear_weak", "rows": 102528, "seconds": 275.00150966644287}
+{"scene": "leo_clear_weak", "rows": 115328, "seconds": 309.3544137477875}
+{"scene": "leo_clear_weak", "rows": 128128, "seconds": 343.75952911376953}
+{"scene": "leo_clear_weak", "rows": 140928, "seconds": 378.1691222190857}
+{"scene": "leo_clear_weak", "rows": 153728, "seconds": 412.6883659362793}
+{"scene": "leo_clear_weak", "rows": 166528, "seconds": 446.7638623714447}
+SEALED leo_clear_weak
