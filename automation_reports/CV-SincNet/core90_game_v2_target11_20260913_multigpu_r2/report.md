@@ -15,3 +15,11 @@ CWD=/home/szu2070436088/2510044040/CV-SincNet/releases/core90_game_v2_target11_2
 命令：`CUDA_VISIBLE_DEVICES=5,0,1,2,3,6,7 python -u code/scripts/core90_game_target_test.py --input-manifest code/configs/core90_game_v2_target11_20260912_r1.json --output-dir /home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_v2_target11_20260913_multigpu_r2 --device cuda:0 --devices cuda:0 cuda:1 cuda:2 cuda:3 cuda:4 cuda:5 cuda:6`。实际发布用UUID列表固定映射，OMP_NUM_THREADS=1、MKL_NUM_THREADS=1以避免7线程CPU过度订阅。
 
 失败规则：来源/契约错误、非有限logits、串并行smoke不一致、buffer变化、预测不完整或输出已存在立即失败并保留产物，不盲目重试，不以低分停机。预期frozen_manifest含model_devices、11份预测、predictions_complete、11份target_scores及complete.json；完整闭合后才报告分数。
+
+## 实际启动后态
+
+2026-09-13 00:30 CST启动，RUNNING / VERIFIED。9项聚焦测试通过，独立P0/P1审查通过。发布commit=821d44904564c322769d013003dd5be297a84cc9，远端OID独立读回一致；归档SHA256=5126abaed370721945a379046778090afa34135e574d5e033cb471976d04bbcb，本地/远端一致，远端编译PASS。
+
+旧PID3244844的CWD/argv精确核实后SIGTERM，独立读回进程消失，旧预测及日志保留。新PID3258296，PPID=1，CWD/argv正确；nvidia-smi确认同一进程使用物理GPU0/1/2/3/5/6/7，GPU4仅原PID612456。frozen_manifest确认11模型分布7逻辑设备：物理5/0/1/2各2模型，物理3/6/7各1模型。
+
+SOURCE_CHECKPOINT_SMOKE_PASS证明源样本串行与并发预测及置信度一致；clean预测已开始，11文件两次读回持续增长。所有卡均为RTX3090。完整评分尚未完成，不能将启动成功写成最终成绩。

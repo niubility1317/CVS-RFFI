@@ -1,0 +1,111 @@
+{
+  "time": 1789230734.075127,
+  "pid": 3258296,
+  "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/core90_game_v2_target11_20260913_multigpu_r2",
+  "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u code/scripts/core90_game_target_test.py --input-manifest code/configs/core90_game_v2_target11_20260912_r1.json --output-dir /home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_v2_target11_20260913_multigpu_r2 --device cuda:0 --devices cuda:0 cuda:1 cuda:2 cuda:3 cuda:4 cuda:5 cuda:6 ",
+  "process": "    PID    PPID     ELAPSED COMMAND\n3258296       1       01:27 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u code/scripts/core90_game_target_test.py --input-manifest code/configs/core90_game_v2_target11_20260912_r1.json --output-dir /home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_v2_target11_20260913_multigpu_r2 --device cuda:0 --devices cuda:0 cuda:1 cuda:2 cuda:3 cuda:4 cuda:5 cuda:6\n",
+  "gpu": "gpu_uuid, pid, used_gpu_memory [MiB]\nGPU-56adac86-77cd-36c9-8770-dbf002650461, 3258296, 1392 MiB\nGPU-a2d039ff-1792-4222-2b47-140429e10f94, 3258296, 1392 MiB\nGPU-4fb45b9a-894a-536b-0e0a-09f7c1341562, 3258296, 1392 MiB\nGPU-7b4bacb3-4901-6845-a414-0dfdfeeade97, 3258296, 1388 MiB\nGPU-95d925a1-7218-ca7b-adef-164241f4f491, 612456, 4716 MiB\nGPU-ef5f59f2-e03e-fe6e-ea6b-3e03afc9b331, 3258296, 1392 MiB\nGPU-5463e082-259e-537b-603a-01575d45801c, 3258296, 1388 MiB\nGPU-9c4eb614-ca19-a390-aaf4-801f8980b6a9, 3258296, 1388 MiB\n",
+  "manifest": {
+    "schema": "core90_target_frozen_multiseed_v2",
+    "rows": [
+      "V2_D_seed392006",
+      "V2_D_seed392007",
+      "V2_E_seed392005",
+      "V2_E_seed392006",
+      "V2_E_seed392007",
+      "V2_F_seed392005",
+      "V2_F_seed392006",
+      "V2_F_seed392007",
+      "V2_STRONG_SOURCE_LR_LOW_seed392005",
+      "V2_STRONG_SOURCE_LR_BASE_seed392005",
+      "V2_STRONG_SOURCE_LR_HIGH_seed392005"
+    ],
+    "seed": null,
+    "training_seeds": {
+      "V2_D_seed392006": 392006,
+      "V2_D_seed392007": 392007,
+      "V2_E_seed392005": 392005,
+      "V2_E_seed392006": 392006,
+      "V2_E_seed392007": 392007,
+      "V2_F_seed392005": 392005,
+      "V2_F_seed392006": 392006,
+      "V2_F_seed392007": 392007,
+      "V2_STRONG_SOURCE_LR_LOW_seed392005": 392005,
+      "V2_STRONG_SOURCE_LR_BASE_seed392005": 392005,
+      "V2_STRONG_SOURCE_LR_HIGH_seed392005": 392005
+    },
+    "target_exposure_status": "previously_exposed_benchmark_recheck",
+    "checkpoints": {
+      "V2_D_seed392006": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_v2_20260911_r3/V2_D_seed392006/final_ssdg.pth",
+      "V2_D_seed392007": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_v2_20260911_r3/V2_D_seed392007/final_ssdg.pth",
+      "V2_E_seed392005": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_v2_20260911_r3/V2_E_seed392005/final_ssdg.pth",
+      "V2_E_seed392006": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_v2_20260911_r3/V2_E_seed392006/final_ssdg.pth",
+      "V2_E_seed392007": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_v2_20260911_r3/V2_E_seed392007/final_ssdg.pth",
+      "V2_F_seed392005": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_v2_20260911_r3/V2_F_seed392005/final_ssdg.pth",
+      "V2_F_seed392006": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_v2_20260911_r3/V2_F_seed392006/final_ssdg.pth",
+      "V2_F_seed392007": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_v2_20260911_r3/V2_F_seed392007/final_ssdg.pth",
+      "V2_STRONG_SOURCE_LR_LOW_seed392005": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_v2_20260911_r3/V2_STRONG_SOURCE_LR_LOW_seed392005/final_ssdg.pth",
+      "V2_STRONG_SOURCE_LR_BASE_seed392005": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_v2_20260911_r3/V2_STRONG_SOURCE_LR_BASE_seed392005/final_ssdg.pth",
+      "V2_STRONG_SOURCE_LR_HIGH_seed392005": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_game_v2_20260911_r3/V2_STRONG_SOURCE_LR_HIGH_seed392005/final_ssdg.pth"
+    },
+    "target_rxs": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "samples_per_scene": 168000,
+    "scenes": [
+      "clean",
+      "leo_clear_weak",
+      "leo_low_elev_weak",
+      "leo_rain_weak"
+    ],
+    "batch_size": 256,
+    "augmentation_seed": 392002,
+    "num_classes": 6,
+    "source_only": false,
+    "scope": "four_view_closed_set_target_diagnostic",
+    "fitting": false,
+    "selection": false,
+    "all_rows_predicted_before_truth": true,
+    "model_devices": {
+      "V2_D_seed392006": "cuda:0",
+      "V2_D_seed392007": "cuda:1",
+      "V2_E_seed392005": "cuda:2",
+      "V2_E_seed392006": "cuda:3",
+      "V2_E_seed392007": "cuda:4",
+      "V2_F_seed392005": "cuda:5",
+      "V2_F_seed392006": "cuda:6",
+      "V2_F_seed392007": "cuda:0",
+      "V2_STRONG_SOURCE_LR_LOW_seed392005": "cuda:1",
+      "V2_STRONG_SOURCE_LR_BASE_seed392005": "cuda:2",
+      "V2_STRONG_SOURCE_LR_HIGH_seed392005": "cuda:3"
+    }
+  },
+  "bytes": {
+    "V2_E_seed392007_predictions.jsonl": 2826294,
+    "V2_D_seed392006_predictions.jsonl": 2834863,
+    "V2_D_seed392007_predictions.jsonl": 2843969,
+    "V2_F_seed392007_predictions.jsonl": 2854640,
+    "V2_F_seed392005_predictions.jsonl": 2835926,
+    "V2_E_seed392006_predictions.jsonl": 2835881,
+    "V2_STRONG_SOURCE_LR_BASE_seed392005_predictions.jsonl": 2869408,
+    "V2_STRONG_SOURCE_LR_HIGH_seed392005_predictions.jsonl": 2825950,
+    "V2_F_seed392006_predictions.jsonl": 2825990,
+    "V2_STRONG_SOURCE_LR_LOW_seed392005_predictions.jsonl": 2843548,
+    "V2_E_seed392005_predictions.jsonl": 2834060
+  },
+  "stdout": "SOURCE_CHECKPOINT_SMOKE_PASS\n{\"stage\": \"predict\", \"scene\": \"clean\", \"samples\": 256, \"total\": 168000}\n",
+  "complete": false,
+  "old_pid_exists": false
+}

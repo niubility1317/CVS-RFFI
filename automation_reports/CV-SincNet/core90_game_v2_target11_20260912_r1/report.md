@@ -22,3 +22,7 @@
 状态：RUNNING / VERIFIED，测试尚未完成。7项聚焦测试通过；发布commit=e7ba210359f5e19852cc6658eb4a47b3b71a26a9，远端分支OID独立读回一致。归档SHA256=0e79c74c28aba570aedb8ea37591c60baccb29d6fe9843de7ac415a993d43820，本地/远端一次比对一致，远端编译PASS。
 
 PID=3244844，PPID=1，CWD/argv与预登记一致，实际GPU5 UUID绑定正确（708MiB）。日志出现SOURCE_CHECKPOINT_SMOKE_PASS及clean预测进度；frozen_manifest核实11模型、168000样本/场景。11份prediction文件连续两次读回均增长，尚无complete.json。未干预其他任务。结束后runner自动执行完整预测检查及独立评分；此启动记录不代表测试成绩。
+
+## 用户要求调整GPU分配
+
+2026-09-13 00:30 CST按用户要求停止单卡PID3244844（独立核实退出），所有partial预测保留，未生成最终评分。替代run为core90_game_v2_target11_20260913_multigpu_r2，11模型均匀放置七卡并行推理，见相邻run报告。原RUNNING记录为历史状态。
