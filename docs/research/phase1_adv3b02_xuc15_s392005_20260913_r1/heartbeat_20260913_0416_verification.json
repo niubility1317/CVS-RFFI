@@ -1,0 +1,98 @@
+{
+  "status": "VERIFIED_HEALTHY",
+  "rows": {
+    "M00": {
+      "pid_identity": "VERIFIED",
+      "gpu": 0,
+      "completed_epoch": 98,
+      "log_growth": true
+    },
+    "M01": {
+      "pid_identity": "VERIFIED",
+      "gpu": 1,
+      "completed_epoch": 100,
+      "log_growth": true
+    },
+    "M02": {
+      "pid_identity": "VERIFIED",
+      "gpu": 2,
+      "completed_epoch": 101,
+      "log_growth": true
+    },
+    "M03": {
+      "pid_identity": "VERIFIED",
+      "gpu": 3,
+      "completed_epoch": 107,
+      "log_growth": true
+    },
+    "M04": {
+      "pid_identity": "VERIFIED",
+      "gpu": 5,
+      "completed_epoch": 103,
+      "log_growth": true
+    },
+    "M05": {
+      "pid_identity": "VERIFIED",
+      "gpu": 6,
+      "completed_epoch": 103,
+      "log_growth": true
+    },
+    "M06": {
+      "pid_identity": "VERIFIED",
+      "gpu": 7,
+      "completed_epoch": 104,
+      "log_growth": true
+    },
+    "M07": {
+      "pid_identity": "VERIFIED",
+      "gpu": 5,
+      "completed_epoch": 103,
+      "log_growth": true
+    },
+    "M08": {
+      "pid_identity": "VERIFIED",
+      "gpu": 7,
+      "completed_epoch": 102,
+      "log_growth": true
+    },
+    "M09": {
+      "pid_identity": "VERIFIED",
+      "gpu": 0,
+      "completed_epoch": 28,
+      "log_growth": true
+    },
+    "M10": {
+      "pid_identity": "VERIFIED",
+      "gpu": 1,
+      "completed_epoch": 29,
+      "log_growth": true
+    },
+    "M11": {
+      "pid_identity": "VERIFIED",
+      "gpu": 2,
+      "completed_epoch": 103,
+      "log_growth": true
+    },
+    "M12": {
+      "pid_identity": "VERIFIED",
+      "gpu": 3,
+      "completed_epoch": 104,
+      "log_growth": true
+    },
+    "M13": {
+      "pid_identity": "VERIFIED",
+      "gpu": 6,
+      "completed_epoch": 102,
+      "log_growth": true
+    },
+    "M14": {
+      "pid_identity": "VERIFIED",
+      "gpu": 4,
+      "completed_epoch": 91,
+      "log_growth": true
+    }
+  },
+  "gpu_max_processes": 2,
+  "intervention": false,
+  "target_prediction_started": false
+}

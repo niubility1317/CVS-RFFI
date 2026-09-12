@@ -90,3 +90,9 @@ M00/M08/M12真实入口CPU一步训练均成功，checkpoint由本次synthetic s
 VERIFIED_HEALTHY：15/15行保持RUNNING，实际PID/PPID/CWD/GPU/scratch核对通过，每GPU仍为2个compute进程，所有行日志相对前次读回增长。CORE90行已完成E29—E35；native M09/M10已完成E12/E13。已扫描全部可用actions/logs/metrics_epoch结构化记录和完整训练日志，CORE90非有限loss/grad与未接受更新均为0，未发现Traceback、CUDA OOM或异常退出。native非有限skip计数未暴露于现有epoch字段，不将缺失计数写成0；完整日志无致命标记且epoch正常推进。native尚无checkpoint符合final_only。
 
 原C2比较分支已自然出现CORRECT，C*未触发仍按既定门槛运行，不为激活改阈值；这不是性能结论。未干预、未重发、未访问target truth。保留每小时监控；证据heartbeat_20260913_0315*.json及heartbeat_scan.py。
+
+## 每小时监控：2026-09-13 04:16
+
+VERIFIED_HEALTHY：15/15行仍在原PID运行，PID/PPID/CWD/GPU/scratch全部匹配，8张GPU每卡2个compute进程，日志较03:15检查均增长。CORE90行完成E91—E107，native M09/M10完成E28/E29。扫描当前全部结构化日志及完整训练日志，CORE90非有限loss/grad、未接受更新均为0，无Traceback或CUDA OOM，无异常退出。native TEST/JOINT-METRIC中的nan是未构造target测试loader时的预期占位，不是训练数值异常；native final_only在E200以前不保存checkpoint也属预期。
+
+保持原训练、参数、seed及数据契约，未修复/重发，未读取target truth。C*无自然动作不作为异常处理。heartbeat继续每小时检查；本轮无需要通知的状态变化。证据heartbeat_20260913_0416*.json。
