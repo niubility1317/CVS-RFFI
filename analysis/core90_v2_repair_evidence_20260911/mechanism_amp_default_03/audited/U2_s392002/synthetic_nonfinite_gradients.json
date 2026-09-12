@@ -1,0 +1,37 @@
+[
+  {
+    "parameter_name": "id_backbone.pa_stats_proj.0.weight",
+    "nonfinite_elements": 18,
+    "nan_elements": 0,
+    "posinf_elements": 15,
+    "neginf_elements": 3
+  },
+  {
+    "parameter_name": "id_backbone.sinc.low_hz_",
+    "nonfinite_elements": 24,
+    "nan_elements": 24,
+    "posinf_elements": 0,
+    "neginf_elements": 0
+  },
+  {
+    "parameter_name": "id_backbone.pa_stats_proj.0.weight",
+    "nonfinite_elements": 7,
+    "nan_elements": 0,
+    "posinf_elements": 7,
+    "neginf_elements": 0
+  },
+  {
+    "parameter_name": "id_backbone.cls_head.joint_proj.0.weight",
+    "nonfinite_elements": 59,
+    "nan_elements": 0,
+    "posinf_elements": 59,
+    "neginf_elements": 0
+  },
+  {
+    "parameter_name": "id_backbone.cls_head.joint_proj.0.weight",
+    "nonfinite_elements": 3,
+    "nan_elements": 0,
+    "posinf_elements": 3,
+    "neginf_elements": 0
+  }
+]

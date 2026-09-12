@@ -1,0 +1,30 @@
+{
+  "status": "VERIFIED",
+  "scope": "synthetic complete source metadata grid; not a formal run or target evaluation",
+  "tx": 6,
+  "rx": 5,
+  "days": 3,
+  "K": 2,
+  "physical_records": 6300,
+  "role_combinations_per_candidate": 36,
+  "full_feasible_candidates": 225,
+  "actual_candidate_pool": 128,
+  "all_feasible_reachable": {
+    "observed_rectangles": 450,
+    "response_query_rectangles": 450,
+    "directed_response_transfers": 4050
+  },
+  "actual_pool_reachable": {
+    "observed_rectangles": 450,
+    "response_query_rectangles": 450,
+    "directed_response_transfers": 3798
+  },
+  "sampled_steps": 49,
+  "sampled_blocks": 196,
+  "actually_observed": {
+    "observed_rectangles": 450,
+    "response_query_rectangles": 158,
+    "directed_response_transfers": 379
+  },
+  "interpretation": "reachable sets are structural upper bounds; observed/query coverage counts are separate"
+}

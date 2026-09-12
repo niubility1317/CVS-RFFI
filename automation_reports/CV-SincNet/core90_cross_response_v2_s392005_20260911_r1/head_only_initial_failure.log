@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "/home/szu2070436088/2510044040/CV-SincNet/releases/core90_cross_response_v2_392005_e5bffaa3/code/SSDG/train_ssdg.py", line 12844, in <module>
+    raise SystemExit(main())
+  File "/home/szu2070436088/2510044040/CV-SincNet/releases/core90_cross_response_v2_392005_e5bffaa3/code/SSDG/train_ssdg.py", line 12840, in main
+    return train(args)
+  File "/home/szu2070436088/2510044040/CV-SincNet/releases/core90_cross_response_v2_392005_e5bffaa3/code/SSDG/train_ssdg.py", line 7503, in train
+    cr_runtime = CrossResponseRuntime(model, data_ctx, cr_config, args, device) if cr_config is not None else None
+  File "/home/szu2070436088/2510044040/CV-SincNet/releases/core90_cross_response_v2_392005_e5bffaa3/code/cvsrffi/cross_response/integration.py", line 196, in __init__
+    self.auxiliary_transaction = IndependentAuxiliaryTransaction(self.parameters(),
+  File "/home/szu2070436088/2510044040/CV-SincNet/releases/core90_cross_response_v2_392005_e5bffaa3/code/cvsrffi/cross_response/training.py", line 16, in __init__
+    self.scaler = torch.amp.GradScaler("cuda", enabled=amp)
+AttributeError: module 'torch.amp' has no attribute 'GradScaler'

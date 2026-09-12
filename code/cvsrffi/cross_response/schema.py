@@ -20,7 +20,9 @@ class RolePlan:
     query_tx: Tuple[int, ...]
     donor_rx: Tuple[int, ...]
     query_rx: Tuple[int, ...]
-    rotation: int
+    rotation: int = 0
+    role_policy_version: str = "legacy_halves_v1"
+    plan_id: int = 0
 
     @property
     def independent_query_rectangle(self):

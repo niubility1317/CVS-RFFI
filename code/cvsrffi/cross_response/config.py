@@ -19,14 +19,68 @@ KEYS = {
     "event_windows",
 }
 
+V2_KEYS = {"implementation_version", "direction_shrinkage", "diagnostic_interval", "statistics_audit",
+           "gain_strategy", "evidence_config", "decision_mode", "decision_calibration",
+           "interaction_mode", "response_routing", "mechanism_gate", "response_decomposition",
+           "source_audit_enabled", "source_baseline_fit_steps", "source_baseline_fit_lr"}
+V2_KEYS.update(("geometry_min_norm", "mechanism_audit"))
+
 
 def validate_runtime_config(c):
-    unknown = set(c) - KEYS
+    unknown = set(c) - KEYS - V2_KEYS
     if unknown:
         raise ValueError(f"unused cross-response parameters: {sorted(unknown)}")
     for key in KEYS - {"event_windows"}:
         if key not in c:
             raise ValueError(f"missing cross-response parameter: {key}")
+    if c.get("implementation_version", 1) not in (1, 2):
+        raise ValueError("unsupported implementation_version")
+    if not math.isfinite(c.get("direction_shrinkage", 0.)) or c.get("direction_shrinkage", 0.) < 0:
+        raise ValueError("direction_shrinkage must be finite and nonnegative")
+    if type(c.get("diagnostic_interval", 20)) is not int or c.get("diagnostic_interval", 20) < 1:
+        raise ValueError("diagnostic_interval must be a positive integer")
+    if c.get("decision_mode", "vectorized") not in ("vectorized", "delta", "delta_pairs"):
+        raise ValueError("unknown decision_mode")
+    if c.get("decision_mode") in ("delta", "delta_pairs") and not c.get("decision_calibration"):
+        raise ValueError("SOURCE_PARAMETERS_UNFROZEN: delta requires source calibration and validation evidence")
+    if c.get("source_audit_enabled") and (c.get("source_baseline_fit_steps") is None or c.get("source_baseline_fit_lr") is None):
+        raise ValueError("source baseline fit budget must be explicit")
+    if c.get("gain_strategy") == "reliable_evidence":
+        if not c["response_enabled"] or c["head_only"] or c["permanent_detach"]:
+            raise ValueError("reliable feedback requires a current joint response objective")
+        if c.get('mechanism_gate') is None:
+            raise ValueError('SOURCE_PARAMETERS_UNFROZEN: reliable feedback requires a current joint mechanism gate')
+    audit = c.get('mechanism_audit')
+    if c.get('mechanism_gate') is not None:
+        if not c['response_enabled'] or c['head_only'] or c['permanent_detach']:
+            raise ValueError('source mechanism gate requires a current joint response objective')
+        if not c.get('source_audit_enabled') or not isinstance(audit, dict):
+            raise ValueError('source mechanism gate requires explicit source audit budgets')
+        required = {'interval_steps', 'pairs_per_observation', 'query_records_per_cell', 'seed', 'identity_scope'}
+        if set(audit) != required:
+            raise ValueError('all source mechanism audit controls must be explicit')
+        for key in required - {'identity_scope'}:
+            if type(audit[key]) is not int or audit[key] < (0 if key == 'seed' else 1):
+                raise ValueError('invalid source mechanism audit control: ' + key)
+        if audit['pairs_per_observation'] < 2:
+            raise ValueError('source update utility requires multiple paired batches')
+        terminal = c['mechanism_gate'].get('terminal_identity_module')
+        if terminal not in ('time_fuse', 'freq_fuse') or audit['identity_scope'] not in ('cls_head', terminal):
+            raise ValueError('source mechanism audit permits cls_head then one verified terminal module')
+    elif audit is not None:
+        raise ValueError('mechanism audit requires explicit source gate thresholds')
+    if c.get("implementation_version") == 2 and c["gradient_tail_prefixes"] != ["id_backbone.cls_head"]:
+        raise ValueError("V2 starts at cls_head; one feature-module extension requires fresh source gate evidence")
+    if c.get("response_routing", "full_error") not in ("full_error", "decomposed"):
+        raise ValueError("unknown response_routing")
+    if c.get("response_routing") == "decomposed":
+        d = c.get("response_decomposition") or {}
+        if d.get("source_frozen") is not True or d.get("source_role") != "L_s" or not d.get("evidence_id"):
+            raise ValueError("SOURCE_PARAMETERS_UNFROZEN: decomposed routing requires source noise evidence")
+        if c.get("mechanism_gate") is None:
+            raise ValueError("decomposed joint routing requires an explicit source mechanism gate configuration")
+    if c.get("interaction_mode", "raw") not in ("raw", "normalized"):
+        raise ValueError("unknown interaction_mode")
     for key in ("gate_min_blocks", "gate_stable_checks", "gate_interval_epochs", "source_fit_max_records",
                 "source_eval_max_blocks", "scheduler_candidate_limit", "decision_min_records"):
         if type(c[key]) is not int or c[key] < 1:
@@ -41,10 +95,13 @@ def validate_runtime_config(c):
                 "head_only", "permanent_detach", "role_rotation"):
         if type(c[key]) is not bool:
             raise ValueError(f"{key} must be boolean, not a truthy string")
-    for key, expected in (("normalization_policy", "frozen_source"), ("mixstyle_role_policy", "donor_only"),
+    for key, expected in (("normalization_policy", "frozen_source"),
                           ("gradient_stage", "warmup")):
         if c[key] != expected:
             raise ValueError(f"unsupported {key}: {c[key]}")
+    if c["mixstyle_role_policy"] != "donor_only":
+        if not (c.get("implementation_version") == 2 and c["mixstyle_role_policy"] == "original_mask" and not c["response_enabled"]):
+            raise ValueError("original mask is only an explicit V2 no-response organization control")
     if not c["k_menu"] or c["K"] not in c["k_menu"] or any(type(k) is not int or k < 1 for k in c["k_menu"]):
         raise ValueError("k_menu must contain positive physical K including configured K")
     if not c["gradient_tail_prefixes"] or any(not x.startswith("id_backbone.") for x in c["gradient_tail_prefixes"]):

@@ -1,0 +1,27 @@
+{
+  "path": "E:\\type10-7\\logs\\core90_v2_repair_20260911\\mechanism_fp32_01\\audited\\synthetic_wisig.pkl",
+  "tx": 6,
+  "rx": 6,
+  "days": 2,
+  "records_per_cell": 128,
+  "iq_length": 256,
+  "unique_physical_records": 9216,
+  "source_receivers": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "target_receivers": [
+    5
+  ],
+  "source_days": [
+    0
+  ],
+  "target_days": [
+    1
+  ],
+  "synthetic": true,
+  "seed": 413
+}

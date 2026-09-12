@@ -1,0 +1,19 @@
+{
+  "status": "NOT_REQUIRED",
+  "protocol": "fixed_source_val_multiview_local_component_v2",
+  "selection_policy": "final_only",
+  "reference": {
+    "status": "NOT_AVAILABLE",
+    "reason": "tail_reference_metric_missing"
+  },
+  "final": {
+    "status": "OMITTED_SYNTHETIC_TEST",
+    "reason": "unrelated bounded-fixture report"
+  },
+  "p99_delta_deg": null,
+  "tail_cvar_delta_deg": null,
+  "proxy_vaccept_delta": null,
+  "satellite_protocol_registry_sha256": "d38c3bcc85699c97c9bca53a84a5268b51db140a6767c28fae06cf65cc5db215",
+  "blocks_final_export": false,
+  "blocks_promotion": false
+}

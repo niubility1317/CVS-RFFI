@@ -1,0 +1,11 @@
+{
+  "status": "VERIFIED",
+  "baseline_args_exact_equal_to_previous_s392005": true,
+  "model_seed": 392005,
+  "data_seed": 392005,
+  "tests": {"passed":31,"skipped":0,"elapsed_seconds":10.09,"modules":["code/tests/test_cross_response_dispatcher.py","code/tests/test_cross_response_matrix.py","tests/test_cross_response_v2_integration.py"]},
+  "independent_review": {"status":"PASSED_FOR_SELECTED_EIGHT", "p0_p1_remaining_in_selected_rows":0,"excluded_joint_rows_reason":"Unconfigured real source gate cannot satisfy identity-response activation; keep existing activation checks"},
+  "selected_variants":["U0","U1","U1_mask_off","U3","Ux","Ux_normalized","head_only","permanent_detach"],
+  "total_compute_capacity_per_gpu":2,
+  "unchanged_prior_validation":"repair baseline d2368f2c: 189 passed, 12 skipped; real CUDA source audit parity FP32/AMP and fail-closed evidence"
+}
