@@ -1,0 +1,19 @@
+{
+  "status": "VERIFIED",
+  "time": "2026-09-13T19:42:26.939035+08:00",
+  "execution_commit": "e7dbe643f5b85062e8f4e2de6d711a5447c7a422",
+  "release": "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc_full_e7dbe643f5",
+  "dispatcher_pid": 4068467,
+  "row_status_counts": {
+    "RUNNING": 8,
+    "QUEUED": 1
+  },
+  "all_running_rows_accepted_updates": true,
+  "full_options_match_in_started_full_rows": true,
+  "scratch_provenance_match": true,
+  "observed_max_gpu_processes": 2,
+  "remote_cuda_diagnostic": "PASS",
+  "cuda_peak_reserved_gib": 3.48046875,
+  "formal_activation_scope": "Warmup currently; E21/E61 conditional paths not yet observed in formal training",
+  "automation_status": "PAUSED"
+}
