@@ -16,7 +16,7 @@ def table(headers,rows):
     return '\n'.join(['|'+'|'.join(headers)+'|','|'+'|'.join(['---']*len(headers))+'|']+['|'+'|'.join(map(str,row))+'|' for row in rows])+'\n'
 
 def main():
-    p=argparse.ArgumentParser();p.add_argument('--audit',required=True);args=p.parse_args()
+    p=argparse.ArgumentParser();p.add_argument('--audit',required=True);p.add_argument('--tables-only',action='store_true');args=p.parse_args()
     path=Path(args.audit);out=path.parent;data=json.loads(path.read_text(encoding='utf-8'))
     completed=[r for r in data['rows'] if r['queue_state']=='completed'];byid={r['run_id']:r for r in completed}
     scene_rows=[];tx_rows=[];rx_rows=[];day_rows=[];cm_rows=[];epoch_rows=[];run_rows=[];activation=[];progress=[]
@@ -77,6 +77,7 @@ def main():
         max_score_error=max(r['independent_scores']['saved_metric_max_absolute_error'] for r in completed),
         all_stdout_marker_count=sum(len(r['stdout_markers']) for r in data['rows']),run_summary=run_rows,seed_aggregates=aggregates,paired_deltas=paired)
     (out/'summary.json').write_text(json.dumps(summary,indent=2)+'\n',encoding='utf-8')
+    if args.tables_only:return
     pct=lambda x:f'{100*x:.3f}'
     lines=['# CORE90 GAME V2已完成实验详细测试数据','',
         f"数据截止：{data['snapshot_finished']}。**{len(completed)}/21行完成E200和四场景预测评分，其余{summary['active']}行仍运行或评分中。**本报告只汇总已完成行的最终测试指标。",'',
