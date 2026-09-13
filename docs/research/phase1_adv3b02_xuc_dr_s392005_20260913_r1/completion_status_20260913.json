@@ -1,0 +1,781 @@
+{
+  "state": {
+    "status": "COMPLETE",
+    "run_id": "phase1_adv3b02_xuc_dr_s392005_20260913_r1",
+    "pid": 3535115,
+    "release": "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc_dr_4d3880208e",
+    "commit": "4d3880208e40e0e8a875284e2dc31e41ad0d54f4",
+    "seed": 392005,
+    "epochs": 200,
+    "created": 1789269117.0298018,
+    "rows": {
+      "DR-M14": {
+        "status": "SCORED",
+        "pid": 3535129,
+        "gpu": 2,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc_dr_4d3880208e/code/scripts/train_xuc.py",
+          "--matrix",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc_dr_4d3880208e/configs/matrix_dr.json",
+          "--recipe",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc_dr_4d3880208e/configs/core90_recipe_reference.json",
+          "--row",
+          "DR-M14",
+          "--dataset",
+          "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+          "--output",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_xuc_dr_s392005_20260913_r1/DR-M14",
+          "--source-contract",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_xuc_dr_s392005_20260913_r1/source_contract.json"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc_dr_4d3880208e",
+        "started": 1789269117.3575344,
+        "exit_code": 0,
+        "finished": 1789282401.9204752,
+        "artifact_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_xuc_dr_s392005_20260913_r1/DR-M14",
+        "prediction_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_xuc_dr_s392005_20260913_r1/DR-M14/target_prediction/predictions.json",
+        "predictions_fixed": true
+      },
+      "DR-M11": {
+        "status": "SCORED",
+        "pid": 3535201,
+        "gpu": 3,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc_dr_4d3880208e/code/scripts/train_xuc.py",
+          "--matrix",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc_dr_4d3880208e/configs/matrix_dr.json",
+          "--recipe",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc_dr_4d3880208e/configs/core90_recipe_reference.json",
+          "--row",
+          "DR-M11",
+          "--dataset",
+          "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+          "--output",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_xuc_dr_s392005_20260913_r1/DR-M11",
+          "--source-contract",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_xuc_dr_s392005_20260913_r1/source_contract.json"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc_dr_4d3880208e",
+        "started": 1789269122.5549097,
+        "exit_code": 0,
+        "finished": 1789283047.5740387,
+        "artifact_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_xuc_dr_s392005_20260913_r1/DR-M11",
+        "prediction_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_xuc_dr_s392005_20260913_r1/DR-M11/target_prediction/predictions.json",
+        "predictions_fixed": true
+      },
+      "DR-M05": {
+        "status": "SCORED",
+        "pid": 3535275,
+        "gpu": 5,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc_dr_4d3880208e/code/scripts/train_xuc.py",
+          "--matrix",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc_dr_4d3880208e/configs/matrix_dr.json",
+          "--recipe",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc_dr_4d3880208e/configs/core90_recipe_reference.json",
+          "--row",
+          "DR-M05",
+          "--dataset",
+          "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+          "--output",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_xuc_dr_s392005_20260913_r1/DR-M05",
+          "--source-contract",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_xuc_dr_s392005_20260913_r1/source_contract.json"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc_dr_4d3880208e",
+        "started": 1789269127.7785053,
+        "exit_code": 0,
+        "finished": 1789282341.8583245,
+        "artifact_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_xuc_dr_s392005_20260913_r1/DR-M05",
+        "prediction_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_xuc_dr_s392005_20260913_r1/DR-M05/target_prediction/predictions.json",
+        "predictions_fixed": true
+      },
+      "DR-M08": {
+        "status": "SCORED",
+        "pid": 3535759,
+        "gpu": 6,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc_dr_4d3880208e/code/scripts/train_xuc.py",
+          "--matrix",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc_dr_4d3880208e/configs/matrix_dr.json",
+          "--recipe",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc_dr_4d3880208e/configs/core90_recipe_reference.json",
+          "--row",
+          "DR-M08",
+          "--dataset",
+          "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+          "--output",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_xuc_dr_s392005_20260913_r1/DR-M08",
+          "--source-contract",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_xuc_dr_s392005_20260913_r1/source_contract.json"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc_dr_4d3880208e",
+        "started": 1789269132.9980307,
+        "exit_code": 0,
+        "finished": 1789282792.3152092,
+        "artifact_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_xuc_dr_s392005_20260913_r1/DR-M08",
+        "prediction_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_xuc_dr_s392005_20260913_r1/DR-M08/target_prediction/predictions.json",
+        "predictions_fixed": true
+      },
+      "DR-M07": {
+        "status": "SCORED",
+        "pid": 3535834,
+        "gpu": 7,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc_dr_4d3880208e/code/scripts/train_xuc.py",
+          "--matrix",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc_dr_4d3880208e/configs/matrix_dr.json",
+          "--recipe",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc_dr_4d3880208e/configs/core90_recipe_reference.json",
+          "--row",
+          "DR-M07",
+          "--dataset",
+          "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+          "--output",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_xuc_dr_s392005_20260913_r1/DR-M07",
+          "--source-contract",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_xuc_dr_s392005_20260913_r1/source_contract.json"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc_dr_4d3880208e",
+        "started": 1789269138.1991012,
+        "exit_code": 0,
+        "finished": 1789282732.254624,
+        "artifact_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_xuc_dr_s392005_20260913_r1/DR-M07",
+        "prediction_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_xuc_dr_s392005_20260913_r1/DR-M07/target_prediction/predictions.json",
+        "predictions_fixed": true
+      },
+      "DR-M12": {
+        "status": "SCORED",
+        "pid": 3535908,
+        "gpu": 1,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc_dr_4d3880208e/code/scripts/train_xuc.py",
+          "--matrix",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc_dr_4d3880208e/configs/matrix_dr.json",
+          "--recipe",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc_dr_4d3880208e/configs/core90_recipe_reference.json",
+          "--row",
+          "DR-M12",
+          "--dataset",
+          "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+          "--output",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_xuc_dr_s392005_20260913_r1/DR-M12",
+          "--source-contract",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_xuc_dr_s392005_20260913_r1/source_contract.json"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc_dr_4d3880208e",
+        "started": 1789269143.3922627,
+        "exit_code": 0,
+        "finished": 1789282291.8047714,
+        "artifact_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_xuc_dr_s392005_20260913_r1/DR-M12",
+        "prediction_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_xuc_dr_s392005_20260913_r1/DR-M12/target_prediction/predictions.json",
+        "predictions_fixed": true
+      },
+      "DR-M13": {
+        "status": "SCORED",
+        "pid": 3535981,
+        "gpu": 0,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc_dr_4d3880208e/code/scripts/train_xuc.py",
+          "--matrix",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc_dr_4d3880208e/configs/matrix_dr.json",
+          "--recipe",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc_dr_4d3880208e/configs/core90_recipe_reference.json",
+          "--row",
+          "DR-M13",
+          "--dataset",
+          "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+          "--output",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_xuc_dr_s392005_20260913_r1/DR-M13",
+          "--source-contract",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_xuc_dr_s392005_20260913_r1/source_contract.json"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc_dr_4d3880208e",
+        "started": 1789269148.6151292,
+        "exit_code": 0,
+        "finished": 1789282301.8163614,
+        "artifact_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_xuc_dr_s392005_20260913_r1/DR-M13",
+        "prediction_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_xuc_dr_s392005_20260913_r1/DR-M13/target_prediction/predictions.json",
+        "predictions_fixed": true
+      }
+    },
+    "recovery_from": "",
+    "retry_rows": [],
+    "finished": 1789283781.9375906
+  },
+  "predictions_complete": {
+    "rows": [
+      "DR-M14",
+      "DR-M11",
+      "DR-M05",
+      "DR-M08",
+      "DR-M07",
+      "DR-M12",
+      "DR-M13"
+    ],
+    "record_count": 4704000,
+    "created": 1789283763.5023036
+  },
+  "rows": {
+    "DR-M14": {
+      "completion": {
+        "status": "TRAINING_COMPLETE",
+        "epochs": 200,
+        "steps": 9800,
+        "actions": {
+          "NORMAL": 9800,
+          "CATCHUP": 0,
+          "CORRECT": 0
+        },
+        "head_steps": 0,
+        "cstar": "CONTROL_NOT_ACTIVATED",
+        "target_evaluated": false,
+        "elapsed_seconds": 13277.568394800182
+      },
+      "checkpoint_bytes": 19936053,
+      "score": {
+        "metrics": {
+          "clean": {
+            "accuracy": 0.7670535714285714,
+            "correct": 128865,
+            "per_class_accuracy": {
+              "0": 0.9512857142857143,
+              "1": 0.4258571428571429,
+              "2": 0.6959642857142857,
+              "3": 0.6063214285714286,
+              "4": 0.9920357142857142,
+              "5": 0.9308571428571428
+            },
+            "total": 168000
+          },
+          "leo_clear_weak": {
+            "accuracy": 0.5606666666666666,
+            "correct": 94192,
+            "per_class_accuracy": {
+              "0": 0.33264285714285713,
+              "1": 0.31242857142857144,
+              "2": 0.5030357142857143,
+              "3": 0.5928214285714286,
+              "4": 0.7286785714285714,
+              "5": 0.8943928571428571
+            },
+            "total": 168000
+          },
+          "leo_low_elev_weak": {
+            "accuracy": 0.5457857142857143,
+            "correct": 91692,
+            "per_class_accuracy": {
+              "0": 0.36178571428571427,
+              "1": 0.2934285714285714,
+              "2": 0.4772857142857143,
+              "3": 0.548,
+              "4": 0.71275,
+              "5": 0.8814642857142857
+            },
+            "total": 168000
+          },
+          "leo_rain_weak": {
+            "accuracy": 0.5468511904761905,
+            "correct": 91871,
+            "per_class_accuracy": {
+              "0": 0.38442857142857145,
+              "1": 0.2942142857142857,
+              "2": 0.479,
+              "3": 0.5333214285714286,
+              "4": 0.7,
+              "5": 0.8901428571428571
+            },
+            "total": 168000
+          }
+        },
+        "prediction_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_xuc_dr_s392005_20260913_r1/DR-M14/target_prediction/predictions.json",
+        "record_count": 672000,
+        "schema": "cvs.phase1.truth_last_score.v1",
+        "truth_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_fcr_r1r8_s392005_equalized_20260903_v4/target_truth/truth_sidecar.json"
+      },
+      "score_mtime": 1789283766.028705
+    },
+    "DR-M11": {
+      "completion": {
+        "status": "TRAINING_COMPLETE",
+        "epochs": 200,
+        "steps": 9800,
+        "actions": {
+          "NORMAL": 9493,
+          "CATCHUP": 0,
+          "CORRECT": 307
+        },
+        "head_steps": 0,
+        "cstar": null,
+        "target_evaluated": false,
+        "elapsed_seconds": 13918.64102958329
+      },
+      "checkpoint_bytes": 19347637,
+      "score": {
+        "metrics": {
+          "clean": {
+            "accuracy": 0.7906785714285715,
+            "correct": 132834,
+            "per_class_accuracy": {
+              "0": 0.9556428571428571,
+              "1": 0.45889285714285716,
+              "2": 0.7875,
+              "3": 0.6129285714285714,
+              "4": 0.9707142857142858,
+              "5": 0.9583928571428572
+            },
+            "total": 168000
+          },
+          "leo_clear_weak": {
+            "accuracy": 0.5582857142857143,
+            "correct": 93792,
+            "per_class_accuracy": {
+              "0": 0.329,
+              "1": 0.3140357142857143,
+              "2": 0.54225,
+              "3": 0.6029642857142857,
+              "4": 0.6370714285714286,
+              "5": 0.9243928571428571
+            },
+            "total": 168000
+          },
+          "leo_low_elev_weak": {
+            "accuracy": 0.5411785714285714,
+            "correct": 90918,
+            "per_class_accuracy": {
+              "0": 0.3344642857142857,
+              "1": 0.30510714285714285,
+              "2": 0.5083571428571428,
+              "3": 0.5606428571428571,
+              "4": 0.6311785714285715,
+              "5": 0.9073214285714286
+            },
+            "total": 168000
+          },
+          "leo_rain_weak": {
+            "accuracy": 0.5429940476190476,
+            "correct": 91223,
+            "per_class_accuracy": {
+              "0": 0.3497857142857143,
+              "1": 0.3066785714285714,
+              "2": 0.5104285714285715,
+              "3": 0.55,
+              "4": 0.6238571428571429,
+              "5": 0.9172142857142858
+            },
+            "total": 168000
+          }
+        },
+        "prediction_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_xuc_dr_s392005_20260913_r1/DR-M11/target_prediction/predictions.json",
+        "record_count": 672000,
+        "schema": "cvs.phase1.truth_last_score.v1",
+        "truth_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_fcr_r1r8_s392005_equalized_20260903_v4/target_truth/truth_sidecar.json"
+      },
+      "score_mtime": 1789283768.665705
+    },
+    "DR-M05": {
+      "completion": {
+        "status": "TRAINING_COMPLETE",
+        "epochs": 200,
+        "steps": 9800,
+        "actions": {
+          "NORMAL": 9800,
+          "CATCHUP": 0,
+          "CORRECT": 0
+        },
+        "head_steps": 0,
+        "cstar": "CONTROL_NOT_ACTIVATED",
+        "target_evaluated": false,
+        "elapsed_seconds": 13206.005693282
+      },
+      "checkpoint_bytes": 19936053,
+      "score": {
+        "metrics": {
+          "clean": {
+            "accuracy": 0.7744166666666666,
+            "correct": 130102,
+            "per_class_accuracy": {
+              "0": 0.9424642857142858,
+              "1": 0.4435,
+              "2": 0.7158214285714286,
+              "3": 0.6285714285714286,
+              "4": 0.9840714285714286,
+              "5": 0.9320714285714286
+            },
+            "total": 168000
+          },
+          "leo_clear_weak": {
+            "accuracy": 0.5413035714285714,
+            "correct": 90939,
+            "per_class_accuracy": {
+              "0": 0.3153214285714286,
+              "1": 0.31664285714285717,
+              "2": 0.5140357142857143,
+              "3": 0.5868214285714286,
+              "4": 0.6014642857142857,
+              "5": 0.9135357142857143
+            },
+            "total": 168000
+          },
+          "leo_low_elev_weak": {
+            "accuracy": 0.5260833333333333,
+            "correct": 88382,
+            "per_class_accuracy": {
+              "0": 0.3283214285714286,
+              "1": 0.30128571428571427,
+              "2": 0.47996428571428573,
+              "3": 0.55225,
+              "4": 0.5932142857142857,
+              "5": 0.9014642857142857
+            },
+            "total": 168000
+          },
+          "leo_rain_weak": {
+            "accuracy": 0.5281488095238095,
+            "correct": 88729,
+            "per_class_accuracy": {
+              "0": 0.34714285714285714,
+              "1": 0.3028571428571429,
+              "2": 0.4810357142857143,
+              "3": 0.5437857142857143,
+              "4": 0.5862857142857143,
+              "5": 0.9077857142857143
+            },
+            "total": 168000
+          }
+        },
+        "prediction_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_xuc_dr_s392005_20260913_r1/DR-M05/target_prediction/predictions.json",
+        "record_count": 672000,
+        "schema": "cvs.phase1.truth_last_score.v1",
+        "truth_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_fcr_r1r8_s392005_equalized_20260903_v4/target_truth/truth_sidecar.json"
+      },
+      "score_mtime": 1789283771.2937052
+    },
+    "DR-M08": {
+      "completion": {
+        "status": "TRAINING_COMPLETE",
+        "epochs": 200,
+        "steps": 9800,
+        "actions": {
+          "NORMAL": 9493,
+          "CATCHUP": 0,
+          "CORRECT": 307
+        },
+        "head_steps": 0,
+        "cstar": null,
+        "target_evaluated": false,
+        "elapsed_seconds": 13649.56670208415
+      },
+      "checkpoint_bytes": 19934645,
+      "score": {
+        "metrics": {
+          "clean": {
+            "accuracy": 0.7782976190476191,
+            "correct": 130754,
+            "per_class_accuracy": {
+              "0": 0.9527857142857142,
+              "1": 0.4697142857142857,
+              "2": 0.704,
+              "3": 0.60625,
+              "4": 0.9847142857142858,
+              "5": 0.9523214285714285
+            },
+            "total": 168000
+          },
+          "leo_clear_weak": {
+            "accuracy": 0.5343154761904761,
+            "correct": 89765,
+            "per_class_accuracy": {
+              "0": 0.27889285714285716,
+              "1": 0.3269285714285714,
+              "2": 0.5038214285714285,
+              "3": 0.5649642857142857,
+              "4": 0.6195357142857143,
+              "5": 0.91175
+            },
+            "total": 168000
+          },
+          "leo_low_elev_weak": {
+            "accuracy": 0.518154761904762,
+            "correct": 87050,
+            "per_class_accuracy": {
+              "0": 0.29060714285714284,
+              "1": 0.3041785714285714,
+              "2": 0.46535714285714286,
+              "3": 0.5349642857142857,
+              "4": 0.6142142857142857,
+              "5": 0.8996071428571428
+            },
+            "total": 168000
+          },
+          "leo_rain_weak": {
+            "accuracy": 0.5218214285714285,
+            "correct": 87666,
+            "per_class_accuracy": {
+              "0": 0.30807142857142855,
+              "1": 0.3082142857142857,
+              "2": 0.4682857142857143,
+              "3": 0.5295357142857143,
+              "4": 0.61,
+              "5": 0.9068214285714286
+            },
+            "total": 168000
+          }
+        },
+        "prediction_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_xuc_dr_s392005_20260913_r1/DR-M08/target_prediction/predictions.json",
+        "record_count": 672000,
+        "schema": "cvs.phase1.truth_last_score.v1",
+        "truth_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_fcr_r1r8_s392005_equalized_20260903_v4/target_truth/truth_sidecar.json"
+      },
+      "score_mtime": 1789283773.9217055
+    },
+    "DR-M07": {
+      "completion": {
+        "status": "TRAINING_COMPLETE",
+        "epochs": 200,
+        "steps": 9800,
+        "actions": {
+          "NORMAL": 9483,
+          "CATCHUP": 0,
+          "CORRECT": 317
+        },
+        "head_steps": 0,
+        "cstar": null,
+        "target_evaluated": false,
+        "elapsed_seconds": 13584.810006048996
+      },
+      "checkpoint_bytes": 19934581,
+      "score": {
+        "metrics": {
+          "clean": {
+            "accuracy": 0.7691071428571429,
+            "correct": 129210,
+            "per_class_accuracy": {
+              "0": 0.9494642857142858,
+              "1": 0.44742857142857145,
+              "2": 0.6843214285714285,
+              "3": 0.60675,
+              "4": 0.9699285714285715,
+              "5": 0.95675
+            },
+            "total": 168000
+          },
+          "leo_clear_weak": {
+            "accuracy": 0.5296904761904762,
+            "correct": 88988,
+            "per_class_accuracy": {
+              "0": 0.2988571428571429,
+              "1": 0.31875,
+              "2": 0.4953214285714286,
+              "3": 0.5741785714285714,
+              "4": 0.5733928571428571,
+              "5": 0.9176428571428571
+            },
+            "total": 168000
+          },
+          "leo_low_elev_weak": {
+            "accuracy": 0.5153214285714286,
+            "correct": 86574,
+            "per_class_accuracy": {
+              "0": 0.3118214285714286,
+              "1": 0.2973928571428571,
+              "2": 0.4614285714285714,
+              "3": 0.54,
+              "4": 0.5749642857142857,
+              "5": 0.9063214285714286
+            },
+            "total": 168000
+          },
+          "leo_rain_weak": {
+            "accuracy": 0.5168869047619048,
+            "correct": 86837,
+            "per_class_accuracy": {
+              "0": 0.32639285714285715,
+              "1": 0.2973928571428571,
+              "2": 0.4669285714285714,
+              "3": 0.5297142857142857,
+              "4": 0.5678928571428571,
+              "5": 0.913
+            },
+            "total": 168000
+          }
+        },
+        "prediction_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_xuc_dr_s392005_20260913_r1/DR-M07/target_prediction/predictions.json",
+        "record_count": 672000,
+        "schema": "cvs.phase1.truth_last_score.v1",
+        "truth_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_fcr_r1r8_s392005_equalized_20260903_v4/target_truth/truth_sidecar.json"
+      },
+      "score_mtime": 1789283776.5487056
+    },
+    "DR-M12": {
+      "completion": {
+        "status": "TRAINING_COMPLETE",
+        "epochs": 200,
+        "steps": 9800,
+        "actions": {
+          "NORMAL": 9800,
+          "CATCHUP": 0,
+          "CORRECT": 0
+        },
+        "head_steps": 0,
+        "cstar": "CONTROL_NOT_ACTIVATED",
+        "target_evaluated": false,
+        "elapsed_seconds": 13140.808188443072
+      },
+      "checkpoint_bytes": 19936053,
+      "score": {
+        "metrics": {
+          "clean": {
+            "accuracy": 0.7706904761904761,
+            "correct": 129476,
+            "per_class_accuracy": {
+              "0": 0.947,
+              "1": 0.41182142857142856,
+              "2": 0.7228214285714286,
+              "3": 0.6293571428571428,
+              "4": 0.9955714285714286,
+              "5": 0.9175714285714286
+            },
+            "total": 168000
+          },
+          "leo_clear_weak": {
+            "accuracy": 0.5625654761904761,
+            "correct": 94511,
+            "per_class_accuracy": {
+              "0": 0.3395,
+              "1": 0.31364285714285717,
+              "2": 0.5195357142857143,
+              "3": 0.5759642857142857,
+              "4": 0.7450714285714286,
+              "5": 0.8816785714285714
+            },
+            "total": 168000
+          },
+          "leo_low_elev_weak": {
+            "accuracy": 0.5468630952380953,
+            "correct": 91873,
+            "per_class_accuracy": {
+              "0": 0.3637142857142857,
+              "1": 0.29810714285714285,
+              "2": 0.49589285714285714,
+              "3": 0.5301428571428571,
+              "4": 0.7239642857142857,
+              "5": 0.8693571428571428
+            },
+            "total": 168000
+          },
+          "leo_rain_weak": {
+            "accuracy": 0.549047619047619,
+            "correct": 92240,
+            "per_class_accuracy": {
+              "0": 0.3899285714285714,
+              "1": 0.2988928571428571,
+              "2": 0.49742857142857144,
+              "3": 0.5186785714285714,
+              "4": 0.7101428571428572,
+              "5": 0.8792142857142857
+            },
+            "total": 168000
+          }
+        },
+        "prediction_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_xuc_dr_s392005_20260913_r1/DR-M12/target_prediction/predictions.json",
+        "record_count": 672000,
+        "schema": "cvs.phase1.truth_last_score.v1",
+        "truth_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_fcr_r1r8_s392005_equalized_20260903_v4/target_truth/truth_sidecar.json"
+      },
+      "score_mtime": 1789283779.1707058
+    },
+    "DR-M13": {
+      "completion": {
+        "status": "TRAINING_COMPLETE",
+        "epochs": 200,
+        "steps": 9800,
+        "actions": {
+          "NORMAL": 9800,
+          "CATCHUP": 0,
+          "CORRECT": 0
+        },
+        "head_steps": 0,
+        "cstar": "CONTROL_NOT_ACTIVATED",
+        "target_evaluated": false,
+        "elapsed_seconds": 13146.005098836962
+      },
+      "checkpoint_bytes": 19936053,
+      "score": {
+        "metrics": {
+          "clean": {
+            "accuracy": 0.761529761904762,
+            "correct": 127937,
+            "per_class_accuracy": {
+              "0": 0.9536428571428571,
+              "1": 0.39285714285714285,
+              "2": 0.6992142857142857,
+              "3": 0.6048928571428571,
+              "4": 0.9735714285714285,
+              "5": 0.945
+            },
+            "total": 168000
+          },
+          "leo_clear_weak": {
+            "accuracy": 0.5412380952380952,
+            "correct": 90928,
+            "per_class_accuracy": {
+              "0": 0.31910714285714287,
+              "1": 0.29714285714285715,
+              "2": 0.5010714285714286,
+              "3": 0.6093928571428572,
+              "4": 0.60825,
+              "5": 0.9124642857142857
+            },
+            "total": 168000
+          },
+          "leo_low_elev_weak": {
+            "accuracy": 0.5275892857142858,
+            "correct": 88635,
+            "per_class_accuracy": {
+              "0": 0.33421428571428574,
+              "1": 0.27982142857142855,
+              "2": 0.46989285714285717,
+              "3": 0.57575,
+              "4": 0.60525,
+              "5": 0.9006071428571428
+            },
+            "total": 168000
+          },
+          "leo_rain_weak": {
+            "accuracy": 0.5312797619047619,
+            "correct": 89255,
+            "per_class_accuracy": {
+              "0": 0.35535714285714287,
+              "1": 0.28289285714285717,
+              "2": 0.47382142857142856,
+              "3": 0.5706071428571429,
+              "4": 0.5974642857142857,
+              "5": 0.9075357142857143
+            },
+            "total": 168000
+          }
+        },
+        "prediction_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_xuc_dr_s392005_20260913_r1/DR-M13/target_prediction/predictions.json",
+        "record_count": 672000,
+        "schema": "cvs.phase1.truth_last_score.v1",
+        "truth_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_fcr_r1r8_s392005_equalized_20260903_v4/target_truth/truth_sidecar.json"
+      },
+      "score_mtime": 1789283781.814706
+    }
+  }
+}

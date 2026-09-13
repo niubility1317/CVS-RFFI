@@ -59,3 +59,8 @@ N607 preflight：普通账号、目标主机/CWD核对通过，约7185GiB空闲�
 每小时监控xuc15已更新为同时覆盖原15组与新7组，频率每小时一次，状态保持PAUSED。此前关于恢复监控的询问尚未收到回答，因此目前不会自动执行巡检/修复；训练dispatcher本身不依赖该定时任务，继续运行并在E200后自动预测、评分。
 
 验收证据：delivery_verification.json、live_launch_initial.json、live_launch_verification.json、remote_cuda_acceptance.json；完整矩阵matrix_dr.json。初始速率不能可靠外推C*审计/EG与后期DAOT成本，暂不承诺完成时间。
+
+
+## 2026-09-13完成状态更新
+
+只读独立核验：7组全部E200/9800步，最终checkpoint、四场景score.json齐全；每组672000条，共4704000条。11:11:57启动，15:04:07全部训练完成，15:16:21预测及独立评分全部闭合，总用时4小时4分25秒（香港时间）。pipeline_state=COMPLETE，7行均SCORED。证据见completion_status_20260913.json。本次仅核验完成状态与产物，不作全量训练曲线或科学收益结论。
