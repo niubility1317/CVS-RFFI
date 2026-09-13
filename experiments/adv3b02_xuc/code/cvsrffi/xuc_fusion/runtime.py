@@ -70,6 +70,7 @@ def resolve_args(recipe,row,*,dataset,output,device='cuda:0',synthetic=False,tes
     args.xuc_unconsumed_reference_options=ignored
     args.xuc_row=deepcopy(row)
     args.xuc_daot_rc4=bool(row.get('daot_rc4',False))
+    args.xuc_fasttrust_lr=args.xuc_daot_rc4 or row.get('epoch_budget')=='full_unlabeled'
     if args.xuc_daot_rc4:
         args.use_ema_teacher=True
         args.ema_decay=.999
@@ -120,7 +121,7 @@ def train(args,row,source_contract=None):
     ema=deepcopy(model).eval() if args.use_ema_teacher else None
     if ema is not None:
         for parameter in ema.parameters():parameter.requires_grad_(False)
-    if args.xuc_daot_rc4:
+    if args.xuc_fasttrust_lr:
         grouped={role:[] for role in ('backbone','other')}
         for name,parameter in model.named_parameters():grouped['backbone' if 'backbone' in name.lower() else 'other'].append(parameter)
         parameters=[dict(params=value,fasttrust_role=key) for key,value in grouped.items()]
@@ -134,7 +135,10 @@ def train(args,row,source_contract=None):
     if args.xuc_daot_rc4:
         from .dr_objective import DROT
         reference=json.loads((Path(__file__).resolve().parents[3]/'configs/a1_native_recipe_reference.json').read_text(encoding='utf-8'))
-        dr=DROT(model,ema,source,args,reference)
+        if row.get('dr_full_extensions'):
+            from .full_dr_objective import FullDROT
+            dr=FullDROT(model,ema,source,args,reference,proto)
+        else:dr=DROT(model,ema,source,args,reference)
         json_write(output/'resolved_dr_config.json',vars(dr.args))
     objective=FusionObjective(model,args,proto,row,dr=dr)
     stream=TicketStream(source,args,row)
@@ -152,6 +156,8 @@ def train(args,row,source_contract=None):
     augmentor=make_augmentor(aug_cfg) if aug_cfg else None
     if augmentor is not None and hasattr(augmentor,'to'):augmentor=augmentor.to(device)
     started=time.perf_counter();epoch_rows=[];completed=0;actions={'NORMAL':0,'CATCHUP':0,'CORRECT':0};head_total=0
+    from .activation import ActivationLedger
+    activation=ActivationLedger(row) if row.get('dr_full_extensions') else None
     print(f'[XUC-INIT] row={row["id"]} scratch_only=true seed=392005 domains={len(source.domains)} steps_per_epoch={stream.steps}',flush=True)
     json_write(output/'initialization.json',dict(scratch_only=True,checkpoint_sources=[],seed=args.seed,
         parameter_count=sum(p.numel() for p in model.parameters()),batchnorm_modules=[n for n,m in model.named_modules() if isinstance(m,torch.nn.modules.batchnorm._BatchNorm)],
@@ -172,9 +178,9 @@ def train(args,row,source_contract=None):
         ticket,coverage=stream.choose(capability=reliable.capability(completed) if reliable else False,
                                      difficulty=reliable.latest.get('difficulty',{}) if reliable and reliable.latest else {})
         batch,ubatch=stream.batches(ticket)
-        if dr is not None:
+        if args.xuc_fasttrust_lr:
             from SSDG.train_ssdg import _apply_fasttrust_lr
-            _apply_fasttrust_lr(optimizer,base_lr=args.lr,epoch=ticket.epoch,tail_mode=dr.args.a1_tail_lr)
+            _apply_fasttrust_lr(optimizer,base_lr=args.lr,epoch=ticket.epoch,tail_mode=dr.args.a1_tail_lr if dr else 'legacy')
         model.train();configure_mixstyle_for_epoch(model,args,ticket.epoch)
         if augmentor is not None:configure_augmentor_for_epoch(augmentor,aug_cfg,min(ticket.epoch,args.label_epochs),args)
         decision=dict(action='NORMAL',catchup_steps=0,reason='fixed')
@@ -210,7 +216,7 @@ def train(args,row,source_contract=None):
             ctx=prepare_context(batch,None if dr else ubatch,model,ema,context_args,ticket.epoch,ticket.batch_index,ticket.weights,gen,augmentor,
                                 exposure_record=exposure)
             ctx.grid_plan=ticket.grid_plan;ctx.rx=batch[3]['rx_i'].to(device);ctx.day=batch[3]['day_i'].to(device)
-            ctx.audit_gradients=completed%250==0;ctx.field_components=[];ctx.fusion_telemetry={}
+            ctx.audit_gradients=completed%(1000 if row.get('dr_full_extensions') else 250)==0;ctx.field_components=[];ctx.fusion_telemetry={}
             if dr is not None:dr.prepare(ctx,ubatch)
             count=decision.get('catchup_steps',0)
             if legacy and count and not budget.can_afford(completed,head_steps=count)[0]:count=0
@@ -244,8 +250,10 @@ def train(args,row,source_contract=None):
         if dr is not None:
             record['daot_rc4']=ctx.dr_telemetry
             record['learning_rates']={g['fasttrust_role']:g['lr'] for g in optimizer.param_groups}
+        if activation is not None:activation.observe(record)
         append(output/'actions.jsonl',record);epoch_rows.append(record);completed+=1
         if completed%stream.steps==0:
+            if activation is not None:json_write(output/'activation_status.json',activation.report(live_epoch))
             validation=evaluate_source(model,source,args)
             summary=dict(epoch=live_epoch,total_step=completed,accepted=len(epoch_rows),
                          mean_loss=float(np.mean([r['loss'] for r in epoch_rows])),source_validation=validation,

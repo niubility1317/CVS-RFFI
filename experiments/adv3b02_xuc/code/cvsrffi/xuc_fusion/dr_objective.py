@@ -94,7 +94,9 @@ class DROT:
             labeled=native._compute_daot_labeled_step(model=self.model,ema_model=self.ema,student_clean=out,
                 x_clean=ctx.x,y_clean=ctx.y,d_clean=ctx.domain,args=self.args,epoch=ctx.epoch,batch_idx=ctx.batch_index,
                 apply_sat_fn=apply_sat_channel_for_scenario,prototype_matrix=None,loss_normalizer=local)
-        strong=self.model(ctx.dr_strong,return_aux=True,domain_labels=ctx.dr_d,grl_lambda=1.)
+        # Match the native RC4 U student: its domain head trains, but this CE
+        # must not introduce a new adversarial gradient into the identity trunk.
+        strong=self.model(ctx.dr_strong,return_aux=True,domain_labels=ctx.dr_d,grl_lambda=0.)
         unlabeled=native._compute_daot_unlabeled_step(model=self.model,ema_model=self.ema,teacher_clean=ctx.dr_teacher,
             student_strong=strong,x_unlabeled=ctx.dr_x,d_unlabeled=ctx.dr_d,args=self.args,epoch=ctx.epoch,batch_idx=ctx.batch_index,
             apply_sat_fn=apply_sat_channel_for_scenario,prototype_matrix=None,loss_normalizer=local)

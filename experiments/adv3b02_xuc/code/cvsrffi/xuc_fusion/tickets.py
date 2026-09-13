@@ -1,5 +1,6 @@
 """Deterministic source-only tickets; capability changes order, never membership."""
 from dataclasses import dataclass
+import math
 from collections import Counter
 import torch
 from torch.utils.data._utils.collate import default_collate
@@ -36,6 +37,8 @@ class TicketStream:
     def __init__(self, source, args, row):
         self.source,self.args,self.row = source,args,row
         self.steps = len(source.train)//args.batch_size
+        if row.get('epoch_budget')=='full_unlabeled':
+            self.steps=math.ceil(len(source.unlabeled)/int(row.get('unlabeled_batch',256)))
         if args.game_synthetic: self.steps = min(self.steps, args.game_max_steps_per_epoch or self.steps)
         self.next_epoch = 1
         self.pending = []
@@ -61,7 +64,7 @@ class TicketStream:
         self.boundaries.update(int(v) for k,v in vars(args).items() if k.endswith('_start_epoch') and isinstance(v,int) and v>1)
         # Every baseline schedule discontinuity is bounded; continuous ramps travel with tickets.
         self.boundaries.update({int(args.aug_warmup_epochs)+1})
-        if getattr(args,'xuc_daot_rc4',False):self.boundaries.update({21,41,91,161,181})
+        if getattr(args,'xuc_daot_rc4',False):self.boundaries.update({21,41,61,91,141,161,181})
 
     def fill(self):
         assert not self.pending
@@ -73,8 +76,16 @@ class TicketStream:
         for epoch in range(start,end+1):
             # Ordinary order uses one independent generator; all methods share physical role sets.
             ordinary=torch.randperm(len(self.source.train),generator=torch.Generator().manual_seed(self.args.seed+epoch)).tolist()
+            if self.steps*self.args.batch_size>len(ordinary):
+                gen=torch.Generator().manual_seed(self.args.seed+epoch)
+                ordinary=[]
+                while len(ordinary)<self.steps*self.args.batch_size:
+                    # Cycle full-size L batches; retain the original drop-last semantics.
+                    ids=torch.randperm(len(self.source.train),generator=gen).tolist()
+                    ordinary.extend(ids[:len(ids)//self.args.batch_size*self.args.batch_size])
             dr=getattr(self.args,'xuc_daot_rc4',False)
-            uloader=self.source.unlabeled_epoch_loader(256 if dr else self.args.batch_size,epoch_index=epoch-1 if dr else max(0,epoch-self.args.label_epochs-1),
+            ubatch=int(self.row.get('unlabeled_batch',256 if dr else self.args.batch_size))
+            uloader=self.source.unlabeled_epoch_loader(ubatch,epoch_index=epoch-1 if dr else max(0,epoch-self.args.label_epochs-1),
                                                       steps=self.steps,seed=self.args.seed,workers=0)
             u_batches=list(uloader.batch_sampler)
             for bi in range(1,self.steps+1):
