@@ -23,3 +23,7 @@ CWD=/home/szu2070436088/2510044040/CV-SincNet/releases/core90_game_v2_target11_2
 旧PID3244844的CWD/argv精确核实后SIGTERM，独立读回进程消失，旧预测及日志保留。新PID3258296，PPID=1，CWD/argv正确；nvidia-smi确认同一进程使用物理GPU0/1/2/3/5/6/7，GPU4仅原PID612456。frozen_manifest确认11模型分布7逻辑设备：物理5/0/1/2各2模型，物理3/6/7各1模型。
 
 SOURCE_CHECKPOINT_SMOKE_PASS证明源样本串行与并发预测及置信度一致；clean预测已开始，11文件两次读回持续增长。所有卡均为RTX3090。完整评分尚未完成，不能将启动成功写成最终成绩。
+
+## 最终完成
+
+2026-09-13 01:09:02 +08:00完成11模型四场景预测和评分，用时38.11分钟，PID3258296已退出。7392000条预测逐条独立复核，指标最大误差0，VERIFIED。完整21模型合并结果见../core90_game_v2_target_all21_20260913/target_report.md。
