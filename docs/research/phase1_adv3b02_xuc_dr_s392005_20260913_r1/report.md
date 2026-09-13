@@ -31,7 +31,7 @@ A1固定2-view mean，tangent/nuisance/fingerprint权重0；nuisance head附加�
 
 本地验收：原16项回归PASS；新增3项矩阵/开关对应、LR边界、GPU准入及受控RC4身份梯度测试PASS；真实合成E1/E21/E131/E181 objective+EG+严格自生成checkpoint重建PASS。DAOT、RC4、X/U实际梯度与字段、教师不变、两场完整目标、scale单次提交均检查。真实E1训练入口也PASS。所有合成权重标为诊断，严禁正式初始化使用。
 
-资源策略：新的dispatcher仅向空闲GPU启动一个自身worker，以避免与旧dispatcher未初始化子进程发生跨owner准入竞争；旧M09/M10及其他健康任务保持，空闲不足的行合法排队。相同策略用于最终预测，先7行预测全部固定（4704000条），再独立评分。
+资源策略：每GPU最多2个训练进程且准入前空闲显存至少6500MiB，优先少进程/多显存设备；同时计入其他owner尚未CUDA初始化的单卡train脚本PID及自身预占。当前seedscan owner3521900严格max_processes_per_gpu=1、5运行1排队，不竞争第二槽；旧XUC15仅M09/M10运行，无待训行。此方案不是跨owner原子锁，后续新增owner仍须统一检查并发。所有健康任务保留。7行全部预测固定（4704000条）后再独立评分。首次5b0f03fe发布已落地但因没有空闲GPU在CUDA smoke前安全退出，无正式launch/run，产物保留；新版本按上述有界第二槽策略发布。
 
 N607 preflight：普通账号、目标主机/CWD核对通过，约7185GiB空闲磁盘；新run尚不存在，旧M09/M10仍为原PID3317646/3317657。源数据角色直接复用已有VALIDATED_ONCE物理契约，训练入口逐行比较角色，不重建目标包。
 

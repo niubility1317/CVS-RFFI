@@ -33,12 +33,14 @@ def test_native_lr_boundaries_and_all_seven_rows():
     assert a.fasttrust_rc4 and a.rc4_enable_hard and a.rc4_enable_partial
     assert not a.rc4_enable_negative and not a.rc4_use_anchor
 
-def test_dispatcher_admits_only_idle_gpu_and_uses_dr_matrix():
+def test_dispatcher_caps_two_workers_and_uses_dr_matrix():
     spec=importlib.util.spec_from_file_location('drdispatch',ROOT/'code/scripts/dispatch_xuc_dr.py')
     mod=importlib.util.module_from_spec(spec);spec.loader.exec_module(mod)
     with patch.object(mod,'occupancy',return_value={0:dict(pids={123},free_mb=20000),1:dict(pids=set(),free_mb=20000)}):
         assert mod.available_gpu({})==1
     with patch.object(mod,'occupancy',return_value={0:dict(pids={123},free_mb=20000)}):
+        assert mod.available_gpu({})==0
+    with patch.object(mod,'occupancy',return_value={0:dict(pids={123,456},free_mb=20000),1:dict(pids={789},free_mb=6400)}):
         assert mod.available_gpu({}) is None
     command=mod.train_command(dict(id='DR-M08',pipeline='core90'),Path('/project'),Path('/run'))
     assert 'matrix_dr.json' in command[command.index('--matrix')+1]

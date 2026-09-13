@@ -1,4 +1,4 @@
-"""Seven DR extensions; preserve original jobs, admit new work only on idle GPUs."""
+"""Seven DR extensions; preserve original jobs, at most two workers per GPU."""
 import argparse
 import json
 import os
@@ -25,13 +25,24 @@ def occupancy(active):
     for line in raw.splitlines():
         v=line.split(',')
         if len(v)==2 and v[0].strip() in mapping:result[mapping[v[0].strip()][0]]['pids'].add(int(v[1]))
+    # Include other owners' training children before CUDA initialization.
+    # Their explicit single-device environment is a reservation, not just VRAM usage.
+    for proc in Path('/proc').iterdir():
+        if not proc.name.isdigit():continue
+        try:
+            argv=(proc/'cmdline').read_bytes().decode().split('\0')
+            if not any(Path(v).name.startswith('train') and v.endswith('.py') for v in argv):continue
+            env=dict(v.split('=',1) for v in (proc/'environ').read_bytes().decode().split('\0') if '=' in v)
+            device=env.get('CUDA_VISIBLE_DEVICES','')
+            if device.isdigit() and int(device) in result:result[int(device)]['pids'].add(int(proc.name))
+        except (FileNotFoundError,PermissionError,ProcessLookupError,UnicodeError):continue
     # Reserve newly launched children before CUDA initializes; union avoids double counting.
     for job in active.values():
         if job['process'].poll() is None:result[job['gpu']]['pids'].add(job['process'].pid)
     return result
 
 def available_gpu(active):
-    candidates=[(len(v['pids']),-v['free_mb'],gpu) for gpu,v in occupancy(active).items() if len(v['pids'])==0 and v['free_mb']>=6500]
+    candidates=[(len(v['pids']),-v['free_mb'],gpu) for gpu,v in occupancy(active).items() if len(v['pids'])<2 and v['free_mb']>=6500]
     return min(candidates)[2] if candidates else None
 
 def train_command(row,project,run):
