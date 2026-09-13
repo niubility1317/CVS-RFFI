@@ -137,3 +137,8 @@ VERIFIED_HEALTHY_UNCHANGED_PHASE：13行E200完成状态和最终checkpoint的si
 用户明确要求没有测试就执行测试。对已完成13个CORE90最终checkpoint先行执行同配置四场景预测，13组预测全部固定后独立评分；不等待M09/M10，但禁止根据结果改变仍在训练的配置或选择。原调度器和训练保持运行。独立evaluation_id=phase1_adv3b02_xuc13_early_eval_s392005_20260913_r1；输出/日志分别位于N607项目runs/和logs/同名目录，预测入口及模型实现继续使用不可变release adv3b02_xuc15_2a71f5d92d。新增控制脚本test_completed_rows.py负责最多4个推理进程，沿用每GPU最多2进程的资源检测，拒绝覆盖输出。原调度器后续仍会运行完整15行测试，早期结果与该链路分别标记，不覆盖或合并不一致数据。
 
 技术失败保留全部产物和活跃PID，不盲目重启；本次不加载其他checkpoint，不重建数据，不修改训练进程。验证包括冻结模型与source角色负测、脚本编译和独立P0/P1审查。早期评分结果不得反馈本矩阵训练/选模/重跑。
+
+
+提前测试发布VERIFIED：控制提交0e03073d6b9867ede89f47f89f14111eb34c4299已push且独立OID匹配、ahead/behind=0/0；单文件传输校验/远端编译通过，冻结角色正负测及P0/P1定点复核通过。提前测试owner PID3490321，首批M00/M01/M02/M03分别PID3490335/3490348/3490361/3490374，GPU2/3/5/6，CWD及argv已独立核实；原dispatcher3316498、训练3317646/3317657和其他健康进程保留。预测中，尚无score。证据early_eval_launch.json、early_eval_identity.txt。
+
+自动任务xuc15本轮读回为PAUSED（updated_at=1789263569376），保留该实际状态，未擅自恢复；已通过automation_update把提前测试追踪路径加入原prompt。后台测试本身独立运行，不依赖heartbeat。
