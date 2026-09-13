@@ -10,11 +10,11 @@ from cvsrffi.game_tracking.legacy.objective import labeled_terms
 
 
 @contextmanager
-def labeled_forward_context(model, plan, device):
+def labeled_forward_context(model, plan, device, views=2):
     if plan is None:
         yield
         return
-    allowed = mixstyle_allowed_mask(plan, views=2, device=device)
+    allowed = mixstyle_allowed_mask(plan, views=views, device=device)
     saved = []
     try:
         for module in model.modules():
@@ -31,8 +31,9 @@ def labeled_forward_context(model, plan, device):
 
 
 class FusionObjective:
-    def __init__(self, model, args, proto, row):
+    def __init__(self, model, args, proto, row, dr=None):
         self.model, self.args, self.proto, self.row = model, args, proto, row
+        self.dr=dr
 
     def __call__(self, ctx):
         n = len(ctx.y)
@@ -46,7 +47,7 @@ class FusionObjective:
         sat_ce = F.cross_entropy(sat['tx_logits'], ctx.y) if ctx.epoch >= self.args.sat_cons_start_epoch else out['tx_logits'].sum()*0
         loss = loss + ctx.weights['sat_cls'] * sat_ce
         terms['sat_cls'] = sat_ce
-        if ctx.strong is not None:
+        if ctx.strong is not None and self.dr is None:
             strong = self.model(ctx.strong, return_aux=True)
             ctx.forward_calls += 1
             if ctx.strong_mask is None:
@@ -63,6 +64,10 @@ class FusionObjective:
         telemetry = dict(x_enabled=self.row['x_enabled'], u_enabled=self.row['u_enabled'],
                          legal_anchors=0, normalized_valid_blocks=0, normalized_unavailable_blocks=0)
         weighted = {}
+        if self.dr is not None:
+            extra,dr_terms=self.dr.objective(ctx,out)
+            loss=loss+extra
+            terms.update(dr_terms)
         if self.row['x_enabled']:
             x, count = cross_rx_triplet_loss(z, ctx.y, ctx.rx, ctx.day, torch.zeros_like(ctx.y), margin=self.row['x_margin'])
             weighted['x'] = self.row['lambda_x']*x

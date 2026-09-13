@@ -61,6 +61,7 @@ class TicketStream:
         self.boundaries.update(int(v) for k,v in vars(args).items() if k.endswith('_start_epoch') and isinstance(v,int) and v>1)
         # Every baseline schedule discontinuity is bounded; continuous ramps travel with tickets.
         self.boundaries.update({int(args.aug_warmup_epochs)+1})
+        if getattr(args,'xuc_daot_rc4',False):self.boundaries.update({21,41,91,161,181})
 
     def fill(self):
         assert not self.pending
@@ -72,7 +73,8 @@ class TicketStream:
         for epoch in range(start,end+1):
             # Ordinary order uses one independent generator; all methods share physical role sets.
             ordinary=torch.randperm(len(self.source.train),generator=torch.Generator().manual_seed(self.args.seed+epoch)).tolist()
-            uloader=self.source.unlabeled_epoch_loader(self.args.batch_size,epoch_index=max(0,epoch-self.args.label_epochs-1),
+            dr=getattr(self.args,'xuc_daot_rc4',False)
+            uloader=self.source.unlabeled_epoch_loader(256 if dr else self.args.batch_size,epoch_index=epoch-1 if dr else max(0,epoch-self.args.label_epochs-1),
                                                       steps=self.steps,seed=self.args.seed,workers=0)
             u_batches=list(uloader.batch_sampler)
             for bi in range(1,self.steps+1):
@@ -87,7 +89,7 @@ class TicketStream:
                 scenes,p=satellite_stage(epoch)
                 scene=scenes[(epoch+bi-2)%len(scenes)]
                 mask=tuple((torch.rand(len(ids),generator=gen)<p).tolist())
-                ticket=Ticket(tid,epoch,bi,tuple(ids),tuple(u_batches[bi-1]) if epoch>self.args.label_epochs and self.args.use_unlabeled else (),
+                ticket=Ticket(tid,epoch,bi,tuple(ids),tuple(u_batches[bi-1]) if dr or (epoch>self.args.label_epochs and self.args.use_unlabeled) else (),
                               plan,dict(_loss_weights(self.args,build_stage_state(epoch,self.args))),seed,channel_seed,scene,p,mask)
                 self.pending.append(ticket)
         self.next_epoch=end+1

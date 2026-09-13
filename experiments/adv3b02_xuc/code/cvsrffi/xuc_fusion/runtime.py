@@ -69,6 +69,12 @@ def resolve_args(recipe,row,*,dataset,output,device='cuda:0',synthetic=False,tes
     validate_game(args)
     args.xuc_unconsumed_reference_options=ignored
     args.xuc_row=deepcopy(row)
+    args.xuc_daot_rc4=bool(row.get('daot_rc4',False))
+    if args.xuc_daot_rc4:
+        args.use_ema_teacher=True
+        args.ema_decay=.999
+        args.xuc_u_batch=256
+        args.xuc_u_start_epoch=1
     return args
 
 
@@ -114,12 +120,23 @@ def train(args,row,source_contract=None):
     ema=deepcopy(model).eval() if args.use_ema_teacher else None
     if ema is not None:
         for parameter in ema.parameters():parameter.requires_grad_(False)
-    optimizer=torch.optim.AdamW(model.parameters(),lr=args.lr,weight_decay=args.weight_decay)
+    if args.xuc_daot_rc4:
+        grouped={role:[] for role in ('backbone','other')}
+        for name,parameter in model.named_parameters():grouped['backbone' if 'backbone' in name.lower() else 'other'].append(parameter)
+        parameters=[dict(params=value,fasttrust_role=key) for key,value in grouped.items()]
+    else:parameters=model.parameters()
+    optimizer=torch.optim.AdamW(parameters,lr=args.lr,weight_decay=args.weight_decay)
     solver=GameSolver(model,optimizer,nonfinite='raise',max_grad_norm=5.)
     proto=PrototypeMemoryBank(args.num_classes,len(source.domains),momentum=args.proto_momentum,
         margin=args.proto_margin,domain_align_weight=args.proto_domain_align_weight,push_weight=args.proto_push_weight,min_count=args.proto_min_count)
     proto._lazy_init(160,device,torch.float32)
-    objective=FusionObjective(model,args,proto,row)
+    dr=None
+    if args.xuc_daot_rc4:
+        from .dr_objective import DROT
+        reference=json.loads((Path(__file__).resolve().parents[3]/'configs/a1_native_recipe_reference.json').read_text(encoding='utf-8'))
+        dr=DROT(model,ema,source,args,reference)
+        json_write(output/'resolved_dr_config.json',vars(dr.args))
+    objective=FusionObjective(model,args,proto,row,dr=dr)
     stream=TicketStream(source,args,row)
     audit_enabled=row['source_audit_policy']=='cstar_isolated_passive_or_active'
     observer=SourceObserver(source,args) if audit_enabled else None
@@ -138,9 +155,13 @@ def train(args,row,source_contract=None):
     print(f'[XUC-INIT] row={row["id"]} scratch_only=true seed=392005 domains={len(source.domains)} steps_per_epoch={stream.steps}',flush=True)
     json_write(output/'initialization.json',dict(scratch_only=True,checkpoint_sources=[],seed=args.seed,
         parameter_count=sum(p.numel() for p in model.parameters()),batchnorm_modules=[n for n,m in model.named_modules() if isinstance(m,torch.nn.modules.batchnorm._BatchNorm)],
-        mixstyle_modules=[n for n,m in model.named_modules() if m.__class__.__name__=='MixStyle1D'],target_contact=False))
+        mixstyle_modules=[n for n,m in model.named_modules() if m.__class__.__name__=='MixStyle1D'],target_contact=False,
+        daot_rc4=args.xuc_daot_rc4,rc4_heads_in_optimizer=dr is not None))
     while completed<args.epochs*stream.steps:
         live_epoch=completed//stream.steps+1
+        if dr is not None:
+            calibration=dr.calibrate(live_epoch)
+            if calibration:append(output/'rc4_calibration.jsonl',calibration)
         if reliable is not None and completed%250==0:
             # Audit is independent of which remaining ticket the controller selects.
             from cvsrffi.schedule import build_stage_state
@@ -151,6 +172,9 @@ def train(args,row,source_contract=None):
         ticket,coverage=stream.choose(capability=reliable.capability(completed) if reliable else False,
                                      difficulty=reliable.latest.get('difficulty',{}) if reliable and reliable.latest else {})
         batch,ubatch=stream.batches(ticket)
+        if dr is not None:
+            from SSDG.train_ssdg import _apply_fasttrust_lr
+            _apply_fasttrust_lr(optimizer,base_lr=args.lr,epoch=ticket.epoch,tail_mode=dr.args.a1_tail_lr)
         model.train();configure_mixstyle_for_epoch(model,args,ticket.epoch)
         if augmentor is not None:configure_augmentor_for_epoch(augmentor,aug_cfg,min(ticket.epoch,args.label_epochs),args)
         decision=dict(action='NORMAL',catchup_steps=0,reason='fixed')
@@ -183,16 +207,18 @@ def train(args,row,source_contract=None):
             # Version2 here selects deterministic exposure replay, not the GAME V2 controller.
             context_args=deepcopy(args);context_args.game_evidence_version=2
             gen=torch.Generator(device=device).manual_seed(ticket.seed)
-            ctx=prepare_context(batch,ubatch,model,ema,context_args,ticket.epoch,ticket.batch_index,ticket.weights,gen,augmentor,
+            ctx=prepare_context(batch,None if dr else ubatch,model,ema,context_args,ticket.epoch,ticket.batch_index,ticket.weights,gen,augmentor,
                                 exposure_record=exposure)
             ctx.grid_plan=ticket.grid_plan;ctx.rx=batch[3]['rx_i'].to(device);ctx.day=batch[3]['day_i'].to(device)
             ctx.audit_gradients=completed%250==0;ctx.field_components=[];ctx.fusion_telemetry={}
+            if dr is not None:dr.prepare(ctx,ubatch)
             count=decision.get('catchup_steps',0)
             if legacy and count and not budget.can_afford(completed,head_steps=count)[0]:count=0
             head_steps,head_enc=head_catchup(model,optimizer,ctx,count,args)
             solver.mode='extragradient' if decision['action']=='CORRECT' else 'simultaneous'
             result=solver.step(lambda:objective(ctx))
             if result.accepted:
+                if dr is not None:dr.commit(ctx)
                 if ema is not None:_update_ema_model(ema,model,args.ema_decay)
                 proto.update(ctx.origin_features,ctx.y,ctx.domain)
         if not result.accepted:raise RuntimeError('main update not accepted')
@@ -215,6 +241,9 @@ def train(args,row,source_contract=None):
             action=decision['action'],reason=decision['reason'],head_steps=head_steps,field_evaluations=result.field_evaluations,
             field_components=ctx.field_components,loss=result.loss,loss_replay=result.loss_replay,grad_norm=result.grad_norm,
             terms=ctx.origin_terms,fusion=ctx.fusion_telemetry,accepted=True,elapsed_seconds=time.perf_counter()-started)
+        if dr is not None:
+            record['daot_rc4']=ctx.dr_telemetry
+            record['learning_rates']={g['fasttrust_role']:g['lr'] for g in optimizer.param_groups}
         append(output/'actions.jsonl',record);epoch_rows.append(record);completed+=1
         if completed%stream.steps==0:
             validation=evaluate_source(model,source,args)
@@ -229,6 +258,7 @@ def train(args,row,source_contract=None):
                 solver=solver.state_dict(),tickets=stream.state_dict(),cstar=reliable.state_dict() if reliable else None,
                 legacy_controller=legacy_controller.state_dict() if legacy_controller else None,
                 legacy_curriculum=legacy_curriculum.state_dict() if legacy_curriculum else None)
+            if dr is not None:payload['daot_rc4']=dr.state_dict()
             temp=output/'latest_ssdg.tmp';torch.save(payload,temp);temp.replace(output/'latest_ssdg.pth')
             if live_epoch==args.epochs:torch.save(payload,output/'final_ssdg.pth')
             print(f'[EPOCH-END] E{live_epoch:03d}/{args.epochs} accepted={stream.steps} loss={summary["mean_loss"]:.5f}',flush=True)

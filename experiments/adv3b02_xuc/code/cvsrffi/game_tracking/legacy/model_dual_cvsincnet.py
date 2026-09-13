@@ -582,6 +582,12 @@ class DualCVSincNetDisentangle(nn.Module):
     def _pick_z_dom(self, aux: Dict[str, torch.Tensor]) -> torch.Tensor:
         return self._pick_from_keys(aux, self.dom_feature_key, ("feat_imp", "feat_pa", "feat_dac", "base", "feat_con", "feat_cls", "feat_joint"))
 
+    def forward_identity_only(self, x, domain_labels=None):
+        if self.training:
+            raise ValueError('identity-only teacher requires eval mode')
+        aux = backbone_forward_compat(self.id_backbone,x,y=None,return_aux=True,domain_labels=domain_labels)
+        return {'tx_logits':aux['logits'],'z_id':self._pick_z_id(aux)}
+
     def forward(
         self,
         x: torch.Tensor,

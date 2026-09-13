@@ -92,6 +92,14 @@ def append(path,value):
     with Path(path).open('a',encoding='utf-8') as f:
         f.write(json.dumps(plain(value),ensure_ascii=False,allow_nan=False)+'\n')
 
+def _xuc_daot_output(module, inputs, output):
+    if isinstance(output,dict) and 'z_dom' in output:
+        mean,variance=module.daot_nuisance_head(output['z_dom'])
+        output['daot_nuisance_mean']=mean
+        output['daot_nuisance_log_variance']=variance
+    return output
+
+
 def build_model(args,num_domains,device):
     keys = ('model_size','model_variant','branch_ablation','domain_branch_ablation',
             'domain_enhancer','domain_enhancer_strength','mixstyle_p','mixstyle_alpha','mixstyle_eps',
@@ -99,7 +107,14 @@ def build_model(args,num_domains,device):
     kw = {k:getattr(args,k) for k in keys}
     kw.update(dataset='wisig',input_len=args.wisig_out_len,sample_rate_hz=25e6,mixstyle_on=args.use_mixstyle,
               id_feature_key='feat_joint',dom_feature_key='feat_imp',use_tx_adv_on_zdom=False)
-    return build_dual_model(args.num_classes,num_domains,**kw).to(device)
+    model=build_dual_model(args.num_classes,num_domains,**kw).to(device)
+    if getattr(args,'xuc_daot_rc4',False):
+        from model_dual_cvsincnet import NuisanceHeteroscedasticHead
+        from cvsrffi.muse_ssdg import MUSETrainingHeads
+        model.daot_nuisance_head=NuisanceHeteroscedasticHead(model.emb_dim,9).to(device)
+        model.register_forward_hook(_xuc_daot_output)
+        model.xuc_rc4_heads=MUSETrainingHeads(model.emb_dim,model.emb_dim,args.num_classes,num_domains,6).to(device)
+    return model
 
 def extract(model,dataset,indices,batch_size=128):
     device = next(model.parameters()).device
