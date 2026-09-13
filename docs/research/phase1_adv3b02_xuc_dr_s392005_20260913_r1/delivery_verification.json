@@ -1,0 +1,107 @@
+{
+  "status": "VERIFIED",
+  "verified_at": "2026-09-13T11:13:49.657724+08:00",
+  "execution_commit": "4d3880208e40e0e8a875284e2dc31e41ad0d54f4",
+  "release": "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc_dr_4d3880208e",
+  "run_id": "phase1_adv3b02_xuc_dr_s392005_20260913_r1",
+  "owner_pid": 3535115,
+  "checks": [
+    "all seven resolved rows match frozen matrix",
+    "scratch with no inherited checkpoints",
+    "all seven accepted updates and growing logs",
+    "finite latest losses and gradients",
+    "all protected old processes alive",
+    "no more than two CUDA processes per GPU",
+    "remote CUDA objective and strict checkpoint diagnostic PASS"
+  ],
+  "rows": [
+    {
+      "row": "DR-M14",
+      "gpu": 2,
+      "pid": 3535129,
+      "accepted_records": 112,
+      "origin_epoch": 1,
+      "execution_epoch": 3,
+      "loss": 17.29100227355957,
+      "rc4_total": 0.8043271899223328,
+      "daot_executed": false
+    },
+    {
+      "row": "DR-M11",
+      "gpu": 3,
+      "pid": 3535201,
+      "accepted_records": 117,
+      "origin_epoch": 3,
+      "execution_epoch": 3,
+      "loss": 17.195022583007812,
+      "rc4_total": 0.7704974412918091,
+      "daot_executed": false
+    },
+    {
+      "row": "DR-M05",
+      "gpu": 5,
+      "pid": 3535275,
+      "accepted_records": 100,
+      "origin_epoch": 3,
+      "execution_epoch": 3,
+      "loss": 17.39211654663086,
+      "rc4_total": 0.8022973537445068,
+      "daot_executed": false
+    },
+    {
+      "row": "DR-M08",
+      "gpu": 6,
+      "pid": 3535759,
+      "accepted_records": 96,
+      "origin_epoch": 2,
+      "execution_epoch": 2,
+      "loss": 17.509294509887695,
+      "rc4_total": 0.8027360439300537,
+      "daot_executed": false
+    },
+    {
+      "row": "DR-M07",
+      "gpu": 7,
+      "pid": 3535834,
+      "accepted_records": 91,
+      "origin_epoch": 2,
+      "execution_epoch": 2,
+      "loss": 17.30324363708496,
+      "rc4_total": 0.7740328907966614,
+      "daot_executed": false
+    },
+    {
+      "row": "DR-M12",
+      "gpu": 1,
+      "pid": 3535908,
+      "accepted_records": 89,
+      "origin_epoch": 3,
+      "execution_epoch": 2,
+      "loss": 17.49346351623535,
+      "rc4_total": 0.8318517208099365,
+      "daot_executed": false
+    },
+    {
+      "row": "DR-M13",
+      "gpu": 0,
+      "pid": 3535981,
+      "accepted_records": 79,
+      "origin_epoch": 2,
+      "execution_epoch": 2,
+      "loss": 17.71599769592285,
+      "rc4_total": 0.8148595690727234,
+      "daot_executed": false
+    }
+  ],
+  "automation": {
+    "name": "XUC15与DR7每小时监控修复",
+    "status": "PAUSED",
+    "rrule": "FREQ=HOURLY;INTERVAL=1",
+    "target_thread_id": "01a096a4-aa1c-7ac3-8a58-414b9ba959cc"
+  },
+  "limitations": [
+    "Formal DAOT and RC4 identity warmup has not reached origin epoch 21",
+    "Controlled branch tests do not establish natural hard or partial selection",
+    "Current GPU admission is not an atomic lock across unrelated owners"
+  ]
+}

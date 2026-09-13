@@ -14,7 +14,7 @@
 |R4|X/U/C及课程保留，不静默关闭|objective.py/tickets.py/runtime.py|verified|受控激活与原方案对应|
 |R5|状态单次提交，完整目标用于EG|dr_objective.py/solvers.py|verified|事务状态与回放测试|
 |R6|scratch/同数据契约/四场景truth-last|dispatcher与checkpoint重建|verified|真实checkpoint smoke与参数读回|
-|R7|本地Git后发布、独立P0/P1审查、保护旧任务|发布工具|pending|远端PID/CWD/argv/GPU、日志|
+|R7|本地Git后发布、独立P0/P1审查、保护旧任务|发布工具|verified|CUDA验收、PID/CWD/argv/GPU、增长日志及参数读回|
 
 不因低准确率或C*自然没有动作重跑；只处理可复现技术异常。新run与release不可覆盖。发布前记录精确版本与命令，启动后追加实际激活证据。
 
@@ -36,3 +36,26 @@ A1固定2-view mean，tangent/nuisance/fingerprint权重0；nuisance head附加�
 N607 preflight：普通账号、目标主机/CWD核对通过，约7185GiB空闲磁盘；新run尚不存在，旧M09/M10仍为原PID3317646/3317657。源数据角色直接复用已有VALIDATED_ONCE物理契约，训练入口逐行比较角色，不重建目标包。
 
 合成短程模型未自然通过RC4 H/P校准门槛，不能把该短程检查当作自然身份选中证据。另用受控H/P路由验证E1身份为0、E21 hard/partial损失及logit梯度非零；该测试只验证分支接线，不影响正式门槛。正式运行中逐步记录hard/partial实际选中数，E21前只要求RC4 domain/self路径实际执行。
+
+
+## 发布结果与独立读回
+
+2026-09-13T11:13:49.657724+08:00：VERIFIED。执行commit=4d3880208e40e0e8a875284e2dc31e41ad0d54f4，release=/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc_dr_4d3880208e；run=phase1_adv3b02_xuc_dr_s392005_20260913_r1，唯一dispatcher PID3535115。7组全部RUNNING，0排队，0失败；不是训练完成或评分完成。普通账号UID1000，owner和各worker的CWD/argv匹配发布目录。前次仅落地的5b0f03fe目录保留，未启动正式run；本次4d388020为唯一正式执行版本。
+
+|实验|GPU|PID|接受更新记录数|最新总loss|RC4总项|
+|---|---:|---:|---:|---:|---:|
+|DR-M14|2|3535129|112|17.29100|0.80433|
+|DR-M11|3|3535201|117|17.19502|0.77050|
+|DR-M05|5|3535275|100|17.39212|0.80230|
+|DR-M08|6|3535759|96|17.50929|0.80274|
+|DR-M07|7|3535834|91|17.30324|0.77403|
+|DR-M12|1|3535908|89|17.49346|0.83185|
+|DR-M13|0|3535981|79|17.71600|0.81486|
+
+两次读回确认所有行actions日志增长，最新更新accepted=true、loss/grad有限，训练日志无Traceback/RuntimeError/CUDA error。每行resolved_config的xuc_row与冻结matrix逐字段相同，scratch_only=true、checkpoint_sources为空、target_contact=false、RC4辅助头已进入optimizer；X/U开关与父行一致。旧M09/M10和其他8卡原有进程全部存活，每GPU至多2个CUDA进程。
+
+远端CUDA诊断在E1/21/131/181验证完整目标与EG、教师状态、scale单次提交和自身checkpoint严格重建，PASS。正式训练当前仍在warmup，实际RC4 domain/self非零，DAOT和身份项未到origin E21而为0，符合配置；没有把诊断中的E21激活等同于正式行已经达到E21。
+
+每小时监控xuc15已更新为同时覆盖原15组与新7组，频率每小时一次，状态保持PAUSED。此前关于恢复监控的询问尚未收到回答，因此目前不会自动执行巡检/修复；训练dispatcher本身不依赖该定时任务，继续运行并在E200后自动预测、评分。
+
+验收证据：delivery_verification.json、live_launch_initial.json、live_launch_verification.json、remote_cuda_acceptance.json；完整矩阵matrix_dr.json。初始速率不能可靠外推C*审计/EG与后期DAOT成本，暂不承诺完成时间。

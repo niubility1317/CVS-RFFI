@@ -1,0 +1,149 @@
+{
+  "status": "PASS",
+  "synthetic_source_only": true,
+  "audit": [
+    {
+      "epoch": 1,
+      "fields": 1,
+      "loss": 19.689733505249023,
+      "dr": {
+        "configured": true,
+        "daot_executed": false,
+        "rc4_executed": true,
+        "identity_active": false,
+        "u_samples": 256,
+        "hard_count": 0,
+        "partial_count": 0,
+        "daot_labeled": 0.0,
+        "daot_unlabeled": 0.0,
+        "rc4_identity": -0.0,
+        "rc4_total": 0.8695350289344788,
+        "scale_commits_before": 0,
+        "daot_grad_norm": 0.0,
+        "rc4_grad_norm": 0.1930518110561536
+      },
+      "fusion": {
+        "x_enabled": true,
+        "u_enabled": true,
+        "legal_anchors": 128,
+        "normalized_valid_blocks": 4,
+        "normalized_unavailable_blocks": 0,
+        "x_weighted_identity_grad_norm": 0.0006231816951185465,
+        "u_weighted_identity_grad_norm": 0.00015411119966302067,
+        "xu_gradient_cosine": -0.10222253203392029
+      },
+      "lr": {
+        "backbone": 4e-05,
+        "other": 4e-05
+      }
+    },
+    {
+      "epoch": 21,
+      "fields": 2,
+      "loss": 19.97861671447754,
+      "dr": {
+        "configured": true,
+        "daot_executed": true,
+        "rc4_executed": true,
+        "identity_active": true,
+        "u_samples": 256,
+        "hard_count": 0,
+        "partial_count": 0,
+        "daot_labeled": 0.017500000074505806,
+        "daot_unlabeled": 0.014613645151257515,
+        "rc4_identity": -0.0,
+        "rc4_total": 0.8706602454185486,
+        "scale_commits_before": 1,
+        "daot_grad_norm": 0.1647482061677951,
+        "rc4_grad_norm": 0.1883384583069731
+      },
+      "fusion": {
+        "x_enabled": true,
+        "u_enabled": true,
+        "legal_anchors": 128,
+        "normalized_valid_blocks": 4,
+        "normalized_unavailable_blocks": 0,
+        "x_weighted_identity_grad_norm": 0.0005933904321864247,
+        "u_weighted_identity_grad_norm": 0.00014916447980795056,
+        "xu_gradient_cosine": -0.11774798482656479
+      },
+      "lr": {
+        "backbone": 0.0001958191758271035,
+        "other": 0.0001958191758271035
+      }
+    },
+    {
+      "epoch": 131,
+      "fields": 2,
+      "loss": 30.927108764648438,
+      "dr": {
+        "configured": true,
+        "daot_executed": true,
+        "rc4_executed": true,
+        "identity_active": true,
+        "u_samples": 256,
+        "hard_count": 0,
+        "partial_count": 0,
+        "daot_labeled": 0.7524404525756836,
+        "daot_unlabeled": 0.6199020147323608,
+        "rc4_identity": -0.0,
+        "rc4_total": 0.8673648834228516,
+        "scale_commits_before": 2,
+        "daot_grad_norm": 9.389756190512351,
+        "rc4_grad_norm": 0.1882864566077273
+      },
+      "fusion": {
+        "x_enabled": true,
+        "u_enabled": true,
+        "legal_anchors": 128,
+        "normalized_valid_blocks": 4,
+        "normalized_unavailable_blocks": 0,
+        "x_weighted_identity_grad_norm": 0.0006312621408142149,
+        "u_weighted_identity_grad_norm": 0.0001527409185655415,
+        "xu_gradient_cosine": -0.09488017857074738
+      },
+      "lr": {
+        "backbone": 3.529548112204275e-05,
+        "other": 3.529548112204275e-05
+      }
+    },
+    {
+      "epoch": 181,
+      "fields": 2,
+      "loss": 30.423154830932617,
+      "dr": {
+        "configured": true,
+        "daot_executed": true,
+        "rc4_executed": true,
+        "identity_active": true,
+        "u_samples": 256,
+        "hard_count": 0,
+        "partial_count": 0,
+        "daot_labeled": 0.7227414846420288,
+        "daot_unlabeled": 0.6306734085083008,
+        "rc4_identity": -0.0,
+        "rc4_total": 0.8655987977981567,
+        "scale_commits_before": 3,
+        "daot_grad_norm": 10.292859061672475,
+        "rc4_grad_norm": 0.1876782879345211
+      },
+      "fusion": {
+        "x_enabled": true,
+        "u_enabled": true,
+        "legal_anchors": 128,
+        "normalized_valid_blocks": 4,
+        "normalized_unavailable_blocks": 0,
+        "x_weighted_identity_grad_norm": 0.0006322964909486473,
+        "u_weighted_identity_grad_norm": 0.00014998404367361218,
+        "xu_gradient_cosine": -0.10773828625679016
+      },
+      "lr": {
+        "backbone": 1.0000000000000002e-06,
+        "other": 2e-05
+      }
+    }
+  ],
+  "strict_checkpoint_rebuild": true,
+  "teacher_unchanged_in_fields": true,
+  "one_scale_commit_per_main_step": true
+}
