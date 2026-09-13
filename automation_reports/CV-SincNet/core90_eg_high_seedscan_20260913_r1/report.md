@@ -27,3 +27,20 @@ launcher先执行真实source fresh-checkpoint smoke及E1/E80/E131的九次solve
 预期每行：resolved_config.json、backend_configuration.json、全epoch/actions日志、final_ssdg.pth、source_final_eval四场景预测与scores、completion.json。仅exit0且SOURCE_ARTIFACTS_COMPLETE记row完成。报告clean/LEO Accuracy、Macro-F1、RX/TX floor、三seed均值与SD、对旧E/F配对变化和实际训练成本；不自动选模或科学晋级。
 
 当前状态：LOCAL_VERIFIED，实际发布commit、GPU/PID及日志增长在启动后追加。
+
+## 实际发布后态（2026-09-13 11:01 CST）
+
+状态：RUNNING / VERIFIED，5行训练、1行排队、0失败。发布commit=2d472c23807b5930de4c26b03441a69d1af3803f，GitHub OID独立读回一致；归档SHA256=4b270902b80e3c8bda473d99b7f6e73d27c4bed145d27abf4193b5972c70aaeb，一次本地/远端比对一致，远端编译PASS。独立P0/P1审查通过，发现的非阻断旧矩阵元数据已在发布前修正。
+
+调度PID3521900，真实source fresh-checkpoint smoke及九次阶段/solver更新全部PASS，无query访问。已启动worker均核实CWD、argv、PPID、GPU UUID、resolved_config中的lr=0.0004、extragradient、scratch及空继承路径；日志显示adamw_isolated_predictor_raw_gradient_extragradient。GPU0/1/4原有任务继续。
+
+|模型|seed|GPU|PID|
+|---|---|---|---|
+|ADV0|392005|2|3522040|
+|ADV0|392006|3|3522041|
+|ADV0|392007|5|3522042|
+|ADV035|392005|6|3522043|
+|ADV035|392006|7|3522044|
+|ADV035|392007|待空卡|排队|
+
+首个读回每行29—30次动作，第二次读回增至40—42次，确认持续增长，见launch_snapshot.json及growth_snapshot.json。这里只确认训练已启动，尚无E200最终成绩；第6行由调度器等待空卡后自动启动。
