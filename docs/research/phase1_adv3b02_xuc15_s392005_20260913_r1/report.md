@@ -130,3 +130,10 @@ VERIFIED_HEALTHY_UNCHANGED_PHASE：13行E200完成状态及最终checkpoint的si
 VERIFIED_HEALTHY_UNCHANGED_PHASE：13行E200完成状态和最终checkpoint的size/mtime未变。M09/M10分别完成E104/E109，原PID/PPID/CWD/GPU/scratch匹配，日志较08:18继续增长。两行完整可用epoch记录和训练日志无致命异常；未暴露的native skip计数继续记为不可用。每GPU至多1个compute进程，调度器保持正常等待。
 
 总体仍为TRAINING，预测/评分尚未开始。未改参、未干预健康进程、未重发、未读取target truth；每小时监控保持ACTIVE，本轮无实质状态变化，保持安静。证据heartbeat_20260913_0920*.json。
+
+
+## 用户授权提前测试：2026-09-13 09:45
+
+用户明确要求没有测试就执行测试。对已完成13个CORE90最终checkpoint先行执行同配置四场景预测，13组预测全部固定后独立评分；不等待M09/M10，但禁止根据结果改变仍在训练的配置或选择。原调度器和训练保持运行。独立evaluation_id=phase1_adv3b02_xuc13_early_eval_s392005_20260913_r1；输出/日志分别位于N607项目runs/和logs/同名目录，预测入口及模型实现继续使用不可变release adv3b02_xuc15_2a71f5d92d。新增控制脚本test_completed_rows.py负责最多4个推理进程，沿用每GPU最多2进程的资源检测，拒绝覆盖输出。原调度器后续仍会运行完整15行测试，早期结果与该链路分别标记，不覆盖或合并不一致数据。
+
+技术失败保留全部产物和活跃PID，不盲目重启；本次不加载其他checkpoint，不重建数据，不修改训练进程。验证包括冻结模型与source角色负测、脚本编译和独立P0/P1审查。早期评分结果不得反馈本矩阵训练/选模/重跑。
