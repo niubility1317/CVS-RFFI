@@ -142,3 +142,10 @@ VERIFIED_HEALTHY_UNCHANGED_PHASE：13行E200完成状态和最终checkpoint的si
 提前测试发布VERIFIED：控制提交0e03073d6b9867ede89f47f89f14111eb34c4299已push且独立OID匹配、ahead/behind=0/0；单文件传输校验/远端编译通过，冻结角色正负测及P0/P1定点复核通过。提前测试owner PID3490321，首批M00/M01/M02/M03分别PID3490335/3490348/3490361/3490374，GPU2/3/5/6，CWD及argv已独立核实；原dispatcher3316498、训练3317646/3317657和其他健康进程保留。预测中，尚无score。证据early_eval_launch.json、early_eval_identity.txt。
 
 自动任务xuc15本轮读回为PAUSED（updated_at=1789263569376），保留该实际状态，未擅自恢复；已通过automation_update把提前测试追踪路径加入原prompt。后台测试本身独立运行，不依赖heartbeat。
+
+
+## 提前测试完成：2026-09-13 09:55
+
+VERIFIED_COMPLETE_13_ROWS_4_SCENARIOS_TRUTH_LAST：独立evaluation COMPLETE，13个score/52个场景/8736000条预测覆盖完整。预测全部固定后才评分的时间顺序核验通过，所有测试日志无Traceback/OOM。详细结果见early_eval_results.md及early_eval_metrics.csv，原始score汇总及覆盖证据见early_eval_scores_latest.json。CORE90基线clean=78.4619%、三LEO均值=62.5048%；主融合M12分别77.0976%/57.3022%，相对−1.3643/−5.2026pp；原C2完整融合M08为78.1929%/59.2651%。M13三LEO=62.7256%（+0.2208pp），但C*无动作不能归因于主动控制，单seed也不能声明稳定提升。当前融合未证明预期协同收益，性能结果不构成技术故障，不改参/选择性重跑。
+
+M09/M10最新只读进度113/118轮，仍训练中；原15行训练及正式测试链保持运行。本次提前13行测试已经完整闭合，不应因原pipeline_state仍TRAINING误报为没有测试。自动任务xuc15保持读回的PAUSED状态，提前测试无需继续等待监控才能评分。
