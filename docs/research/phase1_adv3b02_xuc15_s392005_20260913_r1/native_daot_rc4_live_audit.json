@@ -1,0 +1,199 @@
+{
+  "time": 1789265511.569907,
+  "rows": {
+    "M09": {
+      "pid": 3317646,
+      "live_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc15_2a71f5d92d/code/scripts/train_xuc_native.py",
+        "--reference",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc15_2a71f5d92d/configs/a1_native_recipe_reference.json",
+        "--row",
+        "M09",
+        "--dataset",
+        "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_xuc15_s392005_20260913_r1/M09",
+        "--source-contract",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_xuc15_s392005_20260913_r1/source_contract.json",
+        ""
+      ],
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc15_2a71f5d92d",
+      "epochs_parsed": 118,
+      "latest_epoch": 118,
+      "options": {
+        "--fasttrust_rc4": "true",
+        "--rc4_enable_hard": "true",
+        "--rc4_enable_partial": "true",
+        "--rc4_enable_partial_set": "true",
+        "--rc4_enable_partial_conditional": "true",
+        "--rc4_enable_negative": "false",
+        "--daot_ablation": "A1",
+        "--daot_loss_ablation": "none",
+        "--daot_efficiency_mode": "identity_sequential",
+        "--daot_batched_scale_readback": "true",
+        "--daot_skip_mean_metadata": "true"
+      },
+      "metrics": {
+        "train_daot_objective_computed": {
+          "latest": 1.0,
+          "positive_epochs": 98,
+          "first_positive_epoch": 21
+        },
+        "train_loss_daot_total": {
+          "latest": 0.831118318411681,
+          "positive_epochs": 98,
+          "first_positive_epoch": 21
+        },
+        "train_loss_daot_unlabeled": {
+          "latest": 0.5638439294185724,
+          "positive_epochs": 98,
+          "first_positive_epoch": 21
+        },
+        "train_rc4_hard_count": {
+          "latest": 39.33783783783784,
+          "positive_epochs": 97,
+          "first_positive_epoch": 21
+        },
+        "train_rc4_partial_count": {
+          "latest": 5.7342342342342345,
+          "positive_epochs": 59,
+          "first_positive_epoch": 21
+        },
+        "train_rc4_effective_weighted_coverage": {
+          "latest": 0.1500000041481611,
+          "positive_epochs": 98,
+          "first_positive_epoch": 21
+        },
+        "train_rc4_partial_conditional_loss": {
+          "latest": 0.0012904313369982684,
+          "positive_epochs": 59,
+          "first_positive_epoch": 21
+        },
+        "train_muse_u_identity_loss": {
+          "latest": 0.00199084713637645,
+          "positive_epochs": 98,
+          "first_positive_epoch": 21
+        },
+        "train_muse_u_identity_gradient_norm": {
+          "latest": 1.4770514737570608e-07,
+          "positive_epochs": 98,
+          "first_positive_epoch": 21
+        },
+        "train_ecrs_cross_rx_executed": {
+          "latest": null,
+          "positive_epochs": 0,
+          "first_positive_epoch": null
+        },
+        "train_ecrs_cross_rx_weighted_loss": {
+          "latest": null,
+          "positive_epochs": 0,
+          "first_positive_epoch": null
+        },
+        "train_optimizer_step_applied": {
+          "latest": 1.0,
+          "positive_epochs": 118,
+          "first_positive_epoch": 1
+        }
+      }
+    },
+    "M10": {
+      "pid": 3317657,
+      "live_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc15_2a71f5d92d/code/scripts/train_xuc_native.py",
+        "--reference",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc15_2a71f5d92d/configs/a1_native_recipe_reference.json",
+        "--row",
+        "M10",
+        "--dataset",
+        "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_xuc15_s392005_20260913_r1/M10",
+        "--source-contract",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_xuc15_s392005_20260913_r1/source_contract.json",
+        ""
+      ],
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_xuc15_2a71f5d92d",
+      "epochs_parsed": 123,
+      "latest_epoch": 123,
+      "options": {
+        "--fasttrust_rc4": "true",
+        "--rc4_enable_hard": "true",
+        "--rc4_enable_partial": "true",
+        "--rc4_enable_partial_set": "true",
+        "--rc4_enable_partial_conditional": "true",
+        "--rc4_enable_negative": "false",
+        "--daot_ablation": "A1",
+        "--daot_loss_ablation": "none",
+        "--daot_efficiency_mode": "identity_sequential",
+        "--daot_batched_scale_readback": "true",
+        "--daot_skip_mean_metadata": "true"
+      },
+      "metrics": {
+        "train_daot_objective_computed": {
+          "latest": 1.0,
+          "positive_epochs": 103,
+          "first_positive_epoch": 21
+        },
+        "train_loss_daot_total": {
+          "latest": 0.8246339836099126,
+          "positive_epochs": 103,
+          "first_positive_epoch": 21
+        },
+        "train_loss_daot_unlabeled": {
+          "latest": 0.570094734027579,
+          "positive_epochs": 103,
+          "first_positive_epoch": 21
+        },
+        "train_rc4_hard_count": {
+          "latest": 41.112612612612615,
+          "positive_epochs": 102,
+          "first_positive_epoch": 21
+        },
+        "train_rc4_partial_count": {
+          "latest": 0.009009009009009009,
+          "positive_epochs": 82,
+          "first_positive_epoch": 21
+        },
+        "train_rc4_effective_weighted_coverage": {
+          "latest": 0.15000000340981526,
+          "positive_epochs": 103,
+          "first_positive_epoch": 21
+        },
+        "train_rc4_partial_conditional_loss": {
+          "latest": 3.1162149703910424e-07,
+          "positive_epochs": 82,
+          "first_positive_epoch": 21
+        },
+        "train_muse_u_identity_loss": {
+          "latest": 0.00018244344019568168,
+          "positive_epochs": 103,
+          "first_positive_epoch": 21
+        },
+        "train_muse_u_identity_gradient_norm": {
+          "latest": 8.223692634308786e-08,
+          "positive_epochs": 103,
+          "first_positive_epoch": 21
+        },
+        "train_ecrs_cross_rx_executed": {
+          "latest": 1.0,
+          "positive_epochs": 123,
+          "first_positive_epoch": 1
+        },
+        "train_ecrs_cross_rx_weighted_loss": {
+          "latest": 0.0005634565648072132,
+          "positive_epochs": 123,
+          "first_positive_epoch": 1
+        },
+        "train_optimizer_step_applied": {
+          "latest": 1.0,
+          "positive_epochs": 123,
+          "first_positive_epoch": 1
+        }
+      }
+    }
+  }
+}

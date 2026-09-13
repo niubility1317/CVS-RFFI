@@ -149,3 +149,12 @@ VERIFIED_HEALTHY_UNCHANGED_PHASE：13行E200完成状态和最终checkpoint的si
 VERIFIED_COMPLETE_13_ROWS_4_SCENARIOS_TRUTH_LAST：独立evaluation COMPLETE，13个score/52个场景/8736000条预测覆盖完整。预测全部固定后才评分的时间顺序核验通过，所有测试日志无Traceback/OOM。详细结果见early_eval_results.md及early_eval_metrics.csv，原始score汇总及覆盖证据见early_eval_scores_latest.json。CORE90基线clean=78.4619%、三LEO均值=62.5048%；主融合M12分别77.0976%/57.3022%，相对−1.3643/−5.2026pp；原C2完整融合M08为78.1929%/59.2651%。M13三LEO=62.7256%（+0.2208pp），但C*无动作不能归因于主动控制，单seed也不能声明稳定提升。当前融合未证明预期协同收益，性能结果不构成技术故障，不改参/选择性重跑。
 
 M09/M10最新只读进度113/118轮，仍训练中；原15行训练及正式测试链保持运行。本次提前13行测试已经完整闭合，不应因原pipeline_state仍TRAINING误报为没有测试。自动任务xuc15保持读回的PAUSED状态，提前测试无需继续等待监控才能评分。
+
+
+## DAOT与FastTrust-RC4实际范围澄清
+
+实时核对M09/M10的PID/argv、initialization及全部118/123条epoch日志：DAOT与FastTrust-RC4确实在这两行执行。DAOT从E21开始，loss_daot_total最新0.831118/0.824634，loss_daot_unlabeled最新0.563844/0.570095；RC4 hard每批均值39.3378/41.1126、partial均值5.73423/0.009009，有效加权覆盖均为0.15。两行身份伪标签loss及身份梯度均非零，optimizer_step_applied=1。M10额外X从E1执行，最新weighted_loss=0.000563457。证据native_daot_rc4_live_audit.json。
+
+必须限定结论：已评分的13个CORE90行（含M08/M12/M13）使用FusionObjective→legacy labeled_terms及普通U伪标签CE/entropy，没有DAOT或RC4目标调用。native.py的M09/M10才进入SSDG/train_ssdg.py，并实际调用DAOT、RC4路由与loss；DAOT有标签项加入总loss，U项为muse_losses[total]+loss_daot_u。故当前不存在DAOT+FastTrust-RC4+X+Ux_normalized+C完整联合实验。当前矩阵只验证将X/U/C模块移植到CORE90，以及原生A1与A1+X对照；不能把13行测试解释为保留X1原生训练体系后的完整三方法融合。此前解释未明确此范围，现予更正。
+
+原生RC4为登记的A1配置：hard/partial开启，negative及外部anchor关闭；不是全部可选RC4分支全开。DAOT也按A1消融配置运行，原型/关系/切向等为零的项不得宣称全部激活。机制执行不等于性能改善，本次不修改或重启正在运行的实验。
