@@ -1,0 +1,37 @@
+{
+  "time": 1789262397.2396817,
+  "status": "TRAINING",
+  "rows": {
+    "M09": {
+      "status": "RUNNING",
+      "lines": {
+        "metrics_epoch.jsonl": 104
+      },
+      "numerical_errors": 0,
+      "unaccepted_steps": 0,
+      "actions": {},
+      "native_nonfinite_max": {},
+      "native_epoch": 104,
+      "completed_epoch": 104,
+      "fatal_markers": [],
+      "latest_checkpoint_present": false,
+      "final_checkpoint_present": false
+    },
+    "M10": {
+      "status": "RUNNING",
+      "lines": {
+        "metrics_epoch.jsonl": 109
+      },
+      "numerical_errors": 0,
+      "unaccepted_steps": 0,
+      "actions": {},
+      "native_nonfinite_max": {},
+      "native_epoch": 109,
+      "completed_epoch": 109,
+      "fatal_markers": [],
+      "latest_checkpoint_present": false,
+      "final_checkpoint_present": false
+    }
+  },
+  "errors": []
+}

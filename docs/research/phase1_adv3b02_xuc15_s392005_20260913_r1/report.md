@@ -124,3 +124,9 @@ VERIFIED_CORE90_TRAINING_COMPLETE：13个CORE90行均完成E200。新完成M14�
 VERIFIED_HEALTHY_UNCHANGED_PHASE：13行E200完成状态及最终checkpoint的size/mtime保持不变。M09/M10分别完成E87/E92，原PID/PPID/CWD/GPU/scratch匹配，日志相对07:18均增长。对仍增长的两行扫描完整可用epoch记录和训练日志，无致命异常；native skip计数未提供，不将缺失当0。每GPU至多1个compute进程，调度器正常等待两行完成。
 
 总体仍为TRAINING，尚未进入预测/评分。无异常修复、无重发、无target truth访问；每小时监控保持ACTIVE，本轮无实质状态变化，保持安静。证据heartbeat_20260913_0818*.json。
+
+## 每小时监控：2026-09-13 09:20
+
+VERIFIED_HEALTHY_UNCHANGED_PHASE：13行E200完成状态和最终checkpoint的size/mtime未变。M09/M10分别完成E104/E109，原PID/PPID/CWD/GPU/scratch匹配，日志较08:18继续增长。两行完整可用epoch记录和训练日志无致命异常；未暴露的native skip计数继续记为不可用。每GPU至多1个compute进程，调度器保持正常等待。
+
+总体仍为TRAINING，预测/评分尚未开始。未改参、未干预健康进程、未重发、未读取target truth；每小时监控保持ACTIVE，本轮无实质状态变化，保持安静。证据heartbeat_20260913_0920*.json。
