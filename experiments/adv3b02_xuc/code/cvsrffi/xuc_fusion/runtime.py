@@ -64,12 +64,30 @@ def resolve_args(recipe,row,*,dataset,output,device='cuda:0',synthetic=False,tes
         game_no_audit=row['control']!='legacy_both',game_telemetry_interval=0,
         game_synthetic=synthetic,game_max_grad_norm=5.,game_max_steps_per_epoch=0)
     if synthetic:defaults.update(epochs=test_epochs,game_max_steps_per_epoch=test_steps)
+    joint=row.get('joint')
+    if joint is not None:
+        from .joint_config import resolve
+        joint=resolve(joint)
+        defaults.update(seed=joint['model_seed'],game_split_seed=joint['data_seed'],
+            game_data_order_seed=joint['data_seed'],lr=joint['lr'],weight_decay=joint['weight_decay'],
+            lambda_adv=joint['outer_adv_weight'],use_ema_teacher=True,ema_decay=.999,
+            game_solver='extragradient' if joint['solver_mode']=='full_EG' else 'simultaneous')
     p.set_defaults(**defaults)
     args=p.parse_args(['--output_dir',str(output)])
     validate_game(args)
     args.xuc_unconsumed_reference_options=ignored
     args.xuc_row=deepcopy(row)
-    args.xuc_daot_rc4=bool(row.get('daot_rc4',False))
+    if 'full_dr_options' in row:args.full_dr_options=deepcopy(row['full_dr_options'])
+    args.joint=joint
+    if joint:
+        from .dr_objective import options
+        reference=json.loads((Path(__file__).resolve().parents[3]/'configs/a1_native_recipe_reference.json').read_text(encoding='utf-8'))
+        native_args=options(reference,output)
+        args.joint_sat_schedule=native_args.sat_view_schedule
+        args.joint_sat_ce_weight=native_args.concat_sat_ce_weight
+    # Same carrier, heads, EMA and U domain/self on all four cells. Only the
+    # native DAOT + H/P identity increment is toggled, with no pseudo fallback.
+    args.xuc_daot_rc4=bool(row.get('daot_rc4',False)) or joint is not None
     args.xuc_fasttrust_lr=args.xuc_daot_rc4 or row.get('epoch_budget')=='full_unlabeled'
     if args.xuc_daot_rc4:
         args.use_ema_teacher=True
@@ -91,23 +109,31 @@ def validate_source_contract(source, path=None):
 def evaluate_source(model,source,args):
     flags={m:m.training for m in model.modules()};model.eval()
     correct=total=0;ce=0.
+    records=dict(y=[],prediction=[],rx=[],day=[])
     try:
         with torch.no_grad():
-            for x,y,_,_ in source.loader('val',args.eval_batch_size,workers=0):
+            for x,y,_,meta in source.loader('val',args.eval_batch_size,workers=0):
                 x=x.to(args.device);y=y.to(args.device)
                 logits=model(x,return_aux=True)['tx_logits']
                 correct+=int((logits.argmax(1)==y).sum());total+=len(y)
                 ce+=float(torch.nn.functional.cross_entropy(logits,y,reduction='sum'))
+                if args.joint:
+                    records['y'].extend(y.cpu().tolist());records['prediction'].extend(logits.argmax(1).cpu().tolist())
+                    records['rx'].extend(meta['rx_i'].tolist());records['day'].extend(meta['day_i'].tolist())
     finally:
         for m,flag in flags.items():m.training=flag
-    return dict(correct=correct,total=total,accuracy=correct/total,ce=ce/total,source_V_read_only=True)
+    result=dict(correct=correct,total=total,accuracy=correct/total,ce=ce/total,source_V_read_only=True)
+    if args.joint:
+        from .joint_metrics import task_metrics
+        result['group_metrics']=task_metrics(records['y'],records['prediction'],records['rx'],records['day'],['clean']*total,args.num_classes)
+    return result
 
 
 def train(args,row,source_contract=None):
     output=Path(args.output_dir)
     if output.exists() and any(output.iterdir()):raise FileExistsError('Refusing existing output '+str(output))
     output.mkdir(parents=True,exist_ok=True)
-    if not args.game_synthetic and (args.epochs!=200 or args.seed!=392005 or args.amp or args.baseline_ckpt):raise ValueError('formal row contract changed')
+    if not args.game_synthetic and (args.epochs!=200 or (args.joint is None and args.seed!=392005) or args.amp or args.baseline_ckpt):raise ValueError('formal row contract changed')
     set_seed(args.seed)
     device=torch.device(args.device)
     if device.type=='cuda' and not torch.cuda.is_available():raise RuntimeError('requested CUDA unavailable')
@@ -121,13 +147,19 @@ def train(args,row,source_contract=None):
     ema=deepcopy(model).eval() if args.use_ema_teacher else None
     if ema is not None:
         for parameter in ema.parameters():parameter.requires_grad_(False)
+    counter=None
+    if args.joint:
+        from .joint_diagnostics import ForwardCounter
+        counter=ForwardCounter(model,ema)
     if args.xuc_fasttrust_lr:
         grouped={role:[] for role in ('backbone','other')}
         for name,parameter in model.named_parameters():grouped['backbone' if 'backbone' in name.lower() else 'other'].append(parameter)
         parameters=[dict(params=value,fasttrust_role=key) for key,value in grouped.items()]
     else:parameters=model.parameters()
     optimizer=torch.optim.AdamW(parameters,lr=args.lr,weight_decay=args.weight_decay)
-    solver=GameSolver(model,optimizer,nonfinite='raise',max_grad_norm=5.)
+    solver=GameSolver(model,optimizer,nonfinite='raise',max_grad_norm=5.,
+        predictor_lr_ratio=args.joint['predictor_lr_ratio'] if args.joint else 1.,
+        telemetry_interval=args.joint['diagnostic_interval'] if args.joint else 0)
     proto=PrototypeMemoryBank(args.num_classes,len(source.domains),momentum=args.proto_momentum,
         margin=args.proto_margin,domain_align_weight=args.proto_domain_align_weight,push_weight=args.proto_push_weight,min_count=args.proto_min_count)
     proto._lazy_init(160,device,torch.float32)
@@ -142,6 +174,7 @@ def train(args,row,source_contract=None):
         json_write(output/'resolved_dr_config.json',vars(dr.args))
     objective=FusionObjective(model,args,proto,row,dr=dr)
     stream=TicketStream(source,args,row)
+    if args.joint and not args.game_synthetic and stream.steps!=222:raise ValueError('joint requires 222 accepted steps per epoch')
     audit_enabled=row['source_audit_policy']=='cstar_isolated_passive_or_active'
     observer=SourceObserver(source,args) if audit_enabled else None
     reliable=ReliableController() if audit_enabled else None
@@ -158,7 +191,7 @@ def train(args,row,source_contract=None):
     started=time.perf_counter();epoch_rows=[];completed=0;actions={'NORMAL':0,'CATCHUP':0,'CORRECT':0};head_total=0
     from .activation import ActivationLedger
     activation=ActivationLedger(row) if row.get('dr_full_extensions') else None
-    print(f'[XUC-INIT] row={row["id"]} scratch_only=true seed=392005 domains={len(source.domains)} steps_per_epoch={stream.steps}',flush=True)
+    print(f'[XUC-INIT] row={row["id"]} scratch_only=true seed={args.seed} domains={len(source.domains)} steps_per_epoch={stream.steps}',flush=True)
     json_write(output/'initialization.json',dict(scratch_only=True,checkpoint_sources=[],seed=args.seed,
         parameter_count=sum(p.numel() for p in model.parameters()),batchnorm_modules=[n for n,m in model.named_modules() if isinstance(m,torch.nn.modules.batchnorm._BatchNorm)],
         mixstyle_modules=[n for n,m in model.named_modules() if m.__class__.__name__=='MixStyle1D'],target_contact=False,
@@ -166,8 +199,11 @@ def train(args,row,source_contract=None):
     while completed<args.epochs*stream.steps:
         live_epoch=completed//stream.steps+1
         if dr is not None:
+            calibration_started=time.perf_counter()
             calibration=dr.calibrate(live_epoch)
-            if calibration:append(output/'rc4_calibration.jsonl',calibration)
+            if calibration:
+                calibration['elapsed_seconds']=time.perf_counter()-calibration_started
+                append(output/'rc4_calibration.jsonl',calibration)
         if reliable is not None and completed%250==0:
             # Audit is independent of which remaining ticket the controller selects.
             from cvsrffi.schedule import build_stage_state
@@ -178,6 +214,7 @@ def train(args,row,source_contract=None):
         ticket,coverage=stream.choose(capability=reliable.capability(completed) if reliable else False,
                                      difficulty=reliable.latest.get('difficulty',{}) if reliable and reliable.latest else {})
         batch,ubatch=stream.batches(ticket)
+        if args.joint and ticket.epoch!=live_epoch:raise RuntimeError('fixed curriculum accepted clock drift')
         if args.xuc_fasttrust_lr:
             from SSDG.train_ssdg import _apply_fasttrust_lr
             _apply_fasttrust_lr(optimizer,base_lr=args.lr,epoch=ticket.epoch,tail_mode=dr.args.a1_tail_lr if dr else 'legacy')
@@ -216,18 +253,22 @@ def train(args,row,source_contract=None):
             ctx=prepare_context(batch,None if dr else ubatch,model,ema,context_args,ticket.epoch,ticket.batch_index,ticket.weights,gen,augmentor,
                                 exposure_record=exposure)
             ctx.grid_plan=ticket.grid_plan;ctx.rx=batch[3]['rx_i'].to(device);ctx.day=batch[3]['day_i'].to(device)
-            ctx.audit_gradients=completed%(1000 if row.get('dr_full_extensions') else 250)==0;ctx.field_components=[];ctx.fusion_telemetry={}
+            interval=args.joint['diagnostic_interval'] if args.joint else (1000 if row.get('dr_full_extensions') else 250)
+            ctx.audit_gradients=interval>0 and completed%interval==0;ctx.field_components=[];ctx.fusion_telemetry={}
             if dr is not None:dr.prepare(ctx,ubatch)
             count=decision.get('catchup_steps',0)
             if legacy and count and not budget.can_afford(completed,head_steps=count)[0]:count=0
             head_steps,head_enc=head_catchup(model,optimizer,ctx,count,args)
-            solver.mode='extragradient' if decision['action']=='CORRECT' else 'simultaneous'
+            solver.mode=('extragradient' if args.joint['solver_mode']=='full_EG' else 'simultaneous') if args.joint else ('extragradient' if decision['action']=='CORRECT' else 'simultaneous')
             result=solver.step(lambda:objective(ctx))
             if result.accepted:
                 if dr is not None:dr.commit(ctx)
                 if ema is not None:_update_ema_model(ema,model,args.ema_decay)
                 proto.update(ctx.origin_features,ctx.y,ctx.domain)
         if not result.accepted:raise RuntimeError('main update not accepted')
+        if args.joint and args.joint['probe_interval']>0 and completed%args.joint['probe_interval']==0:
+            from .joint_diagnostics import run_probes
+            append(output/'joint_probes.jsonl',run_probes(model,ctx,args,dr,optimizer,completed))
         if result.field_evaluations==2 and (len(ctx.field_components)!=2 or ctx.field_components[0]!=ctx.field_components[1]):raise RuntimeError('EG objective mismatch')
         budget.commit(completed,field_evaluations=result.field_evaluations-1,base_steps=1,corrections=int(result.field_evaluations>1),head_steps=head_steps)
         if reliable is not None:reliable.commit(decision,completed,True)
@@ -235,18 +276,28 @@ def train(args,row,source_contract=None):
             event=legacy_curriculum.update(metrics,step=metrics['step'],encoder_version=metrics['encoder_version'],hold=not metrics.get('valid',False))
             append(output/'legacy_curriculum.jsonl',dict(step=completed,**event))
             if event['changed']:metrics={}
-        window=stream.commit(ticket)
+        window=stream.commit(ticket,actual_exposure=dict(scenario=ctx.satellite_scenario,count=ctx.satellite_mask_count) if args.joint else None)
         if window:append(output/'ticket_windows.jsonl',window)
         action=decision['action'] if decision['action'] in actions else 'NORMAL'
         actions[action]+=1;head_total+=head_steps
         record=dict(step=completed,execution_epoch=live_epoch,origin_epoch=ticket.epoch,origin_batch_index=ticket.batch_index,
             ticket_id=ticket.ticket_id,weights=ticket.weights,source_ids=ctx.sample_ids,
             unlabeled_ids=list(ubatch[3]['sample_id']) if ubatch is not None else [],
-            selected_mask=ctx.satellite_selected_mask.cpu().tolist(),scenario=ctx.satellite_scenario,channel_seed=ticket.channel_seed,
+            selected_mask=ctx.satellite_selected_mask.cpu().tolist(),scenario=ctx.satellite_scenario,channel_seed=ctx.satellite_channel_seed,
             coverage_driven=coverage,capability_confirmed=reliable.capability(completed) if reliable else None,
             action=decision['action'],reason=decision['reason'],head_steps=head_steps,field_evaluations=result.field_evaluations,
             field_components=ctx.field_components,loss=result.loss,loss_replay=result.loss_replay,grad_norm=result.grad_norm,
             terms=ctx.origin_terms,fusion=ctx.fusion_telemetry,accepted=True,elapsed_seconds=time.perf_counter()-started)
+        if args.joint:
+            record.update(solver_mode=solver.mode,solver_telemetry=result.telemetry,
+                accepted_main_step=completed+1,normalization_scales=args.joint['normalization_scales'],
+                predictor_lr_ratio=solver.predictor_lr_ratio,controller_mode='off',curriculum_mode='fixed',
+                optimizer_commits=solver.steps,ema_commits=completed+1,
+                prototype_commits=completed+1,dr_increment_enabled=args.joint['native_dr'])
+            record['backbone_forward_counts']=counter.snapshot()
+            record['identity_supervision_exposure']=dict(L=len(ctx.y),U_available=len(ctx.dr_x),
+                U_HP_selected=int((ctx.dr_route.hard|ctx.dr_route.partial).sum()) if ctx.dr_telemetry['weighted_identity']!=0 else 0)
+            record['cuda_peak_memory_bytes']=torch.cuda.max_memory_allocated(device) if device.type=='cuda' else None
         if dr is not None:
             record['daot_rc4']=ctx.dr_telemetry
             record['learning_rates']={g['fasttrust_role']:g['lr'] for g in optimizer.param_groups}
@@ -273,4 +324,5 @@ def train(args,row,source_contract=None):
     json_write(output/'completion.json',dict(status='TRAINING_COMPLETE',epochs=args.epochs,steps=completed,
         actions=actions,head_steps=head_total,cstar='CONTROL_NOT_ACTIVATED' if reliable and not reliable.actions else None,
         target_evaluated=False,elapsed_seconds=time.perf_counter()-started))
+    if counter is not None:counter.close()
     return 0

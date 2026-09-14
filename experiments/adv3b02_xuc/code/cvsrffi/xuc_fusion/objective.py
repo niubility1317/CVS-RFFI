@@ -37,14 +37,23 @@ class FusionObjective:
 
     def __call__(self, ctx):
         n = len(ctx.y)
-        with labeled_forward_context(self.model, ctx.grid_plan, ctx.x.device):
-            combined = self.model(torch.cat((ctx.x, ctx.satellite)), y_tx=torch.cat((ctx.y, ctx.y)),
-                                  grl_lambda=1., return_aux=True, domain_labels=torch.cat((ctx.domain, ctx.domain)))
-        ctx.forward_calls += 1
-        out, sat = slice_batch(combined, 0, n, 2*n), slice_batch(combined, n, 2*n, 2*n)
+        joint=getattr(self.args,'joint',None)
+        if joint:
+            out=self.model(ctx.x,y_tx=ctx.y,grl_lambda=joint['labeled_encoder_grl_multiplier'],
+                           return_aux=True,domain_labels=ctx.domain)
+            sat=self.model(ctx.satellite,y_tx=ctx.y,grl_lambda=joint['labeled_encoder_grl_multiplier'],
+                           return_aux=True,domain_labels=ctx.domain) if ctx.epoch>=self.args.sat_cons_start_epoch else None
+            ctx.forward_calls+=1+int(sat is not None)
+        else:
+            with labeled_forward_context(self.model, ctx.grid_plan, ctx.x.device):
+                combined = self.model(torch.cat((ctx.x, ctx.satellite)), y_tx=torch.cat((ctx.y, ctx.y)),
+                                      grl_lambda=1., return_aux=True, domain_labels=torch.cat((ctx.domain, ctx.domain)))
+            ctx.forward_calls += 1
+            out, sat = slice_batch(combined, 0, n, 2*n), slice_batch(combined, n, 2*n, 2*n)
         loss, terms = labeled_terms(out, ctx.y, ctx.domain, self.args, ctx.epoch,
                                     ctx.batch_index, dict(ctx.weights), self.proto)
         sat_ce = F.cross_entropy(sat['tx_logits'], ctx.y) if ctx.epoch >= self.args.sat_cons_start_epoch else out['tx_logits'].sum()*0
+        if joint:sat_ce=sat_ce*self.args.joint_sat_ce_weight
         loss = loss + ctx.weights['sat_cls'] * sat_ce
         terms['sat_cls'] = sat_ce
         if ctx.strong is not None and self.dr is None:
@@ -68,6 +77,12 @@ class FusionObjective:
             extra,dr_terms=self.dr.objective(ctx,out)
             loss=loss+extra
             terms.update(dr_terms)
+        if joint and ctx.audit_gradients and ctx.origin_features is None:
+            from .joint_diagnostics import scoped_gradients
+            components=dict(TX=terms['tx'],sat=ctx.weights['sat_cls']*sat_ce,
+                DAOT=terms['daot_labeled']+terms['daot_unlabeled'],
+                RC4_id=ctx.dr_weighted_identity,ADV=ctx.weights['adv']*terms['adv'])
+            ctx.joint_gradient_diagnostics=scoped_gradients(self.model,components)
         if self.row['x_enabled']:
             x, count = cross_rx_triplet_loss(z, ctx.y, ctx.rx, ctx.day, torch.zeros_like(ctx.y), margin=self.row['x_margin'])
             weighted['x'] = self.row['lambda_x']*x
@@ -104,4 +119,5 @@ class FusionObjective:
                 if set(grads) == {'x','u'}:
                     telemetry['xu_gradient_cosine'] = float(F.cosine_similarity(grads['x'],grads['u'],dim=0))
             ctx.fusion_telemetry = telemetry
+            if joint and ctx.audit_gradients:ctx.fusion_telemetry['identity_gradients']=ctx.joint_gradient_diagnostics
         return loss

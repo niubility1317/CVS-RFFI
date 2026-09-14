@@ -2109,6 +2109,7 @@ def _compute_daot_labeled_step(
     orbit_memory=None,
     memory_keys: Optional[torch.Tensor] = None,
     loss_normalizer=None,
+    prepared_cache=None,
 ) -> Dict[str, Any]:
     if ema_model is None:
         raise RuntimeError("ADV3B02-DAOT-STN requires an EMA orbit teacher")
@@ -2137,23 +2138,27 @@ def _compute_daot_labeled_step(
     if not hard_scenarios:
         raise ValueError("ADV3B02-DAOT-STN requires at least one hard teacher scenario")
     hard_scenario = hard_scenarios[(int(epoch) + int(batch_idx)) % len(hard_scenarios)]
-    x_medium, medium_meta = apply_sat_fn(
-        x_clean,
-        medium_scenario,
-        args,
-        gen=make_torch_generator(x_clean.device, base_seed + 11),
-        return_meta=True,
-    )
-    teacher_view_count = int(getattr(args, "daot_teacher_view_count", 3))
-    x_hard = hard_meta = None
-    if teacher_view_count >= 3:
-        x_hard, hard_meta = apply_sat_fn(
+    if prepared_cache is not None and 'views' in prepared_cache:
+        x_medium,medium_meta,x_hard,hard_meta,teacher_view_count=prepared_cache['views']
+    else:
+        x_medium, medium_meta = apply_sat_fn(
             x_clean,
-            hard_scenario,
+            medium_scenario,
             args,
-            gen=make_torch_generator(x_clean.device, base_seed + 29),
+            gen=make_torch_generator(x_clean.device, base_seed + 11),
             return_meta=True,
         )
+        teacher_view_count = int(getattr(args, "daot_teacher_view_count", 3))
+        x_hard = hard_meta = None
+        if teacher_view_count >= 3:
+            x_hard, hard_meta = apply_sat_fn(
+                x_clean,
+                hard_scenario,
+                args,
+                gen=make_torch_generator(x_clean.device, base_seed + 29),
+                return_meta=True,
+            )
+        if prepared_cache is not None:prepared_cache['views']=(x_medium,medium_meta,x_hard,hard_meta,teacher_view_count)
     student_channel = model(
         x_medium,
         y_tx=y_clean,
@@ -2162,12 +2167,16 @@ def _compute_daot_labeled_step(
         domain_labels=d_clean,
     )
     ema_model.eval()
-    with torch.no_grad():
-        teacher_inputs = [x_clean, x_medium] + ([x_hard] if x_hard is not None else [])
-        teacher_views, teacher_efficiency = _forward_daot_teacher_views(
-            ema_model, teacher_inputs, domain_labels=d_clean,
-            efficiency_mode=str(getattr(args, "daot_efficiency_mode", "legacy")),
-        )
+    if prepared_cache is not None and 'teacher' in prepared_cache:
+        teacher_views,teacher_efficiency=prepared_cache['teacher']
+    else:
+        with torch.no_grad():
+            teacher_inputs = [x_clean, x_medium] + ([x_hard] if x_hard is not None else [])
+            teacher_views, teacher_efficiency = _forward_daot_teacher_views(
+                ema_model, teacher_inputs, domain_labels=d_clean,
+                efficiency_mode=str(getattr(args, "daot_efficiency_mode", "legacy")),
+            )
+        if prepared_cache is not None:prepared_cache['teacher']=(teacher_views,teacher_efficiency)
     memory_found = None
     if str(args.daot_teacher_mode) == "temporal_memory":
         if orbit_memory is None or memory_keys is None:
@@ -2400,6 +2409,7 @@ def _compute_daot_unlabeled_step(
     orbit_memory=None,
     memory_keys: Optional[torch.Tensor] = None,
     loss_normalizer=None,
+    prepared_cache=None,
 ) -> Dict[str, Any]:
     schedule = adv3b02_daot_schedule(reference_epoch(args, epoch), total_epochs=reference_total(args))
     zero = student_strong["z_id"].sum() * 0.0
@@ -2415,23 +2425,27 @@ def _compute_daot_unlabeled_step(
     if not hard_scenarios:
         raise ValueError("ADV3B02-DAOT-STN requires at least one hard teacher scenario")
     hard_scenario = hard_scenarios[(int(epoch) + int(batch_idx)) % len(hard_scenarios)]
-    x_medium, medium_meta = apply_sat_fn(
-        x_unlabeled,
-        medium_scenario,
-        args,
-        gen=make_torch_generator(x_unlabeled.device, base_seed + 13),
-        return_meta=True,
-    )
-    teacher_view_count = int(getattr(args, "daot_teacher_view_count", 3))
-    x_hard = hard_meta = None
-    if teacher_view_count >= 3:
-        x_hard, hard_meta = apply_sat_fn(
+    if prepared_cache is not None and 'views' in prepared_cache:
+        x_medium,medium_meta,x_hard,hard_meta,teacher_view_count=prepared_cache['views']
+    else:
+        x_medium, medium_meta = apply_sat_fn(
             x_unlabeled,
-            hard_scenario,
+            medium_scenario,
             args,
-            gen=make_torch_generator(x_unlabeled.device, base_seed + 31),
+            gen=make_torch_generator(x_unlabeled.device, base_seed + 13),
             return_meta=True,
         )
+        teacher_view_count = int(getattr(args, "daot_teacher_view_count", 3))
+        x_hard = hard_meta = None
+        if teacher_view_count >= 3:
+            x_hard, hard_meta = apply_sat_fn(
+                x_unlabeled,
+                hard_scenario,
+                args,
+                gen=make_torch_generator(x_unlabeled.device, base_seed + 31),
+                return_meta=True,
+            )
+        if prepared_cache is not None:prepared_cache['views']=(x_medium,medium_meta,x_hard,hard_meta,teacher_view_count)
     student_channel = model(
         x_medium,
         y_tx=None,
@@ -2440,15 +2454,19 @@ def _compute_daot_unlabeled_step(
         domain_labels=d_unlabeled,
     )
     ema_model.eval()
-    with torch.no_grad():
-        # The upstream clean teacher is already available; never recompute it.
-        fresh_views, teacher_efficiency = _forward_daot_teacher_views(
-            ema_model, [x_medium] + ([x_hard] if x_hard is not None else []),
-            domain_labels=d_unlabeled,
-            efficiency_mode=str(getattr(args, "daot_efficiency_mode", "legacy")),
-        )
-        teacher_medium = fresh_views[0]
-        teacher_hard = fresh_views[1] if x_hard is not None else None
+    if prepared_cache is not None and 'teacher' in prepared_cache:
+        teacher_medium,teacher_hard,teacher_efficiency=prepared_cache['teacher']
+    else:
+        with torch.no_grad():
+            # The upstream clean teacher is already available; never recompute it.
+            fresh_views, teacher_efficiency = _forward_daot_teacher_views(
+                ema_model, [x_medium] + ([x_hard] if x_hard is not None else []),
+                domain_labels=d_unlabeled,
+                efficiency_mode=str(getattr(args, "daot_efficiency_mode", "legacy")),
+            )
+            teacher_medium = fresh_views[0]
+            teacher_hard = fresh_views[1] if x_hard is not None else None
+        if prepared_cache is not None:prepared_cache['teacher']=(teacher_medium,teacher_hard,teacher_efficiency)
     teacher_views = [teacher_clean, teacher_medium]
     memory_found = None
     if str(args.daot_teacher_mode) == "temporal_memory":

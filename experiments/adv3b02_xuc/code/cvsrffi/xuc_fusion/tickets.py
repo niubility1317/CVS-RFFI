@@ -36,6 +36,8 @@ class Ticket:
 class TicketStream:
     def __init__(self, source, args, row):
         self.source,self.args,self.row = source,args,row
+        self.order_seed=getattr(args,'game_data_order_seed',args.seed) if getattr(args,'joint',None) else args.seed
+        self.augmentation_seed=args.joint['augmentation_seed'] if getattr(args,'joint',None) else args.seed
         self.steps = len(source.train)//args.batch_size
         if row.get('epoch_budget')=='full_unlabeled':
             self.steps=math.ceil(len(source.unlabeled)/int(row.get('unlabeled_batch',256)))
@@ -75,9 +77,9 @@ class TicketStream:
         self.window_consumed=[]
         for epoch in range(start,end+1):
             # Ordinary order uses one independent generator; all methods share physical role sets.
-            ordinary=torch.randperm(len(self.source.train),generator=torch.Generator().manual_seed(self.args.seed+epoch)).tolist()
+            ordinary=torch.randperm(len(self.source.train),generator=torch.Generator().manual_seed(self.order_seed+epoch)).tolist()
             if self.steps*self.args.batch_size>len(ordinary):
-                gen=torch.Generator().manual_seed(self.args.seed+epoch)
+                gen=torch.Generator().manual_seed(self.order_seed+epoch)
                 ordinary=[]
                 while len(ordinary)<self.steps*self.args.batch_size:
                     # Cycle full-size L batches; retain the original drop-last semantics.
@@ -86,7 +88,7 @@ class TicketStream:
             dr=getattr(self.args,'xuc_daot_rc4',False)
             ubatch=int(self.row.get('unlabeled_batch',256 if dr else self.args.batch_size))
             uloader=self.source.unlabeled_epoch_loader(ubatch,epoch_index=epoch-1 if dr else max(0,epoch-self.args.label_epochs-1),
-                                                      steps=self.steps,seed=self.args.seed,workers=0)
+                                                      steps=self.steps,seed=self.order_seed,workers=0)
             u_batches=list(uloader.batch_sampler)
             for bi in range(1,self.steps+1):
                 plan=self.sampler.next_batch() if self.sampler is not None else None
@@ -94,7 +96,7 @@ class TicketStream:
                 if plan is not None and (len(plan.blocks)!=4 or len(set(plan.indices))!=128):
                     raise ValueError('Formal P4Q4K2 requires four complete disjoint blocks')
                 tid=(epoch-1)*self.steps+bi-1
-                seed=(self.args.seed*1000003+tid*9176)%(2**31-1)
+                seed=(self.augmentation_seed*1000003+tid*9176)%(2**31-1)
                 gen=torch.Generator().manual_seed(seed)
                 channel_seed=int(torch.randint(0,2**31-1,(),generator=gen))
                 scenes,p=satellite_stage(epoch)
@@ -107,6 +109,9 @@ class TicketStream:
         self.window['ticket_ids']=[t.ticket_id for t in self.pending]
         self.window['expected_scene_counts']=dict(Counter({s:sum(sum(t.selected) for t in self.pending if t.scene==s) for s in {t.scene for t in self.pending}}))
         self.window['expected_samples']=sum(len(t.labeled) for t in self.pending)
+        if getattr(self.args,'joint',None):
+            self.window.pop('expected_scene_counts')
+            self.window.update(exposure_policy='native_batch_bernoulli',actual_scene_counts={})
         return True
 
     def choose(self, *, capability=False, difficulty=None):
@@ -127,10 +132,13 @@ class TicketStream:
         ubatch=default_collate([self.source.unlabeled[i] for i in ticket.unlabeled]) if ticket.unlabeled else None
         return batch,ubatch
 
-    def commit(self,ticket):
+    def commit(self,ticket,actual_exposure=None):
         if ticket.ticket_id in self.consumed: raise ValueError('duplicate ticket consumption')
         self.pending.remove(ticket)
         self.consumed.add(ticket.ticket_id);self.window_consumed.append(ticket.ticket_id)
+        if actual_exposure is not None:
+            counts=self.window['actual_scene_counts'];scene=actual_exposure['scenario']
+            counts[scene]=counts.get(scene,0)+actual_exposure['count']
         if not self.pending:
             assert sorted(self.window_consumed)==sorted(self.window['ticket_ids'])
             return dict(self.window,consumed_ids=list(self.window_consumed),membership_verified=True)

@@ -985,6 +985,7 @@ def build_rc4_calibration(
     negative_false_exclusion_target: float = 0.01,
     decouple_partial_negative_aps: bool = False,
     partial_threshold_scope: str = "predicted_class",
+    audit_trace: Optional[dict] = None,
 ) -> RC4Calibration:
     """Fit temperature, cross-fitted correctness risk, and APS thresholds on ``V_cal``."""
 
@@ -1146,6 +1147,23 @@ def build_rc4_calibration(
     )
     partial_ready = bool(partial_ready and partial_mean_size <= 2.5)
     false_exclusion = 1.0 - partial_coverage
+    if audit_trace is not None:
+        from .xuc_fusion.joint_metrics import wilson
+        for name,mask,event in [('H',oof_risk.ge(hard_threshold),correct.bool()),
+            ('P',partial_eligible&oof_partial_safety.ge(partial_threshold),contains_truth)]:
+            selected=int(mask.sum());success=int((mask&event).sum())
+            groups={}
+            for rx in receivers.unique():
+                for tx in predicted.unique():
+                    m=mask&(receivers==rx)&(predicted==tx);n=int(m.sum())
+                    if n:groups[f'{int(rx)}:{int(tx)}']=dict(selected=n,rate=float(event[m].float().mean()))
+            audit_trace[name]=dict(selected=selected,coverage=selected/rows,rate=success/selected if selected else None,
+                nominal_wilson_interval=wilson(success,selected),by_RX_predicted_TX=groups)
+        audit_trace['P'].update(mean_candidate_size=partial_mean_size,
+            candidate_size_histogram=torch.bincount(candidate_size,minlength=num_classes+1).cpu().tolist())
+        audit_trace.update(scope='source_V_calibration_risk_crossfit',folds=fold_count,
+            independent_audit=False,thresholds_selected_on_same_V=True,
+            note='Calibration estimates, not independent coverage guarantees; temperature and APS use pooled V')
     return RC4Calibration(
         temperature=temperature,
         feature_mean=feature_mean.detach().cpu(),
@@ -1316,6 +1334,7 @@ def route_fasttrust_rc4(
     use_calibrated_risk: bool = True,
     batched_readback: bool = False,
     reliability_weight_mode: str = "margin_squared",
+    trace: Optional[dict] = None,
 ) -> RC4Route:
     """Apply stage-frozen source risk rules to U rows without reading TX truth."""
 
@@ -1486,6 +1505,29 @@ def route_fasttrust_rc4(
     weights = (risk_weight * agree_weight * set_weight * balance).clamp(0.0, 4.0)
     weights = torch.where(routed, weights, torch.zeros_like(weights))
 
+    if trace is not None:
+        trace.update(enabled={'H':bool(enable_hard),'P':bool(enable_partial),'N':bool(enable_negative)},
+            ready={'H':bool(hard_ready),'P':bool(calibration.partial_ready),'N':bool(calibration.negative_ready)},
+            ready_failure_reasons={
+                'H':([] if hard_ready else ['source_risk_threshold_not_ready']),
+                'P':([] if calibration.partial_ready else
+                    (['mean_candidate_size_above_2.5'] if calibration.partial_mean_size>2.5 else [])+
+                    (['precision_below_.98'] if calibration.partial_precision<.98 else [])+
+                    (['coverage_below_.01'] if calibration.partial_selected_coverage<.01 else [])+['source_ready_false']),
+                'N':(['configured_off'] if not enable_negative else ([] if calibration.negative_ready else ['exclusion_risk_not_ready']))},
+            calibration={k:v for k,v in vars(calibration).items() if isinstance(v,(bool,int,float,str))},
+            candidate_size_histogram=torch.bincount(set_size,minlength=classes+1).cpu().tolist(),
+            gates=dict(H_singleton=int(set_size.eq(1).sum()),H_safe=int((set_size.eq(1)&risk.ge(hard_threshold)).sum()),
+                H_agree=int((set_size.eq(1)&risk.ge(hard_threshold)&agreement).sum()),
+                H_ready_eligible=int(hard_eligible.sum()),H_after_group_cap=int(hard.sum()),
+                P_size_eligible=int((~hard&set_size.ge(2)&set_size.le(candidate_max_classes)).sum()),
+                P_safe_before_ready=int((~hard&set_size.ge(2)&set_size.le(candidate_max_classes)&p_set_safe.ge(partial_threshold)).sum()),
+                P_after_ready=int(partial.sum()),N_after_ready=int(negative.sum())),
+            risk_quantiles={k:torch.quantile(v.float(),torch.tensor([0.,.25,.5,.75,1.],device=v.device)).cpu().tolist()
+                for k,v in [('p_correct',p_correct),('p_set_safe',p_set_safe),('p_exclusion_safe',p_exclusion_safe)]},
+            before_budget={k:dict(count=int(mask.sum()),weight_sum=float(weights[mask].sum()))
+                for k,mask in [('H',hard),('P',partial),('N',negative)]})
+
     cell_budget = float(class_receiver_effective_budget)
     if cell_budget > 0.0:
         if not math.isfinite(cell_budget) or cell_budget > 1.0:
@@ -1548,6 +1590,16 @@ def route_fasttrust_rc4(
     routed = hard | partial | negative
     weights = torch.where(routed, weights, torch.zeros_like(weights))
     representation = ~routed
+    if trace is not None:
+        from .xuc_fusion.joint_diagnostics import mass
+        trace['after_budget']={k:mass(weights[mask]) for k,mask in [('H',hard),('P',partial),('N',negative)]}
+        trace['groups']={}
+        for tx in predicted.unique():
+            for rx in receivers.unique():
+                for domain in domains[receivers==rx].unique():
+                    mask=(predicted==tx)&(receivers==rx)&(domains==domain)
+                    if mask.any():trace['groups'][f'{int(tx)}:{int(rx)}:{int(domain)}']=dict(total=int(mask.sum()),
+                        H=int((mask&hard).sum()),P=int((mask&partial).sum()),N=int((mask&negative).sum()))
     return RC4Route(
         pseudo=predicted,
         fused_probability=fused,

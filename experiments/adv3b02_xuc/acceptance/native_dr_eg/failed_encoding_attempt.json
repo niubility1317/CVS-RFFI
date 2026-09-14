@@ -1,0 +1,19 @@
+{
+  "status": "FAIL",
+  "tests": 52,
+  "failures": 3,
+  "errors": 0,
+  "skipped": 0,
+  "python": "C:\\Users\\lh594\\.conda\\envs\\ssr-gpu\\python.exe",
+  "formal_experiments_started": 0,
+  "remote_actions": 0,
+  "data_scope": "synthetic tensors and index-only fixtures",
+  "validations": "real model fields, bounded cloned diagnostic fitting, no train runtime invoked",
+  "scientific_performance": "NOT_EVALUATED",
+  "test_files": [
+    "test_native_joint.py",
+    "test_acceptance.py",
+    "test_dr_scheduling.py",
+    "test_full_dr.py"
+  ]
+}

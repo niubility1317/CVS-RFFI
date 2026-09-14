@@ -38,7 +38,7 @@ class GameSolver:
 
     def __init__(self, model, optimizer, mode="simultaneous", head_names=("adv_head.",),
                  *, nonfinite="raise", max_grad_norm=None, scaler=None, stateful=(),
-                 b8_impl="reference", telemetry_interval=0):
+                 b8_impl="reference", telemetry_interval=0, predictor_lr_ratio=1.):
         if mode not in self.MODES:
             raise ValueError(f"Unknown solver: {mode}")
         if type(optimizer) not in (torch.optim.SGD, torch.optim.AdamW):
@@ -51,6 +51,9 @@ class GameSolver:
         self.model, self.optimizer, self.mode = model, optimizer, mode
         self.nonfinite, self.max_grad_norm = nonfinite, max_grad_norm
         self.scaler, self.stateful = scaler, tuple(stateful)
+        if not 0 < predictor_lr_ratio <= 1:
+            raise ValueError('predictor_lr_ratio must be in (0,1]')
+        self.predictor_lr_ratio=float(predictor_lr_ratio)
         if b8_impl not in {"reference", "head_grad_only", "graph_reuse"}:
             raise ValueError("Unknown B8 implementation")
         self.b8_impl, self.telemetry_interval = b8_impl, int(telemetry_interval)
@@ -75,11 +78,14 @@ class GameSolver:
     def state_dict(self):
         return copy.deepcopy({"version": 1, "mode": self.mode, "names": self.names,
                               "previous": self.previous, "steps": self.steps, "b8_impl": self.b8_impl,
+                              "predictor_lr_ratio": self.predictor_lr_ratio,
                               "pseudo_signature": self.pseudo_signature,
                               "pseudo_accumulator": self.pseudo_accumulator,
                               "reset_reasons": self.reset_reasons})
 
     def load_state_dict(self, state):
+        if state.get('predictor_lr_ratio',1.)!=self.predictor_lr_ratio:
+            raise ValueError('Predictor ratio differs from checkpoint')
         if state.get("b8_impl", "reference") != self.b8_impl:
             raise ValueError("Solver B8 implementation differs from checkpoint")
         if state["version"] != 1 or state["mode"] != self.mode or state["names"] != self.names:
@@ -210,7 +216,13 @@ class GameSolver:
             elif self.mode in {"extragradient", "heun", "head_lookahead"}:
                 self._install(first, head_only=self.mode == "head_lookahead", exclude_head=exclude_head)
                 predictor_clipped = [None if p.grad is None else p.grad.detach().clone() for p in self.parameters] if measure else None
-                self.optimizer.step()
+                saved_lrs=[g['lr'] for g in self.optimizer.param_groups]
+                try:
+                    for group,lr in zip(self.optimizer.param_groups,saved_lrs):
+                        group['lr']=lr*self.predictor_lr_ratio
+                    self.optimizer.step()
+                finally:
+                    for group,lr in zip(self.optimizer.param_groups,saved_lrs):group['lr']=lr
                 predictor_updates = [p.detach()-v for p,v,_ in snapshot.parameters] if measure else None
                 self._finite_state("predictor")
                 restore_buffers(self.model, snapshot.buffers)
@@ -251,9 +263,19 @@ class GameSolver:
                         "origin_raw_grad_norm": norm_of(first),
                         "predictor_clipped_grad_norm": norm_of(predictor_clipped) if predictor_clipped is not None else None,
                         "virtual_update_norm": norm_of(predictor_updates) if predictor_updates is not None else None}
+                    base_norm=sum(float(original[id(self.parameters[i])].double().square().sum()) for i in indices)**.5
+                    telemetry['roles'][role]['relative_update_norm']=telemetry['roles'][role]['update_norm']/max(base_norm,1e-12)
+                    left_norm=norm_of(first);right_norm=norm_of(gradients)
+                    dot=sum(float((first[i].double()*gradients[i].double()).sum()) for i in indices if first[i] is not None and gradients[i] is not None)
+                    telemetry['roles'][role]['field_cosine']=dot/(left_norm*right_norm) if left_norm*right_norm else None
+                    difference=[(torch.zeros_like(p) if b is None else b)-(torch.zeros_like(p) if a is None else a) for p,a,b in zip(self.parameters,first,gradients)]
+                    telemetry['roles'][role]['relative_field_change']=norm_of(difference)/max(left_norm,1e-12)
                 total_raw = sum(float(g.double().square().sum()) for g in gradients if g is not None)**.5
                 total_clipped = sum(float(g.double().square().sum()) for g in clipped if g is not None)**.5
                 telemetry['formal_clip_ratio'] = total_clipped/total_raw if total_raw else 1.
+                if predictor_clipped is not None:
+                    pn=sum(float(g.double().square().sum()) for g in predictor_clipped if g is not None)**.5
+                    telemetry['predictor_clip_ratio']=pn/origin_norm if origin_norm else 1.
                 self.last_trace = {'origin': first, 'predictor_clipped': predictor_clipped,
                                    'corrector': gradients, 'formal_clipped': clipped,
                                    'virtual_update': predictor_updates,

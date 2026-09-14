@@ -35,7 +35,10 @@ FULL_OPTIONS=dict(
 class FullDROT(DROT):
     def __init__(self,model,ema,source,args,reference,proto):
         super().__init__(model,ema,source,args,reference)
-        for key,value in FULL_OPTIONS.items():setattr(self.args,key,value)
+        overrides=dict(getattr(args,'full_dr_options',{}))
+        if set(overrides)-set(FULL_OPTIONS):raise ValueError('unknown FULL DR override')
+        effective=dict(FULL_OPTIONS);effective.update(overrides)
+        for key,value in effective.items():setattr(self.args,key,value)
         native._validate_daot_config(self.args)
         self.args.daot_diagnostic_epochs=''
         self.proto=proto;self.anchor=None;self.anchor_epoch=None

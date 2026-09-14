@@ -93,6 +93,19 @@ def prepare_context(batch, unlabeled_batch, model, ema, args, epoch, batch_index
     x,y,d,meta = batch
     x,y,d = x.to(device),y.to(device),d.to(device)
     x_main = augmentor(x,labels=y,no_pa=not bool(args.aug_enable_pa_normal)) if augmentor is not None else x
+    if getattr(args,'joint',None):
+        if unlabeled_batch is not None:raise ValueError('joint U is owned by DROT, no pseudo fallback')
+        from baseline_origin_sat_view import BaselineOriginSatViewAugment
+        view_maker=BaselineOriginSatViewAugment(schedule=args.joint_sat_schedule,
+            seed=args.joint['augmentation_seed'],apply_fn=apply_sat_channel_for_scenario)
+        with torch.no_grad():view=view_maker.transform(x_main,args=args,epoch=epoch,batch_idx=batch_index)
+        ctx=StepContext(x_main.detach(),view.x.detach(),y,d,dict(weights),epoch,batch_index,
+            list(meta['sample_id']),view.scenario,len(x) if view.applied else 0)
+        ctx.satellite_selected_mask=torch.full((len(x),),view.applied,device=device,dtype=torch.bool)
+        ctx.satellite_channel_seed=view_maker.seed+epoch*1009+batch_index
+        ctx.satellite_probability=view.view_prob
+        ctx.satellite_policy_weights=None;ctx.capability_level=None
+        return ctx
     scenarios, probability = satellite_stage(epoch,capability_level)
     scenario = scenarios[(epoch+batch_index-2)%len(scenarios)]
     policy_weights = None
