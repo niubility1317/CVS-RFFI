@@ -39,9 +39,10 @@ class FusionObjective:
         n = len(ctx.y)
         joint=getattr(self.args,'joint',None)
         if joint:
-            out=self.model(ctx.x,y_tx=ctx.y,grl_lambda=joint['labeled_encoder_grl_multiplier'],
+            encoder_grl=getattr(ctx,'response_encoder_grl',joint['labeled_encoder_grl_multiplier'])
+            out=self.model(ctx.x,y_tx=ctx.y,grl_lambda=encoder_grl,
                            return_aux=True,domain_labels=ctx.domain)
-            sat=self.model(ctx.satellite,y_tx=ctx.y,grl_lambda=joint['labeled_encoder_grl_multiplier'],
+            sat=self.model(ctx.satellite,y_tx=ctx.y,grl_lambda=encoder_grl,
                            return_aux=True,domain_labels=ctx.domain) if ctx.epoch>=self.args.sat_cons_start_epoch else None
             ctx.forward_calls+=1+int(sat is not None)
         else:
@@ -120,4 +121,13 @@ class FusionObjective:
                     telemetry['xu_gradient_cosine'] = float(F.cosine_similarity(grads['x'],grads['u'],dim=0))
             ctx.fusion_telemetry = telemetry
             if joint and ctx.audit_gradients:ctx.fusion_telemetry['identity_gradients']=ctx.joint_gradient_diagnostics
+        if getattr(ctx,'response_xt',None) is not None:
+            from .response_fields import cross_tx_fields
+            episode=ctx.response_xt
+            z_episode=self.model(episode['x'],return_aux=True,grl_lambda=0.)['z_id']
+            extra,diagnostic=cross_tx_fields(self.model.adv_head,z_episode,episode['y'],episode['domain'],
+                episode['step'],episode['lr'],episode['mu'],episode['lambda_encoder'],episode['exposure_control'])
+            loss=loss+extra;ctx.response_xt_diagnostics.append(diagnostic)
+        if getattr(self.args,'response',None):
+            ctx.response_task_components=dict(TX=terms['tx'],DAOT=terms['daot_labeled']+terms['daot_unlabeled'],RC4=ctx.dr_weighted_identity)
         return loss

@@ -79,6 +79,7 @@ def resolve_args(recipe,row,*,dataset,output,device='cuda:0',synthetic=False,tes
     args.xuc_row=deepcopy(row)
     if 'full_dr_options' in row:args.full_dr_options=deepcopy(row['full_dr_options'])
     args.joint=joint
+    if row.get('response'):args.response=deepcopy(row['response'])
     if joint:
         from .dr_objective import options
         reference=json.loads((Path(__file__).resolve().parents[3]/'configs/a1_native_recipe_reference.json').read_text(encoding='utf-8'))
@@ -160,6 +161,13 @@ def train(args,row,source_contract=None):
     solver=GameSolver(model,optimizer,nonfinite='raise',max_grad_norm=5.,
         predictor_lr_ratio=args.joint['predictor_lr_ratio'] if args.joint else 1.,
         telemetry_interval=args.joint['diagnostic_interval'] if args.joint else 0)
+    response_monitor=None
+    if getattr(args,'response',None):
+        from .response_solver import ResponseSolver
+        from .response_context import SourceMonitor
+        solver=ResponseSolver(model,optimizer,args.response,nonfinite='raise',max_grad_norm=5.,
+            predictor_lr_ratio=args.joint['predictor_lr_ratio'])
+        response_monitor=SourceMonitor(source)
     proto=PrototypeMemoryBank(args.num_classes,len(source.domains),momentum=args.proto_momentum,
         margin=args.proto_margin,domain_align_weight=args.proto_domain_align_weight,push_weight=args.proto_push_weight,min_count=args.proto_min_count)
     proto._lazy_init(160,device,torch.float32)
@@ -260,7 +268,10 @@ def train(args,row,source_contract=None):
             if legacy and count and not budget.can_afford(completed,head_steps=count)[0]:count=0
             head_steps,head_enc=head_catchup(model,optimizer,ctx,count,args)
             solver.mode=('extragradient' if args.joint['solver_mode']=='full_EG' else 'simultaneous') if args.joint else ('extragradient' if decision['action']=='CORRECT' else 'simultaneous')
-            result=solver.step(lambda:objective(ctx))
+            if getattr(args,'response',None):
+                from .response_runtime import response_step
+                result=response_step(solver,objective,ctx,args,dr,response_monitor,completed)
+            else:result=solver.step(lambda:objective(ctx))
             if result.accepted:
                 if dr is not None:dr.commit(ctx)
                 if ema is not None:_update_ema_model(ema,model,args.ema_decay)

@@ -141,7 +141,8 @@ class DROT:
             rc4['total']=rc4['total']+(multiplier-1.)*identity
             rc4['weighted_identity']=multiplier*identity
             ctx.dr_weighted_identity=rc4['weighted_identity']
-            if self.joint['disable_adversarial_head_loss']:
+            response=getattr(self.source_args,'response',None)
+            if self.joint['disable_adversarial_head_loss'] or (response and not response['unlabeled_head']):
                 rc4['total']=rc4['total']-rc4['rc4_gradient_losses']['adv']
             if not self.joint['native_dr']:
                 labeled['loss']=labeled['loss']*0.;unlabeled['loss']=unlabeled['loss']*0.

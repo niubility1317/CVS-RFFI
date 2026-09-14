@@ -1091,7 +1091,10 @@ class DualCVSincNetDisentangle(nn.Module):
             daot_nuisance_mean, daot_nuisance_log_variance = self.daot_nuisance_head(z_dom)
 
         dom_logits = self.dom_head(z_dom)
-        adv_dom_logits = self.adv_head(grad_reverse(z_id, grl_lambda))
+        # Local response Jacobians differentiate the explicitly signed game;
+        # GRL is a first-order device and must not enter those second derivatives.
+        adv_input = z_id if getattr(self, 'response_explicit_domain_field', False) else grad_reverse(z_id, grl_lambda)
+        adv_dom_logits = self.adv_head(adv_input)
         tx_adv_logits = self.tx_adv_head(grad_reverse(z_dom, grl_lambda)) if self.tx_adv_head is not None else None
         crra_q_raw = aux_id.get("crra_q_raw", None)
         crra_condition_tx_adv_logits = (
