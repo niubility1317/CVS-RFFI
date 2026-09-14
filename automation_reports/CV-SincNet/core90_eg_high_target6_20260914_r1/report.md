@@ -30,6 +30,6 @@ PID373822、PPID1，CWD/argv绑定本release；nvidia-smi核实物理GPU1/2/3/5/
 
 adv0目标LEO Accuracy三seed均值65.221825±1.749316%；adv0.35为66.554828±1.147030%。后者clean77.091071±0.996803%，LEO Macro-F1 66.847157±0.592510%。同seed增加adv的LEO差值均正，平均+1.333003pp。
 
-相对旧LR2e-4完整EG：adv0的LEO均值增加1.843849pp，但392005下降1.254167pp；adv0.35增加2.809392pp且三个seed均提升。最高单模型为ADV035 seed392006，clean78.108333%、LEO67.871825%。普通高LR基线只有seed392005，在该匹配seed本次ADV035的LEO为66.018056%，低于普通高LR67.599206%；不能据本次最高seed宣称EG整体优于普通高LR。
+相对旧LR2e-4完整EG：adv0的LEO均值增加1.843849pp，但392005下降1.254563pp；adv0.35增加2.809392pp且三个seed均提升。最高单模型为ADV035 seed392006，clean78.108333%、LEO67.871825%。普通高LR基线只有seed392005，在该匹配seed本次ADV035的LEO为66.018056%，低于普通高LR67.599206%；不能据本次最高seed宣称EG整体优于普通高LR。
 
 详细报告target_report.md；target_detailed_metrics.csv含2016行，target_confusion_matrices.csv含864格；matched_metric_deltas.csv是9组同seed指标差值，非逐样本翻转核验。保持历史目标基准探索复测口径，无target拟合或自动晋级。
