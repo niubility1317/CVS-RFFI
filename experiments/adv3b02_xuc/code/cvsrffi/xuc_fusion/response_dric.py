@@ -1,6 +1,7 @@
 """DRIC-Lite in explicit signed, low-dimensional parameter coordinates."""
 import itertools
 import time
+import math
 from contextvars import ContextVar
 import torch
 import torch.nn.functional as F
@@ -33,11 +34,25 @@ def constrained_game(jac,g,n,A,eps,radius,*,mu=1e-4,tol=1e-5,max_iterations=5):
     remains coupled. Nonconvergence is explicit; no independent post projection.
     """
     jac=jac.double();g=g.double();A=A.double();eps=eps.double()
+    if not math.isfinite(radius) or radius<0:raise ValueError('invalid trust radius')
+    if not all(torch.isfinite(x).all() for x in (jac,g,A,eps)):raise FloatingPointError('nonfinite local game')
     eye=torch.eye(len(g),device=g.device,dtype=g.dtype)
     eig=torch.linalg.eigvalsh((jac+jac.T)/2).min()
     damping=(mu-eig).clamp_min(0);J=jac+damping*eye
     if not torch.isfinite(J).all():raise FloatingPointError('nonfinite local game')
     unconstrained=torch.linalg.solve(J,-g)
+    if radius==0:
+        if bool((eps<0).any()):raise RuntimeError('DRIC_LOCAL_INFEASIBLE_ZERO_RADIUS')
+        z=torch.cat((g.new_zeros(n),torch.linalg.solve(J[n:,n:],-g[n:])))
+        # The zero-radius ball is a singleton: its normal cone is all R^n.
+        residual=float((J@z+g)[n:].norm()/g.norm().clamp_min(1e-12))
+        return z,dict(spectral_damping=float(damping),minimum_symmetric_eigenvalue=float(eig+damping),
+            residual=residual,iterations=0,active_constraints=[],ball_multiplier=None,
+            zero_radius=True,unconstrained_encoder_norm=float(unconstrained[:n].norm()))
+    # Eliminate the head to initialize the ball multiplier near its scale,
+    # rather than spending five Newton steps growing it from zero.
+    reduced=J[:n,:n]-J[:n,n:]@torch.linalg.solve(J[n:,n:],J[n:,:n])
+    reduced_g=g[:n]-J[:n,n:]@torch.linalg.solve(J[n:,n:],g[n:])
     pad=F.pad(A,(0,len(g)-n))
     # At most n independent active halfspaces are needed in this <=4D space.
     for size in range(min(n,len(A))+1):
@@ -45,6 +60,22 @@ def constrained_game(jac,g,n,A,eps,radius,*,mu=1e-4,tol=1e-5,max_iterations=5):
             H=pad[list(subset)];bound=eps[list(subset)]
             for ball in (False,True):
                 lam=0.;solution=None
+                lower=0.;upper=None
+                if ball:
+                    if size:
+                        ha=H[:,:n]
+                        _,singular,vh=torch.linalg.svd(ha,full_matrices=True)
+                        if int((singular>singular.max()*1e-12).sum())<size:continue
+                        particular=ha.T@torch.linalg.solve(ha@ha.T,bound)
+                        null=vh[size:].T
+                    else:particular=g.new_zeros(n);null=eye[:n,:n]
+                    free_square=radius**2-float(particular.square().sum())
+                    if free_square<=0 or null.shape[1]==0:continue
+                    reduced_null=null.T@reduced@null
+                    forcing=null.T@(reduced_g+reduced@particular)
+                    floor=float(torch.linalg.eigvalsh((reduced_null+reduced_null.T)/2).min())
+                    upper=max(0.,float(forcing.norm())/math.sqrt(free_square)-floor)
+                    lam=upper
                 for iteration in range(max_iterations if ball else 1):
                     matrix=J.clone();matrix[:n,:n]+=lam*eye[:n,:n]
                     K=torch.cat((torch.cat((matrix,H.T),1),torch.cat((H,H.new_zeros(size,size)),1)),0)
@@ -58,7 +89,10 @@ def constrained_game(jac,g,n,A,eps,radius,*,mu=1e-4,tol=1e-5,max_iterations=5):
                     derivative=torch.linalg.solve(K,derivative_rhs)[:n]
                     slope=float(torch.dot(z[:n],derivative)/z[:n].norm().clamp_min(1e-15))
                     if slope>=0:break
-                    lam=max(0.,lam-error/slope)
+                    if error>0:lower=max(lower,lam)
+                    else:upper=min(upper,lam)
+                    proposal=lam-error/slope
+                    lam=proposal if lower<proposal<upper else (lower+upper)/2
                 if solution is None:continue
                 z,multipliers,iterations=solution
                 stationarity=J@z+g+H.T@multipliers
@@ -286,6 +320,7 @@ def dric_step(solver,closure,context,strength):
             selected_parameters=[n for n,_ in named],optimizer_commits=1,
             local_autograd_calls=_derivative_calls.get()-derivative_before,
             local_leaf_executions=replay.executed,local_leaf_replays=replay.replayed,
+            local_cache_scope='deterministic_buffer_free_builtin_leaves_with_input_and_parameter_version_checks',
             main_field_backward_calls=2,component_backward_calls=len(component_gradients),
             explicit_signed_training_field=True,local_encoder_strength=strength,
             moment_policy='one_ordinary_AdamW_state_virtual_task_state_never_committed',elapsed_seconds=time.perf_counter()-started)

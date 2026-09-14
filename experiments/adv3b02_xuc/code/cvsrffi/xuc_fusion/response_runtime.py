@@ -1,11 +1,12 @@
 """One integration point, shared by formal runtime and bounded acceptance."""
 import torch
-from .response_config import schedule
-from .response_context import monitor_views,risk_vector,passive
+from .response_config import schedule,cadence
+from .response_context import monitor_views,risk_vector,passive,source_observation
 
 def response_step(solver,objective,ctx,args,dr,monitor,completed):
     c=args.response;s=schedule(c,ctx.epoch,completed)
-    batch=monitor.batch(completed,ctx.x.device)
+    monitor_index=completed//cadence(c)
+    batch=monitor.batch(monitor_index,ctx.x.device)
     with passive(solver.model):views=monitor_views(batch,ctx,args)
     ctx.response_xt_diagnostics=[]
     def closure(on):
@@ -42,11 +43,24 @@ def response_step(solver,objective,ctx,args,dr,monitor,completed):
         return dict(H_pseudo_probability=aggregate(true,route.hard),P_set_mass=aggregate(mass,route.partial),
             hard_constraints=False,pseudo_labels_are_not_truth=True)
     risk.auxiliary=hp_monitor
+    diagnostic_interval=args.joint['diagnostic_interval']
+    observe=diagnostic_interval>0 and completed%diagnostic_interval==0
+    observation_before=source_observation(solver.model,batch,views) if observe else None
     result=solver.response_step(closure,schedule=s,risk=risk,
         transport=transport,dric=(ctx,local_views,u_weight))
     result.telemetry=result.telemetry or {}
+    if observe:
+        risks,features,head_gradient=source_observation(solver.model,batch,views)
+        r0,z0,h0=observation_before
+        result.telemetry['passive_source_observation']=dict(risk_before=r0.tolist(),risk_after=risks.tolist(),
+            representation_step_drift_norm=float((features-z0).norm()),
+            L_head_gradient_change_norm=float((head_gradient-h0).norm()),
+            L_head_gradient_norm_before=float(h0.norm()),L_head_gradient_norm_after=float(head_gradient.norm()),
+            scope='whole_accepted_step_on_fixed_balanced_L_not_task_only_drift_or_recovery_gap',controls_training=False)
     result.telemetry.update(response_method=c['method'],schedule=s,
-        labeled_monitor_ids=batch['ids'],labeled_monitor_samples=90,active_monitor_scenes=list(views),
+        labeled_monitor_ids=batch['ids'],labeled_monitor_samples=90,monitor_rotation_index=monitor_index,active_monitor_scenes=list(views),
         xt_fields=ctx.response_xt_diagnostics,encoder_adversary=c['encoder_adversary'],
+        effective_adversarial_coefficients=dict(L_encoder=float(ctx.weights['adv'])*float(c['encoder_adversary'])*c['encoder_multiplier'],
+            U_encoder=0.,L_head=float(ctx.weights['adv']),U_head=u_weight),
         unlabeled_encoder_grl=0.,head_LU_supervision=c['unlabeled_head'])
     return result

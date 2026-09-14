@@ -117,7 +117,7 @@ def test_config_stage_boundaries(method):
     row=make_row('test',c);assert row['joint']['normalization_scales']=='reuse_origin_used_scales'
     assert row['joint']['outer_adv_weight']==.35 and not row['joint']['disable_adversarial_head_loss']
 
-@pytest.mark.parametrize('method,epoch,step',[('CF_EG',80,3),('TR_EG',80,3),('XT_DANN',80,19),('DRIC',40,3),('DRIC_OFF',40,3),('DRIC_ZERO',21,3),('DRIC_EMPTY',40,3),('DRIC_TINY',40,3),('FR',40,3),('CGD',40,3),('TASK_PROJECT',40,3),('DRIC_DECOMPOSE',40,3)])
+@pytest.mark.parametrize('method,epoch,step',[('CF_EG',1,0),('CF_EG',80,3),('TR_EG',80,3),('XT_DANN',80,19),('DRIC',40,3),('DRIC_OFF',40,3),('DRIC_ZERO',21,3),('DRIC_EMPTY',40,3),('DRIC_TINY',40,3),('FR',40,3),('CGD',40,3),('TASK_PROJECT',40,3),('DRIC_DECOMPOSE',40,3)])
 def test_real_native_response_path(method,epoch,step,monkeypatch):
     from cvsrffi.xuc_fusion.runtime import resolve_args,synthetic_source
     from cvsrffi.game_tracking.runtime import build_model
@@ -163,9 +163,10 @@ def test_real_native_response_path(method,epoch,step,monkeypatch):
     assert result.accepted and solver.steps==1
     assert all(state['step']==1 for state in optimizer.state.values())
     assert all(div==ctx.dr_field_divisors[0] for div in ctx.dr_field_divisors)
-    assert result.telemetry['schedule']['active']
+    assert result.telemetry['schedule']['active']==(epoch>=21)
     assert result.telemetry['head_LU_supervision']
-    if method=='CF_EG':assert result.field_evaluations==4
+    if method=='CF_EG':assert result.field_evaluations==(4 if epoch>=21 else 2)
+    if epoch==1:assert result.telemetry['passive_source_observation']['controls_training'] is False
     if method=='XT_DANN':assert len(result.telemetry['xt_fields'])==2
     if method=='DRIC':assert result.telemetry['extra_identity_displacement']>0
     if method=='DRIC':assert result.telemetry['local_leaf_replays']>0

@@ -3,7 +3,7 @@ import json,sys
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'code'))
-from cvsrffi.xuc_fusion.response_config import make_row,schedule
+from cvsrffi.xuc_fusion.response_config import make_row,stage_table
 from cvsrffi.xuc_fusion.runtime import resolve_args
 from cvsrffi.xuc_fusion.dr_objective import resolved_options
 
@@ -55,7 +55,7 @@ def main():
     for item in matrix['rows']:
         row=item['row'];args=resolve_args(recipe,row,dataset='ManySig.pkl',output='NOT_LAUNCHED/'+row['id'])
         doc=dict(item,resolved=vars(args),resolved_dr=vars(resolved_options(native,args)),
-            stage_table=[dict(epoch=e,**schedule(row['response'],e,19)) for e in (1,20,21,40,41,60,61,79,80,90,91,160,161,200)])
+            stage_table=stage_table(row['response']))
         (out/(row['id']+'.json')).write_text(json.dumps(doc,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
     (out/'matrix.json').write_text(json.dumps(matrix,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
     print(json.dumps(dict(status=matrix['status'],rows=len(matrix['rows']),dependencies=len(matrix['dependencies']))))

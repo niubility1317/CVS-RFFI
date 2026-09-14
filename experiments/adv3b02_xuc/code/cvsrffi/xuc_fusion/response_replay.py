@@ -1,11 +1,11 @@
 """Replay fixed-background leaf computations while recomputing local dependents.
 
-Only lives inside one local game. Parameters outside the selected local blocks
-must stay fixed. Dependence is established from autograd, not module name guesses.
+Only deterministic, buffer-free builtins are cached. Autograd dependence alone
+does not prove forward independence (detach is a counterexample), so cache hits
+also require identical inputs and unchanged parameter versions.
 """
 from contextlib import contextmanager
 import torch
-from cvsrffi.game_tracking.state import RNGState
 
 def tensors(value):
     if torch.is_tensor(value):return [value]
@@ -19,6 +19,18 @@ def detached(value):
     if isinstance(value,tuple):return tuple(detached(v) for v in value)
     if isinstance(value,list):return [detached(v) for v in value]
     return value
+
+def same(left,right):
+    if torch.is_tensor(left):return torch.is_tensor(right) and left.shape==right.shape and left.dtype==right.dtype and left.device==right.device and torch.equal(left,right)
+    if type(left) is not type(right):return False
+    if isinstance(left,dict):return left.keys()==right.keys() and all(same(left[k],right[k]) for k in left)
+    if isinstance(left,(tuple,list)):return len(left)==len(right) and all(same(a,b) for a,b in zip(left,right))
+    return left==right
+
+PURE_TYPES=(torch.nn.Linear,torch.nn.Conv1d,torch.nn.Conv2d,torch.nn.ReLU,torch.nn.Tanh,
+    torch.nn.SiLU,torch.nn.GELU,torch.nn.ELU,torch.nn.LeakyReLU,torch.nn.Identity,
+    torch.nn.Flatten,torch.nn.AdaptiveAvgPool1d,torch.nn.AvgPool1d,torch.nn.MaxPool1d,
+    torch.nn.LayerNorm,torch.nn.GroupNorm)
 
 class LocalReplay:
     def __init__(self,model,selected):
@@ -40,20 +52,29 @@ class LocalReplay:
         saved=[];counts={}
         try:
             for name,module in self.model.named_modules():
-                if list(module.children()):continue
+                if type(module) not in PURE_TYPES or list(module.children()) or list(module.buffers()):continue
+                if any(id(p) in self.selected for p in module.parameters()):continue
                 original=module.forward
+                had_override='forward' in module.__dict__;old_override=module.__dict__.get('forward')
                 def forward(*args,_name=name,_module=module,_original=original,**kwargs):
                     index=counts.get(_name,0);counts[_name]=index+1
                     key=(tag,_name,index,_module.training)
-                    if key in self.cache:
-                        value,rng=self.cache[key];rng.restore();self.replayed+=1
-                        return detached(value)
+                    versions=tuple(p._version for p in _module.parameters())
+                    inputs=(args,kwargs)
+                    dependent=self.depends(inputs)
+                    if key in self.cache and not dependent:
+                        value,old_inputs,old_versions=self.cache[key]
+                        if versions==old_versions and same(inputs,old_inputs):
+                            self.replayed+=1
+                            return detached(value)
                     result=_original(*args,**kwargs);self.executed+=1
                     # Do not learn caches under no_grad: it hides dependency.
-                    if torch.is_grad_enabled() and not self.depends(result):
-                        self.cache[key]=(detached(result),RNGState.capture())
+                    if torch.is_grad_enabled() and not dependent and not self.depends(result):
+                        self.cache[key]=(detached(result),detached(inputs),versions)
                     return result
-                saved.append((module,original));module.forward=forward
+                saved.append((module,had_override,old_override));module.forward=forward
             yield
         finally:
-            for module,original in reversed(saved):module.forward=original
+            for module,had_override,old_override in reversed(saved):
+                if had_override:module.forward=old_override
+                else:del module.forward

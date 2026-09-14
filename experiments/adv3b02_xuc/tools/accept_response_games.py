@@ -8,7 +8,7 @@ sys.path.insert(0,str(ROOT/'code'))
 
 def main():
     out=ROOT/'acceptance/response_games';out.mkdir(parents=True,exist_ok=True)
-    files=['test_response_games.py','test_native_joint.py','test_acceptance.py','test_dr_scheduling.py','test_full_dr.py']
+    files=['test_response_games.py','test_response_reaudit.py','test_native_joint.py','test_acceptance.py','test_dr_scheduling.py','test_full_dr.py']
     code=pytest.main([*[str(ROOT/'tests'/f) for f in files],'-q','--disable-warnings','--junitxml='+str(out/'tests.xml')])
     suites=list(ET.parse(out/'tests.xml').getroot().iter('testsuite'))
     counts={k:sum(int(s.attrib.get(k,0)) for s in suites) for k in ('tests','failures','errors','skipped')}

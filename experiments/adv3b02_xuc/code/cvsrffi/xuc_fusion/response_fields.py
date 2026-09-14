@@ -11,7 +11,7 @@ def tx_partition(y,domains,step):
         raise ValueError('both TX sets must cover the full source domain universe')
     return a,b
 
-def cross_tx_fields(head,z,y,domain,step,lr,mu,lambda_encoder,exposure_control=False):
+def cross_tx_fields(head,z,y,domain,step,lr,mu,lambda_encoder,exposure_control=False,*,diagnostics=True):
     a,b=tx_partition(y,domain,step)
     params=dict(head.named_parameters());names=list(params);values=tuple(params.values())
     def ce(features,mask,p):return F.cross_entropy(functional_call(head,p,(features[mask],)),domain[mask])
@@ -24,12 +24,16 @@ def cross_tx_fields(head,z,y,domain,step,lr,mu,lambda_encoder,exposure_control=F
         gradients=torch.autograd.grad(inner,values,create_graph=True)
         adapted={n:p-lr*g for n,p,g in zip(names,values,gradients)}
         temporary.append((adapted,monitor))
-        diagnostic[label]=dict(fit_change=float((ce(z.detach(),fit,adapted)-inner).detach()),
-            monitor_change=float((ce(z.detach(),monitor,adapted)-ce(z.detach(),monitor,params)).detach()))
+        if diagnostics:
+            from .response_context import passive
+            with passive(head),torch.no_grad():
+                diagnostic[label]=dict(fit_change=float(ce(z.detach(),fit,adapted)-ce(z.detach(),fit,params)),
+                    monitor_change=float(ce(z.detach(),monitor,adapted)-ce(z.detach(),monitor,params)))
     meta=sum(ce(z.detach(),mask,p) for p,mask in temporary)*mu/2
     adversarial=-lambda_encoder/2*sum(ce(z,mask,{n:p.detach() for n,p in ps.items()}) for ps,mask in temporary)
     diagnostic.update(episode_samples=len(y),tx_A=y[a].unique().tolist(),tx_B=y[b].unique().tolist(),
-        head_inner_commits=0,inner_steps=1,meta_second_order=True,encoder_input_gradient=True)
+        head_inner_commits=0,inner_steps=1,meta_second_order=True,encoder_input_gradient=True,
+        diagnostic_mode='isolated_eval',diagnostic_head_forwards=8 if diagnostics else 0)
     return meta+adversarial,diagnostic
 
 def procrustes(z0,zp,rho=.01):

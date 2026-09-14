@@ -11,7 +11,14 @@ def passive(model):
         model.eval()
         yield
     finally:
-        restore_buffers(model,buffers);rng.restore()
+        # Do not bump unchanged buffer version counters while a caller still
+        # holds an autograd graph (e.g. an XT inner step through BatchNorm).
+        with torch.no_grad():
+            current=dict(model.named_buffers())
+            if current.keys()!=buffers.keys():raise RuntimeError('passive forward changed buffer layout')
+            for name,value in buffers.items():
+                if not torch.equal(current[name],value):current[name].copy_(value)
+        rng.restore()
         for m,flag in flags.items():m.training=flag
 
 class SourceMonitor:
@@ -61,3 +68,15 @@ def actual_head_input(model,x):
     finally:handle.remove()
     if len(captured)!=1:raise ValueError('ambiguous adversarial input')
     return captured[0]
+
+def source_observation(model,batch,views):
+    """Read-only L observation; the gradient change is not a recovery gap."""
+    with passive(model):
+        with torch.no_grad():
+            risks=risk_vector(model,views,batch['y']).detach().clone()
+            features=actual_head_input(model,batch['x']).detach().clone()
+        loss=torch.nn.functional.cross_entropy(model.adv_head(features),batch['domain'])
+        params=list(model.adv_head.parameters())
+        gs=torch.autograd.grad(loss,params,allow_unused=True)
+        head_gradient=torch.cat([(torch.zeros_like(p) if g is None else g).detach().flatten() for p,g in zip(params,gs)])
+    return risks,features,head_gradient

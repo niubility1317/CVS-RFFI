@@ -57,6 +57,9 @@ class ResponseSolver(GameSolver):
                     (torch.zeros_like(p) if b is None else b)+beta*((torch.zeros_like(p) if a is None else a)-(torch.zeros_like(p) if b is None else b))
                     for p,a,b in zip(self.parameters,g1,g0)]
                 self._install(gradients);self.optimizer.step();self._finite_state('cf_candidate')
+                # Compare the exact model state that will be committed, including
+                # the single origin forward's running statistics.
+                restore_buffers(self.model,origin_buffers)
                 with passive(self.model),torch.no_grad():
                     r=risk().detach().clone()
                     auxiliary=risk.auxiliary() if hasattr(risk,'auxiliary') else None

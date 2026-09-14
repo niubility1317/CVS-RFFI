@@ -1477,87 +1477,157 @@
   "stage_table": [
     {
       "epoch": 1,
-      "active": false,
+      "base": "extragradient",
       "strength": 1.0,
-      "base": "extragradient"
+      "accepted_steps": [
+        1,
+        222
+      ],
+      "correction_steps_in_epoch": [],
+      "correction_count": 0
     },
     {
       "epoch": 20,
-      "active": false,
+      "base": "extragradient",
       "strength": 1.0,
-      "base": "extragradient"
+      "accepted_steps": [
+        4219,
+        4440
+      ],
+      "correction_steps_in_epoch": [],
+      "correction_count": 0
     },
     {
       "epoch": 21,
-      "active": true,
+      "base": "extragradient",
       "strength": 1.0,
-      "base": "extragradient"
+      "accepted_steps": [
+        4441,
+        4662
+      ],
+      "correction_steps_in_epoch": [],
+      "correction_count": 0
     },
     {
       "epoch": 40,
-      "active": true,
+      "base": "extragradient",
       "strength": 1.0,
-      "base": "extragradient"
+      "accepted_steps": [
+        8659,
+        8880
+      ],
+      "correction_steps_in_epoch": [],
+      "correction_count": 0
     },
     {
       "epoch": 41,
-      "active": true,
+      "base": "extragradient",
       "strength": 1.0,
-      "base": "extragradient"
+      "accepted_steps": [
+        8881,
+        9102
+      ],
+      "correction_steps_in_epoch": [],
+      "correction_count": 0
     },
     {
       "epoch": 60,
-      "active": true,
+      "base": "extragradient",
       "strength": 1.0,
-      "base": "extragradient"
+      "accepted_steps": [
+        13099,
+        13320
+      ],
+      "correction_steps_in_epoch": [],
+      "correction_count": 0
     },
     {
       "epoch": 61,
-      "active": true,
+      "base": "extragradient",
       "strength": 1.0,
-      "base": "extragradient"
+      "accepted_steps": [
+        13321,
+        13542
+      ],
+      "correction_steps_in_epoch": [],
+      "correction_count": 0
     },
     {
       "epoch": 79,
-      "active": true,
+      "base": "extragradient",
       "strength": 1.0,
-      "base": "extragradient"
+      "accepted_steps": [
+        17317,
+        17538
+      ],
+      "correction_steps_in_epoch": [],
+      "correction_count": 0
     },
     {
       "epoch": 80,
-      "active": true,
+      "base": "extragradient",
       "strength": 1.0,
-      "base": "extragradient"
+      "accepted_steps": [
+        17539,
+        17760
+      ],
+      "correction_steps_in_epoch": [],
+      "correction_count": 0
     },
     {
       "epoch": 90,
-      "active": true,
+      "base": "extragradient",
       "strength": 1.0,
-      "base": "extragradient"
+      "accepted_steps": [
+        19759,
+        19980
+      ],
+      "correction_steps_in_epoch": [],
+      "correction_count": 0
     },
     {
       "epoch": 91,
-      "active": true,
+      "base": "extragradient",
       "strength": 1.0,
-      "base": "extragradient"
+      "accepted_steps": [
+        19981,
+        20202
+      ],
+      "correction_steps_in_epoch": [],
+      "correction_count": 0
     },
     {
       "epoch": 160,
-      "active": true,
+      "base": "extragradient",
       "strength": 1.0,
-      "base": "extragradient"
+      "accepted_steps": [
+        35299,
+        35520
+      ],
+      "correction_steps_in_epoch": [],
+      "correction_count": 0
     },
     {
       "epoch": 161,
-      "active": true,
+      "base": "extragradient",
       "strength": 1.0,
-      "base": "extragradient"
+      "accepted_steps": [
+        35521,
+        35742
+      ],
+      "correction_steps_in_epoch": [],
+      "correction_count": 0
     },
     {
       "epoch": 200,
-      "active": true,
+      "base": "extragradient",
       "strength": 1.0,
-      "base": "extragradient"
+      "accepted_steps": [
+        44179,
+        44400
+      ],
+      "correction_steps_in_epoch": [],
+      "correction_count": 0
     }
   ]
 }

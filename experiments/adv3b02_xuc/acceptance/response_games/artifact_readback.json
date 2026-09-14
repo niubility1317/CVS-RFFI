@@ -144,8 +144,6 @@
     "XT_DANN"
   ],
   "compiled": [
-    "experiments/adv3b02_xuc/code/cvsrffi/xuc_fusion/dr_objective.py",
-    "experiments/adv3b02_xuc/code/cvsrffi/xuc_fusion/objective.py",
     "experiments/adv3b02_xuc/code/cvsrffi/xuc_fusion/response_config.py",
     "experiments/adv3b02_xuc/code/cvsrffi/xuc_fusion/response_context.py",
     "experiments/adv3b02_xuc/code/cvsrffi/xuc_fusion/response_dric.py",
@@ -154,21 +152,21 @@
     "experiments/adv3b02_xuc/code/cvsrffi/xuc_fusion/response_runtime.py",
     "experiments/adv3b02_xuc/code/cvsrffi/xuc_fusion/response_solver.py",
     "experiments/adv3b02_xuc/code/cvsrffi/xuc_fusion/runtime.py",
-    "experiments/adv3b02_xuc/code/model_dual_cvsincnet.py",
-    "experiments/adv3b02_xuc/code/scripts/train_response_games.py",
     "experiments/adv3b02_xuc/tests/test_response_games.py",
+    "experiments/adv3b02_xuc/tests/test_response_reaudit.py",
     "experiments/adv3b02_xuc/tools/accept_response_games.py",
     "experiments/adv3b02_xuc/tools/prepare_response_games.py",
     "experiments/adv3b02_xuc/tools/verify_response_games.py"
   ],
   "acceptance": {
     "status": "PASS",
-    "tests": 80,
+    "tests": 113,
     "failures": 0,
     "errors": 0,
     "skipped": 0,
     "test_files": [
       "test_response_games.py",
+      "test_response_reaudit.py",
       "test_native_joint.py",
       "test_acceptance.py",
       "test_dr_scheduling.py",
@@ -182,11 +180,12 @@
     "performance": "NOT_EVALUATED"
   },
   "final_response_regression": {
-    "tests": 27,
+    "tests": 60,
     "failures": 0,
     "errors": 0,
     "skipped": 0
   },
+  "response_regression_source": "subset of current tests.xml; not an additional test run",
   "remote_training_state": "NOT_TOUCHED",
   "prepared_output_directories_created": 0,
   "real_experiments_started": 0,

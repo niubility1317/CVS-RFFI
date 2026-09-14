@@ -166,7 +166,7 @@ def train(args,row,source_contract=None):
         from .response_solver import ResponseSolver
         from .response_context import SourceMonitor
         solver=ResponseSolver(model,optimizer,args.response,nonfinite='raise',max_grad_norm=5.,
-            predictor_lr_ratio=args.joint['predictor_lr_ratio'])
+            predictor_lr_ratio=args.joint['predictor_lr_ratio'],telemetry_interval=args.joint['diagnostic_interval'])
         response_monitor=SourceMonitor(source)
     proto=PrototypeMemoryBank(args.num_classes,len(source.domains),momentum=args.proto_momentum,
         margin=args.proto_margin,domain_align_weight=args.proto_domain_align_weight,push_weight=args.proto_push_weight,min_count=args.proto_min_count)

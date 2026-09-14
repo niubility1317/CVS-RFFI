@@ -4,7 +4,7 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1];REPO=ROOT.parents[1]
 sys.path.insert(0,str(ROOT/'code'))
-from cvsrffi.xuc_fusion.response_config import make_row
+from cvsrffi.xuc_fusion.response_config import make_row,stage_table
 from cvsrffi.xuc_fusion.runtime import resolve_args
 from cvsrffi.xuc_fusion.dr_objective import resolved_options
 
@@ -26,6 +26,7 @@ def main():
             assert doc['resolved_dr']==json.loads(json.dumps(vars(resolved_options(native,args)))),row['id']
             assert row['joint']['launch'] is False
             if family=='response_games':
+                assert doc['stage_table']==stage_table(row['response']),row['id']
                 assert args.response['launch'] is False
                 assert args.joint['normalization_scales']=='reuse_origin_used_scales'
                 assert args.joint['unlabeled_encoder_grl_multiplier']==0
@@ -53,12 +54,16 @@ def main():
         if path.endswith('.py'):compile((REPO/path).read_text(encoding='utf-8'),path,'exec');compiled.append(path)
     acceptance=json.loads((ROOT/'acceptance/response_games/acceptance.json').read_text(encoding='utf-8'))
     assert acceptance['status']=='PASS' and acceptance['failures']==acceptance['errors']==acceptance['skipped']==0
-    final_xml=ROOT/'acceptance/response_games/final_response_tests.xml'
-    final_suites=list(ET.parse(final_xml).getroot().iter('testsuite'))
-    final_counts={k:sum(int(s.attrib.get(k,0)) for s in final_suites) for k in ('tests','failures','errors','skipped')}
+    final_xml=ROOT/'acceptance/response_games/tests.xml'
+    cases=[case for case in ET.parse(final_xml).getroot().iter('testcase')
+        if case.attrib.get('classname','').split('.')[-1] in ('test_response_games','test_response_reaudit')]
+    final_counts=dict(tests=len(cases),failures=sum(c.find('failure') is not None for c in cases),
+        errors=sum(c.find('error') is not None for c in cases),skipped=sum(c.find('skipped') is not None for c in cases))
+    assert final_counts['tests']>0
     assert final_counts['failures']==final_counts['errors']==final_counts['skipped']==0
     report=dict(status='LOCAL_VERIFIED_NOT_LAUNCHED',config_files_checked=checked,counts={k:len(v) for k,v in checked.items()},
-        parse_only_no_output_directory=dry,compiled=compiled,acceptance=acceptance,final_response_regression=final_counts,remote_training_state='NOT_TOUCHED',
+        parse_only_no_output_directory=dry,compiled=compiled,acceptance=acceptance,final_response_regression=final_counts,
+        response_regression_source='subset of current tests.xml; not an additional test run',remote_training_state='NOT_TOUCHED',
         prepared_output_directories_created=0,real_experiments_started=0,performance='NOT_EVALUATED')
     out=ROOT/'acceptance/response_games'
     (out/'artifact_readback.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')

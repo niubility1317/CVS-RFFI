@@ -1,12 +1,11 @@
 {
   "status": "PASS",
-  "tests": 113,
+  "tests": 80,
   "failures": 0,
   "errors": 0,
   "skipped": 0,
   "test_files": [
     "test_response_games.py",
-    "test_response_reaudit.py",
     "test_native_joint.py",
     "test_acceptance.py",
     "test_dr_scheduling.py",
