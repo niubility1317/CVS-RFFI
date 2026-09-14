@@ -23,3 +23,13 @@ RUNNING / VERIFIED。发布commit=950a67e86db82514968774fde3842282b169e2a5，Git
 归档SHA256=386f49a843bec8e661067a814a5c549e0dd347fb5174783081069165519591e5，本地/远端一次比对一致，远端编译PASS；九项聚焦测试和独立P0/P1审查通过。源训练六份completion均为SOURCE_ARTIFACTS_COMPLETE、E200、9800步、target_evaluated=false。
 
 PID373822、PPID1，CWD/argv绑定本release；nvidia-smi核实物理GPU1/2/3/5/7，其他GPU0/4/6的原PID仍在。六checkpoint均通过来源检查及串并行source smoke，frozen_manifest确认6模型/5设备/168000每场景。首次六文件各约9700条，第二次全部增长，尚无complete。全量预测结束后自动统一评分，本记录不代表已有最终成绩。
+
+## 最终完成与全量独立核验
+
+2026-09-14 10:33:26 +08:00完成，TARGET_ARTIFACTS_COMPLETE / VERIFIED。全部六模型四场景预测关闭后统一评分，用时1957.067秒（32.62分钟），PID373822已退出。逐条复核4032000预测，重算总体混淆矩阵、Accuracy、Macro-F1、Macro-Recall及最弱TX准确率，评分最大绝对误差0。RX/day计数与加权准确率核验通过。
+
+adv0目标LEO Accuracy三seed均值65.221825±1.749316%；adv0.35为66.554828±1.147030%。后者clean77.091071±0.996803%，LEO Macro-F1 66.847157±0.592510%。同seed增加adv的LEO差值均正，平均+1.333003pp。
+
+相对旧LR2e-4完整EG：adv0的LEO均值增加1.843849pp，但392005下降1.254167pp；adv0.35增加2.809392pp且三个seed均提升。最高单模型为ADV035 seed392006，clean78.108333%、LEO67.871825%。普通高LR基线只有seed392005，在该匹配seed本次ADV035的LEO为66.018056%，低于普通高LR67.599206%；不能据本次最高seed宣称EG整体优于普通高LR。
+
+详细报告target_report.md；target_detailed_metrics.csv含2016行，target_confusion_matrices.csv含864格；matched_metric_deltas.csv是9组同seed指标差值，非逐样本翻转核验。保持历史目标基准探索复测口径，无target拟合或自动晋级。

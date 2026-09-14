@@ -43,13 +43,15 @@ def main():
             pairs.append(dict(baseline=baseline,variant=variant,scene=scene,accuracy_delta_pp=(scores[variant]['scenes'][scene]['accuracy']-scores[baseline]['scenes'][scene]['accuracy'])*100,**counts))
     for filename,values in [('target_summary.csv',summary),('target_detailed_metrics.csv',records),('target_confusion_matrices.csv',cms),('target_seed_aggregates.csv',aggregates),('target_paired_predictions.csv',pairs)]:
         with (out/filename).open('w',encoding='utf-8-sig',newline='') as f:
-            w=csv.DictWriter(f,fieldnames=list(values[0]));w.writeheader();w.writerows(values)
+            fields=list(values[0]) if values else ['baseline','variant','scene','accuracy_delta_pp','disagreement','correct_to_wrong','wrong_to_correct','max_confidence_delta']
+            w=csv.DictWriter(f,fieldnames=fields);w.writeheader();w.writerows(values)
     p=lambda v:f'{v:.3f}'
     lines=['# CORE90 V2目标域测试集详细结果','',
         f"**本报告为{len(rows)}个固定E200模型的目标接收机测试，非source验证集。**目标RX={m['target_rxs']}，day={m['target_days']}；每场景{m['samples_per_scene']:,}条，四场景共{m['samples_per_scene']*4:,}条/模型。",'',
         '6类闭集全部注册类argmax，无support适配、无测试拟合、无选模或参数更新。本目标集已被历史研究接触，口径为previously_exposed_benchmark_recheck；不是全新未见确认集，也不是Phase2少样本适配/未知拒识结果。训练seed分别列出，信道增强seed固定392002。','',
         '## 1. 目标域Accuracy（%）','',
         'A/B=ordinary；C/D=B8-D1；E/F=完整EG。每对前者adv=0，后者adv=0.35。STRONG_SOURCE为ordinary+adv，LOW/BASE/HIGH学习率分别1e-4/2e-4/4e-4。','',
+        'EG_HIGH_ADV0/ADV035均为完整EG、学习率4e-4，对抗系数分别0/0.35；只解释本次清单实际包含的模型。','',
         table(['模型','seed','clean','clear','low_elev','rain','LEO均值','最弱LEO RX'],[[r['method'],r['seed'],*[p(r[s+'_accuracy_pct']) for s in scenes],p(r['leo_mean_accuracy_pct']),p(r['worst_leo_rx_accuracy_pct'])] for r in summary]),
         '## 2. 目标域Macro-F1（%）','',
         table(['模型','seed',*scenes,'LEO均值'],[[r['method'],r['seed'],*[p(r[s+'_macro_f1_pct']) for s in scenes],p(r['leo_mean_macro_f1_pct'])] for r in summary]),
