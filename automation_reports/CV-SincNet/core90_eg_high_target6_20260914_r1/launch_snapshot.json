@@ -1,0 +1,82 @@
+{
+  "pid": 373822,
+  "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/core90_eg_high_target6_20260914_r1",
+  "process": "    PID    PPID     ELAPSED COMMAND\n 373822       1       01:14 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u code/scripts/core90_game_target_test.py --input-manifest code/configs/core90_eg_high_target6_20260914_r1.json --output-dir /home/szu2070436088/2510044040/CV-SincNet/runs/core90_eg_high_target6_20260914_r1 --device cuda:0 --devices cuda:0 cuda:1 cuda:2 cuda:3 cuda:4\n",
+  "manifest": {
+    "schema": "core90_target_frozen_multiseed_v2",
+    "rows": [
+      "V2_EG_HIGH_ADV0_seed392005",
+      "V2_EG_HIGH_ADV0_seed392006",
+      "V2_EG_HIGH_ADV0_seed392007",
+      "V2_EG_HIGH_ADV035_seed392005",
+      "V2_EG_HIGH_ADV035_seed392006",
+      "V2_EG_HIGH_ADV035_seed392007"
+    ],
+    "seed": null,
+    "training_seeds": {
+      "V2_EG_HIGH_ADV0_seed392005": 392005,
+      "V2_EG_HIGH_ADV0_seed392006": 392006,
+      "V2_EG_HIGH_ADV0_seed392007": 392007,
+      "V2_EG_HIGH_ADV035_seed392005": 392005,
+      "V2_EG_HIGH_ADV035_seed392006": 392006,
+      "V2_EG_HIGH_ADV035_seed392007": 392007
+    },
+    "target_exposure_status": "previously_exposed_benchmark_recheck",
+    "checkpoints": {
+      "V2_EG_HIGH_ADV0_seed392005": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_eg_high_seedscan_20260913_r1/V2_EG_HIGH_ADV0_seed392005/final_ssdg.pth",
+      "V2_EG_HIGH_ADV0_seed392006": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_eg_high_seedscan_20260913_r1/V2_EG_HIGH_ADV0_seed392006/final_ssdg.pth",
+      "V2_EG_HIGH_ADV0_seed392007": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_eg_high_seedscan_20260913_r1/V2_EG_HIGH_ADV0_seed392007/final_ssdg.pth",
+      "V2_EG_HIGH_ADV035_seed392005": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_eg_high_seedscan_20260913_r1/V2_EG_HIGH_ADV035_seed392005/final_ssdg.pth",
+      "V2_EG_HIGH_ADV035_seed392006": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_eg_high_seedscan_20260913_r1/V2_EG_HIGH_ADV035_seed392006/final_ssdg.pth",
+      "V2_EG_HIGH_ADV035_seed392007": "/home/szu2070436088/2510044040/CV-SincNet/runs/core90_eg_high_seedscan_20260913_r1/V2_EG_HIGH_ADV035_seed392007/final_ssdg.pth"
+    },
+    "target_rxs": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "samples_per_scene": 168000,
+    "scenes": [
+      "clean",
+      "leo_clear_weak",
+      "leo_low_elev_weak",
+      "leo_rain_weak"
+    ],
+    "batch_size": 256,
+    "augmentation_seed": 392002,
+    "num_classes": 6,
+    "source_only": false,
+    "scope": "four_view_closed_set_target_diagnostic",
+    "fitting": false,
+    "selection": false,
+    "all_rows_predicted_before_truth": true,
+    "model_devices": {
+      "V2_EG_HIGH_ADV0_seed392005": "cuda:0",
+      "V2_EG_HIGH_ADV0_seed392006": "cuda:1",
+      "V2_EG_HIGH_ADV0_seed392007": "cuda:2",
+      "V2_EG_HIGH_ADV035_seed392005": "cuda:3",
+      "V2_EG_HIGH_ADV035_seed392006": "cuda:4",
+      "V2_EG_HIGH_ADV035_seed392007": "cuda:0"
+    }
+  },
+  "line_counts": {
+    "V2_EG_HIGH_ADV035_seed392005_predictions.jsonl": 23242,
+    "V2_EG_HIGH_ADV035_seed392006_predictions.jsonl": 23232,
+    "V2_EG_HIGH_ADV035_seed392007_predictions.jsonl": 23247,
+    "V2_EG_HIGH_ADV0_seed392005_predictions.jsonl": 23281,
+    "V2_EG_HIGH_ADV0_seed392006_predictions.jsonl": 23244,
+    "V2_EG_HIGH_ADV0_seed392007_predictions.jsonl": 23259
+  },
+  "stdout": "SOURCE_CHECKPOINT_SMOKE_PASS\n{\"stage\": \"predict\", \"scene\": \"clean\", \"samples\": 256, \"total\": 168000}\n",
+  "complete": false
+}

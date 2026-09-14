@@ -15,3 +15,11 @@
 本地清单核对六行完整；复用九项目标协议/线程测试，独立P0/P1限定审查。发布commit先push并核对OID，唯一归档一次SHA比较及远端compile。技术失败：来源/契约错误、非有限或维度错误、输出已存在、smoke不一致、buffer变化或预测不完整直接报错并保留产物；不自动重试，不以低分停止。
 
 预期frozen_manifest.json、六份predictions、predictions_complete.json、target_truth.jsonl、六份target_scores.json及complete.json。完整闭合后才报告分数。当前LOCAL_VERIFIED，启动后态随后追加。
+
+## 实际启动后态
+
+RUNNING / VERIFIED。发布commit=950a67e86db82514968774fde3842282b169e2a5，GitHub独立OID读回一致；此前source报告的未推送提交同步完成。Git默认代理路径TLS失败，单次调用禁用代理并使用openssl后恢复，未修改全局配置。
+
+归档SHA256=386f49a843bec8e661067a814a5c549e0dd347fb5174783081069165519591e5，本地/远端一次比对一致，远端编译PASS；九项聚焦测试和独立P0/P1审查通过。源训练六份completion均为SOURCE_ARTIFACTS_COMPLETE、E200、9800步、target_evaluated=false。
+
+PID373822、PPID1，CWD/argv绑定本release；nvidia-smi核实物理GPU1/2/3/5/7，其他GPU0/4/6的原PID仍在。六checkpoint均通过来源检查及串并行source smoke，frozen_manifest确认6模型/5设备/168000每场景。首次六文件各约9700条，第二次全部增长，尚无complete。全量预测结束后自动统一评分，本记录不代表已有最终成绩。
