@@ -1,0 +1,81 @@
+{
+  "scored_rows": 113,
+  "family_counts": {
+    "A1": 33,
+    "GAME_V1": 25,
+    "XUC": 28,
+    "GAME_V2": 21,
+    "EG_HIGH": 6
+  },
+  "all_113_leo_means_recomputed": true,
+  "XUC_36_scene_accuracy_and_macroF1_recomputed_from_confusion": true,
+  "XUC_all_paired_count_deltas_recomputed": 60,
+  "A1_frozen_predictions_recounted": 22176000,
+  "A1_metadata_mapping_exact_all33": true,
+  "A1_all_132_scene_macroF1_recomputed": true,
+  "A1_detail_rows": 33792,
+  "GAME_V2_rows": 21,
+  "GAME_V2_V2_E_LEO": {
+    "n": 3,
+    "mean": 63.3779761904762,
+    "sample_sd": 2.2912636301261187
+  },
+  "GAME_V2_V2_STRONG_SOURCE_LR_LOW_LEO": {
+    "n": 1,
+    "mean": 57.51448412698412,
+    "sample_sd": null
+  },
+  "GAME_V2_V2_C_LEO": {
+    "n": 3,
+    "mean": 60.14556878306878,
+    "sample_sd": 1.6315373078926003
+  },
+  "GAME_V2_V2_D_LEO": {
+    "n": 3,
+    "mean": 58.41792328042328,
+    "sample_sd": 1.7309183717781067
+  },
+  "GAME_V2_V2_STRONG_SOURCE_LR_BASE_LEO": {
+    "n": 1,
+    "mean": 63.75099206349207,
+    "sample_sd": null
+  },
+  "GAME_V2_V2_B_LEO": {
+    "n": 3,
+    "mean": 61.16633597883598,
+    "sample_sd": 2.3958163538566
+  },
+  "GAME_V2_V2_A_LEO": {
+    "n": 3,
+    "mean": 60.14556878306878,
+    "sample_sd": 1.6315373078926003
+  },
+  "GAME_V2_V2_F_LEO": {
+    "n": 3,
+    "mean": 63.7454365079365,
+    "sample_sd": 2.181710331242614
+  },
+  "GAME_V2_V2_STRONG_SOURCE_LR_HIGH_LEO": {
+    "n": 1,
+    "mean": 67.59920634920636,
+    "sample_sd": null
+  },
+  "EG_HIGH_rows": 6,
+  "EG_HIGH_V2_EG_HIGH_ADV0_LEO": {
+    "n": 3,
+    "mean": 65.2218253968254,
+    "sample_sd": 1.7493159611358338
+  },
+  "EG_HIGH_V2_EG_HIGH_ADV035_LEO": {
+    "n": 3,
+    "mean": 66.55482804232804,
+    "sample_sd": 1.147030422117313
+  },
+  "main_report_links": true,
+  "snapshot_full_action_read_at": 1789354287.6786616,
+  "snapshot_full_mechanics_read_at": 1789354399.608256,
+  "files": 484,
+  "report_characters": 45238,
+  "configuration_appendix_characters": 551262,
+  "status": "VERIFIED"
+}
