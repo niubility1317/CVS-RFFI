@@ -56,6 +56,6 @@
 |A02|局部缓存不得把梯度截断误判为无前向依赖，状态必须可恢复|response_replay.py|verified|detach/状态反例，真实模型缓存开关的参数、optimizer及RNG逐位一致|
 |A03|XT诊断必须与训练随机流隔离，lr0变化为0|response_fields.py|verified|Dropout反例及诊断开关loss/梯度/RNG一致|
 |A04|配置、入口、阶段、持久化与旧路线一致性|response_config/runtime/solver及准备工具|verified|127份读回、4个默认入口、CF提交buffer、阶段与轮换检查|
-|A05|修复后新旧总验收、报告与Git交付|acceptance/response_games|local_verified_delivery_pending|113项通过；Git独立读回后记录reaudit_delivery.json|
+|A05|修复后新旧总验收、报告与Git交付|acceptance/response_games|verified|113项通过；c5867c63本地/远端OID一致，见reaudit_delivery.json|
 
 本轮详细发现及证据：`../experiments/adv3b02_xuc/acceptance/response_games/reaudit_report.md`。本次没有启动正式实验；R11/R12及前轮依赖项状态不因本地测试通过而改变。
