@@ -1,0 +1,70 @@
+{
+  "time": 1789352654.5742555,
+  "status": "TRAINING",
+  "owner_alive": true,
+  "rows": {
+    "F-M00": {
+      "status": "RUNNING",
+      "completed_epoch": 174,
+      "pid": 4068682,
+      "process_exists": true,
+      "errors": []
+    },
+    "F-A1": {
+      "status": "TRAINING_COMPLETE",
+      "completed_epoch": 200,
+      "pid": 4068959,
+      "process_exists": false,
+      "errors": []
+    },
+    "F-M14": {
+      "status": "TRAINING_COMPLETE",
+      "completed_epoch": 200,
+      "pid": 4069037,
+      "process_exists": false,
+      "errors": []
+    },
+    "F-M11": {
+      "status": "TRAINING_COMPLETE",
+      "completed_epoch": 200,
+      "pid": 4069110,
+      "process_exists": false,
+      "errors": []
+    },
+    "F-M05": {
+      "status": "TRAINING_COMPLETE",
+      "completed_epoch": 200,
+      "pid": 4069185,
+      "process_exists": false,
+      "errors": []
+    },
+    "F-M08": {
+      "status": "TRAINING_COMPLETE",
+      "completed_epoch": 200,
+      "pid": 4069258,
+      "process_exists": false,
+      "errors": []
+    },
+    "F-M07": {
+      "status": "RUNNING",
+      "completed_epoch": 172,
+      "pid": 4069338,
+      "process_exists": true,
+      "errors": []
+    },
+    "F-M12": {
+      "status": "TRAINING_COMPLETE",
+      "completed_epoch": 200,
+      "pid": 4069881,
+      "process_exists": false,
+      "errors": []
+    },
+    "F-M13": {
+      "status": "RUNNING",
+      "completed_epoch": 159,
+      "pid": 4177381,
+      "process_exists": true,
+      "errors": []
+    }
+  }
+}

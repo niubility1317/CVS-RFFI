@@ -12,4 +12,4 @@
 
 验证：本地负测覆盖E199、9800步、target接触、外部checkpoint、源角色不匹配均拒绝；独立P0/P1审查通过。落地单文件传输一次SHA比对和编译；首次使用真实F-M12最终权重做无query零IQ forward，随后立即正式推理。
 
-当前状态：LOCAL_VERIFIED，待提交、发布和评分。
+当前状态：VERIFIED / ARTIFACTS_COMPLETE，六组4032000条预测已固定并独立评分，2026-09-14T10:12:37.283833+08:00完成读回。详细结果见[detailed_results.md](detailed_results.md)。

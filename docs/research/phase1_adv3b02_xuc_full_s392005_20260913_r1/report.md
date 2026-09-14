@@ -84,3 +84,9 @@ full_fields_03通过E1/21/61/131/181完整合成目标及两场EG检查。受控
 已启动行均核实实际进程、CWD、scratch初始化、seed、E200配置、非零接受更新及无异常日志；完整扩展行resolved_dr_config逐项等于冻结FULL_OPTIONS。GPU实际计算进程每卡不超过2个。排队行尚无训练进程，不计作已启动。调度器保守计入前CUDA进程，未使用管理员或干预其他任务。
 
 正式运行仍在预热阶段；合成受控分支验收不替代正式E21/E61激活证据。目前没有新9组测试成绩。每小时自动化已更新到FULL9并独立读回，保留原PAUSED状态。
+
+## 2026-09-14完成行提前测试
+
+用户要求完成行立即测试。六行F-A1/F-M14/F-M11/F-M05/F-M08/F-M12已于独立评估run `phase1_adv3b02_xuc_full6_eval_s392005_20260914_r1`完成4032000条预测与独立评分，状态VERIFIED / ARTIFACTS_COMPLETE。其余三行仍训练，本原矩阵owner保持运行；上述分数不回流训练。原九行统一prediction/score输出尚未闭合，不能将其pipeline标为COMPLETE。
+
+[六行完整测试报告](../phase1_adv3b02_xuc_full6_eval_s392005_20260914_r1/detailed_results.md)；[28个已评分历史与新配置对照](../phase1_adv3b02_xuc_full6_eval_s392005_20260914_r1/all_28_scored_comparison.csv)。F-A1的LEO平均68.7000%；五个完整扩展行最高F-M11为67.7877%，本次尚未证明完整扩展超过F-A1。配置启用与实际机制触发限制详见报告。
