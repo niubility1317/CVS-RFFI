@@ -1,0 +1,86 @@
+{
+  "RadioFingerprinting": {
+    "commit": "23d1fd4aef2f1dd254c5596680ae1da66f416916",
+    "fsck": {
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    "status": {
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    "tracked_files": 112,
+    "missing_tracked": [],
+    "python_files": 53,
+    "syntax_errors": [
+      {
+        "path": "complex_rf/cxnn/complexnn/fft.py",
+        "error": "Missing parentheses in call to 'print'. Did you mean print(...)? (fft.py, line 143)"
+      }
+    ],
+    "entrypoint_probes": [
+      {
+        "entry": "fine-tuning/main.py",
+        "returncode": 1,
+        "stdout": "",
+        "stderr": "Traceback (most recent call last):\n  File \"E:\\type10-7\\external_sources\\rffi_labeled_da_20260915\\RadioFingerprinting\\fine-tuning\\main.py\", line 11, in <module>\n    from keras.utils import np_utils\nImportError: cannot import name 'np_utils' from 'keras.utils' (E:\\type10-7\\external_sources\\rffi_labeled_da_20260915\\venv\\lib\\site-packages\\keras\\utils\\__init__.py)\n"
+      },
+      {
+        "entry": "fine-tuning/finetune.py",
+        "returncode": 1,
+        "stdout": "",
+        "stderr": "Traceback (most recent call last):\n  File \"E:\\type10-7\\external_sources\\rffi_labeled_da_20260915\\RadioFingerprinting\\fine-tuning\\finetune.py\", line 14, in <module>\n    from keras.utils import np_utils\nImportError: cannot import name 'np_utils' from 'keras.utils' (E:\\type10-7\\external_sources\\rffi_labeled_da_20260915\\venv\\lib\\site-packages\\keras\\utils\\__init__.py)\n"
+      }
+    ]
+  },
+  "RadioNet": {
+    "commit": "64f4b0a3dfb48b4a389e4d177e9ffa35010e17f5",
+    "fsck": {
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    "status": {
+      "returncode": 0,
+      "stdout": "?? __pycache__/",
+      "stderr": ""
+    },
+    "tracked_files": 50,
+    "missing_tracked": [],
+    "python_files": 28,
+    "syntax_errors": [],
+    "entrypoint_probes": [
+      {
+        "entry": "model_training.py",
+        "returncode": 1,
+        "stdout": "",
+        "stderr": "Traceback (most recent call last):\n  File \"E:\\type10-7\\external_sources\\rffi_labeled_da_20260915\\RadioNet\\model_training.py\", line 7, in <module>\n    from tensorflow.keras.callbacks import ModelCheckpoint, LearningRateScheduler, EarlyStopping, Callback\nModuleNotFoundError: No module named 'tensorflow'\n"
+      },
+      {
+        "entry": "finetune.py",
+        "returncode": 1,
+        "stdout": "",
+        "stderr": "Traceback (most recent call last):\n  File \"E:\\type10-7\\external_sources\\rffi_labeled_da_20260915\\RadioNet\\finetune.py\", line 10, in <module>\n    from tensorflow.keras.callbacks import ModelCheckpoint, LearningRateScheduler, EarlyStopping, TensorBoard\nModuleNotFoundError: No module named 'tensorflow'\n"
+      },
+      {
+        "entry": "model_test.py",
+        "returncode": 1,
+        "stdout": "",
+        "stderr": "Traceback (most recent call last):\n  File \"E:\\type10-7\\external_sources\\rffi_labeled_da_20260915\\RadioNet\\model_test.py\", line 6, in <module>\n    import load_slice_IQ\n  File \"E:\\type10-7\\external_sources\\rffi_labeled_da_20260915\\RadioNet\\load_slice_IQ.py\", line 9, in <module>\n    from tensorflow.keras.utils import to_categorical\nModuleNotFoundError: No module named 'tensorflow'\n"
+      }
+    ]
+  },
+  "environment": {
+    "python": "E:\\type10-7\\external_sources\\rffi_labeled_da_20260915\\venv\\Scripts\\python.exe",
+    "dependencies": {
+      "tensorflow": false,
+      "keras": true,
+      "numpy": true,
+      "scipy": true,
+      "sklearn": true,
+      "h5py": true
+    }
+  }
+}
