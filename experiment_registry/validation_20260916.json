@@ -1,0 +1,163 @@
+{
+  "status": "VERIFIED",
+  "link_checks": 39,
+  "link_issues": [],
+  "record_counts": {
+    "legacy_evidence_group": 4028,
+    "legacy_log_record": 7778,
+    "remote_directory_locator": 3608
+  },
+  "local_files_enumerated": 509977,
+  "artifact_locators": 414842,
+  "metadata_facts": 10189900,
+  "compressed_detail_files": 23612,
+  "compressed_detail_bytes": 62818209,
+  "metadata_errors": [
+    {
+      "path": "automation_reports/CV-SincNet/20260522_195855/runs/wisig_baselines_seed1337_ratio010_satview/cvcnn_seed1337/metrics.json",
+      "error": "Expecting value: line 1 column 1 (char 0)",
+      "action": "locator_only"
+    },
+    {
+      "path": "automation_reports/CV-SincNet/20260522_195855/runs/wisig_baselines_seed1337_ratio010_satview/drift_seed1337/metrics.json",
+      "error": "Expecting value: line 1 column 1 (char 0)",
+      "action": "locator_only"
+    },
+    {
+      "path": "automation_reports/CV-SincNet/20260522_195855/runs/wisig_baselines_seed1337_ratio010_satview/receiver_agnostic_seed1337/metrics.json",
+      "error": "Expecting value: line 1 column 1 (char 0)",
+      "action": "locator_only"
+    },
+    {
+      "path": "automation_reports/CV-SincNet/20260522_195855/runs/wisig_baselines_seed1337_ratio010_satview/riei_seed1337/metrics.json",
+      "error": "Expecting value: line 1 column 1 (char 0)",
+      "action": "locator_only"
+    },
+    {
+      "path": "automation_reports/CV-SincNet/optimizer_20260607_142904/artifacts/startup_health_4min_16.json",
+      "error": "Expecting value: line 1 column 1 (char 0)",
+      "action": "locator_only"
+    },
+    {
+      "path": "automation_reports/CV-SincNet/stage2_monitor_20260622_104040/artifacts/monitor_gate_20260622_104040.json",
+      "error": "Expecting value: line 1 column 1 (char 0)",
+      "action": "locator_only"
+    },
+    {
+      "path": "automation_reports/CV-SincNet/stage2_monitor_20260622_104126/artifacts/monitor_gate_20260622_104126.json",
+      "error": "Expecting value: line 1 column 1 (char 0)",
+      "action": "locator_only"
+    },
+    {
+      "path": "automation_reports/CV-SincNet/stage2_optimizer_20260617_042102/artifacts/launch_next64aa.json",
+      "error": "Invalid control character at: line 1 column 405 (char 404)",
+      "action": "locator_only"
+    },
+    {
+      "path": "automation_reports/CV-SincNet/stage2_optimizer_20260617_042102/artifacts/sample_metric_meta_next64aa.json",
+      "error": "Expecting value: line 554 column 1 (char 12554)",
+      "action": "locator_only"
+    },
+    {
+      "path": "automation_reports/CV-SincNet/stage2_optimizer_20260618_031729/artifacts/metrics_sample_next64av.json",
+      "error": "Expecting value: line 291 column 1 (char 5291)",
+      "action": "locator_only"
+    },
+    {
+      "path": "automation_reports/CV-SincNet/stage2_optimizer_20260618_081323/artifacts/metrics_schema_probe_next64ay.json",
+      "error": "Expecting ',' delimiter: line 530 column 1 (char 12530)",
+      "action": "locator_only"
+    },
+    {
+      "path": "automation_reports/CV-SincNet/stage2_optimizer_20260618_121524/artifacts/metrics_schema_sample_next64bc.json",
+      "error": "Unterminated string starting at: line 1 column 11999 (char 11998)",
+      "action": "locator_only"
+    },
+    {
+      "path": "automation_reports/CV-SincNet/stage2_optimizer_20260620_021353/artifacts/metrics_sample_next64bu.json",
+      "error": "Expecting value: line 1062 column 1 (char 21062)",
+      "action": "locator_only"
+    },
+    {
+      "path": "automation_reports/CV-SincNet/stage2_optimizer_20260622_061445/artifacts/submit_next64cu.json",
+      "error": "Expecting value: line 1 column 1 (char 0)",
+      "action": "locator_only"
+    },
+    {
+      "path": "automation_reports/CV-SincNet/stage2_spaceborne_next32do_20260623_183522/remote_status_refresh.json",
+      "error": "Expecting value: line 1 column 1 (char 0)",
+      "action": "locator_only"
+    },
+    {
+      "path": "local_artifacts/d92_e0_continuous_session_k10new5_20260817_v7/analyzer_stdout.json",
+      "error": "Expecting value: line 1 column 1 (char 0)",
+      "action": "locator_only"
+    }
+  ],
+  "search_results": {
+    "core90": {
+      "total": 32,
+      "elapsed_seconds": 0.2254,
+      "ids": [
+        "legacy:automation_reports/CV-SincNet/daot_fasttrust_game_comprehensive_20260914",
+        "legacy:automation_reports/CV-SincNet/core90_eg_high_target6_20260914_r1",
+        "legacy:automation_reports/CV-SincNet/core90_eg_high_seedscan_20260913_r1"
+      ]
+    },
+    "daot fasttrust": {
+      "total": 3,
+      "elapsed_seconds": 0.5202,
+      "ids": [
+        "legacy:automation_reports/CV-SincNet/daot_fasttrust_game_comprehensive_20260914",
+        "legacy:automation_reports/CV-SincNet/phase1_adv3b02_xuc_dr_s392005_20260913_r1",
+        "legacy:local_artifacts/releases"
+      ]
+    },
+    "mopc": {
+      "total": 110,
+      "elapsed_seconds": 0.5053,
+      "ids": [
+        "legacy:github_publish/rffi-labeled-da-three-20260915/paper_reproduction/mopc_hr_non_exemplar_cil_sei",
+        "legacy:github_publish/rffi-labeled-da-three-20260915/paper_reproduction/configs",
+        "legacy:github_publish/rffi-labeled-da-three-20260915/local_artifacts/adv3b02_full_comparison_20260714_191356"
+      ]
+    },
+    "RIEI": {
+      "total": 38,
+      "elapsed_seconds": 0.3026,
+      "ids": [
+        "legacy:automation_reports/CV-SincNet/phase1_rcmmc12_20260811_v1",
+        "legacy:automation_reports/CV-SincNet/phase1_hscf_postfreeze_20260811_v1",
+        "legacy:automation_reports/CV-SincNet/phase1_icmt12_20260810_v1"
+      ]
+    },
+    "response": {
+      "total": 60,
+      "elapsed_seconds": 0.5305,
+      "ids": [
+        "legacy:automation_reports/CV-SincNet/response_matrix_eval_20260916",
+        "legacy:local_artifacts/response_matrix_eval_20260916_r1",
+        "legacy:automation_reports/CV-SincNet/response_matrix_eval_20260915"
+      ]
+    }
+  },
+  "scoped_fact_query_seconds": 0.2272,
+  "scoped_fact_query": {
+    "id": "legacy:automation_reports/CV-SincNet/response_games_prepare_20260914",
+    "total": 1,
+    "has_more": false,
+    "detail_file": "E:\\type10-7\\experiment_registry\\details\\009178.facts.jsonl.gz",
+    "shown": [
+      {
+        "field": "model_seed",
+        "value": 392005,
+        "scope": "$.rows[0].row.joint.model_seed",
+        "row": "SIM_s392005",
+        "record_id": "legacy:automation_reports/CV-SincNet/response_games_prepare_20260914",
+        "source": "automation_reports/CV-SincNet/response_games_prepare_20260914/matrix.json"
+      }
+    ]
+  },
+  "elapsed_seconds": 17.43,
+  "link_recheck_at": "2026-09-15T18:04:32+00:00"
+}

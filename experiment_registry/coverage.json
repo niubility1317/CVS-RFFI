@@ -1,0 +1,553 @@
+{
+  "schema": "experiment_registry_coverage_v1",
+  "indexed_at": "2026-09-15T18:03:24+00:00",
+  "workspace": "E:\\type10-7",
+  "mode": "managed_only",
+  "record_counts": {
+    "legacy_evidence_group": 4028,
+    "legacy_log_record": 7778,
+    "remote_directory_locator": 3608
+  },
+  "surfaces": [
+    {
+      "path": "automation_reports/CV-SincNet",
+      "exists": true,
+      "files": 278119,
+      "locator_files": 209922,
+      "locator_bytes": 51871150485
+    },
+    {
+      "path": "runs",
+      "exists": true,
+      "files": 90,
+      "locator_files": 4,
+      "locator_bytes": 4584
+    },
+    {
+      "path": "logs",
+      "exists": true,
+      "files": 1961,
+      "locator_files": 1549,
+      "locator_bytes": 3600938031
+    },
+    {
+      "path": "outputs",
+      "exists": true,
+      "files": 490,
+      "locator_files": 2,
+      "locator_bytes": 4538
+    },
+    {
+      "path": "remote_artifacts",
+      "exists": true,
+      "files": 150,
+      "locator_files": 135,
+      "locator_bytes": 141609912
+    },
+    {
+      "path": "server_log_backups/N607",
+      "exists": true,
+      "files": 3037,
+      "locator_files": 2924,
+      "locator_bytes": 1122419460
+    },
+    {
+      "path": "local_artifacts",
+      "exists": true,
+      "files": 63399,
+      "locator_files": 39614,
+      "locator_bytes": 31836620858
+    },
+    {
+      "path": "analysis",
+      "exists": true,
+      "files": 497,
+      "locator_files": 453,
+      "locator_bytes": 239085678
+    },
+    {
+      "path": "docs",
+      "exists": true,
+      "files": 159,
+      "locator_files": 151,
+      "locator_bytes": 19648618
+    },
+    {
+      "path": "configs",
+      "exists": true,
+      "files": 0,
+      "locator_files": 0,
+      "locator_bytes": 0
+    },
+    {
+      "path": "code/configs",
+      "exists": true,
+      "files": 3,
+      "locator_files": 3,
+      "locator_bytes": 10608
+    },
+    {
+      "path": "paper_reproduction",
+      "exists": true,
+      "files": 422,
+      "locator_files": 350,
+      "locator_bytes": 7801344
+    },
+    {
+      "path": "baselines",
+      "exists": true,
+      "files": 89,
+      "locator_files": 35,
+      "locator_bytes": 52103440
+    },
+    {
+      "path": "Fedbase",
+      "exists": true,
+      "files": 24,
+      "locator_files": 5,
+      "locator_bytes": 9636980
+    },
+    {
+      "path": "automation_releases",
+      "exists": true,
+      "files": 3,
+      "locator_files": 3,
+      "locator_bytes": 108789902
+    },
+    {
+      "path": "releases",
+      "exists": true,
+      "files": 19,
+      "locator_files": 19,
+      "locator_bytes": 718235773
+    },
+    {
+      "path": "release_artifacts",
+      "exists": true,
+      "files": 22,
+      "locator_files": 22,
+      "locator_bytes": 777785255
+    },
+    {
+      "path": "release_packages",
+      "exists": true,
+      "files": 1,
+      "locator_files": 1,
+      "locator_bytes": 40039053
+    },
+    {
+      "path": "release_archives",
+      "exists": true,
+      "files": 57,
+      "locator_files": 57,
+      "locator_bytes": 1876690938
+    },
+    {
+      "path": "worklogs",
+      "exists": true,
+      "files": 107,
+      "locator_files": 7,
+      "locator_bytes": 4229662
+    },
+    {
+      "path": "diagnostics",
+      "exists": true,
+      "files": 2,
+      "locator_files": 2,
+      "locator_bytes": 90697
+    },
+    {
+      "path": "github_publish/CVS-RFFI-repo/automation_reports/CV-SincNet",
+      "exists": true,
+      "files": 1507,
+      "locator_files": 1410,
+      "locator_bytes": 228371216
+    },
+    {
+      "path": "github_publish/CVS-RFFI-repo/runs",
+      "exists": true,
+      "files": 30,
+      "locator_files": 0,
+      "locator_bytes": 0
+    },
+    {
+      "path": "github_publish/CVS-RFFI-repo/logs",
+      "exists": true,
+      "files": 38,
+      "locator_files": 34,
+      "locator_bytes": 108440
+    },
+    {
+      "path": "github_publish/CVS-RFFI-repo/outputs",
+      "exists": false,
+      "files": 0
+    },
+    {
+      "path": "github_publish/CVS-RFFI-repo/remote_artifacts",
+      "exists": true,
+      "files": 12,
+      "locator_files": 12,
+      "locator_bytes": 11842913
+    },
+    {
+      "path": "github_publish/CVS-RFFI-repo/server_log_backups/N607",
+      "exists": false,
+      "files": 0
+    },
+    {
+      "path": "github_publish/CVS-RFFI-repo/local_artifacts",
+      "exists": true,
+      "files": 156326,
+      "locator_files": 155195,
+      "locator_bytes": 5648686153
+    },
+    {
+      "path": "github_publish/CVS-RFFI-repo/analysis",
+      "exists": true,
+      "files": 180,
+      "locator_files": 180,
+      "locator_bytes": 1050101
+    },
+    {
+      "path": "github_publish/CVS-RFFI-repo/docs",
+      "exists": true,
+      "files": 126,
+      "locator_files": 124,
+      "locator_bytes": 4185961
+    },
+    {
+      "path": "github_publish/CVS-RFFI-repo/configs",
+      "exists": true,
+      "files": 16,
+      "locator_files": 16,
+      "locator_bytes": 38768
+    },
+    {
+      "path": "github_publish/CVS-RFFI-repo/code/configs",
+      "exists": true,
+      "files": 4,
+      "locator_files": 4,
+      "locator_bytes": 11826
+    },
+    {
+      "path": "github_publish/CVS-RFFI-repo/paper_reproduction",
+      "exists": true,
+      "files": 445,
+      "locator_files": 316,
+      "locator_bytes": 1077522
+    },
+    {
+      "path": "github_publish/CVS-RFFI-repo/baselines",
+      "exists": true,
+      "files": 51,
+      "locator_files": 2,
+      "locator_bytes": 40976
+    },
+    {
+      "path": "github_publish/CVS-RFFI-repo/Fedbase",
+      "exists": false,
+      "files": 0
+    },
+    {
+      "path": "github_publish/CVS-RFFI-repo/automation_releases",
+      "exists": false,
+      "files": 0
+    },
+    {
+      "path": "github_publish/CVS-RFFI-repo/releases",
+      "exists": false,
+      "files": 0
+    },
+    {
+      "path": "github_publish/CVS-RFFI-repo/release_artifacts",
+      "exists": false,
+      "files": 0
+    },
+    {
+      "path": "github_publish/CVS-RFFI-repo/release_packages",
+      "exists": false,
+      "files": 0
+    },
+    {
+      "path": "github_publish/CVS-RFFI-repo/release_archives",
+      "exists": false,
+      "files": 0
+    },
+    {
+      "path": "github_publish/CVS-RFFI-repo/worklogs",
+      "exists": false,
+      "files": 0
+    },
+    {
+      "path": "github_publish/CVS-RFFI-repo/diagnostics",
+      "exists": true,
+      "files": 1,
+      "locator_files": 1,
+      "locator_bytes": 17584
+    },
+    {
+      "path": "github_publish/CVS-RFFI-repo/artifacts",
+      "exists": true,
+      "files": 1,
+      "locator_files": 1,
+      "locator_bytes": 227686
+    },
+    {
+      "path": "github_publish/CVS-RFFI-repo/ops",
+      "exists": true,
+      "files": 1,
+      "locator_files": 0,
+      "locator_bytes": 0
+    },
+    {
+      "path": "github_publish/rffi-labeled-da-three-20260915/automation_reports/CV-SincNet",
+      "exists": true,
+      "files": 1320,
+      "locator_files": 1239,
+      "locator_bytes": 144126918
+    },
+    {
+      "path": "github_publish/rffi-labeled-da-three-20260915/runs",
+      "exists": false,
+      "files": 0
+    },
+    {
+      "path": "github_publish/rffi-labeled-da-three-20260915/logs",
+      "exists": false,
+      "files": 0
+    },
+    {
+      "path": "github_publish/rffi-labeled-da-three-20260915/outputs",
+      "exists": false,
+      "files": 0
+    },
+    {
+      "path": "github_publish/rffi-labeled-da-three-20260915/remote_artifacts",
+      "exists": true,
+      "files": 12,
+      "locator_files": 12,
+      "locator_bytes": 11852174
+    },
+    {
+      "path": "github_publish/rffi-labeled-da-three-20260915/server_log_backups/N607",
+      "exists": false,
+      "files": 0
+    },
+    {
+      "path": "github_publish/rffi-labeled-da-three-20260915/local_artifacts",
+      "exists": true,
+      "files": 507,
+      "locator_files": 470,
+      "locator_bytes": 11500797
+    },
+    {
+      "path": "github_publish/rffi-labeled-da-three-20260915/analysis",
+      "exists": true,
+      "files": 180,
+      "locator_files": 180,
+      "locator_bytes": 1061594
+    },
+    {
+      "path": "github_publish/rffi-labeled-da-three-20260915/docs",
+      "exists": true,
+      "files": 131,
+      "locator_files": 129,
+      "locator_bytes": 4196359
+    },
+    {
+      "path": "github_publish/rffi-labeled-da-three-20260915/configs",
+      "exists": true,
+      "files": 16,
+      "locator_files": 16,
+      "locator_bytes": 39653
+    },
+    {
+      "path": "github_publish/rffi-labeled-da-three-20260915/code/configs",
+      "exists": true,
+      "files": 4,
+      "locator_files": 4,
+      "locator_bytes": 11698
+    },
+    {
+      "path": "github_publish/rffi-labeled-da-three-20260915/paper_reproduction",
+      "exists": true,
+      "files": 364,
+      "locator_files": 235,
+      "locator_bytes": 812098
+    },
+    {
+      "path": "github_publish/rffi-labeled-da-three-20260915/baselines",
+      "exists": true,
+      "files": 51,
+      "locator_files": 2,
+      "locator_bytes": 41712
+    },
+    {
+      "path": "github_publish/rffi-labeled-da-three-20260915/Fedbase",
+      "exists": false,
+      "files": 0
+    },
+    {
+      "path": "github_publish/rffi-labeled-da-three-20260915/automation_releases",
+      "exists": false,
+      "files": 0
+    },
+    {
+      "path": "github_publish/rffi-labeled-da-three-20260915/releases",
+      "exists": false,
+      "files": 0
+    },
+    {
+      "path": "github_publish/rffi-labeled-da-three-20260915/release_artifacts",
+      "exists": false,
+      "files": 0
+    },
+    {
+      "path": "github_publish/rffi-labeled-da-three-20260915/release_packages",
+      "exists": false,
+      "files": 0
+    },
+    {
+      "path": "github_publish/rffi-labeled-da-three-20260915/release_archives",
+      "exists": false,
+      "files": 0
+    },
+    {
+      "path": "github_publish/rffi-labeled-da-three-20260915/worklogs",
+      "exists": false,
+      "files": 0
+    },
+    {
+      "path": "github_publish/rffi-labeled-da-three-20260915/diagnostics",
+      "exists": true,
+      "files": 1,
+      "locator_files": 1,
+      "locator_bytes": 17584
+    },
+    {
+      "path": "github_publish/rffi-labeled-da-three-20260915/artifacts",
+      "exists": true,
+      "files": 1,
+      "locator_files": 1,
+      "locator_bytes": 227686
+    },
+    {
+      "path": "github_publish/rffi-labeled-da-three-20260915/ops",
+      "exists": true,
+      "files": 1,
+      "locator_files": 0,
+      "locator_bytes": 0
+    },
+    {
+      "path": "analysis/training_log_catalog_20260609_after_archive/log_catalog.csv",
+      "exists": true,
+      "files": 0,
+      "imported_log_records": 3909
+    },
+    {
+      "path": "analysis/20260604_federated_log_full_audit/catalog/log_catalog.csv",
+      "exists": true,
+      "files": 0,
+      "imported_log_records": 3869
+    }
+  ],
+  "remote_snapshots": [
+    {
+      "path": "experiment_registry/snapshots/n607_directories_20260916.json",
+      "observed_at": "2026-09-15T17:55:00.393553+00:00",
+      "records": 3608,
+      "depth": "surface/group/immediate_children",
+      "errors": []
+    }
+  ],
+  "errors": [
+    {
+      "path": "automation_reports/CV-SincNet/20260522_195855/runs/wisig_baselines_seed1337_ratio010_satview/cvcnn_seed1337/metrics.json",
+      "error": "Expecting value: line 1 column 1 (char 0)",
+      "action": "locator_only"
+    },
+    {
+      "path": "automation_reports/CV-SincNet/20260522_195855/runs/wisig_baselines_seed1337_ratio010_satview/drift_seed1337/metrics.json",
+      "error": "Expecting value: line 1 column 1 (char 0)",
+      "action": "locator_only"
+    },
+    {
+      "path": "automation_reports/CV-SincNet/20260522_195855/runs/wisig_baselines_seed1337_ratio010_satview/receiver_agnostic_seed1337/metrics.json",
+      "error": "Expecting value: line 1 column 1 (char 0)",
+      "action": "locator_only"
+    },
+    {
+      "path": "automation_reports/CV-SincNet/20260522_195855/runs/wisig_baselines_seed1337_ratio010_satview/riei_seed1337/metrics.json",
+      "error": "Expecting value: line 1 column 1 (char 0)",
+      "action": "locator_only"
+    },
+    {
+      "path": "automation_reports/CV-SincNet/optimizer_20260607_142904/artifacts/startup_health_4min_16.json",
+      "error": "Expecting value: line 1 column 1 (char 0)",
+      "action": "locator_only"
+    },
+    {
+      "path": "automation_reports/CV-SincNet/stage2_monitor_20260622_104040/artifacts/monitor_gate_20260622_104040.json",
+      "error": "Expecting value: line 1 column 1 (char 0)",
+      "action": "locator_only"
+    },
+    {
+      "path": "automation_reports/CV-SincNet/stage2_monitor_20260622_104126/artifacts/monitor_gate_20260622_104126.json",
+      "error": "Expecting value: line 1 column 1 (char 0)",
+      "action": "locator_only"
+    },
+    {
+      "path": "automation_reports/CV-SincNet/stage2_optimizer_20260617_042102/artifacts/launch_next64aa.json",
+      "error": "Invalid control character at: line 1 column 405 (char 404)",
+      "action": "locator_only"
+    },
+    {
+      "path": "automation_reports/CV-SincNet/stage2_optimizer_20260617_042102/artifacts/sample_metric_meta_next64aa.json",
+      "error": "Expecting value: line 554 column 1 (char 12554)",
+      "action": "locator_only"
+    },
+    {
+      "path": "automation_reports/CV-SincNet/stage2_optimizer_20260618_031729/artifacts/metrics_sample_next64av.json",
+      "error": "Expecting value: line 291 column 1 (char 5291)",
+      "action": "locator_only"
+    },
+    {
+      "path": "automation_reports/CV-SincNet/stage2_optimizer_20260618_081323/artifacts/metrics_schema_probe_next64ay.json",
+      "error": "Expecting ',' delimiter: line 530 column 1 (char 12530)",
+      "action": "locator_only"
+    },
+    {
+      "path": "automation_reports/CV-SincNet/stage2_optimizer_20260618_121524/artifacts/metrics_schema_sample_next64bc.json",
+      "error": "Unterminated string starting at: line 1 column 11999 (char 11998)",
+      "action": "locator_only"
+    },
+    {
+      "path": "automation_reports/CV-SincNet/stage2_optimizer_20260620_021353/artifacts/metrics_sample_next64bu.json",
+      "error": "Expecting value: line 1062 column 1 (char 21062)",
+      "action": "locator_only"
+    },
+    {
+      "path": "automation_reports/CV-SincNet/stage2_optimizer_20260622_061445/artifacts/submit_next64cu.json",
+      "error": "Expecting value: line 1 column 1 (char 0)",
+      "action": "locator_only"
+    },
+    {
+      "path": "automation_reports/CV-SincNet/stage2_spaceborne_next32do_20260623_183522/remote_status_refresh.json",
+      "error": "Expecting value: line 1 column 1 (char 0)",
+      "action": "locator_only"
+    },
+    {
+      "path": "local_artifacts/d92_e0_continuous_session_k10new5_20260817_v7/analyzer_stdout.json",
+      "error": "Expecting value: line 1 column 1 (char 0)",
+      "action": "locator_only"
+    }
+  ],
+  "boundaries": [
+    "本地扫描工作区和github_publish下已存在检出；远端来自单独只读目录快照，不代表实时进程或深层内容已核实。",
+    "历史组不是独立实验；同名镜像保留各自路径，不凭名称合并。",
+    "未解压归档；日志、指标行、预测和权重只登记路径；不读取IQ或truth。",
+    "仅完整读取不超过2MB的UTF-8/带BOM UTF-16元数据与Markdown；大文件与编码错误仍保留locator。",
+    "reported_statuses是原文声明，可能包含历史过程或嵌套row，不能作为当前状态。",
+    "目录不存在、旧索引记录未重见、结构化读取失败都在此披露，不宣称已完成全量性能审计。"
+  ]
+}
