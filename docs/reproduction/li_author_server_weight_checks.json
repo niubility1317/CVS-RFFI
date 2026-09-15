@@ -1,0 +1,18 @@
+{
+  "poster": {
+    "frozen_prefix_exact": true,
+    "per_sample_reload_prediction_match": true,
+    "trainable_layers": [
+      "dense1",
+      "dense2",
+      "dense3"
+    ]
+  },
+  "radionet": {
+    "frozen_prefix_exact": true,
+    "per_sample_reload_prediction_match": true,
+    "trainable_layers": [
+      "FeaturesVec"
+    ]
+  }
+}

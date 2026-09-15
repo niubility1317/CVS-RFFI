@@ -1,0 +1,27 @@
+{
+  "RadioFingerprinting": {
+    "commit": "23d1fd4aef2f1dd254c5596680ae1da66f416916",
+    "changed": [
+      "fine-tuning/finetune.py",
+      "fine-tuning/load_slice_IQ.py",
+      "fine-tuning/main.py",
+      "fine-tuning/radioConv.py",
+      "fine-tuning/tools.py",
+      "fine-tuning/utility.py"
+    ],
+    "all_model_functions_unchanged": true
+  },
+  "RadioNet": {
+    "commit": "64f4b0a3dfb48b4a389e4d177e9ffa35010e17f5",
+    "changed": [
+      "finetune.py",
+      "load_slice_IQ.py",
+      "model_test.py",
+      "model_training.py",
+      "tools.py",
+      "utility.py",
+      "models/rf_models.py"
+    ],
+    "all_model_functions_unchanged": true
+  }
+}
