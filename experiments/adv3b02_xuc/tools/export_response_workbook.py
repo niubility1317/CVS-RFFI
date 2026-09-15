@@ -7,7 +7,8 @@ from openpyxl.styles import Font,PatternFill,Alignment
 def main():
     p=argparse.ArgumentParser();p.add_argument('folder',type=Path);a=p.parse_args()
     wb=Workbook();wb.remove(wb.active);counts={}
-    for path in sorted(a.folder.glob('*.csv')):
+    order=['summary','seed_summary','paired_seed_summary','DR_EG_interaction','paired_rescue_harm','all_groups','coverage36','source_curves','independent_recount','artifact_paths']
+    for path in sorted(a.folder.glob('*.csv'),key=lambda p:order.index(p.stem) if p.stem in order else len(order)):
         with path.open(encoding='utf-8-sig',newline='') as f:rows=list(csv.reader(f))
         ws=wb.create_sheet(path.stem[:31]);ws.append(rows[0])
         for values in rows[1:]:
@@ -22,7 +23,7 @@ def main():
         for cell in ws[1]:cell.font=Font(color='FFFFFF',bold=True);cell.fill=PatternFill('solid',fgColor='163B5C')
         for i,header in enumerate(rows[0],1):
             ws.column_dimensions[ws.cell(1,i).column_letter].width=24 if header not in ('confusion','checkpoint','predictions','score','source_log') else 55
-            if any(x in header for x in ('accuracy','macro_f1','worst_RX','worst_TX')) and not header.endswith('_pp'):
+            if (any(x in header for x in ('accuracy','macro_f1','worst_RX','worst_TX')) and not header.endswith('_pp')) or (path.stem=='seed_summary' and header in ('mean','sd')):
                 for col in ws.iter_cols(min_col=i,max_col=i,min_row=2):
                     for cell in col:cell.number_format='0.0000%'
         counts[ws.title]=len(rows)

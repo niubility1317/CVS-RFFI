@@ -37,6 +37,7 @@ def main():
         if rid in reused:
             shutil.copytree(a.reuse_base/rid,folder)
             pred=json.loads((folder/'prediction/predictions.json').read_text());assert pred['record_count']==672000
+            assert all(r['run_id']==run and r['row_id']==rid for r in pred['records'])
             state['results'][rid]=dict(status='SCORED',count=672000,reused_from=str(a.reuse_base/rid))
         else:
             folder.mkdir()
@@ -54,6 +55,7 @@ def main():
     state['torch']=torch.__version__
     for rid in rows:
         model,payload=load_model(a.output/rid/'final_ssdg.pth',torch.device('cpu'))
+        assert payload['row']['id']==rid
         assert not payload.get('synthetic_diagnostic_only',False) and payload['step']==44400
         assert payload['source_info']['role_ids']==expected['role_ids']
         with torch.no_grad():assert torch.isfinite(model(torch.zeros(2,2,256),return_aux=True)['tx_logits']).all()
