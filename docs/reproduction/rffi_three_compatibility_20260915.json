@@ -1,0 +1,52 @@
+{
+  "status": "COMPATIBILITY_SMOKE_ONLY",
+  "data": "synthetic",
+  "keras": "3.12.4",
+  "backend": "torch",
+  "records": [
+    {
+      "paper": "poster",
+      "policy": "paper_last_layer",
+      "parameters": 52321,
+      "source_loss": 1.6099662780761719,
+      "adaptation_loss": 1.6061025857925415,
+      "frozen_weights_unchanged": true,
+      "trainable_weights_changed": true,
+      "per_sample_inference": true,
+      "checkpoint_roundtrip": true
+    },
+    {
+      "paper": "poster",
+      "policy": "author_last_three",
+      "parameters": 52321,
+      "source_loss": 1.6099662780761719,
+      "adaptation_loss": 1.6078331470489502,
+      "frozen_weights_unchanged": true,
+      "trainable_weights_changed": true,
+      "per_sample_inference": true,
+      "checkpoint_roundtrip": true
+    },
+    {
+      "paper": "radionet",
+      "policy": "paper_last_layer",
+      "parameters": 1044421,
+      "source_loss": 1.6110103130340576,
+      "adaptation_loss": 1.601641058921814,
+      "frozen_weights_unchanged": true,
+      "trainable_weights_changed": true,
+      "per_sample_inference": true,
+      "checkpoint_roundtrip": true
+    },
+    {
+      "paper": "radionet",
+      "policy": "author_last_three",
+      "parameters": 1044421,
+      "source_loss": 1.6110103130340576,
+      "adaptation_loss": 1.6170127391815186,
+      "frozen_weights_unchanged": true,
+      "trainable_weights_changed": true,
+      "per_sample_inference": true,
+      "checkpoint_roundtrip": true
+    }
+  ]
+}
