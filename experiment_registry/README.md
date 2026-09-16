@@ -1,6 +1,6 @@
 # 实验总索引
 
-更新：2026-09-16T18:54:42+00:00
+更新：2026-09-16T18:58:46+00:00
 
 先按方法/问题检索，再用run ID读取精确配置与证据。历史组数量不等于独立实验数量。
 
@@ -12,7 +12,7 @@
 
 |记录类型|数量|
 |---|---:|
-|managed_run|2|
+|managed_run|3|
 
 历史状态统一为HISTORICAL_UNVERIFIED；RUNNING等原文声明只供查证，不能证明此刻仍在运行。
 
@@ -20,11 +20,11 @@
 
 |路径标签（定位提示）|证据组数|
 |---|---:|
-|[response](by_method/response.md)|2|
-|[core90](by_method/core90.md)|2|
-|[daot](by_method/daot.md)|1|
-|[rc4](by_method/rc4.md)|1|
-|[three_seed](by_method/three_seed.md)|1|
+|[response](by_method/response.md)|3|
+|[core90](by_method/core90.md)|3|
+|[daot](by_method/daot.md)|2|
+|[rc4](by_method/rc4.md)|2|
+|[three_seed](by_method/three_seed.md)|2|
 |[evaluation](by_method/evaluation.md)|1|
 
 ## 最近记录入口
@@ -32,4 +32,5 @@
 |名称|类型|报告/原目录|
 |---|---|---|
 |原生DAOT＋RC4与仅动力博弈三seed对照|managed_run|[打开](../automation_reports/CV-SincNet/phase1_daot_rc4_pure_game_m3_20260917_r1/report.md)|
+|原生DAOT＋RC4与仅动力博弈三seed对照|managed_run|[打开](../automation_reports/CV-SincNet/phase1_daot_rc4_pure_game_m3_20260917_r2/report.md)|
 |响应博弈矩阵测试评估：VERIFIED|managed_run|[打开](../automation_reports/CV-SincNet/response_matrix_eval_20260917/report.md)|

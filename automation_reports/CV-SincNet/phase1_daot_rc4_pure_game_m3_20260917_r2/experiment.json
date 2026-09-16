@@ -1,6 +1,6 @@
 {
   "schema": "experiment_record_v1",
-  "run_id": "phase1_daot_rc4_pure_game_m3_20260917_r1",
+  "run_id": "phase1_daot_rc4_pure_game_m3_20260917_r2",
   "group_id": "phase1-daot-response-game-separated-controls",
   "display_name": "原生DAOT＋RC4与仅动力博弈三seed对照",
   "description": "3行原生F0配方DAOT＋RC4；18行仅动力博弈SIM/EG/CF/TR/XT/DRIC。共同source物理角色；新18行与原联合18行同seed、同预算及响应参数，移除全部DAOT/RC4功能；原生配方作独立recipe比较。",
@@ -16,10 +16,10 @@
   ],
   "comparison_group_id": null,
   "parent_run_ids": [],
-  "replaces_run_id": null,
+  "replaces_run_id": "phase1_daot_rc4_pure_game_m3_20260917_r1",
   "authorization": "用户2026-09-17明确要求启动DAOT＋RC4三种子及仅动力博弈以上方法三种子进行对比",
   "code": {
-    "commit": "6a0feba47f4041d19d6cbb1c959603a8258a1899",
+    "commit": "REPAIR_COMMIT_IN_LANDING",
     "checkout": "E:\\type10-7\\code\\snapshots\\native_dr_eg_prepare_20260914_wt",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_6a0feba47f",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python; local validation ssr-gpu"
@@ -29,7 +29,7 @@
     "version": null,
     "representation": "equalized=1; 2x256; normalized center crop",
     "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_xuc15_s392005_20260913_r1/source_contract.json",
-    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/source_contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
     "label_map_ref": "E:\\type10-7\\code\\snapshots\\native_dr_eg_prepare_20260914_wt\\experiments\\adv3b02_xuc\\configs\\core90_recipe_reference.json",
     "source_receivers": [
       1,
@@ -80,7 +80,7 @@
   "checkpoint": {
     "initialization": "scratch",
     "sources": [],
-    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/<row>/source_contract.json",
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/<row>/source_contract.json",
     "provenance_verdict": "NO_EXTERNAL_CHECKPOINT_OR_TEACHER; every row exact physical-role check at startup",
     "selection_rule": "fixed final E200; no target feedback"
   },
@@ -88,10 +88,10 @@
     "host": "N607",
     "launch_owner": "/root",
     "gpu_policy": "max_two_training_runs_per_gpu",
-    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1",
-    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_daot_rc4_pure_game_m3_20260917_r1",
-    "local_artifact_root": "E:\\type10-7\\automation_reports\\CV-SincNet\\phase1_daot_rc4_pure_game_m3_20260917_r1",
-    "launch_command": "python tools/publish_response_release.py --separate-controls --run-id phase1_daot_rc4_pure_game_m3_20260917_r1 --output E:\\type10-7\\automation_reports\\CV-SincNet\\phase1_daot_rc4_pure_game_m3_20260917_r1\\landing",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_daot_rc4_pure_game_m3_20260917_r2",
+    "local_artifact_root": "E:\\type10-7\\automation_reports\\CV-SincNet\\phase1_daot_rc4_pure_game_m3_20260917_r2",
+    "launch_command": "python tools/publish_response_release.py --separate-controls --run-id phase1_daot_rc4_pure_game_m3_20260917_r2 --output E:\\type10-7\\automation_reports\\CV-SincNet\\phase1_daot_rc4_pure_game_m3_20260917_r2\\landing",
     "stop_rule": "A technical row failure holds new submissions and drains healthy rows; no performance stop; no automatic retrain or target selection"
   },
   "expected_artifacts": [
@@ -130,7 +130,7 @@
       "method": "DAOT+RC4 native F0 recipe; no added game solver",
       "purpose": "native_baseline",
       "config_ref": "E:\\type10-7\\code\\snapshots\\native_dr_eg_prepare_20260914_wt\\experiments\\adv3b02_xuc\\configs\\separate_controls\\DAOT_RC4_NATIVE_s392005.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/DAOT_RC4_NATIVE_s392005/resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/DAOT_RC4_NATIVE_s392005/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 392005,
@@ -153,8 +153,8 @@
       "epochs": 200,
       "fl_rounds": null,
       "budget_ref": "E200 native full unlabeled epochs; AMP may skip nonfinite gradients; disclose accepted updates",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/DAOT_RC4_NATIVE_s392005",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_daot_rc4_pure_game_m3_20260917_r1/DAOT_RC4_NATIVE_s392005.train.log",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/DAOT_RC4_NATIVE_s392005",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_daot_rc4_pure_game_m3_20260917_r2/DAOT_RC4_NATIVE_s392005.train.log",
       "command": [
         "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
         "-u",
@@ -164,9 +164,9 @@
         "--dataset",
         "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
         "--output",
-        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/DAOT_RC4_NATIVE_s392005",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/DAOT_RC4_NATIVE_s392005",
         "--source-contract",
-        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/source_contract.json"
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json"
       ],
       "expected_artifacts": [
         "final_ssdg.pth",
@@ -180,7 +180,7 @@
       "method": "DAOT+RC4 native F0 recipe; no added game solver",
       "purpose": "native_baseline",
       "config_ref": "E:\\type10-7\\code\\snapshots\\native_dr_eg_prepare_20260914_wt\\experiments\\adv3b02_xuc\\configs\\separate_controls\\DAOT_RC4_NATIVE_s392006.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/DAOT_RC4_NATIVE_s392006/resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/DAOT_RC4_NATIVE_s392006/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 392006,
@@ -203,8 +203,8 @@
       "epochs": 200,
       "fl_rounds": null,
       "budget_ref": "E200 native full unlabeled epochs; AMP may skip nonfinite gradients; disclose accepted updates",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/DAOT_RC4_NATIVE_s392006",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_daot_rc4_pure_game_m3_20260917_r1/DAOT_RC4_NATIVE_s392006.train.log",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/DAOT_RC4_NATIVE_s392006",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_daot_rc4_pure_game_m3_20260917_r2/DAOT_RC4_NATIVE_s392006.train.log",
       "command": [
         "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
         "-u",
@@ -214,9 +214,9 @@
         "--dataset",
         "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
         "--output",
-        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/DAOT_RC4_NATIVE_s392006",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/DAOT_RC4_NATIVE_s392006",
         "--source-contract",
-        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/source_contract.json"
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json"
       ],
       "expected_artifacts": [
         "final_ssdg.pth",
@@ -230,7 +230,7 @@
       "method": "DAOT+RC4 native F0 recipe; no added game solver",
       "purpose": "native_baseline",
       "config_ref": "E:\\type10-7\\code\\snapshots\\native_dr_eg_prepare_20260914_wt\\experiments\\adv3b02_xuc\\configs\\separate_controls\\DAOT_RC4_NATIVE_s392007.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/DAOT_RC4_NATIVE_s392007/resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/DAOT_RC4_NATIVE_s392007/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 392007,
@@ -253,8 +253,8 @@
       "epochs": 200,
       "fl_rounds": null,
       "budget_ref": "E200 native full unlabeled epochs; AMP may skip nonfinite gradients; disclose accepted updates",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/DAOT_RC4_NATIVE_s392007",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_daot_rc4_pure_game_m3_20260917_r1/DAOT_RC4_NATIVE_s392007.train.log",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/DAOT_RC4_NATIVE_s392007",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_daot_rc4_pure_game_m3_20260917_r2/DAOT_RC4_NATIVE_s392007.train.log",
       "command": [
         "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
         "-u",
@@ -264,9 +264,9 @@
         "--dataset",
         "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
         "--output",
-        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/DAOT_RC4_NATIVE_s392007",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/DAOT_RC4_NATIVE_s392007",
         "--source-contract",
-        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/source_contract.json"
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json"
       ],
       "expected_artifacts": [
         "final_ssdg.pth",
@@ -280,7 +280,7 @@
       "method": "pure SIM; DAOT/RC4 routes, calibration and auxiliary losses disabled; L/U adversarial heads retained",
       "purpose": "pure_game",
       "config_ref": "E:\\type10-7\\code\\snapshots\\native_dr_eg_prepare_20260914_wt\\experiments\\adv3b02_xuc\\configs\\separate_controls\\PURE_SIM_s392005.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_SIM_s392005/resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/PURE_SIM_s392005/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 392005,
@@ -303,8 +303,8 @@
       "epochs": 200,
       "fl_rounds": null,
       "budget_ref": "E200 x 222 accepted steps = 44400",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_SIM_s392005",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_SIM_s392005.train.log",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/PURE_SIM_s392005",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_daot_rc4_pure_game_m3_20260917_r2/PURE_SIM_s392005.train.log",
       "command": [
         "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
         "-u",
@@ -314,9 +314,9 @@
         "--dataset",
         "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
         "--output",
-        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_SIM_s392005",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/PURE_SIM_s392005",
         "--source-contract",
-        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/source_contract.json",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
         "--device",
         "cuda:0",
         "--execute"
@@ -333,7 +333,7 @@
       "method": "pure EG; DAOT/RC4 routes, calibration and auxiliary losses disabled; L/U adversarial heads retained",
       "purpose": "pure_game",
       "config_ref": "E:\\type10-7\\code\\snapshots\\native_dr_eg_prepare_20260914_wt\\experiments\\adv3b02_xuc\\configs\\separate_controls\\PURE_EG_s392005.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_EG_s392005/resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/PURE_EG_s392005/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 392005,
@@ -356,8 +356,8 @@
       "epochs": 200,
       "fl_rounds": null,
       "budget_ref": "E200 x 222 accepted steps = 44400",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_EG_s392005",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_EG_s392005.train.log",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/PURE_EG_s392005",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_daot_rc4_pure_game_m3_20260917_r2/PURE_EG_s392005.train.log",
       "command": [
         "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
         "-u",
@@ -367,9 +367,9 @@
         "--dataset",
         "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
         "--output",
-        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_EG_s392005",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/PURE_EG_s392005",
         "--source-contract",
-        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/source_contract.json",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
         "--device",
         "cuda:0",
         "--execute"
@@ -386,7 +386,7 @@
       "method": "pure CF_EG; DAOT/RC4 routes, calibration and auxiliary losses disabled; L/U adversarial heads retained",
       "purpose": "pure_game",
       "config_ref": "E:\\type10-7\\code\\snapshots\\native_dr_eg_prepare_20260914_wt\\experiments\\adv3b02_xuc\\configs\\separate_controls\\PURE_CF_EG_s392005.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_CF_EG_s392005/resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/PURE_CF_EG_s392005/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 392005,
@@ -409,8 +409,8 @@
       "epochs": 200,
       "fl_rounds": null,
       "budget_ref": "E200 x 222 accepted steps = 44400",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_CF_EG_s392005",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_CF_EG_s392005.train.log",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/PURE_CF_EG_s392005",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_daot_rc4_pure_game_m3_20260917_r2/PURE_CF_EG_s392005.train.log",
       "command": [
         "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
         "-u",
@@ -420,9 +420,9 @@
         "--dataset",
         "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
         "--output",
-        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_CF_EG_s392005",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/PURE_CF_EG_s392005",
         "--source-contract",
-        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/source_contract.json",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
         "--device",
         "cuda:0",
         "--execute"
@@ -439,7 +439,7 @@
       "method": "pure TR_EG; DAOT/RC4 routes, calibration and auxiliary losses disabled; L/U adversarial heads retained",
       "purpose": "pure_game",
       "config_ref": "E:\\type10-7\\code\\snapshots\\native_dr_eg_prepare_20260914_wt\\experiments\\adv3b02_xuc\\configs\\separate_controls\\PURE_TR_EG_s392005.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_TR_EG_s392005/resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/PURE_TR_EG_s392005/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 392005,
@@ -462,8 +462,8 @@
       "epochs": 200,
       "fl_rounds": null,
       "budget_ref": "E200 x 222 accepted steps = 44400",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_TR_EG_s392005",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_TR_EG_s392005.train.log",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/PURE_TR_EG_s392005",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_daot_rc4_pure_game_m3_20260917_r2/PURE_TR_EG_s392005.train.log",
       "command": [
         "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
         "-u",
@@ -473,9 +473,9 @@
         "--dataset",
         "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
         "--output",
-        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_TR_EG_s392005",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/PURE_TR_EG_s392005",
         "--source-contract",
-        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/source_contract.json",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
         "--device",
         "cuda:0",
         "--execute"
@@ -492,7 +492,7 @@
       "method": "pure XT_DANN; DAOT/RC4 routes, calibration and auxiliary losses disabled; L/U adversarial heads retained",
       "purpose": "pure_game",
       "config_ref": "E:\\type10-7\\code\\snapshots\\native_dr_eg_prepare_20260914_wt\\experiments\\adv3b02_xuc\\configs\\separate_controls\\PURE_XT_DANN_s392005.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_XT_DANN_s392005/resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/PURE_XT_DANN_s392005/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 392005,
@@ -515,8 +515,8 @@
       "epochs": 200,
       "fl_rounds": null,
       "budget_ref": "E200 x 222 accepted steps = 44400",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_XT_DANN_s392005",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_XT_DANN_s392005.train.log",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/PURE_XT_DANN_s392005",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_daot_rc4_pure_game_m3_20260917_r2/PURE_XT_DANN_s392005.train.log",
       "command": [
         "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
         "-u",
@@ -526,9 +526,9 @@
         "--dataset",
         "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
         "--output",
-        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_XT_DANN_s392005",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/PURE_XT_DANN_s392005",
         "--source-contract",
-        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/source_contract.json",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
         "--device",
         "cuda:0",
         "--execute"
@@ -545,7 +545,7 @@
       "method": "pure DRIC; DAOT/RC4 routes, calibration and auxiliary losses disabled; L/U adversarial heads retained",
       "purpose": "pure_game",
       "config_ref": "E:\\type10-7\\code\\snapshots\\native_dr_eg_prepare_20260914_wt\\experiments\\adv3b02_xuc\\configs\\separate_controls\\PURE_DRIC_s392005.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_DRIC_s392005/resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/PURE_DRIC_s392005/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 392005,
@@ -568,8 +568,8 @@
       "epochs": 200,
       "fl_rounds": null,
       "budget_ref": "E200 x 222 accepted steps = 44400",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_DRIC_s392005",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_DRIC_s392005.train.log",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/PURE_DRIC_s392005",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_daot_rc4_pure_game_m3_20260917_r2/PURE_DRIC_s392005.train.log",
       "command": [
         "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
         "-u",
@@ -579,9 +579,9 @@
         "--dataset",
         "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
         "--output",
-        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_DRIC_s392005",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/PURE_DRIC_s392005",
         "--source-contract",
-        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/source_contract.json",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
         "--device",
         "cuda:0",
         "--execute"
@@ -598,7 +598,7 @@
       "method": "pure SIM; DAOT/RC4 routes, calibration and auxiliary losses disabled; L/U adversarial heads retained",
       "purpose": "pure_game",
       "config_ref": "E:\\type10-7\\code\\snapshots\\native_dr_eg_prepare_20260914_wt\\experiments\\adv3b02_xuc\\configs\\separate_controls\\PURE_SIM_s392006.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_SIM_s392006/resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/PURE_SIM_s392006/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 392006,
@@ -621,8 +621,8 @@
       "epochs": 200,
       "fl_rounds": null,
       "budget_ref": "E200 x 222 accepted steps = 44400",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_SIM_s392006",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_SIM_s392006.train.log",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/PURE_SIM_s392006",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_daot_rc4_pure_game_m3_20260917_r2/PURE_SIM_s392006.train.log",
       "command": [
         "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
         "-u",
@@ -632,9 +632,9 @@
         "--dataset",
         "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
         "--output",
-        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_SIM_s392006",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/PURE_SIM_s392006",
         "--source-contract",
-        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/source_contract.json",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
         "--device",
         "cuda:0",
         "--execute"
@@ -651,7 +651,7 @@
       "method": "pure EG; DAOT/RC4 routes, calibration and auxiliary losses disabled; L/U adversarial heads retained",
       "purpose": "pure_game",
       "config_ref": "E:\\type10-7\\code\\snapshots\\native_dr_eg_prepare_20260914_wt\\experiments\\adv3b02_xuc\\configs\\separate_controls\\PURE_EG_s392006.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_EG_s392006/resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/PURE_EG_s392006/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 392006,
@@ -674,8 +674,8 @@
       "epochs": 200,
       "fl_rounds": null,
       "budget_ref": "E200 x 222 accepted steps = 44400",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_EG_s392006",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_EG_s392006.train.log",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/PURE_EG_s392006",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_daot_rc4_pure_game_m3_20260917_r2/PURE_EG_s392006.train.log",
       "command": [
         "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
         "-u",
@@ -685,9 +685,9 @@
         "--dataset",
         "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
         "--output",
-        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_EG_s392006",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/PURE_EG_s392006",
         "--source-contract",
-        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/source_contract.json",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
         "--device",
         "cuda:0",
         "--execute"
@@ -704,7 +704,7 @@
       "method": "pure CF_EG; DAOT/RC4 routes, calibration and auxiliary losses disabled; L/U adversarial heads retained",
       "purpose": "pure_game",
       "config_ref": "E:\\type10-7\\code\\snapshots\\native_dr_eg_prepare_20260914_wt\\experiments\\adv3b02_xuc\\configs\\separate_controls\\PURE_CF_EG_s392006.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_CF_EG_s392006/resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/PURE_CF_EG_s392006/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 392006,
@@ -727,8 +727,8 @@
       "epochs": 200,
       "fl_rounds": null,
       "budget_ref": "E200 x 222 accepted steps = 44400",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_CF_EG_s392006",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_CF_EG_s392006.train.log",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/PURE_CF_EG_s392006",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_daot_rc4_pure_game_m3_20260917_r2/PURE_CF_EG_s392006.train.log",
       "command": [
         "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
         "-u",
@@ -738,9 +738,9 @@
         "--dataset",
         "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
         "--output",
-        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_CF_EG_s392006",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/PURE_CF_EG_s392006",
         "--source-contract",
-        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/source_contract.json",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
         "--device",
         "cuda:0",
         "--execute"
@@ -757,7 +757,7 @@
       "method": "pure TR_EG; DAOT/RC4 routes, calibration and auxiliary losses disabled; L/U adversarial heads retained",
       "purpose": "pure_game",
       "config_ref": "E:\\type10-7\\code\\snapshots\\native_dr_eg_prepare_20260914_wt\\experiments\\adv3b02_xuc\\configs\\separate_controls\\PURE_TR_EG_s392006.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_TR_EG_s392006/resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/PURE_TR_EG_s392006/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 392006,
@@ -780,8 +780,8 @@
       "epochs": 200,
       "fl_rounds": null,
       "budget_ref": "E200 x 222 accepted steps = 44400",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_TR_EG_s392006",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_TR_EG_s392006.train.log",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/PURE_TR_EG_s392006",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_daot_rc4_pure_game_m3_20260917_r2/PURE_TR_EG_s392006.train.log",
       "command": [
         "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
         "-u",
@@ -791,9 +791,9 @@
         "--dataset",
         "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
         "--output",
-        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_TR_EG_s392006",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/PURE_TR_EG_s392006",
         "--source-contract",
-        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/source_contract.json",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
         "--device",
         "cuda:0",
         "--execute"
@@ -810,7 +810,7 @@
       "method": "pure XT_DANN; DAOT/RC4 routes, calibration and auxiliary losses disabled; L/U adversarial heads retained",
       "purpose": "pure_game",
       "config_ref": "E:\\type10-7\\code\\snapshots\\native_dr_eg_prepare_20260914_wt\\experiments\\adv3b02_xuc\\configs\\separate_controls\\PURE_XT_DANN_s392006.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_XT_DANN_s392006/resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/PURE_XT_DANN_s392006/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 392006,
@@ -833,8 +833,8 @@
       "epochs": 200,
       "fl_rounds": null,
       "budget_ref": "E200 x 222 accepted steps = 44400",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_XT_DANN_s392006",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_XT_DANN_s392006.train.log",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/PURE_XT_DANN_s392006",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_daot_rc4_pure_game_m3_20260917_r2/PURE_XT_DANN_s392006.train.log",
       "command": [
         "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
         "-u",
@@ -844,9 +844,9 @@
         "--dataset",
         "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
         "--output",
-        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_XT_DANN_s392006",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/PURE_XT_DANN_s392006",
         "--source-contract",
-        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/source_contract.json",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
         "--device",
         "cuda:0",
         "--execute"
@@ -863,7 +863,7 @@
       "method": "pure DRIC; DAOT/RC4 routes, calibration and auxiliary losses disabled; L/U adversarial heads retained",
       "purpose": "pure_game",
       "config_ref": "E:\\type10-7\\code\\snapshots\\native_dr_eg_prepare_20260914_wt\\experiments\\adv3b02_xuc\\configs\\separate_controls\\PURE_DRIC_s392006.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_DRIC_s392006/resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/PURE_DRIC_s392006/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 392006,
@@ -886,8 +886,8 @@
       "epochs": 200,
       "fl_rounds": null,
       "budget_ref": "E200 x 222 accepted steps = 44400",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_DRIC_s392006",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_DRIC_s392006.train.log",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/PURE_DRIC_s392006",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_daot_rc4_pure_game_m3_20260917_r2/PURE_DRIC_s392006.train.log",
       "command": [
         "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
         "-u",
@@ -897,9 +897,9 @@
         "--dataset",
         "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
         "--output",
-        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_DRIC_s392006",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/PURE_DRIC_s392006",
         "--source-contract",
-        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/source_contract.json",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
         "--device",
         "cuda:0",
         "--execute"
@@ -916,7 +916,7 @@
       "method": "pure SIM; DAOT/RC4 routes, calibration and auxiliary losses disabled; L/U adversarial heads retained",
       "purpose": "pure_game",
       "config_ref": "E:\\type10-7\\code\\snapshots\\native_dr_eg_prepare_20260914_wt\\experiments\\adv3b02_xuc\\configs\\separate_controls\\PURE_SIM_s392007.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_SIM_s392007/resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/PURE_SIM_s392007/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 392007,
@@ -939,8 +939,8 @@
       "epochs": 200,
       "fl_rounds": null,
       "budget_ref": "E200 x 222 accepted steps = 44400",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_SIM_s392007",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_SIM_s392007.train.log",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/PURE_SIM_s392007",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_daot_rc4_pure_game_m3_20260917_r2/PURE_SIM_s392007.train.log",
       "command": [
         "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
         "-u",
@@ -950,9 +950,9 @@
         "--dataset",
         "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
         "--output",
-        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_SIM_s392007",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/PURE_SIM_s392007",
         "--source-contract",
-        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/source_contract.json",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
         "--device",
         "cuda:0",
         "--execute"
@@ -969,7 +969,7 @@
       "method": "pure EG; DAOT/RC4 routes, calibration and auxiliary losses disabled; L/U adversarial heads retained",
       "purpose": "pure_game",
       "config_ref": "E:\\type10-7\\code\\snapshots\\native_dr_eg_prepare_20260914_wt\\experiments\\adv3b02_xuc\\configs\\separate_controls\\PURE_EG_s392007.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_EG_s392007/resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/PURE_EG_s392007/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 392007,
@@ -992,8 +992,8 @@
       "epochs": 200,
       "fl_rounds": null,
       "budget_ref": "E200 x 222 accepted steps = 44400",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_EG_s392007",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_EG_s392007.train.log",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/PURE_EG_s392007",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_daot_rc4_pure_game_m3_20260917_r2/PURE_EG_s392007.train.log",
       "command": [
         "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
         "-u",
@@ -1003,9 +1003,9 @@
         "--dataset",
         "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
         "--output",
-        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_EG_s392007",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/PURE_EG_s392007",
         "--source-contract",
-        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/source_contract.json",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
         "--device",
         "cuda:0",
         "--execute"
@@ -1022,7 +1022,7 @@
       "method": "pure CF_EG; DAOT/RC4 routes, calibration and auxiliary losses disabled; L/U adversarial heads retained",
       "purpose": "pure_game",
       "config_ref": "E:\\type10-7\\code\\snapshots\\native_dr_eg_prepare_20260914_wt\\experiments\\adv3b02_xuc\\configs\\separate_controls\\PURE_CF_EG_s392007.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_CF_EG_s392007/resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/PURE_CF_EG_s392007/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 392007,
@@ -1045,8 +1045,8 @@
       "epochs": 200,
       "fl_rounds": null,
       "budget_ref": "E200 x 222 accepted steps = 44400",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_CF_EG_s392007",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_CF_EG_s392007.train.log",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/PURE_CF_EG_s392007",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_daot_rc4_pure_game_m3_20260917_r2/PURE_CF_EG_s392007.train.log",
       "command": [
         "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
         "-u",
@@ -1056,9 +1056,9 @@
         "--dataset",
         "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
         "--output",
-        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_CF_EG_s392007",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/PURE_CF_EG_s392007",
         "--source-contract",
-        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/source_contract.json",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
         "--device",
         "cuda:0",
         "--execute"
@@ -1075,7 +1075,7 @@
       "method": "pure TR_EG; DAOT/RC4 routes, calibration and auxiliary losses disabled; L/U adversarial heads retained",
       "purpose": "pure_game",
       "config_ref": "E:\\type10-7\\code\\snapshots\\native_dr_eg_prepare_20260914_wt\\experiments\\adv3b02_xuc\\configs\\separate_controls\\PURE_TR_EG_s392007.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_TR_EG_s392007/resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/PURE_TR_EG_s392007/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 392007,
@@ -1098,8 +1098,8 @@
       "epochs": 200,
       "fl_rounds": null,
       "budget_ref": "E200 x 222 accepted steps = 44400",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_TR_EG_s392007",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_TR_EG_s392007.train.log",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/PURE_TR_EG_s392007",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_daot_rc4_pure_game_m3_20260917_r2/PURE_TR_EG_s392007.train.log",
       "command": [
         "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
         "-u",
@@ -1109,9 +1109,9 @@
         "--dataset",
         "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
         "--output",
-        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_TR_EG_s392007",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/PURE_TR_EG_s392007",
         "--source-contract",
-        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/source_contract.json",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
         "--device",
         "cuda:0",
         "--execute"
@@ -1128,7 +1128,7 @@
       "method": "pure XT_DANN; DAOT/RC4 routes, calibration and auxiliary losses disabled; L/U adversarial heads retained",
       "purpose": "pure_game",
       "config_ref": "E:\\type10-7\\code\\snapshots\\native_dr_eg_prepare_20260914_wt\\experiments\\adv3b02_xuc\\configs\\separate_controls\\PURE_XT_DANN_s392007.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_XT_DANN_s392007/resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/PURE_XT_DANN_s392007/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 392007,
@@ -1151,8 +1151,8 @@
       "epochs": 200,
       "fl_rounds": null,
       "budget_ref": "E200 x 222 accepted steps = 44400",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_XT_DANN_s392007",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_XT_DANN_s392007.train.log",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/PURE_XT_DANN_s392007",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_daot_rc4_pure_game_m3_20260917_r2/PURE_XT_DANN_s392007.train.log",
       "command": [
         "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
         "-u",
@@ -1162,9 +1162,9 @@
         "--dataset",
         "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
         "--output",
-        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_XT_DANN_s392007",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/PURE_XT_DANN_s392007",
         "--source-contract",
-        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/source_contract.json",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
         "--device",
         "cuda:0",
         "--execute"
@@ -1181,7 +1181,7 @@
       "method": "pure DRIC; DAOT/RC4 routes, calibration and auxiliary losses disabled; L/U adversarial heads retained",
       "purpose": "pure_game",
       "config_ref": "E:\\type10-7\\code\\snapshots\\native_dr_eg_prepare_20260914_wt\\experiments\\adv3b02_xuc\\configs\\separate_controls\\PURE_DRIC_s392007.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_DRIC_s392007/resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/PURE_DRIC_s392007/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 392007,
@@ -1204,8 +1204,8 @@
       "epochs": 200,
       "fl_rounds": null,
       "budget_ref": "E200 x 222 accepted steps = 44400",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_DRIC_s392007",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_DRIC_s392007.train.log",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/PURE_DRIC_s392007",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_daot_rc4_pure_game_m3_20260917_r2/PURE_DRIC_s392007.train.log",
       "command": [
         "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
         "-u",
@@ -1215,9 +1215,9 @@
         "--dataset",
         "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
         "--output",
-        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_DRIC_s392007",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/PURE_DRIC_s392007",
         "--source-contract",
-        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/source_contract.json",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
         "--device",
         "cuda:0",
         "--execute"
@@ -1234,6 +1234,7 @@
     "原生对照保留历史AMP和fasttrust调度；新18行FP32，其他预算/参数与本批联合响应行相同。",
     "不重复训练已有联合18行；原生3行全部新scratch启动，历史392005不代替本轮模型。",
     "最终比较需训练完成后执行固定模型truth-last评分；不得根据目标结果选择性重跑。",
-    "TX0–5；无Phase2 support/capsule；空字段不适用。"
+    "TX0–5；无Phase2 support/capsule；空字段不适用。",
+    "r1仅在训练前写resolved_config发生SatViewStage序列化错误；r2修复结构化序列化，科学配置/seed/预算不变。"
   ]
 }

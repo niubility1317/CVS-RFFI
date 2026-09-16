@@ -1,1 +1,2 @@
 {"at": "2026-09-16T18:53:41.908005+00:00", "status": "PLANNED", "note": "21 rows authorized, all exact parsers validated", "evidence": ["experiment.json", "config_acceptance.json"]}
+{"at": "2026-09-16T18:57:51+00:00", "status": "FAILED", "note": "首行训练前配置序列化SatViewStage失败，dispatcher退出，其余20行HELD；保留产物，r2修复替代", "evidence": ["automation_reports/CV-SincNet/phase1_daot_rc4_pure_game_m3_20260917_r1/launch_readback.json"], "row_id": null}

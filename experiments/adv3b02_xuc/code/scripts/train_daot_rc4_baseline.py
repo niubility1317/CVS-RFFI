@@ -1,10 +1,18 @@
 """Native F0 recipe, scratch only, exact common physical source roles."""
 import argparse,json,sys,time
+from dataclasses import asdict,is_dataclass
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
 from SSDG import train_ssdg as native
 from cvsrffi.xuc_fusion.native import role_ids_from_native
 from cvsrffi.game_tracking.runtime import json_write
+
+def resolved_config(args):
+    def encode(value):
+        if is_dataclass(value):return asdict(value)
+        if isinstance(value,Path):return str(value)
+        raise TypeError('Unsupported resolved config value: '+type(value).__name__)
+    return json.loads(json.dumps(vars(args),default=encode))
 
 def main():
     p=argparse.ArgumentParser();p.add_argument('--config',type=Path,required=True)
@@ -29,7 +37,7 @@ def main():
         assert not ctx['named_test_loaders']
         if role_ids_from_native(ctx)!=expected['role_ids']:raise ValueError('native physical role mismatch')
         json_write(a.output/'source_contract.json',dict(expected,native_role_comparison='EXACT_MATCH'))
-        json_write(a.output/'resolved_config.json',vars(args))
+        json_write(a.output/'resolved_config.json',resolved_config(args))
         json_write(a.output/'initialization.json',dict(scratch_only=True,checkpoint_sources=[],seed=args.seed,target_contact=False,source_roles='EXACT_MATCH'))
         return ctx
     native._build_ssdg_wisig_data=checked;start=time.time()

@@ -7,3 +7,4 @@
 |名称|记录类型|证据入口|
 |---|---|---|
 |原生DAOT＋RC4与仅动力博弈三seed对照|managed_run|[打开](../../automation_reports/CV-SincNet/phase1_daot_rc4_pure_game_m3_20260917_r1/report.md)|
+|原生DAOT＋RC4与仅动力博弈三seed对照|managed_run|[打开](../../automation_reports/CV-SincNet/phase1_daot_rc4_pure_game_m3_20260917_r2/report.md)|
