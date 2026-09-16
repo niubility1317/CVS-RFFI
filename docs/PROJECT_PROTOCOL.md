@@ -306,3 +306,7 @@ D：新Phase1特征提取器+多节点协同
 - 实验记录引用实际数据资产/物理ID/角色划分与配置来源，分别记录model、split、data、augmentation、support和evaluation seed；共享数据契约跨方法复用，不因登记或索引更新重复验证。历史缺证据字段保持未知，artifact完成与协议有效性分别记录；管理索引不进入训练、query决策或目标驱动选择。
 
 可以声明CVS研究的是地面弱标注跨接收机DG、LEO压力下少样本旧类适应与新类注册，以及部署阶段多接收节点代理协同的Phase3方法。不能把WiSig称为真实卫星数据，不能把LEO模拟称为真实在轨验证，不能把非同步多接收机代理称为真实同步多星验证，不能把source-only DG称为few-shot适应，也不能把source proxy unknown、旧类提升、unknown拒识或协议无效结果当作新类注册成功。
+
+## 项目资料管理入口（2026-09-16）
+
+代码、报告、冒烟测试、临时文件及归档的查询与整理，先读[统一导航](../PROJECT_NAVIGATION.md)和[资料管理技能](../.agents/skills/project-file-management/SKILL.md)。当前清单、历史治理库桥接及恢复映射见[资料管理](project_governance/README.md)。先查现有索引，处理前核实当前路径/引用；保留代码镜像、独立变体和有追溯价值的冒烟证据，不凭同名、日期或tmp命名批量删除。实验管理及科学协议继续按原规则执行。

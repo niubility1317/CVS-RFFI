@@ -1,0 +1,803 @@
+[
+  {
+    "worktree": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "HEAD": "a3cbdadfea6b74d1c1de06460302baac259b3e6b",
+    "branch": "refs/heads/work/cvs-active",
+    "status": "DIRTY_KEEP",
+    "status_exit": 0,
+    "tracked_changes": 18,
+    "untracked_entries": 330,
+    "status_sample": [
+      "MM code/SSDG/train_ssdg.py",
+      "M  code/configs/phase1_adv3b02_nmfdu_gate_v1.json",
+      "A  code/cvsrffi/daot_training.py",
+      "A  code/cvsrffi/deployment_orbit.py",
+      "A  code/cvsrffi/nmfdu_training.py",
+      "A  code/cvsrffi/orbit_teacher.py",
+      "A  code/cvsrffi/selective_tangent.py",
+      "M  code/model.py"
+    ]
+  },
+  {
+    "worktree": "E:/fa125wt",
+    "HEAD": "5e3cd6f22fef8cde3f24c0455cf5f8d206c2f4f1",
+    "branch": "refs/heads/codex/next-r5-fa-q-target125-20260805",
+    "status": "DIRTY_KEEP",
+    "status_exit": 0,
+    "tracked_changes": 0,
+    "untracked_entries": 1,
+    "status_sample": [
+      "?? conversation_index/"
+    ]
+  },
+  {
+    "worktree": "E:/p1mwt",
+    "HEAD": "4c8d8a5cbb5c9b2213d39bf5407e2ae80b5a9206",
+    "branch": "refs/heads/codex/phase1-mirage-owdg-20260817",
+    "status": "CLEAN_KEEP_UNREVIEWED_LINEAGE",
+    "status_exit": 0,
+    "tracked_changes": 0,
+    "untracked_entries": 0,
+    "status_sample": []
+  },
+  {
+    "worktree": "E:/r34c3e723",
+    "HEAD": "34c3e723a426fabed18c0ffc547ce839d628b572",
+    "detached": true,
+    "status": "DIRTY_KEEP",
+    "status_exit": 0,
+    "tracked_changes": 0,
+    "untracked_entries": 1,
+    "status_sample": [
+      "?? .pytest_tmp_v4_output_closure/"
+    ]
+  },
+  {
+    "worktree": "E:/type10-7/code/snapshots/a1_fast_20260908_wt",
+    "HEAD": "72360e49ceb6a4f2a9e2e1235e5eea6784d07685",
+    "branch": "refs/heads/codex/a1-fast-20260908",
+    "status": "DIRTY_KEEP",
+    "status_exit": 0,
+    "tracked_changes": 2,
+    "untracked_entries": 3,
+    "status_sample": [
+      " M code/SSDG/train_ssdg.py",
+      " M code/cvsrffi/orbit_teacher.py",
+      "?? analysis/a1_fast_traceability.md",
+      "?? analysis/a1_original_config.json",
+      "?? analysis/a1_original_train_ssdg.py"
+    ]
+  },
+  {
+    "worktree": "E:/type10-7/code/snapshots/a1_fast_original_20260908_wt",
+    "HEAD": "9a5c9665eba3cba719ec93c904863c438d7fe47f",
+    "branch": "refs/heads/codex/a1-fast-original-20260908",
+    "status": "DIRTY_KEEP",
+    "status_exit": 0,
+    "tracked_changes": 0,
+    "untracked_entries": 9,
+    "status_sample": [
+      "?? analysis/a1_fast_traceability.md",
+      "?? analysis/a1_original_dispatcher.log",
+      "?? analysis/a1_r3_eta_snapshot.json",
+      "?? analysis/a1_scratch_cpu_execution.json",
+      "?? analysis/a1_scratch_cpu_execution_daot.json",
+      "?? analysis/freeze_a1_matrix.py",
+      "?? analysis/implement_a1_fast.py",
+      "?? analysis/probe_teacher_modes.py"
+    ]
+  },
+  {
+    "worktree": "E:/type10-7/code/snapshots/a1_fast_v2_20260909_wt",
+    "HEAD": "8ccfb9d5e9c901befbd7636da9d88a5d474f7c3b",
+    "branch": "refs/heads/codex/a1-fast-v2-20260909",
+    "status": "DIRTY_KEEP",
+    "status_exit": 0,
+    "tracked_changes": 0,
+    "untracked_entries": 28,
+    "status_sample": [
+      "?? analysis/a1_ecrs_local_execution/",
+      "?? analysis/a1_ecrs_local_execution_r2/",
+      "?? analysis/a1_extended_local_execution/",
+      "?? analysis/a1_extended_remote_checking.json",
+      "?? analysis/a1_extension_preflight.json",
+      "?? analysis/a1_mechanism_remote_checking.json",
+      "?? analysis/a1_mechanism_remote_launch_v1.json",
+      "?? analysis/a1_mechanism_remote_prelaunch.json"
+    ]
+  },
+  {
+    "worktree": "E:/type10-7/code/snapshots/astra_instructions_20260905_wt",
+    "HEAD": "d61f92e88aef733dea84e27d3c64b4ed4eb49de8",
+    "branch": "refs/heads/codex/astra-instructions-20260905",
+    "status": "CLEAN_KEEP_UNREVIEWED_LINEAGE",
+    "status_exit": 0,
+    "tracked_changes": 0,
+    "untracked_entries": 0,
+    "status_sample": []
+  },
+  {
+    "worktree": "E:/type10-7/code/snapshots/cdom_scxmap_d92_glf_r1_wt",
+    "HEAD": "0ad76d3a5568012c09ea66b6c5d8142f19766d16",
+    "branch": "refs/heads/codex/stage2-da25-r1",
+    "status": "DIRTY_KEEP",
+    "status_exit": 0,
+    "tracked_changes": 2,
+    "untracked_entries": 8,
+    "status_sample": [
+      " M analysis/next_r1_fabr_tsl_traceability_20260803.md",
+      " M docs/STAGE2_RD_GOAL_20260731.md",
+      "?? code/cvsrffi/stage2_next_r1_assets.py",
+      "?? code/cvsrffi/stage2_next_r1_fabr.py",
+      "?? code/cvsrffi/stage2_next_r1_matrix.py",
+      "?? code/cvsrffi/stage2_next_r1_runtime.py",
+      "?? code/cvsrffi/stage2_next_r1_tsl.py",
+      "?? configs/next_r1_fabr_tsl_method_lock_20260804.json"
+    ]
+  },
+  {
+    "worktree": "E:/type10-7/code/snapshots/core90_cross_response_20260911_wt",
+    "HEAD": "22777b27738b502e44da67e7323c4e9542fdf599",
+    "branch": "refs/heads/codex/core90-cross-response-20260911",
+    "status": "DIRTY_KEEP",
+    "status_exit": 0,
+    "tracked_changes": 0,
+    "untracked_entries": 22,
+    "status_sample": [
+      "?? analysis/check_dispatcher_source_preflight.py",
+      "?? analysis/core90_cross_response_unit_results_20260911.xml",
+      "?? analysis/cross_response_unlabeled_recheck_20260911/U0_s392002/",
+      "?? analysis/cross_response_unlabeled_recheck_20260911/U4_bilinear_s392002/",
+      "?? analysis/cross_response_unlabeled_recheck_20260911/fixture_manifest.json",
+      "?? analysis/cross_response_unlabeled_recheck_20260911/synthetic_cross_response_config.json",
+      "?? analysis/dispatcher_source_fixture_20260911/",
+      "?? analysis/synthetic_cross_response_amp_20260911a/"
+    ]
+  },
+  {
+    "worktree": "E:/type10-7/code/snapshots/core90_cross_response_v2_20260911_wt",
+    "HEAD": "6a1febcb7738a2b1ad91573aba5d5912574e1f18",
+    "branch": "refs/heads/codex/core90-cross-response-v2-20260911",
+    "status": "CLEAN_KEEP_UNREVIEWED_LINEAGE",
+    "status_exit": 0,
+    "tracked_changes": 0,
+    "untracked_entries": 0,
+    "status_sample": []
+  },
+  {
+    "worktree": "E:/type10-7/code/snapshots/core90_evidence_20260911_wt",
+    "HEAD": "12772de2f2771d10fd589c8a1e46cbc22cef8d42",
+    "branch": "refs/heads/codex/core90-evidence-head-20260911",
+    "status": "CLEAN_KEEP_UNREVIEWED_LINEAGE",
+    "status_exit": 0,
+    "tracked_changes": 0,
+    "untracked_entries": 0,
+    "status_sample": []
+  },
+  {
+    "worktree": "E:/type10-7/code/snapshots/core90_game_20260911_wt",
+    "HEAD": "104ca24ee85bee251c8f81ab08e3eb7b8cd26220",
+    "branch": "refs/heads/codex/core90-game-tracking-20260911",
+    "status": "DIRTY_KEEP",
+    "status_exit": 0,
+    "tracked_changes": 1,
+    "untracked_entries": 20,
+    "status_sample": [
+      " M code/scripts/report_core90_target_test.py",
+      "?? local_artifacts/core90_game_acceptance_1/",
+      "?? local_artifacts/core90_game_acceptance_analysis.json",
+      "?? local_artifacts/core90_game_acceptance_analysis.md",
+      "?? local_artifacts/core90_game_acceptance_final/",
+      "?? local_artifacts/core90_game_advanced_acceptance/",
+      "?? local_artifacts/core90_game_advanced_field_refinement_20260911/",
+      "?? local_artifacts/core90_reaudit_392005/"
+    ]
+  },
+  {
+    "worktree": "E:/type10-7/code/snapshots/d36wt",
+    "HEAD": "e4281015a1cbb79eb9561002d925d503c6898d23",
+    "detached": true,
+    "status": "DIRTY_KEEP",
+    "status_exit": 0,
+    "tracked_changes": 4,
+    "untracked_entries": 0,
+    "status_sample": [
+      " M code/cvsrffi/somph_predictor_bundle.py",
+      " M code/cvsrffi/somph_runtime_trust.py",
+      " M code/cvsrffi/stage2_predictor_bundle.py",
+      " M code/scripts/run_d25_support_only_concat.py"
+    ]
+  },
+  {
+    "worktree": "E:/type10-7/code/snapshots/d37wt",
+    "HEAD": "fb2f39f01fb771e600c4776550b0c5ce6090cc69",
+    "detached": true,
+    "status": "DIRTY_KEEP",
+    "status_exit": 0,
+    "tracked_changes": 3,
+    "untracked_entries": 0,
+    "status_sample": [
+      " M code/cvsrffi/somph_predictor_bundle.py",
+      " M code/cvsrffi/somph_runtime_trust.py",
+      " M code/cvsrffi/stage2_predictor_bundle.py"
+    ]
+  },
+  {
+    "worktree": "E:/type10-7/code/snapshots/d38wt",
+    "HEAD": "0580a0f9ef76ea1d85665260aaf16e51e7c7b315",
+    "detached": true,
+    "status": "DIRTY_KEEP",
+    "status_exit": 0,
+    "tracked_changes": 3,
+    "untracked_entries": 0,
+    "status_sample": [
+      " M code/cvsrffi/somph_predictor_bundle.py",
+      " M code/cvsrffi/somph_runtime_trust.py",
+      " M code/cvsrffi/stage2_predictor_bundle.py"
+    ]
+  },
+  {
+    "worktree": "E:/type10-7/code/snapshots/d39wt",
+    "HEAD": "6098a3f089fed79abee8994d2802c86495f35784",
+    "detached": true,
+    "status": "DIRTY_KEEP",
+    "status_exit": 0,
+    "tracked_changes": 3,
+    "untracked_entries": 0,
+    "status_sample": [
+      " M code/cvsrffi/somph_predictor_bundle.py",
+      " M code/cvsrffi/somph_runtime_trust.py",
+      " M code/cvsrffi/stage2_predictor_bundle.py"
+    ]
+  },
+  {
+    "worktree": "E:/type10-7/code/snapshots/d40wt",
+    "HEAD": "65be30dd873dfc7588124c30541efe831035d347",
+    "detached": true,
+    "status": "DIRTY_KEEP",
+    "status_exit": 0,
+    "tracked_changes": 3,
+    "untracked_entries": 0,
+    "status_sample": [
+      " M code/cvsrffi/somph_predictor_bundle.py",
+      " M code/cvsrffi/somph_runtime_trust.py",
+      " M code/cvsrffi/stage2_predictor_bundle.py"
+    ]
+  },
+  {
+    "worktree": "E:/type10-7/code/snapshots/d41wt",
+    "HEAD": "7fb47ad486437132c757f5aaf78fd75ff7ae32dc",
+    "detached": true,
+    "status": "DIRTY_KEEP",
+    "status_exit": 0,
+    "tracked_changes": 3,
+    "untracked_entries": 0,
+    "status_sample": [
+      " M code/cvsrffi/somph_predictor_bundle.py",
+      " M code/cvsrffi/somph_runtime_trust.py",
+      " M code/cvsrffi/stage2_predictor_bundle.py"
+    ]
+  },
+  {
+    "worktree": "E:/type10-7/code/snapshots/d62_125wt",
+    "HEAD": "dc7095ca62298e8649681e0842922b1180e836f7",
+    "branch": "refs/heads/codex/d62-125-20260720",
+    "status": "CLEAN_KEEP_UNREVIEWED_LINEAGE",
+    "status_exit": 0,
+    "tracked_changes": 0,
+    "untracked_entries": 0,
+    "status_sample": []
+  },
+  {
+    "worktree": "E:/type10-7/code/snapshots/d62_d81_report_20260720",
+    "HEAD": "ad14563e6e1c0a3685abdf027627b57482fb7253",
+    "branch": "refs/heads/codex/d62-d81-technical-report-20260720",
+    "status": "CLEAN_KEEP_UNREVIEWED_LINEAGE",
+    "status_exit": 0,
+    "tracked_changes": 0,
+    "untracked_entries": 0,
+    "status_sample": []
+  },
+  {
+    "worktree": "E:/type10-7/code/snapshots/d64wt",
+    "HEAD": "49a7c8620cdffec33bd396f3d988986f1215b797",
+    "detached": true,
+    "status": "CLEAN_KEEP_UNREVIEWED_LINEAGE",
+    "status_exit": 0,
+    "tracked_changes": 0,
+    "untracked_entries": 0,
+    "status_sample": []
+  },
+  {
+    "worktree": "E:/type10-7/code/snapshots/d66r1wt",
+    "HEAD": "b7388395e9d905db2a8b7f01b047370b30276028",
+    "detached": true,
+    "status": "DIRTY_KEEP",
+    "status_exit": 0,
+    "tracked_changes": 0,
+    "untracked_entries": 1,
+    "status_sample": [
+      "?? local_artifacts/d66r1_clean_full_chain/"
+    ]
+  },
+  {
+    "worktree": "E:/type10-7/code/snapshots/d66wt",
+    "HEAD": "684e110edddf5adaafe22200cb044ddd56059bcd",
+    "detached": true,
+    "status": "DIRTY_KEEP",
+    "status_exit": 0,
+    "tracked_changes": 0,
+    "untracked_entries": 1,
+    "status_sample": [
+      "?? local_artifacts/d66_clean_full_chain/"
+    ]
+  },
+  {
+    "worktree": "E:/type10-7/code/snapshots/d67wt",
+    "HEAD": "6cfef75b1dd0f82e45b5216e93b3b6b18bfd55af",
+    "detached": true,
+    "status": "DIRTY_KEEP",
+    "status_exit": 0,
+    "tracked_changes": 0,
+    "untracked_entries": 1,
+    "status_sample": [
+      "?? local_artifacts/d67_clean_full_chain/"
+    ]
+  },
+  {
+    "worktree": "E:/type10-7/code/snapshots/d77wt",
+    "HEAD": "62ac89e91825fde7f43e148bc47e7a190fecda3c",
+    "detached": true,
+    "status": "CLEAN_KEEP_UNREVIEWED_LINEAGE",
+    "status_exit": 0,
+    "tracked_changes": 0,
+    "untracked_entries": 0,
+    "status_sample": []
+  },
+  {
+    "worktree": "E:/type10-7/code/snapshots/d78wt",
+    "HEAD": "63f5be597c2c107a4efc32a70707ec32d334208a",
+    "detached": true,
+    "status": "CLEAN_KEEP_UNREVIEWED_LINEAGE",
+    "status_exit": 0,
+    "tracked_changes": 0,
+    "untracked_entries": 0,
+    "status_sample": []
+  },
+  {
+    "worktree": "E:/type10-7/code/snapshots/d79wt",
+    "HEAD": "9b06cc9653f86037dc48b596f637f90c5729f7ec",
+    "detached": true,
+    "status": "CLEAN_KEEP_UNREVIEWED_LINEAGE",
+    "status_exit": 0,
+    "tracked_changes": 0,
+    "untracked_entries": 0,
+    "status_sample": []
+  },
+  {
+    "worktree": "E:/type10-7/code/snapshots/d80wt",
+    "HEAD": "edb9494daad9fbb600e67b91ce9cfcb851168d74",
+    "detached": true,
+    "status": "CLEAN_KEEP_UNREVIEWED_LINEAGE",
+    "status_exit": 0,
+    "tracked_changes": 0,
+    "untracked_entries": 0,
+    "status_sample": []
+  },
+  {
+    "worktree": "E:/type10-7/code/snapshots/d81wt",
+    "HEAD": "bbdecdf4d73ee831549370bea35c8ef9dcba3c67",
+    "detached": true,
+    "status": "CLEAN_KEEP_UNREVIEWED_LINEAGE",
+    "status_exit": 0,
+    "tracked_changes": 0,
+    "untracked_entries": 0,
+    "status_sample": []
+  },
+  {
+    "worktree": "E:/type10-7/code/snapshots/d92_125wt",
+    "HEAD": "3ee910ef5f2805c64824cafb1fbeb1f9f90c6876",
+    "branch": "refs/heads/codex/stage2c-ertb-da0-20260817",
+    "status": "CLEAN_KEEP_UNREVIEWED_LINEAGE",
+    "status_exit": 0,
+    "tracked_changes": 0,
+    "untracked_entries": 0,
+    "status_sample": []
+  },
+  {
+    "worktree": "E:/type10-7/code/snapshots/d92_lite125_20260804_wt",
+    "HEAD": "70d775bc25db3f91118000a67e38c8472dbd3580",
+    "branch": "refs/heads/codex/next-r1-fabr-tsl-20260804",
+    "status": "DIRTY_KEEP",
+    "status_exit": 0,
+    "tracked_changes": 3,
+    "untracked_entries": 6,
+    "status_sample": [
+      " M analysis/next_r6_joint_da_d92_traceability_20260805.md",
+      " M analysis/next_r6_rppf160_design_20260805.md",
+      " M automation_reports/CV-SincNet/next_r6_fa_rdce3_rppf160_proxy24_20260805_r1/report.md",
+      "?? code/cvsrffi/stage2_next_r6_matrix.py",
+      "?? code/cvsrffi/stage2_next_r6_rppf160.py",
+      "?? code/cvsrffi/stage2_next_r6_runtime.py",
+      "?? tests/test_stage2_next_r6_matrix.py",
+      "?? tests/test_stage2_next_r6_rppf160.py"
+    ]
+  },
+  {
+    "worktree": "E:/type10-7/code/snapshots/daot_game_analysis_20260914_wt",
+    "HEAD": "358a087a0e6a1e226c4257afbdd4cad51d706347",
+    "branch": "refs/heads/codex/daot-game-analysis-20260914",
+    "status": "CLEAN_KEEP_UNREVIEWED_LINEAGE",
+    "status_exit": 0,
+    "tracked_changes": 0,
+    "untracked_entries": 0,
+    "status_sample": []
+  },
+  {
+    "worktree": "E:/type10-7/code/snapshots/git_auto_push_20260819_wt",
+    "HEAD": "6ed8b0025577c0c0824abd1be936e54c3f33cfcf",
+    "branch": "refs/heads/ops/git-auto-push",
+    "status": "CLEAN_KEEP_UNREVIEWED_LINEAGE",
+    "status_exit": 0,
+    "tracked_changes": 0,
+    "untracked_entries": 0,
+    "status_sample": []
+  },
+  {
+    "worktree": "E:/type10-7/code/snapshots/ground_proto_da_rd_wt",
+    "HEAD": "20296a0903604cd15b33fbad2d68ac45af425723",
+    "branch": "refs/heads/codex/ground-prototype-da-rd",
+    "status": "DIRTY_KEEP",
+    "status_exit": 0,
+    "tracked_changes": 1,
+    "untracked_entries": 40,
+    "status_sample": [
+      " M tests/test_phase1_adv3b02_deployment_bundle.py",
+      "?? .pytest_tmp_adv3b02_bcr3_adjacent/",
+      "?? .pytest_tmp_adv3b02_bcr3_primary/",
+      "?? .pytest_tmp_adv3b02_matchedaudit1_main/",
+      "?? .pytest_tmp_adv3b02_matchedaudit1_p1_main/",
+      "?? .pytest_tmp_adv3b02_parent_p0/",
+      "?? .pytest_tmp_adv3b02_parent_p0_full/",
+      "?? .pytest_tmp_adv3b02_parent_p0_targeted/"
+    ]
+  },
+  {
+    "worktree": "E:/type10-7/code/snapshots/native_dr_eg_prepare_20260914_wt",
+    "HEAD": "e5317dd02fe76507631cbbfefc2beeee282b2bfa",
+    "branch": "refs/heads/codex/native-dr-eg-prepare-20260914",
+    "status": "CLEAN_KEEP_UNREVIEWED_LINEAGE",
+    "status_exit": 0,
+    "tracked_changes": 0,
+    "untracked_entries": 0,
+    "status_sample": []
+  },
+  {
+    "worktree": "E:/type10-7/code/snapshots/p2_ground_multiproto_option_20260720",
+    "HEAD": "d91f04f6edd52f458dec4b48fc1ada7bc1f61d75",
+    "branch": "refs/heads/codex/p2-ground-multiproto-option",
+    "status": "CLEAN_KEEP_UNREVIEWED_LINEAGE",
+    "status_exit": 0,
+    "tracked_changes": 0,
+    "untracked_entries": 0,
+    "status_sample": []
+  },
+  {
+    "worktree": "E:/type10-7/code/snapshots/phase3_responsibility_20260807_wt",
+    "HEAD": "a966c03d24a5f3cde6c66dd18543cab16f19b7a4",
+    "branch": "refs/heads/codex/phase3-responsibility-20260807",
+    "status": "DIRTY_KEEP",
+    "status_exit": 0,
+    "tracked_changes": 0,
+    "untracked_entries": 1,
+    "status_sample": [
+      "?? conversation_index/"
+    ]
+  },
+  {
+    "worktree": "E:/type10-7/code/snapshots/project_governance_20260813_wt",
+    "HEAD": "0a214211587ff72559f27bf90bb090a59f9d9ee1",
+    "branch": "refs/heads/codex/project-governance-20260813",
+    "status": "DIRTY_KEEP",
+    "status_exit": 0,
+    "tracked_changes": 2,
+    "untracked_entries": 25,
+    "status_sample": [
+      " M \"docs/CVS\\345\\244\\251\\345\\237\\272\\345\\260\\204\\351\\242\\221\\346\\214\\207\\347\\272\\271\\350\\257\\206\\345\\210\\253_3GPP_NTN\\344\\270\\216Iridium_NTN_Direct\\345\\234\\272\\346\\231\\257_20260817.docx\"",
+      " D \"docs/CVS\\345\\244\\251\\345\\237\\272\\345\\260\\204\\351\\242\\221\\346\\214\\207\\347\\272\\271\\350\\257\\206\\345\\210\\253_NTN\\344\\270\\216\\346\\240\\270\\345\\277\\203\\345\\234\\272\\346\\231\\257_\\347\\262\\276\\347\\256\\200\\347\\211\\210_20260817.docx\"",
+      "?? .docx_qa_cvs_ntn/",
+      "?? .docx_qa_cvs_ntn_compact/",
+      "?? .docx_qa_cvs_ntn_compact_final/",
+      "?? .docx_qa_cvs_ntn_compact_v2/",
+      "?? .docx_qa_cvs_ntn_v2/",
+      "?? .docx_qa_cvs_ntn_v3/"
+    ]
+  },
+  {
+    "worktree": "E:/type10-7/code/snapshots/qknn_rxlight5_v10_sync_5752810",
+    "HEAD": "57528108015e49a48c35738c4b1af5d4ad0ac4ac",
+    "detached": true,
+    "status": "CLEAN_KEEP_UNREVIEWED_LINEAGE",
+    "status_exit": 0,
+    "tracked_changes": 0,
+    "untracked_entries": 0,
+    "status_sample": []
+  },
+  {
+    "worktree": "E:/type10-7/code/snapshots/stage2c_mrior_ci_wt",
+    "HEAD": "06d58c65d0124641aff085afd0921ff02c3c2a73",
+    "branch": "refs/heads/codex/stage2c-mrior-ci-20260817",
+    "status": "CLEAN_KEEP_UNREVIEWED_LINEAGE",
+    "status_exit": 0,
+    "tracked_changes": 0,
+    "untracked_entries": 0,
+    "status_sample": []
+  },
+  {
+    "worktree": "E:/type10-7/g2wt",
+    "HEAD": "84a2d9f4bdef6a5b0b04c967d79d33d0959c1c14",
+    "branch": "refs/heads/codex/symmetric-ground-bundle-r2",
+    "status": "CLEAN_KEEP_UNREVIEWED_LINEAGE",
+    "status_exit": 0,
+    "tracked_changes": 0,
+    "untracked_entries": 0,
+    "status_sample": []
+  },
+  {
+    "worktree": "E:/type10-7/github_publish/CVS-RFFI-repo/.worktrees/adv3b02-daot-stn-v1",
+    "HEAD": "96fd91e39258b2599aa99ad55bc2ab98034ac997",
+    "branch": "refs/heads/codex/adv3b02-daot-stn-v1-20260901",
+    "status": "CLEAN_KEEP_UNREVIEWED_LINEAGE",
+    "status_exit": 0,
+    "tracked_changes": 0,
+    "untracked_entries": 0,
+    "status_sample": []
+  },
+  {
+    "worktree": "E:/type10-7/github_publish/CVS-RFFI-repo/.worktrees/adv3b02-ecrs-v1",
+    "HEAD": "5583558d0adff042af188fe6e43be3f3726e167c",
+    "branch": "refs/heads/codex/adv3b02-ecrs-v1-20260901",
+    "status": "DIRTY_KEEP",
+    "status_exit": 0,
+    "tracked_changes": 11,
+    "untracked_entries": 0,
+    "status_sample": [
+      " M code/cvsrffi/tensors.py",
+      " M code/dataset_wisig.py",
+      " M code/model_dual_cvsincnet.py",
+      " M code/scripts/launch_phase1_adv3b02_ecrs_v1_20260901.sh",
+      " M code/tests/test_ecrs_checkpoint.py",
+      " M code/tests/test_ecrs_model_contract.py",
+      " M code/tests/test_ecrs_negative_controls.py",
+      " M code/tests/test_ecrs_pair_metadata.py"
+    ]
+  },
+  {
+    "worktree": "E:/type10-7/github_publish/CVS-RFFI-repo/.worktrees/adv3b02-ecrs-v1-parity-fix",
+    "HEAD": "2fc5060e03dde2fc5e46c1bda82b6291c621c4d5",
+    "branch": "refs/heads/codex/adv3b02-ecrs-v1r-v2-20260906",
+    "status": "CLEAN_KEEP_UNREVIEWED_LINEAGE",
+    "status_exit": 0,
+    "tracked_changes": 0,
+    "untracked_entries": 0,
+    "status_sample": []
+  },
+  {
+    "worktree": "E:/type10-7/github_publish/CVS-RFFI-repo/.worktrees/adv3b02-fcr-20260901",
+    "HEAD": "351bcbe8427e8dba8d08764ed59c90ae078e6199",
+    "branch": "refs/heads/codex/adv3b02-fcr-r1r8-s392005-20260903",
+    "status": "DIRTY_KEEP",
+    "status_exit": 0,
+    "tracked_changes": 0,
+    "untracked_entries": 2,
+    "status_sample": [
+      "?? local_artifacts/phase1_adv3b02_fcr_r1r8_s392002_20260902_v6_analysis/",
+      "?? local_artifacts/phase1_adv3b02_fcr_r1r8_s392005_equalized_20260903_v4_comprehensive/"
+    ]
+  },
+  {
+    "worktree": "E:/type10-7/github_publish/CVS-RFFI-repo/.worktrees/adv3b02-nmfdu-gate-v1",
+    "HEAD": "31ac6c706891b7ffdfd0e45d5a3e2a70e880d590",
+    "branch": "refs/heads/work/adv3b02-nmfdu-gate-v1",
+    "status": "CLEAN_KEEP_UNREVIEWED_LINEAGE",
+    "status_exit": 0,
+    "tracked_changes": 0,
+    "untracked_entries": 0,
+    "status_sample": []
+  },
+  {
+    "worktree": "E:/type10-7/github_publish/CVS-RFFI-repo/.worktrees/adv3b02-xuc-fusion-design-20260913",
+    "HEAD": "8cc225926cbf42f4ce06e068fd36ea5d11dabb79",
+    "branch": "refs/heads/codex/adv3b02-xuc-fusion-design-20260913",
+    "status": "DIRTY_KEEP",
+    "status_exit": 0,
+    "tracked_changes": 0,
+    "untracked_entries": 1,
+    "status_sample": [
+      "?? local_validation/"
+    ]
+  },
+  {
+    "worktree": "E:/type10-7/github_publish/CVS-RFFI-repo/.worktrees/advb02-crra-leo-weak-20260819",
+    "HEAD": "2650134dcd92493d3d6dcd74483b854ebf1786cf",
+    "branch": "refs/heads/codex/advb02-crra-leo-weak-20260819",
+    "status": "CLEAN_KEEP_UNREVIEWED_LINEAGE",
+    "status_exit": 0,
+    "tracked_changes": 0,
+    "untracked_entries": 0,
+    "status_sample": []
+  },
+  {
+    "worktree": "E:/type10-7/github_publish/CVS-RFFI-repo/.worktrees/advb02-ntrs-leo-weak-20260820",
+    "HEAD": "b388eecfc8a87769c6c90b26e851485d59030bc1",
+    "branch": "refs/heads/codex/advb02-hsid-20260823",
+    "status": "CLEAN_KEEP_UNREVIEWED_LINEAGE",
+    "status_exit": 0,
+    "tracked_changes": 0,
+    "untracked_entries": 0,
+    "status_sample": []
+  },
+  {
+    "worktree": "E:/type10-7/github_publish/CVS-RFFI-repo/.worktrees/advb02-sid-capfix-20260823",
+    "HEAD": "098174824b95c46f21a68e4f21892b4157160fcd",
+    "branch": "refs/heads/codex/advb02-sid-capfix-20260823",
+    "status": "CLEAN_KEEP_UNREVIEWED_LINEAGE",
+    "status_exit": 0,
+    "tracked_changes": 0,
+    "untracked_entries": 0,
+    "status_sample": []
+  },
+  {
+    "worktree": "E:/type10-7/github_publish/CVS-RFFI-repo/.worktrees/ccoi-pa-v1",
+    "HEAD": "1261b077a9acd7c3ff5abc22d1886d704ad12791",
+    "branch": "refs/heads/codex/phase1-jmrs02-j0-20260826",
+    "status": "CLEAN_KEEP_UNREVIEWED_LINEAGE",
+    "status_exit": 0,
+    "tracked_changes": 0,
+    "untracked_entries": 0,
+    "status_sample": []
+  },
+  {
+    "worktree": "E:/type10-7/github_publish/CVS-RFFI-repo/.worktrees/core90-records-20260911",
+    "HEAD": "156cc3b40194f0ac65deba2d4cd5d523eded888a",
+    "branch": "refs/heads/codex/core90-records-20260911",
+    "status": "CLEAN_KEEP_UNREVIEWED_LINEAGE",
+    "status_exit": 0,
+    "tracked_changes": 0,
+    "untracked_entries": 0,
+    "status_sample": []
+  },
+  {
+    "worktree": "E:/type10-7/github_publish/CVS-RFFI-repo/.worktrees/m24-safe-residual",
+    "HEAD": "6f9e298924a3612e0b1c84015eb86b78e03eeb55",
+    "branch": "refs/heads/work/m24-safe-residual",
+    "status": "DIRTY_KEEP",
+    "status_exit": 0,
+    "tracked_changes": 0,
+    "untracked_entries": 39,
+    "status_sample": [
+      "?? .pytest_tmp_m24_adjacent/",
+      "?? .pytest_tmp_m24_base_only_red/",
+      "?? .pytest_tmp_m24_baseline/",
+      "?? .pytest_tmp_m24_d1_matrix_green/",
+      "?? .pytest_tmp_m24_d1_matrix_green2/",
+      "?? .pytest_tmp_m24_d1_metric_final/",
+      "?? .pytest_tmp_m24_d1_metric_red/",
+      "?? .pytest_tmp_m24_d1_review_all_adjacent/"
+    ]
+  },
+  {
+    "worktree": "E:/type10-7/github_publish/CVS-RFFI-repo/.worktrees/m26-td-src256-20260823",
+    "HEAD": "4933d48d3d03ec19e54adbcfaabbe57f417e471f",
+    "branch": "refs/heads/codex/m26-td-src256-20260823",
+    "status": "DIRTY_KEEP",
+    "status_exit": 0,
+    "tracked_changes": 0,
+    "untracked_entries": 20,
+    "status_sample": [
+      "?? .pytest_tmp_m26_adjacent/",
+      "?? .pytest_tmp_m26_adjacent_final/",
+      "?? .pytest_tmp_m26_builder_invariance_green/",
+      "?? .pytest_tmp_m26_builder_mixed_green/",
+      "?? .pytest_tmp_m26_builder_mixed_red/",
+      "?? .pytest_tmp_m26_exec_green/",
+      "?? .pytest_tmp_m26_final15/",
+      "?? .pytest_tmp_m26_final_adjacent23/"
+    ]
+  },
+  {
+    "worktree": "E:/type10-7/github_publish/CVS-RFFI-repo/.worktrees/m27-b3-spectral-veto-20260823",
+    "HEAD": "7d4f2e64c4b93e26821bbffb63482a95e4f143ed",
+    "branch": "refs/heads/codex/m29-tasr48-20260825",
+    "status": "DIRTY_KEEP",
+    "status_exit": 0,
+    "tracked_changes": 0,
+    "untracked_entries": 38,
+    "status_sample": [
+      "?? .pytest_tmp_m27_baseline/",
+      "?? .pytest_tmp_m27_focused/",
+      "?? .pytest_tmp_m27_focused2/",
+      "?? .pytest_tmp_m27_focused_after_p1/",
+      "?? .pytest_tmp_m27_focused_final/",
+      "?? .pytest_tmp_m27_green1/",
+      "?? .pytest_tmp_m27_green_builder/",
+      "?? .pytest_tmp_m27_green_integration_rows/"
+    ]
+  },
+  {
+    "worktree": "E:/type10-7/github_publish/CVS-RFFI-repo/.worktrees/meta-adapter-tri-r4-v1-20260824",
+    "HEAD": "2c2f72a7e6dc753495a9795df6a36c7a37434c63",
+    "branch": "refs/heads/codex/binova-d92-20260829",
+    "status": "DIRTY_KEEP",
+    "status_exit": 0,
+    "tracked_changes": 0,
+    "untracked_entries": 4,
+    "status_sample": [
+      "?? conversation_index/",
+      "?? local_artifacts/r5d92_release/",
+      "?? local_artifacts/sf_tapft_normslim/",
+      "?? local_artifacts/sf_tapft_query_closure/"
+    ]
+  },
+  {
+    "worktree": "E:/type10-7/github_publish/CVS-RFFI-repo/.worktrees/phase2-canonical-union-maxq",
+    "HEAD": "f954a449cbfdb7c0e6ced6708848185df974cb80",
+    "branch": "refs/heads/codex/phase1-pairbicad-p4-20260831",
+    "status": "CLEAN_KEEP_UNREVIEWED_LINEAGE",
+    "status_exit": 0,
+    "tracked_changes": 0,
+    "untracked_entries": 0,
+    "status_sample": []
+  },
+  {
+    "worktree": "E:/type10-7/github_publish/CVS-RFFI-repo/.worktrees/phase2-inline-definitions-20260817",
+    "HEAD": "b57eb795d00c0c0e6f5a314e579f034fa0d3fe0b",
+    "branch": "refs/heads/codex/phase2-inline-definitions-20260817",
+    "status": "DIRTY_KEEP",
+    "status_exit": 0,
+    "tracked_changes": 0,
+    "untracked_entries": 14,
+    "status_sample": [
+      "?? local_artifacts/phase2_bilingual_ertb_qa_20260817_v1/",
+      "?? local_artifacts/phase2_bilingual_ertb_qa_20260817_v2/",
+      "?? local_artifacts/phase2_formal_naming_qa_20260817_v1/",
+      "?? local_artifacts/phase2_inline_parenthetical_qa_20260817_v1/",
+      "?? local_artifacts/phase2_metric_definitions_qa_20260817_v1/",
+      "?? local_artifacts/phase2_metric_tables_qa_20260817_v1/",
+      "?? local_artifacts/phase2_metric_tables_qa_20260817_v2/",
+      "?? local_artifacts/phase2_result_regroup_qa_20260817_v1/"
+    ]
+  },
+  {
+    "worktree": "E:/type10-7/github_publish/CVS-RFFI-repo/.worktrees/stage2b-lateblock-20260824",
+    "HEAD": "5fe3b390af4d6a0240c312ecb4ec810bb550a672",
+    "branch": "refs/heads/codex/apsta-p1-robust-20260824",
+    "status": "DIRTY_KEEP",
+    "status_exit": 0,
+    "tracked_changes": 0,
+    "untracked_entries": 1,
+    "status_sample": [
+      "?? local_artifacts/protocol_manifest_repair_8129f98e/"
+    ]
+  },
+  {
+    "worktree": "E:/type10-7/github_publish/CVS-RFFI-repo/.worktrees/two-paper-rffi-reproduction-20260827",
+    "HEAD": "a53c43e983cce82bf2a259a0994403c3b7cf4eec",
+    "branch": "refs/heads/codex/two-paper-rffi-reproduction-20260827",
+    "status": "CLEAN_KEEP_UNREVIEWED_LINEAGE",
+    "status_exit": 0,
+    "tracked_changes": 0,
+    "untracked_entries": 0,
+    "status_sample": []
+  },
+  {
+    "worktree": "E:/type10-7/github_publish/rffi-labeled-da-three-20260915",
+    "HEAD": "8ba250a753d8ed297c236ed91a0a454748069ba3",
+    "branch": "refs/heads/work/rffi-labeled-da-three-20260915",
+    "status": "CLEAN_KEEP_UNREVIEWED_LINEAGE",
+    "status_exit": 0,
+    "tracked_changes": 0,
+    "untracked_entries": 0,
+    "status_sample": []
+  }
+]

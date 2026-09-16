@@ -1,0 +1,8 @@
+{
+  "schema": 1,
+  "scan_date": "2026-09-16",
+  "database": "E:\\type10-7\\local_artifacts\\project_file_management\\20260916\\inventory.sqlite",
+  "snapshot": "20260916/inventory_summary.json",
+  "changes": "20260916/cleanup_manifest.json",
+  "scope": "local workspace; before-cleanup snapshot plus cleanup manifest; reparse and Git internals excluded"
+}
