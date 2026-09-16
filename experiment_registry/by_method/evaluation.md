@@ -6,4 +6,4 @@
 
 |名称|记录类型|证据入口|
 |---|---|---|
-|响应博弈矩阵测试评估|managed_run|[打开](../../automation_reports/CV-SincNet/response_matrix_eval_20260917/report.md)|
+|响应博弈矩阵测试评估：VERIFIED|managed_run|[打开](../../automation_reports/CV-SincNet/response_matrix_eval_20260917/report.md)|

@@ -1,6 +1,6 @@
 # 实验总索引
 
-更新：2026-09-16T16:28:44+00:00
+更新：2026-09-16T17:05:22+00:00
 
 先按方法/问题检索，再用run ID读取精确配置与证据。历史组数量不等于独立实验数量。
 
@@ -28,4 +28,4 @@
 
 |名称|类型|报告/原目录|
 |---|---|---|
-|响应博弈矩阵测试评估|managed_run|[打开](../automation_reports/CV-SincNet/response_matrix_eval_20260917/report.md)|
+|响应博弈矩阵测试评估：VERIFIED|managed_run|[打开](../automation_reports/CV-SincNet/response_matrix_eval_20260917/report.md)|

@@ -1,0 +1,28 @@
+{
+  "status": "VERIFIED",
+  "completed_rows": 33,
+  "new_rows": 17,
+  "reused_rows": 16,
+  "predictions": 22176000,
+  "scene_recounts": 132,
+  "csv_counts": {
+    "all_groups": 37521,
+    "artifact_paths": 33,
+    "coverage36": 36,
+    "day0_cross_day_cross_RX": 132,
+    "day0_seed_summary": 120,
+    "day0_summary": 33,
+    "DR_EG_interaction": 20,
+    "historical_DAOT_RC4_seed392005_reference": 24,
+    "independent_recount": 132,
+    "method_summary": 12,
+    "paired_rescue_harm": 145,
+    "paired_seed_summary": 55,
+    "seed_summary": 120,
+    "source_curves": 6600,
+    "summary": 33
+  },
+  "evaluation_seconds": 2084.087776184082,
+  "source_contract": "VERIFIED_SCRATCH_MATCHED_SOURCE_ROLES_FIXED_E200",
+  "scope": "fixed inventory; historical benchmark descriptive evaluation"
+}
