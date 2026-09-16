@@ -13,3 +13,9 @@ source为RX1/3/4/6/8、day1/2/3，L/U/V=6300/56700/27000。训练不构造目标
 ## r2技术修复
 
 r1首行在训练前记录resolved_config时SatViewStage对象不能直接JSON序列化而退出。源域物理角色比对已通过，但未开始训练；dispatcher已退出，其余20行未启动。r1全部保留。r2仅将dataclass日程结构转换为JSON对象，保持所有科学参数、seed与预算不变。真实三seed配置回归：旧写法均复现同异常，新写法均通过无损JSON roundtrip。
+
+## N607启动状态：VERIFIED
+
+{'RUNNING': 13, 'QUEUED': 8}；dispatcher PID=2153663。实际逐行PID/GPU/argv、resolved config与日志见launch_readback_verified.json。启动代码commit=4a36c49914ee8ff922d79b7d54a3098ce8f4daa4，release=/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_4a36c49914。原生三seed来源均为scratch；pure_game行明确关闭DAOT/RC4，已观察到接受步。
+
+独立原问题复审PASS：序列化转换不修改原始args或训练配方；三seed回归均通过。r1失败保留，本轮未重用任何失败权重。

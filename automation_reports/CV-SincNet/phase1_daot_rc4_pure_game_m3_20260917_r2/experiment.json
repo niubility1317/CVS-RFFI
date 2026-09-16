@@ -19,9 +19,9 @@
   "replaces_run_id": "phase1_daot_rc4_pure_game_m3_20260917_r1",
   "authorization": "用户2026-09-17明确要求启动DAOT＋RC4三种子及仅动力博弈以上方法三种子进行对比",
   "code": {
-    "commit": "REPAIR_COMMIT_IN_LANDING",
+    "commit": "4a36c49914ee8ff922d79b7d54a3098ce8f4daa4",
     "checkout": "E:\\type10-7\\code\\snapshots\\native_dr_eg_prepare_20260914_wt",
-    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_6a0feba47f",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_4a36c49914",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python; local validation ssr-gpu"
   },
   "data": {
@@ -91,7 +91,19 @@
     "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2",
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_daot_rc4_pure_game_m3_20260917_r2",
     "local_artifact_root": "E:\\type10-7\\automation_reports\\CV-SincNet\\phase1_daot_rc4_pure_game_m3_20260917_r2",
-    "launch_command": "python tools/publish_response_release.py --separate-controls --run-id phase1_daot_rc4_pure_game_m3_20260917_r2 --output E:\\type10-7\\automation_reports\\CV-SincNet\\phase1_daot_rc4_pure_game_m3_20260917_r2\\landing",
+    "launch_command": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_4a36c49914/code/scripts/dispatch_separate_controls.py",
+      "--project",
+      "/home/szu2070436088/2510044040/CV-SincNet",
+      "--run-id",
+      "phase1_daot_rc4_pure_game_m3_20260917_r2",
+      "--commit",
+      "4a36c49914ee8ff922d79b7d54a3098ce8f4daa4",
+      "--source-contract",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_xuc15_s392005_20260913_r1/source_contract.json"
+    ],
     "stop_rule": "A technical row failure holds new submissions and drains healthy rows; no performance stop; no automatic retrain or target selection"
   },
   "expected_artifacts": [
@@ -158,9 +170,9 @@
       "command": [
         "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
         "-u",
-        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_6a0feba47f/code/scripts/train_daot_rc4_baseline.py",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_4a36c49914/code/scripts/train_daot_rc4_baseline.py",
         "--config",
-        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_6a0feba47f/configs/separate_controls/DAOT_RC4_NATIVE_s392005.json",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_4a36c49914/configs/separate_controls/DAOT_RC4_NATIVE_s392005.json",
         "--dataset",
         "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
         "--output",
@@ -173,7 +185,10 @@
         "completion.json",
         "source_contract.json",
         "initialization.json"
-      ]
+      ],
+      "status": "RUNNING",
+      "pid": 2153677,
+      "gpu": 0
     },
     {
       "row_id": "DAOT_RC4_NATIVE_s392006",
@@ -208,9 +223,9 @@
       "command": [
         "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
         "-u",
-        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_6a0feba47f/code/scripts/train_daot_rc4_baseline.py",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_4a36c49914/code/scripts/train_daot_rc4_baseline.py",
         "--config",
-        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_6a0feba47f/configs/separate_controls/DAOT_RC4_NATIVE_s392006.json",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_4a36c49914/configs/separate_controls/DAOT_RC4_NATIVE_s392006.json",
         "--dataset",
         "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
         "--output",
@@ -223,7 +238,10 @@
         "completion.json",
         "source_contract.json",
         "initialization.json"
-      ]
+      ],
+      "status": "RUNNING",
+      "pid": 2153690,
+      "gpu": 1
     },
     {
       "row_id": "DAOT_RC4_NATIVE_s392007",
@@ -258,9 +276,9 @@
       "command": [
         "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
         "-u",
-        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_6a0feba47f/code/scripts/train_daot_rc4_baseline.py",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_4a36c49914/code/scripts/train_daot_rc4_baseline.py",
         "--config",
-        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_6a0feba47f/configs/separate_controls/DAOT_RC4_NATIVE_s392007.json",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_4a36c49914/configs/separate_controls/DAOT_RC4_NATIVE_s392007.json",
         "--dataset",
         "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
         "--output",
@@ -273,7 +291,10 @@
         "completion.json",
         "source_contract.json",
         "initialization.json"
-      ]
+      ],
+      "status": "RUNNING",
+      "pid": 2153703,
+      "gpu": 2
     },
     {
       "row_id": "PURE_SIM_s392005",
@@ -308,9 +329,9 @@
       "command": [
         "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
         "-u",
-        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_6a0feba47f/code/scripts/train_response_games.py",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_4a36c49914/code/scripts/train_response_games.py",
         "--config",
-        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_6a0feba47f/configs/separate_controls/PURE_SIM_s392005.json",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_4a36c49914/configs/separate_controls/PURE_SIM_s392005.json",
         "--dataset",
         "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
         "--output",
@@ -326,7 +347,10 @@
         "completion.json",
         "source_contract.json",
         "initialization.json"
-      ]
+      ],
+      "status": "RUNNING",
+      "pid": 2153717,
+      "gpu": 3
     },
     {
       "row_id": "PURE_EG_s392005",
@@ -361,9 +385,9 @@
       "command": [
         "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
         "-u",
-        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_6a0feba47f/code/scripts/train_response_games.py",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_4a36c49914/code/scripts/train_response_games.py",
         "--config",
-        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_6a0feba47f/configs/separate_controls/PURE_EG_s392005.json",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_4a36c49914/configs/separate_controls/PURE_EG_s392005.json",
         "--dataset",
         "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
         "--output",
@@ -379,7 +403,10 @@
         "completion.json",
         "source_contract.json",
         "initialization.json"
-      ]
+      ],
+      "status": "RUNNING",
+      "pid": 2153793,
+      "gpu": 5
     },
     {
       "row_id": "PURE_CF_EG_s392005",
@@ -414,9 +441,9 @@
       "command": [
         "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
         "-u",
-        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_6a0feba47f/code/scripts/train_response_games.py",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_4a36c49914/code/scripts/train_response_games.py",
         "--config",
-        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_6a0feba47f/configs/separate_controls/PURE_CF_EG_s392005.json",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_4a36c49914/configs/separate_controls/PURE_CF_EG_s392005.json",
         "--dataset",
         "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
         "--output",
@@ -432,7 +459,10 @@
         "completion.json",
         "source_contract.json",
         "initialization.json"
-      ]
+      ],
+      "status": "RUNNING",
+      "pid": 2153930,
+      "gpu": 5
     },
     {
       "row_id": "PURE_TR_EG_s392005",
@@ -467,9 +497,9 @@
       "command": [
         "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
         "-u",
-        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_6a0feba47f/code/scripts/train_response_games.py",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_4a36c49914/code/scripts/train_response_games.py",
         "--config",
-        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_6a0feba47f/configs/separate_controls/PURE_TR_EG_s392005.json",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_4a36c49914/configs/separate_controls/PURE_TR_EG_s392005.json",
         "--dataset",
         "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
         "--output",
@@ -485,7 +515,10 @@
         "completion.json",
         "source_contract.json",
         "initialization.json"
-      ]
+      ],
+      "status": "RUNNING",
+      "pid": 2154003,
+      "gpu": 0
     },
     {
       "row_id": "PURE_XT_DANN_s392005",
@@ -520,9 +553,9 @@
       "command": [
         "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
         "-u",
-        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_6a0feba47f/code/scripts/train_response_games.py",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_4a36c49914/code/scripts/train_response_games.py",
         "--config",
-        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_6a0feba47f/configs/separate_controls/PURE_XT_DANN_s392005.json",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_4a36c49914/configs/separate_controls/PURE_XT_DANN_s392005.json",
         "--dataset",
         "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
         "--output",
@@ -538,7 +571,10 @@
         "completion.json",
         "source_contract.json",
         "initialization.json"
-      ]
+      ],
+      "status": "RUNNING",
+      "pid": 2154076,
+      "gpu": 2
     },
     {
       "row_id": "PURE_DRIC_s392005",
@@ -573,9 +609,9 @@
       "command": [
         "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
         "-u",
-        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_6a0feba47f/code/scripts/train_response_games.py",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_4a36c49914/code/scripts/train_response_games.py",
         "--config",
-        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_6a0feba47f/configs/separate_controls/PURE_DRIC_s392005.json",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_4a36c49914/configs/separate_controls/PURE_DRIC_s392005.json",
         "--dataset",
         "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
         "--output",
@@ -591,7 +627,10 @@
         "completion.json",
         "source_contract.json",
         "initialization.json"
-      ]
+      ],
+      "status": "RUNNING",
+      "pid": 2154556,
+      "gpu": 1
     },
     {
       "row_id": "PURE_SIM_s392006",
@@ -626,9 +665,9 @@
       "command": [
         "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
         "-u",
-        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_6a0feba47f/code/scripts/train_response_games.py",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_4a36c49914/code/scripts/train_response_games.py",
         "--config",
-        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_6a0feba47f/configs/separate_controls/PURE_SIM_s392006.json",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_4a36c49914/configs/separate_controls/PURE_SIM_s392006.json",
         "--dataset",
         "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
         "--output",
@@ -644,7 +683,10 @@
         "completion.json",
         "source_contract.json",
         "initialization.json"
-      ]
+      ],
+      "status": "RUNNING",
+      "pid": 2154629,
+      "gpu": 3
     },
     {
       "row_id": "PURE_EG_s392006",
@@ -679,9 +721,9 @@
       "command": [
         "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
         "-u",
-        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_6a0feba47f/code/scripts/train_response_games.py",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_4a36c49914/code/scripts/train_response_games.py",
         "--config",
-        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_6a0feba47f/configs/separate_controls/PURE_EG_s392006.json",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_4a36c49914/configs/separate_controls/PURE_EG_s392006.json",
         "--dataset",
         "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
         "--output",
@@ -697,7 +739,10 @@
         "completion.json",
         "source_contract.json",
         "initialization.json"
-      ]
+      ],
+      "status": "RUNNING",
+      "pid": 2154702,
+      "gpu": 4
     },
     {
       "row_id": "PURE_CF_EG_s392006",
@@ -732,9 +777,9 @@
       "command": [
         "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
         "-u",
-        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_6a0feba47f/code/scripts/train_response_games.py",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_4a36c49914/code/scripts/train_response_games.py",
         "--config",
-        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_6a0feba47f/configs/separate_controls/PURE_CF_EG_s392006.json",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_4a36c49914/configs/separate_controls/PURE_CF_EG_s392006.json",
         "--dataset",
         "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
         "--output",
@@ -750,7 +795,10 @@
         "completion.json",
         "source_contract.json",
         "initialization.json"
-      ]
+      ],
+      "status": "RUNNING",
+      "pid": 2154775,
+      "gpu": 6
     },
     {
       "row_id": "PURE_TR_EG_s392006",
@@ -785,9 +833,9 @@
       "command": [
         "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
         "-u",
-        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_6a0feba47f/code/scripts/train_response_games.py",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_4a36c49914/code/scripts/train_response_games.py",
         "--config",
-        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_6a0feba47f/configs/separate_controls/PURE_TR_EG_s392006.json",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_4a36c49914/configs/separate_controls/PURE_TR_EG_s392006.json",
         "--dataset",
         "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
         "--output",
@@ -803,7 +851,10 @@
         "completion.json",
         "source_contract.json",
         "initialization.json"
-      ]
+      ],
+      "status": "RUNNING",
+      "pid": 2154848,
+      "gpu": 7
     },
     {
       "row_id": "PURE_XT_DANN_s392006",
@@ -838,9 +889,9 @@
       "command": [
         "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
         "-u",
-        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_6a0feba47f/code/scripts/train_response_games.py",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_4a36c49914/code/scripts/train_response_games.py",
         "--config",
-        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_6a0feba47f/configs/separate_controls/PURE_XT_DANN_s392006.json",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_4a36c49914/configs/separate_controls/PURE_XT_DANN_s392006.json",
         "--dataset",
         "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
         "--output",
@@ -856,7 +907,8 @@
         "completion.json",
         "source_contract.json",
         "initialization.json"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "PURE_DRIC_s392006",
@@ -891,9 +943,9 @@
       "command": [
         "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
         "-u",
-        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_6a0feba47f/code/scripts/train_response_games.py",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_4a36c49914/code/scripts/train_response_games.py",
         "--config",
-        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_6a0feba47f/configs/separate_controls/PURE_DRIC_s392006.json",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_4a36c49914/configs/separate_controls/PURE_DRIC_s392006.json",
         "--dataset",
         "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
         "--output",
@@ -909,7 +961,8 @@
         "completion.json",
         "source_contract.json",
         "initialization.json"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "PURE_SIM_s392007",
@@ -944,9 +997,9 @@
       "command": [
         "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
         "-u",
-        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_6a0feba47f/code/scripts/train_response_games.py",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_4a36c49914/code/scripts/train_response_games.py",
         "--config",
-        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_6a0feba47f/configs/separate_controls/PURE_SIM_s392007.json",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_4a36c49914/configs/separate_controls/PURE_SIM_s392007.json",
         "--dataset",
         "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
         "--output",
@@ -962,7 +1015,8 @@
         "completion.json",
         "source_contract.json",
         "initialization.json"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "PURE_EG_s392007",
@@ -997,9 +1051,9 @@
       "command": [
         "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
         "-u",
-        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_6a0feba47f/code/scripts/train_response_games.py",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_4a36c49914/code/scripts/train_response_games.py",
         "--config",
-        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_6a0feba47f/configs/separate_controls/PURE_EG_s392007.json",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_4a36c49914/configs/separate_controls/PURE_EG_s392007.json",
         "--dataset",
         "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
         "--output",
@@ -1015,7 +1069,8 @@
         "completion.json",
         "source_contract.json",
         "initialization.json"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "PURE_CF_EG_s392007",
@@ -1050,9 +1105,9 @@
       "command": [
         "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
         "-u",
-        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_6a0feba47f/code/scripts/train_response_games.py",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_4a36c49914/code/scripts/train_response_games.py",
         "--config",
-        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_6a0feba47f/configs/separate_controls/PURE_CF_EG_s392007.json",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_4a36c49914/configs/separate_controls/PURE_CF_EG_s392007.json",
         "--dataset",
         "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
         "--output",
@@ -1068,7 +1123,8 @@
         "completion.json",
         "source_contract.json",
         "initialization.json"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "PURE_TR_EG_s392007",
@@ -1103,9 +1159,9 @@
       "command": [
         "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
         "-u",
-        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_6a0feba47f/code/scripts/train_response_games.py",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_4a36c49914/code/scripts/train_response_games.py",
         "--config",
-        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_6a0feba47f/configs/separate_controls/PURE_TR_EG_s392007.json",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_4a36c49914/configs/separate_controls/PURE_TR_EG_s392007.json",
         "--dataset",
         "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
         "--output",
@@ -1121,7 +1177,8 @@
         "completion.json",
         "source_contract.json",
         "initialization.json"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "PURE_XT_DANN_s392007",
@@ -1156,9 +1213,9 @@
       "command": [
         "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
         "-u",
-        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_6a0feba47f/code/scripts/train_response_games.py",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_4a36c49914/code/scripts/train_response_games.py",
         "--config",
-        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_6a0feba47f/configs/separate_controls/PURE_XT_DANN_s392007.json",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_4a36c49914/configs/separate_controls/PURE_XT_DANN_s392007.json",
         "--dataset",
         "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
         "--output",
@@ -1174,7 +1231,8 @@
         "completion.json",
         "source_contract.json",
         "initialization.json"
-      ]
+      ],
+      "status": "QUEUED"
     },
     {
       "row_id": "PURE_DRIC_s392007",
@@ -1209,9 +1267,9 @@
       "command": [
         "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
         "-u",
-        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_6a0feba47f/code/scripts/train_response_games.py",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_4a36c49914/code/scripts/train_response_games.py",
         "--config",
-        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_6a0feba47f/configs/separate_controls/PURE_DRIC_s392007.json",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_4a36c49914/configs/separate_controls/PURE_DRIC_s392007.json",
         "--dataset",
         "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
         "--output",
@@ -1227,7 +1285,8 @@
         "completion.json",
         "source_contract.json",
         "initialization.json"
-      ]
+      ],
+      "status": "QUEUED"
     }
   ],
   "notes": [
