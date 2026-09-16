@@ -30,9 +30,13 @@ env['CUDA_VISIBLE_DEVICES']=str(gpu)
 check=project/'logs'/(c['run_id']+'_preflight')
 with (project/'logs'/(c['run_id']+'.smoke.log')).open('x') as log:
     subprocess.run([python,str(release/'code/scripts/check_response_execution.py'),'--output',str(check),
-        '--device','cuda:0'],cwd=release,env=env,stdout=log,stderr=subprocess.STDOUT,check=True)
+        '--device','cuda:0']+(['--pure-game'] if c.get('separate_controls') else []),cwd=release,env=env,stdout=log,stderr=subprocess.STDOUT,check=True)
+    if c.get('separate_controls'):
+        subprocess.run([python,str(release/'code/scripts/check_a1_fast_v2.py'),'--device','cuda:0',
+            '--output',str(check/'native_acceptance.json')],cwd=release,env=env,stdout=log,stderr=subprocess.STDOUT,check=True)
 if json.loads((check/'acceptance.json').read_text())['status']!='PASS':raise ValueError('checkpoint smoke not PASS')
-command=[python,'-u',str(release/'code/scripts/dispatch_response_matrix.py'),'--project',str(project),'--run-id',c['run_id'],'--commit',c['commit'],'--source-contract',str(project/'runs/phase1_adv3b02_xuc15_s392005_20260913_r1/source_contract.json')]
+dispatcher='dispatch_separate_controls.py' if c.get('separate_controls') else 'dispatch_response_matrix.py'
+command=[python,'-u',str(release/'code/scripts'/dispatcher),'--project',str(project),'--run-id',c['run_id'],'--commit',c['commit'],'--source-contract',str(project/'runs/phase1_adv3b02_xuc15_s392005_20260913_r1/source_contract.json')]
 log_path=project/'logs'/(c['run_id']+'.dispatcher.log')
 with log_path.open('x') as log:
     child=subprocess.Popen(command,cwd=release,env=env,stdin=subprocess.DEVNULL,stdout=log,stderr=subprocess.STDOUT,start_new_session=True)
@@ -44,6 +48,7 @@ print(json.dumps(receipt))
 
 def main():
     p=argparse.ArgumentParser();p.add_argument('--run-id',required=True);p.add_argument('--output',type=Path,required=True)
+    p.add_argument('--separate-controls',action='store_true')
     a=p.parse_args();repo=Path(__file__).resolve().parents[3]
     # Path is repo/experiments/adv3b02_xuc/tools/this_file.py.
     commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=repo,text=True).strip()
@@ -53,13 +58,13 @@ def main():
     dirty=subprocess.check_output(['git','status','--porcelain','--','experiments/adv3b02_xuc'],cwd=repo,text=True)
     if dirty:raise ValueError('release code/config has uncommitted changes')
     a.output.mkdir(parents=True,exist_ok=True)
-    release='adv3b02_response_'+commit[:10];archive=a.output/(release+'.tar')
+    release=('adv3b02_controls_' if a.separate_controls else 'adv3b02_response_')+commit[:10];archive=a.output/(release+'.tar')
     subprocess.run(['git','archive','--format=tar','--prefix='+release+'/','--output='+str(archive),commit+':experiments/adv3b02_xuc'],cwd=repo,check=True)
     sha=hashlib.sha256(archive.read_bytes()).hexdigest()
     project='/home/szu2070436088/2510044040/CV-SincNet'
     connection=['-F','E:/type10-7/tools/n607_ssh_config','-o','BatchMode=yes','-o','ConnectTimeout=10']
     subprocess.run(['scp',*connection,str(archive),'N607:'+project+'/releases/'+archive.name],check=True)
-    config=dict(project=project,release=release,archive=archive.name,sha256=sha,run_id=a.run_id,commit=commit)
+    config=dict(project=project,release=release,archive=archive.name,sha256=sha,run_id=a.run_id,commit=commit,separate_controls=a.separate_controls)
     script=REMOTE_SCRIPT.replace('CONFIG',repr(config))
     result=subprocess.run(['ssh',*connection,'-T','N607','python3 -'],input=script.encode('utf-8'),capture_output=True)
     (a.output/'landing.stdout').write_bytes(result.stdout);(a.output/'landing.stderr').write_bytes(result.stderr)

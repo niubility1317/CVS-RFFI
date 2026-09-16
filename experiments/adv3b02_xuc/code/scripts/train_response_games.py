@@ -15,7 +15,7 @@ def main():
     p.add_argument('--source-contract');p.add_argument('--execute',action='store_true')
     a=p.parse_args();doc=json.loads(a.config.read_text(encoding='utf-8'))
     if doc.get('status')=='DEPENDENCY_TEMPLATE':raise ValueError('dependent template is not executable')
-    old=doc['row'];row=make_row(old['id'],old['response'],old['joint']['model_seed'])
+    old=doc['row'];row=make_row(old['id'],old['response'],old['joint']['model_seed'],pure_game=old.get('pure_game',False))
     if row!=old:raise ValueError('configuration differs from canonical prepared row')
     recipe=json.loads((ROOT/'configs/core90_recipe_reference.json').read_text(encoding='utf-8'))
     args=resolve_args(recipe,row,dataset=a.dataset,output=a.output,device=a.device)

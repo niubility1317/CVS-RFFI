@@ -42,7 +42,7 @@ def response_step(solver,objective,ctx,args,dr,monitor,completed):
             return float((values[mask]*weights).sum()/weights.sum().clamp_min(1e-12)) if mask.any() else None
         return dict(H_pseudo_probability=aggregate(true,route.hard),P_set_mass=aggregate(mass,route.partial),
             hard_constraints=False,pseudo_labels_are_not_truth=True)
-    risk.auxiliary=hp_monitor
+    if not getattr(dr,'pure_game',False):risk.auxiliary=hp_monitor
     diagnostic_interval=args.joint['diagnostic_interval']
     observe=diagnostic_interval>0 and completed%diagnostic_interval==0
     observation_before=source_observation(solver.model,batch,views) if observe else None

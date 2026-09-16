@@ -1,4 +1,4 @@
-# response实验与历史证据
+# rc4实验与历史证据
 
 [返回总索引](../README.md)
 
@@ -7,4 +7,3 @@
 |名称|记录类型|证据入口|
 |---|---|---|
 |原生DAOT＋RC4与仅动力博弈三seed对照|managed_run|[打开](../../automation_reports/CV-SincNet/phase1_daot_rc4_pure_game_m3_20260917_r1/report.md)|
-|响应博弈矩阵测试评估：VERIFIED|managed_run|[打开](../../automation_reports/CV-SincNet/response_matrix_eval_20260917/report.md)|

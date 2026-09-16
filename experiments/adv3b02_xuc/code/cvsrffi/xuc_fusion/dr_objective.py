@@ -43,8 +43,14 @@ class DROT:
         self.calibration=None;self.calibration_epoch=None;self.commits=0
         self.route_history={}
         self.source_args=args
+        self.pure_game=bool(args.xuc_row.get('pure_game',False))
+        if self.pure_game:
+            if self.joint['native_dr']:raise ValueError('pure game cannot enable native DR')
+            self.args.fasttrust_rc4=False
+            self.args.use_adv3b02_daot_stn=False
 
     def calibrate(self,epoch):
+        if self.pure_game:return None
         boundary=max(e for e in (1,21,41,91,161) if e<=epoch)
         if self.calibration_epoch==boundary:return None
         device=next(self.model.parameters()).device
@@ -85,6 +91,10 @@ class DROT:
         device=ctx.x.device
         ctx.dr_x=x.to(device);ctx.dr_d=d.to(device);ctx.dr_rx=meta['rx_i'].to(device)
         ctx.dr_strong=native._strong_augment(ctx.dr_x,self.args.strong_noise_std).detach()
+        if self.pure_game:
+            ctx.dr_ids=list(meta['sample_id']);ctx.dr_telemetry={}
+            ctx.dr_used_divisors=None;ctx.dr_field_divisors=[]
+            return
         with torch.no_grad():
             self.ema.eval()
             weak=native._strong_augment(ctx.dr_x,max(1e-5,self.args.strong_noise_std*.25))
@@ -109,6 +119,22 @@ class DROT:
         ctx.dr_ids=list(meta['sample_id'])
 
     def objective(self,ctx,out):
+        if self.pure_game:
+            # Preserve only the registered U adversarial-head CE. No RC4 route,
+            # pseudo identity, z_dom/self auxiliary objective, teacher or DAOT.
+            strong=self.model(ctx.dr_strong,return_aux=True,domain_labels=ctx.dr_d,grl_lambda=0.)
+            zero=out['z_id'].sum()*0.
+            weight=float(self.args.rc4_lambda_domain)*native.rc4_tail_transition_scale(ctx.epoch,
+                start_epoch=self.args.rc4_tail_transition_start_epoch,ramp_epochs=self.args.rc4_tail_transition_epochs,
+                floor=self.args.rc4_tail_transition_floor)
+            if not self.source_args.response['unlabeled_head']:weight=0.
+            loss=weight*torch.nn.functional.cross_entropy(strong['adv_dom_logits'].float(),ctx.dr_d)
+            ctx.dr_weighted_identity=zero
+            ctx.dr_telemetry=dict(pure_game=True,native_dr_enabled=False,daot_executed=False,
+                rc4_executed=False,identity_active=False,weighted_identity=0.,daot_labeled=0.,daot_unlabeled=0.,
+                U_head_loss=float(loss.detach()),U_head_coefficient=weight,U_encoder=0.,rc4_auxiliary_losses=False)
+            return loss,dict(daot_labeled=zero,daot_unlabeled=zero,rc4_total=zero,
+                rc4_identity=zero,rc4_domain=zero,rc4_self=zero,game_U_head=loss)
         # Each EG field gets an isolated scale estimator initialized at the same origin.
         local=deepcopy(self.scale);local.load_state_dict(ctx.dr_scale_origin)
         if self.joint:
@@ -178,6 +204,9 @@ class DROT:
         return labeled['loss']+unlabeled['loss']+rc4['total'],terms
 
     def commit(self,ctx):
+        if self.pure_game:
+            self.commits+=1
+            return
         self.scale.load_state_dict(ctx.dr_pending_scale);self.commits+=1
         if self.joint:
             states=torch.where(ctx.dr_route.hard,1,torch.where(ctx.dr_route.partial,2,0)).cpu().tolist()

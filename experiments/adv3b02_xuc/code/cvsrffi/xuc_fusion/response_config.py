@@ -35,12 +35,16 @@ def resolve(values):
     if c['xt_inner_lr_ratio']!=1.:raise ValueError('one-step head LR ratio is fixed at one')
     return c
 
-def make_row(name, response, seed=392005):
+def make_row(name, response, seed=392005, *, pure_game=False):
+    if type(pure_game) is not bool:raise ValueError('pure_game must be boolean')
     c=resolve(response)
     base='simultaneous' if c['method'] in ('DRIC','SIM','FR','CGD','TASK_PROJECT') else 'full_EG'
     row=native_row(name,dict(solver_mode=base,model_seed=seed,normalization_scales='reuse_origin_used_scales',
         labeled_encoder_grl_multiplier=float(c['encoder_adversary'])*c['encoder_multiplier']))
     row['response']=c
+    if pure_game:
+        row['pure_game']=True
+        row['joint']['native_dr']=False
     return row
 
 def cadence(c):

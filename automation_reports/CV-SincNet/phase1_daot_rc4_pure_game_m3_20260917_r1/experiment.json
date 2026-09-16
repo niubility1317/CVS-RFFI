@@ -1,0 +1,933 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "phase1_daot_rc4_pure_game_m3_20260917_r1",
+  "group_id": "phase1-daot-response-game-separated-controls",
+  "display_name": "原生DAOT＋RC4与仅动力博弈三seed对照",
+  "description": "3行原生F0配方DAOT＋RC4；18行仅动力博弈SIM/EG/CF/TR/XT/DRIC。共同source物理角色；新18行与原联合18行同seed、同预算及响应参数，移除全部DAOT/RC4功能；原生配方作独立recipe比较。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "daot",
+    "rc4",
+    "response",
+    "core90",
+    "three_seed"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "用户2026-09-17明确要求启动DAOT＋RC4三种子及仅动力博弈以上方法三种子进行对比",
+  "code": {
+    "commit": "FIXED_AT_RELEASE_IN_LANDING_EVIDENCE",
+    "checkout": "E:\\type10-7\\code\\snapshots\\native_dr_eg_prepare_20260914_wt",
+    "cwd": "immutable N607 release",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python; local validation ssr-gpu"
+  },
+  "data": {
+    "dataset": "WiSig ManySig CORE90",
+    "version": null,
+    "representation": "equalized=1; 2x256; normalized center crop",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_xuc15_s392005_20260913_r1/source_contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/source_contract.json",
+    "label_map_ref": "E:\\type10-7\\code\\snapshots\\native_dr_eg_prepare_20260914_wt\\experiments\\adv3b02_xuc\\configs\\core90_recipe_reference.json",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "V": 27000
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": null,
+    "support_query_ref": null,
+    "leo_config_ref": "E:\\type10-7\\code\\snapshots\\native_dr_eg_prepare_20260914_wt\\experiments\\adv3b02_xuc\\configs\\core90_recipe_reference.json"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none in training; frozen final predictions then independent scoring",
+    "external_method_exception": null,
+    "claim_scope": "previously exposed benchmark exploratory recipe and ablation comparison; no blind confirmation"
+  },
+  "checkpoint": {
+    "initialization": "scratch",
+    "sources": [],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/<row>/source_contract.json",
+    "provenance_verdict": "NO_EXTERNAL_CHECKPOINT_OR_TEACHER; every row exact physical-role check at startup",
+    "selection_rule": "fixed final E200; no target feedback"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "/root",
+    "gpu_policy": "max_two_training_runs_per_gpu",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_daot_rc4_pure_game_m3_20260917_r1",
+    "local_artifact_root": "E:\\type10-7\\automation_reports\\CV-SincNet\\phase1_daot_rc4_pure_game_m3_20260917_r1",
+    "launch_command": "python tools/publish_response_release.py --separate-controls --run-id phase1_daot_rc4_pure_game_m3_20260917_r1 --output E:\\type10-7\\automation_reports\\CV-SincNet\\phase1_daot_rc4_pure_game_m3_20260917_r1\\landing",
+    "stop_rule": "A technical row failure holds new submissions and drains healthy rows; no performance stop; no automatic retrain or target selection"
+  },
+  "expected_artifacts": [
+    "effective_matrix.json",
+    "pipeline_state.json",
+    "per-row resolved_config.json",
+    "per-row source_contract.json",
+    "final_ssdg.pth",
+    "completion.json",
+    "full source metrics",
+    "frozen predictions and independent scores after training"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "Macro-F1",
+      "weak RX/TX",
+      "paired seed delta",
+      "mean and sample SD",
+      "cost"
+    ],
+    "dimensions": [
+      "row",
+      "seed",
+      "RX",
+      "day",
+      "TX",
+      "scene"
+    ],
+    "prediction_ref": "fixed E200; same opaque target package, batch256, eval seed392005",
+    "scorer_ref": "E:\\type10-7\\code\\snapshots\\native_dr_eg_prepare_20260914_wt\\experiments\\adv3b02_xuc\\tools\\score_native_joint_predictions.py"
+  },
+  "rows": [
+    {
+      "row_id": "DAOT_RC4_NATIVE_s392005",
+      "method": "DAOT+RC4 native F0 recipe; no added game solver",
+      "purpose": "native_baseline",
+      "config_ref": "E:\\type10-7\\code\\snapshots\\native_dr_eg_prepare_20260914_wt\\experiments\\adv3b02_xuc\\configs\\separate_controls\\DAOT_RC4_NATIVE_s392005.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/DAOT_RC4_NATIVE_s392005/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 392005,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 392005,
+        "support": null,
+        "evaluation": 392005
+      },
+      "seed_notes": "support不适用；连续物理ID划分无随机步骤，逐角色与392005契约精确比对。原生seed控制初始化/loader随机流/部分增强；sat_view_seed=2027。不宣称与响应入口随机轨迹完全相同。",
+      "k": null,
+      "scenario": [
+        "clean",
+        "leo_clear_weak",
+        "leo_low_elev_weak",
+        "leo_rain_weak"
+      ],
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "E200 native full unlabeled epochs; AMP may skip nonfinite gradients; disclose accepted updates",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/DAOT_RC4_NATIVE_s392005",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_daot_rc4_pure_game_m3_20260917_r1/DAOT_RC4_NATIVE_s392005.train.log",
+      "command": "effective command generated by dispatch_separate_controls.command; recorded in pipeline_state.json and row.launch.json",
+      "expected_artifacts": [
+        "final_ssdg.pth",
+        "completion.json",
+        "source_contract.json",
+        "initialization.json"
+      ]
+    },
+    {
+      "row_id": "DAOT_RC4_NATIVE_s392006",
+      "method": "DAOT+RC4 native F0 recipe; no added game solver",
+      "purpose": "native_baseline",
+      "config_ref": "E:\\type10-7\\code\\snapshots\\native_dr_eg_prepare_20260914_wt\\experiments\\adv3b02_xuc\\configs\\separate_controls\\DAOT_RC4_NATIVE_s392006.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/DAOT_RC4_NATIVE_s392006/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 392006,
+        "split": 392005,
+        "data": 392006,
+        "augmentation": 392006,
+        "support": null,
+        "evaluation": 392005
+      },
+      "seed_notes": "support不适用；连续物理ID划分无随机步骤，逐角色与392005契约精确比对。原生seed控制初始化/loader随机流/部分增强；sat_view_seed=2027。不宣称与响应入口随机轨迹完全相同。",
+      "k": null,
+      "scenario": [
+        "clean",
+        "leo_clear_weak",
+        "leo_low_elev_weak",
+        "leo_rain_weak"
+      ],
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "E200 native full unlabeled epochs; AMP may skip nonfinite gradients; disclose accepted updates",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/DAOT_RC4_NATIVE_s392006",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_daot_rc4_pure_game_m3_20260917_r1/DAOT_RC4_NATIVE_s392006.train.log",
+      "command": "effective command generated by dispatch_separate_controls.command; recorded in pipeline_state.json and row.launch.json",
+      "expected_artifacts": [
+        "final_ssdg.pth",
+        "completion.json",
+        "source_contract.json",
+        "initialization.json"
+      ]
+    },
+    {
+      "row_id": "DAOT_RC4_NATIVE_s392007",
+      "method": "DAOT+RC4 native F0 recipe; no added game solver",
+      "purpose": "native_baseline",
+      "config_ref": "E:\\type10-7\\code\\snapshots\\native_dr_eg_prepare_20260914_wt\\experiments\\adv3b02_xuc\\configs\\separate_controls\\DAOT_RC4_NATIVE_s392007.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/DAOT_RC4_NATIVE_s392007/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 392007,
+        "split": 392005,
+        "data": 392007,
+        "augmentation": 392007,
+        "support": null,
+        "evaluation": 392005
+      },
+      "seed_notes": "support不适用；连续物理ID划分无随机步骤，逐角色与392005契约精确比对。原生seed控制初始化/loader随机流/部分增强；sat_view_seed=2027。不宣称与响应入口随机轨迹完全相同。",
+      "k": null,
+      "scenario": [
+        "clean",
+        "leo_clear_weak",
+        "leo_low_elev_weak",
+        "leo_rain_weak"
+      ],
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "E200 native full unlabeled epochs; AMP may skip nonfinite gradients; disclose accepted updates",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/DAOT_RC4_NATIVE_s392007",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_daot_rc4_pure_game_m3_20260917_r1/DAOT_RC4_NATIVE_s392007.train.log",
+      "command": "effective command generated by dispatch_separate_controls.command; recorded in pipeline_state.json and row.launch.json",
+      "expected_artifacts": [
+        "final_ssdg.pth",
+        "completion.json",
+        "source_contract.json",
+        "initialization.json"
+      ]
+    },
+    {
+      "row_id": "PURE_SIM_s392005",
+      "method": "pure SIM; DAOT/RC4 routes, calibration and auxiliary losses disabled; L/U adversarial heads retained",
+      "purpose": "pure_game",
+      "config_ref": "E:\\type10-7\\code\\snapshots\\native_dr_eg_prepare_20260914_wt\\experiments\\adv3b02_xuc\\configs\\separate_controls\\PURE_SIM_s392005.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_SIM_s392005/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 392005,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 392005,
+        "support": null,
+        "evaluation": 392005
+      },
+      "seed_notes": "support不适用；仅model seed扫描，其他随机角色固定",
+      "k": null,
+      "scenario": [
+        "clean",
+        "leo_clear_weak",
+        "leo_low_elev_weak",
+        "leo_rain_weak"
+      ],
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "E200 x 222 accepted steps = 44400",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_SIM_s392005",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_SIM_s392005.train.log",
+      "command": "effective command generated by dispatch_separate_controls.command; recorded in pipeline_state.json and row.launch.json",
+      "expected_artifacts": [
+        "final_ssdg.pth",
+        "completion.json",
+        "source_contract.json",
+        "initialization.json"
+      ]
+    },
+    {
+      "row_id": "PURE_EG_s392005",
+      "method": "pure EG; DAOT/RC4 routes, calibration and auxiliary losses disabled; L/U adversarial heads retained",
+      "purpose": "pure_game",
+      "config_ref": "E:\\type10-7\\code\\snapshots\\native_dr_eg_prepare_20260914_wt\\experiments\\adv3b02_xuc\\configs\\separate_controls\\PURE_EG_s392005.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_EG_s392005/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 392005,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 392005,
+        "support": null,
+        "evaluation": 392005
+      },
+      "seed_notes": "support不适用；仅model seed扫描，其他随机角色固定",
+      "k": null,
+      "scenario": [
+        "clean",
+        "leo_clear_weak",
+        "leo_low_elev_weak",
+        "leo_rain_weak"
+      ],
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "E200 x 222 accepted steps = 44400",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_EG_s392005",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_EG_s392005.train.log",
+      "command": "effective command generated by dispatch_separate_controls.command; recorded in pipeline_state.json and row.launch.json",
+      "expected_artifacts": [
+        "final_ssdg.pth",
+        "completion.json",
+        "source_contract.json",
+        "initialization.json"
+      ]
+    },
+    {
+      "row_id": "PURE_CF_EG_s392005",
+      "method": "pure CF_EG; DAOT/RC4 routes, calibration and auxiliary losses disabled; L/U adversarial heads retained",
+      "purpose": "pure_game",
+      "config_ref": "E:\\type10-7\\code\\snapshots\\native_dr_eg_prepare_20260914_wt\\experiments\\adv3b02_xuc\\configs\\separate_controls\\PURE_CF_EG_s392005.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_CF_EG_s392005/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 392005,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 392005,
+        "support": null,
+        "evaluation": 392005
+      },
+      "seed_notes": "support不适用；仅model seed扫描，其他随机角色固定",
+      "k": null,
+      "scenario": [
+        "clean",
+        "leo_clear_weak",
+        "leo_low_elev_weak",
+        "leo_rain_weak"
+      ],
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "E200 x 222 accepted steps = 44400",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_CF_EG_s392005",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_CF_EG_s392005.train.log",
+      "command": "effective command generated by dispatch_separate_controls.command; recorded in pipeline_state.json and row.launch.json",
+      "expected_artifacts": [
+        "final_ssdg.pth",
+        "completion.json",
+        "source_contract.json",
+        "initialization.json"
+      ]
+    },
+    {
+      "row_id": "PURE_TR_EG_s392005",
+      "method": "pure TR_EG; DAOT/RC4 routes, calibration and auxiliary losses disabled; L/U adversarial heads retained",
+      "purpose": "pure_game",
+      "config_ref": "E:\\type10-7\\code\\snapshots\\native_dr_eg_prepare_20260914_wt\\experiments\\adv3b02_xuc\\configs\\separate_controls\\PURE_TR_EG_s392005.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_TR_EG_s392005/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 392005,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 392005,
+        "support": null,
+        "evaluation": 392005
+      },
+      "seed_notes": "support不适用；仅model seed扫描，其他随机角色固定",
+      "k": null,
+      "scenario": [
+        "clean",
+        "leo_clear_weak",
+        "leo_low_elev_weak",
+        "leo_rain_weak"
+      ],
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "E200 x 222 accepted steps = 44400",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_TR_EG_s392005",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_TR_EG_s392005.train.log",
+      "command": "effective command generated by dispatch_separate_controls.command; recorded in pipeline_state.json and row.launch.json",
+      "expected_artifacts": [
+        "final_ssdg.pth",
+        "completion.json",
+        "source_contract.json",
+        "initialization.json"
+      ]
+    },
+    {
+      "row_id": "PURE_XT_DANN_s392005",
+      "method": "pure XT_DANN; DAOT/RC4 routes, calibration and auxiliary losses disabled; L/U adversarial heads retained",
+      "purpose": "pure_game",
+      "config_ref": "E:\\type10-7\\code\\snapshots\\native_dr_eg_prepare_20260914_wt\\experiments\\adv3b02_xuc\\configs\\separate_controls\\PURE_XT_DANN_s392005.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_XT_DANN_s392005/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 392005,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 392005,
+        "support": null,
+        "evaluation": 392005
+      },
+      "seed_notes": "support不适用；仅model seed扫描，其他随机角色固定",
+      "k": null,
+      "scenario": [
+        "clean",
+        "leo_clear_weak",
+        "leo_low_elev_weak",
+        "leo_rain_weak"
+      ],
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "E200 x 222 accepted steps = 44400",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_XT_DANN_s392005",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_XT_DANN_s392005.train.log",
+      "command": "effective command generated by dispatch_separate_controls.command; recorded in pipeline_state.json and row.launch.json",
+      "expected_artifacts": [
+        "final_ssdg.pth",
+        "completion.json",
+        "source_contract.json",
+        "initialization.json"
+      ]
+    },
+    {
+      "row_id": "PURE_DRIC_s392005",
+      "method": "pure DRIC; DAOT/RC4 routes, calibration and auxiliary losses disabled; L/U adversarial heads retained",
+      "purpose": "pure_game",
+      "config_ref": "E:\\type10-7\\code\\snapshots\\native_dr_eg_prepare_20260914_wt\\experiments\\adv3b02_xuc\\configs\\separate_controls\\PURE_DRIC_s392005.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_DRIC_s392005/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 392005,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 392005,
+        "support": null,
+        "evaluation": 392005
+      },
+      "seed_notes": "support不适用；仅model seed扫描，其他随机角色固定",
+      "k": null,
+      "scenario": [
+        "clean",
+        "leo_clear_weak",
+        "leo_low_elev_weak",
+        "leo_rain_weak"
+      ],
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "E200 x 222 accepted steps = 44400",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_DRIC_s392005",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_DRIC_s392005.train.log",
+      "command": "effective command generated by dispatch_separate_controls.command; recorded in pipeline_state.json and row.launch.json",
+      "expected_artifacts": [
+        "final_ssdg.pth",
+        "completion.json",
+        "source_contract.json",
+        "initialization.json"
+      ]
+    },
+    {
+      "row_id": "PURE_SIM_s392006",
+      "method": "pure SIM; DAOT/RC4 routes, calibration and auxiliary losses disabled; L/U adversarial heads retained",
+      "purpose": "pure_game",
+      "config_ref": "E:\\type10-7\\code\\snapshots\\native_dr_eg_prepare_20260914_wt\\experiments\\adv3b02_xuc\\configs\\separate_controls\\PURE_SIM_s392006.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_SIM_s392006/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 392006,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 392005,
+        "support": null,
+        "evaluation": 392005
+      },
+      "seed_notes": "support不适用；仅model seed扫描，其他随机角色固定",
+      "k": null,
+      "scenario": [
+        "clean",
+        "leo_clear_weak",
+        "leo_low_elev_weak",
+        "leo_rain_weak"
+      ],
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "E200 x 222 accepted steps = 44400",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_SIM_s392006",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_SIM_s392006.train.log",
+      "command": "effective command generated by dispatch_separate_controls.command; recorded in pipeline_state.json and row.launch.json",
+      "expected_artifacts": [
+        "final_ssdg.pth",
+        "completion.json",
+        "source_contract.json",
+        "initialization.json"
+      ]
+    },
+    {
+      "row_id": "PURE_EG_s392006",
+      "method": "pure EG; DAOT/RC4 routes, calibration and auxiliary losses disabled; L/U adversarial heads retained",
+      "purpose": "pure_game",
+      "config_ref": "E:\\type10-7\\code\\snapshots\\native_dr_eg_prepare_20260914_wt\\experiments\\adv3b02_xuc\\configs\\separate_controls\\PURE_EG_s392006.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_EG_s392006/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 392006,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 392005,
+        "support": null,
+        "evaluation": 392005
+      },
+      "seed_notes": "support不适用；仅model seed扫描，其他随机角色固定",
+      "k": null,
+      "scenario": [
+        "clean",
+        "leo_clear_weak",
+        "leo_low_elev_weak",
+        "leo_rain_weak"
+      ],
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "E200 x 222 accepted steps = 44400",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_EG_s392006",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_EG_s392006.train.log",
+      "command": "effective command generated by dispatch_separate_controls.command; recorded in pipeline_state.json and row.launch.json",
+      "expected_artifacts": [
+        "final_ssdg.pth",
+        "completion.json",
+        "source_contract.json",
+        "initialization.json"
+      ]
+    },
+    {
+      "row_id": "PURE_CF_EG_s392006",
+      "method": "pure CF_EG; DAOT/RC4 routes, calibration and auxiliary losses disabled; L/U adversarial heads retained",
+      "purpose": "pure_game",
+      "config_ref": "E:\\type10-7\\code\\snapshots\\native_dr_eg_prepare_20260914_wt\\experiments\\adv3b02_xuc\\configs\\separate_controls\\PURE_CF_EG_s392006.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_CF_EG_s392006/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 392006,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 392005,
+        "support": null,
+        "evaluation": 392005
+      },
+      "seed_notes": "support不适用；仅model seed扫描，其他随机角色固定",
+      "k": null,
+      "scenario": [
+        "clean",
+        "leo_clear_weak",
+        "leo_low_elev_weak",
+        "leo_rain_weak"
+      ],
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "E200 x 222 accepted steps = 44400",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_CF_EG_s392006",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_CF_EG_s392006.train.log",
+      "command": "effective command generated by dispatch_separate_controls.command; recorded in pipeline_state.json and row.launch.json",
+      "expected_artifacts": [
+        "final_ssdg.pth",
+        "completion.json",
+        "source_contract.json",
+        "initialization.json"
+      ]
+    },
+    {
+      "row_id": "PURE_TR_EG_s392006",
+      "method": "pure TR_EG; DAOT/RC4 routes, calibration and auxiliary losses disabled; L/U adversarial heads retained",
+      "purpose": "pure_game",
+      "config_ref": "E:\\type10-7\\code\\snapshots\\native_dr_eg_prepare_20260914_wt\\experiments\\adv3b02_xuc\\configs\\separate_controls\\PURE_TR_EG_s392006.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_TR_EG_s392006/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 392006,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 392005,
+        "support": null,
+        "evaluation": 392005
+      },
+      "seed_notes": "support不适用；仅model seed扫描，其他随机角色固定",
+      "k": null,
+      "scenario": [
+        "clean",
+        "leo_clear_weak",
+        "leo_low_elev_weak",
+        "leo_rain_weak"
+      ],
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "E200 x 222 accepted steps = 44400",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_TR_EG_s392006",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_TR_EG_s392006.train.log",
+      "command": "effective command generated by dispatch_separate_controls.command; recorded in pipeline_state.json and row.launch.json",
+      "expected_artifacts": [
+        "final_ssdg.pth",
+        "completion.json",
+        "source_contract.json",
+        "initialization.json"
+      ]
+    },
+    {
+      "row_id": "PURE_XT_DANN_s392006",
+      "method": "pure XT_DANN; DAOT/RC4 routes, calibration and auxiliary losses disabled; L/U adversarial heads retained",
+      "purpose": "pure_game",
+      "config_ref": "E:\\type10-7\\code\\snapshots\\native_dr_eg_prepare_20260914_wt\\experiments\\adv3b02_xuc\\configs\\separate_controls\\PURE_XT_DANN_s392006.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_XT_DANN_s392006/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 392006,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 392005,
+        "support": null,
+        "evaluation": 392005
+      },
+      "seed_notes": "support不适用；仅model seed扫描，其他随机角色固定",
+      "k": null,
+      "scenario": [
+        "clean",
+        "leo_clear_weak",
+        "leo_low_elev_weak",
+        "leo_rain_weak"
+      ],
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "E200 x 222 accepted steps = 44400",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_XT_DANN_s392006",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_XT_DANN_s392006.train.log",
+      "command": "effective command generated by dispatch_separate_controls.command; recorded in pipeline_state.json and row.launch.json",
+      "expected_artifacts": [
+        "final_ssdg.pth",
+        "completion.json",
+        "source_contract.json",
+        "initialization.json"
+      ]
+    },
+    {
+      "row_id": "PURE_DRIC_s392006",
+      "method": "pure DRIC; DAOT/RC4 routes, calibration and auxiliary losses disabled; L/U adversarial heads retained",
+      "purpose": "pure_game",
+      "config_ref": "E:\\type10-7\\code\\snapshots\\native_dr_eg_prepare_20260914_wt\\experiments\\adv3b02_xuc\\configs\\separate_controls\\PURE_DRIC_s392006.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_DRIC_s392006/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 392006,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 392005,
+        "support": null,
+        "evaluation": 392005
+      },
+      "seed_notes": "support不适用；仅model seed扫描，其他随机角色固定",
+      "k": null,
+      "scenario": [
+        "clean",
+        "leo_clear_weak",
+        "leo_low_elev_weak",
+        "leo_rain_weak"
+      ],
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "E200 x 222 accepted steps = 44400",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_DRIC_s392006",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_DRIC_s392006.train.log",
+      "command": "effective command generated by dispatch_separate_controls.command; recorded in pipeline_state.json and row.launch.json",
+      "expected_artifacts": [
+        "final_ssdg.pth",
+        "completion.json",
+        "source_contract.json",
+        "initialization.json"
+      ]
+    },
+    {
+      "row_id": "PURE_SIM_s392007",
+      "method": "pure SIM; DAOT/RC4 routes, calibration and auxiliary losses disabled; L/U adversarial heads retained",
+      "purpose": "pure_game",
+      "config_ref": "E:\\type10-7\\code\\snapshots\\native_dr_eg_prepare_20260914_wt\\experiments\\adv3b02_xuc\\configs\\separate_controls\\PURE_SIM_s392007.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_SIM_s392007/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 392007,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 392005,
+        "support": null,
+        "evaluation": 392005
+      },
+      "seed_notes": "support不适用；仅model seed扫描，其他随机角色固定",
+      "k": null,
+      "scenario": [
+        "clean",
+        "leo_clear_weak",
+        "leo_low_elev_weak",
+        "leo_rain_weak"
+      ],
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "E200 x 222 accepted steps = 44400",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_SIM_s392007",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_SIM_s392007.train.log",
+      "command": "effective command generated by dispatch_separate_controls.command; recorded in pipeline_state.json and row.launch.json",
+      "expected_artifacts": [
+        "final_ssdg.pth",
+        "completion.json",
+        "source_contract.json",
+        "initialization.json"
+      ]
+    },
+    {
+      "row_id": "PURE_EG_s392007",
+      "method": "pure EG; DAOT/RC4 routes, calibration and auxiliary losses disabled; L/U adversarial heads retained",
+      "purpose": "pure_game",
+      "config_ref": "E:\\type10-7\\code\\snapshots\\native_dr_eg_prepare_20260914_wt\\experiments\\adv3b02_xuc\\configs\\separate_controls\\PURE_EG_s392007.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_EG_s392007/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 392007,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 392005,
+        "support": null,
+        "evaluation": 392005
+      },
+      "seed_notes": "support不适用；仅model seed扫描，其他随机角色固定",
+      "k": null,
+      "scenario": [
+        "clean",
+        "leo_clear_weak",
+        "leo_low_elev_weak",
+        "leo_rain_weak"
+      ],
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "E200 x 222 accepted steps = 44400",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_EG_s392007",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_EG_s392007.train.log",
+      "command": "effective command generated by dispatch_separate_controls.command; recorded in pipeline_state.json and row.launch.json",
+      "expected_artifacts": [
+        "final_ssdg.pth",
+        "completion.json",
+        "source_contract.json",
+        "initialization.json"
+      ]
+    },
+    {
+      "row_id": "PURE_CF_EG_s392007",
+      "method": "pure CF_EG; DAOT/RC4 routes, calibration and auxiliary losses disabled; L/U adversarial heads retained",
+      "purpose": "pure_game",
+      "config_ref": "E:\\type10-7\\code\\snapshots\\native_dr_eg_prepare_20260914_wt\\experiments\\adv3b02_xuc\\configs\\separate_controls\\PURE_CF_EG_s392007.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_CF_EG_s392007/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 392007,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 392005,
+        "support": null,
+        "evaluation": 392005
+      },
+      "seed_notes": "support不适用；仅model seed扫描，其他随机角色固定",
+      "k": null,
+      "scenario": [
+        "clean",
+        "leo_clear_weak",
+        "leo_low_elev_weak",
+        "leo_rain_weak"
+      ],
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "E200 x 222 accepted steps = 44400",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_CF_EG_s392007",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_CF_EG_s392007.train.log",
+      "command": "effective command generated by dispatch_separate_controls.command; recorded in pipeline_state.json and row.launch.json",
+      "expected_artifacts": [
+        "final_ssdg.pth",
+        "completion.json",
+        "source_contract.json",
+        "initialization.json"
+      ]
+    },
+    {
+      "row_id": "PURE_TR_EG_s392007",
+      "method": "pure TR_EG; DAOT/RC4 routes, calibration and auxiliary losses disabled; L/U adversarial heads retained",
+      "purpose": "pure_game",
+      "config_ref": "E:\\type10-7\\code\\snapshots\\native_dr_eg_prepare_20260914_wt\\experiments\\adv3b02_xuc\\configs\\separate_controls\\PURE_TR_EG_s392007.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_TR_EG_s392007/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 392007,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 392005,
+        "support": null,
+        "evaluation": 392005
+      },
+      "seed_notes": "support不适用；仅model seed扫描，其他随机角色固定",
+      "k": null,
+      "scenario": [
+        "clean",
+        "leo_clear_weak",
+        "leo_low_elev_weak",
+        "leo_rain_weak"
+      ],
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "E200 x 222 accepted steps = 44400",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_TR_EG_s392007",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_TR_EG_s392007.train.log",
+      "command": "effective command generated by dispatch_separate_controls.command; recorded in pipeline_state.json and row.launch.json",
+      "expected_artifacts": [
+        "final_ssdg.pth",
+        "completion.json",
+        "source_contract.json",
+        "initialization.json"
+      ]
+    },
+    {
+      "row_id": "PURE_XT_DANN_s392007",
+      "method": "pure XT_DANN; DAOT/RC4 routes, calibration and auxiliary losses disabled; L/U adversarial heads retained",
+      "purpose": "pure_game",
+      "config_ref": "E:\\type10-7\\code\\snapshots\\native_dr_eg_prepare_20260914_wt\\experiments\\adv3b02_xuc\\configs\\separate_controls\\PURE_XT_DANN_s392007.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_XT_DANN_s392007/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 392007,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 392005,
+        "support": null,
+        "evaluation": 392005
+      },
+      "seed_notes": "support不适用；仅model seed扫描，其他随机角色固定",
+      "k": null,
+      "scenario": [
+        "clean",
+        "leo_clear_weak",
+        "leo_low_elev_weak",
+        "leo_rain_weak"
+      ],
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "E200 x 222 accepted steps = 44400",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_XT_DANN_s392007",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_XT_DANN_s392007.train.log",
+      "command": "effective command generated by dispatch_separate_controls.command; recorded in pipeline_state.json and row.launch.json",
+      "expected_artifacts": [
+        "final_ssdg.pth",
+        "completion.json",
+        "source_contract.json",
+        "initialization.json"
+      ]
+    },
+    {
+      "row_id": "PURE_DRIC_s392007",
+      "method": "pure DRIC; DAOT/RC4 routes, calibration and auxiliary losses disabled; L/U adversarial heads retained",
+      "purpose": "pure_game",
+      "config_ref": "E:\\type10-7\\code\\snapshots\\native_dr_eg_prepare_20260914_wt\\experiments\\adv3b02_xuc\\configs\\separate_controls\\PURE_DRIC_s392007.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_DRIC_s392007/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 392007,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 392005,
+        "support": null,
+        "evaluation": 392005
+      },
+      "seed_notes": "support不适用；仅model seed扫描，其他随机角色固定",
+      "k": null,
+      "scenario": [
+        "clean",
+        "leo_clear_weak",
+        "leo_low_elev_weak",
+        "leo_rain_weak"
+      ],
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "E200 x 222 accepted steps = 44400",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_DRIC_s392007",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_daot_rc4_pure_game_m3_20260917_r1/PURE_DRIC_s392007.train.log",
+      "command": "effective command generated by dispatch_separate_controls.command; recorded in pipeline_state.json and row.launch.json",
+      "expected_artifacts": [
+        "final_ssdg.pth",
+        "completion.json",
+        "source_contract.json",
+        "initialization.json"
+      ]
+    }
+  ],
+  "notes": [
+    "原生对照保留历史AMP和fasttrust调度；新18行FP32，其他预算/参数与本批联合响应行相同。",
+    "不重复训练已有联合18行；原生3行全部新scratch启动，历史392005不代替本轮模型。",
+    "最终比较需训练完成后执行固定模型truth-last评分；不得根据目标结果选择性重跑。",
+    "TX0–5；无Phase2 support/capsule；空字段不适用。"
+  ]
+}

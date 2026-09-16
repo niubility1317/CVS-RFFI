@@ -20,12 +20,19 @@ from cvsrffi.xuc_fusion.response_solver import ResponseSolver
 from cvsrffi.xuc_fusion.checkpoints import load_model
 
 def main():
-    p=argparse.ArgumentParser();p.add_argument('--output',type=Path,required=True);p.add_argument('--device',default='cpu');a=p.parse_args()
+    p=argparse.ArgumentParser();p.add_argument('--output',type=Path,required=True);p.add_argument('--device',default='cpu');p.add_argument('--pure-game',action='store_true');a=p.parse_args()
     a.output.mkdir(parents=True,exist_ok=False);root=Path(__file__).resolve().parents[2]
     recipe=json.loads((root/'configs/core90_recipe_reference.json').read_text());reference=json.loads((root/'configs/a1_native_recipe_reference.json').read_text())
     torch.set_num_threads(2);audit=[];device=torch.device(a.device)
-    for method,epoch,step in [('CF_EG',80,3),('TR_EG',80,3),('XT_DANN',80,19),('DRIC',40,3)]:
-        torch.manual_seed(32);row=make_row('diagnostic_'+method,dict(method=method))
+    if a.pure_game:
+        from unittest.mock import Mock
+        from SSDG import train_ssdg as native
+        for name in ('build_rc4_calibration','route_fasttrust_rc4','_compute_rc4_unlabeled_losses','_compute_daot_labeled_step','_compute_daot_unlabeled_step'):
+            setattr(native,name,Mock(side_effect=AssertionError('pure game invoked '+name)))
+    cases=[('CF_EG',80,3),('TR_EG',80,3),('XT_DANN',80,19),('DRIC',40,3)]
+    if a.pure_game:cases=[('SIM',80,3),('EG',80,3)]+cases
+    for method,epoch,step in cases:
+        torch.manual_seed(32);row=make_row('diagnostic_'+method,dict(method=method),pure_game=a.pure_game)
         args=resolve_args(recipe,row,dataset='NOT_READ',output=a.output,device=a.device,synthetic=True);args.num_classes=6
         model=build_model(args,15,device);ema=deepcopy(model).eval()
         for par in ema.parameters():par.requires_grad_(False)
@@ -41,6 +48,9 @@ def main():
         if device.type=='cuda':torch.cuda.reset_peak_memory_stats(device)
         result=response_step(solver,objective,ctx,args,dr,SourceMonitor(source),step)
         assert result.accepted and solver.steps==1
+        if a.pure_game:
+            assert not ctx.dr_telemetry['rc4_executed'] and not ctx.dr_telemetry['daot_executed']
+            assert ctx.dr_weighted_identity.item()==0 and not dr.calibration
         assert all(s['step']==1 for s in optimizer.state.values())
         assert all(v==ctx.dr_field_divisors[0] for v in ctx.dr_field_divisors)
         payload=dict(schema='adv3b02_xuc_v1',model=model.state_dict(),args=vars(args),epoch=200,target_contact=False,synthetic_diagnostic_only=True)
