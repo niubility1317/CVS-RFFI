@@ -19,3 +19,7 @@ r1首行在训练前记录resolved_config时SatViewStage对象不能直接JSON�
 {'RUNNING': 13, 'QUEUED': 8}；dispatcher PID=2153663。实际逐行PID/GPU/argv、resolved config与日志见launch_readback_verified.json。启动代码commit=4a36c49914ee8ff922d79b7d54a3098ce8f4daa4，release=/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_controls_4a36c49914。原生三seed来源均为scratch；pure_game行明确关闭DAOT/RC4，已观察到接受步。
 
 独立原问题复审PASS：序列化转换不修改原始args或训练配方；三seed回归均通过。r1失败保留，本轮未重用任何失败权重。
+
+## 用户请求释放GPU：VERIFIED
+
+13行纯博弈已保存并验证恢复断点后暂停，5行排队保持未启动；原生3行继续运行。GPU3–7已释放。详情及恢复计划见pause_restore.md和pause_support。当前状态取代上文启动时RUNNING计数，不表示整批训练完成。

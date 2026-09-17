@@ -104,7 +104,10 @@
       "--source-contract",
       "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_xuc15_s392005_20260913_r1/source_contract.json"
     ],
-    "stop_rule": "A technical row failure holds new submissions and drains healthy rows; no performance stop; no automatic retrain or target selection"
+    "stop_rule": "A technical row failure holds new submissions and drains healthy rows; no performance stop; no automatic retrain or target selection",
+    "status": "PARTIALLY_PAUSED_NATIVE_DRAINING",
+    "pause_evidence": "E:\\type10-7\\automation_reports\\CV-SincNet\\phase1_daot_rc4_pure_game_m3_20260917_r2\\pause_support\\post_pause_readback.json",
+    "resume_plan": "E:\\type10-7\\automation_reports\\CV-SincNet\\phase1_daot_rc4_pure_game_m3_20260917_r2\\pause_support\\resume_plan.json"
   },
   "expected_artifacts": [
     "effective_matrix.json",
@@ -348,9 +351,18 @@
         "source_contract.json",
         "initialization.json"
       ],
-      "status": "RUNNING",
+      "status": "PAUSED_RECOVERABLE",
       "pid": 2153717,
-      "gpu": 3
+      "gpu": 3,
+      "pause_recovery": {
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/pause_20260917_v1/PURE_SIM_s392005/latest_ssdg.pth",
+        "epoch": 195,
+        "step": 43290,
+        "stopped_step": 43416,
+        "steps_to_replay": 126,
+        "validation": "CPU_STRICT_RESTORE_PASS_AND_LOCAL_ACTIVE_UPDATE_PARITY_PASS",
+        "parent_run_id": "phase1_daot_rc4_pure_game_m3_20260917_r2"
+      }
     },
     {
       "row_id": "PURE_EG_s392005",
@@ -404,9 +416,18 @@
         "source_contract.json",
         "initialization.json"
       ],
-      "status": "RUNNING",
+      "status": "PAUSED_RECOVERABLE",
       "pid": 2153793,
-      "gpu": 5
+      "gpu": 5,
+      "pause_recovery": {
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/pause_20260917_v1/PURE_EG_s392005/latest_ssdg.pth",
+        "epoch": 118,
+        "step": 26196,
+        "stopped_step": 26351,
+        "steps_to_replay": 155,
+        "validation": "CPU_STRICT_RESTORE_PASS_AND_LOCAL_ACTIVE_UPDATE_PARITY_PASS",
+        "parent_run_id": "phase1_daot_rc4_pure_game_m3_20260917_r2"
+      }
     },
     {
       "row_id": "PURE_CF_EG_s392005",
@@ -460,9 +481,18 @@
         "source_contract.json",
         "initialization.json"
       ],
-      "status": "RUNNING",
+      "status": "PAUSED_RECOVERABLE",
       "pid": 2153930,
-      "gpu": 5
+      "gpu": 5,
+      "pause_recovery": {
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/pause_20260917_v1/PURE_CF_EG_s392005/latest_ssdg.pth",
+        "epoch": 76,
+        "step": 16872,
+        "stopped_step": 17095,
+        "steps_to_replay": 223,
+        "validation": "CPU_STRICT_RESTORE_PASS_AND_LOCAL_ACTIVE_UPDATE_PARITY_PASS",
+        "parent_run_id": "phase1_daot_rc4_pure_game_m3_20260917_r2"
+      }
     },
     {
       "row_id": "PURE_TR_EG_s392005",
@@ -516,9 +546,18 @@
         "source_contract.json",
         "initialization.json"
       ],
-      "status": "RUNNING",
+      "status": "PAUSED_RECOVERABLE",
       "pid": 2154003,
-      "gpu": 0
+      "gpu": 0,
+      "pause_recovery": {
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/pause_20260917_v1/PURE_TR_EG_s392005/latest_ssdg.pth",
+        "epoch": 121,
+        "step": 26862,
+        "stopped_step": 26926,
+        "steps_to_replay": 64,
+        "validation": "CPU_STRICT_RESTORE_PASS_AND_LOCAL_ACTIVE_UPDATE_PARITY_PASS",
+        "parent_run_id": "phase1_daot_rc4_pure_game_m3_20260917_r2"
+      }
     },
     {
       "row_id": "PURE_XT_DANN_s392005",
@@ -572,9 +611,18 @@
         "source_contract.json",
         "initialization.json"
       ],
-      "status": "RUNNING",
+      "status": "PAUSED_RECOVERABLE",
       "pid": 2154076,
-      "gpu": 2
+      "gpu": 2,
+      "pause_recovery": {
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/pause_20260917_v1/PURE_XT_DANN_s392005/latest_ssdg.pth",
+        "epoch": 117,
+        "step": 25974,
+        "stopped_step": 26151,
+        "steps_to_replay": 177,
+        "validation": "CPU_STRICT_RESTORE_PASS_AND_LOCAL_ACTIVE_UPDATE_PARITY_PASS",
+        "parent_run_id": "phase1_daot_rc4_pure_game_m3_20260917_r2"
+      }
     },
     {
       "row_id": "PURE_DRIC_s392005",
@@ -628,9 +676,18 @@
         "source_contract.json",
         "initialization.json"
       ],
-      "status": "RUNNING",
+      "status": "PAUSED_RECOVERABLE",
       "pid": 2154556,
-      "gpu": 1
+      "gpu": 1,
+      "pause_recovery": {
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/pause_20260917_v1/PURE_DRIC_s392005/latest_ssdg.pth",
+        "epoch": 148,
+        "step": 32856,
+        "stopped_step": 33095,
+        "steps_to_replay": 239,
+        "validation": "CPU_STRICT_RESTORE_PASS_AND_LOCAL_ACTIVE_UPDATE_PARITY_PASS",
+        "parent_run_id": "phase1_daot_rc4_pure_game_m3_20260917_r2"
+      }
     },
     {
       "row_id": "PURE_SIM_s392006",
@@ -684,9 +741,18 @@
         "source_contract.json",
         "initialization.json"
       ],
-      "status": "RUNNING",
+      "status": "PAUSED_RECOVERABLE",
       "pid": 2154629,
-      "gpu": 3
+      "gpu": 3,
+      "pause_recovery": {
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/pause_20260917_v1/PURE_SIM_s392006/latest_ssdg.pth",
+        "epoch": 195,
+        "step": 43290,
+        "stopped_step": 43362,
+        "steps_to_replay": 72,
+        "validation": "CPU_STRICT_RESTORE_PASS_AND_LOCAL_ACTIVE_UPDATE_PARITY_PASS",
+        "parent_run_id": "phase1_daot_rc4_pure_game_m3_20260917_r2"
+      }
     },
     {
       "row_id": "PURE_EG_s392006",
@@ -740,9 +806,18 @@
         "source_contract.json",
         "initialization.json"
       ],
-      "status": "RUNNING",
+      "status": "PAUSED_RECOVERABLE",
       "pid": 2154702,
-      "gpu": 4
+      "gpu": 4,
+      "pause_recovery": {
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/pause_20260917_v1/PURE_EG_s392006/latest_ssdg.pth",
+        "epoch": 116,
+        "step": 25752,
+        "stopped_step": 25983,
+        "steps_to_replay": 231,
+        "validation": "CPU_STRICT_RESTORE_PASS_AND_LOCAL_ACTIVE_UPDATE_PARITY_PASS",
+        "parent_run_id": "phase1_daot_rc4_pure_game_m3_20260917_r2"
+      }
     },
     {
       "row_id": "PURE_CF_EG_s392006",
@@ -796,9 +871,18 @@
         "source_contract.json",
         "initialization.json"
       ],
-      "status": "RUNNING",
+      "status": "PAUSED_RECOVERABLE",
       "pid": 2154775,
-      "gpu": 6
+      "gpu": 6,
+      "pause_recovery": {
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/pause_20260917_v1/PURE_CF_EG_s392006/latest_ssdg.pth",
+        "epoch": 75,
+        "step": 16650,
+        "stopped_step": 16708,
+        "steps_to_replay": 58,
+        "validation": "CPU_STRICT_RESTORE_PASS_AND_LOCAL_ACTIVE_UPDATE_PARITY_PASS",
+        "parent_run_id": "phase1_daot_rc4_pure_game_m3_20260917_r2"
+      }
     },
     {
       "row_id": "PURE_TR_EG_s392006",
@@ -852,9 +936,18 @@
         "source_contract.json",
         "initialization.json"
       ],
-      "status": "RUNNING",
+      "status": "PAUSED_RECOVERABLE",
       "pid": 2154848,
-      "gpu": 7
+      "gpu": 7,
+      "pause_recovery": {
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/pause_20260917_v1/PURE_TR_EG_s392006/latest_ssdg.pth",
+        "epoch": 121,
+        "step": 26862,
+        "stopped_step": 26895,
+        "steps_to_replay": 33,
+        "validation": "CPU_STRICT_RESTORE_PASS_AND_LOCAL_ACTIVE_UPDATE_PARITY_PASS",
+        "parent_run_id": "phase1_daot_rc4_pure_game_m3_20260917_r2"
+      }
     },
     {
       "row_id": "PURE_XT_DANN_s392006",
@@ -908,7 +1001,16 @@
         "source_contract.json",
         "initialization.json"
       ],
-      "status": "QUEUED"
+      "status": "PAUSED_RECOVERABLE",
+      "pause_recovery": {
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/pause_20260917_v1/PURE_XT_DANN_s392006/latest_ssdg.pth",
+        "epoch": 97,
+        "step": 21534,
+        "stopped_step": 21680,
+        "steps_to_replay": 146,
+        "validation": "CPU_STRICT_RESTORE_PASS_AND_LOCAL_ACTIVE_UPDATE_PARITY_PASS",
+        "parent_run_id": "phase1_daot_rc4_pure_game_m3_20260917_r2"
+      }
     },
     {
       "row_id": "PURE_DRIC_s392006",
@@ -962,7 +1064,16 @@
         "source_contract.json",
         "initialization.json"
       ],
-      "status": "QUEUED"
+      "status": "PAUSED_RECOVERABLE",
+      "pause_recovery": {
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/pause_20260917_v1/PURE_DRIC_s392006/latest_ssdg.pth",
+        "epoch": 86,
+        "step": 19092,
+        "stopped_step": 19215,
+        "steps_to_replay": 123,
+        "validation": "CPU_STRICT_RESTORE_PASS_AND_LOCAL_ACTIVE_UPDATE_PARITY_PASS",
+        "parent_run_id": "phase1_daot_rc4_pure_game_m3_20260917_r2"
+      }
     },
     {
       "row_id": "PURE_SIM_s392007",
@@ -1016,7 +1127,16 @@
         "source_contract.json",
         "initialization.json"
       ],
-      "status": "QUEUED"
+      "status": "PAUSED_RECOVERABLE",
+      "pause_recovery": {
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/pause_20260917_v1/PURE_SIM_s392007/latest_ssdg.pth",
+        "epoch": 65,
+        "step": 14430,
+        "stopped_step": 14642,
+        "steps_to_replay": 212,
+        "validation": "CPU_STRICT_RESTORE_PASS_AND_LOCAL_ACTIVE_UPDATE_PARITY_PASS",
+        "parent_run_id": "phase1_daot_rc4_pure_game_m3_20260917_r2"
+      }
     },
     {
       "row_id": "PURE_EG_s392007",
@@ -1070,7 +1190,7 @@
         "source_contract.json",
         "initialization.json"
       ],
-      "status": "QUEUED"
+      "status": "HELD_USER_PAUSE"
     },
     {
       "row_id": "PURE_CF_EG_s392007",
@@ -1124,7 +1244,7 @@
         "source_contract.json",
         "initialization.json"
       ],
-      "status": "QUEUED"
+      "status": "HELD_USER_PAUSE"
     },
     {
       "row_id": "PURE_TR_EG_s392007",
@@ -1178,7 +1298,7 @@
         "source_contract.json",
         "initialization.json"
       ],
-      "status": "QUEUED"
+      "status": "HELD_USER_PAUSE"
     },
     {
       "row_id": "PURE_XT_DANN_s392007",
@@ -1232,7 +1352,7 @@
         "source_contract.json",
         "initialization.json"
       ],
-      "status": "QUEUED"
+      "status": "HELD_USER_PAUSE"
     },
     {
       "row_id": "PURE_DRIC_s392007",
@@ -1286,7 +1406,7 @@
         "source_contract.json",
         "initialization.json"
       ],
-      "status": "QUEUED"
+      "status": "HELD_USER_PAUSE"
     }
   ],
   "notes": [
@@ -1294,6 +1414,7 @@
     "不重复训练已有联合18行；原生3行全部新scratch启动，历史392005不代替本轮模型。",
     "最终比较需训练完成后执行固定模型truth-last评分；不得根据目标结果选择性重跑。",
     "TX0–5；无Phase2 support/capsule；空字段不适用。",
-    "r1仅在训练前写resolved_config发生SatViewStage序列化错误；r2修复结构化序列化，科学配置/seed/预算不变。"
+    "r1仅在训练前写resolved_config发生SatViewStage序列化错误；r2修复结构化序列化，科学配置/seed/预算不变。",
+    "2026-09-17用户要求释放GPU：13行纯博弈断点恢复验证后暂停，5行未启动保留，原生3行无安全中间恢复接口而继续至E200；GPU3–7已核实空闲。最多重算239步。"
   ]
 }

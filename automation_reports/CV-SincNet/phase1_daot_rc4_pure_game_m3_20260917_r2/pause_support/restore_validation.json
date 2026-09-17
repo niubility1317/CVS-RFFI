@@ -1,0 +1,214 @@
+{
+  "status": "PASS",
+  "scope": "CPU strict reconstruction; no target or optimizer updates",
+  "rows": {
+    "PURE_SIM_s392005": {
+      "status": "PASS",
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/pause_20260917_v1/PURE_SIM_s392005/latest_ssdg.pth",
+      "epoch": 195,
+      "step": 43290,
+      "checks": {
+        "model": true,
+        "ema": true,
+        "optimizer": true,
+        "prototype": true,
+        "solver": true,
+        "dr": true,
+        "tickets": true
+      },
+      "initialization": "same-run continuation"
+    },
+    "PURE_EG_s392005": {
+      "status": "PASS",
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/pause_20260917_v1/PURE_EG_s392005/latest_ssdg.pth",
+      "epoch": 118,
+      "step": 26196,
+      "checks": {
+        "model": true,
+        "ema": true,
+        "optimizer": true,
+        "prototype": true,
+        "solver": true,
+        "dr": true,
+        "tickets": true
+      },
+      "initialization": "same-run continuation"
+    },
+    "PURE_CF_EG_s392005": {
+      "status": "PASS",
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/pause_20260917_v1/PURE_CF_EG_s392005/latest_ssdg.pth",
+      "epoch": 76,
+      "step": 16872,
+      "checks": {
+        "model": true,
+        "ema": true,
+        "optimizer": true,
+        "prototype": true,
+        "solver": true,
+        "dr": true,
+        "tickets": true
+      },
+      "initialization": "same-run continuation"
+    },
+    "PURE_TR_EG_s392005": {
+      "status": "PASS",
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/pause_20260917_v1/PURE_TR_EG_s392005/latest_ssdg.pth",
+      "epoch": 121,
+      "step": 26862,
+      "checks": {
+        "model": true,
+        "ema": true,
+        "optimizer": true,
+        "prototype": true,
+        "solver": true,
+        "dr": true,
+        "tickets": true
+      },
+      "initialization": "same-run continuation"
+    },
+    "PURE_XT_DANN_s392005": {
+      "status": "PASS",
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/pause_20260917_v1/PURE_XT_DANN_s392005/latest_ssdg.pth",
+      "epoch": 117,
+      "step": 25974,
+      "checks": {
+        "model": true,
+        "ema": true,
+        "optimizer": true,
+        "prototype": true,
+        "solver": true,
+        "dr": true,
+        "tickets": true
+      },
+      "initialization": "same-run continuation"
+    },
+    "PURE_DRIC_s392005": {
+      "status": "PASS",
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/pause_20260917_v1/PURE_DRIC_s392005/latest_ssdg.pth",
+      "epoch": 148,
+      "step": 32856,
+      "checks": {
+        "model": true,
+        "ema": true,
+        "optimizer": true,
+        "prototype": true,
+        "solver": true,
+        "dr": true,
+        "tickets": true
+      },
+      "initialization": "same-run continuation"
+    },
+    "PURE_SIM_s392006": {
+      "status": "PASS",
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/pause_20260917_v1/PURE_SIM_s392006/latest_ssdg.pth",
+      "epoch": 195,
+      "step": 43290,
+      "checks": {
+        "model": true,
+        "ema": true,
+        "optimizer": true,
+        "prototype": true,
+        "solver": true,
+        "dr": true,
+        "tickets": true
+      },
+      "initialization": "same-run continuation"
+    },
+    "PURE_EG_s392006": {
+      "status": "PASS",
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/pause_20260917_v1/PURE_EG_s392006/latest_ssdg.pth",
+      "epoch": 116,
+      "step": 25752,
+      "checks": {
+        "model": true,
+        "ema": true,
+        "optimizer": true,
+        "prototype": true,
+        "solver": true,
+        "dr": true,
+        "tickets": true
+      },
+      "initialization": "same-run continuation"
+    },
+    "PURE_CF_EG_s392006": {
+      "status": "PASS",
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/pause_20260917_v1/PURE_CF_EG_s392006/latest_ssdg.pth",
+      "epoch": 75,
+      "step": 16650,
+      "checks": {
+        "model": true,
+        "ema": true,
+        "optimizer": true,
+        "prototype": true,
+        "solver": true,
+        "dr": true,
+        "tickets": true
+      },
+      "initialization": "same-run continuation"
+    },
+    "PURE_TR_EG_s392006": {
+      "status": "PASS",
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/pause_20260917_v1/PURE_TR_EG_s392006/latest_ssdg.pth",
+      "epoch": 121,
+      "step": 26862,
+      "checks": {
+        "model": true,
+        "ema": true,
+        "optimizer": true,
+        "prototype": true,
+        "solver": true,
+        "dr": true,
+        "tickets": true
+      },
+      "initialization": "same-run continuation"
+    },
+    "PURE_XT_DANN_s392006": {
+      "status": "PASS",
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/pause_20260917_v1/PURE_XT_DANN_s392006/latest_ssdg.pth",
+      "epoch": 97,
+      "step": 21534,
+      "checks": {
+        "model": true,
+        "ema": true,
+        "optimizer": true,
+        "prototype": true,
+        "solver": true,
+        "dr": true,
+        "tickets": true
+      },
+      "initialization": "same-run continuation"
+    },
+    "PURE_DRIC_s392006": {
+      "status": "PASS",
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/pause_20260917_v1/PURE_DRIC_s392006/latest_ssdg.pth",
+      "epoch": 86,
+      "step": 19092,
+      "checks": {
+        "model": true,
+        "ema": true,
+        "optimizer": true,
+        "prototype": true,
+        "solver": true,
+        "dr": true,
+        "tickets": true
+      },
+      "initialization": "same-run continuation"
+    },
+    "PURE_SIM_s392007": {
+      "status": "PASS",
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/pause_20260917_v1/PURE_SIM_s392007/latest_ssdg.pth",
+      "epoch": 65,
+      "step": 14430,
+      "checks": {
+        "model": true,
+        "ema": true,
+        "optimizer": true,
+        "prototype": true,
+        "solver": true,
+        "dr": true,
+        "tickets": true
+      },
+      "initialization": "same-run continuation"
+    }
+  }
+}
