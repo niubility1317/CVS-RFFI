@@ -199,8 +199,21 @@ def train(args,row,source_contract=None):
     started=time.perf_counter();epoch_rows=[];completed=0;actions={'NORMAL':0,'CATCHUP':0,'CORRECT':0};head_total=0
     from .activation import ActivationLedger
     activation=ActivationLedger(row) if row.get('dr_full_extensions') else None
-    print(f'[XUC-INIT] row={row["id"]} scratch_only=true seed={args.seed} domains={len(source.domains)} steps_per_epoch={stream.steps}',flush=True)
-    json_write(output/'initialization.json',dict(scratch_only=True,checkpoint_sources=[],seed=args.seed,
+    resume_path=getattr(args,'xuc_resume','')
+    if resume_path:
+        from .resume import read_checkpoint,validate_checkpoint,restore_checkpoint
+        payload=read_checkpoint(resume_path)
+        completed=validate_checkpoint(payload,args,row,source,stream.steps,
+            allow_legacy=getattr(args,'xuc_allow_legacy_ticket_resume',False))
+        meta=restore_checkpoint(payload,model,ema,optimizer,proto,solver,stream,dr,counter)
+        actions=meta['actions'];head_total=meta['head_total'];started-=meta['elapsed_seconds']
+        json_write(output/'resume_lineage.json',dict(parent_checkpoint=str(Path(resume_path).resolve()),
+            parent_output=payload['args']['output_dir'],parent_lineage=payload.get('resume_lineage'),
+            restored_epoch=payload['epoch'],restored_step=completed,target_contact=False,
+            legacy_ticket_seed_replay='resume_state' not in payload,source_contract_equal=True,row_equal=True))
+        del payload
+    print(f'[XUC-INIT] row={row["id"]} scratch_only={not bool(resume_path)} seed={args.seed} domains={len(source.domains)} steps_per_epoch={stream.steps} restored_step={completed}',flush=True)
+    json_write(output/'initialization.json',dict(scratch_only=not bool(resume_path),checkpoint_sources=[resume_path] if resume_path else [],seed=args.seed,
         parameter_count=sum(p.numel() for p in model.parameters()),batchnorm_modules=[n for n,m in model.named_modules() if isinstance(m,torch.nn.modules.batchnorm._BatchNorm)],
         mixstyle_modules=[n for n,m in model.named_modules() if m.__class__.__name__=='MixStyle1D'],target_contact=False,
         daot_rc4=args.xuc_daot_rc4,rc4_heads_in_optimizer=dr is not None))
@@ -329,9 +342,22 @@ def train(args,row,source_contract=None):
                 legacy_controller=legacy_controller.state_dict() if legacy_controller else None,
                 legacy_curriculum=legacy_curriculum.state_dict() if legacy_curriculum else None)
             if dr is not None:payload['daot_rc4']=dr.state_dict()
+            if row.get('pure_game'):
+                from .resume import capture_resume_state
+                payload['resume_state']=capture_resume_state(actions=actions,head_total=head_total,
+                    elapsed=time.perf_counter()-started,counter=counter)
+                if resume_path:payload['resume_lineage']=json.loads((output/'resume_lineage.json').read_text(encoding='utf-8'))
             temp=output/'latest_ssdg.tmp';torch.save(payload,temp);temp.replace(output/'latest_ssdg.pth')
             if live_epoch==args.epochs:torch.save(payload,output/'final_ssdg.pth')
             print(f'[EPOCH-END] E{live_epoch:03d}/{args.epochs} accepted={stream.steps} loss={summary["mean_loss"]:.5f}',flush=True)
+            pause_path=getattr(args,'xuc_pause_request','')
+            stop_epoch=getattr(args,'xuc_stop_after_epoch',0)
+            if live_epoch<args.epochs and ((pause_path and Path(pause_path).exists()) or (stop_epoch and live_epoch>=stop_epoch)):
+                if not row.get('pure_game'):raise ValueError('safe pause only supports pure-game rows')
+                json_write(output/'pause_complete.json',dict(status='PAUSED_AT_EPOCH_BOUNDARY',epoch=live_epoch,
+                    step=completed,checkpoint=str(output/'latest_ssdg.pth'),target_contact=False))
+                if counter is not None:counter.close()
+                return 0
     json_write(output/'completion.json',dict(status='TRAINING_COMPLETE',epochs=args.epochs,steps=completed,
         actions=actions,head_steps=head_total,cstar='CONTROL_NOT_ACTIVATED' if reliable and not reliable.actions else None,
         target_evaluated=False,elapsed_seconds=time.perf_counter()-started))

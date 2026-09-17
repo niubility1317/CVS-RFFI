@@ -13,12 +13,17 @@ def main():
     p.add_argument('--config',type=Path,required=True);p.add_argument('--output',required=True)
     p.add_argument('--dataset',default='ManySig.pkl');p.add_argument('--device',default='cuda:0')
     p.add_argument('--source-contract');p.add_argument('--execute',action='store_true')
+    p.add_argument('--resume',default='',help='Same-row source-only epoch checkpoint; output must be new')
+    p.add_argument('--allow-legacy-ticket-resume',action='store_true',help='Audited pure-game v1 epoch replay using saved deterministic tickets')
+    p.add_argument('--pause-request',default='',help='Existing request file causes exit after next validated epoch checkpoint')
     a=p.parse_args();doc=json.loads(a.config.read_text(encoding='utf-8'))
     if doc.get('status')=='DEPENDENCY_TEMPLATE':raise ValueError('dependent template is not executable')
     old=doc['row'];row=make_row(old['id'],old['response'],old['joint']['model_seed'],pure_game=old.get('pure_game',False))
     if row!=old:raise ValueError('configuration differs from canonical prepared row')
     recipe=json.loads((ROOT/'configs/core90_recipe_reference.json').read_text(encoding='utf-8'))
     args=resolve_args(recipe,row,dataset=a.dataset,output=a.output,device=a.device)
+    args.xuc_resume=a.resume;args.xuc_allow_legacy_ticket_resume=a.allow_legacy_ticket_resume
+    args.xuc_pause_request=a.pause_request
     if not a.execute:
         print(json.dumps(dict(status='VALIDATED_NOT_LAUNCHED',row=row,resolved=vars(args)),ensure_ascii=False));return 0
     if not a.source_contract:raise ValueError('formal execution requires existing physical role contract')
