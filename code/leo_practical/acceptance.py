@@ -1,0 +1,229 @@
+"""Synthetic numerical acceptance; no real dataset, labels or training used."""
+from dataclasses import replace
+import argparse
+import hashlib
+import json
+from pathlib import Path
+import sys
+import time
+
+import numpy as np
+
+from . import (Config, ChannelStream, Receiver, receiver_for_session, Geometry,
+               apply_leo_practical_channel_batch, iq_imbalance, compensate_iq,
+               state_probabilities, transition_matrix)
+from .channel import slant_range
+
+
+def run():
+    results = []
+    def check(name, fn):
+        start = time.perf_counter()
+        try:
+            detail = fn()
+            results.append(dict(name=name, status="PASS", detail=detail,
+                                seconds=time.perf_counter()-start))
+        except Exception as exc:
+            results.append(dict(name=name, status="FAIL", error=repr(exc),
+                                seconds=time.perf_counter()-start))
+    rng = np.random.default_rng(481)
+    x = (rng.normal(size=(6, 256))+1j*rng.normal(size=(6, 256))).astype(np.complex64)
+    cfg = Config(fs_hz=25e6)  # Synthetic test rate, NOT inferred dataset metadata.
+    ids = [f"synthetic-{i}" for i in range(6)]
+    sessions = ["rx-a"]*3+["rx-b"]*3
+    def batch(arr, names, rx, config=cfg, namespace="acceptance"):
+        return apply_leo_practical_channel_batch(arr, config, seed=52,
+            sample_ids=names, session_ids=rx, realization_namespace=namespace,
+            receiver_seed=81)
+
+    def basic():
+        y, meta, state = batch(x, ids, sessions)
+        assert y.shape == x.shape and np.isfinite(y).all() and state.shape == (6,)
+        assert all(m["frequency_compensation_applied"] and m["iq_compensation_applied"]
+                   and m["phase_tracking_applied"] for m in meta)
+        json.dumps(meta, allow_nan=False)
+        return {"output_shape": list(y.shape), "default_compensation_flags": True}
+    check("default_runtime_and_metadata", basic)
+
+    def replay():
+        y, _, _ = batch(x, ids, sessions)
+        order = [5, 2, 0, 4, 1, 3]
+        perm, _, _ = batch(x[order], [ids[i] for i in order], [sessions[i] for i in order])
+        parts = [batch(x[i:i+1], ids[i:i+1], sessions[i:i+1])[0] for i in range(6)]
+        assert np.array_equal(perm, y[order]) and np.array_equal(np.concatenate(parts), y)
+        different, _, _ = batch(x, ids, sessions, namespace="acceptance-other")
+        assert not np.array_equal(y, different)
+        return "exact replay across order/batch partition; namespace separates draws"
+    check("snapshot_reproducibility", replay)
+
+    def hardware():
+        _, meta, _ = batch(x, ids, sessions)
+        assert meta[0]["receiver"] == meta[2]["receiver"]
+        assert meta[0]["receiver"] != meta[3]["receiver"]
+        alternate = receiver_for_session(replace(cfg, scenario="practical_high"), 81, "rx-a")
+        assert alternate == receiver_for_session(cfg, 81, "rx-a")
+        return "hardware stable per session and across scenes"
+    check("receiver_session_persistence", hardware)
+
+    def iq():
+        rx = Receiver("calibration", 0., 6., 0., 0., 6.)
+        damaged = iq_imbalance(x[0].astype(np.complex128), rx)
+        restored = compensate_iq(damaged, 0., 6.)
+        error = float(np.max(abs(restored-x[0])))
+        assert error < 1e-12
+        positive_tone = np.exp(2j*np.pi*17*np.arange(256)/256)
+        spectrum = np.fft.fft(iq_imbalance(positive_tone, rx))
+        assert abs(spectrum[-17]) > 1
+        return {"inverse_max_error": error, "pure_phase_image_amplitude": float(abs(spectrum[-17]))}
+    check("iq_pure_phase_image_and_inverse", iq)
+
+    def frequency():
+        base = replace(cfg, fs_hz=1e6, rms_delay_ns=(0.,0.,0.), los_std_db=(0.,0.,0.),
+            diffuse_power_db=(-300.,-300.,-300.), phase_noise_linewidth_hz=0.,
+            phase_tracking_enabled=False, agc_enabled=False, state_mix_time_s=1e12,
+            residual_cfo_std_hz=100., iq_amp_max_db=0., iq_phase_max_deg=0.,
+            iq_estimation_amp_std_db=0., iq_estimation_phase_std_deg=0.)
+        g = Geometry(600000., 30., float(slant_range(600000.,30.)), 5000., "synthetic_control")
+        measured = {}
+        for mode in ("pre_sync", "post_sync"):
+            c = replace(base, mode=mode)
+            stream = ChannelStream(c, 14, receiver_for_session(c, 3, "rx"), g)
+            stream.state = 0
+            _, meta, trace = stream.process(np.ones(1024, dtype=complex), return_traces=True)
+            signal = trace["pre_agc_signal"]
+            estimate = float(np.mean(np.angle(signal[1:]*signal[:-1].conj()))*c.fs_hz/(2*np.pi))
+            assert abs(estimate-meta["output_frequency_hz"]) < 1e-6
+            measured[mode] = estimate
+        assert abs(measured["pre_sync"]) > 10000 and abs(measured["post_sync"]) < 500
+        return measured
+    check("measured_frequency_compensation", frequency)
+
+    def phase_tracking():
+        base = replace(cfg, fs_hz=1e6, rms_delay_ns=(0.,0.,0.), los_std_db=(0.,0.,0.),
+            diffuse_power_db=(-300.,-300.,-300.), phase_noise_linewidth_hz=100.,
+            phase_tracking_residual_std_deg=0., residual_cfo_std_hz=0.,
+            agc_enabled=False, state_mix_time_s=1e12, iq_amp_max_db=0., iq_phase_max_deg=0.,
+            iq_estimation_amp_std_db=0., iq_estimation_phase_std_deg=0.)
+        values = {}
+        for enabled in (False, True):
+            c = replace(base, phase_tracking_enabled=enabled)
+            stream = ChannelStream(c, 14, receiver_for_session(c, 3, "rx"))
+            stream.state = 0
+            _, _, trace = stream.process(np.ones(2048, dtype=complex), return_traces=True)
+            signal = trace["pre_agc_signal"]
+            values[str(enabled)] = float(np.std(np.angle(signal[1:]*signal[:-1].conj())))
+        assert values["False"] > .01 and values["True"] < 1e-10
+        return {"phase_increment_std_rad":values,"scope":"zero_error_proxy_control_not_PLL_accuracy"}
+    check("phase_tracking_actually_changes_waveform", phase_tracking)
+
+    def context_guard():
+        c = replace(cfg, boundary="require_context")
+        stream = ChannelStream(c, 7, receiver_for_session(c, 3, "rx"))
+        try:
+            stream.process(x[0])
+        except ValueError as exc:
+            assert "preceding" in str(exc)
+        else:
+            raise AssertionError("missing real context was accepted")
+        y, meta = stream.process(x[0], preceding_context=np.ones(stream.history_size, dtype=complex))
+        assert np.isfinite(y).all() and meta["boundary"] == "provided_context"
+        return "missing-context refusal and explicit-context execution passed"
+    check("real_context_boundary_contract", context_guard)
+
+    def noise_agc():
+        rows = []
+        for loss in (0.,20.):
+            c = replace(cfg, atmosphere_loss_db=loss, atmosphere_source="synthetic_attenuation_control")
+            stream = ChannelStream(c, 22, receiver_for_session(c, 3, "rx"))
+            y, meta = stream.process(x[0])
+            rows.append(meta)
+            assert abs(np.sqrt(np.mean(abs(y)**2))-1) < 1e-6
+        delta = rows[1]["signal_to_added_noise_db"]-rows[0]["signal_to_added_noise_db"]
+        assert abs(delta+20) < 1e-8
+        assert rows[0]["measured_added_noise_power_pre_agc"] == rows[1]["measured_added_noise_power_pre_agc"]
+        return {"added_attenuation_db":20., "measured_snr_delta_db":delta, "noise_floor_unchanged":True}
+    check("fixed_noise_floor_and_agc", noise_agc)
+
+    def streaming():
+        c = replace(cfg, agc_enabled=False)
+        hardware = receiver_for_session(c, 3, "rx")
+        whole = ChannelStream(c, 33, hardware).process(x[0])[0]
+        stream = ChannelStream(c, 33, hardware)
+        split = np.concatenate([stream.process(x[0,:128])[0], stream.process(x[0,128:])[0]])
+        error = float(np.max(abs(whole-split)))
+        assert error < 2e-6
+        return {"continuous_block_partition_max_error":error, "agc_disabled_for_comparison":True}
+    check("continuous_state_and_delay_history", streaming)
+
+    def markov():
+        for environment in ("urban", "suburban"):
+            p = state_probabilities(20., environment)
+            transition = transition_matrix(p, 0.17, 1.)
+            np.testing.assert_allclose(p@transition, p, atol=1e-14)
+            np.testing.assert_allclose(transition.sum(axis=1), 1, atol=1e-14)
+        return "stationary mapping and stochastic rows verified analytically/numerically"
+    check("markov_stationary_distribution", markov)
+
+    def pdp():
+        stream = ChannelStream(cfg, 6, receiver_for_session(cfg, 4, "rx"))
+        values = []
+        for state in range(3):
+            weights = stream.diffuse[state]*stream.pdp.copy()
+            weights[0] += stream.mean_los_power[state]
+            weights /= weights.sum()
+            delay = stream.delays[state]/cfg.fs_hz
+            value = float(np.sqrt(weights@((delay-weights@delay)**2))*1e9)
+            assert abs(value-cfg.rms_delay_ns[state]) < 1e-9
+            values.append(value)
+        return {"ensemble_rms_delays_ns":values}
+    check("total_pdp_delay_and_power_convention", pdp)
+
+    def torch_adapter():
+        import torch
+        real = np.stack([x.real,x.imag],axis=1)
+        native = batch(real, ids, sessions)[0]
+        tensor = torch.tensor(real, requires_grad=True)
+        converted, _, state = batch(tensor, ids, sessions)
+        assert converted.shape == tensor.shape and not converted.requires_grad
+        np.testing.assert_array_equal(converted.numpy(), native)
+        return {"torch_version":torch.__version__, "device":str(converted.device), "state_dtype":str(state.dtype)}
+    check("torch_cpu_adapter", torch_adapter)
+
+    def external():
+        def callback(y, context):
+            assert set(context)=={"fs_hz","fc_hz","receiver_location","start_sample"}
+            return y, {"timing_sync":"identity_acceptance_only","channel_equalization":"not_run"}
+        stream = ChannelStream(cfg, 4, receiver_for_session(cfg, 1, "rx"), receiver_processor=callback)
+        _, meta = stream.process(x[0])
+        assert meta["external_receiver_processing"]["channel_equalization"] == "not_run"
+        return "callback receives no clean signal, channel truth, labels or seed"
+    check("external_receiver_truth_boundary", external)
+
+    def fractional_response():
+        fraction = 0.5
+        weights = np.array([np.prod([(fraction-k)/(j-k) for k in range(4) if k!=j]) for j in range(4)])
+        frequencies = np.linspace(0, .5, 1001)
+        response = np.exp(-2j*np.pi*frequencies[:,None]*np.arange(4))@weights
+        band = frequencies <= .4
+        max_db = float(np.max(abs(20*np.log10(np.maximum(abs(response[band]),1e-12)))))
+        return {"diagnostic_only":True,"max_magnitude_deviation_to_0_4fs_db":max_db,
+                "note":"not a calibrated fractional-delay filter acceptance"}
+    check("fractional_delay_frequency_response_diagnostic", fractional_response)
+    return results
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--output", type=Path, required=True)
+    args = parser.parse_args()
+    results = run()
+    report = dict(interpreter=sys.executable, numpy_version=np.__version__,
+        scope="synthetic_numerical_checks_no_training_no_real_data",
+        source_sha256={p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in Path(__file__).parent.glob("*.py")},
+        checks=results, passed=sum(r["status"]=="PASS" for r in results),
+        failed=sum(r["status"]=="FAIL" for r in results))
+    args.output.parent.mkdir(parents=True, exist_ok=True)
+    with args.output.open("x",encoding="utf-8") as f:
+        json.dump(report,f,ensure_ascii=False,indent=2,allow_nan=False)
+    print(json.dumps(report,ensure_ascii=False,indent=2))
+    raise SystemExit(bool(report["failed"]))

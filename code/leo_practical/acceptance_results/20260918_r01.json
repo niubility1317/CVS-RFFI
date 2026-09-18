@@ -1,0 +1,121 @@
+{
+  "interpreter": "C:\\Users\\lh594\\.conda\\envs\\ssr-gpu\\python.exe",
+  "numpy_version": "2.2.6",
+  "scope": "synthetic_numerical_checks_no_training_no_real_data",
+  "source_sha256": {
+    "acceptance.py": "41bdd79b4de516226b35fceb86711a5195875d653eab54d9b6176ede747f5982",
+    "batch.py": "f44856f43ce02d6ed294d01894f755dc3e08e85f1314b0cab6644da552b42070",
+    "channel.py": "e5fefd313fabe7d75d55dbb4de301d11416b2f67b92d99eab4a8f41939973ad4",
+    "__init__.py": "96a2ab29a90db5d7ccfa3f50ca88256b976155bd39e9c6dadfd030bd0984629b",
+    "__main__.py": "08a2525820252c868e4609672b1a0717643794ee4de37bc0c3defb421f6f8aa3"
+  },
+  "checks": [
+    {
+      "name": "default_runtime_and_metadata",
+      "status": "PASS",
+      "detail": {
+        "output_shape": [
+          6,
+          256
+        ],
+        "default_compensation_flags": true
+      },
+      "seconds": 0.015263300039805472
+    },
+    {
+      "name": "snapshot_reproducibility",
+      "status": "PASS",
+      "detail": "exact replay across order/batch partition; namespace separates draws",
+      "seconds": 0.05509169993456453
+    },
+    {
+      "name": "receiver_session_persistence",
+      "status": "PASS",
+      "detail": "hardware stable per session and across scenes",
+      "seconds": 0.013031000038608909
+    },
+    {
+      "name": "iq_pure_phase_image_and_inverse",
+      "status": "PASS",
+      "detail": {
+        "inverse_max_error": 9.155133597044475e-16,
+        "pure_phase_image_amplitude": 13.398004798193625
+      },
+      "seconds": 0.1769300999585539
+    },
+    {
+      "name": "measured_frequency_compensation",
+      "status": "PASS",
+      "detail": {
+        "pre_sync": -40846.558132994745,
+        "post_sync": -1.1870435879069894
+      },
+      "seconds": 0.011515500023961067
+    },
+    {
+      "name": "fixed_noise_floor_and_agc",
+      "status": "PASS",
+      "detail": {
+        "added_attenuation_db": 20.0,
+        "measured_snr_delta_db": -20.0,
+        "noise_floor_unchanged": true
+      },
+      "seconds": 0.005543199949897826
+    },
+    {
+      "name": "continuous_state_and_delay_history",
+      "status": "PASS",
+      "detail": {
+        "continuous_block_partition_max_error": 0.0,
+        "agc_disabled_for_comparison": true
+      },
+      "seconds": 0.00513219996355474
+    },
+    {
+      "name": "markov_stationary_distribution",
+      "status": "PASS",
+      "detail": "stationary mapping and stochastic rows verified analytically/numerically",
+      "seconds": 0.42001750005874783
+    },
+    {
+      "name": "total_pdp_delay_and_power_convention",
+      "status": "PASS",
+      "detail": {
+        "ensemble_rms_delays_ns": [
+          20.000000000000004,
+          50.00000000000001,
+          100.00000000000003
+        ]
+      },
+      "seconds": 0.0005854000337421894
+    },
+    {
+      "name": "torch_cpu_adapter",
+      "status": "PASS",
+      "detail": {
+        "torch_version": "2.10.0+cu128",
+        "device": "cpu",
+        "state_dtype": "torch.int64"
+      },
+      "seconds": 2.6946979999775067
+    },
+    {
+      "name": "external_receiver_truth_boundary",
+      "status": "PASS",
+      "detail": "callback receives no clean signal, channel truth, labels or seed",
+      "seconds": 0.0026277999859303236
+    },
+    {
+      "name": "fractional_delay_frequency_response_diagnostic",
+      "status": "PASS",
+      "detail": {
+        "diagnostic_only": true,
+        "max_magnitude_deviation_to_0_4fs_db": 0.7378618394012699,
+        "note": "not a calibrated fractional-delay filter acceptance"
+      },
+      "seconds": 0.0002253999700769782
+    }
+  ],
+  "passed": 12,
+  "failed": 0
+}
