@@ -1,0 +1,25 @@
+{
+  "status": "STATIC_ONLY",
+  "runtime_tests_executed": false,
+  "simulation_executed": false,
+  "training_executed": false,
+  "checks": [
+    "Python AST syntax",
+    "JSON syntax and Config field names",
+    "UTF-8 encoding"
+  ],
+  "sha256": {
+    "__init__.py": "96a2ab29a90db5d7ccfa3f50ca88256b976155bd39e9c6dadfd030bd0984629b",
+    "__main__.py": "08a2525820252c868e4609672b1a0717643794ee4de37bc0c3defb421f6f8aa3",
+    "batch.py": "f44856f43ce02d6ed294d01894f755dc3e08e85f1314b0cab6644da552b42070",
+    "channel.py": "e5fefd313fabe7d75d55dbb4de301d11416b2f67b92d99eab4a8f41939973ad4",
+    "configs\\practical_high.json": "20db63dfebb1e5be5258f1e30e41c82e587c621681675c00f5ab9931ba305154",
+    "configs\\practical_low_urban.json": "4608d3bd4b984ee652715539a92cf2958933a00dba17c051b229d1675583e8a8",
+    "configs\\practical_mid.json": "d4966d109081817760385061348a444a75b7f871efdea28c88e201b18974e9b8",
+    "configs\\receiver_ground_post_sync.json": "8d5857e9cde1f962d1348ae4b1031997b60fbc77c37394925d7620c7b785cbe7",
+    "configs\\receiver_pre_sync.json": "62150d8577527c5af97837be6adb61d9948e65b68f8ab6afc7a169352c8433ad",
+    "configs\\receiver_satellite_post_sync.json": "e1cae7578ea12cc4ee3d15740c027806e4c14dfe4c8f31ad49e80de9adb8f53b",
+    "IMPLEMENTATION.md": "5a0fc38a3e61df8f40a4acb20f0568529ac373a5a86342e9185ead81c4e307f0",
+    "README.md": "c951ca44ca8136e9a7271c17d36190ba5a8470e40d757bd8bb89672a0d250aaf"
+  }
+}
