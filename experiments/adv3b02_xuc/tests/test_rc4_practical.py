@@ -9,7 +9,10 @@ from cvsrffi.practical_adapter import PRACTICAL,set_evaluation_context,apply_pra
 from cvsrffi.a1_periodic_target import evaluate_checkpoint
 
 @pytest.mark.parametrize('route,eq,method',[('full',False,'zf'),('full',True,'zf'),('residual',False,'zf'),('full',True,'mmse')])
-def test_stable_practical_reorder_and_partition(route,eq,method):
+def test_stable_practical_reorder_and_partition(route,eq,method,monkeypatch):
+    def forbidden(*a,**kw):raise AssertionError('Unsafe Torch NumPy ABI bridge')
+    monkeypatch.setattr(torch.Tensor,'numpy',forbidden)
+    monkeypatch.setattr(torch,'from_numpy',forbidden)
     args=SimpleNamespace(practical_route=route,practical_equalization=eq,practical_equalizer_method=method,practical_fs_hz=20e6,practical_fc_hz=2.462e9,practical_receiver_seed=2027)
     x=torch.randn(3,2,256);g=torch.Generator().manual_seed(1)
     set_evaluation_context(['a','b','c']);y,_=apply_practical(x,'practical_high',args,gen=g)

@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "<stdin>", line 31, in <module>
+  File "/usr/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python', '-u', '/home/szu2070436088/2510044040/CV-SincNet/releases/daot_rc4_practical4_20260918_60ac7edb6f/code/scripts/check_rc4_practical.py', '--config', '/home/szu2070436088/2510044040/CV-SincNet/releases/daot_rc4_practical4_20260918_60ac7edb6f/configs/rc4_practical_full_noeq_20260918.json', '--output', '/home/szu2070436088/2510044040/CV-SincNet/runs/20260918-phase1-daot-rc4-practical4-manysig-s392005-r01/startup_smoke_full_noeq', '--device', 'cuda:0']' died with <Signals.SIGSEGV: 11>.

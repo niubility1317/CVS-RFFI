@@ -3,6 +3,7 @@ from contextvars import ContextVar
 from dataclasses import asdict
 from pathlib import Path
 import json
+import numpy as np
 import torch
 from leo_practical import Config, apply_leo_practical_channel_batch
 
@@ -45,8 +46,13 @@ def apply_practical(x,scene,args,*,gen=None,return_meta=False):
     # Evaluation does not depend on batch partition; training advances caller's view RNG.
     seed=392005 if namespace=='target_fixed_v3' else int(torch.randint(0,2**31-1,(),device=gen.device,generator=gen).item())
     cfg=practical_config(scene,args)
-    y,records,states=apply_leo_practical_channel_batch(x,cfg,seed=seed,sample_ids=ids,session_ids=sessions,
+    # N607 Torch 2.1 / NumPy 2.2 has an unsafe ndarray ABI bridge.
+    # Explicit value copies preserve float64 reference math without .numpy/from_numpy.
+    array=np.array(x.detach().to(device='cpu',dtype=torch.float64).tolist(),dtype=np.float64)
+    y,records,states=apply_leo_practical_channel_batch(array,cfg,seed=seed,sample_ids=ids,session_ids=sessions,
         realization_namespace=namespace,receiver_seed=int(args.practical_receiver_seed),return_meta=True)
+    y=torch.tensor(y.tolist(),device=x.device,dtype=x.dtype)
+    states=torch.tensor(states.tolist(),device=x.device,dtype=torch.long)
     _last_meta={'config':asdict(cfg),'records':records,'namespace':namespace}
     evidence_key=(getattr(args,'output_dir',''),namespace,scene)
     if namespace.startswith('source_dynamic_') and evidence_key not in _recorded:

@@ -28,6 +28,8 @@ practical为CPU NumPy参考路径；保持信道实现，不替换近似GPU核�
 
 独立P0/P1审查：review_practical_four，四配置、适配器、标签隔离、launcher均无阻断项。原生10项相关测试通过，4组真实checkpoint smoke通过。固定代码commit=60ac7edb6fc9d20d81f8c7cc5fda20ec236994f8。
 
-## FAILED：启动前ABI故障
+
+## r02技术兼容修复
 
 首组真实scratch GPU smoke在Torch2.1/NumPy2.2 ndarray ABI处SIGSEGV；没有任何launch回执或正式训练。faulthandler及numpy_probe证据已保存。仅修复适配器的数值拷贝边界，信道公式/配置保持不变；替代run 20260918-phase1-daot-rc4-practical4-manysig-s392005-r02。
+回归：4路禁止调用Tensor.numpy/torch.from_numpy仍通过；实际E100预测＋独立CPU scorer通过。本地验证通过，等待远端smoke及正式启动。

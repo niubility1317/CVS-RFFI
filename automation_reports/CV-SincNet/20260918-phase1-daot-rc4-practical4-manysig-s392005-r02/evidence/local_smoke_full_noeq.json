@@ -1,0 +1,2342 @@
+{
+  "status": "PASS",
+  "batch128_channel_seconds": 0.48400000005494803,
+  "scratch_checkpoint": "E:\\type10-7\\local_artifacts\\daot_practical_four_20260918\\full_noeq_25m\\scratch_smoke.pth",
+  "query_inputs": 0,
+  "target_inputs": 0,
+  "daot": true,
+  "rc4": true,
+  "results": [
+    {
+      "scene": "practical_high",
+      "channel_model": "full",
+      "equalization_configured": false,
+      "equalizer_method": "zf",
+      "channel_evidence": {
+        "config": {
+          "fs_hz": 25000000.0,
+          "scenario": "practical_high",
+          "fc_hz": 2462000000.0,
+          "altitude_m": 600000.0,
+          "reference_altitude_m": 600000.0,
+          "reference_elevation_deg": 60.0,
+          "reference_snr_db": 30.0,
+          "receiver_cfo_std_hz": 200.0,
+          "residual_cfo_std_hz": 100.0,
+          "phase_noise_linewidth_hz": 1.0,
+          "iq_amp_max_db": 0.2,
+          "iq_phase_max_deg": 1.0,
+          "shadow_corr_distance_m": 3.0,
+          "terminal_speed_mps": 1.0,
+          "shadow_corr_time_s": null,
+          "state_mix_time_s": 1.0,
+          "scatter_doppler_hz": null,
+          "scatter_sinusoids": 32,
+          "los_mean_db": [
+            0.0,
+            -8.0,
+            0.0
+          ],
+          "los_std_db": [
+            1.0,
+            3.0,
+            0.0
+          ],
+          "diffuse_power_db": [
+            -18.0,
+            -18.0,
+            -20.0
+          ],
+          "rms_delay_ns": [
+            20.0,
+            50.0,
+            100.0
+          ],
+          "mode": "post_sync",
+          "receiver_location": "satellite",
+          "input_processing_state": "WiSig_ManySig_equalized1_center256_shared_normalization",
+          "iq_compensation_enabled": true,
+          "iq_estimation_amp_std_db": 0.05,
+          "iq_estimation_phase_std_deg": 0.2,
+          "phase_tracking_enabled": true,
+          "phase_tracking_residual_std_deg": 1.0,
+          "phase_tracking_correlation_time_s": 0.001,
+          "agc_enabled": true,
+          "agc_limit_db": 30.0,
+          "boundary": "reflect",
+          "atmosphere_loss_db": 0.0,
+          "atmosphere_source": "clear_simplified_no_weather_injection",
+          "local_geometry_max_duration_s": 10.0,
+          "quality_adaptation_enabled": true,
+          "locked_snr_db": 15.0,
+          "unlocked_snr_db": 5.0,
+          "quality_reference_snr_db": 20.0,
+          "max_residual_scale": 10.0,
+          "coarse_doppler_error_std_hz": 500.0,
+          "fractional_delay_half_length": 24,
+          "processing_route": "full",
+          "equalization_enabled": false,
+          "equalizer_method": "zf",
+          "equalizer_length": 129,
+          "equalizer_delay_samples": 64,
+          "equalizer_max_gain_db": 20,
+          "channel_estimation_nmse_db": -25.0,
+          "zf_regularization": 1e-06
+        },
+        "records": [
+          {
+            "version": "leo_practical_v3_full_residual_20260918",
+            "config_hash": "171d06b9e600d9d962a5e7fd2f9c60ec464bd9ba0186f34679dbc28375abf7f6",
+            "seed": 11338412786412298831,
+            "scenario": "practical_high",
+            "geometry": {
+              "altitude_m": 600000.0,
+              "elevation_deg": 47.13597574511661,
+              "distance_m": 790264.6828965554,
+              "range_rate_mps": 5143.950441226797,
+              "source": "simplified_circular_overpass_not_ephemeris"
+            },
+            "fs_hz": 25000000.0,
+            "fc_hz": 2462000000.0,
+            "receiver": {
+              "session_id": "virtual_smoke",
+              "amplitude_imbalance_db": 0.03019354686120357,
+              "quadrature_error_deg": 0.7760156934946059,
+              "oscillator_cfo_hz": -196.7021155954786,
+              "estimated_amplitude_imbalance_db": -0.021264161407041383,
+              "estimated_quadrature_error_deg": 0.563414892747036
+            },
+            "start_sample": 0,
+            "state_probabilities": [
+              0.8893177966672752,
+              0.08854576266617986,
+              0.022136440666544965
+            ],
+            "state_counts": {
+              "LOS": 256,
+              "PARTIAL": 0,
+              "BLOCKED": 0
+            },
+            "state_start": "LOS",
+            "state_end": "LOS",
+            "shadow_correlation_time_s": 3.0,
+            "scatter_max_doppler_hz": 8.212348023778503,
+            "scatter_model": "finite_gaussian_rays_Jakes_approximation",
+            "total_diffuse_power_by_state": [
+              0.015848931924611134,
+              0.015848931924611134,
+              0.01
+            ],
+            "expected_los_power_by_state": [
+              1.0268639927219596,
+              0.2011946041565232,
+              0.0
+            ],
+            "expected_k_linear_by_state": [
+              64.79073779901762,
+              12.694521316234354,
+              0.0
+            ],
+            "delays_samples_by_state": [
+              [
+                0.0,
+                3.9559989624116203,
+                11.867996887234863
+              ],
+              [
+                0.0,
+                4.545450721479871,
+                13.636352164439614
+              ],
+              [
+                0.0,
+                2.812784196122036,
+                8.43835258836611
+              ]
+            ],
+            "delays_seconds_by_state": [
+              [
+                0.0,
+                1.582399584964648e-07,
+                4.7471987548939454e-07
+              ],
+              [
+                0.0,
+                1.8181802885919485e-07,
+                5.454540865775846e-07
+              ],
+              [
+                0.0,
+                1.1251136784488145e-07,
+                3.375341035346444e-07
+              ]
+            ],
+            "rms_delay_ns_by_state": [
+              20.0,
+              50.0,
+              100.0
+            ],
+            "diffuse_pdp": [
+              0.6652409557748218,
+              0.24472847105479764,
+              0.09003057317038046
+            ],
+            "boundary": "synthetic_reflect",
+            "orbital_doppler_hz": -42243.91124042345,
+            "input_oscillator_cfo_hz": -196.7021155954786,
+            "estimated_frequency_hz": -42338.73447648995,
+            "output_frequency_hz": -101.8788795289729,
+            "synchronization": "sampled_estimation_error_proxy",
+            "mode": "post_sync",
+            "receiver_location": "satellite",
+            "link_direction": "ground_to_satellite",
+            "input_processing_state": "WiSig_ManySig_equalized1_center256_shared_normalization",
+            "compensation_scope": "newly_injected_channel_and_virtual_RX_only",
+            "frequency_compensation_applied": true,
+            "iq_compensation_applied": true,
+            "phase_tracking_applied": true,
+            "receiver_lock_status": "locked",
+            "quality_snr_db": 30.137902008130748,
+            "quality_source": "simulated_signal_to_added_noise_not_total_snr",
+            "residual_scale": 1.0,
+            "fine_frequency_tracking_applied": true,
+            "coarse_doppler_compensation_applied": true,
+            "processing_route": "full",
+            "full_channel_waveform_synthesized": true,
+            "channel_equalization_applied": false,
+            "equalizer": {
+              "reason": "disabled_by_default"
+            },
+            "tx_impairment_correction_applied": false,
+            "rff_protection_policy": "no_TX_correction_propagation_EQ_opt_in",
+            "fractional_delay_filter": "kaiser_sinc_beta8.6",
+            "numerical_filter_latency_samples": 24,
+            "phase_tracking_residual_std_deg": 1.0,
+            "effective_phase_tracking_residual_std_deg": 1.0,
+            "phase_tracking_model": "correlated_estimation_error_proxy_not_PLL",
+            "external_receiver_processing": {
+              "timing_sync": "not_run_cropped_input",
+              "channel_equalization": "not_applied"
+            },
+            "snr_measurement_stage": "after_parametric_compensation_before_AGC",
+            "phase_noise_q_rad2_s": 6.283185307179586,
+            "path_gain_db_start": -1.2651125047262473,
+            "common_delay_s": 0.0026360392391744404,
+            "atmosphere_loss_db": 0.0,
+            "atmosphere_source": "clear_simplified_no_weather_injection",
+            "added_noise_variance_reference": 0.001,
+            "measured_added_noise_power_pre_agc": 0.000911293931559682,
+            "signal_to_added_noise_db": 30.543516063278,
+            "true_total_snr_known": false,
+            "agc_gain_db": -0.14174649555669325,
+            "agc_limited": false,
+            "input_metrics": {
+              "rms": 0.9999999999999999,
+              "papr_db": 7.853708986733668,
+              "effective_energy_samples": 133.36930343114932,
+              "peak_energy_share": 0.023830378117149886
+            },
+            "output_metrics": {
+              "rms": 0.9999999999999999,
+              "papr_db": 7.786885504016774,
+              "effective_energy_samples": 132.02544059528162,
+              "peak_energy_share": 0.023466514327351133
+            },
+            "parameter_provenance": {
+              "visibility": "Nie2012_semantic_state_mapping",
+              "geometry": "simplified_circular_overpass_not_ephemeris",
+              "fading_rx_noise": "engineering_assumption",
+              "atmosphere": "clear_simplified_no_weather_injection"
+            },
+            "sample_id": "synthetic0",
+            "independent_snapshot": true,
+            "realization_namespace": "source_smoke",
+            "augmentation_seed": 1164399056,
+            "receiver_seed": 2027,
+            "input_original_rms": 1.3755989218519757,
+            "input_normalization": "unit_rms"
+          },
+          {
+            "version": "leo_practical_v3_full_residual_20260918",
+            "config_hash": "171d06b9e600d9d962a5e7fd2f9c60ec464bd9ba0186f34679dbc28375abf7f6",
+            "seed": 7957979704411436053,
+            "scenario": "practical_high",
+            "geometry": {
+              "altitude_m": 600000.0,
+              "elevation_deg": 65.21200950765093,
+              "distance_m": 654931.7807915704,
+              "range_rate_mps": -3170.3458319175775,
+              "source": "simplified_circular_overpass_not_ephemeris"
+            },
+            "fs_hz": 25000000.0,
+            "fc_hz": 2462000000.0,
+            "receiver": {
+              "session_id": "virtual_smoke",
+              "amplitude_imbalance_db": 0.03019354686120357,
+              "quadrature_error_deg": 0.7760156934946059,
+              "oscillator_cfo_hz": -196.7021155954786,
+              "estimated_amplitude_imbalance_db": -0.021264161407041383,
+              "estimated_quadrature_error_deg": 0.563414892747036
+            },
+            "start_sample": 0,
+            "state_probabilities": [
+              0.9629852727320007,
+              0.02961178181439941,
+              0.00740294545359985
+            ],
+            "state_counts": {
+              "LOS": 256,
+              "PARTIAL": 0,
+              "BLOCKED": 0
+            },
+            "state_start": "LOS",
+            "state_end": "LOS",
+            "shadow_correlation_time_s": 3.0,
+            "scatter_max_doppler_hz": 8.212348023778503,
+            "scatter_model": "finite_gaussian_rays_Jakes_approximation",
+            "total_diffuse_power_by_state": [
+              0.015848931924611134,
+              0.015848931924611134,
+              0.01
+            ],
+            "expected_los_power_by_state": [
+              1.0268639927219596,
+              0.2011946041565232,
+              0.0
+            ],
+            "expected_k_linear_by_state": [
+              64.79073779901762,
+              12.694521316234354,
+              0.0
+            ],
+            "delays_samples_by_state": [
+              [
+                0.0,
+                3.9559989624116203,
+                11.867996887234863
+              ],
+              [
+                0.0,
+                4.545450721479871,
+                13.636352164439614
+              ],
+              [
+                0.0,
+                2.812784196122036,
+                8.43835258836611
+              ]
+            ],
+            "delays_seconds_by_state": [
+              [
+                0.0,
+                1.582399584964648e-07,
+                4.7471987548939454e-07
+              ],
+              [
+                0.0,
+                1.8181802885919485e-07,
+                5.454540865775846e-07
+              ],
+              [
+                0.0,
+                1.1251136784488145e-07,
+                3.375341035346444e-07
+              ]
+            ],
+            "rms_delay_ns_by_state": [
+              20.0,
+              50.0,
+              100.0
+            ],
+            "diffuse_pdp": [
+              0.6652409557748218,
+              0.24472847105479764,
+              0.09003057317038046
+            ],
+            "boundary": "synthetic_reflect",
+            "orbital_doppler_hz": 26035.983327442733,
+            "input_oscillator_cfo_hz": -196.7021155954786,
+            "estimated_frequency_hz": 25832.006135069852,
+            "output_frequency_hz": 7.275076777401409,
+            "synchronization": "sampled_estimation_error_proxy",
+            "mode": "post_sync",
+            "receiver_location": "satellite",
+            "link_direction": "ground_to_satellite",
+            "input_processing_state": "WiSig_ManySig_equalized1_center256_shared_normalization",
+            "compensation_scope": "newly_injected_channel_and_virtual_RX_only",
+            "frequency_compensation_applied": true,
+            "iq_compensation_applied": true,
+            "phase_tracking_applied": true,
+            "receiver_lock_status": "locked",
+            "quality_snr_db": 26.35090408501845,
+            "quality_source": "simulated_signal_to_added_noise_not_total_snr",
+            "residual_scale": 1.0,
+            "fine_frequency_tracking_applied": true,
+            "coarse_doppler_compensation_applied": true,
+            "processing_route": "full",
+            "full_channel_waveform_synthesized": true,
+            "channel_equalization_applied": false,
+            "equalizer": {
+              "reason": "disabled_by_default"
+            },
+            "tx_impairment_correction_applied": false,
+            "rff_protection_policy": "no_TX_correction_propagation_EQ_opt_in",
+            "fractional_delay_filter": "kaiser_sinc_beta8.6",
+            "numerical_filter_latency_samples": 24,
+            "phase_tracking_residual_std_deg": 1.0,
+            "effective_phase_tracking_residual_std_deg": 1.0,
+            "phase_tracking_model": "correlated_estimation_error_proxy_not_PLL",
+            "external_receiver_processing": {
+              "timing_sync": "not_run_cropped_input",
+              "channel_equalization": "not_applied"
+            },
+            "snr_measurement_stage": "after_parametric_compensation_before_AGC",
+            "phase_noise_q_rad2_s": 6.283185307179586,
+            "path_gain_db_start": 0.3664176637962541,
+            "common_delay_s": 0.0021846172687625463,
+            "atmosphere_loss_db": 0.0,
+            "atmosphere_source": "clear_simplified_no_weather_injection",
+            "added_noise_variance_reference": 0.001,
+            "measured_added_noise_power_pre_agc": 0.0010115179132433696,
+            "signal_to_added_noise_db": 26.30544238929985,
+            "true_total_snr_known": false,
+            "agc_gain_db": 3.649106034584288,
+            "agc_limited": false,
+            "input_metrics": {
+              "rms": 1.0,
+              "papr_db": 7.461572107735527,
+              "effective_energy_samples": 136.48701198498722,
+              "peak_energy_share": 0.02177294850668926
+            },
+            "output_metrics": {
+              "rms": 0.9999999999999999,
+              "papr_db": 7.667014528506909,
+              "effective_energy_samples": 134.61183826109655,
+              "peak_energy_share": 0.022827664840371707
+            },
+            "parameter_provenance": {
+              "visibility": "Nie2012_semantic_state_mapping",
+              "geometry": "simplified_circular_overpass_not_ephemeris",
+              "fading_rx_noise": "engineering_assumption",
+              "atmosphere": "clear_simplified_no_weather_injection"
+            },
+            "sample_id": "synthetic1",
+            "independent_snapshot": true,
+            "realization_namespace": "source_smoke",
+            "augmentation_seed": 1164399056,
+            "receiver_seed": 2027,
+            "input_original_rms": 1.3538133956686325,
+            "input_normalization": "unit_rms"
+          },
+          {
+            "version": "leo_practical_v3_full_residual_20260918",
+            "config_hash": "171d06b9e600d9d962a5e7fd2f9c60ec464bd9ba0186f34679dbc28375abf7f6",
+            "seed": 4946353167232657767,
+            "scenario": "practical_high",
+            "geometry": {
+              "altitude_m": 600000.0,
+              "elevation_deg": 74.34382981508384,
+              "distance_m": 621026.151557046,
+              "range_rate_mps": 2040.6390382147663,
+              "source": "simplified_circular_overpass_not_ephemeris"
+            },
+            "fs_hz": 25000000.0,
+            "fc_hz": 2462000000.0,
+            "receiver": {
+              "session_id": "virtual_smoke",
+              "amplitude_imbalance_db": 0.03019354686120357,
+              "quadrature_error_deg": 0.7760156934946059,
+              "oscillator_cfo_hz": -196.7021155954786,
+              "estimated_amplitude_imbalance_db": -0.021264161407041383,
+              "estimated_quadrature_error_deg": 0.563414892747036
+            },
+            "start_sample": 0,
+            "state_probabilities": [
+              0.9852339960928278,
+              0.011812803125737759,
+              0.0029532007814344393
+            ],
+            "state_counts": {
+              "LOS": 256,
+              "PARTIAL": 0,
+              "BLOCKED": 0
+            },
+            "state_start": "LOS",
+            "state_end": "LOS",
+            "shadow_correlation_time_s": 3.0,
+            "scatter_max_doppler_hz": 8.212348023778503,
+            "scatter_model": "finite_gaussian_rays_Jakes_approximation",
+            "total_diffuse_power_by_state": [
+              0.015848931924611134,
+              0.015848931924611134,
+              0.01
+            ],
+            "expected_los_power_by_state": [
+              1.0268639927219596,
+              0.2011946041565232,
+              0.0
+            ],
+            "expected_k_linear_by_state": [
+              64.79073779901762,
+              12.694521316234354,
+              0.0
+            ],
+            "delays_samples_by_state": [
+              [
+                0.0,
+                3.9559989624116203,
+                11.867996887234863
+              ],
+              [
+                0.0,
+                4.545450721479871,
+                13.636352164439614
+              ],
+              [
+                0.0,
+                2.812784196122036,
+                8.43835258836611
+              ]
+            ],
+            "delays_seconds_by_state": [
+              [
+                0.0,
+                1.582399584964648e-07,
+                4.7471987548939454e-07
+              ],
+              [
+                0.0,
+                1.8181802885919485e-07,
+                5.454540865775846e-07
+              ],
+              [
+                0.0,
+                1.1251136784488145e-07,
+                3.375341035346444e-07
+              ]
+            ],
+            "rms_delay_ns_by_state": [
+              20.0,
+              50.0,
+              100.0
+            ],
+            "diffuse_pdp": [
+              0.6652409557748218,
+              0.24472847105479764,
+              0.09003057317038046
+            ],
+            "boundary": "synthetic_reflect",
+            "orbital_doppler_hz": -16758.4379727283,
+            "input_oscillator_cfo_hz": -196.7021155954786,
+            "estimated_frequency_hz": -17049.142640052898,
+            "output_frequency_hz": 94.00255172911784,
+            "synchronization": "sampled_estimation_error_proxy",
+            "mode": "post_sync",
+            "receiver_location": "satellite",
+            "link_direction": "ground_to_satellite",
+            "input_processing_state": "WiSig_ManySig_equalized1_center256_shared_normalization",
+            "compensation_scope": "newly_injected_channel_and_virtual_RX_only",
+            "frequency_compensation_applied": true,
+            "iq_compensation_applied": true,
+            "phase_tracking_applied": true,
+            "receiver_lock_status": "locked",
+            "quality_snr_db": 29.836109983518018,
+            "quality_source": "simulated_signal_to_added_noise_not_total_snr",
+            "residual_scale": 1.0,
+            "fine_frequency_tracking_applied": true,
+            "coarse_doppler_compensation_applied": true,
+            "processing_route": "full",
+            "full_channel_waveform_synthesized": true,
+            "channel_equalization_applied": false,
+            "equalizer": {
+              "reason": "disabled_by_default"
+            },
+            "tx_impairment_correction_applied": false,
+            "rff_protection_policy": "no_TX_correction_propagation_EQ_opt_in",
+            "fractional_delay_filter": "kaiser_sinc_beta8.6",
+            "numerical_filter_latency_samples": 24,
+            "phase_tracking_residual_std_deg": 1.0,
+            "effective_phase_tracking_residual_std_deg": 1.0,
+            "phase_tracking_model": "correlated_estimation_error_proxy_not_PLL",
+            "external_receiver_processing": {
+              "timing_sync": "not_run_cropped_input",
+              "channel_equalization": "not_applied"
+            },
+            "snr_measurement_stage": "after_parametric_compensation_before_AGC",
+            "phase_noise_q_rad2_s": 6.283185307179586,
+            "path_gain_db_start": 0.8281411923180235,
+            "common_delay_s": 0.002071520263385165,
+            "atmosphere_loss_db": 0.0,
+            "atmosphere_source": "clear_simplified_no_weather_injection",
+            "added_noise_variance_reference": 0.001,
+            "measured_added_noise_power_pre_agc": 0.0010339970077585933,
+            "signal_to_added_noise_db": 29.691741381511253,
+            "true_total_snr_known": false,
+            "agc_gain_db": 0.15243695267245758,
+            "agc_limited": false,
+            "input_metrics": {
+              "rms": 1.0,
+              "papr_db": 6.700911154493221,
+              "effective_energy_samples": 133.79085974012963,
+              "peak_energy_share": 0.01827473761396755
+            },
+            "output_metrics": {
+              "rms": 0.9999999999999999,
+              "papr_db": 6.522574946100823,
+              "effective_energy_samples": 138.5476491822657,
+              "peak_energy_share": 0.017539512946243827
+            },
+            "parameter_provenance": {
+              "visibility": "Nie2012_semantic_state_mapping",
+              "geometry": "simplified_circular_overpass_not_ephemeris",
+              "fading_rx_noise": "engineering_assumption",
+              "atmosphere": "clear_simplified_no_weather_injection"
+            },
+            "sample_id": "synthetic2",
+            "independent_snapshot": true,
+            "realization_namespace": "source_smoke",
+            "augmentation_seed": 1164399056,
+            "receiver_seed": 2027,
+            "input_original_rms": 1.5149648270713547,
+            "input_normalization": "unit_rms"
+          },
+          {
+            "version": "leo_practical_v3_full_residual_20260918",
+            "config_hash": "171d06b9e600d9d962a5e7fd2f9c60ec464bd9ba0186f34679dbc28375abf7f6",
+            "seed": 1603723460152408389,
+            "scenario": "practical_high",
+            "geometry": {
+              "altitude_m": 600000.0,
+              "elevation_deg": 77.01722338826491,
+              "distance_m": 614337.5217180671,
+              "range_rate_mps": 1698.8049306938044,
+              "source": "simplified_circular_overpass_not_ephemeris"
+            },
+            "fs_hz": 25000000.0,
+            "fc_hz": 2462000000.0,
+            "receiver": {
+              "session_id": "virtual_smoke",
+              "amplitude_imbalance_db": 0.03019354686120357,
+              "quadrature_error_deg": 0.7760156934946059,
+              "oscillator_cfo_hz": -196.7021155954786,
+              "estimated_amplitude_imbalance_db": -0.021264161407041383,
+              "estimated_quadrature_error_deg": 0.563414892747036
+            },
+            "start_sample": 0,
+            "state_probabilities": [
+              0.9898462356295051,
+              0.008123011496395894,
+              0.0020307528740989723
+            ],
+            "state_counts": {
+              "LOS": 256,
+              "PARTIAL": 0,
+              "BLOCKED": 0
+            },
+            "state_start": "LOS",
+            "state_end": "LOS",
+            "shadow_correlation_time_s": 3.0,
+            "scatter_max_doppler_hz": 8.212348023778503,
+            "scatter_model": "finite_gaussian_rays_Jakes_approximation",
+            "total_diffuse_power_by_state": [
+              0.015848931924611134,
+              0.015848931924611134,
+              0.01
+            ],
+            "expected_los_power_by_state": [
+              1.0268639927219596,
+              0.2011946041565232,
+              0.0
+            ],
+            "expected_k_linear_by_state": [
+              64.79073779901762,
+              12.694521316234354,
+              0.0
+            ],
+            "delays_samples_by_state": [
+              [
+                0.0,
+                3.9559989624116203,
+                11.867996887234863
+              ],
+              [
+                0.0,
+                4.545450721479871,
+                13.636352164439614
+              ],
+              [
+                0.0,
+                2.812784196122036,
+                8.43835258836611
+              ]
+            ],
+            "delays_seconds_by_state": [
+              [
+                0.0,
+                1.582399584964648e-07,
+                4.7471987548939454e-07
+              ],
+              [
+                0.0,
+                1.8181802885919485e-07,
+                5.454540865775846e-07
+              ],
+              [
+                0.0,
+                1.1251136784488145e-07,
+                3.375341035346444e-07
+              ]
+            ],
+            "rms_delay_ns_by_state": [
+              20.0,
+              50.0,
+              100.0
+            ],
+            "diffuse_pdp": [
+              0.6652409557748218,
+              0.24472847105479764,
+              0.09003057317038046
+            ],
+            "boundary": "synthetic_reflect",
+            "orbital_doppler_hz": -13951.177315368443,
+            "input_oscillator_cfo_hz": -196.7021155954786,
+            "estimated_frequency_hz": -14156.150821504008,
+            "output_frequency_hz": 8.27139054008694,
+            "synchronization": "sampled_estimation_error_proxy",
+            "mode": "post_sync",
+            "receiver_location": "satellite",
+            "link_direction": "ground_to_satellite",
+            "input_processing_state": "WiSig_ManySig_equalized1_center256_shared_normalization",
+            "compensation_scope": "newly_injected_channel_and_virtual_RX_only",
+            "frequency_compensation_applied": true,
+            "iq_compensation_applied": true,
+            "phase_tracking_applied": true,
+            "receiver_lock_status": "locked",
+            "quality_snr_db": 29.401822009157648,
+            "quality_source": "simulated_signal_to_added_noise_not_total_snr",
+            "residual_scale": 1.0,
+            "fine_frequency_tracking_applied": true,
+            "coarse_doppler_compensation_applied": true,
+            "processing_route": "full",
+            "full_channel_waveform_synthesized": true,
+            "channel_equalization_applied": false,
+            "equalizer": {
+              "reason": "disabled_by_default"
+            },
+            "tx_impairment_correction_applied": false,
+            "rff_protection_policy": "no_TX_correction_propagation_EQ_opt_in",
+            "fractional_delay_filter": "kaiser_sinc_beta8.6",
+            "numerical_filter_latency_samples": 24,
+            "phase_tracking_residual_std_deg": 1.0,
+            "effective_phase_tracking_residual_std_deg": 1.0,
+            "phase_tracking_model": "correlated_estimation_error_proxy_not_PLL",
+            "external_receiver_processing": {
+              "timing_sync": "not_run_cropped_input",
+              "channel_equalization": "not_applied"
+            },
+            "snr_measurement_stage": "after_parametric_compensation_before_AGC",
+            "phase_noise_q_rad2_s": 6.283185307179586,
+            "path_gain_db_start": 0.9221981401995496,
+            "common_delay_s": 0.002049209395781621,
+            "atmosphere_loss_db": 0.0,
+            "atmosphere_source": "clear_simplified_no_weather_injection",
+            "added_noise_variance_reference": 0.001,
+            "measured_added_noise_power_pre_agc": 0.0009453998572733525,
+            "signal_to_added_noise_db": 29.643967724181643,
+            "true_total_snr_known": false,
+            "agc_gain_db": 0.610570065134091,
+            "agc_limited": false,
+            "input_metrics": {
+              "rms": 1.0,
+              "papr_db": 6.822653277419838,
+              "effective_energy_samples": 132.9725350498703,
+              "peak_energy_share": 0.018794265705193512
+            },
+            "output_metrics": {
+              "rms": 1.0,
+              "papr_db": 6.684491586963253,
+              "effective_energy_samples": 140.81108080568112,
+              "peak_energy_share": 0.01820577593391124
+            },
+            "parameter_provenance": {
+              "visibility": "Nie2012_semantic_state_mapping",
+              "geometry": "simplified_circular_overpass_not_ephemeris",
+              "fading_rx_noise": "engineering_assumption",
+              "atmosphere": "clear_simplified_no_weather_injection"
+            },
+            "sample_id": "synthetic3",
+            "independent_snapshot": true,
+            "realization_namespace": "source_smoke",
+            "augmentation_seed": 1164399056,
+            "receiver_seed": 2027,
+            "input_original_rms": 1.4440587046622448,
+            "input_normalization": "unit_rms"
+          }
+        ],
+        "namespace": "source_smoke"
+      },
+      "loss": 22.653989791870117,
+      "forward_shape": [
+        8,
+        2,
+        256
+      ]
+    },
+    {
+      "scene": "practical_mid",
+      "channel_model": "full",
+      "equalization_configured": false,
+      "equalizer_method": "zf",
+      "channel_evidence": {
+        "config": {
+          "fs_hz": 25000000.0,
+          "scenario": "practical_mid",
+          "fc_hz": 2462000000.0,
+          "altitude_m": 600000.0,
+          "reference_altitude_m": 600000.0,
+          "reference_elevation_deg": 60.0,
+          "reference_snr_db": 30.0,
+          "receiver_cfo_std_hz": 200.0,
+          "residual_cfo_std_hz": 100.0,
+          "phase_noise_linewidth_hz": 1.0,
+          "iq_amp_max_db": 0.2,
+          "iq_phase_max_deg": 1.0,
+          "shadow_corr_distance_m": 3.0,
+          "terminal_speed_mps": 1.0,
+          "shadow_corr_time_s": null,
+          "state_mix_time_s": 1.0,
+          "scatter_doppler_hz": null,
+          "scatter_sinusoids": 32,
+          "los_mean_db": [
+            0.0,
+            -8.0,
+            0.0
+          ],
+          "los_std_db": [
+            1.0,
+            3.0,
+            0.0
+          ],
+          "diffuse_power_db": [
+            -18.0,
+            -18.0,
+            -20.0
+          ],
+          "rms_delay_ns": [
+            20.0,
+            50.0,
+            100.0
+          ],
+          "mode": "post_sync",
+          "receiver_location": "satellite",
+          "input_processing_state": "WiSig_ManySig_equalized1_center256_shared_normalization",
+          "iq_compensation_enabled": true,
+          "iq_estimation_amp_std_db": 0.05,
+          "iq_estimation_phase_std_deg": 0.2,
+          "phase_tracking_enabled": true,
+          "phase_tracking_residual_std_deg": 1.0,
+          "phase_tracking_correlation_time_s": 0.001,
+          "agc_enabled": true,
+          "agc_limit_db": 30.0,
+          "boundary": "reflect",
+          "atmosphere_loss_db": 0.0,
+          "atmosphere_source": "clear_simplified_no_weather_injection",
+          "local_geometry_max_duration_s": 10.0,
+          "quality_adaptation_enabled": true,
+          "locked_snr_db": 15.0,
+          "unlocked_snr_db": 5.0,
+          "quality_reference_snr_db": 20.0,
+          "max_residual_scale": 10.0,
+          "coarse_doppler_error_std_hz": 500.0,
+          "fractional_delay_half_length": 24,
+          "processing_route": "full",
+          "equalization_enabled": false,
+          "equalizer_method": "zf",
+          "equalizer_length": 129,
+          "equalizer_delay_samples": 64,
+          "equalizer_max_gain_db": 20,
+          "channel_estimation_nmse_db": -25.0,
+          "zf_regularization": 1e-06
+        },
+        "records": [
+          {
+            "version": "leo_practical_v3_full_residual_20260918",
+            "config_hash": "11525868a42ef2d930cc6c74f764bdceed7ad5df002db963e9659387ef05d8ca",
+            "seed": 8516327169914736717,
+            "scenario": "practical_mid",
+            "geometry": {
+              "altitude_m": 600000.0,
+              "elevation_deg": 26.12019462369118,
+              "distance_m": 1179160.4300648444,
+              "range_rate_mps": 6789.471917182568,
+              "source": "simplified_circular_overpass_not_ephemeris"
+            },
+            "fs_hz": 25000000.0,
+            "fc_hz": 2462000000.0,
+            "receiver": {
+              "session_id": "virtual_smoke",
+              "amplitude_imbalance_db": 0.03019354686120357,
+              "quadrature_error_deg": 0.7760156934946059,
+              "oscillator_cfo_hz": -196.7021155954786,
+              "estimated_amplitude_imbalance_db": -0.021264161407041383,
+              "estimated_quadrature_error_deg": 0.563414892747036
+            },
+            "start_sample": 0,
+            "state_probabilities": [
+              0.7541789436798136,
+              0.1966568450561491,
+              0.04916421126403725
+            ],
+            "state_counts": {
+              "LOS": 0,
+              "PARTIAL": 256,
+              "BLOCKED": 0
+            },
+            "state_start": "PARTIAL",
+            "state_end": "PARTIAL",
+            "shadow_correlation_time_s": 3.0,
+            "scatter_max_doppler_hz": 8.212348023778503,
+            "scatter_model": "finite_gaussian_rays_Jakes_approximation",
+            "total_diffuse_power_by_state": [
+              0.015848931924611134,
+              0.015848931924611134,
+              0.01
+            ],
+            "expected_los_power_by_state": [
+              1.0268639927219596,
+              0.2011946041565232,
+              0.0
+            ],
+            "expected_k_linear_by_state": [
+              64.79073779901762,
+              12.694521316234354,
+              0.0
+            ],
+            "delays_samples_by_state": [
+              [
+                0.0,
+                3.9559989624116203,
+                11.867996887234863
+              ],
+              [
+                0.0,
+                4.545450721479871,
+                13.636352164439614
+              ],
+              [
+                0.0,
+                2.812784196122036,
+                8.43835258836611
+              ]
+            ],
+            "delays_seconds_by_state": [
+              [
+                0.0,
+                1.582399584964648e-07,
+                4.7471987548939454e-07
+              ],
+              [
+                0.0,
+                1.8181802885919485e-07,
+                5.454540865775846e-07
+              ],
+              [
+                0.0,
+                1.1251136784488145e-07,
+                3.375341035346444e-07
+              ]
+            ],
+            "rms_delay_ns_by_state": [
+              20.0,
+              50.0,
+              100.0
+            ],
+            "diffuse_pdp": [
+              0.6652409557748218,
+              0.24472847105479764,
+              0.09003057317038046
+            ],
+            "boundary": "synthetic_reflect",
+            "orbital_doppler_hz": -55757.50628157391,
+            "input_oscillator_cfo_hz": -196.7021155954786,
+            "estimated_frequency_hz": -56031.43257717172,
+            "output_frequency_hz": 77.22418000233301,
+            "synchronization": "sampled_estimation_error_proxy",
+            "mode": "post_sync",
+            "receiver_location": "satellite",
+            "link_direction": "ground_to_satellite",
+            "input_processing_state": "WiSig_ManySig_equalized1_center256_shared_normalization",
+            "compensation_scope": "newly_injected_channel_and_virtual_RX_only",
+            "frequency_compensation_applied": true,
+            "iq_compensation_applied": true,
+            "phase_tracking_applied": true,
+            "receiver_lock_status": "locked",
+            "quality_snr_db": 16.924983815728524,
+            "quality_source": "simulated_signal_to_added_noise_not_total_snr",
+            "residual_scale": 1.4247898388436908,
+            "fine_frequency_tracking_applied": true,
+            "coarse_doppler_compensation_applied": true,
+            "processing_route": "full",
+            "full_channel_waveform_synthesized": true,
+            "channel_equalization_applied": false,
+            "equalizer": {
+              "reason": "disabled_by_default"
+            },
+            "tx_impairment_correction_applied": false,
+            "rff_protection_policy": "no_TX_correction_propagation_EQ_opt_in",
+            "fractional_delay_filter": "kaiser_sinc_beta8.6",
+            "numerical_filter_latency_samples": 24,
+            "phase_tracking_residual_std_deg": 1.0,
+            "effective_phase_tracking_residual_std_deg": 1.4247898388436908,
+            "phase_tracking_model": "correlated_estimation_error_proxy_not_PLL",
+            "external_receiver_processing": {
+              "timing_sync": "not_run_cropped_input",
+              "channel_equalization": "not_applied"
+            },
+            "snr_measurement_stage": "after_parametric_compensation_before_AGC",
+            "phase_noise_q_rad2_s": 6.283185307179586,
+            "path_gain_db_start": -4.741118968137567,
+            "common_delay_s": 0.003933255819480437,
+            "atmosphere_loss_db": 0.0,
+            "atmosphere_source": "clear_simplified_no_weather_injection",
+            "added_noise_variance_reference": 0.001,
+            "measured_added_noise_power_pre_agc": 0.0009604880585179557,
+            "signal_to_added_noise_db": 17.10163698670471,
+            "true_total_snr_known": false,
+            "agc_gain_db": 13.082600158641771,
+            "agc_limited": false,
+            "input_metrics": {
+              "rms": 0.9999999999999999,
+              "papr_db": 7.853708986733668,
+              "effective_energy_samples": 133.36930343114932,
+              "peak_energy_share": 0.023830378117149886
+            },
+            "output_metrics": {
+              "rms": 0.9999999999999999,
+              "papr_db": 8.181948176172327,
+              "effective_energy_samples": 135.42210624333055,
+              "peak_energy_share": 0.025701285875431547
+            },
+            "parameter_provenance": {
+              "visibility": "Nie2012_semantic_state_mapping",
+              "geometry": "simplified_circular_overpass_not_ephemeris",
+              "fading_rx_noise": "engineering_assumption",
+              "atmosphere": "clear_simplified_no_weather_injection"
+            },
+            "sample_id": "synthetic0",
+            "independent_snapshot": true,
+            "realization_namespace": "source_smoke",
+            "augmentation_seed": 1164399056,
+            "receiver_seed": 2027,
+            "input_original_rms": 1.3755989218519757,
+            "input_normalization": "unit_rms"
+          },
+          {
+            "version": "leo_practical_v3_full_residual_20260918",
+            "config_hash": "11525868a42ef2d930cc6c74f764bdceed7ad5df002db963e9659387ef05d8ca",
+            "seed": 8594470262569197043,
+            "scenario": "practical_mid",
+            "geometry": {
+              "altitude_m": 600000.0,
+              "elevation_deg": 26.951908212698136,
+              "distance_m": 1155099.0827844269,
+              "range_rate_mps": 6740.432670620542,
+              "source": "simplified_circular_overpass_not_ephemeris"
+            },
+            "fs_hz": 25000000.0,
+            "fc_hz": 2462000000.0,
+            "receiver": {
+              "session_id": "virtual_smoke",
+              "amplitude_imbalance_db": 0.03019354686120357,
+              "quadrature_error_deg": 0.7760156934946059,
+              "oscillator_cfo_hz": -196.7021155954786,
+              "estimated_amplitude_imbalance_db": -0.021264161407041383,
+              "estimated_quadrature_error_deg": 0.563414892747036
+            },
+            "start_sample": 0,
+            "state_probabilities": [
+              0.7605384410831301,
+              0.19156924713349596,
+              0.04789231178337397
+            ],
+            "state_counts": {
+              "LOS": 256,
+              "PARTIAL": 0,
+              "BLOCKED": 0
+            },
+            "state_start": "LOS",
+            "state_end": "LOS",
+            "shadow_correlation_time_s": 3.0,
+            "scatter_max_doppler_hz": 8.212348023778503,
+            "scatter_model": "finite_gaussian_rays_Jakes_approximation",
+            "total_diffuse_power_by_state": [
+              0.015848931924611134,
+              0.015848931924611134,
+              0.01
+            ],
+            "expected_los_power_by_state": [
+              1.0268639927219596,
+              0.2011946041565232,
+              0.0
+            ],
+            "expected_k_linear_by_state": [
+              64.79073779901762,
+              12.694521316234354,
+              0.0
+            ],
+            "delays_samples_by_state": [
+              [
+                0.0,
+                3.9559989624116203,
+                11.867996887234863
+              ],
+              [
+                0.0,
+                4.545450721479871,
+                13.636352164439614
+              ],
+              [
+                0.0,
+                2.812784196122036,
+                8.43835258836611
+              ]
+            ],
+            "delays_seconds_by_state": [
+              [
+                0.0,
+                1.582399584964648e-07,
+                4.7471987548939454e-07
+              ],
+              [
+                0.0,
+                1.8181802885919485e-07,
+                5.454540865775846e-07
+              ],
+              [
+                0.0,
+                1.1251136784488145e-07,
+                3.375341035346444e-07
+              ]
+            ],
+            "rms_delay_ns_by_state": [
+              20.0,
+              50.0,
+              100.0
+            ],
+            "diffuse_pdp": [
+              0.6652409557748218,
+              0.24472847105479764,
+              0.09003057317038046
+            ],
+            "boundary": "synthetic_reflect",
+            "orbital_doppler_hz": -55354.77892198267,
+            "input_oscillator_cfo_hz": -196.7021155954786,
+            "estimated_frequency_hz": -55592.60716122086,
+            "output_frequency_hz": 41.12612364270899,
+            "synchronization": "sampled_estimation_error_proxy",
+            "mode": "post_sync",
+            "receiver_location": "satellite",
+            "link_direction": "ground_to_satellite",
+            "input_processing_state": "WiSig_ManySig_equalized1_center256_shared_normalization",
+            "compensation_scope": "newly_injected_channel_and_virtual_RX_only",
+            "frequency_compensation_applied": true,
+            "iq_compensation_applied": true,
+            "phase_tracking_applied": true,
+            "receiver_lock_status": "locked",
+            "quality_snr_db": 25.90472573263976,
+            "quality_source": "simulated_signal_to_added_noise_not_total_snr",
+            "residual_scale": 1.0,
+            "fine_frequency_tracking_applied": true,
+            "coarse_doppler_compensation_applied": true,
+            "processing_route": "full",
+            "full_channel_waveform_synthesized": true,
+            "channel_equalization_applied": false,
+            "equalizer": {
+              "reason": "disabled_by_default"
+            },
+            "tx_impairment_correction_applied": false,
+            "rff_protection_policy": "no_TX_correction_propagation_EQ_opt_in",
+            "fractional_delay_filter": "kaiser_sinc_beta8.6",
+            "numerical_filter_latency_samples": 24,
+            "phase_tracking_residual_std_deg": 1.0,
+            "effective_phase_tracking_residual_std_deg": 1.0,
+            "phase_tracking_model": "correlated_estimation_error_proxy_not_PLL",
+            "external_receiver_processing": {
+              "timing_sync": "not_run_cropped_input",
+              "channel_equalization": "not_applied"
+            },
+            "snr_measurement_stage": "after_parametric_compensation_before_AGC",
+            "phase_noise_q_rad2_s": 6.283185307179586,
+            "path_gain_db_start": -4.562045811587137,
+            "common_delay_s": 0.0038529958041320267,
+            "atmosphere_loss_db": 0.0,
+            "atmosphere_source": "clear_simplified_no_weather_injection",
+            "added_noise_variance_reference": 0.001,
+            "measured_added_noise_power_pre_agc": 0.0010526618077345829,
+            "signal_to_added_noise_db": 25.67876732604441,
+            "true_total_snr_known": false,
+            "agc_gain_db": 4.069967866578026,
+            "agc_limited": false,
+            "input_metrics": {
+              "rms": 1.0,
+              "papr_db": 7.461572107735527,
+              "effective_energy_samples": 136.48701198498722,
+              "peak_energy_share": 0.02177294850668926
+            },
+            "output_metrics": {
+              "rms": 1.0,
+              "papr_db": 7.550710217804103,
+              "effective_energy_samples": 132.91963658356386,
+              "peak_energy_share": 0.022224451760594503
+            },
+            "parameter_provenance": {
+              "visibility": "Nie2012_semantic_state_mapping",
+              "geometry": "simplified_circular_overpass_not_ephemeris",
+              "fading_rx_noise": "engineering_assumption",
+              "atmosphere": "clear_simplified_no_weather_injection"
+            },
+            "sample_id": "synthetic1",
+            "independent_snapshot": true,
+            "realization_namespace": "source_smoke",
+            "augmentation_seed": 1164399056,
+            "receiver_seed": 2027,
+            "input_original_rms": 1.3538133956686325,
+            "input_normalization": "unit_rms"
+          },
+          {
+            "version": "leo_practical_v3_full_residual_20260918",
+            "config_hash": "11525868a42ef2d930cc6c74f764bdceed7ad5df002db963e9659387ef05d8ca",
+            "seed": 6377881817528153043,
+            "scenario": "practical_mid",
+            "geometry": {
+              "altitude_m": 600000.0,
+              "elevation_deg": 31.41191988641653,
+              "distance_m": 1041948.2110620658,
+              "range_rate_mps": 6453.503580474775,
+              "source": "simplified_circular_overpass_not_ephemeris"
+            },
+            "fs_hz": 25000000.0,
+            "fc_hz": 2462000000.0,
+            "receiver": {
+              "session_id": "virtual_smoke",
+              "amplitude_imbalance_db": 0.03019354686120357,
+              "quadrature_error_deg": 0.7760156934946059,
+              "oscillator_cfo_hz": -196.7021155954786,
+              "estimated_amplitude_imbalance_db": -0.021264161407041383,
+              "estimated_quadrature_error_deg": 0.563414892747036
+            },
+            "start_sample": 0,
+            "state_probabilities": [
+              0.79321908847014,
+              0.165424729223888,
+              0.04135618230597199
+            ],
+            "state_counts": {
+              "LOS": 256,
+              "PARTIAL": 0,
+              "BLOCKED": 0
+            },
+            "state_start": "LOS",
+            "state_end": "LOS",
+            "shadow_correlation_time_s": 3.0,
+            "scatter_max_doppler_hz": 8.212348023778503,
+            "scatter_model": "finite_gaussian_rays_Jakes_approximation",
+            "total_diffuse_power_by_state": [
+              0.015848931924611134,
+              0.015848931924611134,
+              0.01
+            ],
+            "expected_los_power_by_state": [
+              1.0268639927219596,
+              0.2011946041565232,
+              0.0
+            ],
+            "expected_k_linear_by_state": [
+              64.79073779901762,
+              12.694521316234354,
+              0.0
+            ],
+            "delays_samples_by_state": [
+              [
+                0.0,
+                3.9559989624116203,
+                11.867996887234863
+              ],
+              [
+                0.0,
+                4.545450721479871,
+                13.636352164439614
+              ],
+              [
+                0.0,
+                2.812784196122036,
+                8.43835258836611
+              ]
+            ],
+            "delays_seconds_by_state": [
+              [
+                0.0,
+                1.582399584964648e-07,
+                4.7471987548939454e-07
+              ],
+              [
+                0.0,
+                1.8181802885919485e-07,
+                5.454540865775846e-07
+              ],
+              [
+                0.0,
+                1.1251136784488145e-07,
+                3.375341035346444e-07
+              ]
+            ],
+            "rms_delay_ns_by_state": [
+              20.0,
+              50.0,
+              100.0
+            ],
+            "diffuse_pdp": [
+              0.6652409557748218,
+              0.24472847105479764,
+              0.09003057317038046
+            ],
+            "boundary": "synthetic_reflect",
+            "orbital_doppler_hz": -52998.41737555952,
+            "input_oscillator_cfo_hz": -196.7021155954786,
+            "estimated_frequency_hz": -53184.871219290864,
+            "output_frequency_hz": -10.24827186413313,
+            "synchronization": "sampled_estimation_error_proxy",
+            "mode": "post_sync",
+            "receiver_location": "satellite",
+            "link_direction": "ground_to_satellite",
+            "input_processing_state": "WiSig_ManySig_equalized1_center256_shared_normalization",
+            "compensation_scope": "newly_injected_channel_and_virtual_RX_only",
+            "frequency_compensation_applied": true,
+            "iq_compensation_applied": true,
+            "phase_tracking_applied": true,
+            "receiver_lock_status": "locked",
+            "quality_snr_db": 25.412329803908847,
+            "quality_source": "simulated_signal_to_added_noise_not_total_snr",
+            "residual_scale": 1.0,
+            "fine_frequency_tracking_applied": true,
+            "coarse_doppler_compensation_applied": true,
+            "processing_route": "full",
+            "full_channel_waveform_synthesized": true,
+            "channel_equalization_applied": false,
+            "equalizer": {
+              "reason": "disabled_by_default"
+            },
+            "tx_impairment_correction_applied": false,
+            "rff_protection_policy": "no_TX_correction_propagation_EQ_opt_in",
+            "fractional_delay_filter": "kaiser_sinc_beta8.6",
+            "numerical_filter_latency_samples": 24,
+            "phase_tracking_residual_std_deg": 1.0,
+            "effective_phase_tracking_residual_std_deg": 1.0,
+            "phase_tracking_model": "correlated_estimation_error_proxy_not_PLL",
+            "external_receiver_processing": {
+              "timing_sync": "not_run_cropped_input",
+              "channel_equalization": "not_applied"
+            },
+            "snr_measurement_stage": "after_parametric_compensation_before_AGC",
+            "phase_noise_q_rad2_s": 6.283185307179586,
+            "path_gain_db_start": -3.6665836986037648,
+            "common_delay_s": 0.0034755651226625116,
+            "atmosphere_loss_db": 0.0,
+            "atmosphere_source": "clear_simplified_no_weather_injection",
+            "added_noise_variance_reference": 0.001,
+            "measured_added_noise_power_pre_agc": 0.0009378257881123972,
+            "signal_to_added_noise_db": 25.688934916157073,
+            "true_total_snr_known": false,
+            "agc_gain_db": 4.538899400193643,
+            "agc_limited": false,
+            "input_metrics": {
+              "rms": 1.0,
+              "papr_db": 6.700911154493221,
+              "effective_energy_samples": 133.79085974012963,
+              "peak_energy_share": 0.01827473761396755
+            },
+            "output_metrics": {
+              "rms": 1.0,
+              "papr_db": 6.508292858309366,
+              "effective_energy_samples": 134.49121815175624,
+              "peak_energy_share": 0.01748192772925639
+            },
+            "parameter_provenance": {
+              "visibility": "Nie2012_semantic_state_mapping",
+              "geometry": "simplified_circular_overpass_not_ephemeris",
+              "fading_rx_noise": "engineering_assumption",
+              "atmosphere": "clear_simplified_no_weather_injection"
+            },
+            "sample_id": "synthetic2",
+            "independent_snapshot": true,
+            "realization_namespace": "source_smoke",
+            "augmentation_seed": 1164399056,
+            "receiver_seed": 2027,
+            "input_original_rms": 1.5149648270713547,
+            "input_normalization": "unit_rms"
+          },
+          {
+            "version": "leo_practical_v3_full_residual_20260918",
+            "config_hash": "11525868a42ef2d930cc6c74f764bdceed7ad5df002db963e9659387ef05d8ca",
+            "seed": 8892970907964361335,
+            "scenario": "practical_mid",
+            "geometry": {
+              "altitude_m": 600000.0,
+              "elevation_deg": 41.869432482168534,
+              "distance_m": 855280.0324592497,
+              "range_rate_mps": -5630.9786613589995,
+              "source": "simplified_circular_overpass_not_ephemeris"
+            },
+            "fs_hz": 25000000.0,
+            "fc_hz": 2462000000.0,
+            "receiver": {
+              "session_id": "virtual_smoke",
+              "amplitude_imbalance_db": 0.03019354686120357,
+              "quadrature_error_deg": 0.7760156934946059,
+              "oscillator_cfo_hz": -196.7021155954786,
+              "estimated_amplitude_imbalance_db": -0.021264161407041383,
+              "estimated_quadrature_error_deg": 0.563414892747036
+            },
+            "start_sample": 0,
+            "state_probabilities": [
+              0.8604487030368353,
+              0.11164103757053177,
+              0.027910259392632933
+            ],
+            "state_counts": {
+              "LOS": 0,
+              "PARTIAL": 256,
+              "BLOCKED": 0
+            },
+            "state_start": "PARTIAL",
+            "state_end": "PARTIAL",
+            "shadow_correlation_time_s": 3.0,
+            "scatter_max_doppler_hz": 8.212348023778503,
+            "scatter_model": "finite_gaussian_rays_Jakes_approximation",
+            "total_diffuse_power_by_state": [
+              0.015848931924611134,
+              0.015848931924611134,
+              0.01
+            ],
+            "expected_los_power_by_state": [
+              1.0268639927219596,
+              0.2011946041565232,
+              0.0
+            ],
+            "expected_k_linear_by_state": [
+              64.79073779901762,
+              12.694521316234354,
+              0.0
+            ],
+            "delays_samples_by_state": [
+              [
+                0.0,
+                3.9559989624116203,
+                11.867996887234863
+              ],
+              [
+                0.0,
+                4.545450721479871,
+                13.636352164439614
+              ],
+              [
+                0.0,
+                2.812784196122036,
+                8.43835258836611
+              ]
+            ],
+            "delays_seconds_by_state": [
+              [
+                0.0,
+                1.582399584964648e-07,
+                4.7471987548939454e-07
+              ],
+              [
+                0.0,
+                1.8181802885919485e-07,
+                5.454540865775846e-07
+              ],
+              [
+                0.0,
+                1.1251136784488145e-07,
+                3.375341035346444e-07
+              ]
+            ],
+            "rms_delay_ns_by_state": [
+              20.0,
+              50.0,
+              100.0
+            ],
+            "diffuse_pdp": [
+              0.6652409557748218,
+              0.24472847105479764,
+              0.09003057317038046
+            ],
+            "boundary": "synthetic_reflect",
+            "orbital_doppler_hz": 46243.556481550506,
+            "input_oscillator_cfo_hz": -196.7021155954786,
+            "estimated_frequency_hz": 46070.583497326115,
+            "output_frequency_hz": -23.729131371088442,
+            "synchronization": "sampled_estimation_error_proxy",
+            "mode": "post_sync",
+            "receiver_location": "satellite",
+            "link_direction": "ground_to_satellite",
+            "input_processing_state": "WiSig_ManySig_equalized1_center256_shared_normalization",
+            "compensation_scope": "newly_injected_channel_and_virtual_RX_only",
+            "frequency_compensation_applied": true,
+            "iq_compensation_applied": true,
+            "phase_tracking_applied": true,
+            "receiver_lock_status": "locked",
+            "quality_snr_db": 21.866881705883074,
+            "quality_source": "simulated_signal_to_added_noise_not_total_snr",
+            "residual_scale": 1.0,
+            "fine_frequency_tracking_applied": true,
+            "coarse_doppler_compensation_applied": true,
+            "processing_route": "full",
+            "full_channel_waveform_synthesized": true,
+            "channel_equalization_applied": false,
+            "equalizer": {
+              "reason": "disabled_by_default"
+            },
+            "tx_impairment_correction_applied": false,
+            "rff_protection_policy": "no_TX_correction_propagation_EQ_opt_in",
+            "fractional_delay_filter": "kaiser_sinc_beta8.6",
+            "numerical_filter_latency_samples": 24,
+            "phase_tracking_residual_std_deg": 1.0,
+            "effective_phase_tracking_residual_std_deg": 1.0,
+            "phase_tracking_model": "correlated_estimation_error_proxy_not_PLL",
+            "external_receiver_processing": {
+              "timing_sync": "not_run_cropped_input",
+              "channel_equalization": "not_applied"
+            },
+            "snr_measurement_stage": "after_parametric_compensation_before_AGC",
+            "phase_noise_q_rad2_s": 6.283185307179586,
+            "path_gain_db_start": -1.9518276920089708,
+            "common_delay_s": 0.0028529071016831576,
+            "atmosphere_loss_db": 0.0,
+            "atmosphere_source": "clear_simplified_no_weather_injection",
+            "added_noise_variance_reference": 0.001,
+            "measured_added_noise_power_pre_agc": 0.0011101713722288446,
+            "signal_to_added_noise_db": 21.415420889716916,
+            "true_total_snr_known": false,
+            "agc_gain_db": 8.121382768436872,
+            "agc_limited": false,
+            "input_metrics": {
+              "rms": 1.0,
+              "papr_db": 6.822653277419838,
+              "effective_energy_samples": 132.9725350498703,
+              "peak_energy_share": 0.018794265705193512
+            },
+            "output_metrics": {
+              "rms": 1.0,
+              "papr_db": 6.547342970315477,
+              "effective_energy_samples": 139.05653745310613,
+              "peak_energy_share": 0.01763982741356635
+            },
+            "parameter_provenance": {
+              "visibility": "Nie2012_semantic_state_mapping",
+              "geometry": "simplified_circular_overpass_not_ephemeris",
+              "fading_rx_noise": "engineering_assumption",
+              "atmosphere": "clear_simplified_no_weather_injection"
+            },
+            "sample_id": "synthetic3",
+            "independent_snapshot": true,
+            "realization_namespace": "source_smoke",
+            "augmentation_seed": 1164399056,
+            "receiver_seed": 2027,
+            "input_original_rms": 1.4440587046622448,
+            "input_normalization": "unit_rms"
+          }
+        ],
+        "namespace": "source_smoke"
+      },
+      "loss": 22.874374389648438,
+      "forward_shape": [
+        8,
+        2,
+        256
+      ]
+    },
+    {
+      "scene": "practical_low_urban",
+      "channel_model": "full",
+      "equalization_configured": false,
+      "equalizer_method": "zf",
+      "channel_evidence": {
+        "config": {
+          "fs_hz": 25000000.0,
+          "scenario": "practical_low_urban",
+          "fc_hz": 2462000000.0,
+          "altitude_m": 600000.0,
+          "reference_altitude_m": 600000.0,
+          "reference_elevation_deg": 60.0,
+          "reference_snr_db": 30.0,
+          "receiver_cfo_std_hz": 200.0,
+          "residual_cfo_std_hz": 100.0,
+          "phase_noise_linewidth_hz": 1.0,
+          "iq_amp_max_db": 0.2,
+          "iq_phase_max_deg": 1.0,
+          "shadow_corr_distance_m": 3.0,
+          "terminal_speed_mps": 1.0,
+          "shadow_corr_time_s": null,
+          "state_mix_time_s": 1.0,
+          "scatter_doppler_hz": null,
+          "scatter_sinusoids": 32,
+          "los_mean_db": [
+            0.0,
+            -8.0,
+            0.0
+          ],
+          "los_std_db": [
+            1.0,
+            3.0,
+            0.0
+          ],
+          "diffuse_power_db": [
+            -18.0,
+            -18.0,
+            -20.0
+          ],
+          "rms_delay_ns": [
+            20.0,
+            50.0,
+            100.0
+          ],
+          "mode": "post_sync",
+          "receiver_location": "satellite",
+          "input_processing_state": "WiSig_ManySig_equalized1_center256_shared_normalization",
+          "iq_compensation_enabled": true,
+          "iq_estimation_amp_std_db": 0.05,
+          "iq_estimation_phase_std_deg": 0.2,
+          "phase_tracking_enabled": true,
+          "phase_tracking_residual_std_deg": 1.0,
+          "phase_tracking_correlation_time_s": 0.001,
+          "agc_enabled": true,
+          "agc_limit_db": 30.0,
+          "boundary": "reflect",
+          "atmosphere_loss_db": 0.0,
+          "atmosphere_source": "clear_simplified_no_weather_injection",
+          "local_geometry_max_duration_s": 10.0,
+          "quality_adaptation_enabled": true,
+          "locked_snr_db": 15.0,
+          "unlocked_snr_db": 5.0,
+          "quality_reference_snr_db": 20.0,
+          "max_residual_scale": 10.0,
+          "coarse_doppler_error_std_hz": 500.0,
+          "fractional_delay_half_length": 24,
+          "processing_route": "full",
+          "equalization_enabled": false,
+          "equalizer_method": "zf",
+          "equalizer_length": 129,
+          "equalizer_delay_samples": 64,
+          "equalizer_max_gain_db": 20,
+          "channel_estimation_nmse_db": -25.0,
+          "zf_regularization": 1e-06
+        },
+        "records": [
+          {
+            "version": "leo_practical_v3_full_residual_20260918",
+            "config_hash": "f8442a576fa4202fa081446df11872ce4f74dae2b034822e03ef42c545ab04c3",
+            "seed": 8577880498712044728,
+            "scenario": "practical_low_urban",
+            "geometry": {
+              "altitude_m": 600000.0,
+              "elevation_deg": 15.400139736950937,
+              "distance_m": 1604736.5057171143,
+              "range_rate_mps": -7290.227267874192,
+              "source": "simplified_circular_overpass_not_ephemeris"
+            },
+            "fs_hz": 25000000.0,
+            "fc_hz": 2462000000.0,
+            "receiver": {
+              "session_id": "virtual_smoke",
+              "amplitude_imbalance_db": 0.03019354686120357,
+              "quadrature_error_deg": 0.7760156934946059,
+              "oscillator_cfo_hz": -196.7021155954786,
+              "estimated_amplitude_imbalance_db": -0.021264161407041383,
+              "estimated_quadrature_error_deg": 0.563414892747036
+            },
+            "start_sample": 0,
+            "state_probabilities": [
+              0.20498012124765042,
+              0.15900397575046993,
+              0.6360159030018797
+            ],
+            "state_counts": {
+              "LOS": 0,
+              "PARTIAL": 0,
+              "BLOCKED": 256
+            },
+            "state_start": "BLOCKED",
+            "state_end": "BLOCKED",
+            "shadow_correlation_time_s": 3.0,
+            "scatter_max_doppler_hz": 8.212348023778503,
+            "scatter_model": "finite_gaussian_rays_Jakes_approximation",
+            "total_diffuse_power_by_state": [
+              0.015848931924611134,
+              0.015848931924611134,
+              0.01
+            ],
+            "expected_los_power_by_state": [
+              1.0268639927219596,
+              0.2011946041565232,
+              0.0
+            ],
+            "expected_k_linear_by_state": [
+              64.79073779901762,
+              12.694521316234354,
+              0.0
+            ],
+            "delays_samples_by_state": [
+              [
+                0.0,
+                3.9559989624116203,
+                11.867996887234863
+              ],
+              [
+                0.0,
+                4.545450721479871,
+                13.636352164439614
+              ],
+              [
+                0.0,
+                2.812784196122036,
+                8.43835258836611
+              ]
+            ],
+            "delays_seconds_by_state": [
+              [
+                0.0,
+                1.582399584964648e-07,
+                4.7471987548939454e-07
+              ],
+              [
+                0.0,
+                1.8181802885919485e-07,
+                5.454540865775846e-07
+              ],
+              [
+                0.0,
+                1.1251136784488145e-07,
+                3.375341035346444e-07
+              ]
+            ],
+            "rms_delay_ns_by_state": [
+              20.0,
+              50.0,
+              100.0
+            ],
+            "diffuse_pdp": [
+              0.6652409557748218,
+              0.24472847105479764,
+              0.09003057317038046
+            ],
+            "boundary": "synthetic_reflect",
+            "orbital_doppler_hz": 59869.883496222785,
+            "input_oscillator_cfo_hz": -196.7021155954786,
+            "estimated_frequency_hz": 59203.202696667795,
+            "output_frequency_hz": 469.9786839595108,
+            "synchronization": "sampled_estimation_error_proxy",
+            "mode": "post_sync",
+            "receiver_location": "satellite",
+            "link_direction": "ground_to_satellite",
+            "input_processing_state": "WiSig_ManySig_equalized1_center256_shared_normalization",
+            "compensation_scope": "newly_injected_channel_and_virtual_RX_only",
+            "frequency_compensation_applied": true,
+            "iq_compensation_applied": true,
+            "phase_tracking_applied": false,
+            "receiver_lock_status": "unlocked",
+            "quality_snr_db": 0.3743049736365772,
+            "quality_source": "simulated_signal_to_added_noise_not_total_snr",
+            "residual_scale": 9.578218749144954,
+            "fine_frequency_tracking_applied": false,
+            "coarse_doppler_compensation_applied": true,
+            "processing_route": "full",
+            "full_channel_waveform_synthesized": true,
+            "channel_equalization_applied": false,
+            "equalizer": {
+              "reason": "disabled_by_default"
+            },
+            "tx_impairment_correction_applied": false,
+            "rff_protection_policy": "no_TX_correction_propagation_EQ_opt_in",
+            "fractional_delay_filter": "kaiser_sinc_beta8.6",
+            "numerical_filter_latency_samples": 24,
+            "phase_tracking_residual_std_deg": 1.0,
+            "effective_phase_tracking_residual_std_deg": null,
+            "phase_tracking_model": "correlated_estimation_error_proxy_not_PLL",
+            "external_receiver_processing": {
+              "timing_sync": "not_run_cropped_input",
+              "channel_equalization": "not_applied"
+            },
+            "snr_measurement_stage": "after_parametric_compensation_before_AGC",
+            "phase_noise_q_rad2_s": 6.283185307179586,
+            "path_gain_db_start": -7.417735679094283,
+            "common_delay_s": 0.005352824805609734,
+            "atmosphere_loss_db": 0.0,
+            "atmosphere_source": "clear_simplified_no_weather_injection",
+            "added_noise_variance_reference": 0.001,
+            "measured_added_noise_power_pre_agc": 0.001042370145559352,
+            "signal_to_added_noise_db": 0.19477868633319198,
+            "true_total_snr_known": false,
+            "agc_gain_db": 26.705908573473284,
+            "agc_limited": false,
+            "input_metrics": {
+              "rms": 0.9999999999999999,
+              "papr_db": 7.853708986733668,
+              "effective_energy_samples": 133.36930343114932,
+              "peak_energy_share": 0.023830378117149886
+            },
+            "output_metrics": {
+              "rms": 1.0000000000000002,
+              "papr_db": 8.147127339133855,
+              "effective_energy_samples": 121.85511943534408,
+              "peak_energy_share": 0.025496042159428165
+            },
+            "parameter_provenance": {
+              "visibility": "Nie2012_semantic_state_mapping",
+              "geometry": "simplified_circular_overpass_not_ephemeris",
+              "fading_rx_noise": "engineering_assumption",
+              "atmosphere": "clear_simplified_no_weather_injection"
+            },
+            "sample_id": "synthetic0",
+            "independent_snapshot": true,
+            "realization_namespace": "source_smoke",
+            "augmentation_seed": 1164399056,
+            "receiver_seed": 2027,
+            "input_original_rms": 1.3755989218519757,
+            "input_normalization": "unit_rms"
+          },
+          {
+            "version": "leo_practical_v3_full_residual_20260918",
+            "config_hash": "f8442a576fa4202fa081446df11872ce4f74dae2b034822e03ef42c545ab04c3",
+            "seed": 12450576221395803767,
+            "scenario": "practical_low_urban",
+            "geometry": {
+              "altitude_m": 600000.0,
+              "elevation_deg": 19.11783494347294,
+              "distance_m": 1428959.5928992906,
+              "range_rate_mps": -7144.680948475319,
+              "source": "simplified_circular_overpass_not_ephemeris"
+            },
+            "fs_hz": 25000000.0,
+            "fc_hz": 2462000000.0,
+            "receiver": {
+              "session_id": "virtual_smoke",
+              "amplitude_imbalance_db": 0.03019354686120357,
+              "quadrature_error_deg": 0.7760156934946059,
+              "oscillator_cfo_hz": -196.7021155954786,
+              "estimated_amplitude_imbalance_db": -0.021264161407041383,
+              "estimated_quadrature_error_deg": 0.563414892747036
+            },
+            "start_sample": 0,
+            "state_probabilities": [
+              0.2822455252713221,
+              0.14355089494573559,
+              0.5742035797829423
+            ],
+            "state_counts": {
+              "LOS": 0,
+              "PARTIAL": 0,
+              "BLOCKED": 256
+            },
+            "state_start": "BLOCKED",
+            "state_end": "BLOCKED",
+            "shadow_correlation_time_s": 3.0,
+            "scatter_max_doppler_hz": 8.212348023778503,
+            "scatter_model": "finite_gaussian_rays_Jakes_approximation",
+            "total_diffuse_power_by_state": [
+              0.015848931924611134,
+              0.015848931924611134,
+              0.01
+            ],
+            "expected_los_power_by_state": [
+              1.0268639927219596,
+              0.2011946041565232,
+              0.0
+            ],
+            "expected_k_linear_by_state": [
+              64.79073779901762,
+              12.694521316234354,
+              0.0
+            ],
+            "delays_samples_by_state": [
+              [
+                0.0,
+                3.9559989624116203,
+                11.867996887234863
+              ],
+              [
+                0.0,
+                4.545450721479871,
+                13.636352164439614
+              ],
+              [
+                0.0,
+                2.812784196122036,
+                8.43835258836611
+              ]
+            ],
+            "delays_seconds_by_state": [
+              [
+                0.0,
+                1.582399584964648e-07,
+                4.7471987548939454e-07
+              ],
+              [
+                0.0,
+                1.8181802885919485e-07,
+                5.454540865775846e-07
+              ],
+              [
+                0.0,
+                1.1251136784488145e-07,
+                3.375341035346444e-07
+              ]
+            ],
+            "rms_delay_ns_by_state": [
+              20.0,
+              50.0,
+              100.0
+            ],
+            "diffuse_pdp": [
+              0.6652409557748218,
+              0.24472847105479764,
+              0.09003057317038046
+            ],
+            "boundary": "synthetic_reflect",
+            "orbital_doppler_hz": 58674.60646773921,
+            "input_oscillator_cfo_hz": -196.7021155954786,
+            "estimated_frequency_hz": 58222.75209956619,
+            "output_frequency_hz": 255.15225257754355,
+            "synchronization": "sampled_estimation_error_proxy",
+            "mode": "post_sync",
+            "receiver_location": "satellite",
+            "link_direction": "ground_to_satellite",
+            "input_processing_state": "WiSig_ManySig_equalized1_center256_shared_normalization",
+            "compensation_scope": "newly_injected_channel_and_virtual_RX_only",
+            "frequency_compensation_applied": true,
+            "iq_compensation_applied": true,
+            "phase_tracking_applied": false,
+            "receiver_lock_status": "unlocked",
+            "quality_snr_db": 4.378363848408485,
+            "quality_source": "simulated_signal_to_added_noise_not_total_snr",
+            "residual_scale": 6.040624052389206,
+            "fine_frequency_tracking_applied": false,
+            "coarse_doppler_compensation_applied": true,
+            "processing_route": "full",
+            "full_channel_waveform_synthesized": true,
+            "channel_equalization_applied": false,
+            "equalizer": {
+              "reason": "disabled_by_default"
+            },
+            "tx_impairment_correction_applied": false,
+            "rff_protection_policy": "no_TX_correction_propagation_EQ_opt_in",
+            "fractional_delay_filter": "kaiser_sinc_beta8.6",
+            "numerical_filter_latency_samples": 24,
+            "phase_tracking_residual_std_deg": 1.0,
+            "effective_phase_tracking_residual_std_deg": null,
+            "phase_tracking_model": "correlated_estimation_error_proxy_not_PLL",
+            "external_receiver_processing": {
+              "timing_sync": "not_run_cropped_input",
+              "channel_equalization": "not_applied"
+            },
+            "snr_measurement_stage": "after_parametric_compensation_before_AGC",
+            "phase_noise_q_rad2_s": 6.283185307179586,
+            "path_gain_db_start": -6.410059997493693,
+            "common_delay_s": 0.004766496136801716,
+            "atmosphere_loss_db": 0.0,
+            "atmosphere_source": "clear_simplified_no_weather_injection",
+            "added_noise_variance_reference": 0.001,
+            "measured_added_noise_power_pre_agc": 0.0009859622765101695,
+            "signal_to_added_noise_db": 4.44009585078131,
+            "true_total_snr_known": false,
+            "agc_gain_db": 24.586923628540312,
+            "agc_limited": false,
+            "input_metrics": {
+              "rms": 1.0,
+              "papr_db": 7.461572107735527,
+              "effective_energy_samples": 136.48701198498722,
+              "peak_energy_share": 0.02177294850668926
+            },
+            "output_metrics": {
+              "rms": 0.9999999999999998,
+              "papr_db": 6.605784795928118,
+              "effective_energy_samples": 138.8658211529037,
+              "peak_energy_share": 0.01787880609607286
+            },
+            "parameter_provenance": {
+              "visibility": "Nie2012_semantic_state_mapping",
+              "geometry": "simplified_circular_overpass_not_ephemeris",
+              "fading_rx_noise": "engineering_assumption",
+              "atmosphere": "clear_simplified_no_weather_injection"
+            },
+            "sample_id": "synthetic1",
+            "independent_snapshot": true,
+            "realization_namespace": "source_smoke",
+            "augmentation_seed": 1164399056,
+            "receiver_seed": 2027,
+            "input_original_rms": 1.3538133956686325,
+            "input_normalization": "unit_rms"
+          },
+          {
+            "version": "leo_practical_v3_full_residual_20260918",
+            "config_hash": "f8442a576fa4202fa081446df11872ce4f74dae2b034822e03ef42c545ab04c3",
+            "seed": 12799010330424814132,
+            "scenario": "practical_low_urban",
+            "geometry": {
+              "altitude_m": 600000.0,
+              "elevation_deg": 25.64162537642645,
+              "distance_m": 1193477.0244000903,
+              "range_rate_mps": 6817.041393915354,
+              "source": "simplified_circular_overpass_not_ephemeris"
+            },
+            "fs_hz": 25000000.0,
+            "fc_hz": 2462000000.0,
+            "receiver": {
+              "session_id": "virtual_smoke",
+              "amplitude_imbalance_db": 0.03019354686120357,
+              "quadrature_error_deg": 0.7760156934946059,
+              "oscillator_cfo_hz": -196.7021155954786,
+              "estimated_amplitude_imbalance_db": -0.021264161407041383,
+              "estimated_quadrature_error_deg": 0.563414892747036
+            },
+            "start_sample": 0,
+            "state_probabilities": [
+              0.4082856594016805,
+              0.11834286811966391,
+              0.47337147247865563
+            ],
+            "state_counts": {
+              "LOS": 0,
+              "PARTIAL": 0,
+              "BLOCKED": 256
+            },
+            "state_start": "BLOCKED",
+            "state_end": "BLOCKED",
+            "shadow_correlation_time_s": 3.0,
+            "scatter_max_doppler_hz": 8.212348023778503,
+            "scatter_model": "finite_gaussian_rays_Jakes_approximation",
+            "total_diffuse_power_by_state": [
+              0.015848931924611134,
+              0.015848931924611134,
+              0.01
+            ],
+            "expected_los_power_by_state": [
+              1.0268639927219596,
+              0.2011946041565232,
+              0.0
+            ],
+            "expected_k_linear_by_state": [
+              64.79073779901762,
+              12.694521316234354,
+              0.0
+            ],
+            "delays_samples_by_state": [
+              [
+                0.0,
+                3.9559989624116203,
+                11.867996887234863
+              ],
+              [
+                0.0,
+                4.545450721479871,
+                13.636352164439614
+              ],
+              [
+                0.0,
+                2.812784196122036,
+                8.43835258836611
+              ]
+            ],
+            "delays_seconds_by_state": [
+              [
+                0.0,
+                1.582399584964648e-07,
+                4.7471987548939454e-07
+              ],
+              [
+                0.0,
+                1.8181802885919485e-07,
+                5.454540865775846e-07
+              ],
+              [
+                0.0,
+                1.1251136784488145e-07,
+                3.375341035346444e-07
+              ]
+            ],
+            "rms_delay_ns_by_state": [
+              20.0,
+              50.0,
+              100.0
+            ],
+            "diffuse_pdp": [
+              0.6652409557748218,
+              0.24472847105479764,
+              0.09003057317038046
+            ],
+            "boundary": "synthetic_reflect",
+            "orbital_doppler_hz": -55983.91641933701,
+            "input_oscillator_cfo_hz": -196.7021155954786,
+            "estimated_frequency_hz": -56588.49970093594,
+            "output_frequency_hz": 407.8811660034553,
+            "synchronization": "sampled_estimation_error_proxy",
+            "mode": "post_sync",
+            "receiver_location": "satellite",
+            "link_direction": "ground_to_satellite",
+            "input_processing_state": "WiSig_ManySig_equalized1_center256_shared_normalization",
+            "compensation_scope": "newly_injected_channel_and_virtual_RX_only",
+            "frequency_compensation_applied": true,
+            "iq_compensation_applied": true,
+            "phase_tracking_applied": true,
+            "receiver_lock_status": "degraded",
+            "quality_snr_db": 7.44575882417656,
+            "quality_source": "simulated_signal_to_added_noise_not_total_snr",
+            "residual_scale": 4.243381306032198,
+            "fine_frequency_tracking_applied": true,
+            "coarse_doppler_compensation_applied": true,
+            "processing_route": "full",
+            "full_channel_waveform_synthesized": true,
+            "channel_equalization_applied": false,
+            "equalizer": {
+              "reason": "disabled_by_default"
+            },
+            "tx_impairment_correction_applied": false,
+            "rff_protection_policy": "no_TX_correction_propagation_EQ_opt_in",
+            "fractional_delay_filter": "kaiser_sinc_beta8.6",
+            "numerical_filter_latency_samples": 24,
+            "phase_tracking_residual_std_deg": 1.0,
+            "effective_phase_tracking_residual_std_deg": 4.243381306032198,
+            "phase_tracking_model": "correlated_estimation_error_proxy_not_PLL",
+            "external_receiver_processing": {
+              "timing_sync": "not_run_cropped_input",
+              "channel_equalization": "not_applied"
+            },
+            "snr_measurement_stage": "after_parametric_compensation_before_AGC",
+            "phase_noise_q_rad2_s": 6.283185307179586,
+            "path_gain_db_start": -4.845942288191844,
+            "common_delay_s": 0.00398101083783799,
+            "atmosphere_loss_db": 0.0,
+            "atmosphere_source": "clear_simplified_no_weather_injection",
+            "added_noise_variance_reference": 0.001,
+            "measured_added_noise_power_pre_agc": 0.0010238191805832736,
+            "signal_to_added_noise_db": 7.342556709788418,
+            "true_total_snr_known": false,
+            "agc_gain_db": 21.79178251818817,
+            "agc_limited": false,
+            "input_metrics": {
+              "rms": 1.0,
+              "papr_db": 6.700911154493221,
+              "effective_energy_samples": 133.79085974012963,
+              "peak_energy_share": 0.01827473761396755
+            },
+            "output_metrics": {
+              "rms": 1.0000000000000002,
+              "papr_db": 6.815786669275862,
+              "effective_energy_samples": 139.73714219600842,
+              "peak_energy_share": 0.01876457366565328
+            },
+            "parameter_provenance": {
+              "visibility": "Nie2012_semantic_state_mapping",
+              "geometry": "simplified_circular_overpass_not_ephemeris",
+              "fading_rx_noise": "engineering_assumption",
+              "atmosphere": "clear_simplified_no_weather_injection"
+            },
+            "sample_id": "synthetic2",
+            "independent_snapshot": true,
+            "realization_namespace": "source_smoke",
+            "augmentation_seed": 1164399056,
+            "receiver_seed": 2027,
+            "input_original_rms": 1.5149648270713547,
+            "input_normalization": "unit_rms"
+          },
+          {
+            "version": "leo_practical_v3_full_residual_20260918",
+            "config_hash": "f8442a576fa4202fa081446df11872ce4f74dae2b034822e03ef42c545ab04c3",
+            "seed": 14580128686186667390,
+            "scenario": "practical_low_urban",
+            "geometry": {
+              "altitude_m": 600000.0,
+              "elevation_deg": 25.837906200729428,
+              "distance_m": 1187562.6003589355,
+              "range_rate_mps": -6805.791444457449,
+              "source": "simplified_circular_overpass_not_ephemeris"
+            },
+            "fs_hz": 25000000.0,
+            "fc_hz": 2462000000.0,
+            "receiver": {
+              "session_id": "virtual_smoke",
+              "amplitude_imbalance_db": 0.03019354686120357,
+              "quadrature_error_deg": 0.7760156934946059,
+              "oscillator_cfo_hz": -196.7021155954786,
+              "estimated_amplitude_imbalance_db": -0.021264161407041383,
+              "estimated_quadrature_error_deg": 0.563414892747036
+            },
+            "start_sample": 0,
+            "state_probabilities": [
+              0.41188938847051515,
+              0.11762212230589697,
+              0.4704884892235879
+            ],
+            "state_counts": {
+              "LOS": 0,
+              "PARTIAL": 0,
+              "BLOCKED": 256
+            },
+            "state_start": "BLOCKED",
+            "state_end": "BLOCKED",
+            "shadow_correlation_time_s": 3.0,
+            "scatter_max_doppler_hz": 8.212348023778503,
+            "scatter_model": "finite_gaussian_rays_Jakes_approximation",
+            "total_diffuse_power_by_state": [
+              0.015848931924611134,
+              0.015848931924611134,
+              0.01
+            ],
+            "expected_los_power_by_state": [
+              1.0268639927219596,
+              0.2011946041565232,
+              0.0
+            ],
+            "expected_k_linear_by_state": [
+              64.79073779901762,
+              12.694521316234354,
+              0.0
+            ],
+            "delays_samples_by_state": [
+              [
+                0.0,
+                3.9559989624116203,
+                11.867996887234863
+              ],
+              [
+                0.0,
+                4.545450721479871,
+                13.636352164439614
+              ],
+              [
+                0.0,
+                2.812784196122036,
+                8.43835258836611
+              ]
+            ],
+            "delays_seconds_by_state": [
+              [
+                0.0,
+                1.582399584964648e-07,
+                4.7471987548939454e-07
+              ],
+              [
+                0.0,
+                1.8181802885919485e-07,
+                5.454540865775846e-07
+              ],
+              [
+                0.0,
+                1.1251136784488145e-07,
+                3.375341035346444e-07
+              ]
+            ],
+            "rms_delay_ns_by_state": [
+              20.0,
+              50.0,
+              100.0
+            ],
+            "diffuse_pdp": [
+              0.6652409557748218,
+              0.24472847105479764,
+              0.09003057317038046
+            ],
+            "boundary": "synthetic_reflect",
+            "orbital_doppler_hz": 55891.52791913878,
+            "input_oscillator_cfo_hz": -196.7021155954786,
+            "estimated_frequency_hz": 55871.397812274656,
+            "output_frequency_hz": -176.57200873135298,
+            "synchronization": "sampled_estimation_error_proxy",
+            "mode": "post_sync",
+            "receiver_location": "satellite",
+            "link_direction": "ground_to_satellite",
+            "input_processing_state": "WiSig_ManySig_equalized1_center256_shared_normalization",
+            "compensation_scope": "newly_injected_channel_and_virtual_RX_only",
+            "frequency_compensation_applied": true,
+            "iq_compensation_applied": true,
+            "phase_tracking_applied": true,
+            "receiver_lock_status": "degraded",
+            "quality_snr_db": 7.520258032092838,
+            "quality_source": "simulated_signal_to_added_noise_not_total_snr",
+            "residual_scale": 4.207141300262492,
+            "fine_frequency_tracking_applied": true,
+            "coarse_doppler_compensation_applied": true,
+            "processing_route": "full",
+            "full_channel_waveform_synthesized": true,
+            "channel_equalization_applied": false,
+            "equalizer": {
+              "reason": "disabled_by_default"
+            },
+            "tx_impairment_correction_applied": false,
+            "rff_protection_policy": "no_TX_correction_propagation_EQ_opt_in",
+            "fractional_delay_filter": "kaiser_sinc_beta8.6",
+            "numerical_filter_latency_samples": 24,
+            "phase_tracking_residual_std_deg": 1.0,
+            "effective_phase_tracking_residual_std_deg": 4.207141300262492,
+            "phase_tracking_model": "correlated_estimation_error_proxy_not_PLL",
+            "external_receiver_processing": {
+              "timing_sync": "not_run_cropped_input",
+              "channel_equalization": "not_applied"
+            },
+            "snr_measurement_stage": "after_parametric_compensation_before_AGC",
+            "phase_noise_q_rad2_s": 6.283185307179586,
+            "path_gain_db_start": -4.802791271621497,
+            "common_delay_s": 0.0039612824427989295,
+            "atmosphere_loss_db": 0.0,
+            "atmosphere_source": "clear_simplified_no_weather_injection",
+            "added_noise_variance_reference": 0.001,
+            "measured_added_noise_power_pre_agc": 0.0010936159356469662,
+            "signal_to_added_noise_db": 7.13076015700167,
+            "true_total_snr_known": false,
+            "agc_gain_db": 21.71511741483636,
+            "agc_limited": false,
+            "input_metrics": {
+              "rms": 1.0,
+              "papr_db": 6.822653277419838,
+              "effective_energy_samples": 132.9725350498703,
+              "peak_energy_share": 0.018794265705193512
+            },
+            "output_metrics": {
+              "rms": 0.9999999999999999,
+              "papr_db": 6.789334069549114,
+              "effective_energy_samples": 141.59860299789378,
+              "peak_energy_share": 0.01865062721755875
+            },
+            "parameter_provenance": {
+              "visibility": "Nie2012_semantic_state_mapping",
+              "geometry": "simplified_circular_overpass_not_ephemeris",
+              "fading_rx_noise": "engineering_assumption",
+              "atmosphere": "clear_simplified_no_weather_injection"
+            },
+            "sample_id": "synthetic3",
+            "independent_snapshot": true,
+            "realization_namespace": "source_smoke",
+            "augmentation_seed": 1164399056,
+            "receiver_seed": 2027,
+            "input_original_rms": 1.4440587046622448,
+            "input_normalization": "unit_rms"
+          }
+        ],
+        "namespace": "source_smoke"
+      },
+      "loss": 21.8518009185791,
+      "forward_shape": [
+        8,
+        2,
+        256
+      ]
+    }
+  ],
+  "daot_labeled_loss": 0.022696478292346,
+  "daot_unlabeled_loss": 0.008517616428434849,
+  "daot_scenes_called": [
+    "practical_high",
+    "practical_high"
+  ]
+}

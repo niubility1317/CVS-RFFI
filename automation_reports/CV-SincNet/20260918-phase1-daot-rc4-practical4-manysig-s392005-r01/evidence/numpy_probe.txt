@@ -1,0 +1,13 @@
+numpy 0 2.2.5
+True
+
+torch -11 Fatal Python error: Segmentation fault
+
+Current thread 0x00007e2806f75600 (most recent call first):
+  File "<string>", line 1 in <module>
+
+Extension modules: mkl._mklinit, mkl._py_mkl_service, numpy._core._multiarray_umath, numpy.linalg._umath_linalg, torch._C, torch._C._fft, torch._C._linalg, torch._C._nested, torch._C._nn, torch._C._sparse, torch._C._special, numpy.core._multiarray_umath (total: 12)
+
+native 0 2.2.5
+True
+

@@ -1,0 +1,13 @@
+files [('/home/szu2070436088/2510044040/CV-SincNet/runs/20260918-phase1-daot-rc4-practical4-manysig-s392005-r01/startup_smoke_full_noeq/scratch_smoke.pth', 4372238)]
+exit -11
+Fatal Python error: Segmentation fault
+
+Current thread 0x0000735244cfc600 (most recent call first):
+  File "/home/szu2070436088/2510044040/CV-SincNet/releases/daot_rc4_practical4_20260918_60ac7edb6f/code/leo_practical/batch.py", line 50 in apply_leo_practical_channel_batch
+  File "/home/szu2070436088/2510044040/CV-SincNet/releases/daot_rc4_practical4_20260918_60ac7edb6f/code/cvsrffi/practical_adapter.py", line 48 in apply_practical
+  File "/home/szu2070436088/2510044040/CV-SincNet/releases/daot_rc4_practical4_20260918_60ac7edb6f/code/cvsrffi/eval.py", line 108 in apply_sat_channel_for_scenario
+  File "/home/szu2070436088/2510044040/CV-SincNet/releases/daot_rc4_practical4_20260918_60ac7edb6f/code/scripts/check_rc4_practical.py", line 37 in main
+  File "/home/szu2070436088/2510044040/CV-SincNet/releases/daot_rc4_practical4_20260918_60ac7edb6f/code/scripts/check_rc4_practical.py", line 76 in <module>
+
+Extension modules: mkl._mklinit, mkl._py_mkl_service, numpy._core._multiarray_umath, numpy.linalg._umath_linalg, torch._C, torch._C._fft, torch._C._linalg, torch._C._nested, torch._C._nn, torch._C._sparse, torch._C._special, numpy.core._multiarray_umath (total: 12)
+

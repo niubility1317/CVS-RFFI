@@ -1,1 +1,2 @@
 {"at": "2026-09-18T08:45:01+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-09-18T08:49:53+00:00", "status": "FAILED", "note": "首组真实scratch GPU smoke在Torch2.1/NumPy2.2 ndarray ABI处SIGSEGV；没有任何launch回执或正式训练。faulthandler及numpy_probe证据已保存。仅修复适配器的数值拷贝边界，信道公式/配置保持不变；替代run 20260918-phase1-daot-rc4-practical4-manysig-s392005-r02。", "evidence": ["E:\\type10-7\\automation_reports\\CV-SincNet\\20260918-phase1-daot-rc4-practical4-manysig-s392005-r01\\evidence\\diagnostic_smoke.txt"], "row_id": null}
