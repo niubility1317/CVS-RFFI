@@ -20,3 +20,12 @@ DAOT保留A1两视图mean版本，clean+clear_leo教师与clear_leo学生，E21�
 ## 当前状态
 
 LOCAL_VERIFIED，待提交发布及N607启动独立读回。不得将此状态解释为训练已启动或已有性能结果。唯一launch owner为本任务/root；最多占用一个空闲GPU，不干预已有进程。启动失败或结果不明先核实原run，禁止盲目重复提交。
+
+## N607启动：VERIFIED
+
+代码commit=82a246e02f5223fbec080638e95bc188b1e9c563，release=/home/szu2070436088/2510044040/CV-SincNet/releases/daot_rc4_original_leo_20260918_82a246e02f。GPU3，PID3163538；独立读取/proc的argv/CWD/CUDA设备及nvidia-smi进程与receipt一致。resolved config确认DAOT A1、RC4、真实拼接、原LEO课程、E200、E100起每10epoch测试。source物理角色EXACT_MATCH，checkpoint来源为空；远端scratch checkpoint及原LEO/DAOT L/U反传smoke为PASS。
+
+注意：旧CONFIG-CONCAT-SAT日志模板仍按concat_masked打印forward_count=2及通用CRRA损失文案；该静态文案不识别本次fused开关。实际路径以resolved config、单前向hook smoke及train/concat_sat_fused_forward_batch_size为准；use_crra=false、lambda_sat_cons=0，不启用文案列出的CRRA损失。未为修正文案热改或重启训练。
+
+首轮/当前完整epoch读回：{"epoch": 1, "train_concat_sat_fused_forward_batch_size": 256.0, "train_loss": 17.649892669540268, "train_optimizer_step_applied": 0.9954954954954955, "train_skipped_nonfinite_grad": 0.0045045045045045045, "train_skipped_nonfinite_loss": 0.0}。
+读回证据：E:\type10-7\automation_reports\CV-SincNet\20260918-phase1-daot-rc4-original-leo-manysig-s392005-r01\evidence\startup_readback_1789717670.json。

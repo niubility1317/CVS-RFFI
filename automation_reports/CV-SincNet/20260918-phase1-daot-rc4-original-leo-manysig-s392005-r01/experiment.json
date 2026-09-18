@@ -23,10 +23,10 @@
   "replaces_run_id": null,
   "authorization": "本对话2026-09-18用户启动授权及后续明确更正：要使用DAOT+FastTrust-RC4；200epoch按项目默认。",
   "code": {
-    "commit": "PENDING_LOCAL_COMMIT_RESOLVED_BEFORE_LAUNCH",
+    "commit": "82a246e02f5223fbec080638e95bc188b1e9c563",
     "checkout": "E:\\type10-7\\code\\snapshots\\rc4_original_leo_20260918_wt",
     "environment": "local ssr-gpu; N607 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
-    "cwd": "resolved in immutable launch.json before training"
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/daot_rc4_original_leo_20260918_82a246e02f"
   },
   "data": {
     "dataset": "WiSig ManySig CORE90",
@@ -96,14 +96,29 @@
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260918-phase1-daot-rc4-original-leo-manysig-s392005-r01",
     "local_artifact_root": "E:\\type10-7\\automation_reports\\CV-SincNet\\20260918-phase1-daot-rc4-original-leo-manysig-s392005-r01",
     "launch_command": [
-      "python",
-      "experiments/adv3b02_xuc/tools/publish_original_leo.py",
-      "--run-id",
-      "20260918-phase1-daot-rc4-original-leo-manysig-s392005-r01",
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/daot_rc4_original_leo_20260918_82a246e02f/code/scripts/train_rc4_original_leo.py",
+      "--config",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/daot_rc4_original_leo_20260918_82a246e02f/configs/rc4_original_leo_20260918.json",
+      "--dataset",
+      "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
       "--output",
-      "E:\\type10-7\\automation_reports\\CV-SincNet\\20260918-phase1-daot-rc4-original-leo-manysig-s392005-r01\\evidence"
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20260918-phase1-daot-rc4-original-leo-manysig-s392005-r01/ADV3B02_DAOT_RC4_ORIGINAL_LEO_s392005",
+      "--source-contract",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "--target-inputs",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_fcr_r1r8_s392005_equalized_20260903_v4/target_inputs",
+      "--target-truth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_fcr_r1r8_s392005_equalized_20260903_v4/target_truth/truth_sidecar.json",
+      "--run-id",
+      "20260918-phase1-daot-rc4-original-leo-manysig-s392005-r01"
     ],
-    "stop_rule": "Only technical failures: data/provenance mismatch, nonfinite guard (8 batches and 5%), output collision, invalid prediction/scoring closure; preserve artifacts, no performance stop or automatic retrain."
+    "stop_rule": "Only technical failures: data/provenance mismatch, nonfinite guard (8 batches and 5%), output collision, invalid prediction/scoring closure; preserve artifacts, no performance stop or automatic retrain.",
+    "status": "RUNNING",
+    "pid": 3163538,
+    "gpu": 3,
+    "launch_evidence": "E:\\type10-7\\automation_reports\\CV-SincNet\\20260918-phase1-daot-rc4-original-leo-manysig-s392005-r01\\evidence\\startup_readback_1789717670.json"
   },
   "expected_artifacts": [
     "resolved_config.json",
@@ -148,7 +163,7 @@
         "support": null,
         "evaluation": 392005
       },
-      "seed_notes": "support不适用。连续物理ID划分固定，按原392005契约核对；训练seed控制初始化、loader与部分增强；sat_view_seed=2027，sat_seed=2027，DAOT派生种子=2027+epoch*100003+batch*101；测试seed392005+scene_index*1009，batch256。",
+      "seed_notes": "model seed392005控制初始化、loader及部分增强；split/data 392005为固定契约标识、连续ID划分不随机；support不适用。sat_view_seed=2027；DAOT L种子=2027+epoch*100003+batch*101，U种子=2027+epoch*200003+batch*211；测试seed392005+scene_index*1009、batch256。",
       "k": null,
       "scenario": [
         "clean",
@@ -166,9 +181,9 @@
       "command": [
         "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
         "-u",
-        "<release>/code/scripts/train_rc4_original_leo.py",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/daot_rc4_original_leo_20260918_82a246e02f/code/scripts/train_rc4_original_leo.py",
         "--config",
-        "<release>/configs/rc4_original_leo_20260918.json",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/daot_rc4_original_leo_20260918_82a246e02f/configs/rc4_original_leo_20260918.json",
         "--dataset",
         "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
         "--output",
@@ -192,7 +207,10 @@
         "target_epochs/E100..E200/predictions.json,score.json,evaluation_scope.json",
         "final_weak_reference/predictions.json,score.json,evaluation_scope.json",
         "completion.json"
-      ]
+      ],
+      "status": "RUNNING",
+      "pid": 3163538,
+      "gpu": 3
     }
   ],
   "notes": [

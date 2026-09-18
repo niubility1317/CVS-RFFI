@@ -1,0 +1,33 @@
+{
+  "status": "LAUNCH_SUBMITTED",
+  "pid": 3163538,
+  "gpu": 3,
+  "argv": [
+    "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "-u",
+    "/home/szu2070436088/2510044040/CV-SincNet/releases/daot_rc4_original_leo_20260918_82a246e02f/code/scripts/train_rc4_original_leo.py",
+    "--config",
+    "/home/szu2070436088/2510044040/CV-SincNet/releases/daot_rc4_original_leo_20260918_82a246e02f/configs/rc4_original_leo_20260918.json",
+    "--dataset",
+    "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+    "--output",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20260918-phase1-daot-rc4-original-leo-manysig-s392005-r01/ADV3B02_DAOT_RC4_ORIGINAL_LEO_s392005",
+    "--source-contract",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "--target-inputs",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_fcr_r1r8_s392005_equalized_20260903_v4/target_inputs",
+    "--target-truth",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_fcr_r1r8_s392005_equalized_20260903_v4/target_truth/truth_sidecar.json",
+    "--run-id",
+    "20260918-phase1-daot-rc4-original-leo-manysig-s392005-r01"
+  ],
+  "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/daot_rc4_original_leo_20260918_82a246e02f",
+  "run_id": "20260918-phase1-daot-rc4-original-leo-manysig-s392005-r01",
+  "row_id": "ADV3B02_DAOT_RC4_ORIGINAL_LEO_s392005",
+  "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260918-phase1-daot-rc4-original-leo-manysig-s392005-r01",
+  "output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260918-phase1-daot-rc4-original-leo-manysig-s392005-r01/ADV3B02_DAOT_RC4_ORIGINAL_LEO_s392005",
+  "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260918-phase1-daot-rc4-original-leo-manysig-s392005-r01/ADV3B02_DAOT_RC4_ORIGINAL_LEO_s392005.train.log",
+  "commit": "82a246e02f5223fbec080638e95bc188b1e9c563",
+  "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+  "timestamp": 1789717447.9541779
+}
