@@ -8,3 +8,4 @@
 |---|---|---|
 |DAOT＋FastTrust-RC4 practical四组实验|managed_run|[打开](../../automation_reports/CV-SincNet/20260918-phase1-daot-rc4-practical4-manysig-s392005-r01/report.md)|
 |DAOT＋FastTrust-RC4 practical四组实验|managed_run|[打开](../../automation_reports/CV-SincNet/20260918-phase1-daot-rc4-practical4-manysig-s392005-r02/report.md)|
+|DAOT＋FastTrust-RC4 practical四组实验r03|managed_run|[打开](../../automation_reports/CV-SincNet/20260918-phase1-daot-rc4-practical4-manysig-s392005-r03/report.md)|

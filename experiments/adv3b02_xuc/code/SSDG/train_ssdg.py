@@ -3567,6 +3567,9 @@ def _evaluate_source_val_tail_geometry(model, data_ctx, device, args) -> Dict[st
                 if int(args.eval_max_batches) > 0 and batch_idx > int(args.eval_max_batches):
                     break
                 x, y, extra = move_batch(batch, device)
+                if args.rc4_satellite_family == "practical":
+                    from cvsrffi.practical_adapter import set_source_evaluation_context
+                    set_source_evaluation_context(extra[1])
                 d = domain_from_extra(extra, data_ctx["domain_label_map"], device)
                 out = model(x, y_tx=None, grl_lambda=1.0, return_aux=True, domain_labels=d)
                 features.append(out["z_id"].detach().float())
@@ -3658,6 +3661,9 @@ def _evaluate_zid_leakage_probes(model, data_ctx, device, args) -> Dict[str, Any
                 if max_batches > 0 and batch_idx > max_batches:
                     break
                 x, _y, extra = move_batch(batch, device)
+                if args.rc4_satellite_family == "practical":
+                    from cvsrffi.practical_adapter import set_source_evaluation_context
+                    set_source_evaluation_context(extra[1])
                 batch_size = int(x.size(0))
                 receiver = _metadata_label_tensor(extra, "rx_i", device, batch_size)
                 day = _metadata_label_tensor(extra, "day_i", device, batch_size)

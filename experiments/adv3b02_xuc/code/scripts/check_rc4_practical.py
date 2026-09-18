@@ -62,6 +62,14 @@ def main():
     daot_loss.backward()
     assert all(torch.isfinite(v.grad).all() for v in model.parameters() if v.grad is not None)
     assert called and set(called)=={'practical_high'}
+    from torch.utils.data import Dataset,DataLoader
+    class SourceValidation(Dataset):
+        def __len__(self):return 7
+        def __getitem__(self,i):return torch.randn(2,256),i%6,0,{'base_index':i,'rx_i':1,'day_i':1}
+    args.sat_train_protocol_scenario_list=list(ORIGINAL[1:]);args.eval_max_batches=0
+    validation=native._evaluate_source_val_tail_geometry(model,
+        {'val_loader':DataLoader(SourceValidation(),batch_size=3),'domain_label_map':{0:0}},device,args)
+    assert isinstance(validation,dict)
     # Full batch time/metadata proves the actual route, including EQ configured vs applied.
     import time
     set_smoke_context(128); started=time.monotonic()
@@ -70,7 +78,7 @@ def main():
     (a.output/'acceptance.json').write_text(json.dumps({'status':'PASS','batch128_channel_seconds':batch_seconds,'scratch_checkpoint':str(path),'query_inputs':0,
         'target_inputs':0,'daot':args.use_adv3b02_daot_stn,'rc4':args.fasttrust_rc4,'results':results,
         'daot_labeled_loss':float(labeled['loss'].detach()),'daot_unlabeled_loss':float(unlabeled['loss'].detach()),
-        'daot_scenes_called':called},indent=2),encoding='utf-8')
-    print('PASS genuine concat forward, original LEO, finite gradients, scratch checkpoint, no query')
+        'daot_scenes_called':called,'source_validation_small_last_batch':'PASS'},indent=2),encoding='utf-8')
+    print('PASS genuine concat, practical, DAOT, source validation, scratch checkpoint, no query')
 
 if __name__=='__main__':main()

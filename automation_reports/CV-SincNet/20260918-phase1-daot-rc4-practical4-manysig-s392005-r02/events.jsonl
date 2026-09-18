@@ -1,1 +1,2 @@
 {"at": "2026-09-18T08:49:55+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-09-18T08:56:37+00:00", "status": "FAILED", "note": "四组在E1训练后source验证阶段缺少当前批物理ID上下文，ValueError退出；全部进程已独立确认结束，无完整epoch。r03仅补齐source验证三入口context，新增7条/batch3末批回归及远端startup验收；四配置保持不变。", "evidence": ["E:\\type10-7\\automation_reports\\CV-SincNet\\20260918-phase1-daot-rc4-practical4-manysig-s392005-r02\\evidence\\readback_1789721569.json"], "row_id": null}

@@ -190,6 +190,9 @@ def evaluate_loader_sat_channel(
         x, y, extra = unpack_batch(batch)
         x = x.to(device, non_blocking=True)
         y = y.to(device, non_blocking=True)
+        if scenario.startswith('practical_'):
+            from cvsrffi.practical_adapter import set_source_evaluation_context
+            set_source_evaluation_context(extra[1])
         x_sat, _ = apply_sat_channel_for_scenario(x, scenario, args, gen=gen, return_meta=False)
         d_raw = extract_domain_from_extra(extra, device)
         d = remap_domain_tensor(d_raw, domain_label_map, device) if d_raw is not None else None

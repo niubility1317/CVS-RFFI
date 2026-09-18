@@ -28,6 +28,11 @@ def set_evaluation_context(ids):
     # Opaque predictor package intentionally carries no receiver/TX truth.
     _context.set((list(ids),['virtual_target_session0']*len(ids),'target_fixed_v3'))
 
+def set_source_evaluation_context(meta):
+    set_training_context(meta,0,'V')
+    ids,sessions,_=_context.get()
+    _context.set((ids,sessions,'source_validation_fixed_v3'))
+
 def set_smoke_context(n):
     _context.set(([f'synthetic{i}' for i in range(n)],['virtual_smoke']*n,'source_smoke'))
 

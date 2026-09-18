@@ -45,3 +45,28 @@ def test_practical_periodic_predictor_actual_model_and_cpu_scorer(tmp_path,monke
     assert random.getstate()==states[0]
     assert np.array_equal(np.random.get_state()[1],states[1][1])
     assert torch.equal(torch.get_rng_state(),states[2])
+
+def test_source_validation_context_last_small_batch(tmp_path,monkeypatch):
+    from scripts.train_rc4_practical import build_args,native
+    from torch.utils.data import DataLoader,Dataset
+    from cvsrffi.eval import evaluate_loader_sat_channel
+    cfg=Path(__file__).resolve().parents[1]/'configs/rc4_practical_full_zf_20260918.json'
+    args=build_args(cfg,'unused',str(tmp_path),'unused','unused','unused','smoke')
+    args.sat_train_protocol_scenario_list=list(PRACTICAL[1:])
+    args.eval_max_batches=0
+    ma=native.merge_checkpoint_args({'model':None,'args':{},'stats':{},'split_info':None},args,input_len=256,num_domains=15)
+    model=native.build_baseline_model(native._apply_model_cli_args(ma,args),torch.device('cpu'))
+    class Source(Dataset):
+        def __len__(self):return 7
+        def __getitem__(self,i):return torch.randn(2,256),i%6,0,{'base_index':i,'rx_i':1,'day_i':1}
+    loader=DataLoader(Source(),batch_size=3)
+    import cvsrffi.practical_adapter as adapter
+    adapter.set_smoke_context(128)
+    with monkeypatch.context() as m:
+        m.setattr(adapter,'set_source_evaluation_context',lambda meta:None)
+        with pytest.raises(ValueError,match='aligned physical'):
+            native._evaluate_source_val_tail_geometry(model,{'val_loader':loader,'domain_label_map':{0:0}},torch.device('cpu'),args)
+    result=native._evaluate_source_val_tail_geometry(model,{'val_loader':loader,'domain_label_map':{0:0}},torch.device('cpu'),args)
+    assert isinstance(result,dict)
+    result=evaluate_loader_sat_channel(model,loader,torch.device('cpu'),{0:0},PRACTICAL[1],args)
+    assert result['tx_total']==7
