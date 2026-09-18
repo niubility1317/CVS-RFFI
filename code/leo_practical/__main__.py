@@ -28,6 +28,12 @@ def main(argv=None):
     p.add_argument("--config", type=Path, required=True, help="JSON Config fields; fs_hz must be explicit")
     p.add_argument("--fs-hz", type=float, help="explicit sampling rate; overrides template null")
     p.add_argument("--receiver-profile", type=Path, help="optional ground/satellite compensation profile JSON")
+    p.add_argument("--route", choices=["full", "residual"], help="override processing route")
+    eq = p.add_mutually_exclusive_group()
+    eq.add_argument("--equalization", dest="equalization", action="store_true")
+    eq.add_argument("--no-equalization", dest="equalization", action="store_false")
+    p.set_defaults(equalization=None)
+    p.add_argument("--equalizer-method", choices=["mmse", "zf"])
     p.add_argument("--fs-source", required=True, help="sampling rate provenance, or explicitly declared assumption")
     p.add_argument("--fc-source", required=True, help="carrier-frequency provenance, or explicitly declared assumption")
     p.add_argument("--seed", type=int, required=True)
@@ -45,6 +51,12 @@ def main(argv=None):
     fields = json.loads(args.config.read_text(encoding="utf-8"))
     if args.receiver_profile:
         fields.update(json.loads(args.receiver_profile.read_text(encoding="utf-8")))
+    if args.route is not None:
+        fields["processing_route"] = args.route
+    if args.equalization is not None:
+        fields["equalization_enabled"] = args.equalization
+    if args.equalizer_method:
+        fields["equalizer_method"] = args.equalizer_method
     if args.fs_hz is not None:
         fields["fs_hz"] = args.fs_hz
     if fields.get("fs_hz") is None:

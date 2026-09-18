@@ -24,6 +24,8 @@ def apply_leo_practical_channel_batch(
     Torch inputs are detached, copied to CPU and returned to the original device
     and dtype. This reference implementation is not a GPU-optimized kernel and
     is not differentiable. Metadata are ordinary Python objects, not tensors.
+    receiver_processor must be None: external receiver transforms/equalizers
+    are forbidden under the RFF-safe policy.
     """
     is_torch = hasattr(x_iq, "detach") and hasattr(x_iq, "device")
     if is_torch:
@@ -68,7 +70,11 @@ def apply_leo_practical_channel_batch(
                 raise ValueError("zero-energy input record")
         hardware = receiver_for_session(cfg, receiver_seed, session)
         derived_seed = stable_seed(seed, realization_namespace, cfg.scenario, ids[i])
-        stream = ChannelStream(cfg, derived_seed, hardware, receiver_processor=receiver_processor)
+        if cfg.processing_route == "residual":
+            from .residual import ResidualChannel
+            stream = ResidualChannel(cfg, derived_seed, hardware, receiver_processor=receiver_processor)
+        else:
+            stream = ChannelStream(cfg, derived_seed, hardware, receiver_processor=receiver_processor)
         y, meta = stream.process(record)
         meta.update(sample_id=ids[i], independent_snapshot=True,
                     realization_namespace=realization_namespace,

@@ -12,7 +12,7 @@ import numpy as np
 from . import (Config, ChannelStream, Receiver, receiver_for_session, Geometry,
                apply_leo_practical_channel_batch, iq_imbalance, compensate_iq,
                state_probabilities, transition_matrix)
-from .channel import slant_range
+from .channel import slant_range, fractional_delay_kernel, receiver_quality
 
 
 def run():
@@ -40,7 +40,7 @@ def run():
         y, meta, state = batch(x, ids, sessions)
         assert y.shape == x.shape and np.isfinite(y).all() and state.shape == (6,)
         assert all(m["frequency_compensation_applied"] and m["iq_compensation_applied"]
-                   and m["phase_tracking_applied"] for m in meta)
+                   and (m["phase_tracking_applied"] == (m["receiver_lock_status"] != "unlocked")) for m in meta)
         json.dumps(meta, allow_nan=False)
         return {"output_shape": list(y.shape), "default_compensation_flags": True}
     check("default_runtime_and_metadata", basic)
@@ -82,7 +82,7 @@ def run():
             diffuse_power_db=(-300.,-300.,-300.), phase_noise_linewidth_hz=0.,
             phase_tracking_enabled=False, agc_enabled=False, state_mix_time_s=1e12,
             residual_cfo_std_hz=100., iq_amp_max_db=0., iq_phase_max_deg=0.,
-            iq_estimation_amp_std_db=0., iq_estimation_phase_std_deg=0.)
+            iq_estimation_amp_std_db=0., iq_estimation_phase_std_deg=0., quality_adaptation_enabled=False)
         g = Geometry(600000., 30., float(slant_range(600000.,30.)), 5000., "synthetic_control")
         measured = {}
         for mode in ("pre_sync", "post_sync"):
@@ -103,7 +103,7 @@ def run():
             diffuse_power_db=(-300.,-300.,-300.), phase_noise_linewidth_hz=100.,
             phase_tracking_residual_std_deg=0., residual_cfo_std_hz=0.,
             agc_enabled=False, state_mix_time_s=1e12, iq_amp_max_db=0., iq_phase_max_deg=0.,
-            iq_estimation_amp_std_db=0., iq_estimation_phase_std_deg=0.)
+            iq_estimation_amp_std_db=0., iq_estimation_phase_std_deg=0., quality_adaptation_enabled=False)
         values = {}
         for enabled in (False, True):
             c = replace(base, phase_tracking_enabled=enabled)
@@ -145,7 +145,7 @@ def run():
     check("fixed_noise_floor_and_agc", noise_agc)
 
     def streaming():
-        c = replace(cfg, agc_enabled=False)
+        c = replace(cfg, agc_enabled=False, quality_adaptation_enabled=False)
         hardware = receiver_for_session(c, 3, "rx")
         whole = ChannelStream(c, 33, hardware).process(x[0])[0]
         stream = ChannelStream(c, 33, hardware)
@@ -191,24 +191,139 @@ def run():
 
     def external():
         def callback(y, context):
-            assert set(context)=={"fs_hz","fc_hz","receiver_location","start_sample"}
-            return y, {"timing_sync":"identity_acceptance_only","channel_equalization":"not_run"}
-        stream = ChannelStream(cfg, 4, receiver_for_session(cfg, 1, "rx"), receiver_processor=callback)
-        _, meta = stream.process(x[0])
-        assert meta["external_receiver_processing"]["channel_equalization"] == "not_run"
-        return "callback receives no clean signal, channel truth, labels or seed"
-    check("external_receiver_truth_boundary", external)
+            raise AssertionError("callback must not execute")
+        try:
+            ChannelStream(cfg, 4, receiver_for_session(cfg, 1, "rx"), receiver_processor=callback)
+        except ValueError as exc:
+            assert "RFF-safe" in str(exc)
+        else:
+            raise AssertionError("arbitrary receiver transform accepted")
+        return "external equalizers/transforms rejected before execution"
+    check("external_equalization_forbidden", external)
 
     def fractional_response():
         fraction = 0.5
-        weights = np.array([np.prod([(fraction-k)/(j-k) for k in range(4) if k!=j]) for j in range(4)])
+        weights = fractional_delay_kernel(fraction, cfg.fractional_delay_half_length)
         frequencies = np.linspace(0, .5, 1001)
-        response = np.exp(-2j*np.pi*frequencies[:,None]*np.arange(4))@weights
+        response = np.exp(-2j*np.pi*frequencies[:,None]*np.arange(len(weights)))@weights
         band = frequencies <= .4
         max_db = float(np.max(abs(20*np.log10(np.maximum(abs(response[band]),1e-12)))))
-        return {"diagnostic_only":True,"max_magnitude_deviation_to_0_4fs_db":max_db,
-                "note":"not a calibrated fractional-delay filter acceptance"}
-    check("fractional_delay_frequency_response_diagnostic", fractional_response)
+        assert max_db < .01
+        return {"max_magnitude_deviation_to_0_4fs_db":max_db,
+                "common_latency_samples":cfg.fractional_delay_half_length}
+    check("fractional_delay_frequency_response", fractional_response)
+
+    def quality():
+        states = [receiver_quality(cfg, snr) for snr in (25.,10.,0.)]
+        assert [s[0] for s in states] == ["locked","degraded","unlocked"]
+        assert states[0][1] < states[1][1] < states[2][1]
+        rows = []
+        for snr in (25.,10.,0.):
+            stream = ChannelStream(cfg, 13, receiver_for_session(cfg, 7, "rx"))
+            _, m = stream.process(x[0], quality_snr_db=snr)
+            rows.append(m)
+        assert rows[0]["phase_tracking_applied"] and rows[1]["phase_tracking_applied"]
+        assert not rows[2]["phase_tracking_applied"] and not rows[2]["fine_frequency_tracking_applied"]
+        assert rows[2]["coarse_doppler_compensation_applied"]
+        assert all(not r["channel_equalization_applied"] for r in rows)
+        return {"states":states,"unlocked_keeps_coarse_only":True}
+    check("quality_conditioned_lock_and_compensation", quality)
+
+    def rff_preservation():
+        c = replace(cfg, rms_delay_ns=(0.,0.,0.), los_std_db=(0.,0.,0.),
+            diffuse_power_db=(-300.,-300.,-300.), reference_snr_db=200.,
+            phase_noise_linewidth_hz=0., residual_cfo_std_hz=0.,
+            phase_tracking_residual_std_deg=0., iq_estimation_amp_std_db=0.,
+            iq_estimation_phase_std_deg=0., agc_enabled=False, state_mix_time_s=1e12)
+        carrier = np.exp(2j*np.pi*.071*np.arange(512)) + .3*np.exp(2j*np.pi*.13*np.arange(512))
+        tx = (carrier + .08*carrier.conj()) * np.exp(.2j*abs(carrier)**2)
+        tx += .04*abs(carrier)**2*carrier
+        tx *= np.exp(2j*np.pi*.001*np.arange(512))
+        geometry = Geometry(600000.,60.,float(slant_range(600000.,60.)),0.,"synthetic_identity_propagation")
+        stream = ChannelStream(c, 19, receiver_for_session(c, 2, "rx"), geometry)
+        stream.state = 0
+        y,m = stream.process(tx[128:384], preceding_context=tx[:128])
+        latency = c.fractional_delay_half_length
+        expected = tx[128-latency:384-latency]
+        error = float(np.max(abs(y-expected)))
+        assert error < 3e-7
+        assert not m["tx_impairment_correction_applied"]
+        return {"tx_iq_pa_and_cfo_preserved_max_error":error,"known_filter_latency_accounted":True}
+    check("injected_RX_correction_preserves_input_TX_RFF", rff_preservation)
+
+    def residual_skip():
+        from .residual import ResidualChannel
+        original = ChannelStream.process
+        def forbidden(*args, **kwargs):
+            raise AssertionError("full waveform path must not execute")
+        ChannelStream.process = forbidden
+        try:
+            c = replace(cfg, processing_route="residual")
+            result,meta,_ = batch(x,ids,sessions,config=c)
+            assert np.isfinite(result).all()
+            assert all(not m["full_channel_waveform_synthesized"] for m in meta)
+            assert all(not m["channel_equalization_applied"] for m in meta)
+        finally:
+            ChannelStream.process = original
+        return "residual route works with full process forcibly unavailable; EQ defaults off"
+    check("residual_does_not_synthesize_full_channel", residual_skip)
+
+    def route_equivalence():
+        from .residual import ResidualChannel
+        base = replace(cfg, quality_adaptation_enabled=False, phase_noise_linewidth_hz=0.,
+            phase_tracking_residual_std_deg=0., residual_cfo_std_hz=0.,
+            iq_amp_max_db=0.,iq_phase_max_deg=0., iq_estimation_amp_std_db=0.,
+            iq_estimation_phase_std_deg=0.,los_std_db=(0.,0.,0.),
+            scatter_doppler_hz=0.,agc_enabled=False,state_mix_time_s=1e12)
+        geometry = Geometry(600000.,60.,float(slant_range(600000.,60.)),0.,"frozen_equivalence_control")
+        local = np.random.default_rng(55)
+        signal = local.normal(size=2048)+1j*local.normal(size=2048)
+        errors = {}
+        for enabled in (False,True):
+            c = replace(base,equalization_enabled=enabled)
+            receiver = receiver_for_session(c,9,"rx")
+            full = ChannelStream(c,35,receiver,geometry)
+            direct = ResidualChannel(replace(c,processing_route="residual"),35,receiver,geometry)
+            y,m = full.process(signal)
+            r,mr = direct.process(signal)
+            guard = full.history_size+c.equalizer_length
+            error = float(np.max(abs(y[guard:]-r[guard:])))
+            assert error < 5e-6
+            assert m["state_start"]==mr["state_start"] and m["receiver"]==mr["receiver"]
+            assert m["channel_equalization_applied"]==enabled==mr["channel_equalization_applied"]
+            errors[str(enabled)] = error
+        return {"frozen_channel_interior_max_error":errors,"boundary_guard_excluded":True}
+    check("full_vs_direct_residual_frozen_equivalence", route_equivalence)
+
+    def equalizers():
+        from .equalization import design_equalizer,linear_filter
+        local = np.random.default_rng(89)
+        signal = local.normal(size=4096)+1j*local.normal(size=4096)
+        h = np.array([1.,.6*np.exp(.2j),.2j])
+        damaged,_=linear_filter(signal,h)
+        values = {}
+        for method in ("mmse","zf"):
+            c=replace(cfg,equalization_enabled=True,equalizer_method=method,channel_estimation_nmse_db=-300.)
+            g,m=design_equalizer(h,c,np.random.default_rng(1),1e-6,1.,1.)
+            out,_=linear_filter(damaged,g)
+            guard=200
+            expected=signal[guard-c.equalizer_delay_samples:len(signal)-c.equalizer_delay_samples]
+            mse=float(np.mean(abs(out[guard:]-expected)**2))
+            assert mse < 1e-5
+            assert np.max(abs(np.fft.fft(g,4096))) <= 10**(c.equalizer_max_gain_db/20)+.01
+            values[method]=mse
+        return {"known_channel_ISI_recovery_mse":values,"not_TX_distortion_correction":True}
+    check("optional_mmse_and_regularized_zf", equalizers)
+
+    def residual_replay():
+        c=replace(cfg,processing_route="residual",equalization_enabled=True)
+        y,m,_=batch(x,ids,sessions,config=c)
+        order=[5,3,1,4,2,0]
+        other,_,_=batch(x[order],[ids[i] for i in order],[sessions[i] for i in order],config=c)
+        np.testing.assert_array_equal(y[order],other)
+        json.dumps(m,allow_nan=False)
+        return "residual plus EQ reproducible and metadata serializable"
+    check("residual_equalization_replay", residual_replay)
     return results
 
 

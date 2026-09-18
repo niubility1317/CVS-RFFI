@@ -1,0 +1,169 @@
+{
+  "interpreter": "C:\\Users\\lh594\\.conda\\envs\\ssr-gpu\\python.exe",
+  "numpy_version": "2.2.6",
+  "scope": "synthetic_numerical_checks_no_training_no_real_data",
+  "source_sha256": {
+    "acceptance.py": "b36c43447d5b68eac5bdb6cd00ad3fb7689c3c1c6caeea96ef94a213fb89b6d2",
+    "batch.py": "f44856f43ce02d6ed294d01894f755dc3e08e85f1314b0cab6644da552b42070",
+    "channel.py": "5fbd11c0e729a16d2c7bd50e419370c59c25644d23f6b59d979ea124bdb03b64",
+    "__init__.py": "96a2ab29a90db5d7ccfa3f50ca88256b976155bd39e9c6dadfd030bd0984629b",
+    "__main__.py": "08a2525820252c868e4609672b1a0717643794ee4de37bc0c3defb421f6f8aa3"
+  },
+  "checks": [
+    {
+      "name": "default_runtime_and_metadata",
+      "status": "PASS",
+      "detail": {
+        "output_shape": [
+          6,
+          256
+        ],
+        "default_compensation_flags": true
+      },
+      "seconds": 0.021878500003367662
+    },
+    {
+      "name": "snapshot_reproducibility",
+      "status": "PASS",
+      "detail": "exact replay across order/batch partition; namespace separates draws",
+      "seconds": 0.08388809999451041
+    },
+    {
+      "name": "receiver_session_persistence",
+      "status": "PASS",
+      "detail": "hardware stable per session and across scenes",
+      "seconds": 0.02108920004684478
+    },
+    {
+      "name": "iq_pure_phase_image_and_inverse",
+      "status": "PASS",
+      "detail": {
+        "inverse_max_error": 9.155133597044475e-16,
+        "pure_phase_image_amplitude": 13.398004798193625
+      },
+      "seconds": 0.006249199970625341
+    },
+    {
+      "name": "measured_frequency_compensation",
+      "status": "PASS",
+      "detail": {
+        "pre_sync": -40846.558132994745,
+        "post_sync": -1.1870435879070034
+      },
+      "seconds": 0.013756999978795648
+    },
+    {
+      "name": "phase_tracking_actually_changes_waveform",
+      "status": "PASS",
+      "detail": {
+        "phase_increment_std_rad": {
+          "False": 0.025704536227113668,
+          "True": 5.345516513894337e-14
+        },
+        "scope": "zero_error_proxy_control_not_PLL_accuracy"
+      },
+      "seconds": 0.023241999908350408
+    },
+    {
+      "name": "real_context_boundary_contract",
+      "status": "PASS",
+      "detail": "missing-context refusal and explicit-context execution passed",
+      "seconds": 0.00543320004362613
+    },
+    {
+      "name": "fixed_noise_floor_and_agc",
+      "status": "PASS",
+      "detail": {
+        "added_attenuation_db": 20.0,
+        "measured_snr_delta_db": -20.0,
+        "noise_floor_unchanged": true
+      },
+      "seconds": 0.007349999970756471
+    },
+    {
+      "name": "continuous_state_and_delay_history",
+      "status": "PASS",
+      "detail": {
+        "continuous_block_partition_max_error": 0.0,
+        "agc_disabled_for_comparison": true
+      },
+      "seconds": 0.008151500020176172
+    },
+    {
+      "name": "markov_stationary_distribution",
+      "status": "PASS",
+      "detail": "stationary mapping and stochastic rows verified analytically/numerically",
+      "seconds": 0.13200390001293272
+    },
+    {
+      "name": "total_pdp_delay_and_power_convention",
+      "status": "PASS",
+      "detail": {
+        "ensemble_rms_delays_ns": [
+          20.000000000000004,
+          50.00000000000001,
+          100.00000000000003
+        ]
+      },
+      "seconds": 0.0006641000509262085
+    },
+    {
+      "name": "torch_cpu_adapter",
+      "status": "PASS",
+      "detail": {
+        "torch_version": "2.10.0+cu128",
+        "device": "cpu",
+        "state_dtype": "torch.int64"
+      },
+      "seconds": 2.6657219999469817
+    },
+    {
+      "name": "external_equalization_forbidden",
+      "status": "PASS",
+      "detail": "external equalizers/transforms rejected before execution",
+      "seconds": 6.880005821585655e-05
+    },
+    {
+      "name": "fractional_delay_frequency_response",
+      "status": "PASS",
+      "detail": {
+        "max_magnitude_deviation_to_0_4fs_db": 0.00042865282749905654,
+        "common_latency_samples": 24
+      },
+      "seconds": 0.001759599894285202
+    },
+    {
+      "name": "quality_conditioned_lock_and_compensation",
+      "status": "PASS",
+      "detail": {
+        "states": [
+          [
+            "locked",
+            1.0
+          ],
+          [
+            "degraded",
+            3.1622776601683795
+          ],
+          [
+            "unlocked",
+            10.0
+          ]
+        ],
+        "unlocked_keeps_coarse_only": true
+      },
+      "seconds": 0.011453500017523766
+    },
+    {
+      "name": "injected_RX_correction_preserves_input_TX_RFF",
+      "status": "PASS",
+      "detail": {
+        "tx_iq_pa_and_cfo_preserved_max_error": 6.051225202923028e-08,
+        "known_filter_latency_accounted": true
+      },
+      "seconds": 0.0032598000252619386
+    }
+  ],
+  "passed": 16,
+  "failed": 0
+}
