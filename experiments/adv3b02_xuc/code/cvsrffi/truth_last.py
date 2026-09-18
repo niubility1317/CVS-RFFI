@@ -74,6 +74,7 @@ def score_predictions(
     truth_path: str | Path,
     *,
     output_path: str | Path | None = None,
+    scenarios=SCENARIOS,
 ) -> dict[str, Any]:
     prediction = json.loads(Path(prediction_path).read_text(encoding="utf-8"))
     truth = json.loads(Path(truth_path).read_text(encoding="utf-8"))
@@ -85,11 +86,11 @@ def score_predictions(
     grouped: dict[str, list[Mapping[str, Any]]] = defaultdict(list)
     for row in prediction.get("records", []):
         grouped[str(row.get("scenario", ""))].append(row)
-    if set(grouped) != set(SCENARIOS):
+    if set(grouped) != set(scenarios):
         raise ValueError("prediction scenario coverage does not match the registered four scenarios")
 
     metrics: dict[str, Any] = {}
-    for scenario in SCENARIOS:
+    for scenario in scenarios:
         rows = grouped[scenario]
         ids = [str(row.get("sample_id", "")) for row in rows]
         if len(ids) != len(set(ids)) or set(ids) != set(truth_by_id):

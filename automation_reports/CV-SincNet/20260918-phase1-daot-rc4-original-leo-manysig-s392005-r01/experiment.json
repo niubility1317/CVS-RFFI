@@ -1,0 +1,207 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20260918-phase1-daot-rc4-original-leo-manysig-s392005-r01",
+  "group_id": "phase1-daot-rc4-original-leo-concat",
+  "display_name": "ADV3B02＋DAOT＋FastTrust-RC4原LEO拼接增强E200",
+  "description": "用户指定原LEO而非LEO_WEAK，真实clean+satellite单前向拼接、卫星CE-only；DAOT A1两视图和FastTrust-RC4；E100起每10epoch独立目标测试。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "DAOT+FastTrust-RC4 original LEO concat"
+  ],
+  "tags": [
+    "phase1",
+    "adv3b02",
+    "daot",
+    "fasttrust",
+    "rc4",
+    "original_leo",
+    "concat"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "本对话2026-09-18用户启动授权及后续明确更正：要使用DAOT+FastTrust-RC4；200epoch按项目默认。",
+  "code": {
+    "commit": "PENDING_LOCAL_COMMIT_RESOLVED_BEFORE_LAUNCH",
+    "checkout": "E:\\type10-7\\code\\snapshots\\rc4_original_leo_20260918_wt",
+    "environment": "local ssr-gpu; N607 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "resolved in immutable launch.json before training"
+  },
+  "data": {
+    "dataset": "WiSig ManySig CORE90",
+    "version": null,
+    "representation": "equalized=1; 2x256; normalized center crop",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260918-phase1-daot-rc4-original-leo-manysig-s392005-r01/ADV3B02_DAOT_RC4_ORIGINAL_LEO_s392005/source_contract.json",
+    "label_map_ref": "E:\\type10-7\\code\\snapshots\\rc4_original_leo_20260918_wt\\experiments\\adv3b02_xuc\\configs\\core90_recipe_reference.json",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "TX [0,1,2,3,4,5] for source and held-out receiver diagnostic",
+    "roles": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "V": 27000
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": null,
+    "support_query_ref": null,
+    "leo_config_ref": "E:\\type10-7\\code\\snapshots\\rc4_original_leo_20260918_wt\\experiments\\adv3b02_xuc\\configs\\rc4_original_leo_20260918.json"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "fixed exploratory tests only; no training/calibration/selection feedback",
+    "external_method_exception": null,
+    "claim_scope": "地面代理跨接收机原LEO模拟压力实验；中间测试为用户授权探索性观察，非独立确认；E200 weak参考隔离报告。"
+  },
+  "checkpoint": {
+    "initialization": "scratch",
+    "sources": [],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260918-phase1-daot-rc4-original-leo-manysig-s392005-r01/ADV3B02_DAOT_RC4_ORIGINAL_LEO_s392005/initialization.json",
+    "provenance_verdict": "NO_EXTERNAL_CHECKPOINT; anchor disabled; EMA and prototypes arise only from this run source training",
+    "selection_rule": "fixed final E200; E100:10:200 saved checkpoints never used for selection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "/root thread 01a098be-671b-7421-9fd5-e9a7203fe9d0",
+    "gpu_policy": "max_two_training_runs_per_gpu",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260918-phase1-daot-rc4-original-leo-manysig-s392005-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260918-phase1-daot-rc4-original-leo-manysig-s392005-r01",
+    "local_artifact_root": "E:\\type10-7\\automation_reports\\CV-SincNet\\20260918-phase1-daot-rc4-original-leo-manysig-s392005-r01",
+    "launch_command": [
+      "python",
+      "experiments/adv3b02_xuc/tools/publish_original_leo.py",
+      "--run-id",
+      "20260918-phase1-daot-rc4-original-leo-manysig-s392005-r01",
+      "--output",
+      "E:\\type10-7\\automation_reports\\CV-SincNet\\20260918-phase1-daot-rc4-original-leo-manysig-s392005-r01\\evidence"
+    ],
+    "stop_rule": "Only technical failures: data/provenance mismatch, nonfinite guard (8 batches and 5%), output collision, invalid prediction/scoring closure; preserve artifacts, no performance stop or automatic retrain."
+  },
+  "expected_artifacts": [
+    "resolved_config.json",
+    "initialization.json",
+    "source_contract.json",
+    "metrics_epoch.jsonl",
+    "final_ssdg.pth",
+    "epoch_100_ssdg.pth through epoch_200_ssdg.pth step10",
+    "target_epochs/E100..E200/predictions.json,score.json,evaluation_scope.json",
+    "final_weak_reference/predictions.json,score.json,evaluation_scope.json",
+    "completion.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "per_class_accuracy",
+      "accepted optimizer steps",
+      "loss curves",
+      "resource cost"
+    ],
+    "dimensions": [
+      "epoch",
+      "scene",
+      "TX"
+    ],
+    "prediction_ref": "E100,110,120,130,140,150,160,170,180,190,200; 168000 physical records each scene; 672000 predictions per observation",
+    "scorer_ref": "code/scripts/score_phase1_truth_last.py; separate CPU subprocess after fixed predictions"
+  },
+  "rows": [
+    {
+      "row_id": "ADV3B02_DAOT_RC4_ORIGINAL_LEO_s392005",
+      "method": "ADV3B02 + DAOT A1 (2 views mean) + FastTrust-RC4; original LEO; fused CE-only concat",
+      "purpose": "primary",
+      "config_ref": "E:\\type10-7\\code\\snapshots\\rc4_original_leo_20260918_wt\\experiments\\adv3b02_xuc\\configs\\rc4_original_leo_20260918.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260918-phase1-daot-rc4-original-leo-manysig-s392005-r01/ADV3B02_DAOT_RC4_ORIGINAL_LEO_s392005/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 392005,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 392005,
+        "support": null,
+        "evaluation": 392005
+      },
+      "seed_notes": "support不适用。连续物理ID划分固定，按原392005契约核对；训练seed控制初始化、loader与部分增强；sat_view_seed=2027，sat_seed=2027，DAOT派生种子=2027+epoch*100003+batch*101；测试seed392005+scene_index*1009，batch256。",
+      "k": null,
+      "scenario": [
+        "clean",
+        "clear_leo",
+        "low_elev_leo",
+        "rain_leo"
+      ],
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "222 U-loader steps/epoch expected from 56700 U and batch256; record actual accepted/skipped steps; source V every epoch.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260918-phase1-daot-rc4-original-leo-manysig-s392005-r01/ADV3B02_DAOT_RC4_ORIGINAL_LEO_s392005",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260918-phase1-daot-rc4-original-leo-manysig-s392005-r01/ADV3B02_DAOT_RC4_ORIGINAL_LEO_s392005.train.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "<release>/code/scripts/train_rc4_original_leo.py",
+        "--config",
+        "<release>/configs/rc4_original_leo_20260918.json",
+        "--dataset",
+        "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260918-phase1-daot-rc4-original-leo-manysig-s392005-r01/ADV3B02_DAOT_RC4_ORIGINAL_LEO_s392005",
+        "--source-contract",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "--target-inputs",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_fcr_r1r8_s392005_equalized_20260903_v4/target_inputs",
+        "--target-truth",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_fcr_r1r8_s392005_equalized_20260903_v4/target_truth/truth_sidecar.json",
+        "--run-id",
+        "20260918-phase1-daot-rc4-original-leo-manysig-s392005-r01"
+      ],
+      "expected_artifacts": [
+        "resolved_config.json",
+        "initialization.json",
+        "source_contract.json",
+        "metrics_epoch.jsonl",
+        "final_ssdg.pth",
+        "epoch_100_ssdg.pth through epoch_200_ssdg.pth step10",
+        "target_epochs/E100..E200/predictions.json,score.json,evaluation_scope.json",
+        "final_weak_reference/predictions.json,score.json,evaluation_scope.json",
+        "completion.json"
+      ]
+    }
+  ],
+  "notes": [
+    "用户纠正前的no-DAOT配置仅完成本地检查，从未发布或启动；正式配置始终DAOT A1。",
+    "训练主场景legacy_full：clear_leo、low_elev_leo、rain_leo；不会用weak simulator。DAOT A1使用clean+clear_leo，两view，不调用hard teacher。",
+    "L拼接课程E1-40 p=.30 clear；E41-90 p=.60 low/rain；E91-200 p=.80三场景。保留sat CE E80开始、lambda=.68、consistency=0；拼接batch statistics从E1生效。",
+    "RC4独立hard satellite路径保持原生关闭；U的原LEO视图由DAOT A1实际承担。EMA、本轮原型等全部从本轮source数据生成。",
+    "最终额外weak参考不参与训练或选择；其他protocol null字段为Phase2/federated不适用。",
+    "唯一P0/P1审查及用户更正后的定点复核通过；真实scratch checkpoint三原LEO拼接反传及DAOT E21 L/U反传PASS。"
+  ],
+  "registered_at": "2026-09-18T07:42:22+00:00"
+}

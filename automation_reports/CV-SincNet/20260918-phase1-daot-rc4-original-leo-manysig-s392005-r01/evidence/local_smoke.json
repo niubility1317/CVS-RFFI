@@ -1,0 +1,46 @@
+{
+  "status": "PASS",
+  "scratch_checkpoint": "E:\\type10-7\\local_artifacts\\rc4_original_leo_20260918\\smoke_daot\\scratch_smoke.pth",
+  "query_inputs": 0,
+  "target_inputs": 0,
+  "daot": true,
+  "rc4": true,
+  "results": [
+    {
+      "scene": "clear_leo",
+      "channel_model": "legacy_full",
+      "loss": 22.763511657714844,
+      "forward_shape": [
+        8,
+        2,
+        256
+      ]
+    },
+    {
+      "scene": "low_elev_leo",
+      "channel_model": "legacy_full",
+      "loss": 22.89028549194336,
+      "forward_shape": [
+        8,
+        2,
+        256
+      ]
+    },
+    {
+      "scene": "rain_leo",
+      "channel_model": "legacy_full",
+      "loss": 21.79781150817871,
+      "forward_shape": [
+        8,
+        2,
+        256
+      ]
+    }
+  ],
+  "daot_labeled_loss": 0.023700019344687462,
+  "daot_unlabeled_loss": 0.007479752879589796,
+  "daot_scenes_called": [
+    "clear_leo",
+    "clear_leo"
+  ]
+}

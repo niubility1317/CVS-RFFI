@@ -14,8 +14,11 @@ def main() -> None:
     parser.add_argument("--predictions", required=True)
     parser.add_argument("--truth", required=True)
     parser.add_argument("--output", required=True)
+    parser.add_argument("--scenarios", default="clean,leo_clear_weak,leo_low_elev_weak,leo_rain_weak")
     args = parser.parse_args()
-    result = score_predictions(args.predictions, args.truth, output_path=args.output)
+    from cvsrffi.original_leo import validate_scenarios
+    scenarios = validate_scenarios(args.scenarios.split(","))
+    result = score_predictions(args.predictions, args.truth, output_path=args.output, scenarios=scenarios)
     print(json.dumps(result, ensure_ascii=False, sort_keys=True))
 
 

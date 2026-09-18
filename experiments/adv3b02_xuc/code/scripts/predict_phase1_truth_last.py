@@ -69,7 +69,9 @@ def main(argv=None) -> None:
     parser.add_argument("--num-workers", type=int, default=4)
     parser.add_argument("--device", default="cuda:0")
     parser.add_argument("--mode", choices=["prepare", "predict"], required=True)
-    parser.add_argument("--recipe", required=True)
+    parser.add_argument("--recipe", default="")
+    parser.add_argument("--expected-epoch", type=int, default=200)
+    parser.add_argument("--scenarios", default=",".join(FCR_PREDICTION_SCENARIOS))
     args = parser.parse_args(argv)
 
     output_root = Path(args.output_root)
@@ -143,9 +145,9 @@ def main(argv=None) -> None:
     output_root.mkdir(parents=True)
 
     device = torch.device(args.device)
-    model, checkpoint = load_model(args.checkpoint,device)
+    model, checkpoint = load_model(args.checkpoint,device,expected_epoch=args.expected_epoch)
     # A single registered channel configuration and batch size for all 15 rows.
-    model_args = json.loads(Path(args.recipe).read_text(encoding='utf-8'))['baseline_args']
+    model_args = (json.loads(Path(args.recipe).read_text(encoding='utf-8'))['baseline_args'] if args.recipe else dict(checkpoint['args']))
     model_args.update({"input_len": 256, "num_classes": 6, "dataset": "wisig", "sat_seed":392005})
     model.eval()
 
@@ -159,7 +161,9 @@ def main(argv=None) -> None:
     sat_args = SimpleNamespace(**model_args)
     records = []
     with torch.no_grad():
-        for scenario_index, scenario in enumerate(FCR_PREDICTION_SCENARIOS):
+        from cvsrffi.original_leo import validate_scenarios
+        scenarios = validate_scenarios(args.scenarios.split(","))
+        for scenario_index, scenario in enumerate(scenarios):
             generator = torch.Generator(device=device)
             generator.manual_seed(int(model_args.get("sat_seed", 2027)) + scenario_index * 1009)
             for x, _masked_y, _domain, meta in loader:

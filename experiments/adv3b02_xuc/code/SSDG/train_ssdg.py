@@ -629,6 +629,10 @@ def build_arg_parser() -> argparse.ArgumentParser:
         default="",
         choices=["", "disabled", "view_aux", "concat_ce_only", "concat_full", "concat_masked", "concat_legacy"],
     )
+    parser.add_argument("--concat_sat_fused_ce_only", type=str2bool, default=False)
+    parser.add_argument("--rc4_satellite_family", choices=["leo_weak", "original_leo"], default="leo_weak")
+    parser.add_argument("--a1_periodic_target_scenarios", default="clean,leo_clear_weak,leo_low_elev_weak,leo_rain_weak")
+    parser.add_argument("--a1_final_weak_reference", type=str2bool, default=False)
     parser.add_argument("--concat_sat_ce_weight", type=float, default=1.0)
     parser.add_argument("--concat_sat_deduplicate_tx_ce", type=str2bool, default=False)
     parser.add_argument("--concat_sat_teacher_clean_only", type=str2bool, default=False)
@@ -8964,7 +8968,12 @@ def train(args) -> int:
                 x_l_main = x_l
             optimizer.zero_grad(set_to_none=True)
             with autocast(enabled=bool(args.amp and device.type == "cuda")):
-                out_l = model(
+                fused_sat_output = None
+                forward_model = model
+                if bool(args.concat_sat_fused_ce_only) and concat_sat_ce_view is not None:
+                    from cvsrffi.original_leo import FusedCleanSatelliteForward
+                    forward_model = FusedCleanSatelliteForward(model, _safe_iq_tensor(concat_sat_ce_view.x))
+                out_l = forward_model(
                     x_l_main,
                     y_tx=y_l,
                     grl_lambda=(
@@ -8984,6 +8993,9 @@ def train(args) -> int:
                         else None
                     ),
                 )
+                if forward_model is not model:
+                    fused_sat_output = forward_model.satellite_output
+                    concat_sat_info["fused_forward_batch_size"] = float(2 * x_l_main.shape[0])
                 domain_stats = {"valid": (d_l >= 0) if d_l is not None else None}
                 domain_gates = {
                     "dom": d_l is not None and "dom_logits" in out_l and cur_w["dom"] > 0.0,
@@ -9871,7 +9883,7 @@ def train(args) -> int:
                         )
                 elif concat_sat_ce_view is not None and epoch >= int(args.sat_cons_start_epoch):
                     x_sat = _safe_iq_tensor(concat_sat_ce_view.x)
-                    out_sat = model(x_sat, y_tx=y_l, grl_lambda=1.0, return_aux=True, domain_labels=d_l)
+                    out_sat = fused_sat_output if fused_sat_output is not None else model(x_sat, y_tx=y_l, grl_lambda=1.0, return_aux=True, domain_labels=d_l)
                     sat_z_id_l = out_sat["z_id"]
                     sat_zid_pair_applied = bool(float(concat_sat_info.get("applied", 0.0)) > 0.0)
                     sat_nuisance = concat_sat_ce_view.nuisance
@@ -10270,6 +10282,9 @@ def train(args) -> int:
                     )
                     u_sat_scenario = (u_satellite_scenario(args, epoch, batch_idx) if reference_clock_enabled(args) else
                         select_adv3b02_u_satellite_scenario(int(epoch), int(batch_idx), int(args.seed)))
+                    if args.rc4_satellite_family == "original_leo":
+                        from cvsrffi.original_leo import original_scenario
+                        u_sat_scenario = original_scenario(u_sat_scenario)
                     sat_anchor_route = None
                     rc4_route = None
                     sat_anchor_pair_active = False
@@ -11896,6 +11911,7 @@ def train(args) -> int:
                     "train/w_loss_teacher_sat_kl": ((float(args.lambda_teacher_sat_kl) * teacher_scale) * loss_teacher_sat_kl_l).detach(),
                     "train/w_loss_teacher_zid_mse": ((float(args.lambda_teacher_zid_mse) * teacher_scale) * loss_teacher_zid_mse_l).detach(),
                     "train/teacher_distill_scale": float(teacher_scale),
+                    "train/concat_sat_fused_forward_batch_size": float(concat_sat_info.get("fused_forward_batch_size", 0.0)),
                     "train/concat_sat_active": float(concat_sat_info.get("active", 0.0)),
                     "train/concat_sat_expanded": float(concat_sat_info.get("expanded", 0.0)),
                     "train/concat_sat_applied": float(concat_sat_info.get("applied", 0.0)),

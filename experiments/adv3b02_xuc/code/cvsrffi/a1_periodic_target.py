@@ -20,7 +20,8 @@ def due(epoch, start, total, interval=10):
 
 
 def evaluate_checkpoint(checkpoint, *, output, input_package, truth, run_id, row_id,
-                        device, predictor=None, scorer=None, expected_records=672000):
+                        device, predictor=None, scorer=None, expected_records=672000,
+                        scenarios="clean,leo_clear_weak,leo_low_elev_weak,leo_rain_weak", expected_epoch=200):
     """Use a separate rebuilt model in this PID; truth only enters CPU scorer."""
     output = Path(output)
     if output.exists():
@@ -35,12 +36,14 @@ def evaluate_checkpoint(checkpoint, *, output, input_package, truth, run_id, row
         with torch.random.fork_rng(devices=cuda_devices):
             predictor(['--checkpoint', str(checkpoint), '--output-root', str(output),
                 '--input-package', str(input_package), '--run-id', run_id, '--row-id', row_id,
-                '--mode', 'predict', '--device', str(device), '--num-workers', '0'])
+                '--mode', 'predict', '--device', str(device), '--num-workers', '0',
+                '--scenarios', scenarios, '--expected-epoch', str(expected_epoch), '--batch-size', '256'])
             predictions = output / 'predictions.json'
             if not predictions.is_file():
                 raise FileNotFoundError('Prediction must be complete before independent scoring')
             score_command = [sys.executable, str(release/'code/scripts/score_phase1_truth_last.py'),
-                '--predictions', str(predictions), '--truth', str(truth), '--output', str(output/'score.json')]
+                '--predictions', str(predictions), '--truth', str(truth), '--output', str(output/'score.json'),
+                '--scenarios', scenarios]
             env = dict(os.environ, CUDA_VISIBLE_DEVICES='')
             env['PYTHONPATH'] = os.pathsep.join([str(release/'code'), str(release), env.get('PYTHONPATH', '')])
             if scorer is None:
@@ -76,6 +79,12 @@ def run_epoch(args, epoch, output_dir, payload, save_fn, device):
     saved = dict(payload, checkpoint_role='fixed_epoch_exploratory_monitor_no_selection')
     save_fn(temporary, saved)
     temporary.rename(checkpoint)
-    return evaluate_checkpoint(checkpoint, output=Path(output_dir)/'target_epochs'/f'E{int(epoch):03d}',
+    elapsed = evaluate_checkpoint(checkpoint, output=Path(output_dir)/'target_epochs'/f'E{int(epoch):03d}',
         input_package=args.a1_periodic_target_inputs, truth=args.a1_periodic_target_truth,
-        run_id=args.run_id, row_id=f'{args.candidate_id}_E{int(epoch):03d}', device=device)
+        run_id=args.run_id, row_id=f'{args.candidate_id}_E{int(epoch):03d}', device=device,
+        expected_epoch=int(epoch), scenarios=getattr(args, 'a1_periodic_target_scenarios', 'clean,leo_clear_weak,leo_low_elev_weak,leo_rain_weak'))
+    if int(epoch) == int(args.epochs) and getattr(args, 'a1_final_weak_reference', False):
+        elapsed += evaluate_checkpoint(checkpoint, output=Path(output_dir)/'final_weak_reference',
+            input_package=args.a1_periodic_target_inputs, truth=args.a1_periodic_target_truth,
+            run_id=args.run_id, row_id=f'{args.candidate_id}_WEAK_REFERENCE', device=device, expected_epoch=int(epoch))
+    return elapsed
