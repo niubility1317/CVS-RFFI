@@ -1,0 +1,406 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20260918-phase1-daot-rc4-practical4-manysig-s392005-r01",
+  "group_id": "phase1-daot-rc4-practical-channel-four",
+  "display_name": "DAOT＋FastTrust-RC4 practical四信道组E200",
+  "description": "同一scratch DAOT A1＋FastTrust-RC4与拼接训练配方，只改变practical full无均衡/full正则ZF/residual无均衡/full MMSE；E100起每10轮固定测试。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "DAOT RC4 LEO practical full residual ZF MMSE"
+  ],
+  "tags": [
+    "phase1",
+    "daot",
+    "fasttrust",
+    "rc4",
+    "practical",
+    "full",
+    "residual",
+    "zf",
+    "mmse",
+    "concat"
+  ],
+  "comparison_group_id": "phase1-daot-rc4-practical-channel-four",
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "本任务用户先授权三实验，随后明确ZF正则化和增益限制，最后追加full MMSE第四实验。",
+  "code": {
+    "commit": "RESOLVED_FROM_COMMITTED_RELEASE_BEFORE_LAUNCH",
+    "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
+    "environment": "local ssr-gpu; N607 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "<release>"
+  },
+  "data": {
+    "dataset": "WiSig ManySig CORE90",
+    "version": null,
+    "representation": "equalized=1; 2x256; normalized center crop",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "Each row/source_contract.json; exact physical roles checked against unchanged data.contract_ref",
+    "label_map_ref": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\experiments\\adv3b02_xuc\\configs\\core90_recipe_reference.json",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "TX [0,1,2,3,4,5] for source and held-out receiver diagnostic",
+    "roles": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "V": 27000
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": null,
+    "support_query_ref": null,
+    "leo_config_ref": "rows[].config_ref; vendored leo_practical commit a8746f385251237dd6725f46d1666d773202ef21"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "fixed exploratory tests only; no training/calibration/selection feedback",
+    "external_method_exception": null,
+    "claim_scope": "地面代理跨接收机practical模拟实验；测试为探索性观察，不反向调整。full/residual有质量估计与边界差异，不宣称只改变RFF保留。"
+  },
+  "checkpoint": {
+    "initialization": "scratch",
+    "sources": [],
+    "contract_check_ref": "Each row/initialization.json; scratch only, source role equality checked before training",
+    "provenance_verdict": "NO_EXTERNAL_CHECKPOINT; anchor disabled; EMA and prototypes arise only from this run source training",
+    "selection_rule": "fixed final E200; E100:10:200 saved checkpoints never used for selection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "/root thread 01a098be-671b-7421-9fd5-e9a7203fe9d0",
+    "gpu_policy": "max_two_training_runs_per_gpu",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260918-phase1-daot-rc4-practical4-manysig-s392005-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260918-phase1-daot-rc4-practical4-manysig-s392005-r01",
+    "local_artifact_root": "E:\\type10-7\\automation_reports\\CV-SincNet\\20260918-phase1-daot-rc4-practical4-manysig-s392005-r01",
+    "launch_command": [
+      "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe",
+      "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\experiments\\adv3b02_xuc\\tools\\publish_practical_four.py",
+      "--run-id",
+      "20260918-phase1-daot-rc4-practical4-manysig-s392005-r01",
+      "--output",
+      "E:\\type10-7\\automation_reports\\CV-SincNet\\20260918-phase1-daot-rc4-practical4-manysig-s392005-r01\\evidence"
+    ],
+    "stop_rule": "Only technical failures: data/provenance mismatch, nonfinite guard (8 batches and 5%), output collision, invalid prediction/scoring closure; preserve artifacts, no performance stop or automatic retrain.",
+    "status": "LOCAL_VERIFIED"
+  },
+  "expected_artifacts": [
+    "resolved_config.json",
+    "initialization.json",
+    "source_contract.json",
+    "metrics_epoch.jsonl",
+    "final_ssdg.pth",
+    "epoch_100_ssdg.pth through epoch_200_ssdg.pth step10",
+    "target_epochs/E100..E200/predictions.json,score.json,evaluation_scope.json",
+    "final_weak_reference/predictions.json,score.json,evaluation_scope.json",
+    "completion.json",
+    "practical_channel_execution.jsonl"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "per_class_accuracy",
+      "accepted optimizer steps",
+      "loss curves",
+      "resource cost"
+    ],
+    "dimensions": [
+      "epoch",
+      "scene",
+      "TX"
+    ],
+    "prediction_ref": "E100,110,120,130,140,150,160,170,180,190,200; 168000 physical records each scene; 672000 predictions per observation",
+    "scorer_ref": "code/scripts/score_phase1_truth_last.py; separate CPU subprocess after fixed predictions"
+  },
+  "rows": [
+    {
+      "row_id": "DAOT_RC4_PRACTICAL_FULL_NOEQ_s392005",
+      "method": "DAOT A1 + FastTrust-RC4 + practical full_noeq",
+      "purpose": "matched_channel_comparison",
+      "config_ref": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\experiments\\adv3b02_xuc\\configs\\rc4_practical_full_noeq_20260918.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260918-phase1-daot-rc4-practical4-manysig-s392005-r01/DAOT_RC4_PRACTICAL_FULL_NOEQ_s392005/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 392005,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 392005,
+        "support": null,
+        "evaluation": 392005
+      },
+      "seed_notes": "model392005; split/data392005为连续物理ID固定契约；support不适用。原训练augmentation seed配方保留，信道view调用从传入generator抽取seed，base_index+epoch+L/U+scene绑定实现；虚拟RX硬件seed2027按rx/day固定。目标opaque ID+scene+seed392005+target_fixed_v3固定，跨四组匹配潜在参数；无需truth。",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "222 U-loader steps/epoch expected from 56700 U and batch256; record actual accepted/skipped steps; source V every epoch.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260918-phase1-daot-rc4-practical4-manysig-s392005-r01/DAOT_RC4_PRACTICAL_FULL_NOEQ_s392005",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260918-phase1-daot-rc4-practical4-manysig-s392005-r01/DAOT_RC4_PRACTICAL_FULL_NOEQ_s392005.train.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "<release>/code/scripts/train_rc4_practical.py",
+        "--config",
+        "<release>/configs/rc4_practical_full_noeq_20260918.json",
+        "--dataset",
+        "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260918-phase1-daot-rc4-practical4-manysig-s392005-r01/DAOT_RC4_PRACTICAL_FULL_NOEQ_s392005",
+        "--source-contract",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "--target-inputs",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_fcr_r1r8_s392005_equalized_20260903_v4/target_inputs",
+        "--target-truth",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_fcr_r1r8_s392005_equalized_20260903_v4/target_truth/truth_sidecar.json",
+        "--run-id",
+        "20260918-phase1-daot-rc4-practical4-manysig-s392005-r01"
+      ],
+      "expected_artifacts": [
+        "resolved_config.json",
+        "initialization.json",
+        "source_contract.json",
+        "metrics_epoch.jsonl",
+        "final_ssdg.pth",
+        "epoch_100_ssdg.pth through epoch_200_ssdg.pth step10",
+        "target_epochs/E100..E200/predictions.json,score.json,evaluation_scope.json",
+        "final_weak_reference/predictions.json,score.json,evaluation_scope.json",
+        "completion.json",
+        "practical_channel_execution.jsonl"
+      ],
+      "status": "LOCAL_VERIFIED"
+    },
+    {
+      "row_id": "DAOT_RC4_PRACTICAL_FULL_ZF_s392005",
+      "method": "DAOT A1 + FastTrust-RC4 + practical full_zf",
+      "purpose": "matched_channel_comparison",
+      "config_ref": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\experiments\\adv3b02_xuc\\configs\\rc4_practical_full_zf_20260918.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260918-phase1-daot-rc4-practical4-manysig-s392005-r01/DAOT_RC4_PRACTICAL_FULL_ZF_s392005/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 392005,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 392005,
+        "support": null,
+        "evaluation": 392005
+      },
+      "seed_notes": "model392005; split/data392005为连续物理ID固定契约；support不适用。原训练augmentation seed配方保留，信道view调用从传入generator抽取seed，base_index+epoch+L/U+scene绑定实现；虚拟RX硬件seed2027按rx/day固定。目标opaque ID+scene+seed392005+target_fixed_v3固定，跨四组匹配潜在参数；无需truth。",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "222 U-loader steps/epoch expected from 56700 U and batch256; record actual accepted/skipped steps; source V every epoch.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260918-phase1-daot-rc4-practical4-manysig-s392005-r01/DAOT_RC4_PRACTICAL_FULL_ZF_s392005",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260918-phase1-daot-rc4-practical4-manysig-s392005-r01/DAOT_RC4_PRACTICAL_FULL_ZF_s392005.train.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "<release>/code/scripts/train_rc4_practical.py",
+        "--config",
+        "<release>/configs/rc4_practical_full_zf_20260918.json",
+        "--dataset",
+        "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260918-phase1-daot-rc4-practical4-manysig-s392005-r01/DAOT_RC4_PRACTICAL_FULL_ZF_s392005",
+        "--source-contract",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "--target-inputs",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_fcr_r1r8_s392005_equalized_20260903_v4/target_inputs",
+        "--target-truth",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_fcr_r1r8_s392005_equalized_20260903_v4/target_truth/truth_sidecar.json",
+        "--run-id",
+        "20260918-phase1-daot-rc4-practical4-manysig-s392005-r01"
+      ],
+      "expected_artifacts": [
+        "resolved_config.json",
+        "initialization.json",
+        "source_contract.json",
+        "metrics_epoch.jsonl",
+        "final_ssdg.pth",
+        "epoch_100_ssdg.pth through epoch_200_ssdg.pth step10",
+        "target_epochs/E100..E200/predictions.json,score.json,evaluation_scope.json",
+        "final_weak_reference/predictions.json,score.json,evaluation_scope.json",
+        "completion.json",
+        "practical_channel_execution.jsonl"
+      ],
+      "status": "LOCAL_VERIFIED"
+    },
+    {
+      "row_id": "DAOT_RC4_PRACTICAL_RESIDUAL_NOEQ_s392005",
+      "method": "DAOT A1 + FastTrust-RC4 + practical residual_noeq",
+      "purpose": "matched_channel_comparison",
+      "config_ref": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\experiments\\adv3b02_xuc\\configs\\rc4_practical_residual_noeq_20260918.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260918-phase1-daot-rc4-practical4-manysig-s392005-r01/DAOT_RC4_PRACTICAL_RESIDUAL_NOEQ_s392005/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 392005,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 392005,
+        "support": null,
+        "evaluation": 392005
+      },
+      "seed_notes": "model392005; split/data392005为连续物理ID固定契约；support不适用。原训练augmentation seed配方保留，信道view调用从传入generator抽取seed，base_index+epoch+L/U+scene绑定实现；虚拟RX硬件seed2027按rx/day固定。目标opaque ID+scene+seed392005+target_fixed_v3固定，跨四组匹配潜在参数；无需truth。",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "222 U-loader steps/epoch expected from 56700 U and batch256; record actual accepted/skipped steps; source V every epoch.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260918-phase1-daot-rc4-practical4-manysig-s392005-r01/DAOT_RC4_PRACTICAL_RESIDUAL_NOEQ_s392005",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260918-phase1-daot-rc4-practical4-manysig-s392005-r01/DAOT_RC4_PRACTICAL_RESIDUAL_NOEQ_s392005.train.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "<release>/code/scripts/train_rc4_practical.py",
+        "--config",
+        "<release>/configs/rc4_practical_residual_noeq_20260918.json",
+        "--dataset",
+        "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260918-phase1-daot-rc4-practical4-manysig-s392005-r01/DAOT_RC4_PRACTICAL_RESIDUAL_NOEQ_s392005",
+        "--source-contract",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "--target-inputs",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_fcr_r1r8_s392005_equalized_20260903_v4/target_inputs",
+        "--target-truth",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_fcr_r1r8_s392005_equalized_20260903_v4/target_truth/truth_sidecar.json",
+        "--run-id",
+        "20260918-phase1-daot-rc4-practical4-manysig-s392005-r01"
+      ],
+      "expected_artifacts": [
+        "resolved_config.json",
+        "initialization.json",
+        "source_contract.json",
+        "metrics_epoch.jsonl",
+        "final_ssdg.pth",
+        "epoch_100_ssdg.pth through epoch_200_ssdg.pth step10",
+        "target_epochs/E100..E200/predictions.json,score.json,evaluation_scope.json",
+        "final_weak_reference/predictions.json,score.json,evaluation_scope.json",
+        "completion.json",
+        "practical_channel_execution.jsonl"
+      ],
+      "status": "LOCAL_VERIFIED"
+    },
+    {
+      "row_id": "DAOT_RC4_PRACTICAL_FULL_MMSE_s392005",
+      "method": "DAOT A1 + FastTrust-RC4 + practical full_mmse",
+      "purpose": "matched_channel_comparison",
+      "config_ref": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\experiments\\adv3b02_xuc\\configs\\rc4_practical_full_mmse_20260918.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260918-phase1-daot-rc4-practical4-manysig-s392005-r01/DAOT_RC4_PRACTICAL_FULL_MMSE_s392005/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 392005,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 392005,
+        "support": null,
+        "evaluation": 392005
+      },
+      "seed_notes": "model392005; split/data392005为连续物理ID固定契约；support不适用。原训练augmentation seed配方保留，信道view调用从传入generator抽取seed，base_index+epoch+L/U+scene绑定实现；虚拟RX硬件seed2027按rx/day固定。目标opaque ID+scene+seed392005+target_fixed_v3固定，跨四组匹配潜在参数；无需truth。",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "222 U-loader steps/epoch expected from 56700 U and batch256; record actual accepted/skipped steps; source V every epoch.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260918-phase1-daot-rc4-practical4-manysig-s392005-r01/DAOT_RC4_PRACTICAL_FULL_MMSE_s392005",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260918-phase1-daot-rc4-practical4-manysig-s392005-r01/DAOT_RC4_PRACTICAL_FULL_MMSE_s392005.train.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "<release>/code/scripts/train_rc4_practical.py",
+        "--config",
+        "<release>/configs/rc4_practical_full_mmse_20260918.json",
+        "--dataset",
+        "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260918-phase1-daot-rc4-practical4-manysig-s392005-r01/DAOT_RC4_PRACTICAL_FULL_MMSE_s392005",
+        "--source-contract",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "--target-inputs",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_fcr_r1r8_s392005_equalized_20260903_v4/target_inputs",
+        "--target-truth",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_fcr_r1r8_s392005_equalized_20260903_v4/target_truth/truth_sidecar.json",
+        "--run-id",
+        "20260918-phase1-daot-rc4-practical4-manysig-s392005-r01"
+      ],
+      "expected_artifacts": [
+        "resolved_config.json",
+        "initialization.json",
+        "source_contract.json",
+        "metrics_epoch.jsonl",
+        "final_ssdg.pth",
+        "epoch_100_ssdg.pth through epoch_200_ssdg.pth step10",
+        "target_epochs/E100..E200/predictions.json,score.json,evaluation_scope.json",
+        "final_weak_reference/predictions.json,score.json,evaluation_scope.json",
+        "completion.json",
+        "practical_channel_execution.jsonl"
+      ],
+      "status": "LOCAL_VERIFIED"
+    }
+  ],
+  "notes": [
+    "ManySig equalized=1保持不变；开/关均衡指新叠加practical信道的接收均衡。",
+    "practical源码固定a8746f38；默认post_sync、星载RX、quality_adaptation、IQ/phase补偿和AGC保留；不是实测LEO。",
+    "频率fs=25MHz fc=2.462GHz，来源WiSig原文IV-B：均衡后重采样回25Msps；native loader不重采样。https://arxiv.org/html/2112.15363",
+    "ZF regularization=1e-6，ZF/MMSE max_gain=20dB，FIR129 delay64；unlocked跳过均衡，execution摘要区分configured/applied。",
+    "residual保留默认关闭均衡，≤1ms快照；full波形SNR与residual白输入期望质量估计差异保留，不宣称严格等价。",
+    "课程E1-40 p.30 high，E41-90 p.60 mid/low_urban，E91-200 p.80三场景；卫星CE E80 lambda.68，DAOT E21 clean+high。RC4 hard-sat路径仍关闭。",
+    "每组测试clean+本组practical三场景；E200附加既有LEO_WEAK参考。目标先预测再独立scorer，不参与选择/重跑。",
+    "无继承任何旧checkpoint；四个row各自独立初始化，使用相同model seed，不是4seed统计。",
+    "practical为CPU NumPy参考路径；保持信道实现，不替换近似GPU核。"
+  ],
+  "registered_at": "2026-09-18T08:45:01+00:00"
+}

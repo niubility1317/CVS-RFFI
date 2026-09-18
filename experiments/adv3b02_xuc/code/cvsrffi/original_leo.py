@@ -11,7 +11,8 @@ def original_scenario(name):
 
 def validate_scenarios(scenarios):
     result = tuple(scenarios)
-    if result not in (ORIGINAL, WEAK):
+    from cvsrffi.practical_adapter import PRACTICAL
+    if result not in (ORIGINAL, WEAK, PRACTICAL):
         raise ValueError('Expected a registered clean plus three original/weak LEO scenes')
     return result
 

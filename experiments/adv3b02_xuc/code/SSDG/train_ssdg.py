@@ -630,7 +630,13 @@ def build_arg_parser() -> argparse.ArgumentParser:
         choices=["", "disabled", "view_aux", "concat_ce_only", "concat_full", "concat_masked", "concat_legacy"],
     )
     parser.add_argument("--concat_sat_fused_ce_only", type=str2bool, default=False)
-    parser.add_argument("--rc4_satellite_family", choices=["leo_weak", "original_leo"], default="leo_weak")
+    parser.add_argument("--practical_route", choices=["full","residual"], default="full")
+    parser.add_argument("--practical_equalization", type=str2bool, default=False)
+    parser.add_argument("--practical_equalizer_method", choices=["mmse","zf"], default="zf")
+    parser.add_argument("--practical_fs_hz", type=float, default=25e6)
+    parser.add_argument("--practical_fc_hz", type=float, default=2.462e9)
+    parser.add_argument("--practical_receiver_seed", type=int, default=2027)
+    parser.add_argument("--rc4_satellite_family", choices=["leo_weak", "original_leo", "practical"], default="leo_weak")
     parser.add_argument("--a1_periodic_target_scenarios", default="clean,leo_clear_weak,leo_low_elev_weak,leo_rain_weak")
     parser.add_argument("--a1_final_weak_reference", type=str2bool, default=False)
     parser.add_argument("--concat_sat_ce_weight", type=float, default=1.0)
@@ -8912,6 +8918,9 @@ def train(args) -> int:
             sat_anchor_anchor_grad_norm = float("nan")
             sat_anchor_pair_sat_grad_cos = float("nan")
             x_l, y_l, extra_l = move_batch(labeled_batch, device)
+            if args.rc4_satellite_family == "practical":
+                from cvsrffi.practical_adapter import set_training_context
+                set_training_context(extra_l[1], epoch, "L")
             r3_x_l = x_l
             r3_l_logs, r3_u_logs = {}, {}
             ecrs_cross_rx_logs = {}
@@ -10201,6 +10210,9 @@ def train(args) -> int:
                     x_u, extra_u = _move_muse_unlabeled_batch(
                         muse_unlabeled_batch, device
                     )
+                    if args.rc4_satellite_family == "practical":
+                        from cvsrffi.practical_adapter import set_training_context
+                        set_training_context(extra_u[1], epoch, "U")
                     unlabeled_count = int(x_u.size(0))
                     receiver_u = _metadata_label_tensor(
                         extra_u, "rx_i", device, unlabeled_count
@@ -10282,6 +10294,9 @@ def train(args) -> int:
                     )
                     u_sat_scenario = (u_satellite_scenario(args, epoch, batch_idx) if reference_clock_enabled(args) else
                         select_adv3b02_u_satellite_scenario(int(epoch), int(batch_idx), int(args.seed)))
+                    if args.rc4_satellite_family == "practical":
+                        from cvsrffi.practical_adapter import practical_scenario
+                        u_sat_scenario = practical_scenario(u_sat_scenario)
                     if args.rc4_satellite_family == "original_leo":
                         from cvsrffi.original_leo import original_scenario
                         u_sat_scenario = original_scenario(u_sat_scenario)

@@ -7,3 +7,4 @@
 |名称|记录类型|证据入口|
 |---|---|---|
 |ADV3B02＋DAOT＋FastTrust-RC4原LEO拼接增强|managed_run|[打开](../../automation_reports/CV-SincNet/20260918-phase1-daot-rc4-original-leo-manysig-s392005-r01/report.md)|
+|DAOT＋FastTrust-RC4 practical四组实验|managed_run|[打开](../../automation_reports/CV-SincNet/20260918-phase1-daot-rc4-practical4-manysig-s392005-r01/report.md)|

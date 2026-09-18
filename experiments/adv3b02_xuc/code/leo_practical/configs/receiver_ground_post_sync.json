@@ -1,0 +1,12 @@
+{
+  "receiver_location": "ground",
+  "mode": "post_sync",
+  "input_processing_state": "unknown_ground_recording_processing",
+  "iq_compensation_enabled": true,
+  "phase_tracking_enabled": true,
+  "residual_cfo_std_hz": 100.0,
+  "iq_estimation_amp_std_db": 0.05,
+  "iq_estimation_phase_std_deg": 0.2,
+  "phase_tracking_residual_std_deg": 1.0,
+  "phase_tracking_correlation_time_s": 0.001
+}

@@ -297,6 +297,12 @@ SAT_CHANNEL_PROTOCOL_FAMILIES: Dict[str, str] = {
 }
 
 
+from cvsrffi.practical_adapter import PRACTICAL
+for _scene in PRACTICAL[1:]:
+    SAT_CHANNEL_SCENARIO_CONFIGS[_scene] = {"channel_model": "leo_practical_v3", "scenario": _scene}
+    SAT_CHANNEL_PROTOCOL_FAMILIES[_scene] = "leo_practical_v3"
+
+
 def parse_sat_scenarios(raw: str) -> List[str]:
     """Parse a comma/semicolon/plus separated satellite scenario list."""
     seen = set()

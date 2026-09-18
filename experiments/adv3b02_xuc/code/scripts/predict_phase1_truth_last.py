@@ -168,6 +168,9 @@ def main(argv=None) -> None:
             generator.manual_seed(int(model_args.get("sat_seed", 2027)) + scenario_index * 1009)
             for x, _masked_y, _domain, meta in loader:
                 x = x.to(device, non_blocking=True)
+                if scenario.startswith("practical_"):
+                    from cvsrffi.practical_adapter import set_evaluation_context
+                    set_evaluation_context(meta["physical_sample_id"])
                 if scenario != "clean":
                     x, _ = apply_sat_channel_for_scenario(
                         x, scenario, sat_args, gen=generator, return_meta=False

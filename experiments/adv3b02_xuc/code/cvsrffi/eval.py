@@ -103,6 +103,9 @@ def apply_sat_channel_for_scenario(
     gen=None,
     return_meta: bool = False,
 ):
+    if scenario.startswith("practical_"):
+        from cvsrffi.practical_adapter import apply_practical
+        return apply_practical(x, scenario, args, gen=gen, return_meta=return_meta)
     if apply_sat_gnd_channel_batch is None:
         raise ImportError("sat_channel.py is required for satellite channel evaluation/training.")
     cfg = make_sat_config(scenario, args)
