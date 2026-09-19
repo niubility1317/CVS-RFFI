@@ -39,7 +39,7 @@ def recount(row):
     matrices = {s: [[0] * 6 for _ in range(6)] for s in SCENES}
     for r in pred['records']:
         scene, sid, yp = r['scenario'], r['sample_id'], r['predicted_class']
-        assert r['row_id'] == row['source_row_id']
+        assert r['row_id'] == row['source_row_id'] + '_E' + str(row['epochs'])
         assert r['run_id'] == row['source_run_id']
         y = labels[sid]
         assert sid not in seen[scene] and 0 <= y < 6 and 0 <= yp < 6
