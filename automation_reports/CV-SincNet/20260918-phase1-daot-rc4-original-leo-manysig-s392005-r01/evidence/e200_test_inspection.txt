@@ -1,0 +1,110 @@
+/home/szu2070436088/2510044040/CV-SincNet/runs/20260918-phase1-daot-rc4-original-leo-manysig-s392005-r01/ADV3B02_DAOT_RC4_ORIGINAL_LEO_s392005/completion.json
+{
+  "status": "ARTIFACTS_COMPLETE",
+  "epochs": 200,
+  "periodic_epochs": [
+    100,
+    110,
+    120,
+    130,
+    140,
+    150,
+    160,
+    170,
+    180,
+    190,
+    200
+  ],
+  "scenarios": [
+    "clean",
+    "clear_leo",
+    "low_elev_leo",
+    "rain_leo"
+  ],
+  "final_weak_reference": true,
+  "feeds_training": false
+}
+/home/szu2070436088/2510044040/CV-SincNet/runs/20260918-phase1-daot-rc4-original-leo-manysig-s392005-r01/ADV3B02_DAOT_RC4_ORIGINAL_LEO_s392005/target_epochs/E200/evaluation_scope.json
+{
+  "scope": "USER_AUTHORIZED_EXPLORATORY_TARGET_MONITOR_NOT_INDEPENDENT_CONFIRMATION",
+  "feeds_training": false,
+  "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260918-phase1-daot-rc4-original-leo-manysig-s392005-r01/ADV3B02_DAOT_RC4_ORIGINAL_LEO_s392005/epoch_200_ssdg.pth",
+  "record_count": 672000,
+  "gpu_execution": "same_training_pid_separate_rebuilt_model",
+  "seconds": 106.04128647688776
+}
+
+score.json 1826
+{
+  "metrics": {
+    "clean": {
+      "accuracy": 0.7544583333333333,
+      "correct": 126749,
+      "per_class_accuracy": {
+        "0": 0.9088928571428572,
+        "1": 0.44389285714285714,
+        "2": 0.6991071428571428,
+        "3": 0.6857857142857143,
+        "4": 0.8337142857142857,
+        "5": 0.9553571428571429
+      },
+      "total": 168000
+    },
+    "clear_leo": {
+      "accuracy": 0.522702380952381,
+      "correct": 87814,
+      "per_class_accuracy": {
+        "0": 0.5694642857142858,
+        "1": 0.29782142857142857,
+        "2": 0.6255714285714286,
+        "3": 0.5818214285714286,
+        "4": 0.18567857142857142,
+        "5": 0.8758571428571429
+      },
+      "total": 168000
+    },
+    "low_elev_leo": {
+      "accuracy": 0.5251785714285714,
+      "correct": 88230,
+      "per_class_accuracy": {
+        "0": 0.5766071428571429,
+        "1": 0.29446428571428573,
+        "2": 0.6260357142857143,
+        "3": 0.5421785714285714,
+        "4": 0.2290357142857143,
+        "5": 0.88275
+      },
+      "total": 168000
+    },
+    "rain_leo": {
+      "accuracy": 0.5033571428571428,
+      "correct": 84564,
+      "per_class_accuracy": {
+        "0": 0.5681785714285714,
+        "1": 0.2726071428571429,
+        "2": 0.6079285714285714,
+        "3": 0.47896428571428573,
+        "4": 0.21317857142857144,
+        "5": 0.8792857142857143
+      },
+      "total": 168000
+    }
+  },
+  "prediction_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260918-phase1-daot-rc4-original-leo-manysig-s392005-r01/ADV3B02_DAOT_RC4_ORIGINAL_LEO_s392005/target_epochs/E200/predictions.json",
+  "record_count": 672000,
+  "schema": "cvs.phase1.truth_last_score.v1",
+  "truth_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_fcr_r1r8_s392005_equalized_20260903_v4/target_truth/truth_sidecar.json"
+}
+
+scorer.log 1450
+evaluation_scope.json 419
+{
+  "scope": "USER_AUTHORIZED_EXPLORATORY_TARGET_MONITOR_NOT_INDEPENDENT_CONFIRMATION",
+  "feeds_training": false,
+  "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260918-phase1-daot-rc4-original-leo-manysig-s392005-r01/ADV3B02_DAOT_RC4_ORIGINAL_LEO_s392005/epoch_200_ssdg.pth",
+  "record_count": 672000,
+  "gpu_execution": "same_training_pid_separate_rebuilt_model",
+  "seconds": 106.04128647688776
+}
+
+predictions.json 203952270

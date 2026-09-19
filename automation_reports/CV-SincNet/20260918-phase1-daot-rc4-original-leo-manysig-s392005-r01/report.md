@@ -19,7 +19,7 @@ DAOT保留A1两视图mean版本，clean+clear_leo教师与clear_leo学生，E21�
 
 ## 当前状态
 
-LOCAL_VERIFIED，待提交发布及N607启动独立读回。不得将此状态解释为训练已启动或已有性能结果。唯一launch owner为本任务/root；最多占用一个空闲GPU，不干预已有进程。启动失败或结果不明先核实原run，禁止盲目重复提交。
+ANALYZED：2026-09-19核实E200训练及测试完成，PID3163538已退出；本次按用户要求复核固定E200的clean及原LEO测试，详见下节。
 
 ## N607启动：VERIFIED
 
@@ -29,3 +29,18 @@ LOCAL_VERIFIED，待提交发布及N607启动独立读回。不得将此状态�
 
 首轮/当前完整epoch读回：{"epoch": 1, "train_concat_sat_fused_forward_batch_size": 256.0, "train_loss": 17.649892669540268, "train_optimizer_step_applied": 0.9954954954954955, "train_skipped_nonfinite_grad": 0.0045045045045045045, "train_skipped_nonfinite_loss": 0.0}。
 读回证据：E:\type10-7\automation_reports\CV-SincNet\20260918-phase1-daot-rc4-original-leo-manysig-s392005-r01\evidence\startup_readback_1789717670.json。
+
+## 2026-09-19测试复核：VERIFIED
+
+用户要求测试PID3163538的clean和原LEO。现场核实训练200epoch结束，completion.json为ARTIFACTS_COMPLETE。复用固定epoch_200_ssdg.pth已有冻结预测，本次未重新推理、未按目标成绩选checkpoint；CPU全量独立复算672000条预测并核对原score.json，四场景准确率及正确数完全一致。每场景168000条，同一批物理样本的四种视图，不能视为672000条独立样本。ID覆盖逐场景完整，无重复、缺失或非法预测类。
+
+|场景|准确率|Macro-F1|正确/总数|
+|---|---:|---:|---:|
+|clean|75.4458%|75.6050%|126749/168000|
+|clear_leo|52.2702%|52.5543%|87814/168000|
+|low_elev_leo|52.5179%|52.8934%|88230/168000|
+|rain_leo|50.3357%|50.6108%|84564/168000|
+
+原LEO指legacy_full的clear_leo、low_elev_leo、rain_leo；不包含LEO_WEAK。结果属于已有探索性目标测试的复核，不是新的盲测确认，不反馈训练或调参。完整混淆矩阵及每类F1见[evidence/e200_clean_original_leo_recount_20260919.json](evidence/e200_clean_original_leo_recount_20260919.json)。
+
+服务器预测：`/home/szu2070436088/2510044040/CV-SincNet/runs/20260918-phase1-daot-rc4-original-leo-manysig-s392005-r01/ADV3B02_DAOT_RC4_ORIGINAL_LEO_s392005/target_epochs/E200/predictions.json`。同目录包含`score.json`、`scorer.log`与`evaluation_scope.json`。训练完成读回见`evidence/startup_readback_1789801599.json`，测试产物读回见`evidence/e200_test_inspection.txt`。
