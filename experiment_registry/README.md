@@ -1,6 +1,6 @@
 # 实验总索引
 
-更新：2026-09-18T09:03:11+00:00
+更新：2026-09-19T12:07:43+00:00
 
 先按方法/问题检索，再用run ID读取精确配置与证据。历史组数量不等于独立实验数量。
 
@@ -12,7 +12,7 @@
 
 |记录类型|数量|
 |---|---:|
-|managed_run|7|
+|managed_run|8|
 
 历史状态统一为HISTORICAL_UNVERIFIED；RUNNING等原文声明只供查证，不能证明此刻仍在运行。
 
@@ -20,16 +20,16 @@
 
 |路径标签（定位提示）|证据组数|
 |---|---:|
-|[daot](by_method/daot.md)|6|
-|[rc4](by_method/rc4.md)|6|
-|[phase1](by_method/phase1.md)|4|
-|[fasttrust](by_method/fasttrust.md)|4|
-|[concat](by_method/concat.md)|4|
-|[practical](by_method/practical.md)|3|
-|[full](by_method/full.md)|3|
-|[residual](by_method/residual.md)|3|
-|[zf](by_method/zf.md)|3|
-|[mmse](by_method/mmse.md)|3|
+|[daot](by_method/daot.md)|7|
+|[rc4](by_method/rc4.md)|7|
+|[phase1](by_method/phase1.md)|5|
+|[fasttrust](by_method/fasttrust.md)|5|
+|[concat](by_method/concat.md)|5|
+|[practical](by_method/practical.md)|4|
+|[full](by_method/full.md)|4|
+|[residual](by_method/residual.md)|4|
+|[zf](by_method/zf.md)|4|
+|[mmse](by_method/mmse.md)|4|
 |[response](by_method/response.md)|3|
 |[core90](by_method/core90.md)|3|
 |[three_seed](by_method/three_seed.md)|2|
@@ -45,6 +45,7 @@
 |DAOT＋FastTrust-RC4 practical四组实验|managed_run|[打开](../automation_reports/CV-SincNet/20260918-phase1-daot-rc4-practical4-manysig-s392005-r01/report.md)|
 |DAOT＋FastTrust-RC4 practical四组实验|managed_run|[打开](../automation_reports/CV-SincNet/20260918-phase1-daot-rc4-practical4-manysig-s392005-r02/report.md)|
 |DAOT＋FastTrust-RC4 practical四组实验r03|managed_run|[打开](../automation_reports/CV-SincNet/20260918-phase1-daot-rc4-practical4-manysig-s392005-r03/report.md)|
+|practical四组最新保存权重测试|managed_run|[打开](../automation_reports/CV-SincNet/20260919-phase1-daot-rc4-practical4-test-s392005-r01/report.md)|
 |原生DAOT＋RC4与仅动力博弈三seed对照|managed_run|[打开](../automation_reports/CV-SincNet/phase1_daot_rc4_pure_game_m3_20260917_r1/report.md)|
 |原生DAOT＋RC4与仅动力博弈三seed对照|managed_run|[打开](../automation_reports/CV-SincNet/phase1_daot_rc4_pure_game_m3_20260917_r2/report.md)|
 |响应博弈矩阵测试评估：VERIFIED|managed_run|[打开](../automation_reports/CV-SincNet/response_matrix_eval_20260917/report.md)|
