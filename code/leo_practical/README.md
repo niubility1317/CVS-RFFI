@@ -37,6 +37,15 @@ processing_route="residual"使用ResidualChannel，直接合成practical信道�
 
 ## 配置与转换
 
+2026-09-19补齐六场景矩阵；场景只改变地面环境及仰角抽样区间，状态内功率、时延和接收机参数仍共用。已有场景名称及默认场景practical_mid保持不变。
+
+|地面环境|高仰角45°—80°|中仰角20°—45°|低仰角10°—30°|
+|---|---|---|---|
+|郊区|practical_high|practical_mid|practical_low_suburban（新增）|
+|城市|practical_high_urban（新增）|practical_mid_urban（新增）|practical_low_urban|
+
+每个名称在configs下有同名JSON；新增三场景支持full/residual及均衡关闭、MMSE、正则化ZF。它们是可显式选择的场景，不自动扩展训练或测试列表，不修改旧LEO_WEAK协议。三组仰角区间与已有配置匹配，并非互不重叠的统计分箱。合成验收见acceptance_results/20260919_six_scenarios_r01.json。
+
 configs含practical_high、practical_mid、practical_low_urban场景以及ground/satellite post_sync和pre_sync配置。场景模板fs_hz=null，必须明确采样率；不能把25MHz测试采样率当成数据元信息。默认载频2.45GHz、高度600km均属工程代理，可显式覆盖。
 
 从code运行python -m leo_practical --help查看原始npy转换接口。需指定input、output-dir（必须新目录）、config、fs-hz、fs-source、fc-source、ids、session-id或sessions、seed、namespace；receiver-profile可叠加地面/星载配置。--route full/residual选择路径；--equalization显式开启均衡，--no-equalization关闭；--equalizer-method mmse/zf选择方法。输出iq.npy、metadata.jsonl、manifest.json，失败保留partial状态。CLI不读取标签、不划分数据、不训练模型。

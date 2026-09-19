@@ -14,7 +14,7 @@ from typing import Optional
 
 import numpy as np
 
-VERSION = "leo_practical_v3_full_residual_20260918"
+VERSION = "leo_practical_v3_six_scenarios_20260919"
 C = 299792458.0
 RE = 6371000.0
 GM = 3.986004418e14
@@ -23,6 +23,9 @@ SCENARIOS = {
     "practical_high": ("suburban", (45.0, 80.0)),
     "practical_mid": ("suburban", (20.0, 45.0)),
     "practical_low_urban": ("urban", (10.0, 30.0)),
+    "practical_low_suburban": ("suburban", (10.0, 30.0)),
+    "practical_mid_urban": ("urban", (20.0, 45.0)),
+    "practical_high_urban": ("urban", (45.0, 80.0)),
 }
 
 

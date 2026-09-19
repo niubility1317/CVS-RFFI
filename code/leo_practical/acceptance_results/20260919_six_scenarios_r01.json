@@ -1,0 +1,398 @@
+{
+  "interpreter": "C:\\Users\\lh594\\.conda\\envs\\ssr-gpu\\python.exe",
+  "numpy_version": "2.2.6",
+  "scope": "synthetic_numerical_checks_no_training_no_real_data",
+  "source_sha256": {
+    "acceptance.py": "cf2106e533e8ec5a80f027170b70e8d2fe91c635c5b424ea39ffaf701479a263",
+    "batch.py": "bd4c5a229ba9b5e3f0584459d8eb732a3126593af50d216dac49ee67da5bfa75",
+    "channel.py": "790ff910df626fa62db3d3df2c018a2a2e65b901ea6fcc1a667031e656ef1b2a",
+    "equalization.py": "65c428c2910db6389da1846add3669e319ec83960f4fe0a7a2660d62b9019069",
+    "residual.py": "6cd4231aed065340f4b6126eee4c397a9cb1ceefe631dc58dfb6e35f8698d40e",
+    "__init__.py": "f81ada0351683bf80c5351697403fc796dda75e4c1a6fec5e32ea6022c8c746d",
+    "__main__.py": "86b05853eb7d454875aa75b6182b7bb6cce33106eaa580ef748dd2c127d06c2d"
+  },
+  "checks": [
+    {
+      "name": "default_runtime_and_metadata",
+      "status": "PASS",
+      "detail": {
+        "output_shape": [
+          6,
+          256
+        ],
+        "default_compensation_flags": true
+      },
+      "seconds": 0.08710389999032486
+    },
+    {
+      "name": "snapshot_reproducibility",
+      "status": "PASS",
+      "detail": "exact replay across order/batch partition; namespace separates draws",
+      "seconds": 0.08205759999691509
+    },
+    {
+      "name": "receiver_session_persistence",
+      "status": "PASS",
+      "detail": "hardware stable per session and across scenes",
+      "seconds": 0.019240400011767633
+    },
+    {
+      "name": "iq_pure_phase_image_and_inverse",
+      "status": "PASS",
+      "detail": {
+        "inverse_max_error": 9.155133597044475e-16,
+        "pure_phase_image_amplitude": 13.398004798193625
+      },
+      "seconds": 0.1548163000115892
+    },
+    {
+      "name": "measured_frequency_compensation",
+      "status": "PASS",
+      "detail": {
+        "pre_sync": -40846.558132994745,
+        "post_sync": -1.1870435879070034
+      },
+      "seconds": 0.015758699999423698
+    },
+    {
+      "name": "phase_tracking_actually_changes_waveform",
+      "status": "PASS",
+      "detail": {
+        "phase_increment_std_rad": {
+          "False": 0.025704536227113668,
+          "True": 5.345516513894337e-14
+        },
+        "scope": "zero_error_proxy_control_not_PLL_accuracy"
+      },
+      "seconds": 0.021133300004294142
+    },
+    {
+      "name": "real_context_boundary_contract",
+      "status": "PASS",
+      "detail": "missing-context refusal and explicit-context execution passed",
+      "seconds": 0.0037173999880906194
+    },
+    {
+      "name": "fixed_noise_floor_and_agc",
+      "status": "PASS",
+      "detail": {
+        "added_attenuation_db": 20.0,
+        "measured_snr_delta_db": -20.0,
+        "noise_floor_unchanged": true
+      },
+      "seconds": 0.007698700006585568
+    },
+    {
+      "name": "continuous_state_and_delay_history",
+      "status": "PASS",
+      "detail": {
+        "continuous_block_partition_max_error": 0.0,
+        "agc_disabled_for_comparison": true
+      },
+      "seconds": 0.008261700000730343
+    },
+    {
+      "name": "markov_stationary_distribution",
+      "status": "PASS",
+      "detail": "stationary mapping and stochastic rows verified analytically/numerically",
+      "seconds": 0.7067941999994218
+    },
+    {
+      "name": "total_pdp_delay_and_power_convention",
+      "status": "PASS",
+      "detail": {
+        "ensemble_rms_delays_ns": [
+          20.000000000000004,
+          50.00000000000001,
+          100.00000000000003
+        ]
+      },
+      "seconds": 0.0008469000022159889
+    },
+    {
+      "name": "torch_cpu_adapter",
+      "status": "PASS",
+      "detail": {
+        "torch_version": "2.10.0+cu128",
+        "device": "cpu",
+        "state_dtype": "torch.int64"
+      },
+      "seconds": 34.05730419998872
+    },
+    {
+      "name": "external_equalization_forbidden",
+      "status": "PASS",
+      "detail": "external equalizers/transforms rejected before execution",
+      "seconds": 7.46000005165115e-05
+    },
+    {
+      "name": "fractional_delay_frequency_response",
+      "status": "PASS",
+      "detail": {
+        "max_magnitude_deviation_to_0_4fs_db": 0.00042865282749905654,
+        "common_latency_samples": 24
+      },
+      "seconds": 0.0017456000059610233
+    },
+    {
+      "name": "quality_conditioned_lock_and_compensation",
+      "status": "PASS",
+      "detail": {
+        "states": [
+          [
+            "locked",
+            1.0
+          ],
+          [
+            "degraded",
+            3.1622776601683795
+          ],
+          [
+            "unlocked",
+            10.0
+          ]
+        ],
+        "unlocked_keeps_coarse_only": true
+      },
+      "seconds": 0.010311500009265728
+    },
+    {
+      "name": "injected_RX_correction_preserves_input_TX_RFF",
+      "status": "PASS",
+      "detail": {
+        "tx_iq_pa_and_cfo_preserved_max_error": 6.051225202923028e-08,
+        "known_filter_latency_accounted": true
+      },
+      "seconds": 0.0031561999931000173
+    },
+    {
+      "name": "residual_does_not_synthesize_full_channel",
+      "status": "PASS",
+      "detail": "residual route works with full process forcibly unavailable; EQ defaults off",
+      "seconds": 0.01645460000145249
+    },
+    {
+      "name": "full_vs_direct_residual_frozen_equivalence",
+      "status": "PASS",
+      "detail": {
+        "frozen_channel_interior_max_error": {
+          "False": 0.0,
+          "True": 0.0
+        },
+        "boundary_guard_excluded": true
+      },
+      "seconds": 0.034065200001350604
+    },
+    {
+      "name": "optional_mmse_and_regularized_zf",
+      "status": "PASS",
+      "detail": {
+        "known_channel_ISI_recovery_mse": {
+          "mmse": 1.0978065402007603e-11,
+          "zf": 1.0978065402007603e-11
+        },
+        "not_TX_distortion_correction": true
+      },
+      "seconds": 0.001306500009377487
+    },
+    {
+      "name": "residual_equalization_replay",
+      "status": "PASS",
+      "detail": "residual plus EQ reproducible and metadata serializable",
+      "seconds": 0.024741600005654618
+    },
+    {
+      "name": "six_scene_templates_routes_equalizers_replay",
+      "status": "PASS",
+      "detail": {
+        "config_route_equalizer_combinations": 36,
+        "combinations": [
+          [
+            "practical_high",
+            "full",
+            "off"
+          ],
+          [
+            "practical_high",
+            "full",
+            "mmse"
+          ],
+          [
+            "practical_high",
+            "full",
+            "zf"
+          ],
+          [
+            "practical_high",
+            "residual",
+            "off"
+          ],
+          [
+            "practical_high",
+            "residual",
+            "mmse"
+          ],
+          [
+            "practical_high",
+            "residual",
+            "zf"
+          ],
+          [
+            "practical_mid",
+            "full",
+            "off"
+          ],
+          [
+            "practical_mid",
+            "full",
+            "mmse"
+          ],
+          [
+            "practical_mid",
+            "full",
+            "zf"
+          ],
+          [
+            "practical_mid",
+            "residual",
+            "off"
+          ],
+          [
+            "practical_mid",
+            "residual",
+            "mmse"
+          ],
+          [
+            "practical_mid",
+            "residual",
+            "zf"
+          ],
+          [
+            "practical_low_urban",
+            "full",
+            "off"
+          ],
+          [
+            "practical_low_urban",
+            "full",
+            "mmse"
+          ],
+          [
+            "practical_low_urban",
+            "full",
+            "zf"
+          ],
+          [
+            "practical_low_urban",
+            "residual",
+            "off"
+          ],
+          [
+            "practical_low_urban",
+            "residual",
+            "mmse"
+          ],
+          [
+            "practical_low_urban",
+            "residual",
+            "zf"
+          ],
+          [
+            "practical_low_suburban",
+            "full",
+            "off"
+          ],
+          [
+            "practical_low_suburban",
+            "full",
+            "mmse"
+          ],
+          [
+            "practical_low_suburban",
+            "full",
+            "zf"
+          ],
+          [
+            "practical_low_suburban",
+            "residual",
+            "off"
+          ],
+          [
+            "practical_low_suburban",
+            "residual",
+            "mmse"
+          ],
+          [
+            "practical_low_suburban",
+            "residual",
+            "zf"
+          ],
+          [
+            "practical_mid_urban",
+            "full",
+            "off"
+          ],
+          [
+            "practical_mid_urban",
+            "full",
+            "mmse"
+          ],
+          [
+            "practical_mid_urban",
+            "full",
+            "zf"
+          ],
+          [
+            "practical_mid_urban",
+            "residual",
+            "off"
+          ],
+          [
+            "practical_mid_urban",
+            "residual",
+            "mmse"
+          ],
+          [
+            "practical_mid_urban",
+            "residual",
+            "zf"
+          ],
+          [
+            "practical_high_urban",
+            "full",
+            "off"
+          ],
+          [
+            "practical_high_urban",
+            "full",
+            "mmse"
+          ],
+          [
+            "practical_high_urban",
+            "full",
+            "zf"
+          ],
+          [
+            "practical_high_urban",
+            "residual",
+            "off"
+          ],
+          [
+            "practical_high_urban",
+            "residual",
+            "mmse"
+          ],
+          [
+            "practical_high_urban",
+            "residual",
+            "zf"
+          ]
+        ],
+        "quality_adaptation_disabled_only_for_branch_coverage": true
+      },
+      "seconds": 0.447914899996249
+    }
+  ],
+  "passed": 21,
+  "failed": 0
+}

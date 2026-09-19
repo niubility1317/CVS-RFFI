@@ -324,6 +324,47 @@ def run():
         json.dumps(m,allow_nan=False)
         return "residual plus EQ reproducible and metadata serializable"
     check("residual_equalization_replay", residual_replay)
+
+    def six_scenarios():
+        # Exercise actual templates through both receivers and EQ branches;
+        # fixed quality ensures the requested equalizer really executes.
+        from .channel import SCENARIOS
+        expected = {
+            "practical_high": ("suburban", (45., 80.)),
+            "practical_mid": ("suburban", (20., 45.)),
+            "practical_low_urban": ("urban", (10., 30.)),
+            "practical_low_suburban": ("suburban", (10., 30.)),
+            "practical_mid_urban": ("urban", (20., 45.)),
+            "practical_high_urban": ("urban", (45., 80.)),
+        }
+        assert SCENARIOS == expected
+        exercised = []
+        for name, (environment, (lo, hi)) in expected.items():
+            fields = json.loads((Path(__file__).parent / "configs" / (name+".json")).read_text(encoding="utf-8"))
+            assert fields["fs_hz"] is None and fields["scenario"] == name
+            base = Config(**{**fields, "fs_hz": cfg.fs_hz})
+            assert not base.equalization_enabled and base.processing_route == "full"
+            for route in ("full", "residual"):
+                for eq in ("off", "mmse", "zf"):
+                    c = replace(base, processing_route=route, equalization_enabled=eq!="off",
+                                equalizer_method="mmse" if eq=="off" else eq,
+                                quality_adaptation_enabled=False)
+                    y, meta, _ = batch(x[:2], ids[:2], sessions[:2], config=c)
+                    assert y.shape == x[:2].shape and np.isfinite(y).all()
+                    again, _, _ = batch(x[1::-1], ids[1::-1], sessions[1::-1], config=c)
+                    np.testing.assert_array_equal(y[::-1], again)
+                    for m in meta:
+                        elevation = m["geometry"]["elevation_deg"]
+                        assert lo <= elevation <= hi
+                        assert m["scenario"] == name and m["processing_route"] == route
+                        assert m["channel_equalization_applied"] == (eq!="off")
+                        assert m["full_channel_waveform_synthesized"] == (route=="full")
+                        np.testing.assert_allclose(m["state_probabilities"], state_probabilities(elevation, environment))
+                    json.dumps(meta, allow_nan=False)
+                    exercised.append([name, route, eq])
+        return {"config_route_equalizer_combinations": len(exercised), "combinations": exercised,
+                "quality_adaptation_disabled_only_for_branch_coverage": True}
+    check("six_scene_templates_routes_equalizers_replay", six_scenarios)
     return results
 
 
