@@ -28,3 +28,7 @@ E100起每10epoch统一评估clean和六个Practical环境，E200保留原LEO_WE
 六组E1均完成222步，221步执行optimizer更新、1步安全跳过非有限梯度，loss无非有限跳步。首步异常位置与旧四组同为id_backbone.sinc.low_hz_，未见持续跳步。E1约100—106秒，不能据此外推后期DAOT启用后的总时长。实际加权场景计数已写metrics_epoch；早期卫星CE/DAOT部分损失仍按原日程未启用，不能由视图被抽样推断对应损失已生效。
 
 实际resolved配置对旧residual的差异检查通过：仅声明的场景/权重、评估覆盖、执行加速、标识/路径及派生清单不同；三个新增profiling默认参数中steps=0，未启用profiling。[完整差异](evidence/resolved_config_comparison.json)。
+
+## 训练速度审计（2026-09-20）
+
+[完整分析](speed_analysis_20260920.md)：全量解析至E25—E28；较快阶段约2倍，前25轮累计只有1.025—1.094倍；当前GPU0/3/5同卡争用。未改变训练。
