@@ -209,9 +209,10 @@
         "final_last_epoch/{ema,student}/metrics.json",
         "COMPLETE.json"
       ],
-      "status": "RUNNING",
+      "status": "STOPPED_SUPERSEDED_USER_CORRECTION",
       "pid": 142613,
-      "gpu": 1
+      "gpu": 1,
+      "replacement": "riei_pl_loo_ce11_s299_t90_20260920_r02"
     }
   ],
   "notes": [
@@ -221,7 +222,7 @@
     "RIEI RX CE, MI and entropy retained on source clean; satellite auxiliary is emitter CE only.",
     "STAR checkout has no Git remote; local commit delivery only."
   ],
-  "status": "RUNNING",
+  "status": "PARTIAL_SUPERSEDED_CVCNN_RUNNING",
   "registered_at": "2026-09-20T02:39:19+00:00",
   "artifact_release_sha256": "c1156940a1d5eaa211c76d99a387cef589db06e7479c80f195941e264e6c542d",
   "delivery": "VERIFIED",

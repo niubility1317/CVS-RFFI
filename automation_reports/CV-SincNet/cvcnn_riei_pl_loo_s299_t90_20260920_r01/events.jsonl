@@ -1,2 +1,3 @@
 {"at": "2026-09-20T02:39:19+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-09-20T02:43:15.344891+00:00", "status": "RUNNING", "evidence": ["remote_inspect.json", "config_audit.json"], "note": "VERIFIED: PID/CWD/argv/GPU, advancing batches/epochs, exact STAR source splits"}
+{"at": "2026-09-20T02:51:46.354851+00:00", "status": "STOPPED_SUPERSEDED_USER_CORRECTION", "row_id": "riei-pl-loo-s299-t90-e200-r01", "note": "RIEI only replaced with CE1:1; CVCNN unchanged", "evidence": ["F:\\AI\\exports\\STRA-RFFI\\STAR-test\\补实验\\riei_pl_loo_ce11_s299_t90_20260920_r02\\stop_evidence.json"]}

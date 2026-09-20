@@ -26,3 +26,5 @@ CVCNN直接使用STAR Ni_model_2part的复数编码器、后128维身份特征�
 - riei：GPU1，PID142613；实际配置和5个源RX划分逐项匹配STAR。
 
 两项均已有完成epoch及持续增长的batch日志，CE/SG权重已实际启用；普通PL在E30启用，当前早期核验尚未启用。远端配置核验见config_audit.json；PID/CWD/命令/GPU/log见remote_inspect.json。未完成E200，不报告最终性能。GitHub初次推送因TLS失败，保留本地提交；最终交付状态见git_delivery.json。
+
+用户修正：RIEI行已停止并由riei_pl_loo_ce11_s299_t90_20260920_r02从零替代，身份CE由0.5+0.5改为1+1。旧RIEI保留为partial，不作为修正版结果；CVCNN继续原配置。远端调度器原生FAILED状态表示用户纠正停机，不是数值/性能失败。

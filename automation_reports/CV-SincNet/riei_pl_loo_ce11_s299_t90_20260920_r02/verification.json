@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "device": "cuda",
+  "tests": [
+    {
+      "method": "riei",
+      "finite_step": true,
+      "pl_activated": true,
+      "checkpoint_roundtrip": true
+    }
+  ]
+}
