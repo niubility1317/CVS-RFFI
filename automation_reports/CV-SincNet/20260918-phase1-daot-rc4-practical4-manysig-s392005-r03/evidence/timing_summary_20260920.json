@@ -1,0 +1,217 @@
+{
+  "full_mmse": {
+    "epochs": 152,
+    "total_hours": 46.57281663391325,
+    "component_hours": {
+      "total": 46.57281663391325,
+      "train": 34.50042511396938,
+      "source_heavy": 6.979954424169328,
+      "target": 4.849340138154156
+    },
+    "stages": {
+      "1-20": {
+        "total": 324.9,
+        "train": 156.9,
+        "source_heavy": 161.2,
+        "target": 0.0
+      },
+      "21-40": {
+        "total": 950.7,
+        "train": 783.2,
+        "source_heavy": 160.7,
+        "target": 0.0
+      },
+      "41-79": {
+        "total": 1010.7,
+        "train": 843.5,
+        "source_heavy": 161.3,
+        "target": 0.0
+      },
+      "80-90": {
+        "total": 1017.2,
+        "train": 849.9,
+        "source_heavy": 161.7,
+        "target": 0.0
+      },
+      "91-200": {
+        "total": 1048.8,
+        "train": 880.9,
+        "source_heavy": 161.8,
+        "target": 0.0
+      }
+    },
+    "eval_median_s": 2907.3403658298776
+  },
+  "residual_noeq": {
+    "epochs": 200,
+    "total_hours": 34.29767159753376,
+    "component_hours": {
+      "total": 34.29767159753376,
+      "train": 25.421740929550595,
+      "source_heavy": 4.416186537411478,
+      "target": 4.155465810295815
+    },
+    "stages": {
+      "1-20": {
+        "total": 197.7,
+        "train": 114.0,
+        "source_heavy": 79.7,
+        "target": 0.0
+      },
+      "21-40": {
+        "total": 540.6,
+        "train": 455.5,
+        "source_heavy": 79.6,
+        "target": 0.0
+      },
+      "41-79": {
+        "total": 572.1,
+        "train": 487.6,
+        "source_heavy": 79.1,
+        "target": 0.0
+      },
+      "80-90": {
+        "total": 570.2,
+        "train": 485.9,
+        "source_heavy": 78.8,
+        "target": 0.0
+      },
+      "91-200": {
+        "total": 590.6,
+        "train": 505.3,
+        "source_heavy": 79.7,
+        "target": 0.0
+      }
+    },
+    "eval_median_s": 1349.9871094860137
+  },
+  "full_zf": {
+    "epochs": 129,
+    "total_hours": 46.52645432068242,
+    "component_hours": {
+      "total": 46.52645432068242,
+      "train": 37.69001725971699,
+      "source_heavy": 6.2384798994991515,
+      "target": 2.3690218694068284
+    },
+    "stages": {
+      "1-20": {
+        "total": 401.7,
+        "train": 222.7,
+        "source_heavy": 174.0,
+        "target": 0.0
+      },
+      "21-40": {
+        "total": 880.8,
+        "train": 718.5,
+        "source_heavy": 156.1,
+        "target": 0.0
+      },
+      "41-79": {
+        "total": 947.7,
+        "train": 783.7,
+        "source_heavy": 157.2,
+        "target": 0.0
+      },
+      "80-90": {
+        "total": 1807.9,
+        "train": 1606.8,
+        "source_heavy": 192.3,
+        "target": 0.0
+      },
+      "91-200": {
+        "total": 1804.5,
+        "train": 1610.0,
+        "source_heavy": 188.1,
+        "target": 0.0
+      }
+    },
+    "eval_median_s": 2856.115464561619
+  },
+  "full_noeq": {
+    "epochs": 142,
+    "total_hours": 46.621247808999485,
+    "component_hours": {
+      "total": 46.621247808999485,
+      "train": 37.42804500102997,
+      "source_heavy": 5.691317730678453,
+      "target": 3.2507746798058763
+    },
+    "stages": {
+      "1-20": {
+        "total": 340.3,
+        "train": 195.0,
+        "source_heavy": 136.6,
+        "target": 0.0
+      },
+      "21-40": {
+        "total": 739.2,
+        "train": 606.0,
+        "source_heavy": 128.0,
+        "target": 0.0
+      },
+      "41-79": {
+        "total": 790.9,
+        "train": 657.0,
+        "source_heavy": 128.2,
+        "target": 0.0
+      },
+      "80-90": {
+        "total": 1557.9,
+        "train": 1382.6,
+        "source_heavy": 163.7,
+        "target": 0.0
+      },
+      "91-200": {
+        "total": 1654.6,
+        "train": 1481.9,
+        "source_heavy": 160.6,
+        "target": 0.0
+      }
+    },
+    "eval_median_s": 2339.3489468749613
+  },
+  "original_leo_control": {
+    "epochs": 200,
+    "total_hours": 19.026814586586422,
+    "component_hours": {
+      "total": 19.026814586586422,
+      "train": 17.28897842499945,
+      "source_heavy": 1.0073262496127022,
+      "target": 0.4107439479873412
+    },
+    "stages": {
+      "1-20": {
+        "total": 101.4,
+        "train": 81.9,
+        "source_heavy": 13.1,
+        "target": 0.0
+      },
+      "21-40": {
+        "total": 561.8,
+        "train": 544.4,
+        "source_heavy": 12.1,
+        "target": 0.0
+      },
+      "41-79": {
+        "total": 223.4,
+        "train": 206.2,
+        "source_heavy": 11.9,
+        "target": 0.0
+      },
+      "80-90": {
+        "total": 222.6,
+        "train": 205.5,
+        "source_heavy": 11.8,
+        "target": 0.0
+      },
+      "91-200": {
+        "total": 223.6,
+        "train": 206.4,
+        "source_heavy": 11.9,
+        "target": 0.0
+      }
+    },
+    "eval_median_s": 106.38435519207269
+  }
+}
