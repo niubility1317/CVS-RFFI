@@ -1,0 +1,21 @@
+{
+  "scope": "SYNTHETIC_EXECUTION_VERIFICATION_NO_EXPERIMENT",
+  "commit": "03d62ccdf89164ac8666004b83fbd549e5fd1d45",
+  "command": [
+    "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "/home/szu2070436088/2510044040/CV-SincNet/benchmarks/practical_remaining_03d62ccd_20260920_b128_r03/experiments/adv3b02_xuc/tools/benchmark_practical_remaining.py",
+    "--device",
+    "cuda:0",
+    "--batch-size",
+    "128",
+    "--repeats",
+    "5",
+    "--output",
+    "/home/szu2070436088/2510044040/CV-SincNet/benchmarks/practical_remaining_03d62ccd_20260920_b128_r03/result.json"
+  ],
+  "gpu_preflight": "0, 12447\n1, 12447\n2, 12447\n3, 1\n4, 1\n5, 10737\n6, 10891\n7, 10751\n",
+  "started": 1789898806.4268749,
+  "pid": 370793,
+  "returncode": 0,
+  "finished": 1789899203.8910863
+}
