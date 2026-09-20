@@ -5,9 +5,13 @@ from pathlib import Path
 import json
 import numpy as np
 import torch
+from functools import lru_cache, partial
+from .execution_profile import stage
 from leo_practical import Config, apply_leo_practical_channel_batch
 
 PRACTICAL=('clean','practical_high','practical_mid','practical_low_urban')
+from leo_practical import SCENARIOS
+PRACTICAL_ALL=('clean', *SCENARIOS)
 _context=ContextVar('practical_context',default=None)
 _last_meta=None
 _recorded=set()
@@ -36,11 +40,25 @@ def set_source_evaluation_context(meta):
 def set_smoke_context(n):
     _context.set(([f'synthetic{i}' for i in range(n)],['virtual_smoke']*n,'source_smoke'))
 
-def practical_config(scene,args):
-    return Config(fs_hz=float(args.practical_fs_hz),fc_hz=float(args.practical_fc_hz),scenario=scene,
-        processing_route=args.practical_route,equalization_enabled=bool(args.practical_equalization),
-        equalizer_method=args.practical_equalizer_method,zf_regularization=1e-6,equalizer_max_gain_db=20,
+@lru_cache(maxsize=64)
+def _config(scene, fs, fc, route, eq, method):
+    return Config(fs_hz=fs,fc_hz=fc,scenario=scene,
+        processing_route=route,equalization_enabled=eq,
+        equalizer_method=method,zf_regularization=1e-6,equalizer_max_gain_db=20,
         input_processing_state='WiSig_ManySig_equalized1_center256_shared_normalization')
+
+def practical_config(scene,args):
+    return _config(scene,float(args.practical_fs_hz),float(args.practical_fc_hz),
+                   args.practical_route,bool(args.practical_equalization),args.practical_equalizer_method)
+
+
+def _output_tensor(array, device, dtype, buffered):
+    if not buffered:
+        return torch.tensor(array.tolist(),device=device,dtype=dtype)
+    # Own the writable buffer; avoid the Torch/NumPy ndarray ABI entirely.
+    value=np.ascontiguousarray(array,dtype=np.float32)
+    return torch.frombuffer(bytearray(value.tobytes()),dtype=torch.float32).reshape(value.shape).to(device=device,dtype=dtype)
+
 
 def apply_practical(x,scene,args,*,gen=None,return_meta=False):
     global _last_meta
@@ -53,13 +71,21 @@ def apply_practical(x,scene,args,*,gen=None,return_meta=False):
     cfg=practical_config(scene,args)
     # N607 Torch 2.1 / NumPy 2.2 has an unsafe ndarray ABI bridge.
     # Explicit value copies preserve float64 reference math without .numpy/from_numpy.
-    array=np.array(x.detach().to(device='cpu',dtype=torch.float64).tolist(),dtype=np.float64)
+    with stage('channel/input_d2h_and_values'):
+        array=np.array(x.detach().to(device='cpu',dtype=torch.float64).tolist(),dtype=np.float64)
     from .practical_view_cache import cached_evaluation_batch
-    (y,records,states),cache_event=cached_evaluation_batch(array,cfg,
-        cache_dir=getattr(args,'practical_eval_cache_dir',''),compute=apply_leo_practical_channel_batch,
-        seed=seed,sample_ids=ids,session_ids=sessions,realization_namespace=namespace,
-        receiver_seed=int(args.practical_receiver_seed))
-    y=torch.tensor(y.tolist(),device=x.device,dtype=x.dtype)
+    compute=apply_leo_practical_channel_batch
+    workers=int(getattr(args,'practical_channel_workers',0))
+    if workers > 1:
+        from .practical_parallel import parallel_batch
+        compute=partial(parallel_batch,workers=workers)
+    with stage('channel/cache_or_simulation'):
+        (y,records,states),cache_event=cached_evaluation_batch(array,cfg,
+            cache_dir=getattr(args,'practical_eval_cache_dir',''),compute=compute,
+            seed=seed,sample_ids=ids,session_ids=sessions,realization_namespace=namespace,
+            receiver_seed=int(args.practical_receiver_seed))
+    with stage('channel/output_values_and_h2d'):
+        y=_output_tensor(y,x.device,x.dtype,bool(getattr(args,'practical_buffer_output',False)))
     _last_meta={'config':asdict(cfg),'records':records,'namespace':namespace,'cache_event':cache_event}
     evidence_key=(getattr(args,'output_dir',''),namespace,scene)
     if namespace.startswith('source_dynamic_') and evidence_key not in _recorded:

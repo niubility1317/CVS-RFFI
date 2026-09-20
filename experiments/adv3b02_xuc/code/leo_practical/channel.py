@@ -7,6 +7,7 @@ No dependency on, or mutation of, historical channel implementations.
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass
+from functools import cached_property
 import hashlib
 import json
 import math
@@ -23,6 +24,9 @@ SCENARIOS = {
     "practical_high": ("suburban", (45.0, 80.0)),
     "practical_mid": ("suburban", (20.0, 45.0)),
     "practical_low_urban": ("urban", (10.0, 30.0)),
+    "practical_low_suburban": ("suburban", (10.0, 30.0)),
+    "practical_mid_urban": ("urban", (20.0, 45.0)),
+    "practical_high_urban": ("urban", (45.0, 80.0)),
 }
 
 
@@ -153,7 +157,7 @@ class Config:
         return (self.shadow_corr_time_s if self.shadow_corr_time_s is not None
                 else self.shadow_corr_distance_m / self.terminal_speed_mps)
 
-    @property
+    @cached_property
     def config_hash(self):
         return hashlib.sha256(json.dumps(asdict(self), sort_keys=True).encode()).hexdigest()
 

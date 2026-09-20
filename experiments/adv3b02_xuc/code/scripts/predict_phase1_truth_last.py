@@ -72,6 +72,8 @@ def main(argv=None) -> None:
     parser.add_argument("--recipe", default="")
     parser.add_argument("--practical-eval-cache-dir", default=None,
                         help="Override checkpoint evaluation IQ cache directory; does not cache predictions")
+    parser.add_argument("--practical-cpu-pipeline", action="store_true")
+    parser.add_argument("--identity-only", action="store_true")
     parser.add_argument("--expected-epoch", type=int, default=200)
     parser.add_argument("--scenarios", default=",".join(FCR_PREDICTION_SCENARIOS))
     args = parser.parse_args(argv)
@@ -154,6 +156,10 @@ def main(argv=None) -> None:
     if args.practical_eval_cache_dir is not None:
         model_args['practical_eval_cache_dir'] = args.practical_eval_cache_dir
     model.eval()
+    cpu_pipeline = args.practical_cpu_pipeline or bool(model_args.get('practical_eval_cpu_pipeline',False))
+    identity_only = args.identity_only or bool(model_args.get('a1_eval_identity_only',False))
+    if identity_only and not callable(getattr(model,'forward_identity_only',None)):
+        raise ValueError('Identity-only evaluation is not supported by this model')
 
     loader = DataLoader(
         _OpaqueTargetDataset(input_package),
@@ -171,7 +177,8 @@ def main(argv=None) -> None:
             generator = torch.Generator(device=device)
             generator.manual_seed(int(model_args.get("sat_seed", 2027)) + scenario_index * 1009)
             for x, _masked_y, _domain, meta in loader:
-                x = x.to(device, non_blocking=True)
+                if not (cpu_pipeline and scenario.startswith('practical_')):
+                    x = x.to(device, non_blocking=True)
                 if scenario.startswith("practical_"):
                     from cvsrffi.practical_adapter import set_evaluation_context
                     set_evaluation_context(meta["physical_sample_id"])
@@ -179,7 +186,9 @@ def main(argv=None) -> None:
                     x, _ = apply_sat_channel_for_scenario(
                         x, scenario, sat_args, gen=generator, return_meta=False
                     )
-                outputs = model(x, y_tx=None, grl_lambda=1.0, return_aux=True)
+                x = x.to(device, non_blocking=True)
+                outputs = (model.forward_identity_only(x, y_tx=None) if identity_only else
+                           model(x, y_tx=None, grl_lambda=1.0, return_aux=True))
                 predicted = select_identity_logits(outputs, model=model).argmax(dim=1).cpu().tolist()
                 for sample_id, predicted_class in zip(meta["physical_sample_id"], predicted):
                     records.append(

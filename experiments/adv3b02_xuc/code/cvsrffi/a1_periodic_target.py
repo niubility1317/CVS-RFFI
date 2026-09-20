@@ -20,13 +20,21 @@ def due(epoch, start, total, interval=10):
 
 
 def evaluate_checkpoint(checkpoint, *, output, input_package, truth, run_id, row_id,
-                        device, predictor=None, scorer=None, expected_records=672000,
+                        device, predictor=None, scorer=None, expected_records=None,
                         scenarios="clean,leo_clear_weak,leo_low_elev_weak,leo_rain_weak", expected_epoch=200):
     """Use a separate rebuilt model in this PID; truth only enters CPU scorer."""
     output = Path(output)
     if output.exists():
         raise FileExistsError(f'Refusing existing evaluation output: {output}')
     release = Path(__file__).resolve().parents[2]
+    from .original_leo import validate_scenarios
+    scene_list = validate_scenarios(scenarios.split(','))
+    if expected_records is None:
+        manifest=json.loads((Path(input_package)/'manifest.json').read_text(encoding='utf-8'))
+        ids=manifest['sample_ids']
+        if not ids or len(set(ids))!=len(ids):
+            raise ValueError('Invalid evaluation physical ID coverage')
+        expected_records=len(ids)*len(scene_list)
     if predictor is None:
         from scripts.predict_phase1_truth_last import main as predictor
     random_state, numpy_state = random.getstate(), np.random.get_state()

@@ -68,7 +68,7 @@ def main():
     if not (output/'final_weak_reference'/'evaluation_scope.json').is_file():
         raise ValueError('Missing final weak reference')
     json_write(output/'completion.json',dict(status='ARTIFACTS_COMPLETE',epochs=200,
-        periodic_epochs=list(range(100,201,10)),scenarios=['clean','practical_high','practical_mid','practical_low_urban'],
+        periodic_epochs=list(range(100,201,10)),scenarios=args.a1_periodic_target_scenarios.split(','),
         final_weak_reference=True,feeds_training=False))
 
 if __name__=='__main__':main()

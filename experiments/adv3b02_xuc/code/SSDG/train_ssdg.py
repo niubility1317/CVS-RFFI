@@ -402,6 +402,11 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--daot_skip_mean_metadata", type=str2bool, default=False)
     parser.add_argument("--a1_scratch_only", type=str2bool, default=False)
     parser.add_argument("--a1_runtime_fast", type=str2bool, default=False)
+    parser.add_argument("--a1_gradient_snapshot", type=str2bool, default=False)
+    parser.add_argument("--a1_eval_identity_only", type=str2bool, default=False)
+    parser.add_argument("--execution_profile_epoch", type=int, default=1)
+    parser.add_argument("--execution_profile_start", type=int, default=1)
+    parser.add_argument("--execution_profile_steps", type=int, default=0)
     parser.add_argument("--a1_ema_versioned_updates", type=str2bool, default=False)
     parser.add_argument("--a1_ema_startup_average", type=str2bool, default=False)
     parser.add_argument("--a1_logit_coverage_weighting", type=str2bool, default=False)
@@ -636,6 +641,9 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--practical_fs_hz", type=float, default=25e6)
     parser.add_argument("--practical_fc_hz", type=float, default=2.462e9)
     parser.add_argument("--practical_receiver_seed", type=int, default=2027)
+    parser.add_argument("--practical_buffer_output", type=str2bool, default=False)
+    parser.add_argument("--practical_eval_cpu_pipeline", type=str2bool, default=False)
+    parser.add_argument("--practical_channel_workers", type=int, default=0)
     parser.add_argument("--practical_eval_cache_dir", type=str, default="",
                         help="Opt-in deterministic Practical LEO evaluation IQ cache; training always bypasses")
     parser.add_argument("--rc4_satellite_family", choices=["leo_weak", "original_leo", "practical"], default="leo_weak")
@@ -8057,6 +8065,10 @@ def _load_baseline_state_allowing_domain_output_resize(
     return tuple(sorted(skipped))
 
 
+from cvsrffi.execution_profile import close_profiles_on_exit
+
+
+@close_profiles_on_exit
 def train(args) -> int:
     training_wall_started = time.time()
     _validate_daot_config(args)
@@ -8816,6 +8828,9 @@ def train(args) -> int:
                 reference_requires_absolute_safe=bool(args.tail_safety_reference_requires_absolute_safe),
             )
         )
+    from cvsrffi.execution_profile import TrainingProfile
+    execution_profile = TrainingProfile(out_dir, args.execution_profile_epoch,
+        args.execution_profile_start, args.execution_profile_steps)
     r3_optimizer_steps = 0
     ecrs_cross_rx_successful_steps = 0
     for epoch in range(1, total_epochs + 1):
@@ -8920,6 +8935,7 @@ def train(args) -> int:
             use_unlabeled_step_budget=bool(getattr(args, "use_muse_ssdg", False)),
         )
         for batch_idx, (labeled_batch, muse_unlabeled_batch) in enumerate(epoch_pairs, start=1):
+            execution_profile.begin(epoch, batch_idx)
             # The source-only CORE90 path also emits the shared RC4 telemetry.
             rc4_route = None
             a1_effective_ema_decay = float("nan")
@@ -11480,7 +11496,7 @@ def train(args) -> int:
                     scaler.scale(loss).backward()
                 scaler.unscale_(optimizer)
                 gradient_snapshot = None
-                if bool(args.a1_runtime_fast):
+                if bool(args.a1_runtime_fast or args.a1_gradient_snapshot):
                     from cvsrffi.a1_fast_runtime import GradientSnapshot
                     gradient_snapshot = GradientSnapshot.capture(model)
                     first_nonfinite_gradient = gradient_snapshot.first_nonfinite()
@@ -11489,7 +11505,7 @@ def train(args) -> int:
                 if first_nonfinite_gradient is None and muse_state is not None:
                     first_nonfinite_gradient = (
                         GradientSnapshot.capture(muse_state["heads"]).first_nonfinite()
-                        if bool(args.a1_runtime_fast) else _first_nonfinite_gradient(muse_state["heads"])
+                        if bool(args.a1_runtime_fast or args.a1_gradient_snapshot) else _first_nonfinite_gradient(muse_state["heads"])
                     )
                     if first_nonfinite_gradient is not None:
                         first_nonfinite_gradient = dict(first_nonfinite_gradient)
@@ -11504,7 +11520,7 @@ def train(args) -> int:
                         max_norm=float(args.max_grad_norm),
                         error_if_nonfinite=False,
                     )
-                if bool(args.a1_runtime_fast):
+                if bool(args.a1_runtime_fast or args.a1_gradient_snapshot):
                     post_clip = (GradientSnapshot.capture(model)
                                  if grads_finite and float(getattr(args, "max_grad_norm", 0.0)) > 0.0
                                  else gradient_snapshot)
@@ -12699,6 +12715,8 @@ def train(args) -> int:
                         f"fraction={rc4_nonfinite_batches / float(max(1, batch_idx)):.6f}"
                     )
 
+            execution_profile.end()
+        execution_profile.close()
         train_batches_seconds = time.time() - t0
         base_validation_started = time.time()
         val_stats = evaluate_loader(model, data_ctx["val_loader"], device, data_ctx["domain_label_map"], max_batches=int(args.eval_max_batches))
