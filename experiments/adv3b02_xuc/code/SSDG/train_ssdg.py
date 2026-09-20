@@ -642,6 +642,9 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--practical_fc_hz", type=float, default=2.462e9)
     parser.add_argument("--practical_receiver_seed", type=int, default=2027)
     parser.add_argument("--practical_buffer_output", type=str2bool, default=False)
+    parser.add_argument("--practical_buffer_input", type=str2bool, default=False)
+    parser.add_argument("--practical_eval_prefetch", type=str2bool, default=False)
+    parser.add_argument("--incremental_epoch_telemetry", type=str2bool, default=False)
     parser.add_argument("--source_validation_reuse", type=str2bool, default=False)
     parser.add_argument("--practical_execution_fast", type=str2bool, default=False)
     parser.add_argument("--practical_eval_cpu_pipeline", type=str2bool, default=False)
@@ -8781,6 +8784,10 @@ def train(args) -> int:
     best_test = float("nan")
     best_epoch = 0
     telemetry_rows: List[Dict[str, Any]] = []
+    telemetry_writer = None
+    if bool(getattr(args, "incremental_epoch_telemetry", False)):
+        from cvsrffi.incremental_telemetry import IncrementalTelemetry
+        telemetry_writer = IncrementalTelemetry(metrics_csv_path, metrics_jsonl_path)
     previous_protected_metrics: Dict[str, float] | None = None
     previous_train_logs: Dict[str, Any] | None = None
     paic_cooldown_remaining = 0
@@ -13303,7 +13310,10 @@ def train(args) -> int:
                 safe_checkpoint_saved=safe_checkpoint_saved,
             )
         )
-        _write_ssdg_epoch_telemetry(metrics_csv_path, metrics_jsonl_path, telemetry_rows)
+        if telemetry_writer is not None:
+            telemetry_writer.write(telemetry_rows)
+        else:
+            _write_ssdg_epoch_telemetry(metrics_csv_path, metrics_jsonl_path, telemetry_rows)
         print(
             format_ssdg_epoch_block(
                 epoch=epoch,

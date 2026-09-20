@@ -60,6 +60,17 @@ def _output_tensor(array, device, dtype, buffered):
     return torch.frombuffer(bytearray(value.tobytes()),dtype=torch.float32).reshape(value.shape).to(device=device,dtype=dtype)
 
 
+def _input_array(x, buffered):
+    value=x.detach().to(device='cpu',dtype=torch.float64).resolve_neg().resolve_conj().contiguous()
+    if not buffered:
+        return np.array(value.tolist(),dtype=np.float64)
+    import ctypes
+    # Copy the live, contiguous CPU tensor into an owned immutable bytes object.
+    # No ndarray ABI bridge, dangling Tensor alias or Python float object list.
+    payload=ctypes.string_at(value.data_ptr(),value.numel()*value.element_size())
+    return np.frombuffer(payload,dtype=np.float64).reshape(tuple(value.shape))
+
+
 def apply_practical(x,scene,args,*,gen=None,return_meta=False):
     global _last_meta
     ctx=_context.get()
@@ -72,7 +83,7 @@ def apply_practical(x,scene,args,*,gen=None,return_meta=False):
     # N607 Torch 2.1 / NumPy 2.2 has an unsafe ndarray ABI bridge.
     # Explicit value copies preserve float64 reference math without .numpy/from_numpy.
     with stage('channel/input_d2h_and_values'):
-        array=np.array(x.detach().to(device='cpu',dtype=torch.float64).tolist(),dtype=np.float64)
+        array=_input_array(x,bool(getattr(args,'practical_buffer_input',False)))
     from .practical_view_cache import cached_evaluation_batch
     compute=apply_leo_practical_channel_batch
     workers=int(getattr(args,'practical_channel_workers',0))

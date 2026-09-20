@@ -178,7 +178,7 @@ def main(argv=None) -> None:
         for scenario_index, scenario in enumerate(scenarios):
             generator = torch.Generator(device=device)
             generator.manual_seed(int(model_args.get("sat_seed", 2027)) + scenario_index * 1009)
-            use_prefetch = args.practical_prefetch and scenario.startswith('practical_')
+            use_prefetch = (args.practical_prefetch or bool(model_args.get('practical_eval_prefetch',False))) and scenario.startswith('practical_')
             def prepare_cpu(batch):
                 value, _y, _d, metadata = batch
                 from cvsrffi.practical_adapter import set_evaluation_context

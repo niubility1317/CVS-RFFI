@@ -87,3 +87,35 @@ def test_actual_clean_geometry_reuse_and_rng():
     cache=SourceValidationReuse(model);cache.record(0,x,z)
     with torch.no_grad():next(model.parameters()).add_(.001)
     assert cache.take(0,x) is None
+
+
+def test_owned_input_buffer_without_numpy_abi(monkeypatch):
+    import torch
+    from cvsrffi.practical_adapter import _input_array
+    def forbidden(*a,**kw):raise AssertionError('ndarray ABI')
+    monkeypatch.setattr(torch.Tensor,'numpy',forbidden)
+    monkeypatch.setattr(torch,'from_numpy',forbidden)
+    for dtype in (torch.float32,torch.float64):
+        x=torch.randn(7,2,512,dtype=dtype)[:,:,::2]
+        old=_input_array(x,False);new=_input_array(x,True)
+        x.fill_(0)
+        assert np.array_equal(old,new) and not new.flags.writeable
+    negative=torch._neg_view(torch.tensor([1.,-2.],dtype=torch.float64))
+    assert np.array_equal(_input_array(negative,False),_input_array(negative,True))
+
+
+def test_incremental_telemetry_matches_legacy(tmp_path):
+    from scripts.train_rc4_practical import native
+    from cvsrffi.incremental_telemetry import IncrementalTelemetry
+    writer=IncrementalTelemetry(tmp_path/'new.csv',tmp_path/'new.jsonl')
+    rows=[]
+    for i in range(9):
+        row={'epoch':i,'loss':1/(i+1),'status':'valid'}
+        if i>=3:row['late_metric']=i+1
+        if i==6:row['transient']=False
+        rows.append(row)
+        native._write_ssdg_epoch_telemetry(tmp_path/'old.csv',tmp_path/'old.jsonl',rows)
+        writer.write(rows)
+        for suffix in ('csv','jsonl'):
+            assert (tmp_path/f'old.{suffix}').read_bytes()==(tmp_path/f'new.{suffix}').read_bytes()
+    with pytest.raises(ValueError,match='exactly one'):writer.write(rows)
