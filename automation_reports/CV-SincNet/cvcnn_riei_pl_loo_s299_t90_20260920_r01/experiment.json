@@ -156,7 +156,10 @@
         "final_last_epoch/{ema,student}/*_probabilities.npy",
         "final_last_epoch/{ema,student}/metrics.json",
         "COMPLETE.json"
-      ]
+      ],
+      "status": "RUNNING",
+      "pid": 142136,
+      "gpu": 0
     },
     {
       "row_id": "riei-pl-loo-s299-t90-e200-r01",
@@ -205,7 +208,10 @@
         "final_last_epoch/{ema,student}/*_probabilities.npy",
         "final_last_epoch/{ema,student}/metrics.json",
         "COMPLETE.json"
-      ]
+      ],
+      "status": "RUNNING",
+      "pid": 142613,
+      "gpu": 1
     }
   ],
   "notes": [
@@ -215,7 +221,11 @@
     "RIEI RX CE, MI and entropy retained on source clean; satellite auxiliary is emitter CE only.",
     "STAR checkout has no Git remote; local commit delivery only."
   ],
-  "status": "LOCAL_VERIFIED",
+  "status": "RUNNING",
   "registered_at": "2026-09-20T02:39:19+00:00",
-  "artifact_release_sha256": "c1156940a1d5eaa211c76d99a387cef589db06e7479c80f195941e264e6c542d"
+  "artifact_release_sha256": "c1156940a1d5eaa211c76d99a387cef589db06e7479c80f195941e264e6c542d",
+  "delivery": "VERIFIED",
+  "updated_at": "2026-09-20T02:43:15.344891+00:00",
+  "runtime_evidence": "F:\\AI\\exports\\STRA-RFFI\\STAR-test\\补实验\\cvcnn_riei_pl_loo_s299_t90_20260920_r01\\remote_inspect.json",
+  "configuration_evidence": "F:\\AI\\exports\\STRA-RFFI\\STAR-test\\补实验\\cvcnn_riei_pl_loo_s299_t90_20260920_r01\\config_audit.json"
 }
