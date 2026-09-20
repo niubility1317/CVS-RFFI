@@ -105,7 +105,8 @@
       "E:\\type10-7\\automation_reports\\CV-SincNet\\20260920-phase1-daot-rc4-residual-ratios-manysig-s392005-r01\\evidence"
     ],
     "stop_rule": "Only technical failures: data/provenance mismatch, nonfinite guard (8 batches and 5%), output collision, invalid prediction/scoring closure; preserve artifacts, no performance stop or automatic retrain.",
-    "status": "PLANNED"
+    "status": "RUNNING",
+    "verification": "VERIFIED: PID, argv, CWD, GPU; training E1 artifacts; evaluation inference ongoing, scores pending"
   },
   "expected_artifacts": [
     "resolved_config.json",
@@ -203,7 +204,7 @@
         "completion.json",
         "practical_channel_execution.jsonl"
       ],
-      "status": "PLANNED",
+      "status": "RUNNING",
       "environment_ratio": {
         "id": "RESIDUAL_HIGH_LOWURBAN_75_25_s392005",
         "config": "rc4_residual_ratio_high_75_25_20260920.json",
@@ -212,7 +213,11 @@
         "easy_probability": 0.75,
         "hard_probability": 0.25,
         "ratio_scope": "applied labeled concat satellite views only"
-      }
+      },
+      "pid": 418180,
+      "gpu": 0,
+      "launch_evidence": "E:\\type10-7\\automation_reports\\CV-SincNet\\20260920-phase1-daot-rc4-residual-ratios-manysig-s392005-r01\\evidence\\launch.json",
+      "verification_evidence": "E:\\type10-7\\automation_reports\\CV-SincNet\\20260920-phase1-daot-rc4-residual-ratios-manysig-s392005-r01\\evidence\\startup_verification.json"
     },
     {
       "row_id": "RESIDUAL_HIGH_LOWURBAN_50_50_s392005",
@@ -278,7 +283,7 @@
         "completion.json",
         "practical_channel_execution.jsonl"
       ],
-      "status": "PLANNED",
+      "status": "RUNNING",
       "environment_ratio": {
         "id": "RESIDUAL_HIGH_LOWURBAN_50_50_s392005",
         "config": "rc4_residual_ratio_high_50_50_20260920.json",
@@ -287,7 +292,11 @@
         "easy_probability": 0.5,
         "hard_probability": 0.5,
         "ratio_scope": "applied labeled concat satellite views only"
-      }
+      },
+      "pid": 418272,
+      "gpu": 1,
+      "launch_evidence": "E:\\type10-7\\automation_reports\\CV-SincNet\\20260920-phase1-daot-rc4-residual-ratios-manysig-s392005-r01\\evidence\\launch.json",
+      "verification_evidence": "E:\\type10-7\\automation_reports\\CV-SincNet\\20260920-phase1-daot-rc4-residual-ratios-manysig-s392005-r01\\evidence\\startup_verification.json"
     },
     {
       "row_id": "RESIDUAL_HIGH_LOWURBAN_25_75_s392005",
@@ -353,7 +362,7 @@
         "completion.json",
         "practical_channel_execution.jsonl"
       ],
-      "status": "PLANNED",
+      "status": "RUNNING",
       "environment_ratio": {
         "id": "RESIDUAL_HIGH_LOWURBAN_25_75_s392005",
         "config": "rc4_residual_ratio_high_25_75_20260920.json",
@@ -362,7 +371,11 @@
         "easy_probability": 0.25,
         "hard_probability": 0.75,
         "ratio_scope": "applied labeled concat satellite views only"
-      }
+      },
+      "pid": 418370,
+      "gpu": 2,
+      "launch_evidence": "E:\\type10-7\\automation_reports\\CV-SincNet\\20260920-phase1-daot-rc4-residual-ratios-manysig-s392005-r01\\evidence\\launch.json",
+      "verification_evidence": "E:\\type10-7\\automation_reports\\CV-SincNet\\20260920-phase1-daot-rc4-residual-ratios-manysig-s392005-r01\\evidence\\startup_verification.json"
     },
     {
       "row_id": "RESIDUAL_MID_LOWURBAN_75_25_s392005",
@@ -428,7 +441,7 @@
         "completion.json",
         "practical_channel_execution.jsonl"
       ],
-      "status": "PLANNED",
+      "status": "RUNNING",
       "environment_ratio": {
         "id": "RESIDUAL_MID_LOWURBAN_75_25_s392005",
         "config": "rc4_residual_ratio_mid_75_25_20260920.json",
@@ -437,7 +450,11 @@
         "easy_probability": 0.75,
         "hard_probability": 0.25,
         "ratio_scope": "applied labeled concat satellite views only"
-      }
+      },
+      "pid": 418875,
+      "gpu": 3,
+      "launch_evidence": "E:\\type10-7\\automation_reports\\CV-SincNet\\20260920-phase1-daot-rc4-residual-ratios-manysig-s392005-r01\\evidence\\launch.json",
+      "verification_evidence": "E:\\type10-7\\automation_reports\\CV-SincNet\\20260920-phase1-daot-rc4-residual-ratios-manysig-s392005-r01\\evidence\\startup_verification.json"
     },
     {
       "row_id": "RESIDUAL_MID_LOWURBAN_50_50_s392005",
@@ -503,7 +520,7 @@
         "completion.json",
         "practical_channel_execution.jsonl"
       ],
-      "status": "PLANNED",
+      "status": "RUNNING",
       "environment_ratio": {
         "id": "RESIDUAL_MID_LOWURBAN_50_50_s392005",
         "config": "rc4_residual_ratio_mid_50_50_20260920.json",
@@ -512,7 +529,11 @@
         "easy_probability": 0.5,
         "hard_probability": 0.5,
         "ratio_scope": "applied labeled concat satellite views only"
-      }
+      },
+      "pid": 419025,
+      "gpu": 4,
+      "launch_evidence": "E:\\type10-7\\automation_reports\\CV-SincNet\\20260920-phase1-daot-rc4-residual-ratios-manysig-s392005-r01\\evidence\\launch.json",
+      "verification_evidence": "E:\\type10-7\\automation_reports\\CV-SincNet\\20260920-phase1-daot-rc4-residual-ratios-manysig-s392005-r01\\evidence\\startup_verification.json"
     },
     {
       "row_id": "RESIDUAL_MID_LOWURBAN_25_75_s392005",
@@ -578,7 +599,7 @@
         "completion.json",
         "practical_channel_execution.jsonl"
       ],
-      "status": "PLANNED",
+      "status": "RUNNING",
       "environment_ratio": {
         "id": "RESIDUAL_MID_LOWURBAN_25_75_s392005",
         "config": "rc4_residual_ratio_mid_25_75_20260920.json",
@@ -587,7 +608,11 @@
         "easy_probability": 0.25,
         "hard_probability": 0.75,
         "ratio_scope": "applied labeled concat satellite views only"
-      }
+      },
+      "pid": 419125,
+      "gpu": 5,
+      "launch_evidence": "E:\\type10-7\\automation_reports\\CV-SincNet\\20260920-phase1-daot-rc4-residual-ratios-manysig-s392005-r01\\evidence\\launch.json",
+      "verification_evidence": "E:\\type10-7\\automation_reports\\CV-SincNet\\20260920-phase1-daot-rc4-residual-ratios-manysig-s392005-r01\\evidence\\startup_verification.json"
     }
   ],
   "notes": [

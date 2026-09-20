@@ -1,0 +1,1577 @@
+{
+  "original_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260918-phase1-daot-rc4-practical4-manysig-s392005-r03/DAOT_RC4_PRACTICAL_RESIDUAL_NOEQ_s392005/resolved_config.json",
+  "rows": [
+    {
+      "row": "RESIDUAL_HIGH_LOWURBAN_25_75_s392005",
+      "diff": {
+        "practical_eval_cpu_pipeline": [
+          null,
+          true
+        ],
+        "practical_channel_workers": [
+          null,
+          2
+        ],
+        "execution_profile_epoch": [
+          null,
+          1
+        ],
+        "a1_periodic_target_scenarios": [
+          "clean,practical_high,practical_mid,practical_low_urban",
+          "clean,practical_high,practical_mid,practical_low_urban,practical_low_suburban,practical_mid_urban,practical_high_urban"
+        ],
+        "practical_eval_cache_dir": [
+          null,
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20260920-phase1-daot-rc4-residual-ratios-manysig-s392005-r01/evaluation_view_cache"
+        ],
+        "sat_view_schedule": [
+          "1@0.30:practical_high;41@0.60:practical_mid,practical_low_urban;91@0.80:practical_high,practical_mid,practical_low_urban",
+          "1@0.30:practical_high*1,practical_low_urban*3;41@0.60:practical_high*1,practical_low_urban*3;91@0.80:practical_high*1,practical_low_urban*3"
+        ],
+        "incremental_epoch_telemetry": [
+          null,
+          true
+        ],
+        "sat_train_scenarios": [
+          "practical_high,practical_mid,practical_low_urban",
+          "practical_high,practical_low_urban"
+        ],
+        "output_dir": [
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20260918-phase1-daot-rc4-practical4-manysig-s392005-r03/DAOT_RC4_PRACTICAL_RESIDUAL_NOEQ_s392005",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20260920-phase1-daot-rc4-residual-ratios-manysig-s392005-r01/RESIDUAL_HIGH_LOWURBAN_25_75_s392005"
+        ],
+        "execution_profile_steps": [
+          null,
+          0
+        ],
+        "execution_profile_start": [
+          null,
+          1
+        ],
+        "sat_protocol_manifest": [
+          {
+            "schema": "phase1_satellite_train_eval_protocol_v1",
+            "train_scenarios": [
+              "practical_high",
+              "practical_mid",
+              "practical_low_urban"
+            ],
+            "eval_scenarios": [],
+            "train_families": [
+              "leo_practical_v3"
+            ],
+            "eval_families": [],
+            "unknown_scenarios": [],
+            "scenario_overlap": [],
+            "family_overlap": [],
+            "scenario_config_sha256": {
+              "practical_high": "3eefdebda7bd95dfeb7f673601ddfd193f2d26a62b1d766aafb4d23286902af9",
+              "practical_mid": "7ca22704d25b220e0781f014e3da3c66cc6864a79c753cc6942fa1b445f50cb2",
+              "practical_low_urban": "228a3eb9f67a5700cfcef2129871bb8a51c5b15ce38b5738b13716e86f78a58b"
+            },
+            "train_config_sha256": [
+              "228a3eb9f67a5700cfcef2129871bb8a51c5b15ce38b5738b13716e86f78a58b",
+              "3eefdebda7bd95dfeb7f673601ddfd193f2d26a62b1d766aafb4d23286902af9",
+              "7ca22704d25b220e0781f014e3da3c66cc6864a79c753cc6942fa1b445f50cb2"
+            ],
+            "eval_config_sha256": [],
+            "config_hash_overlap": [],
+            "channel_implementation": {
+              "practical_high": "leo_practical_v3",
+              "practical_mid": "leo_practical_v3",
+              "practical_low_urban": "leo_practical_v3"
+            },
+            "train_channel_implementations": [
+              "leo_practical_v3"
+            ],
+            "eval_channel_implementations": [],
+            "channel_implementation_overlap": [],
+            "registry_version": "phase1_satellite_protocol_registry_v1",
+            "registry_sha256": "761554b907dba682ba98e17de9a1822c40b8407904060112ad7cf8f5916f9df5",
+            "disjoint": false,
+            "require_disjoint": false,
+            "evaluation_claim": "SOURCE_SYNTHETIC_HELDOUT_CHANNEL_STRESS_NOT_REAL_SATELLITE"
+          },
+          {
+            "schema": "phase1_satellite_train_eval_protocol_v1",
+            "train_scenarios": [
+              "practical_high",
+              "practical_low_urban"
+            ],
+            "eval_scenarios": [],
+            "train_families": [
+              "leo_practical_v3"
+            ],
+            "eval_families": [],
+            "unknown_scenarios": [],
+            "scenario_overlap": [],
+            "family_overlap": [],
+            "scenario_config_sha256": {
+              "practical_high": "3eefdebda7bd95dfeb7f673601ddfd193f2d26a62b1d766aafb4d23286902af9",
+              "practical_low_urban": "228a3eb9f67a5700cfcef2129871bb8a51c5b15ce38b5738b13716e86f78a58b"
+            },
+            "train_config_sha256": [
+              "228a3eb9f67a5700cfcef2129871bb8a51c5b15ce38b5738b13716e86f78a58b",
+              "3eefdebda7bd95dfeb7f673601ddfd193f2d26a62b1d766aafb4d23286902af9"
+            ],
+            "eval_config_sha256": [],
+            "config_hash_overlap": [],
+            "channel_implementation": {
+              "practical_high": "leo_practical_v3",
+              "practical_low_urban": "leo_practical_v3"
+            },
+            "train_channel_implementations": [
+              "leo_practical_v3"
+            ],
+            "eval_channel_implementations": [],
+            "channel_implementation_overlap": [],
+            "registry_version": "phase1_satellite_protocol_registry_v1",
+            "registry_sha256": "761554b907dba682ba98e17de9a1822c40b8407904060112ad7cf8f5916f9df5",
+            "disjoint": false,
+            "require_disjoint": false,
+            "evaluation_claim": "SOURCE_SYNTHETIC_HELDOUT_CHANNEL_STRESS_NOT_REAL_SATELLITE"
+          }
+        ],
+        "practical_eval_prefetch": [
+          null,
+          true
+        ],
+        "sat_view_stages": [
+          [
+            {
+              "start_epoch": 1,
+              "scenarios": [
+                "practical_high"
+              ],
+              "view_prob": 0.3
+            },
+            {
+              "start_epoch": 41,
+              "scenarios": [
+                "practical_mid",
+                "practical_low_urban"
+              ],
+              "view_prob": 0.6
+            },
+            {
+              "start_epoch": 91,
+              "scenarios": [
+                "practical_high",
+                "practical_mid",
+                "practical_low_urban"
+              ],
+              "view_prob": 0.8
+            }
+          ],
+          [
+            {
+              "start_epoch": 1,
+              "scenarios": [
+                "practical_high",
+                "practical_low_urban",
+                "practical_low_urban",
+                "practical_low_urban"
+              ],
+              "view_prob": 0.3
+            },
+            {
+              "start_epoch": 41,
+              "scenarios": [
+                "practical_high",
+                "practical_low_urban",
+                "practical_low_urban",
+                "practical_low_urban"
+              ],
+              "view_prob": 0.6
+            },
+            {
+              "start_epoch": 91,
+              "scenarios": [
+                "practical_high",
+                "practical_low_urban",
+                "practical_low_urban",
+                "practical_low_urban"
+              ],
+              "view_prob": 0.8
+            }
+          ]
+        ],
+        "sat_train_scenario_list": [
+          [
+            "practical_high",
+            "practical_mid",
+            "practical_low_urban"
+          ],
+          [
+            "practical_high",
+            "practical_low_urban"
+          ]
+        ],
+        "practical_buffer_input": [
+          null,
+          true
+        ],
+        "practical_buffer_output": [
+          null,
+          true
+        ],
+        "candidate_id": [
+          "DAOT_RC4_PRACTICAL_RESIDUAL_NOEQ_s392005",
+          "RESIDUAL_HIGH_LOWURBAN_25_75_s392005"
+        ],
+        "source_validation_reuse": [
+          null,
+          true
+        ],
+        "practical_execution_fast": [
+          null,
+          true
+        ],
+        "a1_eval_identity_only": [
+          null,
+          true
+        ],
+        "sat_train_protocol_scenario_list": [
+          [
+            "practical_high",
+            "practical_mid",
+            "practical_low_urban"
+          ],
+          [
+            "practical_high",
+            "practical_low_urban"
+          ]
+        ],
+        "run_id": [
+          "20260918-phase1-daot-rc4-practical4-manysig-s392005-r03",
+          "20260920-phase1-daot-rc4-residual-ratios-manysig-s392005-r01"
+        ],
+        "a1_gradient_snapshot": [
+          null,
+          true
+        ]
+      },
+      "initialization": {
+        "scratch_only": true,
+        "checkpoint_sources": [],
+        "target_training_contact": false,
+        "source_roles": "EXACT_MATCH",
+        "ema_origin": "this_run_student",
+        "daot": true,
+        "rc4": true
+      }
+    },
+    {
+      "row": "RESIDUAL_HIGH_LOWURBAN_50_50_s392005",
+      "diff": {
+        "practical_eval_cpu_pipeline": [
+          null,
+          true
+        ],
+        "practical_channel_workers": [
+          null,
+          2
+        ],
+        "execution_profile_epoch": [
+          null,
+          1
+        ],
+        "a1_periodic_target_scenarios": [
+          "clean,practical_high,practical_mid,practical_low_urban",
+          "clean,practical_high,practical_mid,practical_low_urban,practical_low_suburban,practical_mid_urban,practical_high_urban"
+        ],
+        "practical_eval_cache_dir": [
+          null,
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20260920-phase1-daot-rc4-residual-ratios-manysig-s392005-r01/evaluation_view_cache"
+        ],
+        "sat_view_schedule": [
+          "1@0.30:practical_high;41@0.60:practical_mid,practical_low_urban;91@0.80:practical_high,practical_mid,practical_low_urban",
+          "1@0.30:practical_high*2,practical_low_urban*2;41@0.60:practical_high*2,practical_low_urban*2;91@0.80:practical_high*2,practical_low_urban*2"
+        ],
+        "incremental_epoch_telemetry": [
+          null,
+          true
+        ],
+        "sat_train_scenarios": [
+          "practical_high,practical_mid,practical_low_urban",
+          "practical_high,practical_low_urban"
+        ],
+        "output_dir": [
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20260918-phase1-daot-rc4-practical4-manysig-s392005-r03/DAOT_RC4_PRACTICAL_RESIDUAL_NOEQ_s392005",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20260920-phase1-daot-rc4-residual-ratios-manysig-s392005-r01/RESIDUAL_HIGH_LOWURBAN_50_50_s392005"
+        ],
+        "execution_profile_steps": [
+          null,
+          0
+        ],
+        "execution_profile_start": [
+          null,
+          1
+        ],
+        "sat_protocol_manifest": [
+          {
+            "schema": "phase1_satellite_train_eval_protocol_v1",
+            "train_scenarios": [
+              "practical_high",
+              "practical_mid",
+              "practical_low_urban"
+            ],
+            "eval_scenarios": [],
+            "train_families": [
+              "leo_practical_v3"
+            ],
+            "eval_families": [],
+            "unknown_scenarios": [],
+            "scenario_overlap": [],
+            "family_overlap": [],
+            "scenario_config_sha256": {
+              "practical_high": "3eefdebda7bd95dfeb7f673601ddfd193f2d26a62b1d766aafb4d23286902af9",
+              "practical_mid": "7ca22704d25b220e0781f014e3da3c66cc6864a79c753cc6942fa1b445f50cb2",
+              "practical_low_urban": "228a3eb9f67a5700cfcef2129871bb8a51c5b15ce38b5738b13716e86f78a58b"
+            },
+            "train_config_sha256": [
+              "228a3eb9f67a5700cfcef2129871bb8a51c5b15ce38b5738b13716e86f78a58b",
+              "3eefdebda7bd95dfeb7f673601ddfd193f2d26a62b1d766aafb4d23286902af9",
+              "7ca22704d25b220e0781f014e3da3c66cc6864a79c753cc6942fa1b445f50cb2"
+            ],
+            "eval_config_sha256": [],
+            "config_hash_overlap": [],
+            "channel_implementation": {
+              "practical_high": "leo_practical_v3",
+              "practical_mid": "leo_practical_v3",
+              "practical_low_urban": "leo_practical_v3"
+            },
+            "train_channel_implementations": [
+              "leo_practical_v3"
+            ],
+            "eval_channel_implementations": [],
+            "channel_implementation_overlap": [],
+            "registry_version": "phase1_satellite_protocol_registry_v1",
+            "registry_sha256": "761554b907dba682ba98e17de9a1822c40b8407904060112ad7cf8f5916f9df5",
+            "disjoint": false,
+            "require_disjoint": false,
+            "evaluation_claim": "SOURCE_SYNTHETIC_HELDOUT_CHANNEL_STRESS_NOT_REAL_SATELLITE"
+          },
+          {
+            "schema": "phase1_satellite_train_eval_protocol_v1",
+            "train_scenarios": [
+              "practical_high",
+              "practical_low_urban"
+            ],
+            "eval_scenarios": [],
+            "train_families": [
+              "leo_practical_v3"
+            ],
+            "eval_families": [],
+            "unknown_scenarios": [],
+            "scenario_overlap": [],
+            "family_overlap": [],
+            "scenario_config_sha256": {
+              "practical_high": "3eefdebda7bd95dfeb7f673601ddfd193f2d26a62b1d766aafb4d23286902af9",
+              "practical_low_urban": "228a3eb9f67a5700cfcef2129871bb8a51c5b15ce38b5738b13716e86f78a58b"
+            },
+            "train_config_sha256": [
+              "228a3eb9f67a5700cfcef2129871bb8a51c5b15ce38b5738b13716e86f78a58b",
+              "3eefdebda7bd95dfeb7f673601ddfd193f2d26a62b1d766aafb4d23286902af9"
+            ],
+            "eval_config_sha256": [],
+            "config_hash_overlap": [],
+            "channel_implementation": {
+              "practical_high": "leo_practical_v3",
+              "practical_low_urban": "leo_practical_v3"
+            },
+            "train_channel_implementations": [
+              "leo_practical_v3"
+            ],
+            "eval_channel_implementations": [],
+            "channel_implementation_overlap": [],
+            "registry_version": "phase1_satellite_protocol_registry_v1",
+            "registry_sha256": "761554b907dba682ba98e17de9a1822c40b8407904060112ad7cf8f5916f9df5",
+            "disjoint": false,
+            "require_disjoint": false,
+            "evaluation_claim": "SOURCE_SYNTHETIC_HELDOUT_CHANNEL_STRESS_NOT_REAL_SATELLITE"
+          }
+        ],
+        "practical_eval_prefetch": [
+          null,
+          true
+        ],
+        "sat_view_stages": [
+          [
+            {
+              "start_epoch": 1,
+              "scenarios": [
+                "practical_high"
+              ],
+              "view_prob": 0.3
+            },
+            {
+              "start_epoch": 41,
+              "scenarios": [
+                "practical_mid",
+                "practical_low_urban"
+              ],
+              "view_prob": 0.6
+            },
+            {
+              "start_epoch": 91,
+              "scenarios": [
+                "practical_high",
+                "practical_mid",
+                "practical_low_urban"
+              ],
+              "view_prob": 0.8
+            }
+          ],
+          [
+            {
+              "start_epoch": 1,
+              "scenarios": [
+                "practical_high",
+                "practical_high",
+                "practical_low_urban",
+                "practical_low_urban"
+              ],
+              "view_prob": 0.3
+            },
+            {
+              "start_epoch": 41,
+              "scenarios": [
+                "practical_high",
+                "practical_high",
+                "practical_low_urban",
+                "practical_low_urban"
+              ],
+              "view_prob": 0.6
+            },
+            {
+              "start_epoch": 91,
+              "scenarios": [
+                "practical_high",
+                "practical_high",
+                "practical_low_urban",
+                "practical_low_urban"
+              ],
+              "view_prob": 0.8
+            }
+          ]
+        ],
+        "sat_train_scenario_list": [
+          [
+            "practical_high",
+            "practical_mid",
+            "practical_low_urban"
+          ],
+          [
+            "practical_high",
+            "practical_low_urban"
+          ]
+        ],
+        "practical_buffer_input": [
+          null,
+          true
+        ],
+        "practical_buffer_output": [
+          null,
+          true
+        ],
+        "candidate_id": [
+          "DAOT_RC4_PRACTICAL_RESIDUAL_NOEQ_s392005",
+          "RESIDUAL_HIGH_LOWURBAN_50_50_s392005"
+        ],
+        "source_validation_reuse": [
+          null,
+          true
+        ],
+        "practical_execution_fast": [
+          null,
+          true
+        ],
+        "a1_eval_identity_only": [
+          null,
+          true
+        ],
+        "sat_train_protocol_scenario_list": [
+          [
+            "practical_high",
+            "practical_mid",
+            "practical_low_urban"
+          ],
+          [
+            "practical_high",
+            "practical_low_urban"
+          ]
+        ],
+        "run_id": [
+          "20260918-phase1-daot-rc4-practical4-manysig-s392005-r03",
+          "20260920-phase1-daot-rc4-residual-ratios-manysig-s392005-r01"
+        ],
+        "a1_gradient_snapshot": [
+          null,
+          true
+        ]
+      },
+      "initialization": {
+        "scratch_only": true,
+        "checkpoint_sources": [],
+        "target_training_contact": false,
+        "source_roles": "EXACT_MATCH",
+        "ema_origin": "this_run_student",
+        "daot": true,
+        "rc4": true
+      }
+    },
+    {
+      "row": "RESIDUAL_HIGH_LOWURBAN_75_25_s392005",
+      "diff": {
+        "practical_eval_cpu_pipeline": [
+          null,
+          true
+        ],
+        "practical_channel_workers": [
+          null,
+          2
+        ],
+        "execution_profile_epoch": [
+          null,
+          1
+        ],
+        "a1_periodic_target_scenarios": [
+          "clean,practical_high,practical_mid,practical_low_urban",
+          "clean,practical_high,practical_mid,practical_low_urban,practical_low_suburban,practical_mid_urban,practical_high_urban"
+        ],
+        "practical_eval_cache_dir": [
+          null,
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20260920-phase1-daot-rc4-residual-ratios-manysig-s392005-r01/evaluation_view_cache"
+        ],
+        "sat_view_schedule": [
+          "1@0.30:practical_high;41@0.60:practical_mid,practical_low_urban;91@0.80:practical_high,practical_mid,practical_low_urban",
+          "1@0.30:practical_high*3,practical_low_urban*1;41@0.60:practical_high*3,practical_low_urban*1;91@0.80:practical_high*3,practical_low_urban*1"
+        ],
+        "incremental_epoch_telemetry": [
+          null,
+          true
+        ],
+        "sat_train_scenarios": [
+          "practical_high,practical_mid,practical_low_urban",
+          "practical_high,practical_low_urban"
+        ],
+        "output_dir": [
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20260918-phase1-daot-rc4-practical4-manysig-s392005-r03/DAOT_RC4_PRACTICAL_RESIDUAL_NOEQ_s392005",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20260920-phase1-daot-rc4-residual-ratios-manysig-s392005-r01/RESIDUAL_HIGH_LOWURBAN_75_25_s392005"
+        ],
+        "execution_profile_steps": [
+          null,
+          0
+        ],
+        "execution_profile_start": [
+          null,
+          1
+        ],
+        "sat_protocol_manifest": [
+          {
+            "schema": "phase1_satellite_train_eval_protocol_v1",
+            "train_scenarios": [
+              "practical_high",
+              "practical_mid",
+              "practical_low_urban"
+            ],
+            "eval_scenarios": [],
+            "train_families": [
+              "leo_practical_v3"
+            ],
+            "eval_families": [],
+            "unknown_scenarios": [],
+            "scenario_overlap": [],
+            "family_overlap": [],
+            "scenario_config_sha256": {
+              "practical_high": "3eefdebda7bd95dfeb7f673601ddfd193f2d26a62b1d766aafb4d23286902af9",
+              "practical_mid": "7ca22704d25b220e0781f014e3da3c66cc6864a79c753cc6942fa1b445f50cb2",
+              "practical_low_urban": "228a3eb9f67a5700cfcef2129871bb8a51c5b15ce38b5738b13716e86f78a58b"
+            },
+            "train_config_sha256": [
+              "228a3eb9f67a5700cfcef2129871bb8a51c5b15ce38b5738b13716e86f78a58b",
+              "3eefdebda7bd95dfeb7f673601ddfd193f2d26a62b1d766aafb4d23286902af9",
+              "7ca22704d25b220e0781f014e3da3c66cc6864a79c753cc6942fa1b445f50cb2"
+            ],
+            "eval_config_sha256": [],
+            "config_hash_overlap": [],
+            "channel_implementation": {
+              "practical_high": "leo_practical_v3",
+              "practical_mid": "leo_practical_v3",
+              "practical_low_urban": "leo_practical_v3"
+            },
+            "train_channel_implementations": [
+              "leo_practical_v3"
+            ],
+            "eval_channel_implementations": [],
+            "channel_implementation_overlap": [],
+            "registry_version": "phase1_satellite_protocol_registry_v1",
+            "registry_sha256": "761554b907dba682ba98e17de9a1822c40b8407904060112ad7cf8f5916f9df5",
+            "disjoint": false,
+            "require_disjoint": false,
+            "evaluation_claim": "SOURCE_SYNTHETIC_HELDOUT_CHANNEL_STRESS_NOT_REAL_SATELLITE"
+          },
+          {
+            "schema": "phase1_satellite_train_eval_protocol_v1",
+            "train_scenarios": [
+              "practical_high",
+              "practical_low_urban"
+            ],
+            "eval_scenarios": [],
+            "train_families": [
+              "leo_practical_v3"
+            ],
+            "eval_families": [],
+            "unknown_scenarios": [],
+            "scenario_overlap": [],
+            "family_overlap": [],
+            "scenario_config_sha256": {
+              "practical_high": "3eefdebda7bd95dfeb7f673601ddfd193f2d26a62b1d766aafb4d23286902af9",
+              "practical_low_urban": "228a3eb9f67a5700cfcef2129871bb8a51c5b15ce38b5738b13716e86f78a58b"
+            },
+            "train_config_sha256": [
+              "228a3eb9f67a5700cfcef2129871bb8a51c5b15ce38b5738b13716e86f78a58b",
+              "3eefdebda7bd95dfeb7f673601ddfd193f2d26a62b1d766aafb4d23286902af9"
+            ],
+            "eval_config_sha256": [],
+            "config_hash_overlap": [],
+            "channel_implementation": {
+              "practical_high": "leo_practical_v3",
+              "practical_low_urban": "leo_practical_v3"
+            },
+            "train_channel_implementations": [
+              "leo_practical_v3"
+            ],
+            "eval_channel_implementations": [],
+            "channel_implementation_overlap": [],
+            "registry_version": "phase1_satellite_protocol_registry_v1",
+            "registry_sha256": "761554b907dba682ba98e17de9a1822c40b8407904060112ad7cf8f5916f9df5",
+            "disjoint": false,
+            "require_disjoint": false,
+            "evaluation_claim": "SOURCE_SYNTHETIC_HELDOUT_CHANNEL_STRESS_NOT_REAL_SATELLITE"
+          }
+        ],
+        "practical_eval_prefetch": [
+          null,
+          true
+        ],
+        "sat_view_stages": [
+          [
+            {
+              "start_epoch": 1,
+              "scenarios": [
+                "practical_high"
+              ],
+              "view_prob": 0.3
+            },
+            {
+              "start_epoch": 41,
+              "scenarios": [
+                "practical_mid",
+                "practical_low_urban"
+              ],
+              "view_prob": 0.6
+            },
+            {
+              "start_epoch": 91,
+              "scenarios": [
+                "practical_high",
+                "practical_mid",
+                "practical_low_urban"
+              ],
+              "view_prob": 0.8
+            }
+          ],
+          [
+            {
+              "start_epoch": 1,
+              "scenarios": [
+                "practical_high",
+                "practical_high",
+                "practical_high",
+                "practical_low_urban"
+              ],
+              "view_prob": 0.3
+            },
+            {
+              "start_epoch": 41,
+              "scenarios": [
+                "practical_high",
+                "practical_high",
+                "practical_high",
+                "practical_low_urban"
+              ],
+              "view_prob": 0.6
+            },
+            {
+              "start_epoch": 91,
+              "scenarios": [
+                "practical_high",
+                "practical_high",
+                "practical_high",
+                "practical_low_urban"
+              ],
+              "view_prob": 0.8
+            }
+          ]
+        ],
+        "sat_train_scenario_list": [
+          [
+            "practical_high",
+            "practical_mid",
+            "practical_low_urban"
+          ],
+          [
+            "practical_high",
+            "practical_low_urban"
+          ]
+        ],
+        "practical_buffer_input": [
+          null,
+          true
+        ],
+        "practical_buffer_output": [
+          null,
+          true
+        ],
+        "candidate_id": [
+          "DAOT_RC4_PRACTICAL_RESIDUAL_NOEQ_s392005",
+          "RESIDUAL_HIGH_LOWURBAN_75_25_s392005"
+        ],
+        "source_validation_reuse": [
+          null,
+          true
+        ],
+        "practical_execution_fast": [
+          null,
+          true
+        ],
+        "a1_eval_identity_only": [
+          null,
+          true
+        ],
+        "sat_train_protocol_scenario_list": [
+          [
+            "practical_high",
+            "practical_mid",
+            "practical_low_urban"
+          ],
+          [
+            "practical_high",
+            "practical_low_urban"
+          ]
+        ],
+        "run_id": [
+          "20260918-phase1-daot-rc4-practical4-manysig-s392005-r03",
+          "20260920-phase1-daot-rc4-residual-ratios-manysig-s392005-r01"
+        ],
+        "a1_gradient_snapshot": [
+          null,
+          true
+        ]
+      },
+      "initialization": {
+        "scratch_only": true,
+        "checkpoint_sources": [],
+        "target_training_contact": false,
+        "source_roles": "EXACT_MATCH",
+        "ema_origin": "this_run_student",
+        "daot": true,
+        "rc4": true
+      }
+    },
+    {
+      "row": "RESIDUAL_MID_LOWURBAN_25_75_s392005",
+      "diff": {
+        "practical_eval_cpu_pipeline": [
+          null,
+          true
+        ],
+        "practical_channel_workers": [
+          null,
+          2
+        ],
+        "execution_profile_epoch": [
+          null,
+          1
+        ],
+        "a1_periodic_target_scenarios": [
+          "clean,practical_high,practical_mid,practical_low_urban",
+          "clean,practical_high,practical_mid,practical_low_urban,practical_low_suburban,practical_mid_urban,practical_high_urban"
+        ],
+        "practical_eval_cache_dir": [
+          null,
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20260920-phase1-daot-rc4-residual-ratios-manysig-s392005-r01/evaluation_view_cache"
+        ],
+        "sat_view_schedule": [
+          "1@0.30:practical_high;41@0.60:practical_mid,practical_low_urban;91@0.80:practical_high,practical_mid,practical_low_urban",
+          "1@0.30:practical_mid*1,practical_low_urban*3;41@0.60:practical_mid*1,practical_low_urban*3;91@0.80:practical_mid*1,practical_low_urban*3"
+        ],
+        "incremental_epoch_telemetry": [
+          null,
+          true
+        ],
+        "sat_train_scenarios": [
+          "practical_high,practical_mid,practical_low_urban",
+          "practical_mid,practical_low_urban"
+        ],
+        "output_dir": [
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20260918-phase1-daot-rc4-practical4-manysig-s392005-r03/DAOT_RC4_PRACTICAL_RESIDUAL_NOEQ_s392005",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20260920-phase1-daot-rc4-residual-ratios-manysig-s392005-r01/RESIDUAL_MID_LOWURBAN_25_75_s392005"
+        ],
+        "execution_profile_steps": [
+          null,
+          0
+        ],
+        "sat_train_scenario": [
+          "practical_high",
+          "practical_mid"
+        ],
+        "execution_profile_start": [
+          null,
+          1
+        ],
+        "sat_protocol_manifest": [
+          {
+            "schema": "phase1_satellite_train_eval_protocol_v1",
+            "train_scenarios": [
+              "practical_high",
+              "practical_mid",
+              "practical_low_urban"
+            ],
+            "eval_scenarios": [],
+            "train_families": [
+              "leo_practical_v3"
+            ],
+            "eval_families": [],
+            "unknown_scenarios": [],
+            "scenario_overlap": [],
+            "family_overlap": [],
+            "scenario_config_sha256": {
+              "practical_high": "3eefdebda7bd95dfeb7f673601ddfd193f2d26a62b1d766aafb4d23286902af9",
+              "practical_mid": "7ca22704d25b220e0781f014e3da3c66cc6864a79c753cc6942fa1b445f50cb2",
+              "practical_low_urban": "228a3eb9f67a5700cfcef2129871bb8a51c5b15ce38b5738b13716e86f78a58b"
+            },
+            "train_config_sha256": [
+              "228a3eb9f67a5700cfcef2129871bb8a51c5b15ce38b5738b13716e86f78a58b",
+              "3eefdebda7bd95dfeb7f673601ddfd193f2d26a62b1d766aafb4d23286902af9",
+              "7ca22704d25b220e0781f014e3da3c66cc6864a79c753cc6942fa1b445f50cb2"
+            ],
+            "eval_config_sha256": [],
+            "config_hash_overlap": [],
+            "channel_implementation": {
+              "practical_high": "leo_practical_v3",
+              "practical_mid": "leo_practical_v3",
+              "practical_low_urban": "leo_practical_v3"
+            },
+            "train_channel_implementations": [
+              "leo_practical_v3"
+            ],
+            "eval_channel_implementations": [],
+            "channel_implementation_overlap": [],
+            "registry_version": "phase1_satellite_protocol_registry_v1",
+            "registry_sha256": "761554b907dba682ba98e17de9a1822c40b8407904060112ad7cf8f5916f9df5",
+            "disjoint": false,
+            "require_disjoint": false,
+            "evaluation_claim": "SOURCE_SYNTHETIC_HELDOUT_CHANNEL_STRESS_NOT_REAL_SATELLITE"
+          },
+          {
+            "schema": "phase1_satellite_train_eval_protocol_v1",
+            "train_scenarios": [
+              "practical_mid",
+              "practical_low_urban"
+            ],
+            "eval_scenarios": [],
+            "train_families": [
+              "leo_practical_v3"
+            ],
+            "eval_families": [],
+            "unknown_scenarios": [],
+            "scenario_overlap": [],
+            "family_overlap": [],
+            "scenario_config_sha256": {
+              "practical_mid": "7ca22704d25b220e0781f014e3da3c66cc6864a79c753cc6942fa1b445f50cb2",
+              "practical_low_urban": "228a3eb9f67a5700cfcef2129871bb8a51c5b15ce38b5738b13716e86f78a58b"
+            },
+            "train_config_sha256": [
+              "228a3eb9f67a5700cfcef2129871bb8a51c5b15ce38b5738b13716e86f78a58b",
+              "7ca22704d25b220e0781f014e3da3c66cc6864a79c753cc6942fa1b445f50cb2"
+            ],
+            "eval_config_sha256": [],
+            "config_hash_overlap": [],
+            "channel_implementation": {
+              "practical_mid": "leo_practical_v3",
+              "practical_low_urban": "leo_practical_v3"
+            },
+            "train_channel_implementations": [
+              "leo_practical_v3"
+            ],
+            "eval_channel_implementations": [],
+            "channel_implementation_overlap": [],
+            "registry_version": "phase1_satellite_protocol_registry_v1",
+            "registry_sha256": "761554b907dba682ba98e17de9a1822c40b8407904060112ad7cf8f5916f9df5",
+            "disjoint": false,
+            "require_disjoint": false,
+            "evaluation_claim": "SOURCE_SYNTHETIC_HELDOUT_CHANNEL_STRESS_NOT_REAL_SATELLITE"
+          }
+        ],
+        "practical_eval_prefetch": [
+          null,
+          true
+        ],
+        "sat_view_stages": [
+          [
+            {
+              "start_epoch": 1,
+              "scenarios": [
+                "practical_high"
+              ],
+              "view_prob": 0.3
+            },
+            {
+              "start_epoch": 41,
+              "scenarios": [
+                "practical_mid",
+                "practical_low_urban"
+              ],
+              "view_prob": 0.6
+            },
+            {
+              "start_epoch": 91,
+              "scenarios": [
+                "practical_high",
+                "practical_mid",
+                "practical_low_urban"
+              ],
+              "view_prob": 0.8
+            }
+          ],
+          [
+            {
+              "start_epoch": 1,
+              "scenarios": [
+                "practical_mid",
+                "practical_low_urban",
+                "practical_low_urban",
+                "practical_low_urban"
+              ],
+              "view_prob": 0.3
+            },
+            {
+              "start_epoch": 41,
+              "scenarios": [
+                "practical_mid",
+                "practical_low_urban",
+                "practical_low_urban",
+                "practical_low_urban"
+              ],
+              "view_prob": 0.6
+            },
+            {
+              "start_epoch": 91,
+              "scenarios": [
+                "practical_mid",
+                "practical_low_urban",
+                "practical_low_urban",
+                "practical_low_urban"
+              ],
+              "view_prob": 0.8
+            }
+          ]
+        ],
+        "sat_train_scenario_list": [
+          [
+            "practical_high",
+            "practical_mid",
+            "practical_low_urban"
+          ],
+          [
+            "practical_mid",
+            "practical_low_urban"
+          ]
+        ],
+        "practical_buffer_input": [
+          null,
+          true
+        ],
+        "practical_buffer_output": [
+          null,
+          true
+        ],
+        "candidate_id": [
+          "DAOT_RC4_PRACTICAL_RESIDUAL_NOEQ_s392005",
+          "RESIDUAL_MID_LOWURBAN_25_75_s392005"
+        ],
+        "source_validation_reuse": [
+          null,
+          true
+        ],
+        "practical_execution_fast": [
+          null,
+          true
+        ],
+        "a1_eval_identity_only": [
+          null,
+          true
+        ],
+        "sat_train_protocol_scenario_list": [
+          [
+            "practical_high",
+            "practical_mid",
+            "practical_low_urban"
+          ],
+          [
+            "practical_mid",
+            "practical_low_urban"
+          ]
+        ],
+        "run_id": [
+          "20260918-phase1-daot-rc4-practical4-manysig-s392005-r03",
+          "20260920-phase1-daot-rc4-residual-ratios-manysig-s392005-r01"
+        ],
+        "a1_gradient_snapshot": [
+          null,
+          true
+        ]
+      },
+      "initialization": {
+        "scratch_only": true,
+        "checkpoint_sources": [],
+        "target_training_contact": false,
+        "source_roles": "EXACT_MATCH",
+        "ema_origin": "this_run_student",
+        "daot": true,
+        "rc4": true
+      }
+    },
+    {
+      "row": "RESIDUAL_MID_LOWURBAN_50_50_s392005",
+      "diff": {
+        "practical_eval_cpu_pipeline": [
+          null,
+          true
+        ],
+        "practical_channel_workers": [
+          null,
+          2
+        ],
+        "execution_profile_epoch": [
+          null,
+          1
+        ],
+        "a1_periodic_target_scenarios": [
+          "clean,practical_high,practical_mid,practical_low_urban",
+          "clean,practical_high,practical_mid,practical_low_urban,practical_low_suburban,practical_mid_urban,practical_high_urban"
+        ],
+        "practical_eval_cache_dir": [
+          null,
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20260920-phase1-daot-rc4-residual-ratios-manysig-s392005-r01/evaluation_view_cache"
+        ],
+        "sat_view_schedule": [
+          "1@0.30:practical_high;41@0.60:practical_mid,practical_low_urban;91@0.80:practical_high,practical_mid,practical_low_urban",
+          "1@0.30:practical_mid*2,practical_low_urban*2;41@0.60:practical_mid*2,practical_low_urban*2;91@0.80:practical_mid*2,practical_low_urban*2"
+        ],
+        "incremental_epoch_telemetry": [
+          null,
+          true
+        ],
+        "sat_train_scenarios": [
+          "practical_high,practical_mid,practical_low_urban",
+          "practical_mid,practical_low_urban"
+        ],
+        "output_dir": [
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20260918-phase1-daot-rc4-practical4-manysig-s392005-r03/DAOT_RC4_PRACTICAL_RESIDUAL_NOEQ_s392005",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20260920-phase1-daot-rc4-residual-ratios-manysig-s392005-r01/RESIDUAL_MID_LOWURBAN_50_50_s392005"
+        ],
+        "execution_profile_steps": [
+          null,
+          0
+        ],
+        "sat_train_scenario": [
+          "practical_high",
+          "practical_mid"
+        ],
+        "execution_profile_start": [
+          null,
+          1
+        ],
+        "sat_protocol_manifest": [
+          {
+            "schema": "phase1_satellite_train_eval_protocol_v1",
+            "train_scenarios": [
+              "practical_high",
+              "practical_mid",
+              "practical_low_urban"
+            ],
+            "eval_scenarios": [],
+            "train_families": [
+              "leo_practical_v3"
+            ],
+            "eval_families": [],
+            "unknown_scenarios": [],
+            "scenario_overlap": [],
+            "family_overlap": [],
+            "scenario_config_sha256": {
+              "practical_high": "3eefdebda7bd95dfeb7f673601ddfd193f2d26a62b1d766aafb4d23286902af9",
+              "practical_mid": "7ca22704d25b220e0781f014e3da3c66cc6864a79c753cc6942fa1b445f50cb2",
+              "practical_low_urban": "228a3eb9f67a5700cfcef2129871bb8a51c5b15ce38b5738b13716e86f78a58b"
+            },
+            "train_config_sha256": [
+              "228a3eb9f67a5700cfcef2129871bb8a51c5b15ce38b5738b13716e86f78a58b",
+              "3eefdebda7bd95dfeb7f673601ddfd193f2d26a62b1d766aafb4d23286902af9",
+              "7ca22704d25b220e0781f014e3da3c66cc6864a79c753cc6942fa1b445f50cb2"
+            ],
+            "eval_config_sha256": [],
+            "config_hash_overlap": [],
+            "channel_implementation": {
+              "practical_high": "leo_practical_v3",
+              "practical_mid": "leo_practical_v3",
+              "practical_low_urban": "leo_practical_v3"
+            },
+            "train_channel_implementations": [
+              "leo_practical_v3"
+            ],
+            "eval_channel_implementations": [],
+            "channel_implementation_overlap": [],
+            "registry_version": "phase1_satellite_protocol_registry_v1",
+            "registry_sha256": "761554b907dba682ba98e17de9a1822c40b8407904060112ad7cf8f5916f9df5",
+            "disjoint": false,
+            "require_disjoint": false,
+            "evaluation_claim": "SOURCE_SYNTHETIC_HELDOUT_CHANNEL_STRESS_NOT_REAL_SATELLITE"
+          },
+          {
+            "schema": "phase1_satellite_train_eval_protocol_v1",
+            "train_scenarios": [
+              "practical_mid",
+              "practical_low_urban"
+            ],
+            "eval_scenarios": [],
+            "train_families": [
+              "leo_practical_v3"
+            ],
+            "eval_families": [],
+            "unknown_scenarios": [],
+            "scenario_overlap": [],
+            "family_overlap": [],
+            "scenario_config_sha256": {
+              "practical_mid": "7ca22704d25b220e0781f014e3da3c66cc6864a79c753cc6942fa1b445f50cb2",
+              "practical_low_urban": "228a3eb9f67a5700cfcef2129871bb8a51c5b15ce38b5738b13716e86f78a58b"
+            },
+            "train_config_sha256": [
+              "228a3eb9f67a5700cfcef2129871bb8a51c5b15ce38b5738b13716e86f78a58b",
+              "7ca22704d25b220e0781f014e3da3c66cc6864a79c753cc6942fa1b445f50cb2"
+            ],
+            "eval_config_sha256": [],
+            "config_hash_overlap": [],
+            "channel_implementation": {
+              "practical_mid": "leo_practical_v3",
+              "practical_low_urban": "leo_practical_v3"
+            },
+            "train_channel_implementations": [
+              "leo_practical_v3"
+            ],
+            "eval_channel_implementations": [],
+            "channel_implementation_overlap": [],
+            "registry_version": "phase1_satellite_protocol_registry_v1",
+            "registry_sha256": "761554b907dba682ba98e17de9a1822c40b8407904060112ad7cf8f5916f9df5",
+            "disjoint": false,
+            "require_disjoint": false,
+            "evaluation_claim": "SOURCE_SYNTHETIC_HELDOUT_CHANNEL_STRESS_NOT_REAL_SATELLITE"
+          }
+        ],
+        "practical_eval_prefetch": [
+          null,
+          true
+        ],
+        "sat_view_stages": [
+          [
+            {
+              "start_epoch": 1,
+              "scenarios": [
+                "practical_high"
+              ],
+              "view_prob": 0.3
+            },
+            {
+              "start_epoch": 41,
+              "scenarios": [
+                "practical_mid",
+                "practical_low_urban"
+              ],
+              "view_prob": 0.6
+            },
+            {
+              "start_epoch": 91,
+              "scenarios": [
+                "practical_high",
+                "practical_mid",
+                "practical_low_urban"
+              ],
+              "view_prob": 0.8
+            }
+          ],
+          [
+            {
+              "start_epoch": 1,
+              "scenarios": [
+                "practical_mid",
+                "practical_mid",
+                "practical_low_urban",
+                "practical_low_urban"
+              ],
+              "view_prob": 0.3
+            },
+            {
+              "start_epoch": 41,
+              "scenarios": [
+                "practical_mid",
+                "practical_mid",
+                "practical_low_urban",
+                "practical_low_urban"
+              ],
+              "view_prob": 0.6
+            },
+            {
+              "start_epoch": 91,
+              "scenarios": [
+                "practical_mid",
+                "practical_mid",
+                "practical_low_urban",
+                "practical_low_urban"
+              ],
+              "view_prob": 0.8
+            }
+          ]
+        ],
+        "sat_train_scenario_list": [
+          [
+            "practical_high",
+            "practical_mid",
+            "practical_low_urban"
+          ],
+          [
+            "practical_mid",
+            "practical_low_urban"
+          ]
+        ],
+        "practical_buffer_input": [
+          null,
+          true
+        ],
+        "practical_buffer_output": [
+          null,
+          true
+        ],
+        "candidate_id": [
+          "DAOT_RC4_PRACTICAL_RESIDUAL_NOEQ_s392005",
+          "RESIDUAL_MID_LOWURBAN_50_50_s392005"
+        ],
+        "source_validation_reuse": [
+          null,
+          true
+        ],
+        "practical_execution_fast": [
+          null,
+          true
+        ],
+        "a1_eval_identity_only": [
+          null,
+          true
+        ],
+        "sat_train_protocol_scenario_list": [
+          [
+            "practical_high",
+            "practical_mid",
+            "practical_low_urban"
+          ],
+          [
+            "practical_mid",
+            "practical_low_urban"
+          ]
+        ],
+        "run_id": [
+          "20260918-phase1-daot-rc4-practical4-manysig-s392005-r03",
+          "20260920-phase1-daot-rc4-residual-ratios-manysig-s392005-r01"
+        ],
+        "a1_gradient_snapshot": [
+          null,
+          true
+        ]
+      },
+      "initialization": {
+        "scratch_only": true,
+        "checkpoint_sources": [],
+        "target_training_contact": false,
+        "source_roles": "EXACT_MATCH",
+        "ema_origin": "this_run_student",
+        "daot": true,
+        "rc4": true
+      }
+    },
+    {
+      "row": "RESIDUAL_MID_LOWURBAN_75_25_s392005",
+      "diff": {
+        "practical_eval_cpu_pipeline": [
+          null,
+          true
+        ],
+        "practical_channel_workers": [
+          null,
+          2
+        ],
+        "execution_profile_epoch": [
+          null,
+          1
+        ],
+        "a1_periodic_target_scenarios": [
+          "clean,practical_high,practical_mid,practical_low_urban",
+          "clean,practical_high,practical_mid,practical_low_urban,practical_low_suburban,practical_mid_urban,practical_high_urban"
+        ],
+        "practical_eval_cache_dir": [
+          null,
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20260920-phase1-daot-rc4-residual-ratios-manysig-s392005-r01/evaluation_view_cache"
+        ],
+        "sat_view_schedule": [
+          "1@0.30:practical_high;41@0.60:practical_mid,practical_low_urban;91@0.80:practical_high,practical_mid,practical_low_urban",
+          "1@0.30:practical_mid*3,practical_low_urban*1;41@0.60:practical_mid*3,practical_low_urban*1;91@0.80:practical_mid*3,practical_low_urban*1"
+        ],
+        "incremental_epoch_telemetry": [
+          null,
+          true
+        ],
+        "sat_train_scenarios": [
+          "practical_high,practical_mid,practical_low_urban",
+          "practical_mid,practical_low_urban"
+        ],
+        "output_dir": [
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20260918-phase1-daot-rc4-practical4-manysig-s392005-r03/DAOT_RC4_PRACTICAL_RESIDUAL_NOEQ_s392005",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20260920-phase1-daot-rc4-residual-ratios-manysig-s392005-r01/RESIDUAL_MID_LOWURBAN_75_25_s392005"
+        ],
+        "execution_profile_steps": [
+          null,
+          0
+        ],
+        "sat_train_scenario": [
+          "practical_high",
+          "practical_mid"
+        ],
+        "execution_profile_start": [
+          null,
+          1
+        ],
+        "sat_protocol_manifest": [
+          {
+            "schema": "phase1_satellite_train_eval_protocol_v1",
+            "train_scenarios": [
+              "practical_high",
+              "practical_mid",
+              "practical_low_urban"
+            ],
+            "eval_scenarios": [],
+            "train_families": [
+              "leo_practical_v3"
+            ],
+            "eval_families": [],
+            "unknown_scenarios": [],
+            "scenario_overlap": [],
+            "family_overlap": [],
+            "scenario_config_sha256": {
+              "practical_high": "3eefdebda7bd95dfeb7f673601ddfd193f2d26a62b1d766aafb4d23286902af9",
+              "practical_mid": "7ca22704d25b220e0781f014e3da3c66cc6864a79c753cc6942fa1b445f50cb2",
+              "practical_low_urban": "228a3eb9f67a5700cfcef2129871bb8a51c5b15ce38b5738b13716e86f78a58b"
+            },
+            "train_config_sha256": [
+              "228a3eb9f67a5700cfcef2129871bb8a51c5b15ce38b5738b13716e86f78a58b",
+              "3eefdebda7bd95dfeb7f673601ddfd193f2d26a62b1d766aafb4d23286902af9",
+              "7ca22704d25b220e0781f014e3da3c66cc6864a79c753cc6942fa1b445f50cb2"
+            ],
+            "eval_config_sha256": [],
+            "config_hash_overlap": [],
+            "channel_implementation": {
+              "practical_high": "leo_practical_v3",
+              "practical_mid": "leo_practical_v3",
+              "practical_low_urban": "leo_practical_v3"
+            },
+            "train_channel_implementations": [
+              "leo_practical_v3"
+            ],
+            "eval_channel_implementations": [],
+            "channel_implementation_overlap": [],
+            "registry_version": "phase1_satellite_protocol_registry_v1",
+            "registry_sha256": "761554b907dba682ba98e17de9a1822c40b8407904060112ad7cf8f5916f9df5",
+            "disjoint": false,
+            "require_disjoint": false,
+            "evaluation_claim": "SOURCE_SYNTHETIC_HELDOUT_CHANNEL_STRESS_NOT_REAL_SATELLITE"
+          },
+          {
+            "schema": "phase1_satellite_train_eval_protocol_v1",
+            "train_scenarios": [
+              "practical_mid",
+              "practical_low_urban"
+            ],
+            "eval_scenarios": [],
+            "train_families": [
+              "leo_practical_v3"
+            ],
+            "eval_families": [],
+            "unknown_scenarios": [],
+            "scenario_overlap": [],
+            "family_overlap": [],
+            "scenario_config_sha256": {
+              "practical_mid": "7ca22704d25b220e0781f014e3da3c66cc6864a79c753cc6942fa1b445f50cb2",
+              "practical_low_urban": "228a3eb9f67a5700cfcef2129871bb8a51c5b15ce38b5738b13716e86f78a58b"
+            },
+            "train_config_sha256": [
+              "228a3eb9f67a5700cfcef2129871bb8a51c5b15ce38b5738b13716e86f78a58b",
+              "7ca22704d25b220e0781f014e3da3c66cc6864a79c753cc6942fa1b445f50cb2"
+            ],
+            "eval_config_sha256": [],
+            "config_hash_overlap": [],
+            "channel_implementation": {
+              "practical_mid": "leo_practical_v3",
+              "practical_low_urban": "leo_practical_v3"
+            },
+            "train_channel_implementations": [
+              "leo_practical_v3"
+            ],
+            "eval_channel_implementations": [],
+            "channel_implementation_overlap": [],
+            "registry_version": "phase1_satellite_protocol_registry_v1",
+            "registry_sha256": "761554b907dba682ba98e17de9a1822c40b8407904060112ad7cf8f5916f9df5",
+            "disjoint": false,
+            "require_disjoint": false,
+            "evaluation_claim": "SOURCE_SYNTHETIC_HELDOUT_CHANNEL_STRESS_NOT_REAL_SATELLITE"
+          }
+        ],
+        "practical_eval_prefetch": [
+          null,
+          true
+        ],
+        "sat_view_stages": [
+          [
+            {
+              "start_epoch": 1,
+              "scenarios": [
+                "practical_high"
+              ],
+              "view_prob": 0.3
+            },
+            {
+              "start_epoch": 41,
+              "scenarios": [
+                "practical_mid",
+                "practical_low_urban"
+              ],
+              "view_prob": 0.6
+            },
+            {
+              "start_epoch": 91,
+              "scenarios": [
+                "practical_high",
+                "practical_mid",
+                "practical_low_urban"
+              ],
+              "view_prob": 0.8
+            }
+          ],
+          [
+            {
+              "start_epoch": 1,
+              "scenarios": [
+                "practical_mid",
+                "practical_mid",
+                "practical_mid",
+                "practical_low_urban"
+              ],
+              "view_prob": 0.3
+            },
+            {
+              "start_epoch": 41,
+              "scenarios": [
+                "practical_mid",
+                "practical_mid",
+                "practical_mid",
+                "practical_low_urban"
+              ],
+              "view_prob": 0.6
+            },
+            {
+              "start_epoch": 91,
+              "scenarios": [
+                "practical_mid",
+                "practical_mid",
+                "practical_mid",
+                "practical_low_urban"
+              ],
+              "view_prob": 0.8
+            }
+          ]
+        ],
+        "sat_train_scenario_list": [
+          [
+            "practical_high",
+            "practical_mid",
+            "practical_low_urban"
+          ],
+          [
+            "practical_mid",
+            "practical_low_urban"
+          ]
+        ],
+        "practical_buffer_input": [
+          null,
+          true
+        ],
+        "practical_buffer_output": [
+          null,
+          true
+        ],
+        "candidate_id": [
+          "DAOT_RC4_PRACTICAL_RESIDUAL_NOEQ_s392005",
+          "RESIDUAL_MID_LOWURBAN_75_25_s392005"
+        ],
+        "source_validation_reuse": [
+          null,
+          true
+        ],
+        "practical_execution_fast": [
+          null,
+          true
+        ],
+        "a1_eval_identity_only": [
+          null,
+          true
+        ],
+        "sat_train_protocol_scenario_list": [
+          [
+            "practical_high",
+            "practical_mid",
+            "practical_low_urban"
+          ],
+          [
+            "practical_mid",
+            "practical_low_urban"
+          ]
+        ],
+        "run_id": [
+          "20260918-phase1-daot-rc4-practical4-manysig-s392005-r03",
+          "20260920-phase1-daot-rc4-residual-ratios-manysig-s392005-r01"
+        ],
+        "a1_gradient_snapshot": [
+          null,
+          true
+        ]
+      },
+      "initialization": {
+        "scratch_only": true,
+        "checkpoint_sources": [],
+        "target_training_contact": false,
+        "source_roles": "EXACT_MATCH",
+        "ema_origin": "this_run_student",
+        "daot": true,
+        "rc4": true
+      }
+    }
+  ]
+}

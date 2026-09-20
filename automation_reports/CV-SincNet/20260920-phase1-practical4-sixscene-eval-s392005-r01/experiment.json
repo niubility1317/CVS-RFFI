@@ -126,7 +126,8 @@
       "E:\\type10-7\\automation_reports\\CV-SincNet\\20260920-phase1-practical4-sixscene-eval-s392005-r01\\evidence"
     ],
     "stop_rule": "Only technical failures: data/provenance mismatch, nonfinite guard (8 batches and 5%), output collision, invalid prediction/scoring closure; preserve artifacts, no performance stop or automatic retrain.",
-    "status": "PLANNED"
+    "status": "RUNNING",
+    "verification": "VERIFIED: PID, argv, CWD, GPU; training E1 artifacts; evaluation inference ongoing, scores pending"
   },
   "expected_artifacts": [
     "predictions.json",
@@ -215,8 +216,12 @@
         "scorer.log",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260918-phase1-daot-rc4-practical4-manysig-s392005-r03/DAOT_RC4_PRACTICAL_FULL_MMSE_s392005/epoch_160_ssdg.pth"
+      "status": "RUNNING",
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260918-phase1-daot-rc4-practical4-manysig-s392005-r03/DAOT_RC4_PRACTICAL_FULL_MMSE_s392005/epoch_160_ssdg.pth",
+      "pid": 419204,
+      "gpu": 6,
+      "launch_evidence": "E:\\type10-7\\automation_reports\\CV-SincNet\\20260920-phase1-practical4-sixscene-eval-s392005-r01\\evidence\\launch.json",
+      "verification_evidence": "E:\\type10-7\\automation_reports\\CV-SincNet\\20260920-phase1-practical4-sixscene-eval-s392005-r01\\evidence\\startup_verification.json"
     },
     {
       "row_id": "full_noeq",
@@ -280,8 +285,12 @@
         "scorer.log",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260918-phase1-daot-rc4-practical4-manysig-s392005-r03/DAOT_RC4_PRACTICAL_FULL_NOEQ_s392005/epoch_150_ssdg.pth"
+      "status": "RUNNING",
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260918-phase1-daot-rc4-practical4-manysig-s392005-r03/DAOT_RC4_PRACTICAL_FULL_NOEQ_s392005/epoch_150_ssdg.pth",
+      "pid": 419209,
+      "gpu": 7,
+      "launch_evidence": "E:\\type10-7\\automation_reports\\CV-SincNet\\20260920-phase1-practical4-sixscene-eval-s392005-r01\\evidence\\launch.json",
+      "verification_evidence": "E:\\type10-7\\automation_reports\\CV-SincNet\\20260920-phase1-practical4-sixscene-eval-s392005-r01\\evidence\\startup_verification.json"
     },
     {
       "row_id": "full_zf",
@@ -345,8 +354,12 @@
         "scorer.log",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260918-phase1-daot-rc4-practical4-manysig-s392005-r03/DAOT_RC4_PRACTICAL_FULL_ZF_s392005/epoch_130_ssdg.pth"
+      "status": "RUNNING",
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260918-phase1-daot-rc4-practical4-manysig-s392005-r03/DAOT_RC4_PRACTICAL_FULL_ZF_s392005/epoch_130_ssdg.pth",
+      "pid": 419214,
+      "gpu": 6,
+      "launch_evidence": "E:\\type10-7\\automation_reports\\CV-SincNet\\20260920-phase1-practical4-sixscene-eval-s392005-r01\\evidence\\launch.json",
+      "verification_evidence": "E:\\type10-7\\automation_reports\\CV-SincNet\\20260920-phase1-practical4-sixscene-eval-s392005-r01\\evidence\\startup_verification.json"
     },
     {
       "row_id": "residual_noeq",
@@ -410,8 +423,12 @@
         "scorer.log",
         "completion.json"
       ],
-      "status": "PLANNED",
-      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260918-phase1-daot-rc4-practical4-manysig-s392005-r03/DAOT_RC4_PRACTICAL_RESIDUAL_NOEQ_s392005/epoch_200_ssdg.pth"
+      "status": "RUNNING",
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260918-phase1-daot-rc4-practical4-manysig-s392005-r03/DAOT_RC4_PRACTICAL_RESIDUAL_NOEQ_s392005/epoch_200_ssdg.pth",
+      "pid": 419219,
+      "gpu": 7,
+      "launch_evidence": "E:\\type10-7\\automation_reports\\CV-SincNet\\20260920-phase1-practical4-sixscene-eval-s392005-r01\\evidence\\launch.json",
+      "verification_evidence": "E:\\type10-7\\automation_reports\\CV-SincNet\\20260920-phase1-practical4-sixscene-eval-s392005-r01\\evidence\\startup_verification.json"
     }
   ],
   "notes": [
