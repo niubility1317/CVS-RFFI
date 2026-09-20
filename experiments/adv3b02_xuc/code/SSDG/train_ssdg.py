@@ -6063,6 +6063,7 @@ def _prepare_concat_sat_batch_for_training(
                 "stage_start_epoch": float(int(sat_view.stage_start_epoch)),
                 "stage_index": float(int(sat_view.stage_index)),
                 "scenario_code": float(abs(hash(str(sat_view.scenario))) % 1000000),
+                "scenario": str(sat_view.scenario),
                 "crra_nuisance": sat_view.nuisance,
                 "crra_nuisance_valid": sat_view.nuisance_valid,
                 "crra_nuisance_fields": sat_view.nuisance_fields,
@@ -6089,6 +6090,7 @@ def _prepare_concat_sat_batch_for_training(
             "stage_start_epoch": float(int(concat_batch.stage_start_epoch)),
             "stage_index": float(int(concat_batch.stage_index)),
             "scenario_code": float(abs(hash(str(concat_batch.scenario))) % 1000000),
+            "scenario": str(concat_batch.scenario),
             "crra_nuisance": concat_batch.nuisance,
             "crra_nuisance_valid": concat_batch.nuisance_valid,
             "crra_nuisance_fields": concat_batch.nuisance_fields,
@@ -11975,6 +11977,12 @@ def train(args) -> int:
                     "train/concat_sat_view_prob": float(concat_sat_info.get("view_prob", 0.0)),
                     "train/concat_sat_stage_start_epoch": float(concat_sat_info.get("stage_start_epoch", float("nan"))),
                     "train/concat_sat_stage_index": float(concat_sat_info.get("stage_index", float("nan"))),
+                    **{f"train/concat_sat_{scene}_samples_per_step": (
+                        float(concat_sat_info.get("clean_batch_size", 0.0))
+                        if float(concat_sat_info.get("applied", 0.0)) > 0.0
+                        and concat_sat_info.get("scenario") == scene else 0.0)
+                        for scene in ("practical_high", "practical_mid", "practical_low_urban",
+                                      "practical_low_suburban", "practical_mid_urban", "practical_high_urban")},
                     "train/loss_unlabeled": loss_u.detach(),
                     "train/loss_daot_unlabeled": loss_daot_u.detach(),
                     "train/daot_u_orbit_scale": float(daot_u_diagnostics.get("orbit_scale", 0.0)),

@@ -1,0 +1,73 @@
+{
+  "run_id": "20260920-phase1-daot-rc4-residual-ratios-manysig-s392005-r01",
+  "rows": [
+    {
+      "id": "RESIDUAL_HIGH_LOWURBAN_75_25_s392005",
+      "config": "rc4_residual_ratio_high_75_25_20260920.json",
+      "easy": "practical_high",
+      "hard": "practical_low_urban",
+      "easy_probability": 0.75,
+      "hard_probability": 0.25,
+      "ratio_scope": "applied labeled concat satellite views only"
+    },
+    {
+      "id": "RESIDUAL_HIGH_LOWURBAN_50_50_s392005",
+      "config": "rc4_residual_ratio_high_50_50_20260920.json",
+      "easy": "practical_high",
+      "hard": "practical_low_urban",
+      "easy_probability": 0.5,
+      "hard_probability": 0.5,
+      "ratio_scope": "applied labeled concat satellite views only"
+    },
+    {
+      "id": "RESIDUAL_HIGH_LOWURBAN_25_75_s392005",
+      "config": "rc4_residual_ratio_high_25_75_20260920.json",
+      "easy": "practical_high",
+      "hard": "practical_low_urban",
+      "easy_probability": 0.25,
+      "hard_probability": 0.75,
+      "ratio_scope": "applied labeled concat satellite views only"
+    },
+    {
+      "id": "RESIDUAL_MID_LOWURBAN_75_25_s392005",
+      "config": "rc4_residual_ratio_mid_75_25_20260920.json",
+      "easy": "practical_mid",
+      "hard": "practical_low_urban",
+      "easy_probability": 0.75,
+      "hard_probability": 0.25,
+      "ratio_scope": "applied labeled concat satellite views only"
+    },
+    {
+      "id": "RESIDUAL_MID_LOWURBAN_50_50_s392005",
+      "config": "rc4_residual_ratio_mid_50_50_20260920.json",
+      "easy": "practical_mid",
+      "hard": "practical_low_urban",
+      "easy_probability": 0.5,
+      "hard_probability": 0.5,
+      "ratio_scope": "applied labeled concat satellite views only"
+    },
+    {
+      "id": "RESIDUAL_MID_LOWURBAN_25_75_s392005",
+      "config": "rc4_residual_ratio_mid_25_75_20260920.json",
+      "easy": "practical_mid",
+      "hard": "practical_low_urban",
+      "easy_probability": 0.25,
+      "hard_probability": 0.75,
+      "ratio_scope": "applied labeled concat satellite views only"
+    }
+  ],
+  "scenes": [
+    "clean",
+    "practical_high",
+    "practical_mid",
+    "practical_low_urban",
+    "practical_low_suburban",
+    "practical_mid_urban",
+    "practical_high_urban"
+  ],
+  "seed": 392005,
+  "epochs": 200,
+  "base_recipe": "rc4_practical_residual_noeq_20260918.json",
+  "daot_internal_views": "unchanged: student high, teacher hard mid and low_urban",
+  "initialization": "scratch; old checkpoints evaluation only"
+}
