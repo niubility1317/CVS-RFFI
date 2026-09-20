@@ -1,6 +1,6 @@
 # Practical执行加速实施与验证
 
-状态：本地聚焦验证及N607 batch32合成基准完成；profile新增的FIR核缓存将追加batch128验证。用户最新要求优先：不启动任何正式训练实验；本轮仅验证执行加速，场景选择作为未来配方建议。
+状态：本地聚焦验证及N607 batch32／batch128合成基准均完成，独立产物读回VERIFIED。用户最新要求优先：不启动任何正式训练实验；本轮仅验证执行加速，场景选择作为未来配方建议。
 
 ## 实现范围
 
@@ -58,3 +58,31 @@ identity-only前向17.792→6.456ms（2.756倍）；梯度观测30.205→18.804m
 新增mid_urban没有同一CVS checkpoint下的历史实测，不能宣称它比mid更合适；暂作独立评估候选，不强行作为第三训练环境。若未来仍按原采样机制每步只生成固定数量视图，缩小场景池不减少训练前向次数；六场景改两场景会减少评估枚举量和缓存占用。减少DAOT视图数是另一项科学改动，本轮不做。
 
 原报告：`automation_reports/CV-SincNet/20260918-phase1-daot-rc4-practical4-manysig-s392005-r03/report.md`；禁止将已曝光的目标场景选择包装成独立确认性结论。
+
+
+## N607第二轮B128结果：VERIFIED
+
+代码`3edc74477899b897e78ab9ebada1ce6a478520a1`，同Torch2.1.0＋NumPy2.2.5环境；只测建议保留的mid/low_urban×四配置，共8case。每case串行未缓存FIR→缓存FIR→缓存FIR＋双进程均使用相同合成IQ、物理ID、种子并精确对照。下表组合速度比直接由同case原串行时间除以组合实测时间得到，不是把不同算子倍数相乘。
+
+|信道|场景|原串行ms|仅FIR缓存ms|FIR缓存＋双进程ms|直接实测组合速度比|
+|---|---|---:|---:|---:|---:|
+|full/noeq|practical_mid|513.47|411.82|207.24|2.48|
+|full/noeq|practical_low_urban|507.21|404.85|208.19|2.44|
+|full/zf|practical_mid|682.87|480.31|244.35|2.79|
+|full/zf|practical_low_urban|606.74|447.76|230.75|2.63|
+|full/mmse|practical_mid|682.96|478.58|242.26|2.82|
+|full/mmse|practical_low_urban|606.15|446.84|229.49|2.64|
+|residual/noeq|practical_mid|288.63|186.18|97.89|2.95|
+|residual/noeq|practical_low_urban|290.15|185.94|98.08|2.96|
+
+B128模型只读前向：完整13.981ms，identity-only 4.969ms，2.814倍。梯度观测：原23.858ms，snapshot 13.547ms，1.761倍。两轮的硬件负载／kernel选择可能不同，只比较各轮内部配对结果，不拿B32与B128的绝对耗时推断批量缩放规律。
+
+证据：[N607 B128完整输出](evidence/practical_execution_n607_b128_20260920.json)、[命令与完成状态](evidence/practical_execution_n607_b128_status_20260920.json)。远端日志：`/home/szu2070436088/2510044040/CV-SincNet/benchmarks/practical_execution_3edc7447_20260920_b128_r01/benchmark.log`。独立回读结果8case和两项模型等价标记均通过，返回码0；结束后GPU0显存1MiB。
+
+## 本轮决定
+
+优先保留FIR核缓存、同batch双进程信道、预测identity-only、独立梯度快照和固定评估缓存。buffer与CPU前置路径保留为开关，单独收益小，不夸大。61项相关测试累计通过（原25项＋新增36项；最后5项专门覆盖FIR变化），独立全量审查及FIR增量定点审查均无P0/P1，已修复profiler异常退出问题。
+
+建议未来训练只使用两个星地环境mid/low_urban，发生星地增强时可先按1:1抽样；clean、原拼接发生概率和DAOT每步视图数保持原定义。本轮未写入正式训练配方、未发起新实验、未修改活动release。因为已经参考曝光目标的历史结果，该场景选择属于探索性设计。
+
+完整真实训练epoch、AMP下全部DAOT/RC4分支、跨batch预取、全量固定测试及整轮墙钟收益尚未验证。真实训练有界profiling入口已实现，但按用户“先不启动实验”的要求未启动真实训练采样。下一步应在用户决定继续实际训练验证后使用独立run，而不是自动启动200epoch组。

@@ -1,0 +1,701 @@
+{
+  "scope": "Synthetic execution only; no training dataset/checkpoint; not whole-epoch speedup",
+  "torch": "2.1.0+cu121",
+  "numpy": "2.2.5",
+  "python": "3.10.19 (main, Oct 21 2025, 16:43:05) [GCC 11.2.0]",
+  "platform": "Linux-6.8.0-136-generic-x86_64-with-glibc2.39",
+  "device": "cuda:0",
+  "batch_size": 128,
+  "repeats": 3,
+  "gpu": "NVIDIA GeForce RTX 3090",
+  "cases": [
+    {
+      "route": "full",
+      "equalization": false,
+      "method": "zf",
+      "scene": "practical_mid",
+      "reference": {
+        "median_s": 0.41182209365069866,
+        "samples_s": [
+          0.41206379048526287,
+          0.41182209365069866,
+          0.4111150112003088
+        ]
+      },
+      "uncached_fir_reference": {
+        "median_s": 0.5134702455252409,
+        "samples_s": [
+          0.5134702455252409,
+          0.5212140791118145,
+          0.5123933311551809
+        ]
+      },
+      "buffer": {
+        "median_s": 0.4059782372787595,
+        "samples_s": [
+          0.40720048639923334,
+          0.4059782372787595,
+          0.4059135215356946
+        ]
+      },
+      "parallel2": {
+        "median_s": 0.20723529066890478,
+        "samples_s": [
+          0.20723529066890478,
+          0.20629671961069107,
+          0.21004985366016626
+        ]
+      },
+      "fixed_cold_s": 0.42702837381511927,
+      "fixed_warm_existing_path": {
+        "median_s": 0.012825457379221916,
+        "samples_s": [
+          0.01317539345473051,
+          0.012825457379221916,
+          0.012768847867846489
+        ]
+      },
+      "fixed_warm_cpu_path": {
+        "median_s": 0.01267975103110075,
+        "samples_s": [
+          0.01267975103110075,
+          0.01254301704466343,
+          0.012850974686443806
+        ]
+      },
+      "exact_iq": true
+    },
+    {
+      "route": "full",
+      "equalization": false,
+      "method": "zf",
+      "scene": "practical_low_urban",
+      "reference": {
+        "median_s": 0.40484662260860205,
+        "samples_s": [
+          0.4030485572293401,
+          0.4082351243123412,
+          0.40484662260860205
+        ]
+      },
+      "uncached_fir_reference": {
+        "median_s": 0.507206691429019,
+        "samples_s": [
+          0.5056432401761413,
+          0.5083385342732072,
+          0.507206691429019
+        ]
+      },
+      "buffer": {
+        "median_s": 0.39891099464148283,
+        "samples_s": [
+          0.3980711791664362,
+          0.39891099464148283,
+          0.3990068631246686
+        ]
+      },
+      "parallel2": {
+        "median_s": 0.20819315686821938,
+        "samples_s": [
+          0.20819315686821938,
+          0.20903885085135698,
+          0.20770849846303463
+        ]
+      },
+      "fixed_cold_s": 0.44124354887753725,
+      "fixed_warm_existing_path": {
+        "median_s": 0.01290866732597351,
+        "samples_s": [
+          0.01290866732597351,
+          0.012732098810374737,
+          0.013035941869020462
+        ]
+      },
+      "fixed_warm_cpu_path": {
+        "median_s": 0.012714093551039696,
+        "samples_s": [
+          0.012595012784004211,
+          0.012895554304122925,
+          0.012714093551039696
+        ]
+      },
+      "exact_iq": true
+    },
+    {
+      "route": "full",
+      "equalization": true,
+      "method": "zf",
+      "scene": "practical_mid",
+      "reference": {
+        "median_s": 0.48031381145119667,
+        "samples_s": [
+          0.4797545140609145,
+          0.48031381145119667,
+          0.48077334370464087
+        ]
+      },
+      "uncached_fir_reference": {
+        "median_s": 0.6828707465901971,
+        "samples_s": [
+          0.6826909957453609,
+          0.6896156994625926,
+          0.6828707465901971
+        ]
+      },
+      "buffer": {
+        "median_s": 0.4758311966434121,
+        "samples_s": [
+          0.4744423199445009,
+          0.4758311966434121,
+          0.4811268011108041
+        ]
+      },
+      "parallel2": {
+        "median_s": 0.24434716161340475,
+        "samples_s": [
+          0.24434716161340475,
+          0.251554555259645,
+          0.24335920438170433
+        ]
+      },
+      "fixed_cold_s": 0.48826203867793083,
+      "fixed_warm_existing_path": {
+        "median_s": 0.013496866449713707,
+        "samples_s": [
+          0.01304271724075079,
+          0.013496866449713707,
+          0.0656168507412076
+        ]
+      },
+      "fixed_warm_cpu_path": {
+        "median_s": 0.013104717247188091,
+        "samples_s": [
+          0.013145318254828453,
+          0.013104717247188091,
+          0.013040301389992237
+        ]
+      },
+      "exact_iq": true
+    },
+    {
+      "route": "full",
+      "equalization": true,
+      "method": "zf",
+      "scene": "practical_low_urban",
+      "reference": {
+        "median_s": 0.44776484556496143,
+        "samples_s": [
+          0.44747399631887674,
+          0.447793654166162,
+          0.44776484556496143
+        ]
+      },
+      "uncached_fir_reference": {
+        "median_s": 0.6067371647804976,
+        "samples_s": [
+          0.6049747802317142,
+          0.6081633176654577,
+          0.6067371647804976
+        ]
+      },
+      "buffer": {
+        "median_s": 0.44403605721890926,
+        "samples_s": [
+          0.4432756369933486,
+          0.44403605721890926,
+          0.4485044488683343
+        ]
+      },
+      "parallel2": {
+        "median_s": 0.23075106274336576,
+        "samples_s": [
+          0.2286314582452178,
+          0.23079552873969078,
+          0.23075106274336576
+        ]
+      },
+      "fixed_cold_s": 0.48520926758646965,
+      "fixed_warm_existing_path": {
+        "median_s": 0.013147668913006783,
+        "samples_s": [
+          0.013147668913006783,
+          0.013080676086246967,
+          0.013407516293227673
+        ]
+      },
+      "fixed_warm_cpu_path": {
+        "median_s": 0.01296252477914095,
+        "samples_s": [
+          0.012834457680583,
+          0.013119131326675415,
+          0.01296252477914095
+        ]
+      },
+      "exact_iq": true
+    },
+    {
+      "route": "full",
+      "equalization": true,
+      "method": "mmse",
+      "scene": "practical_mid",
+      "reference": {
+        "median_s": 0.47857705038040876,
+        "samples_s": [
+          0.47857705038040876,
+          0.5329233035445213,
+          0.4758318653330207
+        ]
+      },
+      "uncached_fir_reference": {
+        "median_s": 0.682957443408668,
+        "samples_s": [
+          0.6824220810085535,
+          0.682957443408668,
+          0.685507396236062
+        ]
+      },
+      "buffer": {
+        "median_s": 0.4738953886553645,
+        "samples_s": [
+          0.47240610886365175,
+          0.4738953886553645,
+          0.47425534203648567
+        ]
+      },
+      "parallel2": {
+        "median_s": 0.24225549213588238,
+        "samples_s": [
+          0.2420492758974433,
+          0.24225549213588238,
+          0.24258001893758774
+        ]
+      },
+      "fixed_cold_s": 0.5253356713801622,
+      "fixed_warm_existing_path": {
+        "median_s": 0.013206624425947666,
+        "samples_s": [
+          0.013206624425947666,
+          0.013166387565433979,
+          0.013653433881700039
+        ]
+      },
+      "fixed_warm_cpu_path": {
+        "median_s": 0.013075286522507668,
+        "samples_s": [
+          0.012974272482097149,
+          0.013434749096632004,
+          0.013075286522507668
+        ]
+      },
+      "exact_iq": true
+    },
+    {
+      "route": "full",
+      "equalization": true,
+      "method": "mmse",
+      "scene": "practical_low_urban",
+      "reference": {
+        "median_s": 0.44683602452278137,
+        "samples_s": [
+          0.44605151005089283,
+          0.44717519637197256,
+          0.44683602452278137
+        ]
+      },
+      "uncached_fir_reference": {
+        "median_s": 0.6061456631869078,
+        "samples_s": [
+          0.6061456631869078,
+          0.6051035169512033,
+          0.6074611330404878
+        ]
+      },
+      "buffer": {
+        "median_s": 0.4418548699468374,
+        "samples_s": [
+          0.4418548699468374,
+          0.4420231059193611,
+          0.4416023651137948
+        ]
+      },
+      "parallel2": {
+        "median_s": 0.2294867429882288,
+        "samples_s": [
+          0.2294867429882288,
+          0.22876945044845343,
+          0.23206678498536348
+        ]
+      },
+      "fixed_cold_s": 0.4566968334838748,
+      "fixed_warm_existing_path": {
+        "median_s": 0.013062498532235622,
+        "samples_s": [
+          0.013062498532235622,
+          0.013015779666602612,
+          0.013362507335841656
+        ]
+      },
+      "fixed_warm_cpu_path": {
+        "median_s": 0.012944022193551064,
+        "samples_s": [
+          0.012944022193551064,
+          0.013268076814711094,
+          0.01283265184611082
+        ]
+      },
+      "exact_iq": true
+    },
+    {
+      "route": "residual",
+      "equalization": false,
+      "method": "zf",
+      "scene": "practical_mid",
+      "reference": {
+        "median_s": 0.18617967143654823,
+        "samples_s": [
+          0.18617967143654823,
+          0.18607899453490973,
+          0.18676923867315054
+        ]
+      },
+      "uncached_fir_reference": {
+        "median_s": 0.28862902242690325,
+        "samples_s": [
+          0.28710566833615303,
+          0.28862902242690325,
+          0.2888245163485408
+        ]
+      },
+      "buffer": {
+        "median_s": 0.18062718864530325,
+        "samples_s": [
+          0.18080965336412191,
+          0.1800779365003109,
+          0.18062718864530325
+        ]
+      },
+      "parallel2": {
+        "median_s": 0.09789160545915365,
+        "samples_s": [
+          0.09789160545915365,
+          0.09810655377805233,
+          0.09667609725147486
+        ]
+      },
+      "fixed_cold_s": 0.1910659857094288,
+      "fixed_warm_existing_path": {
+        "median_s": 0.01043032668530941,
+        "samples_s": [
+          0.010613922961056232,
+          0.010428091511130333,
+          0.01043032668530941
+        ]
+      },
+      "fixed_warm_cpu_path": {
+        "median_s": 0.010331571102142334,
+        "samples_s": [
+          0.010341485030949116,
+          0.010321853682398796,
+          0.010331571102142334
+        ]
+      },
+      "exact_iq": true
+    },
+    {
+      "route": "residual",
+      "equalization": false,
+      "method": "zf",
+      "scene": "practical_low_urban",
+      "reference": {
+        "median_s": 0.1859400775283575,
+        "samples_s": [
+          0.1859798301011324,
+          0.18556649144738913,
+          0.1859400775283575
+        ]
+      },
+      "uncached_fir_reference": {
+        "median_s": 0.290154917165637,
+        "samples_s": [
+          0.290154917165637,
+          0.28956427425146103,
+          0.2907471163198352
+        ]
+      },
+      "buffer": {
+        "median_s": 0.18079506140202284,
+        "samples_s": [
+          0.18085122853517532,
+          0.18079506140202284,
+          0.18031745124608278
+        ]
+      },
+      "parallel2": {
+        "median_s": 0.09808000922203064,
+        "samples_s": [
+          0.09692748729139566,
+          0.09870633948594332,
+          0.09808000922203064
+        ]
+      },
+      "fixed_cold_s": 0.19219085667282343,
+      "fixed_warm_existing_path": {
+        "median_s": 0.010478663258254528,
+        "samples_s": [
+          0.010478663258254528,
+          0.010491098277270794,
+          0.010454502888023853
+        ]
+      },
+      "fixed_warm_cpu_path": {
+        "median_s": 0.010355416685342789,
+        "samples_s": [
+          0.010355416685342789,
+          0.010942543856799603,
+          0.010338838212192059
+        ]
+      },
+      "exact_iq": true
+    }
+  ],
+  "cpu_profile_top": [
+    {
+      "file": "/home/szu2070436088/2510044040/CV-SincNet/benchmarks/practical_execution_3edc7447_20260920_b128_r01/experiments/adv3b02_xuc/tools/benchmark_execution_acceleration.py",
+      "line": 68,
+      "function": "call",
+      "calls": 1,
+      "self_s": 4.1560000000000005e-06,
+      "cumulative_s": 0.236939905
+    },
+    {
+      "file": "/home/szu2070436088/2510044040/CV-SincNet/benchmarks/practical_execution_3edc7447_20260920_b128_r01/experiments/adv3b02_xuc/code/cvsrffi/practical_adapter.py",
+      "line": 63,
+      "function": "apply_practical",
+      "calls": 1,
+      "self_s": 0.000686222,
+      "cumulative_s": 0.236931101
+    },
+    {
+      "file": "/home/szu2070436088/2510044040/CV-SincNet/benchmarks/practical_execution_3edc7447_20260920_b128_r01/experiments/adv3b02_xuc/code/cvsrffi/practical_view_cache.py",
+      "line": 27,
+      "function": "cached_evaluation_batch",
+      "calls": 1,
+      "self_s": 3.6932000000000005e-05,
+      "cumulative_s": 0.226833993
+    },
+    {
+      "file": "/home/szu2070436088/2510044040/CV-SincNet/benchmarks/practical_execution_3edc7447_20260920_b128_r01/experiments/adv3b02_xuc/code/leo_practical/batch.py",
+      "line": 9,
+      "function": "apply_leo_practical_channel_batch",
+      "calls": 1,
+      "self_s": 0.0036151160000000002,
+      "cumulative_s": 0.22679706100000002
+    },
+    {
+      "file": "/home/szu2070436088/2510044040/CV-SincNet/benchmarks/practical_execution_3edc7447_20260920_b128_r01/experiments/adv3b02_xuc/code/leo_practical/residual.py",
+      "line": 29,
+      "function": "process",
+      "calls": 128,
+      "self_s": 0.045974508000000004,
+      "cumulative_s": 0.126490512
+    },
+    {
+      "file": "/home/szu2070436088/2510044040/CV-SincNet/benchmarks/practical_execution_3edc7447_20260920_b128_r01/experiments/adv3b02_xuc/code/leo_practical/residual.py",
+      "line": 19,
+      "function": "__init__",
+      "calls": 128,
+      "self_s": 0.000538232,
+      "cumulative_s": 0.08796145200000001
+    },
+    {
+      "file": "/home/szu2070436088/2510044040/CV-SincNet/benchmarks/practical_execution_3edc7447_20260920_b128_r01/experiments/adv3b02_xuc/code/leo_practical/channel.py",
+      "line": 331,
+      "function": "__init__",
+      "calls": 128,
+      "self_s": 0.019804785000000002,
+      "cumulative_s": 0.074947226
+    },
+    {
+      "file": "/home/szu2070436088/2510044040/CV-SincNet/benchmarks/practical_execution_3edc7447_20260920_b128_r01/experiments/adv3b02_xuc/code/leo_practical/channel.py",
+      "line": 336,
+      "function": "<dictcomp>",
+      "calls": 128,
+      "self_s": 0.013611057000000001,
+      "cumulative_s": 0.041299137
+    },
+    {
+      "file": "/home/szu2070436088/2510044040/CV-SincNet/benchmarks/practical_execution_3edc7447_20260920_b128_r01/experiments/adv3b02_xuc/code/leo_practical/equalization.py",
+      "line": 9,
+      "function": "linear_filter",
+      "calls": 384,
+      "self_s": 0.0034536930000000003,
+      "cumulative_s": 0.022272238
+    },
+    {
+      "file": "/home/szu2070436088/2510044040/CV-SincNet/benchmarks/practical_execution_3edc7447_20260920_b128_r01/experiments/adv3b02_xuc/code/leo_practical/channel.py",
+      "line": 33,
+      "function": "stable_seed",
+      "calls": 1281,
+      "self_s": 0.003726014,
+      "cumulative_s": 0.017966347
+    },
+    {
+      "file": "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/numpy/_core/_methods.py",
+      "line": 118,
+      "function": "_mean",
+      "calls": 1152,
+      "self_s": 0.005291919,
+      "cumulative_s": 0.013609488000000001
+    },
+    {
+      "file": "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/dataclasses.py",
+      "line": 1405,
+      "function": "replace",
+      "calls": 128,
+      "self_s": 0.0037556530000000003,
+      "cumulative_s": 0.012475994
+    },
+    {
+      "file": "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/dataclasses.py",
+      "line": 1217,
+      "function": "asdict",
+      "calls": 257,
+      "self_s": 0.00036096900000000005,
+      "cumulative_s": 0.012428638
+    },
+    {
+      "file": "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/numpy/_core/_ufunc_config.py",
+      "line": 464,
+      "function": "inner",
+      "calls": 1153,
+      "self_s": 0.010597941000000001,
+      "cumulative_s": 0.012106547
+    },
+    {
+      "file": "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/numpy/lib/_arraypad_impl.py",
+      "line": 545,
+      "function": "pad",
+      "calls": 256,
+      "self_s": 0.003208863,
+      "cumulative_s": 0.011944275
+    },
+    {
+      "file": "/home/szu2070436088/2510044040/CV-SincNet/benchmarks/practical_execution_3edc7447_20260920_b128_r01/experiments/adv3b02_xuc/code/leo_practical/channel.py",
+      "line": 268,
+      "function": "waveform_metrics",
+      "calls": 256,
+      "self_s": 0.0030329940000000002,
+      "cumulative_s": 0.011905423
+    },
+    {
+      "file": "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/dataclasses.py",
+      "line": 1241,
+      "function": "_asdict_inner",
+      "calls": 1729,
+      "self_s": 0.004459304,
+      "cumulative_s": 0.011837059
+    },
+    {
+      "file": "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/json/__init__.py",
+      "line": 183,
+      "function": "dumps",
+      "calls": 1281,
+      "self_s": 0.0026984820000000003,
+      "cumulative_s": 0.011308955
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "function": "<method 'reduce' of 'numpy.ufunc' objects>",
+      "calls": 4097,
+      "self_s": 0.010689875000000001,
+      "cumulative_s": 0.010689875000000001
+    },
+    {
+      "file": "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/numpy/_core/fromnumeric.py",
+      "line": 3735,
+      "function": "mean",
+      "calls": 640,
+      "self_s": 0.001415912,
+      "cumulative_s": 0.009855743
+    },
+    {
+      "file": "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/numpy/_core/numeric.py",
+      "line": 772,
+      "function": "convolve",
+      "calls": 512,
+      "self_s": 0.001359025,
+      "cumulative_s": 0.007520095
+    },
+    {
+      "file": "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/json/encoder.py",
+      "line": 182,
+      "function": "encode",
+      "calls": 1281,
+      "self_s": 0.0023001270000000003,
+      "cumulative_s": 0.007321772000000001
+    },
+    {
+      "file": "/home/szu2070436088/2510044040/CV-SincNet/benchmarks/practical_execution_3edc7447_20260920_b128_r01/experiments/adv3b02_xuc/code/leo_practical/channel.py",
+      "line": 94,
+      "function": "__post_init__",
+      "calls": 128,
+      "self_s": 0.0019699410000000002,
+      "cumulative_s": 0.006161278
+    },
+    {
+      "file": "/home/szu2070436088/2510044040/CV-SincNet/benchmarks/practical_execution_3edc7447_20260920_b128_r01/experiments/adv3b02_xuc/code/leo_practical/channel.py",
+      "line": 198,
+      "function": "sample_geometry",
+      "calls": 128,
+      "self_s": 0.003488455,
+      "cumulative_s": 0.006081844
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "function": "<built-in method numpy._core._multiarray_umath.correlate>",
+      "calls": 512,
+      "self_s": 0.005645378,
+      "cumulative_s": 0.005645378
+    }
+  ],
+  "model": {
+    "full_eval": {
+      "median_s": 0.013981209136545658,
+      "samples_s": [
+        0.014210179448127747,
+        0.013981209136545658,
+        0.013622641563415527
+      ]
+    },
+    "identity_eval": {
+      "median_s": 0.004968931898474693,
+      "samples_s": [
+        0.004968931898474693,
+        0.004987246356904507,
+        0.004961847327649593
+      ]
+    },
+    "exact_identity": true,
+    "gradient_legacy": {
+      "median_s": 0.023857949301600456,
+      "samples_s": [
+        0.023857949301600456,
+        0.02391082514077425,
+        0.023719532415270805
+      ]
+    },
+    "gradient_snapshot": {
+      "median_s": 0.01354697160422802,
+      "samples_s": [
+        0.013586578890681267,
+        0.013521209359169006,
+        0.01354697160422802
+      ]
+    },
+    "exact_gradient_observation": true,
+    "identity_speedup": 2.8137252476407357,
+    "gradient_speedup": 1.761127874081789
+  }
+}
