@@ -636,6 +636,8 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--practical_fs_hz", type=float, default=25e6)
     parser.add_argument("--practical_fc_hz", type=float, default=2.462e9)
     parser.add_argument("--practical_receiver_seed", type=int, default=2027)
+    parser.add_argument("--practical_eval_cache_dir", type=str, default="",
+                        help="Opt-in deterministic Practical LEO evaluation IQ cache; training always bypasses")
     parser.add_argument("--rc4_satellite_family", choices=["leo_weak", "original_leo", "practical"], default="leo_weak")
     parser.add_argument("--a1_periodic_target_scenarios", default="clean,leo_clear_weak,leo_low_elev_weak,leo_rain_weak")
     parser.add_argument("--a1_final_weak_reference", type=str2bool, default=False)
@@ -3559,6 +3561,8 @@ def _evaluate_source_val_tail_geometry(model, data_ctx, device, args) -> Dict[st
     labels: List[torch.Tensor] = []
     domains: List[torch.Tensor] = []
     sat_scenarios = list(getattr(args, "sat_train_protocol_scenario_list", []))
+    use_sat_geometry = (bool(getattr(args, "direct_metric_multiview_separate", False))
+                        and multiview_direct_metric_acceptance_loss is not None)
     sat_generator = make_torch_generator(device, int(getattr(args, "seed", 0)) + 91079) if make_torch_generator is not None else None
     try:
         model.eval()
@@ -3573,7 +3577,7 @@ def _evaluate_source_val_tail_geometry(model, data_ctx, device, args) -> Dict[st
                 d = domain_from_extra(extra, data_ctx["domain_label_map"], device)
                 out = model(x, y_tx=None, grl_lambda=1.0, return_aux=True, domain_labels=d)
                 features.append(out["z_id"].detach().float())
-                if sat_scenarios and apply_sat_channel_for_scenario is not None:
+                if use_sat_geometry and sat_scenarios and apply_sat_channel_for_scenario is not None:
                     scenario = sat_scenarios[(batch_idx - 1) % len(sat_scenarios)]
                     x_sat, _ = apply_sat_channel_for_scenario(
                         x,
@@ -3630,6 +3634,7 @@ def _evaluate_source_val_tail_geometry(model, data_ctx, device, args) -> Dict[st
                 "seed": int(getattr(args, "seed", 0)) + 91073,
                 "satellite_scenarios": sat_scenarios,
                 "multiview_sample_count": int(torch.cat(sat_features, dim=0).size(0)) if sat_features else 0,
+                "satellite_geometry_requested": bool(use_sat_geometry),
             }
         )
         if result["status"] != "COMPLETE":
@@ -11500,7 +11505,9 @@ def train(args) -> int:
                         error_if_nonfinite=False,
                     )
                 if bool(args.a1_runtime_fast):
-                    post_clip = GradientSnapshot.capture(model)
+                    post_clip = (GradientSnapshot.capture(model)
+                                 if grads_finite and float(getattr(args, "max_grad_norm", 0.0)) > 0.0
+                                 else gradient_snapshot)
                     grad_total = post_clip.norm()
                     grad_backbone = post_clip.norm(lambda name: "backbone" in name)
                     grad_aux = post_clip.norm(lambda name: "aux" in name)

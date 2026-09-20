@@ -1,0 +1,305 @@
+{
+  "coverage": "Full-file AST and targeted call-path audit of current Phase1 Practical LEO pipeline; not all repository methods or all possible runtime branches. Static call counts are not executed counts.",
+  "files": [
+    {
+      "file": "SSDG/train_ssdg.py",
+      "lines": 14048,
+      "functions": 172,
+      "static_calls": {
+        "item": 85,
+        "cpu": 23,
+        "tolist": 2,
+        "numpy": 0,
+        "state_dict": 25
+      }
+    },
+    {
+      "file": "baseline_origin_sat_view.py",
+      "lines": 356,
+      "functions": 16,
+      "static_calls": {
+        "item": 3,
+        "cpu": 0,
+        "tolist": 0,
+        "numpy": 0,
+        "state_dict": 0
+      }
+    },
+    {
+      "file": "cvsrffi/a1_fast_runtime.py",
+      "lines": 62,
+      "functions": 3,
+      "static_calls": {
+        "item": 0,
+        "cpu": 2,
+        "tolist": 2,
+        "numpy": 0,
+        "state_dict": 0
+      }
+    },
+    {
+      "file": "cvsrffi/a1_periodic_target.py",
+      "lines": 90,
+      "functions": 3,
+      "static_calls": {
+        "item": 0,
+        "cpu": 0,
+        "tolist": 0,
+        "numpy": 0,
+        "state_dict": 0
+      }
+    },
+    {
+      "file": "cvsrffi/daot_training.py",
+      "lines": 214,
+      "functions": 3,
+      "static_calls": {
+        "item": 0,
+        "cpu": 0,
+        "tolist": 0,
+        "numpy": 0,
+        "state_dict": 0
+      }
+    },
+    {
+      "file": "cvsrffi/eval.py",
+      "lines": 319,
+      "functions": 15,
+      "static_calls": {
+        "item": 5,
+        "cpu": 0,
+        "tolist": 0,
+        "numpy": 0,
+        "state_dict": 0
+      }
+    },
+    {
+      "file": "cvsrffi/logging.py",
+      "lines": 387,
+      "functions": 14,
+      "static_calls": {
+        "item": 0,
+        "cpu": 0,
+        "tolist": 0,
+        "numpy": 0,
+        "state_dict": 0
+      }
+    },
+    {
+      "file": "cvsrffi/losses.py",
+      "lines": 4576,
+      "functions": 76,
+      "static_calls": {
+        "item": 109,
+        "cpu": 0,
+        "tolist": 0,
+        "numpy": 0,
+        "state_dict": 0
+      }
+    },
+    {
+      "file": "cvsrffi/muse_ssdg.py",
+      "lines": 2926,
+      "functions": 90,
+      "static_calls": {
+        "item": 46,
+        "cpu": 44,
+        "tolist": 26,
+        "numpy": 0,
+        "state_dict": 1
+      }
+    },
+    {
+      "file": "cvsrffi/original_leo.py",
+      "lines": 54,
+      "functions": 5,
+      "static_calls": {
+        "item": 0,
+        "cpu": 0,
+        "tolist": 0,
+        "numpy": 0,
+        "state_dict": 0
+      }
+    },
+    {
+      "file": "cvsrffi/practical_adapter.py",
+      "lines": 83,
+      "functions": 8,
+      "static_calls": {
+        "item": 1,
+        "cpu": 1,
+        "tolist": 4,
+        "numpy": 0,
+        "state_dict": 0
+      }
+    },
+    {
+      "file": "cvsrffi/practical_view_cache.py",
+      "lines": 89,
+      "functions": 2,
+      "static_calls": {
+        "item": 1,
+        "cpu": 0,
+        "tolist": 0,
+        "numpy": 0,
+        "state_dict": 0
+      }
+    },
+    {
+      "file": "dataset_wisig.py",
+      "lines": 1753,
+      "functions": 36,
+      "static_calls": {
+        "item": 0,
+        "cpu": 0,
+        "tolist": 14,
+        "numpy": 0,
+        "state_dict": 0
+      }
+    },
+    {
+      "file": "leo_practical/__init__.py",
+      "lines": 17,
+      "functions": 0,
+      "static_calls": {
+        "item": 0,
+        "cpu": 0,
+        "tolist": 0,
+        "numpy": 0,
+        "state_dict": 0
+      }
+    },
+    {
+      "file": "leo_practical/__main__.py",
+      "lines": 126,
+      "functions": 3,
+      "static_calls": {
+        "item": 0,
+        "cpu": 0,
+        "tolist": 0,
+        "numpy": 0,
+        "state_dict": 0
+      }
+    },
+    {
+      "file": "leo_practical/acceptance.py",
+      "lines": 344,
+      "functions": 25,
+      "static_calls": {
+        "item": 0,
+        "cpu": 0,
+        "tolist": 0,
+        "numpy": 1,
+        "state_dict": 0
+      }
+    },
+    {
+      "file": "leo_practical/batch.py",
+      "lines": 99,
+      "functions": 1,
+      "static_calls": {
+        "item": 0,
+        "cpu": 0,
+        "tolist": 0,
+        "numpy": 1,
+        "state_dict": 0
+      }
+    },
+    {
+      "file": "leo_practical/channel.py",
+      "lines": 575,
+      "functions": 18,
+      "static_calls": {
+        "item": 0,
+        "cpu": 0,
+        "tolist": 7,
+        "numpy": 0,
+        "state_dict": 0
+      }
+    },
+    {
+      "file": "leo_practical/equalization.py",
+      "lines": 65,
+      "functions": 3,
+      "static_calls": {
+        "item": 0,
+        "cpu": 0,
+        "tolist": 0,
+        "numpy": 0,
+        "state_dict": 0
+      }
+    },
+    {
+      "file": "leo_practical/residual.py",
+      "lines": 142,
+      "functions": 2,
+      "static_calls": {
+        "item": 0,
+        "cpu": 0,
+        "tolist": 1,
+        "numpy": 0,
+        "state_dict": 0
+      }
+    },
+    {
+      "file": "model.py",
+      "lines": 2147,
+      "functions": 69,
+      "static_calls": {
+        "item": 0,
+        "cpu": 0,
+        "tolist": 0,
+        "numpy": 0,
+        "state_dict": 0
+      }
+    },
+    {
+      "file": "model_dual_cvsincnet.py",
+      "lines": 1308,
+      "functions": 34,
+      "static_calls": {
+        "item": 0,
+        "cpu": 0,
+        "tolist": 0,
+        "numpy": 0,
+        "state_dict": 0
+      }
+    },
+    {
+      "file": "scripts/predict_phase1_truth_last.py",
+      "lines": 214,
+      "functions": 6,
+      "static_calls": {
+        "item": 0,
+        "cpu": 1,
+        "tolist": 1,
+        "numpy": 1,
+        "state_dict": 0
+      }
+    },
+    {
+      "file": "scripts/score_phase1_truth_last.py",
+      "lines": 26,
+      "functions": 1,
+      "static_calls": {
+        "item": 0,
+        "cpu": 0,
+        "tolist": 0,
+        "numpy": 0,
+        "state_dict": 0
+      }
+    },
+    {
+      "file": "scripts/train_rc4_practical.py",
+      "lines": 74,
+      "functions": 3,
+      "static_calls": {
+        "item": 0,
+        "cpu": 0,
+        "tolist": 0,
+        "numpy": 0,
+        "state_dict": 0
+      }
+    }
+  ]
+}

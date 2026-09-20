@@ -70,6 +70,8 @@ def main(argv=None) -> None:
     parser.add_argument("--device", default="cuda:0")
     parser.add_argument("--mode", choices=["prepare", "predict"], required=True)
     parser.add_argument("--recipe", default="")
+    parser.add_argument("--practical-eval-cache-dir", default=None,
+                        help="Override checkpoint evaluation IQ cache directory; does not cache predictions")
     parser.add_argument("--expected-epoch", type=int, default=200)
     parser.add_argument("--scenarios", default=",".join(FCR_PREDICTION_SCENARIOS))
     args = parser.parse_args(argv)
@@ -149,6 +151,8 @@ def main(argv=None) -> None:
     # A single registered channel configuration and batch size for all 15 rows.
     model_args = (json.loads(Path(args.recipe).read_text(encoding='utf-8'))['baseline_args'] if args.recipe else dict(checkpoint['args']))
     model_args.update({"input_len": 256, "num_classes": 6, "dataset": "wisig", "sat_seed":392005})
+    if args.practical_eval_cache_dir is not None:
+        model_args['practical_eval_cache_dir'] = args.practical_eval_cache_dir
     model.eval()
 
     loader = DataLoader(

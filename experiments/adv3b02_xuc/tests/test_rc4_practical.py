@@ -53,6 +53,7 @@ def test_source_validation_context_last_small_batch(tmp_path,monkeypatch):
     cfg=Path(__file__).resolve().parents[1]/'configs/rc4_practical_full_zf_20260918.json'
     args=build_args(cfg,'unused',str(tmp_path),'unused','unused','unused','smoke')
     args.sat_train_protocol_scenario_list=list(PRACTICAL[1:])
+    args.direct_metric_multiview_separate=True
     args.eval_max_batches=0
     ma=native.merge_checkpoint_args({'model':None,'args':{},'stats':{},'split_info':None},args,input_len=256,num_domains=15)
     model=native.build_baseline_model(native._apply_model_cli_args(ma,args),torch.device('cpu'))

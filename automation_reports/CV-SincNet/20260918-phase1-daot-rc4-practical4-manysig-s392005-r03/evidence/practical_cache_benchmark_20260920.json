@@ -1,0 +1,141 @@
+{
+  "scope": "CPU synthetic IQ generation/cache only; not end-to-end training speedup",
+  "batch_size": 16,
+  "repeats": 3,
+  "torch_version": "2.10.0+cu128",
+  "cache_bytes": 1199923,
+  "cases": [
+    {
+      "route": "full",
+      "equalization": false,
+      "method": "zf",
+      "scene": "practical_high",
+      "uncached_median_s": 0.07101099999272265,
+      "cold_cache_s": 0.0794397999998182,
+      "warm_cache_median_s": 0.005363599979318678,
+      "warm_speedup": 13.239428791582432,
+      "exact_iq": true
+    },
+    {
+      "route": "full",
+      "equalization": false,
+      "method": "zf",
+      "scene": "practical_mid",
+      "uncached_median_s": 0.07577189998119138,
+      "cold_cache_s": 0.07360169998719357,
+      "warm_cache_median_s": 0.0045797000057064,
+      "warm_speedup": 16.54516668925433,
+      "exact_iq": true
+    },
+    {
+      "route": "full",
+      "equalization": false,
+      "method": "zf",
+      "scene": "practical_low_urban",
+      "uncached_median_s": 0.0726124000211712,
+      "cold_cache_s": 0.07530029999907129,
+      "warm_cache_median_s": 0.003040000010514632,
+      "warm_speedup": 23.885657819086283,
+      "exact_iq": true
+    },
+    {
+      "route": "full",
+      "equalization": true,
+      "method": "zf",
+      "scene": "practical_high",
+      "uncached_median_s": 0.08966260001761839,
+      "cold_cache_s": 0.11357419998967089,
+      "warm_cache_median_s": 0.004167099978076294,
+      "warm_speedup": 21.51678637166041,
+      "exact_iq": true
+    },
+    {
+      "route": "full",
+      "equalization": true,
+      "method": "zf",
+      "scene": "practical_mid",
+      "uncached_median_s": 0.09202900002128445,
+      "cold_cache_s": 0.09696759999496862,
+      "warm_cache_median_s": 0.0045307000109460205,
+      "warm_speedup": 20.312313726122994,
+      "exact_iq": true
+    },
+    {
+      "route": "full",
+      "equalization": true,
+      "method": "zf",
+      "scene": "practical_low_urban",
+      "uncached_median_s": 0.08666970001650043,
+      "cold_cache_s": 0.07481950000510551,
+      "warm_cache_median_s": 0.0027630999975372106,
+      "warm_speedup": 31.366834386649174,
+      "exact_iq": true
+    },
+    {
+      "route": "full",
+      "equalization": true,
+      "method": "mmse",
+      "scene": "practical_high",
+      "uncached_median_s": 0.08972079999512061,
+      "cold_cache_s": 0.08371420000912622,
+      "warm_cache_median_s": 0.003054200002225116,
+      "warm_speedup": 29.376203238083676,
+      "exact_iq": true
+    },
+    {
+      "route": "full",
+      "equalization": true,
+      "method": "mmse",
+      "scene": "practical_mid",
+      "uncached_median_s": 0.07734820002224296,
+      "cold_cache_s": 0.0945132999913767,
+      "warm_cache_median_s": 0.004533999977866188,
+      "warm_speedup": 17.059594265513194,
+      "exact_iq": true
+    },
+    {
+      "route": "full",
+      "equalization": true,
+      "method": "mmse",
+      "scene": "practical_low_urban",
+      "uncached_median_s": 0.08202410000376403,
+      "cold_cache_s": 0.09147329998086207,
+      "warm_cache_median_s": 0.00407140000606887,
+      "warm_speedup": 20.14641152465935,
+      "exact_iq": true
+    },
+    {
+      "route": "residual",
+      "equalization": false,
+      "method": "zf",
+      "scene": "practical_high",
+      "uncached_median_s": 0.04096189999836497,
+      "cold_cache_s": 0.046148099994752556,
+      "warm_cache_median_s": 0.00401370000327006,
+      "warm_speedup": 10.20552108154379,
+      "exact_iq": true
+    },
+    {
+      "route": "residual",
+      "equalization": false,
+      "method": "zf",
+      "scene": "practical_mid",
+      "uncached_median_s": 0.04289849998895079,
+      "cold_cache_s": 0.050440499995602295,
+      "warm_cache_median_s": 0.0034991000138688833,
+      "warm_speedup": 12.259866771146903,
+      "exact_iq": true
+    },
+    {
+      "route": "residual",
+      "equalization": false,
+      "method": "zf",
+      "scene": "practical_low_urban",
+      "uncached_median_s": 0.039319800009252504,
+      "cold_cache_s": 0.045413599989842623,
+      "warm_cache_median_s": 0.003692300000693649,
+      "warm_speedup": 10.649134686202569,
+      "exact_iq": true
+    }
+  ]
+}

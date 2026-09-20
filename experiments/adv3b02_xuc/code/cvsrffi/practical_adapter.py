@@ -54,11 +54,13 @@ def apply_practical(x,scene,args,*,gen=None,return_meta=False):
     # N607 Torch 2.1 / NumPy 2.2 has an unsafe ndarray ABI bridge.
     # Explicit value copies preserve float64 reference math without .numpy/from_numpy.
     array=np.array(x.detach().to(device='cpu',dtype=torch.float64).tolist(),dtype=np.float64)
-    y,records,states=apply_leo_practical_channel_batch(array,cfg,seed=seed,sample_ids=ids,session_ids=sessions,
-        realization_namespace=namespace,receiver_seed=int(args.practical_receiver_seed),return_meta=True)
+    from .practical_view_cache import cached_evaluation_batch
+    (y,records,states),cache_event=cached_evaluation_batch(array,cfg,
+        cache_dir=getattr(args,'practical_eval_cache_dir',''),compute=apply_leo_practical_channel_batch,
+        seed=seed,sample_ids=ids,session_ids=sessions,realization_namespace=namespace,
+        receiver_seed=int(args.practical_receiver_seed))
     y=torch.tensor(y.tolist(),device=x.device,dtype=x.dtype)
-    states=torch.tensor(states.tolist(),device=x.device,dtype=torch.long)
-    _last_meta={'config':asdict(cfg),'records':records,'namespace':namespace}
+    _last_meta={'config':asdict(cfg),'records':records,'namespace':namespace,'cache_event':cache_event}
     evidence_key=(getattr(args,'output_dir',''),namespace,scene)
     if namespace.startswith('source_dynamic_') and evidence_key not in _recorded:
         output=Path(args.output_dir)
@@ -70,6 +72,9 @@ def apply_practical(x,scene,args,*,gen=None,return_meta=False):
         with (output/'practical_channel_execution.jsonl').open('a',encoding='utf-8') as f:
             f.write(json.dumps(summary,ensure_ascii=False)+'\n')
         _recorded.add(evidence_key)
+    if not return_meta:
+        return y,None
+    states=torch.tensor(states.tolist(),device=x.device,dtype=torch.long)
     meta={'state':states,'snr_db':torch.tensor([m['quality_snr_db'] for m in records],device=x.device),
         'residual_cfo_hz':torch.tensor([m['output_frequency_hz'] for m in records],device=x.device),
         'theta_deg':torch.tensor([m['geometry']['elevation_deg'] for m in records],device=x.device),

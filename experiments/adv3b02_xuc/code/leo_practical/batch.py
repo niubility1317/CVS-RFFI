@@ -58,6 +58,9 @@ def apply_leo_practical_channel_batch(
     if not isinstance(realization_namespace, str) or not realization_namespace.strip():
         raise ValueError("an explicit realization namespace is required")
     outputs, metadata, states = [], [], []
+    # Receiver is frozen and depends only on cfg/receiver_seed/session, not the
+    # independent per-record stream. Reuse within this call, never stream state.
+    hardware_by_session = {}
     for i, record in enumerate(raw):
         session = str(session_ids[i])
         if not session:
@@ -68,7 +71,9 @@ def apply_leo_practical_channel_batch(
             input_rms = float(np.sqrt(np.mean(np.abs(record)**2)))
             if input_rms == 0:
                 raise ValueError("zero-energy input record")
-        hardware = receiver_for_session(cfg, receiver_seed, session)
+        if session not in hardware_by_session:
+            hardware_by_session[session] = receiver_for_session(cfg, receiver_seed, session)
+        hardware = hardware_by_session[session]
         derived_seed = stable_seed(seed, realization_namespace, cfg.scenario, ids[i])
         if cfg.processing_route == "residual":
             from .residual import ResidualChannel
