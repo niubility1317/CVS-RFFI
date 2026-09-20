@@ -642,6 +642,8 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--practical_fc_hz", type=float, default=2.462e9)
     parser.add_argument("--practical_receiver_seed", type=int, default=2027)
     parser.add_argument("--practical_buffer_output", type=str2bool, default=False)
+    parser.add_argument("--source_validation_reuse", type=str2bool, default=False)
+    parser.add_argument("--practical_execution_fast", type=str2bool, default=False)
     parser.add_argument("--practical_eval_cpu_pipeline", type=str2bool, default=False)
     parser.add_argument("--practical_channel_workers", type=int, default=0)
     parser.add_argument("--practical_eval_cache_dir", type=str, default="",
@@ -3558,7 +3560,7 @@ def _evaluate_source_val_sat_if_enabled(model, data_ctx, device, args) -> Dict[s
     )
 
 
-def _evaluate_source_val_tail_geometry(model, data_ctx, device, args) -> Dict[str, Any]:
+def _evaluate_source_val_tail_geometry(model, data_ctx, device, args, feature_cache=None) -> Dict[str, Any]:
     """Evaluate tail/proxy geometry on one fixed source-val protocol."""
 
     if direct_metric_acceptance_loss is None:
@@ -3583,8 +3585,10 @@ def _evaluate_source_val_tail_geometry(model, data_ctx, device, args) -> Dict[st
                     from cvsrffi.practical_adapter import set_source_evaluation_context
                     set_source_evaluation_context(extra[1])
                 d = domain_from_extra(extra, data_ctx["domain_label_map"], device)
-                out = model(x, y_tx=None, grl_lambda=1.0, return_aux=True, domain_labels=d)
-                features.append(out["z_id"].detach().float())
+                z_cached = feature_cache.take(batch_idx-1, x) if feature_cache is not None else None
+                if z_cached is None:
+                    z_cached = model(x, y_tx=None, grl_lambda=1.0, return_aux=True, domain_labels=d)["z_id"]
+                features.append(z_cached.detach().float())
                 if use_sat_geometry and sat_scenarios and apply_sat_channel_for_scenario is not None:
                     scenario = sat_scenarios[(batch_idx - 1) % len(sat_scenarios)]
                     x_sat, _ = apply_sat_channel_for_scenario(
@@ -12719,7 +12723,11 @@ def train(args) -> int:
         execution_profile.close()
         train_batches_seconds = time.time() - t0
         base_validation_started = time.time()
-        val_stats = evaluate_loader(model, data_ctx["val_loader"], device, data_ctx["domain_label_map"], max_batches=int(args.eval_max_batches))
+        feature_cache = None
+        if bool(getattr(args, "source_validation_reuse", False)) and _should_run_source_val_heavy_eval(epoch, total_epochs, args):
+            from cvsrffi.source_validation_reuse import SourceValidationReuse
+            feature_cache = SourceValidationReuse(model)
+        val_stats = evaluate_loader(model, data_ctx["val_loader"], device, data_ctx["domain_label_map"], max_batches=int(args.eval_max_batches), feature_cache=feature_cache)
         base_validation_seconds = time.time() - base_validation_started
         current_source_val = float(val_stats.get("tx_acc", float("nan")))
         if math.isfinite(current_source_val):
@@ -12751,7 +12759,7 @@ def train(args) -> int:
         source_val_heavy_eval_ran = _should_run_source_val_heavy_eval(epoch, total_epochs, args)
         if source_val_heavy_eval_ran:
             heavy_source_validation_started = time.time()
-            source_val_tail_geometry = _evaluate_source_val_tail_geometry(model, data_ctx, device, args)
+            source_val_tail_geometry = _evaluate_source_val_tail_geometry(model, data_ctx, device, args, feature_cache=feature_cache)
             source_val_sat_stats = _evaluate_source_val_sat_if_enabled(model, data_ctx, device, args)
             heavy_source_validation_seconds = time.time() - heavy_source_validation_started
             last_source_val_tail_geometry = deepcopy(source_val_tail_geometry)

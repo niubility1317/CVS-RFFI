@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+from contextlib import closing, nullcontext
 import json
 from pathlib import Path
 from types import SimpleNamespace
@@ -73,6 +74,7 @@ def main(argv=None) -> None:
     parser.add_argument("--practical-eval-cache-dir", default=None,
                         help="Override checkpoint evaluation IQ cache directory; does not cache predictions")
     parser.add_argument("--practical-cpu-pipeline", action="store_true")
+    parser.add_argument("--practical-prefetch", action="store_true")
     parser.add_argument("--identity-only", action="store_true")
     parser.add_argument("--expected-epoch", type=int, default=200)
     parser.add_argument("--scenarios", default=",".join(FCR_PREDICTION_SCENARIOS))
@@ -176,30 +178,45 @@ def main(argv=None) -> None:
         for scenario_index, scenario in enumerate(scenarios):
             generator = torch.Generator(device=device)
             generator.manual_seed(int(model_args.get("sat_seed", 2027)) + scenario_index * 1009)
-            for x, _masked_y, _domain, meta in loader:
-                if not (cpu_pipeline and scenario.startswith('practical_')):
+            use_prefetch = args.practical_prefetch and scenario.startswith('practical_')
+            def prepare_cpu(batch):
+                value, _y, _d, metadata = batch
+                from cvsrffi.practical_adapter import set_evaluation_context
+                set_evaluation_context(metadata["physical_sample_id"])
+                value, _ = apply_sat_channel_for_scenario(value, scenario, sat_args,
+                    gen=generator, return_meta=False)
+                return value, _y, _d, metadata
+            if use_prefetch:
+                from cvsrffi.bounded_prefetch import prefetch_map
+                batches = prefetch_map(prepare_cpu, loader)
+            else:
+                batches = loader
+            with closing(batches) if use_prefetch else nullcontext(batches):
+                for x, _masked_y, _domain, meta in batches:
+                    if not use_prefetch:
+                        if not (cpu_pipeline and scenario.startswith('practical_')):
+                            x = x.to(device, non_blocking=True)
+                        if scenario.startswith("practical_"):
+                            from cvsrffi.practical_adapter import set_evaluation_context
+                            set_evaluation_context(meta["physical_sample_id"])
+                        if scenario != "clean":
+                            x, _ = apply_sat_channel_for_scenario(
+                                x, scenario, sat_args, gen=generator, return_meta=False
+                            )
                     x = x.to(device, non_blocking=True)
-                if scenario.startswith("practical_"):
-                    from cvsrffi.practical_adapter import set_evaluation_context
-                    set_evaluation_context(meta["physical_sample_id"])
-                if scenario != "clean":
-                    x, _ = apply_sat_channel_for_scenario(
-                        x, scenario, sat_args, gen=generator, return_meta=False
-                    )
-                x = x.to(device, non_blocking=True)
-                outputs = (model.forward_identity_only(x, y_tx=None) if identity_only else
-                           model(x, y_tx=None, grl_lambda=1.0, return_aux=True))
-                predicted = select_identity_logits(outputs, model=model).argmax(dim=1).cpu().tolist()
-                for sample_id, predicted_class in zip(meta["physical_sample_id"], predicted):
-                    records.append(
-                        {
-                            "sample_id": str(sample_id),
-                            "scenario": scenario,
-                            "predicted_class": int(predicted_class),
-                            "run_id": args.run_id,
-                            "row_id": args.row_id,
-                        }
-                    )
+                    outputs = (model.forward_identity_only(x, y_tx=None) if identity_only else
+                               model(x, y_tx=None, grl_lambda=1.0, return_aux=True))
+                    predicted = select_identity_logits(outputs, model=model).argmax(dim=1).cpu().tolist()
+                    for sample_id, predicted_class in zip(meta["physical_sample_id"], predicted):
+                        records.append(
+                            {
+                                "sample_id": str(sample_id),
+                                "scenario": scenario,
+                                "predicted_class": int(predicted_class),
+                                "run_id": args.run_id,
+                                "row_id": args.row_id,
+                            }
+                        )
     predictions_path.write_text(
         json.dumps(
             {

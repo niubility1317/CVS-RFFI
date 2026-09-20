@@ -14,6 +14,7 @@ import math
 from typing import Optional
 
 import numpy as np
+from .execution import REFERENCE, constants, tracking
 
 VERSION = "leo_practical_v3_full_residual_20260918"
 C = 299792458.0
@@ -328,7 +329,8 @@ class ChannelStream:
     AGC and receiver-quality decisions are blockwise and depend on boundaries.
     Input is in shared reference units: do not renormalize consecutive blocks.
     """
-    def __init__(self, cfg, seed, receiver, geometry=None, receiver_processor=None):
+    def __init__(self, cfg, seed, receiver, geometry=None, receiver_processor=None, execution=REFERENCE):
+        self.execution = execution
         self.cfg, self.seed, self.receiver = cfg, int(seed), receiver
         self.receiver_processor = receiver_processor
         if receiver_processor is not None:
@@ -360,25 +362,31 @@ class ChannelStream:
         r = self.rngs["scatter"]
         self.ray_hz = fd * np.cos(r.uniform(-np.pi, np.pi, shape))
         self.ray_coef = (r.normal(size=shape) + 1j*r.normal(size=shape)) / math.sqrt(2*cfg.scatter_sinusoids)
-        self.diffuse = 10**(np.asarray(cfg.diffuse_power_db)/10)
-        a = math.log(10)/20
-        self.mean_los_power = np.exp(2*a*np.asarray(cfg.los_mean_db) + 2*a*a*np.square(cfg.los_std_db))
-        self.mean_los_power[2] = 0
-        self.reference_power = float(self.mean_los_power[0] + self.diffuse[0])
-        # Three diffuse rays; one LOS component shares delay zero. Scale delays
-        # against the TOTAL ensemble PDP, including direct-path power.
-        self.pdp = np.exp(-np.arange(3, dtype=float))
-        self.pdp /= self.pdp.sum()
-        base = np.array([0., 1., 3.])
-        delays = []
-        for s in range(3):
-            weights = self.diffuse[s] * self.pdp
-            weights = weights.copy()
-            weights[0] += self.mean_los_power[s]
-            weights /= weights.sum()
-            spread = np.sqrt(np.sum(weights*(base - weights @ base)**2))
-            delays.append(base * cfg.rms_delay_ns[s]*1e-9 * cfg.fs_hz / spread)
-        self.delays = np.asarray(delays)
+        if execution.constants:
+            diffuse, los, pdp, delays, reference = constants(cfg)
+            self.diffuse, self.mean_los_power = diffuse.copy(), los.copy()
+            self.pdp, self.delays = pdp.copy(), delays.copy()
+            self.reference_power = reference
+        else:
+            self.diffuse = 10**(np.asarray(cfg.diffuse_power_db)/10)
+            a = math.log(10)/20
+            self.mean_los_power = np.exp(2*a*np.asarray(cfg.los_mean_db) + 2*a*a*np.square(cfg.los_std_db))
+            self.mean_los_power[2] = 0
+            self.reference_power = float(self.mean_los_power[0] + self.diffuse[0])
+            # Three diffuse rays; one LOS component shares delay zero. Scale delays
+            # against the TOTAL ensemble PDP, including direct-path power.
+            self.pdp = np.exp(-np.arange(3, dtype=float))
+            self.pdp /= self.pdp.sum()
+            base = np.array([0., 1., 3.])
+            delays = []
+            for s in range(3):
+                weights = self.diffuse[s] * self.pdp
+                weights = weights.copy()
+                weights[0] += self.mean_los_power[s]
+                weights /= weights.sum()
+                spread = np.sqrt(np.sum(weights*(base - weights @ base)**2))
+                delays.append(base * cfg.rms_delay_ns[s]*1e-9 * cfg.fs_hz / spread)
+            self.delays = np.asarray(delays)
         self.history_size = int(np.floor(self.delays.max())) + 2*cfg.fractional_delay_half_length
         self.history = None
         self.eq_signal_history = None
@@ -478,10 +486,10 @@ class ChannelStream:
         tracking_rho = math.exp(-dt/cfg.phase_tracking_correlation_time_s)
         tracking_scale = math.sqrt(-math.expm1(-2*dt/cfg.phase_tracking_correlation_time_s))
         tracking_innovations = self.rngs["tracking"].normal(size=n)
-        tracking_residual = np.empty(n)
-        for k in range(n):
-            tracking_residual[k] = residual_scale*math.radians(cfg.phase_tracking_residual_std_deg)*self.tracking_z
-            self.tracking_z = tracking_rho*self.tracking_z + tracking_scale*tracking_innovations[k]
+        tracking_residual, self.tracking_z = tracking(self.tracking_z,
+            tracking_rho, tracking_scale, tracking_innovations,
+            residual_scale*math.radians(cfg.phase_tracking_residual_std_deg),
+            self.execution.recurrence)
         rotation = np.exp(1j*(2*np.pi*self.f_total*t + phase))
         signal = iq_imbalance(signal*rotation, self.receiver)
         noise = iq_imbalance(noise*rotation, self.receiver)
@@ -520,6 +528,13 @@ class ChannelStream:
         self.index += n
         if not np.isfinite(y).all():
             raise FloatingPointError("nonfinite channel output")
+        if self.execution.light_metadata and not return_traces:
+            return y.astype(np.complex64), dict(
+                metadata_level="training", state_end=STATES[int(state[-1])],
+                quality_snr_db=quality, output_frequency_hz=(self.f_total-self.f_hat
+                    if cfg.mode == "post_sync" else self.f_total),
+                geometry=dict(elevation_deg=self.geometry.elevation_deg, altitude_m=self.geometry.altitude_m),
+                receiver_lock_status=lock_status, channel_equalization_applied=eq_applied)
         ps = float(np.mean(np.abs(signal)**2))
         pn = float(np.mean(np.abs(noise)**2))
         meta = dict(version=VERSION, config_hash=cfg.config_hash, seed=self.seed,

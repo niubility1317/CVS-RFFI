@@ -129,7 +129,7 @@ def resolve_sat_eval_loader_names(named_loaders: Dict[str, DataLoader], spec: st
     return names
 
 
-def evaluate_loader(model, loader, device, domain_label_map: Dict[int, int], max_batches: int = 0):
+def evaluate_loader(model, loader, device, domain_label_map: Dict[int, int], max_batches: int = 0, feature_cache=None):
     model.eval()
     tx_correct = tx_total = 0
     dom_correct = dom_total = 0
@@ -141,6 +141,8 @@ def evaluate_loader(model, loader, device, domain_label_map: Dict[int, int], max
         d = remap_domain_tensor(d_raw, domain_label_map, device) if d_raw is not None else None
 
         out = model(x, y_tx=None, grl_lambda=1.0, return_aux=True)
+        if feature_cache is not None:
+            feature_cache.record(bi, x, out["z_id"])
         tx_logits = out["tx_logits"]
         tx_pred = tx_logits.argmax(dim=1)
         tx_correct += int((tx_pred == y).sum().item())

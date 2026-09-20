@@ -79,6 +79,13 @@ def apply_practical(x,scene,args,*,gen=None,return_meta=False):
     if workers > 1:
         from .practical_parallel import parallel_batch
         compute=partial(parallel_batch,workers=workers)
+    if bool(getattr(args, 'practical_execution_fast', False)):
+        from dataclasses import replace
+        from leo_practical.execution import FAST
+        evidence_key=(getattr(args,'output_dir',''),namespace,scene)
+        # Preserve full first-batch evidence and all fixed evaluation metadata.
+        light=namespace.startswith('source_dynamic_') and evidence_key in _recorded
+        compute=partial(compute, execution=replace(FAST, light_metadata=light))
     with stage('channel/cache_or_simulation'):
         (y,records,states),cache_event=cached_evaluation_batch(array,cfg,
             cache_dir=getattr(args,'practical_eval_cache_dir',''),compute=compute,

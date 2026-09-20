@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import numpy as np
+from .execution import REFERENCE
 
 from .channel import ChannelStream, receiver_for_session, stable_seed, normalize_input, STATES
 
@@ -9,7 +10,7 @@ from .channel import ChannelStream, receiver_for_session, stable_seed, normalize
 def apply_leo_practical_channel_batch(
     x_iq, cfg, *, seed, sample_ids, session_ids, realization_namespace,
     receiver_seed=0, normalize_input_rms=True, return_meta=True,
-    receiver_processor=None,
+    receiver_processor=None, execution=REFERENCE,
 ):
     """Apply independent channels to (B,2,T) real IQ or (B,T) complex IQ.
 
@@ -77,9 +78,9 @@ def apply_leo_practical_channel_batch(
         derived_seed = stable_seed(seed, realization_namespace, cfg.scenario, ids[i])
         if cfg.processing_route == "residual":
             from .residual import ResidualChannel
-            stream = ResidualChannel(cfg, derived_seed, hardware, receiver_processor=receiver_processor)
+            stream = ResidualChannel(cfg, derived_seed, hardware, receiver_processor=receiver_processor, execution=execution)
         else:
-            stream = ChannelStream(cfg, derived_seed, hardware, receiver_processor=receiver_processor)
+            stream = ChannelStream(cfg, derived_seed, hardware, receiver_processor=receiver_processor, execution=execution)
         y, meta = stream.process(record)
         meta.update(sample_id=ids[i], independent_snapshot=True,
                     realization_namespace=realization_namespace,

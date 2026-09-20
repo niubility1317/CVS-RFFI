@@ -6,6 +6,7 @@ once. Noise is colored by G; IQ image and untracked carrier terms survive.
 This is not an independently weakened channel, and G=1 when EQ is off.
 """
 from dataclasses import replace, asdict
+from .execution import REFERENCE, full_config, tracking
 import math
 import numpy as np
 
@@ -16,14 +17,16 @@ from .equalization import propagation_kernel, design_equalizer, linear_filter
 
 class ResidualChannel:
     """One independent short snapshot; not a continuous-orbit stream."""
-    def __init__(self, cfg, seed, receiver, geometry=None, receiver_processor=None):
+    def __init__(self, cfg, seed, receiver, geometry=None, receiver_processor=None, execution=REFERENCE):
         if cfg.mode != "post_sync":
             raise ValueError("residual route requires post_sync")
         if receiver_processor is not None:
             raise ValueError("arbitrary receiver transforms are not supported")
+        self.execution = execution
         self.cfg, self.seed, self.receiver = cfg, seed, receiver
         # Only initialize shared physical parameters. NEVER call its process().
-        self.latent = ChannelStream(replace(cfg, processing_route="full"), seed, receiver, geometry)
+        self.latent = ChannelStream(full_config(cfg) if execution.config_reuse else replace(cfg, processing_route="full"),
+                                    seed, receiver, geometry, execution=execution)
         self.used = False
 
     def process(self, x, *, preceding_context=None, return_traces=False, quality_snr_db=None):
@@ -72,22 +75,23 @@ class ResidualChannel:
         phase = latent.phase+np.concatenate([[0.],np.cumsum(phase_inc[:-1])])
         rho = math.exp(-1/(cfg.fs_hz*cfg.phase_tracking_correlation_time_s))
         innovation = math.sqrt(-math.expm1(-2/(cfg.fs_hz*cfg.phase_tracking_correlation_time_s)))
-        tracking = np.empty(n)
-        z = latent.tracking_z
-        for i,e in enumerate(latent.rngs["tracking"].normal(size=n)):
-            tracking[i] = scale*math.radians(cfg.phase_tracking_residual_std_deg)*z
-            z = rho*z+innovation*e
-        main_phase = tracking if phase_active else phase
-        image_phase = -2*phase+tracking if phase_active else -phase
+        tracking_values, _ = tracking(latent.tracking_z, rho, innovation,
+            latent.rngs["tracking"].normal(size=n),
+            scale*math.radians(cfg.phase_tracking_residual_std_deg), self.execution.recurrence)
+        main_phase = tracking_values if phase_active else phase
+        image_phase = -2*phase+tracking_values if phase_active else -phase
         image_frequency = -(latent.f_total+fhat)
         main_rotation = np.exp(1j*(2*np.pi*residual_frequency*t+main_phase))
         image_rotation = np.exp(1j*(2*np.pi*image_frequency*t+image_phase))
         # Collapse H then G into one residual FIR per widely-linear branch.
         # Carrier modulation of G is exact for constant frequency. Fast phase
         # changes over the equalizer span are approximated as locally constant.
-        offsets = np.arange(len(g))/cfg.fs_hz
-        main_kernel = np.convolve(h,g*np.exp(-2j*np.pi*residual_frequency*offsets))
-        image_kernel = np.convolve(h.conj(),g*np.exp(-2j*np.pi*image_frequency*offsets))
+        if self.execution.identity_filter and not eq_active:
+            main_kernel, image_kernel = h, h.conj()
+        else:
+            offsets = np.arange(len(g))/cfg.fs_hz
+            main_kernel = np.convolve(h,g*np.exp(-2j*np.pi*residual_frequency*offsets))
+            image_kernel = np.convolve(h.conj(),g*np.exp(-2j*np.pi*image_frequency*offsets))
         main, _ = linear_filter(x,main_kernel,cfg.boundary,preceding_context)
         image_context = None if preceding_context is None else np.conj(preceding_context)
         mirror, _ = linear_filter(x.conj(),image_kernel,cfg.boundary,image_context)
@@ -97,7 +101,10 @@ class ResidualChannel:
         noise_input = alpha*w*main_rotation+beta*w.conj()*image_rotation
         # No propagation pass on noise, only post-receiver residual coloration.
         noise_boundary = cfg.boundary if cfg.boundary != "require_context" else "edge"
-        noise, _ = linear_filter(noise_input,g,noise_boundary)
+        if self.execution.identity_filter and not eq_active:
+            noise = noise_input
+        else:
+            noise, _ = linear_filter(noise_input,g,noise_boundary)
         y = signal+noise
         rms = float(np.sqrt(np.mean(abs(y)**2)))
         requested = -20*np.log10(max(rms,1e-300))
@@ -106,6 +113,12 @@ class ResidualChannel:
         if not np.isfinite(y).all():
             raise FloatingPointError("nonfinite residual output")
         self.used = True
+        if self.execution.light_metadata and not return_traces:
+            return y.astype(np.complex64), dict(
+                metadata_level="training", state_end=STATES[s], quality_snr_db=quality,
+                output_frequency_hz=residual_frequency,
+                geometry=dict(elevation_deg=latent.geometry.elevation_deg, altitude_m=latent.geometry.altitude_m),
+                receiver_lock_status=status, channel_equalization_applied=eq_active)
         ps,pn = float(np.mean(abs(signal)**2)),float(np.mean(abs(noise)**2))
         meta = dict(version=VERSION,config_hash=cfg.config_hash,seed=int(self.seed),
             scenario=cfg.scenario,processing_route="residual",full_channel_waveform_synthesized=False,

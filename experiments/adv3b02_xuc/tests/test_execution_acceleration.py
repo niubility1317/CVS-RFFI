@@ -150,7 +150,7 @@ def test_actual_predictor_cpu_identity_subset(tmp_path,monkeypatch):
     common=['--checkpoint',str(checkpoint),'--input-package',str(tmp_path),'--run-id','synthetic',
         '--row-id','row','--mode','predict','--device','cpu','--num-workers','0',
         '--batch-size','3','--expected-epoch','100','--scenarios',','.join(scenes)]
-    for name,extra in [('old',[]),('new',['--practical-cpu-pipeline','--identity-only'])]:
+    for name,extra in [('old',[]),('new',['--practical-cpu-pipeline','--identity-only','--practical-prefetch'])]:
         predict.main(common+['--output-root',str(tmp_path/name)]+extra)
     old=json.loads((tmp_path/'old/predictions.json').read_text())
     new=json.loads((tmp_path/'new/predictions.json').read_text())
