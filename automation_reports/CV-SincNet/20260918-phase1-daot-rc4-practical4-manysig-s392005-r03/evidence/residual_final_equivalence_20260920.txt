@@ -1,0 +1,32 @@
+KEYS dict_keys(['checkpoint_schema', 'checkpoint_role', 'a1_ema_successful_updates', 'a1_ecrs_cross_rx_successful_steps', 'a1_ema_startup_average', 'checkpoint_selection', 'run_id', 'candidate_id', 'ablation_id', 'ablation_config_hash', 'git_commit', 'model', 'ema_model', 'optimizer', 'scaler', 'prototype_memory', 'daot_orbit_memory', 'daot_loss_normalizer', 'rng_state', 'tail_state_machine', 'tail_rollback_events', 'guard_history', 'baseline_ckpt', 'epoch', 'observed_epoch', 'state_epoch', 'phase', 'args', 'baseline_args', 'split_info', 'stats', 'muse_training_heads', 'muse_temporal_memory', 'muse_classification_prototypes', 'muse_source_global_class_counts', 'muse_source_domain_class_counts', 'muse_source_prior_frozen', 'muse_schedule_state', 'sat_anchor_thresholds', 'rc4_calibration', 'joint_guard', 'checkpoint_status']) dict_keys(['checkpoint_schema', 'checkpoint_role', 'a1_ema_successful_updates', 'a1_ecrs_cross_rx_successful_steps', 'a1_ema_startup_average', 'checkpoint_selection', 'run_id', 'candidate_id', 'ablation_id', 'ablation_config_hash', 'git_commit', 'model', 'ema_model', 'optimizer', 'scaler', 'prototype_memory', 'daot_orbit_memory', 'daot_loss_normalizer', 'rng_state', 'tail_state_machine', 'tail_rollback_events', 'guard_history', 'baseline_ckpt', 'epoch', 'observed_epoch', 'state_epoch', 'phase', 'args', 'baseline_args', 'split_info', 'stats', 'muse_training_heads', 'muse_temporal_memory', 'muse_classification_prototypes', 'muse_source_global_class_counts', 'muse_source_domain_class_counts', 'muse_source_prior_frozen', 'muse_schedule_state', 'sat_anchor_thresholds', 'rc4_calibration', 'joint_guard', 'checkpoint_status', 'final_epoch', 'selection_epoch', 'final_only_evidence'])
+TENSOR_MAPPING model equal True
+TENSOR_MAPPING ema_model equal True
+TENSOR_MAPPING prototype_memory equal True
+TENSOR_MAPPING rng_state equal False
+TENSOR_MAPPING muse_training_heads equal True
+EPOCHS 200 200
+COMPLETION {
+  "status": "ARTIFACTS_COMPLETE",
+  "epochs": 200,
+  "periodic_epochs": [
+    100,
+    110,
+    120,
+    130,
+    140,
+    150,
+    160,
+    170,
+    180,
+    190,
+    200
+  ],
+  "scenarios": [
+    "clean",
+    "practical_high",
+    "practical_mid",
+    "practical_low_urban"
+  ],
+  "final_weak_reference": true,
+  "feeds_training": false
+}

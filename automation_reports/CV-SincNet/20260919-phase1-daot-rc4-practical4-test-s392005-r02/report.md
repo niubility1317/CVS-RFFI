@@ -18,3 +18,7 @@ CPU评分PID3932760，独立读回argv/CWD及CUDA_VISIBLE_DEVICES为空；不增
 每组每场景168000条物理样本；已完成两组各672000条冻结预测，逐ID无重复/遗漏，6类预测合法，checkpoint路径、source-only scratch来源及信道配置匹配，复算正确数与原score.json完全一致。全部混淆矩阵与每类F1见[evidence/latest_readback.json](evidence/latest_readback.json)。各组epoch及增强模型不同，不能据此作均衡优劣或同预算的严格因果对照。中间目标测试已曝光，结果属于探索性测试而非盲测确认。
 
 服务器输出：`/home/szu2070436088/2510044040/CV-SincNet/runs/20260919-phase1-daot-rc4-practical4-test-s392005-r02`；每组`<row_id>.json`，汇总`state.json`，终态`completion.json`。服务器日志：`/home/szu2070436088/2510044040/CV-SincNet/logs/20260919-phase1-daot-rc4-practical4-test-s392005-r02/recount.log`。训练r03继续，不改变现有200epoch预算及训练状态。
+
+## 2026-09-20闭合核实
+
+之前等待的四组快照测试均VERIFIED，CPU评分进程已退出且completion.json为COMPLETE。此记录仍对应原E100/E100/E160/E100快照；本次更新后的E130/E110/E200/E140结果见训练r03报告。完整终态证据为evidence/latest_readback.json。
