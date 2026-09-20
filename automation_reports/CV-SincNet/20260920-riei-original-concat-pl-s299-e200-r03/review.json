@@ -1,0 +1,8 @@
+{
+  "status": "PASS_P1_CLOSED",
+  "reviewer": "independent explorer /root/review_baselines",
+  "original_P1": "removed scheduler factor remained in epoch metrics",
+  "fix": "train.py fixed LR .0001 and build generator corrected; AST regression passes",
+  "scope": "original RIEI optimizer and losses, removal of STAR E components, fixed pairs, final student output",
+  "focused_review": "Independent reviewer verified train.py181, generator65, verify22"
+}

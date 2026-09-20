@@ -157,8 +157,9 @@
         "final_last_epoch/{ema,student}/metrics.json",
         "COMPLETE.json"
       ],
-      "status": "QUEUED",
-      "pid": null
+      "status": "STOPPED_SUPERSEDED_USER_CORRECTION",
+      "pid": null,
+      "replacement": "20260920-riei-original-concat-pl-s299-e200-r03"
     }
   ],
   "notes": [
@@ -166,8 +167,9 @@
     "Ordinary PL remains .65, E30, confidence.9; all other r01 settings unchanged.",
     "Only prior RIEI row is superseded; CVCNN r01 remains running."
   ],
-  "status": "QUEUED",
+  "status": "STOPPED_SUPERSEDED_USER_CORRECTION",
   "registered_at": "2026-09-20T02:50:22+00:00",
   "delivery": "VERIFIED",
-  "updated_at": "2026-09-20T02:51:46.354851+00:00"
+  "updated_at": "2026-09-20T02:51:46.354851+00:00",
+  "replacement": "20260920-riei-original-concat-pl-s299-e200-r03"
 }

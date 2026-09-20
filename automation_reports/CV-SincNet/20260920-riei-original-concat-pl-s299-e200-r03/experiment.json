@@ -1,0 +1,168 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20260920-riei-original-concat-pl-s299-e200-r03",
+  "group_id": "star-matched-cvcnn-riei-ordinary-pl-loo",
+  "display_name": "原RIEI优化算法+普通固定Loo拼接+硬伪标签",
+  "description": "Original CVS optimized RIEI algorithm + simplest fixed Loo emitter CE + ordinary PL",
+  "kind": "comparison",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "STAR",
+    "CVCNN",
+    "RIEI",
+    "Loo",
+    "ordinary-pseudo-label"
+  ],
+  "comparison_group_id": "star-e-loo-s299-t90-e200",
+  "parent_run_ids": [],
+  "replaces_run_id": "riei_pl_loo_ce11_s299_t90_20260920_r02",
+  "authorization": "Current task 01a0bca4-4730-7cf2-a1b9-ce1f2925eb32: user requested CVCNN and RIEI plus ordinary PL, seed299, threshold0.9 and STAR concat SG CE.",
+  "code": {
+    "commit": "4d3002f",
+    "checkout": "F:\\AI\\exports\\STRA-RFFI\\STAR-test\\补实验",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/STAR-RFFI/STAR-test/补实验/20260920-riei-original-concat-pl-s299-e200-r03"
+  },
+  "data": {
+    "dataset": "STAR prepared WiSig 10TX 6RX",
+    "version": "20260917-star-clean-sg-rx4-s299-r03",
+    "representation": "paired clean/Loo (2,2048) time+FFT",
+    "contract_ref": "F:\\AI\\exports\\STRA-RFFI\\STAR-test\\补实验\\20260920-riei-original-concat-pl-s299-e200-r03\\manifest.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/STAR-RFFI/STAR-test/补实验/20260917-star-clean-sg-rx4-s299-r03/data/npy_tf2048_sg/rx_{rx}_pair_index.npy",
+    "label_map_ref": "TX0..9, source RX0/1/2/3/5 map to0..4",
+    "source_receivers": [
+      0,
+      1,
+      2,
+      3,
+      5
+    ],
+    "target_receivers": [
+      4
+    ],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": "TX0..9",
+    "roles": {
+      "L_s": ".09 of source pool",
+      "U_s": ".90 of source pool; TX erased before loader",
+      "V": ".01 of source pool"
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": "STAR stratified seed299+rx",
+    "validation_ref": "existing STAR fixed paired arrays; same loader",
+    "support_query_ref": null,
+    "leo_config_ref": "F:\\AI\\exports\\STRA-RFFI\\STAR-test\\补实验\\20260920-riei-original-concat-pl-s299-e200-r03\\manifest.json"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "test_only",
+    "external_method_exception": "User requests STAR dataset/split/Loo rather than CVS Phase1 CORE90 defaults",
+    "claim_scope": "Exploratory STAR matched baseline; single seed, no variance/significance claims"
+  },
+  "checkpoint": {
+    "initialization": "scratch",
+    "sources": [],
+    "contract_check_ref": "F:\\AI\\exports\\STRA-RFFI\\STAR-test\\补实验\\20260920-riei-original-concat-pl-s299-e200-r03\\report.md",
+    "provenance_verdict": "SCRATCH_NO_INHERITED_STATE",
+    "selection_rule": "fixed E200 student; no EMA"
+  },
+  "execution": {
+    "host": "N607/szu2070436088",
+    "launch_owner": "dispatch.py exclusive launch.lock",
+    "gpu_policy": "user authorized max3, free>=6500MiB",
+    "remote_run_root": "/home/szu2070436088/2510044040/STAR-RFFI/STAR-test/补实验/20260920-riei-original-concat-pl-s299-e200-r03/runs",
+    "remote_log_root": "/home/szu2070436088/2510044040/STAR-RFFI/STAR-test/补实验/20260920-riei-original-concat-pl-s299-e200-r03/logs",
+    "local_artifact_root": "F:\\AI\\exports\\STRA-RFFI\\STAR-test\\补实验\\20260920-riei-original-concat-pl-s299-e200-r03",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python /home/szu2070436088/2510044040/STAR-RFFI/STAR-test/补实验/20260920-riei-original-concat-pl-s299-e200-r03/remote_action.py start",
+    "stop_rule": "failed worker stops queued rows; preserve running healthy rows/artifacts; never stop on low accuracy"
+  },
+  "expected_artifacts": [
+    "latest.pth",
+    "metrics_epoch.jsonl",
+    "batches.jsonl",
+    "final_last_epoch/student/metrics.json",
+    "COMPLETE.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macro_f1",
+      "confusion",
+      "CE",
+      "PL acceptance",
+      "train_seconds"
+    ],
+    "dimensions": [
+      "method",
+      "clean/sg",
+      "source/target",
+      "epoch",
+      "student"
+    ],
+    "prediction_ref": "final_last_epoch/student/*_probabilities.npy",
+    "scorer_ref": "F:\\AI\\exports\\STRA-RFFI\\STAR-test\\补实验\\20260920-riei-original-concat-pl-s299-e200-r03\\train.py::score"
+  },
+  "rows": [
+    {
+      "row_id": "riei-original-concat-pl-s299-e200-r03",
+      "method": "original optimized RIEI + fixed concat CE + PL",
+      "purpose": "matched control",
+      "config_ref": "F:\\AI\\exports\\STRA-RFFI\\STAR-test\\补实验\\20260920-riei-original-concat-pl-s299-e200-r03\\manifest.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/STAR-RFFI/STAR-test/补实验/20260920-riei-original-concat-pl-s299-e200-r03/runs/riei-original-concat-pl-s299-e200-r03/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 299,
+        "split": 299,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "fixed Loo arrays; shuffle global RNG299; no online augmentation/support",
+      "k": null,
+      "scenario": "Loo only + clean control",
+      "optimizer": "Adam .0001 heads/FED alternating, no scheduler",
+      "lr": 0.0001,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "original RIEI labeled batch64, U256, E200",
+      "output_root": "/home/szu2070436088/2510044040/STAR-RFFI/STAR-test/补实验/20260920-riei-original-concat-pl-s299-e200-r03/runs/riei-original-concat-pl-s299-e200-r03",
+      "log_path": "/home/szu2070436088/2510044040/STAR-RFFI/STAR-test/补实验/20260920-riei-original-concat-pl-s299-e200-r03/logs/riei-original-concat-pl-s299-e200-r03.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-X",
+        "utf8",
+        "-u",
+        "/home/szu2070436088/2510044040/STAR-RFFI/STAR-test/补实验/20260920-riei-original-concat-pl-s299-e200-r03/train.py",
+        "--method",
+        "riei",
+        "--data-root",
+        "/home/szu2070436088/2510044040/STAR-RFFI/STAR-test/补实验/20260917-star-clean-sg-rx4-s299-r03/data/npy_tf2048_sg",
+        "--output",
+        "/home/szu2070436088/2510044040/STAR-RFFI/STAR-test/补实验/20260920-riei-original-concat-pl-s299-e200-r03/runs/riei-original-concat-pl-s299-e200-r03"
+      ],
+      "expected_artifacts": [
+        "latest.pth",
+        "metrics_epoch.jsonl",
+        "batches.jsonl",
+        "final_last_epoch/student/metrics.json",
+        "COMPLETE.json"
+      ],
+      "status": "RUNNING",
+      "pid": 187566,
+      "gpu": 7
+    }
+  ],
+  "notes": [
+    "Original fixed RIEI launcher uses sum CE/MI/IE, LR1e-4, batch64, feature norm1e-4; reproduced.",
+    "No STAR E augmentation/sampler/scheduler/clipping/EMA; original data contract retained.",
+    "PL starts E100 as disclosed, threshold.9,weight.65 mean over selected views"
+  ],
+  "status": "RUNNING",
+  "registered_at": "2026-09-20T04:00:12+00:00",
+  "delivery": "VERIFIED",
+  "updated_at": "2026-09-20T04:01:24.152140+00:00"
+}

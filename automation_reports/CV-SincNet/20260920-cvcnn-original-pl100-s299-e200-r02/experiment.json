@@ -1,0 +1,176 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20260920-cvcnn-original-pl100-s299-e200-r02",
+  "group_id": "cvcnn-original-pl100-rerun",
+  "display_name": "用户指定9月17日原版CVCNN+PL重跑",
+  "description": "Restore original CVCNN training settings, PL starts E100; append E200 evaluation",
+  "kind": "comparison",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "CVCNN",
+    "STAR",
+    "Loo",
+    "ordinary-pseudo-label",
+    "PL100"
+  ],
+  "comparison_group_id": "cvcnn-original-vs-star-e-config-s299",
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "Current user explicitly selected original 20260917 CVCNN report for fresh rerun and comparison; prior immediate launch exceeding two-process limit authorization retained",
+  "code": {
+    "commit": "658b1c7",
+    "checkout": "F:\\AI\\exports\\STRA-RFFI\\STAR-test\\补实验",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/STAR-RFFI/STAR-test/补实验/20260920-cvcnn-original-pl100-s299-e200-r02"
+  },
+  "data": {
+    "dataset": "STAR prepared WiSig 10TX 6RX",
+    "version": "20260917-star-clean-sg-rx4-s299-r03",
+    "representation": "paired clean/Loo (2,2048) time+FFT",
+    "contract_ref": "F:\\AI\\exports\\STRA-RFFI\\STAR-test\\补实验\\20260920-cvcnn-original-pl100-s299-e200-r02\\manifest.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/STAR-RFFI/STAR-test/补实验/20260917-cvcnn-pl-clean-sg-rx4-s299-e200-r01/data/npy_tf2048_sg/rx_{rx}_pair_index.npy",
+    "label_map_ref": "TX0..9, source RX0/1/2/3/5 map to0..4",
+    "source_receivers": [
+      0,
+      1,
+      2,
+      3,
+      5
+    ],
+    "target_receivers": [
+      4
+    ],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": "TX0..9",
+    "roles": {
+      "L_s": ".09 of source pool",
+      "U_s": ".90 source pool; TX used only detached diagnostic telemetry, never loss/selection",
+      "V": ".01 of source pool"
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": "STAR stratified seed299+rx",
+    "validation_ref": "existing STAR fixed paired arrays; same loader",
+    "support_query_ref": null,
+    "leo_config_ref": "F:\\AI\\exports\\STRA-RFFI\\STAR-test\\补实验\\20260920-cvcnn-original-pl100-s299-e200-r02\\manifest.json"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "test_only",
+    "external_method_exception": "User requests STAR dataset/split/Loo rather than CVS Phase1 CORE90 defaults",
+    "claim_scope": "Exploratory STAR matched baseline; single seed, no variance/significance claims"
+  },
+  "checkpoint": {
+    "initialization": "scratch",
+    "sources": [],
+    "contract_check_ref": "F:\\AI\\exports\\STRA-RFFI\\STAR-test\\补实验\\20260920-cvcnn-original-pl100-s299-e200-r02\\report.md",
+    "provenance_verdict": "SCRATCH_NO_INHERITED_STATE",
+    "selection_rule": "E200 student primary; original best source validation secondary"
+  },
+  "execution": {
+    "host": "N607/szu2070436088",
+    "launch_owner": "dispatch.py exclusive launch.lock",
+    "gpu_policy": "user authorized exceed two; max3 here, free>=8500MiB",
+    "remote_run_root": "/home/szu2070436088/2510044040/STAR-RFFI/STAR-test/补实验/20260920-cvcnn-original-pl100-s299-e200-r02/runs",
+    "remote_log_root": "/home/szu2070436088/2510044040/STAR-RFFI/STAR-test/补实验/20260920-cvcnn-original-pl100-s299-e200-r02/logs",
+    "local_artifact_root": "F:\\AI\\exports\\STRA-RFFI\\STAR-test\\补实验\\20260920-cvcnn-original-pl100-s299-e200-r02",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python /home/szu2070436088/2510044040/STAR-RFFI/STAR-test/补实验/20260920-cvcnn-original-pl100-s299-e200-r02/remote_action.py start",
+    "stop_rule": "failed worker stops queued rows; preserve running healthy rows/artifacts; never stop on low accuracy"
+  },
+  "expected_artifacts": [
+    "config.json",
+    "metrics.csv",
+    "telemetry/epochs.jsonl",
+    "checkpoints/latest.pth",
+    "final_last_epoch/metrics.json",
+    "final_best_val/metrics.json",
+    "COMPLETE.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macro_f1",
+      "confusion",
+      "CE",
+      "PL acceptance",
+      "train_seconds"
+    ],
+    "dimensions": [
+      "clean/sg",
+      "epoch",
+      "last/best_val student"
+    ],
+    "prediction_ref": "final_last_epoch/{clean,sg}_predictions.npy",
+    "scorer_ref": "F:\\AI\\exports\\STRA-RFFI\\STAR-test\\补实验\\20260920-cvcnn-original-pl100-s299-e200-r02\\evaluate_selected.py"
+  },
+  "rows": [
+    {
+      "row_id": "cvcnn-original-pl100-s299-e200-r02",
+      "method": "original STAR CVCNN + ordinary PL E100",
+      "purpose": "matched control",
+      "config_ref": "F:\\AI\\exports\\STRA-RFFI\\STAR-test\\补实验\\20260920-cvcnn-original-pl100-s299-e200-r02\\manifest.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/STAR-RFFI/STAR-test/补实验/20260920-cvcnn-original-pl100-s299-e200-r02/runs/cvcnn-original-pl100-s299-e200-r02/cvcnn_pl/train_clean_sg_val_clean_test_sg/target_rx_4/source_0,1,2,3,5/seed_299/cvcnn-original-pl100-s299-e200-r02/config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 299,
+        "split": 299,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split/loader299, split299+rx; static prepared Loo, no online augmentation; no support",
+      "k": null,
+      "scenario": "Loo only + clean control",
+      "optimizer": "Adam constant .001",
+      "lr": 0.001,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "STAR labeled batch32, unlabeled256, zip loaders",
+      "output_root": "/home/szu2070436088/2510044040/STAR-RFFI/STAR-test/补实验/20260920-cvcnn-original-pl100-s299-e200-r02/runs/cvcnn-original-pl100-s299-e200-r02",
+      "log_path": "/home/szu2070436088/2510044040/STAR-RFFI/STAR-test/补实验/20260920-cvcnn-original-pl100-s299-e200-r02/logs/cvcnn-original-pl100-s299-e200-r02.log",
+      "command": [
+        "python",
+        "Ni_model_generation.py",
+        "--exp_group",
+        "cvcnn_pl",
+        "--epochs",
+        "200",
+        "--pseudo_start_epoch",
+        "100",
+        "--seed",
+        "299",
+        "--pl_threshold",
+        ".9",
+        "--run_id",
+        "cvcnn-original-pl100-s299-e200-r02",
+        "--data_root",
+        "/home/szu2070436088/2510044040/STAR-RFFI/STAR-test/补实验/20260917-cvcnn-pl-clean-sg-rx4-s299-e200-r01/data/npy_tf2048_sg",
+        "--output_dir",
+        "/home/szu2070436088/2510044040/STAR-RFFI/STAR-test/补实验/20260920-cvcnn-original-pl100-s299-e200-r02/runs/cvcnn-original-pl100-s299-e200-r02"
+      ],
+      "expected_artifacts": [
+        "config.json",
+        "metrics.csv",
+        "telemetry/epochs.jsonl",
+        "checkpoints/latest.pth",
+        "final_last_epoch/metrics.json",
+        "final_best_val/metrics.json",
+        "COMPLETE.json"
+      ],
+      "status": "RUNNING",
+      "pid": 184795,
+      "gpu": 5
+    }
+  ],
+  "notes": [
+    "Original training body unchanged; only add last checkpoint evaluation after original best-val evaluation.",
+    "No weights inherited; historical no-extra-tests request respected with static syntax/config checks and real launch readback."
+  ],
+  "status": "RUNNING",
+  "registered_at": "2026-09-20T03:55:13+00:00",
+  "delivery": "VERIFIED",
+  "updated_at": "2026-09-20T04:01:24.147016+00:00"
+}

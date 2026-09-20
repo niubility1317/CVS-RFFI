@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "real_network_two_alternating_updates": true,
+  "pl_boundary": "E99 off E100 on",
+  "clean_sg_ce_weights": [
+    1,
+    1
+  ],
+  "sum_loss_decomposition": true,
+  "adam_lr": 0.0001,
+  "no_star_e_components": true,
+  "checkpoint_roundtrip": true
+}

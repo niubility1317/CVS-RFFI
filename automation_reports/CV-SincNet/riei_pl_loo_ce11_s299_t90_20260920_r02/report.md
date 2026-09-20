@@ -13,3 +13,5 @@
 新目录和output root独占，唯一dispatch launch.lock。代码在STAR独立Git仓库提交（无remote）；登记镜像到CVS Git承载面并推送。模型scratch，全部继承来源为空，EMA仅本次student派生。
 
 发布VERIFIED：调度器PID147712，row状态QUEUED。代码commit e5261fe；本地验证clean/SG身份CE系数各1。旧RIEI已停止保留，CVCNN未停止。当前GPU每卡2个名额已占满，等待空位自动启动；未宣称实际训练或完成。
+
+用户要求移除STAR E训练组件；本run已核实停止，保留partial产物，由20260920-riei-original-concat-pl-s299-e200-r03从零替代。
