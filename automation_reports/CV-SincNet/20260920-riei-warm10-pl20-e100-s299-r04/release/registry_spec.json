@@ -1,0 +1,211 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20260920-riei-warm10-pl20-e100-s299-r04",
+  "group_id": "riei-simple-warm10-pl-vs-no-u",
+  "display_name": "RIEI前10轮中等Loo增强：PL20与完全无U两组100轮",
+  "description": "Simple RIEI: moderate Loo E1:10, original fixed Loo E11:100; PL20 vs no U",
+  "kind": "comparison",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "STAR",
+    "RIEI",
+    "Loo",
+    "ordinary-pseudo-label",
+    "warm10",
+    "no-unlabeled"
+  ],
+  "comparison_group_id": "riei-simple-warm10-pl-vs-no-u",
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "User requested simple RIEI optimization: moderate SG first10 epochs, E100, PL from E20 vs no unlabeled samples; prior explicit authorization to exceed two GPU jobs.",
+  "code": {
+    "commit": "29361aea1554ff69d218a23cafa252af02a8d35e",
+    "checkout": "F:\\AI\\exports\\STRA-RFFI\\STAR-test\\补实验",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/STAR-RFFI/STAR-test/补实验/20260920-riei-warm10-pl20-e100-s299-r04"
+  },
+  "data": {
+    "dataset": "STAR prepared WiSig 10TX 6RX",
+    "version": "20260917-star-clean-sg-rx4-s299-r03",
+    "representation": "paired clean/Loo (2,2048) time+FFT",
+    "contract_ref": "F:\\AI\\exports\\STRA-RFFI\\STAR-test\\补实验\\20260920-riei-warm10-pl20-e100-s299-r04\\manifest.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/STAR-RFFI/STAR-test/补实验/20260917-star-clean-sg-rx4-s299-r03/data/npy_tf2048_sg/rx_{rx}_pair_index.npy",
+    "label_map_ref": "TX0..9, source RX0/1/2/3/5 map to0..4",
+    "source_receivers": [
+      0,
+      1,
+      2,
+      3,
+      5
+    ],
+    "target_receivers": [
+      4
+    ],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": "TX0..9",
+    "roles": {
+      "L_s": ".09 of source pool",
+      "U_s": ".90 of source pool; loaded only in PL row, used only E20+; noU row never indexes U IQ",
+      "V": ".01 of source pool"
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": "STAR stratified seed299+rx",
+    "validation_ref": "existing STAR fixed paired arrays; same loader",
+    "support_query_ref": null,
+    "leo_config_ref": "F:\\AI\\exports\\STRA-RFFI\\STAR-test\\补实验\\20260920-riei-warm10-pl20-e100-s299-r04\\manifest.json"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "test_only",
+    "external_method_exception": "User requests STAR dataset/split/Loo rather than CVS Phase1 CORE90 defaults",
+    "claim_scope": "Exploratory STAR matched baseline; single seed, no variance/significance claims"
+  },
+  "checkpoint": {
+    "initialization": "scratch",
+    "sources": [],
+    "contract_check_ref": "F:\\AI\\exports\\STRA-RFFI\\STAR-test\\补实验\\20260920-riei-warm10-pl20-e100-s299-r04\\report.md",
+    "provenance_verdict": "SCRATCH_NO_INHERITED_STATE",
+    "selection_rule": "fixed E100 student; no EMA"
+  },
+  "execution": {
+    "host": "N607/szu2070436088",
+    "launch_owner": "dispatch.py exclusive launch.lock",
+    "gpu_policy": "user authorized max3, free>=6500MiB",
+    "remote_run_root": "/home/szu2070436088/2510044040/STAR-RFFI/STAR-test/补实验/20260920-riei-warm10-pl20-e100-s299-r04/runs",
+    "remote_log_root": "/home/szu2070436088/2510044040/STAR-RFFI/STAR-test/补实验/20260920-riei-warm10-pl20-e100-s299-r04/logs",
+    "local_artifact_root": "F:\\AI\\exports\\STRA-RFFI\\STAR-test\\补实验\\20260920-riei-warm10-pl20-e100-s299-r04",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python /home/szu2070436088/2510044040/STAR-RFFI/STAR-test/补实验/20260920-riei-warm10-pl20-e100-s299-r04/remote_action.py start",
+    "stop_rule": "failed worker stops queued rows; preserve running healthy rows/artifacts; never stop on low accuracy"
+  },
+  "expected_artifacts": [
+    "latest.pth",
+    "metrics_epoch.jsonl",
+    "batches.jsonl",
+    "final_last_epoch/student/metrics.json",
+    "COMPLETE.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macro_f1",
+      "confusion",
+      "CE",
+      "PL acceptance",
+      "train_seconds"
+    ],
+    "dimensions": [
+      "method",
+      "clean/sg",
+      "source/target",
+      "epoch",
+      "student"
+    ],
+    "prediction_ref": "final_last_epoch/student/*_probabilities.npy",
+    "scorer_ref": "F:\\AI\\exports\\STRA-RFFI\\STAR-test\\补实验\\20260920-riei-warm10-pl20-e100-s299-r04\\train.py::score"
+  },
+  "rows": [
+    {
+      "row_id": "riei-warm10-no-unlabeled-s299-e100-r04",
+      "method": "RIEI no unlabeled samples",
+      "purpose": "matched control",
+      "config_ref": "F:\\AI\\exports\\STRA-RFFI\\STAR-test\\补实验\\20260920-riei-warm10-pl20-e100-s299-r04\\manifest.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/STAR-RFFI/STAR-test/补实验/20260920-riei-warm10-pl20-e100-s299-r04/runs/riei-warm10-no-unlabeled-s299-e100-r04/resolved_config.json",
+      "data_overrides": {
+        "use_unlabeled": false
+      },
+      "seeds": {
+        "model": 299,
+        "split": 299,
+        "data": null,
+        "augmentation": 340299,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Model299; stratified split299+rx; fixed warm augmentation340299; L shuffle299+epoch, independent U shuffle1299+epoch; original full-SG fixed arrays.",
+      "k": null,
+      "scenario": "Loo only + clean control",
+      "optimizer": "Adam .0001 heads/FED alternating, no scheduler",
+      "lr": 0.0001,
+      "epochs": 100,
+      "fl_rounds": null,
+      "budget_ref": "E100 labeled64 both groups; U256 only PL group E20+",
+      "output_root": "/home/szu2070436088/2510044040/STAR-RFFI/STAR-test/补实验/20260920-riei-warm10-pl20-e100-s299-r04/runs/riei-warm10-no-unlabeled-s299-e100-r04",
+      "log_path": "/home/szu2070436088/2510044040/STAR-RFFI/STAR-test/补实验/20260920-riei-warm10-pl20-e100-s299-r04/logs/riei-warm10-no-unlabeled-s299-e100-r04.log",
+      "command": [
+        "python",
+        "train.py",
+        "--method",
+        "riei",
+        "--use-pl",
+        "0",
+        "--data-root",
+        "/home/szu2070436088/2510044040/STAR-RFFI/STAR-test/补实验/20260917-star-clean-sg-rx4-s299-r03/data/npy_tf2048_sg",
+        "--output",
+        "/home/szu2070436088/2510044040/STAR-RFFI/STAR-test/补实验/20260920-riei-warm10-pl20-e100-s299-r04/runs/riei-warm10-no-unlabeled-s299-e100-r04"
+      ],
+      "expected_artifacts": [
+        "latest.pth",
+        "metrics_epoch.jsonl",
+        "batches.jsonl",
+        "final_last_epoch/student/metrics.json",
+        "COMPLETE.json"
+      ]
+    },
+    {
+      "row_id": "riei-warm10-pl20-s299-e100-r04",
+      "method": "RIEI+PL20",
+      "purpose": "matched control",
+      "config_ref": "F:\\AI\\exports\\STRA-RFFI\\STAR-test\\补实验\\20260920-riei-warm10-pl20-e100-s299-r04\\manifest.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/STAR-RFFI/STAR-test/补实验/20260920-riei-warm10-pl20-e100-s299-r04/runs/riei-warm10-pl20-s299-e100-r04/resolved_config.json",
+      "data_overrides": {
+        "use_unlabeled": true
+      },
+      "seeds": {
+        "model": 299,
+        "split": 299,
+        "data": null,
+        "augmentation": 340299,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Model299; stratified split299+rx; fixed warm augmentation340299; L shuffle299+epoch, independent U shuffle1299+epoch; original full-SG fixed arrays.",
+      "k": null,
+      "scenario": "Loo only + clean control",
+      "optimizer": "Adam .0001 heads/FED alternating, no scheduler",
+      "lr": 0.0001,
+      "epochs": 100,
+      "fl_rounds": null,
+      "budget_ref": "E100 labeled64 both groups; U256 only PL group E20+",
+      "output_root": "/home/szu2070436088/2510044040/STAR-RFFI/STAR-test/补实验/20260920-riei-warm10-pl20-e100-s299-r04/runs/riei-warm10-pl20-s299-e100-r04",
+      "log_path": "/home/szu2070436088/2510044040/STAR-RFFI/STAR-test/补实验/20260920-riei-warm10-pl20-e100-s299-r04/logs/riei-warm10-pl20-s299-e100-r04.log",
+      "command": [
+        "python",
+        "train.py",
+        "--method",
+        "riei",
+        "--use-pl",
+        "1",
+        "--data-root",
+        "/home/szu2070436088/2510044040/STAR-RFFI/STAR-test/补实验/20260917-star-clean-sg-rx4-s299-r03/data/npy_tf2048_sg",
+        "--output",
+        "/home/szu2070436088/2510044040/STAR-RFFI/STAR-test/补实验/20260920-riei-warm10-pl20-e100-s299-r04/runs/riei-warm10-pl20-s299-e100-r04"
+      ],
+      "expected_artifacts": [
+        "latest.pth",
+        "metrics_epoch.jsonl",
+        "batches.jsonl",
+        "final_last_epoch/student/metrics.json",
+        "COMPLETE.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Old200 logs and frozen predictions diagnosed, no evidence of numerical failure.",
+    "No-U loader reads labels for identical split but never indexes unlabeled IQ; no U forward/loss/BN update.",
+    "Original RIEI optimizer/losses unchanged; warm10 is sole shared training change. Test fixed full-strength remains unchanged."
+  ],
+  "status": "PREPARED"
+}

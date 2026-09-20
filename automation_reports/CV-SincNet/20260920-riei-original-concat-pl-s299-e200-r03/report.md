@@ -15,3 +15,7 @@ RIEI模型与原CVS优化版相同，ResNet1D18 FED、EC/RC。恢复原启动脚
 验证：两次真实网络交替更新、CE系数及sum损失分解、PL启用边界、checkpoint读回、STAR E函数未导入/调用、一次独立P0/P1审查。独立输出及launch.lock；用户已授权突破两进程限制，此row允许第三个任务且预留6500MiB显存，保护其他进程。
 
 启动VERIFIED：GPU7，PID187566；完成epoch=10，batch日志数=310。PID/CWD/argv/GPU、配置文件及增长日志已核实，尚未E200完成。证据remote_inspect.json。
+
+## 2026-09-20完成复核
+
+已完成200轮/5800批；冻结预测独立重算：source clean88%、source SG22%、target clean57.375%、target SG17.5%。无日志异常。结果仅作已知目标条件下的探索诊断，详见相邻r04的diagnosis.json；旧产物保留。

@@ -1,2 +1,3 @@
 {"at": "2026-09-20T04:00:12+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-09-20T04:01:24.152140+00:00", "status": "RUNNING", "evidence": ["remote_inspect.json"], "note": "Actual training and logs VERIFIED"}
+{"time": "2026-09-20T05:51:41.400203+00:00", "status": "ANALYZED", "evidence": "F:\\AI\\exports\\STRA-RFFI\\STAR-test\\\u8865\u5b9e\u9a8c\\20260920-riei-warm10-pl20-e100-s299-r04\\diagnosis.json", "note": "E200 complete and frozen predictions independently rescored"}

@@ -1,0 +1,99 @@
+{
+  "group_id": "20260920-riei-warm10-pl20-e100-s299-r04",
+  "remote_root": "/home/szu2070436088/2510044040/STAR-RFFI/STAR-test/补实验/20260920-riei-warm10-pl20-e100-s299-r04",
+  "data_root": "/home/szu2070436088/2510044040/STAR-RFFI/STAR-test/补实验/20260917-star-clean-sg-rx4-s299-r03/data/npy_tf2048_sg",
+  "epochs": 100,
+  "seed": 299,
+  "threshold": 0.9,
+  "source_rxs": [
+    0,
+    1,
+    2,
+    3,
+    5
+  ],
+  "target_rx": 4,
+  "initialization": "scratch both rows; no inherited weights",
+  "launch_owner": "dispatch.py exclusive launch.lock",
+  "rows": [
+    {
+      "method": "riei",
+      "use_pl": 0,
+      "run_id": "riei-warm10-no-unlabeled-s299-e100-r04",
+      "output_root": "/home/szu2070436088/2510044040/STAR-RFFI/STAR-test/补实验/20260920-riei-warm10-pl20-e100-s299-r04/runs/riei-warm10-no-unlabeled-s299-e100-r04"
+    },
+    {
+      "method": "riei",
+      "use_pl": 1,
+      "run_id": "riei-warm10-pl20-s299-e100-r04",
+      "output_root": "/home/szu2070436088/2510044040/STAR-RFFI/STAR-test/补实验/20260920-riei-warm10-pl20-e100-s299-r04/runs/riei-warm10-pl20-s299-e100-r04"
+    }
+  ],
+  "pseudo": {
+    "policy": "self hard argmax, detached, confidence >= 0.9",
+    "start_epoch": 20,
+    "weight": 0.65,
+    "reduction": "mean over selected views",
+    "ramp": false,
+    "teacher": false
+  },
+  "supervised_ce": {
+    "clean": 1.0,
+    "sg": 1.0
+  },
+  "augmentation": {
+    "warm_epochs": [
+      1,
+      10
+    ],
+    "warm_loo_delta2": 1.0,
+    "warm_seed": 340299,
+    "scatter_variance": 0.0049,
+    "full_epochs": [
+      11,
+      100
+    ],
+    "full_loo_delta2": 9.0,
+    "test": "unchanged original fixed Loo",
+    "extra_cfo": false,
+    "extra_iq": false
+  },
+  "optimization": {
+    "adam_lr": 0.0001,
+    "lr_schedule": null,
+    "gradient_clip": null,
+    "labeled_pair_batch": 64,
+    "unlabeled_pair_batch": 256,
+    "ce_reduction": "sum",
+    "mi_reduction": "sum",
+    "ie_reduction": "sum",
+    "feature_norm_reduction": "mean"
+  },
+  "inference": {
+    "selection": "E100 student only",
+    "ema": false
+  },
+  "riei": {
+    "lambda_mi": 1.2,
+    "lambda_ie": 1.2,
+    "lambda_feature_norm": 0.0001,
+    "mi_mode": "cosine_abs",
+    "fed_variant": "imagenet1d",
+    "augmentation_objective": "Original labeled clean RX/MI/IE; Loo emitter CE only; U only ordinary PL"
+  },
+  "seed_roles": {
+    "model": 299,
+    "split": "299+rx",
+    "data": "fixed arrays",
+    "augmentation": 340299,
+    "batch": "L generator=299+epoch; independent U generator=1299+epoch",
+    "support": null,
+    "evaluation": "fixed arrays"
+  },
+  "technical_stop_rules": [
+    "stop queued rows on failed worker; never stop for low accuracy"
+  ],
+  "comparison_scope": "Simple RIEI: moderate Loo E1:10, original fixed Loo E11:100; PL20 vs no U",
+  "replaces_run_id": null,
+  "pseudo_start_epoch": 20
+}

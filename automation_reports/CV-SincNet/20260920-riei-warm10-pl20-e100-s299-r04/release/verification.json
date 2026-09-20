@@ -1,0 +1,34 @@
+{
+  "status": "PASS",
+  "device": "cuda",
+  "compile": true,
+  "no_u_guard": true,
+  "warm_layout": true,
+  "warm_deterministic": true,
+  "boundary_steps": [
+    {
+      "epoch": 19,
+      "has_u": false,
+      "active": false,
+      "selected": 0
+    },
+    {
+      "epoch": 20,
+      "has_u": false,
+      "active": false,
+      "selected": 0
+    },
+    {
+      "epoch": 19,
+      "has_u": true,
+      "active": false,
+      "selected": 0
+    },
+    {
+      "epoch": 20,
+      "has_u": true,
+      "active": true,
+      "selected": 4
+    }
+  ]
+}
