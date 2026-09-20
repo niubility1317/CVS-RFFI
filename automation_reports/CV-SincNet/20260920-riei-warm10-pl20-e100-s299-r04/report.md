@@ -33,3 +33,5 @@ diagnosis.json保存旧实验完整日志汇总与独立重算。新结果须等
 - riei-warm10-pl20-s299-e100-r04：GPU7，PID241934，已记录269批；实际U加载数18000。
 
 代码版本：29361aea1554ff69d218a23cafa252af02a8d35e。STAR本地仓库无remote，代码及证据同时镜像至CVS发布仓库。实际PID/CWD/argv见remote_inspect.json，加载数及增强边界见data_readback.json。
+
+边界运行验证：两组E10仍sigma1、E11变sigma3；PL组E19的U视图为0，E20首批U视图512且pseudo_active=true；noU组E20仍为0。已推进到noU E51、PL E28，尚未完成E100。
