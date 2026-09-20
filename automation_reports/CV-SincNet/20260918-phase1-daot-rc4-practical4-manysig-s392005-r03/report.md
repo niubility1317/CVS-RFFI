@@ -63,3 +63,8 @@ r01未启动训练；r02仅适配Torch2.1/NumPy2.2边界为显式值拷贝。sou
 全部四组各672000条预测，即同一168000条物理样本的四种场景视图；场景及ID覆盖完整、无重复/遗漏，正确数与原score.json逐场景一致。核对scratch来源、source物理角色EXACT_MATCH、无目标训练接触，row/epoch身份、checkpoint路径及对应practical配置一致。ZF正则化1e-6及ZF/MMSE增益限制20dB沿用固定release。full/residual与均衡开关各自对应，不替换为原LEO或LEO_WEAK。不同epoch与不同增强模型的结果不能当作同预算严格对照，均为已曝光目标的探索性测试，不反馈训练。
 
 证据：[全量复算与混淆矩阵](evidence/latest_test_recount_20260920.json)、[最终模型权重一致性](evidence/residual_final_equivalence_20260920.txt)、[权重清单](evidence/checkpoint_inventory_20260920.txt)。每组服务器预测及原评分路径见复算JSON的prediction_path，其同目录保存score.json/scorer.log/evaluation_scope.json。
+
+
+## 2026-09-20用户停止与新评估
+
+用户授权停止旧full/noeq、full/ZF、full/MMSE。独立PID/argv/CWD及进程组核对后SIGTERM；后置读回均已退出。residual先前已完成E200，本次未重启。所有checkpoint和日志保留。新四组checkpoint评估单独登记，预算差异保留。证据：evidence/practical_after_stop_20260920.json。

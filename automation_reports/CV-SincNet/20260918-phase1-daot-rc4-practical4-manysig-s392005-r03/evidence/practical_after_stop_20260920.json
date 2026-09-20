@@ -1,0 +1,223 @@
+{
+  "time": 1789904186.0344706,
+  "stop_requested": false,
+  "rows": [
+    {
+      "variant": "full_mmse",
+      "pid": 3200302,
+      "gpu": 7,
+      "output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260918-phase1-daot-rc4-practical4-manysig-s392005-r03/DAOT_RC4_PRACTICAL_FULL_MMSE_s392005",
+      "alive_after": false,
+      "checkpoints": [
+        {
+          "name": "epoch_100_ssdg.pth",
+          "bytes": 15994840,
+          "mtime": 1789808329.4598477
+        },
+        {
+          "name": "epoch_110_ssdg.pth",
+          "bytes": 15994904,
+          "mtime": 1789821770.7877996
+        },
+        {
+          "name": "epoch_120_ssdg.pth",
+          "bytes": 15994904,
+          "mtime": 1789835092.2827427
+        },
+        {
+          "name": "epoch_130_ssdg.pth",
+          "bytes": 15994904,
+          "mtime": 1789850763.0038524
+        },
+        {
+          "name": "epoch_140_ssdg.pth",
+          "bytes": 15995096,
+          "mtime": 1789865216.2338758
+        },
+        {
+          "name": "epoch_150_ssdg.pth",
+          "bytes": 15995096,
+          "mtime": 1789883637.8761802
+        },
+        {
+          "name": "epoch_160_ssdg.pth",
+          "bytes": 15995032,
+          "mtime": 1789899962.5503361
+        }
+      ],
+      "initialization": {
+        "scratch_only": true,
+        "checkpoint_sources": [],
+        "target_training_contact": false,
+        "source_roles": "EXACT_MATCH",
+        "ema_origin": "this_run_student",
+        "daot": true,
+        "rc4": true
+      }
+    },
+    {
+      "variant": "full_noeq",
+      "pid": 3199619,
+      "gpu": 5,
+      "output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260918-phase1-daot-rc4-practical4-manysig-s392005-r03/DAOT_RC4_PRACTICAL_FULL_NOEQ_s392005",
+      "alive_after": false,
+      "checkpoints": [
+        {
+          "name": "epoch_100_ssdg.pth",
+          "bytes": 15994840,
+          "mtime": 1789818481.3785665
+        },
+        {
+          "name": "epoch_110_ssdg.pth",
+          "bytes": 15994904,
+          "mtime": 1789837668.4039252
+        },
+        {
+          "name": "epoch_120_ssdg.pth",
+          "bytes": 15994904,
+          "mtime": 1789856974.1242921
+        },
+        {
+          "name": "epoch_130_ssdg.pth",
+          "bytes": 15994840,
+          "mtime": 1789867459.0920346
+        },
+        {
+          "name": "epoch_140_ssdg.pth",
+          "bytes": 15995096,
+          "mtime": 1789885254.0902946
+        },
+        {
+          "name": "epoch_150_ssdg.pth",
+          "bytes": 15995096,
+          "mtime": 1789898281.9152172
+        }
+      ],
+      "initialization": {
+        "scratch_only": true,
+        "checkpoint_sources": [],
+        "target_training_contact": false,
+        "source_roles": "EXACT_MATCH",
+        "ema_origin": "this_run_student",
+        "daot": true,
+        "rc4": true
+      }
+    },
+    {
+      "variant": "full_zf",
+      "pid": 3200124,
+      "gpu": 6,
+      "output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260918-phase1-daot-rc4-practical4-manysig-s392005-r03/DAOT_RC4_PRACTICAL_FULL_ZF_s392005",
+      "alive_after": false,
+      "checkpoints": [
+        {
+          "name": "epoch_100_ssdg.pth",
+          "bytes": 15994840,
+          "mtime": 1789837525.414915
+        },
+        {
+          "name": "epoch_110_ssdg.pth",
+          "bytes": 15994840,
+          "mtime": 1789858381.5693917
+        },
+        {
+          "name": "epoch_120_ssdg.pth",
+          "bytes": 15994904,
+          "mtime": 1789870899.3482783
+        },
+        {
+          "name": "epoch_130_ssdg.pth",
+          "bytes": 15994840,
+          "mtime": 1789890297.3856516
+        }
+      ],
+      "initialization": {
+        "scratch_only": true,
+        "checkpoint_sources": [],
+        "target_training_contact": false,
+        "source_roles": "EXACT_MATCH",
+        "ema_origin": "this_run_student",
+        "daot": true,
+        "rc4": true
+      }
+    },
+    {
+      "variant": "residual_noeq",
+      "pid": 3200214,
+      "gpu": 7,
+      "output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260918-phase1-daot-rc4-practical4-manysig-s392005-r03/DAOT_RC4_PRACTICAL_RESIDUAL_NOEQ_s392005",
+      "alive_after": false,
+      "checkpoints": [
+        {
+          "name": "epoch_100_ssdg.pth",
+          "bytes": 15994840,
+          "mtime": 1789771374.582231
+        },
+        {
+          "name": "epoch_110_ssdg.pth",
+          "bytes": 15994904,
+          "mtime": 1789778709.0757504
+        },
+        {
+          "name": "epoch_120_ssdg.pth",
+          "bytes": 15994904,
+          "mtime": 1789785975.322265
+        },
+        {
+          "name": "epoch_130_ssdg.pth",
+          "bytes": 15994904,
+          "mtime": 1789793215.5467775
+        },
+        {
+          "name": "epoch_140_ssdg.pth",
+          "bytes": 15995096,
+          "mtime": 1789800468.9582913
+        },
+        {
+          "name": "epoch_150_ssdg.pth",
+          "bytes": 15995096,
+          "mtime": 1789807691.5788026
+        },
+        {
+          "name": "epoch_160_ssdg.pth",
+          "bytes": 15995096,
+          "mtime": 1789814821.8833075
+        },
+        {
+          "name": "epoch_170_ssdg.pth",
+          "bytes": 15995032,
+          "mtime": 1789822057.57982
+        },
+        {
+          "name": "epoch_180_ssdg.pth",
+          "bytes": 15995096,
+          "mtime": 1789829387.4873388
+        },
+        {
+          "name": "epoch_190_ssdg.pth",
+          "bytes": 15995096,
+          "mtime": 1789836576.423848
+        },
+        {
+          "name": "epoch_200_ssdg.pth",
+          "bytes": 15996312,
+          "mtime": 1789843828.2543614
+        },
+        {
+          "name": "final_ssdg.pth",
+          "bytes": 15991848,
+          "mtime": 1789845383.6794715
+        }
+      ],
+      "initialization": {
+        "scratch_only": true,
+        "checkpoint_sources": [],
+        "target_training_contact": false,
+        "source_roles": "EXACT_MATCH",
+        "ema_origin": "this_run_student",
+        "daot": true,
+        "rc4": true
+      }
+    }
+  ]
+}

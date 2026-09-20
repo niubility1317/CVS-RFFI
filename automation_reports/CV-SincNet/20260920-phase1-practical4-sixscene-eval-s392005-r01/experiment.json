@@ -1,0 +1,425 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20260920-phase1-practical4-sixscene-eval-s392005-r01",
+  "group_id": "practical-sixscene-historical-eval",
+  "display_name": "旧Practical四组checkpoint统一六环境测试",
+  "description": "旧四组按停止时最新完整epoch checkpoint统一clean与六环境测试；不反向影响新实验。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "Practical residual environment ratio six scenes"
+  ],
+  "tags": [
+    "daot",
+    "rc4",
+    "residual",
+    "practical",
+    "sixscene",
+    "evaluation"
+  ],
+  "comparison_group_id": "daot-rc4-residual-environment-ratios",
+  "parent_run_ids": [
+    "20260918-phase1-daot-rc4-practical4-manysig-s392005-r03"
+  ],
+  "replaces_run_id": null,
+  "authorization": "本任务用户确认环境比例实验，随后删除新对照、要求旧四组checkpoint六环境测试，并授权停止旧full系列；seed和其他科学配置与旧四组一致。",
+  "code": {
+    "commit": "1e4984924ae804183545681e358bbc205a54145c",
+    "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
+    "environment": "local ssr-gpu; N607 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/daot_rc4_residual_ratios_20260920_1e4984924a"
+  },
+  "data": {
+    "dataset": "WiSig ManySig CORE90",
+    "version": null,
+    "representation": "equalized=1; 2x256; normalized center crop",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "Each row/source_contract.json; exact physical roles checked against unchanged data.contract_ref",
+    "label_map_ref": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\experiments\\adv3b02_xuc\\configs\\core90_recipe_reference.json",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "TX [0,1,2,3,4,5] for source and held-out receiver diagnostic",
+    "roles": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "V": 27000
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": null,
+    "support_query_ref": null,
+    "leo_config_ref": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\experiments\\adv3b02_xuc\\configs\\practical_historical_eval_matrix_20260920.json"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "fixed exploratory tests only; no training/calibration/selection feedback",
+    "external_method_exception": null,
+    "claim_scope": "用户授权探索性地面代理模拟；单seed；不作盲确认或真实在轨声明；评分不进入训练、早停或选择性重跑。"
+  },
+  "checkpoint": {
+    "initialization": "frozen_historical_evaluation_only",
+    "sources": [
+      {
+        "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260918-phase1-daot-rc4-practical4-manysig-s392005-r03/DAOT_RC4_PRACTICAL_FULL_MMSE_s392005/epoch_160_ssdg.pth",
+        "run_id": "20260918-phase1-daot-rc4-practical4-manysig-s392005-r03",
+        "epoch": 160
+      },
+      {
+        "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260918-phase1-daot-rc4-practical4-manysig-s392005-r03/DAOT_RC4_PRACTICAL_FULL_NOEQ_s392005/epoch_150_ssdg.pth",
+        "run_id": "20260918-phase1-daot-rc4-practical4-manysig-s392005-r03",
+        "epoch": 150
+      },
+      {
+        "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260918-phase1-daot-rc4-practical4-manysig-s392005-r03/DAOT_RC4_PRACTICAL_FULL_ZF_s392005/epoch_130_ssdg.pth",
+        "run_id": "20260918-phase1-daot-rc4-practical4-manysig-s392005-r03",
+        "epoch": 130
+      },
+      {
+        "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260918-phase1-daot-rc4-practical4-manysig-s392005-r03/DAOT_RC4_PRACTICAL_RESIDUAL_NOEQ_s392005/epoch_200_ssdg.pth",
+        "run_id": "20260918-phase1-daot-rc4-practical4-manysig-s392005-r03",
+        "epoch": 200
+      }
+    ],
+    "contract_check_ref": "E:\\type10-7\\automation_reports\\CV-SincNet\\20260918-phase1-daot-rc4-practical4-manysig-s392005-r03\\evidence\\practical_after_stop_20260920.json",
+    "provenance_verdict": "Old run initialization independently verified scratch_only/no sources/no target training/EXACT_MATCH roles; no new training inheritance",
+    "selection_rule": "latest complete scheduled epoch at user stop; never by score"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "/root current task: sole publisher",
+    "gpu_policy": "max_two_training_runs_per_gpu",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260920-phase1-practical4-sixscene-eval-s392005-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260920-phase1-practical4-sixscene-eval-s392005-r01",
+    "local_artifact_root": "E:\\type10-7\\automation_reports\\CV-SincNet\\20260920-phase1-practical4-sixscene-eval-s392005-r01",
+    "launch_command": [
+      "C:\\Users\\lh594\\.conda\\envs\\ssr-gpu\\python.exe",
+      "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\experiments\\adv3b02_xuc\\tools\\publish_practical_historical_eval.py",
+      "--launch-file",
+      "E:\\type10-7\\automation_reports\\CV-SincNet\\20260920-phase1-daot-rc4-residual-ratios-manysig-s392005-r01\\evidence\\launch.json",
+      "--output",
+      "E:\\type10-7\\automation_reports\\CV-SincNet\\20260920-phase1-practical4-sixscene-eval-s392005-r01\\evidence"
+    ],
+    "stop_rule": "Only technical failures: data/provenance mismatch, nonfinite guard (8 batches and 5%), output collision, invalid prediction/scoring closure; preserve artifacts, no performance stop or automatic retrain.",
+    "status": "PLANNED"
+  },
+  "expected_artifacts": [
+    "predictions.json",
+    "score.json",
+    "completion.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "per-scene accuracy",
+      "per-class accuracy",
+      "Macro-F1 derived from fixed predictions",
+      "low_urban difficult accuracy",
+      "clean degradation",
+      "epoch stage seconds",
+      "actual concat scene sample fractions"
+    ],
+    "dimensions": [
+      "row",
+      "scenario",
+      "epoch",
+      "fixed_seed"
+    ],
+    "prediction_ref": "rows[].output_root",
+    "scorer_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/daot_rc4_residual_ratios_20260920_1e4984924a/code/scripts/score_phase1_truth_last.py"
+  },
+  "rows": [
+    {
+      "row_id": "full_mmse",
+      "method": "Frozen previous DAOT+RC4 Practical checkpoint evaluation",
+      "purpose": "historical_reference_different_epoch_budgets",
+      "config_ref": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\experiments\\adv3b02_xuc\\configs\\practical_historical_eval_matrix_20260920.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260920-phase1-practical4-sixscene-eval-s392005-r01/full_mmse.recipe.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 392005,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 392005,
+        "support": null,
+        "evaluation": 392005
+      },
+      "seed_notes": "model392005; split/data392005为连续物理ID固定契约；support不适用。原训练augmentation seed配方保留，信道view调用从传入generator抽取seed，base_index+epoch+L/U+scene绑定实现；虚拟RX硬件seed2027按rx/day固定。目标opaque ID+scene+seed392005+target_fixed_v3固定，跨四组匹配潜在参数；无需truth。",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban",
+        "practical_low_suburban",
+        "practical_mid_urban",
+        "practical_high_urban"
+      ],
+      "optimizer": "not_applicable_evaluation",
+      "lr": null,
+      "epochs": 160,
+      "fl_rounds": null,
+      "budget_ref": "one fixed checkpoint, clean plus six practical scenes; batch256",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260920-phase1-practical4-sixscene-eval-s392005-r01/full_mmse",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260920-phase1-practical4-sixscene-eval-s392005-r01/full_mmse.eval.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/daot_rc4_residual_ratios_20260920_1e4984924a/code/scripts/evaluate_practical_checkpoint.py",
+        "--checkpoint",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260918-phase1-daot-rc4-practical4-manysig-s392005-r03/DAOT_RC4_PRACTICAL_FULL_MMSE_s392005/epoch_160_ssdg.pth",
+        "--recipe",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260920-phase1-practical4-sixscene-eval-s392005-r01/full_mmse.recipe.json",
+        "--input-package",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_fcr_r1r8_s392005_equalized_20260903_v4/target_inputs",
+        "--truth",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_fcr_r1r8_s392005_equalized_20260903_v4/target_truth/truth_sidecar.json",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260920-phase1-practical4-sixscene-eval-s392005-r01/full_mmse",
+        "--run-id",
+        "20260920-phase1-practical4-sixscene-eval-s392005-r01",
+        "--row-id",
+        "full_mmse",
+        "--epoch",
+        "160",
+        "--scenarios",
+        "clean,practical_high,practical_mid,practical_low_urban,practical_low_suburban,practical_mid_urban,practical_high_urban"
+      ],
+      "expected_artifacts": [
+        "predictions.json",
+        "score.json",
+        "scorer.log",
+        "completion.json"
+      ],
+      "status": "PLANNED",
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260918-phase1-daot-rc4-practical4-manysig-s392005-r03/DAOT_RC4_PRACTICAL_FULL_MMSE_s392005/epoch_160_ssdg.pth"
+    },
+    {
+      "row_id": "full_noeq",
+      "method": "Frozen previous DAOT+RC4 Practical checkpoint evaluation",
+      "purpose": "historical_reference_different_epoch_budgets",
+      "config_ref": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\experiments\\adv3b02_xuc\\configs\\practical_historical_eval_matrix_20260920.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260920-phase1-practical4-sixscene-eval-s392005-r01/full_noeq.recipe.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 392005,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 392005,
+        "support": null,
+        "evaluation": 392005
+      },
+      "seed_notes": "model392005; split/data392005为连续物理ID固定契约；support不适用。原训练augmentation seed配方保留，信道view调用从传入generator抽取seed，base_index+epoch+L/U+scene绑定实现；虚拟RX硬件seed2027按rx/day固定。目标opaque ID+scene+seed392005+target_fixed_v3固定，跨四组匹配潜在参数；无需truth。",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban",
+        "practical_low_suburban",
+        "practical_mid_urban",
+        "practical_high_urban"
+      ],
+      "optimizer": "not_applicable_evaluation",
+      "lr": null,
+      "epochs": 150,
+      "fl_rounds": null,
+      "budget_ref": "one fixed checkpoint, clean plus six practical scenes; batch256",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260920-phase1-practical4-sixscene-eval-s392005-r01/full_noeq",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260920-phase1-practical4-sixscene-eval-s392005-r01/full_noeq.eval.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/daot_rc4_residual_ratios_20260920_1e4984924a/code/scripts/evaluate_practical_checkpoint.py",
+        "--checkpoint",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260918-phase1-daot-rc4-practical4-manysig-s392005-r03/DAOT_RC4_PRACTICAL_FULL_NOEQ_s392005/epoch_150_ssdg.pth",
+        "--recipe",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260920-phase1-practical4-sixscene-eval-s392005-r01/full_noeq.recipe.json",
+        "--input-package",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_fcr_r1r8_s392005_equalized_20260903_v4/target_inputs",
+        "--truth",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_fcr_r1r8_s392005_equalized_20260903_v4/target_truth/truth_sidecar.json",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260920-phase1-practical4-sixscene-eval-s392005-r01/full_noeq",
+        "--run-id",
+        "20260920-phase1-practical4-sixscene-eval-s392005-r01",
+        "--row-id",
+        "full_noeq",
+        "--epoch",
+        "150",
+        "--scenarios",
+        "clean,practical_high,practical_mid,practical_low_urban,practical_low_suburban,practical_mid_urban,practical_high_urban"
+      ],
+      "expected_artifacts": [
+        "predictions.json",
+        "score.json",
+        "scorer.log",
+        "completion.json"
+      ],
+      "status": "PLANNED",
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260918-phase1-daot-rc4-practical4-manysig-s392005-r03/DAOT_RC4_PRACTICAL_FULL_NOEQ_s392005/epoch_150_ssdg.pth"
+    },
+    {
+      "row_id": "full_zf",
+      "method": "Frozen previous DAOT+RC4 Practical checkpoint evaluation",
+      "purpose": "historical_reference_different_epoch_budgets",
+      "config_ref": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\experiments\\adv3b02_xuc\\configs\\practical_historical_eval_matrix_20260920.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260920-phase1-practical4-sixscene-eval-s392005-r01/full_zf.recipe.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 392005,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 392005,
+        "support": null,
+        "evaluation": 392005
+      },
+      "seed_notes": "model392005; split/data392005为连续物理ID固定契约；support不适用。原训练augmentation seed配方保留，信道view调用从传入generator抽取seed，base_index+epoch+L/U+scene绑定实现；虚拟RX硬件seed2027按rx/day固定。目标opaque ID+scene+seed392005+target_fixed_v3固定，跨四组匹配潜在参数；无需truth。",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban",
+        "practical_low_suburban",
+        "practical_mid_urban",
+        "practical_high_urban"
+      ],
+      "optimizer": "not_applicable_evaluation",
+      "lr": null,
+      "epochs": 130,
+      "fl_rounds": null,
+      "budget_ref": "one fixed checkpoint, clean plus six practical scenes; batch256",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260920-phase1-practical4-sixscene-eval-s392005-r01/full_zf",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260920-phase1-practical4-sixscene-eval-s392005-r01/full_zf.eval.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/daot_rc4_residual_ratios_20260920_1e4984924a/code/scripts/evaluate_practical_checkpoint.py",
+        "--checkpoint",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260918-phase1-daot-rc4-practical4-manysig-s392005-r03/DAOT_RC4_PRACTICAL_FULL_ZF_s392005/epoch_130_ssdg.pth",
+        "--recipe",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260920-phase1-practical4-sixscene-eval-s392005-r01/full_zf.recipe.json",
+        "--input-package",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_fcr_r1r8_s392005_equalized_20260903_v4/target_inputs",
+        "--truth",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_fcr_r1r8_s392005_equalized_20260903_v4/target_truth/truth_sidecar.json",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260920-phase1-practical4-sixscene-eval-s392005-r01/full_zf",
+        "--run-id",
+        "20260920-phase1-practical4-sixscene-eval-s392005-r01",
+        "--row-id",
+        "full_zf",
+        "--epoch",
+        "130",
+        "--scenarios",
+        "clean,practical_high,practical_mid,practical_low_urban,practical_low_suburban,practical_mid_urban,practical_high_urban"
+      ],
+      "expected_artifacts": [
+        "predictions.json",
+        "score.json",
+        "scorer.log",
+        "completion.json"
+      ],
+      "status": "PLANNED",
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260918-phase1-daot-rc4-practical4-manysig-s392005-r03/DAOT_RC4_PRACTICAL_FULL_ZF_s392005/epoch_130_ssdg.pth"
+    },
+    {
+      "row_id": "residual_noeq",
+      "method": "Frozen previous DAOT+RC4 Practical checkpoint evaluation",
+      "purpose": "historical_reference_different_epoch_budgets",
+      "config_ref": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\experiments\\adv3b02_xuc\\configs\\practical_historical_eval_matrix_20260920.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260920-phase1-practical4-sixscene-eval-s392005-r01/residual_noeq.recipe.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 392005,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 392005,
+        "support": null,
+        "evaluation": 392005
+      },
+      "seed_notes": "model392005; split/data392005为连续物理ID固定契约；support不适用。原训练augmentation seed配方保留，信道view调用从传入generator抽取seed，base_index+epoch+L/U+scene绑定实现；虚拟RX硬件seed2027按rx/day固定。目标opaque ID+scene+seed392005+target_fixed_v3固定，跨四组匹配潜在参数；无需truth。",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban",
+        "practical_low_suburban",
+        "practical_mid_urban",
+        "practical_high_urban"
+      ],
+      "optimizer": "not_applicable_evaluation",
+      "lr": null,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "one fixed checkpoint, clean plus six practical scenes; batch256",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260920-phase1-practical4-sixscene-eval-s392005-r01/residual_noeq",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260920-phase1-practical4-sixscene-eval-s392005-r01/residual_noeq.eval.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/daot_rc4_residual_ratios_20260920_1e4984924a/code/scripts/evaluate_practical_checkpoint.py",
+        "--checkpoint",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260918-phase1-daot-rc4-practical4-manysig-s392005-r03/DAOT_RC4_PRACTICAL_RESIDUAL_NOEQ_s392005/epoch_200_ssdg.pth",
+        "--recipe",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260920-phase1-practical4-sixscene-eval-s392005-r01/residual_noeq.recipe.json",
+        "--input-package",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_fcr_r1r8_s392005_equalized_20260903_v4/target_inputs",
+        "--truth",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_fcr_r1r8_s392005_equalized_20260903_v4/target_truth/truth_sidecar.json",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260920-phase1-practical4-sixscene-eval-s392005-r01/residual_noeq",
+        "--run-id",
+        "20260920-phase1-practical4-sixscene-eval-s392005-r01",
+        "--row-id",
+        "residual_noeq",
+        "--epoch",
+        "200",
+        "--scenarios",
+        "clean,practical_high,practical_mid,practical_low_urban,practical_low_suburban,practical_mid_urban,practical_high_urban"
+      ],
+      "expected_artifacts": [
+        "predictions.json",
+        "score.json",
+        "scorer.log",
+        "completion.json"
+      ],
+      "status": "PLANNED",
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260918-phase1-daot-rc4-practical4-manysig-s392005-r03/DAOT_RC4_PRACTICAL_RESIDUAL_NOEQ_s392005/epoch_200_ssdg.pth"
+    }
+  ],
+  "notes": [
+    "Same model/split/data/augmentation seed392005 and receiver hardware seed2027; support not applicable.",
+    "Ratio applies only to the labeled concat satellite branch; DAOT student high and hard teacher mid/low_urban stay unchanged.",
+    "Nominal clean+satellite slots 1:1; applied probability E1-40 .3, E41-90 .6, E91-200 .8; satellite CE starts E80 as old recipe.",
+    "Primary comparison at fixed E200 within new rows; old residual E200 descriptive reference. Old full E150/ZF E130/MMSE E160 are unmatched budgets.",
+    "No result-based early stop, checkpoint choice, or selective rerun. E100:10:E200 observations remain exploratory."
+  ],
+  "registered_at": "2026-09-20T11:43:52+00:00"
+}
