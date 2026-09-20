@@ -7,7 +7,7 @@ No dependency on, or mutation of, historical channel implementations.
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass
-from functools import cached_property
+from functools import cached_property, lru_cache
 import hashlib
 import json
 import math
@@ -276,7 +276,7 @@ def waveform_metrics(x):
                 peak_energy_share=float(power.max()/total))
 
 
-def fractional_delay_kernel(fraction, half_length=24):
+def _fractional_delay_kernel_reference(fraction, half_length=24):
     """Kaiser-windowed sinc, common causal latency=half_length samples.
 
     A propagation delay filter, never a receiver equalizer. The integer/common
@@ -287,6 +287,14 @@ def fractional_delay_kernel(fraction, half_length=24):
     positions = np.arange(2*half_length+1, dtype=float)
     kernel = np.sinc(positions-half_length-fraction)*np.kaiser(len(positions), 8.6)
     return kernel/kernel.sum()
+
+
+_fractional_delay_kernel_cached = lru_cache(maxsize=256)(_fractional_delay_kernel_reference)
+
+
+def fractional_delay_kernel(fraction, half_length=24):
+    # Return an owned array as before; callers cannot mutate the cached kernel.
+    return _fractional_delay_kernel_cached(fraction, half_length).copy()
 
 
 def receiver_quality(cfg, snr_db):

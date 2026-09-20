@@ -28,7 +28,11 @@ def main():
     p.add_argument('--repeats',type=int,default=3)
     p.add_argument('--output',required=True)
     p.add_argument('--model',action='store_true')
+    p.add_argument('--scenes',default=','.join(adapter.PRACTICAL_ALL[1:]))
     a=p.parse_args()
+    scenes=a.scenes.split(',')
+    if not scenes or len(set(scenes))!=len(scenes) or not set(scenes)<=set(adapter.PRACTICAL_ALL[1:]):
+        raise ValueError('Invalid synthetic benchmark scene list')
     destination=Path(a.output)
     if destination.exists():raise FileExistsError(destination)
     torch.set_num_threads(1)
@@ -56,7 +60,7 @@ def main():
                 practical_equalizer_method=method,practical_fs_hz=25e6,practical_fc_hz=2.462e9,
                 practical_receiver_seed=2027,practical_eval_cache_dir='',practical_channel_workers=0,
                 practical_buffer_output=False)
-            for scene in adapter.PRACTICAL_ALL[1:]:
+            for scene in scenes:
                 config.practical_eval_cache_dir=''
                 config.practical_channel_workers=0
                 config.practical_buffer_output=False
@@ -64,7 +68,15 @@ def main():
                 def call(value=gpu):
                     y,_=adapter.apply_practical(value,scene,config,gen=gen)
                     return y.to(device)
+                import leo_practical.channel as channel
+                cached_kernel=channel.fractional_delay_kernel
+                try:
+                    channel.fractional_delay_kernel=channel._fractional_delay_kernel_reference
+                    uncached_fir,original_iq=measure(call)
+                finally:
+                    channel.fractional_delay_kernel=cached_kernel
                 base,reference=measure(call)
+                assert torch.equal(original_iq,reference)
                 assert adapter._last_meta['cache_event']=='bypass'
                 config.practical_buffer_output=True
                 buffered,y=measure(call);assert torch.equal(reference,y)
@@ -79,10 +91,12 @@ def main():
                 cached_cpu,y=measure(lambda:call(x));assert torch.equal(reference,y)
                 assert adapter._last_meta['cache_event']=='hit'
                 row=dict(route=route,equalization=eq,method=method,scene=scene,reference=base,
+                    uncached_fir_reference=uncached_fir,
                     buffer=buffered,parallel2=parallel,fixed_cold_s=cold,
                     fixed_warm_existing_path=cached_gpu,fixed_warm_cpu_path=cached_cpu,exact_iq=True)
                 result['cases'].append(row)
                 print(json.dumps(dict(progress=len(result['cases']),route=route,scene=scene,
+                    fir_cache_speedup=uncached_fir['median_s']/base['median_s'],
                     buffer_speedup=base['median_s']/buffered['median_s'],
                     parallel_speedup=base['median_s']/parallel['median_s'],
                     fixed_cpu_speedup=base['median_s']/cached_cpu['median_s'])),flush=True)

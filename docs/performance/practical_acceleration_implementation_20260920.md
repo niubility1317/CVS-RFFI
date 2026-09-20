@@ -1,6 +1,6 @@
 # Practical执行加速实施与验证
 
-状态：本地聚焦验证完成，N607合成基准待执行。用户最新要求优先：不启动任何正式训练实验；本轮仅验证执行加速，场景选择作为未来配方建议。
+状态：本地聚焦验证及N607 batch32合成基准完成；profile新增的FIR核缓存将追加batch128验证。用户最新要求优先：不启动任何正式训练实验；本轮仅验证执行加速，场景选择作为未来配方建议。
 
 ## 实现范围
 
@@ -27,6 +27,29 @@
 比较对象是当前实现各执行开关的开／关，不是整个历史release对新release的端到端比较；两侧均已享受共享的Config缓存。测量GPU时在每个有界样本边界同步；不把这一模式用于普通训练。进程池启动及磁盘首次生成不计入热态倍数，首次缓存写入另记录。
 
 首次本地benchmark存在跨scene未清空cache配置的问题，其输出`E:/type10-7/.codex_tmp/execution_acceleration_local_20260920.json`作废，禁止用于收益结论。已修正每个case重置配置，并增加bypass/hit断言；有效重跑为`execution_acceleration_local_corrected_20260920.json`。
+
+## N607第一轮结果：VERIFIED
+
+代码94158378，Torch2.1.0+cu121、NumPy2.2.5、RTX3090 GPU0，B32、长度256、float32输入。GPU0启动前无计算任务，结束后显存回到1MiB；未停止／改写其他任务。独立读回result.json与verification_status.json，24case均exact_iq=true，模型identity及梯度观测一致。
+
+|信道|双进程／串行速度比范围|热缓存＋CPU评估／重新生成速度比范围|
+|---|---:|---:|
+|full不均衡|1.95–2.07|32.03–32.91|
+|full ZF|1.98–2.06|38.02–42.89|
+|full MMSE|2.02–2.05|38.17–42.81|
+|residual|1.91–2.00|22.35–22.54|
+
+identity-only前向17.792→6.456ms（2.756倍）；梯度观测30.205→18.804ms（1.606倍）。这是随机初始化模型eval／既定梯度观测，不是AMP训练step或整个RC4/DAOT epoch。
+
+必须拆开增量贡献：相对已有热缓存路径，CPU前置本轮只额外约1.3%–3.2%速度比收益；上表22–43倍主要来自不再重新生成固定信道。输出buffer单独只有约0.1%–1.8%速度比收益，且本机CPU有波动，不能称其是主要瓶颈修复。
+
+证据：[N607 B32](evidence/practical_execution_n607_20260920.json)、[命令与状态](evidence/practical_execution_n607_status_20260920.json)、[本地有效基准](evidence/practical_execution_local_20260920.json)。远端根目录：`/home/szu2070436088/2510044040/CV-SincNet/benchmarks/practical_execution_94158378_20260920_r01`，日志`benchmark.log`。
+
+## 基于profile新增的FIR优化
+
+首轮cProfile仅取residual/high_urban一个batch：Practical总调用约95.25ms，其中分数延迟核约30.64ms、Kaiser窗约27.87ms，两者为嵌套累计时间，不相加。配置固定时滤波核被反复生成，属于真正的不变量重复。
+
+现将原实现保留为参考函数，以fraction与half_length为键建立最大256项LRU，公开入口返回独立copy，保留旧调用方可修改返回值的语义。无种子、state、equalizer或IQ变化。新增5项测试覆盖返回数组修改隔离及四配置×六场景精确IQ/metadata一致；新增测试总数36，旧相关测试25。
 
 ## 场景选择建议（不启动）
 

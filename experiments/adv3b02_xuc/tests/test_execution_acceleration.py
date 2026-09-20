@@ -52,6 +52,31 @@ def test_parallel_rejects_duplicate_ids():
             workers=2,seed=7,sample_ids=['a','a'],session_ids=['s','s'],realization_namespace='source_dynamic_E2_L')
 
 
+def test_fir_cache_preserves_ownership_and_reference():
+    from leo_practical.channel import fractional_delay_kernel,_fractional_delay_kernel_reference
+    for fraction in (0.,.125,.999999):
+        old=_fractional_delay_kernel_reference(fraction,24)
+        new=fractional_delay_kernel(fraction,24)
+        assert np.array_equal(old,new)
+        new[:]=0
+        assert np.array_equal(old,fractional_delay_kernel(fraction,24))
+
+
+@pytest.mark.parametrize('variant',VARIANTS)
+def test_actual_channel_cached_fir_exact(variant,monkeypatch):
+    import leo_practical.channel as channel
+    config=args(variant)
+    x=torch.randn(7,2,256,generator=torch.Generator().manual_seed(9))
+    adapter.set_evaluation_context([f'fir{i}' for i in range(7)])
+    for scene in adapter.PRACTICAL_ALL[1:]:
+        new,_=adapter.apply_practical(x,scene,config,gen=torch.Generator().manual_seed(7))
+        records=copy.deepcopy(adapter._last_meta['records'])
+        with monkeypatch.context() as context:
+            context.setattr(channel,'fractional_delay_kernel',channel._fractional_delay_kernel_reference)
+            old,_=adapter.apply_practical(x,scene,config,gen=torch.Generator().manual_seed(7))
+        assert torch.equal(new,old) and records==adapter._last_meta['records']
+
+
 def test_dynamic_parallel_preserves_seed_and_input(tmp_path):
     config=args(VARIANTS[1]);config.output_dir=str(tmp_path)
     x=torch.randn(4,2,256,generator=torch.Generator().manual_seed(2))
