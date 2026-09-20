@@ -1,0 +1,644 @@
+{
+  "date": "2026-09-20",
+  "baseline_commit": "45bda90a3dd63f7f2113b9cdad41dfd6488fa2d7",
+  "scope": "Static code re-review and saved timing evidence; no live remote status or new performance run",
+  "source_root": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\experiments\\adv3b02_xuc\\code",
+  "prior_tests": "25 passed in previous implementation turn; not rerun for this documentation-only change",
+  "recipe_fields": {
+    "rc4_practical_full_mmse_20260918.json": {
+      "--a1_runtime_fast": "false",
+      "--eval_sat_channel": "false",
+      "--num_workers": "0",
+      "--amp": "true",
+      "--checkpoint_selection": "final_only",
+      "--source_val_heavy_eval_interval": "1",
+      "--sat_view_schedule": "1@0.30:practical_high;41@0.60:practical_mid,practical_low_urban;91@0.80:practical_high,practical_mid,practical_low_urban",
+      "--daot_student_scenario": "practical_high",
+      "--daot_efficiency_mode": "identity_sequential",
+      "--a1_periodic_target_start": "100",
+      "--a1_periodic_target_interval": "10",
+      "--a1_periodic_target_scenarios": "clean,practical_high,practical_mid,practical_low_urban",
+      "--practical_route": "full",
+      "--practical_equalization": "true",
+      "--practical_equalizer_method": "mmse"
+    },
+    "rc4_practical_full_noeq_20260918.json": {
+      "--a1_runtime_fast": "false",
+      "--eval_sat_channel": "false",
+      "--num_workers": "0",
+      "--amp": "true",
+      "--checkpoint_selection": "final_only",
+      "--source_val_heavy_eval_interval": "1",
+      "--sat_view_schedule": "1@0.30:practical_high;41@0.60:practical_mid,practical_low_urban;91@0.80:practical_high,practical_mid,practical_low_urban",
+      "--daot_student_scenario": "practical_high",
+      "--daot_efficiency_mode": "identity_sequential",
+      "--a1_periodic_target_start": "100",
+      "--a1_periodic_target_interval": "10",
+      "--a1_periodic_target_scenarios": "clean,practical_high,practical_mid,practical_low_urban",
+      "--practical_route": "full",
+      "--practical_equalization": "false",
+      "--practical_equalizer_method": "zf"
+    },
+    "rc4_practical_full_zf_20260918.json": {
+      "--a1_runtime_fast": "false",
+      "--eval_sat_channel": "false",
+      "--num_workers": "0",
+      "--amp": "true",
+      "--checkpoint_selection": "final_only",
+      "--source_val_heavy_eval_interval": "1",
+      "--sat_view_schedule": "1@0.30:practical_high;41@0.60:practical_mid,practical_low_urban;91@0.80:practical_high,practical_mid,practical_low_urban",
+      "--daot_student_scenario": "practical_high",
+      "--daot_efficiency_mode": "identity_sequential",
+      "--a1_periodic_target_start": "100",
+      "--a1_periodic_target_interval": "10",
+      "--a1_periodic_target_scenarios": "clean,practical_high,practical_mid,practical_low_urban",
+      "--practical_route": "full",
+      "--practical_equalization": "true",
+      "--practical_equalizer_method": "zf"
+    },
+    "rc4_practical_residual_noeq_20260918.json": {
+      "--a1_runtime_fast": "false",
+      "--eval_sat_channel": "false",
+      "--num_workers": "0",
+      "--amp": "true",
+      "--checkpoint_selection": "final_only",
+      "--source_val_heavy_eval_interval": "1",
+      "--sat_view_schedule": "1@0.30:practical_high;41@0.60:practical_mid,practical_low_urban;91@0.80:practical_high,practical_mid,practical_low_urban",
+      "--daot_student_scenario": "practical_high",
+      "--daot_efficiency_mode": "identity_sequential",
+      "--a1_periodic_target_start": "100",
+      "--a1_periodic_target_interval": "10",
+      "--a1_periodic_target_scenarios": "clean,practical_high,practical_mid,practical_low_urban",
+      "--practical_route": "residual",
+      "--practical_equalization": "false",
+      "--practical_equalizer_method": "zf"
+    }
+  },
+  "training_snapshot_scenarios": {
+    "practical_high": [
+      "suburban",
+      [
+        45.0,
+        80.0
+      ]
+    ],
+    "practical_mid": [
+      "suburban",
+      [
+        20.0,
+        45.0
+      ]
+    ],
+    "practical_low_urban": [
+      "urban",
+      [
+        10.0,
+        30.0
+      ]
+    ]
+  },
+  "independent_module_scenarios": {
+    "practical_high": [
+      "suburban",
+      [
+        45.0,
+        80.0
+      ]
+    ],
+    "practical_mid": [
+      "suburban",
+      [
+        20.0,
+        45.0
+      ]
+    ],
+    "practical_low_urban": [
+      "urban",
+      [
+        10.0,
+        30.0
+      ]
+    ],
+    "practical_low_suburban": [
+      "suburban",
+      [
+        10.0,
+        30.0
+      ]
+    ],
+    "practical_mid_urban": [
+      "urban",
+      [
+        20.0,
+        45.0
+      ]
+    ],
+    "practical_high_urban": [
+      "urban",
+      [
+        45.0,
+        80.0
+      ]
+    ]
+  },
+  "counts": {
+    "old_predictions_per_checkpoint": 672000,
+    "six_scene_predictions_per_checkpoint": 1176000,
+    "six_scene_four_rows_e100_e200_predictions": 51744000,
+    "four_rows_six_scene_iq_bytes": 8257536000,
+    "four_rows_six_scene_iq_gib": 7.6904296875,
+    "clean_iq_gib": 0.3204345703125,
+    "telemetry_data_rows_rewritten_per_format_200_epochs": 20100,
+    "telemetry_data_rows_if_append_200_epochs": 200
+  },
+  "anchors": [
+    {
+      "file": "experiments/adv3b02_xuc/code/SSDG/train_ssdg.py",
+      "needle": "def _evaluate_source_val_tail_geometry(",
+      "matches": [
+        {
+          "line": 3553,
+          "text": "def _evaluate_source_val_tail_geometry(model, data_ctx, device, args) -> Dict[str, Any]:"
+        }
+      ]
+    },
+    {
+      "file": "experiments/adv3b02_xuc/code/SSDG/train_ssdg.py",
+      "needle": "def _grad_norm(",
+      "matches": [
+        {
+          "line": 4312,
+          "text": "def _grad_norm(model, name_filter=None) -> float:"
+        }
+      ]
+    },
+    {
+      "file": "experiments/adv3b02_xuc/code/SSDG/train_ssdg.py",
+      "needle": "def _first_nonfinite_gradient(",
+      "matches": [
+        {
+          "line": 4339,
+          "text": "def _first_nonfinite_gradient(model) -> Dict[str, Any] | None:"
+        }
+      ]
+    },
+    {
+      "file": "experiments/adv3b02_xuc/code/SSDG/train_ssdg.py",
+      "needle": "def _write_ssdg_epoch_telemetry(",
+      "matches": [
+        {
+          "line": 5476,
+          "text": "def _write_ssdg_epoch_telemetry("
+        }
+      ]
+    },
+    {
+      "file": "experiments/adv3b02_xuc/code/SSDG/train_ssdg.py",
+      "needle": "if bool(args.a1_runtime_fast):",
+      "matches": [
+        {
+          "line": 10245,
+          "text": "if bool(args.a1_runtime_fast):"
+        },
+        {
+          "line": 11483,
+          "text": "if bool(args.a1_runtime_fast):"
+        },
+        {
+          "line": 11507,
+          "text": "if bool(args.a1_runtime_fast):"
+        }
+      ]
+    },
+    {
+      "file": "experiments/adv3b02_xuc/code/SSDG/train_ssdg.py",
+      "needle": "base_validation_started =",
+      "matches": [
+        {
+          "line": 12703,
+          "text": "base_validation_started = time.time()"
+        }
+      ]
+    },
+    {
+      "file": "experiments/adv3b02_xuc/code/SSDG/train_ssdg.py",
+      "needle": "source_val_tail_geometry = _evaluate_source_val_tail_geometry(",
+      "matches": [
+        {
+          "line": 12736,
+          "text": "source_val_tail_geometry = _evaluate_source_val_tail_geometry(model, data_ctx, device, args)"
+        }
+      ]
+    },
+    {
+      "file": "experiments/adv3b02_xuc/code/SSDG/train_ssdg.py",
+      "needle": "final_source_val_tail = _evaluate_source_val_tail_geometry(",
+      "matches": [
+        {
+          "line": 13337,
+          "text": "final_source_val_tail = _evaluate_source_val_tail_geometry(model, data_ctx, device, args)"
+        }
+      ]
+    },
+    {
+      "file": "experiments/adv3b02_xuc/code/SSDG/train_ssdg.py",
+      "needle": "final_payload = deepcopy(payload)",
+      "matches": [
+        {
+          "line": 13353,
+          "text": "final_payload = deepcopy(payload)"
+        }
+      ]
+    },
+    {
+      "file": "experiments/adv3b02_xuc/code/cvsrffi/practical_adapter.py",
+      "needle": "PRACTICAL=",
+      "matches": [
+        {
+          "line": 10,
+          "text": "PRACTICAL=('clean','practical_high','practical_mid','practical_low_urban')"
+        }
+      ]
+    },
+    {
+      "file": "experiments/adv3b02_xuc/code/cvsrffi/practical_adapter.py",
+      "needle": "def apply_practical(",
+      "matches": [
+        {
+          "line": 45,
+          "text": "def apply_practical(x,scene,args,*,gen=None,return_meta=False):"
+        }
+      ]
+    },
+    {
+      "file": "experiments/adv3b02_xuc/code/cvsrffi/practical_adapter.py",
+      "needle": "array=np.array(",
+      "matches": [
+        {
+          "line": 56,
+          "text": "array=np.array(x.detach().to(device='cpu',dtype=torch.float64).tolist(),dtype=np.float64)"
+        }
+      ]
+    },
+    {
+      "file": "experiments/adv3b02_xuc/code/cvsrffi/practical_adapter.py",
+      "needle": "y=torch.tensor(",
+      "matches": [
+        {
+          "line": 62,
+          "text": "y=torch.tensor(y.tolist(),device=x.device,dtype=x.dtype)"
+        }
+      ]
+    },
+    {
+      "file": "experiments/adv3b02_xuc/code/cvsrffi/practical_adapter.py",
+      "needle": "if not return_meta:",
+      "matches": [
+        {
+          "line": 75,
+          "text": "if not return_meta:"
+        }
+      ]
+    },
+    {
+      "file": "experiments/adv3b02_xuc/code/cvsrffi/practical_view_cache.py",
+      "needle": "FIXED_NAMESPACES =",
+      "matches": [
+        {
+          "line": 13,
+          "text": "FIXED_NAMESPACES = frozenset(('target_fixed_v3', 'source_validation_fixed_v3'))"
+        }
+      ]
+    },
+    {
+      "file": "experiments/adv3b02_xuc/code/cvsrffi/practical_view_cache.py",
+      "needle": "if not cache_dir",
+      "matches": [
+        {
+          "line": 39,
+          "text": "if not cache_dir or realization_namespace not in FIXED_NAMESPACES:"
+        }
+      ]
+    },
+    {
+      "file": "experiments/adv3b02_xuc/code/cvsrffi/practical_view_cache.py",
+      "needle": "kwargs = dict(",
+      "matches": [
+        {
+          "line": 36,
+          "text": "kwargs = dict(seed=seed, sample_ids=sample_ids, session_ids=session_ids,"
+        }
+      ]
+    },
+    {
+      "file": "experiments/adv3b02_xuc/code/leo_practical/channel.py",
+      "needle": "SCENARIOS =",
+      "matches": [
+        {
+          "line": 22,
+          "text": "SCENARIOS = {"
+        }
+      ]
+    },
+    {
+      "file": "experiments/adv3b02_xuc/code/leo_practical/channel.py",
+      "needle": "class Config:",
+      "matches": [
+        {
+          "line": 36,
+          "text": "class Config:"
+        }
+      ]
+    },
+    {
+      "file": "experiments/adv3b02_xuc/code/leo_practical/channel.py",
+      "needle": "def config_hash(",
+      "matches": [
+        {
+          "line": 157,
+          "text": "def config_hash(self):"
+        }
+      ]
+    },
+    {
+      "file": "experiments/adv3b02_xuc/code/leo_practical/channel.py",
+      "needle": "class ChannelStream:",
+      "matches": [
+        {
+          "line": 310,
+          "text": "class ChannelStream:"
+        }
+      ]
+    },
+    {
+      "file": "experiments/adv3b02_xuc/code/leo_practical/channel.py",
+      "needle": "self.diffuse =",
+      "matches": [
+        {
+          "line": 351,
+          "text": "self.diffuse = 10**(np.asarray(cfg.diffuse_power_db)/10)"
+        }
+      ]
+    },
+    {
+      "file": "experiments/adv3b02_xuc/code/leo_practical/channel.py",
+      "needle": "self.pdp =",
+      "matches": [
+        {
+          "line": 358,
+          "text": "self.pdp = np.exp(-np.arange(3, dtype=float))"
+        }
+      ]
+    },
+    {
+      "file": "experiments/adv3b02_xuc/code/leo_practical/channel.py",
+      "needle": "input_metrics=waveform_metrics",
+      "matches": [
+        {
+          "line": 568,
+          "text": "input_metrics=waveform_metrics(x), output_metrics=waveform_metrics(y),"
+        }
+      ]
+    },
+    {
+      "file": "experiments/adv3b02_xuc/code/leo_practical/residual.py",
+      "needle": "self.latent = ChannelStream",
+      "matches": [
+        {
+          "line": 26,
+          "text": "self.latent = ChannelStream(replace(cfg, processing_route=\"full\"), seed, receiver, geometry)"
+        }
+      ]
+    },
+    {
+      "file": "experiments/adv3b02_xuc/code/leo_practical/residual.py",
+      "needle": "input_metrics=waveform_metrics",
+      "matches": [
+        {
+          "line": 134,
+          "text": "input_metrics=waveform_metrics(x),output_metrics=waveform_metrics(y),"
+        }
+      ]
+    },
+    {
+      "file": "experiments/adv3b02_xuc/code/leo_practical/batch.py",
+      "needle": "hardware_by_session =",
+      "matches": [
+        {
+          "line": 63,
+          "text": "hardware_by_session = {}"
+        }
+      ]
+    },
+    {
+      "file": "experiments/adv3b02_xuc/code/leo_practical/batch.py",
+      "needle": "for i, record in enumerate(raw):",
+      "matches": [
+        {
+          "line": 64,
+          "text": "for i, record in enumerate(raw):"
+        }
+      ]
+    },
+    {
+      "file": "experiments/adv3b02_xuc/code/cvsrffi/a1_fast_runtime.py",
+      "needle": "class GradientSnapshot:",
+      "matches": [
+        {
+          "line": 11,
+          "text": "class GradientSnapshot:"
+        }
+      ]
+    },
+    {
+      "file": "experiments/adv3b02_xuc/code/cvsrffi/a1_fast_runtime.py",
+      "needle": "values = torch.stack(scalars).cpu().tolist()",
+      "matches": [
+        {
+          "line": 37,
+          "text": "values = torch.stack(scalars).cpu().tolist()"
+        }
+      ]
+    },
+    {
+      "file": "experiments/adv3b02_xuc/code/cvsrffi/a1_periodic_target.py",
+      "needle": "device, predictor=None, scorer=None, expected_records=672000,",
+      "matches": [
+        {
+          "line": 23,
+          "text": "device, predictor=None, scorer=None, expected_records=672000,"
+        }
+      ]
+    },
+    {
+      "file": "experiments/adv3b02_xuc/code/cvsrffi/a1_periodic_target.py",
+      "needle": "subprocess.run(score_command",
+      "matches": [
+        {
+          "line": 51,
+          "text": "subprocess.run(score_command, cwd=release, env=env,"
+        }
+      ]
+    },
+    {
+      "file": "experiments/adv3b02_xuc/code/cvsrffi/a1_periodic_target.py",
+      "needle": "count = json.loads",
+      "matches": [
+        {
+          "line": 56,
+          "text": "count = json.loads((output/'score.json').read_text(encoding='utf-8'))['record_count']"
+        }
+      ]
+    },
+    {
+      "file": "experiments/adv3b02_xuc/code/cvsrffi/a1_periodic_target.py",
+      "needle": "def run_epoch(",
+      "matches": [
+        {
+          "line": 71,
+          "text": "def run_epoch(args, epoch, output_dir, payload, save_fn, device):"
+        }
+      ]
+    },
+    {
+      "file": "experiments/adv3b02_xuc/code/cvsrffi/original_leo.py",
+      "needle": "def validate_scenarios(",
+      "matches": [
+        {
+          "line": 12,
+          "text": "def validate_scenarios(scenarios):"
+        }
+      ]
+    },
+    {
+      "file": "experiments/adv3b02_xuc/code/cvsrffi/original_leo.py",
+      "needle": "if result not in",
+      "matches": [
+        {
+          "line": 15,
+          "text": "if result not in (ORIGINAL, WEAK, PRACTICAL):"
+        }
+      ]
+    },
+    {
+      "file": "experiments/adv3b02_xuc/code/cvsrffi/eval.py",
+      "needle": "def evaluate_loader(",
+      "matches": [
+        {
+          "line": 132,
+          "text": "def evaluate_loader(model, loader, device, domain_label_map: Dict[int, int], max_batches: int = 0):"
+        }
+      ]
+    },
+    {
+      "file": "experiments/adv3b02_xuc/code/cvsrffi/eval.py",
+      "needle": "out = model(x, y_tx=None, grl_lambda=1.0, return_aux=True)",
+      "matches": [
+        {
+          "line": 143,
+          "text": "out = model(x, y_tx=None, grl_lambda=1.0, return_aux=True)"
+        }
+      ]
+    },
+    {
+      "file": "experiments/adv3b02_xuc/code/scripts/predict_phase1_truth_last.py",
+      "needle": "logits=outputs[",
+      "matches": [
+        {
+          "line": 28,
+          "text": "logits=outputs['tx_logits']"
+        }
+      ]
+    },
+    {
+      "file": "experiments/adv3b02_xuc/code/scripts/predict_phase1_truth_last.py",
+      "needle": "x = x.to(device, non_blocking=True)",
+      "matches": [
+        {
+          "line": 174,
+          "text": "x = x.to(device, non_blocking=True)"
+        }
+      ]
+    },
+    {
+      "file": "experiments/adv3b02_xuc/code/scripts/predict_phase1_truth_last.py",
+      "needle": "outputs = model(x,",
+      "matches": [
+        {
+          "line": 182,
+          "text": "outputs = model(x, y_tx=None, grl_lambda=1.0, return_aux=True)"
+        }
+      ]
+    },
+    {
+      "file": "experiments/adv3b02_xuc/code/scripts/predict_phase1_truth_last.py",
+      "needle": "records.append(",
+      "matches": [
+        {
+          "line": 185,
+          "text": "records.append("
+        }
+      ]
+    },
+    {
+      "file": "experiments/adv3b02_xuc/code/scripts/predict_phase1_truth_last.py",
+      "needle": "indent=2,",
+      "matches": [
+        {
+          "line": 203,
+          "text": "indent=2,"
+        }
+      ]
+    },
+    {
+      "file": "experiments/adv3b02_xuc/code/scripts/score_phase1_truth_last.py",
+      "needle": "scenarios = validate_scenarios",
+      "matches": [
+        {
+          "line": 20,
+          "text": "scenarios = validate_scenarios(args.scenarios.split(\",\"))"
+        }
+      ]
+    },
+    {
+      "file": "experiments/adv3b02_xuc/code/model_dual_cvsincnet.py",
+      "needle": "def forward_identity_only(",
+      "matches": [
+        {
+          "line": 894,
+          "text": "def forward_identity_only("
+        }
+      ]
+    },
+    {
+      "file": "experiments/adv3b02_xuc/code/model_dual_cvsincnet.py",
+      "needle": "aux_dom = backbone_forward_compat(",
+      "matches": [
+        {
+          "line": 1051,
+          "text": "aux_dom = backbone_forward_compat("
+        }
+      ]
+    },
+    {
+      "file": "experiments/adv3b02_xuc/code/dataset_wisig.py",
+      "needle": "_TORCH_FROM_NUMPY_OK:",
+      "matches": [
+        {
+          "line": 52,
+          "text": "_TORCH_FROM_NUMPY_OK: Optional[bool] = None"
+        }
+      ]
+    },
+    {
+      "file": "experiments/adv3b02_xuc/code/dataset_wisig.py",
+      "needle": "return torch.as_tensor(arr.copy()",
+      "matches": [
+        {
+          "line": 74,
+          "text": "return torch.as_tensor(arr.copy(), dtype=torch.float32)"
+        }
+      ]
+    }
+  ]
+}
