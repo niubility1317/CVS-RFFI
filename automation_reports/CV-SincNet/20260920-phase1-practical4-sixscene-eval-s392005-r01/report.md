@@ -24,3 +24,5 @@ E100起每10epoch统一评估clean和六个Practical环境，E200保留原LEO_WE
 服务器日志目录：`/home/szu2070436088/2510044040/CV-SincNet/logs/20260920-phase1-practical4-sixscene-eval-s392005-r01`。逐行完整命令与输出目录见experiment.json；独立进程读回见[evidence/startup_verification.json](evidence/startup_verification.json)。
 
 四组进程身份与GPU占用已核对，已进入推理；启动时尚未产生完整predictions.json和score.json，因此不能报告测试性能或完成率。固定checkpoint推理完成后由独立CPU scorer连接truth；无训练或选模反馈。
+
+2026-09-21：[residual最新七场景结果](residual_results_20260921.md)，旧E200及六新组E150独立复计VERIFIED。其他full行本次未复核。

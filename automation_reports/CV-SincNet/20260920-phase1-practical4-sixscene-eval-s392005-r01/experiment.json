@@ -423,12 +423,13 @@
         "scorer.log",
         "completion.json"
       ],
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260918-phase1-daot-rc4-practical4-manysig-s392005-r03/DAOT_RC4_PRACTICAL_RESIDUAL_NOEQ_s392005/epoch_200_ssdg.pth",
       "pid": 419219,
       "gpu": 7,
       "launch_evidence": "E:\\type10-7\\automation_reports\\CV-SincNet\\20260920-phase1-practical4-sixscene-eval-s392005-r01\\evidence\\launch.json",
-      "verification_evidence": "E:\\type10-7\\automation_reports\\CV-SincNet\\20260920-phase1-practical4-sixscene-eval-s392005-r01\\evidence\\startup_verification.json"
+      "verification_evidence": "E:\\type10-7\\automation_reports\\CV-SincNet\\20260920-phase1-practical4-sixscene-eval-s392005-r01\\evidence\\startup_verification.json",
+      "result_ref": "E:\\type10-7\\automation_reports\\CV-SincNet\\20260920-phase1-practical4-sixscene-eval-s392005-r01\\residual_results_20260921.md"
     }
   ],
   "notes": [
