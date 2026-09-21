@@ -1,0 +1,35 @@
+{
+  "status": "IMPLEMENTATION_ACCEPTANCE_WITH_EXPLICIT_HISTORICAL_LIMIT",
+  "unit_tests": {
+    "passed": 174,
+    "skipped": 12,
+    "log": "pytest.log"
+  },
+  "full_entrypoint": "real CORE90 synthetic IQ, two epochs, final heldout intentionally omitted",
+  "historical_first_divergence": "UNRESOLVED_HISTORICAL_FIRST_DIVERGENCE",
+  "real_source_three_condition_gate": "NOT_ESTABLISHED",
+  "formal_E200_launched": false,
+  "target_rescored": false,
+  "evidence_files": [
+    "suite_result.json",
+    "pytest.log",
+    "fp32_trajectory.json",
+    "amp_trajectory.json",
+    "amp_auxiliary_nan.json",
+    "amp_auxiliary_inf.json",
+    "legacy_fp32_main_reanalysis.json",
+    "decision_cuda.json",
+    "decision_cuda_initial_failure.json",
+    "role_reachability.json",
+    "actual_v2_branches.json",
+    "source_update.json",
+    "actual_v2_resume.json"
+  ],
+  "large_local_artifacts": {
+    "trajectory_tensors": "E:\\type10-7\\logs\\core90_v2_acceptance_20260911",
+    "source_counterfactual_parameter_deltas": "E:\\type10-7\\code\\snapshots\\core90_cross_response_v2_20260911_wt\\analysis\\v2_source_update_synthetic_20260911_r2"
+  },
+  "large_artifacts_committed": false,
+  "interpretation": "Passing synthetic implementation tests does not establish real source benefit or locate historical E200 first divergence.",
+  "code_commit": "310429025f8d22d9bd684e397fb77b2afd85ae6f"
+}

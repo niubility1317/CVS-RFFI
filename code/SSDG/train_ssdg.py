@@ -7597,8 +7597,8 @@ def train(args) -> int:
         lr=float(args.lr),
         weight_decay=float(args.weight_decay),
     )
-    if cr_runtime is not None and cr_runtime.parameters():
-        optimizer.add_param_group({"params": cr_runtime.parameters()})
+    if cr_runtime is not None and cr_runtime.main_optimizer_parameters():
+        optimizer.add_param_group({"params": cr_runtime.main_optimizer_parameters()})
     scaler = GradScaler(enabled=bool(args.amp and device.type == "cuda"))
     proto_bank = None
     if bool(getattr(args, "use_proto_memory", False)) or float(getattr(args, "lambda_proto", 0.0)) > 0.0:
@@ -8031,6 +8031,8 @@ def train(args) -> int:
             if legacy_unlabeled_active
             else None
         )
+        if cr_runtime is not None:
+            cr_runtime.prepare_training_phase(epoch=epoch, phase=phase)
         epoch_pairs = _muse_epoch_pairs(
             data_ctx["train_loader"],
             data_ctx["unlabeled_loader"],
@@ -8045,7 +8047,7 @@ def train(args) -> int:
             sat_anchor_anchor_grad_norm = float("nan")
             sat_anchor_pair_sat_grad_cos = float("nan")
             x_l, y_l, extra_l = move_batch(labeled_batch, device)
-            cr_plan = cr_runtime.begin_batch(extra_l) if cr_runtime is not None else None
+            cr_plan = cr_runtime.begin_batch(extra_l, epoch=epoch, phase=phase) if cr_runtime is not None else None
             if muse_state is not None:
                 _assert_muse_open_geometry_role("L_s")
             labeled_clean_count = int(y_l.numel())
@@ -10292,12 +10294,25 @@ def train(args) -> int:
                 }
             cr_terms = cr_runtime.losses(model, out_l, y_l, cr_plan) if cr_runtime is not None else None
             cr_baseline_loss = loss
+            if cr_runtime is not None and cr_runtime.mechanism_audit_due:
+                cr_runtime.audit_source_update(model, optimizer, scaler, cr_baseline_loss, loss_tx_l, cr_terms,
+                    training_context=dict(epoch=epoch, phase=phase, unlabeled_active=legacy_unlabeled_active,
+                        ema_teacher_present=ema_model is not None, prototype_bank_present=proto_bank is not None,
+                        pseudo_temporal_entries=len(pseudo_temporal_bank),
+                        available_scalar_loss_terms={k: v for k, v in locals().items()
+                            if k.startswith('loss_') and torch.is_tensor(v) and v.numel() == 1}))
+            if cr_runtime is not None and getattr(cr_runtime, "replay_observer", None) is not None:
+                cr_runtime.audit_event("baseline_losses", total=cr_baseline_loss,
+                    components={k: v for k, v in locals().items() if k.startswith("loss_")
+                                and torch.is_tensor(v) and v.numel() == 1})
             if cr_runtime is not None and cr_runtime.active:
                 cr_response, cr_decision, cr_cross = cr_terms
-                loss = loss + (float(cr_config["lambda_resp"]) * cr_response if cr_config["response_enabled"] else 0.)
+                loss = loss + (float(cr_config["lambda_resp"]) * cr_response if cr_config["response_enabled"] and cr_runtime.auxiliary_transaction is None else 0.)
                 loss = loss + (float(cr_config["lambda_dec"]) * cr_decision if cr_config["decision_enabled"] else 0.)
                 loss = loss + (float(cr_config["lambda_cross"]) * cr_cross if cr_config["identity_interaction_enabled"] else 0.)
             loss_is_finite = bool(torch.isfinite(loss.detach()).item())
+            if cr_runtime is not None and not loss_is_finite:
+                cr_runtime.force_diagnostic("nonfinite_complete_training_loss")
             skipped_nonfinite_loss = 0
             skipped_nonfinite_grad = 0
             optimizer_step_applied = False
@@ -10403,6 +10418,8 @@ def train(args) -> int:
                 first_nonfinite_gradient = _first_nonfinite_gradient(model)
                 if first_nonfinite_gradient is None and cr_runtime is not None:
                     first_nonfinite_gradient = cr_runtime.finite_gradients()
+                if first_nonfinite_gradient is not None and cr_runtime is not None:
+                    cr_runtime.force_diagnostic("nonfinite_main_gradient", **first_nonfinite_gradient)
                 if first_nonfinite_gradient is None and muse_state is not None:
                     first_nonfinite_gradient = _first_nonfinite_gradient(muse_state["heads"])
                     if first_nonfinite_gradient is not None:
@@ -10411,10 +10428,13 @@ def train(args) -> int:
                             "muse_heads." + str(first_nonfinite_gradient["parameter_name"])
                         )
                 grad_norm_before_clip = _grad_norm(model)
+                if cr_runtime is not None and getattr(cr_runtime, "replay_observer", None) is not None:
+                    cr_runtime.audit_event("unscaled_gradients", gradients={n: p.grad for n, p in model.named_parameters()},
+                                           scaler=scaler.state_dict(), nonfinite=first_nonfinite_gradient)
                 grads_finite = first_nonfinite_gradient is None
                 if grads_finite and float(getattr(args, "max_grad_norm", 0.0)) > 0.0:
                     torch.nn.utils.clip_grad_norm_(
-                        _optimizer_parameters(model, muse_state) + (cr_runtime.parameters() if cr_runtime is not None else []),
+                        _optimizer_parameters(model, muse_state) + (cr_runtime.main_optimizer_parameters() if cr_runtime is not None else []),
                         max_norm=float(args.max_grad_norm),
                         error_if_nonfinite=False,
                     )
@@ -10529,6 +10549,12 @@ def train(args) -> int:
                 u_tri_ambiguous_tail_count = max(0.0, u_tri_query_count * max(0.0, min(1.0, u_tri_accept_rate)))
                 u_tri_outside_reject_count = max(0.0, u_tri_query_count - u_tri_ambiguous_tail_count)
             if cr_runtime is not None:
+                if getattr(cr_runtime, "replay_observer", None) is not None:
+                    cr_runtime.audit_event("post_update", model=model.state_dict(), optimizer=optimizer.state_dict(),
+                        scaler=scaler.state_dict(), step_applied=optimizer_step_applied,
+                        ema=ema_model.state_dict() if ema_model is not None else None,
+                        prototypes=proto_bank.state_dict() if proto_bank is not None else None,
+                        pseudo_state=pseudo_temporal_bank)
                 cr_runtime.commit(optimizer_step_applied)
             epoch_logs.append(_detach_log_mapping(
                 {

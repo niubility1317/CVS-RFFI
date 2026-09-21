@@ -8,6 +8,8 @@ from pathlib import Path
 from typing import Any
 
 VARIANTS = ('U0', 'U1', 'U2', 'U3', 'U4_additive', 'U4_bilinear', 'U5', 'Ux', 'head_only', 'permanent_detach')
+V2_VARIANTS = VARIANTS + ('U1_mask_off', 'U3_delta', 'U3_delta_pairs', 'Ux_normalized',
+                         'U4_decomposed', 'U5_reliable')
 DEFAULT_CONFIG = Path(__file__).resolve().parents[1] / 'configs' / 'phase1_core90_cross_response_v1.json'
 STORE_FLAGS = {'use_sat_consistency', 'use_concat_sat_channel_aug', 'concat_sat_ce_only', 'use_crra'}
 ROLE_FIELDS = ('wisig_train_rxs', 'wisig_test_rxs', 'wisig_train_days', 'wisig_test_days')
@@ -16,15 +18,15 @@ ROLE_FIELDS = ('wisig_train_rxs', 'wisig_test_rxs', 'wisig_train_days', 'wisig_t
 def load_config(path: str | Path = DEFAULT_CONFIG) -> dict[str, Any]:
     with Path(path).open(encoding='utf-8') as handle:
         config = json.load(handle)
-    if config.get('schema_version') != 1:
+    if config.get('schema_version') not in (1, 2):
         raise ValueError('unsupported cross-response schema_version')
-    if set(config.get('variants', {})) != set(VARIANTS):
+    if set(config.get('variants', {})) != set(V2_VARIANTS if config['schema_version'] == 2 else VARIANTS):
         raise ValueError('the complete registered ablation matrix is required')
     return config
 
 
 def resolve_variant(config: dict[str, Any], variant: str) -> dict[str, Any]:
-    if variant not in VARIANTS:
+    if variant not in config['variants']:
         raise ValueError(f'unknown cross-response variant: {variant}')
     result = copy.deepcopy(config['cross_response'])
     overrides = config['variants'][variant]
@@ -115,12 +117,39 @@ def build_matrix(*, config_path: str | Path = DEFAULT_CONFIG, wisig_pkl: str,
             baseline.update(roles)
             baseline.update(wisig_pkl=wisig_pkl, seed=seed,
                             output_dir=str(Path(output_root) / f'{variant}_s{seed}'),
-                            run_id='core90_cross_response_v1', candidate_id=f'{variant}_s{seed}')
+                            run_id=f"core90_cross_response_v{config['schema_version']}", candidate_id=f'{variant}_s{seed}')
             resolved = resolve_variant(config, variant)
             argv = arguments_to_argv(baseline)
             argv += ['--cross_response_config', str(Path(config_path).resolve()), '--cross_response_variant', variant]
             rows.append(dict(variant=variant, model_seed=seed, baseline_args=baseline,
                              cross_response=resolved, argv=argv, launch=False))
+    return rows
+
+
+def build_confirmation_matrix(*, confirmation_boundary, **kwargs):
+    """Register paired multi-seed confirmation; this function has no launcher.
+
+    The boundary is a user-frozen future evaluation plan, not inferred from the
+    already-scored historical target. Empty or reused confirmation is rejected.
+    """
+    seeds = kwargs.get("seeds", [])
+    if len(seeds) < 2:
+        raise ValueError("confirmation requires explicitly named multiple model seeds")
+    if (not isinstance(confirmation_boundary, dict)
+            or confirmation_boundary.get("previous_target_results_used") is not False
+            or not confirmation_boundary.get("independent_confirmation_scope")
+            or not confirmation_boundary.get("frozen_before_launch")):
+        raise ValueError("an explicit independent confirmation boundary must be frozen before launch")
+    rows = build_matrix(**kwargs)
+    if any(r["cross_response"].get("implementation_version") != 2 for r in rows):
+        raise ValueError("V2 confirmation requires versioned V2 candidate configuration")
+    for row in rows:
+        row.update(confirmation_boundary=copy.deepcopy(confirmation_boundary),
+            data_seed=row["cross_response"]["data_seed"],
+            comparison_unit="paired model seed; query records are not training replicates",
+            required_reporting=["clean", "leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak",
+                                "RX/day lower tail", "per TX", "training and audit cost"],
+            launch=False)
     return rows
 
 
@@ -132,7 +161,7 @@ def main() -> None:
     for name in ROLE_FIELDS:
         parser.add_argument('--' + name.replace('_', '-'), required=True)
     parser.add_argument('--seeds', type=int, nargs='+', default=[392002])
-    parser.add_argument('--variants', choices=VARIANTS, nargs='+', default=list(VARIANTS))
+    parser.add_argument('--variants', choices=V2_VARIANTS, nargs='+', default=list(VARIANTS))
     parser.add_argument('--write', type=Path)
     args = parser.parse_args()
     rows = build_matrix(config_path=args.config, wisig_pkl=args.wisig_pkl, output_root=args.output_root,

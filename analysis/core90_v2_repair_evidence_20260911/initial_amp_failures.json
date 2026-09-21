@@ -1,0 +1,136 @@
+[
+  {
+    "case": "mechanism_amp_01",
+    "status": "FAILED_EXPECTED_OBSERVATION_ASSERTION",
+    "reason": "No complete two-pair observation; default AMP scaler overflow and window reset",
+    "updates": [
+      {
+        "step": 0,
+        "main_success": false,
+        "status": "UNAVAILABLE",
+        "reason": "source counterfactual has a nonfinite or unapplied optimizer update",
+        "branch_applied": {
+          "base": false,
+          "base_response": false
+        }
+      },
+      {
+        "step": 1,
+        "main_success": false,
+        "status": "UNAVAILABLE",
+        "reason": "source counterfactual has a nonfinite or unapplied optimizer update",
+        "branch_applied": {
+          "base": false,
+          "base_response": false
+        }
+      },
+      {
+        "step": 2,
+        "main_success": false,
+        "status": "UNAVAILABLE",
+        "reason": "source counterfactual has a nonfinite or unapplied optimizer update",
+        "branch_applied": {
+          "base": false,
+          "base_response": false
+        }
+      },
+      {
+        "step": 3,
+        "main_success": true,
+        "status": "MEASURED",
+        "reason": null,
+        "branch_applied": {
+          "base": true,
+          "base_response": true
+        }
+      }
+    ]
+  },
+  {
+    "case": "mechanism_amp_02",
+    "status": "FAILED_EXPECTED_OBSERVATION_ASSERTION",
+    "reason": "No complete two-pair observation; default AMP scaler overflow and window reset",
+    "updates": [
+      {
+        "step": 0,
+        "main_success": false,
+        "status": "UNAVAILABLE",
+        "reason": "source counterfactual has a nonfinite or unapplied optimizer update",
+        "branch_applied": {
+          "base": false,
+          "base_response": false
+        }
+      },
+      {
+        "step": 1,
+        "main_success": false,
+        "status": "UNAVAILABLE",
+        "reason": "source counterfactual has a nonfinite or unapplied optimizer update",
+        "branch_applied": {
+          "base": false,
+          "base_response": false
+        }
+      },
+      {
+        "step": 2,
+        "main_success": false,
+        "status": "UNAVAILABLE",
+        "reason": "source counterfactual has a nonfinite or unapplied optimizer update",
+        "branch_applied": {
+          "base": false,
+          "base_response": false
+        }
+      },
+      {
+        "step": 3,
+        "main_success": true,
+        "status": "MEASURED",
+        "reason": null,
+        "branch_applied": {
+          "base": true,
+          "base_response": true
+        }
+      },
+      {
+        "step": 4,
+        "main_success": false,
+        "status": "UNAVAILABLE",
+        "reason": "source counterfactual has a nonfinite or unapplied optimizer update",
+        "branch_applied": {
+          "base": false,
+          "base_response": false
+        }
+      },
+      {
+        "step": 5,
+        "main_success": false,
+        "status": "UNAVAILABLE",
+        "reason": "source counterfactual has a nonfinite or unapplied optimizer update",
+        "branch_applied": {
+          "base": false,
+          "base_response": false
+        }
+      },
+      {
+        "step": 6,
+        "main_success": true,
+        "status": "MEASURED",
+        "reason": null,
+        "branch_applied": {
+          "base": true,
+          "base_response": true
+        }
+      },
+      {
+        "step": 7,
+        "main_success": true,
+        "status": "UNAVAILABLE",
+        "reason": "source counterfactual has a nonfinite or unapplied optimizer update",
+        "branch_applied": {
+          "base": true,
+          "base_response": false
+        }
+      }
+    ]
+  }
+]

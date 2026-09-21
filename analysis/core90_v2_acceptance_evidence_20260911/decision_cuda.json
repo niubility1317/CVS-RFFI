@@ -1,0 +1,192 @@
+{
+  "kind": "isolated_synthetic_decision_benchmark_not_E200_speed",
+  "device": "NVIDIA GeForce RTX 5070 Ti",
+  "torch_version": "2.10.0+cu128",
+  "shape": [
+    128,
+    6
+  ],
+  "receivers": 5,
+  "seed": 42,
+  "warmup": 2,
+  "repeats": 5,
+  "scope": "fixed logits only; no backbone, optimizer, dataset, checkpoint or target",
+  "modes": {
+    "fp32": {
+      "dtype": "torch.float32",
+      "autocast": false,
+      "atol": 2e-06,
+      "rtol": 2e-05,
+      "equivalence": {
+        "loss": {
+          "max_abs": 1.1920928955078125e-07,
+          "mean_abs": 1.1920928955078125e-07,
+          "max_relative_on_abs_reference_gt_atol": 8.766295422901749e-08,
+          "allclose": true
+        },
+        "reference": {
+          "max_abs": 2.384185791015625e-07,
+          "mean_abs": 2.1265199379172373e-08,
+          "max_relative_on_abs_reference_gt_atol": 1.1517267495264605e-07,
+          "allclose": true
+        },
+        "original_logits_gradient": {
+          "max_abs": 1.862645149230957e-09,
+          "mean_abs": 7.213429853436537e-11,
+          "max_relative_on_abs_reference_gt_atol": 4.374281161290128e-06,
+          "allclose": true
+        },
+        "valid_mask_equal": true
+      },
+      "reference_loss": 1.3598593473434448,
+      "vectorized_loss": 1.3598592281341553,
+      "timing": {
+        "reference_forward_all_diagnostics": {
+          "median_ms": 1427.2351000108756,
+          "min_ms": 1404.3248999951174,
+          "max_ms": 1503.294399997685,
+          "samples_ms": [
+            1430.9934999910183,
+            1404.3248999951174,
+            1406.7490000015823,
+            1427.2351000108756,
+            1503.294399997685
+          ]
+        },
+        "reference_forward_backward": {
+          "median_ms": 1482.9801000014413,
+          "min_ms": 1446.4733000058914,
+          "max_ms": 1541.8803000065964,
+          "samples_ms": [
+            1541.8803000065964,
+            1467.199199993047,
+            1510.5446000088705,
+            1482.9801000014413,
+            1446.4733000058914
+          ]
+        },
+        "vectorized_forward_all_diagnostics": {
+          "median_ms": 24.4951999920886,
+          "min_ms": 22.127299991552718,
+          "max_ms": 25.283900002250448,
+          "samples_ms": [
+            24.6678000112297,
+            24.4951999920886,
+            22.127299991552718,
+            23.92880000115838,
+            25.283900002250448
+          ]
+        },
+        "vectorized_forward_backward": {
+          "median_ms": 23.35430000675842,
+          "min_ms": 21.74479998939205,
+          "max_ms": 25.120799997239374,
+          "samples_ms": [
+            23.520000002463348,
+            25.120799997239374,
+            23.35430000675842,
+            23.048700008075684,
+            21.74479998939205
+          ]
+        }
+      },
+      "vectorized_synchronized_stage_ms": {
+        "input_validation_and_metadata_transfer": 0.9564000065438449,
+        "cpu_reference_mask": 3.3676000020932406,
+        "gpu_reference_and_loss": 5.721299996366724,
+        "diagnostics": 14.41540000087116
+      },
+      "stage_timing_caveat": "Source-identical function copy plus boundary synchronization only; GPU stage includes host dispatch. No per-line tracing overhead. Uninstrumented timings above are end-to-end.",
+      "passed": true
+    },
+    "autocast_fp16": {
+      "dtype": "torch.float16",
+      "autocast": true,
+      "atol": 0.0001,
+      "rtol": 0.002,
+      "equivalence": {
+        "loss": {
+          "max_abs": 0.0,
+          "mean_abs": 0.0,
+          "max_relative_on_abs_reference_gt_atol": 0.0,
+          "allclose": true
+        },
+        "reference": {
+          "max_abs": 0.0,
+          "mean_abs": 0.0,
+          "max_relative_on_abs_reference_gt_atol": 0.0,
+          "allclose": true
+        },
+        "original_logits_gradient": {
+          "max_abs": 0.0,
+          "mean_abs": 0.0,
+          "max_relative_on_abs_reference_gt_atol": 0.0,
+          "allclose": true
+        },
+        "valid_mask_equal": true
+      },
+      "reference_loss": 1.35969078540802,
+      "vectorized_loss": 1.35969078540802,
+      "timing": {
+        "reference_forward_all_diagnostics": {
+          "median_ms": 1504.3389999918872,
+          "min_ms": 1466.4524999971036,
+          "max_ms": 1619.8390000063227,
+          "samples_ms": [
+            1619.8390000063227,
+            1535.1391000003787,
+            1504.3389999918872,
+            1468.7283000093885,
+            1466.4524999971036
+          ]
+        },
+        "reference_forward_backward": {
+          "median_ms": 1465.709700001753,
+          "min_ms": 1419.4623000075808,
+          "max_ms": 1538.367399989511,
+          "samples_ms": [
+            1419.4623000075808,
+            1454.0297000057762,
+            1465.709700001753,
+            1530.561999999918,
+            1538.367399989511
+          ]
+        },
+        "vectorized_forward_all_diagnostics": {
+          "median_ms": 25.397999997949228,
+          "min_ms": 25.019099994096905,
+          "max_ms": 27.12509999400936,
+          "samples_ms": [
+            25.019099994096905,
+            25.240199989639223,
+            25.397999997949228,
+            26.407600002130494,
+            27.12509999400936
+          ]
+        },
+        "vectorized_forward_backward": {
+          "median_ms": 26.258699988829903,
+          "min_ms": 22.916699992492795,
+          "max_ms": 26.38150000711903,
+          "samples_ms": [
+            25.740899989614263,
+            26.33050001168158,
+            26.38150000711903,
+            22.916699992492795,
+            26.258699988829903
+          ]
+        }
+      },
+      "vectorized_synchronized_stage_ms": {
+        "input_validation_and_metadata_transfer": 1.3575999910244718,
+        "cpu_reference_mask": 3.910399987944402,
+        "gpu_reference_and_loss": 5.588900006841868,
+        "diagnostics": 14.204599996446632
+      },
+      "stage_timing_caveat": "Source-identical function copy plus boundary synchronization only; GPU stage includes host dispatch. No per-line tracing overhead. Uninstrumented timings above are end-to-end.",
+      "passed": true
+    }
+  },
+  "legacy_fp16_compatibility": "Original CUDA half quantile raised dtype RuntimeError; reference now explicitly promotes quantile input to FP32 and casts result back. FP32 legacy math is unchanged.",
+  "passed": true
+}

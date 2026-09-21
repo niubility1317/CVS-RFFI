@@ -1,0 +1,65 @@
+{
+  "status": "MAIN_PARITY_AND_SOURCE_FAIL_CLOSED_VERIFIED",
+  "first_divergence": null,
+  "amp": true,
+  "device": "cuda:0",
+  "evidence_scope": "synthetic_actual_CORE90_trainer_not_real_source_benefit",
+  "events": {
+    "control": 40,
+    "audited": 40
+  },
+  "source_mechanism": {
+    "window": [],
+    "observations": [],
+    "attempts": 8,
+    "paired_updates": 2,
+    "phase": "pseudo",
+    "scope": "cls_head",
+    "last_status": "UNAVAILABLE"
+  },
+  "counters": {
+    "control": {
+      "batches": 8,
+      "successful_steps": 3,
+      "effective_blocks": 12,
+      "response_batches": 3,
+      "decision_batches": 0,
+      "cross_batches": 0,
+      "joint_gradient_steps": 0,
+      "domain_gradient_steps": 3,
+      "head_gradient_steps": 3,
+      "decision_gradient_steps": 0,
+      "cross_gradient_steps": 0,
+      "forward_calls": 8,
+      "audited_steps": 5,
+      "audited_successful_steps": 0,
+      "forced_audit_steps": 4
+    },
+    "audited": {
+      "batches": 8,
+      "successful_steps": 3,
+      "effective_blocks": 12,
+      "response_batches": 3,
+      "decision_batches": 0,
+      "cross_batches": 0,
+      "joint_gradient_steps": 0,
+      "domain_gradient_steps": 3,
+      "head_gradient_steps": 3,
+      "decision_gradient_steps": 0,
+      "cross_gradient_steps": 0,
+      "forward_calls": 8,
+      "audited_steps": 5,
+      "audited_successful_steps": 0,
+      "forced_audit_steps": 4
+    }
+  },
+  "training_context": "actual_label_and_pseudo_phase_loss_graphs",
+  "epochs": 4,
+  "synthetic_initial_scale_override": null,
+  "amp_budget_reason": "default_scaler_warmup_can_skip_first_three_updates",
+  "risk_model": "student_after_one_adamw_update",
+  "test_only_thresholds": "deliberately_impossible_to_verify_fail_closed",
+  "main_model_optimizer_ema_prototype_pseudo_rng_parity": true,
+  "formal_experiment": false,
+  "target_evaluation": "OMITTED_SYNTHETIC_TEST"
+}

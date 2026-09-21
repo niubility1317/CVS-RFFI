@@ -1,0 +1,726 @@
+{
+  "variant": "Ux",
+  "status": "ACTIVE_VERIFIED",
+  "missing": [],
+  "counts": {
+    "batches": 9800,
+    "successful_steps": 9781,
+    "effective_blocks": 39124,
+    "response_batches": 0,
+    "decision_batches": 0,
+    "cross_batches": 9781,
+    "joint_gradient_steps": 0,
+    "domain_gradient_steps": 0,
+    "head_gradient_steps": 0,
+    "decision_gradient_steps": 0,
+    "cross_gradient_steps": 490,
+    "forward_calls": 9800,
+    "audited_steps": 509,
+    "audited_successful_steps": 490,
+    "forced_audit_steps": 19
+  },
+  "maxima": {
+    "effective_blocks": 4.0,
+    "independent_records": 128.0,
+    "skipped_blocks": 0.0,
+    "role_rotation_enabled": 1.0,
+    "selection_probability": 0.0078125,
+    "physical_k": 2.0,
+    "duplicate_physical_fraction": 0.0,
+    "identity_interaction": 6.131580471992493,
+    "identity_scale": 7.168939590454102,
+    "identity_between_tx": 0.10373707860708237,
+    "geometry_available": 1.0,
+    "geometry_invalid_records": 0.0,
+    "geometry_min_norm": 1e-08,
+    "geometry_raw_norm_mean": 7.168939590454102,
+    "geometry_raw_norm_p50": 7.042158007621765,
+    "geometry_raw_norm_p95": 10.935954332351685,
+    "geometry_raw_interaction": 6.131580471992493,
+    "geometry_raw_interaction_per_160_dimensions": 6.131580471992493,
+    "geometry_raw_relative_interaction": 0.33966831862926483,
+    "geometry_unit_interaction": 0.22149869054555893,
+    "geometry_classification_records": 32.0,
+    "loss_response": -0.0,
+    "loss_decision": -0.0,
+    "loss_cross": 21.383880615234375,
+    "diagnostics_audited": 1.0,
+    "cross_identity_grad_norm": 16.593797086374916,
+    "response_identity_reference_norm": 0.0,
+    "response_identity_raw_norm": 0.0,
+    "response_identity_cap_scale": 0.0,
+    "response_identity_clipped": 0.0,
+    "response_joint_open": 0.0,
+    "response_grad_shared": 0.0,
+    "response_grad_identity_tail": 0.0,
+    "response_grad_identity_front": 0.0,
+    "response_grad_domain": 0.0,
+    "response_grad_other": 0.0,
+    "response_grad_auxiliary": 0.0,
+    "invalid_feedback_blocks": 0.0,
+    "auxiliary_step_seconds": 2.501336896326393,
+    "peak_memory_bytes": 10211041280.0
+  },
+  "gate": {
+    "min_blocks": 16,
+    "error_ratio": 0.95,
+    "stable_checks": 3,
+    "consecutive": 0,
+    "checks": 0,
+    "opened": false,
+    "last_ratio": null
+  },
+  "rotation_counts": {
+    "23": 1098,
+    "5": 1090,
+    "0": 1089,
+    "8": 1074,
+    "17": 1082,
+    "30": 1090,
+    "27": 1088,
+    "35": 1088,
+    "14": 1087,
+    "16": 1088,
+    "2": 1090,
+    "19": 1079,
+    "10": 1089,
+    "26": 1090,
+    "33": 1094,
+    "3": 1087,
+    "15": 1085,
+    "25": 1089,
+    "4": 1075,
+    "9": 1077,
+    "20": 1091,
+    "28": 1088,
+    "22": 1094,
+    "12": 1081,
+    "24": 1085,
+    "18": 1081,
+    "29": 1092,
+    "7": 1090,
+    "31": 1087,
+    "34": 1089,
+    "13": 1089,
+    "32": 1085,
+    "6": 1087,
+    "11": 1090,
+    "1": 1076,
+    "21": 1090
+  },
+  "mechanism_gate": {
+    "status": "SOURCE_PARAMETERS_UNFROZEN"
+  },
+  "source_mechanism_audit": {
+    "window": [],
+    "observations": [],
+    "attempts": 0,
+    "paired_updates": 0,
+    "phase": "pseudo",
+    "scope": "cls_head",
+    "last_status": null
+  },
+  "joint_objective": {
+    "base_method": "matched_CORE90",
+    "scope": "cls_head",
+    "parameters": {
+      "implementation_version": 2,
+      "response_enabled": false,
+      "decision_enabled": false,
+      "identity_interaction_enabled": true,
+      "head_only": false,
+      "permanent_detach": false,
+      "P": 4,
+      "Q": 4,
+      "K": 2,
+      "view_policy": "clean_only",
+      "target_family": "fft",
+      "target_dim": 8,
+      "statistics_epsilon": 1e-08,
+      "readout_dim": 16,
+      "predictor_mode": "additive",
+      "rank": 4,
+      "lambda_resp": 0.01,
+      "lambda_dec": 0.01,
+      "lambda_cross": 0.01,
+      "decision_delta": 0.0,
+      "decision_min_records": 2,
+      "interaction_weight": 0.0,
+      "role_rotation": true,
+      "normalization_policy": "frozen_source",
+      "mixstyle_role_policy": "donor_only",
+      "gradient_cap": 0.1,
+      "response_routing": "full_error",
+      "response_decomposition": null,
+      "decision_mode": "vectorized",
+      "decision_calibration": null,
+      "interaction_mode": "raw"
+    }
+  },
+  "extended_identity_module": null,
+  "config": {
+    "enabled": true,
+    "response_enabled": false,
+    "decision_enabled": false,
+    "identity_interaction_enabled": true,
+    "head_only": false,
+    "permanent_detach": false,
+    "P": 4,
+    "Q": 4,
+    "K": 2,
+    "view_policy": "clean_only",
+    "target_family": "fft",
+    "target_dim": 8,
+    "statistics_epsilon": 1e-08,
+    "readout_dim": 16,
+    "predictor_mode": "additive",
+    "rank": 4,
+    "lambda_resp": 0.01,
+    "lambda_dec": 0.01,
+    "lambda_cross": 0.01,
+    "decision_delta": 0.0,
+    "decision_min_records": 2,
+    "interaction_weight": 0.0,
+    "role_rotation": true,
+    "normalization_policy": "frozen_source",
+    "mixstyle_role_policy": "donor_only",
+    "gradient_stage": "warmup",
+    "gradient_cap": 0.1,
+    "gate_min_blocks": 16,
+    "gate_error_ratio": 0.95,
+    "gate_stable_checks": 3,
+    "scheduler_mode": "uniform",
+    "exploration": 0.1,
+    "update_interval": 20,
+    "feedback_clip": 10.0,
+    "scheduler_alpha": 1.0,
+    "scheduler_beta": 1.0,
+    "data_seed": 392005,
+    "lags": [
+      1,
+      2,
+      4
+    ],
+    "gate_interval_epochs": 1,
+    "source_fit_max_records": 1024,
+    "source_eval_max_blocks": 16,
+    "k_menu": [
+      2
+    ],
+    "gradient_tail_prefixes": [
+      "id_backbone.cls_head"
+    ],
+    "scheduler_candidate_limit": 128,
+    "implementation_version": 2,
+    "diagnostic_interval": 20,
+    "statistics_audit": false,
+    "geometry_min_norm": 1e-08,
+    "direction_shrinkage": 0.0,
+    "gain_strategy": "legacy_gain",
+    "evidence_config": null,
+    "decision_mode": "vectorized",
+    "decision_calibration": null,
+    "interaction_mode": "raw",
+    "response_routing": "full_error",
+    "mechanism_gate": null,
+    "mechanism_audit": null,
+    "response_decomposition": null,
+    "source_audit_enabled": false,
+    "source_baseline_fit_steps": null,
+    "source_baseline_fit_lr": null
+  },
+  "source_evaluations": [],
+  "auxiliary_parameters": 0,
+  "fixed_statistics_cache": {
+    "entries": 0,
+    "hits": 0,
+    "misses": 0,
+    "value_bytes": 0,
+    "key_utf8_bytes": 0,
+    "python_container_overhead_included": false,
+    "contents": "detached raw waveform statistics only"
+  },
+  "gradient_counter_semantics": {
+    "decision_gradient_steps": "positive among audited_successful_steps",
+    "cross_gradient_steps": "positive among audited_successful_steps",
+    "response_gradient_steps": "every successful routed update; required routing never sampled"
+  },
+  "parameter_groups": {
+    "shared": [
+      "id_backbone.sinc.low_hz_",
+      "id_backbone.sinc.band_hz_"
+    ],
+    "identity_tail": [
+      "id_backbone.cls_head.id_proj.0.weight",
+      "id_backbone.cls_head.id_proj.0.bias",
+      "id_backbone.cls_head.pa_proj.0.weight",
+      "id_backbone.cls_head.pa_proj.0.bias",
+      "id_backbone.cls_head.id_gate.0.weight",
+      "id_backbone.cls_head.id_gate.0.bias",
+      "id_backbone.cls_head.joint_proj.0.weight",
+      "id_backbone.cls_head.joint_proj.0.bias",
+      "id_backbone.cls_head.imp_merge.0.weight",
+      "id_backbone.cls_head.imp_merge.0.bias",
+      "id_backbone.cls_head.head.weight",
+      "id_backbone.cls_head.pa_head.0.weight",
+      "id_backbone.cls_head.pa_head.0.bias",
+      "id_backbone.cls_head.pa_head.2.weight",
+      "id_backbone.cls_head.pa_head.2.bias"
+    ],
+    "identity_front": [
+      "id_backbone.time_fuse.0.weight",
+      "id_backbone.time_fuse.1.weight",
+      "id_backbone.time_fuse.1.bias",
+      "id_backbone.t1.dw.weight",
+      "id_backbone.t1.pw.weight",
+      "id_backbone.t1.norm.weight",
+      "id_backbone.t1.norm.bias",
+      "id_backbone.t2.dw.weight",
+      "id_backbone.t2.pw.weight",
+      "id_backbone.t2.norm.weight",
+      "id_backbone.t2.norm.bias",
+      "id_backbone.t3.dw.weight",
+      "id_backbone.t3.pw.weight",
+      "id_backbone.t3.norm.weight",
+      "id_backbone.t3.norm.bias",
+      "id_backbone.t_proj.weight",
+      "id_backbone.t_proj.bias",
+      "id_backbone.f1.dw.weight",
+      "id_backbone.f1.pw.weight",
+      "id_backbone.f1.norm.weight",
+      "id_backbone.f1.norm.bias",
+      "id_backbone.f2.dw.weight",
+      "id_backbone.f2.pw.weight",
+      "id_backbone.f2.norm.weight",
+      "id_backbone.f2.norm.bias",
+      "id_backbone.f3.dw.weight",
+      "id_backbone.f3.pw.weight",
+      "id_backbone.f3.norm.weight",
+      "id_backbone.f3.norm.bias",
+      "id_backbone.f_proj.weight",
+      "id_backbone.f_proj.bias",
+      "id_backbone.freq_gate.conv.weight",
+      "id_backbone.freq_gate.conv.bias",
+      "id_backbone.freq_stats_proj.0.weight",
+      "id_backbone.freq_stats_proj.0.bias",
+      "id_backbone.pa_stats_proj.0.weight",
+      "id_backbone.pa_stats_proj.0.bias",
+      "id_backbone.pa_gate.net.weight",
+      "id_backbone.pa_gate.net.bias",
+      "id_backbone.pa_b1.conv.weight",
+      "id_backbone.pa_b1.norm.weight",
+      "id_backbone.pa_b1.norm.bias",
+      "id_backbone.pa_b2.conv.weight",
+      "id_backbone.pa_b2.norm.weight",
+      "id_backbone.pa_b2.norm.bias",
+      "id_backbone.pa_b3.conv.weight",
+      "id_backbone.pa_b3.norm.weight",
+      "id_backbone.pa_b3.norm.bias",
+      "id_backbone.pa_proj.0.weight",
+      "id_backbone.pa_proj.0.bias",
+      "id_backbone.fuse.0.weight",
+      "id_backbone.fuse.0.bias",
+      "id_backbone.con_proj.0.weight",
+      "id_backbone.con_proj.0.bias"
+    ],
+    "domain": [
+      "dom_backbone.time_fuse.0.weight",
+      "dom_backbone.time_fuse.1.weight",
+      "dom_backbone.time_fuse.1.bias",
+      "dom_backbone.t1.dw.weight",
+      "dom_backbone.t1.pw.weight",
+      "dom_backbone.t1.norm.weight",
+      "dom_backbone.t1.norm.bias",
+      "dom_backbone.t2.dw.weight",
+      "dom_backbone.t2.pw.weight",
+      "dom_backbone.t2.norm.weight",
+      "dom_backbone.t2.norm.bias",
+      "dom_backbone.t3.dw.weight",
+      "dom_backbone.t3.pw.weight",
+      "dom_backbone.t3.norm.weight",
+      "dom_backbone.t3.norm.bias",
+      "dom_backbone.t_proj.weight",
+      "dom_backbone.t_proj.bias",
+      "dom_backbone.dac_hf_proj.0.weight",
+      "dom_backbone.dac_hf_proj.1.weight",
+      "dom_backbone.dac_hf_proj.1.bias",
+      "dom_backbone.dac_b1.conv.wr.weight",
+      "dom_backbone.dac_b1.conv.wi.weight",
+      "dom_backbone.dac_b1.conv.vr.weight",
+      "dom_backbone.dac_b1.conv.vi.weight",
+      "dom_backbone.dac_b1.norm.weight",
+      "dom_backbone.dac_b1.norm.bias",
+      "dom_backbone.dac_b2.conv.wr.weight",
+      "dom_backbone.dac_b2.conv.wi.weight",
+      "dom_backbone.dac_b2.conv.vr.weight",
+      "dom_backbone.dac_b2.conv.vi.weight",
+      "dom_backbone.dac_b2.norm.weight",
+      "dom_backbone.dac_b2.norm.bias",
+      "dom_backbone.dac_b2.res_proj.0.weight",
+      "dom_backbone.dac_b3.conv.wr.weight",
+      "dom_backbone.dac_b3.conv.wi.weight",
+      "dom_backbone.dac_b3.conv.vr.weight",
+      "dom_backbone.dac_b3.conv.vi.weight",
+      "dom_backbone.dac_b3.norm.weight",
+      "dom_backbone.dac_b3.norm.bias",
+      "dom_backbone.dac_b3.res_proj.0.weight",
+      "dom_backbone.dac_proj.0.weight",
+      "dom_backbone.dac_proj.0.bias",
+      "dom_backbone.f1.dw.weight",
+      "dom_backbone.f1.pw.weight",
+      "dom_backbone.f1.norm.weight",
+      "dom_backbone.f1.norm.bias",
+      "dom_backbone.f2.dw.weight",
+      "dom_backbone.f2.pw.weight",
+      "dom_backbone.f2.norm.weight",
+      "dom_backbone.f2.norm.bias",
+      "dom_backbone.f3.dw.weight",
+      "dom_backbone.f3.pw.weight",
+      "dom_backbone.f3.norm.weight",
+      "dom_backbone.f3.norm.bias",
+      "dom_backbone.f_proj.weight",
+      "dom_backbone.f_proj.bias",
+      "dom_backbone.freq_gate.conv.weight",
+      "dom_backbone.freq_gate.conv.bias",
+      "dom_backbone.pa_gate.net.weight",
+      "dom_backbone.pa_gate.net.bias",
+      "dom_backbone.pa_b1.conv.weight",
+      "dom_backbone.pa_b1.norm.weight",
+      "dom_backbone.pa_b1.norm.bias",
+      "dom_backbone.pa_b2.conv.weight",
+      "dom_backbone.pa_b2.norm.weight",
+      "dom_backbone.pa_b2.norm.bias",
+      "dom_backbone.pa_b3.conv.weight",
+      "dom_backbone.pa_b3.norm.weight",
+      "dom_backbone.pa_b3.norm.bias",
+      "dom_backbone.pa_proj.0.weight",
+      "dom_backbone.pa_proj.0.bias",
+      "dom_backbone.fuse.0.weight",
+      "dom_backbone.fuse.0.bias",
+      "dom_backbone.con_proj.0.weight",
+      "dom_backbone.con_proj.0.bias",
+      "dom_backbone.cls_head.id_proj.0.weight",
+      "dom_backbone.cls_head.id_proj.0.bias",
+      "dom_backbone.cls_head.dac_proj.0.weight",
+      "dom_backbone.cls_head.dac_proj.0.bias",
+      "dom_backbone.cls_head.pa_proj.0.weight",
+      "dom_backbone.cls_head.pa_proj.0.bias",
+      "dom_backbone.cls_head.id_gate.0.weight",
+      "dom_backbone.cls_head.id_gate.0.bias",
+      "dom_backbone.cls_head.joint_proj.0.weight",
+      "dom_backbone.cls_head.joint_proj.0.bias",
+      "dom_backbone.cls_head.imp_merge.0.weight",
+      "dom_backbone.cls_head.imp_merge.0.bias",
+      "dom_backbone.cls_head.head.weight",
+      "dom_backbone.cls_head.dac_head.0.weight",
+      "dom_backbone.cls_head.dac_head.0.bias",
+      "dom_backbone.cls_head.dac_head.2.weight",
+      "dom_backbone.cls_head.dac_head.2.bias",
+      "dom_backbone.cls_head.pa_head.0.weight",
+      "dom_backbone.cls_head.pa_head.0.bias",
+      "dom_backbone.cls_head.pa_head.2.weight",
+      "dom_backbone.cls_head.pa_head.2.bias",
+      "dom_enhancer.stat_encoder.net.0.weight",
+      "dom_enhancer.stat_encoder.net.0.bias",
+      "dom_enhancer.stat_encoder.net.1.weight",
+      "dom_enhancer.stat_encoder.net.1.bias",
+      "dom_enhancer.stat_encoder.net.4.weight",
+      "dom_enhancer.stat_encoder.net.4.bias",
+      "dom_enhancer.gate.0.weight",
+      "dom_enhancer.gate.0.bias",
+      "dom_enhancer.norm.weight",
+      "dom_enhancer.norm.bias"
+    ],
+    "other": [
+      "dom_head.net.0.weight",
+      "dom_head.net.0.bias",
+      "dom_head.net.3.weight",
+      "dom_head.net.3.bias",
+      "adv_head.net.0.weight",
+      "adv_head.net.0.bias",
+      "adv_head.net.3.weight",
+      "adv_head.net.3.bias"
+    ],
+    "auxiliary": []
+  },
+  "optional_controls": {
+    "target_family": "fft",
+    "bilinear_rank_active": null,
+    "interaction_reweighting_active": false,
+    "adaptive_k_configured": false,
+    "response_identity_permanently_detached": false
+  },
+  "candidate_count": 128,
+  "candidate_search_complete": false,
+  "sampling_evidence": {
+    "feedback_history_entries": 128,
+    "pending_feedback_entries": 0,
+    "joint_rectangles": 450,
+    "directed_transfers": 3798,
+    "observed_rectangles": 450,
+    "response_query_rectangles": 450,
+    "directed_response_transfers": 3798,
+    "actual_candidate_pool_reachable": {
+      "observed_rectangles": 450,
+      "response_query_rectangles": 450,
+      "directed_response_transfers": 3798
+    },
+    "direction_history_entries": 4608,
+    "flush_count": 490,
+    "last_step_event": {
+      "step_id": 9799,
+      "success": true,
+      "collected_blocks": 4,
+      "accepted_blocks": 4,
+      "flushed": true,
+      "flush_count": 490,
+      "new_physical_records": 0,
+      "block_physical_evidence": [
+        {
+          "block_id": 39197,
+          "candidate_key": [
+            [
+              0,
+              1,
+              2,
+              3
+            ],
+            [
+              1,
+              4,
+              6,
+              8
+            ],
+            2,
+            1,
+            2
+          ],
+          "direction_key": [
+            [
+              [
+                0,
+                1,
+                2,
+                3
+              ],
+              [
+                1,
+                4,
+                6,
+                8
+              ],
+              2,
+              1,
+              2
+            ],
+            [
+              2,
+              3
+            ],
+            [
+              6,
+              8
+            ],
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              4
+            ],
+            1,
+            "balanced_partitions_v2"
+          ],
+          "actual_new_physical": 0,
+          "success": true
+        },
+        {
+          "block_id": 39198,
+          "candidate_key": [
+            [
+              0,
+              1,
+              2,
+              5
+            ],
+            [
+              1,
+              4,
+              6,
+              8
+            ],
+            1,
+            1,
+            2
+          ],
+          "direction_key": [
+            [
+              [
+                0,
+                1,
+                2,
+                5
+              ],
+              [
+                1,
+                4,
+                6,
+                8
+              ],
+              1,
+              1,
+              2
+            ],
+            [
+              0,
+              2
+            ],
+            [
+              4,
+              6
+            ],
+            [
+              1,
+              5
+            ],
+            [
+              1,
+              8
+            ],
+            1,
+            "balanced_partitions_v2"
+          ],
+          "actual_new_physical": 0,
+          "success": true
+        },
+        {
+          "block_id": 39199,
+          "candidate_key": [
+            [
+              0,
+              1,
+              4,
+              5
+            ],
+            [
+              1,
+              3,
+              4,
+              6
+            ],
+            3,
+            1,
+            2
+          ],
+          "direction_key": [
+            [
+              [
+                0,
+                1,
+                4,
+                5
+              ],
+              [
+                1,
+                3,
+                4,
+                6
+              ],
+              3,
+              1,
+              2
+            ],
+            [
+              0,
+              5
+            ],
+            [
+              3,
+              6
+            ],
+            [
+              1,
+              4
+            ],
+            [
+              1,
+              4
+            ],
+            1,
+            "balanced_partitions_v2"
+          ],
+          "actual_new_physical": 0,
+          "success": true
+        },
+        {
+          "block_id": 39196,
+          "candidate_key": [
+            [
+              0,
+              2,
+              3,
+              5
+            ],
+            [
+              1,
+              3,
+              4,
+              6
+            ],
+            3,
+            1,
+            2
+          ],
+          "direction_key": [
+            [
+              [
+                0,
+                2,
+                3,
+                5
+              ],
+              [
+                1,
+                3,
+                4,
+                6
+              ],
+              3,
+              1,
+              2
+            ],
+            [
+              0,
+              2
+            ],
+            [
+              1,
+              4
+            ],
+            [
+              3,
+              5
+            ],
+            [
+              3,
+              6
+            ],
+            1,
+            "balanced_partitions_v2"
+          ],
+          "actual_new_physical": 0,
+          "success": true
+        }
+      ]
+    },
+    "last_probability_audit": [],
+    "unique_exposed_physical": 6300,
+    "skip_counts": {},
+    "distribution_adaptation_testable": true,
+    "cost_views": 1
+  },
+  "loader_workers": 0,
+  "normalization_layers_fixed_in_labeled_forward": [],
+  "performance_claim": "NOT_EVALUATED"
+}

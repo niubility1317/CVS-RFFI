@@ -1,0 +1,51 @@
+{
+  "status": "RUNNING_VERIFIED",
+  "code_commit": "40c1c205e31f4bfb18117d1a1b673b8cbcc1bd09",
+  "archive_sha256": "314bc26ca0a09bd485ddb912a3b2ecd1193822632227dc4e6566f89eea2acbc0",
+  "remote_archive_sha256_match": true,
+  "remote_compile": "PASSED",
+  "dispatcher_pid": 982320,
+  "exact_dispatcher_argv": [
+    "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "/home/szu2070436088/2510044040/CV-SincNet/releases/core90_cross_response_v2_392005_40c1c205/code/scripts/run_core90_cross_response_experiment.py",
+    "--project-root",
+    "/home/szu2070436088/2510044040/CV-SincNet",
+    "--run-id",
+    "core90_cross_response_v2_s392005_20260911_r2",
+    "--dataset",
+    "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+    "--config",
+    "/home/szu2070436088/2510044040/CV-SincNet/releases/core90_cross_response_v2_392005_40c1c205/code/configs/phase1_core90_cross_response_v2_s392005_20260911.json",
+    "--python",
+    "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "--seed",
+    "392005",
+    "--new-per-gpu",
+    "2",
+    "--min-free-mib",
+    "6500",
+    "--variants",
+    "head_only"
+  ],
+  "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/core90_cross_response_v2_392005_40c1c205",
+  "rows": [
+    {
+      "variant": "head_only",
+      "status": "RUNNING",
+      "pid": 982997,
+      "gpu": "GPU-4fb45b9a-894a-536b-0e0a-09f7c1341562",
+      "checks": {
+        "pid_present": true,
+        "argv": true,
+        "cwd": true,
+        "ppid": true,
+        "cuda": true,
+        "registered": true
+      },
+      "log_bytes": 11857,
+      "epochs": 1,
+      "init_scratch": true
+    }
+  ],
+  "target_results_used": false
+}

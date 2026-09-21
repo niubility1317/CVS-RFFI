@@ -34,10 +34,12 @@ def test_validation_checks_complete_blocks_at_frozen_budget():
         source_block_feasibility(records[:-1],config,validation=True)
 
 
-def test_gpu_reserves_unregistered_new_jobs_and_ignores_existing_total():
+def test_gpu_reserves_unregistered_new_jobs_and_counts_existing_total():
     jobs = [dict(gpu='GPU-a', pid=51)]
     assert choose_gpu(['GPU-a'], jobs, {'GPU-a':12000}, {30:'GPU-a',31:'GPU-a'}, minimum=6500, limit=2) is None
-    assert choose_gpu(['GPU-a'], jobs, {'GPU-a':12000}, {30:'GPU-a',31:'GPU-a',51:'GPU-a'}, minimum=6500, limit=2) == 'GPU-a'
+    assert choose_gpu(['GPU-a'], jobs, {'GPU-a':12000}, {30:'GPU-a',31:'GPU-a',51:'GPU-a'}, minimum=6500, limit=2) is None
+    assert choose_gpu(['GPU-a'], jobs, {'GPU-a':12000}, {51:'GPU-a'}, minimum=6500, limit=2) == 'GPU-a'
+    assert choose_gpu(['GPU-a'], jobs, {'GPU-a':20000}, {30:'GPU-a'}, minimum=6500, limit=2) is None
     jobs.append(dict(gpu='GPU-a', pid=52))
     assert choose_gpu(['GPU-a'], jobs, {'GPU-a':20000}, {51:'GPU-a',52:'GPU-a'}, minimum=6500, limit=2) is None
 
@@ -74,3 +76,22 @@ def test_fingerprint_normalizes_volatile_numbers(tmp_path):
     a.write_text('RuntimeError: CUDA out of memory. Tried to allocate 123 MiB at 0xabc\n')
     b.write_text('RuntimeError: CUDA out of memory. Tried to allocate 456 MiB at 0xdef\n')
     assert failure_fingerprint(a) == failure_fingerprint(b)
+
+
+def test_v2_launch_selection_excludes_unqualified_joint_and_unfrozen_rows():
+    from scripts.run_core90_cross_response_experiment import parser, ROLES
+    from scripts.core90_cross_response_matrix import build_matrix
+    from cvsrffi.cross_response.config import validate_runtime_config
+    selected = ['U0','U1','U1_mask_off','U3','Ux','Ux_normalized','head_only','permanent_detach']
+    config = CODE/'configs/phase1_core90_cross_response_v2.json'
+    args = parser().parse_args(['--project-root','/project','--run-id','new','--dataset','/data.pkl',
+        '--config',str(config),'--variants',*selected])
+    rows = build_matrix(config_path=config, wisig_pkl='/data.pkl', output_root='/runs/new',
+        roles=ROLES, seeds=[392005], variants=args.variants)
+    assert [row['variant'] for row in rows] == selected
+    for row in rows:
+        c = validate_runtime_config(row['cross_response'])
+        assert not c['response_enabled'] or c['head_only'] or c['permanent_detach']
+    with pytest.raises(ValueError, match='duplicate'):
+        build_matrix(config_path=config, wisig_pkl='/data.pkl', output_root='/runs/new',
+            roles=ROLES, seeds=[392005], variants=['U1','U1'])

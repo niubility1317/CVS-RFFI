@@ -1,0 +1,202 @@
+E:\type10-7\code\snapshots\core90_cross_response_v2_20260911_wt\code\scripts\verify_cross_response_v2_mechanism.py:30: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  return actual_scaler(**kwargs)
+[CONFIG-RUN] schema=ssdg_config_v1 seed=392002 device=cuda:0 output_dir=E:\type10-7\logs\core90_v2_repair_20260911\mechanism_amp_scale128_01\control\U2_s392002 baseline_ckpt=<scratch> from_scratch=1 freeze_backbone=0
+[CONFIG-DATA] dataset=wisig split_mode=tx_rx_day_1_7_2 L/U/Vcal/Vselect=270/2430/1140/1140 ratios=0.070/0.630/0.000/0.000 role_protocol=legacy_l_u_v
+[CONFIG-OPT] optimizer=AdamW lr=0.0002 weight_decay=0.0001 amp=1 params_trainable=1048207 params_total=1048207 label_epochs=1 pseudo_epochs=3 total_epochs=4 best_metric=clean_val_tx
+[CONFIG-LOSS] lambda_domain=1 lambda_adv=0.35 lambda_orth=0.05 lambda_cons=0.08 lambda_group_ce=0.16 lambda_fishr=0.04 lambda_sat_cls=0.68 lambda_sat_cons=0 lambda_proto=0.0032 lambda_open_world_feat=0.0024 lambda_zid_compact=0.032 lambda_proxy_unknown=0.0045 proxy_virtual_mode=hard proxy_vaccept_w=1 proxy_gate_w=0.65 lambda_soft_unknown_mixup=0.0045 lambda_source_episode=0.0035 lambda_direct_metric_accept=0 lambda_u=0.16 lambda_ent=0.01 lambda_u_domain=0 lambda_u_adv=0 lambda_u_sat_cons=0 lambda_u_direct_metric_accept=0 lambda_u_quarantine_accept=0 label_smoothing=0.01
+[CONFIG-P1-INVARIANCE] checkpoint_selection=final_only sat_disjoint_required=0 sat_disjoint=0 sat_train_families=simplified_leo_residual_weak_v1 sat_eval_families=- zid_inv_l=0/0/0 zid_inv_u=0/0/0 dm_local=0 dm_local_required=0 leakage_probe_required=0
+[CONFIG-U-DIRECT] domain_start=1 sat_start=1 dm_start=1 dm_min_selected=16 dm_sat_pair=1 dm_valid_domain_only=1 quarantine_start=1 quarantine_valid_domain_only=1 quarantine_sat=1 quarantine_min=4 quarantine_target=0.200 geometry_all_valid=0 unlabeled_shuffle=1 sat_zid_cons_w=0.25 domain_loss=0 adv_loss=0 sat_cons=0 dm_accept=0 quarantine_accept=0
+[CONFIG-TEACHER] teacher_ckpt=<none> lambda_teacher_clean_kl=0 lambda_teacher_sat_kl=0 lambda_teacher_zid_mse=0 temperature=2 start_epoch=1 warmup_epochs=0
+[CONFIG-ADG] bridge_w=0 shell_out_w=0 low_density_w=0 energy_q_w=0 radius_w=0 ratio_w=0 bridge_target=0.2 tail_target=0.45 overflow_target=0.25
+[CONFIG-DM-ACCEPT] start=20 warmup=20 virtual=32 mode=hard targets=p50:28.00,p95:54.00,p99:70.00,tail:56.00,source_overflow:0.450,proxy_vaccept:0.350,bridge:0.250,low_den:0.120,tail_accept:0.350,overflow_accept:0.200,radius_inter:0.850,sat_pair_deg:10.00 weights=zid:1.000,source:1.000,proxy:1.000,bridge:1.000,low_den:1.000,tail:1.000,overflow:1.000,ratio:1.000,core:0.250,sat_pair:0.000
+[CONFIG-PSEUDO] use_unlabeled=1 threshold_mode=rx_day_quantile tau_min=0.92 tau_max=0.97 quantile=0.86 domain_gate=1 temporal_gate=1 strong_agreement=1 ema=1
+[CONFIG-SAT] use_sat_consistency=1 train_scenario=leo_clear_weak train_scenarios=leo_clear_weak,leo_low_elev_weak,leo_rain_weak use_concat_sat_channel_aug=1 concat_sat_ce_only=1 sat_training_mode=concat_ce_only sat_view_schedule=1@0.30:leo_clear_weak;41@0.60:leo_low_elev_weak,leo_rain_weak;91@0.80:leo_clear_weak,leo_low_elev_weak,leo_rain_weak sat_cons_start_epoch=1 eval_sat_channel=0 eval_sat_scenarios=leo_clear_weak,leo_low_elev_weak,leo_rain_weak
+[CONFIG-CONCAT-SAT] enabled=1 mode=concat_ce_only forward_count=2 samples_per_step=B+B sat_losses=ce+nuisance+shell;kl=0;pair=0 scenario_cycle=leo_clear_weak start_epoch=1 view_prob=1.000 seed=2027 ce_weight=1.000
+[CONFIG-TELEMETRY] metrics_csv=E:\type10-7\logs\core90_v2_repair_20260911\mechanism_amp_scale128_01\control\U2_s392002\metrics_epoch.csv metrics_jsonl=E:\type10-7\logs\core90_v2_repair_20260911\mechanism_amp_scale128_01\control\U2_s392002\metrics_epoch.jsonl per_epoch_loss_terms=raw_and_weighted
+[CONFIG-JOINT-SAFE] enabled=0 best_metric=clean_val_tx safe_best_path=E:\type10-7\logs\core90_v2_repair_20260911\mechanism_amp_scale128_01\control\U2_s392002\best_clean_val_tx_safe_ssdg.pth safe_latest_path=E:\type10-7\logs\core90_v2_repair_20260911\mechanism_amp_scale128_01\control\U2_s392002\latest_safe_ssdg.pth drop_guard_pp=2 paic_guard=1 paic_sat_ce_delta=0.12 paic_grad_delta=3 paic_reliable_drop=0.01 paic_sat_scale=0.75
+[CONFIG-PHASE1-V2] hard_gates=0 endpoint=endpoint_accept_v1 loss_gate_exported=0 tail_sm=0 tail_targets=p95:54.00,p99:70.00,cvar:56.00,proxy:0.350 tail_expansion_delta=final:2.00,best:3.50,cvar_final:4.00,cvar_best:6.00 tail_reference_window=5 tail_rollback=0:cooldown2 os_eff_min=0.000 os_eff_max=0.000 os_budget_controller=0 os_gradient_surgery=0 os_eff_all_phases=1 dg_health_guard=0:warn3.0:stop8.0:min_open0.20 guard_blocks_final=1 u_tri_state_required=0 source_episode_density_gate=0 source_episode_overflow_warn=0.900 local_component_weights=compact:0.000,invariant:0.000,inter:0.000,accept:0.000,density:0.000 local_min_samples=2 local_radius_floor=3.00deg local_caps=density:2.00,term:4.00 structural_schedule=start:-1,warmup:-1 source_views=clean:1.00,sat:1.00,normalized:1 max_grad_norm=0.00 multiview_separate=0 endpoint_artifact_required=1 feasibility_gate=0:audit
+[CONFIG-PROTO-MASK] requested=1 audit_only=0 active_loss=1 use_prototypes=1 use_masks=1 use_geometry=1 use_balanced_sampler=0 lambda_tx_proto=0 lambda_rx_proto=0 lambda_mask_aux=0 lambda_txrx_rect=0 use_proto_memory=1 lambda_proto=0.0032 lambda_open_world_feat=0.0024 lambda_zid_compact=0.032 lambda_proxy_unknown=0.0045 lambda_soft_unknown_mixup=0.0045 lambda_source_episode=0.0035 phase2_export=0
+[SSDG-TRAIN] init=scratch split=tx_rx_day_1_7_2 L/U/Vcal/Vselect=270/2430/1140/1140 ratios=0.070/0.630/0.000/0.000 role_protocol=legacy_l_u_v label_epochs=1 pseudo_epochs=3 lambda_domain=1.000 lambda_fishr=0.040 threshold=rx_day_quantile domain_gate=1 temporal_gate=1 ema=1 best_metric=clean_val_tx output=E:\type10-7\logs\core90_v2_repair_20260911\mechanism_amp_scale128_01\control\U2_s392002
+[TELEMETRY] schema=ssdg_epoch_telemetry_v1 metrics_csv=E:\type10-7\logs\core90_v2_repair_20260911\mechanism_amp_scale128_01\control\U2_s392002\metrics_epoch.csv metrics_jsonl=E:\type10-7\logs\core90_v2_repair_20260911\mechanism_amp_scale128_01\control\U2_s392002\metrics_epoch.jsonl loss_terms=loss,loss_labeled,loss_tx,loss_domain,loss_adv,loss_cons,loss_orth,loss_group_ce,loss_fishr,loss_sat_cls,loss_sat_cons,loss_direct_metric_accept,loss_unlabeled,weighted_losses,grad_norms,pseudo_stats,eval_stats
+E:\type10-7\code\snapshots\core90_cross_response_v2_20260911_wt\code\SSDG\train_ssdg.py:8102: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with autocast(enabled=bool(args.amp and device.type == "cuda")):
+E:\type10-7\code\snapshots\core90_cross_response_v2_20260911_wt\code\model.py:740: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=False):
+====================================================================================================================================
+[EPOCH-BEGIN] E001/004 | time=19.2s | lr=2.00e-04 | aux_scale=0.000
+[STAGE] phase=label train_phase=phase=S1_core | use_aux=0.0 cons=0.00 cls_aux=0.00 reg=0.00 joint_inv=0.00 kl=0.00 group_ce=0.50 label_stage=1 pseudo_stage=0
+[MIXSTYLE-EPOCH] phase=base enabled=1 p=0.180 strength=0.700 anneal_t=0.000
+[AUG] scale=0.100 | p_dac=0.000 p_pa=0.014 p_shift=0.035 p_cfo=0.035 p_awgn=0.040 p_mp=0.018 | max_shift=3 cfo_max=4e-05 pn_max=0.0006
+------------------------------------------------------------------------------------------------------------------------------------
+[LOSS-CORE-RAW] total=228.8338 cls=13.3786 dom=1.6579 adv=7.0733 orth=828.3440 cons=0.0000 group_ce=13.7162
+[LOSS-CORE-W]   cls=13.3786 dom=1.6579 adv=1.7330 orth=20.7086 cons=0.0000 group_ce=1.0973
+[LOSS-AUX-RAW]  cls_pa=0.0000 cls_dac=0.0000 pa_joint_inv=0.0000 pa_kl=0.0000 dac_reg=0.0000 pa_reg=0.0000
+[LOSS-AUX-W]    cls_pa=0.0000 cls_dac=0.0000 pa_joint_inv=0.0000 pa_kl=0.0000 dac_reg=0.0000 pa_reg=0.0000
+[LOSS-SAT-RAW]  cls_sat=13.5556 sat_cons=0.0000 sat_cos=nan
+[LOSS-SAT-W]    cls_sat=9.2178 sat_cons=0.0000
+[LOSS-DG-RAW]   proto=0.1567 proto_cos=0.7418 supcon=0.0000 fishr=0.0014 ow_feat=0.1620 soft_unknown_mixup=6.0930 source_episode=0.0497 direct_metric=0.0000
+[LOSS-DG-W]     proto=0.0005 supcon=0.0000 fishr=0.0001 ow_feat=0.0004 soft_unknown_mixup=0.0274 source_episode=0.0002 direct_metric=0.0000
+[OW-FEAT] active_classes=6.0 compact=0.0530 inter=0.0848 sample_margin=0.0005 domain_align=0.3960 pos_angle=40.26deg p95=48.25deg tail3s=0.0156 min_inter=15.37deg vac=0.0593 vac_rate=0.7078 vac_gap=-4.57deg proto_active=6.0
+[PROXY-UNK] active=1.0 known=104 proxy=24 virtual=48 core=91 tail=3 auc=0.6190 vaccept=0.3750 reject_claim=0 core_accept=0.3333 hard_accept=0.4444 vaccept_surr=7.7168 gate=0.4407 shell=0.0000 bridge=1.0000 outward=0.0000 vac=0.1149 vac_rate=0.7708 vac_gap=-10.24deg
+[PROXY-ADG] bridge_loss=0.0000 shell_out=0.0000 low_den=0.0000 e_q=0.0000 e_q05=0.0000 e_q10=0.0000 r_p95=0.00deg r_max=0.00deg gate_r95=0.00deg gate_rmax=0.00deg low_den_rate=0.0000 r_inter=0.0000
+[SOFT-UNK-MIX] count=24 order=3 ce=8.0384 energy=1.2127 vac=0.1635 vaccept=1.0000 vac_rate=0.8715
+[SOURCE-EP] classes=6.0 domains=5.0 overflow=0.9232 r3s=33.00deg r_core=0.00deg r_safe=0.00deg tail_q=0.0000 val_angle=43.43deg mix_count=24 mix_order=3 mix_loss=0.0031 mix_overflow=0.6250 mix_gap=-0.96deg
+[DM-ACCEPT] active=0.0 classes=0.0 p50=0.00deg p95=nandeg p99=nandeg tail_cvar=nandeg source_overflow=0.0000 proxy_vaccept=nan bridge=0.0000 low_den=0.0000 tail_accept=0.0000 overflow_accept=0.0000 radius_inter=0.0000 core_accept=0.0000 known_tpr=0.0000 neg_scale=0.000 proxy_grad=0 sat_pair_p95=0.00deg
+[U-DIRECT] loss_domain=0.0000 loss_adv=0.0000 loss_sat=0.0000 loss_dm=0.0000 loss_quarantine=0.0000 selected=0 q_active=0.0 q_count=0 q_accept=0.0000 q_low_den=0.0000 dm_active=0.0 sat_pairs=0 p50=0.00deg p95=0.00deg p99=0.00deg tail_cvar=0.00deg source_overflow=0.0000 proxy_vaccept=0.0000 bridge=0.0000 low_den=0.0000 radius_inter=0.0000 sat_pair_p95=0.00deg
+[LOSS-WEIGHT] dom=1.000 adv=0.700 orth=0.500 cons=0.000 group_ce=0.500 proto=0.0032 ow_feat=0.0024 soft_unknown_mixup=0.0045 source_episode=0.0035 direct_metric=0 u_domain=0 u_adv=0 u_sat_cons=0 u_dm=0 u_quarantine=0 aux_scale=0.000
+[LOSS-TOP] orth=20.7086 | cls=13.3786 | cls_sat=9.2178 | adv=1.7330 | dom=1.6579 | group_ce=1.0973 | soft_unknown_mixup=0.0274 | proto=0.0005
+[LOSS-PSEUDO]   u=0.0000 reliable=0.000 conf=0.000 domain_pass=0.000 temporal_pass=0.000 strong_pass=0.000 total=0 selected=0/0 correct=N/A precision=N/A
+------------------------------------------------------------------------------------------------------------------------------------
+[TRAIN] tx=0.00% dom=17.58% cons_cos=0.0000
+[GRAD]  total=263.641 backbone=257.735 aux=0.000 domain=169.207
+[OS-GRAD] pre_budget=0.0000 post_budget=0.0000 os_scale=1.000 closed_scale=1.000 conflict=0 step_rate=1.000
+[VAL]   tx=73.44% dom=0.00%
+[TEST]  overall_tx=nan% (0/0)
+[TEST-SPLIT]
+[JOINT-METRIC] strict_udu=nan% receiver_floor=nan% sat_mean=nan% sat_floor=nan% sat_strict_mean=nan% sat_strict_floor=nan%
+[JOINT-GUARD] enabled=0 safe=1 missing_required=0 drop=0 paic=0 cooldown_active=0 reason=
+[PROTO-TX] enabled=1 audit_only=0 lambda_tx_proto=0 module_import=1
+[PROTO-RX] enabled=1 lambda_rx_proto=0 module_import=1
+[MASK] enabled=1 lambda_mask_aux=0 module_import=1
+[BATCH-GEOM] balanced_sampler=0 geometry_losses=1 lambda_txrx_rect=0 sampler_import=1 geometry_import=1
+[TXRX-ANOVA] status=audit_marker_only active_loss=1
+[ZID-FEATURE-SPACE] proto_memory=1 lambda_proto=0.0032 open_world_feat=1 lambda_open_world_feat=0.0024 zid_compact=1 lambda_zid_compact=0.032 proxy_unknown=1 lambda_proxy_unknown=0.0045 soft_unknown_mixup=1 lambda_soft_unknown_mixup=0.0045 source_episode=1 lambda_source_episode=0.0035 phase2_export=0
+[BEST-SOURCE-VAL] val_tx=73.44% @ E001 heldout_test=not_evaluated_on_frozen_best
+[TAIL-CONTROL] state=-1 action=-1 reference_ready=0 reference_saved=0 rollback_applied=0 final_blocked=0
+[CKPT]  latest -> E:\type10-7\logs\core90_v2_repair_20260911\mechanism_amp_scale128_01\control\U2_s392002\NOT_SAVED_FINAL_ONLY (recovery) | final_only -> E:\type10-7\logs\core90_v2_repair_20260911\mechanism_amp_scale128_01\control\U2_s392002\final_ssdg.pth (written after training; telemetry_best=1)
+[EPOCH-END] E001/004
+====================================================================================================================================
+====================================================================================================================================
+[EPOCH-BEGIN] E002/004 | time=5.4s | lr=2.00e-04 | aux_scale=0.000
+[STAGE] phase=pseudo train_phase=phase=SSDG_pseudo | use_aux=1.0 cons=1.00 cls_aux=1.00 reg=1.00 joint_inv=0.30 kl=0.60 group_ce=1.00 label_stage=0 pseudo_stage=1
+[MIXSTYLE-EPOCH] phase=base enabled=1 p=0.180 strength=0.700 anneal_t=0.000
+[AUG] scale=0.100 | p_dac=0.000 p_pa=0.014 p_shift=0.035 p_cfo=0.035 p_awgn=0.040 p_mp=0.018 | max_shift=3 cfo_max=4e-05 pn_max=0.0006
+------------------------------------------------------------------------------------------------------------------------------------
+[LOSS-CORE-RAW] total=97.3069 cls=12.3344 dom=1.5919 adv=4.8711 orth=256.6350 cons=0.1795 group_ce=12.6234
+[LOSS-CORE-W]   cls=12.3344 dom=1.5919 adv=1.7049 orth=12.8317 cons=0.0144 group_ce=2.0197
+[LOSS-AUX-RAW]  cls_pa=0.0000 cls_dac=0.0000 pa_joint_inv=0.0000 pa_kl=0.0000 dac_reg=0.0000 pa_reg=0.0000
+[LOSS-AUX-W]    cls_pa=0.0000 cls_dac=0.0000 pa_joint_inv=0.0000 pa_kl=0.0000 dac_reg=0.0000 pa_reg=0.0000
+[LOSS-SAT-RAW]  cls_sat=12.7468 sat_cons=0.0000 sat_cos=nan
+[LOSS-SAT-W]    cls_sat=8.6679 sat_cons=0.0000
+[LOSS-DG-RAW]   proto=0.3353 proto_cos=0.7194 supcon=0.0000 fishr=0.0022 ow_feat=0.1730 soft_unknown_mixup=5.3522 source_episode=0.0437 direct_metric=0.0000
+[LOSS-DG-W]     proto=0.0011 supcon=0.0000 fishr=0.0001 ow_feat=0.0004 soft_unknown_mixup=0.0241 source_episode=0.0002 direct_metric=0.0000
+[OW-FEAT] active_classes=5.5 compact=0.0531 inter=0.1017 sample_margin=0.0006 domain_align=0.3751 pos_angle=40.75deg p95=48.57deg tail3s=0.0000 min_inter=15.83deg vac=0.0439 vac_rate=0.7523 vac_gap=-5.96deg proto_active=6.0
+[PROXY-UNK] active=1.0 known=116 proxy=12 virtual=48 core=102 tail=4 auc=0.6523 vaccept=0.3542 reject_claim=0 core_accept=0.3333 hard_accept=0.4040 vaccept_surr=8.3883 gate=0.4201 shell=0.0000 bridge=1.0000 outward=0.0000 vac=0.1506 vac_rate=0.7143 vac_gap=-8.77deg
+[PROXY-ADG] bridge_loss=0.0000 shell_out=0.0000 low_den=0.0000 e_q=0.0000 e_q05=0.0000 e_q10=0.0000 r_p95=0.00deg r_max=0.00deg gate_r95=0.00deg gate_rmax=0.00deg low_den_rate=0.0000 r_inter=0.0000
+[SOFT-UNK-MIX] count=24 order=3 ce=6.8618 energy=1.1886 vac=0.1330 vaccept=0.9792 vac_rate=0.9118
+[SOURCE-EP] classes=5.5 domains=5.0 overflow=0.9715 r3s=33.00deg r_core=0.00deg r_safe=0.00deg tail_q=0.0000 val_angle=43.30deg mix_count=24 mix_order=3 mix_loss=0.0030 mix_overflow=0.6250 mix_gap=-1.07deg
+[DM-ACCEPT] active=0.0 classes=0.0 p50=0.00deg p95=nandeg p99=nandeg tail_cvar=nandeg source_overflow=0.0000 proxy_vaccept=nan bridge=0.0000 low_den=0.0000 tail_accept=0.0000 overflow_accept=0.0000 radius_inter=0.0000 core_accept=0.0000 known_tpr=0.0000 neg_scale=0.000 proxy_grad=0 sat_pair_p95=0.00deg
+[U-DIRECT] loss_domain=0.0000 loss_adv=0.0000 loss_sat=0.0000 loss_dm=0.0000 loss_quarantine=0.0000 selected=0 q_active=0.0 q_count=0 q_accept=0.0000 q_low_den=0.0000 dm_active=0.0 sat_pairs=0 p50=0.00deg p95=0.00deg p99=0.00deg tail_cvar=0.00deg source_overflow=0.0000 proxy_vaccept=0.0000 bridge=0.0000 low_den=0.0000 radius_inter=0.0000 sat_pair_p95=0.00deg
+[LOSS-WEIGHT] dom=1.000 adv=1.000 orth=1.000 cons=1.000 group_ce=1.000 proto=0.0032 ow_feat=0.0024 soft_unknown_mixup=0.0045 source_episode=0.0035 direct_metric=0 u_domain=0 u_adv=0 u_sat_cons=0 u_dm=0 u_quarantine=0 aux_scale=0.000
+[LOSS-TOP] orth=12.8317 | cls=12.3344 | cls_sat=8.6679 | group_ce=2.0197 | adv=1.7049 | dom=1.5919 | soft_unknown_mixup=0.0241 | cons=0.0144
+[LOSS-PSEUDO]   u=0.0000 reliable=0.000 conf=0.780 domain_pass=0.203 temporal_pass=0.129 strong_pass=0.180 total=256 selected=0/256 correct=N/A precision=N/A
+------------------------------------------------------------------------------------------------------------------------------------
+[TRAIN] tx=0.00% dom=27.73% cons_cos=0.8205
+[GRAD]  total=170.331 backbone=163.967 aux=0.000 domain=98.789
+[OS-GRAD] pre_budget=0.0000 post_budget=0.0000 os_scale=1.000 closed_scale=1.000 conflict=0 step_rate=1.000
+[VAL]   tx=100.00% dom=0.00%
+[TEST]  overall_tx=nan% (0/0)
+[TEST-SPLIT]
+[JOINT-METRIC] strict_udu=nan% receiver_floor=nan% sat_mean=nan% sat_floor=nan% sat_strict_mean=nan% sat_strict_floor=nan%
+[JOINT-GUARD] enabled=0 safe=1 missing_required=0 drop=0 paic=0 cooldown_active=0 reason=
+[PROTO-TX] enabled=1 audit_only=0 lambda_tx_proto=0 module_import=1
+[PROTO-RX] enabled=1 lambda_rx_proto=0 module_import=1
+[MASK] enabled=1 lambda_mask_aux=0 module_import=1
+[BATCH-GEOM] balanced_sampler=0 geometry_losses=1 lambda_txrx_rect=0 sampler_import=1 geometry_import=1
+[TXRX-ANOVA] status=audit_marker_only active_loss=1
+[ZID-FEATURE-SPACE] proto_memory=1 lambda_proto=0.0032 open_world_feat=1 lambda_open_world_feat=0.0024 zid_compact=1 lambda_zid_compact=0.032 proxy_unknown=1 lambda_proxy_unknown=0.0045 soft_unknown_mixup=1 lambda_soft_unknown_mixup=0.0045 source_episode=1 lambda_source_episode=0.0035 phase2_export=0
+[BEST-SOURCE-VAL] val_tx=100.00% @ E002 heldout_test=not_evaluated_on_frozen_best
+[TAIL-CONTROL] state=-1 action=-1 reference_ready=0 reference_saved=0 rollback_applied=0 final_blocked=0
+[CKPT]  latest -> E:\type10-7\logs\core90_v2_repair_20260911\mechanism_amp_scale128_01\control\U2_s392002\NOT_SAVED_FINAL_ONLY (recovery) | final_only -> E:\type10-7\logs\core90_v2_repair_20260911\mechanism_amp_scale128_01\control\U2_s392002\final_ssdg.pth (written after training; telemetry_best=1)
+[EPOCH-END] E002/004
+====================================================================================================================================
+====================================================================================================================================
+[EPOCH-BEGIN] E003/004 | time=5.0s | lr=2.00e-04 | aux_scale=0.000
+[STAGE] phase=pseudo train_phase=phase=SSDG_pseudo | use_aux=1.0 cons=1.00 cls_aux=1.00 reg=1.00 joint_inv=0.30 kl=0.60 group_ce=1.00 label_stage=0 pseudo_stage=1
+[MIXSTYLE-EPOCH] phase=base enabled=1 p=0.180 strength=0.700 anneal_t=0.000
+[AUG] scale=0.100 | p_dac=0.000 p_pa=0.014 p_shift=0.035 p_cfo=0.035 p_awgn=0.040 p_mp=0.018 | max_shift=3 cfo_max=4e-05 pn_max=0.0006
+------------------------------------------------------------------------------------------------------------------------------------
+[LOSS-CORE-RAW] total=156.7144 cls=12.0365 dom=1.6428 adv=8.7564 orth=480.0703 cons=0.1863 group_ce=12.3038
+[LOSS-CORE-W]   cls=12.0365 dom=1.6428 adv=3.0647 orth=24.0035 cons=0.0149 group_ce=1.9686
+[LOSS-AUX-RAW]  cls_pa=0.0000 cls_dac=0.0000 pa_joint_inv=0.0000 pa_kl=0.0000 dac_reg=0.0000 pa_reg=0.0000
+[LOSS-AUX-W]    cls_pa=0.0000 cls_dac=0.0000 pa_joint_inv=0.0000 pa_kl=0.0000 dac_reg=0.0000 pa_reg=0.0000
+[LOSS-SAT-RAW]  cls_sat=12.1081 sat_cons=0.0000 sat_cos=nan
+[LOSS-SAT-W]    cls_sat=8.2335 sat_cons=0.0000
+[LOSS-DG-RAW]   proto=0.3359 proto_cos=0.7187 supcon=0.0000 fishr=0.0011 ow_feat=0.1634 soft_unknown_mixup=5.3720 source_episode=0.0439 direct_metric=0.0000
+[LOSS-DG-W]     proto=0.0011 supcon=0.0000 fishr=0.0000 ow_feat=0.0004 soft_unknown_mixup=0.0242 source_episode=0.0002 direct_metric=0.0000
+[OW-FEAT] active_classes=6.0 compact=0.0512 inter=0.0891 sample_margin=0.0010 domain_align=0.3878 pos_angle=40.11deg p95=48.99deg tail3s=0.0226 min_inter=15.86deg vac=0.0553 vac_rate=0.7094 vac_gap=-4.67deg proto_active=6.0
+[PROXY-UNK] active=1.0 known=108 proxy=20 virtual=48 core=94 tail=4 auc=0.6515 vaccept=0.3750 reject_claim=0 core_accept=0.3333 hard_accept=0.3819 vaccept_surr=7.8049 gate=0.2452 shell=0.0000 bridge=1.0000 outward=0.0000 vac=0.1352 vac_rate=0.7639 vac_gap=-9.05deg
+[PROXY-ADG] bridge_loss=0.0000 shell_out=0.0000 low_den=0.0000 e_q=0.0000 e_q05=0.0000 e_q10=0.0000 r_p95=0.00deg r_max=0.00deg gate_r95=0.00deg gate_rmax=0.00deg low_den_rate=0.0000 r_inter=0.0000
+[SOFT-UNK-MIX] count=24 order=3 ce=6.8632 energy=1.2032 vac=0.1453 vaccept=1.0000 vac_rate=0.8819
+[SOURCE-EP] classes=6.0 domains=5.0 overflow=0.9056 r3s=33.00deg r_core=0.00deg r_safe=0.00deg tail_q=0.0000 val_angle=42.74deg mix_count=24 mix_order=3 mix_loss=0.0026 mix_overflow=0.6042 mix_gap=-0.42deg
+[DM-ACCEPT] active=0.0 classes=0.0 p50=0.00deg p95=nandeg p99=nandeg tail_cvar=nandeg source_overflow=0.0000 proxy_vaccept=nan bridge=0.0000 low_den=0.0000 tail_accept=0.0000 overflow_accept=0.0000 radius_inter=0.0000 core_accept=0.0000 known_tpr=0.0000 neg_scale=0.000 proxy_grad=0 sat_pair_p95=0.00deg
+[U-DIRECT] loss_domain=0.0000 loss_adv=0.0000 loss_sat=0.0000 loss_dm=0.0000 loss_quarantine=0.0000 selected=0 q_active=0.0 q_count=0 q_accept=0.0000 q_low_den=0.0000 dm_active=0.0 sat_pairs=0 p50=0.00deg p95=0.00deg p99=0.00deg tail_cvar=0.00deg source_overflow=0.0000 proxy_vaccept=0.0000 bridge=0.0000 low_den=0.0000 radius_inter=0.0000 sat_pair_p95=0.00deg
+[LOSS-WEIGHT] dom=1.000 adv=1.000 orth=1.000 cons=1.000 group_ce=1.000 proto=0.0032 ow_feat=0.0024 soft_unknown_mixup=0.0045 source_episode=0.0035 direct_metric=0 u_domain=0 u_adv=0 u_sat_cons=0 u_dm=0 u_quarantine=0 aux_scale=0.000
+[LOSS-TOP] orth=24.0035 | cls=12.0365 | cls_sat=8.2335 | adv=3.0647 | group_ce=1.9686 | dom=1.6428 | soft_unknown_mixup=0.0242 | cons=0.0149
+[LOSS-PSEUDO]   u=0.0000 reliable=0.000 conf=0.783 domain_pass=0.180 temporal_pass=0.078 strong_pass=0.109 total=256 selected=0/256 correct=N/A precision=N/A
+------------------------------------------------------------------------------------------------------------------------------------
+[TRAIN] tx=0.00% dom=17.19% cons_cos=0.8137
+[GRAD]  total=213.547 backbone=205.725 aux=0.000 domain=162.536
+[OS-GRAD] pre_budget=0.0000 post_budget=0.0000 os_scale=1.000 closed_scale=1.000 conflict=0 step_rate=1.000
+[VAL]   tx=100.00% dom=0.00%
+[TEST]  overall_tx=nan% (0/0)
+[TEST-SPLIT]
+[JOINT-METRIC] strict_udu=nan% receiver_floor=nan% sat_mean=nan% sat_floor=nan% sat_strict_mean=nan% sat_strict_floor=nan%
+[JOINT-GUARD] enabled=0 safe=1 missing_required=0 drop=0 paic=0 cooldown_active=0 reason=
+[PROTO-TX] enabled=1 audit_only=0 lambda_tx_proto=0 module_import=1
+[PROTO-RX] enabled=1 lambda_rx_proto=0 module_import=1
+[MASK] enabled=1 lambda_mask_aux=0 module_import=1
+[BATCH-GEOM] balanced_sampler=0 geometry_losses=1 lambda_txrx_rect=0 sampler_import=1 geometry_import=1
+[TXRX-ANOVA] status=audit_marker_only active_loss=1
+[ZID-FEATURE-SPACE] proto_memory=1 lambda_proto=0.0032 open_world_feat=1 lambda_open_world_feat=0.0024 zid_compact=1 lambda_zid_compact=0.032 proxy_unknown=1 lambda_proxy_unknown=0.0045 soft_unknown_mixup=1 lambda_soft_unknown_mixup=0.0045 source_episode=1 lambda_source_episode=0.0035 phase2_export=0
+[BEST-SOURCE-VAL] val_tx=100.00% @ E002 heldout_test=not_evaluated_on_frozen_best
+[TAIL-CONTROL] state=-1 action=-1 reference_ready=0 reference_saved=0 rollback_applied=0 final_blocked=0
+[CKPT]  latest -> E:\type10-7\logs\core90_v2_repair_20260911\mechanism_amp_scale128_01\control\U2_s392002\NOT_SAVED_FINAL_ONLY (recovery) | final_only -> E:\type10-7\logs\core90_v2_repair_20260911\mechanism_amp_scale128_01\control\U2_s392002\final_ssdg.pth (written after training; telemetry_best=0)
+[EPOCH-END] E003/004
+====================================================================================================================================
+====================================================================================================================================
+[EPOCH-BEGIN] E004/004 | time=5.5s | lr=2.00e-04 | aux_scale=0.000
+[STAGE] phase=pseudo train_phase=phase=SSDG_pseudo | use_aux=1.0 cons=1.00 cls_aux=1.00 reg=1.00 joint_inv=0.30 kl=0.60 group_ce=1.00 label_stage=0 pseudo_stage=1
+[MIXSTYLE-EPOCH] phase=base enabled=1 p=0.180 strength=0.700 anneal_t=0.000
+[AUG] scale=0.100 | p_dac=0.000 p_pa=0.014 p_shift=0.035 p_cfo=0.035 p_awgn=0.040 p_mp=0.018 | max_shift=3 cfo_max=4e-05 pn_max=0.0006
+------------------------------------------------------------------------------------------------------------------------------------
+[LOSS-CORE-RAW] total=125.2516 cls=11.5766 dom=1.6068 adv=5.5197 orth=375.4983 cons=0.1863 group_ce=11.9443
+[LOSS-CORE-W]   cls=11.5766 dom=1.6068 adv=1.9319 orth=18.7749 cons=0.0149 group_ce=1.9111
+[LOSS-AUX-RAW]  cls_pa=0.0000 cls_dac=0.0000 pa_joint_inv=0.0000 pa_kl=0.0000 dac_reg=0.0000 pa_reg=0.0000
+[LOSS-AUX-W]    cls_pa=0.0000 cls_dac=0.0000 pa_joint_inv=0.0000 pa_kl=0.0000 dac_reg=0.0000 pa_reg=0.0000
+[LOSS-SAT-RAW]  cls_sat=11.8115 sat_cons=0.0000 sat_cos=nan
+[LOSS-SAT-W]    cls_sat=8.0318 sat_cons=0.0000
+[LOSS-DG-RAW]   proto=0.3431 proto_cos=0.7112 supcon=0.0000 fishr=0.0025 ow_feat=0.1570 soft_unknown_mixup=5.4881 source_episode=0.0448 direct_metric=0.0000
+[LOSS-DG-W]     proto=0.0011 supcon=0.0000 fishr=0.0001 ow_feat=0.0004 soft_unknown_mixup=0.0247 source_episode=0.0002 direct_metric=0.0000
+[OW-FEAT] active_classes=6.0 compact=0.0520 inter=0.0849 sample_margin=0.0011 domain_align=0.3827 pos_angle=40.44deg p95=47.92deg tail3s=0.0208 min_inter=15.51deg vac=0.0475 vac_rate=0.6875 vac_gap=-2.81deg proto_active=6.0
+[PROXY-UNK] active=1.0 known=112 proxy=16 virtual=48 core=98 tail=4 auc=0.6258 vaccept=0.4896 reject_claim=0 core_accept=0.3438 hard_accept=0.4206 vaccept_surr=8.7410 gate=0.3301 shell=0.0312 bridge=1.0000 outward=0.0000 vac=0.1386 vac_rate=0.7460 vac_gap=-9.73deg
+[PROXY-ADG] bridge_loss=0.0000 shell_out=0.0000 low_den=0.0000 e_q=0.0000 e_q05=0.0000 e_q10=0.0000 r_p95=0.00deg r_max=0.00deg gate_r95=0.00deg gate_rmax=0.00deg low_den_rate=0.0000 r_inter=0.0000
+[SOFT-UNK-MIX] count=24 order=3 ce=7.0217 energy=1.2214 vac=0.1535 vaccept=1.0000 vac_rate=0.8403
+[SOURCE-EP] classes=6.0 domains=5.0 overflow=0.9487 r3s=33.00deg r_core=0.00deg r_safe=0.00deg tail_q=0.0000 val_angle=43.15deg mix_count=24 mix_order=3 mix_loss=0.0036 mix_overflow=0.6667 mix_gap=-1.51deg
+[DM-ACCEPT] active=0.0 classes=0.0 p50=0.00deg p95=nandeg p99=nandeg tail_cvar=nandeg source_overflow=0.0000 proxy_vaccept=nan bridge=0.0000 low_den=0.0000 tail_accept=0.0000 overflow_accept=0.0000 radius_inter=0.0000 core_accept=0.0000 known_tpr=0.0000 neg_scale=0.000 proxy_grad=0 sat_pair_p95=0.00deg
+[U-DIRECT] loss_domain=0.0000 loss_adv=0.0000 loss_sat=0.0000 loss_dm=0.0000 loss_quarantine=0.0000 selected=0 q_active=0.0 q_count=0 q_accept=0.0000 q_low_den=0.0000 dm_active=0.0 sat_pairs=0 p50=0.00deg p95=0.00deg p99=0.00deg tail_cvar=0.00deg source_overflow=0.0000 proxy_vaccept=0.0000 bridge=0.0000 low_den=0.0000 radius_inter=0.0000 sat_pair_p95=0.00deg
+[LOSS-WEIGHT] dom=1.000 adv=1.000 orth=1.000 cons=1.000 group_ce=1.000 proto=0.0032 ow_feat=0.0024 soft_unknown_mixup=0.0045 source_episode=0.0035 direct_metric=0 u_domain=0 u_adv=0 u_sat_cons=0 u_dm=0 u_quarantine=0 aux_scale=0.000
+[LOSS-TOP] orth=18.7749 | cls=11.5766 | cls_sat=8.0318 | adv=1.9319 | group_ce=1.9111 | dom=1.6068 | soft_unknown_mixup=0.0247 | cons=0.0149
+[LOSS-PSEUDO]   u=0.0000 reliable=0.000 conf=0.773 domain_pass=0.184 temporal_pass=0.031 strong_pass=0.145 total=256 selected=0/256 correct=N/A precision=N/A
+------------------------------------------------------------------------------------------------------------------------------------
+[TRAIN] tx=0.00% dom=18.75% cons_cos=0.8137
+[GRAD]  total=172.989 backbone=166.401 aux=0.000 domain=124.397
+[OS-GRAD] pre_budget=0.0000 post_budget=0.0000 os_scale=1.000 closed_scale=1.000 conflict=0 step_rate=1.000
+[VAL]   tx=100.00% dom=0.00%
+[TEST]  overall_tx=nan% (0/0)
+[TEST-SPLIT]
+[JOINT-METRIC] strict_udu=nan% receiver_floor=nan% sat_mean=nan% sat_floor=nan% sat_strict_mean=nan% sat_strict_floor=nan%
+[JOINT-GUARD] enabled=0 safe=1 missing_required=0 drop=0 paic=0 cooldown_active=0 reason=
+[PROTO-TX] enabled=1 audit_only=0 lambda_tx_proto=0 module_import=1
+[PROTO-RX] enabled=1 lambda_rx_proto=0 module_import=1
+[MASK] enabled=1 lambda_mask_aux=0 module_import=1
+[BATCH-GEOM] balanced_sampler=0 geometry_losses=1 lambda_txrx_rect=0 sampler_import=1 geometry_import=1
+[TXRX-ANOVA] status=audit_marker_only active_loss=1
+[ZID-FEATURE-SPACE] proto_memory=1 lambda_proto=0.0032 open_world_feat=1 lambda_open_world_feat=0.0024 zid_compact=1 lambda_zid_compact=0.032 proxy_unknown=1 lambda_proxy_unknown=0.0045 soft_unknown_mixup=1 lambda_soft_unknown_mixup=0.0045 source_episode=1 lambda_source_episode=0.0035 phase2_export=0
+[BEST-SOURCE-VAL] val_tx=100.00% @ E002 heldout_test=not_evaluated_on_frozen_best
+[TAIL-CONTROL] state=-1 action=-1 reference_ready=0 reference_saved=0 rollback_applied=0 final_blocked=0
+[CKPT]  latest -> E:\type10-7\logs\core90_v2_repair_20260911\mechanism_amp_scale128_01\control\U2_s392002\NOT_SAVED_FINAL_ONLY (recovery) | final_only -> E:\type10-7\logs\core90_v2_repair_20260911\mechanism_amp_scale128_01\control\U2_s392002\final_ssdg.pth (written after training; telemetry_best=0)
+[EPOCH-END] E004/004
+====================================================================================================================================
+[CROSS-RESPONSE] REJECTED_EXTRA_GATE: unrelated Phase1-v2 P0/P1/endpoint mechanism switches
+[PHASE1-TERMINAL] status=HELDOUT_EVAL_INCOMPLETE exit_code=7 promotion_ready=0 endpoint_export_ready=0

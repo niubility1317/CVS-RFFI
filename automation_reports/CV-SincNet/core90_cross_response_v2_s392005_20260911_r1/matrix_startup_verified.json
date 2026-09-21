@@ -1,0 +1,204 @@
+{
+  "status": "EIGHT_CONTROLS_RUNNING_VERIFIED",
+  "rows": [
+    {
+      "variant": "U0",
+      "status": "RUNNING",
+      "pid": 978194,
+      "gpu": "GPU-4fb45b9a-894a-536b-0e0a-09f7c1341562",
+      "checks": {
+        "pid_present": true,
+        "argv": true,
+        "cwd": true,
+        "ppid": true,
+        "cuda": true,
+        "registered": true
+      },
+      "log_bytes": 73107,
+      "epochs": 12,
+      "init_scratch": true,
+      "run": "core90_cross_response_v2_s392005_20260911_r1",
+      "gpu_index": 2,
+      "latest_update": {
+        "train_optimizer_step_applied": 1.0,
+        "train_skipped_nonfinite_grad": 0.0,
+        "train_skipped_nonfinite_loss": 0.0
+      }
+    },
+    {
+      "variant": "U1",
+      "status": "RUNNING",
+      "pid": 978195,
+      "gpu": "GPU-7b4bacb3-4901-6845-a414-0dfdfeeade97",
+      "checks": {
+        "pid_present": true,
+        "argv": true,
+        "cwd": true,
+        "ppid": true,
+        "cuda": true,
+        "registered": true
+      },
+      "log_bytes": 61944,
+      "epochs": 10,
+      "init_scratch": true,
+      "run": "core90_cross_response_v2_s392005_20260911_r1",
+      "gpu_index": 3,
+      "latest_update": {
+        "train_optimizer_step_applied": 1.0,
+        "train_skipped_nonfinite_grad": 0.0,
+        "train_skipped_nonfinite_loss": 0.0
+      }
+    },
+    {
+      "variant": "U1_mask_off",
+      "status": "RUNNING",
+      "pid": 978196,
+      "gpu": "GPU-a2d039ff-1792-4222-2b47-140429e10f94",
+      "checks": {
+        "pid_present": true,
+        "argv": true,
+        "cwd": true,
+        "ppid": true,
+        "cuda": true,
+        "registered": true
+      },
+      "log_bytes": 67784,
+      "epochs": 11,
+      "init_scratch": true,
+      "run": "core90_cross_response_v2_s392005_20260911_r1",
+      "gpu_index": 1,
+      "latest_update": {
+        "train_optimizer_step_applied": 1.0,
+        "train_skipped_nonfinite_grad": 0.0,
+        "train_skipped_nonfinite_loss": 0.0
+      }
+    },
+    {
+      "variant": "U3",
+      "status": "RUNNING",
+      "pid": 978197,
+      "gpu": "GPU-ef5f59f2-e03e-fe6e-ea6b-3e03afc9b331",
+      "checks": {
+        "pid_present": true,
+        "argv": true,
+        "cwd": true,
+        "ppid": true,
+        "cuda": true,
+        "registered": true
+      },
+      "log_bytes": 50800,
+      "epochs": 8,
+      "init_scratch": true,
+      "run": "core90_cross_response_v2_s392005_20260911_r1",
+      "gpu_index": 5,
+      "latest_update": {
+        "train_optimizer_step_applied": 0.9795918367346939,
+        "train_skipped_nonfinite_grad": 0.02040816326530612,
+        "train_skipped_nonfinite_loss": 0.0
+      }
+    },
+    {
+      "variant": "Ux",
+      "status": "RUNNING",
+      "pid": 978198,
+      "gpu": "GPU-56adac86-77cd-36c9-8770-dbf002650461",
+      "checks": {
+        "pid_present": true,
+        "argv": true,
+        "cwd": true,
+        "ppid": true,
+        "cuda": true,
+        "registered": true
+      },
+      "log_bytes": 56372,
+      "epochs": 9,
+      "init_scratch": true,
+      "run": "core90_cross_response_v2_s392005_20260911_r1",
+      "gpu_index": 0,
+      "latest_update": {
+        "train_optimizer_step_applied": 1.0,
+        "train_skipped_nonfinite_grad": 0.0,
+        "train_skipped_nonfinite_loss": 0.0
+      }
+    },
+    {
+      "variant": "Ux_normalized",
+      "status": "RUNNING",
+      "pid": 978199,
+      "gpu": "GPU-95d925a1-7218-ca7b-adef-164241f4f491",
+      "checks": {
+        "pid_present": true,
+        "argv": true,
+        "cwd": true,
+        "ppid": true,
+        "cuda": true,
+        "registered": true
+      },
+      "log_bytes": 45468,
+      "epochs": 7,
+      "init_scratch": true,
+      "run": "core90_cross_response_v2_s392005_20260911_r1",
+      "gpu_index": 4,
+      "latest_update": {
+        "train_optimizer_step_applied": 0.9795918367346939,
+        "train_skipped_nonfinite_grad": 0.02040816326530612,
+        "train_skipped_nonfinite_loss": 0.0
+      }
+    },
+    {
+      "variant": "permanent_detach",
+      "status": "RUNNING",
+      "pid": 978201,
+      "gpu": "GPU-5463e082-259e-537b-603a-01575d45801c",
+      "checks": {
+        "pid_present": true,
+        "argv": true,
+        "cwd": true,
+        "ppid": true,
+        "cuda": true,
+        "registered": true
+      },
+      "log_bytes": 34329,
+      "epochs": 5,
+      "init_scratch": true,
+      "run": "core90_cross_response_v2_s392005_20260911_r1",
+      "gpu_index": 6,
+      "latest_update": {
+        "train_optimizer_step_applied": 0.9795918367346939,
+        "train_skipped_nonfinite_grad": 0.02040816326530612,
+        "train_skipped_nonfinite_loss": 0.0
+      }
+    },
+    {
+      "variant": "head_only",
+      "status": "RUNNING",
+      "pid": 982997,
+      "gpu": "GPU-4fb45b9a-894a-536b-0e0a-09f7c1341562",
+      "checks": {
+        "pid_present": true,
+        "argv": true,
+        "cwd": true,
+        "ppid": true,
+        "cuda": true,
+        "registered": true
+      },
+      "log_bytes": 11857,
+      "epochs": 1,
+      "init_scratch": true,
+      "run": "core90_cross_response_v2_s392005_20260911_r2",
+      "gpu_index": 2,
+      "latest_update": {
+        "train_cross_response_auxiliary_step_applied": 1.0,
+        "train_optimizer_step_applied": 1.0,
+        "train_skipped_nonfinite_grad": 0.0,
+        "train_skipped_nonfinite_loss": 0.0
+      }
+    }
+  ],
+  "real_source_counts": {
+    "L_s": 6300,
+    "U_s": 56700,
+    "V": 27000
+  },
+  "deferred_rows": 8
+}

@@ -13,7 +13,7 @@ import time
 
 CODE = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(CODE))
-from scripts.core90_cross_response_matrix import build_matrix, load_config, resolve_variant, VARIANTS
+from scripts.core90_cross_response_matrix import build_matrix, load_config, resolve_variant, VARIANTS, V2_VARIANTS
 
 ROLES = dict(wisig_train_rxs='1,3,4,6,8', wisig_test_rxs='0,2,5,7,9,10,11',
              wisig_train_days='1,2,3', wisig_test_days='0')
@@ -110,13 +110,15 @@ def gpu_snapshot():
     return free, registered
 
 
-def choose_gpu(devices, active, free, registered, *, minimum, limit):
+def choose_gpu(devices, active, free, registered, *, minimum, limit, total_limit=2):
     candidates = []
     for gpu in devices:
         owned = [job for job in active if job['gpu'] == gpu]
         reservation = sum(minimum for job in owned if registered.get(job['pid']) != gpu)
+        total = sum(value == gpu for value in registered.values()) + sum(
+            registered.get(job['pid']) != gpu for job in owned)
         available = free.get(gpu, 0) - reservation
-        if len(owned) < limit and available >= minimum:
+        if len(owned) < limit and total < total_limit and available >= minimum:
             candidates.append((len(owned), -available, gpu))
     return min(candidates)[2] if candidates else None
 
@@ -236,7 +238,7 @@ def dispatch(args):
     with lock.open('x', encoding='utf-8') as handle:
         json.dump(dict(pid=os.getpid(), started=time.time(), run_id=args.run_id), handle)
     state = dict(run_id=args.run_id, status='PREFLIGHT', dispatcher_pid=os.getpid(), roles=ROLES,
-                 user_allows_more_than_two_total_jobs_per_gpu=True, new_jobs_per_gpu=args.new_per_gpu,
+                 total_jobs_per_gpu=2, new_jobs_per_gpu=args.new_per_gpu, variants=args.variants,
                  model_seed=args.seed, jobs=[], started=time.time())
     statepath = runs/'pipeline.json'
     write_json(statepath, state)
@@ -251,7 +253,7 @@ def dispatch(args):
         if not devices or any(gpu not in free for gpu in devices):
             raise ValueError('devices must be available nvidia-smi GPU UUIDs')
         rows = build_matrix(config_path=args.config, wisig_pkl=str(args.dataset), output_root=runs,
-                            roles=ROLES, seeds=[args.seed])
+                            roles=ROLES, seeds=[args.seed], variants=args.variants)
         for row in rows:
             variant = row['variant']
             argv = row['argv']
@@ -322,6 +324,7 @@ def parser():
     p.add_argument('--python', default=sys.executable)
     p.add_argument('--devices', nargs='+')
     p.add_argument('--seed', type=int, default=392005)
+    p.add_argument('--variants', choices=V2_VARIANTS, nargs='+', default=list(VARIANTS))
     p.add_argument('--min-free-mib', type=int, default=6500)
     p.add_argument('--new-per-gpu', type=int, choices=[1,2], default=2)
     p.add_argument('--poll-seconds', type=float, default=15)
@@ -338,6 +341,11 @@ def main():
         raise ValueError('run-id must be a single safe directory name')
     if args.seed != 392005 or load_config(args.config)['cross_response']['data_seed'] != 392005:
         raise ValueError('authorized model/data seed is 392005')
+    from cvsrffi.cross_response.config import validate_runtime_config
+    if len(args.variants) != len(set(args.variants)):
+        raise ValueError('duplicate variants would share output paths')
+    for variant in args.variants:
+        validate_runtime_config(resolve_variant(load_config(args.config), variant))
     if args.min_free_mib < 6500 or args.poll_seconds <= 0:
         raise ValueError('minimum free memory must be >=6500 MiB and polling positive')
     if args.detach:

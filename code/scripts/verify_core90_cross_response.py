@@ -23,7 +23,7 @@ import numpy as np
 CODE = Path(__file__).resolve().parents[1]
 if str(CODE) not in sys.path:
     sys.path.insert(0, str(CODE))
-from scripts.core90_cross_response_matrix import DEFAULT_CONFIG, VARIANTS, build_matrix, load_config
+from scripts.core90_cross_response_matrix import DEFAULT_CONFIG, VARIANTS, V2_VARIANTS, build_matrix, load_config
 
 TEST_BOUNDARIES = {
     'dataset': 'entirely synthetic, never actual source/target records',
@@ -36,10 +36,10 @@ TEST_BOUNDARIES = {
 }
 
 
-def make_fixture(path: Path, *, records_per_cell: int = 128, seed: int = 413) -> dict:
+def make_fixture(path: Path, *, records_per_cell: int = 128, seed: int = 413, n_tx: int = 4, n_rx: int = 5) -> dict:
     """Create genuine distinct physical records in the compact WiSig schema."""
     rng = np.random.default_rng(seed)
-    n_tx, n_rx, n_day, length = 4, 5, 2, 256
+    n_day, length = 2, 256
     t = np.arange(length, dtype=np.float32) / length
     data = []
     for tx in range(n_tx):
@@ -68,7 +68,7 @@ def make_fixture(path: Path, *, records_per_cell: int = 128, seed: int = 413) ->
         pickle.dump(payload, handle, protocol=pickle.HIGHEST_PROTOCOL)
     return dict(path=str(path), tx=n_tx, rx=n_rx, days=n_day, records_per_cell=records_per_cell,
                 iq_length=length, unique_physical_records=n_tx*n_rx*n_day*records_per_cell,
-                source_receivers=[0,1,2,3], target_receivers=[4], source_days=[0], target_days=[1],
+                source_receivers=list(range(n_rx-1)), target_receivers=[n_rx-1], source_days=[0], target_days=[1],
                 synthetic=True, seed=seed)
 
 
@@ -122,7 +122,7 @@ def assert_activation(report: dict) -> None:
 def run_synthetic_variant(variant: str, root: Path, *, device: str = 'cuda:0', epochs: int = 2,
                           resume_from: Path | None = None, output_suffix: str = '', deterministic: bool = False,
                           amp: bool = False, runtime_disabled_reference: bool = False,
-                          records_per_cell: int = 128) -> dict:
+                          records_per_cell: int = 128, transmitters: int = 4, source_receivers: int = 4) -> dict:
     if deterministic:
         os.environ.setdefault('CUBLAS_WORKSPACE_CONFIG', ':4096:8')
     import torch
@@ -130,7 +130,7 @@ def run_synthetic_variant(variant: str, root: Path, *, device: str = 'cuda:0', e
     from cvsrffi.cross_response import config as cr_config
     from cvsrffi.cross_response import integration as cr_integration
 
-    if variant not in VARIANTS:
+    if variant not in V2_VARIANTS:
         raise ValueError('unregistered variant')
     if runtime_disabled_reference and (variant != 'U0' or resume_from is not None):
         raise ValueError('only scratch U0 can form the package-absent reference')
@@ -138,13 +138,17 @@ def run_synthetic_variant(variant: str, root: Path, *, device: str = 'cuda:0', e
     fixture = root / 'synthetic_wisig.pkl'
     config_path = root / 'synthetic_cross_response_config.json'
     if not fixture.exists():
-        manifest = make_fixture(fixture,records_per_cell=records_per_cell)
+        manifest = make_fixture(fixture,records_per_cell=records_per_cell,n_tx=transmitters,n_rx=source_receivers+1)
         (root/'fixture_manifest.json').write_text(json.dumps(manifest, indent=2), encoding='utf-8')
     elif json.loads((root/'fixture_manifest.json').read_text(encoding='utf-8'))['records_per_cell'] != records_per_cell:
         raise ValueError('existing fixture has a different physical-record budget')
+    manifest = json.loads((root/'fixture_manifest.json').read_text(encoding='utf-8'))
+    if manifest['tx'] != transmitters or len(manifest['source_receivers']) != source_receivers:
+        raise ValueError('existing fixture has different device counts')
     if not config_path.exists():
         make_test_config(config_path)
-    roles = dict(wisig_train_rxs='0,1,2,3', wisig_test_rxs='4',
+    roles = dict(wisig_train_rxs=','.join(map(str,manifest['source_receivers'])),
+                 wisig_test_rxs=','.join(map(str,manifest['target_receivers'])),
                  wisig_train_days='0', wisig_test_days='1')
     row = build_matrix(config_path=config_path, wisig_pkl=str(fixture), output_root=root,
                        roles=roles, seeds=[392002], variants=[variant])[0]
@@ -331,17 +335,17 @@ def assert_state_equal(left, right, path='state'):
         assert left == right, path
 
 
-def run_resume_verification(root: Path, *, variant='U5', device='cuda:0') -> dict:
+def run_resume_verification(root: Path, *, variant='U5', device='cuda:0', records_per_cell=128) -> dict:
     os.environ.setdefault('CUBLAS_WORKSPACE_CONFIG', ':4096:8')
     import copy
     import torch
     from types import SimpleNamespace
     from cvsrffi.cross_response.integration import CrossResponseRuntime
     uninterrupted = run_synthetic_variant(variant, root, device=device, epochs=2,
-                                         output_suffix='uninterrupted', deterministic=True)
+                                         output_suffix='uninterrupted', deterministic=True,records_per_cell=records_per_cell)
     epoch1 = Path(uninterrupted['epoch1_training_state_path'])
     resumed = run_synthetic_variant(variant, root, device=device, epochs=2,
-                                   resume_from=epoch1, output_suffix='resumed', deterministic=True)
+                                   resume_from=epoch1, output_suffix='resumed', deterministic=True,records_per_cell=records_per_cell)
     full = torch.load(uninterrupted['training_state_path'], map_location='cpu', weights_only=False)
     replay = torch.load(resumed['training_state_path'], map_location='cpu', weights_only=False)
     checked = ['model','ema_model','optimizer','scaler','prototype_memory','pseudo_temporal_bank','rng_state']
@@ -350,6 +354,9 @@ def run_resume_verification(root: Path, *, variant='U5', device='cuda:0') -> dic
     for key in ('auxiliary','statistics','normalizer','sampler','loader_generator','gate',
                 'counts','rotation_counts','source_evaluations','config','source_contract'):
         assert_state_equal(full['cross_response'][key], replay['cross_response'][key], 'cross_response.'+key)
+    if full['cross_response']['config'].get('implementation_version') == 2:
+        for key in ('auxiliary_transaction','mechanism_gate','extended_identity_module'):
+            assert_state_equal(full['cross_response'][key],replay['cross_response'][key],'cross_response.'+key)
     for result in (uninterrupted,resumed):
         final = torch.load(result['checkpoint_path'], map_location='cpu', weights_only=False)
         assert_state_equal(full['model'], final['model'], 'final.model')

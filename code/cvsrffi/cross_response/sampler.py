@@ -82,7 +82,8 @@ class CrossResponseDataset:
 class CrossBlockSampler:
     def __init__(self, records, P=4, Q=4, k_menu=(2,), batch_size=64, seed=1337,
                  max_candidates=512, candidate_attempts=10000, scheduler=None,
-                 steps_per_epoch=None, role_rotation=True):
+                 steps_per_epoch=None, role_rotation=True,
+                 role_policy="legacy_halves_v1", role_seed=None):
         self.records = tuple(records)
         self.P, self.Q, self.k_menu = int(P), int(Q), tuple(sorted(set(map(int,k_menu))))
         self.batch_size = int(batch_size)
@@ -96,6 +97,14 @@ class CrossBlockSampler:
         self.scheduler = scheduler or FeedbackScheduler()
         self.step = 0
         self.role_rotation = bool(role_rotation)
+        self.role_policy = role_policy
+        if role_policy not in ("legacy_halves_v1", "balanced_partitions_v2"):
+            raise ValueError("unknown role policy")
+        if role_policy == "balanced_partitions_v2" and (self.P != 4 or self.Q != 4 or not self.role_rotation):
+            raise ValueError("balanced_partitions_v2 requires P4 Q4 and role_rotation")
+        self.role_rng = random.Random(int(seed) ^ 0x524F4C45 if role_seed is None else role_seed)
+        self.role_counts = {}
+        self.role_orders = {}
         self.block_counter = 0
         self.steps_per_epoch = int(steps_per_epoch or math.ceil(len(records)/batch_size))
         self.cells = defaultdict(dict)
@@ -135,6 +144,30 @@ class CrossBlockSampler:
         self.candidates = tuple(candidates[:max_candidates])
         self.candidate_search_complete = total <= candidate_attempts and len(candidates)<=max_candidates
         self.skip_counts = defaultdict(int)
+        if self.role_policy == "balanced_partitions_v2":
+            for c in self.candidates:
+                order = list(range(36))
+                self.role_rng.shuffle(order)
+                self.role_orders[c.key] = tuple(order)
+                self.role_counts[c.key] = 0
+
+    def next_role_plans(self, candidates=None):
+        """Preview without consuming RNG or advancing unselected candidates."""
+        return {c.key: make_roles(c.tx_ids, c.rx_ids,
+                self.role_orders[c.key][self.role_counts[c.key] % 36]
+                if self.role_policy == "balanced_partitions_v2" else self.step % 4 if self.role_rotation else 0,
+                policy=self.role_policy) for c in (self.candidates if candidates is None else candidates)}
+
+    def candidate_evidence(self, candidates, used=()):
+        """Metadata-only capped new-record estimate, before selection or IQ IO."""
+        exposed = self.scheduler.coverage.exposed_physical
+        unavailable = set(used)
+        return {c.key: dict(new_physical_estimate=sum(
+                min(c.k, sum(r.physical_sample_id not in exposed and
+                             r.physical_sample_id not in unavailable
+                             for r in self.cells[(c.day_id,c.condition_id,t,rx)]))
+                for t in c.tx_ids for rx in c.rx_ids), record_budget=c.size)
+                for c in candidates}
 
     def next_batch(self):
         indices, blocks, used = [], [], set()
@@ -147,10 +180,16 @@ class CrossBlockSampler:
                             for t in c.tx_ids for rx in c.rx_ids)]
             if not feasible:
                 break
-            probs = self.scheduler.probabilities(feasible,rotation,remaining)
+            role_plans = self.next_role_plans(feasible)
+            probs = (self.scheduler.probabilities(feasible,rotation,remaining,role_plans=role_plans,
+                     candidate_evidence=self.candidate_evidence(feasible,used)
+                     if getattr(self.scheduler,"gain_strategy","legacy_gain") == "reliable_evidence" else None,
+                     step_id=self.step)
+                     if self.role_policy == "balanced_partitions_v2" else
+                     self.scheduler.probabilities(feasible,rotation,remaining))
             choice = self.rng.choices(range(len(feasible)),weights=probs,k=1)[0]
             c = feasible[choice]
-            role = make_roles(c.tx_ids,c.rx_ids,rotation)
+            role = role_plans[c.key]
             block = None
             # Actual event metadata, when provided, cannot cross donor/query
             # roles. Bounded retries may conservatively skip a feasible block;
@@ -183,6 +222,8 @@ class CrossBlockSampler:
                 self.skip_counts["event_disjoint_block_unavailable"] += 1
                 continue
             blocks.append(block)
+            if self.role_policy == "balanced_partitions_v2":
+                self.role_counts[c.key] += 1
             indices.extend(r.index for r in picked)
             used.update(r.physical_sample_id for r in picked)
             self.block_counter += 1
@@ -210,14 +251,30 @@ class CrossBlockSampler:
         return self.steps_per_epoch
 
     def state_dict(self):
-        return copy.deepcopy(dict(rng=self.rng.getstate(),step=self.step,block_counter=self.block_counter,
+        return copy.deepcopy(dict(state_version=2 if self.role_policy == "balanced_partitions_v2" else 1,
+             role_policy=self.role_policy,role_rng=self.role_rng.getstate(),
+             role_counts=self.role_counts,role_orders=self.role_orders,
+             rng=self.rng.getstate(),step=self.step,block_counter=self.block_counter,
              scheduler=self.scheduler.state_dict(),skip_counts=dict(self.skip_counts),
              contract=(self.records,self.P,self.Q,self.k_menu,self.batch_size,self.steps_per_epoch,self.role_rotation,self.candidates)))
 
     def load_state_dict(self,state):
+        if state.get("role_policy", "legacy_halves_v1") != self.role_policy:
+            raise ValueError("sampler role policy mismatch; legacy state cannot initialize v2")
+        if self.role_policy == "balanced_partitions_v2":
+            if state.get("state_version") != 2:
+                raise ValueError("balanced role state version mismatch")
+            for c in self.candidates:
+                if (set(state["role_orders"].get(c.key, ())) != set(range(36)) or
+                        len(state["role_orders"].get(c.key, ())) != 36 or state["role_counts"].get(c.key, -1) < 0):
+                    raise ValueError("invalid balanced role progress")
         if state["contract"] != self.state_dict()["contract"]:
             raise ValueError("sampler resume data/configuration mismatch")
         self.rng.setstate(state["rng"])
         self.step,self.block_counter = int(state["step"]),int(state["block_counter"])
         self.scheduler.load_state_dict(state["scheduler"])
         self.skip_counts = defaultdict(int,state["skip_counts"])
+        if "role_rng" in state:
+            self.role_rng.setstate(state["role_rng"])
+        self.role_counts = copy.deepcopy(state.get("role_counts", {}))
+        self.role_orders = copy.deepcopy(state.get("role_orders", {}))
