@@ -1,0 +1,194 @@
+{
+  "time": "2026-09-26T18:14:13.608785+00:00",
+  "launch": {
+    "pid": 904985,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/phase2_practical_baselines_20260927_r01",
+    "argv": [
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/phase2_practical_baselines_20260927_r01/tools/launch_practical_phase2_baselines.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/phase2_practical_baselines_20260927_r01/automation_reports/CV-SincNet/20260927-phase2-baselines-practical-manytx-m5-r01/experiment.json",
+      "--commit",
+      "af41bcbbad5150678f1826b93d61f5cc01ad9fac"
+    ],
+    "commit": "af41bcbbad5150678f1826b93d61f5cc01ad9fac",
+    "started": "2026-09-26T18:12:03.146943+00:00",
+    "owner": "codex/root/practical-phase2-baselines-20260927",
+    "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python"
+  },
+  "state": {
+    "cvcnn_ce-ce-s392005": {
+      "status": "WAITING_SOURCE",
+      "gpu": 0,
+      "updated": "2026-09-26T18:12:03.147411+00:00"
+    },
+    "cvcnn_ce-ce-s2026092701": {
+      "status": "QUEUED",
+      "gpu": 0
+    },
+    "cvcnn_ce-ce-s2026092702": {
+      "status": "QUEUED",
+      "gpu": 0
+    },
+    "cvcnn_ce-ce-s2026092703": {
+      "status": "QUEUED",
+      "gpu": 0
+    },
+    "cvcnn_ce-ce-s2026092704": {
+      "status": "QUEUED",
+      "gpu": 0
+    },
+    "cvcnn_ce-pl-s392005": {
+      "status": "WAITING_SOURCE",
+      "gpu": 1,
+      "updated": "2026-09-26T18:12:03.148388+00:00"
+    },
+    "cvcnn_ce-pl-s2026092701": {
+      "status": "QUEUED",
+      "gpu": 1
+    },
+    "cvcnn_ce-pl-s2026092702": {
+      "status": "QUEUED",
+      "gpu": 1
+    },
+    "cvcnn_ce-pl-s2026092703": {
+      "status": "QUEUED",
+      "gpu": 1
+    },
+    "cvcnn_ce-pl-s2026092704": {
+      "status": "QUEUED",
+      "gpu": 1
+    },
+    "riei_fd-ce-s392005": {
+      "status": "WAITING_SOURCE",
+      "gpu": 2,
+      "updated": "2026-09-26T18:12:03.149517+00:00"
+    },
+    "riei_fd-ce-s2026092701": {
+      "status": "QUEUED",
+      "gpu": 2
+    },
+    "riei_fd-ce-s2026092702": {
+      "status": "QUEUED",
+      "gpu": 2
+    },
+    "riei_fd-ce-s2026092703": {
+      "status": "QUEUED",
+      "gpu": 2
+    },
+    "riei_fd-ce-s2026092704": {
+      "status": "QUEUED",
+      "gpu": 2
+    },
+    "riei_fd-pl-s392005": {
+      "status": "WAITING_SOURCE",
+      "gpu": 3,
+      "updated": "2026-09-26T18:12:03.150558+00:00"
+    },
+    "riei_fd-pl-s2026092701": {
+      "status": "QUEUED",
+      "gpu": 3
+    },
+    "riei_fd-pl-s2026092702": {
+      "status": "QUEUED",
+      "gpu": 3
+    },
+    "riei_fd-pl-s2026092703": {
+      "status": "QUEUED",
+      "gpu": 3
+    },
+    "riei_fd-pl-s2026092704": {
+      "status": "QUEUED",
+      "gpu": 3
+    },
+    "drift-ce-s392005": {
+      "status": "WAITING_SOURCE",
+      "gpu": 4,
+      "updated": "2026-09-26T18:12:03.151439+00:00"
+    },
+    "drift-ce-s2026092701": {
+      "status": "QUEUED",
+      "gpu": 4
+    },
+    "drift-ce-s2026092702": {
+      "status": "QUEUED",
+      "gpu": 4
+    },
+    "drift-ce-s2026092703": {
+      "status": "QUEUED",
+      "gpu": 4
+    },
+    "drift-ce-s2026092704": {
+      "status": "QUEUED",
+      "gpu": 4
+    },
+    "drift-pl-s392005": {
+      "status": "WAITING_SOURCE",
+      "gpu": 5,
+      "updated": "2026-09-26T18:12:03.152082+00:00"
+    },
+    "drift-pl-s2026092701": {
+      "status": "QUEUED",
+      "gpu": 5
+    },
+    "drift-pl-s2026092702": {
+      "status": "QUEUED",
+      "gpu": 5
+    },
+    "drift-pl-s2026092703": {
+      "status": "QUEUED",
+      "gpu": 5
+    },
+    "drift-pl-s2026092704": {
+      "status": "QUEUED",
+      "gpu": 5
+    },
+    "poster-ce-s392005": {
+      "status": "WAITING_SOURCE",
+      "gpu": 6,
+      "updated": "2026-09-26T18:12:03.152712+00:00"
+    },
+    "poster-ce-s2026092701": {
+      "status": "QUEUED",
+      "gpu": 6
+    },
+    "poster-ce-s2026092702": {
+      "status": "QUEUED",
+      "gpu": 6
+    },
+    "poster-ce-s2026092703": {
+      "status": "QUEUED",
+      "gpu": 6
+    },
+    "poster-ce-s2026092704": {
+      "status": "QUEUED",
+      "gpu": 6
+    },
+    "radionet-ce-s392005": {
+      "status": "WAITING_SOURCE",
+      "gpu": 7,
+      "updated": "2026-09-26T18:12:03.153330+00:00"
+    },
+    "radionet-ce-s2026092701": {
+      "status": "QUEUED",
+      "gpu": 7
+    },
+    "radionet-ce-s2026092702": {
+      "status": "QUEUED",
+      "gpu": 7
+    },
+    "radionet-ce-s2026092703": {
+      "status": "QUEUED",
+      "gpu": 7
+    },
+    "radionet-ce-s2026092704": {
+      "status": "QUEUED",
+      "gpu": 7
+    }
+  },
+  "processes": "    PID     ELAPSED COMMAND\n 904985       01:11 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python /home/szu2070436088/2510044040/CV-SincNet/releases/phase2_practical_baselines_20260927_r01/tools/launch_practical_phase2_baselines.py --spec /home/szu2070436088/2510044040/CV-SincNet/releases/phase2_practical_baselines_20260927_r01/automation_reports/CV-SincNet/20260927-phase2-baselines-practical-manytx-m5-r01/experiment.json --commit af41bcbbad5150678f1826b93d61f5cc01ad9fac\n",
+  "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/phase2_practical_baselines_20260927_r01\n",
+  "counts": {
+    "WAITING_SOURCE": 8,
+    "QUEUED": 32
+  }
+}

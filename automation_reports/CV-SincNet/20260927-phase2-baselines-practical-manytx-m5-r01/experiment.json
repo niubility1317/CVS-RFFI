@@ -15,11 +15,14 @@
     "radionet"
   ],
   "comparison_group_id": "manysig-six-source-rx13468-day123-luv076330-residual-noeq-v1",
-  "parent_run_ids": [],
+  "parent_run_ids": [
+    "20260927-phase1-baselines-practical-manysig-m5-r01",
+    "20260927-phase2-practical-data-manytx-s2026092705-r01"
+  ],
   "replaces_run_id": null,
   "authorization": "2026-09-27用户要求执行其他对比方法；确认Phase1/2 residual_noeq，加入POSTER和RadioNet，并包含CVS历史优化种子。",
   "code": {
-    "commit": "release_commit_recorded_in_launch",
+    "commit": "af41bcbbad5150678f1826b93d61f5cc01ad9fac",
     "checkout": "E:\\type10-7\\code\\snapshots\\cvs_practical_baselines_20260927_wt",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/phase2_practical_baselines_20260927_r01"

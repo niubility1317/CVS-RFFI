@@ -27,3 +27,9 @@
 ## 交接
 
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
+
+## 2026-09-27发布读回
+
+VERIFIED：36036条received IQ、2100个split已生成；capsule_id=residual-noeq-ba667eee4fb061055e4c08b5。远端builder_report已读回。
+
+代码版本：`7dd3e79a62c8f7e8487ceeff2dd9ae85ca1e74ee`。

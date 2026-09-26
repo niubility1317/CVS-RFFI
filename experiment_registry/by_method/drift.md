@@ -20,7 +20,7 @@
 |RIEI/DRIFT全source receiver Phase1实验报告|legacy_evidence_group|[打开](../../github_publish/CVS-RFFI-repo/automation_reports/CV-SincNet/phase1_riei_drift_newsplit_allsource_s392002_20260901_r1/report.md)|
 |RIEI/DRIFT全source receiver Phase1实验报告|legacy_evidence_group|[打开](../../automation_reports/CV-SincNet/phase1_riei_drift_newsplit_allsource_s392002_20260901_r1/report.md)|
 |phase1_riei_drift_newsplit_allsource_s392002_20260901_r1_2df2a336.tar|legacy_evidence_group|[打开](../../release_archives/phase1_riei_drift_newsplit_allsource_s392002_20260901_r1_2df2a336.tar.gz)|
-|RIEI/DRIFT新Phase1数据包fold1/fold8首轮报告|legacy_evidence_group|[打开](../../automation_reports/CV-SincNet/phase1_riei_drift_newsplit_fold18_s392002_20260901_r1/report.md)|
+|RIEI/DRIFT fold1/fold8运行停止记录|legacy_evidence_group|[打开](../../automation_reports/CV-SincNet/phase1_riei_drift_newsplit_fold18_s392002_20260901_r1/report.md)|
 |RIEI/DRIFT新Phase1数据包fold1/fold8首轮报告|legacy_evidence_group|[打开](../../github_publish/CVS-RFFI-repo/automation_reports/CV-SincNet/phase1_riei_drift_newsplit_fold18_s392002_20260901_r1/report.md)|
 |phase1_riei_drift_newsplit_fold18_s392002_20260901_r1_55f4e14c.tar|legacy_evidence_group|[打开](../../release_archives/phase1_riei_drift_newsplit_fold18_s392002_20260901_r1_55f4e14c.tar.gz)|
 |Phase1 ADV3B02＋RIEI＋DRIFT同协议`leo_weak`对比实验|legacy_evidence_group|[打开](../../automation_reports/CV-SincNet/phase1_adv3b02_riei_drift_leo_weak_20260818_v1/report.md)|

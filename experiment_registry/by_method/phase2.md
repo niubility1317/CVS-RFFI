@@ -130,7 +130,7 @@
 |Phase2七接收机域目标确认报告|legacy_evidence_group|[打开](../../automation_reports/CV-SincNet/phase2_adv3b02_fasttrust_eff_src5_seed713104_rx7_k20_20260829_r1/report.md)|
 |Phase1与Phase2论文方法对比限定报告（Git镜像）|legacy_evidence_group|[打开](../../github_publish/CVS-RFFI-repo/automation_reports/CV-SincNet/phase1_phase2_paper_method_comparison_20260818/report.md)|
 |Phase1与Phase2实验对比总报告|legacy_evidence_group|[打开](../../automation_reports/CV-SincNet/phase1_phase2_all_experiments_summary_20260818/report.md)|
-|Phase1与Phase2论文方法对比限定报告（Git镜像）|legacy_evidence_group|[打开](../../automation_reports/CV-SincNet/phase1_phase2_paper_method_comparison_20260818/report.md)|
+|Phase1与Phase2论文方法对比限定报告|legacy_evidence_group|[打开](../../automation_reports/CV-SincNet/phase1_phase2_paper_method_comparison_20260818/report.md)|
 |CVS-RFFI_Phase2详细复现报告_图表与场景优化版_修复版|legacy_evidence_group|[打开](../../github_publish/CVS-RFFI-repo/docs/CVS-RFFI_Phase2详细复现报告_图表与场景优化版_修复版.docx)|
 |CVS-RFFI_Phase2详细复现报告_图表与场景优化版|legacy_evidence_group|[打开](../../github_publish/CVS-RFFI-repo/docs/CVS-RFFI_Phase2详细复现报告_图表与场景优化版.docx)|
 |phase2_qknn_symbols_abbr_qa_20260801_v3|legacy_evidence_group|[打开](../../github_publish/CVS-RFFI-repo/local_artifacts/phase2_qknn_symbols_abbr_qa_20260801_v3/phase2_qknn_symbols_abbr.pdf)|

@@ -6,6 +6,7 @@
 
 |名称|记录类型|证据入口|
 |---|---|---|
+|ADV3B02＋DAOT＋FastTrust-RC4原LEO拼接增强|managed_run|[打开](../../automation_reports/CV-SincNet/20260918-phase1-daot-rc4-original-leo-manysig-s392005-r01/report.md)|
 |phase2_adv3b02_collab_open_set_qknn_full_20260703|legacy_evidence_group|[打开](../../github_publish/rffi-labeled-da-three-20260915/remote_artifacts/phase2_adv3b02_collab_open_set_qknn_full_20260703)|
 |adv3b02_official_newcount_scale_20260724_v7_release|legacy_evidence_group|[打开](../../github_publish/rffi-labeled-da-three-20260915/paper_reproduction/configs/adv3b02_official_newcount_scale_20260724_v7_release)|
 |adv3b02_official_newcount_scale_20260724_v6_release|legacy_evidence_group|[打开](../../github_publish/rffi-labeled-da-three-20260915/paper_reproduction/configs/adv3b02_official_newcount_scale_20260724_v6_release)|
@@ -387,7 +388,7 @@
 |ADV3B02可训练骨干CSIL与MoPC-HR全量对比v2|legacy_evidence_group|[打开](../../github_publish/CVS-RFFI-repo/automation_reports/CV-SincNet/adv3b02_unfrozen_paperfull_ci_20260723_v2/report.md)|
 |ADV3B02可训练骨干CSIL与MoPC-HR全量对比v2|legacy_evidence_group|[打开](../../automation_reports/CV-SincNet/adv3b02_unfrozen_paperfull_ci_20260723_v2/report.md)|
 |ADV3B02可训练骨干上的CSIL与MoPC-HR全量论文方法对比|legacy_evidence_group|[打开](../../github_publish/CVS-RFFI-repo/automation_reports/CV-SincNet/adv3b02_unfrozen_paperfull_ci_20260723_v1/report.md)|
-|ADV3B02可训练骨干上的CSIL与MoPC-HR全量论文方法对比|legacy_evidence_group|[打开](../../automation_reports/CV-SincNet/adv3b02_unfrozen_paperfull_ci_20260723_v1/report.md)|
+|ADV3B02可训练骨干上的CSIL与MoPC-HR论文完整机制诊断|legacy_evidence_group|[打开](../../automation_reports/CV-SincNet/adv3b02_unfrozen_paperfull_ci_20260723_v1/report.md)|
 |phase1_d85_adv3b02_center_lowrank_radius|legacy_evidence_group|[打开](../../github_publish/CVS-RFFI-repo/configs/phase1_d85_adv3b02_center_lowrank_radius.json)|
 |d81_seed713102_adv3b02_class_binding_20260720|legacy_evidence_group|[打开](../../github_publish/CVS-RFFI-repo/analysis/d81_seed713102_adv3b02_class_binding_20260720.json)|
 |D21 ADV3B02重训协议冲突与决策选项|legacy_evidence_group|[打开](../../github_publish/CVS-RFFI-repo/analysis/d21_adv3b02_retrain_protocol_conflict_20260717.md)|

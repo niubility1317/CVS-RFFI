@@ -6,6 +6,12 @@
 
 |名称|记录类型|证据入口|
 |---|---|---|
+|ADV3B02＋DAOT＋FastTrust-RC4原LEO拼接增强|managed_run|[打开](../../automation_reports/CV-SincNet/20260918-phase1-daot-rc4-original-leo-manysig-s392005-r01/report.md)|
+|DAOT＋FastTrust-RC4 practical四组实验|managed_run|[打开](../../automation_reports/CV-SincNet/20260918-phase1-daot-rc4-practical4-manysig-s392005-r01/report.md)|
+|DAOT＋FastTrust-RC4 practical四组实验|managed_run|[打开](../../automation_reports/CV-SincNet/20260918-phase1-daot-rc4-practical4-manysig-s392005-r02/report.md)|
+|DAOT＋FastTrust-RC4 practical四组实验r03|managed_run|[打开](../../automation_reports/CV-SincNet/20260918-phase1-daot-rc4-practical4-manysig-s392005-r03/report.md)|
+|practical四组最新保存权重测试|managed_run|[打开](../../automation_reports/CV-SincNet/20260919-phase1-daot-rc4-practical4-test-s392005-r01/report.md)|
+|practical四组最新保存权重测试r02|managed_run|[打开](../../automation_reports/CV-SincNet/20260919-phase1-daot-rc4-practical4-test-s392005-r02/report.md)|
 |phase1_dgleo_p0factorial8_matrix_20260714|legacy_evidence_group|[打开](../../github_publish/rffi-labeled-da-three-20260915/local_artifacts/phase1_dgleo_p0factorial8_matrix_20260714.json)|
 |PHASE1 SHORT195_S3 z_id特征空间验证计划|legacy_evidence_group|[打开](../../github_publish/rffi-labeled-da-three-20260915/docs/PHASE1_SHORT195S3_ZID_FEATURE_SPACE_VALIDATION.md)|
 |Phase1半监督Baseline固定协议（2026-07-13）|legacy_evidence_group|[打开](../../github_publish/rffi-labeled-da-three-20260915/docs/PHASE1_SSL_BASELINE_PROTOCOL_20260713.md)|
@@ -188,7 +194,7 @@
 |RIEI/DRIFT全source receiver Phase1实验报告|legacy_evidence_group|[打开](../../github_publish/CVS-RFFI-repo/automation_reports/CV-SincNet/phase1_riei_drift_newsplit_allsource_s392002_20260901_r1/report.md)|
 |RIEI/DRIFT全source receiver Phase1实验报告|legacy_evidence_group|[打开](../../automation_reports/CV-SincNet/phase1_riei_drift_newsplit_allsource_s392002_20260901_r1/report.md)|
 |phase1_riei_drift_newsplit_allsource_s392002_20260901_r1_2df2a336.tar|legacy_evidence_group|[打开](../../release_archives/phase1_riei_drift_newsplit_allsource_s392002_20260901_r1_2df2a336.tar.gz)|
-|RIEI/DRIFT新Phase1数据包fold1/fold8首轮报告|legacy_evidence_group|[打开](../../automation_reports/CV-SincNet/phase1_riei_drift_newsplit_fold18_s392002_20260901_r1/report.md)|
+|RIEI/DRIFT fold1/fold8运行停止记录|legacy_evidence_group|[打开](../../automation_reports/CV-SincNet/phase1_riei_drift_newsplit_fold18_s392002_20260901_r1/report.md)|
 |RIEI/DRIFT新Phase1数据包fold1/fold8首轮报告|legacy_evidence_group|[打开](../../github_publish/CVS-RFFI-repo/automation_reports/CV-SincNet/phase1_riei_drift_newsplit_fold18_s392002_20260901_r1/report.md)|
 |phase1_riei_drift_newsplit_fold18_s392002_20260901_r1_55f4e14c.tar|legacy_evidence_group|[打开](../../release_archives/phase1_riei_drift_newsplit_fold18_s392002_20260901_r1_55f4e14c.tar.gz)|
 |phase1_pairbicad_cv2_e200_5f785287.tar|legacy_evidence_group|[打开](../../local_artifacts/phase1_pairbicad_cv2_e200_5f785287.tar.gz)|
@@ -418,7 +424,7 @@
 |Phase1：ADV3B02＋RIEI＋DRIFT严格同协议横向矩阵|legacy_evidence_group|[打开](../../automation_reports/CV-SincNet/phase1_adv3b02_riei_drift_same_protocol_20260818_v1/report.md)|
 |Phase1与Phase2论文方法对比限定报告（Git镜像）|legacy_evidence_group|[打开](../../github_publish/CVS-RFFI-repo/automation_reports/CV-SincNet/phase1_phase2_paper_method_comparison_20260818/report.md)|
 |Phase1与Phase2实验对比总报告|legacy_evidence_group|[打开](../../automation_reports/CV-SincNet/phase1_phase2_all_experiments_summary_20260818/report.md)|
-|Phase1与Phase2论文方法对比限定报告（Git镜像）|legacy_evidence_group|[打开](../../automation_reports/CV-SincNet/phase1_phase2_paper_method_comparison_20260818/report.md)|
+|Phase1与Phase2论文方法对比限定报告|legacy_evidence_group|[打开](../../automation_reports/CV-SincNet/phase1_phase2_paper_method_comparison_20260818/report.md)|
 |Phase1 CLIC七门终裁报告|legacy_evidence_group|[打开](../../automation_reports/CV-SincNet/phase1_clic_final_gate_20260816_v1/report.md)|
 |Phase1 ADV3B02 CLIC六折v2技术烟测与正式入口预注册报告|legacy_evidence_group|[打开](../../automation_reports/CV-SincNet/phase1_adv3b02_clic6_20260816_v2/report.md)|
 |Phase1CLIC源域指标补全v4预注册与可追溯报告|legacy_evidence_group|[打开](../../automation_reports/CV-SincNet/phase1_clic_source_metrics_20260816_v4/report.md)|
@@ -540,7 +546,7 @@
 |Phase1 center-lowrank export traceability|legacy_evidence_group|[打开](../../github_publish/CVS-RFFI-repo/analysis/phase1_center_lowrank_export_traceability_20260717.md)|
 |Phase1 center-lowrank export traceability|legacy_evidence_group|[打开](../../analysis/phase1_center_lowrank_export_traceability_20260717.md)|
 |Phase1 export-only在线几何聚合可追溯记录|legacy_evidence_group|[打开](../../github_publish/CVS-RFFI-repo/analysis/phase1_geometry_streaming_traceability_20260717.md)|
-|Phase1 export-only在线几何聚合可追溯记录|legacy_evidence_group|[打开](../../analysis/phase1_geometry_streaming_traceability_20260717.md)|
+|Phase1 geometry streaming traceability|legacy_evidence_group|[打开](../../analysis/phase1_geometry_streaming_traceability_20260717.md)|
 |Phase1域×类int8原型特许路线追溯|legacy_evidence_group|[打开](../../github_publish/CVS-RFFI-repo/analysis/phase1_int8_domain_class_prototype_protocol_20260717.md)|
 |Phase1 P0 Factorial8实验报告|legacy_evidence_group|[打开](../../automation_reports/CV-SincNet/phase1_dgleo_p0factorial8_20260714/report.md)|
 |Phase1 P0 Factorial8实验报告|legacy_evidence_group|[打开](../../github_publish/CVS-RFFI-repo/automation_reports/CV-SincNet/phase1_dgleo_p0factorial8_20260714/report.md)|

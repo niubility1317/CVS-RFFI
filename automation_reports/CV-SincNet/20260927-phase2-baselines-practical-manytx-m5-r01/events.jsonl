@@ -1,1 +1,2 @@
 {"at": "2026-09-26T18:10:28+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-09-26T18:14:14+00:00", "status": "QUEUED", "note": "VERIFIED：dispatcher PID=904985，工作目录和进程已读回。状态计数{'WAITING_SOURCE': 8, 'QUEUED': 32}。等待各源模型固定200轮完成后自动预测，所有40行预测固定后独立评分。", "evidence": ["automation_reports/CV-SincNet/20260927-phase2-baselines-practical-manytx-m5-r01/evidence/launch_readback.json"], "row_id": null}
