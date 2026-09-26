@@ -1,0 +1,16 @@
+{
+  "time": "2026-09-26T18:28:29.484782+00:00",
+  "launch": {
+    "pid": 913497,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/comparison_final_20260927_r01",
+    "commit": "614d79e5da86925e600444a2629ad89b7010fbd3",
+    "owner": "comparison/final-evaluation/20260927-phase1-baselines-final-clean-satellite-m5-r01"
+  },
+  "state": {
+    "status": "BUILDING_DATA",
+    "completed": []
+  },
+  "process": "    PID    PPID     ELAPSED COMMAND\n 913497       1       01:18 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python /home/szu2070436088/2510044040/CV-SincNet/releases/comparison_final_20260927_r01/tools/comparison_final_eval.py dispatch --spec /home/szu2070436088/2510044040/CV-SincNet/releases/comparison_final_20260927_r01/automation_reports/CV-SincNet/20260927-phase1-baselines-final-clean-satellite-m5-r01/experiment.json --commit 614d79e5da86925e600444a2629ad89b7010fbd3\n 913507  913497       01:18 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python /home/szu2070436088/2510044040/CV-SincNet/releases/comparison_final_20260927_r01/tools/comparison_final_eval.py build --spec /home/szu2070436088/2510044040/CV-SincNet/releases/comparison_final_20260927_r01/automation_reports/CV-SincNet/20260927-phase1-baselines-final-clean-satellite-m5-r01/experiment.json\n",
+  "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/comparison_final_20260927_r01\n",
+  "log_tail": "[BUILD] 0/168000\n[BUILD] 8192/168000\n[BUILD] 16384/168000\n[BUILD] 24576/168000\n"
+}

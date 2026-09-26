@@ -13,5 +13,6 @@
 |practical四组最新保存权重测试r02|managed_run|[打开](../../automation_reports/CV-SincNet/20260919-phase1-daot-rc4-practical4-test-s392005-r02/report.md)|
 |DAOT＋FastTrust-RC4 residual环境比例六组|managed_run|[打开](../../automation_reports/CV-SincNet/20260920-phase1-daot-rc4-residual-ratios-manysig-s392005-r01/report.md)|
 |旧Practical四组checkpoint统一六环境测试|managed_run|[打开](../../automation_reports/CV-SincNet/20260920-phase1-practical4-sixscene-eval-s392005-r01/report.md)|
+|最后一轮权重：clean与三种residual_noeq目标域评估|managed_run|[打开](../../automation_reports/CV-SincNet/20260927-phase1-baselines-final-clean-satellite-m5-r01/report.md)|
 |外部对比方法：统一残差信道、五模型种子源域训练|managed_run|[打开](../../automation_reports/CV-SincNet/20260927-phase1-baselines-practical-manysig-m5-r01/report.md)|
 |Phase2残差信道共享数据：7RX、6旧类+20新类|managed_run|[打开](../../automation_reports/CV-SincNet/20260927-phase2-practical-data-manytx-s2026092705-r01/report.md)|

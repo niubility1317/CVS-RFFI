@@ -27,3 +27,9 @@
 ## 交接
 
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
+
+## 启动读回
+
+VERIFIED: dispatcher PID913497, CWD/child process/log progress independently read back; state=BUILDING_DATA. CPU only. Source40rows retain last.pt and200epoch selection.
+
+16项聚焦测试及一次P0/P1审查通过。发布commit：`614d79e5da86925e600444a2629ad89b7010fbd3`。旧训练日志不追写，新日志格式从新launcher启动生效。
