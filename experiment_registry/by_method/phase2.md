@@ -6,6 +6,7 @@
 
 |名称|记录类型|证据入口|
 |---|---|---|
+|Phase2外部对比：固定DG、support NCM及POSTER/RadioNet原生微调|managed_run|[打开](../../automation_reports/CV-SincNet/20260927-phase2-baselines-practical-manytx-m5-r01/report.md)|
 |Phase2残差信道共享数据：7RX、6旧类+20新类|managed_run|[打开](../../automation_reports/CV-SincNet/20260927-phase2-practical-data-manytx-s2026092705-r01/report.md)|
 |phase2_adv3b02_collab_open_set_qknn_full_20260703|legacy_evidence_group|[打开](../../github_publish/rffi-labeled-da-three-20260915/remote_artifacts/phase2_adv3b02_collab_open_set_qknn_full_20260703)|
 |phase2_r8_r9_r10_qknn8_collab_budget_20260706|legacy_evidence_group|[打开](../../github_publish/rffi-labeled-da-three-20260915/local_artifacts/phase2_r8_r9_r10_qknn8_collab_budget_20260706)|

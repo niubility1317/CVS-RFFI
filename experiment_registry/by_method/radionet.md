@@ -7,3 +7,4 @@
 |名称|记录类型|证据入口|
 |---|---|---|
 |外部对比方法：统一残差信道、五模型种子源域训练|managed_run|[打开](../../automation_reports/CV-SincNet/20260927-phase1-baselines-practical-manysig-m5-r01/report.md)|
+|Phase2外部对比：固定DG、support NCM及POSTER/RadioNet原生微调|managed_run|[打开](../../automation_reports/CV-SincNet/20260927-phase2-baselines-practical-manytx-m5-r01/report.md)|

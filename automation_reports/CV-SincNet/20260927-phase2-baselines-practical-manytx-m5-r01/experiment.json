@@ -1,0 +1,1937 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20260927-phase2-baselines-practical-manytx-m5-r01",
+  "group_id": "phase2-practical-baselines-matched",
+  "display_name": "Phase2外部对比：固定DG、support NCM及POSTER/RadioNet原生微调",
+  "description": "40个源模型分别预测共享2100个split；DG每RX/场景仅一次；作者微调只读support。",
+  "kind": "comparison",
+  "stage": "Phase2",
+  "aliases": [],
+  "tags": [
+    "phase2",
+    "comparison",
+    "residual_noeq",
+    "poster",
+    "radionet"
+  ],
+  "comparison_group_id": "manysig-six-source-rx13468-day123-luv076330-residual-noeq-v1",
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "2026-09-27用户要求执行其他对比方法；确认Phase1/2 residual_noeq，加入POSTER和RadioNet，并包含CVS历史优化种子。",
+  "code": {
+    "commit": "release_commit_recorded_in_launch",
+    "checkout": "E:\\type10-7\\code\\snapshots\\cvs_practical_baselines_20260927_wt",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/phase2_practical_baselines_20260927_r01"
+  },
+  "data": {
+    "dataset": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-practical-data-manytx-s2026092705-r01/capsule",
+    "version": "residual-noeq-ba667eee4fb061055e4c08b5",
+    "representation": "equalized=1; center256; unit packet RMS; fs=25000000Hz",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-practical-data-manytx-s2026092705-r01/capsule/manifest.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-practical-data-manytx-s2026092705-r01/capsule/received.npz",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-practical-data-manytx-s2026092705-r01/capsule/splits",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "ManySig.tx_list: all6; actual physical class strings exported at runtime",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "residual-noeq-ba667eee4fb061055e4c08b5",
+    "split_id": "all2100 validated splits",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-practical-data-manytx-s2026092705-r01/capsule/manifest.json",
+    "support_query_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-practical-data-manytx-s2026092705-r01/capsule/splits",
+    "leo_config_ref": "baselines/common/practical_source.py:PracticalResidualAugment"
+  },
+  "permissions": {
+    "regime": "inductive_support_only",
+    "query_use": "read-only pointwise prediction; no adaptation or selection",
+    "external_method_exception": null,
+    "claim_scope": "6old+20new ManyTx target; source ManySig. NCM is a common registration extension; RadioNet DF fine-tuning only."
+  },
+  "checkpoint": {
+    "initialization": "matched_source_final_epoch200",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01"
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "provenance_verdict": "runtime_requires_exact_role_ids_scratch_only_no_target_contact",
+    "selection_rule": "fixed epoch200 for every seed; no source-best or target selection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/practical-phase2-baselines-20260927",
+    "gpu_policy": "one Phase2 lane per GPU; concurrent source lane means at most2 training jobs/GPU",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01",
+    "local_artifact_root": "automation_reports/CV-SincNet/20260927-phase2-baselines-practical-manytx-m5-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python tools/launch_practical_phase2_baselines.py --spec automation_reports/CV-SincNet/20260927-phase2-baselines-practical-manytx-m5-r01/experiment.json --detach --commit RELEASE_COMMIT",
+    "stop_rule": "No retries. Dependency technical failure blocks its lane; preserve all predictions; no performance-based decisions."
+  },
+  "expected_artifacts": [
+    "state.json",
+    "dispatcher_complete.json",
+    "scored_results.json",
+    "*/predictions_complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macro_accuracy",
+      "old_accuracy",
+      "new_accuracy",
+      "harmonic_mean"
+    ],
+    "dimensions": [
+      "model_seed",
+      "support_seed",
+      "receiver",
+      "scenario",
+      "K",
+      "registered_classes",
+      "mode"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": null
+  },
+  "rows": [
+    {
+      "row_id": "cvcnn_ce-ce-s392005",
+      "method": "cvcnn_ce+residual_noeq_CE",
+      "purpose": "DG and support-based adaptation/registration",
+      "gpu": 0,
+      "config_ref": "configs/phase2_practical_baselines_20260927/cvcnn_ce-ce-s392005.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/cvcnn_ce-ce-s392005/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 392005,
+        "split": 2026092705,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Model initialization/FT seed matched across methods; five support draws2026092711..2026092715 are separately identified by split. NCM/DG deterministic. Historical392005 reported separately.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "configs/phase2_practical_baselines_20260927/cvcnn_ce-ce-s392005.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/cvcnn_ce-ce-s392005",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/cvcnn_ce-ce-s392005.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python tools/run_practical_phase2_baseline.py --config configs/phase2_practical_baselines_20260927/cvcnn_ce-ce-s392005.json",
+      "expected_artifacts": [
+        "predictions.jsonl",
+        "predictions_complete.json",
+        "checkpoint_provenance.json",
+        "support_smoke.json"
+      ],
+      "source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/cvcnn_ce-ce-s392005",
+      "source_state": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/state.json"
+    },
+    {
+      "row_id": "cvcnn_ce-ce-s2026092701",
+      "method": "cvcnn_ce+residual_noeq_CE",
+      "purpose": "DG and support-based adaptation/registration",
+      "gpu": 0,
+      "config_ref": "configs/phase2_practical_baselines_20260927/cvcnn_ce-ce-s2026092701.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/cvcnn_ce-ce-s2026092701/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026092705,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Model initialization/FT seed matched across methods; five support draws2026092711..2026092715 are separately identified by split. NCM/DG deterministic. Historical392005 reported separately.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "configs/phase2_practical_baselines_20260927/cvcnn_ce-ce-s2026092701.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/cvcnn_ce-ce-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/cvcnn_ce-ce-s2026092701.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python tools/run_practical_phase2_baseline.py --config configs/phase2_practical_baselines_20260927/cvcnn_ce-ce-s2026092701.json",
+      "expected_artifacts": [
+        "predictions.jsonl",
+        "predictions_complete.json",
+        "checkpoint_provenance.json",
+        "support_smoke.json"
+      ],
+      "source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/cvcnn_ce-ce-s2026092701",
+      "source_state": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/state.json"
+    },
+    {
+      "row_id": "cvcnn_ce-ce-s2026092702",
+      "method": "cvcnn_ce+residual_noeq_CE",
+      "purpose": "DG and support-based adaptation/registration",
+      "gpu": 0,
+      "config_ref": "configs/phase2_practical_baselines_20260927/cvcnn_ce-ce-s2026092702.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/cvcnn_ce-ce-s2026092702/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 2026092705,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Model initialization/FT seed matched across methods; five support draws2026092711..2026092715 are separately identified by split. NCM/DG deterministic. Historical392005 reported separately.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "configs/phase2_practical_baselines_20260927/cvcnn_ce-ce-s2026092702.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/cvcnn_ce-ce-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/cvcnn_ce-ce-s2026092702.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python tools/run_practical_phase2_baseline.py --config configs/phase2_practical_baselines_20260927/cvcnn_ce-ce-s2026092702.json",
+      "expected_artifacts": [
+        "predictions.jsonl",
+        "predictions_complete.json",
+        "checkpoint_provenance.json",
+        "support_smoke.json"
+      ],
+      "source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/cvcnn_ce-ce-s2026092702",
+      "source_state": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/state.json"
+    },
+    {
+      "row_id": "cvcnn_ce-ce-s2026092703",
+      "method": "cvcnn_ce+residual_noeq_CE",
+      "purpose": "DG and support-based adaptation/registration",
+      "gpu": 0,
+      "config_ref": "configs/phase2_practical_baselines_20260927/cvcnn_ce-ce-s2026092703.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/cvcnn_ce-ce-s2026092703/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 2026092705,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Model initialization/FT seed matched across methods; five support draws2026092711..2026092715 are separately identified by split. NCM/DG deterministic. Historical392005 reported separately.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "configs/phase2_practical_baselines_20260927/cvcnn_ce-ce-s2026092703.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/cvcnn_ce-ce-s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/cvcnn_ce-ce-s2026092703.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python tools/run_practical_phase2_baseline.py --config configs/phase2_practical_baselines_20260927/cvcnn_ce-ce-s2026092703.json",
+      "expected_artifacts": [
+        "predictions.jsonl",
+        "predictions_complete.json",
+        "checkpoint_provenance.json",
+        "support_smoke.json"
+      ],
+      "source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/cvcnn_ce-ce-s2026092703",
+      "source_state": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/state.json"
+    },
+    {
+      "row_id": "cvcnn_ce-ce-s2026092704",
+      "method": "cvcnn_ce+residual_noeq_CE",
+      "purpose": "DG and support-based adaptation/registration",
+      "gpu": 0,
+      "config_ref": "configs/phase2_practical_baselines_20260927/cvcnn_ce-ce-s2026092704.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/cvcnn_ce-ce-s2026092704/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 2026092705,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Model initialization/FT seed matched across methods; five support draws2026092711..2026092715 are separately identified by split. NCM/DG deterministic. Historical392005 reported separately.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "configs/phase2_practical_baselines_20260927/cvcnn_ce-ce-s2026092704.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/cvcnn_ce-ce-s2026092704",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/cvcnn_ce-ce-s2026092704.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python tools/run_practical_phase2_baseline.py --config configs/phase2_practical_baselines_20260927/cvcnn_ce-ce-s2026092704.json",
+      "expected_artifacts": [
+        "predictions.jsonl",
+        "predictions_complete.json",
+        "checkpoint_provenance.json",
+        "support_smoke.json"
+      ],
+      "source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/cvcnn_ce-ce-s2026092704",
+      "source_state": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/state.json"
+    },
+    {
+      "row_id": "cvcnn_ce-pl-s392005",
+      "method": "cvcnn_ce+PL+residual_noeq_CE",
+      "purpose": "DG and support-based adaptation/registration",
+      "gpu": 1,
+      "config_ref": "configs/phase2_practical_baselines_20260927/cvcnn_ce-pl-s392005.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/cvcnn_ce-pl-s392005/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 392005,
+        "split": 2026092705,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Model initialization/FT seed matched across methods; five support draws2026092711..2026092715 are separately identified by split. NCM/DG deterministic. Historical392005 reported separately.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "configs/phase2_practical_baselines_20260927/cvcnn_ce-pl-s392005.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/cvcnn_ce-pl-s392005",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/cvcnn_ce-pl-s392005.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python tools/run_practical_phase2_baseline.py --config configs/phase2_practical_baselines_20260927/cvcnn_ce-pl-s392005.json",
+      "expected_artifacts": [
+        "predictions.jsonl",
+        "predictions_complete.json",
+        "checkpoint_provenance.json",
+        "support_smoke.json"
+      ],
+      "source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/cvcnn_ce-pl-s392005",
+      "source_state": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/state.json"
+    },
+    {
+      "row_id": "cvcnn_ce-pl-s2026092701",
+      "method": "cvcnn_ce+PL+residual_noeq_CE",
+      "purpose": "DG and support-based adaptation/registration",
+      "gpu": 1,
+      "config_ref": "configs/phase2_practical_baselines_20260927/cvcnn_ce-pl-s2026092701.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/cvcnn_ce-pl-s2026092701/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026092705,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Model initialization/FT seed matched across methods; five support draws2026092711..2026092715 are separately identified by split. NCM/DG deterministic. Historical392005 reported separately.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "configs/phase2_practical_baselines_20260927/cvcnn_ce-pl-s2026092701.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/cvcnn_ce-pl-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/cvcnn_ce-pl-s2026092701.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python tools/run_practical_phase2_baseline.py --config configs/phase2_practical_baselines_20260927/cvcnn_ce-pl-s2026092701.json",
+      "expected_artifacts": [
+        "predictions.jsonl",
+        "predictions_complete.json",
+        "checkpoint_provenance.json",
+        "support_smoke.json"
+      ],
+      "source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/cvcnn_ce-pl-s2026092701",
+      "source_state": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/state.json"
+    },
+    {
+      "row_id": "cvcnn_ce-pl-s2026092702",
+      "method": "cvcnn_ce+PL+residual_noeq_CE",
+      "purpose": "DG and support-based adaptation/registration",
+      "gpu": 1,
+      "config_ref": "configs/phase2_practical_baselines_20260927/cvcnn_ce-pl-s2026092702.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/cvcnn_ce-pl-s2026092702/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 2026092705,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Model initialization/FT seed matched across methods; five support draws2026092711..2026092715 are separately identified by split. NCM/DG deterministic. Historical392005 reported separately.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "configs/phase2_practical_baselines_20260927/cvcnn_ce-pl-s2026092702.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/cvcnn_ce-pl-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/cvcnn_ce-pl-s2026092702.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python tools/run_practical_phase2_baseline.py --config configs/phase2_practical_baselines_20260927/cvcnn_ce-pl-s2026092702.json",
+      "expected_artifacts": [
+        "predictions.jsonl",
+        "predictions_complete.json",
+        "checkpoint_provenance.json",
+        "support_smoke.json"
+      ],
+      "source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/cvcnn_ce-pl-s2026092702",
+      "source_state": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/state.json"
+    },
+    {
+      "row_id": "cvcnn_ce-pl-s2026092703",
+      "method": "cvcnn_ce+PL+residual_noeq_CE",
+      "purpose": "DG and support-based adaptation/registration",
+      "gpu": 1,
+      "config_ref": "configs/phase2_practical_baselines_20260927/cvcnn_ce-pl-s2026092703.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/cvcnn_ce-pl-s2026092703/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 2026092705,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Model initialization/FT seed matched across methods; five support draws2026092711..2026092715 are separately identified by split. NCM/DG deterministic. Historical392005 reported separately.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "configs/phase2_practical_baselines_20260927/cvcnn_ce-pl-s2026092703.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/cvcnn_ce-pl-s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/cvcnn_ce-pl-s2026092703.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python tools/run_practical_phase2_baseline.py --config configs/phase2_practical_baselines_20260927/cvcnn_ce-pl-s2026092703.json",
+      "expected_artifacts": [
+        "predictions.jsonl",
+        "predictions_complete.json",
+        "checkpoint_provenance.json",
+        "support_smoke.json"
+      ],
+      "source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/cvcnn_ce-pl-s2026092703",
+      "source_state": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/state.json"
+    },
+    {
+      "row_id": "cvcnn_ce-pl-s2026092704",
+      "method": "cvcnn_ce+PL+residual_noeq_CE",
+      "purpose": "DG and support-based adaptation/registration",
+      "gpu": 1,
+      "config_ref": "configs/phase2_practical_baselines_20260927/cvcnn_ce-pl-s2026092704.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/cvcnn_ce-pl-s2026092704/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 2026092705,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Model initialization/FT seed matched across methods; five support draws2026092711..2026092715 are separately identified by split. NCM/DG deterministic. Historical392005 reported separately.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "configs/phase2_practical_baselines_20260927/cvcnn_ce-pl-s2026092704.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/cvcnn_ce-pl-s2026092704",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/cvcnn_ce-pl-s2026092704.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python tools/run_practical_phase2_baseline.py --config configs/phase2_practical_baselines_20260927/cvcnn_ce-pl-s2026092704.json",
+      "expected_artifacts": [
+        "predictions.jsonl",
+        "predictions_complete.json",
+        "checkpoint_provenance.json",
+        "support_smoke.json"
+      ],
+      "source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/cvcnn_ce-pl-s2026092704",
+      "source_state": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/state.json"
+    },
+    {
+      "row_id": "riei_fd-ce-s392005",
+      "method": "riei_fd+residual_noeq_CE",
+      "purpose": "DG and support-based adaptation/registration",
+      "gpu": 2,
+      "config_ref": "configs/phase2_practical_baselines_20260927/riei_fd-ce-s392005.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/riei_fd-ce-s392005/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 392005,
+        "split": 2026092705,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Model initialization/FT seed matched across methods; five support draws2026092711..2026092715 are separately identified by split. NCM/DG deterministic. Historical392005 reported separately.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "configs/phase2_practical_baselines_20260927/riei_fd-ce-s392005.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/riei_fd-ce-s392005",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/riei_fd-ce-s392005.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python tools/run_practical_phase2_baseline.py --config configs/phase2_practical_baselines_20260927/riei_fd-ce-s392005.json",
+      "expected_artifacts": [
+        "predictions.jsonl",
+        "predictions_complete.json",
+        "checkpoint_provenance.json",
+        "support_smoke.json"
+      ],
+      "source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/riei_fd-ce-s392005",
+      "source_state": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/state.json"
+    },
+    {
+      "row_id": "riei_fd-ce-s2026092701",
+      "method": "riei_fd+residual_noeq_CE",
+      "purpose": "DG and support-based adaptation/registration",
+      "gpu": 2,
+      "config_ref": "configs/phase2_practical_baselines_20260927/riei_fd-ce-s2026092701.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/riei_fd-ce-s2026092701/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026092705,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Model initialization/FT seed matched across methods; five support draws2026092711..2026092715 are separately identified by split. NCM/DG deterministic. Historical392005 reported separately.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "configs/phase2_practical_baselines_20260927/riei_fd-ce-s2026092701.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/riei_fd-ce-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/riei_fd-ce-s2026092701.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python tools/run_practical_phase2_baseline.py --config configs/phase2_practical_baselines_20260927/riei_fd-ce-s2026092701.json",
+      "expected_artifacts": [
+        "predictions.jsonl",
+        "predictions_complete.json",
+        "checkpoint_provenance.json",
+        "support_smoke.json"
+      ],
+      "source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/riei_fd-ce-s2026092701",
+      "source_state": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/state.json"
+    },
+    {
+      "row_id": "riei_fd-ce-s2026092702",
+      "method": "riei_fd+residual_noeq_CE",
+      "purpose": "DG and support-based adaptation/registration",
+      "gpu": 2,
+      "config_ref": "configs/phase2_practical_baselines_20260927/riei_fd-ce-s2026092702.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/riei_fd-ce-s2026092702/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 2026092705,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Model initialization/FT seed matched across methods; five support draws2026092711..2026092715 are separately identified by split. NCM/DG deterministic. Historical392005 reported separately.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "configs/phase2_practical_baselines_20260927/riei_fd-ce-s2026092702.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/riei_fd-ce-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/riei_fd-ce-s2026092702.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python tools/run_practical_phase2_baseline.py --config configs/phase2_practical_baselines_20260927/riei_fd-ce-s2026092702.json",
+      "expected_artifacts": [
+        "predictions.jsonl",
+        "predictions_complete.json",
+        "checkpoint_provenance.json",
+        "support_smoke.json"
+      ],
+      "source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/riei_fd-ce-s2026092702",
+      "source_state": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/state.json"
+    },
+    {
+      "row_id": "riei_fd-ce-s2026092703",
+      "method": "riei_fd+residual_noeq_CE",
+      "purpose": "DG and support-based adaptation/registration",
+      "gpu": 2,
+      "config_ref": "configs/phase2_practical_baselines_20260927/riei_fd-ce-s2026092703.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/riei_fd-ce-s2026092703/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 2026092705,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Model initialization/FT seed matched across methods; five support draws2026092711..2026092715 are separately identified by split. NCM/DG deterministic. Historical392005 reported separately.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "configs/phase2_practical_baselines_20260927/riei_fd-ce-s2026092703.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/riei_fd-ce-s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/riei_fd-ce-s2026092703.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python tools/run_practical_phase2_baseline.py --config configs/phase2_practical_baselines_20260927/riei_fd-ce-s2026092703.json",
+      "expected_artifacts": [
+        "predictions.jsonl",
+        "predictions_complete.json",
+        "checkpoint_provenance.json",
+        "support_smoke.json"
+      ],
+      "source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/riei_fd-ce-s2026092703",
+      "source_state": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/state.json"
+    },
+    {
+      "row_id": "riei_fd-ce-s2026092704",
+      "method": "riei_fd+residual_noeq_CE",
+      "purpose": "DG and support-based adaptation/registration",
+      "gpu": 2,
+      "config_ref": "configs/phase2_practical_baselines_20260927/riei_fd-ce-s2026092704.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/riei_fd-ce-s2026092704/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 2026092705,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Model initialization/FT seed matched across methods; five support draws2026092711..2026092715 are separately identified by split. NCM/DG deterministic. Historical392005 reported separately.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "configs/phase2_practical_baselines_20260927/riei_fd-ce-s2026092704.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/riei_fd-ce-s2026092704",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/riei_fd-ce-s2026092704.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python tools/run_practical_phase2_baseline.py --config configs/phase2_practical_baselines_20260927/riei_fd-ce-s2026092704.json",
+      "expected_artifacts": [
+        "predictions.jsonl",
+        "predictions_complete.json",
+        "checkpoint_provenance.json",
+        "support_smoke.json"
+      ],
+      "source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/riei_fd-ce-s2026092704",
+      "source_state": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/state.json"
+    },
+    {
+      "row_id": "riei_fd-pl-s392005",
+      "method": "riei_fd+PL+residual_noeq_CE",
+      "purpose": "DG and support-based adaptation/registration",
+      "gpu": 3,
+      "config_ref": "configs/phase2_practical_baselines_20260927/riei_fd-pl-s392005.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/riei_fd-pl-s392005/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 392005,
+        "split": 2026092705,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Model initialization/FT seed matched across methods; five support draws2026092711..2026092715 are separately identified by split. NCM/DG deterministic. Historical392005 reported separately.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "configs/phase2_practical_baselines_20260927/riei_fd-pl-s392005.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/riei_fd-pl-s392005",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/riei_fd-pl-s392005.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python tools/run_practical_phase2_baseline.py --config configs/phase2_practical_baselines_20260927/riei_fd-pl-s392005.json",
+      "expected_artifacts": [
+        "predictions.jsonl",
+        "predictions_complete.json",
+        "checkpoint_provenance.json",
+        "support_smoke.json"
+      ],
+      "source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/riei_fd-pl-s392005",
+      "source_state": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/state.json"
+    },
+    {
+      "row_id": "riei_fd-pl-s2026092701",
+      "method": "riei_fd+PL+residual_noeq_CE",
+      "purpose": "DG and support-based adaptation/registration",
+      "gpu": 3,
+      "config_ref": "configs/phase2_practical_baselines_20260927/riei_fd-pl-s2026092701.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/riei_fd-pl-s2026092701/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026092705,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Model initialization/FT seed matched across methods; five support draws2026092711..2026092715 are separately identified by split. NCM/DG deterministic. Historical392005 reported separately.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "configs/phase2_practical_baselines_20260927/riei_fd-pl-s2026092701.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/riei_fd-pl-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/riei_fd-pl-s2026092701.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python tools/run_practical_phase2_baseline.py --config configs/phase2_practical_baselines_20260927/riei_fd-pl-s2026092701.json",
+      "expected_artifacts": [
+        "predictions.jsonl",
+        "predictions_complete.json",
+        "checkpoint_provenance.json",
+        "support_smoke.json"
+      ],
+      "source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/riei_fd-pl-s2026092701",
+      "source_state": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/state.json"
+    },
+    {
+      "row_id": "riei_fd-pl-s2026092702",
+      "method": "riei_fd+PL+residual_noeq_CE",
+      "purpose": "DG and support-based adaptation/registration",
+      "gpu": 3,
+      "config_ref": "configs/phase2_practical_baselines_20260927/riei_fd-pl-s2026092702.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/riei_fd-pl-s2026092702/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 2026092705,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Model initialization/FT seed matched across methods; five support draws2026092711..2026092715 are separately identified by split. NCM/DG deterministic. Historical392005 reported separately.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "configs/phase2_practical_baselines_20260927/riei_fd-pl-s2026092702.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/riei_fd-pl-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/riei_fd-pl-s2026092702.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python tools/run_practical_phase2_baseline.py --config configs/phase2_practical_baselines_20260927/riei_fd-pl-s2026092702.json",
+      "expected_artifacts": [
+        "predictions.jsonl",
+        "predictions_complete.json",
+        "checkpoint_provenance.json",
+        "support_smoke.json"
+      ],
+      "source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/riei_fd-pl-s2026092702",
+      "source_state": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/state.json"
+    },
+    {
+      "row_id": "riei_fd-pl-s2026092703",
+      "method": "riei_fd+PL+residual_noeq_CE",
+      "purpose": "DG and support-based adaptation/registration",
+      "gpu": 3,
+      "config_ref": "configs/phase2_practical_baselines_20260927/riei_fd-pl-s2026092703.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/riei_fd-pl-s2026092703/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 2026092705,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Model initialization/FT seed matched across methods; five support draws2026092711..2026092715 are separately identified by split. NCM/DG deterministic. Historical392005 reported separately.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "configs/phase2_practical_baselines_20260927/riei_fd-pl-s2026092703.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/riei_fd-pl-s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/riei_fd-pl-s2026092703.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python tools/run_practical_phase2_baseline.py --config configs/phase2_practical_baselines_20260927/riei_fd-pl-s2026092703.json",
+      "expected_artifacts": [
+        "predictions.jsonl",
+        "predictions_complete.json",
+        "checkpoint_provenance.json",
+        "support_smoke.json"
+      ],
+      "source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/riei_fd-pl-s2026092703",
+      "source_state": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/state.json"
+    },
+    {
+      "row_id": "riei_fd-pl-s2026092704",
+      "method": "riei_fd+PL+residual_noeq_CE",
+      "purpose": "DG and support-based adaptation/registration",
+      "gpu": 3,
+      "config_ref": "configs/phase2_practical_baselines_20260927/riei_fd-pl-s2026092704.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/riei_fd-pl-s2026092704/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 2026092705,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Model initialization/FT seed matched across methods; five support draws2026092711..2026092715 are separately identified by split. NCM/DG deterministic. Historical392005 reported separately.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "configs/phase2_practical_baselines_20260927/riei_fd-pl-s2026092704.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/riei_fd-pl-s2026092704",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/riei_fd-pl-s2026092704.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python tools/run_practical_phase2_baseline.py --config configs/phase2_practical_baselines_20260927/riei_fd-pl-s2026092704.json",
+      "expected_artifacts": [
+        "predictions.jsonl",
+        "predictions_complete.json",
+        "checkpoint_provenance.json",
+        "support_smoke.json"
+      ],
+      "source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/riei_fd-pl-s2026092704",
+      "source_state": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/state.json"
+    },
+    {
+      "row_id": "drift-ce-s392005",
+      "method": "drift+residual_noeq_CE",
+      "purpose": "DG and support-based adaptation/registration",
+      "gpu": 4,
+      "config_ref": "configs/phase2_practical_baselines_20260927/drift-ce-s392005.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/drift-ce-s392005/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 392005,
+        "split": 2026092705,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Model initialization/FT seed matched across methods; five support draws2026092711..2026092715 are separately identified by split. NCM/DG deterministic. Historical392005 reported separately.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "configs/phase2_practical_baselines_20260927/drift-ce-s392005.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/drift-ce-s392005",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/drift-ce-s392005.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python tools/run_practical_phase2_baseline.py --config configs/phase2_practical_baselines_20260927/drift-ce-s392005.json",
+      "expected_artifacts": [
+        "predictions.jsonl",
+        "predictions_complete.json",
+        "checkpoint_provenance.json",
+        "support_smoke.json"
+      ],
+      "source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/drift-ce-s392005",
+      "source_state": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/state.json"
+    },
+    {
+      "row_id": "drift-ce-s2026092701",
+      "method": "drift+residual_noeq_CE",
+      "purpose": "DG and support-based adaptation/registration",
+      "gpu": 4,
+      "config_ref": "configs/phase2_practical_baselines_20260927/drift-ce-s2026092701.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/drift-ce-s2026092701/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026092705,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Model initialization/FT seed matched across methods; five support draws2026092711..2026092715 are separately identified by split. NCM/DG deterministic. Historical392005 reported separately.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "configs/phase2_practical_baselines_20260927/drift-ce-s2026092701.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/drift-ce-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/drift-ce-s2026092701.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python tools/run_practical_phase2_baseline.py --config configs/phase2_practical_baselines_20260927/drift-ce-s2026092701.json",
+      "expected_artifacts": [
+        "predictions.jsonl",
+        "predictions_complete.json",
+        "checkpoint_provenance.json",
+        "support_smoke.json"
+      ],
+      "source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/drift-ce-s2026092701",
+      "source_state": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/state.json"
+    },
+    {
+      "row_id": "drift-ce-s2026092702",
+      "method": "drift+residual_noeq_CE",
+      "purpose": "DG and support-based adaptation/registration",
+      "gpu": 4,
+      "config_ref": "configs/phase2_practical_baselines_20260927/drift-ce-s2026092702.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/drift-ce-s2026092702/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 2026092705,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Model initialization/FT seed matched across methods; five support draws2026092711..2026092715 are separately identified by split. NCM/DG deterministic. Historical392005 reported separately.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "configs/phase2_practical_baselines_20260927/drift-ce-s2026092702.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/drift-ce-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/drift-ce-s2026092702.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python tools/run_practical_phase2_baseline.py --config configs/phase2_practical_baselines_20260927/drift-ce-s2026092702.json",
+      "expected_artifacts": [
+        "predictions.jsonl",
+        "predictions_complete.json",
+        "checkpoint_provenance.json",
+        "support_smoke.json"
+      ],
+      "source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/drift-ce-s2026092702",
+      "source_state": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/state.json"
+    },
+    {
+      "row_id": "drift-ce-s2026092703",
+      "method": "drift+residual_noeq_CE",
+      "purpose": "DG and support-based adaptation/registration",
+      "gpu": 4,
+      "config_ref": "configs/phase2_practical_baselines_20260927/drift-ce-s2026092703.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/drift-ce-s2026092703/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 2026092705,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Model initialization/FT seed matched across methods; five support draws2026092711..2026092715 are separately identified by split. NCM/DG deterministic. Historical392005 reported separately.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "configs/phase2_practical_baselines_20260927/drift-ce-s2026092703.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/drift-ce-s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/drift-ce-s2026092703.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python tools/run_practical_phase2_baseline.py --config configs/phase2_practical_baselines_20260927/drift-ce-s2026092703.json",
+      "expected_artifacts": [
+        "predictions.jsonl",
+        "predictions_complete.json",
+        "checkpoint_provenance.json",
+        "support_smoke.json"
+      ],
+      "source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/drift-ce-s2026092703",
+      "source_state": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/state.json"
+    },
+    {
+      "row_id": "drift-ce-s2026092704",
+      "method": "drift+residual_noeq_CE",
+      "purpose": "DG and support-based adaptation/registration",
+      "gpu": 4,
+      "config_ref": "configs/phase2_practical_baselines_20260927/drift-ce-s2026092704.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/drift-ce-s2026092704/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 2026092705,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Model initialization/FT seed matched across methods; five support draws2026092711..2026092715 are separately identified by split. NCM/DG deterministic. Historical392005 reported separately.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "configs/phase2_practical_baselines_20260927/drift-ce-s2026092704.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/drift-ce-s2026092704",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/drift-ce-s2026092704.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python tools/run_practical_phase2_baseline.py --config configs/phase2_practical_baselines_20260927/drift-ce-s2026092704.json",
+      "expected_artifacts": [
+        "predictions.jsonl",
+        "predictions_complete.json",
+        "checkpoint_provenance.json",
+        "support_smoke.json"
+      ],
+      "source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/drift-ce-s2026092704",
+      "source_state": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/state.json"
+    },
+    {
+      "row_id": "drift-pl-s392005",
+      "method": "drift+PL+residual_noeq_CE",
+      "purpose": "DG and support-based adaptation/registration",
+      "gpu": 5,
+      "config_ref": "configs/phase2_practical_baselines_20260927/drift-pl-s392005.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/drift-pl-s392005/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 392005,
+        "split": 2026092705,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Model initialization/FT seed matched across methods; five support draws2026092711..2026092715 are separately identified by split. NCM/DG deterministic. Historical392005 reported separately.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "configs/phase2_practical_baselines_20260927/drift-pl-s392005.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/drift-pl-s392005",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/drift-pl-s392005.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python tools/run_practical_phase2_baseline.py --config configs/phase2_practical_baselines_20260927/drift-pl-s392005.json",
+      "expected_artifacts": [
+        "predictions.jsonl",
+        "predictions_complete.json",
+        "checkpoint_provenance.json",
+        "support_smoke.json"
+      ],
+      "source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/drift-pl-s392005",
+      "source_state": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/state.json"
+    },
+    {
+      "row_id": "drift-pl-s2026092701",
+      "method": "drift+PL+residual_noeq_CE",
+      "purpose": "DG and support-based adaptation/registration",
+      "gpu": 5,
+      "config_ref": "configs/phase2_practical_baselines_20260927/drift-pl-s2026092701.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/drift-pl-s2026092701/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026092705,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Model initialization/FT seed matched across methods; five support draws2026092711..2026092715 are separately identified by split. NCM/DG deterministic. Historical392005 reported separately.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "configs/phase2_practical_baselines_20260927/drift-pl-s2026092701.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/drift-pl-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/drift-pl-s2026092701.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python tools/run_practical_phase2_baseline.py --config configs/phase2_practical_baselines_20260927/drift-pl-s2026092701.json",
+      "expected_artifacts": [
+        "predictions.jsonl",
+        "predictions_complete.json",
+        "checkpoint_provenance.json",
+        "support_smoke.json"
+      ],
+      "source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/drift-pl-s2026092701",
+      "source_state": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/state.json"
+    },
+    {
+      "row_id": "drift-pl-s2026092702",
+      "method": "drift+PL+residual_noeq_CE",
+      "purpose": "DG and support-based adaptation/registration",
+      "gpu": 5,
+      "config_ref": "configs/phase2_practical_baselines_20260927/drift-pl-s2026092702.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/drift-pl-s2026092702/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 2026092705,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Model initialization/FT seed matched across methods; five support draws2026092711..2026092715 are separately identified by split. NCM/DG deterministic. Historical392005 reported separately.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "configs/phase2_practical_baselines_20260927/drift-pl-s2026092702.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/drift-pl-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/drift-pl-s2026092702.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python tools/run_practical_phase2_baseline.py --config configs/phase2_practical_baselines_20260927/drift-pl-s2026092702.json",
+      "expected_artifacts": [
+        "predictions.jsonl",
+        "predictions_complete.json",
+        "checkpoint_provenance.json",
+        "support_smoke.json"
+      ],
+      "source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/drift-pl-s2026092702",
+      "source_state": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/state.json"
+    },
+    {
+      "row_id": "drift-pl-s2026092703",
+      "method": "drift+PL+residual_noeq_CE",
+      "purpose": "DG and support-based adaptation/registration",
+      "gpu": 5,
+      "config_ref": "configs/phase2_practical_baselines_20260927/drift-pl-s2026092703.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/drift-pl-s2026092703/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 2026092705,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Model initialization/FT seed matched across methods; five support draws2026092711..2026092715 are separately identified by split. NCM/DG deterministic. Historical392005 reported separately.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "configs/phase2_practical_baselines_20260927/drift-pl-s2026092703.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/drift-pl-s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/drift-pl-s2026092703.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python tools/run_practical_phase2_baseline.py --config configs/phase2_practical_baselines_20260927/drift-pl-s2026092703.json",
+      "expected_artifacts": [
+        "predictions.jsonl",
+        "predictions_complete.json",
+        "checkpoint_provenance.json",
+        "support_smoke.json"
+      ],
+      "source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/drift-pl-s2026092703",
+      "source_state": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/state.json"
+    },
+    {
+      "row_id": "drift-pl-s2026092704",
+      "method": "drift+PL+residual_noeq_CE",
+      "purpose": "DG and support-based adaptation/registration",
+      "gpu": 5,
+      "config_ref": "configs/phase2_practical_baselines_20260927/drift-pl-s2026092704.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/drift-pl-s2026092704/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 2026092705,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Model initialization/FT seed matched across methods; five support draws2026092711..2026092715 are separately identified by split. NCM/DG deterministic. Historical392005 reported separately.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "configs/phase2_practical_baselines_20260927/drift-pl-s2026092704.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/drift-pl-s2026092704",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/drift-pl-s2026092704.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python tools/run_practical_phase2_baseline.py --config configs/phase2_practical_baselines_20260927/drift-pl-s2026092704.json",
+      "expected_artifacts": [
+        "predictions.jsonl",
+        "predictions_complete.json",
+        "checkpoint_provenance.json",
+        "support_smoke.json"
+      ],
+      "source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/drift-pl-s2026092704",
+      "source_state": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/state.json"
+    },
+    {
+      "row_id": "poster-ce-s392005",
+      "method": "poster+residual_noeq_CE",
+      "purpose": "DG and support-based adaptation/registration",
+      "gpu": 6,
+      "config_ref": "configs/phase2_practical_baselines_20260927/poster-ce-s392005.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/poster-ce-s392005/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 392005,
+        "split": 2026092705,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Model initialization/FT seed matched across methods; five support draws2026092711..2026092715 are separately identified by split. NCM/DG deterministic. Historical392005 reported separately.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": "author Adam eps1e-7",
+      "lr": 0.001,
+      "epochs": 10,
+      "fl_rounds": null,
+      "budget_ref": "configs/phase2_practical_baselines_20260927/poster-ce-s392005.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/poster-ce-s392005",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/poster-ce-s392005.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python tools/run_practical_phase2_baseline.py --config configs/phase2_practical_baselines_20260927/poster-ce-s392005.json",
+      "expected_artifacts": [
+        "predictions.jsonl",
+        "predictions_complete.json",
+        "checkpoint_provenance.json",
+        "support_smoke.json"
+      ],
+      "source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/poster-ce-s392005",
+      "source_state": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/state.json"
+    },
+    {
+      "row_id": "poster-ce-s2026092701",
+      "method": "poster+residual_noeq_CE",
+      "purpose": "DG and support-based adaptation/registration",
+      "gpu": 6,
+      "config_ref": "configs/phase2_practical_baselines_20260927/poster-ce-s2026092701.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/poster-ce-s2026092701/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026092705,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Model initialization/FT seed matched across methods; five support draws2026092711..2026092715 are separately identified by split. NCM/DG deterministic. Historical392005 reported separately.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": "author Adam eps1e-7",
+      "lr": 0.001,
+      "epochs": 10,
+      "fl_rounds": null,
+      "budget_ref": "configs/phase2_practical_baselines_20260927/poster-ce-s2026092701.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/poster-ce-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/poster-ce-s2026092701.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python tools/run_practical_phase2_baseline.py --config configs/phase2_practical_baselines_20260927/poster-ce-s2026092701.json",
+      "expected_artifacts": [
+        "predictions.jsonl",
+        "predictions_complete.json",
+        "checkpoint_provenance.json",
+        "support_smoke.json"
+      ],
+      "source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/poster-ce-s2026092701",
+      "source_state": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/state.json"
+    },
+    {
+      "row_id": "poster-ce-s2026092702",
+      "method": "poster+residual_noeq_CE",
+      "purpose": "DG and support-based adaptation/registration",
+      "gpu": 6,
+      "config_ref": "configs/phase2_practical_baselines_20260927/poster-ce-s2026092702.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/poster-ce-s2026092702/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 2026092705,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Model initialization/FT seed matched across methods; five support draws2026092711..2026092715 are separately identified by split. NCM/DG deterministic. Historical392005 reported separately.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": "author Adam eps1e-7",
+      "lr": 0.001,
+      "epochs": 10,
+      "fl_rounds": null,
+      "budget_ref": "configs/phase2_practical_baselines_20260927/poster-ce-s2026092702.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/poster-ce-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/poster-ce-s2026092702.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python tools/run_practical_phase2_baseline.py --config configs/phase2_practical_baselines_20260927/poster-ce-s2026092702.json",
+      "expected_artifacts": [
+        "predictions.jsonl",
+        "predictions_complete.json",
+        "checkpoint_provenance.json",
+        "support_smoke.json"
+      ],
+      "source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/poster-ce-s2026092702",
+      "source_state": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/state.json"
+    },
+    {
+      "row_id": "poster-ce-s2026092703",
+      "method": "poster+residual_noeq_CE",
+      "purpose": "DG and support-based adaptation/registration",
+      "gpu": 6,
+      "config_ref": "configs/phase2_practical_baselines_20260927/poster-ce-s2026092703.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/poster-ce-s2026092703/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 2026092705,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Model initialization/FT seed matched across methods; five support draws2026092711..2026092715 are separately identified by split. NCM/DG deterministic. Historical392005 reported separately.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": "author Adam eps1e-7",
+      "lr": 0.001,
+      "epochs": 10,
+      "fl_rounds": null,
+      "budget_ref": "configs/phase2_practical_baselines_20260927/poster-ce-s2026092703.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/poster-ce-s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/poster-ce-s2026092703.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python tools/run_practical_phase2_baseline.py --config configs/phase2_practical_baselines_20260927/poster-ce-s2026092703.json",
+      "expected_artifacts": [
+        "predictions.jsonl",
+        "predictions_complete.json",
+        "checkpoint_provenance.json",
+        "support_smoke.json"
+      ],
+      "source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/poster-ce-s2026092703",
+      "source_state": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/state.json"
+    },
+    {
+      "row_id": "poster-ce-s2026092704",
+      "method": "poster+residual_noeq_CE",
+      "purpose": "DG and support-based adaptation/registration",
+      "gpu": 6,
+      "config_ref": "configs/phase2_practical_baselines_20260927/poster-ce-s2026092704.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/poster-ce-s2026092704/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 2026092705,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Model initialization/FT seed matched across methods; five support draws2026092711..2026092715 are separately identified by split. NCM/DG deterministic. Historical392005 reported separately.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": "author Adam eps1e-7",
+      "lr": 0.001,
+      "epochs": 10,
+      "fl_rounds": null,
+      "budget_ref": "configs/phase2_practical_baselines_20260927/poster-ce-s2026092704.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/poster-ce-s2026092704",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/poster-ce-s2026092704.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python tools/run_practical_phase2_baseline.py --config configs/phase2_practical_baselines_20260927/poster-ce-s2026092704.json",
+      "expected_artifacts": [
+        "predictions.jsonl",
+        "predictions_complete.json",
+        "checkpoint_provenance.json",
+        "support_smoke.json"
+      ],
+      "source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/poster-ce-s2026092704",
+      "source_state": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/state.json"
+    },
+    {
+      "row_id": "radionet-ce-s392005",
+      "method": "radionet+residual_noeq_CE",
+      "purpose": "DG and support-based adaptation/registration",
+      "gpu": 7,
+      "config_ref": "configs/phase2_practical_baselines_20260927/radionet-ce-s392005.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/radionet-ce-s392005/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 392005,
+        "split": 2026092705,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Model initialization/FT seed matched across methods; five support draws2026092711..2026092715 are separately identified by split. NCM/DG deterministic. Historical392005 reported separately.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": "author Adam eps1e-7",
+      "lr": 0.001,
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "configs/phase2_practical_baselines_20260927/radionet-ce-s392005.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/radionet-ce-s392005",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/radionet-ce-s392005.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python tools/run_practical_phase2_baseline.py --config configs/phase2_practical_baselines_20260927/radionet-ce-s392005.json",
+      "expected_artifacts": [
+        "predictions.jsonl",
+        "predictions_complete.json",
+        "checkpoint_provenance.json",
+        "support_smoke.json"
+      ],
+      "source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/radionet-ce-s392005",
+      "source_state": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/state.json"
+    },
+    {
+      "row_id": "radionet-ce-s2026092701",
+      "method": "radionet+residual_noeq_CE",
+      "purpose": "DG and support-based adaptation/registration",
+      "gpu": 7,
+      "config_ref": "configs/phase2_practical_baselines_20260927/radionet-ce-s2026092701.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/radionet-ce-s2026092701/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026092705,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Model initialization/FT seed matched across methods; five support draws2026092711..2026092715 are separately identified by split. NCM/DG deterministic. Historical392005 reported separately.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": "author Adam eps1e-7",
+      "lr": 0.001,
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "configs/phase2_practical_baselines_20260927/radionet-ce-s2026092701.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/radionet-ce-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/radionet-ce-s2026092701.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python tools/run_practical_phase2_baseline.py --config configs/phase2_practical_baselines_20260927/radionet-ce-s2026092701.json",
+      "expected_artifacts": [
+        "predictions.jsonl",
+        "predictions_complete.json",
+        "checkpoint_provenance.json",
+        "support_smoke.json"
+      ],
+      "source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/radionet-ce-s2026092701",
+      "source_state": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/state.json"
+    },
+    {
+      "row_id": "radionet-ce-s2026092702",
+      "method": "radionet+residual_noeq_CE",
+      "purpose": "DG and support-based adaptation/registration",
+      "gpu": 7,
+      "config_ref": "configs/phase2_practical_baselines_20260927/radionet-ce-s2026092702.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/radionet-ce-s2026092702/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 2026092705,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Model initialization/FT seed matched across methods; five support draws2026092711..2026092715 are separately identified by split. NCM/DG deterministic. Historical392005 reported separately.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": "author Adam eps1e-7",
+      "lr": 0.001,
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "configs/phase2_practical_baselines_20260927/radionet-ce-s2026092702.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/radionet-ce-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/radionet-ce-s2026092702.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python tools/run_practical_phase2_baseline.py --config configs/phase2_practical_baselines_20260927/radionet-ce-s2026092702.json",
+      "expected_artifacts": [
+        "predictions.jsonl",
+        "predictions_complete.json",
+        "checkpoint_provenance.json",
+        "support_smoke.json"
+      ],
+      "source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/radionet-ce-s2026092702",
+      "source_state": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/state.json"
+    },
+    {
+      "row_id": "radionet-ce-s2026092703",
+      "method": "radionet+residual_noeq_CE",
+      "purpose": "DG and support-based adaptation/registration",
+      "gpu": 7,
+      "config_ref": "configs/phase2_practical_baselines_20260927/radionet-ce-s2026092703.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/radionet-ce-s2026092703/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 2026092705,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Model initialization/FT seed matched across methods; five support draws2026092711..2026092715 are separately identified by split. NCM/DG deterministic. Historical392005 reported separately.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": "author Adam eps1e-7",
+      "lr": 0.001,
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "configs/phase2_practical_baselines_20260927/radionet-ce-s2026092703.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/radionet-ce-s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/radionet-ce-s2026092703.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python tools/run_practical_phase2_baseline.py --config configs/phase2_practical_baselines_20260927/radionet-ce-s2026092703.json",
+      "expected_artifacts": [
+        "predictions.jsonl",
+        "predictions_complete.json",
+        "checkpoint_provenance.json",
+        "support_smoke.json"
+      ],
+      "source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/radionet-ce-s2026092703",
+      "source_state": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/state.json"
+    },
+    {
+      "row_id": "radionet-ce-s2026092704",
+      "method": "radionet+residual_noeq_CE",
+      "purpose": "DG and support-based adaptation/registration",
+      "gpu": 7,
+      "config_ref": "configs/phase2_practical_baselines_20260927/radionet-ce-s2026092704.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/radionet-ce-s2026092704/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 2026092705,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Model initialization/FT seed matched across methods; five support draws2026092711..2026092715 are separately identified by split. NCM/DG deterministic. Historical392005 reported separately.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": "author Adam eps1e-7",
+      "lr": 0.001,
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "configs/phase2_practical_baselines_20260927/radionet-ce-s2026092704.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-baselines-practical-manytx-m5-r01/radionet-ce-s2026092704",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/radionet-ce-s2026092704.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python tools/run_practical_phase2_baseline.py --config configs/phase2_practical_baselines_20260927/radionet-ce-s2026092704.json",
+      "expected_artifacts": [
+        "predictions.jsonl",
+        "predictions_complete.json",
+        "checkpoint_provenance.json",
+        "support_smoke.json"
+      ],
+      "source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/radionet-ce-s2026092704",
+      "source_state": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/state.json"
+    }
+  ],
+  "notes": [
+    "All40 source rows must freeze predictions before independent scorer opens truth; no target-based changes/retries.",
+    "DG21 predictions per row; support NCM2100 per row; author fine-tuning additional2100 for each POSTER/RadioNet row.",
+    "POSTER uses author-code three-Dense replacement,10epochs,batch256. RadioNet uses DF head replacement,30epochs,batch128. BothAdam.001.",
+    "Source budget200epochs is explicitly matched, rather than an exact paper source-budget reproduction.",
+    "Other external native DA/new-class algorithms are not represented by the common NCM extension.",
+    "No augmentation or extra equalization in Phase2: received IQ is fixed by capsule."
+  ],
+  "registered_at": "2026-09-26T18:10:28+00:00",
+  "status": "PLANNED"
+}

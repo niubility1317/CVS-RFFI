@@ -6,6 +6,7 @@
 
 |名称|记录类型|证据入口|
 |---|---|---|
+|Phase2外部对比：固定DG、support NCM及POSTER/RadioNet原生微调|managed_run|[打开](../../automation_reports/CV-SincNet/20260927-phase2-baselines-practical-manytx-m5-r01/report.md)|
 |ADV3B02、qKNN、域适应与类增量方法完整对比报告|legacy_evidence_group|[打开](../../github_publish/rffi-labeled-da-three-20260915/local_artifacts/adv3b02_full_comparison_20260714_191356/report.md)|
 |CVS论文级对比实验协议|legacy_evidence_group|[打开](../../github_publish/rffi-labeled-da-three-20260915/docs/CVS_PUBLICATION_COMPARISON_PROTOCOL_20260713.md)|
 |Phase1与Phase2论文方法对比限定报告（Git镜像）|legacy_evidence_group|[打开](../../github_publish/rffi-labeled-da-three-20260915/automation_reports/CV-SincNet/phase1_phase2_paper_method_comparison_20260818/report.md)|

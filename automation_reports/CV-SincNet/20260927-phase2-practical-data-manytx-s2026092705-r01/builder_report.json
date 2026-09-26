@@ -1,0 +1,119 @@
+{
+  "config": {
+    "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-practical-data-manytx-s2026092705-r01",
+    "manytx_path": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManyTx.pkl",
+    "old_classes": [
+      "14-10",
+      "14-7",
+      "20-15",
+      "20-19",
+      "6-15",
+      "8-20"
+    ],
+    "new_classes": [
+      "11-4",
+      "3-13",
+      "12-20",
+      "5-20",
+      "20-12",
+      "17-11",
+      "14-14",
+      "2-17",
+      "4-1",
+      "19-13",
+      "19-8",
+      "2-19",
+      "8-1",
+      "14-20",
+      "13-3",
+      "1-18",
+      "20-7",
+      "7-7",
+      "2-3",
+      "18-12"
+    ],
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [
+      "1-1",
+      "14-7",
+      "2-1",
+      "20-1",
+      "7-14",
+      "7-7",
+      "8-8"
+    ],
+    "fs_hz": 25000000,
+    "data_seed": 2026092705,
+    "augmentation_seed": 2026092707,
+    "receiver_seed": 2027,
+    "evaluation_seed": 2026092706,
+    "support_seeds": [
+      2026092711,
+      2026092712,
+      2026092713,
+      2026092714,
+      2026092715
+    ],
+    "scenarios": [
+      "practical_high",
+      "practical_mid",
+      "practical_low_urban"
+    ],
+    "shots": [
+      1,
+      5,
+      10,
+      20
+    ],
+    "new_counts": [
+      0,
+      2,
+      5,
+      10,
+      20
+    ]
+  },
+  "manifest": {
+    "protocol_schema": "p2_min_v1",
+    "phase2_data_status": "VALIDATED_ONCE",
+    "capsule_id": "residual-noeq-ba667eee4fb061055e4c08b5",
+    "members": [
+      "received.npz",
+      "splits/*.json"
+    ],
+    "received_count": 36036,
+    "split_count": 2100,
+    "signal_shape": [
+      2,
+      256
+    ],
+    "scenarios": [
+      "practical_high",
+      "practical_mid",
+      "practical_low_urban"
+    ],
+    "channel": {
+      "route": "residual",
+      "mode": "post_sync",
+      "equalization_enabled": false,
+      "fs_hz": 25000000
+    },
+    "checks": {
+      "unique_physical_observation": true,
+      "scenes_physically_disjoint": true,
+      "support_query_physically_disjoint": true,
+      "query_labels_absent": true,
+      "source_paths_absent": true,
+      "finite_received": true
+    }
+  },
+  "physical_record_mapping": "WiSig ManyTx TX/RX/day/equalized/signal_index; target RX disjoint from all Phase1 RX",
+  "old_new_data_family": "both target old and new from ManyTx; Phase1 source from ManySig",
+  "no_checkpoint_access": true
+}

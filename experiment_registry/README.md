@@ -1,6 +1,6 @@
 # 实验总索引
 
-更新：2026-09-26T17:58:23+00:00
+更新：2026-09-26T18:10:32+00:00
 
 先按方法/问题检索，再用run ID读取精确配置与证据。历史组数量不等于独立实验数量。
 
@@ -12,7 +12,7 @@
 
 |记录类型|数量|
 |---|---:|
-|managed_run|7|
+|managed_run|8|
 |legacy_evidence_group|4028|
 |legacy_log_record|7778|
 |remote_directory_locator|3608|
@@ -39,8 +39,8 @@
 |[stage2](by_method/stage2.md)|600|
 |[fsdg](by_method/fsdg.md)|540|
 |[cvcnn](by_method/cvcnn.md)|479|
+|[phase2](by_method/phase2.md)|466|
 |[receiver_agnostic](by_method/receiver_agnostic.md)|466|
-|[phase2](by_method/phase2.md)|465|
 |[d92](by_method/d92.md)|463|
 |[fl82](by_method/fl82.md)|376|
 |[fedcvs/vmb](by_method/fedcvs_vmb.md)|344|
@@ -59,7 +59,7 @@
 |[csil](by_method/csil.md)|29|
 |[protonet](by_method/protonet.md)|29|
 |[daot](by_method/daot.md)|25|
-|[comparison](by_method/comparison.md)|23|
+|[comparison](by_method/comparison.md)|24|
 |[hcfdg](by_method/hcfdg.md)|20|
 |[dryrun](by_method/dryrun.md)|19|
 |[diagnostic](by_method/diagnostic.md)|13|
@@ -71,17 +71,17 @@
 |[CVCNN](by_method/CVCNN.md)|4|
 |[RIEI](by_method/RIEI.md)|4|
 |[rafl](by_method/rafl.md)|4|
+|[residual_noeq](by_method/residual_noeq.md)|3|
 |[phase3](by_method/phase3.md)|3|
 |[practical](by_method/practical.md)|2|
-|[residual_noeq](by_method/residual_noeq.md)|2|
+|[poster](by_method/poster.md)|2|
+|[radionet](by_method/radionet.md)|2|
 |[fucl](by_method/fucl.md)|2|
 |[tifs2025](by_method/tifs2025.md)|2|
 |[PL100](by_method/PL100.md)|1|
 |[warm10](by_method/warm10.md)|1|
 |[no-unlabeled](by_method/no-unlabeled.md)|1|
 |[baseline](by_method/baseline.md)|1|
-|[poster](by_method/poster.md)|1|
-|[radionet](by_method/radionet.md)|1|
 |[source_only](by_method/source_only.md)|1|
 |[data-builder](by_method/data-builder.md)|1|
 |[fedfa](by_method/fedfa.md)|1|
@@ -94,6 +94,7 @@
 |原RIEI优化算法+普通固定星地拼接+硬伪标签|managed_run|[打开](../automation_reports/CV-SincNet/20260920-riei-original-concat-pl-s299-e200-r03/report.md)|
 |RIEI简单暖启动：100轮、有/无伪标签对照|managed_run|[打开](../automation_reports/CV-SincNet/20260920-riei-warm10-pl20-e100-s299-r04/report.md)|
 |外部对比方法：统一残差信道、五模型种子源域训练|managed_run|[打开](../automation_reports/CV-SincNet/20260927-phase1-baselines-practical-manysig-m5-r01/report.md)|
+|Phase2外部对比：固定DG、support NCM及POSTER/RadioNet原生微调|managed_run|[打开](../automation_reports/CV-SincNet/20260927-phase2-baselines-practical-manytx-m5-r01/report.md)|
 |Phase2残差信道共享数据：7RX、6旧类+20新类|managed_run|[打开](../automation_reports/CV-SincNet/20260927-phase2-practical-data-manytx-s2026092705-r01/report.md)|
 |STAR同配置CVCNN/RIEI普通伪标签对照|managed_run|[打开](../automation_reports/CV-SincNet/cvcnn_riei_pl_loo_s299_t90_20260920_r01/report.md)|
 |RIEI优化版原系数+等权星地CE修正版|managed_run|[打开](../automation_reports/CV-SincNet/riei_pl_loo_ce11_s299_t90_20260920_r02/report.md)|
@@ -209,4 +210,3 @@
 |CVS-RFFI_Phase2详细复现报告_图表与场景优化版_修复版|legacy_evidence_group|[打开](../github_publish/rffi-labeled-da-three-20260915/docs/CVS-RFFI_Phase2详细复现报告_图表与场景优化版_修复版.docx)|
 |CVS-RFFI_Phase2详细复现报告_图表与场景优化版|legacy_evidence_group|[打开](../github_publish/rffi-labeled-da-three-20260915/docs/CVS-RFFI_Phase2详细复现报告_图表与场景优化版.docx)|
 |持续学习、开放世界学习与CVS-RFFI持续注册：联网调研与项目映射报告|legacy_evidence_group|[打开](../github_publish/rffi-labeled-da-three-20260915/docs/CONTINUAL_LEARNING_OPEN_WORLD_REGISTRATION_RESEARCH_20260809.md)|
-|Codex过程更新可见性修复交接|legacy_evidence_group|[打开](../github_publish/rffi-labeled-da-three-20260915/docs/COLLABORATION_PROGRESS_VISIBILITY_FIX_20260714.md)|
