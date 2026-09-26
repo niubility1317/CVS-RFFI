@@ -51,13 +51,13 @@ def factory(method, classes, receivers):
     raise ValueError(method)
 
 
-def source_provenance(source, expected):
+def source_provenance(source, expected, expected_epoch=200):
     initialization = read(source / 'initialization.json')
     completion = read(source / 'completion.json')
     actual = read(source / 'source_contract.json')
     if initialization.get('scratch_only') is not True or initialization.get('checkpoint_sources') != [] or initialization.get('target_contact') is not False:
         raise ValueError('CHECKPOINT_PROVENANCE_UNVERIFIED')
-    if completion.get('target_evaluated') is not False or completion.get('epoch') != 200 or completion.get('status') != 'SOURCE_TRAINED':
+    if completion.get('target_evaluated') is not False or completion.get('epoch') != expected_epoch or completion.get('status') != 'SOURCE_TRAINED':
         raise ValueError('CHECKPOINT_TARGET_CONTAMINATED_OR_INCOMPLETE')
     for key in ('role_ids', 'source_rxs', 'source_days', 'ratios', 'split_seed', 'num_classes'):
         if actual.get(key) != expected.get(key):

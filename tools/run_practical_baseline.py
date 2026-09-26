@@ -33,6 +33,8 @@ def main():
         scratch_only=True, checkpoint_sources=[], model_seed=int(options['--seed']),
         selection='fixed_final_epoch', target_contact=False)), encoding='utf-8')
     import torch
+    from baselines.common.run_logging import startup_record
+    startup_record(cfg, out)
     torch.set_num_threads(2)
     module_name = 'cvcnn_ce' if cfg['method'] in {'poster', 'radionet'} else cfg['method']
     module = importlib.import_module(f'baselines.{module_name}.train_cvs')
@@ -66,7 +68,18 @@ def main():
         if value is not None:
             argv.append(str(value))
     sys.argv = [module.__file__, *argv]
-    module.main()
+    original_parse = argparse.ArgumentParser.parse_args
+    def logged_parse(parser, *args, **kwargs):
+        parsed = original_parse(parser, *args, **kwargs)
+        actual = vars(parsed)
+        (out / 'effective_arguments.json').write_text(json.dumps(actual,indent=2),encoding='utf-8')
+        print('[EFFECTIVE_ARGUMENTS] '+json.dumps(actual),flush=True)
+        return parsed
+    argparse.ArgumentParser.parse_args = logged_parse
+    try:
+        module.main()
+    finally:
+        argparse.ArgumentParser.parse_args = original_parse
     ckpt = torch.load(out / 'last.pt', map_location='cpu', weights_only=False)
     if ckpt['epoch'] != int(options['--epochs']):
         raise ValueError('Fixed-epoch budget was not completed')

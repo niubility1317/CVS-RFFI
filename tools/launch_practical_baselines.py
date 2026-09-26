@@ -64,7 +64,8 @@ def main():
                 update(row['row_id'], status='TECHNICAL_FAILURE', error='output_exists')
                 return
             env = dict(os.environ, CUDA_VISIBLE_DEVICES=str(gpu), PYTHONUNBUFFERED='1',
-                       OMP_NUM_THREADS='2', MKL_NUM_THREADS='2', PYTHONPATH=str(ROOT / 'code')+os.pathsep+str(ROOT))
+                       OMP_NUM_THREADS='2', MKL_NUM_THREADS='2', COMPARISON_RELEASE_COMMIT=a.commit,
+                       PYTHONPATH=str(ROOT / 'code')+os.pathsep+str(ROOT))
             started = time.time()
             with Path(row['log_path']).open('x', encoding='utf-8') as log:
                 child = subprocess.Popen([sys.executable, 'tools/run_practical_baseline.py', '--config', row['config_ref']],
