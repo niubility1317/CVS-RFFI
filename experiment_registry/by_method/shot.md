@@ -15,7 +15,7 @@
 |Phase1双读出bundle CPU one-shot发布报告|legacy_evidence_group|[打开](../../automation_reports/CV-SincNet/phase1_dualreadout_bundle_v2_cpu_oneshot_20260808_v1/report.md)|
 |D110-SCPM真实G0 one-shot发布报告|legacy_evidence_group|[打开](../../automation_reports/CV-SincNet/d110_scpm_g0_oneshot_20260802_033047_r1/report.md)|
 |D106-RCMR-2V-qKNN真实G0 one-shot发布报告|legacy_evidence_group|[打开](../../automation_reports/CV-SincNet/d106_rcmr_g0_oneshot_20260801_132809_r3/report.md)|
-|D48一次性OOF-head margin残差探针报告镜像|legacy_evidence_group|[打开](../../automation_reports/CV-SincNet/d48_one_shot_oof_margin_residual_probe_20260718/report.md)|
+|D48一次性OOF-head margin残差探针报告|legacy_evidence_group|[打开](../../automation_reports/CV-SincNet/d48_one_shot_oof_margin_residual_probe_20260718/report.md)|
 |D48一次性OOF-head margin残差探针报告|legacy_evidence_group|[打开](../../github_publish/CVS-RFFI-repo/automation_reports/CV-SincNet/d48_one_shot_oof_margin_residual_probe_20260718/report.md)|
 |D48一次性OOF-head margin残差追溯表|legacy_evidence_group|[打开](../../github_publish/CVS-RFFI-repo/analysis/d48_one_shot_oof_margin_residual_traceability_20260718.md)|
 |域适应、类增量与qKNN非Oracle逐K联合对比|legacy_evidence_group|[打开](../../automation_reports/CV-SincNet/kshot_da_ci_qknn_comparison_20260715/report.md)|

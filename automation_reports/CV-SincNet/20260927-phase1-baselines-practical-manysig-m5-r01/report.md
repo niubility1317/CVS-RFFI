@@ -43,3 +43,7 @@ POSTER和RadioNet使用作者结构的PyTorch移植，并与本地Keras作者模
 作者来源：[POSTER](https://github.com/SmartHomePrivacyProject/RadioFingerprinting)、[RadioNet](https://github.com/UCdasec/RadioNet)。固定作者版本在baselines/common/li_backbones.py标注。RadioNet本run仅DF有标签微调所需源骨干，不等于已运行其ADA/triplet所有变体。
 
 Phase1训练完成后还需单独进行冻结目标预测和评分。Phase2数据builder须为新residual_noeq received IQ建立单次观测的物理ID一致capsule；原LEO_WEAK的received IQ不能静默改名复用。Phase2及CSIL/MoPC尚未启动。
+
+## 启动读回
+
+VERIFIED：发布提交d8d0f333d968a7ec4df3b85636c474c634c6c8cb，本地与远端归档SHA256一致，远端编译通过。dispatcher PID889485；8个首seed训练进程的PID/CWD/argv/GPU及日志已独立核实，32行排队。证据：evidence/launch_readback.json。所有当前日志tested=0；仅源域训练，尚无目标成绩。

@@ -702,7 +702,7 @@
 |baseline_paper_audit_cvs_day_rx_seed1337|legacy_evidence_group|[打开](../../github_publish/CVS-RFFI-repo/logs/baseline_paper_audit_cvs_day_rx_seed1337)|
 |cvs_publication_phase1_log_diagnosis_20260713|legacy_evidence_group|[打开](../../local_artifacts/cvs_publication_phase1_log_diagnosis_20260713)|
 |CVS论文级方法对比实验Git交接|legacy_evidence_group|[打开](../../github_publish/CVS-RFFI-repo/automation_reports/CV-SincNet/cvs_publication_comparison_20260713_122049/report.md)|
-|CVS论文级方法对比实验报告|legacy_evidence_group|[打开](../../automation_reports/CV-SincNet/cvs_publication_comparison_20260713_122049/report.md)|
+|CVS论文级方法对比实验Git交接|legacy_evidence_group|[打开](../../automation_reports/CV-SincNet/cvs_publication_comparison_20260713_122049/report.md)|
 |cvs_publication_stage2_summary_20260713|legacy_evidence_group|[打开](../../github_publish/CVS-RFFI-repo/local_artifacts/cvs_publication_stage2_summary_20260713)|
 |cvs_publication_phase1_detailed_seed713101_20260713|legacy_evidence_group|[打开](../../github_publish/CVS-RFFI-repo/local_artifacts/cvs_publication_phase1_detailed_seed713101_20260713)|
 |cvs_publication_inputs_20260713|legacy_evidence_group|[打开](../../local_artifacts/cvs_publication_inputs_20260713)|

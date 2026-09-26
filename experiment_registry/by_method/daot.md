@@ -6,16 +6,6 @@
 
 |名称|记录类型|证据入口|
 |---|---|---|
-|ADV3B02＋DAOT＋FastTrust-RC4原LEO拼接增强|managed_run|[打开](../../automation_reports/CV-SincNet/20260918-phase1-daot-rc4-original-leo-manysig-s392005-r01/report.md)|
-|DAOT＋FastTrust-RC4 practical四组实验|managed_run|[打开](../../automation_reports/CV-SincNet/20260918-phase1-daot-rc4-practical4-manysig-s392005-r01/report.md)|
-|DAOT＋FastTrust-RC4 practical四组实验|managed_run|[打开](../../automation_reports/CV-SincNet/20260918-phase1-daot-rc4-practical4-manysig-s392005-r02/report.md)|
-|DAOT＋FastTrust-RC4 practical四组实验r03|managed_run|[打开](../../automation_reports/CV-SincNet/20260918-phase1-daot-rc4-practical4-manysig-s392005-r03/report.md)|
-|practical四组最新保存权重测试|managed_run|[打开](../../automation_reports/CV-SincNet/20260919-phase1-daot-rc4-practical4-test-s392005-r01/report.md)|
-|practical四组最新保存权重测试r02|managed_run|[打开](../../automation_reports/CV-SincNet/20260919-phase1-daot-rc4-practical4-test-s392005-r02/report.md)|
-|DAOT＋FastTrust-RC4 residual环境比例六组|managed_run|[打开](../../automation_reports/CV-SincNet/20260920-phase1-daot-rc4-residual-ratios-manysig-s392005-r01/report.md)|
-|旧Practical四组checkpoint统一六环境测试|managed_run|[打开](../../automation_reports/CV-SincNet/20260920-phase1-practical4-sixscene-eval-s392005-r01/report.md)|
-|原生DAOT＋RC4与仅动力博弈三seed对照|managed_run|[打开](../../automation_reports/CV-SincNet/phase1_daot_rc4_pure_game_m3_20260917_r1/report.md)|
-|原生DAOT＋RC4与仅动力博弈三seed对照|managed_run|[打开](../../automation_reports/CV-SincNet/phase1_daot_rc4_pure_game_m3_20260917_r2/report.md)|
 |ADV3B02 CORE90、DAOT+FastTrust与动力博弈融合：实现、实验与失配机制全量审计|legacy_evidence_group|[打开](../../automation_reports/CV-SincNet/daot_fasttrust_game_comprehensive_20260914/report_bundle/report.md)|
 |ADV3B02-DAOT-STN-RX-V2 E1/R1实验报告|legacy_evidence_group|[打开](../../automation_reports/CV-SincNet/phase1_adv3b02_daot_stn_rx_v2_e1_r1_manysig_s392005_20260903_r1/report.md)|
 |ADV3B02-DAOT-STN-RX-V2 P1～P5实验报告|legacy_evidence_group|[打开](../../automation_reports/CV-SincNet/phase1_adv3b02_daot_stn_rx_v2_p1_p5_manysig_s392005_20260903_r1/report.md)|

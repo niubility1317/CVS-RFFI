@@ -12,6 +12,7 @@ RUN = '20260927-phase1-baselines-practical-manysig-m5-r01'
 def main():
     p = argparse.ArgumentParser()
     p.add_argument('--output', type=Path, required=True)
+    p.add_argument('--phase2-data', action='store_true')
     a = p.parse_args()
     if a.output.exists():
         raise FileExistsError(a.output)
@@ -22,6 +23,12 @@ def main():
                       f'automation_reports/CV-SincNet/{RUN}/')) or
         (s.startswith('code/') and s.count('/') == 1 and s.endswith('.py')) or
         s in {'tools/run_practical_baseline.py','tools/launch_practical_baselines.py'}]
+    if a.phase2_data:
+        selected = [s for s in files if s.startswith(('code/cvsrffi/', 'code/leo_practical/')) or
+                    (s.startswith('code/') and s.count('/') == 1 and s.endswith('.py')) or
+                    s in {'tools/build_practical_phase2_data.py', 'tools/launch_practical_phase2_data.py',
+                          'configs/phase2_practical_data_20260927.json'} or
+                    s.startswith('automation_reports/CV-SincNet/20260927-phase2-practical-data-manytx-s2026092705-r01/')]
     subprocess.run(['git','diff','--exit-code','HEAD','--',*selected], cwd=ROOT, check=True, stdout=subprocess.DEVNULL)
     a.output.parent.mkdir(parents=True, exist_ok=True)
     subprocess.run(['git','archive','--format=tar.gz',f'--output={a.output.resolve()}',commit,*selected], cwd=ROOT, check=True)

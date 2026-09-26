@@ -1,0 +1,205 @@
+{
+  "time": "2026-09-26T18:02:45.611023+00:00",
+  "state": {
+    "cvcnn_ce-ce-s392005": {
+      "status": "RUNNING",
+      "gpu": 0,
+      "pid": 889498,
+      "started": "2026-09-26T17:47:58.106789+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase1-baselines-practical-manysig-m5-r01/cvcnn_ce-ce-s392005.log",
+      "updated": "2026-09-26T17:47:58.106801+00:00"
+    },
+    "cvcnn_ce-ce-s2026092701": {
+      "status": "QUEUED",
+      "gpu": 0
+    },
+    "cvcnn_ce-ce-s2026092702": {
+      "status": "QUEUED",
+      "gpu": 0
+    },
+    "cvcnn_ce-ce-s2026092703": {
+      "status": "QUEUED",
+      "gpu": 0
+    },
+    "cvcnn_ce-ce-s2026092704": {
+      "status": "QUEUED",
+      "gpu": 0
+    },
+    "cvcnn_ce-pl-s392005": {
+      "status": "RUNNING",
+      "gpu": 1,
+      "pid": 889500,
+      "started": "2026-09-26T17:47:58.108051+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase1-baselines-practical-manysig-m5-r01/cvcnn_ce-pl-s392005.log",
+      "updated": "2026-09-26T17:47:58.109039+00:00"
+    },
+    "cvcnn_ce-pl-s2026092701": {
+      "status": "QUEUED",
+      "gpu": 1
+    },
+    "cvcnn_ce-pl-s2026092702": {
+      "status": "QUEUED",
+      "gpu": 1
+    },
+    "cvcnn_ce-pl-s2026092703": {
+      "status": "QUEUED",
+      "gpu": 1
+    },
+    "cvcnn_ce-pl-s2026092704": {
+      "status": "QUEUED",
+      "gpu": 1
+    },
+    "riei_fd-ce-s392005": {
+      "status": "RUNNING",
+      "gpu": 2,
+      "pid": 889502,
+      "started": "2026-09-26T17:47:58.109404+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase1-baselines-practical-manysig-m5-r01/riei_fd-ce-s392005.log",
+      "updated": "2026-09-26T17:47:58.110731+00:00"
+    },
+    "riei_fd-ce-s2026092701": {
+      "status": "QUEUED",
+      "gpu": 2
+    },
+    "riei_fd-ce-s2026092702": {
+      "status": "QUEUED",
+      "gpu": 2
+    },
+    "riei_fd-ce-s2026092703": {
+      "status": "QUEUED",
+      "gpu": 2
+    },
+    "riei_fd-ce-s2026092704": {
+      "status": "QUEUED",
+      "gpu": 2
+    },
+    "riei_fd-pl-s392005": {
+      "status": "RUNNING",
+      "gpu": 3,
+      "pid": 889505,
+      "started": "2026-09-26T17:47:58.111484+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase1-baselines-practical-manysig-m5-r01/riei_fd-pl-s392005.log",
+      "updated": "2026-09-26T17:47:58.113823+00:00"
+    },
+    "riei_fd-pl-s2026092701": {
+      "status": "QUEUED",
+      "gpu": 3
+    },
+    "riei_fd-pl-s2026092702": {
+      "status": "QUEUED",
+      "gpu": 3
+    },
+    "riei_fd-pl-s2026092703": {
+      "status": "QUEUED",
+      "gpu": 3
+    },
+    "riei_fd-pl-s2026092704": {
+      "status": "QUEUED",
+      "gpu": 3
+    },
+    "drift-ce-s392005": {
+      "status": "RUNNING",
+      "gpu": 4,
+      "pid": 889506,
+      "started": "2026-09-26T17:47:58.112355+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase1-baselines-practical-manysig-m5-r01/drift-ce-s392005.log",
+      "updated": "2026-09-26T17:47:58.114817+00:00"
+    },
+    "drift-ce-s2026092701": {
+      "status": "QUEUED",
+      "gpu": 4
+    },
+    "drift-ce-s2026092702": {
+      "status": "QUEUED",
+      "gpu": 4
+    },
+    "drift-ce-s2026092703": {
+      "status": "QUEUED",
+      "gpu": 4
+    },
+    "drift-ce-s2026092704": {
+      "status": "QUEUED",
+      "gpu": 4
+    },
+    "drift-pl-s392005": {
+      "status": "RUNNING",
+      "gpu": 5,
+      "pid": 889508,
+      "started": "2026-09-26T17:47:58.113301+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase1-baselines-practical-manysig-m5-r01/drift-pl-s392005.log",
+      "updated": "2026-09-26T17:47:58.115643+00:00"
+    },
+    "drift-pl-s2026092701": {
+      "status": "QUEUED",
+      "gpu": 5
+    },
+    "drift-pl-s2026092702": {
+      "status": "QUEUED",
+      "gpu": 5
+    },
+    "drift-pl-s2026092703": {
+      "status": "QUEUED",
+      "gpu": 5
+    },
+    "drift-pl-s2026092704": {
+      "status": "QUEUED",
+      "gpu": 5
+    },
+    "poster-ce-s392005": {
+      "status": "RUNNING",
+      "gpu": 6,
+      "pid": 889509,
+      "started": "2026-09-26T17:47:58.113804+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase1-baselines-practical-manysig-m5-r01/poster-ce-s392005.log",
+      "updated": "2026-09-26T17:47:58.116198+00:00"
+    },
+    "poster-ce-s2026092701": {
+      "status": "QUEUED",
+      "gpu": 6
+    },
+    "poster-ce-s2026092702": {
+      "status": "QUEUED",
+      "gpu": 6
+    },
+    "poster-ce-s2026092703": {
+      "status": "QUEUED",
+      "gpu": 6
+    },
+    "poster-ce-s2026092704": {
+      "status": "QUEUED",
+      "gpu": 6
+    },
+    "radionet-ce-s392005": {
+      "status": "RUNNING",
+      "gpu": 7,
+      "pid": 889510,
+      "started": "2026-09-26T17:47:58.114596+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase1-baselines-practical-manysig-m5-r01/radionet-ce-s392005.log",
+      "updated": "2026-09-26T17:47:58.116672+00:00"
+    },
+    "radionet-ce-s2026092701": {
+      "status": "QUEUED",
+      "gpu": 7
+    },
+    "radionet-ce-s2026092702": {
+      "status": "QUEUED",
+      "gpu": 7
+    },
+    "radionet-ce-s2026092703": {
+      "status": "QUEUED",
+      "gpu": 7
+    },
+    "radionet-ce-s2026092704": {
+      "status": "QUEUED",
+      "gpu": 7
+    }
+  },
+  "counts": {
+    "RUNNING": 8,
+    "QUEUED": 32
+  },
+  "processes": "    PID    PPID     ELAPSED COMMAND\n 889498  889485       13:48 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python tools/run_practical_baseline.py --config configs/baselines_practical_20260927/cvcnn_ce-ce-s392005.json\n 889500  889485       13:47 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python tools/run_practical_baseline.py --config configs/baselines_practical_20260927/cvcnn_ce-pl-s392005.json\n 889502  889485       13:47 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python tools/run_practical_baseline.py --config configs/baselines_practical_20260927/riei_fd-ce-s392005.json\n 889505  889485       13:47 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python tools/run_practical_baseline.py --config configs/baselines_practical_20260927/riei_fd-pl-s392005.json\n 889506  889485       13:47 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python tools/run_practical_baseline.py --config configs/baselines_practical_20260927/drift-ce-s392005.json\n 889508  889485       13:47 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python tools/run_practical_baseline.py --config configs/baselines_practical_20260927/drift-pl-s392005.json\n 889509  889485       13:47 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python tools/run_practical_baseline.py --config configs/baselines_practical_20260927/poster-ce-s392005.json\n 889510  889485       13:47 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python tools/run_practical_baseline.py --config configs/baselines_practical_20260927/radionet-ce-s392005.json\n",
+  "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/baselines_practical_20260927_r01\n/home/szu2070436088/2510044040/CV-SincNet/releases/baselines_practical_20260927_r01\n/home/szu2070436088/2510044040/CV-SincNet/releases/baselines_practical_20260927_r01\n/home/szu2070436088/2510044040/CV-SincNet/releases/baselines_practical_20260927_r01\n/home/szu2070436088/2510044040/CV-SincNet/releases/baselines_practical_20260927_r01\n/home/szu2070436088/2510044040/CV-SincNet/releases/baselines_practical_20260927_r01\n/home/szu2070436088/2510044040/CV-SincNet/releases/baselines_practical_20260927_r01\n/home/szu2070436088/2510044040/CV-SincNet/releases/baselines_practical_20260927_r01\n",
+  "gpu": "GPU-56adac86-77cd-36c9-8770-dbf002650461, 889498, 562 MiB\nGPU-a2d039ff-1792-4222-2b47-140429e10f94, 889500, 562 MiB\nGPU-4fb45b9a-894a-536b-0e0a-09f7c1341562, 889502, 686 MiB\nGPU-7b4bacb3-4901-6845-a414-0dfdfeeade97, 889505, 686 MiB\nGPU-95d925a1-7218-ca7b-adef-164241f4f491, 889506, 676 MiB\nGPU-ef5f59f2-e03e-fe6e-ea6b-3e03afc9b331, 889508, 676 MiB\nGPU-5463e082-259e-537b-603a-01575d45801c, 889509, 476 MiB\nGPU-9c4eb614-ca19-a390-aaf4-801f8980b6a9, 889510, 500 MiB\n",
+  "log_tail": "==> /home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase1-baselines-practical-manysig-m5-r01/cvcnn_ce-ce-s392005.log <==\n[Epoch 107/200][START]\n[Epoch 107/200] train_loss=0.2560 val_tx=97.73% tested=0\n[Epoch 108/200][START]\n\n==> /home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase1-baselines-practical-manysig-m5-r01/cvcnn_ce-pl-s392005.log <==\n[Epoch 102/200] train_loss=0.2633 val_tx=82.47% tested=0\n[PSEUDO-METRICS] pseudo/enabled=1 pseudo/active=0 pseudo/ready=0 pseudo/start_epoch=150 pseudo/threshold=0.9 pseudo/margin_threshold=0 pseudo/coverage=0.953281 pseudo/selected=6101 pseudo/total=6400 pseudo/confidence=0.995252 pseudo/confidence_all=0.981915 pseudo/confidence_max=0.999983 pseudo/margin=0.991617 pseudo/margin_all=0.968347 pseudo/loss=0\n[Epoch 103/200][START]\n\n==> /home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase1-baselines-practical-manysig-m5-r01/drift-ce-s392005.log <==\n[Epoch 102/200] train_loss=-438.8044 val_tx=91.81% tested=0\n[TRAIN-METRICS] loss_ce_rx=0.125296 loss_ce_tx=0.215495 loss_center=30.7262 loss_feature_norm=86.1121 loss_grl=0.846567 loss_mse=-22038.2 loss_sat_ce=0.684074 z_rx_norm=93.7257 z_tx_norm=54.0229\n[Epoch 103/200][START]\n\n==> /home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase1-baselines-practical-manysig-m5-r01/drift-pl-s392005.log <==\n[PSEUDO-METRICS] pseudo/enabled=1 pseudo/active=0 pseudo/ready=0 pseudo/start_epoch=150 pseudo/threshold=0.9 pseudo/margin_threshold=0 pseudo/coverage=0.588594 pseudo/selected=3767 pseudo/total=6400 pseudo/confidence=0.9817 pseudo/confidence_all=0.834647 pseudo/confidence_max=1 pseudo/margin=0.967976 pseudo/margin_all=0.724721 pseudo/loss=0\n[BEST-VAL] epoch=96 checkpoint=/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-practical-manysig-m5-r01/drift-pl-s392005/best_by_val.pt test_on_val_improve=0\n[Epoch 097/200][START]\n\n==> /home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase1-baselines-practical-manysig-m5-r01/poster-ce-s392005.log <==\n[Epoch 108/200][START]\n[Epoch 108/200] train_loss=0.7187 val_tx=90.86% tested=0\n[Epoch 109/200][START]\n\n==> /home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase1-baselines-practical-manysig-m5-r01/radionet-ce-s392005.log <==\n[Epoch 108/200][START]\n[Epoch 108/200] train_loss=0.1852 val_tx=98.49% tested=0\n[Epoch 109/200][START]\n\n==> /home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase1-baselines-practical-manysig-m5-r01/riei_fd-ce-s392005.log <==\n[Epoch 098/200] train_loss=-3.8906 val_tx=97.73% tested=0\n[TRAIN-METRICS] grad_norm_all=0 grad_norm_fed=0 loss_ce=0.00256734 loss_dis=-4.07266 loss_feature_norm=4.13944 loss_ie=3.39493 loss_mi=0.00104992 loss_sat_ce=0.263973\n[Epoch 099/200][START]\n\n==> /home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase1-baselines-practical-manysig-m5-r01/riei_fd-pl-s392005.log <==\n[TRAIN-METRICS] grad_norm_all=0 grad_norm_fed=0 loss_ce=0.00201833 loss_dis=-4.0736 loss_feature_norm=4.34174 loss_ie=3.39549 loss_mi=0.000825991 loss_sat_ce=0.285954\n[PSEUDO-METRICS] pseudo/enabled=1 pseudo/active=0 pseudo/ready=0 pseudo/start_epoch=150 pseudo/threshold=0.9 pseudo/margin_threshold=0 pseudo/coverage=0.9725 pseudo/selected=6224 pseudo/total=6400 pseudo/confidence=0.997996 pseudo/confidence_all=0.988868 pseudo/confidence_max=1 pseudo/margin=0.996504 pseudo/margin_all=0.981299 pseudo/loss=0\n[Epoch 095/200][START]\n"
+}

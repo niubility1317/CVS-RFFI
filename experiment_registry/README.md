@@ -1,6 +1,6 @@
 # 实验总索引
 
-更新：2026-09-26T17:46:51+00:00
+更新：2026-09-26T17:58:23+00:00
 
 先按方法/问题检索，再用run ID读取精确配置与证据。历史组数量不等于独立实验数量。
 
@@ -12,7 +12,7 @@
 
 |记录类型|数量|
 |---|---:|
-|managed_run|50|
+|managed_run|7|
 |legacy_evidence_group|4028|
 |legacy_log_record|7778|
 |remote_directory_locator|3608|
@@ -26,13 +26,13 @@
 |[centralized](by_method/centralized.md)|4168|
 |[other](by_method/other.md)|2245|
 |[comparison_baseline](by_method/comparison_baseline.md)|1784|
-|[adv3b02](by_method/adv3b02.md)|1463|
+|[adv3b02](by_method/adv3b02.md)|1462|
 |[cvs](by_method/cvs.md)|1214|
 |[bex02](by_method/bex02.md)|1132|
 |[satellite_ablation](by_method/satellite_ablation.md)|1109|
 |[scheduler](by_method/scheduler.md)|1098|
 |[federated](by_method/federated.md)|742|
-|[phase1](by_method/phase1.md)|671|
+|[phase1](by_method/phase1.md)|665|
 |[riei](by_method/riei.md)|626|
 |[qknn](by_method/qknn.md)|624|
 |[drift](by_method/drift.md)|616|
@@ -40,129 +40,63 @@
 |[fsdg](by_method/fsdg.md)|540|
 |[cvcnn](by_method/cvcnn.md)|479|
 |[receiver_agnostic](by_method/receiver_agnostic.md)|466|
-|[phase2](by_method/phase2.md)|464|
+|[phase2](by_method/phase2.md)|465|
 |[d92](by_method/d92.md)|463|
 |[fl82](by_method/fl82.md)|376|
 |[fedcvs/vmb](by_method/fedcvs_vmb.md)|344|
 |[bex](by_method/bex.md)|237|
-|[core90](by_method/core90.md)|208|
-|[fasttrust](by_method/fasttrust.md)|145|
+|[core90](by_method/core90.md)|205|
+|[fasttrust](by_method/fasttrust.md)|139|
 |[shot](by_method/shot.md)|113|
 |[source](by_method/source.md)|89|
 |[smoke](by_method/smoke.md)|70|
 |[repair](by_method/repair.md)|68|
 |[nm fdu](by_method/nm_fdu.md)|49|
-|[response](by_method/response.md)|45|
 |[ecrs](by_method/ecrs.md)|45|
-|[STAR](by_method/STAR.md)|37|
-|[daot](by_method/daot.md)|35|
-|[Loo](by_method/Loo.md)|31|
+|[response](by_method/response.md)|42|
 |[mopc](by_method/mopc.md)|30|
 |[split_bex02](by_method/split_bex02.md)|30|
 |[csil](by_method/csil.md)|29|
 |[protonet](by_method/protonet.md)|29|
-|[RX1](by_method/RX1.md)|24|
+|[daot](by_method/daot.md)|25|
 |[comparison](by_method/comparison.md)|23|
-|[Smooth-E](by_method/Smooth-E.md)|22|
 |[hcfdg](by_method/hcfdg.md)|20|
 |[dryrun](by_method/dryrun.md)|19|
-|[plain-pseudo-label](by_method/plain-pseudo-label.md)|13|
 |[diagnostic](by_method/diagnostic.md)|13|
-|[rc4](by_method/rc4.md)|10|
 |[fedcvs](by_method/fedcvs.md)|9|
-|[practical](by_method/practical.md)|8|
-|[residual](by_method/residual.md)|7|
-|[special-SNN](by_method/special-SNN.md)|7|
-|[static-Loo](by_method/static-Loo.md)|7|
-|[SG-only](by_method/SG-only.md)|7|
-|[concat](by_method/concat.md)|6|
-|[full](by_method/full.md)|5|
-|[zf](by_method/zf.md)|5|
-|[mmse](by_method/mmse.md)|5|
+|[STAR](by_method/STAR.md)|5|
+|[Loo](by_method/Loo.md)|5|
 |[ordinary-pseudo-label](by_method/ordinary-pseudo-label.md)|5|
 |[stop](by_method/stop.md)|5|
 |[CVCNN](by_method/CVCNN.md)|4|
 |[RIEI](by_method/RIEI.md)|4|
 |[rafl](by_method/rafl.md)|4|
 |[phase3](by_method/phase3.md)|3|
-|[sixscene](by_method/sixscene.md)|2|
-|[evaluation](by_method/evaluation.md)|2|
-|[three_seed](by_method/three_seed.md)|2|
-|[E](by_method/E.md)|2|
+|[practical](by_method/practical.md)|2|
+|[residual_noeq](by_method/residual_noeq.md)|2|
 |[fucl](by_method/fucl.md)|2|
 |[tifs2025](by_method/tifs2025.md)|2|
-|[original_leo](by_method/original_leo.md)|1|
 |[PL100](by_method/PL100.md)|1|
-|[ratio](by_method/ratio.md)|1|
 |[warm10](by_method/warm10.md)|1|
 |[no-unlabeled](by_method/no-unlabeled.md)|1|
 |[baseline](by_method/baseline.md)|1|
-|[residual_noeq](by_method/residual_noeq.md)|1|
 |[poster](by_method/poster.md)|1|
 |[radionet](by_method/radionet.md)|1|
 |[source_only](by_method/source_only.md)|1|
-|[STAR-comparison](by_method/STAR-comparison.md)|1|
-|[provided-code](by_method/provided-code.md)|1|
-|[Original-PairSNN](by_method/Original-PairSNN.md)|1|
-|[ablation](by_method/ablation.md)|1|
-|[no-SNN](by_method/no-SNN.md)|1|
-|[threshold](by_method/threshold.md)|1|
+|[data-builder](by_method/data-builder.md)|1|
 |[fedfa](by_method/fedfa.md)|1|
 
 ## 最近记录入口
 
 |名称|类型|报告/原目录|
 |---|---|---|
-|ADV3B02＋DAOT＋FastTrust-RC4原LEO拼接增强|managed_run|[打开](../automation_reports/CV-SincNet/20260918-phase1-daot-rc4-original-leo-manysig-s392005-r01/report.md)|
-|DAOT＋FastTrust-RC4 practical四组实验|managed_run|[打开](../automation_reports/CV-SincNet/20260918-phase1-daot-rc4-practical4-manysig-s392005-r01/report.md)|
-|DAOT＋FastTrust-RC4 practical四组实验|managed_run|[打开](../automation_reports/CV-SincNet/20260918-phase1-daot-rc4-practical4-manysig-s392005-r02/report.md)|
-|DAOT＋FastTrust-RC4 practical四组实验r03|managed_run|[打开](../automation_reports/CV-SincNet/20260918-phase1-daot-rc4-practical4-manysig-s392005-r03/report.md)|
-|practical四组最新保存权重测试|managed_run|[打开](../automation_reports/CV-SincNet/20260919-phase1-daot-rc4-practical4-test-s392005-r01/report.md)|
-|practical四组最新保存权重测试r02|managed_run|[打开](../automation_reports/CV-SincNet/20260919-phase1-daot-rc4-practical4-test-s392005-r02/report.md)|
 |指定9月17日CVCNN版本重跑|managed_run|[打开](../automation_reports/CV-SincNet/20260920-cvcnn-original-pl100-s299-e200-r02/report.md)|
-|DAOT＋FastTrust-RC4 residual环境比例六组|managed_run|[打开](../automation_reports/CV-SincNet/20260920-phase1-daot-rc4-residual-ratios-manysig-s392005-r01/report.md)|
-|旧Practical四组checkpoint统一六环境测试|managed_run|[打开](../automation_reports/CV-SincNet/20260920-phase1-practical4-sixscene-eval-s392005-r01/report.md)|
 |原RIEI优化算法+普通固定星地拼接+硬伪标签|managed_run|[打开](../automation_reports/CV-SincNet/20260920-riei-original-concat-pl-s299-e200-r03/report.md)|
 |RIEI简单暖启动：100轮、有/无伪标签对照|managed_run|[打开](../automation_reports/CV-SincNet/20260920-riei-warm10-pl20-e100-s299-r04/report.md)|
 |外部对比方法：统一残差信道、五模型种子源域训练|managed_run|[打开](../automation_reports/CV-SincNet/20260927-phase1-baselines-practical-manysig-m5-r01/report.md)|
-|提供代码CORAL/MMMD/CNN/RIEI及PL六方法十种子|managed_run|[打开](../automation_reports/CV-SincNet/baselines_rx1_s10_e100_20260921_r01/report.md)|
+|Phase2残差信道共享数据：7RX、6旧类+20新类|managed_run|[打开](../automation_reports/CV-SincNet/20260927-phase2-practical-data-manytx-s2026092705-r01/report.md)|
 |STAR同配置CVCNN/RIEI普通伪标签对照|managed_run|[打开](../automation_reports/CV-SincNet/cvcnn_riei_pl_loo_s299_t90_20260920_r01/report.md)|
-|旧PairSNN：RX1九种子八阈值|managed_run|[打开](../automation_reports/CV-SincNet/pairsnn_rx1_s9_t8_e100_20260922_r01/report.md)|
-|原生DAOT＋RC4与仅动力博弈三seed对照|managed_run|[打开](../automation_reports/CV-SincNet/phase1_daot_rc4_pure_game_m3_20260917_r1/report.md)|
-|原生DAOT＋RC4与仅动力博弈三seed对照|managed_run|[打开](../automation_reports/CV-SincNet/phase1_daot_rc4_pure_game_m3_20260917_r2/report.md)|
-|响应博弈矩阵测试评估：VERIFIED|managed_run|[打开](../automation_reports/CV-SincNet/response_matrix_eval_20260917/report.md)|
 |RIEI优化版原系数+等权星地CE修正版|managed_run|[打开](../automation_reports/CV-SincNet/riei_pl_loo_ce11_s299_t90_20260920_r02/report.md)|
-|真实标签CE下限0.05＋梯度裁剪10：八种子六阈值|managed_run|[打开](../automation_reports/CV-SincNet/smooth_e_anchor05_pl9_rx1_s8_t6_e100_20260924_r01/report.md)|
-|源校准严格伪标签：3seed × 6阈值|managed_run|[打开](../automation_reports/CV-SincNet/smooth_e_calibrated_plainpl_rx1_s3_t6_e100_20260924_r01/report.md)|
-|冻结E5教师：探索性比较，不是同方法阈值敏感性|managed_run|[打开](../automation_reports/CV-SincNet/smooth_e_frozen5_pl9_rx1_s8_t5_e100_20260925_r01/report.md)|
-|冻结门控自伪标签：统一 CE 下限 0.10|managed_run|[打开](../automation_reports/CV-SincNet/smooth_e_frozengate_anchor10_rx1_s8_t5_e100_20260925_r01/report.md)|
-|冻结门控自伪标签：有标签CE下限0.20|managed_run|[打开](../automation_reports/CV-SincNet/smooth_e_frozengate_anchor20_rx1_s8_t5_e100_20260925_r01/report.md)|
-|最终状态：ANALYZED，40/40完成，期望趋势未达到|managed_run|[打开](../automation_reports/CV-SincNet/smooth_e_frozengate_selfpl9_rx1_s8_t5_e100_20260925_r01/report.md)|
-|类别支持联合置信度，统一 CE 下限 0.10|managed_run|[打开](../automation_reports/CV-SincNet/smooth_e_jointconf_anchor10_rx1_s8_t5_e100_20260926_r01/report.md)|
-|Smooth E STAR＋普通置信度伪标签|managed_run|[打开](../automation_reports/CV-SincNet/smooth_e_plainpl_rx1_s299_t8_e100_20260923_r01/report.md)|
-|Smooth E普通伪标签移除延迟渐增与SG投影：RX1单种子八阈值|managed_run|[打开](../automation_reports/CV-SincNet/smooth_e_plainpl_unprotected_rx1_s299_t8_e100_20260923_r01/report.md)|
-|Smooth E unprotected RX1新增四种子六阈值|managed_run|[打开](../automation_reports/CV-SincNet/smooth_e_plainpl_unprotected_rx1_s4_t6_e100_20260923_r01/report.md)|
-|无校准＋弱真实标签锚定：PL9压力实验|managed_run|[打开](../automation_reports/CV-SincNet/smooth_e_weakanchor_pl9_rx1_s3_t6_e100_20260924_r01/report.md)|
-|弱真实标签PL9：新增八种子六阈值|managed_run|[打开](../automation_reports/CV-SincNet/smooth_e_weakanchor_pl9_rx1_s8_t6_e100_20260924_r01/report.md)|
-|零有标签后期监督＋无梯度裁剪PL9压力实验|managed_run|[打开](../automation_reports/CV-SincNet/smooth_e_zeroanchor_noclip_pl9_rx1_s8_t6_e100_20260924_r01/report.md)|
-|当前STAR E机制与配对消融|managed_run|[打开](../automation_reports/CV-SincNet/smooth_star_e_ablation_s10_t90_20260920_r01/report.md)|
-|Smooth STAR E纯Loo去SNN配对对照|managed_run|[打开](../automation_reports/CV-SincNet/smooth_star_e_nosnn_loo_s10_t4_20260920_r01/report.md)|
-|Comment3 RX1 w45单seed六阈值敏感性|managed_run|[打开](../automation_reports/CV-SincNet/smooth_star_e_rx1_comment3_s299_e100_20260921_r01/report.md)|
-|Comment3 RX1 w45单seed六阈值敏感性|managed_run|[打开](../automation_reports/CV-SincNet/smooth_star_e_rx1_comment3_s299_e100_20260921_r02/report.md)|
-|原Smooth E：原seed299加8种子的六阈值实验|managed_run|[打开](../automation_reports/CV-SincNet/smooth_star_e_rx1_comment3_s9_t6_e100_20260921_r01/report.md)|
-|RX1伪标签噪声压力实验：取消渐增与监督增权|managed_run|[打开](../automation_reports/CV-SincNet/smooth_star_e_rx1_plstress_s299_e100_20260921_r01/report.md)|
-|RX1 Smooth E SG增权与推理EMA精调9项|managed_run|[打开](../automation_reports/CV-SincNet/smooth_star_e_rx1_refine_s3_e100_20260921_r01/report.md)|
-|Smooth STAR E RX1目标域三种子100轮|managed_run|[打开](../automation_reports/CV-SincNet/smooth_star_e_rx1_s3_e100_20260920_r01/report.md)|
-|RX1严格阈值与提前伪标签实验|managed_run|[打开](../automation_reports/CV-SincNet/smooth_star_e_rx1_strict_early_s299_e100_20260921_r01/report.md)|
-|RX1 Smooth E SG权重0.45十种子验证|managed_run|[打开](../automation_reports/CV-SincNet/smooth_star_e_rx1_w45_s10_e100_20260921_r01/report.md)|
-|RX1 Smooth E SG伪标签权重两档三种子|managed_run|[打开](../automation_reports/CV-SincNet/smooth_star_e_rx1_wsg_s3_e100_20260920_r01/report.md)|
-|SNN源域均衡和完整覆盖：2方案各24seed|managed_run|[打开](../automation_reports/CV-SincNet/star_snn_balanced_s24_e100_20260920_r01/report.md)|
-|SNN与Loo增强捆绑：3方案3seed100轮|managed_run|[打开](../automation_reports/CV-SincNet/star_snn_loo_bridge_s3_e100_20260920_r01/report.md)|
-|稳定SNN星地方案：3调度3seed100轮|managed_run|[打开](../automation_reports/CV-SincNet/star_snn_schedule_s3_e100_20260920_r01/report.md)|
-|SNN星地分类权重二维搜索：8新配置3seed100轮|managed_run|[打开](../automation_reports/CV-SincNet/star_snn_sgweight_search_s3_e100_20260920_r01/report.md)|
-|稳定SNN方案24种子验证：3复用21新增|managed_run|[打开](../automation_reports/CV-SincNet/star_snn_stable_s24_e100_20260920_r01/report.md)|
-|旧STAR配对特别SNN：4候选+2对照，各10seed|managed_run|[打开](../automation_reports/CV-SincNet/star_special_snn_s10_t90_20260920_r01/report.md)|
-|旧STAR配对特别SNN：4候选+2对照，各3seed，100轮|managed_run|[打开](../automation_reports/CV-SincNet/star_special_snn_s3_t90_e100_20260920_r01/report.md)|
 |CVS项目场景与数据协议|legacy_evidence_group|[打开](../github_publish/CVS-RFFI-repo/docs/PROJECT_PROTOCOL.md)|
 |实验管理与快速定位|legacy_evidence_group|[打开](../github_publish/CVS-RFFI-repo/docs/EXPERIMENT_MANAGEMENT.md)|
 |N607操作|legacy_evidence_group|[打开](../github_publish/CVS-RFFI-repo/docs/workflows/n607.md)|
@@ -233,3 +167,46 @@
 |qKNN量化记忆、目标域适应与新类注册研究报告|legacy_evidence_group|[打开](../github_publish/rffi-labeled-da-three-20260915/docs/QKNN_INT8_PROTOTYPE_RESEARCH_REPORT_20260720.md)|
 |CVS项目场景与数据协议|legacy_evidence_group|[打开](../github_publish/rffi-labeled-da-three-20260915/docs/PROJECT_PROTOCOL.md)|
 |Phase2近期改动联合实验验证计划|legacy_evidence_group|[打开](../github_publish/rffi-labeled-da-three-20260915/docs/PHASE2_RECENT_CHANGES_INTEGRATED_VALIDATION_PLAN.md)|
+|Phase2开放世界特征空间优化实验验证设计|legacy_evidence_group|[打开](../github_publish/rffi-labeled-da-three-20260915/docs/PHASE2_OW_FEATURE_EXPERIMENT_VALIDATION_PLAN.md)|
+|Phase2 LEO_weak-only数据可达性变更追踪|legacy_evidence_group|[打开](../github_publish/rffi-labeled-da-three-20260915/docs/PHASE2_LEO_WEAK_ONLY_TRACEABILITY_20260715.md)|
+|Phase2本地适配矩阵|legacy_evidence_group|[打开](../github_publish/rffi-labeled-da-three-20260915/docs/PHASE2_LOCAL_FIT_MATRIX.md)|
+|Phase2本地实现计划|legacy_evidence_group|[打开](../github_publish/rffi-labeled-da-three-20260915/docs/PHASE2_IMPLEMENTATION_PLAN_CODEX.md)|
+|Phase2地面特征空间优化设计与实现|legacy_evidence_group|[打开](../github_publish/rffi-labeled-da-three-20260915/docs/PHASE2_FEATURE_SPACE_OPTIMIZATION.md)|
+|Phase2数据一次验证实现附录|legacy_evidence_group|[打开](../github_publish/rffi-labeled-da-three-20260915/docs/PHASE2_DATA_VALIDATION_APPENDIX.md)|
+|PHASE1 SHORT195_S3 z_id特征空间验证计划|legacy_evidence_group|[打开](../github_publish/rffi-labeled-da-three-20260915/docs/PHASE1_SHORT195S3_ZID_FEATURE_SPACE_VALIDATION.md)|
+|Phase1半监督Baseline固定协议（2026-07-13）|legacy_evidence_group|[打开](../github_publish/rffi-labeled-da-three-20260915/docs/PHASE1_SSL_BASELINE_PROTOCOL_20260713.md)|
+|Phase1 ADVB02方法核对版：网络、损失、训练配置与星地信道增强|legacy_evidence_group|[打开](../github_publish/rffi-labeled-da-three-20260915/docs/PHASE1_ADVB02_METHOD_RECHECK_20260819.md)|
+|Local Workspace Cleanup 2026-06-26|legacy_evidence_group|[打开](../github_publish/rffi-labeled-da-three-20260915/docs/LOCAL_CLEANUP_20260626.md)|
+|地面训练双路线|legacy_evidence_group|[打开](../github_publish/rffi-labeled-da-three-20260915/docs/GROUND_TRAINING.md)|
+|ERBT-IDR M2.3／D92 E1-RFGuard实现追踪|legacy_evidence_group|[打开](../github_publish/rffi-labeled-da-three-20260915/docs/ERBT_IDR_M23_RFGUARD_TRACE_20260820.md)|
+|在轨部署Phase|legacy_evidence_group|[打开](../github_publish/rffi-labeled-da-three-20260915/docs/DEPLOYMENT_PHASES.md)|
+|D92 E0完整技术报告：identity160＋FFT96的256维注册方法|legacy_evidence_group|[打开](../github_publish/rffi-labeled-da-three-20260915/docs/D92_METHOD_COMPLETE_REPORT_20260727.md)|
+|D92 E0技术报告替换追踪表|legacy_evidence_group|[打开](../github_publish/rffi-labeled-da-three-20260915/docs/D92_E0_REPORT_REPLACEMENT_TRACE_20260817.md)|
+|D92_E0_METHOD_COMPLETE_REPORT_20260727|legacy_evidence_group|[打开](../github_publish/rffi-labeled-da-three-20260915/docs/D92_E0_METHOD_COMPLETE_REPORT_20260727.html)|
+|D92 E0全量消融实验数据汇总与详细分析|legacy_evidence_group|[打开](../github_publish/rffi-labeled-da-three-20260915/docs/D92_E0_ALL_ABLATION_EXPERIMENTS_REPORT_20260819.md)|
+|CVS Stage2-C TCSR-CI算法说明|legacy_evidence_group|[打开](../github_publish/rffi-labeled-da-three-20260915/docs/CVS_STAGE2C_TCSR_CI_ALGORITHM_20260704.md)|
+|CVS Stage2-C RMD-CI算法说明|legacy_evidence_group|[打开](../github_publish/rffi-labeled-da-three-20260915/docs/CVS_STAGE2C_RMD_CI_ALGORITHM_20260704.md)|
+|CVS Stage2-C OPC-MECR协同拒识算法说明|legacy_evidence_group|[打开](../github_publish/rffi-labeled-da-three-20260915/docs/CVS_STAGE2C_OPC_MECR_ALGORITHM_20260704.md)|
+|CVS Stage2-C OSPR-CI Algorithm|legacy_evidence_group|[打开](../github_publish/rffi-labeled-da-three-20260915/docs/CVS_STAGE2C_OSPR_CI_ALGORITHM_20260705.md)|
+|OF-HNFR-CI:旧类 floor 约束的硬负样本协同推理诊断|legacy_evidence_group|[打开](../github_publish/rffi-labeled-da-three-20260915/docs/CVS_STAGE2C_OF_HNFR_CI_ALGORITHM_20260704.md)|
+|CVS Stage2-C KERA-CI算法说明|legacy_evidence_group|[打开](../github_publish/rffi-labeled-da-three-20260915/docs/CVS_STAGE2C_KERA_CI_ALGORITHM_20260704.md)|
+|CVS Stage2-C DMG-CI算法设计|legacy_evidence_group|[打开](../github_publish/rffi-labeled-da-three-20260915/docs/CVS_STAGE2C_DMG_CI_ALGORITHM_20260704.md)|
+|CVS Stage2-C CRISP-C协同推理算法设计|legacy_evidence_group|[打开](../github_publish/rffi-labeled-da-three-20260915/docs/CVS_STAGE2C_CRISP_C_ALGORITHM_20260704.md)|
+|CVS Stage2-C C3R-HNFR算法设计|legacy_evidence_group|[打开](../github_publish/rffi-labeled-da-three-20260915/docs/CVS_STAGE2C_C3R_HNFR_ALGORITHM_20260704.md)|
+|CVS Stage2-C APACE-CI算法说明|legacy_evidence_group|[打开](../github_publish/rffi-labeled-da-three-20260915/docs/CVS_STAGE2C_APACE_CI_ALGORITHM_20260704.md)|
+|CVS Stage2-C AOR-Adapter-CI算法说明|legacy_evidence_group|[打开](../github_publish/rffi-labeled-da-three-20260915/docs/CVS_STAGE2C_AOR_ADAPTER_CI_ALGORITHM_20260704.md)|
+|CVS论文级对比实验协议|legacy_evidence_group|[打开](../github_publish/rffi-labeled-da-three-20260915/docs/CVS_PUBLICATION_COMPARISON_PROTOCOL_20260713.md)|
+|CVS项目相关约定与数据协议|legacy_evidence_group|[打开](../github_publish/rffi-labeled-da-three-20260915/docs/CVS_PROJECT_CONVENTIONS_AND_DATA_PROTOCOL_20260715.md)|
+|Phase1 FastTrust方法设计、实现与实验结果报告|legacy_evidence_group|[打开](../github_publish/rffi-labeled-da-three-20260915/docs/CVS_PHASE1_FASTTRUST_METHOD_REPORT_20260827.md)|
+|Phase1挑战条件化PA算子辨识需求追踪表|legacy_evidence_group|[打开](../github_publish/rffi-labeled-da-three-20260915/docs/CVS_PHASE1_CCOI_PA_V1_TRACE_20260824.md)|
+|从内容控制到条件系统辨识：Phase1挑战条件化PA算子辨识详细结合设计|legacy_evidence_group|[打开](../github_publish/rffi-labeled-da-three-20260915/docs/CVS_PHASE1_CCOI_PA_V1_DESIGN_20260824.md)|
+|ADV3B02-NMFDU-GATE-V1设计追踪表|legacy_evidence_group|[打开](../github_publish/rffi-labeled-da-three-20260915/docs/CVS_PHASE1_ADV3B02_NMFDU_GATE_V1_TRACE_20260901.md)|
+|ADV3B02物理因子化交叉重构设计追踪表|legacy_evidence_group|[打开](../github_publish/rffi-labeled-da-three-20260915/docs/CVS_PHASE1_ADV3B02_FCR_TRACE_20260901.md)|
+|ADV3B02-ECRS-V1设计追溯表|legacy_evidence_group|[打开](../github_publish/rffi-labeled-da-three-20260915/docs/CVS_PHASE1_ADV3B02_ECRS_V1_TRACE_20260901.md)|
+|CVS_META_ADAPTER_TRI_R4_V1设计追踪表|legacy_evidence_group|[打开](../github_publish/rffi-labeled-da-three-20260915/docs/CVS_META_ADAPTER_TRI_R4_V1_TRACE_20260824.md)|
+|CVS_META_ADAPTER_TRI_R4_V1设计规格|legacy_evidence_group|[打开](../github_publish/rffi-labeled-da-three-20260915/docs/CVS_META_ADAPTER_TRI_R4_V1_DESIGN_20260824.md)|
+|CVS阶段性成果技术报告：`ADV3B02_CORE90_SOFT_E200`与`qKNNV42`|legacy_evidence_group|[打开](../github_publish/rffi-labeled-da-three-20260915/docs/CVS_ADV3B02_QKNNV42_TECHNICAL_REPORT_20260709.md)|
+|CVS-RFFI_Phase2详细复现报告_图表与场景优化版_修复版|legacy_evidence_group|[打开](../github_publish/rffi-labeled-da-three-20260915/docs/CVS-RFFI_Phase2详细复现报告_图表与场景优化版_修复版.docx)|
+|CVS-RFFI_Phase2详细复现报告_图表与场景优化版|legacy_evidence_group|[打开](../github_publish/rffi-labeled-da-three-20260915/docs/CVS-RFFI_Phase2详细复现报告_图表与场景优化版.docx)|
+|持续学习、开放世界学习与CVS-RFFI持续注册：联网调研与项目映射报告|legacy_evidence_group|[打开](../github_publish/rffi-labeled-da-three-20260915/docs/CONTINUAL_LEARNING_OPEN_WORLD_REGISTRATION_RESEARCH_20260809.md)|
+|Codex过程更新可见性修复交接|legacy_evidence_group|[打开](../github_publish/rffi-labeled-da-three-20260915/docs/COLLABORATION_PROGRESS_VISIBILITY_FIX_20260714.md)|
