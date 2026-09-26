@@ -160,7 +160,8 @@ def main() -> None:
         ):
             batch = dict(batch)
             batch["iq"] = batch["iq"].to(device)
-            sat_iq = sat_view_aug(batch["iq"])
+            from baselines.common.practical_source import apply_training_view
+            sat_iq = apply_training_view(sat_view_aug, batch["iq"], batch)
         else:
             batch = supervised_sat_view_batch(batch, device, sat_view_aug if not concat_ce_only else None)
         progress = float(step) / float(total_steps)
@@ -263,7 +264,8 @@ def main() -> None:
         train_step_fn=train_step,
         pseudo_step_fn=unlabeled_step,
         forward_eval_fn=forward_eval,
-        extra_test_fn=extra_test,
+        extra_test_fn=None if args.source_only else extra_test,
+        source_only=args.source_only,
         paper_eval_last_n=args.paper_eval_last_n,
         paper_eval_name=args.paper_eval_name,
         test_eval_interval=args.test_eval_interval,

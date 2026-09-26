@@ -137,9 +137,11 @@ def build_pseudo_step_fn(
     cfg: PseudoLabelConfig,
     loader,
     optimizer,
+    additional_optimizers=(),
     forward_fn: Optional[Callable[[Any, Dict[str, Any], torch.device], Any]] = None,
 ):
     cursor = CyclingLoader(loader)
+    optimizers = (optimizer, *additional_optimizers)
 
     def pseudo_step(model, device, epoch: int, step: int) -> Dict[str, float]:
         del step
@@ -150,9 +152,11 @@ def build_pseudo_step_fn(
             return {"loss": 0.0, "pseudo/active": 0.0}
         result = compute_pseudo_label_loss(model, batch, device, cfg, epoch=epoch, forward_fn=forward_fn)
         if result.active and result.selected > 0:
-            optimizer.zero_grad()
+            for current in optimizers:
+                current.zero_grad()
             result.loss.backward()
-            optimizer.step()
+            for current in optimizers:
+                current.step()
         metrics = dict(result.metrics)
         metrics["loss"] = float(result.loss.detach().cpu())
         if not result.active:

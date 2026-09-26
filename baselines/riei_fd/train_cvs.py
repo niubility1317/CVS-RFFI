@@ -23,6 +23,7 @@ from baselines.common.cvs_sat_eval import (
     parse_and_validate_sat_scenarios,
 )
 from baselines.common.cvs_trainer import run_validation_gated_training
+from baselines.common.practical_source import apply_training_view
 from baselines.common.io import set_seed
 from baselines.common.paper_protocol import compact_receiver_targets, train_receiver_count, train_receiver_indices
 from baselines.common.pseudo_labels import add_pseudo_label_args, build_pseudo_label_config, build_pseudo_step_fn
@@ -158,7 +159,7 @@ def main() -> None:
         ):
             batch = dict(batch)
             batch["iq"] = batch["iq"].to(device)
-            sat_iq = sat_view_aug(batch["iq"])
+            sat_iq = apply_training_view(sat_view_aug, batch["iq"], batch)
         else:
             batch = supervised_sat_view_batch(batch, device, sat_view_aug if not concat_ce_only else None)
             batch = dict(batch)
@@ -192,7 +193,8 @@ def main() -> None:
     if (pseudo_cfg.enabled or consistency_cfg.enabled) and unlabeled_loader is None:
         raise ValueError("Unlabeled training requires --use_source_ssl_split.")
     pseudo_step = (
-        build_pseudo_step_fn(cfg=pseudo_cfg, loader=unlabeled_loader, optimizer=opt_all, forward_fn=forward_eval)
+        build_pseudo_step_fn(cfg=pseudo_cfg, loader=unlabeled_loader, optimizer=opt_all,
+                            additional_optimizers=(opt_fed,), forward_fn=forward_eval)
         if pseudo_cfg.enabled
         else None
     )
@@ -240,7 +242,8 @@ def main() -> None:
         train_step_fn=train_step,
         pseudo_step_fn=unlabeled_step,
         forward_eval_fn=forward_eval,
-        extra_test_fn=extra_test,
+        extra_test_fn=None if args.source_only else extra_test,
+        source_only=args.source_only,
         paper_eval_last_n=args.paper_eval_last_n,
         paper_eval_name=args.paper_eval_name,
         test_eval_interval=args.test_eval_interval,

@@ -1,5 +1,7 @@
 # CVS外部对比实验准备状态
 
+> 后续更新：用户已确认Phase1/2统一residual_noeq，并要求加入POSTER、RadioNet。后续实际矩阵与启动状态以automation_reports/CV-SincNet/20260927-phase1-baselines-practical-manysig-m5-r01/为准；下方保留本文件首次交接事实，不再代表当前阻塞状态。
+
 ## 本次范围
 
 用户要求先运行CVS以外的方法，覆盖Phase1、Phase2域泛化、域适应和新类注册。Phase1使用新的practical LEO residual信道。协同实验属于另一篇论文。

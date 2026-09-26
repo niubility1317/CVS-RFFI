@@ -6,6 +6,7 @@
 
 |名称|记录类型|证据入口|
 |---|---|---|
+|ADV3B02＋DAOT＋FastTrust-RC4原LEO拼接增强|managed_run|[打开](../../automation_reports/CV-SincNet/20260918-phase1-daot-rc4-original-leo-manysig-s392005-r01/report.md)|
 |phase2_adv3b02_collab_open_set_qknn_full_20260703|legacy_evidence_group|[打开](../../github_publish/rffi-labeled-da-three-20260915/remote_artifacts/phase2_adv3b02_collab_open_set_qknn_full_20260703)|
 |adv3b02_official_newcount_scale_20260724_v7_release|legacy_evidence_group|[打开](../../github_publish/rffi-labeled-da-three-20260915/paper_reproduction/configs/adv3b02_official_newcount_scale_20260724_v7_release)|
 |adv3b02_official_newcount_scale_20260724_v6_release|legacy_evidence_group|[打开](../../github_publish/rffi-labeled-da-three-20260915/paper_reproduction/configs/adv3b02_official_newcount_scale_20260724_v6_release)|

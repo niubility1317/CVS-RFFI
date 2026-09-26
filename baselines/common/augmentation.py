@@ -122,6 +122,9 @@ class OnlineRFChannelAugment:
 
 
 def add_sat_channel_view_args(parser: argparse.ArgumentParser) -> argparse.ArgumentParser:
+    parser.add_argument('--practical_residual_noeq', action='store_true')
+    parser.add_argument('--practical_fs_hz', type=float, default=None)
+    parser.add_argument('--practical_receiver_seed', type=int, default=2027)
     parser.add_argument("--use_sat_channel_view_aug", action="store_true")
     parser.add_argument("--use_concat_sat_channel_aug", action="store_true")
     parser.add_argument("--concat_sat_ce_only", action="store_true")
@@ -221,6 +224,14 @@ class SatGroundChannelViewAugment:
 
 
 def build_sat_channel_view_augment(args: Any) -> Optional[SatGroundChannelViewAugment]:
+    if bool(getattr(args, 'practical_residual_noeq', False)):
+        if getattr(args, 'practical_fs_hz', None) is None:
+            raise ValueError('practical_fs_hz must be explicit')
+        if not getattr(args, 'concat_sat_ce_only', False):
+            raise ValueError('Practical matched experiment requires CE-only satellite supervision')
+        from baselines.common.practical_source import PracticalResidualAugment
+        return PracticalResidualAugment(fs_hz=args.practical_fs_hz,
+            seed=args.sat_view_seed, receiver_seed=args.practical_receiver_seed)
     if not (
         bool(getattr(args, "use_sat_channel_view_aug", False))
         or bool(getattr(args, "use_concat_sat_channel_aug", False))

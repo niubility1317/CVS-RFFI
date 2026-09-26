@@ -1,0 +1,106 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20260916-phase1-method-dataset-s000001-r01",
+  "group_id": "phase1-method-question",
+  "display_name": "填写可读实验名称",
+  "description": "填写研究问题、机制与对照差异",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [],
+  "comparison_group_id": null,
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "填写本次用户授权范围或对话ID",
+  "code": {
+    "commit": null,
+    "checkout": null,
+    "environment": null,
+    "cwd": null
+  },
+  "data": {
+    "dataset": null,
+    "version": null,
+    "representation": null,
+    "contract_ref": null,
+    "physical_ids_ref": null,
+    "label_map_ref": null,
+    "source_receivers": [],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": null,
+      "U_s": null,
+      "V": null
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": null,
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "test_only",
+    "external_method_exception": null,
+    "claim_scope": null
+  },
+  "checkpoint": {
+    "initialization": "scratch",
+    "sources": [],
+    "contract_check_ref": null,
+    "provenance_verdict": null,
+    "selection_rule": null
+  },
+  "execution": {
+    "host": null,
+    "launch_owner": null,
+    "gpu_policy": "max_two_training_runs_per_gpu",
+    "remote_run_root": null,
+    "remote_log_root": null,
+    "local_artifact_root": null,
+    "launch_command": null,
+    "stop_rule": null
+  },
+  "expected_artifacts": [],
+  "metrics_plan": {
+    "metric_names": [],
+    "dimensions": [],
+    "prediction_ref": null,
+    "scorer_ref": null
+  },
+  "rows": [
+    {
+      "row_id": "method-s000001",
+      "method": "填写方法和实际启用组件",
+      "purpose": "primary",
+      "config_ref": null,
+      "resolved_config_ref": null,
+      "data_overrides": {},
+      "seeds": {
+        "model": null,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "每个null解释为不适用或待补，不能默认为所有seed相同",
+      "k": null,
+      "scenario": null,
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": null,
+      "output_root": null,
+      "log_path": null,
+      "command": null,
+      "expected_artifacts": []
+    }
+  ],
+  "notes": []
+}

@@ -6,6 +6,12 @@
 
 |名称|记录类型|证据入口|
 |---|---|---|
+|ADV3B02＋DAOT＋FastTrust-RC4原LEO拼接增强|managed_run|[打开](../../automation_reports/CV-SincNet/20260918-phase1-daot-rc4-original-leo-manysig-s392005-r01/report.md)|
+|DAOT＋FastTrust-RC4 practical四组实验|managed_run|[打开](../../automation_reports/CV-SincNet/20260918-phase1-daot-rc4-practical4-manysig-s392005-r01/report.md)|
+|DAOT＋FastTrust-RC4 practical四组实验|managed_run|[打开](../../automation_reports/CV-SincNet/20260918-phase1-daot-rc4-practical4-manysig-s392005-r02/report.md)|
+|DAOT＋FastTrust-RC4 practical四组实验r03|managed_run|[打开](../../automation_reports/CV-SincNet/20260918-phase1-daot-rc4-practical4-manysig-s392005-r03/report.md)|
+|practical四组最新保存权重测试|managed_run|[打开](../../automation_reports/CV-SincNet/20260919-phase1-daot-rc4-practical4-test-s392005-r01/report.md)|
+|practical四组最新保存权重测试r02|managed_run|[打开](../../automation_reports/CV-SincNet/20260919-phase1-daot-rc4-practical4-test-s392005-r02/report.md)|
 |Phase1 FastTrust方法设计、实现与实验结果报告|legacy_evidence_group|[打开](../../github_publish/rffi-labeled-da-three-20260915/docs/CVS_PHASE1_FASTTRUST_METHOD_REPORT_20260827.md)|
 |phase1_adv3b02_fasttrust_rc4_s392002_20260822|legacy_evidence_group|[打开](../../github_publish/rffi-labeled-da-three-20260915/configs/phase1_adv3b02_fasttrust_rc4_s392002_20260822.json)|
 |phase1_adv3b02_fasttrust_rc4_qb_e200_s392002_20260823|legacy_evidence_group|[打开](../../github_publish/rffi-labeled-da-three-20260915/configs/phase1_adv3b02_fasttrust_rc4_qb_e200_s392002_20260823.json)|

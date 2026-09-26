@@ -1,0 +1,22 @@
+{
+  "poster": {
+    "max_probability_abs_error": 1.4901161193847656e-08,
+    "frozen_prefix_unchanged": true,
+    "trainable": [
+      "dense1.weight",
+      "dense1.bias",
+      "dense2.weight",
+      "dense2.bias",
+      "head.weight",
+      "head.bias"
+    ]
+  },
+  "radionet": {
+    "max_probability_abs_error": 1.4901161193847656e-08,
+    "frozen_prefix_unchanged": true,
+    "trainable": [
+      "head.weight",
+      "head.bias"
+    ]
+  }
+}

@@ -7,6 +7,7 @@ import torch
 
 from baselines.common.cvs_trainer import run_validation_gated_training
 from baselines.common.pseudo_labels import PseudoLabelConfig, compute_pseudo_label_loss
+from baselines.common.pseudo_labels import build_pseudo_step_fn
 
 
 class NoTruthBatch(dict):
@@ -22,6 +23,16 @@ class NoTruthBatch(dict):
 
 
 class SourceOnlyTests(unittest.TestCase):
+    def test_pseudo_step_updates_both_disjoint_optimizers(self):
+        model = torch.nn.Sequential(torch.nn.Linear(2, 4), torch.nn.Tanh(), torch.nn.Linear(4, 2))
+        head = torch.optim.SGD(model[2].parameters(), lr=.1)
+        backbone = torch.optim.SGD(model[0].parameters(), lr=.1)
+        before = model[0].weight.detach().clone()
+        step = build_pseudo_step_fn(cfg=PseudoLabelConfig(enabled=True, start_epoch=1, threshold=0),
+            loader=[{'iq': torch.ones(3, 2)}], optimizer=head, additional_optimizers=(backbone,))
+        step(model, torch.device('cpu'), 1, 0)
+        self.assertFalse(torch.equal(before, model[0].weight))
+
     def test_pseudo_loss_does_not_inspect_truth(self):
         model = torch.nn.Linear(2, 2)
         result = compute_pseudo_label_loss(

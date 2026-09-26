@@ -24,6 +24,7 @@ from baselines.common.cvs_sat_eval import (
     parse_and_validate_sat_scenarios,
 )
 from baselines.common.cvs_trainer import run_validation_gated_training
+from baselines.common.practical_source import apply_training_view
 from baselines.common.io import set_seed
 from baselines.common.pseudo_labels import add_pseudo_label_args, build_pseudo_label_config, build_pseudo_step_fn
 from baselines.cvcnn_ce.model import BasicCVCNN, SincCVCNN
@@ -44,6 +45,7 @@ def main() -> None:
     parser.add_argument("--embedding_dim", type=int, default=128)
     parser.add_argument("--dropout", type=float, default=0.0)
     parser.add_argument("--front_end", type=str, default="conv", choices=["conv", "sinc"])
+    parser.add_argument('--author_backbone', choices=['poster', 'radionet'], default=None)
     parser.add_argument("--sinc_kernel_size", type=int, default=79)
     parser.add_argument("--sample_rate_hz", type=float, default=25e6)
     parser.add_argument("--seed", type=int, default=1337)
@@ -57,7 +59,7 @@ def main() -> None:
     set_seed(args.seed)
     device = torch.device(args.device if torch.cuda.is_available() and args.device.startswith("cuda") else "cpu")
     print(
-        f"[START] method=cvcnn_ce front_end={args.front_end} seed={args.seed} device={device} epochs={args.epochs} "
+        f"[START] method={args.author_backbone or 'cvcnn_ce'} front_end={args.front_end} seed={args.seed} device={device} epochs={args.epochs} "
         f"sat_eval={int(bool(sat_scenarios))} output_dir={args.output_dir}",
         flush=True,
     )
@@ -66,6 +68,9 @@ def main() -> None:
     if args.use_pseudo_labels and args.use_augmentation_consistency:
         raise ValueError("Pseudo-label and augmentation-consistency routes must run separately.")
     model_cls = SincCVCNN if args.front_end == "sinc" else BasicCVCNN
+    if args.author_backbone:
+        from baselines.common.li_backbones import PosterHomegrown, RadioNetDF
+        model_cls = PosterHomegrown if args.author_backbone == 'poster' else RadioNetDF
     model_kwargs = {
         "num_classes": loaders.split.num_classes,
         "input_len": loaders.split.input_len,
@@ -82,8 +87,10 @@ def main() -> None:
     total_params = sum(int(p.numel()) for p in model.parameters())
     trainable_params = sum(int(p.numel()) for p in model.parameters() if p.requires_grad)
     print(f"[MODEL] {model.__class__.__name__} params={total_params:,} trainable={trainable_params:,}", flush=True)
-    optimizer = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=args.wd)
-    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=max(1, args.epochs), eta_min=args.lr_min)
+    optimizer = (torch.optim.Adam(model.parameters(), lr=args.lr, eps=1e-7) if args.author_backbone else
+                 torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=args.wd))
+    scheduler = (None if args.author_backbone else
+                 torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=max(1, args.epochs), eta_min=args.lr_min))
     pseudo_cfg = build_pseudo_label_config(args)
     consistency_cfg = build_augmentation_consistency_config(args)
     unlabeled_loader = loaders.unlabeled
@@ -113,11 +120,22 @@ def main() -> None:
     )
 
     def train_step(model, batch, device, epoch, step):
-        batch = supervised_sat_view_batch(batch, device, sat_view_aug)
+        if sat_view_aug is not None:
+            sat_view_aug.set_epoch(epoch)
+        if args.concat_sat_ce_only:
+            batch = dict(batch)
+            batch['iq'] = batch['iq'].to(device)
+        else:
+            batch = supervised_sat_view_batch(batch, device, sat_view_aug)
         x = batch["iq"]
         y = batch["label"].to(device)
-        logits = model(x)
-        loss = F.cross_entropy(logits, y)
+        if args.concat_sat_ce_only and sat_view_aug is not None and epoch >= args.concat_sat_start_epoch:
+            satellite = apply_training_view(sat_view_aug, x, batch)
+            joint_logits = model(torch.cat([x, satellite], dim=0))
+            clean_logits, sat_logits = joint_logits.split(len(x))
+            loss = F.cross_entropy(clean_logits, y) + args.lambda_sat_cls * F.cross_entropy(sat_logits, y)
+        else:
+            loss = F.cross_entropy(model(x), y)
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
@@ -147,7 +165,8 @@ def main() -> None:
         scheduler=scheduler,
         train_step_fn=train_step,
         pseudo_step_fn=unlabeled_step,
-        extra_test_fn=extra_test,
+        extra_test_fn=None if args.source_only else extra_test,
+        source_only=args.source_only,
         paper_eval_last_n=args.paper_eval_last_n,
         paper_eval_name=args.paper_eval_name,
         output_dir=args.output_dir,

@@ -48,6 +48,8 @@ def parse_csv_indices(value: str | Sequence[int] | None) -> Optional[List[int | 
 
 
 def add_cvs_data_args(parser: argparse.ArgumentParser) -> argparse.ArgumentParser:
+    parser.add_argument('--source_only', action='store_true')
+    parser.add_argument('--source_contract', default='')
     parser.add_argument("--wisig_pkl", type=str, default="./Dataset_WigSig/ManySig.pkl")
     parser.add_argument(
         "--wisig_protocol",
@@ -239,6 +241,11 @@ def build_cvs_split(
     transform_train: Optional[Callable[[torch.Tensor], torch.Tensor]] = None,
     transform_eval: Optional[Callable[[torch.Tensor], torch.Tensor]] = None,
 ) -> CVSSplit:
+    if bool(getattr(args, 'source_only', False)):
+        if transform_train is not None or transform_eval is not None:
+            raise ValueError('Contract source inputs forbid implicit transforms')
+        from baselines.common.practical_source import build_contract_split
+        return build_contract_split(args)
     ds_w = load_wisig_compact_pkl(args.wisig_pkl)
     eq = "both" if str(args.wisig_equalized).lower() == "both" else int(args.wisig_equalized)
     protocol = str(getattr(args, "wisig_protocol", "cvs_day_rx")).lower()

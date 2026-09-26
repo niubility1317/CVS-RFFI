@@ -6,6 +6,12 @@
 
 |名称|记录类型|证据入口|
 |---|---|---|
+|ADV3B02＋DAOT＋FastTrust-RC4原LEO拼接增强|managed_run|[打开](../../automation_reports/CV-SincNet/20260918-phase1-daot-rc4-original-leo-manysig-s392005-r01/report.md)|
+|DAOT＋FastTrust-RC4 practical四组实验|managed_run|[打开](../../automation_reports/CV-SincNet/20260918-phase1-daot-rc4-practical4-manysig-s392005-r01/report.md)|
+|DAOT＋FastTrust-RC4 practical四组实验|managed_run|[打开](../../automation_reports/CV-SincNet/20260918-phase1-daot-rc4-practical4-manysig-s392005-r02/report.md)|
+|DAOT＋FastTrust-RC4 practical四组实验r03|managed_run|[打开](../../automation_reports/CV-SincNet/20260918-phase1-daot-rc4-practical4-manysig-s392005-r03/report.md)|
+|practical四组最新保存权重测试|managed_run|[打开](../../automation_reports/CV-SincNet/20260919-phase1-daot-rc4-practical4-test-s392005-r01/report.md)|
+|practical四组最新保存权重测试r02|managed_run|[打开](../../automation_reports/CV-SincNet/20260919-phase1-daot-rc4-practical4-test-s392005-r02/report.md)|
 |phase1_dgleo_p0factorial8_matrix_20260714|legacy_evidence_group|[打开](../../github_publish/rffi-labeled-da-three-20260915/local_artifacts/phase1_dgleo_p0factorial8_matrix_20260714.json)|
 |PHASE1 SHORT195_S3 z_id特征空间验证计划|legacy_evidence_group|[打开](../../github_publish/rffi-labeled-da-three-20260915/docs/PHASE1_SHORT195S3_ZID_FEATURE_SPACE_VALIDATION.md)|
 |Phase1半监督Baseline固定协议（2026-07-13）|legacy_evidence_group|[打开](../../github_publish/rffi-labeled-da-three-20260915/docs/PHASE1_SSL_BASELINE_PROTOCOL_20260713.md)|
