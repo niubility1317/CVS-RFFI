@@ -86,7 +86,7 @@ class BaselinePseudoLabelModuleTest(unittest.TestCase):
         self.assertGreater(float(active.loss.detach()), 0.0)
         self.assertAlmostEqual(active.metrics["pseudo/coverage"], 1.0)
 
-    def test_pseudo_label_precision_uses_true_label_for_masked_source_samples(self):
+    def test_pseudo_label_training_omits_hidden_truth_precision(self):
         from baselines.common.pseudo_labels import PseudoLabelConfig, compute_pseudo_label_loss
 
         class TinyModel(nn.Module):
@@ -108,7 +108,7 @@ class BaselinePseudoLabelModuleTest(unittest.TestCase):
 
         self.assertTrue(active.active)
         self.assertEqual(active.selected, 2)
-        self.assertAlmostEqual(active.metrics["pseudo/precision"], 1.0)
+        self.assertNotIn("pseudo/precision", active.metrics)
 
 
 class BaselinePseudoLabelTrainerHookTest(unittest.TestCase):

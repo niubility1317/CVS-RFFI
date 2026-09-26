@@ -404,7 +404,14 @@ def run_validation_gated_training(
     test_on_val_improve: bool = True,
     reload_best_for_final_test: bool = False,
     checkpoint_name: str = "best_by_val.pt",
+    source_only: bool = False,
 ) -> TrainHistory:
+    if source_only:
+        if named_test_loaders or extra_test_fn is not None or test_evaluate_fn is not None:
+            raise ValueError("source_only forbids target loaders and target evaluation callbacks.")
+        test_on_val_improve = False
+        test_eval_interval = 0
+        paper_eval_last_n = 0
     ensure_dir(output_dir)
     best_metric = str(best_metric).lower()
     if best_metric not in {"acc", "loss"}:
@@ -655,6 +662,20 @@ def run_validation_gated_training(
                 flush=True,
             )
             break
+    if source_only and history.epochs:
+        final_epoch = int(history.epochs[-1]["epoch"])
+        final_path = os.path.join(output_dir, "last.pt")
+        final = {
+            "status": "SOURCE_TRAINED",
+            "epoch": final_epoch,
+            "checkpoint_source": "last_epoch",
+            "checkpoint": final_path,
+            "target_evaluated": False,
+        }
+        torch.save({"model": model.state_dict(), "epoch": final_epoch, "stats": final}, final_path)
+        save_json({"epochs": history.epochs, "best": history.best, "final": final},
+                  os.path.join(output_dir, "metrics.json"))
+        return history
     if history.epochs:
         final_checkpoint_source = "last_epoch"
         final_checkpoint_epoch = int(history.epochs[-1].get("epoch", epochs))
