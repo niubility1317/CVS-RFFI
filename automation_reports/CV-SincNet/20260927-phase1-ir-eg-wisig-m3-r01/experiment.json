@@ -19,10 +19,11 @@
   "replaces_run_id": null,
   "authorization": "Current user requested implementation against IR_EG_DESIGN_SPEC and IMPLEMENTATION_PLAN; remote training not authorized.",
   "code": {
-    "commit": "acf0a6407c4a2cd114851e9f60d0cd346e4b2c77",
+    "commit": "e693ea18fd5e394c47a0cc08415e43f103743f61",
     "checkout": "E:\\type10-7\\code\\worktrees\\ir_eg_v1_20260927",
     "environment": "ssr-gpu; PyTorch 2.10.0+cu128",
-    "cwd": "E:\\type10-7\\code\\worktrees\\ir_eg_v1_20260927\\experiments\\ir_eg_v1"
+    "cwd": "E:\\type10-7\\code\\worktrees\\ir_eg_v1_20260927\\experiments\\ir_eg_v1",
+    "base_commit": "acf0a6407c4a2cd114851e9f60d0cd346e4b2c77"
   },
   "data": {
     "dataset": "ManySig",
@@ -1008,5 +1009,6 @@
     "Confirmation candidates cannot be selected from target scores. Every seed contrast and every attempted candidate/cost must be retained.",
     "Scientific convergence confirmation is a separate unfrozen protocol; E200/44400 only supplies budget-audit readings."
   ],
-  "status": "PREPARED_NOT_LAUNCHED"
+  "status": "PREPARED_NOT_LAUNCHED",
+  "development_status": "VERIFIED"
 }

@@ -2,6 +2,7 @@
 from pathlib import Path
 import json
 import sys
+import subprocess
 
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'code'))
@@ -18,7 +19,8 @@ def main():
         status='PREPARED_NOT_LAUNCHED',tags=['IR-EG','BR-IR-EG','DAOT','FastTrust','source-only'],
         comparison_group_id='native-joint-same-exposure-44400',
         authorization='Current user requested implementation against IR_EG_DESIGN_SPEC and IMPLEMENTATION_PLAN; remote training not authorized.')
-    record['code'].update(commit=BASE,checkout=str(ROOT.parents[1]),environment='ssr-gpu; PyTorch 2.10.0+cu128',cwd=str(ROOT))
+    commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip()
+    record['code'].update(commit=commit,base_commit=BASE,checkout=str(ROOT.parents[1]),environment='ssr-gpu; PyTorch 2.10.0+cu128',cwd=str(ROOT))
     record['data'].update(dataset='ManySig',representation='equalized',
         contract_ref='experiments/ir_eg_v1/docs/IR_EG_DESIGN_SPEC.md#11-不可改变的数据与监督边界',
         source_receivers=[1,3,4,6,8],target_receivers=[0,2,5,7,9,10,11],source_days=[1,2,3],target_days=[0,1,2,3],

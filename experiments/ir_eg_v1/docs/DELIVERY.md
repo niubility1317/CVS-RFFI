@@ -27,3 +27,5 @@ python code/scripts/profile_ir_acceptance.py --device cuda --output acceptance/c
 合成profiling只报告本地实际调用、用时和内存；包含求解器snapshot、CG及外部提交，排除真实数据/教师/评估。冷启动和并行干扰的早期计时另存，不用于比较。当前测量不能证明完整训练提速。
 
 24行计划配置均`launch=false`。尚未完成真实checkpoint探针、三seed训练、真实数据消融、source收敛成本及目标预测评分。逐项范围见[需求追溯](traceability.md)。
+
+实现提交：e693ea18fd5e394c47a0cc08415e43f103743f61。独立git ls-remote核验远端分支OID一致，交付状态VERIFIED。后续提交仅补充交付元数据。
