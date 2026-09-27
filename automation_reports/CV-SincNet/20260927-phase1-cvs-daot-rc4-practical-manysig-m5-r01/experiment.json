@@ -20,7 +20,7 @@
   "replaces_run_id": null,
   "authorization": "2026-09-27用户：跑CVS实验；注意版本；是这个，以及后续的D92。",
   "code": {
-    "commit": "RELEASE_COMMIT",
+    "commit": "9b1ddd939fcabc74c77c94a62fef8e5aad07c0e9",
     "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rc4_matched_20260927_r01",
@@ -126,7 +126,7 @@
       "row_id": "cvs-daot-rc4-s392005",
       "method": "DAOT_A1+FastTrust_RC4_original_residual_noeq",
       "purpose": "historical_seed_replication",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/adv3b02_xuc/configs/matched_20260927/cvs-daot-rc4-s392005.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s392005/resolved_config.json",
       "data_overrides": {},
@@ -148,19 +148,21 @@
       "budget_ref": "native muse_epoch_basis=unlabeled_loader; Ubatch256; actual steps logged; not compute-matched to50-step baselines",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s392005",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s392005.train.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rc4_matched_20260927_r01/code/scripts/train_rc4_matched.py --config /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rc4_matched_20260927_r01/configs/matched_20260927/cvs-daot-rc4-s392005.json --dataset /home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl --output /home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s392005 --source-contract /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json --run-id 20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01 --commit RELEASE_COMMIT",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rc4_matched_20260927_r01/code/scripts/train_rc4_matched.py --config /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rc4_matched_20260927_r01/configs/matched_20260927/cvs-daot-rc4-s392005.json --dataset /home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl --output /home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s392005 --source-contract /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json --run-id 20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01 --commit 9b1ddd939fcabc74c77c94a62fef8e5aad07c0e9",
       "expected_artifacts": [
         "final_ssdg.pth",
         "completion.json",
         "startup.json",
         "resolved_config.json"
-      ]
+      ],
+      "pid": 1269179,
+      "status": "RUNNING"
     },
     {
       "row_id": "cvs-daot-rc4-s2026092701",
       "method": "DAOT_A1+FastTrust_RC4_original_residual_noeq",
       "purpose": "fresh_model_seed",
-      "gpu": null,
+      "gpu": 1,
       "config_ref": "experiments/adv3b02_xuc/configs/matched_20260927/cvs-daot-rc4-s2026092701.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701/resolved_config.json",
       "data_overrides": {},
@@ -182,19 +184,21 @@
       "budget_ref": "native muse_epoch_basis=unlabeled_loader; Ubatch256; actual steps logged; not compute-matched to50-step baselines",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701.train.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rc4_matched_20260927_r01/code/scripts/train_rc4_matched.py --config /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rc4_matched_20260927_r01/configs/matched_20260927/cvs-daot-rc4-s2026092701.json --dataset /home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl --output /home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701 --source-contract /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json --run-id 20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01 --commit RELEASE_COMMIT",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rc4_matched_20260927_r01/code/scripts/train_rc4_matched.py --config /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rc4_matched_20260927_r01/configs/matched_20260927/cvs-daot-rc4-s2026092701.json --dataset /home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl --output /home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701 --source-contract /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json --run-id 20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01 --commit 9b1ddd939fcabc74c77c94a62fef8e5aad07c0e9",
       "expected_artifacts": [
         "final_ssdg.pth",
         "completion.json",
         "startup.json",
         "resolved_config.json"
-      ]
+      ],
+      "pid": 1269190,
+      "status": "RUNNING"
     },
     {
       "row_id": "cvs-daot-rc4-s2026092702",
       "method": "DAOT_A1+FastTrust_RC4_original_residual_noeq",
       "purpose": "fresh_model_seed",
-      "gpu": null,
+      "gpu": 2,
       "config_ref": "experiments/adv3b02_xuc/configs/matched_20260927/cvs-daot-rc4-s2026092702.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092702/resolved_config.json",
       "data_overrides": {},
@@ -216,19 +220,21 @@
       "budget_ref": "native muse_epoch_basis=unlabeled_loader; Ubatch256; actual steps logged; not compute-matched to50-step baselines",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092702.train.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rc4_matched_20260927_r01/code/scripts/train_rc4_matched.py --config /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rc4_matched_20260927_r01/configs/matched_20260927/cvs-daot-rc4-s2026092702.json --dataset /home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl --output /home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092702 --source-contract /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json --run-id 20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01 --commit RELEASE_COMMIT",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rc4_matched_20260927_r01/code/scripts/train_rc4_matched.py --config /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rc4_matched_20260927_r01/configs/matched_20260927/cvs-daot-rc4-s2026092702.json --dataset /home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl --output /home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092702 --source-contract /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json --run-id 20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01 --commit 9b1ddd939fcabc74c77c94a62fef8e5aad07c0e9",
       "expected_artifacts": [
         "final_ssdg.pth",
         "completion.json",
         "startup.json",
         "resolved_config.json"
-      ]
+      ],
+      "pid": 1269200,
+      "status": "RUNNING"
     },
     {
       "row_id": "cvs-daot-rc4-s2026092703",
       "method": "DAOT_A1+FastTrust_RC4_original_residual_noeq",
       "purpose": "fresh_model_seed",
-      "gpu": null,
+      "gpu": 3,
       "config_ref": "experiments/adv3b02_xuc/configs/matched_20260927/cvs-daot-rc4-s2026092703.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092703/resolved_config.json",
       "data_overrides": {},
@@ -250,19 +256,21 @@
       "budget_ref": "native muse_epoch_basis=unlabeled_loader; Ubatch256; actual steps logged; not compute-matched to50-step baselines",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092703",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092703.train.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rc4_matched_20260927_r01/code/scripts/train_rc4_matched.py --config /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rc4_matched_20260927_r01/configs/matched_20260927/cvs-daot-rc4-s2026092703.json --dataset /home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl --output /home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092703 --source-contract /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json --run-id 20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01 --commit RELEASE_COMMIT",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rc4_matched_20260927_r01/code/scripts/train_rc4_matched.py --config /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rc4_matched_20260927_r01/configs/matched_20260927/cvs-daot-rc4-s2026092703.json --dataset /home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl --output /home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092703 --source-contract /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json --run-id 20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01 --commit 9b1ddd939fcabc74c77c94a62fef8e5aad07c0e9",
       "expected_artifacts": [
         "final_ssdg.pth",
         "completion.json",
         "startup.json",
         "resolved_config.json"
-      ]
+      ],
+      "pid": 1269212,
+      "status": "RUNNING"
     },
     {
       "row_id": "cvs-daot-rc4-s2026092704",
       "method": "DAOT_A1+FastTrust_RC4_original_residual_noeq",
       "purpose": "fresh_model_seed",
-      "gpu": null,
+      "gpu": 4,
       "config_ref": "experiments/adv3b02_xuc/configs/matched_20260927/cvs-daot-rc4-s2026092704.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092704/resolved_config.json",
       "data_overrides": {},
@@ -284,13 +292,15 @@
       "budget_ref": "native muse_epoch_basis=unlabeled_loader; Ubatch256; actual steps logged; not compute-matched to50-step baselines",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092704",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092704.train.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rc4_matched_20260927_r01/code/scripts/train_rc4_matched.py --config /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rc4_matched_20260927_r01/configs/matched_20260927/cvs-daot-rc4-s2026092704.json --dataset /home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl --output /home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092704 --source-contract /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json --run-id 20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01 --commit RELEASE_COMMIT",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rc4_matched_20260927_r01/code/scripts/train_rc4_matched.py --config /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rc4_matched_20260927_r01/configs/matched_20260927/cvs-daot-rc4-s2026092704.json --dataset /home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl --output /home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092704 --source-contract /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json --run-id 20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01 --commit 9b1ddd939fcabc74c77c94a62fef8e5aad07c0e9",
       "expected_artifacts": [
         "final_ssdg.pth",
         "completion.json",
         "startup.json",
         "resolved_config.json"
-      ]
+      ],
+      "pid": 1269230,
+      "status": "RUNNING"
     }
   ],
   "notes": [

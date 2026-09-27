@@ -1,0 +1,112 @@
+{
+  "time": 1790485245.3732822,
+  "commit": "9b1ddd939fcabc74c77c94a62fef8e5aad07c0e9",
+  "rows": [
+    {
+      "row_id": "cvs-daot-rc4-s392005",
+      "pid": 1269179,
+      "gpu": 0,
+      "alive": true,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rc4_matched_20260927_r01",
+      "argv_match": true,
+      "output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s392005",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s392005.train.log",
+      "log_bytes": 42993,
+      "tail": [
+        "[TAIL-CONTROL] state=-1 action=-1 reference_ready=0 reference_saved=0 rollback_applied=0 final_blocked=0",
+        "[CKPT]  latest -> /home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s392005/NOT_SAVED_FINAL_ONLY (recovery) | final_only -> /home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s392005/final_ssdg.pth (written after training; telemetry_best=1)",
+        "[EPOCH-END] E001/200",
+        "===================================================================================================================================="
+      ],
+      "source_roles": "EXACT_MATCH",
+      "seed": 392005,
+      "target_start": 0,
+      "epoch_selection": "final_only"
+    },
+    {
+      "row_id": "cvs-daot-rc4-s2026092701",
+      "pid": 1269190,
+      "gpu": 1,
+      "alive": true,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rc4_matched_20260927_r01",
+      "argv_match": true,
+      "output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701.train.log",
+      "log_bytes": 43066,
+      "tail": [
+        "[TAIL-CONTROL] state=-1 action=-1 reference_ready=0 reference_saved=0 rollback_applied=0 final_blocked=0",
+        "[CKPT]  latest -> /home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701/NOT_SAVED_FINAL_ONLY (recovery) | final_only -> /home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701/final_ssdg.pth (written after training; telemetry_best=1)",
+        "[EPOCH-END] E001/200",
+        "===================================================================================================================================="
+      ],
+      "source_roles": "EXACT_MATCH",
+      "seed": 2026092701,
+      "target_start": 0,
+      "epoch_selection": "final_only"
+    },
+    {
+      "row_id": "cvs-daot-rc4-s2026092702",
+      "pid": 1269200,
+      "gpu": 2,
+      "alive": true,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rc4_matched_20260927_r01",
+      "argv_match": true,
+      "output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092702",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092702.train.log",
+      "log_bytes": 43065,
+      "tail": [
+        "[TAIL-CONTROL] state=-1 action=-1 reference_ready=0 reference_saved=0 rollback_applied=0 final_blocked=0",
+        "[CKPT]  latest -> /home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092702/NOT_SAVED_FINAL_ONLY (recovery) | final_only -> /home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092702/final_ssdg.pth (written after training; telemetry_best=1)",
+        "[EPOCH-END] E001/200",
+        "===================================================================================================================================="
+      ],
+      "source_roles": "EXACT_MATCH",
+      "seed": 2026092702,
+      "target_start": 0,
+      "epoch_selection": "final_only"
+    },
+    {
+      "row_id": "cvs-daot-rc4-s2026092703",
+      "pid": 1269212,
+      "gpu": 3,
+      "alive": true,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rc4_matched_20260927_r01",
+      "argv_match": true,
+      "output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092703",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092703.train.log",
+      "log_bytes": 43066,
+      "tail": [
+        "[TAIL-CONTROL] state=-1 action=-1 reference_ready=0 reference_saved=0 rollback_applied=0 final_blocked=0",
+        "[CKPT]  latest -> /home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092703/NOT_SAVED_FINAL_ONLY (recovery) | final_only -> /home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092703/final_ssdg.pth (written after training; telemetry_best=1)",
+        "[EPOCH-END] E001/200",
+        "===================================================================================================================================="
+      ],
+      "source_roles": "EXACT_MATCH",
+      "seed": 2026092703,
+      "target_start": 0,
+      "epoch_selection": "final_only"
+    },
+    {
+      "row_id": "cvs-daot-rc4-s2026092704",
+      "pid": 1269230,
+      "gpu": 4,
+      "alive": true,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rc4_matched_20260927_r01",
+      "argv_match": true,
+      "output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092704",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092704.train.log",
+      "log_bytes": 43066,
+      "tail": [
+        "[TAIL-CONTROL] state=-1 action=-1 reference_ready=0 reference_saved=0 rollback_applied=0 final_blocked=0",
+        "[CKPT]  latest -> /home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092704/NOT_SAVED_FINAL_ONLY (recovery) | final_only -> /home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092704/final_ssdg.pth (written after training; telemetry_best=1)",
+        "[EPOCH-END] E001/200",
+        "===================================================================================================================================="
+      ],
+      "source_roles": "EXACT_MATCH",
+      "seed": 2026092704,
+      "target_start": 0,
+      "epoch_selection": "final_only"
+    }
+  ],
+  "gpu": "0, 44, 2992\n1, 31, 2822\n2, 0, 2910\n3, 38, 2948\n4, 0, 3034\n5, 0, 1\n6, 0, 1\n7, 0, 1\n"
+}

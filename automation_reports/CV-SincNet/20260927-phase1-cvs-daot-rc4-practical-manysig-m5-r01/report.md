@@ -39,3 +39,7 @@
 已通过CPU真实scratch checkpoint保存／严格重载、三场景信道、concat CE及DAOT反传、source V尾批检查。五配置解析与七项污染／版本负测通过。证据：`E:/type10-7/local_artifacts/cvs_matched_20260927/local_smoke/acceptance.json`。首次远端启动还执行一次真实checkpoint无query GPU smoke，随后直接训练。
 
 D92后续固定 `P2-256-FULL`：D92 E0 identity160＋FFT96真实256维v2，非288维P2-FULL。ground统计只从本次最终模型与本次source L生成；注册使用固定residual_noeq support，query只读，独立truth-last评分。D92接线尚在实现，不将此状态写成已启动。
+
+## 启动验证
+
+VERIFIED：发布commit `9b1ddd939fcabc74c77c94a62fef8e5aad07c0e9`已push并独立读回一致。五个worker在GPU0至4运行，PID/CWD/argv/source roles/seed/final-only均匹配，日志增长并已完成E001。真实GPU smoke通过。唯一P0/P1审查PASS；此前GPU待发lane疑问由实时无dispatcher/worker证据消除。训练结果尚未完成。证据见evidence/launch_readback.json。
