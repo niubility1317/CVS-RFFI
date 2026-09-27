@@ -1,0 +1,140 @@
+{
+  "time": 1790485918.0085757,
+  "launch": {
+    "pid": 1276770,
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_d92_matched_20260927_r01/tools/cvs_matched_pipeline.py",
+      "dispatch",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_d92_matched_20260927_r01/configs/cvs_d92_matched_20260927.json",
+      "--commit",
+      "7b5809a755bc641b129f5a703e82b95d422610d2"
+    ],
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_d92_matched_20260927_r01",
+    "commit": "7b5809a755bc641b129f5a703e82b95d422610d2",
+    "owner": "codex/root/cvs-d92-matched-20260927"
+  },
+  "dispatcher": {
+    "alive": true,
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_d92_matched_20260927_r01/tools/cvs_matched_pipeline.py",
+      "dispatch",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_d92_matched_20260927_r01/configs/cvs_d92_matched_20260927.json",
+      "--commit",
+      "7b5809a755bc641b129f5a703e82b95d422610d2"
+    ],
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_d92_matched_20260927_r01"
+  },
+  "rows": [
+    {
+      "row_id": "cvs-daot-rc4-s392005",
+      "status": "WAITING_SOURCE",
+      "pid": 1276775,
+      "phase": {
+        "status": "WAITING_SOURCE"
+      },
+      "process": {
+        "alive": true,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_d92_matched_20260927_r01/tools/cvs_matched_pipeline.py",
+          "worker",
+          "--spec",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_d92_matched_20260927_r01/configs/cvs_d92_matched_20260927.json",
+          "--row",
+          "cvs-daot-rc4-s392005"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_d92_matched_20260927_r01"
+      }
+    },
+    {
+      "row_id": "cvs-daot-rc4-s2026092701",
+      "status": "WAITING_SOURCE",
+      "pid": 1276776,
+      "phase": {
+        "status": "WAITING_SOURCE"
+      },
+      "process": {
+        "alive": true,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_d92_matched_20260927_r01/tools/cvs_matched_pipeline.py",
+          "worker",
+          "--spec",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_d92_matched_20260927_r01/configs/cvs_d92_matched_20260927.json",
+          "--row",
+          "cvs-daot-rc4-s2026092701"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_d92_matched_20260927_r01"
+      }
+    },
+    {
+      "row_id": "cvs-daot-rc4-s2026092702",
+      "status": "WAITING_SOURCE",
+      "pid": 1276778,
+      "phase": {
+        "status": "WAITING_SOURCE"
+      },
+      "process": {
+        "alive": true,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_d92_matched_20260927_r01/tools/cvs_matched_pipeline.py",
+          "worker",
+          "--spec",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_d92_matched_20260927_r01/configs/cvs_d92_matched_20260927.json",
+          "--row",
+          "cvs-daot-rc4-s2026092702"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_d92_matched_20260927_r01"
+      }
+    },
+    {
+      "row_id": "cvs-daot-rc4-s2026092703",
+      "status": "WAITING_SOURCE",
+      "pid": 1276779,
+      "phase": {
+        "status": "WAITING_SOURCE"
+      },
+      "process": {
+        "alive": true,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_d92_matched_20260927_r01/tools/cvs_matched_pipeline.py",
+          "worker",
+          "--spec",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_d92_matched_20260927_r01/configs/cvs_d92_matched_20260927.json",
+          "--row",
+          "cvs-daot-rc4-s2026092703"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_d92_matched_20260927_r01"
+      }
+    },
+    {
+      "row_id": "cvs-daot-rc4-s2026092704",
+      "status": "WAITING_SOURCE",
+      "pid": 1276780,
+      "phase": {
+        "status": "WAITING_SOURCE"
+      },
+      "process": {
+        "alive": true,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_d92_matched_20260927_r01/tools/cvs_matched_pipeline.py",
+          "worker",
+          "--spec",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_d92_matched_20260927_r01/configs/cvs_d92_matched_20260927.json",
+          "--row",
+          "cvs-daot-rc4-s2026092704"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_d92_matched_20260927_r01"
+      }
+    }
+  ],
+  "smoke": "{\"status\": \"PASS\", \"synthetic_only\": true, \"real_query_access\": false, \"ground_schema\": \"int8_domain_class_center_lowrank_residual_radius_v2\", \"ground_feature_dim\": 160, \"residual_rank\": 3, \"checks\": [{\"new_classes\": 0, \"k\": 1, \"feature_dim\": 256, \"batch_individual_argmax_equal\": true}, {\"new_classes\": 2, \"k\": 5, \"feature_dim\": 256, \"batch_individual_argmax_equal\": true}], \"python\": \"3.10.19 (main, Oct 21 2025, 16:43:05) [GCC 11.2.0]\", \"numpy\": \"2.2.5\", \"torch\": \"2.1.0+cu121\"}\n",
+  "log_bytes": 0
+}

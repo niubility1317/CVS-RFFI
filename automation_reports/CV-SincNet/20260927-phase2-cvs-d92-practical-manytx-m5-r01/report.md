@@ -37,3 +37,7 @@ CPU五lane等待各自Phase1完成。先核对final200来源并做真实checkpoi
 验证：本地7项pytest通过（旧类回退、新2/K5、原新5实现数值一致、query分批/顺序不变、v2/P90ground、L物理角色与污染拒绝、Torch/NumPy旧桥禁用）。native来源负测通过，真实scratch checkpoint合成fixture的严格重载及clean/satellite无truth预测通过。纯合成D92 runtime smoke本地PASS，远端发布时执行一次，不依赖pytest。独立P0/P1审查PASS；唯一远端pytest依赖已改为工具smoke子命令并定点确认。
 
 当前状态为LOCAL_VERIFIED，尚未提交远端依赖队列，不等同于已产生D92结果。
+
+## 远端依赖队列
+
+VERIFIED：release `cvs_d92_matched_20260927_r01`来自已push并独立读回的commit `7b5809a755bc641b129f5a703e82b95d422610d2`。远端Torch2.1/NumPy2.2环境的v2ground＋new0K1/new2K5真实256维合成smoke PASS。dispatcher PID1276770及五个CPU worker的PID/CWD/argv均已核实，五row为WAITING_SOURCE。待各自final200完成后自动执行；当前尚无D92性能结果。证据见evidence/launch_readback.json。
