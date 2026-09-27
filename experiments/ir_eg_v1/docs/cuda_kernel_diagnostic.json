@@ -1,0 +1,19 @@
+{
+  "scope": "local source-only native joint fixture; no training run or remote access",
+  "dtype": "float32",
+  "materialized_inputs": "initial model, x, satellite, U x and U strong maximum differences all 0; RNG restored before each paired step",
+  "uncontrolled_cudnn": {
+    "deterministic": false,
+    "benchmark": false,
+    "reference_reference_max_parameter_difference": 0.00026232004165649414,
+    "reference_cached_max_parameter_difference": 0.0000015050172805786133
+  },
+  "controlled_cudnn": {
+    "deterministic": true,
+    "benchmark": false,
+    "reference_reference_max_parameter_difference": 0.0,
+    "reference_cached_max_parameter_difference": 0.0
+  },
+  "global_deterministic_algorithms": "Not enabled: native DAOT detached median-with-indices rejects this switch on CUDA.",
+  "resolution": "Apply deterministic cuDNN and disable benchmark consistently in this package runtime and paired native acceptance fixtures. Preserve existing FP32 atol=1e-6 and rtol=1e-5 single-step acceptance."
+}

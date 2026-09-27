@@ -1,0 +1,15 @@
+........................................................................ [ 65%]
+......................................                                   [100%]
+============================== warnings summary ===============================
+experiments/ir_eg_v1/tests/test_ir_analytic_examples.py: 18 warnings
+  C:\Users\lh594\.conda\envs\ssr-gpu\lib\site-packages\torch\jit\_script.py:1480: DeprecationWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.
+    warnings.warn(
+
+experiments/ir_eg_v1/tests/test_ir_native_diagnostics.py::test_native_source_diagnostics_no_target_and_no_state_changes
+experiments/ir_eg_v1/tests/test_ir_native_joint.py::test_native_joint_cached_reference_alignment
+experiments/ir_eg_v1/tests/test_ir_native_resume.py::test_native_entrypoint_pause_and_resume
+  E:\type10-7\code\worktrees\ir_eg_v1_20260927\experiments\ir_eg_v1\code\cvsrffi\game_tracking\legacy\model.py:712: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+    with torch.cuda.amp.autocast(enabled=False):
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+110 passed, 21 warnings in 46.49s

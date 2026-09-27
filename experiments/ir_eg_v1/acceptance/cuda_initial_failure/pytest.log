@@ -1,0 +1,51 @@
+.....................................................................F.. [ 74%]
+.........................                                                [100%]
+================================== FAILURES ===================================
+________________ test_native_joint_cached_reference_alignment _________________
+
+    def test_native_joint_cached_reference_alignment():
+        a=native_case('reference');b=native_case('cached');rng=RNGState.capture()
+        ra=step(a);after=RNGState.capture();rng.restore();rb=step(b)
+        assert abs(ra.loss_replay-rb.loss_replay)<1e-6
+        assert_nested(a.solver.last_trace['corrector'],b.solver.last_trace['corrector'],1e-6,1e-5)
+>       assert_nested(a.model.state_dict(),b.model.state_dict(),1e-6,1e-5)
+
+tests\test_ir_native_joint.py:69: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\ir_fixtures.py:65: in assert_nested
+    for k in a:assert_nested(a[k],b[k],atol,rtol)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+a = tensor([[[-0.0285, -0.0351,  0.1042,  ..., -0.0492,  0.0473, -0.1014],
+         [-0.0824, -0.0436,  0.0137,  ..., -0.0...01, -0.1199,  0.0166],
+         [ 0.0913,  0.0546,  0.1139,  ..., -0.1117, -0.0210,  0.1083]]],
+       device='cuda:0')
+b = tensor([[[-0.0285, -0.0351,  0.1042,  ..., -0.0492,  0.0473, -0.1014],
+         [-0.0824, -0.0436,  0.0137,  ..., -0.0...01, -0.1199,  0.0166],
+         [ 0.0913,  0.0546,  0.1139,  ..., -0.1117, -0.0210,  0.1083]]],
+       device='cuda:0')
+atol = 1e-06, rtol = 1e-05
+
+    def assert_nested(a,b,atol=0.,rtol=0.):
+>       if torch.is_tensor(a):torch.testing.assert_close(a,b,atol=atol,rtol=rtol)
+E       AssertionError: Tensor-likes are not close!
+E       
+E       Mismatched elements: 2 / 21504 (0.0%)
+E       Greatest absolute difference: 7.331371307373047e-06 at index (49, 7, 6) (up to 1e-06 allowed)
+E       Greatest relative difference: 0.00012635256280191243 at index (48, 6, 5) (up to 1e-05 allowed)
+
+tests\ir_fixtures.py:62: AssertionError
+============================== warnings summary ===============================
+experiments/ir_eg_v1/tests/test_ir_br_history.py: 18 warnings
+  C:\Users\lh594\.conda\envs\ssr-gpu\lib\site-packages\torch\jit\_script.py:1480: DeprecationWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.
+    warnings.warn(
+
+experiments/ir_eg_v1/tests/test_ir_native_diagnostics.py::test_native_source_diagnostics_no_target_and_no_state_changes
+experiments/ir_eg_v1/tests/test_ir_native_joint.py::test_native_joint_cached_reference_alignment
+  E:\type10-7\code\worktrees\ir_eg_v1_20260927\experiments\ir_eg_v1\code\cvsrffi\game_tracking\legacy\model.py:712: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+    with torch.cuda.amp.autocast(enabled=False):
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED tests\test_ir_native_joint.py::test_native_joint_cached_reference_alignment
+1 failed, 96 passed, 20 warnings in 45.52s

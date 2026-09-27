@@ -1,0 +1,41 @@
+{
+  "status": "FAILED",
+  "command": [
+    "C:\\Users\\lh594\\.conda\\envs\\ssr-gpu\\python.exe",
+    "-X",
+    "utf8",
+    "-m",
+    "pytest",
+    "tests\\test_ir_br_history.py",
+    "tests\\test_ir_br_resume.py",
+    "tests\\test_ir_cached.py",
+    "tests\\test_ir_cg.py",
+    "tests\\test_ir_contract.py",
+    "tests\\test_ir_curvature.py",
+    "tests\\test_ir_diagnostics.py",
+    "tests\\test_ir_experiment_manifest.py",
+    "tests\\test_ir_head.py",
+    "tests\\test_ir_metric.py",
+    "tests\\test_ir_native_diagnostics.py",
+    "tests\\test_ir_native_joint.py",
+    "tests\\test_ir_packet.py",
+    "tests\\test_ir_reference.py",
+    "tests\\test_ir_reporting.py",
+    "tests\\test_ir_transaction.py",
+    "-q",
+    "-o",
+    "addopts=",
+    "--junitxml=E:\\type10-7\\code\\worktrees\\ir_eg_v1_20260927\\experiments\\ir_eg_v1\\acceptance\\cuda\\pytest.xml"
+  ],
+  "exit_code": 1,
+  "elapsed_seconds": 49.124482599960174,
+  "device": "cuda",
+  "counts": {
+    "tests": 97,
+    "failures": 1,
+    "errors": 0,
+    "skipped": 0
+  },
+  "performance_claim": false,
+  "training_launch": false
+}

@@ -1,0 +1,60 @@
+{
+  "python": "3.10.19 | packaged by Anaconda, Inc. | (main, Oct 21 2025, 16:41:31) [MSC v.1929 64 bit (AMD64)]",
+  "executable": "C:\\Users\\lh594\\.conda\\envs\\ssr-gpu\\python.exe",
+  "torch": "2.10.0+cu128",
+  "cuda": "12.8",
+  "cudnn": 91002,
+  "device": "cuda",
+  "cudnn_deterministic": true,
+  "cudnn_benchmark": false,
+  "deterministic_algorithms": false,
+  "device_name": "NVIDIA GeForce RTX 5070 Ti",
+  "git_head": "acf0a6407c4a2cd114851e9f60d0cd346e4b2c77",
+  "base": "acf0a6407c4a2cd114851e9f60d0cd346e4b2c77",
+  "modules": {
+    "cvsrffi.xuc_fusion.ir_types": {
+      "file": "E:\\type10-7\\code\\worktrees\\ir_eg_v1_20260927\\experiments\\ir_eg_v1\\code\\cvsrffi\\xuc_fusion\\ir_types.py",
+      "sha256": "ec785ee6a9ce341bf44875b66277b1f3d65ce523669fedafa2c2fec42a6ccb32"
+    },
+    "cvsrffi.xuc_fusion.ir_head": {
+      "file": "E:\\type10-7\\code\\worktrees\\ir_eg_v1_20260927\\experiments\\ir_eg_v1\\code\\cvsrffi\\xuc_fusion\\ir_head.py",
+      "sha256": "fff75b662dd3faeeb2cc339172af1e983b582b71f46b2c92f83b530c28215d7c"
+    },
+    "cvsrffi.xuc_fusion.ir_metric": {
+      "file": "E:\\type10-7\\code\\worktrees\\ir_eg_v1_20260927\\experiments\\ir_eg_v1\\code\\cvsrffi\\xuc_fusion\\ir_metric.py",
+      "sha256": "92ff2d7783f8db1db36d200e56bc9f123ebcf2443ecc6a400ae37c20e975d34e"
+    },
+    "cvsrffi.xuc_fusion.ir_cg": {
+      "file": "E:\\type10-7\\code\\worktrees\\ir_eg_v1_20260927\\experiments\\ir_eg_v1\\code\\cvsrffi\\xuc_fusion\\ir_cg.py",
+      "sha256": "d06019ac222b911d95a186ee694651e02ef8ce37607977395a12c88dc63d01df"
+    },
+    "cvsrffi.xuc_fusion.ir_solver": {
+      "file": "E:\\type10-7\\code\\worktrees\\ir_eg_v1_20260927\\experiments\\ir_eg_v1\\code\\cvsrffi\\xuc_fusion\\ir_solver.py",
+      "sha256": "e9246cd7e10d25467c55061b93cfdadbedab443dc95bdcef756fb13d889adc48"
+    },
+    "cvsrffi.xuc_fusion.ir_objective": {
+      "file": "E:\\type10-7\\code\\worktrees\\ir_eg_v1_20260927\\experiments\\ir_eg_v1\\code\\cvsrffi\\xuc_fusion\\ir_objective.py",
+      "sha256": "396e23f41b6c13cd01e5be8eab71b94046a4b941380f15bb92ab0127fefde34b"
+    },
+    "cvsrffi.game_tracking.solvers": {
+      "file": "E:\\type10-7\\code\\worktrees\\ir_eg_v1_20260927\\experiments\\ir_eg_v1\\code\\cvsrffi\\game_tracking\\solvers.py",
+      "sha256": "d740a3939a16d0bb73eb60cbb3a904959ee9cffbe514008cae7bbe1c4c61bbc1"
+    },
+    "cvsrffi.xuc_fusion.runtime": {
+      "file": "E:\\type10-7\\code\\worktrees\\ir_eg_v1_20260927\\experiments\\ir_eg_v1\\code\\cvsrffi\\xuc_fusion\\runtime.py",
+      "sha256": "019bda2cbc47bf330a3fcd6191f2db9c8004294ad257b7bb5084884fb2888473"
+    },
+    "SSDG.train_ssdg": {
+      "file": "E:\\type10-7\\code\\worktrees\\ir_eg_v1_20260927\\experiments\\ir_eg_v1\\code\\SSDG\\train_ssdg.py",
+      "sha256": "0490bbeae78e37d27092ac7f7cc1365729730cf04c94403c9cba1439d4e73c2f"
+    },
+    "model_dual_cvsincnet": {
+      "file": "E:\\type10-7\\code\\worktrees\\ir_eg_v1_20260927\\experiments\\ir_eg_v1\\code\\model_dual_cvsincnet.py",
+      "sha256": "768752f71c7a2ffef9383bfa175d7dfeb863462d20ed65d355fcbd1e8cdd4d21"
+    }
+  },
+  "dataset_access": false,
+  "checkpoint_access": false,
+  "target_access": false,
+  "synthetic_seed_policy": "explicit per-test fixture seeds; no scientific result"
+}

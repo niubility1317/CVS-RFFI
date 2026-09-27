@@ -1,0 +1,54 @@
+............F........................................................... [ 67%]
+..................................                                       [100%]
+================================== FAILURES ===================================
+_______________________ test_resume_matches_continuous ________________________
+
+tmp_path = WindowsPath('C:/Users/lh594/AppData/Local/Temp/pytest-of-lh594/pytest-7111/test_resume_matches_continuous0')
+
+    def test_resume_matches_continuous(tmp_path):
+        a=make_case(method='BR_IR_EG');run(a);a.ctx.pending=None;run(a)
+        b=make_case(method='BR_IR_EG')
+        path=tmp_path/'accepted.pt'
+        torch.save(dict(model=a.model.state_dict(),optimizer=a.opt.state_dict(),solver=a.solver.state_dict(),external=a.external.state_dict()),path)
+        saved=torch.load(path,weights_only=False,map_location=next(a.model.parameters()).device)
+        b.model.load_state_dict(saved['model']);b.opt.load_state_dict(saved['optimizer'])
+        b.solver.load_state_dict(saved['solver']);b.external.load_state_dict(saved['external'])
+        vars(b.ctx).update(deepcopy(vars(a.ctx)))
+        for _ in range(3):
+            a.ctx.pending=None;b.ctx.pending=None;rng=RNGState.capture()
+            run(a);rng.restore();run(b)
+            assert_nested(a.model.state_dict(),b.model.state_dict())
+>           assert_nested(a.opt.state_dict(),b.opt.state_dict())
+
+tests\test_ir_br_resume.py:21: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\ir_fixtures.py:65: in assert_nested
+    for k in a:assert_nested(a[k],b[k],atol,rtol)
+tests\ir_fixtures.py:65: in assert_nested
+    for k in a:assert_nested(a[k],b[k],atol,rtol)
+tests\ir_fixtures.py:65: in assert_nested
+    for k in a:assert_nested(a[k],b[k],atol,rtol)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+a = tensor(3.), b = tensor(3., device='cuda:0'), atol = 0.0, rtol = 0.0
+
+    def assert_nested(a,b,atol=0.,rtol=0.):
+>       if torch.is_tensor(a):torch.testing.assert_close(a,b,atol=atol,rtol=rtol)
+E       AssertionError: The values for attribute 'device' do not match: cpu != cuda:0.
+
+tests\ir_fixtures.py:62: AssertionError
+============================== warnings summary ===============================
+experiments/ir_eg_v1/tests/test_ir_analytic_examples.py: 18 warnings
+  C:\Users\lh594\.conda\envs\ssr-gpu\lib\site-packages\torch\jit\_script.py:1480: DeprecationWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.
+    warnings.warn(
+
+experiments/ir_eg_v1/tests/test_ir_native_diagnostics.py::test_native_source_diagnostics_no_target_and_no_state_changes
+experiments/ir_eg_v1/tests/test_ir_native_joint.py::test_native_joint_cached_reference_alignment
+experiments/ir_eg_v1/tests/test_ir_native_resume.py::test_native_entrypoint_pause_and_resume
+  E:\type10-7\code\worktrees\ir_eg_v1_20260927\experiments\ir_eg_v1\code\cvsrffi\game_tracking\legacy\model.py:712: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+    with torch.cuda.amp.autocast(enabled=False):
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED tests\test_ir_br_resume.py::test_resume_matches_continuous - Assertion...
+1 failed, 105 passed, 21 warnings in 62.62s (0:01:02)

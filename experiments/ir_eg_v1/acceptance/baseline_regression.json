@@ -1,0 +1,7 @@
+{
+  "command": "python -m pytest tests/test_native_joint.py tests/test_response_games.py tests/test_response_reaudit.py -q",
+  "exit_code": 0,
+  "result": "passed",
+  "scope": "copied frozen native joint and response tests, before IR integration",
+  "warnings": "inherited autocast deprecation warning"
+}

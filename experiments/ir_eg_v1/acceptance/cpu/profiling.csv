@@ -1,0 +1,5 @@
+method,device,accepted,physical_exposure,warmup_steps_excluded,setup_and_warmup_seconds,elapsed_seconds,peak_allocated_bytes,history_bytes,model_forward_calls,full_backward_calls,head_only_backward_calls,response_applied,source_convergence_cost
+IR_ref,cpu,10,100,2,1.6240760999498889,0.2317326000193134,,0,60,20,30,10,
+IR_cached,cpu,10,100,2,0.11214039998594671,0.22176240000408143,,0,40,20,30,10,
+BR_EG,cpu,10,100,2,0.09318080003140494,0.16086510004242882,,424,40,12,38,0,
+BR_IR,cpu,10,100,2,0.11197279999032617,0.2242297999910079,,424,40,12,38,10,

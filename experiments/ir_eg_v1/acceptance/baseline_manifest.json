@@ -1,0 +1,2675 @@
+{
+  "git_base": "acf0a6407c4a2cd114851e9f60d0cd346e4b2c77",
+  "files": [
+    {
+      "path": "code/balanced_tx_rx_sampler.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/balanced_tx_rx_sampler.py",
+      "sha256": "bbc48a901507ac84e13fd6a2c01ec8347513e82e9f092135b183bed3beb37b25"
+    },
+    {
+      "path": "code/baseline_origin_sat_view.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/baseline_origin_sat_view.py",
+      "sha256": "4f48e1919aaf83ed74e832941667f519b9e541dba60728513fcf226ecf9970a5"
+    },
+    {
+      "path": "code/concat_sat_channel_aug.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/concat_sat_channel_aug.py",
+      "sha256": "a37d5865b017555b4c291daa270bc13ce031013e4e407a244345be95be10a043"
+    },
+    {
+      "path": "code/crra.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/crra.py",
+      "sha256": "619e54f27e565c89c55c45d402515382476ee6dbd16617eda3fe3ca675595599"
+    },
+    {
+      "path": "code/DataAugmentation.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/DataAugmentation.py",
+      "sha256": "d2dde0d67608e5df0749045a7bcc81ba5a814c9adfde9d7bf4ec444386a6d918"
+    },
+    {
+      "path": "code/dataset.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/dataset.py",
+      "sha256": "0c35b71b6d34134f7c40022a4b6b974bb24e32ddf83d1816521d564f44bd1108"
+    },
+    {
+      "path": "code/dataset_wisig.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/dataset_wisig.py",
+      "sha256": "fb4d2d20acbea97c6895d48131875a4d2d4d55988b2bab4b76cce6778bb36c45"
+    },
+    {
+      "path": "code/eval_feature_diagnosis.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/eval_feature_diagnosis.py",
+      "sha256": "3eaf80f48cd7b8619444432b3b0e7a21c5d49b050035c56c139c141648fa2fe2"
+    },
+    {
+      "path": "code/eval_spaceborne_fewshot.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/eval_spaceborne_fewshot.py",
+      "sha256": "64921019b04a92916e96eaf3fdc422af09f38ac48b3a99c9c3e7b0cbddbc6906"
+    },
+    {
+      "path": "code/export_spaceborne_features.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/export_spaceborne_features.py",
+      "sha256": "9e0ed8cefd8c652abd0b57a0e3baeebddc03cef16f215e3cf1004f1270552662"
+    },
+    {
+      "path": "code/feature_masks.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/feature_masks.py",
+      "sha256": "b9ce8ea38484a71973c9720192abb1b6b96b10dbd0b2caa89b0a66fc92b53f3f"
+    },
+    {
+      "path": "code/model.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/model.py",
+      "sha256": "4a2a0cb0332968c49af45298b4e9f1e13f3ac8b16cc9714df48644889d3a4a62"
+    },
+    {
+      "path": "code/model_dual_cvsincnet.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/model_dual_cvsincnet.py",
+      "sha256": "768752f71c7a2ffef9383bfa175d7dfeb863462d20ed65d355fcbd1e8cdd4d21"
+    },
+    {
+      "path": "code/open_world_head.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/open_world_head.py",
+      "sha256": "05baa9782b49643a87cefc934a8f6867a14afcdbcd1bb8ac1088dd174df8a02b"
+    },
+    {
+      "path": "code/phase2_prototypes.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/phase2_prototypes.py",
+      "sha256": "85160ddc613ac5dd32ae4ab7f227af8fcd199ae4d13f039368de7d854d6e340a"
+    },
+    {
+      "path": "code/post_stage_cli.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/post_stage_cli.py",
+      "sha256": "326ed525a04e1b4f01f230c1f5105702843cf0f8e58b14867564e693ffdcea4c"
+    },
+    {
+      "path": "code/post_stage_common.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/post_stage_common.py",
+      "sha256": "b2deb24a5cbe2924b12d74071865d3807c0cc6779976f9452b040e873853e436"
+    },
+    {
+      "path": "code/post_stage_eval.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/post_stage_eval.py",
+      "sha256": "2d258e145fd5329528ba55da4d96fbce03dc1682e0b8fda9cbf10a6aefd985f1"
+    },
+    {
+      "path": "code/sat_channel.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/sat_channel.py",
+      "sha256": "c7bca42b449aaa4b7617024f797deac6ffc7ee1a99aa13221fe00812377ca06a"
+    },
+    {
+      "path": "code/target_domain_adaptation.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/target_domain_adaptation.py",
+      "sha256": "c91268be90dffa54c8b31e0f415747842f16b03ef4385eb43dc1317a1fbfce72"
+    },
+    {
+      "path": "code/target_old_only_finetune_diag.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/target_old_only_finetune_diag.py",
+      "sha256": "d4ad614eca0a1acf51ce7d91496a3a5f6c29c064384dcb09037853e5d16918f4"
+    },
+    {
+      "path": "code/target_old_unknown_head_sweep.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/target_old_unknown_head_sweep.py",
+      "sha256": "b9b5d5ed36d078ed4c4551278a51713df50e92aceb343095deeaddbf965ed553"
+    },
+    {
+      "path": "code/tp_rffi_mixstyle.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/tp_rffi_mixstyle.py",
+      "sha256": "71d52e1abd2489562aeac0de69714ef2a18ae2037604f32d4b73cf7e49079e15"
+    },
+    {
+      "path": "code/train.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/train.py",
+      "sha256": "2799dc42588cb19d179da925fea27450f5b646b8f02cb8ed93700a02b9ff4bc7"
+    },
+    {
+      "path": "code/training_controls.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/training_controls.py",
+      "sha256": "8b91c0ebfec43ee72fc6295b2bb6d86cc6f105673def5170b89e3b1b0a129992"
+    },
+    {
+      "path": "code/training_test_eval.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/training_test_eval.py",
+      "sha256": "a37a797d8d050722cf7a86d25603e7dfacba9be0752d9ab4e1188bc401ede2a3"
+    },
+    {
+      "path": "code/train_cen31_distill.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/train_cen31_distill.py",
+      "sha256": "8f3ebcb2eec872683443f0e5406643dcbee8c4626d26b3f95ad08864dd1ddb22"
+    },
+    {
+      "path": "code/train_target_adapt.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/train_target_adapt.py",
+      "sha256": "ad2941e3bc4443cc4d16699016019f74e06cb2328b3055a9b64340bf7185fea1"
+    },
+    {
+      "path": "code/tx_rx_geometry.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/tx_rx_geometry.py",
+      "sha256": "2cb8cbb37b1de731904208799e4182332248fbc594456dc07ad3b7437c18f890"
+    },
+    {
+      "path": "code/baselines/__init__.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/baselines/__init__.py",
+      "sha256": "98b5096512fa8482476f1b681dbb0cd3903e06c1a29e43b8af757f50d3ae9d86"
+    },
+    {
+      "path": "code/configs/core90_game_historical_argv.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/configs/core90_game_historical_argv.json",
+      "sha256": "069c3caa99d4eb7c437b749d5ce48b11882449e6e7990cff1b3661be77b1b3fe"
+    },
+    {
+      "path": "code/cvsrffi/a1_budget_schedule.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/a1_budget_schedule.py",
+      "sha256": "ca174c6c9f5259ae329df85b128b77767d2d4dc5219337d6402e97bbb3e01baf"
+    },
+    {
+      "path": "code/cvsrffi/a1_ecrs_cross_rx.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/a1_ecrs_cross_rx.py",
+      "sha256": "1e543acd5bb5b38c483c0850cbef41674b027ec29a5d2fc407e47fdec7fdbaeb"
+    },
+    {
+      "path": "code/cvsrffi/a1_fast_runtime.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/a1_fast_runtime.py",
+      "sha256": "f8d025139432a4c5a4b40d5daba736a2c694a3575b342e0976921b0ba2ae5e19"
+    },
+    {
+      "path": "code/cvsrffi/a1_fisher_training.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/a1_fisher_training.py",
+      "sha256": "7c92855a3d14a6e7ff46a021ba3739f6320d03069a832b677e1873db748dcaae"
+    },
+    {
+      "path": "code/cvsrffi/a1_periodic_target.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/a1_periodic_target.py",
+      "sha256": "12106f6ae3de8cb11e623a3e8ee1254dfa4311ae186aaeef46a4a235b0dc1702"
+    },
+    {
+      "path": "code/cvsrffi/a1_r3_model.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/a1_r3_model.py",
+      "sha256": "1e01160fc63cad8abf9201226acd1ed54fb597a0514ed36da5ec6b78115eab4e"
+    },
+    {
+      "path": "code/cvsrffi/a1_r3_objective.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/a1_r3_objective.py",
+      "sha256": "e7fe280ba4094312a70b5a94008ff0b0af67507f61f0ba99351a178e0649344b"
+    },
+    {
+      "path": "code/cvsrffi/a1_response_ridge.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/a1_response_ridge.py",
+      "sha256": "fc10bbd723de629704b60129c6213b475f1e33ab0fb0e38af2f227e94ddc5569"
+    },
+    {
+      "path": "code/cvsrffi/a1_response_surface.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/a1_response_surface.py",
+      "sha256": "94730246920abe3f3f461b1bf6d85b60a962f0f9b0928cf5618ea66733d24df4"
+    },
+    {
+      "path": "code/cvsrffi/adaptation_safety.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/adaptation_safety.py",
+      "sha256": "fd5a7ee592bcc7f45ddda5a813170c648eee7b09d235b32d440f6c6f0ce44586"
+    },
+    {
+      "path": "code/cvsrffi/balanced_tx_rx_sampler.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/balanced_tx_rx_sampler.py",
+      "sha256": "90ddbca55d948e4ab22a56dd470e9d6ac5f7d7525598401b032afaa2a20663a3"
+    },
+    {
+      "path": "code/cvsrffi/bounded_domain_confusion.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/bounded_domain_confusion.py",
+      "sha256": "095ebd84ae6c171e66a4dedf0dc4c8d5231d26a28ec0b9b87d0eaf136f8f0974"
+    },
+    {
+      "path": "code/cvsrffi/canonical_excitation.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/canonical_excitation.py",
+      "sha256": "5912de30b3be4347cd1b5d4a01ee42db17b60c03fe098287e7cb8f721d8c2f3f"
+    },
+    {
+      "path": "code/cvsrffi/checkpoint.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/checkpoint.py",
+      "sha256": "9718c555fa559cffbfd73d8dff015b0b190e215e811342cbe593fc8361303c45"
+    },
+    {
+      "path": "code/cvsrffi/checkpoint_loading.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/checkpoint_loading.py",
+      "sha256": "bce52f48ad69b11023b0ac5cba3f1ef106044fe385648f13a31e6622acffa88a"
+    },
+    {
+      "path": "code/cvsrffi/component_geometry.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/component_geometry.py",
+      "sha256": "ecb6257d8ea1a3ee9e165437c89f0ab9eb1567cc54131e1a0148fe3343a20736"
+    },
+    {
+      "path": "code/cvsrffi/crra_training.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/crra_training.py",
+      "sha256": "045ea0d70c8c3430d308c64bbfd94a592b4522739e1a95361e0a96d083591d66"
+    },
+    {
+      "path": "code/cvsrffi/daot_training.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/daot_training.py",
+      "sha256": "34941bf8fff33b1a9e8fe86ac9d997824841a3579944e8fcd7a171870e163785"
+    },
+    {
+      "path": "code/cvsrffi/deployment_orbit.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/deployment_orbit.py",
+      "sha256": "02b33c70cb824cd899011d917208726747fd806126bf097a92c8f955f330e00f"
+    },
+    {
+      "path": "code/cvsrffi/eval.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/eval.py",
+      "sha256": "9de7ed885d999d5f205a0677d2945d7e6c5f1bbc6f647525ecca219560150a5b"
+    },
+    {
+      "path": "code/cvsrffi/feature_masks.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/feature_masks.py",
+      "sha256": "178ca2c1a8788e558f2babf4bf612bd3632af1a0c94f514dda7009e4a32a941c"
+    },
+    {
+      "path": "code/cvsrffi/fisher_branches.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/fisher_branches.py",
+      "sha256": "9cd6f30c55ffd1b45e5400f1afb1f52bbd617413ed1a5beb3476d6bb00abcd8f"
+    },
+    {
+      "path": "code/cvsrffi/fisher_gate.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/fisher_gate.py",
+      "sha256": "7086231fe720b0928e90a7e5247005bc6d12eb4ee60d2a7c69e99e1fb4baf132"
+    },
+    {
+      "path": "code/cvsrffi/full_ablation_spec.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/full_ablation_spec.py",
+      "sha256": "1ea28c1e9e77693c506e5e14a798672b2189cfad404601882d0d76aa991541cd"
+    },
+    {
+      "path": "code/cvsrffi/gate_evidence.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/gate_evidence.py",
+      "sha256": "ae9481b828c76072c60df5a017e8a901ab137dc10e9da1bad177abb9dee6a47e"
+    },
+    {
+      "path": "code/cvsrffi/gate_metrics.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/gate_metrics.py",
+      "sha256": "24064226998902b17195382b28d8fb3bb12f9c1c62d99676fb45b2bfd1f2c88e"
+    },
+    {
+      "path": "code/cvsrffi/hard_gate.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/hard_gate.py",
+      "sha256": "4513f787fcae9ef500864628493e97ddbcc094f432ce74e90d5916b47e5fc856"
+    },
+    {
+      "path": "code/cvsrffi/identifiability_stats.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/identifiability_stats.py",
+      "sha256": "6a58563568bcb06c34fa5ca05c9515127db9d77a4a1cd09145a62ec799340fe0"
+    },
+    {
+      "path": "code/cvsrffi/identity_only_forward.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/identity_only_forward.py",
+      "sha256": "8e262522bcfdc956a68835bcdd7af1e33345b3f88cacdc1ae4bac0d9f3dcb247"
+    },
+    {
+      "path": "code/cvsrffi/leakage_probe.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/leakage_probe.py",
+      "sha256": "a76206b2e1f9bcbbeb1ef906ff3b00d975d70e970ecc794e657bb0f42fb5a306"
+    },
+    {
+      "path": "code/cvsrffi/leo_weak_cache.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/leo_weak_cache.py",
+      "sha256": "e091a842a353b577ef2d9d5481267b047f414824e4b7fc8f6a8c2599570cef20"
+    },
+    {
+      "path": "code/cvsrffi/logging.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/logging.py",
+      "sha256": "89d8455bc57741c3f0607a431edf6af9536bb190d8079082bb4963f1afd3b948"
+    },
+    {
+      "path": "code/cvsrffi/losses.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/losses.py",
+      "sha256": "ffa04074009c7f2b5b722a0eab15df80b4097bec81da2525842d3ae135697fc8"
+    },
+    {
+      "path": "code/cvsrffi/meta_episodes.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/meta_episodes.py",
+      "sha256": "be42b96bae7305d35f76b22e0f771d032db028ba9363903aeff4c0c95c4c248d"
+    },
+    {
+      "path": "code/cvsrffi/muse_ssdg.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/muse_ssdg.py",
+      "sha256": "79d356f950cc766fa7340ba975dd682f9dead0af7b702cb94ce08a98df292ba3"
+    },
+    {
+      "path": "code/cvsrffi/negative_sampling.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/negative_sampling.py",
+      "sha256": "8b6ff898bc78188f8ce3f574ca0ae6a81a4e542d719237068eb16abfa2f3314c"
+    },
+    {
+      "path": "code/cvsrffi/open_world_head.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/open_world_head.py",
+      "sha256": "6ca4f0a100328f3a5cfbbfc22f2481aecc62348e2e2db98b1e533e74cd470f71"
+    },
+    {
+      "path": "code/cvsrffi/opgac_net.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/opgac_net.py",
+      "sha256": "096b95949bc6393adc9c6f2a1ef57d173f1cd7685eab4b1bc4200edbc60451d8"
+    },
+    {
+      "path": "code/cvsrffi/orbit_teacher.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/orbit_teacher.py",
+      "sha256": "a32457c0553971785a6df0b564be4081bd06d4e4055beabe58ee90973ee2b692"
+    },
+    {
+      "path": "code/cvsrffi/paic_star_ground.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/paic_star_ground.py",
+      "sha256": "4fb703a56d47495736d5e946b9a7b4246ffe6690ea82b25d245b8de5cae56d46"
+    },
+    {
+      "path": "code/cvsrffi/phase1_ablation_factory.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/phase1_ablation_factory.py",
+      "sha256": "3c6c51aef0f2f9231b92d1d6b8478abcfd4075551aaffa000ca412011dd742de"
+    },
+    {
+      "path": "code/cvsrffi/phase1_adv3b02_deployment_bundle.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/phase1_adv3b02_deployment_bundle.py",
+      "sha256": "79b361811a4ed9a91f0159248d024c8dd7d2319c830e9a3785313c671d065074"
+    },
+    {
+      "path": "code/cvsrffi/phase1_baseline_fold_matrix.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/phase1_baseline_fold_matrix.py",
+      "sha256": "6578a30fecd9dd1c40dc66ac974d2aa6d9909d7cb95d0d64c0fe33024d700f57"
+    },
+    {
+      "path": "code/cvsrffi/phase1_center_lowrank_prototype_bundle.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/phase1_center_lowrank_prototype_bundle.py",
+      "sha256": "7677b73f9c0f750b27205318a16e06c6f5054d9ac58edcfaf32ee992b2407317"
+    },
+    {
+      "path": "code/cvsrffi/phase1_fcr_canonicalizer.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/phase1_fcr_canonicalizer.py",
+      "sha256": "c745bb254d580a68be6defc88697975cb95b282d768c6b40d78ea43169949fc8"
+    },
+    {
+      "path": "code/cvsrffi/phase1_fcr_decoder.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/phase1_fcr_decoder.py",
+      "sha256": "b27df6a110069d1c2b9a85f76a7e51376f892594376114c3ce1f749f13dae1ff"
+    },
+    {
+      "path": "code/cvsrffi/phase1_fcr_diagnostics.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/phase1_fcr_diagnostics.py",
+      "sha256": "cfcebe56c99c037d2a6abbb5bffd9b6ccef4921aec96bb58bd56a81a3af7dd7b"
+    },
+    {
+      "path": "code/cvsrffi/phase1_fcr_factors.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/phase1_fcr_factors.py",
+      "sha256": "eb3447015b0fe496bc8985d9029ac0536f5da5b09ed6ca7e4874d58a17fe238e"
+    },
+    {
+      "path": "code/cvsrffi/phase1_fcr_fingerprint.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/phase1_fcr_fingerprint.py",
+      "sha256": "988dedfd63b9742ba93d3372636eaec0c407ae9b4fcbdd0be5715376a1c4001c"
+    },
+    {
+      "path": "code/cvsrffi/phase1_fcr_interventions.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/phase1_fcr_interventions.py",
+      "sha256": "3a74a6be60d858b38b314834eb833757f4dc8b531e2c04e1f6468c33c8cd9c5c"
+    },
+    {
+      "path": "code/cvsrffi/phase1_fcr_losses.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/phase1_fcr_losses.py",
+      "sha256": "33c4475284085233f65dcf6af11b410bd31e5a1bac44b5f01ef9fcfbed3b10ea"
+    },
+    {
+      "path": "code/cvsrffi/phase1_fcr_nuisance.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/phase1_fcr_nuisance.py",
+      "sha256": "bbef7a4b47cda3b5ead1c1bb3349f9a6c4219c45ef9645af385d7157686ed376"
+    },
+    {
+      "path": "code/cvsrffi/phase1_fcr_physics.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/phase1_fcr_physics.py",
+      "sha256": "5ec532be00e360d33e18fe8059f175ca6819b21a0e1b89e0213b1178918070d4"
+    },
+    {
+      "path": "code/cvsrffi/phase1_fcr_schedule.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/phase1_fcr_schedule.py",
+      "sha256": "654e5ef2da2d2d6c28022928ef7dd6a55c9319299ce5011aaeb5d6f62387ba9e"
+    },
+    {
+      "path": "code/cvsrffi/phase1_fcr_transplant.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/phase1_fcr_transplant.py",
+      "sha256": "688206dcac35d40ff64d020d056009b8d94ab4bd08bd297745c96ab5602c94d1"
+    },
+    {
+      "path": "code/cvsrffi/phase1_fcr_types.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/phase1_fcr_types.py",
+      "sha256": "27459d5ab3702f576a2e5e5dc075a6604564397df6664894de77cfb3d475e528"
+    },
+    {
+      "path": "code/cvsrffi/phase1_geometry_streaming.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/phase1_geometry_streaming.py",
+      "sha256": "6b4746a7e86811e3c11a425e89065eeca28f62696966d0fdab88c718eb04f782"
+    },
+    {
+      "path": "code/cvsrffi/phase1_int8_prototype_bundle.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/phase1_int8_prototype_bundle.py",
+      "sha256": "2da7c9be79e53256968caf4afa43ae523c600e61a5483b8df23fa6f957546275"
+    },
+    {
+      "path": "code/cvsrffi/phase1_pseudolabel_quality.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/phase1_pseudolabel_quality.py",
+      "sha256": "f7e139aedeec53ebadd56c7d37f594fa002ba63ef339c5e2e272be9d08de3b08"
+    },
+    {
+      "path": "code/cvsrffi/phase1_v2_control.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/phase1_v2_control.py",
+      "sha256": "8b33a40e9f9abdb41d912b4d0797e4617aa496c05518be5b0d2fe79e8d1495b6"
+    },
+    {
+      "path": "code/cvsrffi/phase2_bwrap_policy.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/phase2_bwrap_policy.py",
+      "sha256": "a9258cbb11320cb3343b7818a069469506f77a453652eafd8771d232533d8e3b"
+    },
+    {
+      "path": "code/cvsrffi/phase2_candidate_capsule.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/phase2_candidate_capsule.py",
+      "sha256": "a3d80eccfb7b915dbb672e039c28fa65715376804a23810a962779f77429ce9b"
+    },
+    {
+      "path": "code/cvsrffi/phase2_isolated_runner.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/phase2_isolated_runner.py",
+      "sha256": "f6636d49e16597a37bedbc1db1e349147325cb911eaa89624cd69ab55bf3933c"
+    },
+    {
+      "path": "code/cvsrffi/phase2_landlock_isolated_runner.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/phase2_landlock_isolated_runner.py",
+      "sha256": "5b9d62bc503b573bb5f82d74695b14f1108c10d9cc77eeb50dfb59595600ea43"
+    },
+    {
+      "path": "code/cvsrffi/phase2_landlock_policy.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/phase2_landlock_policy.py",
+      "sha256": "f7fdb313c630955f9ba630438110e05eb03f2296e174f82cdfb6a3e034710bb7"
+    },
+    {
+      "path": "code/cvsrffi/phase2_landlock_pre_run_evidence.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/phase2_landlock_pre_run_evidence.py",
+      "sha256": "e1e9da434ba0dd3bf6519be76edd58acc8f66e97639aac939185b6a96470fed8"
+    },
+    {
+      "path": "code/cvsrffi/phase2_pre_run_evidence.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/phase2_pre_run_evidence.py",
+      "sha256": "a94deb82ff6f211f7924c219d88926a4c19f1629d372fee20547f0e156b6b2fa"
+    },
+    {
+      "path": "code/cvsrffi/phase2_prototypes.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/phase2_prototypes.py",
+      "sha256": "fc23d24f9c0e8be2158d4b43b28eb2003c702142b17e453cb40f6dd8e7392a8d"
+    },
+    {
+      "path": "code/cvsrffi/phase2_runtime_closure.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/phase2_runtime_closure.py",
+      "sha256": "53a7faee62dcff4e37a6379f0b5c7c244731d5be71f270894afdd348e66f89e2"
+    },
+    {
+      "path": "code/cvsrffi/phase2_runtime_contract.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/phase2_runtime_contract.py",
+      "sha256": "792c3eda489679bebdde08825e437ef93c460e8f64fd6279b166909b3ab90a78"
+    },
+    {
+      "path": "code/cvsrffi/presets.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/presets.py",
+      "sha256": "01fa2c36b09b0581b4389c4bbf0fbab0827e7cbdf2564ed696457326aa3da747"
+    },
+    {
+      "path": "code/cvsrffi/prototype_bank.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/prototype_bank.py",
+      "sha256": "32e9824e7fbc915dccdee117db049abba5b5bbec23fbb54220b18f45c04e3f44"
+    },
+    {
+      "path": "code/cvsrffi/runtime_threads.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/runtime_threads.py",
+      "sha256": "cc286441414388aeb3e969d09ebf51193ee0bca3b34891bb34ce784f41007d0d"
+    },
+    {
+      "path": "code/cvsrffi/schedule.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/schedule.py",
+      "sha256": "6c84f11b5e225d88fdbc1f2bb7f80a6ab427cd87e33e0e3f5a7ca2de0e02eb89"
+    },
+    {
+      "path": "code/cvsrffi/selective_tangent.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/selective_tangent.py",
+      "sha256": "34e85711ddd0889c8b771330a2dae9ec11f00fa88552f445e04315497b5d0dc2"
+    },
+    {
+      "path": "code/cvsrffi/somph_authority_lock_builder.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/somph_authority_lock_builder.py",
+      "sha256": "1bdd4bb7c8ddc0f51dca450a34a108646415ff712d1268f0f25a1e1dbd8c3101"
+    },
+    {
+      "path": "code/cvsrffi/somph_cache_build_matrix.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/somph_cache_build_matrix.py",
+      "sha256": "f182e38dcbd14a80da951b3f39edf9069d117f66519765845e17785743f13ff9"
+    },
+    {
+      "path": "code/cvsrffi/somph_diagnostic_bundle_loader.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/somph_diagnostic_bundle_loader.py",
+      "sha256": "b337351e85c376bb5c2bdc826a8e1a0f788947e6d4924bb96d8f3962ae616f1c"
+    },
+    {
+      "path": "code/cvsrffi/somph_diagnostic_enrollment_control.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/somph_diagnostic_enrollment_control.py",
+      "sha256": "243bdf9f622b61789d4627e33b712178309a1068ea946f2a75eef37d505a353f"
+    },
+    {
+      "path": "code/cvsrffi/somph_diagnostic_query_control.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/somph_diagnostic_query_control.py",
+      "sha256": "872a122b09c8f8ef4e4f7a327ca54f75d28d44da4d80a4eafb191cfc2e9974d4"
+    },
+    {
+      "path": "code/cvsrffi/somph_formal_matrix.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/somph_formal_matrix.py",
+      "sha256": "3f09a30a83638dbd299dff6c929761125a37b2a52574d699f0c92f94ca488687"
+    },
+    {
+      "path": "code/cvsrffi/somph_head_artifact.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/somph_head_artifact.py",
+      "sha256": "7d2307d7b33668855ae3d3dc06f8af2778ef950b12577d9e99e1a5918f3492aa"
+    },
+    {
+      "path": "code/cvsrffi/somph_isolated_runner.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/somph_isolated_runner.py",
+      "sha256": "cfe5d03650998e8680b2a2bd5957802147c65505ca47974a89070bcb0283dc16"
+    },
+    {
+      "path": "code/cvsrffi/somph_leo_weak_lineage_seal.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/somph_leo_weak_lineage_seal.py",
+      "sha256": "952c94c07d15ebd0467ba134a22fc39df33fdd3a233ed0639c07f4d359875b59"
+    },
+    {
+      "path": "code/cvsrffi/somph_lineage_authority.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/somph_lineage_authority.py",
+      "sha256": "b853e3ff56fc9c60f3a40ee48160704436702ff888a87f22707683b305f53f56"
+    },
+    {
+      "path": "code/cvsrffi/somph_metric_scorer.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/somph_metric_scorer.py",
+      "sha256": "8301262019723c4f6eec44ebb0d0bcd9bbfa385ab33f0e3fdea508df62d1716c"
+    },
+    {
+      "path": "code/cvsrffi/somph_offline_target_package.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/somph_offline_target_package.py",
+      "sha256": "1f74d2a9482b966b4bdcdae05127993c081b1d1265417a6e50b9855b6ff9327b"
+    },
+    {
+      "path": "code/cvsrffi/somph_prediction_artifact.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/somph_prediction_artifact.py",
+      "sha256": "03a1af5e66645044eba1ee9885880108201f12a9ffe49fda2cb5c42761f536b4"
+    },
+    {
+      "path": "code/cvsrffi/somph_predictor_bundle.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/somph_predictor_bundle.py",
+      "sha256": "49a05c6f1f809fc221e3cb64fffe0c2f11b1b252e6cdbe86449303f8fb5def48"
+    },
+    {
+      "path": "code/cvsrffi/somph_predictor_entry.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/somph_predictor_entry.py",
+      "sha256": "92962951b27c7666e69ebfd6dd4f30e1fe3621a3bfec6e4cc00d5e886104a52f"
+    },
+    {
+      "path": "code/cvsrffi/somph_predictor_runtime.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/somph_predictor_runtime.py",
+      "sha256": "343a0ddcdb200351a8099cde2c2a9bbdd6a4eb661e54d322ecbd6901a5e720ee"
+    },
+    {
+      "path": "code/cvsrffi/somph_runtime_request.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/somph_runtime_request.py",
+      "sha256": "280ec6367d3158793bc8d6514772578109eff8adcdce19739229bb9776c0dc2e"
+    },
+    {
+      "path": "code/cvsrffi/somph_runtime_trust.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/somph_runtime_trust.py",
+      "sha256": "4b1dee1d8ffdc793f48c46c21a11b0fdf8b6ef6e3b253807cc1138011dc1f9fc"
+    },
+    {
+      "path": "code/cvsrffi/source_episode_safe_gate.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/source_episode_safe_gate.py",
+      "sha256": "2a8411a9c73eb1cc3af6230c7e05c0a4998a4d9923487afd22f598a0ea7395b8"
+    },
+    {
+      "path": "code/cvsrffi/spaceborne_fewshot.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/spaceborne_fewshot.py",
+      "sha256": "28cab198ad1108bbcff403658700ed7e29b637e53981cbc1bf72028d0803b758"
+    },
+    {
+      "path": "code/cvsrffi/ssdg_guard.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/ssdg_guard.py",
+      "sha256": "d1035d4f13e5b5cf13cf8dcd07586c139db0490fae7ab002173e00bd4731acea"
+    },
+    {
+      "path": "code/cvsrffi/ssl_pseudo_label.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/ssl_pseudo_label.py",
+      "sha256": "21491f0ce87dd6866b9158b636374bb38f51e1e1b686ff3389ba3c91139e5cff"
+    },
+    {
+      "path": "code/cvsrffi/stage2_ablation_executors.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_ablation_executors.py",
+      "sha256": "659c4a2003a5acd73e24abb3d42b7d10737c593361bb361105924464d59aa9c5"
+    },
+    {
+      "path": "code/cvsrffi/stage2_ablation_factory.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_ablation_factory.py",
+      "sha256": "8cd639a2ba63d8f5f0602af0103ac231c3c8b6b58f0c0b729d80ca222f5cbf31"
+    },
+    {
+      "path": "code/cvsrffi/stage2_ablation_feature_builder.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_ablation_feature_builder.py",
+      "sha256": "7602175679fe8057adba7130480e0d13e26dab9a75dd546703df69ac0bdee81a"
+    },
+    {
+      "path": "code/cvsrffi/stage2_ablation_feature_cache.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_ablation_feature_cache.py",
+      "sha256": "9eca01c213e3c74d7a46cf3f613cab8b9b91aabb9fa1831b034b9d25c3bbc84e"
+    },
+    {
+      "path": "code/cvsrffi/stage2_ablation_quantization.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_ablation_quantization.py",
+      "sha256": "fed84426739bca5884f98c5e6fe5283e93f522c6f43791e133b8888ef1a14c66"
+    },
+    {
+      "path": "code/cvsrffi/stage2_ablation_release.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_ablation_release.py",
+      "sha256": "5f150fbeb222b7ff28b5b46b72cea06c2ac130bae840632fbc42fda9b19efccc"
+    },
+    {
+      "path": "code/cvsrffi/stage2_ablation_row_executor.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_ablation_row_executor.py",
+      "sha256": "9e986f7f3480352ba56b284435be2bfe2afecb9b0a7881deaec4a75825526411"
+    },
+    {
+      "path": "code/cvsrffi/stage2_ablation_scoring_sidecars.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_ablation_scoring_sidecars.py",
+      "sha256": "f55ae87732e2f5d13a3e2230541709ede361f6c81291268114cafff8b374da4a"
+    },
+    {
+      "path": "code/cvsrffi/stage2_ablation_truth_scorer.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_ablation_truth_scorer.py",
+      "sha256": "4041cdf139f16f1273ae5f84c472e58c28237af55d0dfd1ef559625e101aefc7"
+    },
+    {
+      "path": "code/cvsrffi/stage2_all_registered_new_suffix.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_all_registered_new_suffix.py",
+      "sha256": "50933b10a5399f60cceafbbf085ad6ba9c85e2ca784d512d16d90a63eaabeca3"
+    },
+    {
+      "path": "code/cvsrffi/stage2_b3_fisher_closed_form.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_b3_fisher_closed_form.py",
+      "sha256": "2cc05c0f2ef10c231698fdfd183ba84bcc1554a493e0d9bbbe318ac021f5d8ef"
+    },
+    {
+      "path": "code/cvsrffi/stage2_blind_receiver_operator_bank.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_blind_receiver_operator_bank.py",
+      "sha256": "b89f5ef3b472c43f1a2f1848ed62d5abdcbac26ed249accee902dd92ab6075b0"
+    },
+    {
+      "path": "code/cvsrffi/stage2_ciaf.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_ciaf.py",
+      "sha256": "f46c5007cb1c0279bf2b27169ad79989eba908f32658c5a4d7f819916381aeb1"
+    },
+    {
+      "path": "code/cvsrffi/stage2_classwise_safe_release.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_classwise_safe_release.py",
+      "sha256": "68633a72a0af8ecec519fde72679a78969cf89c86d5551eca47cd2eb70bf2eae"
+    },
+    {
+      "path": "code/cvsrffi/stage2_class_conditional_iq_head.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_class_conditional_iq_head.py",
+      "sha256": "6542786ef125449048678ecd82265a45947d05f92388d8ae71971b9b4ec3178c"
+    },
+    {
+      "path": "code/cvsrffi/stage2_class_conditional_local_boundary.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_class_conditional_local_boundary.py",
+      "sha256": "e59a711d47e4e6743b92a35f88d330df17ae137f8882d81c5f2c328372b6682d"
+    },
+    {
+      "path": "code/cvsrffi/stage2_class_local_margin_threshold.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_class_local_margin_threshold.py",
+      "sha256": "7110ddd2b94446747a71bf02461c9d7b4d879f234e0536d9bcb5e68f3a19398c"
+    },
+    {
+      "path": "code/cvsrffi/stage2_cl_cdr_envelope.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_cl_cdr_envelope.py",
+      "sha256": "eafe04305599a9572f06e915ead2c2caf697eae4f095409f40ee788e2a66428d"
+    },
+    {
+      "path": "code/cvsrffi/stage2_cmrae.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_cmrae.py",
+      "sha256": "9461fff6713b84db5f5808f4543bc7c74b4e97ebb5ef1a6e1ebbecabec4a2df0"
+    },
+    {
+      "path": "code/cvsrffi/stage2_collision_aware_multiproto.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_collision_aware_multiproto.py",
+      "sha256": "d90f84cec6fb0031e6b05036ba15d970614c0ce25ea5b0ccd3adb6e4e5c11b8f"
+    },
+    {
+      "path": "code/cvsrffi/stage2_d33_spherical_registration.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_d33_spherical_registration.py",
+      "sha256": "b60ec8a2d797a2e7e80a459e8e91f04f7757996df41e17fda7aea698710630d4"
+    },
+    {
+      "path": "code/cvsrffi/stage2_d34_collision_local_registration.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_d34_collision_local_registration.py",
+      "sha256": "63d38feaee0a899eb07c57d761b74b011442dde7d2da8b8082242361cdda4957"
+    },
+    {
+      "path": "code/cvsrffi/stage2_d35_dense_safe_registration.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_d35_dense_safe_registration.py",
+      "sha256": "6a96b6641d40930a867d4b99fb335575daf7a47262e37f7578210e5e25c62c0c"
+    },
+    {
+      "path": "code/cvsrffi/stage2_d36_compiled_joint_int8.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_d36_compiled_joint_int8.py",
+      "sha256": "e53b164b17da0ffcdf62b2f1024c931917d6d590fc5938b6f77a388270c3e09e"
+    },
+    {
+      "path": "code/cvsrffi/stage2_d37_b3_preserving_int8.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_d37_b3_preserving_int8.py",
+      "sha256": "09e89b5d833d246232bb2c7563dac67295618eb1bff5335789c039fc109df110"
+    },
+    {
+      "path": "code/cvsrffi/stage2_d38_strong_b3_quantized.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_d38_strong_b3_quantized.py",
+      "sha256": "7d621a9c3f63cbb30c8d2c14f20e140c2387c24df071afdd13f8eedb53e89017"
+    },
+    {
+      "path": "code/cvsrffi/stage2_d39_angular_radius.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_d39_angular_radius.py",
+      "sha256": "78018594de21ebdcb75822d4d14164ab4bbd4e41b231fdb71c0155854dbcd86c"
+    },
+    {
+      "path": "code/cvsrffi/stage2_d40_hnbr.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_d40_hnbr.py",
+      "sha256": "fe27425180e52a8b22c6b6dd537cf9f6b2b3390aaf5286811ebcfc41c144f6b1"
+    },
+    {
+      "path": "code/cvsrffi/stage2_d41_bec.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_d41_bec.py",
+      "sha256": "ab61ecb4183695ee7842e93650a7e511cfe7467ea20c61a9ad99235d86abbbde"
+    },
+    {
+      "path": "code/cvsrffi/stage2_d42_compact_runtime.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_d42_compact_runtime.py",
+      "sha256": "d94ca988cfa014006cb142ba65f376a30d2d2aa58463e8e8155af33078f9643c"
+    },
+    {
+      "path": "code/cvsrffi/stage2_d42_unified_shrinkage_lda.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_d42_unified_shrinkage_lda.py",
+      "sha256": "f3c0c49956a83d753e2a92664fd21b9cea8e7d09e4f0ae35d30ea85357fc096f"
+    },
+    {
+      "path": "code/cvsrffi/stage2_d67_row_stacking.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_d67_row_stacking.py",
+      "sha256": "0c193ec9795cb0acfc6cf1cab543c4f4c6f379376405bacb0f5ac39b2a5b4305"
+    },
+    {
+      "path": "code/cvsrffi/stage2_d68_signed_calibration.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_d68_signed_calibration.py",
+      "sha256": "390ea431bee68a2c6b66436aa5427748ee629fe512906e1007ab781513230597"
+    },
+    {
+      "path": "code/cvsrffi/stage2_d69_frozen_d62_append.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_d69_frozen_d62_append.py",
+      "sha256": "bb59c3828ce63cdd168c00fe26a2ca82a2d7a37fade8105dc57f1dc9e6ec3bbf"
+    },
+    {
+      "path": "code/cvsrffi/stage2_d70_atomic_lifecycle.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_d70_atomic_lifecycle.py",
+      "sha256": "f2e67c142ba8fbe797a019e724435a86b67db8446efb9ba49c96abb593b47459"
+    },
+    {
+      "path": "code/cvsrffi/stage2_d71_top2_centroid_reranker.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_d71_top2_centroid_reranker.py",
+      "sha256": "7b406c4b32cde9936b681943c52eda56987136856b7f2b9a44258da4b05b539b"
+    },
+    {
+      "path": "code/cvsrffi/stage2_d72_leave_one_head_bagging.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_d72_leave_one_head_bagging.py",
+      "sha256": "b709caa28aaae09cf3cc352aa38446bdd9c018378e30524b55e96110d5d4ceb2"
+    },
+    {
+      "path": "code/cvsrffi/stage2_d73_conflict_projected_joint_metric.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_d73_conflict_projected_joint_metric.py",
+      "sha256": "8d59e1c92887930cecebbd59e534e572299a64b875d1add559238eb9177391d5"
+    },
+    {
+      "path": "code/cvsrffi/stage2_d74_orthogonal_nuisance_removal.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_d74_orthogonal_nuisance_removal.py",
+      "sha256": "6584e14a918b2217e96093feb2ffefbf60009257d16674913588931b8e455444"
+    },
+    {
+      "path": "code/cvsrffi/stage2_d75_crossfitted_margin_safe_projection.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_d75_crossfitted_margin_safe_projection.py",
+      "sha256": "8b4a59ca9b7ded3f144f592dfe710570e595d1e3864814dfc403733b6e60fc46"
+    },
+    {
+      "path": "code/cvsrffi/stage2_d77_ground_preconditioned_common_descent.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_d77_ground_preconditioned_common_descent.py",
+      "sha256": "cb771f843d83b6fb11c1d373183421cd400d33a1636d4fc05d5be4fec69f603e"
+    },
+    {
+      "path": "code/cvsrffi/stage2_d78_ground_tangent_worstclass_margin.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_d78_ground_tangent_worstclass_margin.py",
+      "sha256": "0139e315e0fda570c2f96a572c61de4be68f899074eba197e18d9a856baac49f"
+    },
+    {
+      "path": "code/cvsrffi/stage2_d79_centered_ground_tangent.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_d79_centered_ground_tangent.py",
+      "sha256": "1260de735e64aa32f11061be82ec2ca26e4c90e5590725d76d83299696848388"
+    },
+    {
+      "path": "code/cvsrffi/stage2_d80_ground_commonmode_denoiser.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_d80_ground_commonmode_denoiser.py",
+      "sha256": "e6edea077beeb02f69f898cec4d3ee89c23bfe4f1b7e5044fba68533a20eb5b2"
+    },
+    {
+      "path": "code/cvsrffi/stage2_d81_ground_nuisance_cauchy_center.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_d81_ground_nuisance_cauchy_center.py",
+      "sha256": "c983baff6b6f71583ed0f694e3ec18c862d799d0d582da6f9bb808379480068c"
+    },
+    {
+      "path": "code/cvsrffi/stage2_d81_query_evaluation.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_d81_query_evaluation.py",
+      "sha256": "1b1b5542bbf1de2caf63d8edb25e0def82677d5e6bb59fb27a30411d5de50dff"
+    },
+    {
+      "path": "code/cvsrffi/stage2_d82_ground_nuisance_wiener_residual.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_d82_ground_nuisance_wiener_residual.py",
+      "sha256": "8cb946877672b2eef1aa8ab85d79a66836d71aee763648031243840bda193865"
+    },
+    {
+      "path": "code/cvsrffi/stage2_d83_ground_precision_loading.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_d83_ground_precision_loading.py",
+      "sha256": "5ed98a00d098c51c079f6c3f77b1c02f2328edc11730fc791ce456d912d56b1d"
+    },
+    {
+      "path": "code/cvsrffi/stage2_d84_ground_crossclass_consensus_center.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_d84_ground_crossclass_consensus_center.py",
+      "sha256": "5bebd29643767ee349059dbf80e0208a349a5e8870ea599c3d5e96cd63e17dff"
+    },
+    {
+      "path": "code/cvsrffi/stage2_d86_ground_radius_counterfactual_center.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_d86_ground_radius_counterfactual_center.py",
+      "sha256": "853255bf7cb1a517e1f56fa93a50639e417d17d23f81b42c19e7a55891529096"
+    },
+    {
+      "path": "code/cvsrffi/stage2_d87_ground_radius_sigma_margin.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_d87_ground_radius_sigma_margin.py",
+      "sha256": "3c1a93d3fd4e02ae8772fe112ab3b13ddcb5abfc960fc0f607a5fa8762a6d12b"
+    },
+    {
+      "path": "code/cvsrffi/stage2_d88_ground_sigma_pareto_guard.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_d88_ground_sigma_pareto_guard.py",
+      "sha256": "a699133cac451a594e7724ecf8a6e845a7411a5323d6e25d4779108566d89487"
+    },
+    {
+      "path": "code/cvsrffi/stage2_d89_v2_radius_cauchy_center.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_d89_v2_radius_cauchy_center.py",
+      "sha256": "b1b4cd983fa85c7b89d7bd33b2fe83267aae1a1a0f165d02fff028c59cd6ebe2"
+    },
+    {
+      "path": "code/cvsrffi/stage2_d90_v2_directionwise_cauchy_center.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_d90_v2_directionwise_cauchy_center.py",
+      "sha256": "11138760634ad16e9b4b8b2fad8371f624866d342692cc3e8b4a6fd491fae1eb"
+    },
+    {
+      "path": "code/cvsrffi/stage2_d91_crossfit_consensus_sigma_margin.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_d91_crossfit_consensus_sigma_margin.py",
+      "sha256": "49331151483e6cb2b98e3db2f800e56a9079c3a2f37869d2654c8bfb1d72255e"
+    },
+    {
+      "path": "code/cvsrffi/stage2_d92_query_evaluation.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_d92_query_evaluation.py",
+      "sha256": "5c4f4b86b4aba44fc9a4d8fe95b30428ae9a8c8b3da4cad3d8eeb86f6306356b"
+    },
+    {
+      "path": "code/cvsrffi/stage2_d92_registration_balanced_covariance.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_d92_registration_balanced_covariance.py",
+      "sha256": "49dbb4a6a02abc3280ae55bf395e71dd02397832b322c372d888bee253e342d3"
+    },
+    {
+      "path": "code/cvsrffi/stage2_dali.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_dali.py",
+      "sha256": "c51e1c028a7b6994243001dd6fd8c47de5168822241d6c4e0fd1e9085455003e"
+    },
+    {
+      "path": "code/cvsrffi/stage2_diag_cosine_exploration.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_diag_cosine_exploration.py",
+      "sha256": "c53908f6b5f8c5ece1c7bceb14308d8cb0475957bafffee3d4ee3df782888fe5"
+    },
+    {
+      "path": "code/cvsrffi/stage2_diag_cosine_scorer.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_diag_cosine_scorer.py",
+      "sha256": "217b4208d67184d7fd5cad376052ee0a7118623e82b8aff1deb4f9d0467d88c2"
+    },
+    {
+      "path": "code/cvsrffi/stage2_fcar.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_fcar.py",
+      "sha256": "a7762adf749b4fb797f83537eba525d52e6172c92208bc5b81529f074300fde1"
+    },
+    {
+      "path": "code/cvsrffi/stage2_floor_sparse_operator_fusion.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_floor_sparse_operator_fusion.py",
+      "sha256": "beb70c6cd6cd0510adb925f6c3035c977dd79d2a8aaae5f9d9901defc0719284"
+    },
+    {
+      "path": "code/cvsrffi/stage2_frozen_class_prototype_export.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_frozen_class_prototype_export.py",
+      "sha256": "cca3521822e3035b834b1225b36e9226ebb42187580fcffe2e2eb269053d6f2b"
+    },
+    {
+      "path": "code/cvsrffi/stage2_identity_lowrank_residual.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_identity_lowrank_residual.py",
+      "sha256": "3bb84c8f3217b7021a1e9237ba4a67ec2b62568a303b9c203d8ca406d8faeb41"
+    },
+    {
+      "path": "code/cvsrffi/stage2_inloop_safe_cap_suffix.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_inloop_safe_cap_suffix.py",
+      "sha256": "a421f914c777b2e5afd03f3431e55945d874b3fec7d9879604887cf83bed6dcb"
+    },
+    {
+      "path": "code/cvsrffi/stage2_joint_residual_logit_head.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_joint_residual_logit_head.py",
+      "sha256": "a24c0a0467f22f3798561720b44d8c3c77006ce6b861b4dabba5b032d6e67814"
+    },
+    {
+      "path": "code/cvsrffi/stage2_local_contrastive_boundary.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_local_contrastive_boundary.py",
+      "sha256": "bc6f2a894a51cb7e8748d506e7c7b9ff644fa8f73cfb5719ad30bd3bb91e1afd"
+    },
+    {
+      "path": "code/cvsrffi/stage2_m23_overlay_builder.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_m23_overlay_builder.py",
+      "sha256": "87d623fd3f7140fbc315f1b25157c320b42f755f99357fb90b789fc920893839"
+    },
+    {
+      "path": "code/cvsrffi/stage2_m23_overlay_cache.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_m23_overlay_cache.py",
+      "sha256": "b9882b329aca2995543414cd9d598c5c202b13181447be50196cc9f9197f6a87"
+    },
+    {
+      "path": "code/cvsrffi/stage2_m23_rfguard.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_m23_rfguard.py",
+      "sha256": "d84ffd12b357f69b03635cd7377e983990008479406803ede162aaf2cd772a0d"
+    },
+    {
+      "path": "code/cvsrffi/stage2_m23_row_executor.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_m23_row_executor.py",
+      "sha256": "044748bb5e14c5a0dde56756917526c70e352eb4de0ab6f2e7eda290be709554"
+    },
+    {
+      "path": "code/cvsrffi/stage2_m23_truth_diagnostics.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_m23_truth_diagnostics.py",
+      "sha256": "6831dc64ff689db995c9486c74a6ce942f89691d8adff6d1eb3d6cd91dcd5612"
+    },
+    {
+      "path": "code/cvsrffi/stage2_max_envelope_calibration.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_max_envelope_calibration.py",
+      "sha256": "72f933a5f5e4395cc5292893e8d992959b5fa454ef4505532dc5f8cbfd17a516"
+    },
+    {
+      "path": "code/cvsrffi/stage2_metric_scorer.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_metric_scorer.py",
+      "sha256": "df50dc0cc98992ad3c16ae73852979db3bcc221e1b4d667f4b3e09dc3f5225e9"
+    },
+    {
+      "path": "code/cvsrffi/stage2_multimodal_compact_diag.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_multimodal_compact_diag.py",
+      "sha256": "553d6361a728490c26963944df8353f1bc64bf1540b2ab6709f2f25bedd6f1ff"
+    },
+    {
+      "path": "code/cvsrffi/stage2_multimodal_concat_fusion.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_multimodal_concat_fusion.py",
+      "sha256": "2c43008c1f14f6a6173c3680b3af8a8b4015dfde662b0d4fcfb11e74829dac1e"
+    },
+    {
+      "path": "code/cvsrffi/stage2_multimodal_diag_floor_adapter.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_multimodal_diag_floor_adapter.py",
+      "sha256": "0b3354f76b281710e2c538d2a1a81a7c00c258b91a7dbe8415ccde48c5d84df0"
+    },
+    {
+      "path": "code/cvsrffi/stage2_new_logit_intrusion_guard.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_new_logit_intrusion_guard.py",
+      "sha256": "217d90572d263f47af9d442ba5347ec8839958097f514c5bc7e2add2b713ce3b"
+    },
+    {
+      "path": "code/cvsrffi/stage2_prediction_artifact.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_prediction_artifact.py",
+      "sha256": "0e90b8f732af90ebea3eef59303ce23df82331045eff1745410de995306b9432"
+    },
+    {
+      "path": "code/cvsrffi/stage2_predictor_bundle.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_predictor_bundle.py",
+      "sha256": "1039a737fd4c895ea77b401f8cb1aa9a7764f7b6e44772fcd7467cb9d0be554a"
+    },
+    {
+      "path": "code/cvsrffi/stage2_predictor_entry.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_predictor_entry.py",
+      "sha256": "8086ed1d0e864829e4f8466532f08bc9d7c845cc42ddd24ac5dce956e9aff0d1"
+    },
+    {
+      "path": "code/cvsrffi/stage2_predictor_runtime.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_predictor_runtime.py",
+      "sha256": "989c7304895b11f7213dbe25158166b135654edd0dfe725bada666a0e2eed2e0"
+    },
+    {
+      "path": "code/cvsrffi/stage2_prototype_lifecycle.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_prototype_lifecycle.py",
+      "sha256": "e7c7637206116dd4c6fe4d4725e8f30c25cf8c81fd7ef35d0970fa64eb1b8b3d"
+    },
+    {
+      "path": "code/cvsrffi/stage2_scoring_sidecar.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_scoring_sidecar.py",
+      "sha256": "afc51001cf69d444ecadc3f9ff37f4240a102dcca5ddf631f057c063df72ae55"
+    },
+    {
+      "path": "code/cvsrffi/stage2_single_observation_floorlock.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_single_observation_floorlock.py",
+      "sha256": "2228ed0dc4eb5c2eac6a43edd6f0be88c383789228961f1fbbebf1de21314e78"
+    },
+    {
+      "path": "code/cvsrffi/stage2_sparse_pairwise_fisher_guard.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_sparse_pairwise_fisher_guard.py",
+      "sha256": "b39c1732124bf76c2ed5852e243d308a8ba3ddd2f2159ff5ce67b4e1e3032731"
+    },
+    {
+      "path": "code/cvsrffi/stage2_sprtdr.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_sprtdr.py",
+      "sha256": "49bafa32f1789949533cc152a0649ecdd478ccf704470b295ce98ccb6691be6a"
+    },
+    {
+      "path": "code/cvsrffi/stage2_structured_late_block_adaptation.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_structured_late_block_adaptation.py",
+      "sha256": "f436bc348c6d6f5b7c49a12725056c67147f3d522c41c886ba50578c55b869ef"
+    },
+    {
+      "path": "code/cvsrffi/stage2_structured_late_block_runner.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_structured_late_block_runner.py",
+      "sha256": "d7eac5a878ddc69c394e9bbc8f0d3badc3f20511359a2e1eb9b9859df8dcd6ec"
+    },
+    {
+      "path": "code/cvsrffi/stage2_structured_late_block_scorer.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_structured_late_block_scorer.py",
+      "sha256": "16eed83b2797304ad427ea05180567d71de6f7afbbef5fe41dec3e0c57a257e5"
+    },
+    {
+      "path": "code/cvsrffi/stage2_support_evidence_gate.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_support_evidence_gate.py",
+      "sha256": "dd9f06bae0e8c6137fae8ebd2e14b2d0d2d33765a15815036af0ceaeb1c1db0a"
+    },
+    {
+      "path": "code/cvsrffi/stage2_support_lowrank_metric.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_support_lowrank_metric.py",
+      "sha256": "b88836734ef650773cddd337f57aa2f180a52946a5b158808f9460308b93624b"
+    },
+    {
+      "path": "code/cvsrffi/stage2_support_safe_selector.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_support_safe_selector.py",
+      "sha256": "70cc0e307d1f13ecb0399a51c88d5f2f89a0cbd98e88cc5491b1f17cffc614b8"
+    },
+    {
+      "path": "code/cvsrffi/stage2_support_sparse_encoder_adaptation.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_support_sparse_encoder_adaptation.py",
+      "sha256": "a9e2db832917f15a93730706ee95345635e64a50315428e9f43acf31accbb34c"
+    },
+    {
+      "path": "code/cvsrffi/stage2_target_prototype_bank.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_target_prototype_bank.py",
+      "sha256": "a5e56456ad89d63445be8a5aea164ab9115e6647ae05b641252fe107654344b5"
+    },
+    {
+      "path": "code/cvsrffi/stage2_target_row_export.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_target_row_export.py",
+      "sha256": "b3233c22f7c9020dda6595cb5a9effc1b94e83a1449110b305167b157392f9fd"
+    },
+    {
+      "path": "code/cvsrffi/stage2_td_htrc_m22.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_td_htrc_m22.py",
+      "sha256": "c86b9f6e2ba0dfa4968e9ee61de69e903fa2e3a0f7c7c3a8858dc05bea3b2cc2"
+    },
+    {
+      "path": "code/cvsrffi/stage2_td_htrc_target_transport.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_td_htrc_target_transport.py",
+      "sha256": "11b863e2c1a3f5c499bee56a5af87cc3cef429705cdae2460b0ba10bdf497930"
+    },
+    {
+      "path": "code/cvsrffi/stage2_trainable_lowrank_support_adapter.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_trainable_lowrank_support_adapter.py",
+      "sha256": "6b7686449805ffb4e6aab851d1d53274bfd46db5ae9ada4e12dca1971887c74d"
+    },
+    {
+      "path": "code/cvsrffi/stage2_uncertainty_proto_fusion.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/stage2_uncertainty_proto_fusion.py",
+      "sha256": "2ed2067c4636447f9e013bab2b99d6bc94e149ed5152907fc363b7e802bd2b86"
+    },
+    {
+      "path": "code/cvsrffi/tail_quarantine.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/tail_quarantine.py",
+      "sha256": "a4f14216eb297712ddefd2f9aa9958f3c1894d18867c9bd4e3ce731c3fa4ba2c"
+    },
+    {
+      "path": "code/cvsrffi/tensors.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/tensors.py",
+      "sha256": "cfe8329499787bceb7d6b2c52c37f27af65719c6016d50cd29d81918e0f0e657"
+    },
+    {
+      "path": "code/cvsrffi/truth_last.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/truth_last.py",
+      "sha256": "a996c5c2c50a5a1bbc8c8c4419bddd3bdfa78d5d124cfe09fe3060a9c786200d"
+    },
+    {
+      "path": "code/cvsrffi/tx_rx_geometry.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/tx_rx_geometry.py",
+      "sha256": "fc0c23b6e4e7d223612d5ebaa4483b69d6b95c9f060c8c616b0f11fdf0a0e066"
+    },
+    {
+      "path": "code/cvsrffi/unlabeled_risk_mining.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/unlabeled_risk_mining.py",
+      "sha256": "ae3a05b6677f1f103289573c725c1d7e324d2532b3c2e57b377718538ca25911"
+    },
+    {
+      "path": "code/cvsrffi/wisig_fewshot_payload.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/wisig_fewshot_payload.py",
+      "sha256": "e4a05ab80734e6e30c8abd14e0c203c717f6f06c38fc62d458e06e5719bb99ea"
+    },
+    {
+      "path": "code/cvsrffi/__init__.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/__init__.py",
+      "sha256": "13cc5247133854c79ed160269ee8fa9816cb8dae3d162e724ad86d0ad8fad7a2"
+    },
+    {
+      "path": "code/scripts/build_xuc_source_contract.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/scripts/build_xuc_source_contract.py",
+      "sha256": "c287c90ee05beca101fa2b955ca7d1ba2264d27665eaa039b7b57b754ca357ef"
+    },
+    {
+      "path": "code/scripts/check_a1_fast_v2.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/scripts/check_a1_fast_v2.py",
+      "sha256": "2f539b8a1c7e9cf7e3f334f110cb053edc4c0e6609e8b9d364d90f9917e1896b"
+    },
+    {
+      "path": "code/scripts/check_dr_execution.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/scripts/check_dr_execution.py",
+      "sha256": "045fbccba74780f5aa9eb63d03ba9991cf340ece98786feb016964dd557fcbca"
+    },
+    {
+      "path": "code/scripts/check_full_dr_execution.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/scripts/check_full_dr_execution.py",
+      "sha256": "748172091089fdf42c4f8873a16e8724ab39c7055e8b89e343626f902ea32223"
+    },
+    {
+      "path": "code/scripts/check_response_execution.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/scripts/check_response_execution.py",
+      "sha256": "191a7139eedfbfb0cbb775a4831722532cd64e66abacff92cd00568d05184fab"
+    },
+    {
+      "path": "code/scripts/check_xuc_execution.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/scripts/check_xuc_execution.py",
+      "sha256": "032551b2df9f9b01bbde1d37615d30fdc813939f4b15b0f6bc7d8c4f402b395a"
+    },
+    {
+      "path": "code/scripts/dispatch_response_matrix.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/scripts/dispatch_response_matrix.py",
+      "sha256": "c7f5579fe126c5c884d106dc9d00bb6fa4d5726d96c0e85982c312a8636ddeee"
+    },
+    {
+      "path": "code/scripts/dispatch_separate_controls.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/scripts/dispatch_separate_controls.py",
+      "sha256": "d4411bfc95bb9235006e3468cd277dacdc5d4915bb905e6cbf6262d93685fab6"
+    },
+    {
+      "path": "code/scripts/dispatch_xuc15.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/scripts/dispatch_xuc15.py",
+      "sha256": "ad7efb7b11b197c3188557742ae2de7f5fe45a65bc1a45ee436d4634845b4e4d"
+    },
+    {
+      "path": "code/scripts/dispatch_xuc_dr.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/scripts/dispatch_xuc_dr.py",
+      "sha256": "73b2ddf829f6df7b0208a145b15741c1c42a3446d4fef082259a22217bf52fa5"
+    },
+    {
+      "path": "code/scripts/dispatch_xuc_full.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/scripts/dispatch_xuc_full.py",
+      "sha256": "51fa7d3373d3b6d53b2404a55cd4258a082b577bd69bc8b27397cc36050818f2"
+    },
+    {
+      "path": "code/scripts/predict_phase1_truth_last.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/scripts/predict_phase1_truth_last.py",
+      "sha256": "af865a52bad468bba74c2dcc93fe40eba6e2181856414e82f4466cd2bc198638"
+    },
+    {
+      "path": "code/scripts/run_a1_ecrs_cross_rx.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/scripts/run_a1_ecrs_cross_rx.py",
+      "sha256": "7dd0e2719b38f51211b5c2b10f289acac2649323c1f2b7c253d6748380a73d5f"
+    },
+    {
+      "path": "code/scripts/run_a1_fast_matched_core90.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/scripts/run_a1_fast_matched_core90.py",
+      "sha256": "77bffcffdeae378cb150e9d5b3cecab496e4def172e188745c206c5f5501a97b"
+    },
+    {
+      "path": "code/scripts/run_a1_fast_selected_adv3b02.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/scripts/run_a1_fast_selected_adv3b02.py",
+      "sha256": "67dfbc37df5ec69a976cc2b2833b37e61877d8e2843ad205e334dcb8d113fe32"
+    },
+    {
+      "path": "code/scripts/run_a1_fast_v2.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/scripts/run_a1_fast_v2.py",
+      "sha256": "398bcb2a6fb5db08d4a7c17b96dc5bc6cfc341be022eac8de0ccdfbf907559f4"
+    },
+    {
+      "path": "code/scripts/run_a1_scratch_no_checkpoint.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/scripts/run_a1_scratch_no_checkpoint.py",
+      "sha256": "a31c3b8c906e1668a58c82afae0445cab8ba5daee9a82d5f872f245e51a49213"
+    },
+    {
+      "path": "code/scripts/score_phase1_truth_last.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/scripts/score_phase1_truth_last.py",
+      "sha256": "69d6283c0e86e117abe53806883aeda9f8684945874bbf1343370297922af435"
+    },
+    {
+      "path": "code/scripts/train_daot_rc4_baseline.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/scripts/train_daot_rc4_baseline.py",
+      "sha256": "531882863e156d7f5ef2c853462f46f863999facd68e8ceefef7c047ef3e7537"
+    },
+    {
+      "path": "code/scripts/train_native_dr_eg.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/scripts/train_native_dr_eg.py",
+      "sha256": "892e67dc98c30051837db4e8973261ac8f5ec8deed18672708baab229ebb4d4f"
+    },
+    {
+      "path": "code/scripts/train_response_games.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/scripts/train_response_games.py",
+      "sha256": "bb814a03e447ef01aaa159582dcfe862aa969cf6c4f58e0670f73aab220bcfa4"
+    },
+    {
+      "path": "code/scripts/train_xuc.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/scripts/train_xuc.py",
+      "sha256": "e150d440aff95ac0ed9e7f3704879c303581b5d553353cddf40bfda473b9ab94"
+    },
+    {
+      "path": "code/scripts/train_xuc_native.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/scripts/train_xuc_native.py",
+      "sha256": "509d362978f30c94f951e21e29cfaddaf65b417782308befcdb0ff0c39b1f387"
+    },
+    {
+      "path": "code/SSDG/train_ssdg.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/SSDG/train_ssdg.py",
+      "sha256": "908a9d38440a29f1aa39671c89bab466a143f66f8394b8db4db73a5c8e85ce0d"
+    },
+    {
+      "path": "code/SSDG/__init__.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/SSDG/__init__.py",
+      "sha256": "262260b4c4e0b5daba0a87feb04f468f75f9b6f4c957e54a70543498662ddb91"
+    },
+    {
+      "path": "code/cvsrffi/cross_response/analysis.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/cross_response/analysis.py",
+      "sha256": "dc23ca27c0be894cbc64174c98919ddda22040d63579b1d8026ffd28d88033f9"
+    },
+    {
+      "path": "code/cvsrffi/cross_response/baseline_compat.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/cross_response/baseline_compat.py",
+      "sha256": "9af0bff19ff70bea376618268bc67e0cc2816e67d346288756dde786f2d13006"
+    },
+    {
+      "path": "code/cvsrffi/cross_response/cache.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/cross_response/cache.py",
+      "sha256": "2c5fe3f0a82aa2b421d7d12a7515e76baeb854662bde73ac77e674ea5e512aee"
+    },
+    {
+      "path": "code/cvsrffi/cross_response/config.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/cross_response/config.py",
+      "sha256": "371c80d28d9e927a23edada29b8356d9cf2c2a743a5d98c1589c8116ed7cf368"
+    },
+    {
+      "path": "code/cvsrffi/cross_response/coverage.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/cross_response/coverage.py",
+      "sha256": "301e061d6ff1e7615d1f319513890b187187c43e0210b63e74762b758009777d"
+    },
+    {
+      "path": "code/cvsrffi/cross_response/decision.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/cross_response/decision.py",
+      "sha256": "13b91b8ae6a781a3825ff09faa6f82e6f92272d47e83f97a4252884a37bf9c4d"
+    },
+    {
+      "path": "code/cvsrffi/cross_response/decision_calibration.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/cross_response/decision_calibration.py",
+      "sha256": "59595902e8bed91b0a39e312200432df7a0a5848c5ab286141b19959936ae21f"
+    },
+    {
+      "path": "code/cvsrffi/cross_response/final_scoring.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/cross_response/final_scoring.py",
+      "sha256": "dbb953a33cdb79834c9745db2934266c31f26c62f6fa57e90f65ed2e0861b1e6"
+    },
+    {
+      "path": "code/cvsrffi/cross_response/gate_v2.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/cross_response/gate_v2.py",
+      "sha256": "0cf899a7bdc80466909acd26cc44b02965a3b27125ddd48b7b376d892d6816f7"
+    },
+    {
+      "path": "code/cvsrffi/cross_response/gradient_audit.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/cross_response/gradient_audit.py",
+      "sha256": "20aac3f7d7690fc3d519535ffbc757b30d3eab4cd3e5755ef78187c4cdd0c13c"
+    },
+    {
+      "path": "code/cvsrffi/cross_response/integration.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/cross_response/integration.py",
+      "sha256": "b0ab9c0a47515675b7820892ed22713f939e6a9f28e9894cbe5d26210ce3d103"
+    },
+    {
+      "path": "code/cvsrffi/cross_response/legacy_losses.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/cross_response/legacy_losses.py",
+      "sha256": "8f97b2fe3eff4aaba5971e366afd6f939647cda313401f9172b15a6e4c8d3f74"
+    },
+    {
+      "path": "code/cvsrffi/cross_response/predictor.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/cross_response/predictor.py",
+      "sha256": "f12a363fc9a0b1818e3978bdb3986aecd2ce6eb3749dfc37f57ca362dd20fd14"
+    },
+    {
+      "path": "code/cvsrffi/cross_response/readouts.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/cross_response/readouts.py",
+      "sha256": "4fed365b46c1700e8f40972bceda7768047ba94bfb63e35e98162d9d94102795"
+    },
+    {
+      "path": "code/cvsrffi/cross_response/replay_audit.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/cross_response/replay_audit.py",
+      "sha256": "7a9367f3bb56d802a2b1f8684031f511ff8bb1f45845d44333034ede9f891269"
+    },
+    {
+      "path": "code/cvsrffi/cross_response/roles.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/cross_response/roles.py",
+      "sha256": "c1af59c23f907a11e5ebc19f09e6a9da9d5af596ced7e19535287d5e86d1b042"
+    },
+    {
+      "path": "code/cvsrffi/cross_response/sampler.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/cross_response/sampler.py",
+      "sha256": "6915e1c38fd452d8c776fbf3280249e3d554a1378ecb2d09b739772eba8607cf"
+    },
+    {
+      "path": "code/cvsrffi/cross_response/scheduler.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/cross_response/scheduler.py",
+      "sha256": "3033866969728bb50abf091cbd6213a18f09cd96d7909ade573dd4477da45e9a"
+    },
+    {
+      "path": "code/cvsrffi/cross_response/schema.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/cross_response/schema.py",
+      "sha256": "2468db447e9be7131d3e5fe809d55db987d9fd106c05836ac86aa717a002aa3e"
+    },
+    {
+      "path": "code/cvsrffi/cross_response/source_baselines.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/cross_response/source_baselines.py",
+      "sha256": "0d2c3e7b4abfdb13afed684d0a5198df3932bf6ae59520876feec74145cec17c"
+    },
+    {
+      "path": "code/cvsrffi/cross_response/source_eval.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/cross_response/source_eval.py",
+      "sha256": "1b7ee0a8eca9bd30a5f3eb4291b2471e46bacd3fc22821b88d4612a12963fdd5"
+    },
+    {
+      "path": "code/cvsrffi/cross_response/source_mechanism.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/cross_response/source_mechanism.py",
+      "sha256": "439a0d8765af30e841ff79732e88732de41aab54d4c3cc665495e1b5c40ec43d"
+    },
+    {
+      "path": "code/cvsrffi/cross_response/statistics.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/cross_response/statistics.py",
+      "sha256": "4b29b3f6f86f948b2c73eebacd1f42417e864eac295674fcfa23b18acb569376"
+    },
+    {
+      "path": "code/cvsrffi/cross_response/tensor_ops.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/cross_response/tensor_ops.py",
+      "sha256": "76998d963c7e069caced28685f63288e058dc9c605126133c3114e52c3b46e0e"
+    },
+    {
+      "path": "code/cvsrffi/cross_response/training.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/cross_response/training.py",
+      "sha256": "de4b98d004a4616b874ccb8fe36ca573978e96915155e8b3eec9b434a4408e51"
+    },
+    {
+      "path": "code/cvsrffi/cross_response/unlabeled.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/cross_response/unlabeled.py",
+      "sha256": "9fb5eca5577c7ef7adfec429a962a7666771e97031708e71b8eaea068fc701cc"
+    },
+    {
+      "path": "code/cvsrffi/cross_response/__init__.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/cross_response/__init__.py",
+      "sha256": "96861f5319b22da9fc2201a024a24166212fd103878fc29f70e75fc8f36de111"
+    },
+    {
+      "path": "code/cvsrffi/game_tracking/audit_evidence.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/game_tracking/audit_evidence.py",
+      "sha256": "a4e3a6e520438ed171755c68a12fc8915d994db7953942a64b58d559aecf6486"
+    },
+    {
+      "path": "code/cvsrffi/game_tracking/budget.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/game_tracking/budget.py",
+      "sha256": "416687f9d5077f62d31bd108b34462fa8158caaca2065a32b92e80f125dd1256"
+    },
+    {
+      "path": "code/cvsrffi/game_tracking/capability.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/game_tracking/capability.py",
+      "sha256": "17388c08c238cfd614bb0417d037d5052375418aca1e6c5ee115352118030857"
+    },
+    {
+      "path": "code/cvsrffi/game_tracking/config.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/game_tracking/config.py",
+      "sha256": "839e30724b219cc21b8d9baca351d2085e339c3618ff4934018a6fbceaa82cec"
+    },
+    {
+      "path": "code/cvsrffi/game_tracking/controller.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/game_tracking/controller.py",
+      "sha256": "f13ddb21c5ab57004539c2d9a69c6a67e8f388f13424cb8594f70b4fc5ca7b53"
+    },
+    {
+      "path": "code/cvsrffi/game_tracking/coverage_audit.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/game_tracking/coverage_audit.py",
+      "sha256": "16a9c8debf00e49002692232ea7c7be79c5c33a0b0158c39d68aa360c5dfaf80"
+    },
+    {
+      "path": "code/cvsrffi/game_tracking/curriculum.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/game_tracking/curriculum.py",
+      "sha256": "e17fa0ebb8e84ccff92d05702f5a988ed7d9e01183af7bb3e7165e087971a559"
+    },
+    {
+      "path": "code/cvsrffi/game_tracking/data.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/game_tracking/data.py",
+      "sha256": "303aded353d5065ebec55de49b8b4ec3b9ba79091bf026694378b7ba4bef321f"
+    },
+    {
+      "path": "code/cvsrffi/game_tracking/field.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/game_tracking/field.py",
+      "sha256": "fdc017122b8c8475cc3e5cc428f678afdd4fcf8ff85b85cb9582bc89815c933e"
+    },
+    {
+      "path": "code/cvsrffi/game_tracking/gradient_audit.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/game_tracking/gradient_audit.py",
+      "sha256": "2bdfe93f8e197fda1f8142740c51b3296f816c527b464146c41b7bd233c2e41b"
+    },
+    {
+      "path": "code/cvsrffi/game_tracking/head_lookahead.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/game_tracking/head_lookahead.py",
+      "sha256": "f0f4cb8ee8feeea1300d363e2f59e3c0a58728c23f69ecde7cf9238c8b420268"
+    },
+    {
+      "path": "code/cvsrffi/game_tracking/jacobian_audit.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/game_tracking/jacobian_audit.py",
+      "sha256": "26637c36abf9d1d0fec5e602e27488fa335f5a566d8189f861ec83ba51732206"
+    },
+    {
+      "path": "code/cvsrffi/game_tracking/parameter_roles.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/game_tracking/parameter_roles.py",
+      "sha256": "41ad7421742cb4ca3e1ecdea28059f535b316b0da5e639abc04a3fac49f3a5f8"
+    },
+    {
+      "path": "code/cvsrffi/game_tracking/response_tracking.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/game_tracking/response_tracking.py",
+      "sha256": "87164d0f6519f02100866913508f97e8233bc9177c445cc510176c09905c4d93"
+    },
+    {
+      "path": "code/cvsrffi/game_tracking/runtime.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/game_tracking/runtime.py",
+      "sha256": "d8eddf6a63ccf3162faa403a86b3b739545e0f9b391887d2fb5ea49d480119e1"
+    },
+    {
+      "path": "code/cvsrffi/game_tracking/runtime_audit_v2.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/game_tracking/runtime_audit_v2.py",
+      "sha256": "9263b67dd50d1774a2b35f615b6788342317043d90789d2ab2573303b7758f34"
+    },
+    {
+      "path": "code/cvsrffi/game_tracking/runtime_control.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/game_tracking/runtime_control.py",
+      "sha256": "798098db9ac50f22a998edc81cfd65471a33b660fc20726a02b7c8d9a41461c5"
+    },
+    {
+      "path": "code/cvsrffi/game_tracking/solvers.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/game_tracking/solvers.py",
+      "sha256": "d990af8ea384d5e83c12b504a1686bb05fd12228179f11d6016a8738e56ab304"
+    },
+    {
+      "path": "code/cvsrffi/game_tracking/source_audit.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/game_tracking/source_audit.py",
+      "sha256": "ae02e55cb8100050eb08a48f8d0a725e2715c3b4eba1062bc3b157f957aa8a04"
+    },
+    {
+      "path": "code/cvsrffi/game_tracking/state.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/game_tracking/state.py",
+      "sha256": "c7ddff8225c4977d676ccae86ea767a60eb7ceeb28d7edf9a72853d2413d7f1e"
+    },
+    {
+      "path": "code/cvsrffi/game_tracking/step_context.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/game_tracking/step_context.py",
+      "sha256": "d0e3b97187ade23e137cace417d8701cb66d57126a93f8e6caf033acfc9eda69"
+    },
+    {
+      "path": "code/cvsrffi/game_tracking/__init__.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/game_tracking/__init__.py",
+      "sha256": "1887d042fe6ab9e10d9a8fcdfae4f0c8a796c285d61345f54bd5cfb350b78ba3"
+    },
+    {
+      "path": "code/cvsrffi/xuc_fusion/activation.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/xuc_fusion/activation.py",
+      "sha256": "f7edb2326b76bd5a9de02748eecefb9c915ccf98dae0e22d6a1382fb9ba9b8f4"
+    },
+    {
+      "path": "code/cvsrffi/xuc_fusion/checkpoints.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/xuc_fusion/checkpoints.py",
+      "sha256": "bd765dcb2b981bc570e865f2f6e797518500519863dc938da6e3a8c541d755f8"
+    },
+    {
+      "path": "code/cvsrffi/xuc_fusion/control.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/xuc_fusion/control.py",
+      "sha256": "65b67d8d921b2a23e6ab2e3d27d6cb8a55ccbc72152bfc99fe0dbe2667ee9603"
+    },
+    {
+      "path": "code/cvsrffi/xuc_fusion/dr_objective.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/xuc_fusion/dr_objective.py",
+      "sha256": "88f841f94b93303cc11aa3c4c5f06cf2d7b22d57f1203480e46b16585052d6dd"
+    },
+    {
+      "path": "code/cvsrffi/xuc_fusion/full_dr_objective.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/xuc_fusion/full_dr_objective.py",
+      "sha256": "d2273d9c6d1ab50a725e3fd1fe3208f3c12a147f173bef02e0bacb18baaceacb"
+    },
+    {
+      "path": "code/cvsrffi/xuc_fusion/joint_config.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/xuc_fusion/joint_config.py",
+      "sha256": "16e9406ff2e01bd680831003e67e81138528e7459a9e704e05bcfd9a1a82279d"
+    },
+    {
+      "path": "code/cvsrffi/xuc_fusion/joint_diagnostics.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/xuc_fusion/joint_diagnostics.py",
+      "sha256": "cc722cb5c0260f74c66c3bfa59962c326b88d87a90c1cfa0f2511aaf937b4889"
+    },
+    {
+      "path": "code/cvsrffi/xuc_fusion/joint_metrics.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/xuc_fusion/joint_metrics.py",
+      "sha256": "5028ea6a85293d76c8cf49eddab2eeb12ab9c5d65c469c3f1456c1e6cdffc9c4"
+    },
+    {
+      "path": "code/cvsrffi/xuc_fusion/joint_normalization.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/xuc_fusion/joint_normalization.py",
+      "sha256": "0667dd354762567265f2048f48db177da8ff20f89174504c14cdec5d5ec9331b"
+    },
+    {
+      "path": "code/cvsrffi/xuc_fusion/native.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/xuc_fusion/native.py",
+      "sha256": "6fd5a1e657d903ac165aa55312b3e6aa0f03672bd72dda99307b0dd3623d9ee4"
+    },
+    {
+      "path": "code/cvsrffi/xuc_fusion/objective.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/xuc_fusion/objective.py",
+      "sha256": "91bbdfe1c572ad982854b92080263e70d9a49763a7197fe6c0ad22e791dff1f0"
+    },
+    {
+      "path": "code/cvsrffi/xuc_fusion/response_config.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/xuc_fusion/response_config.py",
+      "sha256": "e463998467d4728e6f4f57b8e8be193cda657b2db5f235a07ddc9b68502733c1"
+    },
+    {
+      "path": "code/cvsrffi/xuc_fusion/response_context.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/xuc_fusion/response_context.py",
+      "sha256": "5b25ce7d7e62105d9c7437d868452432cf5d4954b0294ec47031c7ac77c3943e"
+    },
+    {
+      "path": "code/cvsrffi/xuc_fusion/response_dric.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/xuc_fusion/response_dric.py",
+      "sha256": "5883609ca19b7ada21677e4a9baf3528fd1943c7968afd03023eb9f10c67e939"
+    },
+    {
+      "path": "code/cvsrffi/xuc_fusion/response_fields.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/xuc_fusion/response_fields.py",
+      "sha256": "4c67c91e041917f90e6d6597863dc273e375f4d5c0b0264ae808da4aeb3ddb99"
+    },
+    {
+      "path": "code/cvsrffi/xuc_fusion/response_replay.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/xuc_fusion/response_replay.py",
+      "sha256": "ff3bd07beb8cdbd53148f0e187368bf3fba6df633a1322683a735e829474c3cb"
+    },
+    {
+      "path": "code/cvsrffi/xuc_fusion/response_runtime.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/xuc_fusion/response_runtime.py",
+      "sha256": "2429e2b848e0c57f80bebdf38b0a0cafb1652053bd96bbd159537ede93774e89"
+    },
+    {
+      "path": "code/cvsrffi/xuc_fusion/response_solver.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/xuc_fusion/response_solver.py",
+      "sha256": "10498e953c28529845eb4b28d5e79549213bf95c3bb87a54fb93fb152b3a321f"
+    },
+    {
+      "path": "code/cvsrffi/xuc_fusion/resume.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/xuc_fusion/resume.py",
+      "sha256": "e277a0f288bd41b7ca5044b01b07b416f5cc9d9a32c2a7177d8269b1258ae0e5"
+    },
+    {
+      "path": "code/cvsrffi/xuc_fusion/runtime.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/xuc_fusion/runtime.py",
+      "sha256": "7124d78253d978e72bcba8c5afcab454e5c916e4ca73313041900d4d4a05e00b"
+    },
+    {
+      "path": "code/cvsrffi/xuc_fusion/tickets.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/xuc_fusion/tickets.py",
+      "sha256": "62ea8835039795ff6217496b491f05eae307f4f5a1cc5d0e22d6aab738685604"
+    },
+    {
+      "path": "code/cvsrffi/xuc_fusion/__init__.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/xuc_fusion/__init__.py",
+      "sha256": "b26f5ffc7c75c8dc005e5bb03084b46d415aa9621b7db2363ff5574fb57557e8"
+    },
+    {
+      "path": "code/cvsrffi/game_tracking/legacy/losses.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/game_tracking/legacy/losses.py",
+      "sha256": "8f97b2fe3eff4aaba5971e366afd6f939647cda313401f9172b15a6e4c8d3f74"
+    },
+    {
+      "path": "code/cvsrffi/game_tracking/legacy/model.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/game_tracking/legacy/model.py",
+      "sha256": "23d68e484a7f4e3dafc9d2e3f2ed0d0243327f11651aa85c793fe62491aa7a1d"
+    },
+    {
+      "path": "code/cvsrffi/game_tracking/legacy/model_dual_cvsincnet.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/game_tracking/legacy/model_dual_cvsincnet.py",
+      "sha256": "6b1fc6ae8a868eadff533bcf780a1e56264ac15e2c00fc39b7600ea8758e1c45"
+    },
+    {
+      "path": "code/cvsrffi/game_tracking/legacy/objective.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/game_tracking/legacy/objective.py",
+      "sha256": "8b9a0d3d2c7f35759a8f5f23ea538fd18d187e751eb3eb4dbf1fa38a6c79bf7a"
+    },
+    {
+      "path": "code/cvsrffi/game_tracking/legacy/options.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/game_tracking/legacy/options.py",
+      "sha256": "696ce8523f1dd37f3e1e059a5d1e6e36de799bb74bdd02d81a0641af07497f18"
+    },
+    {
+      "path": "code/cvsrffi/game_tracking/legacy/source_manifest.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/game_tracking/legacy/source_manifest.json",
+      "sha256": "d2315a2eb560ee82bd284d5a8ad2532150ecb62bd2a3cfa401f1222141a6ff22"
+    },
+    {
+      "path": "code/cvsrffi/game_tracking/legacy/__init__.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/code/cvsrffi/game_tracking/legacy/__init__.py",
+      "sha256": "61cc69aa584f7df062418f394b8797b73248eeb2ab11dce2a58f3fd9daca3601"
+    },
+    {
+      "path": "tests/conftest.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/tests/conftest.py",
+      "sha256": "a30fea10a761f84bbcaeeaa886e52900106a46f28f6c1cff14dba0891fac5b5d"
+    },
+    {
+      "path": "tests/test_acceptance.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/tests/test_acceptance.py",
+      "sha256": "f7b334dd731fc9d31534a5b441e7719ec99ea35572357f5907a812e87cc3175f"
+    },
+    {
+      "path": "tests/test_dr_scheduling.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/tests/test_dr_scheduling.py",
+      "sha256": "bf79d6df05bb7b6799733715b31c69ea34045e00eb01f28a5d4f9b0f27d98ec5"
+    },
+    {
+      "path": "tests/test_full_dr.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/tests/test_full_dr.py",
+      "sha256": "43edeaf92dff80bed15d08a5f838e7e1d4f157b1ab62c3f7bc781730f15380fa"
+    },
+    {
+      "path": "tests/test_native_joint.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/tests/test_native_joint.py",
+      "sha256": "2c623037e3eaea3294c3cfb358d6df7e8ff3bdf6d2376f7fa33b60ac0d305abd"
+    },
+    {
+      "path": "tests/test_pause_controls.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/tests/test_pause_controls.py",
+      "sha256": "0085eb548d66bc4e7f92f4f62fd24e56b220d75251a800dcd3b19b20ed85fe68"
+    },
+    {
+      "path": "tests/test_pure_resume.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/tests/test_pure_resume.py",
+      "sha256": "bac001e94e3a10f1fa824af294ffc4ed7f796c9f9c3bc271571f464a6564b8d6"
+    },
+    {
+      "path": "tests/test_response_games.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/tests/test_response_games.py",
+      "sha256": "01f758fe0168dfebd46a7b4e61e174010a926fde6255b364c0b5a790506be418"
+    },
+    {
+      "path": "tests/test_response_reaudit.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/tests/test_response_reaudit.py",
+      "sha256": "ca27a737ee1c3b5a372350637c5c69717b0a6e78ef1af213f55f65dc7484a287"
+    },
+    {
+      "path": "tests/test_separate_controls.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/tests/test_separate_controls.py",
+      "sha256": "d3ff26d04d9fc9950c8ce1f6d749defbc3f907460d150b5a4e524e1a7d0d9395"
+    },
+    {
+      "path": "configs/a1_fast_matched_core90_20260908.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/a1_fast_matched_core90_20260908.json",
+      "sha256": "ae84226fc635c073c32514b1e2231eb6cd59b1a962b349bda757b8a69f3f6f89"
+    },
+    {
+      "path": "configs/a1_native_recipe_reference.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/a1_native_recipe_reference.json",
+      "sha256": "353468d2c7d54c5915ac9c8c7cabe26b81c61ad1214dc366b9ea162cb4792bca"
+    },
+    {
+      "path": "configs/core90_recipe_reference.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/core90_recipe_reference.json",
+      "sha256": "c339600df9e38728b0cb6b8f8a7fb906286bdc789880d79ceac7c2bcd9744138"
+    },
+    {
+      "path": "configs/matrix15.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/matrix15.json",
+      "sha256": "d700f409dd3bac310549f522e24ad00b3b6264d6251e66f84ca1d8b50c7a9115"
+    },
+    {
+      "path": "configs/matrix_dr.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/matrix_dr.json",
+      "sha256": "954cf44cd06133ebdfbbada0ae08a636bf48758e4d45c2ee9393569151f6e3ab"
+    },
+    {
+      "path": "configs/matrix_dr_full.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/matrix_dr_full.json",
+      "sha256": "ef55da0a423f5a2970b39444563047f5b9d099b8ea292e7aa5f6fe5e6ca94785"
+    },
+    {
+      "path": "configs/native_dr_eg/ADV0-0_s392005.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/native_dr_eg/ADV0-0_s392005.json",
+      "sha256": "9e76e321527ef8c14ccf2cb2b32c2d3724a5ddddfbf970ed12d9c84c95b8d669"
+    },
+    {
+      "path": "configs/native_dr_eg/ADV0-0_s392006.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/native_dr_eg/ADV0-0_s392006.json",
+      "sha256": "27c4d9bc048783f662a3de16294f8ec16d4f52a106681b65e1bd6b8844c59322"
+    },
+    {
+      "path": "configs/native_dr_eg/ADV0-0_s392007.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/native_dr_eg/ADV0-0_s392007.json",
+      "sha256": "e849ece982ff007c649d16daf4edb1d3df699421bef7ad8393f400437e5d45fa"
+    },
+    {
+      "path": "configs/native_dr_eg/ADV0-1_s392005.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/native_dr_eg/ADV0-1_s392005.json",
+      "sha256": "6fe2ed94c2dd1e58522faab294cdb4c861bd7e8e506230217bfc3919e5ed4065"
+    },
+    {
+      "path": "configs/native_dr_eg/ADV0-1_s392006.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/native_dr_eg/ADV0-1_s392006.json",
+      "sha256": "b6fb748bf22e4652e7f74c4a1430fa006ab02fab986d18f9cee5a0b90105dcdd"
+    },
+    {
+      "path": "configs/native_dr_eg/ADV0-1_s392007.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/native_dr_eg/ADV0-1_s392007.json",
+      "sha256": "3c43f77ffa9784a240d50868c565ff78545f9923936e1e575c168a186cf188f7"
+    },
+    {
+      "path": "configs/native_dr_eg/matrix.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/native_dr_eg/matrix.json",
+      "sha256": "9423ecbae5871bf0f1e18a96b50ec42783c316862eb92acb471b08bbc33028d8"
+    },
+    {
+      "path": "configs/native_dr_eg/R0-00_s392005.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/native_dr_eg/R0-00_s392005.json",
+      "sha256": "7ff11a32fde89b9a26c677d2395fb2deea6e806249dd784a4893ae437a6f04d6"
+    },
+    {
+      "path": "configs/native_dr_eg/R0-00_s392006.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/native_dr_eg/R0-00_s392006.json",
+      "sha256": "65d45edfe6998ed734c6fad0dbdce8896e29ed13076da2ec48b8657d45e8b4c5"
+    },
+    {
+      "path": "configs/native_dr_eg/R0-00_s392007.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/native_dr_eg/R0-00_s392007.json",
+      "sha256": "1ed2fe66358ed62ab50dc11abcf80ef36fb7eaa7b70d2211c0c6a43875ecf9c3"
+    },
+    {
+      "path": "configs/native_dr_eg/R0-01_s392005.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/native_dr_eg/R0-01_s392005.json",
+      "sha256": "0c6d2c07ac4d7489dd714c84efd77de008c76f671792da13b0eeadbc672eba1b"
+    },
+    {
+      "path": "configs/native_dr_eg/R0-01_s392006.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/native_dr_eg/R0-01_s392006.json",
+      "sha256": "63f6d08b63cbb278d0e2ba9147da3b5f09d337580536d7e19af39b93e0935940"
+    },
+    {
+      "path": "configs/native_dr_eg/R0-01_s392007.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/native_dr_eg/R0-01_s392007.json",
+      "sha256": "5e75915b073182b2643081e84908e400246888f9b396227ad7a13cc70e8ba275"
+    },
+    {
+      "path": "configs/native_dr_eg/R0-10_s392005.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/native_dr_eg/R0-10_s392005.json",
+      "sha256": "28d2203f8bf39ff78b53f9b55d71715559a53d5a0f6f34ddd53c6973fe94f460"
+    },
+    {
+      "path": "configs/native_dr_eg/R0-10_s392006.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/native_dr_eg/R0-10_s392006.json",
+      "sha256": "aad3d7e14bcb73285ddf2e407fcfde532db071c6097ab7bded119ce32e8f15ba"
+    },
+    {
+      "path": "configs/native_dr_eg/R0-10_s392007.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/native_dr_eg/R0-10_s392007.json",
+      "sha256": "617dba729fb14ec0478b802760fc01ae72307c4f71204447ca06b7edae31995a"
+    },
+    {
+      "path": "configs/native_dr_eg/R0-11_s392005.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/native_dr_eg/R0-11_s392005.json",
+      "sha256": "8683983a167fb3441b5cfc0304577e4be1e602cb8b91c6ca772b5d2b1163d28c"
+    },
+    {
+      "path": "configs/native_dr_eg/R0-11_s392006.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/native_dr_eg/R0-11_s392006.json",
+      "sha256": "bb3bda05a76b23e2909103eb690adb305c6cc7eb1ec94c68525e6502d4735a5f"
+    },
+    {
+      "path": "configs/native_dr_eg/R0-11_s392007.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/native_dr_eg/R0-11_s392007.json",
+      "sha256": "3e2c33a08ee559639ae62ae792aaa032939d24a0dc0c65ad7d24f7f70dd3feb8"
+    },
+    {
+      "path": "configs/native_dr_eg/R1_reference_not_selected.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/native_dr_eg/R1_reference_not_selected.json",
+      "sha256": "2f5fce08aa3d52b18a2fbd8bac5ae91316977ffc94b2c4e13da0a0de37118f07"
+    },
+    {
+      "path": "configs/response_games/CF_EG_encoder_off_s392005.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/CF_EG_encoder_off_s392005.json",
+      "sha256": "3ec1812be0c6145793b171d2d0be7f2eb5fc18020f8affdca5daa825d7444783"
+    },
+    {
+      "path": "configs/response_games/CF_EG_encoder_off_s392006.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/CF_EG_encoder_off_s392006.json",
+      "sha256": "8df83b38c429f1f09b5b98f9d7f79dadc9812de9ad86c167986a3d823a05186e"
+    },
+    {
+      "path": "configs/response_games/CF_EG_encoder_off_s392007.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/CF_EG_encoder_off_s392007.json",
+      "sha256": "ba096dc7d7fdecfe4c77b4e01a1e33d8ae82c893f63a367245259a90b832ba0a"
+    },
+    {
+      "path": "configs/response_games/CF_EG_s392005.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/CF_EG_s392005.json",
+      "sha256": "10884972eb7a7d5dc3a58474a9ff30f1d313b55cba4932b19cbe3cc865d96942"
+    },
+    {
+      "path": "configs/response_games/CF_EG_s392006.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/CF_EG_s392006.json",
+      "sha256": "b4a6b795d33e796fbed03a961489c672806ed9b0ab70768c3497718f49794427"
+    },
+    {
+      "path": "configs/response_games/CF_EG_s392007.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/CF_EG_s392007.json",
+      "sha256": "a71f54f0b8e6e7e262e5b421d42fb29f7093c3227e3fe2299a8b3d71b2aba7e3"
+    },
+    {
+      "path": "configs/response_games/CF_fixed_0.0_s392005.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/CF_fixed_0.0_s392005.json",
+      "sha256": "e8089180172812a5fe50fc4cf7ad342977edc2cfb84f8256704b6628fabf0e0a"
+    },
+    {
+      "path": "configs/response_games/CF_fixed_0.0_s392006.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/CF_fixed_0.0_s392006.json",
+      "sha256": "519a0005fbc60dae1ff875767edb2b18985bdf5c0c621302523cf44845d1e573"
+    },
+    {
+      "path": "configs/response_games/CF_fixed_0.0_s392007.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/CF_fixed_0.0_s392007.json",
+      "sha256": "14f9641554b848180c5a312d2f95200badacb973bde46cc382f2891b43db4e86"
+    },
+    {
+      "path": "configs/response_games/CF_fixed_0.5_s392005.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/CF_fixed_0.5_s392005.json",
+      "sha256": "9e5059cd6c16d89a116300251b2120b531ad68560f7ef36cf0617388cc9f8562"
+    },
+    {
+      "path": "configs/response_games/CF_fixed_0.5_s392006.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/CF_fixed_0.5_s392006.json",
+      "sha256": "9a17db1192a7016c976f41470ab2eb250e4b07296a8bd0d8de6ab9f89591f8a7"
+    },
+    {
+      "path": "configs/response_games/CF_fixed_0.5_s392007.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/CF_fixed_0.5_s392007.json",
+      "sha256": "ea4f85f8ffc7e7b57f2f3611b12f9102e88bfc85ef0fe21f698572fdb10ae2c3"
+    },
+    {
+      "path": "configs/response_games/CF_fixed_1.0_s392005.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/CF_fixed_1.0_s392005.json",
+      "sha256": "5a567be34a323d1bb412bab0dccf8641832f8db769b14985ce94238e5c266c90"
+    },
+    {
+      "path": "configs/response_games/CF_fixed_1.0_s392006.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/CF_fixed_1.0_s392006.json",
+      "sha256": "7c74bc424df1456a62df1c1724d4900da7832c577ddb1ce2012dbbd2fc6f979e"
+    },
+    {
+      "path": "configs/response_games/CF_fixed_1.0_s392007.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/CF_fixed_1.0_s392007.json",
+      "sha256": "e64073cb079cc871a1c102d7ea6e820b1f096d62a4d3f57888c4d60d32ad678c"
+    },
+    {
+      "path": "configs/response_games/CF_random_beta_s392005.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/CF_random_beta_s392005.json",
+      "sha256": "de296198807e01ce069f8e98c3dca9fe805a79e10beb4f272828a286b12b6da1"
+    },
+    {
+      "path": "configs/response_games/CF_random_beta_s392006.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/CF_random_beta_s392006.json",
+      "sha256": "a20d7c76132121e2cbb4db4e6dd9bb1e86fc71fbcdf15ad1457c313b45adbf29"
+    },
+    {
+      "path": "configs/response_games/CF_random_beta_s392007.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/CF_random_beta_s392007.json",
+      "sha256": "f739f114c3b6064c5a2ae52f39dee9f0825d0d4ccc52fa70da659e203c33acf4"
+    },
+    {
+      "path": "configs/response_games/CF_sparse10_s392005.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/CF_sparse10_s392005.json",
+      "sha256": "af344beaa98fc625b3de569dffbecac0233769dbc48c810ee5b83151087c89df"
+    },
+    {
+      "path": "configs/response_games/CF_sparse10_s392006.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/CF_sparse10_s392006.json",
+      "sha256": "6cd46bed2ee8f0a5731b0acfe398ed40a4683cb6f70391a1ea32e99387ba514c"
+    },
+    {
+      "path": "configs/response_games/CF_sparse10_s392007.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/CF_sparse10_s392007.json",
+      "sha256": "7634d139a2f8261028282db05621827a5ae240fec9225d27ae13314246f30977"
+    },
+    {
+      "path": "configs/response_games/CF_sparse5_s392005.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/CF_sparse5_s392005.json",
+      "sha256": "935c3efb632596ebe80ebe0b1d291c101c8c00a14fbc196bcac3eef26e2e9cbb"
+    },
+    {
+      "path": "configs/response_games/CF_sparse5_s392006.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/CF_sparse5_s392006.json",
+      "sha256": "d03a9f3146c16e33947eee85e4dd63e032d294e0995d6e3bda9c6fa06df9c048"
+    },
+    {
+      "path": "configs/response_games/CF_sparse5_s392007.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/CF_sparse5_s392007.json",
+      "sha256": "fe789a3a5a0b013ef9a070181920ec003acaa304bf9aa18b916f2f2ef78efe40"
+    },
+    {
+      "path": "configs/response_games/CF_tolerance_02_s392005.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/CF_tolerance_02_s392005.json",
+      "sha256": "60aacc4773d2f2bc805ce6645452e88e1397c52ba2b8a7c002d9afaccd30d153"
+    },
+    {
+      "path": "configs/response_games/CF_tolerance_02_s392006.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/CF_tolerance_02_s392006.json",
+      "sha256": "ab6c0db1026089dbaa2854e88bf140c4a37dcd4e0a155b98cf1307255ca360f3"
+    },
+    {
+      "path": "configs/response_games/CF_tolerance_02_s392007.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/CF_tolerance_02_s392007.json",
+      "sha256": "ba6586e846f31662ddd278e3f05dee23cd4d186a8459c51160899e56ccf5f6c6"
+    },
+    {
+      "path": "configs/response_games/DRIC_encoder_off_s392005.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/DRIC_encoder_off_s392005.json",
+      "sha256": "14f80d5bb0dcc07592f472e5cfdc26c9ebcd1465a0ae366d16c52e5f1ea365bc"
+    },
+    {
+      "path": "configs/response_games/DRIC_encoder_off_s392006.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/DRIC_encoder_off_s392006.json",
+      "sha256": "380ee39a94d8dfef9109a72edfc98b8cece8ccb7d8b0ec78f434e9857f787a83"
+    },
+    {
+      "path": "configs/response_games/DRIC_encoder_off_s392007.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/DRIC_encoder_off_s392007.json",
+      "sha256": "3b849f964382186856b927f8a5d1bcec41f9f43ce8199690f84ce0040ede2895"
+    },
+    {
+      "path": "configs/response_games/DRIC_L_head_only_s392005.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/DRIC_L_head_only_s392005.json",
+      "sha256": "f48db6f1b68ebb33387f2a50409a7ffdd2570dc17714ece7dc4daf31b1d592c4"
+    },
+    {
+      "path": "configs/response_games/DRIC_L_head_only_s392006.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/DRIC_L_head_only_s392006.json",
+      "sha256": "525df6137c868690b0cf4d55a6b1c669d0507c55fda946949f1617ce29e65290"
+    },
+    {
+      "path": "configs/response_games/DRIC_L_head_only_s392007.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/DRIC_L_head_only_s392007.json",
+      "sha256": "aa5dc8c410b8b105215ba66714915ca99f049be94de8d46154c381cb992fd548"
+    },
+    {
+      "path": "configs/response_games/DRIC_no_drift_s392005.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/DRIC_no_drift_s392005.json",
+      "sha256": "0639a608fe5e7887bfdef35da00d692aa40e16c92e05a863c498ab2cee001645"
+    },
+    {
+      "path": "configs/response_games/DRIC_no_drift_s392006.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/DRIC_no_drift_s392006.json",
+      "sha256": "b1cdd7dde67f91aa39882c0bdd7ea72cd4165fa96a9208d1e26ae5c067f3d00c"
+    },
+    {
+      "path": "configs/response_games/DRIC_no_drift_s392007.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/DRIC_no_drift_s392007.json",
+      "sha256": "49350fb014a546f2a496dd8733380a420989054755ace4342b71ec267efc4e8a"
+    },
+    {
+      "path": "configs/response_games/DRIC_no_identity_budget_s392005.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/DRIC_no_identity_budget_s392005.json",
+      "sha256": "1996c5356f1378262c530355dfb481f71065b374afc12e63397c10f5df8b8528"
+    },
+    {
+      "path": "configs/response_games/DRIC_no_identity_budget_s392006.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/DRIC_no_identity_budget_s392006.json",
+      "sha256": "917c8175c643e47d849112504631e7128f3c843cc85a37db75b1f7295bf663fe"
+    },
+    {
+      "path": "configs/response_games/DRIC_no_identity_budget_s392007.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/DRIC_no_identity_budget_s392007.json",
+      "sha256": "53f3ce2029d5cd27eda8516fc89013e76fc1cb3cdd0743a027f302c941098217"
+    },
+    {
+      "path": "configs/response_games/DRIC_s392005.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/DRIC_s392005.json",
+      "sha256": "271d383f044895a515242a220d4284c47715cf630b22b768b942a0b608c275d1"
+    },
+    {
+      "path": "configs/response_games/DRIC_s392006.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/DRIC_s392006.json",
+      "sha256": "588c6cdbf62cec2c3b2b1d4323fca4ad668d265dc4dde739d2f715a8e0f08b62"
+    },
+    {
+      "path": "configs/response_games/DRIC_s392007.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/DRIC_s392007.json",
+      "sha256": "64158582e9ddc20c4b31180ac9b85141f4ef22d21cfa22098b334911ef4600f4"
+    },
+    {
+      "path": "configs/response_games/DRIC_shuffled_drift_s392005.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/DRIC_shuffled_drift_s392005.json",
+      "sha256": "4de9687e303542ba5c408517953ee6daa64c4e1f44344347540b0da76fe3b302"
+    },
+    {
+      "path": "configs/response_games/DRIC_shuffled_drift_s392006.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/DRIC_shuffled_drift_s392006.json",
+      "sha256": "c7c0afcaa59c519bd2f74c7c4372ced25f97b9d6b48124b6a33af7597ad08beb"
+    },
+    {
+      "path": "configs/response_games/DRIC_shuffled_drift_s392007.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/DRIC_shuffled_drift_s392007.json",
+      "sha256": "a44f6d109bd21ab9fe7cc8944453aaaa7ce5d4386d5d9639026c7d5be47fd39e"
+    },
+    {
+      "path": "configs/response_games/DRIC_task_projection_s392005.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/DRIC_task_projection_s392005.json",
+      "sha256": "b87ab0574e207f2294e89fc6f0d86a83521c29a28045728f841584124015fb8a"
+    },
+    {
+      "path": "configs/response_games/DRIC_task_projection_s392006.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/DRIC_task_projection_s392006.json",
+      "sha256": "2f3bfd414d82fc93431b1f6a142261e7246aac4191ea7f3384208449a15b3b4d"
+    },
+    {
+      "path": "configs/response_games/DRIC_task_projection_s392007.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/DRIC_task_projection_s392007.json",
+      "sha256": "f826fc8613fc928b202ba415b57bdb7742ebc748d763c58d4f28040ca4923f24"
+    },
+    {
+      "path": "configs/response_games/EG_encoder_off_s392005.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/EG_encoder_off_s392005.json",
+      "sha256": "b72c135e9eea70728edb5b55a58ba4839200ded6cfcd43c77cd6f86edbc10663"
+    },
+    {
+      "path": "configs/response_games/EG_encoder_off_s392006.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/EG_encoder_off_s392006.json",
+      "sha256": "7faf914abb846f01f4e0516be7bc677ef3020704a453922e4c506c623c337892"
+    },
+    {
+      "path": "configs/response_games/EG_encoder_off_s392007.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/EG_encoder_off_s392007.json",
+      "sha256": "484d9ff0cb14daff2e6496d507e21eeaa3134f563cf372f97c6a0a67bc70914f"
+    },
+    {
+      "path": "configs/response_games/EG_L_head_only_s392005.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/EG_L_head_only_s392005.json",
+      "sha256": "602ec9a40065ca6b875c38c449f86af9c22db2f00681d6a96b328b6960bbcb6e"
+    },
+    {
+      "path": "configs/response_games/EG_L_head_only_s392006.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/EG_L_head_only_s392006.json",
+      "sha256": "b954537a7e318bb02c765b13598fd0c696dfde511da8d8237b248255d498325c"
+    },
+    {
+      "path": "configs/response_games/EG_L_head_only_s392007.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/EG_L_head_only_s392007.json",
+      "sha256": "c84e17ab53f42dfd1e9932bc490303aeffee9aa680ed8e54ba3ed766e16f94a6"
+    },
+    {
+      "path": "configs/response_games/EG_s392005.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/EG_s392005.json",
+      "sha256": "575c028ff7516e6c9e6f44e6af99e2b9ffe0d6128eeeba2cdacd52b4043839aa"
+    },
+    {
+      "path": "configs/response_games/EG_s392006.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/EG_s392006.json",
+      "sha256": "903901be3d45dd0e7c8faf2239ee918b516d0346169946b3fdd605aae60ccc0a"
+    },
+    {
+      "path": "configs/response_games/EG_s392007.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/EG_s392007.json",
+      "sha256": "703e5ef6e228466c5f9d0d987ead18fa580b6fd46445b040f0be76d235c1abbd"
+    },
+    {
+      "path": "configs/response_games/EG_weak_encoder_s392005.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/EG_weak_encoder_s392005.json",
+      "sha256": "990624d427527ed9e54f9c108abc45655177ec8bf92683cdafed1d83e1359c8a"
+    },
+    {
+      "path": "configs/response_games/EG_weak_encoder_s392006.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/EG_weak_encoder_s392006.json",
+      "sha256": "d3329263f36fa44a3c21a16beff75badd9938ec06505cd701496085877386db4"
+    },
+    {
+      "path": "configs/response_games/EG_weak_encoder_s392007.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/EG_weak_encoder_s392007.json",
+      "sha256": "ee88e350e8fe7526b2555afa0791259e8cf93bb67ea3dbfe46b5711477853dad"
+    },
+    {
+      "path": "configs/response_games/local_competitive_s392005.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/local_competitive_s392005.json",
+      "sha256": "8b3b2d37c7ac8eef9ca4905ba3361191998916b19ac2b26a857c97aff74f6586"
+    },
+    {
+      "path": "configs/response_games/local_competitive_s392006.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/local_competitive_s392006.json",
+      "sha256": "a3f100c0799950a1718d458585dd9afed1d570d218c58ad0239dd19182a405a0"
+    },
+    {
+      "path": "configs/response_games/local_competitive_s392007.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/local_competitive_s392007.json",
+      "sha256": "03d5675beaa1e018ecab303710c75154f218f9016d21c270c107f8dd958e7f1c"
+    },
+    {
+      "path": "configs/response_games/matrix.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/matrix.json",
+      "sha256": "988d1b6f98bb3070ba2582111035726f69b9be698e51319dd52cfb583c8ff4dc"
+    },
+    {
+      "path": "configs/response_games/response_tracking_s392005.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/response_tracking_s392005.json",
+      "sha256": "80abf98f6c3a60700cfc48c9e4a5e015fdbe660568be3c2413c10067e2fdb9d2"
+    },
+    {
+      "path": "configs/response_games/response_tracking_s392006.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/response_tracking_s392006.json",
+      "sha256": "6b2a7672996cc03bae65c8c22887c6abdc965b126039981761e6f2a0699a1931"
+    },
+    {
+      "path": "configs/response_games/response_tracking_s392007.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/response_tracking_s392007.json",
+      "sha256": "0959705c0ef90d45d848bc845966a32f25d6029c762e6b3f18660b8888afca35"
+    },
+    {
+      "path": "configs/response_games/RK2_s392005.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/RK2_s392005.json",
+      "sha256": "d10909c84595a387231cfc487ee51cf1cf7563b7ed65ad2d2e8c17c6d1c4214e"
+    },
+    {
+      "path": "configs/response_games/RK2_s392006.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/RK2_s392006.json",
+      "sha256": "fe56eb680ec22d59db38eb54e5627d4314efe8bd11d6a828a9bf20851570b2f6"
+    },
+    {
+      "path": "configs/response_games/RK2_s392007.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/RK2_s392007.json",
+      "sha256": "3834763edac50c2dd0834414bcdeab3da5c7d96f50e181ec90392299911e2228"
+    },
+    {
+      "path": "configs/response_games/SIM_s392005.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/SIM_s392005.json",
+      "sha256": "490e214c5c8f66b55a64522f57585f3ef575649ab6fc30bf7d9b94061cc3a07e"
+    },
+    {
+      "path": "configs/response_games/SIM_s392006.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/SIM_s392006.json",
+      "sha256": "b7daad32792150a30e816c98b540e6da17006389c74c188a938eca68dca5801d"
+    },
+    {
+      "path": "configs/response_games/SIM_s392007.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/SIM_s392007.json",
+      "sha256": "b94952e680294c13d7950356f90fc68b63badeebe14d27b6ba9a6578ec0f807f"
+    },
+    {
+      "path": "configs/response_games/TR_EG_encoder_off_s392005.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/TR_EG_encoder_off_s392005.json",
+      "sha256": "68cbc81bd7a50101f066be3a8c45f3003d48c37fefcd7a52e3a23b22fe8b4bab"
+    },
+    {
+      "path": "configs/response_games/TR_EG_encoder_off_s392006.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/TR_EG_encoder_off_s392006.json",
+      "sha256": "ce2992df3a85874a2c4ba89eeb4e91bdcb7ef90a2c6e9ed5867bb50035dc21f8"
+    },
+    {
+      "path": "configs/response_games/TR_EG_encoder_off_s392007.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/TR_EG_encoder_off_s392007.json",
+      "sha256": "42fe680f733d004060a50f89d94da31ce0a483a101c77f3975d9e5c7449dd0d5"
+    },
+    {
+      "path": "configs/response_games/TR_EG_s392005.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/TR_EG_s392005.json",
+      "sha256": "eec2954fe178a78ac85cda0b113822e44ef0d678579ac425adc0a4015192204b"
+    },
+    {
+      "path": "configs/response_games/TR_EG_s392006.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/TR_EG_s392006.json",
+      "sha256": "f9435fd5c632d84b794dab0efd1a0dff154842fee62eb21bf84855d33090a4cd"
+    },
+    {
+      "path": "configs/response_games/TR_EG_s392007.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/TR_EG_s392007.json",
+      "sha256": "40325280525ade697fc68fd4d5db835f7b2110cbc68696aab81d0d50be19ffa5"
+    },
+    {
+      "path": "configs/response_games/TR_gamma_0.0_s392005.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/TR_gamma_0.0_s392005.json",
+      "sha256": "011791ff74c322578d6ddeca2b19679ba2b858817e73cf939f49221683017d76"
+    },
+    {
+      "path": "configs/response_games/TR_gamma_0.0_s392006.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/TR_gamma_0.0_s392006.json",
+      "sha256": "d06e7bc4c3429c67e70d398ffacdfd7f6e69e4919d2a6f298cf907e28cb102b3"
+    },
+    {
+      "path": "configs/response_games/TR_gamma_0.0_s392007.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/TR_gamma_0.0_s392007.json",
+      "sha256": "0f790f0b0a69650558e0355dadd8e87cd5ec605d18833997bd26e9d9121c05f7"
+    },
+    {
+      "path": "configs/response_games/TR_gamma_0.25_s392005.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/TR_gamma_0.25_s392005.json",
+      "sha256": "9aaed3b3c3609d73f544bc71e005918ccbc92edf10e934753cef213563421678"
+    },
+    {
+      "path": "configs/response_games/TR_gamma_0.25_s392006.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/TR_gamma_0.25_s392006.json",
+      "sha256": "763949a4afdf8e3cc4dff8277b8d27e2cf98d31988595f98cb170c054f4e9e15"
+    },
+    {
+      "path": "configs/response_games/TR_gamma_0.25_s392007.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/TR_gamma_0.25_s392007.json",
+      "sha256": "6b4494fbabb5d1838f420717901bdf5ad7c3aaba6bdae52b52315918ec23f954"
+    },
+    {
+      "path": "configs/response_games/TR_gamma_1.0_s392005.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/TR_gamma_1.0_s392005.json",
+      "sha256": "b1ff83bfec79c2d9196cc6b37d91859392bb96724f73f269bc2561020f320f9e"
+    },
+    {
+      "path": "configs/response_games/TR_gamma_1.0_s392006.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/TR_gamma_1.0_s392006.json",
+      "sha256": "b05c323ca71e271b24a8cd19db50884f25d5bc6e527a258f64094bb33c58aafb"
+    },
+    {
+      "path": "configs/response_games/TR_gamma_1.0_s392007.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/TR_gamma_1.0_s392007.json",
+      "sha256": "b4e252d3ab722967d8cb07e2aa5126b1e40c2e2a621b3a754310b73c9ead6361"
+    },
+    {
+      "path": "configs/response_games/TR_unmatched_s392005.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/TR_unmatched_s392005.json",
+      "sha256": "7f96aa1e52336321e7a3c842819f1cd45f718513e7230870b8d15c7df9a8c3ae"
+    },
+    {
+      "path": "configs/response_games/TR_unmatched_s392006.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/TR_unmatched_s392006.json",
+      "sha256": "abfaea65562ff5e02f6abedcf13df25f6197d069fbd56021a39a665e49d5ce90"
+    },
+    {
+      "path": "configs/response_games/TR_unmatched_s392007.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/TR_unmatched_s392007.json",
+      "sha256": "be0544698b12a5dcd9ce03e7a429b0aef13ab190879df49d828ce28231beb127"
+    },
+    {
+      "path": "configs/response_games/XT_DANN_encoder_off_s392005.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/XT_DANN_encoder_off_s392005.json",
+      "sha256": "e0125230514c1fa4bba76e7fa390c888c2b051859c1ed1a2873a566d79f64e62"
+    },
+    {
+      "path": "configs/response_games/XT_DANN_encoder_off_s392006.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/XT_DANN_encoder_off_s392006.json",
+      "sha256": "eecbf325bffb33ed03785805d1e5fdbfe55ea7ed5048a121bfdfc4c93f4b3bc4"
+    },
+    {
+      "path": "configs/response_games/XT_DANN_encoder_off_s392007.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/XT_DANN_encoder_off_s392007.json",
+      "sha256": "a5c415db38eba183d2a9b395f7a41419d782ed8104c5f1d1c77afc509ad4af71"
+    },
+    {
+      "path": "configs/response_games/XT_DANN_s392005.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/XT_DANN_s392005.json",
+      "sha256": "4e7fcc24faec7dc214ac130135047589975292a289b308fa9cb00a7b620a1496"
+    },
+    {
+      "path": "configs/response_games/XT_DANN_s392006.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/XT_DANN_s392006.json",
+      "sha256": "97e6da89d0d4f909a8cb7d2436a2e06d2917f9b7181091ce0e406c4431cd26d7"
+    },
+    {
+      "path": "configs/response_games/XT_DANN_s392007.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/XT_DANN_s392007.json",
+      "sha256": "5175aa683bf8ce057596d6bfed000b8a0e6c730c242a4e363f834371ed9cdeeb"
+    },
+    {
+      "path": "configs/response_games/XT_exposure_control_s392005.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/XT_exposure_control_s392005.json",
+      "sha256": "8b0838f43f3cb9a8791b96445f9081a9c1b2486bec0fe729d325c927d5e25fbd"
+    },
+    {
+      "path": "configs/response_games/XT_exposure_control_s392006.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/XT_exposure_control_s392006.json",
+      "sha256": "82a14e20f67981708c0d888340ad3e1c45ac2709945c6c654eed1a62a73887d6"
+    },
+    {
+      "path": "configs/response_games/XT_exposure_control_s392007.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/XT_exposure_control_s392007.json",
+      "sha256": "18d56d937f1cffe9e091e1741f9b9eed0b35bbe8e682acf817615fff87ac2d70"
+    },
+    {
+      "path": "configs/response_games/XT_mu_0.05_s392005.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/XT_mu_0.05_s392005.json",
+      "sha256": "a5e85d2e4414892bd71e6e031d25a343404d3a10cfe9ae7e963d3112eec032da"
+    },
+    {
+      "path": "configs/response_games/XT_mu_0.05_s392006.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/XT_mu_0.05_s392006.json",
+      "sha256": "c26aa0f8415fde76fb186003c65fb8ee38e43c931cfbde6b70a0d7e84c487954"
+    },
+    {
+      "path": "configs/response_games/XT_mu_0.05_s392007.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/XT_mu_0.05_s392007.json",
+      "sha256": "797e5cd2dbdd95a5170f4b167cdee81e62e0ef640df3ed5ca3ed48b1e694a782"
+    },
+    {
+      "path": "configs/response_games/XT_mu_0.0_s392005.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/XT_mu_0.0_s392005.json",
+      "sha256": "cfe7926677d3ebcf9fc6823b8210923c5c8c14c313e60f78ffe76d0b8544f731"
+    },
+    {
+      "path": "configs/response_games/XT_mu_0.0_s392006.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/XT_mu_0.0_s392006.json",
+      "sha256": "d3e47b9528d9c701a18974cea331600bbbbf9343b721dc4b14644697fca9c538"
+    },
+    {
+      "path": "configs/response_games/XT_mu_0.0_s392007.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/XT_mu_0.0_s392007.json",
+      "sha256": "619f590131d6ac9e52934645a88518d03d7dfa2ef4eede15396c3d2d0ac9aad7"
+    },
+    {
+      "path": "configs/response_games/XT_mu_0.2_s392005.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/XT_mu_0.2_s392005.json",
+      "sha256": "44b2bba749880f81f61b4f2b71a47eb20f4b5981318ffbb62253b192d44fa78c"
+    },
+    {
+      "path": "configs/response_games/XT_mu_0.2_s392006.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/XT_mu_0.2_s392006.json",
+      "sha256": "3b8f6308ecf4410b07f8a850bcaeee730ea3a8b18c8dbae7d8df005f4afbf2a1"
+    },
+    {
+      "path": "configs/response_games/XT_mu_0.2_s392007.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/response_games/XT_mu_0.2_s392007.json",
+      "sha256": "4d9cb9ae74eb23e220dde2b6332b61f4eeefda297cf74bd87d738e0763dbcf57"
+    },
+    {
+      "path": "configs/separate_controls/DAOT_RC4_NATIVE_s392005.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/separate_controls/DAOT_RC4_NATIVE_s392005.json",
+      "sha256": "ed44813201edd25d8f77f004062466bd0f0e099453f744c07df4d910b46bc5ea"
+    },
+    {
+      "path": "configs/separate_controls/DAOT_RC4_NATIVE_s392006.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/separate_controls/DAOT_RC4_NATIVE_s392006.json",
+      "sha256": "e240a88dff2530d8d8ff4ea53cce13e0fc0de82e7e8b1e0176ed0ec1b9cebf71"
+    },
+    {
+      "path": "configs/separate_controls/DAOT_RC4_NATIVE_s392007.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/separate_controls/DAOT_RC4_NATIVE_s392007.json",
+      "sha256": "119256adbce1c2e3b16579e0cf9373e332b4255635460dc1632386a95521497d"
+    },
+    {
+      "path": "configs/separate_controls/matrix.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/separate_controls/matrix.json",
+      "sha256": "7e5f2108407e2b23d57d5e8d5118b6af0eb25d4e66dd056d87907a027f08bf85"
+    },
+    {
+      "path": "configs/separate_controls/PURE_CF_EG_s392005.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/separate_controls/PURE_CF_EG_s392005.json",
+      "sha256": "e98f6d85498f57b959dccad8c9a7463572b5c111425a959f105ce87035f79c38"
+    },
+    {
+      "path": "configs/separate_controls/PURE_CF_EG_s392006.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/separate_controls/PURE_CF_EG_s392006.json",
+      "sha256": "ee5977702bf78ee0fa7bb61605708b2d33374f92c5c60f891e5d0a8ffcf420ec"
+    },
+    {
+      "path": "configs/separate_controls/PURE_CF_EG_s392007.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/separate_controls/PURE_CF_EG_s392007.json",
+      "sha256": "277a97eac7d46ff41434f8c07062222314aa5f4fd101f5fd280b8fc2e30f5991"
+    },
+    {
+      "path": "configs/separate_controls/PURE_DRIC_s392005.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/separate_controls/PURE_DRIC_s392005.json",
+      "sha256": "90afc872bf6ffb882fa114effce3348b0c0ef8070cf9bbfb1ff2c25f814d5e94"
+    },
+    {
+      "path": "configs/separate_controls/PURE_DRIC_s392006.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/separate_controls/PURE_DRIC_s392006.json",
+      "sha256": "5e705ee5eb3cefb78113c18ac0ffe0d072b647d2efb9680e2f5d7b47f3c59a90"
+    },
+    {
+      "path": "configs/separate_controls/PURE_DRIC_s392007.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/separate_controls/PURE_DRIC_s392007.json",
+      "sha256": "ad8cb55f81b8f19be4a28054db4137d39c17633a6abad02647589fd8a86230ae"
+    },
+    {
+      "path": "configs/separate_controls/PURE_EG_s392005.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/separate_controls/PURE_EG_s392005.json",
+      "sha256": "be9600f94590030b7e7fbbc207db267ae3b5503dc7d7e4a4ea51135f9f1cecba"
+    },
+    {
+      "path": "configs/separate_controls/PURE_EG_s392006.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/separate_controls/PURE_EG_s392006.json",
+      "sha256": "ac1b8fbd1feefc4e8dbbf63eaef6a15ddee573f3fc36407a562bd1069fff678d"
+    },
+    {
+      "path": "configs/separate_controls/PURE_EG_s392007.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/separate_controls/PURE_EG_s392007.json",
+      "sha256": "b1e818f8d88da9f2c0c13852d5932e29b25ed3138a5d1e698ddb84b6cc7acdce"
+    },
+    {
+      "path": "configs/separate_controls/PURE_SIM_s392005.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/separate_controls/PURE_SIM_s392005.json",
+      "sha256": "cee27671cdba3cb04f2d22d3d0628eecea9f0ff2f015a2a613e8ab3cbf812182"
+    },
+    {
+      "path": "configs/separate_controls/PURE_SIM_s392006.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/separate_controls/PURE_SIM_s392006.json",
+      "sha256": "98404d047bda8516074c44154f8cfd066f7b5963e9408df40ceb3115fc477e3f"
+    },
+    {
+      "path": "configs/separate_controls/PURE_SIM_s392007.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/separate_controls/PURE_SIM_s392007.json",
+      "sha256": "75562cf1e5b4c31cb573b9d8759489256eb10215501b9f2c5b4679e94a7e6441"
+    },
+    {
+      "path": "configs/separate_controls/PURE_TR_EG_s392005.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/separate_controls/PURE_TR_EG_s392005.json",
+      "sha256": "d355be1aad8067cd97e28a442d96739966f5e55d68aeb45489835221823ee28d"
+    },
+    {
+      "path": "configs/separate_controls/PURE_TR_EG_s392006.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/separate_controls/PURE_TR_EG_s392006.json",
+      "sha256": "b8119167fef8cec459c7a6aa31511e6d1aecada596a5b3eaf01fee0a549125c6"
+    },
+    {
+      "path": "configs/separate_controls/PURE_TR_EG_s392007.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/separate_controls/PURE_TR_EG_s392007.json",
+      "sha256": "f21b7f3c8b7a3f72daaf925bcd78bc088be08562119e0e783b2e3f3de7c350c5"
+    },
+    {
+      "path": "configs/separate_controls/PURE_XT_DANN_s392005.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/separate_controls/PURE_XT_DANN_s392005.json",
+      "sha256": "78563946657e9ca7f6b0fb3542efa151848fd55d9ef1e66a96269d71a8b918a6"
+    },
+    {
+      "path": "configs/separate_controls/PURE_XT_DANN_s392006.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/separate_controls/PURE_XT_DANN_s392006.json",
+      "sha256": "721ee06a4515762d472958a5f56b84e9517b418a64b085c0ce97453aa4367a5c"
+    },
+    {
+      "path": "configs/separate_controls/PURE_XT_DANN_s392007.json",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/configs/separate_controls/PURE_XT_DANN_s392007.json",
+      "sha256": "88a128ba193771f7e39866b87dc21dc176df3421b40e0bb6eee6acc7d001dd18"
+    },
+    {
+      "path": "tools/accept_native_dr_eg.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/tools/accept_native_dr_eg.py",
+      "sha256": "d03a2329d65f67b38ee9f7aa9b088c12a077444128d0d5d1bdaf7076a1d64d1f"
+    },
+    {
+      "path": "tools/accept_response_games.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/tools/accept_response_games.py",
+      "sha256": "b3f210cbc90fe6449742a4f021bbd3ea8b3aa953cadbde100aeea990d75e4fe2"
+    },
+    {
+      "path": "tools/analyze_full6_predictions.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/tools/analyze_full6_predictions.py",
+      "sha256": "5aae1f1381bc9bd746fc9ec8038edca944e42506c18a95b9f2a46021f9f4f515"
+    },
+    {
+      "path": "tools/build_full6_report.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/tools/build_full6_report.py",
+      "sha256": "de75e2402da4806573eb26b25122a2684aebbcda5d6babba562b00746b6e63cf"
+    },
+    {
+      "path": "tools/evaluate_completed_response.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/tools/evaluate_completed_response.py",
+      "sha256": "f7bd80c163df8616828f52ef01fbc1f21843246f488744485957f03b2fdd7ac9"
+    },
+    {
+      "path": "tools/export_response_workbook.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/tools/export_response_workbook.py",
+      "sha256": "eee24e0fd6037266a7a1997db3fdd55a059ce825cec46f194913f350095eb44b"
+    },
+    {
+      "path": "tools/inspect_remote.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/tools/inspect_remote.py",
+      "sha256": "f7464004b33032416b9cfabfd96adab4cd3e8c88f973278c7da9a0b9909aef94"
+    },
+    {
+      "path": "tools/inspect_xuc_run.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/tools/inspect_xuc_run.py",
+      "sha256": "beb9c44a20e82cf2c6076a61822a5756b7d15d06a7b5b1f92db53ca9a3691035"
+    },
+    {
+      "path": "tools/pause_separate_controls.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/tools/pause_separate_controls.py",
+      "sha256": "8a34336d98147c14387ad09f484b614d0b9670385b53742c68040146a7a37383"
+    },
+    {
+      "path": "tools/prepare_native_dr_eg.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/tools/prepare_native_dr_eg.py",
+      "sha256": "ff9453427c5194b8573197442bfaa585b7acd1bff86f87f65ab63bff70706e6f"
+    },
+    {
+      "path": "tools/prepare_response_games.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/tools/prepare_response_games.py",
+      "sha256": "21283f13d5280e942bc17d02130a7fcab626141b4d1dc99a4b1a84f185cce31a"
+    },
+    {
+      "path": "tools/prepare_separate_controls.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/tools/prepare_separate_controls.py",
+      "sha256": "058a9a87fbbddf35d3a030facaf03529899876abcf92cb26abc1eeed70540296"
+    },
+    {
+      "path": "tools/publish_dr_release.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/tools/publish_dr_release.py",
+      "sha256": "6fd7c61141036adea6a77476240aa15429f82e7fddf5ba735c1233d7e8f5ba9b"
+    },
+    {
+      "path": "tools/publish_full6_evaluation.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/tools/publish_full6_evaluation.py",
+      "sha256": "97fe9095f37530c0d2c61ab9899bec646a603a6507be8436516327b1bd4a4274"
+    },
+    {
+      "path": "tools/publish_full_release.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/tools/publish_full_release.py",
+      "sha256": "51de6f2b90a90af76dbc9ef6ac0a5d59fd14737b14f03663376e7ae191b0e8aa"
+    },
+    {
+      "path": "tools/publish_pause_support.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/tools/publish_pause_support.py",
+      "sha256": "d09972f539ee25c10718b33d2e6b24c500194849aee1ae5c9d9141ff96b35039"
+    },
+    {
+      "path": "tools/publish_response_release.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/tools/publish_response_release.py",
+      "sha256": "8d57177dfb87a3e941e06edb82bf68de42ab3b1ee1139b6134b20102ca745642"
+    },
+    {
+      "path": "tools/publish_xuc_release.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/tools/publish_xuc_release.py",
+      "sha256": "387ebc4a37941285a625084f0d2929d798012e6a08706485c73ed5e5090bbffc"
+    },
+    {
+      "path": "tools/read_response_release.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/tools/read_response_release.py",
+      "sha256": "982600c4c38f95fcba3d41f2a582f918535a336985213e04e6ebe155cdd4145f"
+    },
+    {
+      "path": "tools/register_separate_controls.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/tools/register_separate_controls.py",
+      "sha256": "66640abb5cf7efb53c5b1fa85238dbb4a570f6c488f75f4adf4beaa850e3bf2e"
+    },
+    {
+      "path": "tools/report_completed_response.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/tools/report_completed_response.py",
+      "sha256": "20d4e935940fdf7ef94731df1f0db6ed42e6d2c7b3a838fa23009128cd567c8e"
+    },
+    {
+      "path": "tools/score_native_joint_predictions.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/tools/score_native_joint_predictions.py",
+      "sha256": "e57fb5d4e03786e24f832c145dc4215a33acf9ee2c2a4fbd1ae1ace0500057e2"
+    },
+    {
+      "path": "tools/test_completed_rows.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/tools/test_completed_rows.py",
+      "sha256": "2f2bbe3642cc286ee091f0491f1ad696d232db30076a3256533cbbb5afa48ff0"
+    },
+    {
+      "path": "tools/test_early_eval_contract.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/tools/test_early_eval_contract.py",
+      "sha256": "22eeb6ccc455b91261d91accf90f94cc1b5669fb406d626bff42433040815732"
+    },
+    {
+      "path": "tools/test_full_completed_rows.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/tools/test_full_completed_rows.py",
+      "sha256": "edf31947bfc63db64585d09db5db5f74a78f4df5d5834487789903cc36de0a5d"
+    },
+    {
+      "path": "tools/test_full_eval_contract.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/tools/test_full_eval_contract.py",
+      "sha256": "d9a4b3ef6175ce981f4f3dd59bfed44722b520facdce2ae2ae56c12561912eae"
+    },
+    {
+      "path": "tools/validate_pause_snapshots.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/tools/validate_pause_snapshots.py",
+      "sha256": "684e1e424fd533743757fe143b13d55018aa0af9012bec34fc36523cad209ffa"
+    },
+    {
+      "path": "tools/verify_native_dr_eg_artifacts.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/tools/verify_native_dr_eg_artifacts.py",
+      "sha256": "3d8528c7118b91c7bbbb7faf20d9936f90019342b5037b83fd0df385a21f596b"
+    },
+    {
+      "path": "tools/verify_response_games.py",
+      "source": "docs/research/dynamic_game_20260927/implementation/response/tools/verify_response_games.py",
+      "sha256": "bed45af04947f49fa1c7029f46c7186b546299f340fe36c238c63276e9449460"
+    }
+  ]
+}

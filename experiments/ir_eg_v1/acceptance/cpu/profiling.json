@@ -1,0 +1,71 @@
+{
+  "scope": "ten-step synthetic joint toy; includes solver snapshot, head replay, CG and external commit; excludes real data, teacher and evaluation",
+  "rffi_efficiency_claim": false,
+  "source_convergence_cost_reason": "no real training or frozen convergence run",
+  "records": [
+    {
+      "method": "IR_ref",
+      "device": "cpu",
+      "accepted": 10,
+      "physical_exposure": 100,
+      "warmup_steps_excluded": 2,
+      "setup_and_warmup_seconds": 1.6240760999498889,
+      "elapsed_seconds": 0.2317326000193134,
+      "peak_allocated_bytes": null,
+      "history_bytes": 0,
+      "model_forward_calls": 60,
+      "full_backward_calls": 20,
+      "head_only_backward_calls": 30,
+      "response_applied": 10,
+      "source_convergence_cost": null
+    },
+    {
+      "method": "IR_cached",
+      "device": "cpu",
+      "accepted": 10,
+      "physical_exposure": 100,
+      "warmup_steps_excluded": 2,
+      "setup_and_warmup_seconds": 0.11214039998594671,
+      "elapsed_seconds": 0.22176240000408143,
+      "peak_allocated_bytes": null,
+      "history_bytes": 0,
+      "model_forward_calls": 40,
+      "full_backward_calls": 20,
+      "head_only_backward_calls": 30,
+      "response_applied": 10,
+      "source_convergence_cost": null
+    },
+    {
+      "method": "BR_EG",
+      "device": "cpu",
+      "accepted": 10,
+      "physical_exposure": 100,
+      "warmup_steps_excluded": 2,
+      "setup_and_warmup_seconds": 0.09318080003140494,
+      "elapsed_seconds": 0.16086510004242882,
+      "peak_allocated_bytes": null,
+      "history_bytes": 424,
+      "model_forward_calls": 40,
+      "full_backward_calls": 12,
+      "head_only_backward_calls": 38,
+      "response_applied": 0,
+      "source_convergence_cost": null
+    },
+    {
+      "method": "BR_IR",
+      "device": "cpu",
+      "accepted": 10,
+      "physical_exposure": 100,
+      "warmup_steps_excluded": 2,
+      "setup_and_warmup_seconds": 0.11197279999032617,
+      "elapsed_seconds": 0.2242297999910079,
+      "peak_allocated_bytes": null,
+      "history_bytes": 424,
+      "model_forward_calls": 40,
+      "full_backward_calls": 12,
+      "head_only_backward_calls": 38,
+      "response_applied": 10,
+      "source_convergence_cost": null
+    }
+  ]
+}

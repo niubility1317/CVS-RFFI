@@ -1,0 +1,4 @@
+# Preserve frozen source bytes and recorded import hashes across platforms.
+* -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+# Raw logs and unified-diff evidence retain their original whitespace.
+acceptance/** -whitespace

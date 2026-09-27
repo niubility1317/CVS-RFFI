@@ -1,0 +1,35 @@
+"""Prepared response games. Default resolves configuration without training."""
+import argparse
+import json
+from pathlib import Path
+import sys
+ROOT=Path(__file__).resolve().parents[2]
+sys.path.insert(0,str(ROOT/'code'))
+from cvsrffi.xuc_fusion.response_config import validate_prepared_row
+from cvsrffi.xuc_fusion.runtime import resolve_args,train
+
+def main():
+    p=argparse.ArgumentParser(description=__doc__)
+    p.add_argument('--config',type=Path,required=True);p.add_argument('--output',required=True)
+    p.add_argument('--dataset',default='ManySig.pkl');p.add_argument('--device',default='cuda:0')
+    p.add_argument('--source-contract');p.add_argument('--execute',action='store_true')
+    p.add_argument('--resume',default='',help='Same-row source-only epoch checkpoint; output must be new')
+    p.add_argument('--allow-legacy-ticket-resume',action='store_true',help='Audited pure-game v1 epoch replay using saved deterministic tickets')
+    p.add_argument('--pause-request',default='',help='Existing request file causes exit after next validated epoch checkpoint')
+    a=p.parse_args();doc=json.loads(a.config.read_text(encoding='utf-8'))
+    if doc.get('status')=='DEPENDENCY_TEMPLATE':raise ValueError('dependent template is not executable')
+    row=validate_prepared_row(doc['row'])
+    recipe=json.loads((ROOT/'configs/core90_recipe_reference.json').read_text(encoding='utf-8'))
+    args=resolve_args(recipe,row,dataset=a.dataset,output=a.output,device=a.device)
+    # The launcher root is the independent authority for every actual import.
+    import model_dual_cvsincnet
+    from cvsrffi.xuc_fusion import dr_objective,joint_normalization,ir_solver
+    from cvsrffi.xuc_fusion.ir_types import audit_runtime_imports
+    args.ir_import_audit=audit_runtime_imports(ROOT/'code')
+    args.xuc_resume=a.resume;args.xuc_allow_legacy_ticket_resume=a.allow_legacy_ticket_resume
+    args.xuc_pause_request=a.pause_request
+    if not a.execute:
+        print(json.dumps(dict(status='VALIDATED_NOT_LAUNCHED',row=row,resolved=vars(args)),ensure_ascii=False));return 0
+    if not a.source_contract:raise ValueError('formal execution requires existing physical role contract')
+    return train(args,row,a.source_contract)
+if __name__=='__main__':raise SystemExit(main())

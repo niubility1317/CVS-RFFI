@@ -1,0 +1,352 @@
+FILE code/cvsrffi/xuc_fusion/ir_types.py
+"""Explicit contracts for the head-only IR response; no persistent caches."""
+from dataclasses import dataclass
+import hashlib
+import json
+from pathlib import Path
+import sys
+from typing import Protocol
+import torch
+
+TensorTuple = tuple[torch.Tensor, ...]
+GradientTuple = tuple[torch.Tensor | None, ...]
+
+@dataclass(frozen=True)
+class ParamLayout:
+    names: tuple[str, ...]
+    shapes: tuple[torch.Size, ...]
+    phi_indices: tuple[int, ...]
+    psi_indices: tuple[int, ...]
+    aliases: dict[str, str]
+    signature: str
+
+@dataclass(frozen=True)
+class DomainCall:
+    key: str
+    physical_ids: tuple[str, ...]
+    z_detached: torch.Tensor
+    domain: torch.Tensor
+    sample_weight: torch.Tensor
+    scaled_dropout_mask: torch.Tensor
+    grl_multiplier: float
+
+@dataclass(frozen=True)
+class HeadBatch:
+    calls: tuple[DomainCall, ...]
+    layout_signature: str
+    context_signature: str
+
+@dataclass(frozen=True)
+class ResponseMetric:
+    diagonal: torch.Tensor
+    sqrt_diagonal: torch.Tensor
+    active_indices: torch.Tensor
+    predictor_clip_coefficient: float
+
+@dataclass(frozen=True)
+class CGResult:
+    solution: torch.Tensor
+    status: str
+    iterations: int
+    relative_residual: float
+    reason: str | None
+
+class ObjectivePacket(Protocol):
+    head_batch: HeadBatch
+    phi_predictor: TensorTuple
+    def assemble(self, phi_leaf: TensorTuple) -> torch.Tensor: ...
+    def release(self) -> None: ...
+
+def build_layout(model, optimizer) -> ParamLayout:
+    if getattr(model, 'adv_head', None) is None:
+        raise ValueError('IR requires the native adv_head')
+    canonical={};aliases={};objects={}
+    for name,p in model.named_parameters(remove_duplicate=False):
+        if id(p) in canonical:aliases[name]=canonical[id(p)]
+        else:canonical[id(p)]=name;objects[id(p)]=p
+    params=[];seen=set()
+    for group in optimizer.param_groups:
+        for p in group['params']:
+            if id(p) not in canonical:raise ValueError('optimizer parameter outside model')
+            if id(p) not in seen:params.append(p);seen.add(id(p))
+    head_ids={id(p) for p in model.adv_head.parameters() if p.requires_grad}
+    if not head_ids.issubset(seen):raise ValueError('trainable adv_head missing from optimizer')
+    names=tuple(canonical[id(p)] for p in params);shapes=tuple(p.shape for p in params)
+    positions={id(p):i for i,p in enumerate(params)}
+    phi=tuple(positions[id(p)] for p in model.adv_head.parameters() if p.requires_grad)
+    psi=tuple(i for i,p in enumerate(params) if p.requires_grad and id(p) not in head_ids)
+    payload=(names,[list(s) for s in shapes],phi,psi,sorted(aliases.items()))
+    signature=hashlib.sha256(json.dumps(payload,separators=(',',':')).encode()).hexdigest()
+    return ParamLayout(names,shapes,phi,psi,aliases,signature)
+
+build_param_layout=build_layout
+
+def assert_import_origins(expected):
+    result={}
+    for name,path in expected.items():
+        module=sys.modules.get(name)
+        actual=getattr(module,'__file__',None)
+        if actual is None or Path(actual).resolve()!=Path(path).resolve():
+            raise RuntimeError(f'import origin mismatch: {name}: {actual} != {path}')
+        result[name]={'path':str(Path(actual).resolve()),'sha256':hashlib.sha256(Path(actual).read_bytes()).hexdigest()}
+    return result
+
+def _reject_target_fields(value, prefix='ctx', seen=None):
+    seen=set() if seen is None else seen
+    if id(value) in seen:return
+    seen.add(id(value))
+    if isinstance(value,dict):items=value.items()
+    elif hasattr(value,'__dict__') and not isinstance(value,(torch.Tensor,torch.nn.Module)):items=vars(value).items()
+    elif isinstance(value,(list,tuple)):
+        for i,v in enumerate(value):_reject_target_fields(v,f'{prefix}[{i}]',seen)
+        return
+    else:return
+    for k,v in items:
+        key=str(k).lower()
+        if 'target' in key or key in {'truth','hidden_tx','u_tx_labels'}:
+            raise ValueError(f'forbidden target/truth field: {prefix}.{k}')
+        _reject_target_fields(v,f'{prefix}.{k}',seen)
+
+def audit_contract(model, optimizer, ctx) -> dict:
+    """Audit real graph ownership, never substitute a coefficient-only ledger.
+
+    ctx supplies head_batch, task_terms (named actual tensors), native_loss,
+    and optionally expected_imports. This function retains caller graphs.
+    """
+    from .ir_head import head_gradient
+    _reject_target_fields(ctx)
+    data=ctx if isinstance(ctx,dict) else vars(ctx)
+    layout=build_layout(model,optimizer)
+    required={'head_batch','task_terms','native_loss'}
+    if not required.issubset(data):raise ValueError('contract needs actual native_loss, task_terms, head_batch')
+    batch=data['head_batch']
+    if batch.layout_signature!=layout.signature:raise ValueError('head layout changed')
+    params=[];seen=set()
+    for group in optimizer.param_groups:
+        for p in group['params']:
+            if id(p) not in seen:params.append(p);seen.add(id(p))
+    phi=tuple(params[i] for i in layout.phi_indices)
+    for name,term in data['task_terms'].items():
+        if not isinstance(term,torch.Tensor):raise ValueError('task ledger must contain actual tensors')
+        gs=torch.autograd.grad(term,phi,retain_graph=True,allow_unused=True) if term.requires_grad else (None,)*len(phi)
+        if any(g is not None and (not torch.isfinite(g).all() or torch.count_nonzero(g)>0) for g in gs):
+            raise ValueError(f'task term has adv_head gradient: {name}')
+    native=torch.autograd.grad(data['native_loss'],phi,retain_graph=True,allow_unused=True)
+    actual=torch.cat([(torch.zeros_like(p) if g is None else g).reshape(-1) for p,g in zip(phi,native)])
+    expected=head_gradient(phi,batch)
+    if not torch.allclose(actual,expected,atol=1e-6,rtol=1e-5):raise ValueError('native weighted head gradient ownership mismatch')
+    code_root=Path(__file__).resolve().parents[2]
+    expected_imports={'cvsrffi.xuc_fusion.ir_types':code_root/'cvsrffi'/'xuc_fusion'/'ir_types.py',
+                      'cvsrffi.xuc_fusion.ir_head':code_root/'cvsrffi'/'xuc_fusion'/'ir_head.py'}
+    expected_imports.update(data.get('expected_imports',{}))
+    return {'layout_signature':layout.signature,'gradient_ownership_verified':True,
+            'imports':assert_import_origins(expected_imports),
+            'task_terms':list(data['task_terms']),
+            'domain_calls':[{'key':c.key,'physical_ids':list(c.physical_ids),'sample_weights':c.sample_weight.detach().cpu().tolist(),
+                             'effective_coefficient':float(c.sample_weight.sum()),'grl_multiplier':c.grl_multiplier} for c in batch.calls]}
+
+FILE code/cvsrffi/xuc_fusion/ir_head.py
+"""Replay the native MLP with isolated, fixed Dropout masks and weighted CE GGN."""
+from contextlib import contextmanager
+import math
+import torch
+from torch import nn
+from torch.nn import functional as F
+from .ir_types import DomainCall, HeadBatch
+
+def _layers(head):
+    net=head if type(head) is nn.Sequential else getattr(head,'net',None)
+    if not isinstance(net,nn.Sequential) or len(net)!=4 or tuple(type(x) for x in net)!=(nn.Linear,nn.ReLU,nn.Dropout,nn.Linear):
+        raise ValueError('unsupported head: requires Linear/ReLU/Dropout/Linear')
+    if net[0].bias is None or net[3].bias is None or list(head.buffers()) or len(list(head.parameters()))!=4:
+        raise ValueError('unsupported head parameters/buffers')
+    return net
+
+class HeadCallTape:
+    def __init__(self,head,layout_signature,context_signature):
+        self.head=head;self.net=_layers(head);self.layout_signature=layout_signature
+        self.context_signature=context_signature;self.records=[];self._calls={};self._pending=None
+    def _pre(self,module,args):
+        if self._pending is not None:raise ValueError('recursive head call unsupported')
+        self._pending={'post_grl_input':args[0]}
+    def _drop_pre(self,module,args):
+        x=args[0]
+        devices=[x.device.index] if x.is_cuda else []
+        cpu=torch.get_rng_state();cuda=torch.cuda.get_rng_state(x.device) if x.is_cuda else None
+        # fork_rng restores the exact incoming random stream; native call consumes it once.
+        with torch.random.fork_rng(devices=devices):
+            mask=F.dropout(torch.ones_like(x),p=module.p,training=module.training,inplace=False)
+        self._pending.update(scaled_dropout_mask=mask.detach().clone(),dropout_rng={'cpu':cpu.clone(),'cuda':None if cuda is None else cuda.clone()})
+    def _post(self,module,args,output):
+        self._pending['logits']=output;self.records.append(self._pending);self._pending=None
+    def register(self,key,physical_ids,domain,sample_weight,grl_multiplier,*,call_index=None):
+        index=len(self.records)-1 if call_index is None else call_index
+        if index<0 or index>=len(self.records):raise ValueError('missing captured head call')
+        if index in self._calls or any(c.key==key for c in self._calls.values()):raise ValueError('duplicate domain call')
+        record=self.records[index];z=record['post_grl_input']
+        call=DomainCall(str(key),tuple(map(str,physical_ids)),z.detach().clone(),domain.detach().clone(),
+                        sample_weight.detach().clone(),record['scaled_dropout_mask'].detach().clone(),float(grl_multiplier))
+        _validate_call(call,record['logits'].shape[-1])
+        self._calls[index]=call
+        return call
+    def batch(self):
+        return HeadBatch(tuple(self._calls[i] for i in sorted(self._calls)),self.layout_signature,self.context_signature)
+
+@contextmanager
+def capture_head_calls(head,layout_signature,context_signature):
+    tape=HeadCallTape(head,layout_signature,context_signature)
+    handles=[head.register_forward_pre_hook(tape._pre),tape.net[2].register_forward_pre_hook(tape._drop_pre),head.register_forward_hook(tape._post)]
+    try:yield tape
+    finally:
+        for h in handles:h.remove()
+
+def _validate_call(call,num_classes):
+    n=call.z_detached.shape[0]
+    if call.z_detached.ndim!=2 or call.domain.shape!=(n,) or call.sample_weight.shape!=(n,) or len(call.physical_ids)!=n:
+        raise ValueError('invalid domain call batch/weight/physical IDs')
+    if call.domain.dtype!=torch.long or (n and (call.domain.min()<0 or call.domain.max()>=num_classes)):
+        raise ValueError('domain label outside registered output mapping')
+    if not torch.isfinite(call.sample_weight).all() or (call.sample_weight<0).any():raise ValueError('invalid nonnegative CE weights')
+    if not math.isfinite(call.grl_multiplier):raise ValueError('nonfinite GRL')
+    if not torch.isfinite(call.scaled_dropout_mask).all():raise ValueError('nonfinite Dropout mask')
+
+def head_logits(phi,call):
+    if len(phi)!=4:raise ValueError('head requires four native parameter tensors')
+    w1,b1,w2,b2=phi
+    hidden=F.relu(F.linear(call.z_detached,w1,b1),inplace=False)
+    if hidden.shape!=call.scaled_dropout_mask.shape:raise ValueError('head mask shape changed')
+    return F.linear(hidden*call.scaled_dropout_mask,w2,b2)
+
+def head_loss(phi,batch):
+    loss=sum(p.sum()*0. for p in phi)
+    for call in batch.calls:
+        _validate_call(call,phi[2].shape[0])
+        if call.z_detached.requires_grad:raise ValueError('HeadBatch must detach backbone inputs')
+        if call.domain.numel()==0:continue
+        loss=loss+(F.cross_entropy(head_logits(phi,call),call.domain,reduction='none')*call.sample_weight).sum()
+    return loss
+
+def head_gradient(phi,batch):
+    leaves=tuple(p.detach().requires_grad_(True) for p in phi)
+    gradient=torch.autograd.grad(head_loss(leaves,batch),leaves)
+    return torch.cat([g.detach().reshape(-1) for g in gradient])
+
+def ggn_matvec(phi,batch,vector):
+    """J^T W (diag(p)-pp^T) Jv, not the nonlinear loss Hessian."""
+    fixed=tuple(p.detach() for p in phi)
+    if vector.ndim!=1 or vector.numel()!=sum(p.numel() for p in fixed):raise ValueError('GGN vector layout mismatch')
+    tangents=[];offset=0
+    for p in fixed:
+        tangents.append(vector[offset:offset+p.numel()].reshape_as(p));offset+=p.numel()
+    result=torch.zeros_like(vector)
+    for call in batch.calls:
+        _validate_call(call,phi[2].shape[0])
+        if call.z_detached.requires_grad:raise ValueError('HeadBatch must detach backbone inputs')
+        if call.domain.numel()==0:continue
+        fn=lambda *parameters: head_logits(parameters,call)
+        logits,jv=torch.func.jvp(fn,fixed,tuple(tangents))
+        probabilities=logits.detach().softmax(-1)
+        weighted=(call.sample_weight[:,None]*probabilities*(jv-(probabilities*jv).sum(-1,keepdim=True))).detach()
+        _,vjp=torch.func.vjp(fn,*fixed)
+        jt=vjp(weighted)
+        result=result+torch.cat([x.detach().reshape(-1) for x in jt])
+    return result
+
+FILE code/cvsrffi/xuc_fusion/ir_metric.py
+"""Frozen-second-moment local metric anchored to a real AdamW predictor."""
+import math
+import torch
+from .ir_types import ResponseMetric
+
+def build_response_metric(optimizer_origin,predictor_record,h0,layout):
+    if isinstance(optimizer_origin,torch.optim.Optimizer):
+        if type(optimizer_origin) is not torch.optim.AdamW:raise ValueError('only AdamW is supported')
+        origin=optimizer_origin.state_dict()
+    else:origin=optimizer_origin
+    if predictor_record.get('optimizer_class','AdamW')!='AdamW':raise ValueError('only AdamW is supported')
+    c=predictor_record['clip_coefficient']
+    if isinstance(c,bool) or not math.isfinite(float(c)) or not 0<=float(c)<=1:raise ValueError('invalid actual predictor clip coefficient')
+    c=float(c);after=predictor_record['optimizer_after']
+    slots=[];seen=set()
+    for group in origin['param_groups']:
+        for flag in ('amsgrad','maximize','fused','capturable','differentiable'):
+            if group.get(flag,False):raise ValueError(f'unsupported AdamW flag: {flag}')
+        if group.get('foreach') is True:raise ValueError('unverified foreach optimizer variant')
+        for pid in group['params']:
+            if pid not in seen:slots.append((pid,group));seen.add(pid)
+    if len(slots)!=len(layout.names) or len(h0)!=len(layout.phi_indices):raise ValueError('optimizer/head layout mismatch')
+    values=[];indices=[];offset=0;reference=next((g for g in h0 if g is not None),None)
+    for index,g in zip(layout.phi_indices,h0):
+        pid,group=slots[index];numel=math.prod(layout.shapes[index]);lr=float(group['lr'])
+        if g is None:offset+=numel;continue
+        if g.shape!=layout.shapes[index] or g.is_sparse or g.dtype!=torch.float32 or not torch.isfinite(g).all():raise ValueError('unsupported gradient dtype/layout/finite state')
+        state=origin['state'].get(pid,{})
+        for name in ('exp_avg','exp_avg_sq'):
+            if name in state and (state[name].dtype!=torch.float32 or state[name].shape!=g.shape or not torch.isfinite(state[name]).all()):raise ValueError('unsupported optimizer state')
+        raw_step=float(state.get('step',0))
+        if raw_step<0 or not raw_step.is_integer():raise ValueError('invalid parameter-local step')
+        k=int(raw_step)+1;beta1,beta2=group['betas'];eps=float(group['eps'])
+        if not (0<=beta1<1 and 0<=beta2<1 and eps>=0 and math.isfinite(lr) and lr>=0):raise ValueError('invalid AdamW group')
+        v0=state.get('exp_avg_sq',torch.zeros_like(g))
+        # Match torch AdamW's addcmul order rather than squaring a pre-scaled expression.
+        clipped=g.detach()*c
+        v1=v0.detach().clone().mul_(beta2).addcmul_(clipped,clipped,value=1-beta2)
+        actual=after['state'].get(pid,{})
+        if 'exp_avg_sq' not in actual or not torch.allclose(v1,actual['exp_avg_sq'],atol=1e-8,rtol=2e-6) or float(actual.get('step',-1))!=k:
+            raise ValueError('predictor second moment/step does not match actual virtual step')
+        if lr>0 and c>0:
+            r=lr*c*(1-beta1)/((1-beta1**k)*(torch.sqrt(v1/(1-beta2**k))+eps))
+            if not torch.isfinite(r).all() or (r<=0).any():raise ValueError('invalid response metric')
+            values.append(r.reshape(-1));indices.append(torch.arange(offset,offset+numel,device=g.device))
+        offset+=numel
+    if reference is None:
+        for state in origin['state'].values():
+            if 'exp_avg_sq' in state:reference=state['exp_avg_sq'];break
+    reference=torch.empty(0,dtype=torch.float32) if reference is None else reference
+    diagonal=torch.cat(values) if values else reference.new_empty(0)
+    active=torch.cat(indices) if indices else torch.empty(0,device=reference.device,dtype=torch.long)
+    return ResponseMetric(diagonal,diagonal.sqrt(),active,c)
+
+FILE code/cvsrffi/xuc_fusion/ir_cg.py
+"""Bounded CG in whitened active coordinates, using FP64 scalar products."""
+import math
+import torch
+from .ir_types import CGResult
+
+def solve_response(e,metric,ggn_operator,*,max_iterations=2,rtol=1e-3):
+    if type(max_iterations) is not int or not 1<=max_iterations<=2:
+        raise ValueError('IR v1 requires one or two CG iterations')
+    if isinstance(rtol,bool) or not math.isfinite(rtol) or rtol<=0:raise ValueError('invalid CG tolerance')
+    idx=metric.active_indices;root=metric.sqrt_diagonal
+    if e.ndim!=1 or idx.ndim!=1 or root.shape!=idx.shape or metric.diagonal.shape!=root.shape:
+        raise ValueError('CG active layout mismatch')
+    if idx.dtype!=torch.long or idx.unique().numel()!=idx.numel() or (idx.numel() and (idx.min()<0 or idx.max()>=e.numel())):
+        raise ValueError('CG active indices invalid')
+    if idx.device!=e.device or root.device!=e.device:raise ValueError('CG active device mismatch')
+    zero=torch.zeros_like(root)
+    def failed(reason,iterations=0,residual=float('inf')):
+        return CGResult(zero.clone(),'numerical_failure',iterations,residual,reason)
+    if not torch.isfinite(e).all() or not torch.isfinite(root).all() or not torch.isfinite(metric.diagonal).all():return failed('nonfinite input')
+    if (root<=0).any() or (metric.diagonal<=0).any():return failed('nonpositive active metric')
+    if not torch.allclose(root.square(),metric.diagonal,rtol=2e-6,atol=0.):raise ValueError('inconsistent square-root metric')
+    b=-root*e.detach()[idx]
+    dot=lambda a,b:torch.dot(a.double(),b.double())
+    bb=dot(b,b)
+    if float(bb)==0:return CGResult(zero,'zero_rhs',0,0.,None)
+    def operator(v):
+        full=torch.zeros_like(e);full[idx]=root*v
+        gv=ggn_operator(full)
+        if gv.shape!=e.shape:raise ValueError('GGN changed full parameter layout')
+        return v+root*gv[idx]
+    u=zero.clone();r=b.clone();p=r.clone();rr=bb
+    for iteration in range(1,max_iterations+1):
+        ap=operator(p)
+        denominator=dot(p,ap)
+        if not torch.isfinite(ap).all() or not torch.isfinite(denominator):return failed('nonfinite operator',iteration-1)
+        if float(denominator)<=0:return failed('nonpositive search denominator',iteration-1)
+        alpha=(rr/denominator).to(u.dtype);u=u+alpha*p;r=r-alpha*ap
+        rr_next=dot(r,r);relative=float(torch.sqrt(rr_next/bb))
+        if not torch.isfinite(u).all() or not math.isfinite(relative):return failed('nonfinite iterate',iteration)
+        if relative<=rtol:return CGResult(u.detach(),'early_converged',iteration,relative,None)
+        if iteration==max_iterations:return CGResult(u.detach(),'truncated_usable',iteration,relative,None)
+        p=r+(rr_next/rr).to(p.dtype)*p;rr=rr_next

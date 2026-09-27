@@ -1,0 +1,2671 @@
+--- frozen/code/scripts/check_ir_acceptance.py
++++ code/scripts/check_ir_acceptance.py
+@@ -0,0 +1,64 @@
++"""Bounded synthetic CPU/CUDA development acceptance; never opens a dataset/checkpoint."""
++import argparse
++import hashlib
++import importlib
++import json
++import os
++from pathlib import Path
++import platform
++import subprocess
++import sys
++import time
++import xml.etree.ElementTree as ET
++
++ROOT=Path(__file__).resolve().parents[2]
++sys.path.insert(0,str(ROOT/'code'))
++
++
++def main():
++    parser=argparse.ArgumentParser(description=__doc__)
++    parser.add_argument('--device',choices=['cpu','cuda'],default='cpu')
++    parser.add_argument('--output',type=Path,required=True)
++    args=parser.parse_args()
++    import torch
++    if args.device=='cuda' and not torch.cuda.is_available():
++        raise RuntimeError('CUDA acceptance requested but CUDA unavailable')
++    args.output.mkdir(parents=True,exist_ok=True)
++    modules={}
++    for name in ('cvsrffi.xuc_fusion.ir_types','cvsrffi.xuc_fusion.ir_head','cvsrffi.xuc_fusion.ir_metric',
++                 'cvsrffi.xuc_fusion.ir_cg','cvsrffi.xuc_fusion.ir_solver','cvsrffi.xuc_fusion.ir_objective',
++                 'cvsrffi.game_tracking.solvers','cvsrffi.xuc_fusion.runtime','SSDG.train_ssdg','model_dual_cvsincnet'):
++        mod=importlib.import_module(name); path=Path(mod.__file__).resolve()
++        if not path.is_relative_to((ROOT/'code').resolve()):
++            raise RuntimeError(f'import source mismatch: {name}: {path}')
++        modules[name]=dict(file=str(path),sha256=hashlib.sha256(path.read_bytes()).hexdigest())
++    def git(*argv):
++        p=subprocess.run(['git',*argv],cwd=ROOT,text=True,encoding='utf-8',capture_output=True,check=True)
++        return p.stdout.strip()
++    environment=dict(python=sys.version,executable=sys.executable,torch=torch.__version__,cuda=torch.version.cuda,
++                     cudnn=torch.backends.cudnn.version(),device=args.device,
++                     device_name=torch.cuda.get_device_name(0) if args.device=='cuda' else platform.processor(),
++                     git_head=git('rev-parse','HEAD'),base='acf0a6407c4a2cd114851e9f60d0cd346e4b2c77',
++                     modules=modules,dataset_access=False,checkpoint_access=False,target_access=False,
++                     synthetic_seed_policy='explicit per-test fixture seeds; no scientific result')
++    (args.output/'environment.json').write_text(json.dumps(environment,indent=2)+'\n',encoding='utf-8')
++    (args.output/'workspace.diff').write_text(git('diff','--','experiments/ir_eg_v1')+'\n',encoding='utf-8')
++    tests=sorted(str(p.relative_to(ROOT)) for p in (ROOT/'tests').glob('test_ir_*.py'))
++    junit=(args.output/'pytest.xml').resolve()
++    command=[sys.executable,'-X','utf8','-m','pytest',*tests,'-q','-o','addopts=',f'--junitxml={junit}']
++    env=dict(os.environ,IR_ACCEPTANCE_DEVICE=args.device,PYTHONUTF8='1')
++    start=time.perf_counter()
++    run=subprocess.run(command,cwd=ROOT,env=env,text=True,encoding='utf-8',errors='strict',capture_output=True)
++    (args.output/'pytest.log').write_text(run.stdout+run.stderr,encoding='utf-8')
++    suite=ET.parse(junit).getroot()
++    counts={k:sum(int(s.attrib.get(k,0)) for s in suite.findall('testsuite')) for k in ('tests','failures','errors','skipped')}
++    result=dict(status='VERIFIED' if run.returncode==0 else 'FAILED',command=command,exit_code=run.returncode,
++                elapsed_seconds=time.perf_counter()-start,device=args.device,counts=counts,
++                performance_claim=False,training_launch=False)
++    (args.output/'result.json').write_text(json.dumps(result,indent=2)+'\n',encoding='utf-8')
++    print(json.dumps(result,indent=2))
++    return run.returncode
++
++
++if __name__=='__main__':
++    raise SystemExit(main())
+--- frozen/code/scripts/profile_ir_acceptance.py
++++ code/scripts/profile_ir_acceptance.py
+@@ -0,0 +1,51 @@
++"""Bounded synthetic profiling, not a ManySig training speed claim."""
++import argparse
++import csv
++import json
++import os
++from pathlib import Path
++import sys
++import time
++
++ROOT=Path(__file__).resolve().parents[2]
++sys.path[:0]=[str(ROOT/'code'),str(ROOT/'tests')]
++
++
++def main():
++    p=argparse.ArgumentParser(description=__doc__)
++    p.add_argument('--device',choices=['cpu','cuda'],default='cpu');p.add_argument('--output',type=Path,required=True)
++    a=p.parse_args();os.environ['IR_ACCEPTANCE_DEVICE']=a.device
++    import torch
++    torch.set_num_threads(2)
++    from ir_fixtures import make_case,run
++    records=[]
++    for name,impl,method,kappa in [('IR_ref','reference','IR_EG',.25),('IR_cached','cached','IR_EG',.25),
++                                 ('BR_EG','cached','BR_IR_EG',0.),('BR_IR','cached','BR_IR_EG',.25)]:
++        case=make_case(impl,method,kappa)
++        if a.device=='cuda':
++            torch.cuda.synchronize();torch.cuda.reset_peak_memory_stats()
++        started=time.perf_counter();rows=[]
++        for i in range(10):
++            case.ctx.pending=None
++            result=run(case);rows.append(result.telemetry)
++        if a.device=='cuda':torch.cuda.synchronize()
++        record=dict(method=name,device=a.device,accepted=10,physical_exposure=100,
++                    elapsed_seconds=time.perf_counter()-started,
++                    peak_allocated_bytes=torch.cuda.max_memory_allocated() if a.device=='cuda' else None,
++                    history_bytes=case.solver.history.bytes,
++                    model_forward_calls=sum(r['model_forward_calls'] for r in rows),
++                    full_backward_calls=sum(r.get('full_backward_calls',0) for r in rows),
++                    head_only_backward_calls=sum(r.get('head_only_backward_calls',0) for r in rows),
++                    response_applied=sum(bool(r.get('applied')) for r in rows),
++                    source_convergence_cost=None)
++        records.append(record)
++    a.output.mkdir(parents=True,exist_ok=True)
++    with (a.output/'profiling.csv').open('w',encoding='utf-8',newline='') as stream:
++        writer=csv.DictWriter(stream,fieldnames=list(records[0]));writer.writeheader();writer.writerows(records)
++    result=dict(scope='ten-step synthetic joint toy; includes solver snapshot, head replay, CG and external commit; excludes real data, teacher and evaluation',
++                rffi_efficiency_claim=False,source_convergence_cost_reason='no real training or frozen convergence run',records=records)
++    (a.output/'profiling.json').write_text(json.dumps(result,indent=2)+'\n',encoding='utf-8')
++    print(json.dumps(result,indent=2))
++
++
++if __name__=='__main__':main()
+--- frozen/code/SSDG/train_ssdg.py
++++ code/SSDG/train_ssdg.py
+@@ -7239,19 +7239,23 @@
+         if str(args.identity_domain_objective_mode) == "bounded_confusion"
+         else float(args.rc4_lambda_domain) * loss_adv
+     )
+-    total = (
++    def assemble_rc4(adversarial=None):
++        """Pure loss assembly; only the registered U CE leaf may be replaced."""
++        replacement = adv_weighted if adversarial is None else float(args.rc4_lambda_domain) * adversarial
++        return (
+         hard_scale * float(args.rc4_lambda_hard) * active_identity["hard"]
+         + partial_set_scale * partial_set_weight * active_identity["partial_set"]
+         + partial_conditional_scale * partial_conditional_weight * active_identity["partial_conditional"]
+         + float(args.rc4_lambda_negative) * active_identity["negative"]
+-        + tail_scale * (zdom_weight * loss_domain + adv_weighted)
++        + tail_scale * (zdom_weight * loss_domain + replacement)
+         + float(args.rc4_lambda_self) * loss_self
+         + float(args.rc4_lambda_satellite) * loss_satellite
+         + float(args.rc4_lambda_feature_anchor) * loss_feature_anchor
+-    )
++        )
++    total = assemble_rc4()
+     route_compat = MUSERoute(high=hard, mid=partial | negative, low=~(hard | partial | negative))
+     return {
+-        "total": total, "identity": identity["total"], "hard": identity["hard"],
++        "total": total, "assemble": assemble_rc4, "identity": identity["total"], "hard": identity["hard"],
+         "soft": identity["partial"], "candidate": identity["negative"],
+         "domain": loss_domain, "adv": loss_adv, "self": loss_self,
+         "domain_discriminator": loss_discriminator,
+--- frozen/code/cvsrffi/game_tracking/solvers.py
++++ code/cvsrffi/game_tracking/solvers.py
+@@ -131,7 +131,10 @@
+             use = (not head_only or id(p) in self.head_ids) and (not exclude_head or id(p) not in self.head_ids)
+             p.grad = g.clone() if g is not None and use else None
+         if self.max_grad_norm is not None:
+-            torch.nn.utils.clip_grad_norm_(self.parameters, self.max_grad_norm, error_if_nonfinite=True)
++            norm = torch.nn.utils.clip_grad_norm_(self.parameters, self.max_grad_norm, error_if_nonfinite=True)
++            self.last_clip_coefficient = float(torch.clamp(self.max_grad_norm / (norm + 1e-6), max=1.))
++        else:
++            self.last_clip_coefficient = 1.
+ 
+     def _finite_state(self, stage):
+         def finite(value):
+--- frozen/code/cvsrffi/game_tracking/state.py
++++ code/cvsrffi/game_tracking/state.py
+@@ -60,6 +60,8 @@
+         self.rng = RNGState.capture()
+         self.scaler_state = copy.deepcopy(scaler.state_dict()) if scaler is not None else None
+         self.stateful = [(obj, copy.deepcopy(obj.state_dict())) for obj in stateful]
++        self.flags = [(m, m.training) for m in model.modules()]
++        self.requires_grad = [(p, p.requires_grad) for p in model.parameters()]
+ 
+     def restore(self, *, rng=True, buffers=True):
+         with torch.no_grad():
+@@ -75,6 +77,10 @@
+             self.scaler.load_state_dict(copy.deepcopy(self.scaler_state))
+         for obj, state in self.stateful:
+             obj.load_state_dict(copy.deepcopy(state))
++        for module, flag in self.flags:
++            module.training = flag
++        for parameter, flag in self.requires_grad:
++            parameter.requires_grad_(flag)
+ 
+ 
+ StateSnapshot = TrainingState
+--- frozen/code/cvsrffi/xuc_fusion/br_history.py
++++ code/cvsrffi/xuc_fusion/br_history.py
+@@ -0,0 +1,71 @@
++"""Previous accepted final raw field, never a periodic stale-gradient cache."""
++import copy
++import torch
++
++
++class RefreshRequired(RuntimeError):
++    pass
++
++
++class BRHistory:
++    def __init__(self, layout, refresh_interval=8):
++        if type(refresh_interval) is not int or refresh_interval < 1:
++            raise ValueError('refresh_interval must be a positive integer')
++        self.layout = layout
++        self.refresh_interval = refresh_interval
++        self.gradients = None
++        self.signature = None
++        self.accepted_index = None
++        self.last_refresh = None
++
++    def refresh_reason(self, signature, accepted_index, activity=None):
++        if self.gradients is None: return 'missing_history'
++        if self.accepted_index != accepted_index - 1: return 'history_age_not_one'
++        if self.signature != signature: return 'stage_boundary'
++        if self.last_refresh is None or accepted_index-self.last_refresh >= self.refresh_interval:
++            return 'periodic_refresh'
++        if activity is None: return 'activity_unavailable'
++        if len(activity) != len(self.layout.psi_indices): raise ValueError('activity layout')
++        if any(bool(active) != (self.gradients[i] is not None)
++               for i, active in zip(self.layout.psi_indices, activity)):
++            return 'activity_changed'
++        return None
++
++    def predictor(self, nonhead_current_activity, h0, signature, accepted_index):
++        reason = self.refresh_reason(signature, accepted_index, nonhead_current_activity)
++        if reason: raise RefreshRequired(reason)
++        if len(h0) != len(self.layout.phi_indices): raise ValueError('head layout')
++        result = [None if g is None else g.clone() for g in self.gradients]
++        for index, grad in zip(self.layout.phi_indices, h0):
++            result[index] = None if grad is None else grad.detach().clone()
++        return tuple(result)
++
++    def commit(self, final_raw_gradients, signature, accepted_index, *, refreshed=False):
++        if len(final_raw_gradients) != len(self.layout.names): raise ValueError('gradient layout')
++        for grad, shape in zip(final_raw_gradients, self.layout.shapes):
++            if grad is not None and (grad.shape != shape or grad.dtype != torch.float32):
++                raise ValueError('history requires the exact FP32 layout')
++        self.gradients = tuple(None if g is None else g.detach().clone() for g in final_raw_gradients)
++        self.signature = copy.deepcopy(signature)
++        self.accepted_index = int(accepted_index)
++        if refreshed: self.last_refresh = int(accepted_index)
++
++    def state_dict(self):
++        return copy.deepcopy(dict(version=1, layout=self.layout.signature,
++            refresh_interval=self.refresh_interval, gradients=self.gradients,
++            signature=self.signature, accepted_index=self.accepted_index,last_refresh=self.last_refresh))
++
++    def load_state_dict(self, state):
++        if state['version'] != 1 or state['layout'] != self.layout.signature:
++            raise ValueError('BR history layout/version mismatch')
++        if state['refresh_interval'] != self.refresh_interval: raise ValueError('BR refresh mismatch')
++        grads=state['gradients']
++        if grads is not None:
++            self.commit(grads,state['signature'],state['accepted_index'])
++        else:
++            self.gradients=None;self.signature=None;self.accepted_index=None
++        self.last_refresh=state['last_refresh']
++
++    @property
++    def bytes(self):
++        return sum(g.numel()*g.element_size() for g in (self.gradients or ()) if g is not None)
+--- frozen/code/cvsrffi/xuc_fusion/dr_objective.py
++++ code/cvsrffi/xuc_fusion/dr_objective.py
+@@ -129,6 +129,10 @@
+                 floor=self.args.rc4_tail_transition_floor)
+             if not self.source_args.response['unlabeled_head']:weight=0.
+             loss=weight*torch.nn.functional.cross_entropy(strong['adv_dom_logits'].float(),ctx.dr_d)
++            if getattr(ctx,'ir_tape',None) is not None:
++                from .ir_objective import register_domain_call
++                register_domain_call(ctx,strong['adv_dom_logits'],'U/strong/rc4/adv',ctx.dr_ids,ctx.dr_d,weight,0.)
++                ctx.ir_dr_assembly=lambda leaves:weight*leaves['U/strong/rc4/adv']
+             ctx.dr_weighted_identity=zero
+             ctx.dr_telemetry=dict(pure_game=True,native_dr_enabled=False,daot_executed=False,
+                 rc4_executed=False,identity_active=False,weighted_identity=0.,daot_labeled=0.,daot_unlabeled=0.,
+@@ -160,12 +164,28 @@
+         rc4=native._compute_rc4_unlabeled_losses(route=ctx.dr_route,ema_outputs=ctx.dr_teacher,anchor_outputs=None,
+             student_views=dict(clean=strong,satellite=None,satellite_indices=torch.empty(0,dtype=torch.long,device=ctx.x.device)),
+             domains=ctx.dr_d,model=self.model,muse_state=dict(args=self.args,heads=self.model.xuc_rc4_heads),epoch=ctx.epoch)
++        if getattr(ctx,'ir_tape',None) is not None:
++            from .ir_objective import register_domain_call
++            if self.args.identity_domain_objective_mode != 'grl_ce':
++                raise ValueError('IR requires native GRL cross entropy')
++            response=getattr(self.source_args,'response',None)
++            if self.joint['disable_adversarial_head_loss'] or (response and not response['unlabeled_head']):
++                raise ValueError('IR requires both registered native L/U head losses')
++            weight=float(self.args.rc4_lambda_domain)*float(rc4['rc4_tail_scale'])
++            register_domain_call(ctx,strong['adv_dom_logits'],'U/strong/rc4/adv',ctx.dr_ids,ctx.dr_d,weight,0.)
+         if self.joint:
+             from .joint_config import hp_multiplier
+             identity=sum(rc4['rc4_gradient_losses'][k] for k in ('hard','partial_set','partial_conditional'))
+             multiplier=hp_multiplier(ctx.epoch,self.joint['hp_ramp']) if self.joint['native_dr'] else 0.
+             rc4['total']=rc4['total']+(multiplier-1.)*identity
+             rc4['weighted_identity']=multiplier*identity
++            if getattr(ctx,'ir_tape',None) is not None:
++                native_assembly=rc4['assemble']
++                labeled_loss=labeled['loss'];unlabeled_loss=unlabeled['loss']
++                def assembly(leaves):
++                    value=native_assembly(leaves['U/strong/rc4/adv'])+(multiplier-1.)*identity
++                    return labeled_loss+unlabeled_loss+value
++                ctx.ir_dr_assembly=assembly
+             ctx.dr_weighted_identity=rc4['weighted_identity']
+             response=getattr(self.source_args,'response',None)
+             if self.joint['disable_adversarial_head_loss'] or (response and not response['unlabeled_head']):
+@@ -224,3 +244,8 @@
+     def state_dict(self):
+         return dict(scale=self.scale.state_dict(),calibration=self.calibration,calibration_epoch=self.calibration_epoch,
+                     commits=self.commits,args=vars(self.args),route_history=self.route_history)
++
++    def load_state_dict(self,state):
++        self.scale.load_state_dict(deepcopy(state['scale']))
++        self.calibration=deepcopy(state['calibration']);self.calibration_epoch=state['calibration_epoch']
++        self.commits=state['commits'];self.route_history=deepcopy(state['route_history'])
+--- frozen/code/cvsrffi/xuc_fusion/ir_cg.py
++++ code/cvsrffi/xuc_fusion/ir_cg.py
+@@ -0,0 +1,44 @@
++"""Bounded CG in whitened active coordinates, using FP64 scalar products."""
++import math
++import torch
++from .ir_types import CGResult
++
++def solve_response(e,metric,ggn_operator,*,max_iterations=2,rtol=1e-3):
++    if type(max_iterations) is not int or not 1<=max_iterations<=2:
++        raise ValueError('IR v1 requires one or two CG iterations')
++    if isinstance(rtol,bool) or not math.isfinite(rtol) or rtol<=0:raise ValueError('invalid CG tolerance')
++    idx=metric.active_indices;root=metric.sqrt_diagonal
++    if e.ndim!=1 or idx.ndim!=1 or root.shape!=idx.shape or metric.diagonal.shape!=root.shape:
++        raise ValueError('CG active layout mismatch')
++    if idx.dtype!=torch.long or idx.unique().numel()!=idx.numel() or (idx.numel() and (idx.min()<0 or idx.max()>=e.numel())):
++        raise ValueError('CG active indices invalid')
++    if idx.numel()==0:
++        return CGResult(e.new_empty(0),'zero_rhs',0,0.,None)
++    if idx.device!=e.device or root.device!=e.device:raise ValueError('CG active device mismatch')
++    zero=torch.zeros_like(root)
++    def failed(reason,iterations=0,residual=float('inf')):
++        return CGResult(zero.clone(),'numerical_failure',iterations,residual,reason)
++    if not torch.isfinite(e).all() or not torch.isfinite(root).all() or not torch.isfinite(metric.diagonal).all():return failed('nonfinite input')
++    if (root<=0).any() or (metric.diagonal<=0).any():return failed('nonpositive active metric')
++    if not torch.allclose(root.square(),metric.diagonal,rtol=2e-6,atol=0.):raise ValueError('inconsistent square-root metric')
++    b=-root*e.detach()[idx]
++    dot=lambda a,b:torch.dot(a.double(),b.double())
++    bb=dot(b,b)
++    if float(bb)==0:return CGResult(zero,'zero_rhs',0,0.,None)
++    def operator(v):
++        full=torch.zeros_like(e);full[idx]=root*v
++        gv=ggn_operator(full)
++        if gv.shape!=e.shape:raise ValueError('GGN changed full parameter layout')
++        return v+root*gv[idx]
++    u=zero.clone();r=b.clone();p=r.clone();rr=bb
++    for iteration in range(1,max_iterations+1):
++        ap=operator(p)
++        denominator=dot(p,ap)
++        if not torch.isfinite(ap).all() or not torch.isfinite(denominator):return failed('nonfinite operator',iteration-1)
++        if float(denominator)<=0:return failed('nonpositive search denominator',iteration-1)
++        alpha=(rr/denominator).to(u.dtype);u=u+alpha*p;r=r-alpha*ap
++        rr_next=dot(r,r);relative=float(torch.sqrt(rr_next/bb))
++        if not torch.isfinite(u).all() or not math.isfinite(relative):return failed('nonfinite iterate',iteration)
++        if relative<=rtol:return CGResult(u.detach(),'early_converged',iteration,relative,None)
++        if iteration==max_iterations:return CGResult(u.detach(),'truncated_usable',iteration,relative,None)
++        p=r+(rr_next/rr).to(p.dtype)*p;rr=rr_next
+--- frozen/code/cvsrffi/xuc_fusion/ir_experiments.py
++++ code/cvsrffi/xuc_fusion/ir_experiments.py
+@@ -0,0 +1,85 @@
++"""Prepared IR research matrices; no process launch or target data access."""
++from copy import deepcopy
++from pathlib import Path
++import json
++
++BASE='acf0a6407c4a2cd114851e9f60d0cd346e4b2c77'
++SEEDS=(392005,392006,392007)
++
++
++def build_matrices():
++    from .response_config import make_row
++    profiles=[('SIM',{'method':'SIM'}),('EG',{'method':'EG'}),
++              ('IR',{'method':'IR_EG'}),('IR_G0',{'method':'IR_EG','ir_curvature':'zero'}),
++              ('OR_EG',{'method':'IR_EG','ir_feature_anchor':'origin'}),
++              ('IR_ENCODER_OFF',{'method':'IR_EG','encoder_adversary':False}),
++              ('BR_EG',{'method':'BR_IR_EG','ir_kappa':0.}),
++              ('BR_IR',{'method':'BR_IR_EG'})]
++    rows=[]
++    for label,response in profiles:
++        for seed in SEEDS:
++            row=make_row(f'{label}_s{seed}',response,seed)
++            rows.append(dict(label=label,row=row,seeds=dict(model=seed,split=392005,data=392005,
++                        augmentation=392005,support=None,evaluation=392005),
++                        seed_notes='split/data/augmentation/evaluation fixed by frozen native joint profile; support not applicable in Phase1',
++                        source_screen=seed==392005,confirmation_requires_frozen_candidate=True,
++                        output=f'runs/ir_eg_v1/{label}_s{seed}',launch=False))
++    common=dict(schema='ir_experiment_matrix_v1',launch=False,git_base=BASE,
++                status='PREPARED_NOT_LAUNCHED',budget_kind='budget_audit',epochs=200,
++                accepted_main_steps=44400,scientific_convergence_claim=False,
++                expected_source=dict(receivers=[1,3,4,6,8],days=[1,2,3],L=6300,U=56700,V=27000),
++                source_contract_ref=None,source_contract_status='bind_existing_frozen_manifest_before_execution',
++                checkpoint=dict(initialization='scratch',sources=[],selection='source_V_only'),
++                target_policy='freeze_candidate_and_checkpoint_then_predictions_then_independent_truth_scorer',
++                reference_configs=['core90_recipe_reference.json','a1_native_recipe_reference.json'],
++                primary_metrics=['clean_accuracy','leo_mean_accuracy','macro_f1','worst_TX','worst_RX','day0','RX_by_TX'],
++                costs=['same_physical_exposure_wall_seconds','peak_device_bytes','same_source_convergence_total_seconds',
++                       'data','teacher','field_forward','backward','GGN_CG','snapshot','logging','evaluation'],
++                promotion='no_automatic_promotion; report every paired seed, failure and negative contrast')
++    performance=dict(deepcopy(common),rows=[r for r in rows if not r['label'].startswith('BR_')])
++    efficiency=dict(deepcopy(common),rows=[r for r in rows if r['label'] in ('EG','IR','BR_EG','BR_IR')])
++    convergence=dict(schema='ir_convergence_confirmation_v1',launch=False,frozen=False,
++        status='PROTOCOL_PREPARATION',budget_audit_separate=True,source_only=True,
++        reason='No approved executable continuation manifest was supplied; safety cap and post-E200 learning-rate policy need freezing before a future authorized run.',
++        safety_cap_epochs=None,post_E200_learning_rate_policy=None,
++        last_discrete_switch_epoch=181,minimum_epochs_after_last_switch=40,
++        windows=4,window_epochs=10,source_V_metric_change_pp_max=.2,ce_relative_improvement_max=.005,
++        required_scheduled_lr_drop_after_mechanism=True,panel_logit_relative_rms_max=.02,
++        panel_logit_rms_denominator_min=1.,gradient_and_displacement_median_growth_max=.20,
++        all_zero_windows='record_separately',unexplained_nonfinite_steps_allowed=0,
++        safety_cap_status='safety_cap_not_converged',target_access=False)
++    for doc in (performance,efficiency):validate_matrix(doc)
++    return performance,efficiency,convergence
++
++
++def validate_matrix(doc):
++    if doc['launch'] is not False or doc['budget_kind']!='budget_audit' or doc['scientific_convergence_claim']:
++        raise ValueError('prepared historical budgets cannot imply convergence or launch')
++    ids=set(); outputs=set()
++    for item in doc['rows']:
++        row=item['row']; c=row['joint']
++        if row['id'] in ids or item['output'] in outputs:raise ValueError('duplicate row/output')
++        ids.add(row['id']);outputs.add(item['output'])
++        if not c['native_dr'] or c['normalization_scales']!='reuse_origin_used_scales':raise ValueError('native joint contract')
++        if (c['labeled_batch'],c['unlabeled_batch'],c['epochs'],c['steps_per_epoch'])!=(128,256,200,222):raise ValueError('unequal exposure')
++        if c['disable_adversarial_head_loss'] or not row['response']['unlabeled_head']:raise ValueError('head supervision must remain enabled')
++        if item['launch'] is not False or set(item['seeds'])!=set(('model','split','data','augmentation','support','evaluation')):raise ValueError('launch or seed roles')
++    return doc
++
++
++def validate_convergence_for_launch(doc):
++    if not doc.get('frozen') or not doc.get('safety_cap_epochs') or not doc.get('post_E200_learning_rate_policy'):
++        raise ValueError('confirmation continuation manifest is not completely frozen')
++    if doc.get('target_access') or not doc.get('source_only'):
++        raise ValueError('source-only convergence required')
++
++
++def write_configs(root):
++    root=Path(root)
++    for name,doc in zip(('ir_eg_v1.json','br_ir_eg_v1.json','convergence_confirmation.json'),build_matrices()):
++        (root/name).write_text(json.dumps(doc,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
++    unique={item['row']['id']:item for doc in build_matrices()[:2] for item in doc['rows']}
++    (root/'ir_rows').mkdir(exist_ok=True)
++    for row_id,item in unique.items():
++        (root/'ir_rows'/f'{row_id}.json').write_text(json.dumps(dict(status='PREPARED_NOT_LAUNCHED',row=item['row']),indent=2)+'\n',encoding='utf-8')
++    return unique
+--- frozen/code/cvsrffi/xuc_fusion/ir_head.py
++++ code/cvsrffi/xuc_fusion/ir_head.py
+@@ -0,0 +1,105 @@
++"""Replay the native MLP with isolated, fixed Dropout masks and weighted CE GGN."""
++from contextlib import contextmanager
++import math
++import torch
++from torch import nn
++from torch.nn import functional as F
++from .ir_types import DomainCall, HeadBatch
++
++def _layers(head):
++    net=head if type(head) is nn.Sequential else getattr(head,'net',None)
++    if not isinstance(net,nn.Sequential) or len(net)!=4 or tuple(type(x) for x in net)!=(nn.Linear,nn.ReLU,nn.Dropout,nn.Linear):
++        raise ValueError('unsupported head: requires Linear/ReLU/Dropout/Linear')
++    if net[0].bias is None or net[3].bias is None or list(head.buffers()) or len(list(head.parameters()))!=4:
++        raise ValueError('unsupported head parameters/buffers')
++    return net
++
++class HeadCallTape:
++    def __init__(self,head,layout_signature,context_signature):
++        self.head=head;self.net=_layers(head);self.layout_signature=layout_signature
++        self.context_signature=context_signature;self.records=[];self._calls={};self._pending=None
++    def _pre(self,module,args):
++        if self._pending is not None:raise ValueError('recursive head call unsupported')
++        self._pending={'post_grl_input':args[0]}
++    def _drop_pre(self,module,args):
++        x=args[0]
++        devices=[x.device.index] if x.is_cuda else []
++        cpu=torch.get_rng_state();cuda=torch.cuda.get_rng_state(x.device) if x.is_cuda else None
++        # fork_rng restores the exact incoming random stream; native call consumes it once.
++        with torch.random.fork_rng(devices=devices):
++            mask=F.dropout(torch.ones_like(x),p=module.p,training=module.training,inplace=False)
++        self._pending.update(scaled_dropout_mask=mask.detach().clone(),dropout_rng={'cpu':cpu.clone(),'cuda':None if cuda is None else cuda.clone()})
++    def _post(self,module,args,output):
++        self._pending['logits']=output;self.records.append(self._pending);self._pending=None
++    def register(self,key,physical_ids,domain,sample_weight,grl_multiplier,*,call_index=None):
++        index=len(self.records)-1 if call_index is None else call_index
++        if index<0 or index>=len(self.records):raise ValueError('missing captured head call')
++        if index in self._calls or any(c.key==key for c in self._calls.values()):raise ValueError('duplicate domain call')
++        record=self.records[index];z=record['post_grl_input']
++        call=DomainCall(str(key),tuple(map(str,physical_ids)),z.detach().clone(),domain.detach().clone(),
++                        sample_weight.detach().clone(),record['scaled_dropout_mask'].detach().clone(),float(grl_multiplier))
++        _validate_call(call,record['logits'].shape[-1])
++        self._calls[index]=call
++        return call
++    def batch(self):
++        return HeadBatch(tuple(self._calls[i] for i in sorted(self._calls)),self.layout_signature,self.context_signature)
++
++@contextmanager
++def capture_head_calls(head,layout_signature,context_signature):
++    tape=HeadCallTape(head,layout_signature,context_signature)
++    handles=[head.register_forward_pre_hook(tape._pre),tape.net[2].register_forward_pre_hook(tape._drop_pre),head.register_forward_hook(tape._post)]
++    try:yield tape
++    finally:
++        for h in handles:h.remove()
++
++def _validate_call(call,num_classes):
++    n=call.z_detached.shape[0]
++    if call.z_detached.ndim!=2 or call.domain.shape!=(n,) or call.sample_weight.shape!=(n,) or len(call.physical_ids)!=n:
++        raise ValueError('invalid domain call batch/weight/physical IDs')
++    if call.domain.dtype!=torch.long or (n and (call.domain.min()<0 or call.domain.max()>=num_classes)):
++        raise ValueError('domain label outside registered output mapping')
++    if not torch.isfinite(call.sample_weight).all() or (call.sample_weight<0).any():raise ValueError('invalid nonnegative CE weights')
++    if not math.isfinite(call.grl_multiplier):raise ValueError('nonfinite GRL')
++    if not torch.isfinite(call.scaled_dropout_mask).all():raise ValueError('nonfinite Dropout mask')
++
++def head_logits(phi,call):
++    if len(phi)!=4:raise ValueError('head requires four native parameter tensors')
++    w1,b1,w2,b2=phi
++    hidden=F.relu(F.linear(call.z_detached,w1,b1),inplace=False)
++    if hidden.shape!=call.scaled_dropout_mask.shape:raise ValueError('head mask shape changed')
++    return F.linear(hidden*call.scaled_dropout_mask,w2,b2)
++
++def head_loss(phi,batch):
++    loss=sum(p.sum()*0. for p in phi)
++    for call in batch.calls:
++        _validate_call(call,phi[2].shape[0])
++        if call.z_detached.requires_grad:raise ValueError('HeadBatch must detach backbone inputs')
++        if call.domain.numel()==0:continue
++        loss=loss+(F.cross_entropy(head_logits(phi,call),call.domain,reduction='none')*call.sample_weight).sum()
++    return loss
++
++def head_gradient(phi,batch):
++    leaves=tuple(p.detach().requires_grad_(True) for p in phi)
++    gradient=torch.autograd.grad(head_loss(leaves,batch),leaves)
++    return torch.cat([g.detach().reshape(-1) for g in gradient])
++
++def ggn_matvec(phi,batch,vector):
++    """J^T W (diag(p)-pp^T) Jv, not the nonlinear loss Hessian."""
++    fixed=tuple(p.detach() for p in phi)
++    if vector.ndim!=1 or vector.numel()!=sum(p.numel() for p in fixed):raise ValueError('GGN vector layout mismatch')
++    tangents=[];offset=0
++    for p in fixed:
++        tangents.append(vector[offset:offset+p.numel()].reshape_as(p));offset+=p.numel()
++    result=torch.zeros_like(vector)
++    for call in batch.calls:
++        _validate_call(call,phi[2].shape[0])
++        if call.z_detached.requires_grad:raise ValueError('HeadBatch must detach backbone inputs')
++        if call.domain.numel()==0:continue
++        fn=lambda *parameters: head_logits(parameters,call)
++        logits,jv=torch.func.jvp(fn,fixed,tuple(tangents))
++        probabilities=logits.detach().softmax(-1)
++        weighted=(call.sample_weight[:,None]*probabilities*(jv-(probabilities*jv).sum(-1,keepdim=True))).detach()
++        _,vjp=torch.func.vjp(fn,*fixed)
++        jt=vjp(weighted)
++        result=result+torch.cat([x.detach().reshape(-1) for x in jt])
++    return result
+--- frozen/code/cvsrffi/xuc_fusion/ir_metric.py
++++ code/cvsrffi/xuc_fusion/ir_metric.py
+@@ -0,0 +1,53 @@
++"""Frozen-second-moment local metric anchored to a real AdamW predictor."""
++import math
++import torch
++from .ir_types import ResponseMetric
++
++def build_response_metric(optimizer_origin,predictor_record,h0,layout):
++    if isinstance(optimizer_origin,torch.optim.Optimizer):
++        if type(optimizer_origin) is not torch.optim.AdamW:raise ValueError('only AdamW is supported')
++        origin=optimizer_origin.state_dict()
++    else:origin=optimizer_origin
++    if predictor_record.get('optimizer_class','AdamW')!='AdamW':raise ValueError('only AdamW is supported')
++    c=predictor_record['clip_coefficient']
++    if isinstance(c,bool) or not math.isfinite(float(c)) or not 0<=float(c)<=1:raise ValueError('invalid actual predictor clip coefficient')
++    c=float(c);after=predictor_record['optimizer_after']
++    slots=[];seen=set()
++    for group in origin['param_groups']:
++        for flag in ('amsgrad','maximize','fused','capturable','differentiable'):
++            if group.get(flag,False):raise ValueError(f'unsupported AdamW flag: {flag}')
++        if group.get('foreach') is True:raise ValueError('unverified foreach optimizer variant')
++        for pid in group['params']:
++            if pid not in seen:slots.append((pid,group));seen.add(pid)
++    if len(slots)!=len(layout.names) or len(h0)!=len(layout.phi_indices):raise ValueError('optimizer/head layout mismatch')
++    values=[];indices=[];offset=0;reference=next((g for g in h0 if g is not None),None)
++    for index,g in zip(layout.phi_indices,h0):
++        pid,group=slots[index];numel=math.prod(layout.shapes[index]);lr=float(group['lr'])
++        if g is None:offset+=numel;continue
++        if g.shape!=layout.shapes[index] or g.is_sparse or g.dtype!=torch.float32 or not torch.isfinite(g).all():raise ValueError('unsupported gradient dtype/layout/finite state')
++        state=origin['state'].get(pid,{})
++        for name in ('exp_avg','exp_avg_sq'):
++            if name in state and (state[name].dtype!=torch.float32 or state[name].shape!=g.shape or not torch.isfinite(state[name]).all()):raise ValueError('unsupported optimizer state')
++        raw_step=float(state.get('step',0))
++        if raw_step<0 or not raw_step.is_integer():raise ValueError('invalid parameter-local step')
++        k=int(raw_step)+1;beta1,beta2=group['betas'];eps=float(group['eps'])
++        if not (0<=beta1<1 and 0<=beta2<1 and eps>=0 and math.isfinite(lr) and lr>=0):raise ValueError('invalid AdamW group')
++        v0=state.get('exp_avg_sq',torch.zeros_like(g))
++        # Match torch AdamW's addcmul order rather than squaring a pre-scaled expression.
++        clipped=g.detach()*c
++        v1=v0.detach().clone().mul_(beta2).addcmul_(clipped,clipped,value=1-beta2)
++        actual=after['state'].get(pid,{})
++        if 'exp_avg_sq' not in actual or not torch.allclose(v1,actual['exp_avg_sq'],atol=1e-8,rtol=2e-6) or float(actual.get('step',-1))!=k:
++            raise ValueError('predictor second moment/step does not match actual virtual step')
++        if lr>0 and c>0:
++            r=lr*c*(1-beta1)/((1-beta1**k)*(torch.sqrt(v1/(1-beta2**k))+eps))
++            if not torch.isfinite(r).all() or (r<=0).any():raise ValueError('invalid response metric')
++            values.append(r.reshape(-1));indices.append(torch.arange(offset,offset+numel,device=g.device))
++        offset+=numel
++    if reference is None:
++        for state in origin['state'].values():
++            if 'exp_avg_sq' in state:reference=state['exp_avg_sq'];break
++    reference=torch.empty(0,dtype=torch.float32) if reference is None else reference
++    diagonal=torch.cat(values) if values else reference.new_empty(0)
++    active=torch.cat(indices) if indices else torch.empty(0,device=reference.device,dtype=torch.long)
++    return ResponseMetric(diagonal,diagonal.sqrt(),active,c)
+--- frozen/code/cvsrffi/xuc_fusion/ir_objective.py
++++ code/cvsrffi/xuc_fusion/ir_objective.py
+@@ -0,0 +1,69 @@
++"""Pure native loss assembly with explicitly registered adversarial leaves."""
++from dataclasses import replace
++import torch
++import torch.nn.functional as F
++from .ir_head import head_logits
++
++
++def register_domain_call(ctx, logits, key, ids, domain, coefficient, grl):
++    tape = getattr(ctx, 'ir_tape', None)
++    if tape is None: return
++    matches=[i for i,r in enumerate(tape.records) if r['logits'] is logits]
++    if len(matches)!=1: raise ValueError('registered CE must identify exactly one native head call')
++    if len(domain)==0: raise ValueError('empty registered domain call')
++    tape.register(key, tuple(str(x) for x in ids), domain,
++        torch.full((len(domain),), float(coefficient)/len(domain),device=domain.device),
++        float(grl),call_index=matches[0])
++    ctx.ir_call_indices[key]=matches[0]
++
++
++class ObjectivePacket:
++    def __init__(self, tape, assembly, phi_predictor, call_indices):
++        self.head_batch=tape.batch()
++        self.phi_predictor=tuple(p.detach().clone() for p in phi_predictor)
++        self._assembly=assembly
++        self._inputs={key:tape.records[i]['post_grl_input'] for key,i in call_indices.items()}
++        self._released=False
++
++    def assemble(self, phi_leaf):
++        if self._released: raise RuntimeError('packet already released')
++        if any(not p.is_leaf or not p.requires_grad for p in phi_leaf):
++            raise ValueError('response head must consist of independent differentiable leaves')
++        leaves={}
++        for call in self.head_batch.calls:
++            # This intentionally retains the native post-GRL graph, including
++            # the zero-gradient U edge. The detached batch is for head solving.
++            live=replace(call,z_detached=self._inputs[call.key])
++            logits=head_logits(phi_leaf,live)
++            # Native CE uses mean before applying the scalar coefficient.
++            # Only uniform within-call native reductions are supported here.
++            weight=call.sample_weight
++            if not torch.equal(weight,weight[0].expand_as(weight)):
++                raise ValueError('unsupported nonuniform native CE reduction')
++            leaves[call.key]=F.cross_entropy(logits.float(),call.domain)
++        return self._assembly(leaves)
++
++    def release(self):
++        self._assembly=None
++        self._inputs.clear()
++        self._released=True
++
++
++def build_objective_packet(ctx):
++    if not callable(getattr(ctx,'ir_assembly',None)): raise ValueError('objective has no pure native assembly')
++    return ObjectivePacket(ctx.ir_tape,ctx.ir_assembly,ctx.ir_phi_predictor,ctx.ir_call_indices)
++
++
++def graph_activity(loss, parameters):
++    """Read autograd connectivity without executing a backbone backward."""
++    wanted={id(p):i for i,p in enumerate(parameters)}
++    active=[False]*len(parameters)
++    pending=[loss.grad_fn];seen=set()
++    while pending:
++        node=pending.pop()
++        if node is None or node in seen: continue
++        seen.add(node)
++        variable=getattr(node,'variable',None)
++        if variable is not None and id(variable) in wanted: active[wanted[id(variable)]]=True
++        pending.extend(edge[0] for edge in node.next_functions)
++    return tuple(active)
+--- frozen/code/cvsrffi/xuc_fusion/ir_solver.py
++++ code/cvsrffi/xuc_fusion/ir_solver.py
+@@ -0,0 +1,314 @@
++"""Native joint implicit-response EG with complete accepted-step atomicity."""
++from copy import deepcopy
++from contextlib import contextmanager
++import torch
++from cvsrffi.game_tracking.solvers import GameSolver, StepResult, NonFiniteStep
++from cvsrffi.game_tracking.state import TrainingState, RNGState, clone_buffers, restore_buffers
++from .response_config import resolve
++from .ir_types import build_layout
++from .ir_head import capture_head_calls, head_gradient, ggn_matvec
++from .ir_metric import build_response_metric
++from .ir_cg import solve_response
++from .ir_objective import build_objective_packet, graph_activity
++from .br_history import BRHistory
++
++
++def _copy(value):
++    if torch.is_tensor(value): return value.detach().clone()
++    if isinstance(value,dict): return {k:_copy(v) for k,v in value.items()}
++    if isinstance(value,list): return [_copy(v) for v in value]
++    if isinstance(value,tuple): return tuple(_copy(v) for v in value)
++    return deepcopy(value)
++
++
++def _context(ctx):
++    return {k:_copy(v) for k,v in vars(ctx).items() if not k.startswith('ir_') or k in ('ir_stage_signature','ir_diagnostics')}
++
++
++def _restore_context(ctx,state):
++    vars(ctx).clear();vars(ctx).update(_copy(state))
++
++
++def _flat(values, parameters):
++    return torch.cat([(torch.zeros_like(p) if g is None else g).reshape(-1) for g,p in zip(values,parameters)])
++
++
++class AttributeState:
++    """Explicit adapter for the native legacy PrototypeMemoryBank."""
++    def __init__(self,obj):self.obj=obj
++    def state_dict(self):return _copy(vars(self.obj))
++    def load_state_dict(self,state):vars(self.obj).clear();vars(self.obj).update(_copy(state))
++
++
++class IREGSolver(GameSolver):
++    def __init__(self,model,optimizer,config,**kwargs):
++        config=resolve(config)
++        if config['method'] not in ('IR_EG','BR_IR_EG'): raise ValueError('IR method required')
++        kwargs.pop('mode',None)
++        super().__init__(model,optimizer,mode='extragradient',**kwargs)
++        if type(optimizer) is not torch.optim.AdamW or self.scaler is not None:
++            raise ValueError('IR v1 requires FP32 AdamW without AMP')
++        if self.predictor_lr_ratio!=1.:raise ValueError('IR predictor ratio must equal one')
++        if self.nonfinite!='raise':raise ValueError('IR never skips a failed source batch')
++        if any(p.dtype!=torch.float32 for p in self.parameters):raise ValueError('IR requires FP32')
++        for group in optimizer.param_groups:
++            if any(group.get(k,False) for k in ('amsgrad','maximize','differentiable','capturable','fused','foreach')):
++                raise ValueError('unsupported AdamW variant')
++        for state in optimizer.state.values():
++            for key in ('exp_avg','exp_avg_sq'):
++                if key in state and state[key].dtype!=torch.float32:raise ValueError('IR requires FP32 AdamW state')
++        self.config=config
++        self.layout=build_layout(model,optimizer)
++        by_name=dict(zip(self.names,self.parameters))
++        self.layout_parameters=tuple(by_name[name] for name in self.layout.names)
++        self.phi=tuple(self.layout_parameters[i] for i in self.layout.phi_indices)
++        self.psi=tuple(self.layout_parameters[i] for i in self.layout.psi_indices)
++        self.history=BRHistory(self.layout,config['br_refresh_interval'])
++        self.failure_injector=None
++
++    def state_dict(self):
++        state=super().state_dict()
++        state['ir_config']=deepcopy(self.config);state['br_history']=self.history.state_dict()
++        return state
++
++    def load_state_dict(self,state):
++        if state.get('ir_config')!=self.config:raise ValueError('IR checkpoint configuration mismatch')
++        super().load_state_dict(state);self.history.load_state_dict(state['br_history'])
++        if self.history.gradients is not None:
++            self.history.gradients=tuple(None if g is None else g.to(p.device) for p,g in zip(self.layout_parameters,self.history.gradients))
++
++    def _inject(self,stage):
++        if self.failure_injector:self.failure_injector(stage)
++
++    def _native_order(self, gradients):
++        by_name=dict(zip(self.layout.names,gradients))
++        return [by_name[name] for name in self.names]
++
++    def _layout_order(self, gradients):
++        by_name=dict(zip(self.names,gradients))
++        return tuple(by_name[name] for name in self.layout.names)
++
++    def _signature(self,ctx):
++        explicit=getattr(ctx,'ir_stage_signature',None)
++        if explicit is None:
++            # Only discrete native phase boundaries, never route IDs or EMA values.
++            explicit=(max(e for e in (1,21,41,61,80,91,161) if e<=ctx.epoch),
++                      getattr(ctx,'calibration_version',None))
++        return (self.layout.signature,explicit,tuple(p.requires_grad for p in self.layout_parameters))
++
++    @contextmanager
++    def _capture(self,ctx):
++        with capture_head_calls(self.model.adv_head,self.layout.signature,str(self._signature(ctx))) as tape:
++            ctx.ir_tape=tape;ctx.ir_call_indices={};ctx.ir_phi_predictor=self.phi
++            try:yield tape
++            finally:ctx.__dict__.pop('ir_tape',None)
++
++    def reference_step(self,closure,ctx,**kwargs):return self.step(closure,ctx=ctx,implementation='reference',**kwargs)
++    def cached_step(self,closure,ctx,**kwargs):return self.step(closure,ctx=ctx,implementation='cached',**kwargs)
++
++    def step(self,closure,*,ctx=None,commit=None,external_stateful=(),implementation=None,**kwargs):
++        if ctx is None:raise ValueError('IR requires an explicit materialized step context')
++        if kwargs:raise ValueError('unsupported IR step options')
++        external=tuple(obj if hasattr(obj,'state_dict') and hasattr(obj,'load_state_dict') else AttributeState(obj)
++                       for obj in external_stateful)
++        origin=TrainingState(self.model,self.optimizer,stateful=self.stateful+external)
++        ctx0=_context(ctx);solver0=deepcopy(self.state_dict())
++        external_flags=[(m,m.training) for obj in external_stateful if isinstance(obj,torch.nn.Module) for m in obj.modules()]
++        count=[0];handle=self.model.register_forward_hook(lambda *unused:count.__setitem__(0,count[0]+1))
++        try:
++            active=ctx.epoch>=self.config['ir_start_epoch']
++            br=self.config['method']=='BR_IR_EG' and active
++            # This branch does not instantiate hooks on the head, masks, packet,
++            # response state, or CG. It calls the original complete EG verbatim.
++            if not active or (self.config['ir_kappa']==0 and not br):
++                result=super().step(closure)
++                result.telemetry=result.telemetry or {}
++                result.telemetry.update(configured=True,eligible=active,executed=False,applied=False,
++                    nonzero=False,fallback=False,effective_kappa=0.,full_backward_calls=2,
++                    head_only_backward_calls=0,jvp_calls=0,vjp_calls=0,field_forward_calls=2,
++                    cg_iterations=0,cg_status=None,implementation='native_full_EG')
++            else:
++                result=self._ir_step(closure,ctx,origin,br,implementation or self.config['implementation'])
++            self._inject('after_formal')
++            if commit:commit()
++            self._inject('after_external_commit')
++            if self.config['method']=='BR_IR_EG' and active:
++                self.history.commit(self._layout_order(self.last_trace['corrector']),self._signature(ctx),self.steps,
++                                    refreshed=result.telemetry['br_refreshed'])
++            result.telemetry=result.telemetry or {}
++            result.telemetry.update(model_forward_calls=count[0],formal_optimizer_commits=1,
++                                    history_bytes=self.history.bytes,accepted_index=self.steps)
++            return result
++        except Exception:
++            origin.restore();_restore_context(ctx,ctx0);self.load_state_dict(solver0)
++            for module,flag in external_flags:module.training=flag
++            raise
++        finally:handle.remove()
++
++    def _ir_step(self,closure,ctx,origin,br,implementation):
++        if torch.is_autocast_enabled() or torch.is_autocast_enabled('cpu'):
++            raise ValueError('IR requires FP32 without autocast')
++        if build_layout(self.model,self.optimizer).signature!=self.layout.signature:
++            raise ValueError('IR parameter structure changed')
++        self._measure_components=False;self._components={}
++        self.optimizer.zero_grad(set_to_none=True)
++        signature=self._signature(ctx);accepted_index=self.steps+1
++        anchor_batch=None
++        with self._capture(ctx) as origin_tape:
++            loss=closure()
++            activity=graph_activity(loss,self.psi)
++            reason=self.history.refresh_reason(signature,accepted_index,activity) if br else 'full_IR'
++            refreshed=reason is not None
++            targets=self.layout_parameters if refreshed else self.phi
++            active_targets=[p for p in targets if p.requires_grad]
++            grads=torch.autograd.grad(loss,active_targets,allow_unused=True) if active_targets else ()
++            by_id={id(p):g for p,g in zip(active_targets,grads)}
++            raw=tuple(None if by_id.get(id(p)) is None else by_id[id(p)].detach().clone() for p in self.layout_parameters)
++            h0=tuple(raw[i] for i in self.layout.phi_indices)
++            if self.config['ir_feature_anchor']=='origin':anchor_batch=origin_tape.batch()
++            loss0=float(loss.detach())
++        if not torch.isfinite(loss.detach()) or any(g is not None and not torch.isfinite(g).all() for g in raw):
++            raise NonFiniteStep('origin')
++        del loss,grads,origin_tape
++        self._finite_state('origin');self._inject('after_origin')
++        origin_ctx=_context(ctx)
++        buffers=clone_buffers(self.model);rng_after=RNGState.capture()
++        first=raw if refreshed else self.history.predictor(activity,h0,signature,accepted_index)
++        first=self._native_order(first)
++        self._install(first)
++        predictor_clip=self.last_clip_coefficient
++        self.optimizer.step();self._finite_state('predictor');self._inject('after_virtual')
++        phip=tuple(p.detach().clone() for p in self.phi)
++        metric=build_response_metric(origin.optimizer_state,dict(clip_coefficient=predictor_clip,
++                                   optimizer_after=deepcopy(self.optimizer.state_dict())),h0,self.layout)
++        if metric.diagonal.device!=self.phi[0].device and metric.diagonal.numel()==0:
++            from dataclasses import replace
++            metric=replace(metric,diagonal=metric.diagonal.to(self.phi[0].device),
++                           sqrt_diagonal=metric.sqrt_diagonal.to(self.phi[0].device),active_indices=metric.active_indices.to(self.phi[0].device))
++        restore_buffers(self.model,origin.buffers);origin.rng.restore()
++        _restore_context(ctx,origin_ctx)
++        packet=None;cg=None;fallback=None;delta=torch.zeros_like(_flat(phip,self.phi));hp=None;eg_raw=None
++        curvature_calls=0;energy=None
++        fields=2;full_backwards=1+int(refreshed)
++        try:
++            with self._capture(ctx) as tape:
++                native_loss=closure()
++                packet=build_objective_packet(ctx)
++                if getattr(ctx,'ir_diagnostics',False):
++                    active=[p for p in self.parameters if p.requires_grad]
++                    diagnostic_grad=torch.autograd.grad(native_loss,active,allow_unused=True,retain_graph=True)
++                    diagnostic_by_id={id(p):g for p,g in zip(active,diagnostic_grad)}
++                    eg_raw=[None if diagnostic_by_id.get(id(p)) is None else diagnostic_by_id[id(p)].detach().clone()
++                            for p in self.parameters]
++                self._inject('after_capture')
++                # The packet must have removed every real adv_head dependency.
++                probe=tuple(p.detach().clone().requires_grad_(True) for p in phip)
++                assembled=packet.assemble(probe)
++                trainable_phi=tuple(p for p in self.phi if p.requires_grad)
++                leaked=torch.autograd.grad(assembled,trainable_phi,allow_unused=True,retain_graph=True) if trainable_phi else ()
++                if any(g is not None and bool(g.count_nonzero()) for g in leaked):
++                    raise ValueError('unregistered native phi gradient leak')
++                batch=anchor_batch or packet.head_batch
++                hp=head_gradient(phip,batch)
++                # Ownership is checked at predictor features regardless of the OR ablation.
++                expected=hp if anchor_batch is None else head_gradient(phip,packet.head_batch)
++                native_head=torch.autograd.grad(native_loss,trainable_phi,allow_unused=True,retain_graph=True) if trainable_phi else ()
++                actual_by_id={id(p):g for p,g in zip(trainable_phi,native_head)}
++                active_flat=torch.cat([torch.full((p.numel(),),p.requires_grad,device=p.device,dtype=torch.bool) for p in self.phi])
++                actual_flat=_flat(tuple(actual_by_id.get(id(p)) for p in self.phi),self.phi)
++                if not torch.allclose(actual_flat[active_flat],expected[active_flat],atol=1e-6,rtol=1e-5):
++                    raise ValueError('native head field differs from registered CE')
++                e=hp-_flat(h0,self.phi)
++                self._inject('inside_cg')
++                if self.config['ir_kappa']:
++                    def operator(v):
++                        nonlocal curvature_calls
++                        if self.config['ir_curvature']=='zero':return torch.zeros_like(v)
++                        curvature_calls+=1
++                        return ggn_matvec(phip,batch,v)
++                    cg=solve_response(e,metric,operator,max_iterations=self.config['ir_cg_max_iterations'],rtol=self.config['ir_cg_rtol'])
++                    if cg.status in ('failed','numerical_failure','breakdown') or not torch.isfinite(cg.solution).all():
++                        raise FloatingPointError(cg.reason or cg.status)
++                    delta[metric.active_indices]=metric.sqrt_diagonal*cg.solution
++                    au=cg.solution+metric.sqrt_diagonal*operator(delta)[metric.active_indices]
++                    rhs=-metric.sqrt_diagonal*e[metric.active_indices]
++                    energy=float(.5*torch.dot(cg.solution.double(),au.double())-torch.dot(rhs.double(),cg.solution.double()))
++                response=_flat(phip,self.phi)+self.config['ir_kappa']*delta
++                phi_response=[];offset=0
++                for p in self.phi:
++                    phi_response.append(response[offset:offset+p.numel()].reshape_as(p).detach().clone())
++                    offset+=p.numel()
++                if implementation=='cached':
++                    leaves=tuple(p.requires_grad_(True) for p in phi_response)
++                    final_loss=packet.assemble(leaves)
++                    targets=[p for p in self.psi if p.requires_grad]+list(leaves)
++                    final=torch.autograd.grad(final_loss,targets,allow_unused=True)
++                    mapped={id(p):g for p,g in zip(targets,final)}
++                    mapped.update({id(p):g if p.requires_grad else None for p,g in zip(self.phi,final[-len(leaves):])})
++                    gradients=[None if mapped.get(id(p)) is None else mapped[id(p)].detach().clone() for p in self.parameters]
++                    loss1=float(final_loss.detach())
++                    del final_loss,assembled,native_loss
++                else:
++                    del assembled,native_loss
++                    packet.release();packet=None
++                    # All graph-owning context callbacks and tape records go away
++                    # before installing the response in the live parameters.
++                    _restore_context(ctx,origin_ctx);tape.records.clear()
++                    with torch.no_grad():
++                        for p,value in zip(self.phi,phi_response):p.copy_(value)
++                    restore_buffers(self.model,origin.buffers);origin.rng.restore()
++                    loss1,gradients=self._evaluate(closure,'ir_corrector')
++                    fields=3
++            self._inject('after_corrector')
++        except FloatingPointError as exc:
++            fallback=str(exc)
++            if packet:packet.release();packet=None
++            # Same materialized batch/context and RNG, rebuilt ordinary EG.
++            origin.restore();_restore_context(ctx,origin_ctx)
++            self._install(first);self.optimizer.step()
++            restore_buffers(self.model,origin.buffers);origin.rng.restore()
++            loss1,gradients=self._evaluate(closure,'fallback_corrector')
++            fields+=1
++        finally:
++            if packet:packet.release()
++            for key in list(vars(ctx)):
++                if key.startswith('ir_') and key not in ('ir_stage_signature','ir_diagnostics'):vars(ctx).pop(key,None)
++        if any(g is not None and not torch.isfinite(g).all() for g in gradients):raise NonFiniteStep('corrector')
++        replay_ctx=_context(ctx)
++        origin.restore();_restore_context(ctx,origin_ctx)
++        # Persist origin semantics, while retaining observable native traversal audit.
++        for key in ('forward_calls','field_components','dr_field_divisors'):
++            if key in replay_ctx:setattr(ctx,key,replay_ctx[key])
++        attribution=None
++        if eg_raw is not None:
++            from .ir_telemetry import clip_attribution
++            self._install(eg_raw)
++            common=self.last_clip_coefficient
++            origin.restore()
++            attribution=clip_attribution(self.model,self.optimizer,self.parameters,eg_raw,gradients,
++                max_grad_norm=self.max_grad_norm,common_coefficient=common)
++        self._install(gradients);formal_clip=self.last_clip_coefficient
++        self.optimizer.step();self._finite_state('formal')
++        restore_buffers(self.model,buffers);rng_after.restore();self.steps+=1
++        self.last_trace=dict(origin=first,corrector=gradients,phip=phip,h0=h0,hp=hp,delta=delta.detach(),
++            metric=metric,head_batch=batch,formal_update=[p.detach()-v for p,v,_ in origin.parameters])
++        norm=sum(float(g.double().square().sum()) for g in gradients if g is not None)**.5
++        telemetry=dict(configured=True,eligible=True,executed=bool(self.config['ir_kappa']),
++            applied=bool(self.config['ir_kappa']) and fallback is None,nonzero=bool(delta.count_nonzero()),
++            fallback=fallback is not None,accepted=True,effective_kappa=self.config['ir_kappa'],implementation=implementation,
++            cg_status=cg.status if cg else None,cg_iterations=cg.iterations if cg else 0,
++            linear_relative_residual=cg.relative_residual if cg else None,
++            quadratic_model_energy=energy,h0_norm=float(_flat(h0,self.phi).double().norm()),
++            hp_norm=float(hp.double().norm()) if hp is not None else None,
++            e_norm=float((hp-_flat(h0,self.phi)).double().norm()) if hp is not None else None,
++            response_norm=float((self.config['ir_kappa']*delta).double().norm()),
++            parameter_displacement_norm=sum(float((p.detach()-v).double().square().sum()) for p,v,_ in origin.parameters)**.5,
++            predictor_clip_coefficient=predictor_clip,formal_clip_coefficient=formal_clip,
++            full_backward_calls=full_backwards,field_forward_calls=fields,
++            diagnostic_full_backward_calls=int(eg_raw is not None),clip_attribution=attribution,
++            head_only_backward_calls=3+int(anchor_batch is not None)+int(not refreshed),
++            jvp_calls=curvature_calls*len(batch.calls),vjp_calls=curvature_calls*len(batch.calls),
++            curvature_operator_calls=curvature_calls,br_refreshed=refreshed,br_refresh_reason=reason,
++            history_age=1 if br and not refreshed else None)
++        return StepResult(loss0,loss1,norm,'extragradient',True,fields,self.config['method'],
++                          failure_stage=fallback,telemetry=telemetry)
+--- frozen/code/cvsrffi/xuc_fusion/ir_telemetry.py
++++ code/cvsrffi/xuc_fusion/ir_telemetry.py
+@@ -0,0 +1,246 @@
++"""Passive source-only IR diagnostics. No controller consumes these measurements."""
++from contextlib import contextmanager
++from copy import deepcopy
++import json
++import time
++from pathlib import Path
++
++import torch
++import torch.nn.functional as F
++from cvsrffi.game_tracking.state import RNGState
++
++
++@contextmanager
++def isolated_diagnostics(model, optimizer=None, stateful=()):
++    rng = RNGState.capture()
++    values = deepcopy(model.state_dict())
++    parameters = [(p, p.requires_grad, None if p.grad is None else p.grad.clone()) for p in model.parameters()]
++    flags = [(m, m.training) for m in model.modules()]
++    optim = deepcopy(optimizer.state_dict()) if optimizer is not None else None
++    states = [(obj, deepcopy(obj.state_dict())) for obj in stateful]
++    try:
++        yield
++    finally:
++        model.load_state_dict(values)
++        if optimizer is not None:
++            optimizer.load_state_dict(optim)
++        for obj, state in states:
++            obj.load_state_dict(state)
++        for p, flag, grad in parameters:
++            p.requires_grad_(flag); p.grad = grad
++        for m, flag in flags:
++            m.training = flag
++        rng.restore()
++
++
++def diagnostics_due(accepted_index, stage_boundary, interval=1000):
++    return bool(stage_boundary or (accepted_index > 0 and accepted_index % interval == 0))
++
++
++def recovery_summary(ce_before, ce_after, accuracy_before, accuracy_after):
++    return dict(ce_before=ce_before, ce_after=ce_after,
++                ce_reduction=ce_before-ce_after, accuracy_before=accuracy_before,
++                accuracy_after=accuracy_after, accuracy_gain=accuracy_after-accuracy_before,
++                controls_training=False)
++
++
++def _unflatten(vector, parameters):
++    result=[]; offset=0
++    for p in parameters:
++        result.append(vector[offset:offset+p.numel()].reshape_as(p)); offset += p.numel()
++    if offset != vector.numel():
++        raise ValueError('parameter vector length mismatch')
++    return tuple(result)
++
++
++def nonlinear_residual(phi, batch, h0, delta, metric):
++    from .ir_head import head_gradient
++    flat=torch.cat([p.detach().reshape(-1) for p in phi])
++    gradient=head_gradient(_unflatten(flat+delta,phi),batch)
++    if isinstance(gradient,(tuple,list)):
++        gradient=torch.cat([g.reshape(-1) for g in gradient])
++    if isinstance(h0,(tuple,list)):
++        h0=torch.cat([(torch.zeros_like(p) if g is None else g).reshape(-1) for p,g in zip(phi,h0)])
++    ids=metric.active_indices
++    residual=delta[ids]/metric.sqrt_diagonal+metric.sqrt_diagonal*(gradient[ids]-h0[ids])
++    return float(residual.double().norm())
++
++
++def head_recovery_probe(head, train_batch, monitor_batch, *, steps=10, lr=2e-4):
++    """Fit a disposable head on detached source training records; monitor disjoint V.
++
++    The registered fixed dropout masks are replayed throughout this probe, both
++    for training and monitoring. This convention is recorded in the result.
++    """
++    from .ir_head import head_logits
++    if steps != 10:
++        raise ValueError('the registered recovery probe uses exactly ten updates')
++    train_ids={i for c in train_batch.calls for i in c.physical_ids}
++    monitor_ids={i for c in monitor_batch.calls for i in c.physical_ids}
++    if train_ids & monitor_ids or not train_ids or not monitor_ids:
++        raise ValueError('training and V monitor physical records must be disjoint and nonempty')
++    rng=RNGState.capture(); started=time.perf_counter()
++    try:
++        phi=tuple(p.detach().clone().requires_grad_(True) for p in head.parameters())
++        optimizer=torch.optim.AdamW(phi, lr=lr)
++        def loss(batch):
++            return sum((F.cross_entropy(head_logits(phi,c),c.domain,reduction='none')*c.sample_weight).sum() for c in batch.calls)
++        def metrics():
++            with torch.no_grad():
++                count=sum(len(c.domain) for c in monitor_batch.calls)
++                ce=sum(float(F.cross_entropy(head_logits(phi,c),c.domain,reduction='sum')) for c in monitor_batch.calls)/count
++                correct=sum(int((head_logits(phi,c).argmax(-1)==c.domain).sum()) for c in monitor_batch.calls)
++                return ce, correct/count
++        before=metrics()
++        for _ in range(steps):
++            optimizer.zero_grad(set_to_none=True); loss(train_batch).backward(); optimizer.step()
++        after=metrics()
++        return dict(recovery_summary(before[0],after[0],before[1],after[1]),
++                    steps=steps, dropout_policy='replay_registered_fixed_masks',
++                    fit_records=len(train_ids), monitor_records=len(monitor_ids),
++                    elapsed_seconds=time.perf_counter()-started)
++    finally:
++        rng.restore()
++
++
++def source_identity_summary(logits, features, tx, rx):
++    """Descriptive source slices and two-way statistical interaction, never physics."""
++    if not len(tx) or logits.shape[0]!=len(tx) or features.shape[0]!=len(tx):
++        raise ValueError('nonempty aligned source panel required')
++    with torch.no_grad():
++        pred=logits.argmax(-1); correct=pred==tx
++        masked=logits.clone(); masked.scatter_(1,tx[:,None],-torch.inf)
++        margin=logits.gather(1,tx[:,None]).squeeze(1)-masked.max(1).values
++        rows=[]; tx_scores=[]; rx_scores=[]; interactions=[]; deltas=[]
++        grand=features.mean(0)
++        for y in tx.unique():
++            ym=tx==y; tx_scores.append(float(correct[ym].float().mean()))
++            for r in rx.unique():
++                mask=ym & (rx==r)
++                if not mask.any():continue
++                centroid=features[mask].mean(0)
++                interaction=centroid-features[ym].mean(0)-features[rx==r].mean(0)+grand
++                interactions.append(float(interaction.norm()))
++                rows.append(dict(tx=int(y),rx=int(r),n=int(mask.sum()),accuracy=float(correct[mask].float().mean()),margin=float(margin[mask].mean()),interaction_norm=float(interaction.norm())))
++        for r in rx.unique():
++            rx_scores.append(float(correct[rx==r].float().mean()))
++            labels=tx[rx==r].unique().tolist()
++            for i,a in enumerate(labels):
++                for b in labels[i+1:]:
++                    global_difference=features[tx==a].mean(0)-features[tx==b].mean(0)
++                    local_difference=features[(tx==a)&(rx==r)].mean(0)-features[(tx==b)&(rx==r)].mean(0)
++                    deltas.append(dict(a=a,b=b,rx=int(r),delta_ab_r=(local_difference-global_difference).cpu().tolist()))
++        return dict(tx_margin=float(margin.mean()),worst_tx_accuracy=min(tx_scores),worst_rx_accuracy=min(rx_scores),
++                    rx_tx=rows,delta_ab_r=deltas,statistical_interaction_norm=sum(interactions)/len(interactions),
++                    physical_parameter_recovery_claim=False,controls_training=False)
++
++
++def clip_attribution(model, optimizer, parameters, eg_raw, ir_raw, *, max_grad_norm, common_coefficient):
++    """Measure disposable AdamW steps from one origin using native and common clip.
++
++    Both gradient fields must come from the same materialized step/context. The
++    common coefficient is provided by the native EG clipping calculation.
++    """
++    if not 0 <= common_coefficient <= 1:
++        raise ValueError('clip coefficient must be in [0,1]')
++    if len(parameters)!=len(eg_raw) or len(parameters)!=len(ir_raw):
++        raise ValueError('gradient layout mismatch')
++    result={};vectors={}
++    for label, raw in [('EG',eg_raw),('IR',ir_raw)]:
++        for common in (False,True):
++            with isolated_diagnostics(model,optimizer):
++                origin=[p.detach().clone() for p in parameters]
++                optimizer.zero_grad(set_to_none=True)
++                for p,g in zip(parameters,raw):
++                    p.grad=None if g is None else g.detach().clone()
++                if common:
++                    for p in parameters:
++                        if p.grad is not None:p.grad.mul_(common_coefficient)
++                else:
++                    torch.nn.utils.clip_grad_norm_(parameters,max_grad_norm,error_if_nonfinite=True)
++                optimizer.step()
++                delta=torch.cat([(p.detach()-v).reshape(-1) for p,v in zip(parameters,origin)])
++                key=label+('_common_clip' if common else '_native_clip')
++                vectors[key]=delta
++                result[key]=dict(displacement_norm=float(delta.double().norm()))
++    for suffix in ('native_clip','common_clip'):
++        a,b=vectors['EG_'+suffix].double(),vectors['IR_'+suffix].double()
++        denom=float(a.norm()*b.norm())
++        result[suffix+'_comparison']=dict(difference_norm=float((a-b).norm()),cosine=float(torch.dot(a,b))/denom if denom else None)
++    result.update(controls_training=False,common_coefficient=common_coefficient)
++    return result
++
++
++def native_heavy_diagnostics(solver, ctx, dr):
++    """Read-only current source train fitting and fixed, disjoint V monitoring."""
++    from .ir_head import capture_head_calls
++    trace=solver.last_trace
++    started=time.perf_counter()
++    with isolated_diagnostics(solver.model,solver.optimizer):
++        model=solver.model
++        model.eval();model.adv_head.train()
++        device=next(model.parameters()).device
++        # A deterministic fixed panel, never a rotating or target-dependent selection.
++        vx,vy,vd,meta=next(iter(dr.source.loader('val',256,seed=0,shuffle=False,workers=0)))
++        vx,vy,vd=vx.to(device),vy.to(device),vd.to(device)
++        val_ids=tuple(map(str,meta['sample_id']))
++        train_ids=tuple(map(str,ctx.sample_ids))+tuple(map(str,ctx.dr_ids))
++        if set(val_ids)&set(train_ids):raise ValueError('source V overlaps source training')
++        def capture(parts,label):
++            with capture_head_calls(model.adv_head,solver.layout.signature,'diagnostic/'+label) as tape:
++                outs=[]
++                with torch.no_grad():
++                    for key,x,d,ids,weight in parts:
++                        outs.append(model(x,return_aux=True,domain_labels=d,grl_lambda=0.))
++                        tape.register(key,ids,d,torch.full((len(d),),weight/len(d),device=device),0.)
++                return tape.batch(),outs
++        weights={c.key.split('/')[0]:float(c.sample_weight.sum()) for c in trace['head_batch'].calls}
++        train_batch,_=capture([('L',ctx.x,ctx.domain,ctx.sample_ids,weights.get('L',1.)),
++                               ('U',ctx.dr_strong,ctx.dr_d,ctx.dr_ids,weights.get('U',1.))],'train')
++        monitor_batch,outputs=capture([('V',vx,vd,val_ids,1.)],'monitor')
++        result=dict(recovery=head_recovery_probe(model.adv_head,train_batch,monitor_batch),
++                    source_identity=source_identity_summary(outputs[0]['tx_logits'],outputs[0]['z_id'],vy,meta['rx_i'].to(device)),
++                    source_panel=dict(role='V',records=len(val_ids),physical_ids=val_ids,policy='fixed_first_256_native_nonshuffled_V'),
++                    controls_training=False)
++        result['nonlinear_residual_full']=nonlinear_residual(trace['phip'],trace['head_batch'],trace['h0'],trace['delta'],trace['metric'])
++        result['nonlinear_residual_applied']=nonlinear_residual(trace['phip'],trace['head_batch'],trace['h0'],trace['delta']*solver.config['ir_kappa'],trace['metric'])
++    result['elapsed_seconds']=time.perf_counter()-started
++    return result
++
++
++METRICS=('accepted_index','physical_exposure','effective_kappa','h0_norm','hp_norm','e_norm',
++         'response_norm','cg_iterations','cg_status','linear_residual','origin_clip_coefficient',
++         'formal_clip_coefficient','parameter_displacement_norm','optimizer_commits','model_calls',
++         'backward_calls','head_only_calls','jvp_calls','vjp_calls','diagnostic_seconds')
++
++
++def step_record(result, **fields):
++    telemetry=result.telemetry or {}
++    row=dict(telemetry)
++    row.update(method=result.algorithm,accepted=result.accepted,loss=result.loss,
++               loss_replay=result.loss_replay,field_evaluations=result.field_evaluations,
++               fallback_reason=result.failure_stage)
++    row.update(fields)
++    aliases={'predictor_clip_coefficient':'origin_clip_coefficient',
++             'linear_relative_residual':'linear_residual','model_forward_calls':'model_calls',
++             'full_backward_calls':'backward_calls','head_only_backward_calls':'head_only_calls',
++             'formal_optimizer_commits':'optimizer_commits'}
++    for original,canonical in aliases.items():
++        if canonical not in row and original in row:row[canonical]=row[original]
++    for name in ('configured','eligible','executed','applied','nonzero','fallback'):
++        row.setdefault(name,None)
++    for name in METRICS:
++        row.setdefault(name,None)
++    row['missing_reasons']={k:'not measured by this execution path' for k,v in row.items() if v is None}
++    return row
++
++
++class TelemetryWriter:
++    def __init__(self,path):
++        self.path=Path(path)
++
++    def write(self,record):
++        encoded=json.dumps(record,ensure_ascii=False,allow_nan=False,sort_keys=True)
++        self.path.parent.mkdir(parents=True,exist_ok=True)
++        with self.path.open('a',encoding='utf-8',newline='\n') as stream:
++            stream.write(encoded+'\n')
+--- frozen/code/cvsrffi/xuc_fusion/ir_types.py
++++ code/cvsrffi/xuc_fusion/ir_types.py
+@@ -0,0 +1,174 @@
++"""Explicit contracts for the head-only IR response; no persistent caches."""
++from dataclasses import dataclass
++import hashlib
++import json
++from pathlib import Path
++import sys
++from typing import Protocol
++import torch
++
++TensorTuple = tuple[torch.Tensor, ...]
++GradientTuple = tuple[torch.Tensor | None, ...]
++
++@dataclass(frozen=True)
++class ParamLayout:
++    names: tuple[str, ...]
++    shapes: tuple[torch.Size, ...]
++    phi_indices: tuple[int, ...]
++    psi_indices: tuple[int, ...]
++    aliases: dict[str, str]
++    signature: str
++
++@dataclass(frozen=True)
++class DomainCall:
++    key: str
++    physical_ids: tuple[str, ...]
++    z_detached: torch.Tensor
++    domain: torch.Tensor
++    sample_weight: torch.Tensor
++    scaled_dropout_mask: torch.Tensor
++    grl_multiplier: float
++
++@dataclass(frozen=True)
++class HeadBatch:
++    calls: tuple[DomainCall, ...]
++    layout_signature: str
++    context_signature: str
++
++@dataclass(frozen=True)
++class ResponseMetric:
++    diagonal: torch.Tensor
++    sqrt_diagonal: torch.Tensor
++    active_indices: torch.Tensor
++    predictor_clip_coefficient: float
++
++@dataclass(frozen=True)
++class CGResult:
++    solution: torch.Tensor
++    status: str
++    iterations: int
++    relative_residual: float
++    reason: str | None
++
++class ObjectivePacket(Protocol):
++    head_batch: HeadBatch
++    phi_predictor: TensorTuple
++    def assemble(self, phi_leaf: TensorTuple) -> torch.Tensor: ...
++    def release(self) -> None: ...
++
++def build_layout(model, optimizer) -> ParamLayout:
++    if getattr(model, 'adv_head', None) is None:
++        raise ValueError('IR requires the native adv_head')
++    canonical={};aliases={};objects={}
++    for name,p in model.named_parameters(remove_duplicate=False):
++        if id(p) in canonical:aliases[name]=canonical[id(p)]
++        else:canonical[id(p)]=name;objects[id(p)]=p
++    params=[];seen=set()
++    for group in optimizer.param_groups:
++        for p in group['params']:
++            if id(p) not in canonical:raise ValueError('optimizer parameter outside model')
++            if id(p) not in seen:params.append(p);seen.add(id(p))
++    head_ids={id(p) for p in model.adv_head.parameters()}
++    if not head_ids.issubset(seen):raise ValueError('unsupported layout: adv_head forward parameter missing from optimizer, including frozen tensors')
++    names=tuple(canonical[id(p)] for p in params);shapes=tuple(p.shape for p in params)
++    positions={id(p):i for i,p in enumerate(params)}
++    phi=tuple(positions[id(p)] for p in model.adv_head.parameters())
++    psi=tuple(i for i,p in enumerate(params) if id(p) not in head_ids)
++    payload=(names,[list(s) for s in shapes],phi,psi,sorted(aliases.items()))
++    signature=hashlib.sha256(json.dumps(payload,separators=(',',':')).encode()).hexdigest()
++    return ParamLayout(names,shapes,phi,psi,aliases,signature)
++
++build_param_layout=build_layout
++
++def assert_import_origins(expected):
++    result={}
++    for name,path in expected.items():
++        module=sys.modules.get(name)
++        actual=getattr(module,'__file__',None)
++        if actual is None or Path(actual).resolve()!=Path(path).resolve():
++            raise RuntimeError(f'import origin mismatch: {name}: {actual} != {path}')
++        result[name]={'path':str(Path(actual).resolve()),'sha256':hashlib.sha256(Path(actual).read_bytes()).hexdigest()}
++    return result
++
++_RUNTIME_MODULES=(
++    'model_dual_cvsincnet', 'cvsrffi.game_tracking.solvers',
++    'cvsrffi.game_tracking.state', 'cvsrffi.game_tracking.legacy.objective',
++    'cvsrffi.xuc_fusion.objective', 'cvsrffi.xuc_fusion.dr_objective',
++    'cvsrffi.xuc_fusion.joint_normalization', 'SSDG.train_ssdg',
++)
++_OPTIONAL_NATIVE_MODULES=('model','model_modified','cvsrffi.game_tracking.legacy.model',
++    'cvsrffi.xuc_fusion.ir_types','cvsrffi.xuc_fusion.ir_head',
++    'cvsrffi.xuc_fusion.ir_metric','cvsrffi.xuc_fusion.ir_cg',
++    'cvsrffi.xuc_fusion.ir_solver','cvsrffi.xuc_fusion.ir_objective')
++
++def _package_imports(expected_code_root, *, require_runtime):
++    """The root is supplied by the launcher, never inferred from this module."""
++    root=Path(expected_code_root).resolve(strict=True)
++    if not (root/'cvsrffi'/'xuc_fusion').is_dir():raise ValueError('expected_code_root is not an execution package code directory')
++    names=set(_RUNTIME_MODULES if require_runtime else ())
++    names.update(name for name in _RUNTIME_MODULES+_OPTIONAL_NATIVE_MODULES if name in sys.modules)
++    names.add('cvsrffi.xuc_fusion.ir_types')
++    return assert_import_origins({name:root.joinpath(*name.split('.')).with_suffix('.py') for name in sorted(names)})
++
++def audit_runtime_imports(expected_code_root):
++    """Require critical native runtime imports to come from the launcher's root.
++
++    Call after importing the native objective/solver stack. Math-only contract
++    audits check any loaded native modules without importing the runtime stack.
++    """
++    return _package_imports(expected_code_root,require_runtime=True)
++
++def _reject_target_fields(value, prefix='ctx', seen=None):
++    seen=set() if seen is None else seen
++    if id(value) in seen:return
++    seen.add(id(value))
++    if isinstance(value,dict):items=value.items()
++    elif hasattr(value,'__dict__') and not isinstance(value,(torch.Tensor,torch.nn.Module)):items=vars(value).items()
++    elif isinstance(value,(list,tuple)):
++        for i,v in enumerate(value):_reject_target_fields(v,f'{prefix}[{i}]',seen)
++        return
++    else:return
++    for k,v in items:
++        key=str(k).lower()
++        if 'target' in key or key in {'truth','hidden_tx','u_tx_labels'}:
++            raise ValueError(f'forbidden target/truth field: {prefix}.{k}')
++        _reject_target_fields(v,f'{prefix}.{k}',seen)
++
++def audit_contract(model, optimizer, ctx) -> dict:
++    """Audit real graph ownership, never substitute a coefficient-only ledger.
++
++    ctx supplies head_batch, task_terms (named actual tensors), native_loss,
++    and optionally expected_imports. This function retains caller graphs.
++    """
++    from .ir_head import head_gradient
++    _reject_target_fields(ctx)
++    data=ctx if isinstance(ctx,dict) else vars(ctx)
++    layout=build_layout(model,optimizer)
++    required={'head_batch','task_terms','native_loss','expected_code_root'}
++    if not required.issubset(data):raise ValueError('contract needs actual native_loss, task_terms, head_batch and independent expected_code_root')
++    imports=_package_imports(data['expected_code_root'],require_runtime=False)
++    batch=data['head_batch']
++    if batch.layout_signature!=layout.signature:raise ValueError('head layout changed')
++    params=[];seen=set()
++    for group in optimizer.param_groups:
++        for p in group['params']:
++            if id(p) not in seen:params.append(p);seen.add(id(p))
++    phi=tuple(params[i] for i in layout.phi_indices)
++    active=tuple(p for p in phi if p.requires_grad)
++    for name,term in data['task_terms'].items():
++        if not isinstance(term,torch.Tensor):raise ValueError('task ledger must contain actual tensors')
++        gs=torch.autograd.grad(term,active,retain_graph=True,allow_unused=True) if term.requires_grad and active else ()
++        if any(g is not None and (not torch.isfinite(g).all() or torch.count_nonzero(g)>0) for g in gs):
++            raise ValueError(f'task term has adv_head gradient: {name}')
++    native=torch.autograd.grad(data['native_loss'],active,retain_graph=True,allow_unused=True) if active else ()
++    actual=torch.cat([(torch.zeros_like(p) if g is None else g).reshape(-1) for p,g in zip(active,native)]) if active else phi[0].new_empty(0)
++    replay=head_gradient(phi,batch)
++    pieces=replay.split([p.numel() for p in phi])
++    expected=torch.cat([g for p,g in zip(phi,pieces) if p.requires_grad]) if active else phi[0].new_empty(0)
++    if not torch.allclose(actual,expected,atol=1e-6,rtol=1e-5):raise ValueError('native weighted head gradient ownership mismatch')
++    imports.update(assert_import_origins(data.get('expected_imports',{})))
++    return {'layout_signature':layout.signature,'gradient_ownership_verified':True,
++            'imports':imports,
++            'task_terms':list(data['task_terms']),
++            'domain_calls':[{'key':c.key,'physical_ids':list(c.physical_ids),'sample_weights':c.sample_weight.detach().cpu().tolist(),
++                             'effective_coefficient':float(c.sample_weight.sum()),'grl_multiplier':c.grl_multiplier} for c in batch.calls]}
+--- frozen/code/cvsrffi/xuc_fusion/objective.py
++++ code/cvsrffi/xuc_fusion/objective.py
+@@ -6,7 +6,7 @@
+ from cvsrffi.cross_response.tensor_ops import normalized_identity_interaction_loss
+ from cvsrffi.cross_response.roles import mixstyle_allowed_mask
+ from cvsrffi.game_tracking.step_context import slice_batch
+-from cvsrffi.game_tracking.legacy.objective import labeled_terms
++from cvsrffi.game_tracking.legacy.objective import labeled_terms, assemble_labeled_terms
+ 
+ 
+ @contextmanager
+@@ -53,9 +53,17 @@
+             out, sat = slice_batch(combined, 0, n, 2*n), slice_batch(combined, n, 2*n, 2*n)
+         loss, terms = labeled_terms(out, ctx.y, ctx.domain, self.args, ctx.epoch,
+                                     ctx.batch_index, dict(ctx.weights), self.proto)
++        packet_mode=getattr(ctx,'ir_tape',None) is not None
++        if packet_mode:
++            from .ir_objective import register_domain_call
++            if not joint:raise ValueError('IR requires the frozen native joint objective')
++            register_domain_call(ctx,out['adv_dom_logits'],'L/clean/main/adv',ctx.sample_ids,
++                                 ctx.domain,ctx.weights['adv'],encoder_grl)
++            labeled_parts=dict(terms);native_weights=dict(ctx.weights);assembly_additions=[]
+         sat_ce = F.cross_entropy(sat['tx_logits'], ctx.y) if ctx.epoch >= self.args.sat_cons_start_epoch else out['tx_logits'].sum()*0
+         if joint:sat_ce=sat_ce*self.args.joint_sat_ce_weight
+         loss = loss + ctx.weights['sat_cls'] * sat_ce
++        if packet_mode:assembly_additions.append(ctx.weights['sat_cls'] * sat_ce)
+         terms['sat_cls'] = sat_ce
+         if ctx.strong is not None and self.dr is None:
+             strong = self.model(ctx.strong, return_aux=True)
+@@ -68,6 +76,7 @@
+             prob = strong['tx_logits'].softmax(1)
+             ent = -(prob*prob.clamp_min(1e-8).log()).sum(1).mean()
+             loss = loss + self.args.lambda_u*ce + self.args.lambda_ent*ent
++            if packet_mode:raise ValueError('unsupported non-native U objective')
+             terms.update(unlabeled_ce=ce, unlabeled_entropy=ent)
+             ctx.pseudo_selected = int(selected.sum())
+         z = out['z_id']
+@@ -77,6 +86,7 @@
+         if self.dr is not None:
+             extra,dr_terms=self.dr.objective(ctx,out)
+             loss=loss+extra
++            if packet_mode:assembly_additions.append(ctx.ir_dr_assembly)
+             terms.update(dr_terms)
+         if joint and ctx.audit_gradients and ctx.origin_features is None:
+             from .joint_diagnostics import scoped_gradients
+@@ -88,6 +98,7 @@
+             x, count = cross_rx_triplet_loss(z, ctx.y, ctx.rx, ctx.day, torch.zeros_like(ctx.y), margin=self.row['x_margin'])
+             weighted['x'] = self.row['lambda_x']*x
+             loss = loss + weighted['x']
++            if packet_mode:assembly_additions.append(weighted['x'])
+             terms['x_cross_rx'] = x
+             telemetry['legal_anchors'] = count
+         if self.row['u_enabled']:
+@@ -106,6 +117,7 @@
+             u = torch.stack(blocks).mean() if blocks else z.sum()*0
+             weighted['u'] = self.row['lambda_u_interaction']*u
+             loss = loss + weighted['u']
++            if packet_mode:assembly_additions.append(weighted['u'])
+             terms['u_normalized'] = u
+         ctx.field_components.append(sorted(terms))
+         if ctx.origin_features is None:
+@@ -122,6 +134,7 @@
+             ctx.fusion_telemetry = telemetry
+             if joint and ctx.audit_gradients:ctx.fusion_telemetry['identity_gradients']=ctx.joint_gradient_diagnostics
+         if getattr(ctx,'response_xt',None) is not None:
++            if packet_mode:raise ValueError('IR does not support XT auxiliary loss')
+             from .response_fields import cross_tx_fields
+             episode=ctx.response_xt
+             z_episode=self.model(episode['x'],return_aux=True,grl_lambda=0.)['z_id']
+@@ -130,4 +143,10 @@
+             loss=loss+extra;ctx.response_xt_diagnostics.append(diagnostic)
+         if getattr(self.args,'response',None):
+             ctx.response_task_components=dict(TX=terms['tx'],DAOT=terms['daot_labeled']+terms['daot_unlabeled'],RC4=ctx.dr_weighted_identity)
++        if packet_mode:
++            def assembly(leaves):
++                value=assemble_labeled_terms(labeled_parts,native_weights,leaves['L/clean/main/adv'])
++                for term in assembly_additions:value=value+(term(leaves) if callable(term) else term)
++                return value
++            ctx.ir_assembly=assembly
+         return loss
+--- frozen/code/cvsrffi/xuc_fusion/response_config.py
++++ code/cvsrffi/xuc_fusion/response_config.py
+@@ -9,12 +9,15 @@
+     xt_mu=.1, xt_interval=20, xt_inner_lr_ratio=1., xt_exposure_control=False,
+     dric_interval=4, identity_budget=.1, trust_ratio=.25, curvature_damping=.1,
+     min_monotonicity=1e-4, residual_tolerance=1e-5, max_iterations=5,
+-    drift=True, identity_constraint=True, shuffle_drift=False, decompose_interval=1000, launch=False)
++    drift=True, identity_constraint=True, shuffle_drift=False, decompose_interval=1000, launch=False,
++    implementation='cached',ir_start_epoch=21,ir_kappa=.25,ir_cg_max_iterations=2,ir_cg_rtol=.001,
++    ir_origin_scales='reuse_origin_used_scales',br_refresh_interval=8,
++    ir_curvature='ggn',ir_feature_anchor='predictor')
+ 
+ def resolve(values):
+     if set(values)-set(DEFAULTS):raise ValueError('unknown response settings')
+     c=deepcopy(DEFAULTS);c.update(values)
+-    if c['method'] not in ('CF_EG','TR_EG','XT_DANN','DRIC','EG','SIM','RK2','FR','CGD','TASK_PROJECT'):
++    if c['method'] not in ('CF_EG','TR_EG','XT_DANN','DRIC','EG','SIM','RK2','FR','CGD','TASK_PROJECT','IR_EG','BR_IR_EG'):
+         raise ValueError('unknown response method')
+     if c['launch'] is not False:raise ValueError('prepared only')
+     for k in ('cf_interval','xt_interval','dric_interval','max_iterations','decompose_interval'):
+@@ -33,6 +36,15 @@
+     if c['fixed_beta'] is not None and c['fixed_beta'] not in c['beta_candidates']:raise ValueError('fixed beta')
+     if c['fixed_beta'] is not None and c['random_beta']:raise ValueError('fixed and random beta controls are mutually exclusive')
+     if c['xt_inner_lr_ratio']!=1.:raise ValueError('one-step head LR ratio is fixed at one')
++    for key in ('ir_start_epoch','ir_cg_max_iterations','br_refresh_interval'):
++        if type(c[key]) is not int or c[key]<1:raise ValueError(key)
++    if c['ir_start_epoch']!=21 or c['ir_cg_max_iterations']>2:raise ValueError('IR v1 uses E21 and at most two CG iterations')
++    if type(c['ir_kappa']) not in (int,float) or not math.isfinite(c['ir_kappa']) or not 0<=c['ir_kappa']<=1:raise ValueError('ir_kappa')
++    if type(c['ir_cg_rtol']) not in (int,float) or not math.isfinite(c['ir_cg_rtol']) or c['ir_cg_rtol']<=0:raise ValueError('ir_cg_rtol')
++    if c['implementation'] not in ('reference','cached'):raise ValueError('implementation')
++    if c['ir_origin_scales']!='reuse_origin_used_scales':raise ValueError('IR origin scales')
++    if c['ir_curvature'] not in ('ggn','zero') or c['ir_feature_anchor'] not in ('predictor','origin'):raise ValueError('IR ablation')
++    if c['method'] in ('IR_EG','BR_IR_EG') and not c['unlabeled_head']:raise ValueError('IR requires U head supervision')
+     return c
+ 
+ def make_row(name, response, seed=392005, *, pure_game=False):
+@@ -51,6 +63,8 @@
+     return c['dric_interval'] if c['method'] in ('DRIC','FR','CGD','TASK_PROJECT') else c['cf_interval'] if c['method']=='CF_EG' else c['xt_interval'] if c['method']=='XT_DANN' else 1
+ 
+ def schedule(c, epoch, accepted_before):
++    if c['method'] in ('IR_EG','BR_IR_EG'):
++        return dict(active=epoch>=c['ir_start_epoch'],strength=c['ir_kappa'],base='extragradient')
+     method=c['method'];local=method in ('DRIC','FR','CGD','TASK_PROJECT')
+     interval=cadence(c)
+     active=epoch>=21 and (accepted_before+1)%interval==0
+--- frozen/code/cvsrffi/xuc_fusion/response_runtime.py
++++ code/cvsrffi/xuc_fusion/response_runtime.py
+@@ -3,8 +3,23 @@
+ from .response_config import schedule,cadence
+ from .response_context import monitor_views,risk_vector,passive,source_observation
+ 
+-def response_step(solver,objective,ctx,args,dr,monitor,completed):
++def response_step(solver,objective,ctx,args,dr,monitor,completed,*,commit=None,external_stateful=()):
+     c=args.response;s=schedule(c,ctx.epoch,completed)
++    if c['method'] in ('IR_EG','BR_IR_EG'):
++        from .ir_telemetry import diagnostics_due,native_heavy_diagnostics
++        ctx.response_encoder_grl=float(c['encoder_adversary'])*c['encoder_multiplier']
++        ctx.ir_stage_signature=(max(e for e in (1,21,41,61,80,91,161) if e<=ctx.epoch),
++                                getattr(dr,'calibration_epoch',None),args.joint['native_dr'])
++        boundary=ctx.epoch in (21,41,61,80,91,161,181) and completed%args.joint['steps_per_epoch']==0
++        ctx.ir_diagnostics=(args.joint['probe_interval']>0 and s['active'] and c['ir_kappa']>0
++                            and diagnostics_due(completed+1,boundary,args.joint['probe_interval']))
++        diagnose=ctx.ir_diagnostics
++        result=solver.step(lambda:objective(ctx),ctx=ctx,commit=commit,external_stateful=external_stateful)
++        result.telemetry.update(response_method=c['method'],schedule=s,head_LU_supervision=True,
++                                unlabeled_encoder_grl=0.,encoder_adversary=c['encoder_adversary'])
++        if diagnose:
++            result.telemetry['heavy_diagnostics']=native_heavy_diagnostics(solver,ctx,dr)
++        return result
+     monitor_index=completed//cadence(c)
+     batch=monitor.batch(monitor_index,ctx.x.device)
+     with passive(solver.model):views=monitor_views(batch,ctx,args)
+--- frozen/code/cvsrffi/xuc_fusion/response_solver.py
++++ code/cvsrffi/xuc_fusion/response_solver.py
+@@ -6,6 +6,14 @@
+ from cvsrffi.game_tracking.state import TrainingState,RNGState,clone_buffers,restore_buffers
+ from .response_fields import procrustes
+ from .response_context import passive,actual_head_input
++
++
++def create_response_solver(model,optimizer,config,**kwargs):
++    """Explicit method registry shared by native and bounded runners."""
++    if config['method'] in ('IR_EG','BR_IR_EG'):
++        from .ir_solver import IREGSolver
++        return IREGSolver(model,optimizer,config,**kwargs)
++    return ResponseSolver(model,optimizer,config,**kwargs)
+ 
+ class ResponseSolver(GameSolver):
+     def __init__(self,model,optimizer,config,**kw):
+--- frozen/code/cvsrffi/xuc_fusion/resume.py
++++ code/cvsrffi/xuc_fusion/resume.py
+@@ -6,6 +6,7 @@
+ intentionally unsupported rather than silently losing their state.
+ """
+ from copy import deepcopy
++from dataclasses import is_dataclass, fields, replace
+ from pathlib import Path
+ import torch
+ from cvsrffi.game_tracking.state import RNGState
+@@ -23,7 +24,8 @@
+     return plain({k:v for k,v in args.items() if k not in IGNORED_ARGS})
+ 
+ def validate_checkpoint(payload,args,row,source,steps,*,allow_legacy=False):
+-    if not row.get('pure_game') or row.get('joint',{}).get('native_dr') is not False:
++    ir=row.get('response',{}).get('method') in ('IR_EG','BR_IR_EG')
++    if not ir and (not row.get('pure_game') or row.get('joint',{}).get('native_dr') is not False):
+         raise ValueError('RESUME_UNSUPPORTED: only pure-game rows')
+     if row.get('ticket_curriculum_enabled') or row.get('control')!='off' or row.get('carrier')=='v2_grid':
+         raise ValueError('RESUME_UNSUPPORTED: stateful controller or grid sampler')
+@@ -55,10 +57,13 @@
+     if any(payload.get(k) is not None for k in ('cstar','legacy_controller','legacy_curriculum')):
+         raise ValueError('RESUME_UNSUPPORTED_CONTROLLER_STATE')
+     dr=payload['daot_rc4']
+-    if dr['calibration'] or dr['route_history']:
++    if not ir and (dr['calibration'] or dr['route_history']):
+         raise ValueError('RESUME_PURE_GAME_CONTAINS_RC4_STATE')
++    if ir and ('ir_config' not in payload['solver'] or 'br_history' not in payload['solver']):
++        raise ValueError('RESUME_MISSING_IR_HISTORY')
+     meta=payload.get('resume_state')
+     if meta is None:
++        if ir:raise ValueError('RESUME_MISSING_IR_RNG')
+         if not allow_legacy:raise ValueError('RESUME_MISSING_RNG: explicit legacy ticket replay required')
+     elif meta.get('version')!=1 or meta.get('boundary')!='after_epoch_validation' or not isinstance(meta.get('rng'),RNGState):
+         raise ValueError('RESUME_INVALID_STATE')
+@@ -69,6 +74,7 @@
+     if isinstance(value,dict):return {k:to_device(v,device) for k,v in value.items()}
+     if isinstance(value,list):return [to_device(v,device) for v in value]
+     if isinstance(value,tuple):return tuple(to_device(v,device) for v in value)
++    if is_dataclass(value):return replace(value,**{f.name:to_device(getattr(value,f.name),device) for f in fields(value)})
+     return deepcopy(value)
+ 
+ def restore_checkpoint(payload,model,ema,optimizer,proto,solver,stream,dr,counter=None):
+@@ -83,7 +89,7 @@
+         setattr(stream,key,deepcopy(payload['tickets'][key]))
+     saved=payload['daot_rc4'];dr.scale.load_state_dict(saved['scale'])
+     for key in ('calibration','calibration_epoch','commits','route_history'):
+-        setattr(dr,key,deepcopy(saved[key]))
++        setattr(dr,key,to_device(saved[key],device))
+     meta=payload.get('resume_state')
+     if meta:
+         if counter is not None and meta['forward_counts'] is not None:counter.counts.update(meta['forward_counts'])
+--- frozen/code/cvsrffi/xuc_fusion/runtime.py
++++ code/cvsrffi/xuc_fusion/runtime.py
+@@ -163,11 +163,11 @@
+         telemetry_interval=args.joint['diagnostic_interval'] if args.joint else 0)
+     response_monitor=None
+     if getattr(args,'response',None):
+-        from .response_solver import ResponseSolver
++        from .response_solver import create_response_solver
+         from .response_context import SourceMonitor
+-        solver=ResponseSolver(model,optimizer,args.response,nonfinite='raise',max_grad_norm=5.,
++        solver=create_response_solver(model,optimizer,args.response,nonfinite='raise',max_grad_norm=5.,
+             predictor_lr_ratio=args.joint['predictor_lr_ratio'],telemetry_interval=args.joint['diagnostic_interval'])
+-        response_monitor=SourceMonitor(source)
++        response_monitor=None if args.response['method'] in ('IR_EG','BR_IR_EG') else SourceMonitor(source)
+     proto=PrototypeMemoryBank(args.num_classes,len(source.domains),momentum=args.proto_momentum,
+         margin=args.proto_margin,domain_align_weight=args.proto_domain_align_weight,push_weight=args.proto_push_weight,min_count=args.proto_min_count)
+     proto._lazy_init(160,device,torch.float32)
+@@ -283,9 +283,19 @@
+             solver.mode=('extragradient' if args.joint['solver_mode']=='full_EG' else 'simultaneous') if args.joint else ('extragradient' if decision['action']=='CORRECT' else 'simultaneous')
+             if getattr(args,'response',None):
+                 from .response_runtime import response_step
+-                result=response_step(solver,objective,ctx,args,dr,response_monitor,completed)
++                is_ir=args.response['method'] in ('IR_EG','BR_IR_EG')
++                def commit_native():
++                    if dr is not None:dr.commit(ctx)
++                    if ema is not None:_update_ema_model(ema,model,args.ema_decay)
++                    proto.update(ctx.origin_features,ctx.y,ctx.domain)
++                result=response_step(solver,objective,ctx,args,dr,response_monitor,completed,
++                    commit=commit_native if is_ir else None,
++                    external_stateful=tuple(obj for obj in (dr,ema,proto) if obj is not None) if is_ir else ())
++                if is_ir:
++                    from .ir_telemetry import step_record
++                    append(output/'ir_steps.jsonl',step_record(result,epoch=ticket.epoch))
+             else:result=solver.step(lambda:objective(ctx))
+-            if result.accepted:
++            if result.accepted and not (getattr(args,'response',None) and args.response['method'] in ('IR_EG','BR_IR_EG')):
+                 if dr is not None:dr.commit(ctx)
+                 if ema is not None:_update_ema_model(ema,model,args.ema_decay)
+                 proto.update(ctx.origin_features,ctx.y,ctx.domain)
+@@ -342,7 +352,7 @@
+                 legacy_controller=legacy_controller.state_dict() if legacy_controller else None,
+                 legacy_curriculum=legacy_curriculum.state_dict() if legacy_curriculum else None)
+             if dr is not None:payload['daot_rc4']=dr.state_dict()
+-            if row.get('pure_game'):
++            if row.get('pure_game') or row.get('response',{}).get('method') in ('IR_EG','BR_IR_EG'):
+                 from .resume import capture_resume_state
+                 payload['resume_state']=capture_resume_state(actions=actions,head_total=head_total,
+                     elapsed=time.perf_counter()-started,counter=counter)
+@@ -353,7 +363,7 @@
+             pause_path=getattr(args,'xuc_pause_request','')
+             stop_epoch=getattr(args,'xuc_stop_after_epoch',0)
+             if live_epoch<args.epochs and ((pause_path and Path(pause_path).exists()) or (stop_epoch and live_epoch>=stop_epoch)):
+-                if not row.get('pure_game'):raise ValueError('safe pause only supports pure-game rows')
++                if not row.get('pure_game') and row.get('response',{}).get('method') not in ('IR_EG','BR_IR_EG'):raise ValueError('safe pause only supports validated resume rows')
+                 json_write(output/'pause_complete.json',dict(status='PAUSED_AT_EPOCH_BOUNDARY',epoch=live_epoch,
+                     step=completed,checkpoint=str(output/'latest_ssdg.pth'),target_contact=False))
+                 if counter is not None:counter.close()
+--- frozen/code/cvsrffi/game_tracking/legacy/objective.py
++++ code/cvsrffi/game_tracking/legacy/objective.py
+@@ -5,6 +5,11 @@
+ import torch.nn.functional as F
+ from .losses import *
+ from .options import _stage_gate_scale
++
++def assemble_labeled_terms(terms, cur_w, adversarial=None):
++    return terms['tx'] + sum(cur_w[k] * (adversarial if k == 'adv' and adversarial is not None else v)
++                             for k, v in terms.items() if k != 'tx')
++
+ 
+ def labeled_terms(out_l, y_l, d_l, args, epoch, batch_idx, cur_w, proto_bank):
+     domain_stats = {"valid": (d_l >= 0) if d_l is not None else None}
+@@ -316,5 +321,5 @@
+         "soft_unknown_mixup": loss_soft_unknown_mixup_l * soft_unknown_mixup_stage_scale,
+         "source_episode": loss_source_episode_l * source_episode_stage_scale,
+     }
+-    total = terms["tx"] + sum(cur_w[k] * v for k, v in terms.items() if k != "tx")
++    total = assemble_labeled_terms(terms, cur_w)
+     return total, terms
+--- frozen/tests/test_ir_br_history.py
++++ tests/test_ir_br_history.py
+@@ -0,0 +1,56 @@
++from copy import deepcopy
++import pytest
++import torch
++from cvsrffi.game_tracking.state import RNGState
++from cvsrffi.xuc_fusion.br_history import BRHistory,RefreshRequired
++from ir_fixtures import make_case,run,assert_nested
++
++
++def test_cache_is_previous_accepted_final_raw_and_age_one_not_eight():
++    a=make_case(method='BR_IR_EG')
++    for index in range(1,5):
++        a.ctx.pending=None;result=run(a)
++        expected=a.solver._layout_order(a.solver.last_trace['corrector'])
++        assert_nested(a.solver.history.gradients,expected)
++        assert a.solver.history.accepted_index==index
++        if index>1:assert result.telemetry['history_age']==1 and not result.telemetry['br_refreshed']
++        assert result.telemetry['full_backward_calls']==(2 if index==1 else 1)
++
++
++def test_refresh_every_eight_and_boundaries_force_refresh():
++    a=make_case(method='BR_IR_EG');refresh=[]
++    for index in range(1,11):
++        a.ctx.pending=None;r=run(a)
++        if r.telemetry['br_refreshed']:refresh.append(index)
++    assert refresh==[1,9]
++    a.ctx.epoch=41;a.ctx.pending=None
++    assert run(a).telemetry['br_refresh_reason']=='stage_boundary'
++
++
++def test_none_activity_requires_refresh():
++    a=make_case(method='BR_IR_EG');run(a);h=a.solver.history
++    signature=a.solver._signature(a.ctx)
++    assert h.refresh_reason(signature,2,None)=='activity_unavailable'
++    activity=[g is not None for i,g in enumerate(h.gradients) if i in h.layout.psi_indices]
++    activity[0]=not activity[0]
++    assert h.refresh_reason(signature,2,activity)=='activity_changed'
++    with pytest.raises(RefreshRequired):h.predictor(None,a.solver.last_trace['h0'],signature,2)
++
++
++@pytest.mark.parametrize('kappa',[0.,.25])
++def test_R1_equals_IR(kappa):
++    a=make_case(method='BR_IR_EG',refresh=1,kappa=kappa);b=make_case(kappa=kappa)
++    for _ in range(3):
++        a.ctx.pending=None;b.ctx.pending=None
++        rng=RNGState.capture();run(a);rng.restore();run(b)
++        assert_nested(a.model.state_dict(),b.model.state_dict(),1e-6,1e-5)
++        assert_nested(a.opt.state_dict(),b.opt.state_dict(),1e-6,1e-5)
++
++
++def test_kappa0_equals_BR_EG_not_full_EG():
++    a=make_case(method='BR_IR_EG',kappa=0.);b=make_case(kappa=0.)
++    for _ in range(3):
++        a.ctx.pending=None;b.ctx.pending=None
++        rng=RNGState.capture();r=run(a);rng.restore();run(b)
++    assert r.telemetry['full_backward_calls']==1 and r.telemetry['cg_iterations']==0
++    assert any(not torch.equal(p,q) for p,q in zip(a.model.parameters(),b.model.parameters()))
+--- frozen/tests/test_ir_br_resume.py
++++ tests/test_ir_br_resume.py
+@@ -0,0 +1,37 @@
++from copy import deepcopy
++import pytest
++import torch
++from cvsrffi.game_tracking.state import RNGState
++from ir_fixtures import make_case,run,assert_nested
++
++
++def test_resume_matches_continuous(tmp_path):
++    a=make_case(method='BR_IR_EG');run(a);a.ctx.pending=None;run(a)
++    b=make_case(method='BR_IR_EG')
++    path=tmp_path/'accepted.pt'
++    torch.save(dict(model=a.model.state_dict(),optimizer=a.opt.state_dict(),solver=a.solver.state_dict(),external=a.external.state_dict()),path)
++    saved=torch.load(path,weights_only=False,map_location=next(a.model.parameters()).device)
++    b.model.load_state_dict(saved['model']);b.opt.load_state_dict(saved['optimizer'])
++    b.solver.load_state_dict(saved['solver']);b.external.load_state_dict(saved['external'])
++    vars(b.ctx).update(deepcopy(vars(a.ctx)))
++    for _ in range(3):
++        a.ctx.pending=None;b.ctx.pending=None;rng=RNGState.capture()
++        run(a);rng.restore();run(b)
++        assert_nested(a.model.state_dict(),b.model.state_dict())
++        assert_nested(a.opt.state_dict(),b.opt.state_dict())
++        assert_nested(a.solver.state_dict(),b.solver.state_dict())
++
++
++def test_rejected_step_does_not_update_cache():
++    a=make_case(method='BR_IR_EG');run(a);before=deepcopy(a.solver.history.state_dict())
++    def fail(stage):
++        if stage=='after_formal':raise RuntimeError('reject')
++    a.solver.failure_injector=fail
++    with pytest.raises(RuntimeError):run(a)
++    assert_nested(a.solver.history.state_dict(),before)
++
++
++def test_cache_layout_mismatch_fails():
++    a=make_case(method='BR_IR_EG');run(a);state=a.solver.state_dict()
++    state['br_history']['layout']='wrong'
++    with pytest.raises(ValueError,match='layout'):a.solver.load_state_dict(state)
+--- frozen/tests/test_ir_cached.py
++++ tests/test_ir_cached.py
+@@ -0,0 +1,18 @@
++import torch
++from cvsrffi.game_tracking.state import RNGState
++from ir_fixtures import make_case,run,assert_nested
++
++
++def test_cached_reference_actual_state_alignment_ten_steps():
++    a=make_case('reference');b=make_case('cached')
++    for step in range(10):
++        a.ctx.pending=None;b.ctx.pending=None
++        rng=RNGState.capture();ra=run(a);after=RNGState.capture();rng.restore();rb=run(b)
++        assert abs(ra.loss_replay-rb.loss_replay)<1e-6
++        assert_nested(a.solver.last_trace['corrector'],b.solver.last_trace['corrector'],1e-6,1e-5)
++        assert_nested(a.model.state_dict(),b.model.state_dict(),1e-6,1e-4)
++        assert_nested(a.opt.state_dict(),b.opt.state_dict(),1e-6,1e-4)
++        assert_nested(a.external.state_dict(),b.external.state_dict(),1e-6,1e-4)
++        assert torch.equal(after.cpu,torch.get_rng_state())
++        assert ra.telemetry['model_forward_calls']==6 and rb.telemetry['model_forward_calls']==4
++        assert rb.telemetry['full_backward_calls']==2
+--- frozen/tests/test_ir_cg.py
++++ tests/test_ir_cg.py
+@@ -0,0 +1,42 @@
++import os
++import pytest
++
++@pytest.fixture(autouse=True)
++def _acceptance_device():
++    device=os.environ.get('IR_ACCEPTANCE_DEVICE','cpu')
++    if device not in ('cpu','cuda'):raise ValueError('invalid IR_ACCEPTANCE_DEVICE')
++    with torch.device(device):
++        yield
++
++import torch
++from cvsrffi.xuc_fusion.ir_types import ResponseMetric
++from cvsrffi.xuc_fusion.ir_cg import solve_response
++
++def metric(n=5):
++    r=torch.ones(n);return ResponseMetric(r,r.sqrt(),torch.arange(n),1.)
++
++def test_CG_two_steps_truncated_is_usable():
++    r=solve_response(torch.ones(5),metric(),lambda v:torch.arange(1,6)*v,rtol=1e-12)
++    assert r.iterations==2 and r.status=='truncated_usable' and r.relative_residual>1e-12
++
++def test_zero_rhs():
++    r=solve_response(torch.zeros(5),metric(),lambda v: (_ for _ in ()).throw(AssertionError()))
++    assert r.status=='zero_rhs' and r.iterations==0
++
++def test_zero_h0_nonzero_hp():
++    r=solve_response(torch.ones(5),metric(),lambda v: v)
++    assert r.status=='early_converged';torch.testing.assert_close(r.solution,-torch.ones(5)/2)
++
++def test_nonfinite_fallback_status():
++    r=solve_response(torch.ones(5),metric(),lambda v: v*float('nan'))
++    assert r.status=='numerical_failure' and r.reason
++
++def test_G_zero_equals_minus_R_e():
++    d=torch.tensor([.2,.4]);r=ResponseMetric(d,d.sqrt(),torch.tensor([0,2]),.5);e=torch.tensor([2.,4.,8.])
++    result=solve_response(e,r,lambda v:torch.zeros_like(v))
++    delta=torch.zeros_like(e);delta[r.active_indices]=r.sqrt_diagonal*result.solution
++    torch.testing.assert_close(delta,torch.tensor([-.4,0.,-3.2]))
++
++def test_nonpositive_operator_fails():
++    result=solve_response(torch.ones(5),metric(),lambda v:-2*v)
++    assert result.status=='numerical_failure'
+--- frozen/tests/test_ir_contract.py
++++ tests/test_ir_contract.py
+@@ -0,0 +1,99 @@
++import os
++import pytest
++
++@pytest.fixture(autouse=True)
++def _acceptance_device():
++    device=os.environ.get('IR_ACCEPTANCE_DEVICE','cpu')
++    if device not in ('cpu','cuda'):raise ValueError('invalid IR_ACCEPTANCE_DEVICE')
++    with torch.device(device):
++        yield
++
++from types import SimpleNamespace
++from pathlib import Path
++import pytest
++import torch
++from torch import nn
++from cvsrffi.xuc_fusion.ir_types import build_layout, audit_contract, assert_import_origins, audit_runtime_imports
++
++CODE_ROOT=Path(__file__).resolve().parents[1]/'code'
++
++def model():
++    m=nn.Module();m.body=nn.Linear(2,2);m.dom_head=nn.Linear(2,2)
++    m.adv_head=nn.Sequential(nn.Linear(2,3),nn.ReLU(),nn.Dropout(.2),nn.Linear(3,2))
++    return m
++
++def test_adv_head_not_dom_head():
++    m=model();layout=build_layout(m,torch.optim.AdamW(m.parameters()))
++    assert all(layout.names[i].startswith('adv_head.') for i in layout.phi_indices)
++    assert any(layout.names[i].startswith('dom_head.') for i in layout.psi_indices)
++
++def test_shared_parameter_dedup():
++    m=model();m.alias=m.adv_head
++    layout=build_layout(m,torch.optim.AdamW(m.parameters()))
++    assert len(layout.names)==len(list(m.parameters())) and layout.aliases['alias.0.weight']=='adv_head.0.weight'
++
++def test_head_order_survives_optimizer_group_reordering():
++    m=model();head=list(m.adv_head.parameters());other=list(m.body.parameters())+list(m.dom_head.parameters())
++    opt=torch.optim.AdamW([{'params':head[::-1]},{'params':other}]);layout=build_layout(m,opt)
++    assert tuple(layout.names[i] for i in layout.phi_indices)==tuple('adv_head.'+n for n,_ in m.adv_head.named_parameters())
++
++def test_import_origin_is_pinned(tmp_path):
++    import cvsrffi.xuc_fusion.ir_types as mod
++    assert_import_origins({'cvsrffi.xuc_fusion.ir_types':mod.__file__})
++    with pytest.raises(RuntimeError,match='import'):assert_import_origins({'cvsrffi.xuc_fusion.ir_types':str(tmp_path/'wrong.py')})
++
++def test_no_target_fields_in_context():
++    m=model();opt=torch.optim.AdamW(m.parameters())
++    with pytest.raises(ValueError,match='target'):audit_contract(m,opt,{'nested':{'target_truth':torch.tensor([1])}})
++
++def _audit(extra=False,frozen=False,expected_code_root=CODE_ROOT):
++    from cvsrffi.xuc_fusion.ir_head import capture_head_calls
++    m=model()
++    if frozen:m.adv_head[0].bias.requires_grad_(False)
++    opt=torch.optim.AdamW(m.parameters());layout=build_layout(m,opt)
++    with capture_head_calls(m.adv_head,layout.signature,'ctx') as tape:
++        z=m.body(torch.randn(2,2)); a=m.adv_head(z); b=m.adv_head(torch.randn(5,2))
++        for i,(n,w) in enumerate(((2,.7),(5,.2))):
++            tape.register(str(i),tuple(map(str,range(n))),torch.zeros(n,dtype=torch.long),torch.full((n,),w/n),1. if i==0 else 0.,call_index=i)
++    task=z.square().sum()+(a.sum()*.01 if extra else 0.)
++    native=task+.7*torch.nn.functional.cross_entropy(a,torch.zeros(2,dtype=torch.long))+.2*torch.nn.functional.cross_entropy(b,torch.zeros(5,dtype=torch.long))
++    return audit_contract(m,opt,{'head_batch':tape.batch(),'task_terms':{'identity':task},'native_loss':native,'expected_code_root':expected_code_root})
++
++def test_task_has_no_phi_gradient():
++    with pytest.raises(ValueError,match='task'): _audit(True)
++
++def test_weighted_LU_reduction_matches_native():
++    report=_audit();assert report['gradient_ownership_verified'] and len(report['domain_calls'])==2
++
++def test_frozen_head_and_nonhead_slots_preserved_under_group_reorder():
++    m=model();m.adv_head[0].bias.requires_grad_(False);m.body.weight.requires_grad_(False)
++    head=list(m.adv_head.parameters());other=list(m.body.parameters())+list(m.dom_head.parameters())
++    opt=torch.optim.AdamW([{'params':head[::-1]},{'params':other}]);layout=build_layout(m,opt)
++    assert len(layout.phi_indices)==4
++    assert set(layout.phi_indices+layout.psi_indices)==set(range(len(layout.names)))
++    assert tuple(layout.names[i] for i in layout.phi_indices)==tuple('adv_head.'+n for n,_ in m.adv_head.named_parameters())
++    assert _audit(frozen=True)['gradient_ownership_verified']
++
++def test_missing_frozen_head_optimizer_slot_is_explicitly_unsupported():
++    m=model();omitted=m.adv_head[0].bias;omitted.requires_grad_(False)
++    opt=torch.optim.AdamW([p for p in m.parameters() if p is not omitted])
++    with pytest.raises(ValueError,match='forward parameter missing from optimizer'):build_layout(m,opt)
++
++def test_contract_rejects_foreign_native_module_without_optional_override(monkeypatch,tmp_path):
++    import sys
++    monkeypatch.setitem(sys.modules,'model_dual_cvsincnet',SimpleNamespace(__file__=str(tmp_path/'model_dual_cvsincnet.py')))
++    with pytest.raises(RuntimeError,match='model_dual_cvsincnet'):_audit()
++
++def test_contract_root_is_independent_of_loaded_helper(tmp_path):
++    (tmp_path/'cvsrffi'/'xuc_fusion').mkdir(parents=True)
++    with pytest.raises(RuntimeError,match='import origin mismatch'):_audit(expected_code_root=tmp_path)
++
++def test_runtime_import_audit_requires_critical_modules_and_rejects_foreign(monkeypatch,tmp_path):
++    import sys
++    from cvsrffi.xuc_fusion.ir_types import _RUNTIME_MODULES
++    for name in _RUNTIME_MODULES:
++        path=CODE_ROOT.joinpath(*name.split('.')).with_suffix('.py')
++        monkeypatch.setitem(sys.modules,name,SimpleNamespace(__file__=str(path)))
++    assert 'SSDG.train_ssdg' in audit_runtime_imports(CODE_ROOT)
++    monkeypatch.setitem(sys.modules,'model_dual_cvsincnet',SimpleNamespace(__file__=str(tmp_path/'model_dual_cvsincnet.py')))
++    with pytest.raises(RuntimeError,match='model_dual_cvsincnet'):audit_runtime_imports(CODE_ROOT)
+--- frozen/tests/test_ir_curvature.py
++++ tests/test_ir_curvature.py
+@@ -0,0 +1,68 @@
++import os
++import pytest
++
++@pytest.fixture(autouse=True)
++def _acceptance_device():
++    device=os.environ.get('IR_ACCEPTANCE_DEVICE','cpu')
++    if device not in ('cpu','cuda'):raise ValueError('invalid IR_ACCEPTANCE_DEVICE')
++    with torch.device(device):
++        yield
++
++from dataclasses import replace
++import torch
++from torch import nn
++from cvsrffi.xuc_fusion.ir_types import DomainCall,HeadBatch
++from cvsrffi.xuc_fusion.ir_head import head_logits,head_loss,ggn_matvec
++
++def fixture():
++    torch.manual_seed(9)
++    phi=(torch.tensor([[1.,.1],[.2,1.]],dtype=torch.float64),torch.ones(2,dtype=torch.float64),torch.randn(3,2,dtype=torch.float64),torch.zeros(3,dtype=torch.float64))
++    calls=[]
++    for name,n,alpha in [('L',2,.7),('U',5,.2)]:
++        calls.append(DomainCall(name,tuple(map(str,range(n))),torch.rand(n,2,dtype=torch.float64),torch.arange(n)%3,torch.full((n,),alpha/n,dtype=torch.float64),torch.ones(n,2,dtype=torch.float64),1. if name=='L' else 0.))
++    return phi,HeadBatch(tuple(calls),'l','c')
++
++def dense(phi,batch):
++    total=sum(p.numel() for p in phi);G=torch.zeros(total,total,dtype=torch.float64)
++    for call in batch.calls:
++        js=torch.func.jacrev(lambda *p:head_logits(p,call),argnums=tuple(range(len(phi))))(*phi)
++        J=torch.cat([j.reshape(call.domain.numel(),3,-1) for j in js],-1)
++        prob=head_logits(phi,call).softmax(-1)
++        for i in range(call.domain.numel()):
++            C=torch.diag(prob[i])-prob[i,:,None]*prob[i,None,:]
++            G+=call.sample_weight[i]*J[i].T@C@J[i]
++    return G
++
++def test_explicit_GGN_symmetry_psd_weight_once():
++    phi,batch=fixture();G=dense(phi,batch);v=torch.randn(G.shape[0],dtype=G.dtype)
++    torch.testing.assert_close(ggn_matvec(phi,batch,v),G@v,atol=1e-10,rtol=1e-8)
++    torch.testing.assert_close(G,G.T,atol=1e-12,rtol=1e-10)
++    assert torch.linalg.eigvalsh(G).min()>-1e-12
++    doubled=replace(batch,calls=tuple(replace(c,sample_weight=2*c.sample_weight) for c in batch.calls))
++    torch.testing.assert_close(ggn_matvec(phi,doubled,v),2*ggn_matvec(phi,batch,v))
++
++def test_nonlinear_GGN_not_declared_full_Hessian():
++    phi,batch=fixture();v=torch.randn(sum(p.numel() for p in phi),dtype=torch.float64);leaves=tuple(p.requires_grad_() for p in phi)
++    gradients=torch.autograd.grad(head_loss(leaves,batch),leaves,create_graph=True)
++    directional=(torch.cat([g.flatten() for g in gradients])*v).sum()
++    Hv=torch.cat([g.flatten() for g in torch.autograd.grad(directional,leaves)])
++    assert not torch.allclose(Hv,ggn_matvec(phi,batch,v),atol=1e-6)
++
++def test_GGN_does_not_mutate_rng_parameters_masks():
++    phi,batch=fixture();before=[p.clone() for p in phi];masks=[c.scaled_dropout_mask.clone() for c in batch.calls]
++    rng=torch.get_rng_state();ggn_matvec(phi,batch,torch.ones(sum(p.numel() for p in phi),dtype=torch.float64))
++    assert torch.equal(rng,torch.get_rng_state())
++    assert all(torch.equal(p,b) for p,b in zip(phi,before))
++    assert all(torch.equal(c.scaled_dropout_mask,b) for c,b in zip(batch.calls,masks))
++
++def test_linear_softmax_last_layer_explicit_kronecker():
++    phi,batch=fixture();nfirst=phi[0].numel()+phi[1].numel();G=dense(phi,batch)
++    # Only last linear weights/bias vary: analytic multinomial logistic GGN.
++    analytic=torch.zeros_like(G[nfirst:,nfirst:])
++    for call in batch.calls:
++        hidden=torch.relu(torch.nn.functional.linear(call.z_detached,phi[0],phi[1]))*call.scaled_dropout_mask
++        p=head_logits(phi,call).softmax(-1)
++        for i in range(hidden.shape[0]):
++            j=torch.cat((torch.kron(torch.eye(3,dtype=p.dtype),hidden[i:i+1]),torch.eye(3,dtype=p.dtype)),dim=1)
++            analytic+=call.sample_weight[i]*j.T@(torch.diag(p[i])-torch.outer(p[i],p[i]))@j
++    torch.testing.assert_close(analytic,G[nfirst:,nfirst:],atol=1e-12,rtol=1e-10)
+--- frozen/tests/test_ir_diagnostics.py
++++ tests/test_ir_diagnostics.py
+@@ -0,0 +1,49 @@
++from copy import deepcopy
++import torch
++from cvsrffi.xuc_fusion.ir_telemetry import isolated_diagnostics, recovery_summary, source_identity_summary, diagnostics_due
++
++
++def test_diagnostics_do_not_change_update():
++    torch.manual_seed(78)
++    model = torch.nn.Sequential(torch.nn.BatchNorm1d(3), torch.nn.Linear(3, 2))
++    opt = torch.optim.AdamW(model.parameters())
++    before = deepcopy(model.state_dict()); rng = torch.get_rng_state().clone()
++    flags = [p.requires_grad for p in model.parameters()]
++    with isolated_diagnostics(model, opt):
++        model.train(); opt.zero_grad(); model(torch.randn(5, 3)).sum().backward(); opt.step()
++        model.eval(); next(model.parameters()).requires_grad_(False)
++    assert torch.equal(rng, torch.get_rng_state()) and model.training
++    assert [p.requires_grad for p in model.parameters()] == flags
++    assert not opt.state
++    for key, value in before.items():
++        torch.testing.assert_close(value, model.state_dict()[key], rtol=0, atol=0)
++
++
++def test_negative_recovery_gain_not_clamped():
++    result = recovery_summary(1., 2., .8, .3)
++    assert result['ce_reduction'] == -1 and result['accuracy_gain'] < 0
++
++
++def test_source_identity_slices():
++    z = torch.tensor([[1.,0.],[.8,.2],[0.,1.],[.2,.8]])
++    y = torch.tensor([0,0,1,1]); rx = torch.tensor([1,3,1,3])
++    result = source_identity_summary(z, z, y, rx)
++    assert result['worst_tx_accuracy'] == 1 and len(result['rx_tx']) == 4
++    assert result['statistical_interaction_norm'] >= 0
++    assert result['physical_parameter_recovery_claim'] is False
++
++
++def test_boundary_and_thousand_accepted_diagnostics():
++    assert diagnostics_due(1000, False)
++    assert diagnostics_due(23, True)
++    assert not diagnostics_due(999, False)
++
++
++def test_clipping_attribution_uses_real_adamw_without_commit():
++    from cvsrffi.xuc_fusion.ir_telemetry import clip_attribution
++    model=torch.nn.Linear(2,1,bias=False);opt=torch.optim.AdamW(model.parameters(),lr=.02,weight_decay=.1)
++    params=list(model.parameters());before=deepcopy(model.state_dict())
++    result=clip_attribution(model,opt,params,[torch.tensor([[4.,1.]])],[torch.tensor([[-3.,1.]])],max_grad_norm=1.,common_coefficient=.2)
++    assert result['native_clip_comparison']['difference_norm']>0
++    assert result['controls_training'] is False and not opt.state
++    torch.testing.assert_close(model.weight,before['weight'],rtol=0,atol=0)
+--- frozen/tests/test_ir_experiment_manifest.py
++++ tests/test_ir_experiment_manifest.py
+@@ -0,0 +1,37 @@
++from copy import deepcopy
++import pytest
++from cvsrffi.xuc_fusion.ir_experiments import build_matrices, validate_matrix, validate_convergence_for_launch
++
++
++def test_all_methods_native_DR_enabled():
++    for doc in build_matrices()[:2]:
++        assert all(i['row']['joint']['native_dr'] for i in doc['rows'])
++
++
++def test_equal_physical_exposure():
++    doc=build_matrices()[0];validate_matrix(doc)
++    broken=deepcopy(doc);broken['rows'][0]['row']['joint']['unlabeled_batch']=128
++    with pytest.raises(ValueError):validate_matrix(broken)
++
++
++def test_no_target_selection():
++    doc=build_matrices()[0]
++    assert doc['checkpoint']['selection']=='source_V_only'
++    assert doc['target_policy'].endswith('independent_truth_scorer')
++
++
++def test_budget_audit_not_convergence():
++    performance,_,confirmation=build_matrices()
++    assert performance['accepted_main_steps']==44400 and not performance['scientific_convergence_claim']
++    with pytest.raises(ValueError):validate_convergence_for_launch(confirmation)
++
++
++def test_unapproved_runs_not_launched():
++    assert all(d['launch'] is False for d in build_matrices())
++
++
++def test_encoder_off_keeps_head_supervision():
++    rows=[i['row'] for i in build_matrices()[0]['rows'] if i['label']=='IR_ENCODER_OFF']
++    for row in rows:
++        assert not row['response']['encoder_adversary'] and row['response']['unlabeled_head']
++        assert row['joint']['outer_adv_weight']>0 and not row['joint']['disable_adversarial_head_loss']
+--- frozen/tests/test_ir_head.py
++++ tests/test_ir_head.py
+@@ -0,0 +1,79 @@
++import os
++import pytest
++
++@pytest.fixture(autouse=True)
++def _acceptance_device():
++    device=os.environ.get('IR_ACCEPTANCE_DEVICE','cpu')
++    if device not in ('cpu','cuda'):raise ValueError('invalid IR_ACCEPTANCE_DEVICE')
++    with torch.device(device):
++        yield
++
++import pytest
++import torch
++from torch import nn
++from cvsrffi.xuc_fusion.ir_head import capture_head_calls,head_logits,head_gradient
++
++@pytest.mark.parametrize('dtype',[torch.float32,torch.float64])
++@pytest.mark.parametrize('p',[0.,.4])
++def test_replay_logits_and_gradients(dtype,p):
++    torch.manual_seed(42);head=nn.Sequential(nn.Linear(2,4),nn.ReLU(inplace=True),nn.Dropout(p),nn.Linear(4,3)).to(dtype)
++    z=torch.randn(5,2,dtype=dtype,requires_grad=True);d=torch.tensor([0,1,2,0,1]);w=torch.full((5,),.2,dtype=dtype)
++    with capture_head_calls(head,'layout','ctx') as tape:
++        native=head(z);tape.register('L',tuple(map(str,range(5))),d,w,1.)
++    call=tape.batch().calls[0];phi=tuple(head.parameters());replay=head_logits(phi,call)
++    atol,rtol=(1e-10,1e-8) if dtype==torch.float64 else (1e-6,1e-5)
++    torch.testing.assert_close(replay,native,atol=atol,rtol=rtol)
++    from dataclasses import replace
++    replay_input=head_logits(phi,replace(call,z_detached=z))
++    gn=torch.autograd.grad(native.sum(),(z,)+phi,retain_graph=True)
++    gr=torch.autograd.grad(replay_input.sum(),(z,)+phi,retain_graph=True)
++    for a,b in zip(gn,gr):torch.testing.assert_close(a,b,atol=atol,rtol=rtol)
++    hn=torch.autograd.grad(torch.nn.functional.cross_entropy(native,d),phi)
++    torch.testing.assert_close(head_gradient(phi,tape.batch()),torch.cat([x.flatten() for x in hn]),atol=atol,rtol=rtol)
++
++def test_zero_activation_does_not_hide_mask():
++    head=nn.Sequential(nn.Linear(2,64),nn.ReLU(),nn.Dropout(.5),nn.Linear(64,2))
++    with torch.no_grad():head[0].weight.zero_();head[0].bias.zero_()
++    with capture_head_calls(head,'l','c') as tape:
++        head(torch.zeros(4,2));tape.register('L',('a','b','c','d'),torch.zeros(4,dtype=torch.long),torch.ones(4)/4,1.)
++    mask=tape.batch().calls[0].scaled_dropout_mask
++    assert (mask==2).any() and (mask==0).any()
++
++def test_L_U_separate_call_rng():
++    head=nn.Sequential(nn.Linear(2,16),nn.ReLU(),nn.Dropout(.5),nn.Linear(16,2))
++    with capture_head_calls(head,'l','c') as tape:
++        for key,n in [('L',2),('U',5)]:
++            head(torch.ones(n,2));tape.register(key,tuple(map(str,range(n))),torch.zeros(n,dtype=torch.long),torch.ones(n)/n,0.)
++    assert [c.z_detached.shape[0] for c in tape.batch().calls]==[2,5]
++
++def test_aux_LEO_call_not_in_domain_loss():
++    head=nn.Sequential(nn.Linear(2,3),nn.ReLU(),nn.Dropout(.5),nn.Linear(3,2))
++    with capture_head_calls(head,'l','c') as tape:
++        head(torch.ones(2,2));head(torch.ones(2,2))
++        tape.register('L',('a','b'),torch.zeros(2,dtype=torch.long),torch.ones(2)/2,1.,call_index=0)
++    assert len(tape.records)==2 and len(tape.batch().calls)==1
++
++def test_replay_restores_caller_rng():
++    head=nn.Sequential(nn.Linear(2,3),nn.ReLU(),nn.Dropout(.5),nn.Linear(3,2));z=torch.ones(2,2)
++    start=torch.get_rng_state();head(z);expected=torch.get_rng_state();torch.set_rng_state(start)
++    with capture_head_calls(head,'l','c'):head(z)
++    assert torch.equal(expected,torch.get_rng_state())
++
++def test_unsupported_head_rejected():
++    with pytest.raises(ValueError,match='head'):
++        with capture_head_calls(nn.Linear(2,3),'l','c'):pass
++
++@pytest.mark.skipif(not torch.cuda.is_available(),reason='CUDA unavailable')
++def test_cuda_dropout_replay_and_rng():
++    head=nn.Sequential(nn.Linear(2,16),nn.ReLU(inplace=True),nn.Dropout(.3),nn.Linear(16,3)).cuda();z=torch.randn(7,2,device='cuda')
++    rng=torch.cuda.get_rng_state();head(z);expected=torch.cuda.get_rng_state();torch.cuda.set_rng_state(rng)
++    with capture_head_calls(head,'l','c') as tape:
++        logits=head(z);tape.register('L',tuple(map(str,range(7))),torch.zeros(7,dtype=torch.long,device='cuda'),torch.ones(7,device='cuda')/7,1.)
++    assert torch.equal(expected,torch.cuda.get_rng_state())
++    torch.testing.assert_close(head_logits(tuple(head.parameters()),tape.batch().calls[0]),logits,atol=1e-6,rtol=1e-5)
++
++def test_capture_hooks_removed_on_failure():
++    head=nn.Sequential(nn.Linear(2,3),nn.ReLU(),nn.Dropout(.5),nn.Linear(3,2))
++    with pytest.raises(RuntimeError):
++        with capture_head_calls(head,'l','c'):raise RuntimeError('injected')
++    assert not head._forward_pre_hooks and not head._forward_hooks and not head[2]._forward_pre_hooks
+--- frozen/tests/test_ir_metric.py
++++ tests/test_ir_metric.py
+@@ -0,0 +1,97 @@
++import os
++import pytest
++
++@pytest.fixture(autouse=True)
++def _acceptance_device():
++    device=os.environ.get('IR_ACCEPTANCE_DEVICE','cpu')
++    if device not in ('cpu','cuda'):raise ValueError('invalid IR_ACCEPTANCE_DEVICE')
++    with torch.device(device):
++        yield
++
++import copy
++import pytest
++import torch
++from torch import nn
++from cvsrffi.xuc_fusion.ir_types import build_layout
++from cvsrffi.xuc_fusion.ir_metric import build_response_metric
++
++def setup(history=False,clip=.25,lr=.03,none=False):
++    m=nn.Module();m.adv_head=nn.Linear(2,1);opt=torch.optim.AdamW(m.parameters(),lr=lr,betas=(.7,.8),eps=1e-5,weight_decay=.2)
++    if history:
++        for p in m.parameters():p.grad=torch.ones_like(p)*.3
++        opt.step()
++        # Parameter-local count really differs.
++        opt.state[m.adv_head.bias]['step'].add_(2)
++    origin=copy.deepcopy(opt.state_dict());h=tuple(None if none and i==0 else torch.full_like(p,.4) for i,p in enumerate(m.parameters()))
++    for p,g in zip(m.parameters(),h):p.grad=None if g is None else clip*g
++    opt.step();record={'clip_coefficient':clip,'optimizer_after':copy.deepcopy(opt.state_dict())}
++    layout=build_layout(m,opt)
++    return origin,record,h,layout
++
++def test_first_adam_step_metric():
++    args=setup();r=build_response_metric(*args)
++    torch.testing.assert_close(r.diagonal,torch.full((3,),.03*.25/(.1+1e-5)))
++
++def test_nonzero_history_and_decay():
++    origin,record,h,layout=setup(True);r=build_response_metric(origin,record,h,layout)
++    group=origin['param_groups'][0];expected=[]
++    for pid,g in zip(group['params'],h):
++        state=origin['state'][pid];k=int(state['step'])+1;v=record['optimizer_after']['state'][pid]['exp_avg_sq']/(1-.8**k)
++        expected.append((.03*.25*.3/((1-.7**k)*(v.sqrt()+1e-5))).flatten())
++    torch.testing.assert_close(r.diagonal,torch.cat(expected))
++
++def test_parameter_local_step_counter():
++    r=build_response_metric(*setup(True));assert r.diagonal[0]!=r.diagonal[-1]
++
++def test_clip_coefficient_used_once():
++    args=setup(clip=.25);r=build_response_metric(*args);step=1e-3
++    # Frozen v and c: independent affine AdamW formula finite difference.
++    origin,record,h,layout=args;v=record['optimizer_after']['state'][0]['exp_avg_sq']/(1-.8)
++    f=lambda x: -.03*(.3*.25*x)/(.3*(v.sqrt()+1e-5))
++    fd=(f(h[0]+step)-f(h[0]-step))/(2*step)
++    torch.testing.assert_close(-fd.flatten(),r.diagonal[:2],atol=2e-6,rtol=2e-5)
++
++def test_zero_lr_excluded():assert build_response_metric(*setup(lr=0.)).diagonal.numel()==0
++
++def test_none_gradient_not_zero():
++    r=build_response_metric(*setup(none=True));assert r.active_indices.tolist()==[2]
++
++@pytest.mark.parametrize('flag',['amsgrad','maximize','fused','capturable','differentiable'])
++def test_unsupported_optimizer_flags(flag):
++    origin,record,h,layout=setup();origin['param_groups'][0][flag]=True
++    with pytest.raises(ValueError):build_response_metric(origin,record,h,layout)
++
++def test_real_predictor_state_required():
++    origin,record,h,layout=setup();record['optimizer_after']['state'][0]['exp_avg_sq'].add_(1.)
++    with pytest.raises(ValueError,match='second'):build_response_metric(origin,record,h,layout)
++
++def test_frozen_head_replay_response_and_formal_none_semantics():
++    from cvsrffi.xuc_fusion.ir_head import capture_head_calls,head_logits,head_gradient
++    from cvsrffi.xuc_fusion.ir_cg import solve_response
++    m=nn.Module();m.adv_head=nn.Sequential(nn.Linear(2,3),nn.ReLU(),nn.Dropout(.2),nn.Linear(3,2))
++    m.adv_head[0].bias.requires_grad_(False)
++    phi=tuple(m.adv_head.parameters());opt=torch.optim.AdamW([{'params':list(phi)[::-1]}],lr=.01)
++    layout=build_layout(m,opt);origin=copy.deepcopy(opt.state_dict())
++    before=phi[1].detach().clone()
++    with capture_head_calls(m.adv_head,layout.signature,'freeze') as tape:
++        native=m.adv_head(torch.randn(4,2))
++        tape.register('L',tuple(map(str,range(4))),torch.zeros(4,dtype=torch.long),torch.ones(4)/4,1.)
++    torch.testing.assert_close(head_logits(phi,tape.batch().calls[0]),native)
++    full=head_gradient(phi,tape.batch()).split([p.numel() for p in phi])
++    h0=tuple(g.reshape_as(p) if p.requires_grad else None for g,p in zip(full,phi))
++    for p,g in zip(phi,h0):p.grad=g
++    opt.step()
++    metric=build_response_metric(origin,{'clip_coefficient':1.,'optimizer_after':copy.deepcopy(opt.state_dict())},h0,layout)
++    e=torch.ones(sum(p.numel() for p in phi));result=solve_response(e,metric,torch.zeros_like)
++    delta=torch.zeros_like(e);delta[metric.active_indices]=metric.sqrt_diagonal*result.solution
++    lo=phi[0].numel();hi=lo+phi[1].numel()
++    assert torch.count_nonzero(delta[lo:hi])==0
++    assert phi[1].grad is None and phi[1] not in opt.state
++    assert torch.equal(phi[1],before)
++
++def test_all_none_head_gradients_return_empty_response_on_input_device():
++    from cvsrffi.xuc_fusion.ir_cg import solve_response
++    origin,record,h,layout=setup();h=tuple(None for _ in h)
++    origin['state']={};metric=build_response_metric(origin,record,h,layout)
++    e=torch.ones(3);result=solve_response(e,metric,lambda v:(_ for _ in ()).throw(AssertionError()))
++    assert result.status=='zero_rhs' and result.solution.numel()==0 and result.solution.device==e.device
+--- frozen/tests/test_ir_native_diagnostics.py
++++ tests/test_ir_native_diagnostics.py
+@@ -0,0 +1,32 @@
++from copy import deepcopy
++import math
++import torch
++from cvsrffi.game_tracking.state import RNGState
++from cvsrffi.xuc_fusion.ir_telemetry import native_heavy_diagnostics
++from test_ir_native_joint import native_case,step
++from ir_fixtures import assert_nested
++
++
++def test_native_source_diagnostics_no_target_and_no_state_changes():
++    case=native_case();case.args.joint['probe_interval']=0
++    step(case)
++    before=deepcopy(case.model.state_dict());optim=deepcopy(case.opt.state_dict())
++    teacher=deepcopy(case.ema.state_dict());dr=deepcopy(case.dr.state_dict())
++    rng=RNGState.capture()
++    result=native_heavy_diagnostics(case.solver,case.ctx,case.dr)
++    assert result['recovery']['steps']==10 and result['source_panel']['role']=='V'
++    assert result['controls_training'] is False
++    assert result['nonlinear_residual_full']>=0
++    assert_nested(before,case.model.state_dict());assert_nested(optim,case.opt.state_dict())
++    assert_nested(teacher,case.ema.state_dict())
++    after_dr=case.dr.state_dict()
++    assert_nested(vars(dr.pop('calibration')),vars(after_dr.pop('calibration')))
++    def nan_safe(value):
++        if isinstance(value,dict):return {k:nan_safe(v) for k,v in value.items()}
++        if isinstance(value,(list,tuple)):return [nan_safe(v) for v in value]
++        if isinstance(value,float) and math.isnan(value):return 'unchanged_nan'
++        return value
++    assert_nested(nan_safe(dr),nan_safe(after_dr))
++    assert torch.equal(rng.cpu,torch.get_rng_state())
++    if rng.cuda:
++        assert all(torch.equal(a,b) for a,b in zip(rng.cuda,torch.cuda.get_rng_state_all()))
+--- frozen/tests/test_ir_native_joint.py
++++ tests/test_ir_native_joint.py
+@@ -0,0 +1,80 @@
++"""Reach the copied production FusionObjective + DAOT + FastTrust assembly."""
++import json
++import os
++from pathlib import Path
++from copy import deepcopy
++from types import SimpleNamespace
++import torch
++from cvsrffi.xuc_fusion.response_config import make_row
++from cvsrffi.xuc_fusion.ir_solver import IREGSolver
++from cvsrffi.xuc_fusion.response_runtime import response_step
++from cvsrffi.game_tracking.state import RNGState
++from ir_fixtures import assert_nested
++
++ROOT=Path(__file__).resolve().parents[1]
++
++
++def native_case(implementation='cached',epoch=80,method='IR_EG',refresh=8):
++    from cvsrffi.xuc_fusion.runtime import resolve_args,synthetic_source
++    from cvsrffi.game_tracking.runtime import build_model
++    from cvsrffi.xuc_fusion.dr_objective import DROT
++    from cvsrffi.xuc_fusion.tickets import TicketStream
++    from cvsrffi.game_tracking.step_context import prepare_context
++    from cvsrffi.game_tracking.legacy.losses import PrototypeMemoryBank
++    from cvsrffi.game_tracking.legacy.options import _loss_weights
++    from cvsrffi.schedule import build_stage_state
++    from cvsrffi.xuc_fusion.objective import FusionObjective
++    device=torch.device(os.environ.get('IR_ACCEPTANCE_DEVICE','cpu'))
++    torch.manual_seed(32)
++    row=make_row('ir_local',dict(method=method,implementation=implementation,br_refresh_interval=refresh))
++    recipe=json.loads((ROOT/'configs/core90_recipe_reference.json').read_text(encoding='utf-8'))
++    args=resolve_args(recipe,row,dataset='NOT_READ',output='NOT_CREATED',device=str(device),synthetic=True)
++    args.num_classes=6
++    model=build_model(args,15,device);ema=deepcopy(model).eval()
++    for p in ema.parameters():p.requires_grad_(False)
++    source=synthetic_source();reference=json.loads((ROOT/'configs/a1_native_recipe_reference.json').read_text(encoding='utf-8'))
++    dr=DROT(model,ema,source,args,reference);dr.calibrate(epoch)
++    stream=TicketStream(source,args,row);ticket,_=stream.choose();batch,ubatch=stream.batches(ticket)
++    def small(b):return (b[0][:6],b[1][:6],b[2][:6],{k:v[:6] for k,v in b[3].items()})
++    batch,ubatch=small(batch),small(ubatch)
++    ctx=prepare_context(batch,None,model,ema,args,epoch,1,_loss_weights(args,build_stage_state(epoch,args)),torch.Generator().manual_seed(1))
++    ctx.grid_plan=None;ctx.rx=batch[3]['rx_i'];ctx.day=batch[3]['day_i'];ctx.audit_gradients=False;ctx.field_components=[];ctx.fusion_telemetry={}
++    dr.prepare(ctx,ubatch)
++    # Controlled source-only fixture reaches both native identity branches.
++    from dataclasses import replace
++    hard=torch.arange(6,device=device)<3;partial=~hard
++    candidate=torch.zeros((6,6),dtype=torch.bool,device=device);candidate[:,:2]=True
++    ctx.dr_route=replace(ctx.dr_route,hard=hard,partial=partial,negative=torch.zeros_like(hard),
++        representation=torch.zeros_like(hard),candidate_mask=candidate,weights=torch.full((6,),.15,device=device))
++    proto=PrototypeMemoryBank(6,15);proto._lazy_init(160,device,torch.float32)
++    objective=FusionObjective(model,args,proto,row,dr)
++    opt=torch.optim.AdamW(model.parameters(),lr=2e-4,weight_decay=1e-4)
++    solver=IREGSolver(model,opt,args.response,max_grad_norm=5.)
++    def commit():
++        from cvsrffi.game_tracking.legacy.options import _update_ema_model
++        dr.commit(ctx);_update_ema_model(ema,model,args.ema_decay);proto.update(ctx.origin_features,ctx.y,ctx.domain)
++    return SimpleNamespace(model=model,ema=ema,args=args,dr=dr,proto=proto,ctx=ctx,objective=objective,opt=opt,solver=solver,commit=commit)
++
++
++def step(case):
++    return response_step(case.solver,case.objective,case.ctx,case.args,case.dr,None,case.solver.steps,
++                         commit=case.commit,external_stateful=(case.dr,case.ema,case.proto))
++
++
++def test_native_joint_cached_reference_alignment():
++    a=native_case('reference');b=native_case('cached');rng=RNGState.capture()
++    ra=step(a);after=RNGState.capture();rng.restore();rb=step(b)
++    assert abs(ra.loss_replay-rb.loss_replay)<1e-6
++    assert_nested(a.solver.last_trace['corrector'],b.solver.last_trace['corrector'],1e-6,1e-5)
++    assert_nested(a.model.state_dict(),b.model.state_dict(),1e-6,1e-5)
++    assert_nested(a.opt.state_dict(),b.opt.state_dict(),1e-6,1e-5)
++    assert_nested(a.ema.state_dict(),b.ema.state_dict(),1e-6,1e-5)
++    assert_nested(vars(a.proto),vars(b.proto),1e-6,1e-5)
++    assert a.dr.commits==b.dr.commits==1
++    assert a.dr.scale.state_dict()==b.dr.scale.state_dict()
++    assert a.dr.route_history==b.dr.route_history
++    assert torch.equal(after.cpu,torch.get_rng_state())
++    assert all(x==b.ctx.dr_field_divisors[0] for x in b.ctx.dr_field_divisors)
++    assert ra.telemetry['model_forward_calls']*2==rb.telemetry['model_forward_calls']*3
++    assert [c.key for c in b.solver.last_trace['head_batch'].calls]==['L/clean/main/adv','U/strong/rc4/adv']
++    assert b.ctx.dr_weighted_identity.item()>0
+--- frozen/tests/test_ir_native_resume.py
++++ tests/test_ir_native_resume.py
+@@ -0,0 +1,24 @@
++import json
++from pathlib import Path
++import torch
++from cvsrffi.xuc_fusion.response_config import make_row
++from cvsrffi.xuc_fusion.runtime import resolve_args,train
++from ir_fixtures import assert_nested
++
++
++def test_native_entrypoint_pause_and_resume(tmp_path):
++    root=Path(__file__).resolve().parents[1]
++    recipe=json.loads((root/'configs/core90_recipe_reference.json').read_text(encoding='utf-8'))
++    row=make_row('ir_resume_entrypoint',dict(method='BR_IR_EG'))
++    def args(path):
++        a=resolve_args(recipe,row,dataset='NOT_READ',output=path,device='cpu',synthetic=True,test_epochs=2,test_steps=1)
++        a.joint['diagnostic_interval']=0;a.joint['probe_interval']=0
++        return a
++    train(args(tmp_path/'full'),row)
++    part=args(tmp_path/'part');part.xuc_stop_after_epoch=1;train(part,row)
++    resumed=args(tmp_path/'resumed');resumed.xuc_resume=str(tmp_path/'part/latest_ssdg.pth');train(resumed,row)
++    a=torch.load(tmp_path/'full/final_ssdg.pth',weights_only=False)
++    b=torch.load(tmp_path/'resumed/final_ssdg.pth',weights_only=False)
++    for key in ('model','ema','optimizer','prototype','solver'):assert_nested(a[key],b[key])
++    assert b['step']==2 and b['resume_lineage']['restored_step']==1
++    assert 'br_history' in b['solver'] and b['daot_rc4']['commits']==2
+--- frozen/tests/test_ir_packet.py
++++ tests/test_ir_packet.py
+@@ -0,0 +1,64 @@
++import torch
++import pytest
++import torch.nn.functional as F
++from cvsrffi.xuc_fusion.ir_objective import build_objective_packet
++from ir_fixtures import make_case,GRL,assert_nested
++
++
++def test_replace_only_registered_adversarial_leaves_and_no_native_phi_gradient_leak():
++    a=make_case();before=[p.detach().clone() for p in a.model.parameters()]
++    with a.solver._capture(a.ctx):
++        native=a.closure();packet=build_objective_packet(a.ctx)
++        leaves=tuple((p.detach()+.001).clone().requires_grad_(True) for p in a.solver.phi)
++        value=packet.assemble(leaves)
++        actual=torch.autograd.grad(value,tuple(a.solver.parameters)+leaves,allow_unused=True)
++        mapped={id(p):g for p,g in zip(a.solver.parameters,actual)}
++        assert all(mapped[id(p)] is None for p in a.solver.phi)
++        assert all(g is not None and torch.isfinite(g).all() for g in actual[-4:])
++        packet.release()
++    assert_nested(before,[p.detach() for p in a.model.parameters()])
++
++
++def test_phi_leaf_gradient_mapping_debug_zero_increment():
++    a=make_case()
++    with a.solver._capture(a.ctx):
++        native=a.closure();packet=build_objective_packet(a.ctx)
++        leaves=tuple(p.detach().clone().requires_grad_(True) for p in a.solver.phi)
++        value=packet.assemble(leaves)
++        assert torch.equal(value,native)
++        old=torch.autograd.grad(native,a.solver.parameters,retain_graph=True,allow_unused=True)
++        new=torch.autograd.grad(value,a.solver.psi+leaves,allow_unused=True)
++        mapping={id(p):g for p,g in zip(a.solver.psi,new[:len(a.solver.psi)])}
++        mapping.update({id(p):g for p,g in zip(a.solver.phi,new[-4:])})
++        assert_nested(old,[mapping[id(p)] for p in a.solver.parameters],1e-6,1e-5)
++
++
++def test_U_GRL_zero_and_U_task_nonzero():
++    a=make_case();z=a.model.encoder(a.ctx.u)
++    adv=a.model.adv_head(GRL.apply(z,0.));task=a.model.tx_head(z).square().mean()
++    domain=F.cross_entropy(adv,a.ctx.ud)
++    g=torch.autograd.grad(domain,z,retain_graph=True)[0]
++    task_g=torch.autograd.grad(task,z)[0]
++    assert torch.equal(g,torch.zeros_like(g)) and task_g.norm()>0
++
++
++def test_scale_call_sequence_preserved():
++    from ir_fixtures import run
++    a=make_case();run(a)
++    assert len(a.ctx.field_components)==2
++    assert a.ctx.pending['used']==1.
++    assert a.ctx.field_components[0]==a.ctx.field_components[1]
++
++
++def test_unregistered_head_dependency_aborts():
++    from ir_fixtures import run
++    a=make_case();original=a.closure
++    def invalid():
++        loss=original();extra=.01*sum(p.square().sum() for p in a.solver.phi)
++        if getattr(a.ctx,'ir_tape',None) is not None:
++            assembly=a.ctx.ir_assembly
++            a.ctx.ir_assembly=lambda leaves:assembly(leaves)+extra
++        return loss+extra
++    a.closure=invalid
++    with pytest.raises(ValueError,match='gradient leak'):run(a)
++    assert a.solver.steps==0 and not a.opt.state and a.external.commits==0
+--- frozen/tests/test_ir_reference.py
++++ tests/test_ir_reference.py
+@@ -0,0 +1,53 @@
++from copy import deepcopy
++import pytest
++import torch
++from cvsrffi.game_tracking.solvers import GameSolver
++from cvsrffi.game_tracking.state import RNGState
++from cvsrffi.xuc_fusion.response_config import resolve,schedule
++from ir_fixtures import make_case,run,assert_nested
++
++
++def test_kappa_zero_direct_EG(monkeypatch):
++    a=make_case(kappa=0.);b=make_case(kappa=0.)
++    b.solver=GameSolver(b.model,b.opt,mode='extragradient',max_grad_norm=.7)
++    import cvsrffi.xuc_fusion.ir_solver as module
++    monkeypatch.setattr(module,'capture_head_calls',lambda *a:(_ for _ in ()).throw(AssertionError('new path ran')))
++    rng=RNGState.capture();ra=run(a);after=RNGState.capture();rng.restore()
++    rb=b.solver.step(b.closure);b.commit()
++    assert_nested(a.model.state_dict(),b.model.state_dict());assert_nested(a.opt.state_dict(),b.opt.state_dict())
++    assert torch.equal(after.cpu,torch.get_rng_state());assert ra.loss_replay==rb.loss_replay
++    assert_nested(a.external.state_dict(),b.external.state_dict())
++
++
++def test_reference_one_formal_commit():
++    a=make_case('reference');result=run(a)
++    assert result.accepted and a.external.commits==1 and a.solver.steps==1
++    assert all(s['step']==1 for s in a.opt.state.values())
++    assert result.field_evaluations==3 and result.telemetry['full_backward_calls']==2
++
++
++def test_phir_not_directly_committed():
++    a=make_case('reference');run(a);trace=a.solver.last_trace
++    phir=torch.cat([p.flatten() for p in trace['phip']])+.25*trace['delta']
++    assert not torch.equal(phir,torch.cat([p.detach().flatten() for p in a.model.adv_head.parameters()]))
++
++
++def test_E21_start_without_TR_ramp():
++    c=resolve(dict(method='IR_EG'))
++    assert not schedule(c,20,0)['active']
++    assert schedule(c,21,0)==dict(active=True,strength=.25,base='extragradient')
++
++
++@pytest.mark.parametrize('all_head',[False,True])
++def test_frozen_head_has_none_gradient_and_no_response(all_head):
++    a=make_case();frozen=list(a.model.adv_head.parameters()) if all_head else [a.model.adv_head[0].bias]
++    for p in frozen:p.requires_grad_(False)
++    before=[p.detach().clone() for p in frozen]
++    run(a)
++    assert_nested(before,[p.detach() for p in frozen])
++    assert all(p.grad is None and p not in a.opt.state for p in frozen)
++
++
++@pytest.mark.parametrize('key,value',[('ir_kappa',True),('ir_cg_max_iterations',True),('ir_cg_max_iterations',3),('br_refresh_interval',0),('ir_origin_scales','legacy_reestimate')])
++def test_strict_config(key,value):
++    with pytest.raises(ValueError):resolve(dict(method='IR_EG',**{key:value}))
+--- frozen/tests/test_ir_reporting.py
++++ tests/test_ir_reporting.py
+@@ -0,0 +1,22 @@
++import json
++from cvsrffi.game_tracking.solvers import StepResult
++from cvsrffi.xuc_fusion.ir_telemetry import step_record, TelemetryWriter
++
++
++def test_missing_metrics_are_null(tmp_path):
++    row = step_record(StepResult(1., 2., 3., 'extragradient', True, 2, 'IR_EG'), accepted_index=1)
++    assert row['hp_norm'] is None and row['missing_reasons']['hp_norm']
++    path = tmp_path/'steps.jsonl'; TelemetryWriter(path).write(row)
++    assert json.loads(path.read_text(encoding='utf-8')) == row
++
++
++def test_executed_not_equal_configured():
++    result = StepResult(1., 2., 3., 'extragradient', True, 2, 'IR_EG', telemetry={'configured':True,'eligible':False,'executed':False,'applied':False,'nonzero':False})
++    row = step_record(result)
++    assert row['configured'] and not row['executed'] and row['accepted']
++
++
++def test_actual_clip_displacement_logged():
++    result = StepResult(1., 2., 3., 'extragradient', True, 2, 'IR_EG')
++    row = step_record(result, origin_clip_coefficient=.2, formal_clip_coefficient=.7, parameter_displacement_norm=.125)
++    assert row['parameter_displacement_norm'] == .125 and row['formal_clip_coefficient'] == .7
+--- frozen/tests/test_ir_transaction.py
++++ tests/test_ir_transaction.py
+@@ -0,0 +1,38 @@
++from copy import deepcopy
++import pytest
++import torch
++from cvsrffi.game_tracking.state import RNGState
++from ir_fixtures import make_case,run,assert_nested
++
++
++@pytest.mark.parametrize('stage',['after_origin','after_virtual','after_capture','inside_cg','after_corrector','after_formal','after_external_commit'])
++def test_transaction_failure_restores_everything(stage):
++    a=make_case();before=(deepcopy(a.model.state_dict()),deepcopy(a.opt.state_dict()),deepcopy(vars(a.ctx)),deepcopy(a.solver.state_dict()),a.external.state_dict())
++    rng=RNGState.capture()
++    def inject(actual):
++        if actual==stage:
++            a.model.eval();raise RuntimeError(stage)
++    a.solver.failure_injector=inject
++    with pytest.raises(RuntimeError,match=stage):run(a)
++    for x,y in zip((a.model.state_dict(),a.opt.state_dict(),vars(a.ctx),a.solver.state_dict(),a.external.state_dict()),before):assert_nested(x,y)
++    assert a.model.training and torch.equal(rng.cpu,torch.get_rng_state())
++    assert not a.model.adv_head._forward_hooks
++
++
++def test_external_commit_partial_failure_is_atomic():
++    a=make_case();old=deepcopy(a.model.state_dict())
++    def fail():a.external.commits+=1;a.external.scale=123.;raise RuntimeError('normalizer')
++    a.commit=fail
++    with pytest.raises(RuntimeError,match='normalizer'):run(a)
++    assert a.external.commits==0 and a.external.scale==1. and a.solver.steps==0
++    assert_nested(a.model.state_dict(),old)
++
++
++def test_numerical_failure_same_step_EG(monkeypatch):
++    a=make_case();b=make_case(kappa=0.);rng=RNGState.capture()
++    import cvsrffi.xuc_fusion.ir_solver as module
++    def fail(*a,**kw):raise FloatingPointError('CG injected')
++    monkeypatch.setattr(module,'solve_response',fail)
++    result=run(a);rng.restore();run(b)
++    assert result.telemetry['fallback'] and result.failure_stage=='CG injected'
++    assert_nested(a.model.state_dict(),b.model.state_dict());assert_nested(a.opt.state_dict(),b.opt.state_dict())

@@ -1,0 +1,59 @@
+{
+  "status": "VERIFIED",
+  "scope": "IR-EG mathematical foundation only",
+  "date": "2026-09-27",
+  "baseline_commit": "acf0a6407c4a2cd114851e9f60d0cd346e4b2c77",
+  "tests": {
+    "cpu": {
+      "passed": 47,
+      "failed": 0,
+      "device_selector": "IR_ACCEPTANCE_DEVICE=cpu"
+    },
+    "cuda": {
+      "passed": 47,
+      "failed": 0,
+      "device_selector": "IR_ACCEPTANCE_DEVICE=cuda",
+      "actual_tensor_execution": true
+    },
+    "math_and_frozen_baseline": {
+      "passed": 86,
+      "failed": 0,
+      "files": [
+        "test_ir_contract.py",
+        "test_ir_head.py",
+        "test_ir_metric.py",
+        "test_ir_curvature.py",
+        "test_ir_cg.py",
+        "test_acceptance.py",
+        "test_native_joint.py"
+      ]
+    }
+  },
+  "red_evidence": {
+    "contract_head_metric": "3 intended missing-interface collection errors",
+    "cg": "1 intended missing-interface collection error",
+    "curvature_only_red": false
+  },
+  "semantics": {
+    "cg_solution": "whitened active u",
+    "ggn_coordinates": "full flattened phi",
+    "metric_coordinates": "active flattened phi only",
+    "phi_order": "native adv_head.parameters order",
+    "layout_names_order": "deduplicated optimizer group order",
+    "response_dtype": "float32",
+    "oracle_dtype": "float64"
+  },
+  "limitations": [
+    "Full native solver equivalence belongs to integrated acceptance",
+    "Serialized optimizer class is enforced by the owner; a bare state_dict has no class field",
+    "No scientific performance or convergence claim"
+  ],
+  "remote_execution": false,
+  "training_started": false,
+  "review_fixes": [
+    "complete frozen head numerical tuple and all optimizer slots preserved",
+    "independent expected_code_root mandatory in contract audit",
+    "strict audit_runtime_imports callable by entrypoint",
+    "frozen response zero and formal grad None verified"
+  ]
+}
