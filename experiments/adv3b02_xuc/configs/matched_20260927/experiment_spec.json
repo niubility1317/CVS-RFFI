@@ -1,0 +1,312 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01",
+  "group_id": "phase1-cvs-daot-rc4-original-practical-matched",
+  "display_name": "CVS：DAOT＋FastTrust-RC4原始residual_noeq五种子实验",
+  "description": "用户确认的原始DAOT A1＋FastTrust-RC4。与对比共享物理L/U/V和五个模型种子，200轮final-only；关闭历史周期目标评分。后续接D92 E0真实256维v2。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "cvs",
+    "daot",
+    "fasttrust_rc4",
+    "residual_noeq",
+    "source_only",
+    "d92_parent"
+  ],
+  "comparison_group_id": "manysig-six-source-rx13468-day123-luv076330-residual-noeq-v1",
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "2026-09-27用户：跑CVS实验；注意版本；是这个，以及后续的D92。",
+  "code": {
+    "commit": "RELEASE_COMMIT",
+    "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rc4_matched_20260927_r01",
+    "base_recipe": "experiments/adv3b02_xuc/configs/rc4_practical_residual_noeq_20260918.json",
+    "native_code_base": "b63734157"
+  },
+  "data": {
+    "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+    "version": "existing_N607_ManySig_6tx_12rx_4day",
+    "representation": "equalized=1; center256; unit packet RMS; fs=25000000Hz",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#role_ids",
+    "label_map_ref": "each row/source_contract.json#classes",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "ManySig.tx_list: all6; actual physical class strings exported at runtime",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": null,
+    "support_query_ref": null,
+    "leo_config_ref": "experiments/adv3b02_xuc/code/cvsrffi/practical_adapter.py"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "not_loaded_in_this_run",
+    "external_method_exception": null,
+    "claim_scope": "Original native CVS recipe; matched physical roles/seeds/epochs, unequal optimizer-step budget and augmentation draws. Historical392005 reported separately from fresh4."
+  },
+  "checkpoint": {
+    "initialization": "scratch",
+    "sources": [],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "provenance_verdict": "SCRATCH_NO_INHERITANCE",
+    "selection_rule": "fixed final_ssdg.pth epoch200; no old checkpoint, teacher or ground bundle"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/cvs-daot-rc4-matched-20260927",
+    "gpu_policy": "five separate GPU lanes selected from current free slots; at most2 total jobs/GPU",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01",
+    "local_artifact_root": "automation_reports/CV-SincNet/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01",
+    "launch_command": "python experiments/adv3b02_xuc/tools/publish_rc4_matched.py --output local_artifacts/cvs_matched_20260927",
+    "stop_rule": "Nonzero exit/protocol violation/missing final checkpoint stops affected row; no automatic retry and no performance stop."
+  },
+  "expected_artifacts": [
+    "each row/startup.json",
+    "each row/initialization.json",
+    "each row/source_contract.json",
+    "each row/resolved_config.json",
+    "each row/final_ssdg.pth",
+    "each row/completion.json",
+    "launch.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source_V_accuracy",
+      "source_training_loss",
+      "pseudo_coverage",
+      "wall_time"
+    ],
+    "dimensions": [
+      "method",
+      "model_seed",
+      "epoch"
+    ],
+    "prediction_ref": "independent final evaluator, existing clean/satellite VALIDATED_ONCE capsule",
+    "scorer_ref": null
+  },
+  "rows": [
+    {
+      "row_id": "cvs-daot-rc4-s392005",
+      "method": "DAOT_A1+FastTrust_RC4_original_residual_noeq",
+      "purpose": "historical_seed_replication",
+      "gpu": null,
+      "config_ref": "experiments/adv3b02_xuc/configs/matched_20260927/cvs-daot-rc4-s392005.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s392005/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 392005,
+        "split": 392005,
+        "data": null,
+        "augmentation": 392005,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Fixed deterministic physical split. Native augmentation generators derive from model seed/epoch/batch; receiver hardware seed2027. No target support/evaluation during training.",
+      "k": null,
+      "scenario": "practical_high,practical_mid,practical_low_urban; residual/post_sync/noeq",
+      "optimizer": "AdamW; native FastTrust schedule",
+      "lr": 0.0002,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "native muse_epoch_basis=unlabeled_loader; Ubatch256; actual steps logged; not compute-matched to50-step baselines",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s392005",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s392005.train.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rc4_matched_20260927_r01/code/scripts/train_rc4_matched.py --config /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rc4_matched_20260927_r01/configs/matched_20260927/cvs-daot-rc4-s392005.json --dataset /home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl --output /home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s392005 --source-contract /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json --run-id 20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01 --commit RELEASE_COMMIT",
+      "expected_artifacts": [
+        "final_ssdg.pth",
+        "completion.json",
+        "startup.json",
+        "resolved_config.json"
+      ]
+    },
+    {
+      "row_id": "cvs-daot-rc4-s2026092701",
+      "method": "DAOT_A1+FastTrust_RC4_original_residual_noeq",
+      "purpose": "fresh_model_seed",
+      "gpu": null,
+      "config_ref": "experiments/adv3b02_xuc/configs/matched_20260927/cvs-daot-rc4-s2026092701.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Fixed deterministic physical split. Native augmentation generators derive from model seed/epoch/batch; receiver hardware seed2027. No target support/evaluation during training.",
+      "k": null,
+      "scenario": "practical_high,practical_mid,practical_low_urban; residual/post_sync/noeq",
+      "optimizer": "AdamW; native FastTrust schedule",
+      "lr": 0.0002,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "native muse_epoch_basis=unlabeled_loader; Ubatch256; actual steps logged; not compute-matched to50-step baselines",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701.train.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rc4_matched_20260927_r01/code/scripts/train_rc4_matched.py --config /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rc4_matched_20260927_r01/configs/matched_20260927/cvs-daot-rc4-s2026092701.json --dataset /home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl --output /home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701 --source-contract /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json --run-id 20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01 --commit RELEASE_COMMIT",
+      "expected_artifacts": [
+        "final_ssdg.pth",
+        "completion.json",
+        "startup.json",
+        "resolved_config.json"
+      ]
+    },
+    {
+      "row_id": "cvs-daot-rc4-s2026092702",
+      "method": "DAOT_A1+FastTrust_RC4_original_residual_noeq",
+      "purpose": "fresh_model_seed",
+      "gpu": null,
+      "config_ref": "experiments/adv3b02_xuc/configs/matched_20260927/cvs-daot-rc4-s2026092702.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092702/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026092702,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Fixed deterministic physical split. Native augmentation generators derive from model seed/epoch/batch; receiver hardware seed2027. No target support/evaluation during training.",
+      "k": null,
+      "scenario": "practical_high,practical_mid,practical_low_urban; residual/post_sync/noeq",
+      "optimizer": "AdamW; native FastTrust schedule",
+      "lr": 0.0002,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "native muse_epoch_basis=unlabeled_loader; Ubatch256; actual steps logged; not compute-matched to50-step baselines",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092702.train.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rc4_matched_20260927_r01/code/scripts/train_rc4_matched.py --config /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rc4_matched_20260927_r01/configs/matched_20260927/cvs-daot-rc4-s2026092702.json --dataset /home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl --output /home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092702 --source-contract /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json --run-id 20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01 --commit RELEASE_COMMIT",
+      "expected_artifacts": [
+        "final_ssdg.pth",
+        "completion.json",
+        "startup.json",
+        "resolved_config.json"
+      ]
+    },
+    {
+      "row_id": "cvs-daot-rc4-s2026092703",
+      "method": "DAOT_A1+FastTrust_RC4_original_residual_noeq",
+      "purpose": "fresh_model_seed",
+      "gpu": null,
+      "config_ref": "experiments/adv3b02_xuc/configs/matched_20260927/cvs-daot-rc4-s2026092703.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092703/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026092703,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Fixed deterministic physical split. Native augmentation generators derive from model seed/epoch/batch; receiver hardware seed2027. No target support/evaluation during training.",
+      "k": null,
+      "scenario": "practical_high,practical_mid,practical_low_urban; residual/post_sync/noeq",
+      "optimizer": "AdamW; native FastTrust schedule",
+      "lr": 0.0002,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "native muse_epoch_basis=unlabeled_loader; Ubatch256; actual steps logged; not compute-matched to50-step baselines",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092703.train.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rc4_matched_20260927_r01/code/scripts/train_rc4_matched.py --config /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rc4_matched_20260927_r01/configs/matched_20260927/cvs-daot-rc4-s2026092703.json --dataset /home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl --output /home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092703 --source-contract /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json --run-id 20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01 --commit RELEASE_COMMIT",
+      "expected_artifacts": [
+        "final_ssdg.pth",
+        "completion.json",
+        "startup.json",
+        "resolved_config.json"
+      ]
+    },
+    {
+      "row_id": "cvs-daot-rc4-s2026092704",
+      "method": "DAOT_A1+FastTrust_RC4_original_residual_noeq",
+      "purpose": "fresh_model_seed",
+      "gpu": null,
+      "config_ref": "experiments/adv3b02_xuc/configs/matched_20260927/cvs-daot-rc4-s2026092704.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092704/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026092704,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Fixed deterministic physical split. Native augmentation generators derive from model seed/epoch/batch; receiver hardware seed2027. No target support/evaluation during training.",
+      "k": null,
+      "scenario": "practical_high,practical_mid,practical_low_urban; residual/post_sync/noeq",
+      "optimizer": "AdamW; native FastTrust schedule",
+      "lr": 0.0002,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "native muse_epoch_basis=unlabeled_loader; Ubatch256; actual steps logged; not compute-matched to50-step baselines",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092704",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092704.train.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rc4_matched_20260927_r01/code/scripts/train_rc4_matched.py --config /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rc4_matched_20260927_r01/configs/matched_20260927/cvs-daot-rc4-s2026092704.json --dataset /home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl --output /home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092704 --source-contract /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json --run-id 20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01 --commit RELEASE_COMMIT",
+      "expected_artifacts": [
+        "final_ssdg.pth",
+        "completion.json",
+        "startup.json",
+        "resolved_config.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Phase2 and final target prediction/scoring are separate dependent runs, not claimed complete here.",
+    "User explicitly overrides legacy LEO_WEAK for this experiment; Phase2 support/query will use residual_noeq too.",
+    "Fixed reference channel augmentation seed2027 and receiver_seed2027 for all methods. Sample gates are ID/epoch deterministic.",
+    "POSTER/RadioNet use parity-tested PyTorch ports, author architecture/freeze scope. Source budget matched200 differs from native defaults.",
+    "CE arms do not use U. PL arms use threshold.9, start150, weight1. RIEI PL updates both classifiers and feature extractor with disjoint optimizers.",
+    "Prior target exploration exists; seed392005 is not a fresh blind confirmatory replicate. No per-method seed selection.",
+    "data seed is null: source role allocation is deterministic contiguous contract. support/evaluation seeds null in source-only run."
+  ],
+  "registered_at": "2026-09-26T17:44:56+00:00",
+  "status": "PLANNED",
+  "next_stage": {
+    "method": "D92 E0 identity160+FFT96 true256 v2",
+    "status": "PREPARING",
+    "ground_bundle": "must derive from this run final model and authorized source aggregates; old bundles forbidden"
+  }
+}

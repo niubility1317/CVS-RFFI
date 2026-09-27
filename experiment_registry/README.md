@@ -1,6 +1,6 @@
 # 实验总索引
 
-更新：2026-09-21T08:00:12+00:00
+更新：2026-09-27T04:56:14+00:00
 
 先按方法/问题检索，再用run ID读取精确配置与证据。历史组数量不等于独立实验数量。
 
@@ -12,7 +12,7 @@
 
 |记录类型|数量|
 |---|---:|
-|managed_run|11|
+|managed_run|12|
 
 历史状态统一为HISTORICAL_UNVERIFIED；RUNNING等原文声明只供查证，不能证明此刻仍在运行。
 
@@ -20,7 +20,7 @@
 
 |路径标签（定位提示）|证据组数|
 |---|---:|
-|[daot](by_method/daot.md)|10|
+|[daot](by_method/daot.md)|11|
 |[rc4](by_method/rc4.md)|10|
 |[practical](by_method/practical.md)|7|
 |[residual](by_method/residual.md)|7|
@@ -38,6 +38,11 @@
 |[adv3b02](by_method/adv3b02.md)|1|
 |[original_leo](by_method/original_leo.md)|1|
 |[ratio](by_method/ratio.md)|1|
+|[cvs](by_method/cvs.md)|1|
+|[fasttrust_rc4](by_method/fasttrust_rc4.md)|1|
+|[residual_noeq](by_method/residual_noeq.md)|1|
+|[source_only](by_method/source_only.md)|1|
+|[d92_parent](by_method/d92_parent.md)|1|
 
 ## 最近记录入口
 
@@ -51,6 +56,7 @@
 |practical四组最新保存权重测试r02|managed_run|[打开](../automation_reports/CV-SincNet/20260919-phase1-daot-rc4-practical4-test-s392005-r02/report.md)|
 |DAOT＋FastTrust-RC4 residual环境比例六组|managed_run|[打开](../automation_reports/CV-SincNet/20260920-phase1-daot-rc4-residual-ratios-manysig-s392005-r01/report.md)|
 |旧Practical四组checkpoint统一六环境测试|managed_run|[打开](../automation_reports/CV-SincNet/20260920-phase1-practical4-sixscene-eval-s392005-r01/report.md)|
+|CVS：DAOT＋FastTrust-RC4原始residual_noeq五种子实验|managed_run|[打开](../automation_reports/CV-SincNet/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/report.md)|
 |原生DAOT＋RC4与仅动力博弈三seed对照|managed_run|[打开](../automation_reports/CV-SincNet/phase1_daot_rc4_pure_game_m3_20260917_r1/report.md)|
 |原生DAOT＋RC4与仅动力博弈三seed对照|managed_run|[打开](../automation_reports/CV-SincNet/phase1_daot_rc4_pure_game_m3_20260917_r2/report.md)|
 |响应博弈矩阵测试评估：VERIFIED|managed_run|[打开](../automation_reports/CV-SincNet/response_matrix_eval_20260917/report.md)|
