@@ -403,6 +403,8 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--a1_scratch_only", type=str2bool, default=False)
     parser.add_argument("--a1_runtime_fast", type=str2bool, default=False)
     parser.add_argument("--a1_gradient_snapshot", type=str2bool, default=False)
+    parser.add_argument("--a1_rc4_teacher_identity_only", type=str2bool, default=False,
+                        help="Use identity-only eval EMA forwards for RC4 without enabling other a1_runtime_fast behavior.")
     parser.add_argument("--a1_eval_identity_only", type=str2bool, default=False)
     parser.add_argument("--execution_profile_epoch", type=int, default=1)
     parser.add_argument("--execution_profile_start", type=int, default=1)
@@ -2034,6 +2036,25 @@ def _validate_daot_config(args) -> None:
         raise ValueError("--daot_diagnostic_epochs must stay inside the training budget")
     if int(args.daot_nuisance_dim) != 9:
         raise ValueError("ADV3B02-DAOT-STN currently binds exactly nine standardized nuisance fields")
+
+
+def _forward_rc4_teacher(teacher_model, x, *, domain_labels, grl_lambda, args, is_ema_teacher):
+    """RC4 consumes teacher tx_logits/z_id; student and routing paths stay intact.
+
+    The independent option applies only to the eval EMA teacher. Preserve the
+    previous bundled fast option, including its historical non-EMA fallback.
+    Caller retains the existing no_grad/autocast context and concatenated batch.
+    """
+    identity_only = bool(getattr(args, "a1_runtime_fast", False)) or (
+        bool(getattr(args, "a1_rc4_teacher_identity_only", False)) and bool(is_ema_teacher)
+    )
+    if identity_only:
+        return _forward_daot_teacher_views(
+            teacher_model, [x], domain_labels=domain_labels,
+            efficiency_mode="identity_sequential",
+        )[0][0]
+    return teacher_model(x, y_tx=None, grl_lambda=grl_lambda,
+                         return_aux=True, domain_labels=domain_labels)
 
 
 def _forward_daot_teacher_views(
@@ -10271,17 +10292,11 @@ def train(args) -> int:
                             )
                             combined_w = torch.cat([x_u, x_w2], dim=0)
                             combined_d = torch.cat([d_u, d_u], dim=0)
-                            if bool(args.a1_runtime_fast):
-                                combined_out = _forward_daot_teacher_views(
-                                    pseudo_source, [combined_w], domain_labels=combined_d,
-                                    efficiency_mode="identity_sequential",
-                                )[0][0]
-                            else:
-                                combined_out = pseudo_source(
-                                    combined_w, y_tx=None,
-                                    grl_lambda=float(schedule.grl_lambda), return_aux=True,
-                                    domain_labels=combined_d,
-                                )
+                            combined_out = _forward_rc4_teacher(
+                                pseudo_source, combined_w, domain_labels=combined_d,
+                                grl_lambda=float(schedule.grl_lambda), args=args,
+                                is_ema_teacher=ema_model is not None,
+                            )
                             out_w, out_w2 = _split_muse_output(
                                 combined_out, unlabeled_count, int(combined_w.shape[0])
                             )

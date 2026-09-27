@@ -12,9 +12,11 @@ class Execution:
     config_reuse: bool = False
     light_metadata: bool = False
     identity_filter: bool = False
+    lazy_rng: bool = False
 
 
-FAST = Execution(True, True, True, True, True)
+# FAST is explicitly opt-in; the reference/default still constructs eagerly.
+FAST = Execution(True, True, True, True, True, lazy_rng=True)
 REFERENCE = Execution()
 
 

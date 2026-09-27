@@ -335,8 +335,9 @@ class ChannelStream:
         self.receiver_processor = receiver_processor
         if receiver_processor is not None:
             raise ValueError("RFF-safe policy: external receiver transforms/equalizers are disabled")
-        self.rngs = {k: np.random.default_rng(stable_seed(seed, k)) for k in
-                     ("geometry", "states", "shadow", "scatter", "phase", "noise", "sync", "tracking", "equalizer")}
+        from .named_rng import NamedRNGs, STREAM_NAMES
+        self.rngs = (NamedRNGs(seed, stable_seed) if execution.lazy_rng else
+                     {k: np.random.default_rng(stable_seed(seed, k)) for k in STREAM_NAMES})
         self.geometry = geometry or sample_geometry(cfg, self.rngs["geometry"])
         g = self.geometry
         if not all(math.isfinite(v) for v in (g.altitude_m, g.elevation_deg, g.distance_m, g.range_rate_mps)) or g.distance_m <= 0 or g.altitude_m <= 0:
