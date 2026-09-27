@@ -22,7 +22,8 @@ def main():
     x=np.random.default_rng(41).normal(size=(a.batch_size,2,256))
     x/=np.sqrt(np.mean(np.sum(x*x,axis=1),axis=1))[:,None,None]
     kw=dict(seed=392005,sample_ids=[f'synthetic{i}' for i in range(len(x))],session_ids=['synthetic_rx']*len(x),realization_namespace='source_dynamic_E91_L',receiver_seed=2027)
-    options={'reference':REFERENCE,'previous_fast':replace(FAST,lazy_rng=False),'lazy_fast':FAST}
+    # Keep the rejected optimization reproducible even when FAST leaves it off.
+    options={'reference':REFERENCE,'previous_fast':replace(FAST,lazy_rng=False),'lazy_fast':replace(FAST,lazy_rng=True)}
     result={'scope':'synthetic CPU component timing; not whole training and not RFF accuracy','host':platform.node(),'platform':platform.platform(),'python':sys.version,'numpy':np.__version__,'batch_size':len(x),'repeats':a.repeats,'cases':[],'physics':[]}
     for route,eq,method in [('full',False,'zf'),('full',True,'zf'),('full',True,'mmse'),('residual',False,'zf')]:
         for scene in SCENARIOS:

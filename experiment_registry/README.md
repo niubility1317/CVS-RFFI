@@ -1,6 +1,6 @@
 # 实验总索引
 
-更新：2026-09-27T05:13:39+00:00
+更新：2026-09-27T16:33:03+00:00
 
 先按方法/问题检索，再用run ID读取精确配置与证据。历史组数量不等于独立实验数量。
 
@@ -12,7 +12,7 @@
 
 |记录类型|数量|
 |---|---:|
-|managed_run|13|
+|managed_run|14|
 
 历史状态统一为HISTORICAL_UNVERIFIED；RUNNING等原文声明只供查证，不能证明此刻仍在运行。
 
@@ -47,6 +47,10 @@
 |[true256](by_method/true256.md)|1|
 |[final_eval](by_method/final_eval.md)|1|
 |[truth_last](by_method/truth_last.md)|1|
+|[urban](by_method/urban.md)|1|
+|[diagnostic](by_method/diagnostic.md)|1|
+|[execution](by_method/execution.md)|1|
+|[synthetic](by_method/synthetic.md)|1|
 
 ## 最近记录入口
 
@@ -62,6 +66,7 @@
 |旧Practical四组checkpoint统一六环境测试|managed_run|[打开](../automation_reports/CV-SincNet/20260920-phase1-practical4-sixscene-eval-s392005-r01/report.md)|
 |CVS：DAOT＋FastTrust-RC4原始residual_noeq五种子实验|managed_run|[打开](../automation_reports/CV-SincNet/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/report.md)|
 |CVS最终clean/星地测试与D92 E0真实256维注册|managed_run|[打开](../automation_reports/CV-SincNet/20260927-phase2-cvs-d92-practical-manytx-m5-r01/report.md)|
+|Urban合成诊断与执行加速基准|managed_run|[打开](../automation_reports/CV-SincNet/20260928-phase1-urban-execution-synthetic-s000041-r01/report.md)|
 |原生DAOT＋RC4与仅动力博弈三seed对照|managed_run|[打开](../automation_reports/CV-SincNet/phase1_daot_rc4_pure_game_m3_20260917_r1/report.md)|
 |原生DAOT＋RC4与仅动力博弈三seed对照|managed_run|[打开](../automation_reports/CV-SincNet/phase1_daot_rc4_pure_game_m3_20260917_r2/report.md)|
 |响应博弈矩阵测试评估：VERIFIED|managed_run|[打开](../automation_reports/CV-SincNet/response_matrix_eval_20260917/report.md)|

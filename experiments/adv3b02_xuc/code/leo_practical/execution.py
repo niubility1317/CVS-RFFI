@@ -15,8 +15,9 @@ class Execution:
     lazy_rng: bool = False
 
 
-# FAST is explicitly opt-in; the reference/default still constructs eagerly.
-FAST = Execution(True, True, True, True, True, lazy_rng=True)
+# Lazy RNG remains an explicit experimental control: paired measurements showed
+# a slowdown, so neither the reference nor the recommended FAST path enables it.
+FAST = Execution(True, True, True, True, True, lazy_rng=False)
 REFERENCE = Execution()
 
 

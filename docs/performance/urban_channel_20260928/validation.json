@@ -1,0 +1,50 @@
+{
+  "status": "VERIFIED_WITH_SCOPE_LIMITS",
+  "artifact_check": {
+    "status": "VERIFIED",
+    "channel_cases": 24,
+    "physics_records": 6144,
+    "teacher_cases": 2,
+    "execution_only_changes": 11,
+    "lazy_fast_default": false,
+    "local_document_links": 19
+  },
+  "test_evidence_origin": "Current task code_analysis agent tool outputs; no standalone pytest log was saved. Counts below are overlapping checks, not an aggregate unique test count.",
+  "pytest_checks": [
+    {
+      "file": "test_practical_lazy_rng.py + test_practical_remaining.py",
+      "passed": 64,
+      "scope": "initial equivalence and existing execution checks"
+    },
+    {
+      "file": "test_practical_lazy_rng.py",
+      "passed": 35,
+      "scope": "after strengthened continuous EQ stream coverage"
+    },
+    {
+      "file": "test_rc4_teacher_identity.py",
+      "passed": 9,
+      "scope": "dispatch plus CPU/CUDA FP32/FP16 exact outputs, state and RNG"
+    },
+    {
+      "file": "test_practical_lazy_rng.py",
+      "passed": 9,
+      "deselected": 26,
+      "scope": "after FAST.lazy_rng=False, default and practical_mid"
+    },
+    {
+      "file": "test_practical_remaining.py",
+      "passed": 8,
+      "deselected": 21,
+      "scope": "after rollback, individual execution equivalence practical_mid"
+    }
+  ],
+  "recipe_parse": "Parsed with train_rc4_matched.build_args and asserted source-only E200 final-only settings in this task",
+  "review": "One focused P0/P1 review; benchmark exclusive-write collision fix verified; teacher increment reviewed with no P0/P1 remaining",
+  "not_verified": [
+    "new urban accuracy",
+    "real source difficult-view teacher calibration",
+    "N607 whole-step or whole-epoch speed",
+    "full training with new recipe"
+  ]
+}

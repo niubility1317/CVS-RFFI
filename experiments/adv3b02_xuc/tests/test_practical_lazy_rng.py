@@ -88,15 +88,17 @@ def test_supplied_geometry_does_not_construct_unused_geometry_rng():
     assert list(lazy.rngs) == list(STREAM_NAMES)
 
 
-def test_default_eager_and_fast_explicitly_lazy():
-    assert not Execution().lazy_rng and not REFERENCE.lazy_rng and FAST.lazy_rng
+def test_default_and_fast_eager_with_explicit_lazy_control():
+    assert not Execution().lazy_rng and not REFERENCE.lazy_rng and not FAST.lazy_rng
     cfg = Config(fs_hz=25e6, fc_hz=2.462e9, scenario='practical_mid')
     receiver = receiver_for_session(cfg, 9, 'rx')
     eager = ChannelStream(cfg, 17, receiver)
     fast = ChannelStream(cfg, 17, receiver, execution=FAST)
+    experimental = ChannelStream(cfg, 17, receiver, execution=replace(FAST, lazy_rng=True))
     assert type(eager.rngs) is dict and len(eager.rngs) == 9
-    assert isinstance(fast.rngs, NamedRNGs)
-    assert len(fast.rngs.materialized_names) == 7
+    assert type(fast.rngs) is dict and len(fast.rngs) == 9
+    assert isinstance(experimental.rngs, NamedRNGs)
+    assert len(experimental.rngs.materialized_names) == 7
 
 
 def test_pickle_preserves_accessed_and_unaccessed_streams():

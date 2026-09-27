@@ -1,0 +1,191 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20260928-phase1-urban-execution-synthetic-s000041-r01",
+  "group_id": "phase1-urban-quality-execution",
+  "display_name": "Urban信道合成质量诊断与保真加速基准",
+  "description": "四route/EQ配置×六场景配对CPU计时、6×1024条合成IQ物理诊断、随机初始化CVS教师GPU前向基准。无真实数据、checkpoint继承或模型训练。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "urban",
+    "diagnostic",
+    "execution",
+    "synthetic"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "2026-09-28当前用户：全面分析urban星地增强并加速训练；本记录仅有界本地诊断/性能测试，不含完整训练。",
+  "code": {
+    "commit": "1d22591581d57cb3928e70475c7c7f930d7bbce9",
+    "checkout": "E:\\type10-7\\code\\snapshots\\daot_game_analysis_20260914_wt",
+    "environment": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe; NumPy2.2.6 Torch2.10.0+cu128",
+    "cwd": "E:\\type10-7\\code\\snapshots\\daot_game_analysis_20260914_wt"
+  },
+  "data": {
+    "dataset": "synthetic Gaussian complex IQ",
+    "version": "urban-synthetic-v1",
+    "representation": "B×2×256 float64; per-packet unit complex RMS; 25Msps",
+    "contract_ref": "tools/benchmark_urban_channel.py",
+    "physical_ids_ref": "synthetic0... and physics0...; no real physical samples",
+    "label_map_ref": "not_applicable_no_classes",
+    "source_receivers": [],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": "not_applicable",
+    "roles": {
+      "L_s": null,
+      "U_s": null,
+      "V": null
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": null,
+    "support_query_ref": null,
+    "leo_config_ref": "experiments/adv3b02_xuc/code/leo_practical/channel.py"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "component speed and model-generated added-noise quality only; no TX recognition or whole-epoch claim"
+  },
+  "checkpoint": {
+    "initialization": "scratch_random_model_for_teacher_benchmark_only",
+    "sources": [],
+    "contract_check_ref": "no checkpoint loaded",
+    "provenance_verdict": "SCRATCH_NO_INHERITANCE_NO_TRAINING",
+    "selection_rule": "not_applicable"
+  },
+  "execution": {
+    "host": "local Windows CPU + RTX5070Ti",
+    "launch_owner": "codex/root/urban-channel-20260928",
+    "gpu_policy": "local one bounded GPU component benchmark; no N607 resource use",
+    "remote_run_root": null,
+    "remote_log_root": null,
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\urban_channel_20260928",
+    "launch_command": "Run both registered row commands serially",
+    "stop_rule": "Stop on exception, output collision, nonfinite IQ or equality failure; preserve artifacts; no automatic retry"
+  },
+  "expected_artifacts": [
+    "channel_benchmark.json",
+    "channel_benchmark.log",
+    "teacher_benchmark.json",
+    "teacher_benchmark.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "median_seconds",
+      "incremental_speedup",
+      "exact_iq_metadata_state",
+      "added_noise_SNR",
+      "state_counts",
+      "lock_counts",
+      "teacher_FP32_speedup",
+      "teacher_AMP_speedup"
+    ],
+    "dimensions": [
+      "route",
+      "equalization",
+      "scene"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": null
+  },
+  "rows": [
+    {
+      "row_id": "synthetic-channel-s000041",
+      "method": "REFERENCE vs previous FAST vs lazy FAST",
+      "purpose": "execution_equivalence_and_physics_diagnostic",
+      "config_ref": "experiments/adv3b02_xuc/tools/benchmark_urban_channel.py",
+      "resolved_config_ref": "E:\\type10-7\\local_artifacts\\urban_channel_20260928\\channel\\channel_benchmark.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": null,
+        "split": null,
+        "data": 41,
+        "augmentation": 392005,
+        "support": null,
+        "evaluation": 812
+      },
+      "seed_notes": "data41 timing input; evaluation812 diagnostic input; augmentation392005 named channels; receiver2027; model/split/support N/A, no classes or real role split",
+      "k": null,
+      "scenario": "six Practical scenes",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "24cases ×3paths ×7paired repeats plus warmup; 6×1024 diagnostics",
+      "output_root": "E:\\type10-7\\local_artifacts\\urban_channel_20260928\\channel",
+      "log_path": "E:\\type10-7\\local_artifacts\\urban_channel_20260928\\channel\\channel_benchmark.log",
+      "command": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe -X utf8 E:/type10-7/code/snapshots/daot_game_analysis_20260914_wt/experiments/adv3b02_xuc/tools/benchmark_urban_channel.py --output E:/type10-7/local_artifacts/urban_channel_20260928/channel/channel_benchmark.json --batch-size 128 --repeats 7 --diagnostic-samples 1024",
+      "expected_artifacts": [
+        "channel_benchmark.json",
+        "channel_benchmark.log"
+      ],
+      "status": "ARTIFACTS_COMPLETE",
+      "pid": 6792,
+      "actual_command": [
+        "C:\\Users\\lh594\\.conda\\envs\\ssr-gpu\\python.exe",
+        "-X",
+        "utf8",
+        "E:\\type10-7\\code\\snapshots\\daot_game_analysis_20260914_wt\\experiments\\adv3b02_xuc\\tools\\benchmark_urban_channel.py",
+        "--output",
+        "E:\\type10-7\\local_artifacts\\urban_channel_20260928\\channel\\channel_benchmark.json"
+      ],
+      "started": "2026-09-28T00:20:37.382084+08:00",
+      "finished": "2026-09-28T00:23:03.136326+08:00"
+    },
+    {
+      "row_id": "synthetic-teacher-s000913",
+      "method": "full vs independent identity-only eval EMA teacher",
+      "purpose": "execution_equivalence_and_cuda_timing",
+      "config_ref": "experiments/adv3b02_xuc/tools/benchmark_rc4_teacher.py",
+      "resolved_config_ref": "E:\\type10-7\\local_artifacts\\urban_channel_20260928\\teacher\\teacher_benchmark.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 913,
+        "split": null,
+        "data": 913,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Single manual_seed913 controls scratch model and synthetic input; no real split, augmentation, support or evaluation dataset.",
+      "k": null,
+      "scenario": "synthetic clean/weak combined tensor, no simulated channel in this component",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "batch512 × FP32/FP16 ×15 paired repeats +5 warmups",
+      "output_root": "E:\\type10-7\\local_artifacts\\urban_channel_20260928\\teacher",
+      "log_path": "E:\\type10-7\\local_artifacts\\urban_channel_20260928\\teacher\\teacher_benchmark.log",
+      "command": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe -X utf8 E:/type10-7/code/snapshots/daot_game_analysis_20260914_wt/experiments/adv3b02_xuc/tools/benchmark_rc4_teacher.py --output E:/type10-7/local_artifacts/urban_channel_20260928/teacher/teacher_benchmark.json",
+      "expected_artifacts": [
+        "teacher_benchmark.json",
+        "teacher_benchmark.log"
+      ],
+      "status": "ARTIFACTS_COMPLETE",
+      "pid": 6704,
+      "actual_command": [
+        "C:\\Users\\lh594\\.conda\\envs\\ssr-gpu\\python.exe",
+        "-X",
+        "utf8",
+        "E:\\type10-7\\code\\snapshots\\daot_game_analysis_20260914_wt\\experiments\\adv3b02_xuc\\tools\\benchmark_rc4_teacher.py",
+        "--output",
+        "E:\\type10-7\\local_artifacts\\urban_channel_20260928\\teacher\\teacher_benchmark.json"
+      ],
+      "started": "2026-09-28T00:23:03.136326+08:00",
+      "finished": "2026-09-28T00:23:25.037208+08:00"
+    }
+  ],
+  "notes": [
+    "No new model training. Fixed channel severity; no optimization of target scores.",
+    "Null L/U/V fractions, K, optimizer and epochs are N/A for synthetic CPU diagnostic."
+  ],
+  "registered_at": "2026-09-27T16:13:21+00:00"
+}

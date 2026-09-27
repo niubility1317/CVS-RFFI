@@ -1,0 +1,1723 @@
+{
+  "scope": "synthetic CPU component timing; not whole training and not RFF accuracy",
+  "host": "DESKTOP-8RI2J69",
+  "platform": "Windows-10-10.0.26200-SP0",
+  "python": "3.10.19 | packaged by Anaconda, Inc. | (main, Oct 21 2025, 16:41:31) [MSC v.1929 64 bit (AMD64)]",
+  "numpy": "2.2.6",
+  "batch_size": 128,
+  "repeats": 7,
+  "cases": [
+    {
+      "route": "full",
+      "equalization": false,
+      "method": "zf",
+      "scene": "practical_high",
+      "samples_s": {
+        "reference": [
+          0.2726385000278242,
+          0.2678526000236161,
+          0.271292999968864,
+          0.27325550001114607,
+          0.2633796000154689,
+          0.26447739999275655,
+          0.2737170000327751
+        ],
+        "previous_fast": [
+          0.23960859997896478,
+          0.23942179995356128,
+          0.2541356000001542,
+          0.24660559999756515,
+          0.24425390001852065,
+          0.24674520001281053,
+          0.23790959996404126
+        ],
+        "lazy_fast": [
+          0.24503079999703914,
+          0.24372450000373647,
+          0.24337550002383068,
+          0.25029960001120344,
+          0.2483234999817796,
+          0.24151879997225478,
+          0.24176600005012006
+        ]
+      },
+      "median_s": {
+        "reference": 0.271292999968864,
+        "previous_fast": 0.24425390001852065,
+        "lazy_fast": 0.24372450000373647
+      },
+      "new_incremental_speedup": 1.0021721247341817,
+      "combined_vs_reference": 1.1131133717156252,
+      "exact_iq_metadata_state": true
+    },
+    {
+      "route": "full",
+      "equalization": false,
+      "method": "zf",
+      "scene": "practical_mid",
+      "samples_s": {
+        "reference": [
+          0.26973860000725836,
+          0.2693602000363171,
+          0.2666587000130676,
+          0.2648164999554865,
+          0.28049420000752434,
+          0.2640024999855086,
+          0.26465180004015565
+        ],
+        "previous_fast": [
+          0.2354683000012301,
+          0.23528409999562427,
+          0.23932560003595427,
+          0.2361693000420928,
+          0.23744060000171885,
+          0.23789500002749264,
+          0.23631929996190593
+        ],
+        "lazy_fast": [
+          0.24127299996325746,
+          0.24298139999154955,
+          0.24696050002239645,
+          0.2444592000101693,
+          0.24366189999273047,
+          0.24317710002651438,
+          0.24197780003305525
+        ]
+      },
+      "median_s": {
+        "reference": 0.2666587000130676,
+        "previous_fast": 0.23631929996190593,
+        "lazy_fast": 0.24317710002651438
+      },
+      "new_incremental_speedup": 0.9717991535228411,
+      "combined_vs_reference": 1.0965617238793988,
+      "exact_iq_metadata_state": true
+    },
+    {
+      "route": "full",
+      "equalization": false,
+      "method": "zf",
+      "scene": "practical_low_urban",
+      "samples_s": {
+        "reference": [
+          0.26553579996107146,
+          0.2657304999884218,
+          0.26377449999563396,
+          0.26442499994300306,
+          0.2646736999740824,
+          0.2670671999803744,
+          0.26362379995407537
+        ],
+        "previous_fast": [
+          0.23454660002607852,
+          0.2367021000245586,
+          0.23665710003115237,
+          0.23740010004257783,
+          0.2368333999766037,
+          0.2408906000200659,
+          0.23369370005093515
+        ],
+        "lazy_fast": [
+          0.248955599963665,
+          0.2435906000318937,
+          0.24586629995610565,
+          0.24234419997083023,
+          0.2448125000228174,
+          0.24378259998047724,
+          0.24275140004465356
+        ]
+      },
+      "median_s": {
+        "reference": 0.2646736999740824,
+        "previous_fast": 0.2367021000245586,
+        "lazy_fast": 0.24378259998047724
+      },
+      "new_incremental_speedup": 0.9709556795419949,
+      "combined_vs_reference": 1.085695615664441,
+      "exact_iq_metadata_state": true
+    },
+    {
+      "route": "full",
+      "equalization": false,
+      "method": "zf",
+      "scene": "practical_low_suburban",
+      "samples_s": {
+        "reference": [
+          0.2668127999641001,
+          0.26435319997835904,
+          0.2648423000355251,
+          0.26445109996711835,
+          0.26389139995444566,
+          0.2645173000055365,
+          0.26629870000761
+        ],
+        "previous_fast": [
+          0.24121639999793842,
+          0.23826960002770647,
+          0.23795669997343794,
+          0.23671970004215837,
+          0.23631960002239794,
+          0.23859630001243204,
+          0.24981830001343042
+        ],
+        "lazy_fast": [
+          0.24429399997461587,
+          0.2411699999938719,
+          0.2466691000154242,
+          0.24246440001297742,
+          0.24211760004982352,
+          0.2426578999729827,
+          0.24254519998794422
+        ]
+      },
+      "median_s": {
+        "reference": 0.2645173000055365,
+        "previous_fast": 0.23826960002770647,
+        "lazy_fast": 0.24254519998794422
+      },
+      "new_incremental_speedup": 0.9823719456808452,
+      "combined_vs_reference": 1.0905897128398518,
+      "exact_iq_metadata_state": true
+    },
+    {
+      "route": "full",
+      "equalization": false,
+      "method": "zf",
+      "scene": "practical_mid_urban",
+      "samples_s": {
+        "reference": [
+          0.271822200040333,
+          0.2648136999923736,
+          0.26513399998657405,
+          0.2775039999978617,
+          0.2642818000167608,
+          0.26524700003210455,
+          0.2748324000276625
+        ],
+        "previous_fast": [
+          0.23791039997013286,
+          0.24060380004812032,
+          0.23879229999147356,
+          0.23953560000518337,
+          0.23621390003245324,
+          0.23638439999194816,
+          0.23565049999160692
+        ],
+        "lazy_fast": [
+          0.24660120002226904,
+          0.24338830000488088,
+          0.2453279999899678,
+          0.242968300008215,
+          0.24347089999355376,
+          0.24329499999294057,
+          0.24088230001507327
+        ]
+      },
+      "median_s": {
+        "reference": 0.26524700003210455,
+        "previous_fast": 0.23791039997013286,
+        "lazy_fast": 0.24338830000488088
+      },
+      "new_incremental_speedup": 0.977493166127385,
+      "combined_vs_reference": 1.0898099868678377,
+      "exact_iq_metadata_state": true
+    },
+    {
+      "route": "full",
+      "equalization": false,
+      "method": "zf",
+      "scene": "practical_high_urban",
+      "samples_s": {
+        "reference": [
+          0.2649418000364676,
+          0.2659540000022389,
+          0.2654140000231564,
+          0.2647840999998152,
+          0.2723276000469923,
+          0.26898569997865707,
+          0.2712912000133656
+        ],
+        "previous_fast": [
+          0.2363406999502331,
+          0.23659240000415593,
+          0.23989159998018295,
+          0.2382089999737218,
+          0.2379998000105843,
+          0.24723370000720024,
+          0.2381427999935113
+        ],
+        "lazy_fast": [
+          0.24254470004234463,
+          0.24279769998975098,
+          0.24255129997618496,
+          0.24273499997798353,
+          0.24760160001460463,
+          0.24197100003948435,
+          0.24254850001307204
+        ]
+      },
+      "median_s": {
+        "reference": 0.2659540000022389,
+        "previous_fast": 0.2381427999935113,
+        "lazy_fast": 0.24255129997618496
+      },
+      "new_incremental_speedup": 0.9818244635955093,
+      "combined_vs_reference": 1.0964855683245225,
+      "exact_iq_metadata_state": true
+    },
+    {
+      "route": "full",
+      "equalization": true,
+      "method": "zf",
+      "scene": "practical_high",
+      "samples_s": {
+        "reference": [
+          0.3036032000090927,
+          0.3019312999676913,
+          0.305879499996081,
+          0.3031833000131883,
+          0.30456599994795397,
+          0.30505289998836815,
+          0.30443819996435195
+        ],
+        "previous_fast": [
+          0.27491019997978583,
+          0.2749488999834284,
+          0.27322920004371554,
+          0.2773934999713674,
+          0.2735034999786876,
+          0.2749189999885857,
+          0.2767584000248462
+        ],
+        "lazy_fast": [
+          0.287707399984356,
+          0.286582000029739,
+          0.2928880999679677,
+          0.28492790000746027,
+          0.2875616000383161,
+          0.2849749000160955,
+          0.29359109996585175
+        ]
+      },
+      "median_s": {
+        "reference": 0.30443819996435195,
+        "previous_fast": 0.2749189999885857,
+        "lazy_fast": 0.2875616000383161
+      },
+      "new_incremental_speedup": 0.9560351589084014,
+      "combined_vs_reference": 1.058688642446652,
+      "exact_iq_metadata_state": true
+    },
+    {
+      "route": "full",
+      "equalization": true,
+      "method": "zf",
+      "scene": "practical_mid",
+      "samples_s": {
+        "reference": [
+          0.30277020001085475,
+          0.3146386999869719,
+          0.3102795000304468,
+          0.3384205999900587,
+          0.3007496999925934,
+          0.30217640002956614,
+          0.3096296999719925
+        ],
+        "previous_fast": [
+          0.2761562999803573,
+          0.27684860001318157,
+          0.280265600013081,
+          0.2772736999904737,
+          0.273517899971921,
+          0.2722905999980867,
+          0.2735858000232838
+        ],
+        "lazy_fast": [
+          0.2865046000224538,
+          0.29062129999510944,
+          0.2889153999858536,
+          0.28739100001985207,
+          0.2859397999709472,
+          0.28544439998222515,
+          0.28415610000956804
+        ]
+      },
+      "median_s": {
+        "reference": 0.3096296999719925,
+        "previous_fast": 0.2761562999803573,
+        "lazy_fast": 0.2865046000224538
+      },
+      "new_incremental_speedup": 0.9638808590113893,
+      "combined_vs_reference": 1.0807145852029125,
+      "exact_iq_metadata_state": true
+    },
+    {
+      "route": "full",
+      "equalization": true,
+      "method": "zf",
+      "scene": "practical_low_urban",
+      "samples_s": {
+        "reference": [
+          0.28512050001882017,
+          0.2894435000489466,
+          0.28355470002861694,
+          0.28339960001176223,
+          0.2844871000270359,
+          0.28549029998248443,
+          0.28460110002197325
+        ],
+        "previous_fast": [
+          0.257264599960763,
+          0.2568357000127435,
+          0.2594865999999456,
+          0.25651909998850897,
+          0.2580200999509543,
+          0.2590244999737479,
+          0.2566201000008732
+        ],
+        "lazy_fast": [
+          0.26723739999579266,
+          0.2678133000154048,
+          0.26314220001222566,
+          0.26416570000583306,
+          0.2646521999849938,
+          0.2680689999833703,
+          0.264627099968493
+        ]
+      },
+      "median_s": {
+        "reference": 0.28460110002197325,
+        "previous_fast": 0.257264599960763,
+        "lazy_fast": 0.2646521999849938
+      },
+      "new_incremental_speedup": 0.9720856277610779,
+      "combined_vs_reference": 1.075377797872493,
+      "exact_iq_metadata_state": true
+    },
+    {
+      "route": "full",
+      "equalization": true,
+      "method": "zf",
+      "scene": "practical_low_suburban",
+      "samples_s": {
+        "reference": [
+          0.3091322000254877,
+          0.3073834999813698,
+          0.3017406000290066,
+          0.3151174999657087,
+          0.309871600009501,
+          0.3125945999636315,
+          0.3146191000123508
+        ],
+        "previous_fast": [
+          0.2741798000060953,
+          0.275298600026872,
+          0.2729012999916449,
+          0.2778480999986641,
+          0.300731299968902,
+          0.29719359998125583,
+          0.2835352999973111
+        ],
+        "lazy_fast": [
+          0.2879454999929294,
+          0.2936084999819286,
+          0.28682499995920807,
+          0.3166747000068426,
+          0.2968533000093885,
+          0.28642950003268197,
+          0.2916620000032708
+        ]
+      },
+      "median_s": {
+        "reference": 0.309871600009501,
+        "previous_fast": 0.2778480999986641,
+        "lazy_fast": 0.2916620000032708
+      },
+      "new_incremental_speedup": 0.9526372993243831,
+      "combined_vs_reference": 1.0624339132489866,
+      "exact_iq_metadata_state": true
+    },
+    {
+      "route": "full",
+      "equalization": true,
+      "method": "zf",
+      "scene": "practical_mid_urban",
+      "samples_s": {
+        "reference": [
+          0.29855680000036955,
+          0.29842619999544695,
+          0.315119200036861,
+          0.29766909999307245,
+          0.2978997999452986,
+          0.3028570000315085,
+          0.29918229999020696
+        ],
+        "previous_fast": [
+          0.27476100000785664,
+          0.2766200000187382,
+          0.2688083999673836,
+          0.26703160000033677,
+          0.26671679998980835,
+          0.2699461999582127,
+          0.2784842000110075
+        ],
+        "lazy_fast": [
+          0.2821305000106804,
+          0.2796587999910116,
+          0.28141080000204965,
+          0.2803876000107266,
+          0.2800252000452019,
+          0.2801014999859035,
+          0.28945540002314374
+        ]
+      },
+      "median_s": {
+        "reference": 0.29855680000036955,
+        "previous_fast": 0.2699461999582127,
+        "lazy_fast": 0.2803876000107266
+      },
+      "new_incremental_speedup": 0.9627608351720458,
+      "combined_vs_reference": 1.064800297833955,
+      "exact_iq_metadata_state": true
+    },
+    {
+      "route": "full",
+      "equalization": true,
+      "method": "zf",
+      "scene": "practical_high_urban",
+      "samples_s": {
+        "reference": [
+          0.3042898999992758,
+          0.3020894000073895,
+          0.3028863000217825,
+          0.3032043999992311,
+          0.3016736999852583,
+          0.3087515999795869,
+          0.30161909997696057
+        ],
+        "previous_fast": [
+          0.27387580001959577,
+          0.282672300003469,
+          0.28105239995056763,
+          0.27467289997730404,
+          0.27615490002790466,
+          0.27439450001111254,
+          0.27460349997272715
+        ],
+        "lazy_fast": [
+          0.28521389997331426,
+          0.2849878999986686,
+          0.2860693999682553,
+          0.28372320003109053,
+          0.29141060000984,
+          0.29259800002910197,
+          0.28739280003355816
+        ]
+      },
+      "median_s": {
+        "reference": 0.3028863000217825,
+        "previous_fast": 0.27467289997730404,
+        "lazy_fast": 0.2860693999682553
+      },
+      "new_incremental_speedup": 0.9601617649695636,
+      "combined_vs_reference": 1.0587860849688688,
+      "exact_iq_metadata_state": true
+    },
+    {
+      "route": "full",
+      "equalization": true,
+      "method": "mmse",
+      "scene": "practical_high",
+      "samples_s": {
+        "reference": [
+          0.3001570000196807,
+          0.303962399950251,
+          0.3028364999918267,
+          0.3062423000228591,
+          0.30312910000793636,
+          0.30474980000872165,
+          0.30294300004607067
+        ],
+        "previous_fast": [
+          0.2762677000137046,
+          0.2748495999840088,
+          0.274671999970451,
+          0.27990540000610054,
+          0.2762440000078641,
+          0.27624450001167133,
+          0.27511669998057187
+        ],
+        "lazy_fast": [
+          0.2913045999594033,
+          0.2853373000398278,
+          0.2870306000113487,
+          0.2861980000161566,
+          0.29039599996758625,
+          0.2928198999725282,
+          0.2861241999780759
+        ]
+      },
+      "median_s": {
+        "reference": 0.30312910000793636,
+        "previous_fast": 0.2762440000078641,
+        "lazy_fast": 0.2870306000113487
+      },
+      "new_incremental_speedup": 0.9624200346476712,
+      "combined_vs_reference": 1.0560863545418193,
+      "exact_iq_metadata_state": true
+    },
+    {
+      "route": "full",
+      "equalization": true,
+      "method": "mmse",
+      "scene": "practical_mid",
+      "samples_s": {
+        "reference": [
+          0.3060109000070952,
+          0.3058555000461638,
+          0.31384700001217425,
+          0.3027487999643199,
+          0.3016345000360161,
+          0.3042426999891177,
+          0.3027388000045903
+        ],
+        "previous_fast": [
+          0.27472990000387654,
+          0.2751756999641657,
+          0.2739117000019178,
+          0.273522800009232,
+          0.27454020001459867,
+          0.2733485999633558,
+          0.27530490001663566
+        ],
+        "lazy_fast": [
+          0.28718949999893084,
+          0.28646029997617006,
+          0.28505639999639243,
+          0.2860995000228286,
+          0.2875697999843396,
+          0.2940142000443302,
+          0.2914843000471592
+        ]
+      },
+      "median_s": {
+        "reference": 0.3042426999891177,
+        "previous_fast": 0.27454020001459867,
+        "lazy_fast": 0.28718949999893084
+      },
+      "new_incremental_speedup": 0.9559548660923214,
+      "combined_vs_reference": 1.0593796082038178,
+      "exact_iq_metadata_state": true
+    },
+    {
+      "route": "full",
+      "equalization": true,
+      "method": "mmse",
+      "scene": "practical_low_urban",
+      "samples_s": {
+        "reference": [
+          0.2850843000342138,
+          0.2846043999888934,
+          0.2837561999913305,
+          0.28434389998437837,
+          0.28440899995621294,
+          0.286739100003615,
+          0.30591170000843704
+        ],
+        "previous_fast": [
+          0.25661329994909465,
+          0.2564147000084631,
+          0.25490320002427325,
+          0.25722839997615665,
+          0.25669000000925735,
+          0.2578510000021197,
+          0.2566993000218645
+        ],
+        "lazy_fast": [
+          0.26749220001511276,
+          0.26484109996818006,
+          0.26666259998455644,
+          0.26540819997899234,
+          0.2651985000120476,
+          0.2638268999871798,
+          0.2665759000228718
+        ]
+      },
+      "median_s": {
+        "reference": 0.2846043999888934,
+        "previous_fast": 0.25669000000925735,
+        "lazy_fast": 0.26540819997899234
+      },
+      "new_incremental_speedup": 0.9671517309170362,
+      "combined_vs_reference": 1.072327079613292,
+      "exact_iq_metadata_state": true
+    },
+    {
+      "route": "full",
+      "equalization": true,
+      "method": "mmse",
+      "scene": "practical_low_suburban",
+      "samples_s": {
+        "reference": [
+          0.302804599981755,
+          0.3160554000060074,
+          0.3203324999776669,
+          0.308143200003542,
+          0.30304379999870434,
+          0.30942060000961646,
+          0.3058553999871947
+        ],
+        "previous_fast": [
+          0.27549919998273253,
+          0.27522100001806393,
+          0.2911413999972865,
+          0.2746200999827124,
+          0.27970680000726134,
+          0.28928879997693,
+          0.2804366000345908
+        ],
+        "lazy_fast": [
+          0.28553110000211746,
+          0.302052500017453,
+          0.2943334999727085,
+          0.286765800032299,
+          0.28542400000151247,
+          0.30147799995029345,
+          0.2870541999582201
+        ]
+      },
+      "median_s": {
+        "reference": 0.308143200003542,
+        "previous_fast": 0.27970680000726134,
+        "lazy_fast": 0.2870541999582201
+      },
+      "new_incremental_speedup": 0.9744041370862082,
+      "combined_vs_reference": 1.0734669621569422,
+      "exact_iq_metadata_state": true
+    },
+    {
+      "route": "full",
+      "equalization": true,
+      "method": "mmse",
+      "scene": "practical_mid_urban",
+      "samples_s": {
+        "reference": [
+          0.2984478999860585,
+          0.3102808999828994,
+          0.29415630002040416,
+          0.30372099997475743,
+          0.29854940000222996,
+          0.29726530000334606,
+          0.29734290001215413
+        ],
+        "previous_fast": [
+          0.27458289999049157,
+          0.2745712000178173,
+          0.268140800006222,
+          0.2698738999897614,
+          0.27072319999570027,
+          0.2736047999933362,
+          0.27148609998403117
+        ],
+        "lazy_fast": [
+          0.2789274000097066,
+          0.2815744000254199,
+          0.27822649996960536,
+          0.28058949997648597,
+          0.2798227000166662,
+          0.28104570001596585,
+          0.27821889996994287
+        ]
+      },
+      "median_s": {
+        "reference": 0.2984478999860585,
+        "previous_fast": 0.27148609998403117,
+        "lazy_fast": 0.2798227000166662
+      },
+      "new_incremental_speedup": 0.970207563460225,
+      "combined_vs_reference": 1.0665607185131263,
+      "exact_iq_metadata_state": true
+    },
+    {
+      "route": "full",
+      "equalization": true,
+      "method": "mmse",
+      "scene": "practical_high_urban",
+      "samples_s": {
+        "reference": [
+          0.30174170003738254,
+          0.3032476000371389,
+          0.3006146000116132,
+          0.3037295999820344,
+          0.3020782000385225,
+          0.3060080999857746,
+          0.30958559998543933
+        ],
+        "previous_fast": [
+          0.27538529998855665,
+          0.2739432000089437,
+          0.2826136000221595,
+          0.2727757000247948,
+          0.27391670003999025,
+          0.2908949999837205,
+          0.28256429999601096
+        ],
+        "lazy_fast": [
+          0.2863907999708317,
+          0.28489089995855466,
+          0.2852068000356667,
+          0.2872639000415802,
+          0.28763499995693564,
+          0.28664470004150644,
+          0.2993478999705985
+        ]
+      },
+      "median_s": {
+        "reference": 0.3032476000371389,
+        "previous_fast": 0.27538529998855665,
+        "lazy_fast": 0.28664470004150644
+      },
+      "new_incremental_speedup": 0.9607200131336131,
+      "combined_vs_reference": 1.0579215314053543,
+      "exact_iq_metadata_state": true
+    },
+    {
+      "route": "residual",
+      "equalization": false,
+      "method": "zf",
+      "scene": "practical_high",
+      "samples_s": {
+        "reference": [
+          0.11737550003454089,
+          0.11868830001913011,
+          0.12525250000180677,
+          0.12528729997575283,
+          0.11809190001804382,
+          0.11810999998124316,
+          0.11830839997855946
+        ],
+        "previous_fast": [
+          0.09128819999750704,
+          0.09021840000059456,
+          0.09249220002675429,
+          0.09083489998010918,
+          0.08653589995810762,
+          0.0864276000065729,
+          0.08736659999703988
+        ],
+        "lazy_fast": [
+          0.09172709996346384,
+          0.09357759996782988,
+          0.09635830001207069,
+          0.09257580002304167,
+          0.09392720001051202,
+          0.09216940001351759,
+          0.09357279998948798
+        ]
+      },
+      "median_s": {
+        "reference": 0.11830839997855946,
+        "previous_fast": 0.09021840000059456,
+        "lazy_fast": 0.09357279998948798
+      },
+      "new_incremental_speedup": 0.9641519759025031,
+      "combined_vs_reference": 1.264346049192183,
+      "exact_iq_metadata_state": true
+    },
+    {
+      "route": "residual",
+      "equalization": false,
+      "method": "zf",
+      "scene": "practical_mid",
+      "samples_s": {
+        "reference": [
+          0.11719689995516092,
+          0.11684169998625293,
+          0.11617009999463335,
+          0.11857270001200959,
+          0.11780720000388101,
+          0.11839100002544001,
+          0.12029259995324537
+        ],
+        "previous_fast": [
+          0.08678499999223277,
+          0.08676420000847429,
+          0.08854140003677458,
+          0.08552979998057708,
+          0.08580270002130419,
+          0.08757390000391752,
+          0.08683690003817901
+        ],
+        "lazy_fast": [
+          0.09334230003878474,
+          0.09159740002360195,
+          0.09270529996138066,
+          0.09208930004388094,
+          0.09402079996652901,
+          0.09364629996707663,
+          0.09284040000056848
+        ]
+      },
+      "median_s": {
+        "reference": 0.11780720000388101,
+        "previous_fast": 0.08678499999223277,
+        "lazy_fast": 0.09284040000056848
+      },
+      "new_incremental_speedup": 0.9347762395649024,
+      "combined_vs_reference": 1.2689217194579046,
+      "exact_iq_metadata_state": true
+    },
+    {
+      "route": "residual",
+      "equalization": false,
+      "method": "zf",
+      "scene": "practical_low_urban",
+      "samples_s": {
+        "reference": [
+          0.11992790002841502,
+          0.11774239997612312,
+          0.11904530000174418,
+          0.11741330003133044,
+          0.11926609999500215,
+          0.11804820003453642,
+          0.11746420001145452
+        ],
+        "previous_fast": [
+          0.08646249998128042,
+          0.0871968999854289,
+          0.08715419995132834,
+          0.08752440003445372,
+          0.08657380001386628,
+          0.08693219994893298,
+          0.08702729997457936
+        ],
+        "lazy_fast": [
+          0.09374839998781681,
+          0.09300860000075772,
+          0.0928876000107266,
+          0.0934018999687396,
+          0.09456559998216107,
+          0.09108659997582436,
+          0.09687120001763105
+        ]
+      },
+      "median_s": {
+        "reference": 0.11804820003453642,
+        "previous_fast": 0.08702729997457936,
+        "lazy_fast": 0.0934018999687396
+      },
+      "new_incremental_speedup": 0.9317508530737199,
+      "combined_vs_reference": 1.263873647902726,
+      "exact_iq_metadata_state": true
+    },
+    {
+      "route": "residual",
+      "equalization": false,
+      "method": "zf",
+      "scene": "practical_low_suburban",
+      "samples_s": {
+        "reference": [
+          0.11704000004101545,
+          0.11775060003856197,
+          0.11751109996112064,
+          0.12328840000554919,
+          0.11957320000510663,
+          0.11831330001587048,
+          0.12477120000403374
+        ],
+        "previous_fast": [
+          0.0857885999721475,
+          0.08643779996782541,
+          0.08768029999919236,
+          0.08698309998726472,
+          0.08959059999324381,
+          0.09229599998798221,
+          0.09363409999059513
+        ],
+        "lazy_fast": [
+          0.09341279999352992,
+          0.09348219999810681,
+          0.09332640003412962,
+          0.09527400002116337,
+          0.09644059999845922,
+          0.09372860001167282,
+          0.10020410001743585
+        ]
+      },
+      "median_s": {
+        "reference": 0.11831330001587048,
+        "previous_fast": 0.08768029999919236,
+        "lazy_fast": 0.09372860001167282
+      },
+      "new_incremental_speedup": 0.9354700698428524,
+      "combined_vs_reference": 1.2622966735994767,
+      "exact_iq_metadata_state": true
+    },
+    {
+      "route": "residual",
+      "equalization": false,
+      "method": "zf",
+      "scene": "practical_mid_urban",
+      "samples_s": {
+        "reference": [
+          0.12085750000551343,
+          0.1214021000196226,
+          0.12144630000693724,
+          0.12237850000383332,
+          0.11850559996673837,
+          0.11814099998446181,
+          0.11740049999207258
+        ],
+        "previous_fast": [
+          0.08739570004399866,
+          0.0890091999899596,
+          0.08872529998188838,
+          0.08671619999222457,
+          0.08736290002707392,
+          0.08724600001005456,
+          0.0873015999677591
+        ],
+        "lazy_fast": [
+          0.09357280004769564,
+          0.09678469999926165,
+          0.09441039996454492,
+          0.09282139997230843,
+          0.09549060004064813,
+          0.0918078999966383,
+          0.09893470001406968
+        ]
+      },
+      "median_s": {
+        "reference": 0.12085750000551343,
+        "previous_fast": 0.08736290002707392,
+        "lazy_fast": 0.09441039996454492
+      },
+      "new_incremental_speedup": 0.9253525041720231,
+      "combined_vs_reference": 1.2801290964861975,
+      "exact_iq_metadata_state": true
+    },
+    {
+      "route": "residual",
+      "equalization": false,
+      "method": "zf",
+      "scene": "practical_high_urban",
+      "samples_s": {
+        "reference": [
+          0.11714919999940321,
+          0.1182359000085853,
+          0.11902600002940744,
+          0.11848819995066151,
+          0.11818320001475513,
+          0.13494790002005175,
+          0.11780250002630055
+        ],
+        "previous_fast": [
+          0.08774569997331128,
+          0.08585450000828132,
+          0.0911634000367485,
+          0.08755690004909411,
+          0.08706770004937425,
+          0.0892123999656178,
+          0.0878931000479497
+        ],
+        "lazy_fast": [
+          0.09202069998718798,
+          0.09330800001043826,
+          0.09319899999536574,
+          0.09241800004383549,
+          0.09151870000641793,
+          0.09251539997057989,
+          0.0930778999463655
+        ]
+      },
+      "median_s": {
+        "reference": 0.1182359000085853,
+        "previous_fast": 0.08774569997331128,
+        "lazy_fast": 0.09251539997057989
+      },
+      "new_incremental_speedup": 0.94844425902298,
+      "combined_vs_reference": 1.2780131745221293,
+      "exact_iq_metadata_state": true
+    }
+  ],
+  "physics": [
+    {
+      "scene": "practical_high",
+      "count": 1024,
+      "config": {
+        "fs_hz": 25000000.0,
+        "scenario": "practical_high",
+        "fc_hz": 2462000000.0,
+        "altitude_m": 600000.0,
+        "reference_altitude_m": 600000.0,
+        "reference_elevation_deg": 60.0,
+        "reference_snr_db": 30.0,
+        "receiver_cfo_std_hz": 200.0,
+        "residual_cfo_std_hz": 100.0,
+        "phase_noise_linewidth_hz": 1.0,
+        "iq_amp_max_db": 0.2,
+        "iq_phase_max_deg": 1.0,
+        "shadow_corr_distance_m": 3.0,
+        "terminal_speed_mps": 1.0,
+        "shadow_corr_time_s": null,
+        "state_mix_time_s": 1.0,
+        "scatter_doppler_hz": null,
+        "scatter_sinusoids": 32,
+        "los_mean_db": [
+          0.0,
+          -8.0,
+          0.0
+        ],
+        "los_std_db": [
+          1.0,
+          3.0,
+          0.0
+        ],
+        "diffuse_power_db": [
+          -18.0,
+          -18.0,
+          -20.0
+        ],
+        "rms_delay_ns": [
+          20.0,
+          50.0,
+          100.0
+        ],
+        "mode": "post_sync",
+        "receiver_location": "satellite",
+        "input_processing_state": "unknown_ground_recording_processing",
+        "iq_compensation_enabled": true,
+        "iq_estimation_amp_std_db": 0.05,
+        "iq_estimation_phase_std_deg": 0.2,
+        "phase_tracking_enabled": true,
+        "phase_tracking_residual_std_deg": 1.0,
+        "phase_tracking_correlation_time_s": 0.001,
+        "agc_enabled": true,
+        "agc_limit_db": 30.0,
+        "boundary": "reflect",
+        "atmosphere_loss_db": 0.0,
+        "atmosphere_source": "clear_simplified_no_weather_injection",
+        "local_geometry_max_duration_s": 10.0,
+        "quality_adaptation_enabled": true,
+        "locked_snr_db": 15.0,
+        "unlocked_snr_db": 5.0,
+        "quality_reference_snr_db": 20.0,
+        "max_residual_scale": 10.0,
+        "coarse_doppler_error_std_hz": 500.0,
+        "fractional_delay_half_length": 24,
+        "processing_route": "residual",
+        "equalization_enabled": false,
+        "equalizer_method": "mmse",
+        "equalizer_length": 129,
+        "equalizer_delay_samples": 64,
+        "equalizer_max_gain_db": 20.0,
+        "channel_estimation_nmse_db": -25.0,
+        "zf_regularization": 1e-06
+      },
+      "state_counts": {
+        "LOS": 978,
+        "BLOCKED": 5,
+        "PARTIAL": 41
+      },
+      "lock_counts": {
+        "locked": 1019,
+        "degraded": 5
+      },
+      "statistics": {
+        "quality_snr_db": {
+          "q05": 26.599910762578613,
+          "median": 29.891736680872707,
+          "q95": 32.15857391994863,
+          "mean": 29.508599791294404
+        },
+        "signal_to_added_noise_db": {
+          "q05": 26.512475013422232,
+          "median": 29.876586872636764,
+          "q95": 32.19766120851287,
+          "mean": 29.514000524118615,
+          "fraction_below_0": 0.0,
+          "fraction_below_10": 0.00390625
+        },
+        "output_frequency_hz": {
+          "q05": -170.09969947647716,
+          "median": 0.13624868659280764,
+          "q95": 164.29010381421025,
+          "mean": -2.8600949939782083
+        },
+        "residual_kernel_energy": {
+          "q05": 0.4570811013682841,
+          "median": 0.9753796206178179,
+          "q95": 1.6438332918779555,
+          "mean": 0.9923500335502782
+        }
+      },
+      "true_total_snr_known": false
+    },
+    {
+      "scene": "practical_mid",
+      "count": 1024,
+      "config": {
+        "fs_hz": 25000000.0,
+        "scenario": "practical_mid",
+        "fc_hz": 2462000000.0,
+        "altitude_m": 600000.0,
+        "reference_altitude_m": 600000.0,
+        "reference_elevation_deg": 60.0,
+        "reference_snr_db": 30.0,
+        "receiver_cfo_std_hz": 200.0,
+        "residual_cfo_std_hz": 100.0,
+        "phase_noise_linewidth_hz": 1.0,
+        "iq_amp_max_db": 0.2,
+        "iq_phase_max_deg": 1.0,
+        "shadow_corr_distance_m": 3.0,
+        "terminal_speed_mps": 1.0,
+        "shadow_corr_time_s": null,
+        "state_mix_time_s": 1.0,
+        "scatter_doppler_hz": null,
+        "scatter_sinusoids": 32,
+        "los_mean_db": [
+          0.0,
+          -8.0,
+          0.0
+        ],
+        "los_std_db": [
+          1.0,
+          3.0,
+          0.0
+        ],
+        "diffuse_power_db": [
+          -18.0,
+          -18.0,
+          -20.0
+        ],
+        "rms_delay_ns": [
+          20.0,
+          50.0,
+          100.0
+        ],
+        "mode": "post_sync",
+        "receiver_location": "satellite",
+        "input_processing_state": "unknown_ground_recording_processing",
+        "iq_compensation_enabled": true,
+        "iq_estimation_amp_std_db": 0.05,
+        "iq_estimation_phase_std_deg": 0.2,
+        "phase_tracking_enabled": true,
+        "phase_tracking_residual_std_deg": 1.0,
+        "phase_tracking_correlation_time_s": 0.001,
+        "agc_enabled": true,
+        "agc_limit_db": 30.0,
+        "boundary": "reflect",
+        "atmosphere_loss_db": 0.0,
+        "atmosphere_source": "clear_simplified_no_weather_injection",
+        "local_geometry_max_duration_s": 10.0,
+        "quality_adaptation_enabled": true,
+        "locked_snr_db": 15.0,
+        "unlocked_snr_db": 5.0,
+        "quality_reference_snr_db": 20.0,
+        "max_residual_scale": 10.0,
+        "coarse_doppler_error_std_hz": 500.0,
+        "fractional_delay_half_length": 24,
+        "processing_route": "residual",
+        "equalization_enabled": false,
+        "equalizer_method": "mmse",
+        "equalizer_length": 129,
+        "equalizer_delay_samples": 64,
+        "equalizer_max_gain_db": 20.0,
+        "channel_estimation_nmse_db": -25.0,
+        "zf_regularization": 1e-06
+      },
+      "state_counts": {
+        "LOS": 808,
+        "PARTIAL": 167,
+        "BLOCKED": 49
+      },
+      "lock_counts": {
+        "locked": 944,
+        "degraded": 53,
+        "unlocked": 27
+      },
+      "statistics": {
+        "quality_snr_db": {
+          "q05": 10.880894203451245,
+          "median": 25.910734849764154,
+          "q95": 29.129924256992574,
+          "mean": 24.032349414859134
+        },
+        "signal_to_added_noise_db": {
+          "q05": 11.102671256376421,
+          "median": 25.93043208424119,
+          "q95": 29.095260720187092,
+          "mean": 24.04728989005097,
+          "fraction_below_0": 0.0048828125,
+          "fraction_below_10": 0.0478515625
+        },
+        "output_frequency_hz": {
+          "q05": -189.67260004355884,
+          "median": -4.0003835205534415,
+          "q95": 214.3441203995759,
+          "mean": 9.374658876372003
+        },
+        "residual_kernel_energy": {
+          "q05": 0.01225126659738459,
+          "median": 0.39000817393712583,
+          "q95": 0.8184533725891742,
+          "mean": 0.39312067594636013
+        }
+      },
+      "true_total_snr_known": false
+    },
+    {
+      "scene": "practical_low_urban",
+      "count": 1024,
+      "config": {
+        "fs_hz": 25000000.0,
+        "scenario": "practical_low_urban",
+        "fc_hz": 2462000000.0,
+        "altitude_m": 600000.0,
+        "reference_altitude_m": 600000.0,
+        "reference_elevation_deg": 60.0,
+        "reference_snr_db": 30.0,
+        "receiver_cfo_std_hz": 200.0,
+        "residual_cfo_std_hz": 100.0,
+        "phase_noise_linewidth_hz": 1.0,
+        "iq_amp_max_db": 0.2,
+        "iq_phase_max_deg": 1.0,
+        "shadow_corr_distance_m": 3.0,
+        "terminal_speed_mps": 1.0,
+        "shadow_corr_time_s": null,
+        "state_mix_time_s": 1.0,
+        "scatter_doppler_hz": null,
+        "scatter_sinusoids": 32,
+        "los_mean_db": [
+          0.0,
+          -8.0,
+          0.0
+        ],
+        "los_std_db": [
+          1.0,
+          3.0,
+          0.0
+        ],
+        "diffuse_power_db": [
+          -18.0,
+          -18.0,
+          -20.0
+        ],
+        "rms_delay_ns": [
+          20.0,
+          50.0,
+          100.0
+        ],
+        "mode": "post_sync",
+        "receiver_location": "satellite",
+        "input_processing_state": "unknown_ground_recording_processing",
+        "iq_compensation_enabled": true,
+        "iq_estimation_amp_std_db": 0.05,
+        "iq_estimation_phase_std_deg": 0.2,
+        "phase_tracking_enabled": true,
+        "phase_tracking_residual_std_deg": 1.0,
+        "phase_tracking_correlation_time_s": 0.001,
+        "agc_enabled": true,
+        "agc_limit_db": 30.0,
+        "boundary": "reflect",
+        "atmosphere_loss_db": 0.0,
+        "atmosphere_source": "clear_simplified_no_weather_injection",
+        "local_geometry_max_duration_s": 10.0,
+        "quality_adaptation_enabled": true,
+        "locked_snr_db": 15.0,
+        "unlocked_snr_db": 5.0,
+        "quality_reference_snr_db": 20.0,
+        "max_residual_scale": 10.0,
+        "coarse_doppler_error_std_hz": 500.0,
+        "fractional_delay_half_length": 24,
+        "processing_route": "residual",
+        "equalization_enabled": false,
+        "equalizer_method": "mmse",
+        "equalizer_length": 129,
+        "equalizer_delay_samples": 64,
+        "equalizer_max_gain_db": 20.0,
+        "channel_estimation_nmse_db": -25.0,
+        "zf_regularization": 1e-06
+      },
+      "state_counts": {
+        "LOS": 311,
+        "PARTIAL": 154,
+        "BLOCKED": 559
+      },
+      "lock_counts": {
+        "locked": 393,
+        "degraded": 189,
+        "unlocked": 442
+      },
+      "statistics": {
+        "quality_snr_db": {
+          "q05": -2.608105356260559,
+          "median": 6.977971337152242,
+          "q95": 25.68288323599385,
+          "mean": 10.760576723779252
+        },
+        "signal_to_added_noise_db": {
+          "q05": -2.832669363835841,
+          "median": 6.971327264226035,
+          "q95": 25.65930426822467,
+          "mean": 10.754400555577117,
+          "fraction_below_0": 0.140625,
+          "fraction_below_10": 0.5556640625
+        },
+        "output_frequency_hz": {
+          "q05": -432.1683302846406,
+          "median": 51.420404011551,
+          "q95": 975.5503198123833,
+          "mean": 150.55628344159996
+        },
+        "residual_kernel_energy": {
+          "q05": 0.0005485163275293139,
+          "median": 0.0049865154031418,
+          "q95": 0.37007381175128107,
+          "mean": 0.09111525205672155
+        }
+      },
+      "true_total_snr_known": false
+    },
+    {
+      "scene": "practical_low_suburban",
+      "count": 1024,
+      "config": {
+        "fs_hz": 25000000.0,
+        "scenario": "practical_low_suburban",
+        "fc_hz": 2462000000.0,
+        "altitude_m": 600000.0,
+        "reference_altitude_m": 600000.0,
+        "reference_elevation_deg": 60.0,
+        "reference_snr_db": 30.0,
+        "receiver_cfo_std_hz": 200.0,
+        "residual_cfo_std_hz": 100.0,
+        "phase_noise_linewidth_hz": 1.0,
+        "iq_amp_max_db": 0.2,
+        "iq_phase_max_deg": 1.0,
+        "shadow_corr_distance_m": 3.0,
+        "terminal_speed_mps": 1.0,
+        "shadow_corr_time_s": null,
+        "state_mix_time_s": 1.0,
+        "scatter_doppler_hz": null,
+        "scatter_sinusoids": 32,
+        "los_mean_db": [
+          0.0,
+          -8.0,
+          0.0
+        ],
+        "los_std_db": [
+          1.0,
+          3.0,
+          0.0
+        ],
+        "diffuse_power_db": [
+          -18.0,
+          -18.0,
+          -20.0
+        ],
+        "rms_delay_ns": [
+          20.0,
+          50.0,
+          100.0
+        ],
+        "mode": "post_sync",
+        "receiver_location": "satellite",
+        "input_processing_state": "unknown_ground_recording_processing",
+        "iq_compensation_enabled": true,
+        "iq_estimation_amp_std_db": 0.05,
+        "iq_estimation_phase_std_deg": 0.2,
+        "phase_tracking_enabled": true,
+        "phase_tracking_residual_std_deg": 1.0,
+        "phase_tracking_correlation_time_s": 0.001,
+        "agc_enabled": true,
+        "agc_limit_db": 30.0,
+        "boundary": "reflect",
+        "atmosphere_loss_db": 0.0,
+        "atmosphere_source": "clear_simplified_no_weather_injection",
+        "local_geometry_max_duration_s": 10.0,
+        "quality_adaptation_enabled": true,
+        "locked_snr_db": 15.0,
+        "unlocked_snr_db": 5.0,
+        "quality_reference_snr_db": 20.0,
+        "max_residual_scale": 10.0,
+        "coarse_doppler_error_std_hz": 500.0,
+        "fractional_delay_half_length": 24,
+        "processing_route": "residual",
+        "equalization_enabled": false,
+        "equalizer_method": "mmse",
+        "equalizer_length": 129,
+        "equalizer_delay_samples": 64,
+        "equalizer_max_gain_db": 20.0,
+        "channel_estimation_nmse_db": -25.0,
+        "zf_regularization": 1e-06
+      },
+      "state_counts": {
+        "LOS": 700,
+        "PARTIAL": 266,
+        "BLOCKED": 58
+      },
+      "lock_counts": {
+        "locked": 859,
+        "unlocked": 47,
+        "degraded": 118
+      },
+      "statistics": {
+        "quality_snr_db": {
+          "q05": 5.795036893601982,
+          "median": 22.41306619216983,
+          "q95": 26.253488958640858,
+          "mean": 20.285878839887722
+        },
+        "signal_to_added_noise_db": {
+          "q05": 5.853212103691589,
+          "median": 22.386883386229847,
+          "q95": 26.20681241039499,
+          "mean": 20.289084465765523,
+          "fraction_below_0": 0.0146484375,
+          "fraction_below_10": 0.072265625
+        },
+        "output_frequency_hz": {
+          "q05": -209.0033174497017,
+          "median": 8.818056784486544,
+          "q95": 258.1753380932864,
+          "mean": 17.133792513457898
+        },
+        "residual_kernel_energy": {
+          "q05": 0.003800655298929141,
+          "median": 0.17430370638932538,
+          "q95": 0.42203542796902405,
+          "mean": 0.18304980977512425
+        }
+      },
+      "true_total_snr_known": false
+    },
+    {
+      "scene": "practical_mid_urban",
+      "count": 1024,
+      "config": {
+        "fs_hz": 25000000.0,
+        "scenario": "practical_mid_urban",
+        "fc_hz": 2462000000.0,
+        "altitude_m": 600000.0,
+        "reference_altitude_m": 600000.0,
+        "reference_elevation_deg": 60.0,
+        "reference_snr_db": 30.0,
+        "receiver_cfo_std_hz": 200.0,
+        "residual_cfo_std_hz": 100.0,
+        "phase_noise_linewidth_hz": 1.0,
+        "iq_amp_max_db": 0.2,
+        "iq_phase_max_deg": 1.0,
+        "shadow_corr_distance_m": 3.0,
+        "terminal_speed_mps": 1.0,
+        "shadow_corr_time_s": null,
+        "state_mix_time_s": 1.0,
+        "scatter_doppler_hz": null,
+        "scatter_sinusoids": 32,
+        "los_mean_db": [
+          0.0,
+          -8.0,
+          0.0
+        ],
+        "los_std_db": [
+          1.0,
+          3.0,
+          0.0
+        ],
+        "diffuse_power_db": [
+          -18.0,
+          -18.0,
+          -20.0
+        ],
+        "rms_delay_ns": [
+          20.0,
+          50.0,
+          100.0
+        ],
+        "mode": "post_sync",
+        "receiver_location": "satellite",
+        "input_processing_state": "unknown_ground_recording_processing",
+        "iq_compensation_enabled": true,
+        "iq_estimation_amp_std_db": 0.05,
+        "iq_estimation_phase_std_deg": 0.2,
+        "phase_tracking_enabled": true,
+        "phase_tracking_residual_std_deg": 1.0,
+        "phase_tracking_correlation_time_s": 0.001,
+        "agc_enabled": true,
+        "agc_limit_db": 30.0,
+        "boundary": "reflect",
+        "atmosphere_loss_db": 0.0,
+        "atmosphere_source": "clear_simplified_no_weather_injection",
+        "local_geometry_max_duration_s": 10.0,
+        "quality_adaptation_enabled": true,
+        "locked_snr_db": 15.0,
+        "unlocked_snr_db": 5.0,
+        "quality_reference_snr_db": 20.0,
+        "max_residual_scale": 10.0,
+        "coarse_doppler_error_std_hz": 500.0,
+        "fractional_delay_half_length": 24,
+        "processing_route": "residual",
+        "equalization_enabled": false,
+        "equalizer_method": "mmse",
+        "equalizer_length": 129,
+        "equalizer_delay_samples": 64,
+        "equalizer_max_gain_db": 20.0,
+        "channel_estimation_nmse_db": -25.0,
+        "zf_regularization": 1e-06
+      },
+      "state_counts": {
+        "BLOCKED": 395,
+        "LOS": 519,
+        "PARTIAL": 110
+      },
+      "lock_counts": {
+        "degraded": 199,
+        "locked": 615,
+        "unlocked": 210
+      },
+      "statistics": {
+        "quality_snr_db": {
+          "q05": 0.8252859709216711,
+          "median": 23.202884655323803,
+          "q95": 28.836947188400934,
+          "mean": 17.227666912660652
+        },
+        "signal_to_added_noise_db": {
+          "q05": 0.850209757848182,
+          "median": 23.17381440891414,
+          "q95": 28.818062906352647,
+          "mean": 17.230217044749782,
+          "fraction_below_0": 0.0341796875,
+          "fraction_below_10": 0.3681640625
+        },
+        "output_frequency_hz": {
+          "q05": -384.2470509967217,
+          "median": 15.078503625678422,
+          "q95": 725.417829322655,
+          "mean": 58.94353993861018
+        },
+        "residual_kernel_energy": {
+          "q05": 0.0012092848207132297,
+          "median": 0.20907185530770603,
+          "q95": 0.7650587021417448,
+          "mean": 0.26151765697793444
+        }
+      },
+      "true_total_snr_known": false
+    },
+    {
+      "scene": "practical_high_urban",
+      "count": 1024,
+      "config": {
+        "fs_hz": 25000000.0,
+        "scenario": "practical_high_urban",
+        "fc_hz": 2462000000.0,
+        "altitude_m": 600000.0,
+        "reference_altitude_m": 600000.0,
+        "reference_elevation_deg": 60.0,
+        "reference_snr_db": 30.0,
+        "receiver_cfo_std_hz": 200.0,
+        "residual_cfo_std_hz": 100.0,
+        "phase_noise_linewidth_hz": 1.0,
+        "iq_amp_max_db": 0.2,
+        "iq_phase_max_deg": 1.0,
+        "shadow_corr_distance_m": 3.0,
+        "terminal_speed_mps": 1.0,
+        "shadow_corr_time_s": null,
+        "state_mix_time_s": 1.0,
+        "scatter_doppler_hz": null,
+        "scatter_sinusoids": 32,
+        "los_mean_db": [
+          0.0,
+          -8.0,
+          0.0
+        ],
+        "los_std_db": [
+          1.0,
+          3.0,
+          0.0
+        ],
+        "diffuse_power_db": [
+          -18.0,
+          -18.0,
+          -20.0
+        ],
+        "rms_delay_ns": [
+          20.0,
+          50.0,
+          100.0
+        ],
+        "mode": "post_sync",
+        "receiver_location": "satellite",
+        "input_processing_state": "unknown_ground_recording_processing",
+        "iq_compensation_enabled": true,
+        "iq_estimation_amp_std_db": 0.05,
+        "iq_estimation_phase_std_deg": 0.2,
+        "phase_tracking_enabled": true,
+        "phase_tracking_residual_std_deg": 1.0,
+        "phase_tracking_correlation_time_s": 0.001,
+        "agc_enabled": true,
+        "agc_limit_db": 30.0,
+        "boundary": "reflect",
+        "atmosphere_loss_db": 0.0,
+        "atmosphere_source": "clear_simplified_no_weather_injection",
+        "local_geometry_max_duration_s": 10.0,
+        "quality_adaptation_enabled": true,
+        "locked_snr_db": 15.0,
+        "unlocked_snr_db": 5.0,
+        "quality_reference_snr_db": 20.0,
+        "max_residual_scale": 10.0,
+        "coarse_doppler_error_std_hz": 500.0,
+        "fractional_delay_half_length": 24,
+        "processing_route": "residual",
+        "equalization_enabled": false,
+        "equalizer_method": "mmse",
+        "equalizer_length": 129,
+        "equalizer_delay_samples": 64,
+        "equalizer_max_gain_db": 20.0,
+        "channel_estimation_nmse_db": -25.0,
+        "zf_regularization": 1e-06
+      },
+      "state_counts": {
+        "LOS": 919,
+        "BLOCKED": 83,
+        "PARTIAL": 22
+      },
+      "lock_counts": {
+        "locked": 942,
+        "unlocked": 14,
+        "degraded": 68
+      },
+      "statistics": {
+        "quality_snr_db": {
+          "q05": 9.549947605498685,
+          "median": 29.857988381771797,
+          "q95": 31.944217716360203,
+          "mean": 28.027765537318174
+        },
+        "signal_to_added_noise_db": {
+          "q05": 9.78983742936547,
+          "median": 29.813859980952806,
+          "q95": 32.06756927940811,
+          "mean": 28.030606548473433,
+          "fraction_below_0": 0.0,
+          "fraction_below_10": 0.0546875
+        },
+        "output_frequency_hz": {
+          "q05": -202.19357686222938,
+          "median": -3.2002450206127833,
+          "q95": 172.84302487101712,
+          "mean": -4.540107190686891
+        },
+        "residual_kernel_energy": {
+          "q05": 0.009015608813793218,
+          "median": 0.9678295903821995,
+          "q95": 1.5646664977364588,
+          "mean": 0.9322221107948296
+        }
+      },
+      "true_total_snr_known": false
+    }
+  ],
+  "status": "VERIFIED"
+}

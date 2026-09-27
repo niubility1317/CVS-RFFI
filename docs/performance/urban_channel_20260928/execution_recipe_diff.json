@@ -1,0 +1,19 @@
+{
+  "base": "experiments/adv3b02_xuc/configs/matched_20260927/cvs-daot-rc4-s392005.json",
+  "new": "experiments/adv3b02_xuc/configs/rc4_practical_residual_noeq_fast_20260928.json",
+  "changed_options": {
+    "--a1_rc4_teacher_identity_only": "true",
+    "--a1_gradient_snapshot": "true",
+    "--a1_eval_identity_only": "true",
+    "--practical_execution_fast": "true",
+    "--practical_buffer_input": "true",
+    "--practical_buffer_output": "true",
+    "--practical_channel_workers": "2",
+    "--source_validation_reuse": "true",
+    "--incremental_epoch_telemetry": "true",
+    "--practical_eval_cpu_pipeline": "true",
+    "--practical_eval_prefetch": "true"
+  },
+  "scientific_method_changes": [],
+  "training_started": false
+}

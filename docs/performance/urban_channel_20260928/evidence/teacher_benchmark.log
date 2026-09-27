@@ -1,0 +1,4 @@
+E:\type10-7\code\snapshots\daot_game_analysis_20260914_wt\experiments\adv3b02_xuc\code\model.py:721: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=False):
+{"scope": "random model eval EMA teacher component, not training step", "torch": "2.10.0+cu128", "device": "NVIDIA GeForce RTX 5070 Ti", "batch_size": 512, "repeats": 15, "status": "VERIFIED"}
+[(False, 2.8143929724831733), (True, 2.994648715542086)]
