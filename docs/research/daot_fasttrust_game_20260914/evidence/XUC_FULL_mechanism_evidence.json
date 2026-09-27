@@ -1,0 +1,1048 @@
+[
+  {
+    "row": "F-A1",
+    "training_hours": 13.799351299795477,
+    "actions": {
+      "NORMAL": 44400
+    },
+    "field_evaluations": {
+      "1": 44400
+    },
+    "counts": {
+      "records": 44400,
+      "accepted": 44400,
+      "L_exposures": 5683200,
+      "U_exposures": 11340000,
+      "daot_executed": 39960,
+      "rc4_executed": 44400,
+      "identity_active": 39960,
+      "hard_count_sum": 380407,
+      "hard_count_nonzero_steps": 13471,
+      "partial_count_sum": 923119,
+      "partial_count_nonzero_steps": 10044,
+      "negative_count_sum": 0,
+      "negative_count_nonzero_steps": 0,
+      "satellite_samples_sum": 0,
+      "satellite_samples_nonzero_steps": 0
+    },
+    "components": {},
+    "anchor": null,
+    "cstar": null
+  },
+  {
+    "row": "F-M14",
+    "training_hours": 13.68485658460646,
+    "actions": {
+      "NORMAL": 44400
+    },
+    "field_evaluations": {
+      "1": 44400
+    },
+    "counts": {
+      "records": 44400,
+      "accepted": 44400,
+      "L_exposures": 5683200,
+      "U_exposures": 11340000,
+      "daot_executed": 39960,
+      "rc4_executed": 44400,
+      "identity_active": 39960,
+      "hard_count_sum": 81589,
+      "hard_count_nonzero_steps": 8429,
+      "partial_count_sum": 3894801,
+      "partial_count_nonzero_steps": 33808,
+      "negative_count_sum": 1552506,
+      "negative_count_nonzero_steps": 31307,
+      "satellite_samples_sum": 81589,
+      "satellite_samples_nonzero_steps": 8429,
+      "normalized_valid_blocks_nonzero_steps": 44400,
+      "legal_anchors_nonzero_steps": 44400
+    },
+    "components": {
+      "daot_orbit_z": {
+        "configured": true,
+        "scheduled_start_epoch": 21,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 39960,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 40
+      },
+      "daot_orbit_logit": {
+        "configured": true,
+        "scheduled_start_epoch": 21,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 39960,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 40
+      },
+      "daot_orbit_proto": {
+        "configured": true,
+        "scheduled_start_epoch": 21,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 39960,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 40
+      },
+      "daot_orbit_relation": {
+        "configured": true,
+        "scheduled_start_epoch": 21,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 39960,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 40
+      },
+      "daot_tangent": {
+        "configured": true,
+        "scheduled_start_epoch": 61,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 31080,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 31
+      },
+      "daot_nuisance": {
+        "configured": true,
+        "scheduled_start_epoch": 21,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 39960,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 40
+      },
+      "daot_fingerprint": {
+        "configured": true,
+        "scheduled_start_epoch": 21,
+        "status": "NONZERO_LOSS_GRADIENT_UNPROVEN",
+        "observed_records": 44400,
+        "nonzero_loss_records": 2,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 0
+      },
+      "rc4_hard": {
+        "configured": true,
+        "scheduled_start_epoch": 21,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 5980,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 9
+      },
+      "rc4_partial_set": {
+        "configured": true,
+        "scheduled_start_epoch": 21,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 30305,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 31
+      },
+      "rc4_partial_conditional": {
+        "configured": true,
+        "scheduled_start_epoch": 21,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 33808,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 31
+      },
+      "rc4_adv": {
+        "configured": true,
+        "scheduled_start_epoch": 1,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 44400,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 45
+      },
+      "rc4_negative": {
+        "configured": true,
+        "scheduled_start_epoch": 21,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 26330,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 29
+      },
+      "rc4_domain": {
+        "configured": true,
+        "scheduled_start_epoch": 1,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 44400,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 45
+      },
+      "rc4_self": {
+        "configured": true,
+        "scheduled_start_epoch": 1,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 44400,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 45
+      },
+      "rc4_satellite": {
+        "configured": true,
+        "scheduled_start_epoch": 21,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 7062,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 9
+      },
+      "rc4_anchor": {
+        "configured": true,
+        "scheduled_start_epoch": 21,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 39960,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 40
+      },
+      "x": {
+        "configured": true,
+        "scheduled_start_epoch": 1,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 44400,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 45
+      },
+      "ux_normalized": {
+        "configured": true,
+        "scheduled_start_epoch": 1,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 44400,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 45
+      }
+    },
+    "anchor": {
+      "origin": "this_run_ema_after_E20",
+      "frozen_at_epoch": 21,
+      "training_contract": {
+        "L_s": 6300,
+        "U_s": 56700,
+        "V": 27000
+      },
+      "external_checkpoint_sources": [],
+      "target_contact": false,
+      "source_V_used_for_training": false
+    },
+    "cstar": "CONTROL_NOT_ACTIVATED"
+  },
+  {
+    "row": "F-M11",
+    "training_hours": 11.726926661115527,
+    "actions": {
+      "NORMAL": 43333,
+      "HOLD_CURRICULUM": 11,
+      "CORRECT": 1056
+    },
+    "field_evaluations": {
+      "1": 43344,
+      "2": 1056
+    },
+    "counts": {
+      "records": 44400,
+      "accepted": 44400,
+      "L_exposures": 5683200,
+      "U_exposures": 11340000,
+      "daot_executed": 39960,
+      "rc4_executed": 44400,
+      "identity_active": 39960,
+      "hard_count_sum": 106588,
+      "hard_count_nonzero_steps": 9386,
+      "partial_count_sum": 2560971,
+      "partial_count_nonzero_steps": 34385,
+      "negative_count_sum": 907491,
+      "negative_count_nonzero_steps": 32723,
+      "satellite_samples_sum": 106588,
+      "satellite_samples_nonzero_steps": 9386
+    },
+    "components": {
+      "daot_orbit_z": {
+        "configured": true,
+        "scheduled_start_epoch": 21,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 39960,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 40
+      },
+      "daot_orbit_logit": {
+        "configured": true,
+        "scheduled_start_epoch": 21,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 39960,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 40
+      },
+      "daot_orbit_proto": {
+        "configured": true,
+        "scheduled_start_epoch": 21,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 39960,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 40
+      },
+      "daot_orbit_relation": {
+        "configured": true,
+        "scheduled_start_epoch": 21,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 39960,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 40
+      },
+      "daot_tangent": {
+        "configured": true,
+        "scheduled_start_epoch": 61,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 31080,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 31
+      },
+      "daot_nuisance": {
+        "configured": true,
+        "scheduled_start_epoch": 21,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 39960,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 40
+      },
+      "daot_fingerprint": {
+        "configured": true,
+        "scheduled_start_epoch": 21,
+        "status": "NONZERO_LOSS_GRADIENT_UNPROVEN",
+        "observed_records": 44400,
+        "nonzero_loss_records": 4,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 0
+      },
+      "rc4_hard": {
+        "configured": true,
+        "scheduled_start_epoch": 21,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 6405,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 11
+      },
+      "rc4_partial_set": {
+        "configured": true,
+        "scheduled_start_epoch": 21,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 28471,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 35
+      },
+      "rc4_partial_conditional": {
+        "configured": true,
+        "scheduled_start_epoch": 21,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 34385,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 35
+      },
+      "rc4_adv": {
+        "configured": true,
+        "scheduled_start_epoch": 1,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 44400,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 45
+      },
+      "rc4_negative": {
+        "configured": true,
+        "scheduled_start_epoch": 21,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 27819,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 32
+      },
+      "rc4_domain": {
+        "configured": true,
+        "scheduled_start_epoch": 1,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 44400,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 45
+      },
+      "rc4_self": {
+        "configured": true,
+        "scheduled_start_epoch": 1,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 44400,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 45
+      },
+      "rc4_satellite": {
+        "configured": true,
+        "scheduled_start_epoch": 21,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 7452,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 11
+      },
+      "rc4_anchor": {
+        "configured": true,
+        "scheduled_start_epoch": 21,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 39960,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 40
+      }
+    },
+    "anchor": {
+      "origin": "this_run_ema_after_E20",
+      "frozen_at_epoch": 21,
+      "training_contract": {
+        "L_s": 6300,
+        "U_s": 56700,
+        "V": 27000
+      },
+      "external_checkpoint_sources": [],
+      "target_contact": false,
+      "source_V_used_for_training": false
+    },
+    "cstar": null
+  },
+  {
+    "row": "F-M05",
+    "training_hours": 12.137487840246694,
+    "actions": {
+      "NORMAL": 44400
+    },
+    "field_evaluations": {
+      "1": 44400
+    },
+    "counts": {
+      "records": 44400,
+      "accepted": 44400,
+      "L_exposures": 5683200,
+      "U_exposures": 11340000,
+      "daot_executed": 39960,
+      "rc4_executed": 44400,
+      "identity_active": 39960,
+      "hard_count_sum": 104282,
+      "hard_count_nonzero_steps": 10578,
+      "partial_count_sum": 0,
+      "partial_count_nonzero_steps": 0,
+      "negative_count_sum": 3674712,
+      "negative_count_nonzero_steps": 39960,
+      "satellite_samples_sum": 104282,
+      "satellite_samples_nonzero_steps": 10578,
+      "normalized_valid_blocks_nonzero_steps": 44400,
+      "legal_anchors_nonzero_steps": 44400
+    },
+    "components": {
+      "daot_orbit_z": {
+        "configured": true,
+        "scheduled_start_epoch": 21,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 39960,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 40
+      },
+      "daot_orbit_logit": {
+        "configured": true,
+        "scheduled_start_epoch": 21,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 39960,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 40
+      },
+      "daot_orbit_proto": {
+        "configured": true,
+        "scheduled_start_epoch": 21,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 39960,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 40
+      },
+      "daot_orbit_relation": {
+        "configured": true,
+        "scheduled_start_epoch": 21,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 39960,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 40
+      },
+      "daot_tangent": {
+        "configured": true,
+        "scheduled_start_epoch": 61,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 31080,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 31
+      },
+      "daot_nuisance": {
+        "configured": true,
+        "scheduled_start_epoch": 21,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 39960,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 40
+      },
+      "daot_fingerprint": {
+        "configured": true,
+        "scheduled_start_epoch": 21,
+        "status": "NONZERO_LOSS_GRADIENT_UNPROVEN",
+        "observed_records": 44400,
+        "nonzero_loss_records": 14,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 0
+      },
+      "rc4_hard": {
+        "configured": true,
+        "scheduled_start_epoch": 21,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 7619,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 10
+      },
+      "rc4_partial_set": {
+        "configured": true,
+        "scheduled_start_epoch": 21,
+        "status": "ENABLED_NO_NONZERO_EVIDENCE",
+        "observed_records": 44400,
+        "nonzero_loss_records": 0,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 0
+      },
+      "rc4_partial_conditional": {
+        "configured": true,
+        "scheduled_start_epoch": 21,
+        "status": "ENABLED_NO_NONZERO_EVIDENCE",
+        "observed_records": 44400,
+        "nonzero_loss_records": 0,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 0
+      },
+      "rc4_adv": {
+        "configured": true,
+        "scheduled_start_epoch": 1,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 44400,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 45
+      },
+      "rc4_negative": {
+        "configured": true,
+        "scheduled_start_epoch": 21,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 37421,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 40
+      },
+      "rc4_domain": {
+        "configured": true,
+        "scheduled_start_epoch": 1,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 44400,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 45
+      },
+      "rc4_self": {
+        "configured": true,
+        "scheduled_start_epoch": 1,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 44400,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 45
+      },
+      "rc4_satellite": {
+        "configured": true,
+        "scheduled_start_epoch": 21,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 8968,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 10
+      },
+      "rc4_anchor": {
+        "configured": true,
+        "scheduled_start_epoch": 21,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 39960,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 40
+      },
+      "x": {
+        "configured": true,
+        "scheduled_start_epoch": 1,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 44399,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 45
+      },
+      "ux_normalized": {
+        "configured": true,
+        "scheduled_start_epoch": 1,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 44400,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 45
+      }
+    },
+    "anchor": {
+      "origin": "this_run_ema_after_E20",
+      "frozen_at_epoch": 21,
+      "training_contract": {
+        "L_s": 6300,
+        "U_s": 56700,
+        "V": 27000
+      },
+      "external_checkpoint_sources": [],
+      "target_contact": false,
+      "source_V_used_for_training": false
+    },
+    "cstar": "CONTROL_NOT_ACTIVATED"
+  },
+  {
+    "row": "F-M08",
+    "training_hours": 12.291031614602673,
+    "actions": {
+      "NORMAL": 43313,
+      "HOLD_CURRICULUM": 11,
+      "CORRECT": 1076
+    },
+    "field_evaluations": {
+      "1": 43324,
+      "2": 1076
+    },
+    "counts": {
+      "records": 44400,
+      "accepted": 44400,
+      "L_exposures": 5683200,
+      "U_exposures": 11340000,
+      "daot_executed": 39960,
+      "rc4_executed": 44400,
+      "identity_active": 39960,
+      "hard_count_sum": 114208,
+      "hard_count_nonzero_steps": 9423,
+      "partial_count_sum": 2973298,
+      "partial_count_nonzero_steps": 34486,
+      "negative_count_sum": 1042017,
+      "negative_count_nonzero_steps": 30368,
+      "satellite_samples_sum": 114208,
+      "satellite_samples_nonzero_steps": 9423,
+      "normalized_valid_blocks_nonzero_steps": 44400,
+      "legal_anchors_nonzero_steps": 44400
+    },
+    "components": {
+      "daot_orbit_z": {
+        "configured": true,
+        "scheduled_start_epoch": 21,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 39960,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 40
+      },
+      "daot_orbit_logit": {
+        "configured": true,
+        "scheduled_start_epoch": 21,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 39960,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 40
+      },
+      "daot_orbit_proto": {
+        "configured": true,
+        "scheduled_start_epoch": 21,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 39960,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 40
+      },
+      "daot_orbit_relation": {
+        "configured": true,
+        "scheduled_start_epoch": 21,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 39960,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 40
+      },
+      "daot_tangent": {
+        "configured": true,
+        "scheduled_start_epoch": 61,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 31080,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 31
+      },
+      "daot_nuisance": {
+        "configured": true,
+        "scheduled_start_epoch": 21,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 39960,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 40
+      },
+      "daot_fingerprint": {
+        "configured": true,
+        "scheduled_start_epoch": 21,
+        "status": "NONZERO_LOSS_GRADIENT_UNPROVEN",
+        "observed_records": 44400,
+        "nonzero_loss_records": 13,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 0
+      },
+      "rc4_hard": {
+        "configured": true,
+        "scheduled_start_epoch": 21,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 7020,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 13
+      },
+      "rc4_partial_set": {
+        "configured": true,
+        "scheduled_start_epoch": 21,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 31650,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 35
+      },
+      "rc4_partial_conditional": {
+        "configured": true,
+        "scheduled_start_epoch": 21,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 34486,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 35
+      },
+      "rc4_adv": {
+        "configured": true,
+        "scheduled_start_epoch": 1,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 44400,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 45
+      },
+      "rc4_negative": {
+        "configured": true,
+        "scheduled_start_epoch": 21,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 26139,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 32
+      },
+      "rc4_domain": {
+        "configured": true,
+        "scheduled_start_epoch": 1,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 44400,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 45
+      },
+      "rc4_self": {
+        "configured": true,
+        "scheduled_start_epoch": 1,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 44400,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 45
+      },
+      "rc4_satellite": {
+        "configured": true,
+        "scheduled_start_epoch": 21,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 7877,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 13
+      },
+      "rc4_anchor": {
+        "configured": true,
+        "scheduled_start_epoch": 21,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 39960,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 40
+      },
+      "x": {
+        "configured": true,
+        "scheduled_start_epoch": 1,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 44400,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 45
+      },
+      "ux_normalized": {
+        "configured": true,
+        "scheduled_start_epoch": 1,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 44400,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 45
+      }
+    },
+    "anchor": {
+      "origin": "this_run_ema_after_E20",
+      "frozen_at_epoch": 21,
+      "training_contract": {
+        "L_s": 6300,
+        "U_s": 56700,
+        "V": 27000
+      },
+      "external_checkpoint_sources": [],
+      "target_contact": false,
+      "source_V_used_for_training": false
+    },
+    "cstar": null
+  },
+  {
+    "row": "F-M12",
+    "training_hours": 12.02320278331107,
+    "actions": {
+      "NORMAL": 44400
+    },
+    "field_evaluations": {
+      "1": 44400
+    },
+    "counts": {
+      "records": 44400,
+      "accepted": 44400,
+      "L_exposures": 5683200,
+      "U_exposures": 11340000,
+      "daot_executed": 39960,
+      "rc4_executed": 44400,
+      "identity_active": 39960,
+      "hard_count_sum": 102293,
+      "hard_count_nonzero_steps": 11566,
+      "partial_count_sum": 3623542,
+      "partial_count_nonzero_steps": 35520,
+      "negative_count_sum": 745698,
+      "negative_count_nonzero_steps": 30361,
+      "satellite_samples_sum": 102293,
+      "satellite_samples_nonzero_steps": 11566,
+      "normalized_valid_blocks_nonzero_steps": 44400,
+      "legal_anchors_nonzero_steps": 44400
+    },
+    "components": {
+      "daot_orbit_z": {
+        "configured": true,
+        "scheduled_start_epoch": 21,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 39960,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 40
+      },
+      "daot_orbit_logit": {
+        "configured": true,
+        "scheduled_start_epoch": 21,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 39960,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 40
+      },
+      "daot_orbit_proto": {
+        "configured": true,
+        "scheduled_start_epoch": 21,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 39960,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 40
+      },
+      "daot_orbit_relation": {
+        "configured": true,
+        "scheduled_start_epoch": 21,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 39960,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 40
+      },
+      "daot_tangent": {
+        "configured": true,
+        "scheduled_start_epoch": 61,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 31080,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 31
+      },
+      "daot_nuisance": {
+        "configured": true,
+        "scheduled_start_epoch": 21,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 39960,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 40
+      },
+      "daot_fingerprint": {
+        "configured": true,
+        "scheduled_start_epoch": 21,
+        "status": "NONZERO_LOSS_GRADIENT_UNPROVEN",
+        "observed_records": 44400,
+        "nonzero_loss_records": 1,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 0
+      },
+      "rc4_hard": {
+        "configured": true,
+        "scheduled_start_epoch": 21,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 8781,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 11
+      },
+      "rc4_partial_set": {
+        "configured": true,
+        "scheduled_start_epoch": 21,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 31877,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 36
+      },
+      "rc4_partial_conditional": {
+        "configured": true,
+        "scheduled_start_epoch": 21,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 35520,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 36
+      },
+      "rc4_adv": {
+        "configured": true,
+        "scheduled_start_epoch": 1,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 44400,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 45
+      },
+      "rc4_negative": {
+        "configured": true,
+        "scheduled_start_epoch": 21,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 24992,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 26
+      },
+      "rc4_domain": {
+        "configured": true,
+        "scheduled_start_epoch": 1,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 44400,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 45
+      },
+      "rc4_self": {
+        "configured": true,
+        "scheduled_start_epoch": 1,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 44400,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 45
+      },
+      "rc4_satellite": {
+        "configured": true,
+        "scheduled_start_epoch": 21,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 9925,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 11
+      },
+      "rc4_anchor": {
+        "configured": true,
+        "scheduled_start_epoch": 21,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 39960,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 40
+      },
+      "x": {
+        "configured": true,
+        "scheduled_start_epoch": 1,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 44400,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 45
+      },
+      "ux_normalized": {
+        "configured": true,
+        "scheduled_start_epoch": 1,
+        "status": "NONZERO_GRADIENT_OBSERVED",
+        "observed_records": 44400,
+        "nonzero_loss_records": 44400,
+        "gradient_probes": 45,
+        "nonzero_gradient_probes": 45
+      }
+    },
+    "anchor": {
+      "origin": "this_run_ema_after_E20",
+      "frozen_at_epoch": 21,
+      "training_contract": {
+        "L_s": 6300,
+        "U_s": 56700,
+        "V": 27000
+      },
+      "external_checkpoint_sources": [],
+      "target_contact": false,
+      "source_V_used_for_training": false
+    },
+    "cstar": "CONTROL_NOT_ACTIVATED"
+  }
+]

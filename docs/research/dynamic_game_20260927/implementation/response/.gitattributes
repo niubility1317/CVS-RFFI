@@ -1,0 +1,6 @@
+*.py text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+
+# Archive: preserve source bytes and checksum reproducibility.
+* -text

@@ -1,0 +1,22 @@
+{
+  "architecture_git": "766c2ea8",
+  "trainer_snapshot": "E:\\type10-7\\code\\snapshots\\phase1_adv3_mechanism32_queue_20260701",
+  "extracted_functions": [
+    "build_arg_parser",
+    "_loss_weights",
+    "_stage_gate_scale",
+    "_threshold_mask",
+    "_as_plain_list",
+    "_update_ema_model"
+  ],
+  "labeled_loss_lines": [
+    2055,
+    2353
+  ],
+  "changes": [
+    "isolated imports",
+    "labeled terms returned before optimizer",
+    "no legacy data or checkpoint loading",
+    "temporal mask is implemented at hidden-TX-safe StepContext boundary"
+  ]
+}

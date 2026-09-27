@@ -1,0 +1,23 @@
+{
+  "status": "VERIFIED",
+  "scope": "frozen evidence aggregation; no new training or inference",
+  "target_rows": 25,
+  "row_scenes_checked": 100,
+  "prediction_count": 16800000,
+  "deep_log_rows": [
+    "C2",
+    "S4",
+    "B0",
+    "B1",
+    "C1",
+    "S3",
+    "B8"
+  ],
+  "deep_epochs": 1400,
+  "links_checked": 14,
+  "utf8": true,
+  "report_bytes": 46260,
+  "excluded_target_row": "B6",
+  "unlaunched_dependency": "C4",
+  "live_remote_state_checked": false
+}

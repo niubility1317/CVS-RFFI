@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="8" skipped="0" tests="8" time="2.247" timestamp="2026-09-14T13:41:50.898748+08:00" hostname="DESKTOP-8RI2J69"><testcase classname="experiments.adv3b02_xuc.tests.test_response_reaudit" name="test_ball_actually_active_scalar_solution[0.1]" time="0.004"><failure message="RuntimeError: DRIC_LOCAL_RESIDUAL_FAILURE: no feasible converged local solution">radius = 0.1
+
+    @pytest.mark.parametrize('radius',[.1,.01,1e-5,0.])
+    def test_ball_actually_active_scalar_solution(radius):
+&gt;       z,info=constrained_game(torch.eye(2),torch.tensor([-1.,.5]),1,
+            torch.empty(0,1),torch.empty(0),radius)
+
+experiments\adv3b02_xuc\tests\test_response_reaudit.py:19: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+jac = tensor([[1., 0.],
+        [0., 1.]], dtype=torch.float64)
+g = tensor([-1.0000,  0.5000], dtype=torch.float64), n = 1
+A = tensor([], size=(0, 1), dtype=torch.float64)
+eps = tensor([], dtype=torch.float64), radius = 0.1
+
+    def constrained_game(jac,g,n,A,eps,radius,*,mu=1e-4,tol=1e-5,max_iterations=5):
+        """Small monotone VI via active-set enumeration and &lt;=5 secular Newton steps.
+    
+        Constraint multipliers enter the encoder equation while the head response
+        remains coupled. Nonconvergence is explicit; no independent post projection.
+        """
+        jac=jac.double();g=g.double();A=A.double();eps=eps.double()
+        eye=torch.eye(len(g),device=g.device,dtype=g.dtype)
+        eig=torch.linalg.eigvalsh((jac+jac.T)/2).min()
+        damping=(mu-eig).clamp_min(0);J=jac+damping*eye
+        if not torch.isfinite(J).all():raise FloatingPointError('nonfinite local game')
+        unconstrained=torch.linalg.solve(J,-g)
+        pad=F.pad(A,(0,len(g)-n))
+        # At most n independent active halfspaces are needed in this &lt;=4D space.
+        for size in range(min(n,len(A))+1):
+            for subset in itertools.combinations(range(len(A)),size):
+                H=pad[list(subset)];bound=eps[list(subset)]
+                for ball in (False,True):
+                    lam=0.;solution=None
+                    for iteration in range(max_iterations if ball else 1):
+                        matrix=J.clone();matrix[:n,:n]+=lam*eye[:n,:n]
+                        K=torch.cat((torch.cat((matrix,H.T),1),torch.cat((H,H.new_zeros(size,size)),1)),0)
+                        rhs=torch.cat((-g,bound))
+                        try:sol=torch.linalg.solve(K,rhs)
+                        except torch.linalg.LinAlgError:break
+                        z=sol[:len(g)];multipliers=sol[len(g):]
+                        error=float(z[:n].norm())-radius
+                        if not ball or abs(error)&lt;=tol*max(radius,1e-8):solution=(z,multipliers,iteration+1);break
+                        derivative_rhs=torch.cat((-torch.cat((z[:n],z.new_zeros(len(g)-n))),z.new_zeros(size)))
+                        derivative=torch.linalg.solve(K,derivative_rhs)[:n]
+                        slope=float(torch.dot(z[:n],derivative)/z[:n].norm().clamp_min(1e-15))
+                        if slope&gt;=0:break
+                        lam=max(0.,lam-error/slope)
+                    if solution is None:continue
+                    z,multipliers,iterations=solution
+                    stationarity=J@z+g+H.T@multipliers
+                    stationarity[:n]+=lam*z[:n]
+                    residual=float(stationarity.norm()/g.norm().clamp_min(1e-12))
+                    feasible=bool((A@z[:n]&lt;=eps+tol*max(radius,1e-8)).all()) and float(z[:n].norm())&lt;=radius*(1+tol)+1e-12
+                    if feasible and bool((multipliers&gt;=-tol).all()) and residual&lt;=tol:
+                        return z,dict(spectral_damping=float(damping),minimum_symmetric_eigenvalue=float(eig+damping),
+                            residual=residual,iterations=iterations,active_constraints=list(subset),ball_multiplier=lam,
+                            unconstrained_encoder_norm=float(unconstrained[:n].norm()))
+&gt;       raise RuntimeError('DRIC_LOCAL_RESIDUAL_FAILURE: no feasible converged local solution')
+E       RuntimeError: DRIC_LOCAL_RESIDUAL_FAILURE: no feasible converged local solution
+
+experiments\adv3b02_xuc\code\cvsrffi\xuc_fusion\response_dric.py:72: RuntimeError</failure></testcase><testcase classname="experiments.adv3b02_xuc.tests.test_response_reaudit" name="test_ball_actually_active_scalar_solution[0.01]" time="0.003"><failure message="RuntimeError: DRIC_LOCAL_RESIDUAL_FAILURE: no feasible converged local solution">radius = 0.01
+
+    @pytest.mark.parametrize('radius',[.1,.01,1e-5,0.])
+    def test_ball_actually_active_scalar_solution(radius):
+&gt;       z,info=constrained_game(torch.eye(2),torch.tensor([-1.,.5]),1,
+            torch.empty(0,1),torch.empty(0),radius)
+
+experiments\adv3b02_xuc\tests\test_response_reaudit.py:19: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+jac = tensor([[1., 0.],
+        [0., 1.]], dtype=torch.float64)
+g = tensor([-1.0000,  0.5000], dtype=torch.float64), n = 1
+A = tensor([], size=(0, 1), dtype=torch.float64)
+eps = tensor([], dtype=torch.float64), radius = 0.01
+
+    def constrained_game(jac,g,n,A,eps,radius,*,mu=1e-4,tol=1e-5,max_iterations=5):
+        """Small monotone VI via active-set enumeration and &lt;=5 secular Newton steps.
+    
+        Constraint multipliers enter the encoder equation while the head response
+        remains coupled. Nonconvergence is explicit; no independent post projection.
+        """
+        jac=jac.double();g=g.double();A=A.double();eps=eps.double()
+        eye=torch.eye(len(g),device=g.device,dtype=g.dtype)
+        eig=torch.linalg.eigvalsh((jac+jac.T)/2).min()
+        damping=(mu-eig).clamp_min(0);J=jac+damping*eye
+        if not torch.isfinite(J).all():raise FloatingPointError('nonfinite local game')
+        unconstrained=torch.linalg.solve(J,-g)
+        pad=F.pad(A,(0,len(g)-n))
+        # At most n independent active halfspaces are needed in this &lt;=4D space.
+        for size in range(min(n,len(A))+1):
+            for subset in itertools.combinations(range(len(A)),size):
+                H=pad[list(subset)];bound=eps[list(subset)]
+                for ball in (False,True):
+                    lam=0.;solution=None
+                    for iteration in range(max_iterations if ball else 1):
+                        matrix=J.clone();matrix[:n,:n]+=lam*eye[:n,:n]
+                        K=torch.cat((torch.cat((matrix,H.T),1),torch.cat((H,H.new_zeros(size,size)),1)),0)
+                        rhs=torch.cat((-g,bound))
+                        try:sol=torch.linalg.solve(K,rhs)
+                        except torch.linalg.LinAlgError:break
+                        z=sol[:len(g)];multipliers=sol[len(g):]
+                        error=float(z[:n].norm())-radius
+                        if not ball or abs(error)&lt;=tol*max(radius,1e-8):solution=(z,multipliers,iteration+1);break
+                        derivative_rhs=torch.cat((-torch.cat((z[:n],z.new_zeros(len(g)-n))),z.new_zeros(size)))
+                        derivative=torch.linalg.solve(K,derivative_rhs)[:n]
+                        slope=float(torch.dot(z[:n],derivative)/z[:n].norm().clamp_min(1e-15))
+                        if slope&gt;=0:break
+                        lam=max(0.,lam-error/slope)
+                    if solution is None:continue
+                    z,multipliers,iterations=solution
+                    stationarity=J@z+g+H.T@multipliers
+                    stationarity[:n]+=lam*z[:n]
+                    residual=float(stationarity.norm()/g.norm().clamp_min(1e-12))
+                    feasible=bool((A@z[:n]&lt;=eps+tol*max(radius,1e-8)).all()) and float(z[:n].norm())&lt;=radius*(1+tol)+1e-12
+                    if feasible and bool((multipliers&gt;=-tol).all()) and residual&lt;=tol:
+                        return z,dict(spectral_damping=float(damping),minimum_symmetric_eigenvalue=float(eig+damping),
+                            residual=residual,iterations=iterations,active_constraints=list(subset),ball_multiplier=lam,
+                            unconstrained_encoder_norm=float(unconstrained[:n].norm()))
+&gt;       raise RuntimeError('DRIC_LOCAL_RESIDUAL_FAILURE: no feasible converged local solution')
+E       RuntimeError: DRIC_LOCAL_RESIDUAL_FAILURE: no feasible converged local solution
+
+experiments\adv3b02_xuc\code\cvsrffi\xuc_fusion\response_dric.py:72: RuntimeError</failure></testcase><testcase classname="experiments.adv3b02_xuc.tests.test_response_reaudit" name="test_ball_actually_active_scalar_solution[1e-05]" time="0.003"><failure message="RuntimeError: DRIC_LOCAL_RESIDUAL_FAILURE: no feasible converged local solution">radius = 1e-05
+
+    @pytest.mark.parametrize('radius',[.1,.01,1e-5,0.])
+    def test_ball_actually_active_scalar_solution(radius):
+&gt;       z,info=constrained_game(torch.eye(2),torch.tensor([-1.,.5]),1,
+            torch.empty(0,1),torch.empty(0),radius)
+
+experiments\adv3b02_xuc\tests\test_response_reaudit.py:19: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+jac = tensor([[1., 0.],
+        [0., 1.]], dtype=torch.float64)
+g = tensor([-1.0000,  0.5000], dtype=torch.float64), n = 1
+A = tensor([], size=(0, 1), dtype=torch.float64)
+eps = tensor([], dtype=torch.float64), radius = 1e-05
+
+    def constrained_game(jac,g,n,A,eps,radius,*,mu=1e-4,tol=1e-5,max_iterations=5):
+        """Small monotone VI via active-set enumeration and &lt;=5 secular Newton steps.
+    
+        Constraint multipliers enter the encoder equation while the head response
+        remains coupled. Nonconvergence is explicit; no independent post projection.
+        """
+        jac=jac.double();g=g.double();A=A.double();eps=eps.double()
+        eye=torch.eye(len(g),device=g.device,dtype=g.dtype)
+        eig=torch.linalg.eigvalsh((jac+jac.T)/2).min()
+        damping=(mu-eig).clamp_min(0);J=jac+damping*eye
+        if not torch.isfinite(J).all():raise FloatingPointError('nonfinite local game')
+        unconstrained=torch.linalg.solve(J,-g)
+        pad=F.pad(A,(0,len(g)-n))
+        # At most n independent active halfspaces are needed in this &lt;=4D space.
+        for size in range(min(n,len(A))+1):
+            for subset in itertools.combinations(range(len(A)),size):
+                H=pad[list(subset)];bound=eps[list(subset)]
+                for ball in (False,True):
+                    lam=0.;solution=None
+                    for iteration in range(max_iterations if ball else 1):
+                        matrix=J.clone();matrix[:n,:n]+=lam*eye[:n,:n]
+                        K=torch.cat((torch.cat((matrix,H.T),1),torch.cat((H,H.new_zeros(size,size)),1)),0)
+                        rhs=torch.cat((-g,bound))
+                        try:sol=torch.linalg.solve(K,rhs)
+                        except torch.linalg.LinAlgError:break
+                        z=sol[:len(g)];multipliers=sol[len(g):]
+                        error=float(z[:n].norm())-radius
+                        if not ball or abs(error)&lt;=tol*max(radius,1e-8):solution=(z,multipliers,iteration+1);break
+                        derivative_rhs=torch.cat((-torch.cat((z[:n],z.new_zeros(len(g)-n))),z.new_zeros(size)))
+                        derivative=torch.linalg.solve(K,derivative_rhs)[:n]
+                        slope=float(torch.dot(z[:n],derivative)/z[:n].norm().clamp_min(1e-15))
+                        if slope&gt;=0:break
+                        lam=max(0.,lam-error/slope)
+                    if solution is None:continue
+                    z,multipliers,iterations=solution
+                    stationarity=J@z+g+H.T@multipliers
+                    stationarity[:n]+=lam*z[:n]
+                    residual=float(stationarity.norm()/g.norm().clamp_min(1e-12))
+                    feasible=bool((A@z[:n]&lt;=eps+tol*max(radius,1e-8)).all()) and float(z[:n].norm())&lt;=radius*(1+tol)+1e-12
+                    if feasible and bool((multipliers&gt;=-tol).all()) and residual&lt;=tol:
+                        return z,dict(spectral_damping=float(damping),minimum_symmetric_eigenvalue=float(eig+damping),
+                            residual=residual,iterations=iterations,active_constraints=list(subset),ball_multiplier=lam,
+                            unconstrained_encoder_norm=float(unconstrained[:n].norm()))
+&gt;       raise RuntimeError('DRIC_LOCAL_RESIDUAL_FAILURE: no feasible converged local solution')
+E       RuntimeError: DRIC_LOCAL_RESIDUAL_FAILURE: no feasible converged local solution
+
+experiments\adv3b02_xuc\code\cvsrffi\xuc_fusion\response_dric.py:72: RuntimeError</failure></testcase><testcase classname="experiments.adv3b02_xuc.tests.test_response_reaudit" name="test_ball_actually_active_scalar_solution[0.0]" time="0.003"><failure message="RuntimeError: DRIC_LOCAL_RESIDUAL_FAILURE: no feasible converged local solution">radius = 0.0
+
+    @pytest.mark.parametrize('radius',[.1,.01,1e-5,0.])
+    def test_ball_actually_active_scalar_solution(radius):
+&gt;       z,info=constrained_game(torch.eye(2),torch.tensor([-1.,.5]),1,
+            torch.empty(0,1),torch.empty(0),radius)
+
+experiments\adv3b02_xuc\tests\test_response_reaudit.py:19: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+jac = tensor([[1., 0.],
+        [0., 1.]], dtype=torch.float64)
+g = tensor([-1.0000,  0.5000], dtype=torch.float64), n = 1
+A = tensor([], size=(0, 1), dtype=torch.float64)
+eps = tensor([], dtype=torch.float64), radius = 0.0
+
+    def constrained_game(jac,g,n,A,eps,radius,*,mu=1e-4,tol=1e-5,max_iterations=5):
+        """Small monotone VI via active-set enumeration and &lt;=5 secular Newton steps.
+    
+        Constraint multipliers enter the encoder equation while the head response
+        remains coupled. Nonconvergence is explicit; no independent post projection.
+        """
+        jac=jac.double();g=g.double();A=A.double();eps=eps.double()
+        eye=torch.eye(len(g),device=g.device,dtype=g.dtype)
+        eig=torch.linalg.eigvalsh((jac+jac.T)/2).min()
+        damping=(mu-eig).clamp_min(0);J=jac+damping*eye
+        if not torch.isfinite(J).all():raise FloatingPointError('nonfinite local game')
+        unconstrained=torch.linalg.solve(J,-g)
+        pad=F.pad(A,(0,len(g)-n))
+        # At most n independent active halfspaces are needed in this &lt;=4D space.
+        for size in range(min(n,len(A))+1):
+            for subset in itertools.combinations(range(len(A)),size):
+                H=pad[list(subset)];bound=eps[list(subset)]
+                for ball in (False,True):
+                    lam=0.;solution=None
+                    for iteration in range(max_iterations if ball else 1):
+                        matrix=J.clone();matrix[:n,:n]+=lam*eye[:n,:n]
+                        K=torch.cat((torch.cat((matrix,H.T),1),torch.cat((H,H.new_zeros(size,size)),1)),0)
+                        rhs=torch.cat((-g,bound))
+                        try:sol=torch.linalg.solve(K,rhs)
+                        except torch.linalg.LinAlgError:break
+                        z=sol[:len(g)];multipliers=sol[len(g):]
+                        error=float(z[:n].norm())-radius
+                        if not ball or abs(error)&lt;=tol*max(radius,1e-8):solution=(z,multipliers,iteration+1);break
+                        derivative_rhs=torch.cat((-torch.cat((z[:n],z.new_zeros(len(g)-n))),z.new_zeros(size)))
+                        derivative=torch.linalg.solve(K,derivative_rhs)[:n]
+                        slope=float(torch.dot(z[:n],derivative)/z[:n].norm().clamp_min(1e-15))
+                        if slope&gt;=0:break
+                        lam=max(0.,lam-error/slope)
+                    if solution is None:continue
+                    z,multipliers,iterations=solution
+                    stationarity=J@z+g+H.T@multipliers
+                    stationarity[:n]+=lam*z[:n]
+                    residual=float(stationarity.norm()/g.norm().clamp_min(1e-12))
+                    feasible=bool((A@z[:n]&lt;=eps+tol*max(radius,1e-8)).all()) and float(z[:n].norm())&lt;=radius*(1+tol)+1e-12
+                    if feasible and bool((multipliers&gt;=-tol).all()) and residual&lt;=tol:
+                        return z,dict(spectral_damping=float(damping),minimum_symmetric_eigenvalue=float(eig+damping),
+                            residual=residual,iterations=iterations,active_constraints=list(subset),ball_multiplier=lam,
+                            unconstrained_encoder_norm=float(unconstrained[:n].norm()))
+&gt;       raise RuntimeError('DRIC_LOCAL_RESIDUAL_FAILURE: no feasible converged local solution')
+E       RuntimeError: DRIC_LOCAL_RESIDUAL_FAILURE: no feasible converged local solution
+
+experiments\adv3b02_xuc\code\cvsrffi\xuc_fusion\response_dric.py:72: RuntimeError</failure></testcase><testcase classname="experiments.adv3b02_xuc.tests.test_response_reaudit" name="test_replay_detached_forward_dependency" time="0.026"><failure message="AssertionError: Tensor-likes are not equal!&#10;&#10;Mismatched elements: 8 / 8 (100.0%)&#10;Greatest absolute difference: 7.164559364318848 at index (3, 0)&#10;Greatest relative difference: 1.2309927940368652 at index (1, 0)">def test_replay_detached_forward_dependency():
+        class DetachedPath(nn.Module):
+            def __init__(self):
+                super().__init__();self.tail=nn.Linear(2,2,bias=False);self.fixed=nn.Linear(2,2,bias=False)
+            def forward(self,x):return self.fixed(self.tail(x).detach())
+        torch.manual_seed(4);model=DetachedPath();x=torch.randn(4,2);replay=LocalReplay(model,model.tail.parameters())
+        with replay.session('same'):model(x)
+        with torch.no_grad():model.tail.weight.add_(2.)
+        expected=model(x)
+        with replay.session('same'):actual=model(x)
+&gt;       torch.testing.assert_close(actual,expected,rtol=0,atol=0)
+E       AssertionError: Tensor-likes are not equal!
+E       
+E       Mismatched elements: 8 / 8 (100.0%)
+E       Greatest absolute difference: 7.164559364318848 at index (3, 0)
+E       Greatest relative difference: 1.2309927940368652 at index (1, 0)
+
+experiments\adv3b02_xuc\tests\test_response_reaudit.py:34: AssertionError</failure></testcase><testcase classname="experiments.adv3b02_xuc.tests.test_response_reaudit" name="test_xt_zero_inner_step_reports_zero_changes_with_dropout" time="0.033"><failure message="assert 0.05904102325439453 == 0.0">def test_xt_zero_inner_step_reports_zero_changes_with_dropout():
+        torch.manual_seed(17);head=nn.Sequential(nn.Linear(4,8),nn.Dropout(.6),nn.Linear(8,15)).train()
+        z=torch.randn(90,4,requires_grad=True);y=torch.arange(6).repeat_interleave(15);d=torch.arange(15).repeat(6)
+        _,diag=cross_tx_fields(head,z,y,d,0,0.,.1,.35)
+        for direction in ('A_to_B','B_to_A'):
+&gt;           assert diag[direction]['fit_change']==0.
+E           assert 0.05904102325439453 == 0.0
+
+experiments\adv3b02_xuc\tests\test_response_reaudit.py:41: AssertionError</failure></testcase><testcase classname="experiments.adv3b02_xuc.tests.test_response_reaudit" name="test_cf_risk_uses_final_committed_buffers" time="1.903"><failure message="AssertionError: Tensor-likes are not equal!&#10;&#10;Mismatched elements: 1 / 1 (100.0%)&#10;Greatest absolute difference: 0.7396507859230042 at index (0,)&#10;Greatest relative difference: 7.235571384429932 at index (0,)">def test_cf_risk_uses_final_committed_buffers():
+        torch.manual_seed(6)
+        model=nn.Sequential(nn.BatchNorm1d(2,momentum=1.),nn.Linear(2,1)).train()
+        opt=torch.optim.AdamW(model.parameters(),lr=.01)
+        x=torch.randn(8,2)+4;monitor=torch.randn(7,2)
+        solver=ResponseSolver(model,opt,resolve(dict(fixed_beta=0.)))
+        result=solver.cf_step(lambda on:model(x).square().mean()*(2 if on else 1),lambda:model(monitor).mean(0))
+        with passive(model),torch.no_grad():actual=model(monitor).mean(0)
+&gt;       torch.testing.assert_close(torch.tensor(result.telemetry['risk_reference']),actual,rtol=0,atol=0)
+E       AssertionError: Tensor-likes are not equal!
+E       
+E       Mismatched elements: 1 / 1 (100.0%)
+E       Greatest absolute difference: 0.7396507859230042 at index (0,)
+E       Greatest relative difference: 7.235571384429932 at index (0,)
+
+experiments\adv3b02_xuc\tests\test_response_reaudit.py:52: AssertionError</failure></testcase><testcase classname="experiments.adv3b02_xuc.tests.test_response_reaudit" name="test_replay_never_suppresses_buffer_updates" time="0.002"><failure message="assert tensor(1.) == 2&#10; +  where tensor(1.) = Counter().count">def test_replay_never_suppresses_buffer_updates():
+        class Counter(nn.Module):
+            def __init__(self):super().__init__();self.register_buffer('count',torch.zeros(()))
+            def forward(self,x):self.count.add_(1);return x+self.count
+        model=nn.Sequential(nn.Linear(2,2),Counter());replay=LocalReplay(model,[]);x=torch.randn(3,2)
+        with replay.session('same'):model(x)
+        with replay.session('same'):actual=model(x)
+&gt;       assert model[1].count==2
+E       assert tensor(1.) == 2
+E        +  where tensor(1.) = Counter().count
+
+experiments\adv3b02_xuc\tests\test_response_reaudit.py:61: AssertionError</failure></testcase></testsuite></testsuites>

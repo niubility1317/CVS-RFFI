@@ -1,0 +1,35 @@
+{
+  "assembled_files": 1219,
+  "assembled_bytes": 140765925,
+  "all_epoch_records": 11133,
+  "remote_read_at": "2026-09-27T18:11:38.618803+08:00",
+  "current_source_commit": "6c53c6e0edcce4f14f21c80c97c3f4386c4c4093",
+  "base_report_commit": "358a087a0e6a1e226c4257afbdd4cad51d706347",
+  "native_amp_skips": [
+    {
+      "row": "DAOT_RC4_NATIVE_s392005",
+      "epochs": 200,
+      "attempted_batches": 44400,
+      "train_skipped_nonfinite_grad": 21,
+      "train_skipped_nonfinite_loss": 0,
+      "train_optimizer_step_applied": 44379
+    },
+    {
+      "row": "DAOT_RC4_NATIVE_s392007",
+      "epochs": 200,
+      "attempted_batches": 44400,
+      "train_skipped_nonfinite_grad": 23,
+      "train_skipped_nonfinite_loss": 0,
+      "train_optimizer_step_applied": 44377
+    },
+    {
+      "row": "DAOT_RC4_NATIVE_s392006",
+      "epochs": 200,
+      "attempted_batches": 44400,
+      "train_skipped_nonfinite_grad": 18,
+      "train_skipped_nonfinite_loss": 0,
+      "train_optimizer_step_applied": 44382
+    }
+  ],
+  "note": "This is archival publication and descriptive analysis; no training code modified or experiments launched."
+}

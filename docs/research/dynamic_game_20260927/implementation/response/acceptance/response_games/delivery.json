@@ -1,0 +1,22 @@
+{
+  "status": "VERIFIED",
+  "code_commit": "372b7726ae651b9818eed01f5e875a443ed32e86",
+  "independently_observed_remote_code_oid": "372b7726ae651b9818eed01f5e875a443ed32e86",
+  "branch": "codex/native-dr-eg-prepare-20260914",
+  "remote": "https://github.com/niubility1317/CVS-RFFI.git",
+  "verification": "Independent git rev-parse HEAD and git ls-remote agreed after auto-push; clean branch with no ahead/behind",
+  "tests_passed": 80,
+  "final_response_regression_passed": 27,
+  "final_response_regression_is_subset_not_additional_tests": true,
+  "prepared_new_configs": 108,
+  "preserved_old_resolved_configs": 19,
+  "default_entrypoints_verified_not_to_train": ["DRIC", "CF_EG", "TR_EG", "XT_DANN"],
+  "real_experiments_started": 0,
+  "n607_actions": 0,
+  "target_data_access": false,
+  "traceability": {"verified": 10, "deferred": 1, "blocked": 1, "rejected": 0},
+  "deferred": "Seven measurement-dependent templates under R11: matched compute and CF mean adversarial strength; no experiments authorized in this delivery",
+  "blocked": "One symmetric L+U encoder-adversary diagnostic conflicts with the current U GRL=0 contract and is not enabled",
+  "scope": "DRIC-Lite and matched local competitive/response comparators; not a claim of full-dimensional literature reproduction or measured generalization gain",
+  "mirror": "E:/type10-7/automation_reports/CV-SincNet/response_games_prepare_20260914"
+}

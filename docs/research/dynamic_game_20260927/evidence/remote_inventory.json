@@ -1,0 +1,2554 @@
+{
+  "read_at": "2026-09-27T18:10:42.403532+08:00",
+  "runs": [
+    "core90_game_source_20260911_1c495c17",
+    "core90_eg_high_target6_20260914_r1",
+    "phase1_daot_rc4_pure_game_m3_20260917_r2",
+    "phase1_native_response_matrix_20260914_r1",
+    "phase1_adv3b02_xuc13_early_eval_s392005_20260913_r1",
+    "core90_game_392005_300ff4a9",
+    "core90_cross_response_v2_s392005_20260911_r2",
+    "core90_cross_response_s392005_20260911_r1",
+    "core90_game_v2_target10_20260912_r1",
+    "phase1_adv3b02_xuc_full6_eval_s392005_20260914_r1",
+    "core90_game_v2_20260911_r2",
+    "phase1_adv3b02_xuc_dr_s392005_20260913_r1",
+    "core90_game_source_20260911_d5f7e5db",
+    "phase1_daot_rc4_pure_game_m3_20260917_r1",
+    "core90_game_v2_target11_20260912_r1",
+    "core90_game_v2_20260911_r3",
+    "phase1_adv3b02_xuc_full_s392005_20260913_r1",
+    "core90_game_v2_target11_20260913_multigpu_r2",
+    "phase1_adv3b02_xuc15_s392005_20260913_r1",
+    "core90_cross_response_v2_s392005_20260911_r1",
+    "core90_eg_high_seedscan_20260913_r1"
+  ],
+  "details": {
+    "phase1_native_response_matrix_20260914_r1": [
+      {
+        "path": "source_contract.json",
+        "bytes": 3061242
+      },
+      {
+        "path": "effective_matrix.json",
+        "bytes": 75163
+      },
+      {
+        "path": "pipeline_state.json",
+        "bytes": 41848
+      },
+      {
+        "path": "ADV0-1_s392005/source_contract.json",
+        "bytes": 3061241
+      },
+      {
+        "path": "ADV0-1_s392005/resolved_dr_config.json",
+        "bytes": 29664
+      },
+      {
+        "path": "ADV0-1_s392005/rc4_calibration.jsonl",
+        "bytes": 19707
+      },
+      {
+        "path": "ADV0-1_s392005/actions.jsonl",
+        "bytes": 872444525
+      },
+      {
+        "path": "ADV0-1_s392005/joint_probes.jsonl",
+        "bytes": 80254
+      },
+      {
+        "path": "ADV0-1_s392005/resolved_config.json",
+        "bytes": 16142
+      },
+      {
+        "path": "ADV0-1_s392005/logs.jsonl",
+        "bytes": 7113336
+      },
+      {
+        "path": "ADV0-1_s392005/initialization.json",
+        "bytes": 295
+      },
+      {
+        "path": "ADV0-1_s392005/completion.json",
+        "bytes": 251
+      },
+      {
+        "path": "ADV0-1_s392005/ticket_windows.jsonl",
+        "bytes": 606522
+      },
+      {
+        "path": "R0-10_s392005/source_contract.json",
+        "bytes": 3061241
+      },
+      {
+        "path": "R0-10_s392005/resolved_dr_config.json",
+        "bytes": 29663
+      },
+      {
+        "path": "R0-10_s392005/rc4_calibration.jsonl",
+        "bytes": 20238
+      },
+      {
+        "path": "R0-10_s392005/actions.jsonl",
+        "bytes": 849124054
+      },
+      {
+        "path": "R0-10_s392005/joint_probes.jsonl",
+        "bytes": 88702
+      },
+      {
+        "path": "R0-10_s392005/resolved_config.json",
+        "bytes": 16154
+      },
+      {
+        "path": "R0-10_s392005/logs.jsonl",
+        "bytes": 7114691
+      },
+      {
+        "path": "R0-10_s392005/initialization.json",
+        "bytes": 295
+      },
+      {
+        "path": "R0-10_s392005/completion.json",
+        "bytes": 251
+      },
+      {
+        "path": "R0-10_s392005/ticket_windows.jsonl",
+        "bytes": 606522
+      },
+      {
+        "path": "R0-01_s392005/source_contract.json",
+        "bytes": 3061241
+      },
+      {
+        "path": "R0-01_s392005/resolved_dr_config.json",
+        "bytes": 29663
+      },
+      {
+        "path": "R0-01_s392005/rc4_calibration.jsonl",
+        "bytes": 19496
+      },
+      {
+        "path": "R0-01_s392005/actions.jsonl",
+        "bytes": 821973134
+      },
+      {
+        "path": "R0-01_s392005/joint_probes.jsonl",
+        "bytes": 88498
+      },
+      {
+        "path": "R0-01_s392005/resolved_config.json",
+        "bytes": 16148
+      },
+      {
+        "path": "R0-01_s392005/logs.jsonl",
+        "bytes": 7110926
+      },
+      {
+        "path": "R0-01_s392005/initialization.json",
+        "bytes": 295
+      },
+      {
+        "path": "R0-01_s392005/completion.json",
+        "bytes": 251
+      },
+      {
+        "path": "R0-01_s392005/ticket_windows.jsonl",
+        "bytes": 606522
+      },
+      {
+        "path": "ADV0-0_s392006/source_contract.json",
+        "bytes": 3061241
+      },
+      {
+        "path": "ADV0-0_s392006/resolved_dr_config.json",
+        "bytes": 29664
+      },
+      {
+        "path": "ADV0-0_s392006/rc4_calibration.jsonl",
+        "bytes": 19757
+      },
+      {
+        "path": "ADV0-0_s392006/actions.jsonl",
+        "bytes": 850572209
+      },
+      {
+        "path": "ADV0-0_s392006/joint_probes.jsonl",
+        "bytes": 80100
+      },
+      {
+        "path": "ADV0-0_s392006/resolved_config.json",
+        "bytes": 16151
+      },
+      {
+        "path": "ADV0-0_s392006/logs.jsonl",
+        "bytes": 7122903
+      },
+      {
+        "path": "ADV0-0_s392006/initialization.json",
+        "bytes": 295
+      },
+      {
+        "path": "ADV0-0_s392006/completion.json",
+        "bytes": 251
+      },
+      {
+        "path": "ADV0-0_s392006/ticket_windows.jsonl",
+        "bytes": 606522
+      },
+      {
+        "path": "R0-10_s392007/source_contract.json",
+        "bytes": 3061241
+      },
+      {
+        "path": "R0-10_s392007/resolved_dr_config.json",
+        "bytes": 29663
+      },
+      {
+        "path": "R0-10_s392007/rc4_calibration.jsonl",
+        "bytes": 19483
+      },
+      {
+        "path": "R0-10_s392007/actions.jsonl",
+        "bytes": 851467845
+      },
+      {
+        "path": "R0-10_s392007/joint_probes.jsonl",
+        "bytes": 88603
+      },
+      {
+        "path": "R0-10_s392007/resolved_config.json",
+        "bytes": 16154
+      },
+      {
+        "path": "R0-10_s392007/logs.jsonl",
+        "bytes": 7108213
+      },
+      {
+        "path": "R0-10_s392007/initialization.json",
+        "bytes": 295
+      },
+      {
+        "path": "R0-10_s392007/completion.json",
+        "bytes": 252
+      },
+      {
+        "path": "R0-10_s392007/ticket_windows.jsonl",
+        "bytes": 606522
+      },
+      {
+        "path": "EG_s392005/source_contract.json",
+        "bytes": 3061241
+      },
+      {
+        "path": "EG_s392005/resolved_dr_config.json",
+        "bytes": 29660
+      },
+      {
+        "path": "EG_s392005/rc4_calibration.jsonl",
+        "bytes": 19692
+      },
+      {
+        "path": "EG_s392005/actions.jsonl",
+        "bytes": 1007155707
+      },
+      {
+        "path": "EG_s392005/joint_probes.jsonl",
+        "bytes": 88668
+      },
+      {
+        "path": "EG_s392005/resolved_config.json",
+        "bytes": 17859
+      },
+      {
+        "path": "EG_s392005/logs.jsonl",
+        "bytes": 7113813
+      },
+      {
+        "path": "EG_s392005/initialization.json",
+        "bytes": 295
+      },
+      {
+        "path": "EG_s392005/completion.json",
+        "bytes": 251
+      },
+      {
+        "path": "EG_s392005/ticket_windows.jsonl",
+        "bytes": 606522
+      },
+      {
+        "path": "R0-10_s392006/source_contract.json",
+        "bytes": 3061241
+      },
+      {
+        "path": "R0-10_s392006/resolved_dr_config.json",
+        "bytes": 29663
+      },
+      {
+        "path": "R0-10_s392006/rc4_calibration.jsonl",
+        "bytes": 19663
+      },
+      {
+        "path": "R0-10_s392006/actions.jsonl",
+        "bytes": 851433146
+      },
+      {
+        "path": "R0-10_s392006/joint_probes.jsonl",
+        "bytes": 88584
+      },
+      {
+        "path": "R0-10_s392006/resolved_config.json",
+        "bytes": 16154
+      },
+      {
+        "path": "R0-10_s392006/logs.jsonl",
+        "bytes": 7127793
+      },
+      {
+        "path": "R0-10_s392006/initialization.json",
+        "bytes": 295
+      },
+      {
+        "path": "R0-10_s392006/completion.json",
+        "bytes": 251
+      },
+      {
+        "path": "R0-10_s392006/ticket_windows.jsonl",
+        "bytes": 606522
+      },
+      {
+        "path": "R0-01_s392007/source_contract.json",
+        "bytes": 3061241
+      },
+      {
+        "path": "R0-01_s392007/resolved_dr_config.json",
+        "bytes": 29663
+      },
+      {
+        "path": "R0-01_s392007/rc4_calibration.jsonl",
+        "bytes": 19489
+      },
+      {
+        "path": "R0-01_s392007/actions.jsonl",
+        "bytes": 822147384
+      },
+      {
+        "path": "R0-01_s392007/joint_probes.jsonl",
+        "bytes": 88499
+      },
+      {
+        "path": "R0-01_s392007/resolved_config.json",
+        "bytes": 16148
+      },
+      {
+        "path": "R0-01_s392007/logs.jsonl",
+        "bytes": 7098704
+      },
+      {
+        "path": "R0-01_s392007/initialization.json",
+        "bytes": 295
+      },
+      {
+        "path": "R0-01_s392007/completion.json",
+        "bytes": 251
+      },
+      {
+        "path": "R0-01_s392007/ticket_windows.jsonl",
+        "bytes": 606522
+      },
+      {
+        "path": "ADV0-1_s392006/source_contract.json",
+        "bytes": 3061241
+      },
+      {
+        "path": "ADV0-1_s392006/resolved_dr_config.json",
+        "bytes": 29664
+      },
+      {
+        "path": "ADV0-1_s392006/rc4_calibration.jsonl",
+        "bytes": 19589
+      },
+      {
+        "path": "ADV0-1_s392006/actions.jsonl",
+        "bytes": 874512419
+      },
+      {
+        "path": "ADV0-1_s392006/joint_probes.jsonl",
+        "bytes": 80058
+      },
+      {
+        "path": "ADV0-1_s392006/resolved_config.json",
+        "bytes": 16142
+      },
+      {
+        "path": "ADV0-1_s392006/logs.jsonl",
+        "bytes": 7115677
+      },
+      {
+        "path": "ADV0-1_s392006/initialization.json",
+        "bytes": 295
+      },
+      {
+        "path": "ADV0-1_s392006/completion.json",
+        "bytes": 251
+      },
+      {
+        "path": "ADV0-1_s392006/ticket_windows.jsonl",
+        "bytes": 606522
+      },
+      {
+        "path": "CF_EG_s392006/source_contract.json",
+        "bytes": 3061241
+      },
+      {
+        "path": "CF_EG_s392006/resolved_dr_config.json",
+        "bytes": 29663
+      },
+      {
+        "path": "CF_EG_s392006/rc4_calibration.jsonl",
+        "bytes": 19668
+      },
+      {
+        "path": "CF_EG_s392006/actions.jsonl",
+        "bytes": 1084993490
+      },
+      {
+        "path": "CF_EG_s392006/joint_probes.jsonl",
+        "bytes": 88635
+      },
+      {
+        "path": "CF_EG_s392006/resolved_config.json",
+        "bytes": 17871
+      },
+      {
+        "path": "CF_EG_s392006/logs.jsonl",
+        "bytes": 7121277
+      },
+      {
+        "path": "CF_EG_s392006/initialization.json",
+        "bytes": 295
+      },
+      {
+        "path": "CF_EG_s392006/completion.json",
+        "bytes": 252
+      },
+      {
+        "path": "CF_EG_s392006/ticket_windows.jsonl",
+        "bytes": 606522
+      },
+      {
+        "path": "R0-00_s392005/source_contract.json",
+        "bytes": 3061241
+      },
+      {
+        "path": "R0-00_s392005/resolved_dr_config.json",
+        "bytes": 29663
+      },
+      {
+        "path": "R0-00_s392005/rc4_calibration.jsonl",
+        "bytes": 20330
+      },
+      {
+        "path": "R0-00_s392005/actions.jsonl",
+        "bytes": 806733539
+      },
+      {
+        "path": "R0-00_s392005/joint_probes.jsonl",
+        "bytes": 88550
+      },
+      {
+        "path": "R0-00_s392005/resolved_config.json",
+        "bytes": 16157
+      },
+      {
+        "path": "R0-00_s392005/logs.jsonl",
+        "bytes": 7115297
+      },
+      {
+        "path": "R0-00_s392005/initialization.json",
+        "bytes": 295
+      },
+      {
+        "path": "R0-00_s392005/completion.json",
+        "bytes": 252
+      },
+      {
+        "path": "R0-00_s392005/ticket_windows.jsonl",
+        "bytes": 606522
+      },
+      {
+        "path": "SIM_s392006/source_contract.json",
+        "bytes": 3061241
+      },
+      {
+        "path": "SIM_s392006/resolved_dr_config.json",
+        "bytes": 29661
+      },
+      {
+        "path": "SIM_s392006/rc4_calibration.jsonl",
+        "bytes": 19714
+      },
+      {
+        "path": "SIM_s392006/actions.jsonl",
+        "bytes": 983324974
+      },
+      {
+        "path": "SIM_s392006/joint_probes.jsonl",
+        "bytes": 88609
+      },
+      {
+        "path": "SIM_s392006/resolved_config.json",
+        "bytes": 17872
+      },
+      {
+        "path": "SIM_s392006/logs.jsonl",
+        "bytes": 7113145
+      },
+      {
+        "path": "SIM_s392006/initialization.json",
+        "bytes": 295
+      },
+      {
+        "path": "SIM_s392006/completion.json",
+        "bytes": 251
+      },
+      {
+        "path": "SIM_s392006/ticket_windows.jsonl",
+        "bytes": 606522
+      },
+      {
+        "path": "ADV0-0_s392005/source_contract.json",
+        "bytes": 3061241
+      },
+      {
+        "path": "ADV0-0_s392005/resolved_dr_config.json",
+        "bytes": 29664
+      },
+      {
+        "path": "ADV0-0_s392005/rc4_calibration.jsonl",
+        "bytes": 19750
+      },
+      {
+        "path": "ADV0-0_s392005/actions.jsonl",
+        "bytes": 848321351
+      },
+      {
+        "path": "ADV0-0_s392005/joint_probes.jsonl",
+        "bytes": 80278
+      },
+      {
+        "path": "ADV0-0_s392005/resolved_config.json",
+        "bytes": 16151
+      },
+      {
+        "path": "ADV0-0_s392005/logs.jsonl",
+        "bytes": 7108927
+      },
+      {
+        "path": "ADV0-0_s392005/initialization.json",
+        "bytes": 295
+      },
+      {
+        "path": "ADV0-0_s392005/completion.json",
+        "bytes": 251
+      },
+      {
+        "path": "ADV0-0_s392005/ticket_windows.jsonl",
+        "bytes": 606522
+      },
+      {
+        "path": "XT_DANN_s392007/source_contract.json",
+        "bytes": 3061241
+      },
+      {
+        "path": "XT_DANN_s392007/resolved_dr_config.json",
+        "bytes": 29665
+      },
+      {
+        "path": "XT_DANN_s392007/rc4_calibration.jsonl",
+        "bytes": 19842
+      },
+      {
+        "path": "XT_DANN_s392007/actions.jsonl",
+        "bytes": 1010945333
+      },
+      {
+        "path": "XT_DANN_s392007/joint_probes.jsonl",
+        "bytes": 88569
+      },
+      {
+        "path": "XT_DANN_s392007/resolved_config.json",
+        "bytes": 17879
+      },
+      {
+        "path": "XT_DANN_s392007/logs.jsonl",
+        "bytes": 7105491
+      },
+      {
+        "path": "XT_DANN_s392007/initialization.json",
+        "bytes": 295
+      },
+      {
+        "path": "XT_DANN_s392007/completion.json",
+        "bytes": 250
+      },
+      {
+        "path": "XT_DANN_s392007/ticket_windows.jsonl",
+        "bytes": 606522
+      },
+      {
+        "path": "R0-00_s392007/source_contract.json",
+        "bytes": 3061241
+      },
+      {
+        "path": "R0-00_s392007/resolved_dr_config.json",
+        "bytes": 29663
+      },
+      {
+        "path": "R0-00_s392007/rc4_calibration.jsonl",
+        "bytes": 19530
+      },
+      {
+        "path": "R0-00_s392007/actions.jsonl",
+        "bytes": 809893534
+      },
+      {
+        "path": "R0-00_s392007/joint_probes.jsonl",
+        "bytes": 88393
+      },
+      {
+        "path": "R0-00_s392007/resolved_config.json",
+        "bytes": 16157
+      },
+      {
+        "path": "R0-00_s392007/logs.jsonl",
+        "bytes": 7096793
+      },
+      {
+        "path": "R0-00_s392007/initialization.json",
+        "bytes": 295
+      },
+      {
+        "path": "R0-00_s392007/completion.json",
+        "bytes": 250
+      },
+      {
+        "path": "R0-00_s392007/ticket_windows.jsonl",
+        "bytes": 606522
+      },
+      {
+        "path": "XT_DANN_s392006/source_contract.json",
+        "bytes": 3061241
+      },
+      {
+        "path": "XT_DANN_s392006/resolved_dr_config.json",
+        "bytes": 29665
+      },
+      {
+        "path": "XT_DANN_s392006/rc4_calibration.jsonl",
+        "bytes": 19694
+      },
+      {
+        "path": "XT_DANN_s392006/actions.jsonl",
+        "bytes": 1010691119
+      },
+      {
+        "path": "XT_DANN_s392006/joint_probes.jsonl",
+        "bytes": 88477
+      },
+      {
+        "path": "XT_DANN_s392006/resolved_config.json",
+        "bytes": 17879
+      },
+      {
+        "path": "XT_DANN_s392006/logs.jsonl",
+        "bytes": 7120654
+      },
+      {
+        "path": "XT_DANN_s392006/initialization.json",
+        "bytes": 295
+      },
+      {
+        "path": "XT_DANN_s392006/completion.json",
+        "bytes": 252
+      },
+      {
+        "path": "XT_DANN_s392006/ticket_windows.jsonl",
+        "bytes": 606522
+      },
+      {
+        "path": "DRIC_s392007/source_contract.json",
+        "bytes": 3061241
+      },
+      {
+        "path": "DRIC_s392007/resolved_dr_config.json",
+        "bytes": 29662
+      },
+      {
+        "path": "DRIC_s392007/rc4_calibration.jsonl",
+        "bytes": 19494
+      },
+      {
+        "path": "DRIC_s392007/actions.jsonl",
+        "bytes": 1012947665
+      },
+      {
+        "path": "DRIC_s392007/joint_probes.jsonl",
+        "bytes": 88601
+      },
+      {
+        "path": "DRIC_s392007/resolved_config.json",
+        "bytes": 17876
+      },
+      {
+        "path": "DRIC_s392007/logs.jsonl",
+        "bytes": 7103916
+      },
+      {
+        "path": "DRIC_s392007/initialization.json",
+        "bytes": 295
+      },
+      {
+        "path": "DRIC_s392007/completion.json",
+        "bytes": 251
+      },
+      {
+        "path": "DRIC_s392007/ticket_windows.jsonl",
+        "bytes": 606522
+      },
+      {
+        "path": "CF_EG_s392007/source_contract.json",
+        "bytes": 3061241
+      },
+      {
+        "path": "CF_EG_s392007/resolved_dr_config.json",
+        "bytes": 29663
+      },
+      {
+        "path": "CF_EG_s392007/rc4_calibration.jsonl",
+        "bytes": 19394
+      },
+      {
+        "path": "CF_EG_s392007/actions.jsonl",
+        "bytes": 1085313345
+      },
+      {
+        "path": "CF_EG_s392007/joint_probes.jsonl",
+        "bytes": 88512
+      },
+      {
+        "path": "CF_EG_s392007/resolved_config.json",
+        "bytes": 17871
+      },
+      {
+        "path": "CF_EG_s392007/logs.jsonl",
+        "bytes": 7104890
+      },
+      {
+        "path": "CF_EG_s392007/initialization.json",
+        "bytes": 295
+      },
+      {
+        "path": "CF_EG_s392007/completion.json",
+        "bytes": 252
+      },
+      {
+        "path": "CF_EG_s392007/ticket_windows.jsonl",
+        "bytes": 606522
+      },
+      {
+        "path": "TR_EG_s392006/source_contract.json",
+        "bytes": 3061241
+      },
+      {
+        "path": "TR_EG_s392006/resolved_dr_config.json",
+        "bytes": 29663
+      },
+      {
+        "path": "TR_EG_s392006/rc4_calibration.jsonl",
+        "bytes": 19667
+      },
+      {
+        "path": "TR_EG_s392006/actions.jsonl",
+        "bytes": 1021276713
+      },
+      {
+        "path": "TR_EG_s392006/joint_probes.jsonl",
+        "bytes": 88573
+      },
+      {
+        "path": "TR_EG_s392006/resolved_config.json",
+        "bytes": 17871
+      },
+      {
+        "path": "TR_EG_s392006/logs.jsonl",
+        "bytes": 7118362
+      },
+      {
+        "path": "TR_EG_s392006/initialization.json",
+        "bytes": 295
+      },
+      {
+        "path": "TR_EG_s392006/completion.json",
+        "bytes": 250
+      },
+      {
+        "path": "TR_EG_s392006/ticket_windows.jsonl",
+        "bytes": 606522
+      },
+      {
+        "path": "DRIC_s392005/source_contract.json",
+        "bytes": 3061241
+      },
+      {
+        "path": "DRIC_s392005/resolved_dr_config.json",
+        "bytes": 29662
+      },
+      {
+        "path": "DRIC_s392005/rc4_calibration.jsonl",
+        "bytes": 19938
+      },
+      {
+        "path": "DRIC_s392005/actions.jsonl",
+        "bytes": 1010559341
+      },
+      {
+        "path": "DRIC_s392005/joint_probes.jsonl",
+        "bytes": 88684
+      },
+      {
+        "path": "DRIC_s392005/resolved_config.json",
+        "bytes": 17876
+      },
+      {
+        "path": "DRIC_s392005/logs.jsonl",
+        "bytes": 7108094
+      },
+      {
+        "path": "DRIC_s392005/initialization.json",
+        "bytes": 295
+      },
+      {
+        "path": "DRIC_s392005/completion.json",
+        "bytes": 251
+      },
+      {
+        "path": "DRIC_s392005/ticket_windows.jsonl",
+        "bytes": 606522
+      },
+      {
+        "path": "SIM_s392007/source_contract.json",
+        "bytes": 3061241
+      },
+      {
+        "path": "SIM_s392007/resolved_dr_config.json",
+        "bytes": 29661
+      },
+      {
+        "path": "SIM_s392007/rc4_calibration.jsonl",
+        "bytes": 19485
+      },
+      {
+        "path": "SIM_s392007/actions.jsonl",
+        "bytes": 983922503
+      },
+      {
+        "path": "SIM_s392007/joint_probes.jsonl",
+        "bytes": 88571
+      },
+      {
+        "path": "SIM_s392007/resolved_config.json",
+        "bytes": 17872
+      },
+      {
+        "path": "SIM_s392007/logs.jsonl",
+        "bytes": 7110658
+      },
+      {
+        "path": "SIM_s392007/initialization.json",
+        "bytes": 295
+      },
+      {
+        "path": "SIM_s392007/completion.json",
+        "bytes": 251
+      },
+      {
+        "path": "SIM_s392007/ticket_windows.jsonl",
+        "bytes": 606522
+      },
+      {
+        "path": "R0-11_s392006/source_contract.json",
+        "bytes": 3061241
+      },
+      {
+        "path": "R0-11_s392006/resolved_dr_config.json",
+        "bytes": 29663
+      },
+      {
+        "path": "R0-11_s392006/rc4_calibration.jsonl",
+        "bytes": 19657
+      },
+      {
+        "path": "R0-11_s392006/actions.jsonl",
+        "bytes": 876859518
+      },
+      {
+        "path": "R0-11_s392006/joint_probes.jsonl",
+        "bytes": 88573
+      },
+      {
+        "path": "R0-11_s392006/resolved_config.json",
+        "bytes": 16145
+      },
+      {
+        "path": "R0-11_s392006/logs.jsonl",
+        "bytes": 7124947
+      },
+      {
+        "path": "R0-11_s392006/initialization.json",
+        "bytes": 295
+      },
+      {
+        "path": "R0-11_s392006/completion.json",
+        "bytes": 251
+      },
+      {
+        "path": "R0-11_s392006/ticket_windows.jsonl",
+        "bytes": 606522
+      },
+      {
+        "path": "XT_DANN_s392005/source_contract.json",
+        "bytes": 3061241
+      },
+      {
+        "path": "XT_DANN_s392005/resolved_dr_config.json",
+        "bytes": 29665
+      },
+      {
+        "path": "XT_DANN_s392005/rc4_calibration.jsonl",
+        "bytes": 20365
+      },
+      {
+        "path": "XT_DANN_s392005/actions.jsonl",
+        "bytes": 1008581554
+      },
+      {
+        "path": "XT_DANN_s392005/joint_probes.jsonl",
+        "bytes": 88713
+      },
+      {
+        "path": "XT_DANN_s392005/resolved_config.json",
+        "bytes": 17879
+      },
+      {
+        "path": "XT_DANN_s392005/logs.jsonl",
+        "bytes": 7114725
+      },
+      {
+        "path": "XT_DANN_s392005/initialization.json",
+        "bytes": 295
+      },
+      {
+        "path": "XT_DANN_s392005/completion.json",
+        "bytes": 252
+      },
+      {
+        "path": "XT_DANN_s392005/ticket_windows.jsonl",
+        "bytes": 606522
+      },
+      {
+        "path": "CF_EG_s392005/source_contract.json",
+        "bytes": 3061241
+      },
+      {
+        "path": "CF_EG_s392005/resolved_dr_config.json",
+        "bytes": 29663
+      },
+      {
+        "path": "CF_EG_s392005/rc4_calibration.jsonl",
+        "bytes": 19456
+      },
+      {
+        "path": "CF_EG_s392005/actions.jsonl",
+        "bytes": 1083542081
+      },
+      {
+        "path": "CF_EG_s392005/joint_probes.jsonl",
+        "bytes": 88644
+      },
+      {
+        "path": "CF_EG_s392005/resolved_config.json",
+        "bytes": 17871
+      },
+      {
+        "path": "CF_EG_s392005/logs.jsonl",
+        "bytes": 7118238
+      },
+      {
+        "path": "CF_EG_s392005/initialization.json",
+        "bytes": 295
+      },
+      {
+        "path": "CF_EG_s392005/completion.json",
+        "bytes": 251
+      },
+      {
+        "path": "CF_EG_s392005/ticket_windows.jsonl",
+        "bytes": 606522
+      },
+      {
+        "path": "TR_EG_s392005/source_contract.json",
+        "bytes": 3061241
+      },
+      {
+        "path": "TR_EG_s392005/resolved_dr_config.json",
+        "bytes": 29663
+      },
+      {
+        "path": "TR_EG_s392005/rc4_calibration.jsonl",
+        "bytes": 19013
+      },
+      {
+        "path": "TR_EG_s392005/actions.jsonl",
+        "bytes": 1019105969
+      },
+      {
+        "path": "TR_EG_s392005/joint_probes.jsonl",
+        "bytes": 88657
+      },
+      {
+        "path": "TR_EG_s392005/resolved_config.json",
+        "bytes": 17871
+      },
+      {
+        "path": "TR_EG_s392005/logs.jsonl",
+        "bytes": 7107498
+      },
+      {
+        "path": "TR_EG_s392005/initialization.json",
+        "bytes": 295
+      },
+      {
+        "path": "TR_EG_s392005/completion.json",
+        "bytes": 251
+      },
+      {
+        "path": "TR_EG_s392005/ticket_windows.jsonl",
+        "bytes": 606522
+      },
+      {
+        "path": "R0-11_s392007/source_contract.json",
+        "bytes": 3061241
+      },
+      {
+        "path": "R0-11_s392007/resolved_dr_config.json",
+        "bytes": 29663
+      },
+      {
+        "path": "R0-11_s392007/rc4_calibration.jsonl",
+        "bytes": 19994
+      },
+      {
+        "path": "R0-11_s392007/actions.jsonl",
+        "bytes": 874337802
+      },
+      {
+        "path": "R0-11_s392007/joint_probes.jsonl",
+        "bytes": 88580
+      },
+      {
+        "path": "R0-11_s392007/resolved_config.json",
+        "bytes": 16145
+      },
+      {
+        "path": "R0-11_s392007/logs.jsonl",
+        "bytes": 7106532
+      },
+      {
+        "path": "R0-11_s392007/initialization.json",
+        "bytes": 295
+      },
+      {
+        "path": "R0-11_s392007/completion.json",
+        "bytes": 251
+      },
+      {
+        "path": "R0-11_s392007/ticket_windows.jsonl",
+        "bytes": 606522
+      },
+      {
+        "path": "ADV0-1_s392007/source_contract.json",
+        "bytes": 3061241
+      },
+      {
+        "path": "ADV0-1_s392007/resolved_dr_config.json",
+        "bytes": 29664
+      },
+      {
+        "path": "ADV0-1_s392007/rc4_calibration.jsonl",
+        "bytes": 18978
+      },
+      {
+        "path": "ADV0-1_s392007/actions.jsonl",
+        "bytes": 876074434
+      },
+      {
+        "path": "ADV0-1_s392007/joint_probes.jsonl",
+        "bytes": 80087
+      },
+      {
+        "path": "ADV0-1_s392007/resolved_config.json",
+        "bytes": 16142
+      },
+      {
+        "path": "ADV0-1_s392007/logs.jsonl",
+        "bytes": 7109427
+      },
+      {
+        "path": "ADV0-1_s392007/initialization.json",
+        "bytes": 295
+      },
+      {
+        "path": "ADV0-1_s392007/completion.json",
+        "bytes": 251
+      },
+      {
+        "path": "ADV0-1_s392007/ticket_windows.jsonl",
+        "bytes": 606522
+      },
+      {
+        "path": "SIM_s392005/source_contract.json",
+        "bytes": 3061241
+      },
+      {
+        "path": "SIM_s392005/resolved_dr_config.json",
+        "bytes": 29661
+      },
+      {
+        "path": "SIM_s392005/rc4_calibration.jsonl",
+        "bytes": 19839
+      },
+      {
+        "path": "SIM_s392005/actions.jsonl",
+        "bytes": 980321040
+      },
+      {
+        "path": "SIM_s392005/joint_probes.jsonl",
+        "bytes": 88672
+      },
+      {
+        "path": "SIM_s392005/resolved_config.json",
+        "bytes": 17872
+      },
+      {
+        "path": "SIM_s392005/logs.jsonl",
+        "bytes": 7111758
+      },
+      {
+        "path": "SIM_s392005/initialization.json",
+        "bytes": 295
+      },
+      {
+        "path": "SIM_s392005/completion.json",
+        "bytes": 251
+      },
+      {
+        "path": "SIM_s392005/ticket_windows.jsonl",
+        "bytes": 606522
+      },
+      {
+        "path": "R0-00_s392006/source_contract.json",
+        "bytes": 3061241
+      },
+      {
+        "path": "R0-00_s392006/resolved_dr_config.json",
+        "bytes": 29663
+      },
+      {
+        "path": "R0-00_s392006/rc4_calibration.jsonl",
+        "bytes": 19629
+      },
+      {
+        "path": "R0-00_s392006/actions.jsonl",
+        "bytes": 809143686
+      },
+      {
+        "path": "R0-00_s392006/joint_probes.jsonl",
+        "bytes": 88554
+      },
+      {
+        "path": "R0-00_s392006/resolved_config.json",
+        "bytes": 16157
+      },
+      {
+        "path": "R0-00_s392006/logs.jsonl",
+        "bytes": 7107741
+      },
+      {
+        "path": "R0-00_s392006/initialization.json",
+        "bytes": 295
+      },
+      {
+        "path": "R0-00_s392006/completion.json",
+        "bytes": 251
+      },
+      {
+        "path": "R0-00_s392006/ticket_windows.jsonl",
+        "bytes": 606522
+      },
+      {
+        "path": "DRIC_s392006/source_contract.json",
+        "bytes": 3061241
+      },
+      {
+        "path": "DRIC_s392006/resolved_dr_config.json",
+        "bytes": 29662
+      },
+      {
+        "path": "DRIC_s392006/rc4_calibration.jsonl",
+        "bytes": 19972
+      },
+      {
+        "path": "DRIC_s392006/actions.jsonl",
+        "bytes": 1012526851
+      },
+      {
+        "path": "DRIC_s392006/joint_probes.jsonl",
+        "bytes": 88558
+      },
+      {
+        "path": "DRIC_s392006/resolved_config.json",
+        "bytes": 17876
+      },
+      {
+        "path": "DRIC_s392006/logs.jsonl",
+        "bytes": 7114303
+      },
+      {
+        "path": "DRIC_s392006/initialization.json",
+        "bytes": 295
+      },
+      {
+        "path": "DRIC_s392006/completion.json",
+        "bytes": 251
+      },
+      {
+        "path": "DRIC_s392006/ticket_windows.jsonl",
+        "bytes": 606522
+      },
+      {
+        "path": "ADV0-0_s392007/source_contract.json",
+        "bytes": 3061241
+      },
+      {
+        "path": "ADV0-0_s392007/resolved_dr_config.json",
+        "bytes": 29664
+      },
+      {
+        "path": "ADV0-0_s392007/rc4_calibration.jsonl",
+        "bytes": 19422
+      },
+      {
+        "path": "ADV0-0_s392007/actions.jsonl",
+        "bytes": 849158856
+      },
+      {
+        "path": "ADV0-0_s392007/joint_probes.jsonl",
+        "bytes": 80174
+      },
+      {
+        "path": "ADV0-0_s392007/resolved_config.json",
+        "bytes": 16151
+      },
+      {
+        "path": "ADV0-0_s392007/logs.jsonl",
+        "bytes": 7104378
+      },
+      {
+        "path": "ADV0-0_s392007/initialization.json",
+        "bytes": 295
+      },
+      {
+        "path": "ADV0-0_s392007/completion.json",
+        "bytes": 251
+      },
+      {
+        "path": "ADV0-0_s392007/ticket_windows.jsonl",
+        "bytes": 606522
+      },
+      {
+        "path": "EG_s392006/source_contract.json",
+        "bytes": 3061241
+      },
+      {
+        "path": "EG_s392006/resolved_dr_config.json",
+        "bytes": 29660
+      },
+      {
+        "path": "EG_s392006/rc4_calibration.jsonl",
+        "bytes": 19635
+      },
+      {
+        "path": "EG_s392006/actions.jsonl",
+        "bytes": 1009024688
+      },
+      {
+        "path": "EG_s392006/joint_probes.jsonl",
+        "bytes": 88504
+      },
+      {
+        "path": "EG_s392006/resolved_config.json",
+        "bytes": 17859
+      },
+      {
+        "path": "EG_s392006/logs.jsonl",
+        "bytes": 7124442
+      },
+      {
+        "path": "EG_s392006/initialization.json",
+        "bytes": 295
+      },
+      {
+        "path": "EG_s392006/completion.json",
+        "bytes": 252
+      },
+      {
+        "path": "EG_s392006/ticket_windows.jsonl",
+        "bytes": 606522
+      },
+      {
+        "path": "EG_s392007/source_contract.json",
+        "bytes": 3061241
+      },
+      {
+        "path": "EG_s392007/resolved_dr_config.json",
+        "bytes": 29660
+      },
+      {
+        "path": "EG_s392007/rc4_calibration.jsonl",
+        "bytes": 19735
+      },
+      {
+        "path": "EG_s392007/actions.jsonl",
+        "bytes": 1009317170
+      },
+      {
+        "path": "EG_s392007/joint_probes.jsonl",
+        "bytes": 88593
+      },
+      {
+        "path": "EG_s392007/resolved_config.json",
+        "bytes": 17859
+      },
+      {
+        "path": "EG_s392007/logs.jsonl",
+        "bytes": 7097721
+      },
+      {
+        "path": "EG_s392007/initialization.json",
+        "bytes": 295
+      },
+      {
+        "path": "EG_s392007/completion.json",
+        "bytes": 252
+      },
+      {
+        "path": "EG_s392007/ticket_windows.jsonl",
+        "bytes": 606522
+      },
+      {
+        "path": "TR_EG_s392007/source_contract.json",
+        "bytes": 3061241
+      },
+      {
+        "path": "TR_EG_s392007/resolved_dr_config.json",
+        "bytes": 29663
+      },
+      {
+        "path": "TR_EG_s392007/rc4_calibration.jsonl",
+        "bytes": 19566
+      },
+      {
+        "path": "TR_EG_s392007/actions.jsonl",
+        "bytes": 1021916984
+      },
+      {
+        "path": "TR_EG_s392007/joint_probes.jsonl",
+        "bytes": 88454
+      },
+      {
+        "path": "TR_EG_s392007/resolved_config.json",
+        "bytes": 17871
+      },
+      {
+        "path": "TR_EG_s392007/logs.jsonl",
+        "bytes": 7100886
+      },
+      {
+        "path": "TR_EG_s392007/initialization.json",
+        "bytes": 295
+      },
+      {
+        "path": "TR_EG_s392007/completion.json",
+        "bytes": 251
+      },
+      {
+        "path": "TR_EG_s392007/ticket_windows.jsonl",
+        "bytes": 606522
+      },
+      {
+        "path": "R0-01_s392006/source_contract.json",
+        "bytes": 3061241
+      },
+      {
+        "path": "R0-01_s392006/resolved_dr_config.json",
+        "bytes": 29663
+      },
+      {
+        "path": "R0-01_s392006/rc4_calibration.jsonl",
+        "bytes": 19712
+      },
+      {
+        "path": "R0-01_s392006/actions.jsonl",
+        "bytes": 821945789
+      },
+      {
+        "path": "R0-01_s392006/joint_probes.jsonl",
+        "bytes": 88503
+      },
+      {
+        "path": "R0-01_s392006/resolved_config.json",
+        "bytes": 16148
+      },
+      {
+        "path": "R0-01_s392006/logs.jsonl",
+        "bytes": 7108027
+      },
+      {
+        "path": "R0-01_s392006/initialization.json",
+        "bytes": 295
+      },
+      {
+        "path": "R0-01_s392006/completion.json",
+        "bytes": 250
+      },
+      {
+        "path": "R0-01_s392006/ticket_windows.jsonl",
+        "bytes": 606522
+      },
+      {
+        "path": "R0-11_s392005/source_contract.json",
+        "bytes": 3061241
+      },
+      {
+        "path": "R0-11_s392005/resolved_dr_config.json",
+        "bytes": 29663
+      },
+      {
+        "path": "R0-11_s392005/rc4_calibration.jsonl",
+        "bytes": 20206
+      },
+      {
+        "path": "R0-11_s392005/actions.jsonl",
+        "bytes": 873084522
+      },
+      {
+        "path": "R0-11_s392005/joint_probes.jsonl",
+        "bytes": 88674
+      },
+      {
+        "path": "R0-11_s392005/resolved_config.json",
+        "bytes": 16145
+      },
+      {
+        "path": "R0-11_s392005/logs.jsonl",
+        "bytes": 7110446
+      },
+      {
+        "path": "R0-11_s392005/initialization.json",
+        "bytes": 295
+      },
+      {
+        "path": "R0-11_s392005/completion.json",
+        "bytes": 251
+      },
+      {
+        "path": "R0-11_s392005/ticket_windows.jsonl",
+        "bytes": 606522
+      }
+    ],
+    "phase1_daot_rc4_pure_game_m3_20260917_r2": [
+      {
+        "path": "source_contract.json",
+        "bytes": 3061242
+      },
+      {
+        "path": "effective_matrix.json",
+        "bytes": 47809
+      },
+      {
+        "path": "pipeline_state.json",
+        "bytes": 22054
+      },
+      {
+        "path": "PURE_CF_EG_s392005/source_contract.json",
+        "bytes": 3061241
+      },
+      {
+        "path": "PURE_CF_EG_s392005/resolved_dr_config.json",
+        "bytes": 29669
+      },
+      {
+        "path": "PURE_CF_EG_s392005/actions.jsonl",
+        "bytes": 314001552
+      },
+      {
+        "path": "PURE_CF_EG_s392005/joint_probes.jsonl",
+        "bytes": 35615
+      },
+      {
+        "path": "PURE_CF_EG_s392005/resolved_config.json",
+        "bytes": 17905
+      },
+      {
+        "path": "PURE_CF_EG_s392005/logs.jsonl",
+        "bytes": 2727552
+      },
+      {
+        "path": "PURE_CF_EG_s392005/initialization.json",
+        "bytes": 295
+      },
+      {
+        "path": "PURE_CF_EG_s392005/ticket_windows.jsonl",
+        "bytes": 198380
+      },
+      {
+        "path": "PURE_XT_DANN_s392005/source_contract.json",
+        "bytes": 3061241
+      },
+      {
+        "path": "PURE_XT_DANN_s392005/resolved_dr_config.json",
+        "bytes": 29671
+      },
+      {
+        "path": "PURE_XT_DANN_s392005/actions.jsonl",
+        "bytes": 462380013
+      },
+      {
+        "path": "PURE_XT_DANN_s392005/joint_probes.jsonl",
+        "bytes": 53491
+      },
+      {
+        "path": "PURE_XT_DANN_s392005/resolved_config.json",
+        "bytes": 17913
+      },
+      {
+        "path": "PURE_XT_DANN_s392005/logs.jsonl",
+        "bytes": 4148986
+      },
+      {
+        "path": "PURE_XT_DANN_s392005/initialization.json",
+        "bytes": 295
+      },
+      {
+        "path": "PURE_XT_DANN_s392005/ticket_windows.jsonl",
+        "bytes": 324111
+      },
+      {
+        "path": "PURE_DRIC_s392006/source_contract.json",
+        "bytes": 3061241
+      },
+      {
+        "path": "PURE_DRIC_s392006/resolved_dr_config.json",
+        "bytes": 29668
+      },
+      {
+        "path": "PURE_DRIC_s392006/actions.jsonl",
+        "bytes": 343767923
+      },
+      {
+        "path": "PURE_DRIC_s392006/joint_probes.jsonl",
+        "bytes": 39531
+      },
+      {
+        "path": "PURE_DRIC_s392006/resolved_config.json",
+        "bytes": 17910
+      },
+      {
+        "path": "PURE_DRIC_s392006/logs.jsonl",
+        "bytes": 3054039
+      },
+      {
+        "path": "PURE_DRIC_s392006/initialization.json",
+        "bytes": 295
+      },
+      {
+        "path": "PURE_DRIC_s392006/ticket_windows.jsonl",
+        "bytes": 226624
+      },
+      {
+        "path": "PURE_EG_s392005/source_contract.json",
+        "bytes": 3061241
+      },
+      {
+        "path": "PURE_EG_s392005/resolved_dr_config.json",
+        "bytes": 29666
+      },
+      {
+        "path": "PURE_EG_s392005/actions.jsonl",
+        "bytes": 464911992
+      },
+      {
+        "path": "PURE_EG_s392005/joint_probes.jsonl",
+        "bytes": 53442
+      },
+      {
+        "path": "PURE_EG_s392005/resolved_config.json",
+        "bytes": 17893
+      },
+      {
+        "path": "PURE_EG_s392005/logs.jsonl",
+        "bytes": 4182085
+      },
+      {
+        "path": "PURE_EG_s392005/initialization.json",
+        "bytes": 295
+      },
+      {
+        "path": "PURE_EG_s392005/ticket_windows.jsonl",
+        "bytes": 324111
+      },
+      {
+        "path": "PURE_SIM_s392006/source_contract.json",
+        "bytes": 3061241
+      },
+      {
+        "path": "PURE_SIM_s392006/resolved_dr_config.json",
+        "bytes": 29667
+      },
+      {
+        "path": "PURE_SIM_s392006/actions.jsonl",
+        "bytes": 751817130
+      },
+      {
+        "path": "PURE_SIM_s392006/joint_probes.jsonl",
+        "bytes": 86548
+      },
+      {
+        "path": "PURE_SIM_s392006/resolved_config.json",
+        "bytes": 17906
+      },
+      {
+        "path": "PURE_SIM_s392006/logs.jsonl",
+        "bytes": 6922497
+      },
+      {
+        "path": "PURE_SIM_s392006/initialization.json",
+        "bytes": 295
+      },
+      {
+        "path": "PURE_SIM_s392006/ticket_windows.jsonl",
+        "bytes": 575143
+      },
+      {
+        "path": "DAOT_RC4_NATIVE_s392005/reference_to_final_tail_safety.json",
+        "bytes": 3793
+      },
+      {
+        "path": "DAOT_RC4_NATIVE_s392005/phase1_resource_summary.json",
+        "bytes": 445
+      },
+      {
+        "path": "DAOT_RC4_NATIVE_s392005/metrics_epoch.jsonl",
+        "bytes": 6853063
+      },
+      {
+        "path": "DAOT_RC4_NATIVE_s392005/source_contract.json",
+        "bytes": 3061284
+      },
+      {
+        "path": "DAOT_RC4_NATIVE_s392005/phase1_terminal_status.json",
+        "bytes": 17337
+      },
+      {
+        "path": "DAOT_RC4_NATIVE_s392005/metrics_epoch.csv",
+        "bytes": 1570070
+      },
+      {
+        "path": "DAOT_RC4_NATIVE_s392005/resolved_config.json",
+        "bytes": 32129
+      },
+      {
+        "path": "DAOT_RC4_NATIVE_s392005/initialization.json",
+        "bytes": 132
+      },
+      {
+        "path": "DAOT_RC4_NATIVE_s392005/phase1_training_completion_receipt.json",
+        "bytes": 3748
+      },
+      {
+        "path": "DAOT_RC4_NATIVE_s392005/external_final_eval_pending.json",
+        "bytes": 289
+      },
+      {
+        "path": "DAOT_RC4_NATIVE_s392005/completion.json",
+        "bytes": 139
+      },
+      {
+        "path": "PURE_TR_EG_s392005/source_contract.json",
+        "bytes": 3061241
+      },
+      {
+        "path": "PURE_TR_EG_s392005/resolved_dr_config.json",
+        "bytes": 29669
+      },
+      {
+        "path": "PURE_TR_EG_s392005/actions.jsonl",
+        "bytes": 481874037
+      },
+      {
+        "path": "PURE_TR_EG_s392005/joint_probes.jsonl",
+        "bytes": 53488
+      },
+      {
+        "path": "PURE_TR_EG_s392005/resolved_config.json",
+        "bytes": 17905
+      },
+      {
+        "path": "PURE_TR_EG_s392005/logs.jsonl",
+        "bytes": 4290211
+      },
+      {
+        "path": "PURE_TR_EG_s392005/initialization.json",
+        "bytes": 295
+      },
+      {
+        "path": "PURE_TR_EG_s392005/ticket_windows.jsonl",
+        "bytes": 355490
+      },
+      {
+        "path": "PURE_TR_EG_s392006/source_contract.json",
+        "bytes": 3061241
+      },
+      {
+        "path": "PURE_TR_EG_s392006/resolved_dr_config.json",
+        "bytes": 29669
+      },
+      {
+        "path": "PURE_TR_EG_s392006/actions.jsonl",
+        "bytes": 481320159
+      },
+      {
+        "path": "PURE_TR_EG_s392006/joint_probes.jsonl",
+        "bytes": 53432
+      },
+      {
+        "path": "PURE_TR_EG_s392006/resolved_config.json",
+        "bytes": 17905
+      },
+      {
+        "path": "PURE_TR_EG_s392006/logs.jsonl",
+        "bytes": 4296548
+      },
+      {
+        "path": "PURE_TR_EG_s392006/initialization.json",
+        "bytes": 295
+      },
+      {
+        "path": "PURE_TR_EG_s392006/ticket_windows.jsonl",
+        "bytes": 355490
+      },
+      {
+        "path": "PURE_SIM_s392005/source_contract.json",
+        "bytes": 3061241
+      },
+      {
+        "path": "PURE_SIM_s392005/resolved_dr_config.json",
+        "bytes": 29667
+      },
+      {
+        "path": "PURE_SIM_s392005/actions.jsonl",
+        "bytes": 752751386
+      },
+      {
+        "path": "PURE_SIM_s392005/joint_probes.jsonl",
+        "bytes": 86624
+      },
+      {
+        "path": "PURE_SIM_s392005/resolved_config.json",
+        "bytes": 17906
+      },
+      {
+        "path": "PURE_SIM_s392005/logs.jsonl",
+        "bytes": 6920014
+      },
+      {
+        "path": "PURE_SIM_s392005/initialization.json",
+        "bytes": 295
+      },
+      {
+        "path": "PURE_SIM_s392005/ticket_windows.jsonl",
+        "bytes": 575143
+      },
+      {
+        "path": "pause_20260917_v1/restore_validation.json",
+        "bytes": 6651
+      },
+      {
+        "path": "pause_20260917_v1/manifest.json",
+        "bytes": 38633
+      },
+      {
+        "path": "PURE_EG_s392006/source_contract.json",
+        "bytes": 3061241
+      },
+      {
+        "path": "PURE_EG_s392006/resolved_dr_config.json",
+        "bytes": 29666
+      },
+      {
+        "path": "PURE_EG_s392006/actions.jsonl",
+        "bytes": 458424770
+      },
+      {
+        "path": "PURE_EG_s392006/joint_probes.jsonl",
+        "bytes": 51449
+      },
+      {
+        "path": "PURE_EG_s392006/resolved_config.json",
+        "bytes": 17893
+      },
+      {
+        "path": "PURE_EG_s392006/logs.jsonl",
+        "bytes": 4154711
+      },
+      {
+        "path": "PURE_EG_s392006/initialization.json",
+        "bytes": 295
+      },
+      {
+        "path": "PURE_EG_s392006/ticket_windows.jsonl",
+        "bytes": 324111
+      },
+      {
+        "path": "PURE_DRIC_s392005/source_contract.json",
+        "bytes": 3061241
+      },
+      {
+        "path": "PURE_DRIC_s392005/resolved_dr_config.json",
+        "bytes": 29668
+      },
+      {
+        "path": "PURE_DRIC_s392005/actions.jsonl",
+        "bytes": 594295098
+      },
+      {
+        "path": "PURE_DRIC_s392005/joint_probes.jsonl",
+        "bytes": 67235
+      },
+      {
+        "path": "PURE_DRIC_s392005/resolved_config.json",
+        "bytes": 17910
+      },
+      {
+        "path": "PURE_DRIC_s392005/logs.jsonl",
+        "bytes": 5289046
+      },
+      {
+        "path": "PURE_DRIC_s392005/initialization.json",
+        "bytes": 295
+      },
+      {
+        "path": "PURE_DRIC_s392005/ticket_windows.jsonl",
+        "bytes": 418248
+      },
+      {
+        "path": "PURE_XT_DANN_s392006/source_contract.json",
+        "bytes": 3061241
+      },
+      {
+        "path": "PURE_XT_DANN_s392006/resolved_dr_config.json",
+        "bytes": 29671
+      },
+      {
+        "path": "PURE_XT_DANN_s392006/actions.jsonl",
+        "bytes": 383400681
+      },
+      {
+        "path": "PURE_XT_DANN_s392006/joint_probes.jsonl",
+        "bytes": 43426
+      },
+      {
+        "path": "PURE_XT_DANN_s392006/resolved_config.json",
+        "bytes": 17913
+      },
+      {
+        "path": "PURE_XT_DANN_s392006/logs.jsonl",
+        "bytes": 3447979
+      },
+      {
+        "path": "PURE_XT_DANN_s392006/initialization.json",
+        "bytes": 295
+      },
+      {
+        "path": "PURE_XT_DANN_s392006/ticket_windows.jsonl",
+        "bytes": 261354
+      },
+      {
+        "path": "DAOT_RC4_NATIVE_s392007/reference_to_final_tail_safety.json",
+        "bytes": 3783
+      },
+      {
+        "path": "DAOT_RC4_NATIVE_s392007/phase1_resource_summary.json",
+        "bytes": 446
+      },
+      {
+        "path": "DAOT_RC4_NATIVE_s392007/metrics_epoch.jsonl",
+        "bytes": 6855772
+      },
+      {
+        "path": "DAOT_RC4_NATIVE_s392007/source_contract.json",
+        "bytes": 3061284
+      },
+      {
+        "path": "DAOT_RC4_NATIVE_s392007/phase1_terminal_status.json",
+        "bytes": 17321
+      },
+      {
+        "path": "DAOT_RC4_NATIVE_s392007/metrics_epoch.csv",
+        "bytes": 1572779
+      },
+      {
+        "path": "DAOT_RC4_NATIVE_s392007/resolved_config.json",
+        "bytes": 32129
+      },
+      {
+        "path": "DAOT_RC4_NATIVE_s392007/initialization.json",
+        "bytes": 132
+      },
+      {
+        "path": "DAOT_RC4_NATIVE_s392007/phase1_training_completion_receipt.json",
+        "bytes": 3749
+      },
+      {
+        "path": "DAOT_RC4_NATIVE_s392007/external_final_eval_pending.json",
+        "bytes": 289
+      },
+      {
+        "path": "DAOT_RC4_NATIVE_s392007/completion.json",
+        "bytes": 140
+      },
+      {
+        "path": "DAOT_RC4_NATIVE_s392006/reference_to_final_tail_safety.json",
+        "bytes": 3785
+      },
+      {
+        "path": "DAOT_RC4_NATIVE_s392006/phase1_resource_summary.json",
+        "bytes": 445
+      },
+      {
+        "path": "DAOT_RC4_NATIVE_s392006/metrics_epoch.jsonl",
+        "bytes": 6844844
+      },
+      {
+        "path": "DAOT_RC4_NATIVE_s392006/source_contract.json",
+        "bytes": 3061284
+      },
+      {
+        "path": "DAOT_RC4_NATIVE_s392006/phase1_terminal_status.json",
+        "bytes": 17317
+      },
+      {
+        "path": "DAOT_RC4_NATIVE_s392006/metrics_epoch.csv",
+        "bytes": 1561819
+      },
+      {
+        "path": "DAOT_RC4_NATIVE_s392006/resolved_config.json",
+        "bytes": 32129
+      },
+      {
+        "path": "DAOT_RC4_NATIVE_s392006/initialization.json",
+        "bytes": 132
+      },
+      {
+        "path": "DAOT_RC4_NATIVE_s392006/phase1_training_completion_receipt.json",
+        "bytes": 3748
+      },
+      {
+        "path": "DAOT_RC4_NATIVE_s392006/external_final_eval_pending.json",
+        "bytes": 289
+      },
+      {
+        "path": "DAOT_RC4_NATIVE_s392006/completion.json",
+        "bytes": 139
+      },
+      {
+        "path": "PURE_SIM_s392007/source_contract.json",
+        "bytes": 3061241
+      },
+      {
+        "path": "PURE_SIM_s392007/resolved_dr_config.json",
+        "bytes": 29667
+      },
+      {
+        "path": "PURE_SIM_s392007/actions.jsonl",
+        "bytes": 254320326
+      },
+      {
+        "path": "PURE_SIM_s392007/joint_probes.jsonl",
+        "bytes": 29635
+      },
+      {
+        "path": "PURE_SIM_s392007/resolved_config.json",
+        "bytes": 17906
+      },
+      {
+        "path": "PURE_SIM_s392007/logs.jsonl",
+        "bytes": 2306830
+      },
+      {
+        "path": "PURE_SIM_s392007/initialization.json",
+        "bytes": 295
+      },
+      {
+        "path": "PURE_SIM_s392007/ticket_windows.jsonl",
+        "bytes": 167028
+      },
+      {
+        "path": "PURE_CF_EG_s392006/source_contract.json",
+        "bytes": 3061241
+      },
+      {
+        "path": "PURE_CF_EG_s392006/resolved_dr_config.json",
+        "bytes": 29669
+      },
+      {
+        "path": "PURE_CF_EG_s392006/actions.jsonl",
+        "bytes": 306804414
+      },
+      {
+        "path": "PURE_CF_EG_s392006/joint_probes.jsonl",
+        "bytes": 33608
+      },
+      {
+        "path": "PURE_CF_EG_s392006/resolved_config.json",
+        "bytes": 17905
+      },
+      {
+        "path": "PURE_CF_EG_s392006/logs.jsonl",
+        "bytes": 2664372
+      },
+      {
+        "path": "PURE_CF_EG_s392006/initialization.json",
+        "bytes": 295
+      },
+      {
+        "path": "PURE_CF_EG_s392006/ticket_windows.jsonl",
+        "bytes": 198380
+      }
+    ],
+    "phase1_adv3b02_xuc_full_s392005_20260913_r1": [
+      {
+        "path": "predictions_complete.json",
+        "bytes": 194
+      },
+      {
+        "path": "source_contract.json",
+        "bytes": 3061242
+      },
+      {
+        "path": "effective_matrix.json",
+        "bytes": 14872
+      },
+      {
+        "path": "pipeline_state.json",
+        "bytes": 13995
+      },
+      {
+        "path": "F-M00/source_contract.json",
+        "bytes": 3061241
+      },
+      {
+        "path": "F-M00/actions.jsonl",
+        "bytes": 377787675
+      },
+      {
+        "path": "F-M00/resolved_config.json",
+        "bytes": 14689
+      },
+      {
+        "path": "F-M00/logs.jsonl",
+        "bytes": 153035
+      },
+      {
+        "path": "F-M00/initialization.json",
+        "bytes": 297
+      },
+      {
+        "path": "F-M00/completion.json",
+        "bytes": 251
+      },
+      {
+        "path": "F-M00/ticket_windows.jsonl",
+        "bytes": 604653
+      },
+      {
+        "path": "F-M05/activation_status.json",
+        "bytes": 5265
+      },
+      {
+        "path": "F-M05/cstar_audit.jsonl",
+        "bytes": 181462
+      },
+      {
+        "path": "F-M05/source_contract.json",
+        "bytes": 3061241
+      },
+      {
+        "path": "F-M05/resolved_dr_config.json",
+        "bytes": 29678
+      },
+      {
+        "path": "F-M05/rc4_calibration.jsonl",
+        "bytes": 1467
+      },
+      {
+        "path": "F-M05/actions.jsonl",
+        "bytes": 711356174
+      },
+      {
+        "path": "F-M05/resolved_config.json",
+        "bytes": 14755
+      },
+      {
+        "path": "F-M05/logs.jsonl",
+        "bytes": 351708
+      },
+      {
+        "path": "F-M05/initialization.json",
+        "bytes": 295
+      },
+      {
+        "path": "F-M05/anchor_provenance.json",
+        "bytes": 248
+      },
+      {
+        "path": "F-M05/completion.json",
+        "bytes": 269
+      },
+      {
+        "path": "F-M05/ticket_windows.jsonl",
+        "bytes": 604831
+      },
+      {
+        "path": "F-M07/legacy_curriculum.jsonl",
+        "bytes": 38626
+      },
+      {
+        "path": "F-M07/activation_status.json",
+        "bytes": 5053
+      },
+      {
+        "path": "F-M07/legacy_audit.jsonl",
+        "bytes": 1038619
+      },
+      {
+        "path": "F-M07/source_contract.json",
+        "bytes": 3061241
+      },
+      {
+        "path": "F-M07/resolved_dr_config.json",
+        "bytes": 29678
+      },
+      {
+        "path": "F-M07/rc4_calibration.jsonl",
+        "bytes": 1467
+      },
+      {
+        "path": "F-M07/actions.jsonl",
+        "bytes": 709246916
+      },
+      {
+        "path": "F-M07/resolved_config.json",
+        "bytes": 14718
+      },
+      {
+        "path": "F-M07/logs.jsonl",
+        "bytes": 344564
+      },
+      {
+        "path": "F-M07/initialization.json",
+        "bytes": 295
+      },
+      {
+        "path": "F-M07/anchor_provenance.json",
+        "bytes": 248
+      },
+      {
+        "path": "F-M07/completion.json",
+        "bytes": 254
+      },
+      {
+        "path": "F-M07/ticket_windows.jsonl",
+        "bytes": 604831
+      },
+      {
+        "path": "F-M14/activation_status.json",
+        "bytes": 5272
+      },
+      {
+        "path": "F-M14/cstar_audit.jsonl",
+        "bytes": 181571
+      },
+      {
+        "path": "F-M14/source_contract.json",
+        "bytes": 3061241
+      },
+      {
+        "path": "F-M14/resolved_dr_config.json",
+        "bytes": 29678
+      },
+      {
+        "path": "F-M14/rc4_calibration.jsonl",
+        "bytes": 1467
+      },
+      {
+        "path": "F-M14/actions.jsonl",
+        "bytes": 713151763
+      },
+      {
+        "path": "F-M14/resolved_config.json",
+        "bytes": 14776
+      },
+      {
+        "path": "F-M14/logs.jsonl",
+        "bytes": 357497
+      },
+      {
+        "path": "F-M14/initialization.json",
+        "bytes": 295
+      },
+      {
+        "path": "F-M14/anchor_provenance.json",
+        "bytes": 248
+      },
+      {
+        "path": "F-M14/completion.json",
+        "bytes": 271
+      },
+      {
+        "path": "F-M14/ticket_windows.jsonl",
+        "bytes": 604831
+      },
+      {
+        "path": "F-M12/activation_status.json",
+        "bytes": 5274
+      },
+      {
+        "path": "F-M12/cstar_audit.jsonl",
+        "bytes": 180978
+      },
+      {
+        "path": "F-M12/source_contract.json",
+        "bytes": 3061241
+      },
+      {
+        "path": "F-M12/resolved_dr_config.json",
+        "bytes": 29678
+      },
+      {
+        "path": "F-M12/rc4_calibration.jsonl",
+        "bytes": 1467
+      },
+      {
+        "path": "F-M12/actions.jsonl",
+        "bytes": 713362246
+      },
+      {
+        "path": "F-M12/resolved_config.json",
+        "bytes": 14770
+      },
+      {
+        "path": "F-M12/logs.jsonl",
+        "bytes": 357098
+      },
+      {
+        "path": "F-M12/initialization.json",
+        "bytes": 295
+      },
+      {
+        "path": "F-M12/anchor_provenance.json",
+        "bytes": 248
+      },
+      {
+        "path": "F-M12/completion.json",
+        "bytes": 271
+      },
+      {
+        "path": "F-M12/ticket_windows.jsonl",
+        "bytes": 604831
+      },
+      {
+        "path": "F-A1/source_contract.json",
+        "bytes": 3061241
+      },
+      {
+        "path": "F-A1/resolved_dr_config.json",
+        "bytes": 29655
+      },
+      {
+        "path": "F-A1/rc4_calibration.jsonl",
+        "bytes": 380
+      },
+      {
+        "path": "F-A1/actions.jsonl",
+        "bytes": 613289961
+      },
+      {
+        "path": "F-A1/resolved_config.json",
+        "bytes": 14763
+      },
+      {
+        "path": "F-A1/logs.jsonl",
+        "bytes": 188845
+      },
+      {
+        "path": "F-A1/initialization.json",
+        "bytes": 295
+      },
+      {
+        "path": "F-A1/completion.json",
+        "bytes": 251
+      },
+      {
+        "path": "F-A1/ticket_windows.jsonl",
+        "bytes": 604831
+      },
+      {
+        "path": "F-M11/legacy_curriculum.jsonl",
+        "bytes": 33447
+      },
+      {
+        "path": "F-M11/activation_status.json",
+        "bytes": 4795
+      },
+      {
+        "path": "F-M11/legacy_audit.jsonl",
+        "bytes": 899415
+      },
+      {
+        "path": "F-M11/source_contract.json",
+        "bytes": 3061241
+      },
+      {
+        "path": "F-M11/resolved_dr_config.json",
+        "bytes": 29678
+      },
+      {
+        "path": "F-M11/rc4_calibration.jsonl",
+        "bytes": 1467
+      },
+      {
+        "path": "F-M11/actions.jsonl",
+        "bytes": 708294339
+      },
+      {
+        "path": "F-M11/resolved_config.json",
+        "bytes": 14774
+      },
+      {
+        "path": "F-M11/logs.jsonl",
+        "bytes": 342578
+      },
+      {
+        "path": "F-M11/initialization.json",
+        "bytes": 295
+      },
+      {
+        "path": "F-M11/anchor_provenance.json",
+        "bytes": 248
+      },
+      {
+        "path": "F-M11/completion.json",
+        "bytes": 253
+      },
+      {
+        "path": "F-M11/ticket_windows.jsonl",
+        "bytes": 604831
+      },
+      {
+        "path": "F-M13/activation_status.json",
+        "bytes": 5275
+      },
+      {
+        "path": "F-M13/cstar_audit.jsonl",
+        "bytes": 181765
+      },
+      {
+        "path": "F-M13/source_contract.json",
+        "bytes": 3061241
+      },
+      {
+        "path": "F-M13/resolved_dr_config.json",
+        "bytes": 29678
+      },
+      {
+        "path": "F-M13/rc4_calibration.jsonl",
+        "bytes": 1467
+      },
+      {
+        "path": "F-M13/actions.jsonl",
+        "bytes": 713353046
+      },
+      {
+        "path": "F-M13/resolved_config.json",
+        "bytes": 14767
+      },
+      {
+        "path": "F-M13/logs.jsonl",
+        "bytes": 357145
+      },
+      {
+        "path": "F-M13/initialization.json",
+        "bytes": 295
+      },
+      {
+        "path": "F-M13/anchor_provenance.json",
+        "bytes": 248
+      },
+      {
+        "path": "F-M13/completion.json",
+        "bytes": 270
+      },
+      {
+        "path": "F-M13/ticket_windows.jsonl",
+        "bytes": 604831
+      },
+      {
+        "path": "F-M08/legacy_curriculum.jsonl",
+        "bytes": 33677
+      },
+      {
+        "path": "F-M08/activation_status.json",
+        "bytes": 5325
+      },
+      {
+        "path": "F-M08/legacy_audit.jsonl",
+        "bytes": 903684
+      },
+      {
+        "path": "F-M08/source_contract.json",
+        "bytes": 3061241
+      },
+      {
+        "path": "F-M08/resolved_dr_config.json",
+        "bytes": 29678
+      },
+      {
+        "path": "F-M08/rc4_calibration.jsonl",
+        "bytes": 1467
+      },
+      {
+        "path": "F-M08/actions.jsonl",
+        "bytes": 713025189
+      },
+      {
+        "path": "F-M08/resolved_config.json",
+        "bytes": 14758
+      },
+      {
+        "path": "F-M08/logs.jsonl",
+        "bytes": 357317
+      },
+      {
+        "path": "F-M08/initialization.json",
+        "bytes": 295
+      },
+      {
+        "path": "F-M08/anchor_provenance.json",
+        "bytes": 248
+      },
+      {
+        "path": "F-M08/completion.json",
+        "bytes": 254
+      },
+      {
+        "path": "F-M08/ticket_windows.jsonl",
+        "bytes": 604831
+      },
+      {
+        "path": "F-M00/target_prediction/score.json",
+        "bytes": 1759
+      },
+      {
+        "path": "F-M00/target_prediction/predictions.json",
+        "bytes": 172200220
+      },
+      {
+        "path": "F-M05/target_prediction/score.json",
+        "bytes": 1745
+      },
+      {
+        "path": "F-M05/target_prediction/predictions.json",
+        "bytes": 172200220
+      },
+      {
+        "path": "F-M07/target_prediction/score.json",
+        "bytes": 1760
+      },
+      {
+        "path": "F-M07/target_prediction/predictions.json",
+        "bytes": 172200220
+      },
+      {
+        "path": "F-M14/target_prediction/score.json",
+        "bytes": 1748
+      },
+      {
+        "path": "F-M14/target_prediction/predictions.json",
+        "bytes": 172200220
+      },
+      {
+        "path": "F-M12/target_prediction/score.json",
+        "bytes": 1733
+      },
+      {
+        "path": "F-M12/target_prediction/predictions.json",
+        "bytes": 172200220
+      },
+      {
+        "path": "F-A1/target_prediction/score.json",
+        "bytes": 1803
+      },
+      {
+        "path": "F-A1/target_prediction/predictions.json",
+        "bytes": 171528219
+      },
+      {
+        "path": "F-M11/target_prediction/score.json",
+        "bytes": 1713
+      },
+      {
+        "path": "F-M11/target_prediction/predictions.json",
+        "bytes": 172200220
+      },
+      {
+        "path": "F-M13/target_prediction/score.json",
+        "bytes": 1744
+      },
+      {
+        "path": "F-M13/target_prediction/predictions.json",
+        "bytes": 172200220
+      },
+      {
+        "path": "F-M08/target_prediction/score.json",
+        "bytes": 1767
+      },
+      {
+        "path": "F-M08/target_prediction/predictions.json",
+        "bytes": 172200220
+      }
+    ]
+  }
+}

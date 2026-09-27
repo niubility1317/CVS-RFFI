@@ -1,0 +1,15 @@
+{
+  "status": "VERIFIED",
+  "implementation_commit": "dc4f7be8d9c782f74b3646b7304d989ad5ebcf0d",
+  "branch": "codex/native-dr-eg-prepare-20260914",
+  "independent_remote_oid": "dc4f7be8d9c782f74b3646b7304d989ad5ebcf0d",
+  "verification": "git ls-remote origin refs/heads/codex/native-dr-eg-prepare-20260914 matches git rev-parse HEAD; git status -sb clean and no ahead/behind",
+  "tests_passed": 53,
+  "traceability": {"verified_local": 12, "deferred": 1, "rejected": 0, "blocked": 0},
+  "experiments_started": 0,
+  "N607_touched": false,
+  "real_dataset_loaded": false,
+  "target_scoring": "NOT_RUN",
+  "deferred": "T12: gradient budgets and dynamic EG depend on fixed-EG evidence; R1 sequential parents await source-only results",
+  "remaining_risk": "Real source contract, N607 runtime and complete E200 execution have not been validated by this local synthetic acceptance"
+}

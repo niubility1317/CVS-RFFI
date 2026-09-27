@@ -1,0 +1,17 @@
+{
+  "status": "VERIFIED",
+  "code_commit": "c5867c63e6f551af80b4c57d88072e091c3b3511",
+  "remote_branch_oid_at_readback": "c5867c63e6f551af80b4c57d88072e091c3b3511",
+  "remote": "https://github.com/niubility1317/CVS-RFFI.git",
+  "branch": "codex/native-dr-eg-prepare-20260914",
+  "independent_readback": "git rev-parse HEAD; git ls-remote origin refs/heads/codex/native-dr-eg-prepare-20260914; git status -sb",
+  "code_worktree_clean_after_push": true,
+  "tests_passed": 113,
+  "response_tests_subset": 60,
+  "config_readbacks": 127,
+  "parse_only_entrypoints": 4,
+  "real_experiments_started": 0,
+  "remote_experiment_actions": 0,
+  "performance": "NOT_EVALUATED",
+  "record_scope": "Verified code commit; this receipt and final traceability update are a subsequent documentation commit."
+}

@@ -1,0 +1,47 @@
+{
+  "status": "SCORED_COMPLETE",
+  "run_id": "phase1_native_response_matrix_20260914_r1",
+  "rows": [
+    "SIM_s392005",
+    "DRIC_s392005",
+    "R0-00_s392005",
+    "R0-10_s392005",
+    "ADV0-0_s392005",
+    "SIM_s392006"
+  ],
+  "created": 1789448312.8204117,
+  "target_feedback": false,
+  "scope": "previously_exposed_benchmark_descriptive_evaluation",
+  "device": "local RTX5070Ti",
+  "batch_size": 256,
+  "seed": 392005,
+  "results": {
+    "SIM_s392005": {
+      "status": "SCORED",
+      "count": 672000
+    },
+    "DRIC_s392005": {
+      "status": "SCORED",
+      "count": 672000
+    },
+    "R0-00_s392005": {
+      "status": "SCORED",
+      "count": 672000
+    },
+    "R0-10_s392005": {
+      "status": "SCORED",
+      "count": 672000
+    },
+    "ADV0-0_s392005": {
+      "status": "SCORED",
+      "count": 672000
+    },
+    "SIM_s392006": {
+      "status": "SCORED",
+      "count": 672000
+    }
+  },
+  "torch": "2.10.0+cu128",
+  "checkpoint_provenance": "VERIFIED_SCRATCH_MATCHED_SOURCE_ROLES_FIXED_E200",
+  "finished": 1789449042.3088
+}
