@@ -33,3 +33,11 @@
 VERIFIED：dispatcher PID=904985，工作目录和进程已读回。状态计数{'WAITING_SOURCE': 8, 'QUEUED': 32}。等待各源模型固定200轮完成后自动预测，所有40行预测固定后独立评分。
 
 代码版本：`af41bcbbad5150678f1826b93d61f5cc01ad9fac`。
+
+## 最终结果核实
+
+2026-09-27T04:28:08.906934+00:00
+
+VERIFIED: all40 rows completed predictions and independent scoring; full scored artifacts downloaded and aggregation coverage validated.
+
+完整汇总：docs/COMPARISON_RESULTS_20260927.md。历史392005与4个新seed分开报告；不反馈调参。

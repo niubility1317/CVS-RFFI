@@ -53,3 +53,11 @@ VERIFIED：发布提交d8d0f333d968a7ec4df3b85636c474c634c6c8cb，本地与远�
 VERIFIED：8个源域训练进程持续运行，40行中其余32行排队；最新证据见evidence/progress_readback_03.json。
 
 代码版本：`d8d0f333d968a7ec4df3b85636c474c634c6c8cb`。
+
+## 最终结果核实
+
+2026-09-27T04:28:08.906934+00:00
+
+VERIFIED:40/40 source checkpoints epoch200 exist; source training complete. Separate final evaluation scored.
+
+完整汇总：docs/COMPARISON_RESULTS_20260927.md。历史392005与4个新seed分开报告；不反馈调参。

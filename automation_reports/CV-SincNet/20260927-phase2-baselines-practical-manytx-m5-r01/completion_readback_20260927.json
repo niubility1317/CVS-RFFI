@@ -1,0 +1,418 @@
+{
+  "state": {
+    "cvcnn_ce-ce-s392005": {
+      "status": "PREDICTIONS_COMPLETE",
+      "gpu": 0,
+      "updated": "2026-09-26T18:29:19.984083+00:00",
+      "pid": 915816,
+      "started": "2026-09-26T18:29:04.114210+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/cvcnn_ce-ce-s392005.log",
+      "exit_code": 0,
+      "wall_seconds": 15.870808601379395
+    },
+    "cvcnn_ce-ce-s2026092701": {
+      "status": "PREDICTIONS_COMPLETE",
+      "gpu": 0,
+      "updated": "2026-09-26T19:10:08.575454+00:00",
+      "pid": 939627,
+      "started": "2026-09-26T19:09:52.396551+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/cvcnn_ce-ce-s2026092701.log",
+      "exit_code": 0,
+      "wall_seconds": 16.179965496063232
+    },
+    "cvcnn_ce-ce-s2026092702": {
+      "status": "PREDICTIONS_COMPLETE",
+      "gpu": 0,
+      "updated": "2026-09-26T19:50:56.570846+00:00",
+      "pid": 963342,
+      "started": "2026-09-26T19:50:40.938732+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/cvcnn_ce-ce-s2026092702.log",
+      "exit_code": 0,
+      "wall_seconds": 15.633077144622803
+    },
+    "cvcnn_ce-ce-s2026092703": {
+      "status": "PREDICTIONS_COMPLETE",
+      "gpu": 0,
+      "updated": "2026-09-26T20:31:46.035624+00:00",
+      "pid": 986548,
+      "started": "2026-09-26T20:31:28.998906+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/cvcnn_ce-ce-s2026092703.log",
+      "exit_code": 0,
+      "wall_seconds": 17.03771448135376
+    },
+    "cvcnn_ce-ce-s2026092704": {
+      "status": "PREDICTIONS_COMPLETE",
+      "gpu": 0,
+      "updated": "2026-09-26T21:12:04.297400+00:00",
+      "pid": 1009468,
+      "started": "2026-09-26T21:11:48.324421+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/cvcnn_ce-ce-s2026092704.log",
+      "exit_code": 0,
+      "wall_seconds": 15.97385573387146
+    },
+    "cvcnn_ce-pl-s392005": {
+      "status": "PREDICTIONS_COMPLETE",
+      "gpu": 1,
+      "updated": "2026-09-26T18:32:20.176630+00:00",
+      "pid": 917660,
+      "started": "2026-09-26T18:32:04.318536+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/cvcnn_ce-pl-s392005.log",
+      "exit_code": 0,
+      "wall_seconds": 15.859078407287598
+    },
+    "cvcnn_ce-pl-s2026092701": {
+      "status": "PREDICTIONS_COMPLETE",
+      "gpu": 1,
+      "updated": "2026-09-26T19:17:08.362279+00:00",
+      "pid": 943798,
+      "started": "2026-09-26T19:16:52.837214+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/cvcnn_ce-pl-s2026092701.log",
+      "exit_code": 0,
+      "wall_seconds": 15.526087760925293
+    },
+    "cvcnn_ce-pl-s2026092702": {
+      "status": "PREDICTIONS_COMPLETE",
+      "gpu": 1,
+      "updated": "2026-09-26T20:00:26.578108+00:00",
+      "pid": 968692,
+      "started": "2026-09-26T20:00:10.876808+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/cvcnn_ce-pl-s2026092702.log",
+      "exit_code": 0,
+      "wall_seconds": 15.702298164367676
+    },
+    "cvcnn_ce-pl-s2026092703": {
+      "status": "PREDICTIONS_COMPLETE",
+      "gpu": 1,
+      "updated": "2026-09-26T20:45:14.784343+00:00",
+      "pid": 994481,
+      "started": "2026-09-26T20:44:59.169566+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/cvcnn_ce-pl-s2026092703.log",
+      "exit_code": 0,
+      "wall_seconds": 15.615764856338501
+    },
+    "cvcnn_ce-pl-s2026092704": {
+      "status": "PREDICTIONS_COMPLETE",
+      "gpu": 1,
+      "updated": "2026-09-26T21:29:33.093487+00:00",
+      "pid": 1019701,
+      "started": "2026-09-26T21:29:17.404870+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/cvcnn_ce-pl-s2026092704.log",
+      "exit_code": 0,
+      "wall_seconds": 15.689365148544312
+    },
+    "riei_fd-ce-s392005": {
+      "status": "PREDICTIONS_COMPLETE",
+      "gpu": 2,
+      "updated": "2026-09-26T18:33:51.100933+00:00",
+      "pid": 918949,
+      "started": "2026-09-26T18:33:34.412819+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/riei_fd-ce-s392005.log",
+      "exit_code": 0,
+      "wall_seconds": 16.688913822174072
+    },
+    "riei_fd-ce-s2026092701": {
+      "status": "PREDICTIONS_COMPLETE",
+      "gpu": 2,
+      "updated": "2026-09-26T19:19:09.772842+00:00",
+      "pid": 945030,
+      "started": "2026-09-26T19:18:53.768021+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/riei_fd-ce-s2026092701.log",
+      "exit_code": 0,
+      "wall_seconds": 16.005604028701782
+    },
+    "riei_fd-ce-s2026092702": {
+      "status": "PREDICTIONS_COMPLETE",
+      "gpu": 2,
+      "updated": "2026-09-26T20:04:28.819545+00:00",
+      "pid": 971031,
+      "started": "2026-09-26T20:04:12.476268+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/riei_fd-ce-s2026092702.log",
+      "exit_code": 0,
+      "wall_seconds": 16.344276428222656
+    },
+    "riei_fd-ce-s2026092703": {
+      "status": "PREDICTIONS_COMPLETE",
+      "gpu": 2,
+      "updated": "2026-09-26T20:50:18.142337+00:00",
+      "pid": 997385,
+      "started": "2026-09-26T20:50:01.587698+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/riei_fd-ce-s2026092703.log",
+      "exit_code": 0,
+      "wall_seconds": 16.555655241012573
+    },
+    "riei_fd-ce-s2026092704": {
+      "status": "PREDICTIONS_COMPLETE",
+      "gpu": 2,
+      "updated": "2026-09-26T21:35:37.535771+00:00",
+      "pid": 1023184,
+      "started": "2026-09-26T21:35:20.843551+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/riei_fd-ce-s2026092704.log",
+      "exit_code": 0,
+      "wall_seconds": 16.69321608543396
+    },
+    "riei_fd-pl-s392005": {
+      "status": "PREDICTIONS_COMPLETE",
+      "gpu": 3,
+      "updated": "2026-09-26T18:38:50.928249+00:00",
+      "pid": 921955,
+      "started": "2026-09-26T18:38:34.640980+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/riei_fd-pl-s392005.log",
+      "exit_code": 0,
+      "wall_seconds": 16.288309812545776
+    },
+    "riei_fd-pl-s2026092701": {
+      "status": "PREDICTIONS_COMPLETE",
+      "gpu": 3,
+      "updated": "2026-09-26T19:29:40.464016+00:00",
+      "pid": 950852,
+      "started": "2026-09-26T19:29:23.971458+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/riei_fd-pl-s2026092701.log",
+      "exit_code": 0,
+      "wall_seconds": 16.493584871292114
+    },
+    "riei_fd-pl-s2026092702": {
+      "status": "PREDICTIONS_COMPLETE",
+      "gpu": 3,
+      "updated": "2026-09-26T20:18:59.688201+00:00",
+      "pid": 979316,
+      "started": "2026-09-26T20:18:43.380429+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/riei_fd-pl-s2026092702.log",
+      "exit_code": 0,
+      "wall_seconds": 16.308391332626343
+    },
+    "riei_fd-pl-s2026092703": {
+      "status": "PREDICTIONS_COMPLETE",
+      "gpu": 3,
+      "updated": "2026-09-26T21:08:18.955834+00:00",
+      "pid": 1007579,
+      "started": "2026-09-26T21:08:02.599971+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/riei_fd-pl-s2026092703.log",
+      "exit_code": 0,
+      "wall_seconds": 16.35690975189209
+    },
+    "riei_fd-pl-s2026092704": {
+      "status": "PREDICTIONS_COMPLETE",
+      "gpu": 3,
+      "updated": "2026-09-26T21:57:38.293730+00:00",
+      "pid": 1035812,
+      "started": "2026-09-26T21:57:21.882760+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/riei_fd-pl-s2026092704.log",
+      "exit_code": 0,
+      "wall_seconds": 16.41186547279358
+    },
+    "drift-ce-s392005": {
+      "status": "PREDICTIONS_COMPLETE",
+      "gpu": 4,
+      "updated": "2026-09-26T18:32:20.906610+00:00",
+      "pid": 917659,
+      "started": "2026-09-26T18:32:04.273440+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/drift-ce-s392005.log",
+      "exit_code": 0,
+      "wall_seconds": 16.634193658828735
+    },
+    "drift-ce-s2026092701": {
+      "status": "PREDICTIONS_COMPLETE",
+      "gpu": 4,
+      "updated": "2026-09-26T19:15:39.693847+00:00",
+      "pid": 942640,
+      "started": "2026-09-26T19:15:23.442838+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/drift-ce-s2026092701.log",
+      "exit_code": 0,
+      "wall_seconds": 16.251999378204346
+    },
+    "drift-ce-s2026092702": {
+      "status": "PREDICTIONS_COMPLETE",
+      "gpu": 4,
+      "updated": "2026-09-26T19:59:28.869718+00:00",
+      "pid": 967999,
+      "started": "2026-09-26T19:59:12.224549+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/drift-ce-s2026092702.log",
+      "exit_code": 0,
+      "wall_seconds": 16.645950317382812
+    },
+    "drift-ce-s2026092703": {
+      "status": "PREDICTIONS_COMPLETE",
+      "gpu": 4,
+      "updated": "2026-09-26T20:42:47.524858+00:00",
+      "pid": 992784,
+      "started": "2026-09-26T20:42:31.439574+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/drift-ce-s2026092703.log",
+      "exit_code": 0,
+      "wall_seconds": 16.08629322052002
+    },
+    "drift-ce-s2026092704": {
+      "status": "PREDICTIONS_COMPLETE",
+      "gpu": 4,
+      "updated": "2026-09-26T21:26:06.170663+00:00",
+      "pid": 1017520,
+      "started": "2026-09-26T21:25:50.135570+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/drift-ce-s2026092704.log",
+      "exit_code": 0,
+      "wall_seconds": 16.036036252975464
+    },
+    "drift-pl-s392005": {
+      "status": "PREDICTIONS_COMPLETE",
+      "gpu": 5,
+      "updated": "2026-09-26T18:35:51.246543+00:00",
+      "pid": 920192,
+      "started": "2026-09-26T18:35:34.519632+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/drift-pl-s392005.log",
+      "exit_code": 0,
+      "wall_seconds": 16.72794508934021
+    },
+    "drift-pl-s2026092701": {
+      "status": "PREDICTIONS_COMPLETE",
+      "gpu": 5,
+      "updated": "2026-09-26T19:23:10.110761+00:00",
+      "pid": 947362,
+      "started": "2026-09-26T19:22:54.000863+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/drift-pl-s2026092701.log",
+      "exit_code": 0,
+      "wall_seconds": 16.110910654067993
+    },
+    "drift-pl-s2026092702": {
+      "status": "PREDICTIONS_COMPLETE",
+      "gpu": 5,
+      "updated": "2026-09-26T20:09:59.037810+00:00",
+      "pid": 974372,
+      "started": "2026-09-26T20:09:42.831203+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/drift-pl-s2026092702.log",
+      "exit_code": 0,
+      "wall_seconds": 16.208153009414673
+    },
+    "drift-pl-s2026092703": {
+      "status": "PREDICTIONS_COMPLETE",
+      "gpu": 5,
+      "updated": "2026-09-26T20:57:18.175896+00:00",
+      "pid": 1001352,
+      "started": "2026-09-26T20:57:01.862921+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/drift-pl-s2026092703.log",
+      "exit_code": 0,
+      "wall_seconds": 16.31393074989319
+    },
+    "drift-pl-s2026092704": {
+      "status": "PREDICTIONS_COMPLETE",
+      "gpu": 5,
+      "updated": "2026-09-26T21:45:07.474670+00:00",
+      "pid": 1028444,
+      "started": "2026-09-26T21:44:51.036100+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/drift-pl-s2026092704.log",
+      "exit_code": 0,
+      "wall_seconds": 16.43956708908081
+    },
+    "poster-ce-s392005": {
+      "status": "PREDICTIONS_COMPLETE",
+      "gpu": 6,
+      "updated": "2026-09-26T18:30:36.038965+00:00",
+      "pid": 915602,
+      "started": "2026-09-26T18:28:34.117514+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/poster-ce-s392005.log",
+      "exit_code": 0,
+      "wall_seconds": 121.92241716384888
+    },
+    "poster-ce-s2026092701": {
+      "status": "PREDICTIONS_COMPLETE",
+      "gpu": 6,
+      "updated": "2026-09-26T19:10:09.303239+00:00",
+      "pid": 938291,
+      "started": "2026-09-26T19:08:08.089901+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/poster-ce-s2026092701.log",
+      "exit_code": 0,
+      "wall_seconds": 121.21443176269531
+    },
+    "poster-ce-s2026092702": {
+      "status": "PREDICTIONS_COMPLETE",
+      "gpu": 6,
+      "updated": "2026-09-26T19:49:48.101774+00:00",
+      "pid": 961342,
+      "started": "2026-09-26T19:47:41.584205+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/poster-ce-s2026092702.log",
+      "exit_code": 0,
+      "wall_seconds": 126.51864767074585
+    },
+    "poster-ce-s2026092703": {
+      "status": "PREDICTIONS_COMPLETE",
+      "gpu": 6,
+      "updated": "2026-09-26T20:29:24.526748+00:00",
+      "pid": 984046,
+      "started": "2026-09-26T20:27:20.196037+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/poster-ce-s2026092703.log",
+      "exit_code": 0,
+      "wall_seconds": 124.33157753944397
+    },
+    "poster-ce-s2026092704": {
+      "status": "PREDICTIONS_COMPLETE",
+      "gpu": 6,
+      "updated": "2026-09-26T21:08:28.652144+00:00",
+      "pid": 1006391,
+      "started": "2026-09-26T21:06:26.737444+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/poster-ce-s2026092704.log",
+      "exit_code": 0,
+      "wall_seconds": 121.91569924354553
+    },
+    "radionet-ce-s392005": {
+      "status": "PREDICTIONS_COMPLETE",
+      "gpu": 7,
+      "updated": "2026-09-26T18:33:01.566834+00:00",
+      "pid": 914982,
+      "started": "2026-09-26T18:28:04.086756+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/radionet-ce-s392005.log",
+      "exit_code": 0,
+      "wall_seconds": 297.48098397254944
+    },
+    "radionet-ce-s2026092701": {
+      "status": "PREDICTIONS_COMPLETE",
+      "gpu": 7,
+      "updated": "2026-09-26T19:14:00.049335+00:00",
+      "pid": 938966,
+      "started": "2026-09-26T19:09:03.694598+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/radionet-ce-s2026092701.log",
+      "exit_code": 0,
+      "wall_seconds": 296.3557503223419
+    },
+    "radionet-ce-s2026092702": {
+      "status": "PREDICTIONS_COMPLETE",
+      "gpu": 7,
+      "updated": "2026-09-26T19:54:36.404481+00:00",
+      "pid": 962193,
+      "started": "2026-09-26T19:49:32.164694+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/radionet-ce-s2026092702.log",
+      "exit_code": 0,
+      "wall_seconds": 304.2406144142151
+    },
+    "radionet-ce-s2026092703": {
+      "status": "PREDICTIONS_COMPLETE",
+      "gpu": 7,
+      "updated": "2026-09-26T20:34:35.853939+00:00",
+      "pid": 985337,
+      "started": "2026-09-26T20:29:38.430281+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/radionet-ce-s2026092703.log",
+      "exit_code": 0,
+      "wall_seconds": 297.4246463775635
+    },
+    "radionet-ce-s2026092704": {
+      "status": "PREDICTIONS_COMPLETE",
+      "gpu": 7,
+      "updated": "2026-09-26T21:14:26.093653+00:00",
+      "pid": 1008280,
+      "started": "2026-09-26T21:09:37.943992+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase2-baselines-practical-manytx-m5-r01/radionet-ce-s2026092704.log",
+      "exit_code": 0,
+      "wall_seconds": 288.1506042480469
+    }
+  },
+  "dispatcher_complete.json": {
+    "finished": "2026-09-26T21:57:38.295947+00:00",
+    "counts": {
+      "PREDICTIONS_COMPLETE": 40
+    }
+  },
+  "scorer_exit.json": {
+    "exit_code": 0,
+    "artifact_exists": true
+  },
+  "scored_results.json": {
+    "bytes": 41508571,
+    "modified": 1790460109.7219985
+  }
+}

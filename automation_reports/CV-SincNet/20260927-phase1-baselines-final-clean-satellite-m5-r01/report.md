@@ -33,3 +33,11 @@
 VERIFIED: dispatcher PID913497, CWD/child process/log progress independently read back; state=BUILDING_DATA. CPU only. Source40rows retain last.pt and200epoch selection.
 
 16项聚焦测试及一次P0/P1审查通过。发布commit：`614d79e5da86925e600444a2629ad89b7010fbd3`。旧训练日志不追写，新日志格式从新launcher启动生效。
+
+## 最终结果核实
+
+2026-09-27T04:28:08.906934+00:00
+
+VERIFIED: all40 rows completed predictions and independent scoring; full scored artifacts downloaded and aggregation coverage validated.
+
+完整汇总：docs/COMPARISON_RESULTS_20260927.md。历史392005与4个新seed分开报告；不反馈调参。

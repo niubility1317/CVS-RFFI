@@ -1,0 +1,612 @@
+{
+  "state": {
+    "cvcnn_ce-ce-s392005": {
+      "status": "SOURCE_TRAINED",
+      "gpu": 0,
+      "pid": 889498,
+      "started": "2026-09-26T17:47:58.106789+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase1-baselines-practical-manysig-m5-r01/cvcnn_ce-ce-s392005.log",
+      "updated": "2026-09-26T18:28:58.366895+00:00",
+      "exit_code": 0,
+      "wall_seconds": 2460.2612915039062
+    },
+    "cvcnn_ce-ce-s2026092701": {
+      "status": "SOURCE_TRAINED",
+      "gpu": 0,
+      "pid": 915729,
+      "started": "2026-09-26T18:28:58.368610+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase1-baselines-practical-manysig-m5-r01/cvcnn_ce-ce-s2026092701.log",
+      "updated": "2026-09-26T19:09:32.794852+00:00",
+      "exit_code": 0,
+      "wall_seconds": 2434.4271519184113
+    },
+    "cvcnn_ce-ce-s2026092702": {
+      "status": "SOURCE_TRAINED",
+      "gpu": 0,
+      "pid": 939510,
+      "started": "2026-09-26T19:09:32.796922+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase1-baselines-practical-manysig-m5-r01/cvcnn_ce-ce-s2026092702.log",
+      "updated": "2026-09-26T19:50:39.172249+00:00",
+      "exit_code": 0,
+      "wall_seconds": 2466.3762242794037
+    },
+    "cvcnn_ce-ce-s2026092703": {
+      "status": "SOURCE_TRAINED",
+      "gpu": 0,
+      "pid": 963269,
+      "started": "2026-09-26T19:50:39.174600+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase1-baselines-practical-manysig-m5-r01/cvcnn_ce-ce-s2026092703.log",
+      "updated": "2026-09-26T20:31:16.883940+00:00",
+      "exit_code": 0,
+      "wall_seconds": 2437.7101259231567
+    },
+    "cvcnn_ce-ce-s2026092704": {
+      "status": "SOURCE_TRAINED",
+      "gpu": 0,
+      "pid": 986447,
+      "started": "2026-09-26T20:31:16.886405+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase1-baselines-practical-manysig-m5-r01/cvcnn_ce-ce-s2026092704.log",
+      "updated": "2026-09-26T21:11:40.685897+00:00",
+      "exit_code": 0,
+      "wall_seconds": 2423.8003005981445
+    },
+    "cvcnn_ce-pl-s392005": {
+      "status": "SOURCE_TRAINED",
+      "gpu": 1,
+      "pid": 889500,
+      "started": "2026-09-26T17:47:58.108051+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase1-baselines-practical-manysig-m5-r01/cvcnn_ce-pl-s392005.log",
+      "updated": "2026-09-26T18:31:45.586211+00:00",
+      "exit_code": 0,
+      "wall_seconds": 2627.4800963401794
+    },
+    "cvcnn_ce-pl-s2026092701": {
+      "status": "SOURCE_TRAINED",
+      "gpu": 1,
+      "pid": 917542,
+      "started": "2026-09-26T18:31:45.587701+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase1-baselines-practical-manysig-m5-r01/cvcnn_ce-pl-s2026092701.log",
+      "updated": "2026-09-26T19:16:25.455712+00:00",
+      "exit_code": 0,
+      "wall_seconds": 2679.868645429611
+    },
+    "cvcnn_ce-pl-s2026092702": {
+      "status": "SOURCE_TRAINED",
+      "gpu": 1,
+      "pid": 943263,
+      "started": "2026-09-26T19:16:25.457898+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase1-baselines-practical-manysig-m5-r01/cvcnn_ce-pl-s2026092702.log",
+      "updated": "2026-09-26T19:59:57.179118+00:00",
+      "exit_code": 0,
+      "wall_seconds": 2611.7220792770386
+    },
+    "cvcnn_ce-pl-s2026092703": {
+      "status": "SOURCE_TRAINED",
+      "gpu": 1,
+      "pid": 968589,
+      "started": "2026-09-26T19:59:57.181627+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase1-baselines-practical-manysig-m5-r01/cvcnn_ce-pl-s2026092703.log",
+      "updated": "2026-09-26T20:44:35.330144+00:00",
+      "exit_code": 0,
+      "wall_seconds": 2678.1493537425995
+    },
+    "cvcnn_ce-pl-s2026092704": {
+      "status": "SOURCE_TRAINED",
+      "gpu": 1,
+      "pid": 993948,
+      "started": "2026-09-26T20:44:35.332445+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase1-baselines-practical-manysig-m5-r01/cvcnn_ce-pl-s2026092704.log",
+      "updated": "2026-09-26T21:29:07.083484+00:00",
+      "exit_code": 0,
+      "wall_seconds": 2671.751918554306
+    },
+    "riei_fd-ce-s392005": {
+      "status": "SOURCE_TRAINED",
+      "gpu": 2,
+      "pid": 889502,
+      "started": "2026-09-26T17:47:58.109404+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase1-baselines-practical-manysig-m5-r01/riei_fd-ce-s392005.log",
+      "updated": "2026-09-26T18:33:31.145061+00:00",
+      "exit_code": 0,
+      "wall_seconds": 2733.037747144699
+    },
+    "riei_fd-ce-s2026092701": {
+      "status": "SOURCE_TRAINED",
+      "gpu": 2,
+      "pid": 918872,
+      "started": "2026-09-26T18:33:31.146374+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase1-baselines-practical-manysig-m5-r01/riei_fd-ce-s2026092701.log",
+      "updated": "2026-09-26T19:18:48.000997+00:00",
+      "exit_code": 0,
+      "wall_seconds": 2716.855204105377
+    },
+    "riei_fd-ce-s2026092702": {
+      "status": "SOURCE_TRAINED",
+      "gpu": 2,
+      "pid": 944945,
+      "started": "2026-09-26T19:18:48.003199+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase1-baselines-practical-manysig-m5-r01/riei_fd-ce-s2026092702.log",
+      "updated": "2026-09-26T20:04:04.706933+00:00",
+      "exit_code": 0,
+      "wall_seconds": 2716.7046389579773
+    },
+    "riei_fd-ce-s2026092703": {
+      "status": "SOURCE_TRAINED",
+      "gpu": 2,
+      "pid": 970942,
+      "started": "2026-09-26T20:04:04.709313+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase1-baselines-practical-manysig-m5-r01/riei_fd-ce-s2026092703.log",
+      "updated": "2026-09-26T20:49:40.255686+00:00",
+      "exit_code": 0,
+      "wall_seconds": 2735.547105073929
+    },
+    "riei_fd-ce-s2026092704": {
+      "status": "SOURCE_TRAINED",
+      "gpu": 2,
+      "pid": 996852,
+      "started": "2026-09-26T20:49:40.258143+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase1-baselines-practical-manysig-m5-r01/riei_fd-ce-s2026092704.log",
+      "updated": "2026-09-26T21:34:56.844935+00:00",
+      "exit_code": 0,
+      "wall_seconds": 2716.5875947475433
+    },
+    "riei_fd-pl-s392005": {
+      "status": "SOURCE_TRAINED",
+      "gpu": 3,
+      "pid": 889505,
+      "started": "2026-09-26T17:47:58.111484+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase1-baselines-practical-manysig-m5-r01/riei_fd-pl-s392005.log",
+      "updated": "2026-09-26T18:38:11.101280+00:00",
+      "exit_code": 0,
+      "wall_seconds": 3012.993016242981
+    },
+    "riei_fd-pl-s2026092701": {
+      "status": "SOURCE_TRAINED",
+      "gpu": 3,
+      "pid": 921423,
+      "started": "2026-09-26T18:38:11.102865+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase1-baselines-practical-manysig-m5-r01/riei_fd-pl-s2026092701.log",
+      "updated": "2026-09-26T19:29:06.306017+00:00",
+      "exit_code": 0,
+      "wall_seconds": 3055.2038881778717
+    },
+    "riei_fd-pl-s2026092702": {
+      "status": "SOURCE_TRAINED",
+      "gpu": 3,
+      "pid": 950739,
+      "started": "2026-09-26T19:29:06.308205+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase1-baselines-practical-manysig-m5-r01/riei_fd-pl-s2026092702.log",
+      "updated": "2026-09-26T20:18:20.148068+00:00",
+      "exit_code": 0,
+      "wall_seconds": 2953.840726852417
+    },
+    "riei_fd-pl-s2026092703": {
+      "status": "SOURCE_TRAINED",
+      "gpu": 3,
+      "pid": 978914,
+      "started": "2026-09-26T20:18:20.150585+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase1-baselines-practical-manysig-m5-r01/riei_fd-pl-s2026092703.log",
+      "updated": "2026-09-26T21:07:37.081166+00:00",
+      "exit_code": 0,
+      "wall_seconds": 2956.9315135478973
+    },
+    "riei_fd-pl-s2026092704": {
+      "status": "SOURCE_TRAINED",
+      "gpu": 3,
+      "pid": 1007043,
+      "started": "2026-09-26T21:07:37.083852+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase1-baselines-practical-manysig-m5-r01/riei_fd-pl-s2026092704.log",
+      "updated": "2026-09-26T21:57:04.340061+00:00",
+      "exit_code": 0,
+      "wall_seconds": 2967.2571403980255
+    },
+    "drift-ce-s392005": {
+      "status": "SOURCE_TRAINED",
+      "gpu": 4,
+      "pid": 889506,
+      "started": "2026-09-26T17:47:58.112355+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase1-baselines-practical-manysig-m5-r01/drift-ce-s392005.log",
+      "updated": "2026-09-26T18:31:35.679091+00:00",
+      "exit_code": 0,
+      "wall_seconds": 2617.569413423538
+    },
+    "drift-ce-s2026092701": {
+      "status": "SOURCE_TRAINED",
+      "gpu": 4,
+      "pid": 917447,
+      "started": "2026-09-26T18:31:35.680743+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase1-baselines-practical-manysig-m5-r01/drift-ce-s2026092701.log",
+      "updated": "2026-09-26T19:14:54.544071+00:00",
+      "exit_code": 0,
+      "wall_seconds": 2598.8640410900116
+    },
+    "drift-ce-s2026092702": {
+      "status": "SOURCE_TRAINED",
+      "gpu": 4,
+      "pid": 942498,
+      "started": "2026-09-26T19:14:54.546192+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase1-baselines-practical-manysig-m5-r01/drift-ce-s2026092702.log",
+      "updated": "2026-09-26T19:59:04.145815+00:00",
+      "exit_code": 0,
+      "wall_seconds": 2649.60035943985
+    },
+    "drift-ce-s2026092703": {
+      "status": "SOURCE_TRAINED",
+      "gpu": 4,
+      "pid": 967908,
+      "started": "2026-09-26T19:59:04.147878+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase1-baselines-practical-manysig-m5-r01/drift-ce-s2026092703.log",
+      "updated": "2026-09-26T20:42:17.862827+00:00",
+      "exit_code": 0,
+      "wall_seconds": 2593.7156932353973
+    },
+    "drift-ce-s2026092704": {
+      "status": "SOURCE_TRAINED",
+      "gpu": 4,
+      "pid": 992679,
+      "started": "2026-09-26T20:42:17.865570+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase1-baselines-practical-manysig-m5-r01/drift-ce-s2026092704.log",
+      "updated": "2026-09-26T21:25:29.116280+00:00",
+      "exit_code": 0,
+      "wall_seconds": 2591.2516598701477
+    },
+    "drift-pl-s392005": {
+      "status": "SOURCE_TRAINED",
+      "gpu": 5,
+      "pid": 889508,
+      "started": "2026-09-26T17:47:58.113301+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase1-baselines-practical-manysig-m5-r01/drift-pl-s392005.log",
+      "updated": "2026-09-26T18:35:28.269739+00:00",
+      "exit_code": 0,
+      "wall_seconds": 2850.159031391144
+    },
+    "drift-pl-s2026092701": {
+      "status": "SOURCE_TRAINED",
+      "gpu": 5,
+      "pid": 920105,
+      "started": "2026-09-26T18:35:28.271296+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase1-baselines-practical-manysig-m5-r01/drift-pl-s2026092701.log",
+      "updated": "2026-09-26T19:22:38.579790+00:00",
+      "exit_code": 0,
+      "wall_seconds": 2830.30925488472
+    },
+    "drift-pl-s2026092702": {
+      "status": "SOURCE_TRAINED",
+      "gpu": 5,
+      "pid": 947254,
+      "started": "2026-09-26T19:22:38.582002+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase1-baselines-practical-manysig-m5-r01/drift-pl-s2026092702.log",
+      "updated": "2026-09-26T20:09:34.641875+00:00",
+      "exit_code": 0,
+      "wall_seconds": 2816.0607731342316
+    },
+    "drift-pl-s2026092703": {
+      "status": "SOURCE_TRAINED",
+      "gpu": 5,
+      "pid": 973873,
+      "started": "2026-09-26T20:09:34.644436+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase1-baselines-practical-manysig-m5-r01/drift-pl-s2026092703.log",
+      "updated": "2026-09-26T20:56:32.790832+00:00",
+      "exit_code": 0,
+      "wall_seconds": 2818.147303581238
+    },
+    "drift-pl-s2026092704": {
+      "status": "SOURCE_TRAINED",
+      "gpu": 5,
+      "pid": 1000809,
+      "started": "2026-09-26T20:56:32.793442+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase1-baselines-practical-manysig-m5-r01/drift-pl-s2026092704.log",
+      "updated": "2026-09-26T21:44:24.520602+00:00",
+      "exit_code": 0,
+      "wall_seconds": 2871.7280564308167
+    },
+    "poster-ce-s392005": {
+      "status": "SOURCE_TRAINED",
+      "gpu": 6,
+      "pid": 889509,
+      "started": "2026-09-26T17:47:58.113804+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase1-baselines-practical-manysig-m5-r01/poster-ce-s392005.log",
+      "updated": "2026-09-26T18:28:18.073613+00:00",
+      "exit_code": 0,
+      "wall_seconds": 2419.961432695389
+    },
+    "poster-ce-s2026092701": {
+      "status": "SOURCE_TRAINED",
+      "gpu": 6,
+      "pid": 915489,
+      "started": "2026-09-26T18:28:18.075087+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase1-baselines-practical-manysig-m5-r01/poster-ce-s2026092701.log",
+      "updated": "2026-09-26T19:07:55.533187+00:00",
+      "exit_code": 0,
+      "wall_seconds": 2377.4587318897247
+    },
+    "poster-ce-s2026092702": {
+      "status": "SOURCE_TRAINED",
+      "gpu": 6,
+      "pid": 938188,
+      "started": "2026-09-26T19:07:55.535168+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase1-baselines-practical-manysig-m5-r01/poster-ce-s2026092702.log",
+      "updated": "2026-09-26T19:47:33.905296+00:00",
+      "exit_code": 0,
+      "wall_seconds": 2378.370852947235
+    },
+    "poster-ce-s2026092703": {
+      "status": "SOURCE_TRAINED",
+      "gpu": 6,
+      "pid": 960843,
+      "started": "2026-09-26T19:47:33.907707+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase1-baselines-practical-manysig-m5-r01/poster-ce-s2026092703.log",
+      "updated": "2026-09-26T20:27:07.872385+00:00",
+      "exit_code": 0,
+      "wall_seconds": 2373.965596437454
+    },
+    "poster-ce-s2026092704": {
+      "status": "SOURCE_TRAINED",
+      "gpu": 6,
+      "pid": 983944,
+      "started": "2026-09-26T20:27:07.875126+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase1-baselines-practical-manysig-m5-r01/poster-ce-s2026092704.log",
+      "updated": "2026-09-26T21:06:24.753568+00:00",
+      "exit_code": 0,
+      "wall_seconds": 2356.8793392181396
+    },
+    "radionet-ce-s392005": {
+      "status": "SOURCE_TRAINED",
+      "gpu": 7,
+      "pid": 889510,
+      "started": "2026-09-26T17:47:58.114596+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase1-baselines-practical-manysig-m5-r01/radionet-ce-s392005.log",
+      "updated": "2026-09-26T18:28:02.377440+00:00",
+      "exit_code": 0,
+      "wall_seconds": 2404.2642166614532
+    },
+    "radionet-ce-s2026092701": {
+      "status": "SOURCE_TRAINED",
+      "gpu": 7,
+      "pid": 914909,
+      "started": "2026-09-26T18:28:02.379297+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase1-baselines-practical-manysig-m5-r01/radionet-ce-s2026092701.log",
+      "updated": "2026-09-26T19:08:40.475158+00:00",
+      "exit_code": 0,
+      "wall_seconds": 2438.096482515335
+    },
+    "radionet-ce-s2026092702": {
+      "status": "SOURCE_TRAINED",
+      "gpu": 7,
+      "pid": 938838,
+      "started": "2026-09-26T19:08:40.477144+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase1-baselines-practical-manysig-m5-r01/radionet-ce-s2026092702.log",
+      "updated": "2026-09-26T19:49:07.505038+00:00",
+      "exit_code": 0,
+      "wall_seconds": 2427.028627872467
+    },
+    "radionet-ce-s2026092703": {
+      "status": "SOURCE_TRAINED",
+      "gpu": 7,
+      "pid": 962054,
+      "started": "2026-09-26T19:49:07.507356+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase1-baselines-practical-manysig-m5-r01/radionet-ce-s2026092703.log",
+      "updated": "2026-09-26T20:29:18.280097+00:00",
+      "exit_code": 0,
+      "wall_seconds": 2410.773525238037
+    },
+    "radionet-ce-s2026092704": {
+      "status": "SOURCE_TRAINED",
+      "gpu": 7,
+      "pid": 985216,
+      "started": "2026-09-26T20:29:18.282474+00:00",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260927-phase1-baselines-practical-manysig-m5-r01/radionet-ce-s2026092704.log",
+      "updated": "2026-09-26T21:09:17.316574+00:00",
+      "exit_code": 0,
+      "wall_seconds": 2399.0348830223083
+    }
+  },
+  "dispatcher_complete.json": {
+    "finished": "2026-09-26T21:57:04.342409+00:00",
+    "counts": {
+      "SOURCE_TRAINED": 40
+    }
+  },
+  "source_artifacts": {
+    "cvcnn_ce-ce-s392005": {
+      "epoch": 200,
+      "target_evaluated": false,
+      "last_pt_bytes": 430132
+    },
+    "cvcnn_ce-ce-s2026092701": {
+      "epoch": 200,
+      "target_evaluated": false,
+      "last_pt_bytes": 430132
+    },
+    "cvcnn_ce-ce-s2026092702": {
+      "epoch": 200,
+      "target_evaluated": false,
+      "last_pt_bytes": 430132
+    },
+    "cvcnn_ce-ce-s2026092703": {
+      "epoch": 200,
+      "target_evaluated": false,
+      "last_pt_bytes": 430132
+    },
+    "cvcnn_ce-ce-s2026092704": {
+      "epoch": 200,
+      "target_evaluated": false,
+      "last_pt_bytes": 430132
+    },
+    "cvcnn_ce-pl-s392005": {
+      "epoch": 200,
+      "target_evaluated": false,
+      "last_pt_bytes": 430132
+    },
+    "cvcnn_ce-pl-s2026092701": {
+      "epoch": 200,
+      "target_evaluated": false,
+      "last_pt_bytes": 430132
+    },
+    "cvcnn_ce-pl-s2026092702": {
+      "epoch": 200,
+      "target_evaluated": false,
+      "last_pt_bytes": 430132
+    },
+    "cvcnn_ce-pl-s2026092703": {
+      "epoch": 200,
+      "target_evaluated": false,
+      "last_pt_bytes": 430132
+    },
+    "cvcnn_ce-pl-s2026092704": {
+      "epoch": 200,
+      "target_evaluated": false,
+      "last_pt_bytes": 430132
+    },
+    "riei_fd-ce-s392005": {
+      "epoch": 200,
+      "target_evaluated": false,
+      "last_pt_bytes": 16518034
+    },
+    "riei_fd-ce-s2026092701": {
+      "epoch": 200,
+      "target_evaluated": false,
+      "last_pt_bytes": 16518034
+    },
+    "riei_fd-ce-s2026092702": {
+      "epoch": 200,
+      "target_evaluated": false,
+      "last_pt_bytes": 16518034
+    },
+    "riei_fd-ce-s2026092703": {
+      "epoch": 200,
+      "target_evaluated": false,
+      "last_pt_bytes": 16518034
+    },
+    "riei_fd-ce-s2026092704": {
+      "epoch": 200,
+      "target_evaluated": false,
+      "last_pt_bytes": 16518034
+    },
+    "riei_fd-pl-s392005": {
+      "epoch": 200,
+      "target_evaluated": false,
+      "last_pt_bytes": 16518034
+    },
+    "riei_fd-pl-s2026092701": {
+      "epoch": 200,
+      "target_evaluated": false,
+      "last_pt_bytes": 16518034
+    },
+    "riei_fd-pl-s2026092702": {
+      "epoch": 200,
+      "target_evaluated": false,
+      "last_pt_bytes": 16518034
+    },
+    "riei_fd-pl-s2026092703": {
+      "epoch": 200,
+      "target_evaluated": false,
+      "last_pt_bytes": 16518034
+    },
+    "riei_fd-pl-s2026092704": {
+      "epoch": 200,
+      "target_evaluated": false,
+      "last_pt_bytes": 16518034
+    },
+    "drift-ce-s392005": {
+      "epoch": 200,
+      "target_evaluated": false,
+      "last_pt_bytes": 16788734
+    },
+    "drift-ce-s2026092701": {
+      "epoch": 200,
+      "target_evaluated": false,
+      "last_pt_bytes": 16788734
+    },
+    "drift-ce-s2026092702": {
+      "epoch": 200,
+      "target_evaluated": false,
+      "last_pt_bytes": 16788734
+    },
+    "drift-ce-s2026092703": {
+      "epoch": 200,
+      "target_evaluated": false,
+      "last_pt_bytes": 16788734
+    },
+    "drift-ce-s2026092704": {
+      "epoch": 200,
+      "target_evaluated": false,
+      "last_pt_bytes": 16788734
+    },
+    "drift-pl-s392005": {
+      "epoch": 200,
+      "target_evaluated": false,
+      "last_pt_bytes": 16788734
+    },
+    "drift-pl-s2026092701": {
+      "epoch": 200,
+      "target_evaluated": false,
+      "last_pt_bytes": 16788734
+    },
+    "drift-pl-s2026092702": {
+      "epoch": 200,
+      "target_evaluated": false,
+      "last_pt_bytes": 16788734
+    },
+    "drift-pl-s2026092703": {
+      "epoch": 200,
+      "target_evaluated": false,
+      "last_pt_bytes": 16788734
+    },
+    "drift-pl-s2026092704": {
+      "epoch": 200,
+      "target_evaluated": false,
+      "last_pt_bytes": 16788734
+    },
+    "poster-ce-s392005": {
+      "epoch": 200,
+      "target_evaluated": false,
+      "last_pt_bytes": 213262
+    },
+    "poster-ce-s2026092701": {
+      "epoch": 200,
+      "target_evaluated": false,
+      "last_pt_bytes": 213262
+    },
+    "poster-ce-s2026092702": {
+      "epoch": 200,
+      "target_evaluated": false,
+      "last_pt_bytes": 213262
+    },
+    "poster-ce-s2026092703": {
+      "epoch": 200,
+      "target_evaluated": false,
+      "last_pt_bytes": 213262
+    },
+    "poster-ce-s2026092704": {
+      "epoch": 200,
+      "target_evaluated": false,
+      "last_pt_bytes": 213262
+    },
+    "radionet-ce-s392005": {
+      "epoch": 200,
+      "target_evaluated": false,
+      "last_pt_bytes": 4179422
+    },
+    "radionet-ce-s2026092701": {
+      "epoch": 200,
+      "target_evaluated": false,
+      "last_pt_bytes": 4179422
+    },
+    "radionet-ce-s2026092702": {
+      "epoch": 200,
+      "target_evaluated": false,
+      "last_pt_bytes": 4179422
+    },
+    "radionet-ce-s2026092703": {
+      "epoch": 200,
+      "target_evaluated": false,
+      "last_pt_bytes": 4179422
+    },
+    "radionet-ce-s2026092704": {
+      "epoch": 200,
+      "target_evaluated": false,
+      "last_pt_bytes": 4179422
+    }
+  }
+}
