@@ -1,5 +1,15 @@
 # D92优化当前交接
 
+## 当前状态：OSC r02完整结果已核验，K5/10/20改善但K1未达标
+
+2026-09-29最新终态覆盖下文历史：两r02均SCORED/ANALYZED，全部supervisor/children退出，无本任务运行中的实验。rx3终态证据`readback_1790616876.json`、rx1`readback_1790616803.json`，下载证据分别`readback_1790616899.json`/`readback_1790616900.json`。实际release`19a38b714f26599b6a9a074ccfedacc1c8df464b`。禁止重发r01/r02。完整4800fits、15600解析fit calls、9648score records审计VERIFIED，optimizer steps=0；原D92/DG全记录不变，4560汇总值独立复算maxerr3.33e−16。两run已有`results/artifacts.json`，rx3`results/combined_rx4/report.md`为联合报告，两图已目视检查。
+
+联合任务Δold/new/H（百分点）：K1=−0.0029/−0.8050/−0.0947；K5=+8.7523/+1.8965/+4.5201；K10=+5.1736/+1.6861/+2.9952；K20=+2.1840/+3.5698/+3.2922。K5/10/20四个模型seed三指标全部提高；K1新类0/4提高、H1/4提高。正式all-cell old guard各K均通过（Δ+0.3870/+8.6264/+4.9403/+1.9796）。这是部分明显改善，未满足各K全面目标；不晋级、不新增独立数据，goal ACTIVE。不得选择性忽略K1或按成绩改已冻结方案。
+
+新增source payload0B，无新特征提取、无checkpoint加载；持久数值状态49200至213200B。累计core fit412.755秒、query scoring159.287秒，均非墙钟/卫星延迟；模型部署状态未知，模型增量传输null。原始scores/full traces/compact logs保留原路径；Git仅小报告/图/审计。
+
+仍盲于target成绩的source_aux在OSC成绩读取前独立完成后备设计`docs/D92_POST_OSC_DESIGN_20260929.md`，冻结设计commit`0127a53a918782db8f0e0b59d51ffd4322c179b9`。仅文档未实现：正则化Cauchy联合中心/协方差一次MM，明确K1无类内信息、不能保证全K，作者建议不要仅为“下一个方案”机械启动。后续方法决策须依据support/源域许可信息和理论，不向盲设计agent透露本段成绩。无权限阻塞，用户已授权先复用数据，待全面改善再独立验证。
+
 ## 当前状态：OSC r02已实际运行，禁止重复启动
 
 2026-09-29独立读回`readback_1790616709.json`：rx3/rx1均PREDICTING，8个CPU worker的argv/CWD匹配。rx3各24/900fits，rx1各51/300fits；supervisor分别2532747/2532935。实际发布commit`19a38b714f26599b6a9a074ccfedacc1c8df464b`，远端Git OID一致已复核。r02已登记RUNNING。r01技术失败记录完整保留；旧SHA字段兼容修复及90合成tests、8真实cache只读绑定VERIFIED。下一步只读跟踪两r02，全部终态再收集评分/fit audit/统一解释。公式不改、不得重发/按性能停止，无真实OSC scores已读。goal ACTIVE。

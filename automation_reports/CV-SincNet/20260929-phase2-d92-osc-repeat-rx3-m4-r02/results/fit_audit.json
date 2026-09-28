@@ -1,0 +1,849 @@
+{
+  "status": "VERIFIED",
+  "method": "D92-OSC-v1",
+  "models": [
+    {
+      "row_id": "cvs-daot-rc4-s2026092701",
+      "fits": 900,
+      "fixed_k1_fits": 225,
+      "diagnostic_cv_fits": 675,
+      "analytical_fit_calls": 2925,
+      "fold_fit_calls": 2025,
+      "final_fit_calls": 900,
+      "optimizer_steps": 0,
+      "final_status_counts": {
+        "ZERO_PHYSICAL_RESIDUAL": 225,
+        "SHARED_COVARIANCE_FIT": 675
+      },
+      "fold_status_counts": {
+        "SHARED_COVARIANCE_FIT": 2025
+      },
+      "resources": {
+        "feature_extraction_seconds": 0,
+        "reused_frozen_cache": true,
+        "checkpoint_loaded": false,
+        "prior_producer_extraction_seconds": 83.49753713048995,
+        "prior_extraction_cost_scope": "Historical cache construction, not this run compute",
+        "physical_observations": 15444,
+        "native_views_per_observation": 4,
+        "new_native_forward_count": 0,
+        "received_cache_array_bytes": 45467136,
+        "received_cache_file_bytes": 46958108,
+        "existing_frozen_model_file_bytes": 15992872,
+        "model_already_deployed": null,
+        "model_incremental_transfer_bytes": null,
+        "model_transfer_unavailable_reason": "Deployment state unknown; complete training checkpoint package is not a measured minimum inference package",
+        "new_source_payload_bytes": 0,
+        "ground_summary_used": false,
+        "frozen_cache_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-bnna-repeat-rx3-m4-r01/cvs-daot-rc4-s2026092701/bnna_features",
+        "cache_scope": "Existing received-only local cache, not source samples or an inherited adapted state"
+      },
+      "timing": {
+        "fit_seconds": {
+          "min": 0.0032128645107150078,
+          "mean": 0.08919900060113933,
+          "max": 0.4323496809229255,
+          "total": 80.2791005410254
+        },
+        "fit_call_seconds": {
+          "min": 0.0034183012321591377,
+          "mean": 0.09149033317859802,
+          "max": 0.43983939848840237,
+          "total": 82.34129986073822
+        },
+        "query_score_seconds": {
+          "min": 0.012426570989191532,
+          "mean": 0.03465928749388291,
+          "max": 0.07824978232383728,
+          "total": 31.193358744494617
+        },
+        "prediction_write_seconds": {
+          "min": 0.0009552258998155594,
+          "mean": 0.004509120615613129,
+          "max": 0.013820524327456951,
+          "total": 4.0582085540518165
+        },
+        "total_seconds": {
+          "min": 0.01732839085161686,
+          "mean": 0.1339828782238894,
+          "max": 0.536875007674098,
+          "total": 120.58459040150046
+        }
+      },
+      "analytical_stage_timing": {
+        "all": {
+          "medoid_seconds": {
+            "min": 0.0008759219199419022,
+            "mean": 0.0196524250246266,
+            "max": 0.13225677609443665,
+            "total": 57.48334319703281
+          },
+          "covariance_seconds": {
+            "min": 0.0003470834344625473,
+            "mean": 0.001994981947235572,
+            "max": 0.009008306078612804,
+            "total": 5.835322195664048
+          },
+          "solve_seconds": {
+            "min": 0.0016250191256403923,
+            "mean": 0.0025101044229589977,
+            "max": 0.024741253815591335,
+            "total": 7.342055437155068
+          },
+          "fit_seconds": {
+            "min": 0.0029528820887207985,
+            "mean": 0.024241693519119523,
+            "max": 0.1430454794317484,
+            "total": 70.9069535434246
+          }
+        },
+        "fold": {
+          "medoid_seconds": {
+            "min": 0.0023516779765486717,
+            "mean": 0.017524334834313687,
+            "max": 0.07523929700255394,
+            "total": 35.486778039485216
+          },
+          "covariance_seconds": {
+            "min": 0.0008973395451903343,
+            "mean": 0.001990427133385782,
+            "max": 0.007751001976430416,
+            "total": 4.030614945106208
+          },
+          "solve_seconds": {
+            "min": 0.0016250191256403923,
+            "mean": 0.002503811808096038,
+            "max": 0.0036198487505316734,
+            "total": 5.070218911394477
+          },
+          "fit_seconds": {
+            "min": 0.005004924722015858,
+            "mean": 0.022096634588123838,
+            "max": 0.08495679590851068,
+            "total": 44.745685040950775
+          }
+        },
+        "final": {
+          "medoid_seconds": {
+            "min": 0.0008759219199419022,
+            "mean": 0.024440627952830658,
+            "max": 0.13225677609443665,
+            "total": 21.996565157547593
+          },
+          "covariance_seconds": {
+            "min": 0.0003470834344625473,
+            "mean": 0.0020052302783976,
+            "max": 0.009008306078612804,
+            "total": 1.8047072505578399
+          },
+          "solve_seconds": {
+            "min": 0.0016286484897136688,
+            "mean": 0.0025242628064006565,
+            "max": 0.024741253815591335,
+            "total": 2.271836525760591
+          },
+          "fit_seconds": {
+            "min": 0.0029528820887207985,
+            "mean": 0.029068076113859812,
+            "max": 0.1430454794317484,
+            "total": 26.16126850247383
+          }
+        }
+      },
+      "numeric_state_byte_ranges": {
+        "head_bytes": {
+          "min": 49200,
+          "mean": 109880,
+          "max": 213200,
+          "total": 98892000
+        },
+        "persistent_state_bytes": {
+          "min": 49200,
+          "mean": 109880,
+          "max": 213200,
+          "total": 98892000
+        }
+      },
+      "working_array_byte_ranges": {
+        "training_feature_bytes": {
+          "min": 49152,
+          "mean": 895070.5230769231,
+          "max": 4259840,
+          "total": 2618081280
+        },
+        "aligned_feature_bytes": {
+          "min": 49152,
+          "mean": 895070.5230769231,
+          "max": 4259840,
+          "total": 2618081280
+        },
+        "template_bytes": {
+          "min": 49152,
+          "mean": 109772.8,
+          "max": 212992,
+          "total": 321085440
+        },
+        "covariance_matrix_bytes": {
+          "min": 524288,
+          "mean": 524288,
+          "max": 524288,
+          "total": 1533542400
+        },
+        "covariance_shape_bytes": {
+          "min": 524288,
+          "mean": 524288,
+          "max": 524288,
+          "total": 1533542400
+        },
+        "cholesky_bytes": {
+          "min": 524288,
+          "mean": 524288,
+          "max": 524288,
+          "total": 1533542400
+        }
+      },
+      "working_array_scope": "Individual recorded allocations, not a sum of simultaneously live arrays or measured peak RAM; process RSS reported separately",
+      "peak_process_rss_bytes": 548270080,
+      "peak_process_rss_reason": "Linux ru_maxrss process high-water memory; null when unavailable on this platform",
+      "trace_file": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-osc-repeat-rx3-m4-r02/cvs-daot-rc4-s2026092701/osc/fit_trace.jsonl",
+      "trace_file_bytes": 67814036,
+      "stage_file_bytes": 2466293
+    },
+    {
+      "row_id": "cvs-daot-rc4-s2026092702",
+      "fits": 900,
+      "fixed_k1_fits": 225,
+      "diagnostic_cv_fits": 675,
+      "analytical_fit_calls": 2925,
+      "fold_fit_calls": 2025,
+      "final_fit_calls": 900,
+      "optimizer_steps": 0,
+      "final_status_counts": {
+        "ZERO_PHYSICAL_RESIDUAL": 225,
+        "SHARED_COVARIANCE_FIT": 675
+      },
+      "fold_status_counts": {
+        "SHARED_COVARIANCE_FIT": 2025
+      },
+      "resources": {
+        "feature_extraction_seconds": 0,
+        "reused_frozen_cache": true,
+        "checkpoint_loaded": false,
+        "prior_producer_extraction_seconds": 87.85259898658842,
+        "prior_extraction_cost_scope": "Historical cache construction, not this run compute",
+        "physical_observations": 15444,
+        "native_views_per_observation": 4,
+        "new_native_forward_count": 0,
+        "received_cache_array_bytes": 45467136,
+        "received_cache_file_bytes": 46958108,
+        "existing_frozen_model_file_bytes": 15992936,
+        "model_already_deployed": null,
+        "model_incremental_transfer_bytes": null,
+        "model_transfer_unavailable_reason": "Deployment state unknown; complete training checkpoint package is not a measured minimum inference package",
+        "new_source_payload_bytes": 0,
+        "ground_summary_used": false,
+        "frozen_cache_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-bnna-repeat-rx3-m4-r01/cvs-daot-rc4-s2026092702/bnna_features",
+        "cache_scope": "Existing received-only local cache, not source samples or an inherited adapted state"
+      },
+      "timing": {
+        "fit_seconds": {
+          "min": 0.003295375034213066,
+          "mean": 0.08856849611633354,
+          "max": 0.41842286102473736,
+          "total": 79.71164650470018
+        },
+        "fit_call_seconds": {
+          "min": 0.00353833194822073,
+          "mean": 0.09078685548259981,
+          "max": 0.4263495793566108,
+          "total": 81.70816993433982
+        },
+        "query_score_seconds": {
+          "min": 0.01185521762818098,
+          "mean": 0.033742670759351716,
+          "max": 0.07395743299275637,
+          "total": 30.368403683416545
+        },
+        "prediction_write_seconds": {
+          "min": 0.0009667286649346352,
+          "mean": 0.004481324782181118,
+          "max": 0.013266749680042267,
+          "total": 4.0331923039630055
+        },
+        "total_seconds": {
+          "min": 0.017010136507451534,
+          "mean": 0.13227512337991762,
+          "max": 0.5252670571208,
+          "total": 119.04761104192585
+        }
+      },
+      "analytical_stage_timing": {
+        "all": {
+          "medoid_seconds": {
+            "min": 0.000864722765982151,
+            "mean": 0.01925227033117643,
+            "max": 0.14034296851605177,
+            "total": 56.31289071869105
+          },
+          "covariance_seconds": {
+            "min": 0.00036380067467689514,
+            "mean": 0.0020779375582296623,
+            "max": 0.009582152590155602,
+            "total": 6.077967357821763
+          },
+          "solve_seconds": {
+            "min": 0.00167754665017128,
+            "mean": 0.0027118157926532957,
+            "max": 0.02530116681009531,
+            "total": 7.93206119351089
+          },
+          "fit_seconds": {
+            "min": 0.0030028922483325005,
+            "mean": 0.02412219877521961,
+            "max": 0.15135323535650969,
+            "total": 70.55743141751736
+          }
+        },
+        "fold": {
+          "medoid_seconds": {
+            "min": 0.002290918491780758,
+            "mean": 0.017157827010033308,
+            "max": 0.07350597064942122,
+            "total": 34.74459969531745
+          },
+          "covariance_seconds": {
+            "min": 0.0009180121123790741,
+            "mean": 0.0020779267468570193,
+            "max": 0.00780416838824749,
+            "total": 4.207801662385464
+          },
+          "solve_seconds": {
+            "min": 0.00167754665017128,
+            "mean": 0.002712133804589142,
+            "max": 0.0037587378174066544,
+            "total": 5.492070954293013
+          },
+          "fit_seconds": {
+            "min": 0.004982042126357555,
+            "mean": 0.022023626557194892,
+            "max": 0.08156619500368834,
+            "total": 44.59784377831966
+          }
+        },
+        "final": {
+          "medoid_seconds": {
+            "min": 0.000864722765982151,
+            "mean": 0.023964767803748448,
+            "max": 0.14034296851605177,
+            "total": 21.568291023373604
+          },
+          "covariance_seconds": {
+            "min": 0.00036380067467689514,
+            "mean": 0.00207796188381811,
+            "max": 0.009582152590155602,
+            "total": 1.8701656954362988
+          },
+          "solve_seconds": {
+            "min": 0.0017098141834139824,
+            "mean": 0.0027111002657976414,
+            "max": 0.02530116681009531,
+            "total": 2.4399902392178774
+          },
+          "fit_seconds": {
+            "min": 0.0030028922483325005,
+            "mean": 0.02884398626577523,
+            "max": 0.15135323535650969,
+            "total": 25.959587639197707
+          }
+        }
+      },
+      "numeric_state_byte_ranges": {
+        "head_bytes": {
+          "min": 49200,
+          "mean": 109880,
+          "max": 213200,
+          "total": 98892000
+        },
+        "persistent_state_bytes": {
+          "min": 49200,
+          "mean": 109880,
+          "max": 213200,
+          "total": 98892000
+        }
+      },
+      "working_array_byte_ranges": {
+        "training_feature_bytes": {
+          "min": 49152,
+          "mean": 895070.5230769231,
+          "max": 4259840,
+          "total": 2618081280
+        },
+        "aligned_feature_bytes": {
+          "min": 49152,
+          "mean": 895070.5230769231,
+          "max": 4259840,
+          "total": 2618081280
+        },
+        "template_bytes": {
+          "min": 49152,
+          "mean": 109772.8,
+          "max": 212992,
+          "total": 321085440
+        },
+        "covariance_matrix_bytes": {
+          "min": 524288,
+          "mean": 524288,
+          "max": 524288,
+          "total": 1533542400
+        },
+        "covariance_shape_bytes": {
+          "min": 524288,
+          "mean": 524288,
+          "max": 524288,
+          "total": 1533542400
+        },
+        "cholesky_bytes": {
+          "min": 524288,
+          "mean": 524288,
+          "max": 524288,
+          "total": 1533542400
+        }
+      },
+      "working_array_scope": "Individual recorded allocations, not a sum of simultaneously live arrays or measured peak RAM; process RSS reported separately",
+      "peak_process_rss_bytes": 548270080,
+      "peak_process_rss_reason": "Linux ru_maxrss process high-water memory; null when unavailable on this platform",
+      "trace_file": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-osc-repeat-rx3-m4-r02/cvs-daot-rc4-s2026092702/osc/fit_trace.jsonl",
+      "trace_file_bytes": 67813664,
+      "stage_file_bytes": 2466175
+    },
+    {
+      "row_id": "cvs-daot-rc4-s2026092703",
+      "fits": 900,
+      "fixed_k1_fits": 225,
+      "diagnostic_cv_fits": 675,
+      "analytical_fit_calls": 2925,
+      "fold_fit_calls": 2025,
+      "final_fit_calls": 900,
+      "optimizer_steps": 0,
+      "final_status_counts": {
+        "ZERO_PHYSICAL_RESIDUAL": 225,
+        "SHARED_COVARIANCE_FIT": 675
+      },
+      "fold_status_counts": {
+        "SHARED_COVARIANCE_FIT": 2025
+      },
+      "resources": {
+        "feature_extraction_seconds": 0,
+        "reused_frozen_cache": true,
+        "checkpoint_loaded": false,
+        "prior_producer_extraction_seconds": 89.01331526227295,
+        "prior_extraction_cost_scope": "Historical cache construction, not this run compute",
+        "physical_observations": 15444,
+        "native_views_per_observation": 4,
+        "new_native_forward_count": 0,
+        "received_cache_array_bytes": 45467136,
+        "received_cache_file_bytes": 46958108,
+        "existing_frozen_model_file_bytes": 15992872,
+        "model_already_deployed": null,
+        "model_incremental_transfer_bytes": null,
+        "model_transfer_unavailable_reason": "Deployment state unknown; complete training checkpoint package is not a measured minimum inference package",
+        "new_source_payload_bytes": 0,
+        "ground_summary_used": false,
+        "frozen_cache_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-bnna-repeat-rx3-m4-r01/cvs-daot-rc4-s2026092703/bnna_features",
+        "cache_scope": "Existing received-only local cache, not source samples or an inherited adapted state"
+      },
+      "timing": {
+        "fit_seconds": {
+          "min": 0.0031725047156214714,
+          "mean": 0.0826076797509773,
+          "max": 0.3936481298878789,
+          "total": 74.34691177587956
+        },
+        "fit_call_seconds": {
+          "min": 0.0033755088225007057,
+          "mean": 0.08472418240271509,
+          "max": 0.40101309306919575,
+          "total": 76.25176416244358
+        },
+        "query_score_seconds": {
+          "min": 0.011539162136614323,
+          "mean": 0.032195974140324525,
+          "max": 0.06916244886815548,
+          "total": 28.976376726292074
+        },
+        "prediction_write_seconds": {
+          "min": 0.0009362399578094482,
+          "mean": 0.004416296318587329,
+          "max": 0.013338594697415829,
+          "total": 3.9746666867285967
+        },
+        "total_seconds": {
+          "min": 0.016332590952515602,
+          "mean": 0.12447572358883917,
+          "max": 0.4934960324317217,
+          "total": 112.02815122995526
+        }
+      },
+      "analytical_stage_timing": {
+        "all": {
+          "medoid_seconds": {
+            "min": 0.0008468953892588615,
+            "mean": 0.018862418902671745,
+            "max": 0.1271793469786644,
+            "total": 55.17257529031485
+          },
+          "covariance_seconds": {
+            "min": 0.0003475826233625412,
+            "mean": 0.0016415777837491443,
+            "max": 0.007325636222958565,
+            "total": 4.801615017466247
+          },
+          "solve_seconds": {
+            "min": 0.001598103903234005,
+            "mean": 0.0019038914742632808,
+            "max": 0.02774832397699356,
+            "total": 5.568882562220097
+          },
+          "fit_seconds": {
+            "min": 0.002918708138167858,
+            "mean": 0.022485033496895915,
+            "max": 0.13471503928303719,
+            "total": 65.76872297842056
+          }
+        },
+        "fold": {
+          "medoid_seconds": {
+            "min": 0.00225167628377676,
+            "mean": 0.01683302228419501,
+            "max": 0.07035482674837112,
+            "total": 34.0868701254949
+          },
+          "covariance_seconds": {
+            "min": 0.0008717887103557587,
+            "mean": 0.0016412189635045735,
+            "max": 0.007314755581319332,
+            "total": 3.3234684010967612
+          },
+          "solve_seconds": {
+            "min": 0.001598103903234005,
+            "mean": 0.001891882482594178,
+            "max": 0.002385055646300316,
+            "total": 3.8310620272532105
+          },
+          "fit_seconds": {
+            "min": 0.004874265752732754,
+            "mean": 0.02043922665586442,
+            "max": 0.0768561651930213,
+            "total": 41.38943397812545
+          }
+        },
+        "final": {
+          "medoid_seconds": {
+            "min": 0.0008468953892588615,
+            "mean": 0.023428561294244397,
+            "max": 0.1271793469786644,
+            "total": 21.085705164819956
+          },
+          "covariance_seconds": {
+            "min": 0.0003475826233625412,
+            "mean": 0.0016423851292994287,
+            "max": 0.007325636222958565,
+            "total": 1.4781466163694859
+          },
+          "solve_seconds": {
+            "min": 0.0016051065176725388,
+            "mean": 0.0019309117055187623,
+            "max": 0.02774832397699356,
+            "total": 1.737820534966886
+          },
+          "fit_seconds": {
+            "min": 0.002918708138167858,
+            "mean": 0.02708809888921678,
+            "max": 0.13471503928303719,
+            "total": 24.379289000295103
+          }
+        }
+      },
+      "numeric_state_byte_ranges": {
+        "head_bytes": {
+          "min": 49200,
+          "mean": 109880,
+          "max": 213200,
+          "total": 98892000
+        },
+        "persistent_state_bytes": {
+          "min": 49200,
+          "mean": 109880,
+          "max": 213200,
+          "total": 98892000
+        }
+      },
+      "working_array_byte_ranges": {
+        "training_feature_bytes": {
+          "min": 49152,
+          "mean": 895070.5230769231,
+          "max": 4259840,
+          "total": 2618081280
+        },
+        "aligned_feature_bytes": {
+          "min": 49152,
+          "mean": 895070.5230769231,
+          "max": 4259840,
+          "total": 2618081280
+        },
+        "template_bytes": {
+          "min": 49152,
+          "mean": 109772.8,
+          "max": 212992,
+          "total": 321085440
+        },
+        "covariance_matrix_bytes": {
+          "min": 524288,
+          "mean": 524288,
+          "max": 524288,
+          "total": 1533542400
+        },
+        "covariance_shape_bytes": {
+          "min": 524288,
+          "mean": 524288,
+          "max": 524288,
+          "total": 1533542400
+        },
+        "cholesky_bytes": {
+          "min": 524288,
+          "mean": 524288,
+          "max": 524288,
+          "total": 1533542400
+        }
+      },
+      "working_array_scope": "Individual recorded allocations, not a sum of simultaneously live arrays or measured peak RAM; process RSS reported separately",
+      "peak_process_rss_bytes": 548270080,
+      "peak_process_rss_reason": "Linux ru_maxrss process high-water memory; null when unavailable on this platform",
+      "trace_file": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-osc-repeat-rx3-m4-r02/cvs-daot-rc4-s2026092703/osc/fit_trace.jsonl",
+      "trace_file_bytes": 67818341,
+      "stage_file_bytes": 2466858
+    },
+    {
+      "row_id": "cvs-daot-rc4-s2026092704",
+      "fits": 900,
+      "fixed_k1_fits": 225,
+      "diagnostic_cv_fits": 675,
+      "analytical_fit_calls": 2925,
+      "fold_fit_calls": 2025,
+      "final_fit_calls": 900,
+      "optimizer_steps": 0,
+      "final_status_counts": {
+        "ZERO_PHYSICAL_RESIDUAL": 225,
+        "SHARED_COVARIANCE_FIT": 675
+      },
+      "fold_status_counts": {
+        "SHARED_COVARIANCE_FIT": 2025
+      },
+      "resources": {
+        "feature_extraction_seconds": 0,
+        "reused_frozen_cache": true,
+        "checkpoint_loaded": false,
+        "prior_producer_extraction_seconds": 90.54356347676367,
+        "prior_extraction_cost_scope": "Historical cache construction, not this run compute",
+        "physical_observations": 15444,
+        "native_views_per_observation": 4,
+        "new_native_forward_count": 0,
+        "received_cache_array_bytes": 45467136,
+        "received_cache_file_bytes": 46958108,
+        "existing_frozen_model_file_bytes": 15992936,
+        "model_already_deployed": null,
+        "model_incremental_transfer_bytes": null,
+        "model_transfer_unavailable_reason": "Deployment state unknown; complete training checkpoint package is not a measured minimum inference package",
+        "new_source_payload_bytes": 0,
+        "ground_summary_used": false,
+        "frozen_cache_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-bnna-repeat-rx3-m4-r01/cvs-daot-rc4-s2026092704/bnna_features",
+        "cache_scope": "Existing received-only local cache, not source samples or an inherited adapted state"
+      },
+      "timing": {
+        "fit_seconds": {
+          "min": 0.0031303558498620987,
+          "mean": 0.08292712633084091,
+          "max": 0.44403041526675224,
+          "total": 74.63441369775683
+        },
+        "fit_call_seconds": {
+          "min": 0.0033437246456742287,
+          "mean": 0.08505580818487538,
+          "max": 0.451530990190804,
+          "total": 76.55022736638784
+        },
+        "query_score_seconds": {
+          "min": 0.01165042445063591,
+          "mean": 0.03241613279407223,
+          "max": 0.07324732840061188,
+          "total": 29.174519514665008
+        },
+        "prediction_write_seconds": {
+          "min": 0.0009413342922925949,
+          "mean": 0.004425620013434026,
+          "max": 0.012892425060272217,
+          "total": 3.9830580120906234
+        },
+        "total_seconds": {
+          "min": 0.016475778073072433,
+          "mean": 0.1250426400701205,
+          "max": 0.543238228186965,
+          "total": 112.53837606310844
+        }
+      },
+      "analytical_stage_timing": {
+        "all": {
+          "medoid_seconds": {
+            "min": 0.0008586812764406204,
+            "mean": 0.018921965146676087,
+            "max": 0.13180409651249647,
+            "total": 55.34674805402756
+          },
+          "covariance_seconds": {
+            "min": 0.0003298260271549225,
+            "mean": 0.0016316591763598288,
+            "max": 0.008065098896622658,
+            "total": 4.772603090852499
+          },
+          "solve_seconds": {
+            "min": 0.0016122693195939064,
+            "mean": 0.0019194330459731256,
+            "max": 0.025352826341986656,
+            "total": 5.614341659471393
+          },
+          "fit_seconds": {
+            "min": 0.0028471797704696655,
+            "mean": 0.022550859944496907,
+            "max": 0.13917689304798841,
+            "total": 65.96126533765346
+          }
+        },
+        "fold": {
+          "medoid_seconds": {
+            "min": 0.00227141659706831,
+            "mean": 0.016826937561049873,
+            "max": 0.10068943444639444,
+            "total": 34.074548561125994
+          },
+          "covariance_seconds": {
+            "min": 0.0008637327700853348,
+            "mean": 0.0016234919847345646,
+            "max": 0.006669860333204269,
+            "total": 3.2875712690874934
+          },
+          "solve_seconds": {
+            "min": 0.0016122693195939064,
+            "mean": 0.0019066142897914958,
+            "max": 0.003469744697213173,
+            "total": 3.860893936827779
+          },
+          "fit_seconds": {
+            "min": 0.004844926297664642,
+            "mean": 0.020430431699403274,
+            "max": 0.10979874152690172,
+            "total": 41.37162419129163
+          }
+        },
+        "final": {
+          "medoid_seconds": {
+            "min": 0.0008586812764406204,
+            "mean": 0.02363577721433507,
+            "max": 0.13180409651249647,
+            "total": 21.272199492901564
+          },
+          "covariance_seconds": {
+            "min": 0.0003298260271549225,
+            "mean": 0.001650035357516673,
+            "max": 0.008065098896622658,
+            "total": 1.4850318217650056
+          },
+          "solve_seconds": {
+            "min": 0.0016185063868761063,
+            "mean": 0.0019482752473817932,
+            "max": 0.025352826341986656,
+            "total": 1.7534477226436138
+          },
+          "fit_seconds": {
+            "min": 0.0028471797704696655,
+            "mean": 0.027321823495957586,
+            "max": 0.13917689304798841,
+            "total": 24.589641146361828
+          }
+        }
+      },
+      "numeric_state_byte_ranges": {
+        "head_bytes": {
+          "min": 49200,
+          "mean": 109880,
+          "max": 213200,
+          "total": 98892000
+        },
+        "persistent_state_bytes": {
+          "min": 49200,
+          "mean": 109880,
+          "max": 213200,
+          "total": 98892000
+        }
+      },
+      "working_array_byte_ranges": {
+        "training_feature_bytes": {
+          "min": 49152,
+          "mean": 895070.5230769231,
+          "max": 4259840,
+          "total": 2618081280
+        },
+        "aligned_feature_bytes": {
+          "min": 49152,
+          "mean": 895070.5230769231,
+          "max": 4259840,
+          "total": 2618081280
+        },
+        "template_bytes": {
+          "min": 49152,
+          "mean": 109772.8,
+          "max": 212992,
+          "total": 321085440
+        },
+        "covariance_matrix_bytes": {
+          "min": 524288,
+          "mean": 524288,
+          "max": 524288,
+          "total": 1533542400
+        },
+        "covariance_shape_bytes": {
+          "min": 524288,
+          "mean": 524288,
+          "max": 524288,
+          "total": 1533542400
+        },
+        "cholesky_bytes": {
+          "min": 524288,
+          "mean": 524288,
+          "max": 524288,
+          "total": 1533542400
+        }
+      },
+      "working_array_scope": "Individual recorded allocations, not a sum of simultaneously live arrays or measured peak RAM; process RSS reported separately",
+      "peak_process_rss_bytes": 548270080,
+      "peak_process_rss_reason": "Linux ru_maxrss process high-water memory; null when unavailable on this platform",
+      "trace_file": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-osc-repeat-rx3-m4-r02/cvs-daot-rc4-s2026092704/osc/fit_trace.jsonl",
+      "trace_file_bytes": 67813959,
+      "stage_file_bytes": 2466964
+    }
+  ],
+  "total_fits": 3600,
+  "fixed_k1_fits": 900,
+  "diagnostic_cv_fits": 2700,
+  "analytical_fit_calls": 11700,
+  "optimizer_steps": 0,
+  "selection": "none_cv_diagnostic_only",
+  "query_rows_used_for_fit": 0,
+  "source_rows_used_for_fit": 0,
+  "new_source_payload_bytes": 0,
+  "ground_summary_used": false,
+  "adapted_state_inherited": false,
+  "raw_traces_preserved": true,
+  "parameter_feedback_forbidden": true,
+  "optimizer_convergence_claim": false,
+  "scope": "Complete physical fold/OOF/phase metadata consistency; not mathematical reexecution. No scores, truth, predictions, checkpoints or feature values read"
+}
