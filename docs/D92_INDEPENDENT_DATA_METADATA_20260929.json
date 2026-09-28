@@ -1,0 +1,119 @@
+{
+  "status": "VERIFIED",
+  "observed_at": "2026-09-28T19:15:34.380079+00:00",
+  "host": "dell-DSS8440",
+  "user": "szu2070436088",
+  "read_only": true,
+  "iq_read": false,
+  "truth_read": false,
+  "scores_read": false,
+  "source_data_read": false,
+  "checkpoint_read": false,
+  "capsules": [
+    {
+      "run_id": "20260927-phase2-practical-data-manytx-s2026092705-r01",
+      "capsule_id": "residual-noeq-ba667eee4fb061055e4c08b5",
+      "received_count": 36036,
+      "split_count": 2100,
+      "protocol_schema": "p2_min_v1",
+      "phase2_data_status": "VALIDATED_ONCE",
+      "target_receivers": [
+        "1-1",
+        "14-7",
+        "2-1",
+        "20-1",
+        "7-14",
+        "7-7",
+        "8-8"
+      ],
+      "source_receivers": [
+        "1-19",
+        "18-2",
+        "19-2",
+        "2-19",
+        "3-19"
+      ],
+      "class_count": 26,
+      "support_pool_size": 36,
+      "query_size": 30,
+      "scenario_count": 3,
+      "physical_ids_unique": true
+    },
+    {
+      "run_id": "20260928-phase2-d92-confirmation-data-manytx-r01",
+      "capsule_id": "residual-noeq-76121e6f34363fa612ec25fb",
+      "received_count": 15444,
+      "split_count": 900,
+      "protocol_schema": "p2_min_v1",
+      "phase2_data_status": "VALIDATED_ONCE",
+      "target_receivers": [
+        "19-1",
+        "8-14",
+        "8-7"
+      ],
+      "source_receivers": [
+        "1-19",
+        "18-2",
+        "19-2",
+        "2-19",
+        "3-19"
+      ],
+      "class_count": 26,
+      "support_pool_size": 36,
+      "query_size": 30,
+      "scenario_count": 3,
+      "physical_ids_unique": true
+    },
+    {
+      "run_id": "20260928-phase2-d92-sfhead-data-manytx-r01",
+      "capsule_id": "residual-noeq-d0a99fede324159c5a4750fd",
+      "received_count": 4680,
+      "split_count": 300,
+      "protocol_schema": "p2_min_v1",
+      "phase2_data_status": "VALIDATED_ONCE",
+      "target_receivers": [
+        "20-19"
+      ],
+      "source_receivers": [
+        "1-19",
+        "18-2",
+        "19-2",
+        "2-19",
+        "3-19"
+      ],
+      "class_count": 26,
+      "support_pool_size": 30,
+      "query_size": 30,
+      "scenario_count": 3,
+      "physical_ids_unique": true
+    }
+  ],
+  "pairwise_id_intersections": [
+    {
+      "left": "20260927-phase2-practical-data-manytx-s2026092705-r01",
+      "right": "20260928-phase2-d92-confirmation-data-manytx-r01",
+      "overlap": 0
+    },
+    {
+      "left": "20260927-phase2-practical-data-manytx-s2026092705-r01",
+      "right": "20260928-phase2-d92-sfhead-data-manytx-r01",
+      "overlap": 0
+    },
+    {
+      "left": "20260928-phase2-d92-confirmation-data-manytx-r01",
+      "right": "20260928-phase2-d92-sfhead-data-manytx-r01",
+      "overlap": 0
+    }
+  ],
+  "all_capsule_union_count": 56160,
+  "dataset_files": [
+    "ManyRx.pkl",
+    "ManySig.pkl",
+    "ManyTx.pkl",
+    "SingleDay.pkl"
+  ],
+  "limitations": [
+    "No raw data pickle was opened; remaining raw pool counts for the original seven targets are unknown",
+    "Only these three registered current-campaign capsules inspected; all-time exposure not certified"
+  ]
+}

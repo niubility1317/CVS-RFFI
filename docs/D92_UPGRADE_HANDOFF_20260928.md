@@ -6,7 +6,7 @@
 
 联合任务Δ旧/新/H（百分点）：K1 +4.887/+5.418/+6.124；K5 +13.523/+6.839/+9.375；K10 +9.315/+6.103/+7.368；K20 +6.279/+6.501/+6.580。每K的四模型seed旧/新/H均提高，全部old guard通过；16个K×新增规模三指标均值均正；48个RX×scene×K的H全部正，旧/新分别47/48正，两个K1弱城市分层退化完整保留。已达到进入独立确认的预登记条件，不能称新独立数据泛化通过。主报告在rx3 `results/combined_rx4/report.md`，两run `results/artifacts.json`，统一fit审计在rx3 `results/fit_audit.json`。新增source0B，头35376至153296B；累计fit调用23.584s、提取551.847s，joint wall473.063s，非卫星耗时。
 
-正在核查独立数据。confirmation_runner仅读既有inventory/元数据，负责`docs/D92_INDEPENDENT_DATA_AVAILABILITY_20260929.md`，尚未交付；仍不读任何query成绩。现有未使用RX1-20/13-7缺TX、18-19最少14条，无法覆盖26TX/K20；四本轮RX最稀缺类余2/4条。已向用户询问新独立数据存放路径；未到位则先冻结版本并交付采集规范。不得重新调参、选择性重跑、复用旧ID伪称新数据。无运行实验；goal ACTIVE，独立验证尚未完成。以下RUNNING文字均为历史。
+独立数据核查与采集规范已交付：`docs/D92_INDEPENDENT_DATA_AVAILABILITY_20260929.md`及同目录`D92_INDEPENDENT_DATA_METADATA_20260929.json`。confirmation_runner仅读inventory/元数据/物理ID，未读IQ或query成绩。现有未使用RX1-20/13-7缺TX、18-19最少14条，无法覆盖26TX/K20；四本轮RX最稀缺类余2/4条。最初7个RX未用余量仍UNKNOWN，不宣称整个库均无可用数据。三个capsule合计56160个不交ID仅是已核实排除范围，不代表全历史独立性证明。按原矩阵每TX/RX需180条物理记录；严格沿用rx3池大小则198条。已向用户询问新独立数据存放路径，尚未收到；当前方法/config冻结，独立验证待数据到位。不得重新调参、选择性重跑、复用旧ID伪称新数据。无运行实验；goal ACTIVE，独立验证尚未完成。以下RUNNING文字均为历史。
 
 ## 最新实时状态：BranchRidge两cohort RUNNING，禁止重复启动
 

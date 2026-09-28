@@ -91,6 +91,7 @@ paths += ['docs/D92_BRANCH_AUGMENT_DESIGN_20260929.md','docs/D92_BRANCH_RIDGE_P0
     'configs/d92_branch_ridge_repeat_rx3_data_20260929.json','configs/d92_branch_ridge_repeat_rx1_data_20260929.json']
 paths += ['tools/collect_d92_branch_ridge_audit.py','tests/test_collect_d92_branch_ridge_audit.py']
 paths += ['tools/finalize_d92_branch_ridge_record.py','tests/test_finalize_d92_branch_ridge_record.py']
+paths += ['docs/D92_INDEPENDENT_DATA_AVAILABILITY_20260929.md','docs/D92_INDEPENDENT_DATA_METADATA_20260929.json']
 for name in paths:
     src=ROOT/name;dst=WS/name;dst.parent.mkdir(parents=True,exist_ok=True)
     # Each name is unique to this task; original D92 and shared wrappers are not mirrored.
