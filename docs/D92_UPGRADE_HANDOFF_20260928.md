@@ -1,6 +1,12 @@
 # D92优化当前交接
 
-## 当前状态：MVRidge两组已启动，完整矩阵运行中
+## 当前状态：MVRidge完整结果已核验，未达到目标，无实验进程
+
+最新终态：两组MVRidge r01均SCORED/ANALYZED，supervisor/children均退出。终态证据两组均`readback_1790618538.json`，下载证据均`readback_1790618554.json`；实际release仍为`71e4bef490bfae3acf907cc3f488b9ca62172a0f`。完整4800fits、15600解析调用、9648评分记录核验VERIFIED；原D92和frozen_dg逐单元记录/混淆矩阵完全一致，独立复算4560汇总数值maxerr3.33e-16。两run的`results/artifacts.json`及rx3的`results/combined_rx4/interpretation_audit.json`已写入，finalizer不可重复write，两张图已目视核对。
+
+联合任务Δold/new/H（百分点）：K1=−1.9780/−0.4845/−0.1513；K5=+2.9896/−2.1958/−0.5371；K10=−0.1175/−4.0229/−2.7684；K20=−1.2008/−4.0356/−3.0512。K5/10/20的新类和H均0/4模型seed提高；K1新类1/4、H2/4。全部任务旧类guard在K1/K20也未通过。完整结果未达标，不晋级、不按成绩修改该候选或选择性重跑；goal ACTIVE。新source payload0B，持久数值状态12336至53456B；累计core fit124.4419秒，query score65.3643秒，均非并行墙钟/卫星延迟；最大梯度残差4.16e-13。已有received缓存占用另列，不是源域传输；模型部署情况未知、增量传输null。
+
+当前只有代码/理论审查：source_aux与confirmation_runner继续对所有query成绩盲态，独立核查固定Phase1中尚未利用的逐样本相位/时间/频率结构及现有IQ预处理边界。尚未冻结下一算法、未登记或启动下一实验。source_aux拥有新文档`docs/D92_FIXED_PHASE1_INFORMATION_AUDIT_20260929.md`；root不向盲态agent传递本结果段。以下启动段仅保留历史，不能当实时状态。
 
 2026-09-29：上一轮OSC全部终态。新工作先完成4800fits纯support OOF信息边界分析（docs/D92_OSC_SUPPORT_DIAGNOSTIC_20260929.md/json），未按query成绩选row/调参。盲态设计排除了Gaussian轨道矩近似及重复ground先验坐标变换，唯一新机制为`D92-MVRidge-v1`：固定identity/FFT=1:4，物理样本总view权重1，全部注册标签共同ridge判别回归，ridge系数固定1，解析解。K1利用多类标签与变换一致性，不声称新增独立观测；各fold所有拟合状态隔离，CV仅诊断。设计在docs/D92_SUPPORT_INFORMATION_DESIGN_20260929.md。
 

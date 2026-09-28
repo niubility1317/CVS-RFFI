@@ -1,0 +1,961 @@
+{
+  "run_id": "20260929-phase2-d92-mvridge-repeat-rx3-m4-r01",
+  "status": "ANALYZED",
+  "execution_status": "SCORED",
+  "evidence_status": "VERIFIED",
+  "candidate": "D92-MVRidge-v1",
+  "candidate_promoted": false,
+  "goal_complete": false,
+  "joint_preregistered_guard_pass": false,
+  "records": 7236,
+  "release_commit": "71e4bef490bfae3acf907cc3f488b9ca62172a0f",
+  "cost": {
+    "total_fits": 3600,
+    "fixed_k1_fits": 900,
+    "diagnostic_cv_fits": 2700,
+    "analytical_fit_calls": 11700,
+    "fold_fit_calls": 8100,
+    "final_fit_calls": 3600,
+    "optimizer_steps": 0,
+    "final_status_counts": {
+      "CLOSED_FORM_SOLVED": 3600
+    },
+    "fold_status_counts": {
+      "CLOSED_FORM_SOLVED": 8100
+    },
+    "timing_totals_seconds": {
+      "fit_seconds": 89.55485040415078,
+      "fit_call_seconds": 95.17315915040672,
+      "query_score_seconds": 47.68707964941859,
+      "prediction_write_seconds": 17.50342616531998,
+      "total_seconds": 169.16433215513825,
+      "feature_extraction_seconds": 0.0
+    },
+    "analytical_stage_totals_seconds": {
+      "all": {
+        "center_seconds": 3.0914907744154334,
+        "gram_seconds": 23.403934282250702,
+        "solve_seconds": 31.519043227657676,
+        "objective_seconds": 8.872316502965987,
+        "fit_seconds": 67.20337895769626
+      },
+      "fold": {
+        "center_seconds": 2.0340039962902665,
+        "gram_seconds": 15.57291585765779,
+        "solve_seconds": 21.843294269405305,
+        "objective_seconds": 6.0060565220192075,
+        "fit_seconds": 45.67445813585073
+      },
+      "final": {
+        "center_seconds": 1.057486778125167,
+        "gram_seconds": 7.831018424592912,
+        "solve_seconds": 9.67574895825237,
+        "objective_seconds": 2.8662599809467793,
+        "fit_seconds": 21.52892082184553
+      }
+    },
+    "objective_protocol": {
+      "objective": "0.5*sum_physical(mean_4_view_squared_error)+0.5*||W||F^2",
+      "view_weight": 0.25,
+      "ridge_coefficient": 1.0,
+      "intercept_regularized": false,
+      "target": "onehot_minus_1_over_C",
+      "features": "unit(concat(unit(identity160),4*unit(FFT96)))",
+      "query_representation": "mean_four_features",
+      "loss_mass_per_physical_sample": 1.0,
+      "verification": "Verified collector checks physical mass, view weight, ridge and N*(1-1/C) targets for every fold/final fit"
+    },
+    "per_model_objective_diagnostics": [
+      {
+        "row_id": "cvs-daot-rc4-s2026092701",
+        "all": {
+          "loss_data_mean": {
+            "min": 0.9323464530218349,
+            "mean": 33.47462023215062,
+            "max": 197.50769405354202,
+            "total": 97913.26417904056
+          },
+          "loss_view": {
+            "min": 6.710428398805777e-06,
+            "mean": 0.14992690151312352,
+            "max": 1.7500766830986865,
+            "total": 438.5361869258863
+          },
+          "loss_ridge": {
+            "min": 0.21551932692378006,
+            "mean": 5.445513987584495,
+            "max": 21.710399212300814,
+            "total": 15928.12841368465
+          },
+          "loss_total": {
+            "min": 1.5172888543493532,
+            "mean": 39.07006112124824,
+            "max": 211.99395484028713,
+            "total": 114279.9287796511
+          },
+          "loss_expanded_data": {
+            "min": 0.9323531634502338,
+            "mean": 33.62454713366375,
+            "max": 197.9273859285585,
+            "total": 98351.80036596645
+          },
+          "gradient_norm": {
+            "min": 3.7708123656420096e-16,
+            "mean": 2.2179246559851672e-14,
+            "max": 2.9041739552877814e-13,
+            "total": 6.487429618756614e-11
+          },
+          "normal_equation_residual": {
+            "min": 3.5406860478274974e-16,
+            "mean": 3.2485260386129517e-15,
+            "max": 1.251902776635351e-14,
+            "total": 9.501938662942884e-12
+          },
+          "intercept_gradient_norm": {
+            "min": 1.5792654235376239e-16,
+            "mean": 1.658025345683939e-14,
+            "max": 2.1374056189870293e-13,
+            "total": 4.8497241361255213e-11
+          }
+        },
+        "fold": {
+          "loss_data_mean": {
+            "min": 3.0843605691995477,
+            "mean": 31.871547944699582,
+            "max": 136.22712793062828,
+            "total": 64539.884588016655
+          },
+          "loss_view": {
+            "min": 0.00034729116093167896,
+            "mean": 0.12934405988865683,
+            "max": 1.0308441050934185,
+            "total": 261.92172127453006
+          },
+          "loss_ridge": {
+            "min": 0.8970882271425179,
+            "mean": 5.342315613550048,
+            "max": 15.930552291233592,
+            "total": 10818.189117438847
+          },
+          "loss_total": {
+            "min": 4.6222117348668466,
+            "mean": 37.34320761813829,
+            "max": 148.239594059138,
+            "total": 75619.99542673003
+          },
+          "loss_expanded_data": {
+            "min": 3.085172754326204,
+            "mean": 32.00089200458824,
+            "max": 136.81317535650913,
+            "total": 64801.80630929118
+          },
+          "gradient_norm": {
+            "min": 1.0183803067929262e-15,
+            "mean": 1.9872475318769106e-14,
+            "max": 1.890385520820265e-13,
+            "total": 4.024176252050744e-11
+          },
+          "normal_equation_residual": {
+            "min": 8.674020278688516e-16,
+            "mean": 3.1433683913329698e-15,
+            "max": 9.174768600003037e-15,
+            "total": 6.365320992449264e-12
+          },
+          "intercept_gradient_norm": {
+            "min": 2.3959288262569916e-16,
+            "mean": 1.4816558724870157e-14,
+            "max": 1.3893344987449702e-13,
+            "total": 3.000353141786207e-11
+          }
+        },
+        "final": {
+          "loss_data_mean": {
+            "min": 0.9323464530218349,
+            "mean": 37.08153287891545,
+            "max": 197.50769405354202,
+            "total": 33373.37959102391
+          },
+          "loss_view": {
+            "min": 6.710428398805777e-06,
+            "mean": 0.19623829516817357,
+            "max": 1.7500766830986865,
+            "total": 176.6144656513562
+          },
+          "loss_ridge": {
+            "min": 0.21551932692378006,
+            "mean": 5.677710329162001,
+            "max": 21.710399212300814,
+            "total": 5109.939296245801
+          },
+          "loss_total": {
+            "min": 1.5172888543493532,
+            "mean": 42.95548150324563,
+            "max": 211.99395484028713,
+            "total": 38659.93335292106
+          },
+          "loss_expanded_data": {
+            "min": 0.9323531634502338,
+            "mean": 37.27777117408363,
+            "max": 197.9273859285585,
+            "total": 33549.99405667526
+          },
+          "gradient_norm": {
+            "min": 3.7708123656420096e-16,
+            "mean": 2.7369481852287442e-14,
+            "max": 2.9041739552877814e-13,
+            "total": 2.4632533667058697e-11
+          },
+          "normal_equation_residual": {
+            "min": 3.5406860478274974e-16,
+            "mean": 3.485130744992911e-15,
+            "max": 1.251902776635351e-14,
+            "total": 3.13661767049362e-12
+          },
+          "intercept_gradient_norm": {
+            "min": 1.5792654235376239e-16,
+            "mean": 2.054856660377016e-14,
+            "max": 2.1374056189870293e-13,
+            "total": 1.8493709943393144e-11
+          }
+        }
+      },
+      {
+        "row_id": "cvs-daot-rc4-s2026092702",
+        "all": {
+          "loss_data_mean": {
+            "min": 0.9315974751989813,
+            "mean": 33.69140109167907,
+            "max": 197.9502840330976,
+            "total": 98547.34819316128
+          },
+          "loss_view": {
+            "min": 1.1260122592287312e-05,
+            "mean": 0.14601487856800088,
+            "max": 2.0176860021938583,
+            "total": 427.0935198114026
+          },
+          "loss_ridge": {
+            "min": 0.19895754664702095,
+            "mean": 5.395597467877145,
+            "max": 21.320690532771188,
+            "total": 15782.122593540647
+          },
+          "loss_total": {
+            "min": 1.5167891275946093,
+            "mean": 39.23301343812422,
+            "max": 212.28098282028915,
+            "total": 114756.56430651333
+          },
+          "loss_expanded_data": {
+            "min": 0.9316087353215735,
+            "mean": 33.83741597024707,
+            "max": 198.2753914684156,
+            "total": 98974.44171297268
+          },
+          "gradient_norm": {
+            "min": 4.333291874288356e-16,
+            "mean": 2.228699300323286e-14,
+            "max": 3.3652938156818234e-13,
+            "total": 6.518945453445612e-11
+          },
+          "normal_equation_residual": {
+            "min": 3.4399916102598827e-16,
+            "mean": 3.1832525477953907e-15,
+            "max": 1.2441300209217546e-14,
+            "total": 9.311013702301517e-12
+          },
+          "intercept_gradient_norm": {
+            "min": 1.8097747405888788e-16,
+            "mean": 1.6688619498919527e-14,
+            "max": 2.4454779571599783e-13,
+            "total": 4.881421203433962e-11
+          }
+        },
+        "fold": {
+          "loss_data_mean": {
+            "min": 3.098005105848469,
+            "mean": 32.071521565065616,
+            "max": 136.67335090020305,
+            "total": 64944.831169257865
+          },
+          "loss_view": {
+            "min": 0.0004461090983765945,
+            "mean": 0.12569291380124625,
+            "max": 1.225048418020469,
+            "total": 254.52815044752364
+          },
+          "loss_ridge": {
+            "min": 0.8887567848304676,
+            "mean": 5.294331477036,
+            "max": 15.731857665351129,
+            "total": 10721.0212409979
+          },
+          "loss_total": {
+            "min": 4.628178574339609,
+            "mean": 37.49154595590286,
+            "max": 148.5971556640991,
+            "total": 75920.38056070328
+          },
+          "loss_expanded_data": {
+            "min": 3.0987577983890358,
+            "mean": 32.19721447886686,
+            "max": 137.21079057558416,
+            "total": 65199.35931970539
+          },
+          "gradient_norm": {
+            "min": 1.1468807284010023e-15,
+            "mean": 2.0064395414505905e-14,
+            "max": 1.6646010499530665e-13,
+            "total": 4.063040071437446e-11
+          },
+          "normal_equation_residual": {
+            "min": 7.188420207407716e-16,
+            "mean": 3.079241084105937e-15,
+            "max": 9.473665839439332e-15,
+            "total": 6.235463195314523e-12
+          },
+          "intercept_gradient_norm": {
+            "min": 4.394434982011654e-16,
+            "mean": 1.497959219898991e-14,
+            "max": 1.228260032499398e-13,
+            "total": 3.0333674202954574e-11
+          }
+        },
+        "final": {
+          "loss_data_mean": {
+            "min": 0.9315974751989813,
+            "mean": 37.33613002655935,
+            "max": 197.9502840330976,
+            "total": 33602.51702390341
+          },
+          "loss_view": {
+            "min": 1.1260122592287312e-05,
+            "mean": 0.1917392992931988,
+            "max": 2.0176860021938583,
+            "total": 172.56536936387892
+          },
+          "loss_ridge": {
+            "min": 0.19895754664702095,
+            "mean": 5.623445947269721,
+            "max": 21.320690532771188,
+            "total": 5061.101352542749
+          },
+          "loss_total": {
+            "min": 1.5167891275946093,
+            "mean": 43.15131527312227,
+            "max": 212.28098282028915,
+            "total": 38836.18374581004
+          },
+          "loss_expanded_data": {
+            "min": 0.9316087353215735,
+            "mean": 37.52786932585255,
+            "max": 198.2753914684156,
+            "total": 33775.082393267294
+          },
+          "gradient_norm": {
+            "min": 4.333291874288356e-16,
+            "mean": 2.7287837577868505e-14,
+            "max": 3.3652938156818234e-13,
+            "total": 2.4559053820081655e-11
+          },
+          "normal_equation_residual": {
+            "min": 3.4399916102598827e-16,
+            "mean": 3.4172783410966607e-15,
+            "max": 1.2441300209217546e-14,
+            "total": 3.0755505069869947e-12
+          },
+          "intercept_gradient_norm": {
+            "min": 1.8097747405888788e-16,
+            "mean": 2.053393092376116e-14,
+            "max": 2.4454779571599783e-13,
+            "total": 1.8480537831385043e-11
+          }
+        }
+      },
+      {
+        "row_id": "cvs-daot-rc4-s2026092703",
+        "all": {
+          "loss_data_mean": {
+            "min": 0.933409516545026,
+            "mean": 33.530598966030944,
+            "max": 197.26963347738595,
+            "total": 98077.00197564052
+          },
+          "loss_view": {
+            "min": 1.1207625397094374e-05,
+            "mean": 0.14986914212697272,
+            "max": 1.9908377479556463,
+            "total": 438.3672407213952
+          },
+          "loss_ridge": {
+            "min": 0.21610136984109263,
+            "mean": 5.45508447166746,
+            "max": 21.787028936801935,
+            "total": 15956.122079627321
+          },
+          "loss_total": {
+            "min": 1.5182845541168324,
+            "mean": 39.13555257982538,
+            "max": 211.95843239664418,
+            "total": 114471.49129598924
+          },
+          "loss_expanded_data": {
+            "min": 0.9334207241704231,
+            "mean": 33.68046810815792,
+            "max": 197.67087337924568,
+            "total": 98515.36921636191
+          },
+          "gradient_norm": {
+            "min": 3.81706565260086e-16,
+            "mean": 2.2088724754316418e-14,
+            "max": 3.1564761874958935e-13,
+            "total": 6.460951990637552e-11
+          },
+          "normal_equation_residual": {
+            "min": 3.267267947603133e-16,
+            "mean": 3.214071911203476e-15,
+            "max": 1.2793781558862713e-14,
+            "total": 9.401160340270167e-12
+          },
+          "intercept_gradient_norm": {
+            "min": 1.3981483803777926e-16,
+            "mean": 1.6501769033869225e-14,
+            "max": 2.32413292623667e-13,
+            "total": 4.8267674424067486e-11
+          }
+        },
+        "fold": {
+          "loss_data_mean": {
+            "min": 3.1116844758611735,
+            "mean": 31.928850121258428,
+            "max": 136.29095113832147,
+            "total": 64655.92149554831
+          },
+          "loss_view": {
+            "min": 0.0003035022934556381,
+            "mean": 0.1287596973135425,
+            "max": 1.2001880991586409,
+            "total": 260.7383870599236
+          },
+          "loss_ridge": {
+            "min": 0.8981069194042323,
+            "mean": 5.349427679564727,
+            "max": 15.991609943389806,
+            "total": 10832.591051118572
+          },
+          "loss_total": {
+            "min": 4.638937672355304,
+            "mean": 37.407037498136695,
+            "max": 148.29849928888626,
+            "total": 75749.25093372681
+          },
+          "loss_expanded_data": {
+            "min": 3.1123588135655087,
+            "mean": 32.05760981857197,
+            "max": 136.82242405366713,
+            "total": 64916.65988260823
+          },
+          "gradient_norm": {
+            "min": 1.0191927233792857e-15,
+            "mean": 1.984906858443874e-14,
+            "max": 1.7091002298589805e-13,
+            "total": 4.019436388348845e-11
+          },
+          "normal_equation_residual": {
+            "min": 7.521402384219447e-16,
+            "mean": 3.106775603817627e-15,
+            "max": 9.233811684934643e-15,
+            "total": 6.291220597730694e-12
+          },
+          "intercept_gradient_norm": {
+            "min": 4.607707697373911e-16,
+            "mean": 1.477679083028087e-14,
+            "max": 1.2536245984607644e-13,
+            "total": 2.992300143131876e-11
+          }
+        },
+        "final": {
+          "loss_data_mean": {
+            "min": 0.933409516545026,
+            "mean": 37.13453386676912,
+            "max": 197.26963347738595,
+            "total": 33421.080480092205
+          },
+          "loss_view": {
+            "min": 1.1207625397094374e-05,
+            "mean": 0.19736539295719066,
+            "max": 1.9908377479556463,
+            "total": 177.6288536614716
+          },
+          "loss_ridge": {
+            "min": 0.21610136984109263,
+            "mean": 5.69281225389861,
+            "max": 21.787028936801935,
+            "total": 5123.531028508748
+          },
+          "loss_total": {
+            "min": 1.5182845541168324,
+            "mean": 43.024711513624915,
+            "max": 211.95843239664418,
+            "total": 38722.240362262426
+          },
+          "loss_expanded_data": {
+            "min": 0.9334207241704231,
+            "mean": 37.331899259726306,
+            "max": 197.67087337924568,
+            "total": 33598.70933375368
+          },
+          "gradient_norm": {
+            "min": 3.81706565260086e-16,
+            "mean": 2.712795113654119e-14,
+            "max": 3.1564761874958935e-13,
+            "total": 2.441515602288707e-11
+          },
+          "normal_equation_residual": {
+            "min": 3.267267947603133e-16,
+            "mean": 3.4554886028216374e-15,
+            "max": 1.2793781558862713e-14,
+            "total": 3.1099397425394737e-12
+          },
+          "intercept_gradient_norm": {
+            "min": 1.3981483803777926e-16,
+            "mean": 2.0382969991943025e-14,
+            "max": 2.32413292623667e-13,
+            "total": 1.8344672992748722e-11
+          }
+        }
+      },
+      {
+        "row_id": "cvs-daot-rc4-s2026092704",
+        "all": {
+          "loss_data_mean": {
+            "min": 0.9361720316722262,
+            "mean": 33.782921414630884,
+            "max": 198.12318435387527,
+            "total": 98815.04513779534
+          },
+          "loss_view": {
+            "min": 5.1236458016624365e-06,
+            "mean": 0.138254591328016,
+            "max": 1.8266772523736057,
+            "total": 404.39467963444685
+          },
+          "loss_ridge": {
+            "min": 0.22207073453118642,
+            "mean": 5.388131883278401,
+            "max": 21.47819179712137,
+            "total": 15760.285758589323
+          },
+          "loss_total": {
+            "min": 1.5204806588405488,
+            "mean": 39.3093078892373,
+            "max": 212.6193298147327,
+            "total": 114979.72557601912
+          },
+          "loss_expanded_data": {
+            "min": 0.9361771553180278,
+            "mean": 33.921176005958905,
+            "max": 198.59635792262287,
+            "total": 99219.4398174298
+          },
+          "gradient_norm": {
+            "min": 3.963948904509174e-16,
+            "mean": 2.2131910129617426e-14,
+            "max": 3.083651187825382e-13,
+            "total": 6.473583712913097e-11
+          },
+          "normal_equation_residual": {
+            "min": 3.3741297948460507e-16,
+            "mean": 3.1606281595893373e-15,
+            "max": 1.2179786038425117e-14,
+            "total": 9.244837366798811e-12
+          },
+          "intercept_gradient_norm": {
+            "min": 1.9906282577560125e-16,
+            "mean": 1.6567594935246848e-14,
+            "max": 2.281365351880618e-13,
+            "total": 4.846021518559703e-11
+          }
+        },
+        "fold": {
+          "loss_data_mean": {
+            "min": 3.111198286097525,
+            "mean": 32.16180520486104,
+            "max": 137.33074300563337,
+            "total": 65127.655539843596
+          },
+          "loss_view": {
+            "min": 0.0003080774312251873,
+            "mean": 0.11929944010680724,
+            "max": 1.1000384565126338,
+            "total": 241.58136621628466
+          },
+          "loss_ridge": {
+            "min": 0.8721189986341902,
+            "mean": 5.284262986906479,
+            "max": 15.929223951620603,
+            "total": 10700.63254848562
+          },
+          "loss_total": {
+            "min": 4.637983425661529,
+            "mean": 37.565367631874324,
+            "max": 148.97962663706068,
+            "total": 76069.86945454551
+          },
+          "loss_expanded_data": {
+            "min": 3.1119241116847762,
+            "mean": 32.28110464496784,
+            "max": 137.79542907414023,
+            "total": 65369.23690605989
+          },
+          "gradient_norm": {
+            "min": 1.2161609965144718e-15,
+            "mean": 1.9859331225000098e-14,
+            "max": 1.5686457390602493e-13,
+            "total": 4.02151457306252e-11
+          },
+          "normal_equation_residual": {
+            "min": 7.702156703191668e-16,
+            "mean": 3.0596576010949067e-15,
+            "max": 9.175860935780844e-15,
+            "total": 6.1958066422171866e-12
+          },
+          "intercept_gradient_norm": {
+            "min": 4.244227080529135e-16,
+            "mean": 1.4824299906900898e-14,
+            "max": 1.1447129329168288e-13,
+            "total": 3.0019207311474315e-11
+          }
+        },
+        "final": {
+          "loss_data_mean": {
+            "min": 0.9361720316722262,
+            "mean": 37.430432886613055,
+            "max": 198.12318435387527,
+            "total": 33687.38959795175
+          },
+          "loss_view": {
+            "min": 5.1236458016624365e-06,
+            "mean": 0.18090368157573572,
+            "max": 1.8266772523736057,
+            "total": 162.81331341816215
+          },
+          "loss_ridge": {
+            "min": 0.22207073453118642,
+            "mean": 5.621836900115226,
+            "max": 21.47819179712137,
+            "total": 5059.653210103704
+          },
+          "loss_total": {
+            "min": 1.5204806588405488,
+            "mean": 43.23317346830401,
+            "max": 212.6193298147327,
+            "total": 38909.85612147361
+          },
+          "loss_expanded_data": {
+            "min": 0.9361771553180278,
+            "mean": 37.61133656818879,
+            "max": 198.59635792262287,
+            "total": 33850.20291136991
+          },
+          "gradient_norm": {
+            "min": 3.963948904509174e-16,
+            "mean": 2.7245212665006412e-14,
+            "max": 3.083651187825382e-13,
+            "total": 2.452069139850577e-11
+          },
+          "normal_equation_residual": {
+            "min": 3.3741297948460507e-16,
+            "mean": 3.3878119162018057e-15,
+            "max": 1.2179786038425117e-14,
+            "total": 3.049030724581625e-12
+          },
+          "intercept_gradient_norm": {
+            "min": 1.9906282577560125e-16,
+            "mean": 2.0490008749025236e-14,
+            "max": 2.281365351880618e-13,
+            "total": 1.844100787412271e-11
+          }
+        }
+      }
+    ],
+    "objective_diagnostic_scope": "Retained per-model collector statistics over differing N/C tasks; totals verify identities only, not comparable training quality or calibrated likelihood",
+    "maximum_gradient_residual": 3.3652938156818234e-13,
+    "numeric_state_byte_ranges": {
+      "head_bytes": [
+        12336,
+        53456
+      ],
+      "persistent_state_bytes": [
+        12336,
+        53456
+      ]
+    },
+    "per_model_resources": [
+      {
+        "row_id": "cvs-daot-rc4-s2026092701",
+        "feature_extraction_seconds": 0,
+        "reused_frozen_cache": true,
+        "checkpoint_loaded": false,
+        "prior_producer_extraction_seconds": 83.49753713048995,
+        "prior_extraction_cost_scope": "Historical cache construction, not this run compute",
+        "physical_observations": 15444,
+        "native_views_per_observation": 4,
+        "new_native_forward_count": 0,
+        "received_cache_array_bytes": 45467136,
+        "received_cache_file_bytes": 46958108,
+        "existing_frozen_model_file_bytes": 15992872,
+        "model_already_deployed": null,
+        "model_incremental_transfer_bytes": null,
+        "model_transfer_unavailable_reason": "Deployment state unknown; complete training checkpoint package is not a measured minimum inference package",
+        "new_source_payload_bytes": 0,
+        "ground_summary_used": false,
+        "frozen_cache_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-bnna-repeat-rx3-m4-r01/cvs-daot-rc4-s2026092701/bnna_features",
+        "cache_scope": "Existing received-only local cache, not source samples or an inherited adapted state",
+        "predictor_peak_process_rss_bytes": 548892672,
+        "predictor_peak_process_rss_reason": "Linux ru_maxrss process high-water memory; null when unavailable on this platform"
+      },
+      {
+        "row_id": "cvs-daot-rc4-s2026092702",
+        "feature_extraction_seconds": 0,
+        "reused_frozen_cache": true,
+        "checkpoint_loaded": false,
+        "prior_producer_extraction_seconds": 87.85259898658842,
+        "prior_extraction_cost_scope": "Historical cache construction, not this run compute",
+        "physical_observations": 15444,
+        "native_views_per_observation": 4,
+        "new_native_forward_count": 0,
+        "received_cache_array_bytes": 45467136,
+        "received_cache_file_bytes": 46958108,
+        "existing_frozen_model_file_bytes": 15992936,
+        "model_already_deployed": null,
+        "model_incremental_transfer_bytes": null,
+        "model_transfer_unavailable_reason": "Deployment state unknown; complete training checkpoint package is not a measured minimum inference package",
+        "new_source_payload_bytes": 0,
+        "ground_summary_used": false,
+        "frozen_cache_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-bnna-repeat-rx3-m4-r01/cvs-daot-rc4-s2026092702/bnna_features",
+        "cache_scope": "Existing received-only local cache, not source samples or an inherited adapted state",
+        "predictor_peak_process_rss_bytes": 548892672,
+        "predictor_peak_process_rss_reason": "Linux ru_maxrss process high-water memory; null when unavailable on this platform"
+      },
+      {
+        "row_id": "cvs-daot-rc4-s2026092703",
+        "feature_extraction_seconds": 0,
+        "reused_frozen_cache": true,
+        "checkpoint_loaded": false,
+        "prior_producer_extraction_seconds": 89.01331526227295,
+        "prior_extraction_cost_scope": "Historical cache construction, not this run compute",
+        "physical_observations": 15444,
+        "native_views_per_observation": 4,
+        "new_native_forward_count": 0,
+        "received_cache_array_bytes": 45467136,
+        "received_cache_file_bytes": 46958108,
+        "existing_frozen_model_file_bytes": 15992872,
+        "model_already_deployed": null,
+        "model_incremental_transfer_bytes": null,
+        "model_transfer_unavailable_reason": "Deployment state unknown; complete training checkpoint package is not a measured minimum inference package",
+        "new_source_payload_bytes": 0,
+        "ground_summary_used": false,
+        "frozen_cache_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-bnna-repeat-rx3-m4-r01/cvs-daot-rc4-s2026092703/bnna_features",
+        "cache_scope": "Existing received-only local cache, not source samples or an inherited adapted state",
+        "predictor_peak_process_rss_bytes": 548892672,
+        "predictor_peak_process_rss_reason": "Linux ru_maxrss process high-water memory; null when unavailable on this platform"
+      },
+      {
+        "row_id": "cvs-daot-rc4-s2026092704",
+        "feature_extraction_seconds": 0,
+        "reused_frozen_cache": true,
+        "checkpoint_loaded": false,
+        "prior_producer_extraction_seconds": 90.54356347676367,
+        "prior_extraction_cost_scope": "Historical cache construction, not this run compute",
+        "physical_observations": 15444,
+        "native_views_per_observation": 4,
+        "new_native_forward_count": 0,
+        "received_cache_array_bytes": 45467136,
+        "received_cache_file_bytes": 46958108,
+        "existing_frozen_model_file_bytes": 15992936,
+        "model_already_deployed": null,
+        "model_incremental_transfer_bytes": null,
+        "model_transfer_unavailable_reason": "Deployment state unknown; complete training checkpoint package is not a measured minimum inference package",
+        "new_source_payload_bytes": 0,
+        "ground_summary_used": false,
+        "frozen_cache_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-bnna-repeat-rx3-m4-r01/cvs-daot-rc4-s2026092704/bnna_features",
+        "cache_scope": "Existing received-only local cache, not source samples or an inherited adapted state",
+        "predictor_peak_process_rss_bytes": 548892672,
+        "predictor_peak_process_rss_reason": "Linux ru_maxrss process high-water memory; null when unavailable on this platform"
+      }
+    ],
+    "model_already_deployed": null,
+    "model_incremental_transfer_bytes": null,
+    "model_transfer_reason": "Deployment state unknown; training checkpoint package is not a measured minimum inference package",
+    "new_source_payload_bytes": 0,
+    "ground_summary_used": false,
+    "optimizer_convergence_claim": false,
+    "selection": "none_cv_diagnostic_only",
+    "adapted_state_inherited": false,
+    "timing_scope": "Measured stage sums, not parallel wall duration or satellite latency. Core fit is nested within fit_call/total; do not add nested timings."
+  },
+  "per_k": [
+    {
+      "k": 1,
+      "model_seed": null,
+      "new_count": null,
+      "joint_cells": 720,
+      "joint_delta_pp": {
+        "old_accuracy": -1.9074074074074077,
+        "new_accuracy": -1.2754629629629644,
+        "harmonic_mean": -0.7990512565603791
+      },
+      "joint_percent": {
+        "D92": {
+          "old_accuracy": 31.636574074074076,
+          "new_accuracy": 23.468055555555555,
+          "harmonic_mean": 24.848071725415245
+        },
+        "D92-MVRidge-v1": {
+          "old_accuracy": 29.729166666666668,
+          "new_accuracy": 22.192592592592593,
+          "harmonic_mean": 24.049020468854867
+        }
+      },
+      "old_all_cells": {
+        "cells": 900,
+        "baseline_percent": 33.946296296296296,
+        "candidate_percent": 31.710493827160498,
+        "delta_pp": -2.2358024691358
+      }
+    },
+    {
+      "k": 5,
+      "model_seed": null,
+      "new_count": null,
+      "joint_cells": 720,
+      "joint_delta_pp": {
+        "old_accuracy": 2.496141975308647,
+        "new_accuracy": -0.8759259259259244,
+        "harmonic_mean": 0.40092843858549054
+      },
+      "joint_percent": {
+        "D92": {
+          "old_accuracy": 39.95910493827161,
+          "new_accuracy": 32.920138888888886,
+          "harmonic_mean": 35.26174945568853
+        },
+        "D92-MVRidge-v1": {
+          "old_accuracy": 42.455246913580254,
+          "new_accuracy": 32.044212962962966,
+          "harmonic_mean": 35.66267789427402
+        }
+      },
+      "old_all_cells": {
+        "cells": 900,
+        "baseline_percent": 42.41666666666667,
+        "candidate_percent": 44.54753086419753,
+        "delta_pp": 2.1308641975308626
+      }
+    },
+    {
+      "k": 10,
+      "model_seed": null,
+      "new_count": null,
+      "joint_cells": 720,
+      "joint_delta_pp": {
+        "old_accuracy": -0.9999999999999953,
+        "new_accuracy": -3.0444444444444443,
+        "harmonic_mean": -2.2832587497463477
+      },
+      "joint_percent": {
+        "D92": {
+          "old_accuracy": 49.80941358024691,
+          "new_accuracy": 39.888888888888886,
+          "harmonic_mean": 43.595209772631996
+        },
+        "D92-MVRidge-v1": {
+          "old_accuracy": 48.80941358024692,
+          "new_accuracy": 36.84444444444444,
+          "harmonic_mean": 41.311951022885644
+        }
+      },
+      "old_all_cells": {
+        "cells": 900,
+        "baseline_percent": 52.34197530864198,
+        "candidate_percent": 51.072222222222216,
+        "delta_pp": -1.269753086419756
+      }
+    },
+    {
+      "k": 20,
+      "model_seed": null,
+      "new_count": null,
+      "joint_cells": 720,
+      "joint_delta_pp": {
+        "old_accuracy": -1.9891975308641952,
+        "new_accuracy": -3.027083333333336,
+        "harmonic_mean": -2.560643272177882
+      },
+      "joint_percent": {
+        "D92": {
+          "old_accuracy": 56.90663580246913,
+          "new_accuracy": 43.4212962962963,
+          "harmonic_mean": 48.52542099068163
+        },
+        "D92-MVRidge-v1": {
+          "old_accuracy": 54.91743827160494,
+          "new_accuracy": 40.39421296296296,
+          "harmonic_mean": 45.96477771850375
+        }
+      },
+      "old_all_cells": {
+        "cells": 900,
+        "baseline_percent": 59.27654320987655,
+        "candidate_percent": 57.084567901234564,
+        "delta_pp": -2.1919753086419913
+      }
+    }
+  ],
+  "original_baseline_verification": {
+    "status": "VERIFIED",
+    "original_run_id": "20260928-phase2-d92-scv-confirmation-manytx-m4-r02",
+    "capsule_id": "residual-noeq-76121e6f34363fa612ec25fb",
+    "model_checkpoints": {
+      "cvs-daot-rc4-s2026092701": "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b",
+      "cvs-daot-rc4-s2026092702": "72f26413e495dcf82317898f8729caa3d35499bf0b41e9671ffdceab2c90924b",
+      "cvs-daot-rc4-s2026092703": "51fadc3b4ad3cbf83de01700a4a109430e7a57b1e10cb147f0be5f01593f26bb",
+      "cvs-daot-rc4-s2026092704": "690fed6ea2a6532d0ad978c93306f0f35b61f4a3a3fc4b1d6494f0e7547c74bb"
+    },
+    "unchanged_original_records": 3636,
+    "methods": [
+      "D92",
+      "frozen_dg"
+    ],
+    "comparison": "Exact physical/task metadata, confusion, class accuracy and all reported metrics",
+    "original_scores": "E:\\type10-7\\automation_reports\\CV-SincNet\\20260928-phase2-d92-scv-confirmation-manytx-m4-r02\\results\\scores.json"
+  },
+  "raw_scores": {
+    "local": "E:\\type10-7\\automation_reports\\CV-SincNet\\20260929-phase2-d92-mvridge-repeat-rx3-m4-r01\\results\\scores.json",
+    "remote": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-mvridge-repeat-rx3-m4-r01/scores.json"
+  },
+  "raw_fit_traces": [
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-mvridge-repeat-rx3-m4-r01/cvs-daot-rc4-s2026092701/mvridge/fit_trace.jsonl",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-mvridge-repeat-rx3-m4-r01/cvs-daot-rc4-s2026092702/mvridge/fit_trace.jsonl",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-mvridge-repeat-rx3-m4-r01/cvs-daot-rc4-s2026092703/mvridge/fit_trace.jsonl",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-mvridge-repeat-rx3-m4-r01/cvs-daot-rc4-s2026092704/mvridge/fit_trace.jsonl"
+  ],
+  "raw_predictions": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-mvridge-repeat-rx3-m4-r01/<row_id>/mvridge/predictions.jsonl",
+  "compact_logs": "fit_logs/",
+  "analytical_stage_logs": "Each row/mvridge/fit_stages.jsonl and fit_stages.csv",
+  "arithmetic_audit": "arithmetic_audit.json",
+  "fit_audit": "fit_audit.json",
+  "cohort_summary": "summary/report.md",
+  "combined_summary": "E:\\type10-7\\automation_reports\\CV-SincNet\\20260929-phase2-d92-mvridge-repeat-rx3-m4-r01\\results\\combined_rx4\\report.md",
+  "interpretation_audit": "E:\\type10-7\\automation_reports\\CV-SincNet\\20260929-phase2-d92-mvridge-repeat-rx3-m4-r01\\results\\combined_rx4\\interpretation_audit.json",
+  "old_guard_scope": "All paired cells including old-only; joint old/new/H table excludes old-only.",
+  "claim_scope": "REPEATED_BENCHMARK_PREVIOUSLY_SCORED_TARGETS",
+  "selection_feedback_forbidden": true,
+  "limitations": [
+    "Previously scored targets reused; not fresh independent confirmation or unexposed generalization evidence.",
+    "Shared query and overlapping support draws are not independent model replicates; no statistical significance claim.",
+    "Ridge scores are not calibrated probabilities. Support OOF NLL is diagnostic only and is not used for cross-method ranking.",
+    "No algorithm modification, parameter choice, selective rerun, or future design based on this audit."
+  ]
+}
