@@ -3,7 +3,7 @@
 - run_id：`20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01`
 - group_id：`d92-fixed-phase1-sourcefree-upgrade`；类别：`cvs`；阶段：`Phase2-joint-confirmation`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：LOCAL_VERIFIED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -29,3 +29,5 @@
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
 
 Current authorized design and fixed loss: docs/D92_SOURCEFREE_AUX_20260928.md. 37 focused tests plus 42 lifecycle/scorer tests passed. Independent P0/P1 review passed. Source-TX auxiliary training was superseded and never launched. No new ground-statistics transfer required; all2412 predictions must finish before scoring.
+
+VERIFIED running supervisor2403988, release3348c8c37df402098a6f84397eaa1bf74d8d592e. Four native checkpoint no-query inference smokes and received feature extraction completed; now paired baseline predictions. Capsule residual-noeq-d0a99fede324159c5a4750fd,4680 observations/300splits. Evidence readback_1790604450.json. No target scores read.

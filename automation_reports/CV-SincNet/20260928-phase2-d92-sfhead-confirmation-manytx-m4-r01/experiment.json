@@ -28,7 +28,8 @@
     "base_recipe": "experiments/adv3b02_xuc/configs/rc4_practical_residual_noeq_20260918.json",
     "native_code_base": "b63734157",
     "native_training_commit": "9b1ddd939fcabc74c77c94a62fef8e5aad07c0e9",
-    "commit_note": "Exact pushed release HEAD recorded in launch/startup; this field is preparation parent."
+    "commit_note": "Exact pushed release HEAD recorded in launch/startup; this field is preparation parent.",
+    "release_commit": "3348c8c37df402098a6f84397eaa1bf74d8d592e"
   },
   "data": {
     "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManyTx.pkl",
@@ -117,7 +118,15 @@
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01",
     "local_artifact_root": "automation_reports/CV-SincNet/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01",
     "launch_command": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe -X utf8 tools/publish_d92_confirmation.py --spec configs/d92_sourcefree_confirmation_20260928.json --release d92_sfhead_confirmation_20260928_r01",
-    "stop_rule": "Any source failure or child nonzero fails affected lane without retry; healthy lanes continue; do not score partial matrix."
+    "stop_rule": "Any source failure or child nonzero fails affected lane without retry; healthy lanes continue; do not score partial matrix.",
+    "pid": 2403988,
+    "runtime_command": [
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_sfhead_confirmation_20260928_r01/tools/run_d92_confirmation.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_sfhead_confirmation_20260928_r01/configs/d92_sourcefree_confirmation_20260928.json",
+      "--commit",
+      "3348c8c37df402098a6f84397eaa1bf74d8d592e"
+    ]
   },
   "expected_artifacts": [
     "startup.json",
@@ -366,5 +375,5 @@
     "predictions_total": 2412
   },
   "registered_at": "2026-09-28T14:04:11+00:00",
-  "status": "LOCAL_VERIFIED"
+  "status": "RUNNING"
 }

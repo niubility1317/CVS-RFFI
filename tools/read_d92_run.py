@@ -21,11 +21,21 @@ for base,name in [(root,'startup.json'),(root,'state.json'),(root,'workflow_stat
    d['live_cwd']=str((proc/'cwd').resolve()) if (proc/'cwd').exists() else None
   result[name]=d
 for p in [release/'run.log',root/'run.log']+list(root.glob('*.log'))+list(root.glob('*/*.log')):
- if p.exists():result[str(p)]={'bytes':p.stat().st_size,'tail':p.read_text(errors='replace').splitlines()[-3:]}
-for p in root.glob('*/scv/predictions_complete.json'):
+ if p.exists():
+  with p.open('rb') as stream:
+   stream.seek(max(0,p.stat().st_size-262144));tail=stream.read().decode(errors='replace').splitlines()[-3:]
+  if p.name=='sfhead.log':
+   filtered=[]
+   for line in tail:
+    try:
+     d=json.loads(line);d.pop('steps',None);filtered.append(json.dumps(d))
+    except (ValueError,TypeError):filtered.append(line[-1500:])
+   tail=filtered
+  result[str(p)]={'bytes':p.stat().st_size,'tail':tail}
+for p in list(root.glob('*/scv/predictions_complete.json'))+list(root.glob('*/sfhead/predictions_complete.json')):
  result[str(p)]=json.loads(p.read_text())
 processes=[]
-for p in root.glob('*/*.log.process.json'):
+for p in list(root.glob('*/*.log.process.json'))+list(root.glob('*.log.process.json')):
  d=json.loads(p.read_text());proc=Path('/proc')/str(d['pid'])
  if (proc/'cmdline').exists():
   d['live_argv']=(proc/'cmdline').read_bytes().decode().split('\0')[:-1]

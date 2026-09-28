@@ -3,7 +3,7 @@
 - run_id：`20260928-phase2-d92-sfhead-data-manytx-r01`
 - group_id：`d92-fixed-phase1-sourcefree-upgrade`；类别：`cvs`；阶段：`Phase2-data-preparation`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：LOCAL_VERIFIED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ARTIFACTS_COMPLETE（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -29,3 +29,5 @@ RX20-19、26TX各180独立物理记录；3场景support30/query30，300划分。
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
 
 Preregistered one-time fresh received builder; support pool30 and query30 per scene, three physically disjoint scenes. No checkpoint/source data accessed by builder.
+
+VERIFIED data completed: capsule residual-noeq-d0a99fede324159c5a4750fd,4680 observations,300splits. Its prediction/scoring run remains separate and active; no data rebuilding.
