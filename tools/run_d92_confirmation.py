@@ -19,6 +19,7 @@ CANDIDATES = (
     ('D92-SFHead-v1', 'sfhead', 'predict_d92_sourcefree_head.py', 'd92_sfhead_registration'),
     ('D92-SGJoint-v1', 'sgjoint', 'predict_d92_summary_joint.py', 'd92_sgjoint_registration'),
     ('D92-MVKME-v1', 'mvkme', 'predict_d92_mv_kme.py', 'd92_mvkme_registration'),
+    ('D92-BNNA-v1', 'bnna', 'predict_d92_bnna.py', 'd92_bnna_registration'),
 )
 
 
@@ -62,7 +63,15 @@ def baseline_root(row):
 
 
 def needs_multiview(confirmation):
-    return candidate_definition(confirmation)['candidate_method']=='D92-MVKME-v1'
+    return feature_definition(confirmation) is not None
+
+
+def feature_definition(confirmation):
+    method = candidate_definition(confirmation)['candidate_method']
+    return {
+        'D92-MVKME-v1': ('export_d92_mv_kme_features.py', 'mv_features', '--mv-features', 'MULTIVIEW_FEATURES_COMPLETE'),
+        'D92-BNNA-v1': ('export_d92_bnna_features.py', 'bnna_features', '--bnna-features', 'BNNA_FEATURES_COMPLETE'),
+    }.get(method)
 
 
 def read(path):
@@ -210,7 +219,7 @@ def run(spec_path, commit):
     reuse_rows=reuse_frozen_rows(spec)
     multiview=needs_multiview(confirmation)
     if multiview and not reuse_rows:
-        raise ValueError('MVKME requires explicitly reused baseline rows')
+        raise ValueError('Multiview candidate requires explicitly reused baseline rows')
     expected_splits = confirmation.get('expected_split_count')
     if expected_splits is not None and (type(expected_splits) is not int or expected_splits <= 0):
         raise ValueError('expected_split_count must be a positive integer')
@@ -285,16 +294,17 @@ def run(spec_path, commit):
                 hashes[row_id]=row['expected_checkpoint_sha256']
                 write(output/'artifact_reuse.json',evidence)
                 if multiview:
+                    exporter, feature_folder, feature_flag, feature_status = feature_definition(confirmation)
                     update(row_id,status='EXPORTING_MULTIVIEW_FEATURES')
-                    invoke('export_d92_mv_kme_features.py', ['--row-root', baseline_root(row),
+                    invoke(exporter, ['--row-root', baseline_root(row),
                         '--source', row['source_root'], '--contract', confirmation['source_contract'],
                         '--native-code', confirmation['native_code'], '--seed', row['seeds']['model'],
-                        '--capsule', confirmation['capsule'], '--output', output/'mv_features',
+                        '--capsule', confirmation['capsule'], '--output', output/feature_folder,
                         '--config', confirmation['candidate_config'], '--expected-capsule-id', manifest['capsule_id'],
                         '--expected-checkpoint-sha256', hashes[row_id], '--device', 'cuda:0'],
-                        output/'mv_features.log', gpu=True)
-                    marker=read(output/'mv_features'/'features_complete.json')
-                    if (marker.get('status')!='MULTIVIEW_FEATURES_COMPLETE'
+                        output/(feature_folder+'.log'), gpu=True)
+                    marker=read(output/feature_folder/'features_complete.json')
+                    if (marker.get('status')!=feature_status
                             or marker.get('capsule_id')!=manifest['capsule_id']
                             or marker.get('checkpoint_sha256')!=hashes[row_id]
                             or marker.get('query_used_for_fitting') is not False):
@@ -327,7 +337,9 @@ def run(spec_path, commit):
                 arguments=['--row-root', baseline_root(row), '--capsule', confirmation['capsule'],
                     '--output', output / folder, '--config', confirmation['candidate_config'],
                     '--expected-capsule-id', manifest['capsule_id'], '--expected-checkpoint-sha256', hashes[row_id]]
-                if multiview: arguments.extend(['--mv-features',output/'mv_features'])
+                if multiview:
+                    _, feature_folder, feature_flag, _ = feature_definition(confirmation)
+                    arguments.extend([feature_flag,output/feature_folder])
                 invoke(candidate['candidate_predictor'], arguments, output / (folder + '.log'))
                 for prediction_root in (baseline_root(row), output / folder):
                     marker = read(prediction_root / 'predictions_complete.json')

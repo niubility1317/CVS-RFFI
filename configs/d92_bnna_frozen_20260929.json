@@ -1,0 +1,64 @@
+{
+  "algorithm": {
+    "method": "D92-BNNA-v1",
+    "input_shape": [
+      2,
+      256
+    ],
+    "phases_quarter_turns": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "identity_dim": 160,
+    "fft_dim": 96,
+    "fft": "historical_spectral_logmag_sketch",
+    "fft_norm_floor": 1e-08,
+    "norm_floor": 1e-12,
+    "block_weights": "equal_1_over_sqrt2",
+    "max_rank": 8,
+    "trace_floor": 1e-24,
+    "eigen_tolerance": "64*float64_eps*trace",
+    "basis": "within_physical_view_covariance_trainfold_only",
+    "repeated_eigen_basis": "project_standard_axes_in_order_then_reorthogonalize",
+    "gate_bounds": [
+      0.0,
+      0.5
+    ],
+    "gate_initialization": 0.0,
+    "nonlinearity_scale": "sqrt160",
+    "adapter": "unit(z-B.T@(a*tanh(sqrt160*B@z)/sqrt160))",
+    "physical_representation": "unit(mean_four_adapted_identity_fft_views)",
+    "prototype": "unit(sum_physical_representations_per_class)",
+    "score_scale": 10.0,
+    "loss_cls": "physical_leave_one_out_if_train_k>=2_else_cross_view_training_only",
+    "loss_view": "mean_squared_deviation_from_physical_mean",
+    "loss_gate": "mean_squared_gate",
+    "loss_view_weight": "1/(train_k+1)",
+    "loss_gate_weight": "1/(train_k+1)",
+    "optimizer": "projected_Adam_float64_analytic_gradient",
+    "steps": 64,
+    "learning_rate": 0.03,
+    "adam_betas": [
+      0.9,
+      0.999
+    ],
+    "adam_epsilon": 1e-08,
+    "final_state": "after_step64_not_best_step",
+    "max_folds": 3,
+    "folds": "per_class_physical_id_sort_then_position_mod_min_K_3",
+    "candidates": [
+      "identity",
+      "trained"
+    ],
+    "k1": "fixed_trained_no_holdout",
+    "selection": "min_max_old_new_oof_nll_then_macro_nll_then_identity",
+    "selection_round_decimals": 10,
+    "refit": "from_zero_all_current_row_support",
+    "precision": "float64",
+    "query_fit": false,
+    "source_inputs": false,
+    "summary_inputs": false
+  }
+}

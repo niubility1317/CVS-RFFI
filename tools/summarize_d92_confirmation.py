@@ -31,14 +31,14 @@ def matrix_definition(spec=None):
         source=spec['data']
         matrix=dict(model_seed=[r['seeds']['model'] for r in spec['rows']],receiver=source['target_receivers'],
             scenario=source['scenarios'],k=source['k'],new_count=source['new_class_counts'],support_seed=source['support_seeds'])
-        strict_new=methods[1] in ('D92-SFHead-v1','D92-SGJoint-v1','D92-MVKME-v1')
+        strict_new=methods[1] in ('D92-SFHead-v1','D92-SGJoint-v1','D92-MVKME-v1','D92-BNNA-v1')
         acceptance['require_new_improvement']=strict_new
         declared=spec.get('metrics_plan',{}).get('acceptance',{})
         if not isinstance(declared,dict) or set(declared)-{'old_max_drop','require_new_improvement','require_harmonic_improvement','primary_scope'}:
             raise ValueError('Unsupported acceptance rule')
         if 'require_harmonic_improvement' in declared and declared['require_harmonic_improvement'] is not True:
             raise ValueError('Every registered K requires harmonic improvement')
-        if 'primary_scope' in declared and (methods[1] not in ('D92-SGJoint-v1','D92-MVKME-v1') or declared['primary_scope']!=
+        if 'primary_scope' in declared and (methods[1] not in ('D92-SGJoint-v1','D92-MVKME-v1','D92-BNNA-v1') or declared['primary_scope']!=
                 'joint all-four-RX equal-cell per-K; cohort tables descriptive, not independent pass gates'):
             raise ValueError('Unsupported primary acceptance scope')
         if 'old_max_drop' in declared and declared['old_max_drop']!=0.01:

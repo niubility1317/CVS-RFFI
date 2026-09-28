@@ -1,6 +1,10 @@
 # D92优化当前交接
 
-## 当前状态：MVKME完整重复基准未达标，正在独立设计BNNA
+## 当前状态：BNNA已实现，两个重复基准已预登记，尚未启动
+
+2026-09-29：BNNA设计、core/config、4view exporter/predictor已实现；37项核心/入口合成检查通过，完整物理fold隔离和K1无CV已核实。runner/publisher/scorer/联合汇总已接入。新增run为`20260929-phase2-d92-bnna-repeat-rx3-m4-r01`与`20260929-phase2-d92-bnna-repeat-rx1-m4-r01`，spec对应`configs/d92_bnna_repeat_rx3_20260929.json`、rx1同名；两者PLANNED，唯一launch owner仍root。资源和新路径只读核实`local_artifacts/d92_upgrade_20260928/bnna_preflight_20260929.json`，GPU0空闲，其余任务未干预。
+
+启动前实现核验完成：core14项、优化后入口+audit62项、编排评分103项相关测试通过，audit补充检查后独立38项通过；独立P0/P1无阻断发现，见`docs/D92_BNNA_P0_REVIEW_20260929.md`。同一C26K20纯合成配对完整fit18.985秒→5.234秒，数学等价且配置未变，只是本地成本。剩余镜像、commit/push/OID及原计划发布。固定公式/超参不因任何target结果改变。入口native smoke已扩展为8条纯合成IQ→4views→完整适应→query逐样本一致性，发生在received数据打开前。尚无BNNA真实分数，禁止从本段推断已launch或已达标。
 
 **2026-09-29最新终态，覆盖下列运行中历史。**MVKME rx3-r02和rx1-r01均已SCORED/ANALYZED，所有supervisor/children退出；rx3终态`readback_1790611107.json`，rx1终态`readback_1790610777.json`，两run下载读回`readback_1790611135.json`。当前没有本任务运行中的实验，禁止重发已完成run。全部9648条评分逐混淆矩阵独立复算通过，4800次拟合日志审计通过，1840个summary值独立解释复核通过。完整报告为rx3-r02的`results/combined_rx4/report.md`，两run均有`results/artifacts.json`。
 

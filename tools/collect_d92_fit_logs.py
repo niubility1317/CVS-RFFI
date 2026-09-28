@@ -31,9 +31,12 @@ def main():
         if len(entries)!=spec['confirmation']['splits_per_model']:raise ValueError('Incomplete fit diagnostics')
         small=[]
         for r in entries:
-            selected=r.pop('selected',{});r.update({'selected_'+k:v for k,v in selected.items()});small.append(r)
+            if isinstance(r.get('selected'),dict):
+                selected=r.pop('selected');r.update({'selected_'+k:v for k,v in selected.items()})
+            small.append(r)
         with (folder/'compact.csv').open('x',encoding='utf-8',newline='') as f:
-            writer=csv.DictWriter(f,fieldnames=list(small[0]));writer.writeheader();writer.writerows(small)
+            writer=csv.DictWriter(f,fieldnames=list(small[0]));writer.writeheader()
+            writer.writerows({k:json.dumps(v,sort_keys=True) if isinstance(v,(dict,list)) else v for k,v in r.items()} for r in small)
     print(out)
 
 

@@ -1,0 +1,90 @@
+{
+  "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-data-manytx-r01",
+  "old_classes": [
+    "14-10",
+    "14-7",
+    "20-15",
+    "20-19",
+    "6-15",
+    "8-20"
+  ],
+  "new_classes": [
+    "11-4",
+    "3-13",
+    "12-20",
+    "5-20",
+    "20-12",
+    "17-11",
+    "14-14",
+    "2-17",
+    "4-1",
+    "19-13",
+    "19-8",
+    "2-19",
+    "8-1",
+    "14-20",
+    "13-3",
+    "1-18",
+    "20-7",
+    "7-7",
+    "2-3",
+    "18-12"
+  ],
+  "source_receivers": [
+    "1-19",
+    "18-2",
+    "19-2",
+    "2-19",
+    "3-19"
+  ],
+  "target_receivers": [
+    "20-19"
+  ],
+  "fs_hz": 25000000,
+  "data_seed": 2026092705,
+  "augmentation_seed": 2026092707,
+  "receiver_seed": 2027,
+  "evaluation_seed": 2026092706,
+  "support_seeds": [
+    2026092711,
+    2026092712,
+    2026092713,
+    2026092714,
+    2026092715
+  ],
+  "scenarios": [
+    "practical_high",
+    "practical_mid",
+    "practical_low_urban"
+  ],
+  "shots": [
+    1,
+    5,
+    10,
+    20
+  ],
+  "new_counts": [
+    0,
+    2,
+    5,
+    10,
+    20
+  ],
+  "schema": "cvs.phase2.validated_capsule_reference.v1",
+  "reference_only": true,
+  "builder_enabled": false,
+  "data_rebuilt": false,
+  "data_revalidated": false,
+  "capsule_id": "residual-noeq-d0a99fede324159c5a4750fd",
+  "protocol_schema": "p2_min_v1",
+  "phase2_data_status": "VALIDATED_ONCE",
+  "capsule": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-data-manytx-r01/capsule",
+  "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-data-manytx-r01/capsule/manifest.json",
+  "split_count": 300,
+  "existing_data_config_ref": "configs/d92_sourcefree_data_20260928.json",
+  "original_data_config": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_sfhead_confirmation_20260928_r01/configs/d92_sourcefree_data_20260928.json",
+  "claim_scope": "REPEATED_BENCHMARK_PREVIOUSLY_SCORED_TARGETS",
+  "note": "Existing received IQ and immutable physical support/query splits; no data construction or revalidation",
+  "support_pool_size": 30,
+  "query_size": 30
+}

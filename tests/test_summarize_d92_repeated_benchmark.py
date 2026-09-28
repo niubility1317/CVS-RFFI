@@ -100,15 +100,17 @@ def test_old_guard_includes_old_only_when_preregistered():
     assert not result['preregistered_guard_pass']
 
 
-def test_mvkme_pool_keeps_method_binding_and_strict_new_guard():
+@pytest.mark.parametrize('candidate_index',[3,4])
+def test_new_candidate_pool_keeps_method_binding_and_strict_new_guard(candidate_index):
+    from run_d92_confirmation import CANDIDATES,CANDIDATE_FIELDS
+    candidate=CANDIDATES[candidate_index]
     specs,data=cohorts()
     for spec,scored in zip(specs,data):
-        spec['confirmation'].update(candidate_method='D92-MVKME-v1',candidate_folder='mvkme',
-            candidate_predictor='predict_d92_mv_kme.py',candidate_mode='d92_mvkme_registration')
+        spec['confirmation'].update(dict(zip(CANDIDATE_FIELDS,candidate)))
         for row in scored['results']:
-            if row['method']=='D92-SGJoint-v1':row['method']='D92-MVKME-v1'
+            if row['method']=='D92-SGJoint-v1':row['method']=candidate[0]
     result=combine(specs,data)
-    assert result['methods']==['D92','D92-MVKME-v1']
+    assert result['methods']==['D92',candidate[0]]
     assert result['acceptance']['require_new_improvement']
     assert 'D92-SGJoint' not in result['claim_scope']
 

@@ -17,6 +17,8 @@ def fixture(tmp, sfhead=False):
     candidate_folder='sgjoint' if sfhead=='sgjoint' else ('sfhead' if sfhead else 'scv')
     candidate_method='D92-SGJoint-v1' if sfhead=='sgjoint' else ('D92-SFHead-v1' if sfhead else 'D92-SCV-v1')
     candidate_mode='d92_sgjoint_registration' if sfhead=='sgjoint' else ('d92_sfhead_registration' if sfhead else 'd92_scv_registration')
+    if sfhead=='bnna':
+        candidate_folder,candidate_method,candidate_mode='bnna','D92-BNNA-v1','d92_bnna_registration'
     cap=tmp/'capsule';(cap/'splits').mkdir(parents=True)
     ids=[f'physical-{i}' for i in range(16)]
     np.savez(cap/'received.npz',ids=ids)
@@ -44,10 +46,11 @@ def fixture(tmp, sfhead=False):
         spec['confirmation'].update(candidate_method=candidate_method, candidate_folder=candidate_folder,
             candidate_predictor='predict_d92_summary_joint.py' if sfhead=='sgjoint' else 'predict_d92_sourcefree_head.py', candidate_mode=candidate_mode,
             expected_split_count=2)
+        if sfhead=='bnna':spec['confirmation']['candidate_predictor']='predict_d92_bnna.py'
     return spec,row,scv
 
 
-@pytest.mark.parametrize('sfhead', [False, True, 'sgjoint'])
+@pytest.mark.parametrize('sfhead', [False, True, 'sgjoint', 'bnna'])
 def test_joint_scoring_h_floors_f1_and_same_row_forgetting(tmp_path,sfhead):
     spec,_,_=fixture(tmp_path,sfhead)
     score(spec,tmp_path/'result.json');result=json.loads((tmp_path/'result.json').read_text())
@@ -60,7 +63,7 @@ def test_joint_scoring_h_floors_f1_and_same_row_forgetting(tmp_path,sfhead):
     assert result['selection_feedback_forbidden']
 
 
-@pytest.mark.parametrize('sfhead', [False, True, 'sgjoint'])
+@pytest.mark.parametrize('sfhead', [False, True, 'sgjoint', 'bnna'])
 @pytest.mark.parametrize('fault',['missing','argmax','identity','duplicate','state','mode'])
 def test_all_predictions_validated_before_truth_is_opened(tmp_path,fault,sfhead):
     spec,row,scv=fixture(tmp_path,sfhead);spec['confirmation']['truth']=str(tmp_path/'NEVER_OPEN_MISSING_TRUTH.json')
@@ -89,7 +92,7 @@ def test_scorer_rejects_invalid_alias_or_split_count_before_truth(tmp_path,key,v
     assert not (tmp_path/'out.json').exists()
 
 
-@pytest.mark.parametrize('sfhead', [False, True, 'sgjoint'])
+@pytest.mark.parametrize('sfhead', [False, True, 'sgjoint', 'bnna'])
 @pytest.mark.parametrize('wrong_tie', [False, True])
 def test_exact_tie_uses_only_the_preregistered_method_policy(tmp_path, sfhead, wrong_tie):
     spec, row, candidate = fixture(tmp_path, sfhead)
@@ -114,7 +117,7 @@ def test_exact_tie_uses_only_the_preregistered_method_policy(tmp_path, sfhead, w
             value['classes'] = [renamed(c) for c in value['classes']]
             if folder == candidate:
                 value['scores'][0] = [1.0] * len(value['classes'])
-                expected = 1 if sfhead == 'sgjoint' else 0
+                expected = 1 if sfhead in ('sgjoint','bnna') else 0
                 value['predicted_indices'][0] = (1 - expected) if wrong_tie else expected
         p.write_text(''.join(json.dumps(v) + '\n' for v in values), encoding='utf-8')
     if wrong_tie:

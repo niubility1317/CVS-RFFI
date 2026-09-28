@@ -4,7 +4,7 @@ import argparse
 import json
 from pathlib import Path
 import subprocess
-from run_d92_confirmation import candidate_definition, reuse_frozen_rows, needs_multiview
+from run_d92_confirmation import candidate_definition, reuse_frozen_rows, needs_multiview, feature_definition
 
 ROOT=Path(__file__).resolve().parents[1]
 RELEASE='d92_scv_confirmation_20260928_r01'
@@ -47,7 +47,8 @@ def release_tool_paths(confirmation):
     candidate=candidate_definition(confirmation)
     return list(dict.fromkeys([p for p in PATHS if not p.startswith('configs/')]
                              +['tools/'+candidate['candidate_predictor']]
-                             +(['tools/export_d92_mv_kme_features.py'] if needs_multiview(confirmation) else [])))
+                             +(['tools/export_d92_mv_kme_features.py'] if candidate['candidate_method']=='D92-BNNA-v1' else [])
+                             +(['tools/'+feature_definition(confirmation)[0]] if needs_multiview(confirmation) else [])))
 
 
 def main():

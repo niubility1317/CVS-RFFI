@@ -1,0 +1,24 @@
+{
+  "status": "VERIFIED",
+  "user": "szu2070436088",
+  "host": "dell-DSS8440",
+  "load": [
+    5.1689453125,
+    5.060546875,
+    5.345703125
+  ],
+  "cpu_count": 96,
+  "disk_free": 7136225796096,
+  "gpu": "0, 1, 24576, 0\n1, 1, 24576, 0\n2, 1, 24576, 0\n3, 3442, 24576, 70\n4, 3452, 24576, 30\n5, 3452, 24576, 75\n6, 3452, 24576, 33\n7, 3452, 24576, 48\n",
+  "processes": "1946780, /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python, 3432\n1946781, /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python, 3442\n1946782, /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python, 3442\n1946783, /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python, 3442\n1946784, /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python, 3442\n",
+  "absent_paths": [
+    "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_bnna_repeat_rx3_20260929_r01",
+    "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_bnna_repeat_rx3_20260929_r01.tar",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-bnna-repeat-rx3-m4-r01",
+    "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_bnna_repeat_rx1_20260929_r01",
+    "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_bnna_repeat_rx1_20260929_r01.tar",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-bnna-repeat-rx1-m4-r01"
+  ],
+  "source_samples_read": false,
+  "query_read": false
+}

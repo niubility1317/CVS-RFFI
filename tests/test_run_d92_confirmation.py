@@ -161,7 +161,7 @@ def test_fresh_capsule_split_count_must_match_preregistered_count(tmp_path, monk
     assert [c[0] for c in calls] == ['build_d92_confirmation_data.py']
 
 
-@pytest.mark.parametrize('candidate_index', [0, 1, 2])
+@pytest.mark.parametrize('candidate_index', [0, 1, 2, 3, 4])
 def test_candidate_release_paths_and_readback_use_exact_registered_folder(tmp_path,capfd,candidate_index):
     from collect_d92_fit_logs import fit_log_paths
     from publish_d92_confirmation import release_tool_paths
@@ -253,30 +253,31 @@ def reused_specification(tmp_path):
     return path,spec
 
 
-@pytest.mark.parametrize('multiview',[False,True])
-def test_reused_rows_only_run_candidate_and_score_with_old_artifacts_unchanged(tmp_path,monkeypatch,multiview):
+@pytest.mark.parametrize('candidate_index',[2,3,4])
+def test_reused_rows_only_run_candidate_and_score_with_old_artifacts_unchanged(tmp_path,monkeypatch,candidate_index):
     from score_d92_confirmation import score
     path,spec=reused_specification(tmp_path)
-    if multiview:
-        spec['confirmation'].update(dict(zip(runner.CANDIDATE_FIELDS,runner.CANDIDATES[3])))
-        save(path,spec)
+    spec['confirmation'].update(dict(zip(runner.CANDIDATE_FIELDS,runner.CANDIDATES[candidate_index])))
+    save(path,spec)
+    multiview=runner.needs_multiview(spec['confirmation'])
+    feature=runner.feature_definition(spec['confirmation'])
     method=runner.candidate_definition(spec['confirmation'])
     old_files=list((tmp_path/'old-run').rglob('*'))
     old_hashes={p:runner.sha(p) for p in old_files if p.is_file()}
     calls=[]
     def invoke(tool,arguments,log,*,gpu=False):
         args=list(map(str,arguments));calls.append(tool)
-        if tool=='export_d92_mv_kme_features.py':
+        if feature is not None and tool==feature[0]:
             assert multiview and gpu
             assert method['candidate_predictor'] not in calls
             output=Path(args[args.index('--output')+1])
-            save(output/'features_complete.json',dict(status='MULTIVIEW_FEATURES_COMPLETE',capsule_id='synthetic',
+            save(output/'features_complete.json',dict(status=feature[3],capsule_id='synthetic',
                 checkpoint_sha256='a'*64,query_used_for_fitting=False))
         elif tool==method['candidate_predictor']:
             assert not gpu
             if multiview:
-                assert calls.count('export_d92_mv_kme_features.py')==4
-                assert Path(args[args.index('--mv-features')+1]).name=='mv_features'
+                assert calls.count(feature[0])==4
+                assert Path(args[args.index(feature[2])+1]).name==feature[1]
             origin=Path(args[args.index('--row-root')+1]);output=Path(args[args.index('--output')+1])
             assert origin.parent==tmp_path/'old-run'
             assert output.parent.parent==Path(spec['execution']['remote_run_root'])
@@ -357,12 +358,14 @@ def test_publisher_cpu_reuse_never_queries_or_waits_for_gpu(monkeypatch):
     assert len(calls)==2
 
 
-def test_mvkme_release_includes_exporter_and_requires_reused_baseline(tmp_path):
+@pytest.mark.parametrize('candidate_index',[3,4])
+def test_multiview_release_includes_exporter_and_requires_reused_baseline(tmp_path,candidate_index):
     from publish_d92_confirmation import release_tool_paths
     path,spec=specification(tmp_path)
-    spec['confirmation'].update(dict(zip(runner.CANDIDATE_FIELDS,runner.CANDIDATES[3])))
+    spec['confirmation'].update(dict(zip(runner.CANDIDATE_FIELDS,runner.CANDIDATES[candidate_index])))
     save(path,spec)
     assert 'tools/export_d92_mv_kme_features.py' in release_tool_paths(spec['confirmation'])
+    assert 'tools/'+runner.feature_definition(spec['confirmation'])[0] in release_tool_paths(spec['confirmation'])
     with pytest.raises(ValueError,match='reused baseline'):
         runner.run(path,'synthetic-commit')
     assert not Path(spec['execution']['remote_run_root']).exists()
