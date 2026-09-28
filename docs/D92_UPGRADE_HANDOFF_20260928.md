@@ -1,5 +1,13 @@
 # D92优化当前交接
 
+## 最新状态：BranchRidge完整重复基准通过，下一步独立数据确认
+
+两run `20260929-phase2-d92-branch-ridge-repeat-rx3-m4-r01`和rx1同名均SCORED/ANALYZED，全部进程退出；终态/下载证据rx3 `readback_1790622737.json`及两组`readback_1790622753.json`。runtime commit仍`01e93386736f1919ee3f009fb1b16fb04f9a463d`。完整9648混淆记录、4800单次fullsupport fits、原D92/DG全记录一致性及4560汇总数值已VERIFIED。最终归档已执行`--write`，不得重跑同输出；两张图已目视检查。
+
+联合任务Δ旧/新/H（百分点）：K1 +4.887/+5.418/+6.124；K5 +13.523/+6.839/+9.375；K10 +9.315/+6.103/+7.368；K20 +6.279/+6.501/+6.580。每K的四模型seed旧/新/H均提高，全部old guard通过；16个K×新增规模三指标均值均正；48个RX×scene×K的H全部正，旧/新分别47/48正，两个K1弱城市分层退化完整保留。已达到进入独立确认的预登记条件，不能称新独立数据泛化通过。主报告在rx3 `results/combined_rx4/report.md`，两run `results/artifacts.json`，统一fit审计在rx3 `results/fit_audit.json`。新增source0B，头35376至153296B；累计fit调用23.584s、提取551.847s，joint wall473.063s，非卫星耗时。
+
+正在核查独立数据。confirmation_runner仅读既有inventory/元数据，负责`docs/D92_INDEPENDENT_DATA_AVAILABILITY_20260929.md`，尚未交付；仍不读任何query成绩。现有未使用RX1-20/13-7缺TX、18-19最少14条，无法覆盖26TX/K20；四本轮RX最稀缺类余2/4条。已向用户询问新独立数据存放路径；未到位则先冻结版本并交付采集规范。不得重新调参、选择性重跑、复用旧ID伪称新数据。无运行实验；goal ACTIVE，独立验证尚未完成。以下RUNNING文字均为历史。
+
 ## 最新实时状态：BranchRidge两cohort RUNNING，禁止重复启动
 
 实际release commit `01e93386736f1919ee3f009fb1b16fb04f9a463d`，已push并独立OID匹配。rx3 supervisor PID2590470、首export PID2590897；rx1 supervisor PID2591155、首export PID2591167；两组`readback_1790622276.json`确认live、argv/CWD及日志增长。后续`readback_1790622356.json`：rx3首模型export已完整15444条并PASS synthetic smoke，正切换第二模型；rx1两个模型export已完成、第三模型PID2592058正在导出。未读任何本轮scores。nvidia只读查询核实所属export在GPU0、约482MiB；其余GPU训练未动。

@@ -3,7 +3,7 @@
 - run_id：`20260929-phase2-d92-branch-ridge-repeat-rx1-m4-r01`
 - group_id：`d92-fixed-phase1-branch-ridge-repeated-benchmark`；类别：`cvs`；阶段：`Phase2-repeated-benchmark`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -33,3 +33,29 @@ PLANNED: single support-justified BranchRidge-v1, full benchmark reuse. Exact or
 Implementation ready: 40 core/probe, 23 exporter/entry, 61 orchestration and 24 summary tests passed. Native synthetic no-query smoke is built into export before any received forward; singleton inference, immutable state and truth-last barrier preserved. No experiment launched yet.
 
 RUNNING VERIFIED readback_1790622276.json and readback_1790622356.json: live owned supervisor, matching export argv/CWD and growing logs. Actual runtime commit 01e93386736f1919ee3f009fb1b16fb04f9a463d. Successful native synthetic smoke recorded separately from received forward counts. Do not repeat launch; no new scores read.
+
+
+<!-- BRANCH_RIDGE_FINAL_ANALYSIS_20260929 -->
+
+## 最终结果、核验与成本
+
+当前 SCORED / ANALYZED，证据 VERIFIED；原文保留运行历史。release commit：01e93386736f1919ee3f009fb1b16fb04f9a463d。完整 2412 条评分，原始 D92/DG 逐记录保持一致。
+
+四个 K 中，联合旧类、新类、H 分别有 4、4、4 个提升；全部任务旧类保护条件有 4 个通过。预登记重复基准条件通过。本归档不自动判定晋级，独立泛化与整体目标完成尚未确认。
+
+下表为候选减 D92，单位百分点；前三列仅新类存在任务，末列含 old-only。
+
+| K | Δ旧类（联合） | Δ新类 | ΔH | Δ旧类（全部任务） |
+|---|---:|---:|---:|---:|
+| 1 | +3.319 | +8.443 | +8.375 | +3.272 |
+| 5 | +16.799 | +6.052 | +9.760 | +15.878 |
+| 10 | +12.053 | +7.001 | +8.960 | +11.419 |
+| 20 | +9.086 | +7.682 | +8.293 | +8.515 |
+
+共 1200 次全 support 解析拟合，含 300 次 K1；每任务一次分解，所有 K 均无运行时 OOF、网格或选参。拟合调用累计 6.596 s，query 打分累计 11.914 s，提取累计 146.636 s；本 cohort 墙钟 171.208 s，累计进程时间不等于墙钟。 received forward 18720 次，合成 smoke 4 次分列。数值头为 W[736,C]+b[C]，5896C B，C=6 至 26 对应 35376 至 153296 B，不含 Python/registry/audit 开销。最大记录梯度残差 5.54e-13；没有优化器更新，不作迭代收敛声明。新增 source payload 与 ground statistics 均为 0；模型文件是已有完整训练 checkpoint 包，不是最小推理包，部署状态和增量模型传输未知。RSS 为单进程高水位，不能相加冒充并发峰值；所有实测分量和字节见产物索引。
+
+验收采用完整四 RX 等单元权重，不能以本 cohort 替代联合结论。本轮为已评分数据透明重复基准，开发使用授权 support 诊断；没有新的独立泛化证据。结果不回流选参或选择性重跑。
+
+见[产物索引](results/artifacts.json)、[本 cohort 汇总](results/summary/report.md)。
+
+ANALYZED VERIFIED: all K and all four model seeds improve old/new/H; complete full-matrix audits and baseline equality passed. Candidate held fixed for independent confirmation. Current repeated benchmark does not establish new independent generalization. Full artifacts and limitations retained.
