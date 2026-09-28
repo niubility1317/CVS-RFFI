@@ -24,12 +24,20 @@ for p in [release/'run.log',root/'run.log']+list(root.glob('*.log'))+list(root.g
  if p.exists():result[str(p)]={'bytes':p.stat().st_size,'tail':p.read_text(errors='replace').splitlines()[-3:]}
 for p in root.glob('*/scv/predictions_complete.json'):
  result[str(p)]=json.loads(p.read_text())
+processes=[]
+for p in root.glob('*/*.log.process.json'):
+ d=json.loads(p.read_text());proc=Path('/proc')/str(d['pid'])
+ if (proc/'cmdline').exists():
+  d['live_argv']=(proc/'cmdline').read_bytes().decode().split('\0')[:-1]
+  d['live_cwd']=str((proc/'cwd').resolve()) if (proc/'cwd').exists() else None
+  d['record']=str(p);processes.append(d)
+result['live_children']=processes
 print(json.dumps(result))
 '''
 
 
 def main():
-    p=argparse.ArgumentParser();p.add_argument('--spec',type=Path,required=True);p.add_argument('--download',nargs='*',default=[])
+    p=argparse.ArgumentParser();p.add_argument('--spec',type=Path,required=True);p.add_argument('--download',nargs='*',default=[]);p.add_argument('--compact',action='store_true')
     a=p.parse_args();spec=json.loads(a.spec.read_text(encoding='utf-8'))
     script=REMOTE.replace('ROOT',repr(spec['execution']['remote_run_root'])).replace('RELEASE',repr(spec['code']['cwd']))
     result=subprocess.run(['ssh',*FLAGS,'-T','N607','python3 -'],input=script.encode(),capture_output=True,check=True)
@@ -41,7 +49,14 @@ def main():
         local=folder/'results'/name;local.parent.mkdir(parents=True,exist_ok=True)
         if local.exists():raise FileExistsError(local)
         subprocess.run(['scp',*FLAGS,'N607:'+spec['execution']['remote_run_root']+'/'+name,str(local)],check=True)
-    print(json.dumps(data,ensure_ascii=False,indent=2));print(path)
+    if a.compact:
+        compact=dict(workflow=data.get('workflow_state.json'),complete=data.get('complete.json'),
+            supervisor_live=bool(data.get('startup.json',{}).get('live_argv')),
+            live_children=[dict(pid=c['pid'],record=c['record'],argv_matches=c['argv']==c['live_argv'],cwd_matches=c['cwd']==c['live_cwd']) for c in data['live_children']],
+            rows=data.get('state.json'),logs={k:v['tail'][-1:] for k,v in data.items() if k.endswith('.log')})
+        print(json.dumps(compact,ensure_ascii=False,indent=2))
+    else:print(json.dumps(data,ensure_ascii=False,indent=2))
+    print(path)
 
 
 if __name__=='__main__':main()
