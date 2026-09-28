@@ -45,3 +45,9 @@ VERIFIED：release `cvs_d92_matched_20260927_r01`来自已push并独立读回的
 ## 2026-09-28完成核查
 
 PARTIAL_TECHNICAL_FAILURE。详见docs/CVS_RESULTS_STATUS_20260928.md及evidence/completion_status_20260928.json。五个Phase1完成200轮；D92三组完成预测、两组发生LDA部署系数一致性错误，未评分。
+
+## Phase1独立评分修复（2026-09-28）
+
+用户授权“phase 1的目标测试结果呢，修复问题”“继续完成”。在本次既有登记内完成已冻结的Phase1评分，不改变训练权重、seed、预测或数据。五row的final_eval均已完成168000条，旧dispatcher与五worker已退出。评分只依赖全部Phase1预测完成及其ID、类型、形状和类别范围校验；校验通过后才读final_truth。Phase2失败仍保留且不评分部分矩阵。
+
+启动入口tools/publish_cvs_phase1_score_repair.py；发布cvs_phase1_score_repair_20260928_r01，CPU独立评分，launch owner为codex/root/phase1-score-repair。沿用experiment.json的全部路径与seed。输出原run/phase1_final_results.json，独占创建；启动参数与commit记录在phase1_score_repair_startup.json，日志phase1_score_repair.log。本地回归覆盖Phase2失败不阻断完整Phase1、Phase1未完成/ID错误时禁止读取truth、正确accuracy及已有结果禁止覆盖。

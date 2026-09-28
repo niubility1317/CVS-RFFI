@@ -67,20 +67,27 @@ def worker(spec,row):
 def final_score(spec):
     import numpy as np
     root=Path(spec['execution']['remote_run_root'])
-    state=read(root/'state.json')
-    if any(s['status']!='PREDICTIONS_COMPLETE' for s in state.values()):
-        raise ValueError('Predictions are incomplete')
+    # Phase1 has its own frozen predictions; a Phase2 failure cannot invalidate them.
     for row in spec['rows']:
         if read(Path(row['output_root'])/'final_eval/predictions_complete.json')['status']!='PREDICTIONS_COMPLETE':
             raise ValueError('Final predictions are incomplete')
     capsule=Path(spec['final_capsule'])
     manifest=read(capsule/'manifest.json');index=np.load(capsule/'index.npz',allow_pickle=False)
-    truth=read(spec['final_truth']);ids=index['ids'].tolist()
-    y=np.asarray([truth[s]['label'] for s in ids]);rx=np.asarray([str(truth[s]['receiver']) for s in ids])
-    results=[];classes=len(manifest['classes'])
+    ids=index['ids'].tolist();classes=len(manifest['classes'])
+    predictions=[]
     for row in spec['rows']:
-        pred=np.load(Path(row['output_root'])/'final_eval/predictions.npz',allow_pickle=False)
-        if not np.array_equal(pred['ids'],index['ids']):raise ValueError('Prediction identity mismatch')
+        with np.load(Path(row['output_root'])/'final_eval/predictions.npz',allow_pickle=False) as pred:
+            if not np.array_equal(pred['ids'],index['ids']):raise ValueError('Prediction identity mismatch')
+            views={key:pred[key].copy() for key in ['clean','satellite']}
+        for values in views.values():
+            if values.shape!=(len(ids),) or values.dtype.kind not in 'iu' or values.min()<0 or values.max()>=classes:
+                raise ValueError('Invalid predictions')
+        predictions.append(views)
+    # Open truth only after every Phase1 prediction has passed identity/shape checks.
+    truth=read(spec['final_truth'])
+    y=np.asarray([truth[s]['label'] for s in ids]);rx=np.asarray([str(truth[s]['receiver']) for s in ids])
+    results=[]
+    for row,pred in zip(spec['rows'],predictions):
         for view in ['clean']+manifest['scenes']:
             mask=np.ones(len(ids),dtype=bool) if view=='clean' else index['scenes']==manifest['scenes'].index(view)
             p=pred['clean' if view=='clean' else 'satellite']
@@ -127,10 +134,10 @@ def main():
                     del jobs[rowid]
                     write(root/'state.json',state)
             if jobs:time.sleep(30)
+        final_score(spec)
         if any(s['status']!='PREDICTIONS_COMPLETE' for s in state.values()):
-            raise RuntimeError('At least one row failed; do not score partial matrix')
-        for label,cmd in [('phase1_score',[sys.executable,str(Path(__file__).resolve()),'final-score','--spec',str(a.spec.resolve())]),
-                          ('phase2_score',[sys.executable,spec['phase2_scorer'],'--run-root',str(root),'--truth',spec['phase2_truth']])]:
+            raise RuntimeError('Phase1 scored; at least one Phase2 row failed; do not score partial Phase2 matrix')
+        for label,cmd in [('phase2_score',[sys.executable,spec['phase2_scorer'],'--run-root',str(root),'--truth',spec['phase2_truth']])]:
             with (root/(label+'.log')).open('x') as log:
                 subprocess.run(cmd,cwd=ROOT,stdout=log,stderr=subprocess.STDOUT,check=True)
         write(root/'completion.json',dict(status='SCORED',commit=a.commit,rows=len(state)))
