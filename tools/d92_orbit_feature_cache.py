@@ -35,8 +35,11 @@ def load_features(*, orbit_features, capsule, row_root, expected_capsule_id,
     provenance = read(root / 'checkpoint_provenance.json')
     extraction = read(root / 'startup.json')
     previous, origin = validate_origin(row_root, capsule, expected_checkpoint_sha256)
+    # Native provenance has no SHA field: validate_origin binds its paired D92
+    # startup SHA. Reject a contradictory SHA when an extended origin has one;
+    # the BNNA marker, provenance, startup and NPZ still require exact SHA.
     if (not _strings(origin.get('classes'))
-            or origin.get('checkpoint_sha256') != expected_checkpoint_sha256
+            or ('checkpoint_sha256' in origin and origin['checkpoint_sha256'] != expected_checkpoint_sha256)
             or marker.get('status') != 'BNNA_FEATURES_COMPLETE' or marker.get('schema') != CACHE_SCHEMA
             or marker.get('capsule_id') != expected_capsule_id or marker.get('checkpoint_sha256') != expected_checkpoint_sha256
             or marker.get('algorithm') != producer['algorithm'] or marker.get('classes') != origin['classes']

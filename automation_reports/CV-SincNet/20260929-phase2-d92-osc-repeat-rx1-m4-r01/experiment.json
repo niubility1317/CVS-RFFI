@@ -30,7 +30,8 @@
     "base_recipe": "experiments/adv3b02_xuc/configs/rc4_practical_residual_noeq_20260918.json",
     "native_code_base": "b63734157",
     "native_training_commit": "9b1ddd939fcabc74c77c94a62fef8e5aad07c0e9",
-    "commit_note": "Preparation parent commit; publisher records exact pushed release HEAD in launch/startup. Frozen algorithm config is unchanged."
+    "commit_note": "Preparation parent commit; publisher records exact pushed release HEAD in launch/startup. Frozen algorithm config is unchanged.",
+    "release_commit": "7800bd72b154f6c8ded9ccbdac45bfa2cd5a5195"
   },
   "data": {
     "dataset": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-data-manytx-r01/capsule/received.npz",
@@ -147,7 +148,15 @@
     "launch_command": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe -X utf8 tools/publish_d92_confirmation.py --spec configs/d92_osc_repeat_rx1_20260929.json --release d92_osc_repeat_rx1_20260929_r01",
     "stop_rule": "Technical contract/process failure fails only affected lane; preserve artifacts, no automatic retry. Healthy lanes and the other preregistered cohort continue; never stop for low performance. Do not score a partial run.",
     "cpu_lanes": 4,
-    "blas_threads_per_lane": 2
+    "blas_threads_per_lane": 2,
+    "pid": 2528881,
+    "runtime_command": [
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_osc_repeat_rx1_20260929_r01/tools/run_d92_confirmation.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_osc_repeat_rx1_20260929_r01/configs/d92_osc_repeat_rx1_20260929.json",
+      "--commit",
+      "7800bd72b154f6c8ded9ccbdac45bfa2cd5a5195"
+    ]
   },
   "expected_artifacts": [
     "startup.json",
@@ -597,5 +606,5 @@
     "partial_policy": "Preserve/report technical failures; no comprehensive acceptance claim from a partial matrix"
   },
   "registered_at": "2026-09-28T17:22:06+00:00",
-  "status": "PLANNED"
+  "status": "FAILED"
 }

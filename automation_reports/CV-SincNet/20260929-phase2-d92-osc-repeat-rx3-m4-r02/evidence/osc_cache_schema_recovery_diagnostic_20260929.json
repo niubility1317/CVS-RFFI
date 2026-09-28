@@ -1,0 +1,212 @@
+{
+  "status": "VERIFIED",
+  "utc": "2026-09-28T17:29:10.290369+00:00",
+  "user": "szu2070436088",
+  "host": "dell-DSS8440",
+  "rows": [
+    {
+      "cohort": "rx3",
+      "row_id": "cvs-daot-rc4-s2026092701",
+      "feature_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-bnna-repeat-rx3-m4-r01/cvs-daot-rc4-s2026092701/bnna_features",
+      "baseline_row_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092701",
+      "capsule": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule",
+      "capsule_id": "residual-noeq-76121e6f34363fa612ec25fb",
+      "checkpoint_sha256": "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b",
+      "model_seed": 2026092701,
+      "physical_observations": 15444,
+      "identity_shape": [
+        15444,
+        4,
+        160
+      ],
+      "fft_shape": [
+        15444,
+        96
+      ],
+      "array_bytes": 45467136,
+      "feature_file_bytes": 46958108,
+      "all_binding_checks": "VERIFIED"
+    },
+    {
+      "cohort": "rx3",
+      "row_id": "cvs-daot-rc4-s2026092702",
+      "feature_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-bnna-repeat-rx3-m4-r01/cvs-daot-rc4-s2026092702/bnna_features",
+      "baseline_row_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092702",
+      "capsule": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule",
+      "capsule_id": "residual-noeq-76121e6f34363fa612ec25fb",
+      "checkpoint_sha256": "72f26413e495dcf82317898f8729caa3d35499bf0b41e9671ffdceab2c90924b",
+      "model_seed": 2026092702,
+      "physical_observations": 15444,
+      "identity_shape": [
+        15444,
+        4,
+        160
+      ],
+      "fft_shape": [
+        15444,
+        96
+      ],
+      "array_bytes": 45467136,
+      "feature_file_bytes": 46958108,
+      "all_binding_checks": "VERIFIED"
+    },
+    {
+      "cohort": "rx3",
+      "row_id": "cvs-daot-rc4-s2026092703",
+      "feature_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-bnna-repeat-rx3-m4-r01/cvs-daot-rc4-s2026092703/bnna_features",
+      "baseline_row_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092703",
+      "capsule": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule",
+      "capsule_id": "residual-noeq-76121e6f34363fa612ec25fb",
+      "checkpoint_sha256": "51fadc3b4ad3cbf83de01700a4a109430e7a57b1e10cb147f0be5f01593f26bb",
+      "model_seed": 2026092703,
+      "physical_observations": 15444,
+      "identity_shape": [
+        15444,
+        4,
+        160
+      ],
+      "fft_shape": [
+        15444,
+        96
+      ],
+      "array_bytes": 45467136,
+      "feature_file_bytes": 46958108,
+      "all_binding_checks": "VERIFIED"
+    },
+    {
+      "cohort": "rx3",
+      "row_id": "cvs-daot-rc4-s2026092704",
+      "feature_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-bnna-repeat-rx3-m4-r01/cvs-daot-rc4-s2026092704/bnna_features",
+      "baseline_row_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092704",
+      "capsule": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule",
+      "capsule_id": "residual-noeq-76121e6f34363fa612ec25fb",
+      "checkpoint_sha256": "690fed6ea2a6532d0ad978c93306f0f35b61f4a3a3fc4b1d6494f0e7547c74bb",
+      "model_seed": 2026092704,
+      "physical_observations": 15444,
+      "identity_shape": [
+        15444,
+        4,
+        160
+      ],
+      "fft_shape": [
+        15444,
+        96
+      ],
+      "array_bytes": 45467136,
+      "feature_file_bytes": 46958108,
+      "all_binding_checks": "VERIFIED"
+    },
+    {
+      "cohort": "rx1",
+      "row_id": "cvs-daot-rc4-s2026092701",
+      "feature_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-bnna-repeat-rx1-m4-r01/cvs-daot-rc4-s2026092701/bnna_features",
+      "baseline_row_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092701",
+      "capsule": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-data-manytx-r01/capsule",
+      "capsule_id": "residual-noeq-d0a99fede324159c5a4750fd",
+      "checkpoint_sha256": "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b",
+      "model_seed": 2026092701,
+      "physical_observations": 4680,
+      "identity_shape": [
+        4680,
+        4,
+        160
+      ],
+      "fft_shape": [
+        4680,
+        96
+      ],
+      "array_bytes": 13777920,
+      "feature_file_bytes": 14235548,
+      "all_binding_checks": "VERIFIED"
+    },
+    {
+      "cohort": "rx1",
+      "row_id": "cvs-daot-rc4-s2026092702",
+      "feature_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-bnna-repeat-rx1-m4-r01/cvs-daot-rc4-s2026092702/bnna_features",
+      "baseline_row_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092702",
+      "capsule": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-data-manytx-r01/capsule",
+      "capsule_id": "residual-noeq-d0a99fede324159c5a4750fd",
+      "checkpoint_sha256": "72f26413e495dcf82317898f8729caa3d35499bf0b41e9671ffdceab2c90924b",
+      "model_seed": 2026092702,
+      "physical_observations": 4680,
+      "identity_shape": [
+        4680,
+        4,
+        160
+      ],
+      "fft_shape": [
+        4680,
+        96
+      ],
+      "array_bytes": 13777920,
+      "feature_file_bytes": 14235548,
+      "all_binding_checks": "VERIFIED"
+    },
+    {
+      "cohort": "rx1",
+      "row_id": "cvs-daot-rc4-s2026092703",
+      "feature_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-bnna-repeat-rx1-m4-r01/cvs-daot-rc4-s2026092703/bnna_features",
+      "baseline_row_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092703",
+      "capsule": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-data-manytx-r01/capsule",
+      "capsule_id": "residual-noeq-d0a99fede324159c5a4750fd",
+      "checkpoint_sha256": "51fadc3b4ad3cbf83de01700a4a109430e7a57b1e10cb147f0be5f01593f26bb",
+      "model_seed": 2026092703,
+      "physical_observations": 4680,
+      "identity_shape": [
+        4680,
+        4,
+        160
+      ],
+      "fft_shape": [
+        4680,
+        96
+      ],
+      "array_bytes": 13777920,
+      "feature_file_bytes": 14235548,
+      "all_binding_checks": "VERIFIED"
+    },
+    {
+      "cohort": "rx1",
+      "row_id": "cvs-daot-rc4-s2026092704",
+      "feature_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-bnna-repeat-rx1-m4-r01/cvs-daot-rc4-s2026092704/bnna_features",
+      "baseline_row_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092704",
+      "capsule": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-data-manytx-r01/capsule",
+      "capsule_id": "residual-noeq-d0a99fede324159c5a4750fd",
+      "checkpoint_sha256": "690fed6ea2a6532d0ad978c93306f0f35b61f4a3a3fc4b1d6494f0e7547c74bb",
+      "model_seed": 2026092704,
+      "physical_observations": 4680,
+      "identity_shape": [
+        4680,
+        4,
+        160
+      ],
+      "fft_shape": [
+        4680,
+        96
+      ],
+      "array_bytes": 13777920,
+      "feature_file_bytes": 14235548,
+      "all_binding_checks": "VERIFIED"
+    }
+  ],
+  "cache_members_read": [
+    "algorithm_json",
+    "capsule_id",
+    "checkpoint_sha256",
+    "fft",
+    "identity_views",
+    "ids"
+  ],
+  "iq_read": false,
+  "truth_read": false,
+  "scores_read": false,
+  "method_fit": false,
+  "method_score": false,
+  "remote_mutation": false,
+  "root_cause": "Legacy native checkpoint_provenance has no checkpoint_sha256; SHA is bound by paired D92 startup. All eight other original metadata predicates matched.",
+  "startup_final_provenance_equal_all_eight": true,
+  "corrected_condition": "Check optional native origin SHA if present; retain mandatory baseline startup and BNNA marker/provenance/startup/NPZ SHA checks",
+  "local_regression_tests": 90,
+  "formula_changed": false,
+  "raw_metadata_readback": "osc_cache_metadata_readback_20260929.json"
+}

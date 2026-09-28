@@ -1,0 +1,24 @@
+{
+  "status": "VERIFIED",
+  "user": "szu2070436088",
+  "host": "dell-DSS8440",
+  "load": [
+    5.09375,
+    5.20556640625,
+    6.5947265625
+  ],
+  "cpu_count": 96,
+  "disk_free": 7131828641792,
+  "gpu": "0, 1, 24576, 0\n1, 1, 24576, 0\n2, 1, 24576, 0\n3, 3442, 24576, 42\n4, 3452, 24576, 59\n5, 3452, 24576, 1\n6, 3452, 24576, 99\n7, 3452, 24576, 41\n",
+  "processes": "1946780, /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python, 3432\n1946781, /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python, 3442\n1946782, /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python, 3442\n1946783, /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python, 3442\n1946784, /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python, 3442\n",
+  "absent_paths": [
+    "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_osc_repeat_rx3_20260929_r02",
+    "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_osc_repeat_rx3_20260929_r02.tar",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-osc-repeat-rx3-m4-r02",
+    "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_osc_repeat_rx1_20260929_r02",
+    "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_osc_repeat_rx1_20260929_r02.tar",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-osc-repeat-rx1-m4-r02"
+  ],
+  "source_samples_read": false,
+  "query_read": false
+}

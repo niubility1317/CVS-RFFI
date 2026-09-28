@@ -1,5 +1,11 @@
 # D92优化当前交接
 
+## 当前状态：OSC r01技术失败，r02已预登记，等待缓存校验修复
+
+已定位唯一问题：旧native `received_features/checkpoint_provenance.json`不含SHA；对应`d92_startup.json`和BNNA三份metadata均精确绑定预期SHA。最小兼容修复为旧origin显式有SHA时仍强制匹配，缺字段时由既有startup及producer/cache强绑定；科学来源/role/污染检查不变。90项相关合成测试通过，包含真实旧schema和错误SHA拒绝。8cache只读绑定检查进行中；r02尚未发布。
+
+发布commit`7800bd72b154f6c8ded9ccbdac45bfa2cd5a5195`已push/OID VERIFIED。两r01均在缓存provenance校验阶段TECHNICAL_FAILURE，读回`readback_1790616335.json`确认全部worker/supervisor退出、无任何fit或score；已登记FAILED并保留产物。禁止重发r01。review agent正以获准缓存metadata定位字段不匹配，公式保持冻结；startup/final provenance不一致的初始假设已被8个cache证伪。两恢复run `20260929-phase2-d92-osc-repeat-rx3-m4-r02`和rx1同名已PLANNED，spec为`configs/d92_osc_repeat_rx3_recovery_20260929.json`及rx1，资源/路径证据`osc_recovery_preflight_20260929.json`。尚未launch r02。无用户许可缺口，继续技术修复→回归验证→commit/push→唯一root发布→读回。
+
 ## 当前状态：OSC实现和预登记完成，尚未发布
 
 2026-09-29：OSC核心/入口/缓存校验及编排已实现，相关合成测试通过；两run `20260929-phase2-d92-osc-repeat-rx3-m4-r01`、`20260929-phase2-d92-osc-repeat-rx1-m4-r01`已PLANNED、launch-ready字段VALID。只读资源/路径核实见`local_artifacts/d92_upgrade_20260928/osc_preflight_20260929.json`。只复用BNNA的固定编码器四视图缓存，不复用其适应状态或成绩；CPU四model lanes×2BLAS，无checkpoint加载/GPU提取/source读取。唯一launch owner root。独立P0/P1审查完成后镜像、commit/push/OID再发布；禁止从旧记录推断已启动。

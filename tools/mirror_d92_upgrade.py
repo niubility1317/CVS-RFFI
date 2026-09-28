@@ -55,6 +55,9 @@ paths += ['code/cvsrffi/stage2_d92_orbit_shared.py','configs/d92_orbit_shared_fr
     'configs/d92_osc_repeat_rx3_20260929.json','configs/d92_osc_repeat_rx1_20260929.json',
     'configs/d92_osc_repeat_rx3_data_20260929.json','configs/d92_osc_repeat_rx1_data_20260929.json',
     'docs/D92_OSC_P0_REVIEW_20260929.md']
+paths += ['tools/prepare_d92_osc_recovery.py',
+    'configs/d92_osc_repeat_rx3_recovery_20260929.json','configs/d92_osc_repeat_rx1_recovery_20260929.json',
+    'configs/d92_osc_repeat_rx3_recovery_data_20260929.json','configs/d92_osc_repeat_rx1_recovery_data_20260929.json']
 for name in paths:
     src=ROOT/name;dst=WS/name;dst.parent.mkdir(parents=True,exist_ok=True)
     # Each name is unique to this task; original D92 and shared wrappers are not mirrored.

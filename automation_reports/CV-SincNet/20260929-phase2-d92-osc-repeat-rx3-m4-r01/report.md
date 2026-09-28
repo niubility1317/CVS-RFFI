@@ -3,7 +3,7 @@
 - run_id：`20260929-phase2-d92-osc-repeat-rx3-m4-r01`
 - group_id：`d92-fixed-phase1-osc-repeated-benchmark`；类别：`cvs`；阶段：`Phase2-repeated-benchmark`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：FAILED（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -31,3 +31,5 @@
 OSC fixed formula preregistered; CPU frozen feature reuse; no experiment started. Resource/path preflight VERIFIED. Root sole launch owner.
 
 Independent OSC P0/P1 review found no blockers; 55 audit tests passed. Ready for pushed fixed release; no target scores read.
+
+FAILED VERIFIED by readback_1790616335.json: all four workers and supervisor exited before first fit; cache metadata validation error, no scores. Preserve r01; separately preregister fixed-formula r02 recovery.

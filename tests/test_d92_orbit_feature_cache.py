@@ -88,6 +88,27 @@ def test_consumer_formula_mismatch_is_rejected(tmp_path, monkeypatch):
     with pytest.raises(ValueError, match='feature formula'): mod.load_features(**args)
 
 
+@pytest.mark.parametrize('fault', [None, 'baseline_sha', 'explicit_origin_sha'])
+def test_native_origin_schema_binds_sha_in_baseline_startup(tmp_path, monkeypatch, fault):
+    # The real native producer omits SHA from checkpoint_provenance.json; its
+    # paired D92 startup binds the checkpoint SHA. BNNA provenance includes SHA.
+    args = inputs(tmp_path, monkeypatch)
+    path = args['row_root']/'received_features/checkpoint_provenance.json'
+    origin = mod.read(path); origin.pop('checkpoint_sha256', None)
+    if fault == 'explicit_origin_sha': origin['checkpoint_sha256'] = 'b'*64
+    dump(path, origin)
+    if fault == 'baseline_sha':
+        startup_path = args['row_root']/'d92_startup.json'
+        startup = mod.read(startup_path); startup['checkpoint_sha256'] = 'b'*64
+        dump(startup_path, startup)
+    if fault:
+        with pytest.raises(ValueError): mod.load_features(**args)
+    else:
+        identity, fft, ids, marker, previous = mod.load_features(**args)
+        assert identity.shape == (7, 4, 160) and fft.shape == (7, 96)
+        assert previous['checkpoint_sha256'] == marker['checkpoint_sha256'] == args['expected_checkpoint_sha256']
+
+
 def test_runtime_import_has_no_previous_adaptation_or_torch_dependency():
     code = "import sys; sys.path[:0]=['tools','code']; import predict_d92_orbit_shared; assert 'torch' not in sys.modules; assert not any('stage2_d92_bnna' in k or 'predict_d92_bnna' in k for k in sys.modules)"
     subprocess.run([sys.executable, '-X', 'utf8', '-c', code], cwd=ROOT, check=True, capture_output=True, text=True)

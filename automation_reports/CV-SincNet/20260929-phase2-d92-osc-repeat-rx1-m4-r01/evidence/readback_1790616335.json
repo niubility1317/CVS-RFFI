@@ -1,0 +1,130 @@
+{
+  "startup.json": {
+    "pid": 2528881,
+    "argv": [
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_osc_repeat_rx1_20260929_r01/tools/run_d92_confirmation.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_osc_repeat_rx1_20260929_r01/configs/d92_osc_repeat_rx1_20260929.json",
+      "--commit",
+      "7800bd72b154f6c8ded9ccbdac45bfa2cd5a5195"
+    ],
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_osc_repeat_rx1_20260929_r01",
+    "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "commit": "7800bd72b154f6c8ded9ccbdac45bfa2cd5a5195",
+    "launch_owner": "codex/root/d92-upgrade-20260928",
+    "environment": {
+      "CUDA_VISIBLE_DEVICES": "",
+      "OMP_NUM_THREADS": "2",
+      "MKL_NUM_THREADS": "2",
+      "OPENBLAS_NUM_THREADS": "2",
+      "NUMEXPR_NUM_THREADS": null
+    },
+    "worker_policy": {
+      "feature_gpu": null,
+      "max_feature_workers": 0,
+      "cpu_row_workers": 4,
+      "blas_threads": 2,
+      "reuse_frozen_rows": true
+    },
+    "timestamp": 1790616265.3031583,
+    "live_argv": null,
+    "live_cwd": null
+  },
+  "state.json": {
+    "cvs-daot-rc4-s2026092701": {
+      "status": "TECHNICAL_FAILURE",
+      "updated": 1790616269.5965333,
+      "checkpoint_sha256": "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b",
+      "reuse_row_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092701",
+      "error": "predict_d92_orbit_shared.py failed with exit code 1; preserved /home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-osc-repeat-rx1-m4-r01/cvs-daot-rc4-s2026092701/osc.log; no automatic retry"
+    },
+    "cvs-daot-rc4-s2026092702": {
+      "status": "TECHNICAL_FAILURE",
+      "updated": 1790616269.5970027,
+      "checkpoint_sha256": "72f26413e495dcf82317898f8729caa3d35499bf0b41e9671ffdceab2c90924b",
+      "reuse_row_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092702",
+      "error": "predict_d92_orbit_shared.py failed with exit code 1; preserved /home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-osc-repeat-rx1-m4-r01/cvs-daot-rc4-s2026092702/osc.log; no automatic retry"
+    },
+    "cvs-daot-rc4-s2026092703": {
+      "status": "TECHNICAL_FAILURE",
+      "updated": 1790616269.5991998,
+      "checkpoint_sha256": "51fadc3b4ad3cbf83de01700a4a109430e7a57b1e10cb147f0be5f01593f26bb",
+      "reuse_row_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092703",
+      "error": "predict_d92_orbit_shared.py failed with exit code 1; preserved /home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-osc-repeat-rx1-m4-r01/cvs-daot-rc4-s2026092703/osc.log; no automatic retry"
+    },
+    "cvs-daot-rc4-s2026092704": {
+      "status": "TECHNICAL_FAILURE",
+      "updated": 1790616269.599551,
+      "checkpoint_sha256": "690fed6ea2a6532d0ad978c93306f0f35b61f4a3a3fc4b1d6494f0e7547c74bb",
+      "reuse_row_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092704",
+      "error": "predict_d92_orbit_shared.py failed with exit code 1; preserved /home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-osc-repeat-rx1-m4-r01/cvs-daot-rc4-s2026092704/osc.log; no automatic retry"
+    }
+  },
+  "workflow_state.json": {
+    "status": "TECHNICAL_FAILURE",
+    "error": "predict_d92_orbit_shared.py failed with exit code 1; preserved /home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-osc-repeat-rx1-m4-r01/cvs-daot-rc4-s2026092701/osc.log; no automatic retry; predict_d92_orbit_shared.py failed with exit code 1; preserved /home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-osc-repeat-rx1-m4-r01/cvs-daot-rc4-s2026092702/osc.log; no automatic retry; predict_d92_orbit_shared.py failed with exit code 1; preserved /home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-osc-repeat-rx1-m4-r01/cvs-daot-rc4-s2026092703/osc.log; no automatic retry; predict_d92_orbit_shared.py failed with exit code 1; preserved /home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-osc-repeat-rx1-m4-r01/cvs-daot-rc4-s2026092704/osc.log; no automatic retry",
+    "retry_policy": "none; preserve all artifacts",
+    "updated": 1790616269.5999997
+  },
+  "launch.json": {
+    "pid": 2528881,
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_osc_repeat_rx1_20260929_r01/tools/run_d92_confirmation.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_osc_repeat_rx1_20260929_r01/configs/d92_osc_repeat_rx1_20260929.json",
+      "--commit",
+      "7800bd72b154f6c8ded9ccbdac45bfa2cd5a5195"
+    ],
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_osc_repeat_rx1_20260929_r01",
+    "commit": "7800bd72b154f6c8ded9ccbdac45bfa2cd5a5195",
+    "run": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-osc-repeat-rx1-m4-r01",
+    "data_run": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-data-manytx-r01",
+    "owner": "codex/root/d92-upgrade-20260928",
+    "live_argv": null,
+    "live_cwd": null
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_osc_repeat_rx1_20260929_r01/run.log": {
+    "bytes": 1383,
+    "tail": [
+      "  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/d92_osc_repeat_rx1_20260929_r01/tools/run_d92_confirmation.py\", line 403, in run",
+      "    raise RuntimeError('; '.join(errors))",
+      "RuntimeError: predict_d92_orbit_shared.py failed with exit code 1; preserved /home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-osc-repeat-rx1-m4-r01/cvs-daot-rc4-s2026092701/osc.log; no automatic retry; predict_d92_orbit_shared.py failed with exit code 1; preserved /home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-osc-repeat-rx1-m4-r01/cvs-daot-rc4-s2026092702/osc.log; no automatic retry; predict_d92_orbit_shared.py failed with exit code 1; preserved /home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-osc-repeat-rx1-m4-r01/cvs-daot-rc4-s2026092703/osc.log; no automatic retry; predict_d92_orbit_shared.py failed with exit code 1; preserved /home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-osc-repeat-rx1-m4-r01/cvs-daot-rc4-s2026092704/osc.log; no automatic retry"
+    ]
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-osc-repeat-rx1-m4-r01/cvs-daot-rc4-s2026092703/osc.log": {
+    "bytes": 955,
+    "tail": [
+      "  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/d92_osc_repeat_rx1_20260929_r01/tools/d92_orbit_feature_cache.py\", line 58, in load_features",
+      "    raise ValueError('Frozen orbit feature provenance mismatch')",
+      "ValueError: Frozen orbit feature provenance mismatch"
+    ]
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-osc-repeat-rx1-m4-r01/cvs-daot-rc4-s2026092704/osc.log": {
+    "bytes": 955,
+    "tail": [
+      "  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/d92_osc_repeat_rx1_20260929_r01/tools/d92_orbit_feature_cache.py\", line 58, in load_features",
+      "    raise ValueError('Frozen orbit feature provenance mismatch')",
+      "ValueError: Frozen orbit feature provenance mismatch"
+    ]
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-osc-repeat-rx1-m4-r01/cvs-daot-rc4-s2026092701/osc.log": {
+    "bytes": 955,
+    "tail": [
+      "  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/d92_osc_repeat_rx1_20260929_r01/tools/d92_orbit_feature_cache.py\", line 58, in load_features",
+      "    raise ValueError('Frozen orbit feature provenance mismatch')",
+      "ValueError: Frozen orbit feature provenance mismatch"
+    ]
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-osc-repeat-rx1-m4-r01/cvs-daot-rc4-s2026092702/osc.log": {
+    "bytes": 955,
+    "tail": [
+      "  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/d92_osc_repeat_rx1_20260929_r01/tools/d92_orbit_feature_cache.py\", line 58, in load_features",
+      "    raise ValueError('Frozen orbit feature provenance mismatch')",
+      "ValueError: Frozen orbit feature provenance mismatch"
+    ]
+  },
+  "fit_progress": {},
+  "live_children": []
+}

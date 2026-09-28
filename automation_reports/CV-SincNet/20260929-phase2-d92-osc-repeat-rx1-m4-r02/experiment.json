@@ -1,9 +1,9 @@
 {
   "schema": "experiment_record_v1",
-  "run_id": "20260929-phase2-d92-osc-repeat-rx3-m4-r01",
+  "run_id": "20260929-phase2-d92-osc-repeat-rx1-m4-r02",
   "group_id": "d92-fixed-phase1-osc-repeated-benchmark",
-  "display_name": "D92-OSC冻结方法rx3透明重复基准",
-  "description": "固定Phase1及既有received四相位特征；当前任务全部注册类support进行物理medoid循环对齐与共享收缩协方差估计，query逐样本对四种相对相位边缘化；复用原D92预测。",
+  "display_name": "D92-OSC冻结方法rx1透明重复基准",
+  "description": "固定Phase1及既有received四相位特征；当前任务全部注册类support进行物理medoid循环对齐与共享收缩协方差估计，query逐样本对四种相对相位边缘化；复用原D92预测。 Technical recovery of cache metadata binding only; fixed algorithm, data, model and matrix unchanged.",
   "kind": "cvs",
   "stage": "Phase2-repeated-benchmark",
   "aliases": [],
@@ -19,27 +19,26 @@
   "comparison_group_id": "manysig-six-source-rx13468-day123-luv076330-residual-noeq-v1",
   "parent_run_ids": [
     "20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01",
-    "20260928-phase2-d92-scv-confirmation-manytx-m4-r02"
+    "20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01"
   ],
   "authorization": "用户授权先复用数据，待新旧类和各K综合性能明显改善后再新增独立数据验证；允许不读取源域样本的辅助训练。",
   "code": {
-    "commit": "f2b4ccace56bda40658d5c9bfb580cc21f5c85f5",
+    "commit": "7800bd72b154f6c8ded9ccbdac45bfa2cd5a5195",
     "checkout": "E:\\type10-7\\code\\snapshots\\d92_support_upgrade_20260928_wt",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
-    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_osc_repeat_rx3_20260929_r01",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_osc_repeat_rx1_20260929_r02",
     "base_recipe": "experiments/adv3b02_xuc/configs/rc4_practical_residual_noeq_20260918.json",
     "native_code_base": "b63734157",
     "native_training_commit": "9b1ddd939fcabc74c77c94a62fef8e5aad07c0e9",
-    "commit_note": "Preparation parent commit; publisher records exact pushed release HEAD in launch/startup. Frozen algorithm config is unchanged.",
-    "release_commit": "7800bd72b154f6c8ded9ccbdac45bfa2cd5a5195"
+    "commit_note": "Preparation parent commit; publisher records exact pushed release HEAD in launch/startup. Frozen algorithm config is unchanged."
   },
   "data": {
-    "dataset": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule/received.npz",
+    "dataset": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-data-manytx-r01/capsule/received.npz",
     "version": "existing_N607_ManyTx_actual19RX",
     "representation": "Unchanged received full-length IQ; four fixed quarter-phase views through frozen identity160 plus original FFT96; one physical observation remains one support",
-    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule/manifest.json",
-    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule/received.npz#ids",
-    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_osc_repeat_rx3_20260929_r01/configs/d92_osc_repeat_rx3_data_20260929.json#old_classes,new_classes",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-data-manytx-r01/capsule/manifest.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-data-manytx-r01/capsule/received.npz#ids",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_osc_repeat_rx1_20260929_r02/configs/d92_osc_repeat_rx1_recovery_data_20260929.json#old_classes,new_classes",
     "source_receivers": [
       "1-19",
       "18-2",
@@ -48,9 +47,7 @@
       "3-19"
     ],
     "target_receivers": [
-      "19-1",
-      "8-14",
-      "8-7"
+      "20-19"
     ],
     "source_days": [
       1,
@@ -63,17 +60,17 @@
       2,
       3
     ],
-    "tx_sets_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_osc_repeat_rx3_20260929_r01/configs/d92_osc_repeat_rx3_data_20260929.json",
+    "tx_sets_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_osc_repeat_rx1_20260929_r02/configs/d92_osc_repeat_rx1_recovery_data_20260929.json",
     "roles": {
       "L_s": 0.07,
       "U_s": 0.63,
       "V": 0.3
     },
     "train_ratio": 0.1,
-    "capsule_id": "residual-noeq-76121e6f34363fa612ec25fb",
-    "split_id": "Existing 900 immutable split IDs; unchanged from 20260928-phase2-d92-scv-confirmation-manytx-m4-r02",
-    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule/manifest.json",
-    "support_query_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule/splits",
+    "capsule_id": "residual-noeq-d0a99fede324159c5a4750fd",
+    "split_id": "Existing 300 immutable split IDs; unchanged from 20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-data-manytx-r01/capsule/manifest.json",
+    "support_query_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-data-manytx-r01/capsule/splits",
     "leo_config_ref": "experiments/adv3b02_xuc/code/cvsrffi/practical_adapter.py",
     "k": [
       1,
@@ -95,13 +92,13 @@
       2026092714,
       2026092715
     ],
-    "protocol_schema": "p2_min_v1",
-    "phase2_data_status": "VALIDATED_ONCE",
     "scenarios": [
       "practical_high",
       "practical_mid",
       "practical_low_urban"
     ],
+    "protocol_schema": "p2_min_v1",
+    "phase2_data_status": "VALIDATED_ONCE",
     "data_rebuilt": false,
     "data_revalidated": false,
     "target_previously_scored": true,
@@ -137,28 +134,20 @@
     "source_training_contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
     "inheritance_policy": "Exact source-only scratch final200 checkpoint provenance retained in frozen-view cache; BNNA adapter/teacher/head are not loaded",
     "current_auxiliary_training": "Current-row support only, analytical orbit alignment and covariance; no source data or previous fitted state",
-    "feature_cache_producer_run_id": "20260929-phase2-d92-bnna-repeat-rx3-m4-r01",
+    "feature_cache_producer_run_id": "20260929-phase2-d92-bnna-repeat-rx1-m4-r01",
     "feature_cache_producer_role": "Frozen encoder outputs only; not model or adapted-state inheritance"
   },
   "execution": {
     "host": "N607",
     "launch_owner": "codex/root/d92-upgrade-20260928",
     "gpu_policy": "CPU only; four model lanes with two BLAS threads; reuse frozen received features without encoder/checkpoint reload or GPU allocation",
-    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-osc-repeat-rx3-m4-r01",
-    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-osc-repeat-rx3-m4-r01",
-    "local_artifact_root": "automation_reports/CV-SincNet/20260929-phase2-d92-osc-repeat-rx3-m4-r01",
-    "launch_command": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe -X utf8 tools/publish_d92_confirmation.py --spec configs/d92_osc_repeat_rx3_20260929.json --release d92_osc_repeat_rx3_20260929_r01",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-osc-repeat-rx1-m4-r02",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-osc-repeat-rx1-m4-r02",
+    "local_artifact_root": "automation_reports/CV-SincNet/20260929-phase2-d92-osc-repeat-rx1-m4-r02",
+    "launch_command": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe -X utf8 tools/publish_d92_confirmation.py --spec configs/d92_osc_repeat_rx1_recovery_20260929.json --release d92_osc_repeat_rx1_20260929_r02",
     "stop_rule": "Technical contract/process failure fails only affected lane; preserve artifacts, no automatic retry. Healthy lanes and the other preregistered cohort continue; never stop for low performance. Do not score a partial run.",
     "cpu_lanes": 4,
-    "blas_threads_per_lane": 2,
-    "pid": 2528695,
-    "runtime_command": [
-      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_osc_repeat_rx3_20260929_r01/tools/run_d92_confirmation.py",
-      "--spec",
-      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_osc_repeat_rx3_20260929_r01/configs/d92_osc_repeat_rx3_20260929.json",
-      "--commit",
-      "7800bd72b154f6c8ded9ccbdac45bfa2cd5a5195"
-    ]
+    "blas_threads_per_lane": 2
   },
   "expected_artifacts": [
     "startup.json",
@@ -200,7 +189,7 @@
       "support_seed"
     ],
     "prediction_ref": "Original reuse_row_root/predictions.jsonl paired with output_root/osc/predictions.jsonl",
-    "scorer_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_osc_repeat_rx3_20260929_r01/tools/score_d92_confirmation.py",
+    "scorer_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_osc_repeat_rx1_20260929_r02/tools/score_d92_confirmation.py",
     "acceptance": {
       "old_max_drop": 0.01,
       "require_new_improvement": true,
@@ -230,8 +219,8 @@
       "method": "paired frozen D92 P2-256-FULL and D92-OSC-v1",
       "purpose": "transparent_repeated_benchmark_fixed_algorithm",
       "gpu": null,
-      "config_ref": "configs/d92_osc_repeat_rx3_20260929.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-osc-repeat-rx3-m4-r01/cvs-daot-rc4-s2026092701/osc/startup.json",
+      "config_ref": "configs/d92_osc_repeat_rx1_recovery_20260929.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-osc-repeat-rx1-m4-r02/cvs-daot-rc4-s2026092701/osc/startup.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092701,
@@ -253,10 +242,10 @@
       "lr": null,
       "epochs": null,
       "fl_rounds": null,
-      "budget_ref": "900 paired splits;K1 one fixed spherical fit;K>=2 F=min(K,3) diagnostic physical folds plus one final fit;one formula,no candidates or parameter selection",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-osc-repeat-rx3-m4-r01/cvs-daot-rc4-s2026092701",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-osc-repeat-rx3-m4-r01/cvs-daot-rc4-s2026092701/osc.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/d92_osc_repeat_rx3_20260929_r01/tools/run_d92_confirmation.py --spec /home/szu2070436088/2510044040/CV-SincNet/releases/d92_osc_repeat_rx3_20260929_r01/configs/d92_osc_repeat_rx3_20260929.json --commit RELEASE_HEAD",
+      "budget_ref": "300 paired splits;K1 one fixed spherical fit;K>=2 F=min(K,3) diagnostic physical folds plus one final fit;one formula,no candidates or parameter selection",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-osc-repeat-rx1-m4-r02/cvs-daot-rc4-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-osc-repeat-rx1-m4-r02/cvs-daot-rc4-s2026092701/osc.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/d92_osc_repeat_rx1_20260929_r02/tools/run_d92_confirmation.py --spec /home/szu2070436088/2510044040/CV-SincNet/releases/d92_osc_repeat_rx1_20260929_r02/configs/d92_osc_repeat_rx1_recovery_20260929.json --commit RELEASE_HEAD",
       "expected_artifacts": [
         "artifact_reuse.json",
         "frozen_feature_reuse.json",
@@ -271,30 +260,30 @@
       ],
       "source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701",
       "ground_source": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-cvs-d92-practical-manytx-m5-r01/cvs-daot-rc4-s2026092701/ground",
-      "reuse_row_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092701",
+      "reuse_row_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092701",
       "expected_checkpoint_sha256": "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b",
       "provenance_refs": {
-        "ground_manifest": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092701/ground/manifest.json",
-        "existing_frozen_export_startup": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092701/received_features/startup.json",
-        "received_features_provenance": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092701/received_features/checkpoint_provenance.json",
-        "existing_d92_startup": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092701/d92_startup.json",
-        "ground_provenance": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092701/ground_provenance.json",
-        "received_features_complete": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092701/received_features/features_complete.json",
-        "baseline_predictions_complete": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092701/predictions_complete.json",
+        "ground_manifest": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092701/ground/manifest.json",
+        "existing_frozen_export_startup": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092701/received_features/startup.json",
+        "received_features_provenance": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092701/received_features/checkpoint_provenance.json",
+        "existing_d92_startup": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092701/d92_startup.json",
+        "ground_provenance": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092701/ground_provenance.json",
+        "received_features_complete": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092701/received_features/features_complete.json",
+        "baseline_predictions_complete": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092701/predictions_complete.json",
         "source_initialization": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701/initialization.json",
         "source_completion": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701/completion.json",
-        "frozen_orbit_features_complete": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-bnna-repeat-rx3-m4-r01/cvs-daot-rc4-s2026092701/bnna_features/features_complete.json",
-        "frozen_orbit_checkpoint_provenance": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-bnna-repeat-rx3-m4-r01/cvs-daot-rc4-s2026092701/bnna_features/checkpoint_provenance.json"
+        "frozen_orbit_features_complete": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-bnna-repeat-rx1-m4-r01/cvs-daot-rc4-s2026092701/bnna_features/features_complete.json",
+        "frozen_orbit_checkpoint_provenance": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-bnna-repeat-rx1-m4-r01/cvs-daot-rc4-s2026092701/bnna_features/checkpoint_provenance.json"
       },
-      "reuse_multiview_features_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-bnna-repeat-rx3-m4-r01/cvs-daot-rc4-s2026092701/bnna_features"
+      "reuse_multiview_features_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-bnna-repeat-rx1-m4-r01/cvs-daot-rc4-s2026092701/bnna_features"
     },
     {
       "row_id": "cvs-daot-rc4-s2026092702",
       "method": "paired frozen D92 P2-256-FULL and D92-OSC-v1",
       "purpose": "transparent_repeated_benchmark_fixed_algorithm",
       "gpu": null,
-      "config_ref": "configs/d92_osc_repeat_rx3_20260929.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-osc-repeat-rx3-m4-r01/cvs-daot-rc4-s2026092702/osc/startup.json",
+      "config_ref": "configs/d92_osc_repeat_rx1_recovery_20260929.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-osc-repeat-rx1-m4-r02/cvs-daot-rc4-s2026092702/osc/startup.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092702,
@@ -316,10 +305,10 @@
       "lr": null,
       "epochs": null,
       "fl_rounds": null,
-      "budget_ref": "900 paired splits;K1 one fixed spherical fit;K>=2 F=min(K,3) diagnostic physical folds plus one final fit;one formula,no candidates or parameter selection",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-osc-repeat-rx3-m4-r01/cvs-daot-rc4-s2026092702",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-osc-repeat-rx3-m4-r01/cvs-daot-rc4-s2026092702/osc.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/d92_osc_repeat_rx3_20260929_r01/tools/run_d92_confirmation.py --spec /home/szu2070436088/2510044040/CV-SincNet/releases/d92_osc_repeat_rx3_20260929_r01/configs/d92_osc_repeat_rx3_20260929.json --commit RELEASE_HEAD",
+      "budget_ref": "300 paired splits;K1 one fixed spherical fit;K>=2 F=min(K,3) diagnostic physical folds plus one final fit;one formula,no candidates or parameter selection",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-osc-repeat-rx1-m4-r02/cvs-daot-rc4-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-osc-repeat-rx1-m4-r02/cvs-daot-rc4-s2026092702/osc.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/d92_osc_repeat_rx1_20260929_r02/tools/run_d92_confirmation.py --spec /home/szu2070436088/2510044040/CV-SincNet/releases/d92_osc_repeat_rx1_20260929_r02/configs/d92_osc_repeat_rx1_recovery_20260929.json --commit RELEASE_HEAD",
       "expected_artifacts": [
         "artifact_reuse.json",
         "frozen_feature_reuse.json",
@@ -334,30 +323,30 @@
       ],
       "source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092702",
       "ground_source": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-cvs-d92-practical-manytx-m5-r01/cvs-daot-rc4-s2026092702/ground",
-      "reuse_row_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092702",
+      "reuse_row_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092702",
       "expected_checkpoint_sha256": "72f26413e495dcf82317898f8729caa3d35499bf0b41e9671ffdceab2c90924b",
       "provenance_refs": {
-        "ground_manifest": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092702/ground/manifest.json",
-        "existing_frozen_export_startup": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092702/received_features/startup.json",
-        "received_features_provenance": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092702/received_features/checkpoint_provenance.json",
-        "existing_d92_startup": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092702/d92_startup.json",
-        "ground_provenance": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092702/ground_provenance.json",
-        "received_features_complete": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092702/received_features/features_complete.json",
-        "baseline_predictions_complete": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092702/predictions_complete.json",
+        "ground_manifest": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092702/ground/manifest.json",
+        "existing_frozen_export_startup": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092702/received_features/startup.json",
+        "received_features_provenance": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092702/received_features/checkpoint_provenance.json",
+        "existing_d92_startup": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092702/d92_startup.json",
+        "ground_provenance": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092702/ground_provenance.json",
+        "received_features_complete": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092702/received_features/features_complete.json",
+        "baseline_predictions_complete": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092702/predictions_complete.json",
         "source_initialization": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092702/initialization.json",
         "source_completion": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092702/completion.json",
-        "frozen_orbit_features_complete": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-bnna-repeat-rx3-m4-r01/cvs-daot-rc4-s2026092702/bnna_features/features_complete.json",
-        "frozen_orbit_checkpoint_provenance": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-bnna-repeat-rx3-m4-r01/cvs-daot-rc4-s2026092702/bnna_features/checkpoint_provenance.json"
+        "frozen_orbit_features_complete": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-bnna-repeat-rx1-m4-r01/cvs-daot-rc4-s2026092702/bnna_features/features_complete.json",
+        "frozen_orbit_checkpoint_provenance": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-bnna-repeat-rx1-m4-r01/cvs-daot-rc4-s2026092702/bnna_features/checkpoint_provenance.json"
       },
-      "reuse_multiview_features_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-bnna-repeat-rx3-m4-r01/cvs-daot-rc4-s2026092702/bnna_features"
+      "reuse_multiview_features_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-bnna-repeat-rx1-m4-r01/cvs-daot-rc4-s2026092702/bnna_features"
     },
     {
       "row_id": "cvs-daot-rc4-s2026092703",
       "method": "paired frozen D92 P2-256-FULL and D92-OSC-v1",
       "purpose": "transparent_repeated_benchmark_fixed_algorithm",
       "gpu": null,
-      "config_ref": "configs/d92_osc_repeat_rx3_20260929.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-osc-repeat-rx3-m4-r01/cvs-daot-rc4-s2026092703/osc/startup.json",
+      "config_ref": "configs/d92_osc_repeat_rx1_recovery_20260929.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-osc-repeat-rx1-m4-r02/cvs-daot-rc4-s2026092703/osc/startup.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092703,
@@ -379,10 +368,10 @@
       "lr": null,
       "epochs": null,
       "fl_rounds": null,
-      "budget_ref": "900 paired splits;K1 one fixed spherical fit;K>=2 F=min(K,3) diagnostic physical folds plus one final fit;one formula,no candidates or parameter selection",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-osc-repeat-rx3-m4-r01/cvs-daot-rc4-s2026092703",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-osc-repeat-rx3-m4-r01/cvs-daot-rc4-s2026092703/osc.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/d92_osc_repeat_rx3_20260929_r01/tools/run_d92_confirmation.py --spec /home/szu2070436088/2510044040/CV-SincNet/releases/d92_osc_repeat_rx3_20260929_r01/configs/d92_osc_repeat_rx3_20260929.json --commit RELEASE_HEAD",
+      "budget_ref": "300 paired splits;K1 one fixed spherical fit;K>=2 F=min(K,3) diagnostic physical folds plus one final fit;one formula,no candidates or parameter selection",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-osc-repeat-rx1-m4-r02/cvs-daot-rc4-s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-osc-repeat-rx1-m4-r02/cvs-daot-rc4-s2026092703/osc.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/d92_osc_repeat_rx1_20260929_r02/tools/run_d92_confirmation.py --spec /home/szu2070436088/2510044040/CV-SincNet/releases/d92_osc_repeat_rx1_20260929_r02/configs/d92_osc_repeat_rx1_recovery_20260929.json --commit RELEASE_HEAD",
       "expected_artifacts": [
         "artifact_reuse.json",
         "frozen_feature_reuse.json",
@@ -397,30 +386,30 @@
       ],
       "source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092703",
       "ground_source": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-cvs-d92-practical-manytx-m5-r01/cvs-daot-rc4-s2026092703/ground",
-      "reuse_row_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092703",
+      "reuse_row_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092703",
       "expected_checkpoint_sha256": "51fadc3b4ad3cbf83de01700a4a109430e7a57b1e10cb147f0be5f01593f26bb",
       "provenance_refs": {
-        "ground_manifest": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092703/ground/manifest.json",
-        "existing_frozen_export_startup": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092703/received_features/startup.json",
-        "received_features_provenance": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092703/received_features/checkpoint_provenance.json",
-        "existing_d92_startup": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092703/d92_startup.json",
-        "ground_provenance": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092703/ground_provenance.json",
-        "received_features_complete": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092703/received_features/features_complete.json",
-        "baseline_predictions_complete": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092703/predictions_complete.json",
+        "ground_manifest": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092703/ground/manifest.json",
+        "existing_frozen_export_startup": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092703/received_features/startup.json",
+        "received_features_provenance": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092703/received_features/checkpoint_provenance.json",
+        "existing_d92_startup": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092703/d92_startup.json",
+        "ground_provenance": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092703/ground_provenance.json",
+        "received_features_complete": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092703/received_features/features_complete.json",
+        "baseline_predictions_complete": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092703/predictions_complete.json",
         "source_initialization": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092703/initialization.json",
         "source_completion": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092703/completion.json",
-        "frozen_orbit_features_complete": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-bnna-repeat-rx3-m4-r01/cvs-daot-rc4-s2026092703/bnna_features/features_complete.json",
-        "frozen_orbit_checkpoint_provenance": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-bnna-repeat-rx3-m4-r01/cvs-daot-rc4-s2026092703/bnna_features/checkpoint_provenance.json"
+        "frozen_orbit_features_complete": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-bnna-repeat-rx1-m4-r01/cvs-daot-rc4-s2026092703/bnna_features/features_complete.json",
+        "frozen_orbit_checkpoint_provenance": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-bnna-repeat-rx1-m4-r01/cvs-daot-rc4-s2026092703/bnna_features/checkpoint_provenance.json"
       },
-      "reuse_multiview_features_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-bnna-repeat-rx3-m4-r01/cvs-daot-rc4-s2026092703/bnna_features"
+      "reuse_multiview_features_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-bnna-repeat-rx1-m4-r01/cvs-daot-rc4-s2026092703/bnna_features"
     },
     {
       "row_id": "cvs-daot-rc4-s2026092704",
       "method": "paired frozen D92 P2-256-FULL and D92-OSC-v1",
       "purpose": "transparent_repeated_benchmark_fixed_algorithm",
       "gpu": null,
-      "config_ref": "configs/d92_osc_repeat_rx3_20260929.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-osc-repeat-rx3-m4-r01/cvs-daot-rc4-s2026092704/osc/startup.json",
+      "config_ref": "configs/d92_osc_repeat_rx1_recovery_20260929.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-osc-repeat-rx1-m4-r02/cvs-daot-rc4-s2026092704/osc/startup.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092704,
@@ -442,10 +431,10 @@
       "lr": null,
       "epochs": null,
       "fl_rounds": null,
-      "budget_ref": "900 paired splits;K1 one fixed spherical fit;K>=2 F=min(K,3) diagnostic physical folds plus one final fit;one formula,no candidates or parameter selection",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-osc-repeat-rx3-m4-r01/cvs-daot-rc4-s2026092704",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-osc-repeat-rx3-m4-r01/cvs-daot-rc4-s2026092704/osc.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/d92_osc_repeat_rx3_20260929_r01/tools/run_d92_confirmation.py --spec /home/szu2070436088/2510044040/CV-SincNet/releases/d92_osc_repeat_rx3_20260929_r01/configs/d92_osc_repeat_rx3_20260929.json --commit RELEASE_HEAD",
+      "budget_ref": "300 paired splits;K1 one fixed spherical fit;K>=2 F=min(K,3) diagnostic physical folds plus one final fit;one formula,no candidates or parameter selection",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-osc-repeat-rx1-m4-r02/cvs-daot-rc4-s2026092704",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-osc-repeat-rx1-m4-r02/cvs-daot-rc4-s2026092704/osc.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/d92_osc_repeat_rx1_20260929_r02/tools/run_d92_confirmation.py --spec /home/szu2070436088/2510044040/CV-SincNet/releases/d92_osc_repeat_rx1_20260929_r02/configs/d92_osc_repeat_rx1_recovery_20260929.json --commit RELEASE_HEAD",
       "expected_artifacts": [
         "artifact_reuse.json",
         "frozen_feature_reuse.json",
@@ -460,22 +449,22 @@
       ],
       "source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092704",
       "ground_source": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-cvs-d92-practical-manytx-m5-r01/cvs-daot-rc4-s2026092704/ground",
-      "reuse_row_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092704",
+      "reuse_row_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092704",
       "expected_checkpoint_sha256": "690fed6ea2a6532d0ad978c93306f0f35b61f4a3a3fc4b1d6494f0e7547c74bb",
       "provenance_refs": {
-        "ground_manifest": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092704/ground/manifest.json",
-        "existing_frozen_export_startup": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092704/received_features/startup.json",
-        "received_features_provenance": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092704/received_features/checkpoint_provenance.json",
-        "existing_d92_startup": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092704/d92_startup.json",
-        "ground_provenance": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092704/ground_provenance.json",
-        "received_features_complete": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092704/received_features/features_complete.json",
-        "baseline_predictions_complete": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092704/predictions_complete.json",
+        "ground_manifest": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092704/ground/manifest.json",
+        "existing_frozen_export_startup": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092704/received_features/startup.json",
+        "received_features_provenance": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092704/received_features/checkpoint_provenance.json",
+        "existing_d92_startup": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092704/d92_startup.json",
+        "ground_provenance": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092704/ground_provenance.json",
+        "received_features_complete": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092704/received_features/features_complete.json",
+        "baseline_predictions_complete": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092704/predictions_complete.json",
         "source_initialization": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092704/initialization.json",
         "source_completion": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092704/completion.json",
-        "frozen_orbit_features_complete": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-bnna-repeat-rx3-m4-r01/cvs-daot-rc4-s2026092704/bnna_features/features_complete.json",
-        "frozen_orbit_checkpoint_provenance": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-bnna-repeat-rx3-m4-r01/cvs-daot-rc4-s2026092704/bnna_features/checkpoint_provenance.json"
+        "frozen_orbit_features_complete": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-bnna-repeat-rx1-m4-r01/cvs-daot-rc4-s2026092704/bnna_features/features_complete.json",
+        "frozen_orbit_checkpoint_provenance": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-bnna-repeat-rx1-m4-r01/cvs-daot-rc4-s2026092704/bnna_features/checkpoint_provenance.json"
       },
-      "reuse_multiview_features_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-bnna-repeat-rx3-m4-r01/cvs-daot-rc4-s2026092704/bnna_features"
+      "reuse_multiview_features_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-bnna-repeat-rx1-m4-r01/cvs-daot-rc4-s2026092704/bnna_features"
     }
   ],
   "notes": [
@@ -490,13 +479,15 @@
     "Equal paired-cell weights across fourRX;H/new fromnew_count>0,old guard fromall cells including old-only;allK/seed/scenario/class-count results retained.",
     "Log measured analytic phase costs and diagnostics;optimizer_steps=0,epoch/LR/gradient null with reasons;source validation absent by permission.",
     "New source payload0B;existing model deployment unknown,null incremental model transmission;training checkpoint package bytes are not a minimal inference package.",
-    "Compiled state stores only W[C,4,256] and b[C] plus identifiers/audit;no training features or covariance persist in inference state."
+    "Compiled state stores only W[C,4,256] and b[C] plus identifiers/audit;no training features or covariance persist in inference state.",
+    "Both r01 cohorts failed during cache provenance validation before any fit or scoring; preserve all prior outputs.",
+    "Recovery corrects producer metadata binding semantics only; no formula/parameter/model/environment/data changes."
   ],
   "confirmation": {
-    "capsule": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule",
-    "truth": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/score_only/truth.json",
-    "data_config": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_osc_repeat_rx3_20260929_r01/configs/d92_osc_repeat_rx3_data_20260929.json",
-    "candidate_config": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_osc_repeat_rx3_20260929_r01/configs/d92_orbit_shared_frozen_20260929.json",
+    "capsule": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-data-manytx-r01/capsule",
+    "truth": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-data-manytx-r01/score_only/truth.json",
+    "data_config": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_osc_repeat_rx1_20260929_r02/configs/d92_osc_repeat_rx1_recovery_data_20260929.json",
+    "candidate_config": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_osc_repeat_rx1_20260929_r02/configs/d92_orbit_shared_frozen_20260929.json",
     "native_code": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rc4_matched_20260927_r01/code",
     "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
     "old_classes": [
@@ -550,20 +541,20 @@
     "candidate_predictor": "predict_d92_orbit_shared.py",
     "candidate_mode": "d92_osc_registration",
     "model_rows": 4,
-    "splits_per_model": 900,
-    "expected_split_count": 900,
-    "predictions_total": 7236,
-    "reuse_validated_capsule_id": "residual-noeq-76121e6f34363fa612ec25fb",
-    "baseline_source_run_id": "20260928-phase2-d92-scv-confirmation-manytx-m4-r02",
+    "splits_per_model": 300,
+    "expected_split_count": 300,
+    "predictions_total": 2412,
+    "reuse_validated_capsule_id": "residual-noeq-d0a99fede324159c5a4750fd",
+    "baseline_source_run_id": "20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01",
     "claim_scope": "REPEATED_BENCHMARK_PREVIOUSLY_SCORED_TARGETS",
-    "frozen_feature_source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-bnna-repeat-rx3-m4-r01",
+    "frozen_feature_source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-bnna-repeat-rx1-m4-r01",
     "frozen_feature_producer_config": "configs/d92_bnna_frozen_20260929.json"
   },
   "claim_scope": "REPEATED_BENCHMARK_PREVIOUSLY_SCORED_TARGETS",
   "joint_benchmark": {
     "cohort_run_ids": [
-      "20260929-phase2-d92-osc-repeat-rx3-m4-r01",
-      "20260929-phase2-d92-osc-repeat-rx1-m4-r01"
+      "20260929-phase2-d92-osc-repeat-rx3-m4-r02",
+      "20260929-phase2-d92-osc-repeat-rx1-m4-r02"
     ],
     "model_rows": 4,
     "receiver_count": 4,
@@ -607,6 +598,7 @@
     "early_result_policy": "Launch both fixed cohorts; no early score may change, select, stop, or tune the other cohort",
     "partial_policy": "Preserve/report technical failures; no comprehensive acceptance claim from a partial matrix"
   },
-  "registered_at": "2026-09-28T17:22:03+00:00",
-  "status": "FAILED"
+  "replaces_run_id": "20260929-phase2-d92-osc-repeat-rx1-m4-r01",
+  "registered_at": "2026-09-28T17:27:47+00:00",
+  "status": "PLANNED"
 }

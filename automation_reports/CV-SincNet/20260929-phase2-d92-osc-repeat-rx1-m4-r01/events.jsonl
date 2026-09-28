@@ -1,1 +1,2 @@
 {"at": "2026-09-28T17:22:06+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-09-28T17:26:33+00:00", "status": "FAILED", "note": "VERIFIED technical failure before first OSC fit: cached provenance mismatch. All workers/supervisor exited; no scores. Preserve r01; diagnose metadata before separately registered recovery.", "evidence": ["automation_reports/CV-SincNet/20260929-phase2-d92-osc-repeat-rx1-m4-r01/evidence/readback_1790616335.json"], "row_id": null}
