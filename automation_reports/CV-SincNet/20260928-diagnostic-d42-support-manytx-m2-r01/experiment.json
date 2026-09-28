@@ -126,7 +126,8 @@
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-diagnostic-d42-support-manytx-m2-r01",
     "local_artifact_root": "E:/type10-7/local_artifacts/20260928-diagnostic-d42-support-manytx-m2-r01",
     "launch_command": "python tools/publish_d42_support_diagnostic.py launch --output E:/type10-7/local_artifacts/20260928-diagnostic-d42-support-manytx-m2-r01",
-    "stop_rule": "No automatic retry; exceptions and captured inner support fit are retained."
+    "stop_rule": "No automatic retry; exceptions and captured inner support fit are retained.",
+    "launch_readback": "evidence/launch.json"
   },
   "expected_artifacts": [
     "launch.json",
@@ -155,12 +156,7 @@
         "evaluation": 2026092706
       },
       "seed_notes": "Phase2 builder split/data2026092705, augmentation2026092707, evaluation-query2026092706, receiver2027. support=null for outer model row; inner seeds2026092711..15 in data.support_seeds and immutable split JSON. Phase1 source split392005; final target augmentation2026092708/evaluation2026092709.",
-      "k": [
-        1,
-        5,
-        10,
-        20
-      ],
+      "k": 20,
       "scenario": "practical_high,practical_mid,practical_low_urban; residual/post_sync/noeq",
       "optimizer": "none for frozen encoder; original D92 support-only state fitting",
       "lr": null,
@@ -175,7 +171,7 @@
         "failed_inner_support_fit.npz"
       ],
       "source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s392005",
-      "status": "PLANNED",
+      "status": "REPRODUCED",
       "argv": [
         "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
         "/home/szu2070436088/2510044040/CV-SincNet/releases/d42_support_diagnostic_20260928_r01/tools/diagnose_d42_support_only.py",
@@ -187,7 +183,9 @@
         "392005",
         "--output",
         "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-diagnostic-d42-support-manytx-m2-r01/cvs-daot-rc4-s392005"
-      ]
+      ],
+      "pid": 2056306,
+      "resolved_split_id": "6533d11a97e532c6b8fe719b"
     },
     {
       "row_id": "cvs-daot-rc4-s2026092703",
@@ -206,12 +204,7 @@
         "evaluation": 2026092706
       },
       "seed_notes": "Phase2 builder split/data2026092705, augmentation2026092707, evaluation-query2026092706, receiver2027. support=null for outer model row; inner seeds2026092711..15 in data.support_seeds and immutable split JSON. Phase1 source split392005; final target augmentation2026092708/evaluation2026092709.",
-      "k": [
-        1,
-        5,
-        10,
-        20
-      ],
+      "k": 20,
       "scenario": "practical_high,practical_mid,practical_low_urban; residual/post_sync/noeq",
       "optimizer": "none for frozen encoder; original D92 support-only state fitting",
       "lr": null,
@@ -226,7 +219,7 @@
         "failed_inner_support_fit.npz"
       ],
       "source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092703",
-      "status": "PLANNED",
+      "status": "REPRODUCED",
       "argv": [
         "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
         "/home/szu2070436088/2510044040/CV-SincNet/releases/d42_support_diagnostic_20260928_r01/tools/diagnose_d42_support_only.py",
@@ -238,7 +231,9 @@
         "2026092703",
         "--output",
         "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-diagnostic-d42-support-manytx-m2-r01/cvs-daot-rc4-s2026092703"
-      ]
+      ],
+      "pid": 2056307,
+      "resolved_split_id": "ef8921d662af2517554b00a8"
     }
   ],
   "notes": [
@@ -251,7 +246,7 @@
     "data seed is null: source role allocation is deterministic contiguous contract. support/evaluation seeds null in source-only run."
   ],
   "registered_at": "2026-09-27T05:05:52+00:00",
-  "status": "LOCAL_VERIFIED",
+  "status": "ARTIFACTS_COMPLETE",
   "source_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01",
   "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
   "native_code": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rc4_matched_20260927_r01/code",

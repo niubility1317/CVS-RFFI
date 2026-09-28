@@ -1,0 +1,29 @@
+{
+  "split_id": "ef8921d662af2517554b00a8",
+  "seed": 2026092703,
+  "k": 20,
+  "classes": 6,
+  "support_count": 120,
+  "query_features_read": false,
+  "query_truth_read": false,
+  "ground_schema": "v2_rank3_radius",
+  "numpy": "2.2.5",
+  "torch": "2.1.0+cu121",
+  "status": "FIT_FAILED",
+  "error_type": "D42UnifiedShrinkageLDAError",
+  "error": "D42 sklearn coefficient deployment prediction drift",
+  "inner_fit_class_count": 6,
+  "inner_fit_k": 19,
+  "covariance_condition": 3854.0385785120166,
+  "coefficient_max_abs": 1735.6355865392545,
+  "mismatch_support_indices": [
+    16
+  ],
+  "float64_vs_sklearn_mismatches": 0,
+  "float32_vs_sklearn_mismatches": 1,
+  "coefficient64_vs_sklearn_max_abs": 1.2361454082565615e-09,
+  "score32_vs_64_max_abs": 4.10630215128549e-05,
+  "sklearn_margins_on_mismatches": [
+    1.3811198414259707e-05
+  ]
+}

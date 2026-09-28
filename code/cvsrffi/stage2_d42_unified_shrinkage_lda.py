@@ -324,6 +324,8 @@ def _fit_equal_prior_lda(
         or residual_energy <= ENERGY_EPSILON
     )
     priors = np.full(class_count, 1.0 / class_count, dtype=np.float64)
+    deployment_common_affine_centered = False
+    uncentered_deployment_mismatch_count = 0
     if fallback:
         coefficients = np.asarray(means, dtype=np.float32)
         intercept = np.asarray(
@@ -366,10 +368,52 @@ def _fit_equal_prior_lda(
             + intercept.astype(np.float64)[None, :],
             axis=1,
         )
-        if not np.array_equal(
-            deployed_predictions,
-            np.asarray(estimator.predict(transformed.astype(np.float64)), dtype=np.int64),
-        ):
+        reference_predictions = np.asarray(
+            estimator.predict(transformed.astype(np.float64)), dtype=np.int64
+        )
+        uncentered_deployment_mismatch_count = int(
+            np.count_nonzero(deployed_predictions != reference_predictions)
+        )
+        if uncentered_deployment_mismatch_count:
+            # A large class-common affine term can erase a small discriminant
+            # margin when coefficients and biases are independently cast to
+            # FP32. Remove that common term in FP64, before information is lost.
+            # This subtracts the same score from every class for every sample;
+            # covariance, means, priors and the fitted decision rule stay fixed.
+            # Preserve the historical bitwise path whenever its guard passes.
+            rows64 = transformed.astype(np.float64)
+            original_scores64 = rows64 @ coefficients64.T + intercept64[None, :]
+            if not np.array_equal(original_scores64.argmax(axis=1), reference_predictions):
+                raise D42UnifiedShrinkageLDAError(
+                    "D42 sklearn float64 coefficient prediction drift"
+                )
+            common_coefficient = coefficients64.mean(axis=0, keepdims=True)
+            common_intercept = float(intercept64.mean())
+            centered64 = coefficients64 - common_coefficient
+            centered_bias64 = intercept64 - common_intercept
+            centered_scores64 = rows64 @ centered64.T + centered_bias64[None, :]
+            expected_scores64 = original_scores64 - (
+                rows64 @ common_coefficient.T + common_intercept
+            )
+            rounding_bound = (
+                32.0 * np.finfo(np.float64).eps * (FEATURE_DIM + 2)
+                * max(1.0, float(np.max(
+                    np.abs(rows64) @ np.abs(coefficients64).T
+                    + np.abs(intercept64)[None, :]
+                )))
+            )
+            if (not np.allclose(centered_scores64, expected_scores64,
+                                rtol=0.0, atol=rounding_bound)
+                    or not np.array_equal(centered_scores64.argmax(axis=1), reference_predictions)):
+                raise D42UnifiedShrinkageLDAError("D42 common-affine algebraic prediction drift")
+            coefficients = centered64.astype(np.float32)
+            intercept = centered_bias64.astype(np.float32)
+            deployed_predictions = np.argmax(
+                rows64 @ coefficients.astype(np.float64).T
+                + intercept.astype(np.float64)[None, :], axis=1,
+            )
+            deployment_common_affine_centered = True
+        if not np.array_equal(deployed_predictions, reference_predictions):
             raise D42UnifiedShrinkageLDAError(
                 "D42 sklearn coefficient deployment prediction drift"
             )
@@ -396,6 +440,8 @@ def _fit_equal_prior_lda(
         "coefficient_source": coefficient_source,
         "covariance_equation_residual_max": covariance_equation_residual_max,
         "sklearn_prediction_equivalent": sklearn_prediction_equivalent,
+        "deployment_common_affine_centered_before_fp32": deployment_common_affine_centered,
+        "uncentered_deployment_mismatch_count": uncentered_deployment_mismatch_count,
     }
     return coefficients, intercept, audit
 

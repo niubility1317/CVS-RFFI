@@ -1,0 +1,38 @@
+[
+  {
+    "row_id": "cvs-daot-rc4-s392005",
+    "pid": 2056306,
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d42_support_diagnostic_20260928_r01/tools/diagnose_d42_support_only.py",
+      "--row",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-cvs-d92-practical-manytx-m5-r01/cvs-daot-rc4-s392005",
+      "--capsule",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-practical-data-manytx-s2026092705-r01/capsule",
+      "--seed",
+      "392005",
+      "--output",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-diagnostic-d42-support-manytx-m2-r01/cvs-daot-rc4-s392005"
+    ],
+    "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-diagnostic-d42-support-manytx-m2-r01/cvs-daot-rc4-s392005.log",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d42_support_diagnostic_20260928_r01"
+  },
+  {
+    "row_id": "cvs-daot-rc4-s2026092703",
+    "pid": 2056307,
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d42_support_diagnostic_20260928_r01/tools/diagnose_d42_support_only.py",
+      "--row",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-cvs-d92-practical-manytx-m5-r01/cvs-daot-rc4-s2026092703",
+      "--capsule",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-practical-data-manytx-s2026092705-r01/capsule",
+      "--seed",
+      "2026092703",
+      "--output",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-diagnostic-d42-support-manytx-m2-r01/cvs-daot-rc4-s2026092703"
+    ],
+    "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-diagnostic-d42-support-manytx-m2-r01/cvs-daot-rc4-s2026092703.log",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d42_support_diagnostic_20260928_r01"
+  }
+]
