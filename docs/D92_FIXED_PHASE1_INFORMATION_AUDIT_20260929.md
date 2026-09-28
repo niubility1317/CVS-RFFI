@@ -1,6 +1,8 @@
 # 固定 Phase1 的信息保留审查
 
-日期：2026-09-29。范围：代码与理论可行性。未读取任何 query IQ、query 成绩、结果段或评分索引，未运行新实验、加载实际 checkpoint、访问 source 样本或逐样本 source feature。仅新增本文件，不修改已冻结方法。
+日期：2026-09-29。初稿范围为代码与理论可行性，未读取任何 query IQ、query 成绩、结果段或评分索引，未运行新实验、加载实际 checkpoint、访问 source 样本或逐样本 source feature。初稿仅新增本文件，不修改已冻结方法。下述补充架构核实随后由另一名保持成绩盲态的 agent 完成。
+
+**补充架构核实（VERIFIED）**：[实际模型属性证据](D92_FIXED_PHASE1_BRANCH_METADATA_20260929.json)已对四个既有来源合规的 final200 checkpoint 核对契约、SHA、scratch 来源并经 exact loader 完整加载。实际均为 lite_d/no_dac/feat_joint；时间、频率、PA、stats 路径启用，DAC 关闭，active_defects=[pa]，t_dim=f_dim=emb_dim=160。joint_proj 和 pa_proj 均为320→160。全部模块eval、参数冻结，BN模块0；CPU元数据查询执行0次forward，未读取任何source/received/query样本或评分。以下“实际flags UNKNOWN”是初稿代码推导时的状态，现已由该证据解决；实际aux输出值、数值非冗余及判别增量仍未测量。A步骤的架构部分完成，support前向一致性尚未执行。
 
 ## 1. 结论
 

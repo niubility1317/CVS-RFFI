@@ -70,6 +70,7 @@ paths += ['docs/D92_SUPPORT_INFORMATION_DESIGN_20260929.md','docs/D92_MVRIDGE_P0
     'configs/d92_mvridge_repeat_rx3_data_20260929.json','configs/d92_mvridge_repeat_rx1_data_20260929.json']
 paths += ['tools/finalize_d92_mvridge_record.py','tests/test_finalize_d92_mvridge_record.py']
 paths += ['docs/D92_FIXED_PHASE1_INFORMATION_AUDIT_20260929.md']
+paths += ['docs/D92_FIXED_PHASE1_BRANCH_METADATA_20260929.json']
 for name in paths:
     src=ROOT/name;dst=WS/name;dst.parent.mkdir(parents=True,exist_ok=True)
     # Each name is unique to this task; original D92 and shared wrappers are not mirrored.

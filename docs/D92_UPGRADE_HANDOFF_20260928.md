@@ -2,6 +2,8 @@
 
 ## 当前状态：MVRidge完整结果已核验，未达到目标，无实验进程
 
+2026-09-29后续只读架构核实已VERIFIED：`docs/D92_FIXED_PHASE1_BRANCH_METADATA_20260929.json`，四模型exact loader完整匹配；实际time/freq/PA/stats启用、DAC关闭，t_dim=f_dim=emb_dim160，joint_proj/pa_proj为320→160。eval/冻结、BN数量0；未读任何样本或成绩、0次forward。这解决下文“实际flags待核实”，尚未执行support前向一致性/信息探查。source_aux正在制定`docs/D92_BRANCH_SUPPORT_PROBE_DESIGN_20260929.md`（方案尚未交付、不得假定已存在）；root尚未登记或启动该探查。最新结果归档commit为e1e29539ba1feb0fd6474cc73faf2555f737b125，信息审查commit为a2f7fc0fca89c476e9ee1f0d417105d3e85750b4，均独立OID验证通过。保持goal ACTIVE。
+
 最新终态：两组MVRidge r01均SCORED/ANALYZED，supervisor/children均退出。终态证据两组均`readback_1790618538.json`，下载证据均`readback_1790618554.json`；实际release仍为`71e4bef490bfae3acf907cc3f488b9ca62172a0f`。完整4800fits、15600解析调用、9648评分记录核验VERIFIED；原D92和frozen_dg逐单元记录/混淆矩阵完全一致，独立复算4560汇总数值maxerr3.33e-16。两run的`results/artifacts.json`及rx3的`results/combined_rx4/interpretation_audit.json`已写入，finalizer不可重复write，两张图已目视核对。
 
 联合任务Δold/new/H（百分点）：K1=−1.9780/−0.4845/−0.1513；K5=+2.9896/−2.1958/−0.5371；K10=−0.1175/−4.0229/−2.7684；K20=−1.2008/−4.0356/−3.0512。K5/10/20的新类和H均0/4模型seed提高；K1新类1/4、H2/4。全部任务旧类guard在K1/K20也未通过。完整结果未达标，不晋级、不按成绩修改该候选或选择性重跑；goal ACTIVE。新source payload0B，持久数值状态12336至53456B；累计core fit124.4419秒，query score65.3643秒，均非并行墙钟/卫星延迟；最大梯度残差4.16e-13。已有received缓存占用另列，不是源域传输；模型部署情况未知、增量传输null。

@@ -1,0 +1,401 @@
+{
+  "status": "VERIFIED",
+  "timestamp_utc": "2026-09-28T18:12:09.867605+00:00",
+  "remote_user": "szu2070436088",
+  "remote_host": "dell-DSS8440",
+  "remote_python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+  "torch_version": "2.1.0+cu121",
+  "native_code": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rc4_matched_20260927_r01/code",
+  "native_loader_file": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rc4_matched_20260927_r01/code/cvsrffi/checkpoint_loading.py",
+  "rows": [
+    {
+      "row_id": "cvs-daot-rc4-s2026092701",
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701/final_ssdg.pth",
+      "checkpoint_sha256": "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b",
+      "checkpoint_epoch": 200,
+      "model_class": "DualCVSincNetDisentangle",
+      "identity_backbone_class": "CVSincNet",
+      "id_feature_key": "feat_joint",
+      "native_attributes": {
+        "emb_dim": 160,
+        "input_len": 256,
+        "sample_rate": 25000000.0,
+        "use_time_path": true,
+        "use_freq_path": true,
+        "use_dac_path": false,
+        "use_pa_path": true,
+        "use_stats_path": true,
+        "freq_feature_source": "raw_fft",
+        "pa_feature_source": "raw_iq",
+        "use_circularity": true,
+        "use_aux_spectral_stats": true,
+        "time_stability_mode": "off",
+        "freq_stability_mode": "off",
+        "use_crra": false,
+        "branch_ablation": [
+          "no_dac"
+        ],
+        "t_dim": 160,
+        "f_dim": 160,
+        "active_defects": [
+          "pa"
+        ],
+        "enable_dac": false,
+        "enable_pa": true
+      },
+      "head_linear_dimensions": {
+        "id_proj": [
+          {
+            "input": 160,
+            "output": 160
+          }
+        ],
+        "dac_proj": null,
+        "pa_proj": [
+          {
+            "input": 320,
+            "output": 160
+          }
+        ],
+        "joint_proj": [
+          {
+            "input": 320,
+            "output": 160
+          }
+        ],
+        "imp_merge": [
+          {
+            "input": 160,
+            "output": 160
+          }
+        ]
+      },
+      "exact_loader": {
+        "loader": "exact_ssdg_training_architecture_v1",
+        "checkpoint_load_strict": true,
+        "crra_enabled": false,
+        "missing_keys": 0,
+        "unexpected_keys": 0,
+        "skipped_mismatch": 0,
+        "state_tensor_count": 199,
+        "num_domains_from_state": 15,
+        "input_len": 256
+      },
+      "checkpoint_architecture_args": {
+        "model_size": "M",
+        "model_variant": "lite_d",
+        "branch_ablation": "no_dac",
+        "domain_branch_ablation": "no_stats",
+        "id_feature_key": "feat_joint",
+        "id_time_stability_mode": null,
+        "id_freq_stability_mode": null,
+        "use_crra": false,
+        "physical_gate_variant": "none",
+        "input_len": null,
+        "num_classes": 6,
+        "wisig_equalized": "1"
+      },
+      "provenance": "VERIFIED_SOURCE_ONLY_SCRATCH_FINAL200_EXACT_ROLES",
+      "all_modules_eval": true,
+      "all_parameters_frozen": true,
+      "batchnorm_modules": 0,
+      "forward_count": 0
+    },
+    {
+      "row_id": "cvs-daot-rc4-s2026092702",
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092702/final_ssdg.pth",
+      "checkpoint_sha256": "72f26413e495dcf82317898f8729caa3d35499bf0b41e9671ffdceab2c90924b",
+      "checkpoint_epoch": 200,
+      "model_class": "DualCVSincNetDisentangle",
+      "identity_backbone_class": "CVSincNet",
+      "id_feature_key": "feat_joint",
+      "native_attributes": {
+        "emb_dim": 160,
+        "input_len": 256,
+        "sample_rate": 25000000.0,
+        "use_time_path": true,
+        "use_freq_path": true,
+        "use_dac_path": false,
+        "use_pa_path": true,
+        "use_stats_path": true,
+        "freq_feature_source": "raw_fft",
+        "pa_feature_source": "raw_iq",
+        "use_circularity": true,
+        "use_aux_spectral_stats": true,
+        "time_stability_mode": "off",
+        "freq_stability_mode": "off",
+        "use_crra": false,
+        "branch_ablation": [
+          "no_dac"
+        ],
+        "t_dim": 160,
+        "f_dim": 160,
+        "active_defects": [
+          "pa"
+        ],
+        "enable_dac": false,
+        "enable_pa": true
+      },
+      "head_linear_dimensions": {
+        "id_proj": [
+          {
+            "input": 160,
+            "output": 160
+          }
+        ],
+        "dac_proj": null,
+        "pa_proj": [
+          {
+            "input": 320,
+            "output": 160
+          }
+        ],
+        "joint_proj": [
+          {
+            "input": 320,
+            "output": 160
+          }
+        ],
+        "imp_merge": [
+          {
+            "input": 160,
+            "output": 160
+          }
+        ]
+      },
+      "exact_loader": {
+        "loader": "exact_ssdg_training_architecture_v1",
+        "checkpoint_load_strict": true,
+        "crra_enabled": false,
+        "missing_keys": 0,
+        "unexpected_keys": 0,
+        "skipped_mismatch": 0,
+        "state_tensor_count": 199,
+        "num_domains_from_state": 15,
+        "input_len": 256
+      },
+      "checkpoint_architecture_args": {
+        "model_size": "M",
+        "model_variant": "lite_d",
+        "branch_ablation": "no_dac",
+        "domain_branch_ablation": "no_stats",
+        "id_feature_key": "feat_joint",
+        "id_time_stability_mode": null,
+        "id_freq_stability_mode": null,
+        "use_crra": false,
+        "physical_gate_variant": "none",
+        "input_len": null,
+        "num_classes": 6,
+        "wisig_equalized": "1"
+      },
+      "provenance": "VERIFIED_SOURCE_ONLY_SCRATCH_FINAL200_EXACT_ROLES",
+      "all_modules_eval": true,
+      "all_parameters_frozen": true,
+      "batchnorm_modules": 0,
+      "forward_count": 0
+    },
+    {
+      "row_id": "cvs-daot-rc4-s2026092703",
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092703/final_ssdg.pth",
+      "checkpoint_sha256": "51fadc3b4ad3cbf83de01700a4a109430e7a57b1e10cb147f0be5f01593f26bb",
+      "checkpoint_epoch": 200,
+      "model_class": "DualCVSincNetDisentangle",
+      "identity_backbone_class": "CVSincNet",
+      "id_feature_key": "feat_joint",
+      "native_attributes": {
+        "emb_dim": 160,
+        "input_len": 256,
+        "sample_rate": 25000000.0,
+        "use_time_path": true,
+        "use_freq_path": true,
+        "use_dac_path": false,
+        "use_pa_path": true,
+        "use_stats_path": true,
+        "freq_feature_source": "raw_fft",
+        "pa_feature_source": "raw_iq",
+        "use_circularity": true,
+        "use_aux_spectral_stats": true,
+        "time_stability_mode": "off",
+        "freq_stability_mode": "off",
+        "use_crra": false,
+        "branch_ablation": [
+          "no_dac"
+        ],
+        "t_dim": 160,
+        "f_dim": 160,
+        "active_defects": [
+          "pa"
+        ],
+        "enable_dac": false,
+        "enable_pa": true
+      },
+      "head_linear_dimensions": {
+        "id_proj": [
+          {
+            "input": 160,
+            "output": 160
+          }
+        ],
+        "dac_proj": null,
+        "pa_proj": [
+          {
+            "input": 320,
+            "output": 160
+          }
+        ],
+        "joint_proj": [
+          {
+            "input": 320,
+            "output": 160
+          }
+        ],
+        "imp_merge": [
+          {
+            "input": 160,
+            "output": 160
+          }
+        ]
+      },
+      "exact_loader": {
+        "loader": "exact_ssdg_training_architecture_v1",
+        "checkpoint_load_strict": true,
+        "crra_enabled": false,
+        "missing_keys": 0,
+        "unexpected_keys": 0,
+        "skipped_mismatch": 0,
+        "state_tensor_count": 199,
+        "num_domains_from_state": 15,
+        "input_len": 256
+      },
+      "checkpoint_architecture_args": {
+        "model_size": "M",
+        "model_variant": "lite_d",
+        "branch_ablation": "no_dac",
+        "domain_branch_ablation": "no_stats",
+        "id_feature_key": "feat_joint",
+        "id_time_stability_mode": null,
+        "id_freq_stability_mode": null,
+        "use_crra": false,
+        "physical_gate_variant": "none",
+        "input_len": null,
+        "num_classes": 6,
+        "wisig_equalized": "1"
+      },
+      "provenance": "VERIFIED_SOURCE_ONLY_SCRATCH_FINAL200_EXACT_ROLES",
+      "all_modules_eval": true,
+      "all_parameters_frozen": true,
+      "batchnorm_modules": 0,
+      "forward_count": 0
+    },
+    {
+      "row_id": "cvs-daot-rc4-s2026092704",
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092704/final_ssdg.pth",
+      "checkpoint_sha256": "690fed6ea2a6532d0ad978c93306f0f35b61f4a3a3fc4b1d6494f0e7547c74bb",
+      "checkpoint_epoch": 200,
+      "model_class": "DualCVSincNetDisentangle",
+      "identity_backbone_class": "CVSincNet",
+      "id_feature_key": "feat_joint",
+      "native_attributes": {
+        "emb_dim": 160,
+        "input_len": 256,
+        "sample_rate": 25000000.0,
+        "use_time_path": true,
+        "use_freq_path": true,
+        "use_dac_path": false,
+        "use_pa_path": true,
+        "use_stats_path": true,
+        "freq_feature_source": "raw_fft",
+        "pa_feature_source": "raw_iq",
+        "use_circularity": true,
+        "use_aux_spectral_stats": true,
+        "time_stability_mode": "off",
+        "freq_stability_mode": "off",
+        "use_crra": false,
+        "branch_ablation": [
+          "no_dac"
+        ],
+        "t_dim": 160,
+        "f_dim": 160,
+        "active_defects": [
+          "pa"
+        ],
+        "enable_dac": false,
+        "enable_pa": true
+      },
+      "head_linear_dimensions": {
+        "id_proj": [
+          {
+            "input": 160,
+            "output": 160
+          }
+        ],
+        "dac_proj": null,
+        "pa_proj": [
+          {
+            "input": 320,
+            "output": 160
+          }
+        ],
+        "joint_proj": [
+          {
+            "input": 320,
+            "output": 160
+          }
+        ],
+        "imp_merge": [
+          {
+            "input": 160,
+            "output": 160
+          }
+        ]
+      },
+      "exact_loader": {
+        "loader": "exact_ssdg_training_architecture_v1",
+        "checkpoint_load_strict": true,
+        "crra_enabled": false,
+        "missing_keys": 0,
+        "unexpected_keys": 0,
+        "skipped_mismatch": 0,
+        "state_tensor_count": 199,
+        "num_domains_from_state": 15,
+        "input_len": 256
+      },
+      "checkpoint_architecture_args": {
+        "model_size": "M",
+        "model_variant": "lite_d",
+        "branch_ablation": "no_dac",
+        "domain_branch_ablation": "no_stats",
+        "id_feature_key": "feat_joint",
+        "id_time_stability_mode": null,
+        "id_freq_stability_mode": null,
+        "use_crra": false,
+        "physical_gate_variant": "none",
+        "input_len": null,
+        "num_classes": 6,
+        "wisig_equalized": "1"
+      },
+      "provenance": "VERIFIED_SOURCE_ONLY_SCRATCH_FINAL200_EXACT_ROLES",
+      "all_modules_eval": true,
+      "all_parameters_frozen": true,
+      "batchnorm_modules": 0,
+      "forward_count": 0
+    }
+  ],
+  "input_access": {
+    "source_samples": false,
+    "received_iq": false,
+    "query_scores": false,
+    "source_role_id_metadata_only": true
+  },
+  "execution": {
+    "device": "cpu",
+    "forward_count": 0,
+    "training": false,
+    "remote_file_writes": false,
+    "weights_transferred": false
+  },
+  "limitations": [
+    "Model attributes and exact loaded tensor shapes verified without data forward; no performance or branch information-gain conclusion."
+  ],
+  "resolved_config_probe": "E:\\type10-7\\local_artifacts\\d92_upgrade_20260928\\fixed_phase1_branch_resolved_probe_20260929.json"
+}
