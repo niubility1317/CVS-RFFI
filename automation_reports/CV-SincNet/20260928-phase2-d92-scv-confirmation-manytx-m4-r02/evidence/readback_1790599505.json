@@ -1,0 +1,145 @@
+{
+  "startup.json": {
+    "pid": 2354788,
+    "argv": [
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_confirmation_20260928_r02/tools/run_d92_confirmation.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_confirmation_20260928_r02/configs/d92_confirmation_recovery_20260928.json",
+      "--commit",
+      "841f189690884f0ae51ad8778099fc576e48d849"
+    ],
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_confirmation_20260928_r02",
+    "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "commit": "841f189690884f0ae51ad8778099fc576e48d849",
+    "launch_owner": "codex/root/d92-upgrade-20260928",
+    "environment": {
+      "CUDA_VISIBLE_DEVICES": "",
+      "OMP_NUM_THREADS": "2",
+      "MKL_NUM_THREADS": "2",
+      "OPENBLAS_NUM_THREADS": "2",
+      "NUMEXPR_NUM_THREADS": null
+    },
+    "worker_policy": {
+      "feature_gpu": 0,
+      "max_feature_workers": 1,
+      "cpu_row_workers": 4,
+      "blas_threads": 2
+    },
+    "timestamp": 1790599414.9095063,
+    "live_argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_confirmation_20260928_r02/tools/run_d92_confirmation.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_confirmation_20260928_r02/configs/d92_confirmation_recovery_20260928.json",
+      "--commit",
+      "841f189690884f0ae51ad8778099fc576e48d849"
+    ],
+    "live_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_confirmation_20260928_r02"
+  },
+  "state.json": {
+    "cvs-daot-rc4-s2026092701": {
+      "status": "D92_PREDICTING",
+      "updated": 1790599431.4960194,
+      "checkpoint_sha256": "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b"
+    },
+    "cvs-daot-rc4-s2026092702": {
+      "status": "D92_PREDICTING",
+      "updated": 1790599431.4967668,
+      "checkpoint_sha256": "72f26413e495dcf82317898f8729caa3d35499bf0b41e9671ffdceab2c90924b"
+    },
+    "cvs-daot-rc4-s2026092703": {
+      "status": "D92_PREDICTING",
+      "updated": 1790599431.4981735,
+      "checkpoint_sha256": "51fadc3b4ad3cbf83de01700a4a109430e7a57b1e10cb147f0be5f01593f26bb"
+    },
+    "cvs-daot-rc4-s2026092704": {
+      "status": "D92_PREDICTING",
+      "updated": 1790599431.4991705,
+      "checkpoint_sha256": "690fed6ea2a6532d0ad978c93306f0f35b61f4a3a3fc4b1d6494f0e7547c74bb"
+    }
+  },
+  "workflow_state.json": {
+    "status": "PREDICTING",
+    "updated": 1790599431.4953592
+  },
+  "launch.json": {
+    "pid": 2354788,
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_confirmation_20260928_r02/tools/run_d92_confirmation.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_confirmation_20260928_r02/configs/d92_confirmation_recovery_20260928.json",
+      "--commit",
+      "841f189690884f0ae51ad8778099fc576e48d849"
+    ],
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_confirmation_20260928_r02",
+    "commit": "841f189690884f0ae51ad8778099fc576e48d849",
+    "run": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02",
+    "data_run": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01",
+    "owner": "codex/root/d92-upgrade-20260928",
+    "live_argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_confirmation_20260928_r02/tools/run_d92_confirmation.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_confirmation_20260928_r02/configs/d92_confirmation_recovery_20260928.json",
+      "--commit",
+      "841f189690884f0ae51ad8778099fc576e48d849"
+    ],
+    "live_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_confirmation_20260928_r02"
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_confirmation_20260928_r02/run.log": {
+    "bytes": 0,
+    "tail": []
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092703/d92.log": {
+    "bytes": 155,
+    "tail": [
+      "{\"split_id\": \"002b103769b61e5a81e8f063\", \"predictions\": 2, \"elapsed_seconds\": 1.1109335385262966, \"feature_dim\": 256, \"reused_original_prediction\": false}"
+    ]
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092703/features.log": {
+    "bytes": 27,
+    "tail": [
+      "COMPLETE received-features"
+    ]
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092704/d92.log": {
+    "bytes": 155,
+    "tail": [
+      "{\"split_id\": \"002b103769b61e5a81e8f063\", \"predictions\": 2, \"elapsed_seconds\": 1.0760920215398073, \"feature_dim\": 256, \"reused_original_prediction\": false}"
+    ]
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092704/features.log": {
+    "bytes": 27,
+    "tail": [
+      "COMPLETE received-features"
+    ]
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092701/d92.log": {
+    "bytes": 155,
+    "tail": [
+      "{\"split_id\": \"002b103769b61e5a81e8f063\", \"predictions\": 2, \"elapsed_seconds\": 0.8571109417825937, \"feature_dim\": 256, \"reused_original_prediction\": false}"
+    ]
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092701/features.log": {
+    "bytes": 27,
+    "tail": [
+      "COMPLETE received-features"
+    ]
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092702/d92.log": {
+    "bytes": 155,
+    "tail": [
+      "{\"split_id\": \"002b103769b61e5a81e8f063\", \"predictions\": 2, \"elapsed_seconds\": 1.0329351099207997, \"feature_dim\": 256, \"reused_original_prediction\": false}"
+    ]
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092702/features.log": {
+    "bytes": 27,
+    "tail": [
+      "COMPLETE received-features"
+    ]
+  }
+}

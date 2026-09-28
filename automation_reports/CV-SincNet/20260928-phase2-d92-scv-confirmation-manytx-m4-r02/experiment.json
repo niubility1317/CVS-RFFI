@@ -31,7 +31,8 @@
     "base_recipe": "experiments/adv3b02_xuc/configs/rc4_practical_residual_noeq_20260918.json",
     "native_code_base": "b63734157",
     "native_training_commit": "9b1ddd939fcabc74c77c94a62fef8e5aad07c0e9",
-    "commit_note": "Exact pushed release HEAD passed in launch and startup; config points to parent implementation commit."
+    "commit_note": "Exact pushed release HEAD passed in launch and startup; config points to parent implementation commit.",
+    "release_commit": "841f189690884f0ae51ad8778099fc576e48d849"
   },
   "data": {
     "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManyTx.pkl",
@@ -122,7 +123,15 @@
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02",
     "local_artifact_root": "automation_reports/CV-SincNet/20260928-phase2-d92-scv-confirmation-manytx-m4-r02",
     "launch_command": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe -X utf8 tools/publish_d92_confirmation.py --spec configs/d92_confirmation_recovery_20260928.json --release d92_scv_confirmation_20260928_r02",
-    "stop_rule": "Any source failure or child nonzero fails affected lane without retry; healthy lanes continue; do not score partial matrix."
+    "stop_rule": "Any source failure or child nonzero fails affected lane without retry; healthy lanes continue; do not score partial matrix.",
+    "pid": 2354788,
+    "runtime_command": [
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_confirmation_20260928_r02/tools/run_d92_confirmation.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_confirmation_20260928_r02/configs/d92_confirmation_recovery_20260928.json",
+      "--commit",
+      "841f189690884f0ae51ad8778099fc576e48d849"
+    ]
   },
   "expected_artifacts": [
     "startup.json",
@@ -376,5 +385,5 @@
     "reuse_validated_capsule_id": "residual-noeq-76121e6f34363fa612ec25fb"
   },
   "registered_at": "2026-09-28T12:43:55+00:00",
-  "status": "PLANNED"
+  "status": "RUNNING"
 }

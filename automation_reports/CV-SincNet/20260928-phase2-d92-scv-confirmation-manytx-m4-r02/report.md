@@ -3,7 +3,7 @@
 - run_id：`20260928-phase2-d92-scv-confirmation-manytx-m4-r02`
 - group_id：`d92-fixed-phase1-support-cv-upgrade`；类别：`cvs`；阶段：`Phase2-joint-confirmation`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -29,3 +29,5 @@
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
 
 Manual technical recovery after diagnosis, not performance rerun.15 runner tests passed including absent reference.classes, actual/ground class binding and validated capsule reuse. No model, algorithm, matrix or data changes.
+
+VERIFIED r02 supervisor2354788 and all4 matched final checkpoint exports. Four CPU paired prediction lanes running; no target truth read. Current release841f189690884f0ae51ad8778099fc576e48d849.

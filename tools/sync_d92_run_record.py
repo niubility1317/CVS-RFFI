@@ -1,6 +1,7 @@
 """Mirror explicit per-run records without touching unrelated workspace edits."""
 import argparse
 import json
+import re
 from pathlib import Path
 import shutil
 
@@ -16,8 +17,16 @@ def main():
     record.update(spec)
     events=[json.loads(s) for s in (folder/'events.jsonl').read_text(encoding='utf-8').splitlines()]
     record['status']=next(e['status'] for e in reversed(events) if not e.get('row_id'))
+    evidence=sorted((folder/'evidence').glob('readback_*.json'))
+    if evidence:
+        observed=json.loads(evidence[-1].read_text(encoding='utf-8')).get('startup.json',{})
+        if observed:
+            record['code']['release_commit']=observed['commit']
+            record['execution'].update(pid=observed['pid'],runtime_command=observed['argv'])
     (folder/'experiment.json').write_text(json.dumps(record,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
     report=(folder/'report.md').read_text(encoding='utf-8')
+    report=re.sub(r'当前登记状态：[A-Z_]+', '当前登记状态：'+record['status'], report)
+    (folder/'report.md').write_text(report,encoding='utf-8')
     if a.note not in report:
         with (folder/'report.md').open('a',encoding='utf-8') as f:f.write('\n'+a.note+'\n')
     for src in folder.rglob('*'):
