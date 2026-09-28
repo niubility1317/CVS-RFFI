@@ -1,0 +1,143 @@
+{
+  "startup.json": {
+    "pid": 2331888,
+    "argv": [
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_source_20260928_r01/tools/run_d92_source_development.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_source_20260928_r01/configs/d92_upgrade_source_20260928.json",
+      "--commit",
+      "8d2697752c84af4763372bb6e4c4ba6a621bceef"
+    ],
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_source_20260928_r01",
+    "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "commit": "8d2697752c84af4763372bb6e4c4ba6a621bceef",
+    "launch_owner": "codex/root/d92-upgrade-20260928",
+    "time": 1790597125.0450025,
+    "live_argv": null,
+    "live_cwd": null
+  },
+  "state.json": {
+    "status": "SOURCE_DIAGNOSTIC_COMPLETE",
+    "commit": "8d2697752c84af4763372bb6e4c4ba6a621bceef",
+    "rows": 180
+  },
+  "child.json": {
+    "pid": 2333071,
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_source_20260928_r01/tools/evaluate_d92_source_development.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_source_20260928_r01/configs/d92_upgrade_source_20260928.json"
+    ],
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_source_20260928_r01",
+    "live_argv": null,
+    "live_cwd": null
+  },
+  "features/startup.json": {
+    "pid": 2331895,
+    "argv": [
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_source_20260928_r01/tools/export_d92_source_development.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_source_20260928_r01/configs/d92_upgrade_source_20260928.json"
+    ],
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_source_20260928_r01",
+    "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "model_seed": 2026092701,
+    "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701/final_ssdg.pth",
+    "loader": {
+      "loader": "exact_ssdg_training_architecture_v1",
+      "checkpoint_load_strict": true,
+      "crra_enabled": false,
+      "missing_keys": 0,
+      "unexpected_keys": 0,
+      "skipped_mismatch": 0,
+      "state_tensor_count": 199,
+      "num_domains_from_state": 15,
+      "input_len": 256
+    },
+    "checkpoint_provenance": "MATCHED_SOURCE_ONLY_SCRATCH_FINAL200",
+    "encoder_updates": 0,
+    "query_access": false,
+    "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "config": {
+      "source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "native_code": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rc4_matched_20260927_r01/code",
+      "model_seed": 2026092701,
+      "device": "cuda:0",
+      "scene_seed": 2026092801,
+      "augmentation_seed": 2026092802,
+      "support_seed": 2026092803,
+      "validation_per_class": 50,
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenarios": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "methods": [
+        "frozen_dg",
+        "D92",
+        "D92-SCV-v1"
+      ],
+      "feature_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-diagnostic-d92-scv-source-s2026092701-r01/features",
+      "evaluation_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-diagnostic-d92-scv-source-s2026092701-r01/evaluation",
+      "ground": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-cvs-d92-practical-manytx-m5-r01/cvs-daot-rc4-s2026092701/ground"
+    }
+  },
+  "features/complete.json": {
+    "status": "SOURCE_FEATURES_COMPLETE",
+    "count": 33300,
+    "roles": {
+      "L_s": 6300,
+      "V": 27000
+    },
+    "checkpoint_sha256": "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b",
+    "classes": [
+      "14-10",
+      "14-7",
+      "20-15",
+      "20-19",
+      "6-15",
+      "8-20"
+    ],
+    "encoder_updates": 0,
+    "target_access": false,
+    "source_only": true,
+    "elapsed_seconds": 71.23889855016023
+  },
+  "evaluation/complete.json": {
+    "status": "SOURCE_DIAGNOSTIC_COMPLETE",
+    "rows": 180,
+    "target_access": false,
+    "source_validation_role": "single_V",
+    "new_class_generalization_verified": false
+  },
+  "export_d92_source_development.log": {
+    "bytes": 11524,
+    "tail": [
+      "{\"role\": \"V\", \"processed\": 26112, \"total\": 27000, \"elapsed_seconds\": 68.07730327732861}",
+      "{\"role\": \"V\", \"processed\": 26368, \"total\": 27000, \"elapsed_seconds\": 68.61376651469618}",
+      "{\"role\": \"V\", \"processed\": 26624, \"total\": 27000, \"elapsed_seconds\": 69.15516630653292}",
+      "{\"role\": \"V\", \"processed\": 26880, \"total\": 27000, \"elapsed_seconds\": 69.69098395295441}",
+      "{\"role\": \"V\", \"processed\": 27000, \"total\": 27000, \"elapsed_seconds\": 69.97892389725894}"
+    ]
+  },
+  "evaluate_d92_source_development.log": {
+    "bytes": 46749,
+    "tail": [
+      "{\"receiver\": 8, \"scene\": \"practical_low_urban\", \"k\": 10, \"method\": \"D92\", \"accuracy\": 0.5733333333333334, \"validation_count\": 300, \"elapsed_seconds\": 1.552822109311819, \"new_accuracy\": null, \"harmonic\": null, \"metric_scope\": \"source_six_seen_TX_adaptation_only\"}",
+      "{\"receiver\": 8, \"scene\": \"practical_low_urban\", \"k\": 10, \"method\": \"D92-SCV-v1\", \"accuracy\": 0.6666666666666666, \"validation_count\": 300, \"elapsed_seconds\": 0.06042289175093174, \"new_accuracy\": null, \"harmonic\": null, \"metric_scope\": \"source_six_seen_TX_adaptation_only\"}",
+      "{\"receiver\": 8, \"scene\": \"practical_low_urban\", \"k\": 20, \"method\": \"frozen_dg\", \"accuracy\": 0.6666666666666666, \"validation_count\": 300, \"elapsed_seconds\": 5.399435758590698e-05, \"new_accuracy\": null, \"harmonic\": null, \"metric_scope\": \"source_six_seen_TX_adaptation_only\"}",
+      "{\"receiver\": 8, \"scene\": \"practical_low_urban\", \"k\": 20, \"method\": \"D92\", \"accuracy\": 0.6666666666666666, \"validation_count\": 300, \"elapsed_seconds\": 3.097691463306546, \"new_accuracy\": null, \"harmonic\": null, \"metric_scope\": \"source_six_seen_TX_adaptation_only\"}",
+      "{\"receiver\": 8, \"scene\": \"practical_low_urban\", \"k\": 20, \"method\": \"D92-SCV-v1\", \"accuracy\": 0.7133333333333334, \"validation_count\": 300, \"elapsed_seconds\": 0.06562926061451435, \"new_accuracy\": null, \"harmonic\": null, \"metric_scope\": \"source_six_seen_TX_adaptation_only\"}"
+    ]
+  },
+  "summary_csv": "method,k,accuracy,cells\nfrozen_dg,1,0.8460000000000001,15\nfrozen_dg,5,0.8460000000000001,15\nfrozen_dg,10,0.8460000000000001,15\nfrozen_dg,20,0.8460000000000001,15\nD92,1,0.687111111111111,15\nD92,5,0.722,15\nD92,10,0.803777777777778,15\nD92,20,0.8104444444444443,15\nD92-SCV-v1,1,0.8460000000000001,15\nD92-SCV-v1,5,0.8419999999999999,15\nD92-SCV-v1,10,0.8424444444444444,15\nD92-SCV-v1,20,0.8471111111111111,15\n",
+  "gpu": "1946779, GPU-a2d039ff-1792-4222-2b47-140429e10f94, 3412 MiB\n1946780, GPU-7b4bacb3-4901-6845-a414-0dfdfeeade97, 3432 MiB\n1946781, GPU-95d925a1-7218-ca7b-adef-164241f4f491, 3442 MiB\n1946782, GPU-ef5f59f2-e03e-fe6e-ea6b-3e03afc9b331, 3442 MiB\n1946783, GPU-5463e082-259e-537b-603a-01575d45801c, 3442 MiB\n1946784, GPU-9c4eb614-ca19-a390-aaf4-801f8980b6a9, 3442 MiB\n"
+}

@@ -1,0 +1,56 @@
+{
+  "status": "VERIFIED_SOURCE_DIAGNOSTIC",
+  "row_count": 180,
+  "summary": [
+    {
+      "k": 1,
+      "frozen_dg": 0.846,
+      "D92": 0.6871111111111111,
+      "D92-SCV-v1": 0.846,
+      "delta_vs_d92": 0.15888888888888886,
+      "delta_vs_dg": 0.0,
+      "worst_cell_delta": -0.0033333333333332993,
+      "cells_below_d92": 3
+    },
+    {
+      "k": 5,
+      "frozen_dg": 0.846,
+      "D92": 0.722,
+      "D92-SCV-v1": 0.842,
+      "delta_vs_d92": 0.12,
+      "delta_vs_dg": -0.0040000000000000036,
+      "worst_cell_delta": 0.010000000000000009,
+      "cells_below_d92": 0
+    },
+    {
+      "k": 10,
+      "frozen_dg": 0.846,
+      "D92": 0.8037777777777778,
+      "D92-SCV-v1": 0.8424444444444444,
+      "delta_vs_d92": 0.03866666666666663,
+      "delta_vs_dg": -0.003555555555555534,
+      "worst_cell_delta": -0.016666666666666607,
+      "cells_below_d92": 3
+    },
+    {
+      "k": 20,
+      "frozen_dg": 0.846,
+      "D92": 0.8104444444444444,
+      "D92-SCV-v1": 0.8471111111111111,
+      "delta_vs_d92": 0.036666666666666736,
+      "delta_vs_dg": 0.0011111111111111738,
+      "worst_cell_delta": -0.036666666666666736,
+      "cells_below_d92": 2
+    }
+  ],
+  "model_seed": 2026092701,
+  "source_only": true,
+  "new_class_h_verified": false,
+  "fit_seconds": {
+    "frozen_dg": 0.0030911238864064217,
+    "D92": 83.63727993890643,
+    "D92-SCV-v1": 2.7667729472741485
+  },
+  "full_trace_path": "E:\\type10-7\\local_artifacts\\d92_upgrade_20260928\\source_r01\\metrics.jsonl",
+  "target_access": false
+}

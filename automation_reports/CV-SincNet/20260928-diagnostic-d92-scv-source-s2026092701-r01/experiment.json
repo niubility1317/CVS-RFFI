@@ -25,7 +25,8 @@
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_source_20260928_r01",
     "environment": "N607 CVS-RFFI; local ssr-gpu; exact frozen native code",
     "base_commit": "21e952081",
-    "commit_note": "Publisher injects exact pushed HEAD into startup/launch evidence; self-referential config omitted."
+    "commit_note": "Publisher injects exact pushed HEAD into startup/launch evidence; self-referential config omitted.",
+    "release_commit": "8d2697752c84af4763372bb6e4c4ba6a621bceef"
   },
   "data": {
     "dataset": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701/resolved_config.json#data",
@@ -96,7 +97,9 @@
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-diagnostic-d92-scv-source-s2026092701-r01",
     "local_artifact_root": "automation_reports/CV-SincNet/20260928-diagnostic-d92-scv-source-s2026092701-r01",
     "launch_command": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe -X utf8 tools/publish_d92_source_development.py",
-    "stop_rule": "On technical failure preserve all artifacts; no automatic retry; do not stop other tasks."
+    "stop_rule": "On technical failure preserve all artifacts; no automatic retry; do not stop other tasks.",
+    "pid": 2331888,
+    "runtime_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python /home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_source_20260928_r01/tools/run_d92_source_development.py --spec /home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_source_20260928_r01/configs/d92_upgrade_source_20260928.json --commit 8d2697752c84af4763372bb6e4c4ba6a621bceef"
   },
   "expected_artifacts": [
     "features/complete.json",
@@ -150,14 +153,16 @@
       "budget_ref": "one export all6300 L and27000 V, then5RX x3scenes x4K x3methods=180 rows",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-diagnostic-d92-scv-source-s2026092701-r01",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-diagnostic-d92-scv-source-s2026092701-r01/run.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python /home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_source_20260928_r01/tools/run_d92_source_development.py --spec /home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_source_20260928_r01/configs/d92_upgrade_source_20260928.json --commit e0bc7db3b74de308c4ee35c70f803cdcf14c7d54",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python /home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_source_20260928_r01/tools/run_d92_source_development.py --spec /home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_source_20260928_r01/configs/d92_upgrade_source_20260928.json --commit 8d2697752c84af4763372bb6e4c4ba6a621bceef",
       "gpu": 0,
       "expected_artifacts": [
         "features/complete.json",
         "evaluation/metrics.jsonl",
         "evaluation/summary.csv",
         "evaluation/complete.json"
-      ]
+      ],
+      "status": "ANALYZED",
+      "pid": 2331888
     }
   ],
   "notes": [

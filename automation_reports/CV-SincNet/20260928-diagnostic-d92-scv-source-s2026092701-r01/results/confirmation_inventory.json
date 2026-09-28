@@ -1,0 +1,50 @@
+{
+  "scope": "not used by matched20260927 source/target receiver sets; historical all-time exposure NOT certified",
+  "checkpoint_read": false,
+  "truth_read": false,
+  "model_scores_read": false,
+  "unused_receiver_coverage": [
+    {
+      "receiver": "1-20",
+      "min_records": 0,
+      "classes_with_at_least198": 24,
+      "class_count": 26
+    },
+    {
+      "receiver": "13-7",
+      "min_records": 0,
+      "classes_with_at_least198": 25,
+      "class_count": 26
+    },
+    {
+      "receiver": "18-19",
+      "min_records": 14,
+      "classes_with_at_least198": 24,
+      "class_count": 26
+    },
+    {
+      "receiver": "19-1",
+      "min_records": 200,
+      "classes_with_at_least198": 26,
+      "class_count": 26
+    },
+    {
+      "receiver": "20-19",
+      "min_records": 184,
+      "classes_with_at_least198": 25,
+      "class_count": 26
+    },
+    {
+      "receiver": "8-14",
+      "min_records": 200,
+      "classes_with_at_least198": 26,
+      "class_count": 26
+    },
+    {
+      "receiver": "8-7",
+      "min_records": 200,
+      "classes_with_at_least198": 26,
+      "class_count": 26
+    }
+  ]
+}
