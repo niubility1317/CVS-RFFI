@@ -1,5 +1,7 @@
 # CVS与D92实验完成情况（2026-09-28）
 
+后续更新：Phase1评分阻断已修复，5seed全部目标结果已核实，见[Phase1目标结果](CVS_PHASE1_TARGET_RESULTS_20260928.md)。下文保留10:36核查时的历史状态；其中“尚无Phase1评分”已由新结果替代。Phase2数值故障仍在独立修复。
+
 核实时间：2026-09-28T10:36:11.004811+08:00。VERIFIED：5个Phase1均完成200轮；D92三组完成、两组技术失败，原自动评分未执行。
 
 完整解析五个训练stdout及1000条epoch结构化记录；预测文件逐行统计。原始证据：`E:\type10-7\local_artifacts\cvs_matched_20260927\completion_full_20260928.json`。

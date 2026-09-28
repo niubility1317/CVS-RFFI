@@ -51,3 +51,5 @@ PARTIAL_TECHNICAL_FAILURE。详见docs/CVS_RESULTS_STATUS_20260928.md及evidence
 用户授权“phase 1的目标测试结果呢，修复问题”“继续完成”。在本次既有登记内完成已冻结的Phase1评分，不改变训练权重、seed、预测或数据。五row的final_eval均已完成168000条，旧dispatcher与五worker已退出。评分只依赖全部Phase1预测完成及其ID、类型、形状和类别范围校验；校验通过后才读final_truth。Phase2失败仍保留且不评分部分矩阵。
 
 启动入口tools/publish_cvs_phase1_score_repair.py；发布cvs_phase1_score_repair_20260928_r01，CPU独立评分，launch owner为codex/root/phase1-score-repair。沿用experiment.json的全部路径与seed。输出原run/phase1_final_results.json，独占创建；启动参数与commit记录在phase1_score_repair_startup.json，日志phase1_score_repair.log。本地回归覆盖Phase2失败不阻断完整Phase1、Phase1未完成/ID错误时禁止读取truth、正确accuracy及已有结果禁止覆盖。
+
+VERIFIED：commit281b92099b76233c1d4dc341372426894006bd84已push并独立比对远端OID；一次独立P0/P1审查PASS。远端回归PASS，实际评分完成，SCP读回完整160条结果至evidence/phase1_final_results.json。4个新seed准确率均值为clean80.3254%、high79.3671%、mid77.2604%、low urban52.4634%。完整逐seed、逐RX、Macro-F1及对比见docs/CVS_PHASE1_TARGET_RESULTS_20260928.md。整体仍为PARTIAL，因为Phase2两行技术失败尚未恢复，不能宣称全实验完成。
