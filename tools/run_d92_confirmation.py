@@ -21,6 +21,7 @@ CANDIDATES = (
     ('D92-MVKME-v1', 'mvkme', 'predict_d92_mv_kme.py', 'd92_mvkme_registration'),
     ('D92-BNNA-v1', 'bnna', 'predict_d92_bnna.py', 'd92_bnna_registration'),
     ('D92-OSC-v1', 'osc', 'predict_d92_orbit_shared.py', 'd92_osc_registration'),
+    ('D92-MVRidge-v1', 'mvridge', 'predict_d92_multiview_ridge.py', 'd92_mvridge_registration'),
 )
 
 
@@ -76,23 +77,23 @@ def feature_definition(confirmation):
 
 
 def reuse_multiview_cache(spec):
-    """Only OSC can reuse the explicitly registered frozen four-view cache."""
+    """Registered support methods can reuse the exact frozen four-view cache."""
     method = candidate_definition(spec['confirmation'])['candidate_method']
     paths = [row.get('reuse_multiview_features_root') for row in spec['rows']]
-    if method != 'D92-OSC-v1':
-        if any(paths): raise ValueError('Frozen multiview cache reuse is only registered for OSC')
+    if method not in ('D92-OSC-v1', 'D92-MVRidge-v1'):
+        if any(paths): raise ValueError('Frozen multiview cache reuse is not registered for this method')
         return False
     if not reuse_frozen_rows(spec) or not all(isinstance(p,str) and p for p in paths):
-        raise ValueError('OSC requires reused baseline rows and all four frozen multiview cache paths')
+        raise ValueError('Frozen orbit cache reuse requires baseline rows and all four feature paths')
     source = spec['confirmation'].get('frozen_feature_source_root')
     if not isinstance(source,str) or not source:
-        raise ValueError('OSC requires an explicit frozen feature source root')
+        raise ValueError('Frozen orbit cache reuse requires an explicit feature source root')
     source, output = Path(source).resolve(), Path(spec['execution']['remote_run_root']).resolve()
     if source == output or source in output.parents or output in source.parents:
         raise ValueError('Frozen feature source and new output must not overlap')
     expected = [source/row['row_id']/'bnna_features' for row in spec['rows']]
     if [Path(p).resolve() for p in paths] != expected or len(set(paths)) != 4:
-        raise ValueError('OSC cache paths must bind each model row to one registered source run')
+        raise ValueError('Frozen orbit cache paths must bind each model row to one registered source run')
     return True
 
 

@@ -161,7 +161,7 @@ def test_fresh_capsule_split_count_must_match_preregistered_count(tmp_path, monk
     assert [c[0] for c in calls] == ['build_d92_confirmation_data.py']
 
 
-@pytest.mark.parametrize('candidate_index', [0, 1, 2, 3, 4, 5])
+@pytest.mark.parametrize('candidate_index', [0, 1, 2, 3, 4, 5, 6])
 def test_candidate_release_paths_and_readback_use_exact_registered_folder(tmp_path,capfd,candidate_index):
     from collect_d92_fit_logs import fit_log_paths
     from publish_d92_confirmation import release_tool_paths
@@ -263,18 +263,18 @@ def install_orbit_cache_reuse(tmp_path,spec):
             checkpoint_sha256='a'*64,model_seed=row['seeds']['model'],query_used_for_fitting=False,encoder_updated=False))
 
 
-@pytest.mark.parametrize('candidate_index',[2,3,4,5])
+@pytest.mark.parametrize('candidate_index',[2,3,4,5,6])
 def test_reused_rows_only_run_candidate_and_score_with_old_artifacts_unchanged(tmp_path,monkeypatch,candidate_index):
     from score_d92_confirmation import score
     path,spec=reused_specification(tmp_path)
     spec['confirmation'].update(dict(zip(runner.CANDIDATE_FIELDS,runner.CANDIDATES[candidate_index])))
-    if candidate_index==5: install_orbit_cache_reuse(tmp_path,spec)
+    if candidate_index in (5,6): install_orbit_cache_reuse(tmp_path,spec)
     save(path,spec)
     multiview=runner.needs_multiview(spec['confirmation'])
     feature=runner.feature_definition(spec['confirmation'])
     method=runner.candidate_definition(spec['confirmation'])
     old_files=list((tmp_path/'old-run').rglob('*'))
-    if candidate_index==5:old_files+=list((tmp_path/'frozen-orbit-origin').rglob('*'))
+    if candidate_index in (5,6):old_files+=list((tmp_path/'frozen-orbit-origin').rglob('*'))
     old_hashes={p:runner.sha(p) for p in old_files if p.is_file()}
     calls=[]
     def invoke(tool,arguments,log,*,gpu=False):
@@ -287,7 +287,7 @@ def test_reused_rows_only_run_candidate_and_score_with_old_artifacts_unchanged(t
                 checkpoint_sha256='a'*64,query_used_for_fitting=False))
         elif tool==method['candidate_predictor']:
             assert not gpu
-            if candidate_index==5:
+            if candidate_index in (5,6):
                 cache=Path(args[args.index('--orbit-features')+1])
                 assert cache.parent.parent==tmp_path/'frozen-orbit-origin'
                 assert not any('export_d92' in call for call in calls)
@@ -324,7 +324,7 @@ def test_reused_rows_only_run_candidate_and_score_with_old_artifacts_unchanged(t
         assert not (output/'predictions.jsonl').exists()
         evidence=runner.read(output/'artifact_reuse.json')
         assert evidence['old_scores_read'] is False and evidence['baseline_executed'] is False
-        if candidate_index==5:
+        if candidate_index in (5,6):
             cached=runner.read(output/'frozen_feature_reuse.json')
             assert cached['cache_recomputed'] is False and cached['checkpoint_reloaded'] is False
             assert cached['adapted_state_reused'] is False

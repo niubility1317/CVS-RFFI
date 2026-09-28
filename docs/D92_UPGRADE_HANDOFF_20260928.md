@@ -1,5 +1,11 @@
 # D92优化当前交接
 
+## 当前状态：MVRidge实现中，完整矩阵已预登记，尚未启动
+
+2026-09-29：上一轮OSC全部终态。新工作先完成4800fits纯support OOF信息边界分析（docs/D92_OSC_SUPPORT_DIAGNOSTIC_20260929.md/json），未按query成绩选row/调参。盲态设计排除了Gaussian轨道矩近似及重复ground先验坐标变换，唯一新机制为`D92-MVRidge-v1`：固定identity/FFT=1:4，物理样本总view权重1，全部注册标签共同ridge判别回归，ridge系数固定1，解析解。K1利用多类标签与变换一致性，不声称新增独立观测；各fold所有拟合状态隔离，CV仅诊断。设计在docs/D92_SUPPORT_INFORMATION_DESIGN_20260929.md。
+
+core/entry/audit分别由source_aux/confirmation_runner/d92_p0_review负责，保持前两agent目标成绩盲态；root负责集成/登记/发布。run `20260929-phase2-d92-mvridge-repeat-rx3-m4-r01`及rx1已PLANNED、spec launch-ready VALID；资源/新路径证据`mvridge_preflight_20260929.json`。候选编排/评分/汇总测试通过，核心/入口/审计测试进行中。尚未发布，无MVRidge实测成绩；完成唯一P0/P1后镜像commit/push/OID再由root启动。复用现有BNNA纯冻结四相位cache和原D92基准，所有模型/算法拟合状态不继承。goal ACTIVE，无权限缺口。
+
 ## 当前状态：OSC r02完整结果已核验，K5/10/20改善但K1未达标
 
 2026-09-29最新终态覆盖下文历史：两r02均SCORED/ANALYZED，全部supervisor/children退出，无本任务运行中的实验。rx3终态证据`readback_1790616876.json`、rx1`readback_1790616803.json`，下载证据分别`readback_1790616899.json`/`readback_1790616900.json`。实际release`19a38b714f26599b6a9a074ccfedacc1c8df464b`。禁止重发r01/r02。完整4800fits、15600解析fit calls、9648score records审计VERIFIED，optimizer steps=0；原D92/DG全记录不变，4560汇总值独立复算maxerr3.33e−16。两run已有`results/artifacts.json`，rx3`results/combined_rx4/report.md`为联合报告，两图已目视检查。

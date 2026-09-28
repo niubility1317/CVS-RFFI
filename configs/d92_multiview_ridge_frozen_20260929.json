@@ -1,0 +1,37 @@
+{
+  "algorithm": {
+    "method": "D92-MVRidge-v1",
+    "input_shape": [
+      2,
+      256
+    ],
+    "phases_quarter_turns": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "identity_dim": 160,
+    "fft_dim": 96,
+    "fft": "historical_spectral_logmag_sketch",
+    "fft_norm_floor": 1e-08,
+    "norm_floor": 1e-12,
+    "features": "unit(concat(unit(identity160),4*unit(FFT96)))",
+    "target": "onehot_minus_1_over_C",
+    "objective": "0.5*sum_physical(mean_4_view_squared_error)+0.5*||W||F^2",
+    "view_weight": 0.25,
+    "ridge_coefficient": 1.0,
+    "intercept_regularized": false,
+    "solver": "float64_Cholesky",
+    "query_representation": "mean_four_features",
+    "k1": "same_closed_form_no_cv",
+    "max_folds": 3,
+    "folds": "per_class_physical_id_sort_then_position_mod_min_K_3",
+    "selection": "none_cv_diagnostic_only",
+    "optimizer_steps": 0,
+    "precision": "float64",
+    "query_fit": false,
+    "source_inputs": false,
+    "summary_inputs": false
+  }
+}

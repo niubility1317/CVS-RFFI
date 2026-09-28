@@ -100,7 +100,7 @@ def test_old_guard_includes_old_only_when_preregistered():
     assert not result['preregistered_guard_pass']
 
 
-@pytest.mark.parametrize('candidate_index',[3,4,5])
+@pytest.mark.parametrize('candidate_index',[3,4,5,6])
 def test_new_candidate_pool_keeps_method_binding_and_strict_new_guard(candidate_index):
     from run_d92_confirmation import CANDIDATES,CANDIDATE_FIELDS
     candidate=CANDIDATES[candidate_index]

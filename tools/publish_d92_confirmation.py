@@ -49,7 +49,7 @@ def release_tool_paths(confirmation):
                              +['tools/'+candidate['candidate_predictor']]
                              +(['tools/export_d92_mv_kme_features.py'] if candidate['candidate_method']=='D92-BNNA-v1' else [])
                              +(['tools/d92_orbit_feature_cache.py','tools/export_d92_mv_kme_features.py',
-                                'configs/d92_bnna_frozen_20260929.json'] if candidate['candidate_method']=='D92-OSC-v1' else [])
+                                'configs/d92_bnna_frozen_20260929.json'] if candidate['candidate_method'] in ('D92-OSC-v1','D92-MVRidge-v1') else [])
                              +(['tools/'+feature_definition(confirmation)[0]] if needs_multiview(confirmation) else [])))
 
 
