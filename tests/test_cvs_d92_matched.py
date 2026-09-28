@@ -144,6 +144,36 @@ def test_ground_only_exact_L_and_current_provenance(tmp_path, monkeypatch):
     rows = [json.loads(line) for line in (prediction_dir / "predictions.jsonl").read_text().splitlines()]
     assert {row["mode"] for row in rows} == {"d92_registration", "frozen_dg"}
     assert all(np.asarray(row["scores"]).shape == (6, 6) for row in rows)
+    # A complete compatible stream reuses predictions without another fit.
+    def forbidden_fit(**unused):
+        raise AssertionError('Completed prefix must not be refitted')
+    with monkeypatch.context() as context:
+        context.setattr(matched, 'fit_d92', forbidden_fit)
+        resumed = tmp_path / 'resumed'
+        resumed_result = matched.predict_capsule(features_path=received, capsule=capsule,
+            ground_dir=kwargs['output_dir'], output_dir=resumed, seed=12, resume_from=prediction_dir)
+        assert resumed_result['predictions'] == 2
+        assert (resumed / 'predictions.jsonl').read_bytes() == (prediction_dir / 'predictions.jsonl').read_bytes()
+        # A prefix ending between registration and DG resumes DG independently.
+        import shutil
+        partial = tmp_path / 'partial'
+        partial.mkdir()
+        shutil.copy2(prediction_dir / 'd92_startup.json', partial / 'd92_startup.json')
+        lines = (prediction_dir / 'predictions.jsonl').read_text().splitlines(keepends=True)
+        (partial / 'predictions.jsonl').write_text(lines[0])
+        matched.predict_capsule(features_path=received, capsule=capsule,
+            ground_dir=kwargs['output_dir'], output_dir=tmp_path / 'resumed_partial', seed=12, resume_from=partial)
+        assert (tmp_path / 'resumed_partial/predictions.jsonl').read_bytes() == (prediction_dir / 'predictions.jsonl').read_bytes()
+    with pytest.raises(ValueError, match='provenance mismatch'):
+        matched.predict_capsule(features_path=received, capsule=capsule,
+            ground_dir=kwargs['output_dir'], output_dir=tmp_path / 'bad_seed', seed=13, resume_from=prediction_dir)
+    expected = {k: v for k, v in rows[0].items() if k not in ('scores', 'predicted_indices')}
+    bad = dict(rows[0], query_ids=['wrong'] * 6)
+    with pytest.raises(ValueError, match='identity mismatch'):
+        matched.validate_resume_record(bad, expected)
+    bad = dict(rows[0], predicted_indices=[99] * 6)
+    with pytest.raises(ValueError, match='Invalid original'):
+        matched.validate_resume_record(bad, expected)
     with np.load(result["npz_path"]) as payload:
         from cvsrffi.phase1_center_lowrank_prototype_bundle import ALLOWED_NPZ_MEMBERS
         assert set(payload.files) == ALLOWED_NPZ_MEMBERS

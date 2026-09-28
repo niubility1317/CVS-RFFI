@@ -1,6 +1,6 @@
 # 实验总索引
 
-更新：2026-09-28T03:53:41+00:00
+更新：2026-09-28T04:00:04+00:00
 
 先按方法/问题检索，再用run ID读取精确配置与证据。历史组数量不等于独立实验数量。
 
@@ -12,7 +12,7 @@
 
 |记录类型|数量|
 |---|---:|
-|managed_run|14|
+|managed_run|15|
 
 历史状态统一为HISTORICAL_UNVERIFIED；RUNNING等原文声明只供查证，不能证明此刻仍在运行。
 
@@ -30,13 +30,16 @@
 |[full](by_method/full.md)|5|
 |[zf](by_method/zf.md)|5|
 |[mmse](by_method/mmse.md)|5|
+|[cvs](by_method/cvs.md)|3|
+|[residual_noeq](by_method/residual_noeq.md)|3|
+|[d92](by_method/d92.md)|3|
 |[response](by_method/response.md)|3|
 |[core90](by_method/core90.md)|3|
 |[sixscene](by_method/sixscene.md)|2|
 |[evaluation](by_method/evaluation.md)|2|
-|[cvs](by_method/cvs.md)|2|
-|[residual_noeq](by_method/residual_noeq.md)|2|
-|[d92](by_method/d92.md)|2|
+|[true256](by_method/true256.md)|2|
+|[final_eval](by_method/final_eval.md)|2|
+|[truth_last](by_method/truth_last.md)|2|
 |[three_seed](by_method/three_seed.md)|2|
 |[adv3b02](by_method/adv3b02.md)|1|
 |[original_leo](by_method/original_leo.md)|1|
@@ -44,9 +47,6 @@
 |[fasttrust_rc4](by_method/fasttrust_rc4.md)|1|
 |[source_only](by_method/source_only.md)|1|
 |[d92_parent](by_method/d92_parent.md)|1|
-|[true256](by_method/true256.md)|1|
-|[final_eval](by_method/final_eval.md)|1|
-|[truth_last](by_method/truth_last.md)|1|
 |[d42](by_method/d42.md)|1|
 |[diagnostic](by_method/diagnostic.md)|1|
 |[support_only](by_method/support_only.md)|1|
@@ -66,6 +66,7 @@
 |CVS：DAOT＋FastTrust-RC4原始residual_noeq五种子实验|managed_run|[打开](../automation_reports/CV-SincNet/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/report.md)|
 |CVS最终clean/星地测试与D92 E0真实256维注册|managed_run|[打开](../automation_reports/CV-SincNet/20260927-phase2-cvs-d92-practical-manytx-m5-r01/report.md)|
 |D42 support-only技术诊断|managed_run|[打开](../automation_reports/CV-SincNet/20260928-diagnostic-d42-support-manytx-m2-r01/report.md)|
+|D92 E0 true256 numerical recovery: all five fixed seeds|managed_run|[打开](../automation_reports/CV-SincNet/20260928-phase2-cvs-d92-practical-manytx-m5-r02/report.md)|
 |原生DAOT＋RC4与仅动力博弈三seed对照|managed_run|[打开](../automation_reports/CV-SincNet/phase1_daot_rc4_pure_game_m3_20260917_r1/report.md)|
 |原生DAOT＋RC4与仅动力博弈三seed对照|managed_run|[打开](../automation_reports/CV-SincNet/phase1_daot_rc4_pure_game_m3_20260917_r2/report.md)|
 |响应博弈矩阵测试评估：VERIFIED|managed_run|[打开](../automation_reports/CV-SincNet/response_matrix_eval_20260917/report.md)|

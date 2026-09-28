@@ -8,3 +8,4 @@
 |---|---|---|
 |CVS：DAOT＋FastTrust-RC4原始residual_noeq五种子实验|managed_run|[打开](../../automation_reports/CV-SincNet/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/report.md)|
 |CVS最终clean/星地测试与D92 E0真实256维注册|managed_run|[打开](../../automation_reports/CV-SincNet/20260927-phase2-cvs-d92-practical-manytx-m5-r01/report.md)|
+|D92 E0 true256 numerical recovery: all five fixed seeds|managed_run|[打开](../../automation_reports/CV-SincNet/20260928-phase2-cvs-d92-practical-manytx-m5-r02/report.md)|

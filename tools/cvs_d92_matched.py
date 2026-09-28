@@ -231,7 +231,7 @@ def load_ground(component_dir):
     return dict(ground_basis=basis, ground_spectral_weights=weights, ground_audit=audit)
 
 
-def predict_capsule(*, features_path, capsule, ground_dir, output_dir, seed):
+def predict_capsule(*, features_path, capsule, ground_dir, output_dir, seed, resume_from=None):
     """One completed prediction stream compatible with the baseline scorer."""
     from cvsrffi.stage2_ablation_factory import resolve_stage2_config
     import os
@@ -259,18 +259,44 @@ def predict_capsule(*, features_path, capsule, ground_dir, output_dir, seed):
         raise ValueError("Frozen feature/capsule alignment drift")
     ground = load_ground(ground_dir)
     features = registered_features(iq, identity)
+    previous_stream = None
+    if resume_from is not None:
+        previous = read(Path(resume_from) / 'd92_startup.json')
+        for key, expected in dict(seed=int(seed), features=str(features_path), capsule=str(capsule), ground=str(ground_dir),
+                                  checkpoint_sha256=ground_manifest['checkpoint_sha256'],
+                                  resolved_config=resolve_stage2_config(ARM), query_fit_access=False, truth_read=False).items():
+            if previous.get(key) != expected:
+                raise ValueError('Resume provenance mismatch: ' + key)
+        if Path(resume_from).resolve() == out.resolve():
+            raise ValueError('Resume must preserve original output')
+        previous_stream = (Path(resume_from) / 'predictions.jsonl').open(encoding='utf-8')
     out.mkdir(parents=True, exist_ok=True)
     _write(out / "d92_startup.json", dict(command=sys.argv, seed=int(seed), pid=os.getpid(),
         python=sys.version, platform=platform.platform(), numpy=np.__version__, torch=torch.__version__,
         features=str(features_path), capsule=str(capsule), ground=str(ground_dir),
         checkpoint_sha256=ground_manifest["checkpoint_sha256"], resolved_config=resolve_stage2_config(ARM),
         new_count_zero_policy="same_D92_old_only_before_exact_d81", new_count_two_policy="same_covariance_added_registry_allowance",
-        query_fit_access=False, truth_read=False))
+        query_fit_access=False, truth_read=False, resume_from=str(resume_from) if resume_from is not None else None,
+        numeric_repair='D42 guarded FP64 common-affine centering before FP32; successful original path unchanged'))
     count, dg_seen = 0, set()
     paths = sorted((capsule / "splits").glob("*.json"))
     if not paths:
         raise ValueError("No capsule split files")
     with (out / "predictions.jsonl").open("x", encoding="utf-8") as stream:
+        def reuse(split, mode):
+            nonlocal count
+            if previous_stream is None:
+                return False
+            line = previous_stream.readline()
+            if not line:
+                return False
+            expected = dict(split_id=split['split_id'], capsule_id=manifest['capsule_id'], mode=mode,
+                receiver=split['receiver'], scenario=split['scenario'], k=split['k'], support_seed=split['support_seed'],
+                classes=split['registered_classes'], query_ids=ids[split['query_indices']].tolist())
+            validate_resume_record(json.loads(line), expected)
+            stream.write(line if line.endswith('\n') else line + '\n'); stream.flush(); count += 1
+            return True
+
         def save(split, mode, scores):
             nonlocal count
             record = dict(split_id=split["split_id"], capsule_id=manifest["capsule_id"], mode=mode,
@@ -289,20 +315,40 @@ def predict_capsule(*, features_path, capsule, ground_dir, output_dir, seed):
                     or min(s + q) < 0 or max(s + q) >= len(ids)):
                 raise ValueError("Split identity, registry, or support/query boundary drift")
             started = time.monotonic()
-            state = fit_d92(support_features=features[s], support_labels=split["support_labels"],
-                classes=classes, ground=ground, seed=seed)
-            scores = predict_scores(state, features[q])
-            save(split, "d92_registration", scores)
+            reused = reuse(split, 'd92_registration')
+            if not reused:
+                state = fit_d92(support_features=features[s], support_labels=split["support_labels"],
+                    classes=classes, ground=ground, seed=seed)
+                scores = predict_scores(state, features[q])
+                save(split, "d92_registration", scores)
             key = (split["receiver"], split["scenario"])
             if classes == old_classes and key not in dg_seen:
-                save(split, "frozen_dg", logits[q])
+                if not reuse(split, 'frozen_dg'):
+                    save(split, "frozen_dg", logits[q])
                 dg_seen.add(key)
             print(json.dumps(dict(split_id=split["split_id"], predictions=count,
-                elapsed_seconds=time.monotonic() - started, feature_dim=state.active_feature_dim)), flush=True)
+                elapsed_seconds=time.monotonic() - started, feature_dim=256, reused_original_prediction=reused)), flush=True)
+    if previous_stream is not None:
+        if previous_stream.read():
+            raise ValueError('Original prediction stream has unexpected trailing records')
+        previous_stream.close()
     result = dict(status="PREDICTIONS_COMPLETE", predictions=count, split_count=len(paths),
                   capsule_id=manifest["capsule_id"], truth_read=False)
     _write(out / "predictions_complete.json", result)
     return result
+
+
+def validate_resume_record(record, expected):
+    """Accept only an exact ordered prediction prefix from the same frozen run."""
+    for key, value in expected.items():
+        if record.get(key) != value:
+            raise ValueError('Resume record identity mismatch: ' + key)
+    scores = np.asarray(record['scores'], dtype=np.float64)
+    predicted = np.asarray(record['predicted_indices'])
+    if (scores.shape != (len(expected['query_ids']), len(expected['classes']))
+            or not np.isfinite(scores).all() or predicted.dtype.kind not in 'iu'
+            or not np.array_equal(predicted, scores.argmax(1))):
+        raise ValueError('Invalid original prediction scores')
 
 
 def runtime_smoke():
@@ -373,6 +419,7 @@ def main(argv=None):
     for name in ("features", "capsule", "ground", "output"):
         predict.add_argument("--" + name, required=True, type=Path)
     predict.add_argument("--seed", required=True, type=int)
+    predict.add_argument("--resume-from", type=Path)
     args = parser.parse_args(argv)
     if args.command == "smoke":
         result = runtime_smoke()
@@ -381,7 +428,7 @@ def main(argv=None):
     else:
         torch.set_num_threads(1)
         result = predict_capsule(features_path=args.features, capsule=args.capsule,
-            ground_dir=args.ground, output_dir=args.output, seed=args.seed)
+            ground_dir=args.ground, output_dir=args.output, seed=args.seed, resume_from=args.resume_from)
     print(json.dumps(result, ensure_ascii=False), flush=True)
 
 
