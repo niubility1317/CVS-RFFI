@@ -3,7 +3,7 @@
 - run_id：`20260928-phase2-d92-mvkme-repeat-rx1-m4-r01`
 - group_id：`d92-fixed-phase1-mvkme-repeated-benchmark`；类别：`cvs`；阶段：`Phase2-repeated-benchmark`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -31,3 +31,5 @@
 Frozen formula independently designed without target scores; complete paired repeated benchmark authorized; implementation and P0/P1 review complete, not launched.
 
 Fixed original formula and data; one numeric tensor bridge technical repair after terminal rx3-r01. New rx3-r02 plus unlaunched rx1-r01; no target score read.
+
+Both fixed cohorts launched under release70bd88dfc6a0864e09b8fa582d2aa48b34a741fb; one serial exporter per cohort, at most two concurrent frozen inference processes on GPU0. Do not inspect scores until both terminal.

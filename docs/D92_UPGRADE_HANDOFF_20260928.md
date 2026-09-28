@@ -2,6 +2,12 @@
 
 ## 当前状态：SGJoint重复基准失败，正在实现MVKME
 
+最新实际状态：MVKME已修复并正常启动两cohort，均使用release commit`70bd88dfc6a0864e09b8fa582d2aa48b34a741fb`。rx3为`20260928-phase2-d92-mvkme-repeat-rx3-m4-r02`，spec为`configs/d92_mvkme_repeat_rx3_recovery_20260928.json`，supervisor2466165，首exporter2466183；rx1为`20260928-phase2-d92-mvkme-repeat-rx1-m4-r01`，spec为`configs/d92_mvkme_repeat_rx1_20260928.json`，supervisor2467532，首exporter2467546。两run的`readback_1790610576.json`均核实live/argv/CWD及日志增长，分别首model11648/15444与1152/4680；原rx3-r01失败终态保留。**禁止重发以上已启动run。**每cohort四model串行导出，两个cohort最多两个冻结推理进程共用GPU0，实测单进程484MiB，未干预其他GPU任务。
+
+桥接修复已真实checkpoint+纯合成11IQ全链验证，独立故障定点审查通过，30项入口测试通过。未修改环境/核心/公式/数据/预算。修复使用Python列表双向转换，解决Torch2.1与NumPy2.2.5双数组类C接口不兼容。诊断见各run的`evidence/mvkme_numpy_bridge_diagnostic.json`。
+
+下一步只读监控两个原run，均终态前不下载/读取新scores。全部完成后使用既有`read_d92_run.py --download scores.json complete.json startup.json`、`summarize_d92_repeated_benchmark.py`（已支持MVKME）、算术audit、`collect_d92_fit_logs.py`及新`collect_d92_mvkme_audit.py --spec ... --output <new fit_audit.json>`。新fit audit24项合成测试通过，尚未对真实run执行；它不读取scores/truth。先保留完整结果再解释，不凭实现/启动完成goal。
+
 MVKME启动后技术状态更新：已发布commit`a208d859a0cf6e4d7beaaccfa7bb9133fc5ea7b3`并启动rx3-r01，supervisor2458913/child2458931均退出，`readback_1790609872.json`核实FAILED；无预测和评分，禁止原地重启。真实checkpoint零IQ smoke通过；后续torch转NumPy输出意外成为object dtype，核心正确拒绝。confirmation_runner在已发布代码上用纯合成IQ复现并定位转换/加载故障，不读源样本或目标结果。rx1-r01仅PLANNED尚未发布。下一步修复该技术问题、本地失败回归及原问题定点审查，rx3使用新r02，rx1更新联合引用后按原冻结算法执行。
 
 用户最后确认“先复用数据，待性能有明显改善后再新增独立数据进行验证”。目标仍ACTIVE；无需等待新增数据。SGJoint两run（rx3/rx1）均已SCORED并登记ANALYZED，禁止重启。发布commit为`a794b71e1c93d6d4e9f3cfe1f2ccc591a685bdea`；终态证据分别为`readback_1790608523.json`与`readback_1790608322.json`。完整9648评分与4800拟合已核验。主报告在rx3的`results/combined_rx4/report.md`，两run均有`results/artifacts.json`和`fit_audit.json`。

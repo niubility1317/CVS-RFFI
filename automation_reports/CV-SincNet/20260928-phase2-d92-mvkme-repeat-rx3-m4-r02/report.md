@@ -3,7 +3,7 @@
 - run_id：`20260928-phase2-d92-mvkme-repeat-rx3-m4-r02`
 - group_id：`d92-fixed-phase1-mvkme-repeated-benchmark`；类别：`cvs`；阶段：`Phase2-repeated-benchmark`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -29,3 +29,7 @@
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
 
 Fixed original formula and data; one numeric tensor bridge technical repair after terminal rx3-r01. New rx3-r02 plus unlaunched rx1-r01; no target score read.
+
+Recovered tensor bridge VERIFIED on real received export; keep run active, do not relaunch. No candidate scores have been read.
+
+Both fixed cohorts launched under release70bd88dfc6a0864e09b8fa582d2aa48b34a741fb; one serial exporter per cohort, at most two concurrent frozen inference processes on GPU0. Do not inspect scores until both terminal.
