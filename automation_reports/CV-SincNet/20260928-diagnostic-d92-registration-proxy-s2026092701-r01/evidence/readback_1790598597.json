@@ -1,0 +1,60 @@
+{
+  "startup.json": {
+    "pid": 2345399,
+    "argv": [
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_registration_proxy_20260928_r01/tools/evaluate_d92_registration_proxy.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_registration_proxy_20260928_r01/configs/d92_registration_proxy_20260928.json",
+      "--commit",
+      "13317404bc0da62f18cfb3b12251d85e236a6c3b"
+    ],
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_registration_proxy_20260928_r01",
+    "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "commit": "13317404bc0da62f18cfb3b12251d85e236a6c3b",
+    "time": 1790598490.5934596,
+    "live_argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_registration_proxy_20260928_r01/tools/evaluate_d92_registration_proxy.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_registration_proxy_20260928_r01/configs/d92_registration_proxy_20260928.json",
+      "--commit",
+      "13317404bc0da62f18cfb3b12251d85e236a6c3b"
+    ],
+    "live_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_registration_proxy_20260928_r01"
+  },
+  "launch.json": {
+    "pid": 2345399,
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_registration_proxy_20260928_r01/tools/evaluate_d92_registration_proxy.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_registration_proxy_20260928_r01/configs/d92_registration_proxy_20260928.json",
+      "--commit",
+      "13317404bc0da62f18cfb3b12251d85e236a6c3b"
+    ],
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_registration_proxy_20260928_r01",
+    "commit": "13317404bc0da62f18cfb3b12251d85e236a6c3b",
+    "run": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-diagnostic-d92-registration-proxy-s2026092701-r01",
+    "owner": "codex/root/d92-upgrade-20260928",
+    "live_argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_registration_proxy_20260928_r01/tools/evaluate_d92_registration_proxy.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_registration_proxy_20260928_r01/configs/d92_registration_proxy_20260928.json",
+      "--commit",
+      "13317404bc0da62f18cfb3b12251d85e236a6c3b"
+    ],
+    "live_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_registration_proxy_20260928_r01"
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_registration_proxy_20260928_r01/run.log": {
+    "bytes": 737,
+    "tail": [
+      "{\"receiver\": 6, \"scene\": 0, \"completed\": 1400, \"total\": 2100}",
+      "{\"receiver\": 6, \"scene\": 1, \"completed\": 1540, \"total\": 2100}",
+      "{\"receiver\": 6, \"scene\": 2, \"completed\": 1680, \"total\": 2100}"
+    ]
+  }
+}

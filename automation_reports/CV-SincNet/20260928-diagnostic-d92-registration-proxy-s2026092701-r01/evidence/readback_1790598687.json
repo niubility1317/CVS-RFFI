@@ -1,0 +1,111 @@
+{
+  "startup.json": {
+    "pid": 2345399,
+    "argv": [
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_registration_proxy_20260928_r01/tools/evaluate_d92_registration_proxy.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_registration_proxy_20260928_r01/configs/d92_registration_proxy_20260928.json",
+      "--commit",
+      "13317404bc0da62f18cfb3b12251d85e236a6c3b"
+    ],
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_registration_proxy_20260928_r01",
+    "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "commit": "13317404bc0da62f18cfb3b12251d85e236a6c3b",
+    "time": 1790598490.5934596,
+    "live_argv": null,
+    "live_cwd": null
+  },
+  "complete.json": {
+    "status": "SOURCE_PROXY_COMPLETE",
+    "rows": 2100,
+    "summary": [
+      {
+        "k": 1,
+        "k1_fft_weight": 0.0,
+        "count": 300,
+        "old_accuracy": 0.8185555555555556,
+        "new_proxy_accuracy": 0.7908888888888889,
+        "harmonic_mean": 0.7956263422237045
+      },
+      {
+        "k": 1,
+        "k1_fft_weight": 0.5,
+        "count": 300,
+        "old_accuracy": 0.8201111111111111,
+        "new_proxy_accuracy": 0.7805777777777778,
+        "harmonic_mean": 0.7908335585608515
+      },
+      {
+        "k": 1,
+        "k1_fft_weight": 1.0,
+        "count": 300,
+        "old_accuracy": 0.8105111111111111,
+        "new_proxy_accuracy": 0.7542666666666666,
+        "harmonic_mean": 0.7721634564116218
+      },
+      {
+        "k": 1,
+        "k1_fft_weight": 4.0,
+        "count": 300,
+        "old_accuracy": 0.8029777777777777,
+        "new_proxy_accuracy": 0.5540444444444443,
+        "harmonic_mean": 0.6158343066896946
+      },
+      {
+        "k": 5,
+        "k1_fft_weight": null,
+        "count": 300,
+        "old_accuracy": 0.8347777777777777,
+        "new_proxy_accuracy": 0.8314444444444444,
+        "harmonic_mean": 0.8298252932960778
+      },
+      {
+        "k": 10,
+        "k1_fft_weight": null,
+        "count": 300,
+        "old_accuracy": 0.8367777777777777,
+        "new_proxy_accuracy": 0.8377555555555555,
+        "harmonic_mean": 0.8339852995157361
+      },
+      {
+        "k": 20,
+        "k1_fft_weight": null,
+        "count": 300,
+        "old_accuracy": 0.8436222222222222,
+        "new_proxy_accuracy": 0.8400666666666667,
+        "harmonic_mean": 0.8393339919834221
+      }
+    ],
+    "selected_k1_fft_weight": 0.0,
+    "selection_rule": "max source V proxy H subject to old and proxy-new accuracy no worse than identity-only by1pp; ties prefer smaller FFT",
+    "target_access": false,
+    "all_tx_previously_seen_by_phase1": true,
+    "novel_tx_performance_verified": false
+  },
+  "launch.json": {
+    "pid": 2345399,
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_registration_proxy_20260928_r01/tools/evaluate_d92_registration_proxy.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_registration_proxy_20260928_r01/configs/d92_registration_proxy_20260928.json",
+      "--commit",
+      "13317404bc0da62f18cfb3b12251d85e236a6c3b"
+    ],
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_registration_proxy_20260928_r01",
+    "commit": "13317404bc0da62f18cfb3b12251d85e236a6c3b",
+    "run": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-diagnostic-d92-registration-proxy-s2026092701-r01",
+    "owner": "codex/root/d92-upgrade-20260928",
+    "live_argv": null,
+    "live_cwd": null
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_registration_proxy_20260928_r01/run.log": {
+    "bytes": 2394,
+    "tail": [
+      "{\"receiver\": 8, \"scene\": 1, \"completed\": 1960, \"total\": 2100}",
+      "{\"receiver\": 8, \"scene\": 2, \"completed\": 2100, \"total\": 2100}",
+      "{\"status\": \"SOURCE_PROXY_COMPLETE\", \"rows\": 2100, \"summary\": [{\"k\": 1, \"k1_fft_weight\": 0.0, \"count\": 300, \"old_accuracy\": 0.8185555555555556, \"new_proxy_accuracy\": 0.7908888888888889, \"harmonic_mean\": 0.7956263422237045}, {\"k\": 1, \"k1_fft_weight\": 0.5, \"count\": 300, \"old_accuracy\": 0.8201111111111111, \"new_proxy_accuracy\": 0.7805777777777778, \"harmonic_mean\": 0.7908335585608515}, {\"k\": 1, \"k1_fft_weight\": 1.0, \"count\": 300, \"old_accuracy\": 0.8105111111111111, \"new_proxy_accuracy\": 0.7542666666666666, \"harmonic_mean\": 0.7721634564116218}, {\"k\": 1, \"k1_fft_weight\": 4.0, \"count\": 300, \"old_accuracy\": 0.8029777777777777, \"new_proxy_accuracy\": 0.5540444444444443, \"harmonic_mean\": 0.6158343066896946}, {\"k\": 5, \"k1_fft_weight\": null, \"count\": 300, \"old_accuracy\": 0.8347777777777777, \"new_proxy_accuracy\": 0.8314444444444444, \"harmonic_mean\": 0.8298252932960778}, {\"k\": 10, \"k1_fft_weight\": null, \"count\": 300, \"old_accuracy\": 0.8367777777777777, \"new_proxy_accuracy\": 0.8377555555555555, \"harmonic_mean\": 0.8339852995157361}, {\"k\": 20, \"k1_fft_weight\": null, \"count\": 300, \"old_accuracy\": 0.8436222222222222, \"new_proxy_accuracy\": 0.8400666666666667, \"harmonic_mean\": 0.8393339919834221}], \"selected_k1_fft_weight\": 0.0, \"selection_rule\": \"max source V proxy H subject to old and proxy-new accuracy no worse than identity-only by1pp; ties prefer smaller FFT\", \"target_access\": false, \"all_tx_previously_seen_by_phase1\": true, \"novel_tx_performance_verified\": false}"
+    ]
+  }
+}

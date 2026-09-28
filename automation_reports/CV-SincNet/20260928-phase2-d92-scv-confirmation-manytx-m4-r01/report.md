@@ -1,13 +1,13 @@
-# D92新旧类竞争的源域分类头遮蔽代理校准
+# 固定Phase1的D92-SCV新旧类完整配对确认
 
-- run_id：`20260928-diagnostic-d92-registration-proxy-s2026092701-r01`
-- group_id：`d92-fixed-phase1-support-cv-upgrade`；类别：`cvs`；阶段：`source-registration-proxy`
+- run_id：`20260928-phase2-d92-scv-confirmation-manytx-m4-r01`
+- group_id：`d92-fixed-phase1-support-cv-upgrade`；类别：`cvs`；阶段：`Phase2-joint-confirmation`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
 - 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
-源域六个已见TX的全部20种3旧/3注册角色组合；只隐藏分类头入口，不声称真正新TX。L支持拟合、单一V评分；K1权重source-only选择。
+4个固定新模型seed、3个与本轮源/目标RX不重合的接收机；全K、全部新类规模及5支持seed，对原D92与冻结SCV做一次完整评分。
 
 ## 数据、seed与模型来源
 
@@ -28,6 +28,4 @@
 
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
 
-Source-only proxy review: no P0/P1; synthetic all-role mapping test passed. All six TX seen by Phase1, not novel-TX evidence. Actual release commit is recorded in startup.json.
-
-VERIFIED: source-only2100 rows complete; K1 FFT weight0.0 selected. Old81.86%, registration proxy79.09%, mean per-cellH79.56%; not novel TX performance.
+Fixed candidate after source-only development. Acceptance checks both old and new accuracy alongside H at every K; complete all4modelseeds and all900splits, no score-driven reruns. Independent P0/P1 code/config review clear; scorer6 and runner8 tests passed.

@@ -1,13 +1,13 @@
-# D92新旧类竞争的源域分类头遮蔽代理校准
+# D92确认集的单次received数据构建
 
-- run_id：`20260928-diagnostic-d92-registration-proxy-s2026092701-r01`
-- group_id：`d92-fixed-phase1-support-cv-upgrade`；类别：`cvs`；阶段：`source-registration-proxy`
+- run_id：`20260928-phase2-d92-confirmation-data-manytx-r01`
+- group_id：`d92-fixed-phase1-support-cv-upgrade`；类别：`cvs`；阶段：`Phase2-data-preparation`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
 - 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
-源域六个已见TX的全部20种3旧/3注册角色组合；只隐藏分类头入口，不声称真正新TX。L支持拟合、单一V评分；K1权重source-only选择。
+3个当前轮未使用RX，26TX各198独立物理记录，3场景support36/query30，900划分。
 
 ## 数据、seed与模型来源
 
@@ -28,6 +28,4 @@
 
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
 
-Source-only proxy review: no P0/P1; synthetic all-role mapping test passed. All six TX seen by Phase1, not novel-TX evidence. Actual release commit is recorded in startup.json.
-
-VERIFIED: source-only2100 rows complete; K1 FFT weight0.0 selected. Old81.86%, registration proxy79.09%, mean per-cellH79.56%; not novel TX performance.
+Preregistered CPU data builder called once by confirmation owner.3RX x26TX x198 observations=15444;900 splits. Actual capsule ID recorded after builder completion.
