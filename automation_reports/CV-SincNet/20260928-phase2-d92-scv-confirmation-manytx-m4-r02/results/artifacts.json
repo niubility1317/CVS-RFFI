@@ -1,0 +1,16 @@
+{
+  "run_id": "20260928-phase2-d92-scv-confirmation-manytx-m4-r02",
+  "records": 7236,
+  "arithmetic_audit": "VERIFIED all confusion matrices: accuracy,old,new,H,macroF1 and query totals",
+  "raw_scores": {
+    "local": "E:\\type10-7\\automation_reports\\CV-SincNet\\20260928-phase2-d92-scv-confirmation-manytx-m4-r02\\results\\scores.json",
+    "remote": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/scores.json",
+    "bytes": 12086760
+  },
+  "full_predictions": "Original remote each-row predictions.jsonl and scv/predictions.jsonl; never modified or selected",
+  "summary": "results/summary/summary.json",
+  "compact_fit_logs": "results/fit_logs/",
+  "candidate_promoted": false,
+  "goal_complete": false,
+  "next_scope": "Await user answer on independent source auxiliary training; formal4 Phase1 models remain frozen"
+}

@@ -3,7 +3,7 @@
 - run_id：`20260928-phase2-d92-scv-confirmation-manytx-m4-r02`
 - group_id：`d92-fixed-phase1-support-cv-upgrade`；类别：`cvs`；阶段：`Phase2-joint-confirmation`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -21,7 +21,7 @@
 
 ## 结果与覆盖
 
-尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
+完整7236条结果已评分和汇总。候选未达到新旧类全面提升目标，未晋级。详见[完整汇总](results/summary/report.md)和[产物定位](results/artifacts.json)。
 源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
 
 ## 交接
@@ -31,3 +31,9 @@
 Manual technical recovery after diagnosis, not performance rerun.15 runner tests passed including absent reference.classes, actual/ground class binding and validated capsule reuse. No model, algorithm, matrix or data changes.
 
 VERIFIED r02 supervisor2354788 and all4 matched final checkpoint exports. Four CPU paired prediction lanes running; no target truth read. Current release841f189690884f0ae51ad8778099fc576e48d849.
+
+VERIFIED complete7236 paired results; all processes terminal. Scientific acceptance FAILED: old/new/H deltas pp at K1(+6.46,-7.00,-3.87),K5(+7.82,+0.26,+2.63),K10(+3.00,-0.85,+0.24),K20(-0.23,-0.04,-0.11). Goal active; candidate not promoted. Full metrics/plots and compact fit CSV preserved. Auxiliary source training scope awaiting user clarification.
+
+![新旧类与H](results/summary/old_new_h.png)
+
+![全部K和新类规模的变化](results/summary/delta_all_k_new.png)

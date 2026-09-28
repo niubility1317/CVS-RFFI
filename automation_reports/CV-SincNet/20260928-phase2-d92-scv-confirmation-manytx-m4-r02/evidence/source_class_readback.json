@@ -1,0 +1,270 @@
+{
+  "rows": [
+    {
+      "seed": 2026092701,
+      "initialization": {
+        "scratch_only": true,
+        "checkpoint_sources": [],
+        "target_training_contact": false,
+        "target_contact": false,
+        "source_roles": "EXACT_MATCH",
+        "ema_origin": "this_run_student",
+        "daot": true,
+        "rc4": true,
+        "seed": 2026092701
+      },
+      "completion": {
+        "status": "TRAINING_COMPLETE",
+        "epochs": 200,
+        "checkpoint": "final_ssdg.pth",
+        "elapsed_seconds": 68715.17176127434,
+        "target_evaluated": false,
+        "commit": "9b1ddd939fcabc74c77c94a62fef8e5aad07c0e9",
+        "method_version": "DAOT_A1_FastTrust_RC4_original_residual_noeq"
+      },
+      "actual_class": [
+        "14-10",
+        "14-7",
+        "20-15",
+        "20-19",
+        "6-15",
+        "8-20"
+      ],
+      "reference_class": null,
+      "actual_keys": [
+        "schema",
+        "source_rxs",
+        "source_days",
+        "num_classes",
+        "domain_kind",
+        "domain_map",
+        "counts",
+        "ratios",
+        "split_rule",
+        "split_seed",
+        "role_ids",
+        "checkpoint_init",
+        "target_access_before_freeze",
+        "capture_group_granularity",
+        "native_role_comparison",
+        "classes"
+      ],
+      "reference_keys": [
+        "schema",
+        "source_rxs",
+        "source_days",
+        "num_classes",
+        "domain_kind",
+        "domain_map",
+        "counts",
+        "ratios",
+        "split_rule",
+        "split_seed",
+        "role_ids",
+        "checkpoint_init",
+        "target_access_before_freeze",
+        "capture_group_granularity"
+      ]
+    },
+    {
+      "seed": 2026092702,
+      "initialization": {
+        "scratch_only": true,
+        "checkpoint_sources": [],
+        "target_training_contact": false,
+        "target_contact": false,
+        "source_roles": "EXACT_MATCH",
+        "ema_origin": "this_run_student",
+        "daot": true,
+        "rc4": true,
+        "seed": 2026092702
+      },
+      "completion": {
+        "status": "TRAINING_COMPLETE",
+        "epochs": 200,
+        "checkpoint": "final_ssdg.pth",
+        "elapsed_seconds": 72070.60806846619,
+        "target_evaluated": false,
+        "commit": "9b1ddd939fcabc74c77c94a62fef8e5aad07c0e9",
+        "method_version": "DAOT_A1_FastTrust_RC4_original_residual_noeq"
+      },
+      "actual_class": [
+        "14-10",
+        "14-7",
+        "20-15",
+        "20-19",
+        "6-15",
+        "8-20"
+      ],
+      "reference_class": null,
+      "actual_keys": [
+        "schema",
+        "source_rxs",
+        "source_days",
+        "num_classes",
+        "domain_kind",
+        "domain_map",
+        "counts",
+        "ratios",
+        "split_rule",
+        "split_seed",
+        "role_ids",
+        "checkpoint_init",
+        "target_access_before_freeze",
+        "capture_group_granularity",
+        "native_role_comparison",
+        "classes"
+      ],
+      "reference_keys": [
+        "schema",
+        "source_rxs",
+        "source_days",
+        "num_classes",
+        "domain_kind",
+        "domain_map",
+        "counts",
+        "ratios",
+        "split_rule",
+        "split_seed",
+        "role_ids",
+        "checkpoint_init",
+        "target_access_before_freeze",
+        "capture_group_granularity"
+      ]
+    },
+    {
+      "seed": 2026092703,
+      "initialization": {
+        "scratch_only": true,
+        "checkpoint_sources": [],
+        "target_training_contact": false,
+        "target_contact": false,
+        "source_roles": "EXACT_MATCH",
+        "ema_origin": "this_run_student",
+        "daot": true,
+        "rc4": true,
+        "seed": 2026092703
+      },
+      "completion": {
+        "status": "TRAINING_COMPLETE",
+        "epochs": 200,
+        "checkpoint": "final_ssdg.pth",
+        "elapsed_seconds": 70245.38384771347,
+        "target_evaluated": false,
+        "commit": "9b1ddd939fcabc74c77c94a62fef8e5aad07c0e9",
+        "method_version": "DAOT_A1_FastTrust_RC4_original_residual_noeq"
+      },
+      "actual_class": [
+        "14-10",
+        "14-7",
+        "20-15",
+        "20-19",
+        "6-15",
+        "8-20"
+      ],
+      "reference_class": null,
+      "actual_keys": [
+        "schema",
+        "source_rxs",
+        "source_days",
+        "num_classes",
+        "domain_kind",
+        "domain_map",
+        "counts",
+        "ratios",
+        "split_rule",
+        "split_seed",
+        "role_ids",
+        "checkpoint_init",
+        "target_access_before_freeze",
+        "capture_group_granularity",
+        "native_role_comparison",
+        "classes"
+      ],
+      "reference_keys": [
+        "schema",
+        "source_rxs",
+        "source_days",
+        "num_classes",
+        "domain_kind",
+        "domain_map",
+        "counts",
+        "ratios",
+        "split_rule",
+        "split_seed",
+        "role_ids",
+        "checkpoint_init",
+        "target_access_before_freeze",
+        "capture_group_granularity"
+      ]
+    },
+    {
+      "seed": 2026092704,
+      "initialization": {
+        "scratch_only": true,
+        "checkpoint_sources": [],
+        "target_training_contact": false,
+        "target_contact": false,
+        "source_roles": "EXACT_MATCH",
+        "ema_origin": "this_run_student",
+        "daot": true,
+        "rc4": true,
+        "seed": 2026092704
+      },
+      "completion": {
+        "status": "TRAINING_COMPLETE",
+        "epochs": 200,
+        "checkpoint": "final_ssdg.pth",
+        "elapsed_seconds": 69613.78945350647,
+        "target_evaluated": false,
+        "commit": "9b1ddd939fcabc74c77c94a62fef8e5aad07c0e9",
+        "method_version": "DAOT_A1_FastTrust_RC4_original_residual_noeq"
+      },
+      "actual_class": [
+        "14-10",
+        "14-7",
+        "20-15",
+        "20-19",
+        "6-15",
+        "8-20"
+      ],
+      "reference_class": null,
+      "actual_keys": [
+        "schema",
+        "source_rxs",
+        "source_days",
+        "num_classes",
+        "domain_kind",
+        "domain_map",
+        "counts",
+        "ratios",
+        "split_rule",
+        "split_seed",
+        "role_ids",
+        "checkpoint_init",
+        "target_access_before_freeze",
+        "capture_group_granularity",
+        "native_role_comparison",
+        "classes"
+      ],
+      "reference_keys": [
+        "schema",
+        "source_rxs",
+        "source_days",
+        "num_classes",
+        "domain_kind",
+        "domain_map",
+        "counts",
+        "ratios",
+        "split_rule",
+        "split_seed",
+        "role_ids",
+        "checkpoint_init",
+        "target_access_before_freeze",
+        "capture_group_granularity"
+      ]
+    }
+  ],
+  "disk_free": 7142182653952,
+  "gpu": "0, 1 MiB\n1, 3422 MiB\n2, 1 MiB\n3, 3442 MiB\n4, 3452 MiB\n5, 3452 MiB\n6, 3452 MiB\n7, 3452 MiB\n"
+}

@@ -1,0 +1,213 @@
+{
+  "startup.json": {
+    "pid": 2354788,
+    "argv": [
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_confirmation_20260928_r02/tools/run_d92_confirmation.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_confirmation_20260928_r02/configs/d92_confirmation_recovery_20260928.json",
+      "--commit",
+      "841f189690884f0ae51ad8778099fc576e48d849"
+    ],
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_confirmation_20260928_r02",
+    "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "commit": "841f189690884f0ae51ad8778099fc576e48d849",
+    "launch_owner": "codex/root/d92-upgrade-20260928",
+    "environment": {
+      "CUDA_VISIBLE_DEVICES": "",
+      "OMP_NUM_THREADS": "2",
+      "MKL_NUM_THREADS": "2",
+      "OPENBLAS_NUM_THREADS": "2",
+      "NUMEXPR_NUM_THREADS": null
+    },
+    "worker_policy": {
+      "feature_gpu": 0,
+      "max_feature_workers": 1,
+      "cpu_row_workers": 4,
+      "blas_threads": 2
+    },
+    "timestamp": 1790599414.9095063,
+    "live_argv": null,
+    "live_cwd": null
+  },
+  "state.json": {
+    "cvs-daot-rc4-s2026092701": {
+      "status": "PREDICTIONS_COMPLETE",
+      "updated": 1790601478.0097237,
+      "checkpoint_sha256": "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b"
+    },
+    "cvs-daot-rc4-s2026092702": {
+      "status": "PREDICTIONS_COMPLETE",
+      "updated": 1790601424.4085793,
+      "checkpoint_sha256": "72f26413e495dcf82317898f8729caa3d35499bf0b41e9671ffdceab2c90924b"
+    },
+    "cvs-daot-rc4-s2026092703": {
+      "status": "PREDICTIONS_COMPLETE",
+      "updated": 1790601461.218408,
+      "checkpoint_sha256": "51fadc3b4ad3cbf83de01700a4a109430e7a57b1e10cb147f0be5f01593f26bb"
+    },
+    "cvs-daot-rc4-s2026092704": {
+      "status": "PREDICTIONS_COMPLETE",
+      "updated": 1790601443.352487,
+      "checkpoint_sha256": "690fed6ea2a6532d0ad978c93306f0f35b61f4a3a3fc4b1d6494f0e7547c74bb"
+    }
+  },
+  "workflow_state.json": {
+    "status": "SCORED",
+    "records": 7236,
+    "commit": "841f189690884f0ae51ad8778099fc576e48d849",
+    "updated": 1790601510.1932106
+  },
+  "complete.json": {
+    "status": "SCORED",
+    "commit": "841f189690884f0ae51ad8778099fc576e48d849",
+    "model_rows": 4,
+    "records": 7236,
+    "selection_feedback_forbidden": true
+  },
+  "launch.json": {
+    "pid": 2354788,
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_confirmation_20260928_r02/tools/run_d92_confirmation.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_confirmation_20260928_r02/configs/d92_confirmation_recovery_20260928.json",
+      "--commit",
+      "841f189690884f0ae51ad8778099fc576e48d849"
+    ],
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_confirmation_20260928_r02",
+    "commit": "841f189690884f0ae51ad8778099fc576e48d849",
+    "run": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02",
+    "data_run": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01",
+    "owner": "codex/root/d92-upgrade-20260928",
+    "live_argv": null,
+    "live_cwd": null
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_confirmation_20260928_r02/run.log": {
+    "bytes": 0,
+    "tail": []
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/score.log": {
+    "bytes": 38,
+    "tail": [
+      "{\"status\": \"SCORED\", \"records\": 7236}"
+    ]
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092703/d92.log": {
+    "bytes": 141300,
+    "tail": [
+      "{\"split_id\": \"ff7dd357e84347e0a8a21ed5\", \"predictions\": 908, \"elapsed_seconds\": 0.03746254649013281, \"feature_dim\": 256, \"reused_original_prediction\": false}",
+      "{\"split_id\": \"ffa628fcc6e073d6f6f05103\", \"predictions\": 909, \"elapsed_seconds\": 1.9112543584778905, \"feature_dim\": 256, \"reused_original_prediction\": false}",
+      "{\"status\": \"PREDICTIONS_COMPLETE\", \"predictions\": 909, \"split_count\": 900, \"capsule_id\": \"residual-noeq-76121e6f34363fa612ec25fb\", \"truth_read\": false}"
+    ]
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092703/scv.log": {
+    "bytes": 393328,
+    "tail": [
+      "{\"split_id\": \"ff603b1541781a20f46c44de\", \"completed\": 898, \"total\": 900, \"k\": 10, \"classes\": 16, \"selected\": {\"fft_weight\": 4.0, \"ridge\": 0.1, \"protection\": 0.5}, \"fit_seconds\": 0.07047218084335327, \"total_seconds\": 0.07780556380748749, \"state_bytes\": 32896, \"query_rows_used_for_fit\": 0, \"loss\": null, \"lr\": null, \"gradient\": null, \"unavailable_reason\": \"closed_form_no_gradient_training; support validation scores in fit_trace.jsonl\"}",
+      "{\"split_id\": \"ff7dd357e84347e0a8a21ed5\", \"completed\": 899, \"total\": 900, \"k\": 1, \"classes\": 11, \"selected\": {\"fft_weight\": 0.0, \"ridge\": 1.0, \"protection\": 1.0}, \"fit_seconds\": 0.00036718789488077164, \"total_seconds\": 0.004302394576370716, \"state_bytes\": 22616, \"query_rows_used_for_fit\": 0, \"loss\": null, \"lr\": null, \"gradient\": null, \"unavailable_reason\": \"closed_form_no_gradient_training; support validation scores in fit_trace.jsonl\"}",
+      "{\"split_id\": \"ffa628fcc6e073d6f6f05103\", \"completed\": 900, \"total\": 900, \"k\": 5, \"classes\": 26, \"selected\": {\"fft_weight\": 0.5, \"ridge\": 0.1, \"protection\": 0.5}, \"fit_seconds\": 0.0771054606884718, \"total_seconds\": 0.09291956201195717, \"state_bytes\": 53456, \"query_rows_used_for_fit\": 0, \"loss\": null, \"lr\": null, \"gradient\": null, \"unavailable_reason\": \"closed_form_no_gradient_training; support validation scores in fit_trace.jsonl\"}"
+    ]
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092703/features.log": {
+    "bytes": 27,
+    "tail": [
+      "COMPLETE received-features"
+    ]
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092704/d92.log": {
+    "bytes": 141277,
+    "tail": [
+      "{\"split_id\": \"ff7dd357e84347e0a8a21ed5\", \"predictions\": 908, \"elapsed_seconds\": 0.03835056722164154, \"feature_dim\": 256, \"reused_original_prediction\": false}",
+      "{\"split_id\": \"ffa628fcc6e073d6f6f05103\", \"predictions\": 909, \"elapsed_seconds\": 1.9553132373839617, \"feature_dim\": 256, \"reused_original_prediction\": false}",
+      "{\"status\": \"PREDICTIONS_COMPLETE\", \"predictions\": 909, \"split_count\": 900, \"capsule_id\": \"residual-noeq-76121e6f34363fa612ec25fb\", \"truth_read\": false}"
+    ]
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092704/scv.log": {
+    "bytes": 393346,
+    "tail": [
+      "{\"split_id\": \"ff603b1541781a20f46c44de\", \"completed\": 898, \"total\": 900, \"k\": 10, \"classes\": 16, \"selected\": {\"fft_weight\": 4.0, \"ridge\": 0.1, \"protection\": 0.0}, \"fit_seconds\": 0.0727968392893672, \"total_seconds\": 0.07963783293962479, \"state_bytes\": 32896, \"query_rows_used_for_fit\": 0, \"loss\": null, \"lr\": null, \"gradient\": null, \"unavailable_reason\": \"closed_form_no_gradient_training; support validation scores in fit_trace.jsonl\"}",
+      "{\"split_id\": \"ff7dd357e84347e0a8a21ed5\", \"completed\": 899, \"total\": 900, \"k\": 1, \"classes\": 11, \"selected\": {\"fft_weight\": 0.0, \"ridge\": 1.0, \"protection\": 1.0}, \"fit_seconds\": 0.0003764405846595764, \"total_seconds\": 0.004315505735576153, \"state_bytes\": 22616, \"query_rows_used_for_fit\": 0, \"loss\": null, \"lr\": null, \"gradient\": null, \"unavailable_reason\": \"closed_form_no_gradient_training; support validation scores in fit_trace.jsonl\"}",
+      "{\"split_id\": \"ffa628fcc6e073d6f6f05103\", \"completed\": 900, \"total\": 900, \"k\": 5, \"classes\": 26, \"selected\": {\"fft_weight\": 4.0, \"ridge\": 1.0, \"protection\": 0.5}, \"fit_seconds\": 0.0771320229396224, \"total_seconds\": 0.09309581480920315, \"state_bytes\": 53456, \"query_rows_used_for_fit\": 0, \"loss\": null, \"lr\": null, \"gradient\": null, \"unavailable_reason\": \"closed_form_no_gradient_training; support validation scores in fit_trace.jsonl\"}"
+    ]
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092704/features.log": {
+    "bytes": 27,
+    "tail": [
+      "COMPLETE received-features"
+    ]
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092701/d92.log": {
+    "bytes": 141317,
+    "tail": [
+      "{\"split_id\": \"ff7dd357e84347e0a8a21ed5\", \"predictions\": 908, \"elapsed_seconds\": 0.038492150604724884, \"feature_dim\": 256, \"reused_original_prediction\": false}",
+      "{\"split_id\": \"ffa628fcc6e073d6f6f05103\", \"predictions\": 909, \"elapsed_seconds\": 1.9858835069462657, \"feature_dim\": 256, \"reused_original_prediction\": false}",
+      "{\"status\": \"PREDICTIONS_COMPLETE\", \"predictions\": 909, \"split_count\": 900, \"capsule_id\": \"residual-noeq-76121e6f34363fa612ec25fb\", \"truth_read\": false}"
+    ]
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092701/scv.log": {
+    "bytes": 393401,
+    "tail": [
+      "{\"split_id\": \"ff603b1541781a20f46c44de\", \"completed\": 898, \"total\": 900, \"k\": 10, \"classes\": 16, \"selected\": {\"fft_weight\": 4.0, \"ridge\": 0.1, \"protection\": 0.5}, \"fit_seconds\": 0.07204356323927641, \"total_seconds\": 0.07928717602044344, \"state_bytes\": 32896, \"query_rows_used_for_fit\": 0, \"loss\": null, \"lr\": null, \"gradient\": null, \"unavailable_reason\": \"closed_form_no_gradient_training; support validation scores in fit_trace.jsonl\"}",
+      "{\"split_id\": \"ff7dd357e84347e0a8a21ed5\", \"completed\": 899, \"total\": 900, \"k\": 1, \"classes\": 11, \"selected\": {\"fft_weight\": 0.0, \"ridge\": 1.0, \"protection\": 1.0}, \"fit_seconds\": 0.0003612544387578964, \"total_seconds\": 0.00425289012491703, \"state_bytes\": 22616, \"query_rows_used_for_fit\": 0, \"loss\": null, \"lr\": null, \"gradient\": null, \"unavailable_reason\": \"closed_form_no_gradient_training; support validation scores in fit_trace.jsonl\"}",
+      "{\"split_id\": \"ffa628fcc6e073d6f6f05103\", \"completed\": 900, \"total\": 900, \"k\": 5, \"classes\": 26, \"selected\": {\"fft_weight\": 1.0, \"ridge\": 0.1, \"protection\": 0.5}, \"fit_seconds\": 0.07761235162615776, \"total_seconds\": 0.09314450435340405, \"state_bytes\": 53456, \"query_rows_used_for_fit\": 0, \"loss\": null, \"lr\": null, \"gradient\": null, \"unavailable_reason\": \"closed_form_no_gradient_training; support validation scores in fit_trace.jsonl\"}"
+    ]
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092701/features.log": {
+    "bytes": 27,
+    "tail": [
+      "COMPLETE received-features"
+    ]
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092702/d92.log": {
+    "bytes": 141303,
+    "tail": [
+      "{\"split_id\": \"ff7dd357e84347e0a8a21ed5\", \"predictions\": 908, \"elapsed_seconds\": 0.04592906031757593, \"feature_dim\": 256, \"reused_original_prediction\": false}",
+      "{\"split_id\": \"ffa628fcc6e073d6f6f05103\", \"predictions\": 909, \"elapsed_seconds\": 2.0002035703510046, \"feature_dim\": 256, \"reused_original_prediction\": false}",
+      "{\"status\": \"PREDICTIONS_COMPLETE\", \"predictions\": 909, \"split_count\": 900, \"capsule_id\": \"residual-noeq-76121e6f34363fa612ec25fb\", \"truth_read\": false}"
+    ]
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092702/scv.log": {
+    "bytes": 393232,
+    "tail": [
+      "{\"split_id\": \"ff603b1541781a20f46c44de\", \"completed\": 898, \"total\": 900, \"k\": 10, \"classes\": 16, \"selected\": {\"fft_weight\": 4.0, \"ridge\": 0.1, \"protection\": 0.0}, \"fit_seconds\": 0.07188871596008539, \"total_seconds\": 0.07865732908248901, \"state_bytes\": 32896, \"query_rows_used_for_fit\": 0, \"loss\": null, \"lr\": null, \"gradient\": null, \"unavailable_reason\": \"closed_form_no_gradient_training; support validation scores in fit_trace.jsonl\"}",
+      "{\"split_id\": \"ff7dd357e84347e0a8a21ed5\", \"completed\": 899, \"total\": 900, \"k\": 1, \"classes\": 11, \"selected\": {\"fft_weight\": 0.0, \"ridge\": 1.0, \"protection\": 1.0}, \"fit_seconds\": 0.0003655664622783661, \"total_seconds\": 0.004343261942267418, \"state_bytes\": 22616, \"query_rows_used_for_fit\": 0, \"loss\": null, \"lr\": null, \"gradient\": null, \"unavailable_reason\": \"closed_form_no_gradient_training; support validation scores in fit_trace.jsonl\"}",
+      "{\"split_id\": \"ffa628fcc6e073d6f6f05103\", \"completed\": 900, \"total\": 900, \"k\": 5, \"classes\": 26, \"selected\": {\"fft_weight\": 0.5, \"ridge\": 0.1, \"protection\": 0.5}, \"fit_seconds\": 0.07724545430392027, \"total_seconds\": 0.09339558985084295, \"state_bytes\": 53456, \"query_rows_used_for_fit\": 0, \"loss\": null, \"lr\": null, \"gradient\": null, \"unavailable_reason\": \"closed_form_no_gradient_training; support validation scores in fit_trace.jsonl\"}"
+    ]
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092702/features.log": {
+    "bytes": 27,
+    "tail": [
+      "COMPLETE received-features"
+    ]
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092703/scv/predictions_complete.json": {
+    "status": "PREDICTIONS_COMPLETE",
+    "split_count": 900,
+    "predictions": 900,
+    "capsule_id": "residual-noeq-76121e6f34363fa612ec25fb",
+    "truth_read": false
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092704/scv/predictions_complete.json": {
+    "status": "PREDICTIONS_COMPLETE",
+    "split_count": 900,
+    "predictions": 900,
+    "capsule_id": "residual-noeq-76121e6f34363fa612ec25fb",
+    "truth_read": false
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092701/scv/predictions_complete.json": {
+    "status": "PREDICTIONS_COMPLETE",
+    "split_count": 900,
+    "predictions": 900,
+    "capsule_id": "residual-noeq-76121e6f34363fa612ec25fb",
+    "truth_read": false
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092702/scv/predictions_complete.json": {
+    "status": "PREDICTIONS_COMPLETE",
+    "split_count": 900,
+    "predictions": 900,
+    "capsule_id": "residual-noeq-76121e6f34363fa612ec25fb",
+    "truth_read": false
+  },
+  "live_children": []
+}
