@@ -1,0 +1,373 @@
+{
+  "status": "VERIFIED",
+  "scope": "complete support-only optimizer traces; no query scores read",
+  "models": [
+    {
+      "row_id": "cvs-daot-rc4-s2026092701",
+      "trace_file": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092701/sfhead/fit_trace.jsonl",
+      "trace_file_bytes": 19445116,
+      "fits": 300,
+      "converged": 293,
+      "total_fit_seconds": 64.79966871999204,
+      "per_k": [
+        {
+          "k": 1,
+          "fits": 75,
+          "converged": 75,
+          "status_counts": {
+            "0": 75
+          },
+          "termination_counts": {
+            "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL": 75
+          },
+          "mean_steps": 59.093333333333334,
+          "max_steps": 122,
+          "mean_fit_seconds": 0.07037918614844481,
+          "max_fit_seconds": 0.17553487047553062,
+          "max_final_gradient_inf": 9.973204357957583e-07,
+          "mean_initial_loss": 1.2270408294477124,
+          "mean_final_loss": 0.6657750940824012
+        },
+        {
+          "k": 5,
+          "fits": 75,
+          "converged": 75,
+          "status_counts": {
+            "0": 75
+          },
+          "termination_counts": {
+            "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL": 75
+          },
+          "mean_steps": 127.64,
+          "max_steps": 230,
+          "mean_fit_seconds": 0.16423785112798214,
+          "max_fit_seconds": 0.36994530353695154,
+          "max_final_gradient_inf": 9.943438866573544e-07,
+          "mean_initial_loss": 1.4892883614749477,
+          "mean_final_loss": 0.8514065405220419
+        },
+        {
+          "k": 10,
+          "fits": 75,
+          "converged": 75,
+          "status_counts": {
+            "0": 75
+          },
+          "termination_counts": {
+            "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL": 75
+          },
+          "mean_steps": 173.73333333333332,
+          "max_steps": 280,
+          "mean_fit_seconds": 0.24581475441654524,
+          "max_fit_seconds": 0.531092937104404,
+          "max_final_gradient_inf": 9.954761214239435e-07,
+          "mean_initial_loss": 1.5638791301974093,
+          "mean_final_loss": 0.8780241011764817
+        },
+        {
+          "k": 20,
+          "fits": 75,
+          "converged": 68,
+          "status_counts": {
+            "0": 68,
+            "1": 7
+          },
+          "termination_counts": {
+            "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL": 68,
+            "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT": 7
+          },
+          "mean_steps": 233.2,
+          "max_steps": 300,
+          "mean_fit_seconds": 0.383563791240255,
+          "max_fit_seconds": 0.7250417675822973,
+          "max_final_gradient_inf": 1.994041553721281e-05,
+          "mean_initial_loss": 1.6017769275843043,
+          "mean_final_loss": 0.9122882831295221
+        }
+      ],
+      "state_bytes_by_classes": {
+        "6": 7728,
+        "16": 20608,
+        "11": 14168,
+        "8": 10304,
+        "26": 33488
+      }
+    },
+    {
+      "row_id": "cvs-daot-rc4-s2026092702",
+      "trace_file": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092702/sfhead/fit_trace.jsonl",
+      "trace_file_bytes": 19492404,
+      "fits": 300,
+      "converged": 293,
+      "total_fit_seconds": 65.27966600935906,
+      "per_k": [
+        {
+          "k": 1,
+          "fits": 75,
+          "converged": 75,
+          "status_counts": {
+            "0": 75
+          },
+          "termination_counts": {
+            "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL": 75
+          },
+          "mean_steps": 58.88,
+          "max_steps": 132,
+          "mean_fit_seconds": 0.07073195934295655,
+          "max_fit_seconds": 0.1892278352752328,
+          "max_final_gradient_inf": 9.954409665959474e-07,
+          "mean_initial_loss": 1.1010597170555845,
+          "mean_final_loss": 0.6086948449383748
+        },
+        {
+          "k": 5,
+          "fits": 75,
+          "converged": 75,
+          "status_counts": {
+            "0": 75
+          },
+          "termination_counts": {
+            "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL": 75
+          },
+          "mean_steps": 128.17333333333335,
+          "max_steps": 220,
+          "mean_fit_seconds": 0.16658234876890976,
+          "max_fit_seconds": 0.35811793990433216,
+          "max_final_gradient_inf": 9.936106997653367e-07,
+          "mean_initial_loss": 1.4540335935282303,
+          "mean_final_loss": 0.8237016514207588
+        },
+        {
+          "k": 10,
+          "fits": 75,
+          "converged": 75,
+          "status_counts": {
+            "0": 75
+          },
+          "termination_counts": {
+            "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL": 75
+          },
+          "mean_steps": 175.86666666666667,
+          "max_steps": 288,
+          "mean_fit_seconds": 0.24945829002807537,
+          "max_fit_seconds": 0.5299511309713125,
+          "max_final_gradient_inf": 9.95889461492984e-07,
+          "mean_initial_loss": 1.5518939473326274,
+          "mean_final_loss": 0.8644314915486165
+        },
+        {
+          "k": 20,
+          "fits": 75,
+          "converged": 68,
+          "status_counts": {
+            "0": 68,
+            "1": 7
+          },
+          "termination_counts": {
+            "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL": 68,
+            "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT": 7
+          },
+          "mean_steps": 232.05333333333334,
+          "max_steps": 300,
+          "mean_fit_seconds": 0.3836229486515125,
+          "max_fit_seconds": 0.7164563899859786,
+          "max_final_gradient_inf": 4.08053670437446e-05,
+          "mean_initial_loss": 1.5826640787981285,
+          "mean_final_loss": 0.9048555817659986
+        }
+      ],
+      "state_bytes_by_classes": {
+        "6": 7728,
+        "16": 20608,
+        "11": 14168,
+        "8": 10304,
+        "26": 33488
+      }
+    },
+    {
+      "row_id": "cvs-daot-rc4-s2026092703",
+      "trace_file": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092703/sfhead/fit_trace.jsonl",
+      "trace_file_bytes": 19233278,
+      "fits": 300,
+      "converged": 291,
+      "total_fit_seconds": 65.58945637289435,
+      "per_k": [
+        {
+          "k": 1,
+          "fits": 75,
+          "converged": 75,
+          "status_counts": {
+            "0": 75
+          },
+          "termination_counts": {
+            "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL": 75
+          },
+          "mean_steps": 57.85333333333333,
+          "max_steps": 134,
+          "mean_fit_seconds": 0.07083818475405375,
+          "max_fit_seconds": 0.19498351495712996,
+          "max_final_gradient_inf": 9.996317995855306e-07,
+          "mean_initial_loss": 1.1550284722140767,
+          "mean_final_loss": 0.626496467763863
+        },
+        {
+          "k": 5,
+          "fits": 75,
+          "converged": 75,
+          "status_counts": {
+            "0": 75
+          },
+          "termination_counts": {
+            "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL": 75
+          },
+          "mean_steps": 128.25333333333333,
+          "max_steps": 234,
+          "mean_fit_seconds": 0.16903627732147772,
+          "max_fit_seconds": 0.38803080935031176,
+          "max_final_gradient_inf": 9.953560087582261e-07,
+          "mean_initial_loss": 1.4524087221091877,
+          "mean_final_loss": 0.8332106452799634
+        },
+        {
+          "k": 10,
+          "fits": 75,
+          "converged": 75,
+          "status_counts": {
+            "0": 75
+          },
+          "termination_counts": {
+            "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL": 75
+          },
+          "mean_steps": 170.66666666666666,
+          "max_steps": 287,
+          "mean_fit_seconds": 0.2461405902604262,
+          "max_fit_seconds": 0.5414578504860401,
+          "max_final_gradient_inf": 9.982047855095868e-07,
+          "mean_initial_loss": 1.5362637492395599,
+          "mean_final_loss": 0.8578647851339937
+        },
+        {
+          "k": 20,
+          "fits": 75,
+          "converged": 66,
+          "status_counts": {
+            "0": 66,
+            "1": 9
+          },
+          "termination_counts": {
+            "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL": 66,
+            "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT": 9
+          },
+          "mean_steps": 230.16,
+          "max_steps": 300,
+          "mean_fit_seconds": 0.3885110326359669,
+          "max_fit_seconds": 0.7392989499494433,
+          "max_final_gradient_inf": 3.2358566560472884e-05,
+          "mean_initial_loss": 1.5883657915650349,
+          "mean_final_loss": 0.8963083729692278
+        }
+      ],
+      "state_bytes_by_classes": {
+        "6": 7728,
+        "16": 20608,
+        "11": 14168,
+        "8": 10304,
+        "26": 33488
+      }
+    },
+    {
+      "row_id": "cvs-daot-rc4-s2026092704",
+      "trace_file": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092704/sfhead/fit_trace.jsonl",
+      "trace_file_bytes": 19189560,
+      "fits": 300,
+      "converged": 291,
+      "total_fit_seconds": 64.76790628395975,
+      "per_k": [
+        {
+          "k": 1,
+          "fits": 75,
+          "converged": 75,
+          "status_counts": {
+            "0": 75
+          },
+          "termination_counts": {
+            "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL": 75
+          },
+          "mean_steps": 56.053333333333335,
+          "max_steps": 139,
+          "mean_fit_seconds": 0.06748567332824071,
+          "max_fit_seconds": 0.20255100820213556,
+          "max_final_gradient_inf": 9.892502801825518e-07,
+          "mean_initial_loss": 1.1807524738226551,
+          "mean_final_loss": 0.6212805226305923
+        },
+        {
+          "k": 5,
+          "fits": 75,
+          "converged": 75,
+          "status_counts": {
+            "0": 75
+          },
+          "termination_counts": {
+            "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL": 75
+          },
+          "mean_steps": 128.57333333333332,
+          "max_steps": 226,
+          "mean_fit_seconds": 0.16680137225737174,
+          "max_fit_seconds": 0.38247515819966793,
+          "max_final_gradient_inf": 9.96690029679231e-07,
+          "mean_initial_loss": 1.4606446356671672,
+          "mean_final_loss": 0.8248627640725774
+        },
+        {
+          "k": 10,
+          "fits": 75,
+          "converged": 75,
+          "status_counts": {
+            "0": 75
+          },
+          "termination_counts": {
+            "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL": 75
+          },
+          "mean_steps": 172.42666666666668,
+          "max_steps": 292,
+          "mean_fit_seconds": 0.2460249535863598,
+          "max_fit_seconds": 0.5366554316133261,
+          "max_final_gradient_inf": 9.968424876480336e-07,
+          "mean_initial_loss": 1.5474229330915048,
+          "mean_final_loss": 0.8484890714102504
+        },
+        {
+          "k": 20,
+          "fits": 75,
+          "converged": 66,
+          "status_counts": {
+            "0": 66,
+            "1": 9
+          },
+          "termination_counts": {
+            "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL": 66,
+            "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT": 9
+          },
+          "mean_steps": 228.36,
+          "max_steps": 300,
+          "mean_fit_seconds": 0.38326008461415767,
+          "max_fit_seconds": 0.7515876106917858,
+          "max_final_gradient_inf": 1.7401059297848483e-05,
+          "mean_initial_loss": 1.5670100627273345,
+          "mean_final_loss": 0.8855953825480949
+        }
+      ],
+      "state_bytes_by_classes": {
+        "6": 7728,
+        "16": 20608,
+        "11": 14168,
+        "8": 10304,
+        "26": 33488
+      }
+    }
+  ],
+  "total_fits": 1200,
+  "total_converged": 1168,
+  "new_ground_statistics_bytes": 0
+}

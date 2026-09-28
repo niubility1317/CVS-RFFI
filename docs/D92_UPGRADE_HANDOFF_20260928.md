@@ -1,5 +1,9 @@
 # D92优化当前交接
 
+最新状态：SFHead完整2412条结果已ANALYZED，supervisor2403988和所有子进程已终止，终态证据`readback_1790605266.json`。该版本每K的Δ旧/Δ新/ΔH（百分点）：K1 +0.29/−2.92/−4.54；K5 +10.88/−13.20/−8.89；K10 +4.27/−14.14/−11.28；K20 +1.34/−15.90/−12.73。未晋级，goal未完成。完整图表和CSV在本run的results/summary，2412混淆矩阵独立复算通过，1200拟合完整日志核验：1168收敛、32个K20预算达到300，所有raw/compact/trace保留。禁止重跑或根据这些目标分数调参。
+
+下一步：`/root/source_aux_feasibility`正在做不接触目标结果的独立数学/代码方案核查，尚未写新候选或启动新实验。它没有收到SFHead结果，职责是从用户source-free约束与已有D92代码独立推导完整候选；每row只能用本row物理support holdout，K1固定规则，不借用其他row额外support，无sourceproxy。等待其完成后按实际协议判断可执行性，不能把本次评分传给研发任务。所有下面的RUNNING/待评分条目均是过程历史，当前以本段终态为准。
+
 当前用户纠正（2026-09-28）：辅助训练禁止使用源域数据；允许地面已冻结模型、原型及少量汇总统计，结合卫星合法support。暂无硬传输上限，优先小payload并报告字节数。源TX留出辅助模型方案已被替代，未启动任何新训练；其实现草稿已归档并从正式代码撤出。当前推进source-data-free Phase2方法，禁止读取source IQ、逐样本特征、source loader或由原型重建伪源样本。允许的量化摘要按当前`项目.md`5.3.2及实际冻结来源判断；无需再次询问辅助训练授权。下列此前“等待范围答复”条目只记录历史。
 
 新候选D92-SFHead-v1与冻结配置见`docs/D92_SOURCEFREE_AUX_20260928.md`及`configs/d92_sourcefree_frozen_20260928.json`。仅support上的taskbalancedCE+旧类KD+L2，CPU确定性L-BFGS-B，无source校准、无query选参。新增地面统计0字节，现有ground摘要只读核算8191至8383字节/模型。37项core/summary/allocation/predictor合成测试、42项runner/scorer测试通过，独立P0/P1审查无阻断。新run：`20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01`；data run：`20260928-phase2-d92-sfhead-data-manytx-r01`；release：`d92_sfhead_confirmation_20260928_r01`。RX20-19按未用于本轮评分且完整26TX可用性选取；4模型×1RX×3scene×4K×5newcounts×5supportseed=1200配对split，连同基线和DG共2412记录。每TX180物理记录（3scene各supportpool30/query30），全矩阵固定后才独立评分。

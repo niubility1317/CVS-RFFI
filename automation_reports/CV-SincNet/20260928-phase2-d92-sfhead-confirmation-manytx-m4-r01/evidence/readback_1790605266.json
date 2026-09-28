@@ -1,0 +1,224 @@
+{
+  "startup.json": {
+    "pid": 2403988,
+    "argv": [
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_sfhead_confirmation_20260928_r01/tools/run_d92_confirmation.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_sfhead_confirmation_20260928_r01/configs/d92_sourcefree_confirmation_20260928.json",
+      "--commit",
+      "3348c8c37df402098a6f84397eaa1bf74d8d592e"
+    ],
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_sfhead_confirmation_20260928_r01",
+    "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "commit": "3348c8c37df402098a6f84397eaa1bf74d8d592e",
+    "launch_owner": "codex/root/d92-upgrade-20260928",
+    "environment": {
+      "CUDA_VISIBLE_DEVICES": "",
+      "OMP_NUM_THREADS": "2",
+      "MKL_NUM_THREADS": "2",
+      "OPENBLAS_NUM_THREADS": "2",
+      "NUMEXPR_NUM_THREADS": null
+    },
+    "worker_policy": {
+      "feature_gpu": 0,
+      "max_feature_workers": 1,
+      "cpu_row_workers": 4,
+      "blas_threads": 2
+    },
+    "timestamp": 1790604350.3915663,
+    "live_argv": null,
+    "live_cwd": null
+  },
+  "state.json": {
+    "cvs-daot-rc4-s2026092701": {
+      "status": "PREDICTIONS_COMPLETE",
+      "updated": 1790605092.7081504,
+      "checkpoint_sha256": "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b"
+    },
+    "cvs-daot-rc4-s2026092702": {
+      "status": "PREDICTIONS_COMPLETE",
+      "updated": 1790605091.8743193,
+      "checkpoint_sha256": "72f26413e495dcf82317898f8729caa3d35499bf0b41e9671ffdceab2c90924b"
+    },
+    "cvs-daot-rc4-s2026092703": {
+      "status": "PREDICTIONS_COMPLETE",
+      "updated": 1790605089.3502386,
+      "checkpoint_sha256": "51fadc3b4ad3cbf83de01700a4a109430e7a57b1e10cb147f0be5f01593f26bb"
+    },
+    "cvs-daot-rc4-s2026092704": {
+      "status": "PREDICTIONS_COMPLETE",
+      "updated": 1790605128.8974538,
+      "checkpoint_sha256": "690fed6ea2a6532d0ad978c93306f0f35b61f4a3a3fc4b1d6494f0e7547c74bb"
+    }
+  },
+  "workflow_state.json": {
+    "status": "SCORED",
+    "records": 2412,
+    "commit": "3348c8c37df402098a6f84397eaa1bf74d8d592e",
+    "updated": 1790605139.421963
+  },
+  "complete.json": {
+    "status": "SCORED",
+    "commit": "3348c8c37df402098a6f84397eaa1bf74d8d592e",
+    "model_rows": 4,
+    "records": 2412,
+    "selection_feedback_forbidden": true
+  },
+  "launch.json": {
+    "pid": 2403988,
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_sfhead_confirmation_20260928_r01/tools/run_d92_confirmation.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_sfhead_confirmation_20260928_r01/configs/d92_sourcefree_confirmation_20260928.json",
+      "--commit",
+      "3348c8c37df402098a6f84397eaa1bf74d8d592e"
+    ],
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_sfhead_confirmation_20260928_r01",
+    "commit": "3348c8c37df402098a6f84397eaa1bf74d8d592e",
+    "run": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01",
+    "data_run": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-data-manytx-r01",
+    "owner": "codex/root/d92-upgrade-20260928",
+    "live_argv": null,
+    "live_cwd": null
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_sfhead_confirmation_20260928_r01/run.log": {
+    "bytes": 0,
+    "tail": []
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/score.log": {
+    "bytes": 38,
+    "tail": [
+      "{\"status\": \"SCORED\", \"records\": 2412}"
+    ]
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/build_data.log": {
+    "bytes": 682,
+    "tail": [
+      "{\"receiver\": \"20-19\", \"received_records\": 4680}",
+      "{\"protocol_schema\": \"p2_min_v1\", \"phase2_data_status\": \"VALIDATED_ONCE\", \"capsule_id\": \"residual-noeq-d0a99fede324159c5a4750fd\", \"members\": [\"received.npz\", \"splits/*.json\"], \"received_count\": 4680, \"split_count\": 300, \"signal_shape\": [2, 256], \"scenarios\": [\"practical_high\", \"practical_mid\", \"practical_low_urban\"], \"channel\": {\"route\": \"residual\", \"mode\": \"post_sync\", \"equalization_enabled\": false, \"fs_hz\": 25000000}, \"checks\": {\"unique_physical_observation\": true, \"scenes_physically_disjoint\": true, \"support_query_physically_disjoint\": true, \"query_labels_absent\": true, \"source_paths_absent\": true, \"finite_received\": true}}"
+    ]
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092703/sfhead.log": {
+    "bytes": 19233278,
+    "tail": [
+      "{\"split_id\": \"fdb9216a4671691feccdce43\", \"method\": \"D92-SFHead-v1\", \"k\": 20, \"old_count\": 6, \"class_count\": 11, \"feature_dim\": 160, \"support_rows\": 220, \"selection\": \"fixed_preregistered_formula\", \"query_rows_used_for_fit\": 0, \"encoder_updated\": false, \"source_runtime_access\": false, \"ground_used_for_fit\": false, \"optimizer\": \"scipy.optimize.L-BFGS-B\", \"precision\": \"float64\", \"learning_rate\": null, \"learning_rate_reason\": \"L-BFGS-B internal line search; scalar learning rate not measured\", \"max_iter\": 300, \"gtol\": 1e-06, \"ftol\": 1e-12, \"prototype_scale\": 10.0, \"converged\": true, \"optimizer_status\": 0, \"termination_message\": \"CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL\", \"status\": \"CONVERGED\", \"optimizer_steps\": 271, \"function_evaluations\": 278, \"initial\": {\"loss\": 2.2666356632234885, \"support_ce\": 2.2362926734333586, \"conditional_old_kd\": 0.6372027855927297, \"scaled_squared_distance\": 0.0, \"regularization\": 0.0, \"support_weight\": 1.0, \"kd_weight\": 0.047619047619047616, \"squared_distance_weight\": 0.0022727272727272726, \"gradient_l2\": 0.2041929451698829, \"gradient_inf\": 0.08952934128084658}, \"final\": {\"loss\": 1.483312080689042, \"support_ce\": 1.3462694487658813, \"conditional_old_kd\": 0.1992579091493459, \"scaled_squared_distance\": 56.123830425918754, \"regularization\": 0.12755416005890624, \"support_weight\": 1.0, \"kd_weight\": 0.047619047619047616, \"squared_distance_weight\": 0.0022727272727272726, \"gradient_l2\": 5.6008499315108835e-06, \"gradient_inf\": 8.676987373797818e-07}, \"fit_seconds\": 0.3884649705141783, \"persistent_state_bytes\": 14168, \"new_ground_payload_bytes\": 0, \"support_task_weights\": {\"old\": 0.5, \"new\": 0.5}}",
+      "{\"split_id\": \"ff4f926ee9ccbd058929e87b\", \"method\": \"D92-SFHead-v1\", \"k\": 1, \"old_count\": 6, \"class_count\": 26, \"feature_dim\": 160, \"support_rows\": 26, \"selection\": \"fixed_preregistered_formula\", \"query_rows_used_for_fit\": 0, \"encoder_updated\": false, \"source_runtime_access\": false, \"ground_used_for_fit\": false, \"optimizer\": \"scipy.optimize.L-BFGS-B\", \"precision\": \"float64\", \"learning_rate\": null, \"learning_rate_reason\": \"L-BFGS-B internal line search; scalar learning rate not measured\", \"max_iter\": 300, \"gtol\": 1e-06, \"ftol\": 1e-12, \"prototype_scale\": 10.0, \"converged\": true, \"optimizer_status\": 0, \"termination_message\": \"CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL\", \"status\": \"CONVERGED\", \"optimizer_steps\": 123, \"function_evaluations\": 133, \"initial\": {\"loss\": 3.0650066972772523, \"support_ce\": 1.7534006100006425, \"conditional_old_kd\": 2.6232121745532195, \"scaled_squared_distance\": 0.0, \"regularization\": 0.0, \"support_weight\": 1.0, \"kd_weight\": 0.5, \"squared_distance_weight\": 0.019230769230769232, \"gradient_l2\": 0.19162828964898707, \"gradient_inf\": 0.10599861587657534}, \"final\": {\"loss\": 1.449564072945972, \"support_ce\": 1.1259685268850732, \"conditional_old_kd\": 0.17760067815534172, \"scaled_squared_distance\": 12.209350763127855, \"regularization\": 0.23479520698322798, \"support_weight\": 1.0, \"kd_weight\": 0.5, \"squared_distance_weight\": 0.019230769230769232, \"gradient_l2\": 2.707059119504706e-06, \"gradient_inf\": 6.88669506836761e-07}, \"fit_seconds\": 0.17907067108899355, \"persistent_state_bytes\": 33488, \"new_ground_payload_bytes\": 0, \"support_task_weights\": {\"old\": 0.5, \"new\": 0.5}}",
+      "{\"split_id\": \"ffb905e1385a4643640ba034\", \"method\": \"D92-SFHead-v1\", \"k\": 10, \"old_count\": 6, \"class_count\": 8, \"feature_dim\": 160, \"support_rows\": 80, \"selection\": \"fixed_preregistered_formula\", \"query_rows_used_for_fit\": 0, \"encoder_updated\": false, \"source_runtime_access\": false, \"ground_used_for_fit\": false, \"optimizer\": \"scipy.optimize.L-BFGS-B\", \"precision\": \"float64\", \"learning_rate\": null, \"learning_rate_reason\": \"L-BFGS-B internal line search; scalar learning rate not measured\", \"max_iter\": 300, \"gtol\": 1e-06, \"ftol\": 1e-12, \"prototype_scale\": 10.0, \"converged\": true, \"optimizer_status\": 0, \"termination_message\": \"CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL\", \"status\": \"CONVERGED\", \"optimizer_steps\": 167, \"function_evaluations\": 179, \"initial\": {\"loss\": 1.822143856550998, \"support_ce\": 1.7600229413259054, \"conditional_old_kd\": 0.6833300674760181, \"scaled_squared_distance\": 0.0, \"regularization\": 0.0, \"support_weight\": 1.0, \"kd_weight\": 0.09090909090909091, \"squared_distance_weight\": 0.00625, \"gradient_l2\": 0.3512008190976071, \"gradient_inf\": 0.1786953766569695}, \"final\": {\"loss\": 0.8933121766320912, \"support_ce\": 0.740091617284224, \"conditional_old_kd\": 0.238319860372266, \"scaled_squared_distance\": 21.04881879933488, \"regularization\": 0.131555117495843, \"support_weight\": 1.0, \"kd_weight\": 0.09090909090909091, \"squared_distance_weight\": 0.00625, \"gradient_l2\": 4.427229063543982e-06, \"gradient_inf\": 9.757537140105122e-07}, \"fit_seconds\": 0.1963855130597949, \"persistent_state_bytes\": 10304, \"new_ground_payload_bytes\": 0, \"support_task_weights\": {\"old\": 0.5, \"new\": 0.5}}"
+    ]
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092703/d92.log": {
+    "bytes": 47133,
+    "tail": [
+      "{\"split_id\": \"ff4f926ee9ccbd058929e87b\", \"predictions\": 302, \"elapsed_seconds\": 0.05649229045957327, \"feature_dim\": 256, \"reused_original_prediction\": false}",
+      "{\"split_id\": \"ffb905e1385a4643640ba034\", \"predictions\": 303, \"elapsed_seconds\": 1.8949851440265775, \"feature_dim\": 256, \"reused_original_prediction\": false}",
+      "{\"status\": \"PREDICTIONS_COMPLETE\", \"predictions\": 303, \"split_count\": 300, \"capsule_id\": \"residual-noeq-d0a99fede324159c5a4750fd\", \"truth_read\": false}"
+    ]
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092703/features.log": {
+    "bytes": 27,
+    "tail": [
+      "COMPLETE received-features"
+    ]
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092704/sfhead.log": {
+    "bytes": 19189560,
+    "tail": [
+      "{\"split_id\": \"fdb9216a4671691feccdce43\", \"method\": \"D92-SFHead-v1\", \"k\": 20, \"old_count\": 6, \"class_count\": 11, \"feature_dim\": 160, \"support_rows\": 220, \"selection\": \"fixed_preregistered_formula\", \"query_rows_used_for_fit\": 0, \"encoder_updated\": false, \"source_runtime_access\": false, \"ground_used_for_fit\": false, \"optimizer\": \"scipy.optimize.L-BFGS-B\", \"precision\": \"float64\", \"learning_rate\": null, \"learning_rate_reason\": \"L-BFGS-B internal line search; scalar learning rate not measured\", \"max_iter\": 300, \"gtol\": 1e-06, \"ftol\": 1e-12, \"prototype_scale\": 10.0, \"converged\": true, \"optimizer_status\": 0, \"termination_message\": \"CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL\", \"status\": \"CONVERGED\", \"optimizer_steps\": 272, \"function_evaluations\": 282, \"initial\": {\"loss\": 2.2882200739764915, \"support_ce\": 2.2534419547817612, \"conditional_old_kd\": 0.7303405030893317, \"scaled_squared_distance\": 0.0, \"regularization\": 0.0, \"support_weight\": 1.0, \"kd_weight\": 0.047619047619047616, \"squared_distance_weight\": 0.0022727272727272726, \"gradient_l2\": 0.20385260706366803, \"gradient_inf\": 0.09324195946979909}, \"final\": {\"loss\": 1.4766681237016888, \"support_ce\": 1.343162200338102, \"conditional_old_kd\": 0.21971794574398962, \"scaled_squared_distance\": 54.13899217867553, \"regularization\": 0.12304316404244438, \"support_weight\": 1.0, \"kd_weight\": 0.047619047619047616, \"squared_distance_weight\": 0.0022727272727272726, \"gradient_l2\": 4.331221258405385e-06, \"gradient_inf\": 6.55578122979244e-07}, \"fit_seconds\": 0.38104338105767965, \"persistent_state_bytes\": 14168, \"new_ground_payload_bytes\": 0, \"support_task_weights\": {\"old\": 0.5, \"new\": 0.5}}",
+      "{\"split_id\": \"ff4f926ee9ccbd058929e87b\", \"method\": \"D92-SFHead-v1\", \"k\": 1, \"old_count\": 6, \"class_count\": 26, \"feature_dim\": 160, \"support_rows\": 26, \"selection\": \"fixed_preregistered_formula\", \"query_rows_used_for_fit\": 0, \"encoder_updated\": false, \"source_runtime_access\": false, \"ground_used_for_fit\": false, \"optimizer\": \"scipy.optimize.L-BFGS-B\", \"precision\": \"float64\", \"learning_rate\": null, \"learning_rate_reason\": \"L-BFGS-B internal line search; scalar learning rate not measured\", \"max_iter\": 300, \"gtol\": 1e-06, \"ftol\": 1e-12, \"prototype_scale\": 10.0, \"converged\": true, \"optimizer_status\": 0, \"termination_message\": \"CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL\", \"status\": \"CONVERGED\", \"optimizer_steps\": 115, \"function_evaluations\": 122, \"initial\": {\"loss\": 2.9346032654358205, \"support_ce\": 1.9010248606378404, \"conditional_old_kd\": 2.0671568095959603, \"scaled_squared_distance\": 0.0, \"regularization\": 0.0, \"support_weight\": 1.0, \"kd_weight\": 0.5, \"squared_distance_weight\": 0.019230769230769232, \"gradient_l2\": 0.19591287913290475, \"gradient_inf\": 0.09912483488750976}, \"final\": {\"loss\": 1.5070436872164232, \"support_ce\": 1.2113945690997516, \"conditional_old_kd\": 0.15036139939157675, \"scaled_squared_distance\": 11.464357757885924, \"regularization\": 0.22046841842088316, \"support_weight\": 1.0, \"kd_weight\": 0.5, \"squared_distance_weight\": 0.019230769230769232, \"gradient_l2\": 3.6049365748472014e-06, \"gradient_inf\": 7.389324959763965e-07}, \"fit_seconds\": 0.1611056886613369, \"persistent_state_bytes\": 33488, \"new_ground_payload_bytes\": 0, \"support_task_weights\": {\"old\": 0.5, \"new\": 0.5}}",
+      "{\"split_id\": \"ffb905e1385a4643640ba034\", \"method\": \"D92-SFHead-v1\", \"k\": 10, \"old_count\": 6, \"class_count\": 8, \"feature_dim\": 160, \"support_rows\": 80, \"selection\": \"fixed_preregistered_formula\", \"query_rows_used_for_fit\": 0, \"encoder_updated\": false, \"source_runtime_access\": false, \"ground_used_for_fit\": false, \"optimizer\": \"scipy.optimize.L-BFGS-B\", \"precision\": \"float64\", \"learning_rate\": null, \"learning_rate_reason\": \"L-BFGS-B internal line search; scalar learning rate not measured\", \"max_iter\": 300, \"gtol\": 1e-06, \"ftol\": 1e-12, \"prototype_scale\": 10.0, \"converged\": true, \"optimizer_status\": 0, \"termination_message\": \"CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL\", \"status\": \"CONVERGED\", \"optimizer_steps\": 176, \"function_evaluations\": 183, \"initial\": {\"loss\": 1.8219094173272894, \"support_ce\": 1.7475313344158856, \"conditional_old_kd\": 0.8181589120254416, \"scaled_squared_distance\": 0.0, \"regularization\": 0.0, \"support_weight\": 1.0, \"kd_weight\": 0.09090909090909091, \"squared_distance_weight\": 0.00625, \"gradient_l2\": 0.37047257167816755, \"gradient_inf\": 0.2027703104835448}, \"final\": {\"loss\": 0.8947854580416144, \"support_ce\": 0.7525057741355341, \"conditional_old_kd\": 0.1911470371198597, \"scaled_squared_distance\": 19.98442888504761, \"regularization\": 0.12490268053154757, \"support_weight\": 1.0, \"kd_weight\": 0.09090909090909091, \"squared_distance_weight\": 0.00625, \"gradient_l2\": 2.634104653223693e-06, \"gradient_inf\": 6.699297617991434e-07}, \"fit_seconds\": 0.1965241301804781, \"persistent_state_bytes\": 10304, \"new_ground_payload_bytes\": 0, \"support_task_weights\": {\"old\": 0.5, \"new\": 0.5}}"
+    ]
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092704/d92.log": {
+    "bytes": 47110,
+    "tail": [
+      "{\"split_id\": \"ff4f926ee9ccbd058929e87b\", \"predictions\": 302, \"elapsed_seconds\": 0.055415887385606766, \"feature_dim\": 256, \"reused_original_prediction\": false}",
+      "{\"split_id\": \"ffb905e1385a4643640ba034\", \"predictions\": 303, \"elapsed_seconds\": 2.090771237388253, \"feature_dim\": 256, \"reused_original_prediction\": false}",
+      "{\"status\": \"PREDICTIONS_COMPLETE\", \"predictions\": 303, \"split_count\": 300, \"capsule_id\": \"residual-noeq-d0a99fede324159c5a4750fd\", \"truth_read\": false}"
+    ]
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092704/features.log": {
+    "bytes": 27,
+    "tail": [
+      "COMPLETE received-features"
+    ]
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092701/sfhead.log": {
+    "bytes": 19445116,
+    "tail": [
+      "{\"split_id\": \"fdb9216a4671691feccdce43\", \"method\": \"D92-SFHead-v1\", \"k\": 20, \"old_count\": 6, \"class_count\": 11, \"feature_dim\": 160, \"support_rows\": 220, \"selection\": \"fixed_preregistered_formula\", \"query_rows_used_for_fit\": 0, \"encoder_updated\": false, \"source_runtime_access\": false, \"ground_used_for_fit\": false, \"optimizer\": \"scipy.optimize.L-BFGS-B\", \"precision\": \"float64\", \"learning_rate\": null, \"learning_rate_reason\": \"L-BFGS-B internal line search; scalar learning rate not measured\", \"max_iter\": 300, \"gtol\": 1e-06, \"ftol\": 1e-12, \"prototype_scale\": 10.0, \"converged\": true, \"optimizer_status\": 0, \"termination_message\": \"CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL\", \"status\": \"CONVERGED\", \"optimizer_steps\": 267, \"function_evaluations\": 277, \"initial\": {\"loss\": 2.250989463146776, \"support_ce\": 2.220440815253987, \"conditional_old_kd\": 0.6415216057485719, \"scaled_squared_distance\": 0.0, \"regularization\": 0.0, \"support_weight\": 1.0, \"kd_weight\": 0.047619047619047616, \"squared_distance_weight\": 0.0022727272727272726, \"gradient_l2\": 0.19724874082322544, \"gradient_inf\": 0.08427265259440593}, \"final\": {\"loss\": 1.5186670527688657, \"support_ce\": 1.3772736974391742, \"conditional_old_kd\": 0.27118416643705906, \"scaled_squared_distance\": 56.53112238162112, \"regularization\": 0.12847982359459345, \"support_weight\": 1.0, \"kd_weight\": 0.047619047619047616, \"squared_distance_weight\": 0.0022727272727272726, \"gradient_l2\": 4.670147456489776e-06, \"gradient_inf\": 8.687714725265063e-07}, \"fit_seconds\": 0.3835982447490096, \"persistent_state_bytes\": 14168, \"new_ground_payload_bytes\": 0, \"support_task_weights\": {\"old\": 0.5, \"new\": 0.5}}",
+      "{\"split_id\": \"ff4f926ee9ccbd058929e87b\", \"method\": \"D92-SFHead-v1\", \"k\": 1, \"old_count\": 6, \"class_count\": 26, \"feature_dim\": 160, \"support_rows\": 26, \"selection\": \"fixed_preregistered_formula\", \"query_rows_used_for_fit\": 0, \"encoder_updated\": false, \"source_runtime_access\": false, \"ground_used_for_fit\": false, \"optimizer\": \"scipy.optimize.L-BFGS-B\", \"precision\": \"float64\", \"learning_rate\": null, \"learning_rate_reason\": \"L-BFGS-B internal line search; scalar learning rate not measured\", \"max_iter\": 300, \"gtol\": 1e-06, \"ftol\": 1e-12, \"prototype_scale\": 10.0, \"converged\": true, \"optimizer_status\": 0, \"termination_message\": \"CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL\", \"status\": \"CONVERGED\", \"optimizer_steps\": 122, \"function_evaluations\": 129, \"initial\": {\"loss\": 3.732895258105808, \"support_ce\": 1.9329374694165677, \"conditional_old_kd\": 3.5999155773784803, \"scaled_squared_distance\": 0.0, \"regularization\": 0.0, \"support_weight\": 1.0, \"kd_weight\": 0.5, \"squared_distance_weight\": 0.019230769230769232, \"gradient_l2\": 0.241422219591661, \"gradient_inf\": 0.1129530731971828}, \"final\": {\"loss\": 1.7052864599681312, \"support_ce\": 1.3005905322820541, \"conditional_old_kd\": 0.31974452724738694, \"scaled_squared_distance\": 12.73083053124395, \"regularization\": 0.24482366406238365, \"support_weight\": 1.0, \"kd_weight\": 0.5, \"squared_distance_weight\": 0.019230769230769232, \"gradient_l2\": 3.599942086602461e-06, \"gradient_inf\": 9.482050747750242e-07}, \"fit_seconds\": 0.17553487047553062, \"persistent_state_bytes\": 33488, \"new_ground_payload_bytes\": 0, \"support_task_weights\": {\"old\": 0.5, \"new\": 0.5}}",
+      "{\"split_id\": \"ffb905e1385a4643640ba034\", \"method\": \"D92-SFHead-v1\", \"k\": 10, \"old_count\": 6, \"class_count\": 8, \"feature_dim\": 160, \"support_rows\": 80, \"selection\": \"fixed_preregistered_formula\", \"query_rows_used_for_fit\": 0, \"encoder_updated\": false, \"source_runtime_access\": false, \"ground_used_for_fit\": false, \"optimizer\": \"scipy.optimize.L-BFGS-B\", \"precision\": \"float64\", \"learning_rate\": null, \"learning_rate_reason\": \"L-BFGS-B internal line search; scalar learning rate not measured\", \"max_iter\": 300, \"gtol\": 1e-06, \"ftol\": 1e-12, \"prototype_scale\": 10.0, \"converged\": true, \"optimizer_status\": 0, \"termination_message\": \"CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL\", \"status\": \"CONVERGED\", \"optimizer_steps\": 188, \"function_evaluations\": 202, \"initial\": {\"loss\": 1.9781926320478227, \"support_ce\": 1.914965554360013, \"conditional_old_kd\": 0.6954978545659071, \"scaled_squared_distance\": 0.0, \"regularization\": 0.0, \"support_weight\": 1.0, \"kd_weight\": 0.09090909090909091, \"squared_distance_weight\": 0.00625, \"gradient_l2\": 0.3588937671367019, \"gradient_inf\": 0.16690784387725005}, \"final\": {\"loss\": 0.9453114621740928, \"support_ce\": 0.7843368587600075, \"conditional_old_kd\": 0.22947092482628256, \"scaled_squared_distance\": 22.41817763968952, \"regularization\": 0.14011361024805952, \"support_weight\": 1.0, \"kd_weight\": 0.09090909090909091, \"squared_distance_weight\": 0.00625, \"gradient_l2\": 2.2160009725938063e-06, \"gradient_inf\": 8.081586840714199e-07}, \"fit_seconds\": 0.21880655270069838, \"persistent_state_bytes\": 10304, \"new_ground_payload_bytes\": 0, \"support_task_weights\": {\"old\": 0.5, \"new\": 0.5}}"
+    ]
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092701/d92.log": {
+    "bytes": 47145,
+    "tail": [
+      "{\"split_id\": \"ff4f926ee9ccbd058929e87b\", \"predictions\": 302, \"elapsed_seconds\": 0.055655401200056076, \"feature_dim\": 256, \"reused_original_prediction\": false}",
+      "{\"split_id\": \"ffb905e1385a4643640ba034\", \"predictions\": 303, \"elapsed_seconds\": 1.9266683580353856, \"feature_dim\": 256, \"reused_original_prediction\": false}",
+      "{\"status\": \"PREDICTIONS_COMPLETE\", \"predictions\": 303, \"split_count\": 300, \"capsule_id\": \"residual-noeq-d0a99fede324159c5a4750fd\", \"truth_read\": false}"
+    ]
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092701/features.log": {
+    "bytes": 27,
+    "tail": [
+      "COMPLETE received-features"
+    ]
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092702/sfhead.log": {
+    "bytes": 19492404,
+    "tail": [
+      "{\"split_id\": \"fdb9216a4671691feccdce43\", \"method\": \"D92-SFHead-v1\", \"k\": 20, \"old_count\": 6, \"class_count\": 11, \"feature_dim\": 160, \"support_rows\": 220, \"selection\": \"fixed_preregistered_formula\", \"query_rows_used_for_fit\": 0, \"encoder_updated\": false, \"source_runtime_access\": false, \"ground_used_for_fit\": false, \"optimizer\": \"scipy.optimize.L-BFGS-B\", \"precision\": \"float64\", \"learning_rate\": null, \"learning_rate_reason\": \"L-BFGS-B internal line search; scalar learning rate not measured\", \"max_iter\": 300, \"gtol\": 1e-06, \"ftol\": 1e-12, \"prototype_scale\": 10.0, \"converged\": true, \"optimizer_status\": 0, \"termination_message\": \"CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL\", \"status\": \"CONVERGED\", \"optimizer_steps\": 261, \"function_evaluations\": 266, \"initial\": {\"loss\": 2.234762925471621, \"support_ce\": 2.205014247734734, \"conditional_old_kd\": 0.6247222324746322, \"scaled_squared_distance\": 0.0, \"regularization\": 0.0, \"support_weight\": 1.0, \"kd_weight\": 0.047619047619047616, \"squared_distance_weight\": 0.0022727272727272726, \"gradient_l2\": 0.1916719980820853, \"gradient_inf\": 0.08298576501200271}, \"final\": {\"loss\": 1.5335447742166364, \"support_ce\": 1.4088685069826383, \"conditional_old_kd\": 0.20536204562219101, \"scaled_squared_distance\": 50.55473376992282, \"regularization\": 0.11489712220437004, \"support_weight\": 1.0, \"kd_weight\": 0.047619047619047616, \"squared_distance_weight\": 0.0022727272727272726, \"gradient_l2\": 3.561507926116823e-06, \"gradient_inf\": 8.654443226463732e-07}, \"fit_seconds\": 0.367374568246305, \"persistent_state_bytes\": 14168, \"new_ground_payload_bytes\": 0, \"support_task_weights\": {\"old\": 0.5, \"new\": 0.5}}",
+      "{\"split_id\": \"ff4f926ee9ccbd058929e87b\", \"method\": \"D92-SFHead-v1\", \"k\": 1, \"old_count\": 6, \"class_count\": 26, \"feature_dim\": 160, \"support_rows\": 26, \"selection\": \"fixed_preregistered_formula\", \"query_rows_used_for_fit\": 0, \"encoder_updated\": false, \"source_runtime_access\": false, \"ground_used_for_fit\": false, \"optimizer\": \"scipy.optimize.L-BFGS-B\", \"precision\": \"float64\", \"learning_rate\": null, \"learning_rate_reason\": \"L-BFGS-B internal line search; scalar learning rate not measured\", \"max_iter\": 300, \"gtol\": 1e-06, \"ftol\": 1e-12, \"prototype_scale\": 10.0, \"converged\": true, \"optimizer_status\": 0, \"termination_message\": \"CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL\", \"status\": \"CONVERGED\", \"optimizer_steps\": 131, \"function_evaluations\": 136, \"initial\": {\"loss\": 2.822769944674238, \"support_ce\": 1.7874980600097943, \"conditional_old_kd\": 2.0705437693288875, \"scaled_squared_distance\": 0.0, \"regularization\": 0.0, \"support_weight\": 1.0, \"kd_weight\": 0.5, \"squared_distance_weight\": 0.019230769230769232, \"gradient_l2\": 0.1976239864898466, \"gradient_inf\": 0.10061362515246054}, \"final\": {\"loss\": 1.442913777918693, \"support_ce\": 1.1308294940314163, \"conditional_old_kd\": 0.1680860110014469, \"scaled_squared_distance\": 11.858146476100764, \"regularization\": 0.22804127838655316, \"support_weight\": 1.0, \"kd_weight\": 0.5, \"squared_distance_weight\": 0.019230769230769232, \"gradient_l2\": 3.0057785715197796e-06, \"gradient_inf\": 8.531912059105205e-07}, \"fit_seconds\": 0.18425489589571953, \"persistent_state_bytes\": 33488, \"new_ground_payload_bytes\": 0, \"support_task_weights\": {\"old\": 0.5, \"new\": 0.5}}",
+      "{\"split_id\": \"ffb905e1385a4643640ba034\", \"method\": \"D92-SFHead-v1\", \"k\": 10, \"old_count\": 6, \"class_count\": 8, \"feature_dim\": 160, \"support_rows\": 80, \"selection\": \"fixed_preregistered_formula\", \"query_rows_used_for_fit\": 0, \"encoder_updated\": false, \"source_runtime_access\": false, \"ground_used_for_fit\": false, \"optimizer\": \"scipy.optimize.L-BFGS-B\", \"precision\": \"float64\", \"learning_rate\": null, \"learning_rate_reason\": \"L-BFGS-B internal line search; scalar learning rate not measured\", \"max_iter\": 300, \"gtol\": 1e-06, \"ftol\": 1e-12, \"prototype_scale\": 10.0, \"converged\": true, \"optimizer_status\": 0, \"termination_message\": \"CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL\", \"status\": \"CONVERGED\", \"optimizer_steps\": 173, \"function_evaluations\": 181, \"initial\": {\"loss\": 2.0276591916702342, \"support_ce\": 1.963519245950157, \"conditional_old_kd\": 0.7055394029208514, \"scaled_squared_distance\": 0.0, \"regularization\": 0.0, \"support_weight\": 1.0, \"kd_weight\": 0.09090909090909091, \"squared_distance_weight\": 0.00625, \"gradient_l2\": 0.37419170651509726, \"gradient_inf\": 0.17984238396874347}, \"final\": {\"loss\": 0.9480095923028266, \"support_ce\": 0.8046744580735186, \"conditional_old_kd\": 0.19242323751835766, \"scaled_squared_distance\": 20.13473802187681, \"regularization\": 0.12584211263673006, \"support_weight\": 1.0, \"kd_weight\": 0.09090909090909091, \"squared_distance_weight\": 0.00625, \"gradient_l2\": 4.0061944383812294e-06, \"gradient_inf\": 8.108403989508294e-07}, \"fit_seconds\": 0.19693545065820217, \"persistent_state_bytes\": 10304, \"new_ground_payload_bytes\": 0, \"support_task_weights\": {\"old\": 0.5, \"new\": 0.5}}"
+    ]
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092702/d92.log": {
+    "bytes": 47141,
+    "tail": [
+      "{\"split_id\": \"ff4f926ee9ccbd058929e87b\", \"predictions\": 302, \"elapsed_seconds\": 0.056031594052910805, \"feature_dim\": 256, \"reused_original_prediction\": false}",
+      "{\"split_id\": \"ffb905e1385a4643640ba034\", \"predictions\": 303, \"elapsed_seconds\": 1.914450243115425, \"feature_dim\": 256, \"reused_original_prediction\": false}",
+      "{\"status\": \"PREDICTIONS_COMPLETE\", \"predictions\": 303, \"split_count\": 300, \"capsule_id\": \"residual-noeq-d0a99fede324159c5a4750fd\", \"truth_read\": false}"
+    ]
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092702/features.log": {
+    "bytes": 27,
+    "tail": [
+      "COMPLETE received-features"
+    ]
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092703/sfhead/predictions_complete.json": {
+    "status": "PREDICTIONS_COMPLETE",
+    "split_count": 300,
+    "predictions": 300,
+    "capsule_id": "residual-noeq-d0a99fede324159c5a4750fd",
+    "truth_read": false,
+    "source_data_access": false
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092704/sfhead/predictions_complete.json": {
+    "status": "PREDICTIONS_COMPLETE",
+    "split_count": 300,
+    "predictions": 300,
+    "capsule_id": "residual-noeq-d0a99fede324159c5a4750fd",
+    "truth_read": false,
+    "source_data_access": false
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092701/sfhead/predictions_complete.json": {
+    "status": "PREDICTIONS_COMPLETE",
+    "split_count": 300,
+    "predictions": 300,
+    "capsule_id": "residual-noeq-d0a99fede324159c5a4750fd",
+    "truth_read": false,
+    "source_data_access": false
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092702/sfhead/predictions_complete.json": {
+    "status": "PREDICTIONS_COMPLETE",
+    "split_count": 300,
+    "predictions": 300,
+    "capsule_id": "residual-noeq-d0a99fede324159c5a4750fd",
+    "truth_read": false,
+    "source_data_access": false
+  },
+  "live_children": []
+}

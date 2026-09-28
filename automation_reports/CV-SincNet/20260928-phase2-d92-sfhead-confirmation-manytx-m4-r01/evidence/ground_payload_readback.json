@@ -1,0 +1,939 @@
+{
+  "rows": [
+    {
+      "seed": 2026092701,
+      "ground": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-cvs-d92-practical-manytx-m5-r01/cvs-daot-rc4-s2026092701/ground",
+      "manifest": {
+        "schema": "int8_domain_class_center_lowrank_residual_radius_v2",
+        "metadata_schema": "cvs.matched.ground.v2",
+        "checkpoint_sha256": "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b",
+        "source_prototype_artifact_sha256": "8a46a2be31cd2b03ac2b7fa365870d313b1bf5714d90f2629463578c7b1d794b",
+        "provenance_status": "CURRENT_FINAL_SCRATCH_EXACT_SOURCE_L",
+        "formal_phase2_eligible": true,
+        "feature_dim": 160,
+        "residual_rank": 3,
+        "radius_histogram_bins": 4096,
+        "member_allowlist": [
+          "int8_domain_class_center_lowrank_residual_radius_v2.npz"
+        ],
+        "npz_member_allowlist": [
+          "center_domain_handle",
+          "class_registry",
+          "core_q",
+          "core_scale",
+          "domain_registry",
+          "feature_schema",
+          "radius_q",
+          "radius_scale",
+          "residual_basis_q",
+          "residual_basis_scale",
+          "residual_coeff_q",
+          "residual_coeff_scale",
+          "residual_domain_registry",
+          "residual_rank",
+          "schema"
+        ],
+        "resource_audit": {
+          "core_q_bytes": 960,
+          "core_scale_bytes": 12,
+          "residual_basis_q_bytes": 2880,
+          "residual_basis_scale_bytes": 36,
+          "residual_coeff_q_bytes": 252,
+          "residual_coeff_scale_bytes": 168,
+          "direction_numeric_payload_bytes": 4308,
+          "radius_q_bytes": 90,
+          "radius_scale_bytes": 12,
+          "radius_numeric_payload_bytes": 102,
+          "compressed_numeric_payload_bytes": 4410,
+          "registry_schema_bytes": 670,
+          "logical_deployment_state_bytes": 5080,
+          "single_class_prototype_reconstruction_macs": 480,
+          "single_domain_all_class_reconstruction_macs": 2880,
+          "all_residual_domain_enrollment_reconstruction_macs": 40320,
+          "center_only_reconstruction_macs": 0,
+          "temporary_single_class_reconstruction_peak_bytes": 3212,
+          "temporary_single_domain_reconstruction_peak_bytes": 19272,
+          "persistent_dense_float_bank_bytes": 0,
+          "target_prototype_state_bytes": 0,
+          "adapter_state_bytes": 0,
+          "per_query_extra_reconstruction_macs": 0,
+          "center_domain_handle": "4",
+          "center_domain_index_in_retained_registry": 4,
+          "center_domain_policy": "phase1_offline_global_maximin_fixed_before_target_access",
+          "residual_rank": 3,
+          "svd_sign_canonicalization": "largest_abs_basis_entry_positive_lowest_index_tie_v1",
+          "rounding_rule": "numpy_rint_ties_to_even_v1",
+          "radius_provenance": "phase1_offline_aggregate_p90_cosine_distance_v1",
+          "mean_reconstruction_cosine": 0.9999820160122603,
+          "min_reconstruction_cosine": 0.9999158716295014,
+          "mean_reconstruction_angle_deg": 0.31261758831593595,
+          "max_reconstruction_angle_deg": 0.7432106314698378,
+          "reconstruction_rmse": 0.000476641085697338,
+          "radius_max_abs_error": 1.1444091796875e-05,
+          "radius_mean_abs_error": 5.4266715778794605e-06
+        },
+        "source_role": "L_s",
+        "target_access": false,
+        "component_state": "CURRENT_MATCHED_SOURCE_ONLY_V2",
+        "historical_outer_signature_claim": false
+      },
+      "members": {
+        "schema": {
+          "shape": [],
+          "dtype": "<U51",
+          "bytes": 204
+        },
+        "feature_schema": {
+          "shape": [],
+          "dtype": "<U27",
+          "bytes": 108
+        },
+        "residual_rank": {
+          "shape": [],
+          "dtype": "int16",
+          "bytes": 2
+        },
+        "center_domain_handle": {
+          "shape": [],
+          "dtype": "<U1",
+          "bytes": 4
+        },
+        "domain_registry": {
+          "shape": [
+            15
+          ],
+          "dtype": "<U2",
+          "bytes": 120
+        },
+        "residual_domain_registry": {
+          "shape": [
+            14
+          ],
+          "dtype": "<U2",
+          "bytes": 112
+        },
+        "class_registry": {
+          "shape": [
+            6
+          ],
+          "dtype": "<U5",
+          "bytes": 120
+        },
+        "core_q": {
+          "shape": [
+            6,
+            160
+          ],
+          "dtype": "int8",
+          "bytes": 960
+        },
+        "core_scale": {
+          "shape": [
+            6
+          ],
+          "dtype": "float16",
+          "bytes": 12
+        },
+        "residual_basis_q": {
+          "shape": [
+            6,
+            3,
+            160
+          ],
+          "dtype": "int8",
+          "bytes": 2880
+        },
+        "residual_basis_scale": {
+          "shape": [
+            6,
+            3
+          ],
+          "dtype": "float16",
+          "bytes": 36
+        },
+        "residual_coeff_q": {
+          "shape": [
+            14,
+            6,
+            3
+          ],
+          "dtype": "int8",
+          "bytes": 252
+        },
+        "residual_coeff_scale": {
+          "shape": [
+            14,
+            6
+          ],
+          "dtype": "float16",
+          "bytes": 168
+        },
+        "radius_q": {
+          "shape": [
+            15,
+            6
+          ],
+          "dtype": "int8",
+          "bytes": 90
+        },
+        "radius_scale": {
+          "shape": [
+            6
+          ],
+          "dtype": "float16",
+          "bytes": 12
+        }
+      },
+      "classes": [
+        "14-10",
+        "14-7",
+        "20-15",
+        "20-19",
+        "6-15",
+        "8-20"
+      ],
+      "domains": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14"
+      ],
+      "npz_file_bytes": 5508,
+      "manifest_file_bytes": 2875,
+      "checkpoint_file_bytes": 15992872,
+      "initialization": {
+        "scratch_only": true,
+        "checkpoint_sources": [],
+        "target_training_contact": false,
+        "target_contact": false,
+        "source_roles": "EXACT_MATCH",
+        "ema_origin": "this_run_student",
+        "daot": true,
+        "rc4": true,
+        "seed": 2026092701
+      },
+      "completion": {
+        "status": "TRAINING_COMPLETE",
+        "epochs": 200,
+        "checkpoint": "final_ssdg.pth",
+        "elapsed_seconds": 68715.17176127434,
+        "target_evaluated": false,
+        "commit": "9b1ddd939fcabc74c77c94a62fef8e5aad07c0e9",
+        "method_version": "DAOT_A1_FastTrust_RC4_original_residual_noeq"
+      }
+    },
+    {
+      "seed": 2026092702,
+      "ground": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-cvs-d92-practical-manytx-m5-r01/cvs-daot-rc4-s2026092702/ground",
+      "manifest": {
+        "schema": "int8_domain_class_center_lowrank_residual_radius_v2",
+        "metadata_schema": "cvs.matched.ground.v2",
+        "checkpoint_sha256": "72f26413e495dcf82317898f8729caa3d35499bf0b41e9671ffdceab2c90924b",
+        "source_prototype_artifact_sha256": "4d5cd4ec9c2247f9838440311bee37d36dbf3e5fd0c3db40fc306d276dfae9c0",
+        "provenance_status": "CURRENT_FINAL_SCRATCH_EXACT_SOURCE_L",
+        "formal_phase2_eligible": true,
+        "feature_dim": 160,
+        "residual_rank": 3,
+        "radius_histogram_bins": 4096,
+        "member_allowlist": [
+          "int8_domain_class_center_lowrank_residual_radius_v2.npz"
+        ],
+        "npz_member_allowlist": [
+          "center_domain_handle",
+          "class_registry",
+          "core_q",
+          "core_scale",
+          "domain_registry",
+          "feature_schema",
+          "radius_q",
+          "radius_scale",
+          "residual_basis_q",
+          "residual_basis_scale",
+          "residual_coeff_q",
+          "residual_coeff_scale",
+          "residual_domain_registry",
+          "residual_rank",
+          "schema"
+        ],
+        "resource_audit": {
+          "core_q_bytes": 960,
+          "core_scale_bytes": 12,
+          "residual_basis_q_bytes": 2880,
+          "residual_basis_scale_bytes": 36,
+          "residual_coeff_q_bytes": 252,
+          "residual_coeff_scale_bytes": 168,
+          "direction_numeric_payload_bytes": 4308,
+          "radius_q_bytes": 90,
+          "radius_scale_bytes": 12,
+          "radius_numeric_payload_bytes": 102,
+          "compressed_numeric_payload_bytes": 4410,
+          "registry_schema_bytes": 670,
+          "logical_deployment_state_bytes": 5080,
+          "single_class_prototype_reconstruction_macs": 480,
+          "single_domain_all_class_reconstruction_macs": 2880,
+          "all_residual_domain_enrollment_reconstruction_macs": 40320,
+          "center_only_reconstruction_macs": 0,
+          "temporary_single_class_reconstruction_peak_bytes": 3212,
+          "temporary_single_domain_reconstruction_peak_bytes": 19272,
+          "persistent_dense_float_bank_bytes": 0,
+          "target_prototype_state_bytes": 0,
+          "adapter_state_bytes": 0,
+          "per_query_extra_reconstruction_macs": 0,
+          "center_domain_handle": "3",
+          "center_domain_index_in_retained_registry": 3,
+          "center_domain_policy": "phase1_offline_global_maximin_fixed_before_target_access",
+          "residual_rank": 3,
+          "svd_sign_canonicalization": "largest_abs_basis_entry_positive_lowest_index_tie_v1",
+          "rounding_rule": "numpy_rint_ties_to_even_v1",
+          "radius_provenance": "phase1_offline_aggregate_p90_cosine_distance_v1",
+          "mean_reconstruction_cosine": 0.999979625659335,
+          "min_reconstruction_cosine": 0.9999174393065653,
+          "mean_reconstruction_angle_deg": 0.33372933757332596,
+          "max_reconstruction_angle_deg": 0.7362533506418046,
+          "reconstruction_rmse": 0.0005070674233138561,
+          "radius_max_abs_error": 1.9550323486328125e-05,
+          "radius_mean_abs_error": 5.986955329717603e-06
+        },
+        "source_role": "L_s",
+        "target_access": false,
+        "component_state": "CURRENT_MATCHED_SOURCE_ONLY_V2",
+        "historical_outer_signature_claim": false
+      },
+      "members": {
+        "schema": {
+          "shape": [],
+          "dtype": "<U51",
+          "bytes": 204
+        },
+        "feature_schema": {
+          "shape": [],
+          "dtype": "<U27",
+          "bytes": 108
+        },
+        "residual_rank": {
+          "shape": [],
+          "dtype": "int16",
+          "bytes": 2
+        },
+        "center_domain_handle": {
+          "shape": [],
+          "dtype": "<U1",
+          "bytes": 4
+        },
+        "domain_registry": {
+          "shape": [
+            15
+          ],
+          "dtype": "<U2",
+          "bytes": 120
+        },
+        "residual_domain_registry": {
+          "shape": [
+            14
+          ],
+          "dtype": "<U2",
+          "bytes": 112
+        },
+        "class_registry": {
+          "shape": [
+            6
+          ],
+          "dtype": "<U5",
+          "bytes": 120
+        },
+        "core_q": {
+          "shape": [
+            6,
+            160
+          ],
+          "dtype": "int8",
+          "bytes": 960
+        },
+        "core_scale": {
+          "shape": [
+            6
+          ],
+          "dtype": "float16",
+          "bytes": 12
+        },
+        "residual_basis_q": {
+          "shape": [
+            6,
+            3,
+            160
+          ],
+          "dtype": "int8",
+          "bytes": 2880
+        },
+        "residual_basis_scale": {
+          "shape": [
+            6,
+            3
+          ],
+          "dtype": "float16",
+          "bytes": 36
+        },
+        "residual_coeff_q": {
+          "shape": [
+            14,
+            6,
+            3
+          ],
+          "dtype": "int8",
+          "bytes": 252
+        },
+        "residual_coeff_scale": {
+          "shape": [
+            14,
+            6
+          ],
+          "dtype": "float16",
+          "bytes": 168
+        },
+        "radius_q": {
+          "shape": [
+            15,
+            6
+          ],
+          "dtype": "int8",
+          "bytes": 90
+        },
+        "radius_scale": {
+          "shape": [
+            6
+          ],
+          "dtype": "float16",
+          "bytes": 12
+        }
+      },
+      "classes": [
+        "14-10",
+        "14-7",
+        "20-15",
+        "20-19",
+        "6-15",
+        "8-20"
+      ],
+      "domains": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14"
+      ],
+      "npz_file_bytes": 5385,
+      "manifest_file_bytes": 2877,
+      "checkpoint_file_bytes": 15992936,
+      "initialization": {
+        "scratch_only": true,
+        "checkpoint_sources": [],
+        "target_training_contact": false,
+        "target_contact": false,
+        "source_roles": "EXACT_MATCH",
+        "ema_origin": "this_run_student",
+        "daot": true,
+        "rc4": true,
+        "seed": 2026092702
+      },
+      "completion": {
+        "status": "TRAINING_COMPLETE",
+        "epochs": 200,
+        "checkpoint": "final_ssdg.pth",
+        "elapsed_seconds": 72070.60806846619,
+        "target_evaluated": false,
+        "commit": "9b1ddd939fcabc74c77c94a62fef8e5aad07c0e9",
+        "method_version": "DAOT_A1_FastTrust_RC4_original_residual_noeq"
+      }
+    },
+    {
+      "seed": 2026092703,
+      "ground": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-cvs-d92-practical-manytx-m5-r01/cvs-daot-rc4-s2026092703/ground",
+      "manifest": {
+        "schema": "int8_domain_class_center_lowrank_residual_radius_v2",
+        "metadata_schema": "cvs.matched.ground.v2",
+        "checkpoint_sha256": "51fadc3b4ad3cbf83de01700a4a109430e7a57b1e10cb147f0be5f01593f26bb",
+        "source_prototype_artifact_sha256": "88899b10869d96f29e697924013167f155957c9de8007b68a4ccfef8c360a8ec",
+        "provenance_status": "CURRENT_FINAL_SCRATCH_EXACT_SOURCE_L",
+        "formal_phase2_eligible": true,
+        "feature_dim": 160,
+        "residual_rank": 3,
+        "radius_histogram_bins": 4096,
+        "member_allowlist": [
+          "int8_domain_class_center_lowrank_residual_radius_v2.npz"
+        ],
+        "npz_member_allowlist": [
+          "center_domain_handle",
+          "class_registry",
+          "core_q",
+          "core_scale",
+          "domain_registry",
+          "feature_schema",
+          "radius_q",
+          "radius_scale",
+          "residual_basis_q",
+          "residual_basis_scale",
+          "residual_coeff_q",
+          "residual_coeff_scale",
+          "residual_domain_registry",
+          "residual_rank",
+          "schema"
+        ],
+        "resource_audit": {
+          "core_q_bytes": 960,
+          "core_scale_bytes": 12,
+          "residual_basis_q_bytes": 2880,
+          "residual_basis_scale_bytes": 36,
+          "residual_coeff_q_bytes": 252,
+          "residual_coeff_scale_bytes": 168,
+          "direction_numeric_payload_bytes": 4308,
+          "radius_q_bytes": 90,
+          "radius_scale_bytes": 12,
+          "radius_numeric_payload_bytes": 102,
+          "compressed_numeric_payload_bytes": 4410,
+          "registry_schema_bytes": 670,
+          "logical_deployment_state_bytes": 5080,
+          "single_class_prototype_reconstruction_macs": 480,
+          "single_domain_all_class_reconstruction_macs": 2880,
+          "all_residual_domain_enrollment_reconstruction_macs": 40320,
+          "center_only_reconstruction_macs": 0,
+          "temporary_single_class_reconstruction_peak_bytes": 3212,
+          "temporary_single_domain_reconstruction_peak_bytes": 19272,
+          "persistent_dense_float_bank_bytes": 0,
+          "target_prototype_state_bytes": 0,
+          "adapter_state_bytes": 0,
+          "per_query_extra_reconstruction_macs": 0,
+          "center_domain_handle": "3",
+          "center_domain_index_in_retained_registry": 3,
+          "center_domain_policy": "phase1_offline_global_maximin_fixed_before_target_access",
+          "residual_rank": 3,
+          "svd_sign_canonicalization": "largest_abs_basis_entry_positive_lowest_index_tie_v1",
+          "rounding_rule": "numpy_rint_ties_to_even_v1",
+          "radius_provenance": "phase1_offline_aggregate_p90_cosine_distance_v1",
+          "mean_reconstruction_cosine": 0.9999818617351928,
+          "min_reconstruction_cosine": 0.9999255873676957,
+          "mean_reconstruction_angle_deg": 0.3204646853461699,
+          "max_reconstruction_angle_deg": 0.6989782421853525,
+          "reconstruction_rmse": 0.0004786102508660406,
+          "radius_max_abs_error": 7.62939453125e-06,
+          "radius_mean_abs_error": 3.874964022543281e-06
+        },
+        "source_role": "L_s",
+        "target_access": false,
+        "component_state": "CURRENT_MATCHED_SOURCE_ONLY_V2",
+        "historical_outer_signature_claim": false
+      },
+      "members": {
+        "schema": {
+          "shape": [],
+          "dtype": "<U51",
+          "bytes": 204
+        },
+        "feature_schema": {
+          "shape": [],
+          "dtype": "<U27",
+          "bytes": 108
+        },
+        "residual_rank": {
+          "shape": [],
+          "dtype": "int16",
+          "bytes": 2
+        },
+        "center_domain_handle": {
+          "shape": [],
+          "dtype": "<U1",
+          "bytes": 4
+        },
+        "domain_registry": {
+          "shape": [
+            15
+          ],
+          "dtype": "<U2",
+          "bytes": 120
+        },
+        "residual_domain_registry": {
+          "shape": [
+            14
+          ],
+          "dtype": "<U2",
+          "bytes": 112
+        },
+        "class_registry": {
+          "shape": [
+            6
+          ],
+          "dtype": "<U5",
+          "bytes": 120
+        },
+        "core_q": {
+          "shape": [
+            6,
+            160
+          ],
+          "dtype": "int8",
+          "bytes": 960
+        },
+        "core_scale": {
+          "shape": [
+            6
+          ],
+          "dtype": "float16",
+          "bytes": 12
+        },
+        "residual_basis_q": {
+          "shape": [
+            6,
+            3,
+            160
+          ],
+          "dtype": "int8",
+          "bytes": 2880
+        },
+        "residual_basis_scale": {
+          "shape": [
+            6,
+            3
+          ],
+          "dtype": "float16",
+          "bytes": 36
+        },
+        "residual_coeff_q": {
+          "shape": [
+            14,
+            6,
+            3
+          ],
+          "dtype": "int8",
+          "bytes": 252
+        },
+        "residual_coeff_scale": {
+          "shape": [
+            14,
+            6
+          ],
+          "dtype": "float16",
+          "bytes": 168
+        },
+        "radius_q": {
+          "shape": [
+            15,
+            6
+          ],
+          "dtype": "int8",
+          "bytes": 90
+        },
+        "radius_scale": {
+          "shape": [
+            6
+          ],
+          "dtype": "float16",
+          "bytes": 12
+        }
+      },
+      "classes": [
+        "14-10",
+        "14-7",
+        "20-15",
+        "20-19",
+        "6-15",
+        "8-20"
+      ],
+      "domains": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14"
+      ],
+      "npz_file_bytes": 5319,
+      "manifest_file_bytes": 2872,
+      "checkpoint_file_bytes": 15992872,
+      "initialization": {
+        "scratch_only": true,
+        "checkpoint_sources": [],
+        "target_training_contact": false,
+        "target_contact": false,
+        "source_roles": "EXACT_MATCH",
+        "ema_origin": "this_run_student",
+        "daot": true,
+        "rc4": true,
+        "seed": 2026092703
+      },
+      "completion": {
+        "status": "TRAINING_COMPLETE",
+        "epochs": 200,
+        "checkpoint": "final_ssdg.pth",
+        "elapsed_seconds": 70245.38384771347,
+        "target_evaluated": false,
+        "commit": "9b1ddd939fcabc74c77c94a62fef8e5aad07c0e9",
+        "method_version": "DAOT_A1_FastTrust_RC4_original_residual_noeq"
+      }
+    },
+    {
+      "seed": 2026092704,
+      "ground": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-cvs-d92-practical-manytx-m5-r01/cvs-daot-rc4-s2026092704/ground",
+      "manifest": {
+        "schema": "int8_domain_class_center_lowrank_residual_radius_v2",
+        "metadata_schema": "cvs.matched.ground.v2",
+        "checkpoint_sha256": "690fed6ea2a6532d0ad978c93306f0f35b61f4a3a3fc4b1d6494f0e7547c74bb",
+        "source_prototype_artifact_sha256": "0f3ee0c70de37fe910bca717c5fae1783269b1f8c6d795c96ae122116df3857c",
+        "provenance_status": "CURRENT_FINAL_SCRATCH_EXACT_SOURCE_L",
+        "formal_phase2_eligible": true,
+        "feature_dim": 160,
+        "residual_rank": 3,
+        "radius_histogram_bins": 4096,
+        "member_allowlist": [
+          "int8_domain_class_center_lowrank_residual_radius_v2.npz"
+        ],
+        "npz_member_allowlist": [
+          "center_domain_handle",
+          "class_registry",
+          "core_q",
+          "core_scale",
+          "domain_registry",
+          "feature_schema",
+          "radius_q",
+          "radius_scale",
+          "residual_basis_q",
+          "residual_basis_scale",
+          "residual_coeff_q",
+          "residual_coeff_scale",
+          "residual_domain_registry",
+          "residual_rank",
+          "schema"
+        ],
+        "resource_audit": {
+          "core_q_bytes": 960,
+          "core_scale_bytes": 12,
+          "residual_basis_q_bytes": 2880,
+          "residual_basis_scale_bytes": 36,
+          "residual_coeff_q_bytes": 252,
+          "residual_coeff_scale_bytes": 168,
+          "direction_numeric_payload_bytes": 4308,
+          "radius_q_bytes": 90,
+          "radius_scale_bytes": 12,
+          "radius_numeric_payload_bytes": 102,
+          "compressed_numeric_payload_bytes": 4410,
+          "registry_schema_bytes": 670,
+          "logical_deployment_state_bytes": 5080,
+          "single_class_prototype_reconstruction_macs": 480,
+          "single_domain_all_class_reconstruction_macs": 2880,
+          "all_residual_domain_enrollment_reconstruction_macs": 40320,
+          "center_only_reconstruction_macs": 0,
+          "temporary_single_class_reconstruction_peak_bytes": 3212,
+          "temporary_single_domain_reconstruction_peak_bytes": 19272,
+          "persistent_dense_float_bank_bytes": 0,
+          "target_prototype_state_bytes": 0,
+          "adapter_state_bytes": 0,
+          "per_query_extra_reconstruction_macs": 0,
+          "center_domain_handle": "3",
+          "center_domain_index_in_retained_registry": 3,
+          "center_domain_policy": "phase1_offline_global_maximin_fixed_before_target_access",
+          "residual_rank": 3,
+          "svd_sign_canonicalization": "largest_abs_basis_entry_positive_lowest_index_tie_v1",
+          "rounding_rule": "numpy_rint_ties_to_even_v1",
+          "radius_provenance": "phase1_offline_aggregate_p90_cosine_distance_v1",
+          "mean_reconstruction_cosine": 0.9999788415524122,
+          "min_reconstruction_cosine": 0.9999222460911834,
+          "mean_reconstruction_angle_deg": 0.341339091393186,
+          "max_reconstruction_angle_deg": 0.7144988921812103,
+          "reconstruction_rmse": 0.0005166562623344362,
+          "radius_max_abs_error": 1.7344951629638672e-05,
+          "radius_mean_abs_error": 4.980961421097163e-06
+        },
+        "source_role": "L_s",
+        "target_access": false,
+        "component_state": "CURRENT_MATCHED_SOURCE_ONLY_V2",
+        "historical_outer_signature_claim": false
+      },
+      "members": {
+        "schema": {
+          "shape": [],
+          "dtype": "<U51",
+          "bytes": 204
+        },
+        "feature_schema": {
+          "shape": [],
+          "dtype": "<U27",
+          "bytes": 108
+        },
+        "residual_rank": {
+          "shape": [],
+          "dtype": "int16",
+          "bytes": 2
+        },
+        "center_domain_handle": {
+          "shape": [],
+          "dtype": "<U1",
+          "bytes": 4
+        },
+        "domain_registry": {
+          "shape": [
+            15
+          ],
+          "dtype": "<U2",
+          "bytes": 120
+        },
+        "residual_domain_registry": {
+          "shape": [
+            14
+          ],
+          "dtype": "<U2",
+          "bytes": 112
+        },
+        "class_registry": {
+          "shape": [
+            6
+          ],
+          "dtype": "<U5",
+          "bytes": 120
+        },
+        "core_q": {
+          "shape": [
+            6,
+            160
+          ],
+          "dtype": "int8",
+          "bytes": 960
+        },
+        "core_scale": {
+          "shape": [
+            6
+          ],
+          "dtype": "float16",
+          "bytes": 12
+        },
+        "residual_basis_q": {
+          "shape": [
+            6,
+            3,
+            160
+          ],
+          "dtype": "int8",
+          "bytes": 2880
+        },
+        "residual_basis_scale": {
+          "shape": [
+            6,
+            3
+          ],
+          "dtype": "float16",
+          "bytes": 36
+        },
+        "residual_coeff_q": {
+          "shape": [
+            14,
+            6,
+            3
+          ],
+          "dtype": "int8",
+          "bytes": 252
+        },
+        "residual_coeff_scale": {
+          "shape": [
+            14,
+            6
+          ],
+          "dtype": "float16",
+          "bytes": 168
+        },
+        "radius_q": {
+          "shape": [
+            15,
+            6
+          ],
+          "dtype": "int8",
+          "bytes": 90
+        },
+        "radius_scale": {
+          "shape": [
+            6
+          ],
+          "dtype": "float16",
+          "bytes": 12
+        }
+      },
+      "classes": [
+        "14-10",
+        "14-7",
+        "20-15",
+        "20-19",
+        "6-15",
+        "8-20"
+      ],
+      "domains": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14"
+      ],
+      "npz_file_bytes": 5485,
+      "manifest_file_bytes": 2876,
+      "checkpoint_file_bytes": 15992936,
+      "initialization": {
+        "scratch_only": true,
+        "checkpoint_sources": [],
+        "target_training_contact": false,
+        "target_contact": false,
+        "source_roles": "EXACT_MATCH",
+        "ema_origin": "this_run_student",
+        "daot": true,
+        "rc4": true,
+        "seed": 2026092704
+      },
+      "completion": {
+        "status": "TRAINING_COMPLETE",
+        "epochs": 200,
+        "checkpoint": "final_ssdg.pth",
+        "elapsed_seconds": 69613.78945350647,
+        "target_evaluated": false,
+        "commit": "9b1ddd939fcabc74c77c94a62fef8e5aad07c0e9",
+        "method_version": "DAOT_A1_FastTrust_RC4_original_residual_noeq"
+      }
+    }
+  ],
+  "source_samples_read": false,
+  "source_features_read": false,
+  "target_read": false
+}
