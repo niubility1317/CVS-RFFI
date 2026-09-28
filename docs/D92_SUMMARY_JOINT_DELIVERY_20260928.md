@@ -1,5 +1,7 @@
 # D92-SGJoint交付与验收边界
 
+当前结论：两cohort完整9648条重复基准已核验并归档，SGJoint未通过新旧类综合改进标准。K1的H下降1.557个百分点，K1/5/10的新类均下降；不进入独立数据验收。完整表与限制见rx3 run的`results/combined_rx4/report.md`。以下设计和启动说明保留为过程记录。
+
 ## 用户确定的范围
 
 固定现有Phase1，改进各K的新旧类综合H，同时要求新类表现改善并限制旧类退化。辅助训练只使用当前row的合法卫星support；不使用或传输source IQ、源域逐样本特征，不重新访问source loader，不训练新的源域辅助模型。
@@ -20,7 +22,7 @@
 
 ## 传输与本地资源
 
-现有四个模型对应的合法量化摘要数值数组均为4412字节。NPZ与manifest两文件实际合计分别为8383、8262、8191、8361字节。读取证据保存在SFHead既有run的`evidence/ground_payload_readback.json`。这是摘要包大小，模型传输单列，不能把它当作完整部署包大小。
+现有四个模型对应的合法量化摘要数值数组均为4410字节（完整fit审计核正）。NPZ与manifest两文件实际合计分别为8383、8262、8191、8361字节。原始证据保存在SFHead既有run的`evidence/ground_payload_readback.json`，实际读取审计见SGJoint两run的`results/fit_audit.json`。这是摘要包大小，模型传输单列，不能把它当作完整部署包大小。
 
 本候选无需新增地面统计。如果摘要已经位于接收端，则增量传输为0；否则传输上述已有摘要两文件，入口按实际文件重新计数。默认配置保守设置`summary_already_deployed=false`，只有实际部署状态能够证明已存在时才显式设为true；这不改变算法。
 

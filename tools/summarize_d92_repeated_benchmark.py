@@ -18,8 +18,10 @@ def combine(specs, scored):
         raise ValueError('Exactly the preregistered rx3 and rx1 cohorts are required')
     infos = [matrix_definition(s) for s in specs]
     validated = [summarize(d, s) for d, s in zip(scored, specs)]
-    if any(info[0] != ('D92', 'D92-SGJoint-v1') for info in infos):
-        raise ValueError('Only the frozen SGJoint candidate may be pooled')
+    method=infos[0][0][1]
+    if method not in ('D92-SGJoint-v1','D92-MVKME-v1') or any(info[0] != ('D92',method) for info in infos):
+        raise ValueError('Only matching frozen repeated-benchmark candidates may be pooled')
+    claim=CLAIM.replace('D92-SGJoint-v1',method)
     if len({s['run_id'] for s in specs}) != 2:
         raise ValueError('Duplicated run')
     if any('REPEATED_BENCHMARK' not in s['permissions']['claim_scope'] for s in specs):
@@ -39,7 +41,8 @@ def combine(specs, scored):
         raise ValueError('The cohorts must retain their two distinct capsule identities')
     # This is an analysis-only matrix, never a launch specification or data capsule.
     composite = dict(analysis_only=True, source_run_ids=[s['run_id'] for s in specs],
-        permissions=dict(claim_scope=CLAIM), rows=deepcopy(specs[0]['rows']),
+        permissions=dict(claim_scope=claim), rows=deepcopy(specs[0]['rows']),
+        joint_benchmark=deepcopy(specs[0].get('joint_benchmark',{})),
         data=dict(target_receivers=receivers, scenarios=first['scenario'], k=first['k'],
                   new_class_counts=first['new_count'], support_seeds=first['support_seed'],
                   capsule_ids=capsule_ids),
@@ -48,7 +51,7 @@ def combine(specs, scored):
             ('candidate_method', 'candidate_folder', 'candidate_predictor', 'candidate_mode')})
     composite['confirmation'].update(expected_split_count=1200, splits_per_model=1200,
         model_rows=4, predictions_total=9648)
-    data = dict(status='SCORED', selection_feedback_forbidden=True, claim_scope=CLAIM,
+    data = dict(status='SCORED', selection_feedback_forbidden=True, claim_scope=claim,
         results=[r for d in scored for r in d['results']])
     result = summarize(data, composite)
     result['source_cohorts'] = [dict(run_id=s['run_id'], receivers=v['matrix']['receiver'],

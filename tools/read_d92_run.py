@@ -25,16 +25,28 @@ for p in [release/'run.log',root/'run.log']+list(root.glob('*.log'))+list(root.g
  if p.exists():
   with p.open('rb') as stream:
    stream.seek(max(0,p.stat().st_size-262144));tail=stream.read().decode(errors='replace').splitlines()[-3:]
-  if p.name in ('sfhead.log','sgjoint.log'):
+  if p.name in ('sfhead.log','sgjoint.log','mvkme.log'):
    filtered=[]
    for line in tail:
     try:
-     d=json.loads(line);d.pop('steps',None);filtered.append(json.dumps(d))
+     d=json.loads(line);d.pop('steps',None)
+     if 'folds' in d:d['fold_count']=len(d.pop('folds'))
+     filtered.append(json.dumps(d))
     except (ValueError,TypeError):filtered.append(line[-1500:])
    tail=filtered
   result[str(p)]={'bytes':p.stat().st_size,'tail':tail}
 for p in root.glob('*/'+candidate_folder+'/predictions_complete.json'):
  result[str(p)]=json.loads(p.read_text())
+result['fit_progress']={}
+for p in root.glob('*/'+candidate_folder+'/compact.jsonl'):
+ with p.open('rb') as stream:
+  stream.seek(max(0,p.stat().st_size-16384));lines=stream.read().decode(errors='replace').splitlines()
+ for line in reversed(lines):
+  try:
+   row=json.loads(line)
+   result['fit_progress'][p.parent.parent.name]={k:row.get(k) for k in ['completed','total','k','classes','fit_seconds']}
+   break
+  except ValueError:pass
 processes=[]
 for p in list(root.glob('*/*.log.process.json'))+list(root.glob('*.log.process.json')):
  d=json.loads(p.read_text());proc=Path('/proc')/str(d['pid'])
@@ -71,7 +83,8 @@ def main():
         compact=dict(workflow=data.get('workflow_state.json'),complete=data.get('complete.json'),
             supervisor_live=bool(data.get('startup.json',{}).get('live_argv')),
             live_children=[dict(pid=c['pid'],record=c['record'],argv_matches=c['argv']==c['live_argv'],cwd_matches=c['cwd']==c['live_cwd']) for c in data['live_children']],
-            rows=data.get('state.json'),logs={k:v['tail'][-1:] for k,v in data.items() if k.endswith('.log')})
+            rows=data.get('state.json'),fit_progress=data.get('fit_progress',{}),
+            logs={k:v['tail'][-1:] for k,v in data.items() if k.endswith('.log')})
         print(json.dumps(compact,ensure_ascii=False,indent=2))
     else:print(json.dumps(data,ensure_ascii=False,indent=2))
     print(path)

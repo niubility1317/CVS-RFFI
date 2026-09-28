@@ -28,6 +28,14 @@ paths=['docs/D92_SUPPORT_UPGRADE_20260928.md','code/cvsrffi/stage2_d92_support_c
     'tests/test_summarize_d92_repeated_benchmark.py',
     'configs/d92_sgjoint_repeat_rx3_20260928.json','configs/d92_sgjoint_repeat_rx1_20260928.json',
     'configs/d92_sgjoint_repeat_rx3_data_20260928.json','configs/d92_sgjoint_repeat_rx1_data_20260928.json']
+paths += ['tools/collect_d92_summary_joint_audit.py','tests/test_collect_d92_summary_joint_audit.py',
+    'tools/finalize_d92_sgjoint_record.py','code/cvsrffi/stage2_d92_mv_kme.py','tests/test_d92_mv_kme.py',
+    'configs/d92_mv_kme_frozen_20260928.json','docs/D92_MV_KME_DESIGN_20260928.md',
+    'tools/export_d92_mv_kme_features.py','tools/predict_d92_mv_kme.py',
+    'tests/test_export_d92_mv_kme_features.py','tests/test_predict_d92_mv_kme.py',
+    'tools/prepare_d92_mv_kme_benchmark.py','tools/preflight_d92_mvkme.py','configs/d92_mvkme_repeat_rx3_20260928.json',
+    'configs/d92_mvkme_repeat_rx1_20260928.json','configs/d92_mvkme_repeat_rx3_data_20260928.json',
+    'configs/d92_mvkme_repeat_rx1_data_20260928.json']
 for name in paths:
     src=ROOT/name;dst=WS/name;dst.parent.mkdir(parents=True,exist_ok=True)
     # Each name is unique to this task; original D92 and shared wrappers are not mirrored.

@@ -18,6 +18,7 @@ CANDIDATES = (
     ('D92-SCV-v1', 'scv', 'predict_d92_support_cv.py', 'd92_scv_registration'),
     ('D92-SFHead-v1', 'sfhead', 'predict_d92_sourcefree_head.py', 'd92_sfhead_registration'),
     ('D92-SGJoint-v1', 'sgjoint', 'predict_d92_summary_joint.py', 'd92_sgjoint_registration'),
+    ('D92-MVKME-v1', 'mvkme', 'predict_d92_mv_kme.py', 'd92_mvkme_registration'),
 )
 
 
@@ -58,6 +59,10 @@ def reuse_frozen_rows(spec):
 
 def baseline_root(row):
     return Path(row.get('reuse_row_root',row['output_root']))
+
+
+def needs_multiview(confirmation):
+    return candidate_definition(confirmation)['candidate_method']=='D92-MVKME-v1'
 
 
 def read(path):
@@ -203,6 +208,9 @@ def run(spec_path, commit):
     confirmation, rows = spec['confirmation'], spec['rows']
     candidate = candidate_definition(confirmation)
     reuse_rows=reuse_frozen_rows(spec)
+    multiview=needs_multiview(confirmation)
+    if multiview and not reuse_rows:
+        raise ValueError('MVKME requires explicitly reused baseline rows')
     expected_splits = confirmation.get('expected_split_count')
     if expected_splits is not None and (type(expected_splits) is not int or expected_splits <= 0):
         raise ValueError('expected_split_count must be a positive integer')
@@ -237,7 +245,7 @@ def run(spec_path, commit):
           python=sys.executable, commit=commit, spec=spec, launch_owner=spec['execution']['launch_owner'],
           environment={k: os.environ.get(k) for k in ('CUDA_VISIBLE_DEVICES', 'OMP_NUM_THREADS',
               'MKL_NUM_THREADS', 'OPENBLAS_NUM_THREADS', 'NUMEXPR_NUM_THREADS')},
-          worker_policy=dict(feature_gpu=None if reuse_rows else 0, max_feature_workers=0 if reuse_rows else 1,
+          worker_policy=dict(feature_gpu=None if reuse_rows and not multiview else 0, max_feature_workers=0 if reuse_rows and not multiview else 1,
                              cpu_row_workers=4, blas_threads=2, reuse_frozen_rows=reuse_rows),
           timestamp=time.time()))
     write(root / 'state.json', state)
@@ -276,6 +284,21 @@ def run(spec_path, commit):
                 evidence=validate_reused_row(row,confirmation,capsule_data)
                 hashes[row_id]=row['expected_checkpoint_sha256']
                 write(output/'artifact_reuse.json',evidence)
+                if multiview:
+                    update(row_id,status='EXPORTING_MULTIVIEW_FEATURES')
+                    invoke('export_d92_mv_kme_features.py', ['--row-root', baseline_root(row),
+                        '--source', row['source_root'], '--contract', confirmation['source_contract'],
+                        '--native-code', confirmation['native_code'], '--seed', row['seeds']['model'],
+                        '--capsule', confirmation['capsule'], '--output', output/'mv_features',
+                        '--config', confirmation['candidate_config'], '--expected-capsule-id', manifest['capsule_id'],
+                        '--expected-checkpoint-sha256', hashes[row_id], '--device', 'cuda:0'],
+                        output/'mv_features.log', gpu=True)
+                    marker=read(output/'mv_features'/'features_complete.json')
+                    if (marker.get('status')!='MULTIVIEW_FEATURES_COMPLETE'
+                            or marker.get('capsule_id')!=manifest['capsule_id']
+                            or marker.get('checkpoint_sha256')!=hashes[row_id]
+                            or marker.get('query_used_for_fitting') is not False):
+                        raise ValueError('Multiview feature completion or binding mismatch')
                 update(row_id,status='FEATURES_COMPLETE',checkpoint_sha256=hashes[row_id],reuse_row_root=row['reuse_row_root'])
                 continue
             update(row_id, status='VERIFYING_SOURCE')
@@ -301,10 +324,11 @@ def run(spec_path, commit):
                         '--seed', row['seeds']['model']], output / 'd92.log')
                 folder = candidate['candidate_folder']
                 update(row_id, status=folder.upper() + '_PREDICTING')
-                invoke(candidate['candidate_predictor'], ['--row-root', baseline_root(row), '--capsule', confirmation['capsule'],
+                arguments=['--row-root', baseline_root(row), '--capsule', confirmation['capsule'],
                     '--output', output / folder, '--config', confirmation['candidate_config'],
-                    '--expected-capsule-id', manifest['capsule_id'], '--expected-checkpoint-sha256', hashes[row_id]],
-                    output / (folder + '.log'))
+                    '--expected-capsule-id', manifest['capsule_id'], '--expected-checkpoint-sha256', hashes[row_id]]
+                if multiview: arguments.extend(['--mv-features',output/'mv_features'])
+                invoke(candidate['candidate_predictor'], arguments, output / (folder + '.log'))
                 for prediction_root in (baseline_root(row), output / folder):
                     marker = read(prediction_root / 'predictions_complete.json')
                     if (marker.get('status') != 'PREDICTIONS_COMPLETE' or marker.get('split_count') != manifest['split_count']
@@ -339,7 +363,7 @@ def run(spec_path, commit):
               records=len(scored['results']), selection_feedback_forbidden=True))
     except Exception as error:
         for row_id, value in list(state.items()):
-            if value['status'] in ('VERIFYING_SOURCE', 'EXPORTING_FROZEN_FEATURES','VERIFYING_FROZEN_ARTIFACTS'):
+            if value['status'] in ('VERIFYING_SOURCE', 'EXPORTING_FROZEN_FEATURES','VERIFYING_FROZEN_ARTIFACTS','EXPORTING_MULTIVIEW_FEATURES'):
                 update(row_id, status='TECHNICAL_FAILURE', error=str(error))
         stage('TECHNICAL_FAILURE', error=str(error), retry_policy='none; preserve all artifacts')
         raise

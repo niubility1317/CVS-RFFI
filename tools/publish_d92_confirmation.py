@@ -4,7 +4,7 @@ import argparse
 import json
 from pathlib import Path
 import subprocess
-from run_d92_confirmation import candidate_definition, reuse_frozen_rows
+from run_d92_confirmation import candidate_definition, reuse_frozen_rows, needs_multiview
 
 ROOT=Path(__file__).resolve().parents[1]
 RELEASE='d92_scv_confirmation_20260928_r01'
@@ -23,7 +23,7 @@ if c['reuse_data']:
  m=json.loads((Path(c['data_run'])/'capsule/manifest.json').read_text())
  if m['capsule_id']!=c['reuse_data'] or m['phase2_data_status']!='VALIDATED_ONCE':raise ValueError('Existing data binding mismatch')
 if shutil.disk_usage(base).free<2*1024**3:raise RuntimeError('Insufficient disk')
-if not c.get('reuse_frozen_rows',False):
+if not c.get('reuse_frozen_rows',False) or c.get('multiview',False):
  used=int(subprocess.check_output(['nvidia-smi','--id=0','--query-gpu=memory.used','--format=csv,noheader,nounits'],text=True).strip())
  if used>1024:raise RuntimeError('GPU0 currently occupied; do not disturb existing work')
 if hashlib.sha256(archive.read_bytes()).hexdigest()!=c['sha256']:raise ValueError('Transfer mismatch')
@@ -46,7 +46,8 @@ print(json.dumps(launch))
 def release_tool_paths(confirmation):
     candidate=candidate_definition(confirmation)
     return list(dict.fromkeys([p for p in PATHS if not p.startswith('configs/')]
-                             +['tools/'+candidate['candidate_predictor']]))
+                             +['tools/'+candidate['candidate_predictor']]
+                             +(['tools/export_d92_mv_kme_features.py'] if needs_multiview(confirmation) else [])))
 
 
 def main():
@@ -75,7 +76,7 @@ def main():
     subprocess.run(['git','archive','--format=tar','--prefix='+release_name+'/','--output='+str(archive),commit,*paths_to_pack],cwd=ROOT,check=True)
     subprocess.run(['scp',*FLAGS,str(archive),'N607:'+remote_archive],check=True)
     config=dict(commit=commit,release=release_name,archive=archive.name,run=paths[2],data_run=cfg['output_root'],
-        reuse_data=reuse,reuse_frozen_rows=reuse_rows,spec=a.spec,sha256=hashlib.sha256(archive.read_bytes()).hexdigest())
+        reuse_data=reuse,reuse_frozen_rows=reuse_rows,multiview=needs_multiview(spec['confirmation']),spec=a.spec,sha256=hashlib.sha256(archive.read_bytes()).hexdigest())
     payload=REMOTE.replace('CONFIG',repr(config));compile(payload,'remote','exec')
     result=subprocess.run(['ssh',*FLAGS,'-T','N607','python3 -'],input=payload.encode(),capture_output=True)
     (out/'landing.stdout').write_bytes(result.stdout);(out/'landing.stderr').write_bytes(result.stderr)

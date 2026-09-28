@@ -1,6 +1,16 @@
 # D92优化当前交接
 
-## 当前状态：用户已授权复用数据，准备SGJoint完整重复基准
+## 当前状态：SGJoint重复基准失败，正在实现MVKME
+
+用户最后确认“先复用数据，待性能有明显改善后再新增独立数据进行验证”。目标仍ACTIVE；无需等待新增数据。SGJoint两run（rx3/rx1）均已SCORED并登记ANALYZED，禁止重启。发布commit为`a794b71e1c93d6d4e9f3cfe1f2ccc591a685bdea`；终态证据分别为`readback_1790608523.json`与`readback_1790608322.json`。完整9648评分与4800拟合已核验。主报告在rx3的`results/combined_rx4/report.md`，两run均有`results/artifacts.json`和`fit_audit.json`。
+
+K1/5/10/20的Δnew为−2.306/−1.041/−1.181/+0.178pp；ΔH为−1.557/+1.296/+0.129/+0.500pp。未晋级，不能称全面明显改善。联合表旧类只含new_count>0；正式旧类保护含old-only，Δold为+1.213/+7.097/+3.287/+0.973pp，均通过。原汇总保留，解释审计补足口径；新汇总器已修正。拟合累计1119.447秒；摘要numeric实际4410bytes，包8191至8383bytes，新增地面统计0。大scores和完整trace保留原路径。
+
+下一版D92-MVKME-v1由未读目标结果的source_aux_feasibility独立设计并实现core/config/design；confirmation_runner实现exporter/predictor；d92_p0_review做一次P0/P1；root负责控制面与唯一launch。固定16个received-IQ视图、冻结identity160+FFT96、固定Fourier核均值、当前row support岭回归。K1固定，K>=2物理support九候选CV，无源样本或地面摘要拟合。目前仅实现/本地验证，尚未启动。下一步完成接口验证、预登记、资源核查和发布。四模型串行GPU提取后CPU拟合，两个cohort均终态后才读评分。
+
+## 以下是SGJoint启动过程历史，以顶部终态为准
+
+实际启动已VERIFIED：两run均使用release commit`a794b71e1c93d6d4e9f3cfe1f2ccc591a685bdea`。rx3 supervisor2441154、CPU子进程2441202/03/04/05在`readback_1790608341.json`仍live且argv/CWD一致、日志增长，继续原run；rx1 supervisor2441856已在`readback_1790608322.json`核实SCORED终态、4row完成、2412记录、无livechildren。尚未下载/阅读任一新scores。不要因前文PREPARING历史或观察超时重发。下一步只读核实rx3终态，两个run均终态后才下载scores并完整联合分析。
 
 用户最新明确说“那就先复用数据”，随后要求解释；已解释固定基准复用与新独立确认的区别。等待新增数据的前一安排已被该授权替代。SGJoint公式与配置冻结，按原完整矩阵做重复基准，不因旧scores改公式、不读取source样本。子Agent负责reuse runner/publisher/scorer、两个新spec、只读输入预检和reuse delta正确性审查，主Agent是唯一launch owner。
 

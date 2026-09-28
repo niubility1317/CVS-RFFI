@@ -253,21 +253,35 @@ def reused_specification(tmp_path):
     return path,spec
 
 
-def test_reused_rows_only_run_candidate_and_score_with_old_artifacts_unchanged(tmp_path,monkeypatch):
+@pytest.mark.parametrize('multiview',[False,True])
+def test_reused_rows_only_run_candidate_and_score_with_old_artifacts_unchanged(tmp_path,monkeypatch,multiview):
     from score_d92_confirmation import score
     path,spec=reused_specification(tmp_path)
+    if multiview:
+        spec['confirmation'].update(dict(zip(runner.CANDIDATE_FIELDS,runner.CANDIDATES[3])))
+        save(path,spec)
+    method=runner.candidate_definition(spec['confirmation'])
     old_files=list((tmp_path/'old-run').rglob('*'))
     old_hashes={p:runner.sha(p) for p in old_files if p.is_file()}
     calls=[]
     def invoke(tool,arguments,log,*,gpu=False):
         args=list(map(str,arguments));calls.append(tool)
-        assert not gpu
-        if tool=='predict_d92_summary_joint.py':
+        if tool=='export_d92_mv_kme_features.py':
+            assert multiview and gpu
+            assert method['candidate_predictor'] not in calls
+            output=Path(args[args.index('--output')+1])
+            save(output/'features_complete.json',dict(status='MULTIVIEW_FEATURES_COMPLETE',capsule_id='synthetic',
+                checkpoint_sha256='a'*64,query_used_for_fitting=False))
+        elif tool==method['candidate_predictor']:
+            assert not gpu
+            if multiview:
+                assert calls.count('export_d92_mv_kme_features.py')==4
+                assert Path(args[args.index('--mv-features')+1]).name=='mv_features'
             origin=Path(args[args.index('--row-root')+1]);output=Path(args[args.index('--output')+1])
             assert origin.parent==tmp_path/'old-run'
             assert output.parent.parent==Path(spec['execution']['remote_run_root'])
             entries=[json.loads(line) for line in (origin/'predictions.jsonl').read_text().splitlines()]
-            candidate=[dict(r,mode='d92_sgjoint_registration') for r in entries if r['mode']=='d92_registration']
+            candidate=[dict(r,mode=method['candidate_mode']) for r in entries if r['mode']=='d92_registration']
             output.mkdir()
             (output/'predictions.jsonl').write_text(''.join(json.dumps(r)+'\n' for r in candidate),encoding='utf-8')
             save(output/'predictions_complete.json',dict(status='PREDICTIONS_COMPLETE',capsule_id='synthetic',split_count=2,predictions=2,truth_read=False))
@@ -280,13 +294,13 @@ def test_reused_rows_only_run_candidate_and_score_with_old_artifacts_unchanged(t
     monkeypatch.setattr(runner,'invoke',invoke)
     monkeypatch.setattr(runner,'prepare_ground',lambda *_:pytest.fail('Must reuse existing ground'))
     runner.run(path,'synthetic-commit')
-    assert calls.count('predict_d92_summary_joint.py')==4 and calls[-1]=='score_d92_confirmation.py'
+    assert calls.count(method['candidate_predictor'])==4 and calls[-1]=='score_d92_confirmation.py'
     assert {p:runner.sha(p) for p in old_hashes}==old_hashes
     root=Path(spec['execution']['remote_run_root'])
     assert len(runner.read(root/'scores.json')['results'])==20
     assert runner.read(root/'scores.json')['claim_scope']==spec['permissions']['claim_scope']
     policy=runner.read(root/'startup.json')['worker_policy']
-    assert policy['feature_gpu'] is None and policy['max_feature_workers']==0
+    assert policy['feature_gpu']==(0 if multiview else None) and policy['max_feature_workers']==int(multiview)
     for row in spec['rows']:
         output=Path(row['output_root'])
         assert not (output/'ground').exists() and not (output/'received_features').exists()
@@ -338,6 +352,20 @@ def test_publisher_cpu_reuse_never_queries_or_waits_for_gpu(monkeypatch):
     with pytest.raises(RuntimeError,match='occupied'):
         exec(code,dict(c=dict(reuse_frozen_rows=False),subprocess=subprocess))
     assert len(calls)==1
+    with pytest.raises(RuntimeError,match='occupied'):
+        exec(code,dict(c=dict(reuse_frozen_rows=True,multiview=True),subprocess=subprocess))
+    assert len(calls)==2
+
+
+def test_mvkme_release_includes_exporter_and_requires_reused_baseline(tmp_path):
+    from publish_d92_confirmation import release_tool_paths
+    path,spec=specification(tmp_path)
+    spec['confirmation'].update(dict(zip(runner.CANDIDATE_FIELDS,runner.CANDIDATES[3])))
+    save(path,spec)
+    assert 'tools/export_d92_mv_kme_features.py' in release_tool_paths(spec['confirmation'])
+    with pytest.raises(ValueError,match='reused baseline'):
+        runner.run(path,'synthetic-commit')
+    assert not Path(spec['execution']['remote_run_root']).exists()
 
 
 @pytest.mark.parametrize('tool', ['cvs_d92_matched.py', 'predict_d92_support_cv.py'])

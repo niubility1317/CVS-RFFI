@@ -1,0 +1,68 @@
+{
+  "algorithm": {
+    "method": "D92-MVKME-v1",
+    "input_shape": [
+      2,
+      256
+    ],
+    "crop_length": 192,
+    "crop_starts": [
+      0,
+      32,
+      64
+    ],
+    "crop_padding": [
+      32,
+      32
+    ],
+    "phases_quarter_turns": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "view_order": "window_then_phase",
+    "identity_dim": 160,
+    "fft_dim": 96,
+    "feature_block_weight": "equal_1_over_sqrt2",
+    "fft": "historical_spectral_logmag_sketch_on_each_padded_window",
+    "fft_norm_floor": 1e-08,
+    "fourier_generator": "numpy.Generator(PCG64(0)).standard_normal",
+    "fourier_seed": 0,
+    "fourier_frequencies": 128,
+    "fourier_bandwidth": 1.0,
+    "fourier_map": "concat_cos_sin_div_sqrt128",
+    "blocks": [
+      "original",
+      "mean_full_4_phases",
+      "mean_local_12_views"
+    ],
+    "block_renormalization": false,
+    "etas": [
+      0.0,
+      0.5,
+      1.0
+    ],
+    "gammas": [
+      0.01,
+      0.1,
+      1.0
+    ],
+    "k1": {
+      "eta": 0.5,
+      "gamma": 0.1
+    },
+    "max_folds": 3,
+    "folds": "per_class_physical_id_sort_then_position_mod_min_K_3",
+    "target": "onehot_minus_1_over_C",
+    "regularizer": "K_times_gamma",
+    "score_scale": 10.0,
+    "selection": "min_max_old_new_oof_nll_then_macro_nll_then_larger_gamma_smaller_eta",
+    "selection_round_decimals": 10,
+    "precision": "float64",
+    "norm_floor": 1e-12,
+    "source_inputs": false,
+    "summary_inputs": false,
+    "query_fit": false
+  }
+}

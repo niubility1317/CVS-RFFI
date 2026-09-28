@@ -1,0 +1,233 @@
+{
+  "run_id": "20260928-phase2-d92-sgjoint-repeat-rx1-m4-r01",
+  "status": "ANALYZED",
+  "execution_status": "SCORED",
+  "evidence_status": "VERIFIED",
+  "candidate": "D92-SGJoint-v1",
+  "candidate_promoted": false,
+  "goal_complete": false,
+  "release_commit": "a794b71e1c93d6d4e9f3cfe1f2ccc591a685bdea",
+  "records": 2412,
+  "paired_cells": 1200,
+  "raw_scores": {
+    "local": "E:\\type10-7\\automation_reports\\CV-SincNet\\20260928-phase2-d92-sgjoint-repeat-rx1-m4-r01\\results\\scores.json",
+    "remote": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sgjoint-repeat-rx1-m4-r01/scores.json",
+    "bytes": 4030835
+  },
+  "raw_predictions": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sgjoint-repeat-rx1-m4-r01/<row_id>/sgjoint/predictions.jsonl",
+  "baseline_predictions": [
+    {
+      "row_id": "cvs-daot-rc4-s2026092701",
+      "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092701/predictions.jsonl"
+    },
+    {
+      "row_id": "cvs-daot-rc4-s2026092702",
+      "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092702/predictions.jsonl"
+    },
+    {
+      "row_id": "cvs-daot-rc4-s2026092703",
+      "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092703/predictions.jsonl"
+    },
+    {
+      "row_id": "cvs-daot-rc4-s2026092704",
+      "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092704/predictions.jsonl"
+    }
+  ],
+  "raw_fit_traces": [
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sgjoint-repeat-rx1-m4-r01/cvs-daot-rc4-s2026092701/sgjoint/fit_trace.jsonl",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sgjoint-repeat-rx1-m4-r01/cvs-daot-rc4-s2026092702/sgjoint/fit_trace.jsonl",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sgjoint-repeat-rx1-m4-r01/cvs-daot-rc4-s2026092703/sgjoint/fit_trace.jsonl",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sgjoint-repeat-rx1-m4-r01/cvs-daot-rc4-s2026092704/sgjoint/fit_trace.jsonl"
+  ],
+  "audits": {
+    "arithmetic": "arithmetic_audit.json",
+    "fit": "fit_audit.json",
+    "interpretation": "E:\\type10-7\\automation_reports\\CV-SincNet\\20260928-phase2-d92-sgjoint-repeat-rx3-m4-r01\\results\\combined_rx4\\interpretation_audit.json"
+  },
+  "summaries": {
+    "cohort": "summary/report.md",
+    "combined": "E:\\type10-7\\automation_reports\\CV-SincNet\\20260928-phase2-d92-sgjoint-repeat-rx3-m4-r01\\results\\combined_rx4\\report.md"
+  },
+  "compact_fit_logs": "fit_logs/",
+  "per_k": [
+    {
+      "k": 1,
+      "joint_cells": 240,
+      "joint_delta_pp": {
+        "old_accuracy": 1.7476851851851882,
+        "new_accuracy": -1.5611111111111131,
+        "harmonic_mean": -1.0220243372454252
+      },
+      "old_guard_all_cells": {
+        "cells": 300,
+        "baseline": 0.5524074074074075,
+        "candidate": 0.5745740740740741,
+        "delta_pp": 2.216666666666667,
+        "pass_guard": true
+      }
+    },
+    {
+      "k": 5,
+      "joint_cells": 240,
+      "joint_delta_pp": {
+        "old_accuracy": 10.293981481481485,
+        "new_accuracy": -0.642361111111106,
+        "harmonic_mean": 2.690435080608106
+      },
+      "old_guard_all_cells": {
+        "cells": 300,
+        "baseline": 0.5873333333333333,
+        "candidate": 0.6867222222222221,
+        "delta_pp": 9.938888888888886,
+        "pass_guard": true
+      }
+    },
+    {
+      "k": 10,
+      "joint_cells": 240,
+      "joint_delta_pp": {
+        "old_accuracy": 6.803240740740735,
+        "new_accuracy": 0.997916666666665,
+        "harmonic_mean": 2.796523521728278
+      },
+      "old_guard_all_cells": {
+        "cells": 300,
+        "baseline": 0.6603518518518519,
+        "candidate": 0.7241481481481481,
+        "delta_pp": 6.379629629629624,
+        "pass_guard": true
+      }
+    },
+    {
+      "k": 20,
+      "joint_cells": 240,
+      "joint_delta_pp": {
+        "old_accuracy": 4.6597222222222285,
+        "new_accuracy": 0.8784722222222152,
+        "harmonic_mean": 2.0231424405152687
+      },
+      "old_guard_all_cells": {
+        "cells": 300,
+        "baseline": 0.717111111111111,
+        "candidate": 0.7571296296296296,
+        "delta_pp": 4.001851851851857,
+        "pass_guard": true
+      }
+    }
+  ],
+  "fit_cost": {
+    "fits": 1200,
+    "fixed_k1_fits": 300,
+    "support_cv_fits": 900,
+    "total_fit_seconds": 283.1632828461006,
+    "mean_fit_seconds": 0.23596940237175051,
+    "process_peak_rss_bytes": {
+      "min": 498352128,
+      "mean": 500369408,
+      "max": 504152064
+    },
+    "state_byte_ranges": {
+      "head_bytes": [
+        7728,
+        53456
+      ],
+      "summary_operator_bytes": [
+        204800,
+        204800
+      ],
+      "persistent_state_bytes": [
+        212528,
+        258256
+      ],
+      "covariance_matrix_bytes": [
+        204800,
+        524288
+      ]
+    },
+    "note": "Sum of measured fit_seconds, not wall duration or satellite hardware speed; closed-form head plus support CV, no epoch/gradient convergence claim"
+  },
+  "payload_byte_ranges": {
+    "numeric_array_bytes": {
+      "min": 4410,
+      "mean": 4410,
+      "max": 4410
+    },
+    "registry_schema_bytes": {
+      "min": 670,
+      "mean": 670,
+      "max": 670
+    },
+    "total_array_bytes": {
+      "min": 5080,
+      "mean": 5080,
+      "max": 5080
+    },
+    "npz_file_bytes": {
+      "min": 5319,
+      "mean": 5424.25,
+      "max": 5508
+    },
+    "manifest_file_bytes": {
+      "min": 2872,
+      "mean": 2875,
+      "max": 2877
+    },
+    "total_file_bytes": {
+      "min": 8191,
+      "mean": 8299.25,
+      "max": 8383
+    },
+    "incremental_transfer_bytes": {
+      "min": 8191,
+      "mean": 8299.25,
+      "max": 8383
+    }
+  },
+  "payload_delivery_assumption": "summary_already_deployed=false: existing summary file package counts toward delivery; no newly fitted ground statistics",
+  "new_ground_statistics_bytes": 0,
+  "source_rows_read": 0,
+  "query_rows_used_for_fit": 0,
+  "old_guard_scope": "All paired cells at K, including new_count=0; joint table old/new/H restricts to new_count>0. Explicit supplement corrects summary guard scope without replacing original summary.",
+  "claim_scope": "REPEATED_BENCHMARK_PREVIOUSLY_SCORED_TARGETS",
+  "selection_feedback_forbidden": true,
+  "limitations": [
+    "Previously scored target reuse is not independent unexposed generalization evidence",
+    "Shared query and overlapping support draws are not independent model repeats",
+    "Not a comprehensive performance improvement; all-K goal remains unmet"
+  ],
+  "analysis_utc": "2026-09-28T15:28:08.793130+00:00",
+  "combined_old_guard_all_cells": [
+    {
+      "k": 1,
+      "cells": 1200,
+      "baseline": 0.39269907407407406,
+      "candidate": 0.40482870370370366,
+      "delta_pp": 1.2129629629629601,
+      "pass_guard": true
+    },
+    {
+      "k": 5,
+      "cells": 1200,
+      "baseline": 0.46495833333333336,
+      "candidate": 0.5359259259259259,
+      "delta_pp": 7.096759259259255,
+      "pass_guard": true
+    },
+    {
+      "k": 10,
+      "cells": 1200,
+      "baseline": 0.5576527777777778,
+      "candidate": 0.5905231481481481,
+      "delta_pp": 3.2870370370370328,
+      "pass_guard": true
+    },
+    {
+      "k": 20,
+      "cells": 1200,
+      "baseline": 0.6238518518518519,
+      "candidate": 0.6335787037037037,
+      "delta_pp": 0.9726851851851848,
+      "pass_guard": true
+    }
+  ]
+}

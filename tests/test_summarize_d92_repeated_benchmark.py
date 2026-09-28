@@ -18,6 +18,8 @@ def cohorts():
     for i, (s, d) in enumerate(zip(specs, data)):
         s['run_id'] = f'synthetic-cohort-{i}'
         s['permissions']['claim_scope'] = 'REPEATED_BENCHMARK_PREVIOUSLY_SCORED_TARGETS synthetic'
+        s['metrics_plan']['acceptance'].update(require_harmonic_improvement=True,
+            primary_scope='joint all-four-RX equal-cell per-K; cohort tables descriptive, not independent pass gates')
         s['confirmation'].update(candidate_method='D92-SGJoint-v1', candidate_folder='sgjoint',
             candidate_predictor='predict_d92_summary_joint.py', candidate_mode='d92_sgjoint_registration',
             reuse_validated_capsule_id=f'synthetic-capsule-{i}', expected_split_count=900 if i == 0 else 300,
@@ -81,3 +83,40 @@ def test_inputs_unchanged_after_pooling():
     before = deepcopy((specs, data))
     combine(specs, data)
     assert (specs, data) == before
+
+
+def test_old_guard_includes_old_only_when_preregistered():
+    specs,data=cohorts()
+    for spec,scored in zip(specs,data):
+        spec['joint_benchmark']={'old_accuracy_scope':'All paired cells at this K, including old-only registration'}
+        for row in scored['results']:
+            if row['method']=='D92-SGJoint-v1':
+                row['old_accuracy']=.51 if row['new_count'] else 0.0
+            elif row['method']=='D92':
+                row['old_accuracy']=.5
+    result=combine(specs,data)
+    assert all(row['delta']['old_accuracy']==pytest.approx(.01) for row in result['comparisons'])
+    assert all(row['old_guard_delta']==pytest.approx(-.092) and not row['old_guard'] for row in result['comparisons'])
+    assert not result['preregistered_guard_pass']
+
+
+def test_mvkme_pool_keeps_method_binding_and_strict_new_guard():
+    specs,data=cohorts()
+    for spec,scored in zip(specs,data):
+        spec['confirmation'].update(candidate_method='D92-MVKME-v1',candidate_folder='mvkme',
+            candidate_predictor='predict_d92_mv_kme.py',candidate_mode='d92_mvkme_registration')
+        for row in scored['results']:
+            if row['method']=='D92-SGJoint-v1':row['method']='D92-MVKME-v1'
+    result=combine(specs,data)
+    assert result['methods']==['D92','D92-MVKME-v1']
+    assert result['acceptance']['require_new_improvement']
+    assert 'D92-SGJoint' not in result['claim_scope']
+
+
+@pytest.mark.parametrize('field,value', [('require_harmonic_improvement', False),
+                                        ('primary_scope', 'choose best receiver')])
+def test_reject_changed_preregistered_acceptance(field, value):
+    specs, data = cohorts()
+    specs[0]['metrics_plan']['acceptance'][field] = value
+    with pytest.raises(ValueError):
+        combine(specs, data)

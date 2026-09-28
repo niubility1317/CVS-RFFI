@@ -31,17 +31,27 @@ def matrix_definition(spec=None):
         source=spec['data']
         matrix=dict(model_seed=[r['seeds']['model'] for r in spec['rows']],receiver=source['target_receivers'],
             scenario=source['scenarios'],k=source['k'],new_count=source['new_class_counts'],support_seed=source['support_seeds'])
-        strict_new=methods[1] in ('D92-SFHead-v1','D92-SGJoint-v1')
+        strict_new=methods[1] in ('D92-SFHead-v1','D92-SGJoint-v1','D92-MVKME-v1')
         acceptance['require_new_improvement']=strict_new
         declared=spec.get('metrics_plan',{}).get('acceptance',{})
-        if not isinstance(declared,dict) or set(declared)-{'old_max_drop','require_new_improvement'}:
+        if not isinstance(declared,dict) or set(declared)-{'old_max_drop','require_new_improvement','require_harmonic_improvement','primary_scope'}:
             raise ValueError('Unsupported acceptance rule')
+        if 'require_harmonic_improvement' in declared and declared['require_harmonic_improvement'] is not True:
+            raise ValueError('Every registered K requires harmonic improvement')
+        if 'primary_scope' in declared and (methods[1] not in ('D92-SGJoint-v1','D92-MVKME-v1') or declared['primary_scope']!=
+                'joint all-four-RX equal-cell per-K; cohort tables descriptive, not independent pass gates'):
+            raise ValueError('Unsupported primary acceptance scope')
         if 'old_max_drop' in declared and declared['old_max_drop']!=0.01:
             raise ValueError('The registered old-class guard must be 0.01')
         if 'require_new_improvement' in declared:
             if type(declared['require_new_improvement']) is not bool or (strict_new and not declared['require_new_improvement']):
                 raise ValueError(methods[1]+' requires strict new-class improvement')
             acceptance['require_new_improvement']=declared['require_new_improvement']
+        old_scope=spec.get('joint_benchmark',{}).get('old_accuracy_scope')
+        if old_scope is not None:
+            if old_scope!='All paired cells at this K, including old-only registration':
+                raise ValueError('Unsupported old-class guard scope')
+            acceptance['old_guard_scope']='all_cells_including_old_only'
     for name,values in matrix.items():
         if not isinstance(values,list) or not values or len(set(values))!=len(values):
             raise ValueError('Matrix axis must be a nonempty unique list: '+name)
@@ -76,7 +86,7 @@ def summarize(data,spec=None):
             or any(r['new_count']!=0 or tuple(r[k] for k in KEY) not in expected for r in dg)):
         raise ValueError('Wrong final coverage')
     tables={}
-    for name,dimensions,joint in [('per_k',['k'],True),('per_k_new',['k','new_count'],False),
+    for name,dimensions,joint in [('per_k',['k'],True),('per_k_all',['k'],False),('per_k_new',['k','new_count'],False),
         ('per_seed_k',['model_seed','k'],True),('per_rx_scene_k',['receiver','scenario','k'],True)]:
         groups=defaultdict(list)
         for r in rows:
@@ -92,12 +102,17 @@ def summarize(data,spec=None):
         baseline=next(r for r in tables['per_k'] if r['k']==k and r['method']==methods[0])
         candidate=next(r for r in tables['per_k'] if r['k']==k and r['method']==methods[1])
         delta={m:candidate[m]-baseline[m] for m in METRICS}
+        old_guard_delta=delta['old_accuracy']
+        if acceptance.get('old_guard_scope')=='all_cells_including_old_only':
+            pair={r['method']:r for r in tables['per_k_all'] if r['k']==k}
+            old_guard_delta=pair[methods[1]]['old_accuracy']-pair[methods[0]]['old_accuracy']
         seed_delta=[]
         for seed in matrix['model_seed']:
             pair={r['method']:r for r in tables['per_seed_k'] if r['k']==k and r['model_seed']==seed}
             seed_delta.append({m:pair[methods[1]][m]-pair[methods[0]][m] for m in METRICS})
         comparisons.append(dict(k=k,delta=delta,paired_seed_delta_range={m:[min(r[m] for r in seed_delta),max(r[m] for r in seed_delta)] for m in METRICS},
-            h_improved=delta['harmonic_mean']>0,old_guard=delta['old_accuracy']>=-acceptance['old_max_drop'],new_guard=delta['new_accuracy']>=-acceptance['new_max_drop'],
+            old_guard_delta=old_guard_delta,
+            h_improved=delta['harmonic_mean']>0,old_guard=old_guard_delta>=-acceptance['old_max_drop'],new_guard=delta['new_accuracy']>=-acceptance['new_max_drop'],
             new_improved=delta['new_accuracy']>0))
     result=dict(status='ANALYZED',rows=len(rows),methods=list(methods),matrix=matrix,acceptance=acceptance,
         aggregation=f"Equal mean over fixed RX/scene/new_count/support seed cells; H is mean of per-cell H, not H of marginal means. {len(matrix['model_seed'])} model seeds are the independent model replicates; support draws share query and are not independent samples.",
@@ -125,6 +140,8 @@ def write_summary(result, output):
     for r in result['comparisons']:
         d=r['delta'];lines.append(f"|{r['k']}|{100*d['old_accuracy']:+.2f}|{100*d['new_accuracy']:+.2f}|{100*d['harmonic_mean']:+.2f}|")
     acceptance_text='每个K的H和新类严格提升、旧类退化不超过1个百分点' if result['acceptance']['require_new_improvement'] else '每个K的H严格提升、新旧类各自退化不超过1个百分点'
+    if result['acceptance'].get('old_guard_scope')=='all_cells_including_old_only':
+        lines+=['','以上表格为新增类数大于0的联合任务。旧类保护条件另按全部单元（含旧类单独任务）计算，见per_k_all.csv。']
     lines+=['',f"验收标准：{acceptance_text}。通过：{result['preregistered_guard_pass']}。每个K的新类均提升：{result['new_improved_every_k']}。",
         '','完整K×新增类规模、每seed和RX×场景结果见同目录CSV。最弱类别准确率、分组宏F1与遗忘均保留，不能用总体H掩盖局部退化。',
         '',f"适用范围：{result['claim_scope']}。评分不回流本候选调参或选择性重跑。"]
