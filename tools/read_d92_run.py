@@ -35,8 +35,9 @@ for p in [release/'run.log',root/'run.log']+list(root.glob('*.log'))+list(root.g
     except (ValueError,TypeError):filtered.append(line[-1500:])
    tail=filtered
   result[str(p)]={'bytes':p.stat().st_size,'tail':tail}
-for p in root.glob('*/'+candidate_folder+'/predictions_complete.json'):
- result[str(p)]=json.loads(p.read_text())
+for marker in ('predictions_complete.json','probe_complete.json'):
+ for p in root.glob('*/'+candidate_folder+'/'+marker):
+  result[str(p)]=json.loads(p.read_text())
 result['fit_progress']={}
 for p in root.glob('*/'+candidate_folder+'/compact.jsonl'):
  with p.open('rb') as stream:
@@ -60,7 +61,10 @@ print(json.dumps(result))
 
 
 def readback_script(spec):
-    candidate=candidate_definition(spec.get('confirmation',{}))
+    if 'probe' in spec and spec['probe'].get('query_access') is False:
+        candidate={'candidate_folder':'probe'}
+    else:
+        candidate=candidate_definition(spec.get('confirmation',{}))
     return (REMOTE.replace('ROOT',repr(spec['execution']['remote_run_root']))
             .replace('RELEASE',repr(spec['code']['cwd']))
             .replace('CANDIDATE_FOLDER',repr(candidate['candidate_folder'])))

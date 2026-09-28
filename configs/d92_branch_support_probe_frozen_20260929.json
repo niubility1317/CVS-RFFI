@@ -1,0 +1,47 @@
+{
+  "method": "D92-BranchSupportProbe-v1",
+  "schema": "d92_branch_support_probe_v1",
+  "views": "original_received_only",
+  "branches": [
+    "t_emb",
+    "f_emb",
+    "pa_local"
+  ],
+  "disabled_branches": [
+    "dac_local"
+  ],
+  "identity_dim": 160,
+  "fft_dim": 96,
+  "aux_dim": 480,
+  "norm_floor": 1e-12,
+  "background_z": "unit(z_id)",
+  "background_zfft": "unit(concat(unit(z_id),4*unit(fft96)))",
+  "auxiliary": "concat(unit(t_emb),unit(f_emb),unit(pa_local))/sqrt(3)",
+  "arms": [
+    "z",
+    "z_duplicate",
+    "z_aux",
+    "zfft",
+    "zfft_duplicate",
+    "zfft_aux"
+  ],
+  "concatenate_renormalize": false,
+  "duplicate": "concat(B,B)",
+  "target": "onehot_minus_1_over_C",
+  "objective": "0.5*sum_physical_squared_error+0.5*||W||F^2",
+  "ridge_coefficient": 1.0,
+  "intercept_regularized": false,
+  "sample_weight": 1.0,
+  "solver": "float64_Cholesky_primal_if_D_le_N_else_dual",
+  "max_folds": 3,
+  "folds": "per_class_physical_id_sort_position_mod_min_K_3",
+  "k1": "numerical_only_no_fit_no_holdout",
+  "selection": "none_diagnostic_only",
+  "reconstruction": "same_ridge_B_to_A_trainfold_centered_joint_RHS",
+  "numerical_rank": "max(N,D)*eps64*max_singular_value",
+  "optimizer_steps": 0,
+  "source_inputs": false,
+  "summary_inputs": false,
+  "query_inputs": false,
+  "claim_scope": "SUPPORT_OOF_DIAGNOSTIC_NOT_QUERY_EVALUATION"
+}

@@ -71,6 +71,15 @@ paths += ['docs/D92_SUPPORT_INFORMATION_DESIGN_20260929.md','docs/D92_MVRIDGE_P0
 paths += ['tools/finalize_d92_mvridge_record.py','tests/test_finalize_d92_mvridge_record.py']
 paths += ['docs/D92_FIXED_PHASE1_INFORMATION_AUDIT_20260929.md']
 paths += ['docs/D92_FIXED_PHASE1_BRANCH_METADATA_20260929.json']
+paths += ['docs/D92_BRANCH_SUPPORT_PROBE_DESIGN_20260929.md',
+    'code/cvsrffi/d92_branch_support_probe.py','configs/d92_branch_support_probe_frozen_20260929.json',
+    'tests/test_d92_branch_support_probe.py','tools/export_d92_branch_support_features.py',
+    'tests/test_export_d92_branch_support_features.py','tools/evaluate_d92_branch_support_probe.py',
+    'tests/test_evaluate_d92_branch_support_probe.py','tools/prepare_d92_branch_support_probe.py',
+    'tools/run_d92_branch_support_probe.py','tools/publish_d92_branch_support_probe.py',
+    'tools/preflight_d92_branch_support_probe.py','tests/test_run_d92_branch_support_probe.py',
+    'configs/d92_branch_support_probe_20260929.json','configs/d92_branch_support_probe_rx3_20260929.json',
+    'configs/d92_branch_support_probe_rx1_20260929.json','docs/D92_BRANCH_SUPPORT_PROBE_P0_20260929.md']
 for name in paths:
     src=ROOT/name;dst=WS/name;dst.parent.mkdir(parents=True,exist_ok=True)
     # Each name is unique to this task; original D92 and shared wrappers are not mirrored.

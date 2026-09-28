@@ -1,5 +1,11 @@
 # D92优化当前交接
 
+## 当前状态：分支support信息探查已预登记，尚未启动
+
+2026-09-29：新run `20260929-phase2-d92-branch-support-probe-m4-r01` 已PLANNED/launch-ready VALID，release预定`d92_branch_support_probe_20260929_r01`。实际架构元数据已核实，固定原始单view的t_emb/f_emb/pa_local作为一组。两个背景z与z+FFT分别固定baseline/duplicate/aux三臂，共六臂；全部ridge1，duplicate用于正则/能量对照。K1仅数值诊断，其他K逐物理OOF；完整4800episode、预期64800分解，0 query访问、0新source payload，不输出部署头。原型/ground/source数据不读取。设计`docs/D92_BRANCH_SUPPORT_PROBE_DESIGN_20260929.md`。
+
+core21、export35、entry6、root编排8及旧readback8项相关测试已通过（各owner详细证据）；唯一P0/P1正在收尾，正式launch尚未执行。资源/新路径/capsule绑定预检VERIFIED：`evidence/support_preflight_1790620345048893000.json`（GPU0空闲、其余健康任务不动；未读IQ/未数据重验）。root唯一launch owner，GPU0串行冻结export与最多4 CPU lanes×2BLAS。新helper prepare/run/publish/preflight及现有read_d92_run支持该scope。source_aux另负责只读8lane完整汇总脚本（尚未交付），其余agent不访问query成绩。下一步稳定实现/唯一review完成→mirror/commit/push/OID→只启动一次→独立PID/artifact读回→全support结果分析。goal ACTIVE；以下MVRidge已完成归档。
+
 ## 当前状态：MVRidge完整结果已核验，未达到目标，无实验进程
 
 2026-09-29后续只读架构核实已VERIFIED：`docs/D92_FIXED_PHASE1_BRANCH_METADATA_20260929.json`，四模型exact loader完整匹配；实际time/freq/PA/stats启用、DAC关闭，t_dim=f_dim=emb_dim160，joint_proj/pa_proj为320→160。eval/冻结、BN数量0；未读任何样本或成绩、0次forward。这解决下文“实际flags待核实”，尚未执行support前向一致性/信息探查。source_aux正在制定`docs/D92_BRANCH_SUPPORT_PROBE_DESIGN_20260929.md`（方案尚未交付、不得假定已存在）；root尚未登记或启动该探查。最新结果归档commit为e1e29539ba1feb0fd6474cc73faf2555f737b125，信息审查commit为a2f7fc0fca89c476e9ee1f0d417105d3e85750b4，均独立OID验证通过。保持goal ACTIVE。

@@ -1,0 +1,46 @@
+{
+  "host": "dell-DSS8440",
+  "user": "szu2070436088",
+  "cpu_count": 96,
+  "loadavg": [
+    5.05615234375,
+    5.0498046875,
+    5.17041015625
+  ],
+  "gpu": [
+    "0, 1, 24576",
+    "1, 1, 24576",
+    "2, 1, 24576",
+    "3, 3442, 24576",
+    "4, 3452, 24576",
+    "5, 3452, 24576",
+    "6, 3452, 24576",
+    "7, 3452, 24576"
+  ],
+  "gpu0_free_for_single_export": true,
+  "free_disk_bytes": 7128764321792,
+  "output_paths": {
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-support-probe-m4-r01": false,
+    "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_support_probe_20260929_r01": false,
+    "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_support_probe_20260929_r01.tar": false
+  },
+  "cohorts": {
+    "rx3": {
+      "capsule_id": "residual-noeq-76121e6f34363fa612ec25fb",
+      "split_count": 900,
+      "binding": "VERIFIED",
+      "iq_read": false,
+      "data_revalidated": false
+    },
+    "rx1": {
+      "capsule_id": "residual-noeq-d0a99fede324159c5a4750fd",
+      "split_count": 300,
+      "binding": "VERIFIED",
+      "iq_read": false,
+      "data_revalidated": false
+    }
+  },
+  "query_access": false,
+  "source_sample_access": false,
+  "status": "VERIFIED"
+}
