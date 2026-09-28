@@ -82,6 +82,13 @@ paths += ['docs/D92_BRANCH_SUPPORT_PROBE_DESIGN_20260929.md',
     'configs/d92_branch_support_probe_rx1_20260929.json','docs/D92_BRANCH_SUPPORT_PROBE_P0_20260929.md']
 paths += ['tools/summarize_d92_branch_support_probe.py','tests/test_summarize_d92_branch_support_probe.py',
     'tools/analyze_d92_branch_support_probe.py']
+paths += ['docs/D92_BRANCH_AUGMENT_DESIGN_20260929.md','docs/D92_BRANCH_RIDGE_P0_20260929.md','code/cvsrffi/d92_branch_ridge.py',
+    'configs/d92_branch_ridge_frozen_20260929.json','tests/test_d92_branch_ridge.py',
+    'tools/export_d92_branch_features.py','tools/evaluate_d92_branch_ridge.py',
+    'tests/test_export_d92_branch_features.py','tests/test_evaluate_d92_branch_ridge.py',
+    'tools/prepare_d92_branch_ridge_benchmark.py','tools/preflight_d92_branch_ridge.py',
+    'configs/d92_branch_ridge_repeat_rx3_20260929.json','configs/d92_branch_ridge_repeat_rx1_20260929.json',
+    'configs/d92_branch_ridge_repeat_rx3_data_20260929.json','configs/d92_branch_ridge_repeat_rx1_data_20260929.json']
 for name in paths:
     src=ROOT/name;dst=WS/name;dst.parent.mkdir(parents=True,exist_ok=True)
     # Each name is unique to this task; original D92 and shared wrappers are not mirrored.

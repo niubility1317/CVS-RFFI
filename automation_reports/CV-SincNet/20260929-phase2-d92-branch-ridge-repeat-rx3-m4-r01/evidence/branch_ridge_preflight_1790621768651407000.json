@@ -1,0 +1,90 @@
+{
+  "host": "dell-DSS8440",
+  "user": "szu2070436088",
+  "cpu_count": 96,
+  "loadavg": [
+    5.10302734375,
+    5.17138671875,
+    5.38720703125
+  ],
+  "gpu": [
+    "0, 1, 24576",
+    "1, 1, 24576",
+    "2, 1, 24576",
+    "3, 3442, 24576",
+    "4, 3452, 24576",
+    "5, 3452, 24576",
+    "6, 3452, 24576",
+    "7, 3452, 24576"
+  ],
+  "gpu0_available": true,
+  "free_disk_bytes": 7126924292096,
+  "output_paths": {
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-ridge-repeat-rx3-m4-r01": false,
+    "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_ridge_repeat_rx3_20260929_r01": false,
+    "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_ridge_repeat_rx3_20260929_r01.tar": false,
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-ridge-repeat-rx1-m4-r01": false,
+    "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_ridge_repeat_rx1_20260929_r01": false,
+    "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_ridge_repeat_rx1_20260929_r01.tar": false
+  },
+  "inputs": {
+    "20260929-phase2-d92-branch-ridge-repeat-rx3-m4-r01": {
+      "capsule_id": "residual-noeq-76121e6f34363fa612ec25fb",
+      "split_count": 900,
+      "model_rows": [
+        {
+          "row_id": "cvs-daot-rc4-s2026092701",
+          "baseline_complete": true,
+          "checkpoint_file_bytes": 15992872
+        },
+        {
+          "row_id": "cvs-daot-rc4-s2026092702",
+          "baseline_complete": true,
+          "checkpoint_file_bytes": 15992936
+        },
+        {
+          "row_id": "cvs-daot-rc4-s2026092703",
+          "baseline_complete": true,
+          "checkpoint_file_bytes": 15992872
+        },
+        {
+          "row_id": "cvs-daot-rc4-s2026092704",
+          "baseline_complete": true,
+          "checkpoint_file_bytes": 15992936
+        }
+      ]
+    },
+    "20260929-phase2-d92-branch-ridge-repeat-rx1-m4-r01": {
+      "capsule_id": "residual-noeq-d0a99fede324159c5a4750fd",
+      "split_count": 300,
+      "model_rows": [
+        {
+          "row_id": "cvs-daot-rc4-s2026092701",
+          "baseline_complete": true,
+          "checkpoint_file_bytes": 15992872
+        },
+        {
+          "row_id": "cvs-daot-rc4-s2026092702",
+          "baseline_complete": true,
+          "checkpoint_file_bytes": 15992936
+        },
+        {
+          "row_id": "cvs-daot-rc4-s2026092703",
+          "baseline_complete": true,
+          "checkpoint_file_bytes": 15992872
+        },
+        {
+          "row_id": "cvs-daot-rc4-s2026092704",
+          "baseline_complete": true,
+          "checkpoint_file_bytes": 15992936
+        }
+      ]
+    }
+  },
+  "iq_read": false,
+  "truth_read": false,
+  "scores_read": false,
+  "source_samples_read": false,
+  "data_revalidated": false,
+  "status": "VERIFIED"
+}

@@ -22,6 +22,7 @@ CANDIDATES = (
     ('D92-BNNA-v1', 'bnna', 'predict_d92_bnna.py', 'd92_bnna_registration'),
     ('D92-OSC-v1', 'osc', 'predict_d92_orbit_shared.py', 'd92_osc_registration'),
     ('D92-MVRidge-v1', 'mvridge', 'predict_d92_multiview_ridge.py', 'd92_mvridge_registration'),
+    ('D92-BranchRidge-v1', 'branch_ridge', 'evaluate_d92_branch_ridge.py', 'd92_branch_ridge_registration'),
 )
 
 
@@ -73,6 +74,7 @@ def feature_definition(confirmation):
     return {
         'D92-MVKME-v1': ('export_d92_mv_kme_features.py', 'mv_features', '--mv-features', 'MULTIVIEW_FEATURES_COMPLETE'),
         'D92-BNNA-v1': ('export_d92_bnna_features.py', 'bnna_features', '--bnna-features', 'BNNA_FEATURES_COMPLETE'),
+        'D92-BranchRidge-v1': ('export_d92_branch_features.py', 'branch_features', '--branch-features', 'BRANCH_FEATURES_COMPLETE'),
     }.get(method)
 
 

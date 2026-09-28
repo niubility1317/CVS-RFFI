@@ -1,0 +1,39 @@
+{
+  "algorithm": {
+    "method": "D92-BranchRidge-v1",
+    "schema": "d92_branch_ridge_v1",
+    "views": "original_received_only",
+    "branches": [
+      "t_emb",
+      "f_emb",
+      "pa_local"
+    ],
+    "identity_dim": 160,
+    "fft_dim": 96,
+    "feature_dim": 736,
+    "norm_floor": 1e-12,
+    "background": "unit(concat(unit(z_id),4*unit(fft96)))",
+    "auxiliary": "concat(unit(t_emb),unit(f_emb),unit(pa_local))/sqrt(3)",
+    "features": "concat(background,auxiliary)",
+    "concatenate_renormalize": false,
+    "fft": "historical_spectral_logmag_sketch",
+    "fft_norm_floor": 1e-08,
+    "target": "onehot_minus_1_over_C",
+    "objective": "0.5*sum_physical_squared_error+0.5*||W||F^2",
+    "ridge_coefficient": 1.0,
+    "intercept_regularized": false,
+    "sample_weight": 1.0,
+    "solver": "float64_Cholesky_primal_if_D_le_N_else_dual",
+    "selection": "fixed_no_selection",
+    "selected": "zfft_aux",
+    "runtime_cv": false,
+    "k1": "same_full_support_fit_no_independent_holdout",
+    "score": "per_sample_linear_all_registered_classes",
+    "tie_break": "physical_class_id_lexicographic",
+    "optimizer_steps": 0,
+    "source_inputs": false,
+    "summary_inputs": false,
+    "query_fit": false,
+    "phase1_frozen": true
+  }
+}

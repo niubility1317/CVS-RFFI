@@ -161,7 +161,7 @@ def test_fresh_capsule_split_count_must_match_preregistered_count(tmp_path, monk
     assert [c[0] for c in calls] == ['build_d92_confirmation_data.py']
 
 
-@pytest.mark.parametrize('candidate_index', [0, 1, 2, 3, 4, 5, 6])
+@pytest.mark.parametrize('candidate_index', [0, 1, 2, 3, 4, 5, 6, 7])
 def test_candidate_release_paths_and_readback_use_exact_registered_folder(tmp_path,capfd,candidate_index):
     from collect_d92_fit_logs import fit_log_paths
     from publish_d92_confirmation import release_tool_paths
@@ -263,7 +263,7 @@ def install_orbit_cache_reuse(tmp_path,spec):
             checkpoint_sha256='a'*64,model_seed=row['seeds']['model'],query_used_for_fitting=False,encoder_updated=False))
 
 
-@pytest.mark.parametrize('candidate_index',[2,3,4,5,6])
+@pytest.mark.parametrize('candidate_index',[2,3,4,5,6,7])
 def test_reused_rows_only_run_candidate_and_score_with_old_artifacts_unchanged(tmp_path,monkeypatch,candidate_index):
     from score_d92_confirmation import score
     path,spec=reused_specification(tmp_path)
@@ -403,7 +403,7 @@ def test_publisher_cpu_reuse_never_queries_or_waits_for_gpu(monkeypatch):
     assert len(calls)==2
 
 
-@pytest.mark.parametrize('candidate_index',[3,4])
+@pytest.mark.parametrize('candidate_index',[3,4,7])
 def test_multiview_release_includes_exporter_and_requires_reused_baseline(tmp_path,candidate_index):
     from publish_d92_confirmation import release_tool_paths
     path,spec=specification(tmp_path)

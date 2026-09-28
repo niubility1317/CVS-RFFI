@@ -1,5 +1,11 @@
 # D92优化当前交接
 
+## 最新状态：BranchRidge两cohort已就绪，尚未发布
+
+新run `20260929-phase2-d92-branch-ridge-repeat-rx3-m4-r01`和rx1同名已PLANNED/launch-ready VALID。固定单view736维、全support一次ridge1、全K同式；新source0B，K1无OOF。40核心/probe、23export/entry、61编排、24summary tests通过。唯一P0/P1见`docs/D92_BRANCH_RIDGE_P0_20260929.md`，无阻断；实际checkpoint synthetic无query smoke已在export入口内，received singleton前向。资源/输出/capsule/原baseline句柄preflight VERIFIED。root唯一launch owner，GPU0每cohort一个串行export、每cohort最多4CPU lanes×2BLAS，不干预GPU3至7已有任务。
+
+准备按两spec的launch_command发布，各release/run目录尚不存在；发布后必须独立readback再更新本段，禁止凭历史PLANNED重复启动。source_aux负责新纯metadata fit/cost collector，d92_p0_review负责新finalizer，仅合成开发中，不影响已冻结runtime。两组均完成后才下载任何scores，固定矩阵不择优重跑。goal ACTIVE，无待批准事项。
+
 ## 最新状态：support分支探查完整分析完成，下一候选正在实现
 
 run `20260929-phase2-d92-branch-support-probe-m4-r01`已终态，全部8行/4800任务完整，1200个K1任务仅数值诊断，其余3600任务六臂物理OOF共64800次分解。独立汇总`results/support_summary/summary.json`状态COMPLETE_SUPPORT_DIAGNOSTIC_VERIFIED；分析commit `63aac180dbbd200ba3954929f4a457386aff7fd8`，runtime仍`f7f19e87042b22c499ca2cee3d01fd0334dc8d47`。所有进程已退出，禁止重跑探查或analysis输出。完整解释位于该run的`support_interpretation.md`。
