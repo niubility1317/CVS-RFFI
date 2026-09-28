@@ -1,14 +1,14 @@
 # D92优化当前交接
 
-## 当前状态：SGJoint已实现，等新增独立数据验收
+## 当前状态：用户已授权复用数据，准备SGJoint完整重复基准
 
-用户最新明确选择：先完成方法，新增独立数据后验收；并要求更多子agent分工以提高效率。当前三项并行责任为核心/合成测试、预测与日志接入、独立P0/P1审查，主Agent整合交付。不得重新对既有query做SGJoint评分，不能把待数据解释为重跑SFHead或放宽矩阵权限。
+用户最新明确说“那就先复用数据”，随后要求解释；已解释固定基准复用与新独立确认的区别。等待新增数据的前一安排已被该授权替代。SGJoint公式与配置冻结，按原完整矩阵做重复基准，不因旧scores改公式、不读取source样本。子Agent负责reuse runner/publisher/scorer、两个新spec、只读输入预检和reuse delta正确性审查，主Agent是唯一launch owner。
 
 新候选为D92-SGJoint-v1：既有量化摘要决定固定类无关归一化，identity160+同一received IQ的FFT96联合特征，注册类等先验的共享收缩LDA，K≥2仅当前row物理support CV，K1固定规则。参数来自未接触目标结果的独立数学设计，源样本/源逐样本特征/teacher/query均不参与拟合。代码、公式、固定配置和未来验收边界见`docs/D92_SUMMARY_JOINT_DELIVERY_20260928.md`及其链接。
 
-当前没有新真实实验run、没有在运行的本任务训练进程、没有SGJoint目标成绩。已有SCV与SFHead均已完成且未通过目标，原结果/日志保留。Goal仍未完成；下一个必要外部条件是符合物理ID与checkpoint契约的新增独立数据。数据到位前不新增run或训练，不读旧评分进行下一轮选参。
+拟执行run为20260928-phase2-d92-sgjoint-repeat-rx3-m4-r01和rx1-m4-r01，release为d92_sgjoint_repeat_rx3_20260928_r01和rx1_20260928_r01。各自复用旧SCV/r02与SFHead/r01的900/300split/model、四个相同模型、原D92基线预测和cached received features，CPU-only4lanes×2BLAS。只读preflight位于`local_artifacts/d92_upgrade_20260928/sgjoint_reuse_preflight.json`，新run/release/archive不存在，原run终态、八row/capsule/四checkpoint绑定已VERIFIED。此段写入时尚未启动；启动后以新run现状读回为准，绝不凭这一历史句重复启动。
 
-本阶段交付通过后，只需核实新增数据可用性并按已冻结方法预登记完整矩阵；继续沿用固定Phase1、新旧类全面验收、无源数据、实际字节审计的用户授权。不存在待用户批准的辅助训练或传输上限问题。
+两个cohort都完整执行，原SGJoint配置不变。两者终态前不下载/阅读新scores。每cohort内部全矩阵prediction固定后独立truth-last评分；主结论在四RX全部4800paired cells上等权汇总（含DG共9648评分记录），每K要求ΔH>0、Δnew>0、Δold≥−1pp，完整报告局部退化。`tools/summarize_d92_repeated_benchmark.py`负责严格完整联合汇总，已用9项合成测试验证3:1cohort的真实cell权重及防缺行/混搭。结果须标明REPEATED_BENCHMARK_PREVIOUSLY_SCORED_TARGETS，不能冒充全新独立确认。无待批准权限或待新增数据阻塞。
 
 ## 下列为已保留的过程历史，以当前状态为准
 

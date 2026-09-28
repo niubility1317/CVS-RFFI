@@ -1,0 +1,1444 @@
+{
+  "timestamp_utc": "2026-09-28T14:53:19.635920+00:00",
+  "host": "dell-DSS8440",
+  "user": 1000,
+  "scope": "read_only_metadata_and_frozen_checkpoint_binding; no scores, truth, sourceIQ or prediction score arrays opened",
+  "runs": [
+    {
+      "tag": "rx3",
+      "root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02",
+      "complete": {
+        "status": "SCORED",
+        "commit": "841f189690884f0ae51ad8778099fc576e48d849",
+        "model_rows": 4,
+        "records": 7236,
+        "selection_feedback_forbidden": true
+      },
+      "workflow": {
+        "status": "SCORED",
+        "records": 7236,
+        "commit": "841f189690884f0ae51ad8778099fc576e48d849",
+        "updated": 1790601510.1932106
+      },
+      "state": {
+        "cvs-daot-rc4-s2026092701": {
+          "status": "PREDICTIONS_COMPLETE",
+          "updated": 1790601478.0097237,
+          "checkpoint_sha256": "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b"
+        },
+        "cvs-daot-rc4-s2026092702": {
+          "status": "PREDICTIONS_COMPLETE",
+          "updated": 1790601424.4085793,
+          "checkpoint_sha256": "72f26413e495dcf82317898f8729caa3d35499bf0b41e9671ffdceab2c90924b"
+        },
+        "cvs-daot-rc4-s2026092703": {
+          "status": "PREDICTIONS_COMPLETE",
+          "updated": 1790601461.218408,
+          "checkpoint_sha256": "51fadc3b4ad3cbf83de01700a4a109430e7a57b1e10cb147f0be5f01593f26bb"
+        },
+        "cvs-daot-rc4-s2026092704": {
+          "status": "PREDICTIONS_COMPLETE",
+          "updated": 1790601443.352487,
+          "checkpoint_sha256": "690fed6ea2a6532d0ad978c93306f0f35b61f4a3a3fc4b1d6494f0e7547c74bb"
+        }
+      },
+      "capsule": {
+        "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule",
+        "manifest": {
+          "protocol_schema": "p2_min_v1",
+          "phase2_data_status": "VALIDATED_ONCE",
+          "capsule_id": "residual-noeq-76121e6f34363fa612ec25fb",
+          "members": [
+            "received.npz",
+            "splits/*.json"
+          ],
+          "received_count": 15444,
+          "split_count": 900,
+          "signal_shape": [
+            2,
+            256
+          ],
+          "scenarios": [
+            "practical_high",
+            "practical_mid",
+            "practical_low_urban"
+          ],
+          "channel": {
+            "route": "residual",
+            "mode": "post_sync",
+            "equalization_enabled": false,
+            "fs_hz": 25000000
+          },
+          "checks": {
+            "unique_physical_observation": true,
+            "scenes_physically_disjoint": true,
+            "support_query_physically_disjoint": true,
+            "query_labels_absent": true,
+            "source_paths_absent": true,
+            "finite_received": true
+          }
+        },
+        "ids_count": 15444,
+        "unique_ids": true
+      },
+      "rows": [
+        {
+          "row_id": "cvs-daot-rc4-s2026092701",
+          "root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092701",
+          "model_seed": 2026092701,
+          "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701/final_ssdg.pth",
+          "checkpoint_sha256": "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b",
+          "ground_manifest": {
+            "schema": "int8_domain_class_center_lowrank_residual_radius_v2",
+            "metadata_schema": "cvs.matched.ground.v2",
+            "checkpoint_sha256": "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b",
+            "source_prototype_artifact_sha256": "8a46a2be31cd2b03ac2b7fa365870d313b1bf5714d90f2629463578c7b1d794b",
+            "provenance_status": "CURRENT_FINAL_SCRATCH_EXACT_SOURCE_L",
+            "formal_phase2_eligible": true,
+            "feature_dim": 160,
+            "residual_rank": 3,
+            "radius_histogram_bins": 4096,
+            "member_allowlist": [
+              "int8_domain_class_center_lowrank_residual_radius_v2.npz"
+            ],
+            "npz_member_allowlist": [
+              "center_domain_handle",
+              "class_registry",
+              "core_q",
+              "core_scale",
+              "domain_registry",
+              "feature_schema",
+              "radius_q",
+              "radius_scale",
+              "residual_basis_q",
+              "residual_basis_scale",
+              "residual_coeff_q",
+              "residual_coeff_scale",
+              "residual_domain_registry",
+              "residual_rank",
+              "schema"
+            ],
+            "resource_audit": {
+              "core_q_bytes": 960,
+              "core_scale_bytes": 12,
+              "residual_basis_q_bytes": 2880,
+              "residual_basis_scale_bytes": 36,
+              "residual_coeff_q_bytes": 252,
+              "residual_coeff_scale_bytes": 168,
+              "direction_numeric_payload_bytes": 4308,
+              "radius_q_bytes": 90,
+              "radius_scale_bytes": 12,
+              "radius_numeric_payload_bytes": 102,
+              "compressed_numeric_payload_bytes": 4410,
+              "registry_schema_bytes": 670,
+              "logical_deployment_state_bytes": 5080,
+              "single_class_prototype_reconstruction_macs": 480,
+              "single_domain_all_class_reconstruction_macs": 2880,
+              "all_residual_domain_enrollment_reconstruction_macs": 40320,
+              "center_only_reconstruction_macs": 0,
+              "temporary_single_class_reconstruction_peak_bytes": 3212,
+              "temporary_single_domain_reconstruction_peak_bytes": 19272,
+              "persistent_dense_float_bank_bytes": 0,
+              "target_prototype_state_bytes": 0,
+              "adapter_state_bytes": 0,
+              "per_query_extra_reconstruction_macs": 0,
+              "center_domain_handle": "4",
+              "center_domain_index_in_retained_registry": 4,
+              "center_domain_policy": "phase1_offline_global_maximin_fixed_before_target_access",
+              "residual_rank": 3,
+              "svd_sign_canonicalization": "largest_abs_basis_entry_positive_lowest_index_tie_v1",
+              "rounding_rule": "numpy_rint_ties_to_even_v1",
+              "radius_provenance": "phase1_offline_aggregate_p90_cosine_distance_v1",
+              "mean_reconstruction_cosine": 0.9999820160122603,
+              "min_reconstruction_cosine": 0.9999158716295014,
+              "mean_reconstruction_angle_deg": 0.31261758831593595,
+              "max_reconstruction_angle_deg": 0.7432106314698378,
+              "reconstruction_rmse": 0.000476641085697338,
+              "radius_max_abs_error": 1.1444091796875e-05,
+              "radius_mean_abs_error": 5.4266715778794605e-06
+            },
+            "source_role": "L_s",
+            "target_access": false,
+            "component_state": "CURRENT_MATCHED_SOURCE_ONLY_V2",
+            "historical_outer_signature_claim": false
+          },
+          "feature_provenance": {
+            "verdict": "MATCHED_SOURCE_ONLY_SCRATCH",
+            "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701/final_ssdg.pth",
+            "checkpoint_epoch": 200,
+            "initialization": "scratch",
+            "checkpoint_inheritance": [],
+            "target_access_before_freeze": false,
+            "source_role_comparison": "EXACT_MATCH",
+            "classes": [
+              "14-10",
+              "14-7",
+              "20-15",
+              "20-19",
+              "6-15",
+              "8-20"
+            ],
+            "model_seed": 2026092701,
+            "selection": "fixed_final_epoch200",
+            "loader": {
+              "loader": "exact_ssdg_training_architecture_v1",
+              "checkpoint_load_strict": true,
+              "crra_enabled": false,
+              "missing_keys": 0,
+              "unexpected_keys": 0,
+              "skipped_mismatch": 0,
+              "state_tensor_count": 199,
+              "num_domains_from_state": 15,
+              "input_len": 256
+            },
+            "query_read_for_smoke": false
+          },
+          "feature_marker": {
+            "status": "FROZEN_FEATURES_COMPLETE",
+            "capsule_id": "residual-noeq-76121e6f34363fa612ec25fb",
+            "count": 15444,
+            "query_used_for_fitting": false
+          },
+          "baseline_marker": {
+            "status": "PREDICTIONS_COMPLETE",
+            "predictions": 909,
+            "split_count": 900,
+            "capsule_id": "residual-noeq-76121e6f34363fa612ec25fb",
+            "truth_read": false
+          },
+          "checks": {
+            "checkpoint_ground_sha": true,
+            "checkpoint_ground_provenance_sha": true,
+            "checkpoint_d92_sha": true,
+            "checkpoint_feature_source": true,
+            "model_seed": true,
+            "feature_capsule": true,
+            "feature_id_alignment": true,
+            "feature_members": true,
+            "ground_source_only": true,
+            "feature_source_only": true,
+            "baseline_binding": true,
+            "baseline_complete": true
+          },
+          "files": {
+            "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092701/predictions.jsonl": {
+              "bytes": 141171562,
+              "mtime": 1790601414.034004
+            },
+            "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092701/received_features/received_features.npz": {
+              "bytes": 11738198,
+              "mtime": 1790599418.6278627
+            },
+            "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092701/ground/int8_domain_class_center_lowrank_residual_radius_v2.npz": {
+              "bytes": 5508,
+              "mtime": 1790599415.0448623
+            }
+          }
+        },
+        {
+          "row_id": "cvs-daot-rc4-s2026092702",
+          "root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092702",
+          "model_seed": 2026092702,
+          "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092702/final_ssdg.pth",
+          "checkpoint_sha256": "72f26413e495dcf82317898f8729caa3d35499bf0b41e9671ffdceab2c90924b",
+          "ground_manifest": {
+            "schema": "int8_domain_class_center_lowrank_residual_radius_v2",
+            "metadata_schema": "cvs.matched.ground.v2",
+            "checkpoint_sha256": "72f26413e495dcf82317898f8729caa3d35499bf0b41e9671ffdceab2c90924b",
+            "source_prototype_artifact_sha256": "4d5cd4ec9c2247f9838440311bee37d36dbf3e5fd0c3db40fc306d276dfae9c0",
+            "provenance_status": "CURRENT_FINAL_SCRATCH_EXACT_SOURCE_L",
+            "formal_phase2_eligible": true,
+            "feature_dim": 160,
+            "residual_rank": 3,
+            "radius_histogram_bins": 4096,
+            "member_allowlist": [
+              "int8_domain_class_center_lowrank_residual_radius_v2.npz"
+            ],
+            "npz_member_allowlist": [
+              "center_domain_handle",
+              "class_registry",
+              "core_q",
+              "core_scale",
+              "domain_registry",
+              "feature_schema",
+              "radius_q",
+              "radius_scale",
+              "residual_basis_q",
+              "residual_basis_scale",
+              "residual_coeff_q",
+              "residual_coeff_scale",
+              "residual_domain_registry",
+              "residual_rank",
+              "schema"
+            ],
+            "resource_audit": {
+              "core_q_bytes": 960,
+              "core_scale_bytes": 12,
+              "residual_basis_q_bytes": 2880,
+              "residual_basis_scale_bytes": 36,
+              "residual_coeff_q_bytes": 252,
+              "residual_coeff_scale_bytes": 168,
+              "direction_numeric_payload_bytes": 4308,
+              "radius_q_bytes": 90,
+              "radius_scale_bytes": 12,
+              "radius_numeric_payload_bytes": 102,
+              "compressed_numeric_payload_bytes": 4410,
+              "registry_schema_bytes": 670,
+              "logical_deployment_state_bytes": 5080,
+              "single_class_prototype_reconstruction_macs": 480,
+              "single_domain_all_class_reconstruction_macs": 2880,
+              "all_residual_domain_enrollment_reconstruction_macs": 40320,
+              "center_only_reconstruction_macs": 0,
+              "temporary_single_class_reconstruction_peak_bytes": 3212,
+              "temporary_single_domain_reconstruction_peak_bytes": 19272,
+              "persistent_dense_float_bank_bytes": 0,
+              "target_prototype_state_bytes": 0,
+              "adapter_state_bytes": 0,
+              "per_query_extra_reconstruction_macs": 0,
+              "center_domain_handle": "3",
+              "center_domain_index_in_retained_registry": 3,
+              "center_domain_policy": "phase1_offline_global_maximin_fixed_before_target_access",
+              "residual_rank": 3,
+              "svd_sign_canonicalization": "largest_abs_basis_entry_positive_lowest_index_tie_v1",
+              "rounding_rule": "numpy_rint_ties_to_even_v1",
+              "radius_provenance": "phase1_offline_aggregate_p90_cosine_distance_v1",
+              "mean_reconstruction_cosine": 0.999979625659335,
+              "min_reconstruction_cosine": 0.9999174393065653,
+              "mean_reconstruction_angle_deg": 0.33372933757332596,
+              "max_reconstruction_angle_deg": 0.7362533506418046,
+              "reconstruction_rmse": 0.0005070674233138561,
+              "radius_max_abs_error": 1.9550323486328125e-05,
+              "radius_mean_abs_error": 5.986955329717603e-06
+            },
+            "source_role": "L_s",
+            "target_access": false,
+            "component_state": "CURRENT_MATCHED_SOURCE_ONLY_V2",
+            "historical_outer_signature_claim": false
+          },
+          "feature_provenance": {
+            "verdict": "MATCHED_SOURCE_ONLY_SCRATCH",
+            "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092702/final_ssdg.pth",
+            "checkpoint_epoch": 200,
+            "initialization": "scratch",
+            "checkpoint_inheritance": [],
+            "target_access_before_freeze": false,
+            "source_role_comparison": "EXACT_MATCH",
+            "classes": [
+              "14-10",
+              "14-7",
+              "20-15",
+              "20-19",
+              "6-15",
+              "8-20"
+            ],
+            "model_seed": 2026092702,
+            "selection": "fixed_final_epoch200",
+            "loader": {
+              "loader": "exact_ssdg_training_architecture_v1",
+              "checkpoint_load_strict": true,
+              "crra_enabled": false,
+              "missing_keys": 0,
+              "unexpected_keys": 0,
+              "skipped_mismatch": 0,
+              "state_tensor_count": 199,
+              "num_domains_from_state": 15,
+              "input_len": 256
+            },
+            "query_read_for_smoke": false
+          },
+          "feature_marker": {
+            "status": "FROZEN_FEATURES_COMPLETE",
+            "capsule_id": "residual-noeq-76121e6f34363fa612ec25fb",
+            "count": 15444,
+            "query_used_for_fitting": false
+          },
+          "baseline_marker": {
+            "status": "PREDICTIONS_COMPLETE",
+            "predictions": 909,
+            "split_count": 900,
+            "capsule_id": "residual-noeq-76121e6f34363fa612ec25fb",
+            "truth_read": false
+          },
+          "checks": {
+            "checkpoint_ground_sha": true,
+            "checkpoint_ground_provenance_sha": true,
+            "checkpoint_d92_sha": true,
+            "checkpoint_feature_source": true,
+            "model_seed": true,
+            "feature_capsule": true,
+            "feature_id_alignment": true,
+            "feature_members": true,
+            "ground_source_only": true,
+            "feature_source_only": true,
+            "baseline_binding": true,
+            "baseline_complete": true
+          },
+          "files": {
+            "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092702/predictions.jsonl": {
+              "bytes": 141199365,
+              "mtime": 1790601351.4109995
+            },
+            "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092702/received_features/received_features.npz": {
+              "bytes": 11738198,
+              "mtime": 1790599422.728863
+            },
+            "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092702/ground/int8_domain_class_center_lowrank_residual_radius_v2.npz": {
+              "bytes": 5385,
+              "mtime": 1790599419.2388628
+            }
+          }
+        },
+        {
+          "row_id": "cvs-daot-rc4-s2026092703",
+          "root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092703",
+          "model_seed": 2026092703,
+          "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092703/final_ssdg.pth",
+          "checkpoint_sha256": "51fadc3b4ad3cbf83de01700a4a109430e7a57b1e10cb147f0be5f01593f26bb",
+          "ground_manifest": {
+            "schema": "int8_domain_class_center_lowrank_residual_radius_v2",
+            "metadata_schema": "cvs.matched.ground.v2",
+            "checkpoint_sha256": "51fadc3b4ad3cbf83de01700a4a109430e7a57b1e10cb147f0be5f01593f26bb",
+            "source_prototype_artifact_sha256": "88899b10869d96f29e697924013167f155957c9de8007b68a4ccfef8c360a8ec",
+            "provenance_status": "CURRENT_FINAL_SCRATCH_EXACT_SOURCE_L",
+            "formal_phase2_eligible": true,
+            "feature_dim": 160,
+            "residual_rank": 3,
+            "radius_histogram_bins": 4096,
+            "member_allowlist": [
+              "int8_domain_class_center_lowrank_residual_radius_v2.npz"
+            ],
+            "npz_member_allowlist": [
+              "center_domain_handle",
+              "class_registry",
+              "core_q",
+              "core_scale",
+              "domain_registry",
+              "feature_schema",
+              "radius_q",
+              "radius_scale",
+              "residual_basis_q",
+              "residual_basis_scale",
+              "residual_coeff_q",
+              "residual_coeff_scale",
+              "residual_domain_registry",
+              "residual_rank",
+              "schema"
+            ],
+            "resource_audit": {
+              "core_q_bytes": 960,
+              "core_scale_bytes": 12,
+              "residual_basis_q_bytes": 2880,
+              "residual_basis_scale_bytes": 36,
+              "residual_coeff_q_bytes": 252,
+              "residual_coeff_scale_bytes": 168,
+              "direction_numeric_payload_bytes": 4308,
+              "radius_q_bytes": 90,
+              "radius_scale_bytes": 12,
+              "radius_numeric_payload_bytes": 102,
+              "compressed_numeric_payload_bytes": 4410,
+              "registry_schema_bytes": 670,
+              "logical_deployment_state_bytes": 5080,
+              "single_class_prototype_reconstruction_macs": 480,
+              "single_domain_all_class_reconstruction_macs": 2880,
+              "all_residual_domain_enrollment_reconstruction_macs": 40320,
+              "center_only_reconstruction_macs": 0,
+              "temporary_single_class_reconstruction_peak_bytes": 3212,
+              "temporary_single_domain_reconstruction_peak_bytes": 19272,
+              "persistent_dense_float_bank_bytes": 0,
+              "target_prototype_state_bytes": 0,
+              "adapter_state_bytes": 0,
+              "per_query_extra_reconstruction_macs": 0,
+              "center_domain_handle": "3",
+              "center_domain_index_in_retained_registry": 3,
+              "center_domain_policy": "phase1_offline_global_maximin_fixed_before_target_access",
+              "residual_rank": 3,
+              "svd_sign_canonicalization": "largest_abs_basis_entry_positive_lowest_index_tie_v1",
+              "rounding_rule": "numpy_rint_ties_to_even_v1",
+              "radius_provenance": "phase1_offline_aggregate_p90_cosine_distance_v1",
+              "mean_reconstruction_cosine": 0.9999818617351928,
+              "min_reconstruction_cosine": 0.9999255873676957,
+              "mean_reconstruction_angle_deg": 0.3204646853461699,
+              "max_reconstruction_angle_deg": 0.6989782421853525,
+              "reconstruction_rmse": 0.0004786102508660406,
+              "radius_max_abs_error": 7.62939453125e-06,
+              "radius_mean_abs_error": 3.874964022543281e-06
+            },
+            "source_role": "L_s",
+            "target_access": false,
+            "component_state": "CURRENT_MATCHED_SOURCE_ONLY_V2",
+            "historical_outer_signature_claim": false
+          },
+          "feature_provenance": {
+            "verdict": "MATCHED_SOURCE_ONLY_SCRATCH",
+            "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092703/final_ssdg.pth",
+            "checkpoint_epoch": 200,
+            "initialization": "scratch",
+            "checkpoint_inheritance": [],
+            "target_access_before_freeze": false,
+            "source_role_comparison": "EXACT_MATCH",
+            "classes": [
+              "14-10",
+              "14-7",
+              "20-15",
+              "20-19",
+              "6-15",
+              "8-20"
+            ],
+            "model_seed": 2026092703,
+            "selection": "fixed_final_epoch200",
+            "loader": {
+              "loader": "exact_ssdg_training_architecture_v1",
+              "checkpoint_load_strict": true,
+              "crra_enabled": false,
+              "missing_keys": 0,
+              "unexpected_keys": 0,
+              "skipped_mismatch": 0,
+              "state_tensor_count": 199,
+              "num_domains_from_state": 15,
+              "input_len": 256
+            },
+            "query_read_for_smoke": false
+          },
+          "feature_marker": {
+            "status": "FROZEN_FEATURES_COMPLETE",
+            "capsule_id": "residual-noeq-76121e6f34363fa612ec25fb",
+            "count": 15444,
+            "query_used_for_fitting": false
+          },
+          "baseline_marker": {
+            "status": "PREDICTIONS_COMPLETE",
+            "predictions": 909,
+            "split_count": 900,
+            "capsule_id": "residual-noeq-76121e6f34363fa612ec25fb",
+            "truth_read": false
+          },
+          "checks": {
+            "checkpoint_ground_sha": true,
+            "checkpoint_ground_provenance_sha": true,
+            "checkpoint_d92_sha": true,
+            "checkpoint_feature_source": true,
+            "model_seed": true,
+            "feature_capsule": true,
+            "feature_id_alignment": true,
+            "feature_members": true,
+            "ground_source_only": true,
+            "feature_source_only": true,
+            "baseline_binding": true,
+            "baseline_complete": true
+          },
+          "files": {
+            "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092703/predictions.jsonl": {
+              "bytes": 141188317,
+              "mtime": 1790601397.6480029
+            },
+            "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092703/received_features/received_features.npz": {
+              "bytes": 11738198,
+              "mtime": 1790599426.835863
+            },
+            "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092703/ground/int8_domain_class_center_lowrank_residual_radius_v2.npz": {
+              "bytes": 5319,
+              "mtime": 1790599423.338863
+            }
+          }
+        },
+        {
+          "row_id": "cvs-daot-rc4-s2026092704",
+          "root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092704",
+          "model_seed": 2026092704,
+          "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092704/final_ssdg.pth",
+          "checkpoint_sha256": "690fed6ea2a6532d0ad978c93306f0f35b61f4a3a3fc4b1d6494f0e7547c74bb",
+          "ground_manifest": {
+            "schema": "int8_domain_class_center_lowrank_residual_radius_v2",
+            "metadata_schema": "cvs.matched.ground.v2",
+            "checkpoint_sha256": "690fed6ea2a6532d0ad978c93306f0f35b61f4a3a3fc4b1d6494f0e7547c74bb",
+            "source_prototype_artifact_sha256": "0f3ee0c70de37fe910bca717c5fae1783269b1f8c6d795c96ae122116df3857c",
+            "provenance_status": "CURRENT_FINAL_SCRATCH_EXACT_SOURCE_L",
+            "formal_phase2_eligible": true,
+            "feature_dim": 160,
+            "residual_rank": 3,
+            "radius_histogram_bins": 4096,
+            "member_allowlist": [
+              "int8_domain_class_center_lowrank_residual_radius_v2.npz"
+            ],
+            "npz_member_allowlist": [
+              "center_domain_handle",
+              "class_registry",
+              "core_q",
+              "core_scale",
+              "domain_registry",
+              "feature_schema",
+              "radius_q",
+              "radius_scale",
+              "residual_basis_q",
+              "residual_basis_scale",
+              "residual_coeff_q",
+              "residual_coeff_scale",
+              "residual_domain_registry",
+              "residual_rank",
+              "schema"
+            ],
+            "resource_audit": {
+              "core_q_bytes": 960,
+              "core_scale_bytes": 12,
+              "residual_basis_q_bytes": 2880,
+              "residual_basis_scale_bytes": 36,
+              "residual_coeff_q_bytes": 252,
+              "residual_coeff_scale_bytes": 168,
+              "direction_numeric_payload_bytes": 4308,
+              "radius_q_bytes": 90,
+              "radius_scale_bytes": 12,
+              "radius_numeric_payload_bytes": 102,
+              "compressed_numeric_payload_bytes": 4410,
+              "registry_schema_bytes": 670,
+              "logical_deployment_state_bytes": 5080,
+              "single_class_prototype_reconstruction_macs": 480,
+              "single_domain_all_class_reconstruction_macs": 2880,
+              "all_residual_domain_enrollment_reconstruction_macs": 40320,
+              "center_only_reconstruction_macs": 0,
+              "temporary_single_class_reconstruction_peak_bytes": 3212,
+              "temporary_single_domain_reconstruction_peak_bytes": 19272,
+              "persistent_dense_float_bank_bytes": 0,
+              "target_prototype_state_bytes": 0,
+              "adapter_state_bytes": 0,
+              "per_query_extra_reconstruction_macs": 0,
+              "center_domain_handle": "3",
+              "center_domain_index_in_retained_registry": 3,
+              "center_domain_policy": "phase1_offline_global_maximin_fixed_before_target_access",
+              "residual_rank": 3,
+              "svd_sign_canonicalization": "largest_abs_basis_entry_positive_lowest_index_tie_v1",
+              "rounding_rule": "numpy_rint_ties_to_even_v1",
+              "radius_provenance": "phase1_offline_aggregate_p90_cosine_distance_v1",
+              "mean_reconstruction_cosine": 0.9999788415524122,
+              "min_reconstruction_cosine": 0.9999222460911834,
+              "mean_reconstruction_angle_deg": 0.341339091393186,
+              "max_reconstruction_angle_deg": 0.7144988921812103,
+              "reconstruction_rmse": 0.0005166562623344362,
+              "radius_max_abs_error": 1.7344951629638672e-05,
+              "radius_mean_abs_error": 4.980961421097163e-06
+            },
+            "source_role": "L_s",
+            "target_access": false,
+            "component_state": "CURRENT_MATCHED_SOURCE_ONLY_V2",
+            "historical_outer_signature_claim": false
+          },
+          "feature_provenance": {
+            "verdict": "MATCHED_SOURCE_ONLY_SCRATCH",
+            "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092704/final_ssdg.pth",
+            "checkpoint_epoch": 200,
+            "initialization": "scratch",
+            "checkpoint_inheritance": [],
+            "target_access_before_freeze": false,
+            "source_role_comparison": "EXACT_MATCH",
+            "classes": [
+              "14-10",
+              "14-7",
+              "20-15",
+              "20-19",
+              "6-15",
+              "8-20"
+            ],
+            "model_seed": 2026092704,
+            "selection": "fixed_final_epoch200",
+            "loader": {
+              "loader": "exact_ssdg_training_architecture_v1",
+              "checkpoint_load_strict": true,
+              "crra_enabled": false,
+              "missing_keys": 0,
+              "unexpected_keys": 0,
+              "skipped_mismatch": 0,
+              "state_tensor_count": 199,
+              "num_domains_from_state": 15,
+              "input_len": 256
+            },
+            "query_read_for_smoke": false
+          },
+          "feature_marker": {
+            "status": "FROZEN_FEATURES_COMPLETE",
+            "capsule_id": "residual-noeq-76121e6f34363fa612ec25fb",
+            "count": 15444,
+            "query_used_for_fitting": false
+          },
+          "baseline_marker": {
+            "status": "PREDICTIONS_COMPLETE",
+            "predictions": 909,
+            "split_count": 900,
+            "capsule_id": "residual-noeq-76121e6f34363fa612ec25fb",
+            "truth_read": false
+          },
+          "checks": {
+            "checkpoint_ground_sha": true,
+            "checkpoint_ground_provenance_sha": true,
+            "checkpoint_d92_sha": true,
+            "checkpoint_feature_source": true,
+            "model_seed": true,
+            "feature_capsule": true,
+            "feature_id_alignment": true,
+            "feature_members": true,
+            "ground_source_only": true,
+            "feature_source_only": true,
+            "baseline_binding": true,
+            "baseline_complete": true
+          },
+          "files": {
+            "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092704/predictions.jsonl": {
+              "bytes": 141180370,
+              "mtime": 1790601379.0580015
+            },
+            "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092704/received_features/received_features.npz": {
+              "bytes": 11738198,
+              "mtime": 1790599430.9498634
+            },
+            "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092704/ground/int8_domain_class_center_lowrank_residual_radius_v2.npz": {
+              "bytes": 5485,
+              "mtime": 1790599427.4438632
+            }
+          }
+        }
+      ]
+    },
+    {
+      "tag": "rx1",
+      "root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01",
+      "complete": {
+        "status": "SCORED",
+        "commit": "3348c8c37df402098a6f84397eaa1bf74d8d592e",
+        "model_rows": 4,
+        "records": 2412,
+        "selection_feedback_forbidden": true
+      },
+      "workflow": {
+        "status": "SCORED",
+        "records": 2412,
+        "commit": "3348c8c37df402098a6f84397eaa1bf74d8d592e",
+        "updated": 1790605139.421963
+      },
+      "state": {
+        "cvs-daot-rc4-s2026092701": {
+          "status": "PREDICTIONS_COMPLETE",
+          "updated": 1790605092.7081504,
+          "checkpoint_sha256": "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b"
+        },
+        "cvs-daot-rc4-s2026092702": {
+          "status": "PREDICTIONS_COMPLETE",
+          "updated": 1790605091.8743193,
+          "checkpoint_sha256": "72f26413e495dcf82317898f8729caa3d35499bf0b41e9671ffdceab2c90924b"
+        },
+        "cvs-daot-rc4-s2026092703": {
+          "status": "PREDICTIONS_COMPLETE",
+          "updated": 1790605089.3502386,
+          "checkpoint_sha256": "51fadc3b4ad3cbf83de01700a4a109430e7a57b1e10cb147f0be5f01593f26bb"
+        },
+        "cvs-daot-rc4-s2026092704": {
+          "status": "PREDICTIONS_COMPLETE",
+          "updated": 1790605128.8974538,
+          "checkpoint_sha256": "690fed6ea2a6532d0ad978c93306f0f35b61f4a3a3fc4b1d6494f0e7547c74bb"
+        }
+      },
+      "capsule": {
+        "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-data-manytx-r01/capsule",
+        "manifest": {
+          "protocol_schema": "p2_min_v1",
+          "phase2_data_status": "VALIDATED_ONCE",
+          "capsule_id": "residual-noeq-d0a99fede324159c5a4750fd",
+          "members": [
+            "received.npz",
+            "splits/*.json"
+          ],
+          "received_count": 4680,
+          "split_count": 300,
+          "signal_shape": [
+            2,
+            256
+          ],
+          "scenarios": [
+            "practical_high",
+            "practical_mid",
+            "practical_low_urban"
+          ],
+          "channel": {
+            "route": "residual",
+            "mode": "post_sync",
+            "equalization_enabled": false,
+            "fs_hz": 25000000
+          },
+          "checks": {
+            "unique_physical_observation": true,
+            "scenes_physically_disjoint": true,
+            "support_query_physically_disjoint": true,
+            "query_labels_absent": true,
+            "source_paths_absent": true,
+            "finite_received": true
+          }
+        },
+        "ids_count": 4680,
+        "unique_ids": true
+      },
+      "rows": [
+        {
+          "row_id": "cvs-daot-rc4-s2026092701",
+          "root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092701",
+          "model_seed": 2026092701,
+          "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701/final_ssdg.pth",
+          "checkpoint_sha256": "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b",
+          "ground_manifest": {
+            "schema": "int8_domain_class_center_lowrank_residual_radius_v2",
+            "metadata_schema": "cvs.matched.ground.v2",
+            "checkpoint_sha256": "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b",
+            "source_prototype_artifact_sha256": "8a46a2be31cd2b03ac2b7fa365870d313b1bf5714d90f2629463578c7b1d794b",
+            "provenance_status": "CURRENT_FINAL_SCRATCH_EXACT_SOURCE_L",
+            "formal_phase2_eligible": true,
+            "feature_dim": 160,
+            "residual_rank": 3,
+            "radius_histogram_bins": 4096,
+            "member_allowlist": [
+              "int8_domain_class_center_lowrank_residual_radius_v2.npz"
+            ],
+            "npz_member_allowlist": [
+              "center_domain_handle",
+              "class_registry",
+              "core_q",
+              "core_scale",
+              "domain_registry",
+              "feature_schema",
+              "radius_q",
+              "radius_scale",
+              "residual_basis_q",
+              "residual_basis_scale",
+              "residual_coeff_q",
+              "residual_coeff_scale",
+              "residual_domain_registry",
+              "residual_rank",
+              "schema"
+            ],
+            "resource_audit": {
+              "core_q_bytes": 960,
+              "core_scale_bytes": 12,
+              "residual_basis_q_bytes": 2880,
+              "residual_basis_scale_bytes": 36,
+              "residual_coeff_q_bytes": 252,
+              "residual_coeff_scale_bytes": 168,
+              "direction_numeric_payload_bytes": 4308,
+              "radius_q_bytes": 90,
+              "radius_scale_bytes": 12,
+              "radius_numeric_payload_bytes": 102,
+              "compressed_numeric_payload_bytes": 4410,
+              "registry_schema_bytes": 670,
+              "logical_deployment_state_bytes": 5080,
+              "single_class_prototype_reconstruction_macs": 480,
+              "single_domain_all_class_reconstruction_macs": 2880,
+              "all_residual_domain_enrollment_reconstruction_macs": 40320,
+              "center_only_reconstruction_macs": 0,
+              "temporary_single_class_reconstruction_peak_bytes": 3212,
+              "temporary_single_domain_reconstruction_peak_bytes": 19272,
+              "persistent_dense_float_bank_bytes": 0,
+              "target_prototype_state_bytes": 0,
+              "adapter_state_bytes": 0,
+              "per_query_extra_reconstruction_macs": 0,
+              "center_domain_handle": "4",
+              "center_domain_index_in_retained_registry": 4,
+              "center_domain_policy": "phase1_offline_global_maximin_fixed_before_target_access",
+              "residual_rank": 3,
+              "svd_sign_canonicalization": "largest_abs_basis_entry_positive_lowest_index_tie_v1",
+              "rounding_rule": "numpy_rint_ties_to_even_v1",
+              "radius_provenance": "phase1_offline_aggregate_p90_cosine_distance_v1",
+              "mean_reconstruction_cosine": 0.9999820160122603,
+              "min_reconstruction_cosine": 0.9999158716295014,
+              "mean_reconstruction_angle_deg": 0.31261758831593595,
+              "max_reconstruction_angle_deg": 0.7432106314698378,
+              "reconstruction_rmse": 0.000476641085697338,
+              "radius_max_abs_error": 1.1444091796875e-05,
+              "radius_mean_abs_error": 5.4266715778794605e-06
+            },
+            "source_role": "L_s",
+            "target_access": false,
+            "component_state": "CURRENT_MATCHED_SOURCE_ONLY_V2",
+            "historical_outer_signature_claim": false
+          },
+          "feature_provenance": {
+            "verdict": "MATCHED_SOURCE_ONLY_SCRATCH",
+            "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701/final_ssdg.pth",
+            "checkpoint_epoch": 200,
+            "initialization": "scratch",
+            "checkpoint_inheritance": [],
+            "target_access_before_freeze": false,
+            "source_role_comparison": "EXACT_MATCH",
+            "classes": [
+              "14-10",
+              "14-7",
+              "20-15",
+              "20-19",
+              "6-15",
+              "8-20"
+            ],
+            "model_seed": 2026092701,
+            "selection": "fixed_final_epoch200",
+            "loader": {
+              "loader": "exact_ssdg_training_architecture_v1",
+              "checkpoint_load_strict": true,
+              "crra_enabled": false,
+              "missing_keys": 0,
+              "unexpected_keys": 0,
+              "skipped_mismatch": 0,
+              "state_tensor_count": 199,
+              "num_domains_from_state": 15,
+              "input_len": 256
+            },
+            "query_read_for_smoke": false
+          },
+          "feature_marker": {
+            "status": "FROZEN_FEATURES_COMPLETE",
+            "capsule_id": "residual-noeq-d0a99fede324159c5a4750fd",
+            "count": 4680,
+            "query_used_for_fitting": false
+          },
+          "baseline_marker": {
+            "status": "PREDICTIONS_COMPLETE",
+            "predictions": 303,
+            "split_count": 300,
+            "capsule_id": "residual-noeq-d0a99fede324159c5a4750fd",
+            "truth_read": false
+          },
+          "checks": {
+            "checkpoint_ground_sha": true,
+            "checkpoint_ground_provenance_sha": true,
+            "checkpoint_d92_sha": true,
+            "checkpoint_feature_source": true,
+            "model_seed": true,
+            "feature_capsule": true,
+            "feature_id_alignment": true,
+            "feature_members": true,
+            "ground_source_only": true,
+            "feature_source_only": true,
+            "baseline_binding": true,
+            "baseline_complete": true
+          },
+          "files": {
+            "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092701/predictions.jsonl": {
+              "bytes": 47054124,
+              "mtime": 1790605021.4752593
+            },
+            "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092701/received_features/received_features.npz": {
+              "bytes": 3557558,
+              "mtime": 1790604368.7962132
+            },
+            "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092701/ground/int8_domain_class_center_lowrank_residual_radius_v2.npz": {
+              "bytes": 5508,
+              "mtime": 1790604366.053213
+            }
+          }
+        },
+        {
+          "row_id": "cvs-daot-rc4-s2026092702",
+          "root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092702",
+          "model_seed": 2026092702,
+          "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092702/final_ssdg.pth",
+          "checkpoint_sha256": "72f26413e495dcf82317898f8729caa3d35499bf0b41e9671ffdceab2c90924b",
+          "ground_manifest": {
+            "schema": "int8_domain_class_center_lowrank_residual_radius_v2",
+            "metadata_schema": "cvs.matched.ground.v2",
+            "checkpoint_sha256": "72f26413e495dcf82317898f8729caa3d35499bf0b41e9671ffdceab2c90924b",
+            "source_prototype_artifact_sha256": "4d5cd4ec9c2247f9838440311bee37d36dbf3e5fd0c3db40fc306d276dfae9c0",
+            "provenance_status": "CURRENT_FINAL_SCRATCH_EXACT_SOURCE_L",
+            "formal_phase2_eligible": true,
+            "feature_dim": 160,
+            "residual_rank": 3,
+            "radius_histogram_bins": 4096,
+            "member_allowlist": [
+              "int8_domain_class_center_lowrank_residual_radius_v2.npz"
+            ],
+            "npz_member_allowlist": [
+              "center_domain_handle",
+              "class_registry",
+              "core_q",
+              "core_scale",
+              "domain_registry",
+              "feature_schema",
+              "radius_q",
+              "radius_scale",
+              "residual_basis_q",
+              "residual_basis_scale",
+              "residual_coeff_q",
+              "residual_coeff_scale",
+              "residual_domain_registry",
+              "residual_rank",
+              "schema"
+            ],
+            "resource_audit": {
+              "core_q_bytes": 960,
+              "core_scale_bytes": 12,
+              "residual_basis_q_bytes": 2880,
+              "residual_basis_scale_bytes": 36,
+              "residual_coeff_q_bytes": 252,
+              "residual_coeff_scale_bytes": 168,
+              "direction_numeric_payload_bytes": 4308,
+              "radius_q_bytes": 90,
+              "radius_scale_bytes": 12,
+              "radius_numeric_payload_bytes": 102,
+              "compressed_numeric_payload_bytes": 4410,
+              "registry_schema_bytes": 670,
+              "logical_deployment_state_bytes": 5080,
+              "single_class_prototype_reconstruction_macs": 480,
+              "single_domain_all_class_reconstruction_macs": 2880,
+              "all_residual_domain_enrollment_reconstruction_macs": 40320,
+              "center_only_reconstruction_macs": 0,
+              "temporary_single_class_reconstruction_peak_bytes": 3212,
+              "temporary_single_domain_reconstruction_peak_bytes": 19272,
+              "persistent_dense_float_bank_bytes": 0,
+              "target_prototype_state_bytes": 0,
+              "adapter_state_bytes": 0,
+              "per_query_extra_reconstruction_macs": 0,
+              "center_domain_handle": "3",
+              "center_domain_index_in_retained_registry": 3,
+              "center_domain_policy": "phase1_offline_global_maximin_fixed_before_target_access",
+              "residual_rank": 3,
+              "svd_sign_canonicalization": "largest_abs_basis_entry_positive_lowest_index_tie_v1",
+              "rounding_rule": "numpy_rint_ties_to_even_v1",
+              "radius_provenance": "phase1_offline_aggregate_p90_cosine_distance_v1",
+              "mean_reconstruction_cosine": 0.999979625659335,
+              "min_reconstruction_cosine": 0.9999174393065653,
+              "mean_reconstruction_angle_deg": 0.33372933757332596,
+              "max_reconstruction_angle_deg": 0.7362533506418046,
+              "reconstruction_rmse": 0.0005070674233138561,
+              "radius_max_abs_error": 1.9550323486328125e-05,
+              "radius_mean_abs_error": 5.986955329717603e-06
+            },
+            "source_role": "L_s",
+            "target_access": false,
+            "component_state": "CURRENT_MATCHED_SOURCE_ONLY_V2",
+            "historical_outer_signature_claim": false
+          },
+          "feature_provenance": {
+            "verdict": "MATCHED_SOURCE_ONLY_SCRATCH",
+            "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092702/final_ssdg.pth",
+            "checkpoint_epoch": 200,
+            "initialization": "scratch",
+            "checkpoint_inheritance": [],
+            "target_access_before_freeze": false,
+            "source_role_comparison": "EXACT_MATCH",
+            "classes": [
+              "14-10",
+              "14-7",
+              "20-15",
+              "20-19",
+              "6-15",
+              "8-20"
+            ],
+            "model_seed": 2026092702,
+            "selection": "fixed_final_epoch200",
+            "loader": {
+              "loader": "exact_ssdg_training_architecture_v1",
+              "checkpoint_load_strict": true,
+              "crra_enabled": false,
+              "missing_keys": 0,
+              "unexpected_keys": 0,
+              "skipped_mismatch": 0,
+              "state_tensor_count": 199,
+              "num_domains_from_state": 15,
+              "input_len": 256
+            },
+            "query_read_for_smoke": false
+          },
+          "feature_marker": {
+            "status": "FROZEN_FEATURES_COMPLETE",
+            "capsule_id": "residual-noeq-d0a99fede324159c5a4750fd",
+            "count": 4680,
+            "query_used_for_fitting": false
+          },
+          "baseline_marker": {
+            "status": "PREDICTIONS_COMPLETE",
+            "predictions": 303,
+            "split_count": 300,
+            "capsule_id": "residual-noeq-d0a99fede324159c5a4750fd",
+            "truth_read": false
+          },
+          "checks": {
+            "checkpoint_ground_sha": true,
+            "checkpoint_ground_provenance_sha": true,
+            "checkpoint_d92_sha": true,
+            "checkpoint_feature_source": true,
+            "model_seed": true,
+            "feature_capsule": true,
+            "feature_id_alignment": true,
+            "feature_members": true,
+            "ground_source_only": true,
+            "feature_source_only": true,
+            "baseline_binding": true,
+            "baseline_complete": true
+          },
+          "files": {
+            "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092702/predictions.jsonl": {
+              "bytes": 47054481,
+              "mtime": 1790605020.1872592
+            },
+            "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092702/received_features/received_features.npz": {
+              "bytes": 3557558,
+              "mtime": 1790604371.9522133
+            },
+            "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092702/ground/int8_domain_class_center_lowrank_residual_radius_v2.npz": {
+              "bytes": 5385,
+              "mtime": 1790604369.3352132
+            }
+          }
+        },
+        {
+          "row_id": "cvs-daot-rc4-s2026092703",
+          "root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092703",
+          "model_seed": 2026092703,
+          "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092703/final_ssdg.pth",
+          "checkpoint_sha256": "51fadc3b4ad3cbf83de01700a4a109430e7a57b1e10cb147f0be5f01593f26bb",
+          "ground_manifest": {
+            "schema": "int8_domain_class_center_lowrank_residual_radius_v2",
+            "metadata_schema": "cvs.matched.ground.v2",
+            "checkpoint_sha256": "51fadc3b4ad3cbf83de01700a4a109430e7a57b1e10cb147f0be5f01593f26bb",
+            "source_prototype_artifact_sha256": "88899b10869d96f29e697924013167f155957c9de8007b68a4ccfef8c360a8ec",
+            "provenance_status": "CURRENT_FINAL_SCRATCH_EXACT_SOURCE_L",
+            "formal_phase2_eligible": true,
+            "feature_dim": 160,
+            "residual_rank": 3,
+            "radius_histogram_bins": 4096,
+            "member_allowlist": [
+              "int8_domain_class_center_lowrank_residual_radius_v2.npz"
+            ],
+            "npz_member_allowlist": [
+              "center_domain_handle",
+              "class_registry",
+              "core_q",
+              "core_scale",
+              "domain_registry",
+              "feature_schema",
+              "radius_q",
+              "radius_scale",
+              "residual_basis_q",
+              "residual_basis_scale",
+              "residual_coeff_q",
+              "residual_coeff_scale",
+              "residual_domain_registry",
+              "residual_rank",
+              "schema"
+            ],
+            "resource_audit": {
+              "core_q_bytes": 960,
+              "core_scale_bytes": 12,
+              "residual_basis_q_bytes": 2880,
+              "residual_basis_scale_bytes": 36,
+              "residual_coeff_q_bytes": 252,
+              "residual_coeff_scale_bytes": 168,
+              "direction_numeric_payload_bytes": 4308,
+              "radius_q_bytes": 90,
+              "radius_scale_bytes": 12,
+              "radius_numeric_payload_bytes": 102,
+              "compressed_numeric_payload_bytes": 4410,
+              "registry_schema_bytes": 670,
+              "logical_deployment_state_bytes": 5080,
+              "single_class_prototype_reconstruction_macs": 480,
+              "single_domain_all_class_reconstruction_macs": 2880,
+              "all_residual_domain_enrollment_reconstruction_macs": 40320,
+              "center_only_reconstruction_macs": 0,
+              "temporary_single_class_reconstruction_peak_bytes": 3212,
+              "temporary_single_domain_reconstruction_peak_bytes": 19272,
+              "persistent_dense_float_bank_bytes": 0,
+              "target_prototype_state_bytes": 0,
+              "adapter_state_bytes": 0,
+              "per_query_extra_reconstruction_macs": 0,
+              "center_domain_handle": "3",
+              "center_domain_index_in_retained_registry": 3,
+              "center_domain_policy": "phase1_offline_global_maximin_fixed_before_target_access",
+              "residual_rank": 3,
+              "svd_sign_canonicalization": "largest_abs_basis_entry_positive_lowest_index_tie_v1",
+              "rounding_rule": "numpy_rint_ties_to_even_v1",
+              "radius_provenance": "phase1_offline_aggregate_p90_cosine_distance_v1",
+              "mean_reconstruction_cosine": 0.9999818617351928,
+              "min_reconstruction_cosine": 0.9999255873676957,
+              "mean_reconstruction_angle_deg": 0.3204646853461699,
+              "max_reconstruction_angle_deg": 0.6989782421853525,
+              "reconstruction_rmse": 0.0004786102508660406,
+              "radius_max_abs_error": 7.62939453125e-06,
+              "radius_mean_abs_error": 3.874964022543281e-06
+            },
+            "source_role": "L_s",
+            "target_access": false,
+            "component_state": "CURRENT_MATCHED_SOURCE_ONLY_V2",
+            "historical_outer_signature_claim": false
+          },
+          "feature_provenance": {
+            "verdict": "MATCHED_SOURCE_ONLY_SCRATCH",
+            "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092703/final_ssdg.pth",
+            "checkpoint_epoch": 200,
+            "initialization": "scratch",
+            "checkpoint_inheritance": [],
+            "target_access_before_freeze": false,
+            "source_role_comparison": "EXACT_MATCH",
+            "classes": [
+              "14-10",
+              "14-7",
+              "20-15",
+              "20-19",
+              "6-15",
+              "8-20"
+            ],
+            "model_seed": 2026092703,
+            "selection": "fixed_final_epoch200",
+            "loader": {
+              "loader": "exact_ssdg_training_architecture_v1",
+              "checkpoint_load_strict": true,
+              "crra_enabled": false,
+              "missing_keys": 0,
+              "unexpected_keys": 0,
+              "skipped_mismatch": 0,
+              "state_tensor_count": 199,
+              "num_domains_from_state": 15,
+              "input_len": 256
+            },
+            "query_read_for_smoke": false
+          },
+          "feature_marker": {
+            "status": "FROZEN_FEATURES_COMPLETE",
+            "capsule_id": "residual-noeq-d0a99fede324159c5a4750fd",
+            "count": 4680,
+            "query_used_for_fitting": false
+          },
+          "baseline_marker": {
+            "status": "PREDICTIONS_COMPLETE",
+            "predictions": 303,
+            "split_count": 300,
+            "capsule_id": "residual-noeq-d0a99fede324159c5a4750fd",
+            "truth_read": false
+          },
+          "checks": {
+            "checkpoint_ground_sha": true,
+            "checkpoint_ground_provenance_sha": true,
+            "checkpoint_d92_sha": true,
+            "checkpoint_feature_source": true,
+            "model_seed": true,
+            "feature_capsule": true,
+            "feature_id_alignment": true,
+            "feature_members": true,
+            "ground_source_only": true,
+            "feature_source_only": true,
+            "baseline_binding": true,
+            "baseline_complete": true
+          },
+          "files": {
+            "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092703/predictions.jsonl": {
+              "bytes": 47055283,
+              "mtime": 1790605017.071259
+            },
+            "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092703/received_features/received_features.npz": {
+              "bytes": 3557558,
+              "mtime": 1790604375.1422136
+            },
+            "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092703/ground/int8_domain_class_center_lowrank_residual_radius_v2.npz": {
+              "bytes": 5319,
+              "mtime": 1790604372.4942133
+            }
+          }
+        },
+        {
+          "row_id": "cvs-daot-rc4-s2026092704",
+          "root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092704",
+          "model_seed": 2026092704,
+          "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092704/final_ssdg.pth",
+          "checkpoint_sha256": "690fed6ea2a6532d0ad978c93306f0f35b61f4a3a3fc4b1d6494f0e7547c74bb",
+          "ground_manifest": {
+            "schema": "int8_domain_class_center_lowrank_residual_radius_v2",
+            "metadata_schema": "cvs.matched.ground.v2",
+            "checkpoint_sha256": "690fed6ea2a6532d0ad978c93306f0f35b61f4a3a3fc4b1d6494f0e7547c74bb",
+            "source_prototype_artifact_sha256": "0f3ee0c70de37fe910bca717c5fae1783269b1f8c6d795c96ae122116df3857c",
+            "provenance_status": "CURRENT_FINAL_SCRATCH_EXACT_SOURCE_L",
+            "formal_phase2_eligible": true,
+            "feature_dim": 160,
+            "residual_rank": 3,
+            "radius_histogram_bins": 4096,
+            "member_allowlist": [
+              "int8_domain_class_center_lowrank_residual_radius_v2.npz"
+            ],
+            "npz_member_allowlist": [
+              "center_domain_handle",
+              "class_registry",
+              "core_q",
+              "core_scale",
+              "domain_registry",
+              "feature_schema",
+              "radius_q",
+              "radius_scale",
+              "residual_basis_q",
+              "residual_basis_scale",
+              "residual_coeff_q",
+              "residual_coeff_scale",
+              "residual_domain_registry",
+              "residual_rank",
+              "schema"
+            ],
+            "resource_audit": {
+              "core_q_bytes": 960,
+              "core_scale_bytes": 12,
+              "residual_basis_q_bytes": 2880,
+              "residual_basis_scale_bytes": 36,
+              "residual_coeff_q_bytes": 252,
+              "residual_coeff_scale_bytes": 168,
+              "direction_numeric_payload_bytes": 4308,
+              "radius_q_bytes": 90,
+              "radius_scale_bytes": 12,
+              "radius_numeric_payload_bytes": 102,
+              "compressed_numeric_payload_bytes": 4410,
+              "registry_schema_bytes": 670,
+              "logical_deployment_state_bytes": 5080,
+              "single_class_prototype_reconstruction_macs": 480,
+              "single_domain_all_class_reconstruction_macs": 2880,
+              "all_residual_domain_enrollment_reconstruction_macs": 40320,
+              "center_only_reconstruction_macs": 0,
+              "temporary_single_class_reconstruction_peak_bytes": 3212,
+              "temporary_single_domain_reconstruction_peak_bytes": 19272,
+              "persistent_dense_float_bank_bytes": 0,
+              "target_prototype_state_bytes": 0,
+              "adapter_state_bytes": 0,
+              "per_query_extra_reconstruction_macs": 0,
+              "center_domain_handle": "3",
+              "center_domain_index_in_retained_registry": 3,
+              "center_domain_policy": "phase1_offline_global_maximin_fixed_before_target_access",
+              "residual_rank": 3,
+              "svd_sign_canonicalization": "largest_abs_basis_entry_positive_lowest_index_tie_v1",
+              "rounding_rule": "numpy_rint_ties_to_even_v1",
+              "radius_provenance": "phase1_offline_aggregate_p90_cosine_distance_v1",
+              "mean_reconstruction_cosine": 0.9999788415524122,
+              "min_reconstruction_cosine": 0.9999222460911834,
+              "mean_reconstruction_angle_deg": 0.341339091393186,
+              "max_reconstruction_angle_deg": 0.7144988921812103,
+              "reconstruction_rmse": 0.0005166562623344362,
+              "radius_max_abs_error": 1.7344951629638672e-05,
+              "radius_mean_abs_error": 4.980961421097163e-06
+            },
+            "source_role": "L_s",
+            "target_access": false,
+            "component_state": "CURRENT_MATCHED_SOURCE_ONLY_V2",
+            "historical_outer_signature_claim": false
+          },
+          "feature_provenance": {
+            "verdict": "MATCHED_SOURCE_ONLY_SCRATCH",
+            "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092704/final_ssdg.pth",
+            "checkpoint_epoch": 200,
+            "initialization": "scratch",
+            "checkpoint_inheritance": [],
+            "target_access_before_freeze": false,
+            "source_role_comparison": "EXACT_MATCH",
+            "classes": [
+              "14-10",
+              "14-7",
+              "20-15",
+              "20-19",
+              "6-15",
+              "8-20"
+            ],
+            "model_seed": 2026092704,
+            "selection": "fixed_final_epoch200",
+            "loader": {
+              "loader": "exact_ssdg_training_architecture_v1",
+              "checkpoint_load_strict": true,
+              "crra_enabled": false,
+              "missing_keys": 0,
+              "unexpected_keys": 0,
+              "skipped_mismatch": 0,
+              "state_tensor_count": 199,
+              "num_domains_from_state": 15,
+              "input_len": 256
+            },
+            "query_read_for_smoke": false
+          },
+          "feature_marker": {
+            "status": "FROZEN_FEATURES_COMPLETE",
+            "capsule_id": "residual-noeq-d0a99fede324159c5a4750fd",
+            "count": 4680,
+            "query_used_for_fitting": false
+          },
+          "baseline_marker": {
+            "status": "PREDICTIONS_COMPLETE",
+            "predictions": 303,
+            "split_count": 300,
+            "capsule_id": "residual-noeq-d0a99fede324159c5a4750fd",
+            "truth_read": false
+          },
+          "checks": {
+            "checkpoint_ground_sha": true,
+            "checkpoint_ground_provenance_sha": true,
+            "checkpoint_d92_sha": true,
+            "checkpoint_feature_source": true,
+            "model_seed": true,
+            "feature_capsule": true,
+            "feature_id_alignment": true,
+            "feature_members": true,
+            "ground_source_only": true,
+            "feature_source_only": true,
+            "baseline_binding": true,
+            "baseline_complete": true
+          },
+          "files": {
+            "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092704/predictions.jsonl": {
+              "bytes": 47054001,
+              "mtime": 1790605057.640262
+            },
+            "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092704/received_features/received_features.npz": {
+              "bytes": 3557558,
+              "mtime": 1790604378.3702137
+            },
+            "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092704/ground/int8_domain_class_center_lowrank_residual_radius_v2.npz": {
+              "bytes": 5485,
+              "mtime": 1790604375.6892135
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "new_paths": [
+    {
+      "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sgjoint-repeat-rx3-m4-r01",
+      "exists": false
+    },
+    {
+      "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_sgjoint_repeat_rx3_20260928_r01",
+      "exists": false
+    },
+    {
+      "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_sgjoint_repeat_rx3_20260928_r01.tar",
+      "exists": false
+    },
+    {
+      "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sgjoint-repeat-rx1-m4-r01",
+      "exists": false
+    },
+    {
+      "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_sgjoint_repeat_rx1_20260928_r01",
+      "exists": false
+    },
+    {
+      "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_sgjoint_repeat_rx1_20260928_r01.tar",
+      "exists": false
+    }
+  ],
+  "issues": [],
+  "old_run_processes": [],
+  "resources": {
+    "cpu_count": 96,
+    "load_average": [
+      6.04296875,
+      6.0322265625,
+      6.53466796875
+    ],
+    "memory": {
+      "MemTotal_bytes": 540441075712,
+      "MemAvailable_bytes": 504603623424,
+      "SwapTotal_bytes": 2147479552,
+      "SwapFree_bytes": 2144858112
+    },
+    "disk": {
+      "total_bytes": 11903314657280,
+      "free_bytes": 7139595792384
+    },
+    "requested": {
+      "cpu_lanes": 4,
+      "blas_threads_per_lane": 2,
+      "gpu_required": false
+    }
+  },
+  "verdict": "VERIFIED"
+}

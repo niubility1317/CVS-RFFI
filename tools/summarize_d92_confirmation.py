@@ -107,18 +107,16 @@ def summarize(data,spec=None):
     return result
 
 
-def main():
-    p=argparse.ArgumentParser();p.add_argument('--scores',required=True,type=Path);p.add_argument('--output',required=True,type=Path)
-    p.add_argument('--spec',type=Path)
-    a=p.parse_args();spec=json.loads(a.spec.read_text(encoding='utf-8')) if a.spec else None
-    result=summarize(json.loads(a.scores.read_text(encoding='utf-8')),spec=spec)
-    a.output.mkdir(parents=True,exist_ok=False)
-    (a.output/'summary.json').write_text(json.dumps(result,indent=2)+'\n',encoding='utf-8')
+def write_summary(result, output):
+    output=Path(output)
+    output.mkdir(parents=True,exist_ok=False)
+    (output/'summary.json').write_text(json.dumps(result,indent=2)+'\n',encoding='utf-8')
     for name,rows in result['tables'].items():
-        with (a.output/(name+'.csv')).open('x',encoding='utf-8',newline='') as f:
+        with (output/(name+'.csv')).open('x',encoding='utf-8',newline='') as f:
             writer=csv.DictWriter(f,fieldnames=list(rows[0]));writer.writeheader();writer.writerows(rows)
     matrix=result['matrix']
-    lines=[f"# {result['methods'][1]}新旧类配对确认结果",'',f"记录：{result['rows']}。{len(matrix['model_seed'])}个固定Phase1模型、{len(matrix['receiver'])}RX、{len(matrix['scenario'])}场景、{len(matrix['k'])}个K、{len(matrix['new_count'])}种新增类规模、{len(matrix['support_seed'])}组support抽样。",
+    scope='重复基准比较' if 'REPEATED_BENCHMARK' in result['claim_scope'] else '新旧类配对确认'
+    lines=[f"# {result['methods'][1]}{scope}结果",'',f"记录：{result['rows']}。{len(matrix['model_seed'])}个固定Phase1模型、{len(matrix['receiver'])}RX、{len(matrix['scenario'])}场景、{len(matrix['k'])}个K、{len(matrix['new_count'])}种新增类规模、{len(matrix['support_seed'])}组support抽样。",
         '','单元等权平均；H先在单元内计算再平均。不同support抽样复用query，不作为独立模型重复。',
         '','|K|方法|旧类准确率|新类准确率|H|宏F1|','|---|---|---:|---:|---:|---:|']
     for r in result['tables']['per_k']:
@@ -130,7 +128,15 @@ def main():
     lines+=['',f"验收标准：{acceptance_text}。通过：{result['preregistered_guard_pass']}。每个K的新类均提升：{result['new_improved_every_k']}。",
         '','完整K×新增类规模、每seed和RX×场景结果见同目录CSV。最弱类别准确率、分组宏F1与遗忘均保留，不能用总体H掩盖局部退化。',
         '',f"适用范围：{result['claim_scope']}。评分不回流本候选调参或选择性重跑。"]
-    (a.output/'report.md').write_text('\n'.join(lines)+'\n',encoding='utf-8')
+    (output/'report.md').write_text('\n'.join(lines)+'\n',encoding='utf-8')
+
+
+def main():
+    p=argparse.ArgumentParser();p.add_argument('--scores',required=True,type=Path);p.add_argument('--output',required=True,type=Path)
+    p.add_argument('--spec',type=Path)
+    a=p.parse_args();spec=json.loads(a.spec.read_text(encoding='utf-8')) if a.spec else None
+    result=summarize(json.loads(a.scores.read_text(encoding='utf-8')),spec=spec)
+    write_summary(result,a.output)
     print(json.dumps({k:v for k,v in result.items() if k!='tables'},indent=2))
 
 

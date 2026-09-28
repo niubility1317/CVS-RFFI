@@ -23,7 +23,11 @@ paths=['docs/D92_SUPPORT_UPGRADE_20260928.md','code/cvsrffi/stage2_d92_support_c
     'code/cvsrffi/stage2_d92_summary_joint.py','tools/predict_d92_summary_joint.py',
     'tests/test_d92_summary_joint.py','tests/test_predict_d92_summary_joint.py',
     'configs/d92_summary_joint_frozen_20260928.json',
-    'docs/D92_SUMMARY_JOINT_DESIGN_20260928.md','docs/D92_SUMMARY_JOINT_DELIVERY_20260928.md']
+    'docs/D92_SUMMARY_JOINT_DESIGN_20260928.md','docs/D92_SUMMARY_JOINT_DELIVERY_20260928.md',
+    'tools/prepare_d92_summary_joint_benchmark.py','tools/summarize_d92_repeated_benchmark.py',
+    'tests/test_summarize_d92_repeated_benchmark.py',
+    'configs/d92_sgjoint_repeat_rx3_20260928.json','configs/d92_sgjoint_repeat_rx1_20260928.json',
+    'configs/d92_sgjoint_repeat_rx3_data_20260928.json','configs/d92_sgjoint_repeat_rx1_data_20260928.json']
 for name in paths:
     src=ROOT/name;dst=WS/name;dst.parent.mkdir(parents=True,exist_ok=True)
     # Each name is unique to this task; original D92 and shared wrappers are not mirrored.

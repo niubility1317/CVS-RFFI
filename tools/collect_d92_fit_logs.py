@@ -25,7 +25,8 @@ def main():
     for row in spec['rows']:
         rid=row['row_id'];folder=out/rid;folder.mkdir()
         for name,rel in paths:
-            subprocess.run(['scp',*FLAGS,'N607:'+row['output_root']+'/'+rel,str(folder/name)],check=True)
+            origin=row.get('reuse_row_root',row['output_root']) if name=='d92.jsonl' else row['output_root']
+            subprocess.run(['scp',*FLAGS,'N607:'+origin+'/'+rel,str(folder/name)],check=True)
         entries=[json.loads(line) for line in (folder/'compact.jsonl').read_text(encoding='utf-8').splitlines()]
         if len(entries)!=spec['confirmation']['splits_per_model']:raise ValueError('Incomplete fit diagnostics')
         small=[]
