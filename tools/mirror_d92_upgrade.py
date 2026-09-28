@@ -14,7 +14,7 @@ paths=['docs/D92_SUPPORT_UPGRADE_20260928.md','code/cvsrffi/stage2_d92_support_c
     'tests/test_d92_confirmation_score.py','tests/test_run_d92_confirmation.py','tests/test_summarize_d92_confirmation.py',
     'docs/D92_SOURCE_AUX_PLAN_20260928.md','docs/D92_SOURCEFREE_AUX_20260928.md','docs/D92_UPGRADE_HANDOFF_20260928.md',
     'code/cvsrffi/stage2_d92_sourcefree_head.py','code/cvsrffi/d92_ground_summary.py',
-    'tools/predict_d92_sourcefree_head.py','tools/prepare_d92_sourcefree_confirmation.py','tools/inspect_d92_ground_payload.py',
+    'tools/predict_d92_sourcefree_head.py','tools/prepare_d92_sourcefree_confirmation.py','tools/inspect_d92_ground_payload.py','tools/collect_d92_fit_logs.py',
     'configs/d92_sourcefree_confirmation_20260928.json','configs/d92_sourcefree_data_20260928.json',
     'configs/d92_sourcefree_data_record_20260928.json','configs/d92_sourcefree_frozen_20260928.json',
     'tests/test_d92_sourcefree_head.py','tests/test_d92_ground_summary.py','tests/test_d92_confirmation_allocation.py',

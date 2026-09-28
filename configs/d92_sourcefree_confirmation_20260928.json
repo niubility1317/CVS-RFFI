@@ -89,6 +89,11 @@
       2026092713,
       2026092714,
       2026092715
+    ],
+    "scenarios": [
+      "practical_high",
+      "practical_mid",
+      "practical_low_urban"
     ]
   },
   "permissions": {
@@ -149,7 +154,11 @@
       "support_seed"
     ],
     "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/each row/{predictions.jsonl,sfhead/predictions.jsonl}",
-    "scorer_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_sfhead_confirmation_20260928_r01/tools/score_d92_confirmation.py"
+    "scorer_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_sfhead_confirmation_20260928_r01/tools/score_d92_confirmation.py",
+    "acceptance": {
+      "old_max_drop": 0.01,
+      "require_new_improvement": true
+    }
   },
   "rows": [
     {

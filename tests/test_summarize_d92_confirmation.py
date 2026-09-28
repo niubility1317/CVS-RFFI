@@ -1,12 +1,13 @@
 """Synthetic complete-matrix checks; no target results are loaded."""
 from itertools import product
+import json
 from pathlib import Path
 import sys
 
 import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'tools'))
-from summarize_d92_confirmation import summarize
+from summarize_d92_confirmation import main, summarize
 
 
 SEEDS = range(2026092701, 2026092705)
@@ -90,3 +91,85 @@ def test_h_gain_cannot_hide_either_side_regression(baseline, candidate, failing_
         assert comparison['delta']['harmonic_mean'] == pytest.approx(0.28)
     assert result['preregistered_guard_pass'] is False
     assert result['new_improved_every_k'] is (failing_guard == 'old_guard')
+
+
+def sfhead_spec():
+    return dict(rows=[dict(seeds=dict(model=s)) for s in SEEDS],
+        data=dict(target_receivers=['20-19'],scenarios=SCENES,k=[1,5,10,20],
+            new_class_counts=[0,2,5,10,20],support_seeds=list(SUPPORT_SEEDS)),
+        confirmation=dict(candidate_method='D92-SFHead-v1',candidate_folder='sfhead',
+            candidate_predictor='predict_d92_sourcefree_head.py',candidate_mode='d92_sfhead_registration',
+            expected_split_count=300,splits_per_model=300,model_rows=4,predictions_total=2412),
+        metrics_plan=dict(acceptance=dict(old_max_drop=0.01,require_new_improvement=True)),
+        permissions=dict(claim_scope='Synthetic one-receiver confirmation only'))
+
+
+def sfhead_scores():
+    data=complete_scores(lambda method,seed:(0.5,0.5) if method=='D92' else (0.6,0.6))
+    data['results']=[r for r in data['results'] if r['receiver']=='19-1']
+    for row in data['results']:
+        row['receiver']='20-19'
+        if row['method']=='D92-SCV-v1':row['method']='D92-SFHead-v1'
+    return data
+
+
+def test_sfhead_spec_derives_exact_2412_matrix_and_real_method_labels(tmp_path,monkeypatch):
+    data,spec=sfhead_scores(),sfhead_spec()
+    result=summarize(data,spec)
+    assert result['rows']==2412
+    assert result['methods']==['D92','D92-SFHead-v1']
+    assert result['matrix']['receiver']==['20-19']
+    assert result['preregistered_guard_pass'] is True
+    assert result['acceptance']['require_new_improvement'] is True
+    assert len(result['tables']['per_k'])==8
+    assert len(result['tables']['per_k_new'])==40
+    assert len(result['tables']['per_seed_k'])==32
+    assert len(result['tables']['per_rx_scene_k'])==24
+    assert all(r['cells']==240 for r in result['tables']['per_k'])
+    scores_path,spec_path,output=tmp_path/'synthetic_scores.json',tmp_path/'synthetic_spec.json',tmp_path/'report'
+    scores_path.write_text(json.dumps(data),encoding='utf-8')
+    spec_path.write_text(json.dumps(spec),encoding='utf-8')
+    monkeypatch.setattr(sys,'argv',['summarize_d92_confirmation','--scores',str(scores_path),'--spec',str(spec_path),'--output',str(output)])
+    main()
+    report=(output/'report.md').read_text(encoding='utf-8')
+    assert 'D92-SFHead-v1' in report and 'D92-SCV' not in report
+    assert '1RX' in report and '2412' in report
+    assert 'H和新类严格提升' in report
+
+
+@pytest.mark.parametrize('fault',['missing','duplicate','model_seed','receiver','scenario','k','new_count','support_seed','dg_duplicate'])
+def test_sfhead_exact_coverage_rejects_missing_or_substituted_cell_even_same_count(fault):
+    data=sfhead_scores()
+    candidate=[r for r in data['results'] if r['method']=='D92-SFHead-v1']
+    if fault=='missing':
+        data['results'].remove(candidate[0])
+    elif fault=='duplicate':
+        candidate[0].update(candidate[1])
+    elif fault=='dg_duplicate':
+        dg=[r for r in data['results'] if r['method']=='frozen_dg']
+        dg[0].update(dg[1])
+    else:
+        candidate[0][fault]='wrong' if fault in ('receiver','scenario') else 999
+    with pytest.raises(ValueError,match='Incomplete paired matrix|Wrong final coverage'):
+        summarize(data,sfhead_spec())
+
+
+@pytest.mark.parametrize('new_accuracy,passes',[(0.5,False),(0.495,False),(0.51,True)])
+def test_sfhead_requires_strict_new_gain_at_every_k_even_when_h_and_guards_pass(new_accuracy,passes):
+    data=sfhead_scores()
+    for row in data['results']:
+        if row['method']=='D92-SFHead-v1' and row['k']==20 and row['new_count']:
+            row['old_accuracy']=0.65
+            row['new_accuracy']=new_accuracy
+            row['harmonic_mean']=2*0.65*new_accuracy/(0.65+new_accuracy)
+    result=summarize(data,sfhead_spec())
+    assert all(r['h_improved'] and r['old_guard'] and r['new_guard'] for r in result['comparisons'])
+    assert result['preregistered_guard_pass'] is passes
+    assert result['new_improved_every_k'] is passes
+
+
+def test_spec_requires_explicit_scenarios_instead_of_guessing():
+    spec=sfhead_spec()
+    del spec['data']['scenarios']
+    with pytest.raises(KeyError,match='scenarios'):
+        summarize(sfhead_scores(),spec)

@@ -6,6 +6,8 @@
 
 当前已VERIFIED启动：supervisor PID2403988，实际release commit `3348c8c37df402098a6f84397eaa1bf74d8d592e`。`readback_1790604450.json`核实4个D92子进程的实际argv/CWD一致，4模型已完成checkpoint无query推理检查及received特征提取。数据已ARTIFACTS_COMPLETE，capsule `residual-noeq-d0a99fede324159c5a4750fd`，4680观测、300splits，VALIDATED_ONCE。保持此run，禁止重复启动或改运行中配置。监控命令：`python tools/read_d92_run.py --spec configs/d92_sourcefree_confirmation_20260928.json --compact`。新结果尚未读取，完成后下载scores并用支持新spec的汇总器评分；不能以本地测试或启动成功标记goal完成。
 
+本地汇总器已支持`--spec configs/d92_sourcefree_confirmation_20260928.json`，20项合成测试通过；由spec验证2412条精确矩阵覆盖，按每K的ΔH>0、Δnew>0、Δold>=−0.01判断。本地spec只补充了与发布前data_config及notes一致的`data.scenarios`和机器可读acceptance字段，未修改远端配置、候选或矩阵。终态确认后可用`read_d92_run.py --download scores.json complete.json startup.json`下载，用`summarize_d92_confirmation.py --scores <path> --spec <spec> --output <new directory>`汇总，`collect_d92_fit_logs.py --spec <spec>`收集全部compact JSONL/CSV；保留远端完整fit_trace。旧`finalize_d92_confirmation_record.py`写死SCV旧run，不可用于本轮。需新增本轮独立算术核验与最终报告，不能误写旧结果或晋级。
+
 - 目标：固定Phase1，全面改善新旧类与各K的H。用户明确强调新类也要好。源域结果不能完成goal；目标分数不能回流调参、选种子或选择性重跑。
 - 工作树：`E:/type10-7/code/snapshots/d92_support_upgrade_20260928_wt`，分支`codex/d92-support-upgrade-20260928`。根目录不是Git仓库，主承载面其他暂存改动未动。
 - 源域旧类诊断180条、注册代理2100条均完成并登记ANALYZED。K1固定FFT权重0；K≥5的support-only选择算法与grid冻结。代理6个TX均被Phase1见过，不能称真正新TX结果。

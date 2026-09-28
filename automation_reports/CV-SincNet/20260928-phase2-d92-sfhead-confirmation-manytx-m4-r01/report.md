@@ -31,3 +31,5 @@
 Current authorized design and fixed loss: docs/D92_SOURCEFREE_AUX_20260928.md. 37 focused tests plus 42 lifecycle/scorer tests passed. Independent P0/P1 review passed. Source-TX auxiliary training was superseded and never launched. No new ground-statistics transfer required; all2412 predictions must finish before scoring.
 
 VERIFIED running supervisor2403988, release3348c8c37df402098a6f84397eaa1bf74d8d592e. Four native checkpoint no-query inference smokes and received feature extraction completed; now paired baseline predictions. Capsule residual-noeq-d0a99fede324159c5a4750fd,4680 observations/300splits. Evidence readback_1790604450.json. No target scores read.
+
+Local analysis metadata adds explicit scenarios and machine-readable acceptance equivalent to the prelaunch data config/notes; remote candidate/config unchanged. Spec-aware summarizer exact2412 coverage and strict perK H/new gain plus old1pp guard passed20 synthetic tests before any scores were read.

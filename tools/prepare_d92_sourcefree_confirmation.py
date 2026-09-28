@@ -46,7 +46,7 @@ def main():
         model_rows=4,splits_per_model=300,expected_split_count=300,predictions_total=2412)
     spec['code'].update(commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
         checkout=str(ROOT),cwd=release,commit_note='Exact pushed release HEAD recorded in launch/startup; this field is preparation parent.')
-    spec['data'].update(target_receivers=cfg['target_receivers'],capsule_id=None,split_id='300 IDs from one preregistered builder',
+    spec['data'].update(target_receivers=cfg['target_receivers'],scenarios=cfg['scenarios'],capsule_id=None,split_id='300 IDs from one preregistered builder',
         physical_ids_ref=data_root+'/builder_report.json',validation_ref=data_root+'/capsule/manifest.json',
         support_query_ref=data_root+'/capsule/splits',tx_sets_ref=release+'/configs/d92_sourcefree_data_20260928.json')
     spec['permissions'].update(query_use='read-only per sample; no fit/selection; truth only independent scorer',
@@ -55,7 +55,8 @@ def main():
         launch_owner='codex/root/d92-upgrade-20260928',gpu_policy='Sequential GPU0 frozen inference; four CPU lanes each2BLASthreads for support head optimization; no encoder training',
         launch_command='C:/Users/lh594/.conda/envs/ssr-gpu/python.exe -X utf8 tools/publish_d92_confirmation.py --spec configs/d92_sourcefree_confirmation_20260928.json --release '+RELEASE)
     spec['metrics_plan'].update(scorer_ref=release+'/tools/score_d92_confirmation.py',
-        prediction_ref=remote+'/each row/{predictions.jsonl,sfhead/predictions.jsonl}')
+        prediction_ref=remote+'/each row/{predictions.jsonl,sfhead/predictions.jsonl}',
+        acceptance=dict(old_max_drop=0.01,require_new_improvement=True))
     spec['expected_artifacts']=['startup.json','state.json','complete.json','scores.json','each row/sfhead/fit_trace.jsonl','each row/sfhead/compact.csv']
     for row in spec['rows']:
         out=remote+'/'+row['row_id']
