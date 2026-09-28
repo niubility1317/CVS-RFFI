@@ -1,5 +1,6 @@
 """Publish pushed, registered paired matrix without overwriting any prior run."""
 import hashlib
+import argparse
 import json
 from pathlib import Path
 import subprocess
@@ -16,7 +17,10 @@ from pathlib import Path
 c=CONFIG
 base=Path('/home/szu2070436088/2510044040/CV-SincNet/releases')
 release=base/c['release'];archive=base/c['archive']
-if any(Path(p).exists() for p in [str(release),c['run'],c['data_run']]):raise FileExistsError('Existing release/run/data; reconcile instead of retry')
+if any(Path(p).exists() for p in [str(release),c['run']]+([] if c['reuse_data'] else [c['data_run']])):raise FileExistsError('Existing release/run/data; reconcile instead of retry')
+if c['reuse_data']:
+ m=json.loads((Path(c['data_run'])/'capsule/manifest.json').read_text())
+ if m['capsule_id']!=c['reuse_data'] or m['phase2_data_status']!='VALIDATED_ONCE':raise ValueError('Existing data binding mismatch')
 if shutil.disk_usage(base).free<2*1024**3:raise RuntimeError('Insufficient disk')
 used=int(subprocess.check_output(['nvidia-smi','--id=0','--query-gpu=memory.used','--format=csv,noheader,nounits'],text=True).strip())
 if used>1024:raise RuntimeError('GPU0 currently occupied; do not disturb existing work')
@@ -28,7 +32,7 @@ with tarfile.open(archive) as tar:
 py='/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python'
 env=dict(os.environ,CUDA_VISIBLE_DEVICES='',OMP_NUM_THREADS='2',MKL_NUM_THREADS='2',OPENBLAS_NUM_THREADS='2',PYTHONUNBUFFERED='1')
 subprocess.run([py,'-m','compileall','-q',str(release/'tools'),str(release/'code')],env=env,check=True)
-argv=[py,'-u',str(release/'tools/run_d92_confirmation.py'),'--spec',str(release/'configs/d92_confirmation_20260928.json'),'--commit',c['commit']]
+argv=[py,'-u',str(release/'tools/run_d92_confirmation.py'),'--spec',str(release/c['spec']),'--commit',c['commit']]
 with (release/'run.log').open('x') as stream:
  p=subprocess.Popen(argv,cwd=release,env=env,stdin=subprocess.DEVNULL,stdout=stream,stderr=subprocess.STDOUT,start_new_session=True)
 launch=dict(pid=p.pid,argv=argv,cwd=str(release),commit=c['commit'],run=c['run'],data_run=c['data_run'],owner='codex/root/d92-upgrade-20260928')
@@ -38,22 +42,26 @@ print(json.dumps(launch))
 
 
 def main():
+    p=argparse.ArgumentParser();p.add_argument('--spec',default='configs/d92_confirmation_20260928.json');p.add_argument('--release',default=RELEASE)
+    a=p.parse_args();release_name=a.release
+    paths_to_pack=[v for v in PATHS if v!='configs/d92_confirmation_20260928.json']+[a.spec]
     commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip()
     branch=subprocess.check_output(['git','branch','--show-current'],cwd=ROOT,text=True).strip()
     if subprocess.check_output(['git','ls-remote','origin','refs/heads/'+branch],cwd=ROOT,text=True).split()[0]!=commit:raise ValueError('Release commit not pushed')
-    if subprocess.check_output(['git','status','--porcelain','--',*PATHS],cwd=ROOT,text=True).strip():raise ValueError('Uncommitted release paths')
-    spec=json.loads((ROOT/'configs/d92_confirmation_20260928.json').read_text(encoding='utf-8'))
+    if subprocess.check_output(['git','status','--porcelain','--',*paths_to_pack],cwd=ROOT,text=True).strip():raise ValueError('Uncommitted release paths')
+    spec=json.loads((ROOT/a.spec).read_text(encoding='utf-8'))
     cfg=json.loads((ROOT/'configs/d92_confirmation_data_20260928.json').read_text(encoding='utf-8'))
-    out=Path('E:/type10-7/local_artifacts/d92_upgrade_20260928/confirmation_r01');out.mkdir(parents=True,exist_ok=True)
-    archive=out/(RELEASE+'.tar')
+    out=Path('E:/type10-7/local_artifacts/d92_upgrade_20260928')/release_name;out.mkdir(parents=True,exist_ok=True)
+    archive=out/(release_name+'.tar')
     if archive.exists():raise FileExistsError('Local archive already exists; reconcile')
     remote_archive='/home/szu2070436088/2510044040/CV-SincNet/releases/'+archive.name
-    paths=[remote_archive,spec['code']['cwd'],spec['execution']['remote_run_root'],cfg['output_root']]
+    reuse=spec['confirmation'].get('reuse_validated_capsule_id')
+    paths=[remote_archive,spec['code']['cwd'],spec['execution']['remote_run_root']]+([] if reuse else [cfg['output_root']])
     probe='from pathlib import Path\npaths='+repr(paths)+'\nassert not any(Path(p).exists() for p in paths), "Output collision"\n'
     subprocess.run(['ssh',*FLAGS,'-T','N607','python3 -'],input=probe.encode(),check=True)
-    subprocess.run(['git','archive','--format=tar','--prefix='+RELEASE+'/','--output='+str(archive),commit,*PATHS],cwd=ROOT,check=True)
+    subprocess.run(['git','archive','--format=tar','--prefix='+release_name+'/','--output='+str(archive),commit,*paths_to_pack],cwd=ROOT,check=True)
     subprocess.run(['scp',*FLAGS,str(archive),'N607:'+remote_archive],check=True)
-    config=dict(commit=commit,release=RELEASE,archive=archive.name,run=paths[2],data_run=paths[3],sha256=hashlib.sha256(archive.read_bytes()).hexdigest())
+    config=dict(commit=commit,release=release_name,archive=archive.name,run=paths[2],data_run=cfg['output_root'],reuse_data=reuse,spec=a.spec,sha256=hashlib.sha256(archive.read_bytes()).hexdigest())
     payload=REMOTE.replace('CONFIG',repr(config));compile(payload,'remote','exec')
     result=subprocess.run(['ssh',*FLAGS,'-T','N607','python3 -'],input=payload.encode(),capture_output=True)
     (out/'landing.stdout').write_bytes(result.stdout);(out/'landing.stderr').write_bytes(result.stderr)

@@ -29,3 +29,5 @@
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
 
 Preregistered CPU data builder called once by confirmation owner.3RX x26TX x198 observations=15444;900 splits. Actual capsule ID recorded after builder completion.
+
+VERIFIED complete:15444 observations,900 immutable splits; residual-noeq-76121e6f34363fa612ec25fb. Builder report and capsule manifest read back; reused unchanged in r02.

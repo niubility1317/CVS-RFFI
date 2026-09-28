@@ -1,0 +1,34 @@
+{
+  "protocol_schema": "p2_min_v1",
+  "phase2_data_status": "VALIDATED_ONCE",
+  "capsule_id": "residual-noeq-76121e6f34363fa612ec25fb",
+  "members": [
+    "received.npz",
+    "splits/*.json"
+  ],
+  "received_count": 15444,
+  "split_count": 900,
+  "signal_shape": [
+    2,
+    256
+  ],
+  "scenarios": [
+    "practical_high",
+    "practical_mid",
+    "practical_low_urban"
+  ],
+  "channel": {
+    "route": "residual",
+    "mode": "post_sync",
+    "equalization_enabled": false,
+    "fs_hz": 25000000
+  },
+  "checks": {
+    "unique_physical_observation": true,
+    "scenes_physically_disjoint": true,
+    "support_query_physically_disjoint": true,
+    "query_labels_absent": true,
+    "source_paths_absent": true,
+    "finite_received": true
+  }
+}

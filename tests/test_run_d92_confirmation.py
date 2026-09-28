@@ -3,6 +3,7 @@ from pathlib import Path
 import sys
 import threading
 
+import numpy as np
 import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'tools'))
@@ -128,15 +129,18 @@ def test_workers_have_bounded_cpu_and_gpu_visibility():
         assert all(env[name] == '2' for name in ('OMP_NUM_THREADS', 'MKL_NUM_THREADS', 'OPENBLAS_NUM_THREADS'))
 
 
-@pytest.mark.parametrize('wrong_sha', [False, True])
-def test_ground_copy_bound_to_actual_source_checkpoint(tmp_path, wrong_sha):
+@pytest.mark.parametrize('fault', [None, 'checkpoint_sha', 'source_classes', 'ground_classes'])
+def test_ground_copy_bound_to_actual_source_checkpoint(tmp_path, fault):
     sys.path.insert(0, str(runner.RELEASE / 'code'))
     from cvsrffi.phase1_center_lowrank_prototype_bundle import NPZ_NAME
     source, origin, output = tmp_path / 'source', tmp_path / 'original-ground', tmp_path / 'row'
-    contract = dict(native_role_comparison='EXACT_MATCH', role_ids=dict(L_s=['source-id']),
+    classes = ['14-10', '14-7', '20-15', '20-19', '6-15', '8-20']
+    # The reference source contract has no classes or native_role_comparison.
+    contract = dict(role_ids=dict(L_s=['source-id']),
         source_rxs=['source-rx'], source_days=[1], ratios=[0.1], split_seed=42,
-        num_classes=6, classes=[f'class-{i}' for i in range(6)])
-    save(source / 'source_contract.json', contract)
+        num_classes=6)
+    actual_classes = list(reversed(classes)) if fault == 'source_classes' else classes
+    save(source / 'source_contract.json', dict(contract, native_role_comparison='EXACT_MATCH', classes=actual_classes))
     save(tmp_path / 'contract.json', contract)
     save(source / 'initialization.json', dict(scratch_only=True, checkpoint_sources=[],
         target_contact=False, source_roles='EXACT_MATCH'))
@@ -146,20 +150,46 @@ def test_ground_copy_bound_to_actual_source_checkpoint(tmp_path, wrong_sha):
         a1_periodic_target_start=0, a1_final_weak_reference=False))
     (source / 'final_ssdg.pth').write_bytes(b'synthetic-checkpoint')
     expected = runner.sha(source / 'final_ssdg.pth')
-    save(origin / 'manifest.json', dict(checkpoint_sha256='wrong' if wrong_sha else expected,
+    save(origin / 'manifest.json', dict(checkpoint_sha256='wrong' if fault == 'checkpoint_sha' else expected,
         target_access=False, source_role='L_s', formal_phase2_eligible=True,
         provenance_status='CURRENT_FINAL_SCRATCH_EXACT_SOURCE_L', member_allowlist=[NPZ_NAME]))
-    (origin / NPZ_NAME).write_bytes(b'synthetic-aggregate')
+    np.savez(origin / NPZ_NAME, class_registry=list(reversed(classes)) if fault == 'ground_classes' else classes)
     (origin / 'do_not_copy_source_sample_cache.npz').write_bytes(b'cache')
     output.mkdir()
     row = dict(source_root=str(source), ground_source=str(origin), output_root=str(output),
                seeds=dict(model=2026092701))
-    confirmation = dict(source_contract=str(tmp_path / 'contract.json'))
-    if wrong_sha:
-        with pytest.raises(ValueError, match='Ground source/checkpoint'):
+    confirmation = dict(source_contract=str(tmp_path / 'contract.json'), old_classes=classes)
+    if fault is not None:
+        with pytest.raises(ValueError, match='class registry mismatch|Ground source/checkpoint'):
             runner.prepare_ground(row, confirmation)
         assert not (output / 'ground').exists()
     else:
         assert runner.prepare_ground(row, confirmation) == expected
         assert {p.name for p in (output / 'ground').iterdir()} == {'manifest.json', NPZ_NAME}
         assert runner.read(output / 'ground_provenance.json')['checkpoint_sha256'] == expected
+
+
+@pytest.mark.parametrize('fault', [None, 'capsule_id', 'split_count', 'protocol_schema', 'phase2_data_status'])
+def test_reuses_validated_capsule_without_builder_or_data_revalidation(tmp_path, monkeypatch, fault):
+    path, spec = specification(tmp_path)
+    spec['confirmation']['reuse_validated_capsule_id'] = 'synthetic'
+    save(path, spec)
+    manifest = dict(protocol_schema='p2_min_v1', phase2_data_status='VALIDATED_ONCE',
+                    capsule_id='synthetic', split_count=900)
+    if fault:
+        manifest[fault] = 899 if fault == 'split_count' else 'wrong'
+    capsule_manifest = Path(spec['confirmation']['capsule']) / 'manifest.json'
+    save(capsule_manifest, manifest)
+    original = capsule_manifest.read_bytes()
+    calls = install_workers(monkeypatch, spec)
+    if fault:
+        with pytest.raises(ValueError, match='capsule'):
+            runner.run(path, 'synthetic-commit')
+        assert calls == []
+    else:
+        runner.run(path, 'synthetic-commit')
+        assert not any(c[0] == 'build_d92_confirmation_data.py' for c in calls)
+        record = runner.read(Path(spec['execution']['remote_run_root']) / 'data_reuse.json')
+        assert record['capsule_id'] == 'synthetic' and record['data_revalidated'] is False
+        assert record['data_rebuilt'] is False and record['truth_read'] is False
+    assert capsule_manifest.read_bytes() == original

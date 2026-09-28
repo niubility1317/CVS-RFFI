@@ -1,6 +1,6 @@
 {
   "schema": "experiment_record_v1",
-  "run_id": "20260928-phase2-d92-scv-confirmation-manytx-m4-r01",
+  "run_id": "20260928-phase2-d92-scv-confirmation-manytx-m4-r02",
   "group_id": "d92-fixed-phase1-support-cv-upgrade",
   "display_name": "固定Phase1的D92-SCV新旧类完整配对确认",
   "description": "4个固定新模型seed、3个与本轮源/目标RX不重合的接收机；全K、全部新类规模及5支持seed，对原D92与冻结SCV做一次完整评分。",
@@ -18,15 +18,16 @@
   "comparison_group_id": "manysig-six-source-rx13468-day123-luv076330-residual-noeq-v1",
   "parent_run_ids": [
     "20260928-diagnostic-d92-registration-proxy-s2026092701-r01",
-    "20260928-phase2-d92-confirmation-data-manytx-r01"
+    "20260928-phase2-d92-confirmation-data-manytx-r01",
+    "20260928-phase2-d92-scv-confirmation-manytx-m4-r01"
   ],
-  "replaces_run_id": null,
+  "replaces_run_id": "20260928-phase2-d92-scv-confirmation-manytx-m4-r01",
   "authorization": "2026-09-28用户要求优化D92，允许大幅修改；固定Phase1，全面提升新旧类及各K的H。",
   "code": {
-    "commit": "13317404bc0da62f18cfb3b12251d85e236a6c3b",
+    "commit": "aa73860623b3ad092f8003699f91fdf8574aeedf",
     "checkout": "E:\\type10-7\\code\\snapshots\\d92_support_upgrade_20260928_wt",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
-    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_confirmation_20260928_r01",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_confirmation_20260928_r02",
     "base_recipe": "experiments/adv3b02_xuc/configs/rc4_practical_residual_noeq_20260918.json",
     "native_code_base": "b63734157",
     "native_training_commit": "9b1ddd939fcabc74c77c94a62fef8e5aad07c0e9",
@@ -69,8 +70,8 @@
       "V": 0.3
     },
     "train_ratio": 0.1,
-    "capsule_id": null,
-    "split_id": "900 IDs determined once by registered builder",
+    "capsule_id": "residual-noeq-76121e6f34363fa612ec25fb",
+    "split_id": "existing900 immutable split IDs from r01 data builder",
     "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule/manifest.json",
     "support_query_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule/splits",
     "leo_config_ref": "experiments/adv3b02_xuc/code/cvsrffi/practical_adapter.py",
@@ -117,10 +118,10 @@
     "host": "N607",
     "launch_owner": "codex/root/d92-upgrade-20260928",
     "gpu_policy": "Sequential GPU0 frozen feature extraction; four CPU lanes each2BLASthreads, no gradient training",
-    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r01",
-    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r01",
-    "local_artifact_root": "automation_reports/CV-SincNet/20260928-phase2-d92-scv-confirmation-manytx-m4-r01",
-    "launch_command": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe -X utf8 tools/publish_d92_confirmation.py",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02",
+    "local_artifact_root": "automation_reports/CV-SincNet/20260928-phase2-d92-scv-confirmation-manytx-m4-r02",
+    "launch_command": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe -X utf8 tools/publish_d92_confirmation.py --spec configs/d92_confirmation_recovery_20260928.json --release d92_scv_confirmation_20260928_r02",
     "stop_rule": "Any source failure or child nonzero fails affected lane without retry; healthy lanes continue; do not score partial matrix."
   },
   "expected_artifacts": [
@@ -153,7 +154,7 @@
       "support_seed"
     ],
     "prediction_ref": "each row/predictions.jsonl",
-    "scorer_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_confirmation_20260928_r01/tools/score_d92_confirmation.py"
+    "scorer_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_confirmation_20260928_r02/tools/score_d92_confirmation.py"
   },
   "rows": [
     {
@@ -161,8 +162,8 @@
       "method": "paired D92 P2-256-FULL and D92-SCV-v1",
       "purpose": "joint_confirmation_fixed_model_seed",
       "gpu": 0,
-      "config_ref": "configs/d92_confirmation_20260928.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r01/startup.json",
+      "config_ref": "configs/d92_confirmation_recovery_20260928.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/startup.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092701,
@@ -185,9 +186,9 @@
       "epochs": null,
       "fl_rounds": null,
       "budget_ref": "900 paired splits plus9 DG; no target-based selection or rerun",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092701",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092701/worker.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python /home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_confirmation_20260928_r01/tools/run_d92_confirmation.py --spec /home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_confirmation_20260928_r01/configs/d92_confirmation_20260928.json --commit RELEASE_HEAD",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092701/worker.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python /home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_confirmation_20260928_r02/tools/run_d92_confirmation.py --spec /home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_confirmation_20260928_r02/configs/d92_confirmation_recovery_20260928.json --commit RELEASE_HEAD",
       "expected_artifacts": [
         "ground/manifest.json",
         "received_features/features_complete.json",
@@ -203,8 +204,8 @@
       "method": "paired D92 P2-256-FULL and D92-SCV-v1",
       "purpose": "joint_confirmation_fixed_model_seed",
       "gpu": 0,
-      "config_ref": "configs/d92_confirmation_20260928.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r01/startup.json",
+      "config_ref": "configs/d92_confirmation_recovery_20260928.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/startup.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092702,
@@ -227,9 +228,9 @@
       "epochs": null,
       "fl_rounds": null,
       "budget_ref": "900 paired splits plus9 DG; no target-based selection or rerun",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092702",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092702/worker.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python /home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_confirmation_20260928_r01/tools/run_d92_confirmation.py --spec /home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_confirmation_20260928_r01/configs/d92_confirmation_20260928.json --commit RELEASE_HEAD",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092702/worker.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python /home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_confirmation_20260928_r02/tools/run_d92_confirmation.py --spec /home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_confirmation_20260928_r02/configs/d92_confirmation_recovery_20260928.json --commit RELEASE_HEAD",
       "expected_artifacts": [
         "ground/manifest.json",
         "received_features/features_complete.json",
@@ -245,8 +246,8 @@
       "method": "paired D92 P2-256-FULL and D92-SCV-v1",
       "purpose": "joint_confirmation_fixed_model_seed",
       "gpu": 0,
-      "config_ref": "configs/d92_confirmation_20260928.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r01/startup.json",
+      "config_ref": "configs/d92_confirmation_recovery_20260928.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/startup.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092703,
@@ -269,9 +270,9 @@
       "epochs": null,
       "fl_rounds": null,
       "budget_ref": "900 paired splits plus9 DG; no target-based selection or rerun",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092703",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092703/worker.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python /home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_confirmation_20260928_r01/tools/run_d92_confirmation.py --spec /home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_confirmation_20260928_r01/configs/d92_confirmation_20260928.json --commit RELEASE_HEAD",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092703/worker.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python /home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_confirmation_20260928_r02/tools/run_d92_confirmation.py --spec /home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_confirmation_20260928_r02/configs/d92_confirmation_recovery_20260928.json --commit RELEASE_HEAD",
       "expected_artifacts": [
         "ground/manifest.json",
         "received_features/features_complete.json",
@@ -287,8 +288,8 @@
       "method": "paired D92 P2-256-FULL and D92-SCV-v1",
       "purpose": "joint_confirmation_fixed_model_seed",
       "gpu": 0,
-      "config_ref": "configs/d92_confirmation_20260928.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r01/startup.json",
+      "config_ref": "configs/d92_confirmation_recovery_20260928.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/startup.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092704,
@@ -311,9 +312,9 @@
       "epochs": null,
       "fl_rounds": null,
       "budget_ref": "900 paired splits plus9 DG; no target-based selection or rerun",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092704",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092704/worker.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python /home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_confirmation_20260928_r01/tools/run_d92_confirmation.py --spec /home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_confirmation_20260928_r01/configs/d92_confirmation_20260928.json --commit RELEASE_HEAD",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092704",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092704/worker.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python /home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_confirmation_20260928_r02/tools/run_d92_confirmation.py --spec /home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_confirmation_20260928_r02/configs/d92_confirmation_recovery_20260928.json --commit RELEASE_HEAD",
       "expected_artifacts": [
         "ground/manifest.json",
         "received_features/features_complete.json",
@@ -330,13 +331,14 @@
     "RX19-1,8-14,8-7 are disjoint from current source and recent target RX; all-time historical exposure is not certified.",
     "All predictions must finish before independent scorer opens query truth; scores cannot tune this frozen version.",
     "Primary: H improves at every K, old AND new mean accuracy each no worse by more than1pp; report all K/new-count cells, seed consistency, F1, class floors and forgetting.",
-    "No training: actual support-fit diagnostics retained; optimizer loss/LR/gradient N/A."
+    "No training: actual support-fit diagnostics retained; optimizer loss/LR/gradient N/A.",
+    "Technical recovery: reference source contract lacks classes; bind actual source class registry to registered old classes and ground NPZ.Original r01 failed before checkpoint load or target prediction. Reuse validated capsule, do not rebuild/resample/revalidate data. Candidate and full model/matrix unchanged."
   ],
   "confirmation": {
     "capsule": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule",
     "truth": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/score_only/truth.json",
-    "data_config": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_confirmation_20260928_r01/configs/d92_confirmation_data_20260928.json",
-    "candidate_config": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_confirmation_20260928_r01/configs/d92_scv_frozen_20260928.json",
+    "data_config": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_confirmation_20260928_r02/configs/d92_confirmation_data_20260928.json",
+    "candidate_config": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_confirmation_20260928_r02/configs/d92_scv_frozen_20260928.json",
     "native_code": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rc4_matched_20260927_r01/code",
     "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
     "source_proxy_result": "E:\\type10-7\\automation_reports\\CV-SincNet\\20260928-diagnostic-d92-registration-proxy-s2026092701-r01\\results\\complete.json",
@@ -362,8 +364,15 @@
     },
     "model_rows": 4,
     "splits_per_model": 900,
-    "predictions_total": 7236
-  },
-  "registered_at": "2026-09-28T12:35:36+00:00",
-  "status": "FAILED"
+    "predictions_total": 7236,
+    "old_classes": [
+      "14-10",
+      "14-7",
+      "20-15",
+      "20-19",
+      "6-15",
+      "8-20"
+    ],
+    "reuse_validated_capsule_id": "residual-noeq-76121e6f34363fa612ec25fb"
+  }
 }

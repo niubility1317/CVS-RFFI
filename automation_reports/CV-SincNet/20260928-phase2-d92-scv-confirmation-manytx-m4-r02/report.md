@@ -1,6 +1,6 @@
 # 固定Phase1的D92-SCV新旧类完整配对确认
 
-- run_id：`20260928-phase2-d92-scv-confirmation-manytx-m4-r01`
+- run_id：`20260928-phase2-d92-scv-confirmation-manytx-m4-r02`
 - group_id：`d92-fixed-phase1-support-cv-upgrade`；类别：`cvs`；阶段：`Phase2-joint-confirmation`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
 - 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
@@ -28,6 +28,4 @@
 
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
 
-Fixed candidate after source-only development. Acceptance checks both old and new accuracy alongside H at every K; complete all4modelseeds and all900splits, no score-driven reruns. Independent P0/P1 code/config review clear; scorer6 and runner8 tests passed.
-
-FAILED at local schema check before checkpoint loading or target prediction. Actual source contract contains physical classes; reference contract has no classes field. No scientific result; r02 performs diagnosed repair and reuses unchanged data/candidate.
+Manual technical recovery after diagnosis, not performance rerun.15 runner tests passed including absent reference.classes, actual/ground class binding and validated capsule reuse. No model, algorithm, matrix or data changes.

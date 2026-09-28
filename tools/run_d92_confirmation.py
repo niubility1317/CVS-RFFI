@@ -59,10 +59,13 @@ def prepare_ground(row, confirmation):
     from cvs_native_artifacts import verify_source
     sys.path.insert(0, str(RELEASE / 'code'))
     from cvsrffi.phase1_center_lowrank_prototype_bundle import NPZ_NAME
+    import numpy as np
     source = Path(row['source_root'])
     contract = read(confirmation['source_contract'])
     actual, _ = verify_source(source, contract, row['seeds']['model'])
-    if actual.get('classes') != contract.get('classes'):
+    expected_classes = confirmation['old_classes']
+    if (not isinstance(expected_classes, list) or len(expected_classes) != 6
+            or len(set(expected_classes)) != 6 or actual.get('classes') != expected_classes):
         raise ValueError('Checkpoint source class registry mismatch')
     checkpoint_sha = sha(source / 'final_ssdg.pth')
     origin = Path(row['ground_source'])
@@ -72,6 +75,9 @@ def prepare_ground(row, confirmation):
             or manifest.get('provenance_status') != 'CURRENT_FINAL_SCRATCH_EXACT_SOURCE_L'
             or manifest.get('member_allowlist') != [NPZ_NAME]):
         raise ValueError('Ground source/checkpoint provenance mismatch')
+    with np.load(origin / NPZ_NAME, allow_pickle=False) as aggregate:
+        if aggregate['class_registry'].astype(str).tolist() != actual['classes']:
+            raise ValueError('Ground/source class registry mismatch')
     destination = Path(row['output_root']) / 'ground'
     destination.mkdir(exist_ok=False)
     members = {}
@@ -127,12 +133,23 @@ def run(spec_path, commit):
           timestamp=time.time()))
     write(root / 'state.json', state)
     try:
-        stage('BUILDING_DATA')
-        invoke('build_d92_confirmation_data.py', ['--config', confirmation['data_config']], root / 'build_data.log')
+        reuse_id = confirmation.get('reuse_validated_capsule_id')
+        if reuse_id is None:
+            stage('BUILDING_DATA')
+            invoke('build_d92_confirmation_data.py', ['--config', confirmation['data_config']], root / 'build_data.log')
+        else:
+            stage('REUSING_VALIDATED_DATA')
         manifest = read(Path(confirmation['capsule']) / 'manifest.json')
         if (manifest.get('protocol_schema') != 'p2_min_v1' or manifest.get('phase2_data_status') != 'VALIDATED_ONCE'
                 or not isinstance(manifest.get('split_count'), int) or manifest['split_count'] <= 0):
             raise ValueError('Data builder did not produce a validated complete capsule')
+        if reuse_id is not None:
+            if not isinstance(reuse_id, str) or not reuse_id or manifest.get('capsule_id') != reuse_id or manifest['split_count'] != 900:
+                raise ValueError('Existing validated capsule identity/split count mismatch')
+            write(root / 'data_reuse.json', dict(status='VALIDATED_ONCE_REUSED', capsule_id=reuse_id,
+                  capsule=confirmation['capsule'], split_count=manifest['split_count'],
+                  protocol_schema=manifest['protocol_schema'], phase2_data_status=manifest['phase2_data_status'],
+                  data_rebuilt=False, data_revalidated=False, truth_read=False, timestamp=time.time()))
         hashes = {}
         stage('EXPORTING_FROZEN_FEATURES')
         for row in rows:

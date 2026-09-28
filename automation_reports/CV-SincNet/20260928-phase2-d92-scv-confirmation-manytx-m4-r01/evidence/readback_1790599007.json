@@ -1,0 +1,95 @@
+{
+  "startup.json": {
+    "pid": 2349832,
+    "argv": [
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_confirmation_20260928_r01/tools/run_d92_confirmation.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_confirmation_20260928_r01/configs/d92_confirmation_20260928.json",
+      "--commit",
+      "aa73860623b3ad092f8003699f91fdf8574aeedf"
+    ],
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_confirmation_20260928_r01",
+    "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "commit": "aa73860623b3ad092f8003699f91fdf8574aeedf",
+    "launch_owner": "codex/root/d92-upgrade-20260928",
+    "environment": {
+      "CUDA_VISIBLE_DEVICES": "",
+      "OMP_NUM_THREADS": "2",
+      "MKL_NUM_THREADS": "2",
+      "OPENBLAS_NUM_THREADS": "2",
+      "NUMEXPR_NUM_THREADS": null
+    },
+    "worker_policy": {
+      "feature_gpu": 0,
+      "max_feature_workers": 1,
+      "cpu_row_workers": 4,
+      "blas_threads": 2
+    },
+    "timestamp": 1790598925.1013036,
+    "live_argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_confirmation_20260928_r01/tools/run_d92_confirmation.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_confirmation_20260928_r01/configs/d92_confirmation_20260928.json",
+      "--commit",
+      "aa73860623b3ad092f8003699f91fdf8574aeedf"
+    ],
+    "live_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_confirmation_20260928_r01"
+  },
+  "state.json": {
+    "cvs-daot-rc4-s2026092701": {
+      "status": "PLANNED"
+    },
+    "cvs-daot-rc4-s2026092702": {
+      "status": "PLANNED"
+    },
+    "cvs-daot-rc4-s2026092703": {
+      "status": "PLANNED"
+    },
+    "cvs-daot-rc4-s2026092704": {
+      "status": "PLANNED"
+    }
+  },
+  "workflow_state.json": {
+    "status": "BUILDING_DATA",
+    "updated": 1790598925.1019816
+  },
+  "launch.json": {
+    "pid": 2349832,
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_confirmation_20260928_r01/tools/run_d92_confirmation.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_confirmation_20260928_r01/configs/d92_confirmation_20260928.json",
+      "--commit",
+      "aa73860623b3ad092f8003699f91fdf8574aeedf"
+    ],
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_confirmation_20260928_r01",
+    "commit": "aa73860623b3ad092f8003699f91fdf8574aeedf",
+    "run": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r01",
+    "data_run": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01",
+    "owner": "codex/root/d92-upgrade-20260928",
+    "live_argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_confirmation_20260928_r01/tools/run_d92_confirmation.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_confirmation_20260928_r01/configs/d92_confirmation_20260928.json",
+      "--commit",
+      "aa73860623b3ad092f8003699f91fdf8574aeedf"
+    ],
+    "live_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_confirmation_20260928_r01"
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_scv_confirmation_20260928_r01/run.log": {
+    "bytes": 0,
+    "tail": []
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r01/build_data.log": {
+    "bytes": 47,
+    "tail": [
+      "{\"receiver\": \"19-1\", \"received_records\": 5148}"
+    ]
+  }
+}
