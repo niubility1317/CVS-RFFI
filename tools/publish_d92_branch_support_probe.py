@@ -2,7 +2,7 @@
 import argparse
 import hashlib
 import json
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 import subprocess
 from run_d92_branch_support_probe import validate_spec
 
@@ -37,8 +37,15 @@ print(json.dumps(launch))
 '''
 
 
+def remote_archive_path(release,name):
+    if '\\' in release or not release.startswith('/') or '/' in name or '\\' in name:
+        raise ValueError('Remote paths must be POSIX paths')
+    return str(PurePosixPath(release).parent/name)
+
+
 def main():
     p=argparse.ArgumentParser();p.add_argument('--spec',default='configs/d92_branch_support_probe_20260929.json')
+    p.add_argument('--resume-staged-commit',help='Explicit recovery only: original committed archive, verified no launch/output yet')
     a=p.parse_args();spec=json.loads((ROOT/a.spec).read_text(encoding='utf-8'));validate_spec(spec)
     release=spec['code']['cwd'];name=Path(release).name;remote_root=spec['execution']['remote_run_root']
     paths=PATHS+[a.spec]
@@ -48,18 +55,31 @@ def main():
         raise ValueError('Release not pushed')
     if subprocess.check_output(['git','status','--porcelain','--',*paths],cwd=ROOT,text=True).strip():
         raise ValueError('Uncommitted release paths')
+    if a.resume_staged_commit:
+        original=subprocess.check_output(['git','rev-parse',a.resume_staged_commit],cwd=ROOT,text=True).strip()
+        if original!=a.resume_staged_commit:raise ValueError('Recovery requires exact original commit OID')
+        subprocess.run(['git','merge-base','--is-ancestor',original,commit],cwd=ROOT,check=True)
+        subprocess.run(['git','diff','--exit-code',original,commit,'--',*paths],cwd=ROOT,check=True)
+        commit=original
     folder=Path('E:/type10-7/local_artifacts/d92_upgrade_20260928')/name;folder.mkdir(parents=True,exist_ok=True)
-    archive=folder/(name+'.tar');remote_archive=str(Path(release).parent/archive.name)
-    if archive.exists():raise FileExistsError('Local archive exists; reconcile')
-    probe='from pathlib import Path\nassert not any(Path(p).exists() for p in '+repr([remote_archive,release,remote_root])+'), "Output collision"\n'
+    archive=folder/(name+'.tar');remote_archive=remote_archive_path(release,archive.name)
+    if archive.exists() and not a.resume_staged_commit:raise FileExistsError('Local archive exists; reconcile')
+    if a.resume_staged_commit and not archive.exists():raise FileNotFoundError('Original local archive missing')
+    checked=[release,remote_root] if a.resume_staged_commit else [remote_archive,release,remote_root]
+    probe='from pathlib import Path\nassert not any(Path(p).exists() for p in '+repr(checked)+'), "Output collision"\n'
+    if a.resume_staged_commit:
+        probe+='import hashlib\nassert hashlib.sha256(Path('+repr(remote_archive)+').read_bytes()).hexdigest()=='+repr(hashlib.sha256(archive.read_bytes()).hexdigest())+', "Staged archive mismatch"\n'
     subprocess.run(['ssh',*FLAGS,'-T','N607','python3 -'],input=probe.encode(),check=True)
-    subprocess.run(['git','archive','--format=tar','--prefix='+name+'/','--output='+str(archive),commit,*paths],cwd=ROOT,check=True)
-    subprocess.run(['scp',*FLAGS,str(archive),'N607:'+remote_archive],check=True)
+    if not a.resume_staged_commit:
+        subprocess.run(['git','archive','--format=tar','--prefix='+name+'/','--output='+str(archive),commit,*paths],cwd=ROOT,check=True)
+        subprocess.run(['scp',*FLAGS,str(archive),'N607:'+remote_archive],check=True)
     cfg=dict(release=release,archive=remote_archive,root=remote_root,spec=a.spec,commit=commit,
         python=spec['code']['environment'],owner=spec['execution']['launch_owner'],sha256=hashlib.sha256(archive.read_bytes()).hexdigest())
     script=REMOTE.replace('CONFIG',repr(cfg));compile(script,'remote','exec')
     result=subprocess.run(['ssh',*FLAGS,'-T','N607','python3 -'],input=script.encode(),capture_output=True)
-    (folder/'landing.stdout').write_bytes(result.stdout);(folder/'landing.stderr').write_bytes(result.stderr)
+    prefix='recovery_landing' if a.resume_staged_commit else 'landing'
+    with (folder/(prefix+'.stdout')).open('xb') as f:f.write(result.stdout)
+    with (folder/(prefix+'.stderr')).open('xb') as f:f.write(result.stderr)
     print(result.stdout.decode());print(result.stderr.decode());result.check_returncode()
 
 

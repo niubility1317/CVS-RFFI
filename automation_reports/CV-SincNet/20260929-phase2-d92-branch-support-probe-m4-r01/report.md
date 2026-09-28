@@ -29,3 +29,5 @@
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
 
 PLANNED: complete current-row support-only six-arm probe; core/export/entry and orchestration synthetic validation passed. Resource/output/capsule binding preflight VERIFIED without IQ access or data revalidation. Awaiting unique P0/P1 review and pushed release; not launched.
+
+Publication technical failure before extraction/launch: Windows Path serialized remote archive with backslashes. Independent readback_1790620548.json shows no supervisor/children/startup; remote intended POSIX archive exists and is intact (SHA256 15d195442be83ebb4a285986a217494d2cbe7a158a70d8f8a8c13ba19b345d24). Fix uses PurePosixPath; explicit staged-commit recovery requires absent release/run, matching staged bytes, and identical runtime paths versus the original pushed commit f7f19e87042b22c499ca2cee3d01fd0334dc8d47. No experiment has started; preserve original landing evidence.

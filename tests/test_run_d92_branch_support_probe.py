@@ -9,6 +9,7 @@ import pytest
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'tools'))
 import run_d92_branch_support_probe as runner
 import read_d92_run as reader
+import publish_d92_branch_support_probe as publisher
 
 
 def spec(tmp_path):
@@ -72,6 +73,11 @@ def test_commands_and_readback_never_add_query_or_ground_arguments(tmp_path):
     assert '--source-contract' in export and '--expected-checkpoint-sha256' in export
     script=reader.readback_script(s);compile(script,'remote-readback','exec')
     assert "candidate_folder='probe'" in script and 'probe_complete.json' in script
+
+
+def test_remote_archive_is_posix_on_windows():
+    assert publisher.remote_archive_path('/home/user/releases/probe','probe.tar')=='/home/user/releases/probe.tar'
+    with pytest.raises(ValueError):publisher.remote_archive_path('\\home\\user\\releases\\probe','probe.tar')
 
 
 @pytest.mark.parametrize('mutation',[lambda s:s['rows'].pop(),lambda s:s['probe'].update(query_access=True),
