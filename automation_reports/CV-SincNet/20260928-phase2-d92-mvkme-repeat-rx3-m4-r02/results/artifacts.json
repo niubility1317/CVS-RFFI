@@ -1,0 +1,273 @@
+{
+  "run_id": "20260928-phase2-d92-mvkme-repeat-rx3-m4-r02",
+  "status": "ANALYZED",
+  "execution_status": "SCORED",
+  "evidence_status": "VERIFIED",
+  "candidate": "D92-MVKME-v1",
+  "candidate_promoted": false,
+  "goal_complete": false,
+  "records": 7236,
+  "release_commit": "70bd88dfc6a0864e09b8fa582d2aa48b34a741fb",
+  "cost": {
+    "total_fits": 3600,
+    "fixed_k1_fits": 900,
+    "support_cv_fits": 2700,
+    "timing_totals_seconds": {
+      "fit_seconds": 277.1926035610959,
+      "fit_call_seconds": 280.3713155891746,
+      "query_score_seconds": 57.25994034297764,
+      "prediction_write_seconds": 16.56981868389994,
+      "total_seconds": 358.83830702863634,
+      "feature_extraction_seconds": 461.0340885994956
+    },
+    "numeric_state_byte_ranges": {
+      "head_bytes": [
+        36864,
+        159744
+      ],
+      "fourier_matrix_bytes": [
+        262144,
+        262144
+      ],
+      "persistent_state_bytes": [
+        299008,
+        421888
+      ],
+      "gram_bytes": [
+        288,
+        2163200
+      ]
+    },
+    "per_model_resources": [
+      {
+        "row_id": "cvs-daot-rc4-s2026092701",
+        "feature_extraction_seconds": 116.207747772336,
+        "physical_observations": 15444,
+        "native_views_per_observation": 16,
+        "recorded_native_view_count": 247104,
+        "received_cache_array_bytes": 47443968,
+        "received_cache_file_bytes": 48932854,
+        "existing_frozen_model_file_bytes": 15992872,
+        "new_source_payload_bytes": 0,
+        "model_file_bytes_source": "existing checkpoint package size recorded by bound exporter; no checkpoint file read by audit",
+        "new_ground_statistics_bytes": 0,
+        "ground_summary_used": false,
+        "feature_peak_process_rss_bytes": 1268629504,
+        "feature_peak_rss_unavailable_reason": null,
+        "cache_scope": "Received-only local derived cache; not a source transmission payload",
+        "model_incremental_transfer_bytes": null,
+        "model_transfer_unavailable_reason": "Deployment state not specified; existing model package bytes are reported separately",
+        "predictor_peak_process_rss_bytes": 554848256
+      },
+      {
+        "row_id": "cvs-daot-rc4-s2026092702",
+        "feature_extraction_seconds": 116.24643407016993,
+        "physical_observations": 15444,
+        "native_views_per_observation": 16,
+        "recorded_native_view_count": 247104,
+        "received_cache_array_bytes": 47443968,
+        "received_cache_file_bytes": 48932854,
+        "existing_frozen_model_file_bytes": 15992936,
+        "new_source_payload_bytes": 0,
+        "model_file_bytes_source": "existing checkpoint package size recorded by bound exporter; no checkpoint file read by audit",
+        "new_ground_statistics_bytes": 0,
+        "ground_summary_used": false,
+        "feature_peak_process_rss_bytes": 1269358592,
+        "feature_peak_rss_unavailable_reason": null,
+        "cache_scope": "Received-only local derived cache; not a source transmission payload",
+        "model_incremental_transfer_bytes": null,
+        "model_transfer_unavailable_reason": "Deployment state not specified; existing model package bytes are reported separately",
+        "predictor_peak_process_rss_bytes": 562880512
+      },
+      {
+        "row_id": "cvs-daot-rc4-s2026092703",
+        "feature_extraction_seconds": 114.98188424762338,
+        "physical_observations": 15444,
+        "native_views_per_observation": 16,
+        "recorded_native_view_count": 247104,
+        "received_cache_array_bytes": 47443968,
+        "received_cache_file_bytes": 48932854,
+        "existing_frozen_model_file_bytes": 15992872,
+        "new_source_payload_bytes": 0,
+        "model_file_bytes_source": "existing checkpoint package size recorded by bound exporter; no checkpoint file read by audit",
+        "new_ground_statistics_bytes": 0,
+        "ground_summary_used": false,
+        "feature_peak_process_rss_bytes": 1271070720,
+        "feature_peak_rss_unavailable_reason": null,
+        "cache_scope": "Received-only local derived cache; not a source transmission payload",
+        "model_incremental_transfer_bytes": null,
+        "model_transfer_unavailable_reason": "Deployment state not specified; existing model package bytes are reported separately",
+        "predictor_peak_process_rss_bytes": 556466176
+      },
+      {
+        "row_id": "cvs-daot-rc4-s2026092704",
+        "feature_extraction_seconds": 113.59802250936627,
+        "physical_observations": 15444,
+        "native_views_per_observation": 16,
+        "recorded_native_view_count": 247104,
+        "received_cache_array_bytes": 47443968,
+        "received_cache_file_bytes": 48932854,
+        "existing_frozen_model_file_bytes": 15992936,
+        "new_source_payload_bytes": 0,
+        "model_file_bytes_source": "existing checkpoint package size recorded by bound exporter; no checkpoint file read by audit",
+        "new_ground_statistics_bytes": 0,
+        "ground_summary_used": false,
+        "feature_peak_process_rss_bytes": 1270050816,
+        "feature_peak_rss_unavailable_reason": null,
+        "cache_scope": "Received-only local derived cache; not a source transmission payload",
+        "model_incremental_transfer_bytes": null,
+        "model_transfer_unavailable_reason": "Deployment state not specified; existing model package bytes are reported separately",
+        "predictor_peak_process_rss_bytes": 557948928
+      }
+    ],
+    "model_incremental_transfer_bytes": null,
+    "model_transfer_reason": "Deployment state unknown; existing training-checkpoint package is not a measured minimum inference package",
+    "new_source_payload_bytes": 0,
+    "ground_summary_used": false,
+    "timing_scope": "Measured stage timings, not parallel wall duration or satellite hardware latency; fit_seconds is nested within fit_call_seconds/total_seconds and must not be added to them."
+  },
+  "per_k": [
+    {
+      "k": 1,
+      "model_seed": null,
+      "new_count": null,
+      "joint_cells": 720,
+      "joint_delta_pp": {
+        "old_accuracy": 1.5864197530864155,
+        "new_accuracy": -1.0127314814814796,
+        "harmonic_mean": -0.22014283608576268
+      },
+      "joint_percent": {
+        "D92": {
+          "old_accuracy": 31.636574074074076,
+          "new_accuracy": 23.468055555555555,
+          "harmonic_mean": 24.848071725415245
+        },
+        "D92-MVKME-v1": {
+          "old_accuracy": 33.222993827160494,
+          "new_accuracy": 22.455324074074078,
+          "harmonic_mean": 24.627928889329485
+        }
+      },
+      "old_all_cells": {
+        "cells": 900,
+        "baseline_percent": 33.946296296296296,
+        "candidate_percent": 35.81296296296296,
+        "delta_pp": 1.8666666666666665
+      }
+    },
+    {
+      "k": 5,
+      "model_seed": null,
+      "new_count": null,
+      "joint_cells": 720,
+      "joint_delta_pp": {
+        "old_accuracy": 6.598765432098763,
+        "new_accuracy": -1.1474537037037047,
+        "harmonic_mean": 0.8960869898222368
+      },
+      "joint_percent": {
+        "D92": {
+          "old_accuracy": 39.95910493827161,
+          "new_accuracy": 32.920138888888886,
+          "harmonic_mean": 35.26174945568853
+        },
+        "D92-MVKME-v1": {
+          "old_accuracy": 46.55787037037037,
+          "new_accuracy": 31.772685185185185,
+          "harmonic_mean": 36.15783644551077
+        }
+      },
+      "old_all_cells": {
+        "cells": 900,
+        "baseline_percent": 42.41666666666667,
+        "candidate_percent": 48.99691358024691,
+        "delta_pp": 6.580246913580245
+      }
+    },
+    {
+      "k": 10,
+      "model_seed": null,
+      "new_count": null,
+      "joint_cells": 720,
+      "joint_delta_pp": {
+        "old_accuracy": 3.1589506172839457,
+        "new_accuracy": -1.669212962962957,
+        "harmonic_mean": -0.555942322118752
+      },
+      "joint_percent": {
+        "D92": {
+          "old_accuracy": 49.80941358024691,
+          "new_accuracy": 39.888888888888886,
+          "harmonic_mean": 43.595209772631996
+        },
+        "D92-MVKME-v1": {
+          "old_accuracy": 52.96836419753086,
+          "new_accuracy": 38.21967592592593,
+          "harmonic_mean": 43.03926745051324
+        }
+      },
+      "old_all_cells": {
+        "cells": 900,
+        "baseline_percent": 52.34197530864198,
+        "candidate_percent": 55.05679012345679,
+        "delta_pp": 2.7148148148148143
+      }
+    },
+    {
+      "k": 20,
+      "model_seed": null,
+      "new_count": null,
+      "joint_cells": 720,
+      "joint_delta_pp": {
+        "old_accuracy": 0.7438271604938262,
+        "new_accuracy": -1.1756944444444417,
+        "harmonic_mean": -0.804892347120606
+      },
+      "joint_percent": {
+        "D92": {
+          "old_accuracy": 56.90663580246913,
+          "new_accuracy": 43.4212962962963,
+          "harmonic_mean": 48.52542099068163
+        },
+        "D92-MVKME-v1": {
+          "old_accuracy": 57.650462962962955,
+          "new_accuracy": 42.24560185185185,
+          "harmonic_mean": 47.720528643561025
+        }
+      },
+      "old_all_cells": {
+        "cells": 900,
+        "baseline_percent": 59.27654320987655,
+        "candidate_percent": 59.40987654320987,
+        "delta_pp": 0.13333333333331865
+      }
+    }
+  ],
+  "raw_scores": {
+    "local": "E:\\type10-7\\automation_reports\\CV-SincNet\\20260928-phase2-d92-mvkme-repeat-rx3-m4-r02\\results\\scores.json",
+    "remote": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-mvkme-repeat-rx3-m4-r02/scores.json"
+  },
+  "raw_fit_traces": [
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-mvkme-repeat-rx3-m4-r02/cvs-daot-rc4-s2026092701/mvkme/fit_trace.jsonl",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-mvkme-repeat-rx3-m4-r02/cvs-daot-rc4-s2026092702/mvkme/fit_trace.jsonl",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-mvkme-repeat-rx3-m4-r02/cvs-daot-rc4-s2026092703/mvkme/fit_trace.jsonl",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-mvkme-repeat-rx3-m4-r02/cvs-daot-rc4-s2026092704/mvkme/fit_trace.jsonl"
+  ],
+  "raw_predictions": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-mvkme-repeat-rx3-m4-r02/<row_id>/mvkme/predictions.jsonl",
+  "compact_logs": "fit_logs/",
+  "arithmetic_audit": "arithmetic_audit.json",
+  "fit_audit": "fit_audit.json",
+  "cohort_summary": "summary/report.md",
+  "combined_summary": "E:\\type10-7\\automation_reports\\CV-SincNet\\20260928-phase2-d92-mvkme-repeat-rx3-m4-r02\\results\\combined_rx4\\report.md",
+  "interpretation_audit": "E:\\type10-7\\automation_reports\\CV-SincNet\\20260928-phase2-d92-mvkme-repeat-rx3-m4-r02\\results\\combined_rx4\\interpretation_audit.json",
+  "old_guard_scope": "All paired cells including old-only; joint old/new/H table excludes old-only.",
+  "failed_predecessor_preserved": "20260928-phase2-d92-mvkme-repeat-rx3-m4-r01",
+  "claim_scope": "REPEATED_BENCHMARK_PREVIOUSLY_SCORED_TARGETS",
+  "selection_feedback_forbidden": true,
+  "limitations": [
+    "Previously scored targets reused; not fresh independent confirmation or unexposed generalization evidence.",
+    "Shared query and overlapping support draws are not independent model replicates; no statistical significance claim.",
+    "No algorithm modification, parameter choice, selective rerun, or future design based on this audit."
+  ]
+}

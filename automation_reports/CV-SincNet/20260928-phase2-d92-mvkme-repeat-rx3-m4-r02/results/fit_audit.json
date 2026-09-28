@@ -1,0 +1,698 @@
+{
+  "status": "VERIFIED",
+  "method": "D92-MVKME-v1",
+  "models": [
+    {
+      "row_id": "cvs-daot-rc4-s2026092701",
+      "fits": 900,
+      "fixed_k1_fits": 225,
+      "support_cv_fits": 675,
+      "resources": {
+        "feature_extraction_seconds": 116.207747772336,
+        "physical_observations": 15444,
+        "native_views_per_observation": 16,
+        "recorded_native_view_count": 247104,
+        "received_cache_array_bytes": 47443968,
+        "received_cache_file_bytes": 48932854,
+        "existing_frozen_model_file_bytes": 15992872,
+        "new_source_payload_bytes": 0,
+        "model_file_bytes_source": "existing checkpoint package size recorded by bound exporter; no checkpoint file read by audit",
+        "new_ground_statistics_bytes": 0,
+        "ground_summary_used": false,
+        "feature_peak_process_rss_bytes": 1268629504,
+        "feature_peak_rss_unavailable_reason": null,
+        "cache_scope": "Received-only local derived cache; not a source transmission payload",
+        "model_incremental_transfer_bytes": null,
+        "model_transfer_unavailable_reason": "Deployment state not specified; existing model package bytes are reported separately"
+      },
+      "timing": {
+        "fit_seconds": {
+          "min": 0.00033694226294755936,
+          "mean": 0.07574861832273504,
+          "max": 0.48968151956796646,
+          "total": 68.17375649046153
+        },
+        "fit_call_seconds": {
+          "min": 0.00047077424824237823,
+          "mean": 0.07667159935149054,
+          "max": 0.49148624762892723,
+          "total": 69.00443941634148
+        },
+        "query_score_seconds": {
+          "min": 0.004787406884133816,
+          "mean": 0.016053813855267232,
+          "max": 0.0408434746786952,
+          "total": 14.44843246974051
+        },
+        "prediction_write_seconds": {
+          "min": 0.0009073112159967422,
+          "mean": 0.004605598798435595,
+          "max": 0.0140432920306921,
+          "total": 4.145038918592036
+        },
+        "total_seconds": {
+          "min": 0.00655039306730032,
+          "mean": 0.09861621596540014,
+          "max": 0.5487119127064943,
+          "total": 88.75459436886013
+        }
+      },
+      "peak_process_rss_bytes": 554848256,
+      "peak_rss_unavailable_reason": null,
+      "numeric_state_byte_ranges": {
+        "head_bytes": {
+          "min": 36864,
+          "mean": 82329.6,
+          "max": 159744,
+          "total": 74096640
+        },
+        "fourier_matrix_bytes": {
+          "min": 262144,
+          "mean": 262144,
+          "max": 262144,
+          "total": 235929600
+        },
+        "persistent_state_bytes": {
+          "min": 299008,
+          "mean": 344473.6,
+          "max": 421888,
+          "total": 310026240
+        },
+        "gram_bytes": {
+          "min": 288,
+          "mean": 242591.2,
+          "max": 2163200,
+          "total": 218332080
+        }
+      },
+      "per_k": [
+        {
+          "k": 1,
+          "fits": 225,
+          "folds_per_fit": 0,
+          "candidates_per_fit": 0,
+          "fit_seconds": {
+            "min": 0.00033694226294755936,
+            "mean": 0.0005032950929469533,
+            "max": 0.00195888988673687,
+            "total": 0.11324139591306448
+          },
+          "selected_parameter_frequencies": {
+            "{\"eta\": 0.5, \"gamma\": 0.1}": 225
+          }
+        },
+        {
+          "k": 5,
+          "fits": 225,
+          "folds_per_fit": 3,
+          "candidates_per_fit": 9,
+          "fit_seconds": {
+            "min": 0.022684563882648945,
+            "mean": 0.04943371054199007,
+            "max": 0.10284262988716364,
+            "total": 11.122584871947765
+          },
+          "selected_parameter_frequencies": {
+            "{\"eta\": 1.0, \"gamma\": 1.0}": 28,
+            "{\"eta\": 1.0, \"gamma\": 0.01}": 34,
+            "{\"eta\": 0.0, \"gamma\": 1.0}": 46,
+            "{\"eta\": 0.5, \"gamma\": 1.0}": 25,
+            "{\"eta\": 1.0, \"gamma\": 0.1}": 39,
+            "{\"eta\": 0.5, \"gamma\": 0.1}": 38,
+            "{\"eta\": 0.0, \"gamma\": 0.1}": 2,
+            "{\"eta\": 0.5, \"gamma\": 0.01}": 13
+          }
+        },
+        {
+          "k": 10,
+          "fits": 225,
+          "folds_per_fit": 3,
+          "candidates_per_fit": 9,
+          "fit_seconds": {
+            "min": 0.035330625250935555,
+            "mean": 0.08516586703144842,
+            "max": 0.20186926797032356,
+            "total": 19.162320082075894
+          },
+          "selected_parameter_frequencies": {
+            "{\"eta\": 1.0, \"gamma\": 0.1}": 50,
+            "{\"eta\": 0.5, \"gamma\": 0.1}": 52,
+            "{\"eta\": 0.0, \"gamma\": 1.0}": 20,
+            "{\"eta\": 0.5, \"gamma\": 0.01}": 31,
+            "{\"eta\": 1.0, \"gamma\": 1.0}": 8,
+            "{\"eta\": 1.0, \"gamma\": 0.01}": 59,
+            "{\"eta\": 0.5, \"gamma\": 1.0}": 5
+          }
+        },
+        {
+          "k": 20,
+          "fits": 225,
+          "folds_per_fit": 3,
+          "candidates_per_fit": 9,
+          "fit_seconds": {
+            "min": 0.05855218507349491,
+            "mean": 0.1678916006245547,
+            "max": 0.48968151956796646,
+            "total": 37.775610140524805
+          },
+          "selected_parameter_frequencies": {
+            "{\"eta\": 0.5, \"gamma\": 0.01}": 55,
+            "{\"eta\": 0.5, \"gamma\": 0.1}": 61,
+            "{\"eta\": 1.0, \"gamma\": 0.01}": 69,
+            "{\"eta\": 1.0, \"gamma\": 0.1}": 30,
+            "{\"eta\": 0.0, \"gamma\": 1.0}": 4,
+            "{\"eta\": 1.0, \"gamma\": 1.0}": 5,
+            "{\"eta\": 0.5, \"gamma\": 1.0}": 1
+          }
+        }
+      ],
+      "trace_file": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-mvkme-repeat-rx3-m4-r02/cvs-daot-rc4-s2026092701/mvkme/fit_trace.jsonl",
+      "trace_file_bytes": 25492551,
+      "compact_file_bytes": 1048368
+    },
+    {
+      "row_id": "cvs-daot-rc4-s2026092702",
+      "fits": 900,
+      "fixed_k1_fits": 225,
+      "support_cv_fits": 675,
+      "resources": {
+        "feature_extraction_seconds": 116.24643407016993,
+        "physical_observations": 15444,
+        "native_views_per_observation": 16,
+        "recorded_native_view_count": 247104,
+        "received_cache_array_bytes": 47443968,
+        "received_cache_file_bytes": 48932854,
+        "existing_frozen_model_file_bytes": 15992936,
+        "new_source_payload_bytes": 0,
+        "model_file_bytes_source": "existing checkpoint package size recorded by bound exporter; no checkpoint file read by audit",
+        "new_ground_statistics_bytes": 0,
+        "ground_summary_used": false,
+        "feature_peak_process_rss_bytes": 1269358592,
+        "feature_peak_rss_unavailable_reason": null,
+        "cache_scope": "Received-only local derived cache; not a source transmission payload",
+        "model_incremental_transfer_bytes": null,
+        "model_transfer_unavailable_reason": "Deployment state not specified; existing model package bytes are reported separately"
+      },
+      "timing": {
+        "fit_seconds": {
+          "min": 0.0003274306654930115,
+          "mean": 0.07486803914523787,
+          "max": 0.43010473530739546,
+          "total": 67.38123523071408
+        },
+        "fit_call_seconds": {
+          "min": 0.00047321245074272156,
+          "mean": 0.07574134322090281,
+          "max": 0.43192672077566385,
+          "total": 68.16720889881253
+        },
+        "query_score_seconds": {
+          "min": 0.004763531498610973,
+          "mean": 0.015807537057747442,
+          "max": 0.040560269728302956,
+          "total": 14.2267833519727
+        },
+        "prediction_write_seconds": {
+          "min": 0.0008919574320316315,
+          "mean": 0.004567039815915956,
+          "max": 0.017737657763063908,
+          "total": 4.11033583432436
+        },
+        "total_seconds": {
+          "min": 0.0064338380470871925,
+          "mean": 0.09740000925026834,
+          "max": 0.4872190346941352,
+          "total": 87.6600083252415
+        }
+      },
+      "peak_process_rss_bytes": 562880512,
+      "peak_rss_unavailable_reason": null,
+      "numeric_state_byte_ranges": {
+        "head_bytes": {
+          "min": 36864,
+          "mean": 82329.6,
+          "max": 159744,
+          "total": 74096640
+        },
+        "fourier_matrix_bytes": {
+          "min": 262144,
+          "mean": 262144,
+          "max": 262144,
+          "total": 235929600
+        },
+        "persistent_state_bytes": {
+          "min": 299008,
+          "mean": 344473.6,
+          "max": 421888,
+          "total": 310026240
+        },
+        "gram_bytes": {
+          "min": 288,
+          "mean": 242591.2,
+          "max": 2163200,
+          "total": 218332080
+        }
+      },
+      "per_k": [
+        {
+          "k": 1,
+          "fits": 225,
+          "folds_per_fit": 0,
+          "candidates_per_fit": 0,
+          "fit_seconds": {
+            "min": 0.0003274306654930115,
+            "mean": 0.0004978903217448128,
+            "max": 0.001520616002380848,
+            "total": 0.1120253223925829
+          },
+          "selected_parameter_frequencies": {
+            "{\"eta\": 0.5, \"gamma\": 0.1}": 225
+          }
+        },
+        {
+          "k": 5,
+          "fits": 225,
+          "folds_per_fit": 3,
+          "candidates_per_fit": 9,
+          "fit_seconds": {
+            "min": 0.022245420143008232,
+            "mean": 0.04845464429507653,
+            "max": 0.09586780797690153,
+            "total": 10.902294966392219
+          },
+          "selected_parameter_frequencies": {
+            "{\"eta\": 1.0, \"gamma\": 1.0}": 35,
+            "{\"eta\": 1.0, \"gamma\": 0.01}": 24,
+            "{\"eta\": 0.0, \"gamma\": 1.0}": 55,
+            "{\"eta\": 0.5, \"gamma\": 0.1}": 38,
+            "{\"eta\": 1.0, \"gamma\": 0.1}": 38,
+            "{\"eta\": 0.5, \"gamma\": 0.01}": 22,
+            "{\"eta\": 0.5, \"gamma\": 1.0}": 8,
+            "{\"eta\": 0.0, \"gamma\": 0.01}": 2,
+            "{\"eta\": 0.0, \"gamma\": 0.1}": 3
+          }
+        },
+        {
+          "k": 10,
+          "fits": 225,
+          "folds_per_fit": 3,
+          "candidates_per_fit": 9,
+          "fit_seconds": {
+            "min": 0.03509947285056114,
+            "mean": 0.08344009492132398,
+            "max": 0.2011891594156623,
+            "total": 18.774021357297897
+          },
+          "selected_parameter_frequencies": {
+            "{\"eta\": 0.0, \"gamma\": 1.0}": 19,
+            "{\"eta\": 1.0, \"gamma\": 0.1}": 52,
+            "{\"eta\": 0.5, \"gamma\": 0.1}": 55,
+            "{\"eta\": 1.0, \"gamma\": 1.0}": 12,
+            "{\"eta\": 0.5, \"gamma\": 0.01}": 46,
+            "{\"eta\": 1.0, \"gamma\": 0.01}": 33,
+            "{\"eta\": 0.5, \"gamma\": 1.0}": 6,
+            "{\"eta\": 0.0, \"gamma\": 0.01}": 2
+          }
+        },
+        {
+          "k": 20,
+          "fits": 225,
+          "folds_per_fit": 3,
+          "candidates_per_fit": 9,
+          "fit_seconds": {
+            "min": 0.05783813539892435,
+            "mean": 0.16707952704280615,
+            "max": 0.43010473530739546,
+            "total": 37.59289358463138
+          },
+          "selected_parameter_frequencies": {
+            "{\"eta\": 0.5, \"gamma\": 0.01}": 75,
+            "{\"eta\": 0.5, \"gamma\": 0.1}": 60,
+            "{\"eta\": 1.0, \"gamma\": 0.01}": 42,
+            "{\"eta\": 1.0, \"gamma\": 0.1}": 31,
+            "{\"eta\": 0.0, \"gamma\": 0.1}": 4,
+            "{\"eta\": 0.0, \"gamma\": 1.0}": 7,
+            "{\"eta\": 1.0, \"gamma\": 1.0}": 5,
+            "{\"eta\": 0.5, \"gamma\": 1.0}": 1
+          }
+        }
+      ],
+      "trace_file": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-mvkme-repeat-rx3-m4-r02/cvs-daot-rc4-s2026092702/mvkme/fit_trace.jsonl",
+      "trace_file_bytes": 25492844,
+      "compact_file_bytes": 1048509
+    },
+    {
+      "row_id": "cvs-daot-rc4-s2026092703",
+      "fits": 900,
+      "fixed_k1_fits": 225,
+      "support_cv_fits": 675,
+      "resources": {
+        "feature_extraction_seconds": 114.98188424762338,
+        "physical_observations": 15444,
+        "native_views_per_observation": 16,
+        "recorded_native_view_count": 247104,
+        "received_cache_array_bytes": 47443968,
+        "received_cache_file_bytes": 48932854,
+        "existing_frozen_model_file_bytes": 15992872,
+        "new_source_payload_bytes": 0,
+        "model_file_bytes_source": "existing checkpoint package size recorded by bound exporter; no checkpoint file read by audit",
+        "new_ground_statistics_bytes": 0,
+        "ground_summary_used": false,
+        "feature_peak_process_rss_bytes": 1271070720,
+        "feature_peak_rss_unavailable_reason": null,
+        "cache_scope": "Received-only local derived cache; not a source transmission payload",
+        "model_incremental_transfer_bytes": null,
+        "model_transfer_unavailable_reason": "Deployment state not specified; existing model package bytes are reported separately"
+      },
+      "timing": {
+        "fit_seconds": {
+          "min": 0.000337451696395874,
+          "mean": 0.082816746958221,
+          "max": 0.46664521284401417,
+          "total": 74.5350722623989
+        },
+        "fit_call_seconds": {
+          "min": 0.0004798322916030884,
+          "mean": 0.08368121145086156,
+          "max": 0.469224632717669,
+          "total": 75.3130903057754
+        },
+        "query_score_seconds": {
+          "min": 0.004860932007431984,
+          "mean": 0.015999682773318556,
+          "max": 0.04581934679299593,
+          "total": 14.3997144959867
+        },
+        "prediction_write_seconds": {
+          "min": 0.0008804677054286003,
+          "mean": 0.004551628116104338,
+          "max": 0.014001613482832909,
+          "total": 4.096465304493904
+        },
+        "total_seconds": {
+          "min": 0.00663301907479763,
+          "mean": 0.10552671201113198,
+          "max": 0.5242404360324144,
+          "total": 94.97404081001878
+        }
+      },
+      "peak_process_rss_bytes": 556466176,
+      "peak_rss_unavailable_reason": null,
+      "numeric_state_byte_ranges": {
+        "head_bytes": {
+          "min": 36864,
+          "mean": 82329.6,
+          "max": 159744,
+          "total": 74096640
+        },
+        "fourier_matrix_bytes": {
+          "min": 262144,
+          "mean": 262144,
+          "max": 262144,
+          "total": 235929600
+        },
+        "persistent_state_bytes": {
+          "min": 299008,
+          "mean": 344473.6,
+          "max": 421888,
+          "total": 310026240
+        },
+        "gram_bytes": {
+          "min": 288,
+          "mean": 242591.2,
+          "max": 2163200,
+          "total": 218332080
+        }
+      },
+      "per_k": [
+        {
+          "k": 1,
+          "fits": 225,
+          "folds_per_fit": 0,
+          "candidates_per_fit": 0,
+          "fit_seconds": {
+            "min": 0.000337451696395874,
+            "mean": 0.0005173797118994925,
+            "max": 0.001784694381058216,
+            "total": 0.11641043517738581
+          },
+          "selected_parameter_frequencies": {
+            "{\"eta\": 0.5, \"gamma\": 0.1}": 225
+          }
+        },
+        {
+          "k": 5,
+          "fits": 225,
+          "folds_per_fit": 3,
+          "candidates_per_fit": 9,
+          "fit_seconds": {
+            "min": 0.02253588940948248,
+            "mean": 0.051125087990529006,
+            "max": 0.104018141515553,
+            "total": 11.503144797869027
+          },
+          "selected_parameter_frequencies": {
+            "{\"eta\": 1.0, \"gamma\": 1.0}": 34,
+            "{\"eta\": 1.0, \"gamma\": 0.01}": 31,
+            "{\"eta\": 0.0, \"gamma\": 1.0}": 46,
+            "{\"eta\": 0.5, \"gamma\": 1.0}": 20,
+            "{\"eta\": 0.5, \"gamma\": 0.1}": 35,
+            "{\"eta\": 1.0, \"gamma\": 0.1}": 39,
+            "{\"eta\": 0.0, \"gamma\": 0.01}": 4,
+            "{\"eta\": 0.5, \"gamma\": 0.01}": 13,
+            "{\"eta\": 0.0, \"gamma\": 0.1}": 3
+          }
+        },
+        {
+          "k": 10,
+          "fits": 225,
+          "folds_per_fit": 3,
+          "candidates_per_fit": 9,
+          "fit_seconds": {
+            "min": 0.03509786073118448,
+            "mean": 0.09052314326581028,
+            "max": 0.20417934469878674,
+            "total": 20.367707234807312
+          },
+          "selected_parameter_frequencies": {
+            "{\"eta\": 0.0, \"gamma\": 1.0}": 10,
+            "{\"eta\": 0.5, \"gamma\": 0.1}": 43,
+            "{\"eta\": 1.0, \"gamma\": 0.1}": 64,
+            "{\"eta\": 1.0, \"gamma\": 1.0}": 15,
+            "{\"eta\": 0.5, \"gamma\": 0.01}": 44,
+            "{\"eta\": 1.0, \"gamma\": 0.01}": 42,
+            "{\"eta\": 0.5, \"gamma\": 1.0}": 6,
+            "{\"eta\": 0.0, \"gamma\": 0.01}": 1
+          }
+        },
+        {
+          "k": 20,
+          "fits": 225,
+          "folds_per_fit": 3,
+          "candidates_per_fit": 9,
+          "fit_seconds": {
+            "min": 0.057975844480097294,
+            "mean": 0.1891013768646452,
+            "max": 0.46664521284401417,
+            "total": 42.547809794545174
+          },
+          "selected_parameter_frequencies": {
+            "{\"eta\": 1.0, \"gamma\": 0.01}": 51,
+            "{\"eta\": 1.0, \"gamma\": 0.1}": 46,
+            "{\"eta\": 0.5, \"gamma\": 0.01}": 67,
+            "{\"eta\": 0.5, \"gamma\": 0.1}": 49,
+            "{\"eta\": 0.0, \"gamma\": 1.0}": 5,
+            "{\"eta\": 1.0, \"gamma\": 1.0}": 6,
+            "{\"eta\": 0.0, \"gamma\": 0.1}": 1
+          }
+        }
+      ],
+      "trace_file": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-mvkme-repeat-rx3-m4-r02/cvs-daot-rc4-s2026092703/mvkme/fit_trace.jsonl",
+      "trace_file_bytes": 25490952,
+      "compact_file_bytes": 1048321
+    },
+    {
+      "row_id": "cvs-daot-rc4-s2026092704",
+      "fits": 900,
+      "fixed_k1_fits": 225,
+      "support_cv_fits": 675,
+      "resources": {
+        "feature_extraction_seconds": 113.59802250936627,
+        "physical_observations": 15444,
+        "native_views_per_observation": 16,
+        "recorded_native_view_count": 247104,
+        "received_cache_array_bytes": 47443968,
+        "received_cache_file_bytes": 48932854,
+        "existing_frozen_model_file_bytes": 15992936,
+        "new_source_payload_bytes": 0,
+        "model_file_bytes_source": "existing checkpoint package size recorded by bound exporter; no checkpoint file read by audit",
+        "new_ground_statistics_bytes": 0,
+        "ground_summary_used": false,
+        "feature_peak_process_rss_bytes": 1270050816,
+        "feature_peak_rss_unavailable_reason": null,
+        "cache_scope": "Received-only local derived cache; not a source transmission payload",
+        "model_incremental_transfer_bytes": null,
+        "model_transfer_unavailable_reason": "Deployment state not specified; existing model package bytes are reported separately"
+      },
+      "timing": {
+        "fit_seconds": {
+          "min": 0.00033820606768131256,
+          "mean": 0.0745583773083571,
+          "max": 0.4604965280741453,
+          "total": 67.10253957752138
+        },
+        "fit_call_seconds": {
+          "min": 0.0004729917272925377,
+          "mean": 0.0754295299647169,
+          "max": 0.46233053784817457,
+          "total": 67.88657696824521
+        },
+        "query_score_seconds": {
+          "min": 0.00472639873623848,
+          "mean": 0.015761122250308592,
+          "max": 0.04058991279453039,
+          "total": 14.185010025277734
+        },
+        "prediction_write_seconds": {
+          "min": 0.000910833477973938,
+          "mean": 0.004686642918321822,
+          "max": 0.01425452996045351,
+          "total": 4.217978626489639
+        },
+        "total_seconds": {
+          "min": 0.006473741494119167,
+          "mean": 0.09716629280501769,
+          "max": 0.5162010909989476,
+          "total": 87.44966352451593
+        }
+      },
+      "peak_process_rss_bytes": 557948928,
+      "peak_rss_unavailable_reason": null,
+      "numeric_state_byte_ranges": {
+        "head_bytes": {
+          "min": 36864,
+          "mean": 82329.6,
+          "max": 159744,
+          "total": 74096640
+        },
+        "fourier_matrix_bytes": {
+          "min": 262144,
+          "mean": 262144,
+          "max": 262144,
+          "total": 235929600
+        },
+        "persistent_state_bytes": {
+          "min": 299008,
+          "mean": 344473.6,
+          "max": 421888,
+          "total": 310026240
+        },
+        "gram_bytes": {
+          "min": 288,
+          "mean": 242591.2,
+          "max": 2163200,
+          "total": 218332080
+        }
+      },
+      "per_k": [
+        {
+          "k": 1,
+          "fits": 225,
+          "folds_per_fit": 0,
+          "candidates_per_fit": 0,
+          "fit_seconds": {
+            "min": 0.00033820606768131256,
+            "mean": 0.0005016571159164111,
+            "max": 0.0013664988800883293,
+            "total": 0.1128728510811925
+          },
+          "selected_parameter_frequencies": {
+            "{\"eta\": 0.5, \"gamma\": 0.1}": 225
+          }
+        },
+        {
+          "k": 5,
+          "fits": 225,
+          "folds_per_fit": 3,
+          "candidates_per_fit": 9,
+          "fit_seconds": {
+            "min": 0.022588267922401428,
+            "mean": 0.04830148570653465,
+            "max": 0.0967012457549572,
+            "total": 10.867834283970296
+          },
+          "selected_parameter_frequencies": {
+            "{\"eta\": 1.0, \"gamma\": 1.0}": 27,
+            "{\"eta\": 1.0, \"gamma\": 0.01}": 42,
+            "{\"eta\": 1.0, \"gamma\": 0.1}": 47,
+            "{\"eta\": 0.0, \"gamma\": 1.0}": 51,
+            "{\"eta\": 0.5, \"gamma\": 0.1}": 24,
+            "{\"eta\": 0.5, \"gamma\": 0.01}": 12,
+            "{\"eta\": 0.5, \"gamma\": 1.0}": 21,
+            "{\"eta\": 0.0, \"gamma\": 0.1}": 1
+          }
+        },
+        {
+          "k": 10,
+          "fits": 225,
+          "folds_per_fit": 3,
+          "candidates_per_fit": 9,
+          "fit_seconds": {
+            "min": 0.035430146381258965,
+            "mean": 0.0832351446027557,
+            "max": 0.17974137421697378,
+            "total": 18.727907535620034
+          },
+          "selected_parameter_frequencies": {
+            "{\"eta\": 1.0, \"gamma\": 0.1}": 52,
+            "{\"eta\": 0.5, \"gamma\": 0.1}": 47,
+            "{\"eta\": 0.0, \"gamma\": 1.0}": 21,
+            "{\"eta\": 0.5, \"gamma\": 0.01}": 36,
+            "{\"eta\": 1.0, \"gamma\": 1.0}": 8,
+            "{\"eta\": 1.0, \"gamma\": 0.01}": 54,
+            "{\"eta\": 0.5, \"gamma\": 1.0}": 5,
+            "{\"eta\": 0.0, \"gamma\": 0.1}": 2
+          }
+        },
+        {
+          "k": 20,
+          "fits": 225,
+          "folds_per_fit": 3,
+          "candidates_per_fit": 9,
+          "fit_seconds": {
+            "min": 0.05797393061220646,
+            "mean": 0.1661952218082216,
+            "max": 0.4604965280741453,
+            "total": 37.39392490684986
+          },
+          "selected_parameter_frequencies": {
+            "{\"eta\": 0.5, \"gamma\": 0.01}": 66,
+            "{\"eta\": 0.5, \"gamma\": 0.1}": 61,
+            "{\"eta\": 1.0, \"gamma\": 0.01}": 57,
+            "{\"eta\": 1.0, \"gamma\": 0.1}": 29,
+            "{\"eta\": 1.0, \"gamma\": 1.0}": 3,
+            "{\"eta\": 0.0, \"gamma\": 1.0}": 6,
+            "{\"eta\": 0.0, \"gamma\": 0.1}": 2,
+            "{\"eta\": 0.5, \"gamma\": 1.0}": 1
+          }
+        }
+      ],
+      "trace_file": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-mvkme-repeat-rx3-m4-r02/cvs-daot-rc4-s2026092704/mvkme/fit_trace.jsonl",
+      "trace_file_bytes": 25492696,
+      "compact_file_bytes": 1048518
+    }
+  ],
+  "total_fits": 3600,
+  "fixed_k1_fits": 900,
+  "support_cv_fits": 2700,
+  "query_rows_used_for_fit": 0,
+  "source_rows_used_for_fit": 0,
+  "new_source_payload_bytes": 0,
+  "ground_summary_used": false,
+  "raw_traces_preserved": true,
+  "parameter_feedback_forbidden": true,
+  "selection_frequencies_descriptive_only": true,
+  "optimizer_convergence_claim": false,
+  "scope": "Complete physical-support fit/resource metadata only; no target scores, truth, predictions or feature values read",
+  "time_scope": "Extraction, core fit, query score, prediction serialization/write reported separately; total includes overhead; never sum repeated shared decomposition times"
+}

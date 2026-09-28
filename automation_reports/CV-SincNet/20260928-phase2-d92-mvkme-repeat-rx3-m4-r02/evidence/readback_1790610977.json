@@ -1,0 +1,386 @@
+{
+  "startup.json": {
+    "pid": 2466165,
+    "argv": [
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_mvkme_repeat_rx3_20260928_r02/tools/run_d92_confirmation.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_mvkme_repeat_rx3_20260928_r02/configs/d92_mvkme_repeat_rx3_recovery_20260928.json",
+      "--commit",
+      "70bd88dfc6a0864e09b8fa582d2aa48b34a741fb"
+    ],
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_mvkme_repeat_rx3_20260928_r02",
+    "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "commit": "70bd88dfc6a0864e09b8fa582d2aa48b34a741fb",
+    "launch_owner": "codex/root/d92-upgrade-20260928",
+    "environment": {
+      "CUDA_VISIBLE_DEVICES": "",
+      "OMP_NUM_THREADS": "2",
+      "MKL_NUM_THREADS": "2",
+      "OPENBLAS_NUM_THREADS": "2",
+      "NUMEXPR_NUM_THREADS": null
+    },
+    "worker_policy": {
+      "feature_gpu": 0,
+      "max_feature_workers": 1,
+      "cpu_row_workers": 4,
+      "blas_threads": 2,
+      "reuse_frozen_rows": true
+    },
+    "timestamp": 1790610422.5001035,
+    "live_argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_mvkme_repeat_rx3_20260928_r02/tools/run_d92_confirmation.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_mvkme_repeat_rx3_20260928_r02/configs/d92_mvkme_repeat_rx3_recovery_20260928.json",
+      "--commit",
+      "70bd88dfc6a0864e09b8fa582d2aa48b34a741fb"
+    ],
+    "live_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_mvkme_repeat_rx3_20260928_r02"
+  },
+  "state.json": {
+    "cvs-daot-rc4-s2026092701": {
+      "status": "MVKME_PREDICTING",
+      "updated": 1790610908.8836422,
+      "checkpoint_sha256": "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b",
+      "reuse_row_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092701"
+    },
+    "cvs-daot-rc4-s2026092702": {
+      "status": "MVKME_PREDICTING",
+      "updated": 1790610908.8842416,
+      "checkpoint_sha256": "72f26413e495dcf82317898f8729caa3d35499bf0b41e9671ffdceab2c90924b",
+      "reuse_row_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092702"
+    },
+    "cvs-daot-rc4-s2026092703": {
+      "status": "MVKME_PREDICTING",
+      "updated": 1790610908.885765,
+      "checkpoint_sha256": "51fadc3b4ad3cbf83de01700a4a109430e7a57b1e10cb147f0be5f01593f26bb",
+      "reuse_row_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092703"
+    },
+    "cvs-daot-rc4-s2026092704": {
+      "status": "MVKME_PREDICTING",
+      "updated": 1790610908.886651,
+      "checkpoint_sha256": "690fed6ea2a6532d0ad978c93306f0f35b61f4a3a3fc4b1d6494f0e7547c74bb",
+      "reuse_row_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092704"
+    }
+  },
+  "workflow_state.json": {
+    "status": "PREDICTING",
+    "updated": 1790610908.8830636
+  },
+  "launch.json": {
+    "pid": 2466165,
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_mvkme_repeat_rx3_20260928_r02/tools/run_d92_confirmation.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_mvkme_repeat_rx3_20260928_r02/configs/d92_mvkme_repeat_rx3_recovery_20260928.json",
+      "--commit",
+      "70bd88dfc6a0864e09b8fa582d2aa48b34a741fb"
+    ],
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_mvkme_repeat_rx3_20260928_r02",
+    "commit": "70bd88dfc6a0864e09b8fa582d2aa48b34a741fb",
+    "run": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-mvkme-repeat-rx3-m4-r02",
+    "data_run": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01",
+    "owner": "codex/root/d92-upgrade-20260928",
+    "live_argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_mvkme_repeat_rx3_20260928_r02/tools/run_d92_confirmation.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_mvkme_repeat_rx3_20260928_r02/configs/d92_mvkme_repeat_rx3_recovery_20260928.json",
+      "--commit",
+      "70bd88dfc6a0864e09b8fa582d2aa48b34a741fb"
+    ],
+    "live_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_mvkme_repeat_rx3_20260928_r02"
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_mvkme_repeat_rx3_20260928_r02/run.log": {
+    "bytes": 0,
+    "tail": []
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-mvkme-repeat-rx3-m4-r02/cvs-daot-rc4-s2026092703/mv_features.log": {
+    "bytes": 53488,
+    "tail": [
+      "{\"event\": \"FEATURE_PROGRESS\", \"completed\": 15360, \"total\": 15444, \"views\": 245760, \"extraction_elapsed_seconds\": 114.27748355548829}",
+      "{\"event\": \"FEATURE_PROGRESS\", \"completed\": 15444, \"total\": 15444, \"views\": 247104, \"extraction_elapsed_seconds\": 114.90029777213931}",
+      "{\"status\": \"MULTIVIEW_FEATURES_COMPLETE\", \"schema\": \"d92_mvkme_received_blocks_v1\", \"capsule_id\": \"residual-noeq-76121e6f34363fa612ec25fb\", \"checkpoint_sha256\": \"51fadc3b4ad3cbf83de01700a4a109430e7a57b1e10cb147f0be5f01593f26bb\", \"algorithm\": {\"method\": \"D92-MVKME-v1\", \"input_shape\": [2, 256], \"crop_length\": 192, \"crop_starts\": [0, 32, 64], \"crop_padding\": [32, 32], \"phases_quarter_turns\": [0, 1, 2, 3], \"view_order\": \"window_then_phase\", \"identity_dim\": 160, \"fft_dim\": 96, \"feature_block_weight\": \"equal_1_over_sqrt2\", \"fft\": \"historical_spectral_logmag_sketch_on_each_padded_window\", \"fft_norm_floor\": 1e-08, \"fourier_generator\": \"numpy.Generator(PCG64(0)).standard_normal\", \"fourier_seed\": 0, \"fourier_frequencies\": 128, \"fourier_bandwidth\": 1.0, \"fourier_map\": \"concat_cos_sin_div_sqrt128\", \"blocks\": [\"original\", \"mean_full_4_phases\", \"mean_local_12_views\"], \"block_renormalization\": false, \"etas\": [0.0, 0.5, 1.0], \"gammas\": [0.01, 0.1, 1.0], \"k1\": {\"eta\": 0.5, \"gamma\": 0.1}, \"max_folds\": 3, \"folds\": \"per_class_physical_id_sort_then_position_mod_min_K_3\", \"target\": \"onehot_minus_1_over_C\", \"regularizer\": \"K_times_gamma\", \"score_scale\": 10.0, \"selection\": \"min_max_old_new_oof_nll_then_macro_nll_then_larger_gamma_smaller_eta\", \"selection_round_decimals\": 10, \"precision\": \"float64\", \"norm_floor\": 1e-12, \"source_inputs\": false, \"summary_inputs\": false, \"query_fit\": false}, \"count\": 15444, \"shape\": [15444, 3, 256], \"dtype\": \"float32\", \"classes\": [\"14-10\", \"14-7\", \"20-15\", \"20-19\", \"6-15\", \"8-20\"], \"model_seed\": 2026092703, \"query_used_for_fitting\": false, \"source_data_access\": false, \"truth_read\": false, \"encoder_updated\": false, \"native_eval\": true, \"native_buffers_unchanged\": true, \"view_count_per_observation\": 16, \"native_forward_scope\": \"One observation, 16 fixed views per call; no cross-query statistics\", \"feature_seconds\": 114.98188424762338, \"feature_array_bytes\": 47443968, \"feature_file_bytes\": 48932854, \"model_file_bytes\": 15992872, \"new_ground_statistics_bytes\": 0, \"peak_process_rss_bytes\": 1271070720, \"peak_process_rss_reason\": \"Linux ru_maxrss process high-water memory; null when unavailable on this platform\"}"
+    ]
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-mvkme-repeat-rx3-m4-r02/cvs-daot-rc4-s2026092703/mvkme.log": {
+    "bytes": 960798,
+    "tail": [
+      "{\"split_id\": \"0fdc45dbd875d5783e55f795\", \"event\": \"PHYSICAL_SUPPORT_FOLD\", \"eta\": 1.0, \"gamma\": 0.1, \"fold\": 2, \"train_k\": 14, \"heldout_k\": 6, \"train_physical_count\": 112, \"heldout_physical_count\": 48, \"gram_dimension\": 112, \"regularizer\": 1.4000000000000001, \"score_scale\": 10.0, \"temperature\": 1.0, \"training_scale\": \"fixed; no data-estimated normalization\", \"decomposition_shared_across_gammas\": true, \"decomposition_seconds\": 0.0016370518133044243, \"solve_score_seconds\": 0.0018982896581292152, \"elapsed_seconds\": 0.08069486729800701, \"train_squared_error\": 0.5984654577739228, \"regularization_loss\": 0.10672941098644771, \"train_objective\": 0.7051948687603705, \"objective\": 1.9086254993292626, \"macro_nll\": 1.568303736751843, \"old_nll\": 1.4548631492260364, \"new_nll\": 1.9086254993292626}",
+      "{\"split_id\": \"0fdc45dbd875d5783e55f795\", \"event\": \"PHYSICAL_SUPPORT_FOLD\", \"eta\": 1.0, \"gamma\": 1.0, \"fold\": 2, \"train_k\": 14, \"heldout_k\": 6, \"train_physical_count\": 112, \"heldout_physical_count\": 48, \"gram_dimension\": 112, \"regularizer\": 14.0, \"score_scale\": 10.0, \"temperature\": 1.0, \"training_scale\": \"fixed; no data-estimated normalization\", \"decomposition_shared_across_gammas\": true, \"decomposition_seconds\": 0.0016370518133044243, \"solve_score_seconds\": 0.0018993904814124107, \"elapsed_seconds\": 0.0831297542899847, \"train_squared_error\": 0.8208906089511042, \"regularization_loss\": 0.02543625733352275, \"train_objective\": 0.8463268662846269, \"objective\": 1.999861163107652, \"macro_nll\": 1.9295175437577972, \"old_nll\": 1.9060696706411788, \"new_nll\": 1.999861163107652}",
+      "{\"split_id\": \"0fdc45dbd875d5783e55f795\", \"event\": \"FINAL_SUPPORT_FIT\", \"eta\": 0.5, \"gamma\": 0.1, \"train_k\": 20, \"train_physical_count\": 160, \"gram_dimension\": 160, \"regularizer\": 2.0, \"score_scale\": 10.0, \"temperature\": 1.0, \"training_scale\": \"fixed; no data-estimated normalization\", \"fit_seconds\": 0.0032972311601042747, \"elapsed_seconds\": 0.08774069417268038, \"train_squared_error\": 0.5943769598560597, \"regularization_loss\": 0.09962832211755877, \"train_objective\": 0.6940052819736184}"
+    ]
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-mvkme-repeat-rx3-m4-r02/cvs-daot-rc4-s2026092704/mv_features.log": {
+    "bytes": 53480,
+    "tail": [
+      "{\"event\": \"FEATURE_PROGRESS\", \"completed\": 15360, \"total\": 15444, \"views\": 245760, \"extraction_elapsed_seconds\": 112.90200166776776}",
+      "{\"event\": \"FEATURE_PROGRESS\", \"completed\": 15444, \"total\": 15444, \"views\": 247104, \"extraction_elapsed_seconds\": 113.51838087569922}",
+      "{\"status\": \"MULTIVIEW_FEATURES_COMPLETE\", \"schema\": \"d92_mvkme_received_blocks_v1\", \"capsule_id\": \"residual-noeq-76121e6f34363fa612ec25fb\", \"checkpoint_sha256\": \"690fed6ea2a6532d0ad978c93306f0f35b61f4a3a3fc4b1d6494f0e7547c74bb\", \"algorithm\": {\"method\": \"D92-MVKME-v1\", \"input_shape\": [2, 256], \"crop_length\": 192, \"crop_starts\": [0, 32, 64], \"crop_padding\": [32, 32], \"phases_quarter_turns\": [0, 1, 2, 3], \"view_order\": \"window_then_phase\", \"identity_dim\": 160, \"fft_dim\": 96, \"feature_block_weight\": \"equal_1_over_sqrt2\", \"fft\": \"historical_spectral_logmag_sketch_on_each_padded_window\", \"fft_norm_floor\": 1e-08, \"fourier_generator\": \"numpy.Generator(PCG64(0)).standard_normal\", \"fourier_seed\": 0, \"fourier_frequencies\": 128, \"fourier_bandwidth\": 1.0, \"fourier_map\": \"concat_cos_sin_div_sqrt128\", \"blocks\": [\"original\", \"mean_full_4_phases\", \"mean_local_12_views\"], \"block_renormalization\": false, \"etas\": [0.0, 0.5, 1.0], \"gammas\": [0.01, 0.1, 1.0], \"k1\": {\"eta\": 0.5, \"gamma\": 0.1}, \"max_folds\": 3, \"folds\": \"per_class_physical_id_sort_then_position_mod_min_K_3\", \"target\": \"onehot_minus_1_over_C\", \"regularizer\": \"K_times_gamma\", \"score_scale\": 10.0, \"selection\": \"min_max_old_new_oof_nll_then_macro_nll_then_larger_gamma_smaller_eta\", \"selection_round_decimals\": 10, \"precision\": \"float64\", \"norm_floor\": 1e-12, \"source_inputs\": false, \"summary_inputs\": false, \"query_fit\": false}, \"count\": 15444, \"shape\": [15444, 3, 256], \"dtype\": \"float32\", \"classes\": [\"14-10\", \"14-7\", \"20-15\", \"20-19\", \"6-15\", \"8-20\"], \"model_seed\": 2026092704, \"query_used_for_fitting\": false, \"source_data_access\": false, \"truth_read\": false, \"encoder_updated\": false, \"native_eval\": true, \"native_buffers_unchanged\": true, \"view_count_per_observation\": 16, \"native_forward_scope\": \"One observation, 16 fixed views per call; no cross-query statistics\", \"feature_seconds\": 113.59802250936627, \"feature_array_bytes\": 47443968, \"feature_file_bytes\": 48932854, \"model_file_bytes\": 15992936, \"new_ground_statistics_bytes\": 0, \"peak_process_rss_bytes\": 1270050816, \"peak_process_rss_reason\": \"Linux ru_maxrss process high-water memory; null when unavailable on this platform\"}"
+    ]
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-mvkme-repeat-rx3-m4-r02/cvs-daot-rc4-s2026092704/mvkme.log": {
+    "bytes": 985238,
+    "tail": [
+      "{\"split_id\": \"109ee0b1af75344142e07bd9\", \"event\": \"FINAL_SUPPORT_FIT\", \"eta\": 0.5, \"gamma\": 0.01, \"train_k\": 20, \"train_physical_count\": 320, \"gram_dimension\": 320, \"regularizer\": 0.2, \"score_scale\": 10.0, \"temperature\": 1.0, \"training_scale\": \"fixed; no data-estimated normalization\", \"fit_seconds\": 0.00861008744686842, \"elapsed_seconds\": 0.1834205463528633, \"train_squared_error\": 0.33813656486687743, \"regularization_loss\": 0.11088416787060248, \"train_objective\": 0.4490207327374799}",
+      "{\"event\": \"ROW_COMPLETE\", \"split_id\": \"110d07d73212f308ff9e51d2\", \"completed\": 61, \"total\": 900, \"k\": 1, \"classes\": 8, \"receiver\": \"8-7\", \"scenario\": \"practical_mid\", \"support_seed\": 2026092713, \"new_count\": 2, \"selected\": {\"eta\": 0.5, \"gamma\": 0.1}, \"selection\": \"k1_preregistered_no_holdout\", \"candidate_count\": 0, \"fold_count\": 0, \"selected_objective\": null, \"selected_macro_nll\": null, \"selected_old_nll\": null, \"selected_new_nll\": null, \"fit_seconds\": 0.0004409113898873329, \"persistent_state_bytes\": 311296, \"head_bytes\": 49152, \"fourier_matrix_bytes\": 262144, \"fit_call_seconds\": 0.00063300970941782, \"query_score_seconds\": 0.00772861298173666, \"prediction_write_seconds\": 0.0015074396505951881, \"total_seconds\": 0.01028203871101141, \"peak_process_rss_bytes\": 554016768, \"query_rows_used_for_fit\": 0, \"source_rows_used_for_fit\": 0, \"learning_rate\": null, \"gradient\": null, \"source_validation\": null, \"source_validation_reason\": \"Not run by design: user prohibits auxiliary source-sample and source-feature-cache access\", \"unavailable_reason\": \"Closed-form ridge and physical-support CV; no learning rate/gradient; process peak RSS Linux-only\"}",
+      "{\"split_id\": \"110d07d73212f308ff9e51d2\", \"event\": \"FINAL_SUPPORT_FIT\", \"eta\": 0.5, \"gamma\": 0.1, \"train_k\": 1, \"train_physical_count\": 8, \"gram_dimension\": 8, \"regularizer\": 0.1, \"score_scale\": 10.0, \"temperature\": 1.0, \"training_scale\": \"fixed; no data-estimated normalization\", \"fit_seconds\": 0.00020954757928848267, \"elapsed_seconds\": 0.0003284430131316185, \"train_squared_error\": 0.09214179514742968, \"regularization_loss\": 0.1671139418740439, \"train_objective\": 0.2592557370214736}"
+    ]
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-mvkme-repeat-rx3-m4-r02/cvs-daot-rc4-s2026092701/mv_features.log": {
+    "bytes": 53489,
+    "tail": [
+      "{\"event\": \"FEATURE_PROGRESS\", \"completed\": 15360, \"total\": 15444, \"views\": 245760, \"extraction_elapsed_seconds\": 115.48889467958361}",
+      "{\"event\": \"FEATURE_PROGRESS\", \"completed\": 15444, \"total\": 15444, \"views\": 247104, \"extraction_elapsed_seconds\": 116.12561021652073}",
+      "{\"status\": \"MULTIVIEW_FEATURES_COMPLETE\", \"schema\": \"d92_mvkme_received_blocks_v1\", \"capsule_id\": \"residual-noeq-76121e6f34363fa612ec25fb\", \"checkpoint_sha256\": \"f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b\", \"algorithm\": {\"method\": \"D92-MVKME-v1\", \"input_shape\": [2, 256], \"crop_length\": 192, \"crop_starts\": [0, 32, 64], \"crop_padding\": [32, 32], \"phases_quarter_turns\": [0, 1, 2, 3], \"view_order\": \"window_then_phase\", \"identity_dim\": 160, \"fft_dim\": 96, \"feature_block_weight\": \"equal_1_over_sqrt2\", \"fft\": \"historical_spectral_logmag_sketch_on_each_padded_window\", \"fft_norm_floor\": 1e-08, \"fourier_generator\": \"numpy.Generator(PCG64(0)).standard_normal\", \"fourier_seed\": 0, \"fourier_frequencies\": 128, \"fourier_bandwidth\": 1.0, \"fourier_map\": \"concat_cos_sin_div_sqrt128\", \"blocks\": [\"original\", \"mean_full_4_phases\", \"mean_local_12_views\"], \"block_renormalization\": false, \"etas\": [0.0, 0.5, 1.0], \"gammas\": [0.01, 0.1, 1.0], \"k1\": {\"eta\": 0.5, \"gamma\": 0.1}, \"max_folds\": 3, \"folds\": \"per_class_physical_id_sort_then_position_mod_min_K_3\", \"target\": \"onehot_minus_1_over_C\", \"regularizer\": \"K_times_gamma\", \"score_scale\": 10.0, \"selection\": \"min_max_old_new_oof_nll_then_macro_nll_then_larger_gamma_smaller_eta\", \"selection_round_decimals\": 10, \"precision\": \"float64\", \"norm_floor\": 1e-12, \"source_inputs\": false, \"summary_inputs\": false, \"query_fit\": false}, \"count\": 15444, \"shape\": [15444, 3, 256], \"dtype\": \"float32\", \"classes\": [\"14-10\", \"14-7\", \"20-15\", \"20-19\", \"6-15\", \"8-20\"], \"model_seed\": 2026092701, \"query_used_for_fitting\": false, \"source_data_access\": false, \"truth_read\": false, \"encoder_updated\": false, \"native_eval\": true, \"native_buffers_unchanged\": true, \"view_count_per_observation\": 16, \"native_forward_scope\": \"One observation, 16 fixed views per call; no cross-query statistics\", \"feature_seconds\": 116.207747772336, \"feature_array_bytes\": 47443968, \"feature_file_bytes\": 48932854, \"model_file_bytes\": 15992872, \"new_ground_statistics_bytes\": 0, \"peak_process_rss_bytes\": 1268629504, \"peak_process_rss_reason\": \"Linux ru_maxrss process high-water memory; null when unavailable on this platform\"}"
+    ]
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-mvkme-repeat-rx3-m4-r02/cvs-daot-rc4-s2026092701/mvkme.log": {
+    "bytes": 960810,
+    "tail": [
+      "{\"split_id\": \"0fdc45dbd875d5783e55f795\", \"event\": \"PHYSICAL_SUPPORT_FOLD\", \"eta\": 1.0, \"gamma\": 0.1, \"fold\": 2, \"train_k\": 14, \"heldout_k\": 6, \"train_physical_count\": 112, \"heldout_physical_count\": 48, \"gram_dimension\": 112, \"regularizer\": 1.4000000000000001, \"score_scale\": 10.0, \"temperature\": 1.0, \"training_scale\": \"fixed; no data-estimated normalization\", \"decomposition_shared_across_gammas\": true, \"decomposition_seconds\": 0.0012872042134404182, \"solve_score_seconds\": 0.0017940662801265717, \"elapsed_seconds\": 0.07744656596332788, \"train_squared_error\": 0.6128551911637835, \"regularization_loss\": 0.10090569367272269, \"train_objective\": 0.7137608848365062, \"objective\": 1.9576627552199073, \"macro_nll\": 1.641164314218949, \"old_nll\": 1.5356648338852963, \"new_nll\": 1.9576627552199073}",
+      "{\"split_id\": \"0fdc45dbd875d5783e55f795\", \"event\": \"PHYSICAL_SUPPORT_FOLD\", \"eta\": 1.0, \"gamma\": 1.0, \"fold\": 2, \"train_k\": 14, \"heldout_k\": 6, \"train_physical_count\": 112, \"heldout_physical_count\": 48, \"gram_dimension\": 112, \"regularizer\": 14.0, \"score_scale\": 10.0, \"temperature\": 1.0, \"training_scale\": \"fixed; no data-estimated normalization\", \"decomposition_shared_across_gammas\": true, \"decomposition_seconds\": 0.0012872042134404182, \"solve_score_seconds\": 0.001820337027311325, \"elapsed_seconds\": 0.07974028587341309, \"train_squared_error\": 0.8228879485500222, \"regularization_loss\": 0.024417645780572553, \"train_objective\": 0.8473055943305948, \"objective\": 2.0105076253687533, \"macro_nll\": 1.9470946856987634, \"old_nll\": 1.9259570391421004, \"new_nll\": 2.0105076253687533}",
+      "{\"split_id\": \"0fdc45dbd875d5783e55f795\", \"event\": \"FINAL_SUPPORT_FIT\", \"eta\": 0.5, \"gamma\": 0.1, \"train_k\": 20, \"train_physical_count\": 160, \"gram_dimension\": 160, \"regularizer\": 2.0, \"score_scale\": 10.0, \"temperature\": 1.0, \"training_scale\": \"fixed; no data-estimated normalization\", \"fit_seconds\": 0.002469237893819809, \"elapsed_seconds\": 0.08351105079054832, \"train_squared_error\": 0.6148891678806718, \"regularization_loss\": 0.09400082635110359, \"train_objective\": 0.7088899942317755}"
+    ]
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-mvkme-repeat-rx3-m4-r02/cvs-daot-rc4-s2026092702/mv_features.log": {
+    "bytes": 53474,
+    "tail": [
+      "{\"event\": \"FEATURE_PROGRESS\", \"completed\": 15360, \"total\": 15444, \"views\": 245760, \"extraction_elapsed_seconds\": 115.53452043794096}",
+      "{\"event\": \"FEATURE_PROGRESS\", \"completed\": 15444, \"total\": 15444, \"views\": 247104, \"extraction_elapsed_seconds\": 116.16478103213012}",
+      "{\"status\": \"MULTIVIEW_FEATURES_COMPLETE\", \"schema\": \"d92_mvkme_received_blocks_v1\", \"capsule_id\": \"residual-noeq-76121e6f34363fa612ec25fb\", \"checkpoint_sha256\": \"72f26413e495dcf82317898f8729caa3d35499bf0b41e9671ffdceab2c90924b\", \"algorithm\": {\"method\": \"D92-MVKME-v1\", \"input_shape\": [2, 256], \"crop_length\": 192, \"crop_starts\": [0, 32, 64], \"crop_padding\": [32, 32], \"phases_quarter_turns\": [0, 1, 2, 3], \"view_order\": \"window_then_phase\", \"identity_dim\": 160, \"fft_dim\": 96, \"feature_block_weight\": \"equal_1_over_sqrt2\", \"fft\": \"historical_spectral_logmag_sketch_on_each_padded_window\", \"fft_norm_floor\": 1e-08, \"fourier_generator\": \"numpy.Generator(PCG64(0)).standard_normal\", \"fourier_seed\": 0, \"fourier_frequencies\": 128, \"fourier_bandwidth\": 1.0, \"fourier_map\": \"concat_cos_sin_div_sqrt128\", \"blocks\": [\"original\", \"mean_full_4_phases\", \"mean_local_12_views\"], \"block_renormalization\": false, \"etas\": [0.0, 0.5, 1.0], \"gammas\": [0.01, 0.1, 1.0], \"k1\": {\"eta\": 0.5, \"gamma\": 0.1}, \"max_folds\": 3, \"folds\": \"per_class_physical_id_sort_then_position_mod_min_K_3\", \"target\": \"onehot_minus_1_over_C\", \"regularizer\": \"K_times_gamma\", \"score_scale\": 10.0, \"selection\": \"min_max_old_new_oof_nll_then_macro_nll_then_larger_gamma_smaller_eta\", \"selection_round_decimals\": 10, \"precision\": \"float64\", \"norm_floor\": 1e-12, \"source_inputs\": false, \"summary_inputs\": false, \"query_fit\": false}, \"count\": 15444, \"shape\": [15444, 3, 256], \"dtype\": \"float32\", \"classes\": [\"14-10\", \"14-7\", \"20-15\", \"20-19\", \"6-15\", \"8-20\"], \"model_seed\": 2026092702, \"query_used_for_fitting\": false, \"source_data_access\": false, \"truth_read\": false, \"encoder_updated\": false, \"native_eval\": true, \"native_buffers_unchanged\": true, \"view_count_per_observation\": 16, \"native_forward_scope\": \"One observation, 16 fixed views per call; no cross-query statistics\", \"feature_seconds\": 116.24643407016993, \"feature_array_bytes\": 47443968, \"feature_file_bytes\": 48932854, \"model_file_bytes\": 15992936, \"new_ground_statistics_bytes\": 0, \"peak_process_rss_bytes\": 1269358592, \"peak_process_rss_reason\": \"Linux ru_maxrss process high-water memory; null when unavailable on this platform\"}"
+    ]
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-mvkme-repeat-rx3-m4-r02/cvs-daot-rc4-s2026092702/mvkme.log": {
+    "bytes": 983627,
+    "tail": [
+      "{\"split_id\": \"109ee0b1af75344142e07bd9\", \"event\": \"PHYSICAL_SUPPORT_FOLD\", \"eta\": 1.0, \"gamma\": 0.1, \"fold\": 2, \"train_k\": 14, \"heldout_k\": 6, \"train_physical_count\": 224, \"heldout_physical_count\": 96, \"gram_dimension\": 224, \"regularizer\": 1.4000000000000001, \"score_scale\": 10.0, \"temperature\": 1.0, \"training_scale\": \"fixed; no data-estimated normalization\", \"decomposition_shared_across_gammas\": true, \"decomposition_seconds\": 0.004022534936666489, \"solve_score_seconds\": 0.004202661104500294, \"elapsed_seconds\": 0.17267311736941338, \"train_squared_error\": 0.6268307321504712, \"regularization_loss\": 0.09354393683395817, \"train_objective\": 0.7203746689844295, \"objective\": 1.6596423186518028, \"macro_nll\": 1.5966833168425605, \"old_nll\": 1.6596423186518028, \"new_nll\": 1.5589079157570152}",
+      "{\"split_id\": \"109ee0b1af75344142e07bd9\", \"event\": \"PHYSICAL_SUPPORT_FOLD\", \"eta\": 1.0, \"gamma\": 1.0, \"fold\": 2, \"train_k\": 14, \"heldout_k\": 6, \"train_physical_count\": 224, \"heldout_physical_count\": 96, \"gram_dimension\": 224, \"regularizer\": 14.0, \"score_scale\": 10.0, \"temperature\": 1.0, \"training_scale\": \"fixed; no data-estimated normalization\", \"decomposition_shared_across_gammas\": true, \"decomposition_seconds\": 0.004022534936666489, \"solve_score_seconds\": 0.004241997376084328, \"elapsed_seconds\": 0.17761546280235052, \"train_squared_error\": 0.8394779428029961, \"regularization_loss\": 0.04287554369626973, \"train_objective\": 0.8823534864992659, \"objective\": 2.3557884046895032, \"macro_nll\": 2.34913333285866, \"old_nll\": 2.3380415464739217, \"new_nll\": 2.3557884046895032}",
+      "{\"split_id\": \"109ee0b1af75344142e07bd9\", \"event\": \"FINAL_SUPPORT_FIT\", \"eta\": 0.5, \"gamma\": 0.01, \"train_k\": 20, \"train_physical_count\": 320, \"gram_dimension\": 320, \"regularizer\": 0.2, \"score_scale\": 10.0, \"temperature\": 1.0, \"training_scale\": \"fixed; no data-estimated normalization\", \"fit_seconds\": 0.0088444072753191, \"elapsed_seconds\": 0.188305689021945, \"train_squared_error\": 0.33680963854059237, \"regularization_loss\": 0.11030161186170905, \"train_objective\": 0.44711125040230143}"
+    ]
+  },
+  "fit_progress": {
+    "cvs-daot-rc4-s2026092703": {
+      "completed": 59,
+      "total": 900,
+      "k": 20,
+      "classes": 8,
+      "fit_seconds": 0.0880373977124691
+    },
+    "cvs-daot-rc4-s2026092704": {
+      "completed": 61,
+      "total": 900,
+      "k": 1,
+      "classes": 8,
+      "fit_seconds": 0.0004409113898873329
+    },
+    "cvs-daot-rc4-s2026092701": {
+      "completed": 59,
+      "total": 900,
+      "k": 20,
+      "classes": 8,
+      "fit_seconds": 0.08377406280487776
+    },
+    "cvs-daot-rc4-s2026092702": {
+      "completed": 60,
+      "total": 900,
+      "k": 20,
+      "classes": 16,
+      "fit_seconds": 0.18871276546269655
+    }
+  },
+  "live_children": [
+    {
+      "pid": 2472489,
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_mvkme_repeat_rx3_20260928_r02/tools/predict_d92_mv_kme.py",
+        "--row-root",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092703",
+        "--capsule",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-mvkme-repeat-rx3-m4-r02/cvs-daot-rc4-s2026092703/mvkme",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_mvkme_repeat_rx3_20260928_r02/configs/d92_mv_kme_frozen_20260928.json",
+        "--expected-capsule-id",
+        "residual-noeq-76121e6f34363fa612ec25fb",
+        "--expected-checkpoint-sha256",
+        "51fadc3b4ad3cbf83de01700a4a109430e7a57b1e10cb147f0be5f01593f26bb",
+        "--mv-features",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-mvkme-repeat-rx3-m4-r02/cvs-daot-rc4-s2026092703/mv_features"
+      ],
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_mvkme_repeat_rx3_20260928_r02",
+      "gpu": null,
+      "blas_threads": 2,
+      "started": 1790610908.8874025,
+      "live_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_mvkme_repeat_rx3_20260928_r02/tools/predict_d92_mv_kme.py",
+        "--row-root",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092703",
+        "--capsule",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-mvkme-repeat-rx3-m4-r02/cvs-daot-rc4-s2026092703/mvkme",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_mvkme_repeat_rx3_20260928_r02/configs/d92_mv_kme_frozen_20260928.json",
+        "--expected-capsule-id",
+        "residual-noeq-76121e6f34363fa612ec25fb",
+        "--expected-checkpoint-sha256",
+        "51fadc3b4ad3cbf83de01700a4a109430e7a57b1e10cb147f0be5f01593f26bb",
+        "--mv-features",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-mvkme-repeat-rx3-m4-r02/cvs-daot-rc4-s2026092703/mv_features"
+      ],
+      "live_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_mvkme_repeat_rx3_20260928_r02",
+      "record": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-mvkme-repeat-rx3-m4-r02/cvs-daot-rc4-s2026092703/mvkme.log.process.json"
+    },
+    {
+      "pid": 2472490,
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_mvkme_repeat_rx3_20260928_r02/tools/predict_d92_mv_kme.py",
+        "--row-root",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092704",
+        "--capsule",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-mvkme-repeat-rx3-m4-r02/cvs-daot-rc4-s2026092704/mvkme",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_mvkme_repeat_rx3_20260928_r02/configs/d92_mv_kme_frozen_20260928.json",
+        "--expected-capsule-id",
+        "residual-noeq-76121e6f34363fa612ec25fb",
+        "--expected-checkpoint-sha256",
+        "690fed6ea2a6532d0ad978c93306f0f35b61f4a3a3fc4b1d6494f0e7547c74bb",
+        "--mv-features",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-mvkme-repeat-rx3-m4-r02/cvs-daot-rc4-s2026092704/mv_features"
+      ],
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_mvkme_repeat_rx3_20260928_r02",
+      "gpu": null,
+      "blas_threads": 2,
+      "started": 1790610908.8882186,
+      "live_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_mvkme_repeat_rx3_20260928_r02/tools/predict_d92_mv_kme.py",
+        "--row-root",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092704",
+        "--capsule",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-mvkme-repeat-rx3-m4-r02/cvs-daot-rc4-s2026092704/mvkme",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_mvkme_repeat_rx3_20260928_r02/configs/d92_mv_kme_frozen_20260928.json",
+        "--expected-capsule-id",
+        "residual-noeq-76121e6f34363fa612ec25fb",
+        "--expected-checkpoint-sha256",
+        "690fed6ea2a6532d0ad978c93306f0f35b61f4a3a3fc4b1d6494f0e7547c74bb",
+        "--mv-features",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-mvkme-repeat-rx3-m4-r02/cvs-daot-rc4-s2026092704/mv_features"
+      ],
+      "live_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_mvkme_repeat_rx3_20260928_r02",
+      "record": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-mvkme-repeat-rx3-m4-r02/cvs-daot-rc4-s2026092704/mvkme.log.process.json"
+    },
+    {
+      "pid": 2472487,
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_mvkme_repeat_rx3_20260928_r02/tools/predict_d92_mv_kme.py",
+        "--row-root",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092701",
+        "--capsule",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-mvkme-repeat-rx3-m4-r02/cvs-daot-rc4-s2026092701/mvkme",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_mvkme_repeat_rx3_20260928_r02/configs/d92_mv_kme_frozen_20260928.json",
+        "--expected-capsule-id",
+        "residual-noeq-76121e6f34363fa612ec25fb",
+        "--expected-checkpoint-sha256",
+        "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b",
+        "--mv-features",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-mvkme-repeat-rx3-m4-r02/cvs-daot-rc4-s2026092701/mv_features"
+      ],
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_mvkme_repeat_rx3_20260928_r02",
+      "gpu": null,
+      "blas_threads": 2,
+      "started": 1790610908.885431,
+      "live_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_mvkme_repeat_rx3_20260928_r02/tools/predict_d92_mv_kme.py",
+        "--row-root",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092701",
+        "--capsule",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-mvkme-repeat-rx3-m4-r02/cvs-daot-rc4-s2026092701/mvkme",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_mvkme_repeat_rx3_20260928_r02/configs/d92_mv_kme_frozen_20260928.json",
+        "--expected-capsule-id",
+        "residual-noeq-76121e6f34363fa612ec25fb",
+        "--expected-checkpoint-sha256",
+        "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b",
+        "--mv-features",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-mvkme-repeat-rx3-m4-r02/cvs-daot-rc4-s2026092701/mv_features"
+      ],
+      "live_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_mvkme_repeat_rx3_20260928_r02",
+      "record": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-mvkme-repeat-rx3-m4-r02/cvs-daot-rc4-s2026092701/mvkme.log.process.json"
+    },
+    {
+      "pid": 2472488,
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_mvkme_repeat_rx3_20260928_r02/tools/predict_d92_mv_kme.py",
+        "--row-root",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092702",
+        "--capsule",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-mvkme-repeat-rx3-m4-r02/cvs-daot-rc4-s2026092702/mvkme",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_mvkme_repeat_rx3_20260928_r02/configs/d92_mv_kme_frozen_20260928.json",
+        "--expected-capsule-id",
+        "residual-noeq-76121e6f34363fa612ec25fb",
+        "--expected-checkpoint-sha256",
+        "72f26413e495dcf82317898f8729caa3d35499bf0b41e9671ffdceab2c90924b",
+        "--mv-features",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-mvkme-repeat-rx3-m4-r02/cvs-daot-rc4-s2026092702/mv_features"
+      ],
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_mvkme_repeat_rx3_20260928_r02",
+      "gpu": null,
+      "blas_threads": 2,
+      "started": 1790610908.886461,
+      "live_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_mvkme_repeat_rx3_20260928_r02/tools/predict_d92_mv_kme.py",
+        "--row-root",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092702",
+        "--capsule",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-mvkme-repeat-rx3-m4-r02/cvs-daot-rc4-s2026092702/mvkme",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_mvkme_repeat_rx3_20260928_r02/configs/d92_mv_kme_frozen_20260928.json",
+        "--expected-capsule-id",
+        "residual-noeq-76121e6f34363fa612ec25fb",
+        "--expected-checkpoint-sha256",
+        "72f26413e495dcf82317898f8729caa3d35499bf0b41e9671ffdceab2c90924b",
+        "--mv-features",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-mvkme-repeat-rx3-m4-r02/cvs-daot-rc4-s2026092702/mv_features"
+      ],
+      "live_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_mvkme_repeat_rx3_20260928_r02",
+      "record": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-mvkme-repeat-rx3-m4-r02/cvs-daot-rc4-s2026092702/mvkme.log.process.json"
+    }
+  ]
+}

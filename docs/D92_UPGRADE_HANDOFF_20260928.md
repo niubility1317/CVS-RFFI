@@ -1,6 +1,16 @@
 # D92优化当前交接
 
-## 当前状态：SGJoint重复基准失败，正在实现MVKME
+## 当前状态：MVKME完整重复基准未达标，正在独立设计BNNA
+
+**2026-09-29最新终态，覆盖下列运行中历史。**MVKME rx3-r02和rx1-r01均已SCORED/ANALYZED，所有supervisor/children退出；rx3终态`readback_1790611107.json`，rx1终态`readback_1790610777.json`，两run下载读回`readback_1790611135.json`。当前没有本任务运行中的实验，禁止重发已完成run。全部9648条评分逐混淆矩阵独立复算通过，4800次拟合日志审计通过，1840个summary值独立解释复核通过。完整报告为rx3-r02的`results/combined_rx4/report.md`，两run均有`results/artifacts.json`。
+
+每K联合任务Δold/new/H(pp)：K1 +1.766/−0.297/+0.490；K5 +7.637/−1.213/+0.987；K10 +4.194/−1.341/−0.030；K20 +1.721/−1.271/−0.607。正式含old-only的old guard Δ=+2.000/+7.506/+3.750/+1.079pp，全过保护，但所有K平均new下降，未晋级，整体goal未完成，不进入新增独立数据验收。所有原始输出保留，不能据此修改已评分候选参数。
+
+实际成本（累计进程内时间，非墙钟）：提取602.124s、core拟合370.824s、query分数计算76.741s、预测序列化写入22.107s。新source payload0，模型是否已部署未知，增量模型传输null；完整训练checkpoint15992872至15992936bytes，不是最小推理包。两图已目视检查。
+
+下一步：未读目标结果的source_aux_feasibility正在设计ONE D92-BNNA-v1，只用当前row support估计最多8维不稳定方向并学习有界非线性收缩；设计文档计划`docs/D92_BNNA_DESIGN_20260929.md`，尚未实现或预登记/启动。confirmation_runner独立只读检查原D92数学结构，发现old-only metric在head-only LOO外预拟合导致support OOF旧新不对称风险；这是代码事实，不可据此断言目标退化原因。新方案必须每物理fold重新估计全部适应状态。两设计agent保持不读scores/results；root和解释审查者可归档评分。用户继续授权先复用数据，直到全面明显改善后才新增独立数据验证，无待批准事项。
+
+## 以下保留已结束的MVKME运行过程，以顶部终态为准
 
 最新实际状态：MVKME已修复并正常启动两cohort，均使用release commit`70bd88dfc6a0864e09b8fa582d2aa48b34a741fb`。rx3为`20260928-phase2-d92-mvkme-repeat-rx3-m4-r02`，spec为`configs/d92_mvkme_repeat_rx3_recovery_20260928.json`，supervisor2466165，首exporter2466183；rx1为`20260928-phase2-d92-mvkme-repeat-rx1-m4-r01`，spec为`configs/d92_mvkme_repeat_rx1_20260928.json`，supervisor2467532，首exporter2467546。两run的`readback_1790610576.json`均核实live/argv/CWD及日志增长，分别首model11648/15444与1152/4680；原rx3-r01失败终态保留。**禁止重发以上已启动run。**每cohort四model串行导出，两个cohort最多两个冻结推理进程共用GPU0，实测单进程484MiB，未干预其他GPU任务。
 
