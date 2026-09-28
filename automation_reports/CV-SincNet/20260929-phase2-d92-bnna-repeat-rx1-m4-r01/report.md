@@ -3,7 +3,7 @@
 - run_id：`20260929-phase2-d92-bnna-repeat-rx1-m4-r01`
 - group_id：`d92-fixed-phase1-bnna-repeated-benchmark`；类别：`cvs`；阶段：`Phase2-repeated-benchmark`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：LOCAL_VERIFIED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -31,3 +31,5 @@
 BNNA formula frozen; support-only full physical folds; metadata ancestry reused; preflight verified; launch pending local implementation verification.
 
 LOCAL_VERIFIED: frozen formula; core14 and full entry/audit integration passed; independent P0/P1 no blocker. Model deployment and incremental model transmission unknown. Existing checkpoint ancestry remains exact source-only scratch final200. Real native synthetic smoke runs before received IQ is opened.
+
+VERIFIED RUNNING at readback_1790613570.json; actual release 0fce1af680992fac2c343762af0f07915e10b647. Both cohorts execute unchanged; no scores may be downloaded before both reach terminal state.
