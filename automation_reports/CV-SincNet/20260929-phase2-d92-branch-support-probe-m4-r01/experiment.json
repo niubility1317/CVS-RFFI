@@ -27,7 +27,8 @@
     "base_recipe": "experiments/adv3b02_xuc/configs/rc4_practical_residual_noeq_20260918.json",
     "native_code_base": "b63734157",
     "native_training_commit": "9b1ddd939fcabc74c77c94a62fef8e5aad07c0e9",
-    "commit_note": "Preparation parent; publisher records actual pushed release commit in launch/startup."
+    "commit_note": "Preparation parent; publisher records actual pushed release commit in launch/startup.",
+    "release_commit": "f7f19e87042b22c499ca2cee3d01fd0334dc8d47"
   },
   "data": {
     "dataset": "Support slices only from the two existing VALIDATED_ONCE capsules",
@@ -149,7 +150,15 @@
     "cpu_lanes": 4,
     "blas_threads_per_lane": 2,
     "export_device": "cuda:0",
-    "export_batch_size": 32
+    "export_batch_size": 32,
+    "pid": 2574293,
+    "runtime_command": [
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_support_probe_20260929_r01/tools/run_d92_branch_support_probe.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_support_probe_20260929_r01/configs/d92_branch_support_probe_20260929.json",
+      "--commit",
+      "f7f19e87042b22c499ca2cee3d01fd0334dc8d47"
+    ]
   },
   "expected_artifacts": [
     "startup.json",
@@ -171,7 +180,7 @@
     "Frozen checkpoint lineage verified; actual architecture evidence retained. No source samples or new source payload."
   ],
   "claim_scope": "SUPPORT_INFORMATION_DIAGNOSTIC_NOT_QUERY_PERFORMANCE",
-  "status": "PLANNED",
+  "status": "RUNNING",
   "metrics_plan": {
     "metric_names": [
       "physical_OOF_accuracy",

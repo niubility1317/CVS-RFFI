@@ -1,6 +1,8 @@
 # D92优化当前交接
 
-## 当前状态：分支support信息探查已预登记，尚未启动
+## 当前状态：分支support信息探查已启动，正在导出/探查
+
+最新实时证据`readback_1790620659.json`：run `20260929-phase2-d92-branch-support-probe-m4-r01` supervisor PID2574293 live，首个export PID2574301 argv/CWD匹配。实际runtime commit=`f7f19e87042b22c499ca2cee3d01fd0334dc8d47`，release=`d92_branch_support_probe_20260929_r01`。此前发布器Windows Path→反斜杠造成启动前失败，独立证据确认无run/release/process、原归档存在且一致；仅发布器改PurePosixPath（commit ce80b6afb41ac25b18c917c13227445107e4e999），显式staged-commit恢复核对原runtime无变化后首次启动。原失败landing与恢复landing均保留。不要重复发布/启动。后续按PID/artifact核对状态，等待全部8lane后汇总；以下尚未启动文字仅是预登记历史。9项编排含Windows路径回归通过；唯一P0/P1文档已完成，无阻断。
 
 2026-09-29：新run `20260929-phase2-d92-branch-support-probe-m4-r01` 已PLANNED/launch-ready VALID，release预定`d92_branch_support_probe_20260929_r01`。实际架构元数据已核实，固定原始单view的t_emb/f_emb/pa_local作为一组。两个背景z与z+FFT分别固定baseline/duplicate/aux三臂，共六臂；全部ridge1，duplicate用于正则/能量对照。K1仅数值诊断，其他K逐物理OOF；完整4800episode、预期64800分解，0 query访问、0新source payload，不输出部署头。原型/ground/source数据不读取。设计`docs/D92_BRANCH_SUPPORT_PROBE_DESIGN_20260929.md`。
 
