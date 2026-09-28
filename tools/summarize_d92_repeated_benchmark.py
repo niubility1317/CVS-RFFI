@@ -19,7 +19,7 @@ def combine(specs, scored):
     infos = [matrix_definition(s) for s in specs]
     validated = [summarize(d, s) for d, s in zip(scored, specs)]
     method=infos[0][0][1]
-    if method not in ('D92-SGJoint-v1','D92-MVKME-v1','D92-BNNA-v1') or any(info[0] != ('D92',method) for info in infos):
+    if method not in ('D92-SGJoint-v1','D92-MVKME-v1','D92-BNNA-v1','D92-OSC-v1') or any(info[0] != ('D92',method) for info in infos):
         raise ValueError('Only matching frozen repeated-benchmark candidates may be pooled')
     claim=CLAIM.replace('D92-SGJoint-v1',method)
     if len({s['run_id'] for s in specs}) != 2:

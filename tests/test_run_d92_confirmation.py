@@ -161,7 +161,7 @@ def test_fresh_capsule_split_count_must_match_preregistered_count(tmp_path, monk
     assert [c[0] for c in calls] == ['build_d92_confirmation_data.py']
 
 
-@pytest.mark.parametrize('candidate_index', [0, 1, 2, 3, 4])
+@pytest.mark.parametrize('candidate_index', [0, 1, 2, 3, 4, 5])
 def test_candidate_release_paths_and_readback_use_exact_registered_folder(tmp_path,capfd,candidate_index):
     from collect_d92_fit_logs import fit_log_paths
     from publish_d92_confirmation import release_tool_paths
@@ -253,16 +253,28 @@ def reused_specification(tmp_path):
     return path,spec
 
 
-@pytest.mark.parametrize('candidate_index',[2,3,4])
+def install_orbit_cache_reuse(tmp_path,spec):
+    source=tmp_path/'frozen-orbit-origin'
+    spec['confirmation']['frozen_feature_source_root']=str(source)
+    for row in spec['rows']:
+        cache=source/row['row_id']/'bnna_features'
+        row['reuse_multiview_features_root']=str(cache)
+        save(cache/'features_complete.json',dict(status='BNNA_FEATURES_COMPLETE',capsule_id='synthetic',
+            checkpoint_sha256='a'*64,model_seed=row['seeds']['model'],query_used_for_fitting=False,encoder_updated=False))
+
+
+@pytest.mark.parametrize('candidate_index',[2,3,4,5])
 def test_reused_rows_only_run_candidate_and_score_with_old_artifacts_unchanged(tmp_path,monkeypatch,candidate_index):
     from score_d92_confirmation import score
     path,spec=reused_specification(tmp_path)
     spec['confirmation'].update(dict(zip(runner.CANDIDATE_FIELDS,runner.CANDIDATES[candidate_index])))
+    if candidate_index==5: install_orbit_cache_reuse(tmp_path,spec)
     save(path,spec)
     multiview=runner.needs_multiview(spec['confirmation'])
     feature=runner.feature_definition(spec['confirmation'])
     method=runner.candidate_definition(spec['confirmation'])
     old_files=list((tmp_path/'old-run').rglob('*'))
+    if candidate_index==5:old_files+=list((tmp_path/'frozen-orbit-origin').rglob('*'))
     old_hashes={p:runner.sha(p) for p in old_files if p.is_file()}
     calls=[]
     def invoke(tool,arguments,log,*,gpu=False):
@@ -275,6 +287,10 @@ def test_reused_rows_only_run_candidate_and_score_with_old_artifacts_unchanged(t
                 checkpoint_sha256='a'*64,query_used_for_fitting=False))
         elif tool==method['candidate_predictor']:
             assert not gpu
+            if candidate_index==5:
+                cache=Path(args[args.index('--orbit-features')+1])
+                assert cache.parent.parent==tmp_path/'frozen-orbit-origin'
+                assert not any('export_d92' in call for call in calls)
             if multiview:
                 assert calls.count(feature[0])==4
                 assert Path(args[args.index(feature[2])+1]).name==feature[1]
@@ -308,6 +324,35 @@ def test_reused_rows_only_run_candidate_and_score_with_old_artifacts_unchanged(t
         assert not (output/'predictions.jsonl').exists()
         evidence=runner.read(output/'artifact_reuse.json')
         assert evidence['old_scores_read'] is False and evidence['baseline_executed'] is False
+        if candidate_index==5:
+            cached=runner.read(output/'frozen_feature_reuse.json')
+            assert cached['cache_recomputed'] is False and cached['checkpoint_reloaded'] is False
+            assert cached['adapted_state_reused'] is False
+
+
+@pytest.mark.parametrize('fault',['missing','mixed_source','duplicate','overlap','wrong_candidate'])
+def test_orbit_cache_reuse_requires_complete_explicit_model_binding(tmp_path,fault):
+    path,spec=reused_specification(tmp_path)
+    spec['confirmation'].update(dict(zip(runner.CANDIDATE_FIELDS,runner.CANDIDATES[5])))
+    install_orbit_cache_reuse(tmp_path,spec)
+    if fault=='missing':spec['rows'][0].pop('reuse_multiview_features_root')
+    if fault=='mixed_source':spec['rows'][0]['reuse_multiview_features_root']=str(tmp_path/'other'/'bnna_features')
+    if fault=='duplicate':spec['rows'][0]['reuse_multiview_features_root']=spec['rows'][1]['reuse_multiview_features_root']
+    if fault=='overlap':spec['confirmation']['frozen_feature_source_root']=spec['execution']['remote_run_root']
+    if fault=='wrong_candidate':spec['confirmation'].update(dict(zip(runner.CANDIDATE_FIELDS,runner.CANDIDATES[2])))
+    save(path,spec)
+    with pytest.raises(ValueError,match='cache|OSC|overlap'):runner.run(path,'synthetic-commit')
+    assert not Path(spec['execution']['remote_run_root']).exists()
+
+
+def test_orbit_bad_cache_metadata_blocks_prediction_and_score(tmp_path,monkeypatch):
+    path,spec=reused_specification(tmp_path)
+    spec['confirmation'].update(dict(zip(runner.CANDIDATE_FIELDS,runner.CANDIDATES[5])))
+    install_orbit_cache_reuse(tmp_path,spec);save(path,spec)
+    marker=Path(spec['rows'][0]['reuse_multiview_features_root'])/'features_complete.json'
+    data=runner.read(marker);data['encoder_updated']=True;save(marker,data)
+    monkeypatch.setattr(runner,'invoke',lambda *_args,**_kwargs:pytest.fail('No prediction or scoring on incompatible cache'))
+    with pytest.raises(ValueError,match='cache metadata'):runner.run(path,'synthetic-commit')
 
 
 @pytest.mark.parametrize('fault',['partial','mixed_parent','duplicate_origin','bad_sha','wrong_seed',

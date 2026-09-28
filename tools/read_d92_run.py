@@ -25,7 +25,7 @@ for p in [release/'run.log',root/'run.log']+list(root.glob('*.log'))+list(root.g
  if p.exists():
   with p.open('rb') as stream:
    stream.seek(max(0,p.stat().st_size-262144));tail=stream.read().decode(errors='replace').splitlines()[-3:]
-  if p.name in ('sfhead.log','sgjoint.log','mvkme.log','bnna.log'):
+  if p.name in ('sfhead.log','sgjoint.log','mvkme.log','bnna.log','osc.log'):
    filtered=[]
    for line in tail:
     try:

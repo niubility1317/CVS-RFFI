@@ -1,5 +1,11 @@
 # D92优化当前交接
 
+## 当前状态：OSC实现和预登记完成，尚未发布
+
+2026-09-29：OSC核心/入口/缓存校验及编排已实现，相关合成测试通过；两run `20260929-phase2-d92-osc-repeat-rx3-m4-r01`、`20260929-phase2-d92-osc-repeat-rx1-m4-r01`已PLANNED、launch-ready字段VALID。只读资源/路径核实见`local_artifacts/d92_upgrade_20260928/osc_preflight_20260929.json`。只复用BNNA的固定编码器四视图缓存，不复用其适应状态或成绩；CPU四model lanes×2BLAS，无checkpoint加载/GPU提取/source读取。唯一launch owner root。独立P0/P1审查完成后镜像、commit/push/OID再发布；禁止从旧记录推断已启动。
+
+固定方案和矩阵不变，全部物理fold重估，CV仅诊断，零optimizer steps。新旧类与各K须全面明显改善，方进入新增独立数据阶段。两cohort终态前不读任何OSC scores。BNNA及更早run均终态，不能重发。用户复用数据授权持续有效；goal ACTIVE。
+
 ## 当前状态：BNNA完整重复基准未达标，全部终态已核验
 
 **2026-09-29最新状态，覆盖下文运行中历史。**rx3/rx1均SCORED，所有supervisor/children退出；终态证据rx3`readback_1790615090.json`、rx1`readback_1790614237.json`，两run下载证据`readback_1790615121.json`。完整4800fits/9648scores、958784真实Adamsteps已核验，禁止重发原run。release仍`0fce1af680992fac2c343762af0f07915e10b647`。

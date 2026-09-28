@@ -1,6 +1,6 @@
 # D92 后备设计：共享协方差的循环相位边缘化
 
-日期：2026-09-29。状态：独立后备设计，尚未实现、测试或启动；不改变正在运行的 BNNA。本设计未读取历史或当前 target scores、结果解释或评分索引。名称暂记为 Orbit Shared Covariance（OSC），不创建正式 run 或宣称性能提升。
+日期：2026-09-29。状态：独立后备设计已实现核心并通过合成测试，未由本实现任务启动真实实验。本设计未读取历史或当前 target scores、结果解释或评分索引。正式方法名为 D92-OSC-v1（Orbit Shared Covariance），不宣称性能提升。
 
 ## 1. 决策与协议边界
 
@@ -130,4 +130,12 @@ OOF 按物理样本各一次记录 NLL/预测；报告 macro-class NLL、old/new
 7. 构造均值相同但循环对应关系不同的有限合成例子，验证实现确实读取相对相位结构。它只证明该例子的功能差异，不证明对真实数据有提升或不存在所有线性表示。
 8. 测量实际 nbytes、分阶段耗时和 RSS；不读取任何 target truth 或历史分数来设测试阈值。
 
-科学验收只能在日后获得真实运行授权并按 truth-last 固定预测后进行。本次交付仅为后备机制设计，不登记、不启动新实验，也不改变 BNNA。
+科学验收只能在获得真实运行授权并按 truth-last 固定预测后进行。本实现任务不登记、不启动新实验，也不改变 BNNA。
+
+## 7. 实现与本地验证记录
+
+核心为 `code/cvsrffi/stage2_d92_orbit_shared.py`，冻结配置为 `configs/d92_orbit_shared_frozen_20260929.json`，合成测试为 `tests/test_d92_orbit_shared.py`。核心不依赖 Torch 或 SciPy，不执行文件读取；拟合内部按物理类 ID 规范排序，返回的 `state.classes` 和 W/b 顺序仍保持调用方注册表顺序。`old_classes` 仅参与 OOF 诊断。审计 `folds[*].training` 和 `final_fit` 保留实际物理自由度、收缩系数、medoid、shift、分阶段时间与数组字节；不保留训练特征数组。
+
+10 项合成测试通过，覆盖以上 8 类要求，包括 K1/C26、K5 各 fold 实际 n、近零残差、全零输入、编译公式与原二次式、cyclic query invariance、输入排列、逐样本分块、只读状态、负输入及 held 物理样本扰动隔离。该测试结果仅说明所测性质，不代表真实目标性能。
+
+C26/K20 成本测量使用 `ssr-gpu` Python、2 个 BLAS 线程、`default_rng(1801)` 顺序生成 float32 的 `[520,4,160]` 和 `[520,96]` 标准正态合成输入；不含编码器或文件读写。一次完整拟合外层耗时 0.3423714 s，core `fit_seconds` 为 0.3208400 s。三个 fold 与 final 的实际 n 为 `[13,13,14,20]`，物理自由度 `[312,312,338,494]`；四次拟合合计 medoid 0.2468120 s、covariance 0.0166445 s、solve 0.0121327 s，OOF score 0.0324172 s。优化器步数为 0，最终 W+b 实测 213200 B。耗时是一次本机测量，不保证远端性能；该测量进程未安装 psutil，RSS/peak RSS 未测，不能据数组大小推断进程峰值。

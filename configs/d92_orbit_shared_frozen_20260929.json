@@ -1,0 +1,40 @@
+{
+  "algorithm": {
+    "method": "D92-OSC-v1",
+    "input_shape": [
+      2,
+      256
+    ],
+    "phases_quarter_turns": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "identity_dim": 160,
+    "fft_dim": 96,
+    "fft": "historical_spectral_logmag_sketch",
+    "fft_norm_floor": 1e-08,
+    "norm_floor": 1e-12,
+    "block_weights": "equal_1_over_sqrt2",
+    "medoid": "min_sum_pair_min_cyclic_squared_distance_then_physical_id",
+    "alignment": "medoid_shift_zero_other_min_distance_then_smallest_shift",
+    "covariance": "equal_class_equal_view_physical_residual",
+    "physical_df": "C*(train_k-1)",
+    "shrinkage": "256/(physical_df+256)",
+    "covariance_shape": "(1-lambda)*256*S/trace(S)+lambda*I",
+    "zero_residual": "trace(S)<=64*float64_eps*mean_squared_feature_norm",
+    "reference_covariance": "Q/256",
+    "class_prior": "equal",
+    "score": "logmeanexp_four_cyclic_average_gaussian_experts_drop_query_common_term",
+    "k1": "fixed_identity_covariance_no_cv",
+    "max_folds": 3,
+    "folds": "per_class_physical_id_sort_then_position_mod_min_K_3",
+    "selection": "none_cv_diagnostic_only",
+    "optimizer_steps": 0,
+    "precision": "float64",
+    "query_fit": false,
+    "source_inputs": false,
+    "summary_inputs": false
+  }
+}

@@ -4,7 +4,7 @@ import argparse
 import json
 from pathlib import Path
 import subprocess
-from run_d92_confirmation import candidate_definition, reuse_frozen_rows, needs_multiview, feature_definition
+from run_d92_confirmation import candidate_definition, reuse_frozen_rows, needs_multiview, feature_definition, reuse_multiview_cache
 
 ROOT=Path(__file__).resolve().parents[1]
 RELEASE='d92_scv_confirmation_20260928_r01'
@@ -48,6 +48,8 @@ def release_tool_paths(confirmation):
     return list(dict.fromkeys([p for p in PATHS if not p.startswith('configs/')]
                              +['tools/'+candidate['candidate_predictor']]
                              +(['tools/export_d92_mv_kme_features.py'] if candidate['candidate_method']=='D92-BNNA-v1' else [])
+                             +(['tools/d92_orbit_feature_cache.py','tools/export_d92_mv_kme_features.py',
+                                'configs/d92_bnna_frozen_20260929.json'] if candidate['candidate_method']=='D92-OSC-v1' else [])
                              +(['tools/'+feature_definition(confirmation)[0]] if needs_multiview(confirmation) else [])))
 
 
@@ -56,6 +58,7 @@ def main():
     a=p.parse_args();release_name=a.release
     spec=json.loads((ROOT/a.spec).read_text(encoding='utf-8'))
     reuse_rows=reuse_frozen_rows(spec)
+    reuse_multiview_cache(spec)
     data_config='configs/'+Path(spec['confirmation']['data_config']).name
     candidate_config='configs/'+Path(spec['confirmation']['candidate_config']).name
     for local,remote in [(data_config,spec['confirmation']['data_config']),(candidate_config,spec['confirmation']['candidate_config'])]:

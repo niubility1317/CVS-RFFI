@@ -20,6 +20,7 @@ CANDIDATES = (
     ('D92-SGJoint-v1', 'sgjoint', 'predict_d92_summary_joint.py', 'd92_sgjoint_registration'),
     ('D92-MVKME-v1', 'mvkme', 'predict_d92_mv_kme.py', 'd92_mvkme_registration'),
     ('D92-BNNA-v1', 'bnna', 'predict_d92_bnna.py', 'd92_bnna_registration'),
+    ('D92-OSC-v1', 'osc', 'predict_d92_orbit_shared.py', 'd92_osc_registration'),
 )
 
 
@@ -72,6 +73,27 @@ def feature_definition(confirmation):
         'D92-MVKME-v1': ('export_d92_mv_kme_features.py', 'mv_features', '--mv-features', 'MULTIVIEW_FEATURES_COMPLETE'),
         'D92-BNNA-v1': ('export_d92_bnna_features.py', 'bnna_features', '--bnna-features', 'BNNA_FEATURES_COMPLETE'),
     }.get(method)
+
+
+def reuse_multiview_cache(spec):
+    """Only OSC can reuse the explicitly registered frozen four-view cache."""
+    method = candidate_definition(spec['confirmation'])['candidate_method']
+    paths = [row.get('reuse_multiview_features_root') for row in spec['rows']]
+    if method != 'D92-OSC-v1':
+        if any(paths): raise ValueError('Frozen multiview cache reuse is only registered for OSC')
+        return False
+    if not reuse_frozen_rows(spec) or not all(isinstance(p,str) and p for p in paths):
+        raise ValueError('OSC requires reused baseline rows and all four frozen multiview cache paths')
+    source = spec['confirmation'].get('frozen_feature_source_root')
+    if not isinstance(source,str) or not source:
+        raise ValueError('OSC requires an explicit frozen feature source root')
+    source, output = Path(source).resolve(), Path(spec['execution']['remote_run_root']).resolve()
+    if source == output or source in output.parents or output in source.parents:
+        raise ValueError('Frozen feature source and new output must not overlap')
+    expected = [source/row['row_id']/'bnna_features' for row in spec['rows']]
+    if [Path(p).resolve() for p in paths] != expected or len(set(paths)) != 4:
+        raise ValueError('OSC cache paths must bind each model row to one registered source run')
+    return True
 
 
 def read(path):
@@ -217,6 +239,7 @@ def run(spec_path, commit):
     confirmation, rows = spec['confirmation'], spec['rows']
     candidate = candidate_definition(confirmation)
     reuse_rows=reuse_frozen_rows(spec)
+    reuse_views=reuse_multiview_cache(spec)
     multiview=needs_multiview(confirmation)
     if multiview and not reuse_rows:
         raise ValueError('Multiview candidate requires explicitly reused baseline rows')
@@ -293,6 +316,20 @@ def run(spec_path, commit):
                 evidence=validate_reused_row(row,confirmation,capsule_data)
                 hashes[row_id]=row['expected_checkpoint_sha256']
                 write(output/'artifact_reuse.json',evidence)
+                if reuse_views:
+                    cache=Path(row['reuse_multiview_features_root'])
+                    marker=read(cache/'features_complete.json')
+                    if (marker.get('status')!='BNNA_FEATURES_COMPLETE'
+                            or marker.get('capsule_id')!=manifest['capsule_id']
+                            or marker.get('checkpoint_sha256')!=hashes[row_id]
+                            or marker.get('model_seed')!=row['seeds']['model']
+                            or marker.get('query_used_for_fitting') is not False
+                            or marker.get('encoder_updated') is not False):
+                        raise ValueError('Reused four-view cache metadata binding mismatch')
+                    write(output/'frozen_feature_reuse.json',dict(feature_root=str(cache),
+                        cache_recomputed=False,checkpoint_reloaded=False,adapted_state_reused=False,
+                        source_samples_read=False,query_used_for_fitting=False,
+                        checkpoint_sha256=hashes[row_id],capsule_id=manifest['capsule_id']))
                 if multiview:
                     exporter, feature_folder, feature_flag, feature_status = feature_definition(confirmation)
                     update(row_id,status='EXPORTING_MULTIVIEW_FEATURES')
@@ -340,6 +377,7 @@ def run(spec_path, commit):
                 if multiview:
                     _, feature_folder, feature_flag, _ = feature_definition(confirmation)
                     arguments.extend([feature_flag,output/feature_folder])
+                if reuse_views: arguments.extend(['--orbit-features',row['reuse_multiview_features_root']])
                 invoke(candidate['candidate_predictor'], arguments, output / (folder + '.log'))
                 for prediction_root in (baseline_root(row), output / folder):
                     marker = read(prediction_root / 'predictions_complete.json')
