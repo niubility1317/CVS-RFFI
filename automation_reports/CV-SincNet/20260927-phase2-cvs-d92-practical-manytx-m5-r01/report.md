@@ -41,3 +41,7 @@ CPU五lane等待各自Phase1完成。先核对final200来源并做真实checkpoi
 ## 远端依赖队列
 
 VERIFIED：release `cvs_d92_matched_20260927_r01`来自已push并独立读回的commit `7b5809a755bc641b129f5a703e82b95d422610d2`。远端Torch2.1/NumPy2.2环境的v2ground＋new0K1/new2K5真实256维合成smoke PASS。dispatcher PID1276770及五个CPU worker的PID/CWD/argv均已核实，五row为WAITING_SOURCE。待各自final200完成后自动执行；当前尚无D92性能结果。证据见evidence/launch_readback.json。
+
+## 2026-09-28完成核查
+
+PARTIAL_TECHNICAL_FAILURE。详见docs/CVS_RESULTS_STATUS_20260928.md及evidence/completion_status_20260928.json。五个Phase1完成200轮；D92三组完成预测、两组发生LDA部署系数一致性错误，未评分。

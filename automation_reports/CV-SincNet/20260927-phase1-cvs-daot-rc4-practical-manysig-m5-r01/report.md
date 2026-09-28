@@ -45,3 +45,7 @@ D92后续固定 `P2-256-FULL`：D92 E0 identity160＋FFT96真实256维v2，非28
 VERIFIED：发布commit `9b1ddd939fcabc74c77c94a62fef8e5aad07c0e9`已push并独立读回一致。五个worker在GPU0至4运行，PID/CWD/argv/source roles/seed/final-only均匹配，日志增长并已完成E001。真实GPU smoke通过。唯一P0/P1审查PASS；此前GPU待发lane疑问由实时无dispatcher/worker证据消除。训练结果尚未完成。证据见evidence/launch_readback.json。
 
 2026-09-27 13:11CST独立读回：五个训练进程均正常，392005完成E007，其余四seed完成E008；日志持续增长，尚无final200。后续评估/D92队列已VERIFIED等待源模型。
+
+## 2026-09-28完成核查
+
+TRAINING_COMPLETE。详见docs/CVS_RESULTS_STATUS_20260928.md及evidence/completion_status_20260928.json。五个Phase1完成200轮；D92三组完成预测、两组发生LDA部署系数一致性错误，未评分。
