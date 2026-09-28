@@ -1,5 +1,9 @@
 # D92优化当前交接
 
+当前用户纠正（2026-09-28）：辅助训练禁止使用源域数据；允许地面已冻结模型、原型及少量汇总统计，结合卫星合法support。暂无硬传输上限，优先小payload并报告字节数。源TX留出辅助模型方案已被替代，未启动任何新训练；其实现草稿已归档并从正式代码撤出。当前推进source-data-free Phase2方法，禁止读取source IQ、逐样本特征、source loader或由原型重建伪源样本。允许的量化摘要按当前`项目.md`5.3.2及实际冻结来源判断；无需再次询问辅助训练授权。下列此前“等待范围答复”条目只记录历史。
+
+新候选D92-SFHead-v1与冻结配置见`docs/D92_SOURCEFREE_AUX_20260928.md`及`configs/d92_sourcefree_frozen_20260928.json`。仅support上的taskbalancedCE+旧类KD+L2，CPU确定性L-BFGS-B，无source校准、无query选参。新增地面统计0字节，现有ground摘要只读核算8191至8383字节/模型。37项core/summary/allocation/predictor合成测试、42项runner/scorer测试通过，独立P0/P1审查无阻断。新预登记run：`20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01`；data run：`20260928-phase2-d92-sfhead-data-manytx-r01`；release：`d92_sfhead_confirmation_20260928_r01`。RX20-19按未用于本轮评分且完整26TX可用性选取；4模型×1RX×3scene×4K×5newcounts×5supportseed=1200配对split，连同基线和DG共2412记录。每TX180物理记录（3scene各supportpool30/query30），全矩阵固定后才独立评分。此处尚为待发布状态，启动后须读取真实PID/argv/CWD与日志再更新。
+
 - 目标：固定Phase1，全面改善新旧类与各K的H。用户明确强调新类也要好。源域结果不能完成goal；目标分数不能回流调参、选种子或选择性重跑。
 - 工作树：`E:/type10-7/code/snapshots/d92_support_upgrade_20260928_wt`，分支`codex/d92-support-upgrade-20260928`。根目录不是Git仓库，主承载面其他暂存改动未动。
 - 源域旧类诊断180条、注册代理2100条均完成并登记ANALYZED。K1固定FFT权重0；K≥5的support-only选择算法与grid冻结。代理6个TX均被Phase1见过，不能称真正新TX结果。

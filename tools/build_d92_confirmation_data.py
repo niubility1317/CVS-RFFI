@@ -19,18 +19,21 @@ def digest(value):
     return hashlib.sha256(json.dumps(value, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
 
 
-def assignments(records, *, seed, receiver, class_id):
+def assignments(records, *, seed, receiver, class_id, support_pool_size=36, query_size=30):
     from leo_practical.channel import stable_seed
-    if len(records) < 198:
-        raise ValueError('At least198 physical observations required per RX/class')
+    if type(support_pool_size) is not int or type(query_size) is not int or min(support_pool_size, query_size) < 1:
+        raise ValueError('Positive integer support/query pool sizes required')
+    per_scene = support_pool_size + query_size
+    if len(records) < 3 * per_scene:
+        raise ValueError(f'At least{3 * per_scene} physical observations required per RX/class')
     if len(set(records)) != len(records):
         raise ValueError('Repeated physical record')
     rng = np.random.default_rng(stable_seed(seed, receiver, class_id, 'scene-role-allocation'))
-    order = rng.permutation(len(records))[:198]
+    order = rng.permutation(len(records))[:3 * per_scene]
     result = {}
     for j, scene in enumerate(('practical_high','practical_mid','practical_low_urban')):
-        indices = [records[int(i)] for i in order[j*66:(j+1)*66]]
-        result[scene] = {'support_pool': indices[:36], 'query': indices[36:]}
+        indices = [records[int(i)] for i in order[j*per_scene:(j+1)*per_scene]]
+        result[scene] = {'support_pool': indices[:support_pool_size], 'query': indices[support_pool_size:]}
     return result
 
 
@@ -39,6 +42,9 @@ def main():
     p.add_argument('--config', type=Path, required=True)
     a = p.parse_args()
     cfg = json.loads(a.config.read_text(encoding='utf-8'))
+    pool_size, query_size = cfg.get('support_pool_size', 36), cfg.get('query_size', 30)
+    if type(pool_size) is not int or pool_size < max(cfg['shots']):
+        raise ValueError('Support pool cannot cover preregistered K')
     # Reuse the exact previous data builder's native dataset/channel runtime.
     sys.path.insert(0, cfg['data_code'])
     if set(cfg['target_receivers']) & set(cfg['excluded_recent_target_receivers']):
@@ -70,7 +76,8 @@ def main():
             ti = txs.index(class_id)
             records = [(di, si) for di in range(len(days)) if raw['data'][ti][ri][di][eq] is not None
                        for si in range(len(raw['data'][ti][ri][di][eq]))]
-            role_map = assignments(records, seed=cfg['data_seed'], receiver=receiver, class_id=class_id)
+            role_map = assignments(records, seed=cfg['data_seed'], receiver=receiver, class_id=class_id,
+                                   support_pool_size=pool_size, query_size=query_size)
             for scene, roles in role_map.items():
                 channel = Config(fs_hz=cfg['fs_hz'], scenario=scene, processing_route='residual',
                     mode='post_sync', equalization_enabled=False,

@@ -35,6 +35,8 @@ def specification(tmp_path):
 def install_workers(monkeypatch, spec, fail=None):
     calls, lock = [], threading.Lock()
     root = Path(spec['execution']['remote_run_root'])
+    candidate = runner.candidate_definition(spec['confirmation'])
+    splits = spec['confirmation'].get('expected_split_count', 900)
     def mock_invoke(tool, arguments, log, *, gpu=False):
         args = list(map(str, arguments))
         def arg(name):
@@ -45,22 +47,23 @@ def install_workers(monkeypatch, spec, fail=None):
             raise RuntimeError('synthetic failure')
         if tool == 'build_d92_confirmation_data.py':
             save(Path(spec['confirmation']['capsule']) / 'manifest.json', dict(protocol_schema='p2_min_v1',
-                phase2_data_status='VALIDATED_ONCE', capsule_id='synthetic', split_count=900))
+                phase2_data_status='VALIDATED_ONCE', capsule_id='synthetic', split_count=splits))
         elif tool == 'cvs_native_artifacts.py':
             assert gpu is True
             save(Path(arg('output')) / 'features_complete.json', dict(status='FROZEN_FEATURES_COMPLETE',
                 capsule_id='synthetic', query_used_for_fitting=False))
-        elif tool in ('cvs_d92_matched.py', 'predict_d92_support_cv.py'):
+        elif tool in ('cvs_d92_matched.py', candidate['candidate_predictor']):
             assert gpu is False
             assert len([c for c in calls if c[0] == 'cvs_native_artifacts.py']) == 4
             output = Path(arg('output'))
-            if tool == 'predict_d92_support_cv.py':
+            if tool == candidate['candidate_predictor']:
+                assert output.name == candidate['candidate_folder']
                 assert (output.parent / 'predictions_complete.json').exists()
             save(output / 'predictions_complete.json', dict(status='PREDICTIONS_COMPLETE',
-                capsule_id='synthetic', split_count=900, truth_read=False))
+                capsule_id='synthetic', split_count=splits, truth_read=False))
         elif tool == 'score_d92_confirmation.py':
             assert all(s['status'] == 'PREDICTIONS_COMPLETE' for s in runner.read(root / 'state.json').values())
-            assert len([c for c in calls if c[0] == 'predict_d92_support_cv.py']) == 4
+            assert len([c for c in calls if c[0] == candidate['candidate_predictor']]) == 4
             # Deliberately no truth file exists: orchestration must never open it.
             assert not Path(spec['confirmation']['truth']).exists()
             save(arg('output'), dict(status='SCORED', results=[{}], selection_feedback_forbidden=True))
@@ -83,6 +86,74 @@ def test_all_models_freeze_before_independent_score(tmp_path, monkeypatch):
     startup = runner.read(root / 'startup.json')
     assert startup['spec'] == spec and startup['commit'] == 'synthetic-commit'
     assert startup['worker_policy']['max_feature_workers'] == 1
+
+
+@pytest.mark.parametrize('reuse', [False, True])
+def test_sfhead_candidate_with_300_splits_completes_every_row_before_score(tmp_path, monkeypatch, reuse):
+    path, spec = specification(tmp_path)
+    spec['confirmation'].update(dict(zip(runner.CANDIDATE_FIELDS, runner.CANDIDATES[1])))
+    spec['confirmation']['expected_split_count'] = 300
+    if reuse:
+        spec['confirmation']['reuse_validated_capsule_id'] = 'synthetic'
+        save(Path(spec['confirmation']['capsule']) / 'manifest.json', dict(protocol_schema='p2_min_v1',
+            phase2_data_status='VALIDATED_ONCE', capsule_id='synthetic', split_count=300))
+    save(path, spec)
+    calls = install_workers(monkeypatch, spec)
+    runner.run(path, 'synthetic-commit')
+    assert len([c for c in calls if c[0] == 'predict_d92_sourcefree_head.py']) == 4
+    assert not any(c[0] == 'predict_d92_support_cv.py' for c in calls)
+    assert calls[-1][0] == 'score_d92_confirmation.py'
+    assert any(c[0] == 'build_d92_confirmation_data.py' for c in calls) is (not reuse)
+    root = Path(spec['execution']['remote_run_root'])
+    assert all(r['status'] == 'PREDICTIONS_COMPLETE' for r in runner.read(root / 'state.json').values())
+
+
+def test_sfhead_failure_blocks_score_while_healthy_rows_finish(tmp_path, monkeypatch):
+    path, spec = specification(tmp_path)
+    spec['confirmation'].update(dict(zip(runner.CANDIDATE_FIELDS, runner.CANDIDATES[1])))
+    spec['confirmation']['expected_split_count'] = 300
+    save(path, spec)
+    calls = install_workers(monkeypatch, spec, fail=('predict_d92_sourcefree_head.py', '2026092701'))
+    with pytest.raises(RuntimeError, match='synthetic failure'):
+        runner.run(path, 'synthetic-commit')
+    assert not any(c[0] == 'score_d92_confirmation.py' for c in calls)
+    root = Path(spec['execution']['remote_run_root'])
+    state = runner.read(root / 'state.json')
+    assert state['seed-2026092701']['status'] == 'TECHNICAL_FAILURE'
+    assert all(state[f'seed-{seed}']['status'] == 'PREDICTIONS_COMPLETE' for seed in runner.MODEL_SEEDS[1:])
+
+
+@pytest.mark.parametrize('key,value', [
+    ('candidate_method', 'arbitrary'), ('candidate_folder', '../escape'),
+    ('candidate_predictor', '../other.py'), ('candidate_mode', 'd92_scv_registration'),
+])
+def test_illegal_candidate_combination_rejected_before_run_creation(tmp_path, key, value):
+    path, spec = specification(tmp_path)
+    spec['confirmation'].update(dict(zip(runner.CANDIDATE_FIELDS, runner.CANDIDATES[1])))
+    spec['confirmation'][key] = value
+    save(path, spec)
+    with pytest.raises(ValueError, match='combination is not allowed'):
+        runner.run(path, 'synthetic-commit')
+    assert not Path(spec['execution']['remote_run_root']).exists()
+
+
+def test_fresh_capsule_split_count_must_match_preregistered_count(tmp_path, monkeypatch):
+    path, spec = specification(tmp_path)
+    spec['confirmation']['expected_split_count'] = 300
+    save(path, spec)
+    calls = install_workers(monkeypatch, spec)
+    original = runner.invoke
+    def wrong_count(tool, arguments, log, **kwargs):
+        original(tool, arguments, log, **kwargs)
+        if tool == 'build_d92_confirmation_data.py':
+            manifest_path = Path(spec['confirmation']['capsule']) / 'manifest.json'
+            manifest = runner.read(manifest_path)
+            manifest['split_count'] = 900
+            save(manifest_path, manifest)
+    monkeypatch.setattr(runner, 'invoke', wrong_count)
+    with pytest.raises(ValueError, match='expected_split_count'):
+        runner.run(path, 'synthetic-commit')
+    assert [c[0] for c in calls] == ['build_d92_confirmation_data.py']
 
 
 @pytest.mark.parametrize('tool', ['cvs_d92_matched.py', 'predict_d92_support_cv.py'])

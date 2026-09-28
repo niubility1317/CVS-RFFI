@@ -13,6 +13,19 @@ import time
 
 RELEASE = Path(__file__).resolve().parents[1]
 MODEL_SEEDS = (2026092701, 2026092702, 2026092703, 2026092704)
+CANDIDATE_FIELDS = ('candidate_method', 'candidate_folder', 'candidate_predictor', 'candidate_mode')
+CANDIDATES = (
+    ('D92-SCV-v1', 'scv', 'predict_d92_support_cv.py', 'd92_scv_registration'),
+    ('D92-SFHead-v1', 'sfhead', 'predict_d92_sourcefree_head.py', 'd92_sfhead_registration'),
+)
+
+
+def candidate_definition(confirmation):
+    """An exact allowlisted combination prevents script/path/method substitution."""
+    values = tuple(confirmation.get(name, default) for name, default in zip(CANDIDATE_FIELDS, CANDIDATES[0]))
+    if values not in CANDIDATES:
+        raise ValueError('Candidate method/folder/predictor/mode combination is not allowed')
+    return dict(zip(CANDIDATE_FIELDS, values))
 
 
 def read(path):
@@ -98,6 +111,10 @@ def run(spec_path, commit):
     spec = read(spec_path)
     root = Path(spec['execution']['remote_run_root'])
     confirmation, rows = spec['confirmation'], spec['rows']
+    candidate = candidate_definition(confirmation)
+    expected_splits = confirmation.get('expected_split_count')
+    if expected_splits is not None and (type(expected_splits) is not int or expected_splits <= 0):
+        raise ValueError('expected_split_count must be a positive integer')
     if sorted(r['seeds']['model'] for r in rows) != list(MODEL_SEEDS):
         raise ValueError('Expected exactly the four preregistered fresh model seeds')
     if len({r['row_id'] for r in rows}) != len(rows):
@@ -143,8 +160,11 @@ def run(spec_path, commit):
         if (manifest.get('protocol_schema') != 'p2_min_v1' or manifest.get('phase2_data_status') != 'VALIDATED_ONCE'
                 or not isinstance(manifest.get('split_count'), int) or manifest['split_count'] <= 0):
             raise ValueError('Data builder did not produce a validated complete capsule')
+        if expected_splits is not None and manifest['split_count'] != expected_splits:
+            raise ValueError('Capsule split count differs from preregistered expected_split_count')
         if reuse_id is not None:
-            if not isinstance(reuse_id, str) or not reuse_id or manifest.get('capsule_id') != reuse_id or manifest['split_count'] != 900:
+            if (not isinstance(reuse_id, str) or not reuse_id or manifest.get('capsule_id') != reuse_id
+                    or manifest['split_count'] != (900 if expected_splits is None else expected_splits)):
                 raise ValueError('Existing validated capsule identity/split count mismatch')
             write(root / 'data_reuse.json', dict(status='VALIDATED_ONCE_REUSED', capsule_id=reuse_id,
                   capsule=confirmation['capsule'], split_count=manifest['split_count'],
@@ -175,13 +195,14 @@ def run(spec_path, commit):
                 invoke('cvs_d92_matched.py', ['predict', '--features', output / 'received_features' / 'received_features.npz',
                     '--capsule', confirmation['capsule'], '--ground', output / 'ground', '--output', output,
                     '--seed', row['seeds']['model']], output / 'd92.log')
-                update(row_id, status='SCV_PREDICTING')
-                invoke('predict_d92_support_cv.py', ['--row-root', output, '--capsule', confirmation['capsule'],
-                    '--output', output / 'scv', '--config', confirmation['candidate_config'],
+                folder = candidate['candidate_folder']
+                update(row_id, status=folder.upper() + '_PREDICTING')
+                invoke(candidate['candidate_predictor'], ['--row-root', output, '--capsule', confirmation['capsule'],
+                    '--output', output / folder, '--config', confirmation['candidate_config'],
                     '--expected-capsule-id', manifest['capsule_id'], '--expected-checkpoint-sha256', hashes[row_id]],
-                    output / 'scv.log')
-                for folder in (output, output / 'scv'):
-                    marker = read(folder / 'predictions_complete.json')
+                    output / (folder + '.log'))
+                for prediction_root in (output, output / folder):
+                    marker = read(prediction_root / 'predictions_complete.json')
                     if (marker.get('status') != 'PREDICTIONS_COMPLETE' or marker.get('split_count') != manifest['split_count']
                             or marker.get('capsule_id') != manifest['capsule_id'] or marker.get('truth_read') is not False):
                         raise ValueError('Paired method predictions incomplete')

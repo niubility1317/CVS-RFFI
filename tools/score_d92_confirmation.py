@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 
 import numpy as np
+from run_d92_confirmation import candidate_definition
 
 
 def read(path):
@@ -13,17 +14,21 @@ def read(path):
 
 def load_frozen_records(spec):
     """This validation phase has no truth-path access."""
+    candidate=candidate_definition(spec['confirmation'])
     root=Path(spec['execution']['remote_run_root']);state=read(root/'state.json')
     if set(state)!=set(r['row_id'] for r in spec['rows']) or any(v['status']!='PREDICTIONS_COMPLETE' for v in state.values()):
         raise ValueError('All preregistered model rows must finish before scoring')
     capsule=Path(spec['confirmation']['capsule']);manifest=read(capsule/'manifest.json')
+    expected_splits=spec['confirmation'].get('expected_split_count')
+    if expected_splits is not None and (type(expected_splits) is not int or expected_splits<=0 or manifest['split_count']!=expected_splits):
+        raise ValueError('Capsule split count differs from preregistered expected_split_count')
     with np.load(capsule/'received.npz',allow_pickle=False) as d:ids=d['ids'].astype(str)
     if len(ids)!=len(set(ids)):raise ValueError('Repeated physical IDs')
     splits={p.stem:read(p) for p in (capsule/'splits').glob('*.json')}
     if len(splits)!=manifest['split_count']:raise ValueError('Incomplete capsule split set')
     records=[]
     for row in spec['rows']:
-        for method,folder in [('D92',Path(row['output_root'])),('D92-SCV-v1',Path(row['output_root'])/'scv')]:
+        for method,folder in [('D92',Path(row['output_root'])),(candidate['candidate_method'],Path(row['output_root'])/candidate['candidate_folder'])]:
             marker=read(folder/'predictions_complete.json')
             if marker.get('status')!='PREDICTIONS_COMPLETE' or marker.get('split_count')!=len(splits) or marker.get('capsule_id')!=manifest['capsule_id']:
                 raise ValueError('Incomplete method predictions')
@@ -45,7 +50,7 @@ def load_frozen_records(spec):
                     if len(record['classes'])!=6 or key in dg_seen:raise ValueError('Invalid DG record')
                     dg_seen.add(key)
                 else:
-                    expected='d92_registration' if method=='D92' else 'd92_scv_registration'
+                    expected='d92_registration' if method=='D92' else candidate['candidate_mode']
                     if record['mode']!=expected or sid in main_seen:raise ValueError('Invalid/duplicate method record')
                     main_seen.add(sid)
                 records.append((row['row_id'],row['seeds']['model'],method,record))

@@ -9,7 +9,7 @@ ROOT=Path(__file__).resolve().parents[1]
 RELEASE='d92_scv_confirmation_20260928_r01'
 FLAGS=['-F','E:/type10-7/tools/n607_ssh_config','-o','BatchMode=yes','-o','ConnectTimeout=10']
 PATHS=['code','tools/cvs_native_artifacts.py','tools/cvs_d92_matched.py','tools/cvs_d92_covariance_matched.py',
-    'tools/build_d92_confirmation_data.py','tools/predict_d92_support_cv.py','tools/score_d92_confirmation.py','tools/run_d92_confirmation.py',
+    'tools/build_d92_confirmation_data.py','tools/predict_d92_support_cv.py','tools/predict_d92_sourcefree_head.py','tools/score_d92_confirmation.py','tools/run_d92_confirmation.py',
     'configs/d92_confirmation_20260928.json','configs/d92_confirmation_data_20260928.json','configs/d92_scv_frozen_20260928.json']
 REMOTE=r'''
 import hashlib,json,os,shutil,subprocess,tarfile
@@ -44,13 +44,17 @@ print(json.dumps(launch))
 def main():
     p=argparse.ArgumentParser();p.add_argument('--spec',default='configs/d92_confirmation_20260928.json');p.add_argument('--release',default=RELEASE)
     a=p.parse_args();release_name=a.release
-    paths_to_pack=[v for v in PATHS if v!='configs/d92_confirmation_20260928.json']+[a.spec]
+    spec=json.loads((ROOT/a.spec).read_text(encoding='utf-8'))
+    data_config='configs/'+Path(spec['confirmation']['data_config']).name
+    candidate_config='configs/'+Path(spec['confirmation']['candidate_config']).name
+    for local,remote in [(data_config,spec['confirmation']['data_config']),(candidate_config,spec['confirmation']['candidate_config'])]:
+        if remote!=spec['code']['cwd']+'/'+local:raise ValueError('Configuration outside pinned release')
+    paths_to_pack=[v for v in PATHS if not v.startswith('configs/')]+[a.spec,data_config,candidate_config]
     commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip()
     branch=subprocess.check_output(['git','branch','--show-current'],cwd=ROOT,text=True).strip()
     if subprocess.check_output(['git','ls-remote','origin','refs/heads/'+branch],cwd=ROOT,text=True).split()[0]!=commit:raise ValueError('Release commit not pushed')
     if subprocess.check_output(['git','status','--porcelain','--',*paths_to_pack],cwd=ROOT,text=True).strip():raise ValueError('Uncommitted release paths')
-    spec=json.loads((ROOT/a.spec).read_text(encoding='utf-8'))
-    cfg=json.loads((ROOT/'configs/d92_confirmation_data_20260928.json').read_text(encoding='utf-8'))
+    cfg=json.loads((ROOT/data_config).read_text(encoding='utf-8'))
     out=Path('E:/type10-7/local_artifacts/d92_upgrade_20260928')/release_name;out.mkdir(parents=True,exist_ok=True)
     archive=out/(release_name+'.tar')
     if archive.exists():raise FileExistsError('Local archive already exists; reconcile')
