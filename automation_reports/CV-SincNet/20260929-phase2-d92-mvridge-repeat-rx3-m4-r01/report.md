@@ -3,7 +3,7 @@
 - run_id：`20260929-phase2-d92-mvridge-repeat-rx3-m4-r01`
 - group_id：`d92-fixed-phase1-mvridge-repeated-benchmark`；类别：`cvs`；阶段：`Phase2-repeated-benchmark`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -31,3 +31,5 @@
 MVRidge PLANNED: frozen physical-weighted four-view supervised ridge1, complete matrix, source-free/cache-only CPU. Resource/path preflight VERIFIED. No experiment launched; root sole launch owner.
 
 MVRidge local validation VERIFIED: 9 core tests, 13 predictor tests, 57 collector tests, and relevant orchestration/scoring/summary tests passed. Independent P0/P1 review found no blockers. Frozen method and full matrix are ready for committed publication; not launched at this entry.
+
+RUNNING VERIFIED by readback_1790618402.json; release 71e4bef490bfae3acf907cc3f488b9ca62172a0f. Full matrix CPU run uses frozen pure received features and zero new source payload. No duplicate launch; await both cohorts before reading results.

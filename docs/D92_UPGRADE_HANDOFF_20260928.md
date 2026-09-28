@@ -1,10 +1,10 @@
 # D92优化当前交接
 
-## 当前状态：MVRidge实现中，完整矩阵已预登记，尚未启动
+## 当前状态：MVRidge两组已启动，完整矩阵运行中
 
 2026-09-29：上一轮OSC全部终态。新工作先完成4800fits纯support OOF信息边界分析（docs/D92_OSC_SUPPORT_DIAGNOSTIC_20260929.md/json），未按query成绩选row/调参。盲态设计排除了Gaussian轨道矩近似及重复ground先验坐标变换，唯一新机制为`D92-MVRidge-v1`：固定identity/FFT=1:4，物理样本总view权重1，全部注册标签共同ridge判别回归，ridge系数固定1，解析解。K1利用多类标签与变换一致性，不声称新增独立观测；各fold所有拟合状态隔离，CV仅诊断。设计在docs/D92_SUPPORT_INFORMATION_DESIGN_20260929.md。
 
-core/entry/audit分别由source_aux/confirmation_runner/d92_p0_review负责，保持前两agent目标成绩盲态；root负责集成/登记/发布。run `20260929-phase2-d92-mvridge-repeat-rx3-m4-r01`及rx1已PLANNED、spec launch-ready VALID；资源/新路径证据`mvridge_preflight_20260929.json`。候选编排/评分/汇总测试通过，核心/入口/审计测试进行中。尚未发布，无MVRidge实测成绩；完成唯一P0/P1后镜像commit/push/OID再由root启动。复用现有BNNA纯冻结四相位cache和原D92基准，所有模型/算法拟合状态不继承。goal ACTIVE，无权限缺口。
+core/entry/audit分别由source_aux/confirmation_runner/d92_p0_review负责，保持前两agent目标成绩盲态；root负责集成/登记/发布。run `20260929-phase2-d92-mvridge-repeat-rx3-m4-r01`及rx1已启动；资源/新路径证据`mvridge_preflight_20260929.json`。核心9项、入口13项、collector57项及编排/评分/汇总测试通过，唯一P0/P1无阻断。release commit `71e4bef490bfae3acf907cc3f488b9ca62172a0f`已push并独立核对远端OID。两组启动readback均`readback_1790618402.json`；rx3 supervisor PID2550613、四个child argv/CWD正确，已完成约104至107/900任务；rx1 supervisor PID2551256正在验证冻结缓存。禁止重复启动。两组全部终态后才下载/读取成绩。复用现有BNNA纯冻结四相位cache和原D92基准，所有模型/算法拟合状态不继承。goal ACTIVE，无权限缺口。下一步终态核验、fit/算术/原baseline审计和完整联合报告。finalizer43项合成案例通过，尚未用于实测结果。
 
 ## 当前状态：OSC r02完整结果已核验，K5/10/20改善但K1未达标
 
