@@ -9,9 +9,21 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
+def normalize_svg(path):
+    from xml.etree import ElementTree
+    text=path.read_text(encoding='utf-8')
+    clean='\n'.join(line.rstrip() for line in text.splitlines())+'\n'
+    before=ElementTree.fromstring(text);after=ElementTree.fromstring(clean)
+    assert [(e.tag,dict((k,' '.join(v.split())) for k,v in e.attrib.items())) for e in before.iter()]==[(e.tag,dict((k,' '.join(v.split())) for k,v in e.attrib.items())) for e in after.iter()]
+    path.write_text(clean,encoding='utf-8')
+
+
 def main():
-    p=argparse.ArgumentParser();p.add_argument('--summary',type=Path,required=True);a=p.parse_args()
+    p=argparse.ArgumentParser();p.add_argument('--summary',type=Path,required=True);p.add_argument('--normalize-only',action='store_true');a=p.parse_args()
     data=json.loads(a.summary.read_text(encoding='utf-8'));out=a.summary.parent
+    if a.normalize_only:
+        for name in ['old_new_h.svg','delta_all_k_new.svg']:normalize_svg(out/name)
+        print('SVG_XML_GEOMETRY_UNCHANGED');return
     plt.rcParams.update({'font.family':'DejaVu Sans','font.size':10,'axes.spines.top':False,'axes.spines.right':False})
     keys=[('old_accuracy','Old accuracy'),('new_accuracy','New accuracy'),('harmonic_mean','Harmonic mean H')]
     fig,axes=plt.subplots(1,3,figsize=(11,3.8),sharex=True)
@@ -36,6 +48,7 @@ def main():
     fig.suptitle('D92-SCV-v1 minus D92 (percentage points); all registered class-count cells',fontsize=12)
     fig.colorbar(im,ax=axes,shrink=.7,label='percentage points',fraction=.025,pad=.025)
     fig.savefig(out/'delta_all_k_new.png',dpi=180,bbox_inches='tight');fig.savefig(out/'delta_all_k_new.svg',bbox_inches='tight');plt.close(fig)
+    for name in ['old_new_h.svg','delta_all_k_new.svg']:normalize_svg(out/name)
     print(out/'old_new_h.png');print(out/'delta_all_k_new.png')
 
 
