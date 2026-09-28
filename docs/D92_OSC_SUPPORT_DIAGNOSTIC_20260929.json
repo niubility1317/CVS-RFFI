@@ -1,0 +1,2734 @@
+{
+  "status": "VERIFIED",
+  "scope": "OSC_SUPPORT_OOF_DIAGNOSTICS_ONLY",
+  "utc": "2026-09-28T17:42:47.805528+00:00",
+  "total_fits": 4800,
+  "independent_oof_absent_k1_fits": 1200,
+  "support_oof_fits": 3600,
+  "total_heldout_physical_occurrences": 562800,
+  "weighting": "Equal registered tasks; mean macro NLL and within-task accuracy over all cells; old includes old-only; new uses joint cells only; cohorts pooled 3:1.",
+  "query_scores_read": false,
+  "query_summary_read": false,
+  "query_predictions_read": false,
+  "query_iq_read": false,
+  "fitting_or_parameter_selection": false,
+  "local_compact_inventory": [
+    {
+      "cohort": "rx3",
+      "model_seed": 2026092701,
+      "local_compact": "E:\\type10-7\\automation_reports\\CV-SincNet\\20260929-phase2-d92-osc-repeat-rx3-m4-r02\\results\\fit_logs\\cvs-daot-rc4-s2026092701\\compact.jsonl",
+      "fits": 900,
+      "bytes": 1825556
+    },
+    {
+      "cohort": "rx3",
+      "model_seed": 2026092702,
+      "local_compact": "E:\\type10-7\\automation_reports\\CV-SincNet\\20260929-phase2-d92-osc-repeat-rx3-m4-r02\\results\\fit_logs\\cvs-daot-rc4-s2026092702\\compact.jsonl",
+      "fits": 900,
+      "bytes": 1825587
+    },
+    {
+      "cohort": "rx3",
+      "model_seed": 2026092703,
+      "local_compact": "E:\\type10-7\\automation_reports\\CV-SincNet\\20260929-phase2-d92-osc-repeat-rx3-m4-r02\\results\\fit_logs\\cvs-daot-rc4-s2026092703\\compact.jsonl",
+      "fits": 900,
+      "bytes": 1826071
+    },
+    {
+      "cohort": "rx3",
+      "model_seed": 2026092704,
+      "local_compact": "E:\\type10-7\\automation_reports\\CV-SincNet\\20260929-phase2-d92-osc-repeat-rx3-m4-r02\\results\\fit_logs\\cvs-daot-rc4-s2026092704\\compact.jsonl",
+      "fits": 900,
+      "bytes": 1826019
+    },
+    {
+      "cohort": "rx1",
+      "model_seed": 2026092701,
+      "local_compact": "E:\\type10-7\\automation_reports\\CV-SincNet\\20260929-phase2-d92-osc-repeat-rx1-m4-r02\\results\\fit_logs\\cvs-daot-rc4-s2026092701\\compact.jsonl",
+      "fits": 300,
+      "bytes": 609120
+    },
+    {
+      "cohort": "rx1",
+      "model_seed": 2026092702,
+      "local_compact": "E:\\type10-7\\automation_reports\\CV-SincNet\\20260929-phase2-d92-osc-repeat-rx1-m4-r02\\results\\fit_logs\\cvs-daot-rc4-s2026092702\\compact.jsonl",
+      "fits": 300,
+      "bytes": 609067
+    },
+    {
+      "cohort": "rx1",
+      "model_seed": 2026092703,
+      "local_compact": "E:\\type10-7\\automation_reports\\CV-SincNet\\20260929-phase2-d92-osc-repeat-rx1-m4-r02\\results\\fit_logs\\cvs-daot-rc4-s2026092703\\compact.jsonl",
+      "fits": 300,
+      "bytes": 609184
+    },
+    {
+      "cohort": "rx1",
+      "model_seed": 2026092704,
+      "local_compact": "E:\\type10-7\\automation_reports\\CV-SincNet\\20260929-phase2-d92-osc-repeat-rx1-m4-r02\\results\\fit_logs\\cvs-daot-rc4-s2026092704\\compact.jsonl",
+      "fits": 300,
+      "bytes": 609177
+    }
+  ],
+  "trace_inventory": [
+    {
+      "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-osc-repeat-rx3-m4-r02/cvs-daot-rc4-s2026092701/osc/fit_trace.jsonl",
+      "rows": 900,
+      "bytes": 67814036
+    },
+    {
+      "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-osc-repeat-rx3-m4-r02/cvs-daot-rc4-s2026092702/osc/fit_trace.jsonl",
+      "rows": 900,
+      "bytes": 67813664
+    },
+    {
+      "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-osc-repeat-rx3-m4-r02/cvs-daot-rc4-s2026092703/osc/fit_trace.jsonl",
+      "rows": 900,
+      "bytes": 67818341
+    },
+    {
+      "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-osc-repeat-rx3-m4-r02/cvs-daot-rc4-s2026092704/osc/fit_trace.jsonl",
+      "rows": 900,
+      "bytes": 67813959
+    },
+    {
+      "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-osc-repeat-rx1-m4-r02/cvs-daot-rc4-s2026092701/osc/fit_trace.jsonl",
+      "rows": 300,
+      "bytes": 22622471
+    },
+    {
+      "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-osc-repeat-rx1-m4-r02/cvs-daot-rc4-s2026092702/osc/fit_trace.jsonl",
+      "rows": 300,
+      "bytes": 22610461
+    },
+    {
+      "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-osc-repeat-rx1-m4-r02/cvs-daot-rc4-s2026092703/osc/fit_trace.jsonl",
+      "rows": 300,
+      "bytes": 22612178
+    },
+    {
+      "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-osc-repeat-rx1-m4-r02/cvs-daot-rc4-s2026092704/osc/fit_trace.jsonl",
+      "rows": 300,
+      "bytes": 22615408
+    }
+  ],
+  "unique_support_ids_across_model_and_draw_reuse": 10605,
+  "trace_keys": [
+    "candidate_count",
+    "classes",
+    "config",
+    "cross_row_adapted_state_reuse",
+    "encoder_updated",
+    "final_fit",
+    "final_optimizer_steps",
+    "fit_call_seconds",
+    "fit_seconds",
+    "fold_count",
+    "folds",
+    "ground_summary_used",
+    "head_bytes",
+    "k",
+    "method",
+    "new_count",
+    "new_source_payload_bytes",
+    "old_classes",
+    "oof",
+    "optimizer_steps",
+    "persistent_state_bytes",
+    "persistent_state_bytes_scope",
+    "physical_fold_assignment",
+    "prediction_write_seconds",
+    "query_fit_rows",
+    "query_rows_used_for_fit",
+    "query_score_seconds",
+    "receiver",
+    "registered_classes",
+    "scenario",
+    "selected",
+    "selection",
+    "source_fit_rows",
+    "source_rows_used_for_fit",
+    "source_validation",
+    "source_validation_reason",
+    "split_id",
+    "steps",
+    "support_feature_bytes",
+    "support_seed"
+  ],
+  "final_fit_keys": [
+    "aligned_feature_bytes",
+    "alignment_shifts",
+    "all_states_estimated_from_trainfold_only",
+    "cholesky_bytes",
+    "coefficient_bytes",
+    "condition_bound",
+    "covariance_matrix_bytes",
+    "covariance_seconds",
+    "covariance_shape_bytes",
+    "covariance_trace",
+    "feature_energy",
+    "fit_seconds",
+    "fold",
+    "intercept_bytes",
+    "medoid_physical_ids",
+    "medoid_seconds",
+    "optimizer_steps",
+    "persistent_state_bytes",
+    "physical_df",
+    "scope",
+    "shrinkage",
+    "solve_seconds",
+    "status",
+    "template_bytes",
+    "train_k",
+    "train_physical_count",
+    "training_feature_bytes",
+    "training_physical_ids",
+    "zero_residual_tolerance"
+  ],
+  "per_k_class": [
+    {
+      "k": 5,
+      "class_id": "1-18",
+      "role": "new",
+      "task_appearances": 240,
+      "mean_nll": 6.340553208650983,
+      "mean_accuracy": 0.23833333333333334
+    },
+    {
+      "k": 5,
+      "class_id": "11-4",
+      "role": "new",
+      "task_appearances": 960,
+      "mean_nll": 7.78368324974952,
+      "mean_accuracy": 0.22395833333333334
+    },
+    {
+      "k": 5,
+      "class_id": "12-20",
+      "role": "new",
+      "task_appearances": 720,
+      "mean_nll": 6.68202612052662,
+      "mean_accuracy": 0.2722222222222222
+    },
+    {
+      "k": 5,
+      "class_id": "13-3",
+      "role": "new",
+      "task_appearances": 240,
+      "mean_nll": 7.535426279459583,
+      "mean_accuracy": 0.25666666666666665
+    },
+    {
+      "k": 5,
+      "class_id": "14-10",
+      "role": "old",
+      "task_appearances": 1200,
+      "mean_nll": 6.1832327575608454,
+      "mean_accuracy": 0.5001666666666668
+    },
+    {
+      "k": 5,
+      "class_id": "14-14",
+      "role": "new",
+      "task_appearances": 480,
+      "mean_nll": 6.737655704006803,
+      "mean_accuracy": 0.22000000000000003
+    },
+    {
+      "k": 5,
+      "class_id": "14-20",
+      "role": "new",
+      "task_appearances": 240,
+      "mean_nll": 4.781570417870165,
+      "mean_accuracy": 0.4216666666666667
+    },
+    {
+      "k": 5,
+      "class_id": "14-7",
+      "role": "old",
+      "task_appearances": 1200,
+      "mean_nll": 5.803962009831133,
+      "mean_accuracy": 0.4873333333333334
+    },
+    {
+      "k": 5,
+      "class_id": "17-11",
+      "role": "new",
+      "task_appearances": 480,
+      "mean_nll": 7.3897673941759425,
+      "mean_accuracy": 0.3154166666666667
+    },
+    {
+      "k": 5,
+      "class_id": "18-12",
+      "role": "new",
+      "task_appearances": 240,
+      "mean_nll": 6.734189906672573,
+      "mean_accuracy": 0.30333333333333334
+    },
+    {
+      "k": 5,
+      "class_id": "19-13",
+      "role": "new",
+      "task_appearances": 480,
+      "mean_nll": 5.300760318563431,
+      "mean_accuracy": 0.43291666666666667
+    },
+    {
+      "k": 5,
+      "class_id": "19-8",
+      "role": "new",
+      "task_appearances": 240,
+      "mean_nll": 6.418463975374627,
+      "mean_accuracy": 0.35083333333333333
+    },
+    {
+      "k": 5,
+      "class_id": "2-17",
+      "role": "new",
+      "task_appearances": 480,
+      "mean_nll": 4.956421568098937,
+      "mean_accuracy": 0.5125
+    },
+    {
+      "k": 5,
+      "class_id": "2-19",
+      "role": "new",
+      "task_appearances": 240,
+      "mean_nll": 4.824820253697316,
+      "mean_accuracy": 0.3433333333333334
+    },
+    {
+      "k": 5,
+      "class_id": "2-3",
+      "role": "new",
+      "task_appearances": 240,
+      "mean_nll": 6.671743083944327,
+      "mean_accuracy": 0.2866666666666667
+    },
+    {
+      "k": 5,
+      "class_id": "20-12",
+      "role": "new",
+      "task_appearances": 720,
+      "mean_nll": 6.7345972294943435,
+      "mean_accuracy": 0.3052777777777778
+    },
+    {
+      "k": 5,
+      "class_id": "20-15",
+      "role": "old",
+      "task_appearances": 1200,
+      "mean_nll": 5.171740575102296,
+      "mean_accuracy": 0.5138333333333334
+    },
+    {
+      "k": 5,
+      "class_id": "20-19",
+      "role": "old",
+      "task_appearances": 1200,
+      "mean_nll": 7.839408104513028,
+      "mean_accuracy": 0.36050000000000004
+    },
+    {
+      "k": 5,
+      "class_id": "20-7",
+      "role": "new",
+      "task_appearances": 240,
+      "mean_nll": 4.891574995826388,
+      "mean_accuracy": 0.5875
+    },
+    {
+      "k": 5,
+      "class_id": "3-13",
+      "role": "new",
+      "task_appearances": 960,
+      "mean_nll": 7.818359231781651,
+      "mean_accuracy": 0.24729166666666666
+    },
+    {
+      "k": 5,
+      "class_id": "4-1",
+      "role": "new",
+      "task_appearances": 480,
+      "mean_nll": 7.263910018838177,
+      "mean_accuracy": 0.265
+    },
+    {
+      "k": 5,
+      "class_id": "5-20",
+      "role": "new",
+      "task_appearances": 720,
+      "mean_nll": 4.826920525870442,
+      "mean_accuracy": 0.3938888888888889
+    },
+    {
+      "k": 5,
+      "class_id": "6-15",
+      "role": "old",
+      "task_appearances": 1200,
+      "mean_nll": 5.61975203867235,
+      "mean_accuracy": 0.4956666666666667
+    },
+    {
+      "k": 5,
+      "class_id": "7-7",
+      "role": "new",
+      "task_appearances": 240,
+      "mean_nll": 8.382566976980701,
+      "mean_accuracy": 0.15916666666666668
+    },
+    {
+      "k": 5,
+      "class_id": "8-1",
+      "role": "new",
+      "task_appearances": 240,
+      "mean_nll": 5.888686112217763,
+      "mean_accuracy": 0.2833333333333333
+    },
+    {
+      "k": 5,
+      "class_id": "8-20",
+      "role": "old",
+      "task_appearances": 1200,
+      "mean_nll": 5.087296931122515,
+      "mean_accuracy": 0.7568333333333334
+    },
+    {
+      "k": 10,
+      "class_id": "1-18",
+      "role": "new",
+      "task_appearances": 240,
+      "mean_nll": 3.09399877502931,
+      "mean_accuracy": 0.32875000000000004
+    },
+    {
+      "k": 10,
+      "class_id": "11-4",
+      "role": "new",
+      "task_appearances": 960,
+      "mean_nll": 3.598146836022421,
+      "mean_accuracy": 0.2971875
+    },
+    {
+      "k": 10,
+      "class_id": "12-20",
+      "role": "new",
+      "task_appearances": 720,
+      "mean_nll": 3.242967386016491,
+      "mean_accuracy": 0.3433333333333333
+    },
+    {
+      "k": 10,
+      "class_id": "13-3",
+      "role": "new",
+      "task_appearances": 240,
+      "mean_nll": 3.532153849695475,
+      "mean_accuracy": 0.3854166666666667
+    },
+    {
+      "k": 10,
+      "class_id": "14-10",
+      "role": "old",
+      "task_appearances": 1200,
+      "mean_nll": 2.7376221927506337,
+      "mean_accuracy": 0.6144999999999999
+    },
+    {
+      "k": 10,
+      "class_id": "14-14",
+      "role": "new",
+      "task_appearances": 480,
+      "mean_nll": 3.41213066054726,
+      "mean_accuracy": 0.27687500000000004
+    },
+    {
+      "k": 10,
+      "class_id": "14-20",
+      "role": "new",
+      "task_appearances": 240,
+      "mean_nll": 2.506753467763945,
+      "mean_accuracy": 0.51875
+    },
+    {
+      "k": 10,
+      "class_id": "14-7",
+      "role": "old",
+      "task_appearances": 1200,
+      "mean_nll": 2.968874625538943,
+      "mean_accuracy": 0.5051666666666667
+    },
+    {
+      "k": 10,
+      "class_id": "17-11",
+      "role": "new",
+      "task_appearances": 480,
+      "mean_nll": 3.5168038110952415,
+      "mean_accuracy": 0.39291666666666664
+    },
+    {
+      "k": 10,
+      "class_id": "18-12",
+      "role": "new",
+      "task_appearances": 240,
+      "mean_nll": 3.5394430641028545,
+      "mean_accuracy": 0.385
+    },
+    {
+      "k": 10,
+      "class_id": "19-13",
+      "role": "new",
+      "task_appearances": 480,
+      "mean_nll": 2.600412916945638,
+      "mean_accuracy": 0.518125
+    },
+    {
+      "k": 10,
+      "class_id": "19-8",
+      "role": "new",
+      "task_appearances": 240,
+      "mean_nll": 3.0992355707273953,
+      "mean_accuracy": 0.4454166666666667
+    },
+    {
+      "k": 10,
+      "class_id": "2-17",
+      "role": "new",
+      "task_appearances": 480,
+      "mean_nll": 2.301033732518019,
+      "mean_accuracy": 0.6179166666666667
+    },
+    {
+      "k": 10,
+      "class_id": "2-19",
+      "role": "new",
+      "task_appearances": 240,
+      "mean_nll": 2.846339658361293,
+      "mean_accuracy": 0.40041666666666664
+    },
+    {
+      "k": 10,
+      "class_id": "2-3",
+      "role": "new",
+      "task_appearances": 240,
+      "mean_nll": 3.4615893209136748,
+      "mean_accuracy": 0.40166666666666667
+    },
+    {
+      "k": 10,
+      "class_id": "20-12",
+      "role": "new",
+      "task_appearances": 720,
+      "mean_nll": 3.0391280929651967,
+      "mean_accuracy": 0.41277777777777774
+    },
+    {
+      "k": 10,
+      "class_id": "20-15",
+      "role": "old",
+      "task_appearances": 1200,
+      "mean_nll": 2.2178960457840495,
+      "mean_accuracy": 0.6349166666666667
+    },
+    {
+      "k": 10,
+      "class_id": "20-19",
+      "role": "old",
+      "task_appearances": 1200,
+      "mean_nll": 3.37213121207854,
+      "mean_accuracy": 0.44975000000000004
+    },
+    {
+      "k": 10,
+      "class_id": "20-7",
+      "role": "new",
+      "task_appearances": 240,
+      "mean_nll": 2.310979440798842,
+      "mean_accuracy": 0.6704166666666667
+    },
+    {
+      "k": 10,
+      "class_id": "3-13",
+      "role": "new",
+      "task_appearances": 960,
+      "mean_nll": 3.6785202960452295,
+      "mean_accuracy": 0.3223958333333333
+    },
+    {
+      "k": 10,
+      "class_id": "4-1",
+      "role": "new",
+      "task_appearances": 480,
+      "mean_nll": 3.5109068627148274,
+      "mean_accuracy": 0.33541666666666664
+    },
+    {
+      "k": 10,
+      "class_id": "5-20",
+      "role": "new",
+      "task_appearances": 720,
+      "mean_nll": 2.250946949321601,
+      "mean_accuracy": 0.5434722222222222
+    },
+    {
+      "k": 10,
+      "class_id": "6-15",
+      "role": "old",
+      "task_appearances": 1200,
+      "mean_nll": 2.6291341283976752,
+      "mean_accuracy": 0.543
+    },
+    {
+      "k": 10,
+      "class_id": "7-7",
+      "role": "new",
+      "task_appearances": 240,
+      "mean_nll": 4.13756126134486,
+      "mean_accuracy": 0.19583333333333333
+    },
+    {
+      "k": 10,
+      "class_id": "8-1",
+      "role": "new",
+      "task_appearances": 240,
+      "mean_nll": 3.201372878978798,
+      "mean_accuracy": 0.3920833333333333
+    },
+    {
+      "k": 10,
+      "class_id": "8-20",
+      "role": "old",
+      "task_appearances": 1200,
+      "mean_nll": 2.718073452101979,
+      "mean_accuracy": 0.7935833333333333
+    },
+    {
+      "k": 20,
+      "class_id": "1-18",
+      "role": "new",
+      "task_appearances": 240,
+      "mean_nll": 2.4830930609250226,
+      "mean_accuracy": 0.33875
+    },
+    {
+      "k": 20,
+      "class_id": "11-4",
+      "role": "new",
+      "task_appearances": 960,
+      "mean_nll": 2.2390956458789715,
+      "mean_accuracy": 0.37921875
+    },
+    {
+      "k": 20,
+      "class_id": "12-20",
+      "role": "new",
+      "task_appearances": 720,
+      "mean_nll": 2.3239983544588485,
+      "mean_accuracy": 0.37145833333333333
+    },
+    {
+      "k": 20,
+      "class_id": "13-3",
+      "role": "new",
+      "task_appearances": 240,
+      "mean_nll": 2.3919555756054867,
+      "mean_accuracy": 0.444375
+    },
+    {
+      "k": 20,
+      "class_id": "14-10",
+      "role": "old",
+      "task_appearances": 1200,
+      "mean_nll": 1.7615633016371552,
+      "mean_accuracy": 0.6538333333333334
+    },
+    {
+      "k": 20,
+      "class_id": "14-14",
+      "role": "new",
+      "task_appearances": 480,
+      "mean_nll": 2.5072666797638976,
+      "mean_accuracy": 0.34010416666666665
+    },
+    {
+      "k": 20,
+      "class_id": "14-20",
+      "role": "new",
+      "task_appearances": 240,
+      "mean_nll": 1.680329064194954,
+      "mean_accuracy": 0.614375
+    },
+    {
+      "k": 20,
+      "class_id": "14-7",
+      "role": "old",
+      "task_appearances": 1200,
+      "mean_nll": 1.84656149897746,
+      "mean_accuracy": 0.5664583333333333
+    },
+    {
+      "k": 20,
+      "class_id": "17-11",
+      "role": "new",
+      "task_appearances": 480,
+      "mean_nll": 2.091900643194572,
+      "mean_accuracy": 0.5113541666666667
+    },
+    {
+      "k": 20,
+      "class_id": "18-12",
+      "role": "new",
+      "task_appearances": 240,
+      "mean_nll": 2.478370854907539,
+      "mean_accuracy": 0.41958333333333336
+    },
+    {
+      "k": 20,
+      "class_id": "19-13",
+      "role": "new",
+      "task_appearances": 480,
+      "mean_nll": 1.587113298630104,
+      "mean_accuracy": 0.6186458333333333
+    },
+    {
+      "k": 20,
+      "class_id": "19-8",
+      "role": "new",
+      "task_appearances": 240,
+      "mean_nll": 2.1199610113200564,
+      "mean_accuracy": 0.5539583333333333
+    },
+    {
+      "k": 20,
+      "class_id": "2-17",
+      "role": "new",
+      "task_appearances": 480,
+      "mean_nll": 1.5807648377588461,
+      "mean_accuracy": 0.6887500000000001
+    },
+    {
+      "k": 20,
+      "class_id": "2-19",
+      "role": "new",
+      "task_appearances": 240,
+      "mean_nll": 2.2989077986085418,
+      "mean_accuracy": 0.4608333333333333
+    },
+    {
+      "k": 20,
+      "class_id": "2-3",
+      "role": "new",
+      "task_appearances": 240,
+      "mean_nll": 2.236741628243979,
+      "mean_accuracy": 0.5197916666666667
+    },
+    {
+      "k": 20,
+      "class_id": "20-12",
+      "role": "new",
+      "task_appearances": 720,
+      "mean_nll": 1.9988772263682484,
+      "mean_accuracy": 0.46013888888888893
+    },
+    {
+      "k": 20,
+      "class_id": "20-15",
+      "role": "old",
+      "task_appearances": 1200,
+      "mean_nll": 1.4645403962330112,
+      "mean_accuracy": 0.6823750000000001
+    },
+    {
+      "k": 20,
+      "class_id": "20-19",
+      "role": "old",
+      "task_appearances": 1200,
+      "mean_nll": 2.021697559035922,
+      "mean_accuracy": 0.5158333333333334
+    },
+    {
+      "k": 20,
+      "class_id": "20-7",
+      "role": "new",
+      "task_appearances": 240,
+      "mean_nll": 1.651339559083278,
+      "mean_accuracy": 0.7277083333333334
+    },
+    {
+      "k": 20,
+      "class_id": "3-13",
+      "role": "new",
+      "task_appearances": 960,
+      "mean_nll": 2.404356064291356,
+      "mean_accuracy": 0.37390625
+    },
+    {
+      "k": 20,
+      "class_id": "4-1",
+      "role": "new",
+      "task_appearances": 480,
+      "mean_nll": 2.4582114150426175,
+      "mean_accuracy": 0.3692708333333333
+    },
+    {
+      "k": 20,
+      "class_id": "5-20",
+      "role": "new",
+      "task_appearances": 720,
+      "mean_nll": 1.5830290560773679,
+      "mean_accuracy": 0.6102083333333334
+    },
+    {
+      "k": 20,
+      "class_id": "6-15",
+      "role": "old",
+      "task_appearances": 1200,
+      "mean_nll": 1.6866210119098826,
+      "mean_accuracy": 0.5881666666666666
+    },
+    {
+      "k": 20,
+      "class_id": "7-7",
+      "role": "new",
+      "task_appearances": 240,
+      "mean_nll": 2.9466877176415327,
+      "mean_accuracy": 0.2502083333333333
+    },
+    {
+      "k": 20,
+      "class_id": "8-1",
+      "role": "new",
+      "task_appearances": 240,
+      "mean_nll": 2.2064948420467405,
+      "mean_accuracy": 0.47875
+    },
+    {
+      "k": 20,
+      "class_id": "8-20",
+      "role": "old",
+      "task_appearances": 1200,
+      "mean_nll": 1.8138307719745956,
+      "mean_accuracy": 0.81
+    }
+  ],
+  "per_k": [
+    {
+      "k": 1,
+      "fits": 1200,
+      "oof_fits": 0,
+      "joint_fits": 960,
+      "heldout_physical_occurrences": 0,
+      "train_held_per_class_fold_patterns": [
+        []
+      ],
+      "final_status_counts": {
+        "ZERO_PHYSICAL_RESIDUAL": 1200
+      },
+      "mean_support_oof": {
+        "macro_nll": null,
+        "old_nll": null,
+        "new_nll": null,
+        "accuracy": null,
+        "old_accuracy": null,
+        "new_accuracy": null
+      },
+      "final_covariance_trace_range": [
+        0.0,
+        0.0
+      ],
+      "final_feature_energy_range": [
+        0.9999999999999997,
+        1.0
+      ]
+    },
+    {
+      "k": 5,
+      "fits": 1200,
+      "oof_fits": 1200,
+      "joint_fits": 960,
+      "heldout_physical_occurrences": 80400,
+      "train_held_per_class_fold_patterns": [
+        [
+          [
+            3,
+            2
+          ],
+          [
+            3,
+            2
+          ],
+          [
+            4,
+            1
+          ]
+        ]
+      ],
+      "final_status_counts": {
+        "SHARED_COVARIANCE_FIT": 1200
+      },
+      "mean_support_oof": {
+        "macro_nll": 6.278182015995172,
+        "old_nll": 5.950898736133695,
+        "new_nll": 6.944153805014761,
+        "accuracy": 0.45249813034188036,
+        "old_accuracy": 0.5190555555555556,
+        "new_accuracy": 0.31569791666666663
+      },
+      "final_covariance_trace_range": [
+        0.07709216540006902,
+        0.5287380519326018
+      ],
+      "final_feature_energy_range": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "k": 10,
+      "fits": 1200,
+      "oof_fits": 1200,
+      "joint_fits": 960,
+      "heldout_physical_occurrences": 160800,
+      "train_held_per_class_fold_patterns": [
+        [
+          [
+            6,
+            4
+          ],
+          [
+            7,
+            3
+          ],
+          [
+            7,
+            3
+          ]
+        ]
+      ],
+      "final_status_counts": {
+        "SHARED_COVARIANCE_FIT": 1200
+      },
+      "mean_support_oof": {
+        "macro_nll": 2.908096631538054,
+        "old_nll": 2.773955276108637,
+        "new_nll": 3.2069704013520672,
+        "accuracy": 0.5287187621406372,
+        "old_accuracy": 0.5901527777777777,
+        "new_accuracy": 0.40372916666666664
+      },
+      "final_covariance_trace_range": [
+        0.0903000975421645,
+        0.5198965650975425
+      ],
+      "final_feature_energy_range": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "k": 20,
+      "fits": 1200,
+      "oof_fits": 1200,
+      "joint_fits": 960,
+      "heldout_physical_occurrences": 321600,
+      "train_held_per_class_fold_patterns": [
+        [
+          [
+            13,
+            7
+          ],
+          [
+            13,
+            7
+          ],
+          [
+            14,
+            6
+          ]
+        ]
+      ],
+      "final_status_counts": {
+        "SHARED_COVARIANCE_FIT": 1200
+      },
+      "mean_support_oof": {
+        "macro_nll": 1.840714609904775,
+        "old_nll": 1.765802423294671,
+        "new_nll": 2.037518119098653,
+        "accuracy": 0.5803319614413365,
+        "old_accuracy": 0.6361111111111112,
+        "new_accuracy": 0.46757031250000003
+      },
+      "final_covariance_trace_range": [
+        0.09994449221556242,
+        0.5004801689494249
+      ],
+      "final_feature_energy_range": [
+        1.0,
+        1.0
+      ]
+    }
+  ],
+  "per_cohort_k": [
+    {
+      "cohort": "rx3",
+      "k": 1,
+      "fits": 900,
+      "oof_fits": 0,
+      "joint_fits": 720,
+      "heldout_physical_occurrences": 0,
+      "train_held_per_class_fold_patterns": [
+        []
+      ],
+      "final_status_counts": {
+        "ZERO_PHYSICAL_RESIDUAL": 900
+      },
+      "mean_support_oof": {
+        "macro_nll": null,
+        "old_nll": null,
+        "new_nll": null,
+        "accuracy": null,
+        "old_accuracy": null,
+        "new_accuracy": null
+      },
+      "final_covariance_trace_range": [
+        0.0,
+        0.0
+      ],
+      "final_feature_energy_range": [
+        0.9999999999999997,
+        1.0
+      ]
+    },
+    {
+      "cohort": "rx3",
+      "k": 5,
+      "fits": 900,
+      "oof_fits": 900,
+      "joint_fits": 720,
+      "heldout_physical_occurrences": 60300,
+      "train_held_per_class_fold_patterns": [
+        [
+          [
+            3,
+            2
+          ],
+          [
+            3,
+            2
+          ],
+          [
+            4,
+            1
+          ]
+        ]
+      ],
+      "final_status_counts": {
+        "SHARED_COVARIANCE_FIT": 900
+      },
+      "mean_support_oof": {
+        "macro_nll": 6.973870453680732,
+        "old_nll": 6.701474942705362,
+        "new_nll": 7.539139172428093,
+        "accuracy": 0.41322309634809634,
+        "old_accuracy": 0.4667037037037037,
+        "new_accuracy": 0.2965138888888889
+      },
+      "final_covariance_trace_range": [
+        0.13027601900969804,
+        0.5287380519326018
+      ],
+      "final_feature_energy_range": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "cohort": "rx3",
+      "k": 10,
+      "fits": 900,
+      "oof_fits": 900,
+      "joint_fits": 720,
+      "heldout_physical_occurrences": 120600,
+      "train_held_per_class_fold_patterns": [
+        [
+          [
+            6,
+            4
+          ],
+          [
+            7,
+            3
+          ],
+          [
+            7,
+            3
+          ]
+        ]
+      ],
+      "final_status_counts": {
+        "SHARED_COVARIANCE_FIT": 900
+      },
+      "mean_support_oof": {
+        "macro_nll": 3.2226392115352733,
+        "old_nll": 3.1368981888500596,
+        "new_nll": 3.4352749144642436,
+        "accuracy": 0.4891843110593111,
+        "old_accuracy": 0.5411111111111111,
+        "new_accuracy": 0.37819444444444444
+      },
+      "final_covariance_trace_range": [
+        0.16278531746706734,
+        0.5198965650975425
+      ],
+      "final_feature_energy_range": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "cohort": "rx3",
+      "k": 20,
+      "fits": 900,
+      "oof_fits": 900,
+      "joint_fits": 720,
+      "heldout_physical_occurrences": 241200,
+      "train_held_per_class_fold_patterns": [
+        [
+          [
+            13,
+            7
+          ],
+          [
+            13,
+            7
+          ],
+          [
+            14,
+            6
+          ]
+        ]
+      ],
+      "final_status_counts": {
+        "SHARED_COVARIANCE_FIT": 900
+      },
+      "mean_support_oof": {
+        "macro_nll": 2.0287937795481357,
+        "old_nll": 1.9769988153218068,
+        "new_nll": 2.1957769103960736,
+        "accuracy": 0.5433421312483813,
+        "old_accuracy": 0.5935277777777778,
+        "new_accuracy": 0.43678819444444444
+      },
+      "final_covariance_trace_range": [
+        0.16949406618058038,
+        0.5004801689494249
+      ],
+      "final_feature_energy_range": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "cohort": "rx1",
+      "k": 1,
+      "fits": 300,
+      "oof_fits": 0,
+      "joint_fits": 240,
+      "heldout_physical_occurrences": 0,
+      "train_held_per_class_fold_patterns": [
+        []
+      ],
+      "final_status_counts": {
+        "ZERO_PHYSICAL_RESIDUAL": 300
+      },
+      "mean_support_oof": {
+        "macro_nll": null,
+        "old_nll": null,
+        "new_nll": null,
+        "accuracy": null,
+        "old_accuracy": null,
+        "new_accuracy": null
+      },
+      "final_covariance_trace_range": [
+        0.0,
+        0.0
+      ],
+      "final_feature_energy_range": [
+        0.9999999999999997,
+        1.0
+      ]
+    },
+    {
+      "cohort": "rx1",
+      "k": 5,
+      "fits": 300,
+      "oof_fits": 300,
+      "joint_fits": 240,
+      "heldout_physical_occurrences": 20100,
+      "train_held_per_class_fold_patterns": [
+        [
+          [
+            3,
+            2
+          ],
+          [
+            3,
+            2
+          ],
+          [
+            4,
+            1
+          ]
+        ]
+      ],
+      "final_status_counts": {
+        "SHARED_COVARIANCE_FIT": 300
+      },
+      "mean_support_oof": {
+        "macro_nll": 4.191116702938486,
+        "old_nll": 3.699170116418694,
+        "new_nll": 5.159197702774764,
+        "accuracy": 0.5703232323232323,
+        "old_accuracy": 0.6761111111111111,
+        "new_accuracy": 0.37324999999999997
+      },
+      "final_covariance_trace_range": [
+        0.07709216540006902,
+        0.4160324080105313
+      ],
+      "final_feature_energy_range": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "cohort": "rx1",
+      "k": 10,
+      "fits": 300,
+      "oof_fits": 300,
+      "joint_fits": 240,
+      "heldout_physical_occurrences": 40200,
+      "train_held_per_class_fold_patterns": [
+        [
+          [
+            6,
+            4
+          ],
+          [
+            7,
+            3
+          ],
+          [
+            7,
+            3
+          ]
+        ]
+      ],
+      "final_status_counts": {
+        "SHARED_COVARIANCE_FIT": 300
+      },
+      "mean_support_oof": {
+        "macro_nll": 1.9644688915463973,
+        "old_nll": 1.6851265378843685,
+        "new_nll": 2.5220568620155372,
+        "accuracy": 0.6473221153846154,
+        "old_accuracy": 0.7372777777777778,
+        "new_accuracy": 0.48033333333333333
+      },
+      "final_covariance_trace_range": [
+        0.0903000975421645,
+        0.4062721985948626
+      ],
+      "final_feature_energy_range": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "cohort": "rx1",
+      "k": 20,
+      "fits": 300,
+      "oof_fits": 300,
+      "joint_fits": 240,
+      "heldout_physical_occurrences": 80400,
+      "train_held_per_class_fold_patterns": [
+        [
+          [
+            13,
+            7
+          ],
+          [
+            13,
+            7
+          ],
+          [
+            14,
+            6
+          ]
+        ]
+      ],
+      "final_status_counts": {
+        "SHARED_COVARIANCE_FIT": 300
+      },
+      "mean_support_oof": {
+        "macro_nll": 1.2764771009746934,
+        "old_nll": 1.132213247213264,
+        "new_nll": 1.5627417452063914,
+        "accuracy": 0.691301452020202,
+        "old_accuracy": 0.7638611111111111,
+        "new_accuracy": 0.5599166666666666
+      },
+      "final_covariance_trace_range": [
+        0.09994449221556242,
+        0.4011528433319239
+      ],
+      "final_feature_energy_range": [
+        1.0,
+        1.0
+      ]
+    }
+  ],
+  "per_model_seed_k": [
+    {
+      "model_seed": 2026092701,
+      "k": 1,
+      "fits": 300,
+      "oof_fits": 0,
+      "joint_fits": 240,
+      "heldout_physical_occurrences": 0,
+      "train_held_per_class_fold_patterns": [
+        []
+      ],
+      "final_status_counts": {
+        "ZERO_PHYSICAL_RESIDUAL": 300
+      },
+      "mean_support_oof": {
+        "macro_nll": null,
+        "old_nll": null,
+        "new_nll": null,
+        "accuracy": null,
+        "old_accuracy": null,
+        "new_accuracy": null
+      },
+      "final_covariance_trace_range": [
+        0.0,
+        0.0
+      ],
+      "final_feature_energy_range": [
+        0.9999999999999997,
+        1.0
+      ]
+    },
+    {
+      "model_seed": 2026092701,
+      "k": 5,
+      "fits": 300,
+      "oof_fits": 300,
+      "joint_fits": 240,
+      "heldout_physical_occurrences": 20100,
+      "train_held_per_class_fold_patterns": [
+        [
+          [
+            3,
+            2
+          ],
+          [
+            3,
+            2
+          ],
+          [
+            4,
+            1
+          ]
+        ]
+      ],
+      "final_status_counts": {
+        "SHARED_COVARIANCE_FIT": 300
+      },
+      "mean_support_oof": {
+        "macro_nll": 6.45777395444607,
+        "old_nll": 6.192746689943201,
+        "new_nll": 7.003888455526625,
+        "accuracy": 0.4465998445998446,
+        "old_accuracy": 0.5125555555555557,
+        "new_accuracy": 0.3094166666666667
+      },
+      "final_covariance_trace_range": [
+        0.07709216540006902,
+        0.5287380519326018
+      ],
+      "final_feature_energy_range": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "model_seed": 2026092701,
+      "k": 10,
+      "fits": 300,
+      "oof_fits": 300,
+      "joint_fits": 240,
+      "heldout_physical_occurrences": 40200,
+      "train_held_per_class_fold_patterns": [
+        [
+          [
+            6,
+            4
+          ],
+          [
+            7,
+            3
+          ],
+          [
+            7,
+            3
+          ]
+        ]
+      ],
+      "final_status_counts": {
+        "SHARED_COVARIANCE_FIT": 300
+      },
+      "mean_support_oof": {
+        "macro_nll": 2.9992237488399676,
+        "old_nll": 2.912727962089089,
+        "new_nll": 3.2069175022359278,
+        "accuracy": 0.5281866744366744,
+        "old_accuracy": 0.589,
+        "new_accuracy": 0.4038333333333333
+      },
+      "final_covariance_trace_range": [
+        0.0903000975421645,
+        0.5198965650975425
+      ],
+      "final_feature_energy_range": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "model_seed": 2026092701,
+      "k": 20,
+      "fits": 300,
+      "oof_fits": 300,
+      "joint_fits": 240,
+      "heldout_physical_occurrences": 80400,
+      "train_held_per_class_fold_patterns": [
+        [
+          [
+            13,
+            7
+          ],
+          [
+            13,
+            7
+          ],
+          [
+            14,
+            6
+          ]
+        ]
+      ],
+      "final_status_counts": {
+        "SHARED_COVARIANCE_FIT": 300
+      },
+      "mean_support_oof": {
+        "macro_nll": 1.8913499407631529,
+        "old_nll": 1.8394692418079206,
+        "new_nll": 2.048205777722478,
+        "accuracy": 0.5779957022144522,
+        "old_accuracy": 0.6318888888888888,
+        "new_accuracy": 0.4669166666666667
+      },
+      "final_covariance_trace_range": [
+        0.10646807488414356,
+        0.5000570281517716
+      ],
+      "final_feature_energy_range": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "model_seed": 2026092702,
+      "k": 1,
+      "fits": 300,
+      "oof_fits": 0,
+      "joint_fits": 240,
+      "heldout_physical_occurrences": 0,
+      "train_held_per_class_fold_patterns": [
+        []
+      ],
+      "final_status_counts": {
+        "ZERO_PHYSICAL_RESIDUAL": 300
+      },
+      "mean_support_oof": {
+        "macro_nll": null,
+        "old_nll": null,
+        "new_nll": null,
+        "accuracy": null,
+        "old_accuracy": null,
+        "new_accuracy": null
+      },
+      "final_covariance_trace_range": [
+        0.0,
+        0.0
+      ],
+      "final_feature_energy_range": [
+        0.9999999999999997,
+        1.0
+      ]
+    },
+    {
+      "model_seed": 2026092702,
+      "k": 5,
+      "fits": 300,
+      "oof_fits": 300,
+      "joint_fits": 240,
+      "heldout_physical_occurrences": 20100,
+      "train_held_per_class_fold_patterns": [
+        [
+          [
+            3,
+            2
+          ],
+          [
+            3,
+            2
+          ],
+          [
+            4,
+            1
+          ]
+        ]
+      ],
+      "final_status_counts": {
+        "SHARED_COVARIANCE_FIT": 300
+      },
+      "mean_support_oof": {
+        "macro_nll": 6.3775450539623195,
+        "old_nll": 6.04782871404434,
+        "new_nll": 7.047903346804017,
+        "accuracy": 0.44844386169386175,
+        "old_accuracy": 0.5093333333333334,
+        "new_accuracy": 0.31895833333333334
+      },
+      "final_covariance_trace_range": [
+        0.09164015573855036,
+        0.5182432487588309
+      ],
+      "final_feature_energy_range": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "model_seed": 2026092702,
+      "k": 10,
+      "fits": 300,
+      "oof_fits": 300,
+      "joint_fits": 240,
+      "heldout_physical_occurrences": 40200,
+      "train_held_per_class_fold_patterns": [
+        [
+          [
+            6,
+            4
+          ],
+          [
+            7,
+            3
+          ],
+          [
+            7,
+            3
+          ]
+        ]
+      ],
+      "final_status_counts": {
+        "SHARED_COVARIANCE_FIT": 300
+      },
+      "mean_support_oof": {
+        "macro_nll": 2.9167799381591366,
+        "old_nll": 2.778447401741332,
+        "new_nll": 3.230509836733592,
+        "accuracy": 0.5296214063714063,
+        "old_accuracy": 0.5896111111111111,
+        "new_accuracy": 0.40204166666666663
+      },
+      "final_covariance_trace_range": [
+        0.10293777991731809,
+        0.5101311521971379
+      ],
+      "final_feature_energy_range": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "model_seed": 2026092702,
+      "k": 20,
+      "fits": 300,
+      "oof_fits": 300,
+      "joint_fits": 240,
+      "heldout_physical_occurrences": 80400,
+      "train_held_per_class_fold_patterns": [
+        [
+          [
+            13,
+            7
+          ],
+          [
+            13,
+            7
+          ],
+          [
+            14,
+            6
+          ]
+        ]
+      ],
+      "final_status_counts": {
+        "SHARED_COVARIANCE_FIT": 300
+      },
+      "mean_support_oof": {
+        "macro_nll": 1.8382455918998855,
+        "old_nll": 1.7656564685592377,
+        "new_nll": 2.038287835134029,
+        "accuracy": 0.5797766365578865,
+        "old_accuracy": 0.6338611111111111,
+        "new_accuracy": 0.4685729166666667
+      },
+      "final_covariance_trace_range": [
+        0.11513071278976961,
+        0.49527267894399585
+      ],
+      "final_feature_energy_range": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "model_seed": 2026092703,
+      "k": 1,
+      "fits": 300,
+      "oof_fits": 0,
+      "joint_fits": 240,
+      "heldout_physical_occurrences": 0,
+      "train_held_per_class_fold_patterns": [
+        []
+      ],
+      "final_status_counts": {
+        "ZERO_PHYSICAL_RESIDUAL": 300
+      },
+      "mean_support_oof": {
+        "macro_nll": null,
+        "old_nll": null,
+        "new_nll": null,
+        "accuracy": null,
+        "old_accuracy": null,
+        "new_accuracy": null
+      },
+      "final_covariance_trace_range": [
+        0.0,
+        0.0
+      ],
+      "final_feature_energy_range": [
+        0.9999999999999997,
+        1.0
+      ]
+    },
+    {
+      "model_seed": 2026092703,
+      "k": 5,
+      "fits": 300,
+      "oof_fits": 300,
+      "joint_fits": 240,
+      "heldout_physical_occurrences": 20100,
+      "train_held_per_class_fold_patterns": [
+        [
+          [
+            3,
+            2
+          ],
+          [
+            3,
+            2
+          ],
+          [
+            4,
+            1
+          ]
+        ]
+      ],
+      "final_status_counts": {
+        "SHARED_COVARIANCE_FIT": 300
+      },
+      "mean_support_oof": {
+        "macro_nll": 6.196925957295697,
+        "old_nll": 5.780785135790612,
+        "new_nll": 7.008466375902277,
+        "accuracy": 0.4636049922299922,
+        "old_accuracy": 0.5377777777777778,
+        "new_accuracy": 0.31837499999999996
+      },
+      "final_covariance_trace_range": [
+        0.08476168280814347,
+        0.5267926633107145
+      ],
+      "final_feature_energy_range": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "model_seed": 2026092703,
+      "k": 10,
+      "fits": 300,
+      "oof_fits": 300,
+      "joint_fits": 240,
+      "heldout_physical_occurrences": 40200,
+      "train_held_per_class_fold_patterns": [
+        [
+          [
+            6,
+            4
+          ],
+          [
+            7,
+            3
+          ],
+          [
+            7,
+            3
+          ]
+        ]
+      ],
+      "final_status_counts": {
+        "SHARED_COVARIANCE_FIT": 300
+      },
+      "mean_support_oof": {
+        "macro_nll": 2.885983390360357,
+        "old_nll": 2.707083137616176,
+        "new_nll": 3.2490563604872778,
+        "accuracy": 0.5333521756021756,
+        "old_accuracy": 0.6013888888888889,
+        "new_accuracy": 0.4020208333333333
+      },
+      "final_covariance_trace_range": [
+        0.09097015977662282,
+        0.5126413504796377
+      ],
+      "final_feature_energy_range": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "model_seed": 2026092703,
+      "k": 20,
+      "fits": 300,
+      "oof_fits": 300,
+      "joint_fits": 240,
+      "heldout_physical_occurrences": 80400,
+      "train_held_per_class_fold_patterns": [
+        [
+          [
+            13,
+            7
+          ],
+          [
+            13,
+            7
+          ],
+          [
+            14,
+            6
+          ]
+        ]
+      ],
+      "final_status_counts": {
+        "SHARED_COVARIANCE_FIT": 300
+      },
+      "mean_support_oof": {
+        "macro_nll": 1.8193130446071606,
+        "old_nll": 1.7240545158763954,
+        "new_nll": 2.0414299949891213,
+        "accuracy": 0.5851390345765346,
+        "old_accuracy": 0.6440833333333333,
+        "new_accuracy": 0.46942708333333333
+      },
+      "final_covariance_trace_range": [
+        0.09994449221556242,
+        0.5004801689494249
+      ],
+      "final_feature_energy_range": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "model_seed": 2026092704,
+      "k": 1,
+      "fits": 300,
+      "oof_fits": 0,
+      "joint_fits": 240,
+      "heldout_physical_occurrences": 0,
+      "train_held_per_class_fold_patterns": [
+        []
+      ],
+      "final_status_counts": {
+        "ZERO_PHYSICAL_RESIDUAL": 300
+      },
+      "mean_support_oof": {
+        "macro_nll": null,
+        "old_nll": null,
+        "new_nll": null,
+        "accuracy": null,
+        "old_accuracy": null,
+        "new_accuracy": null
+      },
+      "final_covariance_trace_range": [
+        0.0,
+        0.0
+      ],
+      "final_feature_energy_range": [
+        0.9999999999999997,
+        1.0
+      ]
+    },
+    {
+      "model_seed": 2026092704,
+      "k": 5,
+      "fits": 300,
+      "oof_fits": 300,
+      "joint_fits": 240,
+      "heldout_physical_occurrences": 20100,
+      "train_held_per_class_fold_patterns": [
+        [
+          [
+            3,
+            2
+          ],
+          [
+            3,
+            2
+          ],
+          [
+            4,
+            1
+          ]
+        ]
+      ],
+      "final_status_counts": {
+        "SHARED_COVARIANCE_FIT": 300
+      },
+      "mean_support_oof": {
+        "macro_nll": 6.080483098276597,
+        "old_nll": 5.782234404756625,
+        "new_nll": 6.716357041826123,
+        "accuracy": 0.4513438228438229,
+        "old_accuracy": 0.5165555555555555,
+        "new_accuracy": 0.31604166666666667
+      },
+      "final_covariance_trace_range": [
+        0.08945144943785838,
+        0.516559333829053
+      ],
+      "final_feature_energy_range": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "model_seed": 2026092704,
+      "k": 10,
+      "fits": 300,
+      "oof_fits": 300,
+      "joint_fits": 240,
+      "heldout_physical_occurrences": 40200,
+      "train_held_per_class_fold_patterns": [
+        [
+          [
+            6,
+            4
+          ],
+          [
+            7,
+            3
+          ],
+          [
+            7,
+            3
+          ]
+        ]
+      ],
+      "final_status_counts": {
+        "SHARED_COVARIANCE_FIT": 300
+      },
+      "mean_support_oof": {
+        "macro_nll": 2.8303994487927557,
+        "old_nll": 2.697562602987949,
+        "new_nll": 3.141397905951471,
+        "accuracy": 0.5237147921522921,
+        "old_accuracy": 0.5806111111111111,
+        "new_accuracy": 0.40702083333333333
+      },
+      "final_covariance_trace_range": [
+        0.09899067776740676,
+        0.5049168474506276
+      ],
+      "final_feature_energy_range": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "model_seed": 2026092704,
+      "k": 20,
+      "fits": 300,
+      "oof_fits": 300,
+      "joint_fits": 240,
+      "heldout_physical_occurrences": 80400,
+      "train_held_per_class_fold_patterns": [
+        [
+          [
+            13,
+            7
+          ],
+          [
+            13,
+            7
+          ],
+          [
+            14,
+            6
+          ]
+        ]
+      ],
+      "final_status_counts": {
+        "SHARED_COVARIANCE_FIT": 300
+      },
+      "mean_support_oof": {
+        "macro_nll": 1.813949862348901,
+        "old_nll": 1.7340294669351306,
+        "new_nll": 2.022148868548985,
+        "accuracy": 0.5784164724164724,
+        "old_accuracy": 0.6346111111111111,
+        "new_accuracy": 0.46536458333333336
+      },
+      "final_covariance_trace_range": [
+        0.11148590043956785,
+        0.4858472434318238
+      ],
+      "final_feature_energy_range": [
+        1.0,
+        1.0
+      ]
+    }
+  ],
+  "per_k_new_count": [
+    {
+      "new_count": 0,
+      "k": 1,
+      "fits": 240,
+      "oof_fits": 0,
+      "joint_fits": 0,
+      "heldout_physical_occurrences": 0,
+      "train_held_per_class_fold_patterns": [
+        []
+      ],
+      "final_status_counts": {
+        "ZERO_PHYSICAL_RESIDUAL": 240
+      },
+      "mean_support_oof": {
+        "macro_nll": null,
+        "old_nll": null,
+        "new_nll": null,
+        "accuracy": null,
+        "old_accuracy": null,
+        "new_accuracy": null
+      },
+      "final_covariance_trace_range": [
+        0.0,
+        0.0
+      ],
+      "final_feature_energy_range": [
+        0.9999999999999997,
+        1.0
+      ]
+    },
+    {
+      "new_count": 0,
+      "k": 5,
+      "fits": 240,
+      "oof_fits": 240,
+      "joint_fits": 0,
+      "heldout_physical_occurrences": 7200,
+      "train_held_per_class_fold_patterns": [
+        [
+          [
+            3,
+            2
+          ],
+          [
+            3,
+            2
+          ],
+          [
+            4,
+            1
+          ]
+        ]
+      ],
+      "final_status_counts": {
+        "SHARED_COVARIANCE_FIT": 240
+      },
+      "mean_support_oof": {
+        "macro_nll": 5.770658909862535,
+        "old_nll": 5.770658909862535,
+        "new_nll": null,
+        "accuracy": 0.6213888888888889,
+        "old_accuracy": 0.6213888888888889,
+        "new_accuracy": null
+      },
+      "final_covariance_trace_range": [
+        0.07709216540006902,
+        0.5287380519326018
+      ],
+      "final_feature_energy_range": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "new_count": 0,
+      "k": 10,
+      "fits": 240,
+      "oof_fits": 240,
+      "joint_fits": 0,
+      "heldout_physical_occurrences": 14400,
+      "train_held_per_class_fold_patterns": [
+        [
+          [
+            6,
+            4
+          ],
+          [
+            7,
+            3
+          ],
+          [
+            7,
+            3
+          ]
+        ]
+      ],
+      "final_status_counts": {
+        "SHARED_COVARIANCE_FIT": 240
+      },
+      "mean_support_oof": {
+        "macro_nll": 2.602562014871546,
+        "old_nll": 2.602562014871546,
+        "new_nll": null,
+        "accuracy": 0.6831944444444444,
+        "old_accuracy": 0.6831944444444444,
+        "new_accuracy": null
+      },
+      "final_covariance_trace_range": [
+        0.0903000975421645,
+        0.506663555838377
+      ],
+      "final_feature_energy_range": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "new_count": 0,
+      "k": 20,
+      "fits": 240,
+      "oof_fits": 240,
+      "joint_fits": 0,
+      "heldout_physical_occurrences": 28800,
+      "train_held_per_class_fold_patterns": [
+        [
+          [
+            13,
+            7
+          ],
+          [
+            13,
+            7
+          ],
+          [
+            14,
+            6
+          ]
+        ]
+      ],
+      "final_status_counts": {
+        "SHARED_COVARIANCE_FIT": 240
+      },
+      "mean_support_oof": {
+        "macro_nll": 1.4614315626209349,
+        "old_nll": 1.4614315626209349,
+        "new_nll": null,
+        "accuracy": 0.7194444444444444,
+        "old_accuracy": 0.7194444444444444,
+        "new_accuracy": null
+      },
+      "final_covariance_trace_range": [
+        0.09994449221556242,
+        0.4869379597620183
+      ],
+      "final_feature_energy_range": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "new_count": 2,
+      "k": 1,
+      "fits": 240,
+      "oof_fits": 0,
+      "joint_fits": 240,
+      "heldout_physical_occurrences": 0,
+      "train_held_per_class_fold_patterns": [
+        []
+      ],
+      "final_status_counts": {
+        "ZERO_PHYSICAL_RESIDUAL": 240
+      },
+      "mean_support_oof": {
+        "macro_nll": null,
+        "old_nll": null,
+        "new_nll": null,
+        "accuracy": null,
+        "old_accuracy": null,
+        "new_accuracy": null
+      },
+      "final_covariance_trace_range": [
+        0.0,
+        0.0
+      ],
+      "final_feature_energy_range": [
+        0.9999999999999998,
+        1.0
+      ]
+    },
+    {
+      "new_count": 2,
+      "k": 5,
+      "fits": 240,
+      "oof_fits": 240,
+      "joint_fits": 240,
+      "heldout_physical_occurrences": 9600,
+      "train_held_per_class_fold_patterns": [
+        [
+          [
+            3,
+            2
+          ],
+          [
+            3,
+            2
+          ],
+          [
+            4,
+            1
+          ]
+        ]
+      ],
+      "final_status_counts": {
+        "SHARED_COVARIANCE_FIT": 240
+      },
+      "mean_support_oof": {
+        "macro_nll": 6.566434498245974,
+        "old_nll": 6.110323936202052,
+        "new_nll": 7.934766184377742,
+        "accuracy": 0.5015625,
+        "old_accuracy": 0.5672222222222222,
+        "new_accuracy": 0.3045833333333333
+      },
+      "final_covariance_trace_range": [
+        0.12178924965630442,
+        0.5146674308501233
+      ],
+      "final_feature_energy_range": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "new_count": 2,
+      "k": 10,
+      "fits": 240,
+      "oof_fits": 240,
+      "joint_fits": 240,
+      "heldout_physical_occurrences": 19200,
+      "train_held_per_class_fold_patterns": [
+        [
+          [
+            6,
+            4
+          ],
+          [
+            7,
+            3
+          ],
+          [
+            7,
+            3
+          ]
+        ]
+      ],
+      "final_status_counts": {
+        "SHARED_COVARIANCE_FIT": 240
+      },
+      "mean_support_oof": {
+        "macro_nll": 2.9106343061992184,
+        "old_nll": 2.703763438079054,
+        "new_nll": 3.5312469105597115,
+        "accuracy": 0.5672916666666666,
+        "old_accuracy": 0.6290277777777777,
+        "new_accuracy": 0.38208333333333333
+      },
+      "final_covariance_trace_range": [
+        0.13473315342885872,
+        0.5198965650975425
+      ],
+      "final_feature_energy_range": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "new_count": 2,
+      "k": 20,
+      "fits": 240,
+      "oof_fits": 240,
+      "joint_fits": 240,
+      "heldout_physical_occurrences": 38400,
+      "train_held_per_class_fold_patterns": [
+        [
+          [
+            13,
+            7
+          ],
+          [
+            13,
+            7
+          ],
+          [
+            14,
+            6
+          ]
+        ]
+      ],
+      "final_status_counts": {
+        "SHARED_COVARIANCE_FIT": 240
+      },
+      "mean_support_oof": {
+        "macro_nll": 1.704788229086265,
+        "old_nll": 1.6181037818828452,
+        "new_nll": 1.9648415706965245,
+        "accuracy": 0.6156770833333333,
+        "old_accuracy": 0.6704513888888889,
+        "new_accuracy": 0.45135416666666667
+      },
+      "final_covariance_trace_range": [
+        0.13599735592621348,
+        0.49879639279312754
+      ],
+      "final_feature_energy_range": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "new_count": 5,
+      "k": 1,
+      "fits": 240,
+      "oof_fits": 0,
+      "joint_fits": 240,
+      "heldout_physical_occurrences": 0,
+      "train_held_per_class_fold_patterns": [
+        []
+      ],
+      "final_status_counts": {
+        "ZERO_PHYSICAL_RESIDUAL": 240
+      },
+      "mean_support_oof": {
+        "macro_nll": null,
+        "old_nll": null,
+        "new_nll": null,
+        "accuracy": null,
+        "old_accuracy": null,
+        "new_accuracy": null
+      },
+      "final_covariance_trace_range": [
+        0.0,
+        0.0
+      ],
+      "final_feature_energy_range": [
+        0.9999999999999999,
+        1.0
+      ]
+    },
+    {
+      "new_count": 5,
+      "k": 5,
+      "fits": 240,
+      "oof_fits": 240,
+      "joint_fits": 240,
+      "heldout_physical_occurrences": 13200,
+      "train_held_per_class_fold_patterns": [
+        [
+          [
+            3,
+            2
+          ],
+          [
+            3,
+            2
+          ],
+          [
+            4,
+            1
+          ]
+        ]
+      ],
+      "final_status_counts": {
+        "SHARED_COVARIANCE_FIT": 240
+      },
+      "mean_support_oof": {
+        "macro_nll": 6.472175091524049,
+        "old_nll": 6.120236500875302,
+        "new_nll": 6.894501400302545,
+        "accuracy": 0.4325,
+        "old_accuracy": 0.5154166666666666,
+        "new_accuracy": 0.333
+      },
+      "final_covariance_trace_range": [
+        0.12535760479212005,
+        0.527762019860958
+      ],
+      "final_feature_energy_range": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "new_count": 5,
+      "k": 10,
+      "fits": 240,
+      "oof_fits": 240,
+      "joint_fits": 240,
+      "heldout_physical_occurrences": 26400,
+      "train_held_per_class_fold_patterns": [
+        [
+          [
+            6,
+            4
+          ],
+          [
+            7,
+            3
+          ],
+          [
+            7,
+            3
+          ]
+        ]
+      ],
+      "final_status_counts": {
+        "SHARED_COVARIANCE_FIT": 240
+      },
+      "mean_support_oof": {
+        "macro_nll": 2.898730550247116,
+        "old_nll": 2.8045845221946686,
+        "new_nll": 3.011705783910053,
+        "accuracy": 0.5156818181818182,
+        "old_accuracy": 0.5839583333333334,
+        "new_accuracy": 0.43374999999999997
+      },
+      "final_covariance_trace_range": [
+        0.12940168601593102,
+        0.5080293348288376
+      ],
+      "final_feature_energy_range": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "new_count": 5,
+      "k": 20,
+      "fits": 240,
+      "oof_fits": 240,
+      "joint_fits": 240,
+      "heldout_physical_occurrences": 52800,
+      "train_held_per_class_fold_patterns": [
+        [
+          [
+            13,
+            7
+          ],
+          [
+            13,
+            7
+          ],
+          [
+            14,
+            6
+          ]
+        ]
+      ],
+      "final_status_counts": {
+        "SHARED_COVARIANCE_FIT": 240
+      },
+      "mean_support_oof": {
+        "macro_nll": 1.8316234360776564,
+        "old_nll": 1.7899453536915273,
+        "new_nll": 1.8816371349410113,
+        "accuracy": 0.5639962121212121,
+        "old_accuracy": 0.6287152777777778,
+        "new_accuracy": 0.48633333333333334
+      },
+      "final_covariance_trace_range": [
+        0.13006867356985913,
+        0.5004801689494249
+      ],
+      "final_feature_energy_range": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "new_count": 10,
+      "k": 1,
+      "fits": 240,
+      "oof_fits": 0,
+      "joint_fits": 240,
+      "heldout_physical_occurrences": 0,
+      "train_held_per_class_fold_patterns": [
+        []
+      ],
+      "final_status_counts": {
+        "ZERO_PHYSICAL_RESIDUAL": 240
+      },
+      "mean_support_oof": {
+        "macro_nll": null,
+        "old_nll": null,
+        "new_nll": null,
+        "accuracy": null,
+        "old_accuracy": null,
+        "new_accuracy": null
+      },
+      "final_covariance_trace_range": [
+        0.0,
+        0.0
+      ],
+      "final_feature_energy_range": [
+        0.9999999999999998,
+        1.0
+      ]
+    },
+    {
+      "new_count": 10,
+      "k": 5,
+      "fits": 240,
+      "oof_fits": 240,
+      "joint_fits": 240,
+      "heldout_physical_occurrences": 19200,
+      "train_held_per_class_fold_patterns": [
+        [
+          [
+            3,
+            2
+          ],
+          [
+            3,
+            2
+          ],
+          [
+            4,
+            1
+          ]
+        ]
+      ],
+      "final_status_counts": {
+        "SHARED_COVARIANCE_FIT": 240
+      },
+      "mean_support_oof": {
+        "macro_nll": 6.403964768496248,
+        "old_nll": 6.0133118316594265,
+        "new_nll": 6.63835653059834,
+        "accuracy": 0.3788020833333333,
+        "old_accuracy": 0.4673611111111111,
+        "new_accuracy": 0.32566666666666666
+      },
+      "final_covariance_trace_range": [
+        0.15081074063669078,
+        0.5009573810211155
+      ],
+      "final_feature_energy_range": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "new_count": 10,
+      "k": 10,
+      "fits": 240,
+      "oof_fits": 240,
+      "joint_fits": 240,
+      "heldout_physical_occurrences": 38400,
+      "train_held_per_class_fold_patterns": [
+        [
+          [
+            6,
+            4
+          ],
+          [
+            7,
+            3
+          ],
+          [
+            7,
+            3
+          ]
+        ]
+      ],
+      "final_status_counts": {
+        "SHARED_COVARIANCE_FIT": 240
+      },
+      "mean_support_oof": {
+        "macro_nll": 2.9792488685425473,
+        "old_nll": 2.8276966676299793,
+        "new_nll": 3.0701801890900877,
+        "accuracy": 0.46351562500000004,
+        "old_accuracy": 0.5475,
+        "new_accuracy": 0.413125
+      },
+      "final_covariance_trace_range": [
+        0.15199314041415624,
+        0.493783859723428
+      ],
+      "final_feature_energy_range": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "new_count": 10,
+      "k": 20,
+      "fits": 240,
+      "oof_fits": 240,
+      "joint_fits": 240,
+      "heldout_physical_occurrences": 76800,
+      "train_held_per_class_fold_patterns": [
+        [
+          [
+            13,
+            7
+          ],
+          [
+            13,
+            7
+          ],
+          [
+            14,
+            6
+          ]
+        ]
+      ],
+      "final_status_counts": {
+        "SHARED_COVARIANCE_FIT": 240
+      },
+      "mean_support_oof": {
+        "macro_nll": 1.9693740058892395,
+        "old_nll": 1.8893592459566833,
+        "new_nll": 2.0173828618487732,
+        "accuracy": 0.5226302083333334,
+        "old_accuracy": 0.5963888888888889,
+        "new_accuracy": 0.478375
+      },
+      "final_covariance_trace_range": [
+        0.15941551329391515,
+        0.48411265517337543
+      ],
+      "final_feature_energy_range": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "new_count": 20,
+      "k": 1,
+      "fits": 240,
+      "oof_fits": 0,
+      "joint_fits": 240,
+      "heldout_physical_occurrences": 0,
+      "train_held_per_class_fold_patterns": [
+        []
+      ],
+      "final_status_counts": {
+        "ZERO_PHYSICAL_RESIDUAL": 240
+      },
+      "mean_support_oof": {
+        "macro_nll": null,
+        "old_nll": null,
+        "new_nll": null,
+        "accuracy": null,
+        "old_accuracy": null,
+        "new_accuracy": null
+      },
+      "final_covariance_trace_range": [
+        0.0,
+        0.0
+      ],
+      "final_feature_energy_range": [
+        0.9999999999999999,
+        1.0
+      ]
+    },
+    {
+      "new_count": 20,
+      "k": 5,
+      "fits": 240,
+      "oof_fits": 240,
+      "joint_fits": 240,
+      "heldout_physical_occurrences": 31200,
+      "train_held_per_class_fold_patterns": [
+        [
+          [
+            3,
+            2
+          ],
+          [
+            3,
+            2
+          ],
+          [
+            4,
+            1
+          ]
+        ]
+      ],
+      "final_status_counts": {
+        "SHARED_COVARIANCE_FIT": 240
+      },
+      "mean_support_oof": {
+        "macro_nll": 6.177676811847047,
+        "old_nll": 5.739962502069156,
+        "new_nll": 6.308991104780415,
+        "accuracy": 0.3282371794871795,
+        "old_accuracy": 0.42388888888888887,
+        "new_accuracy": 0.29954166666666665
+      },
+      "final_covariance_trace_range": [
+        0.15667333680721315,
+        0.5146504293935679
+      ],
+      "final_feature_energy_range": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "new_count": 20,
+      "k": 10,
+      "fits": 240,
+      "oof_fits": 240,
+      "joint_fits": 240,
+      "heldout_physical_occurrences": 62400,
+      "train_held_per_class_fold_patterns": [
+        [
+          [
+            6,
+            4
+          ],
+          [
+            7,
+            3
+          ],
+          [
+            7,
+            3
+          ]
+        ]
+      ],
+      "final_status_counts": {
+        "SHARED_COVARIANCE_FIT": 240
+      },
+      "mean_support_oof": {
+        "macro_nll": 3.149307417829844,
+        "old_nll": 2.931169737767936,
+        "new_nll": 3.2147487218484163,
+        "accuracy": 0.4139102564102564,
+        "old_accuracy": 0.5070833333333333,
+        "new_accuracy": 0.3859583333333333
+      },
+      "final_covariance_trace_range": [
+        0.1675028922445772,
+        0.4977068198101372
+      ],
+      "final_feature_energy_range": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "new_count": 20,
+      "k": 20,
+      "fits": 240,
+      "oof_fits": 240,
+      "joint_fits": 240,
+      "heldout_physical_occurrences": 124800,
+      "train_held_per_class_fold_patterns": [
+        [
+          [
+            13,
+            7
+          ],
+          [
+            13,
+            7
+          ],
+          [
+            14,
+            6
+          ]
+        ]
+      ],
+      "final_status_counts": {
+        "SHARED_COVARIANCE_FIT": 240
+      },
+      "mean_support_oof": {
+        "macro_nll": 2.236355815849779,
+        "old_nll": 2.070172172321365,
+        "new_nll": 2.286210908908304,
+        "accuracy": 0.47991185897435895,
+        "old_accuracy": 0.5655555555555555,
+        "new_accuracy": 0.45421875
+      },
+      "final_covariance_trace_range": [
+        0.17314200252765727,
+        0.4893897973357111
+      ],
+      "final_feature_energy_range": [
+        1.0,
+        1.0
+      ]
+    }
+  ],
+  "limitations": [
+    "OOF folds share training supports; repeated tasks share physical IDs; occurrences are not independent samples.",
+    "Per-class NLL and physical predicted class exist in full trace; compact preserves only three group NLL values.",
+    "View-specific vectors, within-physical orbit variation, cyclic margins, pairwise interclass distances and full OOF logits are not recorded.",
+    "Covariance trace is aligned between-physical residual, not direct within-physical view information.",
+    "K1 has no heldout OOF; these diagnostics cannot establish query/generalization performance or an information-theoretic identifiability limit."
+  ]
+}

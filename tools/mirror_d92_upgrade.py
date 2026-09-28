@@ -60,6 +60,7 @@ paths += ['tools/prepare_d92_osc_recovery.py',
     'configs/d92_osc_repeat_rx3_recovery_data_20260929.json','configs/d92_osc_repeat_rx1_recovery_data_20260929.json']
 paths += ['tools/finalize_d92_osc_record.py','tests/test_finalize_d92_osc_record.py']
 paths += ['docs/D92_POST_OSC_DESIGN_20260929.md']
+paths += ['docs/D92_OSC_SUPPORT_DIAGNOSTIC_20260929.md','docs/D92_OSC_SUPPORT_DIAGNOSTIC_20260929.json']
 for name in paths:
     src=ROOT/name;dst=WS/name;dst.parent.mkdir(parents=True,exist_ok=True)
     # Each name is unique to this task; original D92 and shared wrappers are not mirrored.
