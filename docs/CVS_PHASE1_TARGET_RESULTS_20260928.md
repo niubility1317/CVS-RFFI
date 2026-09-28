@@ -55,4 +55,4 @@ clean每seed为168000例；high为55998例、mid为56174例、low urban为55828�
 CVS完整160条汇总（含逐seed、接收机、场景、Macro-F1与混淆矩阵）：`E:/type10-7/local_artifacts/cvs_matched_20260927/phase1_final_results.json`。
 对比数据：`E:/type10-7/local_artifacts/comparison_results_20260927/phase1_results.json`。
 远端结果：`/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-cvs-d92-practical-manytx-m5-r01/phase1_final_results.json`。
-Phase2原矩阵3个seed预测完成、2个seed因LDA数值一致性检查失败；尚无完整Phase2评分。修复只使用失败support与source ground，目标truth不参与修复。
+Phase2原矩阵3个seed预测完成、2个seed因LDA数值一致性检查失败。该数值问题现已修复，两个完整失败support拟合在N607复核通过，新恢复run为20260928-phase2-cvs-d92-practical-manytx-m5-r02。已保留并复用成功预测，继续补算缺失划分；尚无完整Phase2评分。修复只使用失败support与source ground，目标truth不参与修复。

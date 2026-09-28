@@ -39,3 +39,11 @@ Preserve final200 source checkpoints and all successful prediction prefixes; sup
 唯一launch owner：codex/root/cvs-d92-recovery-20260928。CPU五lane，无GPU训练。详细命令由tools/cvs_d92_recovery.py生成并写入state.json、各row日志及d92_startup.json；发布器tools/publish_cvs_d92_recovery.py只发布已提交并远端OID一致的版本。发布后先对两个原失败split完整support-only fit核查FIT_PASSED，再启动恢复。
 
 验证：D42相关31项测试、新3项数值回归、两份实际失败inner-support回放通过；matched 7项测试通过，含完整前缀不重拟合、注册记录与DG之间截断恢复、来源seed错误和record身份/argmax拒绝。数学修复与恢复流程各完成独立P0/P1定点审查PASS。启动前状态为LOCAL_VERIFIED，尚不代表远端恢复完成。
+
+## 已启动与独立核实
+
+VERIFIED：release cvs_d92_recovery_20260928_r02来自已push并独立核实OID的commit c0e538d60c2e52a50112ee9b43337b4277d463d3。远端合成smoke通过，两个原失败split（6533d11a97e532c6b8fe719b、ef8921d662af2517554b00a8）完整support拟合均FIT_PASSED、active_feature_dim=256、query_truth_read=false。dispatcher PID2061061的/proc argv与cwd正确。
+
+evidence/readback_1790568134.json：3个完整seed已逐条验证并复用至2121/2121；392005已从830推进至850，2026092703从1968推进至1990，两条新增预测路径均正常运行。整体RUNNING，尚无scored_results.json。此前错误已越过，但完整矩阵仍须等剩余划分完成，不将启动成功写成实验全部结束。
+
+继续核查使用tools/read_cvs_d92_recovery.py，只读进程与状态；状态变化后用tools/record_cvs_d92_recovery.py更新原登记。若所有行成功，dispatcher自动调用独立scorer并生成completion.json；若技术异常，保留新partial并停止评分，不自动重试。

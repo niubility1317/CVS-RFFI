@@ -55,7 +55,7 @@ def main():
         f'CVS完整160条汇总（含逐seed、接收机、场景、Macro-F1与混淆矩阵）：`{a.cvs.as_posix()}`。',
         f'对比数据：`{a.baselines.as_posix()}`。',
         '远端结果：`/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-cvs-d92-practical-manytx-m5-r01/phase1_final_results.json`。',
-        'Phase2原矩阵3个seed预测完成、2个seed因LDA数值一致性检查失败；尚无完整Phase2评分。修复只使用失败support与source ground，目标truth不参与修复。']
+        'Phase2原矩阵3个seed预测完成、2个seed因LDA数值一致性检查失败。数值修复与恢复状态见docs/CVS_D92_RECOVERY_STATUS_20260928.md及20260928-phase2-cvs-d92-practical-manytx-m5-r02登记。Phase2结果不属于本报告统计范围。']
     a.output.parent.mkdir(parents=True, exist_ok=True)
     a.output.write_text('\n\n'.join(text[:5]) + '\n\n' + '\n'.join(text[5:]) + '\n', encoding='utf-8')
     print(a.output)
