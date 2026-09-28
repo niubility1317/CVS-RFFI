@@ -1,0 +1,627 @@
+{
+  "status": "PASS",
+  "phase1_records": 1440,
+  "phase2_records": 116445,
+  "common_registration_splits": 2100,
+  "duplicate_records": 0,
+  "model_seeds": [
+    392005,
+    2026092701,
+    2026092702,
+    2026092703,
+    2026092704
+  ],
+  "coverage": [
+    {
+      "method": "cvcnn_ce-ce",
+      "mode": "support_ncm",
+      "model_seed": 392005,
+      "records": 2100
+    },
+    {
+      "method": "cvcnn_ce-ce",
+      "mode": "frozen_dg",
+      "model_seed": 392005,
+      "records": 21
+    },
+    {
+      "method": "cvcnn_ce-ce",
+      "mode": "support_ncm",
+      "model_seed": 2026092701,
+      "records": 2100
+    },
+    {
+      "method": "cvcnn_ce-ce",
+      "mode": "frozen_dg",
+      "model_seed": 2026092701,
+      "records": 21
+    },
+    {
+      "method": "cvcnn_ce-ce",
+      "mode": "support_ncm",
+      "model_seed": 2026092702,
+      "records": 2100
+    },
+    {
+      "method": "cvcnn_ce-ce",
+      "mode": "frozen_dg",
+      "model_seed": 2026092702,
+      "records": 21
+    },
+    {
+      "method": "cvcnn_ce-ce",
+      "mode": "support_ncm",
+      "model_seed": 2026092703,
+      "records": 2100
+    },
+    {
+      "method": "cvcnn_ce-ce",
+      "mode": "frozen_dg",
+      "model_seed": 2026092703,
+      "records": 21
+    },
+    {
+      "method": "cvcnn_ce-ce",
+      "mode": "support_ncm",
+      "model_seed": 2026092704,
+      "records": 2100
+    },
+    {
+      "method": "cvcnn_ce-ce",
+      "mode": "frozen_dg",
+      "model_seed": 2026092704,
+      "records": 21
+    },
+    {
+      "method": "cvcnn_ce-pl",
+      "mode": "support_ncm",
+      "model_seed": 392005,
+      "records": 2100
+    },
+    {
+      "method": "cvcnn_ce-pl",
+      "mode": "frozen_dg",
+      "model_seed": 392005,
+      "records": 21
+    },
+    {
+      "method": "cvcnn_ce-pl",
+      "mode": "support_ncm",
+      "model_seed": 2026092701,
+      "records": 2100
+    },
+    {
+      "method": "cvcnn_ce-pl",
+      "mode": "frozen_dg",
+      "model_seed": 2026092701,
+      "records": 21
+    },
+    {
+      "method": "cvcnn_ce-pl",
+      "mode": "support_ncm",
+      "model_seed": 2026092702,
+      "records": 2100
+    },
+    {
+      "method": "cvcnn_ce-pl",
+      "mode": "frozen_dg",
+      "model_seed": 2026092702,
+      "records": 21
+    },
+    {
+      "method": "cvcnn_ce-pl",
+      "mode": "support_ncm",
+      "model_seed": 2026092703,
+      "records": 2100
+    },
+    {
+      "method": "cvcnn_ce-pl",
+      "mode": "frozen_dg",
+      "model_seed": 2026092703,
+      "records": 21
+    },
+    {
+      "method": "cvcnn_ce-pl",
+      "mode": "support_ncm",
+      "model_seed": 2026092704,
+      "records": 2100
+    },
+    {
+      "method": "cvcnn_ce-pl",
+      "mode": "frozen_dg",
+      "model_seed": 2026092704,
+      "records": 21
+    },
+    {
+      "method": "riei_fd-ce",
+      "mode": "support_ncm",
+      "model_seed": 392005,
+      "records": 2100
+    },
+    {
+      "method": "riei_fd-ce",
+      "mode": "frozen_dg",
+      "model_seed": 392005,
+      "records": 21
+    },
+    {
+      "method": "riei_fd-ce",
+      "mode": "support_ncm",
+      "model_seed": 2026092701,
+      "records": 2100
+    },
+    {
+      "method": "riei_fd-ce",
+      "mode": "frozen_dg",
+      "model_seed": 2026092701,
+      "records": 21
+    },
+    {
+      "method": "riei_fd-ce",
+      "mode": "support_ncm",
+      "model_seed": 2026092702,
+      "records": 2100
+    },
+    {
+      "method": "riei_fd-ce",
+      "mode": "frozen_dg",
+      "model_seed": 2026092702,
+      "records": 21
+    },
+    {
+      "method": "riei_fd-ce",
+      "mode": "support_ncm",
+      "model_seed": 2026092703,
+      "records": 2100
+    },
+    {
+      "method": "riei_fd-ce",
+      "mode": "frozen_dg",
+      "model_seed": 2026092703,
+      "records": 21
+    },
+    {
+      "method": "riei_fd-ce",
+      "mode": "support_ncm",
+      "model_seed": 2026092704,
+      "records": 2100
+    },
+    {
+      "method": "riei_fd-ce",
+      "mode": "frozen_dg",
+      "model_seed": 2026092704,
+      "records": 21
+    },
+    {
+      "method": "riei_fd-pl",
+      "mode": "support_ncm",
+      "model_seed": 392005,
+      "records": 2100
+    },
+    {
+      "method": "riei_fd-pl",
+      "mode": "frozen_dg",
+      "model_seed": 392005,
+      "records": 21
+    },
+    {
+      "method": "riei_fd-pl",
+      "mode": "support_ncm",
+      "model_seed": 2026092701,
+      "records": 2100
+    },
+    {
+      "method": "riei_fd-pl",
+      "mode": "frozen_dg",
+      "model_seed": 2026092701,
+      "records": 21
+    },
+    {
+      "method": "riei_fd-pl",
+      "mode": "support_ncm",
+      "model_seed": 2026092702,
+      "records": 2100
+    },
+    {
+      "method": "riei_fd-pl",
+      "mode": "frozen_dg",
+      "model_seed": 2026092702,
+      "records": 21
+    },
+    {
+      "method": "riei_fd-pl",
+      "mode": "support_ncm",
+      "model_seed": 2026092703,
+      "records": 2100
+    },
+    {
+      "method": "riei_fd-pl",
+      "mode": "frozen_dg",
+      "model_seed": 2026092703,
+      "records": 21
+    },
+    {
+      "method": "riei_fd-pl",
+      "mode": "support_ncm",
+      "model_seed": 2026092704,
+      "records": 2100
+    },
+    {
+      "method": "riei_fd-pl",
+      "mode": "frozen_dg",
+      "model_seed": 2026092704,
+      "records": 21
+    },
+    {
+      "method": "drift-ce",
+      "mode": "support_ncm",
+      "model_seed": 392005,
+      "records": 2100
+    },
+    {
+      "method": "drift-ce",
+      "mode": "frozen_dg",
+      "model_seed": 392005,
+      "records": 21
+    },
+    {
+      "method": "drift-ce",
+      "mode": "support_ncm",
+      "model_seed": 2026092701,
+      "records": 2100
+    },
+    {
+      "method": "drift-ce",
+      "mode": "frozen_dg",
+      "model_seed": 2026092701,
+      "records": 21
+    },
+    {
+      "method": "drift-ce",
+      "mode": "support_ncm",
+      "model_seed": 2026092702,
+      "records": 2100
+    },
+    {
+      "method": "drift-ce",
+      "mode": "frozen_dg",
+      "model_seed": 2026092702,
+      "records": 21
+    },
+    {
+      "method": "drift-ce",
+      "mode": "support_ncm",
+      "model_seed": 2026092703,
+      "records": 2100
+    },
+    {
+      "method": "drift-ce",
+      "mode": "frozen_dg",
+      "model_seed": 2026092703,
+      "records": 21
+    },
+    {
+      "method": "drift-ce",
+      "mode": "support_ncm",
+      "model_seed": 2026092704,
+      "records": 2100
+    },
+    {
+      "method": "drift-ce",
+      "mode": "frozen_dg",
+      "model_seed": 2026092704,
+      "records": 21
+    },
+    {
+      "method": "drift-pl",
+      "mode": "support_ncm",
+      "model_seed": 392005,
+      "records": 2100
+    },
+    {
+      "method": "drift-pl",
+      "mode": "frozen_dg",
+      "model_seed": 392005,
+      "records": 21
+    },
+    {
+      "method": "drift-pl",
+      "mode": "support_ncm",
+      "model_seed": 2026092701,
+      "records": 2100
+    },
+    {
+      "method": "drift-pl",
+      "mode": "frozen_dg",
+      "model_seed": 2026092701,
+      "records": 21
+    },
+    {
+      "method": "drift-pl",
+      "mode": "support_ncm",
+      "model_seed": 2026092702,
+      "records": 2100
+    },
+    {
+      "method": "drift-pl",
+      "mode": "frozen_dg",
+      "model_seed": 2026092702,
+      "records": 21
+    },
+    {
+      "method": "drift-pl",
+      "mode": "support_ncm",
+      "model_seed": 2026092703,
+      "records": 2100
+    },
+    {
+      "method": "drift-pl",
+      "mode": "frozen_dg",
+      "model_seed": 2026092703,
+      "records": 21
+    },
+    {
+      "method": "drift-pl",
+      "mode": "support_ncm",
+      "model_seed": 2026092704,
+      "records": 2100
+    },
+    {
+      "method": "drift-pl",
+      "mode": "frozen_dg",
+      "model_seed": 2026092704,
+      "records": 21
+    },
+    {
+      "method": "poster-ce",
+      "mode": "support_ncm",
+      "model_seed": 392005,
+      "records": 2100
+    },
+    {
+      "method": "poster-ce",
+      "mode": "author_finetune",
+      "model_seed": 392005,
+      "records": 2100
+    },
+    {
+      "method": "poster-ce",
+      "mode": "frozen_dg",
+      "model_seed": 392005,
+      "records": 21
+    },
+    {
+      "method": "poster-ce",
+      "mode": "support_ncm",
+      "model_seed": 2026092701,
+      "records": 2100
+    },
+    {
+      "method": "poster-ce",
+      "mode": "author_finetune",
+      "model_seed": 2026092701,
+      "records": 2100
+    },
+    {
+      "method": "poster-ce",
+      "mode": "frozen_dg",
+      "model_seed": 2026092701,
+      "records": 21
+    },
+    {
+      "method": "poster-ce",
+      "mode": "support_ncm",
+      "model_seed": 2026092702,
+      "records": 2100
+    },
+    {
+      "method": "poster-ce",
+      "mode": "author_finetune",
+      "model_seed": 2026092702,
+      "records": 2100
+    },
+    {
+      "method": "poster-ce",
+      "mode": "frozen_dg",
+      "model_seed": 2026092702,
+      "records": 21
+    },
+    {
+      "method": "poster-ce",
+      "mode": "support_ncm",
+      "model_seed": 2026092703,
+      "records": 2100
+    },
+    {
+      "method": "poster-ce",
+      "mode": "author_finetune",
+      "model_seed": 2026092703,
+      "records": 2100
+    },
+    {
+      "method": "poster-ce",
+      "mode": "frozen_dg",
+      "model_seed": 2026092703,
+      "records": 21
+    },
+    {
+      "method": "poster-ce",
+      "mode": "support_ncm",
+      "model_seed": 2026092704,
+      "records": 2100
+    },
+    {
+      "method": "poster-ce",
+      "mode": "author_finetune",
+      "model_seed": 2026092704,
+      "records": 2100
+    },
+    {
+      "method": "poster-ce",
+      "mode": "frozen_dg",
+      "model_seed": 2026092704,
+      "records": 21
+    },
+    {
+      "method": "radionet-ce",
+      "mode": "support_ncm",
+      "model_seed": 392005,
+      "records": 2100
+    },
+    {
+      "method": "radionet-ce",
+      "mode": "author_finetune",
+      "model_seed": 392005,
+      "records": 2100
+    },
+    {
+      "method": "radionet-ce",
+      "mode": "frozen_dg",
+      "model_seed": 392005,
+      "records": 21
+    },
+    {
+      "method": "radionet-ce",
+      "mode": "support_ncm",
+      "model_seed": 2026092701,
+      "records": 2100
+    },
+    {
+      "method": "radionet-ce",
+      "mode": "author_finetune",
+      "model_seed": 2026092701,
+      "records": 2100
+    },
+    {
+      "method": "radionet-ce",
+      "mode": "frozen_dg",
+      "model_seed": 2026092701,
+      "records": 21
+    },
+    {
+      "method": "radionet-ce",
+      "mode": "support_ncm",
+      "model_seed": 2026092702,
+      "records": 2100
+    },
+    {
+      "method": "radionet-ce",
+      "mode": "author_finetune",
+      "model_seed": 2026092702,
+      "records": 2100
+    },
+    {
+      "method": "radionet-ce",
+      "mode": "frozen_dg",
+      "model_seed": 2026092702,
+      "records": 21
+    },
+    {
+      "method": "radionet-ce",
+      "mode": "support_ncm",
+      "model_seed": 2026092703,
+      "records": 2100
+    },
+    {
+      "method": "radionet-ce",
+      "mode": "author_finetune",
+      "model_seed": 2026092703,
+      "records": 2100
+    },
+    {
+      "method": "radionet-ce",
+      "mode": "frozen_dg",
+      "model_seed": 2026092703,
+      "records": 21
+    },
+    {
+      "method": "radionet-ce",
+      "mode": "support_ncm",
+      "model_seed": 2026092704,
+      "records": 2100
+    },
+    {
+      "method": "radionet-ce",
+      "mode": "author_finetune",
+      "model_seed": 2026092704,
+      "records": 2100
+    },
+    {
+      "method": "radionet-ce",
+      "mode": "frozen_dg",
+      "model_seed": 2026092704,
+      "records": 21
+    },
+    {
+      "method": "cvs-daot-rc4",
+      "mode": "d92_registration",
+      "model_seed": 392005,
+      "records": 2100
+    },
+    {
+      "method": "cvs-daot-rc4",
+      "mode": "frozen_dg",
+      "model_seed": 392005,
+      "records": 21
+    },
+    {
+      "method": "cvs-daot-rc4",
+      "mode": "d92_registration",
+      "model_seed": 2026092701,
+      "records": 2100
+    },
+    {
+      "method": "cvs-daot-rc4",
+      "mode": "frozen_dg",
+      "model_seed": 2026092701,
+      "records": 21
+    },
+    {
+      "method": "cvs-daot-rc4",
+      "mode": "d92_registration",
+      "model_seed": 2026092702,
+      "records": 2100
+    },
+    {
+      "method": "cvs-daot-rc4",
+      "mode": "frozen_dg",
+      "model_seed": 2026092702,
+      "records": 21
+    },
+    {
+      "method": "cvs-daot-rc4",
+      "mode": "d92_registration",
+      "model_seed": 2026092703,
+      "records": 2100
+    },
+    {
+      "method": "cvs-daot-rc4",
+      "mode": "frozen_dg",
+      "model_seed": 2026092703,
+      "records": 21
+    },
+    {
+      "method": "cvs-daot-rc4",
+      "mode": "d92_registration",
+      "model_seed": 2026092704,
+      "records": 2100
+    },
+    {
+      "method": "cvs-daot-rc4",
+      "mode": "frozen_dg",
+      "model_seed": 2026092704,
+      "records": 21
+    }
+  ],
+  "checks": [
+    "all records parsed",
+    "unique row/split/mode",
+    "full five seed coverage",
+    "common 2100 split IDs across registration routes",
+    "expected records in every aggregation cell",
+    "query_count=30*class_count",
+    "overall/old/new weighted identity",
+    "harmonic mean identity",
+    "phase1 confusion/accuracy/Macro-F1 identity"
+  ]
+}

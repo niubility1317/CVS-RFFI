@@ -1,5 +1,7 @@
 # CVS Phase1目标测试结果（2026-09-28）
 
+后续更新：Phase2恢复与评分也已全部完成。Phase1/Phase2合并对比、完整注册规模与K扫描见[完整对比实验报告](results/cvs_comparison_20260928/完整对比实验报告.md)。本文末尾恢复中的描述保留为当时的历史状态。
+
 VERIFIED：5个固定seed全部完成200轮训练，并完成clean与residual_noeq星地目标测试。使用最后一轮final_ssdg.pth；未按目标结果选seed、选epoch或重训。
 
 评分修复commit：281b92099b76233c1d4dc341372426894006bd84。原队列将Phase1评分错误地绑定到Phase2完整状态；现已解除依赖。全部Phase1预测完成并通过ID/形状/整数类别校验后，独立读取truth。原预测、checkpoint与Phase2失败产物保留。

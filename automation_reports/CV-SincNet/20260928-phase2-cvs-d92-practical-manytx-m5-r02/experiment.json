@@ -131,7 +131,7 @@
     "launch_command": "python tools/publish_cvs_d92_recovery.py",
     "stop_rule": "No auto-retry. Preserve any partial artifacts. Score only all five complete rows.",
     "dispatcher_pid": 2061061,
-    "readback_time_unix": 1790568134.5450623
+    "readback_time_unix": 1790576670.6765327
   },
   "expected_artifacts": [
     "launch.json",
@@ -203,7 +203,7 @@
       "source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s392005",
       "reuse_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-cvs-d92-practical-manytx-m5-r01/cvs-daot-rc4-s392005",
       "pid": 2061063,
-      "status": "RUNNING",
+      "status": "PREDICTIONS_COMPLETE",
       "observed_argv": [
         "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
         "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_d92_recovery_20260928_r02/tools/cvs_d92_matched.py",
@@ -346,7 +346,7 @@
       "source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092703",
       "reuse_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-cvs-d92-practical-manytx-m5-r01/cvs-daot-rc4-s2026092703",
       "pid": 2061067,
-      "status": "RUNNING",
+      "status": "PREDICTIONS_COMPLETE",
       "observed_argv": [
         "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
         "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_d92_recovery_20260928_r02/tools/cvs_d92_matched.py",
@@ -414,7 +414,7 @@
     "All target truth access isolated to final scorer after all five complete matrices. No retraining, retuning, seed selection, data modification or query-fitted state."
   ],
   "registered_at": "2026-09-28T04:00:04+00:00",
-  "status": "RUNNING",
+  "status": "ANALYZED",
   "source_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01",
   "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
   "native_code": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rc4_matched_20260927_r01/code",

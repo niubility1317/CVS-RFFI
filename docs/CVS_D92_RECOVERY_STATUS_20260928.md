@@ -1,5 +1,7 @@
 # CVS恢复交接（2026-09-28）
 
+最新结果：VERIFIED，恢复run全部5行均为PREDICTIONS_COMPLETE（各2100 splits、2121条预测），completion.json=SCORED，独立评分已下载至`E:/type10-7/local_artifacts/cvs_d92_recovery_20260928/scored_results.json`。下文启动进度为历史记录。完整对比见[总报告](results/cvs_comparison_20260928/完整对比实验报告.md)。
+
 Phase1已完成目标评分，详见[完整结果](CVS_PHASE1_TARGET_RESULTS_20260928.md)。5个模型使用原始DAOT A1＋FastTrust-RC4的第200轮权重；Practical LEO residual/post_sync/noeq。不得据新目标分数调参或选择性重跑。
 
 D92版本为P2-256-FULL，即E0去RF32、identity160＋FFT96。两次失败均为inner support LDA的FP32舍入错误；修复仅在原guard失败时用FP64消除类别共同仿射项后转换，严格sklearn预测检查保留，成功路径数值不变。修复、聚焦测试和一次独立审查完成。

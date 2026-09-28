@@ -47,3 +47,11 @@ VERIFIED：release cvs_d92_recovery_20260928_r02来自已push并独立核实OID�
 evidence/readback_1790568134.json：3个完整seed已逐条验证并复用至2121/2121；392005已从830推进至850，2026092703从1968推进至1990，两条新增预测路径均正常运行。整体RUNNING，尚无scored_results.json。此前错误已越过，但完整矩阵仍须等剩余划分完成，不将启动成功写成实验全部结束。
 
 继续核查使用tools/read_cvs_d92_recovery.py，只读进程与状态；状态变化后用tools/record_cvs_d92_recovery.py更新原登记。若所有行成功，dispatcher自动调用独立scorer并生成completion.json；若技术异常，保留新partial并停止评分，不自动重试。
+
+## 完成与完整对比
+
+VERIFIED：evidence/readback_1790576670.json显示5行均完成2100个split、2121条预测，completion.json=SCORED；dispatcher及worker已退出。完整10605条D92评分读回至E:/type10-7/local_artifacts/cvs_d92_recovery_20260928/scored_results.json。结合外部105840条Phase2评分、1440条Phase1评分全量整理，重复键、seed覆盖、split一致性、query数和指标恒等关系全部PASS。
+
+结果见docs/results/cvs_comparison_20260928/完整对比实验报告.md及validation.json。4新seed：Phase2零适应DG69.62±1.26%；仅旧类适应K1/5/10/20为60.94±0.55%、72.36±0.56%、77.80±0.42%、80.92±0.24%。6旧类＋20新类时K5总体49.05±0.14%、旧类55.19±0.33%、新类47.21±0.10%、H50.53±0.17%；K20总体61.95±0.06%。K1及低仰角城市退化已明确报告，无目标反馈调参或选择性重跑。
+
+本批固定矩阵全部完成，不等于所有DA方法或论文消融均已完成。NCM为统一扩展，POSTER/RadioNet FT单列；缺少的原生DA、等计算预算、Phase2 Macro-F1/混淆矩阵和资源对比在总报告明确标为待补，不用已有指标替代。

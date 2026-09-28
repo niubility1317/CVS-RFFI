@@ -1,0 +1,187 @@
+{
+  "time": 1790576670.6765327,
+  "launch": {
+    "pid": 2061061,
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_d92_recovery_20260928_r02/tools/cvs_d92_recovery.py",
+      "dispatch",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_d92_recovery_20260928_r02/configs/cvs_d92_recovery_20260928.json",
+      "--commit",
+      "c0e538d60c2e52a50112ee9b43337b4277d463d3"
+    ],
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_d92_recovery_20260928_r02",
+    "commit": "c0e538d60c2e52a50112ee9b43337b4277d463d3",
+    "owner": "codex/root/cvs-d92-recovery-20260928"
+  },
+  "dispatcher": {
+    "alive": false,
+    "argv": [],
+    "cwd": null
+  },
+  "rows": [
+    {
+      "row_id": "cvs-daot-rc4-s392005",
+      "status": "PREDICTIONS_COMPLETE",
+      "pid": 2061063,
+      "process": {
+        "alive": false,
+        "argv": [],
+        "cwd": null
+      },
+      "progress": {
+        "split_id": "fffcc796331850446955730e",
+        "predictions": 2121,
+        "elapsed_seconds": 5.2297245087102056,
+        "feature_dim": 256,
+        "reused_original_prediction": false
+      },
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "predictions": 2121,
+        "split_count": 2100,
+        "capsule_id": "residual-noeq-ba667eee4fb061055e4c08b5",
+        "truth_read": false
+      },
+      "log_tail": null
+    },
+    {
+      "row_id": "cvs-daot-rc4-s2026092701",
+      "status": "PREDICTIONS_COMPLETE",
+      "pid": 2061064,
+      "process": {
+        "alive": false,
+        "argv": [],
+        "cwd": null
+      },
+      "progress": {
+        "split_id": "fffcc796331850446955730e",
+        "predictions": 2121,
+        "elapsed_seconds": 0.0036585722118616104,
+        "feature_dim": 256,
+        "reused_original_prediction": true
+      },
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "predictions": 2121,
+        "split_count": 2100,
+        "capsule_id": "residual-noeq-ba667eee4fb061055e4c08b5",
+        "truth_read": false
+      },
+      "log_tail": null
+    },
+    {
+      "row_id": "cvs-daot-rc4-s2026092702",
+      "status": "PREDICTIONS_COMPLETE",
+      "pid": 2061065,
+      "process": {
+        "alive": false,
+        "argv": [],
+        "cwd": null
+      },
+      "progress": {
+        "split_id": "fffcc796331850446955730e",
+        "predictions": 2121,
+        "elapsed_seconds": 0.0032198503613471985,
+        "feature_dim": 256,
+        "reused_original_prediction": true
+      },
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "predictions": 2121,
+        "split_count": 2100,
+        "capsule_id": "residual-noeq-ba667eee4fb061055e4c08b5",
+        "truth_read": false
+      },
+      "log_tail": null
+    },
+    {
+      "row_id": "cvs-daot-rc4-s2026092703",
+      "status": "PREDICTIONS_COMPLETE",
+      "pid": 2061067,
+      "process": {
+        "alive": false,
+        "argv": [],
+        "cwd": null
+      },
+      "progress": {
+        "split_id": "fffcc796331850446955730e",
+        "predictions": 2121,
+        "elapsed_seconds": 5.202033309265971,
+        "feature_dim": 256,
+        "reused_original_prediction": false
+      },
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "predictions": 2121,
+        "split_count": 2100,
+        "capsule_id": "residual-noeq-ba667eee4fb061055e4c08b5",
+        "truth_read": false
+      },
+      "log_tail": null
+    },
+    {
+      "row_id": "cvs-daot-rc4-s2026092704",
+      "status": "PREDICTIONS_COMPLETE",
+      "pid": 2061068,
+      "process": {
+        "alive": false,
+        "argv": [],
+        "cwd": null
+      },
+      "progress": {
+        "split_id": "fffcc796331850446955730e",
+        "predictions": 2121,
+        "elapsed_seconds": 0.0033020228147506714,
+        "feature_dim": 256,
+        "reused_original_prediction": true
+      },
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "predictions": 2121,
+        "split_count": 2100,
+        "capsule_id": "residual-noeq-ba667eee4fb061055e4c08b5",
+        "truth_read": false
+      },
+      "log_tail": null
+    }
+  ],
+  "support_replays": {
+    "392005": {
+      "split_id": "6533d11a97e532c6b8fe719b",
+      "seed": 392005,
+      "k": 20,
+      "classes": 6,
+      "support_count": 120,
+      "query_features_read": false,
+      "query_truth_read": false,
+      "ground_schema": "v2_rank3_radius",
+      "numpy": "2.2.5",
+      "torch": "2.1.0+cu121",
+      "status": "FIT_PASSED",
+      "active_feature_dim": 256
+    },
+    "2026092703": {
+      "split_id": "ef8921d662af2517554b00a8",
+      "seed": 2026092703,
+      "k": 20,
+      "classes": 6,
+      "support_count": 120,
+      "query_features_read": false,
+      "query_truth_read": false,
+      "ground_schema": "v2_rank3_radius",
+      "numpy": "2.2.5",
+      "torch": "2.1.0+cu121",
+      "status": "FIT_PASSED",
+      "active_feature_dim": 256
+    }
+  },
+  "completion": {
+    "status": "SCORED",
+    "rows": 5,
+    "commit": "c0e538d60c2e52a50112ee9b43337b4277d463d3",
+    "spec": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_d92_recovery_20260928_r02/configs/cvs_d92_recovery_20260928.json"
+  },
+  "scored_results_exists": true
+}
