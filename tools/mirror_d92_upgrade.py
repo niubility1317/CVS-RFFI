@@ -18,7 +18,8 @@ paths=['docs/D92_SUPPORT_UPGRADE_20260928.md','code/cvsrffi/stage2_d92_support_c
     'configs/d92_sourcefree_confirmation_20260928.json','configs/d92_sourcefree_data_20260928.json',
     'configs/d92_sourcefree_data_record_20260928.json','configs/d92_sourcefree_frozen_20260928.json',
     'tests/test_d92_sourcefree_head.py','tests/test_d92_ground_summary.py','tests/test_d92_confirmation_allocation.py',
-    'tests/test_predict_d92_sourcefree_head.py']
+    'tests/test_predict_d92_sourcefree_head.py','tools/audit_d92_confirmation.py','tools/plot_d92_confirmation.py',
+    'tests/test_audit_d92_confirmation.py']
 for name in paths:
     src=ROOT/name;dst=WS/name;dst.parent.mkdir(parents=True,exist_ok=True)
     # Each name is unique to this task; original D92 and shared wrappers are not mirrored.

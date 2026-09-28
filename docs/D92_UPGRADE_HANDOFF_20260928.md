@@ -8,6 +8,8 @@
 
 本地汇总器已支持`--spec configs/d92_sourcefree_confirmation_20260928.json`，20项合成测试通过；由spec验证2412条精确矩阵覆盖，按每K的ΔH>0、Δnew>0、Δold>=−0.01判断。本地spec只补充了与发布前data_config及notes一致的`data.scenarios`和机器可读acceptance字段，未修改远端配置、候选或矩阵。终态确认后可用`read_d92_run.py --download scores.json complete.json startup.json`下载，用`summarize_d92_confirmation.py --scores <path> --spec <spec> --output <new directory>`汇总，`collect_d92_fit_logs.py --spec <spec>`收集全部compact JSONL/CSV；保留远端完整fit_trace。旧`finalize_d92_confirmation_record.py`写死SCV旧run，不可用于本轮。需新增本轮独立算术核验与最终报告，不能误写旧结果或晋级。
 
+独立算术核验入口已补好：`tools/audit_d92_confirmation.py --spec <spec> --scores <scores.json> --output <new arithmetic_audit.json>`，9项合成测试通过。`plot_d92_confirmation.py --summary <summary.json>`现按真实方法名/矩阵/验收结果绘图，拒绝覆盖既有图；真实图尚待本轮全部完成后生成并目视检查。最新运行检查`readback_1790604980.json`仍核实supervisor与4个D92子进程活跃、argv/CWD一致，基线226至246条预测，尚未进入最终评分。上一goal turn为实现/发布进展，本轮也有指标核验工具进展与真实live进程等待，不存在权限阻塞。
+
 - 目标：固定Phase1，全面改善新旧类与各K的H。用户明确强调新类也要好。源域结果不能完成goal；目标分数不能回流调参、选种子或选择性重跑。
 - 工作树：`E:/type10-7/code/snapshots/d92_support_upgrade_20260928_wt`，分支`codex/d92-support-upgrade-20260928`。根目录不是Git仓库，主承载面其他暂存改动未动。
 - 源域旧类诊断180条、注册代理2100条均完成并登记ANALYZED。K1固定FFT权重0；K≥5的support-only选择算法与grid冻结。代理6个TX均被Phase1见过，不能称真正新TX结果。
