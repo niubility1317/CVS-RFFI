@@ -36,3 +36,15 @@
 - [提交进程](evidence/launch.log)
 - [最新独立读回](evidence/readback_1790556295011623100.log)
 - [发布审查](../../../experiments/ir_eg_v1/docs/release_review_20260928.md)
+
+## 2026-09-28日志反馈修订
+
+用户指出stdout只有epoch和总loss，并明确要求现有训练继续，后续默认提供详细日志及适合AI查看的额外结构化格式。
+
+完整读取本次六行截至快照的actions.jsonl、logs.jsonl、ir_steps.jsonl（适用行）和stdout后，确认已有学习率、损失分量、权重、梯度、DAOT/RC4状态、IR/CG响应和source V指标；六行无无效完整JSON记录。源侧训练accuracy未记录，不从loss反推；target未评估。详见[字段与记录数审计](evidence/logging_audit_summary_20260928.json)。
+
+根因是IR专用runtime保留开发期单行摘要，没有接入原生CVS的多段日志展示。已为后续默认增加详细stdout及持久training.log、training_config.json、紧凑epoch training_metrics.jsonl和training_metrics.csv。现有逐步原始JSONL格式保持。说明见[日志字段与口径](../../../experiments/ir_eg_v1/docs/logging.md)。已在工作区和Git承载面的AGENTS.md登记用户默认要求。
+
+修订只在本地Git实现，未向当前N607发布目录写入、未增设日志旁路进程、未停止或重启任何训练。原训练commit仍为92f40367d61c45b9d16a9718bcd68df17af507c2；后续新发布使用更新后的日志实现。
+
+验证覆盖文本/JSONL/CSV一致性、真实测量与缺失区分、IR晚出现字段及恢复计时、原始输入不变，以及原生训练入口连续/恢复模型、优化器、EMA、prototype、solver和RNG一致性。相关测试4项通过。

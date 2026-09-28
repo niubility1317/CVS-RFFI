@@ -222,6 +222,15 @@ def train(args,row,source_contract=None):
             legacy_ticket_seed_replay='resume_state' not in payload,source_contract_equal=True,row_equal=True))
         del payload
     print(f'[XUC-INIT] row={row["id"]} scratch_only={not bool(resume_path)} seed={args.seed} domains={len(source.domains)} steps_per_epoch={stream.steps} restored_step={completed}',flush=True)
+    from .training_log import TrainingLog
+    log_config=dict(vars(args),actual_optimizer=dict(type=type(optimizer).__name__,
+        parameter_groups=[{k:v for k,v in group.items() if k!='params'} for group in optimizer.param_groups]),
+        source_role_counts=source.info['counts'],steps_per_epoch=stream.steps,
+        parameter_count=sum(p.numel() for p in model.parameters()),
+        runtime_environment=dict(torch=torch.__version__,cuda=torch.version.cuda,device=str(device)))
+    training_log=TrainingLog(output,log_config,
+        previous_elapsed=meta['elapsed_seconds'] if resume_path else 0.,
+        emit=lambda text:print(text,flush=True))
     json_write(output/'initialization.json',dict(scratch_only=not bool(resume_path),checkpoint_sources=[resume_path] if resume_path else [],seed=args.seed,
         parameter_count=sum(p.numel() for p in model.parameters()),batchnorm_modules=[n for n,m in model.named_modules() if isinstance(m,torch.nn.modules.batchnorm._BatchNorm)],
         mixstyle_modules=[n for n,m in model.named_modules() if m.__class__.__name__=='MixStyle1D'],target_contact=False,
@@ -346,6 +355,7 @@ def train(args,row,source_contract=None):
             record['learning_rates']={g['fasttrust_role']:g['lr'] for g in optimizer.param_groups}
         if activation is not None:activation.observe(record)
         append(output/'actions.jsonl',record);epoch_rows.append(record);completed+=1
+        training_log.step(record,stream.steps)
         if completed%stream.steps==0:
             if activation is not None:json_write(output/'activation_status.json',activation.report(live_epoch))
             validation=evaluate_source(model,source,args)
@@ -353,7 +363,7 @@ def train(args,row,source_contract=None):
                          mean_loss=float(np.mean([r['loss'] for r in epoch_rows])),source_validation=validation,
                          terms={k:float(np.mean([r['terms'].get(k,0.) for r in epoch_rows])) for k in epoch_rows[0]['terms']},
                          elapsed_seconds=time.perf_counter()-started,source_only=True)
-            append(output/'logs.jsonl',summary);epoch_rows=[]
+            append(output/'logs.jsonl',summary)
             payload=dict(schema='adv3b02_xuc_v1',model=model.state_dict(),ema=ema.state_dict() if ema else None,
                 optimizer=optimizer.state_dict(),prototype=deepcopy(vars(proto)),args=vars(args),row=row,epoch=live_epoch,
                 step=completed,source_info=source.info,initialization='scratch_only',from_scratch=True,target_contact=False,
@@ -368,7 +378,7 @@ def train(args,row,source_contract=None):
                 if resume_path:payload['resume_lineage']=json.loads((output/'resume_lineage.json').read_text(encoding='utf-8'))
             temp=output/'latest_ssdg.tmp';torch.save(payload,temp);temp.replace(output/'latest_ssdg.pth')
             if live_epoch==args.epochs:torch.save(payload,output/'final_ssdg.pth')
-            print(f'[EPOCH-END] E{live_epoch:03d}/{args.epochs} accepted={stream.steps} loss={summary["mean_loss"]:.5f}',flush=True)
+            training_log.epoch(summary,epoch_rows);epoch_rows=[]
             pause_path=getattr(args,'xuc_pause_request','')
             stop_epoch=getattr(args,'xuc_stop_after_epoch',0)
             if live_epoch<args.epochs and ((pause_path and Path(pause_path).exists()) or (stop_epoch and live_epoch>=stop_epoch)):

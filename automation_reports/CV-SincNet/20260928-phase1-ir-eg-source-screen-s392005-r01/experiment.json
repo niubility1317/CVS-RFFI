@@ -515,5 +515,12 @@
     "launch_owner": "/root thread 01a0e381-ac85-7b20-9a4e-d137ff563379",
     "gpu": 1
   },
-  "delivery_verdict": "VERIFIED"
+  "delivery_verdict": "VERIFIED",
+  "logging_followup": {
+    "current_release_unchanged": true,
+    "remote_intervention": false,
+    "default_policy": "detailed text plus compact epoch JSONL/CSV for future runs",
+    "audit_ref": "automation_reports\\CV-SincNet\\20260928-phase1-ir-eg-source-screen-s392005-r01\\evidence\\logging_audit_summary_20260928.json",
+    "documentation": "experiments/ir_eg_v1/docs/logging.md"
+  }
 }

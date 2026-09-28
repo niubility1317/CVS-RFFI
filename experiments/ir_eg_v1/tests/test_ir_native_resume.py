@@ -24,3 +24,18 @@ def test_native_entrypoint_pause_and_resume(tmp_path):
     assert torch.equal(a['resume_state']['rng'].cpu,b['resume_state']['rng'].cpu)
     assert b['step']==2 and b['resume_lineage']['restored_step']==1
     assert 'br_history' in b['solver'] and b['daot_rc4']['commits']==2
+    # The actual launcher defaults must publish both detailed data formats.
+    for directory, epochs in [('full',[1,2]),('part',[1]),('resumed',[2])]:
+        path=tmp_path/directory
+        compact=[json.loads(line) for line in (path/'training_metrics.jsonl').read_text(encoding='utf-8').splitlines()]
+        raw=[json.loads(line) for line in (path/'logs.jsonl').read_text(encoding='utf-8').splitlines()]
+        assert [r['epoch'] for r in compact]==epochs
+        assert (path/'training_metrics.csv').is_file() and (path/'training_config.json').is_file()
+        config=json.loads((path/'training_config.json').read_text(encoding='utf-8'))
+        assert config['actual_optimizer']['type']=='AdamW'
+        assert config['actual_optimizer']['parameter_groups'][0]['betas']==[.9,.999]
+        assert '[VAL-SOURCE]' in (path/'training.log').read_text(encoding='utf-8')
+        for metric, original in zip(compact,raw):
+            assert metric['train_loss_mean']==original['mean_loss']
+            assert metric['source_val_accuracy']==original['source_validation']['accuracy']
+            assert metric['target_accuracy'] is None and metric['epoch_seconds']>0

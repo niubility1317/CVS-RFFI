@@ -56,3 +56,7 @@
 - For Markdown, JSON, and non-ASCII text, use explicit UTF-8 writes, BOM-aware reads, and Python JSON I/O when payloads are large or encoding-sensitive.
 - Do not assume all PowerShell versions support the same parameters or .NET helpers. Check support before relying on `Tee-Object -Encoding`, `Test-Connection -TimeoutSeconds`, `[IO.Path]::GetRelativePath`, or compression APIs that may require explicit `Add-Type`.
 - After SSH/SCP timeouts or malformed quoting, verify local SSH clients and TCP connections have exited, then use read-only remote process/log evidence before relaunching or declaring failure.
+
+## 训练日志默认要求（2026-09-28）
+
+用户要求后续训练默认保留CVS风格详细文本日志，不得只打印epoch和总loss。启动时显示实际生效参数，训练中显示已测量的损失分量、权重、学习率、梯度、方法实际执行状态、源域验证和耗时。完整结构化逐步记录继续保存；同时提供按epoch汇总、去除大数组的紧凑JSONL及CSV，适合AI读取和比较。缺失值写null/N/A并说明原因，不虚构指标，不额外访问target。日志修订不授权停止、重启或热修改已运行实验。
