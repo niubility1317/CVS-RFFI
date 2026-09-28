@@ -1,0 +1,542 @@
+{
+  "status": "VERIFIED",
+  "method": "D92-BNNA-v1",
+  "models": [
+    {
+      "row_id": "cvs-daot-rc4-s2026092701",
+      "fits": 300,
+      "fixed_k1_fits": 75,
+      "support_cv_fits": 225,
+      "optimizer_steps": 60864,
+      "final_optimizer_steps": 17664,
+      "final_status_counts": {
+        "TRAINING_BUDGET_COMPLETE": 276,
+        "IDENTITY_SELECTED": 24
+      },
+      "selected_arm_counts": {
+        "trained": 276,
+        "identity": 24
+      },
+      "resources": {
+        "feature_extraction_seconds": 25.378475940786302,
+        "physical_observations": 4680,
+        "native_views_per_observation": 4,
+        "recorded_native_view_count": 18720,
+        "received_cache_array_bytes": 13777920,
+        "received_cache_file_bytes": 14235548,
+        "existing_frozen_model_file_bytes": 15992872,
+        "model_incremental_transfer_bytes": null,
+        "model_transfer_unavailable_reason": "Deployment state unknown; training checkpoint package is not a measured minimum inference package",
+        "feature_peak_process_rss_bytes": 1131663360,
+        "feature_peak_rss_unavailable_reason": "Linux ru_maxrss process high-water memory; null when unavailable on this platform",
+        "new_source_payload_bytes": 0,
+        "ground_summary_used": false,
+        "cache_scope": "Received-only local cache, not a ground payload"
+      },
+      "timing": {
+        "fit_seconds": {
+          "min": 0.06562519166618586,
+          "mean": 1.4162725349950294,
+          "max": 8.054366998374462,
+          "total": 424.8817604985088
+        },
+        "fit_call_seconds": {
+          "min": 0.06689818017184734,
+          "mean": 1.420598560264334,
+          "max": 8.062469657510519,
+          "total": 426.1795680793002
+        },
+        "query_score_seconds": {
+          "min": 0.014432956464588642,
+          "mean": 0.03911897731013596,
+          "max": 0.08298437669873238,
+          "total": 11.735693193040788
+        },
+        "prediction_write_seconds": {
+          "min": 0.0009830985218286514,
+          "mean": 0.004566383877148231,
+          "max": 0.013898633420467377,
+          "total": 1.3699151631444693
+        },
+        "total_seconds": {
+          "min": 0.09018299542367458,
+          "mean": 1.4822326648514719,
+          "max": 8.178948368877172,
+          "total": 444.66979945544153
+        }
+      },
+      "numeric_state_byte_ranges": {
+        "head_bytes": {
+          "min": 12288,
+          "mean": 27443.2,
+          "max": 53248,
+          "total": 8232960
+        },
+        "basis_bytes": {
+          "min": 0,
+          "mean": 9420.8,
+          "max": 10240,
+          "total": 2826240
+        },
+        "gate_bytes": {
+          "min": 0,
+          "mean": 58.88,
+          "max": 64,
+          "total": 17664
+        },
+        "persistent_state_bytes": {
+          "min": 12288,
+          "mean": 36922.88,
+          "max": 63552,
+          "total": 11076864
+        }
+      },
+      "peak_process_rss_bytes": 536600576,
+      "per_k": [
+        {
+          "k": 1,
+          "fits": 75,
+          "optimizer_steps": 4800,
+          "selected_arm_counts": {
+            "trained": 75
+          }
+        },
+        {
+          "k": 5,
+          "fits": 75,
+          "optimizer_steps": 18048,
+          "selected_arm_counts": {
+            "identity": 18,
+            "trained": 57
+          }
+        },
+        {
+          "k": 10,
+          "fits": 75,
+          "optimizer_steps": 18880,
+          "selected_arm_counts": {
+            "trained": 70,
+            "identity": 5
+          }
+        },
+        {
+          "k": 20,
+          "fits": 75,
+          "optimizer_steps": 19136,
+          "selected_arm_counts": {
+            "trained": 74,
+            "identity": 1
+          }
+        }
+      ],
+      "trace_file": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-bnna-repeat-rx1-m4-r01/cvs-daot-rc4-s2026092701/bnna/fit_trace.jsonl",
+      "trace_file_bytes": 54829652,
+      "training_steps_file_bytes": 45868795
+    },
+    {
+      "row_id": "cvs-daot-rc4-s2026092702",
+      "fits": 300,
+      "fixed_k1_fits": 75,
+      "support_cv_fits": 225,
+      "optimizer_steps": 60736,
+      "final_optimizer_steps": 17536,
+      "final_status_counts": {
+        "TRAINING_BUDGET_COMPLETE": 274,
+        "IDENTITY_SELECTED": 26
+      },
+      "selected_arm_counts": {
+        "trained": 274,
+        "identity": 26
+      },
+      "resources": {
+        "feature_extraction_seconds": 25.472009257413447,
+        "physical_observations": 4680,
+        "native_views_per_observation": 4,
+        "recorded_native_view_count": 18720,
+        "received_cache_array_bytes": 13777920,
+        "received_cache_file_bytes": 14235548,
+        "existing_frozen_model_file_bytes": 15992936,
+        "model_incremental_transfer_bytes": null,
+        "model_transfer_unavailable_reason": "Deployment state unknown; training checkpoint package is not a measured minimum inference package",
+        "feature_peak_process_rss_bytes": 1129021440,
+        "feature_peak_rss_unavailable_reason": "Linux ru_maxrss process high-water memory; null when unavailable on this platform",
+        "new_source_payload_bytes": 0,
+        "ground_summary_used": false,
+        "cache_scope": "Received-only local cache, not a ground payload"
+      },
+      "timing": {
+        "fit_seconds": {
+          "min": 0.0652551781386137,
+          "mean": 1.531940642927463,
+          "max": 8.366699653677642,
+          "total": 459.58219287823886
+        },
+        "fit_call_seconds": {
+          "min": 0.0665274877101183,
+          "mean": 1.5360997053577254,
+          "max": 8.374817525967956,
+          "total": 460.8299116073176
+        },
+        "query_score_seconds": {
+          "min": 0.013652198947966099,
+          "mean": 0.03882608008260528,
+          "max": 0.08652377035468817,
+          "total": 11.647824024781585
+        },
+        "prediction_write_seconds": {
+          "min": 0.0009716711938381195,
+          "mean": 0.004552881587296724,
+          "max": 0.013080618344247341,
+          "total": 1.3658644761890173
+        },
+        "total_seconds": {
+          "min": 0.08998932782560587,
+          "mean": 1.5973504494006434,
+          "max": 8.493706978857517,
+          "total": 479.20513482019305
+        }
+      },
+      "numeric_state_byte_ranges": {
+        "head_bytes": {
+          "min": 12288,
+          "mean": 27443.2,
+          "max": 53248,
+          "total": 8232960
+        },
+        "basis_bytes": {
+          "min": 0,
+          "mean": 9352.533333333333,
+          "max": 10240,
+          "total": 2805760
+        },
+        "gate_bytes": {
+          "min": 0,
+          "mean": 58.45333333333333,
+          "max": 64,
+          "total": 17536
+        },
+        "persistent_state_bytes": {
+          "min": 12288,
+          "mean": 36854.18666666667,
+          "max": 63552,
+          "total": 11056256
+        }
+      },
+      "peak_process_rss_bytes": 532205568,
+      "per_k": [
+        {
+          "k": 1,
+          "fits": 75,
+          "optimizer_steps": 4800,
+          "selected_arm_counts": {
+            "trained": 75
+          }
+        },
+        {
+          "k": 5,
+          "fits": 75,
+          "optimizer_steps": 17984,
+          "selected_arm_counts": {
+            "identity": 19,
+            "trained": 56
+          }
+        },
+        {
+          "k": 10,
+          "fits": 75,
+          "optimizer_steps": 18816,
+          "selected_arm_counts": {
+            "trained": 69,
+            "identity": 6
+          }
+        },
+        {
+          "k": 20,
+          "fits": 75,
+          "optimizer_steps": 19136,
+          "selected_arm_counts": {
+            "trained": 74,
+            "identity": 1
+          }
+        }
+      ],
+      "trace_file": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-bnna-repeat-rx1-m4-r01/cvs-daot-rc4-s2026092702/bnna/fit_trace.jsonl",
+      "trace_file_bytes": 54757143,
+      "training_steps_file_bytes": 45788218
+    },
+    {
+      "row_id": "cvs-daot-rc4-s2026092703",
+      "fits": 300,
+      "fixed_k1_fits": 75,
+      "support_cv_fits": 225,
+      "optimizer_steps": 60736,
+      "final_optimizer_steps": 17536,
+      "final_status_counts": {
+        "TRAINING_BUDGET_COMPLETE": 274,
+        "IDENTITY_SELECTED": 26
+      },
+      "selected_arm_counts": {
+        "trained": 274,
+        "identity": 26
+      },
+      "resources": {
+        "feature_extraction_seconds": 25.29417241550982,
+        "physical_observations": 4680,
+        "native_views_per_observation": 4,
+        "recorded_native_view_count": 18720,
+        "received_cache_array_bytes": 13777920,
+        "received_cache_file_bytes": 14235548,
+        "existing_frozen_model_file_bytes": 15992872,
+        "model_incremental_transfer_bytes": null,
+        "model_transfer_unavailable_reason": "Deployment state unknown; training checkpoint package is not a measured minimum inference package",
+        "feature_peak_process_rss_bytes": 1130971136,
+        "feature_peak_rss_unavailable_reason": "Linux ru_maxrss process high-water memory; null when unavailable on this platform",
+        "new_source_payload_bytes": 0,
+        "ground_summary_used": false,
+        "cache_scope": "Received-only local cache, not a ground payload"
+      },
+      "timing": {
+        "fit_seconds": {
+          "min": 0.06508811842650175,
+          "mean": 1.5208397712123891,
+          "max": 8.553150568157434,
+          "total": 456.2519313637167
+        },
+        "fit_call_seconds": {
+          "min": 0.06643686536699533,
+          "mean": 1.5250276934014013,
+          "max": 8.561328197829425,
+          "total": 457.5083080204204
+        },
+        "query_score_seconds": {
+          "min": 0.013600226491689682,
+          "mean": 0.03855924227585395,
+          "max": 0.08374703302979469,
+          "total": 11.567772682756186
+        },
+        "prediction_write_seconds": {
+          "min": 0.0010119900107383728,
+          "mean": 0.0045687236978362005,
+          "max": 0.012852960266172886,
+          "total": 1.3706171093508601
+        },
+        "total_seconds": {
+          "min": 0.08982098009437323,
+          "mean": 1.5861169338102141,
+          "max": 8.680207498371601,
+          "total": 475.83508014306426
+        }
+      },
+      "numeric_state_byte_ranges": {
+        "head_bytes": {
+          "min": 12288,
+          "mean": 27443.2,
+          "max": 53248,
+          "total": 8232960
+        },
+        "basis_bytes": {
+          "min": 0,
+          "mean": 9352.533333333333,
+          "max": 10240,
+          "total": 2805760
+        },
+        "gate_bytes": {
+          "min": 0,
+          "mean": 58.45333333333333,
+          "max": 64,
+          "total": 17536
+        },
+        "persistent_state_bytes": {
+          "min": 12288,
+          "mean": 36854.18666666667,
+          "max": 63552,
+          "total": 11056256
+        }
+      },
+      "peak_process_rss_bytes": 532004864,
+      "per_k": [
+        {
+          "k": 1,
+          "fits": 75,
+          "optimizer_steps": 4800,
+          "selected_arm_counts": {
+            "trained": 75
+          }
+        },
+        {
+          "k": 5,
+          "fits": 75,
+          "optimizer_steps": 18112,
+          "selected_arm_counts": {
+            "identity": 17,
+            "trained": 58
+          }
+        },
+        {
+          "k": 10,
+          "fits": 75,
+          "optimizer_steps": 18752,
+          "selected_arm_counts": {
+            "trained": 68,
+            "identity": 7
+          }
+        },
+        {
+          "k": 20,
+          "fits": 75,
+          "optimizer_steps": 19072,
+          "selected_arm_counts": {
+            "trained": 73,
+            "identity": 2
+          }
+        }
+      ],
+      "trace_file": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-bnna-repeat-rx1-m4-r01/cvs-daot-rc4-s2026092703/bnna/fit_trace.jsonl",
+      "trace_file_bytes": 54862170,
+      "training_steps_file_bytes": 45896967
+    },
+    {
+      "row_id": "cvs-daot-rc4-s2026092704",
+      "fits": 300,
+      "fixed_k1_fits": 75,
+      "support_cv_fits": 225,
+      "optimizer_steps": 60160,
+      "final_optimizer_steps": 16960,
+      "final_status_counts": {
+        "TRAINING_BUDGET_COMPLETE": 265,
+        "IDENTITY_SELECTED": 35
+      },
+      "selected_arm_counts": {
+        "trained": 265,
+        "identity": 35
+      },
+      "resources": {
+        "feature_extraction_seconds": 25.496853549964726,
+        "physical_observations": 4680,
+        "native_views_per_observation": 4,
+        "recorded_native_view_count": 18720,
+        "received_cache_array_bytes": 13777920,
+        "received_cache_file_bytes": 14235548,
+        "existing_frozen_model_file_bytes": 15992936,
+        "model_incremental_transfer_bytes": null,
+        "model_transfer_unavailable_reason": "Deployment state unknown; training checkpoint package is not a measured minimum inference package",
+        "feature_peak_process_rss_bytes": 1129930752,
+        "feature_peak_rss_unavailable_reason": "Linux ru_maxrss process high-water memory; null when unavailable on this platform",
+        "new_source_payload_bytes": 0,
+        "ground_summary_used": false,
+        "cache_scope": "Received-only local cache, not a ground payload"
+      },
+      "timing": {
+        "fit_seconds": {
+          "min": 0.06490888632833958,
+          "mean": 1.378820949976022,
+          "max": 8.323078195564449,
+          "total": 413.6462849928066
+        },
+        "fit_call_seconds": {
+          "min": 0.06622460763901472,
+          "mean": 1.3828406730821976,
+          "max": 8.33080929517746,
+          "total": 414.8522019246593
+        },
+        "query_score_seconds": {
+          "min": 0.013700388371944427,
+          "mean": 0.03839808301068842,
+          "max": 0.08207757025957108,
+          "total": 11.519424903206527
+        },
+        "prediction_write_seconds": {
+          "min": 0.000992869958281517,
+          "mean": 0.004593223991493384,
+          "max": 0.014096653088927269,
+          "total": 1.3779671974480152
+        },
+        "total_seconds": {
+          "min": 0.08967023994773626,
+          "mean": 1.4436874202887218,
+          "max": 8.445566556416452,
+          "total": 433.1062260866165
+        }
+      },
+      "numeric_state_byte_ranges": {
+        "head_bytes": {
+          "min": 12288,
+          "mean": 27443.2,
+          "max": 53248,
+          "total": 8232960
+        },
+        "basis_bytes": {
+          "min": 0,
+          "mean": 9045.333333333334,
+          "max": 10240,
+          "total": 2713600
+        },
+        "gate_bytes": {
+          "min": 0,
+          "mean": 56.53333333333333,
+          "max": 64,
+          "total": 16960
+        },
+        "persistent_state_bytes": {
+          "min": 12288,
+          "mean": 36545.066666666666,
+          "max": 63552,
+          "total": 10963520
+        }
+      },
+      "peak_process_rss_bytes": 540114944,
+      "per_k": [
+        {
+          "k": 1,
+          "fits": 75,
+          "optimizer_steps": 4800,
+          "selected_arm_counts": {
+            "trained": 75
+          }
+        },
+        {
+          "k": 5,
+          "fits": 75,
+          "optimizer_steps": 17280,
+          "selected_arm_counts": {
+            "identity": 30,
+            "trained": 45
+          }
+        },
+        {
+          "k": 10,
+          "fits": 75,
+          "optimizer_steps": 18944,
+          "selected_arm_counts": {
+            "trained": 71,
+            "identity": 4
+          }
+        },
+        {
+          "k": 20,
+          "fits": 75,
+          "optimizer_steps": 19136,
+          "selected_arm_counts": {
+            "trained": 74,
+            "identity": 1
+          }
+        }
+      ],
+      "trace_file": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-bnna-repeat-rx1-m4-r01/cvs-daot-rc4-s2026092704/bnna/fit_trace.jsonl",
+      "trace_file_bytes": 54502254,
+      "training_steps_file_bytes": 45527697
+    }
+  ],
+  "total_fits": 1200,
+  "optimizer_steps": 242496,
+  "fixed_k1_fits": 300,
+  "support_cv_fits": 900,
+  "query_rows_used_for_fit": 0,
+  "source_rows_used_for_fit": 0,
+  "new_source_payload_bytes": 0,
+  "ground_summary_used": false,
+  "raw_traces_preserved": true,
+  "parameter_feedback_forbidden": true,
+  "optimizer_convergence_claim": false,
+  "scope": "Complete fit/fold/step metadata consistency audit, not a mathematical reexecution; no scores, truth, predictions, checkpoints or feature values read"
+}

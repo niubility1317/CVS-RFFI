@@ -2,6 +2,8 @@
 
 ## 当前状态：BNNA两个重复基准已VERIFIED启动，继续原run
 
+后续只读进展：rx1在`readback_1790614237.json`已核实SCORED终态（2412records、4×300fits、无livechildren/supervisor），登记ARTIFACTS_COMPLETE；已收集`results/fit_audit.json`和fit_logs，完整1200fit/242496实际steps审计VERIFIED。rx3同次读回仍PREDICTING，4个CPU子进程2502694/96/97/98正常、各227至246/900fits。尚未下载或读取任一BNNA scores。不要重启rx1；继续原rx3。新归档工具`tools/finalize_d92_bnna_record.py`及19项合成测试已就绪，尚未对真实成绩执行。
+
 **最新实际状态覆盖下文启动前历史。**发布commit`0fce1af680992fac2c343762af0f07915e10b647`，push/OID已独立核实。rx3为`20260929-phase2-d92-bnna-repeat-rx3-m4-r01`、supervisor2497991、首exporter2498011；rx1为`20260929-phase2-d92-bnna-repeat-rx1-m4-r01`、supervisor2498328、首exporter2498344。两run的`readback_1790613570.json`核实live argv/CWD，首model特征进度分别5248/15444与2176/4680，意味着实际native合成全流程smoke已通过；无真实BNNA评分读取。**禁止因压缩、超时或本文件旧文字重复发布。**下一步只读跟踪原run，全部终态后再下载评分、收集完整fit审计并统一分析。用户要求新旧类与各K全面明显改善后才新增独立数据；目前goal未完成。
 
 2026-09-29：BNNA设计、core/config、4view exporter/predictor已实现；37项核心/入口合成检查通过，完整物理fold隔离和K1无CV已核实。runner/publisher/scorer/联合汇总已接入。新增run为`20260929-phase2-d92-bnna-repeat-rx3-m4-r01`与`20260929-phase2-d92-bnna-repeat-rx1-m4-r01`，spec对应`configs/d92_bnna_repeat_rx3_20260929.json`、rx1同名；两者PLANNED，唯一launch owner仍root。资源和新路径只读核实`local_artifacts/d92_upgrade_20260928/bnna_preflight_20260929.json`，GPU0空闲，其余任务未干预。
