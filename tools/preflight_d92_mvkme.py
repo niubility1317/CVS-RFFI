@@ -1,4 +1,5 @@
 """Read-only resource and output-path preflight for the two fixed MVKME runs."""
+import argparse
 import json
 from pathlib import Path
 import subprocess
@@ -8,7 +9,10 @@ ROOT=Path(__file__).resolve().parents[1]
 
 
 def main():
-    specs=[json.loads((ROOT/f'configs/d92_mvkme_repeat_{c}_20260928.json').read_text(encoding='utf-8')) for c in ('rx3','rx1')]
+    parser=argparse.ArgumentParser();parser.add_argument('--specs',nargs=2,required=True);parser.add_argument('--output',type=Path,required=True)
+    args=parser.parse_args()
+    if args.output.exists():raise FileExistsError(args.output)
+    specs=[json.loads((ROOT/path).read_text(encoding='utf-8')) for path in args.specs]
     paths=[]
     for spec in specs:
         release=spec['code']['cwd']
@@ -22,7 +26,7 @@ def main():
     result=subprocess.run(['ssh',*FLAGS,'-T','N607','python3 -'],input=script.encode('utf-8'),capture_output=True,check=True)
     value=json.loads(result.stdout)
     if value['user']!='szu2070436088':raise ValueError('Unexpected remote user')
-    out=Path('E:/type10-7/local_artifacts/d92_upgrade_20260928/mvkme_preflight.json')
+    out=args.output
     with out.open('x',encoding='utf-8') as stream:json.dump(value,stream,indent=2);stream.write('\n')
     print(json.dumps(value))
 

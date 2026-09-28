@@ -1,13 +1,13 @@
 # D92-MVKME冻结方法rx3透明重复基准
 
-- run_id：`20260928-phase2-d92-mvkme-repeat-rx3-m4-r01`
+- run_id：`20260928-phase2-d92-mvkme-repeat-rx3-m4-r02`
 - group_id：`d92-fixed-phase1-mvkme-repeated-benchmark`；类别：`cvs`；阶段：`Phase2-repeated-benchmark`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：FAILED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
-固定Phase1与已验证received IQ及support/query；同一IQ的固定16视图经冻结编码器和核均值表征，仅用当前row support训练岭回归头；复用原D92预测。
+固定Phase1与已验证received IQ及support/query；同一IQ的固定16视图经冻结编码器和核均值表征，仅用当前row support训练岭回归头；复用原D92预测。 技术恢复：修复既有Torch/NumPy双数组ABI的数值转换接口，使用Python数值列表中转；公式、精度、矩阵和预算不变。
 
 ## 数据、seed与模型来源
 
@@ -28,6 +28,4 @@
 
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
 
-Frozen formula independently designed without target scores; complete paired repeated benchmark authorized; implementation and P0/P1 review complete, not launched.
-
-Native checkpoint synthetic zero-IQ smoke passed; feature validation then failed. Supervisor2458913 and child2458931 exited; no performance result.
+Fixed original formula and data; one numeric tensor bridge technical repair after terminal rx3-r01. New rx3-r02 plus unlaunched rx1-r01; no target score read.

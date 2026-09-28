@@ -2,6 +2,8 @@
 
 ## 当前状态：SGJoint重复基准失败，正在实现MVKME
 
+MVKME启动后技术状态更新：已发布commit`a208d859a0cf6e4d7beaaccfa7bb9133fc5ea7b3`并启动rx3-r01，supervisor2458913/child2458931均退出，`readback_1790609872.json`核实FAILED；无预测和评分，禁止原地重启。真实checkpoint零IQ smoke通过；后续torch转NumPy输出意外成为object dtype，核心正确拒绝。confirmation_runner在已发布代码上用纯合成IQ复现并定位转换/加载故障，不读源样本或目标结果。rx1-r01仅PLANNED尚未发布。下一步修复该技术问题、本地失败回归及原问题定点审查，rx3使用新r02，rx1更新联合引用后按原冻结算法执行。
+
 用户最后确认“先复用数据，待性能有明显改善后再新增独立数据进行验证”。目标仍ACTIVE；无需等待新增数据。SGJoint两run（rx3/rx1）均已SCORED并登记ANALYZED，禁止重启。发布commit为`a794b71e1c93d6d4e9f3cfe1f2ccc591a685bdea`；终态证据分别为`readback_1790608523.json`与`readback_1790608322.json`。完整9648评分与4800拟合已核验。主报告在rx3的`results/combined_rx4/report.md`，两run均有`results/artifacts.json`和`fit_audit.json`。
 
 K1/5/10/20的Δnew为−2.306/−1.041/−1.181/+0.178pp；ΔH为−1.557/+1.296/+0.129/+0.500pp。未晋级，不能称全面明显改善。联合表旧类只含new_count>0；正式旧类保护含old-only，Δold为+1.213/+7.097/+3.287/+0.973pp，均通过。原汇总保留，解释审计补足口径；新汇总器已修正。拟合累计1119.447秒；摘要numeric实际4410bytes，包8191至8383bytes，新增地面统计0。大scores和完整trace保留原路径。

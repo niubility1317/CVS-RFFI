@@ -35,7 +35,8 @@ paths += ['tools/collect_d92_summary_joint_audit.py','tests/test_collect_d92_sum
     'tests/test_export_d92_mv_kme_features.py','tests/test_predict_d92_mv_kme.py',
     'tools/prepare_d92_mv_kme_benchmark.py','tools/preflight_d92_mvkme.py','configs/d92_mvkme_repeat_rx3_20260928.json',
     'configs/d92_mvkme_repeat_rx1_20260928.json','configs/d92_mvkme_repeat_rx3_data_20260928.json',
-    'configs/d92_mvkme_repeat_rx1_data_20260928.json']
+    'configs/d92_mvkme_repeat_rx1_data_20260928.json','tools/prepare_d92_mvkme_recovery.py',
+    'configs/d92_mvkme_repeat_rx3_recovery_20260928.json','configs/d92_mvkme_repeat_rx3_recovery_data_20260928.json']
 for name in paths:
     src=ROOT/name;dst=WS/name;dst.parent.mkdir(parents=True,exist_ok=True)
     # Each name is unique to this task; original D92 and shared wrappers are not mirrored.

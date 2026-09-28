@@ -51,6 +51,13 @@ def test_support_fit_query_invariance_and_logs(tmp_path,monkeypatch,k):
     assert small['source_rows_used_for_fit']==small['query_rows_used_for_fit']==0
     assert (small['selected_old_nll'] is None)==(k==1)
     assert (small['selected_new_nll'] is None)==(k==1)
+    assert (small['receiver'],small['scenario'],small['support_seed'],small['new_count'])==('rx','synthetic',1,2)
+    assert all(small[key]>=0 for key in ('fit_call_seconds','query_score_seconds','prediction_write_seconds'))
+    trace=mod.read(args['output']/'fit_trace.jsonl')
+    for entry in trace['physical_fold_assignment']:
+        physical_index=int(entry['physical_id'].split('-')[-1])
+        assert entry['class_id']==trace['registered_classes'][physical_index//k]
+    assert trace['new_count']==2 and trace['query_score_seconds']==small['query_score_seconds']
     assert small['learning_rate'] is small['gradient'] is small['source_validation'] is None
     assert 'Closed-form ridge' in small['unavailable_reason']
     assert (args['output']/'compact.csv').is_file()

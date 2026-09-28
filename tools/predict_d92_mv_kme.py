@@ -92,9 +92,9 @@ def predict(*,row_root,capsule,output,mv_features,expected_capsule_id,expected_c
         mv_features=str(mv_features),payload_audit=payload,prediction_tie_policy='physical_class_id_ascending',
         cross_row_adapted_state_reuse=False,new_ground_statistics_bytes=0)
     write(out/'startup.json',startup);print(json.dumps(dict(event='STARTUP',**startup)),flush=True)
-    fields=['split_id','completed','total','k','classes','selected','selection','candidate_count','fold_count',
+    fields=['split_id','completed','total','receiver','scenario','support_seed','new_count','k','classes','selected','selection','candidate_count','fold_count',
         'selected_objective','selected_macro_nll','selected_old_nll','selected_new_nll','fit_seconds','persistent_state_bytes','head_bytes','fourier_matrix_bytes',
-        'total_seconds','peak_process_rss_bytes','query_rows_used_for_fit','source_rows_used_for_fit',
+        'fit_call_seconds','query_score_seconds','prediction_write_seconds','total_seconds','peak_process_rss_bytes','query_rows_used_for_fit','source_rows_used_for_fit',
         'learning_rate','gradient','source_validation','source_validation_reason','unavailable_reason']
     with (out/'predictions.jsonl').open('x',encoding='utf-8') as predictions, \
             (out/'fit_trace.jsonl').open('x',encoding='utf-8') as trace, \
@@ -106,17 +106,30 @@ def predict(*,row_root,capsule,output,mv_features,expected_capsule_id,expected_c
             started=time.perf_counter()
             state=fit_mv_kme(support_blocks=blocks[support],support_labels=labels,support_ids=ids[support],
                 classes=split['registered_classes'],old_classes=old_classes)
+            fit_call_seconds=time.perf_counter()-started
             if list(state.classes)!=split['registered_classes']:raise ValueError('Ridge class order mismatch')
-            audit=state.audit_dict();scores=state.score(blocks[query])
+            audit=state.audit_dict();query_blocks=blocks[query]
+            score_started=time.perf_counter();scores=state.score(query_blocks)
+            query_score_seconds=time.perf_counter()-score_started
             if scores.shape!=(len(query),len(state.classes)) or not np.isfinite(scores).all():raise ValueError('Invalid query scores')
+            write_started=time.perf_counter()
             record={key:split[key] for key in ('split_id','capsule_id','receiver','scenario','k','support_seed')}
             record.update(mode='d92_mvkme_registration',classes=list(state.classes),query_ids=ids[query].tolist(),
                 predicted_indices=stable_predictions(scores,state.classes).tolist(),scores=scores.tolist())
             predictions.write(json.dumps(record,allow_nan=False)+'\n');predictions.flush()
+            prediction_write_seconds=time.perf_counter()-write_started
+            coordinates={key:split[key] for key in ('receiver','scenario','support_seed')}
+            coordinates['new_count']=len(state.classes)-len(old_classes)
+            support_classes={str(identifier):split['registered_classes'][int(label)] for identifier,label in zip(ids[support],labels)}
+            audit.update(registered_classes=list(state.classes),old_classes=list(old_classes),**coordinates,
+                fit_call_seconds=fit_call_seconds,query_score_seconds=query_score_seconds,prediction_write_seconds=prediction_write_seconds)
+            for assignment in audit['physical_fold_assignment']:
+                assignment['class_id']=support_classes[assignment['physical_id']]
             trace.write(json.dumps(dict(split_id=split['split_id'],**audit),allow_nan=False)+'\n');trace.flush()
-            small=dict(split_id=split['split_id'],completed=index+1,total=len(splits),k=split['k'],classes=len(state.classes),
+            small=dict(split_id=split['split_id'],completed=index+1,total=len(splits),k=split['k'],classes=len(state.classes),**coordinates,
                 **{key:audit[key] for key in ('selected','selection','candidate_count','fold_count','selected_objective',
                     'selected_macro_nll','selected_old_nll','selected_new_nll','fit_seconds','persistent_state_bytes','head_bytes','fourier_matrix_bytes')},
+                fit_call_seconds=fit_call_seconds,query_score_seconds=query_score_seconds,prediction_write_seconds=prediction_write_seconds,
                 total_seconds=time.perf_counter()-started,peak_process_rss_bytes=peak_process_rss(),
                 query_rows_used_for_fit=0,source_rows_used_for_fit=0,learning_rate=None,gradient=None,
                 source_validation=None,source_validation_reason=SOURCE_VALIDATION_REASON,

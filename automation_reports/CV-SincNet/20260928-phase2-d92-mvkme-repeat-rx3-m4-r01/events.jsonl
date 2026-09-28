@@ -1,1 +1,2 @@
 {"at": "2026-09-28T15:32:41+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-09-28T15:39:37+00:00", "status": "FAILED", "note": "VERIFIED terminal technical failure in received multiview feature validation; no predictions or scores. Preserve r01, diagnose with synthetic IQ, no in-place retry.", "evidence": ["automation_reports/CV-SincNet/20260928-phase2-d92-mvkme-repeat-rx3-m4-r01/evidence/readback_1790609872.json"], "row_id": null}

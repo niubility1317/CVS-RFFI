@@ -1,0 +1,92 @@
+{
+  "startup.json": {
+    "pid": 2458913,
+    "argv": [
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_mvkme_repeat_rx3_20260928_r01/tools/run_d92_confirmation.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_mvkme_repeat_rx3_20260928_r01/configs/d92_mvkme_repeat_rx3_20260928.json",
+      "--commit",
+      "a208d859a0cf6e4d7beaaccfa7bb9133fc5ea7b3"
+    ],
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_mvkme_repeat_rx3_20260928_r01",
+    "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "commit": "a208d859a0cf6e4d7beaaccfa7bb9133fc5ea7b3",
+    "launch_owner": "codex/root/d92-upgrade-20260928",
+    "environment": {
+      "CUDA_VISIBLE_DEVICES": "",
+      "OMP_NUM_THREADS": "2",
+      "MKL_NUM_THREADS": "2",
+      "OPENBLAS_NUM_THREADS": "2",
+      "NUMEXPR_NUM_THREADS": null
+    },
+    "worker_policy": {
+      "feature_gpu": 0,
+      "max_feature_workers": 1,
+      "cpu_row_workers": 4,
+      "blas_threads": 2,
+      "reuse_frozen_rows": true
+    },
+    "timestamp": 1790609803.7798238,
+    "live_argv": null,
+    "live_cwd": null
+  },
+  "state.json": {
+    "cvs-daot-rc4-s2026092701": {
+      "status": "TECHNICAL_FAILURE",
+      "updated": 1790609810.1486647,
+      "error": "export_d92_mv_kme_features.py failed with exit code 1; preserved /home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-mvkme-repeat-rx3-m4-r01/cvs-daot-rc4-s2026092701/mv_features.log; no automatic retry"
+    },
+    "cvs-daot-rc4-s2026092702": {
+      "status": "PLANNED"
+    },
+    "cvs-daot-rc4-s2026092703": {
+      "status": "PLANNED"
+    },
+    "cvs-daot-rc4-s2026092704": {
+      "status": "PLANNED"
+    }
+  },
+  "workflow_state.json": {
+    "status": "TECHNICAL_FAILURE",
+    "error": "export_d92_mv_kme_features.py failed with exit code 1; preserved /home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-mvkme-repeat-rx3-m4-r01/cvs-daot-rc4-s2026092701/mv_features.log; no automatic retry",
+    "retry_policy": "none; preserve all artifacts",
+    "updated": 1790609810.1490216
+  },
+  "launch.json": {
+    "pid": 2458913,
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_mvkme_repeat_rx3_20260928_r01/tools/run_d92_confirmation.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_mvkme_repeat_rx3_20260928_r01/configs/d92_mvkme_repeat_rx3_20260928.json",
+      "--commit",
+      "a208d859a0cf6e4d7beaaccfa7bb9133fc5ea7b3"
+    ],
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_mvkme_repeat_rx3_20260928_r01",
+    "commit": "a208d859a0cf6e4d7beaaccfa7bb9133fc5ea7b3",
+    "run": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-mvkme-repeat-rx3-m4-r01",
+    "data_run": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01",
+    "owner": "codex/root/d92-upgrade-20260928",
+    "live_argv": null,
+    "live_cwd": null
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_mvkme_repeat_rx3_20260928_r01/run.log": {
+    "bytes": 1065,
+    "tail": [
+      "  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/d92_mvkme_repeat_rx3_20260928_r01/tools/run_d92_confirmation.py\", line 104, in invoke",
+      "    raise RuntimeError(f'{tool} failed with exit code {code}; preserved {log}; no automatic retry')",
+      "RuntimeError: export_d92_mv_kme_features.py failed with exit code 1; preserved /home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-mvkme-repeat-rx3-m4-r01/cvs-daot-rc4-s2026092701/mv_features.log; no automatic retry"
+    ]
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-mvkme-repeat-rx3-m4-r01/cvs-daot-rc4-s2026092701/mv_features.log": {
+    "bytes": 37506,
+    "tail": [
+      "  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/d92_mvkme_repeat_rx3_20260928_r01/code/cvsrffi/stage2_d92_mv_kme.py\", line 66, in _numeric",
+      "    raise ValueError(name + ' has invalid shape, type, or finite values')",
+      "ValueError: frozen identity views has invalid shape, type, or finite values"
+    ]
+  },
+  "fit_progress": {},
+  "live_children": []
+}

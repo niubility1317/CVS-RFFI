@@ -77,6 +77,7 @@ def test_export_bound_cache_and_query_independent_features(tmp_path,monkeypatch)
     assert marker['status']=='MULTIVIEW_FEATURES_COMPLETE' and marker['new_ground_statistics_bytes']==0
     assert marker['model_file_bytes']==123456
     assert marker['feature_array_bytes']==len(iq)*3*256*4
+    assert 'peak_process_rss_bytes' in marker and marker['peak_process_rss_reason']
     infer.verify_frozen()
     assert opened
     with pytest.raises(FileExistsError):mod.export(**args)
@@ -148,3 +149,25 @@ def test_feature_progress_every_128_observations_and_final(capsys):
     assert [e['views'] for e in events]==[128*16,129*16]
     assert all(e['total']==129 and e['event']=='FEATURE_PROGRESS' and e['extraction_elapsed_seconds']>=0 for e in events)
     assert all(not isinstance(value,(list,dict)) for e in events for value in e.values())
+
+
+def test_scalar_list_boundary_avoids_incompatible_numpy_c_bridges(monkeypatch):
+    infer=tiny_encoder()
+    views=np.random.default_rng(271).normal(size=(16,2,256)).astype(np.float64)
+    with torch.inference_mode():
+        expected=np.asarray(infer.model(torch.tensor(views.astype(np.float32).tolist())).tolist(),dtype=np.float64)
+    def broken_bridge(*_args,**_kwargs):
+        raise RuntimeError('Simulated legacy/new NumPy C-extension class mismatch')
+    monkeypatch.setattr(torch.Tensor,'numpy',broken_bridge)
+    monkeypatch.setattr(torch,'as_tensor',broken_bridge)
+    actual=infer(views)
+    assert actual.dtype==np.float64 and actual.dtype.kind=='f' and np.isfinite(actual).all()
+    np.testing.assert_array_equal(actual,expected)
+    core=mod.local_core()
+    with threadpool_limits(limits=1):
+        blocks=mod.transform_received(np.zeros((8,2,256)),infer,core)
+        state=core.fit_mv_kme(support_blocks=blocks,support_labels=np.repeat(np.arange(4),2),
+            support_ids=[f'synthetic-{i}' for i in range(8)],classes=['old-a','old-b','new-a','new-b'],
+            old_classes=['old-a','old-b'])
+        assert np.isfinite(state.score(blocks[:1])).all()
+    infer.verify_frozen()

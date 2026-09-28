@@ -32,6 +32,13 @@ def sha256(path):
     return digest.hexdigest()
 
 
+def peak_process_rss():
+    if sys.platform.startswith('linux'):
+        import resource
+        return int(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss*1024)
+    return None
+
+
 def local_core():
     # Keep the exact native cvsrffi package separate from the new local method.
     name='_d92_mvkme_local'
@@ -89,12 +96,16 @@ class FrozenIdentity:
     def __call__(self,views):
         torch=self.torch
         with torch.inference_mode():
-            result=self.forward(self.model,torch.as_tensor(np.array(views,copy=True),dtype=torch.float32,device=self.device),'z_id')
+            # The deployed Torch 2.1 / NumPy 2 environment can expose two NumPy
+            # C-extension ndarray classes. Cross only Python scalar lists,
+            # matching the existing native exporter, instead of that C bridge.
+            tensor=torch.tensor(np.asarray(views,dtype=np.float32).tolist(),dtype=torch.float32,device=self.device)
+            result=self.forward(self.model,tensor,'z_id')
             if result is None:raise ValueError('Native identity-only forward unavailable')
             identity=result[0]
             if identity.shape!=(len(views),160) or not torch.isfinite(identity).all():
                 raise ValueError('Invalid native identity output')
-            return identity.detach().cpu().numpy().astype(np.float64)
+            return np.asarray(identity.detach().cpu().tolist(),dtype=np.float64)
 
 
 def load_native(*,native_code,source,contract,seed,expected_checkpoint_sha256,device):
@@ -118,10 +129,14 @@ def load_native(*,native_code,source,contract,seed,expected_checkpoint_sha256,de
     model,audit=checkpoint_loading.build_exact_ssdg_model_from_checkpoint(payload,input_len=256,device=device)
     infer=FrozenIdentity(model,identity_only_forward.identity_only_feature_forward,device)
     smoke_started=time.perf_counter()
-    smoke_views=local_core().make_received_views(np.zeros((1,2,256),dtype=np.float32)).reshape(16,2,256)
+    core=local_core();smoke_iq=np.zeros((1,2,256),dtype=np.float32)
+    smoke_views=core.make_received_views(smoke_iq).reshape(16,2,256)
     smoke_identity=infer(smoke_views);infer.verify_frozen()
+    smoke_blocks=core.build_fourier_blocks(received_iq=smoke_iq,identity_views=smoke_identity.reshape(1,4,4,160))
     print(json.dumps(dict(event='NATIVE_ZERO_IQ_SMOKE',status='PASS',query_read=False,
         view_shape=list(smoke_views.shape),identity_shape=list(smoke_identity.shape),device=str(device),
+        blocks_shape=list(smoke_blocks.shape),identity_dtype=str(smoke_identity.dtype),
+        tensor_numpy_boundary='python_scalar_lists',torch_version=torch.__version__,numpy_version=np.__version__,
         model_parameter_count=sum(value.numel() for value in model.parameters()),loader=audit,
         elapsed_seconds=time.perf_counter()-smoke_started,all_parameters_frozen=True,buffers_unchanged=True)),flush=True)
     return infer,dict(verdict='MATCHED_SOURCE_ONLY_SCRATCH',checkpoint=str(checkpoint),checkpoint_sha256=expected_checkpoint_sha256,
@@ -184,7 +199,8 @@ def export(*,row_root,source,contract,native_code,seed,capsule,output,config,
         source_data_access=False,truth_read=False,encoder_updated=False,native_eval=True,native_buffers_unchanged=True,
         view_count_per_observation=16,native_forward_scope='One observation, 16 fixed views per call; no cross-query statistics',
         feature_seconds=time.perf_counter()-started,feature_array_bytes=blocks.nbytes,feature_file_bytes=feature_path.stat().st_size,
-        model_file_bytes=provenance['model_file_bytes'],new_ground_statistics_bytes=0)
+        model_file_bytes=provenance['model_file_bytes'],new_ground_statistics_bytes=0,peak_process_rss_bytes=peak_process_rss(),
+        peak_process_rss_reason='Linux ru_maxrss process high-water memory; null when unavailable on this platform')
     write(out/'features_complete.json',marker)
     print(json.dumps(marker,allow_nan=False),flush=True)
 

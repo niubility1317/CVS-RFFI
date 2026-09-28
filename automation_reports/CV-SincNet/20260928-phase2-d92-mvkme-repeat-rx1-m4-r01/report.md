@@ -29,3 +29,5 @@
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
 
 Frozen formula independently designed without target scores; complete paired repeated benchmark authorized; implementation and P0/P1 review complete, not launched.
+
+Fixed original formula and data; one numeric tensor bridge technical repair after terminal rx3-r01. New rx3-r02 plus unlaunched rx1-r01; no target score read.
