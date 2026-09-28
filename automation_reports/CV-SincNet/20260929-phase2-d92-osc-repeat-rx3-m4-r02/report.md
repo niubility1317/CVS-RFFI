@@ -3,7 +3,7 @@
 - run_id：`20260929-phase2-d92-osc-repeat-rx3-m4-r02`
 - group_id：`d92-fixed-phase1-osc-repeated-benchmark`；类别：`cvs`；阶段：`Phase2-repeated-benchmark`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -31,3 +31,5 @@
 PLANNED technical recovery only: legacy origin metadata omits SHA; expected SHA remains required in D92 startup and BNNA producer metadata/cache. Formula, matrix, source provenance, data and model unchanged.
 
 Technical repair VERIFIED: 90 local tests and readonly full binding checks on all eight real caches passed; no IQ/truth/scoring/fit access. Evidence osc_cache_schema_recovery_diagnostic_20260929.json. Ready for recovery release.
+
+RUNNING independently VERIFIED at readback_1790616709.json. Four CPU workers, actual fit progress; no restart or score reading until both cohorts finish.

@@ -1,5 +1,9 @@
 # D92优化当前交接
 
+## 当前状态：OSC r02已实际运行，禁止重复启动
+
+2026-09-29独立读回`readback_1790616709.json`：rx3/rx1均PREDICTING，8个CPU worker的argv/CWD匹配。rx3各24/900fits，rx1各51/300fits；supervisor分别2532747/2532935。实际发布commit`19a38b714f26599b6a9a074ccfedacc1c8df464b`，远端Git OID一致已复核。r02已登记RUNNING。r01技术失败记录完整保留；旧SHA字段兼容修复及90合成tests、8真实cache只读绑定VERIFIED。下一步只读跟踪两r02，全部终态再收集评分/fit audit/统一解释。公式不改、不得重发/按性能停止，无真实OSC scores已读。goal ACTIVE。
+
 ## 当前状态：OSC r01技术失败，r02已预登记，等待缓存校验修复
 
 已定位唯一问题：旧native `received_features/checkpoint_provenance.json`不含SHA；对应`d92_startup.json`和BNNA三份metadata均精确绑定预期SHA。最小兼容修复为旧origin显式有SHA时仍强制匹配，缺字段时由既有startup及producer/cache强绑定；科学来源/role/污染检查不变。90项相关合成测试通过，包含真实旧schema和错误SHA拒绝。8cache只读绑定检查进行中；r02尚未发布。
