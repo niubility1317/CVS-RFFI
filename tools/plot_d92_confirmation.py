@@ -19,8 +19,9 @@ def normalize_svg(path):
 
 
 def main():
-    p=argparse.ArgumentParser();p.add_argument('--summary',type=Path,required=True);p.add_argument('--normalize-only',action='store_true');a=p.parse_args()
-    data=json.loads(a.summary.read_text(encoding='utf-8'));out=a.summary.parent
+    p=argparse.ArgumentParser();p.add_argument('--summary',type=Path,required=True);p.add_argument('--output',type=Path);p.add_argument('--normalize-only',action='store_true');a=p.parse_args()
+    data=json.loads(a.summary.read_text(encoding='utf-8'));out=a.output or a.summary.parent
+    out.mkdir(parents=True,exist_ok=True)
     if a.normalize_only:
         for name in ['old_new_h.svg','delta_all_k_new.svg']:normalize_svg(out/name)
         print('SVG_XML_GEOMETRY_UNCHANGED');return
@@ -51,7 +52,7 @@ def main():
         im=ax.imshow(values,cmap='RdBu',vmin=-bound,vmax=bound)
         ax.set_title('Delta '+title);ax.set_xticks(range(len(new_counts)),new_counts);ax.set_yticks(range(len(shots)),shots);ax.set_xlabel('New classes');ax.set_ylabel('K')
         for (i,j),v in np.ndenumerate(values):ax.text(j,i,f'{v:+.2f}',ha='center',va='center',color='white' if abs(v)>.65*bound else 'black',fontsize=9)
-    fig.suptitle(f'{methods[1]} minus {methods[0]} (percentage points); all registered class-count cells',fontsize=12)
+    fig.suptitle(f'{methods[1]} minus {methods[0]} (percentage points); joint tasks with new classes',fontsize=12)
     fig.colorbar(im,ax=axes,shrink=.7,label='percentage points',fraction=.025,pad=.025)
     fig.savefig(out/'delta_all_k_new.png',dpi=180,bbox_inches='tight');fig.savefig(out/'delta_all_k_new.svg',bbox_inches='tight');plt.close(fig)
     for name in ['old_new_h.svg','delta_all_k_new.svg']:normalize_svg(out/name)

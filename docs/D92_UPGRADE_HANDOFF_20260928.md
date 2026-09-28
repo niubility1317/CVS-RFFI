@@ -1,6 +1,14 @@
 # D92优化当前交接
 
-## 当前状态：BNNA两个重复基准已VERIFIED启动，继续原run
+## 当前状态：BNNA完整重复基准未达标，全部终态已核验
+
+**2026-09-29最新状态，覆盖下文运行中历史。**rx3/rx1均SCORED，所有supervisor/children退出；终态证据rx3`readback_1790615090.json`、rx1`readback_1790614237.json`，两run下载证据`readback_1790615121.json`。完整4800fits/9648scores、958784真实Adamsteps已核验，禁止重发原run。release仍`0fce1af680992fac2c343762af0f07915e10b647`。
+
+联合Δold/new/H（百分点，new_count>0）：K1=−1.554/−0.617/−0.421；K5=+0.796/−7.347/−4.840；K10=−4.889/−11.565/−9.790；K20=−8.872/−14.906/−13.486。正式all-cell旧类保护Δ=−1.206/+0.919/−4.586/−8.831，仅K5通过。K5/10/20四个model seed的新类/H均下降；K1各1/4正向。未晋级，不新增独立数据，goal仍ACTIVE。
+
+两run arithmetic/fit audit及combined interpretation均VERIFIED。独立复算4560汇总值，maxerr3.33e−16；58个原始证据不变，重复归档拒覆盖。core拟合累计5993.482s、提取累计452.549s，不是墙钟；fold691200steps、final267584steps；新增source载荷0，模型部署及增量模型传输null，完整训练checkpoint15992872至15992936bytes。持久数值状态12288至63552bytes。完整原始日志与评分保留原路径，Git仅小型报告/审计/图表。
+
+下一步实施已在成绩读取前独立设计并提交的OSC方案，文档`docs/D92_NEXT_SUPPORT_DESIGN_20260929.md`（设计commit`a2d721e943b4369aeb8abe71ff3537c5c74d1e56`）。source_aux与confirmation_runner仍保持成绩盲态；不向其发送以上分数。当前仅设计、未实现、未预登记/启动。继续固定Phase1、support-only、完整物理fold、源数据禁入和透明重复基准。用户无需再次批准复用数据。
 
 并行后备设计已完成：`docs/D92_NEXT_SUPPORT_DESIGN_20260929.md`，唯一OSC机制为四视图循环对齐与共享协方差Gaussian相位边缘化。由保持target成绩盲态的source_aux独立设计，未实现、未启动；BNNA保持不变。该设计在BNNA成绩读取前落盘，尚无效果结论。
 
