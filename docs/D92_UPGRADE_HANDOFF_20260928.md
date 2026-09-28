@@ -6,7 +6,7 @@
 
 联合任务Δold/new/H（百分点）：K1=−1.9780/−0.4845/−0.1513；K5=+2.9896/−2.1958/−0.5371；K10=−0.1175/−4.0229/−2.7684；K20=−1.2008/−4.0356/−3.0512。K5/10/20的新类和H均0/4模型seed提高；K1新类1/4、H2/4。全部任务旧类guard在K1/K20也未通过。完整结果未达标，不晋级、不按成绩修改该候选或选择性重跑；goal ACTIVE。新source payload0B，持久数值状态12336至53456B；累计core fit124.4419秒，query score65.3643秒，均非并行墙钟/卫星延迟；最大梯度残差4.16e-13。已有received缓存占用另列，不是源域传输；模型部署情况未知、增量传输null。
 
-当前只有代码/理论审查：source_aux与confirmation_runner继续对所有query成绩盲态，独立核查固定Phase1中尚未利用的逐样本相位/时间/频率结构及现有IQ预处理边界。尚未冻结下一算法、未登记或启动下一实验。source_aux拥有新文档`docs/D92_FIXED_PHASE1_INFORMATION_AUDIT_20260929.md`；root不向盲态agent传递本结果段。以下启动段仅保留历史，不能当实时状态。
+盲态代码/理论审查已完成：`docs/D92_FIXED_PHASE1_INFORMATION_AUDIT_20260929.md`。结论为同一冻结骨干已计算但出口丢弃的融合前分支值得做逐row support-only验证；代码压缩瓶颈不是实际判别增量证据。静态no_dac不计DAC信息，实际flags待元数据核实。当前cache无法反解aux，补提取需要重跑合法support的冻结forward，未来同次导出才可不新增backbone前向次数。下一步A核对实际checkpoint架构/出口；B逐row数值非冗余；C K>=2严格物理OOF的单一预设探针对比，K1无独立类内holdout。未冻结下一分类器、未登记或启动下一实验。confirmation_runner正在做A的只读checkpoint配置元数据核实，预计证据`local_artifacts/d92_upgrade_20260928/fixed_phase1_branch_metadata_20260929.json`，不得假定文件已生成。两agent继续对所有query成绩盲态，root不传递本结果段。以下启动段仅保留历史，不能当实时状态。
 
 2026-09-29：上一轮OSC全部终态。新工作先完成4800fits纯support OOF信息边界分析（docs/D92_OSC_SUPPORT_DIAGNOSTIC_20260929.md/json），未按query成绩选row/调参。盲态设计排除了Gaussian轨道矩近似及重复ground先验坐标变换，唯一新机制为`D92-MVRidge-v1`：固定identity/FFT=1:4，物理样本总view权重1，全部注册标签共同ridge判别回归，ridge系数固定1，解析解。K1利用多类标签与变换一致性，不声称新增独立观测；各fold所有拟合状态隔离，CV仅诊断。设计在docs/D92_SUPPORT_INFORMATION_DESIGN_20260929.md。
 
