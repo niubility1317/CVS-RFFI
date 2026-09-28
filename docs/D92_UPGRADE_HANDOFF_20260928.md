@@ -1,5 +1,11 @@
 # D92优化当前交接
 
+## 最新实时状态：BranchRidge两cohort RUNNING，禁止重复启动
+
+实际release commit `01e93386736f1919ee3f009fb1b16fb04f9a463d`，已push并独立OID匹配。rx3 supervisor PID2590470、首export PID2590897；rx1 supervisor PID2591155、首export PID2591167；两组`readback_1790622276.json`确认live、argv/CWD及日志增长。后续`readback_1790622356.json`：rx3首模型export已完整15444条并PASS synthetic smoke，正切换第二模型；rx1两个模型export已完成、第三模型PID2592058正在导出。未读任何本轮scores。nvidia只读查询核实所属export在GPU0、约482MiB；其余GPU训练未动。
+
+两run均已登记RUNNING。继续只读核实原run，均终态后再下载scores/startup/complete并汇总、独立算术核验。`tools/collect_d92_branch_ridge_audit.py`双spec全4800fit/成本审计已完成23项合成tests；只metadata/log不读scores。新finalizer由d92_p0_review实现中，尚未调用。goal ACTIVE，无权限阻塞。以下“尚未发布”均是历史。
+
 ## 最新状态：BranchRidge两cohort已就绪，尚未发布
 
 新run `20260929-phase2-d92-branch-ridge-repeat-rx3-m4-r01`和rx1同名已PLANNED/launch-ready VALID。固定单view736维、全support一次ridge1、全K同式；新source0B，K1无OOF。40核心/probe、23export/entry、61编排、24summary tests通过。唯一P0/P1见`docs/D92_BRANCH_RIDGE_P0_20260929.md`，无阻断；实际checkpoint synthetic无query smoke已在export入口内，received singleton前向。资源/输出/capsule/原baseline句柄preflight VERIFIED。root唯一launch owner，GPU0每cohort一个串行export、每cohort最多4CPU lanes×2BLAS，不干预GPU3至7已有任务。

@@ -3,7 +3,7 @@
 - run_id：`20260929-phase2-d92-branch-ridge-repeat-rx1-m4-r01`
 - group_id：`d92-fixed-phase1-branch-ridge-repeated-benchmark`；类别：`cvs`；阶段：`Phase2-repeated-benchmark`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -31,3 +31,5 @@
 PLANNED: single support-justified BranchRidge-v1, full benchmark reuse. Exact original source-only checkpoint lineage unchanged and previously verified; live resource/path/capsule metadata preflight VERIFIED. No experiment launched; final focused entry tests and unique P0/P1 review pending.
 
 Implementation ready: 40 core/probe, 23 exporter/entry, 61 orchestration and 24 summary tests passed. Native synthetic no-query smoke is built into export before any received forward; singleton inference, immutable state and truth-last barrier preserved. No experiment launched yet.
+
+RUNNING VERIFIED readback_1790622276.json and readback_1790622356.json: live owned supervisor, matching export argv/CWD and growing logs. Actual runtime commit 01e93386736f1919ee3f009fb1b16fb04f9a463d. Successful native synthetic smoke recorded separately from received forward counts. Do not repeat launch; no new scores read.

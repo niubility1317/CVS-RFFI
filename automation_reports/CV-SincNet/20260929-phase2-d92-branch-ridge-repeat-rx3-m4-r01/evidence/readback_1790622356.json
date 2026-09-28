@@ -1,0 +1,104 @@
+{
+  "startup.json": {
+    "pid": 2590470,
+    "argv": [
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_ridge_repeat_rx3_20260929_r01/tools/run_d92_confirmation.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_ridge_repeat_rx3_20260929_r01/configs/d92_branch_ridge_repeat_rx3_20260929.json",
+      "--commit",
+      "01e93386736f1919ee3f009fb1b16fb04f9a463d"
+    ],
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_ridge_repeat_rx3_20260929_r01",
+    "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "commit": "01e93386736f1919ee3f009fb1b16fb04f9a463d",
+    "launch_owner": "codex/root/d92-upgrade-20260928",
+    "environment": {
+      "CUDA_VISIBLE_DEVICES": "",
+      "OMP_NUM_THREADS": "2",
+      "MKL_NUM_THREADS": "2",
+      "OPENBLAS_NUM_THREADS": "2",
+      "NUMEXPR_NUM_THREADS": null
+    },
+    "worker_policy": {
+      "feature_gpu": 0,
+      "max_feature_workers": 1,
+      "cpu_row_workers": 4,
+      "blas_threads": 2,
+      "reuse_frozen_rows": true
+    },
+    "timestamp": 1790622188.239837,
+    "live_argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_ridge_repeat_rx3_20260929_r01/tools/run_d92_confirmation.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_ridge_repeat_rx3_20260929_r01/configs/d92_branch_ridge_repeat_rx3_20260929.json",
+      "--commit",
+      "01e93386736f1919ee3f009fb1b16fb04f9a463d"
+    ],
+    "live_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_ridge_repeat_rx3_20260929_r01"
+  },
+  "state.json": {
+    "cvs-daot-rc4-s2026092701": {
+      "status": "FEATURES_COMPLETE",
+      "updated": 1790622294.9423795,
+      "checkpoint_sha256": "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b",
+      "reuse_row_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092701"
+    },
+    "cvs-daot-rc4-s2026092702": {
+      "status": "VERIFYING_FROZEN_ARTIFACTS",
+      "updated": 1790622294.9428072
+    },
+    "cvs-daot-rc4-s2026092703": {
+      "status": "PLANNED"
+    },
+    "cvs-daot-rc4-s2026092704": {
+      "status": "PLANNED"
+    }
+  },
+  "workflow_state.json": {
+    "status": "VERIFYING_FROZEN_ARTIFACTS",
+    "updated": 1790622188.391998
+  },
+  "launch.json": {
+    "pid": 2590470,
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_ridge_repeat_rx3_20260929_r01/tools/run_d92_confirmation.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_ridge_repeat_rx3_20260929_r01/configs/d92_branch_ridge_repeat_rx3_20260929.json",
+      "--commit",
+      "01e93386736f1919ee3f009fb1b16fb04f9a463d"
+    ],
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_ridge_repeat_rx3_20260929_r01",
+    "commit": "01e93386736f1919ee3f009fb1b16fb04f9a463d",
+    "run": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-ridge-repeat-rx3-m4-r01",
+    "data_run": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01",
+    "owner": "codex/root/d92-upgrade-20260928",
+    "live_argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_ridge_repeat_rx3_20260929_r01/tools/run_d92_confirmation.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_ridge_repeat_rx3_20260929_r01/configs/d92_branch_ridge_repeat_rx3_20260929.json",
+      "--commit",
+      "01e93386736f1919ee3f009fb1b16fb04f9a463d"
+    ],
+    "live_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_ridge_repeat_rx3_20260929_r01"
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_ridge_repeat_rx3_20260929_r01/run.log": {
+    "bytes": 0,
+    "tail": []
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-ridge-repeat-rx3-m4-r01/cvs-daot-rc4-s2026092701/branch_features.log": {
+    "bytes": 23865,
+    "tail": [
+      "{\"event\": \"FEATURE_PROGRESS\", \"completed\": 15360, \"total\": 15444, \"native_batch_calls\": 15361, \"elapsed_seconds\": 101.7758265370503}",
+      "{\"event\": \"FEATURE_PROGRESS\", \"completed\": 15444, \"total\": 15444, \"native_batch_calls\": 15445, \"elapsed_seconds\": 102.33152293134481}",
+      "{\"status\": \"BRANCH_FEATURES_COMPLETE\", \"schema\": \"d92_branch_received_features_v1\", \"feature_contract\": {\"input_shape\": [2, 256], \"view\": \"original_received_observation\", \"view_count\": 1, \"identity_feature_key\": \"feat_joint\", \"branch_keys\": [\"z_id\", \"t_emb\", \"f_emb\", \"pa_local\"], \"branch_dim\": 160, \"fft_dim\": 96, \"fft\": \"historical_spectral_logmag_sketch\", \"fft_norm_floor\": 1e-08, \"cache_dtype\": \"float32\", \"normalization\": \"raw_native_aux_no_additional_branch_normalization\"}, \"capsule_id\": \"residual-noeq-76121e6f34363fa612ec25fb\", \"checkpoint_sha256\": \"f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b\", \"model_seed\": 2026092701, \"classes\": [\"14-10\", \"14-7\", \"20-15\", \"20-19\", \"6-15\", \"8-20\"], \"count\": 15444, \"dtype\": \"float32\", \"shapes\": {\"z_id\": [15444, 160], \"t_emb\": [15444, 160], \"f_emb\": [15444, 160], \"pa_local\": [15444, 160], \"fft\": [15444, 96]}, \"feature_array_bytes\": 45467136, \"registry_array_bytes\": 1482624, \"feature_file_bytes\": 46953930, \"model_file_bytes\": 15992872, \"native_physical_forward_count\": 15444, \"native_batch_calls\": 15444, \"identity_reference_checks\": 15444, \"smoke_forward_count\": 1, \"smoke_batch_calls\": 1, \"synthetic_smoke\": {\"status\": \"PASS\", \"input\": \"synthetic_PCG64_seed0\", \"physical_forward_count\": 1, \"native_batch_calls\": 1, \"feature_shape\": [1, 736], \"query_rows_read\": 0, \"seconds\": 0.37487889640033245, \"frozen_state_unchanged\": true}, \"native_total_physical_forward_count\": 15445, \"native_total_batch_calls\": 15445, \"support_cache_reuse_count\": 0, \"identity_check_additional_encoder_forwards\": 0, \"native_batch_size\": 1, \"view_count_per_observation\": 1, \"query_used_for_fitting\": false, \"source_data_access\": false, \"truth_read\": false, \"adapted_state_inherited\": false, \"encoder_updated\": false, \"native_eval\": true, \"native_parameters_unchanged\": true, \"native_buffers_unchanged\": true, \"active_branches\": {\"emb_dim\": 160, \"t_dim\": 160, \"f_dim\": 160, \"use_time_path\": true, \"use_freq_path\": true, \"enable_dac\": false, \"enable_pa\": true, \"active_defects\": [\"pa\"], \"id_feature_key\": \"feat_joint\"}, \"new_source_payload_bytes\": 0, \"new_ground_statistics_bytes\": 0, \"capsule_revalidated\": false, \"received_file_rehashed\": false, \"timing\": {\"metadata_seconds\": 0.009228070266544819, \"checkpoint_load_seconds\": 1.9671190213412046, \"synthetic_smoke_seconds\": 0.37487889640033245, \"received_read_seconds\": 0.02846566867083311, \"native_forward_seconds\": 93.20275395270437, \"fft_seconds\": 3.83593335095793, \"frozen_verify_seconds\": 2.764850500971079, \"write_seconds\": 0.06792911235243082, \"total_seconds\": 102.39950923621655}, \"peak_process_rss_bytes\": 1179996160, \"peak_process_rss_reason\": \"Linux process high-water RSS; null when unavailable\"}"
+    ]
+  },
+  "fit_progress": {},
+  "live_children": []
+}

@@ -29,7 +29,8 @@
     "base_recipe": "experiments/adv3b02_xuc/configs/rc4_practical_residual_noeq_20260918.json",
     "native_code_base": "b63734157",
     "native_training_commit": "9b1ddd939fcabc74c77c94a62fef8e5aad07c0e9",
-    "commit_note": "Preparation parent; publisher records exact pushed runtime HEAD."
+    "commit_note": "Preparation parent; publisher records exact pushed runtime HEAD.",
+    "release_commit": "01e93386736f1919ee3f009fb1b16fb04f9a463d"
   },
   "data": {
     "dataset": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule/received.npz",
@@ -146,7 +147,15 @@
     "launch_command": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe -X utf8 tools/publish_d92_confirmation.py --spec configs/d92_branch_ridge_repeat_rx3_20260929.json --release d92_branch_ridge_repeat_rx3_20260929_r01",
     "stop_rule": "Technical contract/process failure fails only affected lane; preserve artifacts, no automatic retry. Healthy lanes and the other preregistered cohort continue; never stop for low performance. Do not score a partial run.",
     "cpu_lanes": 4,
-    "blas_threads_per_lane": 2
+    "blas_threads_per_lane": 2,
+    "pid": 2590470,
+    "runtime_command": [
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_ridge_repeat_rx3_20260929_r01/tools/run_d92_confirmation.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_ridge_repeat_rx3_20260929_r01/configs/d92_branch_ridge_repeat_rx3_20260929.json",
+      "--commit",
+      "01e93386736f1919ee3f009fb1b16fb04f9a463d"
+    ]
   },
   "expected_artifacts": [
     "startup.json",
@@ -585,6 +594,6 @@
     "early_result_policy": "Launch both fixed cohorts; no early score may change, select, stop, or tune the other cohort",
     "partial_policy": "Preserve/report technical failures; no comprehensive acceptance claim from a partial matrix"
   },
-  "status": "PLANNED",
+  "status": "RUNNING",
   "registered_at": "2026-09-28T18:55:52+00:00"
 }
