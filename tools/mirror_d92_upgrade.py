@@ -46,7 +46,7 @@ paths += ['docs/D92_BNNA_DESIGN_20260929.md','code/cvsrffi/stage2_d92_bnna.py',
     'configs/d92_bnna_repeat_rx1_20260929.json','configs/d92_bnna_repeat_rx3_data_20260929.json',
     'configs/d92_bnna_repeat_rx1_data_20260929.json',
     'tools/collect_d92_bnna_audit.py','tests/test_collect_d92_bnna_audit.py','docs/D92_BNNA_P0_REVIEW_20260929.md',
-    'tools/finalize_d92_bnna_record.py','tests/test_finalize_d92_bnna_record.py']
+    'tools/finalize_d92_bnna_record.py','tests/test_finalize_d92_bnna_record.py','docs/D92_NEXT_SUPPORT_DESIGN_20260929.md']
 for name in paths:
     src=ROOT/name;dst=WS/name;dst.parent.mkdir(parents=True,exist_ok=True)
     # Each name is unique to this task; original D92 and shared wrappers are not mirrored.

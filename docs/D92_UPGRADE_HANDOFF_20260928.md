@@ -2,6 +2,8 @@
 
 ## 当前状态：BNNA两个重复基准已VERIFIED启动，继续原run
 
+并行后备设计已完成：`docs/D92_NEXT_SUPPORT_DESIGN_20260929.md`，唯一OSC机制为四视图循环对齐与共享协方差Gaussian相位边缘化。由保持target成绩盲态的source_aux独立设计，未实现、未启动；BNNA保持不变。该设计在BNNA成绩读取前落盘，尚无效果结论。
+
 后续只读进展：rx1在`readback_1790614237.json`已核实SCORED终态（2412records、4×300fits、无livechildren/supervisor），登记ARTIFACTS_COMPLETE；已收集`results/fit_audit.json`和fit_logs，完整1200fit/242496实际steps审计VERIFIED。rx3同次读回仍PREDICTING，4个CPU子进程2502694/96/97/98正常、各227至246/900fits。尚未下载或读取任一BNNA scores。不要重启rx1；继续原rx3。新归档工具`tools/finalize_d92_bnna_record.py`及19项合成测试已就绪，尚未对真实成绩执行。
 
 **最新实际状态覆盖下文启动前历史。**发布commit`0fce1af680992fac2c343762af0f07915e10b647`，push/OID已独立核实。rx3为`20260929-phase2-d92-bnna-repeat-rx3-m4-r01`、supervisor2497991、首exporter2498011；rx1为`20260929-phase2-d92-bnna-repeat-rx1-m4-r01`、supervisor2498328、首exporter2498344。两run的`readback_1790613570.json`核实live argv/CWD，首model特征进度分别5248/15444与2176/4680，意味着实际native合成全流程smoke已通过；无真实BNNA评分读取。**禁止因压缩、超时或本文件旧文字重复发布。**下一步只读跟踪原run，全部终态后再下载评分、收集完整fit审计并统一分析。用户要求新旧类与各K全面明显改善后才新增独立数据；目前goal未完成。
