@@ -1,0 +1,263 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20260928-diagnostic-d42-support-manytx-m2-r01",
+  "group_id": "d42-support-only-numerical-recovery",
+  "display_name": "D42部署预测漂移的support-only复现",
+  "description": "只复现两个技术失败row的首个失败support split；无query预测、评分、调参。",
+  "kind": "diagnostic",
+  "stage": "Phase2-support-fit",
+  "aliases": [],
+  "tags": [
+    "d42",
+    "d92",
+    "diagnostic",
+    "support_only"
+  ],
+  "comparison_group_id": "manysig-six-source-rx13468-day123-luv076330-residual-noeq-v1",
+  "parent_run_ids": [
+    "20260927-phase2-cvs-d92-practical-manytx-m5-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "当前CVS实验技术恢复授权；主Agent指定d92_version_wiring为本诊断唯一launch owner。",
+  "code": {
+    "commit": "281b92099b76233c1d4dc341372426894006bd84",
+    "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d42_support_diagnostic_20260928_r01",
+    "base_recipe": "experiments/adv3b02_xuc/configs/rc4_practical_residual_noeq_20260918.json",
+    "native_code_base": "b63734157",
+    "native_training_commit": "9b1ddd939fcabc74c77c94a62fef8e5aad07c0e9"
+  },
+  "data": {
+    "dataset": "existing ManySig final clean/satellite and ManyTx received-only shared capsules",
+    "version": "existing_N607_ManySig_6tx_12rx_4day",
+    "representation": "Phase2 fixed received IQ only, residual/post_sync/noeq, fs25MHz; native identity160 + FFT96; old-only and new2 assembly adapters preserve original math",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#role_ids",
+    "label_map_ref": "each row/source_contract.json#classes",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "ManySig.tx_list: all6; actual physical class strings exported at runtime",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "residual-noeq-ba667eee4fb061055e4c08b5",
+    "split_id": "all2100 pre-existing split JSON identities",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-practical-data-manytx-s2026092705-r01/capsule/manifest.json",
+    "support_query_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-practical-data-manytx-s2026092705-r01/capsule/splits",
+    "leo_config_ref": "experiments/adv3b02_xuc/code/cvsrffi/practical_adapter.py",
+    "k": [
+      1,
+      5,
+      10,
+      20
+    ],
+    "new_class_counts": [
+      0,
+      2,
+      5,
+      10,
+      20
+    ],
+    "support_seeds": [
+      2026092711,
+      2026092712,
+      2026092713,
+      2026092714,
+      2026092715
+    ],
+    "phase1_final_seeds": {
+      "augmentation": 2026092708,
+      "evaluation": 2026092709
+    }
+  },
+  "permissions": {
+    "regime": "frozen_encoder_support_only_registration",
+    "query_use": "forbidden; only support indices selected",
+    "external_method_exception": null,
+    "claim_scope": "Numerical failure diagnosis only; no accuracy claims"
+  },
+  "checkpoint": {
+    "initialization": "No checkpoint/model load; reuse exact frozen received-feature artifacts and matched v2 ground.",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s392005/final_ssdg.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701/final_ssdg.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092702/final_ssdg.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092703/final_ssdg.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092704/final_ssdg.pth"
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "provenance_verdict": "CHECK_AT_LOAD: new scratch source contract EXACT_MATCH; all inheritance empty",
+    "selection_rule": "No selection; first failed split inferred from immutable failed log."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/d92_version_wiring",
+    "gpu_policy": "CPU only two processes one BLAS/Torch thread each",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-diagnostic-d42-support-manytx-m2-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-diagnostic-d42-support-manytx-m2-r01",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20260928-diagnostic-d42-support-manytx-m2-r01",
+    "launch_command": "python tools/publish_d42_support_diagnostic.py launch --output E:/type10-7/local_artifacts/20260928-diagnostic-d42-support-manytx-m2-r01",
+    "stop_rule": "No automatic retry; exceptions and captured inner support fit are retained."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "*/diagnostic.json",
+    "*/failed_inner_support_fit.npz"
+  ],
+  "metrics_plan": {
+    "accuracy": "not computed",
+    "diagnostic": "FP64/FP32/sklearn mismatch counts, covariance condition, support-only coefficients"
+  },
+  "rows": [
+    {
+      "row_id": "cvs-daot-rc4-s392005",
+      "method": "D92_E0_P2-256-FULL",
+      "purpose": "first_failed_support_split_reproduction",
+      "gpu": null,
+      "config_ref": "configs/cvs_d92_matched_20260927.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-cvs-d92-practical-manytx-m5-r01/cvs-daot-rc4-s392005/d92_startup.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 392005,
+        "split": 2026092705,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Phase2 builder split/data2026092705, augmentation2026092707, evaluation-query2026092706, receiver2027. support=null for outer model row; inner seeds2026092711..15 in data.support_seeds and immutable split JSON. Phase1 source split392005; final target augmentation2026092708/evaluation2026092709.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "practical_high,practical_mid,practical_low_urban; residual/post_sync/noeq",
+      "optimizer": "none for frozen encoder; original D92 support-only state fitting",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "one failed support split; unchanged original method",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-diagnostic-d42-support-manytx-m2-r01/cvs-daot-rc4-s392005",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-diagnostic-d42-support-manytx-m2-r01/cvs-daot-rc4-s392005.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python /home/szu2070436088/2510044040/CV-SincNet/releases/d42_support_diagnostic_20260928_r01/tools/diagnose_d42_support_only.py --row /home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-cvs-d92-practical-manytx-m5-r01/cvs-daot-rc4-s392005 --capsule /home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-practical-data-manytx-s2026092705-r01/capsule --seed 392005 --output /home/szu2070436088/2510044040/CV-SincNet/runs/20260928-diagnostic-d42-support-manytx-m2-r01/cvs-daot-rc4-s392005",
+      "expected_artifacts": [
+        "diagnostic.json",
+        "failed_inner_support_fit.npz"
+      ],
+      "source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s392005",
+      "status": "PLANNED",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d42_support_diagnostic_20260928_r01/tools/diagnose_d42_support_only.py",
+        "--row",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-cvs-d92-practical-manytx-m5-r01/cvs-daot-rc4-s392005",
+        "--capsule",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-practical-data-manytx-s2026092705-r01/capsule",
+        "--seed",
+        "392005",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-diagnostic-d42-support-manytx-m2-r01/cvs-daot-rc4-s392005"
+      ]
+    },
+    {
+      "row_id": "cvs-daot-rc4-s2026092703",
+      "method": "D92_E0_P2-256-FULL",
+      "purpose": "first_failed_support_split_reproduction",
+      "gpu": null,
+      "config_ref": "configs/cvs_d92_matched_20260927.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-cvs-d92-practical-manytx-m5-r01/cvs-daot-rc4-s2026092703/d92_startup.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 2026092705,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Phase2 builder split/data2026092705, augmentation2026092707, evaluation-query2026092706, receiver2027. support=null for outer model row; inner seeds2026092711..15 in data.support_seeds and immutable split JSON. Phase1 source split392005; final target augmentation2026092708/evaluation2026092709.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "practical_high,practical_mid,practical_low_urban; residual/post_sync/noeq",
+      "optimizer": "none for frozen encoder; original D92 support-only state fitting",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "one failed support split; unchanged original method",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-diagnostic-d42-support-manytx-m2-r01/cvs-daot-rc4-s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-diagnostic-d42-support-manytx-m2-r01/cvs-daot-rc4-s2026092703.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python /home/szu2070436088/2510044040/CV-SincNet/releases/d42_support_diagnostic_20260928_r01/tools/diagnose_d42_support_only.py --row /home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-cvs-d92-practical-manytx-m5-r01/cvs-daot-rc4-s2026092703 --capsule /home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-practical-data-manytx-s2026092705-r01/capsule --seed 2026092703 --output /home/szu2070436088/2510044040/CV-SincNet/runs/20260928-diagnostic-d42-support-manytx-m2-r01/cvs-daot-rc4-s2026092703",
+      "expected_artifacts": [
+        "diagnostic.json",
+        "failed_inner_support_fit.npz"
+      ],
+      "source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092703",
+      "status": "PLANNED",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d42_support_diagnostic_20260928_r01/tools/diagnose_d42_support_only.py",
+        "--row",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-cvs-d92-practical-manytx-m5-r01/cvs-daot-rc4-s2026092703",
+        "--capsule",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-practical-data-manytx-s2026092705-r01/capsule",
+        "--seed",
+        "2026092703",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-diagnostic-d42-support-manytx-m2-r01/cvs-daot-rc4-s2026092703"
+      ]
+    }
+  ],
+  "notes": [
+    "Phase2 and final target prediction/scoring are separate dependent runs, not claimed complete here.",
+    "User explicitly overrides legacy LEO_WEAK for this experiment; Phase2 support/query will use residual_noeq too.",
+    "Fixed reference channel augmentation seed2027 and receiver_seed2027 for all methods. Sample gates are ID/epoch deterministic.",
+    "POSTER/RadioNet use parity-tested PyTorch ports, author architecture/freeze scope. Source budget matched200 differs from native defaults.",
+    "CE arms do not use U. PL arms use threshold.9, start150, weight1. RIEI PL updates both classifiers and feature extractor with disjoint optimizers.",
+    "Prior target exploration exists; seed392005 is not a fresh blind confirmatory replicate. No per-method seed selection.",
+    "data seed is null: source role allocation is deterministic contiguous contract. support/evaluation seeds null in source-only run."
+  ],
+  "registered_at": "2026-09-27T05:05:52+00:00",
+  "status": "LOCAL_VERIFIED",
+  "source_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01",
+  "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+  "native_code": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rc4_matched_20260927_r01/code",
+  "final_capsule": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/capsule",
+  "final_truth": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json",
+  "phase2_capsule": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-practical-data-manytx-s2026092705-r01/capsule",
+  "phase2_truth": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-practical-data-manytx-s2026092705-r01/score_only/truth.json",
+  "phase2_scorer": "/home/szu2070436088/2510044040/CV-SincNet/releases/phase2_practical_baselines_20260927_r01/tools/score_practical_phase2_baselines.py"
+}

@@ -1,4 +1,4 @@
-# d92实验与历史证据
+# support_only实验与历史证据
 
 [返回总索引](../README.md)
 
@@ -6,5 +6,4 @@
 
 |名称|记录类型|证据入口|
 |---|---|---|
-|CVS最终clean/星地测试与D92 E0真实256维注册|managed_run|[打开](../../automation_reports/CV-SincNet/20260927-phase2-cvs-d92-practical-manytx-m5-r01/report.md)|
 |D42 support-only技术诊断|managed_run|[打开](../../automation_reports/CV-SincNet/20260928-diagnostic-d42-support-manytx-m2-r01/report.md)|
