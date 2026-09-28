@@ -43,7 +43,15 @@ def load_frozen_records(spec):
                 if record['classes']!=split['registered_classes'] or record['query_ids']!=ids[split['query_indices']].tolist():
                     raise ValueError('Prediction class/query-ID binding mismatch')
                 score=np.asarray(record['scores'],dtype=float);pred=np.asarray(record['predicted_indices'])
-                if score.shape!=(len(record['query_ids']),len(record['classes'])) or not np.isfinite(score).all() or pred.dtype.kind not in 'iu' or not np.array_equal(score.argmax(1),pred):
+                if score.shape!=(len(record['query_ids']),len(record['classes'])) or not np.isfinite(score).all() or pred.dtype.kind not in 'iu':
+                    raise ValueError('Invalid prediction scores/argmax')
+                if method=='D92-SGJoint-v1':
+                    # SGJoint's registered tie rule is independent of class-column order.
+                    order=np.asarray(sorted(range(len(record['classes'])),key=lambda i:record['classes'][i]))
+                    expected_pred=order[score[:,order].argmax(1)]
+                else:
+                    expected_pred=score.argmax(1)
+                if not np.array_equal(expected_pred,pred):
                     raise ValueError('Invalid prediction scores/argmax')
                 if record['mode']=='frozen_dg' and method=='D92':
                     key=(record['receiver'],record['scenario'])

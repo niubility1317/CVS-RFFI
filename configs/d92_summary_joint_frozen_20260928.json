@@ -1,0 +1,46 @@
+{
+  "algorithm": {
+    "method": "D92-SGJoint-v1",
+    "alphas": [
+      0.0,
+      0.5,
+      1.0,
+      4.0
+    ],
+    "betas": [
+      0,
+      1
+    ],
+    "shrinkages": [
+      0.1,
+      1.0
+    ],
+    "max_folds": 3,
+    "folds": "per_class_physical_id_sort_then_position_mod_min_K_3",
+    "k1": {
+      "alpha": 1.0,
+      "beta": 1,
+      "shrinkage": 1.0,
+      "cosine_scale": 10.0,
+      "temperature": 1.0
+    },
+    "temperature_bounds": [
+      0.1,
+      10.0
+    ],
+    "temperature_xatol": 1e-08,
+    "temperature_maxiter": 200,
+    "selection": "min_max_old_new_oof_nll_then_macro_nll_then_stronger_shrinkage_smaller_alpha_beta",
+    "selection_round_decimals": 10,
+    "class_prior": "equal_1_over_registered_class_count",
+    "summary_formula": "q=1/(1+rho); class_equal_weighted_domain_covariance; A=(I+160G/traceG)^(-1/2)",
+    "covariance": "class_equal_unbiased_support_residual_covariance_then_spherical_shrinkage",
+    "training_score_scale": "class_centered_training_score_rms_floor_1e-12",
+    "precision": "float64",
+    "feature_schema": "identity160+same_received_IQ_FFT96",
+    "norm_floor": 1e-12,
+    "covariance_trace_floor": 1e-24,
+    "new_source_payload": false
+  },
+  "summary_already_deployed": false
+}

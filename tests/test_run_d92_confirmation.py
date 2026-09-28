@@ -89,9 +89,11 @@ def test_all_models_freeze_before_independent_score(tmp_path, monkeypatch):
 
 
 @pytest.mark.parametrize('reuse', [False, True])
-def test_sfhead_candidate_with_300_splits_completes_every_row_before_score(tmp_path, monkeypatch, reuse):
+@pytest.mark.parametrize('candidate_index', [1, 2])
+def test_trained_candidate_with_300_splits_completes_every_row_before_score(tmp_path, monkeypatch, reuse, candidate_index):
     path, spec = specification(tmp_path)
-    spec['confirmation'].update(dict(zip(runner.CANDIDATE_FIELDS, runner.CANDIDATES[1])))
+    candidate=runner.CANDIDATES[candidate_index]
+    spec['confirmation'].update(dict(zip(runner.CANDIDATE_FIELDS, candidate)))
     spec['confirmation']['expected_split_count'] = 300
     if reuse:
         spec['confirmation']['reuse_validated_capsule_id'] = 'synthetic'
@@ -100,7 +102,7 @@ def test_sfhead_candidate_with_300_splits_completes_every_row_before_score(tmp_p
     save(path, spec)
     calls = install_workers(monkeypatch, spec)
     runner.run(path, 'synthetic-commit')
-    assert len([c for c in calls if c[0] == 'predict_d92_sourcefree_head.py']) == 4
+    assert len([c for c in calls if c[0] == candidate[2]]) == 4
     assert not any(c[0] == 'predict_d92_support_cv.py' for c in calls)
     assert calls[-1][0] == 'score_d92_confirmation.py'
     assert any(c[0] == 'build_d92_confirmation_data.py' for c in calls) is (not reuse)
@@ -108,12 +110,14 @@ def test_sfhead_candidate_with_300_splits_completes_every_row_before_score(tmp_p
     assert all(r['status'] == 'PREDICTIONS_COMPLETE' for r in runner.read(root / 'state.json').values())
 
 
-def test_sfhead_failure_blocks_score_while_healthy_rows_finish(tmp_path, monkeypatch):
+@pytest.mark.parametrize('candidate_index', [1, 2])
+def test_trained_candidate_failure_blocks_score_while_healthy_rows_finish(tmp_path, monkeypatch, candidate_index):
     path, spec = specification(tmp_path)
-    spec['confirmation'].update(dict(zip(runner.CANDIDATE_FIELDS, runner.CANDIDATES[1])))
+    candidate=runner.CANDIDATES[candidate_index]
+    spec['confirmation'].update(dict(zip(runner.CANDIDATE_FIELDS, candidate)))
     spec['confirmation']['expected_split_count'] = 300
     save(path, spec)
-    calls = install_workers(monkeypatch, spec, fail=('predict_d92_sourcefree_head.py', '2026092701'))
+    calls = install_workers(monkeypatch, spec, fail=(candidate[2], '2026092701'))
     with pytest.raises(RuntimeError, match='synthetic failure'):
         runner.run(path, 'synthetic-commit')
     assert not any(c[0] == 'score_d92_confirmation.py' for c in calls)
@@ -154,6 +158,46 @@ def test_fresh_capsule_split_count_must_match_preregistered_count(tmp_path, monk
     with pytest.raises(ValueError, match='expected_split_count'):
         runner.run(path, 'synthetic-commit')
     assert [c[0] for c in calls] == ['build_d92_confirmation_data.py']
+
+
+@pytest.mark.parametrize('candidate_index', [0, 1, 2])
+def test_candidate_release_paths_and_readback_use_exact_registered_folder(tmp_path,capfd,candidate_index):
+    from collect_d92_fit_logs import fit_log_paths
+    from publish_d92_confirmation import release_tool_paths
+    from read_d92_run import readback_script
+    candidate=runner.CANDIDATES[candidate_index]
+    confirmation=dict(zip(runner.CANDIDATE_FIELDS,candidate))
+    assert fit_log_paths(confirmation)==[('compact.jsonl',candidate[1]+'/compact.jsonl'),('d92.jsonl','d92.log')]
+    paths=release_tool_paths(confirmation)
+    assert 'code' in paths and 'tools/'+candidate[2] in paths
+    assert ('tools/predict_d92_summary_joint.py' in paths) is (candidate_index==2)
+    root,release=tmp_path/'run',tmp_path/'release'
+    release.mkdir()
+    marker=root/'row'/candidate[1]/'predictions_complete.json'
+    save(marker,dict(status='PREDICTIONS_COMPLETE'))
+    log=root/'row'/(candidate[1]+'.log')
+    log.write_text(json.dumps(dict(split_id='synthetic',steps=[dict(loss=1)],optimizer_status='done'))+'\n',encoding='utf-8')
+    script=readback_script(dict(confirmation=confirmation,execution=dict(remote_run_root=str(root)),code=dict(cwd=str(release))))
+    # Execute read-only artifact inspection on synthetic local paths; no SSH or scores.
+    exec(compile(script,'synthetic_readback','exec'),{})
+    data=json.loads(capfd.readouterr().out)
+    assert data[str(marker)]['status']=='PREDICTIONS_COMPLETE'
+    if candidate_index:
+        assert 'steps' not in json.loads(data[str(log)]['tail'][0])
+
+
+def test_sgjoint_rejects_sfhead_mode_in_release_and_readback(tmp_path):
+    from collect_d92_fit_logs import fit_log_paths
+    from publish_d92_confirmation import release_tool_paths
+    from read_d92_run import readback_script
+    confirmation=dict(zip(runner.CANDIDATE_FIELDS,runner.CANDIDATES[2]))
+    confirmation['candidate_mode']='d92_sfhead_registration'
+    with pytest.raises(ValueError,match='combination'):
+        release_tool_paths(confirmation)
+    with pytest.raises(ValueError,match='combination'):
+        readback_script(dict(confirmation=confirmation))
+    with pytest.raises(ValueError,match='combination'):
+        fit_log_paths(confirmation)
 
 
 @pytest.mark.parametrize('tool', ['cvs_d92_matched.py', 'predict_d92_support_cv.py'])

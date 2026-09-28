@@ -4,6 +4,7 @@ import argparse
 import json
 from pathlib import Path
 import subprocess
+from run_d92_confirmation import candidate_definition
 
 ROOT=Path(__file__).resolve().parents[1]
 RELEASE='d92_scv_confirmation_20260928_r01'
@@ -41,6 +42,12 @@ print(json.dumps(launch))
 '''
 
 
+def release_tool_paths(confirmation):
+    candidate=candidate_definition(confirmation)
+    return list(dict.fromkeys([p for p in PATHS if not p.startswith('configs/')]
+                             +['tools/'+candidate['candidate_predictor']]))
+
+
 def main():
     p=argparse.ArgumentParser();p.add_argument('--spec',default='configs/d92_confirmation_20260928.json');p.add_argument('--release',default=RELEASE)
     a=p.parse_args();release_name=a.release
@@ -49,7 +56,7 @@ def main():
     candidate_config='configs/'+Path(spec['confirmation']['candidate_config']).name
     for local,remote in [(data_config,spec['confirmation']['data_config']),(candidate_config,spec['confirmation']['candidate_config'])]:
         if remote!=spec['code']['cwd']+'/'+local:raise ValueError('Configuration outside pinned release')
-    paths_to_pack=[v for v in PATHS if not v.startswith('configs/')]+[a.spec,data_config,candidate_config]
+    paths_to_pack=release_tool_paths(spec['confirmation'])+[a.spec,data_config,candidate_config]
     commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip()
     branch=subprocess.check_output(['git','branch','--show-current'],cwd=ROOT,text=True).strip()
     if subprocess.check_output(['git','ls-remote','origin','refs/heads/'+branch],cwd=ROOT,text=True).split()[0]!=commit:raise ValueError('Release commit not pushed')

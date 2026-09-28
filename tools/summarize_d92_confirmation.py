@@ -31,15 +31,16 @@ def matrix_definition(spec=None):
         source=spec['data']
         matrix=dict(model_seed=[r['seeds']['model'] for r in spec['rows']],receiver=source['target_receivers'],
             scenario=source['scenarios'],k=source['k'],new_count=source['new_class_counts'],support_seed=source['support_seeds'])
-        acceptance['require_new_improvement']=methods[1]=='D92-SFHead-v1'
+        strict_new=methods[1] in ('D92-SFHead-v1','D92-SGJoint-v1')
+        acceptance['require_new_improvement']=strict_new
         declared=spec.get('metrics_plan',{}).get('acceptance',{})
         if not isinstance(declared,dict) or set(declared)-{'old_max_drop','require_new_improvement'}:
             raise ValueError('Unsupported acceptance rule')
         if 'old_max_drop' in declared and declared['old_max_drop']!=0.01:
             raise ValueError('The registered old-class guard must be 0.01')
         if 'require_new_improvement' in declared:
-            if type(declared['require_new_improvement']) is not bool or (methods[1]=='D92-SFHead-v1' and not declared['require_new_improvement']):
-                raise ValueError('SFHead requires strict new-class improvement')
+            if type(declared['require_new_improvement']) is not bool or (strict_new and not declared['require_new_improvement']):
+                raise ValueError(methods[1]+' requires strict new-class improvement')
             acceptance['require_new_improvement']=declared['require_new_improvement']
     for name,values in matrix.items():
         if not isinstance(values,list) or not values or len(set(values))!=len(values):

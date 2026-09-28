@@ -173,3 +173,27 @@ def test_spec_requires_explicit_scenarios_instead_of_guessing():
     del spec['data']['scenarios']
     with pytest.raises(KeyError,match='scenarios'):
         summarize(sfhead_scores(),spec)
+
+
+@pytest.mark.parametrize('new_gain',[True,False])
+def test_sgjoint_label_and_strict_new_gain_are_preserved(new_gain):
+    data,spec=sfhead_scores(),sfhead_spec()
+    spec['confirmation'].update(candidate_method='D92-SGJoint-v1',candidate_folder='sgjoint',
+        candidate_predictor='predict_d92_summary_joint.py',candidate_mode='d92_sgjoint_registration')
+    # No optional acceptance override: SGJoint must default to the strict rule.
+    del spec['metrics_plan']['acceptance']
+    for row in data['results']:
+        if row['method']=='D92-SFHead-v1':
+            row['method']='D92-SGJoint-v1'
+            if not new_gain and row['k']==20 and row['new_count']:
+                row['new_accuracy']=0.5
+                row['harmonic_mean']=2*row['old_accuracy']*0.5/(row['old_accuracy']+0.5)
+    result=summarize(data,spec)
+    assert result['methods']==['D92','D92-SGJoint-v1']
+    assert all(r['method'] in result['methods'] for r in result['tables']['per_k'])
+    assert result['acceptance']['require_new_improvement'] is True
+    assert all(r['h_improved'] and r['old_guard'] and r['new_guard'] for r in result['comparisons'])
+    assert result['preregistered_guard_pass'] is new_gain
+    spec['metrics_plan']['acceptance']=dict(require_new_improvement=False)
+    with pytest.raises(ValueError,match='SGJoint.*strict new-class'):
+        summarize(data,spec)

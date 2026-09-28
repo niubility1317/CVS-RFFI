@@ -4,12 +4,13 @@ import json
 from pathlib import Path
 import subprocess
 import time
+from run_d92_confirmation import candidate_definition
 
 FLAGS=['-F','E:/type10-7/tools/n607_ssh_config','-o','BatchMode=yes','-o','ConnectTimeout=10']
 REMOTE=r'''
 import json
 from pathlib import Path
-root=Path(ROOT);release=Path(RELEASE)
+root=Path(ROOT);release=Path(RELEASE);candidate_folder=CANDIDATE_FOLDER
 result={}
 for base,name in [(root,'startup.json'),(root,'state.json'),(root,'workflow_state.json'),(root,'complete.json'),(root,'completion.json'),(release,'launch.json')]:
  p=base/name
@@ -24,7 +25,7 @@ for p in [release/'run.log',root/'run.log']+list(root.glob('*.log'))+list(root.g
  if p.exists():
   with p.open('rb') as stream:
    stream.seek(max(0,p.stat().st_size-262144));tail=stream.read().decode(errors='replace').splitlines()[-3:]
-  if p.name=='sfhead.log':
+  if p.name in ('sfhead.log','sgjoint.log'):
    filtered=[]
    for line in tail:
     try:
@@ -32,7 +33,7 @@ for p in [release/'run.log',root/'run.log']+list(root.glob('*.log'))+list(root.g
     except (ValueError,TypeError):filtered.append(line[-1500:])
    tail=filtered
   result[str(p)]={'bytes':p.stat().st_size,'tail':tail}
-for p in list(root.glob('*/scv/predictions_complete.json'))+list(root.glob('*/sfhead/predictions_complete.json')):
+for p in root.glob('*/'+candidate_folder+'/predictions_complete.json'):
  result[str(p)]=json.loads(p.read_text())
 processes=[]
 for p in list(root.glob('*/*.log.process.json'))+list(root.glob('*.log.process.json')):
@@ -46,10 +47,17 @@ print(json.dumps(result))
 '''
 
 
+def readback_script(spec):
+    candidate=candidate_definition(spec.get('confirmation',{}))
+    return (REMOTE.replace('ROOT',repr(spec['execution']['remote_run_root']))
+            .replace('RELEASE',repr(spec['code']['cwd']))
+            .replace('CANDIDATE_FOLDER',repr(candidate['candidate_folder'])))
+
+
 def main():
     p=argparse.ArgumentParser();p.add_argument('--spec',type=Path,required=True);p.add_argument('--download',nargs='*',default=[]);p.add_argument('--compact',action='store_true')
     a=p.parse_args();spec=json.loads(a.spec.read_text(encoding='utf-8'))
-    script=REMOTE.replace('ROOT',repr(spec['execution']['remote_run_root'])).replace('RELEASE',repr(spec['code']['cwd']))
+    script=readback_script(spec)
     result=subprocess.run(['ssh',*FLAGS,'-T','N607','python3 -'],input=script.encode(),capture_output=True,check=True)
     data=json.loads(result.stdout);stamp=str(int(time.time()))
     folder=Path('E:/type10-7/automation_reports/CV-SincNet')/spec['run_id'];out=folder/'evidence';out.mkdir(parents=True,exist_ok=True)

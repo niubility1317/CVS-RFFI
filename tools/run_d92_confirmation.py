@@ -17,6 +17,7 @@ CANDIDATE_FIELDS = ('candidate_method', 'candidate_folder', 'candidate_predictor
 CANDIDATES = (
     ('D92-SCV-v1', 'scv', 'predict_d92_support_cv.py', 'd92_scv_registration'),
     ('D92-SFHead-v1', 'sfhead', 'predict_d92_sourcefree_head.py', 'd92_sfhead_registration'),
+    ('D92-SGJoint-v1', 'sgjoint', 'predict_d92_summary_joint.py', 'd92_sgjoint_registration'),
 )
 
 
