@@ -80,6 +80,8 @@ paths += ['docs/D92_BRANCH_SUPPORT_PROBE_DESIGN_20260929.md',
     'tools/preflight_d92_branch_support_probe.py','tests/test_run_d92_branch_support_probe.py',
     'configs/d92_branch_support_probe_20260929.json','configs/d92_branch_support_probe_rx3_20260929.json',
     'configs/d92_branch_support_probe_rx1_20260929.json','docs/D92_BRANCH_SUPPORT_PROBE_P0_20260929.md']
+paths += ['tools/summarize_d92_branch_support_probe.py','tests/test_summarize_d92_branch_support_probe.py',
+    'tools/analyze_d92_branch_support_probe.py']
 for name in paths:
     src=ROOT/name;dst=WS/name;dst.parent.mkdir(parents=True,exist_ok=True)
     # Each name is unique to this task; original D92 and shared wrappers are not mirrored.
