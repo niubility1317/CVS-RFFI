@@ -19,12 +19,12 @@
   "replaces_run_id": null,
   "authorization": "2026-09-28用户明确要求：发布实验。范围为已实现设计的首轮固定seed源侧筛查。",
   "code": {
-    "commit": "f11b785a42cc48a9e996f52468b627e546b080d1",
+    "commit": "92f40367d61c45b9d16a9718bcd68df17af507c2",
     "checkout": "E:\\type10-7\\code\\worktrees\\ir_eg_v1_20260927",
     "environment": "N607 Python 3.10.19; torch 2.1.0+cu121; local ssr-gpu torch 2.10.0+cu128",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01",
     "base_commit": "acf0a6407c4a2cd114851e9f60d0cd346e4b2c77",
-    "commit_note": "Implementation base; exact release commit supplied to launcher and effective_launch.json, recorded after commit."
+    "commit_note": "Exact immutable release commit independently matched to origin before transfer."
   },
   "data": {
     "dataset": "ManySig.pkl",
@@ -109,12 +109,14 @@
       "--spec",
       "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/configs/source_screen_20260928.json",
       "--commit",
-      "<release Git HEAD>"
+      "92f40367d61c45b9d16a9718bcd68df17af507c2"
     ],
     "stop_rule": "Fixed E200/44400 accepted-step budget. Fatal exception/nonfinite ordinary EG aborts only that row; no skipped batch, performance stop, automatic retry or target feedback.",
     "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "dataset_path": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
-    "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json"
+    "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "launch_verification_ref": "automation_reports\\CV-SincNet\\20260928-phase1-ir-eg-source-screen-s392005-r01\\evidence\\readback_1790556295011623100.log",
+    "observed_at": "2026-09-28T00:43:56.158891+00:00"
   },
   "expected_artifacts": [
     "source_contract.json",
@@ -153,7 +155,7 @@
       "row_id": "SIM_s392005",
       "method": "SIM",
       "purpose": "single_seed_source_screen",
-      "status": "LOCAL_VERIFIED",
+      "status": "RUNNING",
       "config_ref": "experiments/ir_eg_v1/configs/ir_rows/SIM_s392005.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase1-ir-eg-source-screen-s392005-r01/SIM_s392005/resolved_config.json",
       "data_overrides": {},
@@ -200,13 +202,17 @@
         "final_ssdg.pth",
         "completion.json"
       ],
-      "gpu": 1
+      "gpu": 1,
+      "pid": 1946779,
+      "last_observed_step": 99,
+      "last_observed_epoch": 1,
+      "launch_evidence": "automation_reports\\CV-SincNet\\20260928-phase1-ir-eg-source-screen-s392005-r01\\evidence\\readback_1790556295011623100.log"
     },
     {
       "row_id": "EG_s392005",
       "method": "EG",
       "purpose": "single_seed_source_screen",
-      "status": "LOCAL_VERIFIED",
+      "status": "RUNNING",
       "config_ref": "experiments/ir_eg_v1/configs/ir_rows/EG_s392005.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase1-ir-eg-source-screen-s392005-r01/EG_s392005/resolved_config.json",
       "data_overrides": {},
@@ -253,13 +259,17 @@
         "final_ssdg.pth",
         "completion.json"
       ],
-      "gpu": 3
+      "gpu": 3,
+      "pid": 1946780,
+      "last_observed_step": 68,
+      "last_observed_epoch": 1,
+      "launch_evidence": "automation_reports\\CV-SincNet\\20260928-phase1-ir-eg-source-screen-s392005-r01\\evidence\\readback_1790556295011623100.log"
     },
     {
       "row_id": "IR_s392005",
       "method": "IR",
       "purpose": "single_seed_source_screen",
-      "status": "LOCAL_VERIFIED",
+      "status": "RUNNING",
       "config_ref": "experiments/ir_eg_v1/configs/ir_rows/IR_s392005.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase1-ir-eg-source-screen-s392005-r01/IR_s392005/resolved_config.json",
       "data_overrides": {},
@@ -306,13 +316,17 @@
         "final_ssdg.pth",
         "completion.json"
       ],
-      "gpu": 4
+      "gpu": 4,
+      "pid": 1946781,
+      "last_observed_step": 63,
+      "last_observed_epoch": 1,
+      "launch_evidence": "automation_reports\\CV-SincNet\\20260928-phase1-ir-eg-source-screen-s392005-r01\\evidence\\readback_1790556295011623100.log"
     },
     {
       "row_id": "IR_G0_s392005",
       "method": "IR_G0",
       "purpose": "single_seed_source_screen",
-      "status": "LOCAL_VERIFIED",
+      "status": "RUNNING",
       "config_ref": "experiments/ir_eg_v1/configs/ir_rows/IR_G0_s392005.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase1-ir-eg-source-screen-s392005-r01/IR_G0_s392005/resolved_config.json",
       "data_overrides": {},
@@ -359,13 +373,17 @@
         "final_ssdg.pth",
         "completion.json"
       ],
-      "gpu": 5
+      "gpu": 5,
+      "pid": 1946782,
+      "last_observed_step": 58,
+      "last_observed_epoch": 1,
+      "launch_evidence": "automation_reports\\CV-SincNet\\20260928-phase1-ir-eg-source-screen-s392005-r01\\evidence\\readback_1790556295011623100.log"
     },
     {
       "row_id": "OR_EG_s392005",
       "method": "OR_EG",
       "purpose": "single_seed_source_screen",
-      "status": "LOCAL_VERIFIED",
+      "status": "RUNNING",
       "config_ref": "experiments/ir_eg_v1/configs/ir_rows/OR_EG_s392005.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase1-ir-eg-source-screen-s392005-r01/OR_EG_s392005/resolved_config.json",
       "data_overrides": {},
@@ -412,13 +430,17 @@
         "final_ssdg.pth",
         "completion.json"
       ],
-      "gpu": 6
+      "gpu": 6,
+      "pid": 1946783,
+      "last_observed_step": 64,
+      "last_observed_epoch": 1,
+      "launch_evidence": "automation_reports\\CV-SincNet\\20260928-phase1-ir-eg-source-screen-s392005-r01\\evidence\\readback_1790556295011623100.log"
     },
     {
       "row_id": "IR_ENCODER_OFF_s392005",
       "method": "IR_ENCODER_OFF",
       "purpose": "single_seed_source_screen",
-      "status": "LOCAL_VERIFIED",
+      "status": "RUNNING",
       "config_ref": "experiments/ir_eg_v1/configs/ir_rows/IR_ENCODER_OFF_s392005.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase1-ir-eg-source-screen-s392005-r01/IR_ENCODER_OFF_s392005/resolved_config.json",
       "data_overrides": {},
@@ -465,7 +487,11 @@
         "final_ssdg.pth",
         "completion.json"
       ],
-      "gpu": 7
+      "gpu": 7,
+      "pid": 1946784,
+      "last_observed_step": 62,
+      "last_observed_epoch": 1,
+      "launch_evidence": "automation_reports\\CV-SincNet\\20260928-phase1-ir-eg-source-screen-s392005-r01\\evidence\\readback_1790556295011623100.log"
     }
   ],
   "notes": [
@@ -475,7 +501,7 @@
     "Only source RX/day filtered tensors reach learner; monolithic pickle is the existing builder input.",
     "Single artifact archive SHA and remote compile; no new data validation or hash chain."
   ],
-  "status": "LOCAL_VERIFIED",
+  "status": "RUNNING",
   "development_status": "VERIFIED",
   "preparation_run_id": "20260927-phase1-ir-eg-wisig-m3-r01",
   "release_smoke": {
@@ -488,5 +514,6 @@
     "output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase1-ir-eg-source-screen-s392005-r01/_release_smoke",
     "launch_owner": "/root thread 01a0e381-ac85-7b20-9a4e-d137ff563379",
     "gpu": 1
-  }
+  },
+  "delivery_verdict": "VERIFIED"
 }
