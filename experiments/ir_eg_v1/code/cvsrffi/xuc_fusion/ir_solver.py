@@ -156,7 +156,12 @@ class IREGSolver(GameSolver):
         finally:handle.remove()
 
     def _ir_step(self,closure,ctx,origin,br,implementation):
-        if torch.is_autocast_enabled() or torch.is_autocast_enabled('cpu'):
+        autocast_active = torch.is_autocast_enabled()
+        try:
+            autocast_active = autocast_active or torch.is_autocast_enabled('cpu')
+        except TypeError:  # PyTorch 2.1 has no device argument on this API.
+            autocast_active = autocast_active or torch.is_autocast_cpu_enabled()
+        if autocast_active:
             raise ValueError('IR requires FP32 without autocast')
         if build_layout(self.model,self.optimizer).signature!=self.layout.signature:
             raise ValueError('IR parameter structure changed')
