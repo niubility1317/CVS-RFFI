@@ -1,5 +1,13 @@
 # D92优化当前交接
 
+## 最新状态：support分支探查完整分析完成，下一候选正在实现
+
+run `20260929-phase2-d92-branch-support-probe-m4-r01`已终态，全部8行/4800任务完整，1200个K1任务仅数值诊断，其余3600任务六臂物理OOF共64800次分解。独立汇总`results/support_summary/summary.json`状态COMPLETE_SUPPORT_DIAGNOSTIC_VERIFIED；分析commit `63aac180dbbd200ba3954929f4a457386aff7fd8`，runtime仍`f7f19e87042b22c499ca2cee3d01fd0334dc8d47`。所有进程已退出，禁止重跑探查或analysis输出。完整解释位于该run的`support_interpretation.md`。
+
+合法support证据：联合任务zfft_aux相对zfft旧/新/H +5.025/+10.221/+9.464pp，相对重复背景+4.342/+9.047/+8.231pp。所有已汇总边际分层均值正，但有任务级退化，K1没有OOF；没有query结论。新source0B，墙钟121.324秒，累计probe345.523秒。已将纯support证据交给仍盲于所有query成绩的设计agent。
+
+下一单一候选D92-BranchRidge-v1已接受实现：原view，736维固定identity/FFT+time/freq/PA分支，当前row全support平方损失+ridge1、不罚截距，一次解析解；全K同式，不增加网格，不重跑已有OOF。source_aux负责设计/config/core，confirmation_runner负责完整received特征export/evaluate，root负责编排/登记/发布；d92_p0_review待实现ready后做唯一P0/P1。尚未启动新benchmark。用户授权先复用完整旧数据，再全面改善后新增独立验证；无待批准事项，goal ACTIVE。以下均为历史。
+
 ## 当前状态：分支support信息探查已启动，正在导出/探查
 
 最新实时证据`readback_1790620659.json`：run `20260929-phase2-d92-branch-support-probe-m4-r01` supervisor PID2574293 live，首个export PID2574301 argv/CWD匹配。实际runtime commit=`f7f19e87042b22c499ca2cee3d01fd0334dc8d47`，release=`d92_branch_support_probe_20260929_r01`。此前发布器Windows Path→反斜杠造成启动前失败，独立证据确认无run/release/process、原归档存在且一致；仅发布器改PurePosixPath（commit ce80b6afb41ac25b18c917c13227445107e4e999），显式staged-commit恢复核对原runtime无变化后首次启动。原失败landing与恢复landing均保留。不要重复发布/启动。后续按PID/artifact核对状态，等待全部8lane后汇总；以下尚未启动文字仅是预登记历史。9项编排含Windows路径回归通过；唯一P0/P1文档已完成，无阻断。
