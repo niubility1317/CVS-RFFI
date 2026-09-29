@@ -3,7 +3,7 @@
 - run_id：`20260929-phase2-d92-branch-local-ridge-repeat-rx3-m4-r01`
 - group_id：`d92-fixed-phase1-branch-local-ridge-repeated-benchmark`；类别：`cvs`；阶段：`Phase2-repeated-benchmark`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -31,3 +31,5 @@
 LocalRidge frozen full-matrix repeated benchmark preregistered; not launched. Source-free cached Phase1 provenance; original D92, BranchRidge and BranchInteraction references fixed. No score-driven changes.
 
 VERIFIED readonly preflight:8 frozen BranchRidge original-received caches bound to capsules/checkpoints; all destination/release paths absent; CPU only, no source/query score reads. Native stdlib publisher uses verified F:/App/miniconda3/python.exe; broken original Conda junction is not used. Frozen core unchanged; current-support-only fullmatrix benchmark prepared with3unchanged baselines.
+
+VERIFIED RUNNING: supervisor326110 and4ownedCPU predictors have matched live argv/CWD; all4model rows show completed fit/prediction progress. Runtime commitde10068cd1168ab064c835bf341ddb0f63e1231c; no score files read. Continue original run; no restart, retune or partial interpretation. Both cohorts must complete before score download.

@@ -1,3 +1,13 @@
+## 当前继续点：LocalRidge两组完整重复基准已运行（2026-09-29）
+
+run `20260929-phase2-d92-branch-local-ridge-repeat-{rx3,rx1}-m4-r01` 均 RUNNING。实际发布commit `de10068cd1168ab064c835bf341ddb0f63e1231c` 已push且远端OID匹配。两组 `evidence/readback_1790693127.json` 独立核实supervisor326110/326678及8CPU worker实际argv/CWD匹配、每行都有预测进展；不是仅凭launch返回成功。root唯一launch owner，禁止重复发布/启动，健康任务不因性能停止。
+
+相关299合成测试通过（218入口/集成、45三基线汇总、36成本审计），唯一独立P0/P1已闭合。core与frozen config保持96f74版本不变；复用原BranchRidge缓存，4个Phase1模型、4RX、3场景、K1/5/10/20、新类0/2/5/10/20、5support抽样共4800fits。全部query评分将与原D92/BranchRidge/BranchInteraction对比；属于旧数据重复基准。
+
+下一步：仅用 `.codex_tmp/monitor_local_ridge_benchmark_20260929.py` 或 `tools/read_d92_run.py --spec ... --compact` 只读跟踪。两cohort均完整SCORED后再下载各自 startup.json/complete.json/scores.json；既有两种reference的对应results已在各旧run目录保留。运行 `tools/summarize_d92_branch_local_ridge_benchmark.py --results RX3 RX1 --branch-references BRANCH_RX3 BRANCH_RX1 --interaction-references INTERACTION_RX3 INTERACTION_RX1 --output NEW_PATH`；成本审计用 `tools/collect_d92_branch_local_ridge_audit.py --spec configs/d92_branch_local_ridge_repeat_rx3_20260929.json --spec configs/d92_branch_local_ridge_repeat_rx1_20260929.json --output NEW_JSON`。两者均已完成测试，无需重复写实现。不得提前读取一组scores、改公式或把query结果发给query-blind方法worker。
+
+此前support run已完整ANALYZED，结果与全部分层/成本已提交，勿重跑。goal ACTIVE；没有新增独立数据验证，全面优化目标未宣告完成。以下为历史交接。
+
 ## 当前继续点：LocalRidge完整support分析完成，准备重复基准（2026-09-29）
 
 support run `20260929-phase2-d92-branch-local-ridge-support-m4-r01` 已 ANALYZED。runtime `96f74ac9dcb06d72923324f3cd44a63dac65a2de`，analysis `09d4a0dbc6ef69462d09ee313aeffb7f0c6a8463`。完整8lane/4800parent，158400次三臂分解，无query/source输入；终态证据 `evidence/readback_1790691921.json`，全量汇总 `results/support_summary/summary.json`。不要重启probe或重复analysis。
