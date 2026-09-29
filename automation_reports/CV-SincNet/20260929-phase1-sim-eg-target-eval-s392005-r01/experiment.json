@@ -1,0 +1,320 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20260929-phase1-sim-eg-target-eval-s392005-r01",
+  "group_id": "phase1-native-joint-implicit-response-target-evaluation",
+  "display_name": "SIM与EG固定E200目标测试",
+  "description": "用户要求先保持四行IR中断状态，对已完成SIM/EG固定最终checkpoint做完整clean和三LEO测试。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "IR-EG",
+    "BR-IR-EG",
+    "DAOT",
+    "FastTrust",
+    "source-only"
+  ],
+  "comparison_group_id": "native-joint-same-exposure-44400",
+  "parent_run_ids": [
+    "20260928-phase1-ir-eg-source-screen-s392005-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "2026-09-29用户：先别恢复，可以续跑就行，先给出SIM和EG目标测试结果。",
+  "code": {
+    "commit": "92f40367d61c45b9d16a9718bcd68df17af507c2",
+    "checkout": "E:\\type10-7\\code\\worktrees\\ir_eg_v1_20260927",
+    "environment": "N607 Python 3.10.19; torch 2.1.0+cu121; local ssr-gpu torch 2.10.0+cu128",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01",
+    "base_commit": "acf0a6407c4a2cd114851e9f60d0cd346e4b2c77",
+    "commit_note": "Frozen inference/scorer training release; new orchestration commit recorded at launch."
+  },
+  "data": {
+    "dataset": "ManySig.pkl",
+    "version": "existing N607 asset, 2359341461 bytes; no dataset transformation",
+    "representation": "equalized=1; 2x256; normalized center crop",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#role_ids",
+    "label_map_ref": "ManySig.pkl tx_list index order (6 classes); native loader preserves mapping",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "ManySig.pkl tx_list (all six source-known classes)",
+    "roles": {
+      "L_s": {
+        "count": 6300,
+        "fraction": 0.07
+      },
+      "U_s": {
+        "count": 56700,
+        "fraction": 0.63,
+        "tx_labels": "hidden"
+      },
+      "V": {
+        "count": 27000,
+        "fraction": 0.3
+      }
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "support_query_ref": null,
+    "leo_config_ref": "experiments/ir_eg_v1/configs/core90_recipe_reference.json",
+    "target_input_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_fcr_r1r8_s392005_equalized_20260903_v4/target_inputs/manifest.json",
+    "target_truth_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_fcr_r1r8_s392005_equalized_20260903_v4/target_truth/truth_sidecar.json"
+  },
+  "permissions": {
+    "regime": "frozen_target_evaluation",
+    "query_use": "prediction-only, opaque IDs, no truth until both full prediction artifacts fixed",
+    "external_method_exception": null,
+    "claim_scope": "Single-model-seed descriptive comparison on previously exposed benchmark; not blind independent confirmation"
+  },
+  "checkpoint": {
+    "initialization": "fixed_final_E200",
+    "sources": [
+      {
+        "run_id": "20260928-phase1-ir-eg-source-screen-s392005-r01",
+        "row_id": "SIM_s392005",
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase1-ir-eg-source-screen-s392005-r01/SIM_s392005/final_ssdg.pth",
+        "ancestry": "scratch only, no external weights, no target contact",
+        "source_contract_equal": true
+      },
+      {
+        "run_id": "20260928-phase1-ir-eg-source-screen-s392005-r01",
+        "row_id": "EG_s392005",
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase1-ir-eg-source-screen-s392005-r01/EG_s392005/final_ssdg.pth",
+        "ancestry": "scratch only, no external weights, no target contact",
+        "source_contract_equal": true
+      }
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "provenance_verdict": "VERIFIED_SCRATCH_MATCHED_SOURCE_FIXED_E200",
+    "selection_rule": "User fixed SIM and EG final E200 before target contact; no candidate selection from scores."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "/root thread 01a0e381-ac85-7b20-9a4e-d137ff563379",
+    "gpu_policy": "max_two_training_runs_per_gpu",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase1-sim-eg-target-eval-s392005-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260929-phase1-sim-eg-target-eval-s392005-r01",
+    "local_artifact_root": "E:\\type10-7\\code\\worktrees\\ir_eg_v1_20260927\\automation_reports\\CV-SincNet\\20260929-phase1-sim-eg-target-eval-s392005-r01",
+    "launch_command": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_sim_eg_eval_20260929_r01/evaluate_sim_eg_20260929.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_sim_eg_eval_20260929_r01/power_target_eval.json",
+      "--commit",
+      "<orchestration Git HEAD>"
+    ],
+    "stop_rule": "Evaluation errors stop scoring; preserve predictions. No training resume/retry or target-driven changes.",
+    "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "dataset_path": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+    "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "launch_verification_ref": "automation_reports\\CV-SincNet\\20260928-phase1-ir-eg-source-screen-s392005-r01\\evidence\\readback_1790556295011623100.log",
+    "observed_at": "2026-09-28T00:43:56.158891+00:00",
+    "training_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01",
+    "input_package": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_fcr_r1r8_s392005_equalized_20260903_v4/target_inputs",
+    "truth_sidecar": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_fcr_r1r8_s392005_equalized_20260903_v4/target_truth/truth_sidecar.json"
+  },
+  "expected_artifacts": [
+    "evaluation_state.json",
+    "per-row predictions.json",
+    "per-row score.json",
+    "comparison report"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "clean",
+      "LEO mean",
+      "Macro-F1",
+      "worst TX",
+      "worst RX",
+      "day0",
+      "RX-by-TX",
+      "wall seconds",
+      "peak bytes"
+    ],
+    "dimensions": [
+      "model_seed",
+      "method",
+      "scene",
+      "RX",
+      "TX",
+      "day"
+    ],
+    "prediction_ref": "each row 168000 opaque IDs x 4 scenes, batch256, channel seed392005 + scenario_index*1009",
+    "scorer_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/tools/score_native_joint_predictions.py"
+  },
+  "rows": [
+    {
+      "row_id": "SIM_s392005",
+      "method": "SIM",
+      "purpose": "fixed_target_evaluation",
+      "status": "PLANNED",
+      "config_ref": "experiments/ir_eg_v1/configs/ir_rows/SIM_s392005.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase1-ir-eg-source-screen-s392005-r01/SIM_s392005/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 392005,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 392005,
+        "support": null,
+        "evaluation": 392005
+      },
+      "seed_notes": "split/data/augmentation/evaluation fixed by frozen native joint profile; support not applicable in Phase1",
+      "k": null,
+      "scenario": "clean plus paired LEO views",
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "experiments/ir_eg_v1/configs/ir_eg_v1.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase1-sim-eg-target-eval-s392005-r01/SIM_s392005",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260929-phase1-sim-eg-target-eval-s392005-r01/SIM_s392005.predict.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/scripts/predict_phase1_truth_last.py",
+        "--checkpoint",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase1-ir-eg-source-screen-s392005-r01/SIM_s392005/final_ssdg.pth",
+        "--output-root",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase1-sim-eg-target-eval-s392005-r01/SIM_s392005",
+        "--input-package",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_fcr_r1r8_s392005_equalized_20260903_v4/target_inputs",
+        "--run-id",
+        "20260929-phase1-sim-eg-target-eval-s392005-r01",
+        "--row-id",
+        "SIM_s392005",
+        "--recipe",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/configs/core90_recipe_reference.json",
+        "--mode",
+        "predict",
+        "--batch-size",
+        "256",
+        "--num-workers",
+        "0",
+        "--device",
+        "cuda:0"
+      ],
+      "expected_artifacts": [
+        "predictions.json:672000 records",
+        "score.json:complete four-scene and grouped metrics"
+      ],
+      "gpu": 0,
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase1-ir-eg-source-screen-s392005-r01/SIM_s392005/final_ssdg.pth",
+      "score_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase1-sim-eg-target-eval-s392005-r01/SIM_s392005/score.json",
+      "score_command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/tools/score_native_joint_predictions.py",
+        "--predictions",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase1-sim-eg-target-eval-s392005-r01/SIM_s392005/predictions.json",
+        "--truth",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_fcr_r1r8_s392005_equalized_20260903_v4/target_truth/truth_sidecar.json",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase1-sim-eg-target-eval-s392005-r01/SIM_s392005/score.json"
+      ]
+    },
+    {
+      "row_id": "EG_s392005",
+      "method": "EG",
+      "purpose": "fixed_target_evaluation",
+      "status": "PLANNED",
+      "config_ref": "experiments/ir_eg_v1/configs/ir_rows/EG_s392005.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase1-ir-eg-source-screen-s392005-r01/EG_s392005/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 392005,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 392005,
+        "support": null,
+        "evaluation": 392005
+      },
+      "seed_notes": "split/data/augmentation/evaluation fixed by frozen native joint profile; support not applicable in Phase1",
+      "k": null,
+      "scenario": "clean plus paired LEO views",
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "experiments/ir_eg_v1/configs/ir_eg_v1.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase1-sim-eg-target-eval-s392005-r01/EG_s392005",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260929-phase1-sim-eg-target-eval-s392005-r01/EG_s392005.predict.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/scripts/predict_phase1_truth_last.py",
+        "--checkpoint",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase1-ir-eg-source-screen-s392005-r01/EG_s392005/final_ssdg.pth",
+        "--output-root",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase1-sim-eg-target-eval-s392005-r01/EG_s392005",
+        "--input-package",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_fcr_r1r8_s392005_equalized_20260903_v4/target_inputs",
+        "--run-id",
+        "20260929-phase1-sim-eg-target-eval-s392005-r01",
+        "--row-id",
+        "EG_s392005",
+        "--recipe",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/configs/core90_recipe_reference.json",
+        "--mode",
+        "predict",
+        "--batch-size",
+        "256",
+        "--num-workers",
+        "0",
+        "--device",
+        "cuda:0"
+      ],
+      "expected_artifacts": [
+        "predictions.json:672000 records",
+        "score.json:complete four-scene and grouped metrics"
+      ],
+      "gpu": 1,
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase1-ir-eg-source-screen-s392005-r01/EG_s392005/final_ssdg.pth",
+      "score_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase1-sim-eg-target-eval-s392005-r01/EG_s392005/score.json",
+      "score_command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/tools/score_native_joint_predictions.py",
+        "--predictions",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase1-sim-eg-target-eval-s392005-r01/EG_s392005/predictions.json",
+        "--truth",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_fcr_r1r8_s392005_equalized_20260903_v4/target_truth/truth_sidecar.json",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase1-sim-eg-target-eval-s392005-r01/EG_s392005/score.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Four interrupted IR rows remain stopped; no --resume or trainer in evaluation commands.",
+    "Fixed label map: six ManySig source-known classes; RX0/2/5/7/9/10/11, days0/1/2/3.",
+    "Reuses existing frozen predictor package; no dataset rebuild.",
+    "All target outcomes are descriptive and cannot feed back into model, threshold, hyperparameter or restart decisions."
+  ],
+  "status": "LOCAL_VERIFIED",
+  "development_status": "VERIFIED"
+}

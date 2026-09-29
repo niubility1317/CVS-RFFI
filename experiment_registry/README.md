@@ -1,6 +1,6 @@
 # 实验总索引
 
-更新：2026-09-28T08:02:59+00:00
+更新：2026-09-29T07:25:18+00:00
 
 先按方法/问题检索，再用run ID读取精确配置与证据。历史组数量不等于独立实验数量。
 
@@ -12,7 +12,7 @@
 
 |记录类型|数量|
 |---|---:|
-|managed_run|2|
+|managed_run|3|
 
 历史状态统一为HISTORICAL_UNVERIFIED；RUNNING等原文声明只供查证，不能证明此刻仍在运行。
 
@@ -20,11 +20,11 @@
 
 |路径标签（定位提示）|证据组数|
 |---|---:|
-|[IR-EG](by_method/IR-EG.md)|2|
-|[BR-IR-EG](by_method/BR-IR-EG.md)|2|
-|[DAOT](by_method/DAOT.md)|2|
-|[FastTrust](by_method/FastTrust.md)|2|
-|[source-only](by_method/source-only.md)|2|
+|[IR-EG](by_method/IR-EG.md)|3|
+|[BR-IR-EG](by_method/BR-IR-EG.md)|3|
+|[DAOT](by_method/DAOT.md)|3|
+|[FastTrust](by_method/FastTrust.md)|3|
+|[source-only](by_method/source-only.md)|3|
 
 ## 最近记录入口
 
@@ -32,3 +32,4 @@
 |---|---|---|
 |IR-EG / BR-IR-EG研究准备记录|managed_run|[打开](../automation_reports/CV-SincNet/20260927-phase1-ir-eg-wisig-m3-r01/report.md)|
 |IR-EG源侧筛查已发布|managed_run|[打开](../automation_reports/CV-SincNet/20260928-phase1-ir-eg-source-screen-s392005-r01/report.md)|
+|SIM与EG目标测试|managed_run|[打开](../automation_reports/CV-SincNet/20260929-phase1-sim-eg-target-eval-s392005-r01/report.md)|
