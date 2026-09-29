@@ -33,3 +33,5 @@
 发布前独立审查完成，两项P1已修复并定点关闭：轨道近抵消的thinQR等价稳定计算、CE异常上下文和已完成阶段保留。冻结公式与配置未变，核心32、exporter18、entry10、summary70、编排16项测试通过；真实support实验尚未启动。
 
 VERIFIED启动：supervisor185899，首exporter185909；readback_1790674303.json核实实际argv/CWD和support特征进度。实际release d57307814ef6a51f542a0455f25c3fe22cc0a6d7。目标仍ACTIVE；当前仅真实support诊断，无query成绩。
+
+readback_1790674538.json确认首组导出完成8273物理support/33092视图前向，checkpoint smoke PASS且参数buffer未变；已进入CPU probe并完成22/900任务，下一组GPU export同步推进。新增源样本与地面统计payload均0B；88923468B特征文件是接收端缓存而非地面传输。尚无完整性能结果。

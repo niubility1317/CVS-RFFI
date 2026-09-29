@@ -1,0 +1,233 @@
+{
+  "startup.json": {
+    "pid": 185899,
+    "argv": [
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_orbit_ce_support_20260929_r01/tools/run_d92_branch_orbit_ce_probe.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_orbit_ce_support_20260929_r01/configs/d92_branch_orbit_ce_support_20260929.json",
+      "--commit",
+      "d57307814ef6a51f542a0455f25c3fe22cc0a6d7"
+    ],
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_orbit_ce_support_20260929_r01",
+    "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "commit": "d57307814ef6a51f542a0455f25c3fe22cc0a6d7",
+    "started": 1790674232.3453827,
+    "query_access": false,
+    "source_sample_access": false,
+    "live_argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_orbit_ce_support_20260929_r01/tools/run_d92_branch_orbit_ce_probe.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_orbit_ce_support_20260929_r01/configs/d92_branch_orbit_ce_support_20260929.json",
+      "--commit",
+      "d57307814ef6a51f542a0455f25c3fe22cc0a6d7"
+    ],
+    "live_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_orbit_ce_support_20260929_r01"
+  },
+  "state.json": {
+    "rx3-cvs-daot-rc4-s2026092701": {
+      "status": "PROBING_SUPPORT",
+      "updated": 1790674416.1393704
+    },
+    "rx3-cvs-daot-rc4-s2026092702": {
+      "status": "EXTRACTING_SUPPORT",
+      "updated": 1790674416.1399426
+    },
+    "rx3-cvs-daot-rc4-s2026092703": {
+      "status": "PENDING"
+    },
+    "rx3-cvs-daot-rc4-s2026092704": {
+      "status": "PENDING"
+    },
+    "rx1-cvs-daot-rc4-s2026092701": {
+      "status": "PENDING"
+    },
+    "rx1-cvs-daot-rc4-s2026092702": {
+      "status": "PENDING"
+    },
+    "rx1-cvs-daot-rc4-s2026092703": {
+      "status": "PENDING"
+    },
+    "rx1-cvs-daot-rc4-s2026092704": {
+      "status": "PENDING"
+    }
+  },
+  "launch.json": {
+    "pid": 185899,
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_orbit_ce_support_20260929_r01/tools/run_d92_branch_orbit_ce_probe.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_orbit_ce_support_20260929_r01/configs/d92_branch_orbit_ce_support_20260929.json",
+      "--commit",
+      "d57307814ef6a51f542a0455f25c3fe22cc0a6d7"
+    ],
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_orbit_ce_support_20260929_r01",
+    "commit": "d57307814ef6a51f542a0455f25c3fe22cc0a6d7",
+    "run": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-orbit-ce-support-m4-r01",
+    "owner": "codex/root/d92-upgrade-20260928",
+    "live_argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_orbit_ce_support_20260929_r01/tools/run_d92_branch_orbit_ce_probe.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_orbit_ce_support_20260929_r01/configs/d92_branch_orbit_ce_support_20260929.json",
+      "--commit",
+      "d57307814ef6a51f542a0455f25c3fe22cc0a6d7"
+    ],
+    "live_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_orbit_ce_support_20260929_r01"
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_orbit_ce_support_20260929_r01/run.log": {
+    "bytes": 420,
+    "tail": [
+      "{\"row\": \"rx3-cvs-daot-rc4-s2026092701\", \"status\": \"EXPORTED_SUPPORT\", \"updated\": 1790674416.138747, \"count\": 8273}",
+      "{\"row\": \"rx3-cvs-daot-rc4-s2026092701\", \"status\": \"PROBING_SUPPORT\", \"updated\": 1790674416.1393704}",
+      "{\"row\": \"rx3-cvs-daot-rc4-s2026092702\", \"status\": \"EXTRACTING_SUPPORT\", \"updated\": 1790674416.1399426}"
+    ]
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-orbit-ce-support-m4-r01/rx3-cvs-daot-rc4-s2026092702/export.log": {
+    "bytes": 15487,
+    "tail": [
+      "{\"event\": \"SUPPORT_FEATURE_PROGRESS\", \"completed\": 2560, \"total\": 8273, \"native_batch_calls\": 10244, \"elapsed_seconds\": 59.497146210997016}",
+      "{\"event\": \"SUPPORT_FEATURE_PROGRESS\", \"completed\": 2592, \"total\": 8273, \"native_batch_calls\": 10372, \"elapsed_seconds\": 60.20733945699976}",
+      "{\"event\": \"SUPPORT_FEATURE_PROGRESS\", \"completed\": 2624, \"total\": 8273, \"native_batch_calls\": 10500, \"elapsed_seconds\": 60.91879871799756}"
+    ]
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-orbit-ce-support-m4-r01/rx3-cvs-daot-rc4-s2026092701/probe.log": {
+    "bytes": 2440472,
+    "tail": [
+      "{\"event\": \"SUPPORT_EPISODE_COMPLETE\", \"split_id\": \"049fc6948c8182253df3ee37\", \"receiver\": \"8-7\", \"scenario\": \"practical_low_urban\", \"k\": 10, \"support_seed\": 2026092715, \"new_count\": 20, \"completed\": 20, \"total\": 900, \"scope\": \"SUPPORT_OOF_AND_SUPPORT_ONESHOT_PROXY_NOT_QUERY_EVALUATION\", \"classes\": 26, \"support_count\": 260, \"fold_count\": 3, \"numerical\": {\"orbit_pooled_diagonal\": {\"min\": 2.5335581838340953, \"max\": 2.9316490683714864, \"mean\": 2.7757584505039574}, \"orbit_normalized_diagonal\": {\"min\": 2.9999999999999987, \"max\": 3.000000000000001, \"mean\": 3.0}, \"orbit_norm_below_floor_count\": 0, \"interpretation\": \"Same-physical deterministic orbit variation; not independent class covariance\"}, \"oof\": {\"single_ridge\": {\"metrics\": {\"accuracy\": 0.17692307692307693, \"macro_accuracy\": 0.17692307692307693, \"old_accuracy\": 0.26666666666666666, \"new_accuracy\": 0.15000000000000002, \"h\": 0.19200000000000003, \"macro_nll\": 3.196223215282638, \"nll_interpretation\": \"fixed_softmax_of_uncalibrated_ridge_scores\"}}, \"single_ce\": {\"metrics\": {\"accuracy\": 0.15384615384615385, \"macro_accuracy\": 0.15384615384615385, \"old_accuracy\": 0.26666666666666666, \"new_accuracy\": 0.12, \"h\": 0.16551724137931034, \"macro_nll\": 3.0827320577849964, \"nll_interpretation\": \"fixed_softmax_of_uncalibrated_ridge_scores\"}}, \"orbit_ridge\": {\"metrics\": {\"accuracy\": 0.14615384615384616, \"macro_accuracy\": 0.14615384615384616, \"old_accuracy\": 0.26666666666666666, \"new_accuracy\": 0.11000000000000001, \"h\": 0.15575221238938053, \"macro_nll\": 3.2014109326982685, \"nll_interpretation\": \"fixed_softmax_of_uncalibrated_ridge_scores\"}}, \"orbit_ce\": {\"metrics\": {\"accuracy\": 0.1346153846153846, \"macro_accuracy\": 0.1346153846153846, \"old_accuracy\": 0.21666666666666667, \"new_accuracy\": 0.10999999999999999, \"h\": 0.14591836734693878, \"macro_nll\": 3.1175779876878855, \"nll_interpretation\": \"fixed_softmax_of_uncalibrated_ridge_scores\"}}}, \"paired\": {\"orbit_ce_minus_single_ridge\": {\"mean_correct_delta\": -0.04230769230769231}, \"orbit_ce_minus_single_ce\": {\"mean_correct_delta\": -0.019230769230769232}, \"orbit_ce_minus_orbit_ridge\": {\"mean_correct_delta\": -0.011538461538461539}, \"single_ce_minus_single_ridge\": {\"mean_correct_delta\": -0.023076923076923078}, \"orbit_ridge_minus_single_ridge\": {\"mean_correct_delta\": -0.03076923076923077}}, \"fit_seconds\": 3.381699441000819, \"factorization_count\": 26, \"standard_factorization_count\": 6, \"proxy_anchor_count\": 10, \"oneshot_proxy\": {\"parent_k\": 10, \"proxy_train_k\": 1, \"trial_count\": 10, \"factorization_count\": 20, \"scope\": \"SUPPORT_ONESHOT_PROXY_FROM_PARENT_SUPPORT_NOT_FORMAL_K1\", \"coverage\": {\"parent_physical_count\": 260, \"training_occurrences\": 260, \"held_occurrences\": 2340, \"unique_held_physical_count\": 260}, \"parent_split_id\": \"049fc6948c8182253df3ee37\", \"diagnostic\": \"support_oneshot_proxy\", \"evidence_schema\": \"anchor_confusion_class_nll_and_exact_physical_mapping_v1\", \"parent_mean_metrics\": {\"single_ridge\": {\"accuracy\": 0.09658119658119659, \"macro_accuracy\": 0.09658119658119659, \"old_accuracy\": 0.13148148148148148, \"new_accuracy\": 0.08611111111111111, \"h\": 0.09234254677008442, \"macro_nll\": 3.240521666779126}, \"single_ce\": {\"accuracy\": 0.09700854700854701, \"macro_accuracy\": 0.09700854700854701, \"old_accuracy\": 0.12777777777777777, \"new_accuracy\": 0.08777777777777779, \"h\": 0.09072833385946766, \"macro_nll\": 3.2391060439808284}, \"orbit_ridge\": {\"accuracy\": 0.09316239316239315, \"macro_accuracy\": 0.09316239316239315, \"old_accuracy\": 0.1388888888888889, \"new_accuracy\": 0.07944444444444446, \"h\": 0.09044566255979805, \"macro_nll\": 3.2423627584107315}, \"orbit_ce\": {\"accuracy\": 0.08803418803418804, \"macro_accuracy\": 0.08803418803418804, \"old_accuracy\": 0.13148148148148148, \"new_accuracy\": 0.07499999999999998, \"h\": 0.084070497699078, \"macro_nll\": 3.2421949948315527}}}, \"optimizer_steps\": 2559, \"persistent_state_bytes\": 0, \"heldout_unavailable_reason\": null, \"fit_call_seconds\": 3.383367737998924, \"log_write_seconds\": 0.09726967599999625, \"total_seconds\": 3.4831352180008253, \"peak_process_rss_bytes\": 245190656, \"query_rows_used\": 0, \"source_rows_used\": 0}",
+      "{\"event\": \"SUPPORT_EPISODE_COMPLETE\", \"split_id\": \"04aa56acd6227e374701b9b8\", \"receiver\": \"8-14\", \"scenario\": \"practical_low_urban\", \"k\": 1, \"support_seed\": 2026092711, \"new_count\": 0, \"completed\": 21, \"total\": 900, \"scope\": \"SUPPORT_OOF_AND_SUPPORT_ONESHOT_PROXY_NOT_QUERY_EVALUATION\", \"classes\": 6, \"support_count\": 6, \"fold_count\": 0, \"numerical\": {\"orbit_pooled_diagonal\": {\"min\": 2.6234784907150197, \"max\": 2.8955772323176845, \"mean\": 2.769477508637671}, \"orbit_normalized_diagonal\": {\"min\": 2.999999999999999, \"max\": 3.0000000000000004, \"mean\": 2.9999999999999996}, \"orbit_norm_below_floor_count\": 0, \"interpretation\": \"Same-physical deterministic orbit variation; not independent class covariance\"}, \"oof\": null, \"paired\": null, \"fit_seconds\": 0.0013795509985357057, \"factorization_count\": 0, \"standard_factorization_count\": 0, \"proxy_anchor_count\": 0, \"oneshot_proxy\": null, \"optimizer_steps\": 0, \"persistent_state_bytes\": 0, \"heldout_unavailable_reason\": \"K1_NO_INDEPENDENT_PHYSICAL_HOLDOUT\", \"fit_call_seconds\": 0.0014429750008275732, \"log_write_seconds\": 0.0004039609993924387, \"total_seconds\": 0.002667680000740802, \"peak_process_rss_bytes\": 245190656, \"query_rows_used\": 0, \"source_rows_used\": 0}",
+      "{\"event\": \"SUPPORT_EPISODE_COMPLETE\", \"split_id\": \"04ac37fbdf7517ba955f79c3\", \"receiver\": \"8-7\", \"scenario\": \"practical_high\", \"k\": 1, \"support_seed\": 2026092715, \"new_count\": 10, \"completed\": 22, \"total\": 900, \"scope\": \"SUPPORT_OOF_AND_SUPPORT_ONESHOT_PROXY_NOT_QUERY_EVALUATION\", \"classes\": 16, \"support_count\": 16, \"fold_count\": 0, \"numerical\": {\"orbit_pooled_diagonal\": {\"min\": 2.4780556239929776, \"max\": 2.902467185336821, \"mean\": 2.701334207749402}, \"orbit_normalized_diagonal\": {\"min\": 2.9999999999999987, \"max\": 3.000000000000001, \"mean\": 2.9999999999999996}, \"orbit_norm_below_floor_count\": 0, \"interpretation\": \"Same-physical deterministic orbit variation; not independent class covariance\"}, \"oof\": null, \"paired\": null, \"fit_seconds\": 0.0017683039986877702, \"factorization_count\": 0, \"standard_factorization_count\": 0, \"proxy_anchor_count\": 0, \"oneshot_proxy\": null, \"optimizer_steps\": 0, \"persistent_state_bytes\": 0, \"heldout_unavailable_reason\": \"K1_NO_INDEPENDENT_PHYSICAL_HOLDOUT\", \"fit_call_seconds\": 0.0018445960013195872, \"log_write_seconds\": 0.000113211997813778, \"total_seconds\": 0.001980458000616636, \"peak_process_rss_bytes\": 245190656, \"query_rows_used\": 0, \"source_rows_used\": 0}"
+    ]
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-orbit-ce-support-m4-r01/rx3-cvs-daot-rc4-s2026092701/export.log": {
+    "bytes": 43604,
+    "tail": [
+      "{\"event\": \"SUPPORT_FEATURE_PROGRESS\", \"completed\": 8256, \"total\": 8273, \"native_batch_calls\": 33028, \"elapsed_seconds\": 182.5907650679983}",
+      "{\"event\": \"SUPPORT_FEATURE_PROGRESS\", \"completed\": 8273, \"total\": 8273, \"native_batch_calls\": 33096, \"elapsed_seconds\": 182.96397919699666}",
+      "{\"status\": \"BRANCH_ORBIT_SUPPORT_FEATURES_COMPLETE\", \"schema\": \"d92_branch_orbit_support_features_v1\", \"feature_contract\": {\"input_shape\": [2, 256], \"view\": \"four_full_length_quarter_phase_rotations\", \"view_count\": 4, \"phase_degrees\": [0, 90, 180, 270], \"identity_feature_key\": \"feat_joint\", \"branch_keys\": [\"z_id\", \"t_emb\", \"f_emb\", \"pa_local\"], \"branch_dim\": 160, \"fft_dim\": 96, \"fft\": \"historical_spectral_logmag_sketch\", \"fft_input\": \"original_received_observation\", \"fft_norm_floor\": 1e-08, \"cache_dtype\": \"float32\", \"normalization\": \"raw_native_aux_no_additional_branch_normalization\", \"native_forward_scope\": \"one_physical_one_view_per_call\"}, \"capsule_id\": \"residual-noeq-76121e6f34363fa612ec25fb\", \"checkpoint_sha256\": \"f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b\", \"model_seed\": 2026092701, \"classes\": [\"14-10\", \"14-7\", \"20-15\", \"20-19\", \"6-15\", \"8-20\"], \"count\": 8273, \"split_count\": 900, \"dtype\": \"float32\", \"shapes\": {\"z_id\": [8273, 4, 160], \"t_emb\": [8273, 4, 160], \"f_emb\": [8273, 4, 160], \"pa_local\": [8273, 4, 160], \"fft\": [8273, 96]}, \"feature_array_bytes\": 87892352, \"index_bytes\": 66184, \"registry_array_bytes\": 959668, \"feature_file_bytes\": 88923468, \"metadata_file_bytes\": {\"startup.json\": 4494, \"support_splits.json\": 7163960, \"checkpoint_provenance.json\": 1453}, \"artifact_file_bytes_excluding_completion_marker\": 96093375, \"model_file_bytes\": 15992872, \"view_count_per_observation\": 4, \"native_physical_forward_count\": 33092, \"native_view_forward_count\": 33092, \"native_batch_calls\": 33092, \"identity_reference_checks\": 33092, \"identity_check_additional_encoder_forwards\": 0, \"native_batch_size\": 1, \"support_physical_observation_count\": 8273, \"smoke_forward_count\": 4, \"smoke_batch_calls\": 4, \"synthetic_smoke\": {\"status\": \"PASS\", \"input\": \"synthetic_PCG64_seed0\", \"physical_observation_count\": 1, \"view_forward_count\": 4, \"native_batch_calls\": 4, \"query_rows_read\": 0, \"frozen_state_unchanged\": true, \"seconds\": 0.42851138599871774}, \"native_total_physical_forward_count\": 33096, \"native_total_batch_calls\": 33096, \"support_iq_rows_read\": 8273, \"iq_access\": \"ZIP_STORED_NPY_readonly_mmap_support_indices_only\", \"capsule_revalidated\": false, \"received_file_rehashed\": false, \"native_eval\": true, \"native_parameters_unchanged\": true, \"native_buffers_unchanged\": true, \"encoder_updated\": false, \"active_branches\": {\"emb_dim\": 160, \"t_dim\": 160, \"f_dim\": 160, \"use_time_path\": true, \"use_freq_path\": true, \"enable_dac\": false, \"enable_pa\": true, \"active_defects\": [\"pa\"], \"id_feature_key\": \"feat_joint\"}, \"query_iq_access\": false, \"query_rows_read\": 0, \"query_used_for_fitting\": false, \"source_data_access\": false, \"truth_read\": false, \"adapted_state_inherited\": false, \"new_source_payload_bytes\": 0, \"new_ground_statistics_bytes\": 0, \"timing\": {\"metadata_seconds\": 0.29026936199807096, \"checkpoint_load_seconds\": 2.318056219999562, \"synthetic_smoke_seconds\": 0.42851138599871774, \"support_read_seconds\": 0.19415454699992551, \"native_forward_seconds\": 176.92245814502166, \"fft_seconds\": 0.9717108669647132, \"frozen_verify_seconds\": 1.7930095490191889, \"write_seconds\": 0.28019046600093134, \"total_seconds\": 183.24420003099658}, \"peak_process_rss_bytes\": 1275387904, \"peak_process_rss_reason\": \"Linux process high-water RSS; null when unavailable on this platform\", \"byte_scope\": \"Support feature/index/registry arrays and cache file; received-side storage, not source transmission\"}"
+    ]
+  },
+  "fit_progress": {
+    "rx3-cvs-daot-rc4-s2026092701": {
+      "completed": 22,
+      "total": 900,
+      "k": 1,
+      "classes": 16,
+      "fit_seconds": 0.0017683039986877702
+    }
+  },
+  "live_children": [
+    {
+      "pid": 187413,
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_orbit_ce_support_20260929_r01/tools/export_d92_branch_orbit_support_features.py",
+        "--checkpoint-root",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092702",
+        "--native-code",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rc4_matched_20260927_r01/code",
+        "--source-contract",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "--source-receivers",
+        "[\"1-19\", \"18-2\", \"19-2\", \"2-19\", \"3-19\"]",
+        "--seed",
+        "2026092702",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-orbit-ce-support-m4-r01/rx3-cvs-daot-rc4-s2026092702/feature_cache",
+        "--device",
+        "cuda:0",
+        "--batch-size",
+        "32",
+        "--capsule",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule",
+        "--expected-capsule-id",
+        "residual-noeq-76121e6f34363fa612ec25fb",
+        "--expected-checkpoint-sha256",
+        "72f26413e495dcf82317898f8729caa3d35499bf0b41e9671ffdceab2c90924b"
+      ],
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_orbit_ce_support_20260929_r01",
+      "started": 1790674416.1418421,
+      "kind": "export",
+      "live_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_orbit_ce_support_20260929_r01/tools/export_d92_branch_orbit_support_features.py",
+        "--checkpoint-root",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092702",
+        "--native-code",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rc4_matched_20260927_r01/code",
+        "--source-contract",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "--source-receivers",
+        "[\"1-19\", \"18-2\", \"19-2\", \"2-19\", \"3-19\"]",
+        "--seed",
+        "2026092702",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-orbit-ce-support-m4-r01/rx3-cvs-daot-rc4-s2026092702/feature_cache",
+        "--device",
+        "cuda:0",
+        "--batch-size",
+        "32",
+        "--capsule",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule",
+        "--expected-capsule-id",
+        "residual-noeq-76121e6f34363fa612ec25fb",
+        "--expected-checkpoint-sha256",
+        "72f26413e495dcf82317898f8729caa3d35499bf0b41e9671ffdceab2c90924b"
+      ],
+      "live_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_orbit_ce_support_20260929_r01",
+      "record": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-orbit-ce-support-m4-r01/rx3-cvs-daot-rc4-s2026092702/export.log.process.json"
+    },
+    {
+      "pid": 187412,
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_orbit_ce_support_20260929_r01/tools/evaluate_d92_branch_orbit_ce_probe.py",
+        "--support-features",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-orbit-ce-support-m4-r01/rx3-cvs-daot-rc4-s2026092701/feature_cache",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-orbit-ce-support-m4-r01/rx3-cvs-daot-rc4-s2026092701/probe",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_orbit_ce_support_20260929_r01/configs/d92_branch_orbit_ce_support_rx3_20260929.json",
+        "--expected-model-seed",
+        "2026092701",
+        "--capsule",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule",
+        "--expected-capsule-id",
+        "residual-noeq-76121e6f34363fa612ec25fb",
+        "--expected-checkpoint-sha256",
+        "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b"
+      ],
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_orbit_ce_support_20260929_r01",
+      "started": 1790674416.1411514,
+      "kind": "probe",
+      "live_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_orbit_ce_support_20260929_r01/tools/evaluate_d92_branch_orbit_ce_probe.py",
+        "--support-features",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-orbit-ce-support-m4-r01/rx3-cvs-daot-rc4-s2026092701/feature_cache",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-orbit-ce-support-m4-r01/rx3-cvs-daot-rc4-s2026092701/probe",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_orbit_ce_support_20260929_r01/configs/d92_branch_orbit_ce_support_rx3_20260929.json",
+        "--expected-model-seed",
+        "2026092701",
+        "--capsule",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule",
+        "--expected-capsule-id",
+        "residual-noeq-76121e6f34363fa612ec25fb",
+        "--expected-checkpoint-sha256",
+        "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b"
+      ],
+      "live_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_orbit_ce_support_20260929_r01",
+      "record": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-orbit-ce-support-m4-r01/rx3-cvs-daot-rc4-s2026092701/probe.log.process.json"
+    }
+  ]
+}
