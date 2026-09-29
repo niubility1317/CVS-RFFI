@@ -4,7 +4,9 @@
 
 2026-09-29用户明确要求在BranchRidge基础上更进一步，已恢复研发；独立数据验证仍待数据。新候选D92-BranchInteraction-v1保持原五块特征、冻结Phase1、全K同式，以固定KB+KA+KB*KA交互核对比linear与1.5倍linear能量对照，不扫参数。设计agent仅访问代码和合法support资料，未接收任何query成绩。先运行完整support-only OOF诊断，K1只数值检查，不能伪称独立类内holdout。预登记K5/10/20相对两对照H和新类均提升、旧类退化不超过1pp；是否进入query重复基准只据该support证据决定。
 
-新run `20260929-phase2-d92-branch-interaction-support-m4-r01`已PLANNED/launch-ready VALID，尚未启动；复用旧support-only缓存，不读取query/原IQ/truth、不重新加载checkpoint。CPU四lane、每lane两BLAS线程，不占GPU。远端8个cache、capsule句柄与新输出路径preflight VERIFIED，证据`interaction_preflight_1790668633787952000.json`。root唯一launch owner；核心/入口测试和唯一P0/P1正在收尾。用户另问K与新增类数量，报告补充分开进行，旧query成绩不反馈设计agent。以下BranchRidge完成状态仍有效，历史“等待数据停止研发”被本次继续优化请求更新。
+新run `20260929-phase2-d92-branch-interaction-support-m4-r01`已完整结束，8lane/4800任务/32400分解，runtime `9cbebdb292d6fd3c54d029e9113360a12eea64c6`。终态及下载证据`readback_1790669155.json`、`readback_1790669216.json`，supervisor/children均退出。完整summary已成功生成并下载，禁止重复启动或覆盖。K5/10/20相对linear的旧/新/H差值分别为+0.840/+1.743/+1.582、+0.642/+1.962/+1.621、+0.813/+2.522/+2.030pp；相对energy_control各K也均正，预定screen全通过。仅support证据，不是query结论；K1数值检查不证明性能。解释在该run的support_interpretation.md。
+
+现冻结原公式进入同矩阵重复基准准备：branch_next_entry负责正式entry，branch_next_design负责CPU缓存复用/runner/config/publisher，d92_p0_review负责两基线完整汇总，root负责整合/唯一launch/登记。两run `20260929-phase2-d92-branch-interaction-repeat-rx3-m4-r01`及rx1同名已PLANNED/launch-ready VALID，完整8缓存/旧预测句柄/新输出/CPU资源preflight VERIFIED。正式entry 7、编排相关82、scorer 68、metadata collector 28、汇总相关58项各自通过（集合有重叠，不合计独立总数）；正式runtime唯一P0/P1无阻断。CPU缓存复用，原公式不变，root唯一launch owner。尚未启动；发布后必须独立读回再更新状态。用户K与新增类数量问题已补全文档`docs/D92_BRANCH_RIDGE_K_NEW_EXPLANATION_20260929.md`并push；旧query成绩不反馈设计agent。目标工具仍标blocked（此前缺独立数据），但用户已恢复本轮研发；不得重复创建目标。独立数据确认仍待数据。
 
 ## 最新状态：BranchRidge完整重复基准通过，下一步独立数据确认
 

@@ -19,7 +19,8 @@ def combine(specs, scored):
     infos = [matrix_definition(s) for s in specs]
     validated = [summarize(d, s) for d, s in zip(scored, specs)]
     method=infos[0][0][1]
-    if method not in ('D92-SGJoint-v1','D92-MVKME-v1','D92-BNNA-v1','D92-OSC-v1','D92-MVRidge-v1','D92-BranchRidge-v1') or any(info[0] != ('D92',method) for info in infos):
+    baseline=infos[0][0][0]
+    if method not in ('D92-SGJoint-v1','D92-MVKME-v1','D92-BNNA-v1','D92-OSC-v1','D92-MVRidge-v1','D92-BranchRidge-v1','D92-BranchInteraction-v1') or any(info[0] != (baseline,method) for info in infos):
         raise ValueError('Only matching frozen repeated-benchmark candidates may be pooled')
     claim=CLAIM.replace('D92-SGJoint-v1',method)
     if len({s['run_id'] for s in specs}) != 2:
@@ -41,6 +42,7 @@ def combine(specs, scored):
         raise ValueError('The cohorts must retain their two distinct capsule identities')
     # This is an analysis-only matrix, never a launch specification or data capsule.
     composite = dict(analysis_only=True, source_run_ids=[s['run_id'] for s in specs],
+        baseline_method=baseline,
         permissions=dict(claim_scope=claim), rows=deepcopy(specs[0]['rows']),
         joint_benchmark=deepcopy(specs[0].get('joint_benchmark',{})),
         data=dict(target_receivers=receivers, scenarios=first['scenario'], k=first['k'],

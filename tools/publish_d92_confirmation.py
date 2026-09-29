@@ -4,7 +4,7 @@ import argparse
 import json
 from pathlib import Path
 import subprocess
-from run_d92_confirmation import candidate_definition, reuse_frozen_rows, needs_multiview, feature_definition, reuse_multiview_cache
+from run_d92_confirmation import candidate_definition, reuse_frozen_rows, needs_multiview, feature_definition, reuse_multiview_cache, reuse_branch_cache
 
 ROOT=Path(__file__).resolve().parents[1]
 RELEASE='d92_scv_confirmation_20260928_r01'
@@ -52,6 +52,10 @@ def release_tool_paths(confirmation):
                                 'configs/d92_bnna_frozen_20260929.json'] if candidate['candidate_method'] in ('D92-OSC-v1','D92-MVRidge-v1') else [])
                              +(['tools/export_d92_branch_support_features.py','tools/export_d92_mv_kme_features.py','tools/d92_orbit_feature_cache.py']
                                if candidate['candidate_method']=='D92-BranchRidge-v1' else [])
+                             +(['tools/export_d92_branch_features.py','tools/export_d92_branch_support_features.py',
+                                'tools/export_d92_mv_kme_features.py','tools/d92_orbit_feature_cache.py',
+                                'configs/d92_branch_ridge_frozen_20260929.json']
+                               if candidate['candidate_method']=='D92-BranchInteraction-v1' else [])
                              +(['tools/'+feature_definition(confirmation)[0]] if needs_multiview(confirmation) else [])))
 
 
@@ -61,10 +65,13 @@ def main():
     spec=json.loads((ROOT/a.spec).read_text(encoding='utf-8'))
     reuse_rows=reuse_frozen_rows(spec)
     reuse_multiview_cache(spec)
+    reuse_branches=reuse_branch_cache(spec)
     data_config='configs/'+Path(spec['confirmation']['data_config']).name
     candidate_config='configs/'+Path(spec['confirmation']['candidate_config']).name
     for local,remote in [(data_config,spec['confirmation']['data_config']),(candidate_config,spec['confirmation']['candidate_config'])]:
         if remote!=spec['code']['cwd']+'/'+local:raise ValueError('Configuration outside pinned release')
+    if reuse_branches and spec['confirmation']['frozen_branch_feature_producer_config'] != spec['code']['cwd']+'/configs/d92_branch_ridge_frozen_20260929.json':
+        raise ValueError('Branch producer configuration outside pinned release')
     paths_to_pack=release_tool_paths(spec['confirmation'])+[a.spec,data_config,candidate_config]
     commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip()
     branch=subprocess.check_output(['git','branch','--show-current'],cwd=ROOT,text=True).strip()

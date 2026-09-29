@@ -1,0 +1,2510 @@
+{
+  "status": "COMPLETE_SUPPORT_DIAGNOSTIC_VERIFIED",
+  "scope": "SUPPORT_OOF_DIAGNOSTIC_NOT_QUERY_EVALUATION",
+  "run_id": "20260929-phase2-d92-branch-interaction-support-m4-r01",
+  "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-interaction-support-m4-r01",
+  "release_commit": "9cbebdb292d6fd3c54d029e9113360a12eea64c6",
+  "run_wall_seconds": 44.062438011169434,
+  "coverage": {
+    "episodes": 4800,
+    "k1_episodes": 1200,
+    "oof_episodes": 3600,
+    "factorizations": 32400,
+    "physical_oof_records_per_arm": 562800
+  },
+  "lanes": [
+    {
+      "row_id": "rx3-cvs-daot-rc4-s2026092701",
+      "cohort": "rx3",
+      "model_seed": 2026092701,
+      "episodes": 900,
+      "k1_episodes": 225,
+      "factorizations": 6075,
+      "checkpoint_sha256": "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b",
+      "capsule_id": "residual-noeq-76121e6f34363fa612ec25fb"
+    },
+    {
+      "row_id": "rx3-cvs-daot-rc4-s2026092702",
+      "cohort": "rx3",
+      "model_seed": 2026092702,
+      "episodes": 900,
+      "k1_episodes": 225,
+      "factorizations": 6075,
+      "checkpoint_sha256": "72f26413e495dcf82317898f8729caa3d35499bf0b41e9671ffdceab2c90924b",
+      "capsule_id": "residual-noeq-76121e6f34363fa612ec25fb"
+    },
+    {
+      "row_id": "rx3-cvs-daot-rc4-s2026092703",
+      "cohort": "rx3",
+      "model_seed": 2026092703,
+      "episodes": 900,
+      "k1_episodes": 225,
+      "factorizations": 6075,
+      "checkpoint_sha256": "51fadc3b4ad3cbf83de01700a4a109430e7a57b1e10cb147f0be5f01593f26bb",
+      "capsule_id": "residual-noeq-76121e6f34363fa612ec25fb"
+    },
+    {
+      "row_id": "rx3-cvs-daot-rc4-s2026092704",
+      "cohort": "rx3",
+      "model_seed": 2026092704,
+      "episodes": 900,
+      "k1_episodes": 225,
+      "factorizations": 6075,
+      "checkpoint_sha256": "690fed6ea2a6532d0ad978c93306f0f35b61f4a3a3fc4b1d6494f0e7547c74bb",
+      "capsule_id": "residual-noeq-76121e6f34363fa612ec25fb"
+    },
+    {
+      "row_id": "rx1-cvs-daot-rc4-s2026092701",
+      "cohort": "rx1",
+      "model_seed": 2026092701,
+      "episodes": 300,
+      "k1_episodes": 75,
+      "factorizations": 2025,
+      "checkpoint_sha256": "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b",
+      "capsule_id": "residual-noeq-d0a99fede324159c5a4750fd"
+    },
+    {
+      "row_id": "rx1-cvs-daot-rc4-s2026092702",
+      "cohort": "rx1",
+      "model_seed": 2026092702,
+      "episodes": 300,
+      "k1_episodes": 75,
+      "factorizations": 2025,
+      "checkpoint_sha256": "72f26413e495dcf82317898f8729caa3d35499bf0b41e9671ffdceab2c90924b",
+      "capsule_id": "residual-noeq-d0a99fede324159c5a4750fd"
+    },
+    {
+      "row_id": "rx1-cvs-daot-rc4-s2026092703",
+      "cohort": "rx1",
+      "model_seed": 2026092703,
+      "episodes": 300,
+      "k1_episodes": 75,
+      "factorizations": 2025,
+      "checkpoint_sha256": "51fadc3b4ad3cbf83de01700a4a109430e7a57b1e10cb147f0be5f01593f26bb",
+      "capsule_id": "residual-noeq-d0a99fede324159c5a4750fd"
+    },
+    {
+      "row_id": "rx1-cvs-daot-rc4-s2026092704",
+      "cohort": "rx1",
+      "model_seed": 2026092704,
+      "episodes": 300,
+      "k1_episodes": 75,
+      "factorizations": 2025,
+      "checkpoint_sha256": "690fed6ea2a6532d0ad978c93306f0f35b61f4a3a3fc4b1d6494f0e7547c74bb",
+      "capsule_id": "residual-noeq-d0a99fede324159c5a4750fd"
+    }
+  ],
+  "statistics": [
+    {
+      "population": "allold",
+      "kind": "arm",
+      "metric": "energy_control.accuracy",
+      "count": 720,
+      "null_count": 0,
+      "sum": 497.7416666666659,
+      "mean": 0.6913078703703692,
+      "min": 0.2,
+      "max": 1.0
+    },
+    {
+      "population": "allold",
+      "kind": "arm",
+      "metric": "energy_control.h",
+      "count": 0,
+      "null_count": 720,
+      "sum": null,
+      "mean": null,
+      "min": null,
+      "max": null
+    },
+    {
+      "population": "allold",
+      "kind": "arm",
+      "metric": "energy_control.macro_accuracy",
+      "count": 720,
+      "null_count": 0,
+      "sum": 497.7416666666659,
+      "mean": 0.6913078703703692,
+      "min": 0.19999999999999998,
+      "max": 1.0
+    },
+    {
+      "population": "allold",
+      "kind": "arm",
+      "metric": "energy_control.macro_nll",
+      "count": 720,
+      "null_count": 0,
+      "sum": 1096.0979958076307,
+      "mean": 1.5223583275105983,
+      "min": 1.2049340243370876,
+      "max": 1.8040114386580552
+    },
+    {
+      "population": "allold",
+      "kind": "arm",
+      "metric": "energy_control.new_accuracy",
+      "count": 0,
+      "null_count": 720,
+      "sum": null,
+      "mean": null,
+      "min": null,
+      "max": null
+    },
+    {
+      "population": "allold",
+      "kind": "arm",
+      "metric": "energy_control.old_accuracy",
+      "count": 720,
+      "null_count": 0,
+      "sum": 497.7416666666659,
+      "mean": 0.6913078703703692,
+      "min": 0.19999999999999998,
+      "max": 1.0
+    },
+    {
+      "population": "allold",
+      "kind": "arm",
+      "metric": "interaction.accuracy",
+      "count": 720,
+      "null_count": 0,
+      "sum": 499.65833333333245,
+      "mean": 0.6939699074074062,
+      "min": 0.2,
+      "max": 1.0
+    },
+    {
+      "population": "allold",
+      "kind": "arm",
+      "metric": "interaction.h",
+      "count": 0,
+      "null_count": 720,
+      "sum": null,
+      "mean": null,
+      "min": null,
+      "max": null
+    },
+    {
+      "population": "allold",
+      "kind": "arm",
+      "metric": "interaction.macro_accuracy",
+      "count": 720,
+      "null_count": 0,
+      "sum": 499.65833333333245,
+      "mean": 0.6939699074074062,
+      "min": 0.19999999999999998,
+      "max": 1.0
+    },
+    {
+      "population": "allold",
+      "kind": "arm",
+      "metric": "interaction.macro_nll",
+      "count": 720,
+      "null_count": 0,
+      "sum": 1087.0475159270118,
+      "mean": 1.509788216565294,
+      "min": 1.1855826963979625,
+      "max": 1.7991186267477235
+    },
+    {
+      "population": "allold",
+      "kind": "arm",
+      "metric": "interaction.new_accuracy",
+      "count": 0,
+      "null_count": 720,
+      "sum": null,
+      "mean": null,
+      "min": null,
+      "max": null
+    },
+    {
+      "population": "allold",
+      "kind": "arm",
+      "metric": "interaction.old_accuracy",
+      "count": 720,
+      "null_count": 0,
+      "sum": 499.65833333333245,
+      "mean": 0.6939699074074062,
+      "min": 0.19999999999999998,
+      "max": 1.0
+    },
+    {
+      "population": "allold",
+      "kind": "arm",
+      "metric": "linear.accuracy",
+      "count": 720,
+      "null_count": 0,
+      "sum": 493.67499999999944,
+      "mean": 0.6856597222222215,
+      "min": 0.16666666666666666,
+      "max": 1.0
+    },
+    {
+      "population": "allold",
+      "kind": "arm",
+      "metric": "linear.h",
+      "count": 0,
+      "null_count": 720,
+      "sum": null,
+      "mean": null,
+      "min": null,
+      "max": null
+    },
+    {
+      "population": "allold",
+      "kind": "arm",
+      "metric": "linear.macro_accuracy",
+      "count": 720,
+      "null_count": 0,
+      "sum": 493.67499999999944,
+      "mean": 0.6856597222222215,
+      "min": 0.16666666666666666,
+      "max": 1.0
+    },
+    {
+      "population": "allold",
+      "kind": "arm",
+      "metric": "linear.macro_nll",
+      "count": 720,
+      "null_count": 0,
+      "sum": 1116.4977630673973,
+      "mean": 1.5506913375936073,
+      "min": 1.2435946831616382,
+      "max": 1.8053436412677057
+    },
+    {
+      "population": "allold",
+      "kind": "arm",
+      "metric": "linear.new_accuracy",
+      "count": 0,
+      "null_count": 720,
+      "sum": null,
+      "mean": null,
+      "min": null,
+      "max": null
+    },
+    {
+      "population": "allold",
+      "kind": "arm",
+      "metric": "linear.old_accuracy",
+      "count": 720,
+      "null_count": 0,
+      "sum": 493.67499999999944,
+      "mean": 0.6856597222222215,
+      "min": 0.16666666666666666,
+      "max": 1.0
+    },
+    {
+      "population": "allold",
+      "kind": "coverage",
+      "metric": "episodes",
+      "count": 960,
+      "null_count": 0,
+      "sum": 960.0,
+      "mean": 1.0,
+      "min": 1,
+      "max": 1
+    },
+    {
+      "population": "allold",
+      "kind": "coverage",
+      "metric": "k1_episodes",
+      "count": 960,
+      "null_count": 0,
+      "sum": 240.0,
+      "mean": 0.25,
+      "min": 0,
+      "max": 1
+    },
+    {
+      "population": "allold",
+      "kind": "coverage",
+      "metric": "oof_episodes",
+      "count": 960,
+      "null_count": 0,
+      "sum": 720.0,
+      "mean": 0.75,
+      "min": 0,
+      "max": 1
+    },
+    {
+      "population": "allold",
+      "kind": "numerical",
+      "metric": "auxiliary_mean_squared_norm",
+      "count": 960,
+      "null_count": 0,
+      "sum": 960.0,
+      "mean": 1.0,
+      "min": 1.0,
+      "max": 1.0000000000000002
+    },
+    {
+      "population": "allold",
+      "kind": "numerical",
+      "metric": "background_mean_squared_norm",
+      "count": 960,
+      "null_count": 0,
+      "sum": 960.0,
+      "mean": 1.0,
+      "min": 0.9999999999999999,
+      "max": 1.0000000000000002
+    },
+    {
+      "population": "allold",
+      "kind": "numerical",
+      "metric": "interaction_minus_energy_control_diagonal.max",
+      "count": 960,
+      "null_count": 0,
+      "sum": 3.1175062531474396e-13,
+      "mean": 3.2474023470285827e-16,
+      "min": 0.0,
+      "max": 4.440892098500626e-16
+    },
+    {
+      "population": "allold",
+      "kind": "numerical",
+      "metric": "interaction_minus_energy_control_diagonal.max_abs",
+      "count": 960,
+      "null_count": 0,
+      "sum": 3.1175062531474396e-13,
+      "mean": 3.2474023470285827e-16,
+      "min": 0.0,
+      "max": 4.440892098500626e-16
+    },
+    {
+      "population": "allold",
+      "kind": "numerical",
+      "metric": "interaction_minus_energy_control_diagonal.mean",
+      "count": 960,
+      "null_count": 0,
+      "sum": 2.2178555288595247e-14,
+      "mean": 2.310266175895338e-17,
+      "min": 0.0,
+      "max": 2.220446049250313e-16
+    },
+    {
+      "population": "allold",
+      "kind": "numerical",
+      "metric": "interaction_minus_energy_control_diagonal.min",
+      "count": 960,
+      "null_count": 0,
+      "sum": 0.0,
+      "mean": 0.0,
+      "min": 0.0,
+      "max": 0.0
+    },
+    {
+      "population": "allold",
+      "kind": "numerical",
+      "metric": "kernel_diagonal.energy_control.max",
+      "count": 960,
+      "null_count": 0,
+      "sum": 2880.0000000000005,
+      "mean": 3.0000000000000004,
+      "min": 3.0,
+      "max": 3.0000000000000013
+    },
+    {
+      "population": "allold",
+      "kind": "numerical",
+      "metric": "kernel_diagonal.energy_control.mean",
+      "count": 960,
+      "null_count": 0,
+      "sum": 2880.0,
+      "mean": 3.0,
+      "min": 3.0,
+      "max": 3.0000000000000013
+    },
+    {
+      "population": "allold",
+      "kind": "numerical",
+      "metric": "kernel_diagonal.energy_control.min",
+      "count": 960,
+      "null_count": 0,
+      "sum": 2880.0,
+      "mean": 3.0,
+      "min": 2.999999999999999,
+      "max": 3.0
+    },
+    {
+      "population": "allold",
+      "kind": "numerical",
+      "metric": "kernel_diagonal.interaction.max",
+      "count": 960,
+      "null_count": 0,
+      "sum": 2880.0000000000005,
+      "mean": 3.0000000000000004,
+      "min": 3.0,
+      "max": 3.0000000000000018
+    },
+    {
+      "population": "allold",
+      "kind": "numerical",
+      "metric": "kernel_diagonal.interaction.mean",
+      "count": 960,
+      "null_count": 0,
+      "sum": 2880.0,
+      "mean": 3.0,
+      "min": 3.0,
+      "max": 3.0000000000000013
+    },
+    {
+      "population": "allold",
+      "kind": "numerical",
+      "metric": "kernel_diagonal.interaction.min",
+      "count": 960,
+      "null_count": 0,
+      "sum": 2880.0,
+      "mean": 3.0,
+      "min": 2.999999999999999,
+      "max": 3.0
+    },
+    {
+      "population": "allold",
+      "kind": "numerical",
+      "metric": "kernel_diagonal.linear.max",
+      "count": 960,
+      "null_count": 0,
+      "sum": 1920.0000000000002,
+      "mean": 2.0000000000000004,
+      "min": 2.0,
+      "max": 2.000000000000001
+    },
+    {
+      "population": "allold",
+      "kind": "numerical",
+      "metric": "kernel_diagonal.linear.mean",
+      "count": 960,
+      "null_count": 0,
+      "sum": 1920.0,
+      "mean": 2.0,
+      "min": 2.0,
+      "max": 2.0000000000000004
+    },
+    {
+      "population": "allold",
+      "kind": "numerical",
+      "metric": "kernel_diagonal.linear.min",
+      "count": 960,
+      "null_count": 0,
+      "sum": 1920.0,
+      "mean": 2.0,
+      "min": 1.9999999999999996,
+      "max": 2.0
+    },
+    {
+      "population": "allold",
+      "kind": "paired",
+      "metric": "energy_control_minus_linear.accuracy",
+      "count": 720,
+      "null_count": 0,
+      "sum": 4.066666666666658,
+      "mean": 0.0056481481481481365,
+      "min": -0.06666666666666665,
+      "max": 0.09999999999999998
+    },
+    {
+      "population": "allold",
+      "kind": "paired",
+      "metric": "energy_control_minus_linear.h",
+      "count": 0,
+      "null_count": 720,
+      "sum": null,
+      "mean": null,
+      "min": null,
+      "max": null
+    },
+    {
+      "population": "allold",
+      "kind": "paired",
+      "metric": "energy_control_minus_linear.macro_accuracy",
+      "count": 720,
+      "null_count": 0,
+      "sum": 4.06666666666666,
+      "mean": 0.005648148148148139,
+      "min": -0.06666666666666676,
+      "max": 0.10000000000000003
+    },
+    {
+      "population": "allold",
+      "kind": "paired",
+      "metric": "energy_control_minus_linear.macro_nll",
+      "count": 720,
+      "null_count": 0,
+      "sum": -20.399767259766705,
+      "mean": -0.028333010083009313,
+      "min": -0.05833034127245029,
+      "max": -0.0009382933079113975
+    },
+    {
+      "population": "allold",
+      "kind": "paired",
+      "metric": "energy_control_minus_linear.new_accuracy",
+      "count": 0,
+      "null_count": 720,
+      "sum": null,
+      "mean": null,
+      "min": null,
+      "max": null
+    },
+    {
+      "population": "allold",
+      "kind": "paired",
+      "metric": "energy_control_minus_linear.old_accuracy",
+      "count": 720,
+      "null_count": 0,
+      "sum": 4.06666666666666,
+      "mean": 0.005648148148148139,
+      "min": -0.06666666666666676,
+      "max": 0.10000000000000003
+    },
+    {
+      "population": "allold",
+      "kind": "paired",
+      "metric": "interaction_minus_energy_control.accuracy",
+      "count": 720,
+      "null_count": 0,
+      "sum": 1.9166666666666647,
+      "mean": 0.0026620370370370344,
+      "min": -0.09999999999999998,
+      "max": 0.06666666666666671
+    },
+    {
+      "population": "allold",
+      "kind": "paired",
+      "metric": "interaction_minus_energy_control.h",
+      "count": 0,
+      "null_count": 720,
+      "sum": null,
+      "mean": null,
+      "min": null,
+      "max": null
+    },
+    {
+      "population": "allold",
+      "kind": "paired",
+      "metric": "interaction_minus_energy_control.macro_accuracy",
+      "count": 720,
+      "null_count": 0,
+      "sum": 1.9166666666666687,
+      "mean": 0.00266203703703704,
+      "min": -0.10000000000000006,
+      "max": 0.06666666666666676
+    },
+    {
+      "population": "allold",
+      "kind": "paired",
+      "metric": "interaction_minus_energy_control.macro_nll",
+      "count": 720,
+      "null_count": 0,
+      "sum": -9.050479880620001,
+      "mean": -0.012570110945305557,
+      "min": -0.03320936278569331,
+      "max": 0.006530465396145102
+    },
+    {
+      "population": "allold",
+      "kind": "paired",
+      "metric": "interaction_minus_energy_control.new_accuracy",
+      "count": 0,
+      "null_count": 720,
+      "sum": null,
+      "mean": null,
+      "min": null,
+      "max": null
+    },
+    {
+      "population": "allold",
+      "kind": "paired",
+      "metric": "interaction_minus_energy_control.old_accuracy",
+      "count": 720,
+      "null_count": 0,
+      "sum": 1.9166666666666687,
+      "mean": 0.00266203703703704,
+      "min": -0.10000000000000006,
+      "max": 0.06666666666666676
+    },
+    {
+      "population": "allold",
+      "kind": "paired",
+      "metric": "interaction_minus_linear.accuracy",
+      "count": 720,
+      "null_count": 0,
+      "sum": 5.98333333333332,
+      "mean": 0.008310185185185167,
+      "min": -0.1333333333333333,
+      "max": 0.10000000000000003
+    },
+    {
+      "population": "allold",
+      "kind": "paired",
+      "metric": "interaction_minus_linear.h",
+      "count": 0,
+      "null_count": 720,
+      "sum": null,
+      "mean": null,
+      "min": null,
+      "max": null
+    },
+    {
+      "population": "allold",
+      "kind": "paired",
+      "metric": "interaction_minus_linear.macro_accuracy",
+      "count": 720,
+      "null_count": 0,
+      "sum": 5.983333333333331,
+      "mean": 0.008310185185185181,
+      "min": -0.13333333333333333,
+      "max": 0.10000000000000009
+    },
+    {
+      "population": "allold",
+      "kind": "paired",
+      "metric": "interaction_minus_linear.macro_nll",
+      "count": 720,
+      "null_count": 0,
+      "sum": -29.450247140386715,
+      "mean": -0.04090312102831488,
+      "min": -0.0915397040581436,
+      "max": -0.003407827211130865
+    },
+    {
+      "population": "allold",
+      "kind": "paired",
+      "metric": "interaction_minus_linear.new_accuracy",
+      "count": 0,
+      "null_count": 720,
+      "sum": null,
+      "mean": null,
+      "min": null,
+      "max": null
+    },
+    {
+      "population": "allold",
+      "kind": "paired",
+      "metric": "interaction_minus_linear.old_accuracy",
+      "count": 720,
+      "null_count": 0,
+      "sum": 5.983333333333331,
+      "mean": 0.008310185185185181,
+      "min": -0.13333333333333333,
+      "max": 0.10000000000000009
+    },
+    {
+      "population": "new_present",
+      "kind": "arm",
+      "metric": "energy_control.accuracy",
+      "count": 2880,
+      "null_count": 0,
+      "sum": 1523.8808784964997,
+      "mean": 0.5291253050335069,
+      "min": 0.07692307692307693,
+      "max": 0.975
+    },
+    {
+      "population": "new_present",
+      "kind": "arm",
+      "metric": "energy_control.h",
+      "count": 2880,
+      "null_count": 0,
+      "sum": 1439.0820051212422,
+      "mean": 0.4996812517782091,
+      "min": 0.0,
+      "max": 0.983050847457627
+    },
+    {
+      "population": "new_present",
+      "kind": "arm",
+      "metric": "energy_control.macro_accuracy",
+      "count": 2880,
+      "null_count": 0,
+      "sum": 1523.8808784964997,
+      "mean": 0.5291253050335069,
+      "min": 0.07692307692307693,
+      "max": 0.975
+    },
+    {
+      "population": "new_present",
+      "kind": "arm",
+      "metric": "energy_control.macro_nll",
+      "count": 2880,
+      "null_count": 0,
+      "sum": 6981.844094413252,
+      "mean": 2.424251421671268,
+      "min": 1.575920421325221,
+      "max": 3.2412369466198756
+    },
+    {
+      "population": "new_present",
+      "kind": "arm",
+      "metric": "energy_control.new_accuracy",
+      "count": 2880,
+      "null_count": 0,
+      "sum": 1299.3700000000008,
+      "mean": 0.4511701388888892,
+      "min": 0.0,
+      "max": 1.0
+    },
+    {
+      "population": "new_present",
+      "kind": "arm",
+      "metric": "energy_control.old_accuracy",
+      "count": 2880,
+      "null_count": 0,
+      "sum": 1716.200000000004,
+      "mean": 0.5959027777777791,
+      "min": 0.03333333333333333,
+      "max": 1.0
+    },
+    {
+      "population": "new_present",
+      "kind": "arm",
+      "metric": "interaction.accuracy",
+      "count": 2880,
+      "null_count": 0,
+      "sum": 1547.651617132867,
+      "mean": 0.5373790337266899,
+      "min": 0.08461538461538462,
+      "max": 0.975
+    },
+    {
+      "population": "new_present",
+      "kind": "arm",
+      "metric": "interaction.h",
+      "count": 2880,
+      "null_count": 0,
+      "sum": 1468.011457402129,
+      "mean": 0.5097262004868504,
+      "min": 0.0,
+      "max": 0.983050847457627
+    },
+    {
+      "population": "new_present",
+      "kind": "arm",
+      "metric": "interaction.macro_accuracy",
+      "count": 2880,
+      "null_count": 0,
+      "sum": 1547.651617132867,
+      "mean": 0.5373790337266899,
+      "min": 0.08461538461538462,
+      "max": 0.975
+    },
+    {
+      "population": "new_present",
+      "kind": "arm",
+      "metric": "interaction.macro_nll",
+      "count": 2880,
+      "null_count": 0,
+      "sum": 6939.533399533203,
+      "mean": 2.409560208171251,
+      "min": 1.5484839313606282,
+      "max": 3.239479589030077
+    },
+    {
+      "population": "new_present",
+      "kind": "arm",
+      "metric": "interaction.new_accuracy",
+      "count": 2880,
+      "null_count": 0,
+      "sum": 1333.7624999999969,
+      "mean": 0.4631119791666656,
+      "min": 0.0,
+      "max": 1.0
+    },
+    {
+      "population": "new_present",
+      "kind": "arm",
+      "metric": "interaction.old_accuracy",
+      "count": 2880,
+      "null_count": 0,
+      "sum": 1729.791666666672,
+      "mean": 0.6006221064814833,
+      "min": 0.03333333333333333,
+      "max": 1.0
+    },
+    {
+      "population": "new_present",
+      "kind": "arm",
+      "metric": "linear.accuracy",
+      "count": 2880,
+      "null_count": 0,
+      "sum": 1507.2992351398568,
+      "mean": 0.5233677899791169,
+      "min": 0.07692307692307693,
+      "max": 0.9625
+    },
+    {
+      "population": "new_present",
+      "kind": "arm",
+      "metric": "linear.h",
+      "count": 2880,
+      "null_count": 0,
+      "sum": 1417.7760154278317,
+      "mean": 0.49228333869021934,
+      "min": 0.0,
+      "max": 0.9655172413793104
+    },
+    {
+      "population": "new_present",
+      "kind": "arm",
+      "metric": "linear.macro_accuracy",
+      "count": 2880,
+      "null_count": 0,
+      "sum": 1507.2992351398568,
+      "mean": 0.5233677899791169,
+      "min": 0.07692307692307693,
+      "max": 0.9624999999999999
+    },
+    {
+      "population": "new_present",
+      "kind": "arm",
+      "metric": "linear.macro_nll",
+      "count": 2880,
+      "null_count": 0,
+      "sum": 7045.344860582339,
+      "mean": 2.4463002988133122,
+      "min": 1.6161827435881606,
+      "max": 3.2439063779469812
+    },
+    {
+      "population": "new_present",
+      "kind": "arm",
+      "metric": "linear.new_accuracy",
+      "count": 2880,
+      "null_count": 0,
+      "sum": 1273.9849999999992,
+      "mean": 0.44235590277777753,
+      "min": 0.0,
+      "max": 1.0
+    },
+    {
+      "population": "new_present",
+      "kind": "arm",
+      "metric": "linear.old_accuracy",
+      "count": 2880,
+      "null_count": 0,
+      "sum": 1707.758333333339,
+      "mean": 0.5929716435185205,
+      "min": 0.03333333333333333,
+      "max": 1.0
+    },
+    {
+      "population": "new_present",
+      "kind": "coverage",
+      "metric": "episodes",
+      "count": 3840,
+      "null_count": 0,
+      "sum": 3840.0,
+      "mean": 1.0,
+      "min": 1,
+      "max": 1
+    },
+    {
+      "population": "new_present",
+      "kind": "coverage",
+      "metric": "k1_episodes",
+      "count": 3840,
+      "null_count": 0,
+      "sum": 960.0,
+      "mean": 0.25,
+      "min": 0,
+      "max": 1
+    },
+    {
+      "population": "new_present",
+      "kind": "coverage",
+      "metric": "oof_episodes",
+      "count": 3840,
+      "null_count": 0,
+      "sum": 2880.0,
+      "mean": 0.75,
+      "min": 0,
+      "max": 1
+    },
+    {
+      "population": "new_present",
+      "kind": "numerical",
+      "metric": "auxiliary_mean_squared_norm",
+      "count": 3840,
+      "null_count": 0,
+      "sum": 3840.0,
+      "mean": 1.0,
+      "min": 1.0,
+      "max": 1.0000000000000002
+    },
+    {
+      "population": "new_present",
+      "kind": "numerical",
+      "metric": "background_mean_squared_norm",
+      "count": 3840,
+      "null_count": 0,
+      "sum": 3840.0,
+      "mean": 1.0,
+      "min": 0.9999999999999999,
+      "max": 1.0000000000000004
+    },
+    {
+      "population": "new_present",
+      "kind": "numerical",
+      "metric": "interaction_minus_energy_control_diagonal.max",
+      "count": 3840,
+      "null_count": 0,
+      "sum": 1.475708444331758e-12,
+      "mean": 3.8429907404472866e-16,
+      "min": 0.0,
+      "max": 4.440892098500626e-16
+    },
+    {
+      "population": "new_present",
+      "kind": "numerical",
+      "metric": "interaction_minus_energy_control_diagonal.max_abs",
+      "count": 3840,
+      "null_count": 0,
+      "sum": 1.475708444331758e-12,
+      "mean": 3.8429907404472866e-16,
+      "min": 0.0,
+      "max": 4.440892098500626e-16
+    },
+    {
+      "population": "new_present",
+      "kind": "numerical",
+      "metric": "interaction_minus_energy_control_diagonal.mean",
+      "count": 3840,
+      "null_count": 0,
+      "sum": 9.061446232056182e-14,
+      "mean": 2.3597516229312974e-17,
+      "min": 0.0,
+      "max": 1.6653345369377348e-16
+    },
+    {
+      "population": "new_present",
+      "kind": "numerical",
+      "metric": "interaction_minus_energy_control_diagonal.min",
+      "count": 3840,
+      "null_count": 0,
+      "sum": 0.0,
+      "mean": 0.0,
+      "min": 0.0,
+      "max": 0.0
+    },
+    {
+      "population": "new_present",
+      "kind": "numerical",
+      "metric": "kernel_diagonal.energy_control.max",
+      "count": 3840,
+      "null_count": 0,
+      "sum": 11520.000000000002,
+      "mean": 3.0000000000000004,
+      "min": 3.0,
+      "max": 3.0000000000000013
+    },
+    {
+      "population": "new_present",
+      "kind": "numerical",
+      "metric": "kernel_diagonal.energy_control.mean",
+      "count": 3840,
+      "null_count": 0,
+      "sum": 11520.0,
+      "mean": 3.0,
+      "min": 3.0,
+      "max": 3.000000000000001
+    },
+    {
+      "population": "new_present",
+      "kind": "numerical",
+      "metric": "kernel_diagonal.energy_control.min",
+      "count": 3840,
+      "null_count": 0,
+      "sum": 11519.999999999998,
+      "mean": 2.9999999999999996,
+      "min": 2.999999999999999,
+      "max": 3.0
+    },
+    {
+      "population": "new_present",
+      "kind": "numerical",
+      "metric": "kernel_diagonal.interaction.max",
+      "count": 3840,
+      "null_count": 0,
+      "sum": 11520.000000000002,
+      "mean": 3.0000000000000004,
+      "min": 3.0,
+      "max": 3.0000000000000018
+    },
+    {
+      "population": "new_present",
+      "kind": "numerical",
+      "metric": "kernel_diagonal.interaction.mean",
+      "count": 3840,
+      "null_count": 0,
+      "sum": 11520.0,
+      "mean": 3.0,
+      "min": 3.0,
+      "max": 3.000000000000001
+    },
+    {
+      "population": "new_present",
+      "kind": "numerical",
+      "metric": "kernel_diagonal.interaction.min",
+      "count": 3840,
+      "null_count": 0,
+      "sum": 11519.999999999998,
+      "mean": 2.9999999999999996,
+      "min": 2.999999999999999,
+      "max": 3.0
+    },
+    {
+      "population": "new_present",
+      "kind": "numerical",
+      "metric": "kernel_diagonal.linear.max",
+      "count": 3840,
+      "null_count": 0,
+      "sum": 7680.0,
+      "mean": 2.0,
+      "min": 2.0,
+      "max": 2.000000000000001
+    },
+    {
+      "population": "new_present",
+      "kind": "numerical",
+      "metric": "kernel_diagonal.linear.mean",
+      "count": 3840,
+      "null_count": 0,
+      "sum": 7680.0,
+      "mean": 2.0,
+      "min": 2.0,
+      "max": 2.0000000000000004
+    },
+    {
+      "population": "new_present",
+      "kind": "numerical",
+      "metric": "kernel_diagonal.linear.min",
+      "count": 3840,
+      "null_count": 0,
+      "sum": 7680.0,
+      "mean": 2.0,
+      "min": 1.9999999999999996,
+      "max": 2.0
+    },
+    {
+      "population": "new_present",
+      "kind": "paired",
+      "metric": "energy_control_minus_linear.accuracy",
+      "count": 2880,
+      "null_count": 0,
+      "sum": 16.581643356643358,
+      "mean": 0.0057575150543900545,
+      "min": -0.1,
+      "max": 0.125
+    },
+    {
+      "population": "new_present",
+      "kind": "paired",
+      "metric": "energy_control_minus_linear.h",
+      "count": 2880,
+      "null_count": 0,
+      "sum": 21.30598969340975,
+      "mean": 0.007397913087989497,
+      "min": -0.12646616541353378,
+      "max": 0.27068965517241383
+    },
+    {
+      "population": "new_present",
+      "kind": "paired",
+      "metric": "energy_control_minus_linear.macro_accuracy",
+      "count": 2880,
+      "null_count": 0,
+      "sum": 16.581643356643326,
+      "mean": 0.005757515054390044,
+      "min": -0.1,
+      "max": 0.125
+    },
+    {
+      "population": "new_present",
+      "kind": "paired",
+      "metric": "energy_control_minus_linear.macro_nll",
+      "count": 2880,
+      "null_count": 0,
+      "sum": -63.500766169091186,
+      "mean": -0.02204887714204555,
+      "min": -0.04786375609973925,
+      "max": 0.0012536993379002048
+    },
+    {
+      "population": "new_present",
+      "kind": "paired",
+      "metric": "energy_control_minus_linear.new_accuracy",
+      "count": 2880,
+      "null_count": 0,
+      "sum": 25.38499999999996,
+      "mean": 0.008814236111111097,
+      "min": -0.10000000000000003,
+      "max": 0.20000000000000004
+    },
+    {
+      "population": "new_present",
+      "kind": "paired",
+      "metric": "energy_control_minus_linear.old_accuracy",
+      "count": 2880,
+      "null_count": 0,
+      "sum": 8.441666666666658,
+      "mean": 0.002931134259259256,
+      "min": -0.1333333333333334,
+      "max": 0.13333333333333341
+    },
+    {
+      "population": "new_present",
+      "kind": "paired",
+      "metric": "interaction_minus_energy_control.accuracy",
+      "count": 2880,
+      "null_count": 0,
+      "sum": 23.770738636363657,
+      "mean": 0.008253728693181825,
+      "min": -0.07500000000000001,
+      "max": 0.09999999999999998
+    },
+    {
+      "population": "new_present",
+      "kind": "paired",
+      "metric": "interaction_minus_energy_control.h",
+      "count": 2880,
+      "null_count": 0,
+      "sum": 28.929452280884036,
+      "mean": 0.01004494870864029,
+      "min": -0.17272727272727273,
+      "max": 0.18632258064516133
+    },
+    {
+      "population": "new_present",
+      "kind": "paired",
+      "metric": "interaction_minus_energy_control.macro_accuracy",
+      "count": 2880,
+      "null_count": 0,
+      "sum": 23.770738636363657,
+      "mean": 0.008253728693181825,
+      "min": -0.07500000000000001,
+      "max": 0.10000000000000003
+    },
+    {
+      "population": "new_present",
+      "kind": "paired",
+      "metric": "interaction_minus_energy_control.macro_nll",
+      "count": 2880,
+      "null_count": 0,
+      "sum": -42.31069488004878,
+      "mean": -0.014691213500016937,
+      "min": -0.04350478012671921,
+      "max": 0.00386989156225237
+    },
+    {
+      "population": "new_present",
+      "kind": "paired",
+      "metric": "interaction_minus_energy_control.new_accuracy",
+      "count": 2880,
+      "null_count": 0,
+      "sum": 34.39250000000001,
+      "mean": 0.011941840277777782,
+      "min": -0.19999999999999996,
+      "max": 0.2
+    },
+    {
+      "population": "new_present",
+      "kind": "paired",
+      "metric": "interaction_minus_energy_control.old_accuracy",
+      "count": 2880,
+      "null_count": 0,
+      "sum": 13.59166666666666,
+      "mean": 0.004719328703703701,
+      "min": -0.09999999999999998,
+      "max": 0.13333333333333328
+    },
+    {
+      "population": "new_present",
+      "kind": "paired",
+      "metric": "interaction_minus_linear.accuracy",
+      "count": 2880,
+      "null_count": 0,
+      "sum": 40.352381993007064,
+      "mean": 0.014011243747571898,
+      "min": -0.07500000000000001,
+      "max": 0.09999999999999998
+    },
+    {
+      "population": "new_present",
+      "kind": "paired",
+      "metric": "interaction_minus_linear.h",
+      "count": 2880,
+      "null_count": 0,
+      "sum": 50.23544197429385,
+      "mean": 0.017442861796629808,
+      "min": -0.12646616541353378,
+      "max": 0.3175953079178886
+    },
+    {
+      "population": "new_present",
+      "kind": "paired",
+      "metric": "interaction_minus_linear.macro_accuracy",
+      "count": 2880,
+      "null_count": 0,
+      "sum": 40.35238199300704,
+      "mean": 0.01401124374757189,
+      "min": -0.07500000000000001,
+      "max": 0.10000000000000009
+    },
+    {
+      "population": "new_present",
+      "kind": "paired",
+      "metric": "interaction_minus_linear.macro_nll",
+      "count": 2880,
+      "null_count": 0,
+      "sum": -105.81146104913992,
+      "mean": -0.036740090642062476,
+      "min": -0.08049371447544651,
+      "max": 0.0006133212100198904
+    },
+    {
+      "population": "new_present",
+      "kind": "paired",
+      "metric": "interaction_minus_linear.new_accuracy",
+      "count": 2880,
+      "null_count": 0,
+      "sum": 59.777500000000174,
+      "mean": 0.02075607638888895,
+      "min": -0.10000000000000003,
+      "max": 0.30000000000000004
+    },
+    {
+      "population": "new_present",
+      "kind": "paired",
+      "metric": "interaction_minus_linear.old_accuracy",
+      "count": 2880,
+      "null_count": 0,
+      "sum": 22.033333333333378,
+      "mean": 0.007650462962962979,
+      "min": -0.1,
+      "max": 0.13333333333333336
+    }
+  ],
+  "resources": {
+    "lane.wall_seconds": {
+      "count": 8,
+      "null_count": 0,
+      "sum": 165.4641813709968,
+      "mean": 20.6830226713746,
+      "min": 9.648226302000694,
+      "max": 34.151914530000795
+    },
+    "payload.cache_load_seconds": {
+      "count": 8,
+      "null_count": 0,
+      "sum": 5.034494863000873,
+      "mean": 0.6293118578751091,
+      "min": 0.14452372200321406,
+      "max": 1.117130016998999
+    },
+    "payload.existing_model_file_bytes": {
+      "count": 8,
+      "null_count": 0,
+      "sum": 127943232.0,
+      "mean": 15992904.0,
+      "min": 15992872,
+      "max": 15992936
+    },
+    "payload.feature_extraction_this_run_seconds": {
+      "count": 8,
+      "null_count": 0,
+      "sum": 0.0,
+      "mean": 0.0,
+      "min": 0.0,
+      "max": 0.0
+    },
+    "payload.model_incremental_transfer_bytes": {
+      "count": 8,
+      "null_count": 0,
+      "sum": 0.0,
+      "mean": 0.0,
+      "min": 0,
+      "max": 0
+    },
+    "payload.native_physical_forward_count_this_run": {
+      "count": 8,
+      "null_count": 0,
+      "sum": 0.0,
+      "mean": 0.0,
+      "min": 0,
+      "max": 0
+    },
+    "payload.new_ground_statistics_bytes": {
+      "count": 8,
+      "null_count": 0,
+      "sum": 0.0,
+      "mean": 0.0,
+      "min": 0,
+      "max": 0
+    },
+    "payload.new_source_payload_bytes": {
+      "count": 8,
+      "null_count": 0,
+      "sum": 0.0,
+      "mean": 0.0,
+      "min": 0,
+      "max": 0
+    },
+    "payload.support_feature_array_bytes": {
+      "count": 8,
+      "null_count": 0,
+      "sum": 124884480.0,
+      "mean": 15610560.0,
+      "min": 6865408,
+      "max": 24355712
+    },
+    "payload.support_feature_file_bytes": {
+      "count": 8,
+      "null_count": 0,
+      "sum": 130181840.0,
+      "mean": 16272730.0,
+      "min": 7159236,
+      "max": 25386224
+    },
+    "probe.fit_call_seconds": {
+      "count": 4800,
+      "null_count": 0,
+      "sum": 148.56693127788458,
+      "mean": 0.030951444016225953,
+      "min": 0.00041177900129696354,
+      "max": 0.40168492299926584
+    },
+    "probe.fit_seconds": {
+      "count": 4800,
+      "null_count": 0,
+      "sum": 147.858752008211,
+      "mean": 0.030803906668377293,
+      "min": 0.00038761199903092347,
+      "max": 0.40132877200085204
+    },
+    "probe.log_write_seconds": {
+      "count": 4800,
+      "null_count": 0,
+      "sum": 10.469075648023136,
+      "mean": 0.0021810574266714865,
+      "min": 7.998200089787133e-05,
+      "max": 0.010378195998782758
+    },
+    "probe.peak_process_rss_bytes": {
+      "count": 4800,
+      "null_count": 0,
+      "sum": 570977644544.0,
+      "mean": 118953675.94666667,
+      "min": 73273344,
+      "max": 129597440
+    },
+    "probe.total_seconds": {
+      "count": 4800,
+      "null_count": 0,
+      "sum": 159.38530204994095,
+      "mean": 0.033205271260404366,
+      "min": 0.000510180998389842,
+      "max": 0.40938619599910453
+    }
+  },
+  "support_candidate_assessment": {
+    "scope": "SUPPORT_ONLY_CANDIDATE_SCREEN_NOT_QUERY_GENERALIZATION",
+    "rule": "For each of K5/10/20 separately on joint new-present tasks, mean H and new accuracy strictly improve versus both controls, and old accuracy delta is at least -0.01. Cross-K means are descriptive only.",
+    "comparisons": {
+      "linear": {
+        "mean_h_delta": 0.017442861796629808,
+        "mean_new_accuracy_delta": 0.02075607638888895,
+        "h_delta_by_k": {
+          "5": 0.015817753428980834,
+          "10": 0.01620590646569465,
+          "20": 0.020304925495213812
+        },
+        "new_accuracy_delta_by_k": {
+          "5": 0.017427083333333263,
+          "10": 0.019619791666666643,
+          "20": 0.025221354166666658
+        },
+        "h_improvement_pass_by_k": {
+          "5": true,
+          "10": true,
+          "20": true
+        },
+        "new_improvement_pass_by_k": {
+          "5": true,
+          "10": true,
+          "20": true
+        },
+        "old_accuracy_delta_by_k": {
+          "5": 0.008402777777777757,
+          "10": 0.006423611111111099,
+          "20": 0.008125000000000012
+        },
+        "old_guard_pass_by_k": {
+          "5": true,
+          "10": true,
+          "20": true
+        },
+        "allold_accuracy_delta_by_k": {
+          "5": 0.012638888888888877,
+          "10": 0.004930555555555553,
+          "20": 0.00736111111111112
+        },
+        "available": true,
+        "passes": true
+      },
+      "energy_control": {
+        "mean_h_delta": 0.01004494870864029,
+        "mean_new_accuracy_delta": 0.011941840277777782,
+        "h_delta_by_k": {
+          "5": 0.007571445701293423,
+          "10": 0.00888175481757545,
+          "20": 0.013681645607051958
+        },
+        "new_accuracy_delta_by_k": {
+          "5": 0.008666666666666652,
+          "10": 0.011015624999999982,
+          "20": 0.016143229166666665
+        },
+        "h_improvement_pass_by_k": {
+          "5": true,
+          "10": true,
+          "20": true
+        },
+        "new_improvement_pass_by_k": {
+          "5": true,
+          "10": true,
+          "20": true
+        },
+        "old_accuracy_delta_by_k": {
+          "5": 0.0035763888888888846,
+          "10": 0.003749999999999995,
+          "20": 0.0068315972222222155
+        },
+        "old_guard_pass_by_k": {
+          "5": true,
+          "10": true,
+          "20": true
+        },
+        "allold_accuracy_delta_by_k": {
+          "5": 0.003472222222222221,
+          "10": 0.0015972222222222236,
+          "20": 0.0029166666666666737
+        },
+        "available": true,
+        "passes": true
+      }
+    },
+    "available": true,
+    "passes": true,
+    "allold_scope": "Reported separately; not substituted for joint old-class guard.",
+    "k1_scope": "Numerical diagnostics only; no performance evidence.",
+    "automatic_promotion": false
+  },
+  "fit_stage_statistics": [
+    {
+      "arm": "energy_control",
+      "metric": "classification_output_dim",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 144720.0,
+      "mean": 13.4,
+      "min": 6,
+      "max": 26
+    },
+    {
+      "arm": "energy_control",
+      "metric": "coefficient_bytes",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 154963200.0,
+      "mean": 14348.444444444445,
+      "min": 864,
+      "max": 75712
+    },
+    {
+      "arm": "energy_control",
+      "metric": "condition_bound",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 1267744.6188915765,
+      "mean": 117.38376100847931,
+      "min": 11.870689805756772,
+      "max": 587.7502281038126
+    },
+    {
+      "arm": "energy_control",
+      "metric": "dual_objective_gradient_norm",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 9.957674592422285e-10,
+      "mean": 9.220069067057672e-14,
+      "min": 7.878764175524207e-16,
+      "max": 2.3088131401122048e-12
+    },
+    {
+      "arm": "energy_control",
+      "metric": "epoch",
+      "count": 0,
+      "null_count": 10800,
+      "sum": null,
+      "mean": null,
+      "min": null,
+      "max": null
+    },
+    {
+      "arm": "energy_control",
+      "metric": "factorization_calls",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 10800.0,
+      "mean": 1.0,
+      "min": 1,
+      "max": 1
+    },
+    {
+      "arm": "energy_control",
+      "metric": "factorization_dim",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 1125600.0,
+      "mean": 104.22222222222223,
+      "min": 18,
+      "max": 364
+    },
+    {
+      "arm": "energy_control",
+      "metric": "fit_seconds",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 15.061445118808479,
+      "mean": 0.001394578251741526,
+      "min": 0.00033608500234549865,
+      "max": 0.01045286299995496
+    },
+    {
+      "arm": "energy_control",
+      "metric": "fold",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 10800.0,
+      "mean": 1.0,
+      "min": 0,
+      "max": 2
+    },
+    {
+      "arm": "energy_control",
+      "metric": "gradient_norm",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 9.957674592422285e-10,
+      "mean": 9.220069067057672e-14,
+      "min": 7.878764175524207e-16,
+      "max": 2.3088131401122048e-12
+    },
+    {
+      "arm": "energy_control",
+      "metric": "gram_bytes",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 1554059520.0,
+      "mean": 143894.4,
+      "min": 2592,
+      "max": 1059968
+    },
+    {
+      "arm": "energy_control",
+      "metric": "gram_min_eigenvalue_lower_bound",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 10800.0,
+      "mean": 1.0,
+      "min": 1.0,
+      "max": 1.0
+    },
+    {
+      "arm": "energy_control",
+      "metric": "gram_seconds",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 6.873597342088033,
+      "mean": 0.0006364441983414845,
+      "min": 0.00014366400137078017,
+      "max": 0.004910632000246551
+    },
+    {
+      "arm": "energy_control",
+      "metric": "implicit_feature_dim",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 7948800.0,
+      "mean": 736.0,
+      "min": 736,
+      "max": 736
+    },
+    {
+      "arm": "energy_control",
+      "metric": "input_feature_dim",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 7948800.0,
+      "mean": 736.0,
+      "min": 736,
+      "max": 736
+    },
+    {
+      "arm": "energy_control",
+      "metric": "intercept_gradient_norm",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 1.9640592894704467e-09,
+      "mean": 1.8185734161763395e-13,
+      "min": 7.062689683090247e-16,
+      "max": 3.414879927000244e-12
+    },
+    {
+      "arm": "energy_control",
+      "metric": "kernel_diagonal_mean",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 32400.0,
+      "mean": 3.0,
+      "min": 3.0,
+      "max": 3.0000000000000013
+    },
+    {
+      "arm": "energy_control",
+      "metric": "learning_rate",
+      "count": 0,
+      "null_count": 10800,
+      "sum": null,
+      "mean": null,
+      "min": null,
+      "max": null
+    },
+    {
+      "arm": "energy_control",
+      "metric": "loss_data",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 205186.45125183463,
+      "mean": 18.998745486280985,
+      "min": 1.1805231218992813,
+      "max": 102.28216056565495
+    },
+    {
+      "arm": "energy_control",
+      "metric": "loss_ridge",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 77834.66508244124,
+      "mean": 7.206913433559373,
+      "min": 1.4214484518316575,
+      "max": 21.897492882911866
+    },
+    {
+      "arm": "energy_control",
+      "metric": "loss_total",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 283021.1163342759,
+      "mean": 26.205658919840364,
+      "min": 2.661648722312774,
+      "max": 120.39062141518244
+    },
+    {
+      "arm": "energy_control",
+      "metric": "normal_equation_residual",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 8.546591894961117e-11,
+      "mean": 7.913511013852887e-15,
+      "min": 5.782226546457897e-16,
+      "max": 6.144330056681567e-14
+    },
+    {
+      "arm": "energy_control",
+      "metric": "optimizer_steps",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 0.0,
+      "mean": 0.0,
+      "min": 0,
+      "max": 0
+    },
+    {
+      "arm": "energy_control",
+      "metric": "output_dim",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 144720.0,
+      "mean": 13.4,
+      "min": 6,
+      "max": 26
+    },
+    {
+      "arm": "energy_control",
+      "metric": "physical_loss_mass",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 1125600.0,
+      "mean": 104.22222222222223,
+      "min": 18.0,
+      "max": 364.0
+    },
+    {
+      "arm": "energy_control",
+      "metric": "ridge_coefficient",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 10800.0,
+      "mean": 1.0,
+      "min": 1.0,
+      "max": 1.0
+    },
+    {
+      "arm": "energy_control",
+      "metric": "sample_weight",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 10800.0,
+      "mean": 1.0,
+      "min": 1.0,
+      "max": 1.0
+    },
+    {
+      "arm": "energy_control",
+      "metric": "score_seconds",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 28.01353107613977,
+      "mean": 0.0025938454700129418,
+      "min": 0.0002223800001956988,
+      "max": 0.022451218999776756
+    },
+    {
+      "arm": "energy_control",
+      "metric": "solve_seconds",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 5.872925935975218,
+      "mean": 0.0005437894385162239,
+      "min": 7.492100121453404e-05,
+      "max": 0.004743419998703757
+    },
+    {
+      "arm": "energy_control",
+      "metric": "target_norm_squared",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 1041600.0,
+      "mean": 96.44444444444444,
+      "min": 15.0,
+      "max": 350.0
+    },
+    {
+      "arm": "energy_control",
+      "metric": "train_k",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 84000.0,
+      "mean": 7.777777777777778,
+      "min": 3,
+      "max": 14
+    },
+    {
+      "arm": "energy_control",
+      "metric": "train_physical_count",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 1125600.0,
+      "mean": 104.22222222222223,
+      "min": 18,
+      "max": 364
+    },
+    {
+      "arm": "energy_control",
+      "metric": "training_feature_bytes",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 6627532800.0,
+      "mean": 613660.4444444445,
+      "min": 105984,
+      "max": 2143232
+    },
+    {
+      "arm": "interaction",
+      "metric": "classification_output_dim",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 144720.0,
+      "mean": 13.4,
+      "min": 6,
+      "max": 26
+    },
+    {
+      "arm": "interaction",
+      "metric": "coefficient_bytes",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 154963200.0,
+      "mean": 14348.444444444445,
+      "min": 864,
+      "max": 75712
+    },
+    {
+      "arm": "interaction",
+      "metric": "condition_bound",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 1521349.9872230268,
+      "mean": 140.86573955768768,
+      "min": 14.796876053076158,
+      "max": 682.2563675290601
+    },
+    {
+      "arm": "interaction",
+      "metric": "dual_objective_gradient_norm",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 1.026391408222932e-09,
+      "mean": 9.503624150212334e-14,
+      "min": 9.885776008312872e-16,
+      "max": 2.3536428417974396e-12
+    },
+    {
+      "arm": "interaction",
+      "metric": "epoch",
+      "count": 0,
+      "null_count": 10800,
+      "sum": null,
+      "mean": null,
+      "min": null,
+      "max": null
+    },
+    {
+      "arm": "interaction",
+      "metric": "factorization_calls",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 10800.0,
+      "mean": 1.0,
+      "min": 1,
+      "max": 1
+    },
+    {
+      "arm": "interaction",
+      "metric": "factorization_dim",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 1125600.0,
+      "mean": 104.22222222222223,
+      "min": 18,
+      "max": 364
+    },
+    {
+      "arm": "interaction",
+      "metric": "fit_seconds",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 15.228424578945123,
+      "mean": 0.001410039312865289,
+      "min": 0.00032607799948891625,
+      "max": 0.013346575000468874
+    },
+    {
+      "arm": "interaction",
+      "metric": "fold",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 10800.0,
+      "mean": 1.0,
+      "min": 0,
+      "max": 2
+    },
+    {
+      "arm": "interaction",
+      "metric": "gradient_norm",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 1.026391408222932e-09,
+      "mean": 9.503624150212334e-14,
+      "min": 9.885776008312872e-16,
+      "max": 2.3536428417974396e-12
+    },
+    {
+      "arm": "interaction",
+      "metric": "gram_bytes",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 1554059520.0,
+      "mean": 143894.4,
+      "min": 2592,
+      "max": 1059968
+    },
+    {
+      "arm": "interaction",
+      "metric": "gram_min_eigenvalue_lower_bound",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 10800.0,
+      "mean": 1.0,
+      "min": 1.0,
+      "max": 1.0
+    },
+    {
+      "arm": "interaction",
+      "metric": "gram_seconds",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 7.052654839069874,
+      "mean": 0.0006530235962101734,
+      "min": 0.00013443799980450422,
+      "max": 0.007797129001119174
+    },
+    {
+      "arm": "interaction",
+      "metric": "implicit_feature_dim",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 1335052800.0,
+      "mean": 123616.0,
+      "min": 123616,
+      "max": 123616
+    },
+    {
+      "arm": "interaction",
+      "metric": "input_feature_dim",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 7948800.0,
+      "mean": 736.0,
+      "min": 736,
+      "max": 736
+    },
+    {
+      "arm": "interaction",
+      "metric": "intercept_gradient_norm",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 2.0971089256046414e-09,
+      "mean": 1.9417675237080013e-13,
+      "min": 6.434865484555646e-16,
+      "max": 3.2868107269650275e-12
+    },
+    {
+      "arm": "interaction",
+      "metric": "kernel_diagonal_mean",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 32400.0,
+      "mean": 3.0,
+      "min": 3.0,
+      "max": 3.0000000000000013
+    },
+    {
+      "arm": "interaction",
+      "metric": "learning_rate",
+      "count": 0,
+      "null_count": 10800,
+      "sum": null,
+      "mean": null,
+      "min": null,
+      "max": null
+    },
+    {
+      "arm": "interaction",
+      "metric": "loss_data",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 165794.28585350406,
+      "mean": 15.35132276421334,
+      "min": 0.922101243217572,
+      "max": 81.459148820402
+    },
+    {
+      "arm": "interaction",
+      "metric": "loss_ridge",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 86319.75607671386,
+      "mean": 7.992570007103136,
+      "min": 1.4185661211089968,
+      "max": 28.218854374972356
+    },
+    {
+      "arm": "interaction",
+      "metric": "loss_total",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 252114.04193021826,
+      "mean": 23.343892771316504,
+      "min": 2.3511569013687947,
+      "max": 106.22357742595464
+    },
+    {
+      "arm": "interaction",
+      "metric": "normal_equation_residual",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 8.408566428458568e-11,
+      "mean": 7.785709655980156e-15,
+      "min": 6.526987848146008e-16,
+      "max": 5.860067009435043e-14
+    },
+    {
+      "arm": "interaction",
+      "metric": "optimizer_steps",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 0.0,
+      "mean": 0.0,
+      "min": 0,
+      "max": 0
+    },
+    {
+      "arm": "interaction",
+      "metric": "output_dim",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 144720.0,
+      "mean": 13.4,
+      "min": 6,
+      "max": 26
+    },
+    {
+      "arm": "interaction",
+      "metric": "physical_loss_mass",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 1125600.0,
+      "mean": 104.22222222222223,
+      "min": 18.0,
+      "max": 364.0
+    },
+    {
+      "arm": "interaction",
+      "metric": "ridge_coefficient",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 10800.0,
+      "mean": 1.0,
+      "min": 1.0,
+      "max": 1.0
+    },
+    {
+      "arm": "interaction",
+      "metric": "sample_weight",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 10800.0,
+      "mean": 1.0,
+      "min": 1.0,
+      "max": 1.0
+    },
+    {
+      "arm": "interaction",
+      "metric": "score_seconds",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 28.228206071868044,
+      "mean": 0.0026137227844322264,
+      "min": 0.0002223800001956988,
+      "max": 0.01891670800250722
+    },
+    {
+      "arm": "interaction",
+      "metric": "solve_seconds",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 5.869529386094655,
+      "mean": 0.0005434749431569124,
+      "min": 7.436599844368175e-05,
+      "max": 0.00486889199964935
+    },
+    {
+      "arm": "interaction",
+      "metric": "target_norm_squared",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 1041600.0,
+      "mean": 96.44444444444444,
+      "min": 15.0,
+      "max": 350.0
+    },
+    {
+      "arm": "interaction",
+      "metric": "train_k",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 84000.0,
+      "mean": 7.777777777777778,
+      "min": 3,
+      "max": 14
+    },
+    {
+      "arm": "interaction",
+      "metric": "train_physical_count",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 1125600.0,
+      "mean": 104.22222222222223,
+      "min": 18,
+      "max": 364
+    },
+    {
+      "arm": "interaction",
+      "metric": "training_feature_bytes",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 6627532800.0,
+      "mean": 613660.4444444445,
+      "min": 105984,
+      "max": 2143232
+    },
+    {
+      "arm": "linear",
+      "metric": "classification_output_dim",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 144720.0,
+      "mean": 13.4,
+      "min": 6,
+      "max": 26
+    },
+    {
+      "arm": "linear",
+      "metric": "coefficient_bytes",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 154963200.0,
+      "mean": 14348.444444444445,
+      "min": 864,
+      "max": 75712
+    },
+    {
+      "arm": "linear",
+      "metric": "condition_bound",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 848763.0792610506,
+      "mean": 78.58917400565284,
+      "min": 8.24712653717118,
+      "max": 392.1668187358749
+    },
+    {
+      "arm": "linear",
+      "metric": "dual_objective_gradient_norm",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 4.527128316165045e-10,
+      "mean": 4.191785477930597e-14,
+      "min": 3.9299565939997683e-16,
+      "max": 1.0397187452271687e-12
+    },
+    {
+      "arm": "linear",
+      "metric": "epoch",
+      "count": 0,
+      "null_count": 10800,
+      "sum": null,
+      "mean": null,
+      "min": null,
+      "max": null
+    },
+    {
+      "arm": "linear",
+      "metric": "factorization_calls",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 10800.0,
+      "mean": 1.0,
+      "min": 1,
+      "max": 1
+    },
+    {
+      "arm": "linear",
+      "metric": "factorization_dim",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 1125600.0,
+      "mean": 104.22222222222223,
+      "min": 18,
+      "max": 364
+    },
+    {
+      "arm": "linear",
+      "metric": "fit_seconds",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 15.984542181849974,
+      "mean": 0.0014800502020231457,
+      "min": 0.00034208800207125023,
+      "max": 0.16773209299935843
+    },
+    {
+      "arm": "linear",
+      "metric": "fold",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 10800.0,
+      "mean": 1.0,
+      "min": 0,
+      "max": 2
+    },
+    {
+      "arm": "linear",
+      "metric": "gradient_norm",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 4.527128316165045e-10,
+      "mean": 4.191785477930597e-14,
+      "min": 3.9299565939997683e-16,
+      "max": 1.0397187452271687e-12
+    },
+    {
+      "arm": "linear",
+      "metric": "gram_bytes",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 1554059520.0,
+      "mean": 143894.4,
+      "min": 2592,
+      "max": 1059968
+    },
+    {
+      "arm": "linear",
+      "metric": "gram_min_eigenvalue_lower_bound",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 10800.0,
+      "mean": 1.0,
+      "min": 1.0,
+      "max": 1.0
+    },
+    {
+      "arm": "linear",
+      "metric": "gram_seconds",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 7.3552946418385545,
+      "mean": 0.0006810458001702365,
+      "min": 0.0001496660006523598,
+      "max": 0.07290597199971671
+    },
+    {
+      "arm": "linear",
+      "metric": "implicit_feature_dim",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 7948800.0,
+      "mean": 736.0,
+      "min": 736,
+      "max": 736
+    },
+    {
+      "arm": "linear",
+      "metric": "input_feature_dim",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 7948800.0,
+      "mean": 736.0,
+      "min": 736,
+      "max": 736
+    },
+    {
+      "arm": "linear",
+      "metric": "intercept_gradient_norm",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 1.3866720184964462e-09,
+      "mean": 1.2839555726818946e-13,
+      "min": 7.227116997239067e-16,
+      "max": 2.3306705450033752e-12
+    },
+    {
+      "arm": "linear",
+      "metric": "kernel_diagonal_mean",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 21600.0,
+      "mean": 2.0,
+      "min": 2.0,
+      "max": 2.000000000000001
+    },
+    {
+      "arm": "linear",
+      "metric": "learning_rate",
+      "count": 0,
+      "null_count": 10800,
+      "sum": null,
+      "mean": null,
+      "min": null,
+      "max": null
+    },
+    {
+      "arm": "linear",
+      "metric": "loss_data",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 237661.12051093573,
+      "mean": 22.005659306568123,
+      "min": 1.6944085844346466,
+      "max": 109.79630036636726
+    },
+    {
+      "arm": "linear",
+      "metric": "loss_ridge",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 76771.45697627013,
+      "mean": 7.10846823854353,
+      "min": 1.4097538592169063,
+      "max": 22.036100041114928
+    },
+    {
+      "arm": "linear",
+      "metric": "loss_total",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 314432.5774872073,
+      "mean": 29.11412754511179,
+      "min": 3.2872997331135467,
+      "max": 127.7040786693192
+    },
+    {
+      "arm": "linear",
+      "metric": "normal_equation_residual",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 6.83255468515654e-11,
+      "mean": 6.326439523293093e-15,
+      "min": 6.473657049138938e-16,
+      "max": 4.20239127645835e-14
+    },
+    {
+      "arm": "linear",
+      "metric": "optimizer_steps",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 0.0,
+      "mean": 0.0,
+      "min": 0,
+      "max": 0
+    },
+    {
+      "arm": "linear",
+      "metric": "output_dim",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 144720.0,
+      "mean": 13.4,
+      "min": 6,
+      "max": 26
+    },
+    {
+      "arm": "linear",
+      "metric": "physical_loss_mass",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 1125600.0,
+      "mean": 104.22222222222223,
+      "min": 18.0,
+      "max": 364.0
+    },
+    {
+      "arm": "linear",
+      "metric": "ridge_coefficient",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 10800.0,
+      "mean": 1.0,
+      "min": 1.0,
+      "max": 1.0
+    },
+    {
+      "arm": "linear",
+      "metric": "sample_weight",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 10800.0,
+      "mean": 1.0,
+      "min": 1.0,
+      "max": 1.0
+    },
+    {
+      "arm": "linear",
+      "metric": "score_seconds",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 27.158521276116517,
+      "mean": 0.0025146778959367145,
+      "min": 0.00021523100076592527,
+      "max": 0.02122860899908119
+    },
+    {
+      "arm": "linear",
+      "metric": "solve_seconds",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 6.291308839401609,
+      "mean": 0.0005825285962408897,
+      "min": 7.51389998185914e-05,
+      "max": 0.09383699200043338
+    },
+    {
+      "arm": "linear",
+      "metric": "target_norm_squared",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 1041600.0,
+      "mean": 96.44444444444444,
+      "min": 15.0,
+      "max": 350.0
+    },
+    {
+      "arm": "linear",
+      "metric": "train_k",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 84000.0,
+      "mean": 7.777777777777778,
+      "min": 3,
+      "max": 14
+    },
+    {
+      "arm": "linear",
+      "metric": "train_physical_count",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 1125600.0,
+      "mean": 104.22222222222223,
+      "min": 18,
+      "max": 364
+    },
+    {
+      "arm": "linear",
+      "metric": "training_feature_bytes",
+      "count": 10800,
+      "null_count": 0,
+      "sum": 6627532800.0,
+      "mean": 613660.4444444445,
+      "min": 105984,
+      "max": 2143232
+    }
+  ],
+  "query_rows_used": 0,
+  "source_rows_used": 0,
+  "new_source_payload_bytes": 0,
+  "persistent_classifier_bytes": 0,
+  "optimizer_steps": 0,
+  "selected_arm": null,
+  "automatic_promotion": false,
+  "interpretation": [
+    "Equal-episode descriptive means; repeated and overlapping support draws are correlated. No independent-sample confidence interval or p-value is claimed.",
+    "Allold and new-present populations are separate; undefined new/H metrics remain null. Paired deltas compare the same physical OOF rows and episodes.",
+    "K1 has numerical diagnostics only; no independent held prediction and no classifier fitting.",
+    "All three predetermined kernels are reported. No automatic arm selection, query evaluation, or deployment is performed.",
+    "Extraction and checkpoint reuse cost zero new forwards/transfers in this run; cache loading and analytical fitting costs are measured separately.",
+    "Process time sums are work totals; RSS values are per-process high-water marks, not aggregate concurrent memory.",
+    "Only current run traces/metadata and explicitly bound cache completion metadata were read; no IQ, cache arrays, historical result, or query/truth file was read."
+  ]
+}

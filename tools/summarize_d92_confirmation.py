@@ -27,18 +27,22 @@ def matrix_definition(spec=None):
     acceptance=dict(old_max_drop=0.01,new_max_drop=0.01,require_new_improvement=False,require_h_improvement=True)
     if spec is not None:
         candidate=candidate_definition(spec['confirmation'])
-        methods=('D92',candidate['candidate_method'])
+        baseline=spec.get('baseline_method','D92')
+        if baseline!='D92' and not (spec.get('analysis_only') is True
+                and baseline=='D92-BranchRidge-v1' and candidate['candidate_method']=='D92-BranchInteraction-v1'):
+            raise ValueError('Alternate baseline requires explicit analysis-only BranchInteraction comparison')
+        methods=(baseline,candidate['candidate_method'])
         source=spec['data']
         matrix=dict(model_seed=[r['seeds']['model'] for r in spec['rows']],receiver=source['target_receivers'],
             scenario=source['scenarios'],k=source['k'],new_count=source['new_class_counts'],support_seed=source['support_seeds'])
-        strict_new=methods[1] in ('D92-SFHead-v1','D92-SGJoint-v1','D92-MVKME-v1','D92-BNNA-v1','D92-OSC-v1','D92-MVRidge-v1','D92-BranchRidge-v1')
+        strict_new=methods[1] in ('D92-SFHead-v1','D92-SGJoint-v1','D92-MVKME-v1','D92-BNNA-v1','D92-OSC-v1','D92-MVRidge-v1','D92-BranchRidge-v1','D92-BranchInteraction-v1')
         acceptance['require_new_improvement']=strict_new
         declared=spec.get('metrics_plan',{}).get('acceptance',{})
         if not isinstance(declared,dict) or set(declared)-{'old_max_drop','require_new_improvement','require_harmonic_improvement','primary_scope'}:
             raise ValueError('Unsupported acceptance rule')
         if 'require_harmonic_improvement' in declared and declared['require_harmonic_improvement'] is not True:
             raise ValueError('Every registered K requires harmonic improvement')
-        if 'primary_scope' in declared and (methods[1] not in ('D92-SGJoint-v1','D92-MVKME-v1','D92-BNNA-v1','D92-OSC-v1','D92-MVRidge-v1','D92-BranchRidge-v1') or declared['primary_scope']!=
+        if 'primary_scope' in declared and (methods[1] not in ('D92-SGJoint-v1','D92-MVKME-v1','D92-BNNA-v1','D92-OSC-v1','D92-MVRidge-v1','D92-BranchRidge-v1','D92-BranchInteraction-v1') or declared['primary_scope']!=
                 'joint all-four-RX equal-cell per-K; cohort tables descriptive, not independent pass gates'):
             raise ValueError('Unsupported primary acceptance scope')
         if 'old_max_drop' in declared and declared['old_max_drop']!=0.01:

@@ -23,6 +23,7 @@ CANDIDATES = (
     ('D92-OSC-v1', 'osc', 'predict_d92_orbit_shared.py', 'd92_osc_registration'),
     ('D92-MVRidge-v1', 'mvridge', 'predict_d92_multiview_ridge.py', 'd92_mvridge_registration'),
     ('D92-BranchRidge-v1', 'branch_ridge', 'evaluate_d92_branch_ridge.py', 'd92_branch_ridge_registration'),
+    ('D92-BranchInteraction-v1', 'branch_interaction', 'evaluate_d92_branch_interaction.py', 'd92_branch_interaction_registration'),
 )
 
 
@@ -97,6 +98,72 @@ def reuse_multiview_cache(spec):
     if [Path(p).resolve() for p in paths] != expected or len(set(paths)) != 4:
         raise ValueError('Frozen orbit cache paths must bind each model row to one registered source run')
     return True
+
+
+def reuse_branch_cache(spec):
+    """Require exact BranchRidge cache paths for CPU-only interaction inference."""
+    method = candidate_definition(spec['confirmation'])['candidate_method']
+    paths = [row.get('reuse_branch_features_root') for row in spec['rows']]
+    if method != 'D92-BranchInteraction-v1':
+        if any(paths): raise ValueError('Branch cache reuse is not registered for this method')
+        return False
+    if not reuse_frozen_rows(spec) or not all(isinstance(p, str) and p for p in paths):
+        raise ValueError('Branch interaction requires all four frozen branch caches and baseline rows')
+    conf = spec['confirmation']
+    source = conf.get('frozen_branch_feature_source_root')
+    producer = conf.get('frozen_branch_feature_producer_config')
+    if not source or not producer:
+        raise ValueError('Branch cache source and producer config must be explicit')
+    if (conf.get('branch_ridge_reference_root') != source
+            or Path(source).name != conf.get('branch_ridge_reference_run_id')):
+        raise ValueError('BranchRidge reference run ID/root must match the feature producer')
+    source, output = Path(source).resolve(), Path(spec['execution']['remote_run_root']).resolve()
+    if source == output or source in output.parents or output in source.parents:
+        raise ValueError('Branch source and output must not overlap')
+    expected = [source/row['row_id']/'branch_features' for row in spec['rows']]
+    baselines = [source/row['row_id']/'branch_ridge' for row in spec['rows']]
+    if ([Path(p).resolve() for p in paths] != expected or len(set(paths)) != 4
+            or [Path(row.get('reuse_branch_ridge_root', '')).resolve() for row in spec['rows']] != baselines):
+        raise ValueError('Branch cache and second baseline must bind every model to the frozen producer run')
+    return True
+
+
+def validate_reused_branch_metadata(row, confirmation, manifest):
+    """Read producer/completion metadata only; predictor validates numerical cache."""
+    cache = Path(row['reuse_branch_features_root'])
+    marker, startup = read(cache/'features_complete.json'), read(cache/'startup.json')
+    config = read(confirmation['frozen_branch_feature_producer_config'])
+    from export_d92_branch_features import local_core, CACHE_SCHEMA, FEATURE_CONTRACT
+    if config != {'algorithm': local_core().FROZEN_CONFIG} or startup.get('config') != config:
+        raise ValueError('Reused branch producer config mismatch')
+    for record in (marker, startup):
+        if (record.get('schema') != CACHE_SCHEMA or record.get('feature_contract') != FEATURE_CONTRACT
+                or record.get('capsule_id') != manifest['capsule_id']
+                or record.get('checkpoint_sha256') != row['expected_checkpoint_sha256']
+                or record.get('model_seed') != row['seeds']['model']
+                or any(record.get(k) is not False for k in
+                    ('truth_read', 'source_data_access', 'adapted_state_inherited', 'encoder_updated'))):
+            raise ValueError('Reused branch feature metadata binding mismatch')
+    if (marker.get('status') != 'BRANCH_FEATURES_COMPLETE'
+            or marker.get('count') != manifest['received_count']
+            or marker.get('query_used_for_fitting') is not False
+            or startup.get('query_fit_access') is not False
+            or marker.get('native_parameters_unchanged') is not True
+            or marker.get('native_buffers_unchanged') is not True):
+        raise ValueError('Reused branch feature completion mismatch')
+    # Only the second baseline's immutable completion marker is read here.
+    # Its prediction rows and all scores remain outside candidate preparation.
+    complete = read(Path(row['reuse_branch_ridge_root'])/'predictions_complete.json')
+    if (complete.get('status') != 'PREDICTIONS_COMPLETE'
+            or complete.get('capsule_id') != manifest['capsule_id']
+            or complete.get('split_count') != manifest['split_count']
+            or complete.get('truth_read') is not False):
+        raise ValueError('Reused BranchRidge predictions incomplete or mismatched')
+    return dict(feature_root=str(cache), producer_config=confirmation['frozen_branch_feature_producer_config'],
+        branch_ridge_prediction_root=row['reuse_branch_ridge_root'], cache_recomputed=False,
+        checkpoint_reloaded=False, encoder_executed=False, adapted_state_reused=False,
+        source_samples_read=False, query_used_for_fitting=False, scores_read=False,
+        checkpoint_sha256=row['expected_checkpoint_sha256'], capsule_id=manifest['capsule_id'])
 
 
 def read(path):
@@ -243,6 +310,7 @@ def run(spec_path, commit):
     candidate = candidate_definition(confirmation)
     reuse_rows=reuse_frozen_rows(spec)
     reuse_views=reuse_multiview_cache(spec)
+    reuse_branches=reuse_branch_cache(spec)
     multiview=needs_multiview(confirmation)
     if multiview and not reuse_rows:
         raise ValueError('Multiview candidate requires explicitly reused baseline rows')
@@ -319,6 +387,9 @@ def run(spec_path, commit):
                 evidence=validate_reused_row(row,confirmation,capsule_data)
                 hashes[row_id]=row['expected_checkpoint_sha256']
                 write(output/'artifact_reuse.json',evidence)
+                if reuse_branches:
+                    write(output/'frozen_branch_feature_reuse.json',
+                          validate_reused_branch_metadata(row, confirmation, manifest))
                 if reuse_views:
                     cache=Path(row['reuse_multiview_features_root'])
                     marker=read(cache/'features_complete.json')
@@ -381,6 +452,7 @@ def run(spec_path, commit):
                     _, feature_folder, feature_flag, _ = feature_definition(confirmation)
                     arguments.extend([feature_flag,output/feature_folder])
                 if reuse_views: arguments.extend(['--orbit-features',row['reuse_multiview_features_root']])
+                if reuse_branches: arguments.extend(['--branch-features',row['reuse_branch_features_root']])
                 invoke(candidate['candidate_predictor'], arguments, output / (folder + '.log'))
                 for prediction_root in (baseline_root(row), output / folder):
                     marker = read(prediction_root / 'predictions_complete.json')

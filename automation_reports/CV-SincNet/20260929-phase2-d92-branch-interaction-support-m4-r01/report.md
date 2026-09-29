@@ -3,7 +3,7 @@
 - run_id：`20260929-phase2-d92-branch-interaction-support-m4-r01`
 - group_id：`d92-branch-interaction-support-development`；类别：`diagnostic`；阶段：`Phase2-support-only-diagnostic`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -21,7 +21,7 @@
 
 ## 结果与覆盖
 
-尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
+完整support诊断已完成且预定screen通过；详见[support解释](support_interpretation.md)及[完整汇总](results/support_summary/report.md)。未进行query评分。
 源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
 
 ## 交接
@@ -29,3 +29,5 @@
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
 
 PLANNED: fixed three-arm interaction support diagnostic using existing support-only raw caches. CPU-only launch owner root; all 8 cache and capsule metadata bindings and fresh output paths VERIFIED. No new experiment launched yet.
+
+ANALYZED: complete support evidence and independent terminal readbacks verified. See support_interpretation.md; all preregistered K5/10/20 comparisons pass; no query result available.

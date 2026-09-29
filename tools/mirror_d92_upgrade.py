@@ -101,6 +101,13 @@ paths += ['code/cvsrffi/d92_branch_interaction.py','configs/d92_branch_interacti
     'tools/preflight_d92_branch_interaction_probe.py','tools/prepare_d92_branch_interaction_probe.py',
     'tests/test_d92_branch_interaction.py','tests/test_evaluate_d92_branch_interaction_probe.py',
     'tests/test_summarize_d92_branch_interaction_probe.py','tests/test_run_d92_branch_interaction_probe.py']
+paths += ['tools/evaluate_d92_branch_interaction.py','tests/test_evaluate_d92_branch_interaction.py',
+    'tools/prepare_d92_branch_interaction_benchmark.py','tools/preflight_d92_branch_interaction.py',
+    'tests/test_d92_branch_interaction_benchmark.py',
+    'configs/d92_branch_interaction_repeat_rx3_20260929.json','configs/d92_branch_interaction_repeat_rx1_20260929.json',
+    'configs/d92_branch_interaction_repeat_rx3_data_20260929.json','configs/d92_branch_interaction_repeat_rx1_data_20260929.json',
+    'tools/summarize_d92_branch_interaction_benchmark.py','tests/test_summarize_d92_branch_interaction_benchmark.py',
+    'tools/collect_d92_branch_interaction_audit.py','tests/test_collect_d92_branch_interaction_audit.py']
 for name in paths:
     src=ROOT/name;dst=WS/name;dst.parent.mkdir(parents=True,exist_ok=True)
     # Each name is unique to this task; original D92 and shared wrappers are not mirrored.

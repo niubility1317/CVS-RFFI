@@ -37,3 +37,20 @@
 - [publisher](../tools/publish_d92_branch_interaction_probe.py)：5–15 行依赖及 CPU transport。
 - [预登记准备](../tools/prepare_d92_branch_interaction_probe.py)及[总 spec](../configs/d92_branch_interaction_support_20260929.json)。
 - [汇总判定](../tools/summarize_d92_branch_interaction_probe.py)。
+
+
+## 正式完整重复基准：新增入口与缓存复用路径
+
+日期：2026-09-29。本段是 support 诊断完成后，对新增正式入口、缓存复用、runner/publisher/preflight/preparer 的一次增量 P0/P1 审查。没有重复审查已通过的 core，没有依据新 query 成绩修改方法。**结论：本范围未发现 P0/P1 阻断。** 本段不审查本人编写的双基线汇总器，其审查由主任务负责。
+
+- 输入是冻结 BranchRidge 原运行中的完整 received 五块单 view 特征缓存。本次正式入口允许只读 query 特征并逐条预测，与上方“support-only 诊断不读取 query”是两个不同执行范围；不能将诊断边界原样套到正式推理。入口沿用 load_features，核对旧原生来源、SHA/model seed、capsule、完整 ID 顺序、producer config、特征成员/形状/字节；数组来自不可写 buffer，不加载 checkpoint，也不读取或继承旧 BranchRidge/诊断的头。
+- evaluate_d92_branch_interaction.py 第 103 至 113 行只将当前 split 的 support 切片传入一次 fit，核对固定 interaction/no-selection、1 次分解、0 folds/OOF/optimizer。第 117 至 121 行每次只向 state.score 传一条 query，输出全部注册类分数，平局物理类字典序与独立 scorer 新 allowlist 一致。registered class、support/query 物理位置由既有 validate_split 校验；本次不额外读取 truth。
+- runner 的 reuse_branch_cache 把四个新 row 严格绑定到同一冻结 BranchRidge run 下对应 branch_features 和 branch_ridge 路径，禁止与新 output 交叠。新 metadata 校验只读缓存和第二基线 completion；不将 BranchRidge 预测/分数传给候选。候选路径 needs_multiview=False，绕过 exporter 和 baseline 运行；旧 D92 的既有 prediction 校验保持。
+- 本地对两份正式 spec 实际调用 reuse_branch_cache，并核对 needs_multiview=False；两份 candidate config 与 core FROZEN_CONFIG 完全一致。另逐 cohort 精确比较新旧 matrix、capsule、每模型 row_id/source_root/SHA/reuse_row_root 和完整 seed 字段，全部相等。branch_ridge_reference_run_id 显式指向冻结原 run。
+- release_tool_paths 对本方法返回的 15 项本地依赖均存在；包括单 view cache reader、旧 producer config、相对导入 core 及其依赖。publisher 固定 producer config 在新 release 内，已有 archive/release/run 拒绝覆盖。本方法 reuse_frozen_rows=True、multiview=False，不触发 GPU 检查；publisher/worker GPU 可见性为空、每 cohort 4 个 CPU lane、每 lane 2 个 BLAS 线程。纯导入检查未加载 torch。
+- 入口终态仅在全部 split 预测完成后写出，失败保存 technical_failure 并抛出。runner 等全部健康 lane 完成，任何失败不自动重跑；所有注册 row 的完整预测校验通过后才进入独立 scorer。scorer 先验证两方法全预测，再在 score_d92_confirmation.py 第 92 行打开 truth。候选不读第二基线历史 scores；比较工作是运行后独立分析。既有 D92/DG 和 BranchRidge 产物保留。
+- 新 preflight 的远端 payload 只读取缓存/预测 completion、startup、manifest 与文件存在性/大小、CPU/disk/path；不打开 IQ、weights、特征数组或 scores。本审查未再执行远端检查，真实 8 缓存及空输出路径的 VERIFIED 证据由主任务取得。本地源码检查与这些元数据证据不等于动态系统调用安全证明。
+
+作者提供的最终测试证据按范围记录，不合并为互不重叠总数：正式 entry 7 项通过；collector 28 项通过；新编排 14 项加既有 runner/entry 合计 82 项通过；主任务独立 scorer 68 项通过。本审查只运行配置/路径/纯导入断言，没有重复这些测试。本次尚未据真实 query 结果作方法或选择调整，未由审查者启动、提交或写远端。
+
+正式范围源码：[入口](../tools/evaluate_d92_branch_interaction.py)、[runner](../tools/run_d92_confirmation.py)、[publisher](../tools/publish_d92_confirmation.py)、[preflight](../tools/preflight_d92_branch_interaction.py)、[preparer](../tools/prepare_d92_branch_interaction_benchmark.py)、[scorer](../tools/score_d92_confirmation.py)。

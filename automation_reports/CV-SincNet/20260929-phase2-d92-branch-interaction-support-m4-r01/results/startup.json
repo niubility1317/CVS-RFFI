@@ -1,0 +1,734 @@
+{
+  "pid": 144241,
+  "argv": [
+    "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_interaction_support_20260929_r01/tools/run_d92_branch_interaction_probe.py",
+    "--spec",
+    "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_interaction_support_20260929_r01/configs/d92_branch_interaction_support_20260929.json",
+    "--commit",
+    "9cbebdb292d6fd3c54d029e9113360a12eea64c6"
+  ],
+  "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_interaction_support_20260929_r01",
+  "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+  "commit": "9cbebdb292d6fd3c54d029e9113360a12eea64c6",
+  "spec": {
+    "schema": "experiment_record_v1",
+    "run_id": "20260929-phase2-d92-branch-interaction-support-m4-r01",
+    "group_id": "d92-branch-interaction-support-development",
+    "display_name": "BranchRidge分支交互三臂support诊断",
+    "description": "固定背景与辅助分支乘积核，对比线性基线和1.5倍能量对照；只复用support缓存，不访问query。",
+    "kind": "diagnostic",
+    "stage": "Phase2-support-only-diagnostic",
+    "aliases": [],
+    "tags": [
+      "d92",
+      "branch-interaction",
+      "support-only",
+      "cached",
+      "no-query-access"
+    ],
+    "comparison_group_id": "manysig-six-source-rx13468-day123-luv076330-residual-noeq-v1",
+    "parent_run_ids": [
+      "20260929-phase2-d92-branch-support-probe-m4-r01"
+    ],
+    "authorization": "用户明确要求在BranchRidge基础上继续优化；固定Phase1、源数据禁用、合法support研发及透明重复基准的既有授权保持。",
+    "code": {
+      "commit": "9dafeff77c28e4d9ae667d99c3fec239da1ffd8f",
+      "checkout": "E:\\type10-7\\code\\snapshots\\d92_support_upgrade_20260928_wt",
+      "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_interaction_support_20260929_r01",
+      "base_recipe": "experiments/adv3b02_xuc/configs/rc4_practical_residual_noeq_20260918.json",
+      "native_code_base": "b63734157",
+      "native_training_commit": "9b1ddd939fcabc74c77c94a62fef8e5aad07c0e9",
+      "commit_note": "Preparation parent; publisher records actual pushed release commit in launch/startup."
+    },
+    "data": {
+      "dataset": "Support slices only from the two existing VALIDATED_ONCE capsules",
+      "version": "existing_N607_ManyTx_actual19RX",
+      "representation": "Existing immutable support-only z_id/fft/t_emb/f_emb/pa_local; same single received observation",
+      "contract_ref": "probe.cohorts.*.capsule/manifest.json",
+      "physical_ids_ref": "probe.cohorts.*.capsule/received.npz#ids metadata only",
+      "label_map_ref": "probe.cohorts.*.capsule/splits/*.json#registered_classes,support_labels",
+      "source_receivers": [
+        "1-19",
+        "18-2",
+        "19-2",
+        "2-19",
+        "3-19"
+      ],
+      "target_receivers": [
+        "19-1",
+        "8-14",
+        "8-7",
+        "20-19"
+      ],
+      "source_days": [
+        1,
+        2,
+        3
+      ],
+      "target_days": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "tx_sets_ref": "probe.cohorts.*.capsule/splits/*.json#registered_classes",
+      "roles": {
+        "L_s": 0.07,
+        "U_s": 0.63,
+        "V": 0.3
+      },
+      "train_ratio": 0.1,
+      "capsule_id": {
+        "rx3": "residual-noeq-76121e6f34363fa612ec25fb",
+        "rx1": "residual-noeq-d0a99fede324159c5a4750fd"
+      },
+      "split_id": "All unchanged 900 rx3 plus 300 rx1 splits, repeated across four fixed models",
+      "validation_ref": "Existing cohort capsule manifests; no data rebuild or revalidation",
+      "support_query_ref": "Only registered support_indices/support_labels are consumed; query excluded",
+      "leo_config_ref": "experiments/adv3b02_xuc/code/cvsrffi/practical_adapter.py",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "new_class_counts": [
+        0,
+        2,
+        5,
+        10,
+        20
+      ],
+      "support_seeds": [
+        2026092711,
+        2026092712,
+        2026092713,
+        2026092714,
+        2026092715
+      ],
+      "protocol_schema": "p2_min_v1",
+      "phase2_data_status": "VALIDATED_ONCE",
+      "scenarios": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "data_rebuilt": false,
+      "data_revalidated": false,
+      "target_previously_scored": true,
+      "reuse_policy": "VALIDATED_ONCE; runtime artifact identity/binding checks only, no new data validation"
+    },
+    "permissions": {
+      "regime": "current_row_support_only_interaction_diagnostic",
+      "query_use": "none; query IQ/labels/truth/scores never read",
+      "source_samples": false,
+      "source_per_record_features": false,
+      "source_replay": false,
+      "summary_inputs": false,
+      "old_target_scores_for_adaptation": false,
+      "cross_run_result_tuning": false,
+      "adapted_state_reuse": false,
+      "truth_use": "Only registered support labels for physical OOF; no query scorer",
+      "claim_scope": "SUPPORT_INFORMATION_DIAGNOSTIC_NOT_QUERY_PERFORMANCE"
+    },
+    "checkpoint": {
+      "initialization": "Exact source-only scratch final200 model; eval and frozen; no changed buffers or weights",
+      "sources": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701/final_ssdg.pth",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092702/final_ssdg.pth",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092703/final_ssdg.pth",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092704/final_ssdg.pth"
+      ],
+      "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "provenance_verdict": "VERIFIED_ALL_FOUR_EXACT_SOURCE_CONTRACT_SCRATCH_FINAL200_SHA_AND_NATIVE_ARCHITECTURE",
+      "selection_rule": "All four fixed model seeds, final epoch200; no checkpoint/model choice from any target score",
+      "metadata_evidence_ref": "docs/D92_FIXED_PHASE1_BRANCH_METADATA_20260929.json",
+      "runtime_checkpoint_reload": false,
+      "source_training_contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "inheritance_policy": "Only original source-only model; no historical adapted head/cache state",
+      "current_auxiliary_training": "Three fixed per-fold kernel ridge heads from current support only",
+      "feature_cache_producer_run_id": "20260929-phase2-d92-branch-support-probe-m4-r01",
+      "feature_cache_producer_role": "support-only raw frozen features; no learned state"
+    },
+    "execution": {
+      "host": "N607",
+      "launch_owner": "codex/root/d92-upgrade-20260928",
+      "gpu_policy": "CPU only; four lanes and two BLAS threads per lane; no checkpoint reload or GPU process",
+      "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-interaction-support-m4-r01",
+      "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-interaction-support-m4-r01",
+      "local_artifact_root": "automation_reports/CV-SincNet/20260929-phase2-d92-branch-interaction-support-m4-r01",
+      "launch_command": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe -X utf8 tools/publish_d92_branch_interaction_probe.py --spec configs/d92_branch_interaction_support_20260929.json",
+      "stop_rule": "Technical failure fails only its lane; healthy lanes finish. No automatic retry, no stopping for weak support diagnostics.",
+      "cpu_lanes": 4,
+      "blas_threads_per_lane": 2,
+      "export_device": null,
+      "export_batch_size": null
+    },
+    "expected_artifacts": [
+      "startup.json",
+      "state.json",
+      "complete.json",
+      "each row/probe.log",
+      "each row/probe/startup.json",
+      "each row/probe/fit_trace.jsonl",
+      "each row/probe/compact.jsonl",
+      "each row/probe/compact.csv",
+      "each row/probe/probe_complete.json"
+    ],
+    "notes": [
+      "Single interaction mechanism, three fixed arms, lambda=1; no hyperparameter search.",
+      "Existing support-only raw features reused; no fitted state inherited and no new checkpoint forward.",
+      "Query results from earlier development exist but are not inputs to this study. K1 has no physical OOF evidence."
+    ],
+    "claim_scope": "SUPPORT_INFORMATION_DIAGNOSTIC_NOT_QUERY_PERFORMANCE",
+    "status": "PLANNED",
+    "metrics_plan": {
+      "metric_names": [
+        "support_OOF_old_accuracy",
+        "support_OOF_new_accuracy",
+        "support_OOF_H",
+        "kernel_energy",
+        "loss",
+        "stationarity",
+        "resource_cost"
+      ],
+      "dimensions": [
+        "model_seed",
+        "cohort",
+        "receiver",
+        "scenario",
+        "K",
+        "new_count",
+        "support_seed",
+        "arm"
+      ],
+      "scorer_ref": null,
+      "prediction_ref": "support OOF only; no query predictions",
+      "interpretation": "Full paired support-only diagnostic. Candidate proceeds only if interaction improves mean H and new accuracy at K5/10/20 versus both controls, with old accuracy decline at most 1pp in each K. K1 numeric pass is not performance evidence. No query evaluation or parameter revision in this study."
+    },
+    "probe": {
+      "cohorts": {
+        "rx3": {
+          "capsule": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule",
+          "capsule_id": "residual-noeq-76121e6f34363fa612ec25fb",
+          "expected_split_count": 900,
+          "matrix": {
+            "receivers": [
+              "19-1",
+              "8-14",
+              "8-7"
+            ],
+            "scenarios": [
+              "practical_high",
+              "practical_mid",
+              "practical_low_urban"
+            ],
+            "ks": [
+              1,
+              5,
+              10,
+              20
+            ],
+            "new_counts": [
+              0,
+              2,
+              5,
+              10,
+              20
+            ],
+            "support_seeds": [
+              2026092711,
+              2026092712,
+              2026092713,
+              2026092714,
+              2026092715
+            ]
+          },
+          "evaluation_config": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_interaction_support_20260929_r01/configs/d92_branch_interaction_support_rx3_20260929.json"
+        },
+        "rx1": {
+          "capsule": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-data-manytx-r01/capsule",
+          "capsule_id": "residual-noeq-d0a99fede324159c5a4750fd",
+          "expected_split_count": 300,
+          "matrix": {
+            "receivers": [
+              "20-19"
+            ],
+            "scenarios": [
+              "practical_high",
+              "practical_mid",
+              "practical_low_urban"
+            ],
+            "ks": [
+              1,
+              5,
+              10,
+              20
+            ],
+            "new_counts": [
+              0,
+              2,
+              5,
+              10,
+              20
+            ],
+            "support_seeds": [
+              2026092711,
+              2026092712,
+              2026092713,
+              2026092714,
+              2026092715
+            ]
+          },
+          "evaluation_config": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_interaction_support_20260929_r01/configs/d92_branch_interaction_support_rx1_20260929.json"
+        }
+      },
+      "native_code": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rc4_matched_20260927_r01/code",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "source_receivers": [
+        "1-19",
+        "18-2",
+        "19-2",
+        "2-19",
+        "3-19"
+      ],
+      "algorithm_config": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_interaction_support_20260929_r01/configs/d92_branch_interaction_frozen_20260929.json",
+      "model_rows": 8,
+      "total_episodes": 4800,
+      "view_count": 1,
+      "source_payload_bytes": 0,
+      "query_access": false,
+      "full_support_head": false,
+      "reuse_support_cache": true,
+      "expected_factorizations": 32400,
+      "baseline": "linear",
+      "energy_control": "energy_control",
+      "candidate": "interaction"
+    },
+    "rows": [
+      {
+        "row_id": "rx3-cvs-daot-rc4-s2026092701",
+        "method": "D92-BranchInteraction fixed three-arm support probe",
+        "purpose": "Test bilinear information against linear and energy controls",
+        "gpu": "CPU only",
+        "config_ref": "configs/d92_branch_interaction_support_20260929.json",
+        "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-interaction-support-m4-r01/rx3-cvs-daot-rc4-s2026092701/probe/startup.json",
+        "data_overrides": {
+          "capsule": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule",
+          "capsule_id": "residual-noeq-76121e6f34363fa612ec25fb",
+          "expected_split_count": 900
+        },
+        "seeds": {
+          "model": 2026092701,
+          "split": 2026092705,
+          "data": 2026092705,
+          "augmentation": 2026092707,
+          "support": null,
+          "evaluation": null
+        },
+        "seed_notes": "Model/split/data/augmentation roles retain source/capsule lineage. Support seed varies over explicit cohort matrix (row field null). Evaluation seed null: physical OOF is deterministic and no query evaluation is executed.",
+        "k": [
+          1,
+          5,
+          10,
+          20
+        ],
+        "scenario": "practical_high,practical_mid,practical_low_urban; residual/post_sync/noeq",
+        "optimizer": "None; exact ridge1 physical-sum least squares, unregularized intercept; no optimizer steps",
+        "lr": null,
+        "epochs": null,
+        "fl_rounds": null,
+        "budget_ref": "K1 numeric-only; K5/10/20 three physical folds times three fixed arms; no full-support deployment fit",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-interaction-support-m4-r01/rx3-cvs-daot-rc4-s2026092701",
+        "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-interaction-support-m4-r01/rx3-cvs-daot-rc4-s2026092701/probe.log",
+        "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_interaction_support_20260929_r01/tools/run_d92_branch_interaction_probe.py --spec /home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_interaction_support_20260929_r01/configs/d92_branch_interaction_support_20260929.json --commit RELEASE_HEAD",
+        "expected_artifacts": [
+          "probe/startup.json",
+          "probe/fit_trace.jsonl",
+          "probe/compact.jsonl",
+          "probe/compact.csv",
+          "probe/probe_complete.json"
+        ],
+        "source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701",
+        "expected_checkpoint_sha256": "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b",
+        "provenance_refs": {
+          "source_initialization": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701/initialization.json",
+          "source_completion": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701/completion.json"
+        },
+        "cohort": "rx3",
+        "support_features": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-support-probe-m4-r01/rx3-cvs-daot-rc4-s2026092701/feature_cache"
+      },
+      {
+        "row_id": "rx3-cvs-daot-rc4-s2026092702",
+        "method": "D92-BranchInteraction fixed three-arm support probe",
+        "purpose": "Test bilinear information against linear and energy controls",
+        "gpu": "CPU only",
+        "config_ref": "configs/d92_branch_interaction_support_20260929.json",
+        "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-interaction-support-m4-r01/rx3-cvs-daot-rc4-s2026092702/probe/startup.json",
+        "data_overrides": {
+          "capsule": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule",
+          "capsule_id": "residual-noeq-76121e6f34363fa612ec25fb",
+          "expected_split_count": 900
+        },
+        "seeds": {
+          "model": 2026092702,
+          "split": 2026092705,
+          "data": 2026092705,
+          "augmentation": 2026092707,
+          "support": null,
+          "evaluation": null
+        },
+        "seed_notes": "Model/split/data/augmentation roles retain source/capsule lineage. Support seed varies over explicit cohort matrix (row field null). Evaluation seed null: physical OOF is deterministic and no query evaluation is executed.",
+        "k": [
+          1,
+          5,
+          10,
+          20
+        ],
+        "scenario": "practical_high,practical_mid,practical_low_urban; residual/post_sync/noeq",
+        "optimizer": "None; exact ridge1 physical-sum least squares, unregularized intercept; no optimizer steps",
+        "lr": null,
+        "epochs": null,
+        "fl_rounds": null,
+        "budget_ref": "K1 numeric-only; K5/10/20 three physical folds times three fixed arms; no full-support deployment fit",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-interaction-support-m4-r01/rx3-cvs-daot-rc4-s2026092702",
+        "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-interaction-support-m4-r01/rx3-cvs-daot-rc4-s2026092702/probe.log",
+        "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_interaction_support_20260929_r01/tools/run_d92_branch_interaction_probe.py --spec /home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_interaction_support_20260929_r01/configs/d92_branch_interaction_support_20260929.json --commit RELEASE_HEAD",
+        "expected_artifacts": [
+          "probe/startup.json",
+          "probe/fit_trace.jsonl",
+          "probe/compact.jsonl",
+          "probe/compact.csv",
+          "probe/probe_complete.json"
+        ],
+        "source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092702",
+        "expected_checkpoint_sha256": "72f26413e495dcf82317898f8729caa3d35499bf0b41e9671ffdceab2c90924b",
+        "provenance_refs": {
+          "source_initialization": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092702/initialization.json",
+          "source_completion": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092702/completion.json"
+        },
+        "cohort": "rx3",
+        "support_features": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-support-probe-m4-r01/rx3-cvs-daot-rc4-s2026092702/feature_cache"
+      },
+      {
+        "row_id": "rx3-cvs-daot-rc4-s2026092703",
+        "method": "D92-BranchInteraction fixed three-arm support probe",
+        "purpose": "Test bilinear information against linear and energy controls",
+        "gpu": "CPU only",
+        "config_ref": "configs/d92_branch_interaction_support_20260929.json",
+        "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-interaction-support-m4-r01/rx3-cvs-daot-rc4-s2026092703/probe/startup.json",
+        "data_overrides": {
+          "capsule": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule",
+          "capsule_id": "residual-noeq-76121e6f34363fa612ec25fb",
+          "expected_split_count": 900
+        },
+        "seeds": {
+          "model": 2026092703,
+          "split": 2026092705,
+          "data": 2026092705,
+          "augmentation": 2026092707,
+          "support": null,
+          "evaluation": null
+        },
+        "seed_notes": "Model/split/data/augmentation roles retain source/capsule lineage. Support seed varies over explicit cohort matrix (row field null). Evaluation seed null: physical OOF is deterministic and no query evaluation is executed.",
+        "k": [
+          1,
+          5,
+          10,
+          20
+        ],
+        "scenario": "practical_high,practical_mid,practical_low_urban; residual/post_sync/noeq",
+        "optimizer": "None; exact ridge1 physical-sum least squares, unregularized intercept; no optimizer steps",
+        "lr": null,
+        "epochs": null,
+        "fl_rounds": null,
+        "budget_ref": "K1 numeric-only; K5/10/20 three physical folds times three fixed arms; no full-support deployment fit",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-interaction-support-m4-r01/rx3-cvs-daot-rc4-s2026092703",
+        "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-interaction-support-m4-r01/rx3-cvs-daot-rc4-s2026092703/probe.log",
+        "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_interaction_support_20260929_r01/tools/run_d92_branch_interaction_probe.py --spec /home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_interaction_support_20260929_r01/configs/d92_branch_interaction_support_20260929.json --commit RELEASE_HEAD",
+        "expected_artifacts": [
+          "probe/startup.json",
+          "probe/fit_trace.jsonl",
+          "probe/compact.jsonl",
+          "probe/compact.csv",
+          "probe/probe_complete.json"
+        ],
+        "source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092703",
+        "expected_checkpoint_sha256": "51fadc3b4ad3cbf83de01700a4a109430e7a57b1e10cb147f0be5f01593f26bb",
+        "provenance_refs": {
+          "source_initialization": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092703/initialization.json",
+          "source_completion": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092703/completion.json"
+        },
+        "cohort": "rx3",
+        "support_features": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-support-probe-m4-r01/rx3-cvs-daot-rc4-s2026092703/feature_cache"
+      },
+      {
+        "row_id": "rx3-cvs-daot-rc4-s2026092704",
+        "method": "D92-BranchInteraction fixed three-arm support probe",
+        "purpose": "Test bilinear information against linear and energy controls",
+        "gpu": "CPU only",
+        "config_ref": "configs/d92_branch_interaction_support_20260929.json",
+        "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-interaction-support-m4-r01/rx3-cvs-daot-rc4-s2026092704/probe/startup.json",
+        "data_overrides": {
+          "capsule": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule",
+          "capsule_id": "residual-noeq-76121e6f34363fa612ec25fb",
+          "expected_split_count": 900
+        },
+        "seeds": {
+          "model": 2026092704,
+          "split": 2026092705,
+          "data": 2026092705,
+          "augmentation": 2026092707,
+          "support": null,
+          "evaluation": null
+        },
+        "seed_notes": "Model/split/data/augmentation roles retain source/capsule lineage. Support seed varies over explicit cohort matrix (row field null). Evaluation seed null: physical OOF is deterministic and no query evaluation is executed.",
+        "k": [
+          1,
+          5,
+          10,
+          20
+        ],
+        "scenario": "practical_high,practical_mid,practical_low_urban; residual/post_sync/noeq",
+        "optimizer": "None; exact ridge1 physical-sum least squares, unregularized intercept; no optimizer steps",
+        "lr": null,
+        "epochs": null,
+        "fl_rounds": null,
+        "budget_ref": "K1 numeric-only; K5/10/20 three physical folds times three fixed arms; no full-support deployment fit",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-interaction-support-m4-r01/rx3-cvs-daot-rc4-s2026092704",
+        "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-interaction-support-m4-r01/rx3-cvs-daot-rc4-s2026092704/probe.log",
+        "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_interaction_support_20260929_r01/tools/run_d92_branch_interaction_probe.py --spec /home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_interaction_support_20260929_r01/configs/d92_branch_interaction_support_20260929.json --commit RELEASE_HEAD",
+        "expected_artifacts": [
+          "probe/startup.json",
+          "probe/fit_trace.jsonl",
+          "probe/compact.jsonl",
+          "probe/compact.csv",
+          "probe/probe_complete.json"
+        ],
+        "source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092704",
+        "expected_checkpoint_sha256": "690fed6ea2a6532d0ad978c93306f0f35b61f4a3a3fc4b1d6494f0e7547c74bb",
+        "provenance_refs": {
+          "source_initialization": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092704/initialization.json",
+          "source_completion": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092704/completion.json"
+        },
+        "cohort": "rx3",
+        "support_features": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-support-probe-m4-r01/rx3-cvs-daot-rc4-s2026092704/feature_cache"
+      },
+      {
+        "row_id": "rx1-cvs-daot-rc4-s2026092701",
+        "method": "D92-BranchInteraction fixed three-arm support probe",
+        "purpose": "Test bilinear information against linear and energy controls",
+        "gpu": "CPU only",
+        "config_ref": "configs/d92_branch_interaction_support_20260929.json",
+        "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-interaction-support-m4-r01/rx1-cvs-daot-rc4-s2026092701/probe/startup.json",
+        "data_overrides": {
+          "capsule": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-data-manytx-r01/capsule",
+          "capsule_id": "residual-noeq-d0a99fede324159c5a4750fd",
+          "expected_split_count": 300
+        },
+        "seeds": {
+          "model": 2026092701,
+          "split": 2026092705,
+          "data": 2026092705,
+          "augmentation": 2026092707,
+          "support": null,
+          "evaluation": null
+        },
+        "seed_notes": "Model/split/data/augmentation roles retain source/capsule lineage. Support seed varies over explicit cohort matrix (row field null). Evaluation seed null: physical OOF is deterministic and no query evaluation is executed.",
+        "k": [
+          1,
+          5,
+          10,
+          20
+        ],
+        "scenario": "practical_high,practical_mid,practical_low_urban; residual/post_sync/noeq",
+        "optimizer": "None; exact ridge1 physical-sum least squares, unregularized intercept; no optimizer steps",
+        "lr": null,
+        "epochs": null,
+        "fl_rounds": null,
+        "budget_ref": "K1 numeric-only; K5/10/20 three physical folds times three fixed arms; no full-support deployment fit",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-interaction-support-m4-r01/rx1-cvs-daot-rc4-s2026092701",
+        "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-interaction-support-m4-r01/rx1-cvs-daot-rc4-s2026092701/probe.log",
+        "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_interaction_support_20260929_r01/tools/run_d92_branch_interaction_probe.py --spec /home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_interaction_support_20260929_r01/configs/d92_branch_interaction_support_20260929.json --commit RELEASE_HEAD",
+        "expected_artifacts": [
+          "probe/startup.json",
+          "probe/fit_trace.jsonl",
+          "probe/compact.jsonl",
+          "probe/compact.csv",
+          "probe/probe_complete.json"
+        ],
+        "source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701",
+        "expected_checkpoint_sha256": "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b",
+        "provenance_refs": {
+          "source_initialization": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701/initialization.json",
+          "source_completion": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701/completion.json"
+        },
+        "cohort": "rx1",
+        "support_features": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-support-probe-m4-r01/rx1-cvs-daot-rc4-s2026092701/feature_cache"
+      },
+      {
+        "row_id": "rx1-cvs-daot-rc4-s2026092702",
+        "method": "D92-BranchInteraction fixed three-arm support probe",
+        "purpose": "Test bilinear information against linear and energy controls",
+        "gpu": "CPU only",
+        "config_ref": "configs/d92_branch_interaction_support_20260929.json",
+        "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-interaction-support-m4-r01/rx1-cvs-daot-rc4-s2026092702/probe/startup.json",
+        "data_overrides": {
+          "capsule": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-data-manytx-r01/capsule",
+          "capsule_id": "residual-noeq-d0a99fede324159c5a4750fd",
+          "expected_split_count": 300
+        },
+        "seeds": {
+          "model": 2026092702,
+          "split": 2026092705,
+          "data": 2026092705,
+          "augmentation": 2026092707,
+          "support": null,
+          "evaluation": null
+        },
+        "seed_notes": "Model/split/data/augmentation roles retain source/capsule lineage. Support seed varies over explicit cohort matrix (row field null). Evaluation seed null: physical OOF is deterministic and no query evaluation is executed.",
+        "k": [
+          1,
+          5,
+          10,
+          20
+        ],
+        "scenario": "practical_high,practical_mid,practical_low_urban; residual/post_sync/noeq",
+        "optimizer": "None; exact ridge1 physical-sum least squares, unregularized intercept; no optimizer steps",
+        "lr": null,
+        "epochs": null,
+        "fl_rounds": null,
+        "budget_ref": "K1 numeric-only; K5/10/20 three physical folds times three fixed arms; no full-support deployment fit",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-interaction-support-m4-r01/rx1-cvs-daot-rc4-s2026092702",
+        "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-interaction-support-m4-r01/rx1-cvs-daot-rc4-s2026092702/probe.log",
+        "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_interaction_support_20260929_r01/tools/run_d92_branch_interaction_probe.py --spec /home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_interaction_support_20260929_r01/configs/d92_branch_interaction_support_20260929.json --commit RELEASE_HEAD",
+        "expected_artifacts": [
+          "probe/startup.json",
+          "probe/fit_trace.jsonl",
+          "probe/compact.jsonl",
+          "probe/compact.csv",
+          "probe/probe_complete.json"
+        ],
+        "source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092702",
+        "expected_checkpoint_sha256": "72f26413e495dcf82317898f8729caa3d35499bf0b41e9671ffdceab2c90924b",
+        "provenance_refs": {
+          "source_initialization": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092702/initialization.json",
+          "source_completion": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092702/completion.json"
+        },
+        "cohort": "rx1",
+        "support_features": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-support-probe-m4-r01/rx1-cvs-daot-rc4-s2026092702/feature_cache"
+      },
+      {
+        "row_id": "rx1-cvs-daot-rc4-s2026092703",
+        "method": "D92-BranchInteraction fixed three-arm support probe",
+        "purpose": "Test bilinear information against linear and energy controls",
+        "gpu": "CPU only",
+        "config_ref": "configs/d92_branch_interaction_support_20260929.json",
+        "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-interaction-support-m4-r01/rx1-cvs-daot-rc4-s2026092703/probe/startup.json",
+        "data_overrides": {
+          "capsule": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-data-manytx-r01/capsule",
+          "capsule_id": "residual-noeq-d0a99fede324159c5a4750fd",
+          "expected_split_count": 300
+        },
+        "seeds": {
+          "model": 2026092703,
+          "split": 2026092705,
+          "data": 2026092705,
+          "augmentation": 2026092707,
+          "support": null,
+          "evaluation": null
+        },
+        "seed_notes": "Model/split/data/augmentation roles retain source/capsule lineage. Support seed varies over explicit cohort matrix (row field null). Evaluation seed null: physical OOF is deterministic and no query evaluation is executed.",
+        "k": [
+          1,
+          5,
+          10,
+          20
+        ],
+        "scenario": "practical_high,practical_mid,practical_low_urban; residual/post_sync/noeq",
+        "optimizer": "None; exact ridge1 physical-sum least squares, unregularized intercept; no optimizer steps",
+        "lr": null,
+        "epochs": null,
+        "fl_rounds": null,
+        "budget_ref": "K1 numeric-only; K5/10/20 three physical folds times three fixed arms; no full-support deployment fit",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-interaction-support-m4-r01/rx1-cvs-daot-rc4-s2026092703",
+        "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-interaction-support-m4-r01/rx1-cvs-daot-rc4-s2026092703/probe.log",
+        "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_interaction_support_20260929_r01/tools/run_d92_branch_interaction_probe.py --spec /home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_interaction_support_20260929_r01/configs/d92_branch_interaction_support_20260929.json --commit RELEASE_HEAD",
+        "expected_artifacts": [
+          "probe/startup.json",
+          "probe/fit_trace.jsonl",
+          "probe/compact.jsonl",
+          "probe/compact.csv",
+          "probe/probe_complete.json"
+        ],
+        "source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092703",
+        "expected_checkpoint_sha256": "51fadc3b4ad3cbf83de01700a4a109430e7a57b1e10cb147f0be5f01593f26bb",
+        "provenance_refs": {
+          "source_initialization": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092703/initialization.json",
+          "source_completion": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092703/completion.json"
+        },
+        "cohort": "rx1",
+        "support_features": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-support-probe-m4-r01/rx1-cvs-daot-rc4-s2026092703/feature_cache"
+      },
+      {
+        "row_id": "rx1-cvs-daot-rc4-s2026092704",
+        "method": "D92-BranchInteraction fixed three-arm support probe",
+        "purpose": "Test bilinear information against linear and energy controls",
+        "gpu": "CPU only",
+        "config_ref": "configs/d92_branch_interaction_support_20260929.json",
+        "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-interaction-support-m4-r01/rx1-cvs-daot-rc4-s2026092704/probe/startup.json",
+        "data_overrides": {
+          "capsule": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-data-manytx-r01/capsule",
+          "capsule_id": "residual-noeq-d0a99fede324159c5a4750fd",
+          "expected_split_count": 300
+        },
+        "seeds": {
+          "model": 2026092704,
+          "split": 2026092705,
+          "data": 2026092705,
+          "augmentation": 2026092707,
+          "support": null,
+          "evaluation": null
+        },
+        "seed_notes": "Model/split/data/augmentation roles retain source/capsule lineage. Support seed varies over explicit cohort matrix (row field null). Evaluation seed null: physical OOF is deterministic and no query evaluation is executed.",
+        "k": [
+          1,
+          5,
+          10,
+          20
+        ],
+        "scenario": "practical_high,practical_mid,practical_low_urban; residual/post_sync/noeq",
+        "optimizer": "None; exact ridge1 physical-sum least squares, unregularized intercept; no optimizer steps",
+        "lr": null,
+        "epochs": null,
+        "fl_rounds": null,
+        "budget_ref": "K1 numeric-only; K5/10/20 three physical folds times three fixed arms; no full-support deployment fit",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-interaction-support-m4-r01/rx1-cvs-daot-rc4-s2026092704",
+        "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-interaction-support-m4-r01/rx1-cvs-daot-rc4-s2026092704/probe.log",
+        "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_interaction_support_20260929_r01/tools/run_d92_branch_interaction_probe.py --spec /home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_interaction_support_20260929_r01/configs/d92_branch_interaction_support_20260929.json --commit RELEASE_HEAD",
+        "expected_artifacts": [
+          "probe/startup.json",
+          "probe/fit_trace.jsonl",
+          "probe/compact.jsonl",
+          "probe/compact.csv",
+          "probe/probe_complete.json"
+        ],
+        "source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092704",
+        "expected_checkpoint_sha256": "690fed6ea2a6532d0ad978c93306f0f35b61f4a3a3fc4b1d6494f0e7547c74bb",
+        "provenance_refs": {
+          "source_initialization": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092704/initialization.json",
+          "source_completion": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092704/completion.json"
+        },
+        "cohort": "rx1",
+        "support_features": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-support-probe-m4-r01/rx1-cvs-daot-rc4-s2026092704/feature_cache"
+      }
+    ]
+  },
+  "started": 1790669012.0223515,
+  "query_access": false,
+  "source_sample_access": false,
+  "checkpoint_loaded": false,
+  "reused_support_cache": true,
+  "gpu_use": false
+}
