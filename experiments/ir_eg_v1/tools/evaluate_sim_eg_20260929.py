@@ -16,7 +16,12 @@ def main():
     torch.set_num_threads(2)
     uuids=dict(line.split(', ') for line in subprocess.check_output(['nvidia-smi','--query-gpu=index,uuid','--format=csv,noheader'],text=True).strip().splitlines())
     apps=subprocess.check_output(['nvidia-smi','--query-compute-apps=gpu_uuid,pid','--format=csv,noheader'],text=True)
-    for row in spec['rows']:assert uuids[str(row['gpu'])] not in apps,'requested GPU occupied'
+    free=dict(line.split(', ') for line in subprocess.check_output(['nvidia-smi','--query-gpu=index,memory.free','--format=csv,noheader,nounits'],text=True).strip().splitlines())
+    for row in spec['rows']:
+        # One existing job plus one authorized inference fits the two-job cap.
+        uuid=uuids[str(row['gpu'])]
+        assert sum(line.startswith(uuid+',') for line in apps.splitlines())<2,'requested GPU has two jobs'
+        assert int(free[str(row['gpu'])])>=8192,'insufficient free memory for inference'
     run.mkdir(parents=True,exist_ok=False);logs.mkdir(parents=True,exist_ok=False)
     state=dict(status='CHECKPOINT_VALIDATION',commit=a.commit,source_run=spec['parent_run_ids'][0],pid=os.getpid(),rows={},started=time.time(),target_feedback=False)
     def save():

@@ -124,9 +124,9 @@
     "local_artifact_root": "E:\\type10-7\\code\\worktrees\\ir_eg_v1_20260927\\automation_reports\\CV-SincNet\\20260929-phase1-sim-eg-target-eval-s392005-r01",
     "launch_command": [
       "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
-      "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_sim_eg_eval_20260929_r01/evaluate_sim_eg_20260929.py",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_sim_eg_eval_20260929_r02/evaluate_sim_eg_20260929.py",
       "--spec",
-      "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_sim_eg_eval_20260929_r01/power_target_eval.json",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_sim_eg_eval_20260929_r02/power_target_eval.json",
       "--commit",
       "<orchestration Git HEAD>"
     ],
@@ -134,11 +134,10 @@
     "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "dataset_path": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
     "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
-    "launch_verification_ref": "automation_reports\\CV-SincNet\\20260928-phase1-ir-eg-source-screen-s392005-r01\\evidence\\readback_1790556295011623100.log",
-    "observed_at": "2026-09-28T00:43:56.158891+00:00",
     "training_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01",
     "input_package": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_fcr_r1r8_s392005_equalized_20260903_v4/target_inputs",
-    "truth_sidecar": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_fcr_r1r8_s392005_equalized_20260903_v4/target_truth/truth_sidecar.json"
+    "truth_sidecar": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_fcr_r1r8_s392005_equalized_20260903_v4/target_truth/truth_sidecar.json",
+    "resource_policy": "At most two compute jobs per GPU including this evaluation; at least 8192 MiB free before launch."
   },
   "expected_artifacts": [
     "evaluation_state.json",
@@ -225,7 +224,7 @@
         "predictions.json:672000 records",
         "score.json:complete four-scene and grouped metrics"
       ],
-      "gpu": 0,
+      "gpu": 6,
       "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase1-ir-eg-source-screen-s392005-r01/SIM_s392005/final_ssdg.pth",
       "score_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase1-sim-eg-target-eval-s392005-r01/SIM_s392005/score.json",
       "score_command": [
@@ -294,7 +293,7 @@
         "predictions.json:672000 records",
         "score.json:complete four-scene and grouped metrics"
       ],
-      "gpu": 1,
+      "gpu": 5,
       "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase1-ir-eg-source-screen-s392005-r01/EG_s392005/final_ssdg.pth",
       "score_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase1-sim-eg-target-eval-s392005-r01/EG_s392005/score.json",
       "score_command": [
