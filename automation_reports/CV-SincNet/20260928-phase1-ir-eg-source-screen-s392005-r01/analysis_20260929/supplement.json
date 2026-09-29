@@ -1,0 +1,105 @@
+{
+  "cpu_only": true,
+  "training_started": false,
+  "benchmark": {
+    "operation": "deepcopy actual IR route_history on N607 CPU",
+    "entries": 56700,
+    "seconds": [
+      0.11089370500121731,
+      0.11238926000078209,
+      0.11060794800141593,
+      0.11110044900124194,
+      0.11651292399983504,
+      0.11266438399979961,
+      0.11131218599985004
+    ],
+    "median_seconds": 0.11131218599985004,
+    "caveat": "isolated Python copy only; not a full training profile; shared CPU load"
+  },
+  "panels": {
+    "IR_s392005": {
+      "epoch": 21,
+      "records": 256,
+      "TX": [
+        0
+      ],
+      "RX": [
+        1
+      ],
+      "cells": [
+        {
+          "tx": 0,
+          "rx": 1,
+          "n": 256,
+          "accuracy": 0.99609375,
+          "margin": 20.2767333984375,
+          "interaction_norm": 0.0
+        }
+      ],
+      "policy": "fixed_first_256_native_nonshuffled_V"
+    },
+    "IR_G0_s392005": {
+      "epoch": 21,
+      "records": 256,
+      "TX": [
+        0
+      ],
+      "RX": [
+        1
+      ],
+      "cells": [
+        {
+          "tx": 0,
+          "rx": 1,
+          "n": 256,
+          "accuracy": 0.99609375,
+          "margin": 20.2767333984375,
+          "interaction_norm": 0.0
+        }
+      ],
+      "policy": "fixed_first_256_native_nonshuffled_V"
+    },
+    "OR_EG_s392005": {
+      "epoch": 21,
+      "records": 256,
+      "TX": [
+        0
+      ],
+      "RX": [
+        1
+      ],
+      "cells": [
+        {
+          "tx": 0,
+          "rx": 1,
+          "n": 256,
+          "accuracy": 0.99609375,
+          "margin": 20.2767333984375,
+          "interaction_norm": 0.0
+        }
+      ],
+      "policy": "fixed_first_256_native_nonshuffled_V"
+    },
+    "IR_ENCODER_OFF_s392005": {
+      "epoch": 21,
+      "records": 256,
+      "TX": [
+        0
+      ],
+      "RX": [
+        1
+      ],
+      "cells": [
+        {
+          "tx": 0,
+          "rx": 1,
+          "n": 256,
+          "accuracy": 0.99609375,
+          "margin": 20.139400482177734,
+          "interaction_norm": 0.0
+        }
+      ],
+      "policy": "fixed_first_256_native_nonshuffled_V"
+    }
+  }
+}

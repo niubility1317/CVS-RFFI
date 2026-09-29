@@ -1,8 +1,8 @@
 # IR-EG源侧筛查已发布
 
-发布状态：**VERIFIED**。N607六行训练的PID、CWD、argv、CUDA绑定、实际配置及接受步日志增长已独立核实。训练仍在进行，尚无完整结果。
+发布状态：**VERIFIED**。N607六行训练的PID、CWD、argv、CUDA绑定、实际配置及接受步日志增长已独立核实。该段为2026-09-28启动记录；当前SIM/EG已完成、四个IR保持停止，见末尾更新。
 
-固定model seed392005，split/data/augmentation/evaluation seed392005；support不适用。六行均从零训练，L/U/V为6300/56700/27000，同一既有物理ID契约，完整原生DAOT＋FastTrust。200epoch/44400接受步是固定曝光预算，不代表收敛。
+固定model seed392005，split/data/augmentation/evaluation seed392005；support不适用。六行均从零训练，L/U/V为6300/56700/27000，同一既有物理ID契约，启用原生DAOT/RC4核心实现的联合配置（并非旧原生入口全部配方）。200epoch/44400接受步是固定曝光预算，不代表收敛。
 
 |行|GPU|PID|读回接受步|状态|
 |---|---:|---:|---:|---|
@@ -52,3 +52,7 @@
 ## 2026-09-29停电核实
 
 SIM、EG完成E200；IR、OR_EG保留E164；IR_G0、IR_ENCODER_OFF保留E163。checkpoint可读取且来源契约一致。用户要求先不恢复，四行保持停止。SIM、EG固定最终权重目标评估记录：20260929-phase1-sim-eg-target-eval-s392005-r01。历史RUNNING/PID为启动时证据，不能代表当前运行。
+
+## 2026-09-29完整诊断
+
+用户要求先不续跑，全面分析性能与速度。六行全量234265个完整主步及全部结构化文件已扫描；没有数值失败，发现P路由整体失活、固定V诊断面板覆盖不足及事务全量复制成本。详见[完整诊断报告](analysis_20260929/report.md)，提供逐epoch CSV/JSONL、曲线和CPU只读证据。训练代码与远端任务均未修改。
