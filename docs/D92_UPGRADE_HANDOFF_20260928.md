@@ -1,5 +1,13 @@
 # D92优化当前交接
 
+## 最新终态：BranchMetric完整support诊断完成，代理条件未通过
+
+run `20260929-phase2-d92-branch-metric-support-m4-r01`已ANALYZED，8lane/4800parent/1200真K1数值/3600OOF/42000proxy anchors/63600分解完整，全部进程退出。runtime `7099da7ab85170034de90d41c2471c4572860207`，分析commit `af8d1f6149f6e761a8cc315cd478ee629607853b`；终态`readback_1790672161.json`及`results/support_summary/analysis_execution.json`、完整下载summary VERIFIED。不要覆盖或重复启动run/analysis。raw trace/log保留N607原路径。
+
+纯support结果：OOF相对interaction_ridge的Δ旧/新/H pp，K5 −0.226/+1.730/+1.340；K10 −0.059/+1.918/+1.440；K20 +0.098/+2.093/+1.539。相对NCM的H +4.418/+6.889/+8.819pp，预设A每K对两control均通过。1-shot proxy相对ridge的Δ旧/新/H pp，parentK5 −0.665/+0.109/−0.131；K10 −0.736/+0.284/−0.031；K20 −0.834/+0.265/−0.094，B全部失败；candidate与NCM精确等价。**本版本不推进query，不替代BranchInteraction，不改参数或选择性重跑。**真实K1仍无独立held性能证据。完整旧6类/新0、2、5、10、20及K分层见该run support_interpretation.md与CSV；不能仅报通过的A。新增source/ground/model传输0B，wall236.176秒，非部署时延。
+
+本轮是方法实现、完整诊断及拒绝不满足条件候选的实际进展；goal ACTIVE，尚未全面达成优化及独立数据验证。下一轮可只向仍query-blind的branch_next_design传这份support summary和core，研究单样本判决问题；不要发送本handoff或历史query结果。设计agent只实现过core，d92_p0_review本轮是entry/summary作者，source_aux_feasibility是唯一独立reviewer。当前无运行实验。以下RUNNING/未启动均为历史。
+
 ## 实时状态：BranchMetric支持集诊断已运行，禁止重复启动
 
 run `20260929-phase2-d92-branch-metric-support-m4-r01`，runtime `7099da7ab85170034de90d41c2471c4572860207`已push且独立远端OID匹配。`readback_1790671911.json`核实supervisor168153及CPU worker168166/168168/168169/168170 live、argv/CWD匹配且日志增长。登记RUNNING。全部合成验证及唯一P0/P1闭合；8缓存preflight VERIFIED。root唯一launch owner。继续原run只读监控；4800parent全部终态后运行 `tools/analyze_d92_branch_metric_probe.py --spec configs/d92_branch_metric_support_20260929.json --analysis-release d92_branch_metric_analysis_20260929_r01`，完整汇总两类support诊断，不从中途数据改动算法或覆盖输出。goal ACTIVE；独立query数据验证仍待数据。以下未启动描述为历史。

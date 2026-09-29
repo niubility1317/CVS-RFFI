@@ -3,7 +3,7 @@
 - run_id：`20260929-phase2-d92-branch-metric-support-m4-r01`
 - group_id：`d92-branch-metric-support-development`；类别：`diagnostic`；阶段：`Phase2-support-only-diagnostic`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -33,3 +33,5 @@
 实际算法配置已冻结；核心25项及既有interaction29项、entry/summary44项和3子测试、CPU编排15项通过，集合按范围记录不当成独立总数。分析发布闭包P1已补齐，隔离目录导入验证通过；独立审查收尾中，尚未启动。
 
 运行已独立读回VERIFIED：runtime7099da7ab85170034de90d41c2471c4572860207，supervisor168153及四CPU worker live且argv/CWD一致，readback_1790671911.json。全矩阵结束后一次完整汇总，不按中途表现改变配置。
+
+完整support诊断已ANALYZED：4800父任务、3600OOF、42000proxy、63600分解。OOF A通过，proxy B失败，不推进query或替换现方法。解释见support_interpretation.md；保留全部原始产物和各新增类规模分层。
