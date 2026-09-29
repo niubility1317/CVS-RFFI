@@ -1,3 +1,11 @@
+## 三阶段分析工具已验证（2026-09-30）
+
+用户10pp适应提升、<=1pp注册旧类下降、<=3pp新旧绝对差是理想目标，非硬门槛。新增ABC身份投影/配对/汇总工具已经76项合成测试通过（28+12+36），配对与collector独立审查、root汇总审查均无未解决P0/P1。设计与测试说明：`docs/D92_ABC_ANALYSIS_REVIEW_20260930.md`。没有修改方法或当前support运行。
+
+下一步root单独对已经完成的LocalRidge基准运行只读collector：`tools/collect_d92_adaptation_registration_identities.py --spec configs/d92_branch_local_ridge_repeat_rx3_20260929.json --spec configs/d92_branch_local_ridge_repeat_rx1_20260929.json --output <new-local-directory>`，然后 `tools/summarize_d92_adaptation_registration.py --results <rx3-results> <rx1-results> --identities <rx3-identity-json> <rx1-identity-json> --output <new-report-directory>`。collector远端只读，不重新预测/评分，数值预测字段解析后丢弃，不访问truth/IQ/features/source样本。运行后须读取实际输出核实，不能用76项合成测试替代真实结果。
+
+方法子任务仍query-blind，禁止给它们实际ABC/query报告。ABC能报告现有独立重新拟合B/C的行为变化，不证明状态继承；B-A含分类头替换收益。既有LocalMargin完整support run仍待结束，原runtime5b7319acd不变。工具开发worker任务已完成，无测试/Conda子进程残留。此节替代下面“工具尚在开发”的描述。
+
 ## 最新用户目标澄清（2026-09-30）
 
 用户明确理想效果：同一旧类query上B−A旧类适应提升>=10pp，注册后B旧−C旧<=1pp，注册后abs(C新−C旧)<=3pp；随后明确这些是最理想目标，先在现有优化方法上逐步提升，不作为硬淘汰条件。H保留辅助，不代替三阶段效果。完整定义见 [渐进优化目标](D92_ADAPTATION_REGISTRATION_TARGET_20260930.md)。原健康LocalMargin support run继续，参数不变；最新读回 `readback_1790699128705548800.json` 核实supervisor348892及4子进程live，rx3各326至357/900，rx1仍等待。不能因未达到理想目标停机或重跑。

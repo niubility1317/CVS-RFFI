@@ -182,6 +182,13 @@ paths += ['tools/evaluate_d92_branch_local_margin.py',
     'tests/test_collect_d92_branch_local_margin_audit.py',
     'docs/D92_LOCAL_MARGIN_BENCHMARK_REVIEW_20260929.md']
 paths += ['docs/D92_ADAPTATION_REGISTRATION_TARGET_20260930.md']
+paths += ['tools/d92_adaptation_registration_pairing.py',
+    'tools/collect_d92_adaptation_registration_identities.py',
+    'tools/summarize_d92_adaptation_registration.py',
+    'tests/test_d92_adaptation_registration_pairing.py',
+    'tests/test_collect_d92_adaptation_registration_identities.py',
+    'tests/test_summarize_d92_adaptation_registration.py',
+    'docs/D92_ABC_ANALYSIS_REVIEW_20260930.md']
 for name in paths:
     src=ROOT/name;dst=WS/name;dst.parent.mkdir(parents=True,exist_ok=True)
     # Each name is unique to this task; original D92 and shared wrappers are not mirrored.
