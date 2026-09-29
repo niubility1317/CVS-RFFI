@@ -1,1 +1,2 @@
 {"at": "2026-09-29T09:20:12+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-09-29T09:32:16+00:00", "status": "RUNNING", "note": "VERIFIED: supervisor185899与首个support exporter185909实际cmdline/CWD吻合；日志已记录256/8273物理support及1028 native forwards，四相位不增加K。实际release commit d57307814ef6a51f542a0455f25c3fe22cc0a6d7；8rows固定完整矩阵，不重复启动。", "evidence": ["automation_reports/CV-SincNet/20260929-phase2-d92-branch-orbit-ce-support-m4-r01/evidence/readback_1790674303.json"], "row_id": null}

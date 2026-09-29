@@ -1,0 +1,160 @@
+{
+  "startup.json": {
+    "pid": 185899,
+    "argv": [
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_orbit_ce_support_20260929_r01/tools/run_d92_branch_orbit_ce_probe.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_orbit_ce_support_20260929_r01/configs/d92_branch_orbit_ce_support_20260929.json",
+      "--commit",
+      "d57307814ef6a51f542a0455f25c3fe22cc0a6d7"
+    ],
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_orbit_ce_support_20260929_r01",
+    "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "commit": "d57307814ef6a51f542a0455f25c3fe22cc0a6d7",
+    "started": 1790674232.3453827,
+    "query_access": false,
+    "source_sample_access": false,
+    "live_argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_orbit_ce_support_20260929_r01/tools/run_d92_branch_orbit_ce_probe.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_orbit_ce_support_20260929_r01/configs/d92_branch_orbit_ce_support_20260929.json",
+      "--commit",
+      "d57307814ef6a51f542a0455f25c3fe22cc0a6d7"
+    ],
+    "live_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_orbit_ce_support_20260929_r01"
+  },
+  "state.json": {
+    "rx3-cvs-daot-rc4-s2026092701": {
+      "status": "EXTRACTING_SUPPORT",
+      "updated": 1790674232.346457
+    },
+    "rx3-cvs-daot-rc4-s2026092702": {
+      "status": "PENDING"
+    },
+    "rx3-cvs-daot-rc4-s2026092703": {
+      "status": "PENDING"
+    },
+    "rx3-cvs-daot-rc4-s2026092704": {
+      "status": "PENDING"
+    },
+    "rx1-cvs-daot-rc4-s2026092701": {
+      "status": "PENDING"
+    },
+    "rx1-cvs-daot-rc4-s2026092702": {
+      "status": "PENDING"
+    },
+    "rx1-cvs-daot-rc4-s2026092703": {
+      "status": "PENDING"
+    },
+    "rx1-cvs-daot-rc4-s2026092704": {
+      "status": "PENDING"
+    }
+  },
+  "launch.json": {
+    "pid": 185899,
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_orbit_ce_support_20260929_r01/tools/run_d92_branch_orbit_ce_probe.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_orbit_ce_support_20260929_r01/configs/d92_branch_orbit_ce_support_20260929.json",
+      "--commit",
+      "d57307814ef6a51f542a0455f25c3fe22cc0a6d7"
+    ],
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_orbit_ce_support_20260929_r01",
+    "commit": "d57307814ef6a51f542a0455f25c3fe22cc0a6d7",
+    "run": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-orbit-ce-support-m4-r01",
+    "owner": "codex/root/d92-upgrade-20260928",
+    "live_argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_orbit_ce_support_20260929_r01/tools/run_d92_branch_orbit_ce_probe.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_orbit_ce_support_20260929_r01/configs/d92_branch_orbit_ce_support_20260929.json",
+      "--commit",
+      "d57307814ef6a51f542a0455f25c3fe22cc0a6d7"
+    ],
+    "live_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_orbit_ce_support_20260929_r01"
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_orbit_ce_support_20260929_r01/run.log": {
+    "bytes": 102,
+    "tail": [
+      "{\"row\": \"rx3-cvs-daot-rc4-s2026092701\", \"status\": \"EXTRACTING_SUPPORT\", \"updated\": 1790674232.346457}"
+    ]
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-orbit-ce-support-m4-r01/rx3-cvs-daot-rc4-s2026092701/export.log": {
+    "bytes": 5274,
+    "tail": [
+      "{\"event\": \"SUPPORT_FEATURE_PROGRESS\", \"completed\": 192, \"total\": 8273, \"native_batch_calls\": 772, \"elapsed_seconds\": 7.392407335999451}",
+      "{\"event\": \"SUPPORT_FEATURE_PROGRESS\", \"completed\": 224, \"total\": 8273, \"native_batch_calls\": 900, \"elapsed_seconds\": 8.083028841996565}",
+      "{\"event\": \"SUPPORT_FEATURE_PROGRESS\", \"completed\": 256, \"total\": 8273, \"native_batch_calls\": 1028, \"elapsed_seconds\": 8.784140941999794}"
+    ]
+  },
+  "fit_progress": {},
+  "live_children": [
+    {
+      "pid": 185909,
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_orbit_ce_support_20260929_r01/tools/export_d92_branch_orbit_support_features.py",
+        "--checkpoint-root",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701",
+        "--native-code",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rc4_matched_20260927_r01/code",
+        "--source-contract",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "--source-receivers",
+        "[\"1-19\", \"18-2\", \"19-2\", \"2-19\", \"3-19\"]",
+        "--seed",
+        "2026092701",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-orbit-ce-support-m4-r01/rx3-cvs-daot-rc4-s2026092701/feature_cache",
+        "--device",
+        "cuda:0",
+        "--batch-size",
+        "32",
+        "--capsule",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule",
+        "--expected-capsule-id",
+        "residual-noeq-76121e6f34363fa612ec25fb",
+        "--expected-checkpoint-sha256",
+        "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b"
+      ],
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_orbit_ce_support_20260929_r01",
+      "started": 1790674232.3471344,
+      "kind": "export",
+      "live_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_orbit_ce_support_20260929_r01/tools/export_d92_branch_orbit_support_features.py",
+        "--checkpoint-root",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701",
+        "--native-code",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rc4_matched_20260927_r01/code",
+        "--source-contract",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "--source-receivers",
+        "[\"1-19\", \"18-2\", \"19-2\", \"2-19\", \"3-19\"]",
+        "--seed",
+        "2026092701",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-orbit-ce-support-m4-r01/rx3-cvs-daot-rc4-s2026092701/feature_cache",
+        "--device",
+        "cuda:0",
+        "--batch-size",
+        "32",
+        "--capsule",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule",
+        "--expected-capsule-id",
+        "residual-noeq-76121e6f34363fa612ec25fb",
+        "--expected-checkpoint-sha256",
+        "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b"
+      ],
+      "live_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_orbit_ce_support_20260929_r01",
+      "record": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-orbit-ce-support-m4-r01/rx3-cvs-daot-rc4-s2026092701/export.log.process.json"
+    }
+  ]
+}

@@ -1,6 +1,10 @@
 # D92优化当前交接
 
-## 当前工作：BranchOrbitCE两项P1已修复，准备发布，尚未启动
+## 当前工作：BranchOrbitCE完整support诊断已VERIFIED启动
+
+当前run `20260929-phase2-d92-branch-orbit-ce-support-m4-r01`已RUNNING；实际runtime commit `d57307814ef6a51f542a0455f25c3fe22cc0a6d7`，release `d92_branch_orbit_ce_support_20260929_r01`。证据`readback_1790674303.json`核实supervisor185899存活、首exporter185909实际argv/CWD吻合，256/8273条物理support已导出；随后GPU0只读观测492MiB、util17%。4个C4 views始终只算一条physical，冻结模型不训练。root唯一launch owner，无重复启动或远端修改许可扩展。
+
+上一goal turn完成用户关于K/新增类数量的解释，本轮完成两项P1修复整合、146项聚焦验证（新数值路径80项入口/汇总联调通过）、Git提交push/OID读回与实际发布，是progress。所有8rows按已登记顺序串行GPU export、最多4个CPU probe×2BLAS；继续用 `tools/read_d92_run.py --spec configs/d92_branch_orbit_ce_support_20260929.json --compact` 核实同一run。全部终态后用 `tools/analyze_d92_branch_orbit_ce_probe.py --spec configs/d92_branch_orbit_ce_support_20260929.json --analysis-release d92_branch_orbit_ce_analysis_20260929_r01` 完整汇总。只看support结果；没有query晋级结论。目标ACTIVE，独立新数据仍待补充。以下未启动句为发布前历史。
 
 独立P0/P1审查已关闭两项实际问题：完整轨道近抵消改用等价thin-QR表示稳定求值；CE失败逐层保留arm/fold/anchor/train物理ID与本episode已完成stages。冻结数学公式、配置与矩阵未变；未读真实query或启动实验。核心32项测试通过，独立审查复放原反例确认归一化自核约3、Gram对称且正定；设计文档已同步数值说明与修复后合成成本。其余exporter18、entry10、summary70、编排16项既有聚焦验证通过，共146项；新数值路径的entry/summary共80项联调再次通过。下一步mirror、Git提交push读回后唯一发布。本段优先于下面历史待审状态。
 

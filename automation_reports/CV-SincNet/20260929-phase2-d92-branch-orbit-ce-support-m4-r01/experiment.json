@@ -29,7 +29,8 @@
     "base_recipe": "experiments/adv3b02_xuc/configs/rc4_practical_residual_noeq_20260918.json",
     "native_code_base": "b63734157",
     "native_training_commit": "9b1ddd939fcabc74c77c94a62fef8e5aad07c0e9",
-    "commit_note": "Preparation parent; publisher records actual pushed release commit in launch/startup."
+    "commit_note": "Preparation parent; publisher records actual pushed release commit in launch/startup.",
+    "release_commit": "d57307814ef6a51f542a0455f25c3fe22cc0a6d7"
   },
   "data": {
     "dataset": "Support slices only from the two existing VALIDATED_ONCE capsules",
@@ -151,7 +152,15 @@
     "cpu_lanes": 4,
     "blas_threads_per_lane": 2,
     "export_device": "cuda:0",
-    "export_batch_size": 32
+    "export_batch_size": 32,
+    "pid": 185899,
+    "runtime_command": [
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_orbit_ce_support_20260929_r01/tools/run_d92_branch_orbit_ce_probe.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_orbit_ce_support_20260929_r01/configs/d92_branch_orbit_ce_support_20260929.json",
+      "--commit",
+      "d57307814ef6a51f542a0455f25c3fe22cc0a6d7"
+    ]
   },
   "expected_artifacts": [
     "startup.json",
@@ -179,7 +188,7 @@
     "Frozen original source-only models only; no adapted head or source samples/statistics are loaded."
   ],
   "claim_scope": "SUPPORT_INFORMATION_DIAGNOSTIC_NOT_QUERY_PERFORMANCE",
-  "status": "PLANNED",
+  "status": "RUNNING",
   "metrics_plan": {
     "metric_names": [
       "support_OOF_old_accuracy",

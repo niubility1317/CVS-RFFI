@@ -3,7 +3,7 @@
 - run_id：`20260929-phase2-d92-branch-orbit-ce-support-m4-r01`
 - group_id：`d92-branch-orbit-ce-support-development`；类别：`diagnostic`；阶段：`Phase2-support-only-diagnostic`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -31,3 +31,5 @@
 完整四臂和物理OOF/全部proxy anchors已预登记，received-only四相位不增加K；实际配置固定，source-only原模型来源未变。原capsule及GPU0/CPU/空输出路径preflight VERIFIED，尚未发布或启动。
 
 发布前独立审查完成，两项P1已修复并定点关闭：轨道近抵消的thinQR等价稳定计算、CE异常上下文和已完成阶段保留。冻结公式与配置未变，核心32、exporter18、entry10、summary70、编排16项测试通过；真实support实验尚未启动。
+
+VERIFIED启动：supervisor185899，首exporter185909；readback_1790674303.json核实实际argv/CWD和support特征进度。实际release d57307814ef6a51f542a0455f25c3fe22cc0a6d7。目标仍ACTIVE；当前仅真实support诊断，无query成绩。
