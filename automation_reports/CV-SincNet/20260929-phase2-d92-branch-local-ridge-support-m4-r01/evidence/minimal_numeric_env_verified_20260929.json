@@ -1,0 +1,47 @@
+{
+  "status": "VERIFIED",
+  "scope": "independent_minimal_numeric_environment_not_original_GPU_env",
+  "executable": "E:\\type10-7\\local_envs\\ssr-gpu\\python.exe",
+  "prefix": "E:\\type10-7\\local_envs\\ssr-gpu",
+  "CONDA_PREFIX": "E:\\type10-7\\local_envs\\ssr-gpu",
+  "python": "3.10.0 | packaged by conda-forge | (default, Nov 10 2021, 13:20:59) [MSC v.1916 64 bit (AMD64)]",
+  "user_site_enabled": false,
+  "versions": {
+    "numpy": "2.2.6",
+    "scipy": "1.15.3",
+    "pytest": "8.4.2",
+    "threadpoolctl": "3.6.0"
+  },
+  "package_paths": {
+    "numpy": "E:\\type10-7\\local_envs\\ssr-gpu\\lib\\site-packages\\numpy\\__init__.py",
+    "scipy": "E:\\type10-7\\local_envs\\ssr-gpu\\lib\\site-packages\\scipy\\__init__.py",
+    "pytest": "E:\\type10-7\\local_envs\\ssr-gpu\\lib\\site-packages\\pytest\\__init__.py"
+  },
+  "numpy_cholesky_residual": 1.5463617361248926e-15,
+  "scipy_solve_residual": 2.9340723804077858e-15,
+  "threadpools_during_check": [
+    {
+      "user_api": "blas",
+      "internal_api": "openblas",
+      "num_threads": 2,
+      "prefix": "libscipy_openblas",
+      "filepath": "E:\\type10-7\\local_envs\\ssr-gpu\\Lib\\site-packages\\numpy.libs\\libscipy_openblas64_-13e2df515630b4a41f92893938845698.dll",
+      "version": "0.3.29",
+      "threading_layer": "pthreads",
+      "architecture": "Haswell"
+    },
+    {
+      "user_api": "blas",
+      "internal_api": "openblas",
+      "num_threads": 2,
+      "prefix": "libscipy_openblas",
+      "filepath": "E:\\type10-7\\local_envs\\ssr-gpu\\Lib\\site-packages\\scipy.libs\\libscipy_openblas-f07f5a5d207a3a47104dca54d6d0c86a.dll",
+      "version": "0.3.28",
+      "threading_layer": "pthreads",
+      "architecture": "Haswell"
+    }
+  ],
+  "torch_installed": false,
+  "real_data_loaded": false,
+  "checkpoint_loaded": false
+}

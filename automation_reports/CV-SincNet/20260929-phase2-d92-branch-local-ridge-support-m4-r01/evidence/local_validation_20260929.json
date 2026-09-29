@@ -1,0 +1,55 @@
+{
+  "status": "VERIFIED_RELEVANT_CHECKS_AFTER_ORACLE_REPAIR",
+  "environment": "E:/type10-7/local_envs/ssr-gpu",
+  "python": "3.10.0",
+  "initial_suite": {
+    "session": 87564,
+    "exit_code": 1,
+    "files": [
+      "tests/test_d92_branch_local_ridge.py",
+      "tests/test_evaluate_d92_branch_local_ridge_probe.py",
+      "tests/test_summarize_d92_branch_local_ridge_probe.py",
+      "tests/test_run_d92_branch_local_ridge_probe.py"
+    ],
+    "command": "conda run -p E:/type10-7/local_envs/ssr-gpu python -s -m pytest -q -s <four listed test files>",
+    "failures": [
+      "test_rank2_distance_matches_explicit_near_duplicate_zero_and_rank_deficient"
+    ],
+    "other_collected_tests": "passed",
+    "failure_cause": "Windows NumPy longdouble is float64; independent test oracle was not higher precision",
+    "repair": "80-digit stdlib Decimal exact float input expansion; stricter relative tolerance 1e-12, no method tolerance changed"
+  },
+  "repaired_and_changed_checks": {
+    "session": 77961,
+    "exit_code": 0,
+    "passed": 3,
+    "elapsed_seconds": 1.26,
+    "tests": [
+      "test_rank2_distance_matches_explicit_near_duplicate_zero_and_rank_deficient",
+      "test_single_class_no_bandwidth_or_factorization",
+      "test_screen_has_no_extra_newcount_gate_and_requires_complete_parent_evidence"
+    ]
+  },
+  "resource_observations": [
+    {
+      "c": 26,
+      "k": 1,
+      "fit_seconds": 0.030475600000045233,
+      "persistent_state_bytes": 158944,
+      "peak_traced_bytes": 1160209
+    },
+    {
+      "c": 26,
+      "k": 20,
+      "fit_seconds": 12.418459799999937,
+      "persistent_state_bytes": 3178272,
+      "peak_traced_bytes": 22999888
+    }
+  ],
+  "resource_scope": "Synthetic local CPU final fit; tracemalloc Python/NumPy tracked allocations, not process RSS or remote runtime",
+  "independent_review": "docs/D92_BRANCH_LOCAL_RIDGE_P0_20260929.md",
+  "preflight": "local_ridge_preflight_1790688674704354200.json",
+  "query_access": false,
+  "source_sample_access": false,
+  "performance_improvement_proven": false
+}
