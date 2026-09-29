@@ -3,7 +3,7 @@
 - run_id：`20260929-phase2-d92-branch-interaction-repeat-rx3-m4-r01`
 - group_id：`d92-fixed-phase1-branch-interaction-repeated-benchmark`；类别：`cvs`；阶段：`Phase2-repeated-benchmark`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -21,7 +21,7 @@
 
 ## 结果与覆盖
 
-尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
+全部预测与评分已完成；双基线完整解释位于rx3 run的interpretation.md与results/dual_baseline/report.md。K5/10/20继续改善，K1基本持平且旧类略降；独立数据确认未完成。
 源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
 
 ## 交接
@@ -29,3 +29,5 @@
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
 
 PLANNED: same frozen interaction candidate, full existing matrix, CPU-only immutable BranchRidge cache reuse and two registered baselines. Read-only cache/output/resource preflight VERIFIED; root is sole launch owner. No query scores read and no experiment launched yet.
+
+ANALYZED: all processes exited, complete two-baseline analysis and metadata audit VERIFIED. Runtime 780b027d07acbe4ceabf583209eeaed448d70d4e; see rx3 interpretation.md. No independent-data generalization claim and no rerun.

@@ -1,5 +1,17 @@
 # D92优化当前交接
 
+## 最新终态：BranchInteraction两基线重复比较已完成
+
+两run 20260929-phase2-d92-branch-interaction-repeat-{rx3,rx1}-m4-r01均SCORED/ANALYZED，supervisor/children全部退出。runtime 780b027d07acbe4ceabf583209eeaed448d70d4e；终态readback_1790670222.json，下载rx3 readback_1790670249.json、rx1 readback_1790670251.json。全4800fit单次support、9648评分、原D92/DG记录及4800BranchRidge复用记录一致性VERIFIED；已生成dual_baseline和fit_audit，不得覆盖或重复启动。
+
+相对BranchRidge Δ旧/新/H（pp）：K1 −0.084/+0.055/+0.010；K5 +1.145/+1.805/+1.703；K10 +0.924/+2.317/+1.921；K20 +1.038/+2.741/+2.193。预设均值guard通过，但K1四seed旧类都降、两seed H降，不能称全设置全面改善。K5/10/20四seed、各新增规模、全部RX×场景旧/新/H均值均正。完整解释在rx3 interpretation.md；新增source0B，numeric head35776至3178464B，墙钟156.679秒（非卫星实测），不比旧头轻。
+
+本轮实现和完整开发基准已完成，独立数据确认仍待数据，goal不标完成。用户K/新增类数量问题的补充报告已提交：docs/D92_BRANCH_RIDGE_K_NEW_EXPLANATION_20260929.md。当前无运行任务。以下RUNNING/PLANNED均为历史。
+
+## 实时状态：BranchInteraction双cohort已运行，禁止重复启动
+
+实际runtime commit 780b027d07acbe4ceabf583209eeaed448d70d4e已push且独立远端OID匹配。rx3 supervisor PID153261，rx1 PID153447；两组evidence/readback_1790670075.json独立核实live。rx3四CPU worker PID153439至153442的argv/CWD匹配且拟合日志增长，rx1在核对冻结artifact。run为20260929-phase2-d92-branch-interaction-repeat-{rx3,rx1}-m4-r01。两组均登记RUNNING；继续只读监控，全部终态后才下载scores并跑双基线汇总及metadata审计；不得因本段或旧PLANNED重复启动。
+
 ## 当前工作：用户要求继续优化BranchRidge，先做support交互诊断
 
 2026-09-29用户明确要求在BranchRidge基础上更进一步，已恢复研发；独立数据验证仍待数据。新候选D92-BranchInteraction-v1保持原五块特征、冻结Phase1、全K同式，以固定KB+KA+KB*KA交互核对比linear与1.5倍linear能量对照，不扫参数。设计agent仅访问代码和合法support资料，未接收任何query成绩。先运行完整support-only OOF诊断，K1只数值检查，不能伪称独立类内holdout。预登记K5/10/20相对两对照H和新类均提升、旧类退化不超过1pp；是否进入query重复基准只据该support证据决定。

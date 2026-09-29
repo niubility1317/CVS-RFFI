@@ -1,0 +1,1779 @@
+{
+  "status": "VERIFIED",
+  "method": "D92-BranchInteraction-v1",
+  "runs": [
+    {
+      "status": "VERIFIED",
+      "run_id": "20260929-phase2-d92-branch-interaction-repeat-rx3-m4-r01",
+      "models": [
+        {
+          "row_id": "cvs-daot-rc4-s2026092701",
+          "model_seed": 2026092701,
+          "fits": 900,
+          "k1_fits": 225,
+          "full_fit_calls": 900,
+          "factorizations": 900,
+          "solver_counts": {
+            "float64_centered_kernel_Cholesky": 900
+          },
+          "status_counts": {
+            "CLOSED_FORM_SOLVED": 900
+          },
+          "resources": {
+            "checkpoint_sha256": "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b",
+            "existing_model_file_bytes": 15992872,
+            "feature_array_bytes": 45467136,
+            "feature_file_bytes": 46953930,
+            "registry_array_bytes": 1482624,
+            "count": 15444,
+            "native_physical_forward_count": 0,
+            "native_batch_calls": 0,
+            "smoke_forward_count": 0,
+            "smoke_batch_calls": 0,
+            "native_total_physical_forward_count": 0,
+            "native_total_batch_calls": 0,
+            "support_cache_reuse_count": 0,
+            "existing_extraction_timing": {
+              "metadata_seconds": 0.009228070266544819,
+              "checkpoint_load_seconds": 1.9671190213412046,
+              "synthetic_smoke_seconds": 0.37487889640033245,
+              "received_read_seconds": 0.02846566867083311,
+              "native_forward_seconds": 93.20275395270437,
+              "fft_seconds": 3.83593335095793,
+              "frozen_verify_seconds": 2.764850500971079,
+              "write_seconds": 0.06792911235243082,
+              "total_seconds": 102.39950923621655
+            },
+            "existing_received_native_forward_count": 15444,
+            "extraction_timing": {
+              "total_seconds": 0.0
+            },
+            "cache_load_seconds": 0.5000939079982345,
+            "model_incremental_transfer_bytes": 0,
+            "checkpoint_loaded": false,
+            "feature_cache_reused": true,
+            "new_source_payload_bytes": 0,
+            "new_ground_statistics_bytes": 0,
+            "model_byte_scope": "Full existing training checkpoint package; not a measured minimum inference transfer"
+          },
+          "fit_measurements": {
+            "loss_data": {
+              "min": 0.3382823877146294,
+              "mean": 19.404676306758937,
+              "max": 122.75122652716593,
+              "total": 17464.208676083043
+            },
+            "loss_ridge": {
+              "min": 0.5063622233992748,
+              "mean": 8.673072373810346,
+              "max": 35.09472106435816,
+              "total": 7805.765136429311
+            },
+            "loss_total": {
+              "min": 0.9058291091586426,
+              "mean": 28.077748680569282,
+              "max": 157.05005934505317,
+              "total": 25269.973812512355
+            },
+            "gradient_norm": {
+              "min": 3.3151336107973524e-16,
+              "mean": 2.0241492521667841e-13,
+              "max": 5.9714033145714275e-12,
+              "total": 1.8217343269501059e-10
+            },
+            "normal_equation_residual": {
+              "min": 2.761644904721361e-16,
+              "mean": 1.0735565247407832e-14,
+              "max": 9.930634052856782e-14,
+              "total": 9.662008722667048e-12
+            },
+            "intercept_gradient_norm": {
+              "min": 2.2845722026868423e-16,
+              "mean": 3.4913548219395397e-13,
+              "max": 7.055525794866089e-12,
+              "total": 3.142219339745586e-10
+            },
+            "target_norm_squared": {
+              "min": 5.0,
+              "mean": 111.59999999999998,
+              "max": 499.99999999999994,
+              "total": 100439.99999999999
+            },
+            "condition_bound": {
+              "min": 5.891187263915727,
+              "mean": 165.34660225149318,
+              "max": 939.5220344306774,
+              "total": 148811.94202634387
+            },
+            "kernel_diagonal_mean": {
+              "min": 2.9999999999999996,
+              "mean": 3.0,
+              "max": 3.0000000000000013,
+              "total": 2700.0
+            },
+            "gram_seconds": {
+              "min": 0.00013178299923310988,
+              "mean": 0.000977056065498295,
+              "max": 0.023873828999057878,
+              "total": 0.8793504589484655
+            },
+            "solve_seconds": {
+              "min": 5.175899786991067e-05,
+              "mean": 0.0007758130311291704,
+              "max": 0.010015248000854626,
+              "total": 0.6982317280162533
+            },
+            "fit_seconds": {
+              "min": 0.00030280799910542555,
+              "mean": 0.002000647028770699,
+              "max": 0.024369955997826764,
+              "total": 1.8005823258936289
+            },
+            "factorization_dim": {
+              "min": 6,
+              "mean": 120.6,
+              "max": 520,
+              "total": 108540
+            },
+            "training_feature_bytes": {
+              "min": 35328,
+              "mean": 710092.8,
+              "max": 3061760,
+              "total": 639083520
+            },
+            "gram_bytes": {
+              "min": 288,
+              "mean": 242591.2,
+              "max": 2163200,
+              "total": 218332080
+            },
+            "coefficient_bytes": {
+              "min": 288,
+              "mean": 16603.2,
+              "max": 108160,
+              "total": 14942880
+            },
+            "dual_objective_gradient_norm": {
+              "min": 3.3151336107973524e-16,
+              "mean": 2.0241492521667841e-13,
+              "max": 5.9714033145714275e-12,
+              "total": 1.8217343269501059e-10
+            }
+          },
+          "timing": {
+            "fit_seconds": {
+              "min": 0.0007645309997315053,
+              "mean": 0.0034491323033540135,
+              "max": 0.03579765999893425,
+              "total": 3.104219073018612
+            },
+            "fit_call_seconds": {
+              "min": 0.0009655260000727139,
+              "mean": 0.003928013335567407,
+              "max": 0.04311608200077899,
+              "total": 3.5352120020106668
+            },
+            "query_score_seconds": {
+              "min": 0.036961562000215054,
+              "mean": 0.10795952390781167,
+              "max": 0.33291712400023243,
+              "total": 97.1635715170305
+            },
+            "prediction_write_seconds": {
+              "min": 0.0009588280008756556,
+              "mean": 0.0047611617510443065,
+              "max": 0.045843501000490505,
+              "total": 4.285045575939876
+            },
+            "total_seconds": {
+              "min": 0.03922633799811592,
+              "mean": 0.11722350185668297,
+              "max": 0.39034324499880313,
+              "total": 105.50115167101467
+            }
+          },
+          "state_bytes": {
+            "head_bytes": {
+              "min": 35776,
+              "mean": 728748.8,
+              "max": 3178464,
+              "total": 655873920
+            },
+            "persistent_state_bytes": {
+              "min": 35776,
+              "mean": 728748.8,
+              "max": 3178464,
+              "total": 655873920
+            }
+          },
+          "peak_process_rss_bytes": 567513088,
+          "peak_process_rss_reason": "Linux process high-water RSS; null when unavailable",
+          "compact_peak_rss_bytes": {
+            "min": 567513088,
+            "mean": 567513088,
+            "max": 567513088,
+            "total": 510761779200
+          },
+          "trace_file_bytes": 14530696,
+          "stage_file_bytes": 1210299
+        },
+        {
+          "row_id": "cvs-daot-rc4-s2026092702",
+          "model_seed": 2026092702,
+          "fits": 900,
+          "k1_fits": 225,
+          "full_fit_calls": 900,
+          "factorizations": 900,
+          "solver_counts": {
+            "float64_centered_kernel_Cholesky": 900
+          },
+          "status_counts": {
+            "CLOSED_FORM_SOLVED": 900
+          },
+          "resources": {
+            "checkpoint_sha256": "72f26413e495dcf82317898f8729caa3d35499bf0b41e9671ffdceab2c90924b",
+            "existing_model_file_bytes": 15992936,
+            "feature_array_bytes": 45467136,
+            "feature_file_bytes": 46953930,
+            "registry_array_bytes": 1482624,
+            "count": 15444,
+            "native_physical_forward_count": 0,
+            "native_batch_calls": 0,
+            "smoke_forward_count": 0,
+            "smoke_batch_calls": 0,
+            "native_total_physical_forward_count": 0,
+            "native_total_batch_calls": 0,
+            "support_cache_reuse_count": 0,
+            "existing_extraction_timing": {
+              "metadata_seconds": 0.009132439270615578,
+              "checkpoint_load_seconds": 1.8175313910469413,
+              "synthetic_smoke_seconds": 0.4096240270882845,
+              "received_read_seconds": 0.0320698581635952,
+              "native_forward_seconds": 108.73156921286136,
+              "fft_seconds": 3.9292663419619203,
+              "frozen_verify_seconds": 2.159438345581293,
+              "write_seconds": 0.07706523314118385,
+              "total_seconds": 117.32850164081901
+            },
+            "existing_received_native_forward_count": 15444,
+            "extraction_timing": {
+              "total_seconds": 0.0
+            },
+            "cache_load_seconds": 0.46624343800067436,
+            "model_incremental_transfer_bytes": 0,
+            "checkpoint_loaded": false,
+            "feature_cache_reused": true,
+            "new_source_payload_bytes": 0,
+            "new_ground_statistics_bytes": 0,
+            "model_byte_scope": "Full existing training checkpoint package; not a measured minimum inference transfer"
+          },
+          "fit_measurements": {
+            "loss_data": {
+              "min": 0.3191027419451571,
+              "mean": 18.638557324778084,
+              "max": 118.81486437098624,
+              "total": 16774.701592300276
+            },
+            "loss_ridge": {
+              "min": 0.5138768982422505,
+              "mean": 8.78461906097905,
+              "max": 36.068865621018915,
+              "total": 7906.157154881145
+            },
+            "loss_total": {
+              "min": 0.8830054700549804,
+              "mean": 27.423176385757134,
+              "max": 154.18474072235665,
+              "total": 24680.85874718142
+            },
+            "gradient_norm": {
+              "min": 2.6764986857564527e-16,
+              "mean": 1.7492440417234807e-13,
+              "max": 3.181652634735619e-12,
+              "total": 1.5743196375511327e-10
+            },
+            "normal_equation_residual": {
+              "min": 2.254873622441467e-16,
+              "mean": 1.0295628589205899e-14,
+              "max": 8.496993737155164e-14,
+              "total": 9.266065730285308e-12
+            },
+            "intercept_gradient_norm": {
+              "min": 2.2117554247121401e-16,
+              "mean": 3.498247936827997e-13,
+              "max": 5.809685996504706e-12,
+              "total": 3.1484231431451976e-10
+            },
+            "target_norm_squared": {
+              "min": 5.0,
+              "mean": 111.59999999999998,
+              "max": 499.99999999999994,
+              "total": 100439.99999999999
+            },
+            "condition_bound": {
+              "min": 5.858571598550693,
+              "mean": 169.28726860126204,
+              "max": 953.4204525412366,
+              "total": 152358.54174113585
+            },
+            "kernel_diagonal_mean": {
+              "min": 2.9999999999999996,
+              "mean": 3.0,
+              "max": 3.0000000000000013,
+              "total": 2700.0
+            },
+            "gram_seconds": {
+              "min": 0.00013428199963527732,
+              "mean": 0.0009811947199947705,
+              "max": 0.024705756000912515,
+              "total": 0.8830752479952935
+            },
+            "solve_seconds": {
+              "min": 5.26429976162035e-05,
+              "mean": 0.0007882255978135315,
+              "max": 0.007626891001564218,
+              "total": 0.7094030380321783
+            },
+            "fit_seconds": {
+              "min": 0.0003091670005233027,
+              "mean": 0.0020148692277628774,
+              "max": 0.025184837999404408,
+              "total": 1.8133823049865896
+            },
+            "factorization_dim": {
+              "min": 6,
+              "mean": 120.6,
+              "max": 520,
+              "total": 108540
+            },
+            "training_feature_bytes": {
+              "min": 35328,
+              "mean": 710092.8,
+              "max": 3061760,
+              "total": 639083520
+            },
+            "gram_bytes": {
+              "min": 288,
+              "mean": 242591.2,
+              "max": 2163200,
+              "total": 218332080
+            },
+            "coefficient_bytes": {
+              "min": 288,
+              "mean": 16603.2,
+              "max": 108160,
+              "total": 14942880
+            },
+            "dual_objective_gradient_norm": {
+              "min": 2.6764986857564527e-16,
+              "mean": 1.7492440417234807e-13,
+              "max": 3.181652634735619e-12,
+              "total": 1.5743196375511327e-10
+            }
+          },
+          "timing": {
+            "fit_seconds": {
+              "min": 0.0007618589988851454,
+              "mean": 0.003507734791172778,
+              "max": 0.026403698000649456,
+              "total": 3.1569613120555005
+            },
+            "fit_call_seconds": {
+              "min": 0.0009624739977880381,
+              "mean": 0.003993515143221076,
+              "max": 0.032599762998870574,
+              "total": 3.5941636288989685
+            },
+            "query_score_seconds": {
+              "min": 0.03711214099894278,
+              "mean": 0.10656312108115445,
+              "max": 0.33101758300108486,
+              "total": 95.906808973039
+            },
+            "prediction_write_seconds": {
+              "min": 0.000962512000114657,
+              "mean": 0.0046653394677761955,
+              "max": 0.02958734699859633,
+              "total": 4.198805520998576
+            },
+            "total_seconds": {
+              "min": 0.03935679300047923,
+              "mean": 0.11580037185992195,
+              "max": 0.3734017810020305,
+              "total": 104.22033467392976
+            }
+          },
+          "state_bytes": {
+            "head_bytes": {
+              "min": 35776,
+              "mean": 728748.8,
+              "max": 3178464,
+              "total": 655873920
+            },
+            "persistent_state_bytes": {
+              "min": 35776,
+              "mean": 728748.8,
+              "max": 3178464,
+              "total": 655873920
+            }
+          },
+          "peak_process_rss_bytes": 567513088,
+          "peak_process_rss_reason": "Linux process high-water RSS; null when unavailable",
+          "compact_peak_rss_bytes": {
+            "min": 567513088,
+            "mean": 567513088,
+            "max": 567513088,
+            "total": 510761779200
+          },
+          "trace_file_bytes": 14530250,
+          "stage_file_bytes": 1209659
+        },
+        {
+          "row_id": "cvs-daot-rc4-s2026092703",
+          "model_seed": 2026092703,
+          "fits": 900,
+          "k1_fits": 225,
+          "full_fit_calls": 900,
+          "factorizations": 900,
+          "solver_counts": {
+            "float64_centered_kernel_Cholesky": 900
+          },
+          "status_counts": {
+            "CLOSED_FORM_SOLVED": 900
+          },
+          "resources": {
+            "checkpoint_sha256": "51fadc3b4ad3cbf83de01700a4a109430e7a57b1e10cb147f0be5f01593f26bb",
+            "existing_model_file_bytes": 15992872,
+            "feature_array_bytes": 45467136,
+            "feature_file_bytes": 46953930,
+            "registry_array_bytes": 1482624,
+            "count": 15444,
+            "native_physical_forward_count": 0,
+            "native_batch_calls": 0,
+            "smoke_forward_count": 0,
+            "smoke_batch_calls": 0,
+            "native_total_physical_forward_count": 0,
+            "native_total_batch_calls": 0,
+            "support_cache_reuse_count": 0,
+            "existing_extraction_timing": {
+              "metadata_seconds": 0.009238062426447868,
+              "checkpoint_load_seconds": 1.8770062206313014,
+              "synthetic_smoke_seconds": 0.3807251863181591,
+              "received_read_seconds": 0.027736439369618893,
+              "native_forward_seconds": 84.16485718078911,
+              "fft_seconds": 3.778699589893222,
+              "frozen_verify_seconds": 0.8648136798292398,
+              "write_seconds": 0.06799514032900333,
+              "total_seconds": 91.31475107744336
+            },
+            "existing_received_native_forward_count": 15444,
+            "extraction_timing": {
+              "total_seconds": 0.0
+            },
+            "cache_load_seconds": 0.44331160099682165,
+            "model_incremental_transfer_bytes": 0,
+            "checkpoint_loaded": false,
+            "feature_cache_reused": true,
+            "new_source_payload_bytes": 0,
+            "new_ground_statistics_bytes": 0,
+            "model_byte_scope": "Full existing training checkpoint package; not a measured minimum inference transfer"
+          },
+          "fit_measurements": {
+            "loss_data": {
+              "min": 0.31339542121063296,
+              "mean": 18.218276421550115,
+              "max": 116.0307826008906,
+              "total": 16396.448779395105
+            },
+            "loss_ridge": {
+              "min": 0.5203765169299659,
+              "mean": 8.832385116917985,
+              "max": 37.01639628479197,
+              "total": 7949.146605226186
+            },
+            "loss_total": {
+              "min": 0.8726075288367185,
+              "mean": 27.0506615384681,
+              "max": 152.31943856443115,
+              "total": 24345.59538462129
+            },
+            "gradient_norm": {
+              "min": 3.6388042716046843e-16,
+              "mean": 1.873253679400341e-13,
+              "max": 5.423294745350253e-12,
+              "total": 1.685928311460307e-10
+            },
+            "normal_equation_residual": {
+              "min": 2.3387263717801085e-16,
+              "mean": 1.0425977352871619e-14,
+              "max": 9.423316677540661e-14,
+              "total": 9.383379617584458e-12
+            },
+            "intercept_gradient_norm": {
+              "min": 2.104670727712685e-16,
+              "mean": 3.547860775907518e-13,
+              "max": 6.270006600915704e-12,
+              "total": 3.193074698316766e-10
+            },
+            "target_norm_squared": {
+              "min": 5.0,
+              "mean": 111.59999999999998,
+              "max": 499.99999999999994,
+              "total": 100439.99999999999
+            },
+            "condition_bound": {
+              "min": 6.009284574810765,
+              "mean": 174.67929095736707,
+              "max": 973.0828174667623,
+              "total": 157211.36186163034
+            },
+            "kernel_diagonal_mean": {
+              "min": 3.0,
+              "mean": 3.0,
+              "max": 3.0000000000000013,
+              "total": 2700.0
+            },
+            "gram_seconds": {
+              "min": 0.00013607200162368827,
+              "mean": 0.0011271048933364607,
+              "max": 0.02926148099868442,
+              "total": 1.0143944040028146
+            },
+            "solve_seconds": {
+              "min": 5.120300193084404e-05,
+              "mean": 0.001127519056632688,
+              "max": 0.010707819998060586,
+              "total": 1.0147671509694192
+            },
+            "fit_seconds": {
+              "min": 0.00030739900103071705,
+              "mean": 0.0025360393233050775,
+              "max": 0.02976859900081763,
+              "total": 2.2824353909745696
+            },
+            "factorization_dim": {
+              "min": 6,
+              "mean": 120.6,
+              "max": 520,
+              "total": 108540
+            },
+            "training_feature_bytes": {
+              "min": 35328,
+              "mean": 710092.8,
+              "max": 3061760,
+              "total": 639083520
+            },
+            "gram_bytes": {
+              "min": 288,
+              "mean": 242591.2,
+              "max": 2163200,
+              "total": 218332080
+            },
+            "coefficient_bytes": {
+              "min": 288,
+              "mean": 16603.2,
+              "max": 108160,
+              "total": 14942880
+            },
+            "dual_objective_gradient_norm": {
+              "min": 3.6388042716046843e-16,
+              "mean": 1.873253679400341e-13,
+              "max": 5.423294745350253e-12,
+              "total": 1.685928311460307e-10
+            }
+          },
+          "timing": {
+            "fit_seconds": {
+              "min": 0.0007580890014651231,
+              "mean": 0.004118129637770633,
+              "max": 0.0316021680009726,
+              "total": 3.7063166739935696
+            },
+            "fit_call_seconds": {
+              "min": 0.0009629420019336976,
+              "mean": 0.004584201866705876,
+              "max": 0.03717627700098092,
+              "total": 4.1257816800352884
+            },
+            "query_score_seconds": {
+              "min": 0.03711713000302552,
+              "mean": 0.10927952197112771,
+              "max": 0.3306844340004318,
+              "total": 98.35156977401493
+            },
+            "prediction_write_seconds": {
+              "min": 0.0009548770030960441,
+              "mean": 0.004662139146696265,
+              "max": 0.029614797000249382,
+              "total": 4.195925232026639
+            },
+            "total_seconds": {
+              "min": 0.039386278000165476,
+              "mean": 0.11910842926668314,
+              "max": 0.3804450959978567,
+              "total": 107.19758634001482
+            }
+          },
+          "state_bytes": {
+            "head_bytes": {
+              "min": 35776,
+              "mean": 728748.8,
+              "max": 3178464,
+              "total": 655873920
+            },
+            "persistent_state_bytes": {
+              "min": 35776,
+              "mean": 728748.8,
+              "max": 3178464,
+              "total": 655873920
+            }
+          },
+          "peak_process_rss_bytes": 567513088,
+          "peak_process_rss_reason": "Linux process high-water RSS; null when unavailable",
+          "compact_peak_rss_bytes": {
+            "min": 567513088,
+            "mean": 567513088,
+            "max": 567513088,
+            "total": 510761779200
+          },
+          "trace_file_bytes": 14533528,
+          "stage_file_bytes": 1209634
+        },
+        {
+          "row_id": "cvs-daot-rc4-s2026092704",
+          "model_seed": 2026092704,
+          "fits": 900,
+          "k1_fits": 225,
+          "full_fit_calls": 900,
+          "factorizations": 900,
+          "solver_counts": {
+            "float64_centered_kernel_Cholesky": 900
+          },
+          "status_counts": {
+            "CLOSED_FORM_SOLVED": 900
+          },
+          "resources": {
+            "checkpoint_sha256": "690fed6ea2a6532d0ad978c93306f0f35b61f4a3a3fc4b1d6494f0e7547c74bb",
+            "existing_model_file_bytes": 15992936,
+            "feature_array_bytes": 45467136,
+            "feature_file_bytes": 46953930,
+            "registry_array_bytes": 1482624,
+            "count": 15444,
+            "native_physical_forward_count": 0,
+            "native_batch_calls": 0,
+            "smoke_forward_count": 0,
+            "smoke_batch_calls": 0,
+            "native_total_physical_forward_count": 0,
+            "native_total_batch_calls": 0,
+            "support_cache_reuse_count": 0,
+            "existing_extraction_timing": {
+              "metadata_seconds": 0.009240739047527313,
+              "checkpoint_load_seconds": 1.8967380663380027,
+              "synthetic_smoke_seconds": 0.3885983247309923,
+              "received_read_seconds": 0.027634339407086372,
+              "native_forward_seconds": 86.91869639791548,
+              "fft_seconds": 3.833251771517098,
+              "frozen_verify_seconds": 0.8812632160261273,
+              "write_seconds": 0.0675302054733038,
+              "total_seconds": 94.16860652621835
+            },
+            "existing_received_native_forward_count": 15444,
+            "extraction_timing": {
+              "total_seconds": 0.0
+            },
+            "cache_load_seconds": 0.4823002820012334,
+            "model_incremental_transfer_bytes": 0,
+            "checkpoint_loaded": false,
+            "feature_cache_reused": true,
+            "new_source_payload_bytes": 0,
+            "new_ground_statistics_bytes": 0,
+            "model_byte_scope": "Full existing training checkpoint package; not a measured minimum inference transfer"
+          },
+          "fit_measurements": {
+            "loss_data": {
+              "min": 0.32535118186197615,
+              "mean": 18.777699753639403,
+              "max": 121.13909815026426,
+              "total": 16899.929778275462
+            },
+            "loss_ridge": {
+              "min": 0.5242818844936149,
+              "mean": 8.75566223201062,
+              "max": 35.80275742377924,
+              "total": 7880.096008809558
+            },
+            "loss_total": {
+              "min": 0.8884239313176143,
+              "mean": 27.533361985650025,
+              "max": 156.14121152276516,
+              "total": 24780.025787085022
+            },
+            "gradient_norm": {
+              "min": 2.8645208715724977e-16,
+              "mean": 1.8273372209841379e-13,
+              "max": 4.150031726823173e-12,
+              "total": 1.6446034988857241e-10
+            },
+            "normal_equation_residual": {
+              "min": 2.0396099332657776e-16,
+              "mean": 1.0468873605231488e-14,
+              "max": 8.92396558671751e-14,
+              "total": 9.42198624470834e-12
+            },
+            "intercept_gradient_norm": {
+              "min": 2.4276213934271013e-16,
+              "mean": 3.4538043232407387e-13,
+              "max": 5.352755221574464e-12,
+              "total": 3.108423890916665e-10
+            },
+            "target_norm_squared": {
+              "min": 5.0,
+              "mean": 111.59999999999998,
+              "max": 499.99999999999994,
+              "total": 100439.99999999999
+            },
+            "condition_bound": {
+              "min": 5.914710284479276,
+              "mean": 169.09320966199112,
+              "max": 948.3919684371612,
+              "total": 152183.888695792
+            },
+            "kernel_diagonal_mean": {
+              "min": 3.0,
+              "mean": 3.0,
+              "max": 3.0000000000000013,
+              "total": 2700.0
+            },
+            "gram_seconds": {
+              "min": 0.0001363949995720759,
+              "mean": 0.000968822102178011,
+              "max": 0.021547824999288423,
+              "total": 0.8719398919602099
+            },
+            "solve_seconds": {
+              "min": 5.252200207905844e-05,
+              "mean": 0.0007720063766666701,
+              "max": 0.007804802997270599,
+              "total": 0.6948057390000031
+            },
+            "fit_seconds": {
+              "min": 0.00031232099718181416,
+              "mean": 0.0019892776144398443,
+              "max": 0.021999740001774626,
+              "total": 1.7903498529958597
+            },
+            "factorization_dim": {
+              "min": 6,
+              "mean": 120.6,
+              "max": 520,
+              "total": 108540
+            },
+            "training_feature_bytes": {
+              "min": 35328,
+              "mean": 710092.8,
+              "max": 3061760,
+              "total": 639083520
+            },
+            "gram_bytes": {
+              "min": 288,
+              "mean": 242591.2,
+              "max": 2163200,
+              "total": 218332080
+            },
+            "coefficient_bytes": {
+              "min": 288,
+              "mean": 16603.2,
+              "max": 108160,
+              "total": 14942880
+            },
+            "dual_objective_gradient_norm": {
+              "min": 2.8645208715724977e-16,
+              "mean": 1.8273372209841379e-13,
+              "max": 4.150031726823173e-12,
+              "total": 1.6446034988857241e-10
+            }
+          },
+          "timing": {
+            "fit_seconds": {
+              "min": 0.0007689260019105859,
+              "mean": 0.0034691767188309718,
+              "max": 0.026811554002051707,
+              "total": 3.1222590469478746
+            },
+            "fit_call_seconds": {
+              "min": 0.0009687860001577064,
+              "mean": 0.003935022438878756,
+              "max": 0.02935557199816685,
+              "total": 3.5415201949908806
+            },
+            "query_score_seconds": {
+              "min": 0.03702285699910135,
+              "mean": 0.1074260837255982,
+              "max": 0.3267828930001997,
+              "total": 96.68347535303838
+            },
+            "prediction_write_seconds": {
+              "min": 0.0009553669988235924,
+              "mean": 0.004663577673329403,
+              "max": 0.029297301000042353,
+              "total": 4.197219905996462
+            },
+            "total_seconds": {
+              "min": 0.039295942999160616,
+              "mean": 0.11660472546449455,
+              "max": 0.3617639660005807,
+              "total": 104.9442529180451
+            }
+          },
+          "state_bytes": {
+            "head_bytes": {
+              "min": 35776,
+              "mean": 728748.8,
+              "max": 3178464,
+              "total": 655873920
+            },
+            "persistent_state_bytes": {
+              "min": 35776,
+              "mean": 728748.8,
+              "max": 3178464,
+              "total": 655873920
+            }
+          },
+          "peak_process_rss_bytes": 567513088,
+          "peak_process_rss_reason": "Linux process high-water RSS; null when unavailable",
+          "compact_peak_rss_bytes": {
+            "min": 567513088,
+            "mean": 567513088,
+            "max": 567513088,
+            "total": 510761779200
+          },
+          "trace_file_bytes": 14532379,
+          "stage_file_bytes": 1210399
+        }
+      ],
+      "commit": "780b027d07acbe4ceabf583209eeaed448d70d4e",
+      "total_fits": 3600,
+      "k1_fits": 900,
+      "run_wall_seconds": 156.67888188362122,
+      "run_started": 1790669996.3667574,
+      "run_finished": 1790670153.0456393,
+      "wall_scope": "Complete cohort orchestration including cache binding, prediction, baseline verification and independent scorer; scorer values not read"
+    },
+    {
+      "status": "VERIFIED",
+      "run_id": "20260929-phase2-d92-branch-interaction-repeat-rx1-m4-r01",
+      "models": [
+        {
+          "row_id": "cvs-daot-rc4-s2026092701",
+          "model_seed": 2026092701,
+          "fits": 300,
+          "k1_fits": 75,
+          "full_fit_calls": 300,
+          "factorizations": 300,
+          "solver_counts": {
+            "float64_centered_kernel_Cholesky": 300
+          },
+          "status_counts": {
+            "CLOSED_FORM_SOLVED": 300
+          },
+          "resources": {
+            "checkpoint_sha256": "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b",
+            "existing_model_file_bytes": 15992872,
+            "feature_array_bytes": 13777920,
+            "feature_file_bytes": 14231370,
+            "registry_array_bytes": 449280,
+            "count": 4680,
+            "native_physical_forward_count": 0,
+            "native_batch_calls": 0,
+            "smoke_forward_count": 0,
+            "smoke_batch_calls": 0,
+            "native_total_physical_forward_count": 0,
+            "native_total_batch_calls": 0,
+            "support_cache_reuse_count": 0,
+            "existing_extraction_timing": {
+              "metadata_seconds": 0.0035798195749521255,
+              "checkpoint_load_seconds": 1.8274047942832112,
+              "synthetic_smoke_seconds": 0.4677403587847948,
+              "received_read_seconds": 0.010599218308925629,
+              "native_forward_seconds": 35.1145194619894,
+              "fft_seconds": 1.1785225812345743,
+              "frozen_verify_seconds": 1.080626747570932,
+              "write_seconds": 0.025390882045030594,
+              "total_seconds": 39.770017427392304
+            },
+            "existing_received_native_forward_count": 4680,
+            "extraction_timing": {
+              "total_seconds": 0.0
+            },
+            "cache_load_seconds": 0.180525210002088,
+            "model_incremental_transfer_bytes": 0,
+            "checkpoint_loaded": false,
+            "feature_cache_reused": true,
+            "new_source_payload_bytes": 0,
+            "new_ground_statistics_bytes": 0,
+            "model_byte_scope": "Full existing training checkpoint package; not a measured minimum inference transfer"
+          },
+          "fit_measurements": {
+            "loss_data": {
+              "min": 0.4524642840437533,
+              "mean": 17.294568070126687,
+              "max": 117.24639806579498,
+              "total": 5188.370421038006
+            },
+            "loss_ridge": {
+              "min": 0.5425277207939846,
+              "mean": 8.142975693921368,
+              "max": 32.67811475981084,
+              "total": 2442.8927081764105
+            },
+            "loss_total": {
+              "min": 1.0442525364294784,
+              "mean": 25.437543764048055,
+              "max": 149.24858566410188,
+              "total": 7631.263129214416
+            },
+            "gradient_norm": {
+              "min": 2.0640928543372045e-16,
+              "mean": 1.575976193252018e-13,
+              "max": 2.804442981050664e-12,
+              "total": 4.727928579756053e-11
+            },
+            "normal_equation_residual": {
+              "min": 2.7052788744732945e-16,
+              "mean": 9.610797815641685e-15,
+              "max": 7.709110658818736e-14,
+              "total": 2.8832393446925052e-12
+            },
+            "intercept_gradient_norm": {
+              "min": 2.665835984225005e-16,
+              "mean": 2.419062523585619e-13,
+              "max": 4.260357601374217e-12,
+              "total": 7.257187570756857e-11
+            },
+            "target_norm_squared": {
+              "min": 5.0,
+              "mean": 111.59999999999998,
+              "max": 499.9999999999999,
+              "total": 33479.99999999999
+            },
+            "condition_bound": {
+              "min": 5.231580966236616,
+              "mean": 139.78422847956972,
+              "max": 797.1472318017255,
+              "total": 41935.268543870916
+            },
+            "kernel_diagonal_mean": {
+              "min": 3.0,
+              "mean": 3.0,
+              "max": 3.0000000000000013,
+              "total": 900.0000000000001
+            },
+            "gram_seconds": {
+              "min": 0.00014075999933993444,
+              "mean": 0.001195335983466066,
+              "max": 0.017778176999854622,
+              "total": 0.3586007950398198
+            },
+            "solve_seconds": {
+              "min": 5.620299998554401e-05,
+              "mean": 0.0011786554199594928,
+              "max": 0.01124486499975319,
+              "total": 0.3535966259878478
+            },
+            "fit_seconds": {
+              "min": 0.00032211899815592915,
+              "mean": 0.0026663919366910704,
+              "max": 0.021928227000898914,
+              "total": 0.7999175810073211
+            },
+            "factorization_dim": {
+              "min": 6,
+              "mean": 120.6,
+              "max": 520,
+              "total": 36180
+            },
+            "training_feature_bytes": {
+              "min": 35328,
+              "mean": 710092.8,
+              "max": 3061760,
+              "total": 213027840
+            },
+            "gram_bytes": {
+              "min": 288,
+              "mean": 242591.2,
+              "max": 2163200,
+              "total": 72777360
+            },
+            "coefficient_bytes": {
+              "min": 288,
+              "mean": 16603.2,
+              "max": 108160,
+              "total": 4980960
+            },
+            "dual_objective_gradient_norm": {
+              "min": 2.0640928543372045e-16,
+              "mean": 1.575976193252018e-13,
+              "max": 2.804442981050664e-12,
+              "total": 4.727928579756053e-11
+            }
+          },
+          "timing": {
+            "fit_seconds": {
+              "min": 0.0007806360008544289,
+              "mean": 0.004448458230096246,
+              "max": 0.029656510003405856,
+              "total": 1.3345374690288736
+            },
+            "fit_call_seconds": {
+              "min": 0.0009966420002456289,
+              "mean": 0.004967549869822202,
+              "max": 0.03146735200061812,
+              "total": 1.4902649609466607
+            },
+            "query_score_seconds": {
+              "min": 0.03712941599951591,
+              "mean": 0.1101544135898439,
+              "max": 0.33533990399882896,
+              "total": 33.04632407695317
+            },
+            "prediction_write_seconds": {
+              "min": 0.000965904000622686,
+              "mean": 0.004760608459934398,
+              "max": 0.0276711129990872,
+              "total": 1.4281825379803195
+            },
+            "total_seconds": {
+              "min": 0.039473353997891536,
+              "mean": 0.12048643895318188,
+              "max": 0.3813392170013685,
+              "total": 36.145931685954565
+            }
+          },
+          "state_bytes": {
+            "head_bytes": {
+              "min": 35776,
+              "mean": 728748.8,
+              "max": 3178464,
+              "total": 218624640
+            },
+            "persistent_state_bytes": {
+              "min": 35776,
+              "mean": 728748.8,
+              "max": 3178464,
+              "total": 218624640
+            }
+          },
+          "peak_process_rss_bytes": 250290176,
+          "peak_process_rss_reason": "Linux process high-water RSS; null when unavailable",
+          "compact_peak_rss_bytes": {
+            "min": 250290176,
+            "mean": 250290176,
+            "max": 250290176,
+            "total": 75087052800
+          },
+          "trace_file_bytes": 4845658,
+          "stage_file_bytes": 403318
+        },
+        {
+          "row_id": "cvs-daot-rc4-s2026092702",
+          "model_seed": 2026092702,
+          "fits": 300,
+          "k1_fits": 75,
+          "full_fit_calls": 300,
+          "factorizations": 300,
+          "solver_counts": {
+            "float64_centered_kernel_Cholesky": 300
+          },
+          "status_counts": {
+            "CLOSED_FORM_SOLVED": 300
+          },
+          "resources": {
+            "checkpoint_sha256": "72f26413e495dcf82317898f8729caa3d35499bf0b41e9671ffdceab2c90924b",
+            "existing_model_file_bytes": 15992936,
+            "feature_array_bytes": 13777920,
+            "feature_file_bytes": 14231370,
+            "registry_array_bytes": 449280,
+            "count": 4680,
+            "native_physical_forward_count": 0,
+            "native_batch_calls": 0,
+            "smoke_forward_count": 0,
+            "smoke_batch_calls": 0,
+            "native_total_physical_forward_count": 0,
+            "native_total_batch_calls": 0,
+            "support_cache_reuse_count": 0,
+            "existing_extraction_timing": {
+              "metadata_seconds": 0.003609348088502884,
+              "checkpoint_load_seconds": 1.8770957011729479,
+              "synthetic_smoke_seconds": 0.46485816687345505,
+              "received_read_seconds": 0.010900177992880344,
+              "native_forward_seconds": 30.93038801383227,
+              "fft_seconds": 1.14552350807935,
+              "frozen_verify_seconds": 1.0217666430398822,
+              "write_seconds": 0.024176198057830334,
+              "total_seconds": 35.53619370236993
+            },
+            "existing_received_native_forward_count": 4680,
+            "extraction_timing": {
+              "total_seconds": 0.0
+            },
+            "cache_load_seconds": 0.1877334009986953,
+            "model_incremental_transfer_bytes": 0,
+            "checkpoint_loaded": false,
+            "feature_cache_reused": true,
+            "new_source_payload_bytes": 0,
+            "new_ground_statistics_bytes": 0,
+            "model_byte_scope": "Full existing training checkpoint package; not a measured minimum inference transfer"
+          },
+          "fit_measurements": {
+            "loss_data": {
+              "min": 0.43000464005847566,
+              "mean": 16.405775899466988,
+              "max": 113.60764940197369,
+              "total": 4921.732769840097
+            },
+            "loss_ridge": {
+              "min": 0.5414392002914743,
+              "mean": 8.237017889923802,
+              "max": 33.642650478227424,
+              "total": 2471.105366977141
+            },
+            "loss_total": {
+              "min": 1.0258156197612727,
+              "mean": 24.64279378939079,
+              "max": 146.68310075062752,
+              "total": 7392.838136817238
+            },
+            "gradient_norm": {
+              "min": 3.1553408636555715e-16,
+              "mean": 1.557894589151733e-13,
+              "max": 2.8552545909961384e-12,
+              "total": 4.6736837674551994e-11
+            },
+            "normal_equation_residual": {
+              "min": 2.4196749845665633e-16,
+              "mean": 9.518763194597999e-15,
+              "max": 7.265445197470496e-14,
+              "total": 2.8556289583793996e-12
+            },
+            "intercept_gradient_norm": {
+              "min": 3.3709029460790903e-16,
+              "mean": 2.2892317647812537e-13,
+              "max": 3.7053861386103264e-12,
+              "total": 6.867695294343762e-11
+            },
+            "target_norm_squared": {
+              "min": 5.0,
+              "mean": 111.59999999999998,
+              "max": 499.9999999999999,
+              "total": 33479.99999999999
+            },
+            "condition_bound": {
+              "min": 5.550373612746621,
+              "mean": 144.52136902582237,
+              "max": 808.1955496741306,
+              "total": 43356.41070774671
+            },
+            "kernel_diagonal_mean": {
+              "min": 3.0,
+              "mean": 3.0000000000000004,
+              "max": 3.0000000000000013,
+              "total": 900.0000000000001
+            },
+            "gram_seconds": {
+              "min": 0.00014164800086291507,
+              "mean": 0.0011032053199839236,
+              "max": 0.01658065699666622,
+              "total": 0.33096159599517705
+            },
+            "solve_seconds": {
+              "min": 5.7981000281870365e-05,
+              "mean": 0.0009671164866449544,
+              "max": 0.010909960998105817,
+              "total": 0.2901349459934863
+            },
+            "fit_seconds": {
+              "min": 0.00032628900225972757,
+              "mean": 0.0023395409766817465,
+              "max": 0.021526019998418633,
+              "total": 0.701862293004524
+            },
+            "factorization_dim": {
+              "min": 6,
+              "mean": 120.6,
+              "max": 520,
+              "total": 36180
+            },
+            "training_feature_bytes": {
+              "min": 35328,
+              "mean": 710092.8,
+              "max": 3061760,
+              "total": 213027840
+            },
+            "gram_bytes": {
+              "min": 288,
+              "mean": 242591.2,
+              "max": 2163200,
+              "total": 72777360
+            },
+            "coefficient_bytes": {
+              "min": 288,
+              "mean": 16603.2,
+              "max": 108160,
+              "total": 4980960
+            },
+            "dual_objective_gradient_norm": {
+              "min": 3.1553408636555715e-16,
+              "mean": 1.557894589151733e-13,
+              "max": 2.8552545909961384e-12,
+              "total": 4.6736837674551994e-11
+            }
+          },
+          "timing": {
+            "fit_seconds": {
+              "min": 0.000798172000941122,
+              "mean": 0.004100062029889765,
+              "max": 0.029170324000006076,
+              "total": 1.2300186089669296
+            },
+            "fit_call_seconds": {
+              "min": 0.0010135219999938272,
+              "mean": 0.004635660296589777,
+              "max": 0.030786645998887252,
+              "total": 1.390698088976933
+            },
+            "query_score_seconds": {
+              "min": 0.0379705900013505,
+              "mean": 0.10990949442002602,
+              "max": 0.33544527100093546,
+              "total": 32.97284832600781
+            },
+            "prediction_write_seconds": {
+              "min": 0.0009633769986976404,
+              "mean": 0.004762208056430003,
+              "max": 0.026345463000325253,
+              "total": 1.4286624169290008
+            },
+            "total_seconds": {
+              "min": 0.04028553100215504,
+              "mean": 0.11990554477669017,
+              "max": 0.3803847480012337,
+              "total": 35.97166343300705
+            }
+          },
+          "state_bytes": {
+            "head_bytes": {
+              "min": 35776,
+              "mean": 728748.8,
+              "max": 3178464,
+              "total": 218624640
+            },
+            "persistent_state_bytes": {
+              "min": 35776,
+              "mean": 728748.8,
+              "max": 3178464,
+              "total": 218624640
+            }
+          },
+          "peak_process_rss_bytes": 250290176,
+          "peak_process_rss_reason": "Linux process high-water RSS; null when unavailable",
+          "compact_peak_rss_bytes": {
+            "min": 250290176,
+            "mean": 250290176,
+            "max": 250290176,
+            "total": 75087052800
+          },
+          "trace_file_bytes": 4843748,
+          "stage_file_bytes": 403659
+        },
+        {
+          "row_id": "cvs-daot-rc4-s2026092703",
+          "model_seed": 2026092703,
+          "fits": 300,
+          "k1_fits": 75,
+          "full_fit_calls": 300,
+          "factorizations": 300,
+          "solver_counts": {
+            "float64_centered_kernel_Cholesky": 300
+          },
+          "status_counts": {
+            "CLOSED_FORM_SOLVED": 300
+          },
+          "resources": {
+            "checkpoint_sha256": "51fadc3b4ad3cbf83de01700a4a109430e7a57b1e10cb147f0be5f01593f26bb",
+            "existing_model_file_bytes": 15992872,
+            "feature_array_bytes": 13777920,
+            "feature_file_bytes": 14231370,
+            "registry_array_bytes": 449280,
+            "count": 4680,
+            "native_physical_forward_count": 0,
+            "native_batch_calls": 0,
+            "smoke_forward_count": 0,
+            "smoke_batch_calls": 0,
+            "native_total_physical_forward_count": 0,
+            "native_total_batch_calls": 0,
+            "support_cache_reuse_count": 0,
+            "existing_extraction_timing": {
+              "metadata_seconds": 0.0036074304953217506,
+              "checkpoint_load_seconds": 1.8331312453374267,
+              "synthetic_smoke_seconds": 0.40730869956314564,
+              "received_read_seconds": 0.010365713387727737,
+              "native_forward_seconds": 34.85029457975179,
+              "fft_seconds": 1.182657747529447,
+              "frozen_verify_seconds": 0.9649443319067359,
+              "write_seconds": 0.02451657224446535,
+              "total_seconds": 39.33639648463577
+            },
+            "existing_received_native_forward_count": 4680,
+            "extraction_timing": {
+              "total_seconds": 0.0
+            },
+            "cache_load_seconds": 0.17182773600143264,
+            "model_incremental_transfer_bytes": 0,
+            "checkpoint_loaded": false,
+            "feature_cache_reused": true,
+            "new_source_payload_bytes": 0,
+            "new_ground_statistics_bytes": 0,
+            "model_byte_scope": "Full existing training checkpoint package; not a measured minimum inference transfer"
+          },
+          "fit_measurements": {
+            "loss_data": {
+              "min": 0.4169362585413154,
+              "mean": 15.859009921611428,
+              "max": 110.77544305534315,
+              "total": 4757.702976483429
+            },
+            "loss_ridge": {
+              "min": 0.5504771150444218,
+              "mean": 8.327486774941338,
+              "max": 34.34922796660248,
+              "total": 2498.2460324824015
+            },
+            "loss_total": {
+              "min": 1.0036226841460614,
+              "mean": 24.186496696552766,
+              "max": 144.74016603474576,
+              "total": 7255.949008965829
+            },
+            "gradient_norm": {
+              "min": 2.831971345187459e-16,
+              "mean": 1.351081749310681e-13,
+              "max": 2.7527979093856874e-12,
+              "total": 4.053245247932043e-11
+            },
+            "normal_equation_residual": {
+              "min": 2.1499376424746292e-16,
+              "mean": 8.995125357742782e-15,
+              "max": 6.967513332078276e-14,
+              "total": 2.6985376073228346e-12
+            },
+            "intercept_gradient_norm": {
+              "min": 3.275275528903928e-16,
+              "mean": 2.3066515284061294e-13,
+              "max": 3.70574467721623e-12,
+              "total": 6.919954585218387e-11
+            },
+            "target_norm_squared": {
+              "min": 5.0,
+              "mean": 111.59999999999998,
+              "max": 499.9999999999999,
+              "total": 33479.99999999999
+            },
+            "condition_bound": {
+              "min": 5.510524655630759,
+              "mean": 145.6364814116949,
+              "max": 819.4296792954306,
+              "total": 43690.944423508474
+            },
+            "kernel_diagonal_mean": {
+              "min": 3.0,
+              "mean": 3.0,
+              "max": 3.0000000000000013,
+              "total": 900.0000000000001
+            },
+            "gram_seconds": {
+              "min": 0.0001390109973726794,
+              "mean": 0.001064665296835301,
+              "max": 0.02342054800101323,
+              "total": 0.3193995890505903
+            },
+            "solve_seconds": {
+              "min": 5.4643998737446964e-05,
+              "mean": 0.000833503419914147,
+              "max": 0.00820956700044917,
+              "total": 0.2500510259742441
+            },
+            "fit_seconds": {
+              "min": 0.0003202719999535475,
+              "mean": 0.0021512559833960646,
+              "max": 0.0242853780000587,
+              "total": 0.6453767950188194
+            },
+            "factorization_dim": {
+              "min": 6,
+              "mean": 120.6,
+              "max": 520,
+              "total": 36180
+            },
+            "training_feature_bytes": {
+              "min": 35328,
+              "mean": 710092.8,
+              "max": 3061760,
+              "total": 213027840
+            },
+            "gram_bytes": {
+              "min": 288,
+              "mean": 242591.2,
+              "max": 2163200,
+              "total": 72777360
+            },
+            "coefficient_bytes": {
+              "min": 288,
+              "mean": 16603.2,
+              "max": 108160,
+              "total": 4980960
+            },
+            "dual_objective_gradient_norm": {
+              "min": 2.831971345187459e-16,
+              "mean": 1.351081749310681e-13,
+              "max": 2.7527979093856874e-12,
+              "total": 4.053245247932043e-11
+            }
+          },
+          "timing": {
+            "fit_seconds": {
+              "min": 0.0007846280022931751,
+              "mean": 0.0037487373568243737,
+              "max": 0.02580350000062026,
+              "total": 1.124621207047312
+            },
+            "fit_call_seconds": {
+              "min": 0.0009862180013442412,
+              "mean": 0.0042503562968098174,
+              "max": 0.026421708000270883,
+              "total": 1.2751068890429451
+            },
+            "query_score_seconds": {
+              "min": 0.038305484002194135,
+              "mean": 0.10896056391668632,
+              "max": 0.31838940500165336,
+              "total": 32.688169175005896
+            },
+            "prediction_write_seconds": {
+              "min": 0.0009614320006221533,
+              "mean": 0.004721592886514069,
+              "max": 0.027687300997058628,
+              "total": 1.4164778659542208
+            },
+            "total_seconds": {
+              "min": 0.04060237799785682,
+              "mean": 0.11851707639000475,
+              "max": 0.35804291800013743,
+              "total": 35.55512291700143
+            }
+          },
+          "state_bytes": {
+            "head_bytes": {
+              "min": 35776,
+              "mean": 728748.8,
+              "max": 3178464,
+              "total": 218624640
+            },
+            "persistent_state_bytes": {
+              "min": 35776,
+              "mean": 728748.8,
+              "max": 3178464,
+              "total": 218624640
+            }
+          },
+          "peak_process_rss_bytes": 250290176,
+          "peak_process_rss_reason": "Linux process high-water RSS; null when unavailable",
+          "compact_peak_rss_bytes": {
+            "min": 250290176,
+            "mean": 250290176,
+            "max": 250290176,
+            "total": 75087052800
+          },
+          "trace_file_bytes": 4843577,
+          "stage_file_bytes": 403306
+        },
+        {
+          "row_id": "cvs-daot-rc4-s2026092704",
+          "model_seed": 2026092704,
+          "fits": 300,
+          "k1_fits": 75,
+          "full_fit_calls": 300,
+          "factorizations": 300,
+          "solver_counts": {
+            "float64_centered_kernel_Cholesky": 300
+          },
+          "status_counts": {
+            "CLOSED_FORM_SOLVED": 300
+          },
+          "resources": {
+            "checkpoint_sha256": "690fed6ea2a6532d0ad978c93306f0f35b61f4a3a3fc4b1d6494f0e7547c74bb",
+            "existing_model_file_bytes": 15992936,
+            "feature_array_bytes": 13777920,
+            "feature_file_bytes": 14231370,
+            "registry_array_bytes": 449280,
+            "count": 4680,
+            "native_physical_forward_count": 0,
+            "native_batch_calls": 0,
+            "smoke_forward_count": 0,
+            "smoke_batch_calls": 0,
+            "native_total_physical_forward_count": 0,
+            "native_total_batch_calls": 0,
+            "support_cache_reuse_count": 0,
+            "existing_extraction_timing": {
+              "metadata_seconds": 0.0036167949438095093,
+              "checkpoint_load_seconds": 1.8226237008348107,
+              "synthetic_smoke_seconds": 0.4118446884676814,
+              "received_read_seconds": 0.009053035639226437,
+              "native_forward_seconds": 27.5024677477777,
+              "fft_seconds": 1.1475577633827925,
+              "frozen_verify_seconds": 1.0159302465617657,
+              "write_seconds": 0.02287349570542574,
+              "total_seconds": 31.99303433764726
+            },
+            "existing_received_native_forward_count": 4680,
+            "extraction_timing": {
+              "total_seconds": 0.0
+            },
+            "cache_load_seconds": 0.17129284399925382,
+            "model_incremental_transfer_bytes": 0,
+            "checkpoint_loaded": false,
+            "feature_cache_reused": true,
+            "new_source_payload_bytes": 0,
+            "new_ground_statistics_bytes": 0,
+            "model_byte_scope": "Full existing training checkpoint package; not a measured minimum inference transfer"
+          },
+          "fit_measurements": {
+            "loss_data": {
+              "min": 0.4349215308847044,
+              "mean": 16.269895001247278,
+              "max": 114.5822326769943,
+              "total": 4880.968500374183
+            },
+            "loss_ridge": {
+              "min": 0.5510983879287925,
+              "mean": 8.241151056278596,
+              "max": 33.665780304827,
+              "total": 2472.345316883579
+            },
+            "loss_total": {
+              "min": 1.0245804141386599,
+              "mean": 24.511046057525874,
+              "max": 147.66730104082276,
+              "total": 7353.313817257762
+            },
+            "gradient_norm": {
+              "min": 3.0776028556376195e-16,
+              "mean": 1.6653970107465566e-13,
+              "max": 2.604846769738571e-12,
+              "total": 4.99619103223967e-11
+            },
+            "normal_equation_residual": {
+              "min": 2.8031757299712627e-16,
+              "mean": 9.650412584166544e-15,
+              "max": 7.241035947020238e-14,
+              "total": 2.895123775249963e-12
+            },
+            "intercept_gradient_norm": {
+              "min": 3.4134844607150005e-16,
+              "mean": 2.3110055281139193e-13,
+              "max": 3.850186538144423e-12,
+              "total": 6.933016584341758e-11
+            },
+            "target_norm_squared": {
+              "min": 5.0,
+              "mean": 111.59999999999998,
+              "max": 499.9999999999999,
+              "total": 33479.99999999999
+            },
+            "condition_bound": {
+              "min": 5.534035720357867,
+              "mean": 143.32865262524217,
+              "max": 808.9196173335729,
+              "total": 42998.59578757265
+            },
+            "kernel_diagonal_mean": {
+              "min": 3.0,
+              "mean": 3.0000000000000004,
+              "max": 3.0000000000000013,
+              "total": 900.0000000000001
+            },
+            "gram_seconds": {
+              "min": 0.0001372459992126096,
+              "mean": 0.001142364866718708,
+              "max": 0.02543137699831277,
+              "total": 0.3427094600156124
+            },
+            "solve_seconds": {
+              "min": 5.889000021852553e-05,
+              "mean": 0.000978807543287985,
+              "max": 0.011504226000397466,
+              "total": 0.2936422629863955
+            },
+            "fit_seconds": {
+              "min": 0.0003207689987902995,
+              "mean": 0.0023902765499587988,
+              "max": 0.026261445997079136,
+              "total": 0.7170829649876396
+            },
+            "factorization_dim": {
+              "min": 6,
+              "mean": 120.6,
+              "max": 520,
+              "total": 36180
+            },
+            "training_feature_bytes": {
+              "min": 35328,
+              "mean": 710092.8,
+              "max": 3061760,
+              "total": 213027840
+            },
+            "gram_bytes": {
+              "min": 288,
+              "mean": 242591.2,
+              "max": 2163200,
+              "total": 72777360
+            },
+            "coefficient_bytes": {
+              "min": 288,
+              "mean": 16603.2,
+              "max": 108160,
+              "total": 4980960
+            },
+            "dual_objective_gradient_norm": {
+              "min": 3.0776028556376195e-16,
+              "mean": 1.6653970107465566e-13,
+              "max": 2.604846769738571e-12,
+              "total": 4.99619103223967e-11
+            }
+          },
+          "timing": {
+            "fit_seconds": {
+              "min": 0.000807361000624951,
+              "mean": 0.004128115513485682,
+              "max": 0.03048155900251004,
+              "total": 1.2384346540457045
+            },
+            "fit_call_seconds": {
+              "min": 0.0010126619999937247,
+              "mean": 0.004647164089971435,
+              "max": 0.032260187002975727,
+              "total": 1.3941492269914306
+            },
+            "query_score_seconds": {
+              "min": 0.037105086998053594,
+              "mean": 0.10878988048996689,
+              "max": 0.3330489079999097,
+              "total": 32.63696414699007
+            },
+            "prediction_write_seconds": {
+              "min": 0.0009654080022301059,
+              "mean": 0.004759193323394963,
+              "max": 0.027758175998314982,
+              "total": 1.4277579970184888
+            },
+            "total_seconds": {
+              "min": 0.03944117400169489,
+              "mean": 0.11880058457662623,
+              "max": 0.3770265710008971,
+              "total": 35.64017537298787
+            }
+          },
+          "state_bytes": {
+            "head_bytes": {
+              "min": 35776,
+              "mean": 728748.8,
+              "max": 3178464,
+              "total": 218624640
+            },
+            "persistent_state_bytes": {
+              "min": 35776,
+              "mean": 728748.8,
+              "max": 3178464,
+              "total": 218624640
+            }
+          },
+          "peak_process_rss_bytes": 250290176,
+          "peak_process_rss_reason": "Linux process high-water RSS; null when unavailable",
+          "compact_peak_rss_bytes": {
+            "min": 250290176,
+            "mean": 250290176,
+            "max": 250290176,
+            "total": 75087052800
+          },
+          "trace_file_bytes": 4843576,
+          "stage_file_bytes": 403326
+        }
+      ],
+      "commit": "780b027d07acbe4ceabf583209eeaed448d70d4e",
+      "total_fits": 1200,
+      "k1_fits": 300,
+      "run_wall_seconds": 52.40798830986023,
+      "run_started": 1790670013.4779425,
+      "run_finished": 1790670065.8859308,
+      "wall_scope": "Complete cohort orchestration including cache binding, prediction, baseline verification and independent scorer; scorer values not read"
+    }
+  ],
+  "total_fits": 4800,
+  "k1_fits": 1200,
+  "full_fit_calls": 4800,
+  "factorizations": 4800,
+  "fold_fit_calls": 0,
+  "optimizer_steps": 0,
+  "oof": null,
+  "feature_dim": 736,
+  "implicit_feature_dim": 123616,
+  "numeric_head_bytes_formula": "8*(N*(736+C+2)+C)+16; N=C*K; current support retained",
+  "query_rows_used_for_fit": 0,
+  "source_rows_used_for_fit": 0,
+  "new_source_payload_bytes": 0,
+  "new_ground_statistics_bytes": 0,
+  "selection": "fixed_no_selection",
+  "raw_traces_preserved": true,
+  "parameter_feedback_forbidden": true,
+  "summed_process_work_seconds": {
+    "fit_seconds": 18.017368045104377,
+    "fit_call_seconds": 20.346896671893774,
+    "query_score_seconds": 519.4497313420798,
+    "prediction_write_seconds": 22.578077052843582,
+    "total_seconds": 565.1762190119553
+  },
+  "numeric_state_bytes": {
+    "head_bytes": {
+      "min": 35776,
+      "max": 3178464,
+      "mean": 728748.8,
+      "summed_episode_bytes": 3497994240
+    },
+    "persistent_state_bytes": {
+      "min": 35776,
+      "max": 3178464,
+      "mean": 728748.8,
+      "summed_episode_bytes": 3497994240
+    }
+  },
+  "summed_extraction_seconds": 0.0,
+  "summed_cache_load_seconds": 2.6033284199984337,
+  "summed_extraction_stage_seconds": {
+    "total_seconds": 0.0
+  },
+  "joint_wall_span_seconds": 156.67888188362122,
+  "summed_cohort_wall_seconds": 209.08687019348145,
+  "max_observed_process_rss_bytes": 567513088,
+  "existing_unique_model_file_bytes": 63971616,
+  "unique_model_count": 4,
+  "model_incremental_transfer_bytes": 0,
+  "checkpoint_loaded": false,
+  "feature_cache_reused": true,
+  "received_feature_array_bytes": 236980224,
+  "received_feature_file_bytes": 244741200,
+  "received_registry_array_bytes": 7727616,
+  "received_native_forward_count": 0,
+  "synthetic_smoke_forward_count": 0,
+  "actual_total_native_forward_count": 0,
+  "actual_total_native_batch_calls": 0,
+  "interpretation": "Recorded metadata consistency, not numerical reexecution. Process work sums differ from wall span; max process RSS is not aggregate simultaneous memory. Summed episode state bytes are cumulative per-fit snapshots, not concurrent memory. Existing model and feature bytes are storage, not new transfer; extraction/forward costs are zero for this cache-reuse run. No predictions, scores, truth, checkpoints or feature values read."
+}
