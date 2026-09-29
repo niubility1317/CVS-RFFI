@@ -1,3 +1,11 @@
+## 当前继续点：LocalMargin准备启动完整support诊断（2026-09-29）
+
+用户要求在BranchLocalRidge上继续改善，独立验证暂缓。直接基线为LocalRidge，旧BranchRidge/Interaction只作描述性对照。新run `20260929-phase2-d92-branch-local-margin-support-m4-r01` 为LOCAL_VERIFIED，尚未启动；release `d92_branch_local_margin_support_20260929_r01`。core/config、7个工具、96项测试及逐sweep日志已完成；数学与可执行P0/P1审查记录 `docs/D92_LOCAL_MARGIN_MATH_REVIEW_20260929.md`。
+
+新候选只改固定LocalRidge核上的分类损失，物理求和最强竞争类平方hinge，正则与margin均1，float64精确行块dual求解，最多1000sweep。完整8row/4800parent/52800候选fit及同折控制；真实K1仅数值，3600OOF和42000proxy anchors。合成26/364/520形状全部证书通过；单样本求解较慢，不外推目标耗时。证据 `evidence/local_validation.json`。不得将query报告/历史query指标交给方法worker。
+
+root唯一launch/test owner。代码本地提交push读回后，发布 `tools/publish_d92_branch_local_margin_probe.py --spec configs/d92_branch_local_margin_support_20260929.json`，并核实PID/CWD/argv/日志增长后更新原记录。已有preflight确认新路径不存在、缓存绑定正确。启动或SSH不明先read-only reconcile，禁止重复启动。此前LocalRidge两组重复基准已ANALYZED，不重启。以下为历史记录。
+
 ## 当前继续点：LocalRidge完整评测完成；用户要求继续提升（2026-09-29）
 
 两组 `20260929-phase2-d92-branch-local-ridge-repeat-{rx3,rx1}-m4-r01` 已 SCORED/ANALYZED，全部4800fits/9648scores，所有本轮进程退出。runtime `de10068cd1168ab064c835bf341ddb0f63e1231c`。终态证据rx3 `readback_1790694038.json`、rx1 `readback_1790694039.json`；下载前双终态证据 `readback_1790694048.json`。结果已落盘 `rx3/results/triple_baseline/analysis.json`、`report.md`、`fit_audit.json`，两组 `arithmetic_audit.json` 和 `artifacts.json`。不得重复启动/下载/分析到同一路径。

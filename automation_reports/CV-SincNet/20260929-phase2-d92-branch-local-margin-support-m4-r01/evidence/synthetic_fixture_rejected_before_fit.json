@@ -1,0 +1,56 @@
+{
+  "scope": "SYNTHETIC_ONLY_NO_PROJECT_DATA",
+  "python": "E:\\type10-7\\local_envs\\ssr-gpu\\python.exe",
+  "conda_prefix": "E:\\type10-7\\local_envs\\ssr-gpu",
+  "numpy": "2.2.6",
+  "threads": [
+    {
+      "user_api": "blas",
+      "internal_api": "openblas",
+      "num_threads": 2,
+      "prefix": "libscipy_openblas",
+      "filepath": "E:\\type10-7\\local_envs\\ssr-gpu\\Lib\\site-packages\\numpy.libs\\libscipy_openblas64_-13e2df515630b4a41f92893938845698.dll",
+      "version": "0.3.29",
+      "threading_layer": "pthreads",
+      "architecture": "Haswell"
+    }
+  ],
+  "rows": [
+    {
+      "shape": [
+        26,
+        26
+      ],
+      "status": "FAILED",
+      "elapsed_seconds": 0.0008493999994243495,
+      "error_type": "ValueError",
+      "error": "Invalid support labels, physical IDs, classes, or old membership",
+      "callback_count": 0,
+      "failure_context": null
+    },
+    {
+      "shape": [
+        364,
+        26
+      ],
+      "status": "FAILED",
+      "elapsed_seconds": 0.0039402999991580145,
+      "error_type": "ValueError",
+      "error": "Invalid support labels, physical IDs, classes, or old membership",
+      "callback_count": 0,
+      "failure_context": null
+    },
+    {
+      "shape": [
+        520,
+        26
+      ],
+      "status": "FAILED",
+      "elapsed_seconds": 0.009538199999951757,
+      "error_type": "ValueError",
+      "error": "Invalid support labels, physical IDs, classes, or old membership",
+      "callback_count": 0,
+      "failure_context": null
+    }
+  ]
+}

@@ -153,6 +153,24 @@ paths += ['docs/D92_INDEPENDENT_DATA_METADATA_ADDENDUM_20260929.md',
     'tools/collect_d92_branch_local_ridge_audit.py','tests/test_collect_d92_branch_local_ridge_audit.py',
     'configs/d92_branch_local_ridge_repeat_rx3_20260929.json','configs/d92_branch_local_ridge_repeat_rx1_20260929.json',
     'configs/d92_branch_local_ridge_repeat_rx3_data_20260929.json','configs/d92_branch_local_ridge_repeat_rx1_data_20260929.json']
+paths += ['docs/D92_NEXT_AFTER_LOCAL_RIDGE_20260929.md',
+    'docs/D92_LOCAL_MARGIN_MATH_REVIEW_20260929.md',
+    'code/cvsrffi/d92_branch_local_margin.py',
+    'configs/d92_branch_local_margin_frozen_20260929.json',
+    'configs/d92_branch_local_margin_support_20260929.json',
+    'configs/d92_branch_local_margin_support_rx3_20260929.json',
+    'configs/d92_branch_local_margin_support_rx1_20260929.json',
+    'tools/evaluate_d92_branch_local_margin_probe.py',
+    'tools/summarize_d92_branch_local_margin_probe.py',
+    'tools/run_d92_branch_local_margin_probe.py',
+    'tools/publish_d92_branch_local_margin_probe.py',
+    'tools/preflight_d92_branch_local_margin_probe.py',
+    'tools/prepare_d92_branch_local_margin_probe.py',
+    'tools/analyze_d92_branch_local_margin_probe.py',
+    'tests/test_d92_branch_local_margin.py',
+    'tests/test_evaluate_d92_branch_local_margin_probe.py',
+    'tests/test_summarize_d92_branch_local_margin_probe.py',
+    'tests/test_run_d92_branch_local_margin_probe.py']
 for name in paths:
     src=ROOT/name;dst=WS/name;dst.parent.mkdir(parents=True,exist_ok=True)
     # Each name is unique to this task; original D92 and shared wrappers are not mirrored.

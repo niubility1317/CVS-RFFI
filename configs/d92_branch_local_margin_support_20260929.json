@@ -1,0 +1,785 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20260929-phase2-d92-branch-local-margin-support-m4-r01",
+  "group_id": "d92-branch-local-margin-support-development",
+  "display_name": "BranchLocalMargin固定局部核平方间隔与单样本代理support诊断",
+  "description": "保持LocalRidge训练折内核几何，比较最强错误类平方间隔目标；四臂逐折从零拟合，完整物理OOF及全部support内1-shot anchors。",
+  "kind": "diagnostic",
+  "stage": "Phase2-support-only-diagnostic",
+  "aliases": [],
+  "tags": [
+    "d92",
+    "branch-local-margin",
+    "support-only",
+    "cached",
+    "no-query-access"
+  ],
+  "comparison_group_id": "manysig-six-source-rx13468-day123-luv076330-residual-noeq-v1",
+  "parent_run_ids": [
+    "20260929-phase2-d92-branch-local-ridge-support-m4-r01"
+  ],
+  "authorization": "用户要求在BranchLocalRidge上继续改善旧类、新类和H；允许子Agent、合法support辅助训练及透明重复基准，固定Phase1、不访问源样本或逐样本源特征；独立验证暂缓。",
+  "code": {
+    "commit": "0e4747126346e632a696a957cd5c5ac78151236c",
+    "checkout": "E:\\type10-7\\code\\snapshots\\d92_support_upgrade_20260928_wt",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_margin_support_20260929_r01",
+    "base_recipe": "experiments/adv3b02_xuc/configs/rc4_practical_residual_noeq_20260918.json",
+    "native_code_base": "b63734157",
+    "native_training_commit": "9b1ddd939fcabc74c77c94a62fef8e5aad07c0e9",
+    "commit_note": "Preparation parent; publisher records actual pushed release commit in launch/startup."
+  },
+  "data": {
+    "dataset": "Support slices only from the two existing VALIDATED_ONCE capsules",
+    "version": "existing_N607_ManyTx_actual19RX",
+    "representation": "Existing immutable support-only z_id/fft/t_emb/f_emb/pa_local; same single received observation",
+    "contract_ref": "probe.cohorts.*.capsule/manifest.json",
+    "physical_ids_ref": "probe.cohorts.*.capsule/received.npz#ids metadata only",
+    "label_map_ref": "probe.cohorts.*.capsule/splits/*.json#registered_classes,support_labels",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [
+      "19-1",
+      "8-14",
+      "8-7",
+      "20-19"
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "probe.cohorts.*.capsule/splits/*.json#registered_classes",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": {
+      "rx3": "residual-noeq-76121e6f34363fa612ec25fb",
+      "rx1": "residual-noeq-d0a99fede324159c5a4750fd"
+    },
+    "split_id": "All unchanged 900 rx3 plus 300 rx1 splits, repeated across four fixed models",
+    "validation_ref": "Existing cohort capsule manifests; no data rebuild or revalidation",
+    "support_query_ref": "Only registered support_indices/support_labels are consumed; query excluded",
+    "leo_config_ref": "experiments/adv3b02_xuc/code/cvsrffi/practical_adapter.py",
+    "k": [
+      1,
+      5,
+      10,
+      20
+    ],
+    "new_class_counts": [
+      0,
+      2,
+      5,
+      10,
+      20
+    ],
+    "support_seeds": [
+      2026092711,
+      2026092712,
+      2026092713,
+      2026092714,
+      2026092715
+    ],
+    "protocol_schema": "p2_min_v1",
+    "phase2_data_status": "VALIDATED_ONCE",
+    "scenarios": [
+      "practical_high",
+      "practical_mid",
+      "practical_low_urban"
+    ],
+    "data_rebuilt": false,
+    "data_revalidated": false,
+    "target_previously_scored": true,
+    "reuse_policy": "VALIDATED_ONCE; runtime artifact identity/binding checks only, no new data validation"
+  },
+  "permissions": {
+    "regime": "current_row_support_only_local_margin_diagnostic",
+    "query_use": "none; query IQ/labels/truth/scores never read",
+    "source_samples": false,
+    "source_per_record_features": false,
+    "source_replay": false,
+    "summary_inputs": false,
+    "old_target_scores_for_adaptation": false,
+    "cross_run_result_tuning": false,
+    "adapted_state_reuse": false,
+    "truth_use": "Only held legal support labels after fixed support predictions; no query scorer",
+    "claim_scope": "SUPPORT_INFORMATION_DIAGNOSTIC_NOT_QUERY_PERFORMANCE"
+  },
+  "checkpoint": {
+    "initialization": "Exact source-only scratch final200 model; eval and frozen; no changed buffers or weights",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701/final_ssdg.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092702/final_ssdg.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092703/final_ssdg.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092704/final_ssdg.pth"
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "provenance_verdict": "VERIFIED_ALL_FOUR_EXACT_SOURCE_CONTRACT_SCRATCH_FINAL200_SHA_AND_NATIVE_ARCHITECTURE",
+    "selection_rule": "All four fixed model seeds, final epoch200; no checkpoint/model choice from any target score",
+    "metadata_evidence_ref": "docs/D92_FIXED_PHASE1_BRANCH_METADATA_20260929.json",
+    "runtime_checkpoint_reload": false,
+    "source_training_contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "inheritance_policy": "Only original source-only model; no historical adapted head/cache state",
+    "current_auxiliary_training": "Fixed support-only branch / interaction / local ridge / local margin, freshly refit for every fold or anchor",
+    "feature_cache_producer_run_id": "20260929-phase2-d92-branch-support-probe-m4-r01",
+    "feature_cache_producer_role": "support-only raw frozen features; no learned state"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/d92-upgrade-20260928",
+    "gpu_policy": "CPU only; four lanes and two BLAS threads per lane; no checkpoint reload or GPU process",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-local-margin-support-m4-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-local-margin-support-m4-r01",
+    "local_artifact_root": "automation_reports/CV-SincNet/20260929-phase2-d92-branch-local-margin-support-m4-r01",
+    "launch_command": "F:/App/miniconda3/python.exe -X utf8 tools/publish_d92_branch_local_margin_probe.py --spec configs/d92_branch_local_margin_support_20260929.json",
+    "stop_rule": "Technical failure fails only its lane; healthy lanes finish. No automatic retry, no stopping for weak support diagnostics.",
+    "cpu_lanes": 4,
+    "blas_threads_per_lane": 2,
+    "export_device": null,
+    "export_batch_size": null
+  },
+  "expected_artifacts": [
+    "startup.json",
+    "state.json",
+    "complete.json",
+    "each row/probe.log",
+    "each row/probe/startup.json",
+    "each row/probe/fit_trace.jsonl",
+    "each row/probe/compact.jsonl",
+    "each row/probe/compact.csv",
+    "each row/probe/probe_complete.json",
+    "each row/probe/fit_stages.jsonl",
+    "each row/probe/fit_stages.csv",
+    "each row/probe/solver_sweeps.jsonl",
+    "each row/probe/solver_sweeps.csv",
+    "each row/probe/solver_sweeps.log"
+  ],
+  "notes": [
+    "LocalMargin preserves LocalRidge train-only bandwidth and trace matching; margin=1, physical-sum weight=1, RKHS penalty=1.",
+    "All four fixed arms freshly refit every exact physical fold and anchor; no control artifact reuse, parameter grid or per-row selection.",
+    "True K1 has no independent holdout. Proxy train K1 is reported separately by parent K5/10/20.",
+    "Existing support-only raw caches; no checkpoint reload, source access, query access or fitted-state inheritance.",
+    "LocalRidge is the direct samefold control by latest user instruction; old BranchRidge/Interaction are descriptive controls only. Query results were not supplied to method workers."
+  ],
+  "claim_scope": "SUPPORT_INFORMATION_DIAGNOSTIC_NOT_QUERY_PERFORMANCE",
+  "status": "PLANNED",
+  "metrics_plan": {
+    "metric_names": [
+      "support_OOF_old_accuracy",
+      "support_OOF_new_accuracy",
+      "support_OOF_H",
+      "support_oneshot_proxy_old_accuracy",
+      "support_oneshot_proxy_new_accuracy",
+      "support_oneshot_proxy_H",
+      "uncalibrated_NLL",
+      "resource_cost"
+    ],
+    "dimensions": [
+      "model_seed",
+      "cohort",
+      "receiver",
+      "scenario",
+      "parent_K",
+      "train_K",
+      "new_count",
+      "support_seed",
+      "diagnostic",
+      "arm"
+    ],
+    "scorer_ref": null,
+    "prediction_ref": "support OOF only; no query predictions",
+    "interpretation": "Standard OOF and proxy separately: at each parent K5/10/20, candidate H/new must improve versus freshly fitted LocalRidge with old decline <=1pp. BranchRidge and InteractionRidge are descriptive controls only. Report strict old/new/H improvements separately from the guard. All-old and each K/new-count stratum reported without an extra all-cell-positive gate. Aggregate all anchors within parent before task means. True K1 has numerical evidence only; no query claim or parameter revision from this diagnostic."
+  },
+  "probe": {
+    "cohorts": {
+      "rx3": {
+        "capsule": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule",
+        "capsule_id": "residual-noeq-76121e6f34363fa612ec25fb",
+        "expected_split_count": 900,
+        "matrix": {
+          "receivers": [
+            "19-1",
+            "8-14",
+            "8-7"
+          ],
+          "scenarios": [
+            "practical_high",
+            "practical_mid",
+            "practical_low_urban"
+          ],
+          "ks": [
+            1,
+            5,
+            10,
+            20
+          ],
+          "new_counts": [
+            0,
+            2,
+            5,
+            10,
+            20
+          ],
+          "support_seeds": [
+            2026092711,
+            2026092712,
+            2026092713,
+            2026092714,
+            2026092715
+          ]
+        },
+        "evaluation_config": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_margin_support_20260929_r01/configs/d92_branch_local_margin_support_rx3_20260929.json"
+      },
+      "rx1": {
+        "capsule": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-data-manytx-r01/capsule",
+        "capsule_id": "residual-noeq-d0a99fede324159c5a4750fd",
+        "expected_split_count": 300,
+        "matrix": {
+          "receivers": [
+            "20-19"
+          ],
+          "scenarios": [
+            "practical_high",
+            "practical_mid",
+            "practical_low_urban"
+          ],
+          "ks": [
+            1,
+            5,
+            10,
+            20
+          ],
+          "new_counts": [
+            0,
+            2,
+            5,
+            10,
+            20
+          ],
+          "support_seeds": [
+            2026092711,
+            2026092712,
+            2026092713,
+            2026092714,
+            2026092715
+          ]
+        },
+        "evaluation_config": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_margin_support_20260929_r01/configs/d92_branch_local_margin_support_rx1_20260929.json"
+      }
+    },
+    "native_code": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rc4_matched_20260927_r01/code",
+    "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "algorithm_config": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_margin_support_20260929_r01/configs/d92_branch_local_margin_frozen_20260929.json",
+    "model_rows": 8,
+    "total_episodes": 4800,
+    "view_count": 1,
+    "source_payload_bytes": 0,
+    "query_access": false,
+    "full_support_head": false,
+    "reuse_support_cache": true,
+    "candidate": "local_margin",
+    "max_factorizations": 158400,
+    "expected_oof_parents": 3600,
+    "expected_true_k1_parents": 1200,
+    "expected_proxy_anchors": 42000,
+    "controls": [
+      "branch_ridge",
+      "interaction_ridge",
+      "local_ridge"
+    ],
+    "diagnostics": [
+      "physical_oof",
+      "support_oneshot_proxy"
+    ],
+    "proxy_policy": "All sorted positions 0..parent_K-1 inside each current support set; true K1 excluded",
+    "direct_baseline": "local_ridge",
+    "descriptive_controls": [
+      "branch_ridge",
+      "interaction_ridge"
+    ],
+    "expected_candidate_fits": 52800,
+    "expected_fresh_local_ridge_fits": 52800,
+    "control_reuse": false,
+    "maximum_sweeps_per_candidate_fit": 1000
+  },
+  "rows": [
+    {
+      "row_id": "rx3-cvs-daot-rc4-s2026092701",
+      "method": "D92-BranchLocalMargin fixed four-arm support probe",
+      "purpose": "Compare fixed-kernel margin against fresh same-fold LocalRidge; older controls descriptive; separate one-shot proxy",
+      "gpu": "CPU only",
+      "config_ref": "configs/d92_branch_local_margin_support_20260929.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-local-margin-support-m4-r01/rx3-cvs-daot-rc4-s2026092701/probe/startup.json",
+      "data_overrides": {
+        "capsule": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule",
+        "capsule_id": "residual-noeq-76121e6f34363fa612ec25fb",
+        "expected_split_count": 900
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026092705,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Model/split/data/augmentation roles retain source/capsule lineage. Support seed varies over explicit cohort matrix (row field null). Evaluation seed null: physical OOF is deterministic and no query evaluation is executed.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "practical_high,practical_mid,practical_low_urban; residual/post_sync/noeq",
+      "optimizer": "Deterministic exact row-block dual minimization, float64, zero initialization, max1000 full sweeps, gap/KKT sqrt(eps64); controls freshly solved ridge; report measured steps",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "All4800 parents;3600 three-fold OOF;all42000 one-shot anchors;trueK1 numeric-only",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-local-margin-support-m4-r01/rx3-cvs-daot-rc4-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-local-margin-support-m4-r01/rx3-cvs-daot-rc4-s2026092701/probe.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_margin_support_20260929_r01/tools/run_d92_branch_local_margin_probe.py --spec /home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_margin_support_20260929_r01/configs/d92_branch_local_margin_support_20260929.json --commit RELEASE_HEAD",
+      "expected_artifacts": [
+        "probe/startup.json",
+        "probe/fit_trace.jsonl",
+        "probe/compact.jsonl",
+        "probe/compact.csv",
+        "probe/probe_complete.json",
+        "probe/fit_stages.jsonl",
+        "probe/fit_stages.csv",
+        "probe/solver_sweeps.jsonl",
+        "probe/solver_sweeps.csv",
+        "probe/solver_sweeps.log"
+      ],
+      "source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701",
+      "expected_checkpoint_sha256": "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b",
+      "provenance_refs": {
+        "source_initialization": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701/initialization.json",
+        "source_completion": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701/completion.json"
+      },
+      "cohort": "rx3",
+      "support_features": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-support-probe-m4-r01/rx3-cvs-daot-rc4-s2026092701/feature_cache"
+    },
+    {
+      "row_id": "rx3-cvs-daot-rc4-s2026092702",
+      "method": "D92-BranchLocalMargin fixed four-arm support probe",
+      "purpose": "Compare fixed-kernel margin against fresh same-fold LocalRidge; older controls descriptive; separate one-shot proxy",
+      "gpu": "CPU only",
+      "config_ref": "configs/d92_branch_local_margin_support_20260929.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-local-margin-support-m4-r01/rx3-cvs-daot-rc4-s2026092702/probe/startup.json",
+      "data_overrides": {
+        "capsule": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule",
+        "capsule_id": "residual-noeq-76121e6f34363fa612ec25fb",
+        "expected_split_count": 900
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 2026092705,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Model/split/data/augmentation roles retain source/capsule lineage. Support seed varies over explicit cohort matrix (row field null). Evaluation seed null: physical OOF is deterministic and no query evaluation is executed.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "practical_high,practical_mid,practical_low_urban; residual/post_sync/noeq",
+      "optimizer": "Deterministic exact row-block dual minimization, float64, zero initialization, max1000 full sweeps, gap/KKT sqrt(eps64); controls freshly solved ridge; report measured steps",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "All4800 parents;3600 three-fold OOF;all42000 one-shot anchors;trueK1 numeric-only",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-local-margin-support-m4-r01/rx3-cvs-daot-rc4-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-local-margin-support-m4-r01/rx3-cvs-daot-rc4-s2026092702/probe.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_margin_support_20260929_r01/tools/run_d92_branch_local_margin_probe.py --spec /home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_margin_support_20260929_r01/configs/d92_branch_local_margin_support_20260929.json --commit RELEASE_HEAD",
+      "expected_artifacts": [
+        "probe/startup.json",
+        "probe/fit_trace.jsonl",
+        "probe/compact.jsonl",
+        "probe/compact.csv",
+        "probe/probe_complete.json",
+        "probe/fit_stages.jsonl",
+        "probe/fit_stages.csv",
+        "probe/solver_sweeps.jsonl",
+        "probe/solver_sweeps.csv",
+        "probe/solver_sweeps.log"
+      ],
+      "source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092702",
+      "expected_checkpoint_sha256": "72f26413e495dcf82317898f8729caa3d35499bf0b41e9671ffdceab2c90924b",
+      "provenance_refs": {
+        "source_initialization": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092702/initialization.json",
+        "source_completion": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092702/completion.json"
+      },
+      "cohort": "rx3",
+      "support_features": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-support-probe-m4-r01/rx3-cvs-daot-rc4-s2026092702/feature_cache"
+    },
+    {
+      "row_id": "rx3-cvs-daot-rc4-s2026092703",
+      "method": "D92-BranchLocalMargin fixed four-arm support probe",
+      "purpose": "Compare fixed-kernel margin against fresh same-fold LocalRidge; older controls descriptive; separate one-shot proxy",
+      "gpu": "CPU only",
+      "config_ref": "configs/d92_branch_local_margin_support_20260929.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-local-margin-support-m4-r01/rx3-cvs-daot-rc4-s2026092703/probe/startup.json",
+      "data_overrides": {
+        "capsule": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule",
+        "capsule_id": "residual-noeq-76121e6f34363fa612ec25fb",
+        "expected_split_count": 900
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 2026092705,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Model/split/data/augmentation roles retain source/capsule lineage. Support seed varies over explicit cohort matrix (row field null). Evaluation seed null: physical OOF is deterministic and no query evaluation is executed.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "practical_high,practical_mid,practical_low_urban; residual/post_sync/noeq",
+      "optimizer": "Deterministic exact row-block dual minimization, float64, zero initialization, max1000 full sweeps, gap/KKT sqrt(eps64); controls freshly solved ridge; report measured steps",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "All4800 parents;3600 three-fold OOF;all42000 one-shot anchors;trueK1 numeric-only",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-local-margin-support-m4-r01/rx3-cvs-daot-rc4-s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-local-margin-support-m4-r01/rx3-cvs-daot-rc4-s2026092703/probe.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_margin_support_20260929_r01/tools/run_d92_branch_local_margin_probe.py --spec /home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_margin_support_20260929_r01/configs/d92_branch_local_margin_support_20260929.json --commit RELEASE_HEAD",
+      "expected_artifacts": [
+        "probe/startup.json",
+        "probe/fit_trace.jsonl",
+        "probe/compact.jsonl",
+        "probe/compact.csv",
+        "probe/probe_complete.json",
+        "probe/fit_stages.jsonl",
+        "probe/fit_stages.csv",
+        "probe/solver_sweeps.jsonl",
+        "probe/solver_sweeps.csv",
+        "probe/solver_sweeps.log"
+      ],
+      "source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092703",
+      "expected_checkpoint_sha256": "51fadc3b4ad3cbf83de01700a4a109430e7a57b1e10cb147f0be5f01593f26bb",
+      "provenance_refs": {
+        "source_initialization": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092703/initialization.json",
+        "source_completion": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092703/completion.json"
+      },
+      "cohort": "rx3",
+      "support_features": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-support-probe-m4-r01/rx3-cvs-daot-rc4-s2026092703/feature_cache"
+    },
+    {
+      "row_id": "rx3-cvs-daot-rc4-s2026092704",
+      "method": "D92-BranchLocalMargin fixed four-arm support probe",
+      "purpose": "Compare fixed-kernel margin against fresh same-fold LocalRidge; older controls descriptive; separate one-shot proxy",
+      "gpu": "CPU only",
+      "config_ref": "configs/d92_branch_local_margin_support_20260929.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-local-margin-support-m4-r01/rx3-cvs-daot-rc4-s2026092704/probe/startup.json",
+      "data_overrides": {
+        "capsule": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule",
+        "capsule_id": "residual-noeq-76121e6f34363fa612ec25fb",
+        "expected_split_count": 900
+      },
+      "seeds": {
+        "model": 2026092704,
+        "split": 2026092705,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Model/split/data/augmentation roles retain source/capsule lineage. Support seed varies over explicit cohort matrix (row field null). Evaluation seed null: physical OOF is deterministic and no query evaluation is executed.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "practical_high,practical_mid,practical_low_urban; residual/post_sync/noeq",
+      "optimizer": "Deterministic exact row-block dual minimization, float64, zero initialization, max1000 full sweeps, gap/KKT sqrt(eps64); controls freshly solved ridge; report measured steps",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "All4800 parents;3600 three-fold OOF;all42000 one-shot anchors;trueK1 numeric-only",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-local-margin-support-m4-r01/rx3-cvs-daot-rc4-s2026092704",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-local-margin-support-m4-r01/rx3-cvs-daot-rc4-s2026092704/probe.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_margin_support_20260929_r01/tools/run_d92_branch_local_margin_probe.py --spec /home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_margin_support_20260929_r01/configs/d92_branch_local_margin_support_20260929.json --commit RELEASE_HEAD",
+      "expected_artifacts": [
+        "probe/startup.json",
+        "probe/fit_trace.jsonl",
+        "probe/compact.jsonl",
+        "probe/compact.csv",
+        "probe/probe_complete.json",
+        "probe/fit_stages.jsonl",
+        "probe/fit_stages.csv",
+        "probe/solver_sweeps.jsonl",
+        "probe/solver_sweeps.csv",
+        "probe/solver_sweeps.log"
+      ],
+      "source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092704",
+      "expected_checkpoint_sha256": "690fed6ea2a6532d0ad978c93306f0f35b61f4a3a3fc4b1d6494f0e7547c74bb",
+      "provenance_refs": {
+        "source_initialization": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092704/initialization.json",
+        "source_completion": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092704/completion.json"
+      },
+      "cohort": "rx3",
+      "support_features": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-support-probe-m4-r01/rx3-cvs-daot-rc4-s2026092704/feature_cache"
+    },
+    {
+      "row_id": "rx1-cvs-daot-rc4-s2026092701",
+      "method": "D92-BranchLocalMargin fixed four-arm support probe",
+      "purpose": "Compare fixed-kernel margin against fresh same-fold LocalRidge; older controls descriptive; separate one-shot proxy",
+      "gpu": "CPU only",
+      "config_ref": "configs/d92_branch_local_margin_support_20260929.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-local-margin-support-m4-r01/rx1-cvs-daot-rc4-s2026092701/probe/startup.json",
+      "data_overrides": {
+        "capsule": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-data-manytx-r01/capsule",
+        "capsule_id": "residual-noeq-d0a99fede324159c5a4750fd",
+        "expected_split_count": 300
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026092705,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Model/split/data/augmentation roles retain source/capsule lineage. Support seed varies over explicit cohort matrix (row field null). Evaluation seed null: physical OOF is deterministic and no query evaluation is executed.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "practical_high,practical_mid,practical_low_urban; residual/post_sync/noeq",
+      "optimizer": "Deterministic exact row-block dual minimization, float64, zero initialization, max1000 full sweeps, gap/KKT sqrt(eps64); controls freshly solved ridge; report measured steps",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "All4800 parents;3600 three-fold OOF;all42000 one-shot anchors;trueK1 numeric-only",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-local-margin-support-m4-r01/rx1-cvs-daot-rc4-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-local-margin-support-m4-r01/rx1-cvs-daot-rc4-s2026092701/probe.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_margin_support_20260929_r01/tools/run_d92_branch_local_margin_probe.py --spec /home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_margin_support_20260929_r01/configs/d92_branch_local_margin_support_20260929.json --commit RELEASE_HEAD",
+      "expected_artifacts": [
+        "probe/startup.json",
+        "probe/fit_trace.jsonl",
+        "probe/compact.jsonl",
+        "probe/compact.csv",
+        "probe/probe_complete.json",
+        "probe/fit_stages.jsonl",
+        "probe/fit_stages.csv",
+        "probe/solver_sweeps.jsonl",
+        "probe/solver_sweeps.csv",
+        "probe/solver_sweeps.log"
+      ],
+      "source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701",
+      "expected_checkpoint_sha256": "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b",
+      "provenance_refs": {
+        "source_initialization": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701/initialization.json",
+        "source_completion": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701/completion.json"
+      },
+      "cohort": "rx1",
+      "support_features": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-support-probe-m4-r01/rx1-cvs-daot-rc4-s2026092701/feature_cache"
+    },
+    {
+      "row_id": "rx1-cvs-daot-rc4-s2026092702",
+      "method": "D92-BranchLocalMargin fixed four-arm support probe",
+      "purpose": "Compare fixed-kernel margin against fresh same-fold LocalRidge; older controls descriptive; separate one-shot proxy",
+      "gpu": "CPU only",
+      "config_ref": "configs/d92_branch_local_margin_support_20260929.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-local-margin-support-m4-r01/rx1-cvs-daot-rc4-s2026092702/probe/startup.json",
+      "data_overrides": {
+        "capsule": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-data-manytx-r01/capsule",
+        "capsule_id": "residual-noeq-d0a99fede324159c5a4750fd",
+        "expected_split_count": 300
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 2026092705,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Model/split/data/augmentation roles retain source/capsule lineage. Support seed varies over explicit cohort matrix (row field null). Evaluation seed null: physical OOF is deterministic and no query evaluation is executed.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "practical_high,practical_mid,practical_low_urban; residual/post_sync/noeq",
+      "optimizer": "Deterministic exact row-block dual minimization, float64, zero initialization, max1000 full sweeps, gap/KKT sqrt(eps64); controls freshly solved ridge; report measured steps",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "All4800 parents;3600 three-fold OOF;all42000 one-shot anchors;trueK1 numeric-only",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-local-margin-support-m4-r01/rx1-cvs-daot-rc4-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-local-margin-support-m4-r01/rx1-cvs-daot-rc4-s2026092702/probe.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_margin_support_20260929_r01/tools/run_d92_branch_local_margin_probe.py --spec /home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_margin_support_20260929_r01/configs/d92_branch_local_margin_support_20260929.json --commit RELEASE_HEAD",
+      "expected_artifacts": [
+        "probe/startup.json",
+        "probe/fit_trace.jsonl",
+        "probe/compact.jsonl",
+        "probe/compact.csv",
+        "probe/probe_complete.json",
+        "probe/fit_stages.jsonl",
+        "probe/fit_stages.csv",
+        "probe/solver_sweeps.jsonl",
+        "probe/solver_sweeps.csv",
+        "probe/solver_sweeps.log"
+      ],
+      "source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092702",
+      "expected_checkpoint_sha256": "72f26413e495dcf82317898f8729caa3d35499bf0b41e9671ffdceab2c90924b",
+      "provenance_refs": {
+        "source_initialization": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092702/initialization.json",
+        "source_completion": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092702/completion.json"
+      },
+      "cohort": "rx1",
+      "support_features": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-support-probe-m4-r01/rx1-cvs-daot-rc4-s2026092702/feature_cache"
+    },
+    {
+      "row_id": "rx1-cvs-daot-rc4-s2026092703",
+      "method": "D92-BranchLocalMargin fixed four-arm support probe",
+      "purpose": "Compare fixed-kernel margin against fresh same-fold LocalRidge; older controls descriptive; separate one-shot proxy",
+      "gpu": "CPU only",
+      "config_ref": "configs/d92_branch_local_margin_support_20260929.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-local-margin-support-m4-r01/rx1-cvs-daot-rc4-s2026092703/probe/startup.json",
+      "data_overrides": {
+        "capsule": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-data-manytx-r01/capsule",
+        "capsule_id": "residual-noeq-d0a99fede324159c5a4750fd",
+        "expected_split_count": 300
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 2026092705,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Model/split/data/augmentation roles retain source/capsule lineage. Support seed varies over explicit cohort matrix (row field null). Evaluation seed null: physical OOF is deterministic and no query evaluation is executed.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "practical_high,practical_mid,practical_low_urban; residual/post_sync/noeq",
+      "optimizer": "Deterministic exact row-block dual minimization, float64, zero initialization, max1000 full sweeps, gap/KKT sqrt(eps64); controls freshly solved ridge; report measured steps",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "All4800 parents;3600 three-fold OOF;all42000 one-shot anchors;trueK1 numeric-only",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-local-margin-support-m4-r01/rx1-cvs-daot-rc4-s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-local-margin-support-m4-r01/rx1-cvs-daot-rc4-s2026092703/probe.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_margin_support_20260929_r01/tools/run_d92_branch_local_margin_probe.py --spec /home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_margin_support_20260929_r01/configs/d92_branch_local_margin_support_20260929.json --commit RELEASE_HEAD",
+      "expected_artifacts": [
+        "probe/startup.json",
+        "probe/fit_trace.jsonl",
+        "probe/compact.jsonl",
+        "probe/compact.csv",
+        "probe/probe_complete.json",
+        "probe/fit_stages.jsonl",
+        "probe/fit_stages.csv",
+        "probe/solver_sweeps.jsonl",
+        "probe/solver_sweeps.csv",
+        "probe/solver_sweeps.log"
+      ],
+      "source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092703",
+      "expected_checkpoint_sha256": "51fadc3b4ad3cbf83de01700a4a109430e7a57b1e10cb147f0be5f01593f26bb",
+      "provenance_refs": {
+        "source_initialization": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092703/initialization.json",
+        "source_completion": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092703/completion.json"
+      },
+      "cohort": "rx1",
+      "support_features": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-support-probe-m4-r01/rx1-cvs-daot-rc4-s2026092703/feature_cache"
+    },
+    {
+      "row_id": "rx1-cvs-daot-rc4-s2026092704",
+      "method": "D92-BranchLocalMargin fixed four-arm support probe",
+      "purpose": "Compare fixed-kernel margin against fresh same-fold LocalRidge; older controls descriptive; separate one-shot proxy",
+      "gpu": "CPU only",
+      "config_ref": "configs/d92_branch_local_margin_support_20260929.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-local-margin-support-m4-r01/rx1-cvs-daot-rc4-s2026092704/probe/startup.json",
+      "data_overrides": {
+        "capsule": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-data-manytx-r01/capsule",
+        "capsule_id": "residual-noeq-d0a99fede324159c5a4750fd",
+        "expected_split_count": 300
+      },
+      "seeds": {
+        "model": 2026092704,
+        "split": 2026092705,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Model/split/data/augmentation roles retain source/capsule lineage. Support seed varies over explicit cohort matrix (row field null). Evaluation seed null: physical OOF is deterministic and no query evaluation is executed.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "practical_high,practical_mid,practical_low_urban; residual/post_sync/noeq",
+      "optimizer": "Deterministic exact row-block dual minimization, float64, zero initialization, max1000 full sweeps, gap/KKT sqrt(eps64); controls freshly solved ridge; report measured steps",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "All4800 parents;3600 three-fold OOF;all42000 one-shot anchors;trueK1 numeric-only",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-local-margin-support-m4-r01/rx1-cvs-daot-rc4-s2026092704",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-local-margin-support-m4-r01/rx1-cvs-daot-rc4-s2026092704/probe.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_margin_support_20260929_r01/tools/run_d92_branch_local_margin_probe.py --spec /home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_margin_support_20260929_r01/configs/d92_branch_local_margin_support_20260929.json --commit RELEASE_HEAD",
+      "expected_artifacts": [
+        "probe/startup.json",
+        "probe/fit_trace.jsonl",
+        "probe/compact.jsonl",
+        "probe/compact.csv",
+        "probe/probe_complete.json",
+        "probe/fit_stages.jsonl",
+        "probe/fit_stages.csv",
+        "probe/solver_sweeps.jsonl",
+        "probe/solver_sweeps.csv",
+        "probe/solver_sweeps.log"
+      ],
+      "source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092704",
+      "expected_checkpoint_sha256": "690fed6ea2a6532d0ad978c93306f0f35b61f4a3a3fc4b1d6494f0e7547c74bb",
+      "provenance_refs": {
+        "source_initialization": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092704/initialization.json",
+        "source_completion": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092704/completion.json"
+      },
+      "cohort": "rx1",
+      "support_features": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-support-probe-m4-r01/rx1-cvs-daot-rc4-s2026092704/feature_cache"
+    }
+  ]
+}

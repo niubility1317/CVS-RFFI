@@ -1,0 +1,39 @@
+{
+  "status": "VERIFIED",
+  "scope": "LOCAL_SYNTHETIC_NO_PROJECT_SIGNAL",
+  "preparation_commit": "0e4747126346e632a696a957cd5c5ac78151236c",
+  "environment": "E:/type10-7/local_envs/ssr-gpu",
+  "python": "3.10.0",
+  "numpy": "2.2.6",
+  "scipy": "1.15.3",
+  "focused_suite": {
+    "files": [
+      "test_d92_branch_local_margin.py",
+      "test_evaluate_d92_branch_local_margin_probe.py",
+      "test_run_d92_branch_local_margin_probe.py",
+      "test_summarize_d92_branch_local_margin_probe.py"
+    ],
+    "count": 96,
+    "exit_code": 0,
+    "exec_session": 8493
+  },
+  "logging_followup": {
+    "node": "test_d92_branch_local_margin.py::test_geometry_is_frozen_local_ridge_and_candidate_never_cholesky",
+    "exit_code": 0,
+    "purpose": "Metadata-only callback additions after suite; no fitted mathematics changed"
+  },
+  "initial_tool_suite": {
+    "passed": 70,
+    "failures": 2,
+    "causes": [
+      "Synthetic read guard intercepted lazy scientific-library metadata; dependencies preloaded before guard.",
+      "Frozen config not yet saved during first execution."
+    ]
+  },
+  "synthetic": "evidence/synthetic_numerical_runtime.json",
+  "synthetic_fixture_correction": "First resource fixture used string labels and was rejected before fit; replaced with required integer label indices. No production change.",
+  "timing_scope": "Synthetic Windows BLAS2 with tracemalloc and callback overhead; not a target runtime estimate.",
+  "p0_p1_review": "docs/D92_LOCAL_MARGIN_MATH_REVIEW_20260929.md",
+  "query_rows_used": 0,
+  "source_rows_used": 0
+}
