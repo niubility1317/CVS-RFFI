@@ -1,5 +1,11 @@
 # D92优化当前交接
 
+## 当前工作：BranchMetric支持集诊断正在实现
+
+goal ACTIVE。上一轮BranchInteraction完整重复比较已交付；本轮继续合法support研发，未启动新实验。设计者仅读源码和既有support诊断，未接收query成绩。新候选D92-BranchMetric-v1保持五块特征及固定交互核，用support类内残差之和和固定lambda1定义共享度量，再按带类中心范数项的最近中心分类；固定对照interaction_ridge/kernel_ncm，不扫参数。普通地面原型不可训练covariance/head；既有冻结ground包缺少分支统计，本候选新增地面输入0B。
+
+拟定run `20260929-phase2-d92-branch-metric-support-m4-r01`、release `d92_branch_metric_support_20260929_r01`；复用原8个support-only原始特征缓存。4800parent、真K1仅数值1200、物理OOF3600、穷尽1-shot proxy anchors42000。代理仅在本row既有K5/10/20 support内部拆分，实际trainK1与parentK分列，不代替正式K1证据；重复held不是独立样本。非退化分解上界63600，按实际stage累计。root负责编排、预登记、发布和唯一launch；branch_next_design负责core/config/tests；d92_p0_review本轮负责entry/summary而非审查；source_aux_feasibility完成ground核查后负责唯一独立P0/P1。尚待集成验证、审查、push、preflight后启动，不得凭此段推断已经运行。以下均为历史进度。
+
 ## 最新终态：BranchInteraction两基线重复比较已完成
 
 两run 20260929-phase2-d92-branch-interaction-repeat-{rx3,rx1}-m4-r01均SCORED/ANALYZED，supervisor/children全部退出。runtime 780b027d07acbe4ceabf583209eeaed448d70d4e；终态readback_1790670222.json，下载rx3 readback_1790670249.json、rx1 readback_1790670251.json。全4800fit单次support、9648评分、原D92/DG记录及4800BranchRidge复用记录一致性VERIFIED；已生成dual_baseline和fit_audit，不得覆盖或重复启动。

@@ -1,0 +1,70 @@
+{
+  "host": "dell-DSS8440",
+  "user": "szu2070436088",
+  "cpu_count": 96,
+  "loadavg": [
+    0.0,
+    0.724609375,
+    1.56689453125
+  ],
+  "free_disk_bytes": 7118817464320,
+  "output_paths": {
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-metric-support-m4-r01": false,
+    "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_metric_support_20260929_r01": false,
+    "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_metric_support_20260929_r01.tar": false
+  },
+  "cache_bindings": [
+    {
+      "row": "rx3-cvs-daot-rc4-s2026092701",
+      "cache": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-support-probe-m4-r01/rx3-cvs-daot-rc4-s2026092701/feature_cache",
+      "count": 8273,
+      "binding": "VERIFIED"
+    },
+    {
+      "row": "rx3-cvs-daot-rc4-s2026092702",
+      "cache": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-support-probe-m4-r01/rx3-cvs-daot-rc4-s2026092702/feature_cache",
+      "count": 8273,
+      "binding": "VERIFIED"
+    },
+    {
+      "row": "rx3-cvs-daot-rc4-s2026092703",
+      "cache": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-support-probe-m4-r01/rx3-cvs-daot-rc4-s2026092703/feature_cache",
+      "count": 8273,
+      "binding": "VERIFIED"
+    },
+    {
+      "row": "rx3-cvs-daot-rc4-s2026092704",
+      "cache": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-support-probe-m4-r01/rx3-cvs-daot-rc4-s2026092704/feature_cache",
+      "count": 8273,
+      "binding": "VERIFIED"
+    },
+    {
+      "row": "rx1-cvs-daot-rc4-s2026092701",
+      "cache": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-support-probe-m4-r01/rx1-cvs-daot-rc4-s2026092701/feature_cache",
+      "count": 2332,
+      "binding": "VERIFIED"
+    },
+    {
+      "row": "rx1-cvs-daot-rc4-s2026092702",
+      "cache": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-support-probe-m4-r01/rx1-cvs-daot-rc4-s2026092702/feature_cache",
+      "count": 2332,
+      "binding": "VERIFIED"
+    },
+    {
+      "row": "rx1-cvs-daot-rc4-s2026092703",
+      "cache": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-support-probe-m4-r01/rx1-cvs-daot-rc4-s2026092703/feature_cache",
+      "count": 2332,
+      "binding": "VERIFIED"
+    },
+    {
+      "row": "rx1-cvs-daot-rc4-s2026092704",
+      "cache": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-support-probe-m4-r01/rx1-cvs-daot-rc4-s2026092704/feature_cache",
+      "count": 2332,
+      "binding": "VERIFIED"
+    }
+  ],
+  "query_access": false,
+  "source_sample_access": false,
+  "gpu_use": false,
+  "status": "VERIFIED"
+}

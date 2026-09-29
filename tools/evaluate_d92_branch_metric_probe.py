@@ -1,0 +1,158 @@
+"""CPU-only metric diagnostic from bound existing support feature caches."""
+import argparse
+import csv
+import json
+import os
+from pathlib import Path
+import sys
+import time
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path[:0] = [str(ROOT/'code'), str(ROOT/'tools')]
+from cvsrffi.d92_branch_metric import FROZEN_CONFIG, probe_branch_metric
+from cvsrffi.d92_branch_support_probe import FROZEN_CONFIG as CACHE_VALIDATION_CONFIG
+from evaluate_d92_branch_support_probe import (
+    load_support, read, write, check, scalars, csv_record, peak_rss, BRANCHES,
+)
+
+
+SCOPE = 'SUPPORT_OOF_AND_SUPPORT_ONESHOT_PROXY_NOT_QUERY_EVALUATION'
+
+
+def compact_proxy(audit, split_id):
+    """Add parent-first scalar summaries to core compact anchor evidence."""
+    proxy = audit['oneshot_proxy']
+    audit['proxy_anchor_count'] = 0 if proxy is None else proxy['trial_count']
+    if proxy is None:
+        return audit
+    proxy.update(parent_split_id=split_id, diagnostic='support_oneshot_proxy',
+                 evidence_schema='anchor_confusion_class_nll_and_exact_physical_mapping_v1')
+    proxy['parent_mean_metrics'] = {
+        arm: {key: (sum(t['oof'][arm]['metrics'][key] for t in proxy['trials'])/len(proxy['trials'])
+                    if proxy['trials'][0]['oof'][arm]['metrics'][key] is not None else None)
+              for key in ('accuracy','macro_accuracy','old_accuracy','new_accuracy','h','macro_nll')}
+        for arm in audit['oof']}
+    return audit
+
+
+def evaluate(*, support_features, capsule, output, config, expected_capsule_id,
+             expected_checkpoint_sha256, expected_model_seed):
+    out = Path(output)
+    if out.exists():
+        raise FileExistsError(out)
+    check(set(config) == {'algorithm', 'matrix'} and config['algorithm'] == FROZEN_CONFIG,
+          'Frozen interaction configuration mismatch')
+    started = time.perf_counter()
+    # The old algorithm is used solely for its unchanged cache-binding contract.
+    arrays, tasks, old, producer, extraction, provenance = load_support(
+        support_features=support_features, capsule=capsule,
+        expected_capsule_id=expected_capsule_id,
+        expected_checkpoint_sha256=expected_checkpoint_sha256,
+        expected_model_seed=expected_model_seed,
+        config=dict(algorithm=CACHE_VALIDATION_CONFIG, matrix=config['matrix']))
+    load_seconds = time.perf_counter()-started
+    out.mkdir(parents=True, exist_ok=False)
+    payload = dict(existing_model_file_bytes=producer['model_file_bytes'],
+        model_file_bytes_scope='Existing full training checkpoint package; not loaded or transferred by this diagnostic',
+        support_feature_array_bytes=producer['feature_array_bytes'],
+        support_feature_file_bytes=producer['feature_file_bytes'],
+        cache_load_seconds=load_seconds, feature_cache_reused=True,
+        feature_extraction_this_run_seconds=0., native_physical_forward_count_this_run=0,
+        new_source_payload_bytes=0, new_ground_statistics_bytes=0,
+        model_incremental_transfer_bytes=0, checkpoint_loaded=False)
+    startup = dict(scope=SCOPE, argv=sys.argv, python=sys.executable, pid=os.getpid(),
+        config=config, capsule_id=expected_capsule_id,
+        checkpoint_sha256=expected_checkpoint_sha256, model_seed=expected_model_seed,
+        provenance=provenance, support_features=str(support_features),
+        capsule_manifest=str(Path(capsule)/'manifest.json'), episodes=len(tasks),
+        query_rows_used=0, source_rows_used=0, query_iq_access=False, truth_read=False,
+        adapted_state_inherited=False, cross_row_adapted_state_reuse=False,
+        checkpoint_loaded=False, encoder_updated=False, payload_audit=payload,
+        source_validation=None, source_validation_reason='No source samples or source feature banks accessed',
+        learning_rate=None, epoch=None, optimizer_steps=0, device='cpu',
+        unavailable_reason='Closed-form support diagnostic; no optimizer or deployment head',
+        blas_environment={k: os.environ.get(k) for k in ('OMP_NUM_THREADS','OPENBLAS_NUM_THREADS','MKL_NUM_THREADS')})
+    write(out/'startup.json', startup)
+    print(json.dumps(dict(event='STARTUP', **startup), allow_nan=False), flush=True)
+    fields = ['split_id','receiver','scenario','k','new_count','support_seed','completed','total',
+        'scope','classes','support_count','fold_count','numerical','oof','paired','fit_seconds',
+        'factorization_count','standard_factorization_count','proxy_anchor_count','oneshot_proxy','optimizer_steps','persistent_state_bytes','heldout_unavailable_reason',
+        'fit_call_seconds','log_write_seconds','total_seconds','peak_process_rss_bytes',
+        'query_rows_used','source_rows_used']
+    factorizations = standard_factorizations = proxy_anchors = k1_count = 0
+    with (out/'fit_trace.jsonl').open('x', encoding='utf-8') as trace, \
+         (out/'compact.jsonl').open('x', encoding='utf-8') as compact, \
+         (out/'compact.csv').open('x', encoding='utf-8', newline='') as csvfile, \
+         (out/'fit_stages.jsonl').open('x', encoding='utf-8') as stages, \
+         (out/'fit_stages.csv').open('x', encoding='utf-8', newline='') as stage_csv:
+        writer = csv.DictWriter(csvfile, fieldnames=fields); writer.writeheader()
+        stage_writer = None
+        for number, (split, positions, labels) in enumerate(tasks, 1):
+            begin = time.perf_counter()
+            audit = probe_branch_metric(**{k: v[positions] for k,v in arrays.items()},
+                support_labels=labels, support_ids=split['support_ids'],
+                classes=split['registered_classes'], old_classes=old)
+            elapsed = time.perf_counter()-begin
+            k = split['k']; folds = 0 if k == 1 else min(k, 3)
+            check(audit['k'] == k and audit['support_count'] == len(positions)
+                  and set(audit['classes']) == set(split['registered_classes'])
+                  and audit['fold_count'] == folds and len(audit['folds']) == folds
+                  and audit['factorization_count'] >= 0 and audit['optimizer_steps'] == 0
+                  and audit['persistent_state_bytes'] == 0, 'Interaction core audit mismatch')
+            if k == 1:
+                check(audit['oof'] is None and audit['paired'] is None and audit['oneshot_proxy'] is None, 'K1 fabricated holdout')
+                k1_count += 1
+            audit = compact_proxy(audit, split['split_id'])
+            factorizations += audit['factorization_count']
+            standard_factorizations += audit['standard_factorization_count']
+            proxy_anchors += audit['proxy_anchor_count']
+            coords = {key: split[key] for key in ('split_id','receiver','scenario','k','support_seed')}
+            coords['new_count'] = len(split['registered_classes'])-len(old)
+            record = dict(audit, **{key: value for key,value in coords.items() if key != 'k'},
+                scope=SCOPE, registered_classes=split['registered_classes'],
+                fit_call_seconds=elapsed, query_rows_used=0, source_rows_used=0)
+            writing = time.perf_counter()
+            trace.write(json.dumps(record, allow_nan=False)+'\n'); trace.flush()
+            all_stages = [s for f in audit['folds'] for s in f['stages']]
+            if audit['oneshot_proxy']:
+                all_stages += [s for t in audit['oneshot_proxy']['trials'] for s in t['stages']]
+            if all_stages and stage_writer is None:
+                columns = sorted({key for s in all_stages for key in scalars(s)})+['split_id']
+                stage_writer = csv.DictWriter(stage_csv, fieldnames=columns); stage_writer.writeheader()
+            for stage in all_stages:
+                    row = dict(scalars(stage), split_id=split['split_id'])
+                    stages.write(json.dumps(row, allow_nan=False)+'\n')
+                    stage_writer.writerow(csv_record(row))
+                    print(json.dumps(dict(event='ANALYTICAL_SUPPORT_FIT', **row), allow_nan=False), flush=True)
+            stages.flush(); stage_csv.flush()
+            small = dict(coords, completed=number, total=len(tasks), scope=SCOPE, classes=len(audit['classes']),
+                **{key: scalars(audit[key]) for key in ('support_count','fold_count','numerical','oof','paired',
+                   'fit_seconds','factorization_count','standard_factorization_count','proxy_anchor_count','oneshot_proxy','optimizer_steps','persistent_state_bytes','heldout_unavailable_reason')},
+                fit_call_seconds=elapsed, log_write_seconds=time.perf_counter()-writing,
+                total_seconds=time.perf_counter()-begin, peak_process_rss_bytes=peak_rss(),
+                query_rows_used=0, source_rows_used=0)
+            compact.write(json.dumps(small, allow_nan=False)+'\n'); compact.flush()
+            writer.writerow(csv_record(small)); csvfile.flush()
+            print(json.dumps(dict(event='SUPPORT_EPISODE_COMPLETE', **small), allow_nan=False), flush=True)
+    marker = dict(status='SUPPORT_PROBE_COMPLETE', scope=SCOPE, capsule_id=expected_capsule_id,
+        checkpoint_sha256=expected_checkpoint_sha256, model_seed=expected_model_seed,
+        episodes=len(tasks), k1_episodes=k1_count, oof_episodes=len(tasks)-k1_count,
+        algorithm=FROZEN_CONFIG, matrix=config['matrix'], query_rows_used=0, source_rows_used=0,
+        truth_read=False, factorization_count=factorizations, standard_factorization_count=standard_factorizations,
+        proxy_anchor_count=proxy_anchors, optimizer_steps=0,
+        persistent_state_bytes=0, payload_audit=payload, wall_seconds=time.perf_counter()-started,
+        peak_process_rss_bytes=peak_rss(), peak_process_rss_reason='Linux process high-water RSS; null on unsupported platform')
+    write(out/'probe_complete.json', marker)
+    return marker
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    for key in ('support-features','capsule','output','config','expected-capsule-id','expected-checkpoint-sha256'):
+        parser.add_argument('--'+key, required=True)
+    parser.add_argument('--expected-model-seed', type=int, required=True)
+    args = vars(parser.parse_args()); args['config'] = read(args['config'])
+    evaluate(**args)
+
+
+if __name__ == '__main__': main()
