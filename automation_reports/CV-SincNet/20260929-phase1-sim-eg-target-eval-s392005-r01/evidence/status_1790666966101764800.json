@@ -1,0 +1,6 @@
+{
+  "status": "NO_STATE",
+  "observed_at": 1790666904.9823024,
+  "dispatcher_tail": "Traceback (most recent call last):\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/ir_sim_eg_eval_20260929_r01/evaluate_sim_eg_20260929.py\", line 81, in <module>\n    if __name__=='__main__':main()\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/ir_sim_eg_eval_20260929_r01/evaluate_sim_eg_20260929.py\", line 19, in main\n    for row in spec['rows']:assert uuids[str(row['gpu'])] not in apps,'requested GPU occupied'\nAssertionError: requested GPU occupied\n",
+  "gpu": "GPU-56adac86-77cd-36c9-8770-dbf002650461, 123236, 7572 MiB\nGPU-a2d039ff-1792-4222-2b47-140429e10f94, 123248, 7572 MiB\nGPU-4fb45b9a-894a-536b-0e0a-09f7c1341562, 123262, 7572 MiB\nGPU-7b4bacb3-4901-6845-a414-0dfdfeeade97, 123280, 7572 MiB\nGPU-95d925a1-7218-ca7b-adef-164241f4f491, 123295, 7572 MiB\nGPU-ef5f59f2-e03e-fe6e-ea6b-3e03afc9b331, 123312, 7572 MiB\nGPU-5463e082-259e-537b-603a-01575d45801c, 123327, 7572 MiB\nGPU-9c4eb614-ca19-a390-aaf4-801f8980b6a9, 123394, 7572 MiB\n"
+}

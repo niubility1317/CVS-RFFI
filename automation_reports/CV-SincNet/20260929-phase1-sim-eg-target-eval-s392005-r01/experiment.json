@@ -137,7 +137,11 @@
     "training_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01",
     "input_package": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_fcr_r1r8_s392005_equalized_20260903_v4/target_inputs",
     "truth_sidecar": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_fcr_r1r8_s392005_equalized_20260903_v4/target_truth/truth_sidecar.json",
-    "resource_policy": "At most two compute jobs per GPU including this evaluation; at least 8192 MiB free before launch."
+    "resource_policy": "At most two compute jobs per GPU including this evaluation; at least 8192 MiB free before launch.",
+    "orchestration_commit": "90311e5f91e6ad84ad6d49257cff9f03bb73fd28",
+    "observed_at": "2026-09-29T07:34:11.954164+00:00",
+    "launch_verification_ref": "automation_reports\\CV-SincNet\\20260929-phase1-sim-eg-target-eval-s392005-r01\\evidence\\status_1790667229959050700.json",
+    "dispatcher_pid": 128731
   },
   "expected_artifacts": [
     "evaluation_state.json",
@@ -173,7 +177,7 @@
       "row_id": "SIM_s392005",
       "method": "SIM",
       "purpose": "fixed_target_evaluation",
-      "status": "PLANNED",
+      "status": "SCORED",
       "config_ref": "experiments/ir_eg_v1/configs/ir_rows/SIM_s392005.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase1-ir-eg-source-screen-s392005-r01/SIM_s392005/resolved_config.json",
       "data_overrides": {},
@@ -236,13 +240,15 @@
         "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_fcr_r1r8_s392005_equalized_20260903_v4/target_truth/truth_sidecar.json",
         "--output",
         "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase1-sim-eg-target-eval-s392005-r01/SIM_s392005/score.json"
-      ]
+      ],
+      "pid": 128814,
+      "launch_evidence": "automation_reports\\CV-SincNet\\20260929-phase1-sim-eg-target-eval-s392005-r01\\evidence\\status_1790667229959050700.json"
     },
     {
       "row_id": "EG_s392005",
       "method": "EG",
       "purpose": "fixed_target_evaluation",
-      "status": "PLANNED",
+      "status": "SCORED",
       "config_ref": "experiments/ir_eg_v1/configs/ir_rows/EG_s392005.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase1-ir-eg-source-screen-s392005-r01/EG_s392005/resolved_config.json",
       "data_overrides": {},
@@ -305,7 +311,9 @@
         "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_fcr_r1r8_s392005_equalized_20260903_v4/target_truth/truth_sidecar.json",
         "--output",
         "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase1-sim-eg-target-eval-s392005-r01/EG_s392005/score.json"
-      ]
+      ],
+      "pid": 128815,
+      "launch_evidence": "automation_reports\\CV-SincNet\\20260929-phase1-sim-eg-target-eval-s392005-r01\\evidence\\status_1790667229959050700.json"
     }
   ],
   "notes": [
@@ -314,6 +322,6 @@
     "Reuses existing frozen predictor package; no dataset rebuild.",
     "All target outcomes are descriptive and cannot feed back into model, threshold, hyperparameter or restart decisions."
   ],
-  "status": "LOCAL_VERIFIED",
+  "status": "SCORED_COMPLETE",
   "development_status": "VERIFIED"
 }

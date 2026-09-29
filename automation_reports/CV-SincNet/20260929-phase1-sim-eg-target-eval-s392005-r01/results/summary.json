@@ -1,0 +1,72 @@
+[
+  {
+    "method": "SIM",
+    "scene": "clean",
+    "n": 168000,
+    "accuracy": 0.7619940476190477,
+    "macro_f1": 0.7596721760599148
+  },
+  {
+    "method": "SIM",
+    "scene": "leo_clear_weak",
+    "n": 168000,
+    "accuracy": 0.6675892857142857,
+    "macro_f1": 0.6688398241688401
+  },
+  {
+    "method": "SIM",
+    "scene": "leo_low_elev_weak",
+    "n": 168000,
+    "accuracy": 0.6498928571428572,
+    "macro_f1": 0.6506638497026428
+  },
+  {
+    "method": "SIM",
+    "scene": "leo_rain_weak",
+    "n": 168000,
+    "accuracy": 0.6510595238095238,
+    "macro_f1": 0.6512830246117584
+  },
+  {
+    "method": "SIM",
+    "scene": "LEO_mean",
+    "n": 504000,
+    "accuracy": 0.6561805555555555,
+    "macro_f1": 0.6569288994944138
+  },
+  {
+    "method": "EG",
+    "scene": "clean",
+    "n": 168000,
+    "accuracy": 0.761625,
+    "macro_f1": 0.759416011241474
+  },
+  {
+    "method": "EG",
+    "scene": "leo_clear_weak",
+    "n": 168000,
+    "accuracy": 0.6742380952380952,
+    "macro_f1": 0.677771747125714
+  },
+  {
+    "method": "EG",
+    "scene": "leo_low_elev_weak",
+    "n": 168000,
+    "accuracy": 0.6593035714285714,
+    "macro_f1": 0.6626220273375991
+  },
+  {
+    "method": "EG",
+    "scene": "leo_rain_weak",
+    "n": 168000,
+    "accuracy": 0.6617559523809524,
+    "macro_f1": 0.664687878514568
+  },
+  {
+    "method": "EG",
+    "scene": "LEO_mean",
+    "n": 504000,
+    "accuracy": 0.6650992063492064,
+    "macro_f1": 0.668360550992627
+  }
+]

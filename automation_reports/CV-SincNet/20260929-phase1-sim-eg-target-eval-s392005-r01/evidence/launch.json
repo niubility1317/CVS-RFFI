@@ -1,0 +1,17 @@
+{
+  "status": "SUBMITTED",
+  "pid": 128018,
+  "command": [
+    "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "-u",
+    "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_sim_eg_eval_20260929_r01/evaluate_sim_eg_20260929.py",
+    "--spec",
+    "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_sim_eg_eval_20260929_r01/power_target_eval.json",
+    "--commit",
+    "1f126bf9305c57acea812835d9a6631c4fd858c0"
+  ],
+  "commit": "1f126bf9305c57acea812835d9a6631c4fd858c0",
+  "archive_sha256": "24622e1c0922123c99276ded1bc2f8054688f690361dc86f58563893f8d2212b",
+  "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20260929-phase1-sim-eg-target-eval-s392005-r01.dispatcher.log",
+  "release": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_sim_eg_eval_20260929_r01"
+}

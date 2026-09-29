@@ -1,0 +1,766 @@
+{
+  "observed_at": 1790666057.4022374,
+  "rows": [
+    {
+      "row_id": "SIM_s392005",
+      "output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase1-ir-eg-source-screen-s392005-r01/SIM_s392005",
+      "files": {
+        "completion.json": {
+          "bytes": 251,
+          "mtime": 1790609820.7915993
+        },
+        "latest_ssdg.pth": {
+          "bytes": 21964208,
+          "mtime": 1790609820.5525992
+        },
+        "final_ssdg.pth": {
+          "bytes": 21962997,
+          "mtime": 1790609820.7915993
+        }
+      },
+      "completion": {
+        "status": "TRAINING_COMPLETE",
+        "epochs": 200,
+        "steps": 44400,
+        "actions": {
+          "NORMAL": 44400,
+          "CATCHUP": 0,
+          "CORRECT": 0
+        },
+        "head_steps": 0,
+        "cstar": null,
+        "target_evaluated": false,
+        "elapsed_seconds": 53659.41880428791
+      },
+      "checkpoint": {
+        "epoch": 200,
+        "step": 44400,
+        "keys": [
+          "args",
+          "cstar",
+          "daot_rc4",
+          "ema",
+          "epoch",
+          "from_scratch",
+          "initialization",
+          "legacy_controller",
+          "legacy_curriculum",
+          "model",
+          "optimizer",
+          "prototype",
+          "row",
+          "schema",
+          "solver",
+          "source_info",
+          "step",
+          "target_contact",
+          "tickets"
+        ],
+        "method": "SIM",
+        "from_scratch": true,
+        "initialization": "scratch_only",
+        "target_contact": false,
+        "contract_equal": true,
+        "role_ids_equal": true,
+        "solver_steps": 44400,
+        "dr_commits": 44400,
+        "resume_state": null,
+        "upstream": null,
+        "checkpoint_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase1-ir-eg-source-screen-s392005-r01/SIM_s392005/latest_ssdg.pth",
+        "arg_imports": {
+          "SSDG.train_ssdg": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/SSDG/train_ssdg.py",
+            "sha256": "0490bbeae78e37d27092ac7f7cc1365729730cf04c94403c9cba1439d4e73c2f"
+          },
+          "cvsrffi.game_tracking.legacy.model": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/game_tracking/legacy/model.py",
+            "sha256": "23d68e484a7f4e3dafc9d2e3f2ed0d0243327f11651aa85c793fe62491aa7a1d"
+          },
+          "cvsrffi.game_tracking.legacy.objective": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/game_tracking/legacy/objective.py",
+            "sha256": "2c77d592fb0bb111764c6745a8344831cd0c91e8a74cccbed4df5b8332eb2268"
+          },
+          "cvsrffi.game_tracking.solvers": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/game_tracking/solvers.py",
+            "sha256": "d740a3939a16d0bb73eb60cbb3a904959ee9cffbe514008cae7bbe1c4c61bbc1"
+          },
+          "cvsrffi.game_tracking.state": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/game_tracking/state.py",
+            "sha256": "e4ded03b3dd42833d2af494a796fef483bf50f0d5734a63ce261a5290eec7196"
+          },
+          "cvsrffi.xuc_fusion.dr_objective": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/xuc_fusion/dr_objective.py",
+            "sha256": "a9952022bb106cb10cc8123d2867dce61b2520ca91f993dc74ef8c0370a660df"
+          },
+          "cvsrffi.xuc_fusion.ir_cg": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/xuc_fusion/ir_cg.py",
+            "sha256": "d06019ac222b911d95a186ee694651e02ef8ce37607977395a12c88dc63d01df"
+          },
+          "cvsrffi.xuc_fusion.ir_head": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/xuc_fusion/ir_head.py",
+            "sha256": "fff75b662dd3faeeb2cc339172af1e983b582b71f46b2c92f83b530c28215d7c"
+          },
+          "cvsrffi.xuc_fusion.ir_metric": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/xuc_fusion/ir_metric.py",
+            "sha256": "92ff2d7783f8db1db36d200e56bc9f123ebcf2443ecc6a400ae37c20e975d34e"
+          },
+          "cvsrffi.xuc_fusion.ir_objective": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/xuc_fusion/ir_objective.py",
+            "sha256": "396e23f41b6c13cd01e5be8eab71b94046a4b941380f15bb92ab0127fefde34b"
+          },
+          "cvsrffi.xuc_fusion.ir_solver": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/xuc_fusion/ir_solver.py",
+            "sha256": "faa1d43b24d732908367b415d491ee04fd541b8f0d7c1c85c76ab27806639fd2"
+          },
+          "cvsrffi.xuc_fusion.ir_types": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/xuc_fusion/ir_types.py",
+            "sha256": "ec785ee6a9ce341bf44875b66277b1f3d65ce523669fedafa2c2fec42a6ccb32"
+          },
+          "cvsrffi.xuc_fusion.joint_normalization": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/xuc_fusion/joint_normalization.py",
+            "sha256": "0667dd354762567265f2048f48db177da8ff20f89174504c14cdec5d5ec9331b"
+          },
+          "cvsrffi.xuc_fusion.objective": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/xuc_fusion/objective.py",
+            "sha256": "e47ebd018be0b66ba34fab5089e3c8db819554e17cf4ccea89422290d3e8bd51"
+          },
+          "model": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/model.py",
+            "sha256": "4a2a0cb0332968c49af45298b4e9f1e13f3ac8b16cc9714df48644889d3a4a62"
+          },
+          "model_dual_cvsincnet": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/model_dual_cvsincnet.py",
+            "sha256": "768752f71c7a2ffef9383bfa175d7dfeb863462d20ed65d355fcbd1e8cdd4d21"
+          }
+        }
+      },
+      "stdout_tail": [
+        "[EPOCH-END] E197/200 accepted=222 loss=6.13129",
+        "[EPOCH-END] E198/200 accepted=222 loss=5.97116",
+        "[EPOCH-END] E199/200 accepted=222 loss=6.15012",
+        "[EPOCH-END] E200/200 accepted=222 loss=5.99213"
+      ]
+    },
+    {
+      "row_id": "EG_s392005",
+      "output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase1-ir-eg-source-screen-s392005-r01/EG_s392005",
+      "files": {
+        "completion.json": {
+          "bytes": 251,
+          "mtime": 1790643205.8699632
+        },
+        "latest_ssdg.pth": {
+          "bytes": 21964208,
+          "mtime": 1790643205.6199632
+        },
+        "final_ssdg.pth": {
+          "bytes": 21962997,
+          "mtime": 1790643205.868963
+        }
+      },
+      "completion": {
+        "status": "TRAINING_COMPLETE",
+        "epochs": 200,
+        "steps": 44400,
+        "actions": {
+          "NORMAL": 44400,
+          "CATCHUP": 0,
+          "CORRECT": 0
+        },
+        "head_steps": 0,
+        "cstar": null,
+        "target_evaluated": false,
+        "elapsed_seconds": 87045.28635111544
+      },
+      "checkpoint": {
+        "epoch": 200,
+        "step": 44400,
+        "keys": [
+          "args",
+          "cstar",
+          "daot_rc4",
+          "ema",
+          "epoch",
+          "from_scratch",
+          "initialization",
+          "legacy_controller",
+          "legacy_curriculum",
+          "model",
+          "optimizer",
+          "prototype",
+          "row",
+          "schema",
+          "solver",
+          "source_info",
+          "step",
+          "target_contact",
+          "tickets"
+        ],
+        "method": "EG",
+        "from_scratch": true,
+        "initialization": "scratch_only",
+        "target_contact": false,
+        "contract_equal": true,
+        "role_ids_equal": true,
+        "solver_steps": 44400,
+        "dr_commits": 44400,
+        "resume_state": null,
+        "upstream": null,
+        "checkpoint_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase1-ir-eg-source-screen-s392005-r01/EG_s392005/latest_ssdg.pth",
+        "arg_imports": {
+          "SSDG.train_ssdg": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/SSDG/train_ssdg.py",
+            "sha256": "0490bbeae78e37d27092ac7f7cc1365729730cf04c94403c9cba1439d4e73c2f"
+          },
+          "cvsrffi.game_tracking.legacy.model": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/game_tracking/legacy/model.py",
+            "sha256": "23d68e484a7f4e3dafc9d2e3f2ed0d0243327f11651aa85c793fe62491aa7a1d"
+          },
+          "cvsrffi.game_tracking.legacy.objective": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/game_tracking/legacy/objective.py",
+            "sha256": "2c77d592fb0bb111764c6745a8344831cd0c91e8a74cccbed4df5b8332eb2268"
+          },
+          "cvsrffi.game_tracking.solvers": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/game_tracking/solvers.py",
+            "sha256": "d740a3939a16d0bb73eb60cbb3a904959ee9cffbe514008cae7bbe1c4c61bbc1"
+          },
+          "cvsrffi.game_tracking.state": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/game_tracking/state.py",
+            "sha256": "e4ded03b3dd42833d2af494a796fef483bf50f0d5734a63ce261a5290eec7196"
+          },
+          "cvsrffi.xuc_fusion.dr_objective": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/xuc_fusion/dr_objective.py",
+            "sha256": "a9952022bb106cb10cc8123d2867dce61b2520ca91f993dc74ef8c0370a660df"
+          },
+          "cvsrffi.xuc_fusion.ir_cg": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/xuc_fusion/ir_cg.py",
+            "sha256": "d06019ac222b911d95a186ee694651e02ef8ce37607977395a12c88dc63d01df"
+          },
+          "cvsrffi.xuc_fusion.ir_head": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/xuc_fusion/ir_head.py",
+            "sha256": "fff75b662dd3faeeb2cc339172af1e983b582b71f46b2c92f83b530c28215d7c"
+          },
+          "cvsrffi.xuc_fusion.ir_metric": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/xuc_fusion/ir_metric.py",
+            "sha256": "92ff2d7783f8db1db36d200e56bc9f123ebcf2443ecc6a400ae37c20e975d34e"
+          },
+          "cvsrffi.xuc_fusion.ir_objective": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/xuc_fusion/ir_objective.py",
+            "sha256": "396e23f41b6c13cd01e5be8eab71b94046a4b941380f15bb92ab0127fefde34b"
+          },
+          "cvsrffi.xuc_fusion.ir_solver": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/xuc_fusion/ir_solver.py",
+            "sha256": "faa1d43b24d732908367b415d491ee04fd541b8f0d7c1c85c76ab27806639fd2"
+          },
+          "cvsrffi.xuc_fusion.ir_types": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/xuc_fusion/ir_types.py",
+            "sha256": "ec785ee6a9ce341bf44875b66277b1f3d65ce523669fedafa2c2fec42a6ccb32"
+          },
+          "cvsrffi.xuc_fusion.joint_normalization": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/xuc_fusion/joint_normalization.py",
+            "sha256": "0667dd354762567265f2048f48db177da8ff20f89174504c14cdec5d5ec9331b"
+          },
+          "cvsrffi.xuc_fusion.objective": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/xuc_fusion/objective.py",
+            "sha256": "e47ebd018be0b66ba34fab5089e3c8db819554e17cf4ccea89422290d3e8bd51"
+          },
+          "model": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/model.py",
+            "sha256": "4a2a0cb0332968c49af45298b4e9f1e13f3ac8b16cc9714df48644889d3a4a62"
+          },
+          "model_dual_cvsincnet": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/model_dual_cvsincnet.py",
+            "sha256": "768752f71c7a2ffef9383bfa175d7dfeb863462d20ed65d355fcbd1e8cdd4d21"
+          }
+        }
+      },
+      "stdout_tail": [
+        "[EPOCH-END] E197/200 accepted=222 loss=6.15319",
+        "[EPOCH-END] E198/200 accepted=222 loss=6.03970",
+        "[EPOCH-END] E199/200 accepted=222 loss=6.17585",
+        "[EPOCH-END] E200/200 accepted=222 loss=6.02893"
+      ]
+    },
+    {
+      "row_id": "IR_s392005",
+      "output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase1-ir-eg-source-screen-s392005-r01/IR_s392005",
+      "files": {
+        "latest_ssdg.pth": {
+          "bytes": 24095540,
+          "mtime": 1790643748.2770014
+        }
+      },
+      "checkpoint": {
+        "epoch": 164,
+        "step": 36408,
+        "keys": [
+          "args",
+          "cstar",
+          "daot_rc4",
+          "ema",
+          "epoch",
+          "from_scratch",
+          "initialization",
+          "legacy_controller",
+          "legacy_curriculum",
+          "model",
+          "optimizer",
+          "prototype",
+          "resume_state",
+          "row",
+          "schema",
+          "solver",
+          "source_info",
+          "step",
+          "target_contact",
+          "tickets"
+        ],
+        "method": "IR_EG",
+        "from_scratch": true,
+        "initialization": "scratch_only",
+        "target_contact": false,
+        "contract_equal": true,
+        "role_ids_equal": true,
+        "solver_steps": 36408,
+        "dr_commits": 36408,
+        "resume_state": 1,
+        "upstream": null,
+        "checkpoint_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase1-ir-eg-source-screen-s392005-r01/IR_s392005/latest_ssdg.pth",
+        "arg_imports": {
+          "SSDG.train_ssdg": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/SSDG/train_ssdg.py",
+            "sha256": "0490bbeae78e37d27092ac7f7cc1365729730cf04c94403c9cba1439d4e73c2f"
+          },
+          "cvsrffi.game_tracking.legacy.model": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/game_tracking/legacy/model.py",
+            "sha256": "23d68e484a7f4e3dafc9d2e3f2ed0d0243327f11651aa85c793fe62491aa7a1d"
+          },
+          "cvsrffi.game_tracking.legacy.objective": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/game_tracking/legacy/objective.py",
+            "sha256": "2c77d592fb0bb111764c6745a8344831cd0c91e8a74cccbed4df5b8332eb2268"
+          },
+          "cvsrffi.game_tracking.solvers": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/game_tracking/solvers.py",
+            "sha256": "d740a3939a16d0bb73eb60cbb3a904959ee9cffbe514008cae7bbe1c4c61bbc1"
+          },
+          "cvsrffi.game_tracking.state": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/game_tracking/state.py",
+            "sha256": "e4ded03b3dd42833d2af494a796fef483bf50f0d5734a63ce261a5290eec7196"
+          },
+          "cvsrffi.xuc_fusion.dr_objective": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/xuc_fusion/dr_objective.py",
+            "sha256": "a9952022bb106cb10cc8123d2867dce61b2520ca91f993dc74ef8c0370a660df"
+          },
+          "cvsrffi.xuc_fusion.ir_cg": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/xuc_fusion/ir_cg.py",
+            "sha256": "d06019ac222b911d95a186ee694651e02ef8ce37607977395a12c88dc63d01df"
+          },
+          "cvsrffi.xuc_fusion.ir_head": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/xuc_fusion/ir_head.py",
+            "sha256": "fff75b662dd3faeeb2cc339172af1e983b582b71f46b2c92f83b530c28215d7c"
+          },
+          "cvsrffi.xuc_fusion.ir_metric": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/xuc_fusion/ir_metric.py",
+            "sha256": "92ff2d7783f8db1db36d200e56bc9f123ebcf2443ecc6a400ae37c20e975d34e"
+          },
+          "cvsrffi.xuc_fusion.ir_objective": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/xuc_fusion/ir_objective.py",
+            "sha256": "396e23f41b6c13cd01e5be8eab71b94046a4b941380f15bb92ab0127fefde34b"
+          },
+          "cvsrffi.xuc_fusion.ir_solver": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/xuc_fusion/ir_solver.py",
+            "sha256": "faa1d43b24d732908367b415d491ee04fd541b8f0d7c1c85c76ab27806639fd2"
+          },
+          "cvsrffi.xuc_fusion.ir_types": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/xuc_fusion/ir_types.py",
+            "sha256": "ec785ee6a9ce341bf44875b66277b1f3d65ce523669fedafa2c2fec42a6ccb32"
+          },
+          "cvsrffi.xuc_fusion.joint_normalization": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/xuc_fusion/joint_normalization.py",
+            "sha256": "0667dd354762567265f2048f48db177da8ff20f89174504c14cdec5d5ec9331b"
+          },
+          "cvsrffi.xuc_fusion.objective": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/xuc_fusion/objective.py",
+            "sha256": "e47ebd018be0b66ba34fab5089e3c8db819554e17cf4ccea89422290d3e8bd51"
+          },
+          "model": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/model.py",
+            "sha256": "4a2a0cb0332968c49af45298b4e9f1e13f3ac8b16cc9714df48644889d3a4a62"
+          },
+          "model_dual_cvsincnet": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/model_dual_cvsincnet.py",
+            "sha256": "768752f71c7a2ffef9383bfa175d7dfeb863462d20ed65d355fcbd1e8cdd4d21"
+          }
+        }
+      },
+      "stdout_tail": [
+        "[EPOCH-END] E161/200 accepted=222 loss=5.97576",
+        "[EPOCH-END] E162/200 accepted=222 loss=5.91946",
+        "[EPOCH-END] E163/200 accepted=222 loss=6.05668",
+        "[EPOCH-END] E164/200 accepted=222 loss=5.98225"
+      ]
+    },
+    {
+      "row_id": "IR_G0_s392005",
+      "output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase1-ir-eg-source-screen-s392005-r01/IR_G0_s392005",
+      "files": {
+        "latest_ssdg.pth": {
+          "bytes": 24451572,
+          "mtime": 1790643420.3369782
+        }
+      },
+      "checkpoint": {
+        "epoch": 163,
+        "step": 36186,
+        "keys": [
+          "args",
+          "cstar",
+          "daot_rc4",
+          "ema",
+          "epoch",
+          "from_scratch",
+          "initialization",
+          "legacy_controller",
+          "legacy_curriculum",
+          "model",
+          "optimizer",
+          "prototype",
+          "resume_state",
+          "row",
+          "schema",
+          "solver",
+          "source_info",
+          "step",
+          "target_contact",
+          "tickets"
+        ],
+        "method": "IR_EG",
+        "from_scratch": true,
+        "initialization": "scratch_only",
+        "target_contact": false,
+        "contract_equal": true,
+        "role_ids_equal": true,
+        "solver_steps": 36186,
+        "dr_commits": 36186,
+        "resume_state": 1,
+        "upstream": null,
+        "checkpoint_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase1-ir-eg-source-screen-s392005-r01/IR_G0_s392005/latest_ssdg.pth",
+        "arg_imports": {
+          "SSDG.train_ssdg": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/SSDG/train_ssdg.py",
+            "sha256": "0490bbeae78e37d27092ac7f7cc1365729730cf04c94403c9cba1439d4e73c2f"
+          },
+          "cvsrffi.game_tracking.legacy.model": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/game_tracking/legacy/model.py",
+            "sha256": "23d68e484a7f4e3dafc9d2e3f2ed0d0243327f11651aa85c793fe62491aa7a1d"
+          },
+          "cvsrffi.game_tracking.legacy.objective": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/game_tracking/legacy/objective.py",
+            "sha256": "2c77d592fb0bb111764c6745a8344831cd0c91e8a74cccbed4df5b8332eb2268"
+          },
+          "cvsrffi.game_tracking.solvers": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/game_tracking/solvers.py",
+            "sha256": "d740a3939a16d0bb73eb60cbb3a904959ee9cffbe514008cae7bbe1c4c61bbc1"
+          },
+          "cvsrffi.game_tracking.state": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/game_tracking/state.py",
+            "sha256": "e4ded03b3dd42833d2af494a796fef483bf50f0d5734a63ce261a5290eec7196"
+          },
+          "cvsrffi.xuc_fusion.dr_objective": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/xuc_fusion/dr_objective.py",
+            "sha256": "a9952022bb106cb10cc8123d2867dce61b2520ca91f993dc74ef8c0370a660df"
+          },
+          "cvsrffi.xuc_fusion.ir_cg": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/xuc_fusion/ir_cg.py",
+            "sha256": "d06019ac222b911d95a186ee694651e02ef8ce37607977395a12c88dc63d01df"
+          },
+          "cvsrffi.xuc_fusion.ir_head": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/xuc_fusion/ir_head.py",
+            "sha256": "fff75b662dd3faeeb2cc339172af1e983b582b71f46b2c92f83b530c28215d7c"
+          },
+          "cvsrffi.xuc_fusion.ir_metric": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/xuc_fusion/ir_metric.py",
+            "sha256": "92ff2d7783f8db1db36d200e56bc9f123ebcf2443ecc6a400ae37c20e975d34e"
+          },
+          "cvsrffi.xuc_fusion.ir_objective": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/xuc_fusion/ir_objective.py",
+            "sha256": "396e23f41b6c13cd01e5be8eab71b94046a4b941380f15bb92ab0127fefde34b"
+          },
+          "cvsrffi.xuc_fusion.ir_solver": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/xuc_fusion/ir_solver.py",
+            "sha256": "faa1d43b24d732908367b415d491ee04fd541b8f0d7c1c85c76ab27806639fd2"
+          },
+          "cvsrffi.xuc_fusion.ir_types": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/xuc_fusion/ir_types.py",
+            "sha256": "ec785ee6a9ce341bf44875b66277b1f3d65ce523669fedafa2c2fec42a6ccb32"
+          },
+          "cvsrffi.xuc_fusion.joint_normalization": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/xuc_fusion/joint_normalization.py",
+            "sha256": "0667dd354762567265f2048f48db177da8ff20f89174504c14cdec5d5ec9331b"
+          },
+          "cvsrffi.xuc_fusion.objective": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/xuc_fusion/objective.py",
+            "sha256": "e47ebd018be0b66ba34fab5089e3c8db819554e17cf4ccea89422290d3e8bd51"
+          },
+          "model": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/model.py",
+            "sha256": "4a2a0cb0332968c49af45298b4e9f1e13f3ac8b16cc9714df48644889d3a4a62"
+          },
+          "model_dual_cvsincnet": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/model_dual_cvsincnet.py",
+            "sha256": "768752f71c7a2ffef9383bfa175d7dfeb863462d20ed65d355fcbd1e8cdd4d21"
+          }
+        }
+      },
+      "stdout_tail": [
+        "[EPOCH-END] E160/200 accepted=222 loss=6.15908",
+        "[EPOCH-END] E161/200 accepted=222 loss=5.98089",
+        "[EPOCH-END] E162/200 accepted=222 loss=5.94644",
+        "[EPOCH-END] E163/200 accepted=222 loss=6.06801"
+      ]
+    },
+    {
+      "row_id": "OR_EG_s392005",
+      "output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase1-ir-eg-source-screen-s392005-r01/OR_EG_s392005",
+      "files": {
+        "latest_ssdg.pth": {
+          "bytes": 24095540,
+          "mtime": 1790643740.318001
+        }
+      },
+      "checkpoint": {
+        "epoch": 164,
+        "step": 36408,
+        "keys": [
+          "args",
+          "cstar",
+          "daot_rc4",
+          "ema",
+          "epoch",
+          "from_scratch",
+          "initialization",
+          "legacy_controller",
+          "legacy_curriculum",
+          "model",
+          "optimizer",
+          "prototype",
+          "resume_state",
+          "row",
+          "schema",
+          "solver",
+          "source_info",
+          "step",
+          "target_contact",
+          "tickets"
+        ],
+        "method": "IR_EG",
+        "from_scratch": true,
+        "initialization": "scratch_only",
+        "target_contact": false,
+        "contract_equal": true,
+        "role_ids_equal": true,
+        "solver_steps": 36408,
+        "dr_commits": 36408,
+        "resume_state": 1,
+        "upstream": null,
+        "checkpoint_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase1-ir-eg-source-screen-s392005-r01/OR_EG_s392005/latest_ssdg.pth",
+        "arg_imports": {
+          "SSDG.train_ssdg": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/SSDG/train_ssdg.py",
+            "sha256": "0490bbeae78e37d27092ac7f7cc1365729730cf04c94403c9cba1439d4e73c2f"
+          },
+          "cvsrffi.game_tracking.legacy.model": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/game_tracking/legacy/model.py",
+            "sha256": "23d68e484a7f4e3dafc9d2e3f2ed0d0243327f11651aa85c793fe62491aa7a1d"
+          },
+          "cvsrffi.game_tracking.legacy.objective": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/game_tracking/legacy/objective.py",
+            "sha256": "2c77d592fb0bb111764c6745a8344831cd0c91e8a74cccbed4df5b8332eb2268"
+          },
+          "cvsrffi.game_tracking.solvers": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/game_tracking/solvers.py",
+            "sha256": "d740a3939a16d0bb73eb60cbb3a904959ee9cffbe514008cae7bbe1c4c61bbc1"
+          },
+          "cvsrffi.game_tracking.state": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/game_tracking/state.py",
+            "sha256": "e4ded03b3dd42833d2af494a796fef483bf50f0d5734a63ce261a5290eec7196"
+          },
+          "cvsrffi.xuc_fusion.dr_objective": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/xuc_fusion/dr_objective.py",
+            "sha256": "a9952022bb106cb10cc8123d2867dce61b2520ca91f993dc74ef8c0370a660df"
+          },
+          "cvsrffi.xuc_fusion.ir_cg": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/xuc_fusion/ir_cg.py",
+            "sha256": "d06019ac222b911d95a186ee694651e02ef8ce37607977395a12c88dc63d01df"
+          },
+          "cvsrffi.xuc_fusion.ir_head": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/xuc_fusion/ir_head.py",
+            "sha256": "fff75b662dd3faeeb2cc339172af1e983b582b71f46b2c92f83b530c28215d7c"
+          },
+          "cvsrffi.xuc_fusion.ir_metric": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/xuc_fusion/ir_metric.py",
+            "sha256": "92ff2d7783f8db1db36d200e56bc9f123ebcf2443ecc6a400ae37c20e975d34e"
+          },
+          "cvsrffi.xuc_fusion.ir_objective": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/xuc_fusion/ir_objective.py",
+            "sha256": "396e23f41b6c13cd01e5be8eab71b94046a4b941380f15bb92ab0127fefde34b"
+          },
+          "cvsrffi.xuc_fusion.ir_solver": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/xuc_fusion/ir_solver.py",
+            "sha256": "faa1d43b24d732908367b415d491ee04fd541b8f0d7c1c85c76ab27806639fd2"
+          },
+          "cvsrffi.xuc_fusion.ir_types": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/xuc_fusion/ir_types.py",
+            "sha256": "ec785ee6a9ce341bf44875b66277b1f3d65ce523669fedafa2c2fec42a6ccb32"
+          },
+          "cvsrffi.xuc_fusion.joint_normalization": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/xuc_fusion/joint_normalization.py",
+            "sha256": "0667dd354762567265f2048f48db177da8ff20f89174504c14cdec5d5ec9331b"
+          },
+          "cvsrffi.xuc_fusion.objective": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/xuc_fusion/objective.py",
+            "sha256": "e47ebd018be0b66ba34fab5089e3c8db819554e17cf4ccea89422290d3e8bd51"
+          },
+          "model": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/model.py",
+            "sha256": "4a2a0cb0332968c49af45298b4e9f1e13f3ac8b16cc9714df48644889d3a4a62"
+          },
+          "model_dual_cvsincnet": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/model_dual_cvsincnet.py",
+            "sha256": "768752f71c7a2ffef9383bfa175d7dfeb863462d20ed65d355fcbd1e8cdd4d21"
+          }
+        }
+      },
+      "stdout_tail": [
+        "[EPOCH-END] E161/200 accepted=222 loss=5.97851",
+        "[EPOCH-END] E162/200 accepted=222 loss=5.92078",
+        "[EPOCH-END] E163/200 accepted=222 loss=6.02434",
+        "[EPOCH-END] E164/200 accepted=222 loss=5.96404"
+      ]
+    },
+    {
+      "row_id": "IR_ENCODER_OFF_s392005",
+      "output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase1-ir-eg-source-screen-s392005-r01/IR_ENCODER_OFF_s392005",
+      "files": {
+        "latest_ssdg.pth": {
+          "bytes": 24451572,
+          "mtime": 1790643648.4389944
+        }
+      },
+      "checkpoint": {
+        "epoch": 163,
+        "step": 36186,
+        "keys": [
+          "args",
+          "cstar",
+          "daot_rc4",
+          "ema",
+          "epoch",
+          "from_scratch",
+          "initialization",
+          "legacy_controller",
+          "legacy_curriculum",
+          "model",
+          "optimizer",
+          "prototype",
+          "resume_state",
+          "row",
+          "schema",
+          "solver",
+          "source_info",
+          "step",
+          "target_contact",
+          "tickets"
+        ],
+        "method": "IR_EG",
+        "from_scratch": true,
+        "initialization": "scratch_only",
+        "target_contact": false,
+        "contract_equal": true,
+        "role_ids_equal": true,
+        "solver_steps": 36186,
+        "dr_commits": 36186,
+        "resume_state": 1,
+        "upstream": null,
+        "checkpoint_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase1-ir-eg-source-screen-s392005-r01/IR_ENCODER_OFF_s392005/latest_ssdg.pth",
+        "arg_imports": {
+          "SSDG.train_ssdg": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/SSDG/train_ssdg.py",
+            "sha256": "0490bbeae78e37d27092ac7f7cc1365729730cf04c94403c9cba1439d4e73c2f"
+          },
+          "cvsrffi.game_tracking.legacy.model": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/game_tracking/legacy/model.py",
+            "sha256": "23d68e484a7f4e3dafc9d2e3f2ed0d0243327f11651aa85c793fe62491aa7a1d"
+          },
+          "cvsrffi.game_tracking.legacy.objective": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/game_tracking/legacy/objective.py",
+            "sha256": "2c77d592fb0bb111764c6745a8344831cd0c91e8a74cccbed4df5b8332eb2268"
+          },
+          "cvsrffi.game_tracking.solvers": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/game_tracking/solvers.py",
+            "sha256": "d740a3939a16d0bb73eb60cbb3a904959ee9cffbe514008cae7bbe1c4c61bbc1"
+          },
+          "cvsrffi.game_tracking.state": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/game_tracking/state.py",
+            "sha256": "e4ded03b3dd42833d2af494a796fef483bf50f0d5734a63ce261a5290eec7196"
+          },
+          "cvsrffi.xuc_fusion.dr_objective": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/xuc_fusion/dr_objective.py",
+            "sha256": "a9952022bb106cb10cc8123d2867dce61b2520ca91f993dc74ef8c0370a660df"
+          },
+          "cvsrffi.xuc_fusion.ir_cg": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/xuc_fusion/ir_cg.py",
+            "sha256": "d06019ac222b911d95a186ee694651e02ef8ce37607977395a12c88dc63d01df"
+          },
+          "cvsrffi.xuc_fusion.ir_head": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/xuc_fusion/ir_head.py",
+            "sha256": "fff75b662dd3faeeb2cc339172af1e983b582b71f46b2c92f83b530c28215d7c"
+          },
+          "cvsrffi.xuc_fusion.ir_metric": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/xuc_fusion/ir_metric.py",
+            "sha256": "92ff2d7783f8db1db36d200e56bc9f123ebcf2443ecc6a400ae37c20e975d34e"
+          },
+          "cvsrffi.xuc_fusion.ir_objective": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/xuc_fusion/ir_objective.py",
+            "sha256": "396e23f41b6c13cd01e5be8eab71b94046a4b941380f15bb92ab0127fefde34b"
+          },
+          "cvsrffi.xuc_fusion.ir_solver": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/xuc_fusion/ir_solver.py",
+            "sha256": "faa1d43b24d732908367b415d491ee04fd541b8f0d7c1c85c76ab27806639fd2"
+          },
+          "cvsrffi.xuc_fusion.ir_types": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/xuc_fusion/ir_types.py",
+            "sha256": "ec785ee6a9ce341bf44875b66277b1f3d65ce523669fedafa2c2fec42a6ccb32"
+          },
+          "cvsrffi.xuc_fusion.joint_normalization": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/xuc_fusion/joint_normalization.py",
+            "sha256": "0667dd354762567265f2048f48db177da8ff20f89174504c14cdec5d5ec9331b"
+          },
+          "cvsrffi.xuc_fusion.objective": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/cvsrffi/xuc_fusion/objective.py",
+            "sha256": "e47ebd018be0b66ba34fab5089e3c8db819554e17cf4ccea89422290d3e8bd51"
+          },
+          "model": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/model.py",
+            "sha256": "4a2a0cb0332968c49af45298b4e9f1e13f3ac8b16cc9714df48644889d3a4a62"
+          },
+          "model_dual_cvsincnet": {
+            "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/ir_eg_source_screen_20260928_r01/code/model_dual_cvsincnet.py",
+            "sha256": "768752f71c7a2ffef9383bfa175d7dfeb863462d20ed65d355fcbd1e8cdd4d21"
+          }
+        }
+      },
+      "stdout_tail": [
+        "[EPOCH-END] E160/200 accepted=222 loss=6.09297",
+        "[EPOCH-END] E161/200 accepted=222 loss=5.94084",
+        "[EPOCH-END] E162/200 accepted=222 loss=5.82672",
+        "[EPOCH-END] E163/200 accepted=222 loss=5.99222"
+      ]
+    }
+  ],
+  "processes": [
+    "   2571 /usr/bin/python3 /usr/share/unattended-upgrades/unattended-upgrade-shutdown --wait-for-signal",
+    " 120191 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -"
+  ],
+  "gpu": ""
+}

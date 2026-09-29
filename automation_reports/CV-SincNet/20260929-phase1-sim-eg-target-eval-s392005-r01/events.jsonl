@@ -1,2 +1,4 @@
 {"timestamp": "2026-09-29T07:22:47.068025+00:00", "status": "LOCAL_VERIFIED", "note": "User fixed SIM/EG E200 for target evaluation; no training resume"}
 {"event": "LAUNCH_PREFLIGHT_FAILED", "reason": "Other jobs appeared on GPUs; idle-only guard exited before creating run or reading target.", "action": "Keep original failed release/log; deploy resource-only fix as r02 on GPU6/5 with available second slot."}
+{"event": "POST_STATE_VERIFIED", "at": "2026-09-29T07:32:50.341609+00:00", "status": "PREDICTING", "evidence": "automation_reports\\CV-SincNet\\20260929-phase1-sim-eg-target-eval-s392005-r01\\evidence\\status_1790667062927392200.json"}
+{"event": "POST_STATE_VERIFIED", "at": "2026-09-29T07:34:11.954164+00:00", "status": "SCORED_COMPLETE", "evidence": "automation_reports\\CV-SincNet\\20260929-phase1-sim-eg-target-eval-s392005-r01\\evidence\\status_1790667229959050700.json"}
