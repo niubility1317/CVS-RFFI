@@ -1,3 +1,15 @@
+## 最新状态：先吸取历史微调失败经验（2026-09-30）
+
+用户指出过去域适应微调未获良好改善。已停止推进新Residual8实验准备，未启动新实验；整体goal仍ACTIVE，当前健康Margin原样运行。新的历史复盘覆盖D11 rank8缓存后残差、D21 M6投影低秩微调和完整BranchOrbitCE支持对照。根汇总 `docs/D92_FINETUNING_FAILURE_LESSONS_20260930.md` 含历史query回顾，QUERY-EXPOSED，不发给方法设计者；D11完整support日志复算 `docs/D92_HISTORICAL_D11_SUPPORT_RECHECK_20260930.md` 是safe支持证据。
+
+Residual8原设计保存在 `docs/D92_SUPPORT_PEFT_DESIGN_20260930.md`，已明确暂缓、非待启动方案。未验证核心草稿 `code/cvsrffi/d92_support_residual_local_ridge.py` 保留在本工作树，未测试、未纳入本次正式代码交付；无tests/entry/config/launcher，无实验预登记。恢复时不得将草稿当完成代码或直接发布。原owner local_env_reconcile已停止，已知输入类序过严问题未修。发布/entry两agent未写文件。
+
+优先完成历史机制复盘并沿用现有LocalRidge：分开测表示适应收益、注册头重拟合与新增类竞争；冻结Adapter本身不是抗遗忘保证。下一步可以在同一support折B0/B/C0/C固定全类分数后做纯评价C_old分解，不给部署predictor query角色。新的设计只能用合法support证据，不从历史query分数选参数/候选。用户10/1/3目标仍是理想方向。
+
+最新Margin读回 `readback_1790701077118803900.json`：supervisor348892及4worker仍live且绑定一致，rx3各560/569/620/593个parent（各900），rx1仍pending，无complete。只读继续监控，完整结束才汇总，不停机、不重复启动。Margin分析与后续support通过时benchmark流程保持原授权。
+
+以下均为历史状态，以本段为准。
+
 ## 三阶段基线报告完成，允许目标域参数高效微调（2026-09-30）
 
 用户要求以后每次优化报告固定列A适应前旧类、B仅旧类适应后、C注册后旧类与新类，注明K和新类数，详细报告三项变化与H。10/1/3pp仍是理想目标，不是硬门槛。用户同时明确允许合法target-support模型微调（SFT/参数高效方式），地面Phase1基座保持固定；不增加source样本/逐样本特征或query拟合权限，资源节省必须实测。已将约定追加到workspace/Git两份AGENTS.md与目标文档。
