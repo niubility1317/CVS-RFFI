@@ -1,5 +1,9 @@
 # D92优化当前交接
 
+## 实时状态：BranchMetric支持集诊断已运行，禁止重复启动
+
+run `20260929-phase2-d92-branch-metric-support-m4-r01`，runtime `7099da7ab85170034de90d41c2471c4572860207`已push且独立远端OID匹配。`readback_1790671911.json`核实supervisor168153及CPU worker168166/168168/168169/168170 live、argv/CWD匹配且日志增长。登记RUNNING。全部合成验证及唯一P0/P1闭合；8缓存preflight VERIFIED。root唯一launch owner。继续原run只读监控；4800parent全部终态后运行 `tools/analyze_d92_branch_metric_probe.py --spec configs/d92_branch_metric_support_20260929.json --analysis-release d92_branch_metric_analysis_20260929_r01`，完整汇总两类support诊断，不从中途数据改动算法或覆盖输出。goal ACTIVE；独立query数据验证仍待数据。以下未启动描述为历史。
+
 ## 当前工作：BranchMetric支持集诊断正在实现
 
 goal ACTIVE。上一轮BranchInteraction完整重复比较已交付；本轮继续合法support研发，未启动新实验。设计者仅读源码和既有support诊断，未接收query成绩。新候选D92-BranchMetric-v1保持五块特征及固定交互核，用support类内残差之和和固定lambda1定义共享度量，再按带类中心范数项的最近中心分类；固定对照interaction_ridge/kernel_ncm，不扫参数。普通地面原型不可训练covariance/head；既有冻结ground包缺少分支统计，本候选新增地面输入0B。
