@@ -35,3 +35,5 @@
 VERIFIED启动：supervisor185899，首exporter185909；readback_1790674303.json核实实际argv/CWD和support特征进度。实际release d57307814ef6a51f542a0455f25c3fe22cc0a6d7。目标仍ACTIVE；当前仅真实support诊断，无query成绩。
 
 readback_1790674538.json确认首组导出完成8273物理support/33092视图前向，checkpoint smoke PASS且参数buffer未变；已进入CPU probe并完成22/900任务，下一组GPU export同步推进。新增源样本与地面统计payload均0B；88923468B特征文件是接收端缓存而非地面传输。尚无完整性能结果。
+
+八组export完成已VERIFIED，证据readback_1790675306.json；所有smoke和冻结检查通过。资源口径见docs/D92_BRANCH_ORBIT_COST_20260929.md，source/ground新增0B不等于全部通信0。最终summary将澄清CE NLL沿用ridge文字标签，数值及运行中方法不变。

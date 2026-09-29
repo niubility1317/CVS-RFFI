@@ -323,6 +323,7 @@ def summarize(*, spec, run_root=None, output):
                        'Exact train/held physical mappings and per-anchor confusion/NLL counts remain in full traces; no query scores are used.',
                        'Standard OOF and proxy are separate; repeated held occurrences and support draws are correlated, not independent sample counts.',
                        'CE heads use physical-sum cross entropy and fixed RKHS regularization; full training steps are retained, with source validation unavailable because source inputs are prohibited.',
+                       'Macro NLL uses fixed softmax of each arm\'s own scores, without post-hoc calibration. The runtime shared metrics helper labels all arms as uncalibrated_ridge_scores; that inherited text is inaccurate for CE arms, whose scores come from the CE head. Numeric NLL computation is unchanged and NLL is not a screening criterion.',
                        'A/B screens are support development evidence, not formal K1/query generalization or automatic promotion.'])
     write_json(out/'summary.json',summary)
     lines=['# BranchOrbitCE support 诊断','','标准物理 OOF 与 support 内部 1-shot proxy 分别报告；proxy 的 K 表示 parent K，绝不是正式 K1。',

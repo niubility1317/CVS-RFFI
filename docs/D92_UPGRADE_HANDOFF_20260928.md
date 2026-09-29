@@ -2,6 +2,8 @@
 
 ## 当前工作：BranchOrbitCE完整support诊断已VERIFIED启动
 
+更新：`readback_1790675306.json`确认8组support export全部完成，逐个解析完成日志核实smoke PASS、参数/buffer未变、源域/query访问0；4个rx3 CPU probes存活且argv/CWD吻合，rx1的4组缓存已就绪等待CPU名额，当前合计1031/4800parents。尚无complete.json，不启动analysis，不重启任何run。新增`docs/D92_BRANCH_ORBIT_COST_20260929.md`区分完整模型包、cohort全集缓存、单任务状态和4N前向；C26K20状态12,367,904B、新源样本/新地面统计0B，是否首次下发模型未知。当前运行日志继承的CE NLL文字标签写成ridge，数值无误；本地最终summary仅增加解释说明，不改变运行中代码、指标或筛选规则。
+
 当前run `20260929-phase2-d92-branch-orbit-ce-support-m4-r01`已RUNNING；实际runtime commit `d57307814ef6a51f542a0455f25c3fe22cc0a6d7`，release `d92_branch_orbit_ce_support_20260929_r01`。证据`readback_1790674303.json`核实supervisor185899存活、首exporter185909实际argv/CWD吻合，256/8273条物理support已导出；随后GPU0只读观测492MiB、util17%。4个C4 views始终只算一条physical，冻结模型不训练。root唯一launch owner，无重复启动或远端修改许可扩展。
 
 上一goal turn完成用户关于K/新增类数量的解释，本轮完成两项P1修复整合、146项聚焦验证（新数值路径80项入口/汇总联调通过）、Git提交push/OID读回与实际发布，是progress。所有8rows按已登记顺序串行GPU export、最多4个CPU probe×2BLAS；继续用 `tools/read_d92_run.py --spec configs/d92_branch_orbit_ce_support_20260929.json --compact` 核实同一run。全部终态后用 `tools/analyze_d92_branch_orbit_ce_probe.py --spec configs/d92_branch_orbit_ce_support_20260929.json --analysis-release d92_branch_orbit_ce_analysis_20260929_r01` 完整汇总。只看support结果；没有query晋级结论。目标ACTIVE，独立新数据仍待补充。以下未启动句为发布前历史。

@@ -128,6 +128,7 @@ paths += ['code/cvsrffi/d92_branch_orbit_ce.py','configs/d92_branch_orbit_ce_fro
     'tools/analyze_d92_branch_orbit_ce_probe.py','tests/test_d92_branch_orbit_ce.py',
     'tests/test_export_d92_branch_orbit_support_features.py','tests/test_evaluate_d92_branch_orbit_ce_probe.py',
     'tests/test_summarize_d92_branch_orbit_ce_probe.py','tests/test_run_d92_branch_orbit_ce_probe.py']
+paths += ['docs/D92_BRANCH_ORBIT_COST_20260929.md']
 for name in paths:
     src=ROOT/name;dst=WS/name;dst.parent.mkdir(parents=True,exist_ok=True)
     # Each name is unique to this task; original D92 and shared wrappers are not mirrored.
