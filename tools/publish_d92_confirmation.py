@@ -55,7 +55,7 @@ def release_tool_paths(confirmation):
                              +(['tools/export_d92_branch_features.py','tools/export_d92_branch_support_features.py',
                                 'tools/export_d92_mv_kme_features.py','tools/d92_orbit_feature_cache.py',
                                 'configs/d92_branch_ridge_frozen_20260929.json']
-                               if candidate['candidate_method']=='D92-BranchInteraction-v1' else [])
+                               if candidate['candidate_method'] in ('D92-BranchInteraction-v1','D92-BranchLocalRidge-v1') else [])
                              +(['tools/'+feature_definition(confirmation)[0]] if needs_multiview(confirmation) else [])))
 
 

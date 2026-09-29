@@ -1,0 +1,99 @@
+{
+  "host": "dell-DSS8440",
+  "user": "szu2070436088",
+  "cpu_count": 96,
+  "loadavg": [
+    0.0,
+    0.54833984375,
+    3.33740234375
+  ],
+  "free_disk_bytes": 7104510308352,
+  "output_paths": {
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-local-ridge-repeat-rx3-m4-r01": false,
+    "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_ridge_repeat_rx3_20260929_r01": false,
+    "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_ridge_repeat_rx3_20260929_r01.tar": false,
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-local-ridge-repeat-rx1-m4-r01": false,
+    "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_ridge_repeat_rx1_20260929_r01": false,
+    "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_ridge_repeat_rx1_20260929_r01.tar": false
+  },
+  "inputs": {
+    "20260929-phase2-d92-branch-local-ridge-repeat-rx3-m4-r01": {
+      "capsule_id": "residual-noeq-76121e6f34363fa612ec25fb",
+      "split_count": 900,
+      "model_rows": [
+        {
+          "row_id": "cvs-daot-rc4-s2026092701",
+          "feature_cache": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-ridge-repeat-rx3-m4-r01/cvs-daot-rc4-s2026092701/branch_features",
+          "feature_file_bytes": 46953930,
+          "d92_complete": true,
+          "branch_ridge_complete": true
+        },
+        {
+          "row_id": "cvs-daot-rc4-s2026092702",
+          "feature_cache": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-ridge-repeat-rx3-m4-r01/cvs-daot-rc4-s2026092702/branch_features",
+          "feature_file_bytes": 46953930,
+          "d92_complete": true,
+          "branch_ridge_complete": true
+        },
+        {
+          "row_id": "cvs-daot-rc4-s2026092703",
+          "feature_cache": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-ridge-repeat-rx3-m4-r01/cvs-daot-rc4-s2026092703/branch_features",
+          "feature_file_bytes": 46953930,
+          "d92_complete": true,
+          "branch_ridge_complete": true
+        },
+        {
+          "row_id": "cvs-daot-rc4-s2026092704",
+          "feature_cache": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-ridge-repeat-rx3-m4-r01/cvs-daot-rc4-s2026092704/branch_features",
+          "feature_file_bytes": 46953930,
+          "d92_complete": true,
+          "branch_ridge_complete": true
+        }
+      ]
+    },
+    "20260929-phase2-d92-branch-local-ridge-repeat-rx1-m4-r01": {
+      "capsule_id": "residual-noeq-d0a99fede324159c5a4750fd",
+      "split_count": 300,
+      "model_rows": [
+        {
+          "row_id": "cvs-daot-rc4-s2026092701",
+          "feature_cache": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-ridge-repeat-rx1-m4-r01/cvs-daot-rc4-s2026092701/branch_features",
+          "feature_file_bytes": 14231370,
+          "d92_complete": true,
+          "branch_ridge_complete": true
+        },
+        {
+          "row_id": "cvs-daot-rc4-s2026092702",
+          "feature_cache": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-ridge-repeat-rx1-m4-r01/cvs-daot-rc4-s2026092702/branch_features",
+          "feature_file_bytes": 14231370,
+          "d92_complete": true,
+          "branch_ridge_complete": true
+        },
+        {
+          "row_id": "cvs-daot-rc4-s2026092703",
+          "feature_cache": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-ridge-repeat-rx1-m4-r01/cvs-daot-rc4-s2026092703/branch_features",
+          "feature_file_bytes": 14231370,
+          "d92_complete": true,
+          "branch_ridge_complete": true
+        },
+        {
+          "row_id": "cvs-daot-rc4-s2026092704",
+          "feature_cache": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-ridge-repeat-rx1-m4-r01/cvs-daot-rc4-s2026092704/branch_features",
+          "feature_file_bytes": 14231370,
+          "d92_complete": true,
+          "branch_ridge_complete": true
+        }
+      ]
+    }
+  },
+  "cpu_only": true,
+  "gpu_requested": false,
+  "iq_read": false,
+  "checkpoint_loaded": false,
+  "feature_arrays_read": false,
+  "truth_read": false,
+  "scores_read": false,
+  "source_samples_read": false,
+  "data_revalidated": false,
+  "status": "VERIFIED"
+}

@@ -142,6 +142,15 @@ paths += ['code/cvsrffi/d92_branch_local_ridge.py',
     'tools/prepare_d92_branch_local_ridge_probe.py',
     'tests/test_d92_branch_local_ridge.py', 'tests/test_evaluate_d92_branch_local_ridge_probe.py',
     'tests/test_summarize_d92_branch_local_ridge_probe.py', 'tests/test_run_d92_branch_local_ridge_probe.py']
+paths += ['docs/D92_BRANCH_LOCAL_RIDGE_SUPPORT_RESULT_20260929.md',
+    'docs/D92_BRANCH_LOCAL_RIDGE_BENCHMARK_P0_20260929.md',
+    'tools/evaluate_d92_branch_local_ridge.py','tests/test_evaluate_d92_branch_local_ridge.py',
+    'tools/prepare_d92_branch_local_ridge_benchmark.py','tools/preflight_d92_branch_local_ridge.py',
+    'tests/test_d92_branch_local_ridge_benchmark.py',
+    'tools/summarize_d92_branch_local_ridge_benchmark.py','tests/test_summarize_d92_branch_local_ridge_benchmark.py',
+    'tools/collect_d92_branch_local_ridge_audit.py','tests/test_collect_d92_branch_local_ridge_audit.py',
+    'configs/d92_branch_local_ridge_repeat_rx3_20260929.json','configs/d92_branch_local_ridge_repeat_rx1_20260929.json',
+    'configs/d92_branch_local_ridge_repeat_rx3_data_20260929.json','configs/d92_branch_local_ridge_repeat_rx1_data_20260929.json']
 for name in paths:
     src=ROOT/name;dst=WS/name;dst.parent.mkdir(parents=True,exist_ok=True)
     # Each name is unique to this task; original D92 and shared wrappers are not mirrored.

@@ -1,3 +1,13 @@
+## 当前继续点：LocalRidge完整support分析完成，准备重复基准（2026-09-29）
+
+support run `20260929-phase2-d92-branch-local-ridge-support-m4-r01` 已 ANALYZED。runtime `96f74ac9dcb06d72923324f3cd44a63dac65a2de`，analysis `09d4a0dbc6ef69462d09ee313aeffb7f0c6a8463`。完整8lane/4800parent，158400次三臂分解，无query/source输入；终态证据 `evidence/readback_1790691921.json`，全量汇总 `results/support_summary/summary.json`。不要重启probe或重复analysis。
+
+标准OOF相对两个对照每K旧/新/H均为正；proxy每K新/H为正、旧略降（最大0.159pp），A/B原screen通过但不是严格共同提升。12分层中proxy K10/new20相对BranchRidge H为−0.011pp。真实K1仅数值证据。详细结果 `docs/D92_BRANCH_LOCAL_RIDGE_SUPPORT_RESULT_20260929.md`。
+
+已生成 LocalRidge rx3/rx1 完整重复基准配置，尚未发布。复用同一BranchRidge原始received缓存及原D92预测；不继承拟合头、不重载checkpoint，不改核心/config。并列比较D92、BranchRidge、BranchInteraction，所有4800单元完成后再联合解读。root唯一launch/test owner；entry及metadata audit由branch_local_entry负责，三基线summary由branch_local_core负责，local_env_reconcile独立P0/P1检查。不得向query-blind方法worker转发历史query结果。
+
+本地数值环境 `E:/type10-7/local_envs/ssr-gpu` 已验证；旧损坏junction不动。goal ACTIVE，独立数据验证仍待新增数据。下文均是历史状态，不能据旧RUNNING重复启动。
+
 ## 当前继续点：BranchLocalRidge已启动（2026-09-29）
 
 - 目标仍ACTIVE：固定Phase1，在BranchRidge基础上提升新旧类与H；不得把实现通过当作性能改善。

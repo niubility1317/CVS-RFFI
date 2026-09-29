@@ -1,0 +1,44 @@
+{
+  "status": "VERIFIED",
+  "environment_prefix": "E:/type10-7/local_envs/ssr-gpu",
+  "python": "3.10.0",
+  "numpy": "2.2.6",
+  "scipy": "1.15.3",
+  "torch_installed": false,
+  "execution": "Serial conda run -p E:/type10-7/local_envs/ssr-gpu python -s -m pytest",
+  "passed_tests": 299,
+  "suites": [
+    {
+      "tests": [
+        "test_evaluate_d92_branch_local_ridge",
+        "test_d92_branch_local_ridge_benchmark",
+        "test_run_d92_confirmation",
+        "test_d92_confirmation_score",
+        "test_summarize_d92_confirmation",
+        "test_summarize_d92_repeated_benchmark",
+        "test_d92_branch_interaction_benchmark"
+      ],
+      "passed": 218
+    },
+    {
+      "tests": [
+        "test_summarize_d92_branch_local_ridge_benchmark"
+      ],
+      "passed": 44,
+      "seconds": 38.29
+    },
+    {
+      "tests": [
+        "test_collect_d92_branch_local_ridge_audit",
+        "test_summarize_d92_branch_local_ridge_benchmark::test_no_partial_or_malformed_six_matrix_analysis[unexposed_claim]"
+      ],
+      "passed": 37,
+      "seconds": 3.99
+    }
+  ],
+  "initial_failure": "One synthetic test expected quantile arrays in compact scalar-only projection; test expectation corrected. No runtime algorithm changes.",
+  "scientific_scope": "Synthetic functional validation only; no real query performance evidence.",
+  "core_and_frozen_config_changed": false,
+  "independent_review": "docs/D92_BRANCH_LOCAL_RIDGE_BENCHMARK_P0_20260929.md; inherited broken launcher path corrected before publication; no remaining P0/P1.",
+  "remote_preflight": "VERIFIED metadata binding for all8cache paths, unoccupied outputs/releases, CPUonly; no IQ/weights/scores read."
+}

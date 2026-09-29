@@ -1,0 +1,339 @@
+{
+  "startup.json": {
+    "pid": 294733,
+    "argv": [
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_ridge_support_20260929_r01/tools/run_d92_branch_local_ridge_probe.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_ridge_support_20260929_r01/configs/d92_branch_local_ridge_support_20260929.json",
+      "--commit",
+      "96f74ac9dcb06d72923324f3cd44a63dac65a2de"
+    ],
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_ridge_support_20260929_r01",
+    "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "commit": "96f74ac9dcb06d72923324f3cd44a63dac65a2de",
+    "started": 1790689042.2789383,
+    "query_access": false,
+    "source_sample_access": false,
+    "checkpoint_loaded": false,
+    "reused_support_cache": true,
+    "gpu_use": false,
+    "live_argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_ridge_support_20260929_r01/tools/run_d92_branch_local_ridge_probe.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_ridge_support_20260929_r01/configs/d92_branch_local_ridge_support_20260929.json",
+      "--commit",
+      "96f74ac9dcb06d72923324f3cd44a63dac65a2de"
+    ],
+    "live_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_ridge_support_20260929_r01"
+  },
+  "state.json": {
+    "rx3-cvs-daot-rc4-s2026092701": {
+      "status": "PROBING_SUPPORT",
+      "updated": 1790689042.280197
+    },
+    "rx3-cvs-daot-rc4-s2026092702": {
+      "status": "PROBING_SUPPORT",
+      "updated": 1790689042.2806578
+    },
+    "rx3-cvs-daot-rc4-s2026092703": {
+      "status": "PROBING_SUPPORT",
+      "updated": 1790689042.282102
+    },
+    "rx3-cvs-daot-rc4-s2026092704": {
+      "status": "PROBING_SUPPORT",
+      "updated": 1790689042.283179
+    },
+    "rx1-cvs-daot-rc4-s2026092701": {
+      "status": "PENDING"
+    },
+    "rx1-cvs-daot-rc4-s2026092702": {
+      "status": "PENDING"
+    },
+    "rx1-cvs-daot-rc4-s2026092703": {
+      "status": "PENDING"
+    },
+    "rx1-cvs-daot-rc4-s2026092704": {
+      "status": "PENDING"
+    }
+  },
+  "launch.json": {
+    "pid": 294733,
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_ridge_support_20260929_r01/tools/run_d92_branch_local_ridge_probe.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_ridge_support_20260929_r01/configs/d92_branch_local_ridge_support_20260929.json",
+      "--commit",
+      "96f74ac9dcb06d72923324f3cd44a63dac65a2de"
+    ],
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_ridge_support_20260929_r01",
+    "commit": "96f74ac9dcb06d72923324f3cd44a63dac65a2de",
+    "run": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-local-ridge-support-m4-r01",
+    "owner": "codex/root/d92-upgrade-20260928",
+    "live_argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_ridge_support_20260929_r01/tools/run_d92_branch_local_ridge_probe.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_ridge_support_20260929_r01/configs/d92_branch_local_ridge_support_20260929.json",
+      "--commit",
+      "96f74ac9dcb06d72923324f3cd44a63dac65a2de"
+    ],
+    "live_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_ridge_support_20260929_r01"
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_ridge_support_20260929_r01/run.log": {
+    "bytes": 0,
+    "tail": []
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-local-ridge-support-m4-r01/rx3-cvs-daot-rc4-s2026092704/probe.log": {
+    "bytes": 9593904,
+    "tail": [
+      "{\"event\": \"ANALYTICAL_SUPPORT_FIT\", \"arm\": \"interaction_ridge\", \"status\": \"CLOSED_FORM_SOLVED\", \"solver\": \"float64_centered_kernel_Cholesky\", \"train_k\": 1, \"train_physical_count\": 16, \"physical_loss_mass\": 16.0, \"sample_weight\": 1.0, \"ridge_coefficient\": 1.0, \"input_feature_dim\": 736, \"implicit_feature_dim\": 123616, \"output_dim\": 16, \"classification_output_dim\": 16, \"factorization_dim\": 16, \"factorization_calls\": 1, \"condition_bound\": 21.132091836798146, \"gram_min_eigenvalue_lower_bound\": 1.0, \"loss_data\": 2.206702620489818, \"loss_ridge\": 1.6304908190320306, \"loss_total\": 3.8371934395218488, \"normal_equation_residual\": 1.0735345726716592e-15, \"gradient_norm\": 2.5313085524873455e-15, \"gradient_coordinate\": \"dual_coefficients\", \"dual_objective_gradient_norm\": 2.5313085524873455e-15, \"intercept_gradient_norm\": 1.9752095040381014e-15, \"target_norm_squared\": 15.0, \"kernel_diagonal_mean\": 3.000000000000001, \"degenerate_constant_features\": false, \"gram_bytes\": 2048, \"coefficient_bytes\": 2048, \"training_feature_bytes\": 94208, \"gram_seconds\": 0.00015637699834769592, \"solve_seconds\": 7.862300117267296e-05, \"fit_seconds\": 0.00036058099794900045, \"optimizer_steps\": 0, \"learning_rate\": null, \"epoch\": null, \"all_states_estimated_from_trainfold_only\": true, \"scope\": \"support_oneshot_proxy\", \"fold\": null, \"all_states_estimated_from_current_support_only\": true, \"parent_k\": 20, \"trial\": 19, \"score_seconds\": 0.009450679004658014, \"training_accuracy\": 1.0, \"held_accuracy\": 0.34868421052631576, \"training_minus_held_accuracy\": 0.6513157894736843, \"split_id\": \"23feaac1ed11ef9d1be01bc4\"}",
+      "{\"event\": \"ANALYTICAL_SUPPORT_FIT\", \"arm\": \"local_ridge\", \"train_k\": 1, \"train_physical_count\": 16, \"factorization_calls\": 1, \"optimizer_steps\": 0, \"distance_rule\": \"rank2_reduced_QR_nonnegative_square_sum_exact_identity_zero\", \"bandwidth_rule\": \"median_nearest_other_class_squared_distance_including_zeros\", \"scope\": \"support_oneshot_proxy\", \"fold\": null, \"trial\": 19, \"bandwidth_tau\": 1.259261275356641, \"interaction_centered_trace\": 20.13209183679814, \"degeneracy_reason\": null, \"numerical_tolerance\": 4.547473508864641e-13, \"status\": \"CLOSED_FORM_SOLVED\", \"solver\": \"float64_Cholesky_two_triangular_solves_no_jitter\", \"bandwidth_zero\": false, \"nearest_other_class_squared_distance\": {\"count\": 16, \"min\": 0.7172929027286318, \"median\": 1.259261275356641, \"max\": 2.4052181067729785, \"mean\": 1.3964528162085188}, \"zero_nearest_other_class_fraction\": 0.0, \"radial_centered_trace\": 12.851273818525165, \"trace_scale\": 1.5665444625246132, \"trace_relative_error\": 1.7647017049200656e-16, \"normal_equation_residual\": 1.934752091298142e-17, \"normal_equation_absolute_residual\": 7.922503195807498e-16, \"residual_denominator\": \"(1+s0)*frobenius(alpha)+frobenius(Yc)_spectral_upper_bound\", \"condition_bound\": 21.13209183679814, \"gram_min_eigenvalue_lower_bound\": 1.0, \"physical_loss_mass\": 16.0, \"sample_weight\": 1.0, \"ridge_coefficient\": 1.0, \"loss_data\": 1.5390667737547679, \"loss_ridge\": 1.7975974951769218, \"loss_total\": 3.3366642689316897, \"gradient_norm\": 1.1901711693863817e-15, \"gradient_coordinate\": \"dual_coefficients\", \"target_norm_squared\": 15.0, \"factorization_dim\": 16, \"input_feature_dim\": 736, \"implicit_feature_dim\": 123616, \"output_dim\": 16, \"classification_output_dim\": 16, \"training_feature_bytes\": 94208, \"gram_bytes\": 2048, \"kernel_bytes\": 2048, \"coefficient_bytes\": 2048, \"learning_rate\": null, \"epoch\": null, \"effective_degrees_of_freedom\": 8.32667146213662, \"effective_degrees_of_freedom_seconds\": 4.687799810199067e-05, \"effective_degrees_of_freedom_extra_triangular_solves\": 2, \"training_offdiagonal_radial\": {\"count\": 240, \"min\": 0.03340606527316363, \"median\": 0.11873844596662367, \"max\": 0.5657437509095163, \"mean\": 0.14324841209832243}, \"training_radial_row_sum\": {\"count\": 16, \"min\": 2.258018814814763, \"median\": 3.2992898710125234, \"max\": 3.8522700930507305, \"mean\": 3.148726181474837}, \"centered_training_diagonal\": {\"count\": 16, \"min\": 1.1204891374471182, \"median\": 1.2287726505370662, \"max\": 1.4326723264212855, \"mean\": 1.2582557397998835}, \"training_accuracy\": 1.0, \"degenerate_constant_features\": false, \"all_states_estimated_from_trainfold_only\": true, \"solve_seconds\": 9.042299643624574e-05, \"gram_seconds\": 0.00428616000135662, \"fit_seconds\": 0.00442405399371637, \"parent_k\": 20, \"all_states_estimated_from_current_support_only\": true, \"score_seconds\": 0.09803461000410607, \"held_accuracy\": 0.34539473684210525, \"training_minus_held_accuracy\": 0.6546052631578947, \"held_max_radial_similarity\": {\"count\": 304, \"min\": 0.10616963588026729, \"median\": 0.39304318871101096, \"max\": 0.6831510677142318, \"mean\": 0.3962018749492191}, \"held_correct_minus_nearest_wrong_similarity\": {\"count\": 304, \"min\": -0.5096488273808418, \"median\": -0.09329682100748724, \"max\": 0.41437766835289547, \"mean\": -0.09292200836414513}, \"held_no_exact_match_fraction\": null, \"held_centered_radial_squared_norm\": {\"count\": 304, \"min\": 1.1441750693150476, \"median\": 1.3463850739588565, \"max\": 1.7072752136033518, \"mean\": 1.374999580557701}, \"split_id\": \"23feaac1ed11ef9d1be01bc4\"}",
+      "{\"event\": \"SUPPORT_EPISODE_COMPLETE\", \"split_id\": \"23feaac1ed11ef9d1be01bc4\", \"receiver\": \"8-14\", \"scenario\": \"practical_high\", \"k\": 20, \"support_seed\": 2026092712, \"new_count\": 10, \"completed\": 122, \"total\": 900, \"scope\": \"SUPPORT_OOF_AND_SUPPORT_ONESHOT_PROXY_NOT_QUERY_EVALUATION\", \"classes\": 16, \"support_count\": 320, \"fold_count\": 3, \"numerical\": {\"kernel_diagonal\": {\"linear\": {\"min\": 1.9999999999999998, \"max\": 2.000000000000001, \"mean\": 2.0}, \"energy_control\": {\"min\": 2.9999999999999996, \"max\": 3.0000000000000013, \"mean\": 3.0}, \"interaction\": {\"min\": 2.9999999999999996, \"max\": 3.0000000000000018, \"mean\": 3.0}}, \"interaction_minus_energy_control_diagonal\": {\"min\": 0.0, \"max\": 4.440892098500626e-16, \"mean\": 2.3592239273284576e-17, \"max_abs\": 4.440892098500626e-16}, \"energy_match_scope\": \"unit_nonzero_blocks_only_zero_or_floor_blocks_may_differ\", \"background_mean_squared_norm\": 1.0, \"auxiliary_mean_squared_norm\": 1.0}, \"oof\": {\"branch_ridge\": {\"metrics\": {\"accuracy\": 0.578125, \"macro_accuracy\": 0.578125, \"old_accuracy\": 0.7250000000000001, \"new_accuracy\": 0.49000000000000005, \"h\": 0.5847736625514404, \"macro_nll\": 2.548915172057581, \"nll_interpretation\": \"fixed_softmax_of_uncalibrated_ridge_scores\"}}, \"interaction_ridge\": {\"metrics\": {\"accuracy\": 0.571875, \"macro_accuracy\": 0.571875, \"old_accuracy\": 0.6916666666666665, \"new_accuracy\": 0.5, \"h\": 0.5804195804195804, \"macro_nll\": 2.5095363185050017, \"nll_interpretation\": \"fixed_softmax_of_uncalibrated_ridge_scores\"}}, \"local_ridge\": {\"metrics\": {\"accuracy\": 0.590625, \"macro_accuracy\": 0.5906250000000001, \"old_accuracy\": 0.6916666666666665, \"new_accuracy\": 0.53, \"h\": 0.6001364256480217, \"macro_nll\": 2.503443433030666, \"nll_interpretation\": \"fixed_softmax_of_uncalibrated_ridge_scores\"}}}, \"paired\": {\"local_ridge_minus_branch_ridge\": {\"mean_correct_delta\": 0.0125}, \"local_ridge_minus_interaction_ridge\": {\"mean_correct_delta\": 0.01875}, \"interaction_ridge_minus_branch_ridge\": {\"mean_correct_delta\": -0.00625}}, \"fit_seconds\": 7.447830338998756, \"factorization_count\": 69, \"standard_factorization_count\": 9, \"proxy_anchor_count\": 20, \"oneshot_proxy\": {\"parent_k\": 20, \"proxy_train_k\": 1, \"trial_count\": 20, \"scope\": \"SUPPORT_ONESHOT_PROXY_FROM_PARENT_SUPPORT_NOT_FORMAL_K1\", \"coverage\": {\"parent_physical_count\": 320, \"training_occurrences\": 320, \"held_occurrences\": 6080, \"unique_held_physical_count\": 320}, \"factorization_count\": 60, \"parent_split_id\": \"23feaac1ed11ef9d1be01bc4\", \"diagnostic\": \"support_oneshot_proxy\", \"evidence_schema\": \"anchor_confusion_class_nll_and_exact_physical_mapping_v1\", \"parent_mean_metrics\": {\"branch_ridge\": {\"accuracy\": 0.37368421052631573, \"macro_accuracy\": 0.37368421052631573, \"old_accuracy\": 0.4789473684210527, \"new_accuracy\": 0.31052631578947365, \"h\": 0.3696763685579145, \"macro_nll\": 2.7054754347181116}, \"interaction_ridge\": {\"accuracy\": 0.37499999999999994, \"macro_accuracy\": 0.37499999999999994, \"old_accuracy\": 0.47850877192982455, \"new_accuracy\": 0.3128947368421052, \"h\": 0.3707185696231105, \"macro_nll\": 2.684093226580901}, \"local_ridge\": {\"accuracy\": 0.3804276315789473, \"macro_accuracy\": 0.3804276315789474, \"old_accuracy\": 0.48157894736842105, \"new_accuracy\": 0.3197368421052632, \"h\": 0.37864753303856713, \"macro_nll\": 2.705282815724255}}}, \"optimizer_steps\": 0, \"persistent_state_bytes\": 0, \"heldout_unavailable_reason\": null, \"fit_call_seconds\": 7.449000578999403, \"log_write_seconds\": 0.01982225100073265, \"total_seconds\": 7.4690091789962025, \"peak_process_rss_bytes\": 175632384, \"query_rows_used\": 0, \"source_rows_used\": 0}"
+    ]
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-local-ridge-support-m4-r01/rx3-cvs-daot-rc4-s2026092702/probe.log": {
+    "bytes": 9772489,
+    "tail": [
+      "{\"event\": \"ANALYTICAL_SUPPORT_FIT\", \"arm\": \"interaction_ridge\", \"status\": \"CLOSED_FORM_SOLVED\", \"solver\": \"float64_centered_kernel_Cholesky\", \"train_k\": 1, \"train_physical_count\": 6, \"physical_loss_mass\": 6.0, \"sample_weight\": 1.0, \"ridge_coefficient\": 1.0, \"input_feature_dim\": 736, \"implicit_feature_dim\": 123616, \"output_dim\": 6, \"classification_output_dim\": 6, \"factorization_dim\": 6, \"factorization_calls\": 1, \"condition_bound\": 6.370412510806108, \"gram_min_eigenvalue_lower_bound\": 1.0, \"loss_data\": 0.664528251306493, \"loss_ridge\": 0.5977783936862409, \"loss_total\": 1.2623066449927338, \"normal_equation_residual\": 4.388541835720876e-16, \"gradient_norm\": 4.1478330160731504e-16, \"gradient_coordinate\": \"dual_coefficients\", \"dual_objective_gradient_norm\": 4.1478330160731504e-16, \"intercept_gradient_norm\": 4.660953740672398e-16, \"target_norm_squared\": 5.000000000000001, \"kernel_diagonal_mean\": 3.0000000000000004, \"degenerate_constant_features\": false, \"gram_bytes\": 288, \"coefficient_bytes\": 288, \"training_feature_bytes\": 35328, \"gram_seconds\": 0.0001320590017712675, \"solve_seconds\": 4.9697999202180654e-05, \"fit_seconds\": 0.00029700100276386365, \"optimizer_steps\": 0, \"learning_rate\": null, \"epoch\": null, \"all_states_estimated_from_trainfold_only\": true, \"scope\": \"support_oneshot_proxy\", \"fold\": null, \"all_states_estimated_from_current_support_only\": true, \"parent_k\": 10, \"trial\": 9, \"score_seconds\": 0.0017145679958048277, \"training_accuracy\": 1.0, \"held_accuracy\": 0.6481481481481481, \"training_minus_held_accuracy\": 0.35185185185185186, \"split_id\": \"24443c62c4861be595187345\"}",
+      "{\"event\": \"ANALYTICAL_SUPPORT_FIT\", \"arm\": \"local_ridge\", \"train_k\": 1, \"train_physical_count\": 6, \"factorization_calls\": 1, \"optimizer_steps\": 0, \"distance_rule\": \"rank2_reduced_QR_nonnegative_square_sum_exact_identity_zero\", \"bandwidth_rule\": \"median_nearest_other_class_squared_distance_including_zeros\", \"scope\": \"support_oneshot_proxy\", \"fold\": null, \"trial\": 9, \"bandwidth_tau\": 1.6162248118495728, \"interaction_centered_trace\": 5.370412510806106, \"degeneracy_reason\": null, \"numerical_tolerance\": 1.7053025658242404e-13, \"status\": \"CLOSED_FORM_SOLVED\", \"solver\": \"float64_Cholesky_two_triangular_solves_no_jitter\", \"bandwidth_zero\": false, \"nearest_other_class_squared_distance\": {\"count\": 6, \"min\": 1.3173470164699705, \"median\": 1.6162248118495728, \"max\": 2.1640856606138104, \"mean\": 1.6512264161216776}, \"zero_nearest_other_class_fraction\": 0.0, \"radial_centered_trace\": 3.628644006751674, \"trace_scale\": 1.480005341062279, \"trace_relative_error\": 0.0, \"normal_equation_residual\": 4.383844485989542e-17, \"normal_equation_absolute_residual\": 4.050792900924367e-16, \"residual_denominator\": \"(1+s0)*frobenius(alpha)+frobenius(Yc)_spectral_upper_bound\", \"condition_bound\": 6.370412510806106, \"gram_min_eigenvalue_lower_bound\": 1.0, \"physical_loss_mass\": 6.0, \"sample_weight\": 1.0, \"ridge_coefficient\": 1.0, \"loss_data\": 0.6044395205547639, \"loss_ridge\": 0.6170566555582134, \"loss_total\": 1.2214961761129772, \"gradient_norm\": 4.3678392175420385e-16, \"gradient_coordinate\": \"dual_coefficients\", \"target_norm_squared\": 5.000000000000001, \"factorization_dim\": 6, \"input_feature_dim\": 736, \"implicit_feature_dim\": 123616, \"output_dim\": 6, \"classification_output_dim\": 6, \"training_feature_bytes\": 35328, \"gram_bytes\": 288, \"kernel_bytes\": 288, \"coefficient_bytes\": 288, \"learning_rate\": null, \"epoch\": null, \"effective_degrees_of_freedom\": 2.5570076477740455, \"effective_degrees_of_freedom_seconds\": 4.300499858800322e-05, \"effective_degrees_of_freedom_extra_triangular_solves\": 2, \"training_offdiagonal_radial\": {\"count\": 30, \"min\": 0.18844151389396538, \"median\": 0.25266610950913154, \"max\": 0.44260542468045566, \"mean\": 0.27427119864966526}, \"training_radial_row_sum\": {\"count\": 6, \"min\": 2.195771924099521, \"median\": 2.368217359175339, \"max\": 2.563925229937192, \"mean\": 2.371355993248326}, \"centered_training_diagonal\": {\"count\": 6, \"min\": 0.8000675855264151, \"median\": 0.8966171501982378, \"max\": 0.9816905385162442, \"mean\": 0.8950687518010176}, \"training_accuracy\": 1.0, \"degenerate_constant_features\": false, \"all_states_estimated_from_trainfold_only\": true, \"solve_seconds\": 7.983099931152537e-05, \"gram_seconds\": 0.001975817998754792, \"fit_seconds\": 0.002099166995321866, \"parent_k\": 10, \"all_states_estimated_from_current_support_only\": true, \"score_seconds\": 0.013012855997658335, \"held_accuracy\": 0.6296296296296297, \"training_minus_held_accuracy\": 0.37037037037037035, \"held_max_radial_similarity\": {\"count\": 54, \"min\": 0.0797107366709912, \"median\": 0.45486834727969694, \"max\": 0.682475108905485, \"mean\": 0.4206508880468278}, \"held_correct_minus_nearest_wrong_similarity\": {\"count\": 54, \"min\": -0.17759431345546373, \"median\": 0.06300015972090967, \"max\": 0.35790569463578426, \"mean\": 0.08247765251467389}, \"held_no_exact_match_fraction\": null, \"held_centered_radial_squared_norm\": {\"count\": 54, \"min\": 0.9079600308666251, \"median\": 1.2145320201380425, \"max\": 1.875359809512313, \"mean\": 1.279684102443746}, \"split_id\": \"24443c62c4861be595187345\"}",
+      "{\"event\": \"SUPPORT_EPISODE_COMPLETE\", \"split_id\": \"24443c62c4861be595187345\", \"receiver\": \"8-7\", \"scenario\": \"practical_mid\", \"k\": 10, \"support_seed\": 2026092713, \"new_count\": 0, \"completed\": 124, \"total\": 900, \"scope\": \"SUPPORT_OOF_AND_SUPPORT_ONESHOT_PROXY_NOT_QUERY_EVALUATION\", \"classes\": 6, \"support_count\": 60, \"fold_count\": 3, \"numerical\": {\"kernel_diagonal\": {\"linear\": {\"min\": 1.9999999999999996, \"max\": 2.000000000000001, \"mean\": 2.0}, \"energy_control\": {\"min\": 2.999999999999999, \"max\": 3.0000000000000013, \"mean\": 3.0}, \"interaction\": {\"min\": 2.999999999999999, \"max\": 3.0000000000000018, \"mean\": 3.0}}, \"interaction_minus_energy_control_diagonal\": {\"min\": 0.0, \"max\": 4.440892098500626e-16, \"mean\": 1.4802973661668754e-17, \"max_abs\": 4.440892098500626e-16}, \"energy_match_scope\": \"unit_nonzero_blocks_only_zero_or_floor_blocks_may_differ\", \"background_mean_squared_norm\": 1.0, \"auxiliary_mean_squared_norm\": 1.0}, \"oof\": {\"branch_ridge\": {\"metrics\": {\"accuracy\": 0.7666666666666667, \"macro_accuracy\": 0.7666666666666666, \"old_accuracy\": 0.7666666666666666, \"new_accuracy\": null, \"h\": null, \"macro_nll\": 1.5204151631252718, \"nll_interpretation\": \"fixed_softmax_of_uncalibrated_ridge_scores\"}}, \"interaction_ridge\": {\"metrics\": {\"accuracy\": 0.7666666666666667, \"macro_accuracy\": 0.7666666666666666, \"old_accuracy\": 0.7666666666666666, \"new_accuracy\": null, \"h\": null, \"macro_nll\": 1.4721411347062021, \"nll_interpretation\": \"fixed_softmax_of_uncalibrated_ridge_scores\"}}, \"local_ridge\": {\"metrics\": {\"accuracy\": 0.7833333333333333, \"macro_accuracy\": 0.7833333333333332, \"old_accuracy\": 0.7833333333333332, \"new_accuracy\": null, \"h\": null, \"macro_nll\": 1.5105216889435524, \"nll_interpretation\": \"fixed_softmax_of_uncalibrated_ridge_scores\"}}}, \"paired\": {\"local_ridge_minus_branch_ridge\": {\"mean_correct_delta\": 0.016666666666666666}, \"local_ridge_minus_interaction_ridge\": {\"mean_correct_delta\": 0.016666666666666666}, \"interaction_ridge_minus_branch_ridge\": {\"mean_correct_delta\": 0.0}}, \"fit_seconds\": 0.5494297249970259, \"factorization_count\": 39, \"standard_factorization_count\": 9, \"proxy_anchor_count\": 10, \"oneshot_proxy\": {\"parent_k\": 10, \"proxy_train_k\": 1, \"trial_count\": 10, \"scope\": \"SUPPORT_ONESHOT_PROXY_FROM_PARENT_SUPPORT_NOT_FORMAL_K1\", \"coverage\": {\"parent_physical_count\": 60, \"training_occurrences\": 60, \"held_occurrences\": 540, \"unique_held_physical_count\": 60}, \"factorization_count\": 30, \"parent_split_id\": \"24443c62c4861be595187345\", \"diagnostic\": \"support_oneshot_proxy\", \"evidence_schema\": \"anchor_confusion_class_nll_and_exact_physical_mapping_v1\", \"parent_mean_metrics\": {\"branch_ridge\": {\"accuracy\": 0.5944444444444444, \"macro_accuracy\": 0.5944444444444444, \"old_accuracy\": 0.5944444444444444, \"new_accuracy\": null, \"h\": null, \"macro_nll\": 1.7043390244711891}, \"interaction_ridge\": {\"accuracy\": 0.5962962962962963, \"macro_accuracy\": 0.5962962962962963, \"old_accuracy\": 0.5962962962962963, \"new_accuracy\": null, \"h\": null, \"macro_nll\": 1.6753480927978248}, \"local_ridge\": {\"accuracy\": 0.5925925925925927, \"macro_accuracy\": 0.5925925925925927, \"old_accuracy\": 0.5925925925925927, \"new_accuracy\": null, \"h\": null, \"macro_nll\": 1.7022783458275481}}}, \"optimizer_steps\": 0, \"persistent_state_bytes\": 0, \"heldout_unavailable_reason\": null, \"fit_call_seconds\": 0.5497079880005913, \"log_write_seconds\": 0.00783959600084927, \"total_seconds\": 0.5578512300053262, \"peak_process_rss_bytes\": 175177728, \"query_rows_used\": 0, \"source_rows_used\": 0}"
+    ]
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-local-ridge-support-m4-r01/rx3-cvs-daot-rc4-s2026092703/probe.log": {
+    "bytes": 9985680,
+    "tail": [
+      "{\"event\": \"ANALYTICAL_SUPPORT_FIT\", \"arm\": \"interaction_ridge\", \"status\": \"CLOSED_FORM_SOLVED\", \"solver\": \"float64_centered_kernel_Cholesky\", \"train_k\": 1, \"train_physical_count\": 6, \"physical_loss_mass\": 6.0, \"sample_weight\": 1.0, \"ridge_coefficient\": 1.0, \"input_feature_dim\": 736, \"implicit_feature_dim\": 123616, \"output_dim\": 6, \"classification_output_dim\": 6, \"factorization_dim\": 6, \"factorization_calls\": 1, \"condition_bound\": 9.331194189671578, \"gram_min_eigenvalue_lower_bound\": 1.0, \"loss_data\": 0.4722348484548676, \"loss_ridge\": 0.5687756056505617, \"loss_total\": 1.0410104541054293, \"normal_equation_residual\": 5.694967977388552e-16, \"gradient_norm\": 1.2213259169996368e-15, \"gradient_coordinate\": \"dual_coefficients\", \"dual_objective_gradient_norm\": 1.2213259169996368e-15, \"intercept_gradient_norm\": 4.736779903279368e-16, \"target_norm_squared\": 5.000000000000001, \"kernel_diagonal_mean\": 3.0, \"degenerate_constant_features\": false, \"gram_bytes\": 288, \"coefficient_bytes\": 288, \"training_feature_bytes\": 35328, \"gram_seconds\": 0.00012739199883071706, \"solve_seconds\": 4.8548994527664036e-05, \"fit_seconds\": 0.00028963799559278414, \"optimizer_steps\": 0, \"learning_rate\": null, \"epoch\": null, \"all_states_estimated_from_trainfold_only\": true, \"scope\": \"support_oneshot_proxy\", \"fold\": null, \"all_states_estimated_from_current_support_only\": true, \"parent_k\": 5, \"trial\": 4, \"score_seconds\": 0.0008812660016701557, \"training_accuracy\": 1.0, \"held_accuracy\": 0.25, \"training_minus_held_accuracy\": 0.75, \"split_id\": \"2460b7da4d55e801da611471\"}",
+      "{\"event\": \"ANALYTICAL_SUPPORT_FIT\", \"arm\": \"local_ridge\", \"train_k\": 1, \"train_physical_count\": 6, \"factorization_calls\": 1, \"optimizer_steps\": 0, \"distance_rule\": \"rank2_reduced_QR_nonnegative_square_sum_exact_identity_zero\", \"bandwidth_rule\": \"median_nearest_other_class_squared_distance_including_zeros\", \"scope\": \"support_oneshot_proxy\", \"fold\": null, \"trial\": 4, \"bandwidth_tau\": 2.7937939156385285, \"interaction_centered_trace\": 8.33119418967158, \"degeneracy_reason\": null, \"numerical_tolerance\": 1.7053025658242404e-13, \"status\": \"CLOSED_FORM_SOLVED\", \"solver\": \"float64_Cholesky_two_triangular_solves_no_jitter\", \"bandwidth_zero\": false, \"nearest_other_class_squared_distance\": {\"count\": 6, \"min\": 1.2579276256402057, \"median\": 2.7937939156385285, \"max\": 2.8952826522594606, \"mean\": 2.3155714486426793}, \"zero_nearest_other_class_fraction\": 0.0, \"radial_centered_trace\": 3.4129381709815445, \"trace_scale\": 2.4410621500581033, \"trace_relative_error\": 2.132175530853009e-16, \"normal_equation_residual\": 5.0422017781007084e-17, \"normal_equation_absolute_residual\": 5.3533015581491455e-16, \"residual_denominator\": \"(1+s0)*frobenius(alpha)+frobenius(Yc)_spectral_upper_bound\", \"condition_bound\": 9.33119418967158, \"gram_min_eigenvalue_lower_bound\": 1.0, \"physical_loss_mass\": 6.0, \"sample_weight\": 1.0, \"ridge_coefficient\": 1.0, \"loss_data\": 0.40334748099043166, \"loss_ridge\": 0.5790113897552377, \"loss_total\": 0.9823588707456694, \"gradient_norm\": 8.992162440151008e-16, \"gradient_coordinate\": \"dual_coefficients\", \"target_norm_squared\": 5.000000000000001, \"factorization_dim\": 6, \"input_feature_dim\": 736, \"implicit_feature_dim\": 123616, \"output_dim\": 6, \"classification_output_dim\": 6, \"training_feature_bytes\": 35328, \"gram_bytes\": 288, \"kernel_bytes\": 288, \"coefficient_bytes\": 288, \"learning_rate\": null, \"epoch\": null, \"effective_degrees_of_freedom\": 3.0352822585086603, \"effective_degrees_of_freedom_seconds\": 4.449100379133597e-05, \"effective_degrees_of_freedom_extra_triangular_solves\": 2, \"training_offdiagonal_radial\": {\"count\": 30, \"min\": 0.18775371760947632, \"median\": 0.3034382431218761, \"max\": 0.6374637640847837, \"mean\": 0.3174123658036912}, \"training_radial_row_sum\": {\"count\": 6, \"min\": 2.361962176909879, \"median\": 2.6167907719590153, \"max\": 2.7340230641182104, \"mean\": 2.5870618290184555}, \"centered_training_diagonal\": {\"count\": 6, \"min\": 1.268951862102663, \"median\": 1.3643422991541176, \"max\": 1.5716931118630946, \"mean\": 1.388532364945263}, \"training_accuracy\": 1.0, \"degenerate_constant_features\": false, \"all_states_estimated_from_trainfold_only\": true, \"solve_seconds\": 8.64589965203777e-05, \"gram_seconds\": 0.0019333539967192337, \"fit_seconds\": 0.002064838001388125, \"parent_k\": 5, \"all_states_estimated_from_current_support_only\": true, \"score_seconds\": 0.005912160995649174, \"held_accuracy\": 0.25, \"training_minus_held_accuracy\": 0.75, \"held_max_radial_similarity\": {\"count\": 24, \"min\": 0.25533037205575737, \"median\": 0.3543808176736588, \"max\": 0.7316858168398943, \"mean\": 0.39295308224629383}, \"held_correct_minus_nearest_wrong_similarity\": {\"count\": 24, \"min\": -0.32605808929470104, \"median\": -0.06228460162046487, \"max\": 0.22412045476385506, \"mean\": -0.048151173346200456}, \"held_no_exact_match_fraction\": null, \"held_centered_radial_squared_norm\": {\"count\": 24, \"min\": 1.5238721877432624, \"median\": 2.144260432063823, \"max\": 2.576166588032304, \"mean\": 2.069230952444725}, \"split_id\": \"2460b7da4d55e801da611471\"}",
+      "{\"event\": \"SUPPORT_EPISODE_COMPLETE\", \"split_id\": \"2460b7da4d55e801da611471\", \"receiver\": \"8-14\", \"scenario\": \"practical_low_urban\", \"k\": 5, \"support_seed\": 2026092715, \"new_count\": 0, \"completed\": 126, \"total\": 900, \"scope\": \"SUPPORT_OOF_AND_SUPPORT_ONESHOT_PROXY_NOT_QUERY_EVALUATION\", \"classes\": 6, \"support_count\": 30, \"fold_count\": 3, \"numerical\": {\"kernel_diagonal\": {\"linear\": {\"min\": 1.9999999999999998, \"max\": 2.000000000000001, \"mean\": 2.0}, \"energy_control\": {\"min\": 2.9999999999999996, \"max\": 3.0000000000000013, \"mean\": 3.0}, \"interaction\": {\"min\": 2.9999999999999996, \"max\": 3.0000000000000018, \"mean\": 3.0}}, \"interaction_minus_energy_control_diagonal\": {\"min\": 0.0, \"max\": 4.440892098500626e-16, \"mean\": 1.4802973661668754e-17, \"max_abs\": 4.440892098500626e-16}, \"energy_match_scope\": \"unit_nonzero_blocks_only_zero_or_floor_blocks_may_differ\", \"background_mean_squared_norm\": 1.0, \"auxiliary_mean_squared_norm\": 1.0}, \"oof\": {\"branch_ridge\": {\"metrics\": {\"accuracy\": 0.4, \"macro_accuracy\": 0.4000000000000001, \"old_accuracy\": 0.4000000000000001, \"new_accuracy\": null, \"h\": null, \"macro_nll\": 1.714658754147296, \"nll_interpretation\": \"fixed_softmax_of_uncalibrated_ridge_scores\"}}, \"interaction_ridge\": {\"metrics\": {\"accuracy\": 0.4, \"macro_accuracy\": 0.39999999999999997, \"old_accuracy\": 0.39999999999999997, \"new_accuracy\": null, \"h\": null, \"macro_nll\": 1.7065500658030972, \"nll_interpretation\": \"fixed_softmax_of_uncalibrated_ridge_scores\"}}, \"local_ridge\": {\"metrics\": {\"accuracy\": 0.4, \"macro_accuracy\": 0.39999999999999997, \"old_accuracy\": 0.39999999999999997, \"new_accuracy\": null, \"h\": null, \"macro_nll\": 1.7333779126951518, \"nll_interpretation\": \"fixed_softmax_of_uncalibrated_ridge_scores\"}}}, \"paired\": {\"local_ridge_minus_branch_ridge\": {\"mean_correct_delta\": 0.0}, \"local_ridge_minus_interaction_ridge\": {\"mean_correct_delta\": 0.0}, \"interaction_ridge_minus_branch_ridge\": {\"mean_correct_delta\": 0.0}}, \"fit_seconds\": 0.1853108759969473, \"factorization_count\": 24, \"standard_factorization_count\": 9, \"proxy_anchor_count\": 5, \"oneshot_proxy\": {\"parent_k\": 5, \"proxy_train_k\": 1, \"trial_count\": 5, \"scope\": \"SUPPORT_ONESHOT_PROXY_FROM_PARENT_SUPPORT_NOT_FORMAL_K1\", \"coverage\": {\"parent_physical_count\": 30, \"training_occurrences\": 30, \"held_occurrences\": 120, \"unique_held_physical_count\": 30}, \"factorization_count\": 15, \"parent_split_id\": \"2460b7da4d55e801da611471\", \"diagnostic\": \"support_oneshot_proxy\", \"evidence_schema\": \"anchor_confusion_class_nll_and_exact_physical_mapping_v1\", \"parent_mean_metrics\": {\"branch_ridge\": {\"accuracy\": 0.23333333333333334, \"macro_accuracy\": 0.23333333333333334, \"old_accuracy\": 0.23333333333333334, \"new_accuracy\": null, \"h\": null, \"macro_nll\": 1.7694398768634372}, \"interaction_ridge\": {\"accuracy\": 0.23333333333333334, \"macro_accuracy\": 0.23333333333333334, \"old_accuracy\": 0.23333333333333334, \"new_accuracy\": null, \"h\": null, \"macro_nll\": 1.7666991013198927}, \"local_ridge\": {\"accuracy\": 0.225, \"macro_accuracy\": 0.225, \"old_accuracy\": 0.225, \"new_accuracy\": null, \"h\": null, \"macro_nll\": 1.7723466415735807}}}, \"optimizer_steps\": 0, \"persistent_state_bytes\": 0, \"heldout_unavailable_reason\": null, \"fit_call_seconds\": 0.1853682579967426, \"log_write_seconds\": 0.00465033900400158, \"total_seconds\": 0.19025424499704968, \"peak_process_rss_bytes\": 175472640, \"query_rows_used\": 0, \"source_rows_used\": 0}"
+    ]
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-local-ridge-support-m4-r01/rx3-cvs-daot-rc4-s2026092701/probe.log": {
+    "bytes": 9437563,
+    "tail": [
+      "{\"event\": \"ANALYTICAL_SUPPORT_FIT\", \"arm\": \"interaction_ridge\", \"status\": \"CLOSED_FORM_SOLVED\", \"solver\": \"float64_centered_kernel_Cholesky\", \"train_k\": 1, \"train_physical_count\": 6, \"physical_loss_mass\": 6.0, \"sample_weight\": 1.0, \"ridge_coefficient\": 1.0, \"input_feature_dim\": 736, \"implicit_feature_dim\": 123616, \"output_dim\": 6, \"classification_output_dim\": 6, \"factorization_dim\": 6, \"factorization_calls\": 1, \"condition_bound\": 8.723907648131345, \"gram_min_eigenvalue_lower_bound\": 1.0, \"loss_data\": 0.5350594777749305, \"loss_ridge\": 0.5682446939499946, \"loss_total\": 1.103304171724925, \"normal_equation_residual\": 3.488821756485609e-16, \"gradient_norm\": 6.98331070278543e-16, \"gradient_coordinate\": \"dual_coefficients\", \"dual_objective_gradient_norm\": 6.98331070278543e-16, \"intercept_gradient_norm\": 7.474705859542147e-16, \"target_norm_squared\": 5.0, \"kernel_diagonal_mean\": 3.0, \"degenerate_constant_features\": false, \"gram_bytes\": 288, \"coefficient_bytes\": 288, \"training_feature_bytes\": 35328, \"gram_seconds\": 0.00012480300210881978, \"solve_seconds\": 5.013899499317631e-05, \"fit_seconds\": 0.00029097100195940584, \"optimizer_steps\": 0, \"learning_rate\": null, \"epoch\": null, \"all_states_estimated_from_trainfold_only\": true, \"scope\": \"support_oneshot_proxy\", \"fold\": null, \"all_states_estimated_from_current_support_only\": true, \"parent_k\": 5, \"trial\": 4, \"score_seconds\": 0.0009330419998150319, \"training_accuracy\": 1.0, \"held_accuracy\": 0.25, \"training_minus_held_accuracy\": 0.75, \"split_id\": \"23ca3d23b7b93b043f490260\"}",
+      "{\"event\": \"ANALYTICAL_SUPPORT_FIT\", \"arm\": \"local_ridge\", \"train_k\": 1, \"train_physical_count\": 6, \"factorization_calls\": 1, \"optimizer_steps\": 0, \"distance_rule\": \"rank2_reduced_QR_nonnegative_square_sum_exact_identity_zero\", \"bandwidth_rule\": \"median_nearest_other_class_squared_distance_including_zeros\", \"scope\": \"support_oneshot_proxy\", \"fold\": null, \"trial\": 4, \"bandwidth_tau\": 1.74811685338349, \"interaction_centered_trace\": 7.723907648131347, \"degeneracy_reason\": null, \"numerical_tolerance\": 1.7053025658242404e-13, \"status\": \"CLOSED_FORM_SOLVED\", \"solver\": \"float64_Cholesky_two_triangular_solves_no_jitter\", \"bandwidth_zero\": false, \"nearest_other_class_squared_distance\": {\"count\": 6, \"min\": 1.7003177190216832, \"median\": 1.74811685338349, \"max\": 3.3767130824995233, \"mean\": 2.015119677084571}, \"zero_nearest_other_class_fraction\": 0.0, \"radial_centered_trace\": 4.009775922756309, \"trace_scale\": 1.9262691474345415, \"trace_relative_error\": 1.14990812961753e-16, \"normal_equation_residual\": 2.9632245725142037e-17, \"normal_equation_absolute_residual\": 3.0150272531948617e-16, \"residual_denominator\": \"(1+s0)*frobenius(alpha)+frobenius(Yc)_spectral_upper_bound\", \"condition_bound\": 8.723907648131348, \"gram_min_eigenvalue_lower_bound\": 1.0, \"physical_loss_mass\": 6.0, \"sample_weight\": 1.0, \"ridge_coefficient\": 1.0, \"loss_data\": 0.414049444512439, \"loss_ridge\": 0.5920986006620438, \"loss_total\": 1.0061480451744829, \"gradient_norm\": 5.009356631571473e-16, \"gradient_coordinate\": \"dual_coefficients\", \"target_norm_squared\": 5.0, \"factorization_dim\": 6, \"input_feature_dim\": 736, \"implicit_feature_dim\": 123616, \"output_dim\": 6, \"classification_output_dim\": 6, \"training_feature_bytes\": 35328, \"gram_bytes\": 288, \"kernel_bytes\": 288, \"coefficient_bytes\": 288, \"learning_rate\": null, \"epoch\": null, \"effective_degrees_of_freedom\": 2.9877039096510343, \"effective_degrees_of_freedom_seconds\": 4.6036999265197664e-05, \"effective_degrees_of_freedom_extra_triangular_solves\": 2, \"training_offdiagonal_radial\": {\"count\": 30, \"min\": 0.05862636515822464, \"median\": 0.164317784599602, \"max\": 0.3780772325390991, \"mean\": 0.19804481544873814}, \"training_radial_row_sum\": {\"count\": 6, \"min\": 1.518036105962983, \"median\": 2.059577507161275, \"max\": 2.28989752225923, \"mean\": 1.9902240772436908}, \"centered_training_diagonal\": {\"count\": 6, \"min\": 1.0949007042089394, \"median\": 1.2427868172488892, \"max\": 1.5905049816444692, \"mean\": 1.2873179413552245}, \"training_accuracy\": 1.0, \"degenerate_constant_features\": false, \"all_states_estimated_from_trainfold_only\": true, \"solve_seconds\": 8.047599840210751e-05, \"gram_seconds\": 0.0019373519971850328, \"fit_seconds\": 0.0020643889947677962, \"parent_k\": 5, \"all_states_estimated_from_current_support_only\": true, \"score_seconds\": 0.005971322003460955, \"held_accuracy\": 0.25, \"training_minus_held_accuracy\": 0.75, \"held_max_radial_similarity\": {\"count\": 24, \"min\": 0.2445954123695485, \"median\": 0.4213120578593177, \"max\": 0.7598238680210782, \"mean\": 0.4393606219187953}, \"held_correct_minus_nearest_wrong_similarity\": {\"count\": 24, \"min\": -0.700913918257466, \"median\": -0.169759140978666, \"max\": 0.3334704927288448, \"mean\": -0.12139473804808393}, \"held_no_exact_match_fraction\": null, \"held_centered_radial_squared_norm\": {\"count\": 24, \"min\": 1.3783417723737832, \"median\": 1.5829730284037544, \"max\": 1.9952226085754605, \"mean\": 1.6444419058405828}, \"split_id\": \"23ca3d23b7b93b043f490260\"}",
+      "{\"event\": \"SUPPORT_EPISODE_COMPLETE\", \"split_id\": \"23ca3d23b7b93b043f490260\", \"receiver\": \"8-14\", \"scenario\": \"practical_high\", \"k\": 5, \"support_seed\": 2026092713, \"new_count\": 0, \"completed\": 121, \"total\": 900, \"scope\": \"SUPPORT_OOF_AND_SUPPORT_ONESHOT_PROXY_NOT_QUERY_EVALUATION\", \"classes\": 6, \"support_count\": 30, \"fold_count\": 3, \"numerical\": {\"kernel_diagonal\": {\"linear\": {\"min\": 2.0, \"max\": 2.0000000000000004, \"mean\": 2.0}, \"energy_control\": {\"min\": 3.0, \"max\": 3.000000000000001, \"mean\": 3.0}, \"interaction\": {\"min\": 3.0, \"max\": 3.000000000000001, \"mean\": 3.0}}, \"interaction_minus_energy_control_diagonal\": {\"min\": 0.0, \"max\": 0.0, \"mean\": 0.0, \"max_abs\": 0.0}, \"energy_match_scope\": \"unit_nonzero_blocks_only_zero_or_floor_blocks_may_differ\", \"background_mean_squared_norm\": 1.0, \"auxiliary_mean_squared_norm\": 1.0}, \"oof\": {\"branch_ridge\": {\"metrics\": {\"accuracy\": 0.43333333333333335, \"macro_accuracy\": 0.4333333333333333, \"old_accuracy\": 0.4333333333333333, \"new_accuracy\": null, \"h\": null, \"macro_nll\": 1.686883956506005, \"nll_interpretation\": \"fixed_softmax_of_uncalibrated_ridge_scores\"}}, \"interaction_ridge\": {\"metrics\": {\"accuracy\": 0.43333333333333335, \"macro_accuracy\": 0.4333333333333333, \"old_accuracy\": 0.4333333333333333, \"new_accuracy\": null, \"h\": null, \"macro_nll\": 1.6586534493485032, \"nll_interpretation\": \"fixed_softmax_of_uncalibrated_ridge_scores\"}}, \"local_ridge\": {\"metrics\": {\"accuracy\": 0.4666666666666667, \"macro_accuracy\": 0.4666666666666666, \"old_accuracy\": 0.4666666666666666, \"new_accuracy\": null, \"h\": null, \"macro_nll\": 1.6872420490459175, \"nll_interpretation\": \"fixed_softmax_of_uncalibrated_ridge_scores\"}}}, \"paired\": {\"local_ridge_minus_branch_ridge\": {\"mean_correct_delta\": 0.03333333333333333}, \"local_ridge_minus_interaction_ridge\": {\"mean_correct_delta\": 0.03333333333333333}, \"interaction_ridge_minus_branch_ridge\": {\"mean_correct_delta\": 0.0}}, \"fit_seconds\": 0.18630811000184622, \"factorization_count\": 24, \"standard_factorization_count\": 9, \"proxy_anchor_count\": 5, \"oneshot_proxy\": {\"parent_k\": 5, \"proxy_train_k\": 1, \"trial_count\": 5, \"scope\": \"SUPPORT_ONESHOT_PROXY_FROM_PARENT_SUPPORT_NOT_FORMAL_K1\", \"coverage\": {\"parent_physical_count\": 30, \"training_occurrences\": 30, \"held_occurrences\": 120, \"unique_held_physical_count\": 30}, \"factorization_count\": 15, \"parent_split_id\": \"23ca3d23b7b93b043f490260\", \"diagnostic\": \"support_oneshot_proxy\", \"evidence_schema\": \"anchor_confusion_class_nll_and_exact_physical_mapping_v1\", \"parent_mean_metrics\": {\"branch_ridge\": {\"accuracy\": 0.39166666666666666, \"macro_accuracy\": 0.39166666666666666, \"old_accuracy\": 0.39166666666666666, \"new_accuracy\": null, \"h\": null, \"macro_nll\": 1.7525391050021952}, \"interaction_ridge\": {\"accuracy\": 0.4, \"macro_accuracy\": 0.4, \"old_accuracy\": 0.4, \"new_accuracy\": null, \"h\": null, \"macro_nll\": 1.7360372611922106}, \"local_ridge\": {\"accuracy\": 0.3833333333333333, \"macro_accuracy\": 0.3833333333333333, \"old_accuracy\": 0.3833333333333333, \"new_accuracy\": null, \"h\": null, \"macro_nll\": 1.7466226158465168}}}, \"optimizer_steps\": 0, \"persistent_state_bytes\": 0, \"heldout_unavailable_reason\": null, \"fit_call_seconds\": 0.18659662500431295, \"log_write_seconds\": 0.00466846399649512, \"total_seconds\": 0.19168331800028682, \"peak_process_rss_bytes\": 176267264, \"query_rows_used\": 0, \"source_rows_used\": 0}"
+    ]
+  },
+  "fit_progress": {
+    "rx3-cvs-daot-rc4-s2026092704": {
+      "completed": 122,
+      "total": 900,
+      "k": 20,
+      "classes": 16,
+      "fit_seconds": 7.447830338998756
+    },
+    "rx3-cvs-daot-rc4-s2026092702": {
+      "completed": 124,
+      "total": 900,
+      "k": 10,
+      "classes": 6,
+      "fit_seconds": 0.5494297249970259
+    },
+    "rx3-cvs-daot-rc4-s2026092703": {
+      "completed": 126,
+      "total": 900,
+      "k": 5,
+      "classes": 6,
+      "fit_seconds": 0.1853108759969473
+    },
+    "rx3-cvs-daot-rc4-s2026092701": {
+      "completed": 121,
+      "total": 900,
+      "k": 5,
+      "classes": 6,
+      "fit_seconds": 0.18630811000184622
+    }
+  },
+  "live_children": [
+    {
+      "pid": 294750,
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_ridge_support_20260929_r01/tools/evaluate_d92_branch_local_ridge_probe.py",
+        "--support-features",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-support-probe-m4-r01/rx3-cvs-daot-rc4-s2026092704/feature_cache",
+        "--capsule",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-local-ridge-support-m4-r01/rx3-cvs-daot-rc4-s2026092704/probe",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_ridge_support_20260929_r01/configs/d92_branch_local_ridge_support_rx3_20260929.json",
+        "--expected-capsule-id",
+        "residual-noeq-76121e6f34363fa612ec25fb",
+        "--expected-checkpoint-sha256",
+        "690fed6ea2a6532d0ad978c93306f0f35b61f4a3a3fc4b1d6494f0e7547c74bb",
+        "--expected-model-seed",
+        "2026092704"
+      ],
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_ridge_support_20260929_r01",
+      "started": 1790689042.2844963,
+      "kind": "probe",
+      "live_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_ridge_support_20260929_r01/tools/evaluate_d92_branch_local_ridge_probe.py",
+        "--support-features",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-support-probe-m4-r01/rx3-cvs-daot-rc4-s2026092704/feature_cache",
+        "--capsule",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-local-ridge-support-m4-r01/rx3-cvs-daot-rc4-s2026092704/probe",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_ridge_support_20260929_r01/configs/d92_branch_local_ridge_support_rx3_20260929.json",
+        "--expected-capsule-id",
+        "residual-noeq-76121e6f34363fa612ec25fb",
+        "--expected-checkpoint-sha256",
+        "690fed6ea2a6532d0ad978c93306f0f35b61f4a3a3fc4b1d6494f0e7547c74bb",
+        "--expected-model-seed",
+        "2026092704"
+      ],
+      "live_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_ridge_support_20260929_r01",
+      "record": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-local-ridge-support-m4-r01/rx3-cvs-daot-rc4-s2026092704/probe.log.process.json"
+    },
+    {
+      "pid": 294748,
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_ridge_support_20260929_r01/tools/evaluate_d92_branch_local_ridge_probe.py",
+        "--support-features",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-support-probe-m4-r01/rx3-cvs-daot-rc4-s2026092702/feature_cache",
+        "--capsule",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-local-ridge-support-m4-r01/rx3-cvs-daot-rc4-s2026092702/probe",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_ridge_support_20260929_r01/configs/d92_branch_local_ridge_support_rx3_20260929.json",
+        "--expected-capsule-id",
+        "residual-noeq-76121e6f34363fa612ec25fb",
+        "--expected-checkpoint-sha256",
+        "72f26413e495dcf82317898f8729caa3d35499bf0b41e9671ffdceab2c90924b",
+        "--expected-model-seed",
+        "2026092702"
+      ],
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_ridge_support_20260929_r01",
+      "started": 1790689042.2828436,
+      "kind": "probe",
+      "live_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_ridge_support_20260929_r01/tools/evaluate_d92_branch_local_ridge_probe.py",
+        "--support-features",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-support-probe-m4-r01/rx3-cvs-daot-rc4-s2026092702/feature_cache",
+        "--capsule",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-local-ridge-support-m4-r01/rx3-cvs-daot-rc4-s2026092702/probe",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_ridge_support_20260929_r01/configs/d92_branch_local_ridge_support_rx3_20260929.json",
+        "--expected-capsule-id",
+        "residual-noeq-76121e6f34363fa612ec25fb",
+        "--expected-checkpoint-sha256",
+        "72f26413e495dcf82317898f8729caa3d35499bf0b41e9671ffdceab2c90924b",
+        "--expected-model-seed",
+        "2026092702"
+      ],
+      "live_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_ridge_support_20260929_r01",
+      "record": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-local-ridge-support-m4-r01/rx3-cvs-daot-rc4-s2026092702/probe.log.process.json"
+    },
+    {
+      "pid": 294749,
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_ridge_support_20260929_r01/tools/evaluate_d92_branch_local_ridge_probe.py",
+        "--support-features",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-support-probe-m4-r01/rx3-cvs-daot-rc4-s2026092703/feature_cache",
+        "--capsule",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-local-ridge-support-m4-r01/rx3-cvs-daot-rc4-s2026092703/probe",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_ridge_support_20260929_r01/configs/d92_branch_local_ridge_support_rx3_20260929.json",
+        "--expected-capsule-id",
+        "residual-noeq-76121e6f34363fa612ec25fb",
+        "--expected-checkpoint-sha256",
+        "51fadc3b4ad3cbf83de01700a4a109430e7a57b1e10cb147f0be5f01593f26bb",
+        "--expected-model-seed",
+        "2026092703"
+      ],
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_ridge_support_20260929_r01",
+      "started": 1790689042.2838647,
+      "kind": "probe",
+      "live_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_ridge_support_20260929_r01/tools/evaluate_d92_branch_local_ridge_probe.py",
+        "--support-features",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-support-probe-m4-r01/rx3-cvs-daot-rc4-s2026092703/feature_cache",
+        "--capsule",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-local-ridge-support-m4-r01/rx3-cvs-daot-rc4-s2026092703/probe",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_ridge_support_20260929_r01/configs/d92_branch_local_ridge_support_rx3_20260929.json",
+        "--expected-capsule-id",
+        "residual-noeq-76121e6f34363fa612ec25fb",
+        "--expected-checkpoint-sha256",
+        "51fadc3b4ad3cbf83de01700a4a109430e7a57b1e10cb147f0be5f01593f26bb",
+        "--expected-model-seed",
+        "2026092703"
+      ],
+      "live_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_ridge_support_20260929_r01",
+      "record": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-local-ridge-support-m4-r01/rx3-cvs-daot-rc4-s2026092703/probe.log.process.json"
+    },
+    {
+      "pid": 294747,
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_ridge_support_20260929_r01/tools/evaluate_d92_branch_local_ridge_probe.py",
+        "--support-features",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-support-probe-m4-r01/rx3-cvs-daot-rc4-s2026092701/feature_cache",
+        "--capsule",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-local-ridge-support-m4-r01/rx3-cvs-daot-rc4-s2026092701/probe",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_ridge_support_20260929_r01/configs/d92_branch_local_ridge_support_rx3_20260929.json",
+        "--expected-capsule-id",
+        "residual-noeq-76121e6f34363fa612ec25fb",
+        "--expected-checkpoint-sha256",
+        "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b",
+        "--expected-model-seed",
+        "2026092701"
+      ],
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_ridge_support_20260929_r01",
+      "started": 1790689042.2819757,
+      "kind": "probe",
+      "live_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_ridge_support_20260929_r01/tools/evaluate_d92_branch_local_ridge_probe.py",
+        "--support-features",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-support-probe-m4-r01/rx3-cvs-daot-rc4-s2026092701/feature_cache",
+        "--capsule",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-local-ridge-support-m4-r01/rx3-cvs-daot-rc4-s2026092701/probe",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_ridge_support_20260929_r01/configs/d92_branch_local_ridge_support_rx3_20260929.json",
+        "--expected-capsule-id",
+        "residual-noeq-76121e6f34363fa612ec25fb",
+        "--expected-checkpoint-sha256",
+        "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b",
+        "--expected-model-seed",
+        "2026092701"
+      ],
+      "live_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_ridge_support_20260929_r01",
+      "record": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-local-ridge-support-m4-r01/rx3-cvs-daot-rc4-s2026092701/probe.log.process.json"
+    }
+  ]
+}
