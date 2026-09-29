@@ -1,5 +1,11 @@
 # D92优化当前交接
 
+## 当前工作：用户要求继续优化BranchRidge，先做support交互诊断
+
+2026-09-29用户明确要求在BranchRidge基础上更进一步，已恢复研发；独立数据验证仍待数据。新候选D92-BranchInteraction-v1保持原五块特征、冻结Phase1、全K同式，以固定KB+KA+KB*KA交互核对比linear与1.5倍linear能量对照，不扫参数。设计agent仅访问代码和合法support资料，未接收任何query成绩。先运行完整support-only OOF诊断，K1只数值检查，不能伪称独立类内holdout。预登记K5/10/20相对两对照H和新类均提升、旧类退化不超过1pp；是否进入query重复基准只据该support证据决定。
+
+新run `20260929-phase2-d92-branch-interaction-support-m4-r01`已PLANNED/launch-ready VALID，尚未启动；复用旧support-only缓存，不读取query/原IQ/truth、不重新加载checkpoint。CPU四lane、每lane两BLAS线程，不占GPU。远端8个cache、capsule句柄与新输出路径preflight VERIFIED，证据`interaction_preflight_1790668633787952000.json`。root唯一launch owner；核心/入口测试和唯一P0/P1正在收尾。用户另问K与新增类数量，报告补充分开进行，旧query成绩不反馈设计agent。以下BranchRidge完成状态仍有效，历史“等待数据停止研发”被本次继续优化请求更新。
+
 ## 最新状态：BranchRidge完整重复基准通过，下一步独立数据确认
 
 两run `20260929-phase2-d92-branch-ridge-repeat-rx3-m4-r01`和rx1同名均SCORED/ANALYZED，全部进程退出；终态/下载证据rx3 `readback_1790622737.json`及两组`readback_1790622753.json`。runtime commit仍`01e93386736f1919ee3f009fb1b16fb04f9a463d`。完整9648混淆记录、4800单次fullsupport fits、原D92/DG全记录一致性及4560汇总数值已VERIFIED。最终归档已执行`--write`，不得重跑同输出；两张图已目视检查。

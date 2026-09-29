@@ -1,0 +1,85 @@
+{
+  "algorithm": {
+    "method": "D92-BranchInteraction-v1",
+    "schema": "d92_branch_interaction_v1",
+    "views": "original_received_only",
+    "branches": [
+      "t_emb",
+      "f_emb",
+      "pa_local"
+    ],
+    "identity_dim": 160,
+    "fft_dim": 96,
+    "background_dim": 256,
+    "auxiliary_dim": 480,
+    "input_feature_dim": 736,
+    "implicit_interaction_dim": 122880,
+    "norm_floor": 1e-12,
+    "fft": "historical_spectral_logmag_sketch",
+    "fft_norm_floor": 1e-08,
+    "background": "unit(concat(unit(z_id),4*unit(fft96)))",
+    "auxiliary": "concat(unit(t_emb),unit(f_emb),unit(pa_local))/sqrt(3)",
+    "arms": [
+      "linear",
+      "energy_control",
+      "interaction"
+    ],
+    "kernels": {
+      "linear": "KB+KA",
+      "energy_control": "1.5*(KB+KA)",
+      "interaction": "KB+KA+KB*KA"
+    },
+    "selected": "interaction",
+    "selection": "fixed_no_selection",
+    "energy_match_scope": "unit_nonzero_blocks_only_zero_or_floor_blocks_may_differ",
+    "target": "onehot_minus_1_over_C",
+    "ridge_coefficient": 1.0,
+    "objective": "0.5*sum_physical_squared_error+0.5*RKHS_norm_squared",
+    "intercept_regularized": false,
+    "sample_weight": 1.0,
+    "solver": "float64_centered_kernel_Cholesky",
+    "centering": "train_support_only_reference_difference_then_mean",
+    "max_folds": 3,
+    "folds": "per_class_physical_id_sort_position_mod_min_K_3",
+    "k1": "same_full_support_fit_no_independent_holdout",
+    "probe_k1": "numerical_only_no_fit_no_holdout",
+    "score": "per_sample_kernel_all_registered_classes",
+    "tie_break": "physical_class_id_lexicographic",
+    "optimizer_steps": 0,
+    "source_inputs": false,
+    "summary_inputs": false,
+    "query_fit": false,
+    "phase1_frozen": true,
+    "retained_features": "current_row_target_support_only"
+  },
+  "matrix": {
+    "receivers": [
+      "20-19"
+    ],
+    "scenarios": [
+      "practical_high",
+      "practical_mid",
+      "practical_low_urban"
+    ],
+    "ks": [
+      1,
+      5,
+      10,
+      20
+    ],
+    "new_counts": [
+      0,
+      2,
+      5,
+      10,
+      20
+    ],
+    "support_seeds": [
+      2026092711,
+      2026092712,
+      2026092713,
+      2026092714,
+      2026092715
+    ]
+  }
+}

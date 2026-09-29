@@ -92,6 +92,15 @@ paths += ['docs/D92_BRANCH_AUGMENT_DESIGN_20260929.md','docs/D92_BRANCH_RIDGE_P0
 paths += ['tools/collect_d92_branch_ridge_audit.py','tests/test_collect_d92_branch_ridge_audit.py']
 paths += ['tools/finalize_d92_branch_ridge_record.py','tests/test_finalize_d92_branch_ridge_record.py']
 paths += ['docs/D92_INDEPENDENT_DATA_AVAILABILITY_20260929.md','docs/D92_INDEPENDENT_DATA_METADATA_20260929.json']
+paths += ['code/cvsrffi/d92_branch_interaction.py','configs/d92_branch_interaction_frozen_20260929.json',
+    'configs/d92_branch_interaction_support_20260929.json','configs/d92_branch_interaction_support_rx3_20260929.json',
+    'configs/d92_branch_interaction_support_rx1_20260929.json','docs/D92_BRANCH_INTERACTION_DESIGN_20260929.md',
+    'docs/D92_BRANCH_INTERACTION_P0_20260929.md','docs/D92_BRANCH_RIDGE_K_NEW_EXPLANATION_20260929.md',
+    'tools/evaluate_d92_branch_interaction_probe.py','tools/summarize_d92_branch_interaction_probe.py',
+    'tools/run_d92_branch_interaction_probe.py','tools/publish_d92_branch_interaction_probe.py',
+    'tools/preflight_d92_branch_interaction_probe.py','tools/prepare_d92_branch_interaction_probe.py',
+    'tests/test_d92_branch_interaction.py','tests/test_evaluate_d92_branch_interaction_probe.py',
+    'tests/test_summarize_d92_branch_interaction_probe.py','tests/test_run_d92_branch_interaction_probe.py']
 for name in paths:
     src=ROOT/name;dst=WS/name;dst.parent.mkdir(parents=True,exist_ok=True)
     # Each name is unique to this task; original D92 and shared wrappers are not mirrored.

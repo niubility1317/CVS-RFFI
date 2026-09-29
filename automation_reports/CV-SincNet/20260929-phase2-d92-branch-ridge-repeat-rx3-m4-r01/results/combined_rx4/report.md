@@ -62,3 +62,8 @@
 完整48个receiver×scenario×K联合分层中，H全部提高，最小增量为1.830个百分点；旧类、新类分别在47/48个分层提高。两处均值退化为：K1、RX20-19、practical_low_urban旧类−0.396个百分点；K1、RX19-1、practical_low_urban新类−2.435个百分点。其余16个K×新增类规模的旧/新/H边际均值均提高。以上是分层平均，不能当作每个物理样本或每次support抽样都获益。
 
 主任务据预登记通过条件，将当前固定版本列为独立确认候选。保留runtime commit `01e93386736f1919ee3f009fb1b16fb04f9a463d`和原冻结配置；不根据这些query结果调整分支、ridge、K1规则或筛选接收机。独立数据到位后先固定数据角色与矩阵，再由同一版本产生预测并独立评分。本次已证明透明重复基准上的全面均值改善，尚未证明新增独立数据泛化，整体goal保持ACTIVE。
+
+
+<!-- BRANCH_RIDGE_K_NEW_EXPLANATION_20260929 -->
+
+新增类数量、完整 16 格新旧类结果及 K 增益解释见[补充报告](E:/type10-7/code/snapshots/d92_support_upgrade_20260928_wt/docs/D92_BRANCH_RIDGE_K_NEW_EXPLANATION_20260929.md)。联合表仅包含新增 2、5、10、20 类的等权任务；旧类单独任务另列。
