@@ -25,6 +25,7 @@ CANDIDATES = (
     ('D92-BranchRidge-v1', 'branch_ridge', 'evaluate_d92_branch_ridge.py', 'd92_branch_ridge_registration'),
     ('D92-BranchInteraction-v1', 'branch_interaction', 'evaluate_d92_branch_interaction.py', 'd92_branch_interaction_registration'),
     ('D92-BranchLocalRidge-v1', 'branch_local_ridge', 'evaluate_d92_branch_local_ridge.py', 'd92_branch_local_ridge_registration'),
+    ('D92-BranchLocalMargin-v1', 'branch_local_margin', 'evaluate_d92_branch_local_margin.py', 'd92_branch_local_margin_registration'),
 )
 
 
@@ -105,7 +106,7 @@ def reuse_branch_cache(spec):
     """Require exact BranchRidge cache paths for registered CPU-only heads."""
     method = candidate_definition(spec['confirmation'])['candidate_method']
     paths = [row.get('reuse_branch_features_root') for row in spec['rows']]
-    if method not in ('D92-BranchInteraction-v1', 'D92-BranchLocalRidge-v1'):
+    if method not in ('D92-BranchInteraction-v1', 'D92-BranchLocalRidge-v1', 'D92-BranchLocalMargin-v1'):
         if any(paths): raise ValueError('Branch cache reuse is not registered for this method')
         return False
     if not reuse_frozen_rows(spec) or not all(isinstance(p, str) and p for p in paths):

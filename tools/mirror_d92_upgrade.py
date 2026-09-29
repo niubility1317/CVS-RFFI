@@ -171,6 +171,16 @@ paths += ['docs/D92_NEXT_AFTER_LOCAL_RIDGE_20260929.md',
     'tests/test_evaluate_d92_branch_local_margin_probe.py',
     'tests/test_summarize_d92_branch_local_margin_probe.py',
     'tests/test_run_d92_branch_local_margin_probe.py']
+paths += ['tools/evaluate_d92_branch_local_margin.py',
+    'tools/prepare_d92_branch_local_margin_benchmark.py',
+    'tools/preflight_d92_branch_local_margin.py',
+    'tools/summarize_d92_branch_local_margin_benchmark.py',
+    'tools/collect_d92_branch_local_margin_audit.py',
+    'tests/test_evaluate_d92_branch_local_margin.py',
+    'tests/test_d92_branch_local_margin_benchmark.py',
+    'tests/test_summarize_d92_branch_local_margin_benchmark.py',
+    'tests/test_collect_d92_branch_local_margin_audit.py',
+    'docs/D92_LOCAL_MARGIN_BENCHMARK_REVIEW_20260929.md']
 for name in paths:
     src=ROOT/name;dst=WS/name;dst.parent.mkdir(parents=True,exist_ok=True)
     # Each name is unique to this task; original D92 and shared wrappers are not mirrored.

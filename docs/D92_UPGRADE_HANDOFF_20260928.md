@@ -1,3 +1,13 @@
+## 最新交接：LocalMargin仍在support诊断，后续工具已备好（2026-09-29）
+
+同一run `20260929-phase2-d92-branch-local-margin-support-m4-r01` 继续RUNNING，runtime保持 `5b7319acd9e61f8f1c9f59824ac979db459b0aa8`。只读证据 `evidence/readback_1790696933018702700.json` 核实supervisor348892及4个子进程argv/CWD匹配，rx3各88至89/900单元，rx1仍排队。没有完整性能结论；不要重启。
+
+新增重复基准预测、配置生成、预检、三基线配对汇总和全fit/sweep元数据审计工具，324项合成测试通过；预测内存修正后2项失败保留测试重跑通过。独立入口审查及root对汇总/审计的审查均无未解决P0/P1。没有生成benchmark配置，没有启动query基准，当前远端runtime没有变化。
+
+恢复先用 `.codex_tmp/monitor_local_margin_support_20260929.py` 只读核实同一运行。完整support结束后按现有分析器处理所有4800parent；标准OOF和proxy分别对LocalRidge检查K5/10/20新类/H>0、旧类>=-1pp，另报严格三项正向。全部既定support条件通过后，才运行已备好的 `.codex_tmp/preregister_local_margin_benchmark_20260929.py` 生成及登记后续配置，然后纳入镜像、提交push验证后发布。不要提前调用生成器/发布器。root唯一launch/Conda/测试owner。
+
+后续汇总CLI：`tools/summarize_d92_branch_local_margin_benchmark.py --results <rx3> <rx1> --local-references <rx3> <rx1> --interaction-references <rx3> <rx1> --output <new-path>`。方法子任务仍保持query-blind，不转发本交接或历史query结果。独立验证继续按用户要求暂缓。
+
 ## 当前运行：LocalMargin完整support诊断已启动（2026-09-29）
 
 run `20260929-phase2-d92-branch-local-margin-support-m4-r01` RUNNING；runtime `5b7319acd9e61f8f1c9f59824ac979db459b0aa8`。N607 supervisor348892，4个CPU子进程348906/348907/348908/348909，argv/CWD/commit和日志增长已独立核实，证据 `evidence/readback_1790695881713377700.json`。rx3四模型运行、rx1四模型队列等待。不要重启、覆盖或因低性能停止。

@@ -59,3 +59,9 @@ VERIFIED:96 focused tests and metadata logging test pass;3 synthetic sizes certi
 VERIFIED RUNNING: supervisor348892 and4CPUchildren argv/CWD match release5b7319acd; first trueK1 numerical parents complete, measured sweep logs growing; no source/query/GPU access.
 
 首次读回已见4个lane的训练日志，包含实际tau、gamma、损失分量、primal/dual、gap、KKT、active数量与耗时。其余4个lane按原CPU队列等待，不启动重复run。
+
+## 后续比较工具准备（不改变当前运行）
+
+Benchmark tooling ready, not launched: 324 synthetic tests passed plus 2 focused reruns; independent entry review and root summary/audit review have no open P0/P1. Support runtime unchanged; complete support evidence required before paired query benchmark.
+
+最新只读证据：`evidence/readback_1790696933018702700.json`。四个rx3 lane完成88至89/900个诊断单元；其余四个rx1 lane等待，未出现终止标记。此进度不是完整性能结论。

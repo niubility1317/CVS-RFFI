@@ -1,0 +1,41 @@
+{
+  "status": "VERIFIED_LOCAL_TOOL_TESTS_ONLY",
+  "test_environment": "E:/type10-7/local_envs/ssr-gpu",
+  "evidence_kind": "root-observed exec tool completion records",
+  "suites": [
+    {
+      "session_id": 13116,
+      "exit_code": 0,
+      "passed": 208,
+      "scope": "new prediction/benchmark entry and shared runner/scorer/summaries"
+    },
+    {
+      "session_id": 75600,
+      "exit_code": 0,
+      "passed": 58,
+      "scope": "three-baseline complete paired summary"
+    },
+    {
+      "session_id": 48696,
+      "exit_code": 0,
+      "passed": 58,
+      "scope": "all-fit/all-sweep metadata and cost auditor"
+    }
+  ],
+  "unique_suite_test_count": 324,
+  "post_memory_fix_focused_rerun": {
+    "passed": 2,
+    "exit_code": 0,
+    "tests": [
+      "test_failure_after_completed_split_preserves_fit_evidence_without_completion",
+      "test_query_failure_preserves_completed_fit_but_no_prediction"
+    ]
+  },
+  "review": "entry independently reviewed by branch_local_core; summary and cost auditor reviewed by root; no open P0/P1",
+  "actual_query_results_read_for_tool_development": false,
+  "benchmark_config_generated": false,
+  "benchmark_launched": false,
+  "support_runtime_changed": false,
+  "support_runtime_commit": "5b7319acd9e61f8f1c9f59824ac979db459b0aa8",
+  "live_support_evidence": "readback_1790696933018702700.json"
+}

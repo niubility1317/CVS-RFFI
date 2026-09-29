@@ -1,0 +1,339 @@
+{
+  "startup.json": {
+    "pid": 348892,
+    "argv": [
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_margin_support_20260929_r01/tools/run_d92_branch_local_margin_probe.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_margin_support_20260929_r01/configs/d92_branch_local_margin_support_20260929.json",
+      "--commit",
+      "5b7319acd9e61f8f1c9f59824ac979db459b0aa8"
+    ],
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_margin_support_20260929_r01",
+    "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "commit": "5b7319acd9e61f8f1c9f59824ac979db459b0aa8",
+    "started": 1790695812.16809,
+    "query_access": false,
+    "source_sample_access": false,
+    "checkpoint_loaded": false,
+    "reused_support_cache": true,
+    "gpu_use": false,
+    "live_argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_margin_support_20260929_r01/tools/run_d92_branch_local_margin_probe.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_margin_support_20260929_r01/configs/d92_branch_local_margin_support_20260929.json",
+      "--commit",
+      "5b7319acd9e61f8f1c9f59824ac979db459b0aa8"
+    ],
+    "live_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_margin_support_20260929_r01"
+  },
+  "state.json": {
+    "rx3-cvs-daot-rc4-s2026092701": {
+      "status": "PROBING_SUPPORT",
+      "updated": 1790695812.16951
+    },
+    "rx3-cvs-daot-rc4-s2026092702": {
+      "status": "PROBING_SUPPORT",
+      "updated": 1790695812.1701362
+    },
+    "rx3-cvs-daot-rc4-s2026092703": {
+      "status": "PROBING_SUPPORT",
+      "updated": 1790695812.171663
+    },
+    "rx3-cvs-daot-rc4-s2026092704": {
+      "status": "PROBING_SUPPORT",
+      "updated": 1790695812.17261
+    },
+    "rx1-cvs-daot-rc4-s2026092701": {
+      "status": "PENDING"
+    },
+    "rx1-cvs-daot-rc4-s2026092702": {
+      "status": "PENDING"
+    },
+    "rx1-cvs-daot-rc4-s2026092703": {
+      "status": "PENDING"
+    },
+    "rx1-cvs-daot-rc4-s2026092704": {
+      "status": "PENDING"
+    }
+  },
+  "launch.json": {
+    "pid": 348892,
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_margin_support_20260929_r01/tools/run_d92_branch_local_margin_probe.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_margin_support_20260929_r01/configs/d92_branch_local_margin_support_20260929.json",
+      "--commit",
+      "5b7319acd9e61f8f1c9f59824ac979db459b0aa8"
+    ],
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_margin_support_20260929_r01",
+    "commit": "5b7319acd9e61f8f1c9f59824ac979db459b0aa8",
+    "run": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-local-margin-support-m4-r01",
+    "owner": "codex/root/d92-upgrade-20260928",
+    "live_argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_margin_support_20260929_r01/tools/run_d92_branch_local_margin_probe.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_margin_support_20260929_r01/configs/d92_branch_local_margin_support_20260929.json",
+      "--commit",
+      "5b7319acd9e61f8f1c9f59824ac979db459b0aa8"
+    ],
+    "live_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_margin_support_20260929_r01"
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_margin_support_20260929_r01/run.log": {
+    "bytes": 0,
+    "tail": []
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-local-margin-support-m4-r01/rx3-cvs-daot-rc4-s2026092704/probe.log": {
+    "bytes": 7608169,
+    "tail": [
+      "[CVS LocalMargin] split=00bdf739d833ba5cc8b0ebe7 scope=support_oneshot_proxy sweep=54 steps=432 margin_loss=0.5747164776741247 rkhs_penalty=0.9405570149442635 P=1.5152734926183882 D=1.5152412742646149 gap=2.1262401758011026e-05 KKT=3.141899528058545e-05 LR=N/A source_validation=N/A measured={\"active_constraint_count\": 51, \"active_physical_count\": 8, \"arm\": \"local_margin\", \"bandwidth_tau\": 2.2226694631156185, \"certified\": false, \"class_count\": 8, \"dual_objective\": 1.5152412742646149, \"duality_gap\": 3.221835377331672e-05, \"duality_gap_scale\": 1.5152734926183882, \"epoch\": 54, \"event\": \"sweep\", \"fold\": null, \"gradient_coordinate\": \"negative_dual_beta\", \"gradient_norm\": 0.025789280343155238, \"interaction_centered_trace\": 10.344992515324462, \"kkt_residual\": 3.141899528058545e-05, \"kkt_scale\": 1.0, \"learning_rate\": null, \"learning_rate_reason\": \"Exact row-block minimization; no gradient learning rate\", \"loss_data\": 0.5747164776741247, \"loss_ridge\": 0.9405570149442635, \"loss_total\": 1.5152734926183882, \"max_sweeps\": 1000, \"negative_dual_change\": -3.841794882220029e-09, \"objective_rounding_tolerance\": 2.2737367544323206e-13, \"optimization_tolerance\": 1.4901161193847656e-08, \"optimizer\": \"float64_deterministic_cyclic_exact_dual_row_block\", \"optimizer_steps\": 432, \"parent_k\": 20, \"primal_objective\": 1.5152734926183882, \"radial_centered_trace\": 5.075854235596932, \"relative_duality_gap\": 2.1262401758011026e-05, \"relative_kkt_residual\": 3.141899528058545e-05, \"row_block_solves\": 432, \"scope\": \"support_oneshot_proxy\", \"slack_max\": 0.3847535380784666, \"slack_mean\": 0.3788199932097126, \"slack_min\": 0.34430773412866345, \"solve_seconds\": 0.0569820310047362, \"source_validation\": null, \"source_validation_reason\": \"No source sample permission\", \"split_id\": \"00bdf739d833ba5cc8b0ebe7\", \"squared_slack_sum\": 1.1494329553482494, \"sweep\": 54, \"sweep_seconds\": 0.0008671230025356635, \"trace_scale\": 2.0380791163731806, \"train_k\": 1, \"train_physical_count\": 8, \"training_accuracy\": 1.0, \"trial\": 0}",
+      "[CVS LocalMargin] split=00bdf739d833ba5cc8b0ebe7 scope=support_oneshot_proxy sweep=55 steps=440 margin_loss=0.5747133197736021 rkhs_penalty=0.9405566175207307 P=1.5152699372943328 D=1.5152412773040218 gap=1.8914115304208844e-05 KKT=2.7957813359291706e-05 LR=N/A source_validation=N/A measured={\"active_constraint_count\": 51, \"active_physical_count\": 8, \"arm\": \"local_margin\", \"bandwidth_tau\": 2.2226694631156185, \"certified\": false, \"class_count\": 8, \"dual_objective\": 1.5152412773040218, \"duality_gap\": 2.8659990310986316e-05, \"duality_gap_scale\": 1.5152699372943328, \"epoch\": 55, \"event\": \"sweep\", \"fold\": null, \"gradient_coordinate\": \"negative_dual_beta\", \"gradient_norm\": 0.02578855298274029, \"interaction_centered_trace\": 10.344992515324462, \"kkt_residual\": 2.7957813359291706e-05, \"kkt_scale\": 1.0, \"learning_rate\": null, \"learning_rate_reason\": \"Exact row-block minimization; no gradient learning rate\", \"loss_data\": 0.5747133197736021, \"loss_ridge\": 0.9405566175207307, \"loss_total\": 1.5152699372943328, \"max_sweeps\": 1000, \"negative_dual_change\": -3.039406948346368e-09, \"objective_rounding_tolerance\": 2.2737367544323206e-13, \"optimization_tolerance\": 1.4901161193847656e-08, \"optimizer\": \"float64_deterministic_cyclic_exact_dual_row_block\", \"optimizer_steps\": 440, \"parent_k\": 20, \"primal_objective\": 1.5152699372943328, \"radial_centered_trace\": 5.075854235596932, \"relative_duality_gap\": 1.8914115304208844e-05, \"relative_kkt_residual\": 2.7957813359291706e-05, \"row_block_solves\": 440, \"scope\": \"support_oneshot_proxy\", \"slack_max\": 0.3847429390525968, \"slack_mean\": 0.37881893022453733, \"slack_min\": 0.3443052412557459, \"solve_seconds\": 0.05806043500342639, \"source_validation\": null, \"source_validation_reason\": \"No source sample permission\", \"split_id\": \"00bdf739d833ba5cc8b0ebe7\", \"squared_slack_sum\": 1.1494266395472041, \"sweep\": 55, \"sweep_seconds\": 0.0008239540038630366, \"trace_scale\": 2.0380791163731806, \"train_k\": 1, \"train_physical_count\": 8, \"training_accuracy\": 1.0, \"trial\": 0}",
+      "[CVS LocalMargin] split=00bdf739d833ba5cc8b0ebe7 scope=support_oneshot_proxy sweep=56 steps=448 margin_loss=0.5747105092116866 rkhs_penalty=0.9405562655108588 P=1.5152667747225455 D=1.5152412797086756 gap=1.6825429221533948e-05 KKT=2.4878004591277758e-05 LR=N/A source_validation=N/A measured={\"active_constraint_count\": 51, \"active_physical_count\": 8, \"arm\": \"local_margin\", \"bandwidth_tau\": 2.2226694631156185, \"certified\": false, \"class_count\": 8, \"dual_objective\": 1.5152412797086756, \"duality_gap\": 2.5495013869836214e-05, \"duality_gap_scale\": 1.5152667747225455, \"epoch\": 56, \"event\": \"sweep\", \"fold\": null, \"gradient_coordinate\": \"negative_dual_beta\", \"gradient_norm\": 0.02578791624697665, \"interaction_centered_trace\": 10.344992515324462, \"kkt_residual\": 2.4878004591277758e-05, \"kkt_scale\": 1.0, \"learning_rate\": null, \"learning_rate_reason\": \"Exact row-block minimization; no gradient learning rate\", \"loss_data\": 0.5747105092116866, \"loss_ridge\": 0.9405562655108588, \"loss_total\": 1.5152667747225455, \"max_sweeps\": 1000, \"negative_dual_change\": -2.404653809406909e-09, \"objective_rounding_tolerance\": 2.2737367544323206e-13, \"optimization_tolerance\": 1.4901161193847656e-08, \"optimizer\": \"float64_deterministic_cyclic_exact_dual_row_block\", \"optimizer_steps\": 448, \"parent_k\": 20, \"primal_objective\": 1.5152667747225455, \"radial_centered_trace\": 5.075854235596932, \"relative_duality_gap\": 1.6825429221533948e-05, \"relative_kkt_residual\": 2.4878004591277758e-05, \"row_block_solves\": 448, \"scope\": \"support_oneshot_proxy\", \"slack_max\": 0.3847335077473273, \"slack_mean\": 0.3788179840898375, \"slack_min\": 0.34430302160119597, \"solve_seconds\": 0.05908779300079914, \"source_validation\": null, \"source_validation_reason\": \"No source sample permission\", \"split_id\": \"00bdf739d833ba5cc8b0ebe7\", \"squared_slack_sum\": 1.1494210184233733, \"sweep\": 56, \"sweep_seconds\": 0.0008118879995890893, \"trace_scale\": 2.0380791163731806, \"train_k\": 1, \"train_physical_count\": 8, \"training_accuracy\": 1.0, \"trial\": 0}"
+    ]
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-local-margin-support-m4-r01/rx3-cvs-daot-rc4-s2026092702/probe.log": {
+    "bytes": 7217818,
+    "tail": [
+      "[CVS LocalMargin] split=00bdf739d833ba5cc8b0ebe7 scope=support_oof sweep=62 steps=6448 margin_loss=6.328980710376269 rkhs_penalty=11.17396026202395 P=17.502940972400218 D=17.50283333746565 gap=6.149534226191166e-06 KKT=5.026663482921023e-05 LR=N/A source_validation=N/A measured={\"active_constraint_count\": 524, \"active_physical_count\": 104, \"arm\": \"local_margin\", \"bandwidth_tau\": 1.8458546096788222, \"certified\": false, \"class_count\": 8, \"dual_objective\": 17.50283333746565, \"duality_gap\": 0.00010763493456877882, \"duality_gap_scale\": 17.502940972400218, \"epoch\": 62, \"event\": \"sweep\", \"fold\": 0, \"gradient_coordinate\": \"negative_dual_beta\", \"gradient_norm\": 1.316033051982847, \"interaction_centered_trace\": 160.51765038565975, \"kkt_residual\": 5.026663482921023e-05, \"kkt_scale\": 1.0, \"learning_rate\": null, \"learning_rate_reason\": \"Exact row-block minimization; no gradient learning rate\", \"loss_data\": 6.328980710376269, \"loss_ridge\": 11.17396026202395, \"loss_total\": 17.502940972400218, \"max_sweeps\": 1000, \"negative_dual_change\": -6.981046851706196e-10, \"objective_rounding_tolerance\": 2.9558577807620168e-12, \"optimization_tolerance\": 1.4901161193847656e-08, \"optimizer\": \"float64_deterministic_cyclic_exact_dual_row_block\", \"optimizer_steps\": 6448, \"parent_k\": 20, \"primal_objective\": 17.502940972400218, \"radial_centered_trace\": 81.75938596738055, \"relative_duality_gap\": 6.149534226191166e-06, \"relative_kkt_residual\": 5.026663482921023e-05, \"row_block_solves\": 6448, \"scope\": \"support_oof\", \"slack_max\": 0.6508692772930047, \"slack_mean\": 0.3365961066129083, \"slack_min\": 0.07908591110624752, \"solve_seconds\": 0.48634609099826775, \"source_validation\": null, \"source_validation_reason\": \"No source sample permission\", \"split_id\": \"00bdf739d833ba5cc8b0ebe7\", \"squared_slack_sum\": 12.657961420752539, \"sweep\": 62, \"sweep_seconds\": 0.007658734000870027, \"trace_scale\": 1.963293247452975, \"train_k\": 13, \"train_physical_count\": 104, \"training_accuracy\": 1.0, \"trial\": null}",
+      "[CVS LocalMargin] split=00bdf739d833ba5cc8b0ebe7 scope=support_oof sweep=63 steps=6552 margin_loss=6.328969219929041 rkhs_penalty=11.173959981558077 P=17.50292920148712 D=17.50283333802121 gap=5.4769955819945185e-06 KKT=3.952243676974554e-05 LR=N/A source_validation=N/A measured={\"active_constraint_count\": 524, \"active_physical_count\": 104, \"arm\": \"local_margin\", \"bandwidth_tau\": 1.8458546096788222, \"certified\": false, \"class_count\": 8, \"dual_objective\": 17.50283333802121, \"duality_gap\": 9.58634659085078e-05, \"duality_gap_scale\": 17.50292920148712, \"epoch\": 63, \"event\": \"sweep\", \"fold\": 0, \"gradient_coordinate\": \"negative_dual_beta\", \"gradient_norm\": 1.3160260027911013, \"interaction_centered_trace\": 160.51765038565975, \"kkt_residual\": 3.952243676974554e-05, \"kkt_scale\": 1.0, \"learning_rate\": null, \"learning_rate_reason\": \"Exact row-block minimization; no gradient learning rate\", \"loss_data\": 6.328969219929041, \"loss_ridge\": 11.173959981558077, \"loss_total\": 17.50292920148712, \"max_sweeps\": 1000, \"negative_dual_change\": -5.555627069497859e-10, \"objective_rounding_tolerance\": 2.9558577807620168e-12, \"optimization_tolerance\": 1.4901161193847656e-08, \"optimizer\": \"float64_deterministic_cyclic_exact_dual_row_block\", \"optimizer_steps\": 6552, \"parent_k\": 20, \"primal_objective\": 17.50292920148712, \"radial_centered_trace\": 81.75938596738055, \"relative_duality_gap\": 5.4769955819945185e-06, \"relative_kkt_residual\": 3.952243676974554e-05, \"row_block_solves\": 6552, \"scope\": \"support_oof\", \"slack_max\": 0.650871133716272, \"slack_mean\": 0.3365957633103464, \"slack_min\": 0.07908628172691357, \"solve_seconds\": 0.49422817600134294, \"source_validation\": null, \"source_validation_reason\": \"No source sample permission\", \"split_id\": \"00bdf739d833ba5cc8b0ebe7\", \"squared_slack_sum\": 12.657938439858082, \"sweep\": 63, \"sweep_seconds\": 0.007630330997926649, \"trace_scale\": 1.963293247452975, \"train_k\": 13, \"train_physical_count\": 104, \"training_accuracy\": 1.0, \"trial\": null}",
+      "[CVS LocalMargin] split=00bdf739d833ba5cc8b0ebe7 scope=support_oof sweep=64 steps=6656 margin_loss=6.328957023248658 rkhs_penalty=11.17396017094118 P=17.502917194189838 D=17.50283333846071 gap=4.790957312793621e-06 KKT=2.841818174681432e-05 LR=N/A source_validation=N/A measured={\"active_constraint_count\": 524, \"active_physical_count\": 104, \"arm\": \"local_margin\", \"bandwidth_tau\": 1.8458546096788222, \"certified\": false, \"class_count\": 8, \"dual_objective\": 17.50283333846071, \"duality_gap\": 8.385572912672501e-05, \"duality_gap_scale\": 17.502917194189838, \"epoch\": 64, \"event\": \"sweep\", \"fold\": 0, \"gradient_coordinate\": \"negative_dual_beta\", \"gradient_norm\": 1.3160203896131877, \"interaction_centered_trace\": 160.51765038565975, \"kkt_residual\": 2.841818174681432e-05, \"kkt_scale\": 1.0, \"learning_rate\": null, \"learning_rate_reason\": \"Exact row-block minimization; no gradient learning rate\", \"loss_data\": 6.328957023248658, \"loss_ridge\": 11.17396017094118, \"loss_total\": 17.502917194189838, \"max_sweeps\": 1000, \"negative_dual_change\": -4.3949910377705237e-10, \"objective_rounding_tolerance\": 2.9558577807620168e-12, \"optimization_tolerance\": 1.4901161193847656e-08, \"optimizer\": \"float64_deterministic_cyclic_exact_dual_row_block\", \"optimizer_steps\": 6656, \"parent_k\": 20, \"primal_objective\": 17.502917194189838, \"radial_centered_trace\": 81.75938596738055, \"relative_duality_gap\": 4.790957312793621e-06, \"relative_kkt_residual\": 2.841818174681432e-05, \"row_block_solves\": 6656, \"scope\": \"support_oof\", \"slack_max\": 0.6508736123599332, \"slack_mean\": 0.3365953977726533, \"slack_min\": 0.07908652839948305, \"solve_seconds\": 0.5020277980001993, \"source_validation\": null, \"source_validation_reason\": \"No source sample permission\", \"split_id\": \"00bdf739d833ba5cc8b0ebe7\", \"squared_slack_sum\": 12.657914046497316, \"sweep\": 64, \"sweep_seconds\": 0.007547970999439713, \"trace_scale\": 1.963293247452975, \"train_k\": 13, \"train_physical_count\": 104, \"training_accuracy\": 1.0, \"trial\": null}"
+    ]
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-local-margin-support-m4-r01/rx3-cvs-daot-rc4-s2026092703/probe.log": {
+    "bytes": 7891836,
+    "tail": [
+      "[CVS LocalMargin] split=00637cf445833306751c77aa scope=support_oneshot_proxy sweep=359 steps=9334 margin_loss=2.268219846052108 rkhs_penalty=3.1459307388463125 P=5.414150584898421 D=5.4141505177203335 gap=1.2407871934794358e-08 KKT=1.5494232119550588e-08 LR=N/A source_validation=N/A measured={\"active_constraint_count\": 441, \"active_physical_count\": 26, \"arm\": \"local_margin\", \"bandwidth_tau\": 1.3850303470518814, \"certified\": false, \"class_count\": 26, \"dual_objective\": 5.4141505177203335, \"duality_gap\": 6.717808709311157e-08, \"duality_gap_scale\": 5.414150584898421, \"epoch\": 359, \"event\": \"sweep\", \"fold\": null, \"gradient_coordinate\": \"negative_dual_beta\", \"gradient_norm\": 0.16613610550170968, \"interaction_centered_trace\": 39.389100705445294, \"kkt_residual\": 1.5494232119550588e-08, \"kkt_scale\": 1.0, \"learning_rate\": null, \"learning_rate_reason\": \"Exact row-block minimization; no gradient learning rate\", \"loss_data\": 2.268219846052108, \"loss_ridge\": 3.1459307388463125, \"loss_total\": 5.414150584898421, \"max_sweeps\": 1000, \"negative_dual_change\": -2.6645352591003757e-15, \"objective_rounding_tolerance\": 7.389644451905042e-13, \"optimization_tolerance\": 1.4901161193847656e-08, \"optimizer\": \"float64_deterministic_cyclic_exact_dual_row_block\", \"optimizer_steps\": 9334, \"parent_k\": 20, \"primal_objective\": 5.414150584898421, \"radial_centered_trace\": 21.58236054680202, \"relative_duality_gap\": 1.2407871934794358e-08, \"relative_kkt_residual\": 1.5494232119550588e-08, \"row_block_solves\": 9334, \"scope\": \"support_oneshot_proxy\", \"slack_max\": 0.487938148477123, \"slack_mean\": 0.41647312337488473, \"slack_min\": 0.35442721294808244, \"solve_seconds\": 1.4788248119948548, \"source_validation\": null, \"source_validation_reason\": \"No source sample permission\", \"split_id\": \"00637cf445833306751c77aa\", \"squared_slack_sum\": 4.536439692104216, \"sweep\": 359, \"sweep_seconds\": 0.0038499420043081045, \"trace_scale\": 1.8250598964848543, \"train_k\": 1, \"train_physical_count\": 26, \"training_accuracy\": 1.0, \"trial\": 17}",
+      "[CVS LocalMargin] split=00637cf445833306751c77aa scope=support_oneshot_proxy sweep=360 steps=9360 margin_loss=2.2682198441735015 rkhs_penalty=3.1459307389188895 P=5.4141505830923915 D=5.414150517720338 gap=1.2074295412529038e-08 KKT=1.5077684212272402e-08 LR=N/A source_validation=N/A measured={\"active_constraint_count\": 441, \"active_physical_count\": 26, \"arm\": \"local_margin\", \"bandwidth_tau\": 1.3850303470518814, \"certified\": false, \"class_count\": 26, \"dual_objective\": 5.414150517720338, \"duality_gap\": 6.537205354817388e-08, \"duality_gap_scale\": 5.4141505830923915, \"epoch\": 360, \"event\": \"sweep\", \"fold\": null, \"gradient_coordinate\": \"negative_dual_beta\", \"gradient_norm\": 0.1661361056216821, \"interaction_centered_trace\": 39.389100705445294, \"kkt_residual\": 1.5077684212272402e-08, \"kkt_scale\": 1.0, \"learning_rate\": null, \"learning_rate_reason\": \"Exact row-block minimization; no gradient learning rate\", \"loss_data\": 2.2682198441735015, \"loss_ridge\": 3.1459307389188895, \"loss_total\": 5.4141505830923915, \"max_sweeps\": 1000, \"negative_dual_change\": -4.440892098500626e-15, \"objective_rounding_tolerance\": 7.389644451905042e-13, \"optimization_tolerance\": 1.4901161193847656e-08, \"optimizer\": \"float64_deterministic_cyclic_exact_dual_row_block\", \"optimizer_steps\": 9360, \"parent_k\": 20, \"primal_objective\": 5.4141505830923915, \"radial_centered_trace\": 21.58236054680202, \"relative_duality_gap\": 1.2074295412529038e-08, \"relative_kkt_residual\": 1.5077684212272402e-08, \"row_block_solves\": 9360, \"scope\": \"support_oneshot_proxy\", \"slack_max\": 0.48793814379421147, \"slack_mean\": 0.416473123196719, \"slack_min\": 0.3544272127699297, \"solve_seconds\": 1.4829176279963576, \"source_validation\": null, \"source_validation_reason\": \"No source sample permission\", \"split_id\": \"00637cf445833306751c77aa\", \"squared_slack_sum\": 4.536439688347003, \"sweep\": 360, \"sweep_seconds\": 0.0038542949987458996, \"trace_scale\": 1.8250598964848543, \"train_k\": 1, \"train_physical_count\": 26, \"training_accuracy\": 1.0, \"trial\": 17}",
+      "[CVS LocalMargin] split=00637cf445833306751c77aa scope=support_oneshot_proxy sweep=361 steps=9386 margin_loss=2.2682198423453968 rkhs_penalty=3.145930738989518 P=5.414150581334915 D=5.414150517720339 gap=1.1749687208289273e-08 KKT=1.4672327131037832e-08 LR=N/A source_validation=N/A measured={\"active_constraint_count\": 441, \"active_physical_count\": 26, \"arm\": \"local_margin\", \"bandwidth_tau\": 1.3850303470518814, \"certified\": true, \"class_count\": 26, \"dual_objective\": 5.414150517720339, \"duality_gap\": 6.361457582926278e-08, \"duality_gap_scale\": 5.414150581334915, \"epoch\": 361, \"event\": \"sweep\", \"fold\": null, \"gradient_coordinate\": \"negative_dual_beta\", \"gradient_norm\": 0.16613610573843135, \"interaction_centered_trace\": 39.389100705445294, \"kkt_residual\": 1.4672327131037832e-08, \"kkt_scale\": 1.0, \"learning_rate\": null, \"learning_rate_reason\": \"Exact row-block minimization; no gradient learning rate\", \"loss_data\": 2.2682198423453968, \"loss_ridge\": 3.145930738989518, \"loss_total\": 5.414150581334915, \"max_sweeps\": 1000, \"negative_dual_change\": -8.881784197001252e-16, \"objective_rounding_tolerance\": 7.389644451905042e-13, \"optimization_tolerance\": 1.4901161193847656e-08, \"optimizer\": \"float64_deterministic_cyclic_exact_dual_row_block\", \"optimizer_steps\": 9386, \"parent_k\": 20, \"primal_objective\": 5.414150581334915, \"radial_centered_trace\": 21.58236054680202, \"relative_duality_gap\": 1.1749687208289273e-08, \"relative_kkt_residual\": 1.4672327131037832e-08, \"row_block_solves\": 9386, \"scope\": \"support_oneshot_proxy\", \"slack_max\": 0.487938139237196, \"slack_mean\": 0.4164731230233426, \"slack_min\": 0.35442721259656285, \"solve_seconds\": 1.4870259140006965, \"source_validation\": null, \"source_validation_reason\": \"No source sample permission\", \"split_id\": \"00637cf445833306751c77aa\", \"squared_slack_sum\": 4.5364396846907935, \"sweep\": 361, \"sweep_seconds\": 0.003860471995722037, \"trace_scale\": 1.8250598964848543, \"train_k\": 1, \"train_physical_count\": 26, \"training_accuracy\": 1.0, \"trial\": 17}"
+    ]
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-local-margin-support-m4-r01/rx3-cvs-daot-rc4-s2026092701/probe.log": {
+    "bytes": 7094301,
+    "tail": [
+      "[CVS LocalMargin] split=00637cf445833306751c77aa scope=support_oneshot_proxy sweep=177 steps=4602 margin_loss=2.4029347186240777 rkhs_penalty=3.169634155348744 P=5.572568873972822 D=5.572552365940316 gap=2.9623738851422137e-06 KKT=4.664340214954876e-06 LR=N/A source_validation=N/A measured={\"active_constraint_count\": 492, \"active_physical_count\": 26, \"arm\": \"local_margin\", \"bandwidth_tau\": 1.161690183258651, \"certified\": false, \"class_count\": 26, \"dual_objective\": 5.572552365940316, \"duality_gap\": 1.650803250541344e-05, \"duality_gap_scale\": 5.572568873972822, \"epoch\": 177, \"event\": \"sweep\", \"fold\": null, \"gradient_coordinate\": \"negative_dual_beta\", \"gradient_norm\": 0.15658116759813454, \"interaction_centered_trace\": 36.61862346508281, \"kkt_residual\": 4.664340214954876e-06, \"kkt_scale\": 1.0, \"learning_rate\": null, \"learning_rate_reason\": \"Exact row-block minimization; no gradient learning rate\", \"loss_data\": 2.4029347186240777, \"loss_ridge\": 3.169634155348744, \"loss_total\": 5.572568873972822, \"max_sweeps\": 1000, \"negative_dual_change\": -1.98641103565933e-10, \"objective_rounding_tolerance\": 7.389644451905042e-13, \"optimization_tolerance\": 1.4901161193847656e-08, \"optimizer\": \"float64_deterministic_cyclic_exact_dual_row_block\", \"optimizer_steps\": 4602, \"parent_k\": 20, \"primal_objective\": 5.572568873972822, \"radial_centered_trace\": 22.070639292928856, \"relative_duality_gap\": 2.9623738851422137e-06, \"relative_kkt_residual\": 4.664340214954876e-06, \"row_block_solves\": 4602, \"scope\": \"support_oneshot_proxy\", \"slack_max\": 0.48680863931141405, \"slack_mean\": 0.428659454109378, \"slack_min\": 0.3624035695594999, \"solve_seconds\": 0.7890481630020076, \"source_validation\": null, \"source_validation_reason\": \"No source sample permission\", \"split_id\": \"00637cf445833306751c77aa\", \"squared_slack_sum\": 4.805869437248155, \"sweep\": 177, \"sweep_seconds\": 0.00420470299286535, \"trace_scale\": 1.659155540492882, \"train_k\": 1, \"train_physical_count\": 26, \"training_accuracy\": 1.0, \"trial\": 15}",
+      "[CVS LocalMargin] split=00637cf445833306751c77aa scope=support_oneshot_proxy sweep=178 steps=4628 margin_loss=2.4029342334163175 rkhs_penalty=3.169634172299262 P=5.572568405715579 D=5.572552366127923 gap=2.8783114873617346e-06 KKT=4.5320070696242e-06 LR=N/A source_validation=N/A measured={\"active_constraint_count\": 492, \"active_physical_count\": 26, \"arm\": \"local_margin\", \"bandwidth_tau\": 1.161690183258651, \"certified\": false, \"class_count\": 26, \"dual_objective\": 5.572552366127923, \"duality_gap\": 1.603958765628022e-05, \"duality_gap_scale\": 5.572568405715579, \"epoch\": 178, \"event\": \"sweep\", \"fold\": null, \"gradient_coordinate\": \"negative_dual_beta\", \"gradient_norm\": 0.15658123858255862, \"interaction_centered_trace\": 36.61862346508281, \"kkt_residual\": 4.5320070696242e-06, \"kkt_scale\": 1.0, \"learning_rate\": null, \"learning_rate_reason\": \"Exact row-block minimization; no gradient learning rate\", \"loss_data\": 2.4029342334163175, \"loss_ridge\": 3.169634172299262, \"loss_total\": 5.572568405715579, \"max_sweeps\": 1000, \"negative_dual_change\": -1.8760637487957865e-10, \"objective_rounding_tolerance\": 7.389644451905042e-13, \"optimization_tolerance\": 1.4901161193847656e-08, \"optimizer\": \"float64_deterministic_cyclic_exact_dual_row_block\", \"optimizer_steps\": 4628, \"parent_k\": 20, \"primal_objective\": 5.572568405715579, \"radial_centered_trace\": 22.070639292928856, \"relative_duality_gap\": 2.8783114873617346e-06, \"relative_kkt_residual\": 4.5320070696242e-06, \"row_block_solves\": 4628, \"scope\": \"support_oneshot_proxy\", \"slack_max\": 0.48680747059180074, \"slack_mean\": 0.42865940930506813, \"slack_min\": 0.3624034726549946, \"solve_seconds\": 0.7934989569985191, \"source_validation\": null, \"source_validation_reason\": \"No source sample permission\", \"split_id\": \"00637cf445833306751c77aa\", \"squared_slack_sum\": 4.805868466832635, \"sweep\": 178, \"sweep_seconds\": 0.0041948109937948175, \"trace_scale\": 1.659155540492882, \"train_k\": 1, \"train_physical_count\": 26, \"training_accuracy\": 1.0, \"trial\": 15}",
+      "[CVS LocalMargin] split=00637cf445833306751c77aa scope=support_oneshot_proxy sweep=179 steps=4654 margin_loss=2.4029337620857243 rkhs_penalty=3.169634188756069 P=5.572567950841793 D=5.572552366305105 gap=2.796652607073912e-06 KKT=4.403456277501938e-06 LR=N/A source_validation=N/A measured={\"active_constraint_count\": 492, \"active_physical_count\": 26, \"arm\": \"local_margin\", \"bandwidth_tau\": 1.161690183258651, \"certified\": false, \"class_count\": 26, \"dual_objective\": 5.572552366305105, \"duality_gap\": 1.558453668781823e-05, \"duality_gap_scale\": 5.572567950841793, \"epoch\": 179, \"event\": \"sweep\", \"fold\": null, \"gradient_coordinate\": \"negative_dual_beta\", \"gradient_norm\": 0.1565813071736219, \"interaction_centered_trace\": 36.61862346508281, \"kkt_residual\": 4.403456277501938e-06, \"kkt_scale\": 1.0, \"learning_rate\": null, \"learning_rate_reason\": \"Exact row-block minimization; no gradient learning rate\", \"loss_data\": 2.4029337620857243, \"loss_ridge\": 3.169634188756069, \"loss_total\": 5.572567950841793, \"max_sweeps\": 1000, \"negative_dual_change\": -1.7718271294597798e-10, \"objective_rounding_tolerance\": 7.389644451905042e-13, \"optimization_tolerance\": 1.4901161193847656e-08, \"optimizer\": \"float64_deterministic_cyclic_exact_dual_row_block\", \"optimizer_steps\": 4654, \"parent_k\": 20, \"primal_objective\": 5.572567950841793, \"radial_centered_trace\": 22.070639292928856, \"relative_duality_gap\": 2.796652607073912e-06, \"relative_kkt_residual\": 4.403456277501938e-06, \"row_block_solves\": 4654, \"scope\": \"support_oneshot_proxy\", \"slack_max\": 0.48680633501039905, \"slack_mean\": 0.42865936578081265, \"slack_min\": 0.36240337851825444, \"solve_seconds\": 0.7979385299986461, \"source_validation\": null, \"source_validation_reason\": \"No source sample permission\", \"split_id\": \"00637cf445833306751c77aa\", \"squared_slack_sum\": 4.805867524171449, \"sweep\": 179, \"sweep_seconds\": 0.0042009009994217195, \"trace_scale\": 1.659155540492882, \"train_k\": 1, \"train_physical_count\": 26, \"training_accuracy\": 1.0, \"trial\": 15}"
+    ]
+  },
+  "fit_progress": {
+    "rx3-cvs-daot-rc4-s2026092704": {
+      "completed": 3,
+      "total": 900,
+      "k": 1,
+      "classes": 11,
+      "fit_seconds": 0.0005836429991177283
+    },
+    "rx3-cvs-daot-rc4-s2026092702": {
+      "completed": 3,
+      "total": 900,
+      "k": 1,
+      "classes": 11,
+      "fit_seconds": 0.0005693389975931495
+    },
+    "rx3-cvs-daot-rc4-s2026092703": {
+      "completed": 1,
+      "total": 900,
+      "k": 1,
+      "classes": 6,
+      "fit_seconds": 0.0005996690015308559
+    },
+    "rx3-cvs-daot-rc4-s2026092701": {
+      "completed": 1,
+      "total": 900,
+      "k": 1,
+      "classes": 6,
+      "fit_seconds": 0.0006221619987627491
+    }
+  },
+  "live_children": [
+    {
+      "pid": 348909,
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_margin_support_20260929_r01/tools/evaluate_d92_branch_local_margin_probe.py",
+        "--support-features",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-support-probe-m4-r01/rx3-cvs-daot-rc4-s2026092704/feature_cache",
+        "--capsule",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-local-margin-support-m4-r01/rx3-cvs-daot-rc4-s2026092704/probe",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_margin_support_20260929_r01/configs/d92_branch_local_margin_support_rx3_20260929.json",
+        "--expected-capsule-id",
+        "residual-noeq-76121e6f34363fa612ec25fb",
+        "--expected-checkpoint-sha256",
+        "690fed6ea2a6532d0ad978c93306f0f35b61f4a3a3fc4b1d6494f0e7547c74bb",
+        "--expected-model-seed",
+        "2026092704"
+      ],
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_margin_support_20260929_r01",
+      "started": 1790695812.1741593,
+      "kind": "probe",
+      "live_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_margin_support_20260929_r01/tools/evaluate_d92_branch_local_margin_probe.py",
+        "--support-features",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-support-probe-m4-r01/rx3-cvs-daot-rc4-s2026092704/feature_cache",
+        "--capsule",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-local-margin-support-m4-r01/rx3-cvs-daot-rc4-s2026092704/probe",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_margin_support_20260929_r01/configs/d92_branch_local_margin_support_rx3_20260929.json",
+        "--expected-capsule-id",
+        "residual-noeq-76121e6f34363fa612ec25fb",
+        "--expected-checkpoint-sha256",
+        "690fed6ea2a6532d0ad978c93306f0f35b61f4a3a3fc4b1d6494f0e7547c74bb",
+        "--expected-model-seed",
+        "2026092704"
+      ],
+      "live_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_margin_support_20260929_r01",
+      "record": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-local-margin-support-m4-r01/rx3-cvs-daot-rc4-s2026092704/probe.log.process.json"
+    },
+    {
+      "pid": 348907,
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_margin_support_20260929_r01/tools/evaluate_d92_branch_local_margin_probe.py",
+        "--support-features",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-support-probe-m4-r01/rx3-cvs-daot-rc4-s2026092702/feature_cache",
+        "--capsule",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-local-margin-support-m4-r01/rx3-cvs-daot-rc4-s2026092702/probe",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_margin_support_20260929_r01/configs/d92_branch_local_margin_support_rx3_20260929.json",
+        "--expected-capsule-id",
+        "residual-noeq-76121e6f34363fa612ec25fb",
+        "--expected-checkpoint-sha256",
+        "72f26413e495dcf82317898f8729caa3d35499bf0b41e9671ffdceab2c90924b",
+        "--expected-model-seed",
+        "2026092702"
+      ],
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_margin_support_20260929_r01",
+      "started": 1790695812.1723926,
+      "kind": "probe",
+      "live_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_margin_support_20260929_r01/tools/evaluate_d92_branch_local_margin_probe.py",
+        "--support-features",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-support-probe-m4-r01/rx3-cvs-daot-rc4-s2026092702/feature_cache",
+        "--capsule",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-local-margin-support-m4-r01/rx3-cvs-daot-rc4-s2026092702/probe",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_margin_support_20260929_r01/configs/d92_branch_local_margin_support_rx3_20260929.json",
+        "--expected-capsule-id",
+        "residual-noeq-76121e6f34363fa612ec25fb",
+        "--expected-checkpoint-sha256",
+        "72f26413e495dcf82317898f8729caa3d35499bf0b41e9671ffdceab2c90924b",
+        "--expected-model-seed",
+        "2026092702"
+      ],
+      "live_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_margin_support_20260929_r01",
+      "record": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-local-margin-support-m4-r01/rx3-cvs-daot-rc4-s2026092702/probe.log.process.json"
+    },
+    {
+      "pid": 348908,
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_margin_support_20260929_r01/tools/evaluate_d92_branch_local_margin_probe.py",
+        "--support-features",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-support-probe-m4-r01/rx3-cvs-daot-rc4-s2026092703/feature_cache",
+        "--capsule",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-local-margin-support-m4-r01/rx3-cvs-daot-rc4-s2026092703/probe",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_margin_support_20260929_r01/configs/d92_branch_local_margin_support_rx3_20260929.json",
+        "--expected-capsule-id",
+        "residual-noeq-76121e6f34363fa612ec25fb",
+        "--expected-checkpoint-sha256",
+        "51fadc3b4ad3cbf83de01700a4a109430e7a57b1e10cb147f0be5f01593f26bb",
+        "--expected-model-seed",
+        "2026092703"
+      ],
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_margin_support_20260929_r01",
+      "started": 1790695812.1733432,
+      "kind": "probe",
+      "live_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_margin_support_20260929_r01/tools/evaluate_d92_branch_local_margin_probe.py",
+        "--support-features",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-support-probe-m4-r01/rx3-cvs-daot-rc4-s2026092703/feature_cache",
+        "--capsule",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-local-margin-support-m4-r01/rx3-cvs-daot-rc4-s2026092703/probe",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_margin_support_20260929_r01/configs/d92_branch_local_margin_support_rx3_20260929.json",
+        "--expected-capsule-id",
+        "residual-noeq-76121e6f34363fa612ec25fb",
+        "--expected-checkpoint-sha256",
+        "51fadc3b4ad3cbf83de01700a4a109430e7a57b1e10cb147f0be5f01593f26bb",
+        "--expected-model-seed",
+        "2026092703"
+      ],
+      "live_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_margin_support_20260929_r01",
+      "record": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-local-margin-support-m4-r01/rx3-cvs-daot-rc4-s2026092703/probe.log.process.json"
+    },
+    {
+      "pid": 348906,
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_margin_support_20260929_r01/tools/evaluate_d92_branch_local_margin_probe.py",
+        "--support-features",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-support-probe-m4-r01/rx3-cvs-daot-rc4-s2026092701/feature_cache",
+        "--capsule",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-local-margin-support-m4-r01/rx3-cvs-daot-rc4-s2026092701/probe",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_margin_support_20260929_r01/configs/d92_branch_local_margin_support_rx3_20260929.json",
+        "--expected-capsule-id",
+        "residual-noeq-76121e6f34363fa612ec25fb",
+        "--expected-checkpoint-sha256",
+        "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b",
+        "--expected-model-seed",
+        "2026092701"
+      ],
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_margin_support_20260929_r01",
+      "started": 1790695812.1715367,
+      "kind": "probe",
+      "live_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_margin_support_20260929_r01/tools/evaluate_d92_branch_local_margin_probe.py",
+        "--support-features",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-support-probe-m4-r01/rx3-cvs-daot-rc4-s2026092701/feature_cache",
+        "--capsule",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-local-margin-support-m4-r01/rx3-cvs-daot-rc4-s2026092701/probe",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_margin_support_20260929_r01/configs/d92_branch_local_margin_support_rx3_20260929.json",
+        "--expected-capsule-id",
+        "residual-noeq-76121e6f34363fa612ec25fb",
+        "--expected-checkpoint-sha256",
+        "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b",
+        "--expected-model-seed",
+        "2026092701"
+      ],
+      "live_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_margin_support_20260929_r01",
+      "record": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-local-margin-support-m4-r01/rx3-cvs-daot-rc4-s2026092701/probe.log.process.json"
+    }
+  ]
+}

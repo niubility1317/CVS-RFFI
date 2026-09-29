@@ -44,7 +44,7 @@ def validate_method_records(folder,method,manifest,ids,splits,candidate):
         score=np.asarray(record['scores'],dtype=float);pred=np.asarray(record['predicted_indices'])
         if score.shape!=(len(record['query_ids']),len(record['classes'])) or not np.isfinite(score).all() or pred.dtype.kind not in 'iu':
             raise ValueError('Invalid prediction scores/argmax')
-        if method in ('D92-SGJoint-v1','D92-MVKME-v1','D92-BNNA-v1','D92-OSC-v1','D92-MVRidge-v1','D92-BranchRidge-v1','D92-BranchInteraction-v1','D92-BranchLocalRidge-v1'):
+        if method in ('D92-SGJoint-v1','D92-MVKME-v1','D92-BNNA-v1','D92-OSC-v1','D92-MVRidge-v1','D92-BranchRidge-v1','D92-BranchInteraction-v1','D92-BranchLocalRidge-v1','D92-BranchLocalMargin-v1'):
             order=np.asarray(sorted(range(len(record['classes'])),key=lambda i:record['classes'][i]))
             expected_pred=order[score[:,order].argmax(1)]
         else:
