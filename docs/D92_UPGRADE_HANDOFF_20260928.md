@@ -1,5 +1,15 @@
 # D92优化当前交接
 
+## 当前工作：BranchOrbitCE两项P1已修复，准备发布，尚未启动
+
+独立P0/P1审查已关闭两项实际问题：完整轨道近抵消改用等价thin-QR表示稳定求值；CE失败逐层保留arm/fold/anchor/train物理ID与本episode已完成stages。冻结数学公式、配置与矩阵未变；未读真实query或启动实验。核心32项测试通过，独立审查复放原反例确认归一化自核约3、Gram对称且正定；设计文档已同步数值说明与修复后合成成本。其余exporter18、entry10、summary70、编排16项既有聚焦验证通过，共146项；新数值路径的entry/summary共80项联调再次通过。下一步mirror、Git提交push读回后唯一发布。本段优先于下面历史待审状态。
+
+goal ACTIVE。仅把上一轮完整support诊断传给query-blind设计者，未传query成绩。下一候选固定完整分支四相位C4轨道核和物理等权多类CE头，保留2×2四臂single_ridge/single_ce/orbit_ridge/orbit_ce，所有K同式。全模型冻结；新exporter只从SupportIQ白名单索引读取received，4个确定性相位view不增加K，原始FFT一次；每view单样本前向，严格来源/全参数buffer检查及合成smoke保留。CE训练只使用当前train support，train-RKHS梯度数值停止/max2000，未收敛保留trace不回退；query逐样本只读。
+
+新run `20260929-phase2-d92-branch-orbit-ce-support-m4-r01`与release `d92_branch_orbit_ce_support_20260929_r01`已PLANNED，冻结spec及原capsule/GPU0/CPU/空路径preflight VERIFIED，证据`orbit_preflight_1790673620028626500.json`。4800parent/3600OOF/42000proxy/四固定arms，预计105600ridge分解和105600CE fits，实际steps逐步记录；两类诊断各parentK对三controls都要求H/new正、old>=−1pp，严格旧新同升另列。独立审查正在收尾；尚待mirror/commit/push/launch。root唯一launch owner，GPU0串行export、4CPU probes×2BLAS。不得凭PLANNED或本段重复/提前启动。
+
+所有者：branch_next_design负责core/config/design/tests（query-blind），d92_p0_review负责新support exporter/reader/entry/tests，root负责summary/编排/登记，source_aux_feasibility负责唯一P0/P1。已通过证据：core25、exporter18、entry10、summary70、编排16；设计者仍补异常保留细节和doc。文本显示第0/每25/最终步，完整fit_trace/training_steps.jsonl/CSV不抽样。独立新数据确认仍待数据。以下为历史。
+
 ## 最新终态：BranchMetric完整support诊断完成，代理条件未通过
 
 run `20260929-phase2-d92-branch-metric-support-m4-r01`已ANALYZED，8lane/4800parent/1200真K1数值/3600OOF/42000proxy anchors/63600分解完整，全部进程退出。runtime `7099da7ab85170034de90d41c2471c4572860207`，分析commit `af8d1f6149f6e761a8cc315cd478ee629607853b`；终态`readback_1790672161.json`及`results/support_summary/analysis_execution.json`、完整下载summary VERIFIED。不要覆盖或重复启动run/analysis。raw trace/log保留N607原路径。

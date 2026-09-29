@@ -118,6 +118,16 @@ paths += ['code/cvsrffi/d92_branch_metric.py','configs/d92_branch_metric_frozen_
     'tools/analyze_d92_branch_metric_probe.py',
     'tests/test_d92_branch_metric.py','tests/test_evaluate_d92_branch_metric_probe.py',
     'tests/test_summarize_d92_branch_metric_probe.py','tests/test_run_d92_branch_metric_probe.py']
+paths += ['code/cvsrffi/d92_branch_orbit_ce.py','configs/d92_branch_orbit_ce_frozen_20260929.json',
+    'configs/d92_branch_orbit_ce_support_20260929.json','configs/d92_branch_orbit_ce_support_rx3_20260929.json',
+    'configs/d92_branch_orbit_ce_support_rx1_20260929.json','docs/D92_NEXT_AFTER_METRIC_20260929.md',
+    'docs/D92_BRANCH_ORBIT_CE_P0_20260929.md','tools/export_d92_branch_orbit_support_features.py',
+    'tools/evaluate_d92_branch_orbit_ce_probe.py','tools/summarize_d92_branch_orbit_ce_probe.py',
+    'tools/run_d92_branch_orbit_ce_probe.py','tools/publish_d92_branch_orbit_ce_probe.py',
+    'tools/preflight_d92_branch_orbit_ce_probe.py','tools/prepare_d92_branch_orbit_ce_probe.py',
+    'tools/analyze_d92_branch_orbit_ce_probe.py','tests/test_d92_branch_orbit_ce.py',
+    'tests/test_export_d92_branch_orbit_support_features.py','tests/test_evaluate_d92_branch_orbit_ce_probe.py',
+    'tests/test_summarize_d92_branch_orbit_ce_probe.py','tests/test_run_d92_branch_orbit_ce_probe.py']
 for name in paths:
     src=ROOT/name;dst=WS/name;dst.parent.mkdir(parents=True,exist_ok=True)
     # Each name is unique to this task; original D92 and shared wrappers are not mirrored.
