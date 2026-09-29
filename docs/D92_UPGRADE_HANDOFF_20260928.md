@@ -1,3 +1,11 @@
+## 最新用户目标澄清（2026-09-30）
+
+用户明确理想效果：同一旧类query上B−A旧类适应提升>=10pp，注册后B旧−C旧<=1pp，注册后abs(C新−C旧)<=3pp；随后明确这些是最理想目标，先在现有优化方法上逐步提升，不作为硬淘汰条件。H保留辅助，不代替三阶段效果。完整定义见 [渐进优化目标](D92_ADAPTATION_REGISTRATION_TARGET_20260930.md)。原健康LocalMargin support run继续，参数不变；最新读回 `readback_1790699128705548800.json` 核实supervisor348892及4子进程live，rx3各326至357/900，rx1仍等待。不能因未达到理想目标停机或重跑。
+
+query-blind源码核查：frozen_dg为A（冻结原生logits，无support拟合），当前方法new_count0为B，当前方法new_count>0为C。不能将原D92的B与别的方法C混用。builder保证跨新增类数旧support/query身份集合一致，但query顺序不同；需按物理ID核实实际产物。当前LocalRidge/Margin B/C独立重新拟合，没有继承B状态的接口；可报告注册扩展前后行为变化，不能宣称已实现顺序状态保留。B−A包含分类头替换收益。
+
+正在实施只读analysis-only配对报告，不改任何拟合/runner/scorer：local_margin_entry拥有 `tools/d92_adaptation_registration_pairing.py` 与对应test；local_env_reconcile拥有 `tools/summarize_d92_adaptation_registration.py` 与对应test。两者均query-blind，root统一运行测试/真实分析/Git。汇总将接收两个results目录及两个--identities元数据投影。root仍需按双方确定的schema实现只读身份投影（已有本地results没有split/DG query ID），测试并交付后才能宣称新报告完成。此节提交只记录用户目标，不包含或宣称未完成工具已可用。
+
 ## 最新交接：LocalMargin仍在support诊断，后续工具已备好（2026-09-29）
 
 同一run `20260929-phase2-d92-branch-local-margin-support-m4-r01` 继续RUNNING，runtime保持 `5b7319acd9e61f8f1c9f59824ac979db459b0aa8`。只读证据 `evidence/readback_1790696933018702700.json` 核实supervisor348892及4个子进程argv/CWD匹配，rx3各88至89/900单元，rx1仍排队。没有完整性能结论；不要重启。
