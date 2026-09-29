@@ -1,6 +1,12 @@
 # D92优化当前交接
 
-## 当前工作：BranchOrbitCE完整support诊断已VERIFIED启动
+## 当前工作：BranchOrbitCE完整support诊断已完成，候选失败；下一方法设计中
+
+最新终态：run `20260929-phase2-d92-branch-orbit-ce-support-m4-r01`全部8组/4800parent完成，1200K1数值/3600物理OOF/42000proxy anchors/105600ridge分解/105600CE fits/5563959实际updates完整核验。runtime `d57307814ef6a51f542a0455f25c3fe22cc0a6d7`，analysis `1140fdfbc79287effe88fd1e3afbf4498c86f1b7`。`readback_1790686403.json`核实无存活supervisor/所属子进程，`results/support_summary`已VERIFIED下载。标准OOF相对single_ridge的旧/新/H差：K5−8.962/−8.078/−8.722pp，K10−8.566/−9.885/−10.117pp，K20−7.120/−8.946/−8.584pp；proxy H差−4.324/−4.297/−4.343pp。所有预登记A/B均失败，不进入query、不晋级、不重跑。详见原run `support_interpretation.md`，全部raw留远端；goal ACTIVE。
+
+下一步：query-blind `branch_next_design`仅依据完整合法support汇总设计BranchLocalRidge方向（原视图interaction空间径向局部核、train-only尺度和trace匹配），当前只写 `docs/D92_NEXT_AFTER_ORBIT_20260929.md`，未实现/冻结/登记/启动新实验。不要把假设当改善结论，不发送历史query结果给设计者。
+
+本地环境变化：原 `C:/Users/lh594/.conda/envs/ssr-gpu` 是指向 `D:/conda-envs/ssr-gpu` 的失效junction，旧python不可用。已验证原生 `F:/App/miniconda3/python.exe` 3.13.9可执行标准库监控/分析编排；仅用于这些用途，未替代project测试环境。`source_aux_feasibility`正在有界只读定位恢复配置，禁止破坏旧junction或静默更换测试环境。当前原生cmd.exe短命令+UTF-8 Python脚本文件有效；复杂`python -c`引用失败，使用文件避免嵌套引用。N607 CVS-RFFI环境未变。以下为历史过程，勿据旧RUNNING启动或干预。
 
 更新：`readback_1790675306.json`确认8组support export全部完成，逐个解析完成日志核实smoke PASS、参数/buffer未变、源域/query访问0；4个rx3 CPU probes存活且argv/CWD吻合，rx1的4组缓存已就绪等待CPU名额，当前合计1031/4800parents。尚无complete.json，不启动analysis，不重启任何run。新增`docs/D92_BRANCH_ORBIT_COST_20260929.md`区分完整模型包、cohort全集缓存、单任务状态和4N前向；C26K20状态12,367,904B、新源样本/新地面统计0B，是否首次下发模型未知。当前运行日志继承的CE NLL文字标签写成ridge，数值无误；本地最终summary仅增加解释说明，不改变运行中代码、指标或筛选规则。
 
