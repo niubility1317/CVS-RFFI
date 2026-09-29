@@ -3,7 +3,7 @@
 - run_id：`20260929-phase2-d92-branch-local-ridge-support-m4-r01`
 - group_id：`d92-branch-local-ridge-support-development`；类别：`diagnostic`；阶段：`Phase2-support-only-diagnostic`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -31,3 +31,7 @@
 LocalRidge已预登记，尚未发布或启动。2026-09-29只读N607核查确认8份缓存绑定一致、输出与release目录不存在；复用原始support缓存，不加载模型、不读取源样本或query。联合合成测试仅一项Windows高精度测试参照失败，其余测试通过；修复参照和独立P0/P1审查正在进行，不能据此声称性能改善。
 
 LocalRidge本地相关验证已通过：联合四文件测试只有一项Windows高精度参照失败，改为80位Decimal独立参照后，失败项及两处同期变更的3项复测全部通过；未放宽方法阈值。独立P0/P1审查见docs/D92_BRANCH_LOCAL_RIDGE_P0_20260929.md。证据见evidence/local_validation_20260929.json。此状态仅代表代码验证，尚无性能结论。
+
+VERIFIED: LocalRidge support-only supervisor PID294733 and four owned CPU children have matching live argv/cwd; runtime96f74ac9dcb06d72923324f3cd44a63dac65a2de. All four initial lanes produced first trueK1 numerical record; remaining four lanes pending. No query/source input or checkpoint reload; no performance conclusion.
+
+后续独立读回readback_1790689250.json确认同一主进程及4个children仍存活且命令匹配；首批4条rx3分别完成40/41/41/41个parent，共163/4800。已完成真实K20、26注册类的诊断，日志末尾未见错误。其余4条rx1仍排队；仅记录运行进度，不据部分指标调参或停止。

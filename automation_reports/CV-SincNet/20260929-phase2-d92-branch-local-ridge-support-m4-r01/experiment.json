@@ -27,7 +27,8 @@
     "base_recipe": "experiments/adv3b02_xuc/configs/rc4_practical_residual_noeq_20260918.json",
     "native_code_base": "b63734157",
     "native_training_commit": "9b1ddd939fcabc74c77c94a62fef8e5aad07c0e9",
-    "commit_note": "Preparation parent; publisher records actual pushed release commit in launch/startup."
+    "commit_note": "Preparation parent; publisher records actual pushed release commit in launch/startup.",
+    "release_commit": "96f74ac9dcb06d72923324f3cd44a63dac65a2de"
   },
   "data": {
     "dataset": "Support slices only from the two existing VALIDATED_ONCE capsules",
@@ -151,7 +152,15 @@
     "cpu_lanes": 4,
     "blas_threads_per_lane": 2,
     "export_device": null,
-    "export_batch_size": null
+    "export_batch_size": null,
+    "pid": 294733,
+    "runtime_command": [
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_ridge_support_20260929_r01/tools/run_d92_branch_local_ridge_probe.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_ridge_support_20260929_r01/configs/d92_branch_local_ridge_support_20260929.json",
+      "--commit",
+      "96f74ac9dcb06d72923324f3cd44a63dac65a2de"
+    ]
   },
   "expected_artifacts": [
     "startup.json",
@@ -173,7 +182,7 @@
     "Existing support-only raw caches; no checkpoint reload, source access, query access or fitted-state inheritance."
   ],
   "claim_scope": "SUPPORT_INFORMATION_DIAGNOSTIC_NOT_QUERY_PERFORMANCE",
-  "status": "PLANNED",
+  "status": "RUNNING",
   "metrics_plan": {
     "metric_names": [
       "support_OOF_old_accuracy",

@@ -1,3 +1,16 @@
+## 当前继续点：BranchLocalRidge已启动（2026-09-29）
+
+- 目标仍ACTIVE：固定Phase1，在BranchRidge基础上提升新旧类与H；不得把实现通过当作性能改善。
+- 当前run：`20260929-phase2-d92-branch-local-ridge-support-m4-r01`；唯一launch owner为root；不得重复启动。
+- runtime commit：`96f74ac9dcb06d72923324f3cd44a63dac65a2de`，本地与远端branch OID已独立核对一致。
+- N607 supervisor PID294733；首批四个rx3 children为294747、294748、294749、294750。独立`/proc`读回均匹配argv/cwd，四个rx1仍排队。证据：`automation_reports/CV-SincNet/20260929-phase2-d92-branch-local-ridge-support-m4-r01/evidence/readback_1790689122.json`。
+- 三臂：原BranchRidge、BranchInteraction、BranchLocalRidge；复用原单视图合法support原始特征；带宽、中心化和trace scale均只用训练折。无源样本、query输入、模型重载或额外特征导出。
+- 完整计划4800 parent：1200真实K1只做数值检查、3600标准OOF及42000内部单样本anchor；后者不是正式K1验证。实际分解次数与退化减少量分别报告。
+- 本地四文件相关测试通过；首次Windows longdouble参照错误已改成80位Decimal，失败项及同期变更3项复测通过。证据为同run的`evidence/local_validation_20260929.json`；独立P0/P1无阻断，见`docs/D92_BRANCH_LOCAL_RIDGE_P0_20260929.md`。
+- 本地原ssr-gpu链接仍指向不可用D盘，未改动。新隔离CPU环境`E:/type10-7/local_envs/ssr-gpu`已验证。项目测试串行用`F:/App/miniconda3/Scripts/conda.exe run -p E:/type10-7/local_envs/ssr-gpu python -s ...`；stdlib可用`F:/App/miniconda3/python.exe`。无Torch/CUDA。
+- 下一步：只读核查这个run的活进程和产物；完整后调用`tools/analyze_d92_branch_local_ridge_probe.py --spec configs/d92_branch_local_ridge_support_20260929.json --analysis-release <新独占分析release>`。不提前读取query或改参，不因弱表现停止，不重复发布；技术故障只处理所属lane并保留产物。
+- 已完成BranchOrbitCE完整support分析，未晋级。详细记录保留在其原run。设计人员保持query-blind，不转发本交接中更早的query结果。
+
 # D92优化当前交接
 
 ## 当前工作：BranchOrbitCE完整support诊断已完成，候选失败；下一方法设计中
