@@ -3,7 +3,7 @@
 - run_id：`20260929-phase2-d92-branch-local-margin-support-m4-r01`
 - group_id：`d92-branch-local-margin-support-development`；类别：`diagnostic`；阶段：`Phase2-support-only-diagnostic`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：LOCAL_VERIFIED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -53,3 +53,9 @@ LocalMargin support-only full matrix preregistered, not launched; direct baselin
 远端只读preflight已确认8组缓存绑定、身份、资源与新目录无冲突。正式运行仍以发布后startup记录的实际commit为准。
 
 VERIFIED:96 focused tests and metadata logging test pass;3 synthetic sizes certified; query/source rows0; LocalMargin full support matrix ready for authorized launch.
+
+## 启动核实
+
+VERIFIED RUNNING: supervisor348892 and4CPUchildren argv/CWD match release5b7319acd; first trueK1 numerical parents complete, measured sweep logs growing; no source/query/GPU access.
+
+首次读回已见4个lane的训练日志，包含实际tau、gamma、损失分量、primal/dual、gap、KKT、active数量与耗时。其余4个lane按原CPU队列等待，不启动重复run。

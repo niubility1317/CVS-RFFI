@@ -1,3 +1,9 @@
+## 当前运行：LocalMargin完整support诊断已启动（2026-09-29）
+
+run `20260929-phase2-d92-branch-local-margin-support-m4-r01` RUNNING；runtime `5b7319acd9e61f8f1c9f59824ac979db459b0aa8`。N607 supervisor348892，4个CPU子进程348906/348907/348908/348909，argv/CWD/commit和日志增长已独立核实，证据 `evidence/readback_1790695881713377700.json`。rx3四模型运行、rx1四模型队列等待。不要重启、覆盖或因低性能停止。
+
+恢复先运行本地 `.codex_tmp/monitor_local_margin_support_20260929.py`，核实当前进程与complete/state。root唯一launch owner。完整4800parent都结束后使用新analysis release运行 `tools/analyze_d92_branch_local_margin_probe.py`；不采样partial当完整结论。直接推进基线LocalRidge，标准OOF/proxy分别按parent K=5/10/20检查新/H>0、旧>=-1pp，同时报告strict三项正向。若通过再执行完整重复query基准；方法worker始终query-blind。独立验证按用户要求暂缓。以下历史状态已被本节替代。
+
 ## 当前继续点：LocalMargin准备启动完整support诊断（2026-09-29）
 
 用户要求在BranchLocalRidge上继续改善，独立验证暂缓。直接基线为LocalRidge，旧BranchRidge/Interaction只作描述性对照。新run `20260929-phase2-d92-branch-local-margin-support-m4-r01` 为LOCAL_VERIFIED，尚未启动；release `d92_branch_local_margin_support_20260929_r01`。core/config、7个工具、96项测试及逐sweep日志已完成；数学与可执行P0/P1审查记录 `docs/D92_LOCAL_MARGIN_MATH_REVIEW_20260929.md`。
