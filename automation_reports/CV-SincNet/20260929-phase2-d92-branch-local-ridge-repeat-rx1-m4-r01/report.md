@@ -46,3 +46,7 @@ VERIFIED:rx1 complete1200candidatefits/2412scoringrecords; supervisor and owned 
 完整结果与成本见[产物索引](results/artifacts.json)，解释见[LocalRidge结果报告](E:/type10-7/docs/D92_BRANCH_LOCAL_RIDGE_RESULT_20260929.md)。用户2026-09-29明确要求“先不用独立验证，继续提升”；新增独立数据验证暂缓，继续仅基于合法support的query-blind研发。本轮已有结果不回流调参、拼接方法或选择性重跑。
 
 VERIFIED full repeated benchmark complete:4800pairedcandidatefits/9648jointscores; allconfusion arithmetic and threebaseline identity, fullfit resourceaudit pass. PerK jointold/new/H positive vsall3baselines; K1small and localdeclines preserved. User explicitly deferred independentvalidation and requested continued optimization; next design remains query-blind and support-only. Goal ACTIVE.
+
+## 三阶段描述性补充（2026-09-30）
+
+A/B/C物理身份配对与全4800单元算术核实完成；未新增训练、预测或truth评分。详见 `docs/D92_BRANCH_LOCAL_RIDGE_ABC_RESULT_20260930.md`。10/1/3个百分点仅为理想目标，无自动晋级或调参反馈。

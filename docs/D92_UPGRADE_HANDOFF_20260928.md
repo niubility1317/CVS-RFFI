@@ -1,3 +1,11 @@
+## 三阶段基线报告完成，允许目标域参数高效微调（2026-09-30）
+
+用户要求以后每次优化报告固定列A适应前旧类、B仅旧类适应后、C注册后旧类与新类，注明K和新类数，详细报告三项变化与H。10/1/3pp仍是理想目标，不是硬门槛。用户同时明确允许合法target-support模型微调（SFT/参数高效方式），地面Phase1基座保持固定；不增加source样本/逐样本特征或query拟合权限，资源节省必须实测。已将约定追加到workspace/Git两份AGENTS.md与目标文档。
+
+LocalRidge ABC身份提取与完整4800单元分析已完成，独立原分数算术读回全部一致。QUERY-EXPOSED结果：`docs/D92_BRANCH_LOCAL_RIDGE_ABC_RESULT_20260930.md`；原输出在rx3 run/results/abc_analysis_20260930，身份投影在abc_identities_20260930。不要把这些结果、root交接或query数值发给方法工作者。报告没有用于调参/选择，当前Margin support run原样继续，待完整support证据。
+
+branch_local_core正在query-blind只读检查现有CV-SincNet可作小投影/LoRA/adapter的模块与实际缓存/梯度边界，只报告源码事实及最低改动可行性，未授权该子任务拟合/启动/修改。root需收取结论，再依据合法support证据推进具体设计；不得将已有ABC query结果用于方法设计。此节替代下面待执行身份提取/报告的说明。
+
 ## 三阶段分析工具已验证（2026-09-30）
 
 用户10pp适应提升、<=1pp注册旧类下降、<=3pp新旧绝对差是理想目标，非硬门槛。新增ABC身份投影/配对/汇总工具已经76项合成测试通过（28+12+36），配对与collector独立审查、root汇总审查均无未解决P0/P1。设计与测试说明：`docs/D92_ABC_ANALYSIS_REVIEW_20260930.md`。没有修改方法或当前support运行。

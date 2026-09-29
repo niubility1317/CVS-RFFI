@@ -189,6 +189,7 @@ paths += ['tools/d92_adaptation_registration_pairing.py',
     'tests/test_collect_d92_adaptation_registration_identities.py',
     'tests/test_summarize_d92_adaptation_registration.py',
     'docs/D92_ABC_ANALYSIS_REVIEW_20260930.md']
+paths += ['docs/D92_BRANCH_LOCAL_RIDGE_ABC_RESULT_20260930.md']
 for name in paths:
     src=ROOT/name;dst=WS/name;dst.parent.mkdir(parents=True,exist_ok=True)
     # Each name is unique to this task; original D92 and shared wrappers are not mirrored.

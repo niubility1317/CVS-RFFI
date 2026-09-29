@@ -56,3 +56,11 @@
 - For Markdown, JSON, and non-ASCII text, use explicit UTF-8 writes, BOM-aware reads, and Python JSON I/O when payloads are large or encoding-sensitive.
 - Do not assume all PowerShell versions support the same parameters or .NET helpers. Check support before relying on `Tee-Object -Encoding`, `Test-Connection -TimeoutSeconds`, `[IO.Path]::GetRelativePath`, or compression APIs that may require explicit `Add-Type`.
 - After SSH/SCP timeouts or malformed quoting, verify local SSH clients and TCP connections have exited, then use read-only remote process/log evidence before relaunching or declaring failure.
+
+## D92优化报告与目标域微调约定（2026-09-30）
+
+- 用户要求后续每次方法优化报告详细列出：适应前的旧类准确率、仅用旧类support适应后的旧类准确率、加入新类后的旧类与新类准确率。注明K、旧类数和新增类数，保留完整K×新增类数表及必要分层；同时报告适应提升、注册后旧类下降、新旧类差距和H，不只给相对改进或最终H。
+- 三阶段旧类指标按同一row、同一物理旧类query与旧类support配对。C阶段对全部已注册类统一竞争；缺失阶段记N/A，不猜补或混用其他方法的适应结果。独立重新拟合与继承适应状态的顺序训练必须明确区分。
+- 用户将适应提升>=10个百分点、注册后旧类下降<=1个百分点、新旧类绝对差<=3个百分点明确为理想目标；当前在已有优化方法上逐步提升，不新增每轮必须全部达到的硬门槛。
+- 用户允许目标域合法support上的监督微调（SFT）和参数高效微调。地面Phase1训练及合规基座保持固定；Phase2可按预登记方法更新选定模型参数或adapter。继续禁止源域样本、源域逐样本特征、query拟合或反馈调参；冻结地面原型与聚合摘要仍遵守项目现行使用边界。
+- 降低星载开销必须报告实际可训练参数、训练与推理耗时、峰值内存/显存、常驻状态和新增传输字节数；记录硬件与测量口径。SFT本身不等于省算力，少量可训练参数也不保证训练总计算量较低，未测量项记N/A。新授权不允许热修改、停止或重启健康实验。
