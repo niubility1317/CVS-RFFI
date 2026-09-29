@@ -1,3 +1,15 @@
+## 当前继续点：LocalRidge完整评测完成；用户要求继续提升（2026-09-29）
+
+两组 `20260929-phase2-d92-branch-local-ridge-repeat-{rx3,rx1}-m4-r01` 已 SCORED/ANALYZED，全部4800fits/9648scores，所有本轮进程退出。runtime `de10068cd1168ab064c835bf341ddb0f63e1231c`。终态证据rx3 `readback_1790694038.json`、rx1 `readback_1790694039.json`；下载前双终态证据 `readback_1790694048.json`。结果已落盘 `rx3/results/triple_baseline/analysis.json`、`report.md`、`fit_audit.json`，两组 `arithmetic_audit.json` 和 `artifacts.json`。不得重复启动/下载/分析到同一路径。
+
+完整三基线逐字段配对和所有混淆矩阵算术VERIFIED。对BranchInteraction Δ旧/新/H(pp)：K1 +0.152/+0.391/+0.458；K5 +1.267/+2.166/+2.026；K10 +1.028/+2.416/+2.043；K20 +1.273/+2.901/+2.352。对BranchRidge ΔH +0.468/+3.729/+3.964/+4.545。每K均值三项对全部3基线为正，但存在RX/场景/新增类数/seed局部退化，K1收益小。完整解释 `docs/D92_BRANCH_LOCAL_RIDGE_RESULT_20260929.md`；不要把本handoff、结果文档或query数值给方法研发agent。
+
+实测墙钟跨度934.200秒，fit调用累计926.661秒、query累计4345.239秒；数值头35744至3178272B；新增source/地面统计0B，既有cache复用、checkpoint加载0，实际卫星部署状态未知。完整原始远端fit/prediction/log保留。
+
+用户最新回复“先不用独立验证，继续提升”。独立验证暂缓，不是当前阻塞，不再等数据后才研发。旧库存补充见 `docs/D92_INDEPENDENT_DATA_METADATA_ADDENDUM_20260929.md`：旧7RX逐类库存存在，但版本/ID/历史暴露映射未知；equalized1与当前received构造不冲突。
+
+下一步已有QUERY-BLIND `branch_local_core`仅基于完整support summary设计 `D92-BranchLocalMargin-v1`，责任文件 `docs/D92_NEXT_AFTER_LOCAL_RIDGE_20260929.md`。方向是沿用LocalRidge训练折核几何，改用最强竞争类平方hinge的凸多类margin目标、精确非负二次dual、物理行block求解；当前仅方案，尚未实现/冻结/登记/启动。需完成独立数学/数值可行性核查、实现与相关验证后继续原A/B support研发流程；固定Phase1、无源样本、无query拟合或调参反馈。root为唯一测试/launch owner；`local_ridge_results`已看query，仅负责结果分析，禁止参与方法设计。goal ACTIVE，进一步提升尚在进行。以下均为历史交接。
+
 ## 当前继续点：LocalRidge两组完整重复基准已运行（2026-09-29）
 
 run `20260929-phase2-d92-branch-local-ridge-repeat-{rx3,rx1}-m4-r01` 均 RUNNING。实际发布commit `de10068cd1168ab064c835bf341ddb0f63e1231c` 已push且远端OID匹配。两组 `evidence/readback_1790693127.json` 独立核实supervisor326110/326678及8CPU worker实际argv/CWD匹配、每行都有预测进展；不是仅凭launch返回成功。root唯一launch owner，禁止重复发布/启动，健康任务不因性能停止。
