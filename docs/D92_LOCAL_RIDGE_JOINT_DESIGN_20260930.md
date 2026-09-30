@@ -1,6 +1,6 @@
 # LocalRidge 与监督谱 adapter 联合设计
 
-状态：JOINT_DESIGN_FOR_DISCUSSION_NOT_IMPLEMENTED_NOT_RUN。这是按用户最新要求提出的单一联合方案：**LocalRidge 是唯一最终分类器，微调只服务其度量，并通过闭式分类头共同优化。** 尚未创建新联合core/config或启动实验；固定 WithinClassMetric 留作组件/消融，不把纯度量变换当作完整下一候选。
+状态：IMPLEMENTED_SYNTHETIC_VALIDATION_PASSED_NOT_RUN。这是按用户最新要求实现的单一联合方案：**LocalRidge 是唯一最终分类器，微调只服务其度量，并通过闭式分类头共同优化。** 新core、冻结config和合成tests已落盘；root执行受影响核心及编排43项测试通过，包含解析有限差分、θ0逐元素原值及活跃导数。尚未启动真实support实验；固定 WithinClassMetric 留作组件/消融。
 
 ## 1. 为什么改变训练目标
 
@@ -87,4 +87,47 @@ C最终继承B的**完整旧训练几何**（Q、保护空间、谱方向/λ、�
 
 两个梯度各增加闭式导数三角求解及交叉核导数计算；这个成本可能高于固定W和原LocalRidge很多。要单列B/C训练、内层几何、内层head、梯度、final评估、LOCO诊断、评分、峰值RSS、常驻adapter/头、实际部署包/新增传输字节。复用组件的完整数值状态上界约15.5MB，不能只报16字节θ。现有8步是预设小预算，尚无实测或效果结论；不承诺星载资源降低。
 
-当前仅形成该单一联合建议。原组件数值回归继续按root统一验证；本联合设计没有实施、冻结新配置、读取query或启动训练。
+本联合实现与冻结算法JSON已完成合成验证，真实运行配置、登记和启动由root后续统一处理。当前没有读取query或启动真实训练。
+
+## 7. 已实现API、日志与验证边界
+
+实现为 `code/cvsrffi/d92_joint_spectral_local_ridge.py`；冻结算法文件 `configs/d92_joint_spectral_frozen_20260930.json` 顶层为 `{'algorithm': FROZEN_CONFIG}`。原LocalRidge和纯metric组件源码未修改。
+
+```python
+prepare_joint_training(
+    *, z_id, fft, t_emb, f_emb, pa_local,
+    support_labels, support_ids, classes, old_classes,
+    inherited=None, context=None, log_callback=None,
+) -> JointTraining
+
+fit_joint_spectral_local_ridge(
+    prepared, *, mode='B', baseline_state=None, log_callback=None,
+) -> JointSpectralState
+
+evaluate_joint_objective(prepared, theta, anchor, *, gradient=True)
+    -> (loss, gradient, audit)
+```
+
+mode为B/C_seq/C_reset/fixed。fixed使用θ=(1,0)，零优化步；即便outer trainK2没有可训练内层信息，只要完整几何非identity，fixed仍应用其固定收缩。C的prepared必须传B state作为inherited；它复用B完整旧几何，C_seq/reset/fixed共用同一prepared，准备费用只计一次。C_seq以B.theta为初始化/锚点，reset以0为锚点。Nnew0由入口分别复用各路径B，不再准备或拟合C。
+
+JointTraining保存不可变的规范类序、物理ID、仅训练原始五块、完整几何、各内折几何和距离/谱系数缓存；`.audit_dict()`返回可修改副本。类序以物理class ID字典序规范化，labels是输入classes所对应的整数索引，经准备后重新映射。C核对旧ID全集、逐ID类标签与b/a特征完全一致，并在提供时核对row_id/split_id，不从另一target row继承状态。
+
+JointSpectralState提供只读`.theta`、`.geometry`、`.classes`及`.score(*,五blocks)`、`.predict(*,五blocks)`、`.audit_dict()`。θ=0或完整几何identity时，前向直接复用原LocalRidge；可传同训练集合的baseline_state避免重复最终拟合。原state没有逐ID原始训练label审计，因此baseline的同label绑定由入口对同一train slice立即拟合并传入保证；core核对其ID/特征/classes，不从预测猜补label。不同输入class列顺序只做规范列重排，不算一次新的拟合。
+
+非identity分数仍逐样本计算。θ0内层score不仅使用原先的距离、tau、中心化与同一次闭式解，还将alpha规范成原state的C-contiguous布局并逐行matvec，防止BLAS路径造成末位差异；没有跳过活跃导数。root测试已对内层θ0 score与原头逐元素比较通过。
+
+| 对象 | 计数、资源与身份字段 |
+|---|---|
+| prepared | joint_preparation_count, geometry_fit_count, geometry_factorization_count, geometry_seconds, preparation_seconds（prepare_seconds同值别名）, train_k, training_physical_ids, classes, old_classes, inner_folds, no_information, transient_distance_bytes, geometry_state_bytes, inner_geometry_state_bytes |
+| 每个inner_fold | inner_fold, training_physical_ids, held_physical_ids, geometry_training_physical_ids, geometry_identity, geometry_audit, train_physical_count, held_physical_count, direct_difference_pair_count |
+| state | mode, theta, theta_anchor（anchor同值别名）, optimizer_steps, nonzero_projected_update_count, theta_changed_from_anchor, no_information, no_update_reason, identity_forward, inner_objective_evaluation_count, inner_head_fit_count, inner_factorization_count, derivative_triangular_solve_count, final_head_fit_count, final_factorization_count, final_fit, shared_geometry_state_bytes, head_state_bytes, theta_state_bytes, persistent_state_bytes, fit_seconds |
+
+prepared的identity几何估计仍计一次geometry_fit attempt，但因子分解为0；不是把attempt写成实际学习。训练阶段仅在存在可辨内折几何时执行8步、9次objective评估；执行了8步不等于8次有效适应，应分别报告实际非零投影更新数和最终θ是否偏离锚点。no-information不执行空objective评估，固定路径也不执行优化objective。
+
+prepare回调事件为JOINT_INNER_PREPARED；fit有8条JOINT_SPECTRAL_STEP及一条JOINT_SPECTRAL_FIT。只有STEP含顶层整数step，其他事件没有step。STEP包含pre-update loss/真实gradient和post-update theta，final_objective独立来自第8次更新后的无梯度评估；不得混称最后一条STEP的loss已评价最后一次更新。最终audit保存完整8条标量步骤和各折汇总，入口补齐当前row/split/outer fold或proxy anchor身份，完整保存文本和结构化日志。source_validation=null，原因SOURCE_ACCESS_FORBIDDEN。
+
+NumericalFailure.audit_dict严格JSON可序列化，保留当前θ、已完成步骤、当前失败内折的已执行进度、此前完成内折及准备上下文。因子分解和导数求解按实际尝试累计，即便该objective尚未完整返回；技术失败不能记成零工作量。无jitter、隐藏温度变化或失败后的新候选回退。
+
+对并列导数，合成测试单独验证声明的分支平均及行/类置换对称性；`min(t,-t)`在0的平均广义梯度为0，而两个单侧方向导数均为−1。这些不是同一数量，不要求平均广义梯度等于任一方向有限差分。光滑点另用常规中心有限差分验证完整loss梯度；θ0用可行侧扰动验证仍有实际导数。其余测试覆盖物理held特征不能改变该折几何、不等折样本加权、C继承/reset、K1/K2/no-information、固定θ路径、8/9计数、逐样本批次不变、状态不可写与部分失败计数。
+
+核心与编排43项通过仅说明已测实现行为；不代表support泛化、K1提升、成本降低或真实运行成功。真实耗时/峰值内存/部署字节仍按第6节实测报告。

@@ -1,0 +1,76 @@
+{
+  "host": "dell-DSS8440",
+  "user": "szu2070436088",
+  "cpu_count": 96,
+  "loadavg": [
+    0.09716796875,
+    0.03955078125,
+    0.0107421875
+  ],
+  "free_disk_bytes": 7042078007296,
+  "output_paths": {
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20260930-phase2-d92-joint-spectral-support-m2-r01": false,
+    "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_joint_spectral_support_20260930_r01": false,
+    "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_joint_spectral_support_20260930_r01.tar": false
+  },
+  "cache_bindings": [
+    {
+      "row": "rx3-cvs-daot-rc4-s2026092701",
+      "cache": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-support-probe-m4-r01/rx3-cvs-daot-rc4-s2026092701/feature_cache",
+      "producer_splits": 900,
+      "selected_splits": 40,
+      "channel": {
+        "route": "residual",
+        "mode": "post_sync",
+        "equalization_enabled": false,
+        "fs_hz": 25000000
+      },
+      "binding": "VERIFIED"
+    },
+    {
+      "row": "rx3-cvs-daot-rc4-s2026092702",
+      "cache": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-support-probe-m4-r01/rx3-cvs-daot-rc4-s2026092702/feature_cache",
+      "producer_splits": 900,
+      "selected_splits": 40,
+      "channel": {
+        "route": "residual",
+        "mode": "post_sync",
+        "equalization_enabled": false,
+        "fs_hz": 25000000
+      },
+      "binding": "VERIFIED"
+    },
+    {
+      "row": "rx1-cvs-daot-rc4-s2026092701",
+      "cache": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-support-probe-m4-r01/rx1-cvs-daot-rc4-s2026092701/feature_cache",
+      "producer_splits": 300,
+      "selected_splits": 40,
+      "channel": {
+        "route": "residual",
+        "mode": "post_sync",
+        "equalization_enabled": false,
+        "fs_hz": 25000000
+      },
+      "binding": "VERIFIED"
+    },
+    {
+      "row": "rx1-cvs-daot-rc4-s2026092702",
+      "cache": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-support-probe-m4-r01/rx1-cvs-daot-rc4-s2026092702/feature_cache",
+      "producer_splits": 300,
+      "selected_splits": 40,
+      "channel": {
+        "route": "residual",
+        "mode": "post_sync",
+        "equalization_enabled": false,
+        "fs_hz": 25000000
+      },
+      "binding": "VERIFIED"
+    }
+  ],
+  "query_access": false,
+  "source_sample_access": false,
+  "gpu_use": false,
+  "cpu_lanes": 2,
+  "blas_threads_per_lane": 2,
+  "status": "VERIFIED"
+}

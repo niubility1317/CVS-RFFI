@@ -232,6 +232,18 @@ paths += ['docs/D92_LOCAL_RIDGE_JOINT_REQUIREMENTS_20260930.md',
     'tools/summarize_d92_within_class_metric_probe.py','tests/test_d92_within_class_metric.py',
     'tests/test_d92_within_class_metric_orchestration.py','tests/test_evaluate_d92_within_class_metric_probe.py',
     'tests/test_summarize_d92_within_class_metric_probe.py']
+paths += ['docs/D92_LOCAL_RIDGE_JOINT_REVIEW_20260930.md',
+    'code/cvsrffi/d92_joint_spectral_local_ridge.py',
+    'configs/d92_joint_spectral_frozen_20260930.json',
+    'configs/d92_joint_spectral_support_20260930.json',
+    'configs/d92_joint_spectral_support_rx3_20260930.json',
+    'configs/d92_joint_spectral_support_rx1_20260930.json',
+    'tools/run_d92_joint_spectral_probe.py','tools/prepare_d92_joint_spectral_probe.py',
+    'tools/preflight_d92_joint_spectral_probe.py','tools/publish_d92_joint_spectral_probe.py',
+    'tools/analyze_d92_joint_spectral_probe.py','tools/evaluate_d92_joint_spectral_probe.py',
+    'tools/summarize_d92_joint_spectral_probe.py','tests/test_d92_joint_spectral_local_ridge.py',
+    'tests/test_d92_joint_spectral_orchestration.py','tests/test_evaluate_d92_joint_spectral_probe.py',
+    'tests/test_summarize_d92_joint_spectral_probe.py']
 for name in paths:
     src=ROOT/name;dst=WS/name;dst.parent.mkdir(parents=True,exist_ok=True)
     # Each name is unique to this task; original D92 and shared wrappers are not mirrored.

@@ -1,3 +1,17 @@
+## 最新状态：联合谱adapter实现通过55项检查，已预登记待发布（2026-09-30）
+
+BranchLocalRidge与真实监督微调联合主线已实现，方法D92-JointSpectralLocalRidge-v1。LocalRidge是最终分类器，2维有界谱参数通过内折LocalRidge闭式解解析梯度训练，8步投影梯度、lr0.1。B训练后C继承参数及完整旧类几何；C内折重新估计几何。四路径R0/R_fixed/R_joint/R_reset，R_joint为预声明顺序主线，不能事后选择最好路径。纯WithinClassMetric只作组件，不启动旧pure run。
+
+55项不同测试通过：core12、entry7、summary5、orchestration31。首轮theta0浮点误差证据保留在E:/type10-7/.codex_tmp/pytest_utf8_1790735819806135900.stdout；根因SciPy三角解alpha的Fortran存储布局与原immutable state的C布局不同，修复前向布局并保持活跃导数。core+orchestration43通过日志pytest_utf8_1790735900258796300.stdout；entry+summary+orchestration43通过日志pytest_utf8_1790736104777940100.stdout。两者并集55，非86。联合设计/API及独立审查见docs/D92_LOCAL_RIDGE_JOINT_DESIGN_20260930.md和docs/D92_LOCAL_RIDGE_JOINT_REVIEW_20260930.md。
+
+新run 20260930-phase2-d92-joint-spectral-support-m2-r01 已prepare/new各一次，当前PLANNED，尚未publish/launch。spec configs/d92_joint_spectral_support_20260930.json；release d92_joint_spectral_support_20260930_r01。N607只读预检VERIFIED，证据joint_spectral_preflight_1790735968791537300.json，四support cache绑定匹配且新run/release/archive均不存在。禁止重复prepare/new，后续先核对当前状态。root唯一launch owner。
+
+固定原160parent（4row，2model×2cohort），old6/new0,2,5,10,20/K1,5,10,20，仅high与low_urban实际选中；practical residual/post_sync/noeq/25MHz。源样本、源逐样本特征、query均不读取；缓存对应原合规source-only Phase1，不加载新checkpoint。A=N/A，B0不是ground A，支持集外层结果不能冒称query性能。独立新数据验证仍按用户要求延后。
+
+实际计数上限：baseline3168，jointprep3168，jointstage4576，fixedstage3168；可训练stage<=936、update<=7488、innerobjective<=8424、innerhead<=25272、extra finalhead<=1584、总head<=30024。无信息回退不伪造训练；记录实际非零更新、theta变化、全量training_events与compact JSONL/CSV。只有2参数不代表低总成本，完整geometry/head RAM及训练/评分开销另报；无新增地面摘要payload，未制作部署包项N/A。
+
+当前目标ACTIVE，尚无新联合真实性能数据。下一步完成Git交付远端OID读回后唯一publish；独立核实PID/CWD/argv与resolved config，登记RUNNING；完整4row终态后唯一独立summary及全训练日志分析，不能以partial表现改配置或停机。core/entry方法worker保持QUERY-BLIND，不给本handoff或ABC/query/总索引。暂停Residual8草稿与.codex_tmp保持未暂存。
+
 ## 最新状态：用户明确联合主线，纯metric不单独启动（2026-09-30）
 
 用户最新要求BranchLocalRidge类方法与微调联合，且BranchLocalRidge优先。权威要求摘要见 `docs/D92_LOCAL_RIDGE_JOINT_REQUIREMENTS_20260930.md`。纯WithinClassMetric保留为组件/消融，不能作为下一完整候选。此前within-metric run仅预定名，未prepare/new/发布/启动，无性能数据；不要恢复旧计划自动launch。
