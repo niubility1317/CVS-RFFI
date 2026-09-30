@@ -1,3 +1,9 @@
+## 最新状态：FCR8完成两row，另两row训练中（2026-09-30）
+
+VERIFIED：FCR8既有run推进到114/160parent。rx3两row各40parent已有完整probe_complete产物，原绑定/实际计数核对通过；rx1两row各17parent完成，worker263424/263930实际argv/cwd匹配，主进程247876存活。完整run尚未结束，不读取部分成绩进行分析或选模，不重复启动。
+
+run `20260930-phase2-d92-fcr8-support-m2-r01`，实际runtime33673fe02；后续独立analysis仅在160parent全部结束后单次启动。新训练诊断collector由QUERY-BLIND worker实现，只在完整summary后使用，root统一串行验证/发布。证据 readback_1790782095475360800.json；目标ACTIVE。
+
 ## 最新状态：FCR8单次启动RUNNING（2026-09-30）
 
 VERIFIED：已单次发布并启动FCR8，实际runtime commit33673fe02a857d790aa69a1ace17fdb9638099d0，supervisor PID247876、workers247888/247889独立读回argv/cwd匹配。首次读回14/160parent完成，rx3两row训练中、rx1两rowPENDING，没有技术错误。CPU两lane，query/source样本不读，无encoder训练；尚未完成，不报告真实性能。
