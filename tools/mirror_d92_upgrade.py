@@ -295,6 +295,7 @@ paths += ['tools/report_d92_anchor_joint_support.py', 'tests/test_report_d92_anc
 paths += ['tools/collect_d92_anchor_joint_training_diagnostics.py',
     'tests/test_collect_d92_anchor_joint_training_diagnostics.py',
     'docs/D92_ANCHOR_JOINT_TRAINING_DIAGNOSTICS_20261001.md']
+paths += ['docs/D92_AJLR_INTERCEPT_MATH_AUDIT_20261001.md']
 for name in paths:
     src=ROOT/name;dst=WS/name;dst.parent.mkdir(parents=True,exist_ok=True)
     # Each name is unique to this task; original D92 and shared wrappers are not mirrored.
