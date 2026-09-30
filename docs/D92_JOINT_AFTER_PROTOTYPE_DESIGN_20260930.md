@@ -1,6 +1,6 @@
 # PrototypeTransport 之后：MarginConstrained-Residual8-LocalRidge
 
-日期：2026-09-30。状态：`QUERY_BLIND_IMPLEMENTED_LOCAL_VERIFIED_NOT_RUN`。本文只冻结一个后继候选：**MarginConstrained-Residual8-LocalRidge（MC-Residual8）**。Phase1 固定，输入保持本轮 practical residual 缓存；合法目标 support 监督训练跨分支非线性残差，BranchLocalRidge 是唯一最终分类器。B→C_seq 真实继承，不因 reset 对照略好而更换主线。
+日期：2026-09-30。状态：`QUERY_BLIND_IMPLEMENTED_SUPPORT_PILOT_RUNNING`。本文只冻结一个后继候选：**MarginConstrained-Residual8-LocalRidge（MC-Residual8）**。Phase1 固定，输入保持本轮 practical residual 缓存；合法目标 support 监督训练跨分支非线性残差，BranchLocalRidge 是唯一最终分类器。B→C_seq 真实继承，不因 reset 对照略好而更换主线。
 
 ## 1. 证据与设计判断
 
@@ -195,4 +195,4 @@ g 和 a 分别需要一套 score 伴随；每折复用同一 Cholesky，执行�
 
 必要合成检查：U=0精确R0且U梯度活跃/V首步零；全链两个目标的有限差分；块范数/角度及零块；批形/重复/置换样本逐元素相同映射；原距离下界/零带宽/近重复；折内teacher/head隔离；类风险先跨折合并；B/C同物理绑定；物理松弛的零anchor与非零anchor两种边界；风险方向投影、真实双接受条件、失败trial缓存与counter；K1/单类/N0。
 
-完整support评价保留B0→B、B→C旧类、新类/旧类/绝对差/H及全K×新增类数、模型/接收机场景分层，明确A缺失为N/A。若内层受约束下降、表征确实变化但B仍退化或旧新竞争损失仍明显，则本机制假设不受支持；不能只报告reset或某个K、改松弛、加步数或借query结果补救。本设计已实施并完成本地验证；独立P0/P1审查已修正投影后的目标微升问题，尚未启动真实run。没有新性能结果。
+完整support评价保留B0→B、B→C旧类、新类/旧类/绝对差/H及全K×新增类数、模型/接收机场景分层，明确A缺失为N/A。若内层受约束下降、表征确实变化但B仍退化或旧新竞争损失仍明显，则本机制假设不受支持；不能只报告reset或某个K、改松弛、加步数或借query结果补救。本设计已实施并完成本地验证；独立P0/P1审查已修正投影后的目标微升问题，固定support pilot已启动并独立读回，尚无完整新性能结果。

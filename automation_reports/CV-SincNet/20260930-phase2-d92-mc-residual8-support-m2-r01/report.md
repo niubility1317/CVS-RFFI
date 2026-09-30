@@ -3,7 +3,7 @@
 - run_id：`20260930-phase2-d92-mc-residual8-support-m2-r01`
 - group_id：`d92-mc-residual8-support`；类别：`diagnostic`；阶段：`Phase2-support-only-diagnostic`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：LOCAL_VERIFIED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -37,3 +37,5 @@ BranchLocalRidge为唯一最终分类器，11776参数的跨分支adapter通过�
 状态详见docs/D92_MC_RESIDUAL8_RUN_PLAN_20260930.md。160support parent、旧6类/new0,2,5,10,20、K1,5,10,20，A缺失N/A；B0不替代A。全部state/gradient/trial NPZ坐标完整保存，报告完整事件及实际教师/双伴随开销，不新增成员hash链。新增地面统计0B；星载/部署项未测为N/A。未启动、没有新性能结果。
 
 VERIFIED: Single math-driven joint MC-Residual8/BranchLocalRidge candidate locally tested and independently reviewed; projection-induced objective-increase P1 fixed, no parameter grid. Complete support matrix registered; input identity/output preflight VERIFIED. Root sole launch owner; not launched or claimed performant.
+
+VERIFIED: MC-Residual8/LocalRidge single candidate launched once at runtime commit 191d7df111a58aa8435473582db42902f9b8d3a0. Independent post-state matched supervisor175794 and two child PID/argv/cwd, with12 completed support parents. No query/source sample/encoder access; two CPU lanes, no performance result yet.

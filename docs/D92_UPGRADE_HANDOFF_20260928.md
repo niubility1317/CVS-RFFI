@@ -1,3 +1,9 @@
+## 最新状态：MC-Residual8联合support pilot RUNNING（2026-09-30）
+
+VERIFIED: MC-Residual8/LocalRidge single candidate launched once at runtime commit 191d7df111a58aa8435473582db42902f9b8d3a0. Independent post-state matched supervisor175794 and two child PID/argv/cwd, with12 completed support parents. No query/source sample/encoder access; two CPU lanes, no performance result yet.
+
+run `20260930-phase2-d92-mc-residual8-support-m2-r01`，spec `configs/d92_mc_residual8_support_20260930.json`，release `d92_mc_residual8_support_20260930_r01`。prepare/new/preflight/publish已执行；严禁重复启动或修改健康进程。worker175805/175806首批rx3两row；rx1两row由同一supervisor队列后续执行。下次先用read_single_support_run_20260930.py核实complete/state/PID，再监控完整160parents。48个不同合成检查通过、独立P0/P1无未解决项，理论doc详细说明R2-D2/GEM/adapter借鉴及本项目假设；单方案非参数搜索。完整参数/梯度/方向/trial和teacher q保存state_arrays/*.npz与state_manifest.json，完整scalar事件及compact JSONL/CSV；大体积原始数组按路径保留，不强制Git。完成4row/160后使用独立analysis release和analyze_d92_mc_residual8_probe.py，完整汇总/训练审计；不能以局部K提前择优。A=N/A、support OOF不是query或独立验证。root唯一SSH/launch/串行Conda owner，workersQUERY-BLIND、禁止读此handoff/总索引/历史query/ABC。目标ACTIVE，当前没有性能结论。
+
 ## 最新状态：数学驱动MC-Residual8联合方法LOCAL_VERIFIED待发布（2026-09-30）
 
 VERIFIED: Single math-driven joint MC-Residual8/BranchLocalRidge candidate locally tested and independently reviewed; projection-induced objective-increase P1 fixed, no parameter grid. Complete support matrix registered; input identity/output preflight VERIFIED. Root sole launch owner; not launched or claimed performant.

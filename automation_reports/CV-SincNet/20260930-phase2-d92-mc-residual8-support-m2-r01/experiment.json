@@ -27,7 +27,8 @@
     "base_recipe": "experiments/adv3b02_xuc/configs/rc4_practical_residual_noeq_20260918.json",
     "native_code_base": "b63734157",
     "native_training_commit": "9b1ddd939fcabc74c77c94a62fef8e5aad07c0e9",
-    "commit_note": "Preparation parent; publisher records actual pushed release commit in launch/startup."
+    "commit_note": "Preparation parent; publisher records actual pushed release commit in launch/startup.",
+    "release_commit": "191d7df111a58aa8435473582db42902f9b8d3a0"
   },
   "data": {
     "dataset": "Support slices only from the two existing VALIDATED_ONCE capsules",
@@ -153,7 +154,15 @@
     "cpu_lanes": 2,
     "blas_threads_per_lane": 2,
     "export_device": null,
-    "export_batch_size": null
+    "export_batch_size": null,
+    "pid": 175794,
+    "runtime_command": [
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_mc_residual8_support_20260930_r01/tools/run_d92_mc_residual8_probe.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_mc_residual8_support_20260930_r01/configs/d92_mc_residual8_support_20260930.json",
+      "--commit",
+      "191d7df111a58aa8435473582db42902f9b8d3a0"
+    ]
   },
   "expected_artifacts": [
     "startup.json",
@@ -181,7 +190,7 @@
     "Math/primary-paper foundations: docs/D92_JOINT_FINETUNING_MATH_FOUNDATIONS_20260930.md; complete state vectors externalized as lossless float64 NPZ with coordinate audits; no per-member hash gate."
   ],
   "claim_scope": "SUPPORT_INFORMATION_DIAGNOSTIC_NOT_QUERY_PERFORMANCE",
-  "status": "LOCAL_VERIFIED",
+  "status": "RUNNING",
   "metrics_plan": {
     "metric_names": [
       "A_NA",

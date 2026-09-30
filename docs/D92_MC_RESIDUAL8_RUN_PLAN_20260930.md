@@ -1,6 +1,6 @@
 # MC-Residual8联合方法的固定support试验
 
-状态：LOCAL_VERIFIED，本地相关检查及独立P0/P1审查完成，尚未启动。run ID为`20260930-phase2-d92-mc-residual8-support-m2-r01`，group为`d92-mc-residual8-support`；主Agent是唯一launch owner。实际运行配置与逐行矩阵由`configs/d92_mc_residual8_support_20260930.json`维护，不另复制完整矩阵。
+状态：RUNNING，已独立核实启动进程与日志进度；完整结果及实测资源尚待收集。run ID为`20260930-phase2-d92-mc-residual8-support-m2-r01`，group为`d92-mc-residual8-support`；主Agent是唯一launch owner。实际运行配置与逐行矩阵由`configs/d92_mc_residual8_support_20260930.json`维护，不另复制完整矩阵。
 
 ## 方法与权限
 
@@ -31,3 +31,5 @@ CPU-only，两lane、每lane两BLAS线程；不占用或干预其他GPU训练。
 完成四row全部160parent后，独立analysis release汇总完整K×新增类数、B0/B/注册旧类/新类/H、旧类下降与逐task绝对新旧差、分层和资源。该结果属于support诊断，不是query最终性能或新增独立数据验证。若只内部loss下降而外层结果仍退化，记录机制失败，不换参数组合挑选较好路径。
 
 本run不因低性能停机。技术故障保存所属row与其他健康row产物，没有自动重试；新恢复run须按现有技术恢复流程说明原因，不能覆盖或热修改健康实验。
+
+实际训练代码版本为`191d7df111a58aa8435473582db42902f9b8d3a0`，supervisor PID175794，首批worker PID175805/175806。启动读回证据：`E:\type10-7\automation_reports\CV-SincNet\20260930-phase2-d92-mc-residual8-support-m2-r01\evidence\readback_1790771960389156500.json`。本次状态记录不改变或热修改运行中的代码与参数。
