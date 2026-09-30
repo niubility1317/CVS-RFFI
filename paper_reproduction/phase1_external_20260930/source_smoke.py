@@ -24,7 +24,7 @@ if args.method in ('asknet','wavemlp'):
  x,y=main.load_single_dataset('ManySig',3,1,6,'non_equalized')
  x=torch.tensor(x[:4]).float(); y=torch.tensor(y[:4]).long()
  output=model(x)
- if isinstance(output,tuple): output=output[-1]
+ if isinstance(output,tuple): output=output[0]
  loss=torch.nn.functional.cross_entropy(output,y)
 else:
  import Network1, teacherNet
