@@ -1,0 +1,72 @@
+...................F.....                                                [100%]
+================================== FAILURES ===================================
+___ test_optimizer_actual_cost_bounds_last_accepted_and_batch_independence ____
+
+    def test_optimizer_actual_cost_bounds_last_accepted_and_batch_independence():
+        p=prepare();events=[];state=pt.fit_prototype_transport_local_ridge(p,log_callback=events.append);a=state.audit_dict()
+        assert a['optimizer_steps']==a['accepted_trial_count']==len(a['steps'])<=4
+        assert a['trial_count']==a['accepted_trial_count']+a['rejected_trial_count']<=12
+        assert a['inner_objective_evaluation_count']==1+a['trial_count']
+        assert a['inner_head_fit_count']==3*(1+a['trial_count'])<=39
+        assert a['derivative_triangular_solve_count']==6*a['backward_evaluation_count']<=24
+        assert a['persistent_state_bytes']==a['head_state_bytes']+a['adapter_state_bytes']+a['prototype_state_bytes']+a['lineage_state_bytes']
+        if a['steps']:np.testing.assert_array_equal(state.theta,a['steps'][-1]['u_post'])
+        for t in a['trials']:assert t['accepted']==(t['loss_after']<=t['armijo_rhs']+t['armijo_tolerance'])
+>       raw={k:np.asarray(p.raw[k]) for k in pt._NAMES};batch=state.score(**raw)
+
+tests\test_d92_prototype_transport_local_ridge.py:225: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+code\cvsrffi\d92_prototype_transport_local_ridge.py:438: in score
+    d=_joint_distances(b,a,s.support_background,s.support_auxiliary,b0[i:i+1],a0[i:i+1],self.original_background,self.original_auxiliary)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+b = array([[ 1.37339504e-02, -3.71289028e-02, -8.73535259e-03,
+         1.81341407e-03, -4.62626839e-03,  2.53903769e-02,
+... 5.61055276e-02, -5.97259316e-02,
+        -3.46509067e-02,  5.87193918e-02, -6.59086029e-03,
+         7.24362030e-03]])
+a = array([[-0.0207642 ,  0.07175607,  0.02476169, -0.01274275,  0.01087326,
+        -0.00756646,  0.02304382, -0.0114743 ...2916,  0.09537508, -0.09983802,  0.00255449,
+        -0.04347409,  0.03984431, -0.03453543, -0.01572675,  0.00496943]])
+tb = array([[ 0.01128852,  0.01499651, -0.01568742, ...,  0.02141327,
+         0.04126232,  0.17543444],
+       [ 0.0137339...],
+       [-0.01438294,  0.02870092,  0.0218328 , ..., -0.04358468,
+         0.03544245,  0.14370292]], shape=(9, 256))
+ta = array([[-0.05332873,  0.08343349,  0.03776048, ..., -0.03520941,
+        -0.01716237,  0.03068607],
+       [-0.0207642...],
+       [ 0.10618038, -0.02981135, -0.04588093, ..., -0.03962738,
+         0.02693041,  0.00999779]], shape=(9, 480))
+b0 = array([[ 1.37507511e-02, -3.70996708e-02, -8.74140932e-03,
+         1.84123959e-03, -4.65347735e-03,  2.54135060e-02,
+... 5.71213185e-02, -6.10590286e-02,
+        -3.76789078e-02,  5.71258083e-02, -1.02917753e-02,
+         2.54545285e-03]])
+a0 = array([[-0.02071835,  0.07161163,  0.02478092, -0.01278506,  0.01088979,
+        -0.00770984,  0.02314673, -0.01153688...6374,  0.09516593, -0.0995954 ,  0.00282985,
+        -0.04351604,  0.03990483, -0.03439858, -0.01551934,  0.00492712]])
+tb0 = array([[ 0.01127627,  0.01505482, -0.01571108, ...,  0.0198942 ,
+         0.03818065,  0.17052743],
+       [ 0.0137507...],
+       [-0.01441229,  0.02876882,  0.0218228 , ..., -0.04428419,
+         0.03345133,  0.13781569]], shape=(9, 256))
+ta0 = array([[-0.05340036,  0.083356  ,  0.03782737, ..., -0.03494144,
+        -0.01722211,  0.03076087],
+       [-0.0207183...],
+       [ 0.10628703, -0.03003282, -0.04588085, ..., -0.03941571,
+         0.02690766,  0.00995248]], shape=(9, 480))
+
+    def _joint_distances(b,a,tb,ta,b0,a0,tb0,ta0,*,symmetric=False,d0=None):
+        if d0 is None:d0=local._distances(b0,a0,None if symmetric else tb0,None if symmetric else ta0)
+        da=local._distances(b,a,None if symmetric else tb,None if symmetric else ta)
+        for i in range(len(b)):
+            before=np.all(b0[i]==tb0,axis=1)&np.all(a0[i]==ta0,axis=1)
+            after=np.all(b[i]==tb,axis=1)&np.all(a[i]==ta,axis=1)
+>           if np.any(before&~after):raise FloatingPointError('ORIGINAL_EQUAL_ADAPTED_UNEQUAL')
+E           FloatingPointError: ORIGINAL_EQUAL_ADAPTED_UNEQUAL
+
+code\cvsrffi\d92_prototype_transport_local_ridge.py:199: FloatingPointError
+=========================== short test summary info ===========================
+FAILED tests/test_d92_prototype_transport_local_ridge.py::test_optimizer_actual_cost_bounds_last_accepted_and_batch_independence
+1 failed, 24 passed in 1.57s

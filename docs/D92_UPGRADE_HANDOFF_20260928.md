@@ -1,3 +1,9 @@
+## 最新状态：原型联合方法54项相关验证通过，已登记待发布（2026-09-30）
+
+VERIFIED：PrototypeTransport-LocalRidge唯一160parent support pilot已预登记/availability通过、尚未启动。固定Phase1/practical residual，source-free、不读query；10存储参数/9约束自由度、0.5原几何+切向适配、LocalRidge最终头、真实B/C继承。核心27、入口13、编排14相关测试已通过，独立核心实施审查无P0/未关闭P1。真实失败和修复证据保留，不宣称性能或资源改善。root唯一launch owner。
+
+新run `20260930-phase2-d92-prototype-transport-support-m2-r01`；spec `configs/d92_prototype_transport_support_20260930.json`；release `d92_prototype_transport_support_20260930_r01`。prepare/new已完成，禁止重复。第一次草稿错run编号已被existing-path拒绝，未启动/未覆盖旧数据；原草稿与availability证据已保存。新availability四cache通过、output/release均无旧路径，证据编号1790763166365017600。代码、配置、报告及证据在本次提交；下一步只发布这一个新run，随后独立读startup/state/PID/log核实，不因SSH timeout重复launch。当前尚无新训练进程或性能；旧channel run ANALYZED保留，原BranchLocalRidge仍为主线，目标ACTIVE。
+
 ## 最新状态：通道联合方法已完整分析，继续结构优化（2026-09-30）
 
 VERIFIED：四row/160parent分析完成，独立support summary及完整日志scanner均下载核实。R_channel_seq相对R0的OOF/new-present：C旧+0.555556pp、新+0.062500pp、H+0.199110pp；B−B0+0.243056pp、注册旧类下降6.961806pp、逐任务绝对差11.334201pp。K5 B退化、新增2类部分新类退化，改善很小且混合，不晋级/不启动query。936阶段/7488非零更新，42.595679分钟CPU墙钟、峰值RSS536.472656MiB。A与B−A N/A；固定Phase1/source-free/practical residual。保留原BranchLocalRidge主线，目标ACTIVE。

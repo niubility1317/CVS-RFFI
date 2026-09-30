@@ -1,0 +1,20 @@
+{
+  "status": "VERIFIED",
+  "source": "root executed diagnose_prototype_map_batch.py once under ssr-gpu",
+  "fixture": "synthetic seed81; no optimization or real data",
+  "upstream_bitwise_equal": true,
+  "upstream_fields": [
+    "x",
+    "w",
+    "rho",
+    "d",
+    "neighbors",
+    "weighted_distance",
+    "attention"
+  ],
+  "old_batch_GEMM_vs_single_GEMV_mu_max_abs_difference": 2.7755575615628914e-17,
+  "patched_mu_background_auxiliary_bitwise_equal": true,
+  "core_tests": "pytest_utf8_1790762141810528400.stdout:27 passed",
+  "entry_tests": "13 distinct cases; affected summary8/logger1 pass in pytest_utf8_1790762791182069900.stdout; other evaluator4 previously passed",
+  "orchestration_tests": "pytest_utf8_1790763115978817100.stdout:14 passed"
+}

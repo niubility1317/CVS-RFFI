@@ -1,0 +1,30 @@
+.........F..                                                             [100%]
+================================== FAILURES ===================================
+_____ SummaryTests.test_paired_scores_full_solver_events_and_actual_costs _____
+
+self = <test_summarize_d92_prototype_transport_probe.SummaryTests testMethod=test_paired_scores_full_solver_events_and_actual_costs>
+
+    def test_paired_scores_full_solver_events_and_actual_costs(self):
+>       logs, events, metrics, training = summary.verify_record(self.record, self.split, self.inputs['old_classes'])
+
+tests\test_summarize_d92_prototype_transport_probe.py:23: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tools\summarize_d92_prototype_transport_probe.py:274: in verify_record
+    verify_candidate(stage, prep, entry, by_stage['B_transport']); logs.append(dict(event='CANDIDATE_FIT', **stage))
+tools\summarize_d92_prototype_transport_probe.py:179: in verify_candidate
+    verify_box_projection(proposal, candidate)
+tools\summarize_d92_prototype_transport_probe.py:42: in verify_box_projection
+    check(len(proposal) == 10 and valid_u(actual), 'Transport parameter constraint violation')
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+condition = False, message = 'Transport parameter constraint violation'
+
+    def check(condition, message):
+        if not condition:
+>           raise ValueError(message)
+E           ValueError: Transport parameter constraint violation
+
+tools\evaluate_d92_branch_support_probe.py:34: ValueError
+=========================== short test summary info ===========================
+FAILED tests/test_summarize_d92_prototype_transport_probe.py::SummaryTests::test_paired_scores_full_solver_events_and_actual_costs
+1 failed, 11 passed in 3.93s

@@ -1,0 +1,26 @@
+.........F.................                                              [100%]
+================================== FAILURES ===================================
+_____ SummaryTests.test_paired_scores_full_solver_events_and_actual_costs _____
+
+self = <test_summarize_d92_prototype_transport_probe.SummaryTests testMethod=test_paired_scores_full_solver_events_and_actual_costs>
+
+    def test_paired_scores_full_solver_events_and_actual_costs(self):
+>       logs, events, metrics, training = summary.verify_record(self.record, self.split, self.inputs['old_classes'])
+
+tests\test_summarize_d92_prototype_transport_probe.py:24: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tools\summarize_d92_prototype_transport_probe.py:329: in verify_record
+    check(index < len(stage[field]) and all(event.get(key) == value for key, value in stage[field][index].items()),
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+condition = False, message = 'Training event/full solver trace mismatch'
+
+    def check(condition, message):
+        if not condition:
+>           raise ValueError(message)
+E           ValueError: Training event/full solver trace mismatch
+
+tools\evaluate_d92_branch_support_probe.py:34: ValueError
+=========================== short test summary info ===========================
+FAILED tests/test_summarize_d92_prototype_transport_probe.py::SummaryTests::test_paired_scores_full_solver_events_and_actual_costs
+1 failed, 26 passed in 4.47s
