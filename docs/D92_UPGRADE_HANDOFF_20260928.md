@@ -1,3 +1,11 @@
+## 最新状态：通道联合方法已完整分析，继续结构优化（2026-09-30）
+
+VERIFIED：四row/160parent分析完成，独立support summary及完整日志scanner均下载核实。R_channel_seq相对R0的OOF/new-present：C旧+0.555556pp、新+0.062500pp、H+0.199110pp；B−B0+0.243056pp、注册旧类下降6.961806pp、逐任务绝对差11.334201pp。K5 B退化、新增2类部分新类退化，改善很小且混合，不晋级/不启动query。936阶段/7488非零更新，42.595679分钟CPU墙钟、峰值RSS536.472656MiB。A与B−A N/A；固定Phase1/source-free/practical residual。保留原BranchLocalRidge主线，目标ACTIVE。
+
+训练supervisor/四worker及独立analysis均终止，无健康任务需要干预。禁止重复prepare/new/publish/analyze。runtime commit f18198054cd4ad66375ede114e4984349f3b31b4，analysis commit 0b5ddd255806a6f72d74a9dd54d9f4a7316573fa；完成证据 evidence/readback_1790758988956432300.json、analysis_readback_1790759415767047800.json。全部结果见当前run results/support_summary及results/training_diagnostics。128734767-byte派生完整JSON原位保留，Git交付其lossless gzip12369194 bytes，已读回字节一致。
+
+新结构设计见[D92_JOINT_NEXT_AFTER_CHANNEL_20260930.md](D92_JOINT_NEXT_AFTER_CHANNEL_20260930.md)，设计已定稿并经独立公式/协议审查。当前核心和入口分别由branch_local_core及prototype_transport_entry并行实施，未完成验证/未运行。核心拥有d92_prototype_transport_local_ridge.py/frozen config/core tests；入口拥有evaluate/summarize两tool及tests，root唯一pytest/launch owner。继续BranchLocalRidge+合法support微调联合，不能只做单独头优化。query-blind worker只能读当前support两目录，不给历史query/ABC/总评分索引。下一步为完成独立实现、相关数值验证及预登记support试验；不网格重跑本结构。
+
 ## 最新状态：通道四row完成，独立summary与全日志分析正在执行（2026-09-30）
 
 VERIFIED：四row/160parent全部JOINT_CHANNEL_PROBE_COMPLETE，supervisor37141与所有worker均终止。实际936训练阶段、7488更新、8424内层目标、29376头拟合/分解、44928反向三角求解；无query/source样本/checkpoint加载/GPU。独立汇总与全日志扫描已各唯一启动，性能结论尚未完成，不将训练完成当改进成功。

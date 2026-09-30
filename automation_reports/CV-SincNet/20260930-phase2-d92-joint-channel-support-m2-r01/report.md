@@ -3,7 +3,7 @@
 - run_id：`20260930-phase2-d92-joint-channel-support-m2-r01`
 - group_id：`d92-joint-channel-support`；类别：`diagnostic`；阶段：`Phase2-support-only-diagnostic`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：ARTIFACTS_COMPLETE（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -39,3 +39,5 @@ VERIFIED阶段进展：两个rx3 row各40任务完整完成，分别1872更新/7
 VERIFIED行级状态：rx1两row独立核实仍TRAINING_ON_SUPPORT，CPU child46059/46486存活且argv/CWD一致，分别已完成19/40 parent；rx3两row完整40/40，当前118/160。未完成四row，不执行分析或报告partial性能。
 
 VERIFIED：四row/160parent全部JOINT_CHANNEL_PROBE_COMPLETE，supervisor37141与所有worker均终止。实际936训练阶段、7488更新、8424内层目标、29376头拟合/分解、44928反向三角求解；无query/source样本/checkpoint加载/GPU。独立汇总与全日志扫描已各唯一启动，性能结论尚未完成，不将训练完成当改进成功。
+
+VERIFIED：四row/160parent分析完成，独立support summary及完整日志scanner均下载核实。R_channel_seq相对R0的OOF/new-present：C旧+0.555556pp、新+0.062500pp、H+0.199110pp；B−B0+0.243056pp、注册旧类下降6.961806pp、逐任务绝对差11.334201pp。K5 B退化、新增2类部分新类退化，改善很小且混合，不晋级/不启动query。936阶段/7488非零更新，42.595679分钟CPU墙钟、峰值RSS536.472656MiB。A与B−A N/A；固定Phase1/source-free/practical residual。保留原BranchLocalRidge主线，目标ACTIVE。

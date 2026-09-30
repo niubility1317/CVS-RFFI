@@ -1,0 +1,44 @@
+{
+  "release": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_joint_channel_analysis_20260930_r01",
+  "process": {
+    "pid": 57193,
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_joint_channel_analysis_20260930_r01/tools/summarize_d92_joint_channel_probe.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_joint_channel_support_20260930_r01/configs/d92_joint_channel_support_20260930.json",
+      "--run-root",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20260930-phase2-d92-joint-channel-support-m2-r01",
+      "--output",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20260930-phase2-d92-joint-channel-support-m2-r01/results/support_summary"
+    ],
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_joint_channel_analysis_20260930_r01",
+    "commit": "0b5ddd255806a6f72d74a9dd54d9f4a7316573fa",
+    "live_argv": null,
+    "live_cwd": null
+  },
+  "release_exists": true,
+  "log_bytes": 669,
+  "log_tail": [
+    "{\"status\": \"COMPLETE_JOINT_CHANNEL_PROBE_VERIFIED\", \"coverage\": {\"episodes\": 160, \"k1_episodes\": 40, \"oof_episodes\": 120, \"proxy_anchor_count\": 1400, \"sequence_paths\": 1760, \"baseline_head_fit_count\": 3168, \"baseline_factorization_count\": 3168, \"channel_preparation_count\": 3168, \"channel_stage_count\": 4576, \"trained_channel_stage_count\": 936, \"optimizer_steps\": 7488, \"inner_objective_evaluation_count\": 8424, \"inner_head_fit_count\": 25272, \"inner_factorization_count\": 25272, \"final_head_fit_count\": 936, \"final_factorization_count\": 936, \"head_fit_count\": 29376, \"factorization_count\": 29376, \"diagnostic_fit_count\": 0, \"derivative_triangular_solve_count\": 44928}}"
+  ],
+  "summary_exists": true,
+  "analysis_execution": {
+    "commit": "0b5ddd255806a6f72d74a9dd54d9f4a7316573fa",
+    "runtime_commit": "f18198054cd4ad66375ede114e4984349f3b31b4",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_joint_channel_analysis_20260930_r01/tools/summarize_d92_joint_channel_probe.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_joint_channel_support_20260930_r01/configs/d92_joint_channel_support_20260930.json",
+      "--run-root",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20260930-phase2-d92-joint-channel-support-m2-r01",
+      "--output",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20260930-phase2-d92-joint-channel-support-m2-r01/results/support_summary"
+    ],
+    "status": "VERIFIED",
+    "release": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_joint_channel_analysis_20260930_r01"
+  }
+}

@@ -263,6 +263,7 @@ paths += ['code/cvsrffi/d92_joint_channel_local_ridge.py',
 paths += ['tools/collect_d92_channel_training_diagnostics.py',
     'tests/test_collect_d92_channel_training_diagnostics.py',
     'docs/D92_JOINT_CHANNEL_TRAINING_ANALYSIS_20260930.md']
+paths += ['docs/D92_JOINT_CHANNEL_SUPPORT_RESULT_20260930.md', 'docs/D92_JOINT_CHANNEL_SUPPORT_LESSONS_20260930.md', 'docs/D92_JOINT_NEXT_AFTER_CHANNEL_20260930.md', 'docs/D92_PROTOTYPE_TRANSPORT_DESIGN_REVIEW_20260930.md']
 for name in paths:
     src=ROOT/name;dst=WS/name;dst.parent.mkdir(parents=True,exist_ok=True)
     # Each name is unique to this task; original D92 and shared wrappers are not mirrored.
