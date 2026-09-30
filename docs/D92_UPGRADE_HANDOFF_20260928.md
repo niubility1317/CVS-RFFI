@@ -1,3 +1,11 @@
+## 最新状态：原型联合 r02 已完整分析，未取得全面改善（2026-09-30）
+
+ANALYZED/VERIFIED：160parent完整support汇总及全训练日志扫描通过。顺序候选相对R0：B−0.208pp，C旧+0.069pp、新+0.414pp、H+0.163pp；注册旧下降6.997pp、绝对新旧差11.080pp。仅小幅收益且分层退化，保留BranchLocalRidge主线，不启动该候选query晋级评分。A/B−A N/A，源/query拟合均0。下一步继续联合结构与旧margin保持研究；目标ACTIVE，未达理想目标。
+
+runtime9ebdcd7dd、analysis7a66ab6e6；四row/160 parent结束，无训练或分析进程，禁止重复prepare/new/publish/analyze/collector。完整报告docs/D92_PROTOTYPE_TRANSPORT_SUPPORT_RESULT_20260930.md、训练解释docs/D92_PROTOTYPE_TRANSPORT_TRAINING_FINDINGS_20260930.md。65不同相关测试通过。原始56MB训练派生JSON与全部CSV均保留，无超100MB文件；root是唯一launch owner。
+
+下一步：QUERY-BLIND设计agent负责docs/D92_JOINT_AFTER_PROTOTYPE_DESIGN_20260930.md，研究单一Residual8+LocalRidge+真实B→C教师margin保持结构；尚未实施/登记/发布，不以设计宣称效果。设计注意B teacher全部正确时零keep-risk约束可能阻断更新，已要求一次固定物理计数松弛；不新增性能门槛。用户允许继续联合、固定Phase1/practical residual/source-free，当前只复用数据、独立新数据验证延后。不得发送root handoff/history query/registry/ABC给worker；只可当前support诊断。目标ACTIVE。
+
 ## 最新状态：原型联合 r02 完整结束，两项独立分析已唯一启动（2026-09-30）
 
 四row/160 parent均完成，独立readback1790766778553149900确认无live主管/worker。runtime9ebdcd7dd，3656接受更新、647拒绝trial、19821头拟合/分解。analysis release d92_prototype_transport_analysis_20260930_r02已启动，exec session24432；全日志collector exec session85689。只观察这两个handle，不重复analyze/collector；超时先读analysis_process/PID/log及本机输出。当前完整分析尚未核实，性能未知，目标ACTIVE。

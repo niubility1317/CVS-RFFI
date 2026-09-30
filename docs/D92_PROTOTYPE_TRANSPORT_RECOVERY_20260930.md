@@ -1,6 +1,6 @@
 # PrototypeTransport-LocalRidge 技术恢复
 
-当前状态：r02 四行、160 parent 已完整结束，主管及 worker 均退出。独立性能汇总及全日志分析已启动，性能结论尚未核实。
+当前状态：r02 已完整 ANALYZED，独立性能汇总及全日志扫描通过。仅小幅收益并有局部退化；保留原主线，不启动本候选 query 晋级评分。
 
 联合方法保留 BranchLocalRidge 最终分类器，在合法目标域 support 上优化 10 个原型条件适配参数（9 个约束自由度）。B 阶段仅用旧类 support；C 阶段继承 B 状态并注册新类。原距离与适配距离各占 0.5。固定地面 Phase1、practical residual，不读取源域样本、逐样本源域特征或 query。目标域 support 原型无需新增地面统计传输；实际常驻状态与计算成本仍需测量。
 
@@ -25,3 +25,5 @@ r02 与 r01 的数据、checkpoint 契约、权限、指标、方法、超参数
 启动独立读回：`readback_1790764932355254600.json`，argv/CWD/commit 与预登记一致，未发现错误；完整矩阵尚未完成。
 
 完成独立读回：`readback_1790766778553149900.json`。实际 3656 次接受更新、647 次拒绝试探、19821 次头拟合/分解。无训练技术错误；不把训练结束当成性能成功。
+
+完整结果见[三阶段报告](D92_PROTOTYPE_TRANSPORT_SUPPORT_RESULT_20260930.md)；方法优化目标继续 ACTIVE，未宣布达到理想目标。

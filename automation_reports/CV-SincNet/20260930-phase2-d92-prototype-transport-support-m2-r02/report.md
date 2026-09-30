@@ -3,7 +3,7 @@
 - run_id：`20260930-phase2-d92-prototype-transport-support-m2-r02`
 - group_id：`d92-prototype-transport-support`；类别：`diagnostic`；阶段：`Phase2-support-only-diagnostic`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：ARTIFACTS_COMPLETE（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -37,3 +37,5 @@ RUNNING/VERIFIED：r02独立readback1790764932355254600确认主管110755和两w
 ARTIFACTS_COMPLETE/VERIFIED：r02四row/160parent已完整结束，主管及worker均退出，独立complete/state/argv读回一致。实际更新3656次，实际头拟合19821次。未读取query或源域样本；方法完成不等于性能成功。下一步唯一独立support汇总及全日志扫描，root唯一owner。
 
 独立support汇总与只读全日志扫描各已唯一启动；性能待完整分析，禁止重复启动。
+
+ANALYZED/VERIFIED：160parent完整support汇总及全训练日志扫描通过。顺序候选相对R0：B−0.208pp，C旧+0.069pp、新+0.414pp、H+0.163pp；注册旧下降6.997pp、绝对新旧差11.080pp。仅小幅收益且分层退化，保留BranchLocalRidge主线，不启动该候选query晋级评分。A/B−A N/A，源/query拟合均0。下一步继续联合结构与旧margin保持研究；目标ACTIVE，未达理想目标。

@@ -1,0 +1,44 @@
+{
+  "release": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_prototype_transport_analysis_20260930_r02",
+  "process": {
+    "pid": 129144,
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_prototype_transport_analysis_20260930_r02/tools/summarize_d92_prototype_transport_probe.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_prototype_transport_support_20260930_r02/configs/d92_prototype_transport_support_recovery_20260930.json",
+      "--run-root",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20260930-phase2-d92-prototype-transport-support-m2-r02",
+      "--output",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20260930-phase2-d92-prototype-transport-support-m2-r02/results/support_summary"
+    ],
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_prototype_transport_analysis_20260930_r02",
+    "commit": "7a66ab6e65f0f25f2805bd6dcfdc9a8074254ac7",
+    "live_argv": null,
+    "live_cwd": null
+  },
+  "release_exists": true,
+  "log_bytes": 1106,
+  "log_tail": [
+    "{\"status\": \"COMPLETE_PROTOTYPE_TRANSPORT_PROBE_VERIFIED\", \"coverage\": {\"episodes\": 160, \"k1_episodes\": 40, \"oof_episodes\": 120, \"proxy_anchor_count\": 1400, \"sequence_paths\": 1760, \"baseline_head_fit_count\": 3168, \"baseline_factorization_count\": 3168, \"transport_preparation_count\": 3168, \"transport_stage_count\": 4576, \"trained_transport_stage_count\": 936, \"optimizer_steps\": 3656, \"inner_objective_evaluation_count\": 5239, \"inner_head_fit_count\": 15717, \"inner_factorization_count\": 15717, \"final_head_fit_count\": 936, \"final_factorization_count\": 936, \"head_fit_count\": 19821, \"factorization_count\": 19821, \"diagnostic_fit_count\": 0, \"derivative_triangular_solve_count\": 22368, \"backward_evaluation_count\": 3728, \"accepted_trial_count\": 3656, \"rejected_trial_count\": 647, \"trial_count\": 4303, \"trial_attempt_count\": 4303, \"optimizer_iterations\": 3728, \"prototype_construction_count\": 5112, \"prototype_distance_evaluation_count\": 15336, \"prepared_distance_evaluation_count\": 10224, \"transport_forward_evaluation_count\": 16653, \"final_score_evaluation_count\": 7744, \"final_score_physical_count\": 1020600}}"
+  ],
+  "summary_exists": true,
+  "analysis_execution": {
+    "commit": "7a66ab6e65f0f25f2805bd6dcfdc9a8074254ac7",
+    "runtime_commit": "9ebdcd7dd7ecd804c440111d3a2f40d3f6685d27",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_prototype_transport_analysis_20260930_r02/tools/summarize_d92_prototype_transport_probe.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_prototype_transport_support_20260930_r02/configs/d92_prototype_transport_support_recovery_20260930.json",
+      "--run-root",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20260930-phase2-d92-prototype-transport-support-m2-r02",
+      "--output",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20260930-phase2-d92-prototype-transport-support-m2-r02/results/support_summary"
+    ],
+    "status": "VERIFIED",
+    "release": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_prototype_transport_analysis_20260930_r02"
+  }
+}
