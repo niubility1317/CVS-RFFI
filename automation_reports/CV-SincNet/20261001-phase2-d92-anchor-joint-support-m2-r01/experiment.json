@@ -164,7 +164,30 @@
       "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_anchor_joint_support_20261001_r01/configs/d92_anchor_joint_support_20261001.json",
       "--commit",
       "a1a003f59e8ed14640a252ada8290a03af3420c5"
-    ]
+    ],
+    "independent_analysis": {
+      "status": "COMPLETE_VERIFIED",
+      "release": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_anchor_joint_analysis_20261001_r02",
+      "runtime_commit": "fc5cd282f93e2b7cc1a2fcd686b4217fb4abfe4a",
+      "training_runtime_commit": "a1a003f59e8ed14640a252ada8290a03af3420c5",
+      "local_wait_handle": 99201,
+      "process_exited": true,
+      "summary": "E:\\type10-7\\automation_reports\\CV-SincNet\\20261001-phase2-d92-anchor-joint-support-m2-r01\\results\\support_summary\\summary.json"
+    },
+    "training_diagnostics": {
+      "status": "TRANSPORT_REPAIRED_RETRY_NOT_STARTED",
+      "local_wait_handle": 51314,
+      "process_exited": true,
+      "reason": "Snapshot JSON embedded as a Python source literal exceeded parser length; requires data-only compressed transport",
+      "source_output_prefix": "ssr_command_1790811442258625900",
+      "output": "E:\\type10-7\\automation_reports\\CV-SincNet\\20261001-phase2-d92-anchor-joint-support-m2-r01\\results\\training_diagnostics",
+      "remote_mutation": false,
+      "new_fits_or_solves_or_SVD": false,
+      "outer_scores_or_query_read": false,
+      "failed_handle": 51314,
+      "failed_before_extract": true,
+      "validation": "diagnostic_transport_validation_20261001.json"
+    }
   },
   "expected_artifacts": [
     "startup.json",
@@ -2704,5 +2727,15 @@
       "initial_step_size": 0.125
     }
   ],
-  "registered_at": "2026-09-30T17:32:46+00:00"
+  "registered_at": "2026-09-30T17:32:46+00:00",
+  "results": {
+    "support_analysis": {
+      "status": "COMPLETE_VERIFIED",
+      "scope": "SUPPORT_ONLY_ANCHOR_JOINT_OOF_AND_PROXY_NOT_QUERY_EVALUATION",
+      "report": "docs/D92_ANCHOR_JOINT_SUPPORT_RESULT_20261001.md",
+      "automatic_promotion": false,
+      "interpretation": "E:\\type10-7\\automation_reports\\CV-SincNet\\20261001-phase2-d92-anchor-joint-support-m2-r01\\results\\support_summary\\root_interpretation.json",
+      "actual_A": null
+    }
+  }
 }

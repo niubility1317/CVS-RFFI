@@ -730,7 +730,11 @@ def remote_operation(args, operation, request=None):
     if args.run_root: command += ['--run-root',args.run_root]
     source = Path(__file__).read_text(encoding='utf-8')
     if request is not None:
-        source = 'import json\nSNAPSHOT_REQUEST = json.loads('+repr(json.dumps(request,ensure_ascii=False,allow_nan=False))+')\n'+source
+        import base64
+        import gzip
+        encoded = base64.b64encode(gzip.compress(
+            json.dumps(request,ensure_ascii=False,allow_nan=False).encode('utf-8'),mtime=0)).decode('ascii')
+        source = 'import base64, gzip, json\nSNAPSHOT_REQUEST = json.loads(gzip.decompress(base64.b64decode('+repr(encoded)+')).decode(\'utf-8\'))\n'+source
     result = subprocess.run(['ssh','-F',args.ssh_config,args.ssh_host,shlex.join(command)],
         input=source,text=True,encoding='utf-8',capture_output=True,timeout=1800)
     require(result.returncode==0,'Read-only remote '+operation+' failed: '+result.stderr[-2000:])

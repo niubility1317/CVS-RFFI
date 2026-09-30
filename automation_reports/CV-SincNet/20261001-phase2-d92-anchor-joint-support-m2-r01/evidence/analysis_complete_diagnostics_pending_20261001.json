@@ -1,0 +1,50 @@
+{
+  "status": "ANALYSIS_COMPLETE_VERIFIED_DIAGNOSTICS_PENDING",
+  "analysis": {
+    "commit": "fc5cd282f93e2b7cc1a2fcd686b4217fb4abfe4a",
+    "runtime_commit": "a1a003f59e8ed14640a252ada8290a03af3420c5",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_anchor_joint_analysis_20261001_r02/tools/summarize_d92_anchor_joint_probe.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_anchor_joint_support_20261001_r01/configs/d92_anchor_joint_support_20261001.json",
+      "--run-root",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-anchor-joint-support-m2-r01",
+      "--output",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-anchor-joint-support-m2-r01/results/support_summary"
+    ],
+    "status": "VERIFIED",
+    "release": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_anchor_joint_analysis_20261001_r02"
+  },
+  "source_evidence": "analysis_readback_1790809496318681000.json",
+  "training_rows": 4,
+  "parents": 160,
+  "sequence_paths": 1800,
+  "analysis_process_exited": true,
+  "local_analysis_handle": 99201,
+  "full_report": "docs/D92_ANCHOR_JOINT_SUPPORT_RESULT_20261001.md",
+  "promotion": false,
+  "reason": "New class and H improve but all-class old accuracy and registration decline worsen; no comprehensive superiority",
+  "data_scope": "SUPPORT_ONLY_ANCHOR_JOINT_OOF_AND_PROXY_NOT_QUERY_EVALUATION",
+  "actual_A": null,
+  "training_snapshot": {
+    "status": "COMPLETE_AJLR_TRAINING_READONLY_SNAPSHOT",
+    "file": "E:\\type10-7\\automation_reports\\CV-SincNet\\20261001-phase2-d92-anchor-joint-support-m2-r01\\results\\training_snapshot.json",
+    "file_bytes": 2673911234,
+    "stages": 3240,
+    "source_output_prefix": "ssr_command_1790810582598962300"
+  },
+  "training_diagnostics": {
+    "status": "FAILED_VERIFIED_BEFORE_EXTRACTION",
+    "local_wait_handle": 51314,
+    "process_exited": true,
+    "reason": "Snapshot JSON embedded as a Python source literal exceeded parser length; requires data-only compressed transport",
+    "source_output_prefix": "ssr_command_1790811442258625900",
+    "output": "E:\\type10-7\\automation_reports\\CV-SincNet\\20261001-phase2-d92-anchor-joint-support-m2-r01\\results\\training_diagnostics",
+    "remote_mutation": false,
+    "new_fits_or_solves_or_SVD": false,
+    "outer_scores_or_query_read": false
+  },
+  "goal_complete": false
+}

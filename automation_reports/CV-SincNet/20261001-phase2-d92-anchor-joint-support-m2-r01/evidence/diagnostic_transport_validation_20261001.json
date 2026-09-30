@@ -1,0 +1,18 @@
+{
+  "status": "VERIFIED",
+  "related_checks": 14,
+  "new_unique_checks": 4,
+  "existing_regression_checks": 10,
+  "elapsed_seconds": 5.97,
+  "evidence": "evidence/pytest_utf8_1790812094445714700.txt",
+  "scope": "DATA_ONLY_JSON_GZIP_BASE64_TRANSPORT_NO_DIAGNOSTIC_OR_MATH_CHANGE",
+  "failed_extract_handle": 51314,
+  "failed_before_extract": true,
+  "failed_output_created": false,
+  "complete_snapshot_file_bytes": 2673911234,
+  "snapshot_not_recollected": true,
+  "actual_compression_bytes": null,
+  "compression_speed_claim": false,
+  "retry_started": false,
+  "query_or_source_samples_read": false
+}

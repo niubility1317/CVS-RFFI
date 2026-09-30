@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "E:\type10-7\code\snapshots\d92_support_upgrade_20260928_wt\tools\collect_d92_anchor_joint_training_diagnostics.py", line 776, in <module>
+    if __name__=='__main__': main()
+  File "E:\type10-7\code\snapshots\d92_support_upgrade_20260928_wt\tools\collect_d92_anchor_joint_training_diagnostics.py", line 767, in main
+    value=remote_operation(args,'--extract-stdout',request) if args.ssh_host else extract(request,args.run_root)
+  File "E:\type10-7\code\snapshots\d92_support_upgrade_20260928_wt\tools\collect_d92_anchor_joint_training_diagnostics.py", line 736, in remote_operation
+    require(result.returncode==0,'Read-only remote '+operation+' failed: '+result.stderr[-2000:])
+  File "E:\type10-7\code\snapshots\d92_support_upgrade_20260928_wt\tools\collect_d92_anchor_joint_training_diagnostics.py", line 60, in require
+    raise ValueError(message)
+ValueError: Read-only remote --extract-stdout failed: OverflowError: string to parse is too long
+
+ERROR conda.cli.main_run:execute(127): `conda run python -X utf8 tools/collect_d92_anchor_joint_training_diagnostics.py --snapshot E:/type10-7/automation_reports/CV-SincNet/20261001-phase2-d92-anchor-joint-support-m2-r01/results/training_snapshot.json --run-root /home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-anchor-joint-support-m2-r01 --output E:/type10-7/automation_reports/CV-SincNet/20261001-phase2-d92-anchor-joint-support-m2-r01/results/training_diagnostics --ssh-host N607 --ssh-config E:/type10-7/tools/n607_ssh_config --remote-python /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python` failed. (See above for error)

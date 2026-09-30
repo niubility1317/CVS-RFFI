@@ -1,3 +1,15 @@
+## 最新状态：AJLR传输修复已验证，extract待重试（2026-10-01）
+
+DIAGNOSTIC_TRANSPORT_READY/VERIFIED：旧AJLR只读提取源码literal超过Python解析长度，完整snapshot和分析结果保留，仅改为完整JSON→gzip→base64数据载荷；远端仍stdlib解码，没有字段删减、eval/pickle、新拟合/求解或数学变更。14项相关合成检查通过（5.97s），4项新增、10项既有回归。root在Git交付后仅重试extract，完整snapshot不重采，目标ACTIVE。
+
+Affine r02仍原PID501716/handle2931；原训练160结束，不重复analyze或训练。AJLR完整support报告已完成，无法判断A/B−A；原分析99201已结束。snapshot已完成且字节更正为2673911234；extract51314已失败结束，原目录不存在。Git交付后仅单次重试extract，先核实已有handle和产物，不重新snapshot。
+
+## 最新状态：Affine r02运行、AJLR完整报告及诊断待返回（2026-10-01）
+
+ANALYSIS_COMPLETE/VERIFIED：AJLR完整独立r02已正常结束，160parent/1800path和版本证据核实，完整80行K×新增类数报告已生成。96个新类存在的可测support持出配置中，R0 B71.0417/C旧63.7674/新54.8464/H58.4168；AJLR B71.1458/C旧62.9253/新57.0938/H58.9841。新类+2.2474pp、H+0.5673pp，但C旧−0.8420pp，注册下降从7.2743增至8.2205pp，不能称全面优于或自动晋级。A/B−A=N/A；非query或独立验证。完整训练快照3240阶段/2673911234B已采集；此前2650592222B是写盘尚未结束的观察值，已按完成后stat更正。只读diagnostics extract首次handle51314已退出，无输出；JSON源码字面量超过Python解析限制，尚未进入提取。仅修复压缩数据传输后复用同一完整snapshot，不重复采集或训练；目标ACTIVE。
+
+Affine完整训练已结束；修复分析r02 PID501716/start_ticks5870553/handle2931已独立核实，实际analysis source1acc83a584ace40f294a433ace80629472ee2525、训练runtime81a226a8d1cef34ea817ada87070bd89912d027d。只等待已有2931并读回产物/进程，严禁重复训练、publish、analyze或snapshot。diagnostics首次extract51314已失败且结束，无output；压缩data-only JSON传输修复由QUERY-BLIND fcr_training_diagnostics进行，root串行测试、Git交付后只重试extract，不重复snapshot。AJLR分析99201已结束，不再等待或重启；Affine r01失败证据保留。只读任务完整结束后核实、整理训练机制/资源报告、记录ANALYZED并交付；不读取partial成绩调整方法。
+
 ## 最新状态：Affine完整分析r02运行中（2026-10-01）
 
 ANALYSIS_R02_RUNNING/VERIFIED：Affine完整独立分析修复版本已单次启动，PID501716/argv/cwd与预登记命令独立读回一致，实际analysis commit 1acc83a584ace40f294a433ace80629472ee2525，本地handle2931。原训练runtime81a226a8d1cef34ea817ada87070bd89912d027d，四row/160已结束；未来分析器采用已验证完整等价VJP和64MiB数组缓存，不跳过数学核验。完整summary尚未生成，无性能结论；A/B−A=N/A，query/源样本0，目标ACTIVE。
