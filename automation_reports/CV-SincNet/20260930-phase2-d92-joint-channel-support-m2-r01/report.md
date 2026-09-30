@@ -33,3 +33,5 @@ VERIFIED：joint-channel核心/入口/summary/编排76项不同合成检查通�
 VERIFIED：joint-channel run唯一发布，runtime commit f18198054cd4ad66375ede114e4984349f3b31b4；独立读回核实supervisor37141及CPU worker37153/37154存活且argv/CWD匹配，rx3两row训练中、rx1两rowPENDING。已有完整实际训练STEP/FIT日志，尚无四row完整结果；不以partial评价/调参，无query/source样本读取。
 
 全日志collector8项检查通过，方法与运行配置未改变，完整scan待四row终止后执行。
+
+VERIFIED阶段进展：两个rx3 row各40任务完整完成，分别1872更新/7344头拟合/11232反向三角求解；rx1两row仍训练，当前累计113/160 parent。supervisor37141及当前CPU child46059/46486存活且argv/CWD匹配。没有完整四row结果，不读取或发布partial性能；运行代码/config不变。

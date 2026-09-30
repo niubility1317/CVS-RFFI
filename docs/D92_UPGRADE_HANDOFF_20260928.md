@@ -1,3 +1,9 @@
+## 最新观测：rx3两row完成、rx1两row运行，完整成绩仍待测（2026-09-30）
+
+VERIFIED阶段进展：两个rx3 row各40任务完整完成，分别1872更新/7344头拟合/11232反向三角求解；rx1两row仍训练，当前累计113/160 parent。supervisor37141及当前CPU child46059/46486存活且argv/CWD匹配。没有完整四row结果，不读取或发布partial性能；运行代码/config不变。
+
+当前HEAD仅新增全日志分析工具，不改变runtime commit f18198054cd4ad66375ede114e4984349f3b31b4。collector已8项通过并推送5fb17f406b6e9c8e334208366f634f713cd06708；原76项运行检查不重复。四row全部完成后再唯一创建d92_joint_channel_analysis_20260930_r01，并执行全量collector。禁止重复启动、停止健康任务或根据partial修改方法；目标ACTIVE。
+
 ## 最新补充：健康通道run继续运行，全日志collector8项通过（2026-09-30）
 
 运行代码仍为f18198054cd4ad66375ede114e4984349f3b31b4；supervisor37141独立核实存活，当前未完成四row，禁止重启/热改/重复publish。新增tools/collect_d92_channel_training_diagnostics.py、tests与说明仅用于完成后只读全日志分析，初轮字典合并bug已定点修复，8项不同collector检查全部通过，不重复原76项算法检查。
