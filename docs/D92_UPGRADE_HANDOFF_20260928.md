@@ -1,3 +1,11 @@
+## 最新状态：联合谱adapter实验已启动并核实RUNNING（2026-09-30）
+
+run 20260930-phase2-d92-joint-spectral-support-m2-r01 已唯一发布并启动；runtime commit 38d407699816f125ac8ccf7fb0e4f8c33039ba31，本地HEAD与origin分支OID独立核实一致。release d92_joint_spectral_support_20260930_r01；spec configs/d92_joint_spectral_support_20260930.json。禁止重复prepare/new/publish。
+
+独立读回readback_1790736318.json核实supervisor645034、CPU worker645046/645047存活且argv/CWD一致，rx3两row运行、rx1两row待排队。没有完整结果，当前不能分析或晋级。完整日志已实际产生JOINT_SPECTRAL_STEP及FIT记录，含损失/梯度/参数/源验证N/A及实际更新。core+entry+summary+编排55项不同检查通过、同次独立P0/P1审阅闭合。
+
+下一步仅监控这个run的同一进程与产物；四row全部JOINT_SPECTRAL_PROBE_COMPLETE后运行tools/analyze_d92_joint_spectral_probe.py --spec configs/d92_joint_spectral_support_20260930.json --analysis-release d92_joint_spectral_analysis_20260930_r01（此分析release尚未创建）。先完整独立summary与训练日志分析，再报告K×新增类数量下的B0/B/C旧新/H和成本；A=N/A，B0不是地面A。当前目标ACTIVE，尚无新的性能结论。
+
 ## 最新状态：联合谱adapter实现通过55项检查，已预登记待发布（2026-09-30）
 
 BranchLocalRidge与真实监督微调联合主线已实现，方法D92-JointSpectralLocalRidge-v1。LocalRidge是最终分类器，2维有界谱参数通过内折LocalRidge闭式解解析梯度训练，8步投影梯度、lr0.1。B训练后C继承参数及完整旧类几何；C内折重新估计几何。四路径R0/R_fixed/R_joint/R_reset，R_joint为预声明顺序主线，不能事后选择最好路径。纯WithinClassMetric只作组件，不启动旧pure run。

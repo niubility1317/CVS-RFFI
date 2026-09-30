@@ -3,7 +3,7 @@
 - run_id：`20260930-phase2-d92-joint-spectral-support-m2-r01`
 - group_id：`d92-joint-spectral-support`；类别：`diagnostic`；阶段：`Phase2-support-only-diagnostic`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -29,3 +29,5 @@ LocalRidge为最终分类器；支持集内折监督训练两个有界谱参数�
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
 
 联合谱adapter已完成55项不同合成检查；原始失败证据保留，theta0布局已修复。四路径完整配对，固定160个support任务；practical residual绑定预检VERIFIED。当前PLANNED，尚未发布或启动；无真实联合性能结论。详细算法及API：docs/D92_LOCAL_RIDGE_JOINT_DESIGN_20260930.md；独立审查：docs/D92_LOCAL_RIDGE_JOINT_REVIEW_20260930.md。
+
+VERIFIED：独立读回确认supervisor645034及两个CPU worker645046/645047存活，argv/CWD匹配；runtime commit38d407699816f125ac8ccf7fb0e4f8c33039ba31。4row中rx3两行训练中、rx1两行待运行。无query/source读取，完整结果未完成，不能以partial指标评价或改配置。

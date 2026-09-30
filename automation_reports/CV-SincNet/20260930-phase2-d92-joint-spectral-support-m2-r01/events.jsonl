@@ -1,1 +1,2 @@
 {"at": "2026-09-30T02:39:25+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-09-30T02:46:15+00:00", "status": "RUNNING", "note": "VERIFIED：独立读回确认supervisor645034及两个CPU worker645046/645047存活，argv/CWD匹配；runtime commit38d407699816f125ac8ccf7fb0e4f8c33039ba31。4row中rx3两行训练中、rx1两行待运行。无query/source读取，完整结果未完成，不能以partial指标评价或改配置。", "evidence": ["E:\\type10-7\\automation_reports\\CV-SincNet\\20260930-phase2-d92-joint-spectral-support-m2-r01\\evidence\\readback_1790736318.json"], "row_id": null}
