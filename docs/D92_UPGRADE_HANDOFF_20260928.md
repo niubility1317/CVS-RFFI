@@ -1,3 +1,9 @@
+## 最新状态：AJLR 已验证，待单次发布（2026-10-01）
+
+LOCAL_VERIFIED/VERIFIED：AJLR单一数学结构已实现，54个不同相关检查通过；core22、ops23、entry4、summary5。整数dtype、summary唯一参考pair、实际1800路径和原生bool验收边界均已修复；完整正常复算与10种篡改拒绝通过，独立审查NO_UNRESOLVED_P0_P1。实际B函数prior、固定旧物理参考测度与tau/gamma、残差闭式头、全类CE伴随联合微调；只有R0/R_AJLR_seq。完整四row/160parent预登记与既有source-only缓存身份preflight已核实，新run/release/archive无冲突。未发布、未启动，尚无真实性能；A与B−A=N/A，目标ACTIVE。
+
+run 20261001-phase2-d92-anchor-joint-support-m2-r01；spec configs/d92_anchor_joint_support_20261001.json；release d92_anchor_joint_support_20261001_r01。prepare/new/preflight 已完成，禁止重复。独立review docs/D92_ANCHOR_JOINT_P0_REVIEW_20261001.md。root 唯一 launch owner；发布实际 pushed Git HEAD，之后独立 PID/argv/cwd 读回。FCR所有旧进程与分析已结束，不重复训练/分析/采集。
+
 ## 最新状态：FCR8完整分析完成；下一数学候选设计中（2026-10-01）
 
 ANALYZED/VERIFIED：FCR8完整160 parent独立support分析与完整训练诊断完成；分析进程281156已经退出，不重复运行。OOF96 new-present相对R0：B -0.173611pp、C旧 +0.321181pp、C新 +0.070312pp、H +0.111478pp；绝对新旧差增加0.552951pp。保留BranchLocalRidge，不晋级query。A与B−A=N/A。936信息阶段全部更新；4576阶段/19308曲线/1944教师折/3168准备均完整保留；CVS文本和原NPZ仍在原路径。完整K×新增类数120行、receiver/scene、model/cohort与资源分层已交付。55个不同相关检查通过。额外地面数据/统计0B，星载真实计算与传输N/A。
