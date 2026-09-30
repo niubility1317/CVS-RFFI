@@ -19,7 +19,7 @@
   "replaces_run_id": null,
   "authorization": "User 2026-09-30: organize/design the named comparison methods and complete their experiments.",
   "code": {
-    "commit": "ce98cdb055478ca8756fee9965e19829fdc592ff",
+    "commit": "577825849c5c69edfbec9e258948b5621e4c643a",
     "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01"
@@ -91,8 +91,20 @@
     "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01",
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01",
     "local_artifact_root": "automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01",
-    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -m comparison_suite.launch --spec automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/launch_spec.json",
-    "stop_rule": "No automatic retry, performance stopping, healthy task intervention, artifact overwrite or duplicate launch. Technical failure preserves artifacts and blocks dependent row."
+    "launch_command": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "comparison_suite.launch",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/launch_spec.json",
+      "--commit",
+      "577825849c5c69edfbec9e258948b5621e4c643a"
+    ],
+    "stop_rule": "No automatic retry, performance stopping, healthy task intervention, artifact overwrite or duplicate launch. Technical failure preserves artifacts and blocks dependent row.",
+    "dispatcher_pid": 98355,
+    "actual_commit": "577825849c5c69edfbec9e258948b5621e4c643a",
+    "runtime_state_ref": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/dispatcher/state.json"
   },
   "expected_artifacts": [
     "each row/resolved_config.json",
@@ -171,7 +183,23 @@
         "each row/last.pt",
         "each row/base_state.pt",
         "each row/completion.json"
-      ]
+      ],
+      "runtime": {
+        "status": "RUNNING",
+        "pid": 98407,
+        "gpu": 0,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/protonet-s392005.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/protonet-s392005/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/protonet-s392005.json"
+        ],
+        "started_at": "2026-09-30T10:24:43.046032+00:00"
+      }
     },
     {
       "row_id": "protonet-s2026092701",
@@ -216,7 +244,23 @@
         "each row/last.pt",
         "each row/base_state.pt",
         "each row/completion.json"
-      ]
+      ],
+      "runtime": {
+        "status": "RUNNING",
+        "pid": 98408,
+        "gpu": 1,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/protonet-s2026092701.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/protonet-s2026092701/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/protonet-s2026092701.json"
+        ],
+        "started_at": "2026-09-30T10:24:43.047332+00:00"
+      }
     },
     {
       "row_id": "protonet-s2026092702",
@@ -261,7 +305,23 @@
         "each row/last.pt",
         "each row/base_state.pt",
         "each row/completion.json"
-      ]
+      ],
+      "runtime": {
+        "status": "RUNNING",
+        "pid": 98409,
+        "gpu": 2,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/protonet-s2026092702.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/protonet-s2026092702/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/protonet-s2026092702.json"
+        ],
+        "started_at": "2026-09-30T10:24:43.048832+00:00"
+      }
     },
     {
       "row_id": "protonet-s2026092703",
@@ -306,7 +366,23 @@
         "each row/last.pt",
         "each row/base_state.pt",
         "each row/completion.json"
-      ]
+      ],
+      "runtime": {
+        "status": "RUNNING",
+        "pid": 98410,
+        "gpu": 3,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/protonet-s2026092703.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/protonet-s2026092703/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/protonet-s2026092703.json"
+        ],
+        "started_at": "2026-09-30T10:24:43.050078+00:00"
+      }
     },
     {
       "row_id": "protonet-s2026092704",
@@ -351,7 +427,23 @@
         "each row/last.pt",
         "each row/base_state.pt",
         "each row/completion.json"
-      ]
+      ],
+      "runtime": {
+        "status": "RUNNING",
+        "pid": 98411,
+        "gpu": 4,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/protonet-s2026092704.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/protonet-s2026092704/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/protonet-s2026092704.json"
+        ],
+        "started_at": "2026-09-30T10:24:43.051548+00:00"
+      }
     },
     {
       "row_id": "feature_separation-s392005",
@@ -396,7 +488,23 @@
         "each row/last.pt",
         "each row/base_state.pt",
         "each row/completion.json"
-      ]
+      ],
+      "runtime": {
+        "status": "RUNNING",
+        "pid": 98412,
+        "gpu": 5,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/feature_separation-s392005.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/feature_separation-s392005/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/feature_separation-s392005.json"
+        ],
+        "started_at": "2026-09-30T10:24:43.052805+00:00"
+      }
     },
     {
       "row_id": "feature_separation-s2026092701",
@@ -441,7 +549,23 @@
         "each row/last.pt",
         "each row/base_state.pt",
         "each row/completion.json"
-      ]
+      ],
+      "runtime": {
+        "status": "RUNNING",
+        "pid": 98413,
+        "gpu": 6,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/feature_separation-s2026092701.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/feature_separation-s2026092701/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/feature_separation-s2026092701.json"
+        ],
+        "started_at": "2026-09-30T10:24:43.054108+00:00"
+      }
     },
     {
       "row_id": "feature_separation-s2026092702",
@@ -486,7 +610,23 @@
         "each row/last.pt",
         "each row/base_state.pt",
         "each row/completion.json"
-      ]
+      ],
+      "runtime": {
+        "status": "RUNNING",
+        "pid": 98414,
+        "gpu": 7,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/feature_separation-s2026092702.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/feature_separation-s2026092702/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/feature_separation-s2026092702.json"
+        ],
+        "started_at": "2026-09-30T10:24:43.055405+00:00"
+      }
     },
     {
       "row_id": "feature_separation-s2026092703",
@@ -531,7 +671,14 @@
         "each row/last.pt",
         "each row/base_state.pt",
         "each row/completion.json"
-      ]
+      ],
+      "runtime": {
+        "status": "QUEUED",
+        "pid": null,
+        "gpu": 0,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/feature_separation-s2026092703.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/feature_separation-s2026092703/launch.stdout.log"
+      }
     },
     {
       "row_id": "feature_separation-s2026092704",
@@ -576,7 +723,14 @@
         "each row/last.pt",
         "each row/base_state.pt",
         "each row/completion.json"
-      ]
+      ],
+      "runtime": {
+        "status": "QUEUED",
+        "pid": null,
+        "gpu": 1,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/feature_separation-s2026092704.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/feature_separation-s2026092704/launch.stdout.log"
+      }
     },
     {
       "row_id": "dadda-s392005",
@@ -621,7 +775,14 @@
         "each row/last.pt",
         "each row/base_state.pt",
         "each row/completion.json"
-      ]
+      ],
+      "runtime": {
+        "status": "QUEUED",
+        "pid": null,
+        "gpu": 2,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/dadda-s392005.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/dadda-s392005/launch.stdout.log"
+      }
     },
     {
       "row_id": "dadda-s2026092701",
@@ -666,7 +827,14 @@
         "each row/last.pt",
         "each row/base_state.pt",
         "each row/completion.json"
-      ]
+      ],
+      "runtime": {
+        "status": "QUEUED",
+        "pid": null,
+        "gpu": 3,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/dadda-s2026092701.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/dadda-s2026092701/launch.stdout.log"
+      }
     },
     {
       "row_id": "dadda-s2026092702",
@@ -711,7 +879,14 @@
         "each row/last.pt",
         "each row/base_state.pt",
         "each row/completion.json"
-      ]
+      ],
+      "runtime": {
+        "status": "QUEUED",
+        "pid": null,
+        "gpu": 4,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/dadda-s2026092702.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/dadda-s2026092702/launch.stdout.log"
+      }
     },
     {
       "row_id": "dadda-s2026092703",
@@ -756,7 +931,14 @@
         "each row/last.pt",
         "each row/base_state.pt",
         "each row/completion.json"
-      ]
+      ],
+      "runtime": {
+        "status": "QUEUED",
+        "pid": null,
+        "gpu": 5,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/dadda-s2026092703.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/dadda-s2026092703/launch.stdout.log"
+      }
     },
     {
       "row_id": "dadda-s2026092704",
@@ -801,7 +983,14 @@
         "each row/last.pt",
         "each row/base_state.pt",
         "each row/completion.json"
-      ]
+      ],
+      "runtime": {
+        "status": "QUEUED",
+        "pid": null,
+        "gpu": 6,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/dadda-s2026092704.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/dadda-s2026092704/launch.stdout.log"
+      }
     },
     {
       "row_id": "mrior-s392005",
@@ -846,7 +1035,14 @@
         "each row/last.pt",
         "each row/base_state.pt",
         "each row/completion.json"
-      ]
+      ],
+      "runtime": {
+        "status": "QUEUED",
+        "pid": null,
+        "gpu": 7,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/mrior-s392005.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/mrior-s392005/launch.stdout.log"
+      }
     },
     {
       "row_id": "mrior-s2026092701",
@@ -891,7 +1087,14 @@
         "each row/last.pt",
         "each row/base_state.pt",
         "each row/completion.json"
-      ]
+      ],
+      "runtime": {
+        "status": "QUEUED",
+        "pid": null,
+        "gpu": 0,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/mrior-s2026092701.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/mrior-s2026092701/launch.stdout.log"
+      }
     },
     {
       "row_id": "mrior-s2026092702",
@@ -936,7 +1139,14 @@
         "each row/last.pt",
         "each row/base_state.pt",
         "each row/completion.json"
-      ]
+      ],
+      "runtime": {
+        "status": "QUEUED",
+        "pid": null,
+        "gpu": 1,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/mrior-s2026092702.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/mrior-s2026092702/launch.stdout.log"
+      }
     },
     {
       "row_id": "mrior-s2026092703",
@@ -981,7 +1191,14 @@
         "each row/last.pt",
         "each row/base_state.pt",
         "each row/completion.json"
-      ]
+      ],
+      "runtime": {
+        "status": "QUEUED",
+        "pid": null,
+        "gpu": 2,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/mrior-s2026092703.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/mrior-s2026092703/launch.stdout.log"
+      }
     },
     {
       "row_id": "mrior-s2026092704",
@@ -1026,7 +1243,14 @@
         "each row/last.pt",
         "each row/base_state.pt",
         "each row/completion.json"
-      ]
+      ],
+      "runtime": {
+        "status": "QUEUED",
+        "pid": null,
+        "gpu": 3,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/mrior-s2026092704.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/mrior-s2026092704/launch.stdout.log"
+      }
     },
     {
       "row_id": "twostage-s392005",
@@ -1071,7 +1295,14 @@
         "each row/last.pt",
         "each row/base_state.pt",
         "each row/completion.json"
-      ]
+      ],
+      "runtime": {
+        "status": "QUEUED",
+        "pid": null,
+        "gpu": 4,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/twostage-s392005.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/twostage-s392005/launch.stdout.log"
+      }
     },
     {
       "row_id": "twostage-s2026092701",
@@ -1116,7 +1347,14 @@
         "each row/last.pt",
         "each row/base_state.pt",
         "each row/completion.json"
-      ]
+      ],
+      "runtime": {
+        "status": "QUEUED",
+        "pid": null,
+        "gpu": 5,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/twostage-s2026092701.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/twostage-s2026092701/launch.stdout.log"
+      }
     },
     {
       "row_id": "twostage-s2026092702",
@@ -1161,7 +1399,14 @@
         "each row/last.pt",
         "each row/base_state.pt",
         "each row/completion.json"
-      ]
+      ],
+      "runtime": {
+        "status": "QUEUED",
+        "pid": null,
+        "gpu": 6,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/twostage-s2026092702.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/twostage-s2026092702/launch.stdout.log"
+      }
     },
     {
       "row_id": "twostage-s2026092703",
@@ -1206,7 +1451,14 @@
         "each row/last.pt",
         "each row/base_state.pt",
         "each row/completion.json"
-      ]
+      ],
+      "runtime": {
+        "status": "QUEUED",
+        "pid": null,
+        "gpu": 7,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/twostage-s2026092703.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/twostage-s2026092703/launch.stdout.log"
+      }
     },
     {
       "row_id": "twostage-s2026092704",
@@ -1251,7 +1503,14 @@
         "each row/last.pt",
         "each row/base_state.pt",
         "each row/completion.json"
-      ]
+      ],
+      "runtime": {
+        "status": "QUEUED",
+        "pid": null,
+        "gpu": 0,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/twostage-s2026092704.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/twostage-s2026092704/launch.stdout.log"
+      }
     },
     {
       "row_id": "csil-s392005",
@@ -1296,7 +1555,14 @@
         "each row/last.pt",
         "each row/base_state.pt",
         "each row/completion.json"
-      ]
+      ],
+      "runtime": {
+        "status": "QUEUED",
+        "pid": null,
+        "gpu": 1,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/csil-s392005.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/csil-s392005/launch.stdout.log"
+      }
     },
     {
       "row_id": "csil-s2026092701",
@@ -1341,7 +1607,14 @@
         "each row/last.pt",
         "each row/base_state.pt",
         "each row/completion.json"
-      ]
+      ],
+      "runtime": {
+        "status": "QUEUED",
+        "pid": null,
+        "gpu": 2,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/csil-s2026092701.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/csil-s2026092701/launch.stdout.log"
+      }
     },
     {
       "row_id": "csil-s2026092702",
@@ -1386,7 +1659,14 @@
         "each row/last.pt",
         "each row/base_state.pt",
         "each row/completion.json"
-      ]
+      ],
+      "runtime": {
+        "status": "QUEUED",
+        "pid": null,
+        "gpu": 3,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/csil-s2026092702.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/csil-s2026092702/launch.stdout.log"
+      }
     },
     {
       "row_id": "csil-s2026092703",
@@ -1431,7 +1711,14 @@
         "each row/last.pt",
         "each row/base_state.pt",
         "each row/completion.json"
-      ]
+      ],
+      "runtime": {
+        "status": "QUEUED",
+        "pid": null,
+        "gpu": 4,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/csil-s2026092703.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/csil-s2026092703/launch.stdout.log"
+      }
     },
     {
       "row_id": "csil-s2026092704",
@@ -1476,7 +1763,14 @@
         "each row/last.pt",
         "each row/base_state.pt",
         "each row/completion.json"
-      ]
+      ],
+      "runtime": {
+        "status": "QUEUED",
+        "pid": null,
+        "gpu": 5,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/csil-s2026092704.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/csil-s2026092704/launch.stdout.log"
+      }
     },
     {
       "row_id": "mopc_hr-s392005",
@@ -1521,7 +1815,14 @@
         "each row/last.pt",
         "each row/base_state.pt",
         "each row/completion.json"
-      ]
+      ],
+      "runtime": {
+        "status": "QUEUED",
+        "pid": null,
+        "gpu": 6,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/mopc_hr-s392005.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/mopc_hr-s392005/launch.stdout.log"
+      }
     },
     {
       "row_id": "mopc_hr-s2026092701",
@@ -1566,7 +1867,14 @@
         "each row/last.pt",
         "each row/base_state.pt",
         "each row/completion.json"
-      ]
+      ],
+      "runtime": {
+        "status": "QUEUED",
+        "pid": null,
+        "gpu": 7,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/mopc_hr-s2026092701.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/mopc_hr-s2026092701/launch.stdout.log"
+      }
     },
     {
       "row_id": "mopc_hr-s2026092702",
@@ -1611,7 +1919,14 @@
         "each row/last.pt",
         "each row/base_state.pt",
         "each row/completion.json"
-      ]
+      ],
+      "runtime": {
+        "status": "QUEUED",
+        "pid": null,
+        "gpu": 0,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/mopc_hr-s2026092702.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/mopc_hr-s2026092702/launch.stdout.log"
+      }
     },
     {
       "row_id": "mopc_hr-s2026092703",
@@ -1656,7 +1971,14 @@
         "each row/last.pt",
         "each row/base_state.pt",
         "each row/completion.json"
-      ]
+      ],
+      "runtime": {
+        "status": "QUEUED",
+        "pid": null,
+        "gpu": 1,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/mopc_hr-s2026092703.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/mopc_hr-s2026092703/launch.stdout.log"
+      }
     },
     {
       "row_id": "mopc_hr-s2026092704",
@@ -1701,7 +2023,14 @@
         "each row/last.pt",
         "each row/base_state.pt",
         "each row/completion.json"
-      ]
+      ],
+      "runtime": {
+        "status": "QUEUED",
+        "pid": null,
+        "gpu": 2,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/mopc_hr-s2026092704.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/mopc_hr-s2026092704/launch.stdout.log"
+      }
     },
     {
       "row_id": "orthogonal-s392005",
@@ -1746,7 +2075,14 @@
         "each row/last.pt",
         "each row/base_state.pt",
         "each row/completion.json"
-      ]
+      ],
+      "runtime": {
+        "status": "QUEUED",
+        "pid": null,
+        "gpu": 3,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/orthogonal-s392005.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/orthogonal-s392005/launch.stdout.log"
+      }
     },
     {
       "row_id": "orthogonal-s2026092701",
@@ -1791,7 +2127,14 @@
         "each row/last.pt",
         "each row/base_state.pt",
         "each row/completion.json"
-      ]
+      ],
+      "runtime": {
+        "status": "QUEUED",
+        "pid": null,
+        "gpu": 4,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/orthogonal-s2026092701.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/orthogonal-s2026092701/launch.stdout.log"
+      }
     },
     {
       "row_id": "orthogonal-s2026092702",
@@ -1836,7 +2179,14 @@
         "each row/last.pt",
         "each row/base_state.pt",
         "each row/completion.json"
-      ]
+      ],
+      "runtime": {
+        "status": "QUEUED",
+        "pid": null,
+        "gpu": 5,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/orthogonal-s2026092702.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/orthogonal-s2026092702/launch.stdout.log"
+      }
     },
     {
       "row_id": "orthogonal-s2026092703",
@@ -1881,7 +2231,14 @@
         "each row/last.pt",
         "each row/base_state.pt",
         "each row/completion.json"
-      ]
+      ],
+      "runtime": {
+        "status": "QUEUED",
+        "pid": null,
+        "gpu": 6,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/orthogonal-s2026092703.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/orthogonal-s2026092703/launch.stdout.log"
+      }
     },
     {
       "row_id": "orthogonal-s2026092704",
@@ -1926,7 +2283,14 @@
         "each row/last.pt",
         "each row/base_state.pt",
         "each row/completion.json"
-      ]
+      ],
+      "runtime": {
+        "status": "QUEUED",
+        "pid": null,
+        "gpu": 7,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/orthogonal-s2026092704.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/orthogonal-s2026092704/launch.stdout.log"
+      }
     },
     {
       "row_id": "radionet_ada-s392005",
@@ -1971,7 +2335,14 @@
         "each row/last.pt",
         "each row/base_state.pt",
         "each row/completion.json"
-      ]
+      ],
+      "runtime": {
+        "status": "QUEUED",
+        "pid": null,
+        "gpu": 0,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/radionet_ada-s392005.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/radionet_ada-s392005/launch.stdout.log"
+      }
     },
     {
       "row_id": "radionet_ada-s2026092701",
@@ -2016,7 +2387,14 @@
         "each row/last.pt",
         "each row/base_state.pt",
         "each row/completion.json"
-      ]
+      ],
+      "runtime": {
+        "status": "QUEUED",
+        "pid": null,
+        "gpu": 1,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/radionet_ada-s2026092701.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/radionet_ada-s2026092701/launch.stdout.log"
+      }
     },
     {
       "row_id": "radionet_ada-s2026092702",
@@ -2061,7 +2439,14 @@
         "each row/last.pt",
         "each row/base_state.pt",
         "each row/completion.json"
-      ]
+      ],
+      "runtime": {
+        "status": "QUEUED",
+        "pid": null,
+        "gpu": 2,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/radionet_ada-s2026092702.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/radionet_ada-s2026092702/launch.stdout.log"
+      }
     },
     {
       "row_id": "radionet_ada-s2026092703",
@@ -2106,7 +2491,14 @@
         "each row/last.pt",
         "each row/base_state.pt",
         "each row/completion.json"
-      ]
+      ],
+      "runtime": {
+        "status": "QUEUED",
+        "pid": null,
+        "gpu": 3,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/radionet_ada-s2026092703.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/radionet_ada-s2026092703/launch.stdout.log"
+      }
     },
     {
       "row_id": "radionet_ada-s2026092704",
@@ -2151,7 +2543,14 @@
         "each row/last.pt",
         "each row/base_state.pt",
         "each row/completion.json"
-      ]
+      ],
+      "runtime": {
+        "status": "QUEUED",
+        "pid": null,
+        "gpu": 4,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/radionet_ada-s2026092704.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/radionet_ada-s2026092704/launch.stdout.log"
+      }
     }
   ],
   "notes": [
@@ -2162,5 +2561,6 @@
     "Current config code.commit is preparation baseline; publisher must record the final committed release before launch.",
     "Source L_s alone supplies supervised source initializers. U_s labels remain hidden and are unused; V only evaluated. Source-step/sample exposure differences are reported."
   ],
-  "registered_at": "2026-09-30T10:09:57+00:00"
+  "registered_at": "2026-09-30T10:09:57+00:00",
+  "status": "RUNNING"
 }

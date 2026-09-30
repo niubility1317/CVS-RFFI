@@ -27,3 +27,9 @@ Nine distinct source model families, five fixed seeds, scratch final200; matched
 ## 交接
 
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
+
+## Actual dispatcher state
+
+Status: `RUNNING`; owner: `codex/root/native-comparisons-20260930`; dispatcher PID: `98355`; release commit: `577825849c5c69edfbec9e258948b5621e4c643a`.
+
+Counts: `{"QUEUED": 37, "RUNNING": 8}`. Per-row PID/GPU/log/config evidence: `/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/dispatcher/state.json` and experiment.json row runtime fields. Scoring: `{"p1": "WAITING", "p2": "WAITING"}`.
