@@ -1,3 +1,7 @@
+## 最新补充：原型联合全日志collector 8项通过（2026-09-30）
+
+collector/test/doc已交还；root串行pytest8/8通过1.72s，证据1790766451524824900。训练runtime仍9ebdcd7dd，未改运行release。r02尚未完整结束，禁止重复publish。四row结束后先独立support summary，再用只读collector扫描全部训练流与文本；不读取fit_trace/query、不反馈调参。目标ACTIVE。
+
 ## 最新状态：原型联合方法 r02 已核实运行（2026-09-30）
 
 RUNNING/VERIFIED：r02独立readback1790764932355254600确认主管110755和两worker存活、argv/CWD/实际commit9ebdcd7dd匹配。两rx3行各写出7个parent，已跨过r01 K5 full JSON失败点；两rx1行按既有2CPU lanes排队。完整160矩阵尚未完成，未读取query、未有性能结论；固定方法/数据/超参，root唯一launch owner。
