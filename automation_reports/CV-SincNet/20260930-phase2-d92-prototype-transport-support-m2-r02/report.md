@@ -3,7 +3,7 @@
 - run_id：`20260930-phase2-d92-prototype-transport-support-m2-r02`
 - group_id：`d92-prototype-transport-support`；类别：`diagnostic`；阶段：`Phase2-support-only-diagnostic`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ARTIFACTS_COMPLETE（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -33,3 +33,7 @@ VERIFIED：r01四行因NumPy布尔完整JSON输出失败而退出，产物保留
 RUNNING/VERIFIED：r02独立readback1790764932355254600确认主管110755和两worker存活、argv/CWD/实际commit9ebdcd7dd匹配。两rx3行各写出7个parent，已跨过r01 K5 full JSON失败点；两rx1行按既有2CPU lanes排队。完整160矩阵尚未完成，未读取query、未有性能结论；固定方法/数据/超参，root唯一launch owner。
 
 全日志collector8项实际通过，仅新增分析工具；真实完整scan待run结束，训练算法未改变。
+
+ARTIFACTS_COMPLETE/VERIFIED：r02四row/160parent已完整结束，主管及worker均退出，独立complete/state/argv读回一致。实际更新3656次，实际头拟合19821次。未读取query或源域样本；方法完成不等于性能成功。下一步唯一独立support汇总及全日志扫描，root唯一owner。
+
+独立support汇总与只读全日志扫描各已唯一启动；性能待完整分析，禁止重复启动。
