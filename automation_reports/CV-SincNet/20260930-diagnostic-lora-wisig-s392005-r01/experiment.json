@@ -1,0 +1,160 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20260930-diagnostic-lora-wisig-s392005-r01",
+  "group_id": "newclass-registration-source-acceptance",
+  "display_name": "LORA真实WiSig源代码完整链路验收",
+  "description": "固定作者逻辑、从零训练，各阶段1epoch，保留原始算法行为；执行验收而非论文准确率或正式CVS比较",
+  "kind": "diagnostic",
+  "stage": "external_execution_acceptance",
+  "aliases": [],
+  "tags": [
+    "lora",
+    "WiSig",
+    "source_acceptance"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "用户明确要求原论文与CVS两种口径；ISSL数据下载不可得时保留功能在WiSig上跑通验收",
+  "code": {
+    "commit": null,
+    "checkout": "E:\\type10-7",
+    "environment": "ssr-gpu; torch 2.10.0+cu128",
+    "cwd": "E:\\type10-7"
+  },
+  "data": {
+    "dataset": "WiSig ManySig",
+    "version": "existing N607 compact pickle",
+    "representation": "raw 256x2 IQ",
+    "contract_ref": "E:\\type10-7\\local_artifacts\\newclass_registration_20260930\\wisig_diagnostic.json",
+    "physical_ids_ref": "E:\\type10-7\\local_artifacts\\newclass_registration_20260930\\wisig_diagnostic.json",
+    "label_map_ref": "E:\\type10-7\\local_artifacts\\newclass_registration_20260930\\wisig_diagnostic.json",
+    "source_receivers": [
+      "1-1"
+    ],
+    "target_receivers": [
+      "1-1"
+    ],
+    "source_days": [
+      "2021_03_01"
+    ],
+    "target_days": [
+      "2021_03_01"
+    ],
+    "tx_sets_ref": "E:\\type10-7\\local_artifacts\\newclass_registration_20260930\\wisig_diagnostic.json",
+    "roles": {
+      "L_s": null,
+      "U_s": null,
+      "V": null
+    },
+    "train_ratio": 0.128,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "source shape/finite/unique ID and disjoint role checks; not CVS VALIDATED_ONCE capsule",
+    "support_query_ref": "E:\\type10-7\\local_artifacts\\newclass_registration_20260930\\wisig_diagnostic.json",
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "external_method_diagnostic",
+    "query_use": "post_prediction_independent_scoring_only",
+    "external_method_exception": "own method keeps original old source train set; diagnostic new support",
+    "claim_scope": "not original accuracy reproduction, not CVS benchmark, no LEO"
+  },
+  "checkpoint": {
+    "initialization": "scratch",
+    "sources": [],
+    "contract_check_ref": "E:\\type10-7\\local_artifacts\\newclass_registration_20260930\\wisig_diagnostic.json",
+    "provenance_verdict": "SCRATCH_NO_EXTERNAL_CHECKPOINT",
+    "selection_rule": "fixed final epoch, no query selection; teacher/key only from same-run scratch states"
+  },
+  "execution": {
+    "host": "local",
+    "launch_owner": "/root",
+    "gpu_policy": "local cuda0 at most two training processes; sequential methods",
+    "remote_run_root": null,
+    "remote_log_root": null,
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\newclass_registration_20260930\\lora_r01",
+    "launch_command": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe -X utf8 paper_reproduction/newclass_registration_20260930/launch_local.py --method lora --output E:/type10-7/local_artifacts/newclass_registration_20260930/lora_r01",
+    "stop_rule": "nonfinite training, invalid data, artifact/runtime error; no performance-based stop"
+  },
+  "expected_artifacts": [
+    "resolved_config.json",
+    "steps.jsonl",
+    "steps.csv",
+    "predictions.npz",
+    "acceptance.json",
+    "metrics.json",
+    "state_dict checkpoints",
+    "exclusive stdout log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "old_accuracy_A",
+      "old_accuracy_B",
+      "old_accuracy_C",
+      "new_accuracy_C",
+      "H",
+      "macro_f1",
+      "gradient_norm",
+      "loss_components",
+      "time",
+      "peak_cuda_bytes"
+    ],
+    "dimensions": [
+      "stage",
+      "old3_new3",
+      "K128",
+      "RX1-1",
+      "day2021_03_01",
+      "model_seed392005"
+    ],
+    "prediction_ref": "E:\\type10-7\\local_artifacts\\newclass_registration_20260930\\lora_r01\\predictions.npz",
+    "scorer_ref": "E:\\type10-7\\paper_reproduction\\newclass_registration_20260930\\score.py"
+  },
+  "rows": [
+    {
+      "row_id": "lora-s392005",
+      "method": "lora",
+      "purpose": "execution_diagnostic",
+      "config_ref": "E:\\type10-7\\paper_reproduction\\newclass_registration_20260930\\README.md",
+      "resolved_config_ref": "E:\\type10-7\\local_artifacts\\newclass_registration_20260930\\lora_r01\\resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 392005,
+        "split": null,
+        "data": null,
+        "augmentation": 392005,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/augmentation: Python NumPy Torch share configured seed; split/data/support deterministic front indices; evaluation deterministic argmax/KNN, null not random",
+      "k": 128,
+      "scenario": "raw diagnostic without LEO",
+      "optimizer": "RMSprop",
+      "lr": 0.001,
+      "epochs": 1,
+      "fl_rounds": null,
+      "budget_ref": "E:\\type10-7\\paper_reproduction\\newclass_registration_20260930\\README.md",
+      "output_root": "E:\\type10-7\\local_artifacts\\newclass_registration_20260930\\lora_r01",
+      "log_path": "E:\\type10-7\\local_artifacts\\newclass_registration_20260930\\lora_r01.stdout.log",
+      "command": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe -X utf8 paper_reproduction/newclass_registration_20260930/launch_local.py --method lora --output E:/type10-7/local_artifacts/newclass_registration_20260930/lora_r01",
+      "expected_artifacts": [
+        "resolved_config.json",
+        "steps.jsonl",
+        "steps.csv",
+        "predictions.npz",
+        "acceptance.json",
+        "metrics.json",
+        "state_dict checkpoints",
+        "exclusive stdout log"
+      ]
+    }
+  ],
+  "notes": [
+    "source validation N/A: no validation role in bounded diagnostic",
+    "B N/A for ISSL original workflow; LoRa frozen extractor same support gives B=A",
+    "ISSL retains detached KD, SSL gradient accumulation, reshape queue; no paper-intent correction",
+    "Independent P0/P1 review two fixes verified: downstream crop and clean stage gradient/BN mode"
+  ],
+  "registered_at": "2026-09-30T10:25:13+00:00"
+}
