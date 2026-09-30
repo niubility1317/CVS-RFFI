@@ -1,0 +1,17 @@
+arm_id,stage,function,reference,intervention,status,retrain_phase1,target_selection,notes
+P00,Phase1,FULL,NONE,current_A1_RC4_recipe,DESIGN_ONLY,true,false,freeze_actual_resolved_config_and_final200
+P01,Phase1,GLOBAL,P00,labeled_TX_CE_only,DESIGN_ONLY,true,false,multi_mechanism_reference_not_single_ablation
+P02,Phase1,F1,P00,remove_time_branch,DESIGN_ONLY,true,false,record_capacity_and_compute_change
+P03,Phase1,F1,P00,remove_frequency_branch,DESIGN_ONLY,true,false,record_capacity_and_compute_change
+P04,Phase1,F1,P00,remove_PA_branch,DESIGN_ONLY,true,false,DAC_already_off
+P05,Phase1,F1,P00,remove_identity_statistics_branch,DESIGN_ONLY,true,false,not_domain_no_stats_flag
+P06,Phase1,F2,P00,remove_identity_domain_DG_objective_group,DESIGN_ONLY,true,false,resolve_all_dependent_gradient_paths
+P07,Phase1,F3,P00,remove_unlabeled_TX_supervision,DESIGN_ONLY,true,false,keep_and_disclose_label_free_U_feature_domain_losses
+P08,Phase1,F3,P00,replace_RC4_with_plain_hard_PL,DESIGN_ONLY,true,false,freeze_source_selected_rule_and_effective_mass
+P09,Phase1,F3,P00,remove_correctness_calibration,DESIGN_ONLY,true,false,substitute_source_frozen_trust_rule
+P10,Phase1,F3,P00,hard_only_no_partial,DESIGN_ONLY,true,false,disable_partial_set_and_conditional
+P11,Phase1,F4,P00,remove_DAOT_keep_satellite_CE,DESIGN_ONLY,true,false,keep_channel_schedule
+P12,Phase1,F4,P00,remove_satellite_CE_keep_DAOT,DESIGN_ONLY,true,false,keep_teacher_channel_views
+P13,Phase1,F5,P00,remove_proto_compact_openworld_geometry,DESIGN_ONLY,true,false,keep_proxy_and_source_episode
+P14,Phase1,F5,P00,remove_proxy_unknown_and_soft_unknown_mixup,DESIGN_ONLY,true,false,keep_geometry_and_source_episode
+P15,Phase1,F5,P00,remove_source_episode_objective,DESIGN_ONLY,true,false,all_other_mechanisms_fixed
