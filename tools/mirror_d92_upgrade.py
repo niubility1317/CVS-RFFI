@@ -268,6 +268,7 @@ paths += ['code/cvsrffi/d92_prototype_transport_local_ridge.py', 'configs/d92_pr
 paths += ['tools/prepare_d92_prototype_transport_recovery.py', 'configs/d92_prototype_transport_support_recovery_20260930.json', 'docs/D92_PROTOTYPE_TRANSPORT_RECOVERY_20260930.md']
 paths += ['tools/collect_d92_transport_training_diagnostics.py', 'tests/test_collect_d92_transport_training_diagnostics.py', 'docs/D92_PROTOTYPE_TRANSPORT_LOG_DIAGNOSTICS_20260930.md']
 paths += ['docs/D92_PROTOTYPE_TRANSPORT_SUPPORT_RESULT_20260930.md', 'docs/D92_PROTOTYPE_TRANSPORT_TRAINING_FINDINGS_20260930.md']
+paths += ['docs/D92_JOINT_AFTER_PROTOTYPE_DESIGN_20260930.md']
 for name in paths:
     src=ROOT/name;dst=WS/name;dst.parent.mkdir(parents=True,exist_ok=True)
     # Each name is unique to this task; original D92 and shared wrappers are not mirrored.

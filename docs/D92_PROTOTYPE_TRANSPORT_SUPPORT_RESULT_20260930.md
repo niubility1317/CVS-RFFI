@@ -277,3 +277,7 @@ B 阶段相对 R0 的原正确→错误比例为 0.694%，原错误→正确为 
 - [完整训练损失、梯度、停止与去重解释](D92_PROTOTYPE_TRANSPORT_TRAINING_FINDINGS_20260930.md)
 
 实际运维 release archive 为 583680 bytes，包含代码/配置，不属于地面样本或统计 payload；此值不能替代完整模型部署传输测量。
+
+上述 6,820,440 bytes 是该 support pilot 的最大拟合数值状态。OOF 使用的实际每类训练量小于完整 K，不能将该数值当作完整 K=20 部署内存上限；模型总包与星载峰值仍未测量。
+
+- [下一联合候选的冻结设计](D92_JOINT_AFTER_PROTOTYPE_DESIGN_20260930.md)（设计完成，尚未实施或运行，不代表收益）

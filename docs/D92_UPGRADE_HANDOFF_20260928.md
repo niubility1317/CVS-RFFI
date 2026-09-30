@@ -1,3 +1,9 @@
+## 最新补充：MC-Residual8 唯一后继冻结设计完成，待实现（2026-09-30）
+
+PrototypeTransport r02 ANALYZED结果已b57c56d98提交/推送，完整160parent仅小幅收益，原BranchLocalRidge主线保留，无query评分。新设计docs/D92_JOINT_AFTER_PROTOTYPE_DESIGN_20260930.md：U/V11776参数、rank8跨分支GELU切向残差、LocalRidge唯一最终头、B→C真实继承、折内R0/B教师margin保持+物理记录风险松弛+有限真实双接受。固定Phase1/practical residual/source-free，无新ground摘要依赖，K1无伪监督；最多4×3，不靠加步或LR扫描。风险/资源上界明确，尚无实现/新实验，目标ACTIVE。
+
+下一实现应使用独立新模块d92_margin_constrained_residual8_local_ridge.py，不覆盖未tracked的暂停旧draft d92_support_residual_local_ridge.py；core与entry责任分离，root统一串行pytest及唯一remote launch。不得复用Proto θ热初始化或读历史query反馈。
+
 ## 最新状态：原型联合 r02 已完整分析，未取得全面改善（2026-09-30）
 
 ANALYZED/VERIFIED：160parent完整support汇总及全训练日志扫描通过。顺序候选相对R0：B−0.208pp，C旧+0.069pp、新+0.414pp、H+0.163pp；注册旧下降6.997pp、绝对新旧差11.080pp。仅小幅收益且分层退化，保留BranchLocalRidge主线，不启动该候选query晋级评分。A/B−A N/A，源/query拟合均0。下一步继续联合结构与旧margin保持研究；目标ACTIVE，未达理想目标。
