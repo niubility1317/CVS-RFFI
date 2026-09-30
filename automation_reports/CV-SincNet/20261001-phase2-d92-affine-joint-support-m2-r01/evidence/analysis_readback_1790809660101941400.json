@@ -1,0 +1,27 @@
+{
+  "observed_unix": 1790809598.385495,
+  "process": {
+    "pid": 489447,
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_affine_joint_analysis_20261001_r01/tools/summarize_d92_affine_joint_probe.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_affine_joint_support_20261001_r01/configs/d92_affine_joint_support_20261001.json",
+      "--run-root",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-affine-joint-support-m2-r01",
+      "--output",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-affine-joint-support-m2-r01/results/support_summary"
+    ],
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_affine_joint_analysis_20261001_r01",
+    "commit": "33070cd3a1c27f50c9df001d7d3e2ffc03d7d9e8",
+    "live_argv": null,
+    "live_cwd": null
+  },
+  "activity": null,
+  "summary_exists": false,
+  "analysis_execution": null,
+  "failure_log": "Traceback (most recent call last):\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/d92_affine_joint_analysis_20261001_r01/tools/summarize_d92_affine_joint_probe.py\", line 1151, in <module>\n    if __name__ == '__main__': main()\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/d92_affine_joint_analysis_20261001_r01/tools/summarize_d92_affine_joint_probe.py\", line 1149, in main\n    result = summarize(**vars(parser.parse_args())); print(json.dumps(dict(status=result['status'], coverage=result['coverage'])))\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/d92_affine_joint_analysis_20261001_r01/tools/summarize_d92_affine_joint_probe.py\", line 1034, in summarize\n    for value in logs: check(next(stages, None) == dict(compact_event(value), split_id=sid), 'Stage stream mismatch')\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/d92_affine_joint_analysis_20261001_r01/tools/evaluate_d92_branch_support_probe.py\", line 34, in check\n    raise ValueError(message)\nValueError: Stage stream mismatch\n",
+  "log_bytes": 1039,
+  "performance_read_or_printed": false
+}

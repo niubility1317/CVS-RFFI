@@ -168,12 +168,12 @@
     "independent_analysis": {
       "status": "NOT_STARTED",
       "launch_owner": "root",
-      "release": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_affine_joint_analysis_20261001_r01",
+      "release": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_affine_joint_analysis_20261001_r02",
       "output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-affine-joint-support-m2-r01/results/support_summary",
       "command": [
         "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
         "-u",
-        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_affine_joint_analysis_20261001_r01/tools/summarize_d92_affine_joint_probe.py",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_affine_joint_analysis_20261001_r02/tools/summarize_d92_affine_joint_probe.py",
         "--spec",
         "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_affine_joint_support_20261001_r01/configs/d92_affine_joint_support_20261001.json",
         "--run-root",
@@ -194,7 +194,16 @@
       "cache_entry_cap": 64,
       "query_access": false,
       "source_sample_access": false,
-      "training_or_algorithm_mutation": false
+      "training_or_algorithm_mutation": false,
+      "pid": null,
+      "local_wait_handle": null,
+      "previous_failed_attempt": {
+        "release": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_affine_joint_analysis_20261001_r01",
+        "runtime_commit": "33070cd3a1c27f50c9df001d7d3e2ffc03d7d9e8",
+        "pid": 489447,
+        "local_wait_handle": 44670,
+        "evidence": "analysis_r01_failure_20261001.json"
+      }
     }
   },
   "expected_artifacts": [

@@ -1,0 +1,26 @@
+{
+  "observed_unix": 1790809526.029151,
+  "process": {
+    "pid": 489447,
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_affine_joint_analysis_20261001_r01/tools/summarize_d92_affine_joint_probe.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_affine_joint_support_20261001_r01/configs/d92_affine_joint_support_20261001.json",
+      "--run-root",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-affine-joint-support-m2-r01",
+      "--output",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-affine-joint-support-m2-r01/results/support_summary"
+    ],
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_affine_joint_analysis_20261001_r01",
+    "commit": "33070cd3a1c27f50c9df001d7d3e2ffc03d7d9e8",
+    "live_argv": null,
+    "live_cwd": null
+  },
+  "activity": null,
+  "summary_exists": false,
+  "analysis_execution": null,
+  "log_bytes": 1039,
+  "performance_read_or_printed": false
+}

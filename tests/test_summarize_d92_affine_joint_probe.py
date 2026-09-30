@@ -1,5 +1,7 @@
 """Independent synthetic AFFINE_JOINT certificate/score tampering checks."""
 from copy import deepcopy
+import contextlib
+import io
 import json
 from pathlib import Path
 import sys
@@ -43,7 +45,7 @@ class SummaryTests(unittest.TestCase):
         cls.fit_stages = Path(cls.directory.name)/'fit_stages.jsonl'
         with cls.fit_stages.open('x', encoding='utf-8') as stream:
             def log_callback(stage):
-                row = dict(probe.compact_event(stage), split_id='synthetic-parent')
+                row = dict(probe.compact_event(stage), schema=probe.SCHEMA, method=probe.METHOD, split_id='synthetic-parent')
                 stream.write(json.dumps(row, allow_nan=False)+'\n')
             result = probe.probe_affine_joint(**cls.inputs, context=scope(), state_callback=archive, log_callback=log_callback)
         cls.record, cls.split = as_record(result, cls.inputs, 3)
@@ -59,8 +61,12 @@ class SummaryTests(unittest.TestCase):
         logs, _, _, _ = summary.verify_record(self.record, self.split, self.inputs['old_classes'], resolver)
         resolver.finalize()
         emitted = list(summary.jsonlines(self.fit_stages))
-        expected = [dict(probe.compact_event(value), split_id=self.record['split_id']) for value in logs]
+        expected = [dict(probe.compact_event(value), schema=probe.SCHEMA, method=probe.METHOD,
+                         split_id=self.record['split_id']) for value in logs]
         self.assertEqual(emitted, expected)
+        stream = iter(emitted)
+        summary.verify_stage_stream(stream, logs, self.record['split_id'])
+        self.assertIsNone(next(stream, None))
         per_path = [('BASE_FIT', 'B0'), ('BASE_FIT', 'C0'),
             ('AFFINE_PREPARATION', 'B'), ('CANDIDATE_FIT', 'B_AFFINE'),
             ('AFFINE_PREPARATION', 'C'), ('CANDIDATE_FIT', 'C_AFFINE_seq')]
@@ -199,6 +205,53 @@ class SummaryTests(unittest.TestCase):
              patch.object(summary, 'StateResolver') as archives:
             with self.assertRaisesRegex(ValueError, 'incomplete'): summary.summarize(spec=spec, output=Path(directory)/'out')
             scores.assert_not_called(); archives.assert_not_called()
+
+
+class EntryStageStreamTests(unittest.TestCase):
+    def test_actual_evaluate_written_stream_envelope_order_and_tampering(self):
+        # Exercise the production writer and real core callbacks. Only external
+        # cache selection/loading is synthetic; no stage records are fabricated.
+        for new in (True, False):
+            inputs = synthetic(k=2, new=new, six_old=True)
+            arrays = {key: inputs[key] for key in probe.BRANCHES}
+            split = dict(split_id='synthetic-parent', receiver='synthetic-rx', scenario='practical_high', k=2,
+                support_seed=0, registered_classes=inputs['classes'], support_ids=inputs['support_ids'],
+                support_labels=inputs['support_labels'])
+            producer = dict(feature_array_bytes=sum(value.nbytes for value in arrays.values()), feature_file_bytes=0)
+            config = dict(algorithm=probe.PROBE_CONFIG, producer_matrix={}, selection={})
+            with self.subTest(new=new), tempfile.TemporaryDirectory() as directory:
+                out = Path(directory)/'probe'
+                with patch.object(probe, 'read', return_value=dict(channel=probe.CHANNEL, scenarios=probe.SCENARIOS)), \
+                     patch.object(probe, 'validate_selection'), \
+                     patch.object(probe, 'load_support', return_value=(arrays, [], inputs['old_classes'], producer, {}, {})), \
+                     patch.object(probe, 'selected_tasks', return_value=[(split, np.arange(len(inputs['support_labels'])), inputs['support_labels'])]), \
+                     contextlib.redirect_stdout(io.StringIO()):
+                    probe.evaluate(support_features='synthetic-cache', capsule='synthetic-capsule', output=out,
+                        config=config, expected_capsule_id='synthetic-capsule', expected_checkpoint_sha256='a'*64,
+                        expected_model_seed=0, run_id=scope()['run_id'], row_id=scope()['row_id'])
+                record = next(summary.jsonlines(out/'fit_trace.jsonl'))
+                emitted = list(summary.jsonlines(out/'fit_stages.jsonl'))
+                resolver = summary.StateResolver(out)
+                logs, _, _, _ = summary.verify_record(record, probe.json_native(split), inputs['old_classes'], resolver)
+                resolver.finalize()
+                stream = iter(emitted)
+                summary.verify_stage_stream(stream, logs, split['split_id'])
+                self.assertIsNone(next(stream, None))
+                expected_order = [('BASE_FIT', 'B0')]+([('BASE_FIT', 'C0')] if new else [])
+                expected_order += [('AFFINE_PREPARATION', 'B'), ('CANDIDATE_FIT', 'B_AFFINE')]
+                if new: expected_order += [('AFFINE_PREPARATION', 'C'), ('CANDIDATE_FIT', 'C_AFFINE_seq')]
+                self.assertEqual([(row['event'], row['state']) for row in emitted], expected_order*record['sequence_paths'])
+                self.assertTrue(all(row['schema'] == probe.SCHEMA and row['method'] == probe.METHOD for row in emitted))
+                for corruption in ('schema', 'method', 'split', 'missing_envelope', 'order', 'missing_stage', 'payload'):
+                    changed = deepcopy(emitted)
+                    if corruption in ('schema', 'method'): changed[0][corruption] = 'different-method'
+                    elif corruption == 'split': changed[0]['split_id'] = 'different-parent'
+                    elif corruption == 'missing_envelope': changed[0].pop('schema'); changed[0].pop('method')
+                    elif corruption == 'order': changed[1], changed[2] = changed[2], changed[1]
+                    elif corruption == 'missing_stage': changed.pop(0)
+                    elif corruption == 'payload': changed[0]['class_count'] += 1
+                    with self.subTest(new=new, corruption=corruption), self.assertRaisesRegex(ValueError, 'Stage stream mismatch'):
+                        summary.verify_stage_stream(iter(changed), logs, split['split_id'])
 
 
 if __name__ == '__main__': unittest.main()

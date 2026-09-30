@@ -1,0 +1,19 @@
+{
+  "status": "FAILED_VERIFIED",
+  "layer": "Independent analyzer stage metadata envelope",
+  "runtime_commit": "81a226a8d1cef34ea817ada87070bd89912d027d",
+  "analysis_commit": "33070cd3a1c27f50c9df001d7d3e2ffc03d7d9e8",
+  "pid": 489447,
+  "local_handle": 44670,
+  "source_evidence": "analysis_readback_1790809660101941400.json",
+  "summary_created": false,
+  "process_exited": true,
+  "reason": "Production evaluate writes schema/method/split_id; analyzer expected only split_id. B-to-C order already correct.",
+  "repair": "Preserve exact full field/order equality; reconstruct the actual production envelope and test actual evaluate writer",
+  "training_rerun": false,
+  "method_or_training_config_change": false,
+  "query_or_source_samples_read": false,
+  "next_analysis_release": "d92_affine_joint_analysis_20261001_r02",
+  "next_analysis_started": false,
+  "traceback": "Traceback (most recent call last):\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/d92_affine_joint_analysis_20261001_r01/tools/summarize_d92_affine_joint_probe.py\", line 1151, in <module>\n    if __name__ == '__main__': main()\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/d92_affine_joint_analysis_20261001_r01/tools/summarize_d92_affine_joint_probe.py\", line 1149, in main\n    result = summarize(**vars(parser.parse_args())); print(json.dumps(dict(status=result['status'], coverage=result['coverage'])))\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/d92_affine_joint_analysis_20261001_r01/tools/summarize_d92_affine_joint_probe.py\", line 1034, in summarize\n    for value in logs: check(next(stages, None) == dict(compact_event(value), split_id=sid), 'Stage stream mismatch')\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/d92_affine_joint_analysis_20261001_r01/tools/evaluate_d92_branch_support_probe.py\", line 34, in check\n    raise ValueError(message)\nValueError: Stage stream mismatch\n"
+}

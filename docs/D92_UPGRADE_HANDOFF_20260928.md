@@ -1,3 +1,9 @@
+## 最新状态：Affine分析修复已验证，r02待单次启动（2026-10-01）
+
+ANALYSIS_REPAIR_READY/VERIFIED：Affine分析器严格阶段比较已补齐真实入口schema/method；B→C顺序、全部字段、数学核验和容差保持原样。真实evaluate→core写盘及篡改回归在内的11项相关测试通过（106.31s），其中1项新增、10项既有回归，累计109项不同检查。r01失败和完整训练产物保留，新release d92_affine_joint_analysis_20261001_r02尚未启动；提交推送核对版本后单次独立分析，不重跑训练，目标ACTIVE。
+
+原r01 PID489447/handle44670已退出；只核实新r02，不重复r01或任何训练。AJLR r02 PID394399/handle99201已正常完成，完整summary已下载、报告已生成，完整训练快照已采集（3,240 stages，2,650,592,222B），诊断extract尚未执行。根目录快照保留原文件，不把大体积快照直接加入Git。
+
 ## 最新状态：Affine训练完整产物已核实（2026-10-01）
 
 ARTIFACTS_COMPLETE/VERIFIED：AffineJoint四row/160parent训练已结束，supervisor及全部workers退出；完整marker/state/manifest元数据和实际计数独立读回一致。实际更新2592次、头拟合35988次、latent SVD3240次。完整数学档案仍由独立分析核验；完成不代表性能改善，query/源样本0。下一步唯一analysis release d92_affine_joint_analysis_20261001_r01，root sole owner，目标ACTIVE。

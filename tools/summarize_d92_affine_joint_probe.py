@@ -937,6 +937,13 @@ def verify_record(record, split, old, resolver=None, expected_binding=None):
         proxy=None if k == 1 else record['oneshot_proxy']['parent_mean_metrics']), training
 
 
+def verify_stage_stream(stages, logs, split_id):
+    """Match the actual evaluate() envelope without relaxing fields or order."""
+    for value in logs:
+        expected = dict(compact_event(value), schema=SCHEMA, method=METHOD, split_id=split_id)
+        check(next(stages, None) == expected, 'Stage stream mismatch')
+
+
 def accumulate_resources(resources, record, logs):
     resources['parent_wall_seconds_sum'] = resources.get('parent_wall_seconds_sum', 0.)+record['fit_seconds']
     for row in logs:
@@ -1031,7 +1038,7 @@ def summarize(*, spec, run_root=None, output):
                 accumulate_resources(cell, record, logs); cell['parents'] = cell.get('parents', 0)+1
                 for key in COUNTERS[4:]: cell[key] = cell.get(key, 0)+record[key]
             check(small == compact_record(record), 'Compact evidence mismatch')
-            for value in logs: check(next(stages, None) == dict(compact_event(value), split_id=sid), 'Stage stream mismatch')
+            verify_stage_stream(stages, logs, sid)
             for value in events:
                 full = dict(value, split_id=sid)
                 check(next(event_stream, None) == full and next(small_events, None) == compact_event(full), 'Full/compact training event mismatch')

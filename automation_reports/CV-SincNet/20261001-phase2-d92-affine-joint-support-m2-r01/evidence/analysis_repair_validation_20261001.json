@@ -1,0 +1,16 @@
+{
+  "status": "VERIFIED",
+  "layer": "Analyzer production stage metadata envelope",
+  "related_checks": 11,
+  "new_unique_checks": 1,
+  "existing_regression_checks": 10,
+  "cumulative_unique_checks": 109,
+  "elapsed_seconds": 106.31,
+  "evidence": "evidence/pytest_utf8_1790810723390805400.txt",
+  "production_evaluate_and_core_callbacks_exercised": true,
+  "schema_method_split_order_payload_checks_retained": true,
+  "mathematics_or_tolerance_or_training_change": false,
+  "training_rerun": false,
+  "next_analysis_started": false,
+  "query_or_source_samples_read": false
+}

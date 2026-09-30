@@ -1,0 +1,9 @@
+Traceback (most recent call last):
+  File "E:\type10-7\code\snapshots\d92_support_upgrade_20260928_wt\tools\analyze_d92_affine_joint_probe.py", line 84, in <module>
+    if __name__ == '__main__': main()
+  File "E:\type10-7\code\snapshots\d92_support_upgrade_20260928_wt\tools\analyze_d92_affine_joint_probe.py", line 76, in main
+    print(result.stdout.decode()); print(result.stderr.decode()); result.check_returncode()
+  File "E:\type10-7\local_envs\ssr-gpu\lib\subprocess.py", line 456, in check_returncode
+    raise CalledProcessError(self.returncode, self.args, self.stdout,
+subprocess.CalledProcessError: Command '['ssh', '-F', 'E:/type10-7/tools/n607_ssh_config', '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=10', '-T', 'N607', 'python3 -']' returned non-zero exit status 1.
+ERROR conda.cli.main_run:execute(127): `conda run python -X utf8 tools/analyze_d92_affine_joint_probe.py --spec configs/d92_affine_joint_support_20261001.json --analysis-release d92_affine_joint_analysis_20261001_r01` failed. (See above for error)
