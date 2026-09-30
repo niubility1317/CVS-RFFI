@@ -65,3 +65,7 @@ ISSL DOI https://doi.org/10.1109/TCCN.2025.3583118 ，解析到 IEEE document/11
 两者每阶段只运行 1 epoch，old=3/new=3/K=128，同 RX 同日，不带 LEO；表格只附于运行诊断，不能作为论文准确率对照或正式 CVS 排名。ISSL 低准确率说明短预算未形成有效性能证据，未据此调参/重跑。原代码保留变体与未来论文修复变体不得混用。
 
 [ISSL 完整报告](../../automation_reports/CV-SincNet/20260930-diagnostic-issl-wisig-s392005-r01/report.md) · [LoRa 完整报告](../../automation_reports/CV-SincNet/20260930-diagnostic-lora-wisig-s392005-r01/report.md)。两份报告的 evidence 保存完整紧凑日志、实际参数、数据角色/物理 ID、独立评分与 artifact 审计；大体积权重、IQ、预测留在 `local_artifacts/newclass_registration_20260930/`。
+
+## ISSL修复版（2026-09-30）
+
+原版行为验收入口保留；修复KD计算图、SSL清梯度和queue等问题的入口见[ISSL_REPAIR.md](ISSL_REPAIR.md)。35项修复/协议测试及两组真实WiSig验证通过；长预算主分支旧/新均100%，短预算新类仍0。详细预算、限制及不可覆盖配置见修复报告，不能与此前保留原作者缺陷的结果混称。

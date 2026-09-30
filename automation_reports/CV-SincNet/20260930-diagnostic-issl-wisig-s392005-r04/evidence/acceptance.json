@@ -1,0 +1,17 @@
+{
+  "status": "VERIFIED",
+  "method": "issl",
+  "implementation": "issl_fixed_v1",
+  "seconds": 69.65536639999846,
+  "parameters": 3847424,
+  "trainable_parameters": 3847424,
+  "peak_cuda_bytes": 300798976,
+  "steps": 1710,
+  "query_truth_used_for_training": false,
+  "kd_student_gradient": true,
+  "ssl_new_head_updated": true,
+  "teacher_frozen": true,
+  "incremental_teacher_state_unchanged": true,
+  "old_only_adaptation_B": null,
+  "B_note": "Original ISSL workflow has no old-only adaptation stage"
+}

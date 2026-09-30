@@ -1,0 +1,51 @@
+{
+  "status": "VERIFIED",
+  "tests_passed": 35,
+  "run_results": [
+    {
+      "run_id": "20260930-diagnostic-issl-wisig-s392005-r03",
+      "epochs": {
+        "base_epochs": 2,
+        "ssl_epochs": 2,
+        "downstream_epochs": 2,
+        "incremental_epochs": 2
+      },
+      "steps": 66,
+      "old_accuracy": 0.3541666666666667,
+      "new_accuracy": 0.0,
+      "H": 0.0,
+      "incremental_new_accuracy": 0.0,
+      "seconds": 6.345178499999747,
+      "peak_cuda_bytes": 300798976,
+      "ssl_loss_range": [
+        2.9103384017944336,
+        3.8619275093078613
+      ]
+    },
+    {
+      "run_id": "20260930-diagnostic-issl-wisig-s392005-r04",
+      "epochs": {
+        "base_epochs": 50,
+        "ssl_epochs": 20,
+        "downstream_epochs": 100,
+        "incremental_epochs": 100
+      },
+      "steps": 1710,
+      "old_accuracy": 1.0,
+      "new_accuracy": 1.0,
+      "H": 1.0,
+      "incremental_new_accuracy": 0.75,
+      "seconds": 69.65536639999846,
+      "peak_cuda_bytes": 300798976,
+      "ssl_loss_range": [
+        2.9030539989471436,
+        3.843369483947754
+      ]
+    }
+  ],
+  "checkpoints_verified": 8,
+  "prediction_ids_per_run": 384,
+  "claim_scope": "fixed-budget same-RX/day six-class WiSig diagnostic only",
+  "no_query_selection": true,
+  "causal_limitation": "Long-budget improvement combines code fixes and budget increase; no one-fix causal claim"
+}

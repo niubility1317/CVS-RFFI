@@ -8,3 +8,5 @@
 |---|---|---|
 |ISSL真实WiSig源代码完整链路验收|managed_run|[打开](../../automation_reports/CV-SincNet/20260930-diagnostic-issl-wisig-s392005-r01/report.md)|
 |ISSL全面验收两轮真实WiSig回归|managed_run|[打开](../../automation_reports/CV-SincNet/20260930-diagnostic-issl-wisig-s392005-r02/report.md)|
+|ISSL修复版两轮匹配回归|managed_run|[打开](../../automation_reports/CV-SincNet/20260930-diagnostic-issl-wisig-s392005-r03/report.md)|
+|ISSL修复版新类学习固定预算验证|managed_run|[打开](../../automation_reports/CV-SincNet/20260930-diagnostic-issl-wisig-s392005-r04/report.md)|

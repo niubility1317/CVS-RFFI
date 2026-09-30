@@ -1,0 +1,121 @@
+{
+  "status": "VERIFIED",
+  "structured_rows": 74,
+  "csv_rows": 74,
+  "stdout_lines": 76,
+  "all_logs_read_fully": true,
+  "error_markers": [],
+  "stages": {
+    "base": {
+      "steps": 6,
+      "epochs": {
+        "0": {
+          "steps": 3,
+          "loss_mean": 6.633026838302612,
+          "loss_first": 1.176278829574585,
+          "loss_last": 1.820793628692627,
+          "loss_min": 1.176278829574585,
+          "loss_max": 16.902008056640625
+        },
+        "1": {
+          "steps": 3,
+          "loss_mean": 0.7436644832293192,
+          "loss_first": 0.5834720730781555,
+          "loss_last": 0.5622550249099731,
+          "loss_min": 0.5622550249099731,
+          "loss_max": 1.085266351699829
+        }
+      },
+      "summary_epochs": [
+        0,
+        1
+      ],
+      "grad_min": 3.651467800140381,
+      "grad_max": 53.188228607177734
+    },
+    "ssl": {
+      "steps": 36,
+      "epochs": {
+        "0": {
+          "steps": 18,
+          "loss_mean": 3.5666791995366416,
+          "loss_first": 2.9103384017944336,
+          "loss_last": 3.8342037200927734,
+          "loss_min": 2.9103384017944336,
+          "loss_max": 3.8550682067871094
+        },
+        "1": {
+          "steps": 18,
+          "loss_mean": 3.8143837451934814,
+          "loss_first": 3.8433337211608887,
+          "loss_last": 3.8367507457733154,
+          "loss_min": 3.7636656761169434,
+          "loss_max": 3.8619275093078613
+        }
+      },
+      "summary_epochs": [
+        0,
+        1
+      ],
+      "grad_min": 0.2184315025806427,
+      "grad_max": 0.3205796778202057
+    },
+    "downstream_transfer": {
+      "steps": 12,
+      "epochs": {
+        "0": {
+          "steps": 6,
+          "loss_mean": 4.526256203651428,
+          "loss_first": 3.446272611618042,
+          "loss_last": 1.693876028060913,
+          "loss_min": 1.693876028060913,
+          "loss_max": 12.083047866821289
+        },
+        "1": {
+          "steps": 6,
+          "loss_mean": 1.6324287454287212,
+          "loss_first": 1.628486156463623,
+          "loss_last": 1.603426218032837,
+          "loss_min": 1.5938045978546143,
+          "loss_max": 1.6982481479644775
+        }
+      },
+      "summary_epochs": [
+        0,
+        1
+      ],
+      "grad_min": 0.09999419003725052,
+      "grad_max": 14.302370071411133
+    },
+    "incremental_baseline": {
+      "steps": 12,
+      "epochs": {
+        "0": {
+          "steps": 6,
+          "loss_mean": 2.3371395667394004,
+          "loss_first": 2.656747341156006,
+          "loss_last": 2.150615930557251,
+          "loss_min": 2.150615930557251,
+          "loss_max": 2.656747341156006
+        },
+        "1": {
+          "steps": 6,
+          "loss_mean": 2.0600907603899636,
+          "loss_first": 2.294774055480957,
+          "loss_last": 2.3202788829803467,
+          "loss_min": 1.6058717966079712,
+          "loss_max": 2.3202788829803467
+        }
+      },
+      "summary_epochs": [
+        0,
+        1
+      ],
+      "grad_min": 2.6429758071899414,
+      "grad_max": 4.014864444732666
+    }
+  },
+  "epoch_summary_rows": 8,
+  "convergence_verdict": "NOT_ESTABLISHED_BY_AUDIT: fixed-budget execution and loss statistics alone do not prove convergence",
+  "source_validation": "N/A: absent in diagnostic; no query used for selection"
+}

@@ -1,0 +1,25 @@
+{
+  "status": "VERIFIED",
+  "method": "issl",
+  "steps": 66,
+  "prediction_ids": 384,
+  "checkpoint_reload_strict": [
+    "base.pt",
+    "ssl.pt",
+    "downstream.pt",
+    "incremental_baseline.pt"
+  ],
+  "all_step_losses_gradients_finite": true,
+  "checkpoint_predictions_identical": [
+    "A",
+    "C",
+    "C_incremental_baseline"
+  ],
+  "scoring_stage_coverage": [
+    "ids",
+    "A",
+    "C",
+    "C_incremental_baseline"
+  ],
+  "claim_scope": "functional acceptance only; no new training or performance selection"
+}

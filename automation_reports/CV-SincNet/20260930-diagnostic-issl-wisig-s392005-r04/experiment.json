@@ -18,7 +18,7 @@
   "replaces_run_id": null,
   "authorization": "用户2026-09-30明确要求修复ISSL问题，授权修复后WiSig真实验证；非原论文数据复现、非正式CVS",
   "code": {
-    "commit": null,
+    "commit": "014dc059ad24f9cd2d6f280c46e821f06f377d91",
     "checkout": "E:\\type10-7",
     "environment": "ssr-gpu; torch 2.10.0+cu128",
     "cwd": "E:\\type10-7"
