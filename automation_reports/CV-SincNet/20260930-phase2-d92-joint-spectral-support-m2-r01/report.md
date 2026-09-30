@@ -3,7 +3,7 @@
 - run_id：`20260930-phase2-d92-joint-spectral-support-m2-r01`
 - group_id：`d92-joint-spectral-support`；类别：`diagnostic`；阶段：`Phase2-support-only-diagnostic`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -31,3 +31,5 @@ LocalRidge为最终分类器；支持集内折监督训练两个有界谱参数�
 联合谱adapter已完成55项不同合成检查；原始失败证据保留，theta0布局已修复。四路径完整配对，固定160个support任务；practical residual绑定预检VERIFIED。当前PLANNED，尚未发布或启动；无真实联合性能结论。详细算法及API：docs/D92_LOCAL_RIDGE_JOINT_DESIGN_20260930.md；独立审查：docs/D92_LOCAL_RIDGE_JOINT_REVIEW_20260930.md。
 
 VERIFIED：独立读回确认supervisor645034及两个CPU worker645046/645047存活，argv/CWD匹配；runtime commit38d407699816f125ac8ccf7fb0e4f8c33039ba31。4row中rx3两行训练中、rx1两行待运行。无query/source读取，完整结果未完成，不能以partial指标评价或改配置。
+
+VERIFIED：四row/160任务完成并独立全量分析，936训练阶段/7488更新/29875头拟合；R_joint与R0报告准确率及H一致，无晋级或query评分。OOF新类存在任务B71.041667%、C旧63.767361%、C新54.846354%、H58.416796%。全日志核对795阶段参数改变、6340非零更新；平方距离收缩上界最大0.1748045%，训练有效执行但没有外层准确率收益。下一轮通道adapter联合设计仅DESIGN_ONLY_NOT_FROZEN_NOT_RUN；目标ACTIVE。

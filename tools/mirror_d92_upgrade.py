@@ -244,6 +244,10 @@ paths += ['docs/D92_LOCAL_RIDGE_JOINT_REVIEW_20260930.md',
     'tools/summarize_d92_joint_spectral_probe.py','tests/test_d92_joint_spectral_local_ridge.py',
     'tests/test_d92_joint_spectral_orchestration.py','tests/test_evaluate_d92_joint_spectral_probe.py',
     'tests/test_summarize_d92_joint_spectral_probe.py']
+paths += ['tools/collect_d92_joint_training_diagnostics.py',
+    'tests/test_collect_d92_joint_training_diagnostics.py',
+    'docs/D92_JOINT_NEXT_MECHANISM_20260930.md',
+    'docs/D92_JOINT_SPECTRAL_SUPPORT_RESULT_20260930.md']
 for name in paths:
     src=ROOT/name;dst=WS/name;dst.parent.mkdir(parents=True,exist_ok=True)
     # Each name is unique to this task; original D92 and shared wrappers are not mirrored.

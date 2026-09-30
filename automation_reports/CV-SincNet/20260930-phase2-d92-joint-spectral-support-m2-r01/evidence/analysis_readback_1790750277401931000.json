@@ -1,0 +1,26 @@
+{
+  "release": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_joint_spectral_analysis_20260930_r01",
+  "process": {
+    "pid": 745392,
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_joint_spectral_analysis_20260930_r01/tools/summarize_d92_joint_spectral_probe.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_joint_spectral_support_20260930_r01/configs/d92_joint_spectral_support_20260930.json",
+      "--run-root",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20260930-phase2-d92-joint-spectral-support-m2-r01",
+      "--output",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20260930-phase2-d92-joint-spectral-support-m2-r01/results/support_summary"
+    ],
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_joint_spectral_analysis_20260930_r01",
+    "commit": "374ad25d1a3a0720abe0aefdb592bc91dc137331",
+    "live_argv": null,
+    "live_cwd": null
+  },
+  "log_bytes": 715,
+  "log_tail": [
+    "{\"status\": \"COMPLETE_JOINT_SPECTRAL_PROBE_VERIFIED\", \"coverage\": {\"episodes\": 160, \"k1_episodes\": 40, \"oof_episodes\": 120, \"proxy_anchor_count\": 1400, \"sequence_paths\": 1760, \"baseline_head_fit_count\": 3168, \"baseline_factorization_count\": 3168, \"joint_preparation_count\": 3168, \"joint_stage_count\": 4576, \"fixed_stage_count\": 3168, \"trained_joint_stage_count\": 936, \"optimizer_steps\": 7488, \"geometry_fit_count\": 3704, \"geometry_factorization_count\": 2304, \"inner_objective_evaluation_count\": 8424, \"inner_head_fit_count\": 25272, \"inner_factorization_count\": 25272, \"final_head_fit_count\": 1435, \"final_factorization_count\": 1435, \"head_fit_count\": 29875, \"factorization_count\": 29875, \"diagnostic_fit_count\": 0}}"
+  ],
+  "summary_exists": true
+}

@@ -1,3 +1,11 @@
+## 最新状态：联合谱实验完整ANALYZED，无性能提升；推进通道联合结构（2026-09-30）
+
+VERIFIED：四row/160任务完成并独立全量分析，936训练阶段/7488更新/29875头拟合；R_joint与R0报告准确率及H一致，无晋级或query评分。OOF新类存在任务B71.041667%、C旧63.767361%、C新54.846354%、H58.416796%。全日志核对795阶段参数改变、6340非零更新；平方距离收缩上界最大0.1748045%，训练有效执行但没有外层准确率收益。下一轮通道adapter联合设计仅DESIGN_ONLY_NOT_FROZEN_NOT_RUN；目标ACTIVE。
+
+现有run已终止，无存活supervisor/worker，禁止重复prepare/publish/analysis。runtime commit38d407699816f125ac8ccf7fb0e4f8c33039ba31；analysis commit374ad25d1a3a0720abe0aefdb592bc91dc137331。证据：readback_1790750092582724500.json、analysis_readback_1790750277401931000.json、results/support_summary及results/training_diagnostics。55项实现/编排检查及8项全日志collector检查通过。
+
+完整结果见D92_JOINT_SPECTRAL_SUPPORT_RESULT_20260930.md，A=N/A，B0不是地面A。下一候选D92_JOINT_NEXT_MECHANISM_20260930.md尚无实测：原b/a一次构造后分块保范通道adapter，736参数/731自由度，margin+LocalRidge隐式梯度，8步固定Adam，顺序C继承B。core/入口/新结构独立P0/P1并行实现中，不读query或历史目标评分。root负责串行合成测试、编排、Git、唯一新run发布。已有失败不能标为目标完成。
+
 ## 最新状态：联合谱adapter实验已启动并核实RUNNING（2026-09-30）
 
 run 20260930-phase2-d92-joint-spectral-support-m2-r01 已唯一发布并启动；runtime commit 38d407699816f125ac8ccf7fb0e4f8c33039ba31，本地HEAD与origin分支OID独立核实一致。release d92_joint_spectral_support_20260930_r01；spec configs/d92_joint_spectral_support_20260930.json。禁止重复prepare/new/publish。
