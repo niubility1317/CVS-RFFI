@@ -1,4 +1,22 @@
-## 最新状态：顺序残差头完整分析，不晋级（2026-09-30）
+## 最新状态：用户明确联合主线，纯metric不单独启动（2026-09-30）
+
+用户最新要求BranchLocalRidge类方法与微调联合，且BranchLocalRidge优先。权威要求摘要见 `docs/D92_LOCAL_RIDGE_JOINT_REQUIREMENTS_20260930.md`。纯WithinClassMetric保留为组件/消融，不能作为下一完整候选。此前within-metric run仅预定名，未prepare/new/发布/启动，无性能数据；不要恢复旧计划自动launch。
+
+组件core/冻结JSON、入口/summary、5编排工具与tests完成，累计53项检查通过：核心16、入口汇总10、编排27。context train_k重复kwargs已修复并有回归；缓存投影误差P1已设计/实现/数值回归闭合。受影响26项全部PASS，日志 `E:/type10-7/.codex_tmp/pytest_utf8_1790734497648275400.stdout`；首轮错误证据保留。sessions63707/27422均已结束，未运行真实数据。交付说明docs/D92_WITHIN_CLASS_METRIC_COMPONENT_20260930.md。
+
+单一联合设计已形成 `docs/D92_LOCAL_RIDGE_JOINT_DESIGN_20260930.md`：LocalRidge唯一最终分类器，共享2维谱参数theta在非负和<=1单纯形；各inner fold仅旧inner-train估计M/R/谱，theta经物理inner-held的闭式LocalRidge中心onehot MSE与物理和prox1监督。固定8步PGD lr0.1，解析kernel/solve梯度，初始前向精确R0但保留导数。B后C继承theta初始化/锚点；内折几何重估，最终C继承B完整旧几何、更新theta并全类拟合。inner-held可监督theta但非独立验证，outer-held只评分。K1/K2信息不足精确回退。尚未联合实现/新配置/预登记/launch，不声称encoder微调或2参数就低总成本。下一步对联合微分/非光滑tau/数据边界做直接正确性审阅，并实现单一联合core及配对入口；无需再次询问用户授权。当前目标ACTIVE，无N607活跃任务。
+
+## 历史状态：WithinClassMetric实施中，未预登记未启动（2026-09-30）
+
+上一轮完整残差失败复盘与数据已提交并push核实 `9914f0a5662f9afcc335d97d6d6113ecd9c1e9c5`，本轮开始单一类内度量机制pilot。无当前活跃实验。设计 `docs/D92_WITHIN_CLASS_METRIC_DESIGN_20260930.md`；原s0迹匹配，W仅改变Gaussian距离/tau，旧support均值span保护，C继承同W后全类拟合，proxy trainK1精确identity，A仍N/A。本轮机制+固定对照，不直接晋级/改旧screen，不声称K1收益。
+
+owner：branch_local_core负责core/frozenJSON/coretests/design；sequential_residual_entry负责evaluate/summary与tests；local_env_reconcile负责一次直接P0/P1审阅；root负责run/prepare/preflight/publish/analyze及编排tests、所有Conda/SSH/launch。所有方法worker QUERY-BLIND，禁止把本handoff、query/ABC或历史总索引发给他们。root已写5编排工具和tests，完成syntax/UTF8检查；核心及入口仍在实现，尚无数值测试结论。
+
+数值审阅发现缓存误差路由不能只用投影后norm，需覆盖投影前interaction到参考范数和实际dot维度，正交+近重复回归；core在修复，不能绕过。旧n120的新增数值状态粗估约15.5MB（OOF n84约5.84MB），不是低成本已证实方案；LOCO诊断成本单列。
+
+预定新run `20260930-phase2-d92-within-metric-diagnostic-m2-r01`，release `d92_within_metric_diagnostic_20260930_r01`，spec `configs/d92_within_metric_diagnostic_20260930.json`，同4row160parent。尚未prepare/new/发布，不从这段文字推断已落地。原R0 head3168、metric尝试1760（proxy1400 identity）、非identity<=360、额外head<=648、LOCO2160、optimizer0。真实计数须由entry/summary验证；root之后prepare一次、new一次、预检/提交/push后唯一publish。当前目标ACTIVE。
+
+## 历史状态：顺序残差头完整分析，不晋级（2026-09-30）
 
 run `20260930-phase2-d92-sequential-residual-support-m2-r01` ANALYZED，runtime `d6cee1b1fea30b1074fbf4238193a1c6e0e5cf47`；4row/160parent全部完成，无运行中的所属进程。最终独立证据 `readback_1790731833554181000.json`，summary状态 `COMPLETE_SEQUENTIAL_RESIDUAL_PROBE_VERIFIED`。唯一分析已运行完成，结果在原run/results/support_summary，禁止重新prepare/new/publish/analyze。信道为practical residual/post_sync/noeq/25MHz，两个CPU lane，无GPU/source/query拟合。
 
