@@ -1,3 +1,9 @@
+## 最新状态：数学驱动MC-Residual8联合方法LOCAL_VERIFIED待发布（2026-09-30）
+
+VERIFIED: Single math-driven joint MC-Residual8/BranchLocalRidge candidate locally tested and independently reviewed; projection-induced objective-increase P1 fixed, no parameter grid. Complete support matrix registered; input identity/output preflight VERIFIED. Root sole launch owner; not launched or claimed performant.
+
+run `20260930-phase2-d92-mc-residual8-support-m2-r01`，spec `configs/d92_mc_residual8_support_20260930.json`，release `d92_mc_residual8_support_20260930_r01`。prepare/new/preflight均已执行，禁止重复。U/V11776参数、rank8、GELU切向范数保持，LocalRidge完整双通道伴随与教师旧margin约束，实际Armijo+总目标非增+keep三条件。论文来源/推导见docs/D92_JOINT_FINETUNING_MATH_FOUNDATIONS_20260930.md。参数结构及160parent未搜索或扩大；A=N/A，support pilot不是query或独立数据验证。原source-only scratch基座/cache固定，B零/DCT初始化，不继承先前适应状态；只有当前B→C合法support继承。root统一测试/launch，workersQUERY-BLIND。目标ACTIVE；下一步仅发布已推送版本并独立读回进程，不能重复launch。NPZ完整向量保留原artifact路径，大体积不强制进入Git；日志及报告保留。
+
 ## 最新补充：MC-Residual8 唯一后继冻结设计完成，待实现（2026-09-30）
 
 PrototypeTransport r02 ANALYZED结果已b57c56d98提交/推送，完整160parent仅小幅收益，原BranchLocalRidge主线保留，无query评分。新设计docs/D92_JOINT_AFTER_PROTOTYPE_DESIGN_20260930.md：U/V11776参数、rank8跨分支GELU切向残差、LocalRidge唯一最终头、B→C真实继承、折内R0/B教师margin保持+物理记录风险松弛+有限真实双接受。固定Phase1/practical residual/source-free，无新ground摘要依赖，K1无伪监督；最多4×3，不靠加步或LR扫描。风险/资源上界明确，尚无实现/新实验，目标ACTIVE。

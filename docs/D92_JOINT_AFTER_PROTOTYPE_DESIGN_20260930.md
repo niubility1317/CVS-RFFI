@@ -1,6 +1,6 @@
 # PrototypeTransport 之后：MarginConstrained-Residual8-LocalRidge
 
-日期：2026-09-30。状态：`QUERY_BLIND_DESIGN_ONLY_NOT_IMPLEMENTED_NOT_RUN`。本文只冻结一个后继候选：**MarginConstrained-Residual8-LocalRidge（MC-Residual8）**。Phase1 固定，输入保持本轮 practical residual 缓存；合法目标 support 监督训练跨分支非线性残差，BranchLocalRidge 是唯一最终分类器。B→C_seq 真实继承，不因 reset 对照略好而更换主线。
+日期：2026-09-30。状态：`QUERY_BLIND_IMPLEMENTED_LOCAL_VERIFIED_NOT_RUN`。本文只冻结一个后继候选：**MarginConstrained-Residual8-LocalRidge（MC-Residual8）**。Phase1 固定，输入保持本轮 practical residual 缓存；合法目标 support 监督训练跨分支非线性残差，BranchLocalRidge 是唯一最终分类器。B→C_seq 真实继承，不因 reset 对照略好而更换主线。
 
 ## 1. 证据与设计判断
 
@@ -142,7 +142,7 @@ B 从 U=0、V=V0 开始。U=0 时前向直接返回原 b0/a0 的实际 bits，�
 1. g=0 时记录 ZERO_GRADIENT；否则 `d0=−g/||g||`。
 2. 令 `b=max(0,R_limit−R_keep(current))/t0`。a=0 或 `aᵀd0≤b` 时 d=d0；否则 `d=d0−a(aᵀd0−b)/||a||²`。这将已归一化方向投影到当前保持预算的线性半空间，投影后不再次归一化；d 的范数不超过 1。它只预测一阶风险，不能替代真实 trial 检查。d=0 时记录 ZERO_GUARDED_DIRECTION。
 3. `θ_trial=Π_product_balls(θ+t d)`。两项 Frobenius 球分别投影，得到实际位移 Δ。Δ=0 时记录 ZERO_PROJECTED_STEP。
-4. 接受同时要求：`L_trial≤L_current+1e−4 gᵀΔ+tol_L`，以及 `R_keep_trial≤R_limit+tol_keep`。两个容差都是 `128*eps64*max(1,各自比较量的绝对值)`。投影可能改变一阶方向，真实保持检查仍必须执行。
+4. 接受同时要求：`L_trial≤min(L_current,L_current+1e−4 gᵀΔ)+tol_L`，以及 `R_keep_trial≤R_limit+tol_keep`。两个容差都是 `128*eps64*max(1,各自比较量的绝对值)`。独立数学审查给出了`gᵀd<0`但球投影后`gᵀΔ>0`的反例；单独Armijo可能允许总目标微升。因此增加实际总目标非增检查，不改变参数、试探次数或数据。这保证接受状态总目标在声明浮点容差内非增，不保证收敛或外层性能。真实保持检查仍必须执行。
 5. 只有接受后才替换 θ/current cache。三次均拒绝时记录 ARMIJO_OR_KEEP_BUDGET_EXHAUSTED，保留已接受状态并结束；不加步、择最好外层步或选择性重跑。最后接受缓存直接提供最终目标，全 support 头另拟合一次。
 
 保持约束是候选内部的训练定义，不是数据权限、实验审批或每轮性能门禁。它控制内层保持风险相对阶段起点的增量，并不保证 support OOF 或 query 旧类下降≤1 pp。尤其 C 的 anchor 联合头已经受新类注册竞争影响，守住这个训练上限不等于自动恢复 B 的完整旧类准确率；R_keep 目标才试图恢复教师 margin。
@@ -174,6 +174,8 @@ g 和 a 分别需要一套 score 伴随；每折复用同一 Cholesky，执行�
 
 上述完整 pilot 上界采用本轮360个B训练阶段、576个C训练阶段的结构，只是工作量预算，不扩大矩阵或宣称新候选一定执行同样步数。C教师旧类较少但仍有真实成本；teacher score缓存、两套梯度/距离伴随、V0、anchor和当前/试探参数都计入准备/峰值内存。不能因减少原型表就宣称总体更轻，也不能拿11776个参数与encoder总参数比较来替代测量。
 
+论文对应、解析头微分、margin与注册竞争推导见[联合微调数学依据](D92_JOINT_FINETUNING_MATH_FOUNDATIONS_20260930.md)。这些依据支持结构选择；rank8、κ、混合系数和有限步数仍是提前固定的预算/设计取值，没有理论最优保证。本候选不执行参数组合搜索。
+
 若完整state保留与当前实现同样的原/适配support、raw与标签继承数据，数值字节参考为
 
 `94208 + (17688+8C)N + 32`，
@@ -193,4 +195,4 @@ g 和 a 分别需要一套 score 伴随；每折复用同一 Cholesky，执行�
 
 必要合成检查：U=0精确R0且U梯度活跃/V首步零；全链两个目标的有限差分；块范数/角度及零块；批形/重复/置换样本逐元素相同映射；原距离下界/零带宽/近重复；折内teacher/head隔离；类风险先跨折合并；B/C同物理绑定；物理松弛的零anchor与非零anchor两种边界；风险方向投影、真实双接受条件、失败trial缓存与counter；K1/单类/N0。
 
-完整support评价保留B0→B、B→C旧类、新类/旧类/绝对差/H及全K×新增类数、模型/接收机场景分层，明确A缺失为N/A。若内层受约束下降、表征确实变化但B仍退化或旧新竞争损失仍明显，则本机制假设不受支持；不能只报告reset或某个K、改松弛、加步数或借query结果补救。本设计没有实施或启动新run，主Agent先交付本轮完整报告，再决定后续实现。
+完整support评价保留B0→B、B→C旧类、新类/旧类/绝对差/H及全K×新增类数、模型/接收机场景分层，明确A缺失为N/A。若内层受约束下降、表征确实变化但B仍退化或旧新竞争损失仍明显，则本机制假设不受支持；不能只报告reset或某个K、改松弛、加步数或借query结果补救。本设计已实施并完成本地验证；独立P0/P1审查已修正投影后的目标微升问题，尚未启动真实run。没有新性能结果。
