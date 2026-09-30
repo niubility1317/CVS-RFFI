@@ -1,4 +1,10 @@
-## 最新状态：Margin完整分析完成，顺序残差头实施中（2026-09-30）
+## 最新状态：顺序残差头50项测试通过，已预登记未发布（2026-09-30）
+
+新run `20260930-phase2-d92-sequential-residual-support-m2-r01` 已prepare/new登记为PLANNED，不能再次prepare/new。主配置 `configs/d92_sequential_residual_support_20260930.json`，release `d92_sequential_residual_support_20260930_r01`。核心21、编排17、入口汇总11、隔离发布闭包1合计50测试通过；数值q下溢与post-fit评分失败时保留状态两个问题已修复并有回归。独立审阅已完成，包括entry/summary，无未解决P0/P1。
+
+预检 `residual_preflight_1790731287939812500.json` VERIFIED：同四缓存、practical residual/post_sync/noeq/25MHz、96CPU、2lane×2BLAS，新增输出不存在。未启动真实拟合。下一步完成review收尾，sync原run记录和明确镜像路径，提交push/readback，再唯一调用publish，核实进程与startup。run预计4576残差阶段/292864更新、3168basefit。日志每步保存；所有真实K1仅数值，完整160parent后汇总，不提前选择。全目标ACTIVE。
+
+## 历史状态：Margin完整分析完成，顺序残差头实施中（2026-09-30）
 
 Margin完整4800parent分析VERIFIED，原run/results/support_summary已下载，登记ANALYZED。standard vsLocalRidge K5/10/20的旧/新/H都小幅正向，proxy的新类均微负，未通过既定双诊断筛选，不执行preregister_local_margin_benchmark，不启动query基准。完整数值/成本报告 `docs/D92_BRANCH_LOCAL_MARGIN_SUPPORT_RESULT_20260930.md`；OOF平均fit Margin1.19798秒、LocalRidge0.09410秒，proxy0.29464/0.004106秒。旧analysis PID597219已正常退出，session59121完成；无健康实验待重启。
 

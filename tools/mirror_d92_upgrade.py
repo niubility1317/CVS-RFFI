@@ -204,6 +204,19 @@ paths += ['docs/D92_LOCAL_RIDGE_REGISTRATION_DIAGNOSTIC_20260930.md',
     'configs/d92_registration_diagnostic_rx1_20260930.json']
 paths += ['docs/D92_REGISTRATION_DIAGNOSTIC_RESULT_20260930.md']
 paths += ['docs/D92_BRANCH_LOCAL_MARGIN_SUPPORT_RESULT_20260930.md']
+paths += ['docs/D92_NEXT_AFTER_REGISTRATION_DIAGNOSTIC_20260930.md',
+    'docs/D92_SEQUENTIAL_RESIDUAL_REVIEW_20260930.md',
+    'code/cvsrffi/d92_sequential_residual_head.py',
+    'configs/d92_sequential_residual_head_frozen_20260930.json',
+    'configs/d92_sequential_residual_support_20260930.json',
+    'configs/d92_sequential_residual_support_rx3_20260930.json',
+    'configs/d92_sequential_residual_support_rx1_20260930.json',
+    'tools/run_d92_sequential_residual_probe.py','tools/prepare_d92_sequential_residual_probe.py',
+    'tools/preflight_d92_sequential_residual_probe.py','tools/publish_d92_sequential_residual_probe.py',
+    'tools/analyze_d92_sequential_residual_probe.py','tools/evaluate_d92_sequential_residual_probe.py',
+    'tools/summarize_d92_sequential_residual_probe.py',
+    'tests/test_d92_sequential_residual_head.py','tests/test_d92_sequential_residual_orchestration.py',
+    'tests/test_evaluate_d92_sequential_residual_probe.py','tests/test_summarize_d92_sequential_residual_probe.py']
 for name in paths:
     src=ROOT/name;dst=WS/name;dst.parent.mkdir(parents=True,exist_ok=True)
     # Each name is unique to this task; original D92 and shared wrappers are not mirrored.
