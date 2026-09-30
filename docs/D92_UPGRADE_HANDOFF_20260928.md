@@ -1,3 +1,7 @@
+## 最新补充：MC联合训练诊断工具已验证（2026-09-30）
+
+collector/test/doc已交还；root聚焦pytest证据1790774207012280500。训练runtime仍191d7df111a58aa8435473582db42902f9b8d3a0，未改运行release。最近独立实时证据：readback_1790774171026062600.json。完整run尚未完成；禁止重复publish。结束后独立support summary，再对完整scalar训练流及必要坐标做只读诊断，不访问query或据部分结果改参数。目标ACTIVE。
+
 ## 最新状态：MC-Residual8联合support pilot RUNNING（2026-09-30）
 
 VERIFIED: MC-Residual8/LocalRidge single candidate launched once at runtime commit 191d7df111a58aa8435473582db42902f9b8d3a0. Independent post-state matched supervisor175794 and two child PID/argv/cwd, with12 completed support parents. No query/source sample/encoder access; two CPU lanes, no performance result yet.

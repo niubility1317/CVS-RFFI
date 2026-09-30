@@ -39,3 +39,5 @@ BranchLocalRidge为唯一最终分类器，11776参数的跨分支adapter通过�
 VERIFIED: Single math-driven joint MC-Residual8/BranchLocalRidge candidate locally tested and independently reviewed; projection-induced objective-increase P1 fixed, no parameter grid. Complete support matrix registered; input identity/output preflight VERIFIED. Root sole launch owner; not launched or claimed performant.
 
 VERIFIED: MC-Residual8/LocalRidge single candidate launched once at runtime commit 191d7df111a58aa8435473582db42902f9b8d3a0. Independent post-state matched supervisor175794 and two child PID/argv/cwd, with12 completed support parents. No query/source sample/encoder access; two CPU lanes, no performance result yet.
+
+MC完整训练机制collector聚焦测试通过；仅新增只读分析工具。实际160配置汇总待运行结束，不更改训练runtime。
