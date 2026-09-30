@@ -290,6 +290,11 @@ paths += ['tools/mirror_d92_upgrade.py', 'docs/D92_JOINT_AFTER_FCR8_DESIGN_20261
     'tests/test_evaluate_d92_anchor_joint_probe.py', 'tests/test_summarize_d92_anchor_joint_probe.py',
     'docs/D92_ANCHOR_JOINT_CORE_20261001.md', 'docs/D92_ANCHOR_JOINT_ENTRY_20261001.md',
     'docs/D92_ANCHOR_JOINT_P0_REVIEW_20261001.md', 'docs/D92_ANCHOR_JOINT_RELEASE_PLAN_20261001.md']
+paths += ['tools/report_d92_anchor_joint_support.py', 'tests/test_report_d92_anchor_joint_support.py',
+    'docs/D92_ANCHOR_JOINT_REPORTING_20261001.md']
+paths += ['tools/collect_d92_anchor_joint_training_diagnostics.py',
+    'tests/test_collect_d92_anchor_joint_training_diagnostics.py',
+    'docs/D92_ANCHOR_JOINT_TRAINING_DIAGNOSTICS_20261001.md']
 for name in paths:
     src=ROOT/name;dst=WS/name;dst.parent.mkdir(parents=True,exist_ok=True)
     # Each name is unique to this task; original D92 and shared wrappers are not mirrored.

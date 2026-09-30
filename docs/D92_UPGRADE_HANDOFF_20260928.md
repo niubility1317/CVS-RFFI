@@ -1,3 +1,9 @@
+## 最新状态：AJLR 117/160 配置，完整报告和诊断入口已验证（2026-10-01）
+
+RUNNING/VERIFIED：独立进度证据 `progress_1790793657767532900.json` 记录 117/160 parent。rx3 两 row 各 40 已完成且原 workers 退出；rx1 两 row 分别完成 19/18，workers361624/362622 与 supervisor341635 存活且 argv/cwd 匹配。完整 run 尚未完成，没有读取或打印 partial 性能。实际 runtime 仍为 a1a003f59e8ed14640a252ada8290a03af3420c5；不重复发布、分析、停止或修改健康进程。
+
+报告生成器 10 项检查与训练诊断采集器 10 项合成检查通过；前者保护完整 80 行方法×K×新增类数/A/B/C/逐 parent H 与绝对差，后者两阶段只读完整训练流与 NPZ，不打开 query 或 outer scores。真实报告/诊断均未生成，唯一分析 release d92_anchor_joint_analysis_20261001_r01 尚未启动。新截距数学审计只解释结构约束，不实现或冻结下一候选。目标 ACTIVE；先等待完整 160，再单次独立分析。
+
 ## 最新状态：AJLR 已单次启动 RUNNING（2026-10-01）
 
 RUNNING/VERIFIED：AJLR已单次发布启动，实际runtime a1a003f59e8ed14640a252ada8290a03af3420c5。supervisor341635、workers341647/341648的实际PID/argv/cwd独立匹配；两个rx3 row训练中，两个rx1待排队。CPU两lane/BLAS2、query/source样本不读、encoder/checkpoint不加载。首次readback1790790609；完整160parent尚未结束，尚无真实性能分析；禁止重复publish/重启/热修改。54不同相关检查与唯一P0/P1已完成。A与B−A=N/A，目标ACTIVE。
