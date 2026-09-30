@@ -1,6 +1,6 @@
 # FCR8与LocalRidge联合方法的固定support试验
 
-状态：LOCAL_VERIFIED，核心19项与入口/汇总/调度27项相关合成测试通过。新run为`20260930-phase2-d92-fcr8-support-m2-r01`，group为`d92-fcr8-support`；尚未发布。主Agent是唯一launch owner。实际配置及四row的完整矩阵由`configs/d92_fcr8_support_20260930.json`维护。
+状态：RUNNING，47个不同相关检查与独立P0/P1审查已通过，已单次启动并独立读回进程与首批产物。新run为`20260930-phase2-d92-fcr8-support-m2-r01`，group为`d92-fcr8-support`；已发布；完整结果尚待收集。主Agent是唯一launch owner。实际配置及四row的完整矩阵由`configs/d92_fcr8_support_20260930.json`维护。
 
 ## 数学改动和证据边界
 
@@ -31,3 +31,5 @@ CPU-only，两lane、每lane两BLAS线程，不干预其他GPU训练。完整CVS
 核心19/19：`.codex_tmp/pytest_utf8_1790778450928803500`。入口/汇总/调度27/27：`.codex_tmp/pytest_utf8_1790779028837391100`。唯一实验身份修正后，仅受影响调度16/16复测：`.codex_tmp/pytest_utf8_1790779078011027300`，不是额外16个不同测试。混合零带宽新增1项通过（1790779489929461400），原汇总7项在1790779456170264700均通过；合计47个不同相关检查。极端subnormal逆谱不可表示时显式报错；没有静默跳过或把数值失败算作有效学习。独立P0/P1审查见[D92_FCR8_P0_REVIEW_20260930.md](D92_FCR8_P0_REVIEW_20260930.md)。
 
 本run不因低性能停止。技术故障只记录所属row，保留健康row和原产物；无自动重试、无热修改。完成160parent后才由独立analysis release做完整汇总。预登记、启动与结束状态维护原experiment.json/report.md/events.jsonl及索引。发布采用已推送Git版本，启动后独立读回PID/argv/cwd和产物，不凭退出码判断外部成功。
+
+实际runtime commit为`33673fe02a857d790aa69a1ace17fdb9638099d0`，supervisor PID247876，首批worker PID247888/247889。启动证据为`evidence/readback_1790779962176104900.json`。Git受限环境凭据错误已经通过普通push恢复，远端OID独立核对一致；没有重复launch或热修改。

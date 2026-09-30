@@ -1,3 +1,9 @@
+## 最新状态：FCR8单次启动RUNNING（2026-09-30）
+
+VERIFIED：已单次发布并启动FCR8，实际runtime commit33673fe02a857d790aa69a1ace17fdb9638099d0，supervisor PID247876、workers247888/247889独立读回argv/cwd匹配。首次读回14/160parent完成，rx3两row训练中、rx1两rowPENDING，没有技术错误。CPU两lane，query/source样本不读，无encoder训练；尚未完成，不报告真实性能。
+
+run `20260930-phase2-d92-fcr8-support-m2-r01`，spec `configs/d92_fcr8_support_20260930.json`；prepare/new/preflight/publish均已执行，禁止重复。47个不同检查与独立审查已完成。根Agent唯一launch owner。后续按需只读既有run进度；完整四row160parent结束后单次独立analysis，不据部分数据改候选。A=N/A，不把B0当A，不声明query/独立验证。目标ACTIVE。
+
 ## 最新状态：FCR8 LOCAL_VERIFIED待发布（2026-09-30）
 
 VERIFIED：单一数学驱动FCR8–LocalRidge实现完成，47个不同相关数值/入口/汇总/调度检查通过；独立P0/P1审查完成，完整phi、独占run身份及混合零带宽N/A汇总问题已修。固定字典函数坐标Z、平均函数位移近端、B原U精确继承；无参数组合搜索。已登记完整160parent，新输出与source-only缓存身份preflight VERIFIED，root sole launch owner；尚未发布，尚无FCR真实性能。
