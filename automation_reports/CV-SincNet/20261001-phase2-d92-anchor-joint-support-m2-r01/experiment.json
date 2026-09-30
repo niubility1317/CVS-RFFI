@@ -27,7 +27,8 @@
     "base_recipe": "experiments/adv3b02_xuc/configs/rc4_practical_residual_noeq_20260918.json",
     "native_code_base": "b63734157",
     "native_training_commit": "9b1ddd939fcabc74c77c94a62fef8e5aad07c0e9",
-    "commit_note": "Preparation parent; publisher records actual pushed release commit in launch/startup."
+    "commit_note": "Preparation parent; publisher records actual pushed release commit in launch/startup.",
+    "release_commit": "a1a003f59e8ed14640a252ada8290a03af3420c5"
   },
   "data": {
     "dataset": "Support slices only from the two existing VALIDATED_ONCE capsules",
@@ -153,7 +154,17 @@
     "cpu_lanes": 2,
     "blas_threads_per_lane": 2,
     "export_device": null,
-    "export_batch_size": null
+    "export_batch_size": null,
+    "pid": 341635,
+    "runtime_command": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_anchor_joint_support_20261001_r01/tools/run_d92_anchor_joint_probe.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_anchor_joint_support_20261001_r01/configs/d92_anchor_joint_support_20261001.json",
+      "--commit",
+      "a1a003f59e8ed14640a252ada8290a03af3420c5"
+    ]
   },
   "expected_artifacts": [
     "startup.json",
@@ -186,7 +197,7 @@
     "Two-path AJLR and three-path FCR differ in work; raw elapsed time alone does not establish an adapter speedup. Detailed text, full numeric NPZ, compact JSONL/CSV retained."
   ],
   "claim_scope": "SUPPORT_INFORMATION_DIAGNOSTIC_NOT_QUERY_PERFORMANCE",
-  "status": "LOCAL_VERIFIED",
+  "status": "RUNNING",
   "metrics_plan": {
     "metric_names": [
       "A_NA",

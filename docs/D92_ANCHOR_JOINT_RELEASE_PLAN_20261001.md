@@ -1,6 +1,6 @@
 # AJLR 联合微调与 LocalRidge 的固定 support 试验
 
-状态：`LOCAL_VERIFIED_NOT_LAUNCHED`。新 run 为 `20261001-phase2-d92-anchor-joint-support-m2-r01`，group 为 `d92-anchor-joint-support`，release 为 `d92_anchor_joint_support_20261001_r01`。root 是唯一 launch owner。[逐行配置](../configs/d92_anchor_joint_support_20261001.json)维护实际矩阵；目前尚无 AJLR 性能结果。
+状态：`RUNNING`。新 run 为 `20261001-phase2-d92-anchor-joint-support-m2-r01`，group 为 `d92-anchor-joint-support`，release 为 `d92_anchor_joint_support_20261001_r01`。root 是唯一 launch owner。[逐行配置](../configs/d92_anchor_joint_support_20261001.json)维护实际矩阵；已独立核实启动，完整 AJLR 性能结果尚未产生。
 
 数学方案见[完整推导](D92_JOINT_AFTER_FCR8_DESIGN_20261001.md)。仅比较原 BranchLocalRidge（R0）与预先声明的顺序 AJLR（R_AJLR_seq），不新增 reset 路径，不扫描 rank、学习率、损失权重或温度。
 
@@ -27,3 +27,5 @@ CPU-only、两 lane、每 lane 两 BLAS 线程，不干预 GPU 任务。实际�
 数值验证：22 项核心合成检查通过，证据 `.codex_tmp/pytest_utf8_1790789398064171500`；首轮标签 dtype 问题已修复。入口 4 项、汇总 5 项、启动器 23 项均通过，共 54 个不同相关检查；[唯一 P0/P1 审查](D92_ANCHOR_JOINT_P0_REVIEW_20261001.md)结论为 NO_UNRESOLVED_P0_P1。资源修改后受影响核心 3 项通过（1790789671575009100）；实际路径元数据 6 项通过（1790789874716344800），完整复算 1 项通过（1790790062262768900），10 种篡改拒绝通过（1790790155613702700）。正式发布以已推送版本为准，启动后独立读回 PID/argv/cwd 与产物。技术失败只保留该 row 的诊断，无自动重试；不因低性能停止健康任务。完整 160 parent 后才运行单次独立分析，不根据部分结果更改方法。
 
 LOCAL_VERIFIED/VERIFIED：AJLR单一数学结构已实现，54个不同相关检查通过；core22、ops23、entry4、summary5。整数dtype、summary唯一参考pair、实际1800路径和原生bool验收边界均已修复；完整正常复算与10种篡改拒绝通过，独立审查NO_UNRESOLVED_P0_P1。实际B函数prior、固定旧物理参考测度与tau/gamma、残差闭式头、全类CE伴随联合微调；只有R0/R_AJLR_seq。完整四row/160parent预登记与既有source-only缓存身份preflight已核实，新run/release/archive无冲突。未发布、未启动，尚无真实性能；A与B−A=N/A，目标ACTIVE。
+
+RUNNING/VERIFIED：AJLR已单次发布启动，实际runtime a1a003f59e8ed14640a252ada8290a03af3420c5。supervisor341635、workers341647/341648的实际PID/argv/cwd独立匹配；两个rx3 row训练中，两个rx1待排队。CPU两lane/BLAS2、query/source样本不读、encoder/checkpoint不加载。首次readback1790790609；完整160parent尚未结束，尚无真实性能分析；禁止重复publish/重启/热修改。54不同相关检查与唯一P0/P1已完成。A与B−A=N/A，目标ACTIVE。

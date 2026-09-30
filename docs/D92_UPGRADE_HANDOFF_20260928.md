@@ -1,3 +1,9 @@
+## 最新状态：AJLR 已单次启动 RUNNING（2026-10-01）
+
+RUNNING/VERIFIED：AJLR已单次发布启动，实际runtime a1a003f59e8ed14640a252ada8290a03af3420c5。supervisor341635、workers341647/341648的实际PID/argv/cwd独立匹配；两个rx3 row训练中，两个rx1待排队。CPU两lane/BLAS2、query/source样本不读、encoder/checkpoint不加载。首次readback1790790609；完整160parent尚未结束，尚无真实性能分析；禁止重复publish/重启/热修改。54不同相关检查与唯一P0/P1已完成。A与B−A=N/A，目标ACTIVE。
+
+run 20261001-phase2-d92-anchor-joint-support-m2-r01；spec configs/d92_anchor_joint_support_20261001.json；release d92_anchor_joint_support_20261001_r01。prepare/new/preflight/publish 已执行，禁止重复。完整结束后唯一 analysis release d92_anchor_joint_analysis_20261001_r01，尚未启动。新AJLR训练诊断collector由QUERY-BLIND子Agent只实现，root统一验证；未读取partial performance，不改健康runtime。恢复先只读核实当前PID/产物。
+
 ## 最新状态：AJLR 已验证，待单次发布（2026-10-01）
 
 LOCAL_VERIFIED/VERIFIED：AJLR单一数学结构已实现，54个不同相关检查通过；core22、ops23、entry4、summary5。整数dtype、summary唯一参考pair、实际1800路径和原生bool验收边界均已修复；完整正常复算与10种篡改拒绝通过，独立审查NO_UNRESOLVED_P0_P1。实际B函数prior、固定旧物理参考测度与tau/gamma、残差闭式头、全类CE伴随联合微调；只有R0/R_AJLR_seq。完整四row/160parent预登记与既有source-only缓存身份preflight已核实，新run/release/archive无冲突。未发布、未启动，尚无真实性能；A与B−A=N/A，目标ACTIVE。

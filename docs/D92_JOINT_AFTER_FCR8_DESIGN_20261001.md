@@ -1,6 +1,6 @@
 # D92 FCR8 后续联合方法：固定 B 函数先验的残差 LocalRidge
 
-日期：2026-10-01。状态：`IMPLEMENTED_VERIFIED_NOT_RUN`。候选：`D92-AnchorJointLocalRidge-v1`，简称 AJLR。本文只固定一条结构及其可证伪假设，不启动实验，不报告尚未测量的收益。
+日期：2026-10-01。状态：`RUNNING_SINGLE_STRUCTURE`。候选：`D92-AnchorJointLocalRidge-v1`，简称 AJLR。本文只固定一条结构及其可证伪假设，不启动实验，不报告尚未测量的收益。
 
 **保留 BranchLocalRidge 主线，改变 C 阶段分类函数的继承方式：以本行实际 B 分类函数为固定先验，闭式拟合全注册类标签残差，再通过这个最终 LocalRidge 头联合微调。** B/C 均从合规 source-only Phase1 开始；不继承历史目标适配状态。C 只继承本行新训练的实际 B，不新增 reset 候选或参数组合搜索。
 
