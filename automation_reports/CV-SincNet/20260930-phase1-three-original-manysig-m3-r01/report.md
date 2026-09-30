@@ -37,3 +37,13 @@
 ## 启动前环境兼容修复
 
 真实source smoke发现共享NumPy2.2.5与PyTorch2.1的ndarray转换失败，正式训练尚未启动。仅在本release隔离目录解包NumPy1.26.4轮子，通过PYTHONPATH供本批进程使用，不修改公共环境。数据导出成功并保持原文件，不重复生成。兼容包来源及SHA见experiment.json。
+
+## 已启动：VERIFIED
+
+当前为RUNNING。PID、实际CWD/argv及GPU见[evidence/launch_readback.json](evidence/launch_readback.json)，第二次日志增长、source epoch和resolved config见[evidence/progress_readback.json](evidence/progress_readback.json)。
+
+- asknet: GPU0，worker PID=107317，初始训练PID=107713。
+- wavemlp: GPU1，worker PID=107318，初始训练PID=107712。
+- difl: GPU2，worker PID=107319，初始训练PID=107711。
+
+恢复时先核对原workers和active_process，不重复启动。DIFL教师完成后由同一worker启动学生；最终source complete artifact表示等待source review。未进行目标评分，尚无论文性能结论。其他GPU任务保留；0/1/2各共两个训练进程，符合容量约定。
