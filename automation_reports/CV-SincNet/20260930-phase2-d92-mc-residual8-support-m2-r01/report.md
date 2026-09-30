@@ -3,7 +3,7 @@
 - run_id：`20260930-phase2-d92-mc-residual8-support-m2-r01`
 - group_id：`d92-mc-residual8-support`；类别：`diagnostic`；阶段：`Phase2-support-only-diagnostic`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：ARTIFACTS_COMPLETE（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -45,3 +45,5 @@ MC完整训练机制collector聚焦测试通过；仅新增只读分析工具。
 ARTIFACTS_COMPLETE/VERIFIED：MC联合四row/160parent完整结束，主管及worker均退出，独立complete/state/物理配置计数读回一致。实际更新3544次、实际头拟合22257次。未读取query或源域样本；运行完成不代表性能改善。下一步独立support汇总与完整训练机制诊断；root唯一owner，目标ACTIVE。
 
 VERIFIED：完整MC support独立汇总已单次启动，analysis release d92_mc_residual8_analysis_20260930_r01，PID203687/argv/cwd独立读回匹配，分析commit ccda587647a09bad5c766383c86dea886e8dabc1。本地等待handle72223仍有效；summary尚未产生。训练已全部结束，禁止重复publish或重复analysis。
+
+VERIFIED：MC160 parents完整support分析及训练诊断完成。OOF96新增类任务相对R0：B -0.173611pp、C旧 +0.095486pp、C新 -0.023438pp、H +0.011084pp；绝对新旧差距增加0.184896pp。保留BranchLocalRidge，不晋级query。A=N/A。936信息阶段全部实际更新，保持硬约束未激活，不能解释为保护约束阻止训练。完整120行矩阵和4576阶段/17604曲线/1944教师折已保存。

@@ -1,0 +1,44 @@
+{
+  "release": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_mc_residual8_analysis_20260930_r01",
+  "process": {
+    "pid": 203687,
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_mc_residual8_analysis_20260930_r01/tools/summarize_d92_mc_residual8_probe.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_mc_residual8_support_20260930_r01/configs/d92_mc_residual8_support_20260930.json",
+      "--run-root",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20260930-phase2-d92-mc-residual8-support-m2-r01",
+      "--output",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20260930-phase2-d92-mc-residual8-support-m2-r01/results/support_summary"
+    ],
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_mc_residual8_analysis_20260930_r01",
+    "commit": "ccda587647a09bad5c766383c86dea886e8dabc1",
+    "live_argv": null,
+    "live_cwd": null
+  },
+  "release_exists": true,
+  "log_bytes": 1313,
+  "log_tail": [
+    "{\"status\": \"COMPLETE_MC_RESIDUAL8_PROBE_VERIFIED\", \"coverage\": {\"episodes\": 160, \"k1_episodes\": 40, \"oof_episodes\": 120, \"proxy_anchor_count\": 1400, \"sequence_paths\": 1760, \"baseline_head_fit_count\": 3168, \"baseline_factorization_count\": 3168, \"mc_preparation_count\": 3168, \"mc_stage_count\": 4576, \"trained_mc_stage_count\": 936, \"optimizer_steps\": 3544, \"inner_objective_evaluation_count\": 5763, \"inner_head_fit_count\": 17289, \"inner_factorization_count\": 17289, \"final_head_fit_count\": 936, \"final_factorization_count\": 936, \"head_fit_count\": 22257, \"factorization_count\": 22257, \"diagnostic_fit_count\": 0, \"derivative_triangular_solve_count\": 44652, \"backward_evaluation_count\": 3721, \"accepted_trial_count\": 3544, \"rejected_trial_count\": 1283, \"trial_count\": 4827, \"trial_attempt_count\": 4827, \"optimizer_iterations\": 3721, \"prepared_distance_evaluation_count\": 11952, \"mc_forward_evaluation_count\": 19089, \"teacher_head_fit_count\": 864, \"teacher_factorization_count\": 864, \"teacher_score_evaluation_count\": 1944, \"teacher_score_physical_count\": 30240, \"initial_inner_head_fit_count\": 1080, \"initial_inner_factorization_count\": 1080, \"task_derivative_triangular_solve_count\": 22326, \"keep_derivative_triangular_solve_count\": 22326, \"final_score_evaluation_count\": 7744, \"final_score_physical_count\": 1020600}}"
+  ],
+  "summary_exists": true,
+  "analysis_execution": {
+    "commit": "ccda587647a09bad5c766383c86dea886e8dabc1",
+    "runtime_commit": "191d7df111a58aa8435473582db42902f9b8d3a0",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_mc_residual8_analysis_20260930_r01/tools/summarize_d92_mc_residual8_probe.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_mc_residual8_support_20260930_r01/configs/d92_mc_residual8_support_20260930.json",
+      "--run-root",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20260930-phase2-d92-mc-residual8-support-m2-r01",
+      "--output",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20260930-phase2-d92-mc-residual8-support-m2-r01/results/support_summary"
+    ],
+    "status": "VERIFIED",
+    "release": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_mc_residual8_analysis_20260930_r01"
+  }
+}
