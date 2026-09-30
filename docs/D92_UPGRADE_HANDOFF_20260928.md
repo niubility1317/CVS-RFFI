@@ -1,3 +1,9 @@
+## 最新补充：分数尺度数学审计完成，r02仍运行（2026-10-01）
+
+VERIFIED：新docs/D92_AJLR_SCORE_SCALE_MATH_AUDIT_20261001.md完成，只根据当前数学/原始论文推导，无项目外层结果读取、实现或候选冻结。理想onehot的类数效应、正共享scalar固定判决不变、CE/adapter完整导数与无惩罚可分边界均明确；不把低概率等同弱adapter梯度，不用标签范围假定实际ridge/held分数有±1上界。后续只结合完整训练归档判断，不能归因temperature或声明性能改善。
+
+当前analysis r02 PID394399/handle99201最新独立读回analysis_readback_1790797619859091400.json仍匹配live argv/cwd，尚无summary。实际analysis commit fc5cd282f93e2b7cc1a2fcd686b4217fb4abfe4a；不重复analyze。下一步等待同一handle完成及完整summary下载，再执行已验证报告器和两阶段collector。目标ACTIVE。
+
 ## 最新状态：AJLR完整独立分析r02运行中（2026-10-01）
 
 ANALYSIS_R02_RUNNING/VERIFIED：使用阶段顺序修复的独立分析已单次启动，PID394399/argv/cwd独立读回匹配，analysis commit fc5cd282f93e2b7cc1a2fcd686b4217fb4abfe4a。本地等待handle99201有效，完整summary尚未产生。四row/160训练已完成；r01失败证据保留，不重复训练或任何analysis启动，目标ACTIVE。
