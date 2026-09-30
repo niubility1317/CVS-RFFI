@@ -1,4 +1,10 @@
-## 最新状态：顺序残差头50项测试通过，已预登记未发布（2026-09-30）
+## 最新状态：顺序残差头已启动并核实（2026-09-30）
+
+run `20260930-phase2-d92-sequential-residual-support-m2-r01` RUNNING，runtime `d6cee1b1fea30b1074fbf4238193a1c6e0e5cf47`，supervisor609279、workers609291/609292。独立证据 `readback_1790731526140533100.json` 核实argv/CWD/live一致，两rx3执行、两rx1等待，无complete/error。本次已实际launch，不得重跑prepare/new/publish。两个CPU lane×2BLAS，无GPU、query或source样本。全目标ACTIVE，尚无性能结论。
+
+恢复先只读 `.codex_tmp/read_single_support_run_20260930.py configs/d92_sequential_residual_support_20260930.json` 核实同一run。完整4rows160parent后，唯一调用 `tools/analyze_d92_sequential_residual_probe.py --spec configs/d92_sequential_residual_support_20260930.json --analysis-release d92_sequential_residual_analysis_20260930_r01`；未运行过分析。输出固定run/results/support_summary，若存在先核实，禁止重复覆盖。分析之后才把完整support证据交query-blind方法worker，不用partial选参。当前各worker已完成，无需再次重复review。
+
+## 历史状态：顺序残差头50项测试通过，已预登记未发布（2026-09-30）
 
 新run `20260930-phase2-d92-sequential-residual-support-m2-r01` 已prepare/new登记为PLANNED，不能再次prepare/new。主配置 `configs/d92_sequential_residual_support_20260930.json`，release `d92_sequential_residual_support_20260930_r01`。核心21、编排17、入口汇总11、隔离发布闭包1合计50测试通过；数值q下溢与post-fit评分失败时保留状态两个问题已修复并有回归。独立审阅已完成，包括entry/summary，无未解决P0/P1。
 
