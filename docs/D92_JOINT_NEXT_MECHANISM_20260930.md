@@ -1,6 +1,6 @@
 # JointSpectral 之后：分支通道适配与 LocalRidge 联合训练
 
-状态：DESIGN_ONLY_NOT_FROZEN_NOT_RUN。本文提出一个候选：**在冻结的五块分支缓存上训练有界通道门控，通过内层物理持出的 LocalRidge 间隔损失求梯度；最终分类器仍只有 LocalRidge。** 不实现、不生成运行配置、不启动实验。原实现及暂停中的 Residual8 草稿保留。
+状态：IMPLEMENTED_SYNTHETIC_VALIDATION_PASSED_NOT_RUN。本文规定一个候选：**在冻结的五块分支缓存上训练有界通道门控，通过内层物理持出的 LocalRidge 间隔损失求梯度；最终分类器仍只有 LocalRidge。** 核心、算法常量 JSON 及合成测试已落盘；主任务串行完成核心/编排 60 项、入口/汇总 15 项及新增 Decimal 近重复回归 1 项，共 76 个不同检查，均通过。尚无本候选真实 support 拟合或启动。原实现及暂停中的 Residual8 草稿保留。
 
 ## 1. 完整支持集证据说明了什么
 
@@ -82,13 +82,13 @@ B 仅用当前 row 的旧类 outer-train，从 u=0、anchor=0 学习，得到 u_
 
 Nnew=0 直接复用各路径 B，不额外拟合 C。传入 C 时逐物理 ID 核对旧类标签与五块原始缓存等于 B；只能继承当前 row/相同旧 support 的状态。不同 outer fold、proxy anchor、model 或 cohort 都从各自合法 support 独立构建，不跨任务复用目标适应状态。
 
-k=1 没有物理内持出，B 参数保持零；C 保留合法继承的 anchor，不作监督更新。当前平衡 K1 的 B anchor 为零，故精确等于 R0。support 诊断里的 true K1 仍仅数值检查、不拟合；one-shot proxy 的 trainK1 也不能增加视图充当物理样本。k=2 可做两折 one-shot 内训练头，其 held 标签提供合法训练信号，但统计很弱。新候选不依赖估计非零类内协方差，所以这与旧谱候选的 k=2 无信息条件不同，须明确计数。
+k=1 没有物理内持出，B 参数保持零；C 保留合法继承的 anchor，不作监督更新。单注册类没有错误类最大分数，其数据损失定义为零，也不进行监督更新。只有这两种情况在 prepare 阶段标 no-information，目标评估和优化步数均为零。其他阶段即使当前梯度为零也固定完成 8 步，因为 Adam 历史矩仍可能产生更新；结构零核可得到 8 次零更新记录，不以瞬时零梯度提前退出。当前平衡 K1 的 B anchor 为零，故精确等于 R0。support 诊断里的 true K1 仍仅数值检查、不拟合；one-shot proxy 的 trainK1 也不能增加视图充当物理样本。k=2 可做两折 one-shot 内训练头，其 held 标签提供合法训练信号，但统计很弱。新候选不依赖估计非零类内协方差，所以这与旧谱候选的 k=2 无信息条件不同，须明确计数。
 
 部署将固定 adapter 应用到每个 query 的五块特征，再由同一最终 LocalRidge 对全部注册类评分。只逐样本推理，不读取 query 标签/角色/真实类别数，不根据 query 批次重估归一化、门控或核统计。原始 encoder 特征缓存可复用，但旧的距离/核/预测缓存不可当新方法结果。
 
 ## 6. 最小实现接口与可反驳检查
 
-以下是提议接口，不是已存在代码：
+以下接口已在新核心中实现并通过相关合成检查：
 
 ```python
 prepare_channel_training(
@@ -127,4 +127,22 @@ prepared 保存原始不可变五块、一次原构造得到的 b0/a0、规范�
 
 同一 pilot 的 936 个可训练阶段仍最多 8424 次 objective、25272 次 inner head、936 次额外 final head；加原基线 3168 次，合计最多 29376 次闭式头。proxy 恒等及 N0 复用必须按实际减少。每次推理新增约 736 次通道乘法和五块范数保持变换，但原 LocalRidge 核评分仍在；反向 pair 累加与解算可能远大于 adapter 本身成本。须实测训练/评分分项、峰值 RSS、实际持久状态、部署包与增量传输字节，注明硬件；未测项为 N/A。该方案只确定避免 encoder 反传，尚不能声称总计算低于 LocalRidge。
 
-本文没有实现或运行新候选，没有读取任何真实 query，性能收益仍是假设。
+## 8. 核心实现与审计接口
+
+源码为 `code/cvsrffi/d92_joint_channel_local_ridge.py`，冻结算法常量为 `configs/d92_joint_channel_frozen_20260930.json` 的 algorithm，合成测试为 `tests/test_d92_joint_channel_local_ridge.py`。原 LocalRidge、谱适配和 paused Residual8 均未修改。实现采用 NumPy float64、SciPy 三角求解与全参数伴随，不依赖 Torch。
+
+prepare 返回 `ChannelTraining`，包括不可变原五块、一次构造的 b/a、规范标签/物理 ID、内折问题及可选继承 B。`audit_dict()` 顶层为 `channel_preparation_count`、`prepare_seconds`、`prepared_numeric_state_bytes`、`transient_distance_bytes`、`no_information`、`no_information_reason`、`inherited_state` 和 `inner_folds`。每内折包含训练/持出物理 ID、`original_interaction_centered_trace`、`original_bandwidth_tau` 和数量，折头状态不得取自 inner-held。
+
+fit mode 为 B/C_seq/C_reset；返回 `ChannelLocalRidgeState`，有只读 u、classes、score/predict/audit_dict。最终状态保留原 b/a、raw support 与 labels，用于后续 C 的逐 ID、标签及原始缓存一致性检查；这些 retained arrays 全部计入 `lineage_state_bytes`，并与 `head_state_bytes`、`adapter_state_bytes=5888` 相加得到 `persistent_state_bytes`。`optimizer_state_bytes=11776` 是训练用的两个 Adam 矩，不算部署参数但计入训练资源。现实现没有只保留 5888 B 的低内存部署导出器，不得以参数载荷代替完整 state bytes。
+
+`baseline_state` 签名不变，但不能仅凭 IDs/features/classes 复用。原 LocalRidge state 不存物理标签，因此核心重建原 K，验证实际 alpha 满足当前规范标签的 `(K+I)alpha=Y`，并核对 tau/gamma/核中心。该绑定不做新的 Cholesky，计 `baseline_binding_seconds`、`baseline_binding_distance_evaluation_count=1`、`baseline_binding_factorization_count=0`。单类或零 interaction 核验证精确零头并标 `EXACT_ZERO_HEAD_LABEL_INVARIANT`：此时任何合法标签配置给出同一零预测，不能声称从 alpha 恢复了历史标签。绑定耗时包含在 fit_seconds 内。
+
+每个训练阶段 8 个 `JOINT_CHANNEL_STEP`，另有不含 step 的 `JOINT_CHANNEL_FIT`；prepare 可发 `CHANNEL_INNER_PREPARED`。STEP 保存 u_pre/u_post/anchor、裁剪前真实 gradient、gradient_norm、clipped_gradient_norm、gradient_clip_scale、projection_zero_sum_residuals、active_box_count、实际更新范数及步骤时间。末步后的第 9 次目标单独保存 final_objective，不把第 8 步更新前目标称为最终目标。
+
+总训练目标的 `loss_data/loss_proximal/loss_total` 是 held 间隔平均、近端项及其和，标记 `loss_scope=PHYSICAL_INNER_HELD_MARGIN_PLUS_PROXIMAL`。内折 `held_margin_loss_sum` 才是用于总目标的监督物理和；`head_training_loss_data/ridge/total` 独立记录闭式头自己的训练岭损失。兼容字段 `loss_data_sum` 同 held_margin_loss_sum，而内折原 `loss_data/ridge/total` 同头训练损失，另有明确 loss_scope。汇总不能把头训练损失累计为 adapter 监督目标。
+
+实际工作量通过 `optimizer_steps`、`nonzero_projected_update_count`、`u_changed_from_anchor`、`inner_objective_evaluation_count`、`inner_head_fit_count`、`inner_factorization_count`、`derivative_triangular_solve_count` 和 `final_head_fit_count/final_factorization_count` 分别记录。正常三折阶段为 8/9/27 次更新/目标/内头及 48 次伴随三角求解；最后无梯度评估不做伴随，tau0 退化可进一步减少伴随求解。全 pilot 对应伴随求解实际上界 44928，不能报成每个 objective 都执行反向。
+
+NumericalFailure 保留阶段上下文、完成步骤、当前内折及其已尝试分解、之前完成内折、当前 u/Adam 矩，并把非有限数显式编码为 JSON 字符串。它不静默返回另一个候选。
+
+主任务的核心/编排验证证据为 `E:/type10-7/.codex_tmp/pytest_utf8_1790755858887852000.stdout`。随后只补一项真实近重复回归：从实际 binary64 输入用 Decimal.from_float 构造 100 位显式 interaction 及四端点 Jacobian，验证约 10⁻²⁶ 级平方距离与稳定 VJP，容差 rtol=8×10⁻¹⁵、atol=0；独立运行通过，证据为 `E:/type10-7/.codex_tmp/pytest_utf8_1790756026674225700.stdout`，未修改生产数学或重复已有检查。这些验证说明已测实现行为，不证明 support 泛化或星载资源收益。本候选未真实运行，没有读取任何真实 query，性能收益仍是假设。

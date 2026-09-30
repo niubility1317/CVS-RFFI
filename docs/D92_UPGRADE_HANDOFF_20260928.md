@@ -1,3 +1,11 @@
+## 最新状态：通道联合实现76项通过，已预登记PLANNED待唯一发布（2026-09-30）
+
+VERIFIED：joint-channel核心/入口/summary/编排76项不同合成检查通过；新结构独立P0/P1闭合；已生成并登记四row/160支持任务，preflight独立核实四缓存和practical residual绑定未改变。当前PLANNED，尚未启动，无真实性能结果，root唯一launch owner。
+
+run 20260930-phase2-d92-joint-channel-support-m2-r01；spec configs/d92_joint_channel_support_20260930.json；release d92_joint_channel_support_20260930_r01。已prepare/new/preflight，禁止重复生成。只需提交推送后执行publish一次并独立核PID/argv/CWD。主线R_channel_seq，对照R0/R_channel_reset；8步固定Adam，736参数/731自由度，不加载checkpoint，不读源样本/query，B后C继承并绑定旧ID/标签/原特征。A=N/A，B0不是A；完整K×new/三阶段及成本待实测。
+
+四row全部JOINT_CHANNEL_PROBE_COMPLETE后才执行tools/analyze_d92_joint_channel_probe.py --spec configs/d92_joint_channel_support_20260930.json --analysis-release d92_joint_channel_analysis_20260930_r01（尚未创建）。不根据partial外层指标调参、选路线或重跑。旧joint-spectral完成无增益，已有完整训练诊断。目标ACTIVE。
+
 ## 最新状态：联合谱实验完整ANALYZED，无性能提升；推进通道联合结构（2026-09-30）
 
 VERIFIED：四row/160任务完成并独立全量分析，936训练阶段/7488更新/29875头拟合；R_joint与R0报告准确率及H一致，无晋级或query评分。OOF新类存在任务B71.041667%、C旧63.767361%、C新54.846354%、H58.416796%。全日志核对795阶段参数改变、6340非零更新；平方距离收缩上界最大0.1748045%，训练有效执行但没有外层准确率收益。下一轮通道adapter联合设计仅DESIGN_ONLY_NOT_FROZEN_NOT_RUN；目标ACTIVE。
