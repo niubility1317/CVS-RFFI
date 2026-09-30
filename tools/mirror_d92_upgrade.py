@@ -191,6 +191,17 @@ paths += ['tools/d92_adaptation_registration_pairing.py',
     'docs/D92_ABC_ANALYSIS_REVIEW_20260930.md']
 paths += ['docs/D92_BRANCH_LOCAL_RIDGE_ABC_RESULT_20260930.md']
 paths += ['docs/D92_SUPPORT_PEFT_DESIGN_20260930.md', 'docs/D92_FINETUNING_FAILURE_LESSONS_20260930.md', 'docs/D92_HISTORICAL_D11_SUPPORT_RECHECK_20260930.md']
+paths += ['docs/D92_LOCAL_RIDGE_REGISTRATION_DIAGNOSTIC_20260930.md',
+    'docs/D92_REGISTRATION_DIAGNOSTIC_REVIEW_20260930.md',
+    'tools/d92_registration_score_diagnostics.py','tools/evaluate_d92_registration_diagnostic.py',
+    'tools/summarize_d92_registration_diagnostic.py','tools/analyze_d92_registration_diagnostic.py',
+    'tools/prepare_d92_registration_diagnostic.py','tools/run_d92_registration_diagnostic.py',
+    'tools/preflight_d92_registration_diagnostic.py','tools/publish_d92_registration_diagnostic.py',
+    'tests/test_d92_registration_score_diagnostics.py','tests/test_d92_registration_diagnostic.py',
+    'tests/test_d92_registration_orchestration.py',
+    'configs/d92_registration_diagnostic_20260930.json',
+    'configs/d92_registration_diagnostic_rx3_20260930.json',
+    'configs/d92_registration_diagnostic_rx1_20260930.json']
 for name in paths:
     src=ROOT/name;dst=WS/name;dst.parent.mkdir(parents=True,exist_ok=True)
     # Each name is unique to this task; original D92 and shared wrappers are not mirrored.

@@ -2,6 +2,14 @@
 
 日期：2026-09-30。依据用户本轮明确说明，本任务继续在BranchLocalRidge及当前优化候选上逐步改进。下列数值是理想目标，不是每个候选必须一次达到的硬性淘汰条件，也不授权中断、修改或重启健康实验。
 
+## 星地信道与当前数据绑定
+
+用户明确指定星地信道使用practical residual。2026-09-30只读核实两个现用capsule的manifest：`channel.route=residual`、`channel.mode=post_sync`、`equalization_enabled=false`、`fs_hz=25000000`；场景为`practical_high`、`practical_mid`和`practical_low_urban`。capsule ID分别为`residual-noeq-76121e6f34363fa612ec25fb`与`residual-noeq-d0a99fede324159c5a4750fd`，均为`p2_min_v1/VALIDATED_ONCE`。
+
+本轮继续使用这些固定received观测及已绑定support缓存。既有noeq配置保持不变；不因微调方案或报告变化重新生成信道。历史D11的LEO_weak记录仅作失败机制复盘，不作为当前实验输入、初始化状态或当前practical residual性能证据。小型诊断若只覆盖部分场景，报告明确列出实际覆盖，不冒充三场景完整确认。
+
+只读证据：[现用信道manifest读回](E:/type10-7/local_artifacts/d92_upgrade_20260928/registration_diagnostic_metadata_20260930/channel_metadata_1790701691856377600.json)。本核对未读取IQ、query truth或重新验证数据。
+
 ## 用户希望达到的效果
 
 1. 只使用目标域旧类support完成适应后，旧类准确率明显上升，理想提升至少10个百分点。

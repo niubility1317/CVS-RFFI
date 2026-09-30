@@ -1,4 +1,10 @@
-## 最新状态：先吸取历史微调失败经验（2026-09-30）
+## 最新状态：注册机制诊断准备完成（2026-09-30）
+
+新增run `20260930-phase2-d92-registration-diagnostic-m2-r01` 已预登记、尚未启动。配置 `configs/d92_registration_diagnostic_20260930.json`，固定两个模型seed×两个cohort、160 parent，仅support诊断，不训练新方法。85项相关合成测试通过（纯分解39、编排34、入口12）；独立审阅无未解决P0/P1。预检 `registration_preflight_1790702937357199800.json` 已核实四个缓存绑定及新输出不存在。用户要求practical residual：实际route=residual、mode=post_sync、equalization=false、25 MHz；pilot只覆盖选定receiver的high/low_urban，不覆盖mid。
+
+下一步提交push后由root唯一发布，独立读回进程和startup，再更新此记录。必须保留未验证Residual8草稿，发布闭包明确排除。已有LocalMargin run原样继续；完成全部support后才分析，不从partial选参数。方法子任务保持query-blind，不能读本交接下方ABC等历史query结果。全目标ACTIVE，理想10/1/3目标未达成。
+
+## 历史状态：先吸取历史微调失败经验（2026-09-30）
 
 用户指出过去域适应微调未获良好改善。已停止推进新Residual8实验准备，未启动新实验；整体goal仍ACTIVE，当前健康Margin原样运行。新的历史复盘覆盖D11 rank8缓存后残差、D21 M6投影低秩微调和完整BranchOrbitCE支持对照。根汇总 `docs/D92_FINETUNING_FAILURE_LESSONS_20260930.md` 含历史query回顾，QUERY-EXPOSED，不发给方法设计者；D11完整support日志复算 `docs/D92_HISTORICAL_D11_SUPPORT_RECHECK_20260930.md` 是safe支持证据。
 
