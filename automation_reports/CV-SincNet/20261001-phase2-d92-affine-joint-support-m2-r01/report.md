@@ -3,7 +3,7 @@
 - run_id：`20261001-phase2-d92-affine-joint-support-m2-r01`
 - group_id：`d92-affine-joint-support`；类别：`diagnostic`；阶段：`Phase2-support-only-diagnostic`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ARTIFACTS_COMPLETE（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -35,3 +35,5 @@ RUNNING/VERIFIED：AffineJoint已单次发布启动，实际runtime81a226a8d1cef
 COLLECTOR_VERIFIED/VERIFIED：独立只读AffineJoint训练诊断工具已完成，12个不同合成检查通过（9.02s），累计91个不同相关检查。两阶段目录/训练引用快照与完整训练档案提取、13项RHS/intercept费用、gCE=gZ−Z及实际B→C状态诊断已覆盖；不读取外层评分、不做新拟合/求解/SVD/前向。真实采集尚未执行，当前训练release/runtime不变，run继续RUNNING；不能据此宣称性能改善。
 
 ANALYZER_READY/VERIFIED：未来Affine独立分析器的完整中心化VJP以代数等价的求和/外积展开，O(n³+hn²)改为O(n²+hn)，保留移动reference项、非零g_b及原有核验与容差；64MiB数组预算/64entry缓存按实际nbytes管理，每lane释放，缓存命中仍核查文件状态且不跳过数学核验。17个新增不同检查及10项既有summary回归通过，累计108个不同检查。首轮1项fixture混淆非均匀q的伴随零方向，原独立矩阵oracle已一致；仅修正fixture后受影响8项通过。健康训练runtime81a226a8d1cef34ea817ada87070bd89912d027d及AJLR分析r02不变；Affine分析尚未启动，无真实加速或性能结论，目标ACTIVE。
+
+ARTIFACTS_COMPLETE/VERIFIED：AffineJoint四row/160parent训练已结束，supervisor及全部workers退出；完整marker/state/manifest元数据和实际计数独立读回一致。实际更新2592次、头拟合35988次、latent SVD3240次。完整数学档案仍由独立分析核验；完成不代表性能改善，query/源样本0。下一步唯一analysis release d92_affine_joint_analysis_20261001_r01，root sole owner，目标ACTIVE。

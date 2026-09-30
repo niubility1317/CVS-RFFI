@@ -164,7 +164,38 @@
       "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_affine_joint_support_20261001_r01/configs/d92_affine_joint_support_20261001.json",
       "--commit",
       "81a226a8d1cef34ea817ada87070bd89912d027d"
-    ]
+    ],
+    "independent_analysis": {
+      "status": "NOT_STARTED",
+      "launch_owner": "root",
+      "release": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_affine_joint_analysis_20261001_r01",
+      "output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-affine-joint-support-m2-r01/results/support_summary",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_affine_joint_analysis_20261001_r01/tools/summarize_d92_affine_joint_probe.py",
+        "--spec",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_affine_joint_support_20261001_r01/configs/d92_affine_joint_support_20261001.json",
+        "--run-root",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-affine-joint-support-m2-r01",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-affine-joint-support-m2-r01/results/support_summary"
+      ],
+      "environment": {
+        "CUDA_VISIBLE_DEVICES": "",
+        "OMP_NUM_THREADS": "2",
+        "MKL_NUM_THREADS": "2",
+        "OPENBLAS_NUM_THREADS": "2"
+      },
+      "runtime_commit": null,
+      "code": "Current verified pushed HEAD; exact archived source commit recorded in analysis_process.json",
+      "mathematics": "Same full independent checks; exact rank-one centering expansion and bounded array cache",
+      "cache_budget_bytes": 67108864,
+      "cache_entry_cap": 64,
+      "query_access": false,
+      "source_sample_access": false,
+      "training_or_algorithm_mutation": false
+    }
   },
   "expected_artifacts": [
     "startup.json",
@@ -197,7 +228,7 @@
     "Primal affine solves have C+1 RHS while CE adjoints have C RHS, counted with actual n and all rejected trials; dense work units are a dimensional proxy, not measured FLOP. Intercept state and Schur caches are charged separately from adapter coordinates. Detailed text/full numeric NPZ/compact JSONL/CSV retained."
   ],
   "claim_scope": "SUPPORT_INFORMATION_DIAGNOSTIC_NOT_QUERY_PERFORMANCE",
-  "status": "RUNNING",
+  "status": "ARTIFACTS_COMPLETE",
   "metrics_plan": {
     "metric_names": [
       "A_NA",

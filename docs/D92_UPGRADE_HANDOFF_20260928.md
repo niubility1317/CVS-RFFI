@@ -1,3 +1,9 @@
+## 最新状态：Affine训练完整产物已核实（2026-10-01）
+
+ARTIFACTS_COMPLETE/VERIFIED：AffineJoint四row/160parent训练已结束，supervisor及全部workers退出；完整marker/state/manifest元数据和实际计数独立读回一致。实际更新2592次、头拟合35988次、latent SVD3240次。完整数学档案仍由独立分析核验；完成不代表性能改善，query/源样本0。下一步唯一analysis release d92_affine_joint_analysis_20261001_r01，root sole owner，目标ACTIVE。
+
+证据 completion_readback_1790809455898469800.json；d92_affine_joint_analysis_20261001_r01 尚未启动。使用已验证的等价VJP和有界数组缓存，保持全部数学核验。原AJLR分析r02仍PID394399/handle99201；不重复训练或分析。
+
 ## 最新状态：未来Affine分析器已验证（2026-10-01）
 
 ANALYZER_READY/VERIFIED：未来Affine独立分析器的完整中心化VJP以代数等价的求和/外积展开，O(n³+hn²)改为O(n²+hn)，保留移动reference项、非零g_b及原有核验与容差；64MiB数组预算/64entry缓存按实际nbytes管理，每lane释放，缓存命中仍核查文件状态且不跳过数学核验。17个新增不同检查及10项既有summary回归通过，累计108个不同检查。首轮1项fixture混淆非均匀q的伴随零方向，原独立矩阵oracle已一致；仅修正fixture后受影响8项通过。健康训练runtime81a226a8d1cef34ea817ada87070bd89912d027d及AJLR分析r02不变；Affine分析尚未启动，无真实加速或性能结论，目标ACTIVE。
