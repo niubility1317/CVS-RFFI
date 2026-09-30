@@ -1,0 +1,25 @@
+{
+  "pid": 32132,
+  "command": [
+    "C:\\Users\\lh594\\.conda\\envs\\ssr-gpu\\python.exe",
+    "-X",
+    "utf8",
+    "E:\\type10-7\\paper_reproduction\\newclass_registration_20260930\\acceptance.py",
+    "--method",
+    "issl",
+    "--data",
+    "E:\\type10-7\\local_artifacts\\newclass_registration_20260930\\wisig_diagnostic.npz",
+    "--output",
+    "E:\\type10-7\\local_artifacts\\newclass_registration_20260930\\issl_r02",
+    "--base-epochs",
+    "2",
+    "--ssl-epochs",
+    "2",
+    "--downstream-epochs",
+    "2",
+    "--lora-epochs",
+    "2"
+  ],
+  "cwd": "E:\\type10-7",
+  "log": "E:\\type10-7\\local_artifacts\\newclass_registration_20260930\\issl_r02.stdout.log"
+}

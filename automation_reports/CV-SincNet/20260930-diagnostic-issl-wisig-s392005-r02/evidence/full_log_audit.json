@@ -1,0 +1,120 @@
+{
+  "status": "VERIFIED",
+  "structured_rows": 74,
+  "csv_rows": 74,
+  "stdout_lines": 76,
+  "all_logs_read_fully": true,
+  "error_markers": [],
+  "stages": {
+    "base": {
+      "steps": 6,
+      "epochs": {
+        "0": {
+          "steps": 3,
+          "loss_mean": 6.633546630541484,
+          "loss_first": 1.176278829574585,
+          "loss_last": 1.8223854303359985,
+          "loss_min": 1.176278829574585,
+          "loss_max": 16.901975631713867
+        },
+        "1": {
+          "steps": 3,
+          "loss_mean": 0.6966985464096069,
+          "loss_first": 0.5754152536392212,
+          "loss_last": 0.5493444204330444,
+          "loss_min": 0.5493444204330444,
+          "loss_max": 0.9653359651565552
+        }
+      },
+      "summary_epochs": [
+        0,
+        1
+      ],
+      "grad_min": 3.584944725036621,
+      "grad_max": 53.1907958984375
+    },
+    "ssl": {
+      "steps": 36,
+      "epochs": {
+        "0": {
+          "steps": 18,
+          "loss_mean": 9800.179646889368,
+          "loss_first": 13500.6484375,
+          "loss_last": 3.8438291549682617,
+          "loss_min": 3.8438291549682617,
+          "loss_max": 14620.0654296875
+        },
+        "1": {
+          "steps": 18,
+          "loss_mean": 3.8520776563220553,
+          "loss_first": 3.8725922107696533,
+          "loss_last": 3.8562769889831543,
+          "loss_min": 3.7769277095794678,
+          "loss_max": 3.9111523628234863
+        }
+      },
+      "summary_epochs": [
+        0,
+        1
+      ],
+      "grad_min": 15972.3125,
+      "grad_max": 188126.328125
+    },
+    "downstream_transfer": {
+      "steps": 12,
+      "epochs": {
+        "0": {
+          "steps": 6,
+          "loss_mean": 4.413723707199097,
+          "loss_first": 2.9402542114257812,
+          "loss_last": 1.7104861736297607,
+          "loss_min": 1.7104861736297607,
+          "loss_max": 12.253924369812012
+        },
+        "1": {
+          "steps": 6,
+          "loss_mean": 1.6502564152081807,
+          "loss_first": 1.6458321809768677,
+          "loss_last": 1.6174468994140625,
+          "loss_min": 1.6095690727233887,
+          "loss_max": 1.7068755626678467
+        }
+      },
+      "summary_epochs": [
+        0,
+        1
+      ],
+      "grad_min": 0.10513138025999069,
+      "grad_max": 14.316330909729004
+    },
+    "incremental_baseline": {
+      "steps": 12,
+      "epochs": {
+        "0": {
+          "steps": 6,
+          "loss_mean": 2.3828521966934204,
+          "loss_first": 2.690833806991577,
+          "loss_last": 2.209425449371338,
+          "loss_min": 2.209425449371338,
+          "loss_max": 2.690833806991577
+        },
+        "1": {
+          "steps": 6,
+          "loss_mean": 2.142631749312083,
+          "loss_first": 2.377349376678467,
+          "loss_last": 2.4546523094177246,
+          "loss_min": 1.640112280845642,
+          "loss_max": 2.4546523094177246
+        }
+      },
+      "summary_epochs": [
+        0,
+        1
+      ],
+      "grad_min": 2.332200050354004,
+      "grad_max": 3.75760555267334
+    }
+  },
+  "convergence_verdict": "NOT_ESTABLISHED: two epochs verify execution, not convergence",
+  "source_validation": "N/A: absent in diagnostic; no query used for selection"
+}

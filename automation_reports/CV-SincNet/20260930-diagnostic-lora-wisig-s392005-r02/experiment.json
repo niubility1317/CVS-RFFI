@@ -17,7 +17,7 @@
   "replaces_run_id": null,
   "authorization": "用户2026-09-30要求全面验收，若论文使用WiSig才跑原论文复现实验；此run仅功能回归验收",
   "code": {
-    "commit": null,
+    "commit": "2734f1ffaf76f1c8158cee163b5d1725651c88fa",
     "checkout": "E:\\type10-7",
     "environment": "ssr-gpu; torch 2.10.0+cu128",
     "cwd": "E:\\type10-7"

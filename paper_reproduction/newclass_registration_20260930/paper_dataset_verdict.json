@@ -1,0 +1,40 @@
+{
+  "date": "2026-09-30",
+  "launch_original_wisig_reproduction": false,
+  "methods": [
+    {
+      "method": "CSIL",
+      "dataset": "ADS-B",
+      "evidence": "9-page full text, evaluation dataset page 6",
+      "source": "https://arxiv.org/abs/2105.06381",
+      "wisig_condition": "NOT_MET"
+    },
+    {
+      "method": "LoRa_RFFI",
+      "dataset": "60 self-collected LoRa transmitters / USRP N210",
+      "evidence": "12-page full text",
+      "source": "https://arxiv.org/abs/2107.02867",
+      "wisig_condition": "NOT_MET"
+    },
+    {
+      "method": "MoPC-HR",
+      "dataset": "AIS-100 and ADS-B",
+      "evidence": "15-page full text",
+      "source": "https://github.com/xmuLdz/MoPC-HR",
+      "wisig_condition": "NOT_MET"
+    },
+    {
+      "method": "ISSL",
+      "dataset": "Real radio station signals and ADS-B in public abstract",
+      "evidence": "Public paper abstract; full text unavailable",
+      "doi": "10.1109/TCCN.2025.3583118",
+      "source": "https://www.researchgate.net/publication/393038502_Innovative_Specific_Emitter_Identification_With_Self-Supervised_and_Incremental_Learning",
+      "wisig_condition": "NOT_ESTABLISHED"
+    }
+  ],
+  "functional_runs": [
+    "20260930-diagnostic-issl-wisig-s392005-r02",
+    "20260930-diagnostic-lora-wisig-s392005-r02"
+  ],
+  "limitation": "Functional WiSig diagnostic is not original-paper dataset/accuracy reproduction or formal CVS protocol acceptance"
+}

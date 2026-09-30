@@ -1,0 +1,26 @@
+{
+  "original_preprocessing_max_error": 1.61654702957037e-07,
+  "preprocessing_original_shape": [
+    2,
+    102,
+    62,
+    1
+  ],
+  "wisig_spectrogram_shape": [
+    768,
+    26,
+    6,
+    1
+  ],
+  "B_note": "Frozen extractor plus same-domain support: A equals B; no gradient adaptation",
+  "port": "third-party Torch, not author Keras; full numerical training parity unverified",
+  "optimizer_difference": "Torch RMSprop epsilon placement differs from TF2.1; no bitwise parity claim",
+  "parameters": 367104,
+  "phase2_trainable_parameters": 0,
+  "status": "VERIFIED",
+  "method": "lora",
+  "seconds": 6.857458700000279,
+  "peak_cuda_bytes": 43555328,
+  "steps": 24,
+  "query_truth_used_for_training": false
+}

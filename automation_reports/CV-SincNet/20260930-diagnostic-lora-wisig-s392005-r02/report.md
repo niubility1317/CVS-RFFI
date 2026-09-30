@@ -3,7 +3,7 @@
 - run_id：`20260930-diagnostic-lora-wisig-s392005-r02`
 - group_id：`newclass-registration-source-acceptance`；类别：`diagnostic`；阶段：`external_execution_acceptance`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED（2026-09-30；独立产物读回与全日志分析VERIFIED）
 
 ## 目的与对照
 
@@ -21,7 +21,7 @@
 
 ## 结果与覆盖
 
-尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
+验收结果、逐阶段指标及缺项见下方“全面执行验收结果”；完整证据保存在evidence目录。
 源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
 
 ## 交接
@@ -29,3 +29,23 @@
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
 
 范围：每阶段2epoch真实WiSig功能验收，非论文准确率或正式CVS对比。条件判断与40项测试见 paper_reproduction/newclass_registration_20260930/COMPREHENSIVE_ACCEPTANCE.md。
+
+## 全面执行验收结果（VERIFIED）
+
+固定旧3类、新3类，K=128训练样本/类、64个query/类；RX1-1、2021_03_01、raw IQ。每阶段2epoch；scratch初始化，teacher/key仅继承本run。物理ID不重复且训练/query不相交。无源验证，无query反馈选模，未叠加LEO；非正式CVS性能矩阵。
+
+|阶段|旧类准确率|新类准确率|H|
+|---|---|---|---|
+|A：适应前旧类|98.9583%|N/A|N/A|
+|B：仅旧类support适应|98.9583%|N/A|N/A|
+|C：新旧类统一竞争|97.3958%|97.3958%|97.3958%|
+
+冻结提取器以相同旧类support注册，B=A；适应提升0个百分点，注册后旧类下降1.5625个百分点，最终新旧差0个百分点。单RX/同日/短预算结果不能推断跨域泛化。原长度预处理数值对照最大误差1.616547e-7；执行模型是第三方Torch端，作者TF2.1完整训练数值等价未建立。
+
+40项针对性测试通过，独立P0/P1检查无阻断项。实际24训练步，全部loss/梯度有限；384个唯一物理ID预测齐全；1个checkpoint strict重载，恢复后的完整预测逐条相同（A, C）。训练数据契约路径存在且指向本次实际输入。
+
+完整读取26行JSONL、26行CSV、28行stdout；无错误标记。逐stage/epoch的loss、梯度范围和摘要见evidence/full_log_audit.json。两轮只能证明跨epoch执行，不能判定收敛。
+
+硬件RTX5070Ti，torch2.10.0+cu128。方法端到端6.8575秒（预处理/训练/预测/保存，不含独立评分），Torch峰值allocated=43555328字节，模型参数=367104。LoRa训练时全部参数可训练，注册阶段0参数更新。阶段耗时见steps.jsonl。独立推理耗时、主机峰值内存、完整常驻状态和新增传输字节数未单独测量，均N/A；不据此宣称星载省算力。
+
+原论文WiSig完整预算复现实验未启动：CSIL、LoRa_RFFI、MoPC-HR全文的数据集条件不满足，ISSL公开摘要未提WiSig且全文待核实。ISSL原数据/全文、LoRa原数据/作者Keras环境仍缺。r01及历史产物保持原样，不因评分调参或重跑。

@@ -1,0 +1,75 @@
+ce,contrastive,contrastive_weight,epoch,grad_norm,kd,kd_student_gradient,kd_weight,loss,lr,momentum,negative_queue_layout,queue_size,seconds,source_validation,stage,step,summary,temperature_contrastive,temperature_kd,validation_note,zero_grad
+1.176278829574585,,,0,7.381111145019531,,,,1.176278829574585,0.03,,,,,,base,0,,,,diagnostic has no model-selection validation; no query feedback,
+16.901975631713867,,,0,53.1907958984375,,,,16.901975631713867,0.03,,,,,,base,1,,,,diagnostic has no model-selection validation; no query feedback,
+1.8223854303359985,,,0,9.225695610046387,,,,1.8223854303359985,0.03,,,,,,base,2,,,,diagnostic has no model-selection validation; no query feedback,
+,,,0,,,,,6.633546630541484,,,,,6.883176600000297,,base,,True,,,,
+0.5754152536392212,,,1,5.267644882202148,,,,0.5754152536392212,0.03,,,,,,base,0,,,,diagnostic has no model-selection validation; no query feedback,
+0.9653359651565552,,,1,13.307948112487793,,,,0.9653359651565552,0.03,,,,,,base,1,,,,diagnostic has no model-selection validation; no query feedback,
+0.5493444204330444,,,1,3.584944725036621,,,,0.5493444204330444,0.03,,,,,,base,2,,,,diagnostic has no model-selection validation; no query feedback,
+,,,1,,,,,0.6966985464096069,,,,,0.06851699999970151,,base,,True,,,,
+,27000.462890625,0.5,0,15972.3125,0.8340213894844055,False,0.5,13500.6484375,1e-05,0.99,author_reshape_not_transpose,225,,,ssl,0,,5,20,,False
+,27227.12890625,0.5,0,33998.1640625,0.8882662653923035,False,0.5,13614.0087890625,1e-05,0.99,author_reshape_not_transpose,289,,,ssl,1,,5,20,,False
+,27819.474609375,0.5,0,42505.0078125,0.801293671131134,False,0.5,13910.1376953125,1e-05,0.99,author_reshape_not_transpose,353,,,ssl,2,,5,20,,False
+,29239.166015625,0.5,0,53195.19921875,0.9653419256210327,False,0.5,14620.0654296875,1e-05,0.99,author_reshape_not_transpose,417,,,ssl,3,,5,20,,False
+,24224.931640625,0.5,0,66906.28125,0.8719586730003357,False,0.5,12112.9013671875,1e-05,0.99,author_reshape_not_transpose,481,,,ssl,4,,5,20,,False
+,23555.658203125,0.5,0,75793.9140625,0.8183442950248718,False,0.5,11778.23828125,1e-05,0.99,author_reshape_not_transpose,545,,,ssl,5,,5,20,,False
+,25807.03125,0.5,0,87055.984375,0.8436552286148071,False,0.5,12903.9375,1e-05,0.99,author_reshape_not_transpose,609,,,ssl,6,,5,20,,False
+,22292.810546875,0.5,0,98545.859375,0.8187063932418823,False,0.5,11146.814453125,1e-05,0.99,author_reshape_not_transpose,673,,,ssl,7,,5,20,,False
+,22729.37109375,0.5,0,112907.421875,0.8149774670600891,False,0.5,11365.0927734375,1e-05,0.99,author_reshape_not_transpose,737,,,ssl,8,,5,20,,False
+,22350.623046875,0.5,0,125938.8671875,0.9580821394920349,False,0.5,11175.791015625,1e-05,0.99,author_reshape_not_transpose,801,,,ssl,9,,5,20,,False
+,18882.19140625,0.5,0,139304.65625,0.8350834250450134,False,0.5,9441.513671875,1e-05,0.99,author_reshape_not_transpose,865,,,ssl,10,,5,20,,False
+,19915.9765625,0.5,0,155422.875,0.8717517852783203,False,0.5,9958.423828125,1e-05,0.99,author_reshape_not_transpose,929,,,ssl,11,,5,20,,False
+,18005.41015625,0.5,0,168157.8125,0.8891369104385376,False,0.5,9003.1494140625,1e-05,0.99,author_reshape_not_transpose,993,,,ssl,12,,5,20,,False
+,16726.61328125,0.5,0,176729.5625,0.894740104675293,False,0.5,8363.75390625,1e-05,0.99,author_reshape_not_transpose,993,,,ssl,13,,5,20,,False
+,16601.623046875,0.5,0,184220.765625,0.9196767807006836,False,0.5,8301.271484375,1e-05,0.99,author_reshape_not_transpose,993,,,ssl,14,,5,20,,False
+,10398.646484375,0.5,0,188126.328125,0.9087844491004944,False,0.5,5199.77783203125,1e-05,0.99,author_reshape_not_transpose,993,,,ssl,15,,5,20,,False
+,6.829554080963135,0.5,0,188126.328125,0.8983179330825806,False,0.5,3.863935947418213,1e-05,0.99,author_reshape_not_transpose,993,,,ssl,16,,5,20,,False
+,6.823477268218994,0.5,0,188126.328125,0.8641809225082397,False,0.5,3.8438291549682617,1e-05,0.99,author_reshape_not_transpose,993,,,ssl,17,,5,20,,False
+,,,0,,,,,9800.179646889368,,,,,5.094441500001267,,ssl,,True,,,,
+,6.831788063049316,0.5,1,188126.3125,0.9133965373039246,False,0.5,3.8725922107696533,1e-05,0.99,author_reshape_not_transpose,993,,,ssl,0,,5,20,,False
+,6.8383259773254395,0.5,1,188126.265625,0.8990054130554199,False,0.5,3.8686656951904297,1e-05,0.99,author_reshape_not_transpose,993,,,ssl,1,,5,20,,False
+,6.8173065185546875,0.5,1,188126.265625,0.9196308255195618,False,0.5,3.868468761444092,1e-05,0.99,author_reshape_not_transpose,993,,,ssl,2,,5,20,,False
+,6.833608627319336,0.5,1,188126.25,0.894335150718689,False,0.5,3.8639719486236572,1e-05,0.99,author_reshape_not_transpose,993,,,ssl,3,,5,20,,False
+,6.808954238891602,0.5,1,188126.234375,0.837861955165863,False,0.5,3.8234081268310547,1e-05,0.99,author_reshape_not_transpose,993,,,ssl,4,,5,20,,False
+,6.835897922515869,0.5,1,188126.21875,0.9109594821929932,False,0.5,3.8734288215637207,1e-05,0.99,author_reshape_not_transpose,993,,,ssl,5,,5,20,,False
+,6.799286842346191,0.5,1,188126.171875,0.8456815481185913,False,0.5,3.822484254837036,1e-05,0.99,author_reshape_not_transpose,993,,,ssl,6,,5,20,,False
+,6.828746318817139,0.5,1,188126.15625,0.8992677330970764,False,0.5,3.864006996154785,1e-05,0.99,author_reshape_not_transpose,993,,,ssl,7,,5,20,,False
+,6.825727462768555,0.5,1,188126.15625,0.8928892612457275,False,0.5,3.8593082427978516,1e-05,0.99,author_reshape_not_transpose,993,,,ssl,8,,5,20,,False
+,6.783167362213135,0.5,1,188126.125,0.8531731963157654,False,0.5,3.8181703090667725,1e-05,0.99,author_reshape_not_transpose,993,,,ssl,9,,5,20,,False
+,6.822480201721191,0.5,1,188126.125,0.8770869374275208,False,0.5,3.8497836589813232,1e-05,0.99,author_reshape_not_transpose,993,,,ssl,10,,5,20,,False
+,6.815912246704102,0.5,1,188126.109375,0.8934551477432251,False,0.5,3.8546836376190186,1e-05,0.99,author_reshape_not_transpose,993,,,ssl,11,,5,20,,False
+,6.852022171020508,0.5,1,188126.09375,0.9356449246406555,False,0.5,3.893833637237549,1e-05,0.99,author_reshape_not_transpose,993,,,ssl,12,,5,20,,False
+,6.870827674865723,0.5,1,188126.078125,0.9514769315719604,False,0.5,3.9111523628234863,1e-05,0.99,author_reshape_not_transpose,993,,,ssl,13,,5,20,,False
+,6.82292366027832,0.5,1,188126.046875,0.8768689036369324,False,0.5,3.849896192550659,1e-05,0.99,author_reshape_not_transpose,993,,,ssl,14,,5,20,,False
+,6.7506279945373535,0.5,1,188126.046875,0.803227424621582,False,0.5,3.7769277095794678,1e-05,0.99,author_reshape_not_transpose,993,,,ssl,15,,5,20,,False
+,6.793431282043457,0.5,1,188126.015625,0.8272454142570496,False,0.5,3.810338258743286,1e-05,0.99,author_reshape_not_transpose,993,,,ssl,16,,5,20,,False
+,6.822912693023682,0.5,1,188126.0,0.8896410465240479,False,0.5,3.8562769889831543,1e-05,0.99,author_reshape_not_transpose,993,,,ssl,17,,5,20,,False
+,,,1,,,,,3.8520776563220553,,,,,0.6898449000000255,,ssl,,True,,,,
+2.9402542114257812,,,0,5.144876956939697,,,,2.9402542114257812,0.03,,,,,,downstream_transfer,0,,,,diagnostic has no model-selection validation; no query feedback,
+12.253924369812012,,,0,14.316330909729004,,,,12.253924369812012,0.03,,,,,,downstream_transfer,1,,,,diagnostic has no model-selection validation; no query feedback,
+5.422179222106934,,,0,9.809835433959961,,,,5.422179222106934,0.03,,,,,,downstream_transfer,2,,,,diagnostic has no model-selection validation; no query feedback,
+2.443171977996826,,,0,6.716947078704834,,,,2.443171977996826,0.03,,,,,,downstream_transfer,3,,,,diagnostic has no model-selection validation; no query feedback,
+1.7123262882232666,,,0,1.0389248132705688,,,,1.7123262882232666,0.03,,,,,,downstream_transfer,4,,,,diagnostic has no model-selection validation; no query feedback,
+1.7104861736297607,,,0,0.2414630949497223,,,,1.7104861736297607,0.03,,,,,,downstream_transfer,5,,,,diagnostic has no model-selection validation; no query feedback,
+,,,0,,,,,4.413723707199097,,,,,0.14035169999988284,,downstream_transfer,,True,,,,
+1.6458321809768677,,,1,0.228768453001976,,,,1.6458321809768677,0.03,,,,,,downstream_transfer,0,,,,diagnostic has no model-selection validation; no query feedback,
+1.6570024490356445,,,1,0.46864238381385803,,,,1.6570024490356445,0.03,,,,,,downstream_transfer,1,,,,diagnostic has no model-selection validation; no query feedback,
+1.7068755626678467,,,1,1.5047539472579956,,,,1.7068755626678467,0.03,,,,,,downstream_transfer,2,,,,diagnostic has no model-selection validation; no query feedback,
+1.6648123264312744,,,1,0.1740608811378479,,,,1.6648123264312744,0.03,,,,,,downstream_transfer,3,,,,diagnostic has no model-selection validation; no query feedback,
+1.6095690727233887,,,1,0.10513138025999069,,,,1.6095690727233887,0.03,,,,,,downstream_transfer,4,,,,diagnostic has no model-selection validation; no query feedback,
+1.6174468994140625,,,1,0.1052054688334465,,,,1.6174468994140625,0.03,,,,,,downstream_transfer,5,,,,diagnostic has no model-selection validation; no query feedback,
+,,,1,,,,,1.6502564152081807,,,,,0.12769119999938994,,downstream_transfer,,True,,,,
+4.489407539367676,,,0,3.75760555267334,0.8922600150108337,,0.5,2.690833806991577,0.0001,,,,,,incremental_baseline,0,,,,diagnostic has no model-selection validation; no query feedback,
+3.912652015686035,,,0,3.3853707313537598,0.9300862550735474,,0.5,2.4213690757751465,0.0001,,,,,,incremental_baseline,1,,,,diagnostic has no model-selection validation; no query feedback,
+3.4208173751831055,,,0,2.850125312805176,1.359870195388794,,0.5,2.39034366607666,0.0001,,,,,,incremental_baseline,2,,,,diagnostic has no model-selection validation; no query feedback,
+3.541285514831543,,,0,3.2377073764801025,1.0149955749511719,,0.5,2.2781405448913574,0.0001,,,,,,incremental_baseline,3,,,,diagnostic has no model-selection validation; no query feedback,
+3.0718657970428467,,,0,2.825573682785034,1.5421353578567505,,0.5,2.3070006370544434,0.0001,,,,,,incremental_baseline,4,,,,diagnostic has no model-selection validation; no query feedback,
+3.2715444564819336,,,0,2.9522383213043213,1.1473063230514526,,0.5,2.209425449371338,0.0001,,,,,,incremental_baseline,5,,,,diagnostic has no model-selection validation; no query feedback,
+,,,0,,,,,2.3828521966934204,,,,,0.179850800001077,,incremental_baseline,,True,,,,
+3.586937427520752,,,1,3.301086187362671,1.1677610874176025,,0.5,2.377349376678467,0.0001,,,,,,incremental_baseline,0,,,,diagnostic has no model-selection validation; no query feedback,
+3.2944681644439697,,,1,2.8536181449890137,1.4377903938293457,,0.5,2.3661293983459473,0.0001,,,,,,incremental_baseline,1,,,,diagnostic has no model-selection validation; no query feedback,
+3.128140687942505,,,1,2.644864797592163,1.1479402780532837,,0.5,2.138040542602539,0.0001,,,,,,incremental_baseline,2,,,,diagnostic has no model-selection validation; no query feedback,
+2.4711966514587402,,,1,2.6187527179718018,0.8090278506278992,,0.5,1.640112280845642,0.0001,,,,,,incremental_baseline,3,,,,diagnostic has no model-selection validation; no query feedback,
+2.5703344345092773,,,1,2.332200050354004,1.1886788606643677,,0.5,1.8795065879821777,0.0001,,,,,,incremental_baseline,4,,,,diagnostic has no model-selection validation; no query feedback,
+3.3122620582580566,,,1,2.982370615005493,1.5970423221588135,,0.5,2.4546523094177246,0.0001,,,,,,incremental_baseline,5,,,,diagnostic has no model-selection validation; no query feedback,
+,,,1,,,,,2.142631749312083,,,,,0.16157160000147996,,incremental_baseline,,True,,,,

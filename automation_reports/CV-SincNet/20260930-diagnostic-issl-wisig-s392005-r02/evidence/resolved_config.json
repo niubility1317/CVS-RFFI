@@ -1,0 +1,60 @@
+{
+  "method": "issl",
+  "data": "E:\\type10-7\\local_artifacts\\newclass_registration_20260930\\wisig_diagnostic.npz",
+  "output": "E:\\type10-7\\local_artifacts\\newclass_registration_20260930\\issl_r02",
+  "issl_source": "local_artifacts/external_refs/ISSL_20260930",
+  "lora_source": "local_artifacts/external_refs/LoRa_RFFI_20260930",
+  "lora_torch_source": "local_artifacts/external_refs/LoRa_RFFI_Torch_20260930",
+  "base_epochs": 2,
+  "ssl_epochs": 2,
+  "downstream_epochs": 2,
+  "lora_epochs": 2,
+  "seed": 392005,
+  "device": "cuda:0",
+  "torch": "2.10.0+cu128",
+  "pid": 32132,
+  "cwd": "E:\\type10-7",
+  "claim_scope": "real WiSig execution acceptance only",
+  "checkpoint": "scratch",
+  "gpu_name": "NVIDIA GeForce RTX 5070 Ti",
+  "data_contract_ref": "E:\\type10-7\\local_artifacts\\newclass_registration_20260930\\wisig_diagnostic.json",
+  "train_samples": 768,
+  "query_samples": 384,
+  "old_classes": 3,
+  "new_classes": 3,
+  "crop": 218,
+  "optimization": {
+    "base": {
+      "optimizer": "Adam",
+      "lr": 0.03,
+      "batch": 128,
+      "step_lr_every": 100,
+      "gamma": 0.5
+    },
+    "ssl": {
+      "optimizer": "Adam",
+      "lr": 1e-05,
+      "batch": 64,
+      "step_lr_every": 100,
+      "gamma": 0.8,
+      "K": 1000,
+      "tau": 5,
+      "T": 20,
+      "momentum": 0.99
+    },
+    "transfer": {
+      "optimizer": "Adam",
+      "lr": 0.03,
+      "batch": 128,
+      "step_lr_every": 100,
+      "gamma": 0.5
+    },
+    "incremental": {
+      "optimizer": "Adam",
+      "lr": 0.0001,
+      "batch": 128,
+      "step_lr_every": 100,
+      "gamma": 0.5
+    }
+  }
+}

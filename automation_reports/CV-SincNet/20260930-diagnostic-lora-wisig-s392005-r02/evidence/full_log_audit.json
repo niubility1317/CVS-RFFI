@@ -1,0 +1,39 @@
+{
+  "status": "VERIFIED",
+  "structured_rows": 26,
+  "csv_rows": 26,
+  "stdout_lines": 28,
+  "all_logs_read_fully": true,
+  "error_markers": [],
+  "stages": {
+    "lora_triplet": {
+      "steps": 24,
+      "epochs": {
+        "0": {
+          "steps": 12,
+          "loss_mean": 0.009636060994428894,
+          "loss_first": 0.04355248808860779,
+          "loss_last": 0.011600187048316002,
+          "loss_min": 0.0,
+          "loss_max": 0.04355248808860779
+        },
+        "1": {
+          "steps": 12,
+          "loss_mean": 0.0026248333936867616,
+          "loss_first": 0.0,
+          "loss_last": 0.0,
+          "loss_min": 0.0,
+          "loss_max": 0.009197721257805824
+        }
+      },
+      "summary_epochs": [
+        0,
+        1
+      ],
+      "grad_min": 0.0,
+      "grad_max": 0.65370774269104
+    }
+  },
+  "convergence_verdict": "NOT_ESTABLISHED: two epochs verify execution, not convergence",
+  "source_validation": "N/A: absent in diagnostic; no query used for selection"
+}
