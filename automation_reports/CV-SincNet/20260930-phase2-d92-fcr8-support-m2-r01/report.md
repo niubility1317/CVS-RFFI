@@ -3,7 +3,7 @@
 - run_id：`20260930-phase2-d92-fcr8-support-m2-r01`
 - group_id：`d92-fcr8-support`；类别：`diagnostic`；阶段：`Phase2-support-only-diagnostic`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：ARTIFACTS_COMPLETE（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -21,7 +21,7 @@ LocalRidge为唯一最终分类器；固定DCT/GELU字典，仅学习函数坐�
 
 ## 结果与覆盖
 
-尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
+完整support分析和训练机制诊断均已完成，详见results/support_summary、results/training_diagnostics及docs/D92_FCR8_SUPPORT_RESULT_20261001.md。真实query评分未启动；A=N/A。
 源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
 
 ## 交接
@@ -39,3 +39,5 @@ VERIFIED：FCR完整训练诊断collector实现完成，8/8合成检查通过（
 ARTIFACTS_COMPLETE/VERIFIED：FCR8完整四row/160parent结束，原supervisor及worker均退出；完整marker/state/实际计数独立读回一致。实际更新2673次、头拟合30708次、latent SVD648次。未读query/源样本；完成不代表性能改善。下一步单次独立support分析与完整训练机制诊断，root sole owner，目标ACTIVE。
 
 VERIFIED：FCR8完整support独立汇总已单次启动，analysis release d92_fcr8_analysis_20260930_r01；PID281156/argv/cwd独立读回匹配，分析commitf07e3c9222120f43df9de46eeac028772c364bda。当前本地handle14400仍有效，summary尚未完成。训练已全部结束，禁止重复publish或重复analysis。collector8项验证已通过，待完整summary后只读采集。
+
+ANALYZED/VERIFIED：FCR8完整160 parent独立support分析与完整训练诊断完成；分析进程281156已经退出，不重复运行。OOF96 new-present相对R0：B -0.173611pp、C旧 +0.321181pp、C新 +0.070312pp、H +0.111478pp；绝对新旧差增加0.552951pp。保留BranchLocalRidge，不晋级query。A与B−A=N/A。936信息阶段全部更新；4576阶段/19308曲线/1944教师折/3168准备均完整保留；CVS文本和原NPZ仍在原路径。完整K×新增类数120行、receiver/scene、model/cohort与资源分层已交付。55个不同相关检查通过。额外地面数据/统计0B，星载真实计算与传输N/A。

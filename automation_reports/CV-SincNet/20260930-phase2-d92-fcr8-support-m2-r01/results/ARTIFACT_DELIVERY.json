@@ -1,0 +1,53 @@
+{
+  "status": "VERIFIED",
+  "scope": "DERIVED_REPORT_DELIVERY_ONLY_NOT_DATA_VALIDATION",
+  "raw_NPZ_delivery": "Original remote paths; no Git copy",
+  "entries": [
+    {
+      "original": "results/support_summary/training_objectives.jsonl",
+      "original_bytes": 135523271,
+      "git_delivery": "results/support_summary/training_objectives.jsonl.gz",
+      "delivery_bytes": 10926082,
+      "compression": "gzip",
+      "lossless_readback": "VERIFIED",
+      "original_preserved": true
+    },
+    {
+      "original": "results/training_diagnostics/curves.csv",
+      "original_bytes": 208601775,
+      "git_delivery": "results/training_diagnostics/curves.csv.gz",
+      "delivery_bytes": 19407068,
+      "compression": "gzip",
+      "lossless_readback": "VERIFIED",
+      "original_preserved": true
+    },
+    {
+      "original": "results/training_diagnostics/curves.jsonl",
+      "original_bytes": 257908997,
+      "git_delivery": "results/training_diagnostics/curves.jsonl.gz",
+      "delivery_bytes": 20687429,
+      "compression": "gzip",
+      "lossless_readback": "VERIFIED",
+      "original_preserved": true
+    },
+    {
+      "original": "results/training_diagnostics/stages.csv",
+      "original_bytes": 69154743,
+      "git_delivery": "results/training_diagnostics/stages.csv.gz",
+      "delivery_bytes": 5379881,
+      "compression": "gzip",
+      "lossless_readback": "VERIFIED",
+      "original_preserved": true
+    },
+    {
+      "original": "results/training_diagnostics/stages.jsonl",
+      "original_bytes": 89233496,
+      "git_delivery": "results/training_diagnostics/stages.jsonl.gz",
+      "delivery_bytes": 7189248,
+      "compression": "gzip",
+      "lossless_readback": "VERIFIED",
+      "original_preserved": true
+    }
+  ],
+  "explanation": "Large derived streams remain intact locally. Git carries lossless gzip copies; no original file was removed or overwritten."
+}

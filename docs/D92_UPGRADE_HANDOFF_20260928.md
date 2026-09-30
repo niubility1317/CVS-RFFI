@@ -1,3 +1,9 @@
+## 最新状态：FCR8完整分析完成；下一数学候选设计中（2026-10-01）
+
+ANALYZED/VERIFIED：FCR8完整160 parent独立support分析与完整训练诊断完成；分析进程281156已经退出，不重复运行。OOF96 new-present相对R0：B -0.173611pp、C旧 +0.321181pp、C新 +0.070312pp、H +0.111478pp；绝对新旧差增加0.552951pp。保留BranchLocalRidge，不晋级query。A与B−A=N/A。936信息阶段全部更新；4576阶段/19308曲线/1944教师折/3168准备均完整保留；CVS文本和原NPZ仍在原路径。完整K×新增类数120行、receiver/scene、model/cohort与资源分层已交付。55个不同相关检查通过。额外地面数据/统计0B，星载真实计算与传输N/A。
+
+run 20260930-phase2-d92-fcr8-support-m2-r01；训练runtime33673fe02a857d790aa69a1ace17fdb9638099d0；analysisf07e3c9222120f43df9de46eeac028772c364bda。四训练row/分析/collector全部完成，没有健康任务待干预。禁止重复启动、分析或采集。完整结果docs/D92_FCR8_SUPPORT_RESULT_20261001.md，机制docs/D92_FCR8_TRAINING_FINDINGS_20261001.md。目标ACTIVE；下一数学设计docs/D92_JOINT_AFTER_FCR8_DESIGN_20261001.md正在由query-blind子Agent完成，尚无新run。
+
 ## 最新状态：FCR8独立汇总已单次启动（2026-09-30）
 
 VERIFIED：FCR8完整support独立汇总已单次启动，analysis release d92_fcr8_analysis_20260930_r01；PID281156/argv/cwd独立读回匹配，分析commitf07e3c9222120f43df9de46eeac028772c364bda。当前本地handle14400仍有效，summary尚未完成。训练已全部结束，禁止重复publish或重复analysis。collector8项验证已通过，待完整summary后只读采集。

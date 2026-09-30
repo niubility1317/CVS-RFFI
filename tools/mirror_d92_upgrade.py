@@ -275,6 +275,7 @@ paths += ['tools/collect_d92_mc_training_diagnostics.py', 'tests/test_collect_d9
 paths += ['docs/D92_MC_RESIDUAL8_SUPPORT_RESULT_20260930.md', 'docs/D92_MC_RESIDUAL8_TRAINING_FINDINGS_20260930.md']
 paths += ['code/cvsrffi/d92_function_coordinate_residual8_local_ridge.py', 'configs/d92_fcr8_frozen_20260930.json', 'configs/d92_fcr8_support_20260930.json', 'configs/d92_fcr8_support_rx1_20260930.json', 'configs/d92_fcr8_support_rx3_20260930.json', 'docs/D92_FCR8_CORE_20260930.md', 'docs/D92_FCR8_ENTRY_20260930.md', 'docs/D92_FCR8_RELEASE_PLAN_20260930.md', 'docs/D92_JOINT_AFTER_MC_DESIGN_20260930.md', 'docs/D92_FCR8_P0_REVIEW_20260930.md', 'tests/test_d92_function_coordinate_residual8_local_ridge.py', 'tests/test_d92_fcr8_orchestration.py', 'tests/test_evaluate_d92_fcr8_probe.py', 'tests/test_summarize_d92_fcr8_probe.py', 'tools/prepare_d92_fcr8_probe.py', 'tools/run_d92_fcr8_probe.py', 'tools/preflight_d92_fcr8_probe.py', 'tools/publish_d92_fcr8_probe.py', 'tools/analyze_d92_fcr8_probe.py', 'tools/evaluate_d92_fcr8_probe.py', 'tools/summarize_d92_fcr8_probe.py']
 paths += ['tools/collect_d92_fcr8_training_diagnostics.py', 'tests/test_collect_d92_fcr8_training_diagnostics.py', 'docs/D92_FCR8_TRAINING_DIAGNOSTICS_20260930.md']
+paths += ['docs/D92_FCR8_SUPPORT_RESULT_20261001.md', 'docs/D92_FCR8_TRAINING_FINDINGS_20261001.md']
 for name in paths:
     src=ROOT/name;dst=WS/name;dst.parent.mkdir(parents=True,exist_ok=True)
     # Each name is unique to this task; original D92 and shared wrappers are not mirrored.

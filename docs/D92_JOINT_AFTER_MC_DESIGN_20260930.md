@@ -1,6 +1,6 @@
 # MC 之后的联合设计：函数坐标残差与 LocalRidge
 
-状态：`IMPLEMENTATION_APPROVED_NOT_RUN`。本文件只定义一个下一候选 **FunctionCoordinateResidual8–LocalRidge（FCR8）**；核心、冻结算法配置和合成测试已按本设计落盘，数值验证与真实实验状态见[核心实现说明](D92_FCR8_CORE_20260930.md)。没有复用已完成 MC run 的适配权重。它保留 LocalRidge 为唯一分类器，通过物理 support 内的持出监督训练表征残差。改变的是残差的可学结构及其优化度量，不是扫描 rank、学习率或保持权重。
+状态：`ANALYZED_NOT_PROMOTED`。完整固定support试验和独立分析已完成，见[FCR8结果](D92_FCR8_SUPPORT_RESULT_20261001.md)；保留BranchLocalRidge。本文件只定义一个下一候选 **FunctionCoordinateResidual8–LocalRidge（FCR8）**；核心、冻结算法配置和合成测试已按本设计落盘，数值验证与真实实验状态见[核心实现说明](D92_FCR8_CORE_20260930.md)。没有复用已完成 MC run 的适配权重。它保留 LocalRidge 为唯一分类器，通过物理 support 内的持出监督训练表征残差。改变的是残差的可学结构及其优化度量，不是扫描 rank、学习率或保持权重。
 
 ## 1. 完整证据与可作出的判断
 

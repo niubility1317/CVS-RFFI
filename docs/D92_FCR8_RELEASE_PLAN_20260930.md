@@ -1,6 +1,6 @@
 # FCR8与LocalRidge联合方法的固定support试验
 
-状态：ARTIFACTS_COMPLETE，完整四row/160parent已结束并独立核实，性能分析尚待完成。新run为`20260930-phase2-d92-fcr8-support-m2-r01`，group为`d92-fcr8-support`；已发布；完整结果尚待收集。主Agent是唯一launch owner。实际配置及四row的完整矩阵由`configs/d92_fcr8_support_20260930.json`维护。
+状态：ANALYZED，完整四row/160parent独立support分析与训练诊断已完成。新run为`20260930-phase2-d92-fcr8-support-m2-r01`，group为`d92-fcr8-support`；已发布并完成；完整结果见[D92_FCR8_SUPPORT_RESULT_20261001.md](D92_FCR8_SUPPORT_RESULT_20261001.md)。主Agent是唯一launch owner。实际配置及四row的完整矩阵由`configs/d92_fcr8_support_20260930.json`维护。
 
 ## 数学改动和证据边界
 
@@ -35,3 +35,6 @@ CPU-only，两lane、每lane两BLAS线程，不干预其他GPU训练。完整CVS
 实际runtime commit为`33673fe02a857d790aa69a1ace17fdb9638099d0`，supervisor PID247876，首批worker PID247888/247889。启动证据为`evidence/readback_1790779962176104900.json`。Git受限环境凭据错误已经通过普通push恢复，远端OID独立核对一致；没有重复launch或热修改。
 
 ARTIFACTS_COMPLETE/VERIFIED：FCR8完整四row/160parent结束，原supervisor及worker均退出；完整marker/state/实际计数独立读回一致。实际更新2673次、头拟合30708次、latent SVD648次。未读query/源样本；完成不代表性能改善。下一步单次独立support分析与完整训练机制诊断，root sole owner，目标ACTIVE。
+
+ANALYZED/VERIFIED：FCR8完整160 parent独立support分析与完整训练诊断完成；分析进程281156已经退出，不重复运行。OOF96 new-present相对R0：B -0.173611pp、C旧 +0.321181pp、C新 +0.070312pp、H +0.111478pp；绝对新旧差增加0.552951pp。保留BranchLocalRidge，不晋级query。A与B−A=N/A。936信息阶段全部更新；4576阶段/19308曲线/1944教师折/3168准备均完整保留；CVS文本和原NPZ仍在原路径。完整K×新增类数120行、receiver/scene、model/cohort与资源分层已交付。55个不同相关检查通过。额外地面数据/统计0B，星载真实计算与传输N/A。
+训练runtime33673fe02a857d790aa69a1ace17fdb9638099d0，独立分析f07e3c9222120f43df9de46eeac028772c364bda；全部进程结束。下一候选数学设计中，尚未创建或启动新实验。
