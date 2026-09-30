@@ -70,3 +70,8 @@
 |原生DAOT＋RC4与仅动力博弈三seed对照|managed_run|[打开](../automation_reports/CV-SincNet/phase1_daot_rc4_pure_game_m3_20260917_r1/report.md)|
 |原生DAOT＋RC4与仅动力博弈三seed对照|managed_run|[打开](../automation_reports/CV-SincNet/phase1_daot_rc4_pure_game_m3_20260917_r2/report.md)|
 |响应博弈矩阵测试评估：VERIFIED|managed_run|[打开](../automation_reports/CV-SincNet/response_matrix_eval_20260917/report.md)|
+
+## Native comparison registrations 2026-09-30
+
+- [20260930-phase1-native-baselines-practical-manysig-m5-r01](../automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/report.md)
+- [20260930-phase12-native-baselines-practical-m5-r01](../automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/report.md)

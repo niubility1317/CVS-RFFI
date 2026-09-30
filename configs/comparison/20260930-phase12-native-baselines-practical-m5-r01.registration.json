@@ -1,0 +1,2484 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20260930-phase12-native-baselines-practical-m5-r01",
+  "group_id": "native-residual-noeq-exact-manysig-source-manytx-target-20260930",
+  "display_name": "Native comparison paired adaptation and registration",
+  "description": "Nine distinct source model families, five fixed seeds, scratch final200; matched residual_noeq capsules and truth-last scoring. Native mechanisms retained; dataset and fixed-budget extensions disclosed.",
+  "kind": "comparison",
+  "stage": "Phase1+Phase2",
+  "aliases": [],
+  "tags": [
+    "residual_noeq",
+    "source_scratch",
+    "final200",
+    "native_methods",
+    "truth_last"
+  ],
+  "comparison_group_id": "manysig-six-source-rx13468-day123-luv076330-residual-noeq-v1",
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "User 2026-09-30: organize/design the named comparison methods and complete their experiments.",
+  "code": {
+    "commit": "ce98cdb055478ca8756fee9965e19829fdc592ff",
+    "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01"
+  },
+  "data": {
+    "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+    "version": "existing ManySig/ManyTx immutable artifacts",
+    "representation": "equalized1 center256 unit_rms; residual/post_sync/noeq fs25MHz",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#role_ids",
+    "label_map_ref": "each source checkpoint/classes",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": null,
+    "capsule_id": "residual-noeq-ba667eee4fb061055e4c08b5",
+    "split_id": null,
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-practical-data-manytx-s2026092705-r01/capsule/manifest.json",
+    "support_query_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-practical-data-manytx-s2026092705-r01/capsule/splits",
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "registered external method source-access exception and labeled target support",
+    "query_use": "readonly prediction only; independent scorer after prediction completion",
+    "external_method_exception": "DADDA/MRIOR/twostage/RadioNet ADA source L_s replay per project external-method exception; no target query fitting",
+    "claim_scope": "matched WiSig/LEO extension; not original-paper dataset reproduction"
+  },
+  "checkpoint": {
+    "initialization": "matching source row last.pt only",
+    "sources": [
+      "each row/source_output/last.pt"
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "provenance_verdict": "CHECK_AT_LOAD: complete scratch contract and final200 metadata",
+    "selection_rule": "fixed epoch200 last; no target or source-V selection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/native-comparisons-20260930",
+    "gpu_policy": "max_two_training_runs_per_gpu",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01",
+    "local_artifact_root": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -m comparison_suite.launch --spec automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/launch_spec.json",
+    "stop_rule": "No automatic retry, performance stopping, healthy task intervention, artifact overwrite or duplicate launch. Technical failure preserves artifacts and blocks dependent row."
+  },
+  "expected_artifacts": [
+    "each row/phase1_predictions.npz",
+    "each row/phase2_predictions.jsonl",
+    "each row/phase1_complete.json",
+    "each row/phase2_complete.json",
+    "each row/resources.jsonl",
+    "each row/fit_metrics.jsonl",
+    "each row/provenance.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "clean_accuracy",
+      "target_scene_accuracy",
+      "before_old",
+      "adapted_old",
+      "registered_old",
+      "registered_new",
+      "H",
+      "trainable_parameters",
+      "elapsed_seconds",
+      "peak_memory"
+    ],
+    "dimensions": [
+      "method",
+      "model_seed",
+      "RX",
+      "scene",
+      "K",
+      "new_class_count",
+      "support_seed",
+      "stage"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "comparison_suite.score"
+  },
+  "rows": [
+    {
+      "row_id": "protonet-s392005",
+      "method": "protonet",
+      "purpose": "primary",
+      "config_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/protonet-s392005.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/protonet-s392005/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 392005,
+        "split": 392005,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Source data seed controls sampling/episodes; source V is deterministic (evaluation null), support not applicable. Phase2 data/augmentation/evaluation seeds2026092705/07/06 are existing capsule seeds; support row seeds are2026092711..15 (support null denotes multi-seed matrix). Phase1 target capsule generator seed must be read from existing manifest; unknown here, not inferred. No new target channel draw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": "method-specific matched frozen configuration",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/protonet-s392005.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/protonet-s392005",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/protonet-s392005/launch.stdout.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "comparison_suite.pipeline",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/protonet-s392005.json"
+      ],
+      "expected_artifacts": [
+        "each row/phase1_predictions.npz",
+        "each row/phase2_predictions.jsonl",
+        "each row/phase1_complete.json",
+        "each row/phase2_complete.json",
+        "each row/resources.jsonl",
+        "each row/fit_metrics.jsonl",
+        "each row/provenance.json"
+      ]
+    },
+    {
+      "row_id": "protonet-s2026092701",
+      "method": "protonet",
+      "purpose": "primary",
+      "config_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/protonet-s2026092701.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/protonet-s2026092701/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Source data seed controls sampling/episodes; source V is deterministic (evaluation null), support not applicable. Phase2 data/augmentation/evaluation seeds2026092705/07/06 are existing capsule seeds; support row seeds are2026092711..15 (support null denotes multi-seed matrix). Phase1 target capsule generator seed must be read from existing manifest; unknown here, not inferred. No new target channel draw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": "method-specific matched frozen configuration",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/protonet-s2026092701.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/protonet-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/protonet-s2026092701/launch.stdout.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "comparison_suite.pipeline",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/protonet-s2026092701.json"
+      ],
+      "expected_artifacts": [
+        "each row/phase1_predictions.npz",
+        "each row/phase2_predictions.jsonl",
+        "each row/phase1_complete.json",
+        "each row/phase2_complete.json",
+        "each row/resources.jsonl",
+        "each row/fit_metrics.jsonl",
+        "each row/provenance.json"
+      ]
+    },
+    {
+      "row_id": "protonet-s2026092702",
+      "method": "protonet",
+      "purpose": "primary",
+      "config_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/protonet-s2026092702.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/protonet-s2026092702/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Source data seed controls sampling/episodes; source V is deterministic (evaluation null), support not applicable. Phase2 data/augmentation/evaluation seeds2026092705/07/06 are existing capsule seeds; support row seeds are2026092711..15 (support null denotes multi-seed matrix). Phase1 target capsule generator seed must be read from existing manifest; unknown here, not inferred. No new target channel draw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": "method-specific matched frozen configuration",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/protonet-s2026092702.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/protonet-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/protonet-s2026092702/launch.stdout.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "comparison_suite.pipeline",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/protonet-s2026092702.json"
+      ],
+      "expected_artifacts": [
+        "each row/phase1_predictions.npz",
+        "each row/phase2_predictions.jsonl",
+        "each row/phase1_complete.json",
+        "each row/phase2_complete.json",
+        "each row/resources.jsonl",
+        "each row/fit_metrics.jsonl",
+        "each row/provenance.json"
+      ]
+    },
+    {
+      "row_id": "protonet-s2026092703",
+      "method": "protonet",
+      "purpose": "primary",
+      "config_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/protonet-s2026092703.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/protonet-s2026092703/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Source data seed controls sampling/episodes; source V is deterministic (evaluation null), support not applicable. Phase2 data/augmentation/evaluation seeds2026092705/07/06 are existing capsule seeds; support row seeds are2026092711..15 (support null denotes multi-seed matrix). Phase1 target capsule generator seed must be read from existing manifest; unknown here, not inferred. No new target channel draw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": "method-specific matched frozen configuration",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/protonet-s2026092703.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/protonet-s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/protonet-s2026092703/launch.stdout.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "comparison_suite.pipeline",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/protonet-s2026092703.json"
+      ],
+      "expected_artifacts": [
+        "each row/phase1_predictions.npz",
+        "each row/phase2_predictions.jsonl",
+        "each row/phase1_complete.json",
+        "each row/phase2_complete.json",
+        "each row/resources.jsonl",
+        "each row/fit_metrics.jsonl",
+        "each row/provenance.json"
+      ]
+    },
+    {
+      "row_id": "protonet-s2026092704",
+      "method": "protonet",
+      "purpose": "primary",
+      "config_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/protonet-s2026092704.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/protonet-s2026092704/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Source data seed controls sampling/episodes; source V is deterministic (evaluation null), support not applicable. Phase2 data/augmentation/evaluation seeds2026092705/07/06 are existing capsule seeds; support row seeds are2026092711..15 (support null denotes multi-seed matrix). Phase1 target capsule generator seed must be read from existing manifest; unknown here, not inferred. No new target channel draw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": "method-specific matched frozen configuration",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/protonet-s2026092704.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/protonet-s2026092704",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/protonet-s2026092704/launch.stdout.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "comparison_suite.pipeline",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/protonet-s2026092704.json"
+      ],
+      "expected_artifacts": [
+        "each row/phase1_predictions.npz",
+        "each row/phase2_predictions.jsonl",
+        "each row/phase1_complete.json",
+        "each row/phase2_complete.json",
+        "each row/resources.jsonl",
+        "each row/fit_metrics.jsonl",
+        "each row/provenance.json"
+      ]
+    },
+    {
+      "row_id": "feature_separation-s392005",
+      "method": "feature_separation",
+      "purpose": "primary",
+      "config_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/feature_separation-s392005.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/feature_separation-s392005/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 392005,
+        "split": 392005,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Source data seed controls sampling/episodes; source V is deterministic (evaluation null), support not applicable. Phase2 data/augmentation/evaluation seeds2026092705/07/06 are existing capsule seeds; support row seeds are2026092711..15 (support null denotes multi-seed matrix). Phase1 target capsule generator seed must be read from existing manifest; unknown here, not inferred. No new target channel draw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": "method-specific matched frozen configuration",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/feature_separation-s392005.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/feature_separation-s392005",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/feature_separation-s392005/launch.stdout.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "comparison_suite.pipeline",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/feature_separation-s392005.json"
+      ],
+      "expected_artifacts": [
+        "each row/phase1_predictions.npz",
+        "each row/phase2_predictions.jsonl",
+        "each row/phase1_complete.json",
+        "each row/phase2_complete.json",
+        "each row/resources.jsonl",
+        "each row/fit_metrics.jsonl",
+        "each row/provenance.json"
+      ]
+    },
+    {
+      "row_id": "feature_separation-s2026092701",
+      "method": "feature_separation",
+      "purpose": "primary",
+      "config_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/feature_separation-s2026092701.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/feature_separation-s2026092701/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Source data seed controls sampling/episodes; source V is deterministic (evaluation null), support not applicable. Phase2 data/augmentation/evaluation seeds2026092705/07/06 are existing capsule seeds; support row seeds are2026092711..15 (support null denotes multi-seed matrix). Phase1 target capsule generator seed must be read from existing manifest; unknown here, not inferred. No new target channel draw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": "method-specific matched frozen configuration",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/feature_separation-s2026092701.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/feature_separation-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/feature_separation-s2026092701/launch.stdout.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "comparison_suite.pipeline",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/feature_separation-s2026092701.json"
+      ],
+      "expected_artifacts": [
+        "each row/phase1_predictions.npz",
+        "each row/phase2_predictions.jsonl",
+        "each row/phase1_complete.json",
+        "each row/phase2_complete.json",
+        "each row/resources.jsonl",
+        "each row/fit_metrics.jsonl",
+        "each row/provenance.json"
+      ]
+    },
+    {
+      "row_id": "feature_separation-s2026092702",
+      "method": "feature_separation",
+      "purpose": "primary",
+      "config_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/feature_separation-s2026092702.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/feature_separation-s2026092702/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Source data seed controls sampling/episodes; source V is deterministic (evaluation null), support not applicable. Phase2 data/augmentation/evaluation seeds2026092705/07/06 are existing capsule seeds; support row seeds are2026092711..15 (support null denotes multi-seed matrix). Phase1 target capsule generator seed must be read from existing manifest; unknown here, not inferred. No new target channel draw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": "method-specific matched frozen configuration",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/feature_separation-s2026092702.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/feature_separation-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/feature_separation-s2026092702/launch.stdout.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "comparison_suite.pipeline",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/feature_separation-s2026092702.json"
+      ],
+      "expected_artifacts": [
+        "each row/phase1_predictions.npz",
+        "each row/phase2_predictions.jsonl",
+        "each row/phase1_complete.json",
+        "each row/phase2_complete.json",
+        "each row/resources.jsonl",
+        "each row/fit_metrics.jsonl",
+        "each row/provenance.json"
+      ]
+    },
+    {
+      "row_id": "feature_separation-s2026092703",
+      "method": "feature_separation",
+      "purpose": "primary",
+      "config_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/feature_separation-s2026092703.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/feature_separation-s2026092703/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Source data seed controls sampling/episodes; source V is deterministic (evaluation null), support not applicable. Phase2 data/augmentation/evaluation seeds2026092705/07/06 are existing capsule seeds; support row seeds are2026092711..15 (support null denotes multi-seed matrix). Phase1 target capsule generator seed must be read from existing manifest; unknown here, not inferred. No new target channel draw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": "method-specific matched frozen configuration",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/feature_separation-s2026092703.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/feature_separation-s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/feature_separation-s2026092703/launch.stdout.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "comparison_suite.pipeline",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/feature_separation-s2026092703.json"
+      ],
+      "expected_artifacts": [
+        "each row/phase1_predictions.npz",
+        "each row/phase2_predictions.jsonl",
+        "each row/phase1_complete.json",
+        "each row/phase2_complete.json",
+        "each row/resources.jsonl",
+        "each row/fit_metrics.jsonl",
+        "each row/provenance.json"
+      ]
+    },
+    {
+      "row_id": "feature_separation-s2026092704",
+      "method": "feature_separation",
+      "purpose": "primary",
+      "config_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/feature_separation-s2026092704.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/feature_separation-s2026092704/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Source data seed controls sampling/episodes; source V is deterministic (evaluation null), support not applicable. Phase2 data/augmentation/evaluation seeds2026092705/07/06 are existing capsule seeds; support row seeds are2026092711..15 (support null denotes multi-seed matrix). Phase1 target capsule generator seed must be read from existing manifest; unknown here, not inferred. No new target channel draw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": "method-specific matched frozen configuration",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/feature_separation-s2026092704.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/feature_separation-s2026092704",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/feature_separation-s2026092704/launch.stdout.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "comparison_suite.pipeline",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/feature_separation-s2026092704.json"
+      ],
+      "expected_artifacts": [
+        "each row/phase1_predictions.npz",
+        "each row/phase2_predictions.jsonl",
+        "each row/phase1_complete.json",
+        "each row/phase2_complete.json",
+        "each row/resources.jsonl",
+        "each row/fit_metrics.jsonl",
+        "each row/provenance.json"
+      ]
+    },
+    {
+      "row_id": "dadda-s392005",
+      "method": "dadda",
+      "purpose": "primary",
+      "config_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/dadda-s392005.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/dadda-s392005/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 392005,
+        "split": 392005,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Source data seed controls sampling/episodes; source V is deterministic (evaluation null), support not applicable. Phase2 data/augmentation/evaluation seeds2026092705/07/06 are existing capsule seeds; support row seeds are2026092711..15 (support null denotes multi-seed matrix). Phase1 target capsule generator seed must be read from existing manifest; unknown here, not inferred. No new target channel draw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": "method-specific matched frozen configuration",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/dadda-s392005.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/dadda-s392005",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/dadda-s392005/launch.stdout.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "comparison_suite.pipeline",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/dadda-s392005.json"
+      ],
+      "expected_artifacts": [
+        "each row/phase1_predictions.npz",
+        "each row/phase2_predictions.jsonl",
+        "each row/phase1_complete.json",
+        "each row/phase2_complete.json",
+        "each row/resources.jsonl",
+        "each row/fit_metrics.jsonl",
+        "each row/provenance.json"
+      ]
+    },
+    {
+      "row_id": "dadda-s2026092701",
+      "method": "dadda",
+      "purpose": "primary",
+      "config_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/dadda-s2026092701.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/dadda-s2026092701/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Source data seed controls sampling/episodes; source V is deterministic (evaluation null), support not applicable. Phase2 data/augmentation/evaluation seeds2026092705/07/06 are existing capsule seeds; support row seeds are2026092711..15 (support null denotes multi-seed matrix). Phase1 target capsule generator seed must be read from existing manifest; unknown here, not inferred. No new target channel draw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": "method-specific matched frozen configuration",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/dadda-s2026092701.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/dadda-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/dadda-s2026092701/launch.stdout.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "comparison_suite.pipeline",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/dadda-s2026092701.json"
+      ],
+      "expected_artifacts": [
+        "each row/phase1_predictions.npz",
+        "each row/phase2_predictions.jsonl",
+        "each row/phase1_complete.json",
+        "each row/phase2_complete.json",
+        "each row/resources.jsonl",
+        "each row/fit_metrics.jsonl",
+        "each row/provenance.json"
+      ]
+    },
+    {
+      "row_id": "dadda-s2026092702",
+      "method": "dadda",
+      "purpose": "primary",
+      "config_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/dadda-s2026092702.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/dadda-s2026092702/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Source data seed controls sampling/episodes; source V is deterministic (evaluation null), support not applicable. Phase2 data/augmentation/evaluation seeds2026092705/07/06 are existing capsule seeds; support row seeds are2026092711..15 (support null denotes multi-seed matrix). Phase1 target capsule generator seed must be read from existing manifest; unknown here, not inferred. No new target channel draw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": "method-specific matched frozen configuration",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/dadda-s2026092702.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/dadda-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/dadda-s2026092702/launch.stdout.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "comparison_suite.pipeline",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/dadda-s2026092702.json"
+      ],
+      "expected_artifacts": [
+        "each row/phase1_predictions.npz",
+        "each row/phase2_predictions.jsonl",
+        "each row/phase1_complete.json",
+        "each row/phase2_complete.json",
+        "each row/resources.jsonl",
+        "each row/fit_metrics.jsonl",
+        "each row/provenance.json"
+      ]
+    },
+    {
+      "row_id": "dadda-s2026092703",
+      "method": "dadda",
+      "purpose": "primary",
+      "config_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/dadda-s2026092703.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/dadda-s2026092703/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Source data seed controls sampling/episodes; source V is deterministic (evaluation null), support not applicable. Phase2 data/augmentation/evaluation seeds2026092705/07/06 are existing capsule seeds; support row seeds are2026092711..15 (support null denotes multi-seed matrix). Phase1 target capsule generator seed must be read from existing manifest; unknown here, not inferred. No new target channel draw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": "method-specific matched frozen configuration",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/dadda-s2026092703.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/dadda-s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/dadda-s2026092703/launch.stdout.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "comparison_suite.pipeline",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/dadda-s2026092703.json"
+      ],
+      "expected_artifacts": [
+        "each row/phase1_predictions.npz",
+        "each row/phase2_predictions.jsonl",
+        "each row/phase1_complete.json",
+        "each row/phase2_complete.json",
+        "each row/resources.jsonl",
+        "each row/fit_metrics.jsonl",
+        "each row/provenance.json"
+      ]
+    },
+    {
+      "row_id": "dadda-s2026092704",
+      "method": "dadda",
+      "purpose": "primary",
+      "config_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/dadda-s2026092704.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/dadda-s2026092704/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Source data seed controls sampling/episodes; source V is deterministic (evaluation null), support not applicable. Phase2 data/augmentation/evaluation seeds2026092705/07/06 are existing capsule seeds; support row seeds are2026092711..15 (support null denotes multi-seed matrix). Phase1 target capsule generator seed must be read from existing manifest; unknown here, not inferred. No new target channel draw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": "method-specific matched frozen configuration",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/dadda-s2026092704.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/dadda-s2026092704",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/dadda-s2026092704/launch.stdout.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "comparison_suite.pipeline",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/dadda-s2026092704.json"
+      ],
+      "expected_artifacts": [
+        "each row/phase1_predictions.npz",
+        "each row/phase2_predictions.jsonl",
+        "each row/phase1_complete.json",
+        "each row/phase2_complete.json",
+        "each row/resources.jsonl",
+        "each row/fit_metrics.jsonl",
+        "each row/provenance.json"
+      ]
+    },
+    {
+      "row_id": "mrior-s392005",
+      "method": "mrior",
+      "purpose": "primary",
+      "config_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/mrior-s392005.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/mrior-s392005/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 392005,
+        "split": 392005,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Source data seed controls sampling/episodes; source V is deterministic (evaluation null), support not applicable. Phase2 data/augmentation/evaluation seeds2026092705/07/06 are existing capsule seeds; support row seeds are2026092711..15 (support null denotes multi-seed matrix). Phase1 target capsule generator seed must be read from existing manifest; unknown here, not inferred. No new target channel draw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": "method-specific matched frozen configuration",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/mrior-s392005.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/mrior-s392005",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/mrior-s392005/launch.stdout.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "comparison_suite.pipeline",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/mrior-s392005.json"
+      ],
+      "expected_artifacts": [
+        "each row/phase1_predictions.npz",
+        "each row/phase2_predictions.jsonl",
+        "each row/phase1_complete.json",
+        "each row/phase2_complete.json",
+        "each row/resources.jsonl",
+        "each row/fit_metrics.jsonl",
+        "each row/provenance.json"
+      ]
+    },
+    {
+      "row_id": "mrior-s2026092701",
+      "method": "mrior",
+      "purpose": "primary",
+      "config_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/mrior-s2026092701.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/mrior-s2026092701/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Source data seed controls sampling/episodes; source V is deterministic (evaluation null), support not applicable. Phase2 data/augmentation/evaluation seeds2026092705/07/06 are existing capsule seeds; support row seeds are2026092711..15 (support null denotes multi-seed matrix). Phase1 target capsule generator seed must be read from existing manifest; unknown here, not inferred. No new target channel draw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": "method-specific matched frozen configuration",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/mrior-s2026092701.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/mrior-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/mrior-s2026092701/launch.stdout.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "comparison_suite.pipeline",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/mrior-s2026092701.json"
+      ],
+      "expected_artifacts": [
+        "each row/phase1_predictions.npz",
+        "each row/phase2_predictions.jsonl",
+        "each row/phase1_complete.json",
+        "each row/phase2_complete.json",
+        "each row/resources.jsonl",
+        "each row/fit_metrics.jsonl",
+        "each row/provenance.json"
+      ]
+    },
+    {
+      "row_id": "mrior-s2026092702",
+      "method": "mrior",
+      "purpose": "primary",
+      "config_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/mrior-s2026092702.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/mrior-s2026092702/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Source data seed controls sampling/episodes; source V is deterministic (evaluation null), support not applicable. Phase2 data/augmentation/evaluation seeds2026092705/07/06 are existing capsule seeds; support row seeds are2026092711..15 (support null denotes multi-seed matrix). Phase1 target capsule generator seed must be read from existing manifest; unknown here, not inferred. No new target channel draw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": "method-specific matched frozen configuration",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/mrior-s2026092702.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/mrior-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/mrior-s2026092702/launch.stdout.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "comparison_suite.pipeline",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/mrior-s2026092702.json"
+      ],
+      "expected_artifacts": [
+        "each row/phase1_predictions.npz",
+        "each row/phase2_predictions.jsonl",
+        "each row/phase1_complete.json",
+        "each row/phase2_complete.json",
+        "each row/resources.jsonl",
+        "each row/fit_metrics.jsonl",
+        "each row/provenance.json"
+      ]
+    },
+    {
+      "row_id": "mrior-s2026092703",
+      "method": "mrior",
+      "purpose": "primary",
+      "config_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/mrior-s2026092703.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/mrior-s2026092703/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Source data seed controls sampling/episodes; source V is deterministic (evaluation null), support not applicable. Phase2 data/augmentation/evaluation seeds2026092705/07/06 are existing capsule seeds; support row seeds are2026092711..15 (support null denotes multi-seed matrix). Phase1 target capsule generator seed must be read from existing manifest; unknown here, not inferred. No new target channel draw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": "method-specific matched frozen configuration",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/mrior-s2026092703.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/mrior-s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/mrior-s2026092703/launch.stdout.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "comparison_suite.pipeline",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/mrior-s2026092703.json"
+      ],
+      "expected_artifacts": [
+        "each row/phase1_predictions.npz",
+        "each row/phase2_predictions.jsonl",
+        "each row/phase1_complete.json",
+        "each row/phase2_complete.json",
+        "each row/resources.jsonl",
+        "each row/fit_metrics.jsonl",
+        "each row/provenance.json"
+      ]
+    },
+    {
+      "row_id": "mrior-s2026092704",
+      "method": "mrior",
+      "purpose": "primary",
+      "config_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/mrior-s2026092704.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/mrior-s2026092704/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Source data seed controls sampling/episodes; source V is deterministic (evaluation null), support not applicable. Phase2 data/augmentation/evaluation seeds2026092705/07/06 are existing capsule seeds; support row seeds are2026092711..15 (support null denotes multi-seed matrix). Phase1 target capsule generator seed must be read from existing manifest; unknown here, not inferred. No new target channel draw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": "method-specific matched frozen configuration",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/mrior-s2026092704.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/mrior-s2026092704",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/mrior-s2026092704/launch.stdout.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "comparison_suite.pipeline",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/mrior-s2026092704.json"
+      ],
+      "expected_artifacts": [
+        "each row/phase1_predictions.npz",
+        "each row/phase2_predictions.jsonl",
+        "each row/phase1_complete.json",
+        "each row/phase2_complete.json",
+        "each row/resources.jsonl",
+        "each row/fit_metrics.jsonl",
+        "each row/provenance.json"
+      ]
+    },
+    {
+      "row_id": "twostage-s392005",
+      "method": "twostage",
+      "purpose": "primary",
+      "config_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/twostage-s392005.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/twostage-s392005/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 392005,
+        "split": 392005,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Source data seed controls sampling/episodes; source V is deterministic (evaluation null), support not applicable. Phase2 data/augmentation/evaluation seeds2026092705/07/06 are existing capsule seeds; support row seeds are2026092711..15 (support null denotes multi-seed matrix). Phase1 target capsule generator seed must be read from existing manifest; unknown here, not inferred. No new target channel draw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": "method-specific matched frozen configuration",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/twostage-s392005.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/twostage-s392005",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/twostage-s392005/launch.stdout.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "comparison_suite.pipeline",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/twostage-s392005.json"
+      ],
+      "expected_artifacts": [
+        "each row/phase1_predictions.npz",
+        "each row/phase2_predictions.jsonl",
+        "each row/phase1_complete.json",
+        "each row/phase2_complete.json",
+        "each row/resources.jsonl",
+        "each row/fit_metrics.jsonl",
+        "each row/provenance.json"
+      ]
+    },
+    {
+      "row_id": "twostage-s2026092701",
+      "method": "twostage",
+      "purpose": "primary",
+      "config_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/twostage-s2026092701.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/twostage-s2026092701/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Source data seed controls sampling/episodes; source V is deterministic (evaluation null), support not applicable. Phase2 data/augmentation/evaluation seeds2026092705/07/06 are existing capsule seeds; support row seeds are2026092711..15 (support null denotes multi-seed matrix). Phase1 target capsule generator seed must be read from existing manifest; unknown here, not inferred. No new target channel draw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": "method-specific matched frozen configuration",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/twostage-s2026092701.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/twostage-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/twostage-s2026092701/launch.stdout.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "comparison_suite.pipeline",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/twostage-s2026092701.json"
+      ],
+      "expected_artifacts": [
+        "each row/phase1_predictions.npz",
+        "each row/phase2_predictions.jsonl",
+        "each row/phase1_complete.json",
+        "each row/phase2_complete.json",
+        "each row/resources.jsonl",
+        "each row/fit_metrics.jsonl",
+        "each row/provenance.json"
+      ]
+    },
+    {
+      "row_id": "twostage-s2026092702",
+      "method": "twostage",
+      "purpose": "primary",
+      "config_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/twostage-s2026092702.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/twostage-s2026092702/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Source data seed controls sampling/episodes; source V is deterministic (evaluation null), support not applicable. Phase2 data/augmentation/evaluation seeds2026092705/07/06 are existing capsule seeds; support row seeds are2026092711..15 (support null denotes multi-seed matrix). Phase1 target capsule generator seed must be read from existing manifest; unknown here, not inferred. No new target channel draw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": "method-specific matched frozen configuration",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/twostage-s2026092702.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/twostage-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/twostage-s2026092702/launch.stdout.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "comparison_suite.pipeline",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/twostage-s2026092702.json"
+      ],
+      "expected_artifacts": [
+        "each row/phase1_predictions.npz",
+        "each row/phase2_predictions.jsonl",
+        "each row/phase1_complete.json",
+        "each row/phase2_complete.json",
+        "each row/resources.jsonl",
+        "each row/fit_metrics.jsonl",
+        "each row/provenance.json"
+      ]
+    },
+    {
+      "row_id": "twostage-s2026092703",
+      "method": "twostage",
+      "purpose": "primary",
+      "config_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/twostage-s2026092703.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/twostage-s2026092703/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Source data seed controls sampling/episodes; source V is deterministic (evaluation null), support not applicable. Phase2 data/augmentation/evaluation seeds2026092705/07/06 are existing capsule seeds; support row seeds are2026092711..15 (support null denotes multi-seed matrix). Phase1 target capsule generator seed must be read from existing manifest; unknown here, not inferred. No new target channel draw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": "method-specific matched frozen configuration",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/twostage-s2026092703.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/twostage-s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/twostage-s2026092703/launch.stdout.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "comparison_suite.pipeline",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/twostage-s2026092703.json"
+      ],
+      "expected_artifacts": [
+        "each row/phase1_predictions.npz",
+        "each row/phase2_predictions.jsonl",
+        "each row/phase1_complete.json",
+        "each row/phase2_complete.json",
+        "each row/resources.jsonl",
+        "each row/fit_metrics.jsonl",
+        "each row/provenance.json"
+      ]
+    },
+    {
+      "row_id": "twostage-s2026092704",
+      "method": "twostage",
+      "purpose": "primary",
+      "config_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/twostage-s2026092704.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/twostage-s2026092704/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Source data seed controls sampling/episodes; source V is deterministic (evaluation null), support not applicable. Phase2 data/augmentation/evaluation seeds2026092705/07/06 are existing capsule seeds; support row seeds are2026092711..15 (support null denotes multi-seed matrix). Phase1 target capsule generator seed must be read from existing manifest; unknown here, not inferred. No new target channel draw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": "method-specific matched frozen configuration",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/twostage-s2026092704.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/twostage-s2026092704",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/twostage-s2026092704/launch.stdout.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "comparison_suite.pipeline",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/twostage-s2026092704.json"
+      ],
+      "expected_artifacts": [
+        "each row/phase1_predictions.npz",
+        "each row/phase2_predictions.jsonl",
+        "each row/phase1_complete.json",
+        "each row/phase2_complete.json",
+        "each row/resources.jsonl",
+        "each row/fit_metrics.jsonl",
+        "each row/provenance.json"
+      ]
+    },
+    {
+      "row_id": "csil-s392005",
+      "method": "csil",
+      "purpose": "primary",
+      "config_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/csil-s392005.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/csil-s392005/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 392005,
+        "split": 392005,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Source data seed controls sampling/episodes; source V is deterministic (evaluation null), support not applicable. Phase2 data/augmentation/evaluation seeds2026092705/07/06 are existing capsule seeds; support row seeds are2026092711..15 (support null denotes multi-seed matrix). Phase1 target capsule generator seed must be read from existing manifest; unknown here, not inferred. No new target channel draw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": "method-specific matched frozen configuration",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/csil-s392005.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/csil-s392005",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/csil-s392005/launch.stdout.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "comparison_suite.pipeline",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/csil-s392005.json"
+      ],
+      "expected_artifacts": [
+        "each row/phase1_predictions.npz",
+        "each row/phase2_predictions.jsonl",
+        "each row/phase1_complete.json",
+        "each row/phase2_complete.json",
+        "each row/resources.jsonl",
+        "each row/fit_metrics.jsonl",
+        "each row/provenance.json"
+      ]
+    },
+    {
+      "row_id": "csil-s2026092701",
+      "method": "csil",
+      "purpose": "primary",
+      "config_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/csil-s2026092701.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/csil-s2026092701/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Source data seed controls sampling/episodes; source V is deterministic (evaluation null), support not applicable. Phase2 data/augmentation/evaluation seeds2026092705/07/06 are existing capsule seeds; support row seeds are2026092711..15 (support null denotes multi-seed matrix). Phase1 target capsule generator seed must be read from existing manifest; unknown here, not inferred. No new target channel draw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": "method-specific matched frozen configuration",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/csil-s2026092701.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/csil-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/csil-s2026092701/launch.stdout.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "comparison_suite.pipeline",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/csil-s2026092701.json"
+      ],
+      "expected_artifacts": [
+        "each row/phase1_predictions.npz",
+        "each row/phase2_predictions.jsonl",
+        "each row/phase1_complete.json",
+        "each row/phase2_complete.json",
+        "each row/resources.jsonl",
+        "each row/fit_metrics.jsonl",
+        "each row/provenance.json"
+      ]
+    },
+    {
+      "row_id": "csil-s2026092702",
+      "method": "csil",
+      "purpose": "primary",
+      "config_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/csil-s2026092702.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/csil-s2026092702/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Source data seed controls sampling/episodes; source V is deterministic (evaluation null), support not applicable. Phase2 data/augmentation/evaluation seeds2026092705/07/06 are existing capsule seeds; support row seeds are2026092711..15 (support null denotes multi-seed matrix). Phase1 target capsule generator seed must be read from existing manifest; unknown here, not inferred. No new target channel draw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": "method-specific matched frozen configuration",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/csil-s2026092702.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/csil-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/csil-s2026092702/launch.stdout.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "comparison_suite.pipeline",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/csil-s2026092702.json"
+      ],
+      "expected_artifacts": [
+        "each row/phase1_predictions.npz",
+        "each row/phase2_predictions.jsonl",
+        "each row/phase1_complete.json",
+        "each row/phase2_complete.json",
+        "each row/resources.jsonl",
+        "each row/fit_metrics.jsonl",
+        "each row/provenance.json"
+      ]
+    },
+    {
+      "row_id": "csil-s2026092703",
+      "method": "csil",
+      "purpose": "primary",
+      "config_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/csil-s2026092703.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/csil-s2026092703/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Source data seed controls sampling/episodes; source V is deterministic (evaluation null), support not applicable. Phase2 data/augmentation/evaluation seeds2026092705/07/06 are existing capsule seeds; support row seeds are2026092711..15 (support null denotes multi-seed matrix). Phase1 target capsule generator seed must be read from existing manifest; unknown here, not inferred. No new target channel draw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": "method-specific matched frozen configuration",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/csil-s2026092703.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/csil-s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/csil-s2026092703/launch.stdout.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "comparison_suite.pipeline",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/csil-s2026092703.json"
+      ],
+      "expected_artifacts": [
+        "each row/phase1_predictions.npz",
+        "each row/phase2_predictions.jsonl",
+        "each row/phase1_complete.json",
+        "each row/phase2_complete.json",
+        "each row/resources.jsonl",
+        "each row/fit_metrics.jsonl",
+        "each row/provenance.json"
+      ]
+    },
+    {
+      "row_id": "csil-s2026092704",
+      "method": "csil",
+      "purpose": "primary",
+      "config_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/csil-s2026092704.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/csil-s2026092704/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Source data seed controls sampling/episodes; source V is deterministic (evaluation null), support not applicable. Phase2 data/augmentation/evaluation seeds2026092705/07/06 are existing capsule seeds; support row seeds are2026092711..15 (support null denotes multi-seed matrix). Phase1 target capsule generator seed must be read from existing manifest; unknown here, not inferred. No new target channel draw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": "method-specific matched frozen configuration",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/csil-s2026092704.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/csil-s2026092704",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/csil-s2026092704/launch.stdout.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "comparison_suite.pipeline",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/csil-s2026092704.json"
+      ],
+      "expected_artifacts": [
+        "each row/phase1_predictions.npz",
+        "each row/phase2_predictions.jsonl",
+        "each row/phase1_complete.json",
+        "each row/phase2_complete.json",
+        "each row/resources.jsonl",
+        "each row/fit_metrics.jsonl",
+        "each row/provenance.json"
+      ]
+    },
+    {
+      "row_id": "mopc_hr-s392005",
+      "method": "mopc_hr",
+      "purpose": "primary",
+      "config_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/mopc_hr-s392005.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/mopc_hr-s392005/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 392005,
+        "split": 392005,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Source data seed controls sampling/episodes; source V is deterministic (evaluation null), support not applicable. Phase2 data/augmentation/evaluation seeds2026092705/07/06 are existing capsule seeds; support row seeds are2026092711..15 (support null denotes multi-seed matrix). Phase1 target capsule generator seed must be read from existing manifest; unknown here, not inferred. No new target channel draw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": "method-specific matched frozen configuration",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/mopc_hr-s392005.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/mopc_hr-s392005",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/mopc_hr-s392005/launch.stdout.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "comparison_suite.pipeline",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/mopc_hr-s392005.json"
+      ],
+      "expected_artifacts": [
+        "each row/phase1_predictions.npz",
+        "each row/phase2_predictions.jsonl",
+        "each row/phase1_complete.json",
+        "each row/phase2_complete.json",
+        "each row/resources.jsonl",
+        "each row/fit_metrics.jsonl",
+        "each row/provenance.json"
+      ]
+    },
+    {
+      "row_id": "mopc_hr-s2026092701",
+      "method": "mopc_hr",
+      "purpose": "primary",
+      "config_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/mopc_hr-s2026092701.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/mopc_hr-s2026092701/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Source data seed controls sampling/episodes; source V is deterministic (evaluation null), support not applicable. Phase2 data/augmentation/evaluation seeds2026092705/07/06 are existing capsule seeds; support row seeds are2026092711..15 (support null denotes multi-seed matrix). Phase1 target capsule generator seed must be read from existing manifest; unknown here, not inferred. No new target channel draw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": "method-specific matched frozen configuration",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/mopc_hr-s2026092701.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/mopc_hr-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/mopc_hr-s2026092701/launch.stdout.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "comparison_suite.pipeline",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/mopc_hr-s2026092701.json"
+      ],
+      "expected_artifacts": [
+        "each row/phase1_predictions.npz",
+        "each row/phase2_predictions.jsonl",
+        "each row/phase1_complete.json",
+        "each row/phase2_complete.json",
+        "each row/resources.jsonl",
+        "each row/fit_metrics.jsonl",
+        "each row/provenance.json"
+      ]
+    },
+    {
+      "row_id": "mopc_hr-s2026092702",
+      "method": "mopc_hr",
+      "purpose": "primary",
+      "config_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/mopc_hr-s2026092702.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/mopc_hr-s2026092702/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Source data seed controls sampling/episodes; source V is deterministic (evaluation null), support not applicable. Phase2 data/augmentation/evaluation seeds2026092705/07/06 are existing capsule seeds; support row seeds are2026092711..15 (support null denotes multi-seed matrix). Phase1 target capsule generator seed must be read from existing manifest; unknown here, not inferred. No new target channel draw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": "method-specific matched frozen configuration",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/mopc_hr-s2026092702.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/mopc_hr-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/mopc_hr-s2026092702/launch.stdout.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "comparison_suite.pipeline",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/mopc_hr-s2026092702.json"
+      ],
+      "expected_artifacts": [
+        "each row/phase1_predictions.npz",
+        "each row/phase2_predictions.jsonl",
+        "each row/phase1_complete.json",
+        "each row/phase2_complete.json",
+        "each row/resources.jsonl",
+        "each row/fit_metrics.jsonl",
+        "each row/provenance.json"
+      ]
+    },
+    {
+      "row_id": "mopc_hr-s2026092703",
+      "method": "mopc_hr",
+      "purpose": "primary",
+      "config_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/mopc_hr-s2026092703.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/mopc_hr-s2026092703/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Source data seed controls sampling/episodes; source V is deterministic (evaluation null), support not applicable. Phase2 data/augmentation/evaluation seeds2026092705/07/06 are existing capsule seeds; support row seeds are2026092711..15 (support null denotes multi-seed matrix). Phase1 target capsule generator seed must be read from existing manifest; unknown here, not inferred. No new target channel draw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": "method-specific matched frozen configuration",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/mopc_hr-s2026092703.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/mopc_hr-s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/mopc_hr-s2026092703/launch.stdout.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "comparison_suite.pipeline",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/mopc_hr-s2026092703.json"
+      ],
+      "expected_artifacts": [
+        "each row/phase1_predictions.npz",
+        "each row/phase2_predictions.jsonl",
+        "each row/phase1_complete.json",
+        "each row/phase2_complete.json",
+        "each row/resources.jsonl",
+        "each row/fit_metrics.jsonl",
+        "each row/provenance.json"
+      ]
+    },
+    {
+      "row_id": "mopc_hr-s2026092704",
+      "method": "mopc_hr",
+      "purpose": "primary",
+      "config_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/mopc_hr-s2026092704.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/mopc_hr-s2026092704/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Source data seed controls sampling/episodes; source V is deterministic (evaluation null), support not applicable. Phase2 data/augmentation/evaluation seeds2026092705/07/06 are existing capsule seeds; support row seeds are2026092711..15 (support null denotes multi-seed matrix). Phase1 target capsule generator seed must be read from existing manifest; unknown here, not inferred. No new target channel draw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": "method-specific matched frozen configuration",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/mopc_hr-s2026092704.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/mopc_hr-s2026092704",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/mopc_hr-s2026092704/launch.stdout.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "comparison_suite.pipeline",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/mopc_hr-s2026092704.json"
+      ],
+      "expected_artifacts": [
+        "each row/phase1_predictions.npz",
+        "each row/phase2_predictions.jsonl",
+        "each row/phase1_complete.json",
+        "each row/phase2_complete.json",
+        "each row/resources.jsonl",
+        "each row/fit_metrics.jsonl",
+        "each row/provenance.json"
+      ]
+    },
+    {
+      "row_id": "orthogonal-s392005",
+      "method": "orthogonal",
+      "purpose": "primary",
+      "config_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/orthogonal-s392005.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/orthogonal-s392005/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 392005,
+        "split": 392005,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Source data seed controls sampling/episodes; source V is deterministic (evaluation null), support not applicable. Phase2 data/augmentation/evaluation seeds2026092705/07/06 are existing capsule seeds; support row seeds are2026092711..15 (support null denotes multi-seed matrix). Phase1 target capsule generator seed must be read from existing manifest; unknown here, not inferred. No new target channel draw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": "method-specific matched frozen configuration",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/orthogonal-s392005.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/orthogonal-s392005",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/orthogonal-s392005/launch.stdout.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "comparison_suite.pipeline",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/orthogonal-s392005.json"
+      ],
+      "expected_artifacts": [
+        "each row/phase1_predictions.npz",
+        "each row/phase2_predictions.jsonl",
+        "each row/phase1_complete.json",
+        "each row/phase2_complete.json",
+        "each row/resources.jsonl",
+        "each row/fit_metrics.jsonl",
+        "each row/provenance.json"
+      ]
+    },
+    {
+      "row_id": "orthogonal-s2026092701",
+      "method": "orthogonal",
+      "purpose": "primary",
+      "config_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/orthogonal-s2026092701.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/orthogonal-s2026092701/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Source data seed controls sampling/episodes; source V is deterministic (evaluation null), support not applicable. Phase2 data/augmentation/evaluation seeds2026092705/07/06 are existing capsule seeds; support row seeds are2026092711..15 (support null denotes multi-seed matrix). Phase1 target capsule generator seed must be read from existing manifest; unknown here, not inferred. No new target channel draw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": "method-specific matched frozen configuration",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/orthogonal-s2026092701.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/orthogonal-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/orthogonal-s2026092701/launch.stdout.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "comparison_suite.pipeline",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/orthogonal-s2026092701.json"
+      ],
+      "expected_artifacts": [
+        "each row/phase1_predictions.npz",
+        "each row/phase2_predictions.jsonl",
+        "each row/phase1_complete.json",
+        "each row/phase2_complete.json",
+        "each row/resources.jsonl",
+        "each row/fit_metrics.jsonl",
+        "each row/provenance.json"
+      ]
+    },
+    {
+      "row_id": "orthogonal-s2026092702",
+      "method": "orthogonal",
+      "purpose": "primary",
+      "config_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/orthogonal-s2026092702.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/orthogonal-s2026092702/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Source data seed controls sampling/episodes; source V is deterministic (evaluation null), support not applicable. Phase2 data/augmentation/evaluation seeds2026092705/07/06 are existing capsule seeds; support row seeds are2026092711..15 (support null denotes multi-seed matrix). Phase1 target capsule generator seed must be read from existing manifest; unknown here, not inferred. No new target channel draw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": "method-specific matched frozen configuration",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/orthogonal-s2026092702.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/orthogonal-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/orthogonal-s2026092702/launch.stdout.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "comparison_suite.pipeline",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/orthogonal-s2026092702.json"
+      ],
+      "expected_artifacts": [
+        "each row/phase1_predictions.npz",
+        "each row/phase2_predictions.jsonl",
+        "each row/phase1_complete.json",
+        "each row/phase2_complete.json",
+        "each row/resources.jsonl",
+        "each row/fit_metrics.jsonl",
+        "each row/provenance.json"
+      ]
+    },
+    {
+      "row_id": "orthogonal-s2026092703",
+      "method": "orthogonal",
+      "purpose": "primary",
+      "config_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/orthogonal-s2026092703.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/orthogonal-s2026092703/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Source data seed controls sampling/episodes; source V is deterministic (evaluation null), support not applicable. Phase2 data/augmentation/evaluation seeds2026092705/07/06 are existing capsule seeds; support row seeds are2026092711..15 (support null denotes multi-seed matrix). Phase1 target capsule generator seed must be read from existing manifest; unknown here, not inferred. No new target channel draw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": "method-specific matched frozen configuration",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/orthogonal-s2026092703.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/orthogonal-s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/orthogonal-s2026092703/launch.stdout.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "comparison_suite.pipeline",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/orthogonal-s2026092703.json"
+      ],
+      "expected_artifacts": [
+        "each row/phase1_predictions.npz",
+        "each row/phase2_predictions.jsonl",
+        "each row/phase1_complete.json",
+        "each row/phase2_complete.json",
+        "each row/resources.jsonl",
+        "each row/fit_metrics.jsonl",
+        "each row/provenance.json"
+      ]
+    },
+    {
+      "row_id": "orthogonal-s2026092704",
+      "method": "orthogonal",
+      "purpose": "primary",
+      "config_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/orthogonal-s2026092704.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/orthogonal-s2026092704/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Source data seed controls sampling/episodes; source V is deterministic (evaluation null), support not applicable. Phase2 data/augmentation/evaluation seeds2026092705/07/06 are existing capsule seeds; support row seeds are2026092711..15 (support null denotes multi-seed matrix). Phase1 target capsule generator seed must be read from existing manifest; unknown here, not inferred. No new target channel draw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": "method-specific matched frozen configuration",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/orthogonal-s2026092704.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/orthogonal-s2026092704",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/orthogonal-s2026092704/launch.stdout.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "comparison_suite.pipeline",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/orthogonal-s2026092704.json"
+      ],
+      "expected_artifacts": [
+        "each row/phase1_predictions.npz",
+        "each row/phase2_predictions.jsonl",
+        "each row/phase1_complete.json",
+        "each row/phase2_complete.json",
+        "each row/resources.jsonl",
+        "each row/fit_metrics.jsonl",
+        "each row/provenance.json"
+      ]
+    },
+    {
+      "row_id": "radionet_ada-s392005",
+      "method": "radionet_ada",
+      "purpose": "primary",
+      "config_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/radionet_ada-s392005.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/radionet_ada-s392005/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 392005,
+        "split": 392005,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Source data seed controls sampling/episodes; source V is deterministic (evaluation null), support not applicable. Phase2 data/augmentation/evaluation seeds2026092705/07/06 are existing capsule seeds; support row seeds are2026092711..15 (support null denotes multi-seed matrix). Phase1 target capsule generator seed must be read from existing manifest; unknown here, not inferred. No new target channel draw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": "method-specific matched frozen configuration",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/radionet_ada-s392005.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/radionet_ada-s392005",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/radionet_ada-s392005/launch.stdout.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "comparison_suite.pipeline",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/radionet_ada-s392005.json"
+      ],
+      "expected_artifacts": [
+        "each row/phase1_predictions.npz",
+        "each row/phase2_predictions.jsonl",
+        "each row/phase1_complete.json",
+        "each row/phase2_complete.json",
+        "each row/resources.jsonl",
+        "each row/fit_metrics.jsonl",
+        "each row/provenance.json"
+      ]
+    },
+    {
+      "row_id": "radionet_ada-s2026092701",
+      "method": "radionet_ada",
+      "purpose": "primary",
+      "config_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/radionet_ada-s2026092701.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/radionet_ada-s2026092701/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Source data seed controls sampling/episodes; source V is deterministic (evaluation null), support not applicable. Phase2 data/augmentation/evaluation seeds2026092705/07/06 are existing capsule seeds; support row seeds are2026092711..15 (support null denotes multi-seed matrix). Phase1 target capsule generator seed must be read from existing manifest; unknown here, not inferred. No new target channel draw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": "method-specific matched frozen configuration",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/radionet_ada-s2026092701.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/radionet_ada-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/radionet_ada-s2026092701/launch.stdout.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "comparison_suite.pipeline",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/radionet_ada-s2026092701.json"
+      ],
+      "expected_artifacts": [
+        "each row/phase1_predictions.npz",
+        "each row/phase2_predictions.jsonl",
+        "each row/phase1_complete.json",
+        "each row/phase2_complete.json",
+        "each row/resources.jsonl",
+        "each row/fit_metrics.jsonl",
+        "each row/provenance.json"
+      ]
+    },
+    {
+      "row_id": "radionet_ada-s2026092702",
+      "method": "radionet_ada",
+      "purpose": "primary",
+      "config_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/radionet_ada-s2026092702.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/radionet_ada-s2026092702/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Source data seed controls sampling/episodes; source V is deterministic (evaluation null), support not applicable. Phase2 data/augmentation/evaluation seeds2026092705/07/06 are existing capsule seeds; support row seeds are2026092711..15 (support null denotes multi-seed matrix). Phase1 target capsule generator seed must be read from existing manifest; unknown here, not inferred. No new target channel draw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": "method-specific matched frozen configuration",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/radionet_ada-s2026092702.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/radionet_ada-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/radionet_ada-s2026092702/launch.stdout.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "comparison_suite.pipeline",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/radionet_ada-s2026092702.json"
+      ],
+      "expected_artifacts": [
+        "each row/phase1_predictions.npz",
+        "each row/phase2_predictions.jsonl",
+        "each row/phase1_complete.json",
+        "each row/phase2_complete.json",
+        "each row/resources.jsonl",
+        "each row/fit_metrics.jsonl",
+        "each row/provenance.json"
+      ]
+    },
+    {
+      "row_id": "radionet_ada-s2026092703",
+      "method": "radionet_ada",
+      "purpose": "primary",
+      "config_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/radionet_ada-s2026092703.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/radionet_ada-s2026092703/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Source data seed controls sampling/episodes; source V is deterministic (evaluation null), support not applicable. Phase2 data/augmentation/evaluation seeds2026092705/07/06 are existing capsule seeds; support row seeds are2026092711..15 (support null denotes multi-seed matrix). Phase1 target capsule generator seed must be read from existing manifest; unknown here, not inferred. No new target channel draw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": "method-specific matched frozen configuration",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/radionet_ada-s2026092703.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/radionet_ada-s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/radionet_ada-s2026092703/launch.stdout.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "comparison_suite.pipeline",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/radionet_ada-s2026092703.json"
+      ],
+      "expected_artifacts": [
+        "each row/phase1_predictions.npz",
+        "each row/phase2_predictions.jsonl",
+        "each row/phase1_complete.json",
+        "each row/phase2_complete.json",
+        "each row/resources.jsonl",
+        "each row/fit_metrics.jsonl",
+        "each row/provenance.json"
+      ]
+    },
+    {
+      "row_id": "radionet_ada-s2026092704",
+      "method": "radionet_ada",
+      "purpose": "primary",
+      "config_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/radionet_ada-s2026092704.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/radionet_ada-s2026092704/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "seed_notes": "Source data seed controls sampling/episodes; source V is deterministic (evaluation null), support not applicable. Phase2 data/augmentation/evaluation seeds2026092705/07/06 are existing capsule seeds; support row seeds are2026092711..15 (support null denotes multi-seed matrix). Phase1 target capsule generator seed must be read from existing manifest; unknown here, not inferred. No new target channel draw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "optimizer": "method-specific matched frozen configuration",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/radionet_ada-s2026092704.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/radionet_ada-s2026092704",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/radionet_ada-s2026092704/launch.stdout.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "comparison_suite.pipeline",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/radionet_ada-s2026092704.json"
+      ],
+      "expected_artifacts": [
+        "each row/phase1_predictions.npz",
+        "each row/phase2_predictions.jsonl",
+        "each row/phase1_complete.json",
+        "each row/phase2_complete.json",
+        "each row/resources.jsonl",
+        "each row/fit_metrics.jsonl",
+        "each row/provenance.json"
+      ]
+    }
+  ],
+  "notes": [
+    "392005 is disclosed historical optimized seed; primary analysis uses four fresh fixed seeds, all-five sensitivity also reported. No seed cherry-picking.",
+    "CSIL/MoPC encoder is explicitly declared six-block IQ CVS extension; native channel separation/KD/Fisher/masks and prototype correction/augmentation/HR retained.",
+    "CSIL official_repo_corefix explicitly replaces overflowing author exp(gradient²) with FP64 mean per-example labeled-source CE gradient² empirical Fisher; EWC is active with trainable old-old fingerprints. No silent exponent clamp, identity fallback or literal author-code parity claim.",
+    "ProtoNet source training is episodic, not arbitrary frozen embedding NCM. RadioNet ADA uses its own author ADA encoder, not DF Fine-tuning checkpoint.",
+    "Current config code.commit is preparation baseline; publisher must record the final committed release before launch.",
+    "Source L_s alone supplies supervised source initializers. U_s labels remain hidden and are unused; V only evaluated. Source-step/sample exposure differences are reported."
+  ]
+}

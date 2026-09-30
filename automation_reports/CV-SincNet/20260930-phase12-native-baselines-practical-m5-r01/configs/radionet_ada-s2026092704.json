@@ -1,0 +1,26 @@
+{
+  "method": "radionet_ada",
+  "model_seed": 2026092704,
+  "source_output": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/radionet_ada-s2026092704",
+  "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/radionet_ada-s2026092704",
+  "device": "cuda:0",
+  "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+  "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+  "p1_capsule": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/capsule",
+  "p2_capsule": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-practical-data-manytx-s2026092705-r01/capsule",
+  "adaptation": {
+    "epochs": 100,
+    "steps_per_epoch": 1,
+    "iterations": 1000,
+    "dann_epochs": 100,
+    "lmmd_epochs": 100,
+    "finetune_epochs": 100
+  },
+  "registration": {
+    "csil_old_fingerprint_trainable": true
+  },
+  "batch_size": 256,
+  "method_version": "matched_native_v1",
+  "protocol": "p2_min_v1",
+  "channel_route": "residual_noeq"
+}
