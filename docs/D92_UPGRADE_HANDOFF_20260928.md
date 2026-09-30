@@ -1,3 +1,8 @@
+## 最新状态：MC完整产物已核实（2026-09-30）
+
+ARTIFACTS_COMPLETE/VERIFIED：MC联合四row/160parent完整结束，主管及worker均退出，独立complete/state/物理配置计数读回一致。实际更新3544次、实际头拟合22257次。未读取query或源域样本；运行完成不代表性能改善。下一步独立support汇总与完整训练机制诊断；root唯一owner，目标ACTIVE。
+证据：readback_1790774911362770400.json。下一步唯一analysis release d92_mc_residual8_analysis_20260930_r01，未启动；不重复publish训练run。
+
 ## 最新补充：MC联合训练诊断工具已验证（2026-09-30）
 
 collector/test/doc已交还；root聚焦pytest证据1790774207012280500。训练runtime仍191d7df111a58aa8435473582db42902f9b8d3a0，未改运行release。最近独立实时证据：readback_1790774171026062600.json。完整run尚未完成；禁止重复publish。结束后独立support summary，再对完整scalar训练流及必要坐标做只读诊断，不访问query或据部分结果改参数。目标ACTIVE。

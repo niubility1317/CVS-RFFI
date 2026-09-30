@@ -3,7 +3,7 @@
 - run_id：`20260930-phase2-d92-mc-residual8-support-m2-r01`
 - group_id：`d92-mc-residual8-support`；类别：`diagnostic`；阶段：`Phase2-support-only-diagnostic`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ARTIFACTS_COMPLETE（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -41,3 +41,5 @@ VERIFIED: Single math-driven joint MC-Residual8/BranchLocalRidge candidate local
 VERIFIED: MC-Residual8/LocalRidge single candidate launched once at runtime commit 191d7df111a58aa8435473582db42902f9b8d3a0. Independent post-state matched supervisor175794 and two child PID/argv/cwd, with12 completed support parents. No query/source sample/encoder access; two CPU lanes, no performance result yet.
 
 MC完整训练机制collector聚焦测试通过；仅新增只读分析工具。实际160配置汇总待运行结束，不更改训练runtime。
+
+ARTIFACTS_COMPLETE/VERIFIED：MC联合四row/160parent完整结束，主管及worker均退出，独立complete/state/物理配置计数读回一致。实际更新3544次、实际头拟合22257次。未读取query或源域样本；运行完成不代表性能改善。下一步独立support汇总与完整训练机制诊断；root唯一owner，目标ACTIVE。
