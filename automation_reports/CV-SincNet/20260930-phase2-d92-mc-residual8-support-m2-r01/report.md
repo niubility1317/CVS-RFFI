@@ -43,3 +43,5 @@ VERIFIED: MC-Residual8/LocalRidge single candidate launched once at runtime comm
 MC完整训练机制collector聚焦测试通过；仅新增只读分析工具。实际160配置汇总待运行结束，不更改训练runtime。
 
 ARTIFACTS_COMPLETE/VERIFIED：MC联合四row/160parent完整结束，主管及worker均退出，独立complete/state/物理配置计数读回一致。实际更新3544次、实际头拟合22257次。未读取query或源域样本；运行完成不代表性能改善。下一步独立support汇总与完整训练机制诊断；root唯一owner，目标ACTIVE。
+
+VERIFIED：完整MC support独立汇总已单次启动，analysis release d92_mc_residual8_analysis_20260930_r01，PID203687/argv/cwd独立读回匹配，分析commit ccda587647a09bad5c766383c86dea886e8dabc1。本地等待handle72223仍有效；summary尚未产生。训练已全部结束，禁止重复publish或重复analysis。
