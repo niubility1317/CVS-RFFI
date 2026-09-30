@@ -1,0 +1,17 @@
+{
+  "commit": "67e452901c5b8b03a5b25b49197d925b39a5a64b",
+  "runtime_commit": "5b7319acd9e61f8f1c9f59824ac979db459b0aa8",
+  "argv": [
+    "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "-u",
+    "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_margin_analysis_20260930_r01/tools/summarize_d92_branch_local_margin_probe.py",
+    "--spec",
+    "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_margin_support_20260929_r01/configs/d92_branch_local_margin_support_20260929.json",
+    "--run-root",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-local-margin-support-m4-r01",
+    "--output",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-local-margin-support-m4-r01/results/support_summary"
+  ],
+  "release": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_margin_analysis_20260930_r01",
+  "status": "VERIFIED"
+}

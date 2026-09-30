@@ -1,4 +1,10 @@
-## 最新状态：注册诊断完整分析完成，Margin正在分析（2026-09-30）
+## 最新状态：Margin完整分析完成，顺序残差头实施中（2026-09-30）
+
+Margin完整4800parent分析VERIFIED，原run/results/support_summary已下载，登记ANALYZED。standard vsLocalRidge K5/10/20的旧/新/H都小幅正向，proxy的新类均微负，未通过既定双诊断筛选，不执行preregister_local_margin_benchmark，不启动query基准。完整数值/成本报告 `docs/D92_BRANCH_LOCAL_MARGIN_SUPPORT_RESULT_20260930.md`；OOF平均fit Margin1.19798秒、LocalRidge0.09410秒，proxy0.29464/0.004106秒。旧analysis PID597219已正常退出，session59121完成；无健康实验待重启。
+
+已批准单一新候选LocalRidge-SequentialResidualHead8实施，尚未启动/生成真实配置/预登记。设计文件 `docs/D92_NEXT_AFTER_REGISTRATION_DIAGNOSTIC_20260930.md`；core owner branch_local_core负责新d92_sequential_residual_head.py/frozenJSON/core tests，entry owner sequential_residual_entry负责evaluate/summary及tests，root负责run/prepare/preflight/publish/analyze和编排tests，local_env_reconcile独立直接P0/P1接续审阅。三路径R0/R_reset/R_seq；B旧support训练，C继承参数后全类训练，固定64 Adam updates/stage，C基线重新拟合，N0复用。160parent pilot预计3168basefits、4576residualstages、292864updates。核心API由owner协调，root串行ssr-gpu测试，不提前启动或宣称提升。暂停Residual8草稿继续保留，不能纳入发布。
+
+## 历史状态：注册诊断完整分析完成，Margin正在分析（2026-09-30）
 
 注册诊断160 parent全部完成，summary状态COMPLETE_REGISTRATION_DIAGNOSTIC_VERIFIED，分析commit67e452901，runtime0e6fe9613；本地原始汇总在本run/results/support_summary，结果解释 `docs/D92_REGISTRATION_DIAGNOSTIC_RESULT_20260930.md`，包含完整K×新增类数。此为SAFE support证据可交方法设计者。新类竞争是所选pilot内旧类下降的主要分解项，但不等于某模块的独立因果效应；A/微调收益N/A。branch_local_core正在独有文档D92_NEXT_AFTER_REGISTRATION_DIAGNOSTIC_20260930.md设计下一步，尚未授权核心实现，待Margin完整结果合并。
 
