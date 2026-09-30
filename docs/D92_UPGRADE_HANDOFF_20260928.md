@@ -1,3 +1,9 @@
+## 最新状态：AffineJoint已验证，待单次发布（2026-10-01）
+
+LOCAL_VERIFIED/VERIFIED：单一解析自由截距结构已实现，79个不同相关检查通过（core/entry/ops58、summary10、reporter11）；唯一独立P0/P1审查无未解决问题。完整Schur和非零g_b伴随、当次B→C状态、全部RHS与状态字节、真实事件顺序经合成检查。实际四缓存/160parent输入绑定及新输出无冲突已核实。方案在旧AJLR完整评分前按数学推导确定，无部分结果选模/参数扫描。未发布或启动，真实性能尚未知；A及B−A=N/A，query/source样本不读，目标ACTIVE。
+
+新run 20261001-phase2-d92-affine-joint-support-m2-r01；spec configs/d92_affine_joint_support_20261001.json；release d92_affine_joint_support_20261001_r01。prepare/new/preflight已完成，禁止重复。root唯一launch owner，发布实际pushed HEAD并独立PID/argv/cwd读回。旧AJLR分析r02 PID394399/handle99201仍在运行，保持原进程，不重复分析或训练。当前新方法没有真实性能结论。
+
 ## 最新补充：解析截距实现映射完成，r02持续工作已核实（2026-10-01）
 
 VERIFIED：docs/D92_AJLR_AFFINE_IMPLEMENTATION_MAP_20261001.md完成，只映射已审计公式到实际函数、状态、伴随、RHS/字节费用和必要合成测试。没有修改核心/配置/入口、冻结候选或执行新实验。明确区分τ0非零等价核与零核，并限定actual B为同一新run、同一row/fold当次B→C继承，均衡理论等价不允许跨run复用目标适应状态。

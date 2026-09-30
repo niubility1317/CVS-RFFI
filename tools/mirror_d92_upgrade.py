@@ -299,6 +299,21 @@ paths += ['docs/D92_AJLR_INTERCEPT_MATH_AUDIT_20261001.md']
 paths += ['docs/D92_AJLR_ANALYSIS_REPAIR_20261001.md']
 paths += ['docs/D92_AJLR_SCORE_SCALE_MATH_AUDIT_20261001.md']
 paths += ['docs/D92_AJLR_AFFINE_IMPLEMENTATION_MAP_20261001.md']
+paths += ['code/cvsrffi/d92_affine_joint_local_ridge.py',
+    'configs/d92_affine_joint_frozen_20261001.json',
+    'configs/d92_affine_joint_support_20261001.json',
+    'configs/d92_affine_joint_support_rx1_20261001.json',
+    'configs/d92_affine_joint_support_rx3_20261001.json',
+    'tools/evaluate_d92_affine_joint_probe.py', 'tools/run_d92_affine_joint_probe.py',
+    'tools/prepare_d92_affine_joint_probe.py', 'tools/preflight_d92_affine_joint_probe.py',
+    'tools/publish_d92_affine_joint_probe.py', 'tools/analyze_d92_affine_joint_probe.py',
+    'tools/summarize_d92_affine_joint_probe.py', 'tools/report_d92_affine_joint_support.py',
+    'tests/test_d92_affine_joint_local_ridge.py', 'tests/test_d92_affine_joint_orchestration.py',
+    'tests/test_evaluate_d92_affine_joint_probe.py', 'tests/test_summarize_d92_affine_joint_probe.py',
+    'tests/test_report_d92_affine_joint_support.py',
+    'docs/D92_AFFINE_JOINT_CORE_20261001.md', 'docs/D92_AFFINE_JOINT_ENTRY_20261001.md',
+    'docs/D92_AFFINE_JOINT_SUMMARY_20261001.md', 'docs/D92_AFFINE_JOINT_P0_REVIEW_20261001.md',
+    'docs/D92_AFFINE_JOINT_REPORTING_20261001.md', 'docs/D92_AFFINE_JOINT_RELEASE_PLAN_20261001.md']
 for name in paths:
     src=ROOT/name;dst=WS/name;dst.parent.mkdir(parents=True,exist_ok=True)
     # Each name is unique to this task; original D92 and shared wrappers are not mirrored.

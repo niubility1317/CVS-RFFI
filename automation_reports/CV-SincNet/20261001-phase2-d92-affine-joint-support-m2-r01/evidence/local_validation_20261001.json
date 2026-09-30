@@ -1,0 +1,39 @@
+{
+  "status": "VERIFIED",
+  "scope": "SYNTHETIC_IMPLEMENTATION_NOT_REAL_PERFORMANCE",
+  "unique_checks": 79,
+  "tests": [
+    {
+      "unique_checks": 58,
+      "elapsed_seconds": 7.09,
+      "suites": [
+        "core",
+        "entry",
+        "orchestration"
+      ],
+      "evidence": "evidence\\pytest_utf8_1790801239413599000.txt"
+    },
+    {
+      "unique_checks": 10,
+      "elapsed_seconds": 109.86,
+      "suites": [
+        "summary"
+      ],
+      "evidence": "evidence\\pytest_utf8_1790802427189642100.txt"
+    },
+    {
+      "unique_checks": 11,
+      "elapsed_seconds": 0.57,
+      "suites": [
+        "reporter"
+      ],
+      "evidence": "evidence\\pytest_utf8_1790802979858337900.txt"
+    }
+  ],
+  "independent_review": "NO_UNRESOLVED_P0_P1",
+  "preparation_commit": "e1dec9b5838e7b96459931803d238b086b22c6b8",
+  "live_runtime_changed": false,
+  "query_read": false,
+  "source_samples_read": false,
+  "preflight": "evidence\\affine_joint_preflight_1790804282148346200.json"
+}
