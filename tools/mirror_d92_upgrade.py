@@ -202,6 +202,7 @@ paths += ['docs/D92_LOCAL_RIDGE_REGISTRATION_DIAGNOSTIC_20260930.md',
     'configs/d92_registration_diagnostic_20260930.json',
     'configs/d92_registration_diagnostic_rx3_20260930.json',
     'configs/d92_registration_diagnostic_rx1_20260930.json']
+paths += ['docs/D92_REGISTRATION_DIAGNOSTIC_RESULT_20260930.md']
 for name in paths:
     src=ROOT/name;dst=WS/name;dst.parent.mkdir(parents=True,exist_ok=True)
     # Each name is unique to this task; original D92 and shared wrappers are not mirrored.

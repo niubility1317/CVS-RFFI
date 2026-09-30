@@ -1,4 +1,10 @@
-## 最新状态：注册诊断运行，Margin已完整结束（2026-09-30）
+## 最新状态：注册诊断完整分析完成，Margin正在分析（2026-09-30）
+
+注册诊断160 parent全部完成，summary状态COMPLETE_REGISTRATION_DIAGNOSTIC_VERIFIED，分析commit67e452901，runtime0e6fe9613；本地原始汇总在本run/results/support_summary，结果解释 `docs/D92_REGISTRATION_DIAGNOSTIC_RESULT_20260930.md`，包含完整K×新增类数。此为SAFE support证据可交方法设计者。新类竞争是所选pilot内旧类下降的主要分解项，但不等于某模块的独立因果效应；A/微调收益N/A。branch_local_core正在独有文档D92_NEXT_AFTER_REGISTRATION_DIAGNOSTIC_20260930.md设计下一步，尚未授权核心实现，待Margin完整结果合并。
+
+Margin完整分析已单次启动，release `d92_branch_local_margin_analysis_20260930_r01`，分析PID597219，独立proc读回argv/CWD一致，执行session59121等待返回。必须核实该进程或session，不可重复提交分析；本地分析包目录已存在。helper `.codex_tmp/read_margin_analysis_process_20260930.py` 只读，远端analysis.log和analysis_process.json保留。完成后由既有工具下载summary；若wrapper中断先核实远端再下载，不能重跑分析覆盖。全目标ACTIVE。
+
+## 历史状态：注册诊断运行，Margin已完整结束（2026-09-30）
 
 注册诊断已发布runtime `0e6fe9613ef40f5993069617dbbfef99c0899aa1`，读回 `readback_1790729823005243000.json` 核实supervisor595507及worker595519/595520的argv/CWD一致且live，两个rx3执行、rx1等待。不要重复启动。完整四行160parent后运行 `tools/analyze_d92_registration_diagnostic.py` 汇总。
 
