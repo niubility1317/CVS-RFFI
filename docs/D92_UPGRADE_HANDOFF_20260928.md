@@ -1,3 +1,9 @@
+## 最新状态：未来Affine分析器已验证（2026-10-01）
+
+ANALYZER_READY/VERIFIED：未来Affine独立分析器的完整中心化VJP以代数等价的求和/外积展开，O(n³+hn²)改为O(n²+hn)，保留移动reference项、非零g_b及原有核验与容差；64MiB数组预算/64entry缓存按实际nbytes管理，每lane释放，缓存命中仍核查文件状态且不跳过数学核验。17个新增不同检查及10项既有summary回归通过，累计108个不同检查。首轮1项fixture混淆非均匀q的伴随零方向，原独立矩阵oracle已一致；仅修正fixture后受影响8项通过。健康训练runtime81a226a8d1cef34ea817ada87070bd89912d027d及AJLR分析r02不变；Affine分析尚未启动，无真实加速或性能结论，目标ACTIVE。
+
+实际训练已单次启动；最新只读证据readback_1790808279923520300.json为140/160，尚无complete。只有完整160结束及独立marker/实际费用/进程退出核实后，才单次启动d92_affine_joint_analysis_20261001_r01。原AJLR分析r02 PID394399、handle99201持续运行；不重复训练、publish、analyze，不热修改。新增分析文件的测试与边界见docs/D92_AFFINE_ANALYSIS_VALIDATION_20261001.md。
+
 ## 最新工具交付：AffineJoint训练诊断已验证（2026-10-01）
 
 COLLECTOR_VERIFIED/VERIFIED：独立只读AffineJoint训练诊断工具已完成，12个不同合成检查通过（9.02s），累计91个不同相关检查。两阶段目录/训练引用快照与完整训练档案提取、13项RHS/intercept费用、gCE=gZ−Z及实际B→C状态诊断已覆盖；不读取外层评分、不做新拟合/求解/SVD/前向。真实采集尚未执行，当前训练release/runtime不变，run继续RUNNING；不能据此宣称性能改善。

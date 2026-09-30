@@ -1,0 +1,32 @@
+{
+  "status": "VERIFIED",
+  "scope": "SYNTHETIC_ANALYSIS_EQUIVALENCE_NOT_REAL_PERFORMANCE",
+  "first_combined": {
+    "passed": 26,
+    "failed": 1,
+    "elapsed_seconds": 175.4,
+    "evidence": "evidence/pytest_utf8_1790807069159468400.txt",
+    "failure": "Nonuniform-q adjoint gauge fixture incorrectly used ones; independent dense oracle already agreed"
+  },
+  "affected_rerun": {
+    "passed": 8,
+    "failed": 0,
+    "elapsed_seconds": 0.33,
+    "evidence": "evidence/pytest_utf8_1790808282244998600.txt"
+  },
+  "new_unique_checks": 17,
+  "existing_summary_regression_checks": 10,
+  "cumulative_unique_checks": 108,
+  "formula_or_tolerance_changed_to_resolve_failure": false,
+  "cache_budget_bytes": 67108864,
+  "cache_entry_cap": 64,
+  "same_math_checks_retained": true,
+  "numerical_bits_identical_claim": false,
+  "actual_io_speedup_measured": false,
+  "actual_peak_rss_measured": false,
+  "method_or_training_config_changed": false,
+  "runtime_modified": false,
+  "remote_analysis_started": false,
+  "query_read": false,
+  "source_samples_read": false
+}

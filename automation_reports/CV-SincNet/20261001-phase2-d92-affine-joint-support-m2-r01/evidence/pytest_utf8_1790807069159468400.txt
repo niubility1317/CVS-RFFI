@@ -1,0 +1,22 @@
+..............F............                                              [100%]
+================================== FAILURES ===================================
+__ TestCenterKernelVJP.test_near_cancellation_and_exact_one_sample_boundary ___
+
+self = <test_d92_affine_analysis_math.TestCenterKernelVJP testMethod=test_near_cancellation_and_exact_one_sample_boundary>
+
+    def test_near_cancellation_and_exact_one_sample_boundary(self):
+        rng = np.random.default_rng(201); n = 7
+        v = rng.normal(size=n); small = rng.normal(size=(n, n)); small = .5*(small+small.T)
+        gauge = np.ones((n, 1))*v[None, :]+v[:, None]*np.ones((1, n))
+        A = gauge+1e-12*small; B = np.zeros((3, n))
+        q = np.array([.125, 0, .375, 0, .5, 0, 0])
+        br, bq = math_helper.center_kernel_vjp(A, B, q, 1.)
+        expected = dense_oracle(A, B, q, 1.)
+        for left, right in zip((br, bq), expected): assert_archive_tolerance(self, left, right)
+>       self.assertLess(float(np.linalg.norm(br)), 1e-10)
+E       AssertionError: 17.826367924325297 not less than 1e-10
+
+tests\test_d92_affine_analysis_math.py:134: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_d92_affine_analysis_math.py::TestCenterKernelVJP::test_near_cancellation_and_exact_one_sample_boundary
+1 failed, 26 passed in 175.40s (0:02:55)

@@ -33,3 +33,5 @@ LOCAL_VERIFIED/VERIFIED：单一解析自由截距结构已实现，79个不同�
 RUNNING/VERIFIED：AffineJoint已单次发布启动，实际runtime81a226a8d1cef34ea817ada87070bd89912d027d；supervisor451253及workers451265/451266的PID/argv/cwd独立读回一致。实际生效算法、缓存身份、run/row和CPU/BLAS参数匹配。首次读回16/160parents，两个rx3运行、两个rx1待排队，详细训练文本已增长；尚无完整性能结论。query/source样本0，encoder/checkpoint不加载，新增地面摘要0B。禁止重复publish/停止/重启/热修改；旧AJLR分析r02保持原PID394399/handle99201，目标ACTIVE。
 
 COLLECTOR_VERIFIED/VERIFIED：独立只读AffineJoint训练诊断工具已完成，12个不同合成检查通过（9.02s），累计91个不同相关检查。两阶段目录/训练引用快照与完整训练档案提取、13项RHS/intercept费用、gCE=gZ−Z及实际B→C状态诊断已覆盖；不读取外层评分、不做新拟合/求解/SVD/前向。真实采集尚未执行，当前训练release/runtime不变，run继续RUNNING；不能据此宣称性能改善。
+
+ANALYZER_READY/VERIFIED：未来Affine独立分析器的完整中心化VJP以代数等价的求和/外积展开，O(n³+hn²)改为O(n²+hn)，保留移动reference项、非零g_b及原有核验与容差；64MiB数组预算/64entry缓存按实际nbytes管理，每lane释放，缓存命中仍核查文件状态且不跳过数学核验。17个新增不同检查及10项既有summary回归通过，累计108个不同检查。首轮1项fixture混淆非均匀q的伴随零方向，原独立矩阵oracle已一致；仅修正fixture后受影响8项通过。健康训练runtime81a226a8d1cef34ea817ada87070bd89912d027d及AJLR分析r02不变；Affine分析尚未启动，无真实加速或性能结论，目标ACTIVE。

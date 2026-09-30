@@ -22,14 +22,15 @@ from cvsrffi import d92_branch_interaction as interaction
 from cvsrffi.d92_branch_local_ridge import _distances
 from summarize_d92_registration_diagnostic import _statistics, write_json
 from summarize_d92_branch_support_probe import jsonlines, check_bind, finite_tree, close
+from d92_affine_analysis_math import center_kernel_vjp
 
 SUMMARY_STATUS = 'COMPLETE_AFFINE_JOINT_PROBE_VERIFIED'
 
 
 
 class StateResolver:
-    """Check archive content, metadata and inventory before using any coordinates."""
-    def __init__(self, root):
+    """Check archive content and cache only immutable numeric arrays, never math results."""
+    def __init__(self, root, cache_budget_bytes=64*1024*1024, max_entries=64):
         self.root = Path(root).resolve()
         self.manifest = read(self.root/'state_manifest.json')
         check(self.manifest['schema'] == 'd92_affine_joint_state_archive_v1' and
@@ -41,6 +42,43 @@ class StateResolver:
         check(len(files) == len(self.refs) == self.manifest['file_count'], 'Duplicate/missing state archive inventory')
         check(self.manifest['total_file_bytes'] == sum(ref['file_bytes'] for ref in files), 'Archive byte inventory mismatch')
         self.used, self.verified, self.cache = set(), set(), OrderedDict()
+        check(type(cache_budget_bytes) is int and cache_budget_bytes >= 0 and
+            type(max_entries) is int and max_entries >= 0, 'Invalid archive cache budget')
+        self.cache_budget_bytes, self.max_entries = cache_budget_bytes, max_entries
+        self.cache_numeric_bytes = 0; self.cache_sizes = {}; self.file_mtimes = {}
+        self.cache_counts = dict(load_count=0, hit_count=0, eviction_count=0,
+            loaded_numeric_bytes=0, evicted_numeric_bytes=0, oversized_load_count=0,
+            uncached_load_count=0, clear_count=0, cleared_entry_count=0,
+            cleared_numeric_bytes=0, peak_numeric_bytes=0, peak_entries=0)
+
+    def _file_state(self, path, ref):
+        info = path.stat()
+        check(info.st_size == ref['file_bytes'], 'Archived state file size mismatch')
+        first = self.file_mtimes.setdefault(ref['path'], info.st_mtime_ns)
+        check(info.st_mtime_ns == first, 'Archived state file mtime changed after first read')
+
+    def _reserve(self, predicted_bytes):
+        # Reserve against manifest numeric nbytes before materializing any array.
+        # Oversized files empty the resident cache, are fully read/checked, and
+        # are returned without residency. No numeric or math check is skipped.
+        while self.cache and (self.cache_numeric_bytes+predicted_bytes > self.cache_budget_bytes
+                or len(self.cache) >= self.max_entries):
+            name, _ = self.cache.popitem(last=False); size = self.cache_sizes.pop(name)
+            self.cache_numeric_bytes -= size
+            self.cache_counts['eviction_count'] += 1
+            self.cache_counts['evicted_numeric_bytes'] += size
+
+    def clear_cache(self):
+        """Release a completed lane's arrays while retaining reference/inventory state."""
+        self.cache_counts['clear_count'] += 1
+        self.cache_counts['cleared_entry_count'] += len(self.cache)
+        self.cache_counts['cleared_numeric_bytes'] += self.cache_numeric_bytes
+        self.cache.clear(); self.cache_sizes.clear(); self.cache_numeric_bytes = 0
+
+    def cache_statistics(self):
+        return dict(self.cache_counts, numeric_byte_budget=self.cache_budget_bytes,
+            entry_cap=self.max_entries, resident_numeric_bytes=self.cache_numeric_bytes,
+            resident_entry_count=len(self.cache))
 
     def __call__(self, ref):
         check(isinstance(ref, dict) and ref.get('path') in self.refs and ref == self.refs[ref['path']],
@@ -50,9 +88,13 @@ class StateResolver:
         path = (self.root/relative).resolve()
         check(path.is_relative_to(self.root/'state_arrays') and path.suffix == '.npz', 'State path escaped archive')
         self.used.add(ref['path'])
+        self._file_state(path, ref)
         if ref['path'] in self.cache:
+            self.cache_counts['hit_count'] += 1
             self.cache.move_to_end(ref['path']); return self.cache[ref['path']]
-        check(path.stat().st_size == ref['file_bytes'], 'Archived state file size mismatch')
+        predicted = sum(meta['nbytes'] for meta in ref['arrays'].values())
+        self._reserve(predicted)
+        self.cache_counts['load_count'] += 1
         with np.load(path, allow_pickle=False) as source:
             check(set(source.files) == set(ref['arrays']), 'Archived array inventory mismatch')
             arrays = {name: np.array(source[name], copy=True) for name in source.files}
@@ -66,8 +108,17 @@ class StateResolver:
             check(summary['minimum'] == (float(np.min(value)) if value.size else None) and
                 summary['maximum'] == (float(np.max(value)) if value.size else None), 'Archived coordinate range mismatch')
             value.setflags(write=False)
-        self.verified.add(ref['path']); self.cache[ref['path']] = arrays
-        if len(self.cache) > 8: self.cache.popitem(last=False)
+        self._file_state(path, ref)
+        actual = sum(value.nbytes for value in arrays.values())
+        self.cache_counts['loaded_numeric_bytes'] += actual
+        self.verified.add(ref['path'])
+        if self.cache_budget_bytes and actual > self.cache_budget_bytes: self.cache_counts['oversized_load_count'] += 1
+        if self.cache_budget_bytes and self.max_entries and actual <= self.cache_budget_bytes:
+            self.cache[ref['path']] = arrays; self.cache_sizes[ref['path']] = actual
+            self.cache_numeric_bytes += actual
+            self.cache_counts['peak_numeric_bytes'] = max(self.cache_counts['peak_numeric_bytes'], self.cache_numeric_bytes)
+            self.cache_counts['peak_entries'] = max(self.cache_counts['peak_entries'], len(self.cache))
+        else: self.cache_counts['uncached_load_count'] += 1
         return arrays
 
     def verify_tree(self, value):
@@ -500,9 +551,7 @@ def verify_companion(data, aggregate, j, G, fold, enabled=True):
     close(fold['adjoint_g_b_norm'], float(np.linalg.norm(g_b)), 'Adjoint intercept gradient norm mismatch')
     close(fold['adjoint_sample_sum_residual'], float(np.linalg.norm(T.sum(axis=0)-g_b)), 'Adjoint sample-sum audit mismatch')
     barL = G@data['alpha'].T; rawK = -(T@data['alpha'].T); barK = .5*(rawK+rawK.T)
-    q = data['q']; P = np.eye(n)-np.ones((n, 1))*q[None, :]
-    fullR = P.T@barK@P-q[:, None]*(np.ones(len(G))@barL@P)[None, :]
-    barR = gamma*.5*(fullR+fullR.T); barQ = gamma*barL@P
+    barR, barQ = center_kernel_vjp(barK, barL, data['q'], gamma)
     _array_close(barR, gamma*barK, 'Complete centering VJP did not cancel under affine saddle constraints')
     _array_close(barQ, gamma*barL, 'Cross centering VJP omitted sample-zero alpha constraint')
     dd = -.5*barR*data['raw_train']/tau; dc = -.5*barQ*data['raw_cross']/tau
@@ -1003,9 +1052,10 @@ def summarize(*, spec, run_root=None, output):
         resolver.finalize(); manifest = resolver.manifest
         check(marker['state_archive_file_count'] == manifest['file_count'] and marker['state_archive_file_bytes'] == manifest['total_file_bytes']
             and marker['state_archive_numeric_bytes'] == manifest['numeric_array_bytes'], 'Marker/archive actual byte mismatch')
+        resolver.clear_cache()
         archive_sources.append(dict(row_id=row['row_id'], root=str(lane), manifest=str(lane/'state_manifest.json'),
             file_count=manifest['file_count'], file_bytes=manifest['total_file_bytes'], numeric_array_bytes=manifest['numeric_array_bytes'],
-            archive_seconds=manifest['archive_seconds'], by_phase=manifest['by_phase']))
+            archive_seconds=manifest['archive_seconds'], by_phase=manifest['by_phase'], cache=resolver.cache_statistics()))
         check(all(counts[key] == marker[key] == state[row['row_id']][key] for key in COUNTERS), 'Row actual totals mismatch')
         for key in COUNTERS: coverage[key] += counts[key]
     check(all(coverage[key] == complete[key] for key in COUNTERS), 'Run totals mismatch')

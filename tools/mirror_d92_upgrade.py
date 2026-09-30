@@ -317,6 +317,7 @@ paths += ['code/cvsrffi/d92_affine_joint_local_ridge.py',
 paths += ['tools/collect_d92_affine_joint_training_diagnostics.py',
     'tests/test_collect_d92_affine_joint_training_diagnostics.py',
     'docs/D92_AFFINE_JOINT_TRAINING_DIAGNOSTICS_20261001.md']
+paths += ['tools/d92_affine_analysis_math.py', 'tests/test_d92_affine_analysis_math.py', 'tests/test_d92_affine_joint_archive_cache.py', 'docs/D92_AFFINE_ANALYSIS_CACHE_20261001.md', 'docs/D92_AFFINE_ANALYSIS_CENTER_VJP_20261001.md', 'docs/D92_AFFINE_ANALYSIS_VALIDATION_20261001.md']
 for name in paths:
     src=ROOT/name;dst=WS/name;dst.parent.mkdir(parents=True,exist_ok=True)
     # Each name is unique to this task; original D92 and shared wrappers are not mirrored.

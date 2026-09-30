@@ -26,6 +26,7 @@ PATHS=[
     'tools/evaluate_d92_registration_diagnostic.py','tools/evaluate_d92_affine_joint_probe.py',
     'tools/summarize_d92_registration_diagnostic.py','tools/summarize_d92_branch_support_probe.py',
     'tools/summarize_d92_affine_joint_probe.py',
+    'tools/d92_affine_analysis_math.py',
     'configs/d92_branch_local_ridge_frozen_20260929.json',
     'configs/d92_affine_joint_frozen_20261001.json',
     'configs/d92_affine_joint_support_rx3_20261001.json',
