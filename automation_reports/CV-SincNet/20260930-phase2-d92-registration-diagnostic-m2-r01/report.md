@@ -3,7 +3,7 @@
 - run_id：`20260930-phase2-d92-registration-diagnostic-m2-r01`
 - group_id：`d92-local-ridge-registration-diagnostic`；类别：`diagnostic`；阶段：`Phase2-support-only-diagnostic`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -29,3 +29,5 @@
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
 
 PREPARED_practical_residual_support_only_160parents_preflight_VERIFIED_20260930
+
+VERIFIED_running_PID595507_runtime_0e6fe9613_two_CPU_lanes_practical_residual

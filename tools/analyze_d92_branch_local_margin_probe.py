@@ -7,7 +7,11 @@ spec = importlib.util.spec_from_file_location('_branch_local_margin_analysis_tra
     Path(__file__).with_name('analyze_d92_branch_support_probe.py'))
 transport = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(transport)
-transport.PATHS = ['code', 'tools/summarize_d92_branch_local_margin_probe.py',
+# Analysis needs only this numerical core closure, not unrelated method drafts.
+transport.PATHS = ['code/cvsrffi/__init__.py', 'code/cvsrffi/d92_branch_support_probe.py',
+    'code/cvsrffi/d92_branch_ridge.py', 'code/cvsrffi/d92_branch_interaction.py',
+    'code/cvsrffi/d92_branch_local_ridge.py', 'code/cvsrffi/d92_branch_local_margin.py',
+    'tools/summarize_d92_branch_local_margin_probe.py',
     'tools/summarize_d92_branch_local_ridge_probe.py', 'tools/evaluate_d92_branch_local_ridge_probe.py',
     'tools/summarize_d92_branch_interaction_probe.py', 'tools/summarize_d92_branch_support_probe.py',
     'tools/evaluate_d92_branch_local_margin_probe.py', 'tools/evaluate_d92_branch_support_probe.py',

@@ -3,7 +3,7 @@
 - run_id：`20260929-phase2-d92-branch-local-margin-support-m4-r01`
 - group_id：`d92-branch-local-margin-support-development`；类别：`diagnostic`；阶段：`Phase2-support-only-diagnostic`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ARTIFACTS_COMPLETE（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -65,3 +65,5 @@ VERIFIED RUNNING: supervisor348892 and4CPUchildren argv/CWD match release5b7319a
 Benchmark tooling ready, not launched: 324 synthetic tests passed plus 2 focused reruns; independent entry review and root summary/audit review have no open P0/P1. Support runtime unchanged; complete support evidence required before paired query benchmark.
 
 最新只读证据：`evidence/readback_1790696933018702700.json`。四个rx3 lane完成88至89/900个诊断单元；其余四个rx1 lane等待，未出现终止标记。此进度不是完整性能结论。
+
+VERIFIED_all_8rows_4800parents_complete_analysis_pending_no_query_access

@@ -1,4 +1,10 @@
-## 最新状态：注册机制诊断准备完成（2026-09-30）
+## 最新状态：注册诊断运行，Margin已完整结束（2026-09-30）
+
+注册诊断已发布runtime `0e6fe9613ef40f5993069617dbbfef99c0899aa1`，读回 `readback_1790729823005243000.json` 核实supervisor595507及worker595519/595520的argv/CWD一致且live，两个rx3执行、rx1等待。不要重复启动。完整四行160parent后运行 `tools/analyze_d92_registration_diagnostic.py` 汇总。
+
+LocalMargin最新读回 `readback_1790729823330187300.json` 核实原run的8行4800parent全部完成，supervisor和children已退出；登记ARTIFACTS_COMPLETE，尚未分析。下一步用既有 `tools/analyze_d92_branch_local_margin_probe.py` 完整汇总；其打包闭包需排除保留Residual8草稿。分析完成后按已登记support规则决定后续，不从旧query评分选择。全目标ACTIVE。
+
+## 历史状态：注册机制诊断准备完成（2026-09-30）
 
 新增run `20260930-phase2-d92-registration-diagnostic-m2-r01` 已预登记、尚未启动。配置 `configs/d92_registration_diagnostic_20260930.json`，固定两个模型seed×两个cohort、160 parent，仅support诊断，不训练新方法。85项相关合成测试通过（纯分解39、编排34、入口12）；独立审阅无未解决P0/P1。预检 `registration_preflight_1790702937357199800.json` 已核实四个缓存绑定及新输出不存在。用户要求practical residual：实际route=residual、mode=post_sync、equalization=false、25 MHz；pilot只覆盖选定receiver的high/low_urban，不覆盖mid。
 
