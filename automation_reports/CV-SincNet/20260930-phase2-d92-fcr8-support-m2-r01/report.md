@@ -33,3 +33,5 @@ VERIFIED：单一数学驱动FCR8–LocalRidge实现完成，47个不同相关�
 VERIFIED：已单次发布并启动FCR8，实际runtime commit33673fe02a857d790aa69a1ace17fdb9638099d0，supervisor PID247876、workers247888/247889独立读回argv/cwd匹配。首次读回14/160parent完成，rx3两row训练中、rx1两rowPENDING，没有技术错误。CPU两lane，query/source样本不读，无encoder训练；尚未完成，不报告真实性能。
 
 VERIFIED：FCR8既有run推进到114/160parent。rx3两row各40parent已有完整probe_complete产物，原绑定/实际计数核对通过；rx1两row各17parent完成，worker263424/263930实际argv/cwd匹配，主进程247876存活。完整run尚未结束，不读取部分成绩进行分析或选模，不重复启动。
+
+VERIFIED：FCR完整训练诊断collector实现完成，8/8合成检查通过（1.13s）。真实数据尚未收集，仅在完整独立support summary后单次只读调用；当前run继续既有训练，不热修改或重启。派生Z的task=total-keep-Z，保留动态秩与实测机制/N/A、完整事件/准备/教师、实际费用与B绑定去重，不消费外层成绩/历史/query。
