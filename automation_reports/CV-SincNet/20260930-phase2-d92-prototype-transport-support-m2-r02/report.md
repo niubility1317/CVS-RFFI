@@ -3,7 +3,7 @@
 - run_id：`20260930-phase2-d92-prototype-transport-support-m2-r02`
 - group_id：`d92-prototype-transport-support`；类别：`diagnostic`；阶段：`Phase2-support-only-diagnostic`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -29,3 +29,5 @@
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
 
 VERIFIED：r01四行因NumPy布尔完整JSON输出失败而退出，产物保留、无健康进程干预。仅修复严格原生类型输出；公开audit1项及入口15项实际通过，累计57个不同相关测试通过。r02同方法/同数据/同seed完整160parent恢复已登记、availability通过，尚未启动；root唯一launch owner。性能未知，BranchLocalRidge仍为主线。
+
+RUNNING/VERIFIED：r02独立readback1790764932355254600确认主管110755和两worker存活、argv/CWD/实际commit9ebdcd7dd匹配。两rx3行各写出7个parent，已跨过r01 K5 full JSON失败点；两rx1行按既有2CPU lanes排队。完整160矩阵尚未完成，未读取query、未有性能结论；固定方法/数据/超参，root唯一launch owner。

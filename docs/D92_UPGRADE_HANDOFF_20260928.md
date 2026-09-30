@@ -1,3 +1,9 @@
+## 最新状态：原型联合方法 r02 已核实运行（2026-09-30）
+
+RUNNING/VERIFIED：r02独立readback1790764932355254600确认主管110755和两worker存活、argv/CWD/实际commit9ebdcd7dd匹配。两rx3行各写出7个parent，已跨过r01 K5 full JSON失败点；两rx1行按既有2CPU lanes排队。完整160矩阵尚未完成，未读取query、未有性能结论；固定方法/数据/超参，root唯一launch owner。
+
+目标ACTIVE。r01 FAILED保留；不得重发r02 publisher。下一步等待完整四行/160 parent，独立support分析。日志分析子agent只负责新collector/合成测试，不改方法或运行。
+
 ## 最新状态：联合原型方法 r02 已登记待发布（2026-09-30）
 
 VERIFIED：r01四行因NumPy布尔完整JSON输出失败而退出，产物保留、无健康进程干预。仅修复严格原生类型输出；公开audit1项及入口15项实际通过，累计57个不同相关测试通过。r02同方法/同数据/同seed完整160parent恢复已登记、availability通过，尚未启动；root唯一launch owner。性能未知，BranchLocalRidge仍为主线。

@@ -1,6 +1,6 @@
 # PrototypeTransport-LocalRidge 技术恢复
 
-当前状态：r02 已预登记并通过输入可用性检查，尚未启动。性能尚未验证，原 BranchLocalRidge 仍为主线。
+当前状态：r02 已核实运行，主管 PID 110755、实际版本 9ebdcd7dd；两个 worker 已跨过此前 K=5 完整 JSON 输出失败点，剩余两行排队。性能尚未验证，原 BranchLocalRidge 仍为主线。
 
 联合方法保留 BranchLocalRidge 最终分类器，在合法目标域 support 上优化 10 个原型条件适配参数（9 个约束自由度）。B 阶段仅用旧类 support；C 阶段继承 B 状态并注册新类。原距离与适配距离各占 0.5。固定地面 Phase1、practical residual，不读取源域样本、逐样本源域特征或 query。目标域 support 原型无需新增地面统计传输；实际常驻状态与计算成本仍需测量。
 
@@ -21,3 +21,5 @@ r02 与 r01 的数据、checkpoint 契约、权限、指标、方法、超参数
 输入可用性检查 `prototype_transport_preflight_1790764399351376600.json` 为 VERIFIED：四个原有 support cache 绑定有效，新 run/release/archive 路径不存在。检查没有读取 query 或源域，也没有启动 GPU 作业。这是路径与输入检查，不是方法性能证据。
 
 后续先独立核实启动状态，再完成 support-only 验证。报告按 K×新增类数列出三阶段指标、旧类下降、新旧类差距、H 与资源成本；缺失地面 A 指标记 N/A，不能将原 support 分类器的 B0 当作 A。独立新数据验证按用户要求暂缓。
+
+启动独立读回：`readback_1790764932355254600.json`，argv/CWD/commit 与预登记一致，未发现错误；完整矩阵尚未完成。
