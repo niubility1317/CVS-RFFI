@@ -8,6 +8,7 @@ import json
 import shutil
 import subprocess
 from pathlib import Path
+from apply_repairs_v2 import apply_v2
 
 
 def git(*args, cwd=None):
@@ -32,8 +33,7 @@ def repair(repo, method):
         replace_once(repo / 'main.py', '        verbose=True,\n', '')
         replace_once(repo / 'backbones/WaveletOperator.py', 'import torch.nn as nn',
                      'import torch.nn as nn\nimport torch.nn.functional as F')
-    # DIFL intentionally remains unchanged: repairing its empty feature branch
-    # requires an architectural choice that has not been confirmed from the paper.
+    # These are the historical V1 repairs. V2 is applied separately below.
 
 
 def main():
@@ -41,6 +41,7 @@ def main():
     p.add_argument('--upstream-root', type=Path, required=True)
     p.add_argument('--working-root', type=Path, required=True)
     p.add_argument('--manifest', type=Path, default=Path(__file__).with_name('methods.json'))
+    p.add_argument('--repair-version', type=int, choices=(1, 2), default=2)
     args = p.parse_args()
     config = json.loads(args.manifest.read_text(encoding='utf-8'))
     for m in config['methods']:
@@ -67,9 +68,11 @@ def main():
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(source, target)
         repair(destination, m['id'])
+        if args.repair_version == 2:
+            apply_v2(destination, m['id'])
         (destination / 'LOCAL_SOURCE.json').write_text(json.dumps({
             'method': m['id'], 'repository_url': m['repository_url'],
-            'upstream_commit': m['upstream_commit'], 'repair_version': 1,
+            'upstream_commit': m['upstream_commit'], 'repair_version': args.repair_version,
             'formal_experiment_started': False, 'pretrained_weights_loaded': False,
         }, indent=2) + '\n', encoding='utf-8')
         print(f'PREPARED {m["id"]}: {destination}')

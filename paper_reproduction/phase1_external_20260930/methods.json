@@ -17,14 +17,16 @@
       "original_representation": "non_equalized",
       "license": "No explicit license file in pinned tree",
       "phase": "Phase1",
-      "status": "REPAIRED_PENDING_MATCHED_DATA",
+      "status": "REPAIRED_SYNTHETIC_VALIDATED_PENDING_MATCHED_DATA",
       "comparison_role": "source-only cross-receiver candidate",
       "dataset": "WiSig",
       "original_training": "supervised closed-set",
       "checkpoint_used": null,
       "formal_experiment_started": false,
       "matched_split": null,
-      "resources_measured": null
+      "resources_measured": null,
+      "repair_version": 2,
+      "classification_architecture_changed": false
     },
     {
       "id": "difl",
@@ -40,14 +42,17 @@
       "original_representation": "equalized",
       "license": "README: custom non-commercial license",
       "phase": "Phase1",
-      "status": "BLOCKED_UPSTREAM_METHOD_IMPLEMENTATION",
+      "status": "REPAIRED_SYNTHETIC_VALIDATED_PENDING_MATCHED_DATA",
       "comparison_role": "source-only cross-receiver candidate",
       "dataset": "WiSig",
       "original_training": "supervised closed-set",
       "checkpoint_used": null,
       "formal_experiment_started": false,
       "matched_split": null,
-      "resources_measured": null
+      "resources_measured": null,
+      "repair_version": 2,
+      "classification_architecture_changed": false,
+      "implementation_variant": "upstream-preserving-fc1-feature-tap"
     },
     {
       "id": "wavemlp",
@@ -63,20 +68,22 @@
       "original_representation": "non_equalized",
       "license": "No explicit license file in pinned tree",
       "phase": "Phase1",
-      "status": "REPAIRED_PENDING_MATCHED_DATA",
+      "status": "REPAIRED_SYNTHETIC_VALIDATED_PENDING_MATCHED_DATA",
       "comparison_role": "source-only cross-receiver candidate",
       "dataset": "WiSig",
       "original_training": "supervised closed-set",
       "checkpoint_used": null,
       "formal_experiment_started": false,
       "matched_split": null,
-      "resources_measured": null
+      "resources_measured": null,
+      "repair_version": 2,
+      "classification_architecture_changed": false
     }
   ],
   "protocol_notes": [
     "Original 70/30 source train/validation in ASKNet/WaveMLP uses labels for all training samples; this is not CVS 0.07/0.63/0.30.",
     "No target truth, real IQ, source checkpoints or author checkpoints loaded in this audit.",
-    "DIFL requires resolution of feature split/teacher dimensions before formal comparison.",
+    "DIFL repair uses the existing 512-wide fc1 activation; exact paper feature tap remains unverified. Formal matched data integration is separate.",
     "Original reproduction and matched CVS protocol comparison must be recorded separately."
   ]
 }

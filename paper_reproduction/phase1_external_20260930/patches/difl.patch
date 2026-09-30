@@ -1,0 +1,833 @@
+diff --git a/data_loader.py b/data_loader.py
+--- a/data_loader.py
++++ b/data_loader.py
+@@ -67,41 +67,42 @@
+             print('Dev ' + str(dev_idx + 1) + ' have ' + str(num_pkt) + ' packets.')
+         label = label[sample_index_list]
+         return label
++def _matched_iq_and_labels(data_path, label_path, dev_range):
++    # Select labels and corresponding physical rows together. Original load_labels
++    # grouped labels by TX but did not apply that permutation to the signal rows.
++    loader = LoadDataset()
++    data = loader.load_stft_data(data_path)
++    raw = np.asarray(np.load(label_path)).reshape(-1)
++    if not np.isfinite(raw).all() or not np.equal(raw, np.floor(raw)).all():
++        raise ValueError("Labels must be finite integers")
++    labels = raw.astype(int) - 1  # original author input is 1-based
++    if len(data) != len(labels):
++        raise ValueError(f"IQ/label length mismatch: {len(data)} != {len(labels)}")
++    if data.ndim != 3 or data.shape[1:] != (2, 256) or not np.isfinite(data).all():
++        raise ValueError("Expected finite author-format IQ [N,256,2], yielding [N,2,256]")
++    mask = np.isin(labels, dev_range)
++    if not mask.any():
++        raise ValueError("No samples in selected TX range")
++    return data[mask], labels[mask]
++
++
+ def read_train_data(file_path, file_label, dev_range=np.arange(0, 6, dtype=int),
+-                    label_path='D:/work/data/day1equalized/FFT/label_200.npy'):
+-    data_stft_all = []
+-    y_all = []
+-    label_all = [] 
+-    LoadDatasetObj = LoadDataset()
+-    data_ch0 = LoadDatasetObj.load_stft_data(file_path)
+-    y_ch0 = LoadDatasetObj.load_labels(label_path, dev_range)
+-    data_stft_all.append(data_ch0)
+-    y_all.append(y_ch0)
+-    file_labels = np.full((len(y_ch0),), file_label)
+-    label_all.append(file_labels)
+-    data_stft_all = np.concatenate(data_stft_all, axis=0)
+-    y_all = np.concatenate(y_all)
+-    label_all = np.concatenate(label_all)
+-    X_train, X_val, Y_train, Y_val, label_train, label_val = train_test_split(
+-        data_stft_all, y_all, label_all, test_size=0.2, random_state=32, shuffle=True)
+-    return X_train, X_val, Y_train, Y_val, label_train, label_val
++                    label_path='D:/work/data/day1equalized/FFT/label_200.npy',
++                    test_size=0.2, random_state=32):
++    data, labels = _matched_iq_and_labels(file_path, label_path, dev_range)
++    domains = np.full(len(labels), file_label, dtype=int)
++    return train_test_split(data, labels, domains, test_size=test_size,
++                            random_state=random_state, shuffle=True)
++
++
+ def read_test_data(data_path='D:/work/data/day1equalized/IQ/200/Rx11_12.npy',
+                    label_path='D:/work/data/day1equalized/FFT/label_400.npy',
+-                   dev_range=np.arange(0, 6, dtype=int),
+-                   test_size=0.2, random_state=42):
+-    data_stft_all = []
+-    y_all = []
+-    LoadDatasetObj = LoadDataset()
+-    data_ch0 = LoadDatasetObj.load_stft_data(data_path)
+-    y_ch0 = LoadDatasetObj.load_labels(label_path, dev_range)
+-    data_ch0_subset, _, y_ch0_subset, _ = train_test_split(
+-        data_ch0, y_ch0, test_size=(1 - test_size), random_state=random_state, stratify=y_ch0
+-    )
+-    data_stft_all.append(data_ch0)
+-    y_all.append(y_ch0)
+-    data_stft_all = np.concatenate(data_stft_all, axis=0)
+-    y_all = np.concatenate(y_all)
+-    return data_stft_all, y_all
++                   dev_range=np.arange(0, 6, dtype=int), test_size=0.2, random_state=42):
++    # Preserve actual upstream evaluation behavior: return the complete test file.
++    # Its computed subset was unused; these legacy arguments remain accepted.
++    return _matched_iq_and_labels(data_path, label_path, dev_range)
++
++
+ def main():
+     X_train, X_val, Y_train, Y_val, label_train, label_val = read_train_data()
+     print(X_train.shape)
+diff --git a/Network1.py b/Network1.py
+--- a/Network1.py
++++ b/Network1.py
+@@ -36,8 +36,8 @@
+         out = out.reshape(out.size(0), -1)
+         out = self.fc1(out)
+         out = self.relu(out)
++        features = out  # existing fc1 activation: 256 KD + 256 CORAL
+         out = self.fc2(out)
+-        features = out
+         out = self.relu(out)
+         out = self.fc3(out)
+         out = self.relu(out)
+diff --git a/pretrain.py b/pretrain.py
+--- a/pretrain.py
++++ b/pretrain.py
+@@ -1,16 +1,16 @@
+ import torch
++import argparse
+ import time
+ import torch.nn as nn
+ import torch.nn.functional as F
+-import torchvision
+ from torch.utils.data import TensorDataset, DataLoader, ConcatDataset
+-from torch.utils.tensorboard import SummaryWriter
++from runtime_support import optional_writer, resolve_device, save_state, load_state, Metrics, gradient_norm, timed_start, elapsed
++SummaryWriter = optional_writer()
+ from confusion_matrix import confusion
+ from teacherNet import my_resnet
+ from data_loader import *
+ import random
+ import os
+-os.environ['CUDA_VISIBLE_DEVICES'] = '0'
+ def set_seed(seed):
+     random.seed(seed)
+     np.random.seed(seed)
+@@ -40,33 +40,48 @@
+         self.rand_num = rand_num
+         self.train_lossses = []
+         self.val_accuracies = []
+-def train(model, train_dataloader, optimizer, epoch, writer, device_num):
++def train(model, train_dataloader, optimizer, epoch, writer, device_num, criterion=None, metrics=None):
+     model.train()
+-    device = torch.device("cuda:"+str(device_num))
++    device = resolve_device(device_num)
+     correct = 0
+-    classifier_loss =0
+-    for data_nnl in train_dataloader:
++    classifier_loss = 0.0
++    processed = 0
++    criterion = criterion if criterion is not None else nn.NLLLoss()
++    start = timed_start(device)
++    for step, data_nnl in enumerate(train_dataloader, 1):
+         data, target = data_nnl
+         real_part = data[:, 0, :]
+         imag_part = data[:, 1, :]
+         complex_data = torch.complex(real_part, imag_part)
+         data = torch.angle(torch.fft.fft(complex_data, dim=(1)))
+         data = data.unsqueeze(1)
+-        target = target.squeeze().long()
+-        if torch.cuda.is_available():
+-            data = data.to(device)
+-            target = target.to(device)
++        target = target.reshape(-1).long()
++        data = data.to(device)
++        target = target.to(device)
+         optimizer.zero_grad()
+         features, output = model(data)
+         classifier_output = F.log_softmax(output, dim=1)
+-        classifier_loss_batch = loss(classifier_output, target)
++        classifier_loss_batch = criterion(classifier_output, target)
+         result_loss_batch = classifier_loss_batch
++        if not torch.isfinite(result_loss_batch):
++            raise FloatingPointError("Non-finite teacher loss")
+         result_loss_batch.backward()
++        grad = gradient_norm(model)
++        if not np.isfinite(grad):
++            raise FloatingPointError("Non-finite teacher gradients")
+         optimizer.step()
+-        classifier_loss += classifier_loss_batch.item()
++        classifier_loss += classifier_loss_batch.item() * len(target)
++        processed += len(target)
++        if metrics:
++            metrics.step(dict(epoch=epoch, step=step, samples=len(target), nll=classifier_loss_batch.item(),
++                lr=optimizer.param_groups[0]['lr'], gradient_norm=grad, Fourier_phase=True))
+         pred = classifier_output.argmax(dim=1, keepdim=True)
+         correct += pred.eq(target.view_as(pred)).sum().item()
+-    mean_loss = classifier_loss / len(train_dataloader) 
++    if not processed:
++        raise ValueError("Empty teacher training loader")
++    mean_loss = classifier_loss / processed
++    model.last_train_metrics = dict(nll=mean_loss, lr=optimizer.param_groups[0]['lr'],
++        gradient_norm=grad, train_seconds=elapsed(start, device))
+     mean_accuracy = 100 * correct / len(train_dataloader.dataset)
+     print(
+         'Train Epoch: {} \tLoss: {:.6f}, Accuracy: {}/{} ({:0f}%)\n'.format(
+@@ -77,13 +92,14 @@
+             mean_accuracy)
+         )                       
+     writer.add_scalar('Accuracy/train', 100.0 * correct / len(train_dataloader.dataset), epoch)
+-    writer.add_scalar('Loss/train', classifier_loss, epoch)
++    writer.add_scalar('Loss/train', mean_loss, epoch)
+     return mean_loss, mean_accuracy
+ def evaluate(model, loss, val_dataloader, epoch, writer, device_num):
+     model.eval()
+     val_loss = 0
+     correct = 0
+-    device = torch.device("cuda:"+str(device_num))
++    processed = 0
++    device = resolve_device(device_num)
+     with torch.no_grad():
+         for data, target in val_dataloader:
+             real_part = data[:, 0, :]
+@@ -91,16 +107,18 @@
+             complex_data = torch.complex(real_part, imag_part)
+             data = torch.angle(torch.fft.fft(complex_data, dim=(1)))
+             data = data.unsqueeze(1)
+-            target = target.squeeze().long()
+-            if torch.cuda.is_available():
+-                data = data.to(device)
+-                target = target.to(device)
++            target = target.reshape(-1).long()
++            data = data.to(device)
++            target = target.to(device)
+             features, output = model(data)
+             output = F.log_softmax(output, dim=1)
+-            val_loss += loss(output, target).item()
++            val_loss += loss(output, target).item() * len(target)
++            processed += len(target)
+             pred = output.argmax(dim=1, keepdim=True)
+             correct += pred.eq(target.view_as(pred)).sum().item()
+-    val_loss /= len(val_dataloader)
++    if not processed:
++        raise ValueError("Empty teacher validation loader")
++    val_loss /= processed
+     mean_accuracy = 100*correct/len(val_dataloader.dataset)
+     fmt = '\nValidation set: loss: {:.4f}, Accuracy: {}/{} ({:0f}%)\n'
+     print(
+@@ -115,27 +133,34 @@
+     writer.add_scalar('Accuracy/validation', accuracy, epoch)
+     writer.add_scalar('Loss/validation', val_loss, epoch)
+     return val_loss, mean_accuracy
+-def train_and_evaluate(model, loss_function, train_dataloader, val_dataloader, optimizer, epochs, writer, save_path, device_num):
++def train_and_evaluate(model, loss_function, train_dataloader, val_dataloader, optimizer, epochs, writer, save_path, device_num, metrics=None):
++    if epochs < 1:
++        raise ValueError("epochs must be positive")
++    if os.path.exists(save_path):
++        raise FileExistsError(f"Existing checkpoint preserved: {save_path}")
+     train_losses = []
+     train_accies = []
+     val_losses = []
+     val_accies = []
+-    current_max_val_accuracy = 0                 
++    current_max_val_accuracy = float("-inf")
+     time_start1 = time.time()
+     for epoch in range(1, epochs + 1):
+         time_start = time.time()
+-        train_loss, train_acc = train(model, train_dataloader, optimizer, epoch, writer, device_num)
++        train_loss, train_acc = train(model, train_dataloader, optimizer, epoch, writer, device_num, criterion=loss_function, metrics=metrics)
+         train_losses.append(train_loss)
+         train_accies.append(train_acc)
+         val_loss, val_accuracy = evaluate(model, loss_function, val_dataloader, epoch, writer, device_num)#val_accuracy是当前输入的验证批次数据的平均准确率
+         val_losses.append(val_loss)
+         val_accies.append(val_accuracy)
+ 
++        if metrics:
++            metrics.epoch(dict(epoch=epoch, **model.last_train_metrics, train_accuracy=train_acc,
++                source_val_loss=val_loss, source_val_accuracy=val_accuracy))
+         if val_accuracy >= current_max_val_accuracy:
+             print("The validation accuracy is increased from {} to {}, new model weight is saved.".format(
+                 current_max_val_accuracy, val_accuracy))
+             current_max_val_accuracy = val_accuracy
+-            torch.save(model, save_path)
++            save_state(model, save_path)
+         else:
+             print("The validation loss is not increased.")
+         time_end = time.time()
+@@ -147,45 +172,55 @@
+     Ave_epoch_time = (time_end1 - time_start1) / epochs
+     print("Avgtime for each epoch is: %s" % Ave_epoch_time)
+     return train_losses, train_accies, val_losses, val_accies
++def main():
++    parser = argparse.ArgumentParser('Fourier phase teacher pretraining')
++    parser.add_argument('--source-files', nargs='+', required=True)
++    parser.add_argument('--label-path', required=True)
++    parser.add_argument('--output-dir', required=True)
++    parser.add_argument('--log-dir', required=True)
++    parser.add_argument('--epochs', type=int, default=100)
++    parser.add_argument('--batch-size', type=int, default=32)
++    parser.add_argument('--lr', type=float, default=0.001)
++    parser.add_argument('--seed', type=int, default=300)
++    parser.add_argument('--split-seed', type=int, default=32)
++    parser.add_argument('--val-fraction', type=float, default=0.2)
++    parser.add_argument('--device', default='cuda:0' if torch.cuda.is_available() else 'cpu')
++    conf = parser.parse_args()
++    from pathlib import Path
++    save_path = Path(conf.output_dir) / 'pretrain.pth'
++    if save_path.exists():
++        raise FileExistsError(f'Existing checkpoint preserved: {save_path}')
++    device = resolve_device(conf.device)
++    set_seed(conf.seed)
++    xs, ys, xv, yv = [], [], [], []
++    for i, path in enumerate(conf.source_files):
++        x, v, y, vy, _, _ = read_train_data(path, i, label_path=conf.label_path,
++            test_size=conf.val_fraction, random_state=conf.split_seed)
++        xs.append(x); ys.append(y); xv.append(v); yv.append(vy)
++    train_loader = DataLoader(TensorDataset(torch.tensor(np.concatenate(xs), dtype=torch.float32),
++        torch.tensor(np.concatenate(ys))), batch_size=conf.batch_size, shuffle=True)
++    val_loader = DataLoader(TensorDataset(torch.tensor(np.concatenate(xv), dtype=torch.float32),
++        torch.tensor(np.concatenate(yv))), batch_size=conf.batch_size, shuffle=True)
++    model = my_resnet().to(device)
++    global loss, active_metrics
++    loss = nn.NLLLoss()
++    active_metrics = Metrics(conf.log_dir, dict(vars(conf), method='difl_phase_teacher',
++        input='Fourier phase', selection='source validation accuracy', class_count=6))
++    writer = SummaryWriter(str(Path(conf.log_dir) / 'tensorboard'))
++    try:
++        train_and_evaluate(model, loss, train_loader, val_loader,
++            torch.optim.Adam(model.parameters(), lr=conf.lr, weight_decay=0), conf.epochs,
++            writer, str(save_path), str(device), metrics=active_metrics)
++    finally:
++        writer.close()
++
++
+ if __name__ == '__main__':
+-    conf = Config()                                                     
+-    writer = SummaryWriter("logs")
+-    device = torch.device("cuda:"+str(conf.device_num))
+-    RANDOM_SEED = 300  # any random number
+-    set_seed(RANDOM_SEED)
+-
+-    run_for = 'Train'
+-    if run_for == 'Train':
+-        X_train_all, Y_train_all, L_train_all = [], [], []
+-        X_val_all, Y_val_all, L_val_all = [], [], []
+-        file_paths = [f'D:/work/data/paper6data/day1equalized/IQ/200/Rx{i}.npy' for i in range(1, 11)]
+-        for i, file_path in enumerate(file_paths):
+-            print(i)
+-            X_train, X_val, Y_train, Y_val, L_train, L_val = read_train_data(file_path, file_label=i)
+-            X_train_all.append(X_train)
+-            Y_train_all.append(Y_train)
+-            X_val_all.append(X_val)
+-            Y_val_all.append(Y_val)
+-        X_train_all = np.concatenate(X_train_all, axis=0)
+-        Y_train_all = np.concatenate(Y_train_all, axis=0)
+-        X_val_all = np.concatenate(X_val_all, axis=0)
+-        Y_val_all = np.concatenate(Y_val_all, axis=0)
+-        train_dataset = TensorDataset(torch.Tensor(X_train_all), torch.Tensor(Y_train_all))
+-        val_dataset = TensorDataset(torch.Tensor(X_val_all), torch.Tensor(Y_val_all))
+-        train_dataloader = DataLoader(train_dataset, batch_size=conf.batch_size, shuffle=True, num_workers=2, pin_memory=True)
+-        val_dataloader = DataLoader(val_dataset, batch_size=conf.batch_size, shuffle=True, num_workers=2, pin_memory=True)
+-        model = my_resnet()
+-        print(model)
+-        if torch.cuda.is_available():
+-            model = model.to(device)
+-        loss = nn.NLLLoss()
+-        if torch.cuda.is_available():
+-            loss = loss.to(device)
+-        optim = torch.optim.Adam(model.parameters(), lr=conf.lr, weight_decay=0)
+-        train_losses, train_accies, val_losses, val_accies = train_and_evaluate(model, loss_function=loss, train_dataloader=train_dataloader, val_dataloader=val_dataloader,
+-                       optimizer=optim, epochs=conf.epochs, writer=writer, save_path=conf.save_path,
+-                       device_num=conf.device_num)
+-
+-
+-
+-
++    main()
++
++
++
++
++
++
++
+diff --git a/train_DIFEX1.py b/train_DIFEX1.py
+--- a/train_DIFEX1.py
++++ b/train_DIFEX1.py
+@@ -5,9 +5,9 @@
+ from logging.handlers import RotatingFileHandler
+ import torch.nn as nn
+ import torch.nn.functional as F
+-import torchvision
+ from torch.utils.data import TensorDataset, DataLoader, ConcatDataset
+-from torch.utils.tensorboard import SummaryWriter
++from runtime_support import optional_writer, resolve_device, save_state, load_state, Metrics, gradient_norm, timed_start, elapsed
++SummaryWriter = optional_writer()
+ from confusion_matrix import confusion
+ from Network1 import my_resnet
+ from mmd_loss import mmd_loss
+@@ -20,7 +20,6 @@
+ from sklearn.manifold import TSNE
+ import matplotlib.pyplot as plt
+ from matplotlib.colors import ListedColormap
+-os.environ['CUDA_VISIBLE_DEVICES'] = '0'
+ timestape = datetime.datetime.now().strftime('%Y%m%d%H%M')
+ def set_seed(seed):
+     random.seed(seed)
+@@ -35,6 +34,23 @@
+     parser = argparse.ArgumentParser(description="CORAL")
+     parser.add_argument('--lam', type=float, default=0.05, help='lam')
+     parser.add_argument('--beta', type=float, default=0.01, help='beta')
++    parser.add_argument('--source-files', nargs='+', required=True)
++    parser.add_argument('--label-path', required=True)
++    parser.add_argument('--output-dir', required=True)
++    parser.add_argument('--log-dir', required=True)
++    parser.add_argument('--epochs', type=int, default=100)
++    parser.add_argument('--batch-size', type=int, default=32)
++    parser.add_argument('--lr', type=float, default=0.001)
++    parser.add_argument('--seed', type=int, default=300)
++    parser.add_argument('--split-seed', type=int, default=32)
++    parser.add_argument('--val-fraction', type=float, default=0.2)
++    parser.add_argument('--device', default='cuda:0' if torch.cuda.is_available() else 'cpu')
++    parser.add_argument('--code-state', choices=['only_train', 'only_test', 'train_test'], default='train_test')
++    parser.add_argument('--teacher-checkpoint', required=True)
++    parser.add_argument('--test-data')
++    parser.add_argument('--test-labels')
++    parser.add_argument('--allow-legacy-checkpoint', action='store_true')
++    parser.add_argument('--plot', action='store_true')
+     return parser.parse_args()
+ 
+ def setup_logger(log_dir,filename):
+@@ -73,6 +89,10 @@
+         self.train_lossses = []
+         self.val_accuracies = []
+ def coral(x, y):
++    if x.ndim != 2 or y.ndim != 2 or x.shape[1] == 0 or x.shape[1] != y.shape[1]:
++        raise ValueError("CORAL requires two nonempty feature matrices with matching width")
++    if len(x) < 2 or len(y) < 2:
++        raise ValueError("CORAL covariance requires at least two samples per receiver")
+     mean_x = x.mean(0, keepdim=True)
+     mean_y = y.mean(0, keepdim=True)
+     cent_x = x - mean_x
+@@ -83,78 +103,104 @@
+     cova_diff = (cova_x - cova_y).pow(2).mean()
+     return mean_diff + cova_diff
+ 
+-def train(model, train_dataloader, optimizer, epoch, writer, device_num, logger):
++def train(model, train_dataloader, optimizer, epoch, writer, device_num, logger,
++          teacher=None, loss_function=None, lam_value=None, beta_value=None, metrics=None):
+     model.train()
+-    tmodel = torch.load('model_weight/pretrain.pth')
+-    tmodel.eval()
+-    device = torch.device("cuda:" + str(device_num))
+-    correct = 0
+-    conf = parse_args()
+-    lam = conf.lam
+-    for data_nnl in train_dataloader:
+-        data, target, index = data_nnl
+-        target = target.squeeze().long()
+-        if torch.cuda.is_available():
+-            data = data.to(device)
+-            target = target.to(device)
++    device = resolve_device(device_num)
++    model.to(device)
++    if teacher is None:
++        from teacherNet import my_resnet as teacher_factory
++        teacher = load_state(teacher_factory(), 'model_weight/pretrain.pth', device)
++    teacher = teacher.to(device).eval()
++    teacher.requires_grad_(False)
++    conf = parse_args() if lam_value is None or beta_value is None else None
++    lam = conf.lam if lam_value is None else lam_value
++    beta = conf.beta if beta_value is None else beta_value
++    if lam < 0 or beta < 0:
++        raise ValueError("Loss weights must be nonnegative")
++    criterion = loss_function if loss_function is not None else nn.CrossEntropyLoss()
++    total_loss_sum, correct, processed = 0.0, 0, 0
++    sums = dict(ce=0.0, kd=0.0, coral=0.0)
++    start = timed_start(device)
++    for step, (data, target, index) in enumerate(train_dataloader, 1):
++        data, target = data.to(device), target.reshape(-1).long().to(device)
++        index = index.reshape(-1).to(device)
+         optimizer.zero_grad()
+         features, output = model(data)
+         classifier_output = F.log_softmax(output, dim=1)
+-        classifier_loss_batch = loss(classifier_output, target)
++        ce = criterion(classifier_output, target)
+         with torch.no_grad():
+-            real_part = data[:, 0, :]
+-            imag_part = data[:, 1, :]
+-            complex_data = torch.complex(real_part, imag_part)
+-            data1 = torch.angle(torch.fft.fft(complex_data, dim=(1)))
+-            data1 = data1.unsqueeze(1)
+-            tfeatures, toutput = tmodel(data1)  
+-        loss2 = F.mse_loss(features[:, :256], tfeatures)*lam   
+-        #loss3 = F.mse_loss(features[:, :256], features[:, 256:])*0.001
+-        loss4 = 0
+-        B = 32
+-        for i in range(10 - 1):
+-            for j in range(i + 1, 10):
+-                loss4 += coral(features[i * B:(i + 1) * B, 256:], features[j * B:(j + 1) * B, 256:])
+-        loss4 = beta * (loss4 * 2) / (10 * 9)
+-        loss1 = classifier_loss_batch
+-        total_loss = (loss1 + loss2 + loss4 ) / (1 + beta + lam)
++            phase = torch.angle(torch.fft.fft(torch.complex(data[:, 0, :], data[:, 1, :]), dim=1)).unsqueeze(1)
++            tfeatures, _ = teacher(phase)
++        width = tfeatures.shape[1]
++        if features.shape[1] != 2 * width:
++            raise ValueError(f"Expected two {width}-wide branches, got {features.shape[1]}")
++        kd = F.mse_loss(features[:, :width], tfeatures)
++        domains = torch.unique(index)
++        if len(domains) < 2:
++            raise ValueError("Cross-receiver CORAL needs at least two receiver groups")
++        # Same average over unordered receiver pairs as 2/(D*(D-1)).
++        alignment = features.new_zeros(())
++        pairs = 0
++        for i, domain_i in enumerate(domains):
++            for domain_j in domains[i + 1:]:
++                alignment = alignment + coral(features[index == domain_i, width:], features[index == domain_j, width:])
++                pairs += 1
++        alignment = alignment / pairs
++        total_loss = (ce + lam * kd + beta * alignment) / (1 + beta + lam)
++        if not torch.isfinite(total_loss):
++            raise FloatingPointError("Non-finite DIFL loss")
+         total_loss.backward()
++        grad = gradient_norm(model)
++        if not np.isfinite(grad):
++            raise FloatingPointError("Non-finite DIFL gradients")
+         optimizer.step()
+-        total_loss += total_loss.item()
+-        pred = classifier_output.argmax(dim=1, keepdim=True)
+-        correct += pred.eq(target.view_as(pred)).sum().item()
+-    mean_loss = total_loss / len(train_dataloader) 
+-    mean_accuracy = 100 * correct / len(train_dataloader.dataset)  
+-    logger.info(
+-        'Train Epoch: {} \tLoss: {:.6f}, Accuracy: {}/{} ({:0f}%)\n'.format(
+-            epoch,
+-            mean_loss,
+-            correct,
+-            len(train_dataloader.dataset),
+-            mean_accuracy)
+-    )  
+-    writer.add_scalar('Accuracy/train', 100.0 * correct / len(train_dataloader.dataset), epoch)
++        count = len(target)
++        total_loss_sum += total_loss.item() * count
++        correct += classifier_output.argmax(1).eq(target).sum().item()
++        processed += count
++        for key, value in [('ce', ce), ('kd', kd), ('coral', alignment)]:
++            sums[key] += value.item() * count
++        record = dict(epoch=epoch, step=step, samples=count, loss=total_loss.item(),
++                      ce=ce.item(), kd=kd.item(), coral=alignment.item(),
++                      lambda_kd=lam, beta_coral=beta, lr=optimizer.param_groups[0]['lr'],
++                      gradient_norm=grad, teacher_frozen=True, receiver_pairs=pairs)
++        if metrics:
++            metrics.step(record)
++    if not processed:
++        raise ValueError("Empty training loader")
++    mean_loss, accuracy = total_loss_sum / processed, 100 * correct / processed
++    model.last_train_metrics = dict(loss=mean_loss, accuracy=accuracy, samples=processed,
++        ce=sums['ce']/processed, kd=sums['kd']/processed, coral=sums['coral']/processed,
++        lambda_kd=lam, beta_coral=beta, lr=optimizer.param_groups[0]['lr'],
++        gradient_norm=grad, train_seconds=elapsed(start, device))
++    logger.info('Train Epoch %s Loss %.6f CE %.6f KD %.6f CORAL %.6f Accuracy %.2f%%',
++                epoch, mean_loss, sums['ce']/processed, sums['kd']/processed, sums['coral']/processed, accuracy)
++    writer.add_scalar('Accuracy/train', accuracy, epoch)
+     writer.add_scalar('Loss/train', mean_loss, epoch)
+-    return mean_loss, mean_accuracy
++    return mean_loss, accuracy
++
+ 
+ def evaluate(model, loss, val_dataloader, epoch, writer, device_num, logger):
+     model.eval()
+     val_loss = 0
+     correct = 0
+-    device = torch.device("cuda:" + str(device_num))
++    processed = 0
++    device = resolve_device(device_num)
+     with torch.no_grad():
+         for data, target, index in val_dataloader:
+-            target = target.squeeze().long()
+-            if torch.cuda.is_available():
+-                data = data.to(device)
+-                target = target.to(device)
++            target = target.reshape(-1).long().to(device)
++            data = data.to(device)
+             features, output = model(data)
+             output = F.log_softmax(output, dim=1)
+-            val_loss += loss(output, target).item()
++            val_loss += loss(output, target).item() * len(target)
++            processed += len(target)
+             pred = output.argmax(dim=1, keepdim=True)
+             correct += pred.eq(target.view_as(pred)).sum().item()
+ 
+-    val_loss /= len(val_dataloader)
++    if not processed:
++        raise ValueError("Empty validation loader")
++    val_loss /= processed
+     mean_accuracy = 100 * correct / len(val_dataloader.dataset)
+     fmt = '\nValidation set: loss: {:.4f}, Accuracy: {}/{} ({:0f}%)\n'
+     logger.info(
+@@ -186,24 +232,23 @@
+     t = 0
+     i = 0
+     with torch.no_grad():
++        device = next(model.parameters()).device
+         for data, target in test_dataloader:
+             start_time = time.time()
+-            target = target.long()
+-            if torch.cuda.is_available():
+-                data = data.cuda()
+-                target = target.cuda()
++            target = target.reshape(-1).long().to(device)
++            data = data.to(device)
+             features, output = model(data)
+             out = F.log_softmax(output, dim=1)
+             max_values, max_indices = torch.max(out, dim=1)
+             total_max_values += max_values.sum().item() 
+             total_samples += data.size(0)
+             pred = output.argmax(dim=1, keepdim=True)
+-            correct_mask = pred.eq(target.view_as(pred)) 
++            correct_mask = pred.reshape(-1).eq(target)
+             correct += correct_mask.sum().item()
+-            max_values_correct = max_values[correct_mask.squeeze()] 
++            max_values_correct = max_values[correct_mask]
+             total_max_values_correct += max_values_correct.sum().item()  
+             total_correct_samples += correct_mask.sum().item()  
+-            incorrect_mask = ~correct_mask.squeeze()  
++            incorrect_mask = ~correct_mask
+             max_values_wrong = max_values[incorrect_mask]
+             total_max_values_wrong += max_values_wrong.sum().item()
+             total_wrong_samples += incorrect_mask.sum().item() 
+@@ -222,7 +267,7 @@
+         target_real = np.array(target_real)
+     all_features = np.concatenate(features_list, axis=0)
+     all_labels = np.concatenate(labels_list, axis=0)
+-    accuracy = correct / len(test_dataloader.dataset)
++    accuracy = 100 * correct / len(test_dataloader.dataset)
+     fmt = 'Accuracy: {}/{} ({:0f}%)\n'
+     logger.info(
+         fmt.format(
+@@ -236,26 +281,33 @@
+     return target_pred, target_real, all_labels, all_features
+ 
+ def train_and_evaluate(model, loss_function, train_dataloader, val_dataloader, optimizer, epochs, writer, save_path,
+-                       device_num, logger):
++                       device_num, logger, teacher=None, lam_value=None, beta_value=None, metrics=None):
++    if epochs < 1:
++        raise ValueError("epochs must be positive")
++    if os.path.exists(save_path):
++        raise FileExistsError(f"Existing checkpoint preserved: {save_path}")
+     train_losses = []
+     train_accies = []
+     val_losses = []
+     val_accies = []
+-    current_max_val_accuracy = 1 
++    current_max_val_accuracy = float("-inf")
+     time_start1 = time.time()
+     for epoch in range(1, epochs + 1):
+         time_start = time.time()
+-        train_loss, train_acc = train(model, train_dataloader, optimizer, epoch, writer, device_num, logger)
++        train_loss, train_acc = train(model, train_dataloader, optimizer, epoch, writer, device_num, logger,
++            teacher=teacher, loss_function=loss_function, lam_value=lam_value, beta_value=beta_value, metrics=metrics)
+         train_losses.append(train_loss)
+         train_accies.append(train_acc)
+         val_loss, val_accuracy = evaluate(model, loss_function, val_dataloader, epoch, writer, device_num, logger)
+         val_losses.append(val_loss)
+         val_accies.append(val_accuracy)
++        if metrics:
++            metrics.epoch(dict(epoch=epoch, **model.last_train_metrics, source_val_loss=val_loss, source_val_accuracy=val_accuracy))
+         if val_accuracy > current_max_val_accuracy:
+             logger.info("The validation accuracy is increased from {} to {}, new model weight is saved.".format(
+                 current_max_val_accuracy, val_accuracy))
+             current_max_val_accuracy = val_accuracy
+-            torch.save(model, save_path)
++            save_state(model, save_path)
+         else:
+             logger.info("The validation loss is not decreased.")
+         time_end = time.time()
+@@ -269,12 +321,15 @@
+     return train_losses, train_accies, val_losses, val_accies
+ class MultiFileBatchSampler(BatchSampler):
+     def __init__(self, file_indices, batch_size_per_file):
++        if not file_indices or batch_size_per_file < 2:
++            raise ValueError("Need receiver groups and at least two samples per group")
++        if min(map(len, file_indices)) < batch_size_per_file:
++            raise ValueError("Receiver group smaller than one complete batch")
+         self.file_indices = file_indices
+         self.batch_size_per_file = batch_size_per_file 
+         self.num_files = len(file_indices)
+     def __iter__(self):
+-        num_samples_per_file = len(self.file_indices[0])
+-        num_batches = num_samples_per_file // self.batch_size_per_file
++        num_batches = len(self)
+ 
+         for batch_idx in range(num_batches):
+             batch = []
+@@ -285,96 +340,77 @@
+             yield batch
+ 
+     def __len__(self):
+-        num_samples_per_file = len(self.file_indices[0])
+-        return (num_samples_per_file // self.batch_size_per_file) * self.num_files
++        return min(len(indices) for indices in self.file_indices) // self.batch_size_per_file
++def main():
++    conf = parse_args()
++    device = resolve_device(conf.device)
++    set_seed(conf.seed)
++    from pathlib import Path
++    from teacherNet import my_resnet as teacher_factory
++    output_dir = Path(conf.output_dir)
++    output_dir.mkdir(parents=True, exist_ok=True)
++    save_path = output_dir / 'model.pth'
++    logger = setup_logger(conf.log_dir, 'student')
++    model = my_resnet().to(device)
++    if conf.code_state in ('only_train', 'train_test'):
++        if save_path.exists():
++            raise FileExistsError(f'Existing checkpoint preserved: {save_path}')
++        teacher = load_state(teacher_factory(), conf.teacher_checkpoint, device, conf.allow_legacy_checkpoint).eval()
++        teacher.requires_grad_(False)
++        xs, ys, ds, xv, yv, dv, file_indices = [], [], [], [], [], [], []
++        offset = 0
++        for i, source in enumerate(conf.source_files):
++            x, v, y, vy, d, vd = read_train_data(source, i, label_path=conf.label_path,
++                test_size=conf.val_fraction, random_state=conf.split_seed)
++            xs.append(x); ys.append(y); ds.append(d)
++            xv.append(v); yv.append(vy); dv.append(vd)
++            file_indices.append(list(range(offset, offset + len(x))))
++            offset += len(x)
++        train_dataset = TensorDataset(torch.tensor(np.concatenate(xs), dtype=torch.float32),
++            torch.tensor(np.concatenate(ys)), torch.tensor(np.concatenate(ds)))
++        val_dataset = TensorDataset(torch.tensor(np.concatenate(xv), dtype=torch.float32),
++            torch.tensor(np.concatenate(yv)), torch.tensor(np.concatenate(dv)))
++        train_loader = DataLoader(train_dataset, batch_sampler=MultiFileBatchSampler(file_indices, conf.batch_size))
++        val_loader = DataLoader(val_dataset, batch_size=conf.batch_size, shuffle=True)
++        metrics = Metrics(conf.log_dir, dict(vars(conf), method='difl', feature_tap='fc1_relu_512',
++            covariance='sample unbiased', selection='source validation accuracy',
++            source_receivers=len(conf.source_files), class_count=6, feature_branches=[256, 256]))
++        writer = SummaryWriter(str(Path(conf.log_dir) / 'tensorboard'))
++        try:
++            train_and_evaluate(model, nn.CrossEntropyLoss(), train_loader, val_loader,
++                torch.optim.Adam(model.parameters(), lr=conf.lr, weight_decay=0), conf.epochs,
++                writer, str(save_path), str(device), logger, teacher=teacher,
++                lam_value=conf.lam, beta_value=conf.beta, metrics=metrics)
++        finally:
++            writer.close()
++    if conf.code_state in ('only_test', 'train_test'):
++        if not conf.test_data or not conf.test_labels:
++            raise ValueError('Test mode needs --test-data and --test-labels')
++        model = load_state(model, save_path, device, conf.allow_legacy_checkpoint)
++        x, y = read_test_data(conf.test_data, conf.test_labels)
++        pred, real, labels, features = test(model, DataLoader(TensorDataset(
++            torch.tensor(x, dtype=torch.float32), torch.tensor(y)), batch_size=conf.batch_size), logger)
++        np.savez(output_dir / 'predictions.npz', predictions=pred, labels=real, features=features)
++        if conf.plot:
++            if len(features) < 2:
++                raise ValueError('t-SNE needs at least two samples')
++            features_2d = TSNE(n_components=2, random_state=0,
++                perplexity=min(30, len(features)-1)).fit_transform(features)
++            fig, ax = plt.subplots(figsize=(10, 8))
++            scatter = ax.scatter(features_2d[:, 0], features_2d[:, 1], c=labels, cmap='tab10')
++            fig.colorbar(scatter, ax=ax, ticks=np.arange(6))
++            fig.savefig(output_dir / 'after.pdf', bbox_inches='tight')
++            plt.close(fig)
++
++
+ if __name__ == '__main__':
+-    conf = Config()  
+-    writer = SummaryWriter("logs")
+-    device = torch.device("cuda:" + str(conf.device_num))
+-    RANDOM_SEED = 300  # any random number
+-    set_seed(RANDOM_SEED)
+-    X_train_all, Y_train_all, L_train_all = [], [], []
+-    X_val_all, Y_val_all, L_val_all = [], [], []
+-    file_paths = [f'D:/work/data/paper6data/day1equalized/IQ/200/Rx{i}.npy' for i in range(1, 11)]
+-    for i, file_path in enumerate(file_paths):
+-        X_train, X_val, Y_train, Y_val, L_train, L_val = read_train_data(file_path, file_label=i)
+-        X_train_all.append(X_train)
+-        Y_train_all.append(Y_train)
+-        L_train_all.append(L_train)
+-        X_val_all.append(X_val)
+-        Y_val_all.append(Y_val)
+-        L_val_all.append(L_val)
+-    X_train_all = np.concatenate(X_train_all, axis=0)
+-    Y_train_all = np.concatenate(Y_train_all, axis=0)
+-    L_train_all = np.concatenate(L_train_all, axis=0)
+-    X_val_all = np.concatenate(X_val_all, axis=0)
+-    Y_val_all = np.concatenate(Y_val_all, axis=0)
+-    L_val_all = np.concatenate(L_val_all, axis=0)
+-    train_dataset = TensorDataset(torch.Tensor(X_train_all), torch.Tensor(Y_train_all), torch.Tensor(L_train_all))
+-    val_dataset = TensorDataset(torch.Tensor(X_val_all), torch.Tensor(Y_val_all), torch.Tensor(L_val_all))
+-    file_indices = []
+-    file_size = len(X_train_all) // 10
+-    for i in range(10):
+-        file_indices.append(list(range(i * file_size, (i + 1) * file_size)))
+-    batch_size_per_file = conf.batch_size
+-    batch_sampler = MultiFileBatchSampler(file_indices, batch_size_per_file)
+-    train_dataloader = DataLoader(train_dataset, batch_size=conf.batch_size, shuffle=True)
+-    train_dataloader = DataLoader(train_dataset, batch_sampler=batch_sampler)
+-    val_dataloader = DataLoader(val_dataset, batch_size=conf.batch_size, shuffle=True)
+-    conf = parse_args()
+-    lam = conf.lam
+-    beta = conf.beta
+-    save_dir = f"tsne/"
+-    if not os.path.exists(save_dir):
+-        os.makedirs(save_dir)
+-    file_name = f'lam={conf.lam}_{conf.beta}_{timestape}'
+-    logger = setup_logger(save_dir, file_name)
+-    logger.info("Training session starts")
+-    logger.info(f"Configuration: {conf}")
+-    modelweightfile = os.path.join(save_dir, f'{file_name}.pth')
+-    model = my_resnet()
+-    logger.info(model)
+-    if torch.cuda.is_available():
+-        model = model.to(device)
+-    loss = nn.CrossEntropyLoss()
+-    if torch.cuda.is_available():
+-        loss = loss.to(device)
+-    optim = torch.optim.Adam(model.parameters(), lr=0.001, weight_decay=0)
+-    save_path: str = 'model_weight/model.pth'
+-    device_num = 0
+-    time_start = time.time()
+-
+-    time_end = time.time()
+-    time_sum = time_end - time_start
+-    logger.info("total training time is: %s" % time_sum)
+-    X_test, Y_test, = read_test_data()
+-    test_dataset = TensorDataset(torch.Tensor(X_test), torch.Tensor(Y_test))
+-    data = torch.tensor(X_test)
+-    test_dataloader = DataLoader(test_dataset)
+-    model = torch.load('model_weight/model.pth')  # Raw是ResNet34的
+-    pred, real, labels, features = test(model, test_dataloader, logger)
+-    print(features.shape)
+-    #num_features = features.shape[1] * features.shape[2]
+-    num_features = features.shape[1]
+-    features_reshaped = features.reshape(-1, num_features)
+-    labels = labels.flatten()
+-    tsne = TSNE(n_components=2, random_state=0)
+-    features_2d = tsne.fit_transform(features_reshaped)
+-    plt.rc('font', family='Times New Roman')
+-    plt.rcParams['axes.unicode_minus'] = False
+-    plt.rcParams['xtick.labelsize'] = 16  
+-    plt.rcParams['ytick.labelsize'] = 16 
+-    cmap = ListedColormap(colors)
+-    fig, ax = plt.subplots(figsize=(10, 8))
+-    scatter = ax.scatter(features_2d[:, 0], features_2d[:, 1], c=labels, cmap=cmap)
+-    cbar = fig.colorbar(scatter, orientation='vertical', ticks=np.arange(6))
+-    cbar.set_ticklabels([f'TX{i + 1}' for i in range(6)])
+-    cbar.ax.tick_params(labelsize=16)
+-    plt.savefig("D:/work/after.pdf", format='pdf', bbox_inches='tight')
+-    plt.show()
+-
+-
+-
+-
+-
+-
++    main()
++
++
++
++
++
++
++
++
++
