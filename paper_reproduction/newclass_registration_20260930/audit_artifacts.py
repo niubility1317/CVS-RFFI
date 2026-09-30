@@ -49,10 +49,25 @@ if args.method=='issl':
     counts={'base':resolved['base_epochs']*((labels<3).sum()//128),
             'ssl':resolved['ssl_epochs']*( (len(labels)+(labels<3).sum())//64),
             'downstream_transfer':resolved['downstream_epochs']*(len(labels)//128),
-            'incremental_baseline':resolved['downstream_epochs']*(len(labels)//128)}
+            'incremental_baseline':resolved.get('incremental_epochs',resolved['downstream_epochs'])*(len(labels)//128)}
     for stage,count in counts.items():
         assert len([r for r in steps if r['stage']==stage])==count
-    assert all(r['kd_student_gradient'] is False and r['zero_grad'] is False for r in steps if r['stage']=='ssl')
+    if resolved.get('implementation')=='issl_fixed_v1':
+        ssl_rows=[r for r in steps if r['stage']=='ssl']
+        assert all(r['kd_student_gradient'] is True and r['zero_grad'] is True and
+                   r['teacher_frozen'] is True and r['negative_queue_layout']=='transpose' and
+                   r['queue_normalized'] is True and r['queue_size']<=1000 for r in ssl_rows)
+        assert any(r['kd_logit_grad_norm']>0 for r in ssl_rows)
+        assert any(r['new_head_grad_norm']>0 for r in ssl_rows)
+        incremental=[r for r in steps if r['stage']=='incremental_baseline']
+        assert all(r['teacher_frozen'] is True for r in incremental)
+        assert any(r['kd_logit_grad_norm']>0 for r in incremental)
+        assert acceptance['incremental_teacher_state_unchanged'] is True
+        assert acceptance['ssl_new_head_updated'] is True
+        smoke=json.loads((out/'checkpoint_smoke.json').read_text(encoding='utf-8'))
+        assert smoke['status']=='VERIFIED' and smoke['query_access'] is False
+    else:
+        assert all(r['kd_student_gradient'] is False and r['zero_grad'] is False for r in steps if r['stage']=='ssl')
 else:
     module=load_module(Path(resolved['lora_torch_source'])/'Openset_RFFI/deep_learning_models.py','lora_reload')
     payload=torch.load(out/'extractor.pt',map_location='cpu',weights_only=True)
