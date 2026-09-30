@@ -3,7 +3,7 @@
 - run_id：`20260930-phase2-d92-sequential-residual-support-m2-r01`
 - group_id：`d92-sequential-residual-head-support`；类别：`diagnostic`；阶段：`Phase2-support-only-diagnostic`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -33,3 +33,7 @@ PREPARED_50tests_pass_preflight_VERIFIED_practical_residual_pending_final_entry_
 READY_50tests_pass_review_no_unresolved_P0P1_preflight_VERIFIED_not_launched
 
 VERIFIED_running_2CPU_lanes_PID609279_runtime_d6cee1b1f_complete160_required_before_analysis
+
+COMPLETE_SEQUENTIAL_RESIDUAL_PROBE_VERIFIED_not_promoted_no_query_benchmark
+
+COMPLETE_TRAINING_LOG_SCAN_VERIFIED_4576_stages_292864_steps_no_refit

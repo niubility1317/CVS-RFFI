@@ -217,6 +217,10 @@ paths += ['docs/D92_NEXT_AFTER_REGISTRATION_DIAGNOSTIC_20260930.md',
     'tools/summarize_d92_sequential_residual_probe.py',
     'tests/test_d92_sequential_residual_head.py','tests/test_d92_sequential_residual_orchestration.py',
     'tests/test_evaluate_d92_sequential_residual_probe.py','tests/test_summarize_d92_sequential_residual_probe.py']
+paths += ['docs/D92_SEQUENTIAL_RESIDUAL_SUPPORT_RESULT_20260930.md',
+    'docs/D92_SEQUENTIAL_RESIDUAL_FAILURE_LESSONS_20260930.md',
+    'tools/collect_d92_sequential_training_diagnostics.py',
+    'tests/test_collect_d92_sequential_training_diagnostics.py']
 for name in paths:
     src=ROOT/name;dst=WS/name;dst.parent.mkdir(parents=True,exist_ok=True)
     # Each name is unique to this task; original D92 and shared wrappers are not mirrored.

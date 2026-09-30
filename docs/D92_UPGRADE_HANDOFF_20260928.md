@@ -1,8 +1,10 @@
-## 最新状态：顺序残差头已启动并核实（2026-09-30）
+## 最新状态：顺序残差头完整分析，不晋级（2026-09-30）
 
-run `20260930-phase2-d92-sequential-residual-support-m2-r01` RUNNING，runtime `d6cee1b1fea30b1074fbf4238193a1c6e0e5cf47`，supervisor609279、workers609291/609292。独立证据 `readback_1790731526140533100.json` 核实argv/CWD/live一致，两rx3执行、两rx1等待，无complete/error。本次已实际launch，不得重跑prepare/new/publish。两个CPU lane×2BLAS，无GPU、query或source样本。全目标ACTIVE，尚无性能结论。
+run `20260930-phase2-d92-sequential-residual-support-m2-r01` ANALYZED，runtime `d6cee1b1fea30b1074fbf4238193a1c6e0e5cf47`；4row/160parent全部完成，无运行中的所属进程。最终独立证据 `readback_1790731833554181000.json`，summary状态 `COMPLETE_SEQUENTIAL_RESIDUAL_PROBE_VERIFIED`。唯一分析已运行完成，结果在原run/results/support_summary，禁止重新prepare/new/publish/analyze。信道为practical residual/post_sync/noeq/25MHz，两个CPU lane，无GPU/source/query拟合。
 
-恢复先只读 `.codex_tmp/read_single_support_run_20260930.py configs/d92_sequential_residual_support_20260930.json` 核实同一run。完整4rows160parent后，唯一调用 `tools/analyze_d92_sequential_residual_probe.py --spec configs/d92_sequential_residual_support_20260930.json --analysis-release d92_sequential_residual_analysis_20260930_r01`；未运行过分析。输出固定run/results/support_summary，若存在先核实，禁止重复覆盖。分析之后才把完整support证据交query-blind方法worker，不用partial选参。当前各worker已完成，无需再次重复review。
+完整OOF新增类任务：R0的B/旧/新/H=71.042/63.767/54.846/58.417%；R_seq=66.146/55.252/39.169/44.352%。B阶段已退化，seq对reset的旧类保护伴随新类下降，两条候选均不晋级、不启动querybenchmark。当前保留BranchLocalRidge。完整三路径K×新增类数与资源在 `docs/D92_SEQUENTIAL_RESIDUAL_SUPPORT_RESULT_20260930.md`。A=N/A，B−B0不能替代真实适应收益。注册诊断旧报告已澄清平均准确率差2.198与逐任务绝对差均值3.448的不同口径。
+
+全4576stage/292864step训练日志已只读核对COMPLETE_TRAINING_LOG_SCAN_VERIFIED，结果在同run/results/training_diagnostics。collector7tests通过；nonfinite/zero0，clip30，全部日志error/warning/resume/early-stop0。B训练准确率初始100%，CE虽降而最终训练/held准确率下降，训练残差RMS达到base的3.108至4.647倍。不要误称held RMS或唯一过拟合因果。原SSH解析session36760已完成，禁止覆盖输出重复解析。完整21×64曲线复盘已在docs/D92_SEQUENTIAL_RESIDUAL_FAILURE_LESSONS_20260930.md，所有4576阶段最终loss下降，但B210/360、C_reset268/288的训练准确率下降。报告、只读collector及证据一并提交；当前无活跃实验或SSH任务。下一结构方向仅是待验证假设：保留LocalRidge几何，诊断旧support类内扰动的跨fold稳定性，再决定是否可用于共享度量；尚无新候选实现/launch。真实trainK1不能估计类内变异，必须明确退回及筛选口径，不能伪造K1收益。全目标ACTIVE。
 
 ## 历史状态：顺序残差头50项测试通过，已预登记未发布（2026-09-30）
 
