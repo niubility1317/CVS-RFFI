@@ -1,0 +1,11 @@
+...F....                                                                 [100%]
+================================== FAILURES ===================================
+_ SummaryTests.test_mixed_zero_bandwidth_keeps_explicit_unmeasured_adapted_distance _
+tests\test_summarize_d92_fcr8_probe.py:142: in test_mixed_zero_bandwidth_keeps_explicit_unmeasured_adapted_distance
+    anchor = np.zeros((736, 8)); Z = np.zeros((736, prepared.latent_rank))
+code\cvsrffi\d92_function_coordinate_residual8_local_ridge.py:298: in __getattr__
+    def __getattr__(self,name):return getattr(self.base,name)
+E   AttributeError: 'ChannelTraining' object has no attribute 'latent_rank'
+=========================== short test summary info ===========================
+FAILED tests/test_summarize_d92_fcr8_probe.py::SummaryTests::test_mixed_zero_bandwidth_keeps_explicit_unmeasured_adapted_distance
+1 failed, 7 passed in 16.30s

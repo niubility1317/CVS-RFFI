@@ -1,6 +1,6 @@
 # MC-Residual8联合方法的固定support试验
 
-状态：RUNNING，已独立核实启动进程与日志进度；完整结果及实测资源尚待收集。run ID为`20260930-phase2-d92-mc-residual8-support-m2-r01`，group为`d92-mc-residual8-support`；主Agent是唯一launch owner。实际运行配置与逐行矩阵由`configs/d92_mc_residual8_support_20260930.json`维护，不另复制完整矩阵。
+状态：ANALYZED，四row共160parent完整结束；实际结果与训练诊断见[D92_MC_RESIDUAL8_SUPPORT_RESULT_20260930.md](D92_MC_RESIDUAL8_SUPPORT_RESULT_20260930.md)，无明显共同改善，保留原BranchLocalRidge。run ID为`20260930-phase2-d92-mc-residual8-support-m2-r01`，group为`d92-mc-residual8-support`；主Agent是唯一launch owner。实际运行配置与逐行矩阵由`configs/d92_mc_residual8_support_20260930.json`维护，不另复制完整矩阵。
 
 ## 方法与权限
 

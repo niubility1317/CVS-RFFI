@@ -1,3 +1,9 @@
+## 最新状态：FCR8 LOCAL_VERIFIED待发布（2026-09-30）
+
+VERIFIED：单一数学驱动FCR8–LocalRidge实现完成，47个不同相关数值/入口/汇总/调度检查通过；独立P0/P1审查完成，完整phi、独占run身份及混合零带宽N/A汇总问题已修。固定字典函数坐标Z、平均函数位移近端、B原U精确继承；无参数组合搜索。已登记完整160parent，新输出与source-only缓存身份preflight VERIFIED，root sole launch owner；尚未发布，尚无FCR真实性能。
+
+run `20260930-phase2-d92-fcr8-support-m2-r01`，spec `configs/d92_fcr8_support_20260930.json`，release `d92_fcr8_support_20260930_r01`。prepare/new/preflight已执行，禁止重复。最大5888活动参数，固定DCT/GELU，原U精确B→C，合法support薄SVD函数坐标/近端；不继承历史目标适应state；当前基座/cache完整source-only契约固定。47个不同检查通过。尚未启动，发布前只检查已推送版本与独立review结论；启动后独立读回argv/cwd/PID，不凭返回码判断完成。目标ACTIVE，真实效果未证明。
+
 ## 最新状态：MC完整分析完成；FCR8实现中（2026-09-30）
 
 VERIFIED：MC160 parents完整support分析及训练诊断完成。OOF96新增类任务相对R0：B -0.173611pp、C旧 +0.095486pp、C新 -0.023438pp、H +0.011084pp；绝对新旧差距增加0.184896pp。保留BranchLocalRidge，不晋级query。A=N/A。936信息阶段全部实际更新，保持硬约束未激活，不能解释为保护约束阻止训练。完整120行矩阵和4576阶段/17604曲线/1944教师折已保存。

@@ -1,0 +1,8 @@
+...................                                                      [100%]
+============================== warnings summary ===============================
+tests/test_d92_function_coordinate_residual8_local_ridge.py::test_zero_H_rank_and_scaled_subnormal_safe_or_explicit_failure
+  E:\type10-7\code\snapshots\d92_support_upgrade_20260928_wt\code\cvsrffi\d92_function_coordinate_residual8_local_ridge.py:100: RuntimeWarning: overflow encountered in divide
+    W=(vt[keep].T/s[keep])/scale
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+19 passed, 1 warning in 2.47s

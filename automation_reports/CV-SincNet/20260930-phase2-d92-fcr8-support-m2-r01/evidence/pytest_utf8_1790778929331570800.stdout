@@ -1,0 +1,938 @@
+..F.........EEEEEEEEE......                                              [100%]
+=================================== ERRORS ====================================
+_ ERROR at setup of test_zero_update_stage_still_counts_two_adjoint_channels_and_teacher _
+
+cls = <class '_pytest.runner.CallInfo'>
+func = <function call_and_report.<locals>.<lambda> at 0x000002825488BA30>
+when = 'setup'
+reraise = (<class '_pytest.outcomes.Exit'>, <class 'KeyboardInterrupt'>)
+
+    @classmethod
+    def from_call(
+        cls,
+        func: Callable[[], TResult],
+        when: Literal["collect", "setup", "call", "teardown"],
+        reraise: type[BaseException] | tuple[type[BaseException], ...] | None = None,
+    ) -> CallInfo[TResult]:
+        """Call func, wrapping the result in a CallInfo.
+    
+        :param func:
+            The function to call. Called without arguments.
+        :type func: Callable[[], _pytest.runner.TResult]
+        :param when:
+            The phase in which the function is called.
+        :param reraise:
+            Exception or exceptions that shall propagate if raised by the
+            function, instead of being wrapped in the CallInfo.
+        """
+        excinfo = None
+        instant = timing.Instant()
+        try:
+>           result: TResult | None = func()
+
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\runner.py:344: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\runner.py:246: in <lambda>
+    lambda: runtest_hook(item=item, **kwds), when=when, reraise=reraise
+..\..\..\local_envs\ssr-gpu\lib\site-packages\pluggy\_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\pluggy\_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\logging.py:843: in pytest_runtest_setup
+    yield
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\capture.py:895: in pytest_runtest_setup
+    return (yield)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\runner.py:164: in pytest_runtest_setup
+    item.session._setupstate.setup(item)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\runner.py:514: in setup
+    col.setup()
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\python.py:1674: in setup
+    self._request._fillfixtures()
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\fixtures.py:720: in _fillfixtures
+    item.funcargs[argname] = self.getfixturevalue(argname)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\fixtures.py:549: in getfixturevalue
+    fixturedef = self._get_active_fixturedef(argname)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\fixtures.py:640: in _get_active_fixturedef
+    fixturedef.execute(request=subrequest)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\fixtures.py:1128: in execute
+    result = ihook.pytest_fixture_setup(fixturedef=self, request=request)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\pluggy\_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\pluggy\_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\setuponly.py:36: in pytest_fixture_setup
+    return (yield)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\fixtures.py:1196: in pytest_fixture_setup
+    result = call_fixture_func(fixturefunc, request, kwargs)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\fixtures.py:923: in call_fixture_func
+    fixture_result = next(generator)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\tmpdir.py:264: in tmp_path
+    path = _mk_tmp(request, tmp_path_factory)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\tmpdir.py:251: in _mk_tmp
+    return factory.mktemp(name, numbered=True)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\tmpdir.py:130: in mktemp
+    basename = self._ensure_relative_to_basetemp(basename)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\tmpdir.py:111: in _ensure_relative_to_basetemp
+    if (self.getbasetemp() / basename).resolve().parent != self.getbasetemp():
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\tmpdir.py:186: in getbasetemp
+    basetemp = make_numbered_dir_with_cleanup(
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\pathlib.py:407: in make_numbered_dir_with_cleanup
+    raise e
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\pathlib.py:388: in make_numbered_dir_with_cleanup
+    p = make_numbered_dir(root, prefix, mode)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\pathlib.py:229: in make_numbered_dir
+    max_existing = max(map(parse_num, find_suffixes(root, prefix)), default=-1)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\pathlib.py:188: in extract_suffixes
+    for entry in iter:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+root = WindowsPath('C:/Users/lh594/AppData/Local/Temp/pytest-of-lh594')
+prefix = 'pytest-'
+
+    def find_prefixed(root: Path, prefix: str) -> Iterator[os.DirEntry[str]]:
+        """Find all elements in root that begin with the prefix, case-insensitive."""
+        l_prefix = prefix.lower()
+>       for x in os.scandir(root):
+E       PermissionError: [WinError 5] 拒绝访问。: 'C:\\Users\\lh594\\AppData\\Local\\Temp\\pytest-of-lh594'
+
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\pathlib.py:176: PermissionError
+_ ERROR at setup of test_illegal_access_or_work_accounting_rejected[query_rows_used-1] _
+
+cls = <class '_pytest.runner.CallInfo'>
+func = <function call_and_report.<locals>.<lambda> at 0x00000282546CF250>
+when = 'setup'
+reraise = (<class '_pytest.outcomes.Exit'>, <class 'KeyboardInterrupt'>)
+
+    @classmethod
+    def from_call(
+        cls,
+        func: Callable[[], TResult],
+        when: Literal["collect", "setup", "call", "teardown"],
+        reraise: type[BaseException] | tuple[type[BaseException], ...] | None = None,
+    ) -> CallInfo[TResult]:
+        """Call func, wrapping the result in a CallInfo.
+    
+        :param func:
+            The function to call. Called without arguments.
+        :type func: Callable[[], _pytest.runner.TResult]
+        :param when:
+            The phase in which the function is called.
+        :param reraise:
+            Exception or exceptions that shall propagate if raised by the
+            function, instead of being wrapped in the CallInfo.
+        """
+        excinfo = None
+        instant = timing.Instant()
+        try:
+>           result: TResult | None = func()
+
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\runner.py:344: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\runner.py:246: in <lambda>
+    lambda: runtest_hook(item=item, **kwds), when=when, reraise=reraise
+..\..\..\local_envs\ssr-gpu\lib\site-packages\pluggy\_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\pluggy\_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\logging.py:843: in pytest_runtest_setup
+    yield
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\capture.py:895: in pytest_runtest_setup
+    return (yield)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\runner.py:164: in pytest_runtest_setup
+    item.session._setupstate.setup(item)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\runner.py:514: in setup
+    col.setup()
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\python.py:1674: in setup
+    self._request._fillfixtures()
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\fixtures.py:720: in _fillfixtures
+    item.funcargs[argname] = self.getfixturevalue(argname)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\fixtures.py:549: in getfixturevalue
+    fixturedef = self._get_active_fixturedef(argname)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\fixtures.py:640: in _get_active_fixturedef
+    fixturedef.execute(request=subrequest)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\fixtures.py:1128: in execute
+    result = ihook.pytest_fixture_setup(fixturedef=self, request=request)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\pluggy\_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\pluggy\_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\setuponly.py:36: in pytest_fixture_setup
+    return (yield)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\fixtures.py:1196: in pytest_fixture_setup
+    result = call_fixture_func(fixturefunc, request, kwargs)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\fixtures.py:923: in call_fixture_func
+    fixture_result = next(generator)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\tmpdir.py:264: in tmp_path
+    path = _mk_tmp(request, tmp_path_factory)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\tmpdir.py:251: in _mk_tmp
+    return factory.mktemp(name, numbered=True)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\tmpdir.py:130: in mktemp
+    basename = self._ensure_relative_to_basetemp(basename)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\tmpdir.py:111: in _ensure_relative_to_basetemp
+    if (self.getbasetemp() / basename).resolve().parent != self.getbasetemp():
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\tmpdir.py:186: in getbasetemp
+    basetemp = make_numbered_dir_with_cleanup(
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\pathlib.py:407: in make_numbered_dir_with_cleanup
+    raise e
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\pathlib.py:388: in make_numbered_dir_with_cleanup
+    p = make_numbered_dir(root, prefix, mode)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\pathlib.py:229: in make_numbered_dir
+    max_existing = max(map(parse_num, find_suffixes(root, prefix)), default=-1)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\pathlib.py:188: in extract_suffixes
+    for entry in iter:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+root = WindowsPath('C:/Users/lh594/AppData/Local/Temp/pytest-of-lh594')
+prefix = 'pytest-'
+
+    def find_prefixed(root: Path, prefix: str) -> Iterator[os.DirEntry[str]]:
+        """Find all elements in root that begin with the prefix, case-insensitive."""
+        l_prefix = prefix.lower()
+>       for x in os.scandir(root):
+E       PermissionError: [WinError 5] 拒绝访问。: 'C:\\Users\\lh594\\AppData\\Local\\Temp\\pytest-of-lh594'
+
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\pathlib.py:176: PermissionError
+_ ERROR at setup of test_illegal_access_or_work_accounting_rejected[truth_read-True] _
+
+cls = <class '_pytest.runner.CallInfo'>
+func = <function call_and_report.<locals>.<lambda> at 0x0000028254889480>
+when = 'setup'
+reraise = (<class '_pytest.outcomes.Exit'>, <class 'KeyboardInterrupt'>)
+
+    @classmethod
+    def from_call(
+        cls,
+        func: Callable[[], TResult],
+        when: Literal["collect", "setup", "call", "teardown"],
+        reraise: type[BaseException] | tuple[type[BaseException], ...] | None = None,
+    ) -> CallInfo[TResult]:
+        """Call func, wrapping the result in a CallInfo.
+    
+        :param func:
+            The function to call. Called without arguments.
+        :type func: Callable[[], _pytest.runner.TResult]
+        :param when:
+            The phase in which the function is called.
+        :param reraise:
+            Exception or exceptions that shall propagate if raised by the
+            function, instead of being wrapped in the CallInfo.
+        """
+        excinfo = None
+        instant = timing.Instant()
+        try:
+>           result: TResult | None = func()
+
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\runner.py:344: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\runner.py:246: in <lambda>
+    lambda: runtest_hook(item=item, **kwds), when=when, reraise=reraise
+..\..\..\local_envs\ssr-gpu\lib\site-packages\pluggy\_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\pluggy\_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\logging.py:843: in pytest_runtest_setup
+    yield
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\capture.py:895: in pytest_runtest_setup
+    return (yield)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\runner.py:164: in pytest_runtest_setup
+    item.session._setupstate.setup(item)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\runner.py:514: in setup
+    col.setup()
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\python.py:1674: in setup
+    self._request._fillfixtures()
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\fixtures.py:720: in _fillfixtures
+    item.funcargs[argname] = self.getfixturevalue(argname)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\fixtures.py:549: in getfixturevalue
+    fixturedef = self._get_active_fixturedef(argname)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\fixtures.py:640: in _get_active_fixturedef
+    fixturedef.execute(request=subrequest)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\fixtures.py:1128: in execute
+    result = ihook.pytest_fixture_setup(fixturedef=self, request=request)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\pluggy\_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\pluggy\_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\setuponly.py:36: in pytest_fixture_setup
+    return (yield)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\fixtures.py:1196: in pytest_fixture_setup
+    result = call_fixture_func(fixturefunc, request, kwargs)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\fixtures.py:923: in call_fixture_func
+    fixture_result = next(generator)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\tmpdir.py:264: in tmp_path
+    path = _mk_tmp(request, tmp_path_factory)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\tmpdir.py:251: in _mk_tmp
+    return factory.mktemp(name, numbered=True)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\tmpdir.py:130: in mktemp
+    basename = self._ensure_relative_to_basetemp(basename)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\tmpdir.py:111: in _ensure_relative_to_basetemp
+    if (self.getbasetemp() / basename).resolve().parent != self.getbasetemp():
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\tmpdir.py:186: in getbasetemp
+    basetemp = make_numbered_dir_with_cleanup(
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\pathlib.py:407: in make_numbered_dir_with_cleanup
+    raise e
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\pathlib.py:388: in make_numbered_dir_with_cleanup
+    p = make_numbered_dir(root, prefix, mode)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\pathlib.py:229: in make_numbered_dir
+    max_existing = max(map(parse_num, find_suffixes(root, prefix)), default=-1)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\pathlib.py:188: in extract_suffixes
+    for entry in iter:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+root = WindowsPath('C:/Users/lh594/AppData/Local/Temp/pytest-of-lh594')
+prefix = 'pytest-'
+
+    def find_prefixed(root: Path, prefix: str) -> Iterator[os.DirEntry[str]]:
+        """Find all elements in root that begin with the prefix, case-insensitive."""
+        l_prefix = prefix.lower()
+>       for x in os.scandir(root):
+E       PermissionError: [WinError 5] 拒绝访问。: 'C:\\Users\\lh594\\AppData\\Local\\Temp\\pytest-of-lh594'
+
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\pathlib.py:176: PermissionError
+_ ERROR at setup of test_illegal_access_or_work_accounting_rejected[optimizer_steps-937] _
+
+cls = <class '_pytest.runner.CallInfo'>
+func = <function call_and_report.<locals>.<lambda> at 0x0000028254F329E0>
+when = 'setup'
+reraise = (<class '_pytest.outcomes.Exit'>, <class 'KeyboardInterrupt'>)
+
+    @classmethod
+    def from_call(
+        cls,
+        func: Callable[[], TResult],
+        when: Literal["collect", "setup", "call", "teardown"],
+        reraise: type[BaseException] | tuple[type[BaseException], ...] | None = None,
+    ) -> CallInfo[TResult]:
+        """Call func, wrapping the result in a CallInfo.
+    
+        :param func:
+            The function to call. Called without arguments.
+        :type func: Callable[[], _pytest.runner.TResult]
+        :param when:
+            The phase in which the function is called.
+        :param reraise:
+            Exception or exceptions that shall propagate if raised by the
+            function, instead of being wrapped in the CallInfo.
+        """
+        excinfo = None
+        instant = timing.Instant()
+        try:
+>           result: TResult | None = func()
+
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\runner.py:344: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\runner.py:246: in <lambda>
+    lambda: runtest_hook(item=item, **kwds), when=when, reraise=reraise
+..\..\..\local_envs\ssr-gpu\lib\site-packages\pluggy\_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\pluggy\_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\logging.py:843: in pytest_runtest_setup
+    yield
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\capture.py:895: in pytest_runtest_setup
+    return (yield)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\runner.py:164: in pytest_runtest_setup
+    item.session._setupstate.setup(item)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\runner.py:514: in setup
+    col.setup()
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\python.py:1674: in setup
+    self._request._fillfixtures()
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\fixtures.py:720: in _fillfixtures
+    item.funcargs[argname] = self.getfixturevalue(argname)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\fixtures.py:549: in getfixturevalue
+    fixturedef = self._get_active_fixturedef(argname)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\fixtures.py:640: in _get_active_fixturedef
+    fixturedef.execute(request=subrequest)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\fixtures.py:1128: in execute
+    result = ihook.pytest_fixture_setup(fixturedef=self, request=request)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\pluggy\_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\pluggy\_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\setuponly.py:36: in pytest_fixture_setup
+    return (yield)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\fixtures.py:1196: in pytest_fixture_setup
+    result = call_fixture_func(fixturefunc, request, kwargs)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\fixtures.py:923: in call_fixture_func
+    fixture_result = next(generator)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\tmpdir.py:264: in tmp_path
+    path = _mk_tmp(request, tmp_path_factory)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\tmpdir.py:251: in _mk_tmp
+    return factory.mktemp(name, numbered=True)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\tmpdir.py:130: in mktemp
+    basename = self._ensure_relative_to_basetemp(basename)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\tmpdir.py:111: in _ensure_relative_to_basetemp
+    if (self.getbasetemp() / basename).resolve().parent != self.getbasetemp():
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\tmpdir.py:186: in getbasetemp
+    basetemp = make_numbered_dir_with_cleanup(
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\pathlib.py:407: in make_numbered_dir_with_cleanup
+    raise e
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\pathlib.py:388: in make_numbered_dir_with_cleanup
+    p = make_numbered_dir(root, prefix, mode)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\pathlib.py:229: in make_numbered_dir
+    max_existing = max(map(parse_num, find_suffixes(root, prefix)), default=-1)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\pathlib.py:188: in extract_suffixes
+    for entry in iter:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+root = WindowsPath('C:/Users/lh594/AppData/Local/Temp/pytest-of-lh594')
+prefix = 'pytest-'
+
+    def find_prefixed(root: Path, prefix: str) -> Iterator[os.DirEntry[str]]:
+        """Find all elements in root that begin with the prefix, case-insensitive."""
+        l_prefix = prefix.lower()
+>       for x in os.scandir(root):
+E       PermissionError: [WinError 5] 拒绝访问。: 'C:\\Users\\lh594\\AppData\\Local\\Temp\\pytest-of-lh594'
+
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\pathlib.py:176: PermissionError
+_ ERROR at setup of test_illegal_access_or_work_accounting_rejected[inner_objective_evaluation_count-3043] _
+
+cls = <class '_pytest.runner.CallInfo'>
+func = <function call_and_report.<locals>.<lambda> at 0x00000282546CF250>
+when = 'setup'
+reraise = (<class '_pytest.outcomes.Exit'>, <class 'KeyboardInterrupt'>)
+
+    @classmethod
+    def from_call(
+        cls,
+        func: Callable[[], TResult],
+        when: Literal["collect", "setup", "call", "teardown"],
+        reraise: type[BaseException] | tuple[type[BaseException], ...] | None = None,
+    ) -> CallInfo[TResult]:
+        """Call func, wrapping the result in a CallInfo.
+    
+        :param func:
+            The function to call. Called without arguments.
+        :type func: Callable[[], _pytest.runner.TResult]
+        :param when:
+            The phase in which the function is called.
+        :param reraise:
+            Exception or exceptions that shall propagate if raised by the
+            function, instead of being wrapped in the CallInfo.
+        """
+        excinfo = None
+        instant = timing.Instant()
+        try:
+>           result: TResult | None = func()
+
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\runner.py:344: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\runner.py:246: in <lambda>
+    lambda: runtest_hook(item=item, **kwds), when=when, reraise=reraise
+..\..\..\local_envs\ssr-gpu\lib\site-packages\pluggy\_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\pluggy\_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\logging.py:843: in pytest_runtest_setup
+    yield
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\capture.py:895: in pytest_runtest_setup
+    return (yield)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\runner.py:164: in pytest_runtest_setup
+    item.session._setupstate.setup(item)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\runner.py:514: in setup
+    col.setup()
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\python.py:1674: in setup
+    self._request._fillfixtures()
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\fixtures.py:720: in _fillfixtures
+    item.funcargs[argname] = self.getfixturevalue(argname)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\fixtures.py:549: in getfixturevalue
+    fixturedef = self._get_active_fixturedef(argname)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\fixtures.py:640: in _get_active_fixturedef
+    fixturedef.execute(request=subrequest)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\fixtures.py:1128: in execute
+    result = ihook.pytest_fixture_setup(fixturedef=self, request=request)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\pluggy\_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\pluggy\_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\setuponly.py:36: in pytest_fixture_setup
+    return (yield)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\fixtures.py:1196: in pytest_fixture_setup
+    result = call_fixture_func(fixturefunc, request, kwargs)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\fixtures.py:923: in call_fixture_func
+    fixture_result = next(generator)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\tmpdir.py:264: in tmp_path
+    path = _mk_tmp(request, tmp_path_factory)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\tmpdir.py:251: in _mk_tmp
+    return factory.mktemp(name, numbered=True)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\tmpdir.py:130: in mktemp
+    basename = self._ensure_relative_to_basetemp(basename)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\tmpdir.py:111: in _ensure_relative_to_basetemp
+    if (self.getbasetemp() / basename).resolve().parent != self.getbasetemp():
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\tmpdir.py:186: in getbasetemp
+    basetemp = make_numbered_dir_with_cleanup(
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\pathlib.py:407: in make_numbered_dir_with_cleanup
+    raise e
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\pathlib.py:388: in make_numbered_dir_with_cleanup
+    p = make_numbered_dir(root, prefix, mode)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\pathlib.py:229: in make_numbered_dir
+    max_existing = max(map(parse_num, find_suffixes(root, prefix)), default=-1)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\pathlib.py:188: in extract_suffixes
+    for entry in iter:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+root = WindowsPath('C:/Users/lh594/AppData/Local/Temp/pytest-of-lh594')
+prefix = 'pytest-'
+
+    def find_prefixed(root: Path, prefix: str) -> Iterator[os.DirEntry[str]]:
+        """Find all elements in root that begin with the prefix, case-insensitive."""
+        l_prefix = prefix.lower()
+>       for x in os.scandir(root):
+E       PermissionError: [WinError 5] 拒绝访问。: 'C:\\Users\\lh594\\AppData\\Local\\Temp\\pytest-of-lh594'
+
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\pathlib.py:176: PermissionError
+_ ERROR at setup of test_illegal_access_or_work_accounting_rejected[teacher_head_fit_count-433] _
+
+cls = <class '_pytest.runner.CallInfo'>
+func = <function call_and_report.<locals>.<lambda> at 0x00000282553FAF80>
+when = 'setup'
+reraise = (<class '_pytest.outcomes.Exit'>, <class 'KeyboardInterrupt'>)
+
+    @classmethod
+    def from_call(
+        cls,
+        func: Callable[[], TResult],
+        when: Literal["collect", "setup", "call", "teardown"],
+        reraise: type[BaseException] | tuple[type[BaseException], ...] | None = None,
+    ) -> CallInfo[TResult]:
+        """Call func, wrapping the result in a CallInfo.
+    
+        :param func:
+            The function to call. Called without arguments.
+        :type func: Callable[[], _pytest.runner.TResult]
+        :param when:
+            The phase in which the function is called.
+        :param reraise:
+            Exception or exceptions that shall propagate if raised by the
+            function, instead of being wrapped in the CallInfo.
+        """
+        excinfo = None
+        instant = timing.Instant()
+        try:
+>           result: TResult | None = func()
+
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\runner.py:344: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\runner.py:246: in <lambda>
+    lambda: runtest_hook(item=item, **kwds), when=when, reraise=reraise
+..\..\..\local_envs\ssr-gpu\lib\site-packages\pluggy\_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\pluggy\_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\logging.py:843: in pytest_runtest_setup
+    yield
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\capture.py:895: in pytest_runtest_setup
+    return (yield)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\runner.py:164: in pytest_runtest_setup
+    item.session._setupstate.setup(item)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\runner.py:514: in setup
+    col.setup()
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\python.py:1674: in setup
+    self._request._fillfixtures()
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\fixtures.py:720: in _fillfixtures
+    item.funcargs[argname] = self.getfixturevalue(argname)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\fixtures.py:549: in getfixturevalue
+    fixturedef = self._get_active_fixturedef(argname)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\fixtures.py:640: in _get_active_fixturedef
+    fixturedef.execute(request=subrequest)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\fixtures.py:1128: in execute
+    result = ihook.pytest_fixture_setup(fixturedef=self, request=request)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\pluggy\_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\pluggy\_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\setuponly.py:36: in pytest_fixture_setup
+    return (yield)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\fixtures.py:1196: in pytest_fixture_setup
+    result = call_fixture_func(fixturefunc, request, kwargs)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\fixtures.py:923: in call_fixture_func
+    fixture_result = next(generator)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\tmpdir.py:264: in tmp_path
+    path = _mk_tmp(request, tmp_path_factory)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\tmpdir.py:251: in _mk_tmp
+    return factory.mktemp(name, numbered=True)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\tmpdir.py:130: in mktemp
+    basename = self._ensure_relative_to_basetemp(basename)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\tmpdir.py:111: in _ensure_relative_to_basetemp
+    if (self.getbasetemp() / basename).resolve().parent != self.getbasetemp():
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\tmpdir.py:186: in getbasetemp
+    basetemp = make_numbered_dir_with_cleanup(
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\pathlib.py:407: in make_numbered_dir_with_cleanup
+    raise e
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\pathlib.py:388: in make_numbered_dir_with_cleanup
+    p = make_numbered_dir(root, prefix, mode)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\pathlib.py:229: in make_numbered_dir
+    max_existing = max(map(parse_num, find_suffixes(root, prefix)), default=-1)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\pathlib.py:188: in extract_suffixes
+    for entry in iter:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+root = WindowsPath('C:/Users/lh594/AppData/Local/Temp/pytest-of-lh594')
+prefix = 'pytest-'
+
+    def find_prefixed(root: Path, prefix: str) -> Iterator[os.DirEntry[str]]:
+        """Find all elements in root that begin with the prefix, case-insensitive."""
+        l_prefix = prefix.lower()
+>       for x in os.scandir(root):
+E       PermissionError: [WinError 5] 拒绝访问。: 'C:\\Users\\lh594\\AppData\\Local\\Temp\\pytest-of-lh594'
+
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\pathlib.py:176: PermissionError
+_ ERROR at setup of test_illegal_access_or_work_accounting_rejected[head_fit_count-999] _
+
+cls = <class '_pytest.runner.CallInfo'>
+func = <function call_and_report.<locals>.<lambda> at 0x00000282546CF400>
+when = 'setup'
+reraise = (<class '_pytest.outcomes.Exit'>, <class 'KeyboardInterrupt'>)
+
+    @classmethod
+    def from_call(
+        cls,
+        func: Callable[[], TResult],
+        when: Literal["collect", "setup", "call", "teardown"],
+        reraise: type[BaseException] | tuple[type[BaseException], ...] | None = None,
+    ) -> CallInfo[TResult]:
+        """Call func, wrapping the result in a CallInfo.
+    
+        :param func:
+            The function to call. Called without arguments.
+        :type func: Callable[[], _pytest.runner.TResult]
+        :param when:
+            The phase in which the function is called.
+        :param reraise:
+            Exception or exceptions that shall propagate if raised by the
+            function, instead of being wrapped in the CallInfo.
+        """
+        excinfo = None
+        instant = timing.Instant()
+        try:
+>           result: TResult | None = func()
+
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\runner.py:344: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\runner.py:246: in <lambda>
+    lambda: runtest_hook(item=item, **kwds), when=when, reraise=reraise
+..\..\..\local_envs\ssr-gpu\lib\site-packages\pluggy\_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\pluggy\_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\logging.py:843: in pytest_runtest_setup
+    yield
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\capture.py:895: in pytest_runtest_setup
+    return (yield)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\runner.py:164: in pytest_runtest_setup
+    item.session._setupstate.setup(item)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\runner.py:514: in setup
+    col.setup()
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\python.py:1674: in setup
+    self._request._fillfixtures()
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\fixtures.py:720: in _fillfixtures
+    item.funcargs[argname] = self.getfixturevalue(argname)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\fixtures.py:549: in getfixturevalue
+    fixturedef = self._get_active_fixturedef(argname)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\fixtures.py:640: in _get_active_fixturedef
+    fixturedef.execute(request=subrequest)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\fixtures.py:1128: in execute
+    result = ihook.pytest_fixture_setup(fixturedef=self, request=request)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\pluggy\_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\pluggy\_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\setuponly.py:36: in pytest_fixture_setup
+    return (yield)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\fixtures.py:1196: in pytest_fixture_setup
+    result = call_fixture_func(fixturefunc, request, kwargs)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\fixtures.py:923: in call_fixture_func
+    fixture_result = next(generator)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\tmpdir.py:264: in tmp_path
+    path = _mk_tmp(request, tmp_path_factory)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\tmpdir.py:251: in _mk_tmp
+    return factory.mktemp(name, numbered=True)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\tmpdir.py:130: in mktemp
+    basename = self._ensure_relative_to_basetemp(basename)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\tmpdir.py:111: in _ensure_relative_to_basetemp
+    if (self.getbasetemp() / basename).resolve().parent != self.getbasetemp():
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\tmpdir.py:186: in getbasetemp
+    basetemp = make_numbered_dir_with_cleanup(
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\pathlib.py:407: in make_numbered_dir_with_cleanup
+    raise e
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\pathlib.py:388: in make_numbered_dir_with_cleanup
+    p = make_numbered_dir(root, prefix, mode)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\pathlib.py:229: in make_numbered_dir
+    max_existing = max(map(parse_num, find_suffixes(root, prefix)), default=-1)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\pathlib.py:188: in extract_suffixes
+    for entry in iter:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+root = WindowsPath('C:/Users/lh594/AppData/Local/Temp/pytest-of-lh594')
+prefix = 'pytest-'
+
+    def find_prefixed(root: Path, prefix: str) -> Iterator[os.DirEntry[str]]:
+        """Find all elements in root that begin with the prefix, case-insensitive."""
+        l_prefix = prefix.lower()
+>       for x in os.scandir(root):
+E       PermissionError: [WinError 5] 拒绝访问。: 'C:\\Users\\lh594\\AppData\\Local\\Temp\\pytest-of-lh594'
+
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\pathlib.py:176: PermissionError
+_ ERROR at setup of test_illegal_access_or_work_accounting_rejected[trial_count-True] _
+
+cls = <class '_pytest.runner.CallInfo'>
+func = <function call_and_report.<locals>.<lambda> at 0x00000282553FB640>
+when = 'setup'
+reraise = (<class '_pytest.outcomes.Exit'>, <class 'KeyboardInterrupt'>)
+
+    @classmethod
+    def from_call(
+        cls,
+        func: Callable[[], TResult],
+        when: Literal["collect", "setup", "call", "teardown"],
+        reraise: type[BaseException] | tuple[type[BaseException], ...] | None = None,
+    ) -> CallInfo[TResult]:
+        """Call func, wrapping the result in a CallInfo.
+    
+        :param func:
+            The function to call. Called without arguments.
+        :type func: Callable[[], _pytest.runner.TResult]
+        :param when:
+            The phase in which the function is called.
+        :param reraise:
+            Exception or exceptions that shall propagate if raised by the
+            function, instead of being wrapped in the CallInfo.
+        """
+        excinfo = None
+        instant = timing.Instant()
+        try:
+>           result: TResult | None = func()
+
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\runner.py:344: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\runner.py:246: in <lambda>
+    lambda: runtest_hook(item=item, **kwds), when=when, reraise=reraise
+..\..\..\local_envs\ssr-gpu\lib\site-packages\pluggy\_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\pluggy\_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\logging.py:843: in pytest_runtest_setup
+    yield
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\capture.py:895: in pytest_runtest_setup
+    return (yield)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\runner.py:164: in pytest_runtest_setup
+    item.session._setupstate.setup(item)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\runner.py:514: in setup
+    col.setup()
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\python.py:1674: in setup
+    self._request._fillfixtures()
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\fixtures.py:720: in _fillfixtures
+    item.funcargs[argname] = self.getfixturevalue(argname)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\fixtures.py:549: in getfixturevalue
+    fixturedef = self._get_active_fixturedef(argname)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\fixtures.py:640: in _get_active_fixturedef
+    fixturedef.execute(request=subrequest)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\fixtures.py:1128: in execute
+    result = ihook.pytest_fixture_setup(fixturedef=self, request=request)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\pluggy\_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\pluggy\_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\setuponly.py:36: in pytest_fixture_setup
+    return (yield)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\fixtures.py:1196: in pytest_fixture_setup
+    result = call_fixture_func(fixturefunc, request, kwargs)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\fixtures.py:923: in call_fixture_func
+    fixture_result = next(generator)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\tmpdir.py:264: in tmp_path
+    path = _mk_tmp(request, tmp_path_factory)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\tmpdir.py:251: in _mk_tmp
+    return factory.mktemp(name, numbered=True)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\tmpdir.py:130: in mktemp
+    basename = self._ensure_relative_to_basetemp(basename)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\tmpdir.py:111: in _ensure_relative_to_basetemp
+    if (self.getbasetemp() / basename).resolve().parent != self.getbasetemp():
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\tmpdir.py:186: in getbasetemp
+    basetemp = make_numbered_dir_with_cleanup(
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\pathlib.py:407: in make_numbered_dir_with_cleanup
+    raise e
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\pathlib.py:388: in make_numbered_dir_with_cleanup
+    p = make_numbered_dir(root, prefix, mode)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\pathlib.py:229: in make_numbered_dir
+    max_existing = max(map(parse_num, find_suffixes(root, prefix)), default=-1)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\pathlib.py:188: in extract_suffixes
+    for entry in iter:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+root = WindowsPath('C:/Users/lh594/AppData/Local/Temp/pytest-of-lh594')
+prefix = 'pytest-'
+
+    def find_prefixed(root: Path, prefix: str) -> Iterator[os.DirEntry[str]]:
+        """Find all elements in root that begin with the prefix, case-insensitive."""
+        l_prefix = prefix.lower()
+>       for x in os.scandir(root):
+E       PermissionError: [WinError 5] 拒绝访问。: 'C:\\Users\\lh594\\AppData\\Local\\Temp\\pytest-of-lh594'
+
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\pathlib.py:176: PermissionError
+_ ERROR at setup of test_illegal_access_or_work_accounting_rejected[derivative_triangular_solve_count-11233] _
+
+cls = <class '_pytest.runner.CallInfo'>
+func = <function call_and_report.<locals>.<lambda> at 0x00000282553FB130>
+when = 'setup'
+reraise = (<class '_pytest.outcomes.Exit'>, <class 'KeyboardInterrupt'>)
+
+    @classmethod
+    def from_call(
+        cls,
+        func: Callable[[], TResult],
+        when: Literal["collect", "setup", "call", "teardown"],
+        reraise: type[BaseException] | tuple[type[BaseException], ...] | None = None,
+    ) -> CallInfo[TResult]:
+        """Call func, wrapping the result in a CallInfo.
+    
+        :param func:
+            The function to call. Called without arguments.
+        :type func: Callable[[], _pytest.runner.TResult]
+        :param when:
+            The phase in which the function is called.
+        :param reraise:
+            Exception or exceptions that shall propagate if raised by the
+            function, instead of being wrapped in the CallInfo.
+        """
+        excinfo = None
+        instant = timing.Instant()
+        try:
+>           result: TResult | None = func()
+
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\runner.py:344: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\runner.py:246: in <lambda>
+    lambda: runtest_hook(item=item, **kwds), when=when, reraise=reraise
+..\..\..\local_envs\ssr-gpu\lib\site-packages\pluggy\_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\pluggy\_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\logging.py:843: in pytest_runtest_setup
+    yield
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\capture.py:895: in pytest_runtest_setup
+    return (yield)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\runner.py:164: in pytest_runtest_setup
+    item.session._setupstate.setup(item)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\runner.py:514: in setup
+    col.setup()
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\python.py:1674: in setup
+    self._request._fillfixtures()
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\fixtures.py:720: in _fillfixtures
+    item.funcargs[argname] = self.getfixturevalue(argname)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\fixtures.py:549: in getfixturevalue
+    fixturedef = self._get_active_fixturedef(argname)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\fixtures.py:640: in _get_active_fixturedef
+    fixturedef.execute(request=subrequest)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\fixtures.py:1128: in execute
+    result = ihook.pytest_fixture_setup(fixturedef=self, request=request)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\pluggy\_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\pluggy\_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\setuponly.py:36: in pytest_fixture_setup
+    return (yield)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\fixtures.py:1196: in pytest_fixture_setup
+    result = call_fixture_func(fixturefunc, request, kwargs)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\fixtures.py:923: in call_fixture_func
+    fixture_result = next(generator)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\tmpdir.py:264: in tmp_path
+    path = _mk_tmp(request, tmp_path_factory)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\tmpdir.py:251: in _mk_tmp
+    return factory.mktemp(name, numbered=True)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\tmpdir.py:130: in mktemp
+    basename = self._ensure_relative_to_basetemp(basename)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\tmpdir.py:111: in _ensure_relative_to_basetemp
+    if (self.getbasetemp() / basename).resolve().parent != self.getbasetemp():
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\tmpdir.py:186: in getbasetemp
+    basetemp = make_numbered_dir_with_cleanup(
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\pathlib.py:407: in make_numbered_dir_with_cleanup
+    raise e
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\pathlib.py:388: in make_numbered_dir_with_cleanup
+    p = make_numbered_dir(root, prefix, mode)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\pathlib.py:229: in make_numbered_dir
+    max_existing = max(map(parse_num, find_suffixes(root, prefix)), default=-1)
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\pathlib.py:188: in extract_suffixes
+    for entry in iter:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+root = WindowsPath('C:/Users/lh594/AppData/Local/Temp/pytest-of-lh594')
+prefix = 'pytest-'
+
+    def find_prefixed(root: Path, prefix: str) -> Iterator[os.DirEntry[str]]:
+        """Find all elements in root that begin with the prefix, case-insensitive."""
+        l_prefix = prefix.lower()
+>       for x in os.scandir(root):
+E       PermissionError: [WinError 5] 拒绝访问。: 'C:\\Users\\lh594\\AppData\\Local\\Temp\\pytest-of-lh594'
+
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\pathlib.py:176: PermissionError
+================================== FAILURES ===================================
+_ ProbeTests.test_real_evaluator_writes_full_compact_text_csv_and_npz_with_numpy_ids _
+
+self = <test_evaluate_d92_fcr8_probe.ProbeTests testMethod=test_real_evaluator_writes_full_compact_text_csv_and_npz_with_numpy_ids>
+
+    def test_real_evaluator_writes_full_compact_text_csv_and_npz_with_numpy_ids(self):
+        inputs = synthetic(six_old=True); arrays = {key: inputs[key] for key in probe.BRANCHES}; k = 3
+        split = dict(split_id='stream-parent', receiver='synthetic-rx', scenario='practical_high', k=k,
+            support_seed=0, registered_classes=inputs['classes'], support_ids=inputs['support_ids'], support_labels=inputs['support_labels'])
+        producer = dict(feature_array_bytes=sum(v.nbytes for v in arrays.values()), feature_file_bytes=0)
+        config = dict(algorithm=probe.PROBE_CONFIG, producer_matrix={}, selection={})
+        original = probe.fit_function_coordinate_local_ridge
+        class ScalarAudit:
+            def __init__(self, state): self.state = state
+            def __getattr__(self, key): return getattr(self.state, key)
+            def audit_dict(self):
+                result = self.state.audit_dict()
+                result['identity_forward'] = np.bool_(result['identity_forward'])
+                result['trainable_parameter_count'] = np.int64(result['trainable_parameter_count'])
+                for trial in result['trials']: trial['accepted'] = np.bool_(trial['accepted'])
+                return result
+        with tempfile.TemporaryDirectory() as directory:
+            out = Path(directory)/'probe'
+            with patch.object(probe, 'read', return_value=dict(channel=probe.CHANNEL, scenarios=probe.SCENARIOS)), \
+                 patch.object(probe, 'validate_selection'), \
+                 patch.object(probe, 'load_support', return_value=(arrays, [], inputs['old_classes'], producer, {}, {})), \
+                 patch.object(probe, 'selected_tasks', return_value=[(split, np.arange(len(inputs['support_labels'])), inputs['support_labels'])]), \
+                 patch.object(probe, 'fit_function_coordinate_local_ridge', side_effect=lambda *a, **kw: ScalarAudit(original(*a, **kw))), \
+                 contextlib.redirect_stdout(io.StringIO()):
+>               marker = probe.evaluate(support_features='synthetic-cache', capsule='synthetic-capsule', output=out,
+                    config=config, expected_capsule_id='synthetic-capsule', expected_checkpoint_sha256='a'*64, expected_model_seed=0)
+
+tests\test_evaluate_d92_fcr8_probe.py:98: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tools\evaluate_d92_fcr8_probe.py:521: in evaluate
+    audit = probe_fcr8(**{key: value[positions] for key, value in arrays.items()},
+tools\evaluate_d92_fcr8_probe.py:440: in probe_fcr8
+    for fold in range(folds): result['folds'].append(path(assignments != fold, 'support_oof', fold))
+tools\evaluate_d92_fcr8_probe.py:384: in path
+    prepared[preparation_name] = prepare_function_coordinate_training(**{key: value[base['train']] for key, value in raw.items()},
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def prepare_function_coordinate_training(*,z_id,fft,t_emb,f_emb,pa_local,support_labels,support_ids,
+            classes,old_classes,inherited=None,context=None,log_callback=None,state_callback=None):
+        start=time.perf_counter();rec=_Recorder(state_callback)
+        if inherited is not None and not isinstance(inherited,FunctionCoordinateState):
+>           raise ValueError('FCR C requires a current FCR B state')
+E           ValueError: FCR C requires a current FCR B state
+
+code\cvsrffi\d92_function_coordinate_residual8_local_ridge.py:313: ValueError
+============================== warnings summary ===============================
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\cacheprovider.py:475
+  E:\type10-7\local_envs\ssr-gpu\lib\site-packages\_pytest\cacheprovider.py:475: PytestCacheWarning: could not create cache path E:\type10-7\code\snapshots\d92_support_upgrade_20260928_wt\.pytest_cache\v\cache\nodeids: [WinError 5] 拒绝访问。: 'E:\\type10-7\\code\\snapshots\\d92_support_upgrade_20260928_wt\\.pytest_cache\\v\\cache'
+    config.cache.set("cache/nodeids", sorted(self.cached_nodeids))
+
+..\..\..\local_envs\ssr-gpu\lib\site-packages\_pytest\cacheprovider.py:429
+  E:\type10-7\local_envs\ssr-gpu\lib\site-packages\_pytest\cacheprovider.py:429: PytestCacheWarning: could not create cache path E:\type10-7\code\snapshots\d92_support_upgrade_20260928_wt\.pytest_cache\v\cache\lastfailed: [WinError 5] 拒绝访问。: 'E:\\type10-7\\code\\snapshots\\d92_support_upgrade_20260928_wt\\.pytest_cache\\v\\cache'
+    config.cache.set("cache/lastfailed", self.lastfailed)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED tests/test_evaluate_d92_fcr8_probe.py::ProbeTests::test_real_evaluator_writes_full_compact_text_csv_and_npz_with_numpy_ids
+ERROR tests/test_d92_fcr8_orchestration.py::test_zero_update_stage_still_counts_two_adjoint_channels_and_teacher
+ERROR tests/test_d92_fcr8_orchestration.py::test_illegal_access_or_work_accounting_rejected[query_rows_used-1]
+ERROR tests/test_d92_fcr8_orchestration.py::test_illegal_access_or_work_accounting_rejected[truth_read-True]
+ERROR tests/test_d92_fcr8_orchestration.py::test_illegal_access_or_work_accounting_rejected[optimizer_steps-937]
+ERROR tests/test_d92_fcr8_orchestration.py::test_illegal_access_or_work_accounting_rejected[inner_objective_evaluation_count-3043]
+ERROR tests/test_d92_fcr8_orchestration.py::test_illegal_access_or_work_accounting_rejected[teacher_head_fit_count-433]
+ERROR tests/test_d92_fcr8_orchestration.py::test_illegal_access_or_work_accounting_rejected[head_fit_count-999]
+ERROR tests/test_d92_fcr8_orchestration.py::test_illegal_access_or_work_accounting_rejected[trial_count-True]
+ERROR tests/test_d92_fcr8_orchestration.py::test_illegal_access_or_work_accounting_rejected[derivative_triangular_solve_count-11233]
+1 failed, 17 passed, 2 warnings, 9 errors in 20.75s
