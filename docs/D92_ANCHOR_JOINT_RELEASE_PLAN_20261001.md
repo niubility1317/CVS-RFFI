@@ -1,6 +1,6 @@
 # AJLR 联合微调与 LocalRidge 的固定 support 试验
 
-状态：`RUNNING`。新 run 为 `20261001-phase2-d92-anchor-joint-support-m2-r01`，group 为 `d92-anchor-joint-support`，release 为 `d92_anchor_joint_support_20261001_r01`。root 是唯一 launch owner。[逐行配置](../configs/d92_anchor_joint_support_20261001.json)维护实际矩阵；已独立核实启动，完整 AJLR 性能结果尚未产生。
+状态：`ARTIFACTS_COMPLETE`。新 run 为 `20261001-phase2-d92-anchor-joint-support-m2-r01`，group 为 `d92-anchor-joint-support`，release 为 `d92_anchor_joint_support_20261001_r01`。root 是唯一 launch owner。[逐行配置](../configs/d92_anchor_joint_support_20261001.json)维护实际矩阵；已独立核实启动，完整 AJLR 性能结果尚未产生。
 
 数学方案见[完整推导](D92_JOINT_AFTER_FCR8_DESIGN_20261001.md)。仅比较原 BranchLocalRidge（R0）与预先声明的顺序 AJLR（R_AJLR_seq），不新增 reset 路径，不扫描 rank、学习率、损失权重或温度。
 
@@ -29,3 +29,5 @@ CPU-only、两 lane、每 lane 两 BLAS 线程，不干预 GPU 任务。实际�
 LOCAL_VERIFIED/VERIFIED：AJLR单一数学结构已实现，54个不同相关检查通过；core22、ops23、entry4、summary5。整数dtype、summary唯一参考pair、实际1800路径和原生bool验收边界均已修复；完整正常复算与10种篡改拒绝通过，独立审查NO_UNRESOLVED_P0_P1。实际B函数prior、固定旧物理参考测度与tau/gamma、残差闭式头、全类CE伴随联合微调；只有R0/R_AJLR_seq。完整四row/160parent预登记与既有source-only缓存身份preflight已核实，新run/release/archive无冲突。未发布、未启动，尚无真实性能；A与B−A=N/A，目标ACTIVE。
 
 RUNNING/VERIFIED：AJLR已单次发布启动，实际runtime a1a003f59e8ed14640a252ada8290a03af3420c5。supervisor341635、workers341647/341648的实际PID/argv/cwd独立匹配；两个rx3 row训练中，两个rx1待排队。CPU两lane/BLAS2、query/source样本不读、encoder/checkpoint不加载。首次readback1790790609；完整160parent尚未结束，尚无真实性能分析；禁止重复publish/重启/热修改。54不同相关检查与唯一P0/P1已完成。A与B−A=N/A，目标ACTIVE。
+
+ARTIFACTS_COMPLETE/VERIFIED：AJLR完整四row/160parent已结束，supervisor及全部workers退出；完整marker/state/实际计数独立读回一致。实际更新2592次、头拟合36564次、latent SVD3240次。未读query/源样本；完成不代表性能改善。下一步单次独立support分析与完整训练诊断，root sole owner，目标ACTIVE。

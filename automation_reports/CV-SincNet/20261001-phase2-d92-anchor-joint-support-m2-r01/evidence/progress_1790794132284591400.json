@@ -1,0 +1,69 @@
+{
+  "observed_unix": 1790794070.4504955,
+  "runtime_commit": "a1a003f59e8ed14640a252ada8290a03af3420c5",
+  "supervisor": {
+    "pid": 341635,
+    "live": true,
+    "argv_matches": true,
+    "cwd_matches": true
+  },
+  "rows": [
+    {
+      "row_id": "rx3-cvs-daot-rc4-s2026092701",
+      "status": "ANCHOR_JOINT_PROBE_COMPLETE",
+      "completed_parents": 40,
+      "declared_parents": 40,
+      "process": {
+        "pid": 341647,
+        "live": false,
+        "argv_matches": false,
+        "cwd_matches": false
+      },
+      "complete_marker_exists": true
+    },
+    {
+      "row_id": "rx3-cvs-daot-rc4-s2026092702",
+      "status": "ANCHOR_JOINT_PROBE_COMPLETE",
+      "completed_parents": 40,
+      "declared_parents": 40,
+      "process": {
+        "pid": 341648,
+        "live": false,
+        "argv_matches": false,
+        "cwd_matches": false
+      },
+      "complete_marker_exists": true
+    },
+    {
+      "row_id": "rx1-cvs-daot-rc4-s2026092701",
+      "status": "TRAINING_ON_SUPPORT",
+      "completed_parents": 31,
+      "declared_parents": 40,
+      "process": {
+        "pid": 361624,
+        "live": true,
+        "argv_matches": true,
+        "cwd_matches": true
+      },
+      "complete_marker_exists": false
+    },
+    {
+      "row_id": "rx1-cvs-daot-rc4-s2026092702",
+      "status": "TRAINING_ON_SUPPORT",
+      "completed_parents": 27,
+      "declared_parents": 40,
+      "process": {
+        "pid": 362622,
+        "live": true,
+        "argv_matches": true,
+        "cwd_matches": true
+      },
+      "complete_marker_exists": false
+    }
+  ],
+  "completed_parents": 138,
+  "declared_parents": 160,
+  "complete": null,
+  "query_or_source_data_read": false,
+  "partial_metrics_read_or_printed": false
+}

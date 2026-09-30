@@ -1,3 +1,9 @@
+## 最新状态：AJLR完整产物已核实（2026-10-01）
+
+ARTIFACTS_COMPLETE/VERIFIED：AJLR完整四row/160parent已结束，supervisor及全部workers退出；完整marker/state/实际计数独立读回一致。实际更新2592次、头拟合36564次、latent SVD3240次。未读query/源样本；完成不代表性能改善。下一步单次独立support分析与完整训练诊断，root sole owner，目标ACTIVE。
+
+证据 readback_1790795571233964800.json；唯一analysis release d92_anchor_joint_analysis_20261001_r01 尚未启动，不重复publish或训练。
+
 ## 最新状态：AJLR 117/160 配置，完整报告和诊断入口已验证（2026-10-01）
 
 RUNNING/VERIFIED：独立进度证据 `progress_1790793657767532900.json` 记录 117/160 parent。rx3 两 row 各 40 已完成且原 workers 退出；rx1 两 row 分别完成 19/18，workers361624/362622 与 supervisor341635 存活且 argv/cwd 匹配。完整 run 尚未完成，没有读取或打印 partial 性能。实际 runtime 仍为 a1a003f59e8ed14640a252ada8290a03af3420c5；不重复发布、分析、停止或修改健康进程。

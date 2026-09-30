@@ -1,0 +1,129 @@
+{
+  "observed_unix": 1790795498.0994709,
+  "runtime_commit": "a1a003f59e8ed14640a252ada8290a03af3420c5",
+  "supervisor": {
+    "pid": 341635,
+    "live": false,
+    "argv_matches": false,
+    "cwd_matches": false
+  },
+  "rows": [
+    {
+      "row_id": "rx3-cvs-daot-rc4-s2026092701",
+      "status": "ANCHOR_JOINT_PROBE_COMPLETE",
+      "completed_parents": 40,
+      "declared_parents": 40,
+      "process": {
+        "pid": 341647,
+        "live": false,
+        "argv_matches": false,
+        "cwd_matches": false
+      },
+      "complete_marker_exists": true
+    },
+    {
+      "row_id": "rx3-cvs-daot-rc4-s2026092702",
+      "status": "ANCHOR_JOINT_PROBE_COMPLETE",
+      "completed_parents": 40,
+      "declared_parents": 40,
+      "process": {
+        "pid": 341648,
+        "live": false,
+        "argv_matches": false,
+        "cwd_matches": false
+      },
+      "complete_marker_exists": true
+    },
+    {
+      "row_id": "rx1-cvs-daot-rc4-s2026092701",
+      "status": "ANCHOR_JOINT_PROBE_COMPLETE",
+      "completed_parents": 40,
+      "declared_parents": 40,
+      "process": {
+        "pid": 361624,
+        "live": false,
+        "argv_matches": false,
+        "cwd_matches": false
+      },
+      "complete_marker_exists": true
+    },
+    {
+      "row_id": "rx1-cvs-daot-rc4-s2026092702",
+      "status": "ANCHOR_JOINT_PROBE_COMPLETE",
+      "completed_parents": 40,
+      "declared_parents": 40,
+      "process": {
+        "pid": 362622,
+        "live": false,
+        "argv_matches": false,
+        "cwd_matches": false
+      },
+      "complete_marker_exists": true
+    }
+  ],
+  "completed_parents": 160,
+  "declared_parents": 160,
+  "complete": {
+    "status": "ANCHOR_JOINT_PROBE_COMPLETE",
+    "commit": "a1a003f59e8ed14640a252ada8290a03af3420c5",
+    "model_rows": 4,
+    "completed_rows": 4,
+    "episodes": 160,
+    "k1_episodes": 40,
+    "oof_episodes": 120,
+    "proxy_anchor_count": 1400,
+    "sequence_paths": 1800,
+    "baseline_head_fit_count": 3240,
+    "ajlr_preparation_count": 3240,
+    "ajlr_stage_count": 3240,
+    "diagnostic_fit_count": 0,
+    "trained_ajlr_stage_count": 648,
+    "optimizer_steps": 2592,
+    "trial_count": 9092,
+    "trial_attempt_count": 9092,
+    "inner_objective_evaluation_count": 9740,
+    "inner_head_fit_count": 29220,
+    "inner_factorization_count": 29220,
+    "final_head_fit_count": 3240,
+    "final_factorization_count": 3240,
+    "prior_head_fit_count": 864,
+    "prior_factorization_count": 864,
+    "baseline_factorization_count": 3240,
+    "head_fit_count": 36564,
+    "factorization_count": 36564,
+    "baseline_head_triangular_solve_count": 6480,
+    "baseline_effective_df_triangular_solve_count": 6480,
+    "baseline_triangular_solve_count": 12960,
+    "ce_adjoint_solve_count": 7776,
+    "derivative_triangular_solve_count": 15552,
+    "latent_svd_count": 3240,
+    "dictionary_physical_evaluation_count": 77168,
+    "prepared_distance_evaluation_count": 15840,
+    "original_distance_pair_count": 16199552,
+    "prior_triangular_solve_count": 1728,
+    "prior_score_evaluation_count": 3168,
+    "prior_score_physical_count": 154208,
+    "reference_distance_evaluation_count": 352384,
+    "reference_distance_pair_count": 96132672,
+    "raw_distance_evaluation_count": 349504,
+    "raw_distance_pair_count": 182274573,
+    "kernel_evaluation_count": 217616,
+    "kernel_pair_count": 267039706,
+    "optimizer_iterations": 2592,
+    "head_triangular_solve_count": 64920,
+    "backward_evaluation_count": 2592,
+    "accepted_trial_count": 2592,
+    "rejected_trial_count": 6500,
+    "ajlr_forward_evaluation_count": 32460,
+    "adapter_physical_evaluation_count": 2734963,
+    "final_score_evaluation_count": 6336,
+    "final_score_physical_count": 764400,
+    "query_access": false,
+    "source_sample_access": false,
+    "checkpoint_loaded": false,
+    "gpu_use": false,
+    "finished": 1790795250.8050184
+  },
+  "query_or_source_data_read": false,
+  "partial_metrics_read_or_printed": false
+}
