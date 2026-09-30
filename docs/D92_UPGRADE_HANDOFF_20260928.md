@@ -1,3 +1,9 @@
+## 最新状态：通道四row完成，独立summary与全日志分析正在执行（2026-09-30）
+
+VERIFIED：四row/160parent全部JOINT_CHANNEL_PROBE_COMPLETE，supervisor37141与所有worker均终止。实际936训练阶段、7488更新、8424内层目标、29376头拟合/分解、44928反向三角求解；无query/source样本/checkpoint加载/GPU。独立汇总与全日志扫描已各唯一启动，性能结论尚未完成，不将训练完成当改进成功。
+
+禁止重复prepare/new/publish/analyze。runtime commit f18198054cd4ad66375ede114e4984349f3b31b4。analysis release d92_joint_channel_analysis_20260930_r01已创建，已启动本机exec session78781；全日志collector本机exec session69503；只继续观察同一handle，未知时独立读analysis_process.json/PID/log和新结果目录，不因timeout重启。临时独立读回工具为 .codex_tmp/read_support_analysis_20260930.py。完整support成绩/训练分析尚未下载核实。目标ACTIVE。
+
 ## 最新观测：rx3两row完成、rx1两row运行，完整成绩仍待测（2026-09-30）
 
 VERIFIED阶段进展：两个rx3 row各40任务完整完成，分别1872更新/7344头拟合/11232反向三角求解；rx1两row仍训练，当前累计113/160 parent。supervisor37141及当前CPU child46059/46486存活且argv/CWD匹配。没有完整四row结果，不读取或发布partial性能；运行代码/config不变。

@@ -3,7 +3,7 @@
 - run_id：`20260930-phase2-d92-joint-channel-support-m2-r01`
 - group_id：`d92-joint-channel-support`；类别：`diagnostic`；阶段：`Phase2-support-only-diagnostic`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ARTIFACTS_COMPLETE（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -37,3 +37,5 @@ VERIFIED：joint-channel run唯一发布，runtime commit f18198054cd4ad66375ede
 VERIFIED阶段进展：两个rx3 row各40任务完整完成，分别1872更新/7344头拟合/11232反向三角求解；rx1两row仍训练，当前累计113/160 parent。supervisor37141及当前CPU child46059/46486存活且argv/CWD匹配。没有完整四row结果，不读取或发布partial性能；运行代码/config不变。
 
 VERIFIED行级状态：rx1两row独立核实仍TRAINING_ON_SUPPORT，CPU child46059/46486存活且argv/CWD一致，分别已完成19/40 parent；rx3两row完整40/40，当前118/160。未完成四row，不执行分析或报告partial性能。
+
+VERIFIED：四row/160parent全部JOINT_CHANNEL_PROBE_COMPLETE，supervisor37141与所有worker均终止。实际936训练阶段、7488更新、8424内层目标、29376头拟合/分解、44928反向三角求解；无query/source样本/checkpoint加载/GPU。独立汇总与全日志扫描已各唯一启动，性能结论尚未完成，不将训练完成当改进成功。
