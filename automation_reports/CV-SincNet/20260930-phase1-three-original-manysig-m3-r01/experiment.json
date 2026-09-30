@@ -1,0 +1,275 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20260930-phase1-three-original-manysig-m3-r01",
+  "group_id": "phase1-three-original-reproduction",
+  "display_name": "ASKNet、WaveMLP、域不变方法原实现单seed源域复现",
+  "description": "保留修复后的作者实现，各一seed，源域训练/验证；不是CVS少标签匹配对比，不自动访问目标测试。",
+  "kind": "comparison",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "asknet",
+    "wavemlp",
+    "difl",
+    "original",
+    "source-only"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "用户2026-09-30明确要求：然后开始跑复现实验；保留原实现优先。",
+  "code": {
+    "commit": "1eb16044350101c8d5eb0a4fda2db8447cf3b8a4",
+    "checkout": "/home/szu2070436088/2510044040/CV-SincNet/releases/20260930-phase1-three-original-manysig-m3-r01",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python; torch 2.1.0+cu121; RTX3090",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20260930-phase1-three-original-manysig-m3-r01"
+  },
+  "data": {
+    "dataset": "WiSig/ManySig",
+    "version": "N607 existing ManySig.pkl; 2359341461 bytes",
+    "representation": "ASK/Wave non_equalized; DIFL equalized",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/data/20260930-phase1-three-original-manysig-m3-r01/physical_roles.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/data/20260930-phase1-three-original-manysig-m3-r01/physical_roles.json",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/data/20260930-phase1-three-original-manysig-m3-r01/physical_roles.json",
+    "source_receivers": [
+      "2-19",
+      "3-19",
+      "7-7",
+      "7-14",
+      "8-8",
+      "14-7",
+      "18-2",
+      "19-2",
+      "20-1"
+    ],
+    "target_receivers": [
+      "1-1",
+      "1-19",
+      "2-1"
+    ],
+    "source_days": [
+      1,
+      2
+    ],
+    "target_days": [],
+    "tx_sets_ref": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/data/20260930-phase1-three-original-manysig-m3-r01/physical_roles.json",
+    "roles": {
+      "L_s": "native fully supervised source train",
+      "U_s": null,
+      "V": "native single source validation"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/data/20260930-phase1-three-original-manysig-m3-r01/physical_roles.json",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "external_original_source_only",
+    "query_use": "none during this source training run",
+    "external_method_exception": "原作者全监督数据训练；披露与CVS少标签及LEO训练差异",
+    "claim_scope": "原实现源域复现；不声明matched或正式LEO性能"
+  },
+  "checkpoint": {
+    "initialization": "scratch",
+    "sources": [
+      {
+        "type": "teacher",
+        "method": "difl",
+        "path": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-three-original-manysig-m3-r01/difl/teacher/pretrain.pth",
+        "origin": "same run scratch source-only phase teacher; produced before student",
+        "training_data": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/data/20260930-phase1-three-original-manysig-m3-r01/physical_roles.json",
+        "selection": "single source validation accuracy"
+      }
+    ],
+    "contract_check_ref": "report.md",
+    "provenance_verdict": "scratch; same-run teacher contract identical to student",
+    "selection_rule": "ASK/Wave source V loss and native early stop; DIFL teacher/student source V accuracy"
+  },
+  "execution": {
+    "host": "N607/szu2070436088",
+    "launch_owner": "root-phase1-three-baselines-20260930",
+    "gpu_policy": "max_two_training_runs_per_gpu",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-three-original-manysig-m3-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/logs/20260930-phase1-three-original-manysig-m3-r01",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\phase1_external_20260930\\20260930-phase1-three-original-manysig-m3-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python /home/szu2070436088/2510044040/CV-SincNet/releases/20260930-phase1-three-original-manysig-m3-r01/launch_original.py start --release /home/szu2070436088/2510044040/CV-SincNet/releases/20260930-phase1-three-original-manysig-m3-r01 --data-root /home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/data/20260930-phase1-three-original-manysig-m3-r01 --run-root /home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-three-original-manysig-m3-r01 --log-root /home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/logs/20260930-phase1-three-original-manysig-m3-r01",
+    "stop_rule": "仅所属run无法执行、错误source/split、输出碰撞或确定性系统异常；低准确率不停止；不干预其他进程"
+  },
+  "expected_artifacts": [
+    "launch_plan.json",
+    "workers.json",
+    "per-method active_process.json",
+    "native checkpoints",
+    "resolved_config.json",
+    "training.log",
+    "steps.jsonl",
+    "epochs.jsonl",
+    "epochs.csv",
+    "source_training_complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source train CE/KD/CORAL/loss",
+      "source validation loss/accuracy",
+      "gradient norm",
+      "lr",
+      "training seconds"
+    ],
+    "dimensions": [
+      "method",
+      "receiver",
+      "epoch",
+      "single seed"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "target prediction/scoring deferred until source review and model freeze"
+  },
+  "rows": [
+    {
+      "row_id": "asknet-s2023",
+      "method": "asknet",
+      "purpose": "original implementation source-only pilot",
+      "config_ref": "configs/asknet.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/logs/20260930-phase1-three-original-manysig-m3-r01/asknet/**/resolved_config.json",
+      "data_overrides": {
+        "days": [
+          1,
+          2
+        ],
+        "packets_per_tx_rx_day": 100,
+        "val_fraction": 0.3
+      },
+      "seeds": {
+        "model": 2023,
+        "split": 2023,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model controls initialization/shuffle; split explicit; DIFL packet selection seed300; ASK/Wave first100 deterministic; no augmentation/support/evaluation in this run",
+      "k": null,
+      "scenario": null,
+      "optimizer": "Adam",
+      "lr": 0.001,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "DIFL teacher100 + student100; ASK/Wave max200 native earlystop",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-three-original-manysig-m3-r01/asknet",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/logs/20260930-phase1-three-original-manysig-m3-r01/asknet.stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u main.py --dataset_name ManySig --exp CRD --train_date 1 2 --test_round 0 --seed 2023 --epochs 200 --batch_size 128 --code_state only_train --data-root /home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/data/20260930-phase1-three-original-manysig-m3-r01/author_layout --gpu 0 --output-root /home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-three-original-manysig-m3-r01/asknet --log-root /home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/logs/20260930-phase1-three-original-manysig-m3-r01/asknet",
+      "expected_artifacts": [
+        "launch_plan.json",
+        "workers.json",
+        "per-method active_process.json",
+        "native checkpoints",
+        "resolved_config.json",
+        "training.log",
+        "steps.jsonl",
+        "epochs.jsonl",
+        "epochs.csv",
+        "source_training_complete.json"
+      ]
+    },
+    {
+      "row_id": "wavemlp-s2023",
+      "method": "wavemlp",
+      "purpose": "original implementation source-only pilot",
+      "config_ref": "configs/wavemlp.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/logs/20260930-phase1-three-original-manysig-m3-r01/wavemlp/**/resolved_config.json",
+      "data_overrides": {
+        "days": [
+          1,
+          2
+        ],
+        "packets_per_tx_rx_day": 100,
+        "val_fraction": 0.3
+      },
+      "seeds": {
+        "model": 2023,
+        "split": 2023,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model controls initialization/shuffle; split explicit; DIFL packet selection seed300; ASK/Wave first100 deterministic; no augmentation/support/evaluation in this run",
+      "k": null,
+      "scenario": null,
+      "optimizer": "Adam",
+      "lr": 0.001,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "DIFL teacher100 + student100; ASK/Wave max200 native earlystop",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-three-original-manysig-m3-r01/wavemlp",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/logs/20260930-phase1-three-original-manysig-m3-r01/wavemlp.stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u main.py --dataset_name ManySig --exp CRD --train_date 1 2 --test_round 0 --seed 2023 --epochs 200 --batch_size 128 --code_state only_train --data-root /home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/data/20260930-phase1-three-original-manysig-m3-r01/author_layout --gpu 1 --output-root /home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-three-original-manysig-m3-r01/wavemlp --log-root /home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/logs/20260930-phase1-three-original-manysig-m3-r01/wavemlp",
+      "expected_artifacts": [
+        "launch_plan.json",
+        "workers.json",
+        "per-method active_process.json",
+        "native checkpoints",
+        "resolved_config.json",
+        "training.log",
+        "steps.jsonl",
+        "epochs.jsonl",
+        "epochs.csv",
+        "source_training_complete.json"
+      ]
+    },
+    {
+      "row_id": "difl-s300",
+      "method": "difl",
+      "purpose": "original implementation source-only pilot",
+      "config_ref": "configs/difl.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/logs/20260930-phase1-three-original-manysig-m3-r01/difl/**/resolved_config.json",
+      "data_overrides": {
+        "days": [
+          1
+        ],
+        "packets_per_tx_rx_day": 200,
+        "val_fraction": 0.2
+      },
+      "seeds": {
+        "model": 300,
+        "split": 32,
+        "data": 300,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model controls initialization/shuffle; split explicit; DIFL packet selection seed300; ASK/Wave first100 deterministic; no augmentation/support/evaluation in this run",
+      "k": null,
+      "scenario": null,
+      "optimizer": "Adam",
+      "lr": 0.001,
+      "epochs": 100,
+      "fl_rounds": null,
+      "budget_ref": "DIFL teacher100 + student100; ASK/Wave max200 native earlystop",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-three-original-manysig-m3-r01/difl",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/logs/20260930-phase1-three-original-manysig-m3-r01/difl.stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u pretrain.py --source-files /home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/data/20260930-phase1-three-original-manysig-m3-r01/difl/rx_2-19.npy /home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/data/20260930-phase1-three-original-manysig-m3-r01/difl/rx_3-19.npy /home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/data/20260930-phase1-three-original-manysig-m3-r01/difl/rx_7-7.npy /home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/data/20260930-phase1-three-original-manysig-m3-r01/difl/rx_7-14.npy /home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/data/20260930-phase1-three-original-manysig-m3-r01/difl/rx_8-8.npy /home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/data/20260930-phase1-three-original-manysig-m3-r01/difl/rx_14-7.npy /home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/data/20260930-phase1-three-original-manysig-m3-r01/difl/rx_18-2.npy /home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/data/20260930-phase1-three-original-manysig-m3-r01/difl/rx_19-2.npy /home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/data/20260930-phase1-three-original-manysig-m3-r01/difl/rx_20-1.npy --label-path /home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/data/20260930-phase1-three-original-manysig-m3-r01/difl/labels.npy --epochs 100 --batch-size 32 --lr 0.001 --seed 300 --split-seed 32 --device cuda:0 --output-dir /home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-three-original-manysig-m3-r01/difl/teacher --log-dir /home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/logs/20260930-phase1-three-original-manysig-m3-r01/difl/teacher && /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u train_DIFEX1.py --source-files /home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/data/20260930-phase1-three-original-manysig-m3-r01/difl/rx_2-19.npy /home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/data/20260930-phase1-three-original-manysig-m3-r01/difl/rx_3-19.npy /home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/data/20260930-phase1-three-original-manysig-m3-r01/difl/rx_7-7.npy /home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/data/20260930-phase1-three-original-manysig-m3-r01/difl/rx_7-14.npy /home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/data/20260930-phase1-three-original-manysig-m3-r01/difl/rx_8-8.npy /home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/data/20260930-phase1-three-original-manysig-m3-r01/difl/rx_14-7.npy /home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/data/20260930-phase1-three-original-manysig-m3-r01/difl/rx_18-2.npy /home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/data/20260930-phase1-three-original-manysig-m3-r01/difl/rx_19-2.npy /home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/data/20260930-phase1-three-original-manysig-m3-r01/difl/rx_20-1.npy --label-path /home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/data/20260930-phase1-three-original-manysig-m3-r01/difl/labels.npy --epochs 100 --batch-size 32 --lr 0.001 --seed 300 --split-seed 32 --device cuda:0 --output-dir /home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-three-original-manysig-m3-r01/difl/student --log-dir /home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/logs/20260930-phase1-three-original-manysig-m3-r01/difl/student --code-state only_train --teacher-checkpoint /home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-three-original-manysig-m3-r01/difl/teacher/pretrain.pth --lam 0.05 --beta 0.01",
+      "expected_artifacts": [
+        "launch_plan.json",
+        "workers.json",
+        "per-method active_process.json",
+        "native checkpoints",
+        "resolved_config.json",
+        "training.log",
+        "steps.jsonl",
+        "epochs.jsonl",
+        "epochs.csv",
+        "source_training_complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Source/target RX are shared across methods; day/packet count/representation/validation differ per original implementation, no matched aggregate ranking.",
+    "No author checkpoints/resume; no source/target historical scores used to choose hyperparameters.",
+    "Epochs and model defaults retained. DIFL lam=.05 beta=.01; ASK/Wave native earlystop10 and schedulerpatience5.",
+    "Source_training_complete waits for source review, no automatic target access, no formal LEO artifact-complete claim."
+  ],
+  "registered_at": "2026-09-30T10:28:08+00:00"
+}
