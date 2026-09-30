@@ -1,3 +1,9 @@
+## 最新状态：FCR8独立汇总已单次启动（2026-09-30）
+
+VERIFIED：FCR8完整support独立汇总已单次启动，analysis release d92_fcr8_analysis_20260930_r01；PID281156/argv/cwd独立读回匹配，分析commitf07e3c9222120f43df9de46eeac028772c364bda。当前本地handle14400仍有效，summary尚未完成。训练已全部结束，禁止重复publish或重复analysis。collector8项验证已通过，待完整summary后只读采集。
+
+证据 analysis_readback_1790783763713022700.json；resume先核实既有分析进程/产物，再等handle，不重复调用analyze。目标ACTIVE，真实性能未汇总。
+
 ## 最新状态：FCR8完整产物已核实（2026-09-30）
 
 ARTIFACTS_COMPLETE/VERIFIED：FCR8完整四row/160parent结束，原supervisor及worker均退出；完整marker/state/实际计数独立读回一致。实际更新2673次、头拟合30708次、latent SVD648次。未读query/源样本；完成不代表性能改善。下一步单次独立support分析与完整训练机制诊断，root sole owner，目标ACTIVE。

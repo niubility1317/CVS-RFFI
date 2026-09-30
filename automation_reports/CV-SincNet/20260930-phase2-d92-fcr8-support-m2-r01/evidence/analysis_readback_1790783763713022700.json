@@ -1,0 +1,36 @@
+{
+  "release": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_fcr8_analysis_20260930_r01",
+  "process": {
+    "pid": 281156,
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_fcr8_analysis_20260930_r01/tools/summarize_d92_fcr8_probe.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_fcr8_support_20260930_r01/configs/d92_fcr8_support_20260930.json",
+      "--run-root",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20260930-phase2-d92-fcr8-support-m2-r01",
+      "--output",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20260930-phase2-d92-fcr8-support-m2-r01/results/support_summary"
+    ],
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_fcr8_analysis_20260930_r01",
+    "commit": "f07e3c9222120f43df9de46eeac028772c364bda",
+    "live_argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_fcr8_analysis_20260930_r01/tools/summarize_d92_fcr8_probe.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_fcr8_support_20260930_r01/configs/d92_fcr8_support_20260930.json",
+      "--run-root",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20260930-phase2-d92-fcr8-support-m2-r01",
+      "--output",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20260930-phase2-d92-fcr8-support-m2-r01/results/support_summary"
+    ],
+    "live_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_fcr8_analysis_20260930_r01"
+  },
+  "release_exists": true,
+  "log_bytes": 0,
+  "log_tail": [],
+  "summary_exists": false,
+  "analysis_execution": null
+}
