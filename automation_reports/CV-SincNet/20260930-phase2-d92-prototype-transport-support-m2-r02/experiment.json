@@ -1,9 +1,9 @@
 {
   "schema": "experiment_record_v1",
-  "run_id": "20260930-phase2-d92-prototype-transport-support-m2-r01",
+  "run_id": "20260930-phase2-d92-prototype-transport-support-m2-r02",
   "group_id": "d92-prototype-transport-support",
-  "display_name": "LocalRidge与目标原型条件化监督adapter联合适应及新类注册",
-  "description": "LocalRidge为最终分类器；合法support原型条件化切向旋转训练10参数/9自由度，保留半份原interaction，B后C顺序继承，与原方法和C重置配对。",
+  "display_name": "LocalRidge原型联合适配：JSON输出边界技术恢复",
+  "description": "同一160parent/同一冻结方法与超参，仅修复NumPy标量JSON类型边界；保留r01技术失败，全矩阵新r02独立输出。",
   "kind": "diagnostic",
   "stage": "Phase2-support-only-diagnostic",
   "aliases": [],
@@ -12,23 +12,23 @@
     "support-only",
     "prototype-transport",
     "supervised-adapter",
-    "practical-residual"
+    "practical-residual",
+    "technical-json-recovery"
   ],
   "comparison_group_id": "manysig-six-source-rx13468-day123-luv076330-residual-noeq-v1",
   "parent_run_ids": [
-    "20260930-phase2-d92-registration-diagnostic-m2-r01"
+    "20260930-phase2-d92-prototype-transport-support-m2-r01"
   ],
   "authorization": "Existing user joint LocalRidge/target-support SFT authorization; root sole launch owner.",
   "code": {
-    "commit": "3e5d1e57a21a13f0ad0b4b4523fa7b91ef590323",
+    "commit": "cdde6b366762e3bd22f94a7363b224931a98b6e0",
     "checkout": "E:\\type10-7\\code\\snapshots\\d92_support_upgrade_20260928_wt",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
-    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_prototype_transport_support_20260930_r01",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_prototype_transport_support_20260930_r02",
     "base_recipe": "experiments/adv3b02_xuc/configs/rc4_practical_residual_noeq_20260918.json",
     "native_code_base": "b63734157",
     "native_training_commit": "9b1ddd939fcabc74c77c94a62fef8e5aad07c0e9",
-    "commit_note": "Preparation parent; publisher records actual pushed release commit in launch/startup.",
-    "release_commit": "cdde6b366762e3bd22f94a7363b224931a98b6e0"
+    "commit_note": "Preparation parent; publisher records actual pushed release commit in launch/startup."
   },
   "data": {
     "dataset": "Support slices only from the two existing VALIDATED_ONCE capsules",
@@ -146,23 +146,15 @@
     "host": "N607",
     "launch_owner": "codex/root/d92-upgrade-20260928",
     "gpu_policy": "CPU only; two lanes with two BLAS threads each; no encoder/checkpoint loading",
-    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260930-phase2-d92-prototype-transport-support-m2-r01",
-    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260930-phase2-d92-prototype-transport-support-m2-r01",
-    "local_artifact_root": "automation_reports/CV-SincNet/20260930-phase2-d92-prototype-transport-support-m2-r01",
-    "launch_command": "F:/App/miniconda3/python.exe -X utf8 tools/publish_d92_prototype_transport_probe.py --spec configs/d92_prototype_transport_support_20260930.json",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260930-phase2-d92-prototype-transport-support-m2-r02",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260930-phase2-d92-prototype-transport-support-m2-r02",
+    "local_artifact_root": "automation_reports/CV-SincNet/20260930-phase2-d92-prototype-transport-support-m2-r02",
+    "launch_command": "F:/App/miniconda3/python.exe -X utf8 tools/publish_d92_prototype_transport_probe.py --spec configs/d92_prototype_transport_support_recovery_20260930.json",
     "stop_rule": "Technical failure fails only its lane; healthy lanes finish. No automatic retry, no stopping for weak support diagnostics.",
     "cpu_lanes": 2,
     "blas_threads_per_lane": 2,
     "export_device": null,
-    "export_batch_size": null,
-    "pid": 93368,
-    "runtime_command": [
-      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_prototype_transport_support_20260930_r01/tools/run_d92_prototype_transport_probe.py",
-      "--spec",
-      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_prototype_transport_support_20260930_r01/configs/d92_prototype_transport_support_20260930.json",
-      "--commit",
-      "cdde6b366762e3bd22f94a7363b224931a98b6e0"
-    ]
+    "export_batch_size": null
   },
   "expected_artifacts": [
     "startup.json",
@@ -185,10 +177,13 @@
     "B initializes theta0; C inherits actual theta and old prototype columns, refits all-class final head; raw old support and physical IDs bind inheritance.",
     "Four bounded normalized projected-gradient iterations with at most three Armijo trials each; current accepted state only, no grid or outer/query feedback.",
     "A unavailable in this support pilot; B0 is original support classifier, not ground A. No direct promotion or independent-data claim.",
-    "Cost bounds include internal solves; Ten parameters/nine constrained degrees do not establish satellite compute savings."
+    "Cost bounds include internal solves; Ten parameters/nine constrained degrees do not establish satellite compute savings.",
+    "r01 four rows exited at full parent JSON serialization; all failed outputs retained.",
+    "Native bool/float audit and strict JSONL/text/CSV serialization corrected; mathematical algorithm/data/seeds unchanged.",
+    "One r02 full-matrix technical recovery, no performance-guided subset or parameter change."
   ],
   "claim_scope": "SUPPORT_INFORMATION_DIAGNOSTIC_NOT_QUERY_PERFORMANCE",
-  "status": "FAILED",
+  "status": "PLANNED",
   "metrics_plan": {
     "metric_names": [
       "A_NA",
@@ -263,7 +258,7 @@
             2026092715
           ]
         },
-        "evaluation_config": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_prototype_transport_support_20260930_r01/configs/d92_prototype_transport_support_rx3_20260930.json",
+        "evaluation_config": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_prototype_transport_support_20260930_r02/configs/d92_prototype_transport_support_rx3_20260930.json",
         "selection": {
           "receiver_scenes": [
             [
@@ -1264,7 +1259,7 @@
             2026092715
           ]
         },
-        "evaluation_config": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_prototype_transport_support_20260930_r01/configs/d92_prototype_transport_support_rx1_20260930.json",
+        "evaluation_config": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_prototype_transport_support_20260930_r02/configs/d92_prototype_transport_support_rx1_20260930.json",
         "selection": {
           "receiver_scenes": [
             [
@@ -2435,8 +2430,8 @@
       "method": "D92-PrototypeTransportLocalRidge-v1",
       "purpose": "Joint supervised adapter with LocalRidge final classifier; full paired B/C support pilot",
       "gpu": "CPU only",
-      "config_ref": "configs/d92_prototype_transport_support_20260930.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260930-phase2-d92-prototype-transport-support-m2-r01/rx3-cvs-daot-rc4-s2026092701/probe/startup.json",
+      "config_ref": "configs/d92_prototype_transport_support_recovery_20260930.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260930-phase2-d92-prototype-transport-support-m2-r02/rx3-cvs-daot-rc4-s2026092701/probe/startup.json",
       "data_overrides": {
         "capsule": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule",
         "capsule_id": "residual-noeq-76121e6f34363fa612ec25fb",
@@ -2463,9 +2458,9 @@
       "epochs": null,
       "fl_rounds": null,
       "budget_ref": "40 parents;792 baseline heads;max234 trained stages/936 accepted updates/3042 objectives/9126 inner heads/234 extra final heads/5616 adjoint triangular solves",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260930-phase2-d92-prototype-transport-support-m2-r01/rx3-cvs-daot-rc4-s2026092701",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260930-phase2-d92-prototype-transport-support-m2-r01/rx3-cvs-daot-rc4-s2026092701/probe.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/d92_prototype_transport_support_20260930_r01/tools/run_d92_prototype_transport_probe.py --spec /home/szu2070436088/2510044040/CV-SincNet/releases/d92_prototype_transport_support_20260930_r01/configs/d92_prototype_transport_support_20260930.json --commit RELEASE_HEAD",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260930-phase2-d92-prototype-transport-support-m2-r02/rx3-cvs-daot-rc4-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260930-phase2-d92-prototype-transport-support-m2-r02/rx3-cvs-daot-rc4-s2026092701/probe.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/d92_prototype_transport_support_20260930_r02/tools/run_d92_prototype_transport_probe.py --spec /home/szu2070436088/2510044040/CV-SincNet/releases/d92_prototype_transport_support_20260930_r02/configs/d92_prototype_transport_support_recovery_20260930.json --commit RELEASE_HEAD",
       "expected_artifacts": [
         "probe/startup.json",
         "probe/fit_trace.jsonl",
@@ -2493,8 +2488,8 @@
       "method": "D92-PrototypeTransportLocalRidge-v1",
       "purpose": "Joint supervised adapter with LocalRidge final classifier; full paired B/C support pilot",
       "gpu": "CPU only",
-      "config_ref": "configs/d92_prototype_transport_support_20260930.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260930-phase2-d92-prototype-transport-support-m2-r01/rx3-cvs-daot-rc4-s2026092702/probe/startup.json",
+      "config_ref": "configs/d92_prototype_transport_support_recovery_20260930.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260930-phase2-d92-prototype-transport-support-m2-r02/rx3-cvs-daot-rc4-s2026092702/probe/startup.json",
       "data_overrides": {
         "capsule": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule",
         "capsule_id": "residual-noeq-76121e6f34363fa612ec25fb",
@@ -2521,9 +2516,9 @@
       "epochs": null,
       "fl_rounds": null,
       "budget_ref": "40 parents;792 baseline heads;max234 trained stages/936 accepted updates/3042 objectives/9126 inner heads/234 extra final heads/5616 adjoint triangular solves",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260930-phase2-d92-prototype-transport-support-m2-r01/rx3-cvs-daot-rc4-s2026092702",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260930-phase2-d92-prototype-transport-support-m2-r01/rx3-cvs-daot-rc4-s2026092702/probe.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/d92_prototype_transport_support_20260930_r01/tools/run_d92_prototype_transport_probe.py --spec /home/szu2070436088/2510044040/CV-SincNet/releases/d92_prototype_transport_support_20260930_r01/configs/d92_prototype_transport_support_20260930.json --commit RELEASE_HEAD",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260930-phase2-d92-prototype-transport-support-m2-r02/rx3-cvs-daot-rc4-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260930-phase2-d92-prototype-transport-support-m2-r02/rx3-cvs-daot-rc4-s2026092702/probe.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/d92_prototype_transport_support_20260930_r02/tools/run_d92_prototype_transport_probe.py --spec /home/szu2070436088/2510044040/CV-SincNet/releases/d92_prototype_transport_support_20260930_r02/configs/d92_prototype_transport_support_recovery_20260930.json --commit RELEASE_HEAD",
       "expected_artifacts": [
         "probe/startup.json",
         "probe/fit_trace.jsonl",
@@ -2551,8 +2546,8 @@
       "method": "D92-PrototypeTransportLocalRidge-v1",
       "purpose": "Joint supervised adapter with LocalRidge final classifier; full paired B/C support pilot",
       "gpu": "CPU only",
-      "config_ref": "configs/d92_prototype_transport_support_20260930.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260930-phase2-d92-prototype-transport-support-m2-r01/rx1-cvs-daot-rc4-s2026092701/probe/startup.json",
+      "config_ref": "configs/d92_prototype_transport_support_recovery_20260930.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260930-phase2-d92-prototype-transport-support-m2-r02/rx1-cvs-daot-rc4-s2026092701/probe/startup.json",
       "data_overrides": {
         "capsule": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-data-manytx-r01/capsule",
         "capsule_id": "residual-noeq-d0a99fede324159c5a4750fd",
@@ -2579,9 +2574,9 @@
       "epochs": null,
       "fl_rounds": null,
       "budget_ref": "40 parents;792 baseline heads;max234 trained stages/936 accepted updates/3042 objectives/9126 inner heads/234 extra final heads/5616 adjoint triangular solves",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260930-phase2-d92-prototype-transport-support-m2-r01/rx1-cvs-daot-rc4-s2026092701",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260930-phase2-d92-prototype-transport-support-m2-r01/rx1-cvs-daot-rc4-s2026092701/probe.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/d92_prototype_transport_support_20260930_r01/tools/run_d92_prototype_transport_probe.py --spec /home/szu2070436088/2510044040/CV-SincNet/releases/d92_prototype_transport_support_20260930_r01/configs/d92_prototype_transport_support_20260930.json --commit RELEASE_HEAD",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260930-phase2-d92-prototype-transport-support-m2-r02/rx1-cvs-daot-rc4-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260930-phase2-d92-prototype-transport-support-m2-r02/rx1-cvs-daot-rc4-s2026092701/probe.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/d92_prototype_transport_support_20260930_r02/tools/run_d92_prototype_transport_probe.py --spec /home/szu2070436088/2510044040/CV-SincNet/releases/d92_prototype_transport_support_20260930_r02/configs/d92_prototype_transport_support_recovery_20260930.json --commit RELEASE_HEAD",
       "expected_artifacts": [
         "probe/startup.json",
         "probe/fit_trace.jsonl",
@@ -2609,8 +2604,8 @@
       "method": "D92-PrototypeTransportLocalRidge-v1",
       "purpose": "Joint supervised adapter with LocalRidge final classifier; full paired B/C support pilot",
       "gpu": "CPU only",
-      "config_ref": "configs/d92_prototype_transport_support_20260930.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260930-phase2-d92-prototype-transport-support-m2-r01/rx1-cvs-daot-rc4-s2026092702/probe/startup.json",
+      "config_ref": "configs/d92_prototype_transport_support_recovery_20260930.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260930-phase2-d92-prototype-transport-support-m2-r02/rx1-cvs-daot-rc4-s2026092702/probe/startup.json",
       "data_overrides": {
         "capsule": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-data-manytx-r01/capsule",
         "capsule_id": "residual-noeq-d0a99fede324159c5a4750fd",
@@ -2637,9 +2632,9 @@
       "epochs": null,
       "fl_rounds": null,
       "budget_ref": "40 parents;792 baseline heads;max234 trained stages/936 accepted updates/3042 objectives/9126 inner heads/234 extra final heads/5616 adjoint triangular solves",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260930-phase2-d92-prototype-transport-support-m2-r01/rx1-cvs-daot-rc4-s2026092702",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260930-phase2-d92-prototype-transport-support-m2-r01/rx1-cvs-daot-rc4-s2026092702/probe.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/d92_prototype_transport_support_20260930_r01/tools/run_d92_prototype_transport_probe.py --spec /home/szu2070436088/2510044040/CV-SincNet/releases/d92_prototype_transport_support_20260930_r01/configs/d92_prototype_transport_support_20260930.json --commit RELEASE_HEAD",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260930-phase2-d92-prototype-transport-support-m2-r02/rx1-cvs-daot-rc4-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260930-phase2-d92-prototype-transport-support-m2-r02/rx1-cvs-daot-rc4-s2026092702/probe.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/d92_prototype_transport_support_20260930_r02/tools/run_d92_prototype_transport_probe.py --spec /home/szu2070436088/2510044040/CV-SincNet/releases/d92_prototype_transport_support_20260930_r02/configs/d92_prototype_transport_support_recovery_20260930.json --commit RELEASE_HEAD",
       "expected_artifacts": [
         "probe/startup.json",
         "probe/fit_trace.jsonl",
@@ -2663,5 +2658,5 @@
       "initial_step_size": 0.125
     }
   ],
-  "registered_at": "2026-09-30T10:12:43+00:00"
+  "registered_at": "2026-09-30T10:33:16+00:00"
 }

@@ -331,3 +331,29 @@ def test_failed_trial_preserves_attempt_context_and_cost(monkeypatch):
     assert a['current_trial']['step_size']==.125
     assert a['inner_head_fit_count']==4 and a['inner_objective_evaluation_count']==2
     assert np.all(np.asarray(a['u'])==0) and a['optimizer_steps']==0
+
+
+def test_public_audit_tree_strict_json_native_including_trial_flags():
+    # The full-parent writer consumes audit_dict, not the already-normalized
+    # callback. Exercise that actual boundary, including NumPy context scalars.
+    p=pt.prepare_prototype_transport_training(**fixture(k=3,c=3),
+        context={'synthetic_numpy_integer':np.int64(7),'synthetic_numpy_flag':np.bool_(True)})
+    state=pt.fit_prototype_transport_local_ridge(p)
+    def native(value,path):
+        assert not isinstance(value,np.generic),f'NumPy scalar at {path}: {type(value).__name__}'
+        if isinstance(value,dict):
+            for key,item in value.items():native(item,f'{path}.{key}')
+        elif isinstance(value,(tuple,list)):
+            for i,item in enumerate(value):native(item,f'{path}[{i}]')
+    for name,audit in [('preparation',p.audit_dict()),('state',state.audit_dict())]:
+        native(audit,name)
+        decoded=json.loads(json.dumps(audit,allow_nan=False))
+        assert decoded==audit
+    audit=state.audit_dict()
+    assert audit['trials'], 'This regression must exercise an evaluated Armijo trial'
+    for i,trial in enumerate(audit['trials']):
+        assert type(trial['accepted']) is bool,f'trials[{i}].accepted'
+        assert type(trial['armijo_tolerance']) is float,f'trials[{i}].armijo_tolerance'
+    # The producer itself also stores native types, before audit normalization.
+    assert all(type(t['accepted']) is bool for t in state.audit['trials'])
+    assert type(pt._armijo_tolerance(.2,.3,.1)) is float

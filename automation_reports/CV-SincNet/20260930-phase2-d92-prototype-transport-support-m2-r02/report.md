@@ -1,13 +1,13 @@
-# LocalRidge与目标原型条件化监督adapter联合适应及新类注册
+# LocalRidge原型联合适配：JSON输出边界技术恢复
 
-- run_id：`20260930-phase2-d92-prototype-transport-support-m2-r01`
+- run_id：`20260930-phase2-d92-prototype-transport-support-m2-r02`
 - group_id：`d92-prototype-transport-support`；类别：`diagnostic`；阶段：`Phase2-support-only-diagnostic`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：FAILED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
-LocalRidge为最终分类器；合法support原型条件化切向旋转训练10参数/9自由度，保留半份原interaction，B后C顺序继承，与原方法和C重置配对。
+同一160parent/同一冻结方法与超参，仅修复NumPy标量JSON类型边界；保留r01技术失败，全矩阵新r02独立输出。
 
 ## 数据、seed与模型来源
 
@@ -27,9 +27,5 @@ LocalRidge为最终分类器；合法support原型条件化切向旋转训练10�
 ## 交接
 
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
-
-VERIFIED：PrototypeTransport-LocalRidge唯一160parent support pilot已预登记/availability通过、尚未启动。固定Phase1/practical residual，source-free、不读query；10存储参数/9约束自由度、0.5原几何+切向适配、LocalRidge最终头、真实B/C继承。核心27、入口13、编排14相关测试已通过，独立核心实施审查无P0/未关闭P1。真实失败和修复证据保留，不宣称性能或资源改善。root唯一launch owner。
-
-FAILED/VERIFIED：runtime cdde6b366的r01四row因full parent record JSON序列化NumPy bool失败，主管93368及全部worker均退出，无健康任务干预。eachrow保留5个K1数值parent，未完成任一row/160矩阵，无可用性能结论。4个row日志及run.log已下载保留。方法/数据/超参不改，修复类型边界并验证后使用新r02技术恢复，绝不覆盖/重启旧run。
 
 VERIFIED：r01四行因NumPy布尔完整JSON输出失败而退出，产物保留、无健康进程干预。仅修复严格原生类型输出；公开audit1项及入口15项实际通过，累计57个不同相关测试通过。r02同方法/同数据/同seed完整160parent恢复已登记、availability通过，尚未启动；root唯一launch owner。性能未知，BranchLocalRidge仍为主线。

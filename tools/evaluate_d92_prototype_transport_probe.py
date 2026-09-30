@@ -1,5 +1,6 @@
 """Three fixed support-only LocalRidge/prototype transport paths; no query API."""
 import argparse
+from collections.abc import Mapping
 from copy import deepcopy
 import csv
 import json
@@ -27,6 +28,33 @@ from evaluate_d92_branch_support_probe import load_support, read, write, check, 
 from evaluate_d92_branch_local_ridge_probe import stage_csv_from_jsonl
 PROBE_CONFIG = deepcopy(FROZEN_CONFIG)
 STATUS = 'PROTOTYPE_TRANSPORT_PROBE_COMPLETE'
+
+
+def json_native(value, path='$'):
+    """Convert only NumPy/container data types at the public output boundary."""
+    if isinstance(value, np.generic): return json_native(value.item(), path)
+    if isinstance(value, np.ndarray): return json_native(value.tolist(), path)
+    if isinstance(value, Mapping):
+        result = {}
+        for key, item in value.items():
+            native_key = json_native(key, path+'<key>')
+            if not isinstance(native_key, str): raise TypeError(path+': JSON object key must be a string')
+            result[native_key] = json_native(item, path+'.'+native_key)
+        return result
+    if isinstance(value, (list, tuple)):
+        return [json_native(item, path+'['+str(index)+']') for index, item in enumerate(value)]
+    if value is None or type(value) in (str, bool, int): return value
+    if type(value) is float:
+        if not math.isfinite(value): raise ValueError(path+': nonfinite JSON number')
+        return value
+    raise TypeError(path+': unsupported JSON value '+type(value).__module__+'.'+type(value).__name__)
+
+
+_write_native_json = write
+
+
+def write(path, value):
+    return _write_native_json(path, json_native(value))
 
 SCOPE = 'SUPPORT_ONLY_PROTOTYPE_TRANSPORT_OOF_AND_PROXY_NOT_QUERY_EVALUATION'
 PATHS = ('R0', 'R_transport_seq', 'R_transport_reset')
@@ -187,6 +215,7 @@ def pooled_assess(entries, labels, classes, old):
 
 def compact_event(event):
     """Keep measured vector summaries; full parameters/gradients remain in JSONL."""
+    event = json_native(event)
     result = scalars(event)
     for key, value in event.items():
         if isinstance(value, (list, tuple)) and len(value) == 10 and all(isinstance(v, (int, float)) for v in value):
@@ -357,11 +386,11 @@ def probe_prototype_transport(*, z_id, fft, t_emb, f_emb, pa_local, support_labe
 def compact_record(record):
     keys = ('split_id', 'receiver', 'scenario', 'k', 'support_seed', 'new_count', 'support_count',
         'old_class_count', 'new_class_count', 'fold_count', 'fit_seconds', 'persistent_state_bytes', 'heldout_unavailable_reason')+COUNTERS[4:]
-    return dict({key: record[key] for key in keys},
+    return json_native(dict({key: record[key] for key in keys},
         oof=None if record['oof'] is None else {name: record['oof']['paths'][name]['metrics'] for name in PATHS},
         proxy=None if record['oneshot_proxy'] is None else record['oneshot_proxy']['parent_mean_metrics'],
         proxy_anchor_count=0 if record['oneshot_proxy'] is None else record['oneshot_proxy']['trial_count'],
-        scope=SCOPE, query_rows_used=0, source_rows_used=0)
+        scope=SCOPE, query_rows_used=0, source_rows_used=0))
 
 
 def evaluate(*, support_features, capsule, output, config, expected_capsule_id,
@@ -396,6 +425,7 @@ def evaluate(*, support_features, capsule, output, config, expected_capsule_id,
         hardware=dict(platform=platform.platform(), processor=platform.processor(), cpu_count=os.cpu_count(), dtype='float64', gpu_use=False),
         blas_environment={key: os.environ.get(key) for key in ('OMP_NUM_THREADS', 'OPENBLAS_NUM_THREADS', 'MKL_NUM_THREADS')})
     out.mkdir(parents=True, exist_ok=False); write(out/'startup.json', startup)
+    startup = json_native(startup)
     print(json.dumps(dict(event='STARTUP', **startup), allow_nan=False), flush=True)
     totals = dict.fromkeys(COUNTERS, 0); peak_state = 0
     try:
@@ -414,7 +444,7 @@ def evaluate(*, support_features, capsule, output, config, expected_capsule_id,
                     line = json.dumps(row, allow_nan=False)
                     stages.write(line+'\n'); stages.flush(); textlog.write(line+'\n'); textlog.flush(); print(line, flush=True)
                 def event(row):
-                    full = dict(row, split_id=split['split_id'])
+                    full = json_native(dict(row, split_id=split['split_id']))
                     events.write(json.dumps(full, allow_nan=False)+'\n'); events.flush()
                     small = compact_event(full); line = json.dumps(small, allow_nan=False)
                     compactevents.write(line+'\n'); compactevents.flush()
@@ -429,7 +459,7 @@ def evaluate(*, support_features, capsule, output, config, expected_capsule_id,
                         failure_context=getattr(exc, 'registration_context', {}), completed_episodes=totals['episodes'],
                         query_rows_used=0, source_rows_used=0)))
                     raise
-                record = dict(audit, **split_identity(split, old), scope=SCOPE, query_rows_used=0, source_rows_used=0)
+                record = json_native(dict(audit, **split_identity(split, old), scope=SCOPE, query_rows_used=0, source_rows_used=0))
                 trace.write(json.dumps(record, allow_nan=False)+'\n'); trace.flush(); small = compact_record(record)
                 compact.write(json.dumps(small, allow_nan=False)+'\n'); compact.flush()
                 if writer is None: writer = csv.DictWriter(csvfile, fieldnames=list(small)); writer.writeheader()
@@ -448,6 +478,7 @@ def evaluate(*, support_features, capsule, output, config, expected_capsule_id,
         persistent_state_scope='maximum_one_deployable_C_head_with_prototype_transport_and_inheritance_binding',
         peak_gpu_memory_bytes=None, gpu_memory_reason='CPU only', wall_seconds=time.perf_counter()-begin,
         peak_process_rss_bytes=peak_rss())
+    marker = json_native(marker)
     write(out/'probe_complete.json', marker); return marker
 
 

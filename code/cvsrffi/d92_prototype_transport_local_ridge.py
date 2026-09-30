@@ -309,7 +309,7 @@ class PrototypeTransportTraining:
     audit: Mapping
     def __post_init__(self):object.__setattr__(self,'audit',_freeze(self.audit))
     def __getattr__(self,name):return getattr(self.base,name)
-    def audit_dict(self):return _plain(self.audit)
+    def audit_dict(self):return ch._safe(_plain(self.audit))
 
 
 def prepare_prototype_transport_training(*,z_id,fft,t_emb,f_emb,pa_local,support_labels,support_ids,
@@ -432,7 +432,7 @@ class PrototypeTransportState:
     def u(self):return self.theta
     @property
     def classes(self):return self.base_state.classes
-    def audit_dict(self):return _plain(self.audit)
+    def audit_dict(self):return ch._safe(_plain(self.audit))
     def score(self,*,z_id,fft,t_emb,f_emb,pa_local):
         b0,a0=interaction._blocks(z_id,fft,t_emb,f_emb,pa_local,allow_empty=True);s=self.base_state
         if self.audit['identity_forward']:
@@ -454,7 +454,7 @@ def _add_cost(audit,objective):
     for k in _COUNTERS:audit[k]+=objective.get(k,0)
 
 
-def _armijo_tolerance(before,trial,rhs):return 128*_EPS*max(1.,abs(before),abs(trial),abs(rhs))
+def _armijo_tolerance(before,trial,rhs):return float(128*_EPS*max(1.,abs(before),abs(trial),abs(rhs)))
 
 
 def fit_prototype_transport_local_ridge(prepared,*,mode='B',baseline_state=None,log_callback=None):
@@ -496,7 +496,7 @@ def fit_prototype_transport_local_ridge(prepared,*,mode='B',baseline_state=None,
                     audit['current_trial']=dict(iteration=iteration,trial=trial,step_size=step_size,u_pre=theta.tolist(),u_trial=proposed.tolist())
                     trial_loss,_,trial_obj,trial_cache=evaluate_transport_objective(prepared,proposed,anchor,gradient=False);_add_cost(audit,trial_obj)
                     rhs=loss+_CONFIG['armijo_coefficient']*float(g@delta);tol=_armijo_tolerance(loss,trial_loss,rhs)
-                    accepted=trial_loss<=rhs+tol
+                    accepted=bool(trial_loss<=rhs+tol)
                     tr=dict(iteration=iteration,trial=trial,step_size=step_size,u_pre=theta.tolist(),u_trial=proposed.tolist(),anchor=anchor.tolist(),
                         loss_before=loss,loss_after=trial_loss,armijo_rhs=rhs,armijo_tolerance=tol,accepted=accepted,
                         gradient=g.tolist(),gradient_norm=gn,update_norm=_norm(delta),objective=deepcopy(trial_obj))

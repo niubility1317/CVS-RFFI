@@ -1,0 +1,191 @@
+{
+  "startup.json": {
+    "commit": "cdde6b366762e3bd22f94a7363b224931a98b6e0",
+    "pid": 93368,
+    "argv": [
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_prototype_transport_support_20260930_r01/tools/run_d92_prototype_transport_probe.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_prototype_transport_support_20260930_r01/configs/d92_prototype_transport_support_20260930.json",
+      "--commit",
+      "cdde6b366762e3bd22f94a7363b224931a98b6e0"
+    ],
+    "cpu_lanes": 2,
+    "blas_threads_per_lane": 2,
+    "query_access": false,
+    "source_sample_access": false,
+    "checkpoint_loaded": false,
+    "gpu_use": false,
+    "adapter_training": true,
+    "encoder_training": false,
+    "adapted_state_inherited": true,
+    "actual_A": null,
+    "maximum_optimizer_steps": 3744,
+    "started": 1790763516.0125182,
+    "live_argv": null,
+    "live_cwd": null
+  },
+  "state.json": {
+    "rx3-cvs-daot-rc4-s2026092701": {
+      "status": "FAILED",
+      "updated": 1790763517.777216,
+      "error_type": "RuntimeError",
+      "error": "probe failed with exit code 1; preserve log /home/szu2070436088/2510044040/CV-SincNet/runs/20260930-phase2-d92-prototype-transport-support-m2-r01/rx3-cvs-daot-rc4-s2026092701/probe.log; no automatic retry"
+    },
+    "rx3-cvs-daot-rc4-s2026092702": {
+      "status": "FAILED",
+      "updated": 1790763517.9103498,
+      "error_type": "RuntimeError",
+      "error": "probe failed with exit code 1; preserve log /home/szu2070436088/2510044040/CV-SincNet/runs/20260930-phase2-d92-prototype-transport-support-m2-r01/rx3-cvs-daot-rc4-s2026092702/probe.log; no automatic retry"
+    },
+    "rx1-cvs-daot-rc4-s2026092701": {
+      "status": "FAILED",
+      "updated": 1790763519.477591,
+      "error_type": "RuntimeError",
+      "error": "probe failed with exit code 1; preserve log /home/szu2070436088/2510044040/CV-SincNet/runs/20260930-phase2-d92-prototype-transport-support-m2-r01/rx1-cvs-daot-rc4-s2026092701/probe.log; no automatic retry"
+    },
+    "rx1-cvs-daot-rc4-s2026092702": {
+      "status": "FAILED",
+      "updated": 1790763519.6415858,
+      "error_type": "RuntimeError",
+      "error": "probe failed with exit code 1; preserve log /home/szu2070436088/2510044040/CV-SincNet/runs/20260930-phase2-d92-prototype-transport-support-m2-r01/rx1-cvs-daot-rc4-s2026092702/probe.log; no automatic retry"
+    }
+  },
+  "complete.json": {
+    "status": "FAILED",
+    "commit": "cdde6b366762e3bd22f94a7363b224931a98b6e0",
+    "model_rows": 4,
+    "completed_rows": 0,
+    "episodes": 0,
+    "k1_episodes": 0,
+    "oof_episodes": 0,
+    "proxy_anchor_count": 0,
+    "sequence_paths": 0,
+    "baseline_head_fit_count": 0,
+    "transport_preparation_count": 0,
+    "transport_stage_count": 0,
+    "diagnostic_fit_count": 0,
+    "trained_transport_stage_count": 0,
+    "optimizer_steps": 0,
+    "inner_objective_evaluation_count": 0,
+    "inner_head_fit_count": 0,
+    "inner_factorization_count": 0,
+    "final_head_fit_count": 0,
+    "final_factorization_count": 0,
+    "head_fit_count": 0,
+    "factorization_count": 0,
+    "baseline_factorization_count": 0,
+    "derivative_triangular_solve_count": 0,
+    "backward_evaluation_count": 0,
+    "accepted_trial_count": 0,
+    "rejected_trial_count": 0,
+    "trial_count": 0,
+    "trial_attempt_count": 0,
+    "optimizer_iterations": 0,
+    "prototype_construction_count": 0,
+    "prototype_distance_evaluation_count": 0,
+    "prepared_distance_evaluation_count": 0,
+    "transport_forward_evaluation_count": 0,
+    "final_score_evaluation_count": 0,
+    "final_score_physical_count": 0,
+    "query_access": false,
+    "source_sample_access": false,
+    "checkpoint_loaded": false,
+    "gpu_use": false,
+    "finished": 1790763519.642275
+  },
+  "launch.json": {
+    "pid": 93368,
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_prototype_transport_support_20260930_r01/tools/run_d92_prototype_transport_probe.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_prototype_transport_support_20260930_r01/configs/d92_prototype_transport_support_20260930.json",
+      "--commit",
+      "cdde6b366762e3bd22f94a7363b224931a98b6e0"
+    ],
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_prototype_transport_support_20260930_r01",
+    "commit": "cdde6b366762e3bd22f94a7363b224931a98b6e0",
+    "run": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260930-phase2-d92-prototype-transport-support-m2-r01",
+    "owner": "codex/root/d92-upgrade-20260928",
+    "live_argv": null,
+    "live_cwd": null
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_prototype_transport_support_20260930_r01/run.log": {
+    "bytes": 2080,
+    "tail": [
+      "  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/d92_prototype_transport_support_20260930_r01/tools/run_d92_prototype_transport_probe.py\", line 142, in run",
+      "    raise RuntimeError('Joint pilot lane failed; healthy lanes retained, no retry')",
+      "RuntimeError: Joint pilot lane failed; healthy lanes retained, no retry"
+    ]
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/runs/20260930-phase2-d92-prototype-transport-support-m2-r01/rx1-cvs-daot-rc4-s2026092702/probe.log": {
+    "bytes": 413025,
+    "tail": [
+      "  File \"/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/json/encoder.py\", line 179, in default",
+      "    raise TypeError(f'Object of type {o.__class__.__name__} '",
+      "TypeError: Object of type bool is not JSON serializable"
+    ]
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/runs/20260930-phase2-d92-prototype-transport-support-m2-r01/rx1-cvs-daot-rc4-s2026092701/probe.log": {
+    "bytes": 404727,
+    "tail": [
+      "  File \"/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/json/encoder.py\", line 179, in default",
+      "    raise TypeError(f'Object of type {o.__class__.__name__} '",
+      "TypeError: Object of type bool is not JSON serializable"
+    ]
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/runs/20260930-phase2-d92-prototype-transport-support-m2-r01/rx3-cvs-daot-rc4-s2026092702/probe.log": {
+    "bytes": 404460,
+    "tail": [
+      "  File \"/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/json/encoder.py\", line 179, in default",
+      "    raise TypeError(f'Object of type {o.__class__.__name__} '",
+      "TypeError: Object of type bool is not JSON serializable"
+    ]
+  },
+  "/home/szu2070436088/2510044040/CV-SincNet/runs/20260930-phase2-d92-prototype-transport-support-m2-r01/rx3-cvs-daot-rc4-s2026092701/probe.log": {
+    "bytes": 400290,
+    "tail": [
+      "  File \"/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/json/encoder.py\", line 179, in default",
+      "    raise TypeError(f'Object of type {o.__class__.__name__} '",
+      "TypeError: Object of type bool is not JSON serializable"
+    ]
+  },
+  "fit_progress": {
+    "rx1-cvs-daot-rc4-s2026092702": {
+      "completed": null,
+      "total": null,
+      "k": 1,
+      "classes": null,
+      "fit_seconds": 0.000533206999534741
+    },
+    "rx1-cvs-daot-rc4-s2026092701": {
+      "completed": null,
+      "total": null,
+      "k": 1,
+      "classes": null,
+      "fit_seconds": 0.0006009539993101498
+    },
+    "rx3-cvs-daot-rc4-s2026092702": {
+      "completed": null,
+      "total": null,
+      "k": 1,
+      "classes": null,
+      "fit_seconds": 0.0005343789998732973
+    },
+    "rx3-cvs-daot-rc4-s2026092701": {
+      "completed": null,
+      "total": null,
+      "k": 1,
+      "classes": null,
+      "fit_seconds": 0.0005214310003793798
+    }
+  },
+  "live_children": [],
+  "completed_parent_counts": {
+    "rx1-cvs-daot-rc4-s2026092702": 5,
+    "rx1-cvs-daot-rc4-s2026092701": 5,
+    "rx3-cvs-daot-rc4-s2026092702": 5,
+    "rx3-cvs-daot-rc4-s2026092701": 5
+  }
+}

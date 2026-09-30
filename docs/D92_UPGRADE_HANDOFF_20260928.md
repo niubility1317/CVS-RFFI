@@ -1,3 +1,15 @@
+## 最新状态：联合原型方法 r02 已登记待发布（2026-09-30）
+
+VERIFIED：r01四行因NumPy布尔完整JSON输出失败而退出，产物保留、无健康进程干预。仅修复严格原生类型输出；公开audit1项及入口15项实际通过，累计57个不同相关测试通过。r02同方法/同数据/同seed完整160parent恢复已登记、availability通过，尚未启动；root唯一launch owner。性能未知，BranchLocalRidge仍为主线。
+
+run `20260930-phase2-d92-prototype-transport-support-m2-r02`；spec `configs/d92_prototype_transport_support_recovery_20260930.json`；release `d92_prototype_transport_support_20260930_r02`。prepare/new/preflight已执行，禁止重复。下一步发布本次推送后的JSON修复版本并独立读回启动状态。目标ACTIVE，尚无新性能结论。
+
+## 最新状态：原型r01日志类型技术失败，修复后新r02恢复（2026-09-30）
+
+FAILED/VERIFIED：runtime cdde6b366的r01四row因full parent record JSON序列化NumPy bool失败，主管93368及全部worker均退出，无健康任务干预。eachrow保留5个K1数值parent，未完成任一row/160矩阵，无可用性能结论。4个row日志及run.log已下载保留。方法/数据/超参不改，修复类型边界并验证后使用新r02技术恢复，绝不覆盖/重启旧run。
+
+entry与core子agent分别修JSON写出边界/NumPy接受标志，数学和frozen config不改。尚未准备/登记/发布r02，禁止重复r01 launch。当前无live数值测试或远端训练。r01当前完整readback1790763590151856300及results/failure_diagnostics保留；下一步真正JSON/stream IO回归，之后独立r02登记/commit/push/poststate。root唯一launch和pytest owner，目标ACTIVE。
+
 ## 最新状态：原型联合方法54项相关验证通过，已登记待发布（2026-09-30）
 
 VERIFIED：PrototypeTransport-LocalRidge唯一160parent support pilot已预登记/availability通过、尚未启动。固定Phase1/practical residual，source-free、不读query；10存储参数/9约束自由度、0.5原几何+切向适配、LocalRidge最终头、真实B/C继承。核心27、入口13、编排14相关测试已通过，独立核心实施审查无P0/未关闭P1。真实失败和修复证据保留，不宣称性能或资源改善。root唯一launch owner。

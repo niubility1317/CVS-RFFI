@@ -1,6 +1,6 @@
 # PrototypeTransport-LocalRidge support入口
 
-状态：IMPLEMENTED_VALIDATED_NOT_RUN。本文记录入口合同，不报告实验收益。正式pytest已由主Agent串行执行，同一160 parent pilot的登记与启动仍由主Agent统一执行；本子任务未读query、历史评分或实验总索引，未拟合真实数据。
+状态：TECHNICAL_RECOVERY_VALIDATED；r01为FAILED，r02尚未prepare。本文记录入口合同，不报告实验收益。正式pytest与同一160 parent pilot的登记、启动均由主Agent统一执行；本子任务未读query、历史评分或实验总索引，未拟合真实数据。
 
 `tools/evaluate_d92_prototype_transport_probe.py`复用现有source-only冻结Phase1 support缓存绑定：capsule、checkpoint SHA256、model seed、物理split和practical residual/no-equalization协议须一致。不会加载checkpoint或更新encoder，不读取source样本。输出R0、R_transport_seq和R_transport_reset三条固定路径，旧类6个，K为1/5/10/20，新增类数为0/2/5/10/20；模型seed×cohort沿用已声明的4 row与160 parent。
 
@@ -20,4 +20,12 @@
 
 正式验证暴露并修复了两处入口问题。首轮12项中11项通过，正常summary核对失败：独立eta零和检查遗漏冻结公式中的`5*eta_bound`，原用`128*eps64`，现与core冻结的`128*eps64*5*(log(2)/2)`一致；投影KKT与篡改拒绝仍完整保留。第二轮入口与driver共27项中26项通过，正常summary事件核对发现外层`trial`覆写core的Armijo `trial`；入口现保留core字段，外层索引另存`outer_trial`，两套坐标分别核对，未跳过完整事件比较。
 
-两次失败的完整pytest证据分别为`E:/type10-7/.codex_tmp/pytest_utf8_1790762368169490200.stdout`及`.stderr`、`E:/type10-7/.codex_tmp/pytest_utf8_1790762500600874000.stdout`及`.stderr`。最后仅重跑受影响的8项summary测试和1项日志integration测试，9项全部通过，耗时3.61 s；证据为`E:/type10-7/.codex_tmp/pytest_utf8_1790762791182069900.stdout`及`.stderr`。结合此前通过且未改变的4项evaluator测试，当前13项入口测试均有对应版本的通过证据；主Agent另确认core 27项与driver 14项通过。未因验证重新启动任何实验，真实160 parent pilot尚未运行。
+两次失败的完整pytest证据分别为`E:/type10-7/.codex_tmp/pytest_utf8_1790762368169490200.stdout`及`.stderr`、`E:/type10-7/.codex_tmp/pytest_utf8_1790762500600874000.stdout`及`.stderr`。最后仅重跑受影响的8项summary测试和1项日志integration测试，9项全部通过，耗时3.61 s；证据为`E:/type10-7/.codex_tmp/pytest_utf8_1790762791182069900.stdout`及`.stderr`。结合此前通过且未改变的4项evaluator测试，当时13项入口测试均有对应版本的通过证据；主Agent另确认core 27项与driver 14项通过。该次验证完成时真实160 parent pilot尚未运行。
+
+随后r01（`20260930-phase2-d92-prototype-transport-support-m2-r01`，runtime `cdde6b366`）出现真实JSON输出技术失败。四row均在完成5个K1数值parent后，首个K5完整parent的`json.dumps(record, allow_nan=False)`报`TypeError: Object of type bool is not JSON serializable`。主管PID 93368已退出，所有row均FAILED，失败产物保留。诊断证据仅来自`E:/type10-7/automation_reports/CV-SincNet/20260930-phase2-d92-prototype-transport-support-m2-r01/results/failure_diagnostics/*.log`，未读取历史query或评分。
+
+代码中的来源为NumPy标量类型传播：Armijo容差曾使用NumPy eps，比较可产生`np.bool_`；core回调经安全转换，公开state audit原使用不转换NumPy标量的容器展开，故完整parent写出时暴露该类型。core已单独修正容差/比较的Python标量边界及公开audit转换，未改变公式或冻结配置。入口增加严格`json_native`转换，只将NumPy scalar/array和容器变成原生JSON类型；布尔与数值保留原类型，未知对象和非有限数值明确失败，不使用`default=str`。转换覆盖完整parent/event、紧凑日志、startup和marker写出，防止紧凑scalar过滤遗漏NumPy flag。
+
+新增真正流式integration测试使用6旧类、2新增类、K5确定性合成数据及NumPy labels/classes/physical IDs，实际调用evaluator写出完整/紧凑JSONL、文本日志和3个CSV。测试公开audit的NumPy bool/int/float保持Python bool/int/float，完整与紧凑事件对应一致，另覆盖未知类型和NaN拒绝。正式验证由主Agent串行执行；本修复未热改r01、未自动重试、不据性能改参。
+
+主Agent实际验证结果：真实writer单项1/1通过，耗时7.36 s，证据为`E:/type10-7/.codex_tmp/pytest_utf8_1790764079439220700.stdout`及`.stderr`；完整入口15/15通过，耗时9.96 s，证据为`E:/type10-7/.codex_tmp/pytest_utf8_1790764153519320100.stdout`及`.stderr`。修复通过后保留r01失败状态和全部产物，尚未prepare或启动r02；后续同算法技术恢复由主Agent单独登记和执行，不以r01成绩选参或重跑。

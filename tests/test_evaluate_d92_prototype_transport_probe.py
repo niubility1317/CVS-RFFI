@@ -1,6 +1,11 @@
 """Synthetic physical-support integration tests; no production cache access."""
 from pathlib import Path
+import contextlib
+import csv
+import io
+import json
 import sys
+import tempfile
 import unittest
 from unittest.mock import patch
 
@@ -29,6 +34,78 @@ def as_record(result, inputs, k):
 
 
 class ProbeTests(unittest.TestCase):
+    def test_json_boundary_preserves_types_and_rejects_unknown_or_nonfinite(self):
+        result = probe.json_native(dict(flag=np.bool_(True), count=np.int64(3), value=np.float64(.25),
+                                        vector=np.asarray([True, False]), ids=np.asarray(['a', 'b'])))
+        self.assertIs(type(result['flag']), bool); self.assertIs(type(result['count']), int)
+        self.assertIs(type(result['value']), float); self.assertEqual(result['vector'], [True, False])
+        self.assertEqual(json.loads(json.dumps(result, allow_nan=False)), result)
+        with self.assertRaisesRegex(TypeError, 'unsupported JSON value'):
+            probe.json_native(dict(value=object()))
+        with self.assertRaisesRegex(ValueError, 'nonfinite JSON number'):
+            probe.json_native(dict(value=np.float64(np.nan)))
+
+    def test_evaluate_streams_jsonl_text_and_csv_with_numpy_scalars(self):
+        """Run the real evaluator/writers with synthetic NumPy production boundaries."""
+        k = 5; old = np.asarray([f'old-{i}' for i in range(6)], dtype=np.str_)
+        classes = np.concatenate((old, np.asarray(['new-0', 'new-1'], dtype=np.str_)))
+        labels = np.repeat(np.arange(len(classes), dtype=np.int64), k)
+        rng = np.random.default_rng(3411)
+        arrays = {key: rng.normal(size=(len(labels), width)) for key, width in
+            (('z_id', 160), ('fft', 96), ('t_emb', 160), ('f_emb', 160), ('pa_local', 160))}
+        ids = np.asarray([f'{classes[y]}-{i % k}' for i, y in enumerate(labels)], dtype=np.str_)
+        split = dict(split_id='stream-parent', receiver='synthetic-rx', scenario='practical_high', k=k,
+            support_seed=0, registered_classes=classes, support_ids=ids, support_labels=labels)
+        producer = dict(feature_array_bytes=sum(a.nbytes for a in arrays.values()), feature_file_bytes=0)
+        original_fit = probe.fit_prototype_transport_local_ridge; raw_types = []
+        class ScalarAudit:
+            def __init__(self, state): self.state = state; self.u = state.u
+            def score(self, **features): return self.state.score(**features)
+            def audit_dict(self):
+                value = self.state.audit_dict()
+                # Preserve the scalar types returned by the affected NumPy audit boundary.
+                for trial in value['trials']: trial['accepted'] = np.bool_(trial['accepted'])
+                value['identity_forward'] = np.bool_(value['identity_forward'])
+                value['trainable_parameter_count'] = np.int64(value['trainable_parameter_count'])
+                value['fit_seconds'] = np.float64(value['fit_seconds'])
+                raw_types.extend(type(t['accepted']) for t in value['trials'])
+                return value
+            def __getattr__(self, name): return getattr(self.state, name)
+        config = dict(algorithm=probe.PROBE_CONFIG, producer_matrix={}, selection={})
+        with tempfile.TemporaryDirectory() as directory:
+            out = Path(directory)/'probe'; stdout = io.StringIO()
+            with patch.object(probe, 'read', return_value=dict(channel=probe.CHANNEL, scenarios=probe.SCENARIOS)), \
+                 patch.object(probe, 'validate_selection'), \
+                 patch.object(probe, 'load_support', return_value=(arrays, [], old, producer, {}, {})), \
+                 patch.object(probe, 'selected_tasks', return_value=[(split, np.arange(len(labels)), labels)]), \
+                 patch.object(probe, 'fit_prototype_transport_local_ridge',
+                     side_effect=lambda *a, **kw: ScalarAudit(original_fit(*a, **kw))), \
+                 contextlib.redirect_stdout(stdout):
+                marker = probe.evaluate(support_features='synthetic-cache', capsule='synthetic-capsule', output=out,
+                    config=config, expected_capsule_id='synthetic-capsule', expected_checkpoint_sha256='a'*64,
+                    expected_model_seed=0)
+            self.assertTrue(raw_types and all(t is np.bool_ for t in raw_types))
+            streams = {name: [json.loads(line) for line in (out/name).read_text(encoding='utf-8').splitlines()]
+                for name in ('fit_trace.jsonl', 'compact.jsonl', 'fit_stages.jsonl',
+                             'training_events.jsonl', 'training_events_compact.jsonl')}
+            record = streams['fit_trace.jsonl'][0]; stage = record['folds'][0]['candidate_stages'][0]
+            self.assertIs(type(stage['trials'][0]['accepted']), bool)
+            self.assertIs(type(stage['identity_forward']), bool)
+            self.assertIs(type(stage['trainable_parameter_count']), int)
+            self.assertIs(type(stage['fit_seconds']), float)
+            self.assertEqual(streams['compact.jsonl'], [probe.compact_record(record)])
+            self.assertEqual(streams['training_events_compact.jsonl'],
+                [probe.compact_event(event) for event in streams['training_events.jsonl']])
+            candidate = next(row for row in streams['fit_stages.jsonl'] if row['event'] == 'CANDIDATE_FIT')
+            self.assertIs(type(candidate['identity_forward']), bool)
+            self.assertIs(type(candidate['trainable_parameter_count']), int)
+            for name in ('compact.csv', 'fit_stages.csv', 'training_events_compact.csv'):
+                with (out/name).open(encoding='utf-8', newline='') as source:
+                    self.assertTrue(list(csv.DictReader(source)), name)
+            for line in (out/'training.log').read_text(encoding='utf-8').splitlines():
+                json.loads(line.split(' ', 1)[1] if line.startswith(('STARTUP ', 'PROTOTYPE_TRANSPORT_TRAINING ')) else line)
+            self.assertEqual(json.loads((out/'probe_complete.json').read_text(encoding='utf-8')), marker)
+
     def test_true_k1_never_prepares_or_fits(self):
         with patch.object(probe, 'fit_branch_local_ridge', side_effect=AssertionError('no fit')), \
              patch.object(probe, 'prepare_prototype_transport_training', side_effect=AssertionError('no preparation')):

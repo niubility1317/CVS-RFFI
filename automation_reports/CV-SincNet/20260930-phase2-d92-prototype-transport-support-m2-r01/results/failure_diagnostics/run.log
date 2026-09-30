@@ -1,0 +1,14 @@
+{"row": "rx3-cvs-daot-rc4-s2026092701", "status": "TRAINING_ON_SUPPORT"}
+{"row": "rx3-cvs-daot-rc4-s2026092702", "status": "TRAINING_ON_SUPPORT"}
+{"row": "rx3-cvs-daot-rc4-s2026092701", "status": "FAILED", "error_type": "RuntimeError", "error": "probe failed with exit code 1; preserve log /home/szu2070436088/2510044040/CV-SincNet/runs/20260930-phase2-d92-prototype-transport-support-m2-r01/rx3-cvs-daot-rc4-s2026092701/probe.log; no automatic retry"}
+{"row": "rx1-cvs-daot-rc4-s2026092701", "status": "TRAINING_ON_SUPPORT"}
+{"row": "rx3-cvs-daot-rc4-s2026092702", "status": "FAILED", "error_type": "RuntimeError", "error": "probe failed with exit code 1; preserve log /home/szu2070436088/2510044040/CV-SincNet/runs/20260930-phase2-d92-prototype-transport-support-m2-r01/rx3-cvs-daot-rc4-s2026092702/probe.log; no automatic retry"}
+{"row": "rx1-cvs-daot-rc4-s2026092702", "status": "TRAINING_ON_SUPPORT"}
+{"row": "rx1-cvs-daot-rc4-s2026092701", "status": "FAILED", "error_type": "RuntimeError", "error": "probe failed with exit code 1; preserve log /home/szu2070436088/2510044040/CV-SincNet/runs/20260930-phase2-d92-prototype-transport-support-m2-r01/rx1-cvs-daot-rc4-s2026092701/probe.log; no automatic retry"}
+{"row": "rx1-cvs-daot-rc4-s2026092702", "status": "FAILED", "error_type": "RuntimeError", "error": "probe failed with exit code 1; preserve log /home/szu2070436088/2510044040/CV-SincNet/runs/20260930-phase2-d92-prototype-transport-support-m2-r01/rx1-cvs-daot-rc4-s2026092702/probe.log; no automatic retry"}
+Traceback (most recent call last):
+  File "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_prototype_transport_support_20260930_r01/tools/run_d92_prototype_transport_probe.py", line 150, in <module>
+    run(read(a.spec), a.commit)
+  File "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_prototype_transport_support_20260930_r01/tools/run_d92_prototype_transport_probe.py", line 142, in run
+    raise RuntimeError('Joint pilot lane failed; healthy lanes retained, no retry')
+RuntimeError: Joint pilot lane failed; healthy lanes retained, no retry

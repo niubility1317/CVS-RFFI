@@ -1,6 +1,6 @@
 # PrototypeTransport 数值核心实现说明
 
-状态：IMPLEMENTED_CORE_SYNTHETIC_VERIFIED_NOT_RUN，未进行真实 support 拟合或新实验。历史[设计](D92_JOINT_NEXT_AFTER_CHANNEL_20260930.md)与[设计审查](D92_PROTOTYPE_TRANSPORT_DESIGN_REVIEW_20260930.md)保持原记录；本文描述新文件的实现合同，不声称性能改善。
+最新状态：IMPLEMENTED_CORE_JSON_BOUNDARY_VERIFIED_R02_PENDING。r01 已实际运行并因 JSON 类型边界故障退出，修复回归通过，r02 待准备恢复。历史[设计](D92_JOINT_NEXT_AFTER_CHANNEL_20260930.md)与[设计审查](D92_PROTOTYPE_TRANSPORT_DESIGN_REVIEW_20260930.md)保持原记录；本文描述实现合同及验证历程，不声称性能改善。
 
 ## 交付与依赖
 
@@ -91,3 +91,15 @@ python -s -m pytest tests/test_d92_prototype_transport_local_ridge.py
 首轮结果保留为 `E:/type10-7/.codex_tmp/pytest_utf8_1790761931958217100.stdout`：24 项通过，1 项在 support 自身逐样本评分时触发 `ORIGINAL_EQUAL_ADAPTED_UNEQUAL`。独立合成中间量诊断确认原特征、方向、范数、原型距离及 attention 均逐元素一致，首次差异位于 `mu=att@table.m`：批量 GEMM 与单样本 GEMV 的最大差为 `2.77555756e-17`。修复将 μ 统一为逐样本显式乘积求和，保留原相等输入必须映射相等的严格检查。诊断中修复后的 μ/b/a 逐元素相同；新增不同批量划分与重复样本回归通过。没有放宽相等条件、数值容差或有限差分要求。
 
 另外补全了拒绝/失败 trial 的实际尝试上下文、缓存复用时折级 forward 计数及退化头的实际数值 payload 字节。27 项通过仅证明这些合成数值与协议行为；原型邻域噪声、困难类重加权及注册竞争的泛化效果仍待完整合法 support 实验验证。尚未真实拟合、预登记、启动或产生新性能结论。
+
+## r01 后的 JSON 输出边界修复
+
+上述“未启动”是首版核心交付时点的记录。之后主任务报告 r01 四行均因技术故障退出：首个完整 K5 parent 写出 JSON 时遇到 `np.bool_`，没有健康任务被修改。失败日志、输出和旧 release 均保留，本文不读取其性能指标。
+
+核心确认的类型路径为 `_EPS` 的 NumPy 标量参与 Armijo 容差计算，容差得到 `np.float64`，比较得到 `np.bool_`，再进入 `state.audit.trials[*].accepted`。callback 已经过 JSON 类型归一化，所以逐步事件能写出；旧公开 `audit_dict()` 只走 `_plain`，未转换 NumPy 标量，完整 parent writer 因而失败。
+
+局部修复只将容差返回值显式转换为 Python `float`、接受标志显式转换为 `bool`，并在 prepared/state 两个公开 `audit_dict()` 边界复用已有 `_safe` 递归输出原生 JSON 类型。没有改变浮点计算公式、参数、接受判据或冻结配置，也没有热修旧运行。入口的完整流式写出回归由入口负责人单独维护。
+
+新增核心测试 `test_public_audit_tree_strict_json_native_including_trial_flags` 使用合成 K3 实际拟合，递归检查完整公开 audit 树并执行 `json.dumps(..., allow_nan=False)`，同时检查生产端冻结 audit 中的接受标志本身已是原生 bool。主任务已串行执行该新增回归：**1/1 通过，2.33 s**，证据为 `E:/type10-7/.codex_tmp/pytest_utf8_1790763972888069700.stdout` 及同名 `.stderr`。此前 27 项数学与确定性检查已通过，本次未修改数学；这一次新增验证专门覆盖此前遗漏的公开审计序列化边界。
+
+入口负责人另完成真实 full/compact/text/CSV 写出和严格类型边界检查，主任务验证 15/15 通过，证据为 `E:/type10-7/.codex_tmp/pytest_utf8_1790764153519320100.stdout` 及同名 `.stderr`。r01 的真实失败记录保持原样；r02 待主任务准备恢复。上述验证不产生新的性能结论。
