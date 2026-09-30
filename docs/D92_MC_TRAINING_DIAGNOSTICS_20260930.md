@@ -1,6 +1,6 @@
 # MC 完整训练机制诊断工具
 
-日期：2026-09-30。状态：`IMPLEMENTED_SYNTHETIC_TESTS_PENDING_ROOT`。本 agent 仅做语法/UTF-8 检查；实际 pytest、只读远端执行和数据下载由 root 串行负责。当前健康 MC run 没有被停止、重启或热修改，本工具尚未对实际 run 做分析。
+日期：2026-09-30。状态：`IMPLEMENTED_SYNTHETIC_TESTS_VERIFIED`。本 agent 完成语法/UTF-8 检查；root 已串行执行全部 7 个聚焦合成测试，7/7 通过，耗时 0.99 s。只读远端执行和数据下载由 root 负责。当前健康 MC run 没有被停止、重启或热修改，本工具尚未对实际 run 做分析。
 
 ## 输入和边界
 
@@ -19,7 +19,7 @@
 - 实际资源使用独立 summary 的覆盖/成本/硬件/归档计数。阶段 fit 成本来自 MC_FIT；MC_FIT 在 held scoring 前产生，缺少阶段 score_seconds 时记 N/A，实际评分总量仍保留在已核验的 summary resources 中。
 - 重复 B 按 row、scope、parent K、train K、类别和有序训练物理 ID 分组，单独提供去重描述统计；实际资源继续保留重复拟合，不能将多个 new-count 上下文解释为独立证据。
 
-零更新有信息阶段仍包含初始前向/反向成本。物理 K1 的损失为 N/A。源验证、逐样本预测变化和未测量的部署/传输项均为 N/A。训练损失、内部准确率、教师和约束指标不用于候选选择或新方法设计。
+零更新有信息阶段仍包含初始前向/反向成本。物理 K1 的损失为 N/A。源验证、逐样本预测变化和未测量的部署/传输项均为 N/A。本工具只派生诊断，不选择候选或设计新方法。完整合法 support 的训练机制证据可用于后续机制分析；禁止 query 反馈，以及本轮完成前根据部分结果改变冻结候选。内部训练指标不是独立验证，不能据此宣称泛化收益。
 
 ## CLI
 
@@ -55,6 +55,6 @@ python tools/collect_d92_mc_training_diagnostics.py --summary-root <远端完整
 python -m pytest -q tests/test_collect_d92_mc_training_diagnostics.py
 ```
 
-依赖为 Python 标准库与 NumPy，不导入 fitting/core/summarizer 数值审计函数。正式测试结果由 root 提供后登记；完整实际 pilot 核验前不执行真实分析。
+依赖为 Python 标准库与 NumPy，不导入 fitting/core/summarizer 数值审计函数。root 实际结果为 7 passed in 0.99s；证据：[stdout](E:/type10-7/.codex_tmp/pytest_utf8_1790774207012280500.stdout)、[stderr](E:/type10-7/.codex_tmp/pytest_utf8_1790774207012280500.stderr)。测试后仅更新本文，不新增指标或重复测试。完整实际 pilot 和独立 summary 核验前不执行真实分析。
 
 主Agent聚焦验证：7 passed in 0.99s。完整stdout/stderr保留于本run/evidence/pytest_utf8_1790774207012280500。实际完整训练诊断仍待160配置全部完成；本次只交付分析工具，不改变已运行算法。
