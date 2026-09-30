@@ -33,3 +33,7 @@
 从零训练。ASKNet/WaveMLP使用非均衡Day1/2首100包和70/30源域划分；DIFL使用均衡Day1随机200包和80/20源域划分。source为作者顺序RX[3:]，target为RX[:3]，两者不交。DIFL教师由同run相同source划分从零训练，source V选模，学生只加载该教师，禁止回退作者或历史权重。
 
 该首批是原实现复现，不是CVS少标签/LEO匹配实验，不用跨方法最高值排名。目标测试未启动；source完成后状态保持SOURCE_TRAINING_COMPLETE_AWAITING_SOURCE_REVIEW。
+
+## 启动前环境兼容修复
+
+真实source smoke发现共享NumPy2.2.5与PyTorch2.1的ndarray转换失败，正式训练尚未启动。仅在本release隔离目录解包NumPy1.26.4轮子，通过PYTHONPATH供本批进程使用，不修改公共环境。数据导出成功并保持原文件，不重复生成。兼容包来源及SHA见experiment.json。
