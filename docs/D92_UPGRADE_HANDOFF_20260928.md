@@ -1,3 +1,9 @@
+## 最新状态：FCR8完整产物已核实（2026-09-30）
+
+ARTIFACTS_COMPLETE/VERIFIED：FCR8完整四row/160parent结束，原supervisor及worker均退出；完整marker/state/实际计数独立读回一致。实际更新2673次、头拟合30708次、latent SVD648次。未读query/源样本；完成不代表性能改善。下一步单次独立support分析与完整训练机制诊断，root sole owner，目标ACTIVE。
+
+证据 readback_1790783519749874900.json；下一步唯一analysis release d92_fcr8_analysis_20260930_r01，尚未启动，不重复publish或训练。
+
 ## 最新状态：FCR8完成两row，另两row训练中（2026-09-30）
 
 VERIFIED：FCR8既有run推进到114/160parent。rx3两row各40parent已有完整probe_complete产物，原绑定/实际计数核对通过；rx1两row各17parent完成，worker263424/263930实际argv/cwd匹配，主进程247876存活。完整run尚未结束，不读取部分成绩进行分析或选模，不重复启动。

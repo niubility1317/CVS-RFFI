@@ -1,6 +1,6 @@
 # FCR8与LocalRidge联合方法的固定support试验
 
-状态：RUNNING，47个不同相关检查与独立P0/P1审查已通过，已单次启动并独立读回进程与首批产物。新run为`20260930-phase2-d92-fcr8-support-m2-r01`，group为`d92-fcr8-support`；已发布；完整结果尚待收集。主Agent是唯一launch owner。实际配置及四row的完整矩阵由`configs/d92_fcr8_support_20260930.json`维护。
+状态：ARTIFACTS_COMPLETE，完整四row/160parent已结束并独立核实，性能分析尚待完成。新run为`20260930-phase2-d92-fcr8-support-m2-r01`，group为`d92-fcr8-support`；已发布；完整结果尚待收集。主Agent是唯一launch owner。实际配置及四row的完整矩阵由`configs/d92_fcr8_support_20260930.json`维护。
 
 ## 数学改动和证据边界
 
@@ -33,3 +33,5 @@ CPU-only，两lane、每lane两BLAS线程，不干预其他GPU训练。完整CVS
 本run不因低性能停止。技术故障只记录所属row，保留健康row和原产物；无自动重试、无热修改。完成160parent后才由独立analysis release做完整汇总。预登记、启动与结束状态维护原experiment.json/report.md/events.jsonl及索引。发布采用已推送Git版本，启动后独立读回PID/argv/cwd和产物，不凭退出码判断外部成功。
 
 实际runtime commit为`33673fe02a857d790aa69a1ace17fdb9638099d0`，supervisor PID247876，首批worker PID247888/247889。启动证据为`evidence/readback_1790779962176104900.json`。Git受限环境凭据错误已经通过普通push恢复，远端OID独立核对一致；没有重复launch或热修改。
+
+ARTIFACTS_COMPLETE/VERIFIED：FCR8完整四row/160parent结束，原supervisor及worker均退出；完整marker/state/实际计数独立读回一致。实际更新2673次、头拟合30708次、latent SVD648次。未读query/源样本；完成不代表性能改善。下一步单次独立support分析与完整训练机制诊断，root sole owner，目标ACTIVE。
