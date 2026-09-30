@@ -1,3 +1,9 @@
+## 最新状态：AJLR完整独立分析r02运行中（2026-10-01）
+
+ANALYSIS_R02_RUNNING/VERIFIED：使用阶段顺序修复的独立分析已单次启动，PID394399/argv/cwd独立读回匹配，analysis commit fc5cd282f93e2b7cc1a2fcd686b4217fb4abfe4a。本地等待handle99201有效，完整summary尚未产生。四row/160训练已完成；r01失败证据保留，不重复训练或任何analysis启动，目标ACTIVE。
+
+证据 analysis_readback_1790796681922065700.json；恢复先只读核实已启动PID/产物，再等待handle99201，不重复analyze。完整summary下载核验后执行已验证report工具与两阶段只读collector。当前source-only训练runtime a1a003f59e8ed14640a252ada8290a03af3420c5；截距审计已交付，尚未实现/冻结后继；无新性能结论。
+
 ## 最新状态：AJLR分析r01技术失败已修复，待r02（2026-10-01）
 
 ANALYSIS_R01_FAILED/VERIFIED：完整训练产物保留；首次独立汇总PID386856已退出，无summary/output。实际阶段流为prep B→fit B→prep C→fit C，汇总器重建顺序错误，6项回归检查通过。仅修复分析器，保持严格流核对；预登记新analysis release d92_anchor_joint_analysis_20261001_r02，root sole owner，尚未启动，不重跑训练。

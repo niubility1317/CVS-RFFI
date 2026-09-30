@@ -35,3 +35,5 @@ RUNNING/VERIFIED：AJLR已单次发布启动，实际runtime a1a003f59e8ed14640a
 ARTIFACTS_COMPLETE/VERIFIED：AJLR完整四row/160parent已结束，supervisor及全部workers退出；完整marker/state/实际计数独立读回一致。实际更新2592次、头拟合36564次、latent SVD3240次。未读query/源样本；完成不代表性能改善。下一步单次独立support分析与完整训练诊断，root sole owner，目标ACTIVE。
 
 ANALYSIS_R01_FAILED/VERIFIED：完整训练产物保留；首次独立汇总PID386856已退出，无summary/output。实际阶段流为prep B→fit B→prep C→fit C，汇总器重建顺序错误，6项回归检查通过。仅修复分析器，保持严格流核对；预登记新analysis release d92_anchor_joint_analysis_20261001_r02，root sole owner，尚未启动，不重跑训练。
+
+ANALYSIS_R02_RUNNING/VERIFIED：使用阶段顺序修复的独立分析已单次启动，PID394399/argv/cwd独立读回匹配，analysis commit fc5cd282f93e2b7cc1a2fcd686b4217fb4abfe4a。本地等待handle99201有效，完整summary尚未产生。四row/160训练已完成；r01失败证据保留，不重复训练或任何analysis启动，目标ACTIVE。
