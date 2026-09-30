@@ -1,6 +1,6 @@
 # AffineJoint：解析截距与 LocalRidge 联合微调实验
 
-状态：`LOCAL_VERIFIED_NOT_LAUNCHED`。run 为 `20261001-phase2-d92-affine-joint-support-m2-r01`，release 为 `d92_affine_joint_support_20261001_r01`。root 是唯一 launch owner。配置已生成并登记，尚未发布或启动；没有真实性能结论。
+状态：`RUNNING`。run 为 `20261001-phase2-d92-affine-joint-support-m2-r01`，release 为 `d92_affine_joint_support_20261001_r01`。root 是唯一 launch owner。配置已生成、登记并单次发布；实际进程与训练日志已独立核实，没有完整真实性能结论。
 
 ## 数学改动与依据
 
@@ -47,3 +47,5 @@ CPU-only、两 lane、每 lane 两 BLAS 线程；不干预 GPU 或健康 AJLR �
 79 个不同相关检查通过：core/entry/ops 58 项（7.09 s，证据 `pytest_utf8_1790801239413599000`）、独立汇总 10 项（109.86 s，`pytest_utf8_1790802427189642100`）、报告器 11 项（0.57 s，`pytest_utf8_1790802979858337900`）。测试包含独立 primal/saddle oracle、完整有限差分、非零截距伴随、真实回调顺序、合法 B 状态绑定及篡改拒绝。唯一[独立 P0/P1 审查](D92_AFFINE_JOINT_P0_REVIEW_20261001.md)无未解决问题。读取预先生成的代码和合成测试，不以性能决定通过。
 
 本次实际 preflight 为 VERIFIED：四个缓存绑定匹配，新 run/release/archive 不存在，CPU 96 核、loadavg 约 1.7、磁盘剩余约 6.95 TB；未访问样本值、query 或 checkpoint。发布前代码、配置、预登记和验证证据进入 Git 并核对远端 OID。发布单次执行，随后独立读回 PID/argv/cwd、实际 startup 和训练日志。技术失败只终止所属 lane，无自动重跑；健康任务不因性能弱而停止。完整 160 parents 结束后才独立汇总，不依部分结果修改方法。
+
+RUNNING/VERIFIED：AffineJoint已单次发布启动，实际runtime81a226a8d1cef34ea817ada87070bd89912d027d；supervisor451253及workers451265/451266的PID/argv/cwd独立读回一致。实际生效算法、缓存身份、run/row和CPU/BLAS参数匹配。首次读回16/160parents，两个rx3运行、两个rx1待排队，详细训练文本已增长；尚无完整性能结论。query/source样本0，encoder/checkpoint不加载，新增地面摘要0B。禁止重复publish/停止/重启/热修改；旧AJLR分析r02保持原PID394399/handle99201，目标ACTIVE。

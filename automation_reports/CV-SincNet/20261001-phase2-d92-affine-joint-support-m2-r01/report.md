@@ -3,7 +3,7 @@
 - run_id：`20261001-phase2-d92-affine-joint-support-m2-r01`
 - group_id：`d92-affine-joint-support`；类别：`diagnostic`；阶段：`Phase2-support-only-diagnostic`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：LOCAL_VERIFIED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -29,3 +29,5 @@
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
 
 LOCAL_VERIFIED/VERIFIED：单一解析自由截距结构已实现，79个不同相关检查通过（core/entry/ops58、summary10、reporter11）；唯一独立P0/P1审查无未解决问题。完整Schur和非零g_b伴随、当次B→C状态、全部RHS与状态字节、真实事件顺序经合成检查。实际四缓存/160parent输入绑定及新输出无冲突已核实。方案在旧AJLR完整评分前按数学推导确定，无部分结果选模/参数扫描。未发布或启动，真实性能尚未知；A及B−A=N/A，query/source样本不读，目标ACTIVE。
+
+RUNNING/VERIFIED：AffineJoint已单次发布启动，实际runtime81a226a8d1cef34ea817ada87070bd89912d027d；supervisor451253及workers451265/451266的PID/argv/cwd独立读回一致。实际生效算法、缓存身份、run/row和CPU/BLAS参数匹配。首次读回16/160parents，两个rx3运行、两个rx1待排队，详细训练文本已增长；尚无完整性能结论。query/source样本0，encoder/checkpoint不加载，新增地面摘要0B。禁止重复publish/停止/重启/热修改；旧AJLR分析r02保持原PID394399/handle99201，目标ACTIVE。

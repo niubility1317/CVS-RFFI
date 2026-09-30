@@ -1,3 +1,9 @@
+## 最新状态：AffineJoint已单次启动RUNNING（2026-10-01）
+
+RUNNING/VERIFIED：AffineJoint已单次发布启动，实际runtime81a226a8d1cef34ea817ada87070bd89912d027d；supervisor451253及workers451265/451266的PID/argv/cwd独立读回一致。实际生效算法、缓存身份、run/row和CPU/BLAS参数匹配。首次读回16/160parents，两个rx3运行、两个rx1待排队，详细训练文本已增长；尚无完整性能结论。query/source样本0，encoder/checkpoint不加载，新增地面摘要0B。禁止重复publish/停止/重启/热修改；旧AJLR分析r02保持原PID394399/handle99201，目标ACTIVE。
+
+run 20261001-phase2-d92-affine-joint-support-m2-r01；spec configs/d92_affine_joint_support_20261001.json；release d92_affine_joint_support_20261001_r01。prepare/new/preflight/publish均已完成，禁止重复。完整160parents后才分析，候选analysis release d92_affine_joint_analysis_20261001_r01尚未创建或启动。恢复先只读PID与产物。原AJLR分析r02仍原进程；新collector由QUERY-BLIND子Agent实现，root串行验证。
+
 ## 最新状态：AffineJoint已验证，待单次发布（2026-10-01）
 
 LOCAL_VERIFIED/VERIFIED：单一解析自由截距结构已实现，79个不同相关检查通过（core/entry/ops58、summary10、reporter11）；唯一独立P0/P1审查无未解决问题。完整Schur和非零g_b伴随、当次B→C状态、全部RHS与状态字节、真实事件顺序经合成检查。实际四缓存/160parent输入绑定及新输出无冲突已核实。方案在旧AJLR完整评分前按数学推导确定，无部分结果选模/参数扫描。未发布或启动，真实性能尚未知；A及B−A=N/A，query/source样本不读，目标ACTIVE。
