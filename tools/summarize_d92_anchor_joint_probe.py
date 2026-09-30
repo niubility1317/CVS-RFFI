@@ -632,11 +632,12 @@ def verify_record(record, split, old, resolver=None):
                 _array_close(entry['paths']['R0']['b_scores' if b else 'c_scores'], scores, 'R0 saved outer score function mismatch')
                 counts['final_score_evaluation_count'] += 1; counts['final_score_physical_count'] += len(subset)
         by_prep = {p['state']: p for p in entry['preparations']}; by_stage = {s['state']: s for s in entry['candidate_stages']}
-        for prep in entry['preparations']:
+        # The evaluator emits each preparation immediately before its fitted stage.
+        for prep, stage in zip(entry['preparations'], entry['candidate_stages']):
+            check(stage['preparation_ref'] == prep['state'], 'Candidate/preparation stage order mismatch')
             verify_preparation(prep, entry, labels, old, resolver); logs.append(dict(event='AJLR_PREPARATION', **prep))
             for key in PREPARATION_COUNTERS: counts[key] += prep[key]
-        for stage in entry['candidate_stages']:
-            prep = by_prep[stage['preparation_ref']]; verify_candidate(stage, prep, entry, by_stage['B_AJLR'], resolver)
+            verify_candidate(stage, prep, entry, by_stage['B_AJLR'], resolver)
             logs.append(dict(event='CANDIDATE_FIT', **stage)); counts['trained_ajlr_stage_count'] += int(stage['optimizer_steps'] > 0)
             for key in STAGE_COUNTERS: counts[key] += stage[key]
             if held:

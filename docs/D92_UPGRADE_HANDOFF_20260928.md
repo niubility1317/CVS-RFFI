@@ -1,3 +1,9 @@
+## 最新状态：AJLR分析r01技术失败已修复，待r02（2026-10-01）
+
+ANALYSIS_R01_FAILED/VERIFIED：完整训练产物保留；首次独立汇总PID386856已退出，无summary/output。实际阶段流为prep B→fit B→prep C→fit C，汇总器重建顺序错误，6项回归检查通过。仅修复分析器，保持严格流核对；预登记新analysis release d92_anchor_joint_analysis_20261001_r02，root sole owner，尚未启动，不重跑训练。
+
+完整训练runtime a1a003f59e8ed14640a252ada8290a03af3420c5，四row/160全部完成。r01失败来源与修复见docs/D92_AJLR_ANALYSIS_REPAIR_20261001.md；不得重复r01或训练，r02启动前先确认已推送修复。新截距数学审计已完成但未实现/冻结候选；当前无性能结论，目标ACTIVE。
+
 ## 最新状态：AJLR完整产物已核实（2026-10-01）
 
 ARTIFACTS_COMPLETE/VERIFIED：AJLR完整四row/160parent已结束，supervisor及全部workers退出；完整marker/state/实际计数独立读回一致。实际更新2592次、头拟合36564次、latent SVD3240次。未读query/源样本；完成不代表性能改善。下一步单次独立support分析与完整训练诊断，root sole owner，目标ACTIVE。

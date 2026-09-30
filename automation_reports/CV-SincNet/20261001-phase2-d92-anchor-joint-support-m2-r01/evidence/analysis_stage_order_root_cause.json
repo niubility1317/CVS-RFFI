@@ -1,0 +1,62 @@
+{
+  "status": "ACTUAL_EMISSION_ORDER_VERIFIED",
+  "source": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-anchor-joint-support-m2-r01/rx3-cvs-daot-rc4-s2026092701/probe/fit_stages.jsonl",
+  "events": [
+    {
+      "event": "BASE_FIT",
+      "state": "B0",
+      "split_id": "31fafba727c6103cfabc6367",
+      "scope": "support_full_k1",
+      "fold": null,
+      "trial": null,
+      "class_count": 6
+    },
+    {
+      "event": "BASE_FIT",
+      "state": "C0",
+      "split_id": "31fafba727c6103cfabc6367",
+      "scope": "support_full_k1",
+      "fold": null,
+      "trial": null,
+      "class_count": 8
+    },
+    {
+      "event": "AJLR_PREPARATION",
+      "state": "B",
+      "split_id": "31fafba727c6103cfabc6367",
+      "scope": "support_full_k1",
+      "fold": null,
+      "trial": null,
+      "class_count": 6
+    },
+    {
+      "event": "CANDIDATE_FIT",
+      "state": "B_AJLR",
+      "split_id": "31fafba727c6103cfabc6367",
+      "scope": "support_full_k1",
+      "fold": null,
+      "trial": null,
+      "class_count": 6
+    },
+    {
+      "event": "AJLR_PREPARATION",
+      "state": "C",
+      "split_id": "31fafba727c6103cfabc6367",
+      "scope": "support_full_k1",
+      "fold": null,
+      "trial": null,
+      "class_count": 8
+    },
+    {
+      "event": "CANDIDATE_FIT",
+      "state": "C_AJLR_seq",
+      "split_id": "31fafba727c6103cfabc6367",
+      "scope": "support_full_k1",
+      "fold": null,
+      "trial": null,
+      "class_count": 8
+    }
+  ],
+  "query_source_or_outer_scores_read": false,
+  "summary_order_matches": false
+}

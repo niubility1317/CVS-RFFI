@@ -1,0 +1,25 @@
+{
+  "observed_unix": 1790795641.9194243,
+  "process": {
+    "pid": 386856,
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_anchor_joint_analysis_20261001_r01/tools/summarize_d92_anchor_joint_probe.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_anchor_joint_support_20261001_r01/configs/d92_anchor_joint_support_20261001.json",
+      "--run-root",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-anchor-joint-support-m2-r01",
+      "--output",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-anchor-joint-support-m2-r01/results/support_summary"
+    ],
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_anchor_joint_analysis_20261001_r01",
+    "commit": "889fa1332ae91f0104a805348fee87f91db39709",
+    "live_argv": null,
+    "live_cwd": null
+  },
+  "summary_exists": false,
+  "analysis_execution": null,
+  "log_bytes": 1036,
+  "performance_read_or_printed": false
+}

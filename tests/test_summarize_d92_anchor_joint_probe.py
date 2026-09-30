@@ -21,13 +21,32 @@ class SummaryTests(unittest.TestCase):
     def setUpClass(cls):
         cls.directory = tempfile.TemporaryDirectory(); cls.inputs = synthetic()
         archive = probe.StateArchive(cls.directory.name)
-        cls.record, cls.split = as_record(probe.probe_anchor_joint(**cls.inputs, state_callback=archive), cls.inputs, 3)
+        cls.fit_stages = Path(cls.directory.name)/'fit_stages.jsonl'
+        with cls.fit_stages.open('x', encoding='utf-8') as stream:
+            def log_callback(stage):
+                row = dict(probe.compact_event(stage), split_id='synthetic-parent')
+                stream.write(json.dumps(row, allow_nan=False)+'\n')
+            result = probe.probe_anchor_joint(**cls.inputs, state_callback=archive, log_callback=log_callback)
+        cls.record, cls.split = as_record(result, cls.inputs, 3)
         archive.finalize('COMPLETE')
 
     @classmethod
     def tearDownClass(cls): cls.directory.cleanup()
 
     def resolver(self): return summary.StateResolver(self.directory.name)
+
+    def test_actual_callback_stage_stream_matches_strict_reconstruction(self):
+        resolver = self.resolver()
+        logs, _, _, _ = summary.verify_record(self.record, self.split, self.inputs['old_classes'], resolver)
+        resolver.finalize()
+        emitted = list(summary.jsonlines(self.fit_stages))
+        expected = [dict(probe.compact_event(value), split_id=self.record['split_id']) for value in logs]
+        self.assertEqual(emitted, expected)
+        per_path = [('BASE_FIT', 'B0'), ('BASE_FIT', 'C0'),
+            ('AJLR_PREPARATION', 'B'), ('CANDIDATE_FIT', 'B_AJLR'),
+            ('AJLR_PREPARATION', 'C'), ('CANDIDATE_FIT', 'C_AJLR_seq')]
+        path_count = len(self.record['folds'])+len(self.record['oneshot_proxy']['trials'])
+        self.assertEqual([(value['event'], value['state']) for value in emitted], per_path*path_count)
 
     def test_complete_prior_reference_ce_solver_scores_and_workload_recomputed(self):
         resolver = self.resolver()
