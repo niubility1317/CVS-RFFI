@@ -1,0 +1,47 @@
+{
+  "observed_unix": 1790811053.224798,
+  "process": {
+    "pid": 501716,
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_affine_joint_analysis_20261001_r02/tools/summarize_d92_affine_joint_probe.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_affine_joint_support_20261001_r01/configs/d92_affine_joint_support_20261001.json",
+      "--run-root",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-affine-joint-support-m2-r01",
+      "--output",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-affine-joint-support-m2-r01/results/support_summary"
+    ],
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_affine_joint_analysis_20261001_r02",
+    "commit": "1acc83a584ace40f294a433ace80629472ee2525",
+    "live_argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_affine_joint_analysis_20261001_r02/tools/summarize_d92_affine_joint_probe.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_affine_joint_support_20261001_r01/configs/d92_affine_joint_support_20261001.json",
+      "--run-root",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-affine-joint-support-m2-r01",
+      "--output",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-affine-joint-support-m2-r01/results/support_summary"
+    ],
+    "live_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_affine_joint_analysis_20261001_r02"
+  },
+  "activity": {
+    "state": "R",
+    "user_cpu_ticks": 7732,
+    "system_cpu_ticks": 362,
+    "threads": 3,
+    "start_ticks": 5870553,
+    "rss": "2007232 kB",
+    "peak_rss": "2007232 kB",
+    "read_character_bytes": 1049790414,
+    "disk_read_bytes": 4096
+  },
+  "summary_exists": false,
+  "analysis_execution": null,
+  "failure_log": null,
+  "log_bytes": 0,
+  "performance_read_or_printed": false
+}
