@@ -3,7 +3,7 @@
 - run_id：`20260930-phase2-d92-joint-channel-support-m2-r01`
 - group_id：`d92-joint-channel-support`；类别：`diagnostic`；阶段：`Phase2-support-only-diagnostic`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -29,3 +29,5 @@ LocalRidge为最终分类器；支持集内折监督训练736个有界分块保�
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
 
 VERIFIED：joint-channel核心/入口/summary/编排76项不同合成检查通过；新结构独立P0/P1闭合；已生成并登记四row/160支持任务，preflight独立核实四缓存和practical residual绑定未改变。当前PLANNED，尚未启动，无真实性能结果，root唯一launch owner。
+
+VERIFIED：joint-channel run唯一发布，runtime commit f18198054cd4ad66375ede114e4984349f3b31b4；独立读回核实supervisor37141及CPU worker37153/37154存活且argv/CWD匹配，rx3两row训练中、rx1两rowPENDING。已有完整实际训练STEP/FIT日志，尚无四row完整结果；不以partial评价/调参，无query/source样本读取。

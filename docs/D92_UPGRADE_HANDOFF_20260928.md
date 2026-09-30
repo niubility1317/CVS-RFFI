@@ -1,3 +1,11 @@
+## 最新状态：通道联合实验唯一启动并独立核实RUNNING（2026-09-30）
+
+VERIFIED：joint-channel run唯一发布，runtime commit f18198054cd4ad66375ede114e4984349f3b31b4；独立读回核实supervisor37141及CPU worker37153/37154存活且argv/CWD匹配，rx3两row训练中、rx1两rowPENDING。已有完整实际训练STEP/FIT日志，尚无四row完整结果；不以partial评价/调参，无query/source样本读取。
+
+run 20260930-phase2-d92-joint-channel-support-m2-r01；spec configs/d92_joint_channel_support_20260930.json；release d92_joint_channel_support_20260930_r01。prepare/new/preflight/publish均已完成，禁止重复。76项不同检查通过、新结构独立P0/P1闭合。只监控本run同一进程与产物；四row全部JOINT_CHANNEL_PROBE_COMPLETE后运行tools/analyze_d92_joint_channel_probe.py --spec configs/d92_joint_channel_support_20260930.json --analysis-release d92_joint_channel_analysis_20260930_r01（尚未创建），独立全量汇总与训练日志复盘。
+
+新机制为736参数/731自由度的分支保范通道adapter，通过LocalRidge间隔目标监督更新；B后C继承。完整K×新增类数/分层B/C旧新/H/下降/差距和实际资源待测；A=N/A，B0不是A。没有新性能或省算力结论，目标ACTIVE。健康实验不干预，不读query或源样本；既有失败产物保留。
+
 ## 最新状态：通道联合实现76项通过，已预登记PLANNED待唯一发布（2026-09-30）
 
 VERIFIED：joint-channel核心/入口/summary/编排76项不同合成检查通过；新结构独立P0/P1闭合；已生成并登记四row/160支持任务，preflight独立核实四缓存和practical residual绑定未改变。当前PLANNED，尚未启动，无真实性能结果，root唯一launch owner。
