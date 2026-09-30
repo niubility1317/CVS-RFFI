@@ -40,6 +40,29 @@ def validate_split(train_ids, query_ids):
         raise ValueError('Duplicate physical IDs')
     if set(train_ids) & set(query_ids): raise ValueError('Training/query physical-ID overlap')
 
+def data_contract_path(data):
+    path = Path(data).with_suffix('.json')
+    if not path.is_file(): raise FileNotFoundError(f'Missing data contract: {path}')
+    return path
+
+def load_diagnostic_input(path):
+    """Read this fixed six-class diagnostic schema, withholding query truth."""
+    with np.load(path, allow_pickle=False) as data:
+        required = {'x', 'y', 'train', 'ids'}
+        if not required <= set(data.files): raise ValueError('Missing diagnostic fields')
+        x, mask, ids = data['x'], data['train'], data['ids']
+        if x.ndim != 3 or x.shape[1:] != (256, 2): raise ValueError('Expected N,256,2 IQ')
+        if mask.dtype != np.bool_ or mask.shape != (len(x),): raise ValueError('Role mask must be boolean N-vector')
+        if ids.shape != (len(x),): raise ValueError('Physical IDs must be N-vector')
+        if not mask.any() or mask.all(): raise ValueError('Training or query role is empty')
+        if not np.isfinite(x).all(): raise ValueError('IQ must be finite')
+        validate_split(ids[mask], ids[~mask])
+        labels = data['y']
+        if labels.shape != (len(x),) or labels.dtype.kind not in 'iu': raise ValueError('Labels must be integer N-vector')
+        train_labels = labels[mask]
+        if set(train_labels.tolist()) != set(range(6)): raise ValueError('Expected six registered training classes')
+        return x[mask], train_labels, x[~mask], ids[~mask]
+
 def channel_spectrogram(iq, window=256, overlap=128):
     # Same operations as author preprocessing, with explicit short-IQ adaptation.
     iq = np.asarray(iq)

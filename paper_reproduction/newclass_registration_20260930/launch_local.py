@@ -7,14 +7,16 @@ import time
 from pathlib import Path
 
 p=argparse.ArgumentParser(); p.add_argument('--method',choices=['issl','lora'],required=True)
-p.add_argument('--output',required=True); args=p.parse_args()
+p.add_argument('--output',required=True); p.add_argument('--epochs',type=int,default=1); args=p.parse_args()
+if args.epochs<1: raise ValueError('Positive epoch budget required')
 out=Path(args.output).resolve(); out.parent.mkdir(parents=True,exist_ok=True)
 if out.exists(): raise FileExistsError(out)
 log_path=out.with_suffix('.stdout.log'); launch_path=out.with_suffix('.launch.json')
 if log_path.exists() or launch_path.exists(): raise FileExistsError('Launch evidence already exists')
 command=[sys.executable,'-X','utf8',str(Path(__file__).with_name('acceptance.py').resolve()),
          '--method',args.method,'--data',str(Path('local_artifacts/newclass_registration_20260930/wisig_diagnostic.npz').resolve()),
-         '--output',str(out)]
+         '--output',str(out),'--base-epochs',str(args.epochs),'--ssl-epochs',str(args.epochs),
+         '--downstream-epochs',str(args.epochs),'--lora-epochs',str(args.epochs)]
 with log_path.open('x',encoding='utf-8') as log:
     process=subprocess.Popen(command,stdout=log,stderr=subprocess.STDOUT,cwd=Path.cwd())
     launch_path.write_text(json.dumps({'pid':process.pid,'command':command,'cwd':str(Path.cwd()),'log':str(log_path)},indent=2)+'\n',encoding='utf-8')

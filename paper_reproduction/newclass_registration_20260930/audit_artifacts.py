@@ -4,10 +4,12 @@ import json
 from pathlib import Path
 import numpy as np
 import torch
-from runtime import load_module, expand_head
+from runtime import load_module, expand_head, load_diagnostic_input
+from acceptance import predict
 
 p=argparse.ArgumentParser(); p.add_argument('--method',required=True,choices=['issl','lora'])
 p.add_argument('--output',required=True); args=p.parse_args(); out=Path(args.output)
+if (out/'artifact_audit.json').exists(): raise FileExistsError('Artifact audit already exists')
 resolved=json.loads((out/'resolved_config.json').read_text(encoding='utf-8'))
 acceptance=json.loads((out/'acceptance.json').read_text(encoding='utf-8'))
 metrics=json.loads((out/'metrics.json').read_text(encoding='utf-8'))
@@ -15,11 +17,17 @@ rows=[json.loads(line) for line in (out/'steps.jsonl').read_text(encoding='utf-8
 steps=[r for r in rows if not r.get('summary',False)]
 assert len(steps)==acceptance['steps']
 assert all(np.isfinite(r['loss']) and np.isfinite(r['grad_norm']) for r in steps)
+x,labels,query,query_ids=load_diagnostic_input(resolved['data'])
 with np.load(out/'predictions.npz',allow_pickle=False) as z:
-    assert len(z['ids'])==384 and len(set(z['ids']))==384
-    assert all(len(z[k])==384 for k in z.files if k!='ids')
+    saved={k:z[k].copy() for k in z.files}
+    assert np.array_equal(saved['ids'],query_ids)
+    assert len(saved['ids'])==len(set(saved['ids']))
+    assert all(len(saved[k])==len(query_ids) for k in saved if k!='ids')
 loaded=[]
 torch.set_num_threads(4)
+torch.backends.cudnn.benchmark=False
+device=torch.device(resolved['device'])
+prediction_reload_checks=[]
 if args.method=='issl':
     module=load_module(Path(resolved['issl_source'])/'resnet.py','issl_reload')
     for name in ['base','ssl','downstream','incremental_baseline']:
@@ -31,7 +39,19 @@ if args.method=='issl':
         with torch.no_grad(): logits,_=model(torch.ones(2,2,256))
         assert logits.shape==(2,3 if name=='base' else 6) and torch.isfinite(logits).all()
         loaded.append(name+'.pt')
-    assert len([r for r in steps if r['stage']=='ssl'])==18
+        if name in ['base','downstream','incremental_baseline']:
+            stage={'base':'A','downstream':'C','incremental_baseline':'C_incremental_baseline'}[name]
+            restored=predict(model.to(device),query,device)
+            assert np.array_equal(restored,saved[stage]),f'Checkpoint prediction mismatch: {stage}'
+            prediction_reload_checks.append(stage)
+        if name=='base':
+            assert Path(payload['training_ids_ref']).is_file(), 'Invalid checkpoint data contract locator'
+    counts={'base':resolved['base_epochs']*((labels<3).sum()//128),
+            'ssl':resolved['ssl_epochs']*( (len(labels)+(labels<3).sum())//64),
+            'downstream_transfer':resolved['downstream_epochs']*(len(labels)//128),
+            'incremental_baseline':resolved['downstream_epochs']*(len(labels)//128)}
+    for stage,count in counts.items():
+        assert len([r for r in steps if r['stage']==stage])==count
     assert all(r['kd_student_gradient'] is False and r['zero_grad'] is False for r in steps if r['stage']=='ssl')
 else:
     module=load_module(Path(resolved['lora_torch_source'])/'Openset_RFFI/deep_learning_models.py','lora_reload')
@@ -41,8 +61,24 @@ else:
     with torch.no_grad(): embeddings=model(torch.ones(2,1,26,6))
     assert embeddings.shape==(2,512) and torch.isfinite(embeddings).all()
     loaded=['extractor.pt']
+    assert len(steps)==resolved['lora_epochs']*((labels<3).sum()//32)
+    from runtime import channel_spectrogram
+    from sklearn.neighbors import KNeighborsClassifier
+    model=model.to(device)
+    def features(iq):
+        spec=channel_spectrogram(iq,64,32); result=[]
+        with torch.no_grad():
+            for start in range(0,len(spec),64):
+                result.append(model(torch.from_numpy(spec[start:start+64]).permute(0,3,1,2).to(device)).cpu().numpy())
+        return np.concatenate(result)
+    enrollment=features(x); test=features(query)
+    for stage,mask in [('A',labels<3),('C',np.ones(len(labels),dtype=bool))]:
+        classifier=KNeighborsClassifier(n_neighbors=15,metric='euclidean').fit(enrollment[mask],labels[mask])
+        assert np.array_equal(classifier.predict(test),saved[stage]),f'Reloaded enrollment prediction mismatch: {stage}'
+        prediction_reload_checks.append(stage)
 result={'status':'VERIFIED','method':args.method,'steps':len(steps),'prediction_ids':384,
         'checkpoint_reload_strict':loaded,'all_step_losses_gradients_finite':True,
+        'checkpoint_predictions_identical':prediction_reload_checks,'scoring_stage_coverage':list(saved),
         'claim_scope':'functional acceptance only; no new training or performance selection'}
 (out/'artifact_audit.json').write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
 print(json.dumps(result))

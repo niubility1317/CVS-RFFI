@@ -15,7 +15,8 @@ import numpy as np
 import torch
 from torch.nn import functional as F
 from sklearn.neighbors import KNeighborsClassifier
-from runtime import verify_source, load_module, expand_head, channel_spectrogram
+from runtime import (verify_source, load_module, expand_head, channel_spectrogram,
+                     load_diagnostic_input, data_contract_path)
 
 def write_json(path, payload):
     Path(path).write_text(json.dumps(payload,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
@@ -99,7 +100,7 @@ def issl(args,x,y,query,out,log,device):
     initial=copy.deepcopy(model.state_dict())
     train_ce(model,x[old_mask],y[old_mask],args.base_epochs,128,.03,'base',device,log)
     base=copy.deepcopy(model)
-    torch.save({'state_dict':base.state_dict(),'initialization':'scratch','training_ids_ref':str(args.data)+'.json'},out/'base.pt')
+    torch.save({'state_dict':base.state_dict(),'initialization':'scratch','training_ids_ref':str(data_contract_path(args.data))},out/'base.pt')
     a=predict(base,query,device)
     # main_self_supervised tuple unpack runtime repair; expansion itself unchanged.
     # Separate official scripts serialize after base eval: no base gradients,
@@ -114,9 +115,10 @@ def issl(args,x,y,query,out,log,device):
     qi=np.random.permutation(len(ssl_x))[:kk]
     queue,_=key(batch_tensor(ssl_x[qi],device,crop=218)); queue=queue.detach()
     # Confirm the source KD issue numerically; do not silently fix the method.
-    probe=torch.randn(4,3,device=device,requires_grad=True)
-    kd.MultiClassCrossEntropy(probe,torch.randn_like(probe)).backward()
-    kd_detached=probe.grad is None
+    with torch.random.fork_rng(devices=[device.index or 0]):
+        probe=torch.randn(4,3,device=device,requires_grad=True)
+        kd.MultiClassCrossEntropy(probe,torch.randn_like(probe)).backward()
+        kd_detached=probe.grad is None
     if not kd_detached: raise AssertionError('Pinned KD semantics changed')
     for epoch in range(args.ssl_epochs):
         start=time.perf_counter(); losses=[]
@@ -139,7 +141,8 @@ def issl(args,x,y,query,out,log,device):
             log.log(stage='ssl',epoch=epoch,step=step,loss=float(loss.detach()),contrastive=float(loss_new.detach()),
                     kd=float(loss_old.detach()),kd_weight=.5,contrastive_weight=.5,kd_student_gradient=False,
                     zero_grad=False,negative_queue_layout='author_reshape_not_transpose',queue_size=len(queue),
-                    momentum=.99,temperature_contrastive=5,temperature_kd=20,lr=1e-5,grad_norm=g,source_validation=None)
+                    momentum=.99,temperature_contrastive=5,temperature_kd=20,
+                    lr=optimizer.param_groups[0]['lr'],grad_norm=g,source_validation=None)
         scheduler.step()
         log.log(stage='ssl',epoch=epoch,summary=True,loss=float(np.mean(losses)),seconds=time.perf_counter()-start)
     torch.save({'state_dict':model.state_dict(),'parent':'base.pt','stage':'ssl'},out/'ssl.pt')
@@ -230,13 +233,18 @@ def main():
     torch.set_num_threads(4); torch.backends.cudnn.benchmark=False
     device=torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
     if device.type=='cuda': torch.cuda.manual_seed_all(args.seed); torch.cuda.reset_peak_memory_stats()
-    with np.load(args.data,allow_pickle=False) as data:
-        mask=data['train']; x=data['x'][mask]; y=data['y'][mask] # query labels never read
-        query=data['x'][~mask]; ids=data['ids'][~mask]
-    if set(y.tolist())!=set(range(6)) or x.shape[1:]!=(256,2): raise ValueError('Unexpected diagnostic data')
+    x,y,query,ids=load_diagnostic_input(args.data)
+    contract=data_contract_path(args.data)
     config=vars(args)|{'device':str(device),'torch':torch.__version__,'pid':os.getpid(),'cwd':str(Path.cwd()),
                       'claim_scope':'real WiSig execution acceptance only','checkpoint':'scratch',
-                      'gpu_name':torch.cuda.get_device_name() if device.type=='cuda' else None}
+                      'gpu_name':torch.cuda.get_device_name() if device.type=='cuda' else None,
+                      'data_contract_ref':str(contract),'train_samples':len(x),'query_samples':len(query),
+                      'old_classes':3,'new_classes':3,'crop':218 if args.method=='issl' else None,
+                      'optimization':{'base':{'optimizer':'Adam','lr':.03,'batch':128,'step_lr_every':100,'gamma':.5},
+                          'ssl':{'optimizer':'Adam','lr':1e-5,'batch':64,'step_lr_every':100,'gamma':.8,'K':1000,'tau':5,'T':20,'momentum':.99},
+                          'transfer':{'optimizer':'Adam','lr':.03,'batch':128,'step_lr_every':100,'gamma':.5},
+                          'incremental':{'optimizer':'Adam','lr':1e-4,'batch':128,'step_lr_every':100,'gamma':.5}}
+                          if args.method=='issl' else {'optimizer':'RMSprop','lr':.001,'alpha':.9,'eps':1e-7,'batch':32,'margin':.1,'neighbors':15,'stft_window':64,'stft_overlap':32}}
     write_json(out/'resolved_config.json',config); print(json.dumps(config),flush=True)
     log=Logger(out); start=time.perf_counter()
     predictions,checks=(issl if args.method=='issl' else lora)(args,x,y,query,out,log,device)
