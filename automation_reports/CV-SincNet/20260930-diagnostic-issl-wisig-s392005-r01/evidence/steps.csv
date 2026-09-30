@@ -1,0 +1,38 @@
+ce,contrastive,contrastive_weight,epoch,grad_norm,kd,kd_student_gradient,kd_weight,loss,lr,momentum,negative_queue_layout,queue_size,seconds,source_validation,stage,step,summary,temperature_contrastive,temperature_kd,validation_note,zero_grad
+1.176278829574585,,,0,7.381111145019531,,,,1.176278829574585,0.03,,,,,,base,0,,,,diagnostic has no model-selection validation; no query feedback,
+16.901763916015625,,,0,53.19589614868164,,,,16.901763916015625,0.03,,,,,,base,1,,,,diagnostic has no model-selection validation; no query feedback,
+1.8292133808135986,,,0,9.252054214477539,,,,1.8292133808135986,0.03,,,,,,base,2,,,,diagnostic has no model-selection validation; no query feedback,
+,,,0,,,,,6.635752042134603,,,,,17.125206299999263,,base,,True,,,,
+,10843147.0,0.5,0,5642246.0,1.1890127658843994,False,0.5,5421574.0,1e-05,0.99,author_reshape_not_transpose,225,,,ssl,0,,5,20,,False
+,8961490.0,0.5,0,13182245.0,1.1841135025024414,False,0.5,4480745.5,1e-05,0.99,author_reshape_not_transpose,289,,,ssl,1,,5,20,,False
+,10398718.0,0.5,0,15459585.0,1.1877542734146118,False,0.5,5199359.5,1e-05,0.99,author_reshape_not_transpose,353,,,ssl,2,,5,20,,False
+,11422092.0,0.5,0,18506802.0,1.1954333782196045,False,0.5,5711046.5,1e-05,0.99,author_reshape_not_transpose,417,,,ssl,3,,5,20,,False
+,9030238.0,0.5,0,21891386.0,1.1959834098815918,False,0.5,4515119.5,1e-05,0.99,author_reshape_not_transpose,481,,,ssl,4,,5,20,,False
+,9149663.0,0.5,0,23368532.0,1.1962629556655884,False,0.5,4574832.0,1e-05,0.99,author_reshape_not_transpose,545,,,ssl,5,,5,20,,False
+,8607162.0,0.5,0,25363876.0,1.1843161582946777,False,0.5,4303581.5,1e-05,0.99,author_reshape_not_transpose,609,,,ssl,6,,5,20,,False
+,8511301.0,0.5,0,27620346.0,1.1871421337127686,False,0.5,4255651.0,1e-05,0.99,author_reshape_not_transpose,673,,,ssl,7,,5,20,,False
+,8938992.0,0.5,0,31259802.0,1.1880156993865967,False,0.5,4469496.5,1e-05,0.99,author_reshape_not_transpose,737,,,ssl,8,,5,20,,False
+,8758909.0,0.5,0,34915028.0,1.1861305236816406,False,0.5,4379455.0,1e-05,0.99,author_reshape_not_transpose,801,,,ssl,9,,5,20,,False
+,8736118.0,0.5,0,38367284.0,1.1890171766281128,False,0.5,4368059.5,1e-05,0.99,author_reshape_not_transpose,865,,,ssl,10,,5,20,,False
+,8927808.0,0.5,0,41969248.0,1.1883658170700073,False,0.5,4463904.5,1e-05,0.99,author_reshape_not_transpose,929,,,ssl,11,,5,20,,False
+,8555173.0,0.5,0,45794936.0,1.1933069229125977,False,0.5,4277587.0,1e-05,0.99,author_reshape_not_transpose,993,,,ssl,12,,5,20,,False
+,7159703.0,0.5,0,47062672.0,1.184067726135254,False,0.5,3579852.0,1e-05,0.99,author_reshape_not_transpose,993,,,ssl,13,,5,20,,False
+,7156460.0,0.5,0,49236064.0,1.189072608947754,False,0.5,3578230.5,1e-05,0.99,author_reshape_not_transpose,993,,,ssl,14,,5,20,,False
+,6451393.5,0.5,0,52048516.0,1.1818715333938599,False,0.5,3225697.25,1e-05,0.99,author_reshape_not_transpose,993,,,ssl,15,,5,20,,False
+,6.988558769226074,0.5,0,52048516.0,1.1851602792739868,False,0.5,4.086859703063965,1e-05,0.99,author_reshape_not_transpose,993,,,ssl,16,,5,20,,False
+,6.97479248046875,0.5,0,52048516.0,1.1920210123062134,False,0.5,4.083406925201416,1e-05,0.99,author_reshape_not_transpose,993,,,ssl,17,,5,20,,False
+,,,0,,,,,3933566.662237035,,,,,1.3594033999997919,,ssl,,True,,,,
+2.3292059898376465,,,0,6.584322929382324,,,,2.3292059898376465,0.03,,,,,,downstream_transfer,0,,,,diagnostic has no model-selection validation; no query feedback,
+4.179833889007568,,,0,11.414701461791992,,,,4.179833889007568,0.03,,,,,,downstream_transfer,1,,,,diagnostic has no model-selection validation; no query feedback,
+2.6137900352478027,,,0,3.9771535396575928,,,,2.6137900352478027,0.03,,,,,,downstream_transfer,2,,,,diagnostic has no model-selection validation; no query feedback,
+2.0927252769470215,,,0,1.86305832862854,,,,2.0927252769470215,0.03,,,,,,downstream_transfer,3,,,,diagnostic has no model-selection validation; no query feedback,
+1.6356656551361084,,,0,0.32588323950767517,,,,1.6356656551361084,0.03,,,,,,downstream_transfer,4,,,,diagnostic has no model-selection validation; no query feedback,
+1.5684702396392822,,,0,0.23973849415779114,,,,1.5684702396392822,0.03,,,,,,downstream_transfer,5,,,,diagnostic has no model-selection validation; no query feedback,
+,,,0,,,,,2.403281847635905,,,,,0.17229989999941608,,downstream_transfer,,True,,,,
+2.8313965797424316,,,0,4.026172637939453,3.329901695251465,,0.5,3.0806491374969482,0.0001,,,,,,incremental_baseline,0,,,,diagnostic has no model-selection validation; no query feedback,
+2.347766637802124,,,0,3.524512529373169,3.3098855018615723,,0.5,2.8288259506225586,0.0001,,,,,,incremental_baseline,1,,,,diagnostic has no model-selection validation; no query feedback,
+2.37874174118042,,,0,3.215211868286133,3.1879029273986816,,0.5,2.783322334289551,0.0001,,,,,,incremental_baseline,2,,,,diagnostic has no model-selection validation; no query feedback,
+1.6777806282043457,,,0,2.276888132095337,3.1424362659454346,,0.5,2.4101085662841797,0.0001,,,,,,incremental_baseline,3,,,,diagnostic has no model-selection validation; no query feedback,
+1.8955328464508057,,,0,2.4587454795837402,2.9904162883758545,,0.5,2.44297456741333,0.0001,,,,,,incremental_baseline,4,,,,diagnostic has no model-selection validation; no query feedback,
+1.7617928981781006,,,0,2.685577869415283,3.0442304611206055,,0.5,2.4030117988586426,0.0001,,,,,,incremental_baseline,5,,,,diagnostic has no model-selection validation; no query feedback,
+,,,0,,,,,2.658148725827535,,,,,0.17375899999933608,,incremental_baseline,,True,,,,

@@ -1,0 +1,59 @@
+{
+  "date": "2026-09-30",
+  "author_source_pins": {
+    "CSIL": {
+      "url": "https://github.com/pcwhy/CSIL",
+      "commit": "8ce8637daf4dc60eeb1c56bff64c050c5b2353e9"
+    },
+    "LoRa_RFFI": {
+      "url": "https://github.com/gxhen/LoRa_RFFI",
+      "commit": "00948769c05487315b88b7edf40d903fcf8e5b7d"
+    },
+    "MoPC-HR": {
+      "url": "https://github.com/xmuLdz/MoPC-HR",
+      "commit": "ae6554316ad1a2175920e330133a2f103408bf78"
+    },
+    "ISSL": {
+      "url": "https://github.com/Simple-up/ISSL",
+      "commit": "f58eda144063c7f150fbb7c0d0f31aaccb9d3bbe"
+    }
+  },
+  "lora_port": {
+    "author_official": false,
+    "url": "https://github.com/PoisonT2/RFFI_Torch",
+    "commit": "cc6e0e68c52d06869c8382cec0684a4cf651ee76"
+  },
+  "pdfs": {
+    "CSIL": {
+      "status": "VERIFIED",
+      "pages": 9,
+      "path": "E:/type10-7/local_artifacts/external_refs/pcwhy_CSIL/Class_incremental_learning_for_device_identification_in_IoT_IoT_16942_2021.pdf"
+    },
+    "LoRa_RFFI": {
+      "status": "VERIFIED",
+      "pages": 12,
+      "path": "E:/type10-7/local_artifacts/newclass_registration_20260930/papers/LoRa_RFFI.pdf",
+      "source": "https://arxiv.org/pdf/2107.02867"
+    },
+    "MoPC-HR": {
+      "status": "VERIFIED",
+      "pages": 15,
+      "path": "E:/type10-7/paper_reproduction/mopc_hr_non_exemplar_cil_sei/MoPC-HR_Non-Exemplar_Class-Incremental_Learning_for_SEI.pdf"
+    },
+    "ISSL": {
+      "status": "NOT_DOWNLOADED",
+      "doi": "10.1109/TCCN.2025.3583118",
+      "resolved_page": "https://ieeexplore.ieee.org/document/11050930/",
+      "direct_pdf_attempt": "HTTP418"
+    }
+  },
+  "original_data": {
+    "ISSL": "NOT_FOUND: author README no link; Dataset_50 identity/version unknown",
+    "LoRa_RFFI": "ACCOUNT_ACCESS_REQUIRED: DataPort page offers LoRa_RFFI.zip 15.55GB; no unauthenticated dataset link"
+  },
+  "wisig_acceptance": "VERIFIED: issl_r01 33 steps 4 reload checkpoints; lora_r01 12 steps 1 reload checkpoint",
+  "remaining_scope": [
+    "original-paper full-budget reproduction",
+    "formal CVS LEO registration comparison matrix"
+  ]
+}

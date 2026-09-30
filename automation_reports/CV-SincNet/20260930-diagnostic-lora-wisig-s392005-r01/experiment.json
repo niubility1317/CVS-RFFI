@@ -17,7 +17,7 @@
   "replaces_run_id": null,
   "authorization": "用户明确要求原论文与CVS两种口径；ISSL数据下载不可得时保留功能在WiSig上跑通验收",
   "code": {
-    "commit": null,
+    "commit": "f2aa38aef609d9e8e15f2dfff44e090b778b1852",
     "checkout": "E:\\type10-7",
     "environment": "ssr-gpu; torch 2.10.0+cu128",
     "cwd": "E:\\type10-7"

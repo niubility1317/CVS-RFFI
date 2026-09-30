@@ -1,1 +1,4 @@
 {"at": "2026-09-30T10:25:10+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-09-30T10:27:26+00:00", "status": "RUNNING", "note": "PID24168、实际参数、CUDA0、CWD和逐步日志已读回；从零训练无外部权重", "evidence": ["local_artifacts/newclass_registration_20260930/issl_r01/resolved_config.json"], "row_id": null}
+{"at": "2026-09-30T10:28:32+00:00", "status": "ARTIFACTS_COMPLETE", "note": "33训练步和384条联合预测已读回；四个scratch链路state_dict存在，源代码运行验收完成，非论文准确率复现", "evidence": ["local_artifacts/newclass_registration_20260930/issl_r01/acceptance.json"], "row_id": null}
+{"at": "2026-09-30T10:33:53+00:00", "status": "ANALYZED", "note": "真实WiSig运行验收及独立评分完成；非原论文准确率或正式CVS比较", "evidence": ["E:\\type10-7\\automation_reports\\CV-SincNet\\20260930-diagnostic-issl-wisig-s392005-r01\\evidence\\artifact_audit.json"], "row_id": null}

@@ -1,0 +1,20 @@
+{
+  "method": "lora",
+  "data": "E:\\type10-7\\local_artifacts\\newclass_registration_20260930\\wisig_diagnostic.npz",
+  "output": "E:\\type10-7\\local_artifacts\\newclass_registration_20260930\\lora_r01",
+  "issl_source": "local_artifacts/external_refs/ISSL_20260930",
+  "lora_source": "local_artifacts/external_refs/LoRa_RFFI_20260930",
+  "lora_torch_source": "local_artifacts/external_refs/LoRa_RFFI_Torch_20260930",
+  "base_epochs": 1,
+  "ssl_epochs": 1,
+  "downstream_epochs": 1,
+  "lora_epochs": 1,
+  "seed": 392005,
+  "device": "cuda:0",
+  "torch": "2.10.0+cu128",
+  "pid": 14152,
+  "cwd": "E:\\type10-7",
+  "claim_scope": "real WiSig execution acceptance only",
+  "checkpoint": "scratch",
+  "gpu_name": "NVIDIA GeForce RTX 5070 Ti"
+}

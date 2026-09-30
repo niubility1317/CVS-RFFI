@@ -1,0 +1,26 @@
+{
+  "A": {
+    "old_accuracy": 0.9791666666666666,
+    "new_accuracy": null,
+    "H": null
+  },
+  "C": {
+    "old_accuracy": 0.9739583333333334,
+    "new_accuracy": 0.9635416666666666,
+    "H": 0.9687219982078853,
+    "macro_f1": 0.9690725600170077
+  },
+  "B": {
+    "old_accuracy": 0.9791666666666666,
+    "new_accuracy": null,
+    "H": null
+  },
+  "old_classes": 3,
+  "new_classes": 3,
+  "K": 128,
+  "query_per_class": 64,
+  "claim_scope": "Real WiSig execution diagnostic only; not accuracy reproduction",
+  "adaptation_gain_pp": 0.0,
+  "registration_old_drop_pp": 0.5208333333333259,
+  "final_old_new_gap_pp": 1.041666666666674
+}

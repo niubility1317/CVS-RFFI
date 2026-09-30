@@ -15,7 +15,7 @@ CSIL、MoPC-HR 的 CVS 适配已有完整历史结果，位置：`automation_rep
 |ISSL 作者代码|https://github.com/Simple-up/ISSL|f58eda144063c7f150fbb7c0d0f31aaccb9d3bbe|`local_artifacts/external_refs/ISSL_20260930`|
 |LoRa 第三方 Torch 端|https://github.com/PoisonT2/RFFI_Torch|cc6e0e68c52d06869c8382cec0684a4cf651ee76|`local_artifacts/external_refs/LoRa_RFFI_Torch_20260930`|
 
-MoPC-HR 已有源：`github_publish/CVS-RFFI-repo/local_artifacts/external_refs/MoPC-HR`，历史记录固定 ae6554316ad1a2175920e330133a2f103408bf78。原始仓库保持完整，不往其中写补丁。ISSL 没有许可证声明；本交付提交运行器及源引用，不重发作者源。
+MoPC-HR 已有作者源：https://github.com/xmuLdz/MoPC-HR ，本地 `github_publish/CVS-RFFI-repo/local_artifacts/external_refs/MoPC-HR`，已读回固定 commit ae6554316ad1a2175920e330133a2f103408bf78。原始仓库保持完整，不往其中写补丁。ISSL 没有许可证声明；本交付提交运行器及源引用，不重发作者源。
 
 LoRa 论文预印本下载： https://arxiv.org/pdf/2107.02867 ，本地 `local_artifacts/newclass_registration_20260930/papers/LoRa_RFFI.pdf`，PDF 12 页已解析核实。
 ISSL DOI https://doi.org/10.1109/TCCN.2025.3583118 ，解析到 IEEE document/11050930；未取得全文 PDF。作者仓库 README 只有方法名，无原始数据链接；入口引用 `Dataset_50` 与“徐云公开数据集”，不能据此确认数据版本/切分。LoRa 原数据 https://ieee-dataport.org/open-access/lorarffidataset 页面列出 15.55 GB `LoRa_RFFI.zip`，下载入口要求账户访问。原数据到位前，不声明原论文数值已复现。
@@ -43,6 +43,7 @@ ISSL DOI https://doi.org/10.1109/TCCN.2025.3583118 ，解析到 IEEE document/11
 默认每阶段 1 epoch，仅证明完整训练/预测/保存功能；原论文预算模板是 base=300、SSL=2000、downstream=300，不能靠更改预算冒称原论文数据复现。`acceptance.py` 不读取测试 truth，先固定带物理 ID 的 predictions.npz，再用独立 `score.py` 评分。原方法没有旧类专属适应阶段时 B=N/A。详细 loss 分量、权重、LR、梯度、queue 与方法状态保存在文本 stdout、steps.jsonl、steps.csv；epoch 汇总也在 JSONL。无源验证集时为 null 并说明，绝不取 query 选模。
 
 ```powershell
+& 'C:/Users/lh594/.conda/envs/ssr-gpu/python.exe' -X utf8 paper_reproduction/newclass_registration_20260930/prepare_sources.py
 & 'C:/Users/lh594/.conda/envs/ssr-gpu/python.exe' -X utf8 paper_reproduction/newclass_registration_20260930/test_runtime.py
 & 'C:/Users/lh594/.conda/envs/ssr-gpu/python.exe' -X utf8 paper_reproduction/newclass_registration_20260930/fetch_wisig_diagnostic.py --output local_artifacts/newclass_registration_20260930/wisig_diagnostic.npz
 # output 必须不存在；正式启动命令、预算和结果见各 experiment.json/report.md。
@@ -51,3 +52,16 @@ ISSL DOI https://doi.org/10.1109/TCCN.2025.3583118 ，解析到 IEEE document/11
 ```
 
 待完成：原数据/PDF补齐、原论文完整预算；正式 CVS 场景矩阵与 LEO/support 协议接入；任何按论文修复的算法变体。验收通过不能替代这些事项。
+
+## 本次已完成结果
+
+2026-09-30 真实 WiSig 验收 **VERIFIED**：ISSL 33 个训练步、384 条预测、4 个 checkpoint strict 重载；LoRa Torch 适配端 12 个训练步、384 条预测、1 个 checkpoint strict 重载。全部逐步 loss/梯度有限，输出与物理 ID 完整。运行设备 RTX 5070 Ti；端到端方法时间 ISSL 21.6653 秒、LoRa 24.6021 秒；Torch peak allocated 520555520/43555328 字节。源代码固定提交 f2aa38aef609d9e8e15f2dfff44e090b778b1852。
+
+|方法|旧类 A|旧类 B|注册后旧类 C|注册后新类 C|H|
+|---|---|---|---|---|---|
+|ISSL 保留作者行为|33.3333%|N/A|33.3333%|0%|0%|
+|LoRa WiSig Torch 端|97.9167%|97.9167%|97.3958%|96.3542%|96.8722%|
+
+两者每阶段只运行 1 epoch，old=3/new=3/K=128，同 RX 同日，不带 LEO；表格只附于运行诊断，不能作为论文准确率对照或正式 CVS 排名。ISSL 低准确率说明短预算未形成有效性能证据，未据此调参/重跑。原代码保留变体与未来论文修复变体不得混用。
+
+[ISSL 完整报告](../../automation_reports/CV-SincNet/20260930-diagnostic-issl-wisig-s392005-r01/report.md) · [LoRa 完整报告](../../automation_reports/CV-SincNet/20260930-diagnostic-lora-wisig-s392005-r01/report.md)。两份报告的 evidence 保存完整紧凑日志、实际参数、数据角色/物理 ID、独立评分与 artifact 审计；大体积权重、IQ、预测留在 `local_artifacts/newclass_registration_20260930/`。

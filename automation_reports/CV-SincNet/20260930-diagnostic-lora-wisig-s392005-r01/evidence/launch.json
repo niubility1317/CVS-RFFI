@@ -1,0 +1,17 @@
+{
+  "pid": 14152,
+  "command": [
+    "C:\\Users\\lh594\\.conda\\envs\\ssr-gpu\\python.exe",
+    "-X",
+    "utf8",
+    "E:\\type10-7\\paper_reproduction\\newclass_registration_20260930\\acceptance.py",
+    "--method",
+    "lora",
+    "--data",
+    "E:\\type10-7\\local_artifacts\\newclass_registration_20260930\\wisig_diagnostic.npz",
+    "--output",
+    "E:\\type10-7\\local_artifacts\\newclass_registration_20260930\\lora_r01"
+  ],
+  "cwd": "E:\\type10-7",
+  "log": "E:\\type10-7\\local_artifacts\\newclass_registration_20260930\\lora_r01.stdout.log"
+}

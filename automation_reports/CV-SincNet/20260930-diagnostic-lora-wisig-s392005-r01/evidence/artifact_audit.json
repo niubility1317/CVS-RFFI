@@ -1,0 +1,11 @@
+{
+  "status": "VERIFIED",
+  "method": "lora",
+  "steps": 12,
+  "prediction_ids": 384,
+  "checkpoint_reload_strict": [
+    "extractor.pt"
+  ],
+  "all_step_losses_gradients_finite": true,
+  "claim_scope": "functional acceptance only; no new training or performance selection"
+}
