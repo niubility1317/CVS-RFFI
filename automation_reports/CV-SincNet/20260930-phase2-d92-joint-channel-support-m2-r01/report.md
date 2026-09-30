@@ -35,3 +35,5 @@ VERIFIED：joint-channel run唯一发布，runtime commit f18198054cd4ad66375ede
 全日志collector8项检查通过，方法与运行配置未改变，完整scan待四row终止后执行。
 
 VERIFIED阶段进展：两个rx3 row各40任务完整完成，分别1872更新/7344头拟合/11232反向三角求解；rx1两row仍训练，当前累计113/160 parent。supervisor37141及当前CPU child46059/46486存活且argv/CWD匹配。没有完整四row结果，不读取或发布partial性能；运行代码/config不变。
+
+VERIFIED行级状态：rx1两row独立核实仍TRAINING_ON_SUPPORT，CPU child46059/46486存活且argv/CWD一致，分别已完成19/40 parent；rx3两row完整40/40，当前118/160。未完成四row，不执行分析或报告partial性能。
