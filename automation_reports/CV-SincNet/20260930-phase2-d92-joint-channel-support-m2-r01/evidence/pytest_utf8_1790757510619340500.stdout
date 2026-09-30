@@ -1,0 +1,169 @@
+F.F.FFF.                                                                 [100%]
+================================== FAILURES ===================================
+_____ CollectorTests.test_all_text_tail_and_false_earlystop_configuration _____
+
+self = <test_collect_d92_channel_training_diagnostics.CollectorTests testMethod=test_all_text_tail_and_false_earlystop_configuration>
+
+    def test_all_text_tail_and_false_earlystop_configuration(self):
+        with tempfile.TemporaryDirectory() as directory:
+>           lane, _, events = fixture(Path(directory)); result = collect.collect_lane(lane, 'row-a', ALGORITHM)
+
+tests\test_collect_d92_channel_training_diagnostics.py:198: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tools\collect_d92_channel_training_diagnostics.py:424: in collect_lane
+    first = metrics(steps[0], steps[0]['u_pre'], anchor) if steps else metrics(None)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+objective = {'active_box_count': 0, 'anchor': [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, ...], 'clipped_gradient_norm': 1.0, 'derivative_triangular_solve_count': 6, ...}
+u = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, ...]
+anchor = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, ...]
+
+    def metrics(objective, u=None, anchor=None):
+        objective = objective or {}; small = compact_event(objective)
+        values = {key: number(small.get(key)) for key in METRICS}
+        folds = objective.get('inner_folds')
+        if isinstance(folds, list) and folds and all('held_training_correct_count' in f for f in folds):
+            values['inner_training_correct_count'] = sum(f['held_training_correct_count'] for f in folds)
+        values['recorded_post_u_rms'] = number(objective.get('u_rms'))
+        values['recorded_post_u_max_abs'] = number(objective.get('u_max_abs'))
+>       values.update(vector_metrics(u, 'u', anchor), vector_metrics(objective.get('u_post'), 'u_post', anchor),
+            vector_metrics(objective.get('gradient'), 'gradient'))
+E       TypeError: update expected at most 1 argument, got 3
+
+tools\collect_d92_channel_training_diagnostics.py:209: TypeError
+_____ CollectorTests.test_full_stream_updates_margins_and_compact_vectors _____
+
+self = <test_collect_d92_channel_training_diagnostics.CollectorTests testMethod=test_full_stream_updates_margins_and_compact_vectors>
+
+    def test_full_stream_updates_margins_and_compact_vectors(self):
+        with tempfile.TemporaryDirectory() as directory:
+>           lane, _, _ = fixture(Path(directory)); result = collect.collect_lane(lane, 'row-a', ALGORITHM)
+
+tests\test_collect_d92_channel_training_diagnostics.py:122: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tools\collect_d92_channel_training_diagnostics.py:424: in collect_lane
+    first = metrics(steps[0], steps[0]['u_pre'], anchor) if steps else metrics(None)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+objective = {'active_box_count': 0, 'anchor': [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, ...], 'clipped_gradient_norm': 1.0, 'derivative_triangular_solve_count': 6, ...}
+u = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, ...]
+anchor = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, ...]
+
+    def metrics(objective, u=None, anchor=None):
+        objective = objective or {}; small = compact_event(objective)
+        values = {key: number(small.get(key)) for key in METRICS}
+        folds = objective.get('inner_folds')
+        if isinstance(folds, list) and folds and all('held_training_correct_count' in f for f in folds):
+            values['inner_training_correct_count'] = sum(f['held_training_correct_count'] for f in folds)
+        values['recorded_post_u_rms'] = number(objective.get('u_rms'))
+        values['recorded_post_u_max_abs'] = number(objective.get('u_max_abs'))
+>       values.update(vector_metrics(u, 'u', anchor), vector_metrics(objective.get('u_post'), 'u_post', anchor),
+            vector_metrics(objective.get('gradient'), 'gradient'))
+E       TypeError: update expected at most 1 argument, got 3
+
+tools\collect_d92_channel_training_diagnostics.py:209: TypeError
+_ CollectorTests.test_noinfo_remains_null_and_zero_gradient_still_has_eight_updates _
+
+self = <test_collect_d92_channel_training_diagnostics.CollectorTests testMethod=test_noinfo_remains_null_and_zero_gradient_still_has_eight_updates>
+
+    def test_noinfo_remains_null_and_zero_gradient_still_has_eight_updates(self):
+        with tempfile.TemporaryDirectory() as directory:
+>           lane, _, _ = fixture(Path(directory)); stages = collect.collect_lane(lane, 'row-a', ALGORITHM)['stages']
+
+tests\test_collect_d92_channel_training_diagnostics.py:158: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tools\collect_d92_channel_training_diagnostics.py:424: in collect_lane
+    first = metrics(steps[0], steps[0]['u_pre'], anchor) if steps else metrics(None)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+objective = {'active_box_count': 0, 'anchor': [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, ...], 'clipped_gradient_norm': 1.0, 'derivative_triangular_solve_count': 6, ...}
+u = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, ...]
+anchor = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, ...]
+
+    def metrics(objective, u=None, anchor=None):
+        objective = objective or {}; small = compact_event(objective)
+        values = {key: number(small.get(key)) for key in METRICS}
+        folds = objective.get('inner_folds')
+        if isinstance(folds, list) and folds and all('held_training_correct_count' in f for f in folds):
+            values['inner_training_correct_count'] = sum(f['held_training_correct_count'] for f in folds)
+        values['recorded_post_u_rms'] = number(objective.get('u_rms'))
+        values['recorded_post_u_max_abs'] = number(objective.get('u_max_abs'))
+>       values.update(vector_metrics(u, 'u', anchor), vector_metrics(objective.get('u_post'), 'u_post', anchor),
+            vector_metrics(objective.get('gradient'), 'gradient'))
+E       TypeError: update expected at most 1 argument, got 3
+
+tools\collect_d92_channel_training_diagnostics.py:209: TypeError
+________ CollectorTests.test_output_and_existing_destination_rejection ________
+
+self = <test_collect_d92_channel_training_diagnostics.CollectorTests testMethod=test_output_and_existing_destination_rejection>
+
+    def test_output_and_existing_destination_rejection(self):
+        with tempfile.TemporaryDirectory() as directory:
+>           root = Path(directory); lane, _, _ = fixture(root); parsed = collect.collect_lane(lane, 'row-a', ALGORITHM)
+
+tests\test_collect_d92_channel_training_diagnostics.py:227: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tools\collect_d92_channel_training_diagnostics.py:424: in collect_lane
+    first = metrics(steps[0], steps[0]['u_pre'], anchor) if steps else metrics(None)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+objective = {'active_box_count': 0, 'anchor': [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, ...], 'clipped_gradient_norm': 1.0, 'derivative_triangular_solve_count': 6, ...}
+u = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, ...]
+anchor = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, ...]
+
+    def metrics(objective, u=None, anchor=None):
+        objective = objective or {}; small = compact_event(objective)
+        values = {key: number(small.get(key)) for key in METRICS}
+        folds = objective.get('inner_folds')
+        if isinstance(folds, list) and folds and all('held_training_correct_count' in f for f in folds):
+            values['inner_training_correct_count'] = sum(f['held_training_correct_count'] for f in folds)
+        values['recorded_post_u_rms'] = number(objective.get('u_rms'))
+        values['recorded_post_u_max_abs'] = number(objective.get('u_max_abs'))
+>       values.update(vector_metrics(u, 'u', anchor), vector_metrics(objective.get('u_post'), 'u_post', anchor),
+            vector_metrics(objective.get('gradient'), 'gradient'))
+E       TypeError: update expected at most 1 argument, got 3
+
+tools\collect_d92_channel_training_diagnostics.py:209: TypeError
+___ CollectorTests.test_parameter_adam_mutation_and_final_backward_rejected ___
+
+self = <test_collect_d92_channel_training_diagnostics.CollectorTests testMethod=test_parameter_adam_mutation_and_final_backward_rejected>
+
+    def test_parameter_adam_mutation_and_final_backward_rejected(self):
+        with tempfile.TemporaryDirectory() as directory:
+            lane, stages, events = fixture(Path(directory))
+            final = next(e for e in events if e['event'] == 'JOINT_CHANNEL_FIT' and e['mode'] == 'C_reset')
+            step = final['steps'][0]
+            step['u_post'][0] += .001; step['u_post'][1] -= .001
+            event = next(e for e in events if e['event'] == 'JOINT_CHANNEL_STEP' and e['mode'] == 'C_reset')
+            event['u_post'] = step['u_post'][:]
+            # Update the compact final copy too, so the independent Adam check is reached.
+            position = next(i for i, row in enumerate(stages) if row.get('state') == 'C_reset')
+            stages[position] = collect.compact_event(dict(final, event='CANDIDATE_FIT', score_seconds=.01))
+            save(lane, stages, events)
+>           with self.assertRaisesRegex(ValueError, 'KKT'): collect.collect_lane(lane, 'row-a', ALGORITHM)
+
+tests\test_collect_d92_channel_training_diagnostics.py:187: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tools\collect_d92_channel_training_diagnostics.py:424: in collect_lane
+    first = metrics(steps[0], steps[0]['u_pre'], anchor) if steps else metrics(None)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def metrics(objective, u=None, anchor=None):
+        objective = objective or {}; small = compact_event(objective)
+        values = {key: number(small.get(key)) for key in METRICS}
+        folds = objective.get('inner_folds')
+        if isinstance(folds, list) and folds and all('held_training_correct_count' in f for f in folds):
+            values['inner_training_correct_count'] = sum(f['held_training_correct_count'] for f in folds)
+        values['recorded_post_u_rms'] = number(objective.get('u_rms'))
+        values['recorded_post_u_max_abs'] = number(objective.get('u_max_abs'))
+>       values.update(vector_metrics(u, 'u', anchor), vector_metrics(objective.get('u_post'), 'u_post', anchor),
+            vector_metrics(objective.get('gradient'), 'gradient'))
+E       TypeError: update expected at most 1 argument, got 3
+
+tools\collect_d92_channel_training_diagnostics.py:209: TypeError
+=========================== short test summary info ===========================
+FAILED tests/test_collect_d92_channel_training_diagnostics.py::CollectorTests::test_all_text_tail_and_false_earlystop_configuration
+FAILED tests/test_collect_d92_channel_training_diagnostics.py::CollectorTests::test_full_stream_updates_margins_and_compact_vectors
+FAILED tests/test_collect_d92_channel_training_diagnostics.py::CollectorTests::test_noinfo_remains_null_and_zero_gradient_still_has_eight_updates
+FAILED tests/test_collect_d92_channel_training_diagnostics.py::CollectorTests::test_output_and_existing_destination_rejection
+FAILED tests/test_collect_d92_channel_training_diagnostics.py::CollectorTests::test_parameter_adam_mutation_and_final_backward_rejected

@@ -1,3 +1,9 @@
+## 最新补充：健康通道run继续运行，全日志collector8项通过（2026-09-30）
+
+运行代码仍为f18198054cd4ad66375ede114e4984349f3b31b4；supervisor37141独立核实存活，当前未完成四row，禁止重启/热改/重复publish。新增tools/collect_d92_channel_training_diagnostics.py、tests与说明仅用于完成后只读全日志分析，初轮字典合并bug已定点修复，8项不同collector检查全部通过，不重复原76项算法检查。
+
+四row完成后先独立analyze既有run，再执行collector：--run-root /home/szu2070436088/2510044040/CV-SincNet/runs/20260930-phase2-d92-joint-channel-support-m2-r01 --run-log /home/szu2070436088/2510044040/CV-SincNet/releases/d92_joint_channel_support_20260930_r01/run.log --ssh-host N607 --ssh-config E:/type10-7/tools/n607_ssh_config --remote-python /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python --output E:/type10-7/automation_reports/CV-SincNet/20260930-phase2-d92-joint-channel-support-m2-r01/results/training_diagnostics。collector拒绝未完成run，不读outer-held score trace/query/source，不写远端，只生成新的本机分析目录。完整结果、真实计算开销及新旧改善尚未核实；目标ACTIVE。
+
 ## 最新状态：通道联合实验唯一启动并独立核实RUNNING（2026-09-30）
 
 VERIFIED：joint-channel run唯一发布，runtime commit f18198054cd4ad66375ede114e4984349f3b31b4；独立读回核实supervisor37141及CPU worker37153/37154存活且argv/CWD匹配，rx3两row训练中、rx1两rowPENDING。已有完整实际训练STEP/FIT日志，尚无四row完整结果；不以partial评价/调参，无query/source样本读取。
