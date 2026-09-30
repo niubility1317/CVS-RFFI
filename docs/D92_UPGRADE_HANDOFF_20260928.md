@@ -1,3 +1,9 @@
+## 最新补充：解析截距实现映射完成，r02持续工作已核实（2026-10-01）
+
+VERIFIED：docs/D92_AJLR_AFFINE_IMPLEMENTATION_MAP_20261001.md完成，只映射已审计公式到实际函数、状态、伴随、RHS/字节费用和必要合成测试。没有修改核心/配置/入口、冻结候选或执行新实验。明确区分τ0非零等价核与零核，并限定actual B为同一新run、同一row/fold当次B→C继承，均衡理论等价不允许跨run复用目标适应状态。
+
+两次独立只读activity证据analysis_readback_1790798348699882300.json和analysis_readback_1790799326076421400.json具有同一PID394399、start_ticks4430666及匹配argv/cwd；user CPU ticks从285036增至456285，累计读取字节从38419386993增至59762336689。观测时summary尚未生成，不读取partial性能，不推测完成百分比或剩余时间。实际analysis commit仍fc5cd282f93e2b7cc1a2fcd686b4217fb4abfe4a；等待既有handle99201，严禁重复analyze。下一步完整summary后执行已验证报告器和两阶段collector，目标ACTIVE。
+
 ## 最新补充：分数尺度数学审计完成，r02仍运行（2026-10-01）
 
 VERIFIED：新docs/D92_AJLR_SCORE_SCALE_MATH_AUDIT_20261001.md完成，只根据当前数学/原始论文推导，无项目外层结果读取、实现或候选冻结。理想onehot的类数效应、正共享scalar固定判决不变、CE/adapter完整导数与无惩罚可分边界均明确；不把低概率等同弱adapter梯度，不用标签范围假定实际ridge/held分数有±1上界。后续只结合完整训练归档判断，不能归因temperature或声明性能改善。

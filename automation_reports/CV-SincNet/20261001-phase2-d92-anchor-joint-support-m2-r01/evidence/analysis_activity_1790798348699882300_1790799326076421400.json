@@ -1,0 +1,26 @@
+{
+  "status": "VERIFIED_ONGOING_ANALYSIS_WORK_AT_OBSERVED_TIMES",
+  "scope": "READ_ONLY_PROCESS_ACTIVITY_NOT_PERFORMANCE",
+  "evidence": [
+    "automation_reports/CV-SincNet/20261001-phase2-d92-anchor-joint-support-m2-r01/evidence/analysis_readback_1790798348699882300.json",
+    "automation_reports/CV-SincNet/20261001-phase2-d92-anchor-joint-support-m2-r01/evidence/analysis_readback_1790799326076421400.json"
+  ],
+  "pid": 394399,
+  "start_ticks": 4430666,
+  "observed_unix": [
+    1790798286.898112,
+    1790799264.2821715
+  ],
+  "observation_wall_seconds": 977.3840594291687,
+  "deltas": {
+    "user_cpu_ticks": 171249,
+    "system_cpu_ticks": 3785,
+    "read_character_bytes": 21342949696
+  },
+  "analysis_commit": "fc5cd282f93e2b7cc1a2fcd686b4217fb4abfe4a",
+  "performance_read_or_printed": false,
+  "progress_percentage": null,
+  "remaining_time_seconds": null,
+  "analysis_restarted": false,
+  "note": "rchar includes cached reads; disk_read_bytes is not evidence of no work. CPU units remain ticks."
+}
