@@ -45,3 +45,5 @@ ANALYSIS_REPAIR_READY/VERIFIED：Affine分析器严格阶段比较已补齐真�
 ANALYSIS_R02_RUNNING/VERIFIED：Affine完整独立分析修复版本已单次启动，PID501716/argv/cwd与预登记命令独立读回一致，实际analysis commit 1acc83a584ace40f294a433ace80629472ee2525，本地handle2931。原训练runtime81a226a8d1cef34ea817ada87070bd89912d027d，四row/160已结束；未来分析器采用已验证完整等价VJP和64MiB数组缓存，不跳过数学核验。完整summary尚未生成，无性能结论；A/B−A=N/A，query/源样本0，目标ACTIVE。
 
 MATH_SCOPE_AUDIT/VERIFIED：独立query-blind复核已补充联合目标的可证明范围；未读取真实评分或snapshot，不改方法、参数和健康进程。Affine r02独立读回仍PID501716/start5870553/handle2931，完整summary未产生；训练160已完成，保持ARTIFACTS_COMPLETE，目标ACTIVE。
+
+RELATED_DEVELOPMENT/SYNTHETIC_VERIFIED：正核条件Affine解析头及完整低秩伴随通过20项独立KKT/差分/反例测试；联合SFT上层仍在实现，尚未启动该方法实验、无性能结论。Ground-A原分类头通过43项合成回归，但真实head行绑定、factory/s/weight包未接入，A与B−A仍N/A。实际source_contract classes及dual/no-sat-adapter元数据已只读核实。Affine诊断传输16项检查通过，真实snapshot/extract未启动；当前健康analysis保持PID501716/start5870553/handle2931/源1acc83a，无summary，不修改release或重启。目标ACTIVE。

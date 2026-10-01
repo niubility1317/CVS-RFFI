@@ -218,7 +218,13 @@
       "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_affine_joint_analysis_20261001_r02",
       "evidence": "analysis_readback_1790811114930430400.json",
       "start_ticks": 5870553,
-      "last_independent_readback": "analysis_readback_1790813199530644600.json"
+      "last_independent_readback": "analysis_readback_1790816886992696800.json"
+    },
+    "diagnostic_transport_readiness": {
+      "status": "SYNTHETIC_VERIFIED_REAL_EXTRACTION_NOT_RUN",
+      "passed": 16,
+      "seconds": 8.97,
+      "document": "docs/D92_AFFINE_DIAGNOSTIC_TRANSPORT_20261001.md"
     }
   },
   "expected_artifacts": [
@@ -2765,5 +2771,6 @@
       "initial_step_size": 0.125
     }
   ],
-  "registered_at": "2026-09-30T21:37:54+00:00"
+  "registered_at": "2026-09-30T21:37:54+00:00",
+  "related_development_evidence": "evidence/conditional_joint_prerequisites_20261001.json"
 }

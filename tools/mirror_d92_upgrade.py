@@ -322,6 +322,7 @@ paths += ['docs/D92_AFFINE_ANALYSIS_REPAIR_20261001.md', 'docs/D92_ANCHOR_JOINT_
 paths += ['docs/D92_AJLR_TRAINING_TRANSPORT_FIX_20261001.md']
 paths += ['docs/D92_AFFINE_JOINT_MATH_LIMITS_20261001.md']
 paths += ['docs/D92_AJLR_TRAINING_FINDINGS_20261001.md']
+paths += ['docs/D92_AFFINE_DIAGNOSTIC_TRANSPORT_20261001.md', 'code/cvsrffi/d92_ground_classifier_a.py', 'tests/test_d92_ground_classifier_a.py', 'docs/D92_GROUND_CLASSIFIER_A_20261001.md', 'docs/D92_POST_AFFINE_JOINT_MATH_DESIGN_20261001.md', 'code/cvsrffi/d92_conditional_affine_kernel.py', 'tests/test_d92_conditional_affine_kernel.py', 'docs/D92_CONDITIONAL_AFFINE_KERNEL_IMPLEMENTATION_20261001.md']
 for name in paths:
     src=ROOT/name;dst=WS/name;dst.parent.mkdir(parents=True,exist_ok=True)
     # Each name is unique to this task; original D92 and shared wrappers are not mirrored.

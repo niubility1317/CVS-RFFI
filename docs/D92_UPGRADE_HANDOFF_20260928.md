@@ -1,3 +1,9 @@
+## 最新状态：条件核数学核心已验证，联合入口正在实现（2026-10-01）
+
+RELATED_DEVELOPMENT/SYNTHETIC_VERIFIED：正核条件Affine解析头及完整低秩伴随通过20项独立KKT/差分/反例测试；联合SFT上层仍在实现，尚未启动该方法实验、无性能结论。Ground-A原分类头通过43项合成回归，但真实head行绑定、factory/s/weight包未接入，A与B−A仍N/A。实际source_contract classes及dual/no-sat-adapter元数据已只读核实。Affine诊断传输16项检查通过，真实snapshot/extract未启动；当前健康analysis保持PID501716/start5870553/handle2931/源1acc83a，无summary，不修改release或重启。目标ACTIVE。
+
+当前仅远端Affine analysis PID501716/start5870553与本地handle2931活跃。AJLR诊断已完成并交付，不再poll/repeat60237。Ground-A 43项、条件核20项、Affine transport16项检查已通过；新上层/入口worker写独立文件，未进入本提交。恢复先核实健康分析与worker状态；不要重复analyze/snapshot/extract/training。新条件方法尚未预登记或launch；A仍N/A。
+
 ## 最新状态：AJLR已ANALYZED，Affine独立分析仍在运行（2026-10-01）
 
 ANALYZED/VERIFIED：AJLR完整support分析与训练诊断均已完成。修复后extract60237退出0，独立进程读回PID514480已退出；完整3240stage/3240prep/20756curve/864prior，648有信息stage全部更新，原snapshot2673911234B及全部原始派生流保留。提供无大数组的全曲线JSONL/CSV和分层资源表。科学方法、参数、数学计算与健康Affine分析均未改变。本轮仅support诊断，A/B−A=N/A；新类/H局部收益不能代替旧类保持，原BranchLocalRidge仍保留，未自动晋级，目标ACTIVE。

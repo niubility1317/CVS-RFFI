@@ -1,6 +1,9 @@
 """Hand-built AFFINE_JOINT training archives, no core fit, data, outer score or SSH."""
 from copy import deepcopy
+import ast
+import base64
 import csv
+import gzip
 import json
 from pathlib import Path
 import sys
@@ -418,6 +421,62 @@ class CollectorTests(unittest.TestCase):
             collector.remote_operation(args,'--extract-stdout',request)
         self.assertIn('SNAPSHOT_REQUEST = json.loads(',ssh.call_args.kwargs['input'])
         self.assertNotIn('--output',ssh.call_args.args[0][-1])
+
+    def request_transport_source(self, request):
+        args=SimpleNamespace(ssh_host='synthetic-host',ssh_config='explicit-config',remote_python='/remote/python',
+            summary_root=None,run_root=None)
+        with patch.object(collector.subprocess,'run',return_value=SimpleNamespace(returncode=0,stdout='{}',stderr='')) as ssh:
+            collector.remote_operation(args,'--extract-stdout',request)
+        source=ssh.call_args.kwargs['input'];tree=ast.parse(source)
+        self.assertIsInstance(tree.body[0],ast.Import);self.assertIsInstance(tree.body[1],ast.Assign)
+        self.assertEqual(tree.body[1].targets[0].id,'SNAPSHOT_REQUEST')
+        bootstrap=ast.Module(body=tree.body[:2],type_ignores=[])
+        decoder=next(node for node in ast.walk(bootstrap) if isinstance(node,ast.Call) and
+            isinstance(node.func,ast.Attribute) and node.func.attr=='b64decode')
+        self.assertIsInstance(decoder.args[0],ast.Constant)
+        return source,bootstrap,decoder.args[0]
+
+    def test_compressed_request_bootstrap_roundtrips_complete_deep_unicode_and_escapes(self):
+        request={'unicode':'TRANSPORT_SENTINEL_雪☃中文',
+            'escape':'actual\nline; literal\\n; quote\"\'; slash\\; `$(text); NUL\x00',
+            'finite':[0.,-0.,1.2345678901234567,1e308,5e-324], 'null':None,'flags':[True,False],
+            'nested':{'a':[[],{},None,{'level2':{'level3':['完整字段',{'key\\\"':'值\n'}]}}]}}
+        deep={'leaf':'完整深结构'}
+        for index in range(64): deep={'level':index,'children':[deep]}
+        request['deep']=deep
+        source,bootstrap,payload=self.request_transport_source(request)
+        namespace={};exec(compile(bootstrap,'<synthetic-transport-bootstrap>','exec'),namespace)
+        self.assertEqual(namespace['SNAPSHOT_REQUEST'],request)
+        self.assertTrue(payload.value.isascii());self.assertNotIn(request['unicode'],ast.unparse(bootstrap))
+        compressed=base64.b64decode(payload.value)
+        self.assertEqual(compressed[4:8],b'\x00'*4)
+        raw=gzip.decompress(compressed).decode('utf-8')
+        self.assertEqual(raw,json.dumps(request,ensure_ascii=False,allow_nan=False))
+        self.assertEqual(source.splitlines()[0],'import base64, gzip, json')
+
+    def test_repetitive_large_request_uses_compressed_literal_instead_of_original_json(self):
+        nested={'unicode':'重复字段-雪☃-'*256,'finite':1.25,'null':None,'structure':[[],{},False]}
+        request={'stages':[{'index':i,'complete':nested} for i in range(256)]}
+        _,bootstrap,payload=self.request_transport_source(request)
+        original=json.dumps(request,ensure_ascii=False,allow_nan=False).encode('utf-8')
+        self.assertGreater(len(original),1_000_000);self.assertLess(len(payload.value),len(original)//4)
+        self.assertNotIn(nested['unicode'],ast.unparse(bootstrap))
+        namespace={};exec(compile(bootstrap,'<synthetic-large-transport>','exec'),namespace)
+        self.assertEqual(namespace['SNAPSHOT_REQUEST'],request)
+
+    def test_corrupted_compressed_payload_is_rejected_by_stdlib_initialization(self):
+        _,bootstrap,payload=self.request_transport_source({'complete':{'unicode':'合法数据','null':None}})
+        payload.value=base64.b64encode(b'not a gzip payload').decode('ascii')
+        with self.assertRaises(gzip.BadGzipFile):
+            exec(compile(bootstrap,'<synthetic-corrupt-transport>','exec'),{})
+
+    def test_nonfinite_request_fails_before_subprocess(self):
+        args=SimpleNamespace(ssh_host='synthetic-host',ssh_config='explicit-config',remote_python='/remote/python',
+            summary_root=None,run_root=None)
+        for value in (float('nan'),float('inf'),-float('inf')):
+            with self.subTest(value=value),patch.object(collector.subprocess,'run') as ssh:
+                with self.assertRaises(ValueError):collector.remote_operation(args,'--extract-stdout',{'nested':[{'value':value}]})
+                ssh.assert_not_called()
 
 
 if __name__=='__main__':unittest.main()

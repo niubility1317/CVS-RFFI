@@ -1,0 +1,60 @@
+{
+  "status": "SYNTHETIC_VERIFIED",
+  "scope": "RELATED_DEVELOPMENT_NOT_AFFINE_METHOD_CHANGE",
+  "tests": [
+    {
+      "component": "affine_transport",
+      "passed": 16,
+      "seconds": 8.97,
+      "canonical_output": "E:\\type10-7\\.codex_tmp\\pytest_utf8_1790815639763930300"
+    },
+    {
+      "component": "ground_A_head",
+      "passed": 43,
+      "seconds": 2.46,
+      "canonical_output": "E:\\type10-7\\.codex_tmp\\pytest_utf8_1790816994220795100"
+    },
+    {
+      "component": "conditional_affine_kernel",
+      "passed": 20,
+      "seconds": 2.2,
+      "canonical_output": "E:\\type10-7\\.codex_tmp\\pytest_utf8_1790817454805617800"
+    }
+  ],
+  "source_files": [
+    "tools/collect_d92_affine_joint_training_diagnostics.py",
+    "tests/test_collect_d92_affine_joint_training_diagnostics.py",
+    "docs/D92_AFFINE_DIAGNOSTIC_TRANSPORT_20261001.md",
+    "code/cvsrffi/d92_ground_classifier_a.py",
+    "tests/test_d92_ground_classifier_a.py",
+    "docs/D92_GROUND_CLASSIFIER_A_20261001.md",
+    "docs/D92_POST_AFFINE_JOINT_MATH_DESIGN_20261001.md",
+    "code/cvsrffi/d92_conditional_affine_kernel.py",
+    "tests/test_d92_conditional_affine_kernel.py",
+    "docs/D92_CONDITIONAL_AFFINE_KERNEL_IMPLEMENTATION_20261001.md"
+  ],
+  "actual_A_measured": false,
+  "actual_A_package_integrated": false,
+  "actual_A_missing": [
+    "original_head_row_binding",
+    "actual_factory_module",
+    "head.s",
+    "original_weight_export"
+  ],
+  "ground_metadata_evidence": "ground_a_source_binding_1790817306762347700.json",
+  "conditional_upper_method_status": "IMPLEMENTATION_IN_PROGRESS",
+  "conditional_experiment_launched": false,
+  "conditional_performance_claim": false,
+  "affine_training_release_unchanged": true,
+  "affine_analysis_commit": "1acc83a584ace40f294a433ace80629472ee2525",
+  "affine_analysis_pid": 501716,
+  "affine_local_wait_handle": 2931,
+  "affine_snapshot_extract_started": false,
+  "independent_health_readback": "analysis_readback_1790816886992696800.json",
+  "query_or_source_samples_read": false,
+  "primary_math_sources": [
+    "https://gaussianprocess.org/gpml/chapters/RW2.pdf",
+    "https://alex.smola.org/papers/2001/SchHerSmo01.pdf",
+    "https://papers.nips.cc/paper/7225-gradient-episodic-memory-for-continual-learning.pdf"
+  ]
+}
