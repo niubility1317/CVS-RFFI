@@ -62,3 +62,5 @@ N607 普通用户，CPU 两 lane，每 lane 两 BLAS threads，CUDA_VISIBLE_DEVI
 固定源码push/独立OID、唯一publication及live process读回均已完成。继续原排程；诊断产物闭合后详细分析，完整query入口在盲态源码并行准备。query测试、独立truth-last评分、报告及Git交付分别记录，成绩不回流调参。Goal仍ACTIVE。
 
 发布证据：[evidence/publication_20261001.json](evidence/publication_20261001.json)；源码交付证据：[evidence/source_delivery_20261001.json](evidence/source_delivery_20261001.json)。初次运行时未访问query、truth或源样本，checkpoint/encoder未reload，既有数据未重建/重验。
+
+独立support分析已在experiment.json预登记：源码73aa1b31f、被分析fit runtime9518d46d2、仅完整四行原产物，无query/truth/fit，root唯一执行，独占新输出。分析尚未启动，accuracy/资源结果仍N/A；已运行query方法不受后续诊断分数影响。

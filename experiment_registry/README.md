@@ -1,4 +1,4 @@
-当前D92：[GroupBarrier完整query预登记](../automation_reports/CV-SincNet/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01/report.md)，4行/2400parents，LOCAL_VERIFIED，尚未启动；[support诊断](../automation_reports/CV-SincNet/20261001-phase2-d92-group-barrier-joint-support-m2-r01/report.md)四行训练完成，真实指标待完整分析。原Margin query终态2完成/2技术失败，不评分成功子集。合成验证不代表性能改善。
+当前D92：[GroupBarrier完整query预登记](../automation_reports/CV-SincNet/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01/report.md)，4行/2400parents，RUNNING，immutable73aa1b31f/首次live PID与配置 VERIFIED；[support诊断](../automation_reports/CV-SincNet/20261001-phase2-d92-group-barrier-joint-support-m2-r01/report.md)四行训练完成，真实指标待完整分析。原Margin query终态2完成/2技术失败，不评分成功子集。合成验证不代表性能改善。
 
 <!-- GROUP_BARRIER_QUERY_ENTRY_20261002 -->
 

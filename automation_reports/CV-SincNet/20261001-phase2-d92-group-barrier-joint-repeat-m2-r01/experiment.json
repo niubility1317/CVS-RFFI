@@ -8,7 +8,8 @@
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "commit": "9518d46d2f763e5b080b5337e23155c9de883e09",
     "checkout": "E:\\type10-7\\code\\snapshots\\d92_support_upgrade_20260928_wt",
-    "commit_note": "Fixed source preparation parent; independently verified pushed runtime OID is recorded after the unique launch."
+    "commit_note": "Fixed source preparation parent; independently verified pushed runtime OID is recorded after the unique launch.",
+    "actual_runtime_commit": "73aa1b31fc68aeddfb3d0ef7882acafb5be5a155"
   },
   "execution": {
     "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01",
@@ -21,9 +22,54 @@
     "gpu_policy": "CPU2 / BLAS2 / CUDA_VISIBLE_DEVICES empty; raw caches only",
     "launch_command": "F:/App/miniconda3/python.exe -X utf8 tools/publish_d92_group_barrier_joint_benchmark.py --spec configs/d92_group_barrier_joint_repeat_20261001.json",
     "stop_rule": "Technical failure fails only its own row; preserve partial outputs, no automatic retry or low-score stop.",
-    "actual_runtime_commit": null,
+    "actual_runtime_commit": "73aa1b31fc68aeddfb3d0ef7882acafb5be5a155",
     "implementation_validation": "docs/D92_GROUP_BARRIER_JOINT_QUERY_VALIDATION_20261002.json",
-    "fresh_independent_validation": "Deferred by explicit user request; reuse is not a fresh confirmation"
+    "fresh_independent_validation": "Deferred by explicit user request; reuse is not a fresh confirmation",
+    "publication_status": "VERIFIED",
+    "publication_ref": "evidence/publication_20261002.json",
+    "source_delivery_ref": "evidence/source_delivery_20261002.json",
+    "runtime_readback_ref": "evidence/query_runtime_1790871724715695800.json",
+    "supervisor_pid": 1049548,
+    "supervisor_start_ticks": 11917841,
+    "launch_observed_utc": "2026-10-01T16:21:03Z",
+    "actual_supervisor_argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_group_barrier_joint_repeat_20261001_r01/tools/run_d92_group_barrier_joint_benchmark.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_group_barrier_joint_repeat_20261001_r01/configs/d92_group_barrier_joint_repeat_20261001.json",
+      "--commit",
+      "73aa1b31fc68aeddfb3d0ef7882acafb5be5a155"
+    ],
+    "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_group_barrier_joint_repeat_20261001_r01",
+    "actual_environment": {
+      "OMP_NUM_THREADS": "2",
+      "MKL_NUM_THREADS": "2",
+      "OPENBLAS_NUM_THREADS": "2",
+      "NUMEXPR_NUM_THREADS": "2",
+      "CUDA_VISIBLE_DEVICES": "",
+      "PYTHONUNBUFFERED": "1"
+    },
+    "current_row_statuses": {
+      "rx3-cvs-daot-rc4-s2026092701": "PREDICTING",
+      "rx3-cvs-daot-rc4-s2026092702": "PREDICTING",
+      "rx1-cvs-daot-rc4-s2026092701": "PREFLIGHT_COMPLETE",
+      "rx1-cvs-daot-rc4-s2026092702": "PREFLIGHT_COMPLETE"
+    },
+    "row_pids": {
+      "rx3-cvs-daot-rc4-s2026092701": 1049715,
+      "rx3-cvs-daot-rc4-s2026092702": 1049721,
+      "rx1-cvs-daot-rc4-s2026092701": null,
+      "rx1-cvs-daot-rc4-s2026092702": null
+    },
+    "local_publication_execution_prefix": "ssr_native_command_1790871527121171300",
+    "local_publication_state": "DONE_DO_NOT_REPUBLISH",
+    "all_predictions_fixed": false,
+    "truth_read": false,
+    "scorer_invoked": false,
+    "automatic_retry": false,
+    "metadata_reader_reconciliation": "Initial reader incorrectly expected support row_startup.json and predictions.log; query runner uses state PID/argv and prediction.log. Local read-only helper fixed, subsequent full independent process binding VERIFIED; no runtime or launch changes.",
+    "reader_unknown_evidence_ref": "evidence/query_runtime_1790871663173950300.json"
   },
   "benchmark": {
     "config": {
@@ -193,11 +239,10 @@
       "fl_rounds": null,
       "initial_step_size": 0.125,
       "budget_ref": "benchmark.config.algorithm + group_barrier_resources; each parent max4 accepted/max12 trials, no query tuning",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01/rx3-cvs-daot-rc4-s2026092701/predictions.log",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01/rx3-cvs-daot-rc4-s2026092701/prediction.log",
       "expected_artifacts": [
         "resolved_config.json",
-        "row_startup.json",
-        "predictions.log",
+        "prediction.log",
         "predictions/startup.json",
         "predictions/predictions_A.jsonl",
         "predictions/predictions_B.jsonl",
@@ -252,7 +297,8 @@
         "rx3-cvs-daot-rc4-s2026092701",
         "--release-commit",
         "<ROOT_VERIFIED_PUSHED_OID_AT_LAUNCH>"
-      ]
+      ],
+      "runtime_process_declaration_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01/state.json#rx3-cvs-daot-rc4-s2026092701"
     },
     {
       "row_id": "rx3-cvs-daot-rc4-s2026092702",
@@ -297,11 +343,10 @@
       "fl_rounds": null,
       "initial_step_size": 0.125,
       "budget_ref": "benchmark.config.algorithm + group_barrier_resources; each parent max4 accepted/max12 trials, no query tuning",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01/rx3-cvs-daot-rc4-s2026092702/predictions.log",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01/rx3-cvs-daot-rc4-s2026092702/prediction.log",
       "expected_artifacts": [
         "resolved_config.json",
-        "row_startup.json",
-        "predictions.log",
+        "prediction.log",
         "predictions/startup.json",
         "predictions/predictions_A.jsonl",
         "predictions/predictions_B.jsonl",
@@ -356,7 +401,8 @@
         "rx3-cvs-daot-rc4-s2026092702",
         "--release-commit",
         "<ROOT_VERIFIED_PUSHED_OID_AT_LAUNCH>"
-      ]
+      ],
+      "runtime_process_declaration_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01/state.json#rx3-cvs-daot-rc4-s2026092702"
     },
     {
       "row_id": "rx1-cvs-daot-rc4-s2026092701",
@@ -401,11 +447,10 @@
       "fl_rounds": null,
       "initial_step_size": 0.125,
       "budget_ref": "benchmark.config.algorithm + group_barrier_resources; each parent max4 accepted/max12 trials, no query tuning",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01/rx1-cvs-daot-rc4-s2026092701/predictions.log",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01/rx1-cvs-daot-rc4-s2026092701/prediction.log",
       "expected_artifacts": [
         "resolved_config.json",
-        "row_startup.json",
-        "predictions.log",
+        "prediction.log",
         "predictions/startup.json",
         "predictions/predictions_A.jsonl",
         "predictions/predictions_B.jsonl",
@@ -460,7 +505,8 @@
         "rx1-cvs-daot-rc4-s2026092701",
         "--release-commit",
         "<ROOT_VERIFIED_PUSHED_OID_AT_LAUNCH>"
-      ]
+      ],
+      "runtime_process_declaration_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01/state.json#rx1-cvs-daot-rc4-s2026092701"
     },
     {
       "row_id": "rx1-cvs-daot-rc4-s2026092702",
@@ -505,11 +551,10 @@
       "fl_rounds": null,
       "initial_step_size": 0.125,
       "budget_ref": "benchmark.config.algorithm + group_barrier_resources; each parent max4 accepted/max12 trials, no query tuning",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01/rx1-cvs-daot-rc4-s2026092702/predictions.log",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01/rx1-cvs-daot-rc4-s2026092702/prediction.log",
       "expected_artifacts": [
         "resolved_config.json",
-        "row_startup.json",
-        "predictions.log",
+        "prediction.log",
         "predictions/startup.json",
         "predictions/predictions_A.jsonl",
         "predictions/predictions_B.jsonl",
@@ -564,14 +609,15 @@
         "rx1-cvs-daot-rc4-s2026092702",
         "--release-commit",
         "<ROOT_VERIFIED_PUSHED_OID_AT_LAUNCH>"
-      ]
+      ],
+      "runtime_process_declaration_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01/state.json#rx1-cvs-daot-rc4-s2026092702"
     }
   ],
   "kind": "diagnostic",
   "stage": "Phase2-repeated-query-benchmark",
   "display_name": "GroupBarrierJoint LocalRidge与support监督adapter的完整三阶段重复基准",
   "description": "固定原数学方案：B仅适应旧support，C真实继承B，以新类解析Ridge和全旧点/新类正障碍Bernoulli门控联合学习小adapter。完整2400父任务固定A/B/C后独立truth-last评分，不根据support或query结果选参。",
-  "status": "LOCAL_VERIFIED",
+  "status": "RUNNING",
   "claim_scope": "REPEATED_BENCHMARK_PREVIOUSLY_SCORED_TARGETS",
   "comparison_group_id": "d92-group-barrier-joint-support",
   "authorization": "Existing user joint LocalRidge/target-support SFT and repeated-benchmark authorization; root sole launch owner.",
@@ -717,8 +763,7 @@
     "state.json",
     "complete.json",
     "each row/resolved_config.json",
-    "each row/row_startup.json",
-    "each row/predictions.log",
+    "each row/prediction.log",
     "each row/predictions/startup.json",
     "each row/predictions/predictions_A.jsonl",
     "each row/predictions/predictions_B.jsonl",

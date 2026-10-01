@@ -1,3 +1,14 @@
+## 当前交接：GroupBarrier完整query唯一运行，support分析已预登记
+
+- Goal ACTIVE。query `20261001-phase2-d92-group-barrier-joint-repeat-m2-r01` RUNNING，immutable runtime **73aa1b31fc68aeddfb3d0ef7882acafb5be5a155**。唯一publication nativewrapper1790871527121171300已DONE，local publication目录已存在，绝对不要republish/relaunch。独立16:21:03UTC `evidence/query_runtime_1790871724715695800.json`核实supervisor1049548/start11917841、rx3 evaluator1049715/1049721实时PREDICTING，rx1两行PREFLIGHT_COMPLETE原排程等待；实际PID/argv/CWD/CPU2+BLAS2/noGPU匹配state/startup。第一次metadata reader错误假设support row_startup/log，未知证据保留；修正本地reader后VERIFIED，无远端method改动或重复发布。
+- source73aa已push/independentremoteOID相同/rev-list0/0；query32/scorer39/analyzer11不同合成cases与双限定review已完成，38path隔离import无数据/encoder访问。完整4row/2400parent/6old/20K×new格，全A/B/C固定后才独立truth-last，不能partial评分。当前准确率N/A，runtime73aa不随本次metadata改变；prep9518固定。
+- Group support原immutable9518已四行TRAINING_COMPLETE/退出，160parents、9720fit stages，仍未读取实际指标。原run.execution.support_analysis已预登记：source73aa，fitted9518，root唯一，分析release `d92_group_barrier_joint_analysis_20261002_r01`，新输出 `analyses/20261001-phase2-d92-group-barrier-joint-support-m2-r01/support_summary_20261002_r01`；未启动。下一步唯一分析发布/独立process读回，再完整summary验证报告，不重拟合、不访问query，不向query方法反馈成绩。
+- 原Margin query immutabled86终态FAILED（2COMPLETE/2FAILED），16:09 proof已交付；所有旧进程退出，保留partial，不再poll或score/retry。Source-blindworker全部冻结完成。root唯一numeric/Git/SSH/launch/真实analysis/scoring。后续先push本metadata/OID，再唯一analysis；query原run健康继续，fresh验证仍暂缓。
+
+<!-- GROUP_BARRIER_QUERY_LAUNCH_20261002 -->
+
+以下保留历史状态，不据此重复启动：
+
 ## 当前交接：GroupBarrier完整query预登记与源码验证完成，support四行已终态
 
 - Goal ACTIVE。新queryrun `20261001-phase2-d92-group-barrier-joint-repeat-m2-r01` LOCAL_VERIFIED/未启动，四row/2400parent/6old/完整K4×new5×4RX×3scene×5support seed、same actualB-to-C。配置源码在读任何真实support结果前固定；Phase1/practical residual与协议不变。preparation parent9518不是未来runtime。82个不同case（query32/scorer39/analyzer11）在有界调用验证，两处合成fixture失败已修复且原证据保留；双入口/scorer独立P0/P1关闭，38path isolated import无模型/数据访问。待本次source commit/push/OID后唯一querypublication。

@@ -1,6 +1,6 @@
 # GroupBarrierJoint完整三阶段重复基准预登记
 
-当前状态：LOCAL_VERIFIED／已预登记，尚未远端启动。没有本候选的 query 准确率结论。
+当前状态：RUNNING／唯一publication与实际live PID/argv/CWD VERIFIED。没有完整 query 准确率结论。
 
 run_id：`20261001-phase2-d92-group-barrier-joint-repeat-m2-r01`；[实际配置与来源](experiment.json)；[事件](events.jsonl)。完整固定矩阵为两模型 × rx3/rx1 四行，rx3每模型900、rx1每模型300，合计2400父任务。旧类6个，K表示每类合法support数，新增类数0/2/5/10/20；四receiver、三practical residual场景、五个固定support seed。此前评分库存只作透明重复基准，新增独立验证按用户要求暂缓。
 
@@ -49,4 +49,6 @@ CPU两lane，每lane BLAS两线程，CUDA为空。最多5888可训练坐标不�
 
 ## 执行、评分与交接
 
-当前runtime/PID/实际成本N/A，preparation parent9518d46d2不冒充将来的执行版本。先提交、push并独立核对远端OID，再唯一发布新release/run；记录实际argv/CWD/PID/start ticks及resolved config。root是唯一launch owner，不重试、不干预已有健康实验。完整四行A/B/C预测全部固定后才由独立scorer连接truth；技术失败保留，不用成功子集宣称全矩阵。分数不回流选参、晋级或重跑。Goal仍ACTIVE。
+唯一runtime `73aa1b31fc68aeddfb3d0ef7882acafb5be5a155`；supervisor PID1049548/start11917841，rx3模型01/02 PID1049715/1049721实时PREDICTING，rx1两行已完成preflight等待原排程（2026-10-01T16:21:03Z）。actual argv/CWD/CPU2环境由[evidence/query_runtime_1790871724715695800.json](evidence/query_runtime_1790871724715695800.json)独立核实；preparation parent仍9518d46d2，后续metadata提交不改变执行版本。全部预测与完整实际成本尚未完成。先提交、push并独立核对远端OID，再唯一发布新release/run；记录实际argv/CWD/PID/start ticks及resolved config。root是唯一launch owner，不重试、不干预已有健康实验。完整四行A/B/C预测全部固定后才由独立scorer连接truth；技术失败保留，不用成功子集宣称全矩阵。分数不回流选参、晋级或重跑。Goal仍ACTIVE。
+
+发布证据：[evidence/publication_20261002.json](evidence/publication_20261002.json)；源码push独立OID证据：[evidence/source_delivery_20261002.json](evidence/source_delivery_20261002.json)。log实际为每row `prediction.log`，runner在`state.json`记录row PID/argv；原登记的support-style row_startup/log名称只作本地元数据纠正，没有更改或重复远端执行。
