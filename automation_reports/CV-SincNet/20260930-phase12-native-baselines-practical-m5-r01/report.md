@@ -30,6 +30,12 @@ Nine distinct source model families, five fixed seeds, scratch final200; matched
 
 ## Actual dispatcher state
 
-Status: `RUNNING`; owner: `codex/root/native-comparisons-20260930`; dispatcher PID: `98355`; release commit: `577825849c5c69edfbec9e258948b5621e4c643a`.
+Status: `PARTIAL`; owner: `codex/root/native-comparisons-20260930`; dispatcher PID: `98355`; release commit: `577825849c5c69edfbec9e258948b5621e4c643a`.
 
-Counts: `{"QUEUED": 45}`. Per-row PID/GPU/log/config evidence: `/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/dispatcher/state.json` and experiment.json row runtime fields. Scoring: `{"p1": "WAITING", "p2": "WAITING"}`.
+Counts: `{"FAILED": 10, "PREDICTIONS_COMPLETE": 35}`. Per-row PID/GPU/log/config evidence: `/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/dispatcher/state.json` and experiment.json row runtime fields. Scoring: `{"p1": "ANALYZED", "p2": "WAITING"}`.
+
+## 2026-10-01 independent completion readback
+
+45 final-epoch200 source models verified; Phase1 scored45/45, 1800 stratified records. Phase2 predictions35/45, failed10/45 (CSIL and MoPC-HR generator initialization API incompatibility); Phase2 scoring not complete.
+
+[Phase1 results and failures](../../../docs/results/cvs_native_comparison_20261001/实验进展与Phase1结果.md). Readback: local_readback/20261001T1053HKT/artifact_inventory.json in the Phase12 run.

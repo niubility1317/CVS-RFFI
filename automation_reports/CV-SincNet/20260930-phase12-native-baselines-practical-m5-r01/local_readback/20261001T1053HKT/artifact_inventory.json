@@ -1,0 +1,2763 @@
+{
+  "captured_at": "2026-10-01T03:02:44.208479+00:00",
+  "read_only": true,
+  "dispatcher_state": {
+    "dispatcher_pid": 98355,
+    "launch_owner": "codex/root/native-comparisons-20260930",
+    "rows": {
+      "source:protonet-s392005": {
+        "status": "TRAINING_COMPLETE",
+        "pid": 98407,
+        "gpu": 0,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/protonet-s392005.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/protonet-s392005/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/protonet-s392005.json"
+        ],
+        "started_at": "2026-09-30T10:24:43.046032+00:00",
+        "exit_code": 0
+      },
+      "phase12:protonet-s392005": {
+        "status": "PREDICTIONS_COMPLETE",
+        "pid": 113614,
+        "gpu": 0,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/protonet-s392005.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/protonet-s392005/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.pipeline",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/protonet-s392005.json"
+        ],
+        "started_at": "2026-09-30T10:45:51.972405+00:00",
+        "exit_code": 0
+      },
+      "source:protonet-s2026092701": {
+        "status": "TRAINING_COMPLETE",
+        "pid": 98408,
+        "gpu": 1,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/protonet-s2026092701.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/protonet-s2026092701/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/protonet-s2026092701.json"
+        ],
+        "started_at": "2026-09-30T10:24:43.047332+00:00",
+        "exit_code": 0
+      },
+      "phase12:protonet-s2026092701": {
+        "status": "PREDICTIONS_COMPLETE",
+        "pid": 113832,
+        "gpu": 1,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/protonet-s2026092701.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/protonet-s2026092701/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.pipeline",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/protonet-s2026092701.json"
+        ],
+        "started_at": "2026-09-30T10:46:20.638772+00:00",
+        "exit_code": 0
+      },
+      "source:protonet-s2026092702": {
+        "status": "TRAINING_COMPLETE",
+        "pid": 98409,
+        "gpu": 2,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/protonet-s2026092702.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/protonet-s2026092702/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/protonet-s2026092702.json"
+        ],
+        "started_at": "2026-09-30T10:24:43.048832+00:00",
+        "exit_code": 0
+      },
+      "phase12:protonet-s2026092702": {
+        "status": "PREDICTIONS_COMPLETE",
+        "pid": 113912,
+        "gpu": 2,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/protonet-s2026092702.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/protonet-s2026092702/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.pipeline",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/protonet-s2026092702.json"
+        ],
+        "started_at": "2026-09-30T10:46:22.847762+00:00",
+        "exit_code": 0
+      },
+      "source:protonet-s2026092703": {
+        "status": "TRAINING_COMPLETE",
+        "pid": 98410,
+        "gpu": 3,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/protonet-s2026092703.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/protonet-s2026092703/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/protonet-s2026092703.json"
+        ],
+        "started_at": "2026-09-30T10:24:43.050078+00:00",
+        "exit_code": 0
+      },
+      "phase12:protonet-s2026092703": {
+        "status": "PREDICTIONS_COMPLETE",
+        "pid": 113695,
+        "gpu": 3,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/protonet-s2026092703.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/protonet-s2026092703/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.pipeline",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/protonet-s2026092703.json"
+        ],
+        "started_at": "2026-09-30T10:45:54.176643+00:00",
+        "exit_code": 0
+      },
+      "source:protonet-s2026092704": {
+        "status": "TRAINING_COMPLETE",
+        "pid": 98411,
+        "gpu": 4,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/protonet-s2026092704.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/protonet-s2026092704/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/protonet-s2026092704.json"
+        ],
+        "started_at": "2026-09-30T10:24:43.051548+00:00",
+        "exit_code": 0
+      },
+      "phase12:protonet-s2026092704": {
+        "status": "PREDICTIONS_COMPLETE",
+        "pid": 113536,
+        "gpu": 4,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/protonet-s2026092704.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/protonet-s2026092704/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.pipeline",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/protonet-s2026092704.json"
+        ],
+        "started_at": "2026-09-30T10:45:49.770333+00:00",
+        "exit_code": 0
+      },
+      "source:feature_separation-s392005": {
+        "status": "TRAINING_COMPLETE",
+        "pid": 98412,
+        "gpu": 5,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/feature_separation-s392005.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/feature_separation-s392005/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/feature_separation-s392005.json"
+        ],
+        "started_at": "2026-09-30T10:24:43.052805+00:00",
+        "exit_code": 0
+      },
+      "phase12:feature_separation-s392005": {
+        "status": "PREDICTIONS_COMPLETE",
+        "pid": 133073,
+        "gpu": 5,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/feature_separation-s392005.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/feature_separation-s392005/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.pipeline",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/feature_separation-s392005.json"
+        ],
+        "started_at": "2026-09-30T11:19:49.543100+00:00",
+        "exit_code": 0
+      },
+      "source:feature_separation-s2026092701": {
+        "status": "TRAINING_COMPLETE",
+        "pid": 98413,
+        "gpu": 6,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/feature_separation-s2026092701.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/feature_separation-s2026092701/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/feature_separation-s2026092701.json"
+        ],
+        "started_at": "2026-09-30T10:24:43.054108+00:00",
+        "exit_code": 0
+      },
+      "phase12:feature_separation-s2026092701": {
+        "status": "PREDICTIONS_COMPLETE",
+        "pid": 132973,
+        "gpu": 6,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/feature_separation-s2026092701.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/feature_separation-s2026092701/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.pipeline",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/feature_separation-s2026092701.json"
+        ],
+        "started_at": "2026-09-30T11:19:38.531288+00:00",
+        "exit_code": 0
+      },
+      "source:feature_separation-s2026092702": {
+        "status": "TRAINING_COMPLETE",
+        "pid": 98414,
+        "gpu": 7,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/feature_separation-s2026092702.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/feature_separation-s2026092702/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/feature_separation-s2026092702.json"
+        ],
+        "started_at": "2026-09-30T10:24:43.055405+00:00",
+        "exit_code": 0
+      },
+      "phase12:feature_separation-s2026092702": {
+        "status": "PREDICTIONS_COMPLETE",
+        "pid": 133165,
+        "gpu": 7,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/feature_separation-s2026092702.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/feature_separation-s2026092702/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.pipeline",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/feature_separation-s2026092702.json"
+        ],
+        "started_at": "2026-09-30T11:19:56.146424+00:00",
+        "exit_code": 0
+      },
+      "source:feature_separation-s2026092703": {
+        "status": "TRAINING_COMPLETE",
+        "pid": 113615,
+        "gpu": 0,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/feature_separation-s2026092703.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/feature_separation-s2026092703/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/feature_separation-s2026092703.json"
+        ],
+        "started_at": "2026-09-30T10:45:51.973798+00:00",
+        "exit_code": 0
+      },
+      "phase12:feature_separation-s2026092703": {
+        "status": "PREDICTIONS_COMPLETE",
+        "pid": 145047,
+        "gpu": 0,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/feature_separation-s2026092703.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/feature_separation-s2026092703/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.pipeline",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/feature_separation-s2026092703.json"
+        ],
+        "started_at": "2026-09-30T11:41:43.978082+00:00",
+        "exit_code": 0
+      },
+      "source:feature_separation-s2026092704": {
+        "status": "TRAINING_COMPLETE",
+        "pid": 113833,
+        "gpu": 1,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/feature_separation-s2026092704.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/feature_separation-s2026092704/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/feature_separation-s2026092704.json"
+        ],
+        "started_at": "2026-09-30T10:46:20.640238+00:00",
+        "exit_code": 0
+      },
+      "phase12:feature_separation-s2026092704": {
+        "status": "PREDICTIONS_COMPLETE",
+        "pid": 145872,
+        "gpu": 1,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/feature_separation-s2026092704.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/feature_separation-s2026092704/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.pipeline",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/feature_separation-s2026092704.json"
+        ],
+        "started_at": "2026-09-30T11:43:07.690171+00:00",
+        "exit_code": 0
+      },
+      "source:dadda-s392005": {
+        "status": "TRAINING_COMPLETE",
+        "pid": 113913,
+        "gpu": 2,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/dadda-s392005.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/dadda-s392005/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/dadda-s392005.json"
+        ],
+        "started_at": "2026-09-30T10:46:22.849180+00:00",
+        "exit_code": 0
+      },
+      "phase12:dadda-s392005": {
+        "status": "PREDICTIONS_COMPLETE",
+        "pid": 145164,
+        "gpu": 2,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/dadda-s392005.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/dadda-s392005/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.pipeline",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/dadda-s392005.json"
+        ],
+        "started_at": "2026-09-30T11:42:01.629592+00:00",
+        "exit_code": 0
+      },
+      "source:dadda-s2026092701": {
+        "status": "TRAINING_COMPLETE",
+        "pid": 113696,
+        "gpu": 3,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/dadda-s2026092701.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/dadda-s2026092701/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/dadda-s2026092701.json"
+        ],
+        "started_at": "2026-09-30T10:45:54.178092+00:00",
+        "exit_code": 0
+      },
+      "phase12:dadda-s2026092701": {
+        "status": "PREDICTIONS_COMPLETE",
+        "pid": 144551,
+        "gpu": 3,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/dadda-s2026092701.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/dadda-s2026092701/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.pipeline",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/dadda-s2026092701.json"
+        ],
+        "started_at": "2026-09-30T11:41:37.324812+00:00",
+        "exit_code": 0
+      },
+      "source:dadda-s2026092702": {
+        "status": "TRAINING_COMPLETE",
+        "pid": 113537,
+        "gpu": 4,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/dadda-s2026092702.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/dadda-s2026092702/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/dadda-s2026092702.json"
+        ],
+        "started_at": "2026-09-30T10:45:49.772016+00:00",
+        "exit_code": 0
+      },
+      "phase12:dadda-s2026092702": {
+        "status": "PREDICTIONS_COMPLETE",
+        "pid": 145758,
+        "gpu": 4,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/dadda-s2026092702.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/dadda-s2026092702/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.pipeline",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/dadda-s2026092702.json"
+        ],
+        "started_at": "2026-09-30T11:42:50.051113+00:00",
+        "exit_code": 0
+      },
+      "source:dadda-s2026092703": {
+        "status": "TRAINING_COMPLETE",
+        "pid": 133074,
+        "gpu": 5,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/dadda-s2026092703.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/dadda-s2026092703/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/dadda-s2026092703.json"
+        ],
+        "started_at": "2026-09-30T11:19:49.544774+00:00",
+        "exit_code": 0
+      },
+      "phase12:dadda-s2026092703": {
+        "status": "PREDICTIONS_COMPLETE",
+        "pid": 163586,
+        "gpu": 5,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/dadda-s2026092703.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/dadda-s2026092703/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.pipeline",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/dadda-s2026092703.json"
+        ],
+        "started_at": "2026-09-30T12:16:15.219020+00:00",
+        "exit_code": 0
+      },
+      "source:dadda-s2026092704": {
+        "status": "TRAINING_COMPLETE",
+        "pid": 132974,
+        "gpu": 6,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/dadda-s2026092704.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/dadda-s2026092704/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/dadda-s2026092704.json"
+        ],
+        "started_at": "2026-09-30T11:19:38.532991+00:00",
+        "exit_code": 0
+      },
+      "phase12:dadda-s2026092704": {
+        "status": "PREDICTIONS_COMPLETE",
+        "pid": 163716,
+        "gpu": 6,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/dadda-s2026092704.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/dadda-s2026092704/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.pipeline",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/dadda-s2026092704.json"
+        ],
+        "started_at": "2026-09-30T12:16:43.885812+00:00",
+        "exit_code": 0
+      },
+      "source:mrior-s392005": {
+        "status": "TRAINING_COMPLETE",
+        "pid": 133166,
+        "gpu": 7,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/mrior-s392005.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/mrior-s392005/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/mrior-s392005.json"
+        ],
+        "started_at": "2026-09-30T11:19:56.147839+00:00",
+        "exit_code": 0
+      },
+      "phase12:mrior-s392005": {
+        "status": "PREDICTIONS_COMPLETE",
+        "pid": 161920,
+        "gpu": 7,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/mrior-s392005.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/mrior-s392005/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.pipeline",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/mrior-s392005.json"
+        ],
+        "started_at": "2026-09-30T12:13:14.530186+00:00",
+        "exit_code": 0
+      },
+      "source:mrior-s2026092701": {
+        "status": "TRAINING_COMPLETE",
+        "pid": 145048,
+        "gpu": 0,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/mrior-s2026092701.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/mrior-s2026092701/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/mrior-s2026092701.json"
+        ],
+        "started_at": "2026-09-30T11:41:43.979434+00:00",
+        "exit_code": 0
+      },
+      "phase12:mrior-s2026092701": {
+        "status": "PREDICTIONS_COMPLETE",
+        "pid": 173172,
+        "gpu": 0,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/mrior-s2026092701.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/mrior-s2026092701/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.pipeline",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/mrior-s2026092701.json"
+        ],
+        "started_at": "2026-09-30T12:34:06.730654+00:00",
+        "exit_code": 0
+      },
+      "source:mrior-s2026092702": {
+        "status": "TRAINING_COMPLETE",
+        "pid": 145873,
+        "gpu": 1,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/mrior-s2026092702.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/mrior-s2026092702/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/mrior-s2026092702.json"
+        ],
+        "started_at": "2026-09-30T11:43:07.692244+00:00",
+        "exit_code": 0
+      },
+      "phase12:mrior-s2026092702": {
+        "status": "PREDICTIONS_COMPLETE",
+        "pid": 174089,
+        "gpu": 1,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/mrior-s2026092702.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/mrior-s2026092702/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.pipeline",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/mrior-s2026092702.json"
+        ],
+        "started_at": "2026-09-30T12:35:50.506127+00:00",
+        "exit_code": 0
+      },
+      "source:mrior-s2026092703": {
+        "status": "TRAINING_COMPLETE",
+        "pid": 145165,
+        "gpu": 2,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/mrior-s2026092703.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/mrior-s2026092703/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/mrior-s2026092703.json"
+        ],
+        "started_at": "2026-09-30T11:42:01.631279+00:00",
+        "exit_code": 0
+      },
+      "phase12:mrior-s2026092703": {
+        "status": "PREDICTIONS_COMPLETE",
+        "pid": 174011,
+        "gpu": 2,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/mrior-s2026092703.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/mrior-s2026092703/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.pipeline",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/mrior-s2026092703.json"
+        ],
+        "started_at": "2026-09-30T12:35:48.296961+00:00",
+        "exit_code": 0
+      },
+      "source:mrior-s2026092704": {
+        "status": "TRAINING_COMPLETE",
+        "pid": 144552,
+        "gpu": 3,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/mrior-s2026092704.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/mrior-s2026092704/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/mrior-s2026092704.json"
+        ],
+        "started_at": "2026-09-30T11:41:37.326255+00:00",
+        "exit_code": 0
+      },
+      "phase12:mrior-s2026092704": {
+        "status": "PREDICTIONS_COMPLETE",
+        "pid": 173411,
+        "gpu": 3,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/mrior-s2026092704.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/mrior-s2026092704/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.pipeline",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/mrior-s2026092704.json"
+        ],
+        "started_at": "2026-09-30T12:34:50.824508+00:00",
+        "exit_code": 0
+      },
+      "source:twostage-s392005": {
+        "status": "TRAINING_COMPLETE",
+        "pid": 145759,
+        "gpu": 4,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/twostage-s392005.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/twostage-s392005/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/twostage-s392005.json"
+        ],
+        "started_at": "2026-09-30T11:42:50.052764+00:00",
+        "exit_code": 0
+      },
+      "phase12:twostage-s392005": {
+        "status": "PREDICTIONS_COMPLETE",
+        "pid": 173286,
+        "gpu": 4,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/twostage-s392005.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/twostage-s392005/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.pipeline",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/twostage-s392005.json"
+        ],
+        "started_at": "2026-09-30T12:34:26.563204+00:00",
+        "exit_code": 0
+      },
+      "source:twostage-s2026092701": {
+        "status": "TRAINING_COMPLETE",
+        "pid": 163587,
+        "gpu": 5,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/twostage-s2026092701.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/twostage-s2026092701/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/twostage-s2026092701.json"
+        ],
+        "started_at": "2026-09-30T12:16:15.220487+00:00",
+        "exit_code": 0
+      },
+      "phase12:twostage-s2026092701": {
+        "status": "PREDICTIONS_COMPLETE",
+        "pid": 191688,
+        "gpu": 5,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/twostage-s2026092701.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/twostage-s2026092701/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.pipeline",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/twostage-s2026092701.json"
+        ],
+        "started_at": "2026-09-30T13:07:01.930366+00:00",
+        "exit_code": 0
+      },
+      "source:twostage-s2026092702": {
+        "status": "TRAINING_COMPLETE",
+        "pid": 163717,
+        "gpu": 6,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/twostage-s2026092702.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/twostage-s2026092702/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/twostage-s2026092702.json"
+        ],
+        "started_at": "2026-09-30T12:16:43.887292+00:00",
+        "exit_code": 0
+      },
+      "phase12:twostage-s2026092702": {
+        "status": "PREDICTIONS_COMPLETE",
+        "pid": 192347,
+        "gpu": 6,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/twostage-s2026092702.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/twostage-s2026092702/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.pipeline",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/twostage-s2026092702.json"
+        ],
+        "started_at": "2026-09-30T13:08:08.222466+00:00",
+        "exit_code": 0
+      },
+      "source:twostage-s2026092703": {
+        "status": "TRAINING_COMPLETE",
+        "pid": 161921,
+        "gpu": 7,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/twostage-s2026092703.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/twostage-s2026092703/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/twostage-s2026092703.json"
+        ],
+        "started_at": "2026-09-30T12:13:14.531887+00:00",
+        "exit_code": 0
+      },
+      "phase12:twostage-s2026092703": {
+        "status": "PREDICTIONS_COMPLETE",
+        "pid": 191150,
+        "gpu": 7,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/twostage-s2026092703.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/twostage-s2026092703/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.pipeline",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/twostage-s2026092703.json"
+        ],
+        "started_at": "2026-09-30T13:06:28.964691+00:00",
+        "exit_code": 0
+      },
+      "source:twostage-s2026092704": {
+        "status": "TRAINING_COMPLETE",
+        "pid": 173173,
+        "gpu": 0,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/twostage-s2026092704.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/twostage-s2026092704/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/twostage-s2026092704.json"
+        ],
+        "started_at": "2026-09-30T12:34:06.732116+00:00",
+        "exit_code": 0
+      },
+      "phase12:twostage-s2026092704": {
+        "status": "PREDICTIONS_COMPLETE",
+        "pid": 203377,
+        "gpu": 0,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/twostage-s2026092704.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/twostage-s2026092704/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.pipeline",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/twostage-s2026092704.json"
+        ],
+        "started_at": "2026-09-30T13:28:25.436145+00:00",
+        "exit_code": 0
+      },
+      "source:csil-s392005": {
+        "status": "TRAINING_COMPLETE",
+        "pid": 174090,
+        "gpu": 1,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/csil-s392005.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/csil-s392005/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/csil-s392005.json"
+        ],
+        "started_at": "2026-09-30T12:35:50.507580+00:00",
+        "exit_code": 0
+      },
+      "phase12:csil-s392005": {
+        "status": "FAILED",
+        "pid": 204241,
+        "gpu": 1,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/csil-s392005.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/csil-s392005/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.pipeline",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/csil-s392005.json"
+        ],
+        "started_at": "2026-09-30T13:29:13.995604+00:00",
+        "exit_code": 1
+      },
+      "source:csil-s2026092701": {
+        "status": "TRAINING_COMPLETE",
+        "pid": 174012,
+        "gpu": 2,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/csil-s2026092701.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/csil-s2026092701/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/csil-s2026092701.json"
+        ],
+        "started_at": "2026-09-30T12:35:48.298395+00:00",
+        "exit_code": 0
+      },
+      "phase12:csil-s2026092701": {
+        "status": "FAILED",
+        "pid": 204952,
+        "gpu": 2,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/csil-s2026092701.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/csil-s2026092701/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.pipeline",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/csil-s2026092701.json"
+        ],
+        "started_at": "2026-09-30T13:30:44.502483+00:00",
+        "exit_code": 1
+      },
+      "source:csil-s2026092702": {
+        "status": "TRAINING_COMPLETE",
+        "pid": 173412,
+        "gpu": 3,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/csil-s2026092702.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/csil-s2026092702/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/csil-s2026092702.json"
+        ],
+        "started_at": "2026-09-30T12:34:50.826195+00:00",
+        "exit_code": 0
+      },
+      "phase12:csil-s2026092702": {
+        "status": "FAILED",
+        "pid": 203449,
+        "gpu": 3,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/csil-s2026092702.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/csil-s2026092702/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.pipeline",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/csil-s2026092702.json"
+        ],
+        "started_at": "2026-09-30T13:28:27.649520+00:00",
+        "exit_code": 1
+      },
+      "source:csil-s2026092703": {
+        "status": "TRAINING_COMPLETE",
+        "pid": 173287,
+        "gpu": 4,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/csil-s2026092703.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/csil-s2026092703/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/csil-s2026092703.json"
+        ],
+        "started_at": "2026-09-30T12:34:26.564681+00:00",
+        "exit_code": 0
+      },
+      "phase12:csil-s2026092703": {
+        "status": "FAILED",
+        "pid": 204325,
+        "gpu": 4,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/csil-s2026092703.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/csil-s2026092703/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.pipeline",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/csil-s2026092703.json"
+        ],
+        "started_at": "2026-09-30T13:29:22.826216+00:00",
+        "exit_code": 1
+      },
+      "source:csil-s2026092704": {
+        "status": "TRAINING_COMPLETE",
+        "pid": 191689,
+        "gpu": 5,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/csil-s2026092704.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/csil-s2026092704/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/csil-s2026092704.json"
+        ],
+        "started_at": "2026-09-30T13:07:01.932040+00:00",
+        "exit_code": 0
+      },
+      "phase12:csil-s2026092704": {
+        "status": "FAILED",
+        "pid": 221166,
+        "gpu": 5,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/csil-s2026092704.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/csil-s2026092704/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.pipeline",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/csil-s2026092704.json"
+        ],
+        "started_at": "2026-09-30T14:00:55.449544+00:00",
+        "exit_code": 1
+      },
+      "source:mopc_hr-s392005": {
+        "status": "TRAINING_COMPLETE",
+        "pid": 192348,
+        "gpu": 6,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/mopc_hr-s392005.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/mopc_hr-s392005/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/mopc_hr-s392005.json"
+        ],
+        "started_at": "2026-09-30T13:08:08.224131+00:00",
+        "exit_code": 0
+      },
+      "phase12:mopc_hr-s392005": {
+        "status": "FAILED",
+        "pid": 221775,
+        "gpu": 6,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/mopc_hr-s392005.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/mopc_hr-s392005/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.pipeline",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/mopc_hr-s392005.json"
+        ],
+        "started_at": "2026-09-30T14:02:07.712811+00:00",
+        "exit_code": 1
+      },
+      "source:mopc_hr-s2026092701": {
+        "status": "TRAINING_COMPLETE",
+        "pid": 189627,
+        "gpu": 7,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/mopc_hr-s2026092701.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/mopc_hr-s2026092701/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/mopc_hr-s2026092701.json"
+        ],
+        "started_at": "2026-09-30T13:03:53.126624+00:00",
+        "exit_code": 0
+      },
+      "phase12:mopc_hr-s2026092701": {
+        "status": "FAILED",
+        "pid": 221070,
+        "gpu": 7,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/mopc_hr-s2026092701.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/mopc_hr-s2026092701/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.pipeline",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/mopc_hr-s2026092701.json"
+        ],
+        "started_at": "2026-09-30T14:00:40.012820+00:00",
+        "exit_code": 1
+      },
+      "source:mopc_hr-s2026092702": {
+        "status": "TRAINING_COMPLETE",
+        "pid": 200694,
+        "gpu": 0,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/mopc_hr-s2026092702.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/mopc_hr-s2026092702/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/mopc_hr-s2026092702.json"
+        ],
+        "started_at": "2026-09-30T13:23:53.855952+00:00",
+        "exit_code": 0
+      },
+      "phase12:mopc_hr-s2026092702": {
+        "status": "FAILED",
+        "pid": 232382,
+        "gpu": 0,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/mopc_hr-s2026092702.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/mopc_hr-s2026092702/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.pipeline",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/mopc_hr-s2026092702.json"
+        ],
+        "started_at": "2026-09-30T14:22:18.111808+00:00",
+        "exit_code": 1
+      },
+      "source:mopc_hr-s2026092703": {
+        "status": "TRAINING_COMPLETE",
+        "pid": 202857,
+        "gpu": 1,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/mopc_hr-s2026092703.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/mopc_hr-s2026092703/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/mopc_hr-s2026092703.json"
+        ],
+        "started_at": "2026-09-30T13:27:32.397009+00:00",
+        "exit_code": 0
+      },
+      "phase12:mopc_hr-s2026092703": {
+        "status": "FAILED",
+        "pid": 229608,
+        "gpu": 1,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/mopc_hr-s2026092703.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/mopc_hr-s2026092703/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.pipeline",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/mopc_hr-s2026092703.json"
+        ],
+        "started_at": "2026-09-30T14:17:13.774579+00:00",
+        "exit_code": 1
+      },
+      "source:mopc_hr-s2026092704": {
+        "status": "TRAINING_COMPLETE",
+        "pid": 203521,
+        "gpu": 2,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/mopc_hr-s2026092704.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/mopc_hr-s2026092704/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/mopc_hr-s2026092704.json"
+        ],
+        "started_at": "2026-09-30T13:28:29.850461+00:00",
+        "exit_code": 0
+      },
+      "phase12:mopc_hr-s2026092704": {
+        "status": "FAILED",
+        "pid": 231203,
+        "gpu": 2,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/mopc_hr-s2026092704.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/mopc_hr-s2026092704/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.pipeline",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/mopc_hr-s2026092704.json"
+        ],
+        "started_at": "2026-09-30T14:19:52.563097+00:00",
+        "exit_code": 1
+      },
+      "source:orthogonal-s392005": {
+        "status": "TRAINING_COMPLETE",
+        "pid": 202884,
+        "gpu": 3,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/orthogonal-s392005.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/orthogonal-s392005/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/orthogonal-s392005.json"
+        ],
+        "started_at": "2026-09-30T13:27:43.446340+00:00",
+        "exit_code": 0
+      },
+      "phase12:orthogonal-s392005": {
+        "status": "PREDICTIONS_COMPLETE",
+        "pid": 241244,
+        "gpu": 3,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/orthogonal-s392005.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/orthogonal-s392005/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.pipeline",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/orthogonal-s392005.json"
+        ],
+        "started_at": "2026-09-30T14:38:39.039183+00:00",
+        "exit_code": 0
+      },
+      "source:orthogonal-s2026092701": {
+        "status": "TRAINING_COMPLETE",
+        "pid": 202248,
+        "gpu": 4,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/orthogonal-s2026092701.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/orthogonal-s2026092701/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/orthogonal-s2026092701.json"
+        ],
+        "started_at": "2026-09-30T13:26:19.443416+00:00",
+        "exit_code": 0
+      },
+      "phase12:orthogonal-s2026092701": {
+        "status": "PREDICTIONS_COMPLETE",
+        "pid": 240707,
+        "gpu": 4,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/orthogonal-s2026092701.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/orthogonal-s2026092701/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.pipeline",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/orthogonal-s2026092701.json"
+        ],
+        "started_at": "2026-09-30T14:38:12.570955+00:00",
+        "exit_code": 0
+      },
+      "source:orthogonal-s2026092702": {
+        "status": "TRAINING_COMPLETE",
+        "pid": 219996,
+        "gpu": 5,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/orthogonal-s2026092702.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/orthogonal-s2026092702/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/orthogonal-s2026092702.json"
+        ],
+        "started_at": "2026-09-30T13:58:30.011543+00:00",
+        "exit_code": 0
+      },
+      "phase12:orthogonal-s2026092702": {
+        "status": "PREDICTIONS_COMPLETE",
+        "pid": 258585,
+        "gpu": 5,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/orthogonal-s2026092702.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/orthogonal-s2026092702/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.pipeline",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/orthogonal-s2026092702.json"
+        ],
+        "started_at": "2026-09-30T15:10:54.387748+00:00",
+        "exit_code": 0
+      },
+      "source:orthogonal-s2026092703": {
+        "status": "TRAINING_COMPLETE",
+        "pid": 220055,
+        "gpu": 6,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/orthogonal-s2026092703.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/orthogonal-s2026092703/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/orthogonal-s2026092703.json"
+        ],
+        "started_at": "2026-09-30T13:58:58.670401+00:00",
+        "exit_code": 0
+      },
+      "phase12:orthogonal-s2026092703": {
+        "status": "PREDICTIONS_COMPLETE",
+        "pid": 258456,
+        "gpu": 6,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/orthogonal-s2026092703.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/orthogonal-s2026092703/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.pipeline",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/orthogonal-s2026092703.json"
+        ],
+        "started_at": "2026-09-30T15:10:30.298577+00:00",
+        "exit_code": 0
+      },
+      "source:orthogonal-s2026092704": {
+        "status": "TRAINING_COMPLETE",
+        "pid": 217899,
+        "gpu": 7,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/orthogonal-s2026092704.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/orthogonal-s2026092704/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/orthogonal-s2026092704.json"
+        ],
+        "started_at": "2026-09-30T13:54:25.228677+00:00",
+        "exit_code": 0
+      },
+      "phase12:orthogonal-s2026092704": {
+        "status": "PREDICTIONS_COMPLETE",
+        "pid": 256264,
+        "gpu": 7,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/orthogonal-s2026092704.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/orthogonal-s2026092704/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.pipeline",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/orthogonal-s2026092704.json"
+        ],
+        "started_at": "2026-09-30T15:06:32.027005+00:00",
+        "exit_code": 0
+      },
+      "source:radionet_ada-s392005": {
+        "status": "TRAINING_COMPLETE",
+        "pid": 228003,
+        "gpu": 0,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/radionet_ada-s392005.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/radionet_ada-s392005/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/radionet_ada-s392005.json"
+        ],
+        "started_at": "2026-09-30T14:13:57.529656+00:00",
+        "exit_code": 0
+      },
+      "phase12:radionet_ada-s392005": {
+        "status": "PREDICTIONS_COMPLETE",
+        "pid": 255217,
+        "gpu": 0,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/radionet_ada-s392005.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/radionet_ada-s392005/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.pipeline",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/radionet_ada-s392005.json"
+        ],
+        "started_at": "2026-09-30T15:05:01.715424+00:00",
+        "exit_code": 0
+      },
+      "source:radionet_ada-s2026092701": {
+        "status": "TRAINING_COMPLETE",
+        "pid": 229609,
+        "gpu": 1,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/radionet_ada-s2026092701.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/radionet_ada-s2026092701/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/radionet_ada-s2026092701.json"
+        ],
+        "started_at": "2026-09-30T14:17:13.776208+00:00",
+        "exit_code": 0
+      },
+      "phase12:radionet_ada-s2026092701": {
+        "status": "PREDICTIONS_COMPLETE",
+        "pid": 256915,
+        "gpu": 1,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/radionet_ada-s2026092701.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/radionet_ada-s2026092701/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.pipeline",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/radionet_ada-s2026092701.json"
+        ],
+        "started_at": "2026-09-30T15:08:09.074620+00:00",
+        "exit_code": 0
+      },
+      "source:radionet_ada-s2026092702": {
+        "status": "TRAINING_COMPLETE",
+        "pid": 231204,
+        "gpu": 2,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/radionet_ada-s2026092702.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/radionet_ada-s2026092702/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/radionet_ada-s2026092702.json"
+        ],
+        "started_at": "2026-09-30T14:19:52.564681+00:00",
+        "exit_code": 0
+      },
+      "phase12:radionet_ada-s2026092702": {
+        "status": "PREDICTIONS_COMPLETE",
+        "pid": 258709,
+        "gpu": 2,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/radionet_ada-s2026092702.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/radionet_ada-s2026092702/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.pipeline",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/radionet_ada-s2026092702.json"
+        ],
+        "started_at": "2026-09-30T15:11:23.108683+00:00",
+        "exit_code": 0
+      },
+      "source:radionet_ada-s2026092703": {
+        "status": "TRAINING_COMPLETE",
+        "pid": 241245,
+        "gpu": 3,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/radionet_ada-s2026092703.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/radionet_ada-s2026092703/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/radionet_ada-s2026092703.json"
+        ],
+        "started_at": "2026-09-30T14:38:39.040858+00:00",
+        "exit_code": 0
+      },
+      "phase12:radionet_ada-s2026092703": {
+        "status": "PREDICTIONS_COMPLETE",
+        "pid": 285240,
+        "gpu": 3,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/radionet_ada-s2026092703.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/radionet_ada-s2026092703/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.pipeline",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/radionet_ada-s2026092703.json"
+        ],
+        "started_at": "2026-09-30T16:00:38.583076+00:00",
+        "exit_code": 0
+      },
+      "source:radionet_ada-s2026092704": {
+        "status": "TRAINING_COMPLETE",
+        "pid": 240708,
+        "gpu": 4,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/radionet_ada-s2026092704.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/radionet_ada-s2026092704/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/radionet_ada-s2026092704.json"
+        ],
+        "started_at": "2026-09-30T14:38:12.572581+00:00",
+        "exit_code": 0
+      },
+      "phase12:radionet_ada-s2026092704": {
+        "status": "PREDICTIONS_COMPLETE",
+        "pid": 284855,
+        "gpu": 4,
+        "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/radionet_ada-s2026092704.json",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/radionet_ada-s2026092704/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.pipeline",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/configs/radionet_ada-s2026092704.json"
+        ],
+        "started_at": "2026-09-30T16:00:25.359875+00:00",
+        "exit_code": 0
+      }
+    },
+    "scoring": {
+      "p1": "ANALYZED",
+      "p2": "WAITING"
+    },
+    "spec": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/launch_spec.json",
+    "commit": "577825849c5c69edfbec9e258948b5621e4c643a"
+  },
+  "counts": {
+    "source:TRAINING_COMPLETE": 45,
+    "phase12:PREDICTIONS_COMPLETE": 35,
+    "phase12:FAILED": 10
+  },
+  "phase1_complete": 45,
+  "phase2_complete": 35,
+  "phase2_complete_prediction_records": 54600,
+  "failure_signatures": {
+    "TypeError: kaiming_uniform_() got an unexpected keyword argument 'generator'": 10
+  },
+  "scoring": {
+    "p1": "ANALYZED",
+    "p2": "WAITING"
+  },
+  "rows": [
+    {
+      "row_id": "protonet-s392005",
+      "stage": "source",
+      "method": "protonet",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/protonet-s392005",
+      "state": "TRAINING_COMPLETE",
+      "source_epoch": 200,
+      "source_status": "SOURCE_TRAINED",
+      "final_checkpoint_exists": true
+    },
+    {
+      "row_id": "protonet-s392005",
+      "stage": "phase12",
+      "method": "protonet",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/protonet-s392005",
+      "state": "PREDICTIONS_COMPLETE",
+      "phase1_status": "PREDICTIONS_COMPLETE",
+      "phase1_records": 168000,
+      "phase2_status": "PREDICTIONS_COMPLETE",
+      "phase2_records": 2520,
+      "support_smoke_passed": true
+    },
+    {
+      "row_id": "protonet-s2026092701",
+      "stage": "source",
+      "method": "protonet",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/protonet-s2026092701",
+      "state": "TRAINING_COMPLETE",
+      "source_epoch": 200,
+      "source_status": "SOURCE_TRAINED",
+      "final_checkpoint_exists": true
+    },
+    {
+      "row_id": "protonet-s2026092701",
+      "stage": "phase12",
+      "method": "protonet",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/protonet-s2026092701",
+      "state": "PREDICTIONS_COMPLETE",
+      "phase1_status": "PREDICTIONS_COMPLETE",
+      "phase1_records": 168000,
+      "phase2_status": "PREDICTIONS_COMPLETE",
+      "phase2_records": 2520,
+      "support_smoke_passed": true
+    },
+    {
+      "row_id": "protonet-s2026092702",
+      "stage": "source",
+      "method": "protonet",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/protonet-s2026092702",
+      "state": "TRAINING_COMPLETE",
+      "source_epoch": 200,
+      "source_status": "SOURCE_TRAINED",
+      "final_checkpoint_exists": true
+    },
+    {
+      "row_id": "protonet-s2026092702",
+      "stage": "phase12",
+      "method": "protonet",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/protonet-s2026092702",
+      "state": "PREDICTIONS_COMPLETE",
+      "phase1_status": "PREDICTIONS_COMPLETE",
+      "phase1_records": 168000,
+      "phase2_status": "PREDICTIONS_COMPLETE",
+      "phase2_records": 2520,
+      "support_smoke_passed": true
+    },
+    {
+      "row_id": "protonet-s2026092703",
+      "stage": "source",
+      "method": "protonet",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/protonet-s2026092703",
+      "state": "TRAINING_COMPLETE",
+      "source_epoch": 200,
+      "source_status": "SOURCE_TRAINED",
+      "final_checkpoint_exists": true
+    },
+    {
+      "row_id": "protonet-s2026092703",
+      "stage": "phase12",
+      "method": "protonet",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/protonet-s2026092703",
+      "state": "PREDICTIONS_COMPLETE",
+      "phase1_status": "PREDICTIONS_COMPLETE",
+      "phase1_records": 168000,
+      "phase2_status": "PREDICTIONS_COMPLETE",
+      "phase2_records": 2520,
+      "support_smoke_passed": true
+    },
+    {
+      "row_id": "protonet-s2026092704",
+      "stage": "source",
+      "method": "protonet",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/protonet-s2026092704",
+      "state": "TRAINING_COMPLETE",
+      "source_epoch": 200,
+      "source_status": "SOURCE_TRAINED",
+      "final_checkpoint_exists": true
+    },
+    {
+      "row_id": "protonet-s2026092704",
+      "stage": "phase12",
+      "method": "protonet",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/protonet-s2026092704",
+      "state": "PREDICTIONS_COMPLETE",
+      "phase1_status": "PREDICTIONS_COMPLETE",
+      "phase1_records": 168000,
+      "phase2_status": "PREDICTIONS_COMPLETE",
+      "phase2_records": 2520,
+      "support_smoke_passed": true
+    },
+    {
+      "row_id": "feature_separation-s392005",
+      "stage": "source",
+      "method": "feature_separation",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/feature_separation-s392005",
+      "state": "TRAINING_COMPLETE",
+      "source_epoch": 200,
+      "source_status": "SOURCE_TRAINED",
+      "final_checkpoint_exists": true
+    },
+    {
+      "row_id": "feature_separation-s392005",
+      "stage": "phase12",
+      "method": "feature_separation",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/feature_separation-s392005",
+      "state": "PREDICTIONS_COMPLETE",
+      "phase1_status": "PREDICTIONS_COMPLETE",
+      "phase1_records": 168000,
+      "phase2_status": "PREDICTIONS_COMPLETE",
+      "phase2_records": 840,
+      "support_smoke_passed": true
+    },
+    {
+      "row_id": "feature_separation-s2026092701",
+      "stage": "source",
+      "method": "feature_separation",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/feature_separation-s2026092701",
+      "state": "TRAINING_COMPLETE",
+      "source_epoch": 200,
+      "source_status": "SOURCE_TRAINED",
+      "final_checkpoint_exists": true
+    },
+    {
+      "row_id": "feature_separation-s2026092701",
+      "stage": "phase12",
+      "method": "feature_separation",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/feature_separation-s2026092701",
+      "state": "PREDICTIONS_COMPLETE",
+      "phase1_status": "PREDICTIONS_COMPLETE",
+      "phase1_records": 168000,
+      "phase2_status": "PREDICTIONS_COMPLETE",
+      "phase2_records": 840,
+      "support_smoke_passed": true
+    },
+    {
+      "row_id": "feature_separation-s2026092702",
+      "stage": "source",
+      "method": "feature_separation",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/feature_separation-s2026092702",
+      "state": "TRAINING_COMPLETE",
+      "source_epoch": 200,
+      "source_status": "SOURCE_TRAINED",
+      "final_checkpoint_exists": true
+    },
+    {
+      "row_id": "feature_separation-s2026092702",
+      "stage": "phase12",
+      "method": "feature_separation",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/feature_separation-s2026092702",
+      "state": "PREDICTIONS_COMPLETE",
+      "phase1_status": "PREDICTIONS_COMPLETE",
+      "phase1_records": 168000,
+      "phase2_status": "PREDICTIONS_COMPLETE",
+      "phase2_records": 840,
+      "support_smoke_passed": true
+    },
+    {
+      "row_id": "feature_separation-s2026092703",
+      "stage": "source",
+      "method": "feature_separation",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/feature_separation-s2026092703",
+      "state": "TRAINING_COMPLETE",
+      "source_epoch": 200,
+      "source_status": "SOURCE_TRAINED",
+      "final_checkpoint_exists": true
+    },
+    {
+      "row_id": "feature_separation-s2026092703",
+      "stage": "phase12",
+      "method": "feature_separation",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/feature_separation-s2026092703",
+      "state": "PREDICTIONS_COMPLETE",
+      "phase1_status": "PREDICTIONS_COMPLETE",
+      "phase1_records": 168000,
+      "phase2_status": "PREDICTIONS_COMPLETE",
+      "phase2_records": 840,
+      "support_smoke_passed": true
+    },
+    {
+      "row_id": "feature_separation-s2026092704",
+      "stage": "source",
+      "method": "feature_separation",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/feature_separation-s2026092704",
+      "state": "TRAINING_COMPLETE",
+      "source_epoch": 200,
+      "source_status": "SOURCE_TRAINED",
+      "final_checkpoint_exists": true
+    },
+    {
+      "row_id": "feature_separation-s2026092704",
+      "stage": "phase12",
+      "method": "feature_separation",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/feature_separation-s2026092704",
+      "state": "PREDICTIONS_COMPLETE",
+      "phase1_status": "PREDICTIONS_COMPLETE",
+      "phase1_records": 168000,
+      "phase2_status": "PREDICTIONS_COMPLETE",
+      "phase2_records": 840,
+      "support_smoke_passed": true
+    },
+    {
+      "row_id": "dadda-s392005",
+      "stage": "source",
+      "method": "dadda",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/dadda-s392005",
+      "state": "TRAINING_COMPLETE",
+      "source_epoch": 200,
+      "source_status": "SOURCE_TRAINED",
+      "final_checkpoint_exists": true
+    },
+    {
+      "row_id": "dadda-s392005",
+      "stage": "phase12",
+      "method": "dadda",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/dadda-s392005",
+      "state": "PREDICTIONS_COMPLETE",
+      "phase1_status": "PREDICTIONS_COMPLETE",
+      "phase1_records": 168000,
+      "phase2_status": "PREDICTIONS_COMPLETE",
+      "phase2_records": 840,
+      "support_smoke_passed": true
+    },
+    {
+      "row_id": "dadda-s2026092701",
+      "stage": "source",
+      "method": "dadda",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/dadda-s2026092701",
+      "state": "TRAINING_COMPLETE",
+      "source_epoch": 200,
+      "source_status": "SOURCE_TRAINED",
+      "final_checkpoint_exists": true
+    },
+    {
+      "row_id": "dadda-s2026092701",
+      "stage": "phase12",
+      "method": "dadda",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/dadda-s2026092701",
+      "state": "PREDICTIONS_COMPLETE",
+      "phase1_status": "PREDICTIONS_COMPLETE",
+      "phase1_records": 168000,
+      "phase2_status": "PREDICTIONS_COMPLETE",
+      "phase2_records": 840,
+      "support_smoke_passed": true
+    },
+    {
+      "row_id": "dadda-s2026092702",
+      "stage": "source",
+      "method": "dadda",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/dadda-s2026092702",
+      "state": "TRAINING_COMPLETE",
+      "source_epoch": 200,
+      "source_status": "SOURCE_TRAINED",
+      "final_checkpoint_exists": true
+    },
+    {
+      "row_id": "dadda-s2026092702",
+      "stage": "phase12",
+      "method": "dadda",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/dadda-s2026092702",
+      "state": "PREDICTIONS_COMPLETE",
+      "phase1_status": "PREDICTIONS_COMPLETE",
+      "phase1_records": 168000,
+      "phase2_status": "PREDICTIONS_COMPLETE",
+      "phase2_records": 840,
+      "support_smoke_passed": true
+    },
+    {
+      "row_id": "dadda-s2026092703",
+      "stage": "source",
+      "method": "dadda",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/dadda-s2026092703",
+      "state": "TRAINING_COMPLETE",
+      "source_epoch": 200,
+      "source_status": "SOURCE_TRAINED",
+      "final_checkpoint_exists": true
+    },
+    {
+      "row_id": "dadda-s2026092703",
+      "stage": "phase12",
+      "method": "dadda",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/dadda-s2026092703",
+      "state": "PREDICTIONS_COMPLETE",
+      "phase1_status": "PREDICTIONS_COMPLETE",
+      "phase1_records": 168000,
+      "phase2_status": "PREDICTIONS_COMPLETE",
+      "phase2_records": 840,
+      "support_smoke_passed": true
+    },
+    {
+      "row_id": "dadda-s2026092704",
+      "stage": "source",
+      "method": "dadda",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/dadda-s2026092704",
+      "state": "TRAINING_COMPLETE",
+      "source_epoch": 200,
+      "source_status": "SOURCE_TRAINED",
+      "final_checkpoint_exists": true
+    },
+    {
+      "row_id": "dadda-s2026092704",
+      "stage": "phase12",
+      "method": "dadda",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/dadda-s2026092704",
+      "state": "PREDICTIONS_COMPLETE",
+      "phase1_status": "PREDICTIONS_COMPLETE",
+      "phase1_records": 168000,
+      "phase2_status": "PREDICTIONS_COMPLETE",
+      "phase2_records": 840,
+      "support_smoke_passed": true
+    },
+    {
+      "row_id": "mrior-s392005",
+      "stage": "source",
+      "method": "mrior",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/mrior-s392005",
+      "state": "TRAINING_COMPLETE",
+      "source_epoch": 200,
+      "source_status": "SOURCE_TRAINED",
+      "final_checkpoint_exists": true
+    },
+    {
+      "row_id": "mrior-s392005",
+      "stage": "phase12",
+      "method": "mrior",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/mrior-s392005",
+      "state": "PREDICTIONS_COMPLETE",
+      "phase1_status": "PREDICTIONS_COMPLETE",
+      "phase1_records": 168000,
+      "phase2_status": "PREDICTIONS_COMPLETE",
+      "phase2_records": 840,
+      "support_smoke_passed": true
+    },
+    {
+      "row_id": "mrior-s2026092701",
+      "stage": "source",
+      "method": "mrior",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/mrior-s2026092701",
+      "state": "TRAINING_COMPLETE",
+      "source_epoch": 200,
+      "source_status": "SOURCE_TRAINED",
+      "final_checkpoint_exists": true
+    },
+    {
+      "row_id": "mrior-s2026092701",
+      "stage": "phase12",
+      "method": "mrior",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/mrior-s2026092701",
+      "state": "PREDICTIONS_COMPLETE",
+      "phase1_status": "PREDICTIONS_COMPLETE",
+      "phase1_records": 168000,
+      "phase2_status": "PREDICTIONS_COMPLETE",
+      "phase2_records": 840,
+      "support_smoke_passed": true
+    },
+    {
+      "row_id": "mrior-s2026092702",
+      "stage": "source",
+      "method": "mrior",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/mrior-s2026092702",
+      "state": "TRAINING_COMPLETE",
+      "source_epoch": 200,
+      "source_status": "SOURCE_TRAINED",
+      "final_checkpoint_exists": true
+    },
+    {
+      "row_id": "mrior-s2026092702",
+      "stage": "phase12",
+      "method": "mrior",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/mrior-s2026092702",
+      "state": "PREDICTIONS_COMPLETE",
+      "phase1_status": "PREDICTIONS_COMPLETE",
+      "phase1_records": 168000,
+      "phase2_status": "PREDICTIONS_COMPLETE",
+      "phase2_records": 840,
+      "support_smoke_passed": true
+    },
+    {
+      "row_id": "mrior-s2026092703",
+      "stage": "source",
+      "method": "mrior",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/mrior-s2026092703",
+      "state": "TRAINING_COMPLETE",
+      "source_epoch": 200,
+      "source_status": "SOURCE_TRAINED",
+      "final_checkpoint_exists": true
+    },
+    {
+      "row_id": "mrior-s2026092703",
+      "stage": "phase12",
+      "method": "mrior",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/mrior-s2026092703",
+      "state": "PREDICTIONS_COMPLETE",
+      "phase1_status": "PREDICTIONS_COMPLETE",
+      "phase1_records": 168000,
+      "phase2_status": "PREDICTIONS_COMPLETE",
+      "phase2_records": 840,
+      "support_smoke_passed": true
+    },
+    {
+      "row_id": "mrior-s2026092704",
+      "stage": "source",
+      "method": "mrior",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/mrior-s2026092704",
+      "state": "TRAINING_COMPLETE",
+      "source_epoch": 200,
+      "source_status": "SOURCE_TRAINED",
+      "final_checkpoint_exists": true
+    },
+    {
+      "row_id": "mrior-s2026092704",
+      "stage": "phase12",
+      "method": "mrior",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/mrior-s2026092704",
+      "state": "PREDICTIONS_COMPLETE",
+      "phase1_status": "PREDICTIONS_COMPLETE",
+      "phase1_records": 168000,
+      "phase2_status": "PREDICTIONS_COMPLETE",
+      "phase2_records": 840,
+      "support_smoke_passed": true
+    },
+    {
+      "row_id": "twostage-s392005",
+      "stage": "source",
+      "method": "twostage",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/twostage-s392005",
+      "state": "TRAINING_COMPLETE",
+      "source_epoch": 200,
+      "source_status": "SOURCE_TRAINED",
+      "final_checkpoint_exists": true
+    },
+    {
+      "row_id": "twostage-s392005",
+      "stage": "phase12",
+      "method": "twostage",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/twostage-s392005",
+      "state": "PREDICTIONS_COMPLETE",
+      "phase1_status": "PREDICTIONS_COMPLETE",
+      "phase1_records": 168000,
+      "phase2_status": "PREDICTIONS_COMPLETE",
+      "phase2_records": 840,
+      "support_smoke_passed": true
+    },
+    {
+      "row_id": "twostage-s2026092701",
+      "stage": "source",
+      "method": "twostage",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/twostage-s2026092701",
+      "state": "TRAINING_COMPLETE",
+      "source_epoch": 200,
+      "source_status": "SOURCE_TRAINED",
+      "final_checkpoint_exists": true
+    },
+    {
+      "row_id": "twostage-s2026092701",
+      "stage": "phase12",
+      "method": "twostage",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/twostage-s2026092701",
+      "state": "PREDICTIONS_COMPLETE",
+      "phase1_status": "PREDICTIONS_COMPLETE",
+      "phase1_records": 168000,
+      "phase2_status": "PREDICTIONS_COMPLETE",
+      "phase2_records": 840,
+      "support_smoke_passed": true
+    },
+    {
+      "row_id": "twostage-s2026092702",
+      "stage": "source",
+      "method": "twostage",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/twostage-s2026092702",
+      "state": "TRAINING_COMPLETE",
+      "source_epoch": 200,
+      "source_status": "SOURCE_TRAINED",
+      "final_checkpoint_exists": true
+    },
+    {
+      "row_id": "twostage-s2026092702",
+      "stage": "phase12",
+      "method": "twostage",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/twostage-s2026092702",
+      "state": "PREDICTIONS_COMPLETE",
+      "phase1_status": "PREDICTIONS_COMPLETE",
+      "phase1_records": 168000,
+      "phase2_status": "PREDICTIONS_COMPLETE",
+      "phase2_records": 840,
+      "support_smoke_passed": true
+    },
+    {
+      "row_id": "twostage-s2026092703",
+      "stage": "source",
+      "method": "twostage",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/twostage-s2026092703",
+      "state": "TRAINING_COMPLETE",
+      "source_epoch": 200,
+      "source_status": "SOURCE_TRAINED",
+      "final_checkpoint_exists": true
+    },
+    {
+      "row_id": "twostage-s2026092703",
+      "stage": "phase12",
+      "method": "twostage",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/twostage-s2026092703",
+      "state": "PREDICTIONS_COMPLETE",
+      "phase1_status": "PREDICTIONS_COMPLETE",
+      "phase1_records": 168000,
+      "phase2_status": "PREDICTIONS_COMPLETE",
+      "phase2_records": 840,
+      "support_smoke_passed": true
+    },
+    {
+      "row_id": "twostage-s2026092704",
+      "stage": "source",
+      "method": "twostage",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/twostage-s2026092704",
+      "state": "TRAINING_COMPLETE",
+      "source_epoch": 200,
+      "source_status": "SOURCE_TRAINED",
+      "final_checkpoint_exists": true
+    },
+    {
+      "row_id": "twostage-s2026092704",
+      "stage": "phase12",
+      "method": "twostage",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/twostage-s2026092704",
+      "state": "PREDICTIONS_COMPLETE",
+      "phase1_status": "PREDICTIONS_COMPLETE",
+      "phase1_records": 168000,
+      "phase2_status": "PREDICTIONS_COMPLETE",
+      "phase2_records": 840,
+      "support_smoke_passed": true
+    },
+    {
+      "row_id": "csil-s392005",
+      "stage": "source",
+      "method": "csil",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/csil-s392005",
+      "state": "TRAINING_COMPLETE",
+      "source_epoch": 200,
+      "source_status": "SOURCE_TRAINED",
+      "final_checkpoint_exists": true
+    },
+    {
+      "row_id": "csil-s392005",
+      "stage": "phase12",
+      "method": "csil",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/csil-s392005",
+      "state": "FAILED",
+      "phase1_status": "PREDICTIONS_COMPLETE",
+      "phase1_records": 168000,
+      "phase2_status": null,
+      "phase2_records": null,
+      "support_smoke_passed": true,
+      "failure_tail": [
+        "RESOLVED_CONFIG {\"method\": \"csil\", \"model_seed\": 392005, \"source_output\": \"/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/csil-s392005\", \"output_root\": \"/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/csil-s392005\", \"device\": \"cuda:0\", \"source_contract\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json\", \"dataset\": \"/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl\", \"p1_capsule\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/capsule\", \"p2_capsule\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-practical-data-manytx-s2026092705-r01/capsule\", \"adaptation\": {\"epochs\": 100, \"steps_per_epoch\": 1, \"iterations\": 1000, \"dann_epochs\": 100, \"lmmd_epochs\": 100, \"finetune_epochs\": 100}, \"registration\": {\"csil_old_fingerprint_trainable\": true}, \"batch_size\": 256, \"method_version\": \"csil_official_repo_corefix_empirical_fisher\", \"protocol\": \"p2_min_v1\", \"channel_route\": \"residual_noeq\", \"initial\": {\"status\": \"SCRATCH\", \"checkpoint\": null, \"ancestors\": [], \"model_seed\": 392005, \"source_contract\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json\", \"physical_roles\": \"EXACT_MATCH\", \"selection\": \"fixed_last_epoch\", \"target_access\": false, \"scratch_only\": true, \"checkpoint_sources\": [], \"target_contact\": false}, \"classes\": [\"14-10\", \"14-7\", \"20-15\", \"20-19\", \"6-15\", \"8-20\"], \"query_fit\": false, \"truth_input\": false, \"source_replay_exception\": false, \"B_C_training\": \"C inherits B; same old support/query\", \"hardware\": \"NVIDIA GeForce RTX 3090\"}",
+        "FIT {\"receiver\": \"1-1\", \"scenario\": \"practical_high\", \"k\": 1, \"support_seed\": 2026092711, \"stage\": \"B\", \"split_id\": \"d75248a561c3d5e08b307c9a\", \"phase\": \"B\", \"method\": \"csil\", \"epoch\": 10, \"iteration\": 10, \"learning_rate\": 0.001, \"loss\": 2.949012517929077, \"cross_entropy\": 2.949012517929077, \"gradient_norm\": 2.3013105392456055, \"elapsed_seconds\": 0.5105145330016967, \"source_validation\": null, \"source_validation_reason\": \"Phase2 does not select on validation\"}",
+        "Traceback (most recent call last):",
+        "  File \"/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/runpy.py\", line 196, in _run_module_as_main",
+        "    return _run_code(code, main_globals, None,",
+        "  File \"/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/runpy.py\", line 86, in _run_code",
+        "    exec(code, run_globals)",
+        "  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/comparison_suite/pipeline.py\", line 281, in <module>",
+        "    if __name__ == '__main__': main()",
+        "  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/comparison_suite/pipeline.py\", line 279, in main",
+        "    run(read(p.parse_args().config))",
+        "  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/comparison_suite/pipeline.py\", line 246, in run",
+        "    registered = register_new_classes(state, tensor(iq[selected],device),",
+        "  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/comparison_suite/registration.py\", line 639, in register_new_classes",
+        "    _csil_register(state, new_support_x, new_support_y, cfg, logger, start)",
+        "  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/comparison_suite/registration.py\", line 433, in _csil_register",
+        "    nn.init.kaiming_uniform_(expanded.weight, a=5 ** 0.5, generator=generator)",
+        "TypeError: kaiming_uniform_() got an unexpected keyword argument 'generator'"
+      ],
+      "failure_signature": "TypeError: kaiming_uniform_() got an unexpected keyword argument 'generator'"
+    },
+    {
+      "row_id": "csil-s2026092701",
+      "stage": "source",
+      "method": "csil",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/csil-s2026092701",
+      "state": "TRAINING_COMPLETE",
+      "source_epoch": 200,
+      "source_status": "SOURCE_TRAINED",
+      "final_checkpoint_exists": true
+    },
+    {
+      "row_id": "csil-s2026092701",
+      "stage": "phase12",
+      "method": "csil",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/csil-s2026092701",
+      "state": "FAILED",
+      "phase1_status": "PREDICTIONS_COMPLETE",
+      "phase1_records": 168000,
+      "phase2_status": null,
+      "phase2_records": null,
+      "support_smoke_passed": true,
+      "failure_tail": [
+        "RESOLVED_CONFIG {\"method\": \"csil\", \"model_seed\": 2026092701, \"source_output\": \"/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/csil-s2026092701\", \"output_root\": \"/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/csil-s2026092701\", \"device\": \"cuda:0\", \"source_contract\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json\", \"dataset\": \"/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl\", \"p1_capsule\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/capsule\", \"p2_capsule\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-practical-data-manytx-s2026092705-r01/capsule\", \"adaptation\": {\"epochs\": 100, \"steps_per_epoch\": 1, \"iterations\": 1000, \"dann_epochs\": 100, \"lmmd_epochs\": 100, \"finetune_epochs\": 100}, \"registration\": {\"csil_old_fingerprint_trainable\": true}, \"batch_size\": 256, \"method_version\": \"csil_official_repo_corefix_empirical_fisher\", \"protocol\": \"p2_min_v1\", \"channel_route\": \"residual_noeq\", \"initial\": {\"status\": \"SCRATCH\", \"checkpoint\": null, \"ancestors\": [], \"model_seed\": 2026092701, \"source_contract\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json\", \"physical_roles\": \"EXACT_MATCH\", \"selection\": \"fixed_last_epoch\", \"target_access\": false, \"scratch_only\": true, \"checkpoint_sources\": [], \"target_contact\": false}, \"classes\": [\"14-10\", \"14-7\", \"20-15\", \"20-19\", \"6-15\", \"8-20\"], \"query_fit\": false, \"truth_input\": false, \"source_replay_exception\": false, \"B_C_training\": \"C inherits B; same old support/query\", \"hardware\": \"NVIDIA GeForce RTX 3090\"}",
+        "FIT {\"receiver\": \"1-1\", \"scenario\": \"practical_high\", \"k\": 1, \"support_seed\": 2026092711, \"stage\": \"B\", \"split_id\": \"d75248a561c3d5e08b307c9a\", \"phase\": \"B\", \"method\": \"csil\", \"epoch\": 10, \"iteration\": 10, \"learning_rate\": 0.001, \"loss\": 2.6136248111724854, \"cross_entropy\": 2.6136248111724854, \"gradient_norm\": 2.1269989013671875, \"elapsed_seconds\": 0.49270771900046384, \"source_validation\": null, \"source_validation_reason\": \"Phase2 does not select on validation\"}",
+        "Traceback (most recent call last):",
+        "  File \"/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/runpy.py\", line 196, in _run_module_as_main",
+        "    return _run_code(code, main_globals, None,",
+        "  File \"/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/runpy.py\", line 86, in _run_code",
+        "    exec(code, run_globals)",
+        "  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/comparison_suite/pipeline.py\", line 281, in <module>",
+        "    if __name__ == '__main__': main()",
+        "  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/comparison_suite/pipeline.py\", line 279, in main",
+        "    run(read(p.parse_args().config))",
+        "  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/comparison_suite/pipeline.py\", line 246, in run",
+        "    registered = register_new_classes(state, tensor(iq[selected],device),",
+        "  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/comparison_suite/registration.py\", line 639, in register_new_classes",
+        "    _csil_register(state, new_support_x, new_support_y, cfg, logger, start)",
+        "  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/comparison_suite/registration.py\", line 433, in _csil_register",
+        "    nn.init.kaiming_uniform_(expanded.weight, a=5 ** 0.5, generator=generator)",
+        "TypeError: kaiming_uniform_() got an unexpected keyword argument 'generator'"
+      ],
+      "failure_signature": "TypeError: kaiming_uniform_() got an unexpected keyword argument 'generator'"
+    },
+    {
+      "row_id": "csil-s2026092702",
+      "stage": "source",
+      "method": "csil",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/csil-s2026092702",
+      "state": "TRAINING_COMPLETE",
+      "source_epoch": 200,
+      "source_status": "SOURCE_TRAINED",
+      "final_checkpoint_exists": true
+    },
+    {
+      "row_id": "csil-s2026092702",
+      "stage": "phase12",
+      "method": "csil",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/csil-s2026092702",
+      "state": "FAILED",
+      "phase1_status": "PREDICTIONS_COMPLETE",
+      "phase1_records": 168000,
+      "phase2_status": null,
+      "phase2_records": null,
+      "support_smoke_passed": true,
+      "failure_tail": [
+        "RESOLVED_CONFIG {\"method\": \"csil\", \"model_seed\": 2026092702, \"source_output\": \"/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/csil-s2026092702\", \"output_root\": \"/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/csil-s2026092702\", \"device\": \"cuda:0\", \"source_contract\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json\", \"dataset\": \"/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl\", \"p1_capsule\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/capsule\", \"p2_capsule\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-practical-data-manytx-s2026092705-r01/capsule\", \"adaptation\": {\"epochs\": 100, \"steps_per_epoch\": 1, \"iterations\": 1000, \"dann_epochs\": 100, \"lmmd_epochs\": 100, \"finetune_epochs\": 100}, \"registration\": {\"csil_old_fingerprint_trainable\": true}, \"batch_size\": 256, \"method_version\": \"csil_official_repo_corefix_empirical_fisher\", \"protocol\": \"p2_min_v1\", \"channel_route\": \"residual_noeq\", \"initial\": {\"status\": \"SCRATCH\", \"checkpoint\": null, \"ancestors\": [], \"model_seed\": 2026092702, \"source_contract\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json\", \"physical_roles\": \"EXACT_MATCH\", \"selection\": \"fixed_last_epoch\", \"target_access\": false, \"scratch_only\": true, \"checkpoint_sources\": [], \"target_contact\": false}, \"classes\": [\"14-10\", \"14-7\", \"20-15\", \"20-19\", \"6-15\", \"8-20\"], \"query_fit\": false, \"truth_input\": false, \"source_replay_exception\": false, \"B_C_training\": \"C inherits B; same old support/query\", \"hardware\": \"NVIDIA GeForce RTX 3090\"}",
+        "FIT {\"receiver\": \"1-1\", \"scenario\": \"practical_high\", \"k\": 1, \"support_seed\": 2026092711, \"stage\": \"B\", \"split_id\": \"d75248a561c3d5e08b307c9a\", \"phase\": \"B\", \"method\": \"csil\", \"epoch\": 10, \"iteration\": 10, \"learning_rate\": 0.001, \"loss\": 2.8514204025268555, \"cross_entropy\": 2.8514204025268555, \"gradient_norm\": 2.6951940059661865, \"elapsed_seconds\": 0.551040906997514, \"source_validation\": null, \"source_validation_reason\": \"Phase2 does not select on validation\"}",
+        "Traceback (most recent call last):",
+        "  File \"/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/runpy.py\", line 196, in _run_module_as_main",
+        "    return _run_code(code, main_globals, None,",
+        "  File \"/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/runpy.py\", line 86, in _run_code",
+        "    exec(code, run_globals)",
+        "  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/comparison_suite/pipeline.py\", line 281, in <module>",
+        "    if __name__ == '__main__': main()",
+        "  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/comparison_suite/pipeline.py\", line 279, in main",
+        "    run(read(p.parse_args().config))",
+        "  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/comparison_suite/pipeline.py\", line 246, in run",
+        "    registered = register_new_classes(state, tensor(iq[selected],device),",
+        "  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/comparison_suite/registration.py\", line 639, in register_new_classes",
+        "    _csil_register(state, new_support_x, new_support_y, cfg, logger, start)",
+        "  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/comparison_suite/registration.py\", line 433, in _csil_register",
+        "    nn.init.kaiming_uniform_(expanded.weight, a=5 ** 0.5, generator=generator)",
+        "TypeError: kaiming_uniform_() got an unexpected keyword argument 'generator'"
+      ],
+      "failure_signature": "TypeError: kaiming_uniform_() got an unexpected keyword argument 'generator'"
+    },
+    {
+      "row_id": "csil-s2026092703",
+      "stage": "source",
+      "method": "csil",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/csil-s2026092703",
+      "state": "TRAINING_COMPLETE",
+      "source_epoch": 200,
+      "source_status": "SOURCE_TRAINED",
+      "final_checkpoint_exists": true
+    },
+    {
+      "row_id": "csil-s2026092703",
+      "stage": "phase12",
+      "method": "csil",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/csil-s2026092703",
+      "state": "FAILED",
+      "phase1_status": "PREDICTIONS_COMPLETE",
+      "phase1_records": 168000,
+      "phase2_status": null,
+      "phase2_records": null,
+      "support_smoke_passed": true,
+      "failure_tail": [
+        "RESOLVED_CONFIG {\"method\": \"csil\", \"model_seed\": 2026092703, \"source_output\": \"/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/csil-s2026092703\", \"output_root\": \"/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/csil-s2026092703\", \"device\": \"cuda:0\", \"source_contract\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json\", \"dataset\": \"/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl\", \"p1_capsule\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/capsule\", \"p2_capsule\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-practical-data-manytx-s2026092705-r01/capsule\", \"adaptation\": {\"epochs\": 100, \"steps_per_epoch\": 1, \"iterations\": 1000, \"dann_epochs\": 100, \"lmmd_epochs\": 100, \"finetune_epochs\": 100}, \"registration\": {\"csil_old_fingerprint_trainable\": true}, \"batch_size\": 256, \"method_version\": \"csil_official_repo_corefix_empirical_fisher\", \"protocol\": \"p2_min_v1\", \"channel_route\": \"residual_noeq\", \"initial\": {\"status\": \"SCRATCH\", \"checkpoint\": null, \"ancestors\": [], \"model_seed\": 2026092703, \"source_contract\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json\", \"physical_roles\": \"EXACT_MATCH\", \"selection\": \"fixed_last_epoch\", \"target_access\": false, \"scratch_only\": true, \"checkpoint_sources\": [], \"target_contact\": false}, \"classes\": [\"14-10\", \"14-7\", \"20-15\", \"20-19\", \"6-15\", \"8-20\"], \"query_fit\": false, \"truth_input\": false, \"source_replay_exception\": false, \"B_C_training\": \"C inherits B; same old support/query\", \"hardware\": \"NVIDIA GeForce RTX 3090\"}",
+        "FIT {\"receiver\": \"1-1\", \"scenario\": \"practical_high\", \"k\": 1, \"support_seed\": 2026092711, \"stage\": \"B\", \"split_id\": \"d75248a561c3d5e08b307c9a\", \"phase\": \"B\", \"method\": \"csil\", \"epoch\": 10, \"iteration\": 10, \"learning_rate\": 0.001, \"loss\": 2.957632064819336, \"cross_entropy\": 2.957632064819336, \"gradient_norm\": 2.2410621643066406, \"elapsed_seconds\": 0.507843135001167, \"source_validation\": null, \"source_validation_reason\": \"Phase2 does not select on validation\"}",
+        "Traceback (most recent call last):",
+        "  File \"/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/runpy.py\", line 196, in _run_module_as_main",
+        "    return _run_code(code, main_globals, None,",
+        "  File \"/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/runpy.py\", line 86, in _run_code",
+        "    exec(code, run_globals)",
+        "  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/comparison_suite/pipeline.py\", line 281, in <module>",
+        "    if __name__ == '__main__': main()",
+        "  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/comparison_suite/pipeline.py\", line 279, in main",
+        "    run(read(p.parse_args().config))",
+        "  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/comparison_suite/pipeline.py\", line 246, in run",
+        "    registered = register_new_classes(state, tensor(iq[selected],device),",
+        "  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/comparison_suite/registration.py\", line 639, in register_new_classes",
+        "    _csil_register(state, new_support_x, new_support_y, cfg, logger, start)",
+        "  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/comparison_suite/registration.py\", line 433, in _csil_register",
+        "    nn.init.kaiming_uniform_(expanded.weight, a=5 ** 0.5, generator=generator)",
+        "TypeError: kaiming_uniform_() got an unexpected keyword argument 'generator'"
+      ],
+      "failure_signature": "TypeError: kaiming_uniform_() got an unexpected keyword argument 'generator'"
+    },
+    {
+      "row_id": "csil-s2026092704",
+      "stage": "source",
+      "method": "csil",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/csil-s2026092704",
+      "state": "TRAINING_COMPLETE",
+      "source_epoch": 200,
+      "source_status": "SOURCE_TRAINED",
+      "final_checkpoint_exists": true
+    },
+    {
+      "row_id": "csil-s2026092704",
+      "stage": "phase12",
+      "method": "csil",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/csil-s2026092704",
+      "state": "FAILED",
+      "phase1_status": "PREDICTIONS_COMPLETE",
+      "phase1_records": 168000,
+      "phase2_status": null,
+      "phase2_records": null,
+      "support_smoke_passed": true,
+      "failure_tail": [
+        "RESOLVED_CONFIG {\"method\": \"csil\", \"model_seed\": 2026092704, \"source_output\": \"/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/csil-s2026092704\", \"output_root\": \"/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/csil-s2026092704\", \"device\": \"cuda:0\", \"source_contract\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json\", \"dataset\": \"/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl\", \"p1_capsule\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/capsule\", \"p2_capsule\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-practical-data-manytx-s2026092705-r01/capsule\", \"adaptation\": {\"epochs\": 100, \"steps_per_epoch\": 1, \"iterations\": 1000, \"dann_epochs\": 100, \"lmmd_epochs\": 100, \"finetune_epochs\": 100}, \"registration\": {\"csil_old_fingerprint_trainable\": true}, \"batch_size\": 256, \"method_version\": \"csil_official_repo_corefix_empirical_fisher\", \"protocol\": \"p2_min_v1\", \"channel_route\": \"residual_noeq\", \"initial\": {\"status\": \"SCRATCH\", \"checkpoint\": null, \"ancestors\": [], \"model_seed\": 2026092704, \"source_contract\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json\", \"physical_roles\": \"EXACT_MATCH\", \"selection\": \"fixed_last_epoch\", \"target_access\": false, \"scratch_only\": true, \"checkpoint_sources\": [], \"target_contact\": false}, \"classes\": [\"14-10\", \"14-7\", \"20-15\", \"20-19\", \"6-15\", \"8-20\"], \"query_fit\": false, \"truth_input\": false, \"source_replay_exception\": false, \"B_C_training\": \"C inherits B; same old support/query\", \"hardware\": \"NVIDIA GeForce RTX 3090\"}",
+        "FIT {\"receiver\": \"1-1\", \"scenario\": \"practical_high\", \"k\": 1, \"support_seed\": 2026092711, \"stage\": \"B\", \"split_id\": \"d75248a561c3d5e08b307c9a\", \"phase\": \"B\", \"method\": \"csil\", \"epoch\": 10, \"iteration\": 10, \"learning_rate\": 0.001, \"loss\": 2.6365535259246826, \"cross_entropy\": 2.6365535259246826, \"gradient_norm\": 2.5979366302490234, \"elapsed_seconds\": 0.5127318380000361, \"source_validation\": null, \"source_validation_reason\": \"Phase2 does not select on validation\"}",
+        "Traceback (most recent call last):",
+        "  File \"/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/runpy.py\", line 196, in _run_module_as_main",
+        "    return _run_code(code, main_globals, None,",
+        "  File \"/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/runpy.py\", line 86, in _run_code",
+        "    exec(code, run_globals)",
+        "  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/comparison_suite/pipeline.py\", line 281, in <module>",
+        "    if __name__ == '__main__': main()",
+        "  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/comparison_suite/pipeline.py\", line 279, in main",
+        "    run(read(p.parse_args().config))",
+        "  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/comparison_suite/pipeline.py\", line 246, in run",
+        "    registered = register_new_classes(state, tensor(iq[selected],device),",
+        "  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/comparison_suite/registration.py\", line 639, in register_new_classes",
+        "    _csil_register(state, new_support_x, new_support_y, cfg, logger, start)",
+        "  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/comparison_suite/registration.py\", line 433, in _csil_register",
+        "    nn.init.kaiming_uniform_(expanded.weight, a=5 ** 0.5, generator=generator)",
+        "TypeError: kaiming_uniform_() got an unexpected keyword argument 'generator'"
+      ],
+      "failure_signature": "TypeError: kaiming_uniform_() got an unexpected keyword argument 'generator'"
+    },
+    {
+      "row_id": "mopc_hr-s392005",
+      "stage": "source",
+      "method": "mopc_hr",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/mopc_hr-s392005",
+      "state": "TRAINING_COMPLETE",
+      "source_epoch": 200,
+      "source_status": "SOURCE_TRAINED",
+      "final_checkpoint_exists": true
+    },
+    {
+      "row_id": "mopc_hr-s392005",
+      "stage": "phase12",
+      "method": "mopc_hr",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/mopc_hr-s392005",
+      "state": "FAILED",
+      "phase1_status": "PREDICTIONS_COMPLETE",
+      "phase1_records": 168000,
+      "phase2_status": null,
+      "phase2_records": null,
+      "support_smoke_passed": true,
+      "failure_tail": [
+        "RESOLVED_CONFIG {\"method\": \"mopc_hr\", \"model_seed\": 392005, \"source_output\": \"/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/mopc_hr-s392005\", \"output_root\": \"/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/mopc_hr-s392005\", \"device\": \"cuda:0\", \"source_contract\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json\", \"dataset\": \"/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl\", \"p1_capsule\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/capsule\", \"p2_capsule\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-practical-data-manytx-s2026092705-r01/capsule\", \"adaptation\": {\"epochs\": 100, \"steps_per_epoch\": 1, \"iterations\": 1000, \"dann_epochs\": 100, \"lmmd_epochs\": 100, \"finetune_epochs\": 100}, \"registration\": {\"csil_old_fingerprint_trainable\": true}, \"batch_size\": 256, \"method_version\": \"matched_native_v1\", \"protocol\": \"p2_min_v1\", \"channel_route\": \"residual_noeq\", \"initial\": {\"status\": \"SCRATCH\", \"checkpoint\": null, \"ancestors\": [], \"model_seed\": 392005, \"source_contract\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json\", \"physical_roles\": \"EXACT_MATCH\", \"selection\": \"fixed_last_epoch\", \"target_access\": false, \"scratch_only\": true, \"checkpoint_sources\": [], \"target_contact\": false}, \"classes\": [\"14-10\", \"14-7\", \"20-15\", \"20-19\", \"6-15\", \"8-20\"], \"query_fit\": false, \"truth_input\": false, \"source_replay_exception\": false, \"B_C_training\": \"C inherits B; same old support/query\", \"hardware\": \"NVIDIA GeForce RTX 3090\"}",
+        "FIT {\"receiver\": \"1-1\", \"scenario\": \"practical_high\", \"k\": 1, \"support_seed\": 2026092711, \"stage\": \"B\", \"split_id\": \"d75248a561c3d5e08b307c9a\", \"phase\": \"B\", \"method\": \"mopc_hr\", \"epoch\": 10, \"iteration\": 10, \"learning_rate\": 0.001, \"loss\": 0.94681715965271, \"cross_entropy\": 0.94681715965271, \"gradient_norm\": 32.60562515258789, \"elapsed_seconds\": 0.5339722979988437, \"source_validation\": null, \"source_validation_reason\": \"Phase2 does not select on validation\"}",
+        "Traceback (most recent call last):",
+        "  File \"/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/runpy.py\", line 196, in _run_module_as_main",
+        "    return _run_code(code, main_globals, None,",
+        "  File \"/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/runpy.py\", line 86, in _run_code",
+        "    exec(code, run_globals)",
+        "  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/comparison_suite/pipeline.py\", line 281, in <module>",
+        "    if __name__ == '__main__': main()",
+        "  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/comparison_suite/pipeline.py\", line 279, in main",
+        "    run(read(p.parse_args().config))",
+        "  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/comparison_suite/pipeline.py\", line 246, in run",
+        "    registered = register_new_classes(state, tensor(iq[selected],device),",
+        "  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/comparison_suite/registration.py\", line 642, in register_new_classes",
+        "    _mopc_register(state, new_support_x, new_support_y, cfg, logger, start)",
+        "  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/comparison_suite/registration.py\", line 513, in _mopc_register",
+        "    nn.init.kaiming_uniform_(expanded.weight, a=5 ** 0.5, generator=generator)",
+        "TypeError: kaiming_uniform_() got an unexpected keyword argument 'generator'"
+      ],
+      "failure_signature": "TypeError: kaiming_uniform_() got an unexpected keyword argument 'generator'"
+    },
+    {
+      "row_id": "mopc_hr-s2026092701",
+      "stage": "source",
+      "method": "mopc_hr",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/mopc_hr-s2026092701",
+      "state": "TRAINING_COMPLETE",
+      "source_epoch": 200,
+      "source_status": "SOURCE_TRAINED",
+      "final_checkpoint_exists": true
+    },
+    {
+      "row_id": "mopc_hr-s2026092701",
+      "stage": "phase12",
+      "method": "mopc_hr",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/mopc_hr-s2026092701",
+      "state": "FAILED",
+      "phase1_status": "PREDICTIONS_COMPLETE",
+      "phase1_records": 168000,
+      "phase2_status": null,
+      "phase2_records": null,
+      "support_smoke_passed": true,
+      "failure_tail": [
+        "RESOLVED_CONFIG {\"method\": \"mopc_hr\", \"model_seed\": 2026092701, \"source_output\": \"/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/mopc_hr-s2026092701\", \"output_root\": \"/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/mopc_hr-s2026092701\", \"device\": \"cuda:0\", \"source_contract\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json\", \"dataset\": \"/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl\", \"p1_capsule\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/capsule\", \"p2_capsule\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-practical-data-manytx-s2026092705-r01/capsule\", \"adaptation\": {\"epochs\": 100, \"steps_per_epoch\": 1, \"iterations\": 1000, \"dann_epochs\": 100, \"lmmd_epochs\": 100, \"finetune_epochs\": 100}, \"registration\": {\"csil_old_fingerprint_trainable\": true}, \"batch_size\": 256, \"method_version\": \"matched_native_v1\", \"protocol\": \"p2_min_v1\", \"channel_route\": \"residual_noeq\", \"initial\": {\"status\": \"SCRATCH\", \"checkpoint\": null, \"ancestors\": [], \"model_seed\": 2026092701, \"source_contract\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json\", \"physical_roles\": \"EXACT_MATCH\", \"selection\": \"fixed_last_epoch\", \"target_access\": false, \"scratch_only\": true, \"checkpoint_sources\": [], \"target_contact\": false}, \"classes\": [\"14-10\", \"14-7\", \"20-15\", \"20-19\", \"6-15\", \"8-20\"], \"query_fit\": false, \"truth_input\": false, \"source_replay_exception\": false, \"B_C_training\": \"C inherits B; same old support/query\", \"hardware\": \"NVIDIA GeForce RTX 3090\"}",
+        "FIT {\"receiver\": \"1-1\", \"scenario\": \"practical_high\", \"k\": 1, \"support_seed\": 2026092711, \"stage\": \"B\", \"split_id\": \"d75248a561c3d5e08b307c9a\", \"phase\": \"B\", \"method\": \"mopc_hr\", \"epoch\": 10, \"iteration\": 10, \"learning_rate\": 0.001, \"loss\": 1.4225521087646484, \"cross_entropy\": 1.4225521087646484, \"gradient_norm\": 49.580379486083984, \"elapsed_seconds\": 0.5639573170010408, \"source_validation\": null, \"source_validation_reason\": \"Phase2 does not select on validation\"}",
+        "Traceback (most recent call last):",
+        "  File \"/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/runpy.py\", line 196, in _run_module_as_main",
+        "    return _run_code(code, main_globals, None,",
+        "  File \"/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/runpy.py\", line 86, in _run_code",
+        "    exec(code, run_globals)",
+        "  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/comparison_suite/pipeline.py\", line 281, in <module>",
+        "    if __name__ == '__main__': main()",
+        "  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/comparison_suite/pipeline.py\", line 279, in main",
+        "    run(read(p.parse_args().config))",
+        "  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/comparison_suite/pipeline.py\", line 246, in run",
+        "    registered = register_new_classes(state, tensor(iq[selected],device),",
+        "  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/comparison_suite/registration.py\", line 642, in register_new_classes",
+        "    _mopc_register(state, new_support_x, new_support_y, cfg, logger, start)",
+        "  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/comparison_suite/registration.py\", line 513, in _mopc_register",
+        "    nn.init.kaiming_uniform_(expanded.weight, a=5 ** 0.5, generator=generator)",
+        "TypeError: kaiming_uniform_() got an unexpected keyword argument 'generator'"
+      ],
+      "failure_signature": "TypeError: kaiming_uniform_() got an unexpected keyword argument 'generator'"
+    },
+    {
+      "row_id": "mopc_hr-s2026092702",
+      "stage": "source",
+      "method": "mopc_hr",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/mopc_hr-s2026092702",
+      "state": "TRAINING_COMPLETE",
+      "source_epoch": 200,
+      "source_status": "SOURCE_TRAINED",
+      "final_checkpoint_exists": true
+    },
+    {
+      "row_id": "mopc_hr-s2026092702",
+      "stage": "phase12",
+      "method": "mopc_hr",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/mopc_hr-s2026092702",
+      "state": "FAILED",
+      "phase1_status": "PREDICTIONS_COMPLETE",
+      "phase1_records": 168000,
+      "phase2_status": null,
+      "phase2_records": null,
+      "support_smoke_passed": true,
+      "failure_tail": [
+        "RESOLVED_CONFIG {\"method\": \"mopc_hr\", \"model_seed\": 2026092702, \"source_output\": \"/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/mopc_hr-s2026092702\", \"output_root\": \"/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/mopc_hr-s2026092702\", \"device\": \"cuda:0\", \"source_contract\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json\", \"dataset\": \"/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl\", \"p1_capsule\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/capsule\", \"p2_capsule\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-practical-data-manytx-s2026092705-r01/capsule\", \"adaptation\": {\"epochs\": 100, \"steps_per_epoch\": 1, \"iterations\": 1000, \"dann_epochs\": 100, \"lmmd_epochs\": 100, \"finetune_epochs\": 100}, \"registration\": {\"csil_old_fingerprint_trainable\": true}, \"batch_size\": 256, \"method_version\": \"matched_native_v1\", \"protocol\": \"p2_min_v1\", \"channel_route\": \"residual_noeq\", \"initial\": {\"status\": \"SCRATCH\", \"checkpoint\": null, \"ancestors\": [], \"model_seed\": 2026092702, \"source_contract\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json\", \"physical_roles\": \"EXACT_MATCH\", \"selection\": \"fixed_last_epoch\", \"target_access\": false, \"scratch_only\": true, \"checkpoint_sources\": [], \"target_contact\": false}, \"classes\": [\"14-10\", \"14-7\", \"20-15\", \"20-19\", \"6-15\", \"8-20\"], \"query_fit\": false, \"truth_input\": false, \"source_replay_exception\": false, \"B_C_training\": \"C inherits B; same old support/query\", \"hardware\": \"NVIDIA GeForce RTX 3090\"}",
+        "FIT {\"receiver\": \"1-1\", \"scenario\": \"practical_high\", \"k\": 1, \"support_seed\": 2026092711, \"stage\": \"B\", \"split_id\": \"d75248a561c3d5e08b307c9a\", \"phase\": \"B\", \"method\": \"mopc_hr\", \"epoch\": 10, \"iteration\": 10, \"learning_rate\": 0.001, \"loss\": 1.0373319387435913, \"cross_entropy\": 1.0373319387435913, \"gradient_norm\": 9.15278148651123, \"elapsed_seconds\": 0.5688371750002261, \"source_validation\": null, \"source_validation_reason\": \"Phase2 does not select on validation\"}",
+        "Traceback (most recent call last):",
+        "  File \"/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/runpy.py\", line 196, in _run_module_as_main",
+        "    return _run_code(code, main_globals, None,",
+        "  File \"/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/runpy.py\", line 86, in _run_code",
+        "    exec(code, run_globals)",
+        "  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/comparison_suite/pipeline.py\", line 281, in <module>",
+        "    if __name__ == '__main__': main()",
+        "  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/comparison_suite/pipeline.py\", line 279, in main",
+        "    run(read(p.parse_args().config))",
+        "  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/comparison_suite/pipeline.py\", line 246, in run",
+        "    registered = register_new_classes(state, tensor(iq[selected],device),",
+        "  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/comparison_suite/registration.py\", line 642, in register_new_classes",
+        "    _mopc_register(state, new_support_x, new_support_y, cfg, logger, start)",
+        "  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/comparison_suite/registration.py\", line 513, in _mopc_register",
+        "    nn.init.kaiming_uniform_(expanded.weight, a=5 ** 0.5, generator=generator)",
+        "TypeError: kaiming_uniform_() got an unexpected keyword argument 'generator'"
+      ],
+      "failure_signature": "TypeError: kaiming_uniform_() got an unexpected keyword argument 'generator'"
+    },
+    {
+      "row_id": "mopc_hr-s2026092703",
+      "stage": "source",
+      "method": "mopc_hr",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/mopc_hr-s2026092703",
+      "state": "TRAINING_COMPLETE",
+      "source_epoch": 200,
+      "source_status": "SOURCE_TRAINED",
+      "final_checkpoint_exists": true
+    },
+    {
+      "row_id": "mopc_hr-s2026092703",
+      "stage": "phase12",
+      "method": "mopc_hr",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/mopc_hr-s2026092703",
+      "state": "FAILED",
+      "phase1_status": "PREDICTIONS_COMPLETE",
+      "phase1_records": 168000,
+      "phase2_status": null,
+      "phase2_records": null,
+      "support_smoke_passed": true,
+      "failure_tail": [
+        "RESOLVED_CONFIG {\"method\": \"mopc_hr\", \"model_seed\": 2026092703, \"source_output\": \"/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/mopc_hr-s2026092703\", \"output_root\": \"/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/mopc_hr-s2026092703\", \"device\": \"cuda:0\", \"source_contract\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json\", \"dataset\": \"/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl\", \"p1_capsule\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/capsule\", \"p2_capsule\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-practical-data-manytx-s2026092705-r01/capsule\", \"adaptation\": {\"epochs\": 100, \"steps_per_epoch\": 1, \"iterations\": 1000, \"dann_epochs\": 100, \"lmmd_epochs\": 100, \"finetune_epochs\": 100}, \"registration\": {\"csil_old_fingerprint_trainable\": true}, \"batch_size\": 256, \"method_version\": \"matched_native_v1\", \"protocol\": \"p2_min_v1\", \"channel_route\": \"residual_noeq\", \"initial\": {\"status\": \"SCRATCH\", \"checkpoint\": null, \"ancestors\": [], \"model_seed\": 2026092703, \"source_contract\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json\", \"physical_roles\": \"EXACT_MATCH\", \"selection\": \"fixed_last_epoch\", \"target_access\": false, \"scratch_only\": true, \"checkpoint_sources\": [], \"target_contact\": false}, \"classes\": [\"14-10\", \"14-7\", \"20-15\", \"20-19\", \"6-15\", \"8-20\"], \"query_fit\": false, \"truth_input\": false, \"source_replay_exception\": false, \"B_C_training\": \"C inherits B; same old support/query\", \"hardware\": \"NVIDIA GeForce RTX 3090\"}",
+        "FIT {\"receiver\": \"1-1\", \"scenario\": \"practical_high\", \"k\": 1, \"support_seed\": 2026092711, \"stage\": \"B\", \"split_id\": \"d75248a561c3d5e08b307c9a\", \"phase\": \"B\", \"method\": \"mopc_hr\", \"epoch\": 10, \"iteration\": 10, \"learning_rate\": 0.001, \"loss\": 0.8433101773262024, \"cross_entropy\": 0.8433101773262024, \"gradient_norm\": 11.195085525512695, \"elapsed_seconds\": 0.5246692359978624, \"source_validation\": null, \"source_validation_reason\": \"Phase2 does not select on validation\"}",
+        "Traceback (most recent call last):",
+        "  File \"/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/runpy.py\", line 196, in _run_module_as_main",
+        "    return _run_code(code, main_globals, None,",
+        "  File \"/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/runpy.py\", line 86, in _run_code",
+        "    exec(code, run_globals)",
+        "  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/comparison_suite/pipeline.py\", line 281, in <module>",
+        "    if __name__ == '__main__': main()",
+        "  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/comparison_suite/pipeline.py\", line 279, in main",
+        "    run(read(p.parse_args().config))",
+        "  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/comparison_suite/pipeline.py\", line 246, in run",
+        "    registered = register_new_classes(state, tensor(iq[selected],device),",
+        "  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/comparison_suite/registration.py\", line 642, in register_new_classes",
+        "    _mopc_register(state, new_support_x, new_support_y, cfg, logger, start)",
+        "  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/comparison_suite/registration.py\", line 513, in _mopc_register",
+        "    nn.init.kaiming_uniform_(expanded.weight, a=5 ** 0.5, generator=generator)",
+        "TypeError: kaiming_uniform_() got an unexpected keyword argument 'generator'"
+      ],
+      "failure_signature": "TypeError: kaiming_uniform_() got an unexpected keyword argument 'generator'"
+    },
+    {
+      "row_id": "mopc_hr-s2026092704",
+      "stage": "source",
+      "method": "mopc_hr",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/mopc_hr-s2026092704",
+      "state": "TRAINING_COMPLETE",
+      "source_epoch": 200,
+      "source_status": "SOURCE_TRAINED",
+      "final_checkpoint_exists": true
+    },
+    {
+      "row_id": "mopc_hr-s2026092704",
+      "stage": "phase12",
+      "method": "mopc_hr",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/mopc_hr-s2026092704",
+      "state": "FAILED",
+      "phase1_status": "PREDICTIONS_COMPLETE",
+      "phase1_records": 168000,
+      "phase2_status": null,
+      "phase2_records": null,
+      "support_smoke_passed": true,
+      "failure_tail": [
+        "RESOLVED_CONFIG {\"method\": \"mopc_hr\", \"model_seed\": 2026092704, \"source_output\": \"/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/mopc_hr-s2026092704\", \"output_root\": \"/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/mopc_hr-s2026092704\", \"device\": \"cuda:0\", \"source_contract\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json\", \"dataset\": \"/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl\", \"p1_capsule\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/capsule\", \"p2_capsule\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-practical-data-manytx-s2026092705-r01/capsule\", \"adaptation\": {\"epochs\": 100, \"steps_per_epoch\": 1, \"iterations\": 1000, \"dann_epochs\": 100, \"lmmd_epochs\": 100, \"finetune_epochs\": 100}, \"registration\": {\"csil_old_fingerprint_trainable\": true}, \"batch_size\": 256, \"method_version\": \"matched_native_v1\", \"protocol\": \"p2_min_v1\", \"channel_route\": \"residual_noeq\", \"initial\": {\"status\": \"SCRATCH\", \"checkpoint\": null, \"ancestors\": [], \"model_seed\": 2026092704, \"source_contract\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json\", \"physical_roles\": \"EXACT_MATCH\", \"selection\": \"fixed_last_epoch\", \"target_access\": false, \"scratch_only\": true, \"checkpoint_sources\": [], \"target_contact\": false}, \"classes\": [\"14-10\", \"14-7\", \"20-15\", \"20-19\", \"6-15\", \"8-20\"], \"query_fit\": false, \"truth_input\": false, \"source_replay_exception\": false, \"B_C_training\": \"C inherits B; same old support/query\", \"hardware\": \"NVIDIA GeForce RTX 3090\"}",
+        "FIT {\"receiver\": \"1-1\", \"scenario\": \"practical_high\", \"k\": 1, \"support_seed\": 2026092711, \"stage\": \"B\", \"split_id\": \"d75248a561c3d5e08b307c9a\", \"phase\": \"B\", \"method\": \"mopc_hr\", \"epoch\": 10, \"iteration\": 10, \"learning_rate\": 0.001, \"loss\": 1.0351046323776245, \"cross_entropy\": 1.0351046323776245, \"gradient_norm\": 10.450582504272461, \"elapsed_seconds\": 0.5437501560008968, \"source_validation\": null, \"source_validation_reason\": \"Phase2 does not select on validation\"}",
+        "Traceback (most recent call last):",
+        "  File \"/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/runpy.py\", line 196, in _run_module_as_main",
+        "    return _run_code(code, main_globals, None,",
+        "  File \"/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/runpy.py\", line 86, in _run_code",
+        "    exec(code, run_globals)",
+        "  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/comparison_suite/pipeline.py\", line 281, in <module>",
+        "    if __name__ == '__main__': main()",
+        "  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/comparison_suite/pipeline.py\", line 279, in main",
+        "    run(read(p.parse_args().config))",
+        "  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/comparison_suite/pipeline.py\", line 246, in run",
+        "    registered = register_new_classes(state, tensor(iq[selected],device),",
+        "  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/comparison_suite/registration.py\", line 642, in register_new_classes",
+        "    _mopc_register(state, new_support_x, new_support_y, cfg, logger, start)",
+        "  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/comparison_suite/registration.py\", line 513, in _mopc_register",
+        "    nn.init.kaiming_uniform_(expanded.weight, a=5 ** 0.5, generator=generator)",
+        "TypeError: kaiming_uniform_() got an unexpected keyword argument 'generator'"
+      ],
+      "failure_signature": "TypeError: kaiming_uniform_() got an unexpected keyword argument 'generator'"
+    },
+    {
+      "row_id": "orthogonal-s392005",
+      "stage": "source",
+      "method": "orthogonal",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/orthogonal-s392005",
+      "state": "TRAINING_COMPLETE",
+      "source_epoch": 200,
+      "source_status": "SOURCE_TRAINED",
+      "final_checkpoint_exists": true
+    },
+    {
+      "row_id": "orthogonal-s392005",
+      "stage": "phase12",
+      "method": "orthogonal",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/orthogonal-s392005",
+      "state": "PREDICTIONS_COMPLETE",
+      "phase1_status": "PREDICTIONS_COMPLETE",
+      "phase1_records": 168000,
+      "phase2_status": "PREDICTIONS_COMPLETE",
+      "phase2_records": 2520,
+      "support_smoke_passed": true
+    },
+    {
+      "row_id": "orthogonal-s2026092701",
+      "stage": "source",
+      "method": "orthogonal",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/orthogonal-s2026092701",
+      "state": "TRAINING_COMPLETE",
+      "source_epoch": 200,
+      "source_status": "SOURCE_TRAINED",
+      "final_checkpoint_exists": true
+    },
+    {
+      "row_id": "orthogonal-s2026092701",
+      "stage": "phase12",
+      "method": "orthogonal",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/orthogonal-s2026092701",
+      "state": "PREDICTIONS_COMPLETE",
+      "phase1_status": "PREDICTIONS_COMPLETE",
+      "phase1_records": 168000,
+      "phase2_status": "PREDICTIONS_COMPLETE",
+      "phase2_records": 2520,
+      "support_smoke_passed": true
+    },
+    {
+      "row_id": "orthogonal-s2026092702",
+      "stage": "source",
+      "method": "orthogonal",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/orthogonal-s2026092702",
+      "state": "TRAINING_COMPLETE",
+      "source_epoch": 200,
+      "source_status": "SOURCE_TRAINED",
+      "final_checkpoint_exists": true
+    },
+    {
+      "row_id": "orthogonal-s2026092702",
+      "stage": "phase12",
+      "method": "orthogonal",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/orthogonal-s2026092702",
+      "state": "PREDICTIONS_COMPLETE",
+      "phase1_status": "PREDICTIONS_COMPLETE",
+      "phase1_records": 168000,
+      "phase2_status": "PREDICTIONS_COMPLETE",
+      "phase2_records": 2520,
+      "support_smoke_passed": true
+    },
+    {
+      "row_id": "orthogonal-s2026092703",
+      "stage": "source",
+      "method": "orthogonal",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/orthogonal-s2026092703",
+      "state": "TRAINING_COMPLETE",
+      "source_epoch": 200,
+      "source_status": "SOURCE_TRAINED",
+      "final_checkpoint_exists": true
+    },
+    {
+      "row_id": "orthogonal-s2026092703",
+      "stage": "phase12",
+      "method": "orthogonal",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/orthogonal-s2026092703",
+      "state": "PREDICTIONS_COMPLETE",
+      "phase1_status": "PREDICTIONS_COMPLETE",
+      "phase1_records": 168000,
+      "phase2_status": "PREDICTIONS_COMPLETE",
+      "phase2_records": 2520,
+      "support_smoke_passed": true
+    },
+    {
+      "row_id": "orthogonal-s2026092704",
+      "stage": "source",
+      "method": "orthogonal",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/orthogonal-s2026092704",
+      "state": "TRAINING_COMPLETE",
+      "source_epoch": 200,
+      "source_status": "SOURCE_TRAINED",
+      "final_checkpoint_exists": true
+    },
+    {
+      "row_id": "orthogonal-s2026092704",
+      "stage": "phase12",
+      "method": "orthogonal",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/orthogonal-s2026092704",
+      "state": "PREDICTIONS_COMPLETE",
+      "phase1_status": "PREDICTIONS_COMPLETE",
+      "phase1_records": 168000,
+      "phase2_status": "PREDICTIONS_COMPLETE",
+      "phase2_records": 2520,
+      "support_smoke_passed": true
+    },
+    {
+      "row_id": "radionet_ada-s392005",
+      "stage": "source",
+      "method": "radionet_ada",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/radionet_ada-s392005",
+      "state": "TRAINING_COMPLETE",
+      "source_epoch": 200,
+      "source_status": "SOURCE_TRAINED",
+      "final_checkpoint_exists": true
+    },
+    {
+      "row_id": "radionet_ada-s392005",
+      "stage": "phase12",
+      "method": "radionet_ada",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/radionet_ada-s392005",
+      "state": "PREDICTIONS_COMPLETE",
+      "phase1_status": "PREDICTIONS_COMPLETE",
+      "phase1_records": 168000,
+      "phase2_status": "PREDICTIONS_COMPLETE",
+      "phase2_records": 2520,
+      "support_smoke_passed": true
+    },
+    {
+      "row_id": "radionet_ada-s2026092701",
+      "stage": "source",
+      "method": "radionet_ada",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/radionet_ada-s2026092701",
+      "state": "TRAINING_COMPLETE",
+      "source_epoch": 200,
+      "source_status": "SOURCE_TRAINED",
+      "final_checkpoint_exists": true
+    },
+    {
+      "row_id": "radionet_ada-s2026092701",
+      "stage": "phase12",
+      "method": "radionet_ada",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/radionet_ada-s2026092701",
+      "state": "PREDICTIONS_COMPLETE",
+      "phase1_status": "PREDICTIONS_COMPLETE",
+      "phase1_records": 168000,
+      "phase2_status": "PREDICTIONS_COMPLETE",
+      "phase2_records": 2520,
+      "support_smoke_passed": true
+    },
+    {
+      "row_id": "radionet_ada-s2026092702",
+      "stage": "source",
+      "method": "radionet_ada",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/radionet_ada-s2026092702",
+      "state": "TRAINING_COMPLETE",
+      "source_epoch": 200,
+      "source_status": "SOURCE_TRAINED",
+      "final_checkpoint_exists": true
+    },
+    {
+      "row_id": "radionet_ada-s2026092702",
+      "stage": "phase12",
+      "method": "radionet_ada",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/radionet_ada-s2026092702",
+      "state": "PREDICTIONS_COMPLETE",
+      "phase1_status": "PREDICTIONS_COMPLETE",
+      "phase1_records": 168000,
+      "phase2_status": "PREDICTIONS_COMPLETE",
+      "phase2_records": 2520,
+      "support_smoke_passed": true
+    },
+    {
+      "row_id": "radionet_ada-s2026092703",
+      "stage": "source",
+      "method": "radionet_ada",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/radionet_ada-s2026092703",
+      "state": "TRAINING_COMPLETE",
+      "source_epoch": 200,
+      "source_status": "SOURCE_TRAINED",
+      "final_checkpoint_exists": true
+    },
+    {
+      "row_id": "radionet_ada-s2026092703",
+      "stage": "phase12",
+      "method": "radionet_ada",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/radionet_ada-s2026092703",
+      "state": "PREDICTIONS_COMPLETE",
+      "phase1_status": "PREDICTIONS_COMPLETE",
+      "phase1_records": 168000,
+      "phase2_status": "PREDICTIONS_COMPLETE",
+      "phase2_records": 2520,
+      "support_smoke_passed": true
+    },
+    {
+      "row_id": "radionet_ada-s2026092704",
+      "stage": "source",
+      "method": "radionet_ada",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/radionet_ada-s2026092704",
+      "state": "TRAINING_COMPLETE",
+      "source_epoch": 200,
+      "source_status": "SOURCE_TRAINED",
+      "final_checkpoint_exists": true
+    },
+    {
+      "row_id": "radionet_ada-s2026092704",
+      "stage": "phase12",
+      "method": "radionet_ada",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase12-native-baselines-practical-m5-r01/radionet_ada-s2026092704",
+      "state": "PREDICTIONS_COMPLETE",
+      "phase1_status": "PREDICTIONS_COMPLETE",
+      "phase1_records": 168000,
+      "phase2_status": "PREDICTIONS_COMPLETE",
+      "phase2_records": 2520,
+      "support_smoke_passed": true
+    }
+  ]
+}

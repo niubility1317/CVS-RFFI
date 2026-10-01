@@ -185,7 +185,7 @@
         "each row/completion.json"
       ],
       "runtime": {
-        "status": "RUNNING",
+        "status": "TRAINING_COMPLETE",
         "pid": 98407,
         "gpu": 0,
         "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/protonet-s392005.json",
@@ -198,7 +198,8 @@
           "--config",
           "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/protonet-s392005.json"
         ],
-        "started_at": "2026-09-30T10:24:43.046032+00:00"
+        "started_at": "2026-09-30T10:24:43.046032+00:00",
+        "exit_code": 0
       }
     },
     {
@@ -246,7 +247,7 @@
         "each row/completion.json"
       ],
       "runtime": {
-        "status": "RUNNING",
+        "status": "TRAINING_COMPLETE",
         "pid": 98408,
         "gpu": 1,
         "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/protonet-s2026092701.json",
@@ -259,7 +260,8 @@
           "--config",
           "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/protonet-s2026092701.json"
         ],
-        "started_at": "2026-09-30T10:24:43.047332+00:00"
+        "started_at": "2026-09-30T10:24:43.047332+00:00",
+        "exit_code": 0
       }
     },
     {
@@ -307,7 +309,7 @@
         "each row/completion.json"
       ],
       "runtime": {
-        "status": "RUNNING",
+        "status": "TRAINING_COMPLETE",
         "pid": 98409,
         "gpu": 2,
         "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/protonet-s2026092702.json",
@@ -320,7 +322,8 @@
           "--config",
           "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/protonet-s2026092702.json"
         ],
-        "started_at": "2026-09-30T10:24:43.048832+00:00"
+        "started_at": "2026-09-30T10:24:43.048832+00:00",
+        "exit_code": 0
       }
     },
     {
@@ -368,7 +371,7 @@
         "each row/completion.json"
       ],
       "runtime": {
-        "status": "RUNNING",
+        "status": "TRAINING_COMPLETE",
         "pid": 98410,
         "gpu": 3,
         "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/protonet-s2026092703.json",
@@ -381,7 +384,8 @@
           "--config",
           "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/protonet-s2026092703.json"
         ],
-        "started_at": "2026-09-30T10:24:43.050078+00:00"
+        "started_at": "2026-09-30T10:24:43.050078+00:00",
+        "exit_code": 0
       }
     },
     {
@@ -429,7 +433,7 @@
         "each row/completion.json"
       ],
       "runtime": {
-        "status": "RUNNING",
+        "status": "TRAINING_COMPLETE",
         "pid": 98411,
         "gpu": 4,
         "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/protonet-s2026092704.json",
@@ -442,7 +446,8 @@
           "--config",
           "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/protonet-s2026092704.json"
         ],
-        "started_at": "2026-09-30T10:24:43.051548+00:00"
+        "started_at": "2026-09-30T10:24:43.051548+00:00",
+        "exit_code": 0
       }
     },
     {
@@ -490,7 +495,7 @@
         "each row/completion.json"
       ],
       "runtime": {
-        "status": "RUNNING",
+        "status": "TRAINING_COMPLETE",
         "pid": 98412,
         "gpu": 5,
         "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/feature_separation-s392005.json",
@@ -503,7 +508,8 @@
           "--config",
           "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/feature_separation-s392005.json"
         ],
-        "started_at": "2026-09-30T10:24:43.052805+00:00"
+        "started_at": "2026-09-30T10:24:43.052805+00:00",
+        "exit_code": 0
       }
     },
     {
@@ -551,7 +557,7 @@
         "each row/completion.json"
       ],
       "runtime": {
-        "status": "RUNNING",
+        "status": "TRAINING_COMPLETE",
         "pid": 98413,
         "gpu": 6,
         "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/feature_separation-s2026092701.json",
@@ -564,7 +570,8 @@
           "--config",
           "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/feature_separation-s2026092701.json"
         ],
-        "started_at": "2026-09-30T10:24:43.054108+00:00"
+        "started_at": "2026-09-30T10:24:43.054108+00:00",
+        "exit_code": 0
       }
     },
     {
@@ -612,7 +619,7 @@
         "each row/completion.json"
       ],
       "runtime": {
-        "status": "RUNNING",
+        "status": "TRAINING_COMPLETE",
         "pid": 98414,
         "gpu": 7,
         "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/feature_separation-s2026092702.json",
@@ -625,7 +632,8 @@
           "--config",
           "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/feature_separation-s2026092702.json"
         ],
-        "started_at": "2026-09-30T10:24:43.055405+00:00"
+        "started_at": "2026-09-30T10:24:43.055405+00:00",
+        "exit_code": 0
       }
     },
     {
@@ -673,11 +681,21 @@
         "each row/completion.json"
       ],
       "runtime": {
-        "status": "QUEUED",
-        "pid": null,
+        "status": "TRAINING_COMPLETE",
+        "pid": 113615,
         "gpu": 0,
         "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/feature_separation-s2026092703.json",
-        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/feature_separation-s2026092703/launch.stdout.log"
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/feature_separation-s2026092703/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/feature_separation-s2026092703.json"
+        ],
+        "started_at": "2026-09-30T10:45:51.973798+00:00",
+        "exit_code": 0
       }
     },
     {
@@ -725,11 +743,21 @@
         "each row/completion.json"
       ],
       "runtime": {
-        "status": "QUEUED",
-        "pid": null,
+        "status": "TRAINING_COMPLETE",
+        "pid": 113833,
         "gpu": 1,
         "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/feature_separation-s2026092704.json",
-        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/feature_separation-s2026092704/launch.stdout.log"
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/feature_separation-s2026092704/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/feature_separation-s2026092704.json"
+        ],
+        "started_at": "2026-09-30T10:46:20.640238+00:00",
+        "exit_code": 0
       }
     },
     {
@@ -777,11 +805,21 @@
         "each row/completion.json"
       ],
       "runtime": {
-        "status": "QUEUED",
-        "pid": null,
+        "status": "TRAINING_COMPLETE",
+        "pid": 113913,
         "gpu": 2,
         "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/dadda-s392005.json",
-        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/dadda-s392005/launch.stdout.log"
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/dadda-s392005/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/dadda-s392005.json"
+        ],
+        "started_at": "2026-09-30T10:46:22.849180+00:00",
+        "exit_code": 0
       }
     },
     {
@@ -829,11 +867,21 @@
         "each row/completion.json"
       ],
       "runtime": {
-        "status": "QUEUED",
-        "pid": null,
+        "status": "TRAINING_COMPLETE",
+        "pid": 113696,
         "gpu": 3,
         "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/dadda-s2026092701.json",
-        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/dadda-s2026092701/launch.stdout.log"
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/dadda-s2026092701/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/dadda-s2026092701.json"
+        ],
+        "started_at": "2026-09-30T10:45:54.178092+00:00",
+        "exit_code": 0
       }
     },
     {
@@ -881,11 +929,21 @@
         "each row/completion.json"
       ],
       "runtime": {
-        "status": "QUEUED",
-        "pid": null,
+        "status": "TRAINING_COMPLETE",
+        "pid": 113537,
         "gpu": 4,
         "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/dadda-s2026092702.json",
-        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/dadda-s2026092702/launch.stdout.log"
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/dadda-s2026092702/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/dadda-s2026092702.json"
+        ],
+        "started_at": "2026-09-30T10:45:49.772016+00:00",
+        "exit_code": 0
       }
     },
     {
@@ -933,11 +991,21 @@
         "each row/completion.json"
       ],
       "runtime": {
-        "status": "QUEUED",
-        "pid": null,
+        "status": "TRAINING_COMPLETE",
+        "pid": 133074,
         "gpu": 5,
         "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/dadda-s2026092703.json",
-        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/dadda-s2026092703/launch.stdout.log"
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/dadda-s2026092703/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/dadda-s2026092703.json"
+        ],
+        "started_at": "2026-09-30T11:19:49.544774+00:00",
+        "exit_code": 0
       }
     },
     {
@@ -985,11 +1053,21 @@
         "each row/completion.json"
       ],
       "runtime": {
-        "status": "QUEUED",
-        "pid": null,
+        "status": "TRAINING_COMPLETE",
+        "pid": 132974,
         "gpu": 6,
         "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/dadda-s2026092704.json",
-        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/dadda-s2026092704/launch.stdout.log"
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/dadda-s2026092704/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/dadda-s2026092704.json"
+        ],
+        "started_at": "2026-09-30T11:19:38.532991+00:00",
+        "exit_code": 0
       }
     },
     {
@@ -1037,11 +1115,21 @@
         "each row/completion.json"
       ],
       "runtime": {
-        "status": "QUEUED",
-        "pid": null,
+        "status": "TRAINING_COMPLETE",
+        "pid": 133166,
         "gpu": 7,
         "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/mrior-s392005.json",
-        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/mrior-s392005/launch.stdout.log"
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/mrior-s392005/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/mrior-s392005.json"
+        ],
+        "started_at": "2026-09-30T11:19:56.147839+00:00",
+        "exit_code": 0
       }
     },
     {
@@ -1089,11 +1177,21 @@
         "each row/completion.json"
       ],
       "runtime": {
-        "status": "QUEUED",
-        "pid": null,
+        "status": "TRAINING_COMPLETE",
+        "pid": 145048,
         "gpu": 0,
         "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/mrior-s2026092701.json",
-        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/mrior-s2026092701/launch.stdout.log"
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/mrior-s2026092701/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/mrior-s2026092701.json"
+        ],
+        "started_at": "2026-09-30T11:41:43.979434+00:00",
+        "exit_code": 0
       }
     },
     {
@@ -1141,11 +1239,21 @@
         "each row/completion.json"
       ],
       "runtime": {
-        "status": "QUEUED",
-        "pid": null,
+        "status": "TRAINING_COMPLETE",
+        "pid": 145873,
         "gpu": 1,
         "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/mrior-s2026092702.json",
-        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/mrior-s2026092702/launch.stdout.log"
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/mrior-s2026092702/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/mrior-s2026092702.json"
+        ],
+        "started_at": "2026-09-30T11:43:07.692244+00:00",
+        "exit_code": 0
       }
     },
     {
@@ -1193,11 +1301,21 @@
         "each row/completion.json"
       ],
       "runtime": {
-        "status": "QUEUED",
-        "pid": null,
+        "status": "TRAINING_COMPLETE",
+        "pid": 145165,
         "gpu": 2,
         "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/mrior-s2026092703.json",
-        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/mrior-s2026092703/launch.stdout.log"
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/mrior-s2026092703/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/mrior-s2026092703.json"
+        ],
+        "started_at": "2026-09-30T11:42:01.631279+00:00",
+        "exit_code": 0
       }
     },
     {
@@ -1245,11 +1363,21 @@
         "each row/completion.json"
       ],
       "runtime": {
-        "status": "QUEUED",
-        "pid": null,
+        "status": "TRAINING_COMPLETE",
+        "pid": 144552,
         "gpu": 3,
         "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/mrior-s2026092704.json",
-        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/mrior-s2026092704/launch.stdout.log"
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/mrior-s2026092704/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/mrior-s2026092704.json"
+        ],
+        "started_at": "2026-09-30T11:41:37.326255+00:00",
+        "exit_code": 0
       }
     },
     {
@@ -1297,11 +1425,21 @@
         "each row/completion.json"
       ],
       "runtime": {
-        "status": "QUEUED",
-        "pid": null,
+        "status": "TRAINING_COMPLETE",
+        "pid": 145759,
         "gpu": 4,
         "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/twostage-s392005.json",
-        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/twostage-s392005/launch.stdout.log"
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/twostage-s392005/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/twostage-s392005.json"
+        ],
+        "started_at": "2026-09-30T11:42:50.052764+00:00",
+        "exit_code": 0
       }
     },
     {
@@ -1349,11 +1487,21 @@
         "each row/completion.json"
       ],
       "runtime": {
-        "status": "QUEUED",
-        "pid": null,
+        "status": "TRAINING_COMPLETE",
+        "pid": 163587,
         "gpu": 5,
         "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/twostage-s2026092701.json",
-        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/twostage-s2026092701/launch.stdout.log"
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/twostage-s2026092701/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/twostage-s2026092701.json"
+        ],
+        "started_at": "2026-09-30T12:16:15.220487+00:00",
+        "exit_code": 0
       }
     },
     {
@@ -1401,11 +1549,21 @@
         "each row/completion.json"
       ],
       "runtime": {
-        "status": "QUEUED",
-        "pid": null,
+        "status": "TRAINING_COMPLETE",
+        "pid": 163717,
         "gpu": 6,
         "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/twostage-s2026092702.json",
-        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/twostage-s2026092702/launch.stdout.log"
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/twostage-s2026092702/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/twostage-s2026092702.json"
+        ],
+        "started_at": "2026-09-30T12:16:43.887292+00:00",
+        "exit_code": 0
       }
     },
     {
@@ -1453,11 +1611,21 @@
         "each row/completion.json"
       ],
       "runtime": {
-        "status": "QUEUED",
-        "pid": null,
+        "status": "TRAINING_COMPLETE",
+        "pid": 161921,
         "gpu": 7,
         "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/twostage-s2026092703.json",
-        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/twostage-s2026092703/launch.stdout.log"
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/twostage-s2026092703/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/twostage-s2026092703.json"
+        ],
+        "started_at": "2026-09-30T12:13:14.531887+00:00",
+        "exit_code": 0
       }
     },
     {
@@ -1505,11 +1673,21 @@
         "each row/completion.json"
       ],
       "runtime": {
-        "status": "QUEUED",
-        "pid": null,
+        "status": "TRAINING_COMPLETE",
+        "pid": 173173,
         "gpu": 0,
         "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/twostage-s2026092704.json",
-        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/twostage-s2026092704/launch.stdout.log"
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/twostage-s2026092704/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/twostage-s2026092704.json"
+        ],
+        "started_at": "2026-09-30T12:34:06.732116+00:00",
+        "exit_code": 0
       }
     },
     {
@@ -1557,11 +1735,21 @@
         "each row/completion.json"
       ],
       "runtime": {
-        "status": "QUEUED",
-        "pid": null,
+        "status": "TRAINING_COMPLETE",
+        "pid": 174090,
         "gpu": 1,
         "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/csil-s392005.json",
-        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/csil-s392005/launch.stdout.log"
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/csil-s392005/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/csil-s392005.json"
+        ],
+        "started_at": "2026-09-30T12:35:50.507580+00:00",
+        "exit_code": 0
       }
     },
     {
@@ -1609,11 +1797,21 @@
         "each row/completion.json"
       ],
       "runtime": {
-        "status": "QUEUED",
-        "pid": null,
+        "status": "TRAINING_COMPLETE",
+        "pid": 174012,
         "gpu": 2,
         "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/csil-s2026092701.json",
-        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/csil-s2026092701/launch.stdout.log"
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/csil-s2026092701/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/csil-s2026092701.json"
+        ],
+        "started_at": "2026-09-30T12:35:48.298395+00:00",
+        "exit_code": 0
       }
     },
     {
@@ -1661,11 +1859,21 @@
         "each row/completion.json"
       ],
       "runtime": {
-        "status": "QUEUED",
-        "pid": null,
+        "status": "TRAINING_COMPLETE",
+        "pid": 173412,
         "gpu": 3,
         "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/csil-s2026092702.json",
-        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/csil-s2026092702/launch.stdout.log"
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/csil-s2026092702/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/csil-s2026092702.json"
+        ],
+        "started_at": "2026-09-30T12:34:50.826195+00:00",
+        "exit_code": 0
       }
     },
     {
@@ -1713,11 +1921,21 @@
         "each row/completion.json"
       ],
       "runtime": {
-        "status": "QUEUED",
-        "pid": null,
+        "status": "TRAINING_COMPLETE",
+        "pid": 173287,
         "gpu": 4,
         "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/csil-s2026092703.json",
-        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/csil-s2026092703/launch.stdout.log"
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/csil-s2026092703/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/csil-s2026092703.json"
+        ],
+        "started_at": "2026-09-30T12:34:26.564681+00:00",
+        "exit_code": 0
       }
     },
     {
@@ -1765,11 +1983,21 @@
         "each row/completion.json"
       ],
       "runtime": {
-        "status": "QUEUED",
-        "pid": null,
+        "status": "TRAINING_COMPLETE",
+        "pid": 191689,
         "gpu": 5,
         "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/csil-s2026092704.json",
-        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/csil-s2026092704/launch.stdout.log"
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/csil-s2026092704/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/csil-s2026092704.json"
+        ],
+        "started_at": "2026-09-30T13:07:01.932040+00:00",
+        "exit_code": 0
       }
     },
     {
@@ -1817,11 +2045,21 @@
         "each row/completion.json"
       ],
       "runtime": {
-        "status": "QUEUED",
-        "pid": null,
+        "status": "TRAINING_COMPLETE",
+        "pid": 192348,
         "gpu": 6,
         "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/mopc_hr-s392005.json",
-        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/mopc_hr-s392005/launch.stdout.log"
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/mopc_hr-s392005/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/mopc_hr-s392005.json"
+        ],
+        "started_at": "2026-09-30T13:08:08.224131+00:00",
+        "exit_code": 0
       }
     },
     {
@@ -1869,11 +2107,21 @@
         "each row/completion.json"
       ],
       "runtime": {
-        "status": "QUEUED",
-        "pid": null,
+        "status": "TRAINING_COMPLETE",
+        "pid": 189627,
         "gpu": 7,
         "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/mopc_hr-s2026092701.json",
-        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/mopc_hr-s2026092701/launch.stdout.log"
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/mopc_hr-s2026092701/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/mopc_hr-s2026092701.json"
+        ],
+        "started_at": "2026-09-30T13:03:53.126624+00:00",
+        "exit_code": 0
       }
     },
     {
@@ -1921,11 +2169,21 @@
         "each row/completion.json"
       ],
       "runtime": {
-        "status": "QUEUED",
-        "pid": null,
+        "status": "TRAINING_COMPLETE",
+        "pid": 200694,
         "gpu": 0,
         "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/mopc_hr-s2026092702.json",
-        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/mopc_hr-s2026092702/launch.stdout.log"
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/mopc_hr-s2026092702/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/mopc_hr-s2026092702.json"
+        ],
+        "started_at": "2026-09-30T13:23:53.855952+00:00",
+        "exit_code": 0
       }
     },
     {
@@ -1973,11 +2231,21 @@
         "each row/completion.json"
       ],
       "runtime": {
-        "status": "QUEUED",
-        "pid": null,
+        "status": "TRAINING_COMPLETE",
+        "pid": 202857,
         "gpu": 1,
         "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/mopc_hr-s2026092703.json",
-        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/mopc_hr-s2026092703/launch.stdout.log"
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/mopc_hr-s2026092703/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/mopc_hr-s2026092703.json"
+        ],
+        "started_at": "2026-09-30T13:27:32.397009+00:00",
+        "exit_code": 0
       }
     },
     {
@@ -2025,11 +2293,21 @@
         "each row/completion.json"
       ],
       "runtime": {
-        "status": "QUEUED",
-        "pid": null,
+        "status": "TRAINING_COMPLETE",
+        "pid": 203521,
         "gpu": 2,
         "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/mopc_hr-s2026092704.json",
-        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/mopc_hr-s2026092704/launch.stdout.log"
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/mopc_hr-s2026092704/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/mopc_hr-s2026092704.json"
+        ],
+        "started_at": "2026-09-30T13:28:29.850461+00:00",
+        "exit_code": 0
       }
     },
     {
@@ -2077,11 +2355,21 @@
         "each row/completion.json"
       ],
       "runtime": {
-        "status": "QUEUED",
-        "pid": null,
+        "status": "TRAINING_COMPLETE",
+        "pid": 202884,
         "gpu": 3,
         "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/orthogonal-s392005.json",
-        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/orthogonal-s392005/launch.stdout.log"
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/orthogonal-s392005/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/orthogonal-s392005.json"
+        ],
+        "started_at": "2026-09-30T13:27:43.446340+00:00",
+        "exit_code": 0
       }
     },
     {
@@ -2129,11 +2417,21 @@
         "each row/completion.json"
       ],
       "runtime": {
-        "status": "QUEUED",
-        "pid": null,
+        "status": "TRAINING_COMPLETE",
+        "pid": 202248,
         "gpu": 4,
         "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/orthogonal-s2026092701.json",
-        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/orthogonal-s2026092701/launch.stdout.log"
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/orthogonal-s2026092701/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/orthogonal-s2026092701.json"
+        ],
+        "started_at": "2026-09-30T13:26:19.443416+00:00",
+        "exit_code": 0
       }
     },
     {
@@ -2181,11 +2479,21 @@
         "each row/completion.json"
       ],
       "runtime": {
-        "status": "QUEUED",
-        "pid": null,
+        "status": "TRAINING_COMPLETE",
+        "pid": 219996,
         "gpu": 5,
         "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/orthogonal-s2026092702.json",
-        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/orthogonal-s2026092702/launch.stdout.log"
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/orthogonal-s2026092702/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/orthogonal-s2026092702.json"
+        ],
+        "started_at": "2026-09-30T13:58:30.011543+00:00",
+        "exit_code": 0
       }
     },
     {
@@ -2233,11 +2541,21 @@
         "each row/completion.json"
       ],
       "runtime": {
-        "status": "QUEUED",
-        "pid": null,
+        "status": "TRAINING_COMPLETE",
+        "pid": 220055,
         "gpu": 6,
         "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/orthogonal-s2026092703.json",
-        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/orthogonal-s2026092703/launch.stdout.log"
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/orthogonal-s2026092703/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/orthogonal-s2026092703.json"
+        ],
+        "started_at": "2026-09-30T13:58:58.670401+00:00",
+        "exit_code": 0
       }
     },
     {
@@ -2285,11 +2603,21 @@
         "each row/completion.json"
       ],
       "runtime": {
-        "status": "QUEUED",
-        "pid": null,
+        "status": "TRAINING_COMPLETE",
+        "pid": 217899,
         "gpu": 7,
         "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/orthogonal-s2026092704.json",
-        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/orthogonal-s2026092704/launch.stdout.log"
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/orthogonal-s2026092704/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/orthogonal-s2026092704.json"
+        ],
+        "started_at": "2026-09-30T13:54:25.228677+00:00",
+        "exit_code": 0
       }
     },
     {
@@ -2337,11 +2665,21 @@
         "each row/completion.json"
       ],
       "runtime": {
-        "status": "QUEUED",
-        "pid": null,
+        "status": "TRAINING_COMPLETE",
+        "pid": 228003,
         "gpu": 0,
         "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/radionet_ada-s392005.json",
-        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/radionet_ada-s392005/launch.stdout.log"
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/radionet_ada-s392005/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/radionet_ada-s392005.json"
+        ],
+        "started_at": "2026-09-30T14:13:57.529656+00:00",
+        "exit_code": 0
       }
     },
     {
@@ -2389,11 +2727,21 @@
         "each row/completion.json"
       ],
       "runtime": {
-        "status": "QUEUED",
-        "pid": null,
+        "status": "TRAINING_COMPLETE",
+        "pid": 229609,
         "gpu": 1,
         "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/radionet_ada-s2026092701.json",
-        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/radionet_ada-s2026092701/launch.stdout.log"
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/radionet_ada-s2026092701/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/radionet_ada-s2026092701.json"
+        ],
+        "started_at": "2026-09-30T14:17:13.776208+00:00",
+        "exit_code": 0
       }
     },
     {
@@ -2441,11 +2789,21 @@
         "each row/completion.json"
       ],
       "runtime": {
-        "status": "QUEUED",
-        "pid": null,
+        "status": "TRAINING_COMPLETE",
+        "pid": 231204,
         "gpu": 2,
         "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/radionet_ada-s2026092702.json",
-        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/radionet_ada-s2026092702/launch.stdout.log"
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/radionet_ada-s2026092702/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/radionet_ada-s2026092702.json"
+        ],
+        "started_at": "2026-09-30T14:19:52.564681+00:00",
+        "exit_code": 0
       }
     },
     {
@@ -2493,11 +2851,21 @@
         "each row/completion.json"
       ],
       "runtime": {
-        "status": "QUEUED",
-        "pid": null,
+        "status": "TRAINING_COMPLETE",
+        "pid": 241245,
         "gpu": 3,
         "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/radionet_ada-s2026092703.json",
-        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/radionet_ada-s2026092703/launch.stdout.log"
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/radionet_ada-s2026092703/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/radionet_ada-s2026092703.json"
+        ],
+        "started_at": "2026-09-30T14:38:39.040858+00:00",
+        "exit_code": 0
       }
     },
     {
@@ -2545,11 +2913,21 @@
         "each row/completion.json"
       ],
       "runtime": {
-        "status": "QUEUED",
-        "pid": null,
+        "status": "TRAINING_COMPLETE",
+        "pid": 240708,
         "gpu": 4,
         "config": "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/radionet_ada-s2026092704.json",
-        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/radionet_ada-s2026092704/launch.stdout.log"
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/radionet_ada-s2026092704/launch.stdout.log",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "comparison_suite.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/native_comparisons_20260930_r01/automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/configs/radionet_ada-s2026092704.json"
+        ],
+        "started_at": "2026-09-30T14:38:12.572581+00:00",
+        "exit_code": 0
       }
     }
   ],
@@ -2562,5 +2940,5 @@
     "Source L_s alone supplies supervised source initializers. U_s labels remain hidden and are unused; V only evaluated. Source-step/sample exposure differences are reported."
   ],
   "registered_at": "2026-09-30T10:09:57+00:00",
-  "status": "RUNNING"
+  "status": "TRAINING_COMPLETE"
 }
