@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "tests": 11,
+  "details": "10 of11 PASS in expanded run;queue-test setup blocked by existing pytest temp ACL;fixed with mocked artifact reader and focused rerun PASS",
+  "environment": "ssr-gpu;Python C:/Users/lh594/.conda/envs/ssr-gpu/python.exe;Torch2.10.0+cu128",
+  "cpu_profiles": "both candidates completed;disposable model copies only",
+  "target_read": false,
+  "registry_launch_ready": "VALID",
+  "limits": "No formal source E200 or new clean results yet;N607 cold smoke pending"
+}

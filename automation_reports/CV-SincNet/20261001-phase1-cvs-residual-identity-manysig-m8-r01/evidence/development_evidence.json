@@ -1,0 +1,227 @@
+{
+  "native_total": 382146,
+  "native_gradient_used": 317665,
+  "native_inactive": {
+    "id_backbone.con_proj.0.weight": 25600,
+    "id_backbone.con_proj.0.bias": 160,
+    "id_backbone.cls_head.imp_merge.0.weight": 25600,
+    "id_backbone.cls_head.imp_merge.0.bias": 160,
+    "id_backbone.cls_head.pa_head.0.weight": 12800,
+    "id_backbone.cls_head.pa_head.0.bias": 80,
+    "id_backbone.cls_head.pa_head.2.weight": 80,
+    "id_backbone.cls_head.pa_head.2.bias": 1
+  },
+  "equivalent_pruned_total": 317665,
+  "profiles": {
+    "residual_fusion": {
+      "hardware": "cpu",
+      "precision": "float32",
+      "torch_version": "2.10.0+cu128",
+      "total_parameters": 164225,
+      "trainable_parameters": 164225,
+      "resident_state_bytes": 657552,
+      "input_shape": [
+        2,
+        256
+      ],
+      "warmup": 5,
+      "inference_repetitions": 20,
+      "training_repetitions": 10,
+      "mac_scope": "Conv1d and matrix multiplication only; excludes FFT, normalization, pooling, physical lifts and elementwise arithmetic",
+      "benchmark_state_used_for_training": false,
+      "inference_batch1_ms": 4.457279999769526,
+      "inference_batch128_ms": 56.45338000031188,
+      "conv_linear_macs_per_sample": 9708836,
+      "fft_calls_per_sample": 2,
+      "training_batch128_ms": 210.2377700008219,
+      "gradient_used_parameters": 164225,
+      "benchmark_peak_cuda_allocated_bytes": null,
+      "benchmark_peak_note": "Disposable clone plus original frozen model resident; actual source-training peak is separately logged"
+    },
+    "residual_fusion_moment": {
+      "hardware": "cpu",
+      "precision": "float32",
+      "torch_version": "2.10.0+cu128",
+      "total_parameters": 164417,
+      "trainable_parameters": 164417,
+      "resident_state_bytes": 658320,
+      "input_shape": [
+        2,
+        256
+      ],
+      "warmup": 5,
+      "inference_repetitions": 20,
+      "training_repetitions": 10,
+      "mac_scope": "Conv1d and matrix multiplication only; excludes FFT, normalization, pooling, physical lifts and elementwise arithmetic",
+      "benchmark_state_used_for_training": false,
+      "inference_batch1_ms": 4.712080000172136,
+      "inference_batch128_ms": 56.25154000008479,
+      "conv_linear_macs_per_sample": 9708836,
+      "fft_calls_per_sample": 2,
+      "training_batch128_ms": 192.85761000064667,
+      "gradient_used_parameters": 164417,
+      "benchmark_peak_cuda_allocated_bytes": null,
+      "benchmark_peak_note": "Disposable clone plus original frozen model resident; actual source-training peak is separately logged"
+    }
+  },
+  "paired_source_diagnosis": {
+    "epoch": 60,
+    "partial": true,
+    "target_access": false,
+    "curve_read_at": 1790836408.4445348,
+    "variants": {
+      "native": {
+        "rows": [
+          {
+            "seed": 2026092701,
+            "source_accuracy": 0.9667407407407408,
+            "worst_rx": 0.9105555555555556,
+            "training_ce": 0.10507119357585908
+          },
+          {
+            "seed": 2026092702,
+            "source_accuracy": 0.9714444444444444,
+            "worst_rx": 0.924074074074074,
+            "training_ce": 0.09480999752879143
+          }
+        ],
+        "mean_source_accuracy": 0.9690925925925926,
+        "mean_worst_rx": 0.9173148148148148,
+        "mean_training_ce": 0.09994059555232526
+      },
+      "orthogonal_pa": {
+        "rows": [
+          {
+            "seed": 2026092701,
+            "source_accuracy": 0.9697777777777777,
+            "worst_rx": 0.9157407407407407,
+            "training_ce": 0.07938991855829954
+          },
+          {
+            "seed": 2026092702,
+            "source_accuracy": 0.9737037037037037,
+            "worst_rx": 0.9225925925925926,
+            "training_ce": 0.07687096759676933
+          }
+        ],
+        "mean_source_accuracy": 0.9717407407407408,
+        "mean_worst_rx": 0.9191666666666667,
+        "mean_training_ce": 0.07813044307753443
+      },
+      "moment_pool": {
+        "rows": [
+          {
+            "seed": 2026092701,
+            "source_accuracy": 0.9658888888888889,
+            "worst_rx": 0.909074074074074,
+            "training_ce": 0.10271033816039563
+          },
+          {
+            "seed": 2026092702,
+            "source_accuracy": 0.9732962962962963,
+            "worst_rx": 0.9274074074074075,
+            "training_ce": 0.09874835319817066
+          }
+        ],
+        "mean_source_accuracy": 0.9695925925925926,
+        "mean_worst_rx": 0.9182407407407407,
+        "mean_training_ce": 0.10072934567928314
+      },
+      "orthogonal_moment": {
+        "rows": [
+          {
+            "seed": 2026092701,
+            "source_accuracy": 0.9696296296296296,
+            "worst_rx": 0.9172222222222223,
+            "training_ce": 0.07515523817390203
+          },
+          {
+            "seed": 2026092702,
+            "source_accuracy": 0.9702222222222222,
+            "worst_rx": 0.9144444444444444,
+            "training_ce": 0.06919236682355404
+          }
+        ],
+        "mean_source_accuracy": 0.9699259259259259,
+        "mean_worst_rx": 0.9158333333333333,
+        "mean_training_ce": 0.07217380249872804
+      },
+      "shared_complex": {
+        "rows": [
+          {
+            "seed": 2026092701,
+            "source_accuracy": 0.9336666666666666,
+            "worst_rx": 0.8201851851851852,
+            "training_ce": 0.015011029997840524
+          },
+          {
+            "seed": 2026092702,
+            "source_accuracy": 0.9224444444444444,
+            "worst_rx": 0.794074074074074,
+            "training_ce": 0.01894882214255631
+          }
+        ],
+        "mean_source_accuracy": 0.9280555555555555,
+        "mean_worst_rx": 0.8071296296296296,
+        "mean_training_ce": 0.016979926070198416
+      },
+      "cvcnn": {
+        "rows": [
+          {
+            "seed": 2026092701,
+            "source_accuracy": 0.9557037037037037,
+            "worst_rx": 0.9051851851851852,
+            "training_ce": 0.005367231545969844
+          },
+          {
+            "seed": 2026092702,
+            "source_accuracy": 0.9764814814814815,
+            "worst_rx": 0.9372222222222222,
+            "training_ce": 0.006998149305582046
+          }
+        ],
+        "mean_source_accuracy": 0.9660925925925926,
+        "mean_worst_rx": 0.9212037037037037,
+        "mean_training_ce": 0.006182690425775945
+      },
+      "real_cnn": {
+        "rows": [
+          {
+            "seed": 2026092701,
+            "source_accuracy": 0.8959259259259259,
+            "worst_rx": 0.8633333333333333,
+            "training_ce": 0.001933874477399513
+          },
+          {
+            "seed": 2026092702,
+            "source_accuracy": 0.981037037037037,
+            "worst_rx": 0.9533333333333334,
+            "training_ce": 0.0011970588145777583
+          }
+        ],
+        "mean_source_accuracy": 0.9384814814814815,
+        "mean_worst_rx": 0.9083333333333333,
+        "mean_training_ce": 0.0015654666459886356
+      },
+      "resnet1d": {
+        "rows": [
+          {
+            "seed": 2026092701,
+            "source_accuracy": 0.9796296296296296,
+            "worst_rx": 0.952037037037037,
+            "training_ce": 0.00038969414366874845
+          },
+          {
+            "seed": 2026092702,
+            "source_accuracy": 0.9807037037037037,
+            "worst_rx": 0.955,
+            "training_ce": 0.0003672387878759764
+          }
+        ],
+        "mean_source_accuracy": 0.9801666666666666,
+        "mean_worst_rx": 0.9535185185185184,
+        "mean_training_ce": 0.00037846646577236246
+      }
+    }
+  }
+}

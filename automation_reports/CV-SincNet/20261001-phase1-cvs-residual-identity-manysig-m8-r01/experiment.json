@@ -1,0 +1,437 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261001-phase1-cvs-residual-identity-manysig-m8-r01",
+  "group_id": "cvs-clean-residual-identity-ce",
+  "display_name": "CVS基础网络研发：原物理三分支＋轻量残差身份融合",
+  "description": "保留原时域/频域/PA分支，纯CE、无增强、从零训练两个残差分类头候选；2架构x4seed；source-only研发，现有基准继续运行。",
+  "kind": "cvs",
+  "stage": "Phase1-CVS-source-research",
+  "aliases": [],
+  "tags": [
+    "cvs",
+    "clean_only",
+    "architecture",
+    "ce_only",
+    "no_augmentation",
+    "lightweight",
+    "residual_fusion",
+    "source_selection"
+  ],
+  "comparison_group_id": "manysig-six-source-rx13468-day123-luv076330-residual-noeq-v1",
+  "parent_run_ids": [
+    "20261001-phase1-cvs-clean-architecture-manysig-m32-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "2026-10-01原目标纯CE/无增强/clean/轻量CVS；用户追加：让基准实验先跑着，先研发CVS。",
+  "code": {
+    "commit": "release_commit.txt resolves runtime commit",
+    "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_residual_identity_20261001_r01",
+    "architecture_base_commit": "583be084d91dc1fd8540bbf1da33b61b91b38975"
+  },
+  "data": {
+    "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+    "version": "existing_N607_ManySig_6tx_12rx_4day",
+    "representation": "equalized=1; center256; unit packet RMS; fs=25000000Hz",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#role_ids",
+    "label_map_ref": "each row/source_contract.json#classes",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "ManySig.tx_list: all6; actual physical class strings exported at runtime",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": null,
+    "support_query_ref": null,
+    "leo_config_ref": "baselines/common/practical_source.py:PracticalResidualAugment"
+  },
+  "permissions": {
+    "regime": "source_only_CVS",
+    "query_use": "source matrix never opens target; later frozen clean inference and independent truth-last scorer only",
+    "external_method_exception": null,
+    "claim_scope": "Fixed clean-only architecture plus native classifier comparison; previously exposed target benchmark disclosed; no clean score driven architecture tuning or selective retraining"
+  },
+  "checkpoint": {
+    "initialization": "scratch",
+    "sources": [],
+    "provenance_verdict": "SCRATCH_NO_INHERITANCE",
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "selection_rule": "Scratch E200 for both variants; six registered source-only CVS candidates chosen by four-seed E200 source V before any current clean prediction"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/cvs-residual-identity-20261001",
+    "gpu_policy": "At most2 total training jobs/GPU and12GB free; new dispatcher waits until predecessor has no QUEUED rows, then uses free slots while its running jobs finish",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261001-phase1-cvs-residual-identity-manysig-m8-r01",
+    "local_artifact_root": "automation_reports/CV-SincNet/20261001-phase1-cvs-residual-identity-manysig-m8-r01",
+    "launch_command": "python -m experiments.cvs_residual_identity.publish --output local_artifacts/cvs_residual_identity_20261001_r01",
+    "stop_rule": "Only own affected row fails on nonfinite/permissions/output collision/nonzero exit; preserve all artifacts; no retry, low-score stop or unrelated process intervention"
+  },
+  "expected_artifacts": [
+    "pipeline_state.json",
+    "source_selection.json",
+    "each source/initial_smoke.pt",
+    "each source/initialization.json",
+    "each source/source_contract.json",
+    "each source/resolved_config.json",
+    "each source/step_metrics.jsonl",
+    "each source/epoch_metrics.jsonl",
+    "each source/epoch_metrics.csv",
+    "each source/last.pt",
+    "each source/resource_profile.json",
+    "each source/completion.json",
+    "research_selection.json when predecessor source_selection exists"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source_V_accuracy",
+      "worst_source_RX_accuracy",
+      "clean_ce",
+      "gradient_norm",
+      "parameters",
+      "gradient_used_parameters",
+      "conv_linear_MACs",
+      "FFT_calls",
+      "train_ms",
+      "inference_ms",
+      "peak_cuda_allocated_bytes"
+    ],
+    "dimensions": [
+      "architecture",
+      "model_seed",
+      "source_receiver"
+    ],
+    "prediction_ref": "N/A until source_selection.json is frozen",
+    "scorer_ref": "N/A: source-only release does not score target",
+    "primary": "four-seed final source score=0.5 accuracy+0.5 worst_RX_accuracy;0.2pp tie favors smaller conv/linear MACs then parameters",
+    "later_test": "No target inference/scoring in this release. Before any current clean test, combine all six CVS source-only candidate summaries, freeze one final candidate, retain four fixed baselines."
+  },
+  "rows": [
+    {
+      "row_id": "residual_fusion-s2026092701",
+      "method": "residual_fusion",
+      "purpose": "source_only_CVS_head_candidate",
+      "gpu": null,
+      "config_ref": "experiments/cvs_residual_identity/configs/residual_fusion-s2026092701.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Source roles fixed;dedicated matched loader seed;no augmentation/support;no target access",
+      "k": null,
+      "scenario": "clean",
+      "optimizer": "AdamW+cosine",
+      "lr": 0.0002,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "200x50updates;6300L/epoch",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092701/source",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092701.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.cvs_residual_identity.source --config /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_residual_identity_20261001_r01/experiments/cvs_residual_identity/configs/residual_fusion-s2026092701.json",
+      "expected_artifacts": [
+        "last.pt",
+        "completion.json",
+        "resource_profile.json",
+        "epoch_metrics.jsonl",
+        "epoch_metrics.csv"
+      ]
+    },
+    {
+      "row_id": "residual_fusion_moment-s2026092701",
+      "method": "residual_fusion_moment",
+      "purpose": "source_only_CVS_head_candidate",
+      "gpu": null,
+      "config_ref": "experiments/cvs_residual_identity/configs/residual_fusion_moment-s2026092701.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion_moment-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Source roles fixed;dedicated matched loader seed;no augmentation/support;no target access",
+      "k": null,
+      "scenario": "clean",
+      "optimizer": "AdamW+cosine",
+      "lr": 0.0002,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "200x50updates;6300L/epoch",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion_moment-s2026092701/source",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion_moment-s2026092701.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.cvs_residual_identity.source --config /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_residual_identity_20261001_r01/experiments/cvs_residual_identity/configs/residual_fusion_moment-s2026092701.json",
+      "expected_artifacts": [
+        "last.pt",
+        "completion.json",
+        "resource_profile.json",
+        "epoch_metrics.jsonl",
+        "epoch_metrics.csv"
+      ]
+    },
+    {
+      "row_id": "residual_fusion-s2026092702",
+      "method": "residual_fusion",
+      "purpose": "source_only_CVS_head_candidate",
+      "gpu": null,
+      "config_ref": "experiments/cvs_residual_identity/configs/residual_fusion-s2026092702.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092702/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Source roles fixed;dedicated matched loader seed;no augmentation/support;no target access",
+      "k": null,
+      "scenario": "clean",
+      "optimizer": "AdamW+cosine",
+      "lr": 0.0002,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "200x50updates;6300L/epoch",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092702/source",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092702.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.cvs_residual_identity.source --config /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_residual_identity_20261001_r01/experiments/cvs_residual_identity/configs/residual_fusion-s2026092702.json",
+      "expected_artifacts": [
+        "last.pt",
+        "completion.json",
+        "resource_profile.json",
+        "epoch_metrics.jsonl",
+        "epoch_metrics.csv"
+      ]
+    },
+    {
+      "row_id": "residual_fusion_moment-s2026092702",
+      "method": "residual_fusion_moment",
+      "purpose": "source_only_CVS_head_candidate",
+      "gpu": null,
+      "config_ref": "experiments/cvs_residual_identity/configs/residual_fusion_moment-s2026092702.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion_moment-s2026092702/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Source roles fixed;dedicated matched loader seed;no augmentation/support;no target access",
+      "k": null,
+      "scenario": "clean",
+      "optimizer": "AdamW+cosine",
+      "lr": 0.0002,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "200x50updates;6300L/epoch",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion_moment-s2026092702/source",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion_moment-s2026092702.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.cvs_residual_identity.source --config /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_residual_identity_20261001_r01/experiments/cvs_residual_identity/configs/residual_fusion_moment-s2026092702.json",
+      "expected_artifacts": [
+        "last.pt",
+        "completion.json",
+        "resource_profile.json",
+        "epoch_metrics.jsonl",
+        "epoch_metrics.csv"
+      ]
+    },
+    {
+      "row_id": "residual_fusion-s2026092703",
+      "method": "residual_fusion",
+      "purpose": "source_only_CVS_head_candidate",
+      "gpu": null,
+      "config_ref": "experiments/cvs_residual_identity/configs/residual_fusion-s2026092703.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092703/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Source roles fixed;dedicated matched loader seed;no augmentation/support;no target access",
+      "k": null,
+      "scenario": "clean",
+      "optimizer": "AdamW+cosine",
+      "lr": 0.0002,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "200x50updates;6300L/epoch",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092703/source",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092703.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.cvs_residual_identity.source --config /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_residual_identity_20261001_r01/experiments/cvs_residual_identity/configs/residual_fusion-s2026092703.json",
+      "expected_artifacts": [
+        "last.pt",
+        "completion.json",
+        "resource_profile.json",
+        "epoch_metrics.jsonl",
+        "epoch_metrics.csv"
+      ]
+    },
+    {
+      "row_id": "residual_fusion_moment-s2026092703",
+      "method": "residual_fusion_moment",
+      "purpose": "source_only_CVS_head_candidate",
+      "gpu": null,
+      "config_ref": "experiments/cvs_residual_identity/configs/residual_fusion_moment-s2026092703.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion_moment-s2026092703/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Source roles fixed;dedicated matched loader seed;no augmentation/support;no target access",
+      "k": null,
+      "scenario": "clean",
+      "optimizer": "AdamW+cosine",
+      "lr": 0.0002,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "200x50updates;6300L/epoch",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion_moment-s2026092703/source",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion_moment-s2026092703.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.cvs_residual_identity.source --config /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_residual_identity_20261001_r01/experiments/cvs_residual_identity/configs/residual_fusion_moment-s2026092703.json",
+      "expected_artifacts": [
+        "last.pt",
+        "completion.json",
+        "resource_profile.json",
+        "epoch_metrics.jsonl",
+        "epoch_metrics.csv"
+      ]
+    },
+    {
+      "row_id": "residual_fusion-s2026092704",
+      "method": "residual_fusion",
+      "purpose": "source_only_CVS_head_candidate",
+      "gpu": null,
+      "config_ref": "experiments/cvs_residual_identity/configs/residual_fusion-s2026092704.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092704/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Source roles fixed;dedicated matched loader seed;no augmentation/support;no target access",
+      "k": null,
+      "scenario": "clean",
+      "optimizer": "AdamW+cosine",
+      "lr": 0.0002,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "200x50updates;6300L/epoch",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092704/source",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092704.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.cvs_residual_identity.source --config /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_residual_identity_20261001_r01/experiments/cvs_residual_identity/configs/residual_fusion-s2026092704.json",
+      "expected_artifacts": [
+        "last.pt",
+        "completion.json",
+        "resource_profile.json",
+        "epoch_metrics.jsonl",
+        "epoch_metrics.csv"
+      ]
+    },
+    {
+      "row_id": "residual_fusion_moment-s2026092704",
+      "method": "residual_fusion_moment",
+      "purpose": "source_only_CVS_head_candidate",
+      "gpu": null,
+      "config_ref": "experiments/cvs_residual_identity/configs/residual_fusion_moment-s2026092704.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion_moment-s2026092704/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Source roles fixed;dedicated matched loader seed;no augmentation/support;no target access",
+      "k": null,
+      "scenario": "clean",
+      "optimizer": "AdamW+cosine",
+      "lr": 0.0002,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "200x50updates;6300L/epoch",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion_moment-s2026092704/source",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion_moment-s2026092704.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.cvs_residual_identity.source --config /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_residual_identity_20261001_r01/experiments/cvs_residual_identity/configs/residual_fusion_moment-s2026092704.json",
+      "expected_artifacts": [
+        "last.pt",
+        "completion.json",
+        "resource_profile.json",
+        "epoch_metrics.jsonl",
+        "epoch_metrics.csv"
+      ]
+    }
+  ],
+  "notes": [
+    "Current source evidence is an E60 paired two-seed diagnostic; partial curves cannot substitute E200/four-seed selection or clean results.",
+    "Native parameters382146;CE-active317665;removing64481 inactive parameters preserves exact training logits/active gradients. This control is not a performance improvement.",
+    "Residual head: LN(base)+tanh(gain)*LN(PA_local+PA_delta), gain initialized0.25;cosine scale30/no label margin. Native branches unchanged. No hard input phase invariance.",
+    "Candidate2 additionally changes only three temporal pools to mean+tanh(a)*std with192 zero-initialized scalars.",
+    "Candidates164225/164417 parameters;all receiveCEgradient locally. MAC reduction only1.56percent,not proportional to parameter reduction. CPU timing is synthetic,not a GPU speedup claim.",
+    "Every row scratch200epochsx50steps,6300L/56700Uunused/27000Veval,same physical contract and fixed4seeds;no augmentation/domain backbone/extra loss.",
+    "Existing release, queue, baselines and healthy jobs are preserved; queue-drain dependency avoids simultaneous launch-owner races. No target-based tuning or automatic retraining.",
+    "All six original/new CVS candidates join final source-only selection before target. The first run retains its own source selection record; no overwrite or retroactive target choice.",
+    "Parent run is a source-analysis reference only,not a checkpoint ancestor. No inherited weights/optimizer/teacher/EMA;no target inputs."
+  ],
+  "registered_at": "2026-10-01T06:56:55+00:00",
+  "status": "PLANNED"
+}
