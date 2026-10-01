@@ -1,4 +1,4 @@
-# performance_priority实验与历史证据
+# attentive_pooling实验与历史证据
 
 [返回总索引](../README.md)
 
@@ -7,4 +7,3 @@
 |名称|记录类型|证据入口|
 |---|---|---|
 |CVS 性能优先研发：包内注意力统计池化|managed_run|[打开](../../automation_reports/CV-SincNet/20261001-phase1-cvs-attentive-identity-manysig-m8-r01/report.md)|
-|CVS性能优先继续优化：tf_lowrank32 clean测试报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261001-phase1-cvs-interaction-clean-manysig-m24-r01/report.md)|
