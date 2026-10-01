@@ -5,6 +5,7 @@ from experiments.cvs_clean_design.model import BASELINES,VARIANTS as FIRST
 from experiments.cvs_residual_identity.model import VARIANTS as SECOND
 from experiments.cvs_balanced_identity.model import VARIANTS as THIRD
 from experiments.cvs_interaction_identity.model import VARIANTS as FOURTH
+from experiments.cvs_attentive_identity.model import VARIANTS as FIFTH
 from experiments.cvs_residual_identity.dispatch import combine_research_selection
 
 SEEDS={2026092701,2026092702,2026092703,2026092704}
@@ -18,10 +19,13 @@ def read(path):return json.loads(Path(path).read_text(encoding='utf-8'))
 
 def frozen_selection(path):
     selection=read(path)
-    if selection.get('scope') in ('balanced_source','interaction_source'):
+    if selection.get('scope') in ('balanced_source','interaction_source','attentive_source'):
         if selection['scope']=='balanced_source':
             from experiments.cvs_balanced_identity.freeze import select_performance_candidate
             family=THIRD
+        elif selection['scope']=='attentive_source':
+            from experiments.cvs_attentive_identity.dispatch import select_source_candidate as select_performance_candidate
+            family=FIFTH
         else:
             from experiments.cvs_interaction_identity.dispatch import select_source_candidate as select_performance_candidate
             family=FOURTH
@@ -60,7 +64,7 @@ def frozen_selection(path):
 
 
 def evaluation_variants(selection):
-    if selection.get('scope') in ('balanced_source','interaction_source'):return [*BASELINES,'residual_fusion',selection['selected_variant']]
+    if selection.get('scope') in ('balanced_source','interaction_source','attentive_source'):return [*BASELINES,'residual_fusion',selection['selected_variant']]
     return list(BASELINES) if selection.get('scope')=='baseline_only' else [*BASELINES,selection['selected_variant']]
 
 
@@ -73,7 +77,7 @@ def validate_reused_row(row):
     if out.parts[-3:]!=(old_run,row['row_id'],'prediction'):raise ValueError('Reused output outside original run')
     cfg=read(row['config']);original=frozen_selection(cfg['selection_file'])
     if baseline and original.get('scope')!='baseline_only':raise ValueError('Reused baseline selection changed')
-    if residual and (original.get('scope') in ('baseline_only','balanced_source','interaction_source') or original.get('selected_variant')!='residual_fusion'):
+    if residual and (original.get('scope') in ('baseline_only','balanced_source','interaction_source','attentive_source') or original.get('selected_variant')!='residual_fusion'):
         raise ValueError('Previous residual source selection changed')
     validate_predict_config(cfg,original)
     marker=read(out.parents[1]/'scoring_clean_complete.json');models=5 if residual else 4
@@ -83,6 +87,7 @@ def validate_reused_row(row):
 
 
 def source_method(variant):
+    if variant in FIFTH:return 'cvs_attentive_identity'
     if variant in FOURTH:return 'cvs_interaction_identity'
     if variant in THIRD:return 'cvs_balanced_identity'
     if variant in SECOND:return 'cvs_residual_identity'
@@ -97,7 +102,7 @@ def validate_predict_config(c,selection):
         raise ValueError('Unregistered clean evaluation contract')
     if c['variant'] not in evaluation_variants(selection):
         raise ValueError('Nonselected CVS cannot receive target predictions')
-    expected_parent=c['interaction_source_root'] if c['variant'] in FOURTH else c['balanced_source_root'] if c['variant'] in THIRD else (c['baseline_source_root'] if c['variant'] in FIRST else c['residual_source_root'])
+    expected_parent=c['attentive_source_root'] if c['variant'] in FIFTH else c['interaction_source_root'] if c['variant'] in FOURTH else c['balanced_source_root'] if c['variant'] in THIRD else (c['baseline_source_root'] if c['variant'] in FIRST else c['residual_source_root'])
     expected=Path(expected_parent)/(c['variant']+'-s'+str(c['model_seed']))/'source'
     if Path(c['source_output'])!=expected:raise ValueError('Source row/seed path mismatch')
     return c
@@ -127,7 +132,9 @@ def checkpoint_contract(c,done,initial,contract,expected,resolved,payload):
 
 
 def build_model(variant):
-    if variant in FOURTH:
+    if variant in FIFTH:
+        from experiments.cvs_attentive_identity.model import build
+    elif variant in FOURTH:
         from experiments.cvs_interaction_identity.model import build
     elif variant in THIRD:
         from experiments.cvs_balanced_identity.model import build

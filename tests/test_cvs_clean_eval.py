@@ -438,3 +438,65 @@ def test_interaction_prepare_only_selected4_fixed_capsule(case,monkeypatch):
     for row in new:
         c=contracts.read(folder/(row['row_id']+'.json'));assert c['p1_capsule']==CAPSULE
         contracts.validate_predict_config(c,contracts.read(folder/'frozen_selection.json'))
+
+
+def attentive_case(case):
+    from experiments.cvs_attentive_identity.dispatch import select_source_candidate
+    balanced_case(case)
+    case['spec']['rows']=[r for r in case['spec']['rows'] if r['variant'] not in contracts.THIRD]
+    records=[];source_rows=[]
+    for variant in contracts.FIFTH:
+        for seed in sorted(contracts.SEEDS):
+            rid=variant+'-s'+str(seed);q=case['root']/'attentive_source'/rid/'source'
+            accuracy=.981 if variant=='attentive_moments' else .98
+            write(q/'completion.json',dict(status='SOURCE_TRAINED',epoch=200,steps=10000,target_access=False,target_evaluated=False,
+                final_source_metrics=dict(source_val_accuracy=accuracy,source_val_worst_rx=.95)))
+            write(q/'resource_profile.json',dict(total_parameters=164609 if variant=='attentive_moments' else 164417,conv_linear_macs_per_sample=9716260 if variant=='attentive_moments' else 9716260))
+            source_rows.append(dict(row_id=rid,variant=variant,model_seed=seed,source_output=str(q)))
+            records.append(dict(variant=variant,seed=seed,accuracy=accuracy,worst_rx=.95,parameters=164609 if variant=='attentive_moments' else 164417,macs=9716260 if variant=='attentive_moments' else 9716260))
+    matrix=case['root']/'attentive_source_matrix.json';write(matrix,dict(rows=source_rows))
+    selection=dict(select_source_candidate(records),scope='attentive_source',source_matrix_ref=str(matrix))
+    path=case['root']/'attentive_selection.json';write(path,selection)
+    for seed in sorted(contracts.SEEDS):
+        variant=selection['selected_variant'];rid=variant+'-s'+str(seed);out=Path(case['spec']['runtime_root'])/rid/'prediction'
+        cfg=contracts.read(case['spec']['rows'][0]['config']);cfg.update(variant=variant,model_seed=seed,selection_file=str(path),
+            attentive_source_root=str(case['root']/'attentive_source'),source_output=str(case['root']/'attentive_source'/rid/'source'),output_root=str(out))
+        cp=case['root']/'configs'/(rid+'.json');write(cp,cfg)
+        case['spec']['rows'].append(dict(row_id=rid,variant=variant,model_seed=seed,config=str(cp),output_root=str(out)))
+    case['selection']=selection;case['spec']['selection_file']=str(path)
+    return case
+
+
+def test_attentive_actual_source_freeze_and24row_truth_last(case,monkeypatch):
+    attentive_case(case);dispatch.validate_spec(case['spec']);prediction_fixtures(case)
+    assert contracts.frozen_selection(case['spec']['selection_file'])['selected_variant']=='attentive_moments'
+    opened=[];original=score.read
+    monkeypatch.setattr(score,'read',lambda p:(opened.append(str(p)),original(p))[1])
+    marker=score.score(case['spec']);assert marker['rows']==24 and marker['models']==6
+    at=opened.index(case['spec']['p1_truth']);assert sum(Path(p).name=='clean_complete.json' for p in opened[:at])==24
+
+
+def test_attentive_checkpoint_guards_and_unselected_rejection(case,monkeypatch):
+    attentive_case(case);cfg=contracts.read(case['spec']['rows'][-1]['config'])
+    done,initial,resolved,payload=source_fixture(case,cfg)
+    write(Path(cfg['source_output'])/'completion.json',dict(done,final_source_metrics=dict(source_val_accuracy=.981,source_val_worst_rx=.95)))
+    monkeypatch.setattr(predict,'build_model',lambda v:TinyClassifier())
+    predict.predict(cfg)
+    with pytest.raises(ValueError):contracts.validate_predict_config(dict(cfg,variant='attentive_mean'),case['selection'])
+    args=[cfg,done,initial,case['contract'],case['contract'],resolved,payload]
+    bad=list(args);bad[-1]=dict(payload,method='cvs_balanced_identity')
+    with pytest.raises(ValueError):contracts.checkpoint_contract(*bad)
+
+
+def test_attentive_prepare_only_selected4_fixed_capsule(case,monkeypatch):
+    from experiments.cvs_attentive_clean import prepare
+    from experiments.cvs_clean_eval.prepare import CAPSULE
+    root=Path(__file__).resolve().parents[1];prefix='experiments/cvs_selected_clean/configs/'
+    for name in ('launch_spec.json','experiment_spec.json'):write(case['root']/prefix/name,contracts.read(root/prefix/name))
+    monkeypatch.setattr(prepare,'ROOT',case['root'])
+    prepare.main(dict(status='SOURCE_SELECTION_FROZEN',target_access=False,target_score_used=False,selected_variant='attentive_moments'))
+    folder=case['root']/'experiments/cvs_attentive_clean/configs';runtime=contracts.read(folder/'launch_spec.json');new=[r for r in runtime['rows'] if not r.get('reuse_from_run')]
+    assert len(new)==4 and len(runtime['rows'])==24
+    for row in new:
+        c=contracts.read(folder/(row['row_id']+'.json'));assert c['p1_capsule']==CAPSULE
+        contracts.validate_predict_config(c,contracts.read(folder/'frozen_selection.json'))
