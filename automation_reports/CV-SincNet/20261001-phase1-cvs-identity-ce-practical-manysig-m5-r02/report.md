@@ -42,3 +42,21 @@
 实际commit、PID、GPU、有效配置、日志增长及进度由本run的evidence读回记录证明；实验源训练、预测、评分状态分别列出。失败仅处理所属行，保留产物，无性能停机和自动重启；不影响其他实验。
 
 详细配置、六类seed角色、数据来源、命令、路径、launch owner及停止规则见[experiment.json](experiment.json)。日志保存逐步JSONL、每轮紧凑JSONL／CSV及完整文本stdout，记录clean／sat CE、权重、学习率、梯度、源域V、耗时与峰值显存；未启用项明确为false或N/A。
+
+## 已核实启动
+
+2026-10-01 12:31:29 HKT：VERIFIED，r02的5行已在GPU 0至4运行，均已完成至少第1轮。dispatcher PID 638440。发布提交 `7495ccf2194bee08bec31206d3cb48cd53546c08`；归档本地／远端SHA256相同，远端编译及cold source入口导入通过。
+
+| model seed | GPU | source PID | 已完成epoch |
+|---:|---:|---:|---:|
+| 392005 | 0 | 638459 | 1 |
+| 2026092701 | 1 | 638470 | 1 |
+| 2026092702 | 2 | 638482 | 1 |
+| 2026092703 | 3 | 638558 | 1 |
+| 2026092704 | 4 | 638704 | 1 |
+
+PID／CWD／argv、GPU进程和有效配置已独立读回。各行初始checkpoint往返smoke通过，source_contract物理角色EXACT_MATCH。模型总参数382146，50步／轮，域骨干=false、附加loss=[]、target_access=false。启动证据见[evidence/launch_readback.json](evidence/launch_readback.json)。当前仅源域训练，预测及独立评分尚未完成，不能据此判定网络优势。
+
+下一步由本run的唯一dispatcher执行：各行固定E200权重→Phase1 clean／satellite预测→五行完整后独立truth-last scorer；不启动Phase2。健康训练继续，未授权热修改／停止／重启。
+
+2026-10-01 12:33:27 HKT：第二次独立读回VERIFIED，五行已完成21至22轮，PID持续运行且全部日志较启动快照增长，无failure。证据见[evidence/progress_readback.json](evidence/progress_readback.json)。训练健康；最终权重、预测和评分仍未完成。

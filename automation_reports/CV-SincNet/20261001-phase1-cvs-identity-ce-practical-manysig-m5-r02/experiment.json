@@ -21,7 +21,7 @@
   "replaces_run_id": "20261001-phase1-cvs-identity-ce-practical-manysig-m5-r01",
   "authorization": "2026-10-01用户：CVS基础网络只使用交叉熵和同样星地信道增强、同样数据划分；跑实验说明；域骨干不启用，只使用身份骨干。",
   "code": {
-    "commit": "release_commit.txt resolves the committed runtime version",
+    "commit": "7495ccf2194bee08bec31206d3cb48cd53546c08",
     "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_ce_20261001_r02",
@@ -95,7 +95,8 @@
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261001-phase1-cvs-identity-ce-practical-manysig-m5-r02",
     "local_artifact_root": "automation_reports/CV-SincNet/20261001-phase1-cvs-identity-ce-practical-manysig-m5-r02",
     "launch_command": "python -m experiments.cvs_identity_ce.publish --output local_artifacts/cvs_identity_ce_20261001_r02",
-    "stop_rule": "Nonfinite loss/gradient, source or target permission violation, output collision or nonzero exit fails only affected row; no low-performance stop, automatic retry, fallback or unrelated intervention."
+    "stop_rule": "Nonfinite loss/gradient, source or target permission violation, output collision or nonzero exit fails only affected row; no low-performance stop, automatic retry, fallback or unrelated intervention.",
+    "dispatcher_pid": 638440
   },
   "expected_artifacts": [
     "launch.json",
@@ -145,7 +146,7 @@
       "row_id": "cvs-identity-ce-s392005",
       "method": "cvs_identity_ce",
       "purpose": "historical_reference",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_identity_ce/configs/source-s392005.json",
       "prediction_config_ref": "experiments/cvs_identity_ce/configs/predict-s392005.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-identity-ce-practical-manysig-m5-r02/cvs-identity-ce-s392005/source/resolved_config.json",
@@ -175,13 +176,16 @@
         "completion.json",
         "epoch_metrics.jsonl",
         "epoch_metrics.csv"
-      ]
+      ],
+      "status": "RUNNING",
+      "pid": 638459,
+      "worker_pid": 638456
     },
     {
       "row_id": "cvs-identity-ce-s2026092701",
       "method": "cvs_identity_ce",
       "purpose": "matched_model_seed",
-      "gpu": null,
+      "gpu": 1,
       "config_ref": "experiments/cvs_identity_ce/configs/source-s2026092701.json",
       "prediction_config_ref": "experiments/cvs_identity_ce/configs/predict-s2026092701.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-identity-ce-practical-manysig-m5-r02/cvs-identity-ce-s2026092701/source/resolved_config.json",
@@ -211,13 +215,16 @@
         "completion.json",
         "epoch_metrics.jsonl",
         "epoch_metrics.csv"
-      ]
+      ],
+      "status": "RUNNING",
+      "pid": 638470,
+      "worker_pid": 638467
     },
     {
       "row_id": "cvs-identity-ce-s2026092702",
       "method": "cvs_identity_ce",
       "purpose": "matched_model_seed",
-      "gpu": null,
+      "gpu": 2,
       "config_ref": "experiments/cvs_identity_ce/configs/source-s2026092702.json",
       "prediction_config_ref": "experiments/cvs_identity_ce/configs/predict-s2026092702.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-identity-ce-practical-manysig-m5-r02/cvs-identity-ce-s2026092702/source/resolved_config.json",
@@ -247,13 +254,16 @@
         "completion.json",
         "epoch_metrics.jsonl",
         "epoch_metrics.csv"
-      ]
+      ],
+      "status": "RUNNING",
+      "pid": 638482,
+      "worker_pid": 638479
     },
     {
       "row_id": "cvs-identity-ce-s2026092703",
       "method": "cvs_identity_ce",
       "purpose": "matched_model_seed",
-      "gpu": null,
+      "gpu": 3,
       "config_ref": "experiments/cvs_identity_ce/configs/source-s2026092703.json",
       "prediction_config_ref": "experiments/cvs_identity_ce/configs/predict-s2026092703.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-identity-ce-practical-manysig-m5-r02/cvs-identity-ce-s2026092703/source/resolved_config.json",
@@ -283,13 +293,16 @@
         "completion.json",
         "epoch_metrics.jsonl",
         "epoch_metrics.csv"
-      ]
+      ],
+      "status": "RUNNING",
+      "pid": 638558,
+      "worker_pid": 638555
     },
     {
       "row_id": "cvs-identity-ce-s2026092704",
       "method": "cvs_identity_ce",
       "purpose": "matched_model_seed",
-      "gpu": null,
+      "gpu": 4,
       "config_ref": "experiments/cvs_identity_ce/configs/source-s2026092704.json",
       "prediction_config_ref": "experiments/cvs_identity_ce/configs/predict-s2026092704.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-identity-ce-practical-manysig-m5-r02/cvs-identity-ce-s2026092704/source/resolved_config.json",
@@ -319,7 +332,10 @@
         "completion.json",
         "epoch_metrics.jsonl",
         "epoch_metrics.csv"
-      ]
+      ],
+      "status": "RUNNING",
+      "pid": 638704,
+      "worker_pid": 638703
     }
   ],
   "notes": [
@@ -334,5 +350,5 @@
     "Native unused diagnostic projection/head parameters may have no CE gradient; report total requires_grad count and retain absence of their losses."
   ],
   "registered_at": "2026-10-01T04:29:08+00:00",
-  "status": "PLANNED"
+  "status": "RUNNING"
 }

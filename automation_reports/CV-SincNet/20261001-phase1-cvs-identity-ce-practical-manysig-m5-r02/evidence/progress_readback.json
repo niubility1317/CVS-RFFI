@@ -1,0 +1,796 @@
+{
+  "read_at": 1790829207.4403522,
+  "run_id": "20261001-phase1-cvs-identity-ce-practical-manysig-m5-r02",
+  "release_exists": true,
+  "run_exists": true,
+  "rows": [
+    {
+      "row_id": "cvs-identity-ce-s392005",
+      "pid": 638456,
+      "gpu": 0,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_ce_20261001_r02",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_identity_ce.dispatch",
+        "--source-config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_ce_20261001_r02/experiments/cvs_identity_ce/configs/source-s392005.json",
+        "--predict-config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_ce_20261001_r02/experiments/cvs_identity_ce/configs/predict-s392005.json"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261001-phase1-cvs-identity-ce-practical-manysig-m5-r02/cvs-identity-ce-s392005.log",
+      "process": {
+        "pid": 638456,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_ce_20261001_r02",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_identity_ce.dispatch",
+          "--source-config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_ce_20261001_r02/experiments/cvs_identity_ce/configs/source-s392005.json",
+          "--predict-config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_ce_20261001_r02/experiments/cvs_identity_ce/configs/predict-s392005.json",
+          ""
+        ],
+        "status": [
+          "Name:\tpython",
+          "Umask:\t0002",
+          "State:\tS (sleeping)",
+          "Tgid:\t638456",
+          "Ngid:\t0",
+          "Pid:\t638456"
+        ]
+      },
+      "children": [
+        {
+          "pid": 638456,
+          "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_ce_20261001_r02",
+          "argv": [
+            "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+            "-u",
+            "-m",
+            "experiments.cvs_identity_ce.dispatch",
+            "--source-config",
+            "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_ce_20261001_r02/experiments/cvs_identity_ce/configs/source-s392005.json",
+            "--predict-config",
+            "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_ce_20261001_r02/experiments/cvs_identity_ce/configs/predict-s392005.json",
+            ""
+          ],
+          "status": [
+            "Name:\tpython",
+            "Umask:\t0002",
+            "State:\tS (sleeping)",
+            "Tgid:\t638456",
+            "Ngid:\t0",
+            "Pid:\t638456"
+          ]
+        },
+        {
+          "pid": 638459,
+          "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_ce_20261001_r02",
+          "argv": [
+            "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+            "-u",
+            "-m",
+            "experiments.cvs_identity_ce.source",
+            "--config",
+            "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_ce_20261001_r02/experiments/cvs_identity_ce/configs/source-s392005.json",
+            ""
+          ],
+          "status": [
+            "Name:\tpython",
+            "Umask:\t0002",
+            "State:\tR (running)",
+            "Tgid:\t638459",
+            "Ngid:\t638459",
+            "Pid:\t638459"
+          ]
+        }
+      ],
+      "initialization": {
+        "status": "SCRATCH",
+        "scratch_only": true,
+        "checkpoint": null,
+        "ancestors": [],
+        "checkpoint_sources": [],
+        "target_access": false,
+        "target_contact": false,
+        "model_seed": 392005,
+        "physical_roles": "EXACT_MATCH",
+        "selection": "fixed_last_epoch"
+      },
+      "effective": {
+        "pid": 638459,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_ce_20261001_r02",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "total_parameters": 382146,
+        "trainable_parameters": 382146,
+        "source_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "steps_per_epoch": 50,
+        "domain_backbone": false,
+        "extra_losses": [],
+        "selection": "fixed_last_epoch",
+        "model_seed": 392005,
+        "augmentation_seed": 2027,
+        "target_access": false,
+        "commit": "7495ccf2194bee08bec31206d3cb48cd53546c08"
+      },
+      "epoch": {
+        "epoch": 22,
+        "optimizer_steps": 50,
+        "optimizer_steps_total": 1100,
+        "source_sample_exposure": 6300,
+        "satellite_sample_exposure": 0,
+        "total_loss": 0.2071747836470604,
+        "clean_ce": 0.2071747836470604,
+        "satellite_ce": null,
+        "gradient_norm": 6.347937431335449,
+        "learning_rate": 0.00019463549320334082,
+        "satellite_weight": 0.0,
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9438148148148148,
+        "source_val_ce": 0.16407779706711018,
+        "elapsed_seconds": 5.84025211900007,
+        "peak_cuda_allocated_bytes": 249714688,
+        "domain_backbone_active": false,
+        "pseudo_labels_active": false,
+        "extra_losses_active": false
+      },
+      "source_completion": null,
+      "prediction_complete": null,
+      "log_bytes": 14889,
+      "log_tail": [
+        "EPOCH {\"epoch\": 21, \"optimizer_steps\": 50, \"optimizer_steps_total\": 1050, \"source_sample_exposure\": 6300, \"satellite_sample_exposure\": 0, \"total_loss\": 0.20718243911862375, \"clean_ce\": 0.20718243911862375, \"satellite_ce\": null, \"gradient_norm\": 5.670131716728211, \"learning_rate\": 0.00019513012337136785, \"satellite_weight\": 0.0, \"source_val_count\": 27000, \"source_val_accuracy\": 0.9430740740740741, \"source_val_ce\": 0.17436218978085175, \"elapsed_seconds\": 5.712090075991, \"peak_cuda_allocated_bytes\": 249714688, \"domain_backbone_active\": false, \"pseudo_labels_active\": false, \"extra_losses_active\": false}",
+        "EPOCH {\"epoch\": 22, \"optimizer_steps\": 50, \"optimizer_steps_total\": 1100, \"source_sample_exposure\": 6300, \"satellite_sample_exposure\": 0, \"total_loss\": 0.2071747836470604, \"clean_ce\": 0.2071747836470604, \"satellite_ce\": null, \"gradient_norm\": 6.347937431335449, \"learning_rate\": 0.00019463549320334082, \"satellite_weight\": 0.0, \"source_val_count\": 27000, \"source_val_accuracy\": 0.9438148148148148, \"source_val_ce\": 0.16407779706711018, \"elapsed_seconds\": 5.84025211900007, \"peak_cuda_allocated_bytes\": 249714688, \"domain_backbone_active\": false, \"pseudo_labels_active\": false, \"extra_losses_active\": false}"
+      ]
+    },
+    {
+      "row_id": "cvs-identity-ce-s2026092701",
+      "pid": 638467,
+      "gpu": 1,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_ce_20261001_r02",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_identity_ce.dispatch",
+        "--source-config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_ce_20261001_r02/experiments/cvs_identity_ce/configs/source-s2026092701.json",
+        "--predict-config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_ce_20261001_r02/experiments/cvs_identity_ce/configs/predict-s2026092701.json"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261001-phase1-cvs-identity-ce-practical-manysig-m5-r02/cvs-identity-ce-s2026092701.log",
+      "process": {
+        "pid": 638467,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_ce_20261001_r02",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_identity_ce.dispatch",
+          "--source-config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_ce_20261001_r02/experiments/cvs_identity_ce/configs/source-s2026092701.json",
+          "--predict-config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_ce_20261001_r02/experiments/cvs_identity_ce/configs/predict-s2026092701.json",
+          ""
+        ],
+        "status": [
+          "Name:\tpython",
+          "Umask:\t0002",
+          "State:\tS (sleeping)",
+          "Tgid:\t638467",
+          "Ngid:\t0",
+          "Pid:\t638467"
+        ]
+      },
+      "children": [
+        {
+          "pid": 638467,
+          "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_ce_20261001_r02",
+          "argv": [
+            "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+            "-u",
+            "-m",
+            "experiments.cvs_identity_ce.dispatch",
+            "--source-config",
+            "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_ce_20261001_r02/experiments/cvs_identity_ce/configs/source-s2026092701.json",
+            "--predict-config",
+            "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_ce_20261001_r02/experiments/cvs_identity_ce/configs/predict-s2026092701.json",
+            ""
+          ],
+          "status": [
+            "Name:\tpython",
+            "Umask:\t0002",
+            "State:\tS (sleeping)",
+            "Tgid:\t638467",
+            "Ngid:\t0",
+            "Pid:\t638467"
+          ]
+        },
+        {
+          "pid": 638470,
+          "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_ce_20261001_r02",
+          "argv": [
+            "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+            "-u",
+            "-m",
+            "experiments.cvs_identity_ce.source",
+            "--config",
+            "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_ce_20261001_r02/experiments/cvs_identity_ce/configs/source-s2026092701.json",
+            ""
+          ],
+          "status": [
+            "Name:\tpython",
+            "Umask:\t0002",
+            "State:\tR (running)",
+            "Tgid:\t638470",
+            "Ngid:\t638470",
+            "Pid:\t638470"
+          ]
+        }
+      ],
+      "initialization": {
+        "status": "SCRATCH",
+        "scratch_only": true,
+        "checkpoint": null,
+        "ancestors": [],
+        "checkpoint_sources": [],
+        "target_access": false,
+        "target_contact": false,
+        "model_seed": 2026092701,
+        "physical_roles": "EXACT_MATCH",
+        "selection": "fixed_last_epoch"
+      },
+      "effective": {
+        "pid": 638470,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_ce_20261001_r02",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "total_parameters": 382146,
+        "trainable_parameters": 382146,
+        "source_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "steps_per_epoch": 50,
+        "domain_backbone": false,
+        "extra_losses": [],
+        "selection": "fixed_last_epoch",
+        "model_seed": 2026092701,
+        "augmentation_seed": 2027,
+        "target_access": false,
+        "commit": "7495ccf2194bee08bec31206d3cb48cd53546c08"
+      },
+      "epoch": {
+        "epoch": 21,
+        "optimizer_steps": 50,
+        "optimizer_steps_total": 1050,
+        "source_sample_exposure": 6300,
+        "satellite_sample_exposure": 0,
+        "total_loss": 0.21647158458828927,
+        "clean_ce": 0.21647158458828927,
+        "satellite_ce": null,
+        "gradient_norm": 5.839412136077881,
+        "learning_rate": 0.00019513012337136785,
+        "satellite_weight": 0.0,
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9264074074074075,
+        "source_val_ce": 0.22652126941898906,
+        "elapsed_seconds": 5.728555508001591,
+        "peak_cuda_allocated_bytes": 249714688,
+        "domain_backbone_active": false,
+        "pseudo_labels_active": false,
+        "extra_losses_active": false
+      },
+      "source_completion": null,
+      "prediction_complete": null,
+      "log_bytes": 14302,
+      "log_tail": [
+        "EPOCH {\"epoch\": 20, \"optimizer_steps\": 50, \"optimizer_steps_total\": 1000, \"source_sample_exposure\": 6300, \"satellite_sample_exposure\": 0, \"total_loss\": 0.21902691543102265, \"clean_ce\": 0.21902691543102265, \"satellite_ce\": null, \"gradient_norm\": 6.446870055198669, \"learning_rate\": 0.0001956014049724339, \"satellite_weight\": 0.0, \"source_val_count\": 27000, \"source_val_accuracy\": 0.9378518518518518, \"source_val_ce\": 0.19661367771636556, \"elapsed_seconds\": 5.286180729002808, \"peak_cuda_allocated_bytes\": 249714688, \"domain_backbone_active\": false, \"pseudo_labels_active\": false, \"extra_losses_active\": false}",
+        "EPOCH {\"epoch\": 21, \"optimizer_steps\": 50, \"optimizer_steps_total\": 1050, \"source_sample_exposure\": 6300, \"satellite_sample_exposure\": 0, \"total_loss\": 0.21647158458828927, \"clean_ce\": 0.21647158458828927, \"satellite_ce\": null, \"gradient_norm\": 5.839412136077881, \"learning_rate\": 0.00019513012337136785, \"satellite_weight\": 0.0, \"source_val_count\": 27000, \"source_val_accuracy\": 0.9264074074074075, \"source_val_ce\": 0.22652126941898906, \"elapsed_seconds\": 5.728555508001591, \"peak_cuda_allocated_bytes\": 249714688, \"domain_backbone_active\": false, \"pseudo_labels_active\": false, \"extra_losses_active\": false}"
+      ]
+    },
+    {
+      "row_id": "cvs-identity-ce-s2026092702",
+      "pid": 638479,
+      "gpu": 2,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_ce_20261001_r02",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_identity_ce.dispatch",
+        "--source-config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_ce_20261001_r02/experiments/cvs_identity_ce/configs/source-s2026092702.json",
+        "--predict-config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_ce_20261001_r02/experiments/cvs_identity_ce/configs/predict-s2026092702.json"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261001-phase1-cvs-identity-ce-practical-manysig-m5-r02/cvs-identity-ce-s2026092702.log",
+      "process": {
+        "pid": 638479,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_ce_20261001_r02",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_identity_ce.dispatch",
+          "--source-config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_ce_20261001_r02/experiments/cvs_identity_ce/configs/source-s2026092702.json",
+          "--predict-config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_ce_20261001_r02/experiments/cvs_identity_ce/configs/predict-s2026092702.json",
+          ""
+        ],
+        "status": [
+          "Name:\tpython",
+          "Umask:\t0002",
+          "State:\tS (sleeping)",
+          "Tgid:\t638479",
+          "Ngid:\t0",
+          "Pid:\t638479"
+        ]
+      },
+      "children": [
+        {
+          "pid": 638479,
+          "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_ce_20261001_r02",
+          "argv": [
+            "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+            "-u",
+            "-m",
+            "experiments.cvs_identity_ce.dispatch",
+            "--source-config",
+            "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_ce_20261001_r02/experiments/cvs_identity_ce/configs/source-s2026092702.json",
+            "--predict-config",
+            "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_ce_20261001_r02/experiments/cvs_identity_ce/configs/predict-s2026092702.json",
+            ""
+          ],
+          "status": [
+            "Name:\tpython",
+            "Umask:\t0002",
+            "State:\tS (sleeping)",
+            "Tgid:\t638479",
+            "Ngid:\t0",
+            "Pid:\t638479"
+          ]
+        },
+        {
+          "pid": 638482,
+          "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_ce_20261001_r02",
+          "argv": [
+            "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+            "-u",
+            "-m",
+            "experiments.cvs_identity_ce.source",
+            "--config",
+            "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_ce_20261001_r02/experiments/cvs_identity_ce/configs/source-s2026092702.json",
+            ""
+          ],
+          "status": [
+            "Name:\tpython",
+            "Umask:\t0002",
+            "State:\tS (sleeping)",
+            "Tgid:\t638482",
+            "Ngid:\t638482",
+            "Pid:\t638482"
+          ]
+        }
+      ],
+      "initialization": {
+        "status": "SCRATCH",
+        "scratch_only": true,
+        "checkpoint": null,
+        "ancestors": [],
+        "checkpoint_sources": [],
+        "target_access": false,
+        "target_contact": false,
+        "model_seed": 2026092702,
+        "physical_roles": "EXACT_MATCH",
+        "selection": "fixed_last_epoch"
+      },
+      "effective": {
+        "pid": 638482,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_ce_20261001_r02",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "total_parameters": 382146,
+        "trainable_parameters": 382146,
+        "source_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "steps_per_epoch": 50,
+        "domain_backbone": false,
+        "extra_losses": [],
+        "selection": "fixed_last_epoch",
+        "model_seed": 2026092702,
+        "augmentation_seed": 2027,
+        "target_access": false,
+        "commit": "7495ccf2194bee08bec31206d3cb48cd53546c08"
+      },
+      "epoch": {
+        "epoch": 22,
+        "optimizer_steps": 50,
+        "optimizer_steps_total": 1100,
+        "source_sample_exposure": 6300,
+        "satellite_sample_exposure": 0,
+        "total_loss": 0.20459197342395782,
+        "clean_ce": 0.20459197342395782,
+        "satellite_ce": null,
+        "gradient_norm": 6.5695393800735475,
+        "learning_rate": 0.00019463549320334082,
+        "satellite_weight": 0.0,
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9417037037037037,
+        "source_val_ce": 0.19699526120356664,
+        "elapsed_seconds": 5.674659060998238,
+        "peak_cuda_allocated_bytes": 249714688,
+        "domain_backbone_active": false,
+        "pseudo_labels_active": false,
+        "extra_losses_active": false
+      },
+      "source_completion": null,
+      "prediction_complete": null,
+      "log_bytes": 14928,
+      "log_tail": [
+        "EPOCH {\"epoch\": 21, \"optimizer_steps\": 50, \"optimizer_steps_total\": 1050, \"source_sample_exposure\": 6300, \"satellite_sample_exposure\": 0, \"total_loss\": 0.2155181847512722, \"clean_ce\": 0.2155181847512722, \"satellite_ce\": null, \"gradient_norm\": 6.542215623855591, \"learning_rate\": 0.00019513012337136785, \"satellite_weight\": 0.0, \"source_val_count\": 27000, \"source_val_accuracy\": 0.9325185185185185, \"source_val_ce\": 0.21978198324790638, \"elapsed_seconds\": 5.674413792003179, \"peak_cuda_allocated_bytes\": 249714688, \"domain_backbone_active\": false, \"pseudo_labels_active\": false, \"extra_losses_active\": false}",
+        "EPOCH {\"epoch\": 22, \"optimizer_steps\": 50, \"optimizer_steps_total\": 1100, \"source_sample_exposure\": 6300, \"satellite_sample_exposure\": 0, \"total_loss\": 0.20459197342395782, \"clean_ce\": 0.20459197342395782, \"satellite_ce\": null, \"gradient_norm\": 6.5695393800735475, \"learning_rate\": 0.00019463549320334082, \"satellite_weight\": 0.0, \"source_val_count\": 27000, \"source_val_accuracy\": 0.9417037037037037, \"source_val_ce\": 0.19699526120356664, \"elapsed_seconds\": 5.674659060998238, \"peak_cuda_allocated_bytes\": 249714688, \"domain_backbone_active\": false, \"pseudo_labels_active\": false, \"extra_losses_active\": false}"
+      ]
+    },
+    {
+      "row_id": "cvs-identity-ce-s2026092703",
+      "pid": 638555,
+      "gpu": 3,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_ce_20261001_r02",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_identity_ce.dispatch",
+        "--source-config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_ce_20261001_r02/experiments/cvs_identity_ce/configs/source-s2026092703.json",
+        "--predict-config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_ce_20261001_r02/experiments/cvs_identity_ce/configs/predict-s2026092703.json"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261001-phase1-cvs-identity-ce-practical-manysig-m5-r02/cvs-identity-ce-s2026092703.log",
+      "process": {
+        "pid": 638555,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_ce_20261001_r02",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_identity_ce.dispatch",
+          "--source-config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_ce_20261001_r02/experiments/cvs_identity_ce/configs/source-s2026092703.json",
+          "--predict-config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_ce_20261001_r02/experiments/cvs_identity_ce/configs/predict-s2026092703.json",
+          ""
+        ],
+        "status": [
+          "Name:\tpython",
+          "Umask:\t0002",
+          "State:\tS (sleeping)",
+          "Tgid:\t638555",
+          "Ngid:\t0",
+          "Pid:\t638555"
+        ]
+      },
+      "children": [
+        {
+          "pid": 638555,
+          "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_ce_20261001_r02",
+          "argv": [
+            "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+            "-u",
+            "-m",
+            "experiments.cvs_identity_ce.dispatch",
+            "--source-config",
+            "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_ce_20261001_r02/experiments/cvs_identity_ce/configs/source-s2026092703.json",
+            "--predict-config",
+            "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_ce_20261001_r02/experiments/cvs_identity_ce/configs/predict-s2026092703.json",
+            ""
+          ],
+          "status": [
+            "Name:\tpython",
+            "Umask:\t0002",
+            "State:\tS (sleeping)",
+            "Tgid:\t638555",
+            "Ngid:\t0",
+            "Pid:\t638555"
+          ]
+        },
+        {
+          "pid": 638558,
+          "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_ce_20261001_r02",
+          "argv": [
+            "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+            "-u",
+            "-m",
+            "experiments.cvs_identity_ce.source",
+            "--config",
+            "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_ce_20261001_r02/experiments/cvs_identity_ce/configs/source-s2026092703.json",
+            ""
+          ],
+          "status": [
+            "Name:\tpython",
+            "Umask:\t0002",
+            "State:\tS (sleeping)",
+            "Tgid:\t638558",
+            "Ngid:\t638558",
+            "Pid:\t638558"
+          ]
+        }
+      ],
+      "initialization": {
+        "status": "SCRATCH",
+        "scratch_only": true,
+        "checkpoint": null,
+        "ancestors": [],
+        "checkpoint_sources": [],
+        "target_access": false,
+        "target_contact": false,
+        "model_seed": 2026092703,
+        "physical_roles": "EXACT_MATCH",
+        "selection": "fixed_last_epoch"
+      },
+      "effective": {
+        "pid": 638558,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_ce_20261001_r02",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "total_parameters": 382146,
+        "trainable_parameters": 382146,
+        "source_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "steps_per_epoch": 50,
+        "domain_backbone": false,
+        "extra_losses": [],
+        "selection": "fixed_last_epoch",
+        "model_seed": 2026092703,
+        "augmentation_seed": 2027,
+        "target_access": false,
+        "commit": "7495ccf2194bee08bec31206d3cb48cd53546c08"
+      },
+      "epoch": {
+        "epoch": 22,
+        "optimizer_steps": 50,
+        "optimizer_steps_total": 1100,
+        "source_sample_exposure": 6300,
+        "satellite_sample_exposure": 0,
+        "total_loss": 0.20519644498825074,
+        "clean_ce": 0.20519644498825074,
+        "satellite_ce": null,
+        "gradient_norm": 6.629573893547058,
+        "learning_rate": 0.00019463549320334082,
+        "satellite_weight": 0.0,
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9394814814814815,
+        "source_val_ce": 0.18587489267769788,
+        "elapsed_seconds": 5.754127989988774,
+        "peak_cuda_allocated_bytes": 249714688,
+        "domain_backbone_active": false,
+        "pseudo_labels_active": false,
+        "extra_losses_active": false
+      },
+      "source_completion": null,
+      "prediction_complete": null,
+      "log_bytes": 14920,
+      "log_tail": [
+        "EPOCH {\"epoch\": 21, \"optimizer_steps\": 50, \"optimizer_steps_total\": 1050, \"source_sample_exposure\": 6300, \"satellite_sample_exposure\": 0, \"total_loss\": 0.21072230041027068, \"clean_ce\": 0.21072230041027068, \"satellite_ce\": null, \"gradient_norm\": 5.951423254013061, \"learning_rate\": 0.00019513012337136785, \"satellite_weight\": 0.0, \"source_val_count\": 27000, \"source_val_accuracy\": 0.9418888888888889, \"source_val_ce\": 0.18515511340294377, \"elapsed_seconds\": 5.445200921007199, \"peak_cuda_allocated_bytes\": 249714688, \"domain_backbone_active\": false, \"pseudo_labels_active\": false, \"extra_losses_active\": false}",
+        "EPOCH {\"epoch\": 22, \"optimizer_steps\": 50, \"optimizer_steps_total\": 1100, \"source_sample_exposure\": 6300, \"satellite_sample_exposure\": 0, \"total_loss\": 0.20519644498825074, \"clean_ce\": 0.20519644498825074, \"satellite_ce\": null, \"gradient_norm\": 6.629573893547058, \"learning_rate\": 0.00019463549320334082, \"satellite_weight\": 0.0, \"source_val_count\": 27000, \"source_val_accuracy\": 0.9394814814814815, \"source_val_ce\": 0.18587489267769788, \"elapsed_seconds\": 5.754127989988774, \"peak_cuda_allocated_bytes\": 249714688, \"domain_backbone_active\": false, \"pseudo_labels_active\": false, \"extra_losses_active\": false}"
+      ]
+    },
+    {
+      "row_id": "cvs-identity-ce-s2026092704",
+      "pid": 638703,
+      "gpu": 4,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_ce_20261001_r02",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_identity_ce.dispatch",
+        "--source-config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_ce_20261001_r02/experiments/cvs_identity_ce/configs/source-s2026092704.json",
+        "--predict-config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_ce_20261001_r02/experiments/cvs_identity_ce/configs/predict-s2026092704.json"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261001-phase1-cvs-identity-ce-practical-manysig-m5-r02/cvs-identity-ce-s2026092704.log",
+      "process": {
+        "pid": 638703,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_ce_20261001_r02",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_identity_ce.dispatch",
+          "--source-config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_ce_20261001_r02/experiments/cvs_identity_ce/configs/source-s2026092704.json",
+          "--predict-config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_ce_20261001_r02/experiments/cvs_identity_ce/configs/predict-s2026092704.json",
+          ""
+        ],
+        "status": [
+          "Name:\tpython",
+          "Umask:\t0002",
+          "State:\tS (sleeping)",
+          "Tgid:\t638703",
+          "Ngid:\t0",
+          "Pid:\t638703"
+        ]
+      },
+      "children": [
+        {
+          "pid": 638703,
+          "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_ce_20261001_r02",
+          "argv": [
+            "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+            "-u",
+            "-m",
+            "experiments.cvs_identity_ce.dispatch",
+            "--source-config",
+            "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_ce_20261001_r02/experiments/cvs_identity_ce/configs/source-s2026092704.json",
+            "--predict-config",
+            "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_ce_20261001_r02/experiments/cvs_identity_ce/configs/predict-s2026092704.json",
+            ""
+          ],
+          "status": [
+            "Name:\tpython",
+            "Umask:\t0002",
+            "State:\tS (sleeping)",
+            "Tgid:\t638703",
+            "Ngid:\t0",
+            "Pid:\t638703"
+          ]
+        },
+        {
+          "pid": 638704,
+          "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_ce_20261001_r02",
+          "argv": [
+            "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+            "-u",
+            "-m",
+            "experiments.cvs_identity_ce.source",
+            "--config",
+            "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_ce_20261001_r02/experiments/cvs_identity_ce/configs/source-s2026092704.json",
+            ""
+          ],
+          "status": [
+            "Name:\tpython",
+            "Umask:\t0002",
+            "State:\tR (running)",
+            "Tgid:\t638704",
+            "Ngid:\t0",
+            "Pid:\t638704"
+          ]
+        }
+      ],
+      "initialization": {
+        "status": "SCRATCH",
+        "scratch_only": true,
+        "checkpoint": null,
+        "ancestors": [],
+        "checkpoint_sources": [],
+        "target_access": false,
+        "target_contact": false,
+        "model_seed": 2026092704,
+        "physical_roles": "EXACT_MATCH",
+        "selection": "fixed_last_epoch"
+      },
+      "effective": {
+        "pid": 638704,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_ce_20261001_r02",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "total_parameters": 382146,
+        "trainable_parameters": 382146,
+        "source_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "steps_per_epoch": 50,
+        "domain_backbone": false,
+        "extra_losses": [],
+        "selection": "fixed_last_epoch",
+        "model_seed": 2026092704,
+        "augmentation_seed": 2027,
+        "target_access": false,
+        "commit": "7495ccf2194bee08bec31206d3cb48cd53546c08"
+      },
+      "epoch": {
+        "epoch": 21,
+        "optimizer_steps": 50,
+        "optimizer_steps_total": 1050,
+        "source_sample_exposure": 6300,
+        "satellite_sample_exposure": 0,
+        "total_loss": 0.2183199605345726,
+        "clean_ce": 0.2183199605345726,
+        "satellite_ce": null,
+        "gradient_norm": 6.664875535964966,
+        "learning_rate": 0.00019513012337136785,
+        "satellite_weight": 0.0,
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9412962962962963,
+        "source_val_ce": 0.18285928146299665,
+        "elapsed_seconds": 5.762566477991641,
+        "peak_cuda_allocated_bytes": 249714688,
+        "domain_backbone_active": false,
+        "pseudo_labels_active": false,
+        "extra_losses_active": false
+      },
+      "source_completion": null,
+      "prediction_complete": null,
+      "log_bytes": 14294,
+      "log_tail": [
+        "EPOCH {\"epoch\": 20, \"optimizer_steps\": 50, \"optimizer_steps_total\": 1000, \"source_sample_exposure\": 6300, \"satellite_sample_exposure\": 0, \"total_loss\": 0.2323417979478836, \"clean_ce\": 0.2323417979478836, \"satellite_ce\": null, \"gradient_norm\": 6.198218350410461, \"learning_rate\": 0.0001956014049724339, \"satellite_weight\": 0.0, \"source_val_count\": 27000, \"source_val_accuracy\": 0.9382222222222222, \"source_val_ce\": 0.18563243787018238, \"elapsed_seconds\": 5.562212441989686, \"peak_cuda_allocated_bytes\": 249714688, \"domain_backbone_active\": false, \"pseudo_labels_active\": false, \"extra_losses_active\": false}",
+        "EPOCH {\"epoch\": 21, \"optimizer_steps\": 50, \"optimizer_steps_total\": 1050, \"source_sample_exposure\": 6300, \"satellite_sample_exposure\": 0, \"total_loss\": 0.2183199605345726, \"clean_ce\": 0.2183199605345726, \"satellite_ce\": null, \"gradient_norm\": 6.664875535964966, \"learning_rate\": 0.00019513012337136785, \"satellite_weight\": 0.0, \"source_val_count\": 27000, \"source_val_accuracy\": 0.9412962962962963, \"source_val_ce\": 0.18285928146299665, \"elapsed_seconds\": 5.762566477991641, \"peak_cuda_allocated_bytes\": 249714688, \"domain_backbone_active\": false, \"pseudo_labels_active\": false, \"extra_losses_active\": false}"
+      ]
+    }
+  ],
+  "submit": {
+    "status": "SUBMITTED",
+    "pid": 638440,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_ce_20261001_r02",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_identity_ce.dispatch",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_ce_20261001_r02/experiments/cvs_identity_ce/configs/launch_spec.json"
+    ],
+    "log": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_ce_20261001_r02/dispatcher.stdout.log",
+    "commit": "7495ccf2194bee08bec31206d3cb48cd53546c08",
+    "sha256": "5632f02d8c29a1e53d65ecf4740237624563504ffd09ca4c79276a1e5c9cabcf"
+  },
+  "dispatcher": {
+    "pid": 638440,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_ce_20261001_r02",
+    "argv": [
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_ce_20261001_r02/experiments/cvs_identity_ce/dispatch.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_ce_20261001_r02/experiments/cvs_identity_ce/configs/launch_spec.json"
+    ],
+    "run_id": "20261001-phase1-cvs-identity-ce-practical-manysig-m5-r02",
+    "launch_owner": "codex/root/cvs-identity-ce-20261001",
+    "commit": "7495ccf2194bee08bec31206d3cb48cd53546c08"
+  },
+  "completion": null,
+  "failure": null,
+  "scoring": null,
+  "dispatcher_process": {
+    "pid": 638440,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_ce_20261001_r02",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_identity_ce.dispatch",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_ce_20261001_r02/experiments/cvs_identity_ce/configs/launch_spec.json",
+      ""
+    ],
+    "status": [
+      "Name:\tpython",
+      "Umask:\t0002",
+      "State:\tS (sleeping)",
+      "Tgid:\t638440",
+      "Ngid:\t0",
+      "Pid:\t638440"
+    ]
+  },
+  "gpu": "638459, GPU-56adac86-77cd-36c9-8770-dbf002650461, 914 MiB\n638470, GPU-a2d039ff-1792-4222-2b47-140429e10f94, 914 MiB\n638482, GPU-4fb45b9a-894a-536b-0e0a-09f7c1341562, 914 MiB\n638558, GPU-7b4bacb3-4901-6845-a414-0dfdfeeade97, 914 MiB\n638704, GPU-95d925a1-7218-ca7b-adef-164241f4f491, 914 MiB\n"
+}
