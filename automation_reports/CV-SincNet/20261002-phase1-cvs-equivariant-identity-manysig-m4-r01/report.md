@@ -13,3 +13,24 @@ Sinc后的时间路径和received记忆路径均使用无bias复卷积、逐包�
 10项模型/数学检查、13项协议检查PASS；本地4个一次性CPU模型/12次CE更新PASS；模型/数学与源执行两项独立P0/P1审查PASS。本地实数Conv/Linear MAC为7199008/包，排除FFT与逐元素计算；CPU计时只作本地证据。远端Torch2.1烟测、实际GPU成本、真实源训练与新clean测试均N/A。未证明性能提升，真正RFF physics aware目标仍未完成。
 
 [结构、数学与物理边界](../../../docs/CVS_EQUIVARIANT_IDENTITY_HYPOTHESIS_20261002.md) · [实时源控制核实](evidence/source_control_preflight.json) · [本地CPU烟测](evidence/local_cpu_smoke.json) · [本地profile](evidence/local_profile.json)。
+
+## 远端启动独立核实
+
+**VERIFIED / RUNNING**。不可变源release commit `555aaadea1ab5c40dab7f9d8a80a51b1cd7b5c76`，dispatcher PID `1247460`。独立读取4个worker的 `/proc` CWD/argv，均与release一致。远端CPU一次性4模型/12次CE更新PASS，未读取正式IQ、旧权重或target。
+
+|seed|GPU|worker PID|已完成epoch|末轮CE|源V|最差源RX|
+|---|---:|---:|---:|---:|---:|---:|
+|2026092701|0|1247477|14|0.211953|93.5222%|84.4630%|
+|2026092702|1|1247566|13|0.228014|94.2963%|86.7963%|
+|2026092703|2|1247653|13|0.233416|91.6259%|84.2963%|
+|2026092704|3|1247799|11|0.262908|92.5000%|79.3889%|
+
+以上是读回时的中途进度，不是最终选模或性能提升结论。4行实际为202553参数、普通CE、L6300/V27000、每轮50步；全部参数末batch梯度被记录，源V只读。4行日志持续增长，健康训练不停止、重启或热改。真实GPU成本与完整物理结果待E200，新clean预测/评分为N/A。
+
+条件clean执行链已补齐，重新核对4新+4旧源记录、scratch checkpoint完整payload与实际equivariant激活，只有实际source-selected新候选才允许query。57项条件clean检查PASS（既有52＋新5）；独立P0/P1审查PASS。完整源日志审计12项负测PASS，正式40000步审计尚待完成。后续collector/report控制面不修改本次远端源release。
+
+[启动与实际进度](evidence/launch_readback.json) · [远端CPU烟测](evidence/remote_cpu_smoke.json)。下一步为E200完整日志与源指标审计、8记录冻结、新候选胜出后默认clean4新+20旧truth-last；原基线胜出则核实历史测试，未选新网络测试N/A。性能与真正RFF physics aware目标仍未完成。
+
+## 本次控制面交付
+
+完整源collector和分析实现独立P0/P1审查PASS（尚无正式E200完成数据），条件clean审查PASS；不改变正在运行的不可变源release。最新独立读回4行完成轮次为75, 74, 73, 72，日志增长、进程CWD/argv和actual config一致。等待自然训练完成后继续既定8源记录排名及默认测试分支，不重复启动。[当前读回](evidence/source_progress_readback.json) · [继续执行交接](evidence/current_handoff.json)。

@@ -9,7 +9,7 @@ from comparison_suite.score import metrics
 
 SEEDS={2026092701,2026092702,2026092703,2026092704}
 BASELINES=('native','cvcnn','real_cnn','resnet1d')
-CANDIDATES={'orthogonal_pa','moment_pool','orthogonal_moment','shared_complex','residual_fusion','residual_fusion_moment','balanced_fusion','signed_balanced_fusion','tf_lowrank32','tf_bilinear','attentive_mean','attentive_moments','phase_delta','phase_dsq','coherence_phase','coherence_dsq','simplex_learned','simplex_fixed','rf_mp','rf_gmp','observable_phase','observable_affine','gauge_peak','gauge_coherent','reference_response'}
+CANDIDATES={'orthogonal_pa','moment_pool','orthogonal_moment','shared_complex','residual_fusion','residual_fusion_moment','balanced_fusion','signed_balanced_fusion','tf_lowrank32','tf_bilinear','attentive_mean','attentive_moments','phase_delta','phase_dsq','coherence_phase','coherence_dsq','simplex_learned','simplex_fixed','rf_mp','rf_gmp','observable_phase','observable_affine','gauge_peak','gauge_coherent','reference_response','equivariant_memory'}
 REUSED_BASELINE_RUN='20261001-phase1-clean-baselines-manysig-m16-r01'
 REUSED_RESIDUAL_RUN='20261001-phase1-cvs-selected-clean-manysig-m20-r01'
 
@@ -36,7 +36,7 @@ def validate_matrix(spec):
     else:
         if selection['status']!='SOURCE_SELECTION_FROZEN' or selection['selected_variant'] not in CANDIDATES:
             raise ValueError('No source-only frozen selection')
-        variants=(*BASELINES,'residual_fusion',selection['selected_variant']) if selection.get('scope') in ('balanced_source','interaction_source','attentive_source','stability_source','coherence_source','simplex_source','rf_operator_source','observable_source','gauge_source','reference_source') else (*BASELINES,selection['selected_variant'])
+        variants=(*BASELINES,'residual_fusion',selection['selected_variant']) if selection.get('scope') in ('balanced_source','interaction_source','attentive_source','stability_source','coherence_source','simplex_source','rf_operator_source','observable_source','gauge_source','reference_source','equivariant_source') else (*BASELINES,selection['selected_variant'])
     if selection['target_access'] or selection['target_score_used']:raise ValueError('Target feedback forbidden')
     count=len(variants)*len(SEEDS)
     rows=spec['rows']
@@ -64,7 +64,7 @@ def preflight_predictions(spec):
                 raise ValueError('Unauthorized/incomplete frozen reuse;truth remains closed')
             if baseline and (original.get('scope')!='baseline_only' or original['status']!='FIXED_BASELINES_FROZEN' or original['test_variants']!=list(BASELINES) or original['model_seeds']!=sorted(SEEDS)):
                 raise ValueError('Original fixed baseline selection changed')
-            if residual and (original.get('scope') in ('baseline_only','balanced_source','interaction_source','attentive_source','stability_source','coherence_source','simplex_source','rf_operator_source','observable_source','gauge_source','reference_source') or original['status']!='SOURCE_SELECTION_FROZEN' or original['selected_variant']!='residual_fusion'):
+            if residual and (original.get('scope') in ('baseline_only','balanced_source','interaction_source','attentive_source','stability_source','coherence_source','simplex_source','rf_operator_source','observable_source','gauge_source','reference_source','equivariant_source') or original['status']!='SOURCE_SELECTION_FROZEN' or original['selected_variant']!='residual_fusion'):
                 raise ValueError('Original residual source selection changed')
         flag=read(root/'clean_complete.json');resolved=read(root/'resolved_config.json');provenance=read(root/'provenance.json')
         if (flag['status']!='PREDICTIONS_COMPLETE' or flag['truth_read'] is not False or flag['query_fit'] is not False or flag['views']!=['clean'] or
@@ -115,7 +115,7 @@ def score(spec):
     paired=[]
     candidate='native' if selection.get('scope')=='baseline_only' else selection['selected_variant']
     for receiver in ['ALL',*sorted(set(receivers))]:
-        for baseline in (*BASELINES,'residual_fusion') if selection.get('scope') in ('balanced_source','interaction_source','attentive_source','stability_source','coherence_source','simplex_source','rf_operator_source','observable_source','gauge_source','reference_source') else BASELINES:
+        for baseline in (*BASELINES,'residual_fusion') if selection.get('scope') in ('balanced_source','interaction_source','attentive_source','stability_source','coherence_source','simplex_source','rf_operator_source','observable_source','gauge_source','reference_source','equivariant_source') else BASELINES:
             if baseline==candidate:continue
             deltas=[100*(lookup[(candidate,receiver,s)]['accuracy']-lookup[(baseline,receiver,s)]['accuracy']) for s in sorted(SEEDS)]
             paired.append(dict(candidate=candidate,baseline=baseline,receiver=receiver,view='clean',model_seeds=sorted(SEEDS),

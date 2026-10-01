@@ -1023,3 +1023,102 @@ def test_reference_prepare_only_selected4_fixed_capsule(case,monkeypatch):
     for row in new:
         cfg=contracts.read(folder/(row['row_id']+'.json'));assert cfg['p1_capsule']==CAPSULE
         contracts.validate_predict_config(cfg,contracts.read(folder/'frozen_selection.json'))
+
+
+def equivariant_case(case,monkeypatch):
+    """Full synthetic source provenance and fixed twenty control predictions."""
+    from experiments.cvs_equivariant_identity import dispatch as gd
+    from experiments.cvs_equivariant_identity.model import equivariant_contract
+    balanced_case(case)
+    case['spec']['rows']=[r for r in case['spec']['rows'] if r['variant'] not in contracts.THIRD]
+    project=case['root']/'synthetic_project';monkeypatch.setattr(gd,'PROJECT',project.as_posix())
+    original=copy.deepcopy(case['contract']);original['classes']=['14-10','14-7','20-15','20-19','6-15','8-20']
+    case['classes']=original['classes'];case['contract']=dict(original,physical_roles='EXACT_MATCH',dataset_path=(project/'Dataset_WigSig/ManySig.pkl').as_posix())
+    capsule=case['root']/'capsule';manifest=contracts.read(capsule/'manifest.json');manifest['classes']=case['classes'];write(capsule/'manifest.json',manifest)
+    original_path=project/'runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json';write(original_path,original)
+    new_root=project/'runs/equivariant_source';source_rows=[]
+    for variant in gd.CANDIDATES:
+        for seed in sorted(contracts.SEEDS):
+            rid=variant+'-s'+str(seed)
+            q=project/'runs'/gd.CONTROL_RUN/rid/'source' if variant=='residual_fusion' else new_root/rid/'source'
+            c=dict(method='cvs_residual_identity' if variant=='residual_fusion' else 'cvs_equivariant_identity',variant=variant,model_seed=seed,
+                epochs=200,batch_size=128,lr=.0002,lr_min=1e-6,weight_decay=.0001,drop_last=False,augmentation=False,domain_backbone=False,extra_losses=[],selection='fixed_last_epoch',split_seed=392005,
+                source_contract=original_path.as_posix(),dataset=(project/'Dataset_WigSig/ManySig.pkl').as_posix(),output_root=str(q))
+            if variant!='residual_fusion':c['equivariant']=equivariant_contract(variant)
+            resolved=dict(c,steps_per_epoch=50,source_counts={'L_s':6300,'U_s':56700,'V':27000},U_s_use='unused',target_access=False,
+                precision='float32',gradient_clipping=None,optimizer='AdamW+CosineAnnealingLR',loader_seed=seed)
+            if variant!='residual_fusion':resolved.update(equivariant=c['equivariant'],equivariant_actual=c['equivariant'],equivariant_active=True,classifier_scale=30.)
+            initial=dict(status='SCRATCH',scratch_only=True,checkpoint=None,ancestors=[],checkpoint_sources=[],target_access=False,target_contact=False,model_seed=seed,physical_roles='EXACT_MATCH',selection='fixed_last_epoch')
+            accuracy={'residual_fusion':.97,'equivariant_memory':.981}[variant]
+            done=dict(status='SOURCE_TRAINED',epoch=200,steps=10000,target_access=False,target_evaluated=False,final_source_metrics=dict(source_val_count=27000,source_val_accuracy=accuracy,source_val_worst_rx=.95,source_val_rx_accuracy={str(rx):.95 for rx in [1,3,4,6,8]}))
+            for n,d in [('completion.json',done),('initialization.json',initial),('source_contract.json',case['contract']),('resolved_config.json',resolved),('resource_profile.json',dict(total_parameters=164225,conv_linear_macs_per_sample=9708836))]:write(q/n,d)
+            torch.save(dict(model=TinyClassifier().state_dict(),epoch=200,source_contract=case['contract'],initialization=initial,selection='fixed_last_epoch',method=c['method'],variant=variant,config=resolved,classes=case['classes'],num_classes=6),q/'last.pt')
+            if variant!='residual_fusion':
+                cp=case['root']/'source_configs'/(rid+'.json');write(cp,c)
+                source_rows.append(dict(row_id=rid,variant=variant,model_seed=seed,source_config=str(cp),source_output=str(q)))
+    matrix=dict(rows=source_rows,source_controls=gd.control_rows(),runtime_root=str(new_root));matrix_path=case['root']/'equivariant_matrix.json';write(matrix_path,matrix)
+    records=[gd.read_source_record(r,original,'cvs_residual_identity') for r in matrix['source_controls']]+[gd.read_source_record(r,original,'cvs_equivariant_identity') for r in matrix['rows']]
+    selection=dict(gd.select_source_candidate(records),scope='equivariant_source',source_matrix_ref=str(matrix_path));path=case['root']/'equivariant_selection.json';write(path,selection)
+    for seed in sorted(contracts.SEEDS):
+        variant=selection['selected_variant'];rid=variant+'-s'+str(seed);out=Path(case['spec']['runtime_root'])/rid/'prediction'
+        cfg=contracts.read(case['spec']['rows'][0]['config']);cfg.update(variant=variant,model_seed=seed,selection_file=str(path),equivariant_source_root=str(new_root),source_output=str(new_root/rid/'source'),output_root=str(out),source_contract=str(original_path))
+        cp=case['root']/'configs'/(rid+'.json');write(cp,cfg);case['spec']['rows'].append(dict(row_id=rid,variant=variant,model_seed=seed,config=str(cp),output_root=str(out)))
+    case['selection']=selection;case['spec']['selection_file']=str(path)
+    return matrix
+
+
+def test_equivariant_freeze_recomputes_control_and24row_truth_last(case,monkeypatch):
+    equivariant_case(case,monkeypatch);dispatch.validate_spec(case['spec']);prediction_fixtures(case)
+    assert contracts.frozen_selection(case['spec']['selection_file'])['selected_variant']=='equivariant_memory'
+    opened=[];original=score.read;monkeypatch.setattr(score,'read',lambda p:(opened.append(str(p)),original(p))[1])
+    marker=score.score(case['spec']);assert marker['rows']==24 and marker['models']==6
+    at=opened.index(case['spec']['p1_truth']);assert sum(Path(p).name=='clean_complete.json' for p in opened[:at])==24
+
+
+def test_equivariant_prediction_payload_activation_and_nonselected_guard(case,monkeypatch):
+    equivariant_case(case,monkeypatch);cfg=contracts.read(case['spec']['rows'][-1]['config']);q=Path(cfg['source_output'])
+    monkeypatch.setattr(predict,'build_model',lambda v:TinyClassifier());predict.predict(cfg)
+    assert contracts.read(Path(cfg['output_root'])/'clean_complete.json')['truth_read'] is False
+    with pytest.raises(ValueError):contracts.validate_predict_config(dict(cfg,variant='gauge_peak'),case['selection'])
+    payload=torch.load(q/'last.pt',weights_only=False)
+    args=[cfg,contracts.read(q/'completion.json'),contracts.read(q/'initialization.json'),case['contract'],contracts.read(cfg['source_contract']),contracts.read(q/'resolved_config.json'),payload]
+    bad=list(args);bad[5]=dict(args[5],equivariant_active=False)
+    with pytest.raises(ValueError,match='equivariant activation'):contracts.checkpoint_contract(*bad)
+    bad=list(args);bad[-1]=dict(payload,method='cvs_residual_identity')
+    with pytest.raises(ValueError):contracts.checkpoint_contract(*bad)
+
+
+def test_equivariant_control_corruption_and_ranking_tampering_close_query(case,monkeypatch):
+    matrix=equivariant_case(case,monkeypatch);path=Path(case['spec']['selection_file'])
+    write(path,dict(case['selection'],selected_variant='residual_fusion'))
+    with pytest.raises(ValueError):contracts.frozen_selection(path)
+    write(path,case['selection']);q=Path(matrix['source_controls'][0]['source_output'])/'initialization.json'
+    write(q,dict(contracts.read(q),target_contact=True))
+    with pytest.raises(ValueError):contracts.frozen_selection(path)
+
+
+def test_equivariant_baseline_wins_blocks_all_new_query(case,monkeypatch):
+    from experiments.cvs_equivariant_identity import dispatch as gd
+    matrix=equivariant_case(case,monkeypatch);original=contracts.read(Path(gd.PROJECT)/'runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json')
+    for row in matrix['source_controls']:
+        q=Path(row['source_output'])/'completion.json';d=contracts.read(q);d['final_source_metrics']['source_val_accuracy']=.999;write(q,d)
+    records=[gd.read_source_record(r,original,'cvs_residual_identity') for r in matrix['source_controls']]+[gd.read_source_record(r,original,'cvs_equivariant_identity') for r in matrix['rows']]
+    selection=dict(gd.select_source_candidate(records),scope='equivariant_source',source_matrix_ref=case['selection']['source_matrix_ref']);assert selection['new_candidate_selected'] is False
+    write(Path(case['spec']['selection_file']),selection)
+    with pytest.raises(ValueError,match='baseline retained'):contracts.frozen_selection(case['spec']['selection_file'])
+    from experiments.cvs_equivariant_clean import prepare
+    with pytest.raises(ValueError,match='No selected new equivariant memory'):prepare.main(selection)
+
+
+def test_equivariant_prepare_only_selected4_fixed_capsule(case,monkeypatch):
+    from experiments.cvs_equivariant_clean import prepare
+    from experiments.cvs_clean_eval.prepare import CAPSULE
+    root=Path(__file__).resolve().parents[1];prefix='experiments/cvs_selected_clean/configs/'
+    for name in ('launch_spec.json','experiment_spec.json'):write(case['root']/prefix/name,contracts.read(root/prefix/name))
+    monkeypatch.setattr(prepare,'ROOT',case['root'])
+    prepare.main(dict(status='SOURCE_SELECTION_FROZEN',target_access=False,target_score_used=False,selected_variant='equivariant_memory',new_candidate_selected=True))
+    folder=case['root']/'experiments/cvs_equivariant_clean/configs';runtime=contracts.read(folder/'launch_spec.json');new=[r for r in runtime['rows'] if not r.get('reuse_from_run')]
+    assert len(new)==4 and len(runtime['rows'])==24
+    for row in new:
+        cfg=contracts.read(folder/(row['row_id']+'.json'));assert cfg['p1_capsule']==CAPSULE
+        contracts.validate_predict_config(cfg,contracts.read(folder/'frozen_selection.json'))
