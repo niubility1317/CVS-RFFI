@@ -1,3 +1,13 @@
+## 当前：完整 support 数学分析与三阶段补充完成，训练诊断提取运行中
+
+四行、160 parent、1800条路径、3240阶段的独立分析已COMPLETE_MARGIN_JOINT_PROBE_VERIFIED，原分析PID787831退出，local79064已结束。训练runtime e50de0ad4，分析source ccb7f3469。
+
+实际地面A已另行完成并与原固定B/C配对，见[完整三阶段与K×新增类数](../../../docs/D92_MARGIN_GROUND_A_PAIRED_SUPPORT_RESULT_20261001.md)及[结果解读](../../../docs/D92_MARGIN_JOINT_SUPPORT_RESULT_OVERVIEW_20261001.md)。本结果只描述support持出诊断，不是query或新增独立验证，未全面改善，不晋级或反馈改参数。
+
+完整训练-only collector唯一local78869，remotePID875239/start10109892，当前extract-stdout；snapshot已捕获250238670字节。证据[evidence/collector_runtime_1790853818675083800.json](evidence/collector_runtime_1790853818675083800.json)。不重启、重复提取或将诊断进程RSS当作星载方法内存。
+
+以下为保留的预登记和历史状态；运行判断以上述当前证据为准。
+
 # D92-MarginJointLocalRidge support联合实验预登记
 
 状态：SUPPORT_TRAINING_COMPLETE_ANALYSIS_RUNNING。四行原训练已完成且原进程退出，独立数学分析PID787831/start9221520正在执行；原runtime e50de0ad4，分析源码ccb7f3469。root唯一launch owner。

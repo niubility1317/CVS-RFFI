@@ -1,3 +1,13 @@
+## 当前：完整重复基准已唯一启动并独立核实
+
+状态RUNNING，实际runtime d86edc3235ec0ca0e1925223970e07373256fb9c，supervisorPID869328/start10047966，实际argv/CWD/CPU两lane及BLAS两线程均独立VERIFIED。最新证据[evidence/query_runtime_1790853755995305700.json](evidence/query_runtime_1790853755995305700.json)：rx3两行PREDICTING（PID869442/start10049751与869448/start10049849），rx1两行PREFLIGHT_COMPLETE等待原supervisor排程；全部四行preflight通过，尚无整体完成或query成绩。
+
+既有Git目的地已通过认证账户/仓库权限和项目origin核实，自动审批允许原Git推送；远端OID=d86edc3235ec0ca0e1925223970e07373256fb9c，ahead/behind=0/0。不是用户新增回答，也未换用其他写入路线。独立source交付见[evidence/source_delivery_20261001.json](evidence/source_delivery_20261001.json)。
+
+原冻结方法及资源不变，support分析成绩不回流。全2400parent/旧6/完整K×新增类×4receiver×3scenario×5support seed。只使用本次legal support重拟合B并真实继承到C；query逐样本全注册类只读。全部四行A/B/C固定后才单独scorer；此处是已评分库存复用，不是新独立验证。
+
+以下为保留的预登记和历史状态；运行判断以上述当前证据为准。
+
 # MarginJoint 完整三阶段重复基准预登记
 
 状态：PLANNED，尚未发布或启动。源代码已合成验证；Git push 的具体目的地授权待用户确认。原 support 数学分析继续，方法参数不从结果反馈调整。

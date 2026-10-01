@@ -359,6 +359,8 @@ paths += ['tools/evaluate_d92_margin_joint_benchmark.py', 'tools/score_d92_margi
 
 paths += ['configs/d92_margin_joint_repeat_20261001.json', 'docs/D92_MARGIN_JOINT_QUERY_ENTRY_REVIEW_20261001.md']
 
+paths += ['docs/D92_MARGIN_JOINT_SUPPORT_RESULT_OVERVIEW_20261001.md', 'docs/D92_MARGIN_GROUND_A_PAIRED_SUPPORT_RESULT_20261001.md', 'docs/D92_MARGIN_SUPPORT_DIAGNOSTIC_RESULT_20261001.md', 'docs/D92_MARGIN_JOINT_USER_EXPLANATION_20261001.md']
+
 for name in paths:
     src=ROOT/name;dst=WS/name;dst.parent.mkdir(parents=True,exist_ok=True)
     # Each name is unique to this task; original D92 and shared wrappers are not mirrored.

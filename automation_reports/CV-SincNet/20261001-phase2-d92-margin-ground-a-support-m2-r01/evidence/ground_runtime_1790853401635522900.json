@@ -1,0 +1,102 @@
+{
+  "run_id": "20261001-phase2-d92-margin-ground-a-support-m2-r01",
+  "observed_utc": "2026-10-01T11:15:40Z",
+  "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-ground-a-support-m2-r01",
+  "release": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_margin_ground_a_support_20261001_r01",
+  "startup": {
+    "schema": "d92_ground_a_support_supervisor_v1",
+    "scope": "SUPPORT_ONLY_GROUND_A_PAIRED_OLD_HELD_NOT_QUERY_EVALUATION",
+    "run_id": "20261001-phase2-d92-margin-ground-a-support-m2-r01",
+    "commit": "d86edc3235ec0ca0e1925223970e07373256fb9c",
+    "pid": 873451,
+    "argv": [
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_margin_ground_a_support_20261001_r01/tools/run_d92_ground_a_support.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_margin_ground_a_support_20261001_r01/configs/d92_margin_ground_a_support_20261001.json",
+      "--commit",
+      "d86edc3235ec0ca0e1925223970e07373256fb9c"
+    ],
+    "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cpu_lanes": 1,
+    "blas_threads_per_lane": 2,
+    "hardware": {
+      "platform": "Linux-6.8.0-142-generic-x86_64-with-glibc2.39",
+      "processor": "x86_64",
+      "cpu_count": 96,
+      "gpu_use": false
+    },
+    "query_rows_used": 0,
+    "source_rows_used": 0,
+    "training_performed": false,
+    "original_inputs_modified": false
+  },
+  "complete": {
+    "schema": "d92_ground_a_support_supervisor_v1",
+    "status": "GROUND_A_SUPPORT_SUPERVISOR_COMPLETE",
+    "run_id": "20261001-phase2-d92-margin-ground-a-support-m2-r01",
+    "commit": "d86edc3235ec0ca0e1925223970e07373256fb9c",
+    "rows": 4,
+    "completed_rows": 4,
+    "parent_count": 160,
+    "row_outputs": {
+      "margin-rx3-cvs-daot-rc4-s2026092701": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-ground-a-support-m2-r01/margin-rx3-cvs-daot-rc4-s2026092701",
+      "margin-rx3-cvs-daot-rc4-s2026092702": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-ground-a-support-m2-r01/margin-rx3-cvs-daot-rc4-s2026092702",
+      "margin-rx1-cvs-daot-rc4-s2026092701": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-ground-a-support-m2-r01/margin-rx1-cvs-daot-rc4-s2026092701",
+      "margin-rx1-cvs-daot-rc4-s2026092702": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-ground-a-support-m2-r01/margin-rx1-cvs-daot-rc4-s2026092702"
+    },
+    "wall_seconds": 98.4383228640072,
+    "peak_process_rss_bytes": 1325740032,
+    "peak_gpu_memory_bytes": null,
+    "incremental_network_transfer_bytes": null,
+    "energy": null,
+    "query_rows_used": 0,
+    "source_rows_used": 0,
+    "training_performed": false,
+    "resources_scope": "CPU wall/RSS and per-row scorer measurements; numeric/file bytes are not deployment or transmission costs",
+    "original_inputs_modified": false,
+    "automatic_retry": false
+  },
+  "failed": null,
+  "rows": {
+    "margin-rx3-cvs-daot-rc4-s2026092701": {
+      "status": "GROUND_A_SUPPORT_PAIRING_COMPLETE",
+      "parent_count": 40,
+      "elapsed_seconds": 22.879951049006195,
+      "peak_process_rss_bytes": 1075175424,
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-ground-a-support-m2-r01/margin-rx3-cvs-daot-rc4-s2026092701"
+    },
+    "margin-rx3-cvs-daot-rc4-s2026092702": {
+      "status": "GROUND_A_SUPPORT_PAIRING_COMPLETE",
+      "parent_count": 40,
+      "elapsed_seconds": 22.569117065999308,
+      "peak_process_rss_bytes": 1075175424,
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-ground-a-support-m2-r01/margin-rx3-cvs-daot-rc4-s2026092702"
+    },
+    "margin-rx1-cvs-daot-rc4-s2026092701": {
+      "status": "GROUND_A_SUPPORT_PAIRING_COMPLETE",
+      "parent_count": 40,
+      "elapsed_seconds": 25.420668600010686,
+      "peak_process_rss_bytes": 1325740032,
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-ground-a-support-m2-r01/margin-rx1-cvs-daot-rc4-s2026092701"
+    },
+    "margin-rx1-cvs-daot-rc4-s2026092702": {
+      "status": "GROUND_A_SUPPORT_PAIRING_COMPLETE",
+      "parent_count": 40,
+      "elapsed_seconds": 25.17134896799689,
+      "peak_process_rss_bytes": 1325740032,
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-ground-a-support-m2-r01/margin-rx1-cvs-daot-rc4-s2026092702"
+    }
+  },
+  "live": null,
+  "logs": {
+    "supervisor.log": {
+      "bytes": null
+    },
+    "scoring.log": {
+      "bytes": 35792
+    }
+  },
+  "read_only": true,
+  "performance_read": false,
+  "verification": "VERIFIED"
+}

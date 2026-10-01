@@ -1,3 +1,11 @@
+## 当前：Margin 的真实地面 A/B/C 配对已完成
+
+已按原预登记唯一发布并完成，runtime d86edc3235ec0ca0e1925223970e07373256fb9c，原PID873451退出，4行/160parent，旧类6，K=1/5/10/20、新增0/2/5/10/20。48个原始文件/114208558字节已独立下载核对，完整原始配对保留在results/raw_support_pairing。
+
+[完整三阶段和全部矩阵](../../../docs/D92_MARGIN_GROUND_A_PAIRED_SUPPORT_RESULT_20261001.md)与[结果解读](../../../docs/D92_MARGIN_JOINT_SUPPORT_RESULT_OVERVIEW_20261001.md)均已生成。A/B/C为同一物理旧held support；K1无独立held记N/A，新增0无新类指标。没有重新训练B/C、query或源样本使用。原已发布8d源码选项未使用；已有Git推送问题已由认证目的地新证据和自动审批解决，当前主worktree已推送source用于发布。
+
+以下为保留的预登记和历史状态；运行判断以上述当前证据为准。
+
 # MarginJoint三阶段配对：独立Ground A补充预登记
 
 状态：PREPARED_NOT_LAUNCHED_WAITING_FOR_VERIFIED_MARGIN_SUMMARY。尚未启动，不运行训练或校准。唯一launch owner=root。

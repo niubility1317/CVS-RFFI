@@ -150,8 +150,34 @@
       "launcher": "E:/type10-7/.codex_tmp/launch_margin_ground_published_once_20261001.py",
       "condition": "Only after full original Margin summary is independently COMPLETE; publisher must still match actual remote branch OID",
       "new_query_code_included": false,
-      "launched": false
-    }
+      "launched": false,
+      "used": false,
+      "superseded_reason": "Original Git push approved after authenticated destination evidence; current pushed worktree used"
+    },
+    "runtime_commit": "d86edc3235ec0ca0e1925223970e07373256fb9c",
+    "pid": 873451,
+    "process_alive": false,
+    "completion_status": "VERIFIED_COMPLETE",
+    "completion_ref": "evidence/ground_runtime_1790853401635522900.json",
+    "completed_rows_observed": 4,
+    "completed_parents_observed": 160,
+    "download_readback_ref": "evidence/support_download_readback_20261001.json",
+    "local_raw_root": "results/raw_support_pairing",
+    "combined_report_status": "VERIFIED_COMPLETE",
+    "combined_report_ref": "docs/D92_MARGIN_GROUND_A_PAIRED_SUPPORT_RESULT_20261001.md",
+    "combined_interpretation_ref": "results/interpretation.json",
+    "selected_source_root": "E:\\type10-7\\code\\snapshots\\d92_support_upgrade_20260928_wt",
+    "selected_source_commit": "d86edc3235ec0ca0e1925223970e07373256fb9c",
+    "actual_launch_argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_margin_ground_a_support_20261001_r01/tools/run_d92_ground_a_support.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_margin_ground_a_support_20261001_r01/configs/d92_margin_ground_a_support_20261001.json",
+      "--commit",
+      "d86edc3235ec0ca0e1925223970e07373256fb9c"
+    ],
+    "old_published_source_option_used": false
   },
   "metrics_plan": {
     "metric_names": [
@@ -228,7 +254,7 @@
     "20261001-phase2-d92-ground-a-packet-m2-r02"
   ],
   "spec_path": "configs/d92_margin_ground_a_support_20261001.json",
-  "status": "PREPARED_NOT_LAUNCHED_WAITING_FOR_VERIFIED_MARGIN_SUMMARY",
+  "status": "ANALYZED",
   "rows": [
     {
       "row_id": "margin-rx3-cvs-daot-rc4-s2026092701",
@@ -281,6 +307,15 @@
         "pairing.json",
         "report.md",
         "complete.json"
+      ],
+      "actual_command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_margin_ground_a_support_20261001_r01/tools/run_d92_ground_a_support.py",
+        "--spec",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_margin_ground_a_support_20261001_r01/configs/d92_margin_ground_a_support_20261001.json",
+        "--commit",
+        "d86edc3235ec0ca0e1925223970e07373256fb9c"
       ]
     },
     {
@@ -334,6 +369,15 @@
         "pairing.json",
         "report.md",
         "complete.json"
+      ],
+      "actual_command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_margin_ground_a_support_20261001_r01/tools/run_d92_ground_a_support.py",
+        "--spec",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_margin_ground_a_support_20261001_r01/configs/d92_margin_ground_a_support_20261001.json",
+        "--commit",
+        "d86edc3235ec0ca0e1925223970e07373256fb9c"
       ]
     },
     {
@@ -387,6 +431,15 @@
         "pairing.json",
         "report.md",
         "complete.json"
+      ],
+      "actual_command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_margin_ground_a_support_20261001_r01/tools/run_d92_ground_a_support.py",
+        "--spec",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_margin_ground_a_support_20261001_r01/configs/d92_margin_ground_a_support_20261001.json",
+        "--commit",
+        "d86edc3235ec0ca0e1925223970e07373256fb9c"
       ]
     },
     {
@@ -440,6 +493,15 @@
         "pairing.json",
         "report.md",
         "complete.json"
+      ],
+      "actual_command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_margin_ground_a_support_20261001_r01/tools/run_d92_ground_a_support.py",
+        "--spec",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_margin_ground_a_support_20261001_r01/configs/d92_margin_ground_a_support_20261001.json",
+        "--commit",
+        "d86edc3235ec0ca0e1925223970e07373256fb9c"
       ]
     }
   ]

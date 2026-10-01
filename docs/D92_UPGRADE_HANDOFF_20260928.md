@@ -1,3 +1,13 @@
+## 当前交接：Margin数学分析及实际A完成，完整query唯一运行（2026-10-01）
+
+- Goal ACTIVE。Git目的地认证身份/权限已核实，原push经自动审批允许，当前source d86edc323已推送且独立OID=0/0；不是用户新增回答。历史拒绝保留但不再构成block。
+- 原support训练e50完整，独立分析ccb7 COMPLETE_MARGIN_JOINT_PROBE_VERIFIED，local79064 DONE/PID787831退出，不重复analyze。Ground A run20261001-phase2-d92-margin-ground-a-support-m2-r01也唯一完成/下载，原PID873451退出，local启动已DONE；不要再publish或score。三阶段support A62.6389/B70.2083/C旧66.5538/C新52.2734/H57.8275；注册下降3.6545pp、绝对差15.3220pp。相对同次R0保旧有增益、新类和H下降，不晋级或反馈改方法。详细全矩阵见docs/D92_MARGIN_GROUND_A_PAIRED_SUPPORT_RESULT_20261001.md，数学解释见docs/D92_MARGIN_JOINT_USER_EXPLANATION_20261001.md。
+- 完整训练collector唯一local78869，当前remote875239/start10109892，--extract-stdout；snapshot250238670B已捕获，proof automation_reports/CV-SincNet/20261001-phase2-d92-margin-joint-support-m2-r01/evidence/collector_runtime_1790853818675083800.json。继续同handle；完成后独立核对完整诊断/AI标量JSONL与CSV计数，再更新原run。不得重新collector、重试timeout或并发Conda包装；此原生激活路由未启用Conda CLI。
+- 完整query run20261001-phase2-d92-margin-joint-repeat-m2-r01已唯一启动，runtime d86edc323，supervisor869328/start10047966；rx3 evaluator869442/start10049751及869448/start10049849，rx1两行已preflight等待原supervisor。最新proof automation_reports/CV-SincNet/20261001-phase2-d92-margin-joint-repeat-m2-r01/evidence/query_runtime_1790853755995305700.json。local出版38736 DONE；不要再publisher。source方法参数/QP资源冻结，2400parent完整矩阵；不使用旧support适应状态。仅metadata/progress只读，全部四行A/B/C固定后独立scorer；旧baseline同两seed配对，不把旧m4均值混入。
+- 固定Phase1/practical residual，仅合法support；禁止源样本/逐记录特征/query拟合或truth/role/配额/全局重排与成绩反馈。复用query不称新独立验证，fresh仍暂缓。5888坐标/160MiB factor guard不等于星载低成本；所有资源按实际口径，未测N/A。
+
+以下为历史状态，不依据旧段落重复启动：
+
 ## 当前交接：既有Ground A发布源码已核实可复用（2026-10-01）
 
 - Goal ACTIVE。新query源码/配置本地HEAD d2bb4b48f、ahead3，原GitHub push被auto-review拒绝且具体目的地授权仍待用户回答；禁止重试push/用未授权新query源码发布。此前已推送分支8d020384f已只读clone至code/snapshots/d92_published_ground_20261001_clone；clone已COMPLETE，11个Ground A源码/配置与当前canonical Git blob完全一致，clone中没有新query入口。证据Ground run/evidence/published_source_option_20261001.json。不是新代码向GitHub发布。

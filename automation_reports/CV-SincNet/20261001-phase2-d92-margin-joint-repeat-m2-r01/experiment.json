@@ -33,7 +33,12 @@
     "inheritance_policy": "Only original source-only model; no historical adapted head/cache state",
     "current_auxiliary_training": "Current query split legal support only, frozen MarginJoint adapter and analytic head; no prior probe adapted state",
     "feature_cache_producer_run_id": "20260929-phase2-d92-branch-support-probe-m4-r01",
-    "feature_cache_producer_role": "support-only raw frozen features; no learned state"
+    "feature_cache_producer_role": "support-only raw frozen features; no learned state",
+    "actual_used_sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701/final_ssdg.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092702/final_ssdg.pth"
+    ],
+    "sources_note": "Original lineage inventory preserved; actual_used_sources and rows identify the two used models, no checkpoint reload"
   },
   "schema": "experiment_record_v1",
   "run_id": "20261001-phase2-d92-margin-joint-repeat-m2-r01",
@@ -55,7 +60,7 @@
     "20261001-phase2-d92-margin-joint-support-m2-r01",
     "20261001-phase2-d92-margin-ground-a-support-m2-r01"
   ],
-  "status": "PLANNED",
+  "status": "RUNNING",
   "claim_scope": "REPEATED_BENCHMARK_PREVIOUSLY_SCORED_TARGETS",
   "spec_path": "configs/d92_margin_joint_repeat_20261001.json",
   "code": {
@@ -76,7 +81,44 @@
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-joint-repeat-m2-r01",
     "gpu_policy": "CPU2 / BLAS2 / CUDA_VISIBLE_DEVICES empty; existing caches only",
     "launch_command": "F:/App/miniconda3/python.exe -X utf8 tools/publish_d92_margin_joint_benchmark.py --spec configs/d92_margin_joint_repeat_20261001.json",
-    "stop_rule": "Only a technical failure fails its own row; preserve partial outputs, no automatic retry or low-score stop."
+    "stop_rule": "Only a technical failure fails its own row; preserve partial outputs, no automatic retry or low-score stop.",
+    "runtime_commit": "d86edc3235ec0ca0e1925223970e07373256fb9c",
+    "publication_status": "VERIFIED",
+    "publication_ref": "evidence/publication_20261001.json",
+    "source_delivery_ref": "evidence/source_delivery_20261001.json",
+    "runtime_readback_ref": "evidence/query_runtime_1790853755995305700.json",
+    "supervisor_pid": 869328,
+    "supervisor_start_ticks": 10047966,
+    "actual_launch_argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_margin_joint_repeat_20261001_r01/tools/run_d92_margin_joint_benchmark.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_margin_joint_repeat_20261001_r01/configs/d92_margin_joint_repeat_20261001.json",
+      "--commit",
+      "d86edc3235ec0ca0e1925223970e07373256fb9c"
+    ],
+    "actual_environment": {
+      "OMP_NUM_THREADS": "2",
+      "MKL_NUM_THREADS": "2",
+      "OPENBLAS_NUM_THREADS": "2",
+      "NUMEXPR_NUM_THREADS": "2",
+      "CUDA_VISIBLE_DEVICES": "",
+      "PYTHONUNBUFFERED": "1"
+    },
+    "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_margin_joint_repeat_20261001_r01",
+    "current_row_statuses": {
+      "rx3-cvs-daot-rc4-s2026092701": "PREDICTING",
+      "rx3-cvs-daot-rc4-s2026092702": "PREDICTING",
+      "rx1-cvs-daot-rc4-s2026092701": "PREFLIGHT_COMPLETE",
+      "rx1-cvs-daot-rc4-s2026092702": "PREFLIGHT_COMPLETE"
+    },
+    "completed_rows_observed": 0,
+    "all_predictions_fixed": false,
+    "truth_read": false,
+    "scorer_invoked": false,
+    "local_publication_session_id": 38736,
+    "local_publication_session_state": "DONE_DO_NOT_REPUBLISH"
   },
   "rows": [
     {
@@ -124,6 +166,44 @@
         "rx3-cvs-daot-rc4-s2026092701",
         "--release-commit",
         "ACTUAL_PUSHED_RELEASE_HEAD",
+        "--row-root",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092701",
+        "--capsule",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-joint-repeat-m2-r01/rx3-cvs-daot-rc4-s2026092701/predictions",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-joint-repeat-m2-r01/resolved_algorithm.json",
+        "--expected-capsule-id",
+        "residual-noeq-76121e6f34363fa612ec25fb",
+        "--expected-checkpoint-sha256",
+        "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b",
+        "--branch-features",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-ridge-repeat-rx3-m4-r01/cvs-daot-rc4-s2026092701/branch_features",
+        "--ground-packet",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r02/ground-a-s2026092701"
+      ],
+      "current_status": "PREDICTING",
+      "preflight_observed": {
+        "status": "MARGIN_QUERY_PREFLIGHT_COMPLETE",
+        "split_count": 900,
+        "query_record_count": 361800,
+        "checkpoint_sha256": "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b",
+        "model_seed": 2026092701,
+        "capsule_id": "residual-noeq-76121e6f34363fa612ec25fb"
+      },
+      "actual_pid": 869442,
+      "actual_start_ticks": 10049751,
+      "actual_command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_margin_joint_repeat_20261001_r01/tools/evaluate_d92_margin_joint_benchmark.py",
+        "--run-id",
+        "20261001-phase2-d92-margin-joint-repeat-m2-r01",
+        "--row-id",
+        "rx3-cvs-daot-rc4-s2026092701",
+        "--release-commit",
+        "d86edc3235ec0ca0e1925223970e07373256fb9c",
         "--row-root",
         "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092701",
         "--capsule",
@@ -203,6 +283,44 @@
         "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-ridge-repeat-rx3-m4-r01/cvs-daot-rc4-s2026092702/branch_features",
         "--ground-packet",
         "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r02/ground-a-s2026092702"
+      ],
+      "current_status": "PREDICTING",
+      "preflight_observed": {
+        "status": "MARGIN_QUERY_PREFLIGHT_COMPLETE",
+        "split_count": 900,
+        "query_record_count": 361800,
+        "checkpoint_sha256": "72f26413e495dcf82317898f8729caa3d35499bf0b41e9671ffdceab2c90924b",
+        "model_seed": 2026092702,
+        "capsule_id": "residual-noeq-76121e6f34363fa612ec25fb"
+      },
+      "actual_pid": 869448,
+      "actual_start_ticks": 10049849,
+      "actual_command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_margin_joint_repeat_20261001_r01/tools/evaluate_d92_margin_joint_benchmark.py",
+        "--run-id",
+        "20261001-phase2-d92-margin-joint-repeat-m2-r01",
+        "--row-id",
+        "rx3-cvs-daot-rc4-s2026092702",
+        "--release-commit",
+        "d86edc3235ec0ca0e1925223970e07373256fb9c",
+        "--row-root",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092702",
+        "--capsule",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-joint-repeat-m2-r01/rx3-cvs-daot-rc4-s2026092702/predictions",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-joint-repeat-m2-r01/resolved_algorithm.json",
+        "--expected-capsule-id",
+        "residual-noeq-76121e6f34363fa612ec25fb",
+        "--expected-checkpoint-sha256",
+        "72f26413e495dcf82317898f8729caa3d35499bf0b41e9671ffdceab2c90924b",
+        "--branch-features",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-ridge-repeat-rx3-m4-r01/cvs-daot-rc4-s2026092702/branch_features",
+        "--ground-packet",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r02/ground-a-s2026092702"
       ]
     },
     {
@@ -266,7 +384,16 @@
         "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-ridge-repeat-rx1-m4-r01/cvs-daot-rc4-s2026092701/branch_features",
         "--ground-packet",
         "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r02/ground-a-s2026092701"
-      ]
+      ],
+      "current_status": "PREFLIGHT_COMPLETE",
+      "preflight_observed": {
+        "status": "MARGIN_QUERY_PREFLIGHT_COMPLETE",
+        "split_count": 300,
+        "query_record_count": 120600,
+        "checkpoint_sha256": "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b",
+        "model_seed": 2026092701,
+        "capsule_id": "residual-noeq-d0a99fede324159c5a4750fd"
+      }
     },
     {
       "row_id": "rx1-cvs-daot-rc4-s2026092702",
@@ -329,7 +456,16 @@
         "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-ridge-repeat-rx1-m4-r01/cvs-daot-rc4-s2026092702/branch_features",
         "--ground-packet",
         "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r02/ground-a-s2026092702"
-      ]
+      ],
+      "current_status": "PREFLIGHT_COMPLETE",
+      "preflight_observed": {
+        "status": "MARGIN_QUERY_PREFLIGHT_COMPLETE",
+        "split_count": 300,
+        "query_record_count": 120600,
+        "checkpoint_sha256": "72f26413e495dcf82317898f8729caa3d35499bf0b41e9671ffdceab2c90924b",
+        "model_seed": 2026092702,
+        "capsule_id": "residual-noeq-d0a99fede324159c5a4750fd"
+      }
     }
   ],
   "data": {

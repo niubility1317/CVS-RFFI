@@ -1,0 +1,43 @@
+{
+  "observed_utc": "2026-10-01T11:22:37Z",
+  "run_id": "20261001-phase2-d92-margin-joint-support-m2-r01",
+  "matches": [
+    {
+      "pid": 875239,
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-",
+        "--extract-stdout",
+        "--run-root",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-joint-support-m2-r01"
+      ],
+      "cwd": "/home/szu2070436088",
+      "start_ticks": 10109892,
+      "user_cpu_ticks": 449072,
+      "system_cpu_ticks": 18656,
+      "cpu_tick_hz": 100,
+      "memory": {
+        "VmHWM": "9482496 kB",
+        "VmRSS": "8576740 kB"
+      }
+    }
+  ],
+  "read_only": true,
+  "query_or_truth_or_performance_read": false,
+  "local_files": {
+    "training_snapshot.json": {
+      "exists": true,
+      "bytes": 250238670
+    },
+    "training_diagnostics/summary.json": {
+      "exists": false,
+      "bytes": null
+    },
+    "training_ai_scalar/summary.json": {
+      "exists": false,
+      "bytes": null
+    }
+  },
+  "local_session_id": 78869,
+  "verification": "VERIFIED_OBSERVATION_NOT_COMPLETION"
+}
