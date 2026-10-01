@@ -38,3 +38,25 @@
 正式预算固定为 2 候选×4 model seed、E200×50、同 source L/V，四 seed 最终源 V 与最差源 RX 的等权均值最高优先；性能完全并列后才比较成本。完整源日志和独立 P0/P1 审查后冻结一个候选，默认只测该候选的 4 个 clean 预测，与原 20 个固定对照同物理 query 独立 truth-last 评分。所有负结果保留，测试不回流调参/重排/选择性重跑。物理性质通过与识别收益提升必须分别给证据，未测量结果记 N/A。
 
 第一轮的可证目标是“可执行、受约束的 RF 算子”，最终目标仍是更好的跨接收机识别。若算子约束成立而性能下降，该候选不晋级；不能用物理名称或参数减少替代性能证据。
+
+## 已实现的算子与示例
+
+以下说明实现结果，未改变上面的前瞻候选、预算或源选择规则。图中系数手工设置，输入为独立合成信号；未加载训练权重、未读取真实 IQ。AM/AM、AM/PM 与直接/共轭解析式的最大数值差分别在 2.49e−16 与 1.12e−16 以内（float64）。这些图是方程执行示例，不是实测发射机参数或识别结果。
+
+![射频方程的可执行示例](figures/CVS_RF_OPERATOR_PHYSICS_20261002.png)
+
+```mermaid
+flowchart LR
+    X[Received IQ] --> TF[Native time and frequency paths]
+    X --> RAD[Shared radial protection]
+    RAD --> BASIS[Causal MP or lagged GMP basis]
+    BASIS --> C[Complex direct and conjugate coefficients]
+    C --> OBS[32 global-phase-invariant observations]
+    OBS --> PA[PA feature CNN and projection]
+    TF --> F[Existing residual fusion]
+    PA --> F
+    F --> H[Ordinary cosine classifier]
+    H --> CE[Identity cross entropy]
+```
+
+因果性保证到 RF 算子输出；后续卷积、归一化与池化处理整包，不保证在线因果推理。相位不变性保证在 32 通道物理观测处；普通时间/频率路径仍保留，因此不能把整个模型描述为相位或 CFO 不变。
