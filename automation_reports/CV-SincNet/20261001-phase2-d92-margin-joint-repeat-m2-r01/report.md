@@ -1,3 +1,17 @@
+最新只读证据：[evidence/query_runtime_1790863040880987200.json](evidence/query_runtime_1790863040880987200.json)（2026-10-01 13:56:19 UTC），一行失败，其他两行实时运行，一行等待原排程；整体未完成且未评分。
+
+## 当前：一行数学梯度失败，其他行继续运行
+
+状态仍为 RUNNING，但完整矩阵已经出现技术失败。2026-10-01 13:24:09 UTC 独立读回：rx3/s2026092702 的 PID 869448 已退出（返回码 1）；实际根因是 C 阶段 inner head 的 `UNSUPPORTED_ACTIVE_JACOBIAN`：全部紧约束不等于独立且严格互补的 working set。supervisor 报告缺少 `predictions_complete.json` 是子进程失败后的二级现象，不是文件传输失败。
+
+supervisor 869328、rx3/s2026092701 的 869442、随后由原排程启动的 rx1/s2026092701 的 944965 均有实时进程证据；rx1/s2026092702 仍等待排程。证据见 [evidence/query_runtime_1790861110983221800.json](evidence/query_runtime_1790861110983221800.json)。这里只读进程、状态与失败文本；未读取预测数组、query truth 或分数。
+
+保留全部已有产物，不重试失败行、不改变当前不可变 runtime、不停止健康进程。全部四行完成的评分前提未满足，不能评分部分行后当作完整结果。A/B/C 准确率、H 和改进幅度仍为 N/A。本次故障仅允许数学求导与求解正确性的源码修复，不能据此查看 query 成绩选参。
+
+<!-- row_failure_observed_1790861110983221800 -->
+
+以下保留此前预登记与历史观察；实时状态以上述证据为准。
+
 ## 当前：完整重复基准已唯一启动并独立核实
 
 状态RUNNING，实际runtime d86edc3235ec0ca0e1925223970e07373256fb9c，supervisorPID869328/start10047966，实际argv/CWD/CPU两lane及BLAS两线程均独立VERIFIED。最新证据[evidence/query_runtime_1790853755995305700.json](evidence/query_runtime_1790853755995305700.json)：rx3两行PREDICTING（PID869442/start10049751与869448/start10049849），rx1两行PREFLIGHT_COMPLETE等待原supervisor排程；全部四行preflight通过，尚无整体完成或query成绩。

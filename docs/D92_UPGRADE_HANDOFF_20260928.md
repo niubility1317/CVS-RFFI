@@ -1,3 +1,15 @@
+## 当前交接：Margin 一行梯度失败；GroupBarrier gate 已合成验证，完整集成进行中
+
+- Goal ACTIVE。原 query run `20261001-phase2-d92-margin-joint-repeat-m2-r01` runtime 永远 `d86edc3235ec0ca0e1925223970e07373256fb9c`。最新只读证据 `query_runtime_1790863040880987200.json`（13:56:19 UTC）：supervisor869328实时，rx3/01 PID869442与rx1/01 PID944965实时；rx3/02 PID869448已退出，C inner-head普通KKT梯度`UNSUPPORTED_ACTIVE_JACOBIAN`，rx1/02等待原排程。二级缺complete文件不是SCP故障。全部4行固定条件未满足；不评分子集、不改当前runtime、不重试/重启/停止健康行，保留所有产物。
+- 新 source-only 候选 `D92-GroupBarrierJointLocalRidge-v1`：B严格复用原Margin CE-only/白化球；C冻结实际B旧类条件函数，新类专用解析Ridge+Bernoulli gate+继承小adapter。全部old-point/new-class正logbarrier，固定ζ=N*1e-4/(m*q)，避免hard active/ties普通梯度的结构限制。有限barrier独立方法，不等于原hard最优；严格保护train margin不保证query零遗忘。数学与用户解释见新derivation/implementation_decisions文档。
+- 独立gate源码及20项root合成数值验证完成，包含N520/m120/new20/full2400ties的rank1核、独立标量forward与每条bounds导数。首次最大规模发现伴随相消，已改稳定缩放式；容差、barrier预算与前向未调松。完整记录 `docs/D92_GROUP_BARRIER_GATE_VALIDATION_20261001.json`，原失败输出保留。无真实输入/预测/truth/分数访问，无星载或准确率声明。
+- `/root/group_factorization_math` 当前仅负责新joint core与集成测试；`/root/conditional_math_certificate` 仅负责新support entry/config/pipeline tests；`/root/branch_local_entry` gate修订已完成。Root唯一Conda/numerics/Git/SSH/launch owner。未冻结/未验证的core/entry不得提交成已完成方法或远端发布；已有旧代码/其他untracked保持。
+- 下一步完成真实B继承、新Ridge全部RHS/自由截距与K/L/U/Z链的合成测试，随后新候选完整预登记和必要入口P0/P1审查，源代码push/OID核实后才可唯一launch。数学/solver修复基于技术适用条件，不允许target评分回流选参。固定Phase1/practical residual/合法support和无源样本/源逐记录特征/无query拟合边界不变；fresh验证仍按用户要求暂缓。
+
+<!-- GROUP_BARRIER_GATE_PHASE_20261001 -->
+
+以下保留历史状态，不依据旧段落重复启动：
+
 ## 当前交接：合成本机开销测量已完成，完整真实query继续（2026-10-01）
 
 - Goal ACTIVE。当前已交付source479f6389d/push-OID0/0。固定合成软件成本run 20261001-d92-margin-single-query-cost-synthetic-r01 已唯一完成，runtime479；8软件测试、全部8row/24pair计时与全scores位级等价均VERIFIED。PAIR耗时中位减少8.09%至11.65%，C_ONLY增加5.76%至31.01%，因此只把optional API用于已有B输出的成对计算，单独C保留原路径。没有真实数据/模型/训练/准确率或星载收益声明。完整报告docs/D92_MARGIN_SINGLE_QUERY_COST_MEASUREMENT_20261001.md，独立证据automation_reports/CV-SincNet/20261001-d92-margin-single-query-cost-synthetic-r01/evidence/result_readback_20261001.json。local measurement已DONE，不重跑或扫描。

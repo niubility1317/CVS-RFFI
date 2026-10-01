@@ -1,0 +1,64 @@
+{
+  "schema": "d92_group_barrier_gate_source_validation_v1",
+  "status": "VERIFIED_20_FOCUSED_SYNTHETIC_TESTS",
+  "source": "code/cvsrffi/d92_group_barrier_gate.py",
+  "tests": [
+    "tests/test_d92_group_barrier_gate.py",
+    "tests/test_d92_group_barrier_gate_scale.py"
+  ],
+  "test_count": 20,
+  "test_output_prefix": "E:\\type10-7\\.codex_tmp\\pytest_native_activation_1790862934951624900",
+  "environment": {
+    "identity": {
+      "executable": "E:\\type10-7\\local_envs\\ssr-gpu\\python.exe",
+      "prefix": "E:\\type10-7\\local_envs\\ssr-gpu",
+      "conda_prefix": "E:\\type10-7\\local_envs\\ssr-gpu",
+      "conda_shlvl": "2",
+      "numpy": "2.2.6",
+      "scipy": "1.15.3",
+      "torch": "2.1.0+cpu"
+    },
+    "activation_source": "Installed conda.activate.CmdExeActivator.build_stack; all generated variables applied; no hooks",
+    "conda_cli_or_wrapper_started": false,
+    "test_temp": "E:\\type10-7\\.codex_tmp\\pytest_native_temp_1790862933767212800",
+    "pytest_cache_enabled": false
+  },
+  "actual_target_or_source_data_read": false,
+  "query_truth_or_scores_read": false,
+  "method_integration_complete": false,
+  "experiment_launched": false,
+  "goal_complete": false,
+  "fixed_barrier_rule": "zeta=N*1e-4/(m_old*n_new_classes)",
+  "fixed_average_hard_objective_gap_at_exact_center": 0.0001,
+  "full_scale_case": {
+    "old_classes": 6,
+    "new_classes": 20,
+    "k": 20,
+    "physical_training_rows": 520,
+    "old_rows": 120,
+    "new_rows": 400,
+    "all_pair_constraints": 2400,
+    "raw_kernel": "ones_rank1_duplicate_all_inputs",
+    "oracle": "independent_scalar_brentq",
+    "bounds_vjp": "independent_scalar_stationarity_derivative_each_tied_pair",
+    "tested_peak_H_plus_cholesky_buffers_bytes": 4326400,
+    "process_peak_rss_bytes": null
+  },
+  "preserved_failures": [
+    {
+      "prefix": "pytest_native_activation_1790862701798722200",
+      "reason": "Root test used nonexistent audit key; corrected test to actual constraint_count"
+    },
+    {
+      "prefix": "pytest_native_activation_1790862724293243300",
+      "reason": "Large rank1 VJP readback failed; stable scaled adjoint implemented without relaxing residual tolerance"
+    }
+  ],
+  "limitations": [
+    "Synthetic correctness only; no accuracy conclusion",
+    "Full new-head/RHS/kernel/adapter joint path pending",
+    "Finite barrier is distinct from exact hard optimum",
+    "Theory gap alone is not a finite-precision dual-feasibility certificate",
+    "Star/device time, energy, RSS and wire bytes not measured"
+  ]
+}

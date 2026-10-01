@@ -92,3 +92,5 @@
 ## D92合成软件开销补充记录（2026-10-01）
 
 - [20261001-d92-margin-single-query-cost-synthetic-r01](../automation_reports/CV-SincNet/20261001-d92-margin-single-query-cost-synthetic-r01/report.md)：ANALYZED/VERIFIED，8行和24组实际计时完成；固定8行，纯合成单样本推理成本，不训练或读取真实query，不替代现有完整准确率基准。
+
+- 20261001-phase2-d92-margin-joint-repeat-m2-r01：RUNNING；一行 `UNSUPPORTED_ACTIVE_JACOBIAN` 技术失败，完整矩阵未固定，其他健康任务继续；[当前报告](../automation_reports/CV-SincNet/20261001-phase2-d92-margin-joint-repeat-m2-r01/report.md)。<!-- row_failure_observed_1790861110983221800 -->
