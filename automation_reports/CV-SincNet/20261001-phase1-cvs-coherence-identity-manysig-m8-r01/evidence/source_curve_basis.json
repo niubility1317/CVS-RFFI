@@ -1,0 +1,88 @@
+{
+  "source_run": "20261001-phase1-cvs-stability-identity-manysig-m8-r01",
+  "source_only": true,
+  "rows": [
+    {
+      "row_id": "phase_delta-s2026092701",
+      "gradient_epoch_mean": 1.9769596115114167,
+      "gradient_epoch_max": 6.440039172172546,
+      "CE200": 0.01612534549785778,
+      "V200": 0.9802962962962963,
+      "worst_RX200": 0.9474074074074074,
+      "final20_V_min": 0.9796666666666667,
+      "final20_V_max": 0.9808148148148148
+    },
+    {
+      "row_id": "phase_dsq-s2026092701",
+      "gradient_epoch_mean": 1.9916605720944702,
+      "gradient_epoch_max": 6.428438210487366,
+      "CE200": 0.02261649217340164,
+      "V200": 0.9789629629629629,
+      "worst_RX200": 0.9401851851851852,
+      "final20_V_min": 0.9786296296296296,
+      "final20_V_max": 0.9794444444444445
+    },
+    {
+      "row_id": "phase_delta-s2026092702",
+      "gradient_epoch_mean": 1.9152230868570506,
+      "gradient_epoch_max": 5.722734065055847,
+      "CE200": 0.015508189629763365,
+      "V200": 0.9808518518518519,
+      "worst_RX200": 0.9468518518518518,
+      "final20_V_min": 0.9797037037037037,
+      "final20_V_max": 0.9811851851851852
+    },
+    {
+      "row_id": "phase_dsq-s2026092702",
+      "gradient_epoch_mean": 1.9633848624192178,
+      "gradient_epoch_max": 5.374152569770813,
+      "CE200": 0.01751155667938292,
+      "V200": 0.9814814814814815,
+      "worst_RX200": 0.9474074074074074,
+      "final20_V_min": 0.980925925925926,
+      "final20_V_max": 0.9819629629629629
+    },
+    {
+      "row_id": "phase_delta-s2026092703",
+      "gradient_epoch_mean": 1.9715399321025238,
+      "gradient_epoch_max": 6.047658529281616,
+      "CE200": 0.016874419185332955,
+      "V200": 0.9818888888888889,
+      "worst_RX200": 0.9494444444444444,
+      "final20_V_min": 0.9816666666666667,
+      "final20_V_max": 0.9823703703703703
+    },
+    {
+      "row_id": "phase_dsq-s2026092703",
+      "gradient_epoch_mean": 1.921170299481228,
+      "gradient_epoch_max": 6.247277154922485,
+      "CE200": 0.018501624697819352,
+      "V200": 0.9774444444444444,
+      "worst_RX200": 0.9412962962962963,
+      "final20_V_min": 0.9768888888888889,
+      "final20_V_max": 0.9778888888888889
+    },
+    {
+      "row_id": "phase_delta-s2026092704",
+      "gradient_epoch_mean": 1.990450124944374,
+      "gradient_epoch_max": 5.687168936729432,
+      "CE200": 0.02439860395854339,
+      "V200": 0.9744814814814815,
+      "worst_RX200": 0.9264814814814815,
+      "final20_V_min": 0.9737777777777777,
+      "final20_V_max": 0.9745185185185186
+    },
+    {
+      "row_id": "phase_dsq-s2026092704",
+      "gradient_epoch_mean": 1.962351136407815,
+      "gradient_epoch_max": 6.075972909927368,
+      "CE200": 0.02114173326990567,
+      "V200": 0.9816666666666667,
+      "worst_RX200": 0.9472222222222222,
+      "final20_V_min": 0.9816666666666667,
+      "final20_V_max": 0.9824814814814815
+    }
+  ],
+  "target_scores_used": false,
+  "interpretation": "All formal source steps finite;no evidence that the constructed singularity occurred during the completed run"
+}

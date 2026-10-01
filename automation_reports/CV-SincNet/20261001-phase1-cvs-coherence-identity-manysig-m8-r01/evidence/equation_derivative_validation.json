@@ -1,0 +1,38 @@
+{
+  "status": "VERIFIED_COMPONENT_ONLY",
+  "epsilon": 1e-06,
+  "construction": "z_prev=1+0j,z_current=-epsilon+0j;dot+epsilon=0,cross=0",
+  "legacy": {
+    "forward_finite": true,
+    "input_gradient_finite": true,
+    "nonfinite_input_gradient_elements": 0
+  },
+  "coherence": {
+    "forward_finite": true,
+    "input_gradient_finite": true,
+    "nonfinite_input_gradient_elements": 0
+  },
+  "healthy_formal_source_failure_observed": false,
+  "source_only": true,
+  "local_torch_version": "2.10.0+cu128",
+  "formal_runtime": {
+    "torch_version": "2.1.0+cu121",
+    "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "actual_module": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_stability_identity_20261001_r01/experiments/adv3b02_xuc/code/model.py",
+    "epsilon": 1e-06,
+    "legacy": {
+      "forward_finite": true,
+      "input_gradient_finite": false,
+      "nonfinite_input_gradient_elements": 192
+    },
+    "coherence": {
+      "forward_finite": true,
+      "input_gradient_finite": true,
+      "nonfinite_input_gradient_elements": 0
+    },
+    "atan2_zero_grad_finite": false,
+    "synthetic_inputs_only": true,
+    "checkpoint_loaded": false,
+    "target_inputs_used": false
+  }
+}
