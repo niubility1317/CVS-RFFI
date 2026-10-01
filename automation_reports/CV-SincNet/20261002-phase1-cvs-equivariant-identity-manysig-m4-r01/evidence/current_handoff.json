@@ -1,6 +1,6 @@
 {
   "objective": "Improve clean-only plain-CE identity CVS performance with actual RFF physical constraints; performance first, cost secondary; no augmentation/domain backbone",
-  "status": "TRAINING_COMPLETE_AWAITING_FROZEN_CLEAN_TEST",
+  "status": "ANALYZED",
   "run_id": "20261002-phase1-cvs-equivariant-identity-manysig-m4-r01",
   "source_release": "cvs_equivariant_identity_20261002_r01",
   "source_commit": "555aaadea1ab5c40dab7f9d8a80a51b1cd7b5c76",
@@ -37,15 +37,13 @@
     }
   ],
   "target_access": false,
-  "formal_performance_result": "Source-only selection complete; newclean pending",
+  "formal_performance_result": "Complete frozen clean report exists; no target metrics may be used for subsequent model design",
   "goal_achieved": false,
   "evidence": "evidence/source_progress_readback.json",
   "next_steps": [
-    "Read current same-run state before continuing; never relaunch or alter healthy source release",
-    "At natural E200 completion run experiments.cvs_equivariant_identity.collect then analyze; audit40000steps800epochs and fixed8source selection",
-    "If new_selected: prepare_equivariant_confirmation.py, commit/push/OID, immutableclean publish; freeze4new+20old, truth-last score and analyze",
-    "If residual_selected: finish_equivariant_baseline_retained.py verifies historical20predictions/160metrics unchanged; newequivariant testN/A, noquery",
-    "Register accurate completed states, preserve negatives, mirror and Gitdeliver; physics/performance goal not declaredcomplete"
+    "Numerical diagnosis of pre-query source phase discrepancy with frozen source weights and fixed publicsynthetic inputs",
+    "No changes to current source/clean releases, selection, predictions or scores",
+    "Further design must rely on legal source-only/physical evidence; no clean feedback"
   ],
   "clean_run_id": "20261002-phase1-cvs-equivariant-clean-manysig-m24-r01"
 }

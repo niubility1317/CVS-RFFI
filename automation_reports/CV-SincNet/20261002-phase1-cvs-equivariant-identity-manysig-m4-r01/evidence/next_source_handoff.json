@@ -1,0 +1,28 @@
+{
+  "status": "SOURCE_ONLY_HANDOFF",
+  "run_id": "20261002-phase1-cvs-equivariant-identity-manysig-m4-r01",
+  "source_commit": "555aaadea1ab5c40dab7f9d8a80a51b1cd7b5c76",
+  "source_summaries": {
+    "residual_fusion": {
+      "score": 0.9628240740740741,
+      "source_accuracy": 0.9806944444444444,
+      "worst_rx_accuracy": 0.9449537037037037,
+      "parameters": 164225,
+      "conv_linear_macs": 9708836
+    },
+    "equivariant_memory": {
+      "score": 0.9646898148148149,
+      "source_accuracy": 0.9807222222222223,
+      "worst_rx_accuracy": 0.9486574074074074,
+      "parameters": 202553,
+      "conv_linear_macs": 7199008
+    }
+  },
+  "whole_phase_max_logit_error": 0.02684152126312256,
+  "whole_phase_max_unit_embedding_distance": 0.0018618506146594882,
+  "report_tolerance": 0.001,
+  "numerical_issue_observed_before_new_query": true,
+  "next_action": "Frozen source/public synthetic precision and stage attribution; no architecture/parameter change",
+  "target_scores_included": false,
+  "target_score_based_design_forbidden": true
+}

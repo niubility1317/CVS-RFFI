@@ -1,0 +1,55 @@
+{
+  "status": "VERIFIED",
+  "candidate": "equivariant_memory",
+  "accuracy_mean": 0.6913735119047619,
+  "accuracy_sd": 0.011859390101276858,
+  "paired_vs_residual": {
+    "candidate": "equivariant_memory",
+    "baseline": "residual_fusion",
+    "receiver": "ALL",
+    "view": "clean",
+    "model_seeds": [
+      2026092701,
+      2026092702,
+      2026092703,
+      2026092704
+    ],
+    "accuracy_delta_pp_by_seed": [
+      -8.272023809523809,
+      -7.4619047619047585,
+      -11.457142857142856,
+      -10.07678571428572
+    ],
+    "accuracy_delta_pp_mean": -9.316964285714285,
+    "accuracy_delta_pp_seed_sd": 1.7972979122909274,
+    "positive_seeds": 0
+  },
+  "paired_vs_native": {
+    "candidate": "equivariant_memory",
+    "baseline": "native",
+    "receiver": "ALL",
+    "view": "clean",
+    "model_seeds": [
+      2026092701,
+      2026092702,
+      2026092703,
+      2026092704
+    ],
+    "accuracy_delta_pp_by_seed": [
+      -5.6636904761904745,
+      -5.969047619047618,
+      -8.638095238095234,
+      -8.088690476190486
+    ],
+    "accuracy_delta_pp_mean": -7.089880952380954,
+    "accuracy_delta_pp_seed_sd": 1.4927463029407626,
+    "positive_seeds": 0
+  },
+  "all192_confusions_recomputed": true,
+  "old160_metrics_exactly_unchanged": true,
+  "all_mean_sd_and_pairs_recomputed": true,
+  "scientific_verdict": "PERFORMANCE_REGRESSION",
+  "genuine_RFF_physics_aware_goal_achieved": false,
+  "physical_scope": "Wholeidentity constant-phase constraint and complex received memory with explicit TX/RX confounds; no universal RX/CFO/channel invariance or identified TX parameters",
+  "target_feedback": false
+}
