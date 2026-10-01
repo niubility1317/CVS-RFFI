@@ -10,11 +10,11 @@ import pytest
 ROOT=Path(__file__).resolve().parents[1]
 sys.path[:0]=[str(ROOT/'tools'),str(ROOT/'code')]
 import run_d92_ground_a_packet_export as runner
-from test_export_d92_ground_classifier_a_packet import fixture as checkpoint_fixture
+from test_export_d92_ground_classifier_a_packet import fixture as checkpoint_fixture,native_fixture,native_payload
 
 
 def fixture(tmp_path):
-    run_root=tmp_path/'run';rows=[]
+    run_root=tmp_path/'run';rows=[];native=native_fixture(tmp_path)
     roles=dict(role_ids={'L_s':['source-0','source-1'],'V_s':['source-2'],'T_s':['source-3']},
         source_rxs=['rx-ground'],source_days=['day-source'],ratios=[.6,.2,.2],split_seed=11,num_classes=6)
     expected=tmp_path/'original_source_contract.json'
@@ -22,6 +22,7 @@ def fixture(tmp_path):
     for index in range(2):
         directory=tmp_path/('source-'+str(index));directory.mkdir()
         checkpoint,weight,binding,provenance=checkpoint_fixture(directory,scale=17.25+index)
+        native_payload(checkpoint,weight,binding,provenance,native)
         actual=directory/'source_contract.json';actual.write_text(json.dumps(dict(roles,classes=binding['ordered_classes'],
             native_role_comparison='EXACT_MATCH',checkpoint_init='scratch_only',target_access_before_freeze=False)),encoding='utf-8')
         initial=directory/'initialization.json';initial.write_text(json.dumps(dict(scratch_only=True,checkpoint_sources=[],
@@ -34,15 +35,17 @@ def fixture(tmp_path):
         name='ground-a-synthetic-'+str(index)
         rows.append(dict(row_id=name,checkpoint=checkpoint.as_posix(),source_contract_ref=actual.as_posix(),
             expected_source_contract_ref=expected.as_posix(),initialization_ref=initial.as_posix(),selected_checkpoint_ref=terminal.as_posix(),
-            training_startup_ref=startup.as_posix(),binding=binding,provenance=provenance,output_root=(run_root/name).as_posix()))
+            training_startup_ref=startup.as_posix(),native_code_ref=native.as_posix(),
+            binding=binding,provenance=provenance,output_root=(run_root/name).as_posix()))
     return dict(run_id='synthetic-ground-a',spec_path='configs/synthetic-ground-a.json',
-        code=dict(cwd=(tmp_path/'release').as_posix(),environment=Path(sys.executable).as_posix()),
+        code=dict(cwd=(tmp_path/'release').as_posix(),environment=Path(sys.executable).as_posix(),native_training_release=native.parent.as_posix()),
         execution=dict(remote_run_root=run_root.as_posix(),launch_owner='root',cpu_lanes=1,blas_threads_per_lane=2),rows=rows)
 
 
 def test_full_sequential_packets_source_order_logs_and_measured_totals(tmp_path):
     spec=fixture(tmp_path);calls=[];inputs={row['checkpoint']:Path(row['checkpoint']).read_bytes() for row in spec['rows']}
     def export(**kwargs):
+        assert kwargs['native_code']==spec['rows'][len(calls)]['native_code_ref']
         calls.append(kwargs['checkpoint']);return runner.export_packet(**kwargs)
     result=runner.run(spec,'a'*40,export_fn=export);root=Path(spec['execution']['remote_run_root'])
     assert calls==[row['checkpoint'] for row in spec['rows']]
@@ -132,7 +135,8 @@ def test_failed_second_export_preserves_first_packet_and_does_not_retry(tmp_path
     assert failure['completed_rows']==1 and failure['automatic_retry'] is False
 
 
-@pytest.mark.parametrize('case',['lanes','owner','output','relative_input','missing_binding','missing_startup_ref','wrong_startup_parent','bad_commit'])
+@pytest.mark.parametrize('case',['lanes','owner','output','relative_input','missing_binding','missing_startup_ref','wrong_startup_parent','bad_commit',
+    'missing_native_ref','wrong_native_ref','missing_native_release','overlapping_native_release'])
 def test_spec_scope_rejections_before_run_mutation(tmp_path,case):
     spec=fixture(tmp_path)
     if case=='lanes':spec['execution']['cpu_lanes']=2
@@ -142,5 +146,9 @@ def test_spec_scope_rejections_before_run_mutation(tmp_path,case):
     elif case=='missing_binding':spec['rows'][0]['binding'].pop('scale')
     elif case=='missing_startup_ref':spec['rows'][0].pop('training_startup_ref')
     elif case=='wrong_startup_parent':spec['rows'][0]['training_startup_ref']=spec['rows'][1]['training_startup_ref']
+    elif case=='missing_native_ref':spec['rows'][0].pop('native_code_ref')
+    elif case=='wrong_native_ref':spec['rows'][0]['native_code_ref']=(tmp_path/'wrong'/'code').as_posix()
+    elif case=='missing_native_release':spec['code'].pop('native_training_release')
+    elif case=='overlapping_native_release':spec['code']['native_training_release']=spec['code']['cwd']
     with pytest.raises(ValueError):runner.run(spec,'unknown' if case=='bad_commit' else 'a'*40)
     assert not Path(spec['execution']['remote_run_root']).exists()

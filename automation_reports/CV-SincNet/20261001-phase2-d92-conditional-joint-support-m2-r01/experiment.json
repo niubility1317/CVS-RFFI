@@ -158,7 +158,13 @@
     ],
     "observed_scope": "Independent startup/PID/argv/CWD/row/log metadata; no performance or feature values",
     "frozen_launch_spec_ref": "configs/d92_conditional_joint_support_20261001.json",
-    "metadata_correction_scope": "Record-only correction of inherited Affine display fields: row command/config/log/optimizer/budget. Executed runner constructed Conditional commands from cohort fields and validated probe.algorithm/probe.budget. Original launch spec and remote source remain unchanged."
+    "metadata_correction_scope": "Record-only correction of inherited Affine display fields: row command/config/log/optimizer/budget. Executed runner constructed Conditional commands from cohort fields and validated probe.algorithm/probe.budget. Original launch spec and remote source remain unchanged.",
+    "training_completion_readback_ref": "evidence/completion_readback_1790825522372729400.json",
+    "actual_process_alive": false,
+    "analysis_release": "d92_conditional_joint_analysis_20261001_r01",
+    "analysis_launch_owner": "root",
+    "analysis_status": "PREREGISTERED_NOT_LAUNCHED",
+    "analysis_command": "E:/type10-7/local_envs/ssr-gpu/python.exe -X utf8 tools/analyze_d92_conditional_joint_probe.py --spec configs/d92_conditional_joint_support_20261001.json --analysis-release d92_conditional_joint_analysis_20261001_r01"
   },
   "expected_artifacts": [
     "startup.json",
@@ -673,7 +679,7 @@
   ],
   "parent_run_ids": [],
   "claim_scope": "SUPPORT_INFORMATION_DIAGNOSTIC_NOT_QUERY_PERFORMANCE",
-  "status": "RUNNING",
+  "status": "TRAINING_COMPLETE",
   "spec_path": "configs/d92_conditional_joint_support_20261001.json",
   "input_identity_source": "Declared cache/capsule/model/physical split metadata from the Affine config; no learned state, result or scoring file read",
   "probe": {
@@ -3040,7 +3046,7 @@
     "prediction_ref": "Held legal support predictions fixed before independent support-truth join; no query",
     "interpretation": "Paired support-only structural joint pilot; supervised inner loss is training, outer support holdout is diagnostic performance. No independent query or new-data validation claim."
   },
-  "implementation_status": "SYNTHETIC_PIPELINE_VERIFIED_REAL_SUPPORT_RUN_STARTED",
+  "implementation_status": "COMPLETE_160_PARENT_SUPPORT_TRAINING_INDEPENDENT_ANALYSIS_PENDING",
   "actual_A": null,
   "adaptation_gain_B_minus_A": null,
   "performance_gate": null,

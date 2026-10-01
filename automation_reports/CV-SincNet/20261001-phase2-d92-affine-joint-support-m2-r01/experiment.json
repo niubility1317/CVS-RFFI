@@ -225,7 +225,12 @@
       "passed": 16,
       "seconds": 8.97,
       "document": "docs/D92_AFFINE_DIAGNOSTIC_TRANSPORT_20261001.md"
-    }
+    },
+    "independent_analysis_status": "VERIFIED_COMPLETE",
+    "independent_analysis_commit": "1acc83a584ace40f294a433ace80629472ee2525",
+    "analysis_process_alive": false,
+    "full_support_report_ref": "results/full_support_report.md",
+    "training_collector_status": "SYNTHETIC_REPAIRED_PENDING_REAL_COLLECTION"
   },
   "expected_artifacts": [
     "startup.json",
@@ -258,7 +263,7 @@
     "Primal affine solves have C+1 RHS while CE adjoints have C RHS, counted with actual n and all rejected trials; dense work units are a dimensional proxy, not measured FLOP. Intercept state and Schur caches are charged separately from adapter coordinates. Detailed text/full numeric NPZ/compact JSONL/CSV retained."
   ],
   "claim_scope": "SUPPORT_INFORMATION_DIAGNOSTIC_NOT_QUERY_PERFORMANCE",
-  "status": "ARTIFACTS_COMPLETE",
+  "status": "ANALYZED",
   "metrics_plan": {
     "metric_names": [
       "A_NA",
@@ -2772,5 +2777,6 @@
     }
   ],
   "registered_at": "2026-09-30T21:37:54+00:00",
-  "related_development_evidence": "evidence/conditional_joint_prerequisites_20261001.json"
+  "related_development_evidence": "evidence/conditional_joint_prerequisites_20261001.json",
+  "implementation_status": "FULL_SUPPORT_RESULTS_VERIFIED_TRAINING_DIAGNOSTIC_TRANSPORT_REPAIRED_PENDING_REAL_COLLECTION"
 }

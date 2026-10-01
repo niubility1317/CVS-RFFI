@@ -31,3 +31,5 @@
 输入绑定VERIFIED：原factory为model.build_model，原CosFace的s=30.0、eps=1e-4；实际类别行序为14-10、14-7、20-15、20-19、6-15、8-20。两个模型均source-only scratch final200，完整继承为空，按training_final_only选中。原始head数值部分每个应为3840B；完整包字节数在实际导出后测量。本run不测量A准确率、B−A或星载资源；增量传输量仍N/A。此前只读factory绑定缺arch_family的失败已保留，按原factory默认值与CLI实际合并路径修正，未构造encoder、加载checkpoint或启动训练。
 
 LOCAL_VERIFIED/VERIFIED：原头导出31项、相关scorer/runner/publisher组合71项、final200修订后runner/publisher34项合成检查通过；首轮scorer失败保留并已修。独立P0/P1检查发现的原模型final200和生产档案minimalcontext兼容问题已闭合。原factory/class/s/eps及source-only scratch final200真实元数据已绑定，实际导出/目标推断/评分尚未执行；A与B−A仍N/A。
+
+FAILED/独立读回已核实：r01 supervisor605956已退出，source输入匹配后在torch.load解析原项目配置类时缺baseline_origin_sat_view，完成packet数0。原run/输出/failed marker保留；未适应/推断/评分或修改原模型。另建r02，仅补明确原source code的反序列化类型导入，无参数或训练改动，不复用失败目录。

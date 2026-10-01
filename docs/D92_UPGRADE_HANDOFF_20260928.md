@@ -1,3 +1,13 @@
+## 最新状态：Conditional训练完整结束、地面A小包原生类型兼容修复（2026-10-01）
+
+TRAINING_COMPLETE/VERIFIED：独立control读回核实4个row、160parent、每row40与所有训练进程退出，actualruntime7204161不变。已预登记唯一独立analysis release d92_conditional_joint_analysis_20261001_r01，尚未启动分析或读取真实性能；原spec/训练/状态未修改，A仍N/A。
+
+ANALYZED/VERIFIED：完整独立160parent/1800path结果与80行矩阵报告已生成。oof新类存在总体相对R0：C旧+2.8906pp，C新−2.3203pp，H−0.4376pp，不能宣称全面改善或query泛化。source训练版本81a226a、analysis1acc83a不变。collector首轮compact/full引用shape裁剪冲突失败保留；严格metadata互补融合修复20项合成检查通过（14.01s），真实snapshot/extract待只读重采，无训练/forward/solve。
+
+FAILED/独立读回已核实：r01 supervisor605956已退出，source输入匹配后在torch.load解析原项目配置类时缺baseline_origin_sat_view，完成packet数0。原run/输出/failed marker保留；未适应/推断/评分或修改原模型。另建r02，仅补明确原source code的反序列化类型导入，无参数或训练改动，不复用失败目录。
+
+Ground r02 run 20261001-phase2-d92-ground-a-packet-m2-r02，release d92_ground_a_packet_export_20261001_r02，目前未启动。source修复77合成通过。旧r01 PID605956已退出且FAILED；禁止复用失败输出或再次启动r01。Conditional analysis仍未启动；核实新analysis目录不存在后唯一启动。当前无活跃本地Conda/SSH/旧Affine handle2931已完成，不能poll旧handle。原始source模块仅readonly导入供pickle，所有实际A/星载资源仍未测。
+
 ## 最新状态：条件联合support实验已唯一启动（2026-10-01）
 
 RUNNING/VERIFIED：ConditionalJoint已唯一发布启动，实际训练release为7204161b126a9d3a17096aee5c75bce8ccfee6ec。独立读回核实supervisor578658/start6923770和rx3 workers578671/578672/start6923795的PID、argv、CWD及输入身份；两个rx3训练、两个rx1排队，CPU2lane/BLAS2，不使用GPU、不加载checkpoint、query/源样本0。完整独立summary31、report/collector18、隔离bundle4及核心/ENTRY37、完整KKT63检查已通过。记录中的旧Affine展示字段已按实际Conditional命令与probe预算更正，冻结launch spec及健康进程不变。尚无真实性能，A及B−A仍N/A，旧support恒等式不保证query零遗忘，目标ACTIVE。

@@ -244,6 +244,85 @@ def fixture(root):
 
 
 class CollectorTests(unittest.TestCase):
+    def production_compactor_reference(self, lane):
+        # Use actual ENTRY serialization and compaction, but no candidate fit,
+        # forward, solve, real input or outer-held archive is created/read.
+        import evaluate_d92_affine_joint_probe as entry
+        lane.mkdir(parents=True)
+        namespace = json.dumps(dict(state='B_AFFINE', run_id='synthetic', row_id=lane.parent.name,
+            scope='support_oof', split_id='synthetic_reference', fold=0, trial=None, parent_k=3, train_k=2), sort_keys=True)
+        storage = entry.StateArchive(lane)
+        ref = storage(namespace + '/synthetic_reference', dict(value=np.arange(6, dtype=np.float64).reshape(2, 3),
+            scalar=np.asarray(.125, dtype=np.float64), empty=np.empty((0, 2), dtype=np.float64)))
+        record = dict(event='AFFINE_JOINT_PREPARED', final_problem=dict(prior_ref=ref))
+        compact = entry.compact_event(record)['final_problem']['prior_ref']
+        self.assertEqual(set(compact['arrays']), set(ref['arrays']))
+        self.assertTrue(all('shape' in value for value in ref['arrays'].values()))
+        self.assertTrue(all('shape' not in value for value in compact['arrays'].values()))
+        return ref, compact
+
+    def test_actual_entry_compactor_omits_shapes_and_merge_restores_metadata_without_io(self):
+        with tempfile.TemporaryDirectory() as directory:
+            full, compact = self.production_compactor_reference(Path(directory) / 'row' / 'probe')
+            original_full, original_compact = deepcopy(full), deepcopy(compact)
+            with patch.object(collector.np, 'load', side_effect=AssertionError('NO_NPZ_READ')):
+                self.assertEqual(collector.merge_training_references(full, compact), full)
+                self.assertEqual(collector.merge_training_references(compact, full), full)
+            self.assertEqual(full, original_full); self.assertEqual(compact, original_compact)
+            self.assertEqual(full['arrays']['scalar']['shape'], [])
+            self.assertEqual(full['arrays']['empty']['shape'], [0, 2])
+
+    def test_snapshot_merges_real_compaction_and_keeps_full_shapes_without_arrays_or_outer(self):
+        import evaluate_d92_affine_joint_probe as entry
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory); summary, events_by_row = fixture(root)
+            stages = list(collector.jsonlines(summary / 'training_objectives.jsonl'))
+            full = stages[0]['initialization_state_ref']
+            first_events = events_by_row[stages[0]['row_id']]
+            first_events[0]['final_problem']['prior_ref'] = deepcopy(full)
+            for row_id, events in events_by_row.items():
+                lane = root / 'run' / row_id / 'probe'
+                jsonl(lane / 'training_events.jsonl', events)
+                jsonl(lane / 'training_events_compact.jsonl', [entry.compact_event(event) for event in events])
+            with patch.object(collector.np, 'load', side_effect=AssertionError('NO_NPZ_READ')), \
+                    patch.object(collector, 'EXACT', {'ajlr_stage_count': 7}), patch.object(collector, 'EXPECTED_STAGES', 7):
+                captured = collector.snapshot(summary)
+            lane = next(row for row in captured['lanes'] if row['row_id'] == stages[0]['row_id'])
+            merged = next(ref for ref in lane['training_refs'] if ref['path'] == full['path'])
+            self.assertEqual(merged, full)
+            self.assertTrue(all('shape' in array for row in captured['lanes'] for ref in row['training_refs'] for array in ref['arrays'].values()))
+
+    def test_arrays_accept_real_compacted_ref_and_validate_captured_shape_dtype_bytes(self):
+        with tempfile.TemporaryDirectory() as directory:
+            lane = Path(directory) / 'row' / 'probe'; full, compact = self.production_compactor_reference(lane)
+            arrays = collector.Arrays(lane, [full]); value = arrays(compact)
+            np.testing.assert_array_equal(value['value'], np.arange(6).reshape(2, 3))
+            self.assertEqual(value['scalar'].shape, ()); self.assertEqual(value['empty'].shape, (0, 2))
+            self.assertIs(arrays(full), value); self.assertFalse(value['value'].flags.writeable)
+            with (lane / full['path']).open('wb') as stream:
+                np.savez_compressed(stream, value=np.arange(6, dtype=np.float64).reshape(3, 2),
+                                    scalar=np.asarray(.125, dtype=np.float64), empty=np.empty((0, 2), dtype=np.float64))
+            with self.assertRaisesRegex(ValueError, 'shape/dtype/bytes'):
+                collector.Arrays(lane, [full])(compact)
+
+    def test_reference_metadata_conflicts_never_reach_npz_loading(self):
+        with tempfile.TemporaryDirectory() as directory:
+            lane = Path(directory) / 'row' / 'probe'; full, compact = self.production_compactor_reference(lane)
+            changes = {
+                'key': lambda ref: ref.update(key='another_identity'),
+                'namespace': lambda ref: ref.update(namespace=json.dumps(dict(json.loads(ref['namespace']), split_id='another_split'))),
+                'shape': lambda ref: ref['arrays']['value'].update(shape=[3, 2]),
+                'dtype': lambda ref: ref['arrays']['value'].update(dtype='float32', nbytes=24),
+                'bytes': lambda ref: ref['arrays']['value'].update(nbytes=52),
+                'missing_array': lambda ref: ref['arrays'].pop('scalar'),
+            }
+            for name, mutate in changes.items():
+                with self.subTest(name=name):
+                    changed = deepcopy(compact); mutate(changed)
+                    with patch.object(collector.np, 'load', side_effect=AssertionError('NO_NPZ_READ')):
+                        with self.assertRaisesRegex(ValueError, 'Conflicting'):
+                            collector.Arrays(lane, [full])(changed)
+
     def derive(self,root):
         summary,_=fixture(root)
         with patch.object(collector,'EXACT',{'ajlr_stage_count':7}),patch.object(collector,'EXPECTED_STAGES',7):

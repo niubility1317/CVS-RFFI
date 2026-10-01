@@ -2,7 +2,7 @@
 import argparse
 import importlib.util
 import json
-from pathlib import Path
+from pathlib import Path,PurePosixPath
 import shutil
 import subprocess
 import sys
@@ -27,7 +27,10 @@ def release_paths(spec):
 def readiness(spec,root=ROOT):
     paths=release_paths(spec);missing=[p for p in paths if not (Path(root)/p).is_file()]
     return dict(status='SOURCE_BUNDLE_AVAILABLE_NOT_LAUNCHED' if not missing else 'INCOMPLETE_SOURCE_BUNDLE',
-        paths=paths,missing=missing,launched=False)
+        paths=paths,missing=missing,launched=False,
+        external_native_dependency=dict(code_ref=str(PurePosixPath(spec['code']['native_training_release'])/'code'),
+            copied_into_bundle=False,scope='EXISTING_READ_ONLY_ORIGINAL_TRAINING_RELEASE',
+            runtime_module_origins_verified=False))
 
 
 def verify_bundle_imports(root=ROOT):
@@ -45,6 +48,7 @@ import run_d92_ground_a_packet_export as runner
 import export_d92_ground_classifier_a_packet as exporter
 import cvsrffi
 import cvsrffi.d92_ground_classifier_a as head
+assert 'baseline_origin_sat_view' not in sys.modules and 'cvsrffi.muse_ssdg' not in sys.modules
 modules=[runner,exporter,cvsrffi,head]
 assert all(Path(module.__file__).resolve().is_relative_to(root) for module in modules)
 print(json.dumps(dict(status='VERIFIED',module_files=[Path(module.__file__).relative_to(root).as_posix() for module in modules])))

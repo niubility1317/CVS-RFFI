@@ -1,0 +1,80 @@
+{
+  "scope": "PICKLE_GLOBAL_TYPE_NAMES_AND_ORIGINAL_CLASS_SOURCE_ONLY",
+  "rows": [
+    {
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701/final_ssdg.pth",
+      "pickle_global_type_names": [
+        "_codecs encode",
+        "baseline_origin_sat_view SatViewStage",
+        "collections OrderedDict",
+        "cvsrffi.muse_ssdg RC4Calibration",
+        "numpy dtype",
+        "numpy ndarray",
+        "numpy._core.multiarray _reconstruct",
+        "torch BoolStorage",
+        "torch ByteStorage",
+        "torch FloatStorage",
+        "torch HalfStorage",
+        "torch LongStorage",
+        "torch._utils _rebuild_tensor_v2"
+      ],
+      "tensor_storage_read": false,
+      "torch_load": false
+    },
+    {
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092702/final_ssdg.pth",
+      "pickle_global_type_names": [
+        "_codecs encode",
+        "baseline_origin_sat_view SatViewStage",
+        "collections OrderedDict",
+        "cvsrffi.muse_ssdg RC4Calibration",
+        "numpy dtype",
+        "numpy ndarray",
+        "numpy._core.multiarray _reconstruct",
+        "torch BoolStorage",
+        "torch ByteStorage",
+        "torch FloatStorage",
+        "torch HalfStorage",
+        "torch LongStorage",
+        "torch._utils _rebuild_tensor_v2"
+      ],
+      "tensor_storage_read": false,
+      "torch_load": false
+    }
+  ],
+  "sources": [
+    {
+      "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rc4_matched_20260927_r01/code/baseline_origin_sat_view.py",
+      "bytes": 12077,
+      "imports": [
+        "from __future__ import annotations",
+        "from dataclasses import dataclass",
+        "import math",
+        "from typing import Any, Callable, Iterable, Mapping, Optional",
+        "import torch"
+      ],
+      "classes": [
+        {
+          "name": "SatViewStage",
+          "source": "class SatViewStage:\n    start_epoch: int\n    scenarios: tuple[str, ...]\n    view_prob: float"
+        },
+        {
+          "name": "SatViewTransform",
+          "source": "class SatViewTransform:\n    x: torch.Tensor\n    scenario: str\n    stage_start_epoch: int\n    stage_index: int\n    view_prob: float\n    applied: bool\n    clean_batch_size: int\n    meta: Optional[dict[str, Any]] = None\n    nuisance: Optional[torch.Tensor] = None\n    nuisance_valid: Optional[torch.Tensor] = None\n    nuisance_fields: tuple[str, ...] = ()"
+        },
+        {
+          "name": "BaselineOriginSatViewBatch",
+          "source": "class BaselineOriginSatViewBatch:\n    x: torch.Tensor\n    y: torch.Tensor\n    d_raw: Optional[torch.Tensor]\n    scenario: str\n    clean_batch_size: int\n    total_batch_size: int\n    stage_start_epoch: int\n    stage_index: int\n    view_prob: float\n    applied: bool\n    meta: Optional[dict[str, Any]] = None\n    nuisance: Optional[torch.Tensor] = None\n    nuisance_valid: Optional[torch.Tensor] = None\n    nuisance_fields: tuple[str, ...] = ()"
+        },
+        {
+          "name": "BaselineOriginSatViewAugment",
+          "source": "class BaselineOriginSatViewAugment:\n    \"\"\"Baseline-origin supervised satellite view generator.\n\n    The module exposes both a transform-only API for auxiliary/federated losses\n    and a clean+satellite expansion API for baseline-style supervised batches.\n    \"\"\"\n\n    def __init__(\n        self,\n        *,\n        scenarios: Optional[Iterable[str]] = None,\n        schedule: str = \"\",\n        p: float = 1.0,\n        seed: int = 2027,\n        apply_fn: ApplySatFn,\n    ) -> None:\n        self.stages = build_default_sat_view_stages(scenarios=scenarios, schedule=schedule, default_prob=p)\n        self.scenarios = list(self.stages[0].scenarios)\n        self.schedule = str(schedule or \"\")\n        self.seed = int(seed)\n        self.apply_fn = apply_fn\n\n    def _generator(self, device: torch.device, epoch: int, batch_idx: int) -> torch.Generator:\n        try:\n            gen = torch.Generator(device=device)\n        except Exception:\n            gen = torch.Generator()\n        gen.manual_seed(self.seed + int(epoch) * 1009 + int(batch_idx))\n        return gen\n\n    def stage_for_epoch(self, epoch: int) -> tuple[int, SatViewStage]:\n        cur_index = 0\n        for index, stage in enumerate(self.stages):\n            if int(epoch) >= int(stage.start_epoch):\n                cur_index = index\n            else:\n                break\n        return cur_index, self.stages[cur_index]\n\n    def _select_scenario(self, stage: SatViewStage, gen: torch.Generator, device: torch.device) -> str:\n        if len(stage.scenarios) == 1:\n            return stage.scenarios[0]\n        idx = int(torch.randint(0, len(stage.scenarios), (1,), device=device, generator=gen).item())\n        return stage.scenarios[idx]\n\n    def transform(\n        self,\n        x: torch.Tensor,\n        *,\n        args: Any,\n        epoch: int,\n        batch_idx: int,\n    ) -> SatViewTransform:\n        clean_bsz = int(x.size(0))\n        stage_index, stage = self.stage_for_epoch(epoch)\n        gen = self._generator(x.device, epoch, batch_idx)\n        p = _clamp_prob(stage.view_prob)\n        if p <= 0.0 or float(torch.rand((), device=x.device, generator=gen).item()) > p:\n            return SatViewTransform(\n                x=x.clone(),\n                scenario=\"clean_duplicate\",\n                stage_start_epoch=int(stage.start_epoch),\n                stage_index=int(stage_index),\n                view_prob=p,\n                applied=False,\n                clean_batch_size=clean_bsz,\n                meta={\"scenario\": \"clean_duplicate\", \"valid\": False},\n            )\n        scenario = self._select_scenario(stage, gen, x.device)\n        x_sat, raw_meta = self.apply_fn(x, scenario, args, gen=gen, return_meta=True)\n        meta, nuisance, nuisance_valid, nuisance_fields = _normalize_nuisance_meta(\n            raw_meta,\n            scenario=scenario,\n            batch_size=clean_bsz,\n            device=x.device,\n        )\n        return SatViewTransform(\n            x=x_sat.to(device=x.device, dtype=x.dtype),\n            scenario=scenario,\n            stage_start_epoch=int(stage.start_epoch),\n            stage_index=int(stage_index),\n            view_prob=p,\n            applied=True,\n            clean_batch_size=clean_bsz,\n            meta=meta,\n            nuisance=nuisance,\n            nuisance_valid=nuisance_valid,\n            nuisance_fields=nuisance_fields,\n        )\n\n    def expand(\n        self,\n        x: torch.Tensor,\n        y: torch.Tensor,\n        d_raw: Optional[torch.Tensor],\n        *,\n        args: Any,\n        epoch: int,\n        batch_idx: int,\n    ) -> BaselineOriginSatViewBatch:\n        view = self.transform(x, args=args, epoch=epoch, batch_idx=batch_idx)\n        y_view = y.to(device=x.device)\n        x_cat = torch.cat([x, view.x], dim=0)\n        y_cat = torch.cat([y_view, y_view], dim=0)\n        d_cat = _concat_optional_domain(d_raw, x.device)\n        nuisance, nuisance_valid = _expand_nuisance(\n            view.nuisance,\n            view.nuisance_valid,\n            int(x.size(0)),\n        )\n        return BaselineOriginSatViewBatch(\n            x=x_cat,\n            y=y_cat,\n            d_raw=d_cat,\n            scenario=view.scenario,\n            clean_batch_size=int(x.size(0)),\n            total_batch_size=int(x_cat.size(0)),\n            stage_start_epoch=int(view.stage_start_epoch),\n            stage_index=int(view.stage_index),\n            view_prob=float(view.view_prob),\n            applied=bool(view.applied),\n            meta=view.meta,\n            nuisance=nuisance,\n            nuisance_valid=nuisance_valid,\n            nuisance_fields=view.nuisance_fields,\n        )"
+        }
+      ]
+    }
+  ],
+  "checkpoint_loaded": false,
+  "tensor_storage_read": false,
+  "source_samples_read": false,
+  "target_features_read": false
+}

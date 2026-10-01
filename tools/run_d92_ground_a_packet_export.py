@@ -19,7 +19,7 @@ SOURCE_FIELDS=set(ROLE_FIELDS)|{'native_role_comparison','classes','target_acces
 INITIAL_FIELDS={'scratch_only','checkpoint_sources','target_contact','target_training_contact','source_roles','ema_origin'}
 SELECTED_FIELDS={'schema','selected_checkpoint','selected_checkpoint_sha256','selection_source'}
 ROW_FIELDS={'row_id','checkpoint','source_contract_ref','expected_source_contract_ref','initialization_ref',
-    'selected_checkpoint_ref','training_startup_ref','binding','provenance','output_root'}
+    'selected_checkpoint_ref','training_startup_ref','native_code_ref','binding','provenance','output_root'}
 
 
 def require(condition,message):
@@ -82,18 +82,24 @@ def validate_spec(spec):
         and '..' not in relative.parts and '\\' not in spec['spec_path'] and relative.suffix=='.json','Relative spec path required')
     code=spec['code'];execution=spec['execution'];rows=spec['rows']
     require(absolute(code['cwd']) and absolute(code['environment']) and absolute(execution['remote_run_root']),'Explicit absolute runtime paths required')
+    require(absolute(code.get('native_training_release')),'Explicit original native training release required')
     require(execution['launch_owner']=='root' and execution['cpu_lanes']==1 and execution['blas_threads_per_lane']==2,'One root-owned CPU lane / two BLAS threads required')
     release=PurePosixPath(code['cwd']);root=PurePosixPath(execution['remote_run_root'])
     require(release!=root and release not in root.parents and root not in release.parents,'Release/run paths overlap')
+    native=PurePosixPath(code['native_training_release'])
+    require(native!=root and root not in native.parents and native not in root.parents
+        and native!=release and release not in native.parents and native not in release.parents,
+        'Original native release must be separate from packet release/run')
     require(isinstance(rows,list) and rows and len({r['row_id'] for r in rows})==len(rows),'Explicit unique rows required')
     for row in rows:
         require(ROW_FIELDS<=set(row),'Incomplete explicit packet row')
         name=row['row_id'];require(isinstance(name,str) and name not in ('','.','..') and '/' not in name and '\\' not in name,'Invalid row ID')
         require(PurePosixPath(row['output_root'])==root/name,'Row packet output escaped run root')
-        for key in ('checkpoint','source_contract_ref','expected_source_contract_ref','initialization_ref','selected_checkpoint_ref','training_startup_ref'):
+        for key in ('checkpoint','source_contract_ref','expected_source_contract_ref','initialization_ref','selected_checkpoint_ref','training_startup_ref','native_code_ref'):
             require(absolute(row[key]),'Explicit source path required: '+key)
             source=PurePosixPath(row[key]);require(source!=root and root not in source.parents,'Source input lies inside packet output')
         bound_metadata(row['binding'],row['provenance'])
+        require(PurePosixPath(row['native_code_ref'])==native/'code','Native code must belong to the declared original training release')
         require(type(row['provenance'].get('checkpoint_epoch')) is int and row['provenance']['checkpoint_epoch']==200,
             'Explicit final-epoch-200 provenance required')
         require(PurePosixPath(row['training_startup_ref'])==PurePosixPath(row['checkpoint']).parent/'startup.json',
@@ -130,6 +136,7 @@ def verify_row_sources(row):
     return dict(status='EXISTING_SOURCE_INPUT_BINDINGS_MATCHED',source_contract_ref=row['source_contract_ref'],
         expected_source_contract_ref=row['expected_source_contract_ref'],initialization_ref=row['initialization_ref'],
         selected_checkpoint_ref=row['selected_checkpoint_ref'],training_startup_ref=row['training_startup_ref'],
+        native_code_ref=row['native_code_ref'],
         checkpoint_sha256=metadata.checkpoint_sha256,checkpoint_epoch=200,training_selection=startup['selection'],
         native_role_comparison='EXACT_MATCH',checkpoint_inheritance=[],target_access_before_freeze=False,
         ordered_classes=list(metadata.ordered_classes),role_counts={k:len(v) for k,v in actual['role_ids'].items()},
@@ -183,7 +190,8 @@ def run(spec,commit,*,export_fn=export_packet):
                     model_seed=row['provenance'].get('model_seed'),
                     ordered_classes=list(meta.ordered_classes),scale=meta.scale,norm_eps=meta.norm_eps,head_rows=6,feature_dim=160,
                     source_binding=source,encoder_constructed=False,encoder_executed=False)
-                phase='packet_export';marker=export_fn(checkpoint=row['checkpoint'],binding=row['binding'],provenance=row['provenance'],output=row['output_root'])
+                phase='packet_export';marker=export_fn(checkpoint=row['checkpoint'],binding=row['binding'],provenance=row['provenance'],
+                    output=row['output_root'],native_code=row['native_code_ref'])
                 phase='packet_readback';head=load_packet(row['output_root'])
                 require(marker['status']==PACKET_STATUS and marker['checkpoint_sha256']==meta.checkpoint_sha256 and head.metadata==meta,'Exported packet binding mismatch')
                 require(json.loads((Path(row['output_root'])/'complete.json').read_text(encoding='utf-8'))==marker,'Packet completion readback mismatch')

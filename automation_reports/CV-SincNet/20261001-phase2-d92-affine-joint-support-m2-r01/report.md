@@ -47,3 +47,7 @@ ANALYSIS_R02_RUNNING/VERIFIED：Affine完整独立分析修复版本已单次启
 MATH_SCOPE_AUDIT/VERIFIED：独立query-blind复核已补充联合目标的可证明范围；未读取真实评分或snapshot，不改方法、参数和健康进程。Affine r02独立读回仍PID501716/start5870553/handle2931，完整summary未产生；训练160已完成，保持ARTIFACTS_COMPLETE，目标ACTIVE。
 
 RELATED_DEVELOPMENT/SYNTHETIC_VERIFIED：正核条件Affine解析头及完整低秩伴随通过20项独立KKT/差分/反例测试；联合SFT上层仍在实现，尚未启动该方法实验、无性能结论。Ground-A原分类头通过43项合成回归，但真实head行绑定、factory/s/weight包未接入，A与B−A仍N/A。实际source_contract classes及dual/no-sat-adapter元数据已只读核实。Affine诊断传输16项检查通过，真实snapshot/extract未启动；当前健康analysis保持PID501716/start5870553/handle2931/源1acc83a，无summary，不修改release或重启。目标ACTIVE。
+
+ANALYZED/VERIFIED：完整独立160parent/1800path结果与80行矩阵报告已生成。oof新类存在总体相对R0：C旧+2.8906pp，C新−2.3203pp，H−0.4376pp，不能宣称全面改善或query泛化。source训练版本81a226a、analysis1acc83a不变。collector首轮compact/full引用shape裁剪冲突失败保留；严格metadata互补融合修复20项合成检查通过（14.01s），真实snapshot/extract待只读重采，无训练/forward/solve。
+
+完整结果：[full_support_report.md](results/full_support_report.md)。

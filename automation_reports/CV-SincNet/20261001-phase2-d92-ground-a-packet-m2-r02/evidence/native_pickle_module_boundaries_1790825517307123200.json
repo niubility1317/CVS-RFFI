@@ -1,0 +1,57 @@
+{
+  "scope": "EXACT_ORIGINAL_MODULE_AST_SOURCE_NO_EXECUTION",
+  "modules": [
+    {
+      "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rc4_matched_20260927_r01/code/baseline_origin_sat_view.py",
+      "serialized_class": "SatViewStage",
+      "class_source": "class SatViewStage:\n    start_epoch: int\n    scenarios: tuple[str, ...]\n    view_prob: float",
+      "decorators": [
+        "dataclass(frozen=True)"
+      ],
+      "top_level_non_definition_source": [
+        "from __future__ import annotations",
+        "from dataclasses import dataclass",
+        "import math",
+        "from typing import Any, Callable, Iterable, Mapping, Optional",
+        "import torch",
+        "ApplySatFn = Callable[..., tuple]",
+        "CRRA_NUISANCE_FIELDS = (\n    \"snr_db\",\n    \"cfo_hz\",\n    \"residual_cfo_hz\",\n    \"fD_hz\",\n    \"pl_db\",\n    \"K_db\",\n    \"theta_deg\",\n    \"h_km\",\n    \"state\",\n)",
+        "CRRA_NUISANCE_SCALES = {\n    \"snr_db\": 20.0,\n    \"cfo_hz\": 100_000.0,\n    \"residual_cfo_hz\": 100_000.0,\n    \"fD_hz\": 100_000.0,\n    \"pl_db\": 200.0,\n    \"K_db\": 20.0,\n    \"theta_deg\": 90.0,\n    \"h_km\": 2_000.0,\n    \"state\": 2.0,\n}",
+        "normalize_crra_nuisance_meta = _normalize_nuisance_meta"
+      ]
+    },
+    {
+      "path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rc4_matched_20260927_r01/code/cvsrffi/muse_ssdg.py",
+      "serialized_class": "RC4Calibration",
+      "class_source": "class RC4Calibration:\n    \"\"\"Stage-frozen source ``V_cal`` package for risk-calibrated pseudo labels.\"\"\"\n\n    temperature: float\n    feature_mean: torch.Tensor\n    feature_scale: torch.Tensor\n    partial_feature_mean: torch.Tensor\n    partial_feature_scale: torch.Tensor\n    correctness_weight: torch.Tensor\n    partial_safety_weight: torch.Tensor\n    exclusion_safety_weight: torch.Tensor\n    aps_global: float\n    aps_partial_global: float\n    aps_negative_global: float\n    aps_by_class: torch.Tensor\n    aps_by_domain: torch.Tensor\n    partial_threshold_scope: str\n    hard_risk_threshold: float\n    partial_safety_threshold: float\n    hard_ready: bool\n    partial_ready: bool\n    negative_ready: bool\n    hard_precision: float\n    hard_worst_receiver_precision: float\n    hard_coverage: float\n    partial_coverage: float\n    partial_precision: float\n    partial_worst_receiver_precision: float\n    partial_selected_coverage: float\n    partial_mean_size: float\n    negative_false_exclusion: float\n    calibration_rows: int\n    crossfit_folds: int\n    num_classes: int\n    num_domains: int",
+      "decorators": [
+        "dataclass(frozen=True)"
+      ],
+      "top_level_non_definition_source": [
+        "\"\"\"Stateless MUSE-SSDG training schedule primitives.\"\"\"",
+        "from __future__ import annotations",
+        "from dataclasses import dataclass",
+        "import hashlib",
+        "import math",
+        "from numbers import Real",
+        "from typing import Any, Mapping, Sequence",
+        "import torch",
+        "from torch import nn",
+        "from torch.nn import functional as F",
+        "_PROBABILITY_EPS = 1e-8",
+        "_DEFAULT_FUSION_WEIGHTS = (0.50, 0.25, 0.25)",
+        "_DEFAULT_RATIO_CLIP = (0.5, 2.0)",
+        "_DEFAULT_RELIABILITY_WEIGHTS = (0.25, 0.20, 0.20, 0.20, 0.15)",
+        "_DEFAULT_UNLABELED_PROTOTYPE_WEIGHT = 0.075",
+        "_MIN_UNLABELED_PROTOTYPE_WEIGHT = 0.05",
+        "_MAX_UNLABELED_PROTOTYPE_WEIGHT = 0.10",
+        "_TEMPORAL_STABILITY_STEPS = 3",
+        "__all__ = [\n    \"MUSEConfig\",\n    \"MUSEScheduleState\",\n    \"MUSERoute\",\n    \"muse_schedule_for_epoch\",\n    \"geometric_fuse_probabilities\",\n    \"align_source_domain_prior\",\n    \"js_head_disagreement\",\n    \"compute_muse_reliability\",\n    \"route_muse_reliability\",\n    \"weighted_soft_cross_entropy\",\n    \"candidate_set_mask\",\n    \"candidate_set_cross_entropy\",\n    \"stable_sample_keys\",\n    \"select_satellite_student_mask\",\n    \"MUSETemporalMemory\",\n    \"MUSEClassificationPrototypeBank\",\n    \"MUSETrainingHeads\",\n]"
+      ]
+    }
+  ],
+  "source_samples_read": false,
+  "checkpoint_loaded": false,
+  "target_features_read": false,
+  "encoder_constructed": false
+}

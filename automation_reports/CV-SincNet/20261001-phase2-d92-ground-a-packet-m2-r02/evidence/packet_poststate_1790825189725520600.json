@@ -1,0 +1,425 @@
+{
+  "status": "FAILED",
+  "observed_unix": 1790825128.120748,
+  "run_id": "20261001-phase2-d92-ground-a-packet-m2-r01",
+  "commit": "d83904c13dbbf8ba0fa636f974ce602a92085568",
+  "process": {
+    "pid": 605956,
+    "exists": false
+  },
+  "launch": {
+    "pid": 605956,
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_ground_a_packet_export_20261001_r01/tools/run_d92_ground_a_packet_export.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_ground_a_packet_export_20261001_r01/configs/d92_ground_a_packet_export_20261001.json",
+      "--commit",
+      "d83904c13dbbf8ba0fa636f974ce602a92085568"
+    ],
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_ground_a_packet_export_20261001_r01",
+    "commit": "d83904c13dbbf8ba0fa636f974ce602a92085568",
+    "run": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r01",
+    "owner": "root"
+  },
+  "startup": {
+    "run_id": "20261001-phase2-d92-ground-a-packet-m2-r01",
+    "schema": "d92_ground_a_packet_export_run_v1",
+    "scope": "SOURCE_CLASSIFIER_PACKET_ONLY",
+    "spec": {
+      "schema": "experiment_record_v1",
+      "run_id": "20261001-phase2-d92-ground-a-packet-m2-r01",
+      "group_id": "d92-ground-a-source-packet",
+      "display_name": "D92适应前地面分类头：两个固定模型小包导出",
+      "description": "从两个既有合规source-only scratch final200 checkpoint提取原始6×160 float32 CosFace分类头，显式绑定原头类别行序、s=30、eps=1e-4和raw feat_joint ABI。原模型及训练不变；只建立后续配对A测量输入，本run不读取任何源域样本、逐样本源特征、目标support/query，不训练、不推断、不评分。",
+      "kind": "analysis",
+      "stage": "Phase2-source-classifier-packet-export",
+      "aliases": [],
+      "tags": [
+        "D92",
+        "ground-A",
+        "source-only",
+        "packet-only"
+      ],
+      "comparison_group_id": "manysig-six-source-rx13468-day123-luv076330-residual-noeq-v1",
+      "parent_run_ids": [
+        "20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01"
+      ],
+      "replaces_run_id": null,
+      "authorization": "User fixed Phase1, authorized model/prototypes/small summary transmission, joint LocalRidge+legal-support SFT and paired A/B/C reporting; root sole launch owner.",
+      "code": {
+        "commit": "2cad22d0f9b7323bb73ace69470963060444a7e6",
+        "checkout": "E:\\type10-7\\code\\snapshots\\d92_support_upgrade_20260928_wt",
+        "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_ground_a_packet_export_20261001_r01",
+        "native_training_commit": "9b1ddd939fcabc74c77c94a62fef8e5aad07c0e9",
+        "native_training_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rc4_matched_20260927_r01",
+        "commit_note": "Preparation parent only; publisher/runtime independently records actual committed and pushed export release OID."
+      },
+      "data": {
+        "dataset": "NO_SAMPLES_OR_FEATURE_ROWS; only existing checkpoint and source-origin metadata",
+        "version": "existing_matched_source_only_scratch_final200",
+        "representation": "original native CosFace head float32[6,160]",
+        "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "physical_ids_ref": "rows.*.source_contract_ref#role_ids; existing contract comparison only, no samples read or revalidation",
+        "label_map_ref": "rows.*.binding.ordered_classes from original ctx.class_id_to_tx",
+        "source_receivers": [
+          "1-19",
+          "18-2",
+          "19-2",
+          "2-19",
+          "3-19"
+        ],
+        "target_receivers": [],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "target_days": [],
+        "tx_sets_ref": null,
+        "roles": {
+          "L_s": 0.07,
+          "U_s": 0.63,
+          "V": 0.3
+        },
+        "train_ratio": 0.1,
+        "capsule_id": null,
+        "split_id": null,
+        "validation_ref": "Existing source contract/initialization/final-selection metadata; no data revalidation",
+        "support_query_ref": "No target data is consumed in packet-only export",
+        "leo_config_ref": "Original practical residual/post_sync/noeq source recipe; no channel simulation in export",
+        "data_rebuilt": false,
+        "data_revalidated": false,
+        "source_sample_rows_read": 0,
+        "source_feature_rows_read": 0,
+        "target_support_rows_read": 0,
+        "query_rows_read": 0
+      },
+      "permissions": {
+        "regime": "matched_source_only_model_component_export",
+        "query_use": "none",
+        "external_method_exception": null,
+        "claim_scope": "SOURCE_CLASSIFIER_PACKET_ONLY; NOT_A_ACCURACY_OR_STAR_DEPLOYMENT_MEASUREMENT",
+        "source_samples": false,
+        "source_per_record_features": false,
+        "target_support": false,
+        "query": false,
+        "checkpoint_metrics_for_selection": false,
+        "encoder_constructed": false,
+        "encoder_executed": false
+      },
+      "checkpoint": {
+        "initialization": "Existing exact source-only scratch final200 selected by training_final_only",
+        "sources": [
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701/final_ssdg.pth",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092702/final_ssdg.pth"
+        ],
+        "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "provenance_verdict": "MATCHED_SOURCE_ONLY_SCRATCH; existing actual factory/role/selection bindings VERIFIED",
+        "selection_rule": "Same two smallest fixed original model seeds already preregistered before method scores; final200; no A or target score selection",
+        "inheritance": [],
+        "source_metadata_proof": "evidence/ground_a_factory_binding_1790823508099452000.json",
+        "actual_checkpoint_loads_expected": 2,
+        "training_updates": 0,
+        "head_fits": 0,
+        "fixed_epoch_binding": "rows.*.training_startup_ref#selection==final_epoch_200 AND provenance.checkpoint_epoch integer200; existing selected final SHA, no filename/score inference"
+      },
+      "execution": {
+        "host": "N607",
+        "launch_owner": "root",
+        "gpu_policy": "CPU_ONLY_NO_GPU_USE",
+        "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r01",
+        "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r01",
+        "local_artifact_root": "E:\\type10-7\\automation_reports\\CV-SincNet\\20261001-phase2-d92-ground-a-packet-m2-r01\\artifacts",
+        "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/d92_ground_a_packet_export_20261001_r01/tools/run_d92_ground_a_packet_export.py --spec /home/szu2070436088/2510044040/CV-SincNet/releases/d92_ground_a_packet_export_20261001_r01/configs/d92_ground_a_packet_export_20261001.json --commit ACTUAL_PUBLISHED_COMMIT",
+        "stop_rule": "Only this owned packet export may terminate on direct input/technical failure; preserve failed outputs; no retry/overwrite or other-process intervention.",
+        "cpu_lanes": 1,
+        "blas_threads_per_lane": 2,
+        "remote_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_ground_a_packet_export_20261001_r01",
+        "supervisor_log": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_ground_a_packet_export_20261001_r01/run.log",
+        "actual_pid": null,
+        "actual_gpu": null
+      },
+      "expected_artifacts": [
+        "startup.json",
+        "state.json",
+        "complete.json",
+        "training.log",
+        "events.jsonl",
+        "compact.jsonl",
+        "compact.csv",
+        "ground-a-s2026092701_source_binding.json",
+        "ground-a-s2026092701/metadata.json",
+        "ground-a-s2026092701/head_weight.float32.bin",
+        "ground-a-s2026092701/complete.json",
+        "ground-a-s2026092702_source_binding.json",
+        "ground-a-s2026092702/metadata.json",
+        "ground-a-s2026092702/head_weight.float32.bin",
+        "ground-a-s2026092702/complete.json"
+      ],
+      "metrics_plan": {
+        "metric_names": [
+          "actual_packet_file_bytes",
+          "head_numeric_bytes",
+          "checkpoint_load_seconds",
+          "export_seconds",
+          "peak_process_rss_bytes"
+        ],
+        "dimensions": [
+          "model_seed",
+          "checkpoint_sha256"
+        ],
+        "prediction_ref": null,
+        "scorer_ref": null,
+        "actual_A_accuracy": null,
+        "adaptation_gain_B_minus_A": null,
+        "incremental_network_transfer_bytes": null,
+        "byte_scope": "Actual new packet files; excludes existing encoder/model, logs, transport protocol overhead and star incremental deployment transfer"
+      },
+      "rows": [
+        {
+          "row_id": "ground-a-s2026092701",
+          "method": "Original source-only frozen CosFace GroundClassifierA packet",
+          "purpose": "A-input-export-only",
+          "config_ref": "configs/d92_ground_a_packet_export_20261001.json",
+          "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r01/startup.json#spec.rows.ground-a-s2026092701",
+          "data_overrides": {
+            "source_sample_rows_read": 0,
+            "source_feature_rows_read": 0,
+            "support_rows_read": 0,
+            "query_rows_read": 0
+          },
+          "seeds": {
+            "model": 2026092701,
+            "split": null,
+            "data": null,
+            "augmentation": null,
+            "support": null,
+            "evaluation": null
+          },
+          "seed_notes": "model is original source checkpoint identity. Other five roles are not used by deterministic packet export; original training lineage remains referenced, no seed inference.",
+          "k": null,
+          "scenario": null,
+          "optimizer": null,
+          "lr": null,
+          "epochs": 0,
+          "fl_rounds": null,
+          "budget_ref": "2 sequential source checkpoint loads total; 0 encoder construction/forward, 0 samples, 0 training/head fit/prediction/scoring",
+          "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r01/ground-a-s2026092701",
+          "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r01/training.log",
+          "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/d92_ground_a_packet_export_20261001_r01/tools/run_d92_ground_a_packet_export.py --spec /home/szu2070436088/2510044040/CV-SincNet/releases/d92_ground_a_packet_export_20261001_r01/configs/d92_ground_a_packet_export_20261001.json --commit ACTUAL_PUBLISHED_COMMIT # supervisor executes this export row sequentially",
+          "expected_artifacts": [
+            "metadata.json",
+            "head_weight.float32.bin",
+            "complete.json"
+          ],
+          "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701/final_ssdg.pth",
+          "source_contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701/source_contract.json",
+          "expected_source_contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+          "initialization_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701/initialization.json",
+          "selected_checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701/phase1_terminal_status.json",
+          "binding": {
+            "checkpoint_sha256": "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b",
+            "checkpoint_weight_key": "id_backbone.cls_head.head.weight",
+            "ordered_classes": [
+              "14-10",
+              "14-7",
+              "20-15",
+              "20-19",
+              "6-15",
+              "8-20"
+            ],
+            "scale": 30.0,
+            "norm_eps": 0.0001,
+            "feature_contract": {
+              "checkpoint_sha256": "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b",
+              "cache_key": "z_id",
+              "source_tensor": "feat_joint",
+              "representation": "raw",
+              "dtype": "float32",
+              "feature_dim": 160
+            },
+            "logit_corrections": "none",
+            "class_row_order_source": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rc4_matched_20260927_r01/tools/train_rc4_matched.py:ctx.class_id_to_tx -> /home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701/source_contract.json#classes",
+            "factory_scale_source": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rc4_matched_20260927_r01/code/model.py; Resolved original factory module, no scale override in native factory signatures; exact original constructor propagation and no training scale assignment; evidence/ground_a_factory_binding_1790823508099452000.json",
+            "corrections_source": "Original resolved Dual flags sat_anchor_adapter=false,use_a1_r3=false,a1_response_surface=false; feat_joint classifier uses native CosFace without label margin; evidence/ground_a_factory_binding_1790823508099452000.json"
+          },
+          "provenance": {
+            "verdict": "MATCHED_SOURCE_ONLY_SCRATCH",
+            "checkpoint_sha256": "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b",
+            "target_access_before_freeze": false,
+            "checkpoint_inheritance": [],
+            "classes": [
+              "14-10",
+              "14-7",
+              "20-15",
+              "20-19",
+              "6-15",
+              "8-20"
+            ],
+            "model_seed": 2026092701,
+            "checkpoint_epoch": 200,
+            "source_role_comparison": "EXACT_MATCH"
+          },
+          "training_startup_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701/startup.json"
+        },
+        {
+          "row_id": "ground-a-s2026092702",
+          "method": "Original source-only frozen CosFace GroundClassifierA packet",
+          "purpose": "A-input-export-only",
+          "config_ref": "configs/d92_ground_a_packet_export_20261001.json",
+          "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r01/startup.json#spec.rows.ground-a-s2026092702",
+          "data_overrides": {
+            "source_sample_rows_read": 0,
+            "source_feature_rows_read": 0,
+            "support_rows_read": 0,
+            "query_rows_read": 0
+          },
+          "seeds": {
+            "model": 2026092702,
+            "split": null,
+            "data": null,
+            "augmentation": null,
+            "support": null,
+            "evaluation": null
+          },
+          "seed_notes": "model is original source checkpoint identity. Other five roles are not used by deterministic packet export; original training lineage remains referenced, no seed inference.",
+          "k": null,
+          "scenario": null,
+          "optimizer": null,
+          "lr": null,
+          "epochs": 0,
+          "fl_rounds": null,
+          "budget_ref": "2 sequential source checkpoint loads total; 0 encoder construction/forward, 0 samples, 0 training/head fit/prediction/scoring",
+          "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r01/ground-a-s2026092702",
+          "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r01/training.log",
+          "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/d92_ground_a_packet_export_20261001_r01/tools/run_d92_ground_a_packet_export.py --spec /home/szu2070436088/2510044040/CV-SincNet/releases/d92_ground_a_packet_export_20261001_r01/configs/d92_ground_a_packet_export_20261001.json --commit ACTUAL_PUBLISHED_COMMIT # supervisor executes this export row sequentially",
+          "expected_artifacts": [
+            "metadata.json",
+            "head_weight.float32.bin",
+            "complete.json"
+          ],
+          "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092702/final_ssdg.pth",
+          "source_contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092702/source_contract.json",
+          "expected_source_contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+          "initialization_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092702/initialization.json",
+          "selected_checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092702/phase1_terminal_status.json",
+          "binding": {
+            "checkpoint_sha256": "72f26413e495dcf82317898f8729caa3d35499bf0b41e9671ffdceab2c90924b",
+            "checkpoint_weight_key": "id_backbone.cls_head.head.weight",
+            "ordered_classes": [
+              "14-10",
+              "14-7",
+              "20-15",
+              "20-19",
+              "6-15",
+              "8-20"
+            ],
+            "scale": 30.0,
+            "norm_eps": 0.0001,
+            "feature_contract": {
+              "checkpoint_sha256": "72f26413e495dcf82317898f8729caa3d35499bf0b41e9671ffdceab2c90924b",
+              "cache_key": "z_id",
+              "source_tensor": "feat_joint",
+              "representation": "raw",
+              "dtype": "float32",
+              "feature_dim": 160
+            },
+            "logit_corrections": "none",
+            "class_row_order_source": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rc4_matched_20260927_r01/tools/train_rc4_matched.py:ctx.class_id_to_tx -> /home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092702/source_contract.json#classes",
+            "factory_scale_source": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rc4_matched_20260927_r01/code/model.py; Resolved original factory module, no scale override in native factory signatures; exact original constructor propagation and no training scale assignment; evidence/ground_a_factory_binding_1790823508099452000.json",
+            "corrections_source": "Original resolved Dual flags sat_anchor_adapter=false,use_a1_r3=false,a1_response_surface=false; feat_joint classifier uses native CosFace without label margin; evidence/ground_a_factory_binding_1790823508099452000.json"
+          },
+          "provenance": {
+            "verdict": "MATCHED_SOURCE_ONLY_SCRATCH",
+            "checkpoint_sha256": "72f26413e495dcf82317898f8729caa3d35499bf0b41e9671ffdceab2c90924b",
+            "target_access_before_freeze": false,
+            "checkpoint_inheritance": [],
+            "classes": [
+              "14-10",
+              "14-7",
+              "20-15",
+              "20-19",
+              "6-15",
+              "8-20"
+            ],
+            "model_seed": 2026092702,
+            "checkpoint_epoch": 200,
+            "source_role_comparison": "EXACT_MATCH"
+          },
+          "training_startup_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092702/startup.json"
+        }
+      ],
+      "notes": [
+        "Actual A/B-A remain N/A until separate preregistered fixed-prediction support pairing completes.",
+        "Source class order is actual native head row order, never sorted from target labels.",
+        "Checkpoint torch.load is limited to existing trusted original project source; no inheritance fallback.",
+        "No healthy experiment stopped, restarted, changed or reselected; current Conditional and Affine releases immutable."
+      ],
+      "spec_path": "configs/d92_ground_a_packet_export_20261001.json",
+      "status": "PREPARED_NOT_LAUNCHED",
+      "implementation_status": "SYNTHETIC_PIPELINE_VERIFIED_SOURCE_INPUT_BOUND_NOT_LAUNCHED"
+    },
+    "commit": "d83904c13dbbf8ba0fa636f974ce602a92085568",
+    "pid": 605956,
+    "argv": [
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_ground_a_packet_export_20261001_r01/tools/run_d92_ground_a_packet_export.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_ground_a_packet_export_20261001_r01/configs/d92_ground_a_packet_export_20261001.json",
+      "--commit",
+      "d83904c13dbbf8ba0fa636f974ce602a92085568"
+    ],
+    "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "started": 1790825007.5480733,
+    "cpu_lanes": 1,
+    "blas_threads_per_lane": 2,
+    "torch_threads": 2,
+    "hardware": {
+      "platform": "Linux-6.8.0-142-generic-x86_64-with-glibc2.39",
+      "processor": "x86_64",
+      "cpu_count": 96,
+      "gpu_use": false
+    },
+    "source_sample_rows_read": 0,
+    "source_feature_rows_read": 0,
+    "support_rows_read": 0,
+    "query_rows_read": 0,
+    "encoder_constructed": false,
+    "encoder_executed": false,
+    "actual_A_evaluated": false
+  },
+  "state": {
+    "ground-a-s2026092701": {
+      "status": "GROUND_A_PACKET_EXPORT_FAILED",
+      "phase": "packet_export",
+      "error_type": "ModuleNotFoundError",
+      "error": "No module named 'baseline_origin_sat_view'"
+    },
+    "ground-a-s2026092702": {
+      "status": "PENDING"
+    }
+  },
+  "complete": null,
+  "rows": [],
+  "log_bytes": 20070,
+  "failure": {
+    "status": "GROUND_A_PACKET_EXPORT_FAILED",
+    "run_id": "20261001-phase2-d92-ground-a-packet-m2-r01",
+    "commit": "d83904c13dbbf8ba0fa636f974ce602a92085568",
+    "row_id": "ground-a-s2026092701",
+    "phase": "packet_export",
+    "error_type": "ModuleNotFoundError",
+    "error": "No module named 'baseline_origin_sat_view'",
+    "completed_rows": 0,
+    "wall_seconds": 0.18964216300810222,
+    "automatic_retry": false
+  },
+  "actual_A_evaluated": false,
+  "model_inference_calls": 0,
+  "query_access": false,
+  "source_samples_access": false,
+  "incremental_network_transfer_bytes": null,
+  "scope": "INDEPENDENT_PROCESS_STARTUP_STATE_MARKERS_AND_ACTUAL_PACKET_FILE_READBACK_NOT_ACCURACY"
+}

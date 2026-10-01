@@ -1,9 +1,9 @@
 {
   "schema": "experiment_record_v1",
-  "run_id": "20261001-phase2-d92-ground-a-packet-m2-r01",
+  "run_id": "20261001-phase2-d92-ground-a-packet-m2-r02",
   "group_id": "d92-ground-a-source-packet",
-  "display_name": "D92适应前地面分类头：两个固定模型小包导出",
-  "description": "从两个既有合规source-only scratch final200 checkpoint提取原始6×160 float32 CosFace分类头，显式绑定原头类别行序、s=30、eps=1e-4和raw feat_joint ABI。原模型及训练不变；只建立后续配对A测量输入，本run不读取任何源域样本、逐样本源特征、目标support/query，不训练、不推断、不评分。",
+  "display_name": "D92适应前地面分类头：原生checkpoint类型兼容导出",
+  "description": "从两个既有合规source-only scratch final200 checkpoint提取原始6×160 float32 CosFace分类头，显式绑定原头类别行序、s=30、eps=1e-4和raw feat_joint ABI。原模型及训练不变；只建立后续配对A测量输入，本run不读取任何源域样本、逐样本源特征、目标support/query，不训练、不推断、不评分。 原r01原生配置类解析失败；本r02仅使用已核实原training release/code解析SatViewStage、RC4Calibration。该依赖不构造encoder、不读取样本、不使用calibration属性，不复制到星载packet。",
   "kind": "analysis",
   "stage": "Phase2-source-classifier-packet-export",
   "aliases": [],
@@ -15,19 +15,19 @@
   ],
   "comparison_group_id": "manysig-six-source-rx13468-day123-luv076330-residual-noeq-v1",
   "parent_run_ids": [
-    "20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01"
+    "20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01",
+    "20261001-phase2-d92-ground-a-packet-m2-r01"
   ],
-  "replaces_run_id": null,
+  "replaces_run_id": "20261001-phase2-d92-ground-a-packet-m2-r01",
   "authorization": "User fixed Phase1, authorized model/prototypes/small summary transmission, joint LocalRidge+legal-support SFT and paired A/B/C reporting; root sole launch owner.",
   "code": {
     "commit": "d83904c13dbbf8ba0fa636f974ce602a92085568",
     "checkout": "E:\\type10-7\\code\\snapshots\\d92_support_upgrade_20260928_wt",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
-    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_ground_a_packet_export_20261001_r01",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_ground_a_packet_export_20261001_r02",
     "native_training_commit": "9b1ddd939fcabc74c77c94a62fef8e5aad07c0e9",
     "native_training_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rc4_matched_20260927_r01",
-    "commit_note": "Preparation parent only; publisher/runtime independently records actual committed and pushed export release OID.",
-    "preparation_parent_commit": "2cad22d0f9b7323bb73ace69470963060444a7e6"
+    "commit_note": "Preparation parent only; publisher/runtime independently records actual committed and pushed export release OID."
   },
   "data": {
     "dataset": "NO_SAMPLES_OR_FEATURE_ROWS; only existing checkpoint and source-origin metadata",
@@ -102,25 +102,18 @@
     "host": "N607",
     "launch_owner": "root",
     "gpu_policy": "CPU_ONLY_NO_GPU_USE",
-    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r01",
-    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r01",
-    "local_artifact_root": "E:\\type10-7\\automation_reports\\CV-SincNet\\20261001-phase2-d92-ground-a-packet-m2-r01\\artifacts",
-    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/d92_ground_a_packet_export_20261001_r01/tools/run_d92_ground_a_packet_export.py --spec /home/szu2070436088/2510044040/CV-SincNet/releases/d92_ground_a_packet_export_20261001_r01/configs/d92_ground_a_packet_export_20261001.json --commit ACTUAL_PUBLISHED_COMMIT",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r02",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r02",
+    "local_artifact_root": "E:\\type10-7\\automation_reports\\CV-SincNet\\20261001-phase2-d92-ground-a-packet-m2-r02\\artifacts",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/d92_ground_a_packet_export_20261001_r02/tools/run_d92_ground_a_packet_export.py --spec /home/szu2070436088/2510044040/CV-SincNet/releases/d92_ground_a_packet_export_20261001_r02/configs/d92_ground_a_packet_export_retry_20261001.json --commit ACTUAL_PUBLISHED_COMMIT",
     "stop_rule": "Only this owned packet export may terminate on direct input/technical failure; preserve failed outputs; no retry/overwrite or other-process intervention.",
     "cpu_lanes": 1,
     "blas_threads_per_lane": 2,
-    "remote_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_ground_a_packet_export_20261001_r01",
-    "supervisor_log": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_ground_a_packet_export_20261001_r01/run.log",
-    "actual_pid": 605956,
+    "remote_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_ground_a_packet_export_20261001_r02",
+    "supervisor_log": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_ground_a_packet_export_20261001_r02/run.log",
+    "actual_pid": null,
     "actual_gpu": null,
-    "actual_runtime_commit": "d83904c13dbbf8ba0fa636f974ce602a92085568",
-    "actual_process_alive": false,
-    "failure_readback_ref": "evidence/packet_poststate_1790825189725520600.json",
-    "checkpoint_load_attempted": true,
-    "checkpoint_load_completed": false,
-    "actual_A_evaluated": false,
-    "actual_exported_packet_count": 0,
-    "automatic_retry": false
+    "external_readonly_native_code_dependency": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rc4_matched_20260927_r01/code"
   },
   "expected_artifacts": [
     "startup.json",
@@ -163,8 +156,8 @@
       "row_id": "ground-a-s2026092701",
       "method": "Original source-only frozen CosFace GroundClassifierA packet",
       "purpose": "A-input-export-only",
-      "config_ref": "configs/d92_ground_a_packet_export_20261001.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r01/startup.json#spec.rows.ground-a-s2026092701",
+      "config_ref": "configs/d92_ground_a_packet_export_retry_20261001.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r02/startup.json#spec.rows.ground-a-s2026092701",
       "data_overrides": {
         "source_sample_rows_read": 0,
         "source_feature_rows_read": 0,
@@ -187,9 +180,9 @@
       "epochs": 0,
       "fl_rounds": null,
       "budget_ref": "2 sequential source checkpoint loads total; 0 encoder construction/forward, 0 samples, 0 training/head fit/prediction/scoring",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r01/ground-a-s2026092701",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r01/training.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/d92_ground_a_packet_export_20261001_r01/tools/run_d92_ground_a_packet_export.py --spec /home/szu2070436088/2510044040/CV-SincNet/releases/d92_ground_a_packet_export_20261001_r01/configs/d92_ground_a_packet_export_20261001.json --commit ACTUAL_PUBLISHED_COMMIT # supervisor executes this export row sequentially",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r02/ground-a-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r02/training.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/d92_ground_a_packet_export_20261001_r02/tools/run_d92_ground_a_packet_export.py --spec /home/szu2070436088/2510044040/CV-SincNet/releases/d92_ground_a_packet_export_20261001_r02/configs/d92_ground_a_packet_export_retry_20261001.json --commit ACTUAL_PUBLISHED_COMMIT # supervisor executes this export row sequentially",
       "expected_artifacts": [
         "metadata.json",
         "head_weight.float32.bin",
@@ -243,14 +236,15 @@
         "checkpoint_epoch": 200,
         "source_role_comparison": "EXACT_MATCH"
       },
-      "training_startup_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701/startup.json"
+      "training_startup_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701/startup.json",
+      "native_code_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rc4_matched_20260927_r01/code"
     },
     {
       "row_id": "ground-a-s2026092702",
       "method": "Original source-only frozen CosFace GroundClassifierA packet",
       "purpose": "A-input-export-only",
-      "config_ref": "configs/d92_ground_a_packet_export_20261001.json",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r01/startup.json#spec.rows.ground-a-s2026092702",
+      "config_ref": "configs/d92_ground_a_packet_export_retry_20261001.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r02/startup.json#spec.rows.ground-a-s2026092702",
       "data_overrides": {
         "source_sample_rows_read": 0,
         "source_feature_rows_read": 0,
@@ -273,9 +267,9 @@
       "epochs": 0,
       "fl_rounds": null,
       "budget_ref": "2 sequential source checkpoint loads total; 0 encoder construction/forward, 0 samples, 0 training/head fit/prediction/scoring",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r01/ground-a-s2026092702",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r01/training.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/d92_ground_a_packet_export_20261001_r01/tools/run_d92_ground_a_packet_export.py --spec /home/szu2070436088/2510044040/CV-SincNet/releases/d92_ground_a_packet_export_20261001_r01/configs/d92_ground_a_packet_export_20261001.json --commit ACTUAL_PUBLISHED_COMMIT # supervisor executes this export row sequentially",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r02/ground-a-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r02/training.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/d92_ground_a_packet_export_20261001_r02/tools/run_d92_ground_a_packet_export.py --spec /home/szu2070436088/2510044040/CV-SincNet/releases/d92_ground_a_packet_export_20261001_r02/configs/d92_ground_a_packet_export_retry_20261001.json --commit ACTUAL_PUBLISHED_COMMIT # supervisor executes this export row sequentially",
       "expected_artifacts": [
         "metadata.json",
         "head_weight.float32.bin",
@@ -329,17 +323,19 @@
         "checkpoint_epoch": 200,
         "source_role_comparison": "EXACT_MATCH"
       },
-      "training_startup_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092702/startup.json"
+      "training_startup_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092702/startup.json",
+      "native_code_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rc4_matched_20260927_r01/code"
     }
   ],
   "notes": [
     "Actual A/B-A remain N/A until separate preregistered fixed-prediction support pairing completes.",
     "Source class order is actual native head row order, never sorted from target labels.",
     "Checkpoint torch.load is limited to existing trusted original project source; no inheritance fallback.",
-    "No healthy experiment stopped, restarted, changed or reselected; current Conditional and Affine releases immutable."
+    "No healthy experiment stopped, restarted, changed or reselected; current Conditional and Affine releases immutable.",
+    "Compatibility retry has independent new release/run; previous FAILED run and native import failure evidence remain intact. No automatic retry, encoder or extra calibration analysis."
   ],
-  "spec_path": "configs/d92_ground_a_packet_export_20261001.json",
-  "status": "FAILED",
-  "registered_at": "2026-10-01T03:15:23+00:00",
-  "implementation_status": "SOURCE_INPUTS_MATCHED_NATIVE_PICKLE_DEPENDENCY_MISSING_NO_PACKET"
+  "spec_path": "configs/d92_ground_a_packet_export_retry_20261001.json",
+  "status": "PREPARED_NOT_LAUNCHED",
+  "implementation_status": "NATIVE_PICKLE_COMPATIBILITY_SYNTHETIC_VERIFIED_NOT_LAUNCHED",
+  "registered_at": "2026-10-01T03:44:02+00:00"
 }

@@ -35,3 +35,5 @@ VERIFIED：新Conditional独立summary/analyzer31项、完整报告/训练诊断
 RUNNING/VERIFIED：ConditionalJoint已唯一发布启动，实际训练release为7204161b126a9d3a17096aee5c75bce8ccfee6ec。独立读回核实supervisor578658/start6923770和rx3 workers578671/578672/start6923795的PID、argv、CWD及输入身份；两个rx3训练、两个rx1排队，CPU2lane/BLAS2，不使用GPU、不加载checkpoint、query/源样本0。完整独立summary31、report/collector18、隔离bundle4及核心/ENTRY37、完整KKT63检查已通过。记录中的旧Affine展示字段已按实际Conditional命令与probe预算更正，冻结launch spec及健康进程不变。尚无真实性能，A及B−A仍N/A，旧support恒等式不保证query零遗忘，目标ACTIVE。
 
 当前只做support信息诊断：4个model/cohort row、160个parent、1800条物理顺序路径；旧类6，K=1/5/10/20，新增类0/2/5/10/20，每cohort两个预声明receiver/scenario组合。本轮尚未执行query评估，当前不存在新的最终准确率。完整结束后只对已有产物进行一次独立分析，报告完整矩阵、B/C旧新准确率、H、旧类下降及资源；A需要真实地面classifier包及行映射绑定，不能用R0补齐。
+
+TRAINING_COMPLETE/VERIFIED：独立control读回核实4个row、160parent、每row40与所有训练进程退出，actualruntime7204161不变。已预登记唯一独立analysis release d92_conditional_joint_analysis_20261001_r01，尚未启动分析或读取真实性能；原spec/训练/状态未修改，A仍N/A。

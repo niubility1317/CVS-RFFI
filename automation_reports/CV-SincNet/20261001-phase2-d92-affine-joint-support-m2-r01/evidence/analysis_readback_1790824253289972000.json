@@ -1,0 +1,43 @@
+{
+  "observed_unix": 1790824191.6780026,
+  "process": {
+    "pid": 501716,
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_affine_joint_analysis_20261001_r02/tools/summarize_d92_affine_joint_probe.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_affine_joint_support_20261001_r01/configs/d92_affine_joint_support_20261001.json",
+      "--run-root",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-affine-joint-support-m2-r01",
+      "--output",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-affine-joint-support-m2-r01/results/support_summary"
+    ],
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_affine_joint_analysis_20261001_r02",
+    "commit": "1acc83a584ace40f294a433ace80629472ee2525",
+    "live_argv": null,
+    "live_cwd": null
+  },
+  "activity": null,
+  "summary_exists": true,
+  "analysis_execution": {
+    "commit": "1acc83a584ace40f294a433ace80629472ee2525",
+    "runtime_commit": "81a226a8d1cef34ea817ada87070bd89912d027d",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_affine_joint_analysis_20261001_r02/tools/summarize_d92_affine_joint_probe.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_affine_joint_support_20261001_r01/configs/d92_affine_joint_support_20261001.json",
+      "--run-root",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-affine-joint-support-m2-r01",
+      "--output",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-affine-joint-support-m2-r01/results/support_summary"
+    ],
+    "status": "VERIFIED",
+    "release": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_affine_joint_analysis_20261001_r02"
+  },
+  "failure_log": null,
+  "log_bytes": 2355,
+  "performance_read_or_printed": false
+}

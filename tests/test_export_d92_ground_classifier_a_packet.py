@@ -2,9 +2,11 @@
 from copy import deepcopy
 from dataclasses import asdict
 import hashlib
+import importlib
 import json
 from pathlib import Path
 import sys
+from types import ModuleType
 from unittest.mock import patch
 
 import pytest
@@ -35,6 +37,83 @@ def fixture(tmp_path,prefix='',scale=17.25,extra_state=None):
         checkpoint_inheritance=[],classes=sorted(classes),model_seed=4,checkpoint_epoch=200,
         source_role_comparison='EXACT_MATCH')
     return checkpoint,weight,binding,provenance
+
+
+def native_fixture(tmp_path):
+    """Toy producer modules, deliberately unrelated to real production source."""
+    native=tmp_path/'native-release'/'code';(native/'cvsrffi').mkdir(parents=True)
+    (native/'baseline_origin_sat_view.py').write_text(
+        'class SatViewStage:\n    def __init__(self):\n        self.synthetic = 1\n',encoding='utf-8')
+    (native/'cvsrffi'/'muse_ssdg.py').write_text(
+        'from baseline_origin_sat_view import SatViewStage\n'
+        'class RC4Calibration:\n    def __init__(self):\n        self.synthetic = SatViewStage()\n',encoding='utf-8')
+    return native
+
+
+def native_payload(checkpoint,weight,binding,provenance,native):
+    with exporter.native_checkpoint_types(native):
+        first=importlib.import_module('baseline_origin_sat_view').SatViewStage()
+        second=importlib.import_module('cvsrffi.muse_ssdg').RC4Calibration()
+        torch.save(dict(model={exporter.WEIGHT_KEY:weight},native_stage=first,calibration=second),checkpoint)
+    digest=hashlib.sha256(checkpoint.read_bytes()).hexdigest()
+    binding['checkpoint_sha256']=binding['feature_contract']['checkpoint_sha256']=provenance['checkpoint_sha256']=digest
+
+
+def test_explicit_native_types_checkpoint_preserves_bits_and_restores_namespace(tmp_path):
+    checkpoint,weight,binding,provenance=fixture(tmp_path);native=native_fixture(tmp_path)
+    package=importlib.import_module('cvsrffi');package_path=package.__path__;search=sys.path[:]
+    native_payload(checkpoint,weight,binding,provenance,native)
+    assert all(name not in sys.modules for name in exporter.NATIVE_TYPES)
+    before=checkpoint.read_bytes();out=tmp_path/'packet'
+    exporter.export_packet(checkpoint=checkpoint,binding=binding,provenance=provenance,output=out,native_code=native)
+    assert (out/exporter.WEIGHT_FILE).read_bytes()==bytes(weight.view(torch.uint8).reshape(-1).tolist())
+    assert checkpoint.read_bytes()==before and sys.path==search and package.__path__ is package_path
+    assert all(name not in sys.modules for name in exporter.NATIVE_TYPES)
+    assert not hasattr(package,'muse_ssdg') and not list(native.rglob('*.pyc'))
+    saved=json.loads((out/exporter.METADATA_FILE).read_text(encoding='utf-8'))
+    resolution=saved['export_measurements']['native_type_resolution']
+    assert resolution['resolved_native_code']==str(native.resolve())
+    assert set(resolution['module_files'])==set(exporter.NATIVE_TYPES)
+    assert exporter.load_packet(out).classes==tuple(binding['ordered_classes'])
+
+
+def test_existing_correct_native_modules_preserved_across_nested_context(tmp_path):
+    native=native_fixture(tmp_path);package=importlib.import_module('cvsrffi')
+    with exporter.native_checkpoint_types(native):
+        baseline=sys.modules['baseline_origin_sat_view'];calibration=sys.modules['cvsrffi.muse_ssdg']
+        package_path=package.__path__;search=sys.path[:]
+        with exporter.native_checkpoint_types(native):
+            assert sys.modules['baseline_origin_sat_view'] is baseline
+            assert sys.modules['cvsrffi.muse_ssdg'] is calibration
+        assert sys.path==search and package.__path__ is package_path and package.muse_ssdg is calibration
+    assert all(name not in sys.modules for name in exporter.NATIVE_TYPES)
+
+
+@pytest.mark.parametrize('case',['missing_directory','missing_module','wrong_cached_origin','wrong_import_origin','missing_class','load_failure'])
+def test_native_resolution_failure_preserved_and_namespace_restored(tmp_path,case):
+    checkpoint,weight,binding,provenance=fixture(tmp_path);native=native_fixture(tmp_path)
+    package=importlib.import_module('cvsrffi');package_path=package.__path__;search=sys.path[:]
+    if case=='missing_directory':native=native/'absent'
+    elif case=='missing_module':(native/'cvsrffi/muse_ssdg.py').unlink()
+    elif case=='missing_class':(native/'cvsrffi/muse_ssdg.py').write_text('OTHER = 1\n',encoding='utf-8')
+    wrong=ModuleType('cvsrffi.muse_ssdg');wrong.__file__=str(tmp_path/'outside.py')
+    from contextlib import ExitStack
+    out=tmp_path/'packet'
+    with ExitStack() as stack:
+        if case=='wrong_cached_origin':stack.enter_context(patch.dict(sys.modules,{'cvsrffi.muse_ssdg':wrong}))
+        if case=='wrong_import_origin':
+            from types import SimpleNamespace
+            stack.enter_context(patch.object(exporter.PathFinder,'find_spec',return_value=SimpleNamespace(origin=wrong.__file__)))
+        loader=stack.enter_context(patch.object(exporter.torch,'load',side_effect=RuntimeError('synthetic load failure')))
+        with pytest.raises((ValueError,RuntimeError)):
+            exporter.export_packet(checkpoint=checkpoint,binding=binding,provenance=provenance,output=out,native_code=native)
+        assert loader.call_count==(1 if case=='load_failure' else 0)
+        if case=='wrong_cached_origin':assert sys.modules['cvsrffi.muse_ssdg'] is wrong
+    assert sys.path==search and package.__path__ is package_path
+    assert all(name not in sys.modules for name in exporter.NATIVE_TYPES)
+    failure=json.loads((out/'export_failed.json').read_text(encoding='utf-8'))
+    assert failure['phase']==('checkpoint_load' if case=='load_failure' else 'native_checkpoint_types')
+    assert not (out/exporter.WEIGHT_FILE).exists()
 
 
 @pytest.mark.parametrize('prefix,scale',[('',17.25),('module.',3.75)])

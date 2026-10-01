@@ -6,12 +6,16 @@ owner-supplied source-only conclusion, not a new approval or verification chain.
 """
 import argparse
 from collections.abc import Mapping
+from contextlib import contextmanager
 from dataclasses import asdict
 import hashlib
+import importlib
+from importlib.machinery import PathFinder
 import json
 from pathlib import Path
 import sys
 import time
+from types import ModuleType
 
 import torch
 
@@ -28,6 +32,7 @@ WEIGHT_FILE='head_weight.float32.bin'
 METADATA_FILE='metadata.json'
 COMPLETE_FILE='complete.json'
 WEIGHT_BYTES=GROUND_CLASS_COUNT*FEATURE_DIM*4
+NATIVE_TYPES={'baseline_origin_sat_view':'SatViewStage','cvsrffi.muse_ssdg':'RC4Calibration'}
 BINDING_FIELDS={'checkpoint_sha256','checkpoint_weight_key','ordered_classes','scale','norm_eps',
     'feature_contract','logit_corrections','class_row_order_source','factory_scale_source','corrections_source'}
 
@@ -93,6 +98,62 @@ def checkpoint_digest(stream):
     return digest.hexdigest()
 
 
+@contextmanager
+def native_checkpoint_types(native_code):
+    """Resolve original producer types only during trusted checkpoint loading.
+
+    This is not a sandbox for arbitrary Python or pickle. The caller has already
+    bound the original source-only checkpoint and its original training release.
+    No substitute classes or encoder factory calls are made here.
+    """
+    if native_code is None:
+        yield None
+        return
+    declared=Path(native_code)
+    require(declared.is_absolute() and declared.is_dir(),'Explicit existing native code directory required')
+    native=declared.resolve();package=importlib.import_module('cvsrffi')
+    origins={name:native/('cvsrffi/muse_ssdg.py' if '.' in name else name+'.py') for name in NATIVE_TYPES}
+    for name,path in origins.items():
+        require(path.is_file() and path.resolve().is_relative_to(native),'Original native module missing or outside declared directory: '+name)
+        cached=sys.modules.get(name)
+        if cached is not None:
+            require(getattr(cached,'__file__',None) is not None and Path(cached.__file__).resolve()==path.resolve(),
+                'Cached native module origin mismatch: '+name)
+    old_path=sys.path[:];old_package_path=package.__path__;old_modules=set(sys.modules)
+    old_attributes={k:v for k,v in vars(package).items() if isinstance(v,ModuleType)}
+    old_bytecode=sys.dont_write_bytecode
+    try:
+        sys.dont_write_bytecode=True
+        sys.path[:0]=[str(native)]
+        package.__path__=[str(native/'cvsrffi'),*old_package_path]
+        importlib.invalidate_caches()
+        for name,path in origins.items():
+            search=[str(native/'cvsrffi')] if '.' in name else [str(native)]
+            spec=PathFinder.find_spec(name,search)
+            require(spec is not None and spec.origin is not None and Path(spec.origin).resolve()==path.resolve(),
+                'Native module import origin mismatch: '+name)
+            module=importlib.import_module(name)
+            require(getattr(module,'__file__',None) is not None and Path(module.__file__).resolve()==path.resolve(),
+                'Loaded native module origin mismatch: '+name)
+            symbol=getattr(module,NATIVE_TYPES[name],None)
+            require(isinstance(symbol,type) and symbol.__module__==name,'Original native checkpoint type missing: '+name)
+        yield dict(native_code_ref=str(declared),resolved_native_code=str(native),
+            module_files={name:str(Path(sys.modules[name].__file__).resolve()) for name in NATIVE_TYPES},
+            scope='ORIGINAL_PRODUCER_TYPES_FOR_CHECKPOINT_DESERIALIZATION_ONLY')
+    finally:
+        sys.path[:]=old_path;package.__path__=old_package_path;sys.dont_write_bytecode=old_bytecode
+        # Remove newly imported original-release modules, including local helper
+        # dependencies, while preserving every module that existed on entry.
+        for name in set(sys.modules)-old_modules:
+            module=sys.modules.get(name);origin=getattr(module,'__file__',None)
+            if origin is not None and Path(origin).resolve().is_relative_to(native):sys.modules.pop(name,None)
+        for name,value in list(vars(package).items()):
+            if isinstance(value,ModuleType) and name not in old_attributes and value.__name__ not in sys.modules:
+                delattr(package,name)
+        for name,value in old_attributes.items():setattr(package,name,value)
+        importlib.invalidate_caches()
+
+
 def completion_bytes(value,fixed_file_bytes):
     """Resolve JSON's own byte count before its sole exclusive write."""
     result=dict(value,completion_file_bytes=0,packet_total_file_bytes=fixed_file_bytes)
@@ -103,7 +164,7 @@ def completion_bytes(value,fixed_file_bytes):
     raise ValueError('Completion byte-count representation did not stabilize')
 
 
-def export_packet(*,checkpoint,binding,provenance,output):
+def export_packet(*,checkpoint,binding,provenance,output,native_code=None):
     """Export a new immutable directory; preserve any owned partial output."""
     out=Path(output)
     if out.exists():raise FileExistsError(out)
@@ -118,8 +179,10 @@ def export_packet(*,checkpoint,binding,provenance,output):
         with checkpoint.open('rb') as stream:
             actual_digest=checkpoint_digest(stream)
             require(actual_digest==metadata.checkpoint_sha256,'Actual checkpoint SHA256 differs from the bound original')
-            stream.seek(0);phase='checkpoint_load';tick=time.perf_counter()
-            payload=torch.load(stream,map_location='cpu',weights_only=False)
+            stream.seek(0);phase='native_checkpoint_types';tick=time.perf_counter()
+            with native_checkpoint_types(native_code) as native_binding:
+                phase='checkpoint_load'
+                payload=torch.load(stream,map_location='cpu',weights_only=False)
             load_seconds=time.perf_counter()-tick
             checkpoint_file_bytes=stream.seek(0,2)
         phase='exact_head_extraction';weight,actual_key=extract_exact_weight(payload)
@@ -140,6 +203,7 @@ def export_packet(*,checkpoint,binding,provenance,output):
                 formula='F.linear(F.normalize(z_id.float(),dim=1,eps),F.normalize(weight.float(),dim=1,eps))*scale',
                 tie_break='first_native_head_column',all_declared_ground_classes=True,logit_corrections='none'),
             export_measurements=dict(checkpoint_file_bytes=checkpoint_file_bytes,checkpoint_load_seconds=load_seconds,
+                native_type_resolution=native_binding,
                 torch_version=str(torch.__version__),encoder_constructed=False,encoder_executed=False,
                 source_sample_rows_read=0,source_feature_rows_read=0,support_rows_read=0,query_rows_read=0,
                 checkpoint_scores_inspected=False,actual_A_evaluated=False))
@@ -197,9 +261,10 @@ def load_packet(packet):
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     for name in ('checkpoint','binding','provenance','output'):parser.add_argument('--'+name,type=Path,required=True)
+    parser.add_argument('--native-code',type=Path,help='Explicit original training release code directory for native pickle types')
     args=parser.parse_args()
     marker=export_packet(checkpoint=args.checkpoint,binding=json.loads(args.binding.read_text(encoding='utf-8')),
-        provenance=json.loads(args.provenance.read_text(encoding='utf-8')),output=args.output)
+        provenance=json.loads(args.provenance.read_text(encoding='utf-8')),output=args.output,native_code=args.native_code)
     print(json.dumps(marker,ensure_ascii=False,allow_nan=False))
 
 

@@ -65,7 +65,7 @@ Native 推理仍由原模块实现：float32 normalize、`eps=1e-4`、`F.linear`
 
 新增 `tools/run_d92_ground_a_packet_export.py`，CLI 为 `--spec --commit`。它只按 spec.rows 原顺序调用既有 `export_packet`，再独立 `load_packet` 核对产物；一条 CPU lane、两个 BLAS/Torch 线程，没有模型训练、encoder 构造或样本推理。运行目录必须不存在，每个 row 的 packet 输出严格为 run root 下同名目录。首个失败即停止，保留已完成 packet、失败证据和未启动 row，不自动重试。
 
-Spec 的必填结构为 `run_id/spec_path/code/execution/rows`。`code` 明确 release cwd 与 Python 绝对路径；`execution` 明确 remote run root、唯一 launch owner `root`、`cpu_lanes=1` 和 `blas_threads_per_lane=2`。每个 row 明确 `row_id/checkpoint/source_contract_ref/expected_source_contract_ref/initialization_ref/selected_checkpoint_ref/training_startup_ref/binding/provenance/output_root`。Binding 和 provenance 沿用本文件上文的冻结 packet ABI；runner 另要求 `provenance.checkpoint_epoch` 类型严格为 int 且等于 200（拒绝缺失、bool、float 或字符串）。scale 和类序仍无代码默认值。Row 数与完成计数来自实际 spec，不在 runner 内隐藏额外 row。
+Spec 的必填结构为 `run_id/spec_path/code/execution/rows`。`code` 明确 release cwd、Python 绝对路径及原始 `native_training_release`；`execution` 明确 remote run root、唯一 launch owner `root`、`cpu_lanes=1` 和 `blas_threads_per_lane=2`。每个 row 明确 `row_id/checkpoint/source_contract_ref/expected_source_contract_ref/initialization_ref/selected_checkpoint_ref/training_startup_ref/native_code_ref/binding/provenance/output_root`。Binding 和 provenance 沿用本文件上文的冻结 packet ABI；runner 另要求 `provenance.checkpoint_epoch` 类型严格为 int 且等于 200（拒绝缺失、bool、float 或字符串）。scale 和类序仍无代码默认值。Row 数与完成计数来自实际 spec，不在 runner 内隐藏额外 row。
 
 加载 checkpoint 前核对五类既有来源元数据：
 
@@ -86,3 +86,15 @@ Runner 保存实际 spec/PID/argv/commit/解释器/CPU/线程设置到 startup�
 原 exporter 的 31 项合成测试已由 root 串行通过，耗时 2.82 s，证据前缀为 `.codex_tmp/pytest_utf8_1790823054586420100`。新增 runner/publisher 测试包括两行完整原生小包、加载前来源与行序拒绝、评分字段跳过、独占输出、第二行失败保留第一行、最小白名单隔离导入与 mock 传输；本 worker 未执行这些新数值测试或任何 Git/SSH/实际发布。由 root 串行验证和唯一 launch，本文不声明真实导出已完成。
 
 独立 P1 修订补齐了 final200 的显式绑定：合成回归新增 epoch 199/201、缺失、200.0、bool、字符串拒绝，以及原始 startup selection 缺失或不是 `final_epoch_200` 的加载前拒绝。此修订仅影响 runner 的输入一致性检查，未改 exporter 或 Ground A core，也未重验任何数据。
+
+## 原始生产类型的受控反序列化兼容
+
+Root 报告真实 r01 在 `checkpoint_load` 因缺少 `baseline_origin_sat_view` 而技术失败，未生成 head；该失败目录保持原状。Root 的只读 pickle GLOBAL 清单核实 checkpoint 包含 `baseline_origin_sat_view.SatViewStage` 和 `cvsrffi.muse_ssdg.RC4Calibration`。Root 另核实这两个原模块顶层没有 encoder 构造或数据读取，类型没有自定义反序列化执行。上述事实来自 root 的独立证据，本 worker 没有读取实际 native 代码、checkpoint 或评分。
+
+`export_packet(..., native_code=...)` 及 CLI `--native-code` 接受显式原训练 release 的 code 目录。纯 tensor 合成调用可省略；正式 runner 必须声明 `row.native_code_ref == code.native_training_release + '/code'`，且原 release 与本次 packet release/run 分离。Runner 先完成已有来源文件核对，再把该引用交给 exporter。这个目录是现存只读依赖，不复制或改写到小包 release；publisher 的 readiness 单独记录该依赖，并明确尚未完成运行时模块来源核对。
+
+Exporter 在同一 checkpoint 文件 SHA256 身份匹配后、`torch.load` 前进入临时上下文。上下文先要求目录和两个确切模块文件存在，拒绝逃出声明目录的模块路径；对缓存模块核对 `__file__`，来源不符直接失败。随后临时把 native code 放在 `sys.path` 首位，把 native `cvsrffi` 放在当前小包 `cvsrffi.__path__` 首位，逐个核对 import spec、实际模块 `__file__` 和类型的确切定义模块。它只导入原生产定义，不伪造类、不构造 encoder、不使用 calibration 对象属性。
+
+上下文禁写 Python bytecode，退出时恢复原搜索路径、package namespace 和 bytecode 设置；移除本次新增的原 release 模块缓存，保留进入前已有且来源正确的模块。导入失败或 `torch.load` 失败同样恢复。此边界是已核实原代码的兼容加载，不是任意 Python/pickle 的安全沙箱，不扩展来源权限。导出 metadata 记录声明路径、解析路径和两个实际模块文件；`checkpoint_load_seconds` 包含此受控类型解析时间。小包 schema、head 原始位、类序、scale、loader 返回 ABI 均保持不变。
+
+新增合成回归用两个临时 toy producer 模块生成含两种类型的 checkpoint，核对完整导出、原 head 字节、namespace 恢复和无 `.pyc` 写入；覆盖缺目录、缺模块、错误缓存来源、错误 import 来源、缺确切类和加载失败的保留行为。Runner 的两行合成 checkpoint 也包含这两种类型，并验证 native 引用原样传递；publisher 仍只隔离导入原四文件，不加载或打包 native 模块。当前修订仅完成静态检查，数值与运行验证由 root 串行执行；本文不声明新 run 已启动或导出成功。

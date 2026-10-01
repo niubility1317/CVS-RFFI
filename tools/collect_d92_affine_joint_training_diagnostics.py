@@ -9,6 +9,7 @@ arrays remain in place.
 """
 import argparse
 from collections import Counter, OrderedDict
+from copy import deepcopy
 import csv
 import json
 import math
@@ -202,6 +203,55 @@ def referenced_arrays(value):
         for child in value: yield from referenced_arrays(child)
 
 
+def reference_metadata(ref, complete=False):
+    """Validate a full or scalar-compacted numeric reference, without NPZ I/O."""
+    require(isinstance(ref, dict) and {'path', 'key', 'namespace', 'arrays'} <= set(ref),
+            'Incomplete training reference identity')
+    require(all(isinstance(ref[key], str) and ref[key] for key in ('path', 'key', 'namespace')),
+            'Invalid training reference identity')
+    require(isinstance(json.loads(ref['namespace']), dict), 'Invalid training reference namespace')
+    require(isinstance(ref['arrays'], dict) and bool(ref['arrays']), 'Missing training reference array inventory')
+    for name, metadata in ref['arrays'].items():
+        require(isinstance(name, str) and name and isinstance(metadata, dict) and {'dtype', 'nbytes'} <= set(metadata),
+                'Incomplete training array metadata: ' + str(name))
+        require(isinstance(metadata['dtype'], str) and type(metadata['nbytes']) is int and metadata['nbytes'] >= 0,
+                'Invalid training array dtype/bytes: ' + name)
+        try: dtype = np.dtype(metadata['dtype'])
+        except (TypeError, ValueError) as exc: raise ValueError('Invalid training array dtype: ' + name) from exc
+        require(dtype.kind in 'fbiu', 'Nonnumeric training array dtype: ' + name)
+        require(not complete or 'shape' in metadata, 'Missing full training array shape: ' + name)
+        if 'shape' in metadata:
+            shape = metadata['shape']
+            require(isinstance(shape, (list, tuple)) and all(type(n) is int and n >= 0 for n in shape)
+                    and math.prod(shape) * dtype.itemsize == metadata['nbytes'], 'Invalid training array shape/bytes: ' + name)
+
+
+def merge_training_references(first, second):
+    """Merge omitted metadata; every identity and shared field must agree.
+
+    ENTRY's recursive scalars() can remove shape lists from a reference nested
+    under final_problem while preserving its array names, dtype and nbytes.
+    Missing fields are not contradictory declarations; explicit shape/dtype/
+    bytes, namespace and scalar audit changes remain conflicts.
+    """
+    reference_metadata(first); reference_metadata(second)
+    require(first['path'] == second['path'] and first['key'] == second['key']
+            and json.loads(first['namespace']) == json.loads(second['namespace'])
+            and set(first['arrays']) == set(second['arrays']), 'Conflicting training reference identity/inventory')
+    def merge(left, right, position):
+        if isinstance(left, dict) and isinstance(right, dict):
+            result = deepcopy(left)
+            for key, value in right.items():
+                if key not in result: result[key] = deepcopy(value)
+                elif position == '$' and key == 'namespace': pass  # Parsed full namespace equality was checked above.
+                else: result[key] = merge(result[key], value, position + '.' + key)
+            return result
+        require(left == right, 'Conflicting training reference metadata: ' + position)
+        return deepcopy(left)
+    result = merge(first, second, '$'); reference_metadata(result)
+    return result
+
+
 def training_reference(ref, run_id, row_id):
     relative = Path(ref['path'])
     require(not relative.is_absolute() and relative.parts[0] == 'state_arrays' and relative.suffix == '.npz'
@@ -227,8 +277,8 @@ def snapshot(summary_root, run_root=None):
         def retain(value):
             for ref in referenced_arrays(value):
                 training_reference(ref, metadata['run_id'], source['row_id'])
-                require(ref['path'] not in refs or refs[ref['path']] == ref, 'Conflicting training reference')
-                refs[ref['path']] = ref
+                reference_metadata(ref)
+                refs[ref['path']] = merge_training_references(refs[ref['path']], ref) if ref['path'] in refs else deepcopy(ref)
         for stage in stages:
             if stage['row_id'] == source['row_id']: retain(stage)
         for event in jsonlines(lane/'training_events_compact.jsonl', training_event_key):
@@ -241,6 +291,7 @@ def snapshot(summary_root, run_root=None):
             require(index < compact_count and event['event'] == event_names[index], 'Full/compact training stream coverage mismatch')
             retain(event); full_count += 1
         require(full_count == compact_count, 'Full/compact training stream coverage mismatch')
+        for ref in refs.values(): reference_metadata(ref, complete=True)
         lanes.append(dict(row_id=source['row_id'], lane=str(lane), training_refs=list(refs.values()),
             expected_training_event_records=compact_count,
             compact_training_events=str(lane/'training_events_compact.jsonl'),
@@ -294,13 +345,22 @@ class Arrays:
     """Read-only bounded cache of referenced TRAINING archives, no manifest audit."""
     def __init__(self, lane, allowed_refs=None):
         self.lane = Path(lane).resolve(); self.cache = OrderedDict(); self.read_paths = set()
-        self.allowed = None if allowed_refs is None else {ref['path']:ref for ref in allowed_refs}
+        self.allowed = None
+        if allowed_refs is not None:
+            self.allowed = {}
+            for ref in allowed_refs:
+                reference_metadata(ref, complete=True)
+                self.allowed[ref['path']] = merge_training_references(self.allowed[ref['path']], ref) if ref['path'] in self.allowed else deepcopy(ref)
 
     def __call__(self, ref):
         relative = Path(ref['path']); path = (self.lane/relative).resolve()
         require(not relative.is_absolute() and path.is_relative_to(self.lane/'state_arrays'),
             'NPZ reference outside training archive')
-        require(self.allowed is None or self.allowed.get(ref['path']) == ref, 'NPZ not present in captured training references')
+        if self.allowed is None:
+            reference_metadata(ref, complete=True); canonical = ref
+        else:
+            require(ref['path'] in self.allowed, 'NPZ not present in captured training references')
+            canonical = merge_training_references(self.allowed[ref['path']], ref)
         if ref['path'] not in self.cache:
             with np.load(path, allow_pickle=False) as source:
                 require(not any(name.startswith(('outer_', 'query_')) for name in source.files), 'Forbidden archive array section')
@@ -311,6 +371,11 @@ class Arrays:
                 value.setflags(write=False)
             self.cache[ref['path']] = values; self.read_paths.add(ref['path'])
         self.cache.move_to_end(ref['path']); result = self.cache[ref['path']]
+        require(set(result) == set(canonical['arrays']), 'Training NPZ array inventory differs from captured reference')
+        for name, value in result.items():
+            expected = canonical['arrays'][name]
+            require(list(value.shape) == list(expected['shape']) and str(value.dtype) == expected['dtype'] and value.nbytes == expected['nbytes'],
+                    'Training NPZ shape/dtype/bytes differs from captured reference: ' + name)
         if len(self.cache) > 12: self.cache.popitem(last=False)
         return result
 

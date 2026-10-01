@@ -18,7 +18,13 @@
 
 引用索引来自 summary 的 `training_objectives.jsonl`、完整 compact 训练流，以及 full training events 中补充的 prior/preparation 引用。引用只允许当前 run、当前 row 的 `B_prepare`、`C_prepare`、`B_AFFINE`、`C_AFFINE_seq` 数值归档；`OUTER_SUPPORT_HELD` 不在允许范围。
 
+同一 path 的引用不要求整个 JSON 字典完全相同。实际 ENTRY 的 `compact_event` 对 `final_problem` 等普通嵌套字典使用递归 `scalars`：数组 metadata 的 `shape` 列表会被裁掉，但数组名称、dtype、nbytes 和 namespace 仍保留；显式 `state_ref/head_ref` 则保留完整引用。full 与 compact 是同一归档的互补描述，不能因为 shape 字段被合法省略就拒绝完整 snapshot。
+
+`merge_training_references` 在 snapshot 与第二阶段 allowlist 使用同一严格规则：path、key、完整 namespace 语义及数组名称清单必须一致；所有同时存在的 metadata 字段逐项一致，包括显式 shape、dtype、nbytes 和 scalar audit。缺失字段从完整引用补回，不覆盖冲突、不改变原对象。数组 dtype 必须为数值类型，shape/字节声明必须一致；snapshot 最终必须由已有 full 记录恢复全部 shape，不能从新 forward、solve 或猜测补齐。scalar 的 shape `[]` 与空数组 shape `[0,...]` 分开保留。
+
 第二阶段 `extract(snapshot, run_root=None)` 返回 `COMPLETE_AFFINE_JOINT_TRAINING_DIAGNOSTICS_DERIVED`。它读取索引声明的完整训练曲线和日志，只访问第一阶段捕获的训练 NPZ 引用。目录、阶段索引、事件覆盖或引用不匹配时拒绝继续。它不读取 `fit_trace.jsonl`、outer feature/scores、外部样本或 query。
+
+`Arrays` 接受与捕获 full header 相容的 compact 引用，仍拒绝未捕获 path、身份或 metadata 冲突。读取已有训练 NPZ 后核对实际数组清单、shape、dtype 和 nbytes；这只是归档 header 的直接一致性检查，不重新审计数学方程或计算分类分数。重复缓存读取也保留同一检查，不能通过先传 compact 引用绕过其后完整引用的冲突。
 
 `fit_stages` 使用字段选择器跳过 `score_seconds`、`score_workload`、`outer_stats` 和外层评分字段。训练阶段的 fit/preparation/cache 时间、训练状态字节及实际工作计数保留。完整训练事件只补回 compactor 省略的物理训练身份、prior/final-problem 引用及已测分布统计。
 
@@ -84,3 +90,13 @@ inner-held 标签参与监督训练，因此训练正确率、margin、winner �
 测试使用手工 NPZ、JSONL 和 summary fixture，不调用核心 fit。覆盖完整曲线与重复 B、全部拒绝试探、动态 rank/空坐标、`g_Z−Z` 分解、b/z/s/伴随、13 计数、实际 B→C 存储诊断、tau0/零 scale、快照无曲线/数组读取、不完整输入拒绝、外层字段不反序列化、引用 allowlist、独占本机输出和模拟 SSH 两阶段传输。
 
 开发 Agent 仅做 AST、UTF-8 和静态接口读回。主 Agent 在项目环境串行运行合成测试，12 项全部通过（9.02 s，证据 `pytest_utf8_1790805054766380800`）；随后仅修正流程注释，无逻辑变化。未经主 Agent 完整 summary 确认，不运行真实收集器；不修改已运行 release 或健康任务。
+
+## 2026-10-01 引用 ABI 修复
+
+主 Agent 报告完整独立 Affine summary 后的预登记 snapshot 在 `retain` 处出现 `Conflicting training reference`。本 worker 未读取该真实 snapshot、原 fit_trace、外层分数、query、权重、cache或历史索引。纯源码回归使用实际 ENTRY 的 `StateArchive` 与 `compact_event` 创建合成引用，确认上述 shape 省略差异。修复范围仅为 collector 的引用 metadata 比较/融合及对应测试/本文，未改 method、数学公式、读取权限或健康 release。
+
+新增窄合成回归证明实际 compactor 的 shape 省略、两种顺序融合恢复完整引用、原引用不被修改、scalar/空数组正确保留、snapshot 不读取 NPZ、第二阶段接受相容 compact 引用，并拒绝 path/key/namespace、shape、dtype、nbytes 或数组清单冲突。真实加载的数组 header 与捕获声明不符也拒绝。测试不会调用 fit、adapter forward、SVD、Cholesky 或 solve，不增加训练或外层评分。
+
+主 Agent 已在项目环境串行运行本次修复的合成测试：**20 passed，14.01 s**，输出 prefix 为 `E:/type10-7/.codex_tmp/pytest_utf8_1790825318415316700`，无新增失败。本 worker 未运行测试、Conda、Git、SSH、远端 snapshot/extract 或真实诊断。
+
+新增修复的合成验证状态为 `ROOT_SYNTHETIC_TESTS_VERIFIED`。实际 snapshot 重采和 extract 尚未执行，不能将合成通过记为实际收集器已完成。源码、测试及本文保持冻结，实际执行与产物状态由主 Agent 另行核实。

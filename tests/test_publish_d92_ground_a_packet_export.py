@@ -46,6 +46,10 @@ def test_missing_dependency_blocks_before_import_or_any_publication(tmp_path):
     check.assert_not_called();loader.assert_not_called()
     state=publisher.readiness(spec,tmp_path)
     assert state['missing'] and state['launched'] is False
+    dependency=state['external_native_dependency']
+    assert Path(dependency['code_ref'])==Path(spec['rows'][0]['native_code_ref'])
+    assert dependency['copied_into_bundle'] is dependency['runtime_module_origins_verified'] is False
+    assert not any('baseline_origin' in path or 'muse_ssdg' in path for path in state['paths'])
 
 
 def test_dispatch_checks_exact_isolated_bundle_then_reuses_sole_transport(tmp_path):
