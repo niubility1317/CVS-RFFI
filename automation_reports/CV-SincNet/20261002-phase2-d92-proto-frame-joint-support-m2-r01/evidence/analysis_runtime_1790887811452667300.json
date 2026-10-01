@@ -1,0 +1,172 @@
+{
+  "observed_utc": "2026-10-01T20:49:10Z",
+  "launch": {
+    "status": "DISPATCHED_AWAITING_READBACK",
+    "pid": 1205094,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_proto_frame_support_analysis_20261002_r01",
+    "source_commit": "72663b484cf4343ecf0d7af16c48048adb2eef2f",
+    "fitted_runtime_commit": "a9f638d9ea9bd315d6614c6650e95c5f557aed0c",
+    "output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-proto-frame-joint-support-m2-r01-analysis-r01",
+    "original_run": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-proto-frame-joint-support-m2-r01",
+    "launch_owner": "root",
+    "query_read": false,
+    "fit": false,
+    "automatic_retry": false
+  },
+  "startup": {
+    "schema": "d92_support_analysis_execution_v1",
+    "status": "RUNNING",
+    "pid": 1205099,
+    "wrapper_pid": 1205094,
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_proto_frame_support_analysis_20261002_r01/tools/analyze_d92_proto_frame_joint_probe.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_proto_frame_support_analysis_20261002_r01/configs/d92_proto_frame_joint_support_20261002.json",
+      "--output",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-proto-frame-joint-support-m2-r01-analysis-r01",
+      "--expected-runtime-commit",
+      "a9f638d9ea9bd315d6614c6650e95c5f557aed0c"
+    ],
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_proto_frame_support_analysis_20261002_r01",
+    "source_commit": "72663b484cf4343ecf0d7af16c48048adb2eef2f",
+    "fitted_runtime_commit": "a9f638d9ea9bd315d6614c6650e95c5f557aed0c",
+    "output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-proto-frame-joint-support-m2-r01-analysis-r01",
+    "original_run": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-proto-frame-joint-support-m2-r01",
+    "environment": {
+      "OMP_NUM_THREADS": "2",
+      "OPENBLAS_NUM_THREADS": "2",
+      "MKL_NUM_THREADS": "2",
+      "NUMEXPR_NUM_THREADS": "2",
+      "CUDA_VISIBLE_DEVICES": "",
+      "PYTHONUNBUFFERED": "1"
+    },
+    "started": 1790887188.7143807,
+    "fit": false,
+    "query_read": false,
+    "source_sample_read": false
+  },
+  "execution": {
+    "schema": "d92_support_analysis_execution_v1",
+    "status": "PROCESS_EXITED_AWAITING_ARTIFACT_READBACK",
+    "pid": 1205099,
+    "wrapper_pid": 1205094,
+    "returncode": 0,
+    "elapsed_seconds": 548.3814208507538,
+    "finished": 1790887737.0958035,
+    "source_commit": "72663b484cf4343ecf0d7af16c48048adb2eef2f",
+    "fitted_runtime_commit": "a9f638d9ea9bd315d6614c6650e95c5f557aed0c",
+    "output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-proto-frame-joint-support-m2-r01-analysis-r01",
+    "fit": false,
+    "query_read": false,
+    "source_sample_read": false,
+    "automatic_retry": false
+  },
+  "wrapper_live": null,
+  "child_live": null,
+  "summary_meta": {
+    "status": "COMPLETE_PROTO_FRAME_JOINT_SUPPORT_ANALYSIS_VERIFIED",
+    "schema": "d92_proto_frame_joint_support_probe_v1",
+    "method": "D92-ProtoFrameTangent-GGN1-LocalRidge",
+    "run_id": "20261002-phase2-d92-proto-frame-joint-support-m2-r01",
+    "release_commit": "a9f638d9ea9bd315d6614c6650e95c5f557aed0c",
+    "coverage": {
+      "rows": 4,
+      "parents": 160,
+      "sequence_paths": 1800,
+      "metric_parent_rows": 560,
+      "metric_path_rows": 3600
+    },
+    "query_rows_used": 0,
+    "source_rows_used": 0,
+    "validation_scope": "Complete saved metadata, numeric archive closure and fixed-decision readback; no independent kernel/gate replay"
+  },
+  "files": [
+    {
+      "path": "by_k_new_count.csv",
+      "bytes": 134218
+    },
+    {
+      "path": "by_k_new_count.jsonl",
+      "bytes": 324993
+    },
+    {
+      "path": "by_model_seed.csv",
+      "bytes": 23759
+    },
+    {
+      "path": "by_model_seed.jsonl",
+      "bytes": 55591
+    },
+    {
+      "path": "by_receiver_scene.csv",
+      "bytes": 53474
+    },
+    {
+      "path": "by_receiver_scene.jsonl",
+      "bytes": 124419
+    },
+    {
+      "path": "by_row.csv",
+      "bytes": 63302
+    },
+    {
+      "path": "by_row.jsonl",
+      "bytes": 139520
+    },
+    {
+      "path": "compact.json",
+      "bytes": 639
+    },
+    {
+      "path": "overall.csv",
+      "bytes": 10781
+    },
+    {
+      "path": "overall.jsonl",
+      "bytes": 24864
+    },
+    {
+      "path": "paired_seed_means.csv",
+      "bytes": 149342
+    },
+    {
+      "path": "paired_seed_means.jsonl",
+      "bytes": 331412
+    },
+    {
+      "path": "parameters.csv",
+      "bytes": 394956
+    },
+    {
+      "path": "parameters.jsonl",
+      "bytes": 1480384
+    },
+    {
+      "path": "parents.csv",
+      "bytes": 219275
+    },
+    {
+      "path": "parents.jsonl",
+      "bytes": 554576
+    },
+    {
+      "path": "paths.csv",
+      "bytes": 1589273
+    },
+    {
+      "path": "paths.jsonl",
+      "bytes": 3880420
+    },
+    {
+      "path": "summary.json",
+      "bytes": 1453346
+    }
+  ],
+  "log_bytes": 0,
+  "read_only": true,
+  "metrics_read": false,
+  "query_read": false,
+  "verification": "VERIFIED_COMPLETE_ARTIFACT_METADATA"
+}

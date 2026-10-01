@@ -1,0 +1,160 @@
+{
+  "status": "VERIFIED_COMPLETE_SUPPORT_CLOCK_READBACK",
+  "rows": [
+    {
+      "row_id": "rx3-cvs-daot-rc4-s2026092701",
+      "hardware": {
+        "platform": "Linux-6.8.0-142-generic-x86_64-with-glibc2.39",
+        "processor": "x86_64",
+        "cpu_count": 96,
+        "dtype": "float64",
+        "gpu_use": false
+      },
+      "blas_environment": {
+        "OMP_NUM_THREADS": "2",
+        "OPENBLAS_NUM_THREADS": "2",
+        "MKL_NUM_THREADS": "2"
+      },
+      "counts": {
+        "BASE_FIT/B0": 450,
+        "PROTO_FRAME_PREPARATION/B": 450,
+        "CANDIDATE_FIT/B_PROTO_FRAME": 450,
+        "BASE_FIT/C0": 360,
+        "PROTO_FRAME_PREPARATION/C": 360,
+        "CANDIDATE_FIT/C_PROTO_FRAME_seq": 360
+      },
+      "seconds_sums": {
+        "BASE_FIT/B0/fit_seconds": 3.2094922537507955,
+        "BASE_FIT/B0/fit_and_score_seconds": 14.688986189008574,
+        "BASE_FIT/B0/score_seconds": 9.292086473928066,
+        "PROTO_FRAME_PREPARATION/B/preparation_seconds": 6.555608319918974,
+        "CANDIDATE_FIT/B_PROTO_FRAME/fit_seconds": 58.821366249903804,
+        "CANDIDATE_FIT/B_PROTO_FRAME/score_seconds": 128.13389847382496,
+        "BASE_FIT/C0/fit_seconds": 10.814850856972043,
+        "BASE_FIT/C0/fit_and_score_seconds": 44.62303040003462,
+        "BASE_FIT/C0/score_seconds": 30.48587441178097,
+        "PROTO_FRAME_PREPARATION/C/preparation_seconds": 55.333584653024445,
+        "CANDIDATE_FIT/C_PROTO_FRAME_seq/fit_seconds": 237.20268526521977,
+        "CANDIDATE_FIT/C_PROTO_FRAME_seq/score_seconds": 532.003350342784,
+        "CANDIDATE_FIT/C_PROTO_FRAME_seq/structural_predict_seconds": 505.4764786189626
+      }
+    },
+    {
+      "row_id": "rx3-cvs-daot-rc4-s2026092702",
+      "hardware": {
+        "platform": "Linux-6.8.0-142-generic-x86_64-with-glibc2.39",
+        "processor": "x86_64",
+        "cpu_count": 96,
+        "dtype": "float64",
+        "gpu_use": false
+      },
+      "blas_environment": {
+        "OMP_NUM_THREADS": "2",
+        "OPENBLAS_NUM_THREADS": "2",
+        "MKL_NUM_THREADS": "2"
+      },
+      "counts": {
+        "BASE_FIT/B0": 450,
+        "PROTO_FRAME_PREPARATION/B": 450,
+        "CANDIDATE_FIT/B_PROTO_FRAME": 450,
+        "BASE_FIT/C0": 360,
+        "PROTO_FRAME_PREPARATION/C": 360,
+        "CANDIDATE_FIT/C_PROTO_FRAME_seq": 360
+      },
+      "seconds_sums": {
+        "BASE_FIT/B0/fit_seconds": 3.0480636097781826,
+        "BASE_FIT/B0/fit_and_score_seconds": 14.193580761755584,
+        "BASE_FIT/B0/score_seconds": 8.99289521969331,
+        "PROTO_FRAME_PREPARATION/B/preparation_seconds": 6.213771868831827,
+        "CANDIDATE_FIT/B_PROTO_FRAME/fit_seconds": 56.67787474076613,
+        "CANDIDATE_FIT/B_PROTO_FRAME/score_seconds": 124.47697197290836,
+        "BASE_FIT/C0/fit_seconds": 10.357970678960555,
+        "BASE_FIT/C0/fit_and_score_seconds": 43.223498755090986,
+        "BASE_FIT/C0/score_seconds": 29.564544429798843,
+        "PROTO_FRAME_PREPARATION/C/preparation_seconds": 52.85040326404851,
+        "CANDIDATE_FIT/C_PROTO_FRAME_seq/fit_seconds": 231.0505613371206,
+        "CANDIDATE_FIT/C_PROTO_FRAME_seq/score_seconds": 517.2805691691028,
+        "CANDIDATE_FIT/C_PROTO_FRAME_seq/structural_predict_seconds": 490.9371619117155
+      }
+    },
+    {
+      "row_id": "rx1-cvs-daot-rc4-s2026092701",
+      "hardware": {
+        "platform": "Linux-6.8.0-142-generic-x86_64-with-glibc2.39",
+        "processor": "x86_64",
+        "cpu_count": 96,
+        "dtype": "float64",
+        "gpu_use": false
+      },
+      "blas_environment": {
+        "OMP_NUM_THREADS": "2",
+        "OPENBLAS_NUM_THREADS": "2",
+        "MKL_NUM_THREADS": "2"
+      },
+      "counts": {
+        "BASE_FIT/B0": 450,
+        "PROTO_FRAME_PREPARATION/B": 450,
+        "CANDIDATE_FIT/B_PROTO_FRAME": 450,
+        "BASE_FIT/C0": 360,
+        "PROTO_FRAME_PREPARATION/C": 360,
+        "CANDIDATE_FIT/C_PROTO_FRAME_seq": 360
+      },
+      "seconds_sums": {
+        "BASE_FIT/B0/fit_seconds": 3.0060533018549904,
+        "BASE_FIT/B0/fit_and_score_seconds": 14.051404942758381,
+        "BASE_FIT/B0/score_seconds": 8.889802903693635,
+        "PROTO_FRAME_PREPARATION/B/preparation_seconds": 6.273485810030252,
+        "CANDIDATE_FIT/B_PROTO_FRAME/fit_seconds": 56.88367185409879,
+        "CANDIDATE_FIT/B_PROTO_FRAME/score_seconds": 124.16247041479801,
+        "BASE_FIT/C0/fit_seconds": 10.223351475113304,
+        "BASE_FIT/C0/fit_and_score_seconds": 42.559652285213815,
+        "BASE_FIT/C0/score_seconds": 29.050016974535538,
+        "PROTO_FRAME_PREPARATION/C/preparation_seconds": 52.571810974768596,
+        "CANDIDATE_FIT/C_PROTO_FRAME_seq/fit_seconds": 229.29499727935763,
+        "CANDIDATE_FIT/C_PROTO_FRAME_seq/score_seconds": 512.1365663838224,
+        "CANDIDATE_FIT/C_PROTO_FRAME_seq/structural_predict_seconds": 488.645524821186
+      }
+    },
+    {
+      "row_id": "rx1-cvs-daot-rc4-s2026092702",
+      "hardware": {
+        "platform": "Linux-6.8.0-142-generic-x86_64-with-glibc2.39",
+        "processor": "x86_64",
+        "cpu_count": 96,
+        "dtype": "float64",
+        "gpu_use": false
+      },
+      "blas_environment": {
+        "OMP_NUM_THREADS": "2",
+        "OPENBLAS_NUM_THREADS": "2",
+        "MKL_NUM_THREADS": "2"
+      },
+      "counts": {
+        "BASE_FIT/B0": 450,
+        "PROTO_FRAME_PREPARATION/B": 450,
+        "CANDIDATE_FIT/B_PROTO_FRAME": 450,
+        "BASE_FIT/C0": 360,
+        "PROTO_FRAME_PREPARATION/C": 360,
+        "CANDIDATE_FIT/C_PROTO_FRAME_seq": 360
+      },
+      "seconds_sums": {
+        "BASE_FIT/B0/fit_seconds": 3.015680148790125,
+        "BASE_FIT/B0/fit_and_score_seconds": 14.063357638864545,
+        "BASE_FIT/B0/score_seconds": 8.879409468179801,
+        "PROTO_FRAME_PREPARATION/B/preparation_seconds": 6.285054209030932,
+        "CANDIDATE_FIT/B_PROTO_FRAME/fit_seconds": 56.91962219108245,
+        "CANDIDATE_FIT/B_PROTO_FRAME/score_seconds": 124.2680817291839,
+        "BASE_FIT/C0/fit_seconds": 10.322846280905651,
+        "BASE_FIT/C0/fit_and_score_seconds": 43.090815102274064,
+        "BASE_FIT/C0/score_seconds": 29.452447135932744,
+        "PROTO_FRAME_PREPARATION/C/preparation_seconds": 52.606660688092234,
+        "CANDIDATE_FIT/C_PROTO_FRAME_seq/fit_seconds": 230.6548814291018,
+        "CANDIDATE_FIT/C_PROTO_FRAME_seq/score_seconds": 512.8390212430095,
+        "CANDIDATE_FIT/C_PROTO_FRAME_seq/structural_predict_seconds": 488.9476778511598
+      }
+    }
+  ],
+  "scope": "STORED_MEASURED_FINAL_PATH_CLOCKS; FIT_INCLUDES_STATE_CALLBACK_ARCHIVING; BASELINE_FIT_MINUS_SCORE_STILL_INCLUDES_ARCHIVING; PREPARATION_SEPARATE; NO_REPLAY",
+  "query_or_source_read": false,
+  "training_rerun": false
+}

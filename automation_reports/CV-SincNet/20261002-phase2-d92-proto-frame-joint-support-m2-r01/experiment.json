@@ -8,7 +8,7 @@
   "name": "D92 ProtoFrame tangent GGN1 + LocalRidge joint support diagnostic",
   "description": "One mathematically fixed five-coordinate candidate, same 4 rows/160 physical parents, actual paired A/B/C; no parameter grid",
   "authorization": "Existing user LocalRidge-priority joint target-support SFT/frozen summaries/subagent authorization; root sole launch owner",
-  "status": "TRAINING_COMPLETE",
+  "status": "COMPLETE",
   "created_at": "2026-10-01T18:50:04.036864+00:00",
   "data": {
     "dataset": "Support slices only from the two existing VALIDATED_ONCE capsules",
@@ -331,7 +331,7 @@
       "behind": 0
     },
     "support_analysis": {
-      "status": "RUNNING",
+      "status": "VERIFIED_COMPLETE_SUPPORT_DIAGNOSTIC",
       "attempt_id": "r01",
       "source_preparation_commit": "f0ab613491cf00fc9110ce685c4937718bc65da1",
       "source_commit": "72663b484cf4343ecf0d7af16c48048adb2eef2f",
@@ -363,13 +363,13 @@
       "parameter_selection": false,
       "automatic_retry": false,
       "implementation_validation_ref": "automation_reports/CV-SincNet/20261002-phase2-d92-proto-frame-joint-repeat-m2-r01/evidence/implementation_validation_20261002.json",
-      "publication_status": "VERIFIED_RUNNING",
+      "publication_status": "VERIFIED_COMPLETE_SUPPORT_DIAGNOSTIC",
       "wrapper_pid": 1205094,
       "wrapper_start_ticks": 13489311,
       "child_pid": 1205099,
       "child_start_ticks": 13489314,
       "latest_observed_utc": "2026-10-01T20:40:48Z",
-      "latest_readback_ref": "evidence/analysis_runtime_1790887309653380400.json",
+      "latest_readback_ref": "evidence/analysis_runtime_1790887811452667300.json",
       "publication_ref": "evidence/analysis_publication/publication.json",
       "actual_environment": {
         "OMP_NUM_THREADS": "2",
@@ -380,10 +380,31 @@
         "PYTHONUNBUFFERED": "1"
       },
       "source_file_count": 2,
-      "source_archive_bytes": 204800
+      "source_archive_bytes": 204800,
+      "terminal_observed_utc": "2026-10-01T20:49:10Z",
+      "process_returncode": 0,
+      "elapsed_seconds": 548.3814208507538,
+      "current_processes_live": false,
+      "summary_downloaded": true,
+      "metrics_read": true,
+      "summary_complete": true,
+      "collection_readback_ref": "evidence/support_analysis_collection.json",
+      "report_ref": "automation_reports/CV-SincNet/20261002-phase2-d92-proto-frame-joint-support-m2-r01/support_diagnostic_20261002.md",
+      "original_summary_local_ref": "E:\\type10-7\\local_artifacts\\d92_proto_frame_joint_support_analysis_results\\d92_proto_frame_support_analysis_20261002_r01\\summary.json",
+      "original_summary_remote_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-proto-frame-joint-support-m2-r01-analysis-r01/summary.json",
+      "coverage": {
+        "rows": 4,
+        "parents": 160,
+        "sequence_paths": 1800,
+        "metric_parent_rows": 560,
+        "metric_path_rows": 3600
+      },
+      "query_performance": false,
+      "automatic_promotion": false
     },
     "training_complete": true,
-    "analysis_complete": false
+    "analysis_complete": true,
+    "resource_clock_ref": "evidence/complete_support_clocks_1790888756332194900.json"
   },
   "probe": {
     "cohorts": {
@@ -4706,5 +4727,24 @@
     "independent_analysis": "Fresh analysis after all declared rows close",
     "report": "Paired A/B/C, full K x new-class count, gain/drop/absGap/H and measured costs; missing N/A"
   },
-  "results": null
+  "results": {
+    "independent_analysis": {
+      "status": "VERIFIED_COMPLETE_SUPPORT_DIAGNOSTIC",
+      "report_ref": "automation_reports/CV-SincNet/20261002-phase2-d92-proto-frame-joint-support-m2-r01/support_diagnostic_20261002.md",
+      "summary_ref": "automation_reports/CV-SincNet/20261002-phase2-d92-proto-frame-joint-support-m2-r01/diagnostic_summary.json",
+      "report_metrics_ref": "automation_reports/CV-SincNet/20261002-phase2-d92-proto-frame-joint-support-m2-r01/diagnostic_report_metrics.json",
+      "coverage": {
+        "rows": 4,
+        "parents": 160,
+        "sequence_paths": 1800,
+        "metric_parent_rows": 560,
+        "metric_path_rows": 3600
+      },
+      "query_performance": false,
+      "automatic_promotion": false,
+      "parameter_selection": false
+    }
+  },
+  "status_detail": "Complete declared support OOF/proxy diagnostic; no overall performance gain or query claim",
+  "completed_at": "2026-10-01T21:12:44.719170+00:00"
 }

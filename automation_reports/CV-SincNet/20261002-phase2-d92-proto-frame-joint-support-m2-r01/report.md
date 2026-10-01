@@ -1,6 +1,6 @@
 # ProtoFrame 联合 support 诊断预登记
 
-状态 RUNNING，一次发布与独立进程读回均为 VERIFIED。Phase1 固定，星地信道 practical residual/post_sync/noeq/25 MHz。冻结六类地面中心仅定义 5 个共享切向校正方向，目标域合法 support 的 RMS 类 CE 训练 adapter；B/C 各至多 1 次 GGN 球内更新与 12 次真实目标回读。C 继承本候选实际 B，冻结旧条件函数，完整拟合新 Ridge、自由截距与 all-pair barrier gate。源域样本、逐样本特征、query 拟合和参数网格均禁用。
+状态 COMPLETE，固定support诊断已完整闭合；以下保留预登记和实际执行记录。Phase1 固定，星地信道 practical residual/post_sync/noeq/25 MHz。冻结六类地面中心仅定义 5 个共享切向校正方向，目标域合法 support 的 RMS 类 CE 训练 adapter；B/C 各至多 1 次 GGN 球内更新与 12 次真实目标回读。C 继承本候选实际 B，冻结旧条件函数，完整拟合新 Ridge、自由截距与 all-pair barrier gate。源域样本、逐样本特征、query 拟合和参数网格均禁用。
 
 固定 2 模型 × 2 cohort，共 4 row/160 parent；旧类 6，K=1/5/10/20，新增 0/2/5/10/20。复用现有 VALIDATED_ONCE support 缓存与物理 split。外层 OOF/proxy 是诊断，parent K 与实际 train K 分列；K1 held 指标 N/A。R0 为原 BranchLocalRidge，C 独立重拟合；新候选为实际顺序 B→C，不混用阶段。
 
@@ -19,3 +19,5 @@ ground 元数据与固定模型 lineage 已匹配；只用现有 center，不重
 2026-10-01T20:26:20Z独立metadata确认完整4行训练完成（TRAINING_COMPLETE），原fit runtime不变；完整support分析r01待一次发布，无query性能结论。
 
 2026-10-01T20:40:48Z独立完整support分析r01进程VERIFIED_RUNNING，child1205099/wrapper1205094，sourcecommit`72663b484cf4343ecf0d7af16c48048adb2eef2f`与fit runtime a9f638d9分开。两文件源包204800B，输出在原run外。仍未有完整analysis结果，query性能N/A；无fit/source/query数据访问。
+
+完整support诊断已闭合，原fit a9f638d9、独立analysis 72663b48/548.381秒，4row/160parent/1800路径、20文件11008544字节读回VERIFIED。96个包含新类的OOF parent：A62.64%、B71.04%、C旧64.89%、C新50.18%、H56.00%；R0 H58.42%，下降2.41个百分点，不晋级。详见[完整三阶段、K×新增类和成本报告](support_diagnostic_20261002.md)。原日志、NPZ和参数不变；r02 query在本指标读取前已固定并启动，继续原排程，结果不回流调参。

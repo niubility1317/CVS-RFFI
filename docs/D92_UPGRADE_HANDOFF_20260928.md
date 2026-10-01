@@ -1,3 +1,15 @@
+## 当前交接：ProtoFrame完整support诊断已报告，综合性能未改善；query原排程继续
+
+- Goal ACTIVE。support run20261002-phase2-d92-proto-frame-joint-support-m2-r01 COMPLETE：原fit immutable a9f638d9、独立analysis source72663b48，4row/160parent/1800路径完整，20文件11008544B已收集，analysis548.381秒。不要重训、重跑分析或collector。原日志、NPZ和失败记录保留。
+- 完整报告在本run/support_diagnostic_20261002.md，所有K×新增0/2/5/10/20、旧6、A/B/C、OOF/proxy、分层与成本已交付。96个OOF新增>0：A62.64/B71.04/C旧64.89/C新50.18/H56.00；R0 H58.42，下降2.41pp，旧+1.12pp、新−4.66pp，不晋级。5参数不证明省算力。已读取整个support结果，未读取query或用query反馈选参。
+- 新r02 query immutable72663/supervisor1204372/rx3 PID1204902/1204908；旧Group query immutable73aa/supervisor1049548/rx3 PID1049715/1049721；21:03UTC只读metadata均VERIFIED，两rx3 PREDICTING、两rx1等待。下一正常监测约21:23UTC，禁止partial评分、健康停止/热修改/自动重试。各全4/2400fixed后使用各原immutable独立scorer一次性truth-last评分，结果不回流调参。
+- docs/D92_PROTO_FRAME_GGN_COORDINATE_SCALE_NOTE_20261002.md为source-blind纯数学新候选，Q^T Q+support OOF预测Fisher定义同一阻尼和度量球；只有精确数学正定/商空间/线性坐标协变证明，无实现、精度或准确率保证。group_factorization_math仅拥有新numerics doc，处理唯一近秩亏方案；root未实施未解决的rank/JVP误差链，不改现行theta ABI。
+- Root唯一真实数值、结果、Git/SSH、launch/scoring。先相关文档轻量读回、Git提交/push/独立OID，再收敛候选数值设计；全query终态后报告真实三阶段，fresh独立验证暂缓。当前提交前HEAD73015e04，实际fit/source已另记，不以元数据commit冒充运行源码。
+
+<!-- PROTO_FRAME_SUPPORT_REPORT_COMPLETE_20261002 -->
+
+以下保留历史状态，不据此重复启动：
+
 ## 当前交接：ProtoFrame r02完整基准及完整support独立分析均一次启动VERIFIED
 
 - Goal ACTIVE；`20261002-phase2-d92-proto-frame-joint-repeat-m2-r02`RUNNING，immutable runtime`72663b484cf4343ecf0d7af16c48048adb2eef2f`，准备67587。20:40UTC独立proc/startup/cwd/argv/env VERIFIED，supervisor1204372/start_ticks13486567；rx3PID1204902/1204908 PREDICTING、rx1两行等待，4行完整预检已关闭。fixed4rows/2400parents、old6、K1/5/10/20×new0/2/5/10/20；actualB→C，完整后仅原release truth-last scorer。不要再次发布、自动重试、读subset或改运行源码。

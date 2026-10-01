@@ -1,0 +1,55 @@
+{
+  "status": "COMPLETE_SUPPORT_DIAGNOSTIC_NOT_QUERY_PERFORMANCE",
+  "run_id": "20261002-phase2-d92-proto-frame-joint-support-m2-r01",
+  "fit_runtime": "a9f638d9ea9bd315d6614c6650e95c5f557aed0c",
+  "analysis_source": "72663b484cf4343ecf0d7af16c48048adb2eef2f",
+  "coverage": {
+    "rows": 4,
+    "parents": 160,
+    "sequence_paths": 1800,
+    "metric_parent_rows": 560,
+    "metric_path_rows": 3600
+  },
+  "oof_new_class_parents": 96,
+  "metrics": {
+    "R0": {
+      "A_old_accuracy": 0.6263888888888889,
+      "B_old_accuracy": 0.7104166666666667,
+      "C_old_accuracy": 0.6376736111111111,
+      "C_new_accuracy": 0.5484635416666667,
+      "adaptation_gain_B_minus_A": 0.08402777777777777,
+      "total_old_accuracy_drop": 0.07274305555555555,
+      "C_abs_new_old_gap": 0.1074045138888889,
+      "C_h": 0.5841679640182029
+    },
+    "R_PROTO_FRAME_seq": {
+      "A_old_accuracy": 0.6263888888888889,
+      "B_old_accuracy": 0.7104166666666667,
+      "C_old_accuracy": 0.6488715277777778,
+      "C_new_accuracy": 0.5018489583333333,
+      "adaptation_gain_B_minus_A": 0.08402777777777777,
+      "total_old_accuracy_drop": 0.06154513888888888,
+      "C_abs_new_old_gap": 0.1547309027777778,
+      "C_h": 0.5600258796149435
+    }
+  },
+  "metric_units": "fraction; report percent or percentage points",
+  "timing_seconds": {
+    "BASE_FIT/B0/fit_seconds": 12.279289314174093,
+    "BASE_FIT/B0/fit_and_score_seconds": 56.997329532387084,
+    "BASE_FIT/B0/score_seconds": 36.05419406549481,
+    "PROTO_FRAME_PREPARATION/B/preparation_seconds": 25.327920207811985,
+    "CANDIDATE_FIT/B_PROTO_FRAME/fit_seconds": 229.30253503585118,
+    "CANDIDATE_FIT/B_PROTO_FRAME/score_seconds": 501.04142259071523,
+    "BASE_FIT/C0/fit_seconds": 41.719019291951554,
+    "BASE_FIT/C0/fit_and_score_seconds": 173.4969965426135,
+    "BASE_FIT/C0/score_seconds": 118.5528829520481,
+    "PROTO_FRAME_PREPARATION/C/preparation_seconds": 213.36245957993378,
+    "CANDIDATE_FIT/C_PROTO_FRAME_seq/fit_seconds": 928.2031253107998,
+    "CANDIDATE_FIT/C_PROTO_FRAME_seq/score_seconds": 2074.2595071387186,
+    "CANDIDATE_FIT/C_PROTO_FRAME_seq/structural_predict_seconds": 1974.006843203024
+  },
+  "table_scope": "All completed declared support paths; no query",
+  "query_rows_used": 0,
+  "source_rows_used": 0
+}
