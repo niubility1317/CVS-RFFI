@@ -1,0 +1,16 @@
+{
+  "status": "SUBMITTED",
+  "pid": 1085761,
+  "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rf_operator_clean_eval_20261002_r01",
+  "argv": [
+    "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "-u",
+    "-m",
+    "experiments.cvs_clean_eval.dispatch",
+    "--spec",
+    "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rf_operator_clean_eval_20261002_r01/experiments/cvs_rf_operator_clean/configs/launch_spec.json"
+  ],
+  "log": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rf_operator_clean_eval_20261002_r01/dispatcher.stdout.log",
+  "commit": "be7ffa0283a524e16e80f1a3cd6877bad4d795a4",
+  "sha256": "ee6f0ab6d090f06259e03566900d76857547999b1289c1eea86c684c63e55ee7"
+}
