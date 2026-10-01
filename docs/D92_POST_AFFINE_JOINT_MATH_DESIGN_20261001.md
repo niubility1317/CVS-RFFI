@@ -1,10 +1,10 @@
 # D92：Affine 之后的联合 LocalRidge 数学设计
 
-状态：`DESIGN_FROZEN / COMPLETE_SYNTHETIC_PIPELINE_VERIFIED / REAL_SUPPORT_RUN_RUNNING`。日期：2026-10-01。
+状态：`DESIGN_FROZEN / COMPLETE_SYNTHETIC_PIPELINE_VERIFIED / REAL_SUPPORT_TRAINING_COMPLETE / INDEPENDENT_ANALYSIS_RUNNING`。日期：2026-10-01。
 
 本文推荐一条后续结构路线：**B 直接优化训练用 RMS CE；C 在解析 LocalRidge 头内部限制完整残差，使其在当前旧 support 上恒为零。** C 的约束覆盖全部注册列，包括新增类列。adapter 仍可更新，保护恒等式对每次当前 U 都成立。该路线保留解析头、实际 B 函数继承、固定旧尺度和现有有限更新预算，不引入 keep 权重、GEM 半空间、类别校准系数或参数网格。
 
-数学设计已落实为独立方法 `D92-ConditionalJointLocalRidge-v1`。root 已完成[正核解析头](D92_CONDITIONAL_AFFINE_KERNEL_IMPLEMENTATION_20261001.md) 20 项、[独立完整 KKT 证书](D92_CONDITIONAL_MATH_CERTIFICATE_20261001.md) 63 项、[联合 SFT 核心与运行入口](D92_CONDITIONAL_JOINT_IMPLEMENTATION_20261001.md) 37 项、[独立分析](D92_CONDITIONAL_JOINT_ANALYSIS_20261001.md) 31 项、[报告与训练诊断](D92_CONDITIONAL_JOINT_REPORTING_20261001.md) 18 项及隔离发布包 4 项合成检查。实验 `20261001-phase2-d92-conditional-joint-support-m2-r01` 已唯一启动；训练release为 `7204161b126a9d3a17096aee5c75bce8ccfee6ec`，supervisor 578658 与两个rx3 worker的PID/argv/CWD经独立读回核实。暂无完整真实准确率、星载资源或query零遗忘结论；A与B−A仍N/A。它不修改正在运行的Affine独立分析。下文的“精确”均指数学上的精确；浮点实现需要独立残差和容差核验。
+数学设计已落实为独立方法 `D92-ConditionalJointLocalRidge-v1`。root 已完成[正核解析头](D92_CONDITIONAL_AFFINE_KERNEL_IMPLEMENTATION_20261001.md) 20 项、[独立完整 KKT 证书](D92_CONDITIONAL_MATH_CERTIFICATE_20261001.md) 63 项、[联合 SFT 核心与运行入口](D92_CONDITIONAL_JOINT_IMPLEMENTATION_20261001.md) 37 项、[独立分析](D92_CONDITIONAL_JOINT_ANALYSIS_20261001.md) 31 项、[报告与训练诊断](D92_CONDITIONAL_JOINT_REPORTING_20261001.md) 18 项及隔离发布包 4 项合成检查。实验 `20261001-phase2-d92-conditional-joint-support-m2-r01` 的4行/160个parent已全部完成，训练release为 `7204161b126a9d3a17096aee5c75bce8ccfee6ec`，原supervisor和worker均经独立读回确认退出。独立分析源为 `0145234e381b5799306acfb3d36a4e17865c1814`，PID617023/start7407753仍健康运行。暂无完整真实准确率、星载资源或query零遗忘结论；A与B−A仍N/A。原训练release不变，Affine独立分析已另行完成。下文的“精确”均指数学上的精确；浮点实现需要独立残差和容差核验。
 
 ## 1. 依据、权限与要解决的结构问题
 
@@ -340,11 +340,11 @@ adapter 梯度坐标仍为 `736r`，r≤8；解析 α、β、v 与 B 的 α_B/b_
 5. new0 精确 object/state 复用；K1/rank0 完整头；τ0 非零等价核及重复组；零核强制 b=0；新旧核输入重合的不可学习方向；病态 A 无 jitter 的显式失败与残差证据。
 6. RMS CE-only Armijo 使用实际投影 delta、4×12 固定预算、最后 accepted 而非最高训练 step；所有 rejected trial/prior/projection/adjoint RHS 与 bytes 的实际计数、无损 archive 和独立篡改拒绝。
 
-其中正核解析头、独立 primal KKT、五个原核块及 old/new/held 端点完整伴随、margin 界与远处反例、真实分支/adapter 到 Z、顺序状态、退化分支、预算、实际日志 callback 和无损归档均已通过上述合成测试。完整独立分析链及实际运行仍待完成；局部数值测试通过不能替代预登记实验及独立 scorer。该实现另外执行 A、raw Schur 和 K_perp 三次谱诊断，计算账必须包含这些额外立方规模成本。
+其中正核解析头、独立 primal KKT、五个原核块及 old/new/held 端点完整伴随、margin 界与远处反例、真实分支/adapter 到 Z、顺序状态、退化分支、预算、实际日志 callback 和无损归档均已通过上述合成测试。真实训练已完成，完整独立分析仍在运行；局部数值测试通过不能替代预登记实验及独立 scorer。该实现另外执行 A、raw Schur 和 K_perp 三次谱诊断，计算账必须包含这些额外立方规模成本。
 
 ## 10. 预登记三阶段报告与推荐结论
 
-对同一 row、同一物理旧 support/query，预先固定 A=合法绑定的冻结地面 source-only 分类器、B=旧 support 适应、C=实际 B 继承后全类注册。A 必须核实实际 source-only head、类序、scale 和 raw-feature 契约；当前尚未接入合法 A，故 `A_old` 与 `B_old−A_old` 为 N/A。R0/B0 仍在目标旧 support 上拟合，不能冒充“适应前 A”。
+对同一 row、同一物理旧 support/query，预先固定 A=合法绑定的冻结地面 source-only 分类器、B=旧 support 适应、C=实际 B 继承后全类注册。A 必须核实实际 source-only head、类序、scale 和 raw-feature 契约；[原地面分类头小包](D92_GROUND_A_PACKET_ACTUAL_20261001.md)已经核实并导出，两个完整文件包分别为8737B和8735B，权重各3840B。独立配对入口已通过36项合成测试，但真实A评分尚未启动，故 `A_old` 与 `B_old−A_old` 仍为N/A。R0/B0仍在目标旧support上拟合，不能冒充“适应前A”。小包文件字节不等于星地实际传输字节。
 
 完整报告 K×新增类数，并注明旧类数、新增类数和类别注册规则；分别给 A_old、B_old、C_old、C_new，在相关阶段可用时计算 `B_old−A_old`、`B_old−C_old`、`|C_old−C_new|` 和 H。C 必须全注册类统一竞争，不能用 old-only accuracy 代替；Nnew=0 时新类指标为 N/A。训练 CE 曲线、旧锚点残差、理论界和真实测试 accuracy 分开报告。
 

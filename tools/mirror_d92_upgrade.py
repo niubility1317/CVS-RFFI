@@ -332,6 +332,8 @@ paths += ['tools/export_d92_ground_classifier_a_packet.py', 'tests/test_export_d
     'tests/test_score_d92_ground_a_support.py', 'docs/D92_GROUND_A_SUPPORT_SCORING_20261001.md',
     'configs/d92_ground_a_packet_export_20261001.json', 'configs/d92_ground_a_packet_export_retry_20261001.json',
     'docs/D92_GROUND_A_PACKET_ACTUAL_20261001.md']
+paths += ['tools/run_d92_ground_a_support.py', 'tools/publish_d92_ground_a_support.py', 'tests/test_run_d92_ground_a_support.py', 'tests/test_publish_d92_ground_a_support.py', 'docs/D92_GROUND_A_SUPPORT_ENTRY_20261001.md', 'configs/d92_ground_a_support_20261001.json']
+
 for name in paths:
     src=ROOT/name;dst=WS/name;dst.parent.mkdir(parents=True,exist_ok=True)
     # Each name is unique to this task; original D92 and shared wrappers are not mirrored.

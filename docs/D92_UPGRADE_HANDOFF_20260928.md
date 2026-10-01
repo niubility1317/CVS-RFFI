@@ -736,3 +736,12 @@ K1/5/10/20的Δnew为−2.306/−1.041/−1.181/+0.178pp；ΔH为−1.557/+1.296
 - 科学结果：候选未通过。每K的Δ旧/Δ新/ΔH（百分点）：K1 +6.46/−7.00/−3.87；K5 +7.82/+0.26/+2.63；K10 +3.00/−0.85/+0.24；K20 −0.23/−0.04/−0.11。不得晋级或标记goal成功，不依据这些目标分数改参数/筛seed/重跑。
 - 下一步的范围问题已用async问用户：允许独立源域辅助模型做真正类留出开发，还是禁止所有辅助训练仅用冻结特征。正式4个Phase1均保持冻结。用户回复前不启动依赖此授权的辅助训练。已知源代理六TX均被Phase1见过的局限是目标评分前的证据；辅助训练候选与参数必须只从源域开发选择，禁止将此目标结果传入开发选参流程。
 - 已完成不接触目标结果的独立代码可行性核对。具体方案见`docs/D92_SOURCE_AUX_PLAN_20260928.md`：预先固定两组互补3TX、独立scratch辅助模型、TX筛选和连续标签映射、独立辅助导出。状态DRAFT_PENDING_USER_SCOPE，未登记或启动辅助实验。正式6TX源训练实测约19.1至20.0小时/模型，辅助耗时尚未知。待范围答复后再实施依赖步骤。
+
+## 2026-10-01 Ground A support入口冻结、预登记（当前）
+
+- Goal ACTIVE；LocalRidge+数学联合support SFT优先。Ground r02实际packet导出/读回COMPLETE，原头6×160 float32、文件8737B/8735B；真实A尚N/A。
+- Conditional训练source7204161、4行/160parent完成；独立分析source0145234，remotePID617023/start7407753、local55338仍健康，禁止重复启动或热改。最近只读证据analysis_readback_1790827877007842700.json。
+- Affine完整独立分析已完成；只读训练snapshot3240阶段收集完成（local76725 DONE）。现唯一extract local76621运行，输出results/training_diagnostics；当前不要另开Conda包装。
+- Ground A support新入口5文件冻结，root36pass/6.78s，无直接P0/P1；新增配置与run20261001-phase2-d92-ground-a-support-m2-r01 PLANNED/NOT_LAUNCHED。8行覆盖Affine/Conditional各4行；实际来源runtime固定81a226a8/7204161。仅在当前Conditional完整独立summary完成后唯一发布/启动；无新B/C fit或encoder、source/query访问。
+- 分析先固定Ground A prediction，再由scorer连接同一source run/row/fold合法旧held标签和既有B/C；不以R0/B0填A。所有完整K×新增类数及旧6、新0/2/5/10/20保留；support OOF/proxy并非query或全新独立验证。
+- 下一步：核实76621 extract；核实55338分析完成后生成Conditional报告/训练诊断，再实际Ground A配对。此前健康进程不干预；独立验证按用户暂缓。
