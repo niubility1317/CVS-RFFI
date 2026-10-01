@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "model_tests": 10,
+  "source_protocol_tests": 13,
+  "clean_protocol_tests": 57,
+  "full_source_log_tests": 12,
+  "review": "Independent model/source/selected-only clean P0/P1 scopes PASS; no new model/clean behavior",
+  "new_rows": 4,
+  "reused_rows": 20,
+  "truth_last": true,
+  "target_feedback": false
+}

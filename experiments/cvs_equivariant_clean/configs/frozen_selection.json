@@ -1,0 +1,36 @@
+{
+  "status": "SOURCE_SELECTION_FROZEN",
+  "selected_variant": "equivariant_memory",
+  "source_summaries": {
+    "residual_fusion": {
+      "score": 0.9628240740740741,
+      "source_accuracy": 0.9806944444444444,
+      "worst_rx_accuracy": 0.9449537037037037,
+      "parameters": 164225,
+      "conv_linear_macs": 9708836
+    },
+    "equivariant_memory": {
+      "score": 0.9646898148148149,
+      "source_accuracy": 0.9807222222222223,
+      "worst_rx_accuracy": 0.9486574074074074,
+      "parameters": 202553,
+      "conv_linear_macs": 7199008
+    }
+  },
+  "selection_rule": "performance first: four-seed E200 0.5 sourceV+0.5 worstsourceRX;exact ties V thenworstRX;costs secondary only after equalperformance",
+  "selection_policy": "performance_first_equivariant_with_source_control_20261002",
+  "candidate_universe": [
+    "residual_fusion",
+    "equivariant_memory"
+  ],
+  "new_candidate_selected": true,
+  "exact_cost_tie_order": [
+    "residual_fusion",
+    "equivariant_memory"
+  ],
+  "target_access": false,
+  "target_score_used": false,
+  "test_view": "clean",
+  "scope": "equivariant_source",
+  "source_matrix_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_equivariant_identity_20261002_r01/experiments/cvs_equivariant_identity/configs/launch_spec.json"
+}

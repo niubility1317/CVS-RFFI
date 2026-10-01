@@ -1,6 +1,6 @@
 # 实验总索引
 
-更新：2026-10-01T22:04:13+00:00
+更新：2026-10-01T22:19:01+00:00
 
 先按方法/问题检索，再用run ID读取精确配置与证据。历史组数量不等于独立实验数量。
 
@@ -12,7 +12,7 @@
 
 |记录类型|数量|
 |---|---:|
-|managed_run|45|
+|managed_run|46|
 
 历史状态统一为HISTORICAL_UNVERIFIED；RUNNING等原文声明只供查证，不能证明此刻仍在运行。
 
@@ -20,16 +20,16 @@
 
 |路径标签（定位提示）|证据组数|
 |---|---:|
-|[cvs](by_method/cvs.md)|28|
-|[clean_only](by_method/clean_only.md)|23|
-|[ce_only](by_method/ce_only.md)|23|
+|[cvs](by_method/cvs.md)|29|
+|[clean_only](by_method/clean_only.md)|24|
+|[ce_only](by_method/ce_only.md)|24|
 |[no_augmentation](by_method/no_augmentation.md)|17|
-|[performance_priority](by_method/performance_priority.md)|16|
+|[performance_priority](by_method/performance_priority.md)|17|
 |[source_selection](by_method/source_selection.md)|13|
 |[daot](by_method/daot.md)|11|
 |[rc4](by_method/rc4.md)|10|
-|[source_selected](by_method/source_selected.md)|9|
-|[frozen_prediction_reuse](by_method/frozen_prediction_reuse.md)|8|
+|[source_selected](by_method/source_selected.md)|10|
+|[frozen_prediction_reuse](by_method/frozen_prediction_reuse.md)|9|
 |[practical](by_method/practical.md)|7|
 |[residual](by_method/residual.md)|7|
 |[residual_noeq](by_method/residual_noeq.md)|7|
@@ -131,7 +131,8 @@
 |RFF物理可辨识性：合成诊断|managed_run|[打开](../automation_reports/CV-SincNet/20261002-diagnostic-rff-identifiability-synthetic-m1-r01/report.md)|
 |RFF 源域已知激励诊断：预登记|managed_run|[打开](../automation_reports/CV-SincNet/20261002-diagnostic-rff-known-excitation-source-manysig-m1-r01/report.md)|
 |RFF源域前导码与可观测量诊断|managed_run|[打开](../automation_reports/CV-SincNet/20261002-diagnostic-rff-preamble-source-manysig-m1-r01/report.md)|
-|CVS 全路径复相位等变记忆网络：源域预登记|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-equivariant-identity-manysig-m4-r01/report.md)|
+|全路径复相位等变记忆 CVS：选中候选 clean 确认|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-equivariant-clean-manysig-m24-r01/report.md)|
+|CVS 全路径复相位等变记忆网络：完整源实验报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-equivariant-identity-manysig-m4-r01/report.md)|
 |完整 IQ 相位规范化 CVS：完整源实验报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-gauge-identity-manysig-m8-r01/report.md)|
 |CVS性能优先继续优化：observable_phase clean测试报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-observable-clean-manysig-m24-r01/report.md)|
 |CVS整体物理观测身份网络：源训练预登记|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-observable-identity-manysig-m8-r01/report.md)|
