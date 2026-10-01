@@ -1,0 +1,153 @@
+.................F.FF...........F                                        [100%]
+================================== FAILURES ===================================
+_ test_all_declared_rows_full_matrix_independent_reread_before_truth_and_metrics _
+tests\test_d92_proto_frame_joint_benchmark_score.py:311: in test_all_declared_rows_full_matrix_independent_reread_before_truth_and_metrics
+    result=score.score_benchmark(spec=case['spec'],output=tmp_path/'score.json')
+tools\score_d92_proto_frame_joint_benchmark.py:809: in score_benchmark
+    value=_validated_row_fixed(path,spec,row,runtime,lane['preflight'])
+tools\score_d92_proto_frame_joint_benchmark.py:748: in _validated_row_fixed
+    fixed=load_fixed_predictions(predictions=directory,capsule=co['capsule'],config=spec['benchmark']['config'],expected_binding=binding)
+tests\test_d92_proto_frame_joint_benchmark_score.py:299: in loader
+    validations.append(str(kw['predictions']));return deepcopy(fixed[str(kw['predictions'])])
+E   KeyError: 'E:\\type10-7\\.codex_tmp\\pytest_native_temp_1790884671237284700\\test_all_declared_rows_full_ma0\\full-run\\rx3_2026092701\\predictions'
+__________ test_full_run_failures_cannot_join_truth[last_row_matrix] __________
+tests\test_d92_proto_frame_joint_benchmark_score.py:338: in test_full_run_failures_cannot_join_truth
+    with pytest.raises(ValueError):score.score_benchmark(spec=case['spec'],output=tmp_path/'never.json')
+tools\score_d92_proto_frame_joint_benchmark.py:809: in score_benchmark
+    value=_validated_row_fixed(path,spec,row,runtime,lane['preflight'])
+tools\score_d92_proto_frame_joint_benchmark.py:748: in _validated_row_fixed
+    fixed=load_fixed_predictions(predictions=directory,capsule=co['capsule'],config=spec['benchmark']['config'],expected_binding=binding)
+tests\test_d92_proto_frame_joint_benchmark_score.py:299: in loader
+    validations.append(str(kw['predictions']));return deepcopy(fixed[str(kw['predictions'])])
+E   KeyError: 'E:\\type10-7\\.codex_tmp\\pytest_native_temp_1790884671237284700\\test_full_run_failures_cannot_1\\full-run\\rx3_2026092701\\predictions'
+__________ test_full_run_failures_cannot_join_truth[changed_reread] ___________
+tests\test_d92_proto_frame_joint_benchmark_score.py:338: in test_full_run_failures_cannot_join_truth
+    with pytest.raises(ValueError):score.score_benchmark(spec=case['spec'],output=tmp_path/'never.json')
+tools\score_d92_proto_frame_joint_benchmark.py:809: in score_benchmark
+    value=_validated_row_fixed(path,spec,row,runtime,lane['preflight'])
+tools\score_d92_proto_frame_joint_benchmark.py:748: in _validated_row_fixed
+    fixed=load_fixed_predictions(predictions=directory,capsule=co['capsule'],config=spec['benchmark']['config'],expected_binding=binding)
+tests\test_d92_proto_frame_joint_benchmark_score.py:331: in changed
+    value=loader(**kw)
+tests\test_d92_proto_frame_joint_benchmark_score.py:299: in loader
+    validations.append(str(kw['predictions']));return deepcopy(fixed[str(kw['predictions'])])
+E   KeyError: 'E:\\type10-7\\.codex_tmp\\pytest_native_temp_1790884671237284700\\test_full_run_failures_cannot_2\\full-run\\rx3_2026092701\\predictions'
+_ test_real_preflight_predict_archive_and_completion_with_separate_timing_scopes _
+tests\test_d92_proto_frame_joint_benchmark_score.py:434: in test_real_preflight_predict_archive_and_completion_with_separate_timing_scopes
+    checked=score.validate_row_output(case.args['output'],spec,row,literal.COMMIT,preflight)
+tools\score_d92_proto_frame_joint_benchmark.py:777: in validate_row_output
+    return _validated_row_fixed(directory,spec,row,commit,preflight)['complete']
+tools\score_d92_proto_frame_joint_benchmark.py:748: in _validated_row_fixed
+    fixed=load_fixed_predictions(predictions=directory,capsule=co['capsule'],config=spec['benchmark']['config'],expected_binding=binding)
+tools\score_d92_proto_frame_joint_benchmark.py:527: in load_fixed_predictions
+    _source_identity(startup,marker,expected_binding)
+tools\score_d92_proto_frame_joint_benchmark.py:182: in _source_identity
+    require(source['cache_schema']=='d92_branch_received_features_v1' and source['feature_contract']==RAW_FEATURE_CONTRACT,
+tools\score_d92_proto_frame_joint_benchmark.py:79: in require
+    if not condition:raise ValueError(message)
+E   ValueError: Wrong current five-branch raw feature source contract
+---------------------------- Captured stdout call -----------------------------
+PROTO_FRAME PROTO_FRAME_PREPARED state=B_prepare RMSCE=N/A loss_total=N/A loss_proximal=N/A ridge_weight=1.0 damping=I5 temperature=1 nominal_parameters=5 trainable_parameters=N/A theta=N/A anchor_theta=N/A gradient=N/A direction=N/A GGN_multiplier=N/A lr=N/A accepted=N/A observed_increase=N/A objective_seconds=N/A fit_seconds=N/A resident_bytes=N/A actual_updated_coordinates=N/A source_validation=N/A objective_scope=INNER_SUPPORT_TRAINING_NOT_VALIDATION split=literal-split
+PROTO_FRAME PROTO_FRAME_FINAL state=B_PROTO_FRAME RMSCE=N/A loss_total=N/A loss_proximal=N/A ridge_weight=1.0 damping=I5 temperature=1 nominal_parameters=5 trainable_parameters=0 theta=[0.0, 0.0, 0.0, 0.0, 0.0] anchor_theta=[0.0, 0.0, 0.0, 0.0, 0.0] gradient=N/A direction=N/A GGN_multiplier=N/A lr=N/A accepted=N/A observed_increase=N/A objective_seconds=N/A fit_seconds=0.007923299999674782 resident_bytes=166672 actual_updated_coordinates=0 source_validation=N/A objective_scope=INNER_SUPPORT_TRAINING_NOT_VALIDATION split=literal-split
+PROTO_FRAME PROTO_FRAME_PREPARED state=C_prepare RMSCE=N/A loss_total=N/A loss_proximal=N/A ridge_weight=1.0 damping=I5 temperature=1 nominal_parameters=5 trainable_parameters=N/A theta=N/A anchor_theta=N/A gradient=N/A direction=N/A GGN_multiplier=N/A lr=N/A accepted=N/A observed_increase=N/A objective_seconds=N/A fit_seconds=N/A resident_bytes=N/A actual_updated_coordinates=N/A source_validation=N/A objective_scope=INNER_SUPPORT_TRAINING_NOT_VALIDATION split=literal-split
+PROTO_FRAME PROTO_FRAME_FINAL state=C_PROTO_FRAME_seq RMSCE=N/A loss_total=N/A loss_proximal=N/A ridge_weight=1.0 damping=I5 temperature=1 nominal_parameters=5 trainable_parameters=0 theta=[0.0, 0.0, 0.0, 0.0, 0.0] anchor_theta=[0.0, 0.0, 0.0, 0.0, 0.0] gradient=N/A direction=N/A GGN_multiplier=N/A lr=N/A accepted=N/A observed_increase=N/A objective_seconds=N/A fit_seconds=0.018117799976607785 resident_bytes=412544 actual_updated_coordinates=0 source_validation=N/A objective_scope=INNER_SUPPORT_TRAINING_NOT_VALIDATION split=literal-split
+---------------------------- Captured stderr call -----------------------------
+
+A module that was compiled using NumPy 1.x cannot be run in
+NumPy 2.2.6 as it may crash. To support both 1.x and 2.x
+versions of NumPy, modules must be compiled with NumPy 2.0.
+Some module may need to rebuild instead e.g. with 'pybind11>=2.12'.
+
+If you are a user of the module, the easiest solution will be to
+downgrade to 'numpy<2' or try to upgrade the affected module.
+We expect that some modules will need time to support NumPy 2.
+
+Traceback (most recent call last):  File "E:\type10-7\local_envs\ssr-gpu\lib\runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "E:\type10-7\local_envs\ssr-gpu\lib\runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "E:\type10-7\local_envs\ssr-gpu\lib\site-packages\pytest\__main__.py", line 9, in <module>
+    raise SystemExit(pytest.console_main())
+  File "E:\type10-7\local_envs\ssr-gpu\lib\site-packages\_pytest\config\__init__.py", line 201, in console_main
+    code = main()
+  File "E:\type10-7\local_envs\ssr-gpu\lib\site-packages\_pytest\config\__init__.py", line 175, in main
+    ret: ExitCode | int = config.hook.pytest_cmdline_main(config=config)
+  File "E:\type10-7\local_envs\ssr-gpu\lib\site-packages\pluggy\_hooks.py", line 512, in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+  File "E:\type10-7\local_envs\ssr-gpu\lib\site-packages\pluggy\_manager.py", line 120, in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+  File "E:\type10-7\local_envs\ssr-gpu\lib\site-packages\pluggy\_callers.py", line 121, in _multicall
+    res = hook_impl.function(*args)
+  File "E:\type10-7\local_envs\ssr-gpu\lib\site-packages\_pytest\main.py", line 336, in pytest_cmdline_main
+    return wrap_session(config, _main)
+  File "E:\type10-7\local_envs\ssr-gpu\lib\site-packages\_pytest\main.py", line 289, in wrap_session
+    session.exitstatus = doit(config, session) or 0
+  File "E:\type10-7\local_envs\ssr-gpu\lib\site-packages\_pytest\main.py", line 343, in _main
+    config.hook.pytest_runtestloop(session=session)
+  File "E:\type10-7\local_envs\ssr-gpu\lib\site-packages\pluggy\_hooks.py", line 512, in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+  File "E:\type10-7\local_envs\ssr-gpu\lib\site-packages\pluggy\_manager.py", line 120, in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+  File "E:\type10-7\local_envs\ssr-gpu\lib\site-packages\pluggy\_callers.py", line 121, in _multicall
+    res = hook_impl.function(*args)
+  File "E:\type10-7\local_envs\ssr-gpu\lib\site-packages\_pytest\main.py", line 367, in pytest_runtestloop
+    item.config.hook.pytest_runtest_protocol(item=item, nextitem=nextitem)
+  File "E:\type10-7\local_envs\ssr-gpu\lib\site-packages\pluggy\_hooks.py", line 512, in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+  File "E:\type10-7\local_envs\ssr-gpu\lib\site-packages\pluggy\_manager.py", line 120, in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+  File "E:\type10-7\local_envs\ssr-gpu\lib\site-packages\pluggy\_callers.py", line 121, in _multicall
+    res = hook_impl.function(*args)
+  File "E:\type10-7\local_envs\ssr-gpu\lib\site-packages\_pytest\runner.py", line 117, in pytest_runtest_protocol
+    runtestprotocol(item, nextitem=nextitem)
+  File "E:\type10-7\local_envs\ssr-gpu\lib\site-packages\_pytest\runner.py", line 136, in runtestprotocol
+    reports.append(call_and_report(item, "call", log))
+  File "E:\type10-7\local_envs\ssr-gpu\lib\site-packages\_pytest\runner.py", line 245, in call_and_report
+    call = CallInfo.from_call(
+  File "E:\type10-7\local_envs\ssr-gpu\lib\site-packages\_pytest\runner.py", line 344, in from_call
+    result: TResult | None = func()
+  File "E:\type10-7\local_envs\ssr-gpu\lib\site-packages\_pytest\runner.py", line 246, in <lambda>
+    lambda: runtest_hook(item=item, **kwds), when=when, reraise=reraise
+  File "E:\type10-7\local_envs\ssr-gpu\lib\site-packages\pluggy\_hooks.py", line 512, in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+  File "E:\type10-7\local_envs\ssr-gpu\lib\site-packages\pluggy\_manager.py", line 120, in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+  File "E:\type10-7\local_envs\ssr-gpu\lib\site-packages\pluggy\_callers.py", line 121, in _multicall
+    res = hook_impl.function(*args)
+  File "E:\type10-7\local_envs\ssr-gpu\lib\site-packages\_pytest\runner.py", line 178, in pytest_runtest_call
+    item.runtest()
+  File "E:\type10-7\local_envs\ssr-gpu\lib\site-packages\_pytest\python.py", line 1671, in runtest
+    self.ihook.pytest_pyfunc_call(pyfuncitem=self)
+  File "E:\type10-7\local_envs\ssr-gpu\lib\site-packages\pluggy\_hooks.py", line 512, in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+  File "E:\type10-7\local_envs\ssr-gpu\lib\site-packages\pluggy\_manager.py", line 120, in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+  File "E:\type10-7\local_envs\ssr-gpu\lib\site-packages\pluggy\_callers.py", line 121, in _multicall
+    res = hook_impl.function(*args)
+  File "E:\type10-7\local_envs\ssr-gpu\lib\site-packages\_pytest\python.py", line 157, in pytest_pyfunc_call
+    result = testfunction(**testargs)
+  File "E:\type10-7\code\snapshots\d92_support_upgrade_20260928_wt\tests\test_d92_proto_frame_joint_benchmark_score.py", line 415, in test_real_preflight_predict_archive_and_completion_with_separate_timing_scopes
+    literal=importlib.util.module_from_spec(module_spec);module_spec.loader.exec_module(literal)
+  File "E:\type10-7\code\snapshots\d92_support_upgrade_20260928_wt\tests\test_d92_proto_frame_joint_benchmark.py", line 22, in <module>
+    import torch
+  File "E:\type10-7\local_envs\ssr-gpu\lib\site-packages\torch\__init__.py", line 1382, in <module>
+    from .functional import *  # noqa: F403
+  File "E:\type10-7\local_envs\ssr-gpu\lib\site-packages\torch\functional.py", line 7, in <module>
+    import torch.nn.functional as F
+  File "E:\type10-7\local_envs\ssr-gpu\lib\site-packages\torch\nn\__init__.py", line 1, in <module>
+    from .modules import *  # noqa: F403
+  File "E:\type10-7\local_envs\ssr-gpu\lib\site-packages\torch\nn\modules\__init__.py", line 35, in <module>
+    from .transformer import TransformerEncoder, TransformerDecoder, \
+  File "E:\type10-7\local_envs\ssr-gpu\lib\site-packages\torch\nn\modules\transformer.py", line 20, in <module>
+    device: torch.device = torch.device(torch._C._get_default_device()),  # torch.device('cpu'),
+============================== warnings summary ===============================
+tests/test_d92_proto_frame_joint_benchmark_score.py::test_real_preflight_predict_archive_and_completion_with_separate_timing_scopes
+  E:\type10-7\local_envs\ssr-gpu\lib\site-packages\torch\nn\modules\transformer.py:20: UserWarning: Failed to initialize NumPy: _ARRAY_API not found (Triggered internally at ..\torch\csrc\utils\tensor_numpy.cpp:84.)
+    device: torch.device = torch.device(torch._C._get_default_device()),  # torch.device('cpu'),
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED tests/test_d92_proto_frame_joint_benchmark_score.py::test_all_declared_rows_full_matrix_independent_reread_before_truth_and_metrics
+FAILED tests/test_d92_proto_frame_joint_benchmark_score.py::test_full_run_failures_cannot_join_truth[last_row_matrix]
+FAILED tests/test_d92_proto_frame_joint_benchmark_score.py::test_full_run_failures_cannot_join_truth[changed_reread]
+FAILED tests/test_d92_proto_frame_joint_benchmark_score.py::test_real_preflight_predict_archive_and_completion_with_separate_timing_scopes

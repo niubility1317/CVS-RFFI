@@ -11,3 +11,7 @@ ground 元数据与固定模型 lineage 已匹配；只用现有 center，不重
 本轮实际输入为模型 seed 2026092701/2026092702、接收机 19-1/20-19、practical_high/practical_low_urban、support seed 2026092711；producer 的更大缓存矩阵单独保留引用。完整配置不变。先前一次 pytest 收集错误属于测试导入路径，未运行数值用例，修复后验证通过。隔离 source import 为 34 modules/45 files，未读取数据或模型。
 
 实际 immutable runtime 为 `a9f638d9ea9bd315d6614c6650e95c5f557aed0c`，supervisor PID 1159048/start_ticks 13008322。2026-10-01T19:21:07Z 两条 rx3 进程 1159112/1159113 TRAINING_ON_SUPPORT，两条 rx1 PENDING。CPU2 lane/BLAS2/noGPU，源域及 query 使用为零；详细文本及紧凑逐步 JSONL/CSV已写入。当前没有完整矩阵分析或性能结论，不读部分结果选参，不自动重试。
+
+2026-10-01T20:17:04Z仅元数据独立读回VERIFIED：{"rx3-cvs-daot-rc4-s2026092701": "PROTO_FRAME_JOINT_PROBE_COMPLETE", "rx3-cvs-daot-rc4-s2026092702": "PROTO_FRAME_JOINT_PROBE_COMPLETE", "rx1-cvs-daot-rc4-s2026092701": "TRAINING_ON_SUPPORT", "rx1-cvs-daot-rc4-s2026092702": "TRAINING_ON_SUPPORT"}。未读取部分预测、标签或训练指标；现有immutable runtime不变。
+
+独立完整support analyzer已通过25个合成用例，分析r01已预登记；等待原4行/160parents整体完成后一次分析，不重新训练或改写原产物。仅两文件源码包，NumPy/stdlib；actual_npz读回，无kernel/gate重放。

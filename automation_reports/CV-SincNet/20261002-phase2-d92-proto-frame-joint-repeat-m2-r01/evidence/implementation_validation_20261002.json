@@ -1,0 +1,58 @@
+{
+  "status": "VERIFIED_SYNTHETIC_IMPLEMENTATION_AND_ISOLATED_IMPORT_NOT_PERFORMANCE",
+  "query_tests": [
+    {
+      "prefix": "pytest_native_activation_1790883161531936500",
+      "passed": 13,
+      "exit_code": 0
+    },
+    {
+      "prefix": "pytest_native_activation_1790883482524111800",
+      "passed": 25,
+      "exit_code": 0
+    },
+    {
+      "prefix": "pytest_native_activation_1790883705578099900",
+      "passed": 22,
+      "exit_code": 0
+    },
+    {
+      "prefix": "pytest_native_activation_1790885786845410500",
+      "passed": 42,
+      "exit_code": 0
+    }
+  ],
+  "new_distinct_cases": 102,
+  "candidate_with_prior_core_distinct_cases": 213,
+  "prior_core_case_evidence": "automation_reports/CV-SincNet/20261002-phase2-d92-proto-frame-joint-support-m2-r01/evidence/implementation_validation_20261002.json",
+  "retained_prior_failures": {
+    "prefix": "pytest_native_activation_1790884741585683000",
+    "failed": 4,
+    "passed": 29,
+    "fixes": "Exact four-native-branch-plus-separate-FFT contract and canonical synthetic Windows paths"
+  },
+  "retained_pre_archive_fix_pass": {
+    "prefix": "pytest_native_activation_1790885028950060500",
+    "passed": 33,
+    "limitation": "Preceded two direct P1 source findings; superseded by latest42"
+  },
+  "P1_closure": {
+    "actual_NPZ_files": true,
+    "actual_same_split_B_prior_binding": true,
+    "new_negative_zero_truth_cases": 9,
+    "root_readback_ranges": [
+      "scorer:240-292",
+      "scorer:469-511"
+    ],
+    "latest_scorer_cases": 42
+  },
+  "source_import_ref": "docs/D92_PROTO_FRAME_QUERY_SOURCE_BUNDLE_IMPORT_20261002.json",
+  "source_reviews": [
+    "docs/D92_PROTO_FRAME_QUERY_ENTRY_ANALYSIS_REVIEW_20261002.md",
+    "docs/D92_PROTO_FRAME_QUERY_SCORE_CONTROL_REVIEW_20261002.md"
+  ],
+  "actual_query_truth_read": false,
+  "actual_support_metrics_read": false,
+  "warning": "Existing Torch2.1/NumPy2 ABI initialization warning retained; nativeA.tolist path passes",
+  "scope": "No accuracy claim; full real matrix awaits immutable prediction/scoring; analyzer does no independent kernel/gate replay"
+}

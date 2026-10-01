@@ -1,3 +1,12 @@
+## 当前交接：ProtoFrame完整query源码READY，support整体诊断待关闭
+
+- Goal ACTIVE；`20261002-phase2-d92-proto-frame-joint-repeat-m2-r01` READY，固定4rows/2400parents、old6、K1/5/10/20×new0/2/5/10/20。完整102个新synthetic cases PASS，加已记录core111共213distinct；最新scorer42包含两P1修复及实际producer档案接口。49runtime/51files隔离导入VERIFIED。未发布/未启动；发布只能一次，root owner。源准备母版`f0ab613491cf00fc9110ce685c4937718bc65da1`，actual source commit由pushed HEAD绑定。
+- `20261002-phase2-d92-proto-frame-joint-support-m2-r01` RUNNING，immutablefit `a9f638d9ea9bd315d6614c6650e95c5f557aed0c`；20:17UTC metadata两rx3 COMPLETE、两rx1 TRAINING_ON_SUPPORT，未读取部分指标。standalone analyzer25PASS；r01完整4/160/1800分析已登记，source包仅工具+spec，禁止改原run。分析source commit独立，不能冒充fit runtime。原型包已计filepayload，wire/星载成本N/A。
+- Group query immutable73aa健康，20:17UTC两rx3 PREDICTING/两rx1等待；全4/2400固定后仅原release独立truth-last scorer。不要自动重试、修改健康任务、读subset评分或反馈参数。新query config在候选实际metrics前固定。fresh独立验证暂缓。
+- source review发现时两P1记录保留；root有界读回actualNPZ与实际sameB prior、最新42PASS闭合。原33PASS不代表修后验证。没有数学重放、receipt/data再验或新的门槛。
+
+以下保留历史交接，不据此重复启动：
+
 ## 当前交接：ProtoFrame 联合 support 诊断已一次发布，运行读回 VERIFIED
 
 - Goal ACTIVE，`20261002-phase2-d92-proto-frame-joint-support-m2-r01` RUNNING，immutable runtime `a9f638d9ea9bd315d6614c6650e95c5f557aed0c`，准备母版2832。发布 VERIFIED，supervisor1159048/start_ticks13008322；2026-10-01T19:21:07Z独立读回 rx3 PID1159112/1159113 TRAINING_ON_SUPPORT、rx1两行PENDING。CPU2/BLAS2/noGPU；源域样本/逐记录特征/query均未读取。`automation_reports/CV-SincNet/20261002-phase2-d92-proto-frame-joint-support-m2-r01/evidence/support_runtime_1790882528737126400.json` 与publication/launch evidence已入库。
