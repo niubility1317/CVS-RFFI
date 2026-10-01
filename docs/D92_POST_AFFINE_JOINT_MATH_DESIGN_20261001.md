@@ -8,6 +8,8 @@
 
 ## 1. 依据、权限与要解决的结构问题
 
+论文原理、项目方程与原论文没有证明的内容，见[数学原理与论文逐项映射](D92_JOINT_SFT_PAPER_MAPPING_20261001.md)。映射只解释已经冻结的设计，不依据当前真实评分提出新参数或变体。
+
 设计 worker 允许的证据是当前数学文档、纯源码、一手文献，以及明确授权的 [AJLR training-only findings](D92_AJLR_TRAINING_FINDINGS_20261001.md)。该 worker 未读取 support_summary、query/outer 评分、原始 snapshot/IQ/权重、全局实验索引、handoff 或其他真实结果，只读取该 findings 文档，没有打开真实派生流或其他真实产物，也没有选择训练最高步骤。root 的运行预登记和交付状态另记于本页开头及本次 run 记录。
 
 training-only findings 给出两个与结构有关的事实：C 的冻结 B prior 到 Z=0 注册头已经改变旧类的全注册竞争；adapter 随后的更新不能自动消除这一变化。另有 accepted step 使 RMS CE 上升、总目标下降，说明 `RMSCE + .5||Z||²` 的下降保证不等于 RMS CE 下降保证。这些是训练目标的诊断，不是泛化证据；inner held 的标签参与 optimizer，不能称为独立验证集。本文只据此定位需要改变的方程，不用训练正确率挑 checkpoint、预算或系数。
