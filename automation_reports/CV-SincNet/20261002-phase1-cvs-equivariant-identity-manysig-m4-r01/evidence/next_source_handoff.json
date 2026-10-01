@@ -22,7 +22,7 @@
   "whole_phase_max_unit_embedding_distance": 0.0018618506146594882,
   "report_tolerance": 0.001,
   "numerical_issue_observed_before_new_query": true,
-  "next_action": "Frozen source/public synthetic precision and stage attribution; no architecture/parameter change",
+  "next_action": "Source-only physical representation research;keep completed source/clean model/selection/predictions fixed. Any new numerical training policy preregistered before new source training, no target scores.",
   "target_scores_included": false,
   "target_score_based_design_forbidden": true,
   "fresh_precision_environment": {
@@ -47,6 +47,35 @@
     "target_access": false,
     "scope": "Fresh sameversion environment defaults/module import; not a readback of terminated worker flags"
   },
-  "next_numerical_hypothesis": "cuDNN TF32 contributes to finite-precision phase discrepancy; unproven until same frozen source/public synthetic reproduction and one-variable toggle",
-  "diagnostic_constraints": "Pre-register deterministic4source seeds x source-defaultFP32/cuDNN-TF32-offFP32/float64; source checkpoint full provenance before loading; no formalIQ/query/truth/scored-results; no optimizer/model/selection/prediction changes"
+  "next_numerical_hypothesis": "Resolved for fixed frozen public inputs:single cuDNNTF32 flag change reduces error;not proof of targetperformancecause",
+  "diagnostic_constraints": "Pre-register deterministic4source seeds x source-defaultFP32/cuDNN-TF32-offFP32/float64; source checkpoint full provenance before loading; no formalIQ/query/truth/scored-results; no optimizer/model/selection/prediction changes",
+  "numerical_diagnostic_run_id": "20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01",
+  "numerical_diagnostic_result": {
+    "status": "VERIFIED",
+    "all12_rows_complete": true,
+    "original_default_phase_exact_reproduction": true,
+    "modes": {
+      "default_fp32": {
+        "logit_max_error": 0.02684152126312256,
+        "unit_embedding_max_distance": 0.0018618506146594882,
+        "synthetic_argmax_changes": 9
+      },
+      "cudnn_tf32_off_fp32": {
+        "logit_max_error": 3.4332275390625e-05,
+        "unit_embedding_max_distance": 2.2602473563893e-06,
+        "synthetic_argmax_changes": 0
+      },
+      "cudnn_tf32_off_fp64": {
+        "logit_max_error": 1.0823827631512017e-05,
+        "unit_embedding_max_distance": 1.188071944995883e-06,
+        "synthetic_argmax_changes": 0
+      }
+    },
+    "source_only": true,
+    "target_access": false,
+    "model_updated": false,
+    "precision_scope": "RequestedFP64 preserves native Sinc/headFP32;not end-to-endFP64",
+    "target_regression_cause": "UNPROVEN: no target access or attribution experiment",
+    "goal_achieved": false
+  }
 }

@@ -1,0 +1,28 @@
+{
+  "status": "VERIFIED",
+  "all12_rows_complete": true,
+  "original_default_phase_exact_reproduction": true,
+  "modes": {
+    "default_fp32": {
+      "logit_max_error": 0.02684152126312256,
+      "unit_embedding_max_distance": 0.0018618506146594882,
+      "synthetic_argmax_changes": 9
+    },
+    "cudnn_tf32_off_fp32": {
+      "logit_max_error": 3.4332275390625e-05,
+      "unit_embedding_max_distance": 2.2602473563893e-06,
+      "synthetic_argmax_changes": 0
+    },
+    "cudnn_tf32_off_fp64": {
+      "logit_max_error": 1.0823827631512017e-05,
+      "unit_embedding_max_distance": 1.188071944995883e-06,
+      "synthetic_argmax_changes": 0
+    }
+  },
+  "source_only": true,
+  "target_access": false,
+  "model_updated": false,
+  "precision_scope": "RequestedFP64 preserves native Sinc/headFP32;not end-to-endFP64",
+  "target_regression_cause": "UNPROVEN: no target access or attribution experiment",
+  "goal_achieved": false
+}

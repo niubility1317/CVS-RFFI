@@ -21,12 +21,12 @@
   "replaces_run_id": null,
   "authorization": "用户授权持续优化基础网络，性能第一，真正 RFF physics aware；普通 CE、无增强、clean-only，每次发布默认完成测试。",
   "code": {
-    "commit": "6a1ba9c253d4feb0775cec92a1812e82edba59aa",
+    "commit": "896ca93725689e31221b61a186bf9c62c6aa9d26",
     "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_equivariant_numerics_20261002_r01",
     "architecture_base_commit": "583be084d91dc1fd8540bbf1da33b61b91b38975",
-    "note": "Actual diagnostic release commit read back after launch; model implementation pinned independently to immutable clean release, no target paths consumed.",
+    "note": "Immutable diagnostic896ca937;modelimplementation4e395;sourceweights555aaa;all12verified;no target access",
     "model_code_commit": "4e3958bcb085a469dd7fb9829e29de544ea95b09"
   },
   "data": {
@@ -76,7 +76,19 @@
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01",
     "local_artifact_root": "automation_reports/CV-SincNet/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01",
     "launch_command": "python -m experiments.cvs_equivariant_numerics.publish --output local_artifacts/cvs_equivariant_numerics_20261002_r01",
-    "stop_rule": "Own worker nonzero/nonfinite/provenance/collision: preserve results and no retry. Native FP64 runtime incompatibility is retained as UNSUPPORTED_NATIVE_FP64, no dtype repair."
+    "stop_rule": "Own worker nonzero/nonfinite/provenance/collision: preserve results and no retry. Native FP64 runtime incompatibility is retained as UNSUPPORTED_NATIVE_FP64, no dtype repair.",
+    "actual_pid": 1283077,
+    "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_equivariant_numerics_20261002_r01",
+    "actual_argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_equivariant_numerics_20261002_r01/audit.py",
+      "--output",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01",
+      "--device",
+      "cuda:0"
+    ],
+    "actual_gpu": 0
   },
   "expected_artifacts": [
     "resolved_config.json",
@@ -103,14 +115,15 @@
     "prediction_ref": null,
     "scorer_ref": null,
     "primary": "Paired same frozen weights/input/phase:defaultFP32 vs onlycuDNNTF32off;thirdmode requestedFP64 preserving nativeFP32 casts; report all12 including unsupported.",
-    "later_test": "N/A:this explicitly source/public diagnostic has no updated model and cannot rerun already completed clean predictions"
+    "later_test": "N/A:this explicitly source/public diagnostic has no updated model and cannot rerun already completed clean predictions",
+    "actual_outcome": "12complete;defaultexactsourcephase reproduction;TF32off publicnumeric tolerancepasses;noformalIQ/target/model updates;overallgoal remainsunachieved"
   },
   "rows": [
     {
       "row_id": "s2026092701-default_fp32",
       "method": "equivariant_memory_frozen_numerics",
       "purpose": "fixed_public_synthetic_precision_attribution",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_equivariant_numerics/configs/experiment_spec.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01/resolved_config.json",
       "data_overrides": {
@@ -138,13 +151,15 @@
       "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_equivariant_numerics_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01",
       "expected_artifacts": [
         "result.json"
-      ]
+      ],
+      "actual_pid": 1283077,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_equivariant_numerics_20261002_r01"
     },
     {
       "row_id": "s2026092701-cudnn_tf32_off_fp32",
       "method": "equivariant_memory_frozen_numerics",
       "purpose": "fixed_public_synthetic_precision_attribution",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_equivariant_numerics/configs/experiment_spec.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01/resolved_config.json",
       "data_overrides": {
@@ -172,13 +187,15 @@
       "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_equivariant_numerics_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01",
       "expected_artifacts": [
         "result.json"
-      ]
+      ],
+      "actual_pid": 1283077,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_equivariant_numerics_20261002_r01"
     },
     {
       "row_id": "s2026092701-cudnn_tf32_off_fp64",
       "method": "equivariant_memory_frozen_numerics",
       "purpose": "fixed_public_synthetic_precision_attribution",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_equivariant_numerics/configs/experiment_spec.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01/resolved_config.json",
       "data_overrides": {
@@ -206,13 +223,15 @@
       "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_equivariant_numerics_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01",
       "expected_artifacts": [
         "result.json"
-      ]
+      ],
+      "actual_pid": 1283077,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_equivariant_numerics_20261002_r01"
     },
     {
       "row_id": "s2026092702-default_fp32",
       "method": "equivariant_memory_frozen_numerics",
       "purpose": "fixed_public_synthetic_precision_attribution",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_equivariant_numerics/configs/experiment_spec.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01/resolved_config.json",
       "data_overrides": {
@@ -240,13 +259,15 @@
       "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_equivariant_numerics_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01",
       "expected_artifacts": [
         "result.json"
-      ]
+      ],
+      "actual_pid": 1283077,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_equivariant_numerics_20261002_r01"
     },
     {
       "row_id": "s2026092702-cudnn_tf32_off_fp32",
       "method": "equivariant_memory_frozen_numerics",
       "purpose": "fixed_public_synthetic_precision_attribution",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_equivariant_numerics/configs/experiment_spec.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01/resolved_config.json",
       "data_overrides": {
@@ -274,13 +295,15 @@
       "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_equivariant_numerics_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01",
       "expected_artifacts": [
         "result.json"
-      ]
+      ],
+      "actual_pid": 1283077,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_equivariant_numerics_20261002_r01"
     },
     {
       "row_id": "s2026092702-cudnn_tf32_off_fp64",
       "method": "equivariant_memory_frozen_numerics",
       "purpose": "fixed_public_synthetic_precision_attribution",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_equivariant_numerics/configs/experiment_spec.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01/resolved_config.json",
       "data_overrides": {
@@ -308,13 +331,15 @@
       "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_equivariant_numerics_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01",
       "expected_artifacts": [
         "result.json"
-      ]
+      ],
+      "actual_pid": 1283077,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_equivariant_numerics_20261002_r01"
     },
     {
       "row_id": "s2026092703-default_fp32",
       "method": "equivariant_memory_frozen_numerics",
       "purpose": "fixed_public_synthetic_precision_attribution",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_equivariant_numerics/configs/experiment_spec.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01/resolved_config.json",
       "data_overrides": {
@@ -342,13 +367,15 @@
       "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_equivariant_numerics_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01",
       "expected_artifacts": [
         "result.json"
-      ]
+      ],
+      "actual_pid": 1283077,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_equivariant_numerics_20261002_r01"
     },
     {
       "row_id": "s2026092703-cudnn_tf32_off_fp32",
       "method": "equivariant_memory_frozen_numerics",
       "purpose": "fixed_public_synthetic_precision_attribution",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_equivariant_numerics/configs/experiment_spec.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01/resolved_config.json",
       "data_overrides": {
@@ -376,13 +403,15 @@
       "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_equivariant_numerics_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01",
       "expected_artifacts": [
         "result.json"
-      ]
+      ],
+      "actual_pid": 1283077,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_equivariant_numerics_20261002_r01"
     },
     {
       "row_id": "s2026092703-cudnn_tf32_off_fp64",
       "method": "equivariant_memory_frozen_numerics",
       "purpose": "fixed_public_synthetic_precision_attribution",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_equivariant_numerics/configs/experiment_spec.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01/resolved_config.json",
       "data_overrides": {
@@ -410,13 +439,15 @@
       "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_equivariant_numerics_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01",
       "expected_artifacts": [
         "result.json"
-      ]
+      ],
+      "actual_pid": 1283077,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_equivariant_numerics_20261002_r01"
     },
     {
       "row_id": "s2026092704-default_fp32",
       "method": "equivariant_memory_frozen_numerics",
       "purpose": "fixed_public_synthetic_precision_attribution",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_equivariant_numerics/configs/experiment_spec.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01/resolved_config.json",
       "data_overrides": {
@@ -444,13 +475,15 @@
       "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_equivariant_numerics_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01",
       "expected_artifacts": [
         "result.json"
-      ]
+      ],
+      "actual_pid": 1283077,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_equivariant_numerics_20261002_r01"
     },
     {
       "row_id": "s2026092704-cudnn_tf32_off_fp32",
       "method": "equivariant_memory_frozen_numerics",
       "purpose": "fixed_public_synthetic_precision_attribution",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_equivariant_numerics/configs/experiment_spec.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01/resolved_config.json",
       "data_overrides": {
@@ -478,13 +511,15 @@
       "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_equivariant_numerics_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01",
       "expected_artifacts": [
         "result.json"
-      ]
+      ],
+      "actual_pid": 1283077,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_equivariant_numerics_20261002_r01"
     },
     {
       "row_id": "s2026092704-cudnn_tf32_off_fp64",
       "method": "equivariant_memory_frozen_numerics",
       "purpose": "fixed_public_synthetic_precision_attribution",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_equivariant_numerics/configs/experiment_spec.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01/resolved_config.json",
       "data_overrides": {
@@ -512,7 +547,9 @@
       "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_equivariant_numerics_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01",
       "expected_artifacts": [
         "result.json"
-      ]
+      ],
+      "actual_pid": 1283077,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_equivariant_numerics_20261002_r01"
     }
   ],
   "notes": [

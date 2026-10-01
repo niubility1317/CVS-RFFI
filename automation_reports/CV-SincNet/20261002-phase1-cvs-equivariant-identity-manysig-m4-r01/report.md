@@ -96,3 +96,7 @@ GPU冻结合成诊断的最大全网相位logit误差为0.0268415213，超过预
 只读同版本N607 Torch2.1.0+cu121的新进程，默认cuDNN允许TF32，CUDA matmul不允许TF32；导入source模块后相同，NVIDIA_TF32_OVERRIDE未设置。此次未加载权重、正式IQ或target。这是新进程默认/模块导入观察，不能代替已终止worker的实际设置读回，也不能证明TF32是相位误差或clean下降的原因。
 
 下一步只对相同冻结source权重/相同公共合成输入做单变量精度复现，先登记矩阵及来源，不改变已有源选择、模型、clean预测或评分。[环境读回](evidence/fresh_precision_environment_readback.json) · [不含目标分数的源交接](evidence/next_source_handoff.json)。
+
+## 源数值问题的冻结对照完成
+
+相同源权重/公共输入的 12 行精度诊断全部完成。默认 FP32 逐值复现原相位记录；只关闭 cuDNN TF32 后最大 logit 误差为 0.0000343323，原误差为 0.0268415213。原发布模型/预测保持固定，不能追溯宣称其通过，也没有证明目标性能的因果关系。[源公共数值诊断](../20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01/report.md)。
