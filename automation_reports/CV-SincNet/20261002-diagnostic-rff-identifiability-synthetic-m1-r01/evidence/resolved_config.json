@@ -1,0 +1,16 @@
+{
+  "command": [
+    "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\experiments\\cvs_rff_physics\\identifiability.py",
+    "--output",
+    "E:\\type10-7\\automation_reports\\CV-SincNet\\20261002-diagnostic-rff-identifiability-synthetic-m1-r01\\evidence"
+  ],
+  "python": "C:\\Users\\lh594\\.conda\\envs\\ssr-gpu\\python.exe",
+  "platform": "Windows-10-10.0.26100-SP0",
+  "dataset": null,
+  "checkpoint": null,
+  "random_seed": null,
+  "model": null,
+  "data_role": "hand_set_synthetic_only",
+  "dtype": "complex128/float64",
+  "note": "No RNG, optimizer, model initialization, split, support, augmentation or target evaluation."
+}

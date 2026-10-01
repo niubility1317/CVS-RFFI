@@ -18,11 +18,11 @@
   "replaces_run_id": null,
   "authorization": "用户要求真正的RFF physics aware，继续以物理原理研发CVS；本run只执行合成正确性诊断。",
   "code": {
-    "commit": "7394f04e1c294c220d90cc101fdc4888fd168aea",
+    "commit": "e992d23d1e20e916cc606d2f892a94f772b85306",
     "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
     "environment": "C:\\Users\\lh594\\.conda\\envs\\ssr-gpu\\python.exe",
     "cwd": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
-    "note": "Preparation base commit; actual diagnostic launch commit recorded before execution."
+    "note": "Actual local diagnostic launch commit;no trained model or target-dependent selection."
   },
   "data": {
     "dataset": "Hand-set analytic synthetic signal; no external dataset",

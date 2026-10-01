@@ -1,0 +1,11 @@
+{
+  "repository": "https://github.com/WiSig-dataset/wisig-process-raw",
+  "commit": "6530c6ed6be1d08544ac295040ed50f5babde86a",
+  "file": "matlab_equalization/equalize_channel.m",
+  "read_method": "Read-only public Git clone;independently checked raw official URL with web tool",
+  "fft_mask_matlab": "[39:64,2:27]",
+  "fft_mask_python": "[38:64,1:27]",
+  "retained_signed_bins": "-26..-1,1..26",
+  "dtype": "complex128/float64",
+  "claim": "The diagnostic models this mask only,not full MATLAB equalization or resampling."
+}

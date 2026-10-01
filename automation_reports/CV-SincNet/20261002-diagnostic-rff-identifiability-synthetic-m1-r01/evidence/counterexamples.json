@@ -1,0 +1,97 @@
+{
+  "status": "VERIFIED",
+  "scope": "SYNTHETIC_IDENTIFIABILITY_DIAGNOSTIC_ONLY",
+  "formal_dataset_access": false,
+  "target_access": false,
+  "checkpoint_access": false,
+  "training": false,
+  "training_augmentation": false,
+  "inference_method": false,
+  "dtype": "complex128/float64",
+  "sample_rate_hz": 25000000.0,
+  "tolerance": 1e-11,
+  "cases": [
+    {
+      "name": "tx_rx_gain_gauge",
+      "maximum_absolute_error": 3.1401849173675503e-16,
+      "tx_before": [
+        1.078073235625366,
+        0.21853626387456734
+      ],
+      "tx_after": [
+        1.12769167668194,
+        0.37370507401194797
+      ],
+      "assumption": "Unknown flat complex TX/RX gains; known input does not fix the factorization."
+    },
+    {
+      "name": "tx_rx_oscillator_gauge",
+      "maximum_absolute_error": 0.0,
+      "first_pair_hz": [
+        18000.0,
+        -12000.0
+      ],
+      "second_pair_hz": [
+        38000.0,
+        8000.0
+      ],
+      "observed_offset_hz": 30000.0,
+      "assumption": "No calibrated/common oscillator reference; received CFO is a difference."
+    },
+    {
+      "name": "tx_rx_iq_factorization_gauge",
+      "maximum_absolute_error": 3.1401849173675503e-16,
+      "distinct_tx_image_coefficient_difference": 0.024357437280349652,
+      "cascade_matrix_error": 1.1107649934270853e-16,
+      "assumption": "Invertible memoryless widely-linear TX/RX chains, unity channel; a valid counterexample, not every channel."
+    },
+    {
+      "name": "nonlinearity_tx_rx_attribution",
+      "maximum_absolute_error": 0.0,
+      "cubic_coefficient": [
+        -0.02,
+        0.03
+      ],
+      "distortion_rms": 0.11049438367948416,
+      "assumption": "Unity channel and identical admissible memoryless cubic at either chain end; attribution cannot be universal."
+    },
+    {
+      "name": "periodic_nonlinearity_linear_subspace_overlap",
+      "maximum_absolute_error": 1.7763568394002505e-15,
+      "overlapping_distortion_energy_fraction": 0.8802909365310405,
+      "outside_occupied_energy_fraction": 0.11970906346895949,
+      "input": "Hand-set 12-tone period-20 signal; correct support, not standard L-STF coefficients.",
+      "assumption": "Unknown arbitrary 20-tap complex FIR in periodic steady state; outside-support distortion is not absorbed by this construction."
+    },
+    {
+      "name": "packet_rms_absolute_gain_loss",
+      "maximum_absolute_error": 3.1401849173675503e-16,
+      "positive_gain_ratio": 1.7,
+      "assumption": "Ideal noiseless positive scalar gain; SNR/saturation effects are outside this counterexample."
+    },
+    {
+      "name": "periodic_delay_alias_after_onset",
+      "maximum_absolute_error": 1.0556113548230027e-13,
+      "delays_samples": [
+        0,
+        20
+      ],
+      "delays_ns": [
+        0,
+        800
+      ],
+      "onset_difference": 2.2222968786040433,
+      "assumption": "Periodic steady-state segment only; onset/L-LTF transition can break this ambiguity."
+    },
+    {
+      "name": "official_equalization_rejected_fft_bin",
+      "maximum_absolute_error": 1.4110230442244666e-14,
+      "fft_size": 64,
+      "rejected_signed_bin": 27,
+      "retained_signed_bins": "-26..-1,1..26",
+      "assumption": "Isolates the official pre-CFO-reapplication spectral mask. No full MATLAB/noise/equalization/resampler emulation."
+    }
+  ],
+  "conclusion": "Received-IQ CE recognition is possible; unique universal TX hardware recovery is not established. Counterexamples do not prove impossibility under additional calibrated assumptions.",
+  "elapsed_seconds": 0.005934499989962205
+}
