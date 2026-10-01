@@ -24,3 +24,5 @@
 发布前验证：56项独立相关检查PASS；本地CPU八个一次性模型/24次合成CE更新及冻结变换检查PASS。模型物理与执行权限两个互不重叠的独立P0/P1审查PASS。N607在启动前以其实际Torch运行同一已提交CPU检查，失败则不会启动正式训练。
 
 定点执行复审发现CPU诊断stdout与提交JSON串联的P1；发布前抑制CPU stdout，保留独立JSON产物，生成远端脚本compile通过。未发生远端重复提交。
+
+首次发布在本地git ls-remote（Schannel）30秒超时，尚未创建archive/SCP/远端run；独立N607读回无pipeline/row。发布器改用单命令OpenSSL后继续同一预登记，未启动或重跑训练。

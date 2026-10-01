@@ -91,7 +91,7 @@ def inspect(output):
 def publish(output):
     commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip()
     branch=subprocess.check_output(['git','branch','--show-current'],cwd=ROOT,text=True).strip()
-    remote=subprocess.check_output(['git','-c','http.version=HTTP/1.1','ls-remote','origin','refs/heads/'+branch],cwd=ROOT,text=True,timeout=30).split()[0]
+    remote=subprocess.check_output(['git','-c','http.sslBackend=openssl','-c','http.version=HTTP/1.1','ls-remote','origin','refs/heads/'+branch],cwd=ROOT,text=True,timeout=30).split()[0]
     if remote!=commit: raise ValueError('Remote branch differs from HEAD')
     names=subprocess.check_output(['git','ls-files'],cwd=ROOT,text=True).splitlines()
     selected=[n for n in names if (n.startswith('experiments/cvs_observable_identity/') or n.startswith('experiments/cvs_residual_identity/') or n.startswith('experiments/cvs_clean_design/') or n.startswith('experiments/cvs_identity_ce/') or n.startswith('baselines/cvcnn_ce/') or
