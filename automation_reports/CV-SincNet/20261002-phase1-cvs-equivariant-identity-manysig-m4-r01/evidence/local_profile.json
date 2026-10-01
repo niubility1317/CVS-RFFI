@@ -1,0 +1,28 @@
+{
+  "hardware": "cpu",
+  "precision": "float32",
+  "torch_version": "2.10.0+cu128",
+  "total_parameters": 202553,
+  "trainable_parameters": 202553,
+  "resident_state_bytes": 810844,
+  "input_shape": [
+    2,
+    256
+  ],
+  "warmup": 5,
+  "inference_repetitions": 20,
+  "training_repetitions": 10,
+  "mac_scope": "Conv1d/Conv2d and matrix multiplication only; excludes FFT, normalization, pooling, physical lifts and elementwise arithmetic",
+  "benchmark_state_used_for_training": false,
+  "inference_batch1_ms": 4.3851000009453855,
+  "inference_batch128_ms": 36.54814500041539,
+  "conv_linear_macs_per_sample": 7199008,
+  "fft_calls_per_sample": 2,
+  "training_batch128_ms": 123.238939998555,
+  "gradient_used_parameters": 202553,
+  "benchmark_peak_cuda_allocated_bytes": null,
+  "benchmark_peak_note": "Disposable clone plus original frozen model resident; actual source-training peak is separately logged",
+  "formal_data_access": false,
+  "target_access": false,
+  "scope": "Disposable local CPU synthetic cost;not remoteGPU training performance"
+}

@@ -1,0 +1,14 @@
+{
+  "status": "PASS",
+  "model_tests": 10,
+  "protocol_tests": 13,
+  "model_math_review": "PASS",
+  "source_execution_review": "PASS",
+  "python": "C:\\Users\\lh594\\.conda\\envs\\ssr-gpu\\python.exe",
+  "target_access": false,
+  "checkpoint_loaded": false,
+  "review_agents": [
+    "review_clean_architecture",
+    "review_identity_ce"
+  ]
+}
