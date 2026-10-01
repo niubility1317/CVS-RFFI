@@ -7,6 +7,7 @@
 |名称|记录类型|证据入口|
 |---|---|---|
 |无信道增强四基准的 clean 测试报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261001-phase1-clean-baselines-manysig-m16-r01/report.md)|
+|性能优先注意力池化 CVS：clean 确认实验|managed_run|[打开](../../automation_reports/CV-SincNet/20261001-phase1-cvs-attentive-clean-manysig-m24-r01/report.md)|
 |CVS 性能优先研发：包内注意力统计池化|managed_run|[打开](../../automation_reports/CV-SincNet/20261001-phase1-cvs-attentive-identity-manysig-m8-r01/report.md)|
 |CVS性能优先继续优化：balanced_fusion clean测试报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261001-phase1-cvs-balanced-clean-manysig-m24-r01/report.md)|
 |CVS继续研发：分支平衡融合与有符号PA投影|managed_run|[打开](../../automation_reports/CV-SincNet/20261001-phase1-cvs-balanced-identity-manysig-m8-r01/report.md)|

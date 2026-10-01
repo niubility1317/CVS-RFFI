@@ -26,3 +26,7 @@ run_id：`20261001-phase1-cvs-attentive-identity-manysig-m8-r01`。状态 LOCAL_
 ## 零初始化数学核对
 
 对当前实际实现进行合成 float64 自动求导核对，零注意力的均值参数 Jacobian 等于包内交叉协方差，零波动增益的 Jacobian 等于通道标准差对角矩阵，两者最大绝对误差均为 2.22e-16。它属于结构实现的数学验证，不是正式数据训练或测试结果，不修改源训练、选模和已发布 release。见[数学核对](evidence/math_derivative_verification.json)及设计分析中“零初始化为何仍能学习”。确认报告将只读完成的本 run scratch 权重，补充全部 24 个池化分支的参数学习状态；不作物理系数或测试性能结论。
+
+## 完整源训练与冻结
+
+8 行均完成 E200/10000 步，完整 1600 epoch、80000 step、CSV 和全部 stdout 已解析，无运行期技术异常；实际源数据角色一致，scratch/noaug/nodomain/CE-only 核实。按登记的性能优先规则冻结 `attentive_mean`，源选择独立复算完全一致。源性能完全并列后才考虑参数和计算，不使用测试反馈。确认 run `20261001-phase1-cvs-attentive-clean-manysig-m24-r01` 已预登记，默认完成 4 个新预测和 20 个冻结控制预测的独立评分。见[evidence/source_selection.json](evidence/source_selection.json)和[evidence/source_completion_validation.json](evidence/source_completion_validation.json)。
