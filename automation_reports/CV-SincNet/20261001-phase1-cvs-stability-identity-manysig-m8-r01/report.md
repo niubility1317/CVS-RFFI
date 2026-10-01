@@ -1,6 +1,6 @@
 # CVS 性能优先研发：物理补充表征
 
-run_id：`20261001-phase1-cvs-stability-identity-manysig-m8-r01`。状态 LOCAL_VERIFIED，尚无新 E200 或 clean 结果。此前在读取 attentive clean 结果前固定的两种结构，各四 seed，从零同划分/预算、唯一身份 CE、无增强/域骨干。性能优先，成本次要。
+run_id：`20261001-phase1-cvs-stability-identity-manysig-m8-r01`。状态 SOURCE_TRAINING，尚无本轮完整 E200 或 clean 结果。此前在读取 attentive clean 结果前固定的两种结构，各四 seed，从零同划分/预算、唯一身份 CE、无增强/域骨干。性能优先，成本次要。
 
 |候选|总参数/有效 CE 参数|Conv/Linear MAC/包|
 |---|---:|---:|
@@ -22,3 +22,7 @@ run_id：`20261001-phase1-cvs-stability-identity-manysig-m8-r01`。状态 LOCAL_
 源 dispatcher PID `878839`，实际源代码提交 `ba089c05a10c72f48007b9db1b9997cf3441a422`。已独立核实 8 行进程、GPU、实际配置和日志增长。后续 clean 协议独立 P0/P1 审查 PASS，3 个新增协议检查由审查者独立通过，本地总计 34 项聚焦检查通过。见[确认路径审查](evidence/independent_clean_protocol_review.json)。尚无本轮目标成绩，正式 clean 配置和登记等待真实 8 行 E200 完成后按源规则冻结；不从中途性能提前选择，也不重复启动或热改已发布训练。
 
 恢复先只读 inspect 本 run，核实 dispatcher/row 进程或完整终态；本地 `.codex_tmp/read_stability_source_complete.py` 完整核对 1600 epoch、80000 step、实际角色/物理分支状态与源规则。真实冻结后由 `.codex_tmp/prepare_stability_confirmation.py` 建立选中 4 行新预测＋旧 20 行只读控制的确认 run `20261001-phase1-cvs-stability-clean-manysig-m24-r01`，Git 提交推送核对后发布，最后独立评分并完整报告。目标仍 ACTIVE，当前已完成设计、验证、审查、发布及健康训练启动，性能改进尚未得到完整实验确认。
+
+## 截至当前的完整可用源日志审计
+
+已读八行全部当前完整 step/epoch/CSV 和 stdout，覆盖 47 至 53 轮。实际纯身份 CE、梯度有限、phase/DSQ 激活状态及源角色均符合登记，未发现运行期异常；八个实际训练进程存活。源验证准确率和训练损失只是中途收敛证据，不作选模或 clean 性能确认。持续写入时尚未结束的末行单独记录，不作为完整记录解析，E200 完成后仍执行完整终态审计。见[当前全日志审计](evidence/source_live_full_log_audit.json)。
