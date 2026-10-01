@@ -17,3 +17,5 @@ ground 元数据与固定模型 lineage 已匹配；只用现有 center，不重
 独立完整support analyzer已通过25个合成用例，分析r01已预登记；等待原4行/160parents整体完成后一次分析，不重新训练或改写原产物。仅两文件源码包，NumPy/stdlib；actual_npz读回，无kernel/gate重放。
 
 2026-10-01T20:26:20Z独立metadata确认完整4行训练完成（TRAINING_COMPLETE），原fit runtime不变；完整support分析r01待一次发布，无query性能结论。
+
+2026-10-01T20:40:48Z独立完整support分析r01进程VERIFIED_RUNNING，child1205099/wrapper1205094，sourcecommit`72663b484cf4343ecf0d7af16c48048adb2eef2f`与fit runtime a9f638d9分开。两文件源包204800B，输出在原run外。仍未有完整analysis结果，query性能N/A；无fit/source/query数据访问。

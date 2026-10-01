@@ -331,10 +331,10 @@
       "behind": 0
     },
     "support_analysis": {
-      "status": "PREREGISTERED_NOT_LAUNCHED",
+      "status": "RUNNING",
       "attempt_id": "r01",
       "source_preparation_commit": "f0ab613491cf00fc9110ce685c4937718bc65da1",
-      "source_commit": null,
+      "source_commit": "72663b484cf4343ecf0d7af16c48048adb2eef2f",
       "fitted_runtime_commit": "a9f638d9ea9bd315d6614c6650e95c5f557aed0c",
       "release": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_proto_frame_support_analysis_20261002_r01",
       "output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-proto-frame-joint-support-m2-r01-analysis-r01",
@@ -362,7 +362,25 @@
       "fit": false,
       "parameter_selection": false,
       "automatic_retry": false,
-      "implementation_validation_ref": "automation_reports/CV-SincNet/20261002-phase2-d92-proto-frame-joint-repeat-m2-r01/evidence/implementation_validation_20261002.json"
+      "implementation_validation_ref": "automation_reports/CV-SincNet/20261002-phase2-d92-proto-frame-joint-repeat-m2-r01/evidence/implementation_validation_20261002.json",
+      "publication_status": "VERIFIED_RUNNING",
+      "wrapper_pid": 1205094,
+      "wrapper_start_ticks": 13489311,
+      "child_pid": 1205099,
+      "child_start_ticks": 13489314,
+      "latest_observed_utc": "2026-10-01T20:40:48Z",
+      "latest_readback_ref": "evidence/analysis_runtime_1790887309653380400.json",
+      "publication_ref": "evidence/analysis_publication/publication.json",
+      "actual_environment": {
+        "OMP_NUM_THREADS": "2",
+        "OPENBLAS_NUM_THREADS": "2",
+        "MKL_NUM_THREADS": "2",
+        "NUMEXPR_NUM_THREADS": "2",
+        "CUDA_VISIBLE_DEVICES": "",
+        "PYTHONUNBUFFERED": "1"
+      },
+      "source_file_count": 2,
+      "source_archive_bytes": 204800
     },
     "training_complete": true,
     "analysis_complete": false

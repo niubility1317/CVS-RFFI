@@ -1,3 +1,13 @@
+## 当前交接：ProtoFrame r02完整基准及完整support独立分析均一次启动VERIFIED
+
+- Goal ACTIVE；`20261002-phase2-d92-proto-frame-joint-repeat-m2-r02`RUNNING，immutable runtime`72663b484cf4343ecf0d7af16c48048adb2eef2f`，准备67587。20:40UTC独立proc/startup/cwd/argv/env VERIFIED，supervisor1204372/start_ticks13486567；rx3PID1204902/1204908 PREDICTING、rx1两行等待，4行完整预检已关闭。fixed4rows/2400parents、old6、K1/5/10/20×new0/2/5/10/20；actualB→C，完整后仅原release truth-last scorer。不要再次发布、自动重试、读subset或改运行源码。
+- 原r01FAILED保留，全部进程退出，只修复R0 requested类列ABI后手动登记/发布r02；core/参数/数据未改。24producer回归PASS（两numericID real5streams+NPZ+parser），全部215distinct验证。raw test失败日志逐字节保留，code whitespace检查通过；不修饰原日志。
+- `20261002-phase2-d92-proto-frame-joint-support-m2-r01`TRAINING_COMPLETE，fit runtimea9f638d9；全4行/160parents/1800paths完整后独立analysisr01已一次启动，sourcecommit`72663b484cf4343ecf0d7af16c48048adb2eef2f`，child1205099/wrapper1205094，20:40UTC VERIFIED_RUNNING。两文件source archive204800B，输出原run外；standalone25PASS。metadata reader`.codex_tmp/read_proto_frame_support_analysis_20261002.py`，完整metadata后收集一次full tables/resources，报告OOF/proxy而非query；不fit/replay/改原产物。
+- 新query reader`.codex_tmp/read_proto_frame_r02_query_runtime_20261002.py`输出compactmetadata、失败仅traceback，无partialscore。正常backoff约20min；旧Groupquery immutable73aa健康不干预，full4/2400才原scorer。Fresh独立验证暂缓。
+- 当前数学说明`docs/D92_LOCAL_RIDGE_JOINT_GENERALIZATION_COST_NOTE_20261002.md`；5coord只是参数数目，不承诺成本/性能。报告必须actualA/B/C旧/C新、K×新增数、gain/drop/absGap/H和实测资源/N/A。
+
+以下历史交接保留，不据此重复启动：
+
 ## 当前交接：ProtoFrame r01技术失败保留，r02接口修复READY，support训练完成
 
 - Goal ACTIVE；`20261002-phase2-d92-proto-frame-joint-repeat-m2-r01`FAILED，runtime`67587ead4dd34f35de03ba61a20206622951ea73`一次发布/startup VERIFIED但4行在R0 requested/canonical类别列表断言退出；独立metadata确认全部进程已退出，完整预测false、truth/scorerfalse。compact失败证据+publication入库，raw完整metadata保留本地。不要重启/覆盖原run。

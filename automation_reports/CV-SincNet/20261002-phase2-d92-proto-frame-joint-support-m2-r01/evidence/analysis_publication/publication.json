@@ -1,0 +1,55 @@
+{
+  "status": "DISPATCHED_AWAITING_INDEPENDENT_READBACK",
+  "phase": "REMOTE_EXTRACT_DISPATCH",
+  "launch": {
+    "status": "DISPATCHED_AWAITING_READBACK",
+    "pid": 1205094,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_proto_frame_support_analysis_20261002_r01",
+    "source_commit": "72663b484cf4343ecf0d7af16c48048adb2eef2f",
+    "fitted_runtime_commit": "a9f638d9ea9bd315d6614c6650e95c5f557aed0c",
+    "output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-proto-frame-joint-support-m2-r01-analysis-r01",
+    "original_run": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-proto-frame-joint-support-m2-r01",
+    "launch_owner": "root",
+    "query_read": false,
+    "fit": false,
+    "automatic_retry": false
+  },
+  "binding": {
+    "run_id": "20261002-phase2-d92-proto-frame-joint-support-m2-r01",
+    "source_commit": "72663b484cf4343ecf0d7af16c48048adb2eef2f",
+    "record_commit": "72663b484cf4343ecf0d7af16c48048adb2eef2f",
+    "fitted_runtime_commit": "a9f638d9ea9bd315d6614c6650e95c5f557aed0c",
+    "release": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_proto_frame_support_analysis_20261002_r01",
+    "output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-proto-frame-joint-support-m2-r01-analysis-r01",
+    "log": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_proto_frame_support_analysis_20261002_r01/analysis.log",
+    "command": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_proto_frame_support_analysis_20261002_r01/tools/analyze_d92_proto_frame_joint_probe.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_proto_frame_support_analysis_20261002_r01/configs/d92_proto_frame_joint_support_20261002.json",
+      "--output",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-proto-frame-joint-support-m2-r01-analysis-r01",
+      "--expected-runtime-commit",
+      "a9f638d9ea9bd315d6614c6650e95c5f557aed0c"
+    ],
+    "archive": "E:\\type10-7\\local_artifacts\\d92_proto_frame_joint_support_analysis\\d92_proto_frame_support_analysis_20261002_r01\\d92_proto_frame_support_analysis_20261002_r01.tar",
+    "archive_bytes": 204800,
+    "archive_sha256": "b5ad37265731996e011aae1fe31abe2bb5e742313e898b8429b96b003b4619e3",
+    "paths": [
+      "tools/analyze_d92_proto_frame_joint_probe.py",
+      "configs/d92_proto_frame_joint_support_20261002.json"
+    ],
+    "launch_owner": "root",
+    "automatic_retry": false,
+    "original_run": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-proto-frame-joint-support-m2-r01",
+    "environment": {
+      "OMP_NUM_THREADS": "2",
+      "OPENBLAS_NUM_THREADS": "2",
+      "MKL_NUM_THREADS": "2",
+      "NUMEXPR_NUM_THREADS": "2",
+      "CUDA_VISIBLE_DEVICES": "",
+      "PYTHONUNBUFFERED": "1"
+    }
+  }
+}
