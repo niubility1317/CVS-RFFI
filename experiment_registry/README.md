@@ -1,6 +1,6 @@
 # 实验总索引
 
-更新：2026-10-01T09:24:11+00:00
+更新：2026-10-01T09:36:32+00:00
 
 先按方法/问题检索，再用run ID读取精确配置与证据。历史组数量不等于独立实验数量。
 
@@ -95,7 +95,7 @@
 |Native comparison source training|managed_run|[打开](../automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/report.md)|
 |Native comparison paired adaptation and registration|managed_run|[打开](../automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/report.md)|
 |无信道增强四基准的 clean 测试报告|managed_run|[打开](../automation_reports/CV-SincNet/20261001-phase1-clean-baselines-manysig-m16-r01/report.md)|
-|性能优先的CVS结构改进：clean确认实验|managed_run|[打开](../automation_reports/CV-SincNet/20261001-phase1-cvs-balanced-clean-manysig-m24-r01/report.md)|
+|CVS性能优先继续优化：balanced_fusion clean测试报告|managed_run|[打开](../automation_reports/CV-SincNet/20261001-phase1-cvs-balanced-clean-manysig-m24-r01/report.md)|
 |CVS继续研发：分支平衡融合与有符号PA投影|managed_run|[打开](../automation_reports/CV-SincNet/20261001-phase1-cvs-balanced-identity-manysig-m8-r01/report.md)|
 |CVS 无增强轻量架构与常见网络基准|managed_run|[打开](../automation_reports/CV-SincNet/20261001-phase1-cvs-clean-architecture-manysig-m32-r01/report.md)|
 |CVS身份骨干交叉熵对照实验|managed_run|[打开](../automation_reports/CV-SincNet/20261001-phase1-cvs-identity-ce-practical-manysig-m5-r01/report.md)|

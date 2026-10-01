@@ -1,0 +1,131 @@
+{
+  "status": "VERIFIED",
+  "all192_confusions_recomputed": true,
+  "all_seed_mean_sample_sd_recomputed": true,
+  "old160_metrics_exactly_unchanged": true,
+  "selected_variant": "balanced_fusion",
+  "paired": {
+    "native": {
+      "candidate": "balanced_fusion",
+      "baseline": "native",
+      "receiver": "ALL",
+      "view": "clean",
+      "model_seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "accuracy_delta_pp_by_seed": [
+        0.5178571428571366,
+        1.901190476190473,
+        3.9565476190476234,
+        1.6321428571428487
+      ],
+      "accuracy_delta_pp_mean": 2.0019345238095205,
+      "accuracy_delta_pp_seed_sd": 1.4340959131798623,
+      "positive_seeds": 4
+    },
+    "cvcnn": {
+      "candidate": "balanced_fusion",
+      "baseline": "cvcnn",
+      "receiver": "ALL",
+      "view": "clean",
+      "model_seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "accuracy_delta_pp_by_seed": [
+        8.235119047619044,
+        6.097023809523816,
+        11.468452380952387,
+        8.263690476190478
+      ],
+      "accuracy_delta_pp_mean": 8.516071428571431,
+      "accuracy_delta_pp_seed_sd": 2.2144205454768033,
+      "positive_seeds": 4
+    },
+    "real_cnn": {
+      "candidate": "balanced_fusion",
+      "baseline": "real_cnn",
+      "receiver": "ALL",
+      "view": "clean",
+      "model_seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "accuracy_delta_pp_by_seed": [
+        8.804166666666656,
+        8.098809523809525,
+        11.393452380952384,
+        7.375595238095234
+      ],
+      "accuracy_delta_pp_mean": 8.91800595238095,
+      "accuracy_delta_pp_seed_sd": 1.7503245416994873,
+      "positive_seeds": 4
+    },
+    "resnet1d": {
+      "candidate": "balanced_fusion",
+      "baseline": "resnet1d",
+      "receiver": "ALL",
+      "view": "clean",
+      "model_seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "accuracy_delta_pp_by_seed": [
+        5.0369047619047596,
+        1.444047619047617,
+        9.777380952380954,
+        2.727976190476189
+      ],
+      "accuracy_delta_pp_mean": 4.746577380952379,
+      "accuracy_delta_pp_seed_sd": 3.6685477670275186,
+      "positive_seeds": 4
+    },
+    "residual_fusion": {
+      "candidate": "balanced_fusion",
+      "baseline": "residual_fusion",
+      "receiver": "ALL",
+      "view": "clean",
+      "model_seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "accuracy_delta_pp_by_seed": [
+        -2.090476190476198,
+        0.40833333333333277,
+        1.1375000000000024,
+        -0.3559523809523846
+      ],
+      "accuracy_delta_pp_mean": -0.2251488095238119,
+      "accuracy_delta_pp_seed_sd": 1.384999063278228,
+      "positive_seeds": 2
+    }
+  },
+  "resource_reduction_percent": {
+    "native": {
+      "total_parameters": 70.2561324729292,
+      "gradient_used_parameters": 64.21859506083453,
+      "resident_state_bytes": 70.22617830079857,
+      "conv_linear_macs_per_sample": 2.0781883907789123
+    },
+    "residual_fusion": {
+      "total_parameters": 30.787029989343885,
+      "gradient_used_parameters": 30.787029989343885,
+      "resident_state_bytes": 30.75650290775482,
+      "conv_linear_macs_per_sample": 0.5290026528411818
+    }
+  },
+  "goal_performance_vs_native": true,
+  "goal_performance_vs_previous": false,
+  "target_feedback": false
+}

@@ -26,3 +26,7 @@ N607已用短连接独立核实普通用户szu2070436088/host dell-DSS8440、项
 ## 完整源训练已完成及用户优先级更新
 
 8行均E200/10000更新，完整1600epoch、80000step、CSV及完整stdout已解析，无技术异常；所有source物理角色和scratch/noaug/nodomain/CE-only核实。源训练原选择未覆盖。用户在新target访问前明确性能优先，另按源性能最高冻结balanced_fusion，费用只在性能完全并列时比较；取消0.2个百分点成本优先容差。详见[evidence/performance_selection.json](evidence/performance_selection.json)与[evidence/source_research_complete.json](evidence/source_research_complete.json)。新确认run 20261001-phase1-cvs-balanced-clean-manysig-m24-r01将默认执行clean24行独立评分，不测试未选候选。
+
+## 独立clean确认完成
+
+选中balanced_fusion由独立子run 20261001-phase1-cvs-balanced-clean-manysig-m24-r01完成clean四seed确认，原20预测只读复用，统一24行192条结果评分。78.2292%±1.7151%，较原CVS+2.0019个百分点，但较上一轮残差CVS-0.2251个百分点（2/4seed提升）。当前新增研发没有证明进一步识别提升，不以参数减少代替性能目标。源run自身未读取target，未选signed候选不测试，原源选择与性能优先冻结均保留。完整结果：[确认报告](../20261001-phase1-cvs-balanced-clean-manysig-m24-r01/report.md)。

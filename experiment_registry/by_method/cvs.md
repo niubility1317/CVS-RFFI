@@ -9,7 +9,7 @@
 |CVS：DAOT＋FastTrust-RC4原始residual_noeq五种子实验|managed_run|[打开](../../automation_reports/CV-SincNet/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/report.md)|
 |CVS最终clean/星地测试与D92 E0真实256维注册|managed_run|[打开](../../automation_reports/CV-SincNet/20260927-phase2-cvs-d92-practical-manytx-m5-r01/report.md)|
 |D92 E0 true256 numerical recovery: all five fixed seeds|managed_run|[打开](../../automation_reports/CV-SincNet/20260928-phase2-cvs-d92-practical-manytx-m5-r02/report.md)|
-|性能优先的CVS结构改进：clean确认实验|managed_run|[打开](../../automation_reports/CV-SincNet/20261001-phase1-cvs-balanced-clean-manysig-m24-r01/report.md)|
+|CVS性能优先继续优化：balanced_fusion clean测试报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261001-phase1-cvs-balanced-clean-manysig-m24-r01/report.md)|
 |CVS继续研发：分支平衡融合与有符号PA投影|managed_run|[打开](../../automation_reports/CV-SincNet/20261001-phase1-cvs-balanced-identity-manysig-m8-r01/report.md)|
 |CVS 无增强轻量架构与常见网络基准|managed_run|[打开](../../automation_reports/CV-SincNet/20261001-phase1-cvs-clean-architecture-manysig-m32-r01/report.md)|
 |CVS 基础网络研发：残差物理融合|managed_run|[打开](../../automation_reports/CV-SincNet/20261001-phase1-cvs-residual-identity-manysig-m8-r01/report.md)|
