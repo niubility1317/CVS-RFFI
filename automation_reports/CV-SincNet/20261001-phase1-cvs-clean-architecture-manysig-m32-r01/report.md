@@ -1,6 +1,6 @@
 # CVS 无增强轻量架构与常见网络基准
 
-run_id：`20261001-phase1-cvs-clean-architecture-manysig-m32-r01`。当前状态：LOCAL_VERIFIED；尚未远端启动，无本批 clean 测试结果。
+run_id：`20261001-phase1-cvs-clean-architecture-manysig-m32-r01`。当前状态：RUNNING（独立读回 VERIFIED）；源训练已启动，无本批 clean 测试结果。
 
 ## 目的与公平对照
 
@@ -42,3 +42,11 @@ run_id：`20261001-phase1-cvs-clean-architecture-manysig-m32-r01`。当前状态
 ## 当前交接
 
 已完成实现、固定矩阵、登记、本地验证和独立审查。下一步提交并验证远端 Git，再发布独立 source-only release，读回真实进程、有效配置和逐轮日志。已有产物或进程时先核实，不重复启动。当前尚不能判断改进是否提高 clean 泛化。
+
+## N607 发布与运行证据
+
+代码 commit：`583be084d91dc1fd8540bbf1da33b61b91b38975`，已 push 并独立核实远端分支 OID 相同。不可变 release 解压、传输 SHA、远端 compile 和冷入口检查通过。独立读取 `/proc` 核实 dispatcher PID `700444`、CWD 和 argv；不是仅据提交回执判断运行。
+
+本次读回：{'RUNNING': 16, 'QUEUED': 16}。已核实有效配置的行：native-s2026092701, orthogonal_pa-s2026092701, moment_pool-s2026092701, orthogonal_moment-s2026092701, shared_complex-s2026092701, cvcnn-s2026092701, real_cnn-s2026092701, resnet1d-s2026092701, native-s2026092702, orthogonal_pa-s2026092702, moment_pool-s2026092702, orthogonal_moment-s2026092702, shared_complex-s2026092702, cvcnn-s2026092702, real_cnn-s2026092702, resnet1d-s2026092702；实际无增强、无域骨干、无额外损失、target_access=false，6300/56700/27000 源角色计数和每轮 50 步吻合。硬件 RTX 3090，Torch 2.1.0+cu121。当前逐轮进度与 PID/GPU 见 [独立读回](evidence/source_launch_readback.json)。
+
+源训练继续按既有队列执行。下一步只读监控所属 run，完成后核实 E200 checkpoint、完整日志、资源测量与源选择；随后为冻结的五个网络做 clean 测试。尚无新测试准确率，不能宣称任何架构提升。
