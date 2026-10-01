@@ -1,3 +1,14 @@
+## 当前交接：Group support诊断完整成功，结果未改善；query仍按原版本继续
+
+- Goal ACTIVE。support run `20261001-phase2-d92-group-barrier-joint-support-m2-r01`终态COMPLETE，fit immutable9518，analysis r03/source dfb2完整4row/160parent闭合，child1090096/wrapper1090089已退出、return0/657.267秒；17:35:44UTC `automation_reports/CV-SincNet/20261001-phase2-d92-group-barrier-joint-support-m2-r01/evidence/analysis_runtime_1790876205805888100.json`与collection `automation_reports/CV-SincNet/20261001-phase2-d92-group-barrier-joint-support-m2-r01/evidence/analysis_r03_collection_1790876226131875600.json`独立核实。8分析文件69608147bytes仅新结果已收集，原训练state/log不动。不要再analysis/publish/retrain；r01/r02失败attempts仍保留。
+- root已报告全部A/B/C、20格×scope/path、实际trainK OOF3/4、6/7、13/14及proxy1、成本与缺项；详细 `automation_reports/CV-SincNet/20261001-phase2-d92-group-barrier-joint-support-m2-r01/support_diagnostic_20261002.md`，小compact和完整CSV随Git，67.85MB原summary留remote/local引用。96个OOF新增>0parent：A62.64/B70.21/C旧63.98/C新51.51/H56.52，R0 H58.42；gain7.57/drop6.23/mean absGap14.08pp。本轮不宣称改善/晋级，不按这些结果调参或更换健康query。
+- query immutable73aa/supervisor1049548、rx3 PID1049715/1049721原排程继续。17:27:53UTC WS-only proof `query_runtime_1790875734979869800.json`仍2PREDICTING/2等待；未读partial prediction/truth。完整4row/2400parent A/B/C固定后独立scorer，再与same model01/02历史baseline配对；原Margin FAILED不subset评分，fresh暂缓。
+- Root唯一数值/真实结果/Git/SSH/launch。source-blind group_factorization_math仅拥有新纯数学文档D92_LOCAL_RIDGE_JOINT_GENERALIZATION_COST_NOTE_20261002.md，依据代码/纯设计/一手文献推导解析共享域校正与微调风险/成本，不读真实结果/索引/产物，不改代码或启动实验；不等待这个文档才交付已有完整报告。下一步push/独立OID→query健康退避监测，完整终态后scorer；不重复r03 collector。
+
+<!-- GROUP_SUPPORT_R03_COMPLETE_20261002 -->
+
+以下保留历史状态，不据此重复启动：
+
 ## 当前交接：r03 新分析实际运行已核实；fit/query 原版本保持
 
 - Goal ACTIVE。source dfb2de892 已 push，独立 remote OID 相同且0/0；39合成case PASS（1790875265727460700）。r03唯一发布目录已存在，绝不重复publisher。原run.execution.support_analysis为VERIFIED_RUNNING/source dfb2/child1090096/wrapper1090089，17:22:01UTC证据 `automation_reports/CV-SincNet/20261001-phase2-d92-group-barrier-joint-support-m2-r01/evidence/analysis_runtime_1790875382474900500.json`绑定实际命令/环境/身份；暂无summary与指标。

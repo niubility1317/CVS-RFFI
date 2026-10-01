@@ -198,7 +198,7 @@
     "supervisor_terminal": true,
     "current_row_processes_live": false,
     "support_analysis": {
-      "status": "VERIFIED_RUNNING",
+      "status": "VERIFIED_COMPLETE_SUPPORT_DIAGNOSTIC",
       "fitted_runtime_commit": "9518d46d2f763e5b080b5337e23155c9de883e09",
       "launch_owner": "root",
       "release": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_group_barrier_joint_analysis_20261002_r03",
@@ -225,8 +225,8 @@
       "parameter_selection": false,
       "output_rule": "New output outside original closed support run; no overwrite/retry; analyze only all four complete artifacts",
       "local_summary_root": "automation_reports/CV-SincNet/20261001-phase2-d92-group-barrier-joint-support-m2-r01/results/support_summary_20261002_r03",
-      "metrics_read": false,
-      "summary_downloaded": false,
+      "metrics_read": true,
+      "summary_downloaded": true,
       "automatic_retry": false,
       "attempt_id": "r03",
       "source_preparation_commit": "a3d079182d3ec18b2e17d74160a2a839aedad14c",
@@ -237,7 +237,7 @@
       "pid": 1090096,
       "wrapper_pid": 1090089,
       "process_start_ticks": 12301525,
-      "runtime_readback_ref": "evidence/analysis_runtime_1790875382474900500.json",
+      "runtime_readback_ref": "evidence/analysis_runtime_1790876205805888100.json",
       "publication_ref": "evidence/analysis_r03_publication_20261002.json",
       "observed_utc": "2026-10-01T17:22:01Z",
       "actual_argv": [
@@ -263,7 +263,22 @@
         "PYTHONUNBUFFERED": "1"
       },
       "software_source_archive_bytes": 1218560,
-      "software_bytes_note": "Administrative source tar only; not satellite data/model/prototype wire measurement"
+      "software_bytes_note": "Administrative source tar only; not satellite data/model/prototype wire measurement",
+      "terminal_observed_utc": "2026-10-01T17:35:44Z",
+      "process_returncode": 0,
+      "elapsed_seconds": 657.2666013240814,
+      "current_processes_live": false,
+      "summary_complete": true,
+      "collection_readback_ref": "evidence/analysis_r03_collection_1790876226131875600.json",
+      "compact_summary_ref": "automation_reports/CV-SincNet/20261001-phase2-d92-group-barrier-joint-support-m2-r01/results/support_summary_20261002_r03/compact_summary.json",
+      "report_ref": "automation_reports/CV-SincNet/20261001-phase2-d92-group-barrier-joint-support-m2-r01/support_diagnostic_20261002.md",
+      "original_summary_local_ref": "automation_reports/CV-SincNet/20261001-phase2-d92-group-barrier-joint-support-m2-r01/results/support_summary_20261002_r03/summary.json",
+      "original_summary_remote_ref": "/home/szu2070436088/2510044040/CV-SincNet/analyses/20261001-phase2-d92-group-barrier-joint-support-m2-r01/support_summary_20261002_r03/summary.json",
+      "parent_count": 160,
+      "row_count": 4,
+      "gate_numeric_readback_count": 10080,
+      "query_performance": false,
+      "automatic_promotion": false
     },
     "support_analysis_attempts": [
       {
@@ -822,7 +837,7 @@
   ],
   "parent_run_ids": [],
   "claim_scope": "SUPPORT_INFORMATION_DIAGNOSTIC_NOT_QUERY_PERFORMANCE",
-  "status": "TRAINING_COMPLETE",
+  "status": "COMPLETE",
   "spec_path": "configs/d92_group_barrier_joint_support_20261001.json",
   "input_identity_source": "Fixed source-only cache/capsule/model/split metadata; no scored output, adapted state or index supplied to fitting",
   "probe": {
@@ -5192,5 +5207,75 @@
     "absolute_old_new_gap_pp": 3,
     "status": "SOFT_IDEAL_TARGETS_NOT_LAUNCH_GATES"
   },
-  "registered_at": "2026-10-01T14:54:51+00:00"
+  "registered_at": "2026-10-01T14:54:51+00:00",
+  "status_detail": "Complete fixed support OOF/proxy diagnostic; no query performance or promotion claim",
+  "completed_at": "2026-10-01T17:51:13.611661+00:00",
+  "results": {
+    "independent_analysis": {
+      "status": "VERIFIED_COMPLETE_SUPPORT_DIAGNOSTIC",
+      "scope": "SUPPORT_ONLY_GROUP_BARRIER_JOINT_OOF_AND_PROXY_NOT_QUERY_EVALUATION",
+      "query_performance": false,
+      "diagnostic_overview": [
+        {
+          "scope": "support_oof",
+          "path": "R0",
+          "parent_count": 96,
+          "A_old_accuracy": 0.6263888888888889,
+          "B_old_accuracy": 0.7104166666666667,
+          "C_old_accuracy": 0.6376736111111111,
+          "C_new_accuracy": 0.5484635416666667,
+          "adaptation_gain_B_minus_A": 0.08402777777777777,
+          "total_old_accuracy_drop": 0.07274305555555555,
+          "C_abs_new_old_gap": 0.1074045138888889,
+          "C_h": 0.5841679640182029
+        },
+        {
+          "scope": "support_oof",
+          "path": "R_GROUP_BARRIER_seq",
+          "parent_count": 96,
+          "A_old_accuracy": 0.6263888888888889,
+          "B_old_accuracy": 0.7020833333333333,
+          "C_old_accuracy": 0.6397569444444444,
+          "C_new_accuracy": 0.5151041666666667,
+          "adaptation_gain_B_minus_A": 0.07569444444444445,
+          "total_old_accuracy_drop": 0.06232638888888888,
+          "C_abs_new_old_gap": 0.14083333333333334,
+          "C_h": 0.565172519160519
+        },
+        {
+          "scope": "support_oneshot_proxy",
+          "path": "R0",
+          "parent_count": 96,
+          "A_old_accuracy": 0.6263888888888889,
+          "B_old_accuracy": 0.5214749837556856,
+          "C_old_accuracy": 0.44354085445094216,
+          "C_new_accuracy": 0.3410759320175439,
+          "adaptation_gain_B_minus_A": -0.10491390513320338,
+          "total_old_accuracy_drop": 0.07793412930474333,
+          "C_abs_new_old_gap": 0.15852801128979857,
+          "C_h": 0.36275307391119166
+        },
+        {
+          "scope": "support_oneshot_proxy",
+          "path": "R_GROUP_BARRIER_seq",
+          "parent_count": 96,
+          "A_old_accuracy": 0.6263888888888889,
+          "B_old_accuracy": 0.5214749837556856,
+          "C_old_accuracy": 0.45701500568551007,
+          "C_new_accuracy": 0.30581749512670564,
+          "adaptation_gain_B_minus_A": -0.10491390513320338,
+          "total_old_accuracy_drop": 0.06445997807017544,
+          "C_abs_new_old_gap": 0.18848826348278103,
+          "C_h": 0.34304606574698293
+        }
+      ],
+      "compact_summary_ref": "automation_reports/CV-SincNet/20261001-phase2-d92-group-barrier-joint-support-m2-r01/results/support_summary_20261002_r03/compact_summary.json",
+      "report_ref": "automation_reports/CV-SincNet/20261001-phase2-d92-group-barrier-joint-support-m2-r01/support_diagnostic_20261002.md",
+      "original_summary_remote_ref": "/home/szu2070436088/2510044040/CV-SincNet/analyses/20261001-phase2-d92-group-barrier-joint-support-m2-r01/support_summary_20261002_r03/summary.json",
+      "numeric_state_verification": true,
+      "all_registered_support_parents_complete": true,
+      "parameter_selection": false,
+      "automatic_promotion": false
+    }
+  }
 }

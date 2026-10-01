@@ -72,3 +72,5 @@ N607 普通用户，CPU 两 lane，每 lane 两 BLAS threads，CUDA_VISIBLE_DEVI
 独立分析 r02/source a3d0791 已核实 FAILED（149.303 秒），未生成 summary/成绩。原因和 39 项验证见[三阶段连接修复](../../../docs/D92_GROUP_SUPPORT_ANALYSIS_STREAM_FIX_20261002.md)。原拟合/预测不变，失败 release/log 保留；r03 新独占输出已预登记，尚未启动。
 
 分析 r03/source dfb2de892 已独立核实 VERIFIED_RUNNING（2026-10-01T17:22:01Z），child1090096/wrapper1090089；actual argv/CWD/start/CPU2 见[evidence/analysis_runtime_1790875382474900500.json](evidence/analysis_runtime_1790875382474900500.json)。fit runtime9518不变。summary 未生成、指标未读；本次 source tar1218560bytes仅行政源码传输，不能作为星载传输或成本证据。
+
+2026-10-02完整support诊断已闭合，run终态COMPLETE。r03/source dfb2，原拟合9518，4row/160parent/10080条gate读回、657.267秒；详见[三阶段完整诊断](support_diagnostic_20261002.md)。96个OOF且新增类数>0的parent平均：A62.64%、B70.21%、C旧63.98%、C新51.51%、H56.52%，比R0 H58.42%低1.90个百分点。适应+7.57、注册旧类下降6.23、平均绝对新旧差14.08个百分点；不宣称性能提升。完整K×新增类数、proxy、分层、成本、传输缺项均已报告；query immutable73aa继续，不使用此结果调参/停机/选择性重跑。原67.85MB summary和训练state/log保持原存储，Git只交付小汇总及完整表格。

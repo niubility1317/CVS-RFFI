@@ -1,0 +1,50 @@
+{
+  "status": "VERIFIED_COMPLETE_ANALYSIS_COLLECTION",
+  "run_id": "20261001-phase2-d92-group-barrier-joint-support-m2-r01",
+  "analysis_source_commit": "dfb2de892d4577ef5ff264c70330dc1ce349e9cd",
+  "fitted_runtime_commit": "9518d46d2f763e5b080b5337e23155c9de883e09",
+  "terminal_readback_ref": "automation_reports/CV-SincNet/20261001-phase2-d92-group-barrier-joint-support-m2-r01/evidence/analysis_runtime_1790876205805888100.json",
+  "remote_output": "/home/szu2070436088/2510044040/CV-SincNet/analyses/20261001-phase2-d92-group-barrier-joint-support-m2-r01/support_summary_20261002_r03",
+  "local_output": "automation_reports/CV-SincNet/20261001-phase2-d92-group-barrier-joint-support-m2-r01/results/support_summary_20261002_r03",
+  "files": [
+    {
+      "path": "K_by_new.csv",
+      "bytes": 25550
+    },
+    {
+      "path": "parents.csv",
+      "bytes": 231282
+    },
+    {
+      "path": "paths.csv",
+      "bytes": 1376215
+    },
+    {
+      "path": "receiver_scenario_modelseed.csv",
+      "bytes": 14168
+    },
+    {
+      "path": "report.md",
+      "bytes": 1102
+    },
+    {
+      "path": "row.csv",
+      "bytes": 7386
+    },
+    {
+      "path": "row_K_by_new.csv",
+      "bytes": 107087
+    },
+    {
+      "path": "summary.json",
+      "bytes": 67845357
+    }
+  ],
+  "query_read": false,
+  "original_training_state_downloaded": false,
+  "source_sample_read": false,
+  "summary_complete": true,
+  "metrics_read": true,
+  "row_count": 4,
+  "parent_count": 160
+}
