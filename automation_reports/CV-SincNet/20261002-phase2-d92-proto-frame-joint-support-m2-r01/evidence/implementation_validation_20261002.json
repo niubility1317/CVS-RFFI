@@ -1,0 +1,59 @@
+{
+  "status": "VERIFIED_SYNTHETIC_IMPLEMENTATION_AND_METADATA_NOT_PERFORMANCE",
+  "distinct_synthetic_cases": 111,
+  "passes": [
+    {
+      "prefix": "1790881160942242100",
+      "passed": 86,
+      "root_observed_exit_code": 0
+    },
+    {
+      "prefix": "1790881631294080000",
+      "passed": 34,
+      "root_observed_exit_code": 0
+    }
+  ],
+  "first_collection_failure": {
+    "prefix": "1790881026017521400",
+    "layer": "Root test tools import path; no numerical case ran",
+    "fixed": true,
+    "observed_exit_code": 2
+  },
+  "numerical_execution_owner": "root",
+  "activated_environment": "ssr-gpu",
+  "source_only_workers": true,
+  "isolated_import": {
+    "module_files": 34,
+    "release_files": 45,
+    "data_access": false,
+    "native_encoder_loaded": false,
+    "ref": "docs/D92_PROTO_FRAME_SOURCE_BUNDLE_IMPORT_20261002.json"
+  },
+  "independent_direct_correctness_reviews": [
+    "docs/D92_PROTO_FRAME_PRIMITIVE_INPUT_REVIEW_20261002.md",
+    "docs/D92_PROTO_FRAME_JOINT_ENTRY_REVIEW_20261002.md"
+  ],
+  "raw_evidence": [
+    "automation_reports/CV-SincNet/20261002-phase2-d92-proto-frame-joint-support-m2-r01/evidence/implementation/pytest_native_activation_1790881026017521400.environment.json",
+    "automation_reports/CV-SincNet/20261002-phase2-d92-proto-frame-joint-support-m2-r01/evidence/implementation/pytest_native_activation_1790881026017521400.stderr",
+    "automation_reports/CV-SincNet/20261002-phase2-d92-proto-frame-joint-support-m2-r01/evidence/implementation/pytest_native_activation_1790881026017521400.stdout",
+    "automation_reports/CV-SincNet/20261002-phase2-d92-proto-frame-joint-support-m2-r01/evidence/implementation/pytest_native_activation_1790881160942242100.environment.json",
+    "automation_reports/CV-SincNet/20261002-phase2-d92-proto-frame-joint-support-m2-r01/evidence/implementation/pytest_native_activation_1790881160942242100.stderr",
+    "automation_reports/CV-SincNet/20261002-phase2-d92-proto-frame-joint-support-m2-r01/evidence/implementation/pytest_native_activation_1790881160942242100.stdout",
+    "automation_reports/CV-SincNet/20261002-phase2-d92-proto-frame-joint-support-m2-r01/evidence/implementation/pytest_native_activation_1790881631294080000.environment.json",
+    "automation_reports/CV-SincNet/20261002-phase2-d92-proto-frame-joint-support-m2-r01/evidence/implementation/pytest_native_activation_1790881631294080000.stderr",
+    "automation_reports/CV-SincNet/20261002-phase2-d92-proto-frame-joint-support-m2-r01/evidence/implementation/pytest_native_activation_1790881631294080000.stdout",
+    "automation_reports/CV-SincNet/20261002-phase2-d92-proto-frame-joint-support-m2-r01/evidence/implementation/ssr_native_command_1790881684619879900.execution.json",
+    "automation_reports/CV-SincNet/20261002-phase2-d92-proto-frame-joint-support-m2-r01/evidence/implementation/ssr_native_command_1790881684619879900.stderr",
+    "automation_reports/CV-SincNet/20261002-phase2-d92-proto-frame-joint-support-m2-r01/evidence/implementation/ssr_native_command_1790881684619879900.stdout",
+    "automation_reports/CV-SincNet/20261002-phase2-d92-proto-frame-joint-support-m2-r01/evidence/implementation/ssr_native_command_1790881729017332100.execution.json",
+    "automation_reports/CV-SincNet/20261002-phase2-d92-proto-frame-joint-support-m2-r01/evidence/implementation/ssr_native_command_1790881729017332100.stderr",
+    "automation_reports/CV-SincNet/20261002-phase2-d92-proto-frame-joint-support-m2-r01/evidence/implementation/ssr_native_command_1790881729017332100.stdout"
+  ],
+  "metadata_preflight_ref": "automation_reports/CV-SincNet/20261002-phase2-d92-proto-frame-joint-support-m2-r01/evidence/preflight_20261002.json",
+  "ground_metadata_ref": "docs/D92_PROTO_FRAME_GROUND_METADATA_1790879713538220200.json",
+  "query_or_source_observations_read": false,
+  "new_candidate_launched": false,
+  "performance_evidence": false,
+  "scope": "Relevant source and synthetic validation only; not query accuracy, independent fresh validation or satellite costs"
+}

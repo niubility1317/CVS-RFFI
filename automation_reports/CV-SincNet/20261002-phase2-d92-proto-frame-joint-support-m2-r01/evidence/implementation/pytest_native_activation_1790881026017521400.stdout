@@ -1,0 +1,14 @@
+
+=================================== ERRORS ====================================
+______ ERROR collecting tests/test_d92_proto_frame_support_supervisor.py ______
+ImportError while importing test module 'E:\type10-7\code\snapshots\d92_support_upgrade_20260928_wt\tests\test_d92_proto_frame_support_supervisor.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+..\..\..\local_envs\ssr-gpu\lib\importlib\__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests\test_d92_proto_frame_support_supervisor.py:8: in <module>
+    import run_d92_proto_frame_joint_probe as supervisor
+E   ModuleNotFoundError: No module named 'run_d92_proto_frame_joint_probe'
+=========================== short test summary info ===========================
+ERROR tests/test_d92_proto_frame_support_supervisor.py
+!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!

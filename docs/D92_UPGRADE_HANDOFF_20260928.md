@@ -1,3 +1,14 @@
+## 当前交接：五维原型切向 GGN1 与 LocalRidge 联合候选，源码和 support 输入已就绪
+
+- Goal ACTIVE。`20261002-phase2-d92-proto-frame-joint-support-m2-r01` READY，尚未发布或启动；fixed 4 rows/160 parents，old6，K1/5/10/20×new0/2/5/10/20。新代码 `configs/d92_proto_frame_joint_support_20261002.json` 与数学推导保持一致，111 distinct synthetic cases PASS；首个收集失败未运行数值，证据保留。限定独立直接正确性检查已完成，没有未解决 P0/P1。两文件 ground payload 为 8,383/8,262 B，center only，无 source observations/query。
+- 本提交母版为 `2832a487e2b8e69f6502a761b3284a4f0a777950`；下一步 root 唯一执行 pushed OID 绑定的一次发布与独立 PID/startup readback，再登记实际 runtime commit。不要从 READY 推断已运行，不自动重试。source-blind worker 仅继续新的独立 support analyzer+synthetic tests，未完成 analyzer 不进入本次 release。
+- 验证 `automation_reports/CV-SincNet/20261002-phase2-d92-proto-frame-joint-support-m2-r01/evidence/implementation_validation_20261002.json` 与 `automation_reports/CV-SincNet/20261002-phase2-d92-proto-frame-joint-support-m2-r01/evidence/preflight_20261002.json` 已保存；static whitelist 45 files，34 modules isolated import，未数据/模型加载。本轮 selected receivers19-1/20-19 与 practical_high/practical_low_urban 已分清，producer 的更大 matrix 不代表本轮覆盖。合成验证不保证性能、遗忘或星载省算力。
+- Group query immutable73aa/supervisor1049548 按原排程，2026-10-01T19:10:13Z readonly VERIFIED，2 rx3 PREDICTING/2 rx1 等待，未读 partial predictions/truth。完整4/2400固定后一次独立 scorer；不要热改、重复启动或停止。Group support report已完成，不重新分析。原 Margin FAILED 不作subset评分。fresh验证暂缓。
+
+<!-- PROTO_FRAME_SUPPORT_SOURCE_READY_20261002 -->
+
+以下保留历史状态，不据此重复启动：
+
 ## 当前交接：五维联合校正候选推导冻结，纯源码实现并行进行
 
 - Goal ACTIVE。新候选纯数学文档 `docs/D92_LOCAL_RIDGE_JOINT_GENERALIZATION_COST_NOTE_20261002.md` 已冻结：六个冻结旧类原型差方向、5 个共享切向校正参数、B/C 各至多 1 次完整 GGN 球内二次步、真实 RMSCE 回读。C 继承本候选真实 B 并冻结旧条件函数；原型仅固定特征几何，所有可训练量由合法 target support 拟合。不承诺 query 准确率、理想目标或星载成本改善；未发布新候选实验。
