@@ -1,4 +1,4 @@
-# frozen_prediction_reuse实验与历史证据
+# performance_priority实验与历史证据
 
 [返回总索引](../README.md)
 
@@ -6,5 +6,4 @@
 
 |名称|记录类型|证据入口|
 |---|---|---|
-|CVS性能优先继续优化：balanced_fusion clean测试报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261001-phase1-cvs-balanced-clean-manysig-m24-r01/report.md)|
 |性能优先时频交互 CVS：clean 确认实验|managed_run|[打开](../../automation_reports/CV-SincNet/20261001-phase1-cvs-interaction-clean-manysig-m24-r01/report.md)|
