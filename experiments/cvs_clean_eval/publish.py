@@ -92,7 +92,7 @@ def publish(output,run=RUN,release=RELEASE,spec_ref='experiments/cvs_clean_eval/
     remote=subprocess.check_output(['git','-c','http.version=HTTP/1.1','ls-remote','origin','refs/heads/'+branch],cwd=ROOT,text=True,timeout=30).split()[0]
     if remote!=commit:raise ValueError('Remote branch differs from HEAD')
     names=subprocess.check_output(['git','ls-files'],cwd=ROOT,text=True).splitlines()
-    prefixes=('experiments/cvs_attentive_clean/','experiments/cvs_attentive_identity/','experiments/cvs_interaction_clean/','experiments/cvs_interaction_identity/','experiments/cvs_balanced_clean/','experiments/cvs_balanced_identity/','experiments/cvs_selected_clean/','experiments/cvs_clean_eval/','experiments/cvs_residual_identity/','experiments/cvs_clean_design/','experiments/cvs_identity_ce/',
+    prefixes=('experiments/cvs_stability_clean/','experiments/cvs_stability_identity/','experiments/cvs_attentive_clean/','experiments/cvs_attentive_identity/','experiments/cvs_interaction_clean/','experiments/cvs_interaction_identity/','experiments/cvs_balanced_clean/','experiments/cvs_balanced_identity/','experiments/cvs_selected_clean/','experiments/cvs_clean_eval/','experiments/cvs_residual_identity/','experiments/cvs_clean_design/','experiments/cvs_identity_ce/',
         'experiments/adv3b02_xuc/code/','baselines/cvcnn_ce/','baselines/common/','code/leo_practical/')
     selected=[n for n in names if (n.startswith(prefixes) or n in {'code/dataset_wisig.py','comparison_suite/score.py','comparison_suite/__init__.py','baselines/__init__.py'}) and Path(n).suffix in {'.py','.json'}]
     # Directory pathspecs bound the command line on Windows even as the package grows.
