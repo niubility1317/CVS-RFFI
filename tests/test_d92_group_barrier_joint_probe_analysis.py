@@ -326,3 +326,59 @@ def test_writer_preserves_existing_output_and_marks_unknown(tmp_path):
         parent_count=160,runtime_commit=RUNTIME),fresh)
     assert 'N/A' in (fresh/'parents.csv').read_text(encoding='utf-8')
     assert 'query' in (fresh/'report.md').read_text(encoding='utf-8')
+
+
+@pytest.fixture
+def nested_descriptor_projection(tmp_path):
+    """Real production Recorder + compact_event, rather than hand-made shape loss."""
+    from cvsrffi import d92_affine_joint_local_ridge as affine
+    archive=producer.StateArchive(tmp_path)
+    namespace=json.dumps(dict(state='SYNTHETIC_DESCRIPTOR'),sort_keys=True,separators=(',',':'))
+    recorder=affine._Recorder(lambda key,arrays:archive(namespace+'/'+key,arrays))
+    basic=recorder.save('core',vector=np.array([1.,2.]),scalar=np.asarray(3.))
+    native=archive(namespace+'/native',dict(vector=np.array([4.,5.]),scalar=np.asarray(6.)))
+    state=archive.finalize('COMPLETE')
+    marker=dict(state_archive_file_count=state['file_count'],state_archive_file_bytes=state['total_file_bytes'],
+                state_archive_numeric_bytes=state['numeric_array_bytes'])
+    for name in analysis.REQUIRED_ARTIFACTS:
+        if not (tmp_path/name).exists(): (tmp_path/name).write_text('{}',encoding='utf-8')
+    dump(tmp_path/'artifact_manifest.json',dict(schema='d92_group_barrier_joint_artifacts_v1',method=analysis.METHOD,status=analysis.STATUS,
+        files=[dict(path=p.relative_to(tmp_path).as_posix(),file_bytes=p.stat().st_size) for p in sorted(tmp_path.rglob('*')) if p.is_file()]))
+    full=dict(event='FINAL',audit=dict(preparation=dict(prepared_state_ref=basic),final_state_ref=native))
+    compact=producer.compact_event(full)
+    return analysis.GroupStateResolver(tmp_path,marker),full,compact
+
+
+def test_production_nested_compact_descriptors_close_only_in_compact_stream(nested_descriptor_projection):
+    resolver,full,compact=nested_descriptor_projection
+    projected=compact['audit']['preparation']['prepared_state_ref']
+    assert 'shape' in full['audit']['preparation']['prepared_state_ref']['arrays']['vector']
+    assert 'shape' not in projected['arrays']['vector']
+    assert projected['arrays']['vector']==dict(dtype='float64',nbytes=16)
+    resolver.close_references([full],scalar_projected_records=[compact])
+    assert resolver.used==set(resolver.entries)
+    # The canonical descriptor and the actual NPZ still have the full shape.
+    canonical=resolver.entries[projected['path']]
+    assert canonical['arrays']['vector']['shape']==[2]
+    assert resolver.load(canonical)['vector'].shape==(2,)
+
+
+@pytest.mark.parametrize('stream',('trace','training_events'))
+def test_full_stream_shape_loss_is_rejected(nested_descriptor_projection,stream):
+    resolver,full,compact=nested_descriptor_projection
+    with pytest.raises(ValueError,match='coordinates missing from full-stream'):
+        resolver.close_references([dict(stream=stream,event=compact)])
+
+
+@pytest.mark.parametrize('change',('mixed_shape','dtype','nbytes','summary','extra_field','unknown_path'))
+def test_unknown_or_tampered_compact_descriptor_is_rejected(nested_descriptor_projection,change):
+    resolver,full,compact=nested_descriptor_projection; bad=copy.deepcopy(compact)
+    ref=bad['audit']['preparation']['prepared_state_ref']
+    if change=='mixed_shape': ref['arrays']['vector']['shape']=[2]
+    elif change=='dtype': ref['arrays']['vector']['dtype']='float32'
+    elif change=='nbytes': ref['arrays']['vector']['nbytes']=8
+    elif change=='summary': ref['array_summaries']['vector']['norm']=123.
+    elif change=='extra_field': ref['unknown_scalar_field']=0
+    else: ref['path']='state_arrays/unregistered.npz'
+    with pytest.raises(ValueError,match='state reference projection|Missing state reference'):
+        resolver.close_references([full],scalar_projected_records=[bad])

@@ -1,3 +1,14 @@
+## 当前交接：support分析r01格式故障已修复验证，r02预登记；query继续
+
+- Goal ACTIVE。query immutable73aa1b31f/原supervisor1049548与rx3 evaluator1049715/1049721健康继续；最新16:35:36UTC `query_runtime_1790872598242173900.json`（WS-only）仍两行PREDICTING、rx1两行等待。全部4row/2400parent A/B/C固定后才独立truth-last；当前query准确率N/A。不改该runtime/数学参数/预算，不stop/retry/relaunch。
+- support训练immutable9518仍完整四行160parent/9720stage，全部fit进程已退出。独立分析r01/source73aa/child1055923终态FAILED、141.123秒、summary不存在，原release/output/log保留，绝对不要重复原publisher。16:35:36UTC `evidence/analysis_runtime_1790872597649626100.json`已核实；KeyError shape来自fit_stages嵌套scalar投影，非canonical NPZ缺形状，尚无真实指标。源代码修复仅analyzer/tests；完整trace/events与manifest+NPZ三坐标仍严格，仅compact source投影逐字段匹配，未知/混合/篡改拒绝。
+- 当前affected analyzer全文件20合成case已实际PASS，证据1790873459909748300，原11case与r01失败均保留。Root有限delta核对完整/紧凑ABI与actual Margin Recorder字段，worker source-blind，没有fit/query/source/results访问。修复说明 `docs/D92_GROUP_SUPPORT_ANALYSIS_ABI_FIX_20261002.md`。新analysis r02在原record预登记，release `d92_group_barrier_joint_analysis_20261002_r02`，新输出 `analyses/20261001-phase2-d92-group-barrier-joint-support-m2-r01/support_summary_20261002_r02`；source actualOID尚N/A，prep52bb。source push/独立OID后唯一新attempt，不覆盖r01或fit/query。
+- Root唯一Git/SSH/launch/numerics/真实analysis/scoring。当前parent52bb已push/OID0-0，本次owned source/20pass/失败与r02计划待提交；新query数学评估不根据support结果选择。原Margin queryd86 FAILED（2/2）终态保留不评分。fresh仍暂缓，下一步source交付→r02 unique analysis→完整结果报告。
+
+<!-- GROUP_ANALYSIS_ABI_FIX_20261002 -->
+
+以下保留历史状态，不据此重复启动：
+
 ## 当前交接：GroupBarrier query健康运行；唯一support独立分析已核实
 
 - Goal ACTIVE。本次metadata parentf44496b6c已push/remoteOID相同/0-0。queryrun `20261001-phase2-d92-group-barrier-joint-repeat-m2-r01` immutable73aa1b31f、supervisor1049548/start11917841、rx3 children1049715/1049721，最新16:21:03UTC VERIFIED；rx1两行原排程等待。不要republish/relaunch/干预；完整4row/2400parent全部A/B/C固定后独立truth-last，当前query指标N/A。新数学参数/预算从盲态固定，没有support分数选择。

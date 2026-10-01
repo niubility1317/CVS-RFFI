@@ -17,7 +17,7 @@ import numpy as np
 ROOT = Path(__file__).resolve().parents[1]
 sys.path[:0] = [str(ROOT/'tools'), str(ROOT/'code')]
 from run_d92_group_barrier_joint_probe import validate_spec, evaluator_config, KS, NEW_COUNTS
-from evaluate_d92_group_barrier_joint_probe import COUNTERS, PEAK_COUNTERS, METRICS
+from evaluate_d92_group_barrier_joint_probe import COUNTERS, PEAK_COUNTERS, METRICS, scalars as _source_scalar_projection
 
 SCHEMA = 'd92_group_barrier_joint_local_ridge_v1'
 METHOD = 'D92-GroupBarrierJointLocalRidge-v1'
@@ -109,14 +109,32 @@ class GroupStateResolver:
                 item=gate_diagnostic(self.load(value),state_path=value['path'])
                 if item: self.gate_readbacks.append(item)
 
-    def bind(self, ref):
+    def bind(self, ref, *, allow_scalar_projection=False):
         require(isinstance(ref, dict) and ref.get('path') in self.entries, 'Missing state reference')
         actual = self.entries[ref['path']]
-        require(set(ref['arrays']) == set(actual['arrays']), 'State array names differ')
+        require(isinstance(ref.get('arrays'),dict) and set(ref['arrays']) == set(actual['arrays']), 'State array names differ')
         for key in ('key', 'namespace', 'file_bytes'):
             require(ref.get(key) == actual.get(key), 'State reference identity differs: '+key)
-        for name, meta in ref['arrays'].items():
-            require(all(meta[k] == actual['arrays'][name][k] for k in ('shape', 'dtype', 'nbytes')), 'State coordinates differ')
+        # The callback returns the canonical StateArchive descriptor. The
+        # affine/Group success Recorder replaces only arrays metadata with its
+        # shape/dtype/nbytes view. Both complete source-defined forms are known.
+        basic=dict(actual,arrays={name:{key:meta[key] for key in ('shape','dtype','nbytes')}
+                                  for name,meta in actual['arrays'].items()})
+        complete=all(isinstance(meta,dict) and all(key in meta for key in ('shape','dtype','nbytes'))
+                     for meta in ref['arrays'].values())
+        if complete:
+            for name, meta in ref['arrays'].items():
+                require(all(meta[key] == actual['arrays'][name][key] for key in ('shape','dtype','nbytes')), 'State coordinates differ')
+            require(ref==actual or ref==basic, 'Unknown or altered complete state reference descriptor')
+        else:
+            require(allow_scalar_projection, 'State coordinates missing from full-stream reference')
+            # compact_event first recursively applies the production scalars
+            # function. Nested audit/preparation refs can lose list-valued
+            # shapes; this is a log projection, never a new numerical state.
+            # Match the whole source-defined projection, including summaries,
+            # identity, bytes and archive time; mixed/unknown forms fail.
+            require(ref==_source_scalar_projection(actual) or ref==_source_scalar_projection(basic),
+                    'Unknown or altered scalar state reference projection')
         self.used.add(ref['path'])
         return actual
 
@@ -137,9 +155,12 @@ class GroupStateResolver:
             self.cache = {value['path']:arrays}
         return self.cache[value['path']]
 
-    def close_references(self, records):
+    def close_references(self, records, *, scalar_projected_records=None):
+        """Full trace/events stay complete; only fit_stages supplies projections."""
         for ref in _refs(records):
             self.bind(ref)
+        for ref in _refs(scalar_projected_records):
+            self.bind(ref,allow_scalar_projection=True)
         require(self.used == set(self.entries), 'Unreferenced state archive artifact')
 
 
@@ -473,7 +494,7 @@ def analyze_run(spec, run_root, *, expected_runtime_commit, verify_numeric_state
         selection={x['split_id']:x for x in co['selection']['splits']}
         require(len(traces)==len(compact)==40 and {x['split_id'] for x in traces}==set(selection)
                 and len({x['split_id'] for x in traces})==40 and {x['split_id'] for x in compact}==set(selection), 'Complete 40-parent row required')
-        resolver.close_references([traces,events,read_jsonl(probe/'fit_stages.jsonl')])
+        resolver.close_references([traces,events],scalar_projected_records=read_jsonl(probe/'fit_stages.jsonl'))
         frozen=defaultdict(dict)
         for value in fixed:
             require(value.get('status')=='FIXED_BEFORE_SUPPORT_TRUTH_JOIN' and 'held_labels' not in value
