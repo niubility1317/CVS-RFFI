@@ -1,6 +1,6 @@
 # 实验总索引
 
-更新：2026-10-01T19:12:34+00:00
+更新：2026-10-01T19:52:34+00:00
 
 先按方法/问题检索，再用run ID读取精确配置与证据。历史组数量不等于独立实验数量。
 
@@ -12,7 +12,7 @@
 
 |记录类型|数量|
 |---|---:|
-|managed_run|41|
+|managed_run|42|
 
 历史状态统一为HISTORICAL_UNVERIFIED；RUNNING等原文声明只供查证，不能证明此刻仍在运行。
 
@@ -20,14 +20,14 @@
 
 |路径标签（定位提示）|证据组数|
 |---|---:|
-|[cvs](by_method/cvs.md)|24|
-|[clean_only](by_method/clean_only.md)|20|
-|[ce_only](by_method/ce_only.md)|20|
-|[no_augmentation](by_method/no_augmentation.md)|13|
-|[performance_priority](by_method/performance_priority.md)|13|
+|[cvs](by_method/cvs.md)|25|
+|[clean_only](by_method/clean_only.md)|21|
+|[ce_only](by_method/ce_only.md)|21|
+|[no_augmentation](by_method/no_augmentation.md)|14|
+|[performance_priority](by_method/performance_priority.md)|14|
 |[daot](by_method/daot.md)|11|
+|[source_selection](by_method/source_selection.md)|11|
 |[rc4](by_method/rc4.md)|10|
-|[source_selection](by_method/source_selection.md)|10|
 |[source_selected](by_method/source_selected.md)|9|
 |[frozen_prediction_reuse](by_method/frozen_prediction_reuse.md)|8|
 |[practical](by_method/practical.md)|7|
@@ -85,6 +85,7 @@
 |[synthetic_only](by_method/synthetic_only.md)|1|
 |[no_target_access](by_method/no_target_access.md)|1|
 |[preamble](by_method/preamble.md)|1|
+|[whole_identity_gauge](by_method/whole_identity_gauge.md)|1|
 |[whole_identity_observables](by_method/whole_identity_observables.md)|1|
 |[rf_behavior_operator](by_method/rf_behavior_operator.md)|1|
 
@@ -126,6 +127,7 @@
 |CVS 性能优先研发：物理补充表征|managed_run|[打开](../automation_reports/CV-SincNet/20261001-phase1-cvs-stability-identity-manysig-m8-r01/report.md)|
 |RFF物理可辨识性：合成诊断|managed_run|[打开](../automation_reports/CV-SincNet/20261002-diagnostic-rff-identifiability-synthetic-m1-r01/report.md)|
 |RFF源域前导码与可观测量诊断|managed_run|[打开](../automation_reports/CV-SincNet/20261002-diagnostic-rff-preamble-source-manysig-m1-r01/report.md)|
+|CVS物理研发：保留完整IQ的逐包相位规范化|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-gauge-identity-manysig-m8-r01/report.md)|
 |CVS性能优先继续优化：observable_phase clean测试报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-observable-clean-manysig-m24-r01/report.md)|
 |CVS整体物理观测身份网络：源训练预登记|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-observable-identity-manysig-m8-r01/report.md)|
 |CVS性能优先继续优化：rf_gmp clean测试报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-rf-operator-clean-manysig-m24-r01/report.md)|

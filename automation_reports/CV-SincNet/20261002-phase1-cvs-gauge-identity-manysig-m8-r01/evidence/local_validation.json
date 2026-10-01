@@ -1,0 +1,9 @@
+{
+  "status": "PASS",
+  "model_tests": 13,
+  "protocol_tests": 10,
+  "python": "C:\\Users\\lh594\\.conda\\envs\\ssr-gpu\\python.exe",
+  "model_review": "PASS; independent model/physics P0/P1 review; forward vs classify(features) error0; Torch2.1 API compatible statically; remote runtime pending",
+  "execution_review": "PASS; independent source/protocol/execution P0/P1 review; historical actual control fields compatible; clean implementation not yet validated",
+  "target_access": false
+}

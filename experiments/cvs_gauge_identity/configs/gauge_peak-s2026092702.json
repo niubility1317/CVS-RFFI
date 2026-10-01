@@ -1,0 +1,40 @@
+{
+  "method": "cvs_gauge_identity",
+  "variant": "gauge_peak",
+  "model_seed": 2026092702,
+  "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+  "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+  "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-gauge-identity-manysig-m8-r01/gauge_peak-s2026092702/source",
+  "epochs": 200,
+  "batch_size": 128,
+  "lr": 0.0002,
+  "lr_min": 1e-06,
+  "weight_decay": 0.0001,
+  "drop_last": false,
+  "augmentation": false,
+  "domain_backbone": false,
+  "extra_losses": [],
+  "selection": "fixed_last_epoch",
+  "split_seed": 392005,
+  "device": "cuda:0",
+  "gauge": {
+    "mode": "gauge_peak",
+    "epsilon": 1e-06,
+    "near_peak_relative_tolerance": 1e-05,
+    "coherent_window": [
+      80,
+      160
+    ],
+    "period_samples": 20,
+    "cycles": 4,
+    "degenerate_reference_relative_power": 1e-06,
+    "whole_model_global_phase_invariant_real_arithmetic": true,
+    "removes_linear_phase": false,
+    "original_temporal_samples": 256,
+    "input": "received_equalized1_unit_rms_IQ",
+    "sample_rate_hz": 25000000,
+    "learned_frontend_parameters": 0,
+    "original_waveform_preserved_up_to_packet_complex_scalar": true,
+    "interpretation": "Packet carrier-phase gauge;not TX hardware identification or arbitrary channel/RX invariance"
+  }
+}

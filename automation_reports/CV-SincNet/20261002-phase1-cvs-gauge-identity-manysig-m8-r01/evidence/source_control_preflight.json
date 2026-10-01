@@ -1,0 +1,912 @@
+{
+  "read_at": 1790883851.8786767,
+  "pipeline_status": "SOURCE_RESEARCH_COMPLETE_AWAITING_FROZEN_CLEAN_TEST",
+  "gpu": "0, 24124 MiB\n1, 24124 MiB\n2, 24124 MiB\n3, 24124 MiB\n4, 24124 MiB\n5, 24124 MiB\n6, 24124 MiB\n7, 24124 MiB\n",
+  "apps": "",
+  "source_controls": [
+    {
+      "seed": 2026092701,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092701/source",
+      "completion": {
+        "status": "SOURCE_TRAINED",
+        "epoch": 200,
+        "steps": 10000,
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092701/source/last.pt",
+        "elapsed_seconds": 1138.134439454996,
+        "target_access": false,
+        "target_evaluated": false,
+        "final_source_metrics": {
+          "source_val_count": 27000,
+          "source_val_accuracy": 0.980925925925926,
+          "source_val_ce": 0.10111124420751202,
+          "source_val_rx_accuracy": {
+            "1": 0.9948148148148148,
+            "3": 0.9464814814814815,
+            "4": 0.9835185185185186,
+            "6": 0.9964814814814815,
+            "8": 0.9833333333333333
+          },
+          "source_val_worst_rx": 0.9464814814814815
+        }
+      },
+      "resolved": {
+        "method": "cvs_residual_identity",
+        "variant": "residual_fusion",
+        "model_seed": 2026092701,
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092701/source",
+        "epochs": 200,
+        "batch_size": 128,
+        "lr": 0.0002,
+        "lr_min": 1e-06,
+        "weight_decay": 0.0001,
+        "drop_last": false,
+        "augmentation": false,
+        "domain_backbone": false,
+        "extra_losses": [],
+        "selection": "fixed_last_epoch",
+        "split_seed": 392005,
+        "device": "cuda:0",
+        "pid": 725260,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_residual_identity_20261001_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "commit": "ff469598cdccb6ee40ec21bb1e304a050b3a5a00",
+        "torch_version": "2.1.0+cu121",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "source_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "steps_per_epoch": 50,
+        "total_parameters": 164225,
+        "trainable_parameters": 164225,
+        "U_s_use": "unused",
+        "target_access": false,
+        "precision": "float32",
+        "gradient_clipping": null,
+        "optimizer": "AdamW+CosineAnnealingLR",
+        "loader_seed": 2026092701
+      },
+      "initialization": {
+        "status": "SCRATCH",
+        "scratch_only": true,
+        "checkpoint": null,
+        "ancestors": [],
+        "checkpoint_sources": [],
+        "target_access": false,
+        "target_contact": false,
+        "model_seed": 2026092701,
+        "physical_roles": "EXACT_MATCH",
+        "selection": "fixed_last_epoch"
+      },
+      "profile": {
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "precision": "float32",
+        "torch_version": "2.1.0+cu121",
+        "total_parameters": 164225,
+        "trainable_parameters": 164225,
+        "resident_state_bytes": 657552,
+        "input_shape": [
+          2,
+          256
+        ],
+        "warmup": 5,
+        "inference_repetitions": 20,
+        "training_repetitions": 10,
+        "mac_scope": "Conv1d and matrix multiplication only; excludes FFT, normalization, pooling, physical lifts and elementwise arithmetic",
+        "benchmark_state_used_for_training": false,
+        "inference_batch1_ms": 4.627025449735811,
+        "inference_batch128_ms": 4.3746770003053825,
+        "conv_linear_macs_per_sample": 9708836,
+        "fft_calls_per_sample": 2,
+        "training_batch128_ms": 28.621116999420337,
+        "gradient_used_parameters": 164225,
+        "benchmark_peak_cuda_allocated_bytes": 250365440,
+        "benchmark_peak_note": "Disposable clone plus original frozen model resident; actual source-training peak is separately logged"
+      },
+      "contract_summary": {
+        "schema": "core90_game_source_roles_v1",
+        "source_rxs": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 6,
+        "domain_kind": "rx_day",
+        "domain_map": [
+          [
+            1,
+            1,
+            0
+          ],
+          [
+            1,
+            2,
+            1
+          ],
+          [
+            1,
+            3,
+            2
+          ],
+          [
+            3,
+            1,
+            3
+          ],
+          [
+            3,
+            2,
+            4
+          ],
+          [
+            3,
+            3,
+            5
+          ],
+          [
+            4,
+            1,
+            6
+          ],
+          [
+            4,
+            2,
+            7
+          ],
+          [
+            4,
+            3,
+            8
+          ],
+          [
+            6,
+            1,
+            9
+          ],
+          [
+            6,
+            2,
+            10
+          ],
+          [
+            6,
+            3,
+            11
+          ],
+          [
+            8,
+            1,
+            12
+          ],
+          [
+            8,
+            2,
+            13
+          ],
+          [
+            8,
+            3,
+            14
+          ]
+        ],
+        "counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "ratios": [
+          0.07,
+          0.63,
+          0.3
+        ],
+        "split_rule": "per_tx_rx_day_eq_contiguous_signal_index",
+        "split_seed": 392005,
+        "checkpoint_init": "scratch_only",
+        "target_access_before_freeze": false,
+        "capture_group_granularity": "whole_tx_rx_day_container; no signal-window split",
+        "physical_roles": "EXACT_MATCH",
+        "dataset_path": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "classes": [
+          "14-10",
+          "14-7",
+          "20-15",
+          "20-19",
+          "6-15",
+          "8-20"
+        ],
+        "equalized": 1,
+        "out_len": 256,
+        "normalize": true
+      },
+      "physical_roles_match_original": true
+    },
+    {
+      "seed": 2026092702,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092702/source",
+      "completion": {
+        "status": "SOURCE_TRAINED",
+        "epoch": 200,
+        "steps": 10000,
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092702/source/last.pt",
+        "elapsed_seconds": 1140.57630539799,
+        "target_access": false,
+        "target_evaluated": false,
+        "final_source_metrics": {
+          "source_val_count": 27000,
+          "source_val_accuracy": 0.9819629629629629,
+          "source_val_ce": 0.09610184188432645,
+          "source_val_rx_accuracy": {
+            "1": 0.9962962962962963,
+            "3": 0.9457407407407408,
+            "4": 0.9864814814814815,
+            "6": 0.997037037037037,
+            "8": 0.9842592592592593
+          },
+          "source_val_worst_rx": 0.9457407407407408
+        }
+      },
+      "resolved": {
+        "method": "cvs_residual_identity",
+        "variant": "residual_fusion",
+        "model_seed": 2026092702,
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092702/source",
+        "epochs": 200,
+        "batch_size": 128,
+        "lr": 0.0002,
+        "lr_min": 1e-06,
+        "weight_decay": 0.0001,
+        "drop_last": false,
+        "augmentation": false,
+        "domain_backbone": false,
+        "extra_losses": [],
+        "selection": "fixed_last_epoch",
+        "split_seed": 392005,
+        "device": "cuda:0",
+        "pid": 725436,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_residual_identity_20261001_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "commit": "ff469598cdccb6ee40ec21bb1e304a050b3a5a00",
+        "torch_version": "2.1.0+cu121",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "source_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "steps_per_epoch": 50,
+        "total_parameters": 164225,
+        "trainable_parameters": 164225,
+        "U_s_use": "unused",
+        "target_access": false,
+        "precision": "float32",
+        "gradient_clipping": null,
+        "optimizer": "AdamW+CosineAnnealingLR",
+        "loader_seed": 2026092702
+      },
+      "initialization": {
+        "status": "SCRATCH",
+        "scratch_only": true,
+        "checkpoint": null,
+        "ancestors": [],
+        "checkpoint_sources": [],
+        "target_access": false,
+        "target_contact": false,
+        "model_seed": 2026092702,
+        "physical_roles": "EXACT_MATCH",
+        "selection": "fixed_last_epoch"
+      },
+      "profile": {
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "precision": "float32",
+        "torch_version": "2.1.0+cu121",
+        "total_parameters": 164225,
+        "trainable_parameters": 164225,
+        "resident_state_bytes": 657552,
+        "input_shape": [
+          2,
+          256
+        ],
+        "warmup": 5,
+        "inference_repetitions": 20,
+        "training_repetitions": 10,
+        "mac_scope": "Conv1d and matrix multiplication only; excludes FFT, normalization, pooling, physical lifts and elementwise arithmetic",
+        "benchmark_state_used_for_training": false,
+        "inference_batch1_ms": 4.855126450274838,
+        "inference_batch128_ms": 4.606167950259987,
+        "conv_linear_macs_per_sample": 9708836,
+        "fft_calls_per_sample": 2,
+        "training_batch128_ms": 29.112329598865472,
+        "gradient_used_parameters": 164225,
+        "benchmark_peak_cuda_allocated_bytes": 250365440,
+        "benchmark_peak_note": "Disposable clone plus original frozen model resident; actual source-training peak is separately logged"
+      },
+      "contract_summary": {
+        "schema": "core90_game_source_roles_v1",
+        "source_rxs": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 6,
+        "domain_kind": "rx_day",
+        "domain_map": [
+          [
+            1,
+            1,
+            0
+          ],
+          [
+            1,
+            2,
+            1
+          ],
+          [
+            1,
+            3,
+            2
+          ],
+          [
+            3,
+            1,
+            3
+          ],
+          [
+            3,
+            2,
+            4
+          ],
+          [
+            3,
+            3,
+            5
+          ],
+          [
+            4,
+            1,
+            6
+          ],
+          [
+            4,
+            2,
+            7
+          ],
+          [
+            4,
+            3,
+            8
+          ],
+          [
+            6,
+            1,
+            9
+          ],
+          [
+            6,
+            2,
+            10
+          ],
+          [
+            6,
+            3,
+            11
+          ],
+          [
+            8,
+            1,
+            12
+          ],
+          [
+            8,
+            2,
+            13
+          ],
+          [
+            8,
+            3,
+            14
+          ]
+        ],
+        "counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "ratios": [
+          0.07,
+          0.63,
+          0.3
+        ],
+        "split_rule": "per_tx_rx_day_eq_contiguous_signal_index",
+        "split_seed": 392005,
+        "checkpoint_init": "scratch_only",
+        "target_access_before_freeze": false,
+        "capture_group_granularity": "whole_tx_rx_day_container; no signal-window split",
+        "physical_roles": "EXACT_MATCH",
+        "dataset_path": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "classes": [
+          "14-10",
+          "14-7",
+          "20-15",
+          "20-19",
+          "6-15",
+          "8-20"
+        ],
+        "equalized": 1,
+        "out_len": 256,
+        "normalize": true
+      },
+      "physical_roles_match_original": true
+    },
+    {
+      "seed": 2026092703,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092703/source",
+      "completion": {
+        "status": "SOURCE_TRAINED",
+        "epoch": 200,
+        "steps": 10000,
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092703/source/last.pt",
+        "elapsed_seconds": 1137.8787764669978,
+        "target_access": false,
+        "target_evaluated": false,
+        "final_source_metrics": {
+          "source_val_count": 27000,
+          "source_val_accuracy": 0.9798518518518519,
+          "source_val_ce": 0.1089848450754929,
+          "source_val_rx_accuracy": {
+            "1": 0.9942592592592593,
+            "3": 0.9446296296296296,
+            "4": 0.985,
+            "6": 0.9962962962962963,
+            "8": 0.9790740740740741
+          },
+          "source_val_worst_rx": 0.9446296296296296
+        }
+      },
+      "resolved": {
+        "method": "cvs_residual_identity",
+        "variant": "residual_fusion",
+        "model_seed": 2026092703,
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092703/source",
+        "epochs": 200,
+        "batch_size": 128,
+        "lr": 0.0002,
+        "lr_min": 1e-06,
+        "weight_decay": 0.0001,
+        "drop_last": false,
+        "augmentation": false,
+        "domain_backbone": false,
+        "extra_losses": [],
+        "selection": "fixed_last_epoch",
+        "split_seed": 392005,
+        "device": "cuda:0",
+        "pid": 725608,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_residual_identity_20261001_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "commit": "ff469598cdccb6ee40ec21bb1e304a050b3a5a00",
+        "torch_version": "2.1.0+cu121",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "source_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "steps_per_epoch": 50,
+        "total_parameters": 164225,
+        "trainable_parameters": 164225,
+        "U_s_use": "unused",
+        "target_access": false,
+        "precision": "float32",
+        "gradient_clipping": null,
+        "optimizer": "AdamW+CosineAnnealingLR",
+        "loader_seed": 2026092703
+      },
+      "initialization": {
+        "status": "SCRATCH",
+        "scratch_only": true,
+        "checkpoint": null,
+        "ancestors": [],
+        "checkpoint_sources": [],
+        "target_access": false,
+        "target_contact": false,
+        "model_seed": 2026092703,
+        "physical_roles": "EXACT_MATCH",
+        "selection": "fixed_last_epoch"
+      },
+      "profile": {
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "precision": "float32",
+        "torch_version": "2.1.0+cu121",
+        "total_parameters": 164225,
+        "trainable_parameters": 164225,
+        "resident_state_bytes": 657552,
+        "input_shape": [
+          2,
+          256
+        ],
+        "warmup": 5,
+        "inference_repetitions": 20,
+        "training_repetitions": 10,
+        "mac_scope": "Conv1d and matrix multiplication only; excludes FFT, normalization, pooling, physical lifts and elementwise arithmetic",
+        "benchmark_state_used_for_training": false,
+        "inference_batch1_ms": 4.697186500561656,
+        "inference_batch128_ms": 4.4401248000212945,
+        "conv_linear_macs_per_sample": 9708836,
+        "fft_calls_per_sample": 2,
+        "training_batch128_ms": 28.863304300466552,
+        "gradient_used_parameters": 164225,
+        "benchmark_peak_cuda_allocated_bytes": 250365440,
+        "benchmark_peak_note": "Disposable clone plus original frozen model resident; actual source-training peak is separately logged"
+      },
+      "contract_summary": {
+        "schema": "core90_game_source_roles_v1",
+        "source_rxs": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 6,
+        "domain_kind": "rx_day",
+        "domain_map": [
+          [
+            1,
+            1,
+            0
+          ],
+          [
+            1,
+            2,
+            1
+          ],
+          [
+            1,
+            3,
+            2
+          ],
+          [
+            3,
+            1,
+            3
+          ],
+          [
+            3,
+            2,
+            4
+          ],
+          [
+            3,
+            3,
+            5
+          ],
+          [
+            4,
+            1,
+            6
+          ],
+          [
+            4,
+            2,
+            7
+          ],
+          [
+            4,
+            3,
+            8
+          ],
+          [
+            6,
+            1,
+            9
+          ],
+          [
+            6,
+            2,
+            10
+          ],
+          [
+            6,
+            3,
+            11
+          ],
+          [
+            8,
+            1,
+            12
+          ],
+          [
+            8,
+            2,
+            13
+          ],
+          [
+            8,
+            3,
+            14
+          ]
+        ],
+        "counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "ratios": [
+          0.07,
+          0.63,
+          0.3
+        ],
+        "split_rule": "per_tx_rx_day_eq_contiguous_signal_index",
+        "split_seed": 392005,
+        "checkpoint_init": "scratch_only",
+        "target_access_before_freeze": false,
+        "capture_group_granularity": "whole_tx_rx_day_container; no signal-window split",
+        "physical_roles": "EXACT_MATCH",
+        "dataset_path": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "classes": [
+          "14-10",
+          "14-7",
+          "20-15",
+          "20-19",
+          "6-15",
+          "8-20"
+        ],
+        "equalized": 1,
+        "out_len": 256,
+        "normalize": true
+      },
+      "physical_roles_match_original": true
+    },
+    {
+      "seed": 2026092704,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092704/source",
+      "completion": {
+        "status": "SOURCE_TRAINED",
+        "epoch": 200,
+        "steps": 10000,
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092704/source/last.pt",
+        "elapsed_seconds": 1139.5859742739995,
+        "target_access": false,
+        "target_evaluated": false,
+        "final_source_metrics": {
+          "source_val_count": 27000,
+          "source_val_accuracy": 0.980037037037037,
+          "source_val_ce": 0.10042451041170312,
+          "source_val_rx_accuracy": {
+            "1": 0.995,
+            "3": 0.942962962962963,
+            "4": 0.9848148148148148,
+            "6": 0.9957407407407407,
+            "8": 0.9816666666666667
+          },
+          "source_val_worst_rx": 0.942962962962963
+        }
+      },
+      "resolved": {
+        "method": "cvs_residual_identity",
+        "variant": "residual_fusion",
+        "model_seed": 2026092704,
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092704/source",
+        "epochs": 200,
+        "batch_size": 128,
+        "lr": 0.0002,
+        "lr_min": 1e-06,
+        "weight_decay": 0.0001,
+        "drop_last": false,
+        "augmentation": false,
+        "domain_backbone": false,
+        "extra_losses": [],
+        "selection": "fixed_last_epoch",
+        "split_seed": 392005,
+        "device": "cuda:0",
+        "pid": 725780,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_residual_identity_20261001_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "commit": "ff469598cdccb6ee40ec21bb1e304a050b3a5a00",
+        "torch_version": "2.1.0+cu121",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "source_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "steps_per_epoch": 50,
+        "total_parameters": 164225,
+        "trainable_parameters": 164225,
+        "U_s_use": "unused",
+        "target_access": false,
+        "precision": "float32",
+        "gradient_clipping": null,
+        "optimizer": "AdamW+CosineAnnealingLR",
+        "loader_seed": 2026092704
+      },
+      "initialization": {
+        "status": "SCRATCH",
+        "scratch_only": true,
+        "checkpoint": null,
+        "ancestors": [],
+        "checkpoint_sources": [],
+        "target_access": false,
+        "target_contact": false,
+        "model_seed": 2026092704,
+        "physical_roles": "EXACT_MATCH",
+        "selection": "fixed_last_epoch"
+      },
+      "profile": {
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "precision": "float32",
+        "torch_version": "2.1.0+cu121",
+        "total_parameters": 164225,
+        "trainable_parameters": 164225,
+        "resident_state_bytes": 657552,
+        "input_shape": [
+          2,
+          256
+        ],
+        "warmup": 5,
+        "inference_repetitions": 20,
+        "training_repetitions": 10,
+        "mac_scope": "Conv1d and matrix multiplication only; excludes FFT, normalization, pooling, physical lifts and elementwise arithmetic",
+        "benchmark_state_used_for_training": false,
+        "inference_batch1_ms": 4.726618499989854,
+        "inference_batch128_ms": 4.467693850165233,
+        "conv_linear_macs_per_sample": 9708836,
+        "fft_calls_per_sample": 2,
+        "training_batch128_ms": 29.984816799697,
+        "gradient_used_parameters": 164225,
+        "benchmark_peak_cuda_allocated_bytes": 250365440,
+        "benchmark_peak_note": "Disposable clone plus original frozen model resident; actual source-training peak is separately logged"
+      },
+      "contract_summary": {
+        "schema": "core90_game_source_roles_v1",
+        "source_rxs": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 6,
+        "domain_kind": "rx_day",
+        "domain_map": [
+          [
+            1,
+            1,
+            0
+          ],
+          [
+            1,
+            2,
+            1
+          ],
+          [
+            1,
+            3,
+            2
+          ],
+          [
+            3,
+            1,
+            3
+          ],
+          [
+            3,
+            2,
+            4
+          ],
+          [
+            3,
+            3,
+            5
+          ],
+          [
+            4,
+            1,
+            6
+          ],
+          [
+            4,
+            2,
+            7
+          ],
+          [
+            4,
+            3,
+            8
+          ],
+          [
+            6,
+            1,
+            9
+          ],
+          [
+            6,
+            2,
+            10
+          ],
+          [
+            6,
+            3,
+            11
+          ],
+          [
+            8,
+            1,
+            12
+          ],
+          [
+            8,
+            2,
+            13
+          ],
+          [
+            8,
+            3,
+            14
+          ]
+        ],
+        "counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "ratios": [
+          0.07,
+          0.63,
+          0.3
+        ],
+        "split_rule": "per_tx_rx_day_eq_contiguous_signal_index",
+        "split_seed": 392005,
+        "checkpoint_init": "scratch_only",
+        "target_access_before_freeze": false,
+        "capture_group_granularity": "whole_tx_rx_day_container; no signal-window split",
+        "physical_roles": "EXACT_MATCH",
+        "dataset_path": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "classes": [
+          "14-10",
+          "14-7",
+          "20-15",
+          "20-19",
+          "6-15",
+          "8-20"
+        ],
+        "equalized": 1,
+        "out_len": 256,
+        "normalize": true
+      },
+      "physical_roles_match_original": true
+    }
+  ]
+}
