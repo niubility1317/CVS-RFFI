@@ -1,6 +1,6 @@
 # CVS 等角身份分类头
 
-run_id：`20261001-phase1-cvs-simplex-identity-manysig-m8-r01`。状态 TRAINING_COMPLETE，完整源 E200 已完成，clean 尚未完成。仅身份骨干/普通CE/无增强，从零训练两个源域前瞻候选各4seed。性能优先，参数成本次要。
+run_id：`20261001-phase1-cvs-simplex-identity-manysig-m8-r01`。状态 ANALYZED，完整 E200 与独立 clean 确认均已完成。仅身份骨干/普通CE/无增强，从零训练两个源域前瞻候选各4seed。性能优先，参数成本次要。
 
 |候选|总/有效CE参数|Conv/mm MAC/包|常驻状态字节|
 |---|---:|---:|---:|
@@ -26,3 +26,7 @@ MAC不含QR因子分解和归一化等算子；实际N607训练/推理耗时、�
 ## 完整源训练与冻结
 
 8 行均完成 E200/10000 步，完整 1600 epoch、80000 step、CSV 和全部 stdout 已解析，无运行期技术异常；实际源数据角色一致，scratch/noaug/nodomain/CE-only 核实。按登记的性能优先规则冻结 `simplex_fixed`，源选择独立复算完全一致。源性能完全并列后才考虑参数和计算，不使用测试反馈。确认 run `20261001-phase1-cvs-simplex-clean-manysig-m24-r01` 已预登记，默认完成 4 个新预测和 20 个冻结控制预测的独立评分。见[evidence/source_selection.json](evidence/source_selection.json)和[evidence/source_completion_validation.json](evidence/source_completion_validation.json)。
+
+## 独立 clean 确认完成
+
+选中 `simplex_fixed` 由独立子 run `20261001-phase1-cvs-simplex-clean-manysig-m24-r01` 完成四 seed clean 测试，原 20 预测只读复用，共 24 行、192 条评分。准确率 77.3348% ± 2.5494%，较上轮残差 CVS -1.1195 个百分点（1/4 seed 提升）。本轮没有进一步提高平均准确率，参数更少不能替代性能目标。源 run 未读取 target，未选候选不测试，测试评分不回流调参或重选。见[完整确认报告](../20261001-phase1-cvs-simplex-clean-manysig-m24-r01/report.md)。

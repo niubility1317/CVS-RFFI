@@ -1,0 +1,172 @@
+{
+  "rows": [
+    {
+      "row_id": "simplex_learned-s2026092701",
+      "epochs": 200,
+      "final_ce": 0.01601034217164852,
+      "best_source_V": 0.9814814814814815,
+      "fixed_E200_V": 0.9802962962962963,
+      "train_seconds": 1202.098579927013,
+      "full_log_audit": {
+        "epochs": 200,
+        "steps": 10000,
+        "csv_epochs": 200,
+        "full_stdout_lines": 205,
+        "roles_match": true,
+        "all_step_flags_match": true,
+        "all_physical_cue_flags_match": true,
+        "all_step_metrics_finite": true,
+        "errors": [],
+        "numpy_bridge_warning": false,
+        "startup_traceback_warning": false
+      }
+    },
+    {
+      "row_id": "simplex_fixed-s2026092701",
+      "epochs": 200,
+      "final_ce": 0.01928504957642872,
+      "best_source_V": 0.9817407407407407,
+      "fixed_E200_V": 0.9807407407407407,
+      "train_seconds": 1195.4493604799936,
+      "full_log_audit": {
+        "epochs": 200,
+        "steps": 10000,
+        "csv_epochs": 200,
+        "full_stdout_lines": 205,
+        "roles_match": true,
+        "all_step_flags_match": true,
+        "all_physical_cue_flags_match": true,
+        "all_step_metrics_finite": true,
+        "errors": [],
+        "numpy_bridge_warning": false,
+        "startup_traceback_warning": false
+      }
+    },
+    {
+      "row_id": "simplex_learned-s2026092702",
+      "epochs": 200,
+      "final_ce": 0.016659285365603863,
+      "best_source_V": 0.9823333333333333,
+      "fixed_E200_V": 0.982,
+      "train_seconds": 1203.4000731150009,
+      "full_log_audit": {
+        "epochs": 200,
+        "steps": 10000,
+        "csv_epochs": 200,
+        "full_stdout_lines": 205,
+        "roles_match": true,
+        "all_step_flags_match": true,
+        "all_physical_cue_flags_match": true,
+        "all_step_metrics_finite": true,
+        "errors": [],
+        "numpy_bridge_warning": false,
+        "startup_traceback_warning": false
+      }
+    },
+    {
+      "row_id": "simplex_fixed-s2026092702",
+      "epochs": 200,
+      "final_ce": 0.02133042488479987,
+      "best_source_V": 0.9816296296296296,
+      "fixed_E200_V": 0.9815185185185186,
+      "train_seconds": 1196.9609532960021,
+      "full_log_audit": {
+        "epochs": 200,
+        "steps": 10000,
+        "csv_epochs": 200,
+        "full_stdout_lines": 205,
+        "roles_match": true,
+        "all_step_flags_match": true,
+        "all_physical_cue_flags_match": true,
+        "all_step_metrics_finite": true,
+        "errors": [],
+        "numpy_bridge_warning": false,
+        "startup_traceback_warning": false
+      }
+    },
+    {
+      "row_id": "simplex_learned-s2026092703",
+      "epochs": 200,
+      "final_ce": 0.018854098971933127,
+      "best_source_V": 0.9811111111111112,
+      "fixed_E200_V": 0.9805555555555555,
+      "train_seconds": 1197.6667322199937,
+      "full_log_audit": {
+        "epochs": 200,
+        "steps": 10000,
+        "csv_epochs": 200,
+        "full_stdout_lines": 205,
+        "roles_match": true,
+        "all_step_flags_match": true,
+        "all_physical_cue_flags_match": true,
+        "all_step_metrics_finite": true,
+        "errors": [],
+        "numpy_bridge_warning": false,
+        "startup_traceback_warning": false
+      }
+    },
+    {
+      "row_id": "simplex_fixed-s2026092703",
+      "epochs": 200,
+      "final_ce": 0.02323612576816231,
+      "best_source_V": 0.9820740740740741,
+      "fixed_E200_V": 0.9814074074074074,
+      "train_seconds": 1170.1267008490104,
+      "full_log_audit": {
+        "epochs": 200,
+        "steps": 10000,
+        "csv_epochs": 200,
+        "full_stdout_lines": 205,
+        "roles_match": true,
+        "all_step_flags_match": true,
+        "all_physical_cue_flags_match": true,
+        "all_step_metrics_finite": true,
+        "errors": [],
+        "numpy_bridge_warning": false,
+        "startup_traceback_warning": false
+      }
+    },
+    {
+      "row_id": "simplex_learned-s2026092704",
+      "epochs": 200,
+      "final_ce": 0.025104429675266146,
+      "best_source_V": 0.9802592592592593,
+      "fixed_E200_V": 0.9794814814814815,
+      "train_seconds": 1202.0875681280013,
+      "full_log_audit": {
+        "epochs": 200,
+        "steps": 10000,
+        "csv_epochs": 200,
+        "full_stdout_lines": 205,
+        "roles_match": true,
+        "all_step_flags_match": true,
+        "all_physical_cue_flags_match": true,
+        "all_step_metrics_finite": true,
+        "errors": [],
+        "numpy_bridge_warning": false,
+        "startup_traceback_warning": false
+      }
+    },
+    {
+      "row_id": "simplex_fixed-s2026092704",
+      "epochs": 200,
+      "final_ce": 0.02706804539076984,
+      "best_source_V": 0.9809629629629629,
+      "fixed_E200_V": 0.9807037037037037,
+      "train_seconds": 1163.2965314589965,
+      "full_log_audit": {
+        "epochs": 200,
+        "steps": 10000,
+        "csv_epochs": 200,
+        "full_stdout_lines": 205,
+        "roles_match": true,
+        "all_step_flags_match": true,
+        "all_physical_cue_flags_match": true,
+        "all_step_metrics_finite": true,
+        "errors": [],
+        "numpy_bridge_warning": false,
+        "startup_traceback_warning": false
+      }
+    }
+  ]
+}
