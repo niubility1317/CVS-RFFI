@@ -166,7 +166,7 @@
       "81a226a8d1cef34ea817ada87070bd89912d027d"
     ],
     "independent_analysis": {
-      "status": "RUNNING_VERIFIED",
+      "status": "VERIFIED_COMPLETE",
       "launch_owner": "root",
       "release": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_affine_joint_analysis_20261001_r02",
       "output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-affine-joint-support-m2-r01/results/support_summary",
@@ -221,7 +221,7 @@
       "last_independent_readback": "analysis_readback_1790816886992696800.json"
     },
     "diagnostic_transport_readiness": {
-      "status": "SYNTHETIC_VERIFIED_REAL_EXTRACTION_NOT_RUN",
+      "status": "VERIFIED_REAL_COLLECTION_COMPLETE",
       "passed": 16,
       "seconds": 8.97,
       "document": "docs/D92_AFFINE_DIAGNOSTIC_TRANSPORT_20261001.md"
@@ -230,7 +230,24 @@
     "independent_analysis_commit": "1acc83a584ace40f294a433ace80629472ee2525",
     "analysis_process_alive": false,
     "full_support_report_ref": "results/full_support_report.md",
-    "training_collector_status": "SYNTHETIC_REPAIRED_PENDING_REAL_COLLECTION"
+    "training_collector_status": "COMPLETE_AFFINE_JOINT_TRAINING_DIAGNOSTICS_DERIVED",
+    "training_collector_completed_at": "2026-10-01T05:04:05.077531+00:00",
+    "training_diagnostics_ref": "results/training_diagnostics/summary.json",
+    "training_diagnostics_report_ref": "results/training_diagnostics/report.md",
+    "training_ai_scalar_ref": "results/training_ai_scalar_r02/summary.json",
+    "training_collector_artifact_evidence": [
+      "evidence/training_derived_readback_20261001.json",
+      "evidence/training_ai_scalar_r02_readback_20261001.json"
+    ],
+    "training_collector_counts": {
+      "stages": 3240,
+      "curves": 20564,
+      "preparations": 3240,
+      "prior_heads": 864,
+      "gradient_CE_vs_proximal_conflict_count": 1944,
+      "accepted_objective_increase_count": 0,
+      "accepted_CE_increase_count": null
+    }
   },
   "expected_artifacts": [
     "startup.json",

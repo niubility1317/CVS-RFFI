@@ -3,7 +3,7 @@
 - run_id：`20261001-phase2-d92-affine-joint-support-m2-r01`
 - group_id：`d92-affine-joint-support`；类别：`diagnostic`；阶段：`Phase2-support-only-diagnostic`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：ARTIFACTS_COMPLETE（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED；完整训练诊断已完成并读回（独立证据见下文）
 
 ## 目的与对照
 
@@ -51,3 +51,13 @@ RELATED_DEVELOPMENT/SYNTHETIC_VERIFIED：正核条件Affine解析头及完整低
 ANALYZED/VERIFIED：完整独立160parent/1800path结果与80行矩阵报告已生成。oof新类存在总体相对R0：C旧+2.8906pp，C新−2.3203pp，H−0.4376pp，不能宣称全面改善或query泛化。source训练版本81a226a、analysis1acc83a不变。collector首轮compact/full引用shape裁剪冲突失败保留；严格metadata互补融合修复20项合成检查通过（14.01s），真实snapshot/extract待只读重采，无训练/forward/solve。
 
 完整结果：[full_support_report.md](results/full_support_report.md)。
+
+TRAINING_DIAGNOSTICS_COMPLETE/VERIFIED：两阶段只读采集与独立产物读回完成，覆盖3240阶段、20564曲线、3240准备及864实际prior头。全部训练NPZ引用按四lane完整读取13018/12782/12750/12818个文件；不是outer/query评价。训练数值常驻最大20,891,776B，部署数值状态最大8,149,120B；fit时间合计6006.0325s是各实际阶段成本合计，不是run墙钟或星载测量。GPU、星载峰值、实际wire及未测硬件保持N/A。
+
+完整训练梯度事件中的CE/proximal冲突计1944（B1080、C864），接受步骤的联合目标上升计0；前者不能替代接受步骤后的CE上升，更不能说明准确率。未派生的accepted_CE_increase_count为N/A。早期training_ai_scalar/summary.json对不存在字段给默认0，该旧统计无效且保留；已用必需字段及独立标量流读回修正为r02。没有更改任何训练产物或已运行方法。
+
+- 完整派生摘要及JSONL/CSV保留于本地 results/training_diagnostics；[可读训练报告](results/training_diagnostics/report.md)。
+- [AI标量视图r02说明](results/training_ai_scalar_r02/README.md)及[元数据](results/training_ai_scalar_r02/summary.json)；完整20564/3240行标量JSONL/CSV保留本地。
+- [独立完整产物读回](evidence/training_derived_readback_20261001.json)及[修正视图读回](evidence/training_ai_scalar_r02_readback_20261001.json)。
+
+训练诊断不含A、B−A或query结果；独立support成绩仍以full_support_report为准。Ground A配对补充run已单独预登记，尚未启动。目标ACTIVE，不据训练loss下降宣称方法晋级。

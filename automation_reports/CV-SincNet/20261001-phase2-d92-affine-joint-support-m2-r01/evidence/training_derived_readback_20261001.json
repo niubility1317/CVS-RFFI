@@ -1,0 +1,183 @@
+{
+  "status": "VERIFIED_DERIVED_ARTIFACTS_COMPLETE",
+  "run_id": "20261001-phase2-d92-affine-joint-support-m2-r01",
+  "totals": {
+    "actual_stages": 3240,
+    "preparation_records": 3240,
+    "information_stages": 648,
+    "updated_stages": 648,
+    "zero_update_information_stages": 0,
+    "curve_records": 20564,
+    "unique_B_physical_bindings": 360,
+    "prior_head_records": 864,
+    "repeated_B_actual_contexts": 1440,
+    "scalar_stage_log_records": 9720,
+    "compact_training_event_records": 23804
+  },
+  "streams": {
+    "stages": {
+      "path": "E:\\type10-7\\automation_reports\\CV-SincNet\\20261001-phase2-d92-affine-joint-support-m2-r01\\results\\training_diagnostics\\stages.jsonl",
+      "bytes": 302224453,
+      "rows": 3240
+    },
+    "curves": {
+      "path": "E:\\type10-7\\automation_reports\\CV-SincNet\\20261001-phase2-d92-affine-joint-support-m2-r01\\results\\training_diagnostics\\curves.jsonl",
+      "bytes": 1377772885,
+      "rows": 20564
+    },
+    "preparations": {
+      "path": "E:\\type10-7\\automation_reports\\CV-SincNet\\20261001-phase2-d92-affine-joint-support-m2-r01\\results\\training_diagnostics\\preparations.jsonl",
+      "bytes": 58684125,
+      "rows": 3240
+    },
+    "prior_heads": {
+      "path": "E:\\type10-7\\automation_reports\\CV-SincNet\\20261001-phase2-d92-affine-joint-support-m2-r01\\results\\training_diagnostics\\prior_heads.jsonl",
+      "bytes": 18190504,
+      "rows": 864
+    },
+    "curve_statistics": {
+      "path": "E:\\type10-7\\automation_reports\\CV-SincNet\\20261001-phase2-d92-affine-joint-support-m2-r01\\results\\training_diagnostics\\curve_statistics.jsonl",
+      "bytes": 13240939,
+      "rows": 53435
+    }
+  },
+  "summary_bytes": 14284099,
+  "npz_files_read": {
+    "rx3-cvs-daot-rc4-s2026092701": 13018,
+    "rx3-cvs-daot-rc4-s2026092702": 12782,
+    "rx1-cvs-daot-rc4-s2026092701": 12750,
+    "rx1-cvs-daot-rc4-s2026092702": 12818
+  },
+  "training_resources": {
+    "training_cost_statistics": {
+      "adapter_state_bytes": {
+        "count": 3240,
+        "missing_count": 0,
+        "mean": 94208.0,
+        "minimum": 94208,
+        "maximum": 94208,
+        "sum": 305233920.0
+      },
+      "deployment_numeric_state_bytes": {
+        "count": 3240,
+        "missing_count": 0,
+        "mean": 650890.2913580247,
+        "minimum": 200720,
+        "maximum": 8149120,
+        "sum": 2108884544.0
+      },
+      "fit_seconds": {
+        "count": 3240,
+        "missing_count": 0,
+        "mean": 1.8537137413490334,
+        "minimum": 0.017909451999003068,
+        "maximum": 84.12261167199904,
+        "sum": 6006.032521970868
+      },
+      "forward_cache_bytes": {
+        "count": 3240,
+        "missing_count": 0,
+        "mean": 1064033.8567901235,
+        "minimum": 0,
+        "maximum": 30564224,
+        "sum": 3447469696.0
+      },
+      "gpu_memory_bytes": {
+        "count": 0,
+        "missing_count": 3240,
+        "mean": null,
+        "minimum": null,
+        "maximum": null,
+        "sum": null
+      },
+      "head_state_bytes": {
+        "count": 3240,
+        "missing_count": 0,
+        "mean": 143413.82716049382,
+        "minimum": 35760,
+        "maximum": 2224976,
+        "sum": 464660800.0
+      },
+      "incremental_transmission_bytes": {
+        "count": 0,
+        "missing_count": 3240,
+        "mean": null,
+        "minimum": null,
+        "maximum": null,
+        "sum": null
+      },
+      "optimizer_state_bytes": {
+        "count": 3240,
+        "missing_count": 0,
+        "mean": 0.0,
+        "minimum": 0,
+        "maximum": 0,
+        "sum": 0.0
+      },
+      "peak_rss_bytes": {
+        "count": 0,
+        "missing_count": 3240,
+        "mean": null,
+        "minimum": null,
+        "maximum": null,
+        "sum": null
+      },
+      "persistent_state_bytes": {
+        "count": 3240,
+        "missing_count": 0,
+        "mean": 1347663.9407407406,
+        "minimum": 405680,
+        "maximum": 20891776,
+        "sum": 4366431168.0
+      },
+      "prior_state_bytes": {
+        "count": 3240,
+        "missing_count": 0,
+        "mean": 301458.4888888889,
+        "minimum": 0,
+        "maximum": 3090800,
+        "sum": 976725504.0
+      },
+      "retained_vector_record_bytes": {
+        "count": 3240,
+        "missing_count": 0,
+        "mean": 0.0,
+        "minimum": 0,
+        "maximum": 0,
+        "sum": 0.0
+      },
+      "serialized_deployment_bytes": {
+        "count": 0,
+        "missing_count": 3240,
+        "mean": null,
+        "minimum": null,
+        "maximum": null,
+        "sum": null
+      },
+      "training_coordinate_state_bytes": {
+        "count": 3240,
+        "missing_count": 0,
+        "mean": 91017.63950617284,
+        "minimum": 83264,
+        "maximum": 118080,
+        "sum": 294897152.0
+      }
+    },
+    "candidate_fit_seconds_sum": 6006.032521970868,
+    "preparation_seconds_sum": 572.6401593130504,
+    "maximum_persistent_numeric_state_bytes": 20891776,
+    "maximum_deployment_numeric_state_bytes": 8149120,
+    "run_wall_seconds": null,
+    "hardware": null,
+    "peak_gpu_memory_bytes": null,
+    "serialized_deployment_bytes": null,
+    "incremental_transmission_bytes": null,
+    "outer_prior_inference_work": null,
+    "outer_residual_inference_work": null,
+    "resource_selection_reason": "Only legal training scalar logs are selected; outer scoring/resources are not read; unpassed runtime/package/transfer fields stay N/A",
+    "persistent_scope": "Actual retained training numeric buffers; deployment_numeric_state_bytes is separately measured and does not include Schur/RHS/training coordinates",
+    "triangular_work_unit_scope": "sum_per_actual_call_n_squared_times_rhs_columns_IS_A_WORK_PROXY_NOT_MEASURED_FLOPS"
+  },
+  "source_summary": "E:\\type10-7\\automation_reports\\CV-SincNet\\20261001-phase2-d92-affine-joint-support-m2-r01\\results\\training_diagnostics\\summary.json",
+  "source_full_report": "E:\\type10-7\\automation_reports\\CV-SincNet\\20261001-phase2-d92-affine-joint-support-m2-r01\\results\\training_diagnostics\\report.md"
+}

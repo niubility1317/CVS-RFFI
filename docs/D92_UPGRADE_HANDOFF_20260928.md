@@ -745,3 +745,12 @@ K1/5/10/20的Δnew为−2.306/−1.041/−1.181/+0.178pp；ΔH为−1.557/+1.296
 - Ground A support新入口5文件冻结，root36pass/6.78s，无直接P0/P1；新增配置与run20261001-phase2-d92-ground-a-support-m2-r01 PLANNED/NOT_LAUNCHED。8行覆盖Affine/Conditional各4行；实际来源runtime固定81a226a8/7204161。仅在当前Conditional完整独立summary完成后唯一发布/启动；无新B/C fit或encoder、source/query访问。
 - 分析先固定Ground A prediction，再由scorer连接同一source run/row/fold合法旧held标签和既有B/C；不以R0/B0填A。所有完整K×新增类数及旧6、新0/2/5/10/20保留；support OOF/proxy并非query或全新独立验证。
 - 下一步：核实76621 extract；核实55338分析完成后生成Conditional报告/训练诊断，再实际Ground A配对。此前健康进程不干预；独立验证按用户暂缓。
+
+## 2026-10-01 完整Affine训练诊断已交付（当前）
+
+- Goal ACTIVE；Affine训练诊断snapshot/extract均DONE；3240阶段/20564曲线及全部训练引用独立读回VERIFIED。不存在运行中的Conda包装。大型派生JSONL/CSV保留原results/training_diagnostics。
+- 仅标量视图r02完成20564/3240行；必需字段CE_vs_proximal_conflict_count合计1944，accepted_objective_increase_count为0，accepted_CE_increase_count=N/A。r01不存在字段默认0的旧统计无效且保留；没有更改训练或旧结果。
+- Conditional独立分析仍唯一remote617023/start7407753、local55338、analysis0145234；训练source7204161已完成160/1800。健康进程不停止/重启/热改，最近完整summary仍未生成。
+- Ground A packet r02 COMPLETE；support补充8行run20261001-phase2-d92-ground-a-support-m2-r01仍PLANNED/NOT_LAUNCHED，等Conditional独立完整summary后唯一发布。A/B−A尚N/A。
+- 后续旧类margin保护候选只有query-blind数学草案；独立符号审阅无P0/P1，合成数值证书在写，未实现、未配置或启动、无性能改善结论。
+- 下一步继续核实55338完成，然后Conditional完整报告/训练诊断与Ground A配对。已完成的Affine收集不重跑，独立新数据按用户暂缓。

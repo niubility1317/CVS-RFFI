@@ -1,0 +1,32 @@
+{
+  "status": "VERIFIED_CORRECTED_AI_SCALAR_VIEW",
+  "run_id": "20261001-phase2-d92-affine-joint-support-m2-r01",
+  "source_summary": "E:\\type10-7\\automation_reports\\CV-SincNet\\20261001-phase2-d92-affine-joint-support-m2-r01\\results\\training_diagnostics\\summary.json",
+  "output": "E:\\type10-7\\automation_reports\\CV-SincNet\\20261001-phase2-d92-affine-joint-support-m2-r01\\results\\training_ai_scalar_r02",
+  "rows": {
+    "curves": 20564,
+    "stages": 3240
+  },
+  "by_mode": {
+    "B": {
+      "stages": 1800,
+      "information_stages": 360,
+      "updated_stages": 360,
+      "gradient_CE_vs_proximal_conflict_count": 1080,
+      "accepted_objective_increase_count": 0
+    },
+    "C_seq": {
+      "stages": 1440,
+      "information_stages": 288,
+      "updated_stages": 288,
+      "gradient_CE_vs_proximal_conflict_count": 864,
+      "accepted_objective_increase_count": 0
+    }
+  },
+  "gradient_CE_vs_proximal_conflict_count": 1944,
+  "accepted_objective_increase_count": 0,
+  "accepted_CE_increase_count": null,
+  "previous_preserved": true,
+  "model_updates": 0,
+  "outer_or_query_scoring_read": false
+}

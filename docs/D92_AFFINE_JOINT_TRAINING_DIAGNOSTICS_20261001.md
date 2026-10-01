@@ -100,3 +100,9 @@ inner-held 标签参与监督训练，因此训练正确率、margin、winner �
 主 Agent 已在项目环境串行运行本次修复的合成测试：**20 passed，14.01 s**，输出 prefix 为 `E:/type10-7/.codex_tmp/pytest_utf8_1790825318415316700`，无新增失败。本 worker 未运行测试、Conda、Git、SSH、远端 snapshot/extract 或真实诊断。
 
 新增修复的合成验证状态为 `ROOT_SYNTHETIC_TESTS_VERIFIED`。实际 snapshot 重采和 extract 尚未执行，不能将合成通过记为实际收集器已完成。源码、测试及本文保持冻结，实际执行与产物状态由主 Agent 另行核实。
+
+## Root实际完成状态（2026-10-01）
+
+主Agent已经完成完整snapshot、extract及独立产物读回；状态为COMPLETE_AFFINE_JOINT_TRAINING_DIAGNOSTICS_DERIVED，3240阶段、20564曲线、3240准备、864prior头全部保留。上述第102行的“尚未执行”是修复当时历史状态。当前正式记录与产物位于automation_reports/CV-SincNet/20261001-phase2-d92-affine-joint-support-m2-r01。大型原始派生流保持原存储，可读report和小型证据进入Git。
+
+完整标量视图r02也已完成；CE_vs_proximal_conflict_count描述梯度方向冲突，不是接受步骤后的CE上升。先前临时标量视图r01将不存在字段默认为0的统计无效，原产物保留，新版明确修正。未派生字段保持N/A。该采集没有改变训练、评价或模型，也不能据其训练损失宣称泛化改善。
