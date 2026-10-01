@@ -754,3 +754,12 @@ K1/5/10/20的Δnew为−2.306/−1.041/−1.181/+0.178pp；ΔH为−1.557/+1.296
 - Ground A packet r02 COMPLETE；support补充8行run20261001-phase2-d92-ground-a-support-m2-r01仍PLANNED/NOT_LAUNCHED，等Conditional独立完整summary后唯一发布。A/B−A尚N/A。
 - 后续旧类margin保护候选只有query-blind数学草案；独立符号审阅无P0/P1，合成数值证书在写，未实现、未配置或启动、无性能改善结论。
 - 下一步继续核实55338完成，然后Conditional完整报告/训练诊断与Ground A配对。已完成的Affine收集不重跑，独立新数据按用户暂缓。
+
+## 2026-10-01 Margin联合头数学证书（当前）
+
+- Goal ACTIVE；当前Conditional训练/分析与Ground A预登记均不改变。Conditional最近只读证据analysis_readback_1790831384487218600.json，PID617023/start7407753仍计算，CPU与读取量持续增长，无完整summary；唯一local55338。
+- 新候选只用来源数学/公开论文及手工合成小矩阵。结构文档给出冻结实际B最小margin约束、完整自由b、非负dual、active KKT和全部伴随；独立符号审阅无P0/P1。
+- tests/test_d92_margin_joint_math_certificate.py：主Agentssr-gpu串行19 pass/0.42 s，prefix pytest_utf8_1790831747662706800。独立feature-primal/dual oracle与完整VJP差分通过；不是新方法实现/生产QP/性能验证。
+- 求解路线只保存P_OO与独立working矩阵，从零residual可行点做完整约束扫描；仍待解决浮点rank/误差、退化去循环及一般非光滑导数。最坏q²/q³成本不消失，无实际省算力结论。没有新run/config或launch，不用真实成绩调参，不改健康release。
+- 完整Affine训练诊断和标量r02已推送6373f7fd71c6aade730a825a71d7d476064f4886，并独立读回远端OID一致；第一次TLS读回失败后单次HTTP/1.1只读读回成功，无重复push。
+- 下一步：核实55338完整结果→Conditional报告/训练诊断→唯一Ground A support补充8行。Margin生产求解尚未完成，不能据19项证书晋级。
