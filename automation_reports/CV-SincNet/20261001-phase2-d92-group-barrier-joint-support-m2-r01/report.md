@@ -64,3 +64,5 @@ N607 普通用户，CPU 两 lane，每 lane 两 BLAS threads，CUDA_VISIBLE_DEVI
 发布证据：[evidence/publication_20261001.json](evidence/publication_20261001.json)；源码交付证据：[evidence/source_delivery_20261001.json](evidence/source_delivery_20261001.json)。初次运行时未访问query、truth或源样本，checkpoint/encoder未reload，既有数据未重建/重验。
 
 独立support分析已在experiment.json预登记：源码73aa1b31f、被分析fit runtime9518d46d2、仅完整四行原产物，无query/truth/fit，root唯一执行，独占新输出。分析尚未启动，accuracy/资源结果仍N/A；已运行query方法不受后续诊断分数影响。
+
+独立分析实际启动 VERIFIED_RUNNING（2026-10-01T16:29:14Z），child PID1055923/start11979916，wrapper1055916；argv/CWD/CPU2环境见[evidence/analysis_runtime_1790872215329109400.json](evidence/analysis_runtime_1790872215329109400.json)，源码仍73aa、fit runtime仍9518。完整summary尚无，accuracy和最终成本仍N/A；过程中RSS不是最终峰值或星载证据。软件source tar为1208320 bytes，只是本次SSH源码发布包，不能算source样本或卫星链路实测字节。发布与独立读回见[evidence/analysis_publication_20261002.json](evidence/analysis_publication_20261002.json)。

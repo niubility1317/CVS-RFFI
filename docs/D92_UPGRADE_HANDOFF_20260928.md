@@ -1,3 +1,14 @@
+## 当前交接：GroupBarrier query健康运行；唯一support独立分析已核实
+
+- Goal ACTIVE。本次metadata parentf44496b6c已push/remoteOID相同/0-0。queryrun `20261001-phase2-d92-group-barrier-joint-repeat-m2-r01` immutable73aa1b31f、supervisor1049548/start11917841、rx3 children1049715/1049721，最新16:21:03UTC VERIFIED；rx1两行原排程等待。不要republish/relaunch/干预；完整4row/2400parent全部A/B/C固定后独立truth-last，当前query指标N/A。新数学参数/预算从盲态固定，没有support分数选择。
+- support fit `9518d46d2`已四行160parent/9720stage完成、全部旧进程退出。新tested analyzer **source73aa**已唯一发布，remote release `d92_group_barrier_joint_analysis_20261002_r01`，原run.execution.support_analysis status VERIFIED_RUNNING。独立16:29:14UTC `evidence/analysis_runtime_1790872215329109400.json`核实 child1055923/start11979916、wrapper1055916、actualargv/CWD/CPU2/noGPU。当前execution/summary尚无，指标未读，最终资源N/A。local publication `local_artifacts/d92_group_barrier_joint_support_analysis/d92_group_barrier_joint_analysis_20261002_r01`已存在，绝对不重复dispatch。
+- 分析输出原样固定为 `analyses/20261001-phase2-d92-group-barrier-joint-support-m2-r01/support_summary_20261002_r01`，在原闭合run外，source73aa与fit9518明确区分；分析只读原输出，未fit/query/source访问，不影响健康queryrelease。继续原analysis PID，终态时独立status/完整summary/全表读回，再仅下载分析结果到原run/results/support_summary_20261002_r01；完整训练和state原产物保留remote。必要失败保留、不自动重试、不反馈成绩。
+- 原Margin queryd86终态FAILED两行完成/两行技术失败、不subset评分、不再监控或启动。三source-blindworker已完成冻结，仅root拥有numerics/Git/SSH/launch/真实analysis/scoring。新候选源码query32/scorer39/analyzer11不同case与限定review已通过；不代表准确率目标达到。fresh独立验证仍暂缓，Goal仍ACTIVE。
+
+<!-- GROUP_SUPPORT_ANALYSIS_LAUNCH_20261002 -->
+
+以下保留历史状态，不据此重复启动：
+
 ## 当前交接：GroupBarrier完整query唯一运行，support分析已预登记
 
 - Goal ACTIVE。query `20261001-phase2-d92-group-barrier-joint-repeat-m2-r01` RUNNING，immutable runtime **73aa1b31fc68aeddfb3d0ef7882acafb5be5a155**。唯一publication nativewrapper1790871527121171300已DONE，local publication目录已存在，绝对不要republish/relaunch。独立16:21:03UTC `evidence/query_runtime_1790871724715695800.json`核实supervisor1049548/start11917841、rx3 evaluator1049715/1049721实时PREDICTING，rx1两行PREFLIGHT_COMPLETE原排程等待；实际PID/argv/CWD/CPU2+BLAS2/noGPU匹配state/startup。第一次metadata reader错误假设support row_startup/log，未知证据保留；修正本地reader后VERIFIED，无远端method改动或重复发布。

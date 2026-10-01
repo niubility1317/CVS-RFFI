@@ -198,7 +198,7 @@
     "supervisor_terminal": true,
     "current_row_processes_live": false,
     "support_analysis": {
-      "status": "PREREGISTERED_NOT_LAUNCHED",
+      "status": "VERIFIED_RUNNING",
       "source_commit": "73aa1b31fc68aeddfb3d0ef7882acafb5be5a155",
       "fitted_runtime_commit": "9518d46d2f763e5b080b5337e23155c9de883e09",
       "launch_owner": "root",
@@ -225,7 +225,40 @@
       "fit": false,
       "parameter_selection": false,
       "output_rule": "New output outside original closed support run; no overwrite/retry; analyze only all four complete artifacts",
-      "local_summary_root": "automation_reports/CV-SincNet/20261001-phase2-d92-group-barrier-joint-support-m2-r01/results/support_summary_20261002_r01"
+      "local_summary_root": "automation_reports/CV-SincNet/20261001-phase2-d92-group-barrier-joint-support-m2-r01/results/support_summary_20261002_r01",
+      "pid": 1055923,
+      "process_start_ticks": 11979916,
+      "wrapper_pid": 1055916,
+      "runtime_readback_ref": "evidence/analysis_runtime_1790872215329109400.json",
+      "publication_ref": "evidence/analysis_publication_20261002.json",
+      "observed_utc": "2026-10-01T16:29:14Z",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_group_barrier_joint_analysis_20261002_r01/tools/analyze_d92_group_barrier_joint_probe.py",
+        "--spec",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_group_barrier_joint_analysis_20261002_r01/configs/d92_group_barrier_joint_support_20261001.json",
+        "--run-root",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-group-barrier-joint-support-m2-r01",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/analyses/20261001-phase2-d92-group-barrier-joint-support-m2-r01/support_summary_20261002_r01",
+        "--expected-runtime-commit",
+        "9518d46d2f763e5b080b5337e23155c9de883e09"
+      ],
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_group_barrier_joint_analysis_20261002_r01",
+      "actual_environment": {
+        "OMP_NUM_THREADS": "2",
+        "OPENBLAS_NUM_THREADS": "2",
+        "MKL_NUM_THREADS": "2",
+        "NUMEXPR_NUM_THREADS": "2",
+        "CUDA_VISIBLE_DEVICES": "",
+        "PYTHONUNBUFFERED": "1"
+      },
+      "software_source_archive_bytes": 1208320,
+      "software_bytes_note": "Exact SSH software tar bytes; not data or satellite wire measurement",
+      "metrics_read": false,
+      "summary_downloaded": false,
+      "automatic_retry": false
     }
   },
   "rows": [
