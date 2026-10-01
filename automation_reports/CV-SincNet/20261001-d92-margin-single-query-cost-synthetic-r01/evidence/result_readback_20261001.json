@@ -1,0 +1,200 @@
+{
+  "verification": "VERIFIED_COMPLETE_SYNTHETIC_SOFTWARE_COST",
+  "run_id": "20261001-d92-margin-single-query-cost-synthetic-r01",
+  "runtime_commit": "479f6389d6a6f8ea1899fca017eeb8a6d1dc5069",
+  "actual_local_execution": {
+    "identity": {
+      "executable": "E:\\type10-7\\local_envs\\ssr-gpu\\python.exe",
+      "prefix": "E:\\type10-7\\local_envs\\ssr-gpu",
+      "conda_prefix": "E:\\type10-7\\local_envs\\ssr-gpu",
+      "conda_shlvl": "2",
+      "threads": {
+        "OMP_NUM_THREADS": "2",
+        "MKL_NUM_THREADS": "2",
+        "OPENBLAS_NUM_THREADS": "2",
+        "NUMEXPR_NUM_THREADS": "2"
+      }
+    },
+    "argv": [
+      "E:\\type10-7\\local_envs\\ssr-gpu\\python.exe",
+      "-X",
+      "utf8",
+      "-s",
+      "E:\\type10-7\\code\\snapshots\\d92_support_upgrade_20260928_wt\\tools\\measure_d92_margin_single_query_reuse.py",
+      "--run-id",
+      "20261001-d92-margin-single-query-cost-synthetic-r01",
+      "--code-commit",
+      "479f6389d6a6f8ea1899fca017eeb8a6d1dc5069",
+      "--output-root",
+      "E:\\type10-7\\local_artifacts\\d92_margin_single_query_cost\\20261001-d92-margin-single-query-cost-synthetic-r01"
+    ],
+    "cwd": "E:\\type10-7\\code\\snapshots\\d92_support_upgrade_20260928_wt",
+    "process_pid": 24756,
+    "exit_code": 0,
+    "elapsed_seconds": 5.649755799997365,
+    "activation_hooks": 0,
+    "conda_cli_or_wrapper_started": false,
+    "mode": "measure"
+  },
+  "output_root": "E:\\type10-7\\local_artifacts\\d92_margin_single_query_cost\\20261001-d92-margin-single-query-cost-synthetic-r01",
+  "completed_rows": 8,
+  "repeat_records": 24,
+  "all_full_score_bits_equal": true,
+  "real_data_or_truth_access": false,
+  "new_ground_payload_bytes": 0,
+  "hardware": {
+    "platform": "Windows-10-10.0.26100-SP0",
+    "machine": "AMD64",
+    "processor": "AMD64 Family 25 Model 33 Stepping 0, AuthenticAMD",
+    "processor_identifier": "AMD64 Family 25 Model 33 Stepping 0, AuthenticAMD",
+    "logical_cpu_count": 12,
+    "executable": "E:\\type10-7\\local_envs\\ssr-gpu\\python.exe",
+    "python": "3.10.0 | packaged by conda-forge | (default, Nov 10 2021, 13:20:59) [MSC v.1916 64 bit (AMD64)]",
+    "thread_environment": {
+      "OPENBLAS_NUM_THREADS": "2",
+      "OMP_NUM_THREADS": "2",
+      "MKL_NUM_THREADS": "2",
+      "NUMEXPR_NUM_THREADS": "2"
+    },
+    "versions": {
+      "numpy": "2.2.6",
+      "scipy": "1.15.3",
+      "threadpoolctl": "3.6.0"
+    },
+    "threadpools": [
+      {
+        "user_api": "blas",
+        "internal_api": "openblas",
+        "num_threads": 2,
+        "prefix": "libscipy_openblas",
+        "filepath": "E:\\type10-7\\local_envs\\ssr-gpu\\Lib\\site-packages\\numpy.libs\\libscipy_openblas64_-13e2df515630b4a41f92893938845698.dll",
+        "version": "0.3.29",
+        "threading_layer": "pthreads",
+        "architecture": "Haswell"
+      },
+      {
+        "user_api": "blas",
+        "internal_api": "openblas",
+        "num_threads": 2,
+        "prefix": "libscipy_openblas",
+        "filepath": "E:\\type10-7\\local_envs\\ssr-gpu\\Lib\\site-packages\\scipy.libs\\libscipy_openblas-f07f5a5d207a3a47104dca54d6d0c86a.dll",
+        "version": "0.3.28",
+        "threading_layer": "pthreads",
+        "architecture": "Haswell"
+      }
+    ]
+  },
+  "peak_working_set": {
+    "bytes": 112877568,
+    "reason": null
+  },
+  "measurement_elapsed_seconds": 5.504311699987738,
+  "rows": [
+    {
+      "row_id": "k1-pair",
+      "k": 1,
+      "case": "PAIR",
+      "old_support_count": 6,
+      "registered_support_count": 26,
+      "original_ms_per8": 32.57789999770466,
+      "reused_ms_per8": 28.78259999852162,
+      "ratio": 0.8835007781517394,
+      "change_percent": -11.649922184826057,
+      "first_repeat_original_kernel_pairs": 304,
+      "first_repeat_reused_kernel_pairs": 256
+    },
+    {
+      "row_id": "k1-c_only",
+      "k": 1,
+      "case": "C_ONLY",
+      "old_support_count": 6,
+      "registered_support_count": 26,
+      "original_ms_per8": 23.84780001011677,
+      "reused_ms_per8": 25.22149999276735,
+      "ratio": 1.0576027969904067,
+      "change_percent": 5.760279699040671,
+      "first_repeat_original_kernel_pairs": 256,
+      "first_repeat_reused_kernel_pairs": 256
+    },
+    {
+      "row_id": "k5-pair",
+      "k": 5,
+      "case": "PAIR",
+      "old_support_count": 30,
+      "registered_support_count": 130,
+      "original_ms_per8": 60.68579999555368,
+      "reused_ms_per8": 53.98889999196399,
+      "ratio": 0.8896463422401887,
+      "change_percent": -11.035365775981132,
+      "first_repeat_original_kernel_pairs": 1520,
+      "first_repeat_reused_kernel_pairs": 1280
+    },
+    {
+      "row_id": "k5-c_only",
+      "k": 5,
+      "case": "C_ONLY",
+      "old_support_count": 30,
+      "registered_support_count": 130,
+      "original_ms_per8": 34.936399999423884,
+      "reused_ms_per8": 45.76989999623038,
+      "ratio": 1.3100920529014193,
+      "change_percent": 31.009205290141928,
+      "first_repeat_original_kernel_pairs": 1280,
+      "first_repeat_reused_kernel_pairs": 1280
+    },
+    {
+      "row_id": "k10-pair",
+      "k": 10,
+      "case": "PAIR",
+      "old_support_count": 60,
+      "registered_support_count": 260,
+      "original_ms_per8": 84.40320000227075,
+      "reused_ms_per8": 77.57829999900423,
+      "ratio": 0.9191393216953515,
+      "change_percent": -8.086067830464849,
+      "first_repeat_original_kernel_pairs": 3040,
+      "first_repeat_reused_kernel_pairs": 2560
+    },
+    {
+      "row_id": "k10-c_only",
+      "k": 10,
+      "case": "C_ONLY",
+      "old_support_count": 60,
+      "registered_support_count": 260,
+      "original_ms_per8": 68.97909998951945,
+      "reused_ms_per8": 74.30979999480769,
+      "ratio": 1.077279929806248,
+      "change_percent": 7.727992980624809,
+      "first_repeat_original_kernel_pairs": 2560,
+      "first_repeat_reused_kernel_pairs": 2560
+    },
+    {
+      "row_id": "k20-pair",
+      "k": 20,
+      "case": "PAIR",
+      "old_support_count": 120,
+      "registered_support_count": 520,
+      "original_ms_per8": 143.11669999733567,
+      "reused_ms_per8": 130.8223999949405,
+      "ratio": 0.9140959789973913,
+      "change_percent": -8.590402100260874,
+      "first_repeat_original_kernel_pairs": 6080,
+      "first_repeat_reused_kernel_pairs": 5120
+    },
+    {
+      "row_id": "k20-c_only",
+      "k": 20,
+      "case": "C_ONLY",
+      "old_support_count": 120,
+      "registered_support_count": 520,
+      "original_ms_per8": 120.66040000354405,
+      "reused_ms_per8": 131.39529999170918,
+      "ratio": 1.0889678799991531,
+      "change_percent": 8.896787999915311,
+      "first_repeat_original_kernel_pairs": 5120,
+      "first_repeat_reused_kernel_pairs": 5120
+    }
+  ],
+  "scope": "SYNTHETIC_LOCAL_SOFTWARE_COST_NOT_ACCURACY_OR_SATELLITE_DEPLOYMENT",
+  "goal_complete": false
+}

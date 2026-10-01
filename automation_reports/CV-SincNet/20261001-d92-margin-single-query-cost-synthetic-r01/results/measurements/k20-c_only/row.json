@@ -1,0 +1,250 @@
+{
+  "k": 20,
+  "case": "C_ONLY",
+  "old_support_count": 120,
+  "registered_support_count": 520,
+  "row_id": "k20-c_only",
+  "classes": 26,
+  "status": "COMPLETE",
+  "samples": [
+    {
+      "repeat": 0,
+      "order": [
+        "original",
+        "reused"
+      ],
+      "bitwise_equal": true,
+      "original": {
+        "seconds": 0.1358533000020543,
+        "work": {
+          "raw_distance_evaluation_count": 32,
+          "raw_distance_pair_count": 10240,
+          "reference_distance_evaluation_count": 32,
+          "reference_distance_pair_count": 3840,
+          "kernel_evaluation_count": 16,
+          "kernel_pair_count": 5120,
+          "adapter_physical_evaluation_count": 16,
+          "dictionary_physical_evaluation_count": 16,
+          "intercept_addition_count": 256,
+          "public_score_call_count": 8,
+          "residual_score_call_count": 16,
+          "prior_residual_score_call_count": 8,
+          "reused_prior_count": 0,
+          "composition_addition_count": 48,
+          "score_physical_count": 8
+        },
+        "overhead_seconds": {
+          "packet_preparation_seconds": {
+            "sum": null,
+            "max": null,
+            "measured_call_count": 0,
+            "reason": "API_NOT_EXECUTED"
+          },
+          "cache_validation_seconds": {
+            "sum": null,
+            "max": null,
+            "measured_call_count": 0,
+            "reason": "API_NOT_EXECUTED"
+          }
+        }
+      },
+      "reused": {
+        "seconds": 0.13139529999170918,
+        "work": {
+          "raw_distance_evaluation_count": 32,
+          "raw_distance_pair_count": 10240,
+          "reference_distance_evaluation_count": 32,
+          "reference_distance_pair_count": 3840,
+          "kernel_evaluation_count": 16,
+          "kernel_pair_count": 5120,
+          "adapter_physical_evaluation_count": 16,
+          "dictionary_physical_evaluation_count": 16,
+          "intercept_addition_count": 256,
+          "public_score_call_count": 16,
+          "residual_score_call_count": 16,
+          "prior_residual_score_call_count": 0,
+          "reused_prior_count": 8,
+          "composition_addition_count": 48,
+          "score_physical_count": 16
+        },
+        "overhead_seconds": {
+          "packet_preparation_seconds": {
+            "sum": 0.003667900018626824,
+            "max": 0.0005933000065851957,
+            "measured_call_count": 8,
+            "reason": null
+          },
+          "cache_validation_seconds": {
+            "sum": 0.001324300013948232,
+            "max": 0.0002562000008765608,
+            "measured_call_count": 8,
+            "reason": null
+          }
+        }
+      }
+    },
+    {
+      "repeat": 1,
+      "order": [
+        "reused",
+        "original"
+      ],
+      "bitwise_equal": true,
+      "reused": {
+        "seconds": 0.132970499995281,
+        "work": {
+          "raw_distance_evaluation_count": 32,
+          "raw_distance_pair_count": 10240,
+          "reference_distance_evaluation_count": 32,
+          "reference_distance_pair_count": 3840,
+          "kernel_evaluation_count": 16,
+          "kernel_pair_count": 5120,
+          "adapter_physical_evaluation_count": 16,
+          "dictionary_physical_evaluation_count": 16,
+          "intercept_addition_count": 256,
+          "public_score_call_count": 16,
+          "residual_score_call_count": 16,
+          "prior_residual_score_call_count": 0,
+          "reused_prior_count": 8,
+          "composition_addition_count": 48,
+          "score_physical_count": 16
+        },
+        "overhead_seconds": {
+          "packet_preparation_seconds": {
+            "sum": 0.003981400004704483,
+            "max": 0.000758399983169511,
+            "measured_call_count": 8,
+            "reason": null
+          },
+          "cache_validation_seconds": {
+            "sum": 0.0013475999876391143,
+            "max": 0.0002821000089170411,
+            "measured_call_count": 8,
+            "reason": null
+          }
+        }
+      },
+      "original": {
+        "seconds": 0.12066040000354405,
+        "work": {
+          "raw_distance_evaluation_count": 32,
+          "raw_distance_pair_count": 10240,
+          "reference_distance_evaluation_count": 32,
+          "reference_distance_pair_count": 3840,
+          "kernel_evaluation_count": 16,
+          "kernel_pair_count": 5120,
+          "adapter_physical_evaluation_count": 16,
+          "dictionary_physical_evaluation_count": 16,
+          "intercept_addition_count": 256,
+          "public_score_call_count": 8,
+          "residual_score_call_count": 16,
+          "prior_residual_score_call_count": 8,
+          "reused_prior_count": 0,
+          "composition_addition_count": 48,
+          "score_physical_count": 8
+        },
+        "overhead_seconds": {
+          "packet_preparation_seconds": {
+            "sum": null,
+            "max": null,
+            "measured_call_count": 0,
+            "reason": "API_NOT_EXECUTED"
+          },
+          "cache_validation_seconds": {
+            "sum": null,
+            "max": null,
+            "measured_call_count": 0,
+            "reason": "API_NOT_EXECUTED"
+          }
+        }
+      }
+    },
+    {
+      "repeat": 2,
+      "order": [
+        "original",
+        "reused"
+      ],
+      "bitwise_equal": true,
+      "original": {
+        "seconds": 0.11993190000066534,
+        "work": {
+          "raw_distance_evaluation_count": 32,
+          "raw_distance_pair_count": 10240,
+          "reference_distance_evaluation_count": 32,
+          "reference_distance_pair_count": 3840,
+          "kernel_evaluation_count": 16,
+          "kernel_pair_count": 5120,
+          "adapter_physical_evaluation_count": 16,
+          "dictionary_physical_evaluation_count": 16,
+          "intercept_addition_count": 256,
+          "public_score_call_count": 8,
+          "residual_score_call_count": 16,
+          "prior_residual_score_call_count": 8,
+          "reused_prior_count": 0,
+          "composition_addition_count": 48,
+          "score_physical_count": 8
+        },
+        "overhead_seconds": {
+          "packet_preparation_seconds": {
+            "sum": null,
+            "max": null,
+            "measured_call_count": 0,
+            "reason": "API_NOT_EXECUTED"
+          },
+          "cache_validation_seconds": {
+            "sum": null,
+            "max": null,
+            "measured_call_count": 0,
+            "reason": "API_NOT_EXECUTED"
+          }
+        }
+      },
+      "reused": {
+        "seconds": 0.12538740001036786,
+        "work": {
+          "raw_distance_evaluation_count": 32,
+          "raw_distance_pair_count": 10240,
+          "reference_distance_evaluation_count": 32,
+          "reference_distance_pair_count": 3840,
+          "kernel_evaluation_count": 16,
+          "kernel_pair_count": 5120,
+          "adapter_physical_evaluation_count": 16,
+          "dictionary_physical_evaluation_count": 16,
+          "intercept_addition_count": 256,
+          "public_score_call_count": 16,
+          "residual_score_call_count": 16,
+          "prior_residual_score_call_count": 0,
+          "reused_prior_count": 8,
+          "composition_addition_count": 48,
+          "score_physical_count": 16
+        },
+        "overhead_seconds": {
+          "packet_preparation_seconds": {
+            "sum": 0.003458799998043105,
+            "max": 0.0005845000123372301,
+            "measured_call_count": 8,
+            "reason": null
+          },
+          "cache_validation_seconds": {
+            "sum": 0.0013796999992337078,
+            "max": 0.0002604000037536025,
+            "measured_call_count": 8,
+            "reason": null
+          }
+        }
+      }
+    }
+  ],
+  "warmup_complete": true,
+  "median_seconds": {
+    "original": 0.12066040000354405,
+    "reused": 0.13139529999170918
+  },
+  "reused_over_original_ratio": 1.0889678799991531,
+  "paired_reused_over_original_ratios": [
+    0.9671851915980125,
+    1.1020227016599926,
+    1.045488314699194
+  ]
+}

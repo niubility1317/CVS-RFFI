@@ -1,0 +1,34 @@
+{
+  "identity": {
+    "executable": "E:\\type10-7\\local_envs\\ssr-gpu\\python.exe",
+    "prefix": "E:\\type10-7\\local_envs\\ssr-gpu",
+    "conda_prefix": "E:\\type10-7\\local_envs\\ssr-gpu",
+    "conda_shlvl": "2",
+    "threads": {
+      "OMP_NUM_THREADS": "2",
+      "MKL_NUM_THREADS": "2",
+      "OPENBLAS_NUM_THREADS": "2",
+      "NUMEXPR_NUM_THREADS": "2"
+    }
+  },
+  "argv": [
+    "E:\\type10-7\\local_envs\\ssr-gpu\\python.exe",
+    "-X",
+    "utf8",
+    "-s",
+    "E:\\type10-7\\code\\snapshots\\d92_support_upgrade_20260928_wt\\tools\\measure_d92_margin_single_query_reuse.py",
+    "--run-id",
+    "20261001-d92-margin-single-query-cost-synthetic-r01",
+    "--code-commit",
+    "479f6389d6a6f8ea1899fca017eeb8a6d1dc5069",
+    "--output-root",
+    "E:\\type10-7\\local_artifacts\\d92_margin_single_query_cost\\20261001-d92-margin-single-query-cost-synthetic-r01"
+  ],
+  "cwd": "E:\\type10-7\\code\\snapshots\\d92_support_upgrade_20260928_wt",
+  "process_pid": 24756,
+  "exit_code": 0,
+  "elapsed_seconds": 5.649755799997365,
+  "activation_hooks": 0,
+  "conda_cli_or_wrapper_started": false,
+  "mode": "measure"
+}

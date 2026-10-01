@@ -1,3 +1,12 @@
+## 当前交接：合成本机开销测量已完成，完整真实query继续（2026-10-01）
+
+- Goal ACTIVE。当前已交付source479f6389d/push-OID0/0。固定合成软件成本run 20261001-d92-margin-single-query-cost-synthetic-r01 已唯一完成，runtime479；8软件测试、全部8row/24pair计时与全scores位级等价均VERIFIED。PAIR耗时中位减少8.09%至11.65%，C_ONLY增加5.76%至31.01%，因此只把optional API用于已有B输出的成对计算，单独C保留原路径。没有真实数据/模型/训练/准确率或星载收益声明。完整报告docs/D92_MARGIN_SINGLE_QUERY_COST_MEASUREMENT_20261001.md，独立证据automation_reports/CV-SincNet/20261001-d92-margin-single-query-cost-synthetic-r01/evidence/result_readback_20261001.json。local measurement已DONE，不重跑或扫描。
+- 原完整真实query unique runtime始终d86edc323；supervisor869328/start10047966，rx3 children869442/start10049751和869448/start10049849仍活跃，rx1两行preflight排程。最新12:49UTC proof automation_reports/CV-SincNet/20261001-phase2-d92-margin-joint-repeat-m2-r01/evidence/query_runtime_1790859032804219800.json核实CPU/log增加、无complete。未读取partial predictions/truth/metrics，没有热改或重复publisher。
+- 全4行2400 parent的A/B/C固定后独立终态readback，再唯一truth-last score/report。旧baseline同01/02两个model seed精确配对，用原完整4seed metadata验证覆盖，旧A/B/遗忘缺项N/A；来源方案docs/D92_MARGIN_QUERY_BASELINE_PAIRING_PLAN_20261001.md。真实总体准确率目标未验证，不以本机成本结果代替方法性能改善。
+- 原support数学、Ground A配对和完整训练日志均已完成；旧local79064/78869/38736等DONE，不重复analyze/collector/publish。固定Phase1/practical residual、合法support、源样本与逐样本源特征/query拟合和评分反馈仍禁用，新增fresh验证按用户当前指示暂缓。
+
+以下为历史状态，不依据旧段落重复启动：
+
 ## 当前交接：可选单样本 prior 复用已验证，原完整 query 继续（2026-10-01）
 
 - Goal ACTIVE。此前 report source9d5c06ac8 已 push/OID=0/0。本次新增可选 API 与 22 项合成验证，默认评分、训练函数、冻结配置均保持原行为；尚未用于真实实验，不声明准确率或星载节省。详见 docs/D92_MARGIN_SINGLE_QUERY_REUSE_IMPLEMENTATION_20261001.md 和 validation JSON。首次19通过/1失败的生产标量兼容问题已修正，证据保留。

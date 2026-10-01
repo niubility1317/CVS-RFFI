@@ -1,0 +1,300 @@
+{
+  "observed_utc": "2026-10-01T12:49:31Z",
+  "run_id": "20261001-phase2-d92-margin-joint-repeat-m2-r01",
+  "release": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_margin_joint_repeat_20261001_r01",
+  "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-joint-repeat-m2-r01",
+  "launch": {
+    "status": "DISPATCHED_AWAITING_READBACK",
+    "pid": 869328,
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_margin_joint_repeat_20261001_r01/tools/run_d92_margin_joint_benchmark.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_margin_joint_repeat_20261001_r01/configs/d92_margin_joint_repeat_20261001.json",
+      "--commit",
+      "d86edc3235ec0ca0e1925223970e07373256fb9c"
+    ],
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_margin_joint_repeat_20261001_r01",
+    "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-joint-repeat-m2-r01",
+    "runtime_commit": "d86edc3235ec0ca0e1925223970e07373256fb9c",
+    "launch_owner": "root",
+    "environment": {
+      "OMP_NUM_THREADS": "2",
+      "MKL_NUM_THREADS": "2",
+      "OPENBLAS_NUM_THREADS": "2",
+      "NUMEXPR_NUM_THREADS": "2",
+      "CUDA_VISIBLE_DEVICES": "",
+      "PYTHONUNBUFFERED": "1"
+    },
+    "truth_read": false,
+    "scorer_invoked": false,
+    "automatic_retry": false
+  },
+  "supervisor_live": {
+    "pid": 869328,
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_margin_joint_repeat_20261001_r01/tools/run_d92_margin_joint_benchmark.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_margin_joint_repeat_20261001_r01/configs/d92_margin_joint_repeat_20261001.json",
+      "--commit",
+      "d86edc3235ec0ca0e1925223970e07373256fb9c"
+    ],
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_margin_joint_repeat_20261001_r01",
+    "start_ticks": 10047966,
+    "user_cpu_ticks": 859,
+    "system_cpu_ticks": 78,
+    "cpu_tick_hz": 100,
+    "memory": {
+      "VmHWM": "244492 kB",
+      "VmRSS": "241936 kB"
+    },
+    "environment": {
+      "OMP_NUM_THREADS": "2",
+      "MKL_NUM_THREADS": "2",
+      "OPENBLAS_NUM_THREADS": "2",
+      "NUMEXPR_NUM_THREADS": "2",
+      "CUDA_VISIBLE_DEVICES": ""
+    }
+  },
+  "startup": {
+    "schema": "d92_margin_joint_query_benchmark_v1",
+    "status": "MARGIN_QUERY_SUPERVISOR_STARTED",
+    "run_id": "20261001-phase2-d92-margin-joint-repeat-m2-r01",
+    "group_id": "d92-margin-joint-repeated-benchmark",
+    "runtime_commit": "d86edc3235ec0ca0e1925223970e07373256fb9c",
+    "code_commit": "b97d64bab096ae2fee7938fd94eadf3418c34ad3",
+    "pid": 869328,
+    "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "environment": {
+      "OMP_NUM_THREADS": "2",
+      "MKL_NUM_THREADS": "2",
+      "OPENBLAS_NUM_THREADS": "2",
+      "NUMEXPR_NUM_THREADS": "2",
+      "CUDA_VISIBLE_DEVICES": "",
+      "PYTHONUNBUFFERED": "1"
+    },
+    "truth_read": false,
+    "scorer_invoked": false,
+    "checkpoint_loaded": false,
+    "encoder_loaded": false,
+    "probe_state_inherited": false,
+    "automatic_retry": false
+  },
+  "complete": null,
+  "rows": {
+    "rx3-cvs-daot-rc4-s2026092701": {
+      "status": "PREDICTING",
+      "pid": 869442,
+      "updated": 1790852794.0679736,
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_margin_joint_repeat_20261001_r01/tools/evaluate_d92_margin_joint_benchmark.py",
+        "--run-id",
+        "20261001-phase2-d92-margin-joint-repeat-m2-r01",
+        "--row-id",
+        "rx3-cvs-daot-rc4-s2026092701",
+        "--release-commit",
+        "d86edc3235ec0ca0e1925223970e07373256fb9c",
+        "--row-root",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092701",
+        "--capsule",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-joint-repeat-m2-r01/rx3-cvs-daot-rc4-s2026092701/predictions",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-joint-repeat-m2-r01/resolved_algorithm.json",
+        "--expected-capsule-id",
+        "residual-noeq-76121e6f34363fa612ec25fb",
+        "--expected-checkpoint-sha256",
+        "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b",
+        "--branch-features",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-ridge-repeat-rx3-m4-r01/cvs-daot-rc4-s2026092701/branch_features",
+        "--ground-packet",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r02/ground-a-s2026092701"
+      ],
+      "prediction_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-joint-repeat-m2-r01/rx3-cvs-daot-rc4-s2026092701/predictions",
+      "prediction_log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-joint-repeat-m2-r01/rx3-cvs-daot-rc4-s2026092701/prediction.log",
+      "live": {
+        "pid": 869442,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_margin_joint_repeat_20261001_r01/tools/evaluate_d92_margin_joint_benchmark.py",
+          "--run-id",
+          "20261001-phase2-d92-margin-joint-repeat-m2-r01",
+          "--row-id",
+          "rx3-cvs-daot-rc4-s2026092701",
+          "--release-commit",
+          "d86edc3235ec0ca0e1925223970e07373256fb9c",
+          "--row-root",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092701",
+          "--capsule",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule",
+          "--output",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-joint-repeat-m2-r01/rx3-cvs-daot-rc4-s2026092701/predictions",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-joint-repeat-m2-r01/resolved_algorithm.json",
+          "--expected-capsule-id",
+          "residual-noeq-76121e6f34363fa612ec25fb",
+          "--expected-checkpoint-sha256",
+          "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b",
+          "--branch-features",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-ridge-repeat-rx3-m4-r01/cvs-daot-rc4-s2026092701/branch_features",
+          "--ground-packet",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r02/ground-a-s2026092701"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_margin_joint_repeat_20261001_r01",
+        "start_ticks": 10049751,
+        "user_cpu_ticks": 1060384,
+        "system_cpu_ticks": 17422,
+        "cpu_tick_hz": 100,
+        "memory": {
+          "VmHWM": "1612016 kB",
+          "VmRSS": "1612016 kB"
+        },
+        "environment": {
+          "OMP_NUM_THREADS": "2",
+          "MKL_NUM_THREADS": "2",
+          "OPENBLAS_NUM_THREADS": "2",
+          "NUMEXPR_NUM_THREADS": "2",
+          "CUDA_VISIBLE_DEVICES": ""
+        }
+      },
+      "preflight_meta": {
+        "status": "MARGIN_QUERY_PREFLIGHT_COMPLETE",
+        "split_count": 900,
+        "query_record_count": 361800,
+        "checkpoint_sha256": "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b",
+        "model_seed": 2026092701,
+        "capsule_id": "residual-noeq-76121e6f34363fa612ec25fb"
+      },
+      "log_bytes": 1989848
+    },
+    "rx3-cvs-daot-rc4-s2026092702": {
+      "status": "PREDICTING",
+      "pid": 869448,
+      "updated": 1790852795.0784721,
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_margin_joint_repeat_20261001_r01/tools/evaluate_d92_margin_joint_benchmark.py",
+        "--run-id",
+        "20261001-phase2-d92-margin-joint-repeat-m2-r01",
+        "--row-id",
+        "rx3-cvs-daot-rc4-s2026092702",
+        "--release-commit",
+        "d86edc3235ec0ca0e1925223970e07373256fb9c",
+        "--row-root",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092702",
+        "--capsule",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-joint-repeat-m2-r01/rx3-cvs-daot-rc4-s2026092702/predictions",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-joint-repeat-m2-r01/resolved_algorithm.json",
+        "--expected-capsule-id",
+        "residual-noeq-76121e6f34363fa612ec25fb",
+        "--expected-checkpoint-sha256",
+        "72f26413e495dcf82317898f8729caa3d35499bf0b41e9671ffdceab2c90924b",
+        "--branch-features",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-ridge-repeat-rx3-m4-r01/cvs-daot-rc4-s2026092702/branch_features",
+        "--ground-packet",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r02/ground-a-s2026092702"
+      ],
+      "prediction_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-joint-repeat-m2-r01/rx3-cvs-daot-rc4-s2026092702/predictions",
+      "prediction_log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-joint-repeat-m2-r01/rx3-cvs-daot-rc4-s2026092702/prediction.log",
+      "live": {
+        "pid": 869448,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_margin_joint_repeat_20261001_r01/tools/evaluate_d92_margin_joint_benchmark.py",
+          "--run-id",
+          "20261001-phase2-d92-margin-joint-repeat-m2-r01",
+          "--row-id",
+          "rx3-cvs-daot-rc4-s2026092702",
+          "--release-commit",
+          "d86edc3235ec0ca0e1925223970e07373256fb9c",
+          "--row-root",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092702",
+          "--capsule",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule",
+          "--output",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-joint-repeat-m2-r01/rx3-cvs-daot-rc4-s2026092702/predictions",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-joint-repeat-m2-r01/resolved_algorithm.json",
+          "--expected-capsule-id",
+          "residual-noeq-76121e6f34363fa612ec25fb",
+          "--expected-checkpoint-sha256",
+          "72f26413e495dcf82317898f8729caa3d35499bf0b41e9671ffdceab2c90924b",
+          "--branch-features",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-ridge-repeat-rx3-m4-r01/cvs-daot-rc4-s2026092702/branch_features",
+          "--ground-packet",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r02/ground-a-s2026092702"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_margin_joint_repeat_20261001_r01",
+        "start_ticks": 10049849,
+        "user_cpu_ticks": 1061332,
+        "system_cpu_ticks": 17500,
+        "cpu_tick_hz": 100,
+        "memory": {
+          "VmHWM": "1611708 kB",
+          "VmRSS": "1611708 kB"
+        },
+        "environment": {
+          "OMP_NUM_THREADS": "2",
+          "MKL_NUM_THREADS": "2",
+          "OPENBLAS_NUM_THREADS": "2",
+          "NUMEXPR_NUM_THREADS": "2",
+          "CUDA_VISIBLE_DEVICES": ""
+        }
+      },
+      "preflight_meta": {
+        "status": "MARGIN_QUERY_PREFLIGHT_COMPLETE",
+        "split_count": 900,
+        "query_record_count": 361800,
+        "checkpoint_sha256": "72f26413e495dcf82317898f8729caa3d35499bf0b41e9671ffdceab2c90924b",
+        "model_seed": 2026092702,
+        "capsule_id": "residual-noeq-76121e6f34363fa612ec25fb"
+      },
+      "log_bytes": 2004049
+    },
+    "rx1-cvs-daot-rc4-s2026092701": {
+      "status": "PREFLIGHT_COMPLETE",
+      "updated": 1790852787.8421264,
+      "prediction_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-joint-repeat-m2-r01/rx1-cvs-daot-rc4-s2026092701/predictions",
+      "live": null,
+      "preflight_meta": {
+        "status": "MARGIN_QUERY_PREFLIGHT_COMPLETE",
+        "split_count": 300,
+        "query_record_count": 120600,
+        "checkpoint_sha256": "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b",
+        "model_seed": 2026092701,
+        "capsule_id": "residual-noeq-d0a99fede324159c5a4750fd"
+      },
+      "log_bytes": 5588589
+    },
+    "rx1-cvs-daot-rc4-s2026092702": {
+      "status": "PREFLIGHT_COMPLETE",
+      "updated": 1790852791.0555594,
+      "prediction_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-joint-repeat-m2-r01/rx1-cvs-daot-rc4-s2026092702/predictions",
+      "live": null,
+      "preflight_meta": {
+        "status": "MARGIN_QUERY_PREFLIGHT_COMPLETE",
+        "split_count": 300,
+        "query_record_count": 120600,
+        "checkpoint_sha256": "72f26413e495dcf82317898f8729caa3d35499bf0b41e9671ffdceab2c90924b",
+        "model_seed": 2026092702,
+        "capsule_id": "residual-noeq-d0a99fede324159c5a4750fd"
+      },
+      "log_bytes": 5588590
+    }
+  },
+  "read_only": true,
+  "predictions_or_truth_read": false,
+  "verification": "VERIFIED"
+}

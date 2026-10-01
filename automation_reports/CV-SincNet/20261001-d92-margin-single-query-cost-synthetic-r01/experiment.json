@@ -20,11 +20,12 @@
   "replaces_run_id": null,
   "authorization": "Existing user D92 optimization and measured star-resource request; root sole local launch owner. Fixed synthetic software measurement only.",
   "code": {
-    "commit": "80317479fdf90106452eb83c41fa7dcecdb53d41",
+    "commit": "479f6389d6a6f8ea1899fca017eeb8a6d1dc5069",
     "checkout": "E:\\type10-7\\code\\snapshots\\d92_support_upgrade_20260928_wt",
     "environment": "E:\\type10-7\\local_envs\\ssr-gpu",
     "cwd": "E:\\type10-7\\code\\snapshots\\d92_support_upgrade_20260928_wt",
-    "commit_note": "Preparation parent. Exact committed/pushed harness OID is bound before the unique measurement."
+    "commit_note": "Exact pushed/OID-readback source bound before the unique local synthetic measurement",
+    "preparation_parent_commit": "80317479fdf90106452eb83c41fa7dcecdb53d41"
   },
   "data": {
     "dataset": "In-memory deterministic synthetic scoring expansions",
@@ -83,13 +84,13 @@
       "--run-id",
       "20261001-d92-margin-single-query-cost-synthetic-r01",
       "--code-commit",
-      "ACTUAL_PUSHED_SOURCE_HEAD",
+      "479f6389d6a6f8ea1899fca017eeb8a6d1dc5069",
       "--output-root",
       "E:\\type10-7\\local_artifacts\\d92_margin_single_query_cost\\20261001-d92-margin-single-query-cost-synthetic-r01"
     ],
     "stop_rule": "Technical failure preserves rows and failed.json; no automatic retry or result-driven rerun",
-    "process_pid": null,
-    "runtime_commit": null,
+    "process_pid": 24756,
+    "runtime_commit": "479f6389d6a6f8ea1899fca017eeb8a6d1dc5069",
     "fixed_configuration": {
       "old_class_count": 6,
       "new_class_count": 20,
@@ -125,7 +126,75 @@
       "model_generator": "SeedSequence([2026100101,0/1]) for B/C",
       "evaluation_generator": "default_rng(2026100103); same eight inputs across all K"
     },
-    "harness_validation_ref": "docs/D92_MARGIN_SINGLE_QUERY_COST_VALIDATION_20261001.json"
+    "harness_validation_ref": "docs/D92_MARGIN_SINGLE_QUERY_COST_VALIDATION_20261001.json",
+    "source_delivery_ref": "evidence/source_delivery_20261001.json",
+    "actual_python": "E:\\type10-7\\local_envs\\ssr-gpu\\python.exe",
+    "actual_cwd": "E:\\type10-7\\code\\snapshots\\d92_support_upgrade_20260928_wt",
+    "actual_argv": [
+      "E:\\type10-7\\code\\snapshots\\d92_support_upgrade_20260928_wt\\tools\\measure_d92_margin_single_query_reuse.py",
+      "--run-id",
+      "20261001-d92-margin-single-query-cost-synthetic-r01",
+      "--code-commit",
+      "479f6389d6a6f8ea1899fca017eeb8a6d1dc5069",
+      "--output-root",
+      "E:\\type10-7\\local_artifacts\\d92_margin_single_query_cost\\20261001-d92-margin-single-query-cost-synthetic-r01"
+    ],
+    "started_at_utc": "2026-10-01T12:44:23.629295+00:00",
+    "ended_at_utc": "2026-10-01T12:44:29.136995+00:00",
+    "local_process_state": "DONE_DO_NOT_RESTART",
+    "measurement_status": "VERIFIED_COMPLETE_SYNTHETIC_SOFTWARE_MEASUREMENT",
+    "result_readback_ref": "evidence/result_readback_20261001.json",
+    "completed_rows": 8,
+    "repeat_records": 24,
+    "elapsed_seconds": 5.504311699987738,
+    "process_lifetime_peak_working_set": {
+      "bytes": 112877568,
+      "reason": null
+    },
+    "hardware": {
+      "platform": "Windows-10-10.0.26100-SP0",
+      "machine": "AMD64",
+      "processor": "AMD64 Family 25 Model 33 Stepping 0, AuthenticAMD",
+      "processor_identifier": "AMD64 Family 25 Model 33 Stepping 0, AuthenticAMD",
+      "logical_cpu_count": 12,
+      "executable": "E:\\type10-7\\local_envs\\ssr-gpu\\python.exe",
+      "python": "3.10.0 | packaged by conda-forge | (default, Nov 10 2021, 13:20:59) [MSC v.1916 64 bit (AMD64)]",
+      "thread_environment": {
+        "OPENBLAS_NUM_THREADS": "2",
+        "OMP_NUM_THREADS": "2",
+        "MKL_NUM_THREADS": "2",
+        "NUMEXPR_NUM_THREADS": "2"
+      },
+      "versions": {
+        "numpy": "2.2.6",
+        "scipy": "1.15.3",
+        "threadpoolctl": "3.6.0"
+      },
+      "threadpools": [
+        {
+          "user_api": "blas",
+          "internal_api": "openblas",
+          "num_threads": 2,
+          "prefix": "libscipy_openblas",
+          "filepath": "E:\\type10-7\\local_envs\\ssr-gpu\\Lib\\site-packages\\numpy.libs\\libscipy_openblas64_-13e2df515630b4a41f92893938845698.dll",
+          "version": "0.3.29",
+          "threading_layer": "pthreads",
+          "architecture": "Haswell"
+        },
+        {
+          "user_api": "blas",
+          "internal_api": "openblas",
+          "num_threads": 2,
+          "prefix": "libscipy_openblas",
+          "filepath": "E:\\type10-7\\local_envs\\ssr-gpu\\Lib\\site-packages\\scipy.libs\\libscipy_openblas-f07f5a5d207a3a47104dca54d6d0c86a.dll",
+          "version": "0.3.28",
+          "threading_layer": "pthreads",
+          "architecture": "Haswell"
+        }
+      ]
+    },
+    "source_remote_or_actual_query_modified": false,
+    "raw_result_ref": "results/measurements"
   },
   "expected_artifacts": [
     "E:\\type10-7\\local_artifacts\\d92_margin_single_query_cost\\20261001-d92-margin-single-query-cost-synthetic-r01\\startup.json",
@@ -201,7 +270,7 @@
         "--run-id",
         "20261001-d92-margin-single-query-cost-synthetic-r01",
         "--code-commit",
-        "ACTUAL_PUSHED_SOURCE_HEAD",
+        "479f6389d6a6f8ea1899fca017eeb8a6d1dc5069",
         "--output-root",
         "E:\\type10-7\\local_artifacts\\d92_margin_single_query_cost\\20261001-d92-margin-single-query-cost-synthetic-r01"
       ],
@@ -250,7 +319,7 @@
         "--run-id",
         "20261001-d92-margin-single-query-cost-synthetic-r01",
         "--code-commit",
-        "ACTUAL_PUSHED_SOURCE_HEAD",
+        "479f6389d6a6f8ea1899fca017eeb8a6d1dc5069",
         "--output-root",
         "E:\\type10-7\\local_artifacts\\d92_margin_single_query_cost\\20261001-d92-margin-single-query-cost-synthetic-r01"
       ],
@@ -299,7 +368,7 @@
         "--run-id",
         "20261001-d92-margin-single-query-cost-synthetic-r01",
         "--code-commit",
-        "ACTUAL_PUSHED_SOURCE_HEAD",
+        "479f6389d6a6f8ea1899fca017eeb8a6d1dc5069",
         "--output-root",
         "E:\\type10-7\\local_artifacts\\d92_margin_single_query_cost\\20261001-d92-margin-single-query-cost-synthetic-r01"
       ],
@@ -348,7 +417,7 @@
         "--run-id",
         "20261001-d92-margin-single-query-cost-synthetic-r01",
         "--code-commit",
-        "ACTUAL_PUSHED_SOURCE_HEAD",
+        "479f6389d6a6f8ea1899fca017eeb8a6d1dc5069",
         "--output-root",
         "E:\\type10-7\\local_artifacts\\d92_margin_single_query_cost\\20261001-d92-margin-single-query-cost-synthetic-r01"
       ],
@@ -397,7 +466,7 @@
         "--run-id",
         "20261001-d92-margin-single-query-cost-synthetic-r01",
         "--code-commit",
-        "ACTUAL_PUSHED_SOURCE_HEAD",
+        "479f6389d6a6f8ea1899fca017eeb8a6d1dc5069",
         "--output-root",
         "E:\\type10-7\\local_artifacts\\d92_margin_single_query_cost\\20261001-d92-margin-single-query-cost-synthetic-r01"
       ],
@@ -446,7 +515,7 @@
         "--run-id",
         "20261001-d92-margin-single-query-cost-synthetic-r01",
         "--code-commit",
-        "ACTUAL_PUSHED_SOURCE_HEAD",
+        "479f6389d6a6f8ea1899fca017eeb8a6d1dc5069",
         "--output-root",
         "E:\\type10-7\\local_artifacts\\d92_margin_single_query_cost\\20261001-d92-margin-single-query-cost-synthetic-r01"
       ],
@@ -495,7 +564,7 @@
         "--run-id",
         "20261001-d92-margin-single-query-cost-synthetic-r01",
         "--code-commit",
-        "ACTUAL_PUSHED_SOURCE_HEAD",
+        "479f6389d6a6f8ea1899fca017eeb8a6d1dc5069",
         "--output-root",
         "E:\\type10-7\\local_artifacts\\d92_margin_single_query_cost\\20261001-d92-margin-single-query-cost-synthetic-r01"
       ],
@@ -544,7 +613,7 @@
         "--run-id",
         "20261001-d92-margin-single-query-cost-synthetic-r01",
         "--code-commit",
-        "ACTUAL_PUSHED_SOURCE_HEAD",
+        "479f6389d6a6f8ea1899fca017eeb8a6d1dc5069",
         "--output-root",
         "E:\\type10-7\\local_artifacts\\d92_margin_single_query_cost\\20261001-d92-margin-single-query-cost-synthetic-r01"
       ],
@@ -560,7 +629,7 @@
     "No independent data validation, model promotion, source migration or remote experiment intervention.",
     "Fixed matrix before measurements; no alternative K, repeats, seeds or sampled best result."
   ],
-  "status": "LOCAL_VERIFIED",
+  "status": "ANALYZED",
   "claim_scope": "LOCAL_SYNTHETIC_SOFTWARE_COST_NOT_SATELLITE_OR_ACCURACY",
   "registered_at": "2026-10-01T12:29:52+00:00"
 }
