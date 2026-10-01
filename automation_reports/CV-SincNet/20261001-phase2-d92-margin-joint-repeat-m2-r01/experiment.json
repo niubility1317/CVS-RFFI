@@ -86,7 +86,7 @@
     "publication_status": "VERIFIED",
     "publication_ref": "evidence/publication_20261001.json",
     "source_delivery_ref": "evidence/source_delivery_20261001.json",
-    "runtime_readback_ref": "evidence/query_runtime_1790866527880152700.json",
+    "runtime_readback_ref": "evidence/query_runtime_1790867775105886400.json",
     "supervisor_pid": 869328,
     "supervisor_start_ticks": 10047966,
     "actual_launch_argv": [
@@ -111,7 +111,7 @@
       "rx3-cvs-daot-rc4-s2026092701": "PREDICTING",
       "rx3-cvs-daot-rc4-s2026092702": "FAILED",
       "rx1-cvs-daot-rc4-s2026092701": "COMPLETE",
-      "rx1-cvs-daot-rc4-s2026092702": "PREDICTING"
+      "rx1-cvs-daot-rc4-s2026092702": "FAILED"
     },
     "completed_rows_observed": 1,
     "all_predictions_fixed": false,
@@ -119,9 +119,9 @@
     "scorer_invoked": false,
     "local_publication_session_id": 38736,
     "local_publication_session_state": "DONE_DO_NOT_REPUBLISH",
-    "latest_runtime_observed_utc": "2026-10-01T14:54:26Z",
-    "failed_row_count_observed": 1,
-    "score_readiness": "INCOMPLETE_MATRIX_WITH_TECHNICAL_ROW_FAILURE",
+    "latest_runtime_observed_utc": "2026-10-01T15:15:13Z",
+    "failed_row_count_observed": 2,
+    "score_readiness": "INCOMPLETE_MATRIX_WITH_TWO_TECHNICAL_ROW_FAILURES",
     "failed_rows": [
       {
         "row_id": "rx3-cvs-daot-rc4-s2026092702",
@@ -131,6 +131,19 @@
         "layer": "C_SUPPORT_INNER_HEAD_REGULAR_KKT_VJP",
         "supervisor_secondary_error": "[Errno 2] No such file or directory: '/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-joint-repeat-m2-r01/rx3-cvs-daot-rc4-s2026092702/predictions/predictions_complete.json'",
         "evidence_ref": "evidence/query_runtime_1790861110983221800.json",
+        "predictions_complete": false,
+        "automatic_retry": false,
+        "truth_read": false,
+        "scorer_invoked": false
+      },
+      {
+        "row_id": "rx1-cvs-daot-rc4-s2026092702",
+        "pid": 994723,
+        "failure_code": "UNSUPPORTED_ACTIVE_JACOBIAN",
+        "process_returncode": 1,
+        "layer": "C_SUPPORT_INNER_HEAD_REGULAR_KKT_VJP",
+        "supervisor_secondary_error": "[Errno 2] No such file or directory: '/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-joint-repeat-m2-r01/rx1-cvs-daot-rc4-s2026092702/predictions/predictions_complete.json'",
+        "evidence_ref": "evidence/query_runtime_1790867775105886400.json",
         "predictions_complete": false,
         "automatic_retry": false,
         "truth_read": false,
