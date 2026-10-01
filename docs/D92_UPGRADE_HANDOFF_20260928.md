@@ -1,3 +1,15 @@
+## 当前交接：SupportMetric联合core源码75合成用例通过，尚未新建实验
+
+- Goal ACTIVE。新d92_support_metric_basis/step/joint_local_ridge与3tests均FREEZE；23+34+18=75 distinct PASS。docs/D92_SUPPORT_METRIC_SYNTHETIC_VALIDATION_20261002.md与evidence/implementation_validation.json列明所有原失败与最新通过。有限P0/P1审查已闭合，不新增重复审查。新状态U[r]、actualGram+predictionFisher、eta1固定折半、实际本次B→C；不继承旧adapter，不改健康版本。没有producer/config/run/性能结果。
+- 原ProtoFrame support诊断已完整报告，96个OOF新增>0 H56.00 vs R0 58.42，旧+1.12pp、新−4.66pp，未晋级；报告commit4dde3f67。不要重跑已有fit/analysis/collector。严格完整head误差包络与设备成本N/A。
+- 21:41UTC metadata：新ProtoFrame query immutable72663/supervisor1204372/rx3 PID1204902/1204908两PREDICTING、rx1等待；Group query immutable73aa/supervisor1049548两个rx3 COMPLETE、rx1 PID1228346/1231386两PREDICTING。各全4/2400close后才原immutable scorer一次truth-last，无subset评分/结果回流。下一正常metadata约22:01UTC。
+- root唯一实际数据/数值、Git/SSH/launch/scoring；所有agents只source-blind。下一步先本次Git push/独立OID，再复用新core做独立support入口及state/work/archive，配一个独立analyzer；随后固定4/160现有support诊断预登记和一次launch。允许纯frozenbasis per row预建显式复用，construction与use分计，不从旧训练状态缓存。数值资源预算需显式注册，无参数grid、无query调参/健康干预，fresh暂缓。
+- 当前新source准备母版4dde3f67，实际运行commit须未来另记；不要把本地验证或未来source提交称作N607已运行。原source-only scratch final200、practical residual/post_sync/noeq25MHz、VALIDATED_ONCE数据与源码角色边界不变。
+
+<!-- SUPPORT_METRIC_CORE_VALIDATED_20261002 -->
+
+以下保留历史记录，不据此重复启动：
+
 ## 当前交接：ProtoFrame完整support诊断已报告，综合性能未改善；query原排程继续
 
 - Goal ACTIVE。support run20261002-phase2-d92-proto-frame-joint-support-m2-r01 COMPLETE：原fit immutable a9f638d9、独立analysis source72663b48，4row/160parent/1800路径完整，20文件11008544B已收集，analysis548.381秒。不要重训、重跑分析或collector。原日志、NPZ和失败记录保留。
