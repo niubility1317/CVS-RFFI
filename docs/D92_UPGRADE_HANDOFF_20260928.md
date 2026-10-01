@@ -1,3 +1,14 @@
+## 当前交接：独立分析入口已验证，原support仍运行
+
+- Goal ACTIVE；`20261002-phase2-d92-support-metric-joint-support-m2-r01` RUNNING，runtime3c3不变。2026-10-01T23:08:38Z supervisor1276233/start14215164与两rx3 PID1276296/1276297正常训练，两rx1等待，global complete无。下一次正常metadata读回约23:28UTC；不重复发布或改动健康任务。
+- 独立analyzer原有43用例及新publication49用例已通过；实际RUNNING计划在任何Git/SSH前拒绝派发。execution.support_analysis已登记r01、source_preparation20c91、fittedruntime3c3、2-file archive/fresh independent output，**PREREGISTERED_NOT_LAUNCHED**。只在全4/160/1800真正完成并记录TRAINING_COMPLETE后root显式发布一次。新工具源码及验证见D92_SUPPORT_METRIC_ANALYSIS_ROUTE_VALIDATION_20261002.md；不可把模板或测试副本状态当实际完成。
+- 新固定旧条件竞争恒等式文档已FREEZE；old_drop精确为B原本正确却输给新组比例，不保证小遗忘。没有据此改当前参数、读query成绩或启动另一方法。运行后A/B/C、K×new、gain/drop/absGap/H及实际成本仍必须完整分析；K1 held为N/A，不声称support等于query泛化。
+- 旧Group query73aa与ProtoFrame r02 72663在23:00UTC global markers均无；状态与PID核实正常，metadata proofs已归档。正常下一次约23:20UTC。只允许全4/2400完成后原immutable release scorer一次truth-last，不能对子集评分。旧负结果、失败运行保留；fresh独立验证仍按用户授权暂缓。
+
+<!-- SUPPORT_METRIC_ANALYSIS_ROUTE_READY_20261002 -->
+
+以下保留历史交接，不据此重复启动：
+
 ## 当前交接：物理support度量联合LocalRidge已一次启动，读回VERIFIED
 
 - Goal ACTIVE，`20261002-phase2-d92-support-metric-joint-support-m2-r01` RUNNING，immutable runtime `3c3eb6c513aaf20fe84514dcbeab3584bad1f238`（preparation aa951）。唯一publisher已完成，supervisor1276233/start_ticks14215164；2026-10-01T22:42:14Z两rx3 PID1276296/1276297 TRAINING_ON_SUPPORT，两rx1 PENDING。CPU2/BLAS2/noGPU，四row源/query读0；live proof `automation_reports/CV-SincNet/20261002-phase2-d92-support-metric-joint-support-m2-r01/evidence/support_runtime_1790894595333428100.json` 与publication证据已归档。不得再次发布或启动。

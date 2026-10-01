@@ -21,3 +21,13 @@ basis 每 row 只由冻结地面 Q 构建一次，归档普通方法数据证据
 实际不可变runtime为`3c3eb6c513aaf20fe84514dcbeab3584bad1f238`，supervisor1276233/start_ticks14215164；2026-10-01T22:42:14Z只读PID/argv/cwd/environment/resolved config均匹配。rx3两row PID1276296/1276297 TRAINING_ON_SUPPORT，rx1两row PENDING。原始源码与spec冻结，不热改，不重发。完整四row诊断尚未关闭，没有新方法准确率结果。
 
 两个已启动row的冻结地面字典均精确秩5；各构建一次，测得0.2081s/0.1986s，各26519次Fraction调用，basis数值buffer各32000B。普通研究证据JSON为442565B/396128B，是卫星本地可派生字典证据，不能当作新增星地传输或整方法训练成本；峰值RSS、全部拟合/推理与星载成本待完整产物，未测项N/A。
+
+独立分析入口已预登记，状态PREREGISTERED_NOT_LAUNCHED。原运行保持RUNNING，结果仍为N/A。只有原不可变runtime的全部4 row、160 parent、1800 path完成，且原complete.json关闭全部声明工作后，root才可一次发布只含analyzer与原spec的两文件分析包。分析输出位于独立新目录，不改原始训练、预测、日志或数值状态，不重复拟合head、kernel、JVP或Fraction basis，不读取query或源域样本，不依据结果修改本轮方法。
+
+分析固定报告配对A/B/C、完整K×新增类数、旧类适应提升、注册后旧类下降、新旧绝对差与H。OOF与proxy分别报告；parent K与实际train K分列，K1无held评估记N/A。各模型与receiver分层、逐阶段参数、真实耗时、峰值RSS、常驻状态、basis构建/绑定/Gram工作和传输口径独立列出。真实query泛化、星载能耗及未测量项不由support诊断推断。分析失败保留partial产物，不自动重试或部分晋级。
+
+<!-- SUPPORT_METRIC_INDEPENDENT_ANALYSIS_PREREGISTERED_20261002 -->
+
+独立分析发布工具的49项离线测试通过；真实RUNNING记录在任何Git/SSH或目录创建前被拒绝，分析尚未派发。2026-10-01T23:08:38ZPID/argv/cwd/environment读回VERIFIED，当前两rx3训练、两rx1等待，完整marker仍不存在。新增数学说明给出固定旧条件后的精确竞争损失恒等式，不构成性能保证，也不改变本轮参数。
+
+<!-- SUPPORT_METRIC_ANALYSIS_ROUTE_VALIDATED_20261002 -->
