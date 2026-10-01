@@ -1,0 +1,62 @@
+{
+  "environment": {
+    "python": "C:\\Users\\lh594\\.conda\\envs\\ssr-gpu\\python.exe",
+    "torch": "2.10.0+cu128",
+    "device": "cpu"
+  },
+  "data": "synthetic random tensors only",
+  "checks": {
+    "asknet": {
+      "finite_loss_and_gradients": true,
+      "optimizer_updated": true,
+      "eval_state_unchanged": true,
+      "logits_shape": [
+        4,
+        6
+      ],
+      "one_epoch_native_loop": true,
+      "state_dict_roundtrip": true,
+      "all_receiver_folds_disjoint": true,
+      "source_split_disjoint": true,
+      "zero_power_rejected": true
+    },
+    "wavemlp": {
+      "finite_loss_and_gradients": true,
+      "optimizer_updated": true,
+      "eval_state_unchanged": true,
+      "logits_shape": [
+        4,
+        6
+      ],
+      "one_epoch_native_loop": true,
+      "state_dict_roundtrip": true,
+      "all_receiver_folds_disjoint": true,
+      "source_split_disjoint": true,
+      "zero_power_rejected": true,
+      "padding_branch_fixed": true
+    },
+    "difl": {
+      "finite_loss_and_gradients": true,
+      "optimizer_updated": true,
+      "eval_state_unchanged": true,
+      "logits_shape": [
+        4,
+        6
+      ]
+    }
+  },
+  "upstream_failures_reproduced": {
+    "wavemlp_scheduler_error": "ReduceLROnPlateau.__init__() got an unexpected keyword argument 'verbose'",
+    "wavemlp_padding_error": "name 'F' is not defined",
+    "asknet_zero_power_nan": true,
+    "wavemlp_zero_power_nan": true,
+    "difl": {
+      "empty_coral_is_nan": true,
+      "sampler_reported_batches": 4,
+      "sampler_actual_batches": 2,
+      "student_training_call_missing": true,
+      "plot_colors_undefined": true
+    }
+  },
+  "status": "PASS_WITH_DIFL_FORMAL_USE_BLOCKED"
+}
