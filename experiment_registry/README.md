@@ -1,6 +1,6 @@
 # 实验总索引
 
-更新：2026-10-01T20:40:48+00:00
+更新：2026-10-01T21:00:51+00:00
 
 先按方法/问题检索，再用run ID读取精确配置与证据。历史组数量不等于独立实验数量。
 
@@ -12,7 +12,7 @@
 
 |记录类型|数量|
 |---|---:|
-|managed_run|43|
+|managed_run|44|
 
 历史状态统一为HISTORICAL_UNVERIFIED；RUNNING等原文声明只供查证，不能证明此刻仍在运行。
 
@@ -20,13 +20,13 @@
 
 |路径标签（定位提示）|证据组数|
 |---|---:|
-|[cvs](by_method/cvs.md)|26|
-|[clean_only](by_method/clean_only.md)|21|
-|[ce_only](by_method/ce_only.md)|21|
-|[no_augmentation](by_method/no_augmentation.md)|15|
-|[performance_priority](by_method/performance_priority.md)|14|
+|[cvs](by_method/cvs.md)|27|
+|[clean_only](by_method/clean_only.md)|22|
+|[ce_only](by_method/ce_only.md)|22|
+|[no_augmentation](by_method/no_augmentation.md)|16|
+|[performance_priority](by_method/performance_priority.md)|15|
+|[source_selection](by_method/source_selection.md)|12|
 |[daot](by_method/daot.md)|11|
-|[source_selection](by_method/source_selection.md)|11|
 |[rc4](by_method/rc4.md)|10|
 |[source_selected](by_method/source_selected.md)|9|
 |[frozen_prediction_reuse](by_method/frozen_prediction_reuse.md)|8|
@@ -42,9 +42,9 @@
 |[mmse](by_method/mmse.md)|5|
 |[truth_last](by_method/truth_last.md)|5|
 |[final200](by_method/final200.md)|4|
+|[rff_physics](by_method/rff_physics.md)|4|
 |[source_only](by_method/source_only.md)|3|
 |[d92](by_method/d92.md)|3|
-|[rff_physics](by_method/rff_physics.md)|3|
 |[response](by_method/response.md)|3|
 |[core90](by_method/core90.md)|3|
 |[sixscene](by_method/sixscene.md)|2|
@@ -87,6 +87,7 @@
 |[no_target_access](by_method/no_target_access.md)|1|
 |[whole_identity_gauge](by_method/whole_identity_gauge.md)|1|
 |[whole_identity_observables](by_method/whole_identity_observables.md)|1|
+|[known_excitation](by_method/known_excitation.md)|1|
 |[rf_behavior_operator](by_method/rf_behavior_operator.md)|1|
 
 ## 最近记录入口
@@ -131,6 +132,7 @@
 |完整 IQ 相位规范化 CVS：完整源实验报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-gauge-identity-manysig-m8-r01/report.md)|
 |CVS性能优先继续优化：observable_phase clean测试报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-observable-clean-manysig-m24-r01/report.md)|
 |CVS整体物理观测身份网络：源训练预登记|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-observable-identity-manysig-m8-r01/report.md)|
+|CVS 已知激励相对响应：纯 CE 四 seed 源域研发|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-reference-identity-manysig-m4-r01/report.md)|
 |CVS性能优先继续优化：rf_gmp clean测试报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-rf-operator-clean-manysig-m24-r01/report.md)|
 |CVS 受约束射频行为算子|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-rf-operator-identity-manysig-m8-r01/report.md)|
 |原生DAOT＋RC4与仅动力博弈三seed对照|managed_run|[打开](../automation_reports/CV-SincNet/phase1_daot_rc4_pure_game_m3_20260917_r1/report.md)|

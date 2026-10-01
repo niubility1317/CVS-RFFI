@@ -1,0 +1,3017 @@
+{
+  "status": "PASS",
+  "python": "C:\\Users\\lh594\\.conda\\envs\\ssr-gpu\\python.exe",
+  "torch_version": "2.10.0+cu128",
+  "device": "cpu",
+  "disposable_models": 4,
+  "disposable_ce_updates": 12,
+  "formal_data_access": false,
+  "target_access": false,
+  "checkpoint_access": false,
+  "rows": [
+    {
+      "seed": 2026092701,
+      "losses": [
+        {
+          "kind": "random",
+          "ce": 4.047573089599609
+        },
+        {
+          "kind": "weak",
+          "ce": 3.38787579536438
+        },
+        {
+          "kind": "constant",
+          "ce": 1.9752742052078247
+        }
+      ],
+      "contract": {
+        "mode": "reference_response",
+        "reference": "https://raw.githubusercontent.com/bastibl/gr-ieee802-11/ad0598e4a874f4b8e1f391a1e0323e80df2b34ff/examples/wifi_phy_hier.grc",
+        "nominal_wifi_bandwidth_hz": 20000000,
+        "sample_rate_hz": 25000000,
+        "window": [
+          80,
+          160
+        ],
+        "period_samples": 20,
+        "cycles": 4,
+        "delay_grid_count": 320,
+        "delay_grid_step_samples": 0.0625,
+        "epsilon": 1e-06,
+        "residual_soft_radius": 4.0,
+        "response_features": 29,
+        "relative_cfo_alias_period_hz": 1250000,
+        "reference_branch_flat_gain_phase_quotient": true,
+        "whole_model_invariant": false,
+        "raw_identity_path_retained": true,
+        "rx_arbitrary_channel_invariant": false,
+        "iq_convention_identified": false,
+        "hardware_parameter_estimation": false,
+        "initial_residual_gain": 0.0,
+        "learned_frontend_parameters": 0,
+        "interpretation": "Relative received in-band transfer/quality/CFO; RX/channel/equalizer remain confounds"
+      },
+      "frozen_synthetic": {
+        "status": "FROZEN_SYNTHETIC_DIAGNOSTIC_COMPLETE",
+        "reference": "https://raw.githubusercontent.com/bastibl/gr-ieee802-11/ad0598e4a874f4b8e1f391a1e0323e80df2b34ff/examples/wifi_phy_hier.grc",
+        "synthetic_only": true,
+        "training_augmentation": false,
+        "formal_data_access": false,
+        "target_access": false,
+        "model_updated": false,
+        "hardware_parameter_recovery": false,
+        "identity_accuracy": "N/A: synthetic settings are not source TX classes",
+        "simulated_chain": "100Msps steady L-STF -> TX cubic/image/memory -> causal periodic FIR channel -> RX gain/image/cubic -> retain12occupiedtones -> decimate25Msps -> relative CFO -> packetRMS",
+        "exact_wisig_equalizer": false,
+        "onset_transient_simulated": false,
+        "noise_simulated": false,
+        "physical_parameters": {
+          "tx": [
+            {
+              "name": "ideal",
+              "cubic": [
+                0.0,
+                0.0
+              ],
+              "image": [
+                0.0,
+                0.0
+              ],
+              "memory_cubic": [
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "name": "tx_am_am",
+              "cubic": [
+                -0.03,
+                0.0
+              ],
+              "image": [
+                0.0,
+                0.0
+              ],
+              "memory_cubic": [
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "name": "tx_first_order_am_pm",
+              "cubic": [
+                0.0,
+                0.03
+              ],
+              "image": [
+                0.0,
+                0.0
+              ],
+              "memory_cubic": [
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "name": "tx_iq_image",
+              "cubic": [
+                0.0,
+                0.0
+              ],
+              "image": [
+                0.02,
+                0.02
+              ],
+              "memory_cubic": [
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "name": "tx_cubic_memory",
+              "cubic": [
+                0.0,
+                0.0
+              ],
+              "image": [
+                0.0,
+                0.0
+              ],
+              "memory_cubic": [
+                0.0,
+                0.02
+              ]
+            }
+          ],
+          "rx": [
+            {
+              "name": "identity",
+              "gain": [
+                1.0,
+                0.0
+              ],
+              "tap": [
+                0.0,
+                0.0
+              ],
+              "delay": 1,
+              "image": [
+                0.0,
+                0.0
+              ],
+              "cubic": [
+                0.0,
+                0.0
+              ],
+              "cfo_hz": 0.0
+            },
+            {
+              "name": "flat_phase_gain",
+              "gain": [
+                0.9687267230483316,
+                0.8669305255048073
+              ],
+              "tap": [
+                0.0,
+                0.0
+              ],
+              "delay": 1,
+              "image": [
+                0.0,
+                0.0
+              ],
+              "cubic": [
+                0.0,
+                0.0
+              ],
+              "cfo_hz": 0.0
+            },
+            {
+              "name": "relative_cfo",
+              "gain": [
+                1.0,
+                0.0
+              ],
+              "tap": [
+                0.0,
+                0.0
+              ],
+              "delay": 1,
+              "image": [
+                0.0,
+                0.0
+              ],
+              "cubic": [
+                0.0,
+                0.0
+              ],
+              "cfo_hz": 80000.0
+            },
+            {
+              "name": "lti_channel",
+              "gain": [
+                1.0,
+                0.0
+              ],
+              "tap": [
+                0.15,
+                0.08
+              ],
+              "delay": 1,
+              "image": [
+                0.0,
+                0.0
+              ],
+              "cubic": [
+                0.0,
+                0.0
+              ],
+              "cfo_hz": 0.0
+            },
+            {
+              "name": "rx_iq_image",
+              "gain": [
+                1.0,
+                0.0
+              ],
+              "tap": [
+                0.0,
+                0.0
+              ],
+              "delay": 1,
+              "image": [
+                0.02,
+                0.02
+              ],
+              "cubic": [
+                0.0,
+                0.0
+              ],
+              "cfo_hz": 0.0
+            },
+            {
+              "name": "rx_cubic",
+              "gain": [
+                1.0,
+                0.0
+              ],
+              "tap": [
+                0.0,
+                0.0
+              ],
+              "delay": 1,
+              "image": [
+                0.0,
+                0.0
+              ],
+              "cubic": [
+                -0.03,
+                0.0
+              ],
+              "cfo_hz": 0.0
+            }
+          ],
+          "tx_memory_delay_native_samples": 2
+        },
+        "records": [
+          {
+            "tx": "ideal",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "relative_transfer_distance_same_tx_identity_rx": 0.0,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              0.356389582157135,
+              2.407862424850464,
+              0.7618787288665771,
+              -0.8140108585357666,
+              -2.329561233520508,
+              2.11429500579834
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 0.1560317724943161,
+            "relative_transfer_distance_same_tx_identity_rx": 1.1250129006157294e-07,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              0.5103404521942139,
+              2.3474783897399902,
+              0.9836266040802002,
+              -1.2329792976379395,
+              -2.2890493869781494,
+              1.973813533782959
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.22416989505290985,
+            "relative_transfer_distance_same_tx_identity_rx": 1.3183172598019155e-07,
+            "response_cfo_hz": 80000.0,
+            "source_classifier_logits": [
+              0.5037490129470825,
+              2.5772719383239746,
+              1.3059910535812378,
+              -1.879695177078247,
+              -1.551116943359375,
+              1.9612562656402588
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.06495632976293564,
+            "relative_transfer_distance_same_tx_identity_rx": 0.09611231088638306,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              0.6328056454658508,
+              2.399517774581909,
+              0.7258858680725098,
+              -0.7665988206863403,
+              -2.2720704078674316,
+              2.0702056884765625
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.026784272864460945,
+            "relative_transfer_distance_same_tx_identity_rx": 0.028284240514039993,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              0.4615849256515503,
+              2.469834327697754,
+              0.6988884806632996,
+              -0.9190247654914856,
+              -2.2966840267181396,
+              2.1275367736816406
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.00513765774667263,
+            "relative_transfer_distance_same_tx_identity_rx": 0.005733185447752476,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              0.3671858012676239,
+              2.4067540168762207,
+              0.7633125185966492,
+              -0.834708571434021,
+              -2.324106454849243,
+              2.1239123344421387
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "relative_transfer_distance_same_tx_identity_rx": 0.0,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              0.36718547344207764,
+              2.4067542552948,
+              0.7633126378059387,
+              -0.8347083330154419,
+              -2.3241069316864014,
+              2.123912811279297
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 0.15561547875404358,
+            "relative_transfer_distance_same_tx_identity_rx": 1.8517569344567164e-07,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              0.5215044617652893,
+              2.3488006591796875,
+              0.9784134030342102,
+              -1.2502267360687256,
+              -2.285543441772461,
+              1.9874106645584106
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.22350670397281647,
+            "relative_transfer_distance_same_tx_identity_rx": 1.8950410662910144e-07,
+            "response_cfo_hz": 80000.0,
+            "source_classifier_logits": [
+              0.5070177316665649,
+              2.5760366916656494,
+              1.3056129217147827,
+              -1.8935716152191162,
+              -1.5407073497772217,
+              1.9709224700927734
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.06224193796515465,
+            "relative_transfer_distance_same_tx_identity_rx": 0.09593497961759567,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              0.6362769603729248,
+              2.4017937183380127,
+              0.7342677116394043,
+              -0.7687605023384094,
+              -2.270632743835449,
+              2.079089879989624
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.02335132658481598,
+            "relative_transfer_distance_same_tx_identity_rx": 0.02828553318977356,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              0.46577924489974976,
+              2.4694101810455322,
+              0.7105764150619507,
+              -0.9236242771148682,
+              -2.291565179824829,
+              2.133479118347168
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.004167529288679361,
+            "relative_transfer_distance_same_tx_identity_rx": 0.0050804102793335915,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              0.38117843866348267,
+              2.4080371856689453,
+              0.7665932178497314,
+              -0.8544982075691223,
+              -2.314199924468994,
+              2.131256580352783
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "relative_transfer_distance_same_tx_identity_rx": 0.0,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              0.37573277950286865,
+              2.4297873973846436,
+              0.7433397769927979,
+              -0.8080759644508362,
+              -2.3031091690063477,
+              2.147127866744995
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 0.15703938901424408,
+            "relative_transfer_distance_same_tx_identity_rx": 1.9381208460345078e-07,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              0.5554224252700806,
+              2.2907259464263916,
+              1.0014162063598633,
+              -1.2620102167129517,
+              -2.260938882827759,
+              1.9865057468414307
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.22775304317474365,
+            "relative_transfer_distance_same_tx_identity_rx": 1.649114125257256e-07,
+            "response_cfo_hz": 80000.0,
+            "source_classifier_logits": [
+              0.5190371870994568,
+              2.5645976066589355,
+              1.3146418333053589,
+              -1.898039698600769,
+              -1.5528075695037842,
+              1.9524195194244385
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.06741780787706375,
+            "relative_transfer_distance_same_tx_identity_rx": 0.09611859172582626,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              0.6473405361175537,
+              2.4146952629089355,
+              0.7142602205276489,
+              -0.7882101535797119,
+              -2.2508180141448975,
+              2.0947036743164062
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.02988181822001934,
+            "relative_transfer_distance_same_tx_identity_rx": 0.028285538777709007,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              0.488242506980896,
+              2.4972779750823975,
+              0.6662980914115906,
+              -0.9263333082199097,
+              -2.2746081352233887,
+              2.160335063934326
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.006597778294235468,
+            "relative_transfer_distance_same_tx_identity_rx": 0.0057508922182023525,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              0.38818997144699097,
+              2.4278810024261475,
+              0.7349869012832642,
+              -0.8355879783630371,
+              -2.2988345623016357,
+              2.1578729152679443
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "relative_transfer_distance_same_tx_identity_rx": 0.0,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              0.4615849256515503,
+              2.469834327697754,
+              0.6988884806632996,
+              -0.9190247654914856,
+              -2.2966840267181396,
+              2.1275367736816406
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 0.14981041848659515,
+            "relative_transfer_distance_same_tx_identity_rx": 1.4432495731853123e-07,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              0.5375312566757202,
+              2.4087743759155273,
+              0.8777309060096741,
+              -1.3203353881835938,
+              -2.274712085723877,
+              1.9631383419036865
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.22670558094978333,
+            "relative_transfer_distance_same_tx_identity_rx": 1.6851878115176078e-07,
+            "response_cfo_hz": 80000.0,
+            "source_classifier_logits": [
+              0.489216148853302,
+              2.616192579269409,
+              1.3167415857315063,
+              -1.949418067932129,
+              -1.3556677103042603,
+              2.0739123821258545
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.056476909667253494,
+            "relative_transfer_distance_same_tx_identity_rx": 0.09661120921373367,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              0.6868460178375244,
+              2.4161410331726074,
+              0.7183064222335815,
+              -0.8015811443328857,
+              -2.2309250831604004,
+              2.076967477798462
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.01890372484922409,
+            "relative_transfer_distance_same_tx_identity_rx": 0.02823903039097786,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              0.5555249452590942,
+              2.527538776397705,
+              0.6697216033935547,
+              -0.9732575416564941,
+              -2.2761363983154297,
+              2.1229071617126465
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.002589584793895483,
+            "relative_transfer_distance_same_tx_identity_rx": 0.006021043751388788,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              0.46182698011398315,
+              2.468478202819824,
+              0.7109280824661255,
+              -0.9221428632736206,
+              -2.292757272720337,
+              2.1344027519226074
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "relative_transfer_distance_same_tx_identity_rx": 0.0,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              0.38529014587402344,
+              2.370152473449707,
+              0.7190670967102051,
+              -0.8475942611694336,
+              -2.3641440868377686,
+              2.1470863819122314
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 0.1568017154932022,
+            "relative_transfer_distance_same_tx_identity_rx": 1.5574896394809912e-07,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              0.4742550253868103,
+              2.3090667724609375,
+              0.9955893754959106,
+              -1.1883620023727417,
+              -2.3526666164398193,
+              1.9936312437057495
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.22525407373905182,
+            "relative_transfer_distance_same_tx_identity_rx": 1.334385046902753e-07,
+            "response_cfo_hz": 80000.0,
+            "source_classifier_logits": [
+              0.5229312777519226,
+              2.5469295978546143,
+              1.2792149782180786,
+              -1.859580159187317,
+              -1.604976773262024,
+              1.9623470306396484
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.06682541221380234,
+            "relative_transfer_distance_same_tx_identity_rx": 0.09714633226394653,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              0.6413864493370056,
+              2.348879337310791,
+              0.7215350866317749,
+              -0.7941915392875671,
+              -2.2692248821258545,
+              2.138916015625
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.026367422193288803,
+            "relative_transfer_distance_same_tx_identity_rx": 0.0282899197191,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              0.4961782693862915,
+              2.4375741481781006,
+              0.6410883069038391,
+              -0.9358415603637695,
+              -2.3286852836608887,
+              2.151291608810425
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.003570220898836851,
+            "relative_transfer_distance_same_tx_identity_rx": 0.00576461898162961,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              0.3943237364292145,
+              2.369795083999634,
+              0.7225147485733032,
+              -0.8577637672424316,
+              -2.3561813831329346,
+              2.153348922729492
+            ]
+          }
+        ],
+        "isolated_tx_changes": [
+          {
+            "tx": "tx_am_am",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.00513765774667263,
+            "relative_transfer_distance_to_ideal_tx": 0.005733185447752476
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.012472094036638737,
+            "relative_transfer_distance_to_ideal_tx": 0.005524132400751114
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.026784272864460945,
+            "relative_transfer_distance_to_ideal_tx": 0.028284240514039993
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.013478095643222332,
+            "relative_transfer_distance_to_ideal_tx": 0.023191645741462708
+          }
+        ],
+        "confounds": {
+          "iq_tx_rx_waveform_max_error": 0.0,
+          "cubic_tx_rx_waveform_max_error": 3.3306690738754696e-16
+        },
+        "learned_response_gain_abs_mean": 0.0004002625937573612,
+        "claim": "Whole embedding sensitivity under fixed TX/RX cascade, with identical-observation counterexamples; no calibrated TX or universal RX invariance claim"
+      }
+    },
+    {
+      "seed": 2026092702,
+      "losses": [
+        {
+          "kind": "random",
+          "ce": 5.050565242767334
+        },
+        {
+          "kind": "weak",
+          "ce": 5.2272844314575195
+        },
+        {
+          "kind": "constant",
+          "ce": 5.901278018951416
+        }
+      ],
+      "contract": {
+        "mode": "reference_response",
+        "reference": "https://raw.githubusercontent.com/bastibl/gr-ieee802-11/ad0598e4a874f4b8e1f391a1e0323e80df2b34ff/examples/wifi_phy_hier.grc",
+        "nominal_wifi_bandwidth_hz": 20000000,
+        "sample_rate_hz": 25000000,
+        "window": [
+          80,
+          160
+        ],
+        "period_samples": 20,
+        "cycles": 4,
+        "delay_grid_count": 320,
+        "delay_grid_step_samples": 0.0625,
+        "epsilon": 1e-06,
+        "residual_soft_radius": 4.0,
+        "response_features": 29,
+        "relative_cfo_alias_period_hz": 1250000,
+        "reference_branch_flat_gain_phase_quotient": true,
+        "whole_model_invariant": false,
+        "raw_identity_path_retained": true,
+        "rx_arbitrary_channel_invariant": false,
+        "iq_convention_identified": false,
+        "hardware_parameter_estimation": false,
+        "initial_residual_gain": 0.0,
+        "learned_frontend_parameters": 0,
+        "interpretation": "Relative received in-band transfer/quality/CFO; RX/channel/equalizer remain confounds"
+      },
+      "frozen_synthetic": {
+        "status": "FROZEN_SYNTHETIC_DIAGNOSTIC_COMPLETE",
+        "reference": "https://raw.githubusercontent.com/bastibl/gr-ieee802-11/ad0598e4a874f4b8e1f391a1e0323e80df2b34ff/examples/wifi_phy_hier.grc",
+        "synthetic_only": true,
+        "training_augmentation": false,
+        "formal_data_access": false,
+        "target_access": false,
+        "model_updated": false,
+        "hardware_parameter_recovery": false,
+        "identity_accuracy": "N/A: synthetic settings are not source TX classes",
+        "simulated_chain": "100Msps steady L-STF -> TX cubic/image/memory -> causal periodic FIR channel -> RX gain/image/cubic -> retain12occupiedtones -> decimate25Msps -> relative CFO -> packetRMS",
+        "exact_wisig_equalizer": false,
+        "onset_transient_simulated": false,
+        "noise_simulated": false,
+        "physical_parameters": {
+          "tx": [
+            {
+              "name": "ideal",
+              "cubic": [
+                0.0,
+                0.0
+              ],
+              "image": [
+                0.0,
+                0.0
+              ],
+              "memory_cubic": [
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "name": "tx_am_am",
+              "cubic": [
+                -0.03,
+                0.0
+              ],
+              "image": [
+                0.0,
+                0.0
+              ],
+              "memory_cubic": [
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "name": "tx_first_order_am_pm",
+              "cubic": [
+                0.0,
+                0.03
+              ],
+              "image": [
+                0.0,
+                0.0
+              ],
+              "memory_cubic": [
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "name": "tx_iq_image",
+              "cubic": [
+                0.0,
+                0.0
+              ],
+              "image": [
+                0.02,
+                0.02
+              ],
+              "memory_cubic": [
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "name": "tx_cubic_memory",
+              "cubic": [
+                0.0,
+                0.0
+              ],
+              "image": [
+                0.0,
+                0.0
+              ],
+              "memory_cubic": [
+                0.0,
+                0.02
+              ]
+            }
+          ],
+          "rx": [
+            {
+              "name": "identity",
+              "gain": [
+                1.0,
+                0.0
+              ],
+              "tap": [
+                0.0,
+                0.0
+              ],
+              "delay": 1,
+              "image": [
+                0.0,
+                0.0
+              ],
+              "cubic": [
+                0.0,
+                0.0
+              ],
+              "cfo_hz": 0.0
+            },
+            {
+              "name": "flat_phase_gain",
+              "gain": [
+                0.9687267230483316,
+                0.8669305255048073
+              ],
+              "tap": [
+                0.0,
+                0.0
+              ],
+              "delay": 1,
+              "image": [
+                0.0,
+                0.0
+              ],
+              "cubic": [
+                0.0,
+                0.0
+              ],
+              "cfo_hz": 0.0
+            },
+            {
+              "name": "relative_cfo",
+              "gain": [
+                1.0,
+                0.0
+              ],
+              "tap": [
+                0.0,
+                0.0
+              ],
+              "delay": 1,
+              "image": [
+                0.0,
+                0.0
+              ],
+              "cubic": [
+                0.0,
+                0.0
+              ],
+              "cfo_hz": 80000.0
+            },
+            {
+              "name": "lti_channel",
+              "gain": [
+                1.0,
+                0.0
+              ],
+              "tap": [
+                0.15,
+                0.08
+              ],
+              "delay": 1,
+              "image": [
+                0.0,
+                0.0
+              ],
+              "cubic": [
+                0.0,
+                0.0
+              ],
+              "cfo_hz": 0.0
+            },
+            {
+              "name": "rx_iq_image",
+              "gain": [
+                1.0,
+                0.0
+              ],
+              "tap": [
+                0.0,
+                0.0
+              ],
+              "delay": 1,
+              "image": [
+                0.02,
+                0.02
+              ],
+              "cubic": [
+                0.0,
+                0.0
+              ],
+              "cfo_hz": 0.0
+            },
+            {
+              "name": "rx_cubic",
+              "gain": [
+                1.0,
+                0.0
+              ],
+              "tap": [
+                0.0,
+                0.0
+              ],
+              "delay": 1,
+              "image": [
+                0.0,
+                0.0
+              ],
+              "cubic": [
+                -0.03,
+                0.0
+              ],
+              "cfo_hz": 0.0
+            }
+          ],
+          "tx_memory_delay_native_samples": 2
+        },
+        "records": [
+          {
+            "tx": "ideal",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "relative_transfer_distance_same_tx_identity_rx": 0.0,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              -1.825347900390625,
+              -2.0020110607147217,
+              1.2555124759674072,
+              -0.19228968024253845,
+              2.1548898220062256,
+              2.8623719215393066
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 0.23085901141166687,
+            "relative_transfer_distance_same_tx_identity_rx": 1.1250129006157294e-07,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              -0.8881110548973083,
+              -2.510751962661743,
+              1.7416075468063354,
+              0.5451186299324036,
+              1.7549593448638916,
+              3.015538215637207
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.3067783713340759,
+            "relative_transfer_distance_same_tx_identity_rx": 1.3183172598019155e-07,
+            "response_cfo_hz": 80000.0,
+            "source_classifier_logits": [
+              -0.19474369287490845,
+              -2.450979709625244,
+              3.3103888034820557,
+              -0.9623135328292847,
+              1.6134752035140991,
+              3.249490737915039
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.07734550535678864,
+            "relative_transfer_distance_same_tx_identity_rx": 0.09611231088638306,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              -1.6898373365402222,
+              -2.1381750106811523,
+              1.6944187879562378,
+              -0.2102234959602356,
+              2.188448905944824,
+              2.7930381298065186
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.028194375336170197,
+            "relative_transfer_distance_same_tx_identity_rx": 0.028284240514039993,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              -1.7825371026992798,
+              -1.957138180732727,
+              1.2465819120407104,
+              -0.23820452392101288,
+              2.0482823848724365,
+              2.8421897888183594
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.00872991606593132,
+            "relative_transfer_distance_same_tx_identity_rx": 0.005733185447752476,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              -1.8159252405166626,
+              -2.0121262073516846,
+              1.2975263595581055,
+              -0.19483543932437897,
+              2.1505253314971924,
+              2.866086959838867
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "relative_transfer_distance_same_tx_identity_rx": 0.0,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              -1.8159250020980835,
+              -2.0121259689331055,
+              1.297526478767395,
+              -0.19483543932437897,
+              2.1505255699157715,
+              2.866086959838867
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 0.23240569233894348,
+            "relative_transfer_distance_same_tx_identity_rx": 1.8517569344567164e-07,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              -0.8686728477478027,
+              -2.5203564167022705,
+              1.782191514968872,
+              0.5518485307693481,
+              1.7428948879241943,
+              3.019421339035034
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.30657368898391724,
+            "relative_transfer_distance_same_tx_identity_rx": 1.8950410662910144e-07,
+            "response_cfo_hz": 80000.0,
+            "source_classifier_logits": [
+              -0.1915619671344757,
+              -2.4480347633361816,
+              3.3001043796539307,
+              -0.9579741954803467,
+              1.6095516681671143,
+              3.244417905807495
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.07518783211708069,
+            "relative_transfer_distance_same_tx_identity_rx": 0.09593497961759567,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              -1.6977307796478271,
+              -2.138193368911743,
+              1.7115211486816406,
+              -0.21887607872486115,
+              2.183990478515625,
+              2.785059928894043
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.025494279339909554,
+            "relative_transfer_distance_same_tx_identity_rx": 0.02828553318977356,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              -1.781479835510254,
+              -1.9548064470291138,
+              1.2652584314346313,
+              -0.24121887981891632,
+              2.04795241355896,
+              2.84704327583313
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.006947490852326155,
+            "relative_transfer_distance_same_tx_identity_rx": 0.0050804102793335915,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              -1.810355544090271,
+              -2.0194499492645264,
+              1.3289461135864258,
+              -0.19537344574928284,
+              2.145537853240967,
+              2.8669426441192627
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "relative_transfer_distance_same_tx_identity_rx": 0.0,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              -1.7868221998214722,
+              -2.059314250946045,
+              1.3041847944259644,
+              -0.20473703742027283,
+              2.1503520011901855,
+              2.9065158367156982
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 0.2380552887916565,
+            "relative_transfer_distance_same_tx_identity_rx": 1.9381208460345078e-07,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              -0.8524672985076904,
+              -2.479407787322998,
+              1.683810830116272,
+              0.539203405380249,
+              1.7920403480529785,
+              3.075505495071411
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.30590879917144775,
+            "relative_transfer_distance_same_tx_identity_rx": 1.649114125257256e-07,
+            "response_cfo_hz": 80000.0,
+            "source_classifier_logits": [
+              -0.20484454929828644,
+              -2.457152843475342,
+              3.321605682373047,
+              -0.9579426646232605,
+              1.6295251846313477,
+              3.2330780029296875
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0791509598493576,
+            "relative_transfer_distance_same_tx_identity_rx": 0.09611859172582626,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              -1.6342835426330566,
+              -2.212144374847412,
+              1.7573394775390625,
+              -0.21397870779037476,
+              2.126507520675659,
+              2.8133840560913086
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.029056290164589882,
+            "relative_transfer_distance_same_tx_identity_rx": 0.028285538777709007,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              -1.7256801128387451,
+              -2.040100336074829,
+              1.3210822343826294,
+              -0.2530907988548279,
+              2.0504114627838135,
+              2.888744354248047
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.010563324205577374,
+            "relative_transfer_distance_same_tx_identity_rx": 0.0057508922182023525,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              -1.769658088684082,
+              -2.069058418273926,
+              1.3525761365890503,
+              -0.20707391202449799,
+              2.1438238620758057,
+              2.9127159118652344
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "relative_transfer_distance_same_tx_identity_rx": 0.0,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              -1.7825371026992798,
+              -1.957138180732727,
+              1.2465819120407104,
+              -0.23820452392101288,
+              2.0482823848724365,
+              2.8421897888183594
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 0.2378765344619751,
+            "relative_transfer_distance_same_tx_identity_rx": 1.4432495731853123e-07,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              -0.8924052119255066,
+              -2.408719301223755,
+              1.7341179847717285,
+              0.5074536204338074,
+              1.7551186084747314,
+              3.0187246799468994
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.31011632084846497,
+            "relative_transfer_distance_same_tx_identity_rx": 1.6851878115176078e-07,
+            "response_cfo_hz": 80000.0,
+            "source_classifier_logits": [
+              -0.19200442731380463,
+              -2.342015504837036,
+              3.125810146331787,
+              -0.8945471048355103,
+              1.6457748413085938,
+              3.2149713039398193
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.07435434311628342,
+            "relative_transfer_distance_same_tx_identity_rx": 0.09661120921373367,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              -1.7194702625274658,
+              -2.053436756134033,
+              1.580034613609314,
+              -0.2883201539516449,
+              2.1132967472076416,
+              2.852414608001709
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.023757800459861755,
+            "relative_transfer_distance_same_tx_identity_rx": 0.02823903039097786,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              -1.7678240537643433,
+              -1.889757752418518,
+              1.1981534957885742,
+              -0.2720234990119934,
+              1.9498647451400757,
+              2.8294787406921387
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.004261693451553583,
+            "relative_transfer_distance_same_tx_identity_rx": 0.006021043751388788,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              -1.781868815422058,
+              -1.9560903310775757,
+              1.2666850090026855,
+              -0.23828911781311035,
+              2.0517418384552,
+              2.8505382537841797
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "relative_transfer_distance_same_tx_identity_rx": 0.0,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              -1.7539337873458862,
+              -2.080869674682617,
+              1.372729778289795,
+              -0.215932697057724,
+              2.053626298904419,
+              2.9002580642700195
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 0.23832058906555176,
+            "relative_transfer_distance_same_tx_identity_rx": 1.5574896394809912e-07,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              -0.8159826397895813,
+              -2.5899741649627686,
+              1.8790286779403687,
+              0.5540624260902405,
+              1.6320874691009521,
+              3.032224655151367
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.3089155852794647,
+            "relative_transfer_distance_same_tx_identity_rx": 1.334385046902753e-07,
+            "response_cfo_hz": 80000.0,
+            "source_classifier_logits": [
+              -0.21460069715976715,
+              -2.57680606842041,
+              3.377251148223877,
+              -1.0151312351226807,
+              1.6088132858276367,
+              3.236445188522339
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0830736830830574,
+            "relative_transfer_distance_same_tx_identity_rx": 0.09714633226394653,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              -1.6296840906143188,
+              -2.2743077278137207,
+              1.8655881881713867,
+              -0.1844368577003479,
+              2.0981297492980957,
+              2.7133593559265137
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.024777375161647797,
+            "relative_transfer_distance_same_tx_identity_rx": 0.0282899197191,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              -1.7270276546478271,
+              -2.0259523391723633,
+              1.371482253074646,
+              -0.2763771712779999,
+              1.954765796661377,
+              2.854466676712036
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.008191389963030815,
+            "relative_transfer_distance_same_tx_identity_rx": 0.00576461898162961,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              -1.7513206005096436,
+              -2.086850643157959,
+              1.4109405279159546,
+              -0.21489053964614868,
+              2.0544815063476562,
+              2.8881168365478516
+            ]
+          }
+        ],
+        "isolated_tx_changes": [
+          {
+            "tx": "tx_am_am",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.00872991606593132,
+            "relative_transfer_distance_to_ideal_tx": 0.005733185447752476
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.015651779249310493,
+            "relative_transfer_distance_to_ideal_tx": 0.005524132400751114
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.028194375336170197,
+            "relative_transfer_distance_to_ideal_tx": 0.028284240514039993
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.030038626864552498,
+            "relative_transfer_distance_to_ideal_tx": 0.023191645741462708
+          }
+        ],
+        "confounds": {
+          "iq_tx_rx_waveform_max_error": 0.0,
+          "cubic_tx_rx_waveform_max_error": 3.3306690738754696e-16
+        },
+        "learned_response_gain_abs_mean": 0.00036707016988657415,
+        "claim": "Whole embedding sensitivity under fixed TX/RX cascade, with identical-observation counterexamples; no calibrated TX or universal RX invariance claim"
+      }
+    },
+    {
+      "seed": 2026092703,
+      "losses": [
+        {
+          "kind": "random",
+          "ce": 2.5837953090667725
+        },
+        {
+          "kind": "weak",
+          "ce": 3.500251531600952
+        },
+        {
+          "kind": "constant",
+          "ce": 3.8054325580596924
+        }
+      ],
+      "contract": {
+        "mode": "reference_response",
+        "reference": "https://raw.githubusercontent.com/bastibl/gr-ieee802-11/ad0598e4a874f4b8e1f391a1e0323e80df2b34ff/examples/wifi_phy_hier.grc",
+        "nominal_wifi_bandwidth_hz": 20000000,
+        "sample_rate_hz": 25000000,
+        "window": [
+          80,
+          160
+        ],
+        "period_samples": 20,
+        "cycles": 4,
+        "delay_grid_count": 320,
+        "delay_grid_step_samples": 0.0625,
+        "epsilon": 1e-06,
+        "residual_soft_radius": 4.0,
+        "response_features": 29,
+        "relative_cfo_alias_period_hz": 1250000,
+        "reference_branch_flat_gain_phase_quotient": true,
+        "whole_model_invariant": false,
+        "raw_identity_path_retained": true,
+        "rx_arbitrary_channel_invariant": false,
+        "iq_convention_identified": false,
+        "hardware_parameter_estimation": false,
+        "initial_residual_gain": 0.0,
+        "learned_frontend_parameters": 0,
+        "interpretation": "Relative received in-band transfer/quality/CFO; RX/channel/equalizer remain confounds"
+      },
+      "frozen_synthetic": {
+        "status": "FROZEN_SYNTHETIC_DIAGNOSTIC_COMPLETE",
+        "reference": "https://raw.githubusercontent.com/bastibl/gr-ieee802-11/ad0598e4a874f4b8e1f391a1e0323e80df2b34ff/examples/wifi_phy_hier.grc",
+        "synthetic_only": true,
+        "training_augmentation": false,
+        "formal_data_access": false,
+        "target_access": false,
+        "model_updated": false,
+        "hardware_parameter_recovery": false,
+        "identity_accuracy": "N/A: synthetic settings are not source TX classes",
+        "simulated_chain": "100Msps steady L-STF -> TX cubic/image/memory -> causal periodic FIR channel -> RX gain/image/cubic -> retain12occupiedtones -> decimate25Msps -> relative CFO -> packetRMS",
+        "exact_wisig_equalizer": false,
+        "onset_transient_simulated": false,
+        "noise_simulated": false,
+        "physical_parameters": {
+          "tx": [
+            {
+              "name": "ideal",
+              "cubic": [
+                0.0,
+                0.0
+              ],
+              "image": [
+                0.0,
+                0.0
+              ],
+              "memory_cubic": [
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "name": "tx_am_am",
+              "cubic": [
+                -0.03,
+                0.0
+              ],
+              "image": [
+                0.0,
+                0.0
+              ],
+              "memory_cubic": [
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "name": "tx_first_order_am_pm",
+              "cubic": [
+                0.0,
+                0.03
+              ],
+              "image": [
+                0.0,
+                0.0
+              ],
+              "memory_cubic": [
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "name": "tx_iq_image",
+              "cubic": [
+                0.0,
+                0.0
+              ],
+              "image": [
+                0.02,
+                0.02
+              ],
+              "memory_cubic": [
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "name": "tx_cubic_memory",
+              "cubic": [
+                0.0,
+                0.0
+              ],
+              "image": [
+                0.0,
+                0.0
+              ],
+              "memory_cubic": [
+                0.0,
+                0.02
+              ]
+            }
+          ],
+          "rx": [
+            {
+              "name": "identity",
+              "gain": [
+                1.0,
+                0.0
+              ],
+              "tap": [
+                0.0,
+                0.0
+              ],
+              "delay": 1,
+              "image": [
+                0.0,
+                0.0
+              ],
+              "cubic": [
+                0.0,
+                0.0
+              ],
+              "cfo_hz": 0.0
+            },
+            {
+              "name": "flat_phase_gain",
+              "gain": [
+                0.9687267230483316,
+                0.8669305255048073
+              ],
+              "tap": [
+                0.0,
+                0.0
+              ],
+              "delay": 1,
+              "image": [
+                0.0,
+                0.0
+              ],
+              "cubic": [
+                0.0,
+                0.0
+              ],
+              "cfo_hz": 0.0
+            },
+            {
+              "name": "relative_cfo",
+              "gain": [
+                1.0,
+                0.0
+              ],
+              "tap": [
+                0.0,
+                0.0
+              ],
+              "delay": 1,
+              "image": [
+                0.0,
+                0.0
+              ],
+              "cubic": [
+                0.0,
+                0.0
+              ],
+              "cfo_hz": 80000.0
+            },
+            {
+              "name": "lti_channel",
+              "gain": [
+                1.0,
+                0.0
+              ],
+              "tap": [
+                0.15,
+                0.08
+              ],
+              "delay": 1,
+              "image": [
+                0.0,
+                0.0
+              ],
+              "cubic": [
+                0.0,
+                0.0
+              ],
+              "cfo_hz": 0.0
+            },
+            {
+              "name": "rx_iq_image",
+              "gain": [
+                1.0,
+                0.0
+              ],
+              "tap": [
+                0.0,
+                0.0
+              ],
+              "delay": 1,
+              "image": [
+                0.02,
+                0.02
+              ],
+              "cubic": [
+                0.0,
+                0.0
+              ],
+              "cfo_hz": 0.0
+            },
+            {
+              "name": "rx_cubic",
+              "gain": [
+                1.0,
+                0.0
+              ],
+              "tap": [
+                0.0,
+                0.0
+              ],
+              "delay": 1,
+              "image": [
+                0.0,
+                0.0
+              ],
+              "cubic": [
+                -0.03,
+                0.0
+              ],
+              "cfo_hz": 0.0
+            }
+          ],
+          "tx_memory_delay_native_samples": 2
+        },
+        "records": [
+          {
+            "tx": "ideal",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "relative_transfer_distance_same_tx_identity_rx": 0.0,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              -0.1177612692117691,
+              1.4031518697738647,
+              1.5085031986236572,
+              0.12790918350219727,
+              -1.7716209888458252,
+              -0.9373381733894348
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 0.29402223229408264,
+            "relative_transfer_distance_same_tx_identity_rx": 1.1250129006157294e-07,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              0.2383829951286316,
+              0.5859048366546631,
+              1.0075947046279907,
+              0.37145599722862244,
+              -0.6386954188346863,
+              -1.279512643814087
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.36718690395355225,
+            "relative_transfer_distance_same_tx_identity_rx": 1.3183172598019155e-07,
+            "response_cfo_hz": 80000.0,
+            "source_classifier_logits": [
+              0.6428999900817871,
+              0.4547734558582306,
+              1.2506686449050903,
+              -0.10218889266252518,
+              -1.050278902053833,
+              -1.8790072202682495
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.08494006097316742,
+            "relative_transfer_distance_same_tx_identity_rx": 0.09611231088638306,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              0.17347466945648193,
+              1.4893580675125122,
+              1.1348859071731567,
+              0.2963297367095947,
+              -1.7686965465545654,
+              -0.781494677066803
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.023402849212288857,
+            "relative_transfer_distance_same_tx_identity_rx": 0.028284240514039993,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              -0.10762564837932587,
+              1.3683595657348633,
+              1.5812369585037231,
+              0.08698560297489166,
+              -1.7182986736297607,
+              -0.823178768157959
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.004562849644571543,
+            "relative_transfer_distance_same_tx_identity_rx": 0.005733185447752476,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              -0.1198415458202362,
+              1.4107788801193237,
+              1.52559232711792,
+              0.09914718568325043,
+              -1.7677161693572998,
+              -0.9322345852851868
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "relative_transfer_distance_same_tx_identity_rx": 0.0,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              -0.11984221637248993,
+              1.410779356956482,
+              1.5255919694900513,
+              0.09914685040712357,
+              -1.7677162885665894,
+              -0.9322349429130554
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 0.293781578540802,
+            "relative_transfer_distance_same_tx_identity_rx": 1.8517569344567164e-07,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              0.24141786992549896,
+              0.6071864366531372,
+              1.0190069675445557,
+              0.3649246096611023,
+              -0.6396243572235107,
+              -1.271363615989685
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.36697477102279663,
+            "relative_transfer_distance_same_tx_identity_rx": 1.8950410662910144e-07,
+            "response_cfo_hz": 80000.0,
+            "source_classifier_logits": [
+              0.6565001606941223,
+              0.45629069209098816,
+              1.259540319442749,
+              -0.1015697792172432,
+              -1.0415288209915161,
+              -1.8637909889221191
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.08573513478040695,
+            "relative_transfer_distance_same_tx_identity_rx": 0.09593497961759567,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              0.17269402742385864,
+              1.4962830543518066,
+              1.140411615371704,
+              0.28349411487579346,
+              -1.7756956815719604,
+              -0.7801433801651001
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.02210216037929058,
+            "relative_transfer_distance_same_tx_identity_rx": 0.02828553318977356,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              -0.10379746556282043,
+              1.3717210292816162,
+              1.5899277925491333,
+              0.06900239735841751,
+              -1.7224678993225098,
+              -0.823150098323822
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.003976142965257168,
+            "relative_transfer_distance_same_tx_identity_rx": 0.0050804102793335915,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              -0.121397003531456,
+              1.414074182510376,
+              1.5381808280944824,
+              0.07628325372934341,
+              -1.7658987045288086,
+              -0.9283711910247803
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "relative_transfer_distance_same_tx_identity_rx": 0.0,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              -0.07921390235424042,
+              1.388153076171875,
+              1.4496231079101562,
+              0.19275343418121338,
+              -1.713118076324463,
+              -0.9630289077758789
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 0.3072642385959625,
+            "relative_transfer_distance_same_tx_identity_rx": 1.9381208460345078e-07,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              0.22318315505981445,
+              0.3520055115222931,
+              1.0641871690750122,
+              0.3110544979572296,
+              -0.536098837852478,
+              -1.251069188117981
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.3644016683101654,
+            "relative_transfer_distance_same_tx_identity_rx": 1.649114125257256e-07,
+            "response_cfo_hz": 80000.0,
+            "source_classifier_logits": [
+              0.6381856203079224,
+              0.46449288725852966,
+              1.2206932306289673,
+              -0.08533165603876114,
+              -1.0485659837722778,
+              -1.8765789270401
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.08399426937103271,
+            "relative_transfer_distance_same_tx_identity_rx": 0.09611859172582626,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              0.276917964220047,
+              1.37969970703125,
+              1.1331660747528076,
+              0.3097894489765167,
+              -1.6875954866409302,
+              -0.8016809821128845
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.023520445451140404,
+            "relative_transfer_distance_same_tx_identity_rx": 0.028285538777709007,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              -0.06410211324691772,
+              1.3460372686386108,
+              1.5382611751556396,
+              0.13859522342681885,
+              -1.6703529357910156,
+              -0.8424651026725769
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.005403471179306507,
+            "relative_transfer_distance_same_tx_identity_rx": 0.0057508922182023525,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              -0.08373219519853592,
+              1.3959081172943115,
+              1.4720466136932373,
+              0.16475322842597961,
+              -1.7079370021820068,
+              -0.9483684301376343
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "relative_transfer_distance_same_tx_identity_rx": 0.0,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              -0.10762564837932587,
+              1.3683595657348633,
+              1.5812369585037231,
+              0.08698560297489166,
+              -1.7182986736297607,
+              -0.823178768157959
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 0.2954612076282501,
+            "relative_transfer_distance_same_tx_identity_rx": 1.4432495731853123e-07,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              0.22991828620433807,
+              0.5334078073501587,
+              1.2039897441864014,
+              0.247833713889122,
+              -0.5829539895057678,
+              -1.179043173789978
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.3796286880970001,
+            "relative_transfer_distance_same_tx_identity_rx": 1.6851878115176078e-07,
+            "response_cfo_hz": 80000.0,
+            "source_classifier_logits": [
+              0.8604223728179932,
+              0.4567500352859497,
+              1.4504640102386475,
+              -0.20263658463954926,
+              -0.8654313683509827,
+              -1.6434545516967773
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.09389954060316086,
+            "relative_transfer_distance_same_tx_identity_rx": 0.09661120921373367,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              0.21431341767311096,
+              1.4988009929656982,
+              1.1834443807601929,
+              0.29280486702919006,
+              -1.7444003820419312,
+              -0.7250272631645203
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.02071903645992279,
+            "relative_transfer_distance_same_tx_identity_rx": 0.02823903039097786,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              -0.06672430783510208,
+              1.3249839544296265,
+              1.6110966205596924,
+              0.09953107684850693,
+              -1.6989423036575317,
+              -0.7389558553695679
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0037155039608478546,
+            "relative_transfer_distance_same_tx_identity_rx": 0.006021043751388788,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              -0.10291691869497299,
+              1.371937870979309,
+              1.5858469009399414,
+              0.06909728050231934,
+              -1.723528504371643,
+              -0.8272215723991394
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "relative_transfer_distance_same_tx_identity_rx": 0.0,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              -0.18014571070671082,
+              1.4634802341461182,
+              1.4569957256317139,
+              0.09394660592079163,
+              -1.7844041585922241,
+              -0.9327372908592224
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 0.2960132360458374,
+            "relative_transfer_distance_same_tx_identity_rx": 1.5574896394809912e-07,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              0.13940440118312836,
+              0.7146162390708923,
+              1.1040923595428467,
+              0.2517640292644501,
+              -0.597971498966217,
+              -1.2252249717712402
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.3583660125732422,
+            "relative_transfer_distance_same_tx_identity_rx": 1.334385046902753e-07,
+            "response_cfo_hz": 80000.0,
+            "source_classifier_logits": [
+              0.5983847379684448,
+              0.41048502922058105,
+              1.1476234197616577,
+              -0.01250426284968853,
+              -1.1316380500793457,
+              -1.9796769618988037
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0826013833284378,
+            "relative_transfer_distance_same_tx_identity_rx": 0.09714633226394653,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              0.10397281497716904,
+              1.615939974784851,
+              1.0887751579284668,
+              0.29746419191360474,
+              -1.8003814220428467,
+              -0.8163784742355347
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.02266860194504261,
+            "relative_transfer_distance_same_tx_identity_rx": 0.0282899197191,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              -0.148708313703537,
+              1.4301992654800415,
+              1.5233741998672485,
+              0.06491951644420624,
+              -1.7328081130981445,
+              -0.8118931651115417
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.004499719478189945,
+            "relative_transfer_distance_same_tx_identity_rx": 0.00576461898162961,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              -0.18225347995758057,
+              1.4708136320114136,
+              1.4699137210845947,
+              0.07024772465229034,
+              -1.784827709197998,
+              -0.9270046353340149
+            ]
+          }
+        ],
+        "isolated_tx_changes": [
+          {
+            "tx": "tx_am_am",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.004562849644571543,
+            "relative_transfer_distance_to_ideal_tx": 0.005733185447752476
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.020228266716003418,
+            "relative_transfer_distance_to_ideal_tx": 0.005524132400751114
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.023402849212288857,
+            "relative_transfer_distance_to_ideal_tx": 0.028284240514039993
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.01783251017332077,
+            "relative_transfer_distance_to_ideal_tx": 0.023191645741462708
+          }
+        ],
+        "confounds": {
+          "iq_tx_rx_waveform_max_error": 0.0,
+          "cubic_tx_rx_waveform_max_error": 3.3306690738754696e-16
+        },
+        "learned_response_gain_abs_mean": 0.00039521901635453105,
+        "claim": "Whole embedding sensitivity under fixed TX/RX cascade, with identical-observation counterexamples; no calibrated TX or universal RX invariance claim"
+      }
+    },
+    {
+      "seed": 2026092704,
+      "losses": [
+        {
+          "kind": "random",
+          "ce": 1.1697666645050049
+        },
+        {
+          "kind": "weak",
+          "ce": 1.9546279907226562
+        },
+        {
+          "kind": "constant",
+          "ce": 2.1881656646728516
+        }
+      ],
+      "contract": {
+        "mode": "reference_response",
+        "reference": "https://raw.githubusercontent.com/bastibl/gr-ieee802-11/ad0598e4a874f4b8e1f391a1e0323e80df2b34ff/examples/wifi_phy_hier.grc",
+        "nominal_wifi_bandwidth_hz": 20000000,
+        "sample_rate_hz": 25000000,
+        "window": [
+          80,
+          160
+        ],
+        "period_samples": 20,
+        "cycles": 4,
+        "delay_grid_count": 320,
+        "delay_grid_step_samples": 0.0625,
+        "epsilon": 1e-06,
+        "residual_soft_radius": 4.0,
+        "response_features": 29,
+        "relative_cfo_alias_period_hz": 1250000,
+        "reference_branch_flat_gain_phase_quotient": true,
+        "whole_model_invariant": false,
+        "raw_identity_path_retained": true,
+        "rx_arbitrary_channel_invariant": false,
+        "iq_convention_identified": false,
+        "hardware_parameter_estimation": false,
+        "initial_residual_gain": 0.0,
+        "learned_frontend_parameters": 0,
+        "interpretation": "Relative received in-band transfer/quality/CFO; RX/channel/equalizer remain confounds"
+      },
+      "frozen_synthetic": {
+        "status": "FROZEN_SYNTHETIC_DIAGNOSTIC_COMPLETE",
+        "reference": "https://raw.githubusercontent.com/bastibl/gr-ieee802-11/ad0598e4a874f4b8e1f391a1e0323e80df2b34ff/examples/wifi_phy_hier.grc",
+        "synthetic_only": true,
+        "training_augmentation": false,
+        "formal_data_access": false,
+        "target_access": false,
+        "model_updated": false,
+        "hardware_parameter_recovery": false,
+        "identity_accuracy": "N/A: synthetic settings are not source TX classes",
+        "simulated_chain": "100Msps steady L-STF -> TX cubic/image/memory -> causal periodic FIR channel -> RX gain/image/cubic -> retain12occupiedtones -> decimate25Msps -> relative CFO -> packetRMS",
+        "exact_wisig_equalizer": false,
+        "onset_transient_simulated": false,
+        "noise_simulated": false,
+        "physical_parameters": {
+          "tx": [
+            {
+              "name": "ideal",
+              "cubic": [
+                0.0,
+                0.0
+              ],
+              "image": [
+                0.0,
+                0.0
+              ],
+              "memory_cubic": [
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "name": "tx_am_am",
+              "cubic": [
+                -0.03,
+                0.0
+              ],
+              "image": [
+                0.0,
+                0.0
+              ],
+              "memory_cubic": [
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "name": "tx_first_order_am_pm",
+              "cubic": [
+                0.0,
+                0.03
+              ],
+              "image": [
+                0.0,
+                0.0
+              ],
+              "memory_cubic": [
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "name": "tx_iq_image",
+              "cubic": [
+                0.0,
+                0.0
+              ],
+              "image": [
+                0.02,
+                0.02
+              ],
+              "memory_cubic": [
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "name": "tx_cubic_memory",
+              "cubic": [
+                0.0,
+                0.0
+              ],
+              "image": [
+                0.0,
+                0.0
+              ],
+              "memory_cubic": [
+                0.0,
+                0.02
+              ]
+            }
+          ],
+          "rx": [
+            {
+              "name": "identity",
+              "gain": [
+                1.0,
+                0.0
+              ],
+              "tap": [
+                0.0,
+                0.0
+              ],
+              "delay": 1,
+              "image": [
+                0.0,
+                0.0
+              ],
+              "cubic": [
+                0.0,
+                0.0
+              ],
+              "cfo_hz": 0.0
+            },
+            {
+              "name": "flat_phase_gain",
+              "gain": [
+                0.9687267230483316,
+                0.8669305255048073
+              ],
+              "tap": [
+                0.0,
+                0.0
+              ],
+              "delay": 1,
+              "image": [
+                0.0,
+                0.0
+              ],
+              "cubic": [
+                0.0,
+                0.0
+              ],
+              "cfo_hz": 0.0
+            },
+            {
+              "name": "relative_cfo",
+              "gain": [
+                1.0,
+                0.0
+              ],
+              "tap": [
+                0.0,
+                0.0
+              ],
+              "delay": 1,
+              "image": [
+                0.0,
+                0.0
+              ],
+              "cubic": [
+                0.0,
+                0.0
+              ],
+              "cfo_hz": 80000.0
+            },
+            {
+              "name": "lti_channel",
+              "gain": [
+                1.0,
+                0.0
+              ],
+              "tap": [
+                0.15,
+                0.08
+              ],
+              "delay": 1,
+              "image": [
+                0.0,
+                0.0
+              ],
+              "cubic": [
+                0.0,
+                0.0
+              ],
+              "cfo_hz": 0.0
+            },
+            {
+              "name": "rx_iq_image",
+              "gain": [
+                1.0,
+                0.0
+              ],
+              "tap": [
+                0.0,
+                0.0
+              ],
+              "delay": 1,
+              "image": [
+                0.02,
+                0.02
+              ],
+              "cubic": [
+                0.0,
+                0.0
+              ],
+              "cfo_hz": 0.0
+            },
+            {
+              "name": "rx_cubic",
+              "gain": [
+                1.0,
+                0.0
+              ],
+              "tap": [
+                0.0,
+                0.0
+              ],
+              "delay": 1,
+              "image": [
+                0.0,
+                0.0
+              ],
+              "cubic": [
+                -0.03,
+                0.0
+              ],
+              "cfo_hz": 0.0
+            }
+          ],
+          "tx_memory_delay_native_samples": 2
+        },
+        "records": [
+          {
+            "tx": "ideal",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "relative_transfer_distance_same_tx_identity_rx": 0.0,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              0.0596194714307785,
+              1.1812260150909424,
+              -2.431422233581543,
+              1.7416751384735107,
+              -2.3739566802978516,
+              -2.3030872344970703
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 0.19395655393600464,
+            "relative_transfer_distance_same_tx_identity_rx": 1.1250129006157294e-07,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              -0.38365456461906433,
+              1.3860843181610107,
+              -1.9237247705459595,
+              1.568489670753479,
+              -3.3853893280029297,
+              -2.1517632007598877
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.25469115376472473,
+            "relative_transfer_distance_same_tx_identity_rx": 1.3183172598019155e-07,
+            "response_cfo_hz": 80000.0,
+            "source_classifier_logits": [
+              -0.2270909547805786,
+              0.8375930786132812,
+              -2.329033136367798,
+              1.776368498802185,
+              -2.47495698928833,
+              -1.7119321823120117
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.06891325861215591,
+            "relative_transfer_distance_same_tx_identity_rx": 0.09611231088638306,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              -0.010701343417167664,
+              1.215433955192566,
+              -2.4208922386169434,
+              1.9078807830810547,
+              -2.3375816345214844,
+              -2.293764352798462
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.029774772003293037,
+            "relative_transfer_distance_same_tx_identity_rx": 0.028284240514039993,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              0.0842835009098053,
+              1.0986328125,
+              -2.4462954998016357,
+              1.701951265335083,
+              -2.3702924251556396,
+              -2.264007091522217
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.00816910620778799,
+            "relative_transfer_distance_same_tx_identity_rx": 0.005733185447752476,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              0.07013160735368729,
+              1.1634432077407837,
+              -2.4328396320343018,
+              1.7443325519561768,
+              -2.359445333480835,
+              -2.2963907718658447
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "relative_transfer_distance_same_tx_identity_rx": 0.0,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              0.07013127207756042,
+              1.1634432077407837,
+              -2.43284010887146,
+              1.7443325519561768,
+              -2.3594448566436768,
+              -2.2963905334472656
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 0.19313356280326843,
+            "relative_transfer_distance_same_tx_identity_rx": 1.8517569344567164e-07,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              -0.36127495765686035,
+              1.355362057685852,
+              -1.9209518432617188,
+              1.5835518836975098,
+              -3.370222806930542,
+              -2.1517508029937744
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.2544653117656708,
+            "relative_transfer_distance_same_tx_identity_rx": 1.8950410662910144e-07,
+            "response_cfo_hz": 80000.0,
+            "source_classifier_logits": [
+              -0.23807427287101746,
+              0.8246260285377502,
+              -2.3255128860473633,
+              1.777350664138794,
+              -2.490442991256714,
+              -1.7043907642364502
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.06618363410234451,
+            "relative_transfer_distance_same_tx_identity_rx": 0.09593497961759567,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              -0.014657936990261078,
+              1.2159487009048462,
+              -2.431863307952881,
+              1.9038774967193604,
+              -2.3226304054260254,
+              -2.295147657394409
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.025956187397241592,
+            "relative_transfer_distance_same_tx_identity_rx": 0.02828553318977356,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              0.09112805128097534,
+              1.1003742218017578,
+              -2.452381134033203,
+              1.7045962810516357,
+              -2.3590221405029297,
+              -2.258342742919922
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.006104253698140383,
+            "relative_transfer_distance_same_tx_identity_rx": 0.0050804102793335915,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              0.07811788469552994,
+              1.1517225503921509,
+              -2.4369797706604004,
+              1.7472894191741943,
+              -2.3469367027282715,
+              -2.2901711463928223
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "relative_transfer_distance_same_tx_identity_rx": 0.0,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              0.06278581917285919,
+              1.279783844947815,
+              -2.3806021213531494,
+              1.7686322927474976,
+              -2.418761968612671,
+              -2.2970383167266846
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 0.19648826122283936,
+            "relative_transfer_distance_same_tx_identity_rx": 1.9381208460345078e-07,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              -0.40753331780433655,
+              1.326987385749817,
+              -1.954799771308899,
+              1.5121369361877441,
+              -3.358006000518799,
+              -2.127533435821533
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.2518267333507538,
+            "relative_transfer_distance_same_tx_identity_rx": 1.649114125257256e-07,
+            "response_cfo_hz": 80000.0,
+            "source_classifier_logits": [
+              -0.2560332715511322,
+              0.8183799982070923,
+              -2.322815179824829,
+              1.7970402240753174,
+              -2.464512348175049,
+              -1.7165381908416748
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0703449621796608,
+            "relative_transfer_distance_same_tx_identity_rx": 0.09611859172582626,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              -0.005342736840248108,
+              1.250995397567749,
+              -2.273601531982422,
+              1.9299709796905518,
+              -2.351940155029297,
+              -2.300492525100708
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.03360665217041969,
+            "relative_transfer_distance_same_tx_identity_rx": 0.028285538777709007,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              0.09600955992937088,
+              1.1581369638442993,
+              -2.375856637954712,
+              1.7535158395767212,
+              -2.430576801300049,
+              -2.23553204536438
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.010062453337013721,
+            "relative_transfer_distance_same_tx_identity_rx": 0.0057508922182023525,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              0.0778328999876976,
+              1.2536133527755737,
+              -2.3718438148498535,
+              1.775567650794983,
+              -2.404087781906128,
+              -2.2886109352111816
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "relative_transfer_distance_same_tx_identity_rx": 0.0,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              0.0842835009098053,
+              1.0986328125,
+              -2.4462954998016357,
+              1.701951265335083,
+              -2.3702924251556396,
+              -2.264007091522217
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 0.1910509467124939,
+            "relative_transfer_distance_same_tx_identity_rx": 1.4432495731853123e-07,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              -0.38288062810897827,
+              1.2432836294174194,
+              -2.0861926078796387,
+              1.6546393632888794,
+              -3.3613319396972656,
+              -2.0890822410583496
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.27129417657852173,
+            "relative_transfer_distance_same_tx_identity_rx": 1.6851878115176078e-07,
+            "response_cfo_hz": 80000.0,
+            "source_classifier_logits": [
+              -0.37001124024391174,
+              0.8023889064788818,
+              -2.3552112579345703,
+              1.8334178924560547,
+              -2.6337642669677734,
+              -1.5749796628952026
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.061643898487091064,
+            "relative_transfer_distance_same_tx_identity_rx": 0.09661120921373367,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              -0.01665998250246048,
+              1.1724573373794556,
+              -2.42138934135437,
+              1.8672537803649902,
+              -2.3953802585601807,
+              -2.2293524742126465
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.021275527775287628,
+            "relative_transfer_distance_same_tx_identity_rx": 0.02823903039097786,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              0.0683007761836052,
+              1.0679510831832886,
+              -2.466193675994873,
+              1.665951132774353,
+              -2.3921475410461426,
+              -2.22166109085083
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.004213798325508833,
+            "relative_transfer_distance_same_tx_identity_rx": 0.006021043751388788,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              0.09025007486343384,
+              1.101096510887146,
+              -2.4542624950408936,
+              1.7063968181610107,
+              -2.3583807945251465,
+              -2.260002613067627
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "relative_transfer_distance_same_tx_identity_rx": 0.0,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              0.05492236465215683,
+              1.1859800815582275,
+              -2.4752233028411865,
+              1.7195570468902588,
+              -2.3293890953063965,
+              -2.304811954498291
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 0.1948213279247284,
+            "relative_transfer_distance_same_tx_identity_rx": 1.5574896394809912e-07,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              -0.40737977623939514,
+              1.4353021383285522,
+              -2.018336772918701,
+              1.5388015508651733,
+              -3.3657994270324707,
+              -2.1286373138427734
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.24707470834255219,
+            "relative_transfer_distance_same_tx_identity_rx": 1.334385046902753e-07,
+            "response_cfo_hz": 80000.0,
+            "source_classifier_logits": [
+              -0.19191217422485352,
+              0.8551201224327087,
+              -2.300804853439331,
+              1.7447454929351807,
+              -2.4318695068359375,
+              -1.728985071182251
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.07750749588012695,
+            "relative_transfer_distance_same_tx_identity_rx": 0.09714633226394653,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              -0.03360271453857422,
+              1.1565347909927368,
+              -2.427842140197754,
+              1.9487998485565186,
+              -2.3113789558410645,
+              -2.2823469638824463
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.02925047278404236,
+            "relative_transfer_distance_same_tx_identity_rx": 0.0282899197191,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              0.08083898574113846,
+              1.103772521018982,
+              -2.4703927040100098,
+              1.6941132545471191,
+              -2.338090181350708,
+              -2.2621443271636963
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.005512039177119732,
+            "relative_transfer_distance_same_tx_identity_rx": 0.00576461898162961,
+            "response_cfo_hz": 0.0,
+            "source_classifier_logits": [
+              0.06779193878173828,
+              1.174535870552063,
+              -2.477614641189575,
+              1.7291940450668335,
+              -2.3233048915863037,
+              -2.2924211025238037
+            ]
+          }
+        ],
+        "isolated_tx_changes": [
+          {
+            "tx": "tx_am_am",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.00816910620778799,
+            "relative_transfer_distance_to_ideal_tx": 0.005733185447752476
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.015897667035460472,
+            "relative_transfer_distance_to_ideal_tx": 0.005524132400751114
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.029774772003293037,
+            "relative_transfer_distance_to_ideal_tx": 0.028284240514039993
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.014391608536243439,
+            "relative_transfer_distance_to_ideal_tx": 0.023191645741462708
+          }
+        ],
+        "confounds": {
+          "iq_tx_rx_waveform_max_error": 0.0,
+          "cubic_tx_rx_waveform_max_error": 3.3306690738754696e-16
+        },
+        "learned_response_gain_abs_mean": 0.0003858941199723631,
+        "claim": "Whole embedding sensitivity under fixed TX/RX cascade, with identical-observation counterexamples; no calibrated TX or universal RX invariance claim"
+      }
+    }
+  ]
+}

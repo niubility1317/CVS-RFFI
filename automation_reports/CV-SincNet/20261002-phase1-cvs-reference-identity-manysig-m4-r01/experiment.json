@@ -1,0 +1,386 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261002-phase1-cvs-reference-identity-manysig-m4-r01",
+  "group_id": "cvs-clean-reference-response-ce",
+  "display_name": "CVS 已知激励相对响应：纯 CE 四 seed 源域研发",
+  "description": "已知 L-STF 复响应/质量/相对 CFO 小分支，零门控接入原残差身份核心；固定原物理划分、从零训练、仅普通 CE、无增强或域骨干。四源记录与原残差四源控制比较，选中后默认 clean 测试。",
+  "kind": "cvs",
+  "stage": "Phase1-CVS-source-research",
+  "aliases": [],
+  "tags": [
+    "cvs",
+    "ce_only",
+    "clean_only",
+    "no_augmentation",
+    "performance_priority",
+    "known_excitation",
+    "source_selection",
+    "rff_physics"
+  ],
+  "comparison_group_id": "manysig-six-source-rx13468-day123-luv076330-residual-noeq-v1",
+  "parent_run_ids": [
+    "20261001-phase1-cvs-residual-identity-manysig-m8-r01",
+    "20261002-diagnostic-rff-known-excitation-source-manysig-m1-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户授权持续优化基础网络，性能第一，真正 RFF physics aware；普通 CE、无增强、clean-only，每次发布默认完成测试。",
+  "code": {
+    "commit": "e4533b409086fb443ad32d8ec8ce38f105d3de38",
+    "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_identity_20261002_r01",
+    "architecture_base_commit": "583be084d91dc1fd8540bbf1da33b61b91b38975",
+    "note": "Preparation base; independently record actual immutable release commit after launch."
+  },
+  "data": {
+    "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+    "version": "existing_N607_ManySig_6tx_12rx_4day",
+    "representation": "equalized=1; center256; unit packet RMS; fs=25000000Hz",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#role_ids",
+    "label_map_ref": "each row/source_contract.json#classes",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "ManySig.tx_list: all6; actual physical class strings exported at runtime",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": null,
+    "support_query_ref": null,
+    "leo_config_ref": "baselines/common/practical_source.py:PracticalResidualAugment"
+  },
+  "permissions": {
+    "regime": "source_only_CVS",
+    "query_use": "source matrix never opens target; later frozen clean inference and independent truth-last scorer only",
+    "external_method_exception": null,
+    "claim_scope": "Fixed clean-only architecture plus native classifier comparison; previously exposed target benchmark disclosed; no clean score driven architecture tuning or selective retraining"
+  },
+  "checkpoint": {
+    "initialization": "scratch",
+    "sources": [],
+    "provenance_verdict": "SCRATCH_NO_INHERITANCE",
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "selection_rule": "Own scratch E200. Fourseed 0.5V+0.5worstsourceRX; original residual sourcecontrol metrics only. No target input or inherited weights."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/cvs-reference-identity-20261002",
+    "gpu_policy": "Only free capacity; at most two total training jobs/GPU and >=12GB free; preserve others",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-reference-identity-manysig-m4-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-reference-identity-manysig-m4-r01",
+    "local_artifact_root": "automation_reports/CV-SincNet/20261002-phase1-cvs-reference-identity-manysig-m4-r01",
+    "launch_command": "python -m experiments.cvs_reference_identity.publish --output local_artifacts/cvs_reference_identity_20261002_r01",
+    "stop_rule": "Only own affected row fails on nonfinite/permissions/output collision/nonzero exit; preserve all artifacts; no retry, low-score stop or unrelated process intervention"
+  },
+  "expected_artifacts": [
+    "last.pt",
+    "initialization.json",
+    "source_contract.json",
+    "resolved_config.json",
+    "completion.json",
+    "resource_profile.json",
+    "step_metrics.jsonl",
+    "epoch_metrics.jsonl",
+    "epoch_metrics.csv",
+    "source_final_diagnostics.json",
+    "source_physical_diagnostics.json",
+    "source_selection.json",
+    "conditional independent clean test"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source_V_accuracy",
+      "worst_source_RX_accuracy",
+      "clean_ce",
+      "gradient_norm",
+      "parameters",
+      "gradient_used_parameters",
+      "conv_linear_MACs",
+      "FFT_calls",
+      "train_ms",
+      "inference_ms",
+      "peak_cuda_allocated_bytes"
+    ],
+    "dimensions": [
+      "architecture",
+      "model_seed",
+      "source_receiver"
+    ],
+    "prediction_ref": "N/A until source_selection.json is frozen",
+    "scorer_ref": "N/A: source-only release does not score target",
+    "primary": "Complete200epoch sourceCE/V/worstRX and fixedE200 performancefirst ranking; finalTXRXday/embedding geometry; fixed controlled TX/RX cascade diagnosis",
+    "later_test": "New source-selected candidate automatically receives4clean predictions+20frozen controls in 20261002-phase1-cvs-reference-clean-manysig-m24-r01. If original residual wins, retain original verified test; unselected new model testN/A."
+  },
+  "rows": [
+    {
+      "row_id": "reference_response-s2026092701",
+      "method": "reference_response",
+      "purpose": "source_only_CVS_known_excitation_candidate",
+      "gpu": null,
+      "config_ref": "experiments/cvs_reference_identity/configs/reference_response-s2026092701.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-reference-identity-manysig-m4-r01/reference_response-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Model/loader RNG varies only; fixedphysicalsplit; publicreference/syntheticdiagnostic noRNG, noaugmentation/support/targetrandomness",
+      "k": null,
+      "scenario": "clean",
+      "optimizer": "AdamW+cosine",
+      "lr": 0.0002,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "E200x50;6300LperEpoch",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-reference-identity-manysig-m4-r01/reference_response-s2026092701/source",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-reference-identity-manysig-m4-r01/reference_response-s2026092701.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.cvs_reference_identity.source --config /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_identity_20261002_r01/experiments/cvs_reference_identity/configs/reference_response-s2026092701.json",
+      "expected_artifacts": [
+        "last.pt",
+        "initialization.json",
+        "source_contract.json",
+        "resolved_config.json",
+        "completion.json",
+        "resource_profile.json",
+        "step_metrics.jsonl",
+        "epoch_metrics.jsonl",
+        "epoch_metrics.csv",
+        "source_final_diagnostics.json",
+        "source_physical_diagnostics.json"
+      ]
+    },
+    {
+      "row_id": "reference_response-s2026092702",
+      "method": "reference_response",
+      "purpose": "source_only_CVS_known_excitation_candidate",
+      "gpu": null,
+      "config_ref": "experiments/cvs_reference_identity/configs/reference_response-s2026092702.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-reference-identity-manysig-m4-r01/reference_response-s2026092702/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Model/loader RNG varies only; fixedphysicalsplit; publicreference/syntheticdiagnostic noRNG, noaugmentation/support/targetrandomness",
+      "k": null,
+      "scenario": "clean",
+      "optimizer": "AdamW+cosine",
+      "lr": 0.0002,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "E200x50;6300LperEpoch",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-reference-identity-manysig-m4-r01/reference_response-s2026092702/source",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-reference-identity-manysig-m4-r01/reference_response-s2026092702.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.cvs_reference_identity.source --config /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_identity_20261002_r01/experiments/cvs_reference_identity/configs/reference_response-s2026092702.json",
+      "expected_artifacts": [
+        "last.pt",
+        "initialization.json",
+        "source_contract.json",
+        "resolved_config.json",
+        "completion.json",
+        "resource_profile.json",
+        "step_metrics.jsonl",
+        "epoch_metrics.jsonl",
+        "epoch_metrics.csv",
+        "source_final_diagnostics.json",
+        "source_physical_diagnostics.json"
+      ]
+    },
+    {
+      "row_id": "reference_response-s2026092703",
+      "method": "reference_response",
+      "purpose": "source_only_CVS_known_excitation_candidate",
+      "gpu": null,
+      "config_ref": "experiments/cvs_reference_identity/configs/reference_response-s2026092703.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-reference-identity-manysig-m4-r01/reference_response-s2026092703/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Model/loader RNG varies only; fixedphysicalsplit; publicreference/syntheticdiagnostic noRNG, noaugmentation/support/targetrandomness",
+      "k": null,
+      "scenario": "clean",
+      "optimizer": "AdamW+cosine",
+      "lr": 0.0002,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "E200x50;6300LperEpoch",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-reference-identity-manysig-m4-r01/reference_response-s2026092703/source",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-reference-identity-manysig-m4-r01/reference_response-s2026092703.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.cvs_reference_identity.source --config /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_identity_20261002_r01/experiments/cvs_reference_identity/configs/reference_response-s2026092703.json",
+      "expected_artifacts": [
+        "last.pt",
+        "initialization.json",
+        "source_contract.json",
+        "resolved_config.json",
+        "completion.json",
+        "resource_profile.json",
+        "step_metrics.jsonl",
+        "epoch_metrics.jsonl",
+        "epoch_metrics.csv",
+        "source_final_diagnostics.json",
+        "source_physical_diagnostics.json"
+      ]
+    },
+    {
+      "row_id": "reference_response-s2026092704",
+      "method": "reference_response",
+      "purpose": "source_only_CVS_known_excitation_candidate",
+      "gpu": null,
+      "config_ref": "experiments/cvs_reference_identity/configs/reference_response-s2026092704.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-reference-identity-manysig-m4-r01/reference_response-s2026092704/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Model/loader RNG varies only; fixedphysicalsplit; publicreference/syntheticdiagnostic noRNG, noaugmentation/support/targetrandomness",
+      "k": null,
+      "scenario": "clean",
+      "optimizer": "AdamW+cosine",
+      "lr": 0.0002,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "E200x50;6300LperEpoch",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-reference-identity-manysig-m4-r01/reference_response-s2026092704/source",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-reference-identity-manysig-m4-r01/reference_response-s2026092704.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.cvs_reference_identity.source --config /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_reference_identity_20261002_r01/experiments/cvs_reference_identity/configs/reference_response-s2026092704.json",
+      "expected_artifacts": [
+        "last.pt",
+        "initialization.json",
+        "source_contract.json",
+        "resolved_config.json",
+        "completion.json",
+        "resource_profile.json",
+        "step_metrics.jsonl",
+        "epoch_metrics.jsonl",
+        "epoch_metrics.csv",
+        "source_final_diagnostics.json",
+        "source_physical_diagnostics.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Architecture hypothesis docs/CVS_REFERENCE_RESPONSE_HYPOTHESIS_20261002.md; known-excitation source diagnostic provides fullL6300/V27000 evidence, not target-score design input.",
+    "Fixed public L-STF reference; finite320 delay bank;80:160 four20cycles;wrapped CFO;12 complex relative transfer coefficients+quality/coherence/coherentfraction/relativeCFO/windowpower =29 features.",
+    "Response branch has constrained flatgain/phase quotient only; raworiginalcore remains. No wholemodel invariance, arbitrarychannel/RX removal or recoveredTXhardware parameters.",
+    "Nativecore RNG draws preserved perseed;newMLP29->64->160/LN160;zero160channelresidual gate makes initialentirelogits exactly baseline. CE activates newprojection;no weights loaded.",
+    "Fixed synthetic100Msps TX->channel->RX->12toneprojection->25Msps/CFO/RMS diagnostic only; not training augmentation, not exactWiSig equalizer, not synthetic/sourceidentityaccuracy. RetainTX/RXconfounds.",
+    "ScratchE200x50,6300LperEpoch,27000Vreadonly,batch128;AdamW2e-4/wd1e-4/cosine1e-6;FP32,noclip;CEweight1;noaugmentation/domain/teacher/EMA/margin/Uuse.",
+    "Exactly8source records:4new+4immutableoriginal sourcecontrol;maximum fourseed0.5V+0.5worstRX;exacttiesV,worstRX,ConvLinearMACs,parameters,baseline/reference order. No cost tolerance band.",
+    "Full logs include measured CE/LR/gradient/method status/sourceV/time; stepJSONL and compactepochJSONL/CSV. Final sourceembeddings aggregated only.",
+    "Cost secondary; report ConvLinearMACs and separate publiccorrelator/FFT cost, bufferbytes, actual timedtraining/inference/peak.",
+    "Selectednewonly4query;original20predictions reused readonly;all24 scored truth-last afterpredictioncomplete. Exposedclean6classproxybenchmark, noLEO/SFT/newclasses. No test feedback/selective retry."
+  ],
+  "registered_at": "2026-10-01T21:00:51+00:00",
+  "status": "PLANNED",
+  "source_controls": [
+    {
+      "variant": "residual_fusion",
+      "model_seed": 2026092701,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092701/source"
+    },
+    {
+      "variant": "residual_fusion",
+      "model_seed": 2026092702,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092702/source"
+    },
+    {
+      "variant": "residual_fusion",
+      "model_seed": 2026092703,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092703/source"
+    },
+    {
+      "variant": "residual_fusion",
+      "model_seed": 2026092704,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092704/source"
+    }
+  ],
+  "test_completion_plan": {
+    "run_id": "20261002-phase1-cvs-reference-clean-manysig-m24-r01",
+    "condition": "new_candidate_selected;otherwise retain original residual test without new/unselected query",
+    "views": [
+      "clean"
+    ],
+    "query_count": 168000,
+    "registered_classes": 6,
+    "new_prediction_rows": 4,
+    "reused_rows": 20,
+    "total_rows": 24,
+    "capsule": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/capsule",
+    "physical_id_index": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/capsule/index.npz",
+    "truth": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json",
+    "retained_baseline_test_run": "20261001-phase1-cvs-selected-clean-manysig-m20-r01",
+    "baseline_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+    "candidate_universe": [
+      "residual_fusion",
+      "reference_response"
+    ],
+    "target_tx_ids": [
+      "14-10",
+      "14-7",
+      "20-15",
+      "20-19",
+      "6-15",
+      "8-20"
+    ],
+    "target_rx_ids": [
+      "1-1",
+      "14-7",
+      "2-1",
+      "20-1",
+      "7-14",
+      "7-7",
+      "8-8"
+    ],
+    "target_feedback": false,
+    "selection": "source_only"
+  }
+}
