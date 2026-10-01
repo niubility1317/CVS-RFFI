@@ -6,4 +6,4 @@
 
 |名称|记录类型|证据入口|
 |---|---|---|
-|CVS 已知激励相对响应：纯 CE 四 seed 源域研发|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-reference-identity-manysig-m4-r01/report.md)|
+|CVS 已知激励相对响应：源域预登记|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-reference-identity-manysig-m4-r01/report.md)|
