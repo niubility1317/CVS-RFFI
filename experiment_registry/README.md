@@ -1,6 +1,6 @@
 # 实验总索引
 
-更新：2026-10-01T07:40:45+00:00
+更新：2026-10-01T07:53:53+00:00
 
 先按方法/问题检索，再用run ID读取精确配置与证据。历史组数量不等于独立实验数量。
 
@@ -90,7 +90,7 @@
 |D92 E0 true256 numerical recovery: all five fixed seeds|managed_run|[打开](../automation_reports/CV-SincNet/20260928-phase2-cvs-d92-practical-manytx-m5-r02/report.md)|
 |Native comparison source training|managed_run|[打开](../automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/report.md)|
 |Native comparison paired adaptation and registration|managed_run|[打开](../automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/report.md)|
-|无信道增强基准的 clean 测试报告|managed_run|[打开](../automation_reports/CV-SincNet/20261001-phase1-clean-baselines-manysig-m16-r01/report.md)|
+|无信道增强四基准的 clean 测试报告|managed_run|[打开](../automation_reports/CV-SincNet/20261001-phase1-clean-baselines-manysig-m16-r01/report.md)|
 |CVS 无增强轻量架构与常见网络基准|managed_run|[打开](../automation_reports/CV-SincNet/20261001-phase1-cvs-clean-architecture-manysig-m32-r01/report.md)|
 |CVS身份骨干交叉熵对照实验|managed_run|[打开](../automation_reports/CV-SincNet/20261001-phase1-cvs-identity-ce-practical-manysig-m5-r01/report.md)|
 |CVS身份骨干交叉熵对照实验|managed_run|[打开](../automation_reports/CV-SincNet/20261001-phase1-cvs-identity-ce-practical-manysig-m5-r02/report.md)|

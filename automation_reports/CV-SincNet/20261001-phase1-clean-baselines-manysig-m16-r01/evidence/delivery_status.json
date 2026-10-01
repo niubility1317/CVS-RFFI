@@ -1,0 +1,15 @@
+{
+  "verdict": "VERIFIED",
+  "read_at": 1790840778.8831162,
+  "pid": 750271,
+  "release_commit": "b5bf609e185141ac8e371aa7586e41f65806fc1b",
+  "status": "CLEAN_PREDICTING",
+  "row_states": {
+    "PREDICTIONS_COMPLETE": 4,
+    "RUNNING": 7,
+    "QUEUED": 5
+  },
+  "view": "clean",
+  "target_feedback_forbidden": true,
+  "transient_local_delivery_failure": "Git HTTPS credentials in sandbox thenTLS/readback timeout before package creation;remote empty independently reconciled;same unpublished run delivered once afterward"
+}

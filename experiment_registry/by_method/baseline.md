@@ -6,4 +6,4 @@
 
 |名称|记录类型|证据入口|
 |---|---|---|
-|无信道增强基准的 clean 测试报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261001-phase1-clean-baselines-manysig-m16-r01/report.md)|
+|无信道增强四基准的 clean 测试报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261001-phase1-clean-baselines-manysig-m16-r01/report.md)|
