@@ -1,0 +1,208 @@
+{
+  "status": "VERIFIED",
+  "tolerance": 0.001,
+  "original_affine_failure_retained": true,
+  "source_selection_changed": false,
+  "rows": [
+    {
+      "row_id": "observable_phase-s2026092701",
+      "modes": {
+        "cpu_float32": {
+          "phase_error": 8.344650268554688e-07,
+          "affine_error": 2.0351171493530273,
+          "affine_claimed": false
+        },
+        "cpu_float64": {
+          "phase_error": 3.1086244689504383e-15,
+          "affine_error": 2.035117157958336,
+          "affine_claimed": false
+        },
+        "gpu_float32_default": {
+          "phase_error": 0.0001990795135498047,
+          "affine_error": 2.0348305702209473,
+          "affine_claimed": false
+        },
+        "gpu_float32_tf32_disabled": {
+          "phase_error": 1.7881393432617188e-06,
+          "affine_error": 2.03511643409729,
+          "affine_claimed": false
+        }
+      }
+    },
+    {
+      "row_id": "observable_affine-s2026092701",
+      "modes": {
+        "cpu_float32": {
+          "phase_error": 1.2814998626708984e-06,
+          "affine_error": 3.814697265625e-06,
+          "affine_claimed": true
+        },
+        "cpu_float64": {
+          "phase_error": 3.851086116668512e-15,
+          "affine_error": 4.218847493575595e-15,
+          "affine_claimed": true
+        },
+        "gpu_float32_default": {
+          "phase_error": 0.0004782676696777344,
+          "affine_error": 0.00046753883361816406,
+          "affine_claimed": true
+        },
+        "gpu_float32_tf32_disabled": {
+          "phase_error": 1.9073486328125e-06,
+          "affine_error": 2.5033950805664062e-06,
+          "affine_claimed": true
+        }
+      }
+    },
+    {
+      "row_id": "observable_phase-s2026092702",
+      "modes": {
+        "cpu_float32": {
+          "phase_error": 1.4528632164001465e-06,
+          "affine_error": 2.6097612380981445,
+          "affine_claimed": false
+        },
+        "cpu_float64": {
+          "phase_error": 1.7763568394002505e-15,
+          "affine_error": 2.6097604884654917,
+          "affine_claimed": false
+        },
+        "gpu_float32_default": {
+          "phase_error": 9.34600830078125e-05,
+          "affine_error": 2.6099581718444824,
+          "affine_claimed": false
+        },
+        "gpu_float32_tf32_disabled": {
+          "phase_error": 9.5367431640625e-07,
+          "affine_error": 2.6097629070281982,
+          "affine_claimed": false
+        }
+      }
+    },
+    {
+      "row_id": "observable_affine-s2026092702",
+      "modes": {
+        "cpu_float32": {
+          "phase_error": 1.430511474609375e-06,
+          "affine_error": 1.9073486328125e-06,
+          "affine_claimed": true
+        },
+        "cpu_float64": {
+          "phase_error": 3.6637359812630166e-15,
+          "affine_error": 5.329070518200751e-15,
+          "affine_claimed": true
+        },
+        "gpu_float32_default": {
+          "phase_error": 0.000469207763671875,
+          "affine_error": 0.0012031793594360352,
+          "affine_claimed": true
+        },
+        "gpu_float32_tf32_disabled": {
+          "phase_error": 2.1457672119140625e-06,
+          "affine_error": 2.6226043701171875e-06,
+          "affine_claimed": true
+        }
+      }
+    },
+    {
+      "row_id": "observable_phase-s2026092703",
+      "modes": {
+        "cpu_float32": {
+          "phase_error": 1.1920928955078125e-06,
+          "affine_error": 4.037944793701172,
+          "affine_claimed": false
+        },
+        "cpu_float64": {
+          "phase_error": 6.217248937900877e-15,
+          "affine_error": 4.037945128738237,
+          "affine_claimed": false
+        },
+        "gpu_float32_default": {
+          "phase_error": 0.0001316070556640625,
+          "affine_error": 4.03215217590332,
+          "affine_claimed": false
+        },
+        "gpu_float32_tf32_disabled": {
+          "phase_error": 1.430511474609375e-06,
+          "affine_error": 4.037942886352539,
+          "affine_claimed": false
+        }
+      }
+    },
+    {
+      "row_id": "observable_affine-s2026092703",
+      "modes": {
+        "cpu_float32": {
+          "phase_error": 2.6226043701171875e-06,
+          "affine_error": 1.6689300537109375e-06,
+          "affine_claimed": true
+        },
+        "cpu_float64": {
+          "phase_error": 4.440892098500626e-15,
+          "affine_error": 5.620504062164855e-15,
+          "affine_claimed": true
+        },
+        "gpu_float32_default": {
+          "phase_error": 0.00028324127197265625,
+          "affine_error": 0.00040519237518310547,
+          "affine_claimed": true
+        },
+        "gpu_float32_tf32_disabled": {
+          "phase_error": 5.0067901611328125e-06,
+          "affine_error": 3.933906555175781e-06,
+          "affine_claimed": true
+        }
+      }
+    },
+    {
+      "row_id": "observable_phase-s2026092704",
+      "modes": {
+        "cpu_float32": {
+          "phase_error": 9.5367431640625e-07,
+          "affine_error": 3.0978586673736572,
+          "affine_claimed": false
+        },
+        "cpu_float64": {
+          "phase_error": 4.440892098500626e-15,
+          "affine_error": 3.0978594706344276,
+          "affine_claimed": false
+        },
+        "gpu_float32_default": {
+          "phase_error": 0.00023412704467773438,
+          "affine_error": 3.0985655784606934,
+          "affine_claimed": false
+        },
+        "gpu_float32_tf32_disabled": {
+          "phase_error": 1.430511474609375e-06,
+          "affine_error": 3.097860813140869,
+          "affine_claimed": false
+        }
+      }
+    },
+    {
+      "row_id": "observable_affine-s2026092704",
+      "modes": {
+        "cpu_float32": {
+          "phase_error": 1.9073486328125e-06,
+          "affine_error": 2.86102294921875e-06,
+          "affine_claimed": true
+        },
+        "cpu_float64": {
+          "phase_error": 4.440892098500626e-15,
+          "affine_error": 7.105427357601002e-15,
+          "affine_claimed": true
+        },
+        "gpu_float32_default": {
+          "phase_error": 0.0002321004867553711,
+          "affine_error": 0.00035512447357177734,
+          "affine_claimed": true
+        },
+        "gpu_float32_tf32_disabled": {
+          "phase_error": 1.9073486328125e-06,
+          "affine_error": 1.8477439880371094e-06,
+          "affine_claimed": true
+        }
+      }
+    }
+  ]
+}

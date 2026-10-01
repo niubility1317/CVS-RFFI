@@ -1,0 +1,1212 @@
+{
+  "receipt": {
+    "status": "DIAGNOSTIC_RETURNED",
+    "commit": "bc9d522bde65f90763d9e13356edd14f0db9c1b1",
+    "source_commit": "202aed46748856c16b015d94595ecd5364dca394",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-m",
+      "experiments.cvs_observable_identity.frozen_numerics",
+      "--source-root",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-observable-identity-manysig-m8-r01",
+      "--expected-contract",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-observable-identity-manysig-m8-r01/observable_phase-s2026092701/source/source_contract.json",
+      "--expected-commit",
+      "202aed46748856c16b015d94595ecd5364dca394",
+      "--output",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-observable-identity-manysig-m8-r01/post_training_numerics",
+      "--gpu"
+    ],
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_numerics_20261002_r01",
+    "output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-observable-identity-manysig-m8-r01/post_training_numerics",
+    "log": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_numerics_20261002_r01/diagnostic.stdout.log"
+  },
+  "diagnostic": {
+    "status": "DIAGNOSED",
+    "rows": [
+      {
+        "row_id": "observable_phase-s2026092701",
+        "model_state_unchanged": true,
+        "diagnostics": {
+          "cpu_float32": {
+            "phase_logit_max_abs_error": 8.344650268554688e-07,
+            "affine_logit_max_abs_error": 2.0351171493530273,
+            "affine_invariance_claimed": false,
+            "unit_embedding_distances": {
+              "handset_am_am": 0.07072237133979797,
+              "handset_am_pm": 0.1709778755903244,
+              "rx_iq_counterexample": 0.08885776251554489,
+              "multipath_counterexample": 0.013408569619059563
+            },
+            "synthetic_only": true,
+            "training_augmentation": false,
+            "target_access": false,
+            "physical_parameters": {
+              "positive_amp_compression": 0.12,
+              "amp_phase_beta": 0.17,
+              "rx_iq_scale": [
+                1.08,
+                0.92
+              ],
+              "channel_delay_samples": 2,
+              "channel_tap": 0.2,
+              "constant_phase_radians": 0.731,
+              "affine_phase_slope_radians_per_sample": 0.031
+            },
+            "input_rms_normalized": true,
+            "claim": "Frozen model transform verification and sensitivity only;not TX parameter identification or synthetic identity accuracy."
+          },
+          "cpu_float64": {
+            "phase_logit_max_abs_error": 3.1086244689504383e-15,
+            "affine_logit_max_abs_error": 2.035117157958336,
+            "affine_invariance_claimed": false,
+            "unit_embedding_distances": {
+              "handset_am_am": 0.07072239367314989,
+              "handset_am_pm": 0.17097786671804477,
+              "rx_iq_counterexample": 0.08885788418611154,
+              "multipath_counterexample": 0.013408533586469554
+            },
+            "synthetic_only": true,
+            "training_augmentation": false,
+            "target_access": false,
+            "physical_parameters": {
+              "positive_amp_compression": 0.12,
+              "amp_phase_beta": 0.17,
+              "rx_iq_scale": [
+                1.08,
+                0.92
+              ],
+              "channel_delay_samples": 2,
+              "channel_tap": 0.2,
+              "constant_phase_radians": 0.731,
+              "affine_phase_slope_radians_per_sample": 0.031
+            },
+            "input_rms_normalized": true,
+            "claim": "Frozen model transform verification and sensitivity only;not TX parameter identification or synthetic identity accuracy."
+          },
+          "gpu_float32_default": {
+            "phase_logit_max_abs_error": 0.0001990795135498047,
+            "affine_logit_max_abs_error": 2.0348305702209473,
+            "affine_invariance_claimed": false,
+            "unit_embedding_distances": {
+              "handset_am_am": 0.07073748856782913,
+              "handset_am_pm": 0.17107895016670227,
+              "rx_iq_counterexample": 0.08883675187826157,
+              "multipath_counterexample": 0.013396761380136013
+            },
+            "synthetic_only": true,
+            "training_augmentation": false,
+            "target_access": false,
+            "physical_parameters": {
+              "positive_amp_compression": 0.12,
+              "amp_phase_beta": 0.17,
+              "rx_iq_scale": [
+                1.08,
+                0.92
+              ],
+              "channel_delay_samples": 2,
+              "channel_tap": 0.2,
+              "constant_phase_radians": 0.731,
+              "affine_phase_slope_radians_per_sample": 0.031
+            },
+            "input_rms_normalized": true,
+            "claim": "Frozen model transform verification and sensitivity only;not TX parameter identification or synthetic identity accuracy."
+          },
+          "gpu_float32_tf32_disabled": {
+            "phase_logit_max_abs_error": 1.7881393432617188e-06,
+            "affine_logit_max_abs_error": 2.03511643409729,
+            "affine_invariance_claimed": false,
+            "unit_embedding_distances": {
+              "handset_am_am": 0.07072237133979797,
+              "handset_am_pm": 0.17097783088684082,
+              "rx_iq_counterexample": 0.08885783702135086,
+              "multipath_counterexample": 0.013408535160124302
+            },
+            "synthetic_only": true,
+            "training_augmentation": false,
+            "target_access": false,
+            "physical_parameters": {
+              "positive_amp_compression": 0.12,
+              "amp_phase_beta": 0.17,
+              "rx_iq_scale": [
+                1.08,
+                0.92
+              ],
+              "channel_delay_samples": 2,
+              "channel_tap": 0.2,
+              "constant_phase_radians": 0.731,
+              "affine_phase_slope_radians_per_sample": 0.031
+            },
+            "input_rms_normalized": true,
+            "claim": "Frozen model transform verification and sensitivity only;not TX parameter identification or synthetic identity accuracy."
+          }
+        },
+        "original_gpu_diagnostic": {
+          "phase_logit_max_abs_error": 0.0001990795135498047,
+          "affine_logit_max_abs_error": 2.0348305702209473,
+          "affine_invariance_claimed": false,
+          "unit_embedding_distances": {
+            "handset_am_am": 0.07073748856782913,
+            "handset_am_pm": 0.17107895016670227,
+            "rx_iq_counterexample": 0.08883675187826157,
+            "multipath_counterexample": 0.013396761380136013
+          },
+          "synthetic_only": true,
+          "training_augmentation": false,
+          "target_access": false,
+          "physical_parameters": {
+            "positive_amp_compression": 0.12,
+            "amp_phase_beta": 0.17,
+            "rx_iq_scale": [
+              1.08,
+              0.92
+            ],
+            "channel_delay_samples": 2,
+            "channel_tap": 0.2,
+            "constant_phase_radians": 0.731,
+            "affine_phase_slope_radians_per_sample": 0.031
+          },
+          "input_rms_normalized": true,
+          "claim": "Frozen model transform verification and sensitivity only;not TX parameter identification or synthetic identity accuracy."
+        }
+      },
+      {
+        "row_id": "observable_affine-s2026092701",
+        "model_state_unchanged": true,
+        "diagnostics": {
+          "cpu_float32": {
+            "phase_logit_max_abs_error": 1.2814998626708984e-06,
+            "affine_logit_max_abs_error": 3.814697265625e-06,
+            "affine_invariance_claimed": true,
+            "unit_embedding_distances": {
+              "handset_am_am": 0.15452449023723602,
+              "handset_am_pm": 0.3109906315803528,
+              "rx_iq_counterexample": 0.22618140280246735,
+              "multipath_counterexample": 0.031819410622119904
+            },
+            "synthetic_only": true,
+            "training_augmentation": false,
+            "target_access": false,
+            "physical_parameters": {
+              "positive_amp_compression": 0.12,
+              "amp_phase_beta": 0.17,
+              "rx_iq_scale": [
+                1.08,
+                0.92
+              ],
+              "channel_delay_samples": 2,
+              "channel_tap": 0.2,
+              "constant_phase_radians": 0.731,
+              "affine_phase_slope_radians_per_sample": 0.031
+            },
+            "input_rms_normalized": true,
+            "claim": "Frozen model transform verification and sensitivity only;not TX parameter identification or synthetic identity accuracy."
+          },
+          "cpu_float64": {
+            "phase_logit_max_abs_error": 3.851086116668512e-15,
+            "affine_logit_max_abs_error": 4.218847493575595e-15,
+            "affine_invariance_claimed": true,
+            "unit_embedding_distances": {
+              "handset_am_am": 0.15452454309031946,
+              "handset_am_pm": 0.3109906583791162,
+              "rx_iq_counterexample": 0.22618141354743815,
+              "multipath_counterexample": 0.03181920900753855
+            },
+            "synthetic_only": true,
+            "training_augmentation": false,
+            "target_access": false,
+            "physical_parameters": {
+              "positive_amp_compression": 0.12,
+              "amp_phase_beta": 0.17,
+              "rx_iq_scale": [
+                1.08,
+                0.92
+              ],
+              "channel_delay_samples": 2,
+              "channel_tap": 0.2,
+              "constant_phase_radians": 0.731,
+              "affine_phase_slope_radians_per_sample": 0.031
+            },
+            "input_rms_normalized": true,
+            "claim": "Frozen model transform verification and sensitivity only;not TX parameter identification or synthetic identity accuracy."
+          },
+          "gpu_float32_default": {
+            "phase_logit_max_abs_error": 0.0004782676696777344,
+            "affine_logit_max_abs_error": 0.00046753883361816406,
+            "affine_invariance_claimed": true,
+            "unit_embedding_distances": {
+              "handset_am_am": 0.15457886457443237,
+              "handset_am_pm": 0.31102561950683594,
+              "rx_iq_counterexample": 0.2262449562549591,
+              "multipath_counterexample": 0.0319189690053463
+            },
+            "synthetic_only": true,
+            "training_augmentation": false,
+            "target_access": false,
+            "physical_parameters": {
+              "positive_amp_compression": 0.12,
+              "amp_phase_beta": 0.17,
+              "rx_iq_scale": [
+                1.08,
+                0.92
+              ],
+              "channel_delay_samples": 2,
+              "channel_tap": 0.2,
+              "constant_phase_radians": 0.731,
+              "affine_phase_slope_radians_per_sample": 0.031
+            },
+            "input_rms_normalized": true,
+            "claim": "Frozen model transform verification and sensitivity only;not TX parameter identification or synthetic identity accuracy."
+          },
+          "gpu_float32_tf32_disabled": {
+            "phase_logit_max_abs_error": 1.9073486328125e-06,
+            "affine_logit_max_abs_error": 2.5033950805664062e-06,
+            "affine_invariance_claimed": true,
+            "unit_embedding_distances": {
+              "handset_am_am": 0.15452434122562408,
+              "handset_am_pm": 0.3109906315803528,
+              "rx_iq_counterexample": 0.2261812388896942,
+              "multipath_counterexample": 0.03181932866573334
+            },
+            "synthetic_only": true,
+            "training_augmentation": false,
+            "target_access": false,
+            "physical_parameters": {
+              "positive_amp_compression": 0.12,
+              "amp_phase_beta": 0.17,
+              "rx_iq_scale": [
+                1.08,
+                0.92
+              ],
+              "channel_delay_samples": 2,
+              "channel_tap": 0.2,
+              "constant_phase_radians": 0.731,
+              "affine_phase_slope_radians_per_sample": 0.031
+            },
+            "input_rms_normalized": true,
+            "claim": "Frozen model transform verification and sensitivity only;not TX parameter identification or synthetic identity accuracy."
+          }
+        },
+        "original_gpu_diagnostic": {
+          "phase_logit_max_abs_error": 0.0004782676696777344,
+          "affine_logit_max_abs_error": 0.00046753883361816406,
+          "affine_invariance_claimed": true,
+          "unit_embedding_distances": {
+            "handset_am_am": 0.15457886457443237,
+            "handset_am_pm": 0.31102561950683594,
+            "rx_iq_counterexample": 0.2262449562549591,
+            "multipath_counterexample": 0.0319189690053463
+          },
+          "synthetic_only": true,
+          "training_augmentation": false,
+          "target_access": false,
+          "physical_parameters": {
+            "positive_amp_compression": 0.12,
+            "amp_phase_beta": 0.17,
+            "rx_iq_scale": [
+              1.08,
+              0.92
+            ],
+            "channel_delay_samples": 2,
+            "channel_tap": 0.2,
+            "constant_phase_radians": 0.731,
+            "affine_phase_slope_radians_per_sample": 0.031
+          },
+          "input_rms_normalized": true,
+          "claim": "Frozen model transform verification and sensitivity only;not TX parameter identification or synthetic identity accuracy."
+        }
+      },
+      {
+        "row_id": "observable_phase-s2026092702",
+        "model_state_unchanged": true,
+        "diagnostics": {
+          "cpu_float32": {
+            "phase_logit_max_abs_error": 1.4528632164001465e-06,
+            "affine_logit_max_abs_error": 2.6097612380981445,
+            "affine_invariance_claimed": false,
+            "unit_embedding_distances": {
+              "handset_am_am": 0.06194768846035004,
+              "handset_am_pm": 0.14400197565555573,
+              "rx_iq_counterexample": 0.225534126162529,
+              "multipath_counterexample": 0.011224398389458656
+            },
+            "synthetic_only": true,
+            "training_augmentation": false,
+            "target_access": false,
+            "physical_parameters": {
+              "positive_amp_compression": 0.12,
+              "amp_phase_beta": 0.17,
+              "rx_iq_scale": [
+                1.08,
+                0.92
+              ],
+              "channel_delay_samples": 2,
+              "channel_tap": 0.2,
+              "constant_phase_radians": 0.731,
+              "affine_phase_slope_radians_per_sample": 0.031
+            },
+            "input_rms_normalized": true,
+            "claim": "Frozen model transform verification and sensitivity only;not TX parameter identification or synthetic identity accuracy."
+          },
+          "cpu_float64": {
+            "phase_logit_max_abs_error": 1.7763568394002505e-15,
+            "affine_logit_max_abs_error": 2.6097604884654917,
+            "affine_invariance_claimed": false,
+            "unit_embedding_distances": {
+              "handset_am_am": 0.06194763524626212,
+              "handset_am_pm": 0.1440019280869485,
+              "rx_iq_counterexample": 0.22553425370526778,
+              "multipath_counterexample": 0.011224368146299759
+            },
+            "synthetic_only": true,
+            "training_augmentation": false,
+            "target_access": false,
+            "physical_parameters": {
+              "positive_amp_compression": 0.12,
+              "amp_phase_beta": 0.17,
+              "rx_iq_scale": [
+                1.08,
+                0.92
+              ],
+              "channel_delay_samples": 2,
+              "channel_tap": 0.2,
+              "constant_phase_radians": 0.731,
+              "affine_phase_slope_radians_per_sample": 0.031
+            },
+            "input_rms_normalized": true,
+            "claim": "Frozen model transform verification and sensitivity only;not TX parameter identification or synthetic identity accuracy."
+          },
+          "gpu_float32_default": {
+            "phase_logit_max_abs_error": 9.34600830078125e-05,
+            "affine_logit_max_abs_error": 2.6099581718444824,
+            "affine_invariance_claimed": false,
+            "unit_embedding_distances": {
+              "handset_am_am": 0.061990562826395035,
+              "handset_am_pm": 0.14403922855854034,
+              "rx_iq_counterexample": 0.22552740573883057,
+              "multipath_counterexample": 0.011285671032965183
+            },
+            "synthetic_only": true,
+            "training_augmentation": false,
+            "target_access": false,
+            "physical_parameters": {
+              "positive_amp_compression": 0.12,
+              "amp_phase_beta": 0.17,
+              "rx_iq_scale": [
+                1.08,
+                0.92
+              ],
+              "channel_delay_samples": 2,
+              "channel_tap": 0.2,
+              "constant_phase_radians": 0.731,
+              "affine_phase_slope_radians_per_sample": 0.031
+            },
+            "input_rms_normalized": true,
+            "claim": "Frozen model transform verification and sensitivity only;not TX parameter identification or synthetic identity accuracy."
+          },
+          "gpu_float32_tf32_disabled": {
+            "phase_logit_max_abs_error": 9.5367431640625e-07,
+            "affine_logit_max_abs_error": 2.6097629070281982,
+            "affine_invariance_claimed": false,
+            "unit_embedding_distances": {
+              "handset_am_am": 0.06194758415222168,
+              "handset_am_pm": 0.14400185644626617,
+              "rx_iq_counterexample": 0.2255340814590454,
+              "multipath_counterexample": 0.011224432848393917
+            },
+            "synthetic_only": true,
+            "training_augmentation": false,
+            "target_access": false,
+            "physical_parameters": {
+              "positive_amp_compression": 0.12,
+              "amp_phase_beta": 0.17,
+              "rx_iq_scale": [
+                1.08,
+                0.92
+              ],
+              "channel_delay_samples": 2,
+              "channel_tap": 0.2,
+              "constant_phase_radians": 0.731,
+              "affine_phase_slope_radians_per_sample": 0.031
+            },
+            "input_rms_normalized": true,
+            "claim": "Frozen model transform verification and sensitivity only;not TX parameter identification or synthetic identity accuracy."
+          }
+        },
+        "original_gpu_diagnostic": {
+          "phase_logit_max_abs_error": 9.34600830078125e-05,
+          "affine_logit_max_abs_error": 2.6099581718444824,
+          "affine_invariance_claimed": false,
+          "unit_embedding_distances": {
+            "handset_am_am": 0.061990562826395035,
+            "handset_am_pm": 0.14403922855854034,
+            "rx_iq_counterexample": 0.22552740573883057,
+            "multipath_counterexample": 0.011285671032965183
+          },
+          "synthetic_only": true,
+          "training_augmentation": false,
+          "target_access": false,
+          "physical_parameters": {
+            "positive_amp_compression": 0.12,
+            "amp_phase_beta": 0.17,
+            "rx_iq_scale": [
+              1.08,
+              0.92
+            ],
+            "channel_delay_samples": 2,
+            "channel_tap": 0.2,
+            "constant_phase_radians": 0.731,
+            "affine_phase_slope_radians_per_sample": 0.031
+          },
+          "input_rms_normalized": true,
+          "claim": "Frozen model transform verification and sensitivity only;not TX parameter identification or synthetic identity accuracy."
+        }
+      },
+      {
+        "row_id": "observable_affine-s2026092702",
+        "model_state_unchanged": true,
+        "diagnostics": {
+          "cpu_float32": {
+            "phase_logit_max_abs_error": 1.430511474609375e-06,
+            "affine_logit_max_abs_error": 1.9073486328125e-06,
+            "affine_invariance_claimed": true,
+            "unit_embedding_distances": {
+              "handset_am_am": 0.11957746744155884,
+              "handset_am_pm": 0.2659955322742462,
+              "rx_iq_counterexample": 0.19510871171951294,
+              "multipath_counterexample": 0.0178501196205616
+            },
+            "synthetic_only": true,
+            "training_augmentation": false,
+            "target_access": false,
+            "physical_parameters": {
+              "positive_amp_compression": 0.12,
+              "amp_phase_beta": 0.17,
+              "rx_iq_scale": [
+                1.08,
+                0.92
+              ],
+              "channel_delay_samples": 2,
+              "channel_tap": 0.2,
+              "constant_phase_radians": 0.731,
+              "affine_phase_slope_radians_per_sample": 0.031
+            },
+            "input_rms_normalized": true,
+            "claim": "Frozen model transform verification and sensitivity only;not TX parameter identification or synthetic identity accuracy."
+          },
+          "cpu_float64": {
+            "phase_logit_max_abs_error": 3.6637359812630166e-15,
+            "affine_logit_max_abs_error": 5.329070518200751e-15,
+            "affine_invariance_claimed": true,
+            "unit_embedding_distances": {
+              "handset_am_am": 0.11957745998772817,
+              "handset_am_pm": 0.26599550390496657,
+              "rx_iq_counterexample": 0.1951085872256257,
+              "multipath_counterexample": 0.017850111628528002
+            },
+            "synthetic_only": true,
+            "training_augmentation": false,
+            "target_access": false,
+            "physical_parameters": {
+              "positive_amp_compression": 0.12,
+              "amp_phase_beta": 0.17,
+              "rx_iq_scale": [
+                1.08,
+                0.92
+              ],
+              "channel_delay_samples": 2,
+              "channel_tap": 0.2,
+              "constant_phase_radians": 0.731,
+              "affine_phase_slope_radians_per_sample": 0.031
+            },
+            "input_rms_normalized": true,
+            "claim": "Frozen model transform verification and sensitivity only;not TX parameter identification or synthetic identity accuracy."
+          },
+          "gpu_float32_default": {
+            "phase_logit_max_abs_error": 0.000469207763671875,
+            "affine_logit_max_abs_error": 0.0012031793594360352,
+            "affine_invariance_claimed": true,
+            "unit_embedding_distances": {
+              "handset_am_am": 0.11965326964855194,
+              "handset_am_pm": 0.26608094573020935,
+              "rx_iq_counterexample": 0.19510464370250702,
+              "multipath_counterexample": 0.017864203080534935
+            },
+            "synthetic_only": true,
+            "training_augmentation": false,
+            "target_access": false,
+            "physical_parameters": {
+              "positive_amp_compression": 0.12,
+              "amp_phase_beta": 0.17,
+              "rx_iq_scale": [
+                1.08,
+                0.92
+              ],
+              "channel_delay_samples": 2,
+              "channel_tap": 0.2,
+              "constant_phase_radians": 0.731,
+              "affine_phase_slope_radians_per_sample": 0.031
+            },
+            "input_rms_normalized": true,
+            "claim": "Frozen model transform verification and sensitivity only;not TX parameter identification or synthetic identity accuracy."
+          },
+          "gpu_float32_tf32_disabled": {
+            "phase_logit_max_abs_error": 2.1457672119140625e-06,
+            "affine_logit_max_abs_error": 2.6226043701171875e-06,
+            "affine_invariance_claimed": true,
+            "unit_embedding_distances": {
+              "handset_am_am": 0.11957727372646332,
+              "handset_am_pm": 0.2659957706928253,
+              "rx_iq_counterexample": 0.19510872662067413,
+              "multipath_counterexample": 0.017850132659077644
+            },
+            "synthetic_only": true,
+            "training_augmentation": false,
+            "target_access": false,
+            "physical_parameters": {
+              "positive_amp_compression": 0.12,
+              "amp_phase_beta": 0.17,
+              "rx_iq_scale": [
+                1.08,
+                0.92
+              ],
+              "channel_delay_samples": 2,
+              "channel_tap": 0.2,
+              "constant_phase_radians": 0.731,
+              "affine_phase_slope_radians_per_sample": 0.031
+            },
+            "input_rms_normalized": true,
+            "claim": "Frozen model transform verification and sensitivity only;not TX parameter identification or synthetic identity accuracy."
+          }
+        },
+        "original_gpu_diagnostic": {
+          "phase_logit_max_abs_error": 0.000469207763671875,
+          "affine_logit_max_abs_error": 0.0012031793594360352,
+          "affine_invariance_claimed": true,
+          "unit_embedding_distances": {
+            "handset_am_am": 0.11965326964855194,
+            "handset_am_pm": 0.26608094573020935,
+            "rx_iq_counterexample": 0.19510464370250702,
+            "multipath_counterexample": 0.017864203080534935
+          },
+          "synthetic_only": true,
+          "training_augmentation": false,
+          "target_access": false,
+          "physical_parameters": {
+            "positive_amp_compression": 0.12,
+            "amp_phase_beta": 0.17,
+            "rx_iq_scale": [
+              1.08,
+              0.92
+            ],
+            "channel_delay_samples": 2,
+            "channel_tap": 0.2,
+            "constant_phase_radians": 0.731,
+            "affine_phase_slope_radians_per_sample": 0.031
+          },
+          "input_rms_normalized": true,
+          "claim": "Frozen model transform verification and sensitivity only;not TX parameter identification or synthetic identity accuracy."
+        }
+      },
+      {
+        "row_id": "observable_phase-s2026092703",
+        "model_state_unchanged": true,
+        "diagnostics": {
+          "cpu_float32": {
+            "phase_logit_max_abs_error": 1.1920928955078125e-06,
+            "affine_logit_max_abs_error": 4.037944793701172,
+            "affine_invariance_claimed": false,
+            "unit_embedding_distances": {
+              "handset_am_am": 0.09179974347352982,
+              "handset_am_pm": 0.22269587218761444,
+              "rx_iq_counterexample": 0.1612301468849182,
+              "multipath_counterexample": 0.013298001140356064
+            },
+            "synthetic_only": true,
+            "training_augmentation": false,
+            "target_access": false,
+            "physical_parameters": {
+              "positive_amp_compression": 0.12,
+              "amp_phase_beta": 0.17,
+              "rx_iq_scale": [
+                1.08,
+                0.92
+              ],
+              "channel_delay_samples": 2,
+              "channel_tap": 0.2,
+              "constant_phase_radians": 0.731,
+              "affine_phase_slope_radians_per_sample": 0.031
+            },
+            "input_rms_normalized": true,
+            "claim": "Frozen model transform verification and sensitivity only;not TX parameter identification or synthetic identity accuracy."
+          },
+          "cpu_float64": {
+            "phase_logit_max_abs_error": 6.217248937900877e-15,
+            "affine_logit_max_abs_error": 4.037945128738237,
+            "affine_invariance_claimed": false,
+            "unit_embedding_distances": {
+              "handset_am_am": 0.09179978512434193,
+              "handset_am_pm": 0.22269594858295302,
+              "rx_iq_counterexample": 0.16123018344330728,
+              "multipath_counterexample": 0.01329798650634636
+            },
+            "synthetic_only": true,
+            "training_augmentation": false,
+            "target_access": false,
+            "physical_parameters": {
+              "positive_amp_compression": 0.12,
+              "amp_phase_beta": 0.17,
+              "rx_iq_scale": [
+                1.08,
+                0.92
+              ],
+              "channel_delay_samples": 2,
+              "channel_tap": 0.2,
+              "constant_phase_radians": 0.731,
+              "affine_phase_slope_radians_per_sample": 0.031
+            },
+            "input_rms_normalized": true,
+            "claim": "Frozen model transform verification and sensitivity only;not TX parameter identification or synthetic identity accuracy."
+          },
+          "gpu_float32_default": {
+            "phase_logit_max_abs_error": 0.0001316070556640625,
+            "affine_logit_max_abs_error": 4.03215217590332,
+            "affine_invariance_claimed": false,
+            "unit_embedding_distances": {
+              "handset_am_am": 0.0918901264667511,
+              "handset_am_pm": 0.22275026142597198,
+              "rx_iq_counterexample": 0.16121810674667358,
+              "multipath_counterexample": 0.013240794651210308
+            },
+            "synthetic_only": true,
+            "training_augmentation": false,
+            "target_access": false,
+            "physical_parameters": {
+              "positive_amp_compression": 0.12,
+              "amp_phase_beta": 0.17,
+              "rx_iq_scale": [
+                1.08,
+                0.92
+              ],
+              "channel_delay_samples": 2,
+              "channel_tap": 0.2,
+              "constant_phase_radians": 0.731,
+              "affine_phase_slope_radians_per_sample": 0.031
+            },
+            "input_rms_normalized": true,
+            "claim": "Frozen model transform verification and sensitivity only;not TX parameter identification or synthetic identity accuracy."
+          },
+          "gpu_float32_tf32_disabled": {
+            "phase_logit_max_abs_error": 1.430511474609375e-06,
+            "affine_logit_max_abs_error": 4.037942886352539,
+            "affine_invariance_claimed": false,
+            "unit_embedding_distances": {
+              "handset_am_am": 0.09179969877004623,
+              "handset_am_pm": 0.22269579768180847,
+              "rx_iq_counterexample": 0.16123002767562866,
+              "multipath_counterexample": 0.013297867961227894
+            },
+            "synthetic_only": true,
+            "training_augmentation": false,
+            "target_access": false,
+            "physical_parameters": {
+              "positive_amp_compression": 0.12,
+              "amp_phase_beta": 0.17,
+              "rx_iq_scale": [
+                1.08,
+                0.92
+              ],
+              "channel_delay_samples": 2,
+              "channel_tap": 0.2,
+              "constant_phase_radians": 0.731,
+              "affine_phase_slope_radians_per_sample": 0.031
+            },
+            "input_rms_normalized": true,
+            "claim": "Frozen model transform verification and sensitivity only;not TX parameter identification or synthetic identity accuracy."
+          }
+        },
+        "original_gpu_diagnostic": {
+          "phase_logit_max_abs_error": 0.0001316070556640625,
+          "affine_logit_max_abs_error": 4.03215217590332,
+          "affine_invariance_claimed": false,
+          "unit_embedding_distances": {
+            "handset_am_am": 0.0918901264667511,
+            "handset_am_pm": 0.22275026142597198,
+            "rx_iq_counterexample": 0.16121810674667358,
+            "multipath_counterexample": 0.013240794651210308
+          },
+          "synthetic_only": true,
+          "training_augmentation": false,
+          "target_access": false,
+          "physical_parameters": {
+            "positive_amp_compression": 0.12,
+            "amp_phase_beta": 0.17,
+            "rx_iq_scale": [
+              1.08,
+              0.92
+            ],
+            "channel_delay_samples": 2,
+            "channel_tap": 0.2,
+            "constant_phase_radians": 0.731,
+            "affine_phase_slope_radians_per_sample": 0.031
+          },
+          "input_rms_normalized": true,
+          "claim": "Frozen model transform verification and sensitivity only;not TX parameter identification or synthetic identity accuracy."
+        }
+      },
+      {
+        "row_id": "observable_affine-s2026092703",
+        "model_state_unchanged": true,
+        "diagnostics": {
+          "cpu_float32": {
+            "phase_logit_max_abs_error": 2.6226043701171875e-06,
+            "affine_logit_max_abs_error": 1.6689300537109375e-06,
+            "affine_invariance_claimed": true,
+            "unit_embedding_distances": {
+              "handset_am_am": 0.19980767369270325,
+              "handset_am_pm": 0.5642641186714172,
+              "rx_iq_counterexample": 0.20234346389770508,
+              "multipath_counterexample": 0.04482809826731682
+            },
+            "synthetic_only": true,
+            "training_augmentation": false,
+            "target_access": false,
+            "physical_parameters": {
+              "positive_amp_compression": 0.12,
+              "amp_phase_beta": 0.17,
+              "rx_iq_scale": [
+                1.08,
+                0.92
+              ],
+              "channel_delay_samples": 2,
+              "channel_tap": 0.2,
+              "constant_phase_radians": 0.731,
+              "affine_phase_slope_radians_per_sample": 0.031
+            },
+            "input_rms_normalized": true,
+            "claim": "Frozen model transform verification and sensitivity only;not TX parameter identification or synthetic identity accuracy."
+          },
+          "cpu_float64": {
+            "phase_logit_max_abs_error": 4.440892098500626e-15,
+            "affine_logit_max_abs_error": 5.620504062164855e-15,
+            "affine_invariance_claimed": true,
+            "unit_embedding_distances": {
+              "handset_am_am": 0.19980794807057622,
+              "handset_am_pm": 0.5642642272935339,
+              "rx_iq_counterexample": 0.2023433746880225,
+              "multipath_counterexample": 0.04482828419073429
+            },
+            "synthetic_only": true,
+            "training_augmentation": false,
+            "target_access": false,
+            "physical_parameters": {
+              "positive_amp_compression": 0.12,
+              "amp_phase_beta": 0.17,
+              "rx_iq_scale": [
+                1.08,
+                0.92
+              ],
+              "channel_delay_samples": 2,
+              "channel_tap": 0.2,
+              "constant_phase_radians": 0.731,
+              "affine_phase_slope_radians_per_sample": 0.031
+            },
+            "input_rms_normalized": true,
+            "claim": "Frozen model transform verification and sensitivity only;not TX parameter identification or synthetic identity accuracy."
+          },
+          "gpu_float32_default": {
+            "phase_logit_max_abs_error": 0.00028324127197265625,
+            "affine_logit_max_abs_error": 0.00040519237518310547,
+            "affine_invariance_claimed": true,
+            "unit_embedding_distances": {
+              "handset_am_am": 0.19979096949100494,
+              "handset_am_pm": 0.5640637278556824,
+              "rx_iq_counterexample": 0.20234735310077667,
+              "multipath_counterexample": 0.04483511671423912
+            },
+            "synthetic_only": true,
+            "training_augmentation": false,
+            "target_access": false,
+            "physical_parameters": {
+              "positive_amp_compression": 0.12,
+              "amp_phase_beta": 0.17,
+              "rx_iq_scale": [
+                1.08,
+                0.92
+              ],
+              "channel_delay_samples": 2,
+              "channel_tap": 0.2,
+              "constant_phase_radians": 0.731,
+              "affine_phase_slope_radians_per_sample": 0.031
+            },
+            "input_rms_normalized": true,
+            "claim": "Frozen model transform verification and sensitivity only;not TX parameter identification or synthetic identity accuracy."
+          },
+          "gpu_float32_tf32_disabled": {
+            "phase_logit_max_abs_error": 5.0067901611328125e-06,
+            "affine_logit_max_abs_error": 3.933906555175781e-06,
+            "affine_invariance_claimed": true,
+            "unit_embedding_distances": {
+              "handset_am_am": 0.199807807803154,
+              "handset_am_pm": 0.5642640590667725,
+              "rx_iq_counterexample": 0.20234337449073792,
+              "multipath_counterexample": 0.04482842609286308
+            },
+            "synthetic_only": true,
+            "training_augmentation": false,
+            "target_access": false,
+            "physical_parameters": {
+              "positive_amp_compression": 0.12,
+              "amp_phase_beta": 0.17,
+              "rx_iq_scale": [
+                1.08,
+                0.92
+              ],
+              "channel_delay_samples": 2,
+              "channel_tap": 0.2,
+              "constant_phase_radians": 0.731,
+              "affine_phase_slope_radians_per_sample": 0.031
+            },
+            "input_rms_normalized": true,
+            "claim": "Frozen model transform verification and sensitivity only;not TX parameter identification or synthetic identity accuracy."
+          }
+        },
+        "original_gpu_diagnostic": {
+          "phase_logit_max_abs_error": 0.00028324127197265625,
+          "affine_logit_max_abs_error": 0.00040519237518310547,
+          "affine_invariance_claimed": true,
+          "unit_embedding_distances": {
+            "handset_am_am": 0.19979096949100494,
+            "handset_am_pm": 0.5640637278556824,
+            "rx_iq_counterexample": 0.20234735310077667,
+            "multipath_counterexample": 0.04483511671423912
+          },
+          "synthetic_only": true,
+          "training_augmentation": false,
+          "target_access": false,
+          "physical_parameters": {
+            "positive_amp_compression": 0.12,
+            "amp_phase_beta": 0.17,
+            "rx_iq_scale": [
+              1.08,
+              0.92
+            ],
+            "channel_delay_samples": 2,
+            "channel_tap": 0.2,
+            "constant_phase_radians": 0.731,
+            "affine_phase_slope_radians_per_sample": 0.031
+          },
+          "input_rms_normalized": true,
+          "claim": "Frozen model transform verification and sensitivity only;not TX parameter identification or synthetic identity accuracy."
+        }
+      },
+      {
+        "row_id": "observable_phase-s2026092704",
+        "model_state_unchanged": true,
+        "diagnostics": {
+          "cpu_float32": {
+            "phase_logit_max_abs_error": 9.5367431640625e-07,
+            "affine_logit_max_abs_error": 3.0978586673736572,
+            "affine_invariance_claimed": false,
+            "unit_embedding_distances": {
+              "handset_am_am": 0.06437995284795761,
+              "handset_am_pm": 0.14180754125118256,
+              "rx_iq_counterexample": 0.14101003110408783,
+              "multipath_counterexample": 0.005970637779682875
+            },
+            "synthetic_only": true,
+            "training_augmentation": false,
+            "target_access": false,
+            "physical_parameters": {
+              "positive_amp_compression": 0.12,
+              "amp_phase_beta": 0.17,
+              "rx_iq_scale": [
+                1.08,
+                0.92
+              ],
+              "channel_delay_samples": 2,
+              "channel_tap": 0.2,
+              "constant_phase_radians": 0.731,
+              "affine_phase_slope_radians_per_sample": 0.031
+            },
+            "input_rms_normalized": true,
+            "claim": "Frozen model transform verification and sensitivity only;not TX parameter identification or synthetic identity accuracy."
+          },
+          "cpu_float64": {
+            "phase_logit_max_abs_error": 4.440892098500626e-15,
+            "affine_logit_max_abs_error": 3.0978594706344276,
+            "affine_invariance_claimed": false,
+            "unit_embedding_distances": {
+              "handset_am_am": 0.06437996650986495,
+              "handset_am_pm": 0.1418077668344523,
+              "rx_iq_counterexample": 0.14101014980717425,
+              "multipath_counterexample": 0.005970594171311566
+            },
+            "synthetic_only": true,
+            "training_augmentation": false,
+            "target_access": false,
+            "physical_parameters": {
+              "positive_amp_compression": 0.12,
+              "amp_phase_beta": 0.17,
+              "rx_iq_scale": [
+                1.08,
+                0.92
+              ],
+              "channel_delay_samples": 2,
+              "channel_tap": 0.2,
+              "constant_phase_radians": 0.731,
+              "affine_phase_slope_radians_per_sample": 0.031
+            },
+            "input_rms_normalized": true,
+            "claim": "Frozen model transform verification and sensitivity only;not TX parameter identification or synthetic identity accuracy."
+          },
+          "gpu_float32_default": {
+            "phase_logit_max_abs_error": 0.00023412704467773438,
+            "affine_logit_max_abs_error": 3.0985655784606934,
+            "affine_invariance_claimed": false,
+            "unit_embedding_distances": {
+              "handset_am_am": 0.06437648087739944,
+              "handset_am_pm": 0.14177864789962769,
+              "rx_iq_counterexample": 0.14095695316791534,
+              "multipath_counterexample": 0.005992441438138485
+            },
+            "synthetic_only": true,
+            "training_augmentation": false,
+            "target_access": false,
+            "physical_parameters": {
+              "positive_amp_compression": 0.12,
+              "amp_phase_beta": 0.17,
+              "rx_iq_scale": [
+                1.08,
+                0.92
+              ],
+              "channel_delay_samples": 2,
+              "channel_tap": 0.2,
+              "constant_phase_radians": 0.731,
+              "affine_phase_slope_radians_per_sample": 0.031
+            },
+            "input_rms_normalized": true,
+            "claim": "Frozen model transform verification and sensitivity only;not TX parameter identification or synthetic identity accuracy."
+          },
+          "gpu_float32_tf32_disabled": {
+            "phase_logit_max_abs_error": 1.430511474609375e-06,
+            "affine_logit_max_abs_error": 3.097860813140869,
+            "affine_invariance_claimed": false,
+            "unit_embedding_distances": {
+              "handset_am_am": 0.06437992304563522,
+              "handset_am_pm": 0.14180760085582733,
+              "rx_iq_counterexample": 0.14101006090641022,
+              "multipath_counterexample": 0.005970563739538193
+            },
+            "synthetic_only": true,
+            "training_augmentation": false,
+            "target_access": false,
+            "physical_parameters": {
+              "positive_amp_compression": 0.12,
+              "amp_phase_beta": 0.17,
+              "rx_iq_scale": [
+                1.08,
+                0.92
+              ],
+              "channel_delay_samples": 2,
+              "channel_tap": 0.2,
+              "constant_phase_radians": 0.731,
+              "affine_phase_slope_radians_per_sample": 0.031
+            },
+            "input_rms_normalized": true,
+            "claim": "Frozen model transform verification and sensitivity only;not TX parameter identification or synthetic identity accuracy."
+          }
+        },
+        "original_gpu_diagnostic": {
+          "phase_logit_max_abs_error": 0.00023412704467773438,
+          "affine_logit_max_abs_error": 3.0985655784606934,
+          "affine_invariance_claimed": false,
+          "unit_embedding_distances": {
+            "handset_am_am": 0.06437648087739944,
+            "handset_am_pm": 0.14177864789962769,
+            "rx_iq_counterexample": 0.14095695316791534,
+            "multipath_counterexample": 0.005992441438138485
+          },
+          "synthetic_only": true,
+          "training_augmentation": false,
+          "target_access": false,
+          "physical_parameters": {
+            "positive_amp_compression": 0.12,
+            "amp_phase_beta": 0.17,
+            "rx_iq_scale": [
+              1.08,
+              0.92
+            ],
+            "channel_delay_samples": 2,
+            "channel_tap": 0.2,
+            "constant_phase_radians": 0.731,
+            "affine_phase_slope_radians_per_sample": 0.031
+          },
+          "input_rms_normalized": true,
+          "claim": "Frozen model transform verification and sensitivity only;not TX parameter identification or synthetic identity accuracy."
+        }
+      },
+      {
+        "row_id": "observable_affine-s2026092704",
+        "model_state_unchanged": true,
+        "diagnostics": {
+          "cpu_float32": {
+            "phase_logit_max_abs_error": 1.9073486328125e-06,
+            "affine_logit_max_abs_error": 2.86102294921875e-06,
+            "affine_invariance_claimed": true,
+            "unit_embedding_distances": {
+              "handset_am_am": 0.10162756592035294,
+              "handset_am_pm": 0.223274365067482,
+              "rx_iq_counterexample": 0.2075325846672058,
+              "multipath_counterexample": 0.030964234843850136
+            },
+            "synthetic_only": true,
+            "training_augmentation": false,
+            "target_access": false,
+            "physical_parameters": {
+              "positive_amp_compression": 0.12,
+              "amp_phase_beta": 0.17,
+              "rx_iq_scale": [
+                1.08,
+                0.92
+              ],
+              "channel_delay_samples": 2,
+              "channel_tap": 0.2,
+              "constant_phase_radians": 0.731,
+              "affine_phase_slope_radians_per_sample": 0.031
+            },
+            "input_rms_normalized": true,
+            "claim": "Frozen model transform verification and sensitivity only;not TX parameter identification or synthetic identity accuracy."
+          },
+          "cpu_float64": {
+            "phase_logit_max_abs_error": 4.440892098500626e-15,
+            "affine_logit_max_abs_error": 7.105427357601002e-15,
+            "affine_invariance_claimed": true,
+            "unit_embedding_distances": {
+              "handset_am_am": 0.10162751097762185,
+              "handset_am_pm": 0.22327451368314455,
+              "rx_iq_counterexample": 0.2075325380964675,
+              "multipath_counterexample": 0.03096432762242039
+            },
+            "synthetic_only": true,
+            "training_augmentation": false,
+            "target_access": false,
+            "physical_parameters": {
+              "positive_amp_compression": 0.12,
+              "amp_phase_beta": 0.17,
+              "rx_iq_scale": [
+                1.08,
+                0.92
+              ],
+              "channel_delay_samples": 2,
+              "channel_tap": 0.2,
+              "constant_phase_radians": 0.731,
+              "affine_phase_slope_radians_per_sample": 0.031
+            },
+            "input_rms_normalized": true,
+            "claim": "Frozen model transform verification and sensitivity only;not TX parameter identification or synthetic identity accuracy."
+          },
+          "gpu_float32_default": {
+            "phase_logit_max_abs_error": 0.0002321004867553711,
+            "affine_logit_max_abs_error": 0.00035512447357177734,
+            "affine_invariance_claimed": true,
+            "unit_embedding_distances": {
+              "handset_am_am": 0.1016286090016365,
+              "handset_am_pm": 0.22332993149757385,
+              "rx_iq_counterexample": 0.20754289627075195,
+              "multipath_counterexample": 0.03096800670027733
+            },
+            "synthetic_only": true,
+            "training_augmentation": false,
+            "target_access": false,
+            "physical_parameters": {
+              "positive_amp_compression": 0.12,
+              "amp_phase_beta": 0.17,
+              "rx_iq_scale": [
+                1.08,
+                0.92
+              ],
+              "channel_delay_samples": 2,
+              "channel_tap": 0.2,
+              "constant_phase_radians": 0.731,
+              "affine_phase_slope_radians_per_sample": 0.031
+            },
+            "input_rms_normalized": true,
+            "claim": "Frozen model transform verification and sensitivity only;not TX parameter identification or synthetic identity accuracy."
+          },
+          "gpu_float32_tf32_disabled": {
+            "phase_logit_max_abs_error": 1.9073486328125e-06,
+            "affine_logit_max_abs_error": 1.8477439880371094e-06,
+            "affine_invariance_claimed": true,
+            "unit_embedding_distances": {
+              "handset_am_am": 0.10162755846977234,
+              "handset_am_pm": 0.22327443957328796,
+              "rx_iq_counterexample": 0.20753251016139984,
+              "multipath_counterexample": 0.030964231118559837
+            },
+            "synthetic_only": true,
+            "training_augmentation": false,
+            "target_access": false,
+            "physical_parameters": {
+              "positive_amp_compression": 0.12,
+              "amp_phase_beta": 0.17,
+              "rx_iq_scale": [
+                1.08,
+                0.92
+              ],
+              "channel_delay_samples": 2,
+              "channel_tap": 0.2,
+              "constant_phase_radians": 0.731,
+              "affine_phase_slope_radians_per_sample": 0.031
+            },
+            "input_rms_normalized": true,
+            "claim": "Frozen model transform verification and sensitivity only;not TX parameter identification or synthetic identity accuracy."
+          }
+        },
+        "original_gpu_diagnostic": {
+          "phase_logit_max_abs_error": 0.0002321004867553711,
+          "affine_logit_max_abs_error": 0.00035512447357177734,
+          "affine_invariance_claimed": true,
+          "unit_embedding_distances": {
+            "handset_am_am": 0.1016286090016365,
+            "handset_am_pm": 0.22332993149757385,
+            "rx_iq_counterexample": 0.20754289627075195,
+            "multipath_counterexample": 0.03096800670027733
+          },
+          "synthetic_only": true,
+          "training_augmentation": false,
+          "target_access": false,
+          "physical_parameters": {
+            "positive_amp_compression": 0.12,
+            "amp_phase_beta": 0.17,
+            "rx_iq_scale": [
+              1.08,
+              0.92
+            ],
+            "channel_delay_samples": 2,
+            "channel_tap": 0.2,
+            "constant_phase_radians": 0.731,
+            "affine_phase_slope_radians_per_sample": 0.031
+          },
+          "input_rms_normalized": true,
+          "claim": "Frozen model transform verification and sensitivity only;not TX parameter identification or synthetic identity accuracy."
+        }
+      }
+    ],
+    "expected_source_commit": "202aed46748856c16b015d94595ecd5364dca394",
+    "torch_version": "2.1.0+cu121",
+    "initial_backend": {
+      "cudnn_allow_tf32": true,
+      "matmul_allow_tf32": false
+    },
+    "hardware": "NVIDIA GeForce RTX 3090",
+    "tolerance": 0.001,
+    "original_results_preserved": true,
+    "source_selection_changed": false,
+    "formal_samples_access": false,
+    "target_access": false,
+    "training": false,
+    "claim": "Precision diagnosis only;no retraining, target feedback or hardware identification."
+  },
+  "log": "{\"status\": \"DIAGNOSED\", \"rows\": 8, \"output\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-observable-identity-manysig-m8-r01/post_training_numerics\"}\n"
+}

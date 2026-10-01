@@ -140,6 +140,18 @@ def analyze(root):
         values=[row['phase_logit_max_abs_error'],row['affine_logit_max_abs_error'],distance['handset_am_am'],distance['handset_am_pm'],row['between_tx_centroid_squared_distance'],row['within_tx_rx_centroid_squared_distance']]
         s+='|'+row['row_id']+'|'+'|'.join(f'{value:.6g}' for value in values)+'|\n'
     s+='\n每行源V诊断覆盖27000包及90个TX/RX/day分层；完整逐组准确率、160维均值和分散保留在源读回。相位检查与手设AM/AM、AM/PM、RX IQ及多径干预只在冻结后合成波形上执行，未用于增强或选模。affine声明消除给定输入的线性相位斜率，phase不作此声明；嵌入距离只表示响应强弱，不能证明硬件身份分类准确率、TX参数恢复或RX/信道解耦。源中心距离也只是描述性诊断，不能把TX与RX共存的接收信号因素唯一归属发射机。完整[冻结物理证据](evidence/frozen_physics_diagnostics.json)。\n'
+    numerics=read(root/'automation_reports/CV-SincNet'/SOURCE_RUN/'evidence/frozen_numerics_readback.json')
+    numeric=numerics['diagnostic']
+    if len(numeric['rows'])!=8 or numeric['target_access'] or numeric['formal_samples_access'] or numeric['source_selection_changed'] or not all(row['model_state_unchanged'] for row in numeric['rows']):
+        raise ValueError('Read-only precision diagnostic contract mismatch')
+    write(e/'frozen_precision_diagnostics.json',numerics)
+    s+='\n### 有限精度边界与原始失败\n\n原GPU冻结检查中，未选affine seed02的仿射相位logit误差0.001203179超过既定0.001阈值，原始失败保留。补充诊断只读加载同一八行已冻结模型，完整运行时数据契约、scratch来源和payload一致；无正式样本/target/optimizer访问，无参数更新，不改变源选择。\n\n|affine源行|原GPU默认TF32误差|GPU禁用TF32误差|CPU FP32误差|CPU FP64误差|\n|---|---:|---:|---:|---:|\n'
+    for row in numeric['rows']:
+        modes=row['diagnostics']
+        if not modes['cpu_float64']['affine_invariance_claimed']:continue
+        vals=[modes[k]['affine_logit_max_abs_error'] for k in ('gpu_float32_default','gpu_float32_tf32_disabled','cpu_float32','cpu_float64')]
+        s+='|'+row['row_id']+'|'+'|'.join(f'{v:.9g}' for v in vals)+'|\n'
+    s+='\n同一seed02的默认GPU误差在补充诊断中精确复现，禁用TF32后为2.62260437×10⁻⁶，CPU FP64为5.32907052×10⁻¹⁵，支持误差主要来自TF32计算路径。数学不变性限定于实数运算，实际有限精度不保证逐位相等；本轮使用FP32张量和Torch2.1默认cuDNN TF32。诊断进程的TF32开关没有修改训练、checkpoint、预测或原发布设置，也没有放宽阈值或把原失败改成PASS。完整[精度诊断](evidence/frozen_precision_diagnostics.json)。\n'
     s+='\n## 实测资源成本\n\n|指标|原CVS|上轮残差CVS|本轮CVS|\n|---|---:|---:|---:|\n'
     for field,label in [('total_parameters','总参数'),('gradient_used_parameters','实际CE梯度参数'),('resident_state_bytes','常驻模型状态字节'),('conv_linear_macs_per_sample','Conv/Linear MAC/包'),('fft_calls_per_sample','FFT次数/包'),('inference_batch1_ms','合成batch1推理ms'),('inference_batch128_ms','合成batch128推理ms'),('training_batch128_ms','合成batch128训练步ms'),('actual_training_peak_max_bytes','实际训练进程峰值allocated显存bytes'),('actual_prediction_peak_max_bytes','实际预测进程峰值allocated显存bytes'),('full_test_prediction_seconds_mean','168000query预测秒数（4seed均值）')]:
         vals=[res[m][field] for m in ('native','residual_fusion',candidate)];s+=f"|{label}|"+'|'.join('N/A' if v is None else f'{v:.3f}' if isinstance(v,float) and not v.is_integer() else str(int(v)) for v in vals)+'|\n'

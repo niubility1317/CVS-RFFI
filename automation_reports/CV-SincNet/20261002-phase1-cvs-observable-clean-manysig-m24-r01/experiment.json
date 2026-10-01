@@ -24,7 +24,7 @@
   "replaces_run_id": null,
   "authorization": "2026-10-01用户要求按原目标继续改进并默认完成测试集测试。",
   "code": {
-    "commit": "release_commit.txt resolves runtime commit",
+    "commit": "bc9d522bde65f90763d9e13356edd14f0db9c1b1",
     "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_clean_eval_20261002_r01",
@@ -123,7 +123,9 @@
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-observable-clean-manysig-m24-r01",
     "local_artifact_root": "automation_reports/CV-SincNet/20261002-phase1-cvs-observable-clean-manysig-m24-r01",
     "launch_command": "python -m experiments.cvs_observable_clean.publish --output local_artifacts/cvs_observable_clean_eval_20261002_r01",
-    "stop_rule": "Only own affected row fails on nonfinite/permissions/output collision/nonzero exit; preserve all artifacts; no retry, low-score stop or unrelated process intervention"
+    "stop_rule": "Only own affected row fails on nonfinite/permissions/output collision/nonzero exit; preserve all artifacts; no retry, low-score stop or unrelated process intervention",
+    "dispatcher_pid": 1150731,
+    "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_clean_eval_20261002_r01"
   },
   "expected_artifacts": [
     "pipeline_state.json",
@@ -865,7 +867,7 @@
       "row_id": "observable_phase-s2026092701",
       "method": "observable_phase",
       "purpose": "single_source_selected_new_CVS_confirmation",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_observable_clean/configs/observable_phase-s2026092701.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-observable-clean-manysig-m24-r01/observable_phase-s2026092701/prediction/resolved_config.json",
       "data_overrides": {},
@@ -893,13 +895,14 @@
         "resolved_config.json",
         "clean_predictions.npz",
         "clean_complete.json"
-      ]
+      ],
+      "runtime_pid": null
     },
     {
       "row_id": "observable_phase-s2026092702",
       "method": "observable_phase",
       "purpose": "single_source_selected_new_CVS_confirmation",
-      "gpu": null,
+      "gpu": 1,
       "config_ref": "experiments/cvs_observable_clean/configs/observable_phase-s2026092702.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-observable-clean-manysig-m24-r01/observable_phase-s2026092702/prediction/resolved_config.json",
       "data_overrides": {},
@@ -927,13 +930,14 @@
         "resolved_config.json",
         "clean_predictions.npz",
         "clean_complete.json"
-      ]
+      ],
+      "runtime_pid": null
     },
     {
       "row_id": "observable_phase-s2026092703",
       "method": "observable_phase",
       "purpose": "single_source_selected_new_CVS_confirmation",
-      "gpu": null,
+      "gpu": 2,
       "config_ref": "experiments/cvs_observable_clean/configs/observable_phase-s2026092703.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-observable-clean-manysig-m24-r01/observable_phase-s2026092703/prediction/resolved_config.json",
       "data_overrides": {},
@@ -961,13 +965,14 @@
         "resolved_config.json",
         "clean_predictions.npz",
         "clean_complete.json"
-      ]
+      ],
+      "runtime_pid": null
     },
     {
       "row_id": "observable_phase-s2026092704",
       "method": "observable_phase",
       "purpose": "single_source_selected_new_CVS_confirmation",
-      "gpu": null,
+      "gpu": 3,
       "config_ref": "experiments/cvs_observable_clean/configs/observable_phase-s2026092704.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-observable-clean-manysig-m24-r01/observable_phase-s2026092704/prediction/resolved_config.json",
       "data_overrides": {},
@@ -995,7 +1000,8 @@
         "resolved_config.json",
         "clean_predictions.npz",
         "clean_complete.json"
-      ]
+      ],
+      "runtime_pid": null
     }
   ],
   "notes": [

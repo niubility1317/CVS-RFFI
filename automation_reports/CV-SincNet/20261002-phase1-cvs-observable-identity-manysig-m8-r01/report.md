@@ -1,6 +1,6 @@
 # CVS整体物理观测身份网络：源训练预登记
 
-状态 TRAINING_COMPLETE，N607正式源训练运行中；clean尚未测试。
+状态 ANALYZED，N607正式源训练运行中；clean尚未测试。
 
 仅普通CE、身份网络、无输入/信道增强，scratch、固定L6300/V27000、U56700不使用、split392005；两候选×四modelseed2026092701..04，E200×50/10000更新，batch128、AdamW2e-4、wd1e-4、cosine1e-6、FP32/no clip。无teacher/EMA/继承/域骨干/额外损失。
 
@@ -36,3 +36,11 @@
 ## 完整源训练与冻结
 
 8 行均完成 E200/10000 步，完整 1600 epoch、80000 step、CSV 和全部 stdout 已解析，无运行期技术异常；实际源数据角色一致，scratch/noaug/nodomain/CE-only 核实。按登记的性能优先规则冻结 `observable_phase`，源选择独立复算完全一致。源性能完全并列后才考虑参数和计算，不使用测试反馈。确认 run `20261002-phase1-cvs-observable-clean-manysig-m24-r01` 已预登记，默认完成 4 个新预测和 20 个冻结控制预测的独立评分。见[evidence/source_selection.json](evidence/source_selection.json)和[evidence/source_completion_validation.json](evidence/source_completion_validation.json)。
+
+## 冻结精度诊断完成
+
+独立读回八行/四精度模式，原模型state未变、无正式样本或target访问。affine seed02 GPU默认TF32误差精确复现0.001203179；禁用TF32后2.62260437×10⁻⁶，CPU FP64为5.32907052×10⁻¹⁵。原0.001阈值失败保留，支持TF32数值路径解释，不能改写成原设置PASS。新diagnostic release提交bc9d522bd；训练202aed467及clean预测设置不变。[原始精度读回](evidence/frozen_numerics_readback.json)。
+
+## 独立 clean 确认完成
+
+选中 `observable_phase` 由独立子 run `20261002-phase1-cvs-observable-clean-manysig-m24-r01` 完成四 seed clean 测试，原 20 预测只读复用，共 24 行、192 条评分。准确率 53.7693% ± 2.5759%，较上轮残差 CVS -24.6850 个百分点（0/4 seed 提升）。本轮没有进一步提高平均准确率，参数更少不能替代性能目标。源 run 未读取 target，未选候选不测试，测试评分不回流调参或重选。见[完整确认报告](../20261002-phase1-cvs-observable-clean-manysig-m24-r01/report.md)。

@@ -1,0 +1,22 @@
+{
+  "status": "DIAGNOSTIC_RETURNED",
+  "commit": "bc9d522bde65f90763d9e13356edd14f0db9c1b1",
+  "source_commit": "202aed46748856c16b015d94595ecd5364dca394",
+  "argv": [
+    "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "-m",
+    "experiments.cvs_observable_identity.frozen_numerics",
+    "--source-root",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-observable-identity-manysig-m8-r01",
+    "--expected-contract",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-observable-identity-manysig-m8-r01/observable_phase-s2026092701/source/source_contract.json",
+    "--expected-commit",
+    "202aed46748856c16b015d94595ecd5364dca394",
+    "--output",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-observable-identity-manysig-m8-r01/post_training_numerics",
+    "--gpu"
+  ],
+  "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_numerics_20261002_r01",
+  "output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-observable-identity-manysig-m8-r01/post_training_numerics",
+  "log": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_numerics_20261002_r01/diagnostic.stdout.log"
+}

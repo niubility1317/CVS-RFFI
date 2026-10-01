@@ -593,7 +593,7 @@
     "target_feedback": false
   },
   "supplemental_frozen_numerics": {
-    "status": "PLANNED",
+    "status": "DIAGNOSED",
     "reason": "Unselected affine seed02 frozen GPU affine error 0.001203179 exceeded unchanged 0.001 tolerance",
     "source_commit": "202aed46748856c16b015d94595ecd5364dca394",
     "release": "cvs_observable_numerics_20261002_r01",
@@ -623,6 +623,9 @@
     "source_evaluation_reused": true,
     "original_failure_preserved": true,
     "expected_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-observable-identity-manysig-m8-r01/observable_phase-s2026092701/source/source_contract.json",
-    "contract_check": "Full runtime source contract exact equality including preprocessing;payload/initialization/selection/source commit exact match before load_state_dict."
+    "contract_check": "Full runtime source contract exact equality including preprocessing;payload/initialization/selection/source commit exact match before load_state_dict.",
+    "delivery_commit": "bc9d522bde65f90763d9e13356edd14f0db9c1b1",
+    "evidence_ref": "evidence/frozen_numerics_readback.json",
+    "verdict": "Original affine seed02 GPU TF32 tolerance failure reproduced;CPU FP64 and TF32-disabled GPU support real-arithmetic invariance.Original failure retained;no selection/training/prediction change."
   }
 }

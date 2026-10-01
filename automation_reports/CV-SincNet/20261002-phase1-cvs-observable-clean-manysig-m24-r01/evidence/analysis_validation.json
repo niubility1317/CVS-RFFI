@@ -1,0 +1,131 @@
+{
+  "status": "VERIFIED",
+  "all192_confusions_recomputed": true,
+  "all_seed_mean_sample_sd_recomputed": true,
+  "old160_metrics_exactly_unchanged": true,
+  "selected_variant": "observable_phase",
+  "paired": {
+    "native": {
+      "candidate": "observable_phase",
+      "baseline": "native",
+      "receiver": "ALL",
+      "view": "clean",
+      "model_seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "accuracy_delta_pp_by_seed": [
+        -25.6202380952381,
+        -22.35,
+        -22.107142857142858,
+        -19.754166666666674
+      ],
+      "accuracy_delta_pp_mean": -22.45788690476191,
+      "accuracy_delta_pp_seed_sd": 2.4114469479927916,
+      "positive_seeds": 0
+    },
+    "cvcnn": {
+      "candidate": "observable_phase",
+      "baseline": "cvcnn",
+      "receiver": "ALL",
+      "view": "clean",
+      "model_seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "accuracy_delta_pp_by_seed": [
+        -17.902976190476195,
+        -18.15416666666666,
+        -14.595238095238095,
+        -13.122619047619043
+      ],
+      "accuracy_delta_pp_mean": -15.943749999999998,
+      "accuracy_delta_pp_seed_sd": 2.4833964184487396,
+      "positive_seeds": 0
+    },
+    "real_cnn": {
+      "candidate": "observable_phase",
+      "baseline": "real_cnn",
+      "receiver": "ALL",
+      "view": "clean",
+      "model_seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "accuracy_delta_pp_by_seed": [
+        -17.33392857142858,
+        -16.152380952380952,
+        -14.670238095238098,
+        -14.010714285714288
+      ],
+      "accuracy_delta_pp_mean": -15.541815476190479,
+      "accuracy_delta_pp_seed_sd": 1.4931373606498282,
+      "positive_seeds": 0
+    },
+    "resnet1d": {
+      "candidate": "observable_phase",
+      "baseline": "resnet1d",
+      "receiver": "ALL",
+      "view": "clean",
+      "model_seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "accuracy_delta_pp_by_seed": [
+        -21.101190476190478,
+        -22.80714285714286,
+        -16.28630952380953,
+        -18.65833333333333
+      ],
+      "accuracy_delta_pp_mean": -19.71324404761905,
+      "accuracy_delta_pp_seed_sd": 2.8492877459550856,
+      "positive_seeds": 0
+    },
+    "residual_fusion": {
+      "candidate": "observable_phase",
+      "baseline": "residual_fusion",
+      "receiver": "ALL",
+      "view": "clean",
+      "model_seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "accuracy_delta_pp_by_seed": [
+        -28.228571428571435,
+        -23.84285714285714,
+        -24.92619047619048,
+        -21.742261904761907
+      ],
+      "accuracy_delta_pp_mean": -24.68497023809524,
+      "accuracy_delta_pp_seed_sd": 2.7070268685190375,
+      "positive_seeds": 0
+    }
+  },
+  "resource_reduction_percent": {
+    "native": {
+      "total_parameters": 48.698141547994744,
+      "gradient_used_parameters": 38.284670958399566,
+      "resident_state_bytes": 48.7200144385824,
+      "conv_linear_macs_per_sample": -38.93492439393269
+    },
+    "residual_fusion": {
+      "total_parameters": -19.377683056781848,
+      "gradient_used_parameters": -19.377683056781848,
+      "resident_state_bytes": -19.25931333187336,
+      "conv_linear_macs_per_sample": -41.13296382800162
+    }
+  },
+  "goal_performance_vs_native": false,
+  "goal_performance_vs_previous": false,
+  "target_feedback": false
+}
