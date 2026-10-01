@@ -1,0 +1,48 @@
+{
+  "method": "cvs_observable_identity",
+  "variant": "observable_affine",
+  "model_seed": 2026092702,
+  "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+  "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+  "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-observable-identity-manysig-m8-r01/observable_affine-s2026092702/source",
+  "epochs": 200,
+  "batch_size": 128,
+  "lr": 0.0002,
+  "lr_min": 1e-06,
+  "weight_decay": 0.0001,
+  "drop_last": false,
+  "augmentation": false,
+  "domain_backbone": false,
+  "extra_losses": [],
+  "selection": "fixed_last_epoch",
+  "split_seed": 392005,
+  "device": "cuda:0",
+  "observables": {
+    "physics_mode": "amplitude_and_phase_curvature",
+    "lags": [
+      1,
+      2,
+      5,
+      20
+    ],
+    "epsilon": 1e-06,
+    "observation_channels": 13,
+    "amplitude_channels": 5,
+    "increment_channels": 0,
+    "closure_channels": 8,
+    "global_phase_invariant": true,
+    "affine_phase_invariant": true,
+    "raw_iq_bypass": false,
+    "repetition_window": [
+      80,
+      160
+    ],
+    "repetition_period_samples": 20,
+    "repetition_cycles": 4,
+    "temporal_samples": 256,
+    "spectral_signal": "real_physical_observable_time_variations",
+    "sample_rate_hz": 25000000,
+    "input": "received_equalized1_unit_rms_IQ",
+    "parameter_interpretation": "identity_feature_weights_not_identified_TX_hardware"
+  }
+}

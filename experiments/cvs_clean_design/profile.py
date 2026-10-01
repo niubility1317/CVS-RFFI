@@ -1,5 +1,6 @@
 """Measure synthetic resource costs on a disposable clone, never update training state."""
 import copy
+import math
 import gc
 import time
 import torch
@@ -17,7 +18,7 @@ def resource_profile(model,device):
         trainable_parameters=sum(p.numel() for p in clone.parameters() if p.requires_grad),
         resident_state_bytes=sum(v.numel()*v.element_size() for v in clone.state_dict().values()),
         input_shape=[2,256],warmup=5,inference_repetitions=20,training_repetitions=10,
-        mac_scope='Conv1d and matrix multiplication only; excludes FFT, normalization, pooling, physical lifts and elementwise arithmetic',
+        mac_scope='Conv1d/Conv2d and matrix multiplication only; excludes FFT, normalization, pooling, physical lifts and elementwise arithmetic',
         benchmark_state_used_for_training=False)
     with torch.no_grad():
         for batch in (1,128):
@@ -42,8 +43,8 @@ def resource_profile(model,device):
         def __init__(self):super().__init__();self.macs=0
         def __torch_dispatch__(self,func,types,args=(),kwargs=None):
             out=func(*args,**(kwargs or {}))
-            if str(func)=='aten.convolution.default' and len(args[1].shape)==3:
-                self.macs+=out.numel()*args[1].shape[1]*args[1].shape[2]
+            if str(func)=='aten.convolution.default' and len(args[1].shape) in (3,4):
+                self.macs+=out.numel()*args[1].shape[1]*math.prod(args[1].shape[2:])
             return out
     counter=ConvolutionCounter()
     with torch.no_grad(),counter:clone(x)

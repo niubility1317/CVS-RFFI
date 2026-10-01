@@ -15,5 +15,6 @@
 |CVS 等角身份分类头|managed_run|[打开](../../automation_reports/CV-SincNet/20261001-phase1-cvs-simplex-identity-manysig-m8-r01/report.md)|
 |CVS性能优先继续优化：phase_dsq clean测试报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261001-phase1-cvs-stability-clean-manysig-m24-r01/report.md)|
 |CVS 性能优先研发：物理补充表征|managed_run|[打开](../../automation_reports/CV-SincNet/20261001-phase1-cvs-stability-identity-manysig-m8-r01/report.md)|
+|CVS继续研发：整体物理观测身份表征|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-observable-identity-manysig-m8-r01/report.md)|
 |CVS性能优先继续优化：rf_gmp clean测试报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-rf-operator-clean-manysig-m24-r01/report.md)|
 |CVS 受约束射频行为算子|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-rf-operator-identity-manysig-m8-r01/report.md)|

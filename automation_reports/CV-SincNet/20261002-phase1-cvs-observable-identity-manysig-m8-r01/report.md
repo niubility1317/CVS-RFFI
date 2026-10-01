@@ -1,0 +1,26 @@
+# CVS整体物理观测身份网络：源训练预登记
+
+状态 PLANNED，尚未发布N607。
+
+仅普通CE、身份网络、无输入/信道增强，scratch、固定L6300/V27000、U56700不使用、split392005；两候选×四modelseed2026092701..04，E200×50/10000更新，batch128、AdamW2e-4、wd1e-4、cosine1e-6、FP32/no clip。无teacher/EMA/继承/域骨干/额外损失。
+
+整个身份路径使用共享固定物理观测前端，后接完整256点时间、源域支持80:160的4×20重复网格和观测变化FFT。所有路径常相位不变；affine额外消除给定输入的仿射相位。普通cosine30、160维、6类，不读取RX/day/truth进行前向或设置分类规则。
+
+|候选|前端通道|参数总量（本地实测）|
+|---|---:|---:|
+|observable_phase|21|196048|
+|observable_affine|13|188240|
+
+物理属性检查、CE梯度、逐包独立、弱信号、数据/继承负测及clean协议已经聚焦验证；Conv2d计数与原Conv1d公式验证通过。冻结后还记录sourceV逐TX/RX/day及嵌入分散，合成AM/AM/AM/PM/RX镜像/多径响应仅做诊断，不是增强或TX参数辨识。实测GPU成本及实际源结果尚为N/A。
+
+固定源选择为四seed最终0.5×源V＋0.5×最差源RX最高优先，性能完全并列后才比成本；绝不读目标评分选结构/候选/超参数。参数轻量次要。
+
+默认收尾由独立子run`20261002-phase1-cvs-observable-clean-manysig-m24-r01`完成，只测试源选中的四个模型，旧20个控制预测只读复用，共24行、同168000物理clean query/6类/7RX，预测完整固定后独立truth-last评分；保留全部seed/RX/TX/CM/Macro-F1及负结果。未选候选不测，不以source分数或理论性质宣称性能目标完成。
+
+声明：变化覆盖整体身份框架，不能归因单个机制；不保证任意RX/多径不变、唯一TX硬件恢复、LEO或新增类/SFT效果。当前已历史暴露clean代理基准，不作新盲测。
+
+[前瞻结构](../../../docs/CVS_OBSERVABLE_IDENTITY_HYPOTHESIS_20261002.md) · [源输入依据](../20261002-diagnostic-rff-preamble-source-manysig-m1-r01/report.md) · [物理边界](../../../docs/CVS_RFF_PHYSICS_AWARE_CRITERIA_20261002.md)。
+
+发布前验证：56项独立相关检查PASS；本地CPU八个一次性模型/24次合成CE更新及冻结变换检查PASS。模型物理与执行权限两个互不重叠的独立P0/P1审查PASS。N607在启动前以其实际Torch运行同一已提交CPU检查，失败则不会启动正式训练。
+
+定点执行复审发现CPU诊断stdout与提交JSON串联的P1；发布前抑制CPU stdout，保留独立JSON产物，生成远端脚本compile通过。未发生远端重复提交。
