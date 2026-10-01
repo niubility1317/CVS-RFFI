@@ -1,0 +1,208 @@
+{
+  "status": "COMPLETE_AJLR_DIAGNOSTICS_PACKAGE",
+  "run_id": "20261001-phase2-d92-anchor-joint-support-m2-r01",
+  "scope": "EXISTING_COMPLETE_TRAINING_DERIVATIONS_NO_FIT_FORWARD_SVD_OR_QUERY",
+  "source_status": "COMPLETE_AJLR_TRAINING_DIAGNOSTICS_DERIVED",
+  "totals": {
+    "actual_stages": 3240,
+    "preparation_records": 3240,
+    "information_stages": 648,
+    "updated_stages": 648,
+    "zero_update_information_stages": 0,
+    "curve_records": 20756,
+    "unique_B_physical_bindings": 360,
+    "prior_head_records": 864,
+    "repeated_B_actual_contexts": 1440,
+    "scalar_stage_log_records": 9720,
+    "compact_training_event_records": 23996
+  },
+  "entries": [
+    {
+      "original": "E:\\type10-7\\automation_reports\\CV-SincNet\\20261001-phase2-d92-anchor-joint-support-m2-r01\\results\\training_diagnostics\\summary.json",
+      "original_bytes": 7863525,
+      "compressed": "E:\\type10-7\\automation_reports\\CV-SincNet\\20261001-phase2-d92-anchor-joint-support-m2-r01\\results\\training_diagnostics_package\\summary.json.gz",
+      "compressed_bytes": 553968,
+      "line_count": 1,
+      "compression_seconds": 0.07987319999665488,
+      "original_preserved": true,
+      "git_storage": "SMALL_SUMMARY_AND_COMPACT_ONLY"
+    },
+    {
+      "original": "E:\\type10-7\\automation_reports\\CV-SincNet\\20261001-phase2-d92-anchor-joint-support-m2-r01\\results\\training_diagnostics\\stages.jsonl",
+      "original_bytes": 252096703,
+      "compressed": "E:\\type10-7\\automation_reports\\CV-SincNet\\20261001-phase2-d92-anchor-joint-support-m2-r01\\results\\training_diagnostics_package\\stages.jsonl.gz",
+      "compressed_bytes": 31505821,
+      "line_count": 3240,
+      "compression_seconds": 3.5229342999955406,
+      "original_preserved": true,
+      "git_storage": "LOCAL_LARGE_ARTIFACT_PATH_REFERENCE"
+    },
+    {
+      "original": "E:\\type10-7\\automation_reports\\CV-SincNet\\20261001-phase2-d92-anchor-joint-support-m2-r01\\results\\training_diagnostics\\curves.jsonl",
+      "original_bytes": 1175603137,
+      "compressed": "E:\\type10-7\\automation_reports\\CV-SincNet\\20261001-phase2-d92-anchor-joint-support-m2-r01\\results\\training_diagnostics_package\\curves.jsonl.gz",
+      "compressed_bytes": 170841936,
+      "line_count": 20756,
+      "compression_seconds": 17.791678999994474,
+      "original_preserved": true,
+      "git_storage": "LOCAL_LARGE_ARTIFACT_PATH_REFERENCE"
+    },
+    {
+      "original": "E:\\type10-7\\automation_reports\\CV-SincNet\\20261001-phase2-d92-anchor-joint-support-m2-r01\\results\\training_diagnostics\\preparations.jsonl",
+      "original_bytes": 53671059,
+      "compressed": "E:\\type10-7\\automation_reports\\CV-SincNet\\20261001-phase2-d92-anchor-joint-support-m2-r01\\results\\training_diagnostics_package\\preparations.jsonl.gz",
+      "compressed_bytes": 5271824,
+      "line_count": 3240,
+      "compression_seconds": 0.6201277000000118,
+      "original_preserved": true,
+      "git_storage": "LOCAL_LARGE_ARTIFACT_PATH_REFERENCE"
+    },
+    {
+      "original": "E:\\type10-7\\automation_reports\\CV-SincNet\\20261001-phase2-d92-anchor-joint-support-m2-r01\\results\\training_diagnostics\\prior_heads.jsonl",
+      "original_bytes": 15335201,
+      "compressed": "E:\\type10-7\\automation_reports\\CV-SincNet\\20261001-phase2-d92-anchor-joint-support-m2-r01\\results\\training_diagnostics_package\\prior_heads.jsonl.gz",
+      "compressed_bytes": 1242642,
+      "line_count": 864,
+      "compression_seconds": 0.16544080000312533,
+      "original_preserved": true,
+      "git_storage": "LOCAL_LARGE_ARTIFACT_PATH_REFERENCE"
+    },
+    {
+      "original": "E:\\type10-7\\automation_reports\\CV-SincNet\\20261001-phase2-d92-anchor-joint-support-m2-r01\\results\\training_diagnostics\\curve_statistics.jsonl",
+      "original_bytes": 12506344,
+      "compressed": "E:\\type10-7\\automation_reports\\CV-SincNet\\20261001-phase2-d92-anchor-joint-support-m2-r01\\results\\training_diagnostics_package\\curve_statistics.jsonl.gz",
+      "compressed_bytes": 889686,
+      "line_count": 50227,
+      "compression_seconds": 0.13646880000305828,
+      "original_preserved": true,
+      "git_storage": "LOCAL_LARGE_ARTIFACT_PATH_REFERENCE"
+    },
+    {
+      "original": "E:\\type10-7\\automation_reports\\CV-SincNet\\20261001-phase2-d92-anchor-joint-support-m2-r01\\results\\training_diagnostics_package\\curves_compact.jsonl",
+      "original_bytes": 139058801,
+      "compressed": "E:\\type10-7\\automation_reports\\CV-SincNet\\20261001-phase2-d92-anchor-joint-support-m2-r01\\results\\training_diagnostics_package\\curves_compact.jsonl.gz",
+      "compressed_bytes": 7383655,
+      "line_count": 20756,
+      "compression_seconds": 1.1449576000013622,
+      "original_preserved": true,
+      "git_storage": "SMALL_SUMMARY_AND_COMPACT_ONLY"
+    },
+    {
+      "original": "E:\\type10-7\\automation_reports\\CV-SincNet\\20261001-phase2-d92-anchor-joint-support-m2-r01\\results\\training_diagnostics_package\\curves_compact.csv",
+      "original_bytes": 33533393,
+      "compressed": "E:\\type10-7\\automation_reports\\CV-SincNet\\20261001-phase2-d92-anchor-joint-support-m2-r01\\results\\training_diagnostics_package\\curves_compact.csv.gz",
+      "compressed_bytes": 4705598,
+      "line_count": 20757,
+      "compression_seconds": 0.6092821000056574,
+      "original_preserved": true,
+      "git_storage": "SMALL_SUMMARY_AND_COMPACT_ONLY"
+    }
+  ],
+  "all_original_files": [
+    {
+      "path": "E:\\type10-7\\automation_reports\\CV-SincNet\\20261001-phase2-d92-anchor-joint-support-m2-r01\\results\\training_diagnostics\\archive_by_phase.csv",
+      "bytes": 2353
+    },
+    {
+      "path": "E:\\type10-7\\automation_reports\\CV-SincNet\\20261001-phase2-d92-anchor-joint-support-m2-r01\\results\\training_diagnostics\\B_binding_groups.csv",
+      "bytes": 75442
+    },
+    {
+      "path": "E:\\type10-7\\automation_reports\\CV-SincNet\\20261001-phase2-d92-anchor-joint-support-m2-r01\\results\\training_diagnostics\\by_mode_train_k.csv",
+      "bytes": 176068
+    },
+    {
+      "path": "E:\\type10-7\\automation_reports\\CV-SincNet\\20261001-phase2-d92-anchor-joint-support-m2-r01\\results\\training_diagnostics\\by_model_cohort.csv",
+      "bytes": 1764195
+    },
+    {
+      "path": "E:\\type10-7\\automation_reports\\CV-SincNet\\20261001-phase2-d92-anchor-joint-support-m2-r01\\results\\training_diagnostics\\by_receiver_scene.csv",
+      "bytes": 1765449
+    },
+    {
+      "path": "E:\\type10-7\\automation_reports\\CV-SincNet\\20261001-phase2-d92-anchor-joint-support-m2-r01\\results\\training_diagnostics\\by_row.csv",
+      "bytes": 2881460
+    },
+    {
+      "path": "E:\\type10-7\\automation_reports\\CV-SincNet\\20261001-phase2-d92-anchor-joint-support-m2-r01\\results\\training_diagnostics\\by_scope_k_new_count.csv",
+      "bytes": 721572
+    },
+    {
+      "path": "E:\\type10-7\\automation_reports\\CV-SincNet\\20261001-phase2-d92-anchor-joint-support-m2-r01\\results\\training_diagnostics\\curve_statistics.csv",
+      "bytes": 4790100
+    },
+    {
+      "path": "E:\\type10-7\\automation_reports\\CV-SincNet\\20261001-phase2-d92-anchor-joint-support-m2-r01\\results\\training_diagnostics\\curve_statistics.jsonl",
+      "bytes": 12506344
+    },
+    {
+      "path": "E:\\type10-7\\automation_reports\\CV-SincNet\\20261001-phase2-d92-anchor-joint-support-m2-r01\\results\\training_diagnostics\\curves.csv",
+      "bytes": 1234008240
+    },
+    {
+      "path": "E:\\type10-7\\automation_reports\\CV-SincNet\\20261001-phase2-d92-anchor-joint-support-m2-r01\\results\\training_diagnostics\\curves.jsonl",
+      "bytes": 1175603137
+    },
+    {
+      "path": "E:\\type10-7\\automation_reports\\CV-SincNet\\20261001-phase2-d92-anchor-joint-support-m2-r01\\results\\training_diagnostics\\preparations.csv",
+      "bytes": 57590665
+    },
+    {
+      "path": "E:\\type10-7\\automation_reports\\CV-SincNet\\20261001-phase2-d92-anchor-joint-support-m2-r01\\results\\training_diagnostics\\preparations.jsonl",
+      "bytes": 53671059
+    },
+    {
+      "path": "E:\\type10-7\\automation_reports\\CV-SincNet\\20261001-phase2-d92-anchor-joint-support-m2-r01\\results\\training_diagnostics\\prior_heads.csv",
+      "bytes": 16596759
+    },
+    {
+      "path": "E:\\type10-7\\automation_reports\\CV-SincNet\\20261001-phase2-d92-anchor-joint-support-m2-r01\\results\\training_diagnostics\\prior_heads.jsonl",
+      "bytes": 15335201
+    },
+    {
+      "path": "E:\\type10-7\\automation_reports\\CV-SincNet\\20261001-phase2-d92-anchor-joint-support-m2-r01\\results\\training_diagnostics\\report.md",
+      "bytes": 5195
+    },
+    {
+      "path": "E:\\type10-7\\automation_reports\\CV-SincNet\\20261001-phase2-d92-anchor-joint-support-m2-r01\\results\\training_diagnostics\\resources_by_k_new_count.csv",
+      "bytes": 18650
+    },
+    {
+      "path": "E:\\type10-7\\automation_reports\\CV-SincNet\\20261001-phase2-d92-anchor-joint-support-m2-r01\\results\\training_diagnostics\\resources_by_model_cohort.csv",
+      "bytes": 62233
+    },
+    {
+      "path": "E:\\type10-7\\automation_reports\\CV-SincNet\\20261001-phase2-d92-anchor-joint-support-m2-r01\\results\\training_diagnostics\\resources_by_receiver_scene.csv",
+      "bytes": 63151
+    },
+    {
+      "path": "E:\\type10-7\\automation_reports\\CV-SincNet\\20261001-phase2-d92-anchor-joint-support-m2-r01\\results\\training_diagnostics\\resources_by_row.csv",
+      "bytes": 7320
+    },
+    {
+      "path": "E:\\type10-7\\automation_reports\\CV-SincNet\\20261001-phase2-d92-anchor-joint-support-m2-r01\\results\\training_diagnostics\\stages.csv",
+      "bytes": 257294846
+    },
+    {
+      "path": "E:\\type10-7\\automation_reports\\CV-SincNet\\20261001-phase2-d92-anchor-joint-support-m2-r01\\results\\training_diagnostics\\stages.jsonl",
+      "bytes": 252096703
+    },
+    {
+      "path": "E:\\type10-7\\automation_reports\\CV-SincNet\\20261001-phase2-d92-anchor-joint-support-m2-r01\\results\\training_diagnostics\\summary.json",
+      "bytes": 7863525
+    }
+  ],
+  "original_snapshot": {
+    "path": "E:\\type10-7\\automation_reports\\CV-SincNet\\20261001-phase2-d92-anchor-joint-support-m2-r01\\results\\training_snapshot.json",
+    "bytes": 2673911234,
+    "recollected": false,
+    "git_storage": "ORIGINAL_LARGE_ARTIFACT_PATH_REFERENCE"
+  },
+  "packaging_seconds": 44.71676459999435,
+  "source_or_query_read": false,
+  "method_or_training_changed": false,
+  "transmission_measurement_scope": "LOCAL_INFRASTRUCTURE_ARCHIVES_NOT_STAR_GROUND_PAYLOAD",
+  "remote_extract_source_commit": "015a9c5ec79838e130ec1a4a1cd65f14e56a7797",
+  "completed_extract_handle": 60237,
+  "completed_extract_output_prefix": "E:\\type10-7\\.codex_tmp\\ssr_command_1790813623742330500"
+}

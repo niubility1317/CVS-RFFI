@@ -195,3 +195,9 @@ AJLR 固定旧类物理参考测度及 B 的 τ/γ，但参考点随当前 U 重
 复用既有 p2_min_v1/VALIDATED_ONCE support 身份，没有改变 received IQ、物理 ID、信道或角色划分。未加载历史目标 adapter/head，仅当前 B→C 继承；源样本、源逐记录特征、query 拟合与反馈均不使用。地面统计输入为0 B，不把软件发布包字节当作卫星方法数据传输。
 
 完整独立分析来源：`E:\type10-7\automation_reports\CV-SincNet\20261001-phase2-d92-anchor-joint-support-m2-r01\results\support_summary\summary.json`。逐配置与必要分层保留在同目录 CSV；NPZ 保留原路径。
+
+## 完整训练诊断补充
+
+ANALYZED/VERIFIED：AJLR完整support分析与训练诊断均已完成。修复后extract60237退出0，独立进程读回PID514480已退出；完整3240stage/3240prep/20756curve/864prior，648有信息stage全部更新，原snapshot2673911234B及全部原始派生流保留。提供无大数组的全曲线JSONL/CSV和分层资源表。科学方法、参数、数学计算与健康Affine分析均未改变。本轮仅support诊断，A/B−A=N/A；新类/H局部收益不能代替旧类保持，原BranchLocalRidge仍保留，未自动晋级，目标ACTIVE。
+
+完整机制、梯度/近端项、注册残差与后续adapter变化见[训练诊断](D92_AJLR_TRAINING_FINDINGS_20261001.md)。可证明的范围见[数学边界](D92_AFFINE_JOINT_MATH_LIMITS_20261001.md)。资源以完整pilot实测总账解释，分析/压缩日志开销不能作为星载训练成本；实际星载费用与完整模型传输仍为N/A。

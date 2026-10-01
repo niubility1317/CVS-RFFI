@@ -321,6 +321,7 @@ paths += ['tools/d92_affine_analysis_math.py', 'tests/test_d92_affine_analysis_m
 paths += ['docs/D92_AFFINE_ANALYSIS_REPAIR_20261001.md', 'docs/D92_ANCHOR_JOINT_SUPPORT_RESULT_20261001.md']
 paths += ['docs/D92_AJLR_TRAINING_TRANSPORT_FIX_20261001.md']
 paths += ['docs/D92_AFFINE_JOINT_MATH_LIMITS_20261001.md']
+paths += ['docs/D92_AJLR_TRAINING_FINDINGS_20261001.md']
 for name in paths:
     src=ROOT/name;dst=WS/name;dst.parent.mkdir(parents=True,exist_ok=True)
     # Each name is unique to this task; original D92 and shared wrappers are not mirrored.

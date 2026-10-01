@@ -175,7 +175,7 @@
       "summary": "E:\\type10-7\\automation_reports\\CV-SincNet\\20261001-phase2-d92-anchor-joint-support-m2-r01\\results\\support_summary\\summary.json"
     },
     "training_diagnostics": {
-      "status": "RUNNING_VERIFIED",
+      "status": "COMPLETE_VERIFIED",
       "local_wait_handle": 60237,
       "process_exited": true,
       "reason": "Snapshot JSON embedded as a Python source literal exceeded parser length; requires data-only compressed transport",
@@ -212,8 +212,26 @@
       "snapshot_recollected": false,
       "pid": 514480,
       "start_ticks": 6047347,
-      "last_independent_readback": "extract_readback_1790812997653548000.json",
-      "source_or_query_read": false
+      "last_independent_readback": "extract_readback_1790814350628663600.json",
+      "source_or_query_read": false,
+      "completed_local_wait_handle": 60237,
+      "active_local_wait_handle": null,
+      "remote_process_exited": true,
+      "completed_evidence": "training_diagnostics_complete_20261001.json",
+      "package_manifest": "results/training_diagnostics_package/manifest.json",
+      "totals": {
+        "actual_stages": 3240,
+        "preparation_records": 3240,
+        "information_stages": 648,
+        "updated_stages": 648,
+        "zero_update_information_stages": 0,
+        "curve_records": 20756,
+        "unique_B_physical_bindings": 360,
+        "prior_head_records": 864,
+        "repeated_B_actual_contexts": 1440,
+        "scalar_stage_log_records": 9720,
+        "compact_training_event_records": 23996
+      }
     }
   },
   "expected_artifacts": [
@@ -2763,6 +2781,17 @@
       "automatic_promotion": false,
       "interpretation": "E:\\type10-7\\automation_reports\\CV-SincNet\\20261001-phase2-d92-anchor-joint-support-m2-r01\\results\\support_summary\\root_interpretation.json",
       "actual_A": null
+    },
+    "training_diagnostics": {
+      "status": "COMPLETE_VERIFIED",
+      "scope": "TRAINING_SUPPORT_MECHANISM_NOT_QUERY_PERFORMANCE",
+      "summary": "results/training_diagnostics/summary.json",
+      "manifest": "results/training_diagnostics_package/manifest.json",
+      "compact_jsonl": "results/training_diagnostics_package/curves_compact.jsonl.gz",
+      "compact_csv": "results/training_diagnostics_package/curves_compact.csv.gz",
+      "findings_document": "docs/D92_AJLR_TRAINING_FINDINGS_20261001.md",
+      "automatic_promotion": false,
+      "all_original_artifacts_preserved": true
     }
   }
 }

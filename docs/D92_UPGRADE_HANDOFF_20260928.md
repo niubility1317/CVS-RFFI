@@ -1,3 +1,9 @@
+## 最新状态：AJLR已ANALYZED，Affine独立分析仍在运行（2026-10-01）
+
+ANALYZED/VERIFIED：AJLR完整support分析与训练诊断均已完成。修复后extract60237退出0，独立进程读回PID514480已退出；完整3240stage/3240prep/20756curve/864prior，648有信息stage全部更新，原snapshot2673911234B及全部原始派生流保留。提供无大数组的全曲线JSONL/CSV和分层资源表。科学方法、参数、数学计算与健康Affine分析均未改变。本轮仅support诊断，A/B−A=N/A；新类/H局部收益不能代替旧类保持，原BranchLocalRidge仍保留，未自动晋级，目标ACTIVE。
+
+60237已结束，不再poll或extract/snapshot；31215包装也已结束。Affine保持原PID501716/handle2931，恢复先核实2931与完整summary，不重复analyze/training。root唯一launch owner。AJLR训练源a1a003f、分析源fc5cd28、collector源015a9c5；Affine训练源81a226a、分析源1acc83a。当前未产生Affine完整成绩，不根据部分指标选模/调参。
+
 ## 最新状态：联合方法数学边界已核查，两个只读任务运行中（2026-10-01）
 
 DIAGNOSTIC_EXTRACT_RUNNING/VERIFIED：压缩JSON重试已独立看到远端PID514480/start6047347，local handle60237；只读training extract，未重采snapshot、未重训、未读取query。数学范围审计只用代码与论文，明确全support均方位移、actual B冻结分量及自由截距反向的保护边界；不改变算法或预算。完整diagnostics待完成，目标ACTIVE。
