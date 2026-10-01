@@ -1,0 +1,59 @@
+{
+  "status": "PASS",
+  "tests": 3,
+  "environment": "C:\\Users\\lh594\\.conda\\envs\\ssr-gpu\\python.exe",
+  "profiles": {
+    "tf_lowrank32": {
+      "hardware": "cpu",
+      "precision": "float32",
+      "torch_version": "2.10.0+cu128",
+      "total_parameters": 129089,
+      "trainable_parameters": 129089,
+      "resident_state_bytes": 517008,
+      "input_shape": [
+        2,
+        256
+      ],
+      "warmup": 5,
+      "inference_repetitions": 20,
+      "training_repetitions": 10,
+      "mac_scope": "Conv1d and matrix multiplication only; excludes FFT, normalization, pooling, physical lifts and elementwise arithmetic",
+      "benchmark_state_used_for_training": false,
+      "inference_batch1_ms": 4.213910000544274,
+      "inference_batch128_ms": 47.0900749998691,
+      "conv_linear_macs_per_sample": 9672868,
+      "fft_calls_per_sample": 2,
+      "training_batch128_ms": 189.79965000035008,
+      "gradient_used_parameters": 129089,
+      "benchmark_peak_cuda_allocated_bytes": null,
+      "benchmark_peak_note": "Disposable clone plus original frozen model resident; actual source-training peak is separately logged"
+    },
+    "tf_bilinear": {
+      "hardware": "cpu",
+      "precision": "float32",
+      "torch_version": "2.10.0+cu128",
+      "total_parameters": 113825,
+      "trainable_parameters": 113825,
+      "resident_state_bytes": 455952,
+      "input_shape": [
+        2,
+        256
+      ],
+      "warmup": 5,
+      "inference_repetitions": 20,
+      "training_repetitions": 10,
+      "mac_scope": "Conv1d and matrix multiplication only; excludes FFT, normalization, pooling, physical lifts and elementwise arithmetic",
+      "benchmark_state_used_for_training": false,
+      "inference_batch1_ms": 5.323444999521598,
+      "inference_batch128_ms": 60.856739999871934,
+      "conv_linear_macs_per_sample": 9657476,
+      "fft_calls_per_sample": 2,
+      "training_batch128_ms": 177.9826400001184,
+      "gradient_used_parameters": 113825,
+      "benchmark_peak_cuda_allocated_bytes": null,
+      "benchmark_peak_note": "Disposable clone plus original frozen model resident; actual source-training peak is separately logged"
+    }
+  },
+  "target_inputs_used": false,
+  "source_analysis_ref": "20261001-phase1-cvs-balanced-identity-manysig-m8-r01/evidence/source_research_complete.json"
+}

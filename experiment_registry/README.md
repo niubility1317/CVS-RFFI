@@ -1,6 +1,6 @@
 # 实验总索引
 
-更新：2026-10-01T09:36:32+00:00
+更新：2026-10-01T09:42:27+00:00
 
 先按方法/问题检索，再用run ID读取精确配置与证据。历史组数量不等于独立实验数量。
 
@@ -12,7 +12,7 @@
 
 |记录类型|数量|
 |---|---:|
-|managed_run|25|
+|managed_run|26|
 
 历史状态统一为HISTORICAL_UNVERIFIED；RUNNING等原文声明只供查证，不能证明此刻仍在运行。
 
@@ -22,24 +22,24 @@
 |---|---:|
 |[daot](by_method/daot.md)|11|
 |[rc4](by_method/rc4.md)|10|
-|[cvs](by_method/cvs.md)|8|
+|[cvs](by_method/cvs.md)|9|
 |[practical](by_method/practical.md)|7|
 |[residual](by_method/residual.md)|7|
 |[residual_noeq](by_method/residual_noeq.md)|7|
+|[clean_only](by_method/clean_only.md)|7|
+|[ce_only](by_method/ce_only.md)|7|
 |[phase1](by_method/phase1.md)|6|
 |[fasttrust](by_method/fasttrust.md)|6|
 |[concat](by_method/concat.md)|6|
-|[clean_only](by_method/clean_only.md)|6|
-|[ce_only](by_method/ce_only.md)|6|
+|[no_augmentation](by_method/no_augmentation.md)|6|
+|[lightweight](by_method/lightweight.md)|6|
 |[full](by_method/full.md)|5|
 |[zf](by_method/zf.md)|5|
 |[mmse](by_method/mmse.md)|5|
 |[truth_last](by_method/truth_last.md)|5|
-|[no_augmentation](by_method/no_augmentation.md)|5|
-|[lightweight](by_method/lightweight.md)|5|
 |[final200](by_method/final200.md)|4|
+|[source_selection](by_method/source_selection.md)|4|
 |[d92](by_method/d92.md)|3|
-|[source_selection](by_method/source_selection.md)|3|
 |[response](by_method/response.md)|3|
 |[core90](by_method/core90.md)|3|
 |[sixscene](by_method/sixscene.md)|2|
@@ -73,6 +73,7 @@
 |[cvcnn](by_method/cvcnn.md)|1|
 |[resnet1d](by_method/resnet1d.md)|1|
 |[real_cnn](by_method/real_cnn.md)|1|
+|[time_frequency_interaction](by_method/time_frequency_interaction.md)|1|
 |[residual_fusion](by_method/residual_fusion.md)|1|
 |[frozen_baseline_reuse](by_method/frozen_baseline_reuse.md)|1|
 
@@ -100,6 +101,7 @@
 |CVS 无增强轻量架构与常见网络基准|managed_run|[打开](../automation_reports/CV-SincNet/20261001-phase1-cvs-clean-architecture-manysig-m32-r01/report.md)|
 |CVS身份骨干交叉熵对照实验|managed_run|[打开](../automation_reports/CV-SincNet/20261001-phase1-cvs-identity-ce-practical-manysig-m5-r01/report.md)|
 |CVS身份骨干交叉熵对照实验|managed_run|[打开](../automation_reports/CV-SincNet/20261001-phase1-cvs-identity-ce-practical-manysig-m5-r02/report.md)|
+|CVS性能优先研发：时频交互|managed_run|[打开](../automation_reports/CV-SincNet/20261001-phase1-cvs-interaction-identity-manysig-m8-r01/report.md)|
 |CVS 基础网络研发：残差物理融合|managed_run|[打开](../automation_reports/CV-SincNet/20261001-phase1-cvs-residual-identity-manysig-m8-r01/report.md)|
 |CVS 结构优化：轻量残差融合的 clean 确认报告|managed_run|[打开](../automation_reports/CV-SincNet/20261001-phase1-cvs-selected-clean-manysig-m20-r01/report.md)|
 |原生DAOT＋RC4与仅动力博弈三seed对照|managed_run|[打开](../automation_reports/CV-SincNet/phase1_daot_rc4_pure_game_m3_20260917_r1/report.md)|

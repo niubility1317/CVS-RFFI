@@ -12,5 +12,6 @@
 |CVS性能优先继续优化：balanced_fusion clean测试报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261001-phase1-cvs-balanced-clean-manysig-m24-r01/report.md)|
 |CVS继续研发：分支平衡融合与有符号PA投影|managed_run|[打开](../../automation_reports/CV-SincNet/20261001-phase1-cvs-balanced-identity-manysig-m8-r01/report.md)|
 |CVS 无增强轻量架构与常见网络基准|managed_run|[打开](../../automation_reports/CV-SincNet/20261001-phase1-cvs-clean-architecture-manysig-m32-r01/report.md)|
+|CVS性能优先研发：时频交互|managed_run|[打开](../../automation_reports/CV-SincNet/20261001-phase1-cvs-interaction-identity-manysig-m8-r01/report.md)|
 |CVS 基础网络研发：残差物理融合|managed_run|[打开](../../automation_reports/CV-SincNet/20261001-phase1-cvs-residual-identity-manysig-m8-r01/report.md)|
 |CVS 结构优化：轻量残差融合的 clean 确认报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261001-phase1-cvs-selected-clean-manysig-m20-r01/report.md)|
