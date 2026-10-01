@@ -1,0 +1,49 @@
+{
+  "status": "VERIFIED_PREREG_METADATA_BINDING_ONLY",
+  "run_id": "20261001-phase2-d92-margin-ground-a-support-m2-r01",
+  "at": "2026-10-01T08:04:21.446801+00:00",
+  "source_run_id": "20261001-phase2-d92-margin-joint-support-m2-r01",
+  "expected_source_runtime": "e50de0ad4e7d0570dce62ba88c3791fdf1c14951",
+  "expected_source_summary": "COMPLETE_MARGIN_JOINT_PROBE_VERIFIED",
+  "declared_rows": 4,
+  "declared_parents": 160,
+  "complete_source_summary_available": null,
+  "source_scores_or_arrays_read": false,
+  "training_performed": false,
+  "launched": false,
+  "scope": "Validator/readiness on explicit owner metadata only; source completion prerequisite remains pending",
+  "bindings": [
+    {
+      "row_id": "margin-rx3-cvs-daot-rc4-s2026092701",
+      "source_row_id": "rx3-cvs-daot-rc4-s2026092701",
+      "packet": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r02/ground-a-s2026092701",
+      "expected_checkpoint_sha256": "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b",
+      "expected_capsule_id": "residual-noeq-76121e6f34363fa612ec25fb",
+      "expected_model_seed": 2026092701
+    },
+    {
+      "row_id": "margin-rx3-cvs-daot-rc4-s2026092702",
+      "source_row_id": "rx3-cvs-daot-rc4-s2026092702",
+      "packet": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r02/ground-a-s2026092702",
+      "expected_checkpoint_sha256": "72f26413e495dcf82317898f8729caa3d35499bf0b41e9671ffdceab2c90924b",
+      "expected_capsule_id": "residual-noeq-76121e6f34363fa612ec25fb",
+      "expected_model_seed": 2026092702
+    },
+    {
+      "row_id": "margin-rx1-cvs-daot-rc4-s2026092701",
+      "source_row_id": "rx1-cvs-daot-rc4-s2026092701",
+      "packet": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r02/ground-a-s2026092701",
+      "expected_checkpoint_sha256": "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b",
+      "expected_capsule_id": "residual-noeq-d0a99fede324159c5a4750fd",
+      "expected_model_seed": 2026092701
+    },
+    {
+      "row_id": "margin-rx1-cvs-daot-rc4-s2026092702",
+      "source_row_id": "rx1-cvs-daot-rc4-s2026092702",
+      "packet": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r02/ground-a-s2026092702",
+      "expected_checkpoint_sha256": "72f26413e495dcf82317898f8729caa3d35499bf0b41e9671ffdceab2c90924b",
+      "expected_capsule_id": "residual-noeq-d0a99fede324159c5a4750fd",
+      "expected_model_seed": 2026092702
+    }
+  ]
+}

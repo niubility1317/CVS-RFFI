@@ -1,0 +1,437 @@
+{
+  "schema": "experiment_record_v1",
+  "kind": "analysis",
+  "stage": "Phase2-support-only-paired-A-supplement",
+  "aliases": [],
+  "comparison_group_id": "manysig-six-source-rx13468-day123-luv076330-residual-noeq-v1",
+  "authorization": "Existing user optimization, data reuse and complete A/B/C reporting authorization; root sole launch owner.",
+  "claim_scope": "SUPPORT_ONLY_GROUND_A_PAIRED_OLD_HELD_NOT_QUERY_EVALUATION",
+  "code": {
+    "commit": "1688091c222d33eeb486621112d3c48db75f4718",
+    "checkout": "E:\\type10-7\\code\\snapshots\\d92_support_upgrade_20260928_wt",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_margin_ground_a_support_20261001_r01",
+    "commit_note": "Preparation parent; publisher/startup record actual new immutable analysis source OID.",
+    "preparation_parent_commit": "1688091c222d33eeb486621112d3c48db75f4718"
+  },
+  "data": {
+    "dataset": "Existing selected legal support only; original source classifier head packets",
+    "version": "existing_N607_ManyTx_actual19RX",
+    "representation": "Frozen raw z_id float32/feat_joint for A; existing fixed B/C support predictions are scoring references only",
+    "contract_ref": "rows.*.expected_capsule_id and current source lane startup.selection",
+    "physical_ids_ref": "Each current source lane startup.selection and support_manifest; exact same physical old held IDs",
+    "label_map_ref": "Actual Ground packet ordered_classes and legal support_manifest registered_classes/support_labels",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [
+      "19-1",
+      "8-14",
+      "8-7",
+      "20-19"
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Current source lane frozen startup.selection",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": {
+      "rx3": "residual-noeq-76121e6f34363fa612ec25fb",
+      "rx1": "residual-noeq-d0a99fede324159c5a4750fd"
+    },
+    "split_id": "Explicit selected 40 support splits per cohort; complete original producer matrix retained",
+    "validation_ref": "Existing cohort capsule manifests; no data rebuild or revalidation",
+    "support_query_ref": "Selected legal support union only; no query samples/labels/results",
+    "leo_config_ref": "experiments/adv3b02_xuc/code/cvsrffi/practical_adapter.py",
+    "k": [
+      1,
+      5,
+      10,
+      20
+    ],
+    "new_class_counts": [
+      0,
+      2,
+      5,
+      10,
+      20
+    ],
+    "support_seeds": [
+      2026092711
+    ],
+    "protocol_schema": "p2_min_v1",
+    "phase2_data_status": "VALIDATED_ONCE",
+    "scenarios": [
+      "practical_high",
+      "practical_mid",
+      "practical_low_urban"
+    ],
+    "data_rebuilt": false,
+    "data_revalidated": false,
+    "target_previously_scored": true,
+    "reuse_policy": "VALIDATED_ONCE; runtime artifact identity/binding checks only, no new data validation",
+    "channel": {
+      "route": "residual",
+      "mode": "post_sync",
+      "equalization_enabled": false,
+      "fs_hz": 25000000
+    },
+    "selection_reused": true,
+    "source_samples": false,
+    "source_per_record_features": false
+  },
+  "permissions": {
+    "regime": "frozen_original_source_head_support_pairing_only",
+    "query_use": "none",
+    "source_samples": false,
+    "source_per_record_features": false,
+    "source_replay": false,
+    "target_support": "Existing selected legal support only",
+    "training_performed": false,
+    "calibration_performed": false,
+    "historical_scores_for_training": false,
+    "summary_use": "Whitelisted current run identity/completion/coverage metadata only; result arrays lexically skipped",
+    "truth_use": "Only scorer after fixed A prediction archive; same physical B/C held labels",
+    "adapted_state_reuse": "No load for adaptation; existing same-run B/C frozen score archives used only for independent pairing"
+  },
+  "checkpoint": {
+    "initialization": "No checkpoint load; original immutable float32 ground head packets",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r02/ground-a-s2026092701",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r02/ground-a-s2026092702"
+    ],
+    "provenance_verdict": "MATCHED_SOURCE_ONLY_SCRATCH_FINAL200; actual packet r02 loader readback VERIFIED",
+    "selection_rule": "Same two fixed source-only model seeds and both declared capsules from single current Margin source run",
+    "inheritance": [],
+    "head_fits": 0,
+    "encoder_construction": false,
+    "encoder_execution": false,
+    "packet_runtime_commit": "0145234e381b5799306acfb3d36a4e17865c1814",
+    "packet_proof_ref": "automation_reports/CV-SincNet/20261001-phase2-d92-ground-a-packet-m2-r02/evidence/packet_poststate_1790826531563763300.json"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "root",
+    "gpu_policy": "CPU_ONLY_NO_GPU_USE",
+    "cpu_lanes": 1,
+    "blas_threads_per_lane": 2,
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-ground-a-support-m2-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-ground-a-support-m2-r01",
+    "local_artifact_root": "automation_reports/CV-SincNet/20261001-phase2-d92-margin-ground-a-support-m2-r01",
+    "launch_command": "F:/App/miniconda3/python.exe -X utf8 tools/publish_d92_ground_a_support.py --spec configs/d92_margin_ground_a_support_20261001.json",
+    "stop_rule": "First direct technical failure terminates only this sequential supplement; no retry/overwrite or intervention in source runs.",
+    "actual_pid": null,
+    "actual_gpu": null,
+    "launch_status": "NOT_LAUNCHED_WAITING_FOR_VERIFIED_MARGIN_INDEPENDENT_SUMMARY",
+    "prerequisite_source_run": "20261001-phase2-d92-margin-joint-support-m2-r01",
+    "prerequisite_status": "COMPLETE_MARGIN_JOINT_PROBE_VERIFIED",
+    "prerequisite_source_runtime_commit": "e50de0ad4e7d0570dce62ba88c3791fdf1c14951"
+  },
+  "metrics_plan": {
+    "metric_names": [
+      "A_old_accuracy",
+      "B_old_accuracy",
+      "C_old_accuracy",
+      "C_new_accuracy",
+      "adaptation_gain_B_minus_A",
+      "total_old_accuracy_drop",
+      "C_abs_new_old_gap",
+      "C_h"
+    ],
+    "dimensions": [
+      "source_method",
+      "model_seed",
+      "cohort",
+      "receiver",
+      "scenario",
+      "K",
+      "old_count",
+      "new_count",
+      "diagnostic",
+      "fold"
+    ],
+    "old_class_count": 6,
+    "k": [
+      1,
+      5,
+      10,
+      20
+    ],
+    "new_class_counts": [
+      0,
+      2,
+      5,
+      10,
+      20
+    ],
+    "prediction_ref": "Each exclusive supplement row/ground_a_predictions.npz; fixed before labels read",
+    "scorer_ref": "tools/score_d92_ground_a_support.py",
+    "ideal_targets": {
+      "adaptation_gain_pp": 10,
+      "maximum_old_decline_pp": 1,
+      "maximum_absolute_gap_pp": 3,
+      "hard_gate": false
+    },
+    "limitations": "Support OOF/proxy diagnostic; K1/no independent held A=N/A. Not original query accuracy or fresh-data validation. No feedback to method."
+  },
+  "expected_artifacts": [
+    "startup.json",
+    "state.json",
+    "source_bindings.json",
+    "events.jsonl",
+    "compact.jsonl",
+    "compact.csv",
+    "scoring.log",
+    "complete.json",
+    "each row ground A predictions/summary/report/complete"
+  ],
+  "run_id": "20261001-phase2-d92-margin-ground-a-support-m2-r01",
+  "group_id": "d92-margin-ground-a-support-pairing",
+  "display_name": "MarginJoint同物理旧held support的独立A/B/C配对补充",
+  "description": "单一Margin run固定四行/160parent，在同物理旧held support补测原始地面A；现有B/C不重拟合，结果不回流。",
+  "tags": [
+    "D92",
+    "MarginJoint",
+    "Ground-A",
+    "paired-A-B-C",
+    "support-only",
+    "practical-residual"
+  ],
+  "parent_run_ids": [
+    "20261001-phase2-d92-margin-joint-support-m2-r01",
+    "20261001-phase2-d92-ground-a-packet-m2-r02"
+  ],
+  "spec_path": "configs/d92_margin_ground_a_support_20261001.json",
+  "status": "PREPARED_NOT_LAUNCHED_WAITING_FOR_VERIFIED_MARGIN_SUMMARY",
+  "rows": [
+    {
+      "row_id": "margin-rx3-cvs-daot-rc4-s2026092701",
+      "source_run_id": "20261001-phase2-d92-margin-joint-support-m2-r01",
+      "source_row_id": "rx3-cvs-daot-rc4-s2026092701",
+      "packet": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r02/ground-a-s2026092701",
+      "support_features": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-support-probe-m4-r01/rx3-cvs-daot-rc4-s2026092701/feature_cache",
+      "fit_trace": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-joint-support-m2-r01/rx3-cvs-daot-rc4-s2026092701/probe/fit_trace.jsonl",
+      "source_summary": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-joint-support-m2-r01/results/support_summary/summary.json",
+      "expected_summary_status": "COMPLETE_MARGIN_JOINT_PROBE_VERIFIED",
+      "expected_summary_schema": "d92_margin_joint_local_ridge_v1",
+      "expected_method": "D92-MarginJointLocalRidge-v1",
+      "expected_runtime_commit": "e50de0ad4e7d0570dce62ba88c3791fdf1c14951",
+      "expected_checkpoint_sha256": "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b",
+      "expected_capsule_id": "residual-noeq-76121e6f34363fa612ec25fb",
+      "expected_model_seed": 2026092701,
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-ground-a-support-m2-r01/margin-rx3-cvs-daot-rc4-s2026092701",
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026092705,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": 2026092711,
+        "evaluation": null
+      },
+      "method": "Ground-A-pairing-for-D92-MarginJointLocalRidge-v1",
+      "purpose": "Same physical old held A/B/C supplement, fixed current Margin predictions only",
+      "gpu": "CPU",
+      "config_ref": "configs/d92_margin_ground_a_support_20261001.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-ground-a-support-m2-r01/startup.json",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "Four sequential rows; single Margin source160parents/1800paths; K1 has no independent held A",
+      "scenario": "practical_high,practical_low_urban; residual/post_sync/noeq",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-ground-a-support-m2-r01/scoring.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_margin_ground_a_support_20261001_r01/tools/run_d92_ground_a_support.py",
+        "--spec",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_margin_ground_a_support_20261001_r01/configs/d92_margin_ground_a_support_20261001.json",
+        "--commit",
+        "ACTUAL_IMMUTABLE_RELEASE_COMMIT"
+      ],
+      "expected_artifacts": [
+        "ground_a_predictions.npz",
+        "prediction_complete.json",
+        "pairing.json",
+        "report.md",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "margin-rx3-cvs-daot-rc4-s2026092702",
+      "source_run_id": "20261001-phase2-d92-margin-joint-support-m2-r01",
+      "source_row_id": "rx3-cvs-daot-rc4-s2026092702",
+      "packet": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r02/ground-a-s2026092702",
+      "support_features": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-support-probe-m4-r01/rx3-cvs-daot-rc4-s2026092702/feature_cache",
+      "fit_trace": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-joint-support-m2-r01/rx3-cvs-daot-rc4-s2026092702/probe/fit_trace.jsonl",
+      "source_summary": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-joint-support-m2-r01/results/support_summary/summary.json",
+      "expected_summary_status": "COMPLETE_MARGIN_JOINT_PROBE_VERIFIED",
+      "expected_summary_schema": "d92_margin_joint_local_ridge_v1",
+      "expected_method": "D92-MarginJointLocalRidge-v1",
+      "expected_runtime_commit": "e50de0ad4e7d0570dce62ba88c3791fdf1c14951",
+      "expected_checkpoint_sha256": "72f26413e495dcf82317898f8729caa3d35499bf0b41e9671ffdceab2c90924b",
+      "expected_capsule_id": "residual-noeq-76121e6f34363fa612ec25fb",
+      "expected_model_seed": 2026092702,
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-ground-a-support-m2-r01/margin-rx3-cvs-daot-rc4-s2026092702",
+      "seeds": {
+        "model": 2026092702,
+        "split": 2026092705,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": 2026092711,
+        "evaluation": null
+      },
+      "method": "Ground-A-pairing-for-D92-MarginJointLocalRidge-v1",
+      "purpose": "Same physical old held A/B/C supplement, fixed current Margin predictions only",
+      "gpu": "CPU",
+      "config_ref": "configs/d92_margin_ground_a_support_20261001.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-ground-a-support-m2-r01/startup.json",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "Four sequential rows; single Margin source160parents/1800paths; K1 has no independent held A",
+      "scenario": "practical_high,practical_low_urban; residual/post_sync/noeq",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-ground-a-support-m2-r01/scoring.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_margin_ground_a_support_20261001_r01/tools/run_d92_ground_a_support.py",
+        "--spec",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_margin_ground_a_support_20261001_r01/configs/d92_margin_ground_a_support_20261001.json",
+        "--commit",
+        "ACTUAL_IMMUTABLE_RELEASE_COMMIT"
+      ],
+      "expected_artifacts": [
+        "ground_a_predictions.npz",
+        "prediction_complete.json",
+        "pairing.json",
+        "report.md",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "margin-rx1-cvs-daot-rc4-s2026092701",
+      "source_run_id": "20261001-phase2-d92-margin-joint-support-m2-r01",
+      "source_row_id": "rx1-cvs-daot-rc4-s2026092701",
+      "packet": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r02/ground-a-s2026092701",
+      "support_features": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-support-probe-m4-r01/rx1-cvs-daot-rc4-s2026092701/feature_cache",
+      "fit_trace": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-joint-support-m2-r01/rx1-cvs-daot-rc4-s2026092701/probe/fit_trace.jsonl",
+      "source_summary": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-joint-support-m2-r01/results/support_summary/summary.json",
+      "expected_summary_status": "COMPLETE_MARGIN_JOINT_PROBE_VERIFIED",
+      "expected_summary_schema": "d92_margin_joint_local_ridge_v1",
+      "expected_method": "D92-MarginJointLocalRidge-v1",
+      "expected_runtime_commit": "e50de0ad4e7d0570dce62ba88c3791fdf1c14951",
+      "expected_checkpoint_sha256": "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b",
+      "expected_capsule_id": "residual-noeq-d0a99fede324159c5a4750fd",
+      "expected_model_seed": 2026092701,
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-ground-a-support-m2-r01/margin-rx1-cvs-daot-rc4-s2026092701",
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026092705,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": 2026092711,
+        "evaluation": null
+      },
+      "method": "Ground-A-pairing-for-D92-MarginJointLocalRidge-v1",
+      "purpose": "Same physical old held A/B/C supplement, fixed current Margin predictions only",
+      "gpu": "CPU",
+      "config_ref": "configs/d92_margin_ground_a_support_20261001.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-ground-a-support-m2-r01/startup.json",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "Four sequential rows; single Margin source160parents/1800paths; K1 has no independent held A",
+      "scenario": "practical_high,practical_low_urban; residual/post_sync/noeq",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-ground-a-support-m2-r01/scoring.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_margin_ground_a_support_20261001_r01/tools/run_d92_ground_a_support.py",
+        "--spec",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_margin_ground_a_support_20261001_r01/configs/d92_margin_ground_a_support_20261001.json",
+        "--commit",
+        "ACTUAL_IMMUTABLE_RELEASE_COMMIT"
+      ],
+      "expected_artifacts": [
+        "ground_a_predictions.npz",
+        "prediction_complete.json",
+        "pairing.json",
+        "report.md",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "margin-rx1-cvs-daot-rc4-s2026092702",
+      "source_run_id": "20261001-phase2-d92-margin-joint-support-m2-r01",
+      "source_row_id": "rx1-cvs-daot-rc4-s2026092702",
+      "packet": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r02/ground-a-s2026092702",
+      "support_features": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-support-probe-m4-r01/rx1-cvs-daot-rc4-s2026092702/feature_cache",
+      "fit_trace": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-joint-support-m2-r01/rx1-cvs-daot-rc4-s2026092702/probe/fit_trace.jsonl",
+      "source_summary": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-joint-support-m2-r01/results/support_summary/summary.json",
+      "expected_summary_status": "COMPLETE_MARGIN_JOINT_PROBE_VERIFIED",
+      "expected_summary_schema": "d92_margin_joint_local_ridge_v1",
+      "expected_method": "D92-MarginJointLocalRidge-v1",
+      "expected_runtime_commit": "e50de0ad4e7d0570dce62ba88c3791fdf1c14951",
+      "expected_checkpoint_sha256": "72f26413e495dcf82317898f8729caa3d35499bf0b41e9671ffdceab2c90924b",
+      "expected_capsule_id": "residual-noeq-d0a99fede324159c5a4750fd",
+      "expected_model_seed": 2026092702,
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-ground-a-support-m2-r01/margin-rx1-cvs-daot-rc4-s2026092702",
+      "seeds": {
+        "model": 2026092702,
+        "split": 2026092705,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": 2026092711,
+        "evaluation": null
+      },
+      "method": "Ground-A-pairing-for-D92-MarginJointLocalRidge-v1",
+      "purpose": "Same physical old held A/B/C supplement, fixed current Margin predictions only",
+      "gpu": "CPU",
+      "config_ref": "configs/d92_margin_ground_a_support_20261001.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-ground-a-support-m2-r01/startup.json",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "Four sequential rows; single Margin source160parents/1800paths; K1 has no independent held A",
+      "scenario": "practical_high,practical_low_urban; residual/post_sync/noeq",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-ground-a-support-m2-r01/scoring.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_margin_ground_a_support_20261001_r01/tools/run_d92_ground_a_support.py",
+        "--spec",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_margin_ground_a_support_20261001_r01/configs/d92_margin_ground_a_support_20261001.json",
+        "--commit",
+        "ACTUAL_IMMUTABLE_RELEASE_COMMIT"
+      ],
+      "expected_artifacts": [
+        "ground_a_predictions.npz",
+        "prediction_complete.json",
+        "pairing.json",
+        "report.md",
+        "complete.json"
+      ]
+    }
+  ]
+}

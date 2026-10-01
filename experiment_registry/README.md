@@ -74,3 +74,7 @@
 ## 2026-10-01 D92 Margin联合support预登记
 
 - [20261001-phase2-d92-margin-joint-support-m2-r01](../automation_reports/CV-SincNet/20261001-phase2-d92-margin-joint-support-m2-r01/report.md)：TRAINING_ON_SUPPORT（启动VERIFIED），4row/160parent，旧6×K4×新增5，runtime e50de0ad4/PID756554；未完成，无真实Margin成绩。
+
+## 2026-10-01 Margin独立Ground A配对预登记
+
+- [20261001-phase2-d92-margin-ground-a-support-m2-r01](../automation_reports/CV-SincNet/20261001-phase2-d92-margin-ground-a-support-m2-r01/report.md)：待唯一Margin数学摘要完成，单来源四行/160parent；尚未启动，不训练。

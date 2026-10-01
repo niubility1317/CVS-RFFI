@@ -1,3 +1,7 @@
+## 运行中后续：独立Margin Ground A已预登记，等待原训练/摘要（2026-10-01）
+
+- Goal ACTIVE。原Margin supervisor756554/start8891521及两CPU child在runtime_readback_1790841655059469000.json再次VERIFIED存活；无complete/failed，原run不重启不热改。Ground补充20261001-phase2-d92-margin-ground-a-support-m2-r01四行/160parent已预登记，仅metadata校验；必须等待原训练全完成与COMPLETE_MARGIN_JOINT_PROBE_VERIFIED后发布一次。不要先行调用Ground publisher或scorer。
+
 ## 当前运行：Margin唯一启动已独立核实（2026-10-01）
 
 - Goal ACTIVE。20261001-phase2-d92-margin-joint-support-m2-r01唯一runtime e50de0ad4e7d0570dce62ba88c3791fdf1c14951；supervisor756554/start8891521，两CPU evaluator756564/756565，另两row PENDING。startup完整spec/argv/CWD/BLAS2/GPU空均独立VERIFIED，证据runtime_readback_1790841357922706700.json。没有complete/成绩。
