@@ -1,3 +1,12 @@
+## 当前交接：可选单样本 prior 复用已验证，原完整 query 继续（2026-10-01）
+
+- Goal ACTIVE。此前 report source9d5c06ac8 已 push/OID=0/0。本次新增可选 API 与 22 项合成验证，默认评分、训练函数、冻结配置均保持原行为；尚未用于真实实验，不声明准确率或星载节省。详见 docs/D92_MARGIN_SINGLE_QUERY_REUSE_IMPLEMENTATION_20261001.md 和 validation JSON。首次19通过/1失败的生产标量兼容问题已修正，证据保留。
+- 当前 unique query runtime 始终 d86edc323，supervisor869328/start10047966、rx3 children869442/start10049751 和869448/start10049849不改动。12:00UTC只读 runtime proof query_runtime_1790856116188773200.json 核实 CPU/log 增长、无 complete；12:08UTC fit metadata proof query_fit_progress_1790856543848488500.json 仅核实 rx3 完成写回192/193条，共各900条，rx1两行仍 preflight 排程。它们不是终态或性能证据；不得据旧 RUNNING/部分计数评分。
+- 全部4行2400 parent 的 A/B/C固定并独立终态读回后，唯一独立 score/report。新 source-only配对方案 docs/D92_MARGIN_QUERY_BASELINE_PAIRING_PLAN_20261001.md 已准备：使用 rx3/rx1各自原完整4seed metadata，仅配对本次01/02seed；旧 scored文件实际路径待终态后root核实。旧基准缺A/B/遗忘记N/A，不猜补。复用库存不称fresh验证。
+- 原 support数学、真实Ground A配对、完整训练诊断与AI紧凑日志全部完成。local79064/78869/38736等均DONE，不重复 analyze/collector/publish。当前可选 API 验证无真实 query/truth/历史指标读取；没有新训练或远端修改。
+
+以下为历史状态，不依据旧段落重复启动：
+
 ## 当前交接：Margin全部support分析及日志完成，完整query继续（2026-10-01）
 
 - Goal ACTIVE。当前report source9c16618fd已push/OID=0/0；query immutable runtime仍d86edc323，不热改。完整support训练e50、数学分析ccb7、Ground A补充d86均完成；三阶段和数学解释已交付。保旧单项改善但新类与H下降，不晋级或反馈改参数。

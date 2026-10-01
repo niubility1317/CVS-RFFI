@@ -1,0 +1,50 @@
+{
+  "status": "VERIFIED_SYNTHETIC_SINGLE_QUERY_REUSE",
+  "at": "2026-10-01T12:14:28.296457+00:00",
+  "source_parent_commit": "9d5c06ac8113cf09999091b400a1995dcabc1af5",
+  "source_paths": [
+    "code/cvsrffi/d92_margin_joint_local_ridge.py",
+    "tests/test_d92_margin_joint_single_query_reuse.py"
+  ],
+  "validation": {
+    "passed": 22,
+    "failed": 0,
+    "exit_code": 0,
+    "test_files": [
+      "tests/test_d92_margin_joint_single_query_reuse.py"
+    ],
+    "output_prefix": "E:\\type10-7\\.codex_tmp\\pytest_native_activation_1790856841330828000",
+    "environment": {
+      "identity": {
+        "executable": "E:\\type10-7\\local_envs\\ssr-gpu\\python.exe",
+        "prefix": "E:\\type10-7\\local_envs\\ssr-gpu",
+        "conda_prefix": "E:\\type10-7\\local_envs\\ssr-gpu",
+        "conda_shlvl": "2",
+        "numpy": "2.2.6",
+        "scipy": "1.15.3",
+        "torch": "2.1.0+cpu"
+      },
+      "activation_source": "Installed conda.activate.CmdExeActivator.build_stack; all generated variables applied; no hooks",
+      "conda_cli_or_wrapper_started": false,
+      "test_temp": "E:\\type10-7\\.codex_tmp\\pytest_native_temp_1790856840262167600",
+      "pytest_cache_enabled": false
+    },
+    "elapsed_seconds": null,
+    "numerical_scope": "Synthetic artificial score expansions and actual production K1 B-to-C/new0 states"
+  },
+  "preserved_failed_attempt": {
+    "output_prefix": "E:\\type10-7\\.codex_tmp\\pytest_native_activation_1790856581432327500",
+    "passed": 19,
+    "failed": 1,
+    "cause": "Production frozen center statistics contain immutable scalars, not only 0D arrays"
+  },
+  "preexisting_function_and_class_behavior_AST_unchanged": true,
+  "current_remote_runtime_unchanged": true,
+  "current_remote_runtime_commit": "d86edc3235ec0ca0e1925223970e07373256fb9c",
+  "actual_query_or_truth_access": false,
+  "new_experiment_launched": false,
+  "accuracy_change_claim": null,
+  "device_timing_savings_claim": null,
+  "device_peak_memory_bytes": null,
+  "new_ground_payload_bytes": 0
+}

@@ -746,6 +746,117 @@ def evaluate_margin_joint_objective(prepared,Z,anchor_U=None,*,gradient=True,for
     return float(risk),gZ,info,cache
 
 
+def _capture_single_query(z_id,fft,t_emb,f_emb,pa_local):
+    captured = {}
+    for name,value,width in zip(_NAMES,(z_id,fft,t_emb,f_emb,pa_local),(160,96,160,160,160)):
+        array = np.asarray(value,dtype=np.float64)
+        if array.shape != (1,width):
+            raise ValueError('Prior score reuse requires exactly one complete sample: '+name)
+        captured[name] = _readonly(array)
+    return _freeze(captured)
+
+
+def _immutable_array_binding(array,*,capture_values=True,allow_snapshot=False):
+    """No hashes: sealed buffers need metadata checks; other buffers need values."""
+    if not isinstance(array,np.ndarray):
+        raise ValueError('Prior scoring state must contain numeric arrays')
+    root = array
+    while isinstance(root.base,np.ndarray):
+        root = root.base
+    sealed = isinstance(root.base,bytes)
+    if not sealed and not allow_snapshot:
+        raise ValueError('Prior score reuse requires sealed B numeric storage')
+    buffer = root.base if root.base is not None else root
+    return (array,array.shape,array.dtype.str,array.strides,
+            int(array.__array_interface__['data'][0]),buffer,
+            None if sealed or not capture_values else _readonly(array))
+
+
+def _check_array_binding(now,old,*,scope):
+    array,shape,dtype,strides,address,buffer,snapshot = old
+    if (now[0] is not array or now[1:5] != (shape,dtype,strides,address) or
+            now[5] is not buffer):
+        raise ValueError(scope+': numeric storage changed')
+    if snapshot is not None and not np.array_equal(array,snapshot):
+        raise ValueError(scope+': numeric values changed')
+
+
+def _scoring_numeric_binding(value,*,capture_values=True,allow_snapshot=False):
+    if isinstance(value,np.ndarray):
+        return ('array',_immutable_array_binding(value,capture_values=capture_values,allow_snapshot=allow_snapshot))
+    if type(value) in (int,float) or isinstance(value,(np.integer,np.floating)):
+        if not np.isfinite(value):
+            raise ValueError('Prior scoring scalar must be finite')
+        # Preserve the actual scalar type and value, including signed zero.
+        # Production centering stores reference_self/grand as Python floats.
+        return ('scalar',type(value),value,bool(np.signbit(value)) if value==0 else None)
+    raise ValueError('Prior scoring state must contain numeric arrays or immutable real scalars')
+
+
+def _check_scoring_numeric_binding(now,old,*,scope):
+    if now[0] != old[0]:
+        raise ValueError(scope+': numeric storage changed')
+    if old[0]=='array':
+        _check_array_binding(now[1],old[1],scope=scope)
+    elif now[1:] != old[1:]:
+        raise ValueError(scope+': numeric scalar type or value changed')
+
+
+def _prior_scoring_binding(state,*,capture_values=True):
+    if state.prior is not None or state.problem.mode != 'B':
+        raise ValueError('Reusable prior scores require the actual old-only B state')
+    if tuple(state.classes) != tuple(state.problem.classes) or len(set(state.classes)) != len(state.classes):
+        raise ValueError('Invalid B class column order')
+    p,cache = state.problem,state.final_cache
+    num = cache['numeric']
+    arrays = [state.U,p.train_labels,p.old_indices,num['intercept']]
+    dictionary = None
+    if p.gamma is not None:
+        arrays += [p.train_context['original'],p.q,num['reference'],num['reference_self'],
+                   num['mean'],num['grand'],num['alpha']]
+        if p.tau != 0:
+            # _context's fixed dictionary can be ordinary read-only NumPy storage;
+            # capture values as well rather than trusting writeable=False alone.
+            dictionary = fcr._V0
+            if np.any(state.U):
+                arrays += [cache['b'],cache['a']]
+    bindings = tuple(_scoring_numeric_binding(value,capture_values=capture_values) for value in arrays)
+    if dictionary is not None:
+        bindings += (_scoring_numeric_binding(dictionary,capture_values=capture_values,allow_snapshot=True),)
+    return ((p,cache,num,state.U,p.train_context,state.audit,p.audit),
+            (tuple(state.classes),tuple(p.classes),tuple(state.ids),tuple(state.old_classes),p.mode,p.tau,p.gamma),bindings)
+
+
+def _check_prior_scoring_binding(state,binding):
+    try:
+        current = _prior_scoring_binding(state,capture_values=False)
+    except ValueError as exc:
+        raise ValueError('Expired prior score cache: '+str(exc)) from exc
+    if (any(x is not y for x,y in zip(current[0],binding[0])) or
+            current[1] != binding[1] or len(current[2]) != len(binding[2])):
+        raise ValueError('Expired prior score cache: B scoring state changed')
+    for now,old in zip(current[2],binding[2]):
+        _check_scoring_numeric_binding(now,old,scope='Expired prior score cache: B')
+
+
+@dataclass(frozen=True)
+class _SingleQueryPriorCache:
+    """Ephemeral single-input value cache, not a fitted/query-statistic state."""
+    prior: object
+    features: Mapping
+    background: np.ndarray
+    auxiliary: np.ndarray
+    scores: np.ndarray
+    classes: tuple
+    binding: tuple
+    def __post_init__(self):
+        object.__setattr__(self,'features',_freeze({name:_readonly(value) for name,value in self.features.items()}))
+        for name in ('background','auxiliary','scores'):
+            object.__setattr__(self,name,_readonly(getattr(self,name)))
+        arrays = tuple(self.features[name] for name in _NAMES)+(self.background,self.auxiliary,self.scores)
+        object.__setattr__(self,'_array_bindings',tuple(_immutable_array_binding(array) for array in arrays))
+
+
 @dataclass(frozen=True)
 class MarginJointState:
     U: np.ndarray
@@ -810,6 +921,88 @@ class MarginJointState:
         progress.update(score_physical_count=len(b),score_seconds=time.perf_counter()-start,
             reference_distance_scope='subset_of_raw_distance_work_not_additive')
         return scores,progress
+    def score_single_for_reuse(self,*,z_id,fft,t_emb,f_emb,pa_local):
+        """Score actual B once; return scores, its normal audit, and a bound packet.
+
+        Optional API only. Existing score_with_audit and benchmark callers do not
+        use this path. Capture float64 inputs before scoring; never retain caller
+        views or trust a caller assertion about which sample produced the prior.
+        """
+        start = time.perf_counter()
+        captured = _capture_single_query(z_id,fft,t_emb,f_emb,pa_local)
+        binding = _prior_scoring_binding(self)
+        before_score = time.perf_counter()
+        scores,audit = self.score_with_audit(**captured)
+        after_score = time.perf_counter()
+        _check_prior_scoring_binding(self,binding)
+        if scores.dtype != np.float64 or scores.shape != (1,len(self.classes)):
+            raise ValueError('B scores must retain original single-sample float64 columns')
+        b,a = interaction._blocks(**captured,allow_empty=False)
+        packet = _SingleQueryPriorCache(self,captured,b,a,scores,tuple(self.classes),binding)
+        audit = dict(audit,packet_preparation_seconds=(before_score-start)+(time.perf_counter()-after_score),
+                     single_query_api_seconds=time.perf_counter()-start)
+        return scores,audit,packet
+    def score_single_with_reused_prior(self,packet,*,z_id,fft,t_emb,f_emb,pa_local):
+        """Reuse only this actual B's same-input scores; evaluate all C residuals.
+
+        Packet production work belongs to the earlier B call, not this audit.
+        This cache provides no cross-sample statistics and never changes a head.
+        """
+        start = time.perf_counter()
+        if not isinstance(packet,_SingleQueryPriorCache):
+            raise ValueError('Single-query prior score packet required')
+        if self is not packet.prior and self.prior is not packet.prior:
+            raise ValueError('Prior score packet does not belong to this actual B')
+        arrays = tuple(packet.features[name] for name in _NAMES)+(packet.background,packet.auxiliary,packet.scores)
+        for array,binding in zip(arrays,packet._array_bindings):
+            _check_array_binding(_immutable_array_binding(array),binding,scope='Invalid prior packet column shape or view')
+        captured = _capture_single_query(z_id,fft,t_emb,f_emb,pa_local)
+        for name in _NAMES:
+            if (packet.features[name].shape != captured[name].shape or
+                    packet.features[name].dtype != np.float64 or
+                    not np.array_equal(packet.features[name].view(np.uint64),captured[name].view(np.uint64))):
+                raise ValueError('Prior score packet belongs to a different single input')
+        _check_prior_scoring_binding(packet.prior,packet.binding)
+        if (packet.classes != tuple(packet.prior.classes) or packet.scores.dtype != np.float64 or
+                packet.scores.shape != (1,len(packet.classes)) or
+                packet.background.shape != (1,256) or packet.auxiliary.shape != (1,480)):
+            raise ValueError('Invalid prior packet geometry or score column shape')
+        if tuple(self.classes) != tuple(self.problem.classes) or len(set(self.classes)) != len(self.classes):
+            raise ValueError('Invalid registered class column order')
+        if not set(packet.classes).issubset(self.classes):
+            raise ValueError('Prior class columns are missing from registered classes')
+        columns = [self.classes.index(name) for name in packet.classes]
+        validation_seconds = time.perf_counter()-start
+        residual = {}
+        if self is packet.prior:
+            # Existing new0 semantics: C is literally B, hence no residual call.
+            out = packet.scores.copy()
+        else:
+            try:
+                out = _score_residual(self.problem,self.final_cache,self.U,
+                                      packet.background,packet.auxiliary,residual)
+            except Exception as exc:
+                # Work reported before the failure is known; missing operations
+                # and completion counts remain unknown, never fabricated zeros.
+                exc.single_query_reuse_audit = dict(residual=residual,prior={},status='TECHNICAL_FAILURE',
+                    prior_reused=True,prior_work_executed=False,score_physical_count=None,
+                    score_seconds=time.perf_counter()-start,cache_validation_seconds=validation_seconds)
+                raise
+            if out.shape != (1,len(self.classes)):
+                raise ValueError('Invalid C residual score columns')
+            for col,target in enumerate(columns):
+                out[:,target] += packet.scores[:,col]
+        _finite(out)
+        progress = dict(residual)
+        progress.update(residual=residual,prior={},score_physical_count=1,
+            score_seconds=time.perf_counter()-start,cache_validation_seconds=validation_seconds,
+            prior_reused=True,prior_work_executed=False,prior_score_evaluation_count=0,
+            prior_score_physical_count=0,reused_prior_physical_count=1,prior_score_seconds=None,
+            composition_addition_count=0 if self is packet.prior else len(columns),
+            prior_score_seconds_reason='NOT_EXECUTED_THIS_CALL_ALREADY_PAID_BY_B_SCORE',
+            prior_column_indices=columns,new0_exact_B_reuse=self is packet.prior,
+            reference_distance_scope='subset_of_raw_distance_work_not_additive')
+        return out,progress
     def predict(self,**features):
         order = np.asarray(sorted(range(len(self.classes)),key=lambda i:self.classes[i]))
         return np.asarray(self.classes)[order[np.argmax(self.score(**features)[:,order],axis=1)]]
