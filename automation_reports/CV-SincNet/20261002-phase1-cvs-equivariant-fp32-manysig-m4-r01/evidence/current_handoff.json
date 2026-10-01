@@ -1,5 +1,5 @@
 {
-  "status": "TRAINING_COMPLETE_AWAITING_FROZEN_CLEAN_TEST",
+  "status": "ANALYZED",
   "run_id": "20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01",
   "release": "cvs_equivariant_fp32_identity_20261002_r01",
   "commit": "be0aec8f2e2a3b50ce41d8ec1778c28c96e7eb6e",
@@ -50,11 +50,10 @@
   "target_access": false,
   "confirm_run_id": "20261002-phase1-cvs-equivariant-fp32-clean-manysig-m24-r01",
   "next_steps": [
-    "Reinspect same existing dispatcher/workers;do not resubmit/restart/hotmodify",
-    "On terminal complete use collect_fp32 and analyze_fp32:full40000/800 audit,sourceonlyranking",
-    "Selectednew only:generate configs_fp32 fromactualsourcefreeze then4new+20old defaultclean andtruthlastreport",
-    "Controlwins retainverifiedoldtest;no unselectedquery;allnegativeartifacts retained"
+    "Read next_source_handoff source-only evidence;previous runs terminal",
+    "Do not resubmit/restart/change completed model/selection/target predictions",
+    "Continue source-only physical representation research;no targetscore inputs"
   ],
-  "formal_performance_result": "Source rule selected fullFP32 variant;defaultclean pending",
+  "formal_performance_result": "Complete defaultclean report exists;target metrics forbidden as research input",
   "clean_run_id": "20261002-phase1-cvs-equivariant-fp32-clean-manysig-m24-r01"
 }

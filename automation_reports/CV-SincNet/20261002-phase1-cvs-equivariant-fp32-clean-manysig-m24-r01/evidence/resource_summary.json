@@ -1,0 +1,20 @@
+{
+  "candidate": "equivariant_memory",
+  "parameters": 202553,
+  "trainable_parameters": 202553,
+  "gradient_parameters": 202553,
+  "resident_model_state_bytes": 810844,
+  "conv_linear_macs": 7199008,
+  "inference_batch1_ms_mean": 6.6149500002211425,
+  "train_batch128_ms_mean": 40.53113400004804,
+  "actual_training_peak_bytes": 163909120,
+  "full_clean_prediction_seconds_mean": 12.092273361740808,
+  "actual_prediction_peak_bytes": 50946048,
+  "hardware": "NVIDIA GeForce RTX 3090",
+  "torch_version": "2.1.0+cu121",
+  "mac_scope": "Conv1d/Conv2d and matrix multiplication only; excludes FFT, normalization, pooling, physical lifts and elementwise arithmetic",
+  "fft_calls_per_sample": 2,
+  "whole_phase_max_logit_error": 3.387033939361572e-05,
+  "whole_phase_max_unit_embedding_distance": 2.060541419268702e-06,
+  "new_onboard_transmission_bytes": null
+}

@@ -1,0 +1,89 @@
+{
+  "status": "SOURCE_ONLY_HANDOFF",
+  "run_id": "20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01",
+  "source_commit": "be0aec8f2e2a3b50ce41d8ec1778c28c96e7eb6e",
+  "source_summaries": {
+    "residual_fusion": {
+      "score": 0.9628240740740741,
+      "source_accuracy": 0.9806944444444444,
+      "worst_rx_accuracy": 0.9449537037037037,
+      "parameters": 164225,
+      "conv_linear_macs": 9708836
+    },
+    "equivariant_memory": {
+      "score": 0.9651481481481482,
+      "source_accuracy": 0.9809444444444444,
+      "worst_rx_accuracy": 0.9493518518518519,
+      "parameters": 202553,
+      "conv_linear_macs": 7199008
+    }
+  },
+  "whole_phase_max_logit_error": 3.387033939361572e-05,
+  "whole_phase_max_unit_embedding_distance": 2.060541419268702e-06,
+  "phase_report_tolerance": 0.001,
+  "phase_report_tolerance_pass": true,
+  "target_scores_included": false,
+  "target_score_based_design_forbidden": true,
+  "frozen_source_public_RX_summary": [
+    {
+      "rx": "identity",
+      "seeds": "4",
+      "tx": "ideal",
+      "whole_unit_embedding_distance_mean": "0.0"
+    },
+    {
+      "rx": "flat_phase_gain",
+      "seeds": "4",
+      "tx": "ideal",
+      "whole_unit_embedding_distance_mean": "1.176382980361268e-06"
+    },
+    {
+      "rx": "relative_cfo",
+      "seeds": "4",
+      "tx": "ideal",
+      "whole_unit_embedding_distance_mean": "1.0054208785295486"
+    },
+    {
+      "rx": "lti_channel",
+      "seeds": "4",
+      "tx": "ideal",
+      "whole_unit_embedding_distance_mean": "0.3252953886985779"
+    },
+    {
+      "rx": "rx_iq_image",
+      "seeds": "4",
+      "tx": "ideal",
+      "whole_unit_embedding_distance_mean": "0.13572988659143448"
+    },
+    {
+      "rx": "rx_cubic",
+      "seeds": "4",
+      "tx": "ideal",
+      "whole_unit_embedding_distance_mean": "0.025143399834632874"
+    }
+  ],
+  "source_V_geometry_by_seed": [
+    {
+      "seed": 2026092701,
+      "between_TX": 1.1359485366251383,
+      "within_TX_RX": 0.10507515162570649
+    },
+    {
+      "seed": 2026092702,
+      "between_TX": 1.2629216923326756,
+      "within_TX_RX": 0.12203797906308915
+    },
+    {
+      "seed": 2026092703,
+      "between_TX": 1.11761141802404,
+      "within_TX_RX": 0.11094312228805116
+    },
+    {
+      "seed": 2026092704,
+      "between_TX": 1.270141325479067,
+      "within_TX_RX": 0.09360355063785149
+    }
+  ],
+  "source_geometry_scope": "Aggregate receivedidentityembedding association;not recoveredTXparameters;RX/CFO/channel sensitivities were already measured in frozen source evidence before newquery",
+  "next_action": "Diagnose source-only received representation and documented public RX/CFO/channel sensitivity before choosing any next architecture. Previous allsource/clean weights, selections, predictions and scores fixed;no target feedback/retuning/selective rerun."
+}

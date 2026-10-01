@@ -23,12 +23,12 @@
   "replaces_run_id": null,
   "authorization": "用户授权持续优化，性能优先且真正RFF physics aware；源规则选中才默认clean测试。",
   "code": {
-    "commit": "f4afbefb5647b40eea341fbc578596c5db01dafa",
+    "commit": "2399c43c0e506f8ec4f7d04eda4ea82c816257bd",
     "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_equivariant_fp32_clean_eval_20261002_r01",
     "architecture_base_commit": "a00d731ef2881aae926c16797b6b702a8a0e8379",
-    "note": "Preparationbase;immutablepredictionreleasecommit recorded aftersubmission;actualsourceFP32policy fixed beforequery"
+    "note": "Immutableclean2399c43;actualsourcebe0aec8;sourcefreeze/config incommitbeforequery;all24 fixed before independenttruthlast;negative retained"
   },
   "data": {
     "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
@@ -123,7 +123,17 @@
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-equivariant-fp32-clean-manysig-m24-r01",
     "local_artifact_root": "automation_reports/CV-SincNet/20261002-phase1-cvs-equivariant-fp32-clean-manysig-m24-r01",
     "launch_command": "python -m experiments.cvs_equivariant_clean.publish_fp32 --output local_artifacts/cvs_equivariant_fp32_clean_eval_20261002_r01",
-    "stop_rule": "Only own affected row fails on nonfinite/permissions/output collision/nonzero exit; preserve all artifacts; no retry, low-score stop or unrelated process intervention"
+    "stop_rule": "Only own affected row fails on nonfinite/permissions/output collision/nonzero exit; preserve all artifacts; no retry, low-score stop or unrelated process intervention",
+    "actual_pid": 1310876,
+    "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_equivariant_fp32_clean_eval_20261002_r01",
+    "actual_argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_clean_eval.dispatch",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_equivariant_fp32_clean_eval_20261002_r01/experiments/cvs_equivariant_clean/configs_fp32/launch_spec.json"
+    ]
   },
   "expected_artifacts": [
     "pipeline_state.json",
@@ -158,7 +168,8 @@
     "prediction_ref": "New4:/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-clean-manysig-m24-r01;old20 readonlyoriginalroots",
     "scorer_ref": "experiments/cvs_clean_eval/score.py",
     "primary": "clean4seedpairedvsnative,previousresidualand3commonbaselines;allRX/TX/F1/CM/resources",
-    "later_test": "No target feedback/reselection/retrain/unselectedcandidatequery"
+    "later_test": "No target feedback/reselection/retrain/unselectedcandidatequery",
+    "actual_outcome": "24rows/192records complete;old160exactunchanged;fullFP32sourcephysicsnumeric reporttolerance passes butcleanperformance regression;no test feedback or selective rerun"
   },
   "rows": [
     {
@@ -194,7 +205,9 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01"
+      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "actual_pid": 750288,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_clean_baseline_eval_20261001_r01"
     },
     {
       "row_id": "cvcnn-s2026092701",
@@ -229,7 +242,9 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01"
+      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "actual_pid": 750370,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_clean_baseline_eval_20261001_r01"
     },
     {
       "row_id": "real_cnn-s2026092701",
@@ -264,7 +279,9 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01"
+      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "actual_pid": 750449,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_clean_baseline_eval_20261001_r01"
     },
     {
       "row_id": "resnet1d-s2026092701",
@@ -299,7 +316,9 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01"
+      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "actual_pid": 750531,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_clean_baseline_eval_20261001_r01"
     },
     {
       "row_id": "native-s2026092702",
@@ -334,7 +353,9 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01"
+      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "actual_pid": 750610,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_clean_baseline_eval_20261001_r01"
     },
     {
       "row_id": "cvcnn-s2026092702",
@@ -369,7 +390,9 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01"
+      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "actual_pid": 750692,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_clean_baseline_eval_20261001_r01"
     },
     {
       "row_id": "real_cnn-s2026092702",
@@ -404,7 +427,9 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01"
+      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "actual_pid": 750771,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_clean_baseline_eval_20261001_r01"
     },
     {
       "row_id": "resnet1d-s2026092702",
@@ -439,7 +464,9 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01"
+      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "actual_pid": 750851,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_clean_baseline_eval_20261001_r01"
     },
     {
       "row_id": "native-s2026092703",
@@ -474,7 +501,9 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01"
+      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "actual_pid": 750930,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_clean_baseline_eval_20261001_r01"
     },
     {
       "row_id": "cvcnn-s2026092703",
@@ -509,7 +538,9 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01"
+      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "actual_pid": 751010,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_clean_baseline_eval_20261001_r01"
     },
     {
       "row_id": "real_cnn-s2026092703",
@@ -544,7 +575,9 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01"
+      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "actual_pid": 751091,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_clean_baseline_eval_20261001_r01"
     },
     {
       "row_id": "resnet1d-s2026092703",
@@ -579,7 +612,9 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01"
+      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "actual_pid": 751233,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_clean_baseline_eval_20261001_r01"
     },
     {
       "row_id": "native-s2026092704",
@@ -614,7 +649,9 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01"
+      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "actual_pid": 751314,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_clean_baseline_eval_20261001_r01"
     },
     {
       "row_id": "cvcnn-s2026092704",
@@ -649,7 +686,9 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01"
+      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "actual_pid": 751394,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_clean_baseline_eval_20261001_r01"
     },
     {
       "row_id": "real_cnn-s2026092704",
@@ -684,7 +723,9 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01"
+      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "actual_pid": 751876,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_clean_baseline_eval_20261001_r01"
     },
     {
       "row_id": "resnet1d-s2026092704",
@@ -719,7 +760,9 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01"
+      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "actual_pid": 751958,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_clean_baseline_eval_20261001_r01"
     },
     {
       "row_id": "residual_fusion-s2026092701",
@@ -754,7 +797,9 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-cvs-selected-clean-manysig-m20-r01"
+      "reuse_from_run": "20261001-phase1-cvs-selected-clean-manysig-m20-r01",
+      "actual_pid": 763926,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_selected_clean_eval_20261001_r01"
     },
     {
       "row_id": "residual_fusion-s2026092702",
@@ -789,7 +834,9 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-cvs-selected-clean-manysig-m20-r01"
+      "reuse_from_run": "20261001-phase1-cvs-selected-clean-manysig-m20-r01",
+      "actual_pid": 764008,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_selected_clean_eval_20261001_r01"
     },
     {
       "row_id": "residual_fusion-s2026092703",
@@ -824,7 +871,9 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-cvs-selected-clean-manysig-m20-r01"
+      "reuse_from_run": "20261001-phase1-cvs-selected-clean-manysig-m20-r01",
+      "actual_pid": 764088,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_selected_clean_eval_20261001_r01"
     },
     {
       "row_id": "residual_fusion-s2026092704",
@@ -859,13 +908,15 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-cvs-selected-clean-manysig-m20-r01"
+      "reuse_from_run": "20261001-phase1-cvs-selected-clean-manysig-m20-r01",
+      "actual_pid": 764170,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_selected_clean_eval_20261001_r01"
     },
     {
       "row_id": "equivariant_memory-s2026092701",
       "method": "equivariant_memory",
       "purpose": "single_source_selected_new_CVS_confirmation",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_equivariant_clean/configs_fp32/equivariant_memory-s2026092701.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-clean-manysig-m24-r01/equivariant_memory-s2026092701/prediction/resolved_config.json",
       "data_overrides": {},
@@ -893,13 +944,15 @@
         "resolved_config.json",
         "clean_predictions.npz",
         "clean_complete.json"
-      ]
+      ],
+      "actual_pid": 1310893,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_equivariant_fp32_clean_eval_20261002_r01"
     },
     {
       "row_id": "equivariant_memory-s2026092702",
       "method": "equivariant_memory",
       "purpose": "single_source_selected_new_CVS_confirmation",
-      "gpu": null,
+      "gpu": 1,
       "config_ref": "experiments/cvs_equivariant_clean/configs_fp32/equivariant_memory-s2026092702.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-clean-manysig-m24-r01/equivariant_memory-s2026092702/prediction/resolved_config.json",
       "data_overrides": {},
@@ -927,13 +980,15 @@
         "resolved_config.json",
         "clean_predictions.npz",
         "clean_complete.json"
-      ]
+      ],
+      "actual_pid": 1310973,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_equivariant_fp32_clean_eval_20261002_r01"
     },
     {
       "row_id": "equivariant_memory-s2026092703",
       "method": "equivariant_memory",
       "purpose": "single_source_selected_new_CVS_confirmation",
-      "gpu": null,
+      "gpu": 2,
       "config_ref": "experiments/cvs_equivariant_clean/configs_fp32/equivariant_memory-s2026092703.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-clean-manysig-m24-r01/equivariant_memory-s2026092703/prediction/resolved_config.json",
       "data_overrides": {},
@@ -961,13 +1016,15 @@
         "resolved_config.json",
         "clean_predictions.npz",
         "clean_complete.json"
-      ]
+      ],
+      "actual_pid": 1311053,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_equivariant_fp32_clean_eval_20261002_r01"
     },
     {
       "row_id": "equivariant_memory-s2026092704",
       "method": "equivariant_memory",
       "purpose": "single_source_selected_new_CVS_confirmation",
-      "gpu": null,
+      "gpu": 3,
       "config_ref": "experiments/cvs_equivariant_clean/configs_fp32/equivariant_memory-s2026092704.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-clean-manysig-m24-r01/equivariant_memory-s2026092704/prediction/resolved_config.json",
       "data_overrides": {},
@@ -995,7 +1052,9 @@
         "resolved_config.json",
         "clean_predictions.npz",
         "clean_complete.json"
-      ]
+      ],
+      "actual_pid": 1311137,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_equivariant_fp32_clean_eval_20261002_r01"
     }
   ],
   "notes": [

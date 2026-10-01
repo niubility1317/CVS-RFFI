@@ -87,3 +87,9 @@ Sinc使用相同实系数作用于I/Q；时间与received记忆路径的无bias�
 新模型从零训练，结构/202553 参数和预算不变；训练、V 验证、公共物理诊断、实测 profile 均在 cuDNN.allow_tf32=False 的同一上下文内。实际 matmul TF32=False、benchmark=False、deterministic=False、matmul precision=highest 与固定策略一致，40000 步和 800 轮实际 TF32 状态由完整日志审计核实。原 residual 源控制保留其历史精度，本轮比较不声称控制同为完整 FP32。
 
 若新候选被固定源规则选中，clean 预测继承源 payload 的实际数值策略，在首次 forward 前生效并读回；已有目标预测不修改、不重测，目标成绩不回流。该策略源于新 query 前的源相位问题和公共冻结单变量诊断，尚不能直接证明识别性能提高。
+
+## 默认 clean 收尾完成
+
+源规则选中的4个新模型已在相同固定数值策略下完成新预测，与20份原控制统一24行独立truth-last评分。192份混淆矩阵及四seed配对已复算，旧160条不变。新clean表现下降，完整负结果见[独立clean报告](../20261002-phase1-cvs-equivariant-fp32-clean-manysig-m24-r01/report.md)。这些目标成绩仅作报告，不反馈本轮源规则、结构、超参数、选择或重跑。
+
+状态ANALYZED，本次实验收尾完整；整体目标未完成。后续使用合法源域和冻结物理证据分析表征的TX/RX/信道混合，源专用交接不携带目标成绩。
