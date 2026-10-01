@@ -1,6 +1,6 @@
 # CVS 基础网络研发：残差物理融合
 
-run_id：`20261001-phase1-cvs-residual-identity-manysig-m8-r01`。状态：LOCAL_VERIFIED，独立 P0/P1 审查 PASS，完整 11 项测试经独立实跑全部通过。当前没有新候选 E200 或 clean 测试结果。
+run_id：`20261001-phase1-cvs-residual-identity-manysig-m8-r01`。状态：SOURCE_TRAINING（独立读回 VERIFIED），独立 P0/P1 审查 PASS，完整 11 项测试经独立实跑全部通过。当前没有新候选 E200 或 clean 测试结果。
 
 ## 已实现与研发依据
 
@@ -36,3 +36,13 @@ run_id：`20261001-phase1-cvs-residual-identity-manysig-m8-r01`。状态：LOCAL
 下一步完成独立 P0/P1 审查、提交/push/远端 OID 读回，发布新 CVS-only release，执行 N607 Torch2.1 CPU CE 冷检查，再独立核实调度器与等待/训练状态。已有 release/run 时先核实，不重复发布。新源训练完成后核实完整日志及资源，再冻结最终 CVS；当前识别提升尚未证实。
 
 独立审查证据：[independent_review.json](evidence/independent_review.json)。当前只核实本地代码与源研究权限，远端发布证据待补。
+
+## N607 发布状态
+
+代码 `ff469598cdccb6ee40ec21bb1e304a050b3a5a00` 已提交并 push，发布前独立核实远端 OID 相同。新 release `cvs_residual_identity_20261001_r01` 的传输 SHA、compile、fresh entry 和两个候选的有限 CPU CE 反向传播均在 N607 Torch2.1 环境实际通过。随后提交新 dispatcher，独立 `/proc` 读回 PID `725183`、CWD 与 argv 一致。
+
+当前状态：`SOURCE_TRAINING`；行状态 {'RUNNING': 8}。它只等待原 launch queue 排空及实际空槽，不停止、重启或改变原任务。运行证据见 [独立读回](evidence/source_launch_readback.json)。尚无这两个新 CVS 的正式 E200 或 clean 结果。
+
+实际启动行的 resolved config 已核实：纯身份 CE、augmentation=false、domain_backbone=false、extra_losses=[]、target_access=false，源角色 6300/56700/27000、每轮 50 步；逐轮日志包含真实梯度和三个物理分支的有效 CE 参数。
+
+下一步只读核实新行启动后的有效参数、checkpoint smoke、源角色、逐轮梯度及资源测量。全部 source 完成后联合六候选冻结；若旧 selection 尚未存在，保留本批 source_selection 并补做联合冻结，不重复启动 source。
