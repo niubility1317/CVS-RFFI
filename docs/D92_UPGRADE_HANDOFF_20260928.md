@@ -1,3 +1,13 @@
+## 最新运行：Margin前两行完成，后两行执行；AI导出26passed（2026-10-01）
+
+- Goal ACTIVE。唯一run20261001-phase2-d92-margin-joint-support-m2-r01，immutable runtime e50de0ad4，supervisor756554/start8891521。最新training_progress_1790842913353830900_metadata.json核实rx3两行COMPLETE（每行810FINAL/648STEP），旧evaluator756564/756565终结，不再poll这些PID。
+- rx1当前evaluator771304/start9043046、771324/start9043867；整体complete不存在，无failed，继续原supervisor。不要publisher/prepare/preflight或干预健康任务。标量进度不是最终准确率/成本，尚无Margin性能结论。
+- stdlib AI标量导出工具已26passed/0.92s，证据pytest_utf8_1790842765480567600；原runtime无热修改。完整diagnostics尚未生成，不能先运行真实export。先等四行完成，唯一独立analyze -> collector完整snapshot/extract -> scalar exporter。
+- 独立Ground A补充20261001-phase2-d92-margin-ground-a-support-m2-r01已预登记/fbf48553d，只在COMPLETE_MARGIN_JOINT_PROBE_VERIFIED后发布一次；不训练B/C、严格同物理旧held配对A/B/C，全K×新增类表。不要提前运行scorer。
+- 固定Phase1/practical residual，只合法support；query/源样本/逐样本源特征与成绩反馈禁止。4096/160MiB是技术guard，不是收敛/星载RSS保证。已观察rx3 VmHWM约1.01–1.02GiB，不冒充全run最终峰值。新独立验证仍按用户暂缓。
+
+以下为历史状态（不要照旧段落重复启动）：
+
 ## 运行中后续：独立Margin Ground A已预登记，等待原训练/摘要（2026-10-01）
 
 - Goal ACTIVE。原Margin supervisor756554/start8891521及两CPU child在runtime_readback_1790841655059469000.json再次VERIFIED存活；无complete/failed，原run不重启不热改。Ground补充20261001-phase2-d92-margin-ground-a-support-m2-r01四行/160parent已预登记，仅metadata校验；必须等待原训练全完成与COMPLETE_MARGIN_JOINT_PROBE_VERIFIED后发布一次。不要先行调用Ground publisher或scorer。

@@ -1,0 +1,19 @@
+{
+  "status": "VERIFIED_SYNTHETIC_SCALAR_EXPORTER",
+  "passed": 26,
+  "failed": 0,
+  "seconds": 0.92,
+  "prefix": "E:/type10-7/.codex_tmp/pytest_utf8_1790842765480567600",
+  "at": "2026-10-01T08:24:25.427438+00:00",
+  "source_files": [
+    "tools/export_d92_margin_training_ai_scalars.py",
+    "tests/test_export_d92_margin_training_ai_scalars.py",
+    "docs/D92_MARGIN_TRAINING_AI_SCALARS_20261001.md"
+  ],
+  "actual_Margin_export": null,
+  "training_or_model_changes": 0,
+  "real_logs_or_arrays_read": false,
+  "scope": "Streaming scalar projection/field mapping/counts/phase/identity/CSV readback; unknown null, meanCE vs RMSCE distinguished",
+  "frozen_training_runtime": "e50de0ad4e7d0570dce62ba88c3791fdf1c14951",
+  "healthy_runtime_modified": false
+}

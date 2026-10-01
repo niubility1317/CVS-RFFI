@@ -30,3 +30,9 @@ A、B、C三阶段按同一物理旧类held support配对：本run先固定B/C�
 远端只读元数据preflight：VERIFIED，四个缓存来源均绑定；新run/release/archive均不存在。未读取特征值、query或源样本。Ground A扩展150项通过，12项为两个旧方法fixture中的Margin专用断言跳过，Margin本身已执行；[证据](evidence/ground_a_entry_validation_20261001.json)。上述为启动前preflight证据；其后已唯一发布，启动状态独立VERIFIED。
 
 当前没有完成marker或实际性能。不能将旧方法A/B/C拼给Margin。待原四行结束后，执行一次独立数学摘要和完整训练诊断，再用同物理held记录做Ground A配对。保留所有失败与健康lane，不重复publisher、preflight或request生成。
+
+最新进展（2026-10-01T08:20:51Z）：前两行MARGIN_JOINT_PROBE_COMPLETE，每行810个FINAL/648个STEP；原两个evaluator已退出。后两行PID771304/start9043046、PID771324/start9043867在同一supervisor756554/start8891521下健康执行；整体complete尚不存在，无失败产物。完整性能尚未审计，不报告部分行准确率。证据[evidence/training_progress_1790842913353830900_metadata.json](evidence/training_progress_1790842913353830900_metadata.json)。
+
+此前只读观察的两个rx3训练进程VmHWM为1066416KiB/1058448KiB（约1.02GiB/1.01GiB）；仅当时进程高水位，非全run最终峰值或星载测量。因子buffer160MiB不涵盖进程RSS。完整资源将在结束后按实际scope报告。
+
+新的[AI标量导出工具](../../../docs/D92_MARGIN_TRAINING_AI_SCALARS_20261001.md)已通过26项合成检查，支持完整3流前缀标量展开与JSONL/CSV读回，拒绝巨型audit/ref/text伪标量；源验证null并说明Phase2禁止。只在完整训练诊断生成后使用，不改当前日志或模型。真实转换尚未执行。

@@ -239,7 +239,85 @@
     "actual_gpu": null,
     "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-joint-support-m2-r01/startup.json",
     "frozen_launch_spec_ref": "configs/d92_margin_joint_support_20261001.json",
-    "observed_scope": "Independent startup/argv/CWD/environment/row metadata; no score or feature arrays"
+    "observed_scope": "Independent startup/argv/CWD/environment/row metadata; no score or feature arrays",
+    "latest_training_progress_ref": "evidence/training_progress_1790842913353830900_metadata.json",
+    "latest_progress_observed_utc": "2026-10-01T08:20:51Z",
+    "completed_rows_observed": 2,
+    "current_rows_status": {
+      "rx3-cvs-daot-rc4-s2026092701": "MARGIN_JOINT_PROBE_COMPLETE",
+      "rx3-cvs-daot-rc4-s2026092702": "MARGIN_JOINT_PROBE_COMPLETE",
+      "rx1-cvs-daot-rc4-s2026092701": "TRAINING_ON_SUPPORT",
+      "rx1-cvs-daot-rc4-s2026092702": "TRAINING_ON_SUPPORT"
+    },
+    "active_evaluator_processes_observed": [
+      {
+        "pid": 771304,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_margin_joint_support_20261001_r01/tools/evaluate_d92_margin_joint_probe.py",
+          "--support-features",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-support-probe-m4-r01/rx1-cvs-daot-rc4-s2026092701/feature_cache",
+          "--capsule",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-data-manytx-r01/capsule",
+          "--output",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-joint-support-m2-r01/rx1-cvs-daot-rc4-s2026092701/probe",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_margin_joint_support_20261001_r01/configs/d92_margin_joint_support_rx1_20261001.json",
+          "--expected-capsule-id",
+          "residual-noeq-d0a99fede324159c5a4750fd",
+          "--expected-checkpoint-sha256",
+          "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b",
+          "--expected-model-seed",
+          "2026092701",
+          "--run-id",
+          "20261001-phase2-d92-margin-joint-support-m2-r01",
+          "--row-id",
+          "rx1-cvs-daot-rc4-s2026092701"
+        ],
+        "start_ticks": 9043046,
+        "user_cpu_ticks": 26651,
+        "system_cpu_ticks": 483,
+        "cpu_tick_hz": 100,
+        "VmRSS": "437960 kB",
+        "VmHWM": "495440 kB"
+      },
+      {
+        "pid": 771324,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_margin_joint_support_20261001_r01/tools/evaluate_d92_margin_joint_probe.py",
+          "--support-features",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-support-probe-m4-r01/rx1-cvs-daot-rc4-s2026092702/feature_cache",
+          "--capsule",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-data-manytx-r01/capsule",
+          "--output",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-joint-support-m2-r01/rx1-cvs-daot-rc4-s2026092702/probe",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_margin_joint_support_20261001_r01/configs/d92_margin_joint_support_rx1_20261001.json",
+          "--expected-capsule-id",
+          "residual-noeq-d0a99fede324159c5a4750fd",
+          "--expected-checkpoint-sha256",
+          "72f26413e495dcf82317898f8729caa3d35499bf0b41e9671ffdceab2c90924b",
+          "--expected-model-seed",
+          "2026092702",
+          "--run-id",
+          "20261001-phase2-d92-margin-joint-support-m2-r01",
+          "--row-id",
+          "rx1-cvs-daot-rc4-s2026092702"
+        ],
+        "start_ticks": 9043867,
+        "user_cpu_ticks": 24930,
+        "system_cpu_ticks": 452,
+        "cpu_tick_hz": 100,
+        "VmRSS": "437648 kB",
+        "VmHWM": "498356 kB"
+      }
+    ],
+    "training_progress_scope": "Partial complete scalar events and exact live process observation; not final workload/performance",
+    "ai_scalar_exporter_validation_ref": "evidence/ai_scalar_exporter_validation_20261001.json",
+    "ai_scalar_export_status": "IMPLEMENTED_VERIFIED_SYNTHETIC_WAITING_FOR_COMPLETE_DIAGNOSTICS"
   },
   "rows": [
     {

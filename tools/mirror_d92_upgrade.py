@@ -353,6 +353,8 @@ paths += ['docs/D92_MARGIN_GROUND_A_SUPPORT_ENTRY_20261001.md']
 
 paths += ['configs/d92_margin_ground_a_support_20261001.json']
 
+paths += ['tools/export_d92_margin_training_ai_scalars.py', 'tests/test_export_d92_margin_training_ai_scalars.py', 'docs/D92_MARGIN_TRAINING_AI_SCALARS_20261001.md']
+
 for name in paths:
     src=ROOT/name;dst=WS/name;dst.parent.mkdir(parents=True,exist_ok=True)
     # Each name is unique to this task; original D92 and shared wrappers are not mirrored.
