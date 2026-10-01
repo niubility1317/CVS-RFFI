@@ -1,0 +1,68 @@
+{
+  "status": "PASS",
+  "model_tests": 4,
+  "environment": "C:\\Users\\lh594\\.conda\\envs\\ssr-gpu\\python.exe",
+  "torch_version": "2.10.0+cu128",
+  "profiles": {
+    "balanced_fusion": {
+      "hardware": "cpu",
+      "precision": "float32",
+      "torch_version": "2.10.0+cu128",
+      "total_parameters": 113665,
+      "trainable_parameters": 113665,
+      "resident_state_bytes": 455312,
+      "input_shape": [
+        2,
+        256
+      ],
+      "warmup": 5,
+      "inference_repetitions": 20,
+      "training_repetitions": 10,
+      "mac_scope": "Conv1d and matrix multiplication only; excludes FFT, normalization, pooling, physical lifts and elementwise arithmetic",
+      "benchmark_state_used_for_training": false,
+      "inference_batch1_ms": 4.371265000372659,
+      "inference_batch128_ms": 58.4429700000328,
+      "conv_linear_macs_per_sample": 9657476,
+      "fft_calls_per_sample": 2,
+      "training_batch128_ms": 208.32955000078073,
+      "gradient_used_parameters": 113665,
+      "benchmark_peak_cuda_allocated_bytes": null,
+      "benchmark_peak_note": "Disposable clone plus original frozen model resident; actual source-training peak is separately logged"
+    },
+    "signed_balanced_fusion": {
+      "hardware": "cpu",
+      "precision": "float32",
+      "torch_version": "2.10.0+cu128",
+      "total_parameters": 113665,
+      "trainable_parameters": 113665,
+      "resident_state_bytes": 455312,
+      "input_shape": [
+        2,
+        256
+      ],
+      "warmup": 5,
+      "inference_repetitions": 20,
+      "training_repetitions": 10,
+      "mac_scope": "Conv1d and matrix multiplication only; excludes FFT, normalization, pooling, physical lifts and elementwise arithmetic",
+      "benchmark_state_used_for_training": false,
+      "inference_batch1_ms": 4.868515000271145,
+      "inference_batch128_ms": 63.42946500008111,
+      "conv_linear_macs_per_sample": 9657476,
+      "fft_calls_per_sample": 2,
+      "training_batch128_ms": 218.2676900003571,
+      "gradient_used_parameters": 113665,
+      "benchmark_peak_cuda_allocated_bytes": null,
+      "benchmark_peak_note": "Disposable clone plus original frozen model resident; actual source-training peak is separately logged"
+    }
+  },
+  "preflight": {
+    "user": "szu2070436088",
+    "host": "dell-DSS8440",
+    "time": 1790844705.5653174,
+    "project_exists": true,
+    "disk_free": 6811799195648,
+    "gpu": "0, NVIDIA GeForce RTX 3090, 0 %, 24124 MiB\n1, NVIDIA GeForce RTX 3090, 0 %, 24124 MiB\n2, NVIDIA GeForce RTX 3090, 0 %, 24124 MiB\n3, NVIDIA GeForce RTX 3090, 0 %, 24124 MiB\n4, NVIDIA GeForce RTX 3090, 0 %, 24124 MiB\n5, NVIDIA GeForce RTX 3090, 0 %, 24124 MiB\n6, NVIDIA GeForce RTX 3090, 0 %, 24124 MiB\n7, NVIDIA GeForce RTX 3090, 0 %, 24124 MiB\n",
+    "processes": ""
+  },
+  "preflight_layer_note": "Existing PowerShell wrapper failed to parse ssh -G output; verified native Python subprocess argv resolved exact user/host/identity and independently authenticated direct SSH. No route/identity changed."
+}
