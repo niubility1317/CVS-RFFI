@@ -1,3 +1,14 @@
+## 当前交接：五维联合校正候选推导冻结，纯源码实现并行进行
+
+- Goal ACTIVE。新候选纯数学文档 `docs/D92_LOCAL_RIDGE_JOINT_GENERALIZATION_COST_NOTE_20261002.md` 已冻结：六个冻结旧类原型差方向、5 个共享切向校正参数、B/C 各至多 1 次完整 GGN 球内二次步、真实 RMSCE 回读。C 继承本候选真实 B 并冻结旧条件函数；原型仅固定特征几何，所有可训练量由合法 target support 拟合。不承诺 query 准确率、理想目标或星载成本改善；未发布新候选实验。
+- source-blind anchor_joint_core 仅拥有新 primitives 及其 synthetic 测试；branch_local_entry 仅拥有新 joint core 及其 synthetic 测试。二者不读真实结果/数据/索引，不数值执行。root 唯一负责整合、激活后的 ssr-gpu 串行数值测试、真实输入与 Git/SSH/launch。不要修改当前健康 query。
+- Group support r03 已完整收集/报告，详细三阶段诊断保留 `automation_reports/CV-SincNet/20261001-phase2-d92-group-barrier-joint-support-m2-r01/support_diagnostic_20261002.md`。本次仅澄清：K>1 为 OOF/proxy，诊断 MAX 状态不是 full-K query 最大状态，fit 核计时包含日志/归档 callback。不要重复拟合、分析或 collector；原始 state/log 保持原存储。
+- query immutable73aa/supervisor1049548 按原排程继续。2026-10-01T18:18:23Z `automation_reports/CV-SincNet/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01/evidence/query_runtime_1790878764575945000.json` 独立 VERIFIED：2 rx3 PREDICTING、2 rx1 等待；未读 partial predictions/truth。完整 4 row/2400 parent 固定后独立 scorer，same model01/02 与历史 baseline 配对，历史缺阶段 N/A。原 Margin FAILED 不作 subset 评分，fresh 验证暂缓。
+
+<!-- PROTO_FRAME_MATH_FROZEN_20261002 -->
+
+以下保留历史状态，不据此重复启动：
+
 ## 当前交接：Group support诊断完整成功，结果未改善；query仍按原版本继续
 
 - Goal ACTIVE。support run `20261001-phase2-d92-group-barrier-joint-support-m2-r01`终态COMPLETE，fit immutable9518，analysis r03/source dfb2完整4row/160parent闭合，child1090096/wrapper1090089已退出、return0/657.267秒；17:35:44UTC `automation_reports/CV-SincNet/20261001-phase2-d92-group-barrier-joint-support-m2-r01/evidence/analysis_runtime_1790876205805888100.json`与collection `automation_reports/CV-SincNet/20261001-phase2-d92-group-barrier-joint-support-m2-r01/evidence/analysis_r03_collection_1790876226131875600.json`独立核实。8分析文件69608147bytes仅新结果已收集，原训练state/log不动。不要再analysis/publish/retrain；r01/r02失败attempts仍保留。
