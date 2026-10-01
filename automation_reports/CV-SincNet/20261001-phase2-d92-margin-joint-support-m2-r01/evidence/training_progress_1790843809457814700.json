@@ -1,0 +1,203 @@
+{
+  "run_id": "20261001-phase2-d92-margin-joint-support-m2-r01",
+  "runtime_commit": "e50de0ad4e7d0570dce62ba88c3791fdf1c14951",
+  "observed_utc": "2026-10-01T08:35:47Z",
+  "supervisor": {
+    "pid": 756554,
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_margin_joint_support_20261001_r01/tools/run_d92_margin_joint_probe.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_margin_joint_support_20261001_r01/configs/d92_margin_joint_support_20261001.json",
+      "--commit",
+      "e50de0ad4e7d0570dce62ba88c3791fdf1c14951"
+    ],
+    "start_ticks": 8891521,
+    "user_cpu_ticks": 31,
+    "system_cpu_ticks": 3,
+    "cpu_tick_hz": 100,
+    "VmRSS": "80564 kB",
+    "VmHWM": "80564 kB"
+  },
+  "rows": [
+    {
+      "row_id": "rx3-cvs-daot-rc4-s2026092701",
+      "status": "MARGIN_JOINT_PROBE_COMPLETE",
+      "processes": [],
+      "training_event_counts": {
+        "MARGIN_JOINT_PREPARED": 810,
+        "MARGIN_JOINT_INITIAL": 810,
+        "MARGIN_JOINT_FINAL": 810,
+        "MARGIN_JOINT_GRADIENT": 648,
+        "MARGIN_JOINT_TRIAL": 648,
+        "MARGIN_JOINT_STEP": 648
+      },
+      "last_scalar_training_event": {
+        "event": "MARGIN_JOINT_FINAL",
+        "mode": "C_seq",
+        "iteration": null,
+        "trial": 19,
+        "loss": null,
+        "gradient_norm": null,
+        "accepted": null,
+        "source_validation": null
+      },
+      "partial_tail_observed": false,
+      "event_file_bytes": 255962628,
+      "completed": true,
+      "failed": false
+    },
+    {
+      "row_id": "rx3-cvs-daot-rc4-s2026092702",
+      "status": "MARGIN_JOINT_PROBE_COMPLETE",
+      "processes": [],
+      "training_event_counts": {
+        "MARGIN_JOINT_PREPARED": 810,
+        "MARGIN_JOINT_INITIAL": 810,
+        "MARGIN_JOINT_FINAL": 810,
+        "MARGIN_JOINT_GRADIENT": 648,
+        "MARGIN_JOINT_TRIAL": 648,
+        "MARGIN_JOINT_STEP": 648
+      },
+      "last_scalar_training_event": {
+        "event": "MARGIN_JOINT_FINAL",
+        "mode": "C_seq",
+        "iteration": null,
+        "trial": 19,
+        "loss": null,
+        "gradient_norm": null,
+        "accepted": null,
+        "source_validation": null
+      },
+      "partial_tail_observed": false,
+      "event_file_bytes": 255946985,
+      "completed": true,
+      "failed": false
+    },
+    {
+      "row_id": "rx1-cvs-daot-rc4-s2026092701",
+      "status": "TRAINING_ON_SUPPORT",
+      "processes": [
+        {
+          "pid": 771304,
+          "argv": [
+            "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+            "-u",
+            "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_margin_joint_support_20261001_r01/tools/evaluate_d92_margin_joint_probe.py",
+            "--support-features",
+            "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-support-probe-m4-r01/rx1-cvs-daot-rc4-s2026092701/feature_cache",
+            "--capsule",
+            "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-data-manytx-r01/capsule",
+            "--output",
+            "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-joint-support-m2-r01/rx1-cvs-daot-rc4-s2026092701/probe",
+            "--config",
+            "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_margin_joint_support_20261001_r01/configs/d92_margin_joint_support_rx1_20261001.json",
+            "--expected-capsule-id",
+            "residual-noeq-d0a99fede324159c5a4750fd",
+            "--expected-checkpoint-sha256",
+            "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b",
+            "--expected-model-seed",
+            "2026092701",
+            "--run-id",
+            "20261001-phase2-d92-margin-joint-support-m2-r01",
+            "--row-id",
+            "rx1-cvs-daot-rc4-s2026092701"
+          ],
+          "start_ticks": 9043046,
+          "user_cpu_ticks": 192180,
+          "system_cpu_ticks": 3373,
+          "cpu_tick_hz": 100,
+          "VmRSS": "1000920 kB",
+          "VmHWM": "1273280 kB"
+        }
+      ],
+      "training_event_counts": {
+        "MARGIN_JOINT_PREPARED": 557,
+        "MARGIN_JOINT_INITIAL": 557,
+        "MARGIN_JOINT_FINAL": 556,
+        "MARGIN_JOINT_GRADIENT": 515,
+        "MARGIN_JOINT_TRIAL": 514,
+        "MARGIN_JOINT_STEP": 514
+      },
+      "last_scalar_training_event": {
+        "event": "MARGIN_JOINT_GRADIENT",
+        "mode": "C_seq",
+        "iteration": 3,
+        "trial": null,
+        "loss": null,
+        "gradient_norm": 0.03476420879164348,
+        "accepted": null,
+        "source_validation": null
+      },
+      "partial_tail_observed": false,
+      "event_file_bytes": 194490056,
+      "completed": false,
+      "failed": false
+    },
+    {
+      "row_id": "rx1-cvs-daot-rc4-s2026092702",
+      "status": "TRAINING_ON_SUPPORT",
+      "processes": [
+        {
+          "pid": 771324,
+          "argv": [
+            "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+            "-u",
+            "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_margin_joint_support_20261001_r01/tools/evaluate_d92_margin_joint_probe.py",
+            "--support-features",
+            "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-support-probe-m4-r01/rx1-cvs-daot-rc4-s2026092702/feature_cache",
+            "--capsule",
+            "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-data-manytx-r01/capsule",
+            "--output",
+            "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-joint-support-m2-r01/rx1-cvs-daot-rc4-s2026092702/probe",
+            "--config",
+            "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_margin_joint_support_20261001_r01/configs/d92_margin_joint_support_rx1_20261001.json",
+            "--expected-capsule-id",
+            "residual-noeq-d0a99fede324159c5a4750fd",
+            "--expected-checkpoint-sha256",
+            "72f26413e495dcf82317898f8729caa3d35499bf0b41e9671ffdceab2c90924b",
+            "--expected-model-seed",
+            "2026092702",
+            "--run-id",
+            "20261001-phase2-d92-margin-joint-support-m2-r01",
+            "--row-id",
+            "rx1-cvs-daot-rc4-s2026092702"
+          ],
+          "start_ticks": 9043867,
+          "user_cpu_ticks": 192071,
+          "system_cpu_ticks": 3235,
+          "cpu_tick_hz": 100,
+          "VmRSS": "975564 kB",
+          "VmHWM": "1218616 kB"
+        }
+      ],
+      "training_event_counts": {
+        "MARGIN_JOINT_PREPARED": 559,
+        "MARGIN_JOINT_INITIAL": 559,
+        "MARGIN_JOINT_FINAL": 559,
+        "MARGIN_JOINT_GRADIENT": 516,
+        "MARGIN_JOINT_TRIAL": 516,
+        "MARGIN_JOINT_STEP": 516
+      },
+      "last_scalar_training_event": {
+        "event": "MARGIN_JOINT_FINAL",
+        "mode": "C_seq",
+        "iteration": null,
+        "trial": 0,
+        "loss": null,
+        "gradient_norm": null,
+        "accepted": null,
+        "source_validation": null
+      },
+      "partial_tail_observed": false,
+      "event_file_bytes": 195400466,
+      "completed": false,
+      "failed": false
+    }
+  ],
+  "complete_exists": false,
+  "read_only": true,
+  "query_or_source_values_read": false,
+  "scope": "Live exact process and every complete scalar training event available at observation; no prediction/scorer/NPZ arrays; counts are partial, not final work"
+}

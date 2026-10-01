@@ -1,0 +1,62 @@
+{
+  "observed_utc": "2026-10-01T08:49:52Z",
+  "release": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_margin_joint_analysis_20261001_r01",
+  "run_id": "20261001-phase2-d92-margin-joint-support-m2-r01",
+  "process_record": {
+    "pid": 787831,
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_margin_joint_analysis_20261001_r01/tools/summarize_d92_margin_joint_probe.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_margin_joint_analysis_20261001_r01/analysis_resolved_config.json",
+      "--run-root",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-joint-support-m2-r01",
+      "--output",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-joint-support-m2-r01/results/support_summary"
+    ],
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_margin_joint_analysis_20261001_r01",
+    "commit": "ccb7f3469cc1a28ea8bbd7eb7adce937b41a430a",
+    "runtime_commit": "e50de0ad4e7d0570dce62ba88c3791fdf1c14951",
+    "run_id": "20261001-phase2-d92-margin-joint-support-m2-r01",
+    "qp_resources": {
+      "max_transitions": 4096,
+      "max_factor_buffer_bytes": 167772160
+    }
+  },
+  "live": {
+    "pid": 787831,
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_margin_joint_analysis_20261001_r01/tools/summarize_d92_margin_joint_probe.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_margin_joint_analysis_20261001_r01/analysis_resolved_config.json",
+      "--run-root",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-joint-support-m2-r01",
+      "--output",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-joint-support-m2-r01/results/support_summary"
+    ],
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_margin_joint_analysis_20261001_r01",
+    "start_ticks": 9221520,
+    "user_cpu_ticks": 13703,
+    "system_cpu_ticks": 495,
+    "cpu_tick_hz": 100,
+    "memory": {
+      "VmHWM": "1620476 kB",
+      "VmRSS": "1620476 kB"
+    },
+    "environment": {
+      "OMP_NUM_THREADS": "2",
+      "MKL_NUM_THREADS": "2",
+      "OPENBLAS_NUM_THREADS": "2",
+      "CUDA_VISIBLE_DEVICES": ""
+    }
+  },
+  "summary": null,
+  "execution": null,
+  "log_bytes": 0,
+  "read_only": true,
+  "performance_read": false,
+  "verification": "VERIFIED"
+}

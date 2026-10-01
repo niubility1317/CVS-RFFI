@@ -1,3 +1,13 @@
+## 最新运行：Margin四行训练完成，唯一数学分析运行（2026-10-01）
+
+- Goal ACTIVE。原run20261001-phase2-d92-margin-joint-support-m2-r01 runtime e50de0ad4已四行COMPLETE，160parents/1800paths/3240stages完整；原supervisor756554及evaluator已退出，不重复启动。
+- 唯一独立分析release d92_margin_joint_analysis_20261001_r01，source ccb7f3469，PID787831/start9221520已独立核实live。原本地wrapper session79064仍等待；poll同handle或读取 .codex_tmp/read_margin_analysis_state_20261001.py。分析未完成不读成绩、不collector、不GroundA，不重跑timeout。
+- 分析完整后接 .codex_tmp/collect_margin_complete_once_20261001.py（唯一snapshot/extract/scalar export）；Ground A补充已有fbf485预登记，.codex_tmp/launch_margin_ground_a_once_20261001.py暂未运行，发布前更新其expectedHEAD到当时实际已推送commit。原方法/配置冻结；fixed B→C真实继承。
+- query benchmark predictor/scorer/reporter/supervisor/publisher由三个query-blind agent只读源码实现，root唯一数值/Git/SSH/launch owner。新未提交文件不能全stage；各责任文件不重叠，不干预当前运行。
+- 固定Phase1/practical residual，只合法support；无源样本、逐样本源特征或query拟合/成绩反馈。重复query若后续执行必须透明标注非新独立验证；fresh验证用户暂缓。160MiB factor guard不是RSS，已观察rx1约1.21/1.16GiB高水位，不冒充星载。
+
+以下为历史状态（不要照旧段落重复启动）：
+
 ## 最新运行：Margin前两行完成，后两行执行；AI导出26passed（2026-10-01）
 
 - Goal ACTIVE。唯一run20261001-phase2-d92-margin-joint-support-m2-r01，immutable runtime e50de0ad4，supervisor756554/start8891521。最新training_progress_1790842913353830900_metadata.json核实rx3两行COMPLETE（每行810FINAL/648STEP），旧evaluator756564/756565终结，不再poll这些PID。

@@ -1,6 +1,6 @@
 # D92-MarginJointLocalRidge support联合实验预登记
 
-状态：TRAINING_ON_SUPPORT，启动VERIFIED。root唯一launch owner。实际不可变runtime e50de0ad4e7d0570dce62ba88c3791fdf1c14951；supervisor PID756554/start8891521。两CPU evaluator PID756564/756565已启动，另两行PENDING。独立证据见[evidence/runtime_readback_1790841357922706700.json](evidence/runtime_readback_1790841357922706700.json)，frozen startup已绑定原spec。
+状态：SUPPORT_TRAINING_COMPLETE_ANALYSIS_RUNNING。四行原训练已完成且原进程退出，独立数学分析PID787831/start9221520正在执行；原runtime e50de0ad4，分析源码ccb7f3469。root唯一launch owner。
 
 四行共160个parent；旧类6个，K=1/5/10/20，新增0/2/5/10/20类，两个固定模型seed与两个cohort。矩阵与input身份沿用显式预登记元数据；不依赖成绩选择。practical residual/post_sync/noeq/25MHz。
 
@@ -29,10 +29,16 @@ A、B、C三阶段按同一物理旧类held support配对：本run先固定B/C�
 
 远端只读元数据preflight：VERIFIED，四个缓存来源均绑定；新run/release/archive均不存在。未读取特征值、query或源样本。Ground A扩展150项通过，12项为两个旧方法fixture中的Margin专用断言跳过，Margin本身已执行；[证据](evidence/ground_a_entry_validation_20261001.json)。上述为启动前preflight证据；其后已唯一发布，启动状态独立VERIFIED。
 
-当前没有完成marker或实际性能。不能将旧方法A/B/C拼给Margin。待原四行结束后，执行一次独立数学摘要和完整训练诊断，再用同物理held记录做Ground A配对。保留所有失败与健康lane，不重复publisher、preflight或request生成。
+启动时尚无完成marker；当前训练已完成，但实际性能仍待独立审计。不能将旧方法A/B/C拼给Margin。四行原训练现已结束，正在执行一次独立数学摘要。随后生成完整训练诊断，再用同物理held记录做Ground A配对。保留所有失败与健康lane，不重复publisher、preflight或request生成。
 
-最新进展（2026-10-01T08:20:51Z）：前两行MARGIN_JOINT_PROBE_COMPLETE，每行810个FINAL/648个STEP；原两个evaluator已退出。后两行PID771304/start9043046、PID771324/start9043867在同一supervisor756554/start8891521下健康执行；整体complete尚不存在，无失败产物。完整性能尚未审计，不报告部分行准确率。证据[evidence/training_progress_1790842913353830900_metadata.json](evidence/training_progress_1790842913353830900_metadata.json)。
+历史训练观察（2026-10-01T08:20:51Z）：前两行MARGIN_JOINT_PROBE_COMPLETE，每行810个FINAL/648个STEP；原两个evaluator已退出。后两行PID771304/start9043046、PID771324/start9043867在同一supervisor756554/start8891521下健康执行；整体complete尚不存在，无失败产物。完整性能尚未审计，不报告部分行准确率。证据[evidence/training_progress_1790842913353830900_metadata.json](evidence/training_progress_1790842913353830900_metadata.json)。
 
 此前只读观察的两个rx3训练进程VmHWM为1066416KiB/1058448KiB（约1.02GiB/1.01GiB）；仅当时进程高水位，非全run最终峰值或星载测量。因子buffer160MiB不涵盖进程RSS。完整资源将在结束后按实际scope报告。
 
 新的[AI标量导出工具](../../../docs/D92_MARGIN_TRAINING_AI_SCALARS_20261001.md)已通过26项合成检查，支持完整3流前缀标量展开与JSONL/CSV读回，拒绝巨型audit/ref/text伪标量；源验证null并说明Phase2禁止。只在完整训练诊断生成后使用，不改当前日志或模型。真实转换尚未执行。
+
+训练完成的独立证据：[evidence/runtime_readback_1790844546417236400.json](evidence/runtime_readback_1790844546417236400.json)。原声明160个parent、1800条物理路径、3240个stage全部完成，四行均MARGIN_JOINT_PROBE_COMPLETE。数学分析已唯一发布到新release d92_margin_joint_analysis_20261001_r01，实际commit ccb7f3469cc1a28ea8bbd7eb7adce937b41a430a，当前启动证据[evidence/analysis_runtime_1790844653598279800.json](evidence/analysis_runtime_1790844653598279800.json)；不是分析完成或性能结论。
+
+最新完整训练事件观察[evidence/training_progress_1790843809457814700.json](evidence/training_progress_1790843809457814700.json)记录当时rx1两进程VmHWM为1273280KiB/1218616KiB（约1.21GiB/1.16GiB），只为观察时进程高水位，不是最终全run/星载峰值。完整成本仍待诊断。
+
+完整query重复评测源码由query-blind子agent分工实现，仅读源码及合成输入，不读取实际成绩、不改冻结方法。入口完成前不启动query评测；该开发不修改当前数学分析。
