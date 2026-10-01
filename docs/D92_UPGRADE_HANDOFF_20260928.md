@@ -1,3 +1,12 @@
+## 当前交接：query完整预登记完成，原分析健康运行，push待授权（2026-10-01）
+
+- Goal ACTIVE。当前query run20261001-phase2-d92-margin-joint-repeat-m2-r01已PLANNED，spec configs/d92_margin_joint_repeat_20261001.json；4row/2400parent/两个早已固定model seeds/两个完整capsule，全K×new×receiver×scenario×support seed，无成绩选择。尚未publish/run/PID/实际query读取或成绩。首次新入口P0/P1独立审查无问题，spec仅metadata验证通过；不重复core审查或数值测试。
+- 当前source parent b97d64bab，包含query99passed及跨cohort来源修复24passed。实际publisher runtime将是包含预登记的已推送HEAD，方法源码从parent不得变化。所有本地提交保留，automatic approval review拒绝push；用户异步授权具体GitHub目的地问题仍待回答。禁止绕过；新Ground/query publisher均等实际已推送source。
+- 原support数学分析local79064 / remote PID787831/start9221520 / source ccb7未结束。09:59UTC只读证据analysis_runtime_1790848845960804400.json仍live且CPU推进、summary/execution null。原训练e50完整；不重启/热改/重复analyze。完整后collector/snapshot/extract/scalar一次，Ground A既有run20261001-phase2-d92-margin-ground-a-support-m2-r01按原预登记唯一发布；helper expectedHEAD须更新为当时实际推送版本。
+- 复用query仅透明基准，不称新独立验证；全部prediction固定再单独scorer。实际A/B/C配对，不补缺阶段，baseline匹配相同seed子集；资源实际口径与N/A严格分明。协议、checkpoint来源、Phase1/practical residual、合法support与无query反馈边界不变。
+
+以下为历史状态（不要依据旧段落重复启动）：
+
 ## 当前交接：跨cohort来源修复24项通过，push待授权（2026-10-01）
 
 - Goal ACTIVE。新query评估流程此前99passed；集成metadata发现各cohort原row_root允许不同，已修监督器且保留checkpoint/ground一致与每row来源核对。单文件24passed，测试独立import已修，原collection失败保留。方法公式/参数/资源/当前运行未修改。

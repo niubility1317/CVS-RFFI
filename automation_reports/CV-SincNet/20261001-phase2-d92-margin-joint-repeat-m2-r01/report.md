@@ -1,0 +1,17 @@
+# MarginJoint 完整三阶段重复基准预登记
+
+状态：PLANNED，尚未发布或启动。源代码已合成验证；Git push 的具体目的地授权待用户确认。原 support 数学分析继续，方法参数不从结果反馈调整。
+
+固定 Phase1 与 practical residual/post_sync/noeq/25MHz。使用 support 实验开始前已固定的两个最小模型种子，不按成绩挑选种子。rx3 的 900 个 split 与 rx1 的 300 个 split 全部保留，共 2400 个 parent。旧类 6；K=1、5、10、20；新增类=0、2、5、10、20；3 场景、全部 4 接收机及 5 个 support seed。六类 seed 逐行见 experiment.json；support 为五值轴，原 row 标量为 null。
+
+A 使用冻结地面原分类头；B 仅用当前旧类 support；C 从该次实际 B 继承后注册新类。三阶段使用同一物理旧 query；C 面对全部已注册类统一竞争。K1 正常评估；新增 0 的新类准确率/H/差距为 N/A。报告完整 K×新增类矩阵和接收机、场景、模型、support seed 分层，保留逐 parent 记录。
+
+继续禁止源样本、源逐记录特征、query 拟合、truth/role/配额/全局重排和评分回流。已有 p2_min_v1/VALIDATED_ONCE capsule 与 source-only final200 来源不变；不重建/重验数据，不加载 encoder/checkpoint。地面小包只保留原分类头及元数据，字节数与实际传输分开。
+
+模型来源沿用已核实的完整 scratch/final200 契约，逐行绑定 checkpoint SHA 与原 cache 来源。同 model 跨 cohort 的原目录允许不同，checkpoint 与 Ground packet 保持一致。原 support-probe 的适应状态不继承。冻结配置、完整逐行 argv、环境/CWD、输出/log/预期artifact见 experiment.json 和 spec。
+
+资源使用原先明确的4096 transitions/167772160 factor bytes，仅为技术保护，不保证收敛或进程内存。CPU 两 lane、BLAS 两线程、GPU 禁用。仅技术失败影响所属 row；不重试、覆盖或停止健康任务。保留详细训练文本、完整结构化事件/状态及紧凑 JSONL/CSV；实际参数、耗时、RSS、常驻状态、传输未知项记 N/A。
+
+全部 row 的 A/B/C 固定并独立读回后才单独连接 truth。旧 BranchLocalRidge 仅配对相同两个种子的同 capsule/split/query；缺失 A/B 不补造。理想目标是适应提升≥10个百分点、注册后旧类下降≤1个百分点、新旧类绝对差≤3个百分点，作为软目标。此处是已评分数据的透明重复基准，不能称为新的独立验证。
+
+独立入口审查未发现 P0/P1，见[审查文档](../../../docs/D92_MARGIN_JOINT_QUERY_ENTRY_REVIEW_20261001.md)。root 的实际激活 ssr-gpu 元数据 preflight 核实4行、冻结公式完全相等和原 QP 额度，未拟合或访问真实输入。真实 PID、runtime OID、完整预测和成绩仍为 N/A；publisher 仅在源码已授权推送后执行一次。

@@ -78,3 +78,7 @@
 ## 2026-10-01 Margin独立Ground A配对预登记
 
 - [20261001-phase2-d92-margin-ground-a-support-m2-r01](../automation_reports/CV-SincNet/20261001-phase2-d92-margin-ground-a-support-m2-r01/report.md)：待唯一Margin数学摘要完成，单来源四行/160parent；尚未启动，不训练。
+
+### MarginJoint 完整三阶段重复基准（2026-10-01）
+
+- 20261001-phase2-d92-margin-joint-repeat-m2-r01：PLANNED；4行/2400parents，旧6、完整K×新增矩阵；[预登记报告](../automation_reports/CV-SincNet/20261001-phase2-d92-margin-joint-repeat-m2-r01/report.md)。新query未启动，非新独立验证。

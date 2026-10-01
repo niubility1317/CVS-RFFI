@@ -1,0 +1,579 @@
+{
+  "kind": "diagnostic",
+  "comparison_group_id": "manysig-six-source-rx13468-day123-luv076330-residual-noeq-v1",
+  "authorization": "Existing user joint LocalRidge/target-support SFT authorization; root sole launch owner.",
+  "permissions": {
+    "regime": "legal_target_support_joint_local_ridge_sft",
+    "query_use": "Per-sample read-only inference against all registered classes; no fit, truth/role/quota or query statistics",
+    "source_samples": false,
+    "source_per_record_features": false,
+    "source_replay": false,
+    "summary_inputs": false,
+    "old_target_scores_for_adaptation": false,
+    "cross_run_result_tuning": false,
+    "adapted_state_reuse": "within_path_B_to_C_only; no_cross_parent_fold_or_model_reuse",
+    "truth_use": "Separate scorer after ALL declared A/B/C predictions complete and independent readback; no feedback",
+    "claim_scope": "REPEATED_BENCHMARK_PREVIOUSLY_SCORED_TARGETS",
+    "ground_summary_use": "Frozen original native classifier head packet, not source samples or per-record features"
+  },
+  "checkpoint": {
+    "initialization": "Exact source-only scratch final200 model; eval and frozen; no changed buffers or weights",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701/final_ssdg.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092702/final_ssdg.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092703/final_ssdg.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092704/final_ssdg.pth"
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "provenance_verdict": "REUSE_UNCHANGED_VERIFIED_SOURCE_ONLY_FINAL200_LINEAGE; predictor independently binds exact cache/checkpoint/packet metadata",
+    "selection_rule": "First two source-only final200 model seeds fixed in original Margin support preregistration before scores",
+    "metadata_evidence_ref": "docs/D92_FIXED_PHASE1_BRANCH_METADATA_20260929.json",
+    "runtime_checkpoint_reload": false,
+    "source_training_contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "inheritance_policy": "Only original source-only model; no historical adapted head/cache state",
+    "current_auxiliary_training": "Current query split legal support only, frozen MarginJoint adapter and analytic head; no prior probe adapted state",
+    "feature_cache_producer_run_id": "20260929-phase2-d92-branch-support-probe-m4-r01",
+    "feature_cache_producer_role": "support-only raw frozen features; no learned state"
+  },
+  "schema": "experiment_record_v1",
+  "run_id": "20261001-phase2-d92-margin-joint-repeat-m2-r01",
+  "group_id": "d92-margin-joint-repeated-benchmark",
+  "stage": "Phase2-repeated-query-benchmark",
+  "display_name": "MarginJoint LocalRidge与support监督adapter的完整三阶段重复基准",
+  "description": "固定原数学结构和既有Phase1；两个预先固定模型种子覆盖完整received capsule，A/B/C同物理query配对，C真实继承B。",
+  "aliases": [],
+  "tags": [
+    "d92",
+    "margin-joint",
+    "support-sft",
+    "three-stage",
+    "practical-residual",
+    "repeated-query",
+    "truth-last"
+  ],
+  "parent_run_ids": [
+    "20261001-phase2-d92-margin-joint-support-m2-r01",
+    "20261001-phase2-d92-margin-ground-a-support-m2-r01"
+  ],
+  "status": "PLANNED",
+  "claim_scope": "REPEATED_BENCHMARK_PREVIOUSLY_SCORED_TARGETS",
+  "spec_path": "configs/d92_margin_joint_repeat_20261001.json",
+  "code": {
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_margin_joint_repeat_20261001_r01",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "commit": "b97d64bab096ae2fee7938fd94eadf3418c34ad3",
+    "checkout": "E:\\type10-7\\code\\snapshots\\d92_support_upgrade_20260928_wt",
+    "commit_note": "Preparation parent; publisher independently records exact pushed runtime OID."
+  },
+  "execution": {
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-joint-repeat-m2-r01",
+    "launch_owner": "root",
+    "cpu_lanes": 2,
+    "blas_threads": 2,
+    "host": "N607",
+    "launch_owner_note": "root is the only publisher/launcher; no delegated remote operations",
+    "local_artifact_root": "automation_reports/CV-SincNet/20261001-phase2-d92-margin-joint-repeat-m2-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-joint-repeat-m2-r01",
+    "gpu_policy": "CPU2 / BLAS2 / CUDA_VISIBLE_DEVICES empty; existing caches only",
+    "launch_command": "F:/App/miniconda3/python.exe -X utf8 tools/publish_d92_margin_joint_benchmark.py --spec configs/d92_margin_joint_repeat_20261001.json",
+    "stop_rule": "Only a technical failure fails its own row; preserve partial outputs, no automatic retry or low-score stop."
+  },
+  "rows": [
+    {
+      "row_id": "rx3-cvs-daot-rc4-s2026092701",
+      "cohort": "rx3",
+      "expected_model_seed": 2026092701,
+      "expected_checkpoint_sha256": "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b",
+      "row_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092701",
+      "branch_features": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-ridge-repeat-rx3-m4-r01/cvs-daot-rc4-s2026092701/branch_features",
+      "ground_packet": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r02/ground-a-s2026092701",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-joint-repeat-m2-r01/rx3-cvs-daot-rc4-s2026092701",
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026092705,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "support_seed_values": [
+        2026092711,
+        2026092712,
+        2026092713,
+        2026092714,
+        2026092715
+      ],
+      "method": "D92-MarginJointLocalRidge-v1",
+      "purpose": "Paired frozen Ground A, old-support B, actual-B inherited full-registry C",
+      "gpu": "CPU",
+      "optimizer": "Frozen RMSCE, regular KKT implicit gradient, hard ball and projected Armijo; no grid",
+      "lr": "initial0.125 / fixed halving backtracking",
+      "epochs": null,
+      "fl_rounds": null,
+      "config_ref": "configs/d92_margin_joint_repeat_20261001.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-joint-repeat-m2-r01/resolved_algorithm.json",
+      "budget_ref": "full capsule rx3 / all declared splits",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-joint-repeat-m2-r01/rx3-cvs-daot-rc4-s2026092701/prediction.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_margin_joint_repeat_20261001_r01/tools/evaluate_d92_margin_joint_benchmark.py",
+        "--run-id",
+        "20261001-phase2-d92-margin-joint-repeat-m2-r01",
+        "--row-id",
+        "rx3-cvs-daot-rc4-s2026092701",
+        "--release-commit",
+        "ACTUAL_PUSHED_RELEASE_HEAD",
+        "--row-root",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092701",
+        "--capsule",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-joint-repeat-m2-r01/rx3-cvs-daot-rc4-s2026092701/predictions",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-joint-repeat-m2-r01/resolved_algorithm.json",
+        "--expected-capsule-id",
+        "residual-noeq-76121e6f34363fa612ec25fb",
+        "--expected-checkpoint-sha256",
+        "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b",
+        "--branch-features",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-ridge-repeat-rx3-m4-r01/cvs-daot-rc4-s2026092701/branch_features",
+        "--ground-packet",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r02/ground-a-s2026092701"
+      ]
+    },
+    {
+      "row_id": "rx3-cvs-daot-rc4-s2026092702",
+      "cohort": "rx3",
+      "expected_model_seed": 2026092702,
+      "expected_checkpoint_sha256": "72f26413e495dcf82317898f8729caa3d35499bf0b41e9671ffdceab2c90924b",
+      "row_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092702",
+      "branch_features": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-ridge-repeat-rx3-m4-r01/cvs-daot-rc4-s2026092702/branch_features",
+      "ground_packet": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r02/ground-a-s2026092702",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-joint-repeat-m2-r01/rx3-cvs-daot-rc4-s2026092702",
+      "seeds": {
+        "model": 2026092702,
+        "split": 2026092705,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "support_seed_values": [
+        2026092711,
+        2026092712,
+        2026092713,
+        2026092714,
+        2026092715
+      ],
+      "method": "D92-MarginJointLocalRidge-v1",
+      "purpose": "Paired frozen Ground A, old-support B, actual-B inherited full-registry C",
+      "gpu": "CPU",
+      "optimizer": "Frozen RMSCE, regular KKT implicit gradient, hard ball and projected Armijo; no grid",
+      "lr": "initial0.125 / fixed halving backtracking",
+      "epochs": null,
+      "fl_rounds": null,
+      "config_ref": "configs/d92_margin_joint_repeat_20261001.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-joint-repeat-m2-r01/resolved_algorithm.json",
+      "budget_ref": "full capsule rx3 / all declared splits",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-joint-repeat-m2-r01/rx3-cvs-daot-rc4-s2026092702/prediction.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_margin_joint_repeat_20261001_r01/tools/evaluate_d92_margin_joint_benchmark.py",
+        "--run-id",
+        "20261001-phase2-d92-margin-joint-repeat-m2-r01",
+        "--row-id",
+        "rx3-cvs-daot-rc4-s2026092702",
+        "--release-commit",
+        "ACTUAL_PUSHED_RELEASE_HEAD",
+        "--row-root",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092702",
+        "--capsule",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-joint-repeat-m2-r01/rx3-cvs-daot-rc4-s2026092702/predictions",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-joint-repeat-m2-r01/resolved_algorithm.json",
+        "--expected-capsule-id",
+        "residual-noeq-76121e6f34363fa612ec25fb",
+        "--expected-checkpoint-sha256",
+        "72f26413e495dcf82317898f8729caa3d35499bf0b41e9671ffdceab2c90924b",
+        "--branch-features",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-ridge-repeat-rx3-m4-r01/cvs-daot-rc4-s2026092702/branch_features",
+        "--ground-packet",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r02/ground-a-s2026092702"
+      ]
+    },
+    {
+      "row_id": "rx1-cvs-daot-rc4-s2026092701",
+      "cohort": "rx1",
+      "expected_model_seed": 2026092701,
+      "expected_checkpoint_sha256": "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b",
+      "row_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092701",
+      "branch_features": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-ridge-repeat-rx1-m4-r01/cvs-daot-rc4-s2026092701/branch_features",
+      "ground_packet": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r02/ground-a-s2026092701",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-joint-repeat-m2-r01/rx1-cvs-daot-rc4-s2026092701",
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026092705,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "support_seed_values": [
+        2026092711,
+        2026092712,
+        2026092713,
+        2026092714,
+        2026092715
+      ],
+      "method": "D92-MarginJointLocalRidge-v1",
+      "purpose": "Paired frozen Ground A, old-support B, actual-B inherited full-registry C",
+      "gpu": "CPU",
+      "optimizer": "Frozen RMSCE, regular KKT implicit gradient, hard ball and projected Armijo; no grid",
+      "lr": "initial0.125 / fixed halving backtracking",
+      "epochs": null,
+      "fl_rounds": null,
+      "config_ref": "configs/d92_margin_joint_repeat_20261001.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-joint-repeat-m2-r01/resolved_algorithm.json",
+      "budget_ref": "full capsule rx1 / all declared splits",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-joint-repeat-m2-r01/rx1-cvs-daot-rc4-s2026092701/prediction.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_margin_joint_repeat_20261001_r01/tools/evaluate_d92_margin_joint_benchmark.py",
+        "--run-id",
+        "20261001-phase2-d92-margin-joint-repeat-m2-r01",
+        "--row-id",
+        "rx1-cvs-daot-rc4-s2026092701",
+        "--release-commit",
+        "ACTUAL_PUSHED_RELEASE_HEAD",
+        "--row-root",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092701",
+        "--capsule",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-data-manytx-r01/capsule",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-joint-repeat-m2-r01/rx1-cvs-daot-rc4-s2026092701/predictions",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-joint-repeat-m2-r01/resolved_algorithm.json",
+        "--expected-capsule-id",
+        "residual-noeq-d0a99fede324159c5a4750fd",
+        "--expected-checkpoint-sha256",
+        "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b",
+        "--branch-features",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-ridge-repeat-rx1-m4-r01/cvs-daot-rc4-s2026092701/branch_features",
+        "--ground-packet",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r02/ground-a-s2026092701"
+      ]
+    },
+    {
+      "row_id": "rx1-cvs-daot-rc4-s2026092702",
+      "cohort": "rx1",
+      "expected_model_seed": 2026092702,
+      "expected_checkpoint_sha256": "72f26413e495dcf82317898f8729caa3d35499bf0b41e9671ffdceab2c90924b",
+      "row_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092702",
+      "branch_features": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-ridge-repeat-rx1-m4-r01/cvs-daot-rc4-s2026092702/branch_features",
+      "ground_packet": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r02/ground-a-s2026092702",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-joint-repeat-m2-r01/rx1-cvs-daot-rc4-s2026092702",
+      "seeds": {
+        "model": 2026092702,
+        "split": 2026092705,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": 2026092706
+      },
+      "support_seed_values": [
+        2026092711,
+        2026092712,
+        2026092713,
+        2026092714,
+        2026092715
+      ],
+      "method": "D92-MarginJointLocalRidge-v1",
+      "purpose": "Paired frozen Ground A, old-support B, actual-B inherited full-registry C",
+      "gpu": "CPU",
+      "optimizer": "Frozen RMSCE, regular KKT implicit gradient, hard ball and projected Armijo; no grid",
+      "lr": "initial0.125 / fixed halving backtracking",
+      "epochs": null,
+      "fl_rounds": null,
+      "config_ref": "configs/d92_margin_joint_repeat_20261001.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-joint-repeat-m2-r01/resolved_algorithm.json",
+      "budget_ref": "full capsule rx1 / all declared splits",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-joint-repeat-m2-r01/rx1-cvs-daot-rc4-s2026092702/prediction.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_margin_joint_repeat_20261001_r01/tools/evaluate_d92_margin_joint_benchmark.py",
+        "--run-id",
+        "20261001-phase2-d92-margin-joint-repeat-m2-r01",
+        "--row-id",
+        "rx1-cvs-daot-rc4-s2026092702",
+        "--release-commit",
+        "ACTUAL_PUSHED_RELEASE_HEAD",
+        "--row-root",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092702",
+        "--capsule",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-data-manytx-r01/capsule",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-joint-repeat-m2-r01/rx1-cvs-daot-rc4-s2026092702/predictions",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-joint-repeat-m2-r01/resolved_algorithm.json",
+        "--expected-capsule-id",
+        "residual-noeq-d0a99fede324159c5a4750fd",
+        "--expected-checkpoint-sha256",
+        "72f26413e495dcf82317898f8729caa3d35499bf0b41e9671ffdceab2c90924b",
+        "--branch-features",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-ridge-repeat-rx1-m4-r01/cvs-daot-rc4-s2026092702/branch_features",
+        "--ground-packet",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r02/ground-a-s2026092702"
+      ]
+    }
+  ],
+  "data": {
+    "cohorts": {
+      "rx3": {
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule/received.npz",
+        "version": "existing_N607_ManyTx_actual19RX",
+        "representation": "Reused immutable original-received z_id/FFT96/t_emb/f_emb/pa_local; no encoder execution or new view",
+        "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule/manifest.json",
+        "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule/received.npz#ids",
+        "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_ridge_repeat_rx3_20260929_r01/configs/d92_branch_local_ridge_repeat_rx3_data_20260929.json#old_classes,new_classes",
+        "source_receivers": [
+          "1-19",
+          "18-2",
+          "19-2",
+          "2-19",
+          "3-19"
+        ],
+        "target_receivers": [
+          "19-1",
+          "8-14",
+          "8-7"
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "target_days": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "tx_sets_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_ridge_repeat_rx3_20260929_r01/configs/d92_branch_local_ridge_repeat_rx3_data_20260929.json",
+        "roles": {
+          "L_s": 0.07,
+          "U_s": 0.63,
+          "V": 0.3
+        },
+        "train_ratio": 0.1,
+        "capsule_id": "residual-noeq-76121e6f34363fa612ec25fb",
+        "split_id": "Existing 900 immutable split IDs; unchanged from 20260928-phase2-d92-scv-confirmation-manytx-m4-r02",
+        "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule/manifest.json",
+        "support_query_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule/splits",
+        "leo_config_ref": "experiments/adv3b02_xuc/code/cvsrffi/practical_adapter.py",
+        "k": [
+          1,
+          5,
+          10,
+          20
+        ],
+        "new_class_counts": [
+          0,
+          2,
+          5,
+          10,
+          20
+        ],
+        "support_seeds": [
+          2026092711,
+          2026092712,
+          2026092713,
+          2026092714,
+          2026092715
+        ],
+        "protocol_schema": "p2_min_v1",
+        "phase2_data_status": "VALIDATED_ONCE",
+        "scenarios": [
+          "practical_high",
+          "practical_mid",
+          "practical_low_urban"
+        ],
+        "data_rebuilt": false,
+        "data_revalidated": false,
+        "target_previously_scored": true,
+        "reuse_policy": "VALIDATED_ONCE; runtime artifact identity/binding checks only, no new data validation"
+      },
+      "rx1": {
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-data-manytx-r01/capsule/received.npz",
+        "version": "existing_N607_ManyTx_actual19RX",
+        "representation": "Reused immutable original-received z_id/FFT96/t_emb/f_emb/pa_local; no encoder execution or new view",
+        "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-data-manytx-r01/capsule/manifest.json",
+        "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-data-manytx-r01/capsule/received.npz#ids",
+        "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_ridge_repeat_rx1_20260929_r01/configs/d92_branch_local_ridge_repeat_rx1_data_20260929.json#old_classes,new_classes",
+        "source_receivers": [
+          "1-19",
+          "18-2",
+          "19-2",
+          "2-19",
+          "3-19"
+        ],
+        "target_receivers": [
+          "20-19"
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "target_days": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "tx_sets_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_branch_local_ridge_repeat_rx1_20260929_r01/configs/d92_branch_local_ridge_repeat_rx1_data_20260929.json",
+        "roles": {
+          "L_s": 0.07,
+          "U_s": 0.63,
+          "V": 0.3
+        },
+        "train_ratio": 0.1,
+        "capsule_id": "residual-noeq-d0a99fede324159c5a4750fd",
+        "split_id": "Existing 300 immutable split IDs; unchanged from 20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01",
+        "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-data-manytx-r01/capsule/manifest.json",
+        "support_query_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-data-manytx-r01/capsule/splits",
+        "leo_config_ref": "experiments/adv3b02_xuc/code/cvsrffi/practical_adapter.py",
+        "k": [
+          1,
+          5,
+          10,
+          20
+        ],
+        "new_class_counts": [
+          0,
+          2,
+          5,
+          10,
+          20
+        ],
+        "support_seeds": [
+          2026092711,
+          2026092712,
+          2026092713,
+          2026092714,
+          2026092715
+        ],
+        "scenarios": [
+          "practical_high",
+          "practical_mid",
+          "practical_low_urban"
+        ],
+        "protocol_schema": "p2_min_v1",
+        "phase2_data_status": "VALIDATED_ONCE",
+        "data_rebuilt": false,
+        "data_revalidated": false,
+        "target_previously_scored": true,
+        "reuse_policy": "VALIDATED_ONCE; runtime artifact identity/binding checks only, no new data validation"
+      }
+    },
+    "old_class_count": 6,
+    "k": [
+      1,
+      5,
+      10,
+      20
+    ],
+    "new_class_counts": [
+      0,
+      2,
+      5,
+      10,
+      20
+    ],
+    "support_seeds": [
+      2026092711,
+      2026092712,
+      2026092713,
+      2026092714,
+      2026092715
+    ],
+    "scenarios": [
+      "practical_high",
+      "practical_mid",
+      "practical_low_urban"
+    ],
+    "capsule_split_counts": {
+      "rx3": 900,
+      "rx1": 300
+    },
+    "model_seeds": [
+      2026092701,
+      2026092702
+    ],
+    "parent_count": 2400,
+    "data_rebuilt": false,
+    "data_revalidated": false,
+    "protocol_schema": "p2_min_v1",
+    "phase2_data_status": "VALIDATED_ONCE"
+  },
+  "metrics_plan": {
+    "stages": [
+      "A_ground_old",
+      "B_old_support_adaptation",
+      "C_actual_B_inherited_registration"
+    ],
+    "metrics": [
+      "A_old",
+      "B_old",
+      "C_old",
+      "C_new",
+      "H",
+      "B_minus_A_pp",
+      "B_minus_C_old_pp",
+      "absolute_old_new_gap_pp"
+    ],
+    "dimensions": [
+      "model_seed",
+      "cohort",
+      "receiver",
+      "scenario",
+      "K",
+      "old_class_count",
+      "new_count",
+      "support_seed"
+    ],
+    "scorer": "tools/score_d92_margin_joint_benchmark.py; all rows fixed and independently reread before truth join",
+    "baseline": "Explicit completed BranchLocalRidge same-seed/same-capsule/same-split subset; only available C metrics",
+    "ideal_soft_targets": {
+      "adaptation_gain_pp": 10,
+      "maximum_old_drop_pp": 1,
+      "maximum_abs_old_new_gap_pp": 3
+    }
+  },
+  "expected_artifacts": [
+    "startup.json",
+    "state.json",
+    "events.jsonl",
+    "resolved_algorithm.json",
+    "complete.json",
+    "per-row preflight.log/prediction.log",
+    "per-row predictions/startup.json/complete.json",
+    "per-row predictions_A/B/C.jsonl and C alias",
+    "per-row training.log/full and compact JSONL/CSV/state arrays",
+    "separate independent score.json/full K-by-new and strata report"
+  ],
+  "notes": [
+    "Same first two model seeds frozen before Margin support results; no seed/row selection by any score.",
+    "Support seed role is a per-parent five-value axis; row.seeds.support=null is not absence of support randomness.",
+    "Frozen algorithm and QP capacities match original support preregistration exactly; 160MiB factor limit is not RSS.",
+    "Full query K1 is scored normally; new0 C actually reuses B; new accuracy/H/gap are N/A for new0.",
+    "No support-probe adapted state, source samples/per-record features, query fit, role/quota/batch remapping or feedback.",
+    "Training and inference time, actual coordinates, process RSS, states and incremental transfer are measured or N/A; not claimed as satellite hardware savings.",
+    "Query data was previously scored; fresh independent validation is deferred by explicit user request."
+  ]
+}
