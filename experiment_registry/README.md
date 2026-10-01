@@ -1,6 +1,6 @@
 # 实验总索引
 
-更新：2026-10-01T10:53:23+00:00
+更新：2026-10-01T11:05:54+00:00
 
 先按方法/问题检索，再用run ID读取精确配置与证据。历史组数量不等于独立实验数量。
 
@@ -98,7 +98,7 @@
 |Native comparison source training|managed_run|[打开](../automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/report.md)|
 |Native comparison paired adaptation and registration|managed_run|[打开](../automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/report.md)|
 |无信道增强四基准的 clean 测试报告|managed_run|[打开](../automation_reports/CV-SincNet/20261001-phase1-clean-baselines-manysig-m16-r01/report.md)|
-|性能优先注意力池化 CVS：clean 确认实验|managed_run|[打开](../automation_reports/CV-SincNet/20261001-phase1-cvs-attentive-clean-manysig-m24-r01/report.md)|
+|CVS性能优先继续优化：attentive_mean clean测试报告|managed_run|[打开](../automation_reports/CV-SincNet/20261001-phase1-cvs-attentive-clean-manysig-m24-r01/report.md)|
 |CVS 性能优先研发：包内注意力统计池化|managed_run|[打开](../automation_reports/CV-SincNet/20261001-phase1-cvs-attentive-identity-manysig-m8-r01/report.md)|
 |CVS性能优先继续优化：balanced_fusion clean测试报告|managed_run|[打开](../automation_reports/CV-SincNet/20261001-phase1-cvs-balanced-clean-manysig-m24-r01/report.md)|
 |CVS继续研发：分支平衡融合与有符号PA投影|managed_run|[打开](../automation_reports/CV-SincNet/20261001-phase1-cvs-balanced-identity-manysig-m8-r01/report.md)|
