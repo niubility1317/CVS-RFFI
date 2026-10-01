@@ -28,10 +28,11 @@ env=dict(os.environ,PYTHONPATH=str(release)+os.pathsep+str(release/'code'),OMP_N
 subprocess.run([python,'-m','compileall','-q',str(release)],cwd=release,env=env,check=True)
 for module in ('predict','score','dispatch'):
     subprocess.run([python,'-m','experiments.cvs_clean_eval.'+module,'--help'],cwd=release,env=env,stdout=subprocess.DEVNULL,check=True)
-spec=release/'experiments/cvs_clean_eval/configs/launch_spec.json'
+spec=release/c['spec_ref']
 d=json.loads(spec.read_text())
-if d['run_id']!=c['run'] or len(d['rows'])!=16:raise ValueError('Unexpected baseline matrix')
+if d['run_id']!=c['run'] or len(d['rows'])!=c['matrix_rows']:raise ValueError('Unexpected clean matrix')
 for row in d['rows']:
+    if row.get('reuse_from_run'):continue
     cfg=json.loads(Path(row['config']).read_text())
     for key in ('source_contract',):
         if not Path(cfg[key]).is_file():raise FileNotFoundError(cfg[key])
@@ -41,7 +42,7 @@ for row in d['rows']:
         if not (Path(cfg['p1_capsule'])/name).is_file():raise FileNotFoundError(name)
 smoke='import torch;from experiments.cvs_clean_eval.contracts import BASELINES,build_model;torch.set_num_threads(2);models=[build_model(v).eval() for v in BASELINES];scores=[m(torch.zeros(2,2,256)) for m in models];assert all(s.shape==(2,6) and torch.isfinite(s).all() for s in scores)'
 subprocess.run([python,'-c',smoke],cwd=release,env=env,stdout=subprocess.DEVNULL,check=True)
-preflight='import torch;from pathlib import Path;from experiments.cvs_clean_eval.contracts import read,frozen_selection,validate_predict_config,checkpoint_contract;d=read('+repr(str(spec))+');selection=frozen_selection(d["selection_file"]);'+ '\nfor row in d["rows"]:\n c=validate_predict_config(read(row["config"]),selection);q=Path(c["source_output"]);checkpoint_contract(c,read(q/"completion.json"),read(q/"initialization.json"),read(q/"source_contract.json"),read(c["source_contract"]),read(q/"resolved_config.json"),torch.load(q/"last.pt",map_location="cpu",weights_only=False))'
+preflight='import torch;from pathlib import Path;from experiments.cvs_clean_eval.contracts import read,frozen_selection,validate_predict_config,checkpoint_contract;from experiments.cvs_clean_eval.dispatch import validate_spec;d=validate_spec(read('+repr(str(spec))+'));selection=frozen_selection(d["selection_file"]);'+ '\nfor row in d["rows"]:\n if row.get("reuse_from_run"):continue\n c=validate_predict_config(read(row["config"]),selection);q=Path(c["source_output"]);checkpoint_contract(c,read(q/"completion.json"),read(q/"initialization.json"),read(q/"source_contract.json"),read(c["source_contract"]),read(q/"resolved_config.json"),torch.load(q/"last.pt",map_location="cpu",weights_only=False))'
 subprocess.run([python,'-c',preflight],cwd=release,env=env,stdout=subprocess.DEVNULL,check=True)
 command=[python,'-u','-m','experiments.cvs_clean_eval.dispatch','--spec',str(spec)]
 logpath=release/'dispatcher.stdout.log'
@@ -77,31 +78,31 @@ print(json.dumps(result))
 '''
 
 
-def inspect(output):
-    d=json.loads(ssh(INSPECT.replace('PROJECT',repr(PROJECT)).replace('RELEASE',repr(RELEASE)).replace('RUN',repr(RUN))))
+def inspect(output,run=RUN,release=RELEASE):
+    d=json.loads(ssh(INSPECT.replace('PROJECT',repr(PROJECT)).replace('RELEASE',repr(release)).replace('RUN',repr(run))))
     output.mkdir(parents=True,exist_ok=True)
     (output/'readback.json').write_text(json.dumps(d,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
-    print(json.dumps(dict(run_id=RUN,status=d['pipeline']['status'] if d['pipeline'] else None,marker=d['marker'],
+    print(json.dumps(dict(run_id=run,status=d['pipeline']['status'] if d['pipeline'] else None,marker=d['marker'],
         rows=[dict(row_id=r['row_id'],status=r['status'],gpu=r['gpu'],alive=bool(r['process']),completion=bool(r['completion']),error=r['log_tail'] if r['status']=='FAILED' else None) for r in d['rows']]),ensure_ascii=False))
 
 
-def publish(output):
+def publish(output,run=RUN,release=RELEASE,spec_ref='experiments/cvs_clean_eval/configs/launch_spec.json',matrix_rows=16):
     commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip()
     branch=subprocess.check_output(['git','branch','--show-current'],cwd=ROOT,text=True).strip()
     remote=subprocess.check_output(['git','-c','http.version=HTTP/1.1','ls-remote','origin','refs/heads/'+branch],cwd=ROOT,text=True,timeout=30).split()[0]
     if remote!=commit:raise ValueError('Remote branch differs from HEAD')
     names=subprocess.check_output(['git','ls-files'],cwd=ROOT,text=True).splitlines()
-    prefixes=('experiments/cvs_clean_eval/','experiments/cvs_residual_identity/','experiments/cvs_clean_design/','experiments/cvs_identity_ce/',
+    prefixes=('experiments/cvs_selected_clean/','experiments/cvs_clean_eval/','experiments/cvs_residual_identity/','experiments/cvs_clean_design/','experiments/cvs_identity_ce/',
         'experiments/adv3b02_xuc/code/','baselines/cvcnn_ce/','baselines/common/','code/leo_practical/')
     selected=[n for n in names if (n.startswith(prefixes) or n in {'code/dataset_wisig.py','comparison_suite/score.py','comparison_suite/__init__.py','baselines/__init__.py'}) and Path(n).suffix in {'.py','.json'}]
     if subprocess.check_output(['git','status','--porcelain','--',*selected],cwd=ROOT,text=True).strip():raise ValueError('Uncommitted release')
-    output.mkdir(parents=True,exist_ok=True);archive=output/(RELEASE+'.tar.gz')
+    output.mkdir(parents=True,exist_ok=True);archive=output/(release+'.tar.gz')
     if archive.exists():raise FileExistsError('Existing package;reconcile before retry')
     with tarfile.open(archive,'w:gz') as tar:
         for n in selected:
             blob=subprocess.check_output(['git','show',commit+':'+n],cwd=ROOT);item=tarfile.TarInfo(n);item.size=len(blob);item.mode=0o644;tar.addfile(item,io.BytesIO(blob))
         blob=(commit+'\n').encode();item=tarfile.TarInfo('release_commit.txt');item.size=len(blob);tar.addfile(item,io.BytesIO(blob))
-    c=dict(project=PROJECT,release=RELEASE,run=RUN,archive=archive.name,sha256=hashlib.sha256(archive.read_bytes()).hexdigest(),commit=commit)
+    c=dict(project=PROJECT,release=release,run=run,archive=archive.name,sha256=hashlib.sha256(archive.read_bytes()).hexdigest(),commit=commit,spec_ref=spec_ref,matrix_rows=matrix_rows)
     (output/'package.json').write_text(json.dumps(dict(c,files=len(selected)),indent=2)+'\n',encoding='utf-8')
     subprocess.run(['scp',*CONNECTION,str(archive),'N607:'+PROJECT+'/releases/'+archive.name],check=True)
     receipt=json.loads(ssh(REMOTE.replace('CONFIG',repr(c))))

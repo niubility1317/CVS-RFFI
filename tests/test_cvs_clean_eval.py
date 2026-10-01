@@ -212,6 +212,40 @@ def test_original_role_contract_without_runtime_extensions(case):
     with pytest.raises(ValueError):contracts.checkpoint_contract(cfg,done,initial,case['contract'],dict(expected,num_classes=5),resolved,payload)
 
 
+def reused_case(case):
+    old=case['root']/contracts.REUSED_BASELINE_RUN
+    first=dict(rows=[dict(variant=v,model_seed=s) for v in contracts.BASELINES for s in sorted(contracts.SEEDS)])
+    write(case['root']/'baseline_source_matrix.json',first)
+    fixed=dict(scope='baseline_only',status='FIXED_BASELINES_FROZEN',test_variants=list(contracts.BASELINES),model_seeds=sorted(contracts.SEEDS),
+        target_access=False,target_score_used=False,source_matrix_ref=str(case['root']/'baseline_source_matrix.json'))
+    write(case['root']/'fixed_baselines.json',fixed)
+    write(old/'scoring_clean_complete.json',dict(status='SCORED_COMPLETE',models=4,seeds=4,rows=16))
+    for row in case['spec']['rows']:
+        if row['variant'] not in contracts.BASELINES:continue
+        row.update(reuse_from_run=contracts.REUSED_BASELINE_RUN,output_root=str(old/row['row_id']/'prediction'))
+        cfg=contracts.read(row['config']);cfg.update(output_root=row['output_root'],selection_file=str(case['root']/'fixed_baselines.json'));write(Path(row['config']),cfg)
+    return case
+
+
+def test_reuse16_fixed_baselines_and_score4_new_predictions(case):
+    reused_case(case);dispatch.validate_spec(case['spec']);prediction_fixtures(case)
+    marker=score.score(case['spec'])
+    assert marker['rows']==20 and marker['models']==5
+    assert sum(not r.get('reuse_from_run') for r in case['spec']['rows'])==4
+
+
+def test_reuse_rejects_wrong_original_run_or_incomplete_baselines(case,monkeypatch):
+    reused_case(case);prediction_fixtures(case)
+    row=case['spec']['rows'][0];row['reuse_from_run']='different-run'
+    with pytest.raises(ValueError):dispatch.validate_spec(case['spec'])
+    opened=[];original=score.read;monkeypatch.setattr(score,'read',lambda p:(opened.append(str(p)),original(p))[1])
+    with pytest.raises(ValueError):score.score(case['spec'])
+    assert case['spec']['p1_truth'] not in opened
+    row['reuse_from_run']=contracts.REUSED_BASELINE_RUN
+    write(case['root']/contracts.REUSED_BASELINE_RUN/'scoring_clean_complete.json',dict(status='INCOMPLETE',models=4,seeds=4,rows=16))
+    with pytest.raises(ValueError):dispatch.validate_spec(case['spec'])
+
+
 def test_fresh_process_imports():
     root=Path(__file__).resolve().parents[1]
     for module in ['predict','score','dispatch']:

@@ -10,6 +10,7 @@ from comparison_suite.score import metrics
 SEEDS={2026092701,2026092702,2026092703,2026092704}
 BASELINES=('native','cvcnn','real_cnn','resnet1d')
 CANDIDATES={'orthogonal_pa','moment_pool','orthogonal_moment','shared_complex','residual_fusion','residual_fusion_moment'}
+REUSED_BASELINE_RUN='20261001-phase1-clean-baselines-manysig-m16-r01'
 
 
 def read(path):return json.loads(Path(path).read_text(encoding='utf-8'))
@@ -49,10 +50,19 @@ def preflight_predictions(spec):
     selection=validate_matrix(spec);predictions=[];reference=None
     for row in spec['rows']:
         cfg=read(row['config']);root=Path(row['output_root'])
+        reused=bool(row.get('reuse_from_run'))
+        if reused:
+            original=read(cfg['selection_file']);old_marker=read(root.parents[1]/'scoring_clean_complete.json')
+            if (row['reuse_from_run']!=REUSED_BASELINE_RUN or row['variant'] not in BASELINES or
+                root.parts[-3:]!=(REUSED_BASELINE_RUN,row['row_id'],'prediction') or original.get('scope')!='baseline_only' or
+                original['status']!='FIXED_BASELINES_FROZEN' or original['target_access'] or original['target_score_used'] or
+                original['test_variants']!=list(BASELINES) or original['model_seeds']!=sorted(SEEDS) or
+                old_marker['status']!='SCORED_COMPLETE' or old_marker['rows']!=16 or old_marker['models']!=4 or old_marker['seeds']!=4):
+                raise ValueError('Unauthorized/incomplete baseline reuse;truth remains closed')
         flag=read(root/'clean_complete.json');resolved=read(root/'resolved_config.json');provenance=read(root/'provenance.json')
         if (flag['status']!='PREDICTIONS_COMPLETE' or flag['truth_read'] is not False or flag['query_fit'] is not False or flag['views']!=['clean'] or
             cfg['variant']!=row['variant'] or cfg['model_seed']!=row['model_seed'] or cfg['output_root']!=row['output_root'] or
-            cfg['selection_file']!=spec['selection_file'] or cfg['views']!=['clean'] or resolved['truth_read'] is not False or resolved['query_fit'] is not False or
+            (not reused and cfg['selection_file']!=spec['selection_file']) or cfg['views']!=['clean'] or resolved['truth_read'] is not False or resolved['query_fit'] is not False or
             any(resolved.get(k)!=v for k,v in cfg.items()) or provenance['status']!='VERIFIED' or provenance['query_fit'] is not False):
             raise ValueError('Incomplete/contaminated clean predictions;truth remains closed')
         capsule=Path(cfg['p1_capsule']);manifest=read(capsule/'manifest.json')

@@ -46,3 +46,22 @@ run_id：`20261001-phase1-cvs-residual-identity-manysig-m8-r01`。状态：SOURC
 实际启动行的 resolved config 已核实：纯身份 CE、augmentation=false、domain_backbone=false、extra_losses=[]、target_access=false，源角色 6300/56700/27000、每轮 50 步；逐轮日志包含真实梯度和三个物理分支的有效 CE 参数。
 
 下一步只读核实新行启动后的有效参数、checkpoint smoke、源角色、逐轮梯度及资源测量。全部 source 完成后联合六候选冻结；若旧 selection 尚未存在，保留本批 source_selection 并补做联合冻结，不重复启动 source。
+
+## E200 源研发完成与联合冻结
+
+8 行均独立核实完成 E200/10000 更新，scratch 无继承，augmentation/domain/extra losses/target access 均关闭，逐行完整 200 轮记录已保留。实际 completion 与 source-only 选择均已读回。按原规则从8个 E200结果重算双候选选择，再与原四候选联合重算，均与自动 research_selection 一致：选中 residual_fusion。源训练结束发生在四基准 clean launch 之前，目标成绩未进入选择。
+
+|候选|四seed源V均值|四seed最差源RX均值|总参数|Conv/Linear MAC/包|
+|---|---:|---:|---:|---:|
+|orthogonal_pa|97.898148%|93.986111%|382146|9862436|
+|moment_pool|97.975926%|94.268519%|382338|9862436|
+|orthogonal_moment|97.891667%|94.032407%|382338|9862436|
+|shared_complex|94.883333%|86.990741%|168682|3119232|
+|residual_fusion|98.069444%|94.495370%|164225|9708836|
+|residual_fusion_moment|98.046296%|94.439815%|164417|9708836|
+
+新选中候选源V=98.069444%，最差源RX=94.495370%；原native源V=97.930556%、最差源RX=94.134259%。相对增益分别为0.138889及0.361111个百分点，只能作源域结果。源筛选的0.2个百分点平分区间偏好较小MAC、再较少参数，不能改为按目标测试挑选。
+
+选中模型总参数164225，全部有CE梯度；比原总参数382146少约57.03%，比原有效CE参数317665少约48.30%。Conv/Linear MAC从9862436降到9708836，减少约1.56%，FFT仍为两次；参数减少不代表同比例计算或时间减少。此时 clean 尚未测，目标“结构改进同时提升性能且轻量化”仍待一次冻结确认。
+
+[完整源研发读回](evidence/source_research_complete.json)、[联合冻结](evidence/research_selection.json)、[源选择重算及边界验证](evidence/source_completion_validation.json)。最新用户要求四基准先测试已另行完成；新候选的独立确认将只新增4预测并只读复用原16基准预测。

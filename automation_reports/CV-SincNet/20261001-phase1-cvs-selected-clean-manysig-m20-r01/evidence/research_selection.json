@@ -1,0 +1,72 @@
+{
+  "status": "SOURCE_SELECTION_FROZEN",
+  "selected_variant": "residual_fusion",
+  "source_summaries": {
+    "orthogonal_pa": {
+      "score": 0.9594212962962962,
+      "source_accuracy": 0.9789814814814815,
+      "worst_rx_accuracy": 0.9398611111111111,
+      "parameters": 382146,
+      "conv_linear_macs": 9862436
+    },
+    "moment_pool": {
+      "score": 0.9612222222222222,
+      "source_accuracy": 0.9797592592592592,
+      "worst_rx_accuracy": 0.9426851851851852,
+      "parameters": 382338,
+      "conv_linear_macs": 9862436
+    },
+    "orthogonal_moment": {
+      "score": 0.9596203703703703,
+      "source_accuracy": 0.9789166666666667,
+      "worst_rx_accuracy": 0.940324074074074,
+      "parameters": 382338,
+      "conv_linear_macs": 9862436
+    },
+    "shared_complex": {
+      "score": 0.9093703703703704,
+      "source_accuracy": 0.9488333333333333,
+      "worst_rx_accuracy": 0.8699074074074074,
+      "parameters": 168682,
+      "conv_linear_macs": 3119232
+    },
+    "residual_fusion": {
+      "score": 0.9628240740740741,
+      "source_accuracy": 0.9806944444444444,
+      "worst_rx_accuracy": 0.9449537037037037,
+      "parameters": 164225,
+      "conv_linear_macs": 9708836
+    },
+    "residual_fusion_moment": {
+      "score": 0.9624305555555556,
+      "source_accuracy": 0.980462962962963,
+      "worst_rx_accuracy": 0.9443981481481482,
+      "parameters": 164417,
+      "conv_linear_macs": 9708836
+    }
+  },
+  "selection_rule": "four-seed E200 0.5 source-V accuracy+0.5 worst source RX;within0.2pp lower MACs then parameters",
+  "target_access": false,
+  "target_score_used": false,
+  "test_view": "clean",
+  "test_variants": [
+    "native",
+    "cvcnn",
+    "real_cnn",
+    "resnet1d",
+    "residual_fusion"
+  ],
+  "candidate_universe": [
+    "moment_pool",
+    "orthogonal_moment",
+    "orthogonal_pa",
+    "residual_fusion",
+    "residual_fusion_moment",
+    "shared_complex"
+  ],
+  "selection_scope": "all six registered source-only CVS candidates before any current target prediction",
+  "source_selection_refs": [
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-clean-architecture-manysig-m32-r01/source_selection.json",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/source_selection.json"
+  ]
+}

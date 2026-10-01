@@ -7,6 +7,7 @@ from experiments.cvs_residual_identity.dispatch import combine_research_selectio
 
 SEEDS={2026092701,2026092702,2026092703,2026092704}
 CANDIDATES=set(FIRST)-set(BASELINES)|set(SECOND)
+REUSED_BASELINE_RUN='20261001-phase1-clean-baselines-manysig-m16-r01'
 
 
 def read(path):return json.loads(Path(path).read_text(encoding='utf-8'))
@@ -37,6 +38,21 @@ def frozen_selection(path):
 
 def evaluation_variants(selection):
     return list(BASELINES) if selection.get('scope')=='baseline_only' else [*BASELINES,selection['selected_variant']]
+
+
+def validate_reused_row(row):
+    if row.get('reuse_from_run')!=REUSED_BASELINE_RUN or row['variant'] not in BASELINES:
+        raise ValueError('Only the fixed completed baseline rows can be reused')
+    out=Path(row['output_root'])
+    if out.parts[-3:]!=(REUSED_BASELINE_RUN,row['row_id'],'prediction'):
+        raise ValueError('Reused baseline output outside original run')
+    cfg=read(row['config']);original=frozen_selection(cfg['selection_file'])
+    if original.get('scope')!='baseline_only':raise ValueError('Reused baseline selection changed')
+    validate_predict_config(cfg,original)
+    marker=read(out.parents[1]/'scoring_clean_complete.json')
+    if marker['status']!='SCORED_COMPLETE' or marker['models']!=4 or marker['seeds']!=4 or marker['rows']!=16:
+        raise ValueError('Original baseline matrix not complete')
+    return cfg
 
 
 def source_method(variant):

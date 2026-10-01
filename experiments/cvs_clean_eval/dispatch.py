@@ -9,7 +9,7 @@ import time
 ROOT=Path(__file__).resolve().parents[2]
 sys.path.insert(0,str(ROOT))
 from experiments.cvs_clean_design.dispatch import occupancy
-from experiments.cvs_clean_eval.contracts import read,frozen_selection,validate_predict_config,SEEDS,evaluation_variants
+from experiments.cvs_clean_eval.contracts import read,frozen_selection,validate_predict_config,validate_reused_row,SEEDS,evaluation_variants
 
 
 def write(path,value):Path(path).write_text(json.dumps(value,indent=2)+'\n',encoding='utf-8')
@@ -23,9 +23,10 @@ def validate_spec(spec):
         raise ValueError('Clean matrix differs from frozen model/four-seed plan')
     run=Path(spec['runtime_root'])
     for row in rows:
-        c=validate_predict_config(read(row['config']),selection)
-        if (c['variant']!=row['variant'] or c['model_seed']!=row['model_seed'] or c['selection_file']!=spec['selection_file'] or
-            c['output_root']!=row['output_root'] or Path(row['output_root'])!=run/row['row_id']/'prediction'):
+        reused=bool(row.get('reuse_from_run'))
+        c=validate_reused_row(row) if reused else validate_predict_config(read(row['config']),selection)
+        if (c['variant']!=row['variant'] or c['model_seed']!=row['model_seed'] or c['output_root']!=row['output_root'] or
+            (not reused and (c['selection_file']!=spec['selection_file'] or Path(row['output_root'])!=run/row['row_id']/'prediction'))):
             raise ValueError('Clean row config/output mismatch')
     return spec
 
@@ -42,8 +43,9 @@ def dispatch(path):
     run.mkdir(parents=True,exist_ok=False);logs.mkdir(parents=True,exist_ok=False)
     state=dict(status='CLEAN_PREDICTING',pid=os.getpid(),cwd=str(ROOT),argv=sys.argv,run_id=spec['run_id'],launch_owner=spec['launch_owner'],
         commit=(ROOT/'release_commit.txt').read_text().strip(),truth_read=False,view='clean',
-        rows={r['row_id']:dict(status='QUEUED',variant=r['variant'],model_seed=r['model_seed']) for r in spec['rows']})
-    write(run/'pipeline_state.json',state);pending=list(spec['rows']);active={}
+        rows={r['row_id']:dict(status='PREDICTIONS_COMPLETE' if r.get('reuse_from_run') else 'QUEUED',variant=r['variant'],model_seed=r['model_seed'],
+            output_root=r['output_root'],reuse_from_run=r.get('reuse_from_run')) for r in spec['rows']})
+    write(run/'pipeline_state.json',state);pending=[r for r in spec['rows'] if not r.get('reuse_from_run')];active={}
     while pending or active:
         for rid,job in list(active.items()):
             code=job['process'].poll()
