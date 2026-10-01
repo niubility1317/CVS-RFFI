@@ -163,8 +163,26 @@
     "actual_process_alive": false,
     "analysis_release": "d92_conditional_joint_analysis_20261001_r01",
     "analysis_launch_owner": "root",
-    "analysis_status": "PREREGISTERED_NOT_LAUNCHED",
-    "analysis_command": "E:/type10-7/local_envs/ssr-gpu/python.exe -X utf8 tools/analyze_d92_conditional_joint_probe.py --spec configs/d92_conditional_joint_support_20261001.json --analysis-release d92_conditional_joint_analysis_20261001_r01"
+    "analysis_status": "RUNNING",
+    "analysis_command": "E:/type10-7/local_envs/ssr-gpu/python.exe -X utf8 tools/analyze_d92_conditional_joint_probe.py --spec configs/d92_conditional_joint_support_20261001.json --analysis-release d92_conditional_joint_analysis_20261001_r01",
+    "analysis_pid": 617023,
+    "analysis_start_ticks": 7407753,
+    "analysis_commit": "0145234e381b5799306acfb3d36a4e17865c1814",
+    "analysis_process_alive": true,
+    "analysis_local_handle": 55338,
+    "analysis_actual_argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_conditional_joint_analysis_20261001_r01/tools/summarize_d92_conditional_joint_probe.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_conditional_joint_support_20261001_r01/configs/d92_conditional_joint_support_20261001.json",
+      "--run-root",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-conditional-joint-support-m2-r01",
+      "--output",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-conditional-joint-support-m2-r01/results/support_summary"
+    ],
+    "analysis_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_conditional_joint_analysis_20261001_r01",
+    "analysis_readback_ref": "evidence/analysis_readback_1790826528974606200.json"
   },
   "expected_artifacts": [
     "startup.json",

@@ -1,0 +1,48 @@
+{
+  "observed_unix": 1790826467.3784919,
+  "process": {
+    "pid": 617023,
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_conditional_joint_analysis_20261001_r01/tools/summarize_d92_conditional_joint_probe.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_conditional_joint_support_20261001_r01/configs/d92_conditional_joint_support_20261001.json",
+      "--run-root",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-conditional-joint-support-m2-r01",
+      "--output",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-conditional-joint-support-m2-r01/results/support_summary"
+    ],
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_conditional_joint_analysis_20261001_r01",
+    "commit": "0145234e381b5799306acfb3d36a4e17865c1814",
+    "runtime_commit": "7204161b126a9d3a17096aee5c75bce8ccfee6ec",
+    "live_argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_conditional_joint_analysis_20261001_r01/tools/summarize_d92_conditional_joint_probe.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_conditional_joint_support_20261001_r01/configs/d92_conditional_joint_support_20261001.json",
+      "--run-root",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-conditional-joint-support-m2-r01",
+      "--output",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-conditional-joint-support-m2-r01/results/support_summary"
+    ],
+    "live_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_conditional_joint_analysis_20261001_r01"
+  },
+  "activity": {
+    "state": "R",
+    "user_cpu_ticks": 16183,
+    "system_cpu_ticks": 506,
+    "threads": 3,
+    "start_ticks": 7407753,
+    "rss": "1712024 kB",
+    "peak_rss": "1712024 kB",
+    "read_character_bytes": 1636391110,
+    "disk_read_bytes": 0
+  },
+  "summary_exists": false,
+  "analysis_execution": null,
+  "failure_log": null,
+  "log_bytes": 0,
+  "performance_read_or_printed": false
+}

@@ -1,3 +1,11 @@
+## 最新状态：实际地面A包已完成，Conditional独立分析进行中（2026-10-01）
+
+ARTIFACTS_COMPLETE/VERIFIED：r02实际runtime0145234，supervisor617603正常退出；两个源分类头包经独立loader、checkpoint/class/scale/eps/source lineage/文件统计读回核实，实际文件8737B与8735B，其中各3840B为原float32权重。两包已下载并核对metadata/complete及各文件字节。query/support/源样本/源逐记录特征0，encoder未构造/执行，A仍未评分。ground export程序内计时0.306050687s，进程峰值RSS450482176B；不含Python/Torch启动耗时，不代表星载资源或链路传输，实际星地增量传输N/A。
+
+TRAINING_COMPLETE / ANALYSIS_RUNNING / VERIFIED：预登记Conditional独立分析r01已唯一启动，PID617023/start7407753/source0145234，local handle55338；argv/CWD及原训练runtime7204161经独立只读核实。尚无summary或错误，无部分性能读取。不得再次analysis/publisher、停止或热修改；完整独立分析后才生成结果报告/采集训练档案。
+
+Ground r02已结束，无需再次启动；真实packet在workspace同run/artifacts，两checkpoint原件未动，旧FAILED r01保留。活跃Conditional analysis local55338 / remote617023/start7407753。Affine snapshot只读重采local76725正在运行（此前shape裁剪冲突已修、20合成通过）；不得重复snapshot或并发Conda包装。8row Ground A/support配对入口由branch_local_entry在纯源码/合成范围开发，root尚未建立真实spec/登记/启动；不能误报实际A。后续先接收同handle结果；snapshot完成再单次extract。最新交付源0145234，原训练7204161不变；目标ACTIVE。
+
 ## 最新状态：Conditional训练完整结束、地面A小包原生类型兼容修复（2026-10-01）
 
 TRAINING_COMPLETE/VERIFIED：独立control读回核实4个row、160parent、每row40与所有训练进程退出，actualruntime7204161不变。已预登记唯一独立analysis release d92_conditional_joint_analysis_20261001_r01，尚未启动分析或读取真实性能；原spec/训练/状态未修改，A仍N/A。

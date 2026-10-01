@@ -3,7 +3,7 @@
 - run_id：`20261001-phase2-d92-ground-a-packet-m2-r02`
 - group_id：`d92-ground-a-source-packet`；类别：`analysis`；阶段：`Phase2-source-classifier-packet-export`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ARTIFACTS_COMPLETE；实际runtime为`0145234e381b5799306acfb3d36a4e17865c1814`。
 
 ## 目的与对照
 
@@ -27,3 +27,12 @@
 ## 交接
 
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
+
+ARTIFACTS_COMPLETE/VERIFIED：r02实际runtime0145234，supervisor617603正常退出；两个源分类头包经独立loader、checkpoint/class/scale/eps/source lineage/文件统计读回核实，实际文件8737B与8735B，其中各3840B为原float32权重。两包已下载并核对metadata/complete及各文件字节。query/support/源样本/源逐记录特征0，encoder未构造/执行，A仍未评分。ground export程序内计时0.306050687s，进程峰值RSS450482176B；不含Python/Torch启动耗时，不代表星载资源或链路传输，实际星地增量传输N/A。
+
+| 原模型seed | 权重B | metadata B | complete B | 完整包B | checkpoint加载秒 |
+|---|---:|---:|---:|---:|---:|
+| 2026092701 | 3840 | 4338 | 559 | 8737 | 0.09715832299843896 |
+| 2026092702 | 3840 | 4337 | 558 | 8735 | 0.0371263330016518 |
+
+这里只统计每模型实际三个packet文件；两个模型是实验重复，不要求部署同时传输两模型。原已部署encoder是否需要重复传输、协议开销、压缩/量化及实际星载资源未测。包生成不等于适应前准确率测量，下一步用固定A预测配对同物理旧held support并加入三阶段补充表。

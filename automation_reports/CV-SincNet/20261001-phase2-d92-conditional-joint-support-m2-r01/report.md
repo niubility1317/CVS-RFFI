@@ -37,3 +37,5 @@ RUNNING/VERIFIED：ConditionalJoint已唯一发布启动，实际训练release�
 当前只做support信息诊断：4个model/cohort row、160个parent、1800条物理顺序路径；旧类6，K=1/5/10/20，新增类0/2/5/10/20，每cohort两个预声明receiver/scenario组合。本轮尚未执行query评估，当前不存在新的最终准确率。完整结束后只对已有产物进行一次独立分析，报告完整矩阵、B/C旧新准确率、H、旧类下降及资源；A需要真实地面classifier包及行映射绑定，不能用R0补齐。
 
 TRAINING_COMPLETE/VERIFIED：独立control读回核实4个row、160parent、每row40与所有训练进程退出，actualruntime7204161不变。已预登记唯一独立analysis release d92_conditional_joint_analysis_20261001_r01，尚未启动分析或读取真实性能；原spec/训练/状态未修改，A仍N/A。
+
+TRAINING_COMPLETE / ANALYSIS_RUNNING / VERIFIED：预登记Conditional独立分析r01已唯一启动，PID617023/start7407753/source0145234，local handle55338；argv/CWD及原训练runtime7204161经独立只读核实。尚无summary或错误，无部分性能读取。不得再次analysis/publisher、停止或热修改；完整独立分析后才生成结果报告/采集训练档案。

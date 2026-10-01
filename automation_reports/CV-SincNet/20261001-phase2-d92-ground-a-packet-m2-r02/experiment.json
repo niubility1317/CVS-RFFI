@@ -21,13 +21,14 @@
   "replaces_run_id": "20261001-phase2-d92-ground-a-packet-m2-r01",
   "authorization": "User fixed Phase1, authorized model/prototypes/small summary transmission, joint LocalRidge+legal-support SFT and paired A/B/C reporting; root sole launch owner.",
   "code": {
-    "commit": "d83904c13dbbf8ba0fa636f974ce602a92085568",
+    "commit": "0145234e381b5799306acfb3d36a4e17865c1814",
     "checkout": "E:\\type10-7\\code\\snapshots\\d92_support_upgrade_20260928_wt",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_ground_a_packet_export_20261001_r02",
     "native_training_commit": "9b1ddd939fcabc74c77c94a62fef8e5aad07c0e9",
     "native_training_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rc4_matched_20260927_r01",
-    "commit_note": "Preparation parent only; publisher/runtime independently records actual committed and pushed export release OID."
+    "commit_note": "Preparation parent only; publisher/runtime independently records actual committed and pushed export release OID.",
+    "preparation_parent_commit": "d83904c13dbbf8ba0fa636f974ce602a92085568"
   },
   "data": {
     "dataset": "NO_SAMPLES_OR_FEATURE_ROWS; only existing checkpoint and source-origin metadata",
@@ -111,9 +112,33 @@
     "blas_threads_per_lane": 2,
     "remote_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_ground_a_packet_export_20261001_r02",
     "supervisor_log": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_ground_a_packet_export_20261001_r02/run.log",
-    "actual_pid": null,
+    "actual_pid": 617603,
     "actual_gpu": null,
-    "external_readonly_native_code_dependency": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rc4_matched_20260927_r01/code"
+    "external_readonly_native_code_dependency": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rc4_matched_20260927_r01/code",
+    "actual_runtime_commit": "0145234e381b5799306acfb3d36a4e17865c1814",
+    "actual_process_alive": false,
+    "actual_runtime_command": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_ground_a_packet_export_20261001_r02/tools/run_d92_ground_a_packet_export.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_ground_a_packet_export_20261001_r02/configs/d92_ground_a_packet_export_retry_20261001.json",
+      "--commit",
+      "0145234e381b5799306acfb3d36a4e17865c1814"
+    ],
+    "packet_completion_readback_ref": "evidence/packet_poststate_1790826531563763300.json",
+    "actual_packet_files_bytes": 17472,
+    "actual_head_numeric_bytes": 7680,
+    "actual_run_wall_seconds": 0.3060506869951496,
+    "actual_peak_process_rss_bytes": 450482176,
+    "actual_A_evaluated": false,
+    "incremental_star_network_transfer_bytes": null,
+    "hardware": {
+      "platform": "Linux-6.8.0-142-generic-x86_64-with-glibc2.39",
+      "processor": "x86_64",
+      "cpu_count": 96,
+      "gpu_use": false
+    }
   },
   "expected_artifacts": [
     "startup.json",
@@ -237,7 +262,18 @@
         "source_role_comparison": "EXACT_MATCH"
       },
       "training_startup_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701/startup.json",
-      "native_code_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rc4_matched_20260927_r01/code"
+      "native_code_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rc4_matched_20260927_r01/code",
+      "actual_status": "GROUND_CLASSIFIER_A_PACKET_EXPORTED",
+      "actual_packet_file_bytes": 8737,
+      "actual_weight_numeric_bytes": 3840,
+      "actual_file_bytes": {
+        "head_weight.float32.bin": 3840,
+        "metadata.json": 4338,
+        "complete.json": 559
+      },
+      "actual_checkpoint_load_seconds": 0.09715832299843896,
+      "actual_packet_local_ref": "artifacts/ground-a-s2026092701",
+      "state_evidence_ref": "evidence/packet_poststate_1790826531563763300.json"
     },
     {
       "row_id": "ground-a-s2026092702",
@@ -324,7 +360,18 @@
         "source_role_comparison": "EXACT_MATCH"
       },
       "training_startup_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092702/startup.json",
-      "native_code_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rc4_matched_20260927_r01/code"
+      "native_code_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rc4_matched_20260927_r01/code",
+      "actual_status": "GROUND_CLASSIFIER_A_PACKET_EXPORTED",
+      "actual_packet_file_bytes": 8735,
+      "actual_weight_numeric_bytes": 3840,
+      "actual_file_bytes": {
+        "head_weight.float32.bin": 3840,
+        "metadata.json": 4337,
+        "complete.json": 558
+      },
+      "actual_checkpoint_load_seconds": 0.0371263330016518,
+      "actual_packet_local_ref": "artifacts/ground-a-s2026092702",
+      "state_evidence_ref": "evidence/packet_poststate_1790826531563763300.json"
     }
   ],
   "notes": [
@@ -335,7 +382,7 @@
     "Compatibility retry has independent new release/run; previous FAILED run and native import failure evidence remain intact. No automatic retry, encoder or extra calibration analysis."
   ],
   "spec_path": "configs/d92_ground_a_packet_export_retry_20261001.json",
-  "status": "PREPARED_NOT_LAUNCHED",
-  "implementation_status": "NATIVE_PICKLE_COMPATIBILITY_SYNTHETIC_VERIFIED_NOT_LAUNCHED",
+  "status": "ARTIFACTS_COMPLETE",
+  "implementation_status": "ACTUAL_SOURCE_CLASSIFIER_PACKETS_EXPORTED_AND_INDEPENDENTLY_VERIFIED_NO_A_SCORING",
   "registered_at": "2026-10-01T03:44:02+00:00"
 }
