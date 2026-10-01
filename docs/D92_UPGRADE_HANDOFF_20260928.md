@@ -1,3 +1,13 @@
+## 当前交接：r03 新分析实际运行已核实；fit/query 原版本保持
+
+- Goal ACTIVE。source dfb2de892 已 push，独立 remote OID 相同且0/0；39合成case PASS（1790875265727460700）。r03唯一发布目录已存在，绝不重复publisher。原run.execution.support_analysis为VERIFIED_RUNNING/source dfb2/child1090096/wrapper1090089，17:22:01UTC证据 `automation_reports/CV-SincNet/20261001-phase2-d92-group-barrier-joint-support-m2-r01/evidence/analysis_runtime_1790875382474900500.json`绑定实际命令/环境/身份；暂无summary与指标。
+- r03输出独占 `analyses/20261001-phase2-d92-group-barrier-joint-support-m2-r01/support_summary_20261002_r03`，fit immutable9518完整4row/160parent保持；r01/r02失败已在attempts[0/1]和原release/log中保留。下一步适当退避只读terminal/完整artifact核实，再只收集新analysis结果，不重新拟合、不回流成绩。
+- query immutable73aa/supervisor1049548/rx3 PID1049715/1049721继续原排程，17:09:46UTC两rx3 PREDICTING/两rx1等待；未读partial predictions/truth。全部4row/2400parent A/B/C固定后独立scorer，原Margin FAILED不subset评分。root唯一真实读数/数值/Git/SSH/launch；fresh暂缓，真实性能尚N/A。
+
+<!-- GROUP_ANALYSIS_R03_LIVE_20261002 -->
+
+以下保留历史状态，不据此重复启动：
+
 ## 当前交接：support 分析两次失败已保留，三阶段连接修复已验证，r03 预登记
 
 - Goal ACTIVE。拟合 runtime9518 完整四 row/160 parent 保持；query runtime73aa 保持健康，17:09:46UTC 独立证据 `automation_reports/CV-SincNet/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01/evidence/query_runtime_1790874648168256500.json`核实 supervisor1049548、rx3 PID1049715/1049721，rx1 两行原排程等待。未读 partial predictions/truth，全部4row/2400parent固定后才独立评分，不 stop/retry/relaunch。
