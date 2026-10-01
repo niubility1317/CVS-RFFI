@@ -1,0 +1,604 @@
+{
+  "pipeline": {
+    "status": "SOURCE_RESEARCH_COMPLETE_AWAITING_FROZEN_CLEAN_TEST",
+    "pid": 1130303,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_identity_20261002_r01",
+    "argv": [
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_identity_20261002_r01/experiments/cvs_observable_identity/dispatch.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_identity_20261002_r01/experiments/cvs_observable_identity/configs/launch_spec.json"
+    ],
+    "run_id": "20261002-phase1-cvs-observable-identity-manysig-m8-r01",
+    "launch_owner": "codex/root/cvs-observable-identity-20261002",
+    "commit": "202aed46748856c16b015d94595ecd5364dca394",
+    "target_access": false,
+    "rows": {
+      "observable_phase-s2026092701": {
+        "status": "SOURCE_TRAINED",
+        "variant": "observable_phase",
+        "model_seed": 2026092701,
+        "pid": 1130371,
+        "gpu": 0,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_observable_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_identity_20261002_r01/experiments/cvs_observable_identity/configs/observable_phase-s2026092701.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-observable-identity-manysig-m8-r01/observable_phase-s2026092701.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-observable-identity-manysig-m8-r01/observable_phase-s2026092701/source",
+        "started": 1790879653.2002983,
+        "exit_code": 0,
+        "finished": 1790880685.8950338
+      },
+      "observable_affine-s2026092701": {
+        "status": "SOURCE_TRAINED",
+        "variant": "observable_affine",
+        "model_seed": 2026092701,
+        "pid": 1130461,
+        "gpu": 1,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_observable_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_identity_20261002_r01/experiments/cvs_observable_identity/configs/observable_affine-s2026092701.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-observable-identity-manysig-m8-r01/observable_affine-s2026092701.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-observable-identity-manysig-m8-r01/observable_affine-s2026092701/source",
+        "started": 1790879658.4542105,
+        "exit_code": 0,
+        "finished": 1790880695.9066541
+      },
+      "observable_phase-s2026092702": {
+        "status": "SOURCE_TRAINED",
+        "variant": "observable_phase",
+        "model_seed": 2026092702,
+        "pid": 1130606,
+        "gpu": 2,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_observable_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_identity_20261002_r01/experiments/cvs_observable_identity/configs/observable_phase-s2026092702.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-observable-identity-manysig-m8-r01/observable_phase-s2026092702.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-observable-identity-manysig-m8-r01/observable_phase-s2026092702/source",
+        "started": 1790879663.6963696,
+        "exit_code": 0,
+        "finished": 1790880740.9607267
+      },
+      "observable_affine-s2026092702": {
+        "status": "SOURCE_TRAINED",
+        "variant": "observable_affine",
+        "model_seed": 2026092702,
+        "pid": 1130695,
+        "gpu": 3,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_observable_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_identity_20261002_r01/experiments/cvs_observable_identity/configs/observable_affine-s2026092702.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-observable-identity-manysig-m8-r01/observable_affine-s2026092702.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-observable-identity-manysig-m8-r01/observable_affine-s2026092702/source",
+        "started": 1790879668.9450293,
+        "exit_code": 0,
+        "finished": 1790880730.9477217
+      },
+      "observable_phase-s2026092703": {
+        "status": "SOURCE_TRAINED",
+        "variant": "observable_phase",
+        "model_seed": 2026092703,
+        "pid": 1130837,
+        "gpu": 4,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_observable_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_identity_20261002_r01/experiments/cvs_observable_identity/configs/observable_phase-s2026092703.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-observable-identity-manysig-m8-r01/observable_phase-s2026092703.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-observable-identity-manysig-m8-r01/observable_phase-s2026092703/source",
+        "started": 1790879674.167921,
+        "exit_code": 0,
+        "finished": 1790880735.9542923
+      },
+      "observable_affine-s2026092703": {
+        "status": "SOURCE_TRAINED",
+        "variant": "observable_affine",
+        "model_seed": 2026092703,
+        "pid": 1130926,
+        "gpu": 5,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_observable_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_identity_20261002_r01/experiments/cvs_observable_identity/configs/observable_affine-s2026092703.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-observable-identity-manysig-m8-r01/observable_affine-s2026092703.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-observable-identity-manysig-m8-r01/observable_affine-s2026092703/source",
+        "started": 1790879679.41237,
+        "exit_code": 0,
+        "finished": 1790880700.9131508
+      },
+      "observable_phase-s2026092704": {
+        "status": "SOURCE_TRAINED",
+        "variant": "observable_phase",
+        "model_seed": 2026092704,
+        "pid": 1131015,
+        "gpu": 6,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_observable_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_identity_20261002_r01/experiments/cvs_observable_identity/configs/observable_phase-s2026092704.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-observable-identity-manysig-m8-r01/observable_phase-s2026092704.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-observable-identity-manysig-m8-r01/observable_phase-s2026092704/source",
+        "started": 1790879684.648,
+        "exit_code": 0,
+        "finished": 1790880715.931128
+      },
+      "observable_affine-s2026092704": {
+        "status": "SOURCE_TRAINED",
+        "variant": "observable_affine",
+        "model_seed": 2026092704,
+        "pid": 1131102,
+        "gpu": 7,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_observable_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_identity_20261002_r01/experiments/cvs_observable_identity/configs/observable_affine-s2026092704.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-observable-identity-manysig-m8-r01/observable_affine-s2026092704.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-observable-identity-manysig-m8-r01/observable_affine-s2026092704/source",
+        "started": 1790879689.8838146,
+        "exit_code": 0,
+        "finished": 1790880705.9196227
+      }
+    }
+  },
+  "rows": [
+    {
+      "row_id": "observable_phase-s2026092701",
+      "physical": {
+        "phase_logit_max_abs_error": 0.0001990795135498047,
+        "affine_logit_max_abs_error": 2.0348305702209473,
+        "affine_invariance_claimed": false,
+        "unit_embedding_distances": {
+          "handset_am_am": 0.07073748856782913,
+          "handset_am_pm": 0.17107895016670227,
+          "rx_iq_counterexample": 0.08883675187826157,
+          "multipath_counterexample": 0.013396761380136013
+        },
+        "synthetic_only": true,
+        "training_augmentation": false,
+        "target_access": false,
+        "physical_parameters": {
+          "positive_amp_compression": 0.12,
+          "amp_phase_beta": 0.17,
+          "rx_iq_scale": [
+            1.08,
+            0.92
+          ],
+          "channel_delay_samples": 2,
+          "channel_tap": 0.2,
+          "constant_phase_radians": 0.731,
+          "affine_phase_slope_radians_per_sample": 0.031
+        },
+        "input_rms_normalized": true,
+        "claim": "Frozen model transform verification and sensitivity only;not TX parameter identification or synthetic identity accuracy."
+      },
+      "completion": {
+        "status": "SOURCE_TRAINED",
+        "epoch": 200,
+        "steps": 10000,
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-observable-identity-manysig-m8-r01/observable_phase-s2026092701/source/last.pt",
+        "elapsed_seconds": 1027.1389650749916,
+        "target_access": false,
+        "target_evaluated": false,
+        "final_source_metrics": {
+          "source_val_count": 27000,
+          "source_val_accuracy": 0.9433703703703704,
+          "source_val_ce": 0.24611715796884986,
+          "source_val_rx_accuracy": {
+            "1": 0.9961111111111111,
+            "3": 0.857037037037037,
+            "4": 0.9851851851851852,
+            "6": 0.9914814814814815,
+            "8": 0.8870370370370371
+          },
+          "source_val_worst_rx": 0.857037037037037
+        }
+      }
+    },
+    {
+      "row_id": "observable_affine-s2026092701",
+      "physical": {
+        "phase_logit_max_abs_error": 0.0004782676696777344,
+        "affine_logit_max_abs_error": 0.00046753883361816406,
+        "affine_invariance_claimed": true,
+        "unit_embedding_distances": {
+          "handset_am_am": 0.15457886457443237,
+          "handset_am_pm": 0.31102561950683594,
+          "rx_iq_counterexample": 0.2262449562549591,
+          "multipath_counterexample": 0.0319189690053463
+        },
+        "synthetic_only": true,
+        "training_augmentation": false,
+        "target_access": false,
+        "physical_parameters": {
+          "positive_amp_compression": 0.12,
+          "amp_phase_beta": 0.17,
+          "rx_iq_scale": [
+            1.08,
+            0.92
+          ],
+          "channel_delay_samples": 2,
+          "channel_tap": 0.2,
+          "constant_phase_radians": 0.731,
+          "affine_phase_slope_radians_per_sample": 0.031
+        },
+        "input_rms_normalized": true,
+        "claim": "Frozen model transform verification and sensitivity only;not TX parameter identification or synthetic identity accuracy."
+      },
+      "completion": {
+        "status": "SOURCE_TRAINED",
+        "epoch": 200,
+        "steps": 10000,
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-observable-identity-manysig-m8-r01/observable_affine-s2026092701/source/last.pt",
+        "elapsed_seconds": 1029.2312509689946,
+        "target_access": false,
+        "target_evaluated": false,
+        "final_source_metrics": {
+          "source_val_count": 27000,
+          "source_val_accuracy": 0.9245925925925926,
+          "source_val_ce": 0.32807637658260824,
+          "source_val_rx_accuracy": {
+            "1": 0.9953703703703703,
+            "3": 0.8053703703703704,
+            "4": 0.9859259259259259,
+            "6": 0.9875925925925926,
+            "8": 0.8487037037037037
+          },
+          "source_val_worst_rx": 0.8053703703703704
+        }
+      }
+    },
+    {
+      "row_id": "observable_phase-s2026092702",
+      "physical": {
+        "phase_logit_max_abs_error": 9.34600830078125e-05,
+        "affine_logit_max_abs_error": 2.6099581718444824,
+        "affine_invariance_claimed": false,
+        "unit_embedding_distances": {
+          "handset_am_am": 0.061990562826395035,
+          "handset_am_pm": 0.14403922855854034,
+          "rx_iq_counterexample": 0.22552740573883057,
+          "multipath_counterexample": 0.011285671032965183
+        },
+        "synthetic_only": true,
+        "training_augmentation": false,
+        "target_access": false,
+        "physical_parameters": {
+          "positive_amp_compression": 0.12,
+          "amp_phase_beta": 0.17,
+          "rx_iq_scale": [
+            1.08,
+            0.92
+          ],
+          "channel_delay_samples": 2,
+          "channel_tap": 0.2,
+          "constant_phase_radians": 0.731,
+          "affine_phase_slope_radians_per_sample": 0.031
+        },
+        "input_rms_normalized": true,
+        "claim": "Frozen model transform verification and sensitivity only;not TX parameter identification or synthetic identity accuracy."
+      },
+      "completion": {
+        "status": "SOURCE_TRAINED",
+        "epoch": 200,
+        "steps": 10000,
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-observable-identity-manysig-m8-r01/observable_phase-s2026092702/source/last.pt",
+        "elapsed_seconds": 1066.6459470359987,
+        "target_access": false,
+        "target_evaluated": false,
+        "final_source_metrics": {
+          "source_val_count": 27000,
+          "source_val_accuracy": 0.9462962962962963,
+          "source_val_ce": 0.2332924465146277,
+          "source_val_rx_accuracy": {
+            "1": 0.9955555555555555,
+            "3": 0.8633333333333333,
+            "4": 0.9848148148148148,
+            "6": 0.9933333333333333,
+            "8": 0.8944444444444445
+          },
+          "source_val_worst_rx": 0.8633333333333333
+        }
+      }
+    },
+    {
+      "row_id": "observable_affine-s2026092702",
+      "physical": {
+        "phase_logit_max_abs_error": 0.000469207763671875,
+        "affine_logit_max_abs_error": 0.0012031793594360352,
+        "affine_invariance_claimed": true,
+        "unit_embedding_distances": {
+          "handset_am_am": 0.11965326964855194,
+          "handset_am_pm": 0.26608094573020935,
+          "rx_iq_counterexample": 0.19510464370250702,
+          "multipath_counterexample": 0.017864203080534935
+        },
+        "synthetic_only": true,
+        "training_augmentation": false,
+        "target_access": false,
+        "physical_parameters": {
+          "positive_amp_compression": 0.12,
+          "amp_phase_beta": 0.17,
+          "rx_iq_scale": [
+            1.08,
+            0.92
+          ],
+          "channel_delay_samples": 2,
+          "channel_tap": 0.2,
+          "constant_phase_radians": 0.731,
+          "affine_phase_slope_radians_per_sample": 0.031
+        },
+        "input_rms_normalized": true,
+        "claim": "Frozen model transform verification and sensitivity only;not TX parameter identification or synthetic identity accuracy."
+      },
+      "completion": {
+        "status": "SOURCE_TRAINED",
+        "epoch": 200,
+        "steps": 10000,
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-observable-identity-manysig-m8-r01/observable_affine-s2026092702/source/last.pt",
+        "elapsed_seconds": 1054.1548105980037,
+        "target_access": false,
+        "target_evaluated": false,
+        "final_source_metrics": {
+          "source_val_count": 27000,
+          "source_val_accuracy": 0.9211481481481482,
+          "source_val_ce": 0.3635164535177324,
+          "source_val_rx_accuracy": {
+            "1": 0.9929629629629629,
+            "3": 0.8024074074074075,
+            "4": 0.9840740740740741,
+            "6": 0.9903703703703703,
+            "8": 0.835925925925926
+          },
+          "source_val_worst_rx": 0.8024074074074075
+        }
+      }
+    },
+    {
+      "row_id": "observable_phase-s2026092703",
+      "physical": {
+        "phase_logit_max_abs_error": 0.0001316070556640625,
+        "affine_logit_max_abs_error": 4.03215217590332,
+        "affine_invariance_claimed": false,
+        "unit_embedding_distances": {
+          "handset_am_am": 0.0918901264667511,
+          "handset_am_pm": 0.22275026142597198,
+          "rx_iq_counterexample": 0.16121810674667358,
+          "multipath_counterexample": 0.013240794651210308
+        },
+        "synthetic_only": true,
+        "training_augmentation": false,
+        "target_access": false,
+        "physical_parameters": {
+          "positive_amp_compression": 0.12,
+          "amp_phase_beta": 0.17,
+          "rx_iq_scale": [
+            1.08,
+            0.92
+          ],
+          "channel_delay_samples": 2,
+          "channel_tap": 0.2,
+          "constant_phase_radians": 0.731,
+          "affine_phase_slope_radians_per_sample": 0.031
+        },
+        "input_rms_normalized": true,
+        "claim": "Frozen model transform verification and sensitivity only;not TX parameter identification or synthetic identity accuracy."
+      },
+      "completion": {
+        "status": "SOURCE_TRAINED",
+        "epoch": 200,
+        "steps": 10000,
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-observable-identity-manysig-m8-r01/observable_phase-s2026092703/source/last.pt",
+        "elapsed_seconds": 1053.2991633700003,
+        "target_access": false,
+        "target_evaluated": false,
+        "final_source_metrics": {
+          "source_val_count": 27000,
+          "source_val_accuracy": 0.9493703703703704,
+          "source_val_ce": 0.22325876384812,
+          "source_val_rx_accuracy": {
+            "1": 0.9948148148148148,
+            "3": 0.8705555555555555,
+            "4": 0.9842592592592593,
+            "6": 0.995,
+            "8": 0.9022222222222223
+          },
+          "source_val_worst_rx": 0.8705555555555555
+        }
+      }
+    },
+    {
+      "row_id": "observable_affine-s2026092703",
+      "physical": {
+        "phase_logit_max_abs_error": 0.00028324127197265625,
+        "affine_logit_max_abs_error": 0.00040519237518310547,
+        "affine_invariance_claimed": true,
+        "unit_embedding_distances": {
+          "handset_am_am": 0.19979096949100494,
+          "handset_am_pm": 0.5640637278556824,
+          "rx_iq_counterexample": 0.20234735310077667,
+          "multipath_counterexample": 0.04483511671423912
+        },
+        "synthetic_only": true,
+        "training_augmentation": false,
+        "target_access": false,
+        "physical_parameters": {
+          "positive_amp_compression": 0.12,
+          "amp_phase_beta": 0.17,
+          "rx_iq_scale": [
+            1.08,
+            0.92
+          ],
+          "channel_delay_samples": 2,
+          "channel_tap": 0.2,
+          "constant_phase_radians": 0.731,
+          "affine_phase_slope_radians_per_sample": 0.031
+        },
+        "input_rms_normalized": true,
+        "claim": "Frozen model transform verification and sensitivity only;not TX parameter identification or synthetic identity accuracy."
+      },
+      "completion": {
+        "status": "SOURCE_TRAINED",
+        "epoch": 200,
+        "steps": 10000,
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-observable-identity-manysig-m8-r01/observable_affine-s2026092703/source/last.pt",
+        "elapsed_seconds": 1011.9143699010019,
+        "target_access": false,
+        "target_evaluated": false,
+        "final_source_metrics": {
+          "source_val_count": 27000,
+          "source_val_accuracy": 0.925037037037037,
+          "source_val_ce": 0.32553655756557365,
+          "source_val_rx_accuracy": {
+            "1": 0.9944444444444445,
+            "3": 0.8098148148148148,
+            "4": 0.9848148148148148,
+            "6": 0.9896296296296296,
+            "8": 0.8464814814814815
+          },
+          "source_val_worst_rx": 0.8098148148148148
+        }
+      }
+    },
+    {
+      "row_id": "observable_phase-s2026092704",
+      "physical": {
+        "phase_logit_max_abs_error": 0.00023412704467773438,
+        "affine_logit_max_abs_error": 3.0985655784606934,
+        "affine_invariance_claimed": false,
+        "unit_embedding_distances": {
+          "handset_am_am": 0.06437648087739944,
+          "handset_am_pm": 0.14177864789962769,
+          "rx_iq_counterexample": 0.14095695316791534,
+          "multipath_counterexample": 0.005992441438138485
+        },
+        "synthetic_only": true,
+        "training_augmentation": false,
+        "target_access": false,
+        "physical_parameters": {
+          "positive_amp_compression": 0.12,
+          "amp_phase_beta": 0.17,
+          "rx_iq_scale": [
+            1.08,
+            0.92
+          ],
+          "channel_delay_samples": 2,
+          "channel_tap": 0.2,
+          "constant_phase_radians": 0.731,
+          "affine_phase_slope_radians_per_sample": 0.031
+        },
+        "input_rms_normalized": true,
+        "claim": "Frozen model transform verification and sensitivity only;not TX parameter identification or synthetic identity accuracy."
+      },
+      "completion": {
+        "status": "SOURCE_TRAINED",
+        "epoch": 200,
+        "steps": 10000,
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-observable-identity-manysig-m8-r01/observable_phase-s2026092704/source/last.pt",
+        "elapsed_seconds": 1021.983068141999,
+        "target_access": false,
+        "target_evaluated": false,
+        "final_source_metrics": {
+          "source_val_count": 27000,
+          "source_val_accuracy": 0.951925925925926,
+          "source_val_ce": 0.2198812440815107,
+          "source_val_rx_accuracy": {
+            "1": 0.9940740740740741,
+            "3": 0.8907407407407407,
+            "4": 0.9848148148148148,
+            "6": 0.9911111111111112,
+            "8": 0.8988888888888888
+          },
+          "source_val_worst_rx": 0.8907407407407407
+        }
+      }
+    },
+    {
+      "row_id": "observable_affine-s2026092704",
+      "physical": {
+        "phase_logit_max_abs_error": 0.0002321004867553711,
+        "affine_logit_max_abs_error": 0.00035512447357177734,
+        "affine_invariance_claimed": true,
+        "unit_embedding_distances": {
+          "handset_am_am": 0.1016286090016365,
+          "handset_am_pm": 0.22332993149757385,
+          "rx_iq_counterexample": 0.20754289627075195,
+          "multipath_counterexample": 0.03096800670027733
+        },
+        "synthetic_only": true,
+        "training_augmentation": false,
+        "target_access": false,
+        "physical_parameters": {
+          "positive_amp_compression": 0.12,
+          "amp_phase_beta": 0.17,
+          "rx_iq_scale": [
+            1.08,
+            0.92
+          ],
+          "channel_delay_samples": 2,
+          "channel_tap": 0.2,
+          "constant_phase_radians": 0.731,
+          "affine_phase_slope_radians_per_sample": 0.031
+        },
+        "input_rms_normalized": true,
+        "claim": "Frozen model transform verification and sensitivity only;not TX parameter identification or synthetic identity accuracy."
+      },
+      "completion": {
+        "status": "SOURCE_TRAINED",
+        "epoch": 200,
+        "steps": 10000,
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-observable-identity-manysig-m8-r01/observable_affine-s2026092704/source/last.pt",
+        "elapsed_seconds": 1009.6631604819995,
+        "target_access": false,
+        "target_evaluated": false,
+        "final_source_metrics": {
+          "source_val_count": 27000,
+          "source_val_accuracy": 0.9284074074074075,
+          "source_val_ce": 0.30987640940321876,
+          "source_val_rx_accuracy": {
+            "1": 0.995,
+            "3": 0.8275925925925925,
+            "4": 0.9831481481481481,
+            "6": 0.9872222222222222,
+            "8": 0.8490740740740741
+          },
+          "source_val_worst_rx": 0.8275925925925925
+        }
+      }
+    }
+  ]
+}

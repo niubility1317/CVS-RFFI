@@ -123,6 +123,23 @@ def analyze(root):
     for method,st in selection['source_summaries'].items():s+=f"|{method}|{pct(st['source_accuracy'])}|{pct(st['worst_rx_accuracy'])}|{pct(st['score'])}|\n"
     s+='\n本轮登记开始即遵守用户“性能优先，轻量次要”。源选择以0.5源V＋0.5最差源RX最高分优先，源性能完全并列后才比较成本；没有0.2个百分点成本优先容差。保持E200权重和原source_selection，确认记录引用同一冻结结果。实际8行源产物重算与冻结一致，未选候选不测试；test成绩不回流研发/选择/重训。\n\n'
     s+='本轮整个身份路径共享固定物理观测前端：幅度、延迟幅度差、正则相位增量/曲率，lags1/2/5/20，phase21通道/affine13通道。完整256点时间路径、源域支持的80:160重复4×20网格与物理观测变化FFT路径，经逐包GN/LN、有界相加融合和普通cosine30分类。两个候选整体常相位不变，affine对给定IQ的仿射相位不变；没有原始IQ绕行。解析AM/AM/AM/PM响应、整网不变性及数值梯度通过合成验证，不能推出唯一TX参数恢复或任意多径/RX不变。整体框架变化的识别差异不能只归因某个机制。见[前瞻假设](../../../docs/CVS_OBSERVABLE_IDENTITY_HYPOTHESIS_20261002.md)。\n'
+    physics=[]
+    for row in source['rows']:
+        diagnostic=row['source_diagnostics'];physical=row['physical_diagnostics']
+        if diagnostic['count']!=27000 or len(diagnostic['groups'])!=90 or diagnostic['target_access'] or diagnostic['used_for_training'] or diagnostic['used_for_selection'] or physical['target_access'] or physical['training_augmentation']:
+            raise ValueError('Frozen diagnostic permissions mismatch')
+        entry=dict(row_id=row['row_id'],source_v_count=diagnostic['count'],source_tx_rx_day_groups=len(diagnostic['groups']),
+                   between_tx_centroid_squared_distance=diagnostic['mean_between_tx_centroid_squared_distance'],
+                   within_tx_rx_centroid_squared_distance=diagnostic['mean_within_tx_rx_centroid_squared_distance'],
+                   **physical)
+        physics.append(entry)
+    write(e/'frozen_physics_diagnostics.json',dict(scope='Frozen synthetic interventions and full source V aggregates;report only',target_feedback=False,rows=physics))
+    s+='\n### 冻结后物理性质与源表征证据\n\n|源行|常相位logit最大误差|仿射相位logit最大误差|AM/AM嵌入距离|AM/PM嵌入距离|TX中心间平方距离|同TX跨RX中心平方距离|\n|---|---:|---:|---:|---:|---:|---:|\n'
+    for row in physics:
+        distance=row['unit_embedding_distances']
+        values=[row['phase_logit_max_abs_error'],row['affine_logit_max_abs_error'],distance['handset_am_am'],distance['handset_am_pm'],row['between_tx_centroid_squared_distance'],row['within_tx_rx_centroid_squared_distance']]
+        s+='|'+row['row_id']+'|'+'|'.join(f'{value:.6g}' for value in values)+'|\n'
+    s+='\n每行源V诊断覆盖27000包及90个TX/RX/day分层；完整逐组准确率、160维均值和分散保留在源读回。相位检查与手设AM/AM、AM/PM、RX IQ及多径干预只在冻结后合成波形上执行，未用于增强或选模。affine声明消除给定输入的线性相位斜率，phase不作此声明；嵌入距离只表示响应强弱，不能证明硬件身份分类准确率、TX参数恢复或RX/信道解耦。源中心距离也只是描述性诊断，不能把TX与RX共存的接收信号因素唯一归属发射机。完整[冻结物理证据](evidence/frozen_physics_diagnostics.json)。\n'
     s+='\n## 实测资源成本\n\n|指标|原CVS|上轮残差CVS|本轮CVS|\n|---|---:|---:|---:|\n'
     for field,label in [('total_parameters','总参数'),('gradient_used_parameters','实际CE梯度参数'),('resident_state_bytes','常驻模型状态字节'),('conv_linear_macs_per_sample','Conv/Linear MAC/包'),('fft_calls_per_sample','FFT次数/包'),('inference_batch1_ms','合成batch1推理ms'),('inference_batch128_ms','合成batch128推理ms'),('training_batch128_ms','合成batch128训练步ms'),('actual_training_peak_max_bytes','实际训练进程峰值allocated显存bytes'),('actual_prediction_peak_max_bytes','实际预测进程峰值allocated显存bytes'),('full_test_prediction_seconds_mean','168000query预测秒数（4seed均值）')]:
         vals=[res[m][field] for m in ('native','residual_fusion',candidate)];s+=f"|{label}|"+'|'.join('N/A' if v is None else f'{v:.3f}' if isinstance(v,float) and not v.is_integer() else str(int(v)) for v in vals)+'|\n'

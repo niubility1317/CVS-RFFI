@@ -1,6 +1,6 @@
 # CVS整体物理观测身份网络：源训练预登记
 
-状态 SOURCE_TRAINING，N607正式源训练运行中；clean尚未测试。
+状态 TRAINING_COMPLETE，N607正式源训练运行中；clean尚未测试。
 
 仅普通CE、身份网络、无输入/信道增强，scratch、固定L6300/V27000、U56700不使用、split392005；两候选×四modelseed2026092701..04，E200×50/10000更新，batch128、AdamW2e-4、wd1e-4、cosine1e-6、FP32/no clip。无teacher/EMA/继承/域骨干/额外损失。
 
@@ -30,3 +30,9 @@
 ## N607源训练发布已核实
 
 代码`202aed46748856c16b015d94595ecd5364dca394`已push并独立核对远端OID。新release传输校验、远端compile与Torch2.1冷进程八个一次性CPU模型/24次CE更新及物理变换检查通过。独立读回dispatcher PID1130303的CWD/argv；8行各占一块GPU，进程与resolved/log增长已核实，状态SOURCE_TRAINING。实际6300L/56700Uunused/27000V、每轮50步、纯CE/无增强/域骨干关闭与目标访问关闭一致。发布后源码保持不可变，后续clean按另一个不可覆盖run发布。详见[发布后读回](evidence/source_launch_readback.json)。
+
+冻结后数值诊断：未选affine seed02原GPU仿射相位logit误差0.001203179超过原0.001阈值；其他affine行及全部phase常相位检查在阈值内。保留该失败，未改阈值、未重训/重选。补充预登记八个本轮冻结模型的CPU FP32/FP64和GPU TF32设置只读诊断；无正式样本/target访问或模型更新，独占新release与输出。
+
+## 完整源训练与冻结
+
+8 行均完成 E200/10000 步，完整 1600 epoch、80000 step、CSV 和全部 stdout 已解析，无运行期技术异常；实际源数据角色一致，scratch/noaug/nodomain/CE-only 核实。按登记的性能优先规则冻结 `observable_phase`，源选择独立复算完全一致。源性能完全并列后才考虑参数和计算，不使用测试反馈。确认 run `20261002-phase1-cvs-observable-clean-manysig-m24-r01` 已预登记，默认完成 4 个新预测和 20 个冻结控制预测的独立评分。见[evidence/source_selection.json](evidence/source_selection.json)和[evidence/source_completion_validation.json](evidence/source_completion_validation.json)。

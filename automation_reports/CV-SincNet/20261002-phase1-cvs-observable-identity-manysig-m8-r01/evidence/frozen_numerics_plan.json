@@ -1,0 +1,31 @@
+{
+  "status": "PLANNED",
+  "reason": "Unselected affine seed02 frozen GPU affine error 0.001203179 exceeded unchanged 0.001 tolerance",
+  "source_commit": "202aed46748856c16b015d94595ecd5364dca394",
+  "release": "cvs_observable_numerics_20261002_r01",
+  "rows": [
+    "observable_phase-s2026092701",
+    "observable_affine-s2026092701",
+    "observable_phase-s2026092702",
+    "observable_affine-s2026092702",
+    "observable_phase-s2026092703",
+    "observable_affine-s2026092703",
+    "observable_phase-s2026092704",
+    "observable_affine-s2026092704"
+  ],
+  "precision_modes": [
+    "cpu_float32",
+    "cpu_float64",
+    "gpu_float32_default",
+    "gpu_float32_tf32_disabled"
+  ],
+  "output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-observable-identity-manysig-m8-r01/post_training_numerics",
+  "target_access": false,
+  "formal_samples_access": false,
+  "checkpoint_use": "Only actual eight own scratch E200 models with full data/provenance match",
+  "weights_readonly": true,
+  "source_selection_changed": false,
+  "training": false,
+  "source_evaluation_reused": true,
+  "original_failure_preserved": true
+}

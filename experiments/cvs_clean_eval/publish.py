@@ -89,7 +89,7 @@ def inspect(output,run=RUN,release=RELEASE):
 def publish(output,run=RUN,release=RELEASE,spec_ref='experiments/cvs_clean_eval/configs/launch_spec.json',matrix_rows=16):
     commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip()
     branch=subprocess.check_output(['git','branch','--show-current'],cwd=ROOT,text=True).strip()
-    remote=subprocess.check_output(['git','-c','http.version=HTTP/1.1','ls-remote','origin','refs/heads/'+branch],cwd=ROOT,text=True,timeout=30).split()[0]
+    remote=subprocess.check_output(['git','-c','http.sslBackend=openssl','-c','http.version=HTTP/1.1','ls-remote','origin','refs/heads/'+branch],cwd=ROOT,text=True,timeout=30).split()[0]
     if remote!=commit:raise ValueError('Remote branch differs from HEAD')
     names=subprocess.check_output(['git','ls-files'],cwd=ROOT,text=True).splitlines()
     prefixes=('experiments/cvs_observable_clean/','experiments/cvs_observable_identity/','experiments/cvs_rf_operator_clean/','experiments/cvs_rf_operator_identity/','experiments/cvs_simplex_clean/','experiments/cvs_simplex_identity/','experiments/cvs_coherence_clean/','experiments/cvs_coherence_identity/','experiments/cvs_stability_clean/','experiments/cvs_stability_identity/','experiments/cvs_attentive_clean/','experiments/cvs_attentive_identity/','experiments/cvs_interaction_clean/','experiments/cvs_interaction_identity/','experiments/cvs_balanced_clean/','experiments/cvs_balanced_identity/','experiments/cvs_selected_clean/','experiments/cvs_clean_eval/','experiments/cvs_residual_identity/','experiments/cvs_clean_design/','experiments/cvs_identity_ce/',
