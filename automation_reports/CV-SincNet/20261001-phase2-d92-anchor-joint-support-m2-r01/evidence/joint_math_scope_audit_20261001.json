@@ -1,0 +1,20 @@
+{
+  "status": "VERIFIED",
+  "scope": "SOURCE_AND_PRIMARY_PAPER_MATH_ONLY",
+  "query_blind_reviewer": "anchor_joint_core",
+  "score_or_real_snapshot_read_by_reviewer": false,
+  "algorithm_or_parameters_changed": false,
+  "new_numeric_tests_required": false,
+  "new_runtime_guarantees": false,
+  "document": "docs/D92_AFFINE_JOINT_MATH_LIMITS_20261001.md",
+  "implications": [
+    "support-average hidden readout displacement, not old-only or classification distance",
+    "actual B component inherited, delta and new class competition can change final predictions",
+    "free intercept requires full nonzero g_b companion",
+    "small adapter rank does not remove n-cubed head work"
+  ],
+  "ajlr_extract_pid": 514480,
+  "ajlr_handle": 60237,
+  "affine_analysis_pid": 501716,
+  "affine_handle": 2931
+}

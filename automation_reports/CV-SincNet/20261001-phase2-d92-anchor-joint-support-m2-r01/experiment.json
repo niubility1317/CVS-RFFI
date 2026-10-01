@@ -175,7 +175,7 @@
       "summary": "E:\\type10-7\\automation_reports\\CV-SincNet\\20261001-phase2-d92-anchor-joint-support-m2-r01\\results\\support_summary\\summary.json"
     },
     "training_diagnostics": {
-      "status": "LOCAL_STARTED_REMOTE_NOT_OBSERVED",
+      "status": "RUNNING_VERIFIED",
       "local_wait_handle": 60237,
       "process_exited": true,
       "reason": "Snapshot JSON embedded as a Python source literal exceeded parser length; requires data-only compressed transport",
@@ -209,7 +209,11 @@
       ],
       "retry_evidence": "diagnostic_extract_retry_started_20261001.json",
       "remote_processes": [],
-      "snapshot_recollected": false
+      "snapshot_recollected": false,
+      "pid": 514480,
+      "start_ticks": 6047347,
+      "last_independent_readback": "extract_readback_1790812997653548000.json",
+      "source_or_query_read": false
     }
   },
   "expected_artifacts": [

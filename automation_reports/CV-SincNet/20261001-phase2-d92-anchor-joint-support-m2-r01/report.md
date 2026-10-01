@@ -43,3 +43,5 @@ ANALYSIS_COMPLETE/VERIFIED：AJLR完整独立r02已正常结束，160parent/1800
 DIAGNOSTIC_TRANSPORT_READY/VERIFIED：旧AJLR只读提取源码literal超过Python解析长度，完整snapshot和分析结果保留，仅改为完整JSON→gzip→base64数据载荷；远端仍stdlib解码，没有字段删减、eval/pickle、新拟合/求解或数学变更。14项相关合成检查通过（5.97s），4项新增、10项既有回归。root在Git交付后仅重试extract，完整snapshot不重采，目标ACTIVE。
 
 DIAGNOSTIC_EXTRACT_RETRY_STARTED：root已单次启动压缩JSON只读extract，local handle=60237；完整snapshot为2673911234B，不重采、不重训。首次进程读回尚未看到远端extract进程，本地可能仍在解析/压缩载荷；不能从远端未出现推断失败或完成。原失败51314保留。Affine r02保持PID501716/handle2931，原分析不重复。目标ACTIVE。
+
+DIAGNOSTIC_EXTRACT_RUNNING/VERIFIED：压缩JSON重试已独立看到远端PID514480/start6047347，local handle60237；只读training extract，未重采snapshot、未重训、未读取query。数学范围审计只用代码与论文，明确全support均方位移、actual B冻结分量及自由截距反向的保护边界；不改变算法或预算。完整diagnostics待完成，目标ACTIVE。

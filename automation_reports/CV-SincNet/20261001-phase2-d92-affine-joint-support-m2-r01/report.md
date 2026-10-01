@@ -43,3 +43,5 @@ ANALYSIS_R01_FAILED/VERIFIED：Affine首次独立分析PID489447已退出，无s
 ANALYSIS_REPAIR_READY/VERIFIED：Affine分析器严格阶段比较已补齐真实入口schema/method；B→C顺序、全部字段、数学核验和容差保持原样。真实evaluate→core写盘及篡改回归在内的11项相关测试通过（106.31s），其中1项新增、10项既有回归，累计109项不同检查。r01失败和完整训练产物保留，新release d92_affine_joint_analysis_20261001_r02尚未启动；提交推送核对版本后单次独立分析，不重跑训练，目标ACTIVE。
 
 ANALYSIS_R02_RUNNING/VERIFIED：Affine完整独立分析修复版本已单次启动，PID501716/argv/cwd与预登记命令独立读回一致，实际analysis commit 1acc83a584ace40f294a433ace80629472ee2525，本地handle2931。原训练runtime81a226a8d1cef34ea817ada87070bd89912d027d，四row/160已结束；未来分析器采用已验证完整等价VJP和64MiB数组缓存，不跳过数学核验。完整summary尚未生成，无性能结论；A/B−A=N/A，query/源样本0，目标ACTIVE。
+
+MATH_SCOPE_AUDIT/VERIFIED：独立query-blind复核已补充联合目标的可证明范围；未读取真实评分或snapshot，不改方法、参数和健康进程。Affine r02独立读回仍PID501716/start5870553/handle2931，完整summary未产生；训练160已完成，保持ARTIFACTS_COMPLETE，目标ACTIVE。

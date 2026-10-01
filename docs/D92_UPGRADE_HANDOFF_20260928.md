@@ -1,3 +1,11 @@
+## 最新状态：联合方法数学边界已核查，两个只读任务运行中（2026-10-01）
+
+DIAGNOSTIC_EXTRACT_RUNNING/VERIFIED：压缩JSON重试已独立看到远端PID514480/start6047347，local handle60237；只读training extract，未重采snapshot、未重训、未读取query。数学范围审计只用代码与论文，明确全support均方位移、actual B冻结分量及自由截距反向的保护边界；不改变算法或预算。完整diagnostics待完成，目标ACTIVE。
+
+MATH_SCOPE_AUDIT/VERIFIED：独立query-blind复核已补充联合目标的可证明范围；未读取真实评分或snapshot，不改方法、参数和健康进程。Affine r02独立读回仍PID501716/start5870553/handle2931，完整summary未产生；训练160已完成，保持ARTIFACTS_COMPLETE，目标ACTIVE。
+
+恢复先poll 60237和2931并核实产物；绝不重复extract/snapshot/analyze/training。当前HEAD之前的collector科学源版本015a9c5ec保持不变。数学审计不构成任何准确率、零遗忘或星载省算力保证。完整AJLR support成绩已报告，Affine成绩尚未产生。
+
 ## 最新状态：AJLR只读extract已启动，保留handle60237（2026-10-01）
 
 DIAGNOSTIC_EXTRACT_RETRY_STARTED：root已单次启动压缩JSON只读extract，local handle=60237；完整snapshot为2673911234B，不重采、不重训。首次进程读回尚未看到远端extract进程，本地可能仍在解析/压缩载荷；不能从远端未出现推断失败或完成。原失败51314保留。Affine r02保持PID501716/handle2931，原分析不重复。目标ACTIVE。

@@ -1,0 +1,25 @@
+{
+  "observed_unix": 1790812935.9627476,
+  "processes": [
+    {
+      "pid": 514480,
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-",
+        "--extract-stdout",
+        "--run-root",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-anchor-joint-support-m2-r01"
+      ],
+      "state": "R",
+      "user_cpu_ticks": 54992,
+      "system_cpu_ticks": 2932,
+      "start_ticks": 6047347,
+      "rss": "12695760 kB",
+      "peak_rss": "15049476 kB",
+      "read_character_bytes": 5815419445,
+      "disk_read_bytes": 0
+    }
+  ],
+  "performance_read": false,
+  "data_or_state_mutation": false
+}
