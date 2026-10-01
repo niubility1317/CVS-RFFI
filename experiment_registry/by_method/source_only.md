@@ -7,3 +7,4 @@
 |名称|记录类型|证据入口|
 |---|---|---|
 |CVS：DAOT＋FastTrust-RC4原始residual_noeq五种子实验|managed_run|[打开](../../automation_reports/CV-SincNet/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/report.md)|
+|RFF源域前导码与可观测量诊断|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-diagnostic-rff-preamble-source-manysig-m1-r01/report.md)|

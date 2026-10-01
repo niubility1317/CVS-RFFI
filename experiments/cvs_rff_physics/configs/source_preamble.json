@@ -1,0 +1,28 @@
+{
+  "method": "rff_source_preamble",
+  "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+  "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+  "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-rff-preamble-source-manysig-m1-r01/source",
+  "split_seed": 392005,
+  "roles": [
+    "L_s",
+    "V"
+  ],
+  "source_receivers": [
+    1,
+    3,
+    4,
+    6,
+    8
+  ],
+  "source_days": [
+    1,
+    2,
+    3
+  ],
+  "equalized": 1,
+  "out_len": 256,
+  "rms_normalize": true,
+  "augmentation": false,
+  "model": false
+}
