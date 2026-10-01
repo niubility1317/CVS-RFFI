@@ -23,7 +23,7 @@
   "replaces_run_id": null,
   "authorization": "用户要求继续优化CVS，性能优先；2026-10-02明确要求真正的RFF physics aware。沿用CE唯一、身份骨干、无增强、clean-only，每次发布默认最后测试。",
   "code": {
-    "commit": "release_commit.txt resolves runtime commit",
+    "commit": "010ff27a20a3bb8af90580aa1eda4ab7d08427df",
     "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rf_operator_identity_20261002_r01",
@@ -97,7 +97,10 @@
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-rf-operator-identity-manysig-m8-r01",
     "local_artifact_root": "automation_reports/CV-SincNet/20261002-phase1-cvs-rf-operator-identity-manysig-m8-r01",
     "launch_command": "python -m experiments.cvs_rf_operator_identity.publish --output local_artifacts/cvs_rf_operator_identity_20261002_r01",
-    "stop_rule": "Only own affected row fails on nonfinite/permissions/output collision/nonzero exit; preserve all artifacts; no retry, low-score stop or unrelated process intervention"
+    "stop_rule": "Only own affected row fails on nonfinite/permissions/output collision/nonzero exit; preserve all artifacts; no retry, low-score stop or unrelated process intervention",
+    "dispatcher_pid": 1068124,
+    "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rf_operator_identity_20261002_r01",
+    "dispatcher_log": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rf_operator_identity_20261002_r01/dispatcher.stdout.log"
   },
   "expected_artifacts": [
     "last.pt",
@@ -141,7 +144,7 @@
       "row_id": "rf_mp-s2026092701",
       "method": "rf_mp",
       "purpose": "source_only_CVS_RF_behavior_candidate",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_rf_operator_identity/configs/rf_mp-s2026092701.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-rf-operator-identity-manysig-m8-r01/rf_mp-s2026092701/source/resolved_config.json",
       "data_overrides": {},
@@ -174,13 +177,24 @@
         "epoch_metrics.jsonl",
         "epoch_metrics.csv",
         "step_metrics.jsonl"
+      ],
+      "runtime_pid": 1068141,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rf_operator_identity_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_rf_operator_identity.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rf_operator_identity_20261002_r01/experiments/cvs_rf_operator_identity/configs/rf_mp-s2026092701.json",
+        ""
       ]
     },
     {
       "row_id": "rf_gmp-s2026092701",
       "method": "rf_gmp",
       "purpose": "source_only_CVS_RF_behavior_candidate",
-      "gpu": null,
+      "gpu": 1,
       "config_ref": "experiments/cvs_rf_operator_identity/configs/rf_gmp-s2026092701.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-rf-operator-identity-manysig-m8-r01/rf_gmp-s2026092701/source/resolved_config.json",
       "data_overrides": {},
@@ -213,13 +227,24 @@
         "epoch_metrics.jsonl",
         "epoch_metrics.csv",
         "step_metrics.jsonl"
+      ],
+      "runtime_pid": 1068230,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rf_operator_identity_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_rf_operator_identity.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rf_operator_identity_20261002_r01/experiments/cvs_rf_operator_identity/configs/rf_gmp-s2026092701.json",
+        ""
       ]
     },
     {
       "row_id": "rf_mp-s2026092702",
       "method": "rf_mp",
       "purpose": "source_only_CVS_RF_behavior_candidate",
-      "gpu": null,
+      "gpu": 2,
       "config_ref": "experiments/cvs_rf_operator_identity/configs/rf_mp-s2026092702.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-rf-operator-identity-manysig-m8-r01/rf_mp-s2026092702/source/resolved_config.json",
       "data_overrides": {},
@@ -252,13 +277,24 @@
         "epoch_metrics.jsonl",
         "epoch_metrics.csv",
         "step_metrics.jsonl"
+      ],
+      "runtime_pid": 1068319,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rf_operator_identity_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_rf_operator_identity.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rf_operator_identity_20261002_r01/experiments/cvs_rf_operator_identity/configs/rf_mp-s2026092702.json",
+        ""
       ]
     },
     {
       "row_id": "rf_gmp-s2026092702",
       "method": "rf_gmp",
       "purpose": "source_only_CVS_RF_behavior_candidate",
-      "gpu": null,
+      "gpu": 3,
       "config_ref": "experiments/cvs_rf_operator_identity/configs/rf_gmp-s2026092702.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-rf-operator-identity-manysig-m8-r01/rf_gmp-s2026092702/source/resolved_config.json",
       "data_overrides": {},
@@ -291,13 +327,24 @@
         "epoch_metrics.jsonl",
         "epoch_metrics.csv",
         "step_metrics.jsonl"
+      ],
+      "runtime_pid": 1068406,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rf_operator_identity_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_rf_operator_identity.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rf_operator_identity_20261002_r01/experiments/cvs_rf_operator_identity/configs/rf_gmp-s2026092702.json",
+        ""
       ]
     },
     {
       "row_id": "rf_mp-s2026092703",
       "method": "rf_mp",
       "purpose": "source_only_CVS_RF_behavior_candidate",
-      "gpu": null,
+      "gpu": 4,
       "config_ref": "experiments/cvs_rf_operator_identity/configs/rf_mp-s2026092703.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-rf-operator-identity-manysig-m8-r01/rf_mp-s2026092703/source/resolved_config.json",
       "data_overrides": {},
@@ -330,13 +377,24 @@
         "epoch_metrics.jsonl",
         "epoch_metrics.csv",
         "step_metrics.jsonl"
+      ],
+      "runtime_pid": 1068497,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rf_operator_identity_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_rf_operator_identity.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rf_operator_identity_20261002_r01/experiments/cvs_rf_operator_identity/configs/rf_mp-s2026092703.json",
+        ""
       ]
     },
     {
       "row_id": "rf_gmp-s2026092703",
       "method": "rf_gmp",
       "purpose": "source_only_CVS_RF_behavior_candidate",
-      "gpu": null,
+      "gpu": 5,
       "config_ref": "experiments/cvs_rf_operator_identity/configs/rf_gmp-s2026092703.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-rf-operator-identity-manysig-m8-r01/rf_gmp-s2026092703/source/resolved_config.json",
       "data_overrides": {},
@@ -369,13 +427,24 @@
         "epoch_metrics.jsonl",
         "epoch_metrics.csv",
         "step_metrics.jsonl"
+      ],
+      "runtime_pid": 1068996,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rf_operator_identity_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_rf_operator_identity.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rf_operator_identity_20261002_r01/experiments/cvs_rf_operator_identity/configs/rf_gmp-s2026092703.json",
+        ""
       ]
     },
     {
       "row_id": "rf_mp-s2026092704",
       "method": "rf_mp",
       "purpose": "source_only_CVS_RF_behavior_candidate",
-      "gpu": null,
+      "gpu": 6,
       "config_ref": "experiments/cvs_rf_operator_identity/configs/rf_mp-s2026092704.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-rf-operator-identity-manysig-m8-r01/rf_mp-s2026092704/source/resolved_config.json",
       "data_overrides": {},
@@ -408,13 +477,24 @@
         "epoch_metrics.jsonl",
         "epoch_metrics.csv",
         "step_metrics.jsonl"
+      ],
+      "runtime_pid": 1069085,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rf_operator_identity_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_rf_operator_identity.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rf_operator_identity_20261002_r01/experiments/cvs_rf_operator_identity/configs/rf_mp-s2026092704.json",
+        ""
       ]
     },
     {
       "row_id": "rf_gmp-s2026092704",
       "method": "rf_gmp",
       "purpose": "source_only_CVS_RF_behavior_candidate",
-      "gpu": null,
+      "gpu": 7,
       "config_ref": "experiments/cvs_rf_operator_identity/configs/rf_gmp-s2026092704.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-rf-operator-identity-manysig-m8-r01/rf_gmp-s2026092704/source/resolved_config.json",
       "data_overrides": {},
@@ -447,6 +527,17 @@
         "epoch_metrics.jsonl",
         "epoch_metrics.csv",
         "step_metrics.jsonl"
+      ],
+      "runtime_pid": 1069172,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rf_operator_identity_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_rf_operator_identity.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rf_operator_identity_20261002_r01/experiments/cvs_rf_operator_identity/configs/rf_gmp-s2026092704.json",
+        ""
       ]
     }
   ],

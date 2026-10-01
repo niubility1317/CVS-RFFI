@@ -1,6 +1,6 @@
 # CVS 受约束射频行为算子
 
-run_id：`20261002-phase1-cvs-rf-operator-identity-manysig-m8-r01`。状态 LOCAL_VERIFIED，尚未正式发布或训练。两项前瞻MP/GMP候选各4seed，普通CE唯一、身份骨干、无增强，性能主要、轻量次要。
+run_id：`20261002-phase1-cvs-rf-operator-identity-manysig-m8-r01`。状态 SOURCE_TRAINING，正式源训练运行中，clean确认尚未进行。两项前瞻MP/GMP候选各4seed，普通CE唯一、身份骨干、无增强，性能主要、轻量次要。
 
 |候选|总/有效CE参数|Conv/Linear MAC/包|常驻模型状态字节|
 |---|---:|---:|---:|
@@ -14,3 +14,7 @@ run_id：`20261002-phase1-cvs-rf-operator-identity-manysig-m8-r01`。状态 LOCA
 从零E200×50，完整L6300/epoch、U56700unused/V27000、原四seed和split392005。最终源V/最差源RX等权性能最高候选冻结；并列后才比较成本。默认选中4个clean预测加原20个固定对照，全部24份完成后独立truth-last评分；完整RX/TX/F1/混淆矩阵/成本和负结果保留，不按测试重排、调参或重跑。物理合成检查不作为训练增强或识别提升证明。[验证](evidence/local_validation.json) · [逐行预登记](experiment.json)。独立P0/P1审查及唯一P1修复定点复核通过；审查者独立13项测试PASS，compileall通过。
 
 N607普通账户Torch2.1 CPU的8个合成模型检查通过；24次CE更新中梯度有限非零，最大FP32旋转观测差1.20e−5，单包一致/零常量有限，formal run/log/release均未存在。仅在内存运行本地算子，无真实数据或checkpoint/GPU任务；此证据证明运行时正确性，不证明识别收益。见[远端CPU验证](evidence/remote_cpu_rf_validation.json)及[独立审查](evidence/independent_review.json)。
+
+## N607源训练发布已核实
+
+代码`010ff27a20a3bb8af90580aa1eda4ab7d08427df`已push并独立核对远端OID。新release传输校验、远端compile与Torch2.1冷进程双候选CE反向检查通过。独立读回dispatcher PID1068124的CWD/argv；8行各占一块GPU，进程与resolved/log增长已核实，状态SOURCE_TRAINING。实际6300L/56700Uunused/27000V、每轮50步、纯CE/无增强/域骨干关闭与目标访问关闭一致。发布后源码保持不可变，后续clean按另一个不可覆盖run发布。详见[发布后读回](evidence/source_launch_readback.json)。

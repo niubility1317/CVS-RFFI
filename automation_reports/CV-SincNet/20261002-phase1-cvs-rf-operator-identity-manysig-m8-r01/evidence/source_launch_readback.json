@@ -1,0 +1,1513 @@
+{
+  "read_at": 1790873412.6451697,
+  "run_id": "20261002-phase1-cvs-rf-operator-identity-manysig-m8-r01",
+  "identity": {
+    "user": "szu2070436088",
+    "host": "dell-DSS8440"
+  },
+  "submit": {
+    "status": "SUBMITTED",
+    "pid": 1068124,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rf_operator_identity_20261002_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_rf_operator_identity.dispatch",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rf_operator_identity_20261002_r01/experiments/cvs_rf_operator_identity/configs/launch_spec.json"
+    ],
+    "log": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rf_operator_identity_20261002_r01/dispatcher.stdout.log",
+    "commit": "010ff27a20a3bb8af90580aa1eda4ab7d08427df",
+    "sha256": "ea3ed562cfef7315b36d963742195bbb5e2e761c8e1d97cf1ed902e1faa4de68"
+  },
+  "pipeline": {
+    "status": "SOURCE_TRAINING",
+    "pid": 1068124,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rf_operator_identity_20261002_r01",
+    "argv": [
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rf_operator_identity_20261002_r01/experiments/cvs_rf_operator_identity/dispatch.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rf_operator_identity_20261002_r01/experiments/cvs_rf_operator_identity/configs/launch_spec.json"
+    ],
+    "run_id": "20261002-phase1-cvs-rf-operator-identity-manysig-m8-r01",
+    "launch_owner": "codex/root/cvs-rf-operator-identity-20261002",
+    "commit": "010ff27a20a3bb8af90580aa1eda4ab7d08427df",
+    "target_access": false,
+    "rows": {
+      "rf_mp-s2026092701": {
+        "status": "RUNNING",
+        "variant": "rf_mp",
+        "model_seed": 2026092701,
+        "pid": 1068141,
+        "gpu": 0,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_rf_operator_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rf_operator_identity_20261002_r01/experiments/cvs_rf_operator_identity/configs/rf_mp-s2026092701.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-rf-operator-identity-manysig-m8-r01/rf_mp-s2026092701.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-rf-operator-identity-manysig-m8-r01/rf_mp-s2026092701/source",
+        "started": 1790873350.121265
+      },
+      "rf_gmp-s2026092701": {
+        "status": "RUNNING",
+        "variant": "rf_gmp",
+        "model_seed": 2026092701,
+        "pid": 1068230,
+        "gpu": 1,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_rf_operator_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rf_operator_identity_20261002_r01/experiments/cvs_rf_operator_identity/configs/rf_gmp-s2026092701.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-rf-operator-identity-manysig-m8-r01/rf_gmp-s2026092701.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-rf-operator-identity-manysig-m8-r01/rf_gmp-s2026092701/source",
+        "started": 1790873355.3724349
+      },
+      "rf_mp-s2026092702": {
+        "status": "RUNNING",
+        "variant": "rf_mp",
+        "model_seed": 2026092702,
+        "pid": 1068319,
+        "gpu": 2,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_rf_operator_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rf_operator_identity_20261002_r01/experiments/cvs_rf_operator_identity/configs/rf_mp-s2026092702.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-rf-operator-identity-manysig-m8-r01/rf_mp-s2026092702.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-rf-operator-identity-manysig-m8-r01/rf_mp-s2026092702/source",
+        "started": 1790873360.6127095
+      },
+      "rf_gmp-s2026092702": {
+        "status": "RUNNING",
+        "variant": "rf_gmp",
+        "model_seed": 2026092702,
+        "pid": 1068406,
+        "gpu": 3,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_rf_operator_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rf_operator_identity_20261002_r01/experiments/cvs_rf_operator_identity/configs/rf_gmp-s2026092702.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-rf-operator-identity-manysig-m8-r01/rf_gmp-s2026092702.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-rf-operator-identity-manysig-m8-r01/rf_gmp-s2026092702/source",
+        "started": 1790873365.8549418
+      },
+      "rf_mp-s2026092703": {
+        "status": "RUNNING",
+        "variant": "rf_mp",
+        "model_seed": 2026092703,
+        "pid": 1068497,
+        "gpu": 4,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_rf_operator_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rf_operator_identity_20261002_r01/experiments/cvs_rf_operator_identity/configs/rf_mp-s2026092703.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-rf-operator-identity-manysig-m8-r01/rf_mp-s2026092703.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-rf-operator-identity-manysig-m8-r01/rf_mp-s2026092703/source",
+        "started": 1790873371.0916736
+      },
+      "rf_gmp-s2026092703": {
+        "status": "RUNNING",
+        "variant": "rf_gmp",
+        "model_seed": 2026092703,
+        "pid": 1068996,
+        "gpu": 5,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_rf_operator_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rf_operator_identity_20261002_r01/experiments/cvs_rf_operator_identity/configs/rf_gmp-s2026092703.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-rf-operator-identity-manysig-m8-r01/rf_gmp-s2026092703.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-rf-operator-identity-manysig-m8-r01/rf_gmp-s2026092703/source",
+        "started": 1790873376.3367398
+      },
+      "rf_mp-s2026092704": {
+        "status": "RUNNING",
+        "variant": "rf_mp",
+        "model_seed": 2026092704,
+        "pid": 1069085,
+        "gpu": 6,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_rf_operator_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rf_operator_identity_20261002_r01/experiments/cvs_rf_operator_identity/configs/rf_mp-s2026092704.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-rf-operator-identity-manysig-m8-r01/rf_mp-s2026092704.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-rf-operator-identity-manysig-m8-r01/rf_mp-s2026092704/source",
+        "started": 1790873381.5766428
+      },
+      "rf_gmp-s2026092704": {
+        "status": "RUNNING",
+        "variant": "rf_gmp",
+        "model_seed": 2026092704,
+        "pid": 1069172,
+        "gpu": 7,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_rf_operator_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rf_operator_identity_20261002_r01/experiments/cvs_rf_operator_identity/configs/rf_gmp-s2026092704.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-rf-operator-identity-manysig-m8-r01/rf_gmp-s2026092704.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-rf-operator-identity-manysig-m8-r01/rf_gmp-s2026092704/source",
+        "started": 1790873386.8064737
+      }
+    }
+  },
+  "selection": null,
+  "rows": [
+    {
+      "row_id": "rf_mp-s2026092701",
+      "status": "RUNNING",
+      "gpu": 0,
+      "process": {
+        "pid": 1068141,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rf_operator_identity_20261002_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_rf_operator_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rf_operator_identity_20261002_r01/experiments/cvs_rf_operator_identity/configs/rf_mp-s2026092701.json",
+          ""
+        ]
+      },
+      "epoch": {
+        "epoch": 9,
+        "optimizer_steps": 50,
+        "optimizer_steps_total": 450,
+        "source_sample_exposure": 6300,
+        "clean_ce": 0.3710303658246994,
+        "total_loss": 0.3710303658246994,
+        "ce_weight": 1.0,
+        "learning_rate": 0.0001992154127807906,
+        "gradient_norm": 4.895488386154175,
+        "gradient_used_parameters": 167153,
+        "augmentation_active": false,
+        "satellite_sample_exposure": 0,
+        "domain_backbone_active": false,
+        "extra_losses_active": false,
+        "pseudo_labels_active": false,
+        "rf_operator_active": true,
+        "rf_operator_diagnostics": {
+          "physics_mode": "causal_complex_mp",
+          "basis_terms": 12,
+          "direct_coefficient_norm": 1.691054105758667,
+          "image_coefficient_norm": 1.823740839958191,
+          "direct_gradient_norm": 1.4362415075302124,
+          "image_gradient_norm": 2.3171708583831787,
+          "order_coefficient_norm": {
+            "1": 1.4010661840438843,
+            "3": 1.3895479440689087,
+            "5": 1.5138905048370361
+          },
+          "cross_memory_coefficient_norm": null
+        },
+        "rf_diagnostic_gradient_scope": "last source batch of epoch",
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9233333333333333,
+        "source_val_ce": 0.2845898119124963,
+        "source_val_rx_accuracy": {
+          "1": 0.957962962962963,
+          "3": 0.842037037037037,
+          "4": 0.9587037037037037,
+          "6": 0.9827777777777778,
+          "8": 0.8751851851851852
+        },
+        "source_val_worst_rx": 0.842037037037037,
+        "elapsed_seconds": 5.681100315996446,
+        "peak_cuda_allocated_bytes": 252219904
+      },
+      "resolved": {
+        "method": "cvs_rf_operator_identity",
+        "variant": "rf_mp",
+        "model_seed": 2026092701,
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-rf-operator-identity-manysig-m8-r01/rf_mp-s2026092701/source",
+        "epochs": 200,
+        "batch_size": 128,
+        "lr": 0.0002,
+        "lr_min": 1e-06,
+        "weight_decay": 0.0001,
+        "drop_last": false,
+        "augmentation": false,
+        "domain_backbone": false,
+        "extra_losses": [],
+        "selection": "fixed_last_epoch",
+        "split_seed": 392005,
+        "device": "cuda:0",
+        "rf_operator": {
+          "physics_mode": "causal_complex_mp",
+          "orders": [
+            1,
+            3,
+            5
+          ],
+          "aligned_delays": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cross_envelope_lags": [],
+          "basis_terms": 12,
+          "complex_channels": 8,
+          "observation_channels": 32,
+          "radial_clip": 4.0,
+          "epsilon": 1e-06,
+          "order_scale_base": 2.0,
+          "sample_rate_hz": 25000000,
+          "input": "received_equalized1_unit_rms_IQ",
+          "coefficient_interpretation": "shared_source_learned_behavior_filters"
+        },
+        "pid": 1068141,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rf_operator_identity_20261002_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "commit": "010ff27a20a3bb8af90580aa1eda4ab7d08427df",
+        "torch_version": "2.1.0+cu121",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "source_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "steps_per_epoch": 50,
+        "total_parameters": 167153,
+        "trainable_parameters": 167153,
+        "U_s_use": "unused",
+        "target_access": false,
+        "precision": "float32",
+        "gradient_clipping": null,
+        "optimizer": "AdamW+CosineAnnealingLR",
+        "loader_seed": 2026092701,
+        "rf_operator_actual": {
+          "physics_mode": "causal_complex_mp",
+          "orders": [
+            1,
+            3,
+            5
+          ],
+          "aligned_delays": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cross_envelope_lags": [],
+          "basis_terms": 12,
+          "complex_channels": 8,
+          "observation_channels": 32,
+          "radial_clip": 4.0,
+          "epsilon": 1e-06,
+          "order_scale_base": 2.0,
+          "sample_rate_hz": 25000000,
+          "input": "received_equalized1_unit_rms_IQ",
+          "coefficient_interpretation": "shared_source_learned_behavior_filters"
+        },
+        "rf_operator_active": true,
+        "classifier_scale": 30.0
+      },
+      "completion": null,
+      "profile": null,
+      "log_bytes": 14228,
+      "log_tail": [
+        "EPOCH {\"epoch\": 8, \"optimizer_steps\": 50, \"optimizer_steps_total\": 400, \"source_sample_exposure\": 6300, \"clean_ce\": 0.41932196378707887, \"total_loss\": 0.41932196378707887, \"ce_weight\": 1.0, \"learning_rate\": 0.00019939911506779043, \"gradient_norm\": 4.804161515235901, \"gradient_used_parameters\": 167153, \"augmentation_active\": false, \"satellite_sample_exposure\": 0, \"domain_backbone_active\": false, \"extra_losses_active\": false, \"pseudo_labels_active\": false, \"rf_operator_active\": true, \"rf_operator_diagnostics\": {\"physics_mode\": \"causal_complex_mp\", \"basis_terms\": 12, \"direct_coefficient_norm\": 1.689309000968933, \"image_coefficient_norm\": 1.8237037658691406, \"direct_gradient_norm\": 1.2479063272476196, \"image_gradient_norm\": 1.8527541160583496, \"order_coefficient_norm\": {\"1\": 1.401822805404663, \"3\": 1.3907291889190674, \"5\": 1.5101077556610107}, \"cross_memory_coefficient_norm\": null}, \"rf_diagnostic_gradient_scope\": \"last source batch of epoch\", \"source_val_count\": 27000, \"source_val_accuracy\": 0.9030370370370371, \"source_val_ce\": 0.305610385051894, \"source_val_rx_accuracy\": {\"1\": 0.9183333333333333, \"3\": 0.8344444444444444, \"4\": 0.9411111111111111, \"6\": 0.9566666666666667, \"8\": 0.8646296296296296}, \"source_val_worst_rx\": 0.8344444444444444, \"elapsed_seconds\": 5.803755187007482, \"peak_cuda_allocated_bytes\": 252219904}",
+        "EPOCH {\"epoch\": 9, \"optimizer_steps\": 50, \"optimizer_steps_total\": 450, \"source_sample_exposure\": 6300, \"clean_ce\": 0.3710303658246994, \"total_loss\": 0.3710303658246994, \"ce_weight\": 1.0, \"learning_rate\": 0.0001992154127807906, \"gradient_norm\": 4.895488386154175, \"gradient_used_parameters\": 167153, \"augmentation_active\": false, \"satellite_sample_exposure\": 0, \"domain_backbone_active\": false, \"extra_losses_active\": false, \"pseudo_labels_active\": false, \"rf_operator_active\": true, \"rf_operator_diagnostics\": {\"physics_mode\": \"causal_complex_mp\", \"basis_terms\": 12, \"direct_coefficient_norm\": 1.691054105758667, \"image_coefficient_norm\": 1.823740839958191, \"direct_gradient_norm\": 1.4362415075302124, \"image_gradient_norm\": 2.3171708583831787, \"order_coefficient_norm\": {\"1\": 1.4010661840438843, \"3\": 1.3895479440689087, \"5\": 1.5138905048370361}, \"cross_memory_coefficient_norm\": null}, \"rf_diagnostic_gradient_scope\": \"last source batch of epoch\", \"source_val_count\": 27000, \"source_val_accuracy\": 0.9233333333333333, \"source_val_ce\": 0.2845898119124963, \"source_val_rx_accuracy\": {\"1\": 0.957962962962963, \"3\": 0.842037037037037, \"4\": 0.9587037037037037, \"6\": 0.9827777777777778, \"8\": 0.8751851851851852}, \"source_val_worst_rx\": 0.842037037037037, \"elapsed_seconds\": 5.681100315996446, \"peak_cuda_allocated_bytes\": 252219904}"
+      ]
+    },
+    {
+      "row_id": "rf_gmp-s2026092701",
+      "status": "RUNNING",
+      "gpu": 1,
+      "process": {
+        "pid": 1068230,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rf_operator_identity_20261002_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_rf_operator_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rf_operator_identity_20261002_r01/experiments/cvs_rf_operator_identity/configs/rf_gmp-s2026092701.json",
+          ""
+        ]
+      },
+      "epoch": {
+        "epoch": 8,
+        "optimizer_steps": 50,
+        "optimizer_steps_total": 400,
+        "source_sample_exposure": 6300,
+        "clean_ce": 0.41009709894657137,
+        "total_loss": 0.41009709894657137,
+        "ce_weight": 1.0,
+        "learning_rate": 0.00019939911506779043,
+        "gradient_norm": 4.927709169387818,
+        "gradient_used_parameters": 167665,
+        "augmentation_active": false,
+        "satellite_sample_exposure": 0,
+        "domain_backbone_active": false,
+        "extra_losses_active": false,
+        "pseudo_labels_active": false,
+        "rf_operator_active": true,
+        "rf_operator_diagnostics": {
+          "physics_mode": "causal_complex_lag_gmp",
+          "basis_terms": 28,
+          "direct_coefficient_norm": 2.833051919937134,
+          "image_coefficient_norm": 2.8788022994995117,
+          "direct_gradient_norm": 1.2530944347381592,
+          "image_gradient_norm": 3.3507964611053467,
+          "order_coefficient_norm": {
+            "1": 1.4008722305297852,
+            "3": 2.521355152130127,
+            "5": 2.8273682594299316
+          },
+          "cross_memory_coefficient_norm": 3.1926867961883545
+        },
+        "rf_diagnostic_gradient_scope": "last source batch of epoch",
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9017777777777778,
+        "source_val_ce": 0.29828713943681645,
+        "source_val_rx_accuracy": {
+          "1": 0.907962962962963,
+          "3": 0.8394444444444444,
+          "4": 0.9398148148148148,
+          "6": 0.9455555555555556,
+          "8": 0.8761111111111111
+        },
+        "source_val_worst_rx": 0.8394444444444444,
+        "elapsed_seconds": 6.5742410399980145,
+        "peak_cuda_allocated_bytes": 256430592
+      },
+      "resolved": {
+        "method": "cvs_rf_operator_identity",
+        "variant": "rf_gmp",
+        "model_seed": 2026092701,
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-rf-operator-identity-manysig-m8-r01/rf_gmp-s2026092701/source",
+        "epochs": 200,
+        "batch_size": 128,
+        "lr": 0.0002,
+        "lr_min": 1e-06,
+        "weight_decay": 0.0001,
+        "drop_last": false,
+        "augmentation": false,
+        "domain_backbone": false,
+        "extra_losses": [],
+        "selection": "fixed_last_epoch",
+        "split_seed": 392005,
+        "device": "cuda:0",
+        "rf_operator": {
+          "physics_mode": "causal_complex_lag_gmp",
+          "orders": [
+            1,
+            3,
+            5
+          ],
+          "aligned_delays": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cross_envelope_lags": [
+            1,
+            2
+          ],
+          "basis_terms": 28,
+          "complex_channels": 8,
+          "observation_channels": 32,
+          "radial_clip": 4.0,
+          "epsilon": 1e-06,
+          "order_scale_base": 2.0,
+          "sample_rate_hz": 25000000,
+          "input": "received_equalized1_unit_rms_IQ",
+          "coefficient_interpretation": "shared_source_learned_behavior_filters"
+        },
+        "pid": 1068230,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rf_operator_identity_20261002_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "commit": "010ff27a20a3bb8af90580aa1eda4ab7d08427df",
+        "torch_version": "2.1.0+cu121",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "source_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "steps_per_epoch": 50,
+        "total_parameters": 167665,
+        "trainable_parameters": 167665,
+        "U_s_use": "unused",
+        "target_access": false,
+        "precision": "float32",
+        "gradient_clipping": null,
+        "optimizer": "AdamW+CosineAnnealingLR",
+        "loader_seed": 2026092701,
+        "rf_operator_actual": {
+          "physics_mode": "causal_complex_lag_gmp",
+          "orders": [
+            1,
+            3,
+            5
+          ],
+          "aligned_delays": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cross_envelope_lags": [
+            1,
+            2
+          ],
+          "basis_terms": 28,
+          "complex_channels": 8,
+          "observation_channels": 32,
+          "radial_clip": 4.0,
+          "epsilon": 1e-06,
+          "order_scale_base": 2.0,
+          "sample_rate_hz": 25000000,
+          "input": "received_equalized1_unit_rms_IQ",
+          "coefficient_interpretation": "shared_source_learned_behavior_filters"
+        },
+        "rf_operator_active": true,
+        "classifier_scale": 30.0
+      },
+      "completion": null,
+      "profile": null,
+      "log_bytes": 13043,
+      "log_tail": [
+        "EPOCH {\"epoch\": 7, \"optimizer_steps\": 50, \"optimizer_steps_total\": 350, \"source_sample_exposure\": 6300, \"clean_ce\": 0.4739928105473518, \"total_loss\": 0.4739928105473518, \"ce_weight\": 1.0, \"learning_rate\": 0.00019955841547800648, \"gradient_norm\": 5.6681798601150515, \"gradient_used_parameters\": 167665, \"augmentation_active\": false, \"satellite_sample_exposure\": 0, \"domain_backbone_active\": false, \"extra_losses_active\": false, \"pseudo_labels_active\": false, \"rf_operator_active\": true, \"rf_operator_diagnostics\": {\"physics_mode\": \"causal_complex_lag_gmp\", \"basis_terms\": 28, \"direct_coefficient_norm\": 2.8314669132232666, \"image_coefficient_norm\": 2.8783490657806396, \"direct_gradient_norm\": 0.460267037153244, \"image_gradient_norm\": 0.512811541557312, \"order_coefficient_norm\": {\"1\": 1.4004062414169312, \"3\": 2.52200984954834, \"5\": 2.824964761734009}, \"cross_memory_coefficient_norm\": 3.191347360610962}, \"rf_diagnostic_gradient_scope\": \"last source batch of epoch\", \"source_val_count\": 27000, \"source_val_accuracy\": 0.9134074074074074, \"source_val_ce\": 0.3010515268872044, \"source_val_rx_accuracy\": {\"1\": 0.9638888888888889, \"3\": 0.8266666666666667, \"4\": 0.9172222222222223, \"6\": 0.9811111111111112, \"8\": 0.8781481481481481}, \"source_val_worst_rx\": 0.8266666666666667, \"elapsed_seconds\": 6.548090709999087, \"peak_cuda_allocated_bytes\": 256430592}",
+        "EPOCH {\"epoch\": 8, \"optimizer_steps\": 50, \"optimizer_steps_total\": 400, \"source_sample_exposure\": 6300, \"clean_ce\": 0.41009709894657137, \"total_loss\": 0.41009709894657137, \"ce_weight\": 1.0, \"learning_rate\": 0.00019939911506779043, \"gradient_norm\": 4.927709169387818, \"gradient_used_parameters\": 167665, \"augmentation_active\": false, \"satellite_sample_exposure\": 0, \"domain_backbone_active\": false, \"extra_losses_active\": false, \"pseudo_labels_active\": false, \"rf_operator_active\": true, \"rf_operator_diagnostics\": {\"physics_mode\": \"causal_complex_lag_gmp\", \"basis_terms\": 28, \"direct_coefficient_norm\": 2.833051919937134, \"image_coefficient_norm\": 2.8788022994995117, \"direct_gradient_norm\": 1.2530944347381592, \"image_gradient_norm\": 3.3507964611053467, \"order_coefficient_norm\": {\"1\": 1.4008722305297852, \"3\": 2.521355152130127, \"5\": 2.8273682594299316}, \"cross_memory_coefficient_norm\": 3.1926867961883545}, \"rf_diagnostic_gradient_scope\": \"last source batch of epoch\", \"source_val_count\": 27000, \"source_val_accuracy\": 0.9017777777777778, \"source_val_ce\": 0.29828713943681645, \"source_val_rx_accuracy\": {\"1\": 0.907962962962963, \"3\": 0.8394444444444444, \"4\": 0.9398148148148148, \"6\": 0.9455555555555556, \"8\": 0.8761111111111111}, \"source_val_worst_rx\": 0.8394444444444444, \"elapsed_seconds\": 6.5742410399980145, \"peak_cuda_allocated_bytes\": 256430592}"
+      ]
+    },
+    {
+      "row_id": "rf_mp-s2026092702",
+      "status": "RUNNING",
+      "gpu": 2,
+      "process": {
+        "pid": 1068319,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rf_operator_identity_20261002_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_rf_operator_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rf_operator_identity_20261002_r01/experiments/cvs_rf_operator_identity/configs/rf_mp-s2026092702.json",
+          ""
+        ]
+      },
+      "epoch": {
+        "epoch": 7,
+        "optimizer_steps": 50,
+        "optimizer_steps_total": 350,
+        "source_sample_exposure": 6300,
+        "clean_ce": 0.4824830263853073,
+        "total_loss": 0.4824830263853073,
+        "ce_weight": 1.0,
+        "learning_rate": 0.00019955841547800648,
+        "gradient_norm": 5.005656628608704,
+        "gradient_used_parameters": 167153,
+        "augmentation_active": false,
+        "satellite_sample_exposure": 0,
+        "domain_backbone_active": false,
+        "extra_losses_active": false,
+        "pseudo_labels_active": false,
+        "rf_operator_active": true,
+        "rf_operator_diagnostics": {
+          "physics_mode": "causal_complex_mp",
+          "basis_terms": 12,
+          "direct_coefficient_norm": 1.8549082279205322,
+          "image_coefficient_norm": 1.8928593397140503,
+          "direct_gradient_norm": 3.439882755279541,
+          "image_gradient_norm": 1.7684199810028076,
+          "order_coefficient_norm": {
+            "1": 1.3978264331817627,
+            "3": 1.634829044342041,
+            "5": 1.5482299327850342
+          },
+          "cross_memory_coefficient_norm": null
+        },
+        "rf_diagnostic_gradient_scope": "last source batch of epoch",
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.920074074074074,
+        "source_val_ce": 0.2829952014302145,
+        "source_val_rx_accuracy": {
+          "1": 0.9616666666666667,
+          "3": 0.8274074074074074,
+          "4": 0.967037037037037,
+          "6": 0.9835185185185186,
+          "8": 0.8607407407407407
+        },
+        "source_val_worst_rx": 0.8274074074074074,
+        "elapsed_seconds": 6.097686200999306,
+        "peak_cuda_allocated_bytes": 252219904
+      },
+      "resolved": {
+        "method": "cvs_rf_operator_identity",
+        "variant": "rf_mp",
+        "model_seed": 2026092702,
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-rf-operator-identity-manysig-m8-r01/rf_mp-s2026092702/source",
+        "epochs": 200,
+        "batch_size": 128,
+        "lr": 0.0002,
+        "lr_min": 1e-06,
+        "weight_decay": 0.0001,
+        "drop_last": false,
+        "augmentation": false,
+        "domain_backbone": false,
+        "extra_losses": [],
+        "selection": "fixed_last_epoch",
+        "split_seed": 392005,
+        "device": "cuda:0",
+        "rf_operator": {
+          "physics_mode": "causal_complex_mp",
+          "orders": [
+            1,
+            3,
+            5
+          ],
+          "aligned_delays": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cross_envelope_lags": [],
+          "basis_terms": 12,
+          "complex_channels": 8,
+          "observation_channels": 32,
+          "radial_clip": 4.0,
+          "epsilon": 1e-06,
+          "order_scale_base": 2.0,
+          "sample_rate_hz": 25000000,
+          "input": "received_equalized1_unit_rms_IQ",
+          "coefficient_interpretation": "shared_source_learned_behavior_filters"
+        },
+        "pid": 1068319,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rf_operator_identity_20261002_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "commit": "010ff27a20a3bb8af90580aa1eda4ab7d08427df",
+        "torch_version": "2.1.0+cu121",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "source_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "steps_per_epoch": 50,
+        "total_parameters": 167153,
+        "trainable_parameters": 167153,
+        "U_s_use": "unused",
+        "target_access": false,
+        "precision": "float32",
+        "gradient_clipping": null,
+        "optimizer": "AdamW+CosineAnnealingLR",
+        "loader_seed": 2026092702,
+        "rf_operator_actual": {
+          "physics_mode": "causal_complex_mp",
+          "orders": [
+            1,
+            3,
+            5
+          ],
+          "aligned_delays": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cross_envelope_lags": [],
+          "basis_terms": 12,
+          "complex_channels": 8,
+          "observation_channels": 32,
+          "radial_clip": 4.0,
+          "epsilon": 1e-06,
+          "order_scale_base": 2.0,
+          "sample_rate_hz": 25000000,
+          "input": "received_equalized1_unit_rms_IQ",
+          "coefficient_interpretation": "shared_source_learned_behavior_filters"
+        },
+        "rf_operator_active": true,
+        "classifier_scale": 30.0
+      },
+      "completion": null,
+      "profile": null,
+      "log_bytes": 11523,
+      "log_tail": [
+        "EPOCH {\"epoch\": 6, \"optimizer_steps\": 50, \"optimizer_steps_total\": 300, \"source_sample_exposure\": 6300, \"clean_ce\": 0.562393245100975, \"total_loss\": 0.562393245100975, \"ce_weight\": 1.0, \"learning_rate\": 0.00019969327470644626, \"gradient_norm\": 5.584080405235291, \"gradient_used_parameters\": 167153, \"augmentation_active\": false, \"satellite_sample_exposure\": 0, \"domain_backbone_active\": false, \"extra_losses_active\": false, \"pseudo_labels_active\": false, \"rf_operator_active\": true, \"rf_operator_diagnostics\": {\"physics_mode\": \"causal_complex_mp\", \"basis_terms\": 12, \"direct_coefficient_norm\": 1.8533546924591064, \"image_coefficient_norm\": 1.887839674949646, \"direct_gradient_norm\": 1.1860908269882202, \"image_gradient_norm\": 2.18826961517334, \"order_coefficient_norm\": {\"1\": 1.399006724357605, \"3\": 1.6313822269439697, \"5\": 1.542800784111023}, \"cross_memory_coefficient_norm\": null}, \"rf_diagnostic_gradient_scope\": \"last source batch of epoch\", \"source_val_count\": 27000, \"source_val_accuracy\": 0.8841111111111111, \"source_val_ce\": 0.3658918368534909, \"source_val_rx_accuracy\": {\"1\": 0.9546296296296296, \"3\": 0.7794444444444445, \"4\": 0.8605555555555555, \"6\": 0.9537037037037037, \"8\": 0.8722222222222222}, \"source_val_worst_rx\": 0.7794444444444445, \"elapsed_seconds\": 6.089117520998116, \"peak_cuda_allocated_bytes\": 252219904}",
+        "EPOCH {\"epoch\": 7, \"optimizer_steps\": 50, \"optimizer_steps_total\": 350, \"source_sample_exposure\": 6300, \"clean_ce\": 0.4824830263853073, \"total_loss\": 0.4824830263853073, \"ce_weight\": 1.0, \"learning_rate\": 0.00019955841547800648, \"gradient_norm\": 5.005656628608704, \"gradient_used_parameters\": 167153, \"augmentation_active\": false, \"satellite_sample_exposure\": 0, \"domain_backbone_active\": false, \"extra_losses_active\": false, \"pseudo_labels_active\": false, \"rf_operator_active\": true, \"rf_operator_diagnostics\": {\"physics_mode\": \"causal_complex_mp\", \"basis_terms\": 12, \"direct_coefficient_norm\": 1.8549082279205322, \"image_coefficient_norm\": 1.8928593397140503, \"direct_gradient_norm\": 3.439882755279541, \"image_gradient_norm\": 1.7684199810028076, \"order_coefficient_norm\": {\"1\": 1.3978264331817627, \"3\": 1.634829044342041, \"5\": 1.5482299327850342}, \"cross_memory_coefficient_norm\": null}, \"rf_diagnostic_gradient_scope\": \"last source batch of epoch\", \"source_val_count\": 27000, \"source_val_accuracy\": 0.920074074074074, \"source_val_ce\": 0.2829952014302145, \"source_val_rx_accuracy\": {\"1\": 0.9616666666666667, \"3\": 0.8274074074074074, \"4\": 0.967037037037037, \"6\": 0.9835185185185186, \"8\": 0.8607407407407407}, \"source_val_worst_rx\": 0.8274074074074074, \"elapsed_seconds\": 6.097686200999306, \"peak_cuda_allocated_bytes\": 252219904}"
+      ]
+    },
+    {
+      "row_id": "rf_gmp-s2026092702",
+      "status": "RUNNING",
+      "gpu": 3,
+      "process": {
+        "pid": 1068406,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rf_operator_identity_20261002_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_rf_operator_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rf_operator_identity_20261002_r01/experiments/cvs_rf_operator_identity/configs/rf_gmp-s2026092702.json",
+          ""
+        ]
+      },
+      "epoch": {
+        "epoch": 6,
+        "optimizer_steps": 50,
+        "optimizer_steps_total": 300,
+        "source_sample_exposure": 6300,
+        "clean_ce": 0.546117571592331,
+        "total_loss": 0.546117571592331,
+        "ce_weight": 1.0,
+        "learning_rate": 0.00019969327470644626,
+        "gradient_norm": 5.4892487144470214,
+        "gradient_used_parameters": 167665,
+        "augmentation_active": false,
+        "satellite_sample_exposure": 0,
+        "domain_backbone_active": false,
+        "extra_losses_active": false,
+        "pseudo_labels_active": false,
+        "rf_operator_active": true,
+        "rf_operator_diagnostics": {
+          "physics_mode": "causal_complex_lag_gmp",
+          "basis_terms": 28,
+          "direct_coefficient_norm": 2.9437265396118164,
+          "image_coefficient_norm": 2.80077862739563,
+          "direct_gradient_norm": 1.952370047569275,
+          "image_gradient_norm": 2.568413257598877,
+          "order_coefficient_norm": {
+            "1": 1.4033516645431519,
+            "3": 2.6362082958221436,
+            "5": 2.755157947540283
+          },
+          "cross_memory_coefficient_norm": 3.1017940044403076
+        },
+        "rf_diagnostic_gradient_scope": "last source batch of epoch",
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.8935925925925926,
+        "source_val_ce": 0.3404913491546004,
+        "source_val_rx_accuracy": {
+          "1": 0.9587037037037037,
+          "3": 0.7892592592592592,
+          "4": 0.8740740740740741,
+          "6": 0.9683333333333334,
+          "8": 0.8775925925925926
+        },
+        "source_val_worst_rx": 0.7892592592592592,
+        "elapsed_seconds": 6.9511925209953915,
+        "peak_cuda_allocated_bytes": 256430592
+      },
+      "resolved": {
+        "method": "cvs_rf_operator_identity",
+        "variant": "rf_gmp",
+        "model_seed": 2026092702,
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-rf-operator-identity-manysig-m8-r01/rf_gmp-s2026092702/source",
+        "epochs": 200,
+        "batch_size": 128,
+        "lr": 0.0002,
+        "lr_min": 1e-06,
+        "weight_decay": 0.0001,
+        "drop_last": false,
+        "augmentation": false,
+        "domain_backbone": false,
+        "extra_losses": [],
+        "selection": "fixed_last_epoch",
+        "split_seed": 392005,
+        "device": "cuda:0",
+        "rf_operator": {
+          "physics_mode": "causal_complex_lag_gmp",
+          "orders": [
+            1,
+            3,
+            5
+          ],
+          "aligned_delays": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cross_envelope_lags": [
+            1,
+            2
+          ],
+          "basis_terms": 28,
+          "complex_channels": 8,
+          "observation_channels": 32,
+          "radial_clip": 4.0,
+          "epsilon": 1e-06,
+          "order_scale_base": 2.0,
+          "sample_rate_hz": 25000000,
+          "input": "received_equalized1_unit_rms_IQ",
+          "coefficient_interpretation": "shared_source_learned_behavior_filters"
+        },
+        "pid": 1068406,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rf_operator_identity_20261002_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "commit": "010ff27a20a3bb8af90580aa1eda4ab7d08427df",
+        "torch_version": "2.1.0+cu121",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "source_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "steps_per_epoch": 50,
+        "total_parameters": 167665,
+        "trainable_parameters": 167665,
+        "U_s_use": "unused",
+        "target_access": false,
+        "precision": "float32",
+        "gradient_clipping": null,
+        "optimizer": "AdamW+CosineAnnealingLR",
+        "loader_seed": 2026092702,
+        "rf_operator_actual": {
+          "physics_mode": "causal_complex_lag_gmp",
+          "orders": [
+            1,
+            3,
+            5
+          ],
+          "aligned_delays": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cross_envelope_lags": [
+            1,
+            2
+          ],
+          "basis_terms": 28,
+          "complex_channels": 8,
+          "observation_channels": 32,
+          "radial_clip": 4.0,
+          "epsilon": 1e-06,
+          "order_scale_base": 2.0,
+          "sample_rate_hz": 25000000,
+          "input": "received_equalized1_unit_rms_IQ",
+          "coefficient_interpretation": "shared_source_learned_behavior_filters"
+        },
+        "rf_operator_active": true,
+        "classifier_scale": 30.0
+      },
+      "completion": null,
+      "profile": null,
+      "log_bytes": 10370,
+      "log_tail": [
+        "EPOCH {\"epoch\": 5, \"optimizer_steps\": 50, \"optimizer_steps_total\": 250, \"source_sample_exposure\": 6300, \"clean_ce\": 0.6691551125049591, \"total_loss\": 0.6691551125049591, \"ce_weight\": 1.0, \"learning_rate\": 0.00019980365947861305, \"gradient_norm\": 5.544791026115417, \"gradient_used_parameters\": 167665, \"augmentation_active\": false, \"satellite_sample_exposure\": 0, \"domain_backbone_active\": false, \"extra_losses_active\": false, \"pseudo_labels_active\": false, \"rf_operator_active\": true, \"rf_operator_diagnostics\": {\"physics_mode\": \"causal_complex_lag_gmp\", \"basis_terms\": 28, \"direct_coefficient_norm\": 2.9423885345458984, \"image_coefficient_norm\": 2.79958438873291, \"direct_gradient_norm\": 0.8694972991943359, \"image_gradient_norm\": 1.416274070739746, \"order_coefficient_norm\": {\"1\": 1.4055736064910889, \"3\": 2.6343955993652344, \"5\": 2.753115653991699}, \"cross_memory_coefficient_norm\": 3.099639654159546}, \"rf_diagnostic_gradient_scope\": \"last source batch of epoch\", \"source_val_count\": 27000, \"source_val_accuracy\": 0.8807037037037037, \"source_val_ce\": 0.3851107073942268, \"source_val_rx_accuracy\": {\"1\": 0.9414814814814815, \"3\": 0.7581481481481481, \"4\": 0.9033333333333333, \"6\": 0.9614814814814815, \"8\": 0.8390740740740741}, \"source_val_worst_rx\": 0.7581481481481481, \"elapsed_seconds\": 6.532132865002495, \"peak_cuda_allocated_bytes\": 256430592}",
+        "EPOCH {\"epoch\": 6, \"optimizer_steps\": 50, \"optimizer_steps_total\": 300, \"source_sample_exposure\": 6300, \"clean_ce\": 0.546117571592331, \"total_loss\": 0.546117571592331, \"ce_weight\": 1.0, \"learning_rate\": 0.00019969327470644626, \"gradient_norm\": 5.4892487144470214, \"gradient_used_parameters\": 167665, \"augmentation_active\": false, \"satellite_sample_exposure\": 0, \"domain_backbone_active\": false, \"extra_losses_active\": false, \"pseudo_labels_active\": false, \"rf_operator_active\": true, \"rf_operator_diagnostics\": {\"physics_mode\": \"causal_complex_lag_gmp\", \"basis_terms\": 28, \"direct_coefficient_norm\": 2.9437265396118164, \"image_coefficient_norm\": 2.80077862739563, \"direct_gradient_norm\": 1.952370047569275, \"image_gradient_norm\": 2.568413257598877, \"order_coefficient_norm\": {\"1\": 1.4033516645431519, \"3\": 2.6362082958221436, \"5\": 2.755157947540283}, \"cross_memory_coefficient_norm\": 3.1017940044403076}, \"rf_diagnostic_gradient_scope\": \"last source batch of epoch\", \"source_val_count\": 27000, \"source_val_accuracy\": 0.8935925925925926, \"source_val_ce\": 0.3404913491546004, \"source_val_rx_accuracy\": {\"1\": 0.9587037037037037, \"3\": 0.7892592592592592, \"4\": 0.8740740740740741, \"6\": 0.9683333333333334, \"8\": 0.8775925925925926}, \"source_val_worst_rx\": 0.7892592592592592, \"elapsed_seconds\": 6.9511925209953915, \"peak_cuda_allocated_bytes\": 256430592}"
+      ]
+    },
+    {
+      "row_id": "rf_mp-s2026092703",
+      "status": "RUNNING",
+      "gpu": 4,
+      "process": {
+        "pid": 1068497,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rf_operator_identity_20261002_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_rf_operator_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rf_operator_identity_20261002_r01/experiments/cvs_rf_operator_identity/configs/rf_mp-s2026092703.json",
+          ""
+        ]
+      },
+      "epoch": {
+        "epoch": 5,
+        "optimizer_steps": 50,
+        "optimizer_steps_total": 250,
+        "source_sample_exposure": 6300,
+        "clean_ce": 0.6597625553607941,
+        "total_loss": 0.6597625553607941,
+        "ce_weight": 1.0,
+        "learning_rate": 0.00019980365947861305,
+        "gradient_norm": 5.069022526741028,
+        "gradient_used_parameters": 167153,
+        "augmentation_active": false,
+        "satellite_sample_exposure": 0,
+        "domain_backbone_active": false,
+        "extra_losses_active": false,
+        "pseudo_labels_active": false,
+        "rf_operator_active": true,
+        "rf_operator_diagnostics": {
+          "physics_mode": "causal_complex_mp",
+          "basis_terms": 12,
+          "direct_coefficient_norm": 1.868538498878479,
+          "image_coefficient_norm": 1.8923858404159546,
+          "direct_gradient_norm": 0.7879474759101868,
+          "image_gradient_norm": 0.5076336860656738,
+          "order_coefficient_norm": {
+            "1": 1.5974162817001343,
+            "3": 1.4773554801940918,
+            "5": 1.5291311740875244
+          },
+          "cross_memory_coefficient_norm": null
+        },
+        "rf_diagnostic_gradient_scope": "last source batch of epoch",
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9046296296296297,
+        "source_val_ce": 0.3369605345691175,
+        "source_val_rx_accuracy": {
+          "1": 0.9638888888888889,
+          "3": 0.8018518518518518,
+          "4": 0.9135185185185185,
+          "6": 0.9729629629629629,
+          "8": 0.8709259259259259
+        },
+        "source_val_worst_rx": 0.8018518518518518,
+        "elapsed_seconds": 6.2665014550002525,
+        "peak_cuda_allocated_bytes": 252219904
+      },
+      "resolved": {
+        "method": "cvs_rf_operator_identity",
+        "variant": "rf_mp",
+        "model_seed": 2026092703,
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-rf-operator-identity-manysig-m8-r01/rf_mp-s2026092703/source",
+        "epochs": 200,
+        "batch_size": 128,
+        "lr": 0.0002,
+        "lr_min": 1e-06,
+        "weight_decay": 0.0001,
+        "drop_last": false,
+        "augmentation": false,
+        "domain_backbone": false,
+        "extra_losses": [],
+        "selection": "fixed_last_epoch",
+        "split_seed": 392005,
+        "device": "cuda:0",
+        "rf_operator": {
+          "physics_mode": "causal_complex_mp",
+          "orders": [
+            1,
+            3,
+            5
+          ],
+          "aligned_delays": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cross_envelope_lags": [],
+          "basis_terms": 12,
+          "complex_channels": 8,
+          "observation_channels": 32,
+          "radial_clip": 4.0,
+          "epsilon": 1e-06,
+          "order_scale_base": 2.0,
+          "sample_rate_hz": 25000000,
+          "input": "received_equalized1_unit_rms_IQ",
+          "coefficient_interpretation": "shared_source_learned_behavior_filters"
+        },
+        "pid": 1068497,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rf_operator_identity_20261002_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "commit": "010ff27a20a3bb8af90580aa1eda4ab7d08427df",
+        "torch_version": "2.1.0+cu121",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "source_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "steps_per_epoch": 50,
+        "total_parameters": 167153,
+        "trainable_parameters": 167153,
+        "U_s_use": "unused",
+        "target_access": false,
+        "precision": "float32",
+        "gradient_clipping": null,
+        "optimizer": "AdamW+CosineAnnealingLR",
+        "loader_seed": 2026092703,
+        "rf_operator_actual": {
+          "physics_mode": "causal_complex_mp",
+          "orders": [
+            1,
+            3,
+            5
+          ],
+          "aligned_delays": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cross_envelope_lags": [],
+          "basis_terms": 12,
+          "complex_channels": 8,
+          "observation_channels": 32,
+          "radial_clip": 4.0,
+          "epsilon": 1e-06,
+          "order_scale_base": 2.0,
+          "sample_rate_hz": 25000000,
+          "input": "received_equalized1_unit_rms_IQ",
+          "coefficient_interpretation": "shared_source_learned_behavior_filters"
+        },
+        "rf_operator_active": true,
+        "classifier_scale": 30.0
+      },
+      "completion": null,
+      "profile": null,
+      "log_bytes": 8919,
+      "log_tail": [
+        "EPOCH {\"epoch\": 4, \"optimizer_steps\": 50, \"optimizer_steps_total\": 200, \"source_sample_exposure\": 6300, \"clean_ce\": 0.8665203297138214, \"total_loss\": 0.8665203297138214, \"ce_weight\": 1.0, \"learning_rate\": 0.00019988954255871605, \"gradient_norm\": 5.765848612785339, \"gradient_used_parameters\": 167153, \"augmentation_active\": false, \"satellite_sample_exposure\": 0, \"domain_backbone_active\": false, \"extra_losses_active\": false, \"pseudo_labels_active\": false, \"rf_operator_active\": true, \"rf_operator_diagnostics\": {\"physics_mode\": \"causal_complex_mp\", \"basis_terms\": 12, \"direct_coefficient_norm\": 1.869301676750183, \"image_coefficient_norm\": 1.8898499011993408, \"direct_gradient_norm\": 1.9969960451126099, \"image_gradient_norm\": 1.6629605293273926, \"order_coefficient_norm\": {\"1\": 1.5973528623580933, \"3\": 1.4768791198730469, \"5\": 1.5274534225463867}, \"cross_memory_coefficient_norm\": null}, \"rf_diagnostic_gradient_scope\": \"last source batch of epoch\", \"source_val_count\": 27000, \"source_val_accuracy\": 0.8638148148148148, \"source_val_ce\": 0.4566820154911666, \"source_val_rx_accuracy\": {\"1\": 0.9137037037037037, \"3\": 0.7437037037037038, \"4\": 0.8792592592592593, \"6\": 0.9381481481481482, \"8\": 0.8442592592592593}, \"source_val_worst_rx\": 0.7437037037037038, \"elapsed_seconds\": 6.145134338992648, \"peak_cuda_allocated_bytes\": 252219904}",
+        "EPOCH {\"epoch\": 5, \"optimizer_steps\": 50, \"optimizer_steps_total\": 250, \"source_sample_exposure\": 6300, \"clean_ce\": 0.6597625553607941, \"total_loss\": 0.6597625553607941, \"ce_weight\": 1.0, \"learning_rate\": 0.00019980365947861305, \"gradient_norm\": 5.069022526741028, \"gradient_used_parameters\": 167153, \"augmentation_active\": false, \"satellite_sample_exposure\": 0, \"domain_backbone_active\": false, \"extra_losses_active\": false, \"pseudo_labels_active\": false, \"rf_operator_active\": true, \"rf_operator_diagnostics\": {\"physics_mode\": \"causal_complex_mp\", \"basis_terms\": 12, \"direct_coefficient_norm\": 1.868538498878479, \"image_coefficient_norm\": 1.8923858404159546, \"direct_gradient_norm\": 0.7879474759101868, \"image_gradient_norm\": 0.5076336860656738, \"order_coefficient_norm\": {\"1\": 1.5974162817001343, \"3\": 1.4773554801940918, \"5\": 1.5291311740875244}, \"cross_memory_coefficient_norm\": null}, \"rf_diagnostic_gradient_scope\": \"last source batch of epoch\", \"source_val_count\": 27000, \"source_val_accuracy\": 0.9046296296296297, \"source_val_ce\": 0.3369605345691175, \"source_val_rx_accuracy\": {\"1\": 0.9638888888888889, \"3\": 0.8018518518518518, \"4\": 0.9135185185185185, \"6\": 0.9729629629629629, \"8\": 0.8709259259259259}, \"source_val_worst_rx\": 0.8018518518518518, \"elapsed_seconds\": 6.2665014550002525, \"peak_cuda_allocated_bytes\": 252219904}"
+      ]
+    },
+    {
+      "row_id": "rf_gmp-s2026092703",
+      "status": "RUNNING",
+      "gpu": 5,
+      "process": {
+        "pid": 1068996,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rf_operator_identity_20261002_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_rf_operator_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rf_operator_identity_20261002_r01/experiments/cvs_rf_operator_identity/configs/rf_gmp-s2026092703.json",
+          ""
+        ]
+      },
+      "epoch": {
+        "epoch": 4,
+        "optimizer_steps": 50,
+        "optimizer_steps_total": 200,
+        "source_sample_exposure": 6300,
+        "clean_ce": 0.8838533461093903,
+        "total_loss": 0.8838533461093903,
+        "ce_weight": 1.0,
+        "learning_rate": 0.00019988954255871605,
+        "gradient_norm": 6.044361824989319,
+        "gradient_used_parameters": 167665,
+        "augmentation_active": false,
+        "satellite_sample_exposure": 0,
+        "domain_backbone_active": false,
+        "extra_losses_active": false,
+        "pseudo_labels_active": false,
+        "rf_operator_active": true,
+        "rf_operator_diagnostics": {
+          "physics_mode": "causal_complex_lag_gmp",
+          "basis_terms": 28,
+          "direct_coefficient_norm": 2.6820437908172607,
+          "image_coefficient_norm": 2.7949814796447754,
+          "direct_gradient_norm": 3.0879952907562256,
+          "image_gradient_norm": 2.578434467315674,
+          "order_coefficient_norm": {
+            "1": 1.5950376987457275,
+            "3": 2.442871570587158,
+            "5": 2.5482370853424072
+          },
+          "cross_memory_coefficient_norm": 2.8191728591918945
+        },
+        "rf_diagnostic_gradient_scope": "last source batch of epoch",
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.8612962962962963,
+        "source_val_ce": 0.45711070245628554,
+        "source_val_rx_accuracy": {
+          "1": 0.9248148148148149,
+          "3": 0.7211111111111111,
+          "4": 0.8787037037037037,
+          "6": 0.9409259259259259,
+          "8": 0.840925925925926
+        },
+        "source_val_worst_rx": 0.7211111111111111,
+        "elapsed_seconds": 6.103323499992257,
+        "peak_cuda_allocated_bytes": 256430592
+      },
+      "resolved": {
+        "method": "cvs_rf_operator_identity",
+        "variant": "rf_gmp",
+        "model_seed": 2026092703,
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-rf-operator-identity-manysig-m8-r01/rf_gmp-s2026092703/source",
+        "epochs": 200,
+        "batch_size": 128,
+        "lr": 0.0002,
+        "lr_min": 1e-06,
+        "weight_decay": 0.0001,
+        "drop_last": false,
+        "augmentation": false,
+        "domain_backbone": false,
+        "extra_losses": [],
+        "selection": "fixed_last_epoch",
+        "split_seed": 392005,
+        "device": "cuda:0",
+        "rf_operator": {
+          "physics_mode": "causal_complex_lag_gmp",
+          "orders": [
+            1,
+            3,
+            5
+          ],
+          "aligned_delays": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cross_envelope_lags": [
+            1,
+            2
+          ],
+          "basis_terms": 28,
+          "complex_channels": 8,
+          "observation_channels": 32,
+          "radial_clip": 4.0,
+          "epsilon": 1e-06,
+          "order_scale_base": 2.0,
+          "sample_rate_hz": 25000000,
+          "input": "received_equalized1_unit_rms_IQ",
+          "coefficient_interpretation": "shared_source_learned_behavior_filters"
+        },
+        "pid": 1068996,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rf_operator_identity_20261002_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "commit": "010ff27a20a3bb8af90580aa1eda4ab7d08427df",
+        "torch_version": "2.1.0+cu121",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "source_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "steps_per_epoch": 50,
+        "total_parameters": 167665,
+        "trainable_parameters": 167665,
+        "U_s_use": "unused",
+        "target_access": false,
+        "precision": "float32",
+        "gradient_clipping": null,
+        "optimizer": "AdamW+CosineAnnealingLR",
+        "loader_seed": 2026092703,
+        "rf_operator_actual": {
+          "physics_mode": "causal_complex_lag_gmp",
+          "orders": [
+            1,
+            3,
+            5
+          ],
+          "aligned_delays": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cross_envelope_lags": [
+            1,
+            2
+          ],
+          "basis_terms": 28,
+          "complex_channels": 8,
+          "observation_channels": 32,
+          "radial_clip": 4.0,
+          "epsilon": 1e-06,
+          "order_scale_base": 2.0,
+          "sample_rate_hz": 25000000,
+          "input": "received_equalized1_unit_rms_IQ",
+          "coefficient_interpretation": "shared_source_learned_behavior_filters"
+        },
+        "rf_operator_active": true,
+        "classifier_scale": 30.0
+      },
+      "completion": null,
+      "profile": null,
+      "log_bytes": 7656,
+      "log_tail": [
+        "EPOCH {\"epoch\": 3, \"optimizer_steps\": 50, \"optimizer_steps_total\": 150, \"source_sample_exposure\": 6300, \"clean_ce\": 1.1825431132316588, \"total_loss\": 1.1825431132316588, \"ce_weight\": 1.0, \"learning_rate\": 0.00019995090275639032, \"gradient_norm\": 5.22675555229187, \"gradient_used_parameters\": 167665, \"augmentation_active\": false, \"satellite_sample_exposure\": 0, \"domain_backbone_active\": false, \"extra_losses_active\": false, \"pseudo_labels_active\": false, \"rf_operator_active\": true, \"rf_operator_diagnostics\": {\"physics_mode\": \"causal_complex_lag_gmp\", \"basis_terms\": 28, \"direct_coefficient_norm\": 2.6813881397247314, \"image_coefficient_norm\": 2.7928805351257324, \"direct_gradient_norm\": 0.21610000729560852, \"image_gradient_norm\": 0.3291296660900116, \"order_coefficient_norm\": {\"1\": 1.5963468551635742, \"3\": 2.4408369064331055, \"5\": 2.546373128890991}, \"cross_memory_coefficient_norm\": 2.8177478313446045}, \"rf_diagnostic_gradient_scope\": \"last source batch of epoch\", \"source_val_count\": 27000, \"source_val_accuracy\": 0.768074074074074, \"source_val_ce\": 0.6638035761156568, \"source_val_rx_accuracy\": {\"1\": 0.8705555555555555, \"3\": 0.542962962962963, \"4\": 0.784074074074074, \"6\": 0.8588888888888889, \"8\": 0.7838888888888889}, \"source_val_worst_rx\": 0.542962962962963, \"elapsed_seconds\": 6.254536713997368, \"peak_cuda_allocated_bytes\": 256430592}",
+        "EPOCH {\"epoch\": 4, \"optimizer_steps\": 50, \"optimizer_steps_total\": 200, \"source_sample_exposure\": 6300, \"clean_ce\": 0.8838533461093903, \"total_loss\": 0.8838533461093903, \"ce_weight\": 1.0, \"learning_rate\": 0.00019988954255871605, \"gradient_norm\": 6.044361824989319, \"gradient_used_parameters\": 167665, \"augmentation_active\": false, \"satellite_sample_exposure\": 0, \"domain_backbone_active\": false, \"extra_losses_active\": false, \"pseudo_labels_active\": false, \"rf_operator_active\": true, \"rf_operator_diagnostics\": {\"physics_mode\": \"causal_complex_lag_gmp\", \"basis_terms\": 28, \"direct_coefficient_norm\": 2.6820437908172607, \"image_coefficient_norm\": 2.7949814796447754, \"direct_gradient_norm\": 3.0879952907562256, \"image_gradient_norm\": 2.578434467315674, \"order_coefficient_norm\": {\"1\": 1.5950376987457275, \"3\": 2.442871570587158, \"5\": 2.5482370853424072}, \"cross_memory_coefficient_norm\": 2.8191728591918945}, \"rf_diagnostic_gradient_scope\": \"last source batch of epoch\", \"source_val_count\": 27000, \"source_val_accuracy\": 0.8612962962962963, \"source_val_ce\": 0.45711070245628554, \"source_val_rx_accuracy\": {\"1\": 0.9248148148148149, \"3\": 0.7211111111111111, \"4\": 0.8787037037037037, \"6\": 0.9409259259259259, \"8\": 0.840925925925926}, \"source_val_worst_rx\": 0.7211111111111111, \"elapsed_seconds\": 6.103323499992257, \"peak_cuda_allocated_bytes\": 256430592}"
+      ]
+    },
+    {
+      "row_id": "rf_mp-s2026092704",
+      "status": "RUNNING",
+      "gpu": 6,
+      "process": {
+        "pid": 1069085,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rf_operator_identity_20261002_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_rf_operator_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rf_operator_identity_20261002_r01/experiments/cvs_rf_operator_identity/configs/rf_mp-s2026092704.json",
+          ""
+        ]
+      },
+      "epoch": {
+        "epoch": 4,
+        "optimizer_steps": 50,
+        "optimizer_steps_total": 200,
+        "source_sample_exposure": 6300,
+        "clean_ce": 0.9902272427082062,
+        "total_loss": 0.9902272427082062,
+        "ce_weight": 1.0,
+        "learning_rate": 0.00019988954255871605,
+        "gradient_norm": 5.526124892234802,
+        "gradient_used_parameters": 167153,
+        "augmentation_active": false,
+        "satellite_sample_exposure": 0,
+        "domain_backbone_active": false,
+        "extra_losses_active": false,
+        "pseudo_labels_active": false,
+        "rf_operator_active": true,
+        "rf_operator_diagnostics": {
+          "physics_mode": "causal_complex_mp",
+          "basis_terms": 12,
+          "direct_coefficient_norm": 1.803805947303772,
+          "image_coefficient_norm": 1.861802101135254,
+          "direct_gradient_norm": 2.8356690406799316,
+          "image_gradient_norm": 2.4349215030670166,
+          "order_coefficient_norm": {
+            "1": 1.5001236200332642,
+            "3": 1.4929875135421753,
+            "5": 1.4968767166137695
+          },
+          "cross_memory_coefficient_norm": null
+        },
+        "rf_diagnostic_gradient_scope": "last source batch of epoch",
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.7632592592592593,
+        "source_val_ce": 0.5878615179674493,
+        "source_val_rx_accuracy": {
+          "1": 0.7401851851851852,
+          "3": 0.6807407407407408,
+          "4": 0.7644444444444445,
+          "6": 0.8196296296296296,
+          "8": 0.8112962962962963
+        },
+        "source_val_worst_rx": 0.6807407407407408,
+        "elapsed_seconds": 6.049378971991246,
+        "peak_cuda_allocated_bytes": 252219904
+      },
+      "resolved": {
+        "method": "cvs_rf_operator_identity",
+        "variant": "rf_mp",
+        "model_seed": 2026092704,
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-rf-operator-identity-manysig-m8-r01/rf_mp-s2026092704/source",
+        "epochs": 200,
+        "batch_size": 128,
+        "lr": 0.0002,
+        "lr_min": 1e-06,
+        "weight_decay": 0.0001,
+        "drop_last": false,
+        "augmentation": false,
+        "domain_backbone": false,
+        "extra_losses": [],
+        "selection": "fixed_last_epoch",
+        "split_seed": 392005,
+        "device": "cuda:0",
+        "rf_operator": {
+          "physics_mode": "causal_complex_mp",
+          "orders": [
+            1,
+            3,
+            5
+          ],
+          "aligned_delays": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cross_envelope_lags": [],
+          "basis_terms": 12,
+          "complex_channels": 8,
+          "observation_channels": 32,
+          "radial_clip": 4.0,
+          "epsilon": 1e-06,
+          "order_scale_base": 2.0,
+          "sample_rate_hz": 25000000,
+          "input": "received_equalized1_unit_rms_IQ",
+          "coefficient_interpretation": "shared_source_learned_behavior_filters"
+        },
+        "pid": 1069085,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rf_operator_identity_20261002_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "commit": "010ff27a20a3bb8af90580aa1eda4ab7d08427df",
+        "torch_version": "2.1.0+cu121",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "source_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "steps_per_epoch": 50,
+        "total_parameters": 167153,
+        "trainable_parameters": 167153,
+        "U_s_use": "unused",
+        "target_access": false,
+        "precision": "float32",
+        "gradient_clipping": null,
+        "optimizer": "AdamW+CosineAnnealingLR",
+        "loader_seed": 2026092704,
+        "rf_operator_actual": {
+          "physics_mode": "causal_complex_mp",
+          "orders": [
+            1,
+            3,
+            5
+          ],
+          "aligned_delays": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cross_envelope_lags": [],
+          "basis_terms": 12,
+          "complex_channels": 8,
+          "observation_channels": 32,
+          "radial_clip": 4.0,
+          "epsilon": 1e-06,
+          "order_scale_base": 2.0,
+          "sample_rate_hz": 25000000,
+          "input": "received_equalized1_unit_rms_IQ",
+          "coefficient_interpretation": "shared_source_learned_behavior_filters"
+        },
+        "rf_operator_active": true,
+        "classifier_scale": 30.0
+      },
+      "completion": null,
+      "profile": null,
+      "log_bytes": 7543,
+      "log_tail": [
+        "EPOCH {\"epoch\": 3, \"optimizer_steps\": 50, \"optimizer_steps_total\": 150, \"source_sample_exposure\": 6300, \"clean_ce\": 1.324986333847046, \"total_loss\": 1.324986333847046, \"ce_weight\": 1.0, \"learning_rate\": 0.00019995090275639032, \"gradient_norm\": 4.411878628730774, \"gradient_used_parameters\": 167153, \"augmentation_active\": false, \"satellite_sample_exposure\": 0, \"domain_backbone_active\": false, \"extra_losses_active\": false, \"pseudo_labels_active\": false, \"rf_operator_active\": true, \"rf_operator_diagnostics\": {\"physics_mode\": \"causal_complex_mp\", \"basis_terms\": 12, \"direct_coefficient_norm\": 1.799724817276001, \"image_coefficient_norm\": 1.8553212881088257, \"direct_gradient_norm\": 0.5312040448188782, \"image_gradient_norm\": 0.7000516653060913, \"order_coefficient_norm\": {\"1\": 1.5016807317733765, \"3\": 1.4900418519973755, \"5\": 1.4852464199066162}, \"cross_memory_coefficient_norm\": null}, \"rf_diagnostic_gradient_scope\": \"last source batch of epoch\", \"source_val_count\": 27000, \"source_val_accuracy\": 0.7063333333333334, \"source_val_ce\": 0.7460618702835506, \"source_val_rx_accuracy\": {\"1\": 0.7094444444444444, \"3\": 0.6029629629629629, \"4\": 0.7274074074074074, \"6\": 0.7488888888888889, \"8\": 0.7429629629629629}, \"source_val_worst_rx\": 0.6029629629629629, \"elapsed_seconds\": 6.056426122013363, \"peak_cuda_allocated_bytes\": 252219904}",
+        "EPOCH {\"epoch\": 4, \"optimizer_steps\": 50, \"optimizer_steps_total\": 200, \"source_sample_exposure\": 6300, \"clean_ce\": 0.9902272427082062, \"total_loss\": 0.9902272427082062, \"ce_weight\": 1.0, \"learning_rate\": 0.00019988954255871605, \"gradient_norm\": 5.526124892234802, \"gradient_used_parameters\": 167153, \"augmentation_active\": false, \"satellite_sample_exposure\": 0, \"domain_backbone_active\": false, \"extra_losses_active\": false, \"pseudo_labels_active\": false, \"rf_operator_active\": true, \"rf_operator_diagnostics\": {\"physics_mode\": \"causal_complex_mp\", \"basis_terms\": 12, \"direct_coefficient_norm\": 1.803805947303772, \"image_coefficient_norm\": 1.861802101135254, \"direct_gradient_norm\": 2.8356690406799316, \"image_gradient_norm\": 2.4349215030670166, \"order_coefficient_norm\": {\"1\": 1.5001236200332642, \"3\": 1.4929875135421753, \"5\": 1.4968767166137695}, \"cross_memory_coefficient_norm\": null}, \"rf_diagnostic_gradient_scope\": \"last source batch of epoch\", \"source_val_count\": 27000, \"source_val_accuracy\": 0.7632592592592593, \"source_val_ce\": 0.5878615179674493, \"source_val_rx_accuracy\": {\"1\": 0.7401851851851852, \"3\": 0.6807407407407408, \"4\": 0.7644444444444445, \"6\": 0.8196296296296296, \"8\": 0.8112962962962963}, \"source_val_worst_rx\": 0.6807407407407408, \"elapsed_seconds\": 6.049378971991246, \"peak_cuda_allocated_bytes\": 252219904}"
+      ]
+    },
+    {
+      "row_id": "rf_gmp-s2026092704",
+      "status": "RUNNING",
+      "gpu": 7,
+      "process": {
+        "pid": 1069172,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rf_operator_identity_20261002_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_rf_operator_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rf_operator_identity_20261002_r01/experiments/cvs_rf_operator_identity/configs/rf_gmp-s2026092704.json",
+          ""
+        ]
+      },
+      "epoch": {
+        "epoch": 3,
+        "optimizer_steps": 50,
+        "optimizer_steps_total": 150,
+        "source_sample_exposure": 6300,
+        "clean_ce": 1.3002328503131866,
+        "total_loss": 1.3002328503131866,
+        "ce_weight": 1.0,
+        "learning_rate": 0.00019995090275639032,
+        "gradient_norm": 4.295219783782959,
+        "gradient_used_parameters": 167665,
+        "augmentation_active": false,
+        "satellite_sample_exposure": 0,
+        "domain_backbone_active": false,
+        "extra_losses_active": false,
+        "pseudo_labels_active": false,
+        "rf_operator_active": true,
+        "rf_operator_diagnostics": {
+          "physics_mode": "causal_complex_lag_gmp",
+          "basis_terms": 28,
+          "direct_coefficient_norm": 2.7726306915283203,
+          "image_coefficient_norm": 2.7761127948760986,
+          "direct_gradient_norm": 1.3464617729187012,
+          "image_gradient_norm": 2.0221126079559326,
+          "order_coefficient_norm": {
+            "1": 1.5039950609207153,
+            "3": 2.5471460819244385,
+            "5": 2.5776593685150146
+          },
+          "cross_memory_coefficient_norm": 2.965578556060791
+        },
+        "rf_diagnostic_gradient_scope": "last source batch of epoch",
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.7298518518518519,
+        "source_val_ce": 0.7117486683439326,
+        "source_val_rx_accuracy": {
+          "1": 0.7346296296296296,
+          "3": 0.6098148148148148,
+          "4": 0.7614814814814815,
+          "6": 0.789074074074074,
+          "8": 0.7542592592592593
+        },
+        "source_val_worst_rx": 0.6098148148148148,
+        "elapsed_seconds": 6.218588816002011,
+        "peak_cuda_allocated_bytes": 256430592
+      },
+      "resolved": {
+        "method": "cvs_rf_operator_identity",
+        "variant": "rf_gmp",
+        "model_seed": 2026092704,
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-rf-operator-identity-manysig-m8-r01/rf_gmp-s2026092704/source",
+        "epochs": 200,
+        "batch_size": 128,
+        "lr": 0.0002,
+        "lr_min": 1e-06,
+        "weight_decay": 0.0001,
+        "drop_last": false,
+        "augmentation": false,
+        "domain_backbone": false,
+        "extra_losses": [],
+        "selection": "fixed_last_epoch",
+        "split_seed": 392005,
+        "device": "cuda:0",
+        "rf_operator": {
+          "physics_mode": "causal_complex_lag_gmp",
+          "orders": [
+            1,
+            3,
+            5
+          ],
+          "aligned_delays": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cross_envelope_lags": [
+            1,
+            2
+          ],
+          "basis_terms": 28,
+          "complex_channels": 8,
+          "observation_channels": 32,
+          "radial_clip": 4.0,
+          "epsilon": 1e-06,
+          "order_scale_base": 2.0,
+          "sample_rate_hz": 25000000,
+          "input": "received_equalized1_unit_rms_IQ",
+          "coefficient_interpretation": "shared_source_learned_behavior_filters"
+        },
+        "pid": 1069172,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rf_operator_identity_20261002_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "commit": "010ff27a20a3bb8af90580aa1eda4ab7d08427df",
+        "torch_version": "2.1.0+cu121",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "source_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "steps_per_epoch": 50,
+        "total_parameters": 167665,
+        "trainable_parameters": 167665,
+        "U_s_use": "unused",
+        "target_access": false,
+        "precision": "float32",
+        "gradient_clipping": null,
+        "optimizer": "AdamW+CosineAnnealingLR",
+        "loader_seed": 2026092704,
+        "rf_operator_actual": {
+          "physics_mode": "causal_complex_lag_gmp",
+          "orders": [
+            1,
+            3,
+            5
+          ],
+          "aligned_delays": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cross_envelope_lags": [
+            1,
+            2
+          ],
+          "basis_terms": 28,
+          "complex_channels": 8,
+          "observation_channels": 32,
+          "radial_clip": 4.0,
+          "epsilon": 1e-06,
+          "order_scale_base": 2.0,
+          "sample_rate_hz": 25000000,
+          "input": "received_equalized1_unit_rms_IQ",
+          "coefficient_interpretation": "shared_source_learned_behavior_filters"
+        },
+        "rf_operator_active": true,
+        "classifier_scale": 30.0
+      },
+      "completion": null,
+      "profile": null,
+      "log_bytes": 6328,
+      "log_tail": [
+        "EPOCH {\"epoch\": 2, \"optimizer_steps\": 50, \"optimizer_steps_total\": 100, \"source_sample_exposure\": 6300, \"clean_ce\": 1.8237437176704407, \"total_loss\": 1.8237437176704407, \"ce_weight\": 1.0, \"learning_rate\": 0.00019998772493192525, \"gradient_norm\": 4.150762319564819, \"gradient_used_parameters\": 167665, \"augmentation_active\": false, \"satellite_sample_exposure\": 0, \"domain_backbone_active\": false, \"extra_losses_active\": false, \"pseudo_labels_active\": false, \"rf_operator_active\": true, \"rf_operator_diagnostics\": {\"physics_mode\": \"causal_complex_lag_gmp\", \"basis_terms\": 28, \"direct_coefficient_norm\": 2.7725400924682617, \"image_coefficient_norm\": 2.7737534046173096, \"direct_gradient_norm\": 0.6297926306724548, \"image_gradient_norm\": 1.0824856758117676, \"order_coefficient_norm\": {\"1\": 1.5043939352035522, \"3\": 2.5492677688598633, \"5\": 2.5726871490478516}, \"cross_memory_coefficient_norm\": 2.9643476009368896}, \"rf_diagnostic_gradient_scope\": \"last source batch of epoch\", \"source_val_count\": 27000, \"source_val_accuracy\": 0.6784444444444444, \"source_val_ce\": 1.0605113738731102, \"source_val_rx_accuracy\": {\"1\": 0.7574074074074074, \"3\": 0.4527777777777778, \"4\": 0.7511111111111111, \"6\": 0.7438888888888889, \"8\": 0.687037037037037}, \"source_val_worst_rx\": 0.4527777777777778, \"elapsed_seconds\": 6.187115524007822, \"peak_cuda_allocated_bytes\": 256430592}",
+        "EPOCH {\"epoch\": 3, \"optimizer_steps\": 50, \"optimizer_steps_total\": 150, \"source_sample_exposure\": 6300, \"clean_ce\": 1.3002328503131866, \"total_loss\": 1.3002328503131866, \"ce_weight\": 1.0, \"learning_rate\": 0.00019995090275639032, \"gradient_norm\": 4.295219783782959, \"gradient_used_parameters\": 167665, \"augmentation_active\": false, \"satellite_sample_exposure\": 0, \"domain_backbone_active\": false, \"extra_losses_active\": false, \"pseudo_labels_active\": false, \"rf_operator_active\": true, \"rf_operator_diagnostics\": {\"physics_mode\": \"causal_complex_lag_gmp\", \"basis_terms\": 28, \"direct_coefficient_norm\": 2.7726306915283203, \"image_coefficient_norm\": 2.7761127948760986, \"direct_gradient_norm\": 1.3464617729187012, \"image_gradient_norm\": 2.0221126079559326, \"order_coefficient_norm\": {\"1\": 1.5039950609207153, \"3\": 2.5471460819244385, \"5\": 2.5776593685150146}, \"cross_memory_coefficient_norm\": 2.965578556060791}, \"rf_diagnostic_gradient_scope\": \"last source batch of epoch\", \"source_val_count\": 27000, \"source_val_accuracy\": 0.7298518518518519, \"source_val_ce\": 0.7117486683439326, \"source_val_rx_accuracy\": {\"1\": 0.7346296296296296, \"3\": 0.6098148148148148, \"4\": 0.7614814814814815, \"6\": 0.789074074074074, \"8\": 0.7542592592592593}, \"source_val_worst_rx\": 0.6098148148148148, \"elapsed_seconds\": 6.218588816002011, \"peak_cuda_allocated_bytes\": 256430592}"
+      ]
+    }
+  ],
+  "dispatcher_process": {
+    "pid": 1068124,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rf_operator_identity_20261002_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_rf_operator_identity.dispatch",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rf_operator_identity_20261002_r01/experiments/cvs_rf_operator_identity/configs/launch_spec.json",
+      ""
+    ]
+  },
+  "gpu": "1068141, GPU-56adac86-77cd-36c9-8770-dbf002650461, 918 MiB\n1068230, GPU-a2d039ff-1792-4222-2b47-140429e10f94, 918 MiB\n1068319, GPU-4fb45b9a-894a-536b-0e0a-09f7c1341562, 918 MiB\n1068406, GPU-7b4bacb3-4901-6845-a414-0dfdfeeade97, 918 MiB\n1068497, GPU-95d925a1-7218-ca7b-adef-164241f4f491, 918 MiB\n1068996, GPU-ef5f59f2-e03e-fe6e-ea6b-3e03afc9b331, 918 MiB\n1069085, GPU-5463e082-259e-537b-603a-01575d45801c, 918 MiB\n1069172, GPU-9c4eb614-ca19-a390-aaf4-801f8980b6a9, 918 MiB\n"
+}
