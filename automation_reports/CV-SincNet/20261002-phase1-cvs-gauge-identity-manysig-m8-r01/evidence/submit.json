@@ -1,0 +1,16 @@
+{
+  "status": "SUBMITTED",
+  "pid": 1177298,
+  "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_gauge_identity_20261002_r01",
+  "argv": [
+    "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "-u",
+    "-m",
+    "experiments.cvs_gauge_identity.dispatch",
+    "--spec",
+    "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_gauge_identity_20261002_r01/experiments/cvs_gauge_identity/configs/launch_spec.json"
+  ],
+  "log": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_gauge_identity_20261002_r01/dispatcher.stdout.log",
+  "commit": "8f20a4e8dc7380f75a3966ac04fa282c2f110148",
+  "sha256": "25b5cc4a5016342513c20abac7aa2255da99867fd62b4cb96bd91147d04659e2"
+}

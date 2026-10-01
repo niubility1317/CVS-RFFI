@@ -6,4 +6,4 @@
 
 |名称|记录类型|证据入口|
 |---|---|---|
-|CVS物理研发：保留完整IQ的逐包相位规范化|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-gauge-identity-manysig-m8-r01/report.md)|
+|CVS 完整 IQ 相位规范化：源域预登记|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-gauge-identity-manysig-m8-r01/report.md)|
