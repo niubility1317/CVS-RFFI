@@ -1,14 +1,14 @@
 # D92：Affine 之后的联合 LocalRidge 数学设计
 
-状态：`DESIGN_DOCUMENT / PARTIAL_IMPLEMENTATION / NOT_FROZEN_FOR_EXPERIMENT`。日期：2026-10-01。
+状态：`DESIGN_FROZEN / CORE_ENTRY_SYNTHETIC_VERIFIED / FULL_ANALYSIS_IN_PROGRESS / PREREGISTERED_NOT_LAUNCHED`。日期：2026-10-01。
 
 本文推荐一条后续结构路线：**B 直接优化训练用 RMS CE；C 在解析 LocalRidge 头内部限制完整残差，使其在当前旧 support 上恒为零。** C 的约束覆盖全部注册列，包括新增类列。adapter 仍可更新，保护恒等式对每次当前 U 都成立。该路线保留解析头、实际 B 函数继承、固定旧尺度和现有有限更新预算，不引入 keep 权重、GEM 半空间、类别校准系数或参数网格。
 
-这是一份供后续预登记和实现审查使用的设计。主任务后续已完成[正核解析头与完整伴随](D92_CONDITIONAL_AFFINE_KERNEL_IMPLEMENTATION_20261001.md)的 20 项独立 KKT/方向差分合成验证；联合 SFT 上层和完整实验尚未完成，不能把局部验证当成端到端验证。它不修改正在运行的 Affine，不宣称准确率提高或 query 零遗忘。下文的“精确”均指数学上的精确；浮点实现需要独立残差和容差核验。
+数学设计已落实为独立方法 `D92-ConditionalJointLocalRidge-v1`。root 已完成[正核解析头](D92_CONDITIONAL_AFFINE_KERNEL_IMPLEMENTATION_20261001.md) 20 项、[独立完整 KKT 证书](D92_CONDITIONAL_MATH_CERTIFICATE_20261001.md) 63 项、[联合 SFT 核心与运行入口](D92_CONDITIONAL_JOINT_IMPLEMENTATION_20261001.md) 37 项及[报告与训练诊断](D92_CONDITIONAL_JOINT_REPORTING_20261001.md) 18 项合成检查。实验 `20261001-phase2-d92-conditional-joint-support-m2-r01` 已按实际输入身份预登记，独立 summary/analyzer 尚在接入，未发布或启动，暂无真实准确率、星载资源或 query 零遗忘结论。它不修改正在运行的 Affine。下文的“精确”均指数学上的精确；浮点实现需要独立残差和容差核验。
 
 ## 1. 依据、权限与要解决的结构问题
 
-允许的证据是当前数学文档、纯源码、一手文献，以及明确授权的 [AJLR training-only findings](D92_AJLR_TRAINING_FINDINGS_20261001.md)。未读取 support_summary、query/outer 评分、原始 snapshot/IQ/权重、全局实验索引、handoff 或其他真实结果。本次只读取该 findings 文档，没有打开真实派生流或其他真实产物，也没有选择训练最高步骤。
+设计 worker 允许的证据是当前数学文档、纯源码、一手文献，以及明确授权的 [AJLR training-only findings](D92_AJLR_TRAINING_FINDINGS_20261001.md)。该 worker 未读取 support_summary、query/outer 评分、原始 snapshot/IQ/权重、全局实验索引、handoff 或其他真实结果，只读取该 findings 文档，没有打开真实派生流或其他真实产物，也没有选择训练最高步骤。root 的运行预登记和交付状态另记于本页开头及本次 run 记录。
 
 training-only findings 给出两个与结构有关的事实：C 的冻结 B prior 到 Z=0 注册头已经改变旧类的全注册竞争；adapter 随后的更新不能自动消除这一变化。另有 accepted step 使 RMS CE 上升、总目标下降，说明 `RMSCE + .5||Z||²` 的下降保证不等于 RMS CE 下降保证。这些是训练目标的诊断，不是泛化证据；inner held 的标签参与 optimizer，不能称为独立验证集。本文只据此定位需要改变的方程，不用训练正确率挑 checkpoint、预算或系数。
 
@@ -327,7 +327,7 @@ adapter 梯度坐标仍为 `736r`，r≤8；解析 α、β、v 与 B 的 α_B/b_
 
 ## 9. 后续实现与必要验证清单
 
-本文件不指定新 schema/method，不改现有 core。若 root 决定预登记实现，应独立模块、入口、summary 和方法配置，继续保留现有 release；本设计不是现有 Affine 的热修补。
+实现使用独立 schema `d92_conditional_joint_local_ridge_v1`、方法 `D92-ConditionalJointLocalRidge-v1`，以及独立模块、入口、summary 和配置，继续保留现有 release；本设计不是现有 Affine 的热修补。
 
 训练 archive 至少保留当前 prepared H/W/SVD/anchor、物理 IDs/classes/分组、实际 B lineage 和完整 prior 状态，以及每个 current head 的 A/B/D/F/E、J/z/s/c_N/c_H、K_perp/L_perp、R_N、α/β/v、scores、factor 和真实 τ/γ/s₀。gradient archive 保留 G、T、Λ、X_α/X_T 和完整 kernel/adapter 上游，INITIAL/GRADIENT/TRIAL/STEP/FINAL 的坐标、方向、RMS CE sums/counts、预算与失败原因。summary 应从原/适配几何及 actual B 独立重建式 (5)–(17)，不能只信打印分数或借 core forward 的结果。
 
@@ -340,7 +340,7 @@ adapter 梯度坐标仍为 `736r`，r≤8；解析 α、β、v 与 B 的 α_B/b_
 5. new0 精确 object/state 复用；K1/rank0 完整头；τ0 非零等价核及重复组；零核强制 b=0；新旧核输入重合的不可学习方向；病态 A 无 jitter 的显式失败与残差证据。
 6. RMS CE-only Armijo 使用实际投影 delta、4×12 固定预算、最后 accepted 而非最高训练 step；所有 rejected trial/prior/projection/adjoint RHS 与 bytes 的实际计数、无损 archive 和独立篡改拒绝。
 
-其中正核解析头、独立 primal KKT、五个原核块及 old/new/held 端点完整伴随、margin 界与远处反例已在上述独立模块通过合成测试；真实分支/adapter 到 Z、顺序状态、退化分支、预算、完整日志和端到端集成仍待验证。实际训练/发布/Git/远端仍由 root 统一负责，局部数值测试通过不能替代完整预登记实验及独立 scorer。该实现另外执行 A、raw Schur 和 K_perp 三次谱诊断，计算账必须包含这些额外立方规模成本。
+其中正核解析头、独立 primal KKT、五个原核块及 old/new/held 端点完整伴随、margin 界与远处反例、真实分支/adapter 到 Z、顺序状态、退化分支、预算、实际日志 callback 和无损归档均已通过上述合成测试。完整独立分析链及实际运行仍待完成；局部数值测试通过不能替代预登记实验及独立 scorer。该实现另外执行 A、raw Schur 和 K_perp 三次谱诊断，计算账必须包含这些额外立方规模成本。
 
 ## 10. 预登记三阶段报告与推荐结论
 

@@ -1,0 +1,39 @@
+{
+  "status": "SYNTHETIC_PIPELINE_VERIFIED_NOT_LAUNCHED",
+  "run_id": "20261001-phase2-d92-conditional-joint-support-m2-r01",
+  "checks": [
+    {
+      "component": "independent_summary_analyzer",
+      "passed": 31,
+      "seconds": 26.33,
+      "canonical_output": "E:\\type10-7\\.codex_tmp\\pytest_utf8_1790821231973550500"
+    },
+    {
+      "component": "report_and_complete_training_diagnostics",
+      "passed": 18,
+      "seconds": 18.42,
+      "canonical_output": "E:\\type10-7\\.codex_tmp\\pytest_utf8_1790820313572737900"
+    },
+    {
+      "component": "release_isolated_bundle_import",
+      "passed": 4,
+      "seconds": 1.43,
+      "canonical_output": "E:\\type10-7\\.codex_tmp\\pytest_utf8_1790821375699915600"
+    }
+  ],
+  "independent_summary_candidate_fit_forward_score_adjoint_calls": 0,
+  "geometry_fix": "Independent zero-adapter mapping reconstructs normalized original geometry; candidate unchanged",
+  "source_bundle_transitive_imports": "Isolated subprocess -I imports four analysis/reporting modules from copied whitelist only",
+  "direct_correctness_review": {
+    "reviewer": "anchor_joint_core",
+    "P0_found": 0,
+    "P1_found": 1,
+    "P1": "Missing Affine analysis transitive imports in publisher whitelist",
+    "resolution": "Explicit whitelist completed; isolated bundle import regression passed"
+  },
+  "actual_A_measured": false,
+  "new_experiment_launched": false,
+  "performance_result": false,
+  "query_or_source_samples_read": false,
+  "first_summary_failure_log": "pytest_utf8_1790820898461554800"
+}

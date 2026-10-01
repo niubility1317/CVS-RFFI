@@ -25,7 +25,12 @@ PATHS=[
     'tools/prepare_d92_conditional_joint_probe.py','tools/run_d92_conditional_joint_probe.py',
     'tools/evaluate_d92_conditional_joint_probe.py','tools/preflight_d92_conditional_joint_probe.py',
     'tools/publish_d92_conditional_joint_probe.py','tools/d92_conditional_analysis_math.py',
-    'docs/D92_CONDITIONAL_MATH_CERTIFICATE_20261001.md','docs/D92_CONDITIONAL_JOINT_ENTRY_20261001.md',SUMMARY]
+    'docs/D92_CONDITIONAL_MATH_CERTIFICATE_20261001.md','docs/D92_CONDITIONAL_JOINT_ENTRY_20261001.md',SUMMARY,
+    'tools/summarize_d92_affine_joint_probe.py','tools/d92_affine_analysis_math.py',
+    'tools/evaluate_d92_affine_joint_probe.py','tools/publish_d92_branch_support_probe.py',
+    'tools/analyze_d92_conditional_joint_probe.py','docs/D92_CONDITIONAL_JOINT_ANALYSIS_20261001.md',
+    'tools/report_d92_conditional_joint_support.py','tools/collect_d92_conditional_joint_training_diagnostics.py',
+    'tools/collect_d92_affine_joint_training_diagnostics.py','docs/D92_CONDITIONAL_JOINT_REPORTING_20261001.md']
 
 
 def release_paths(spec):

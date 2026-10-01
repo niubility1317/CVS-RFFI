@@ -1,0 +1,144 @@
+F....F............F............                                          [100%]
+================================== FAILURES ===================================
+_ test_real_candidate_complete_trace_independent_summary_without_candidate_calls _
+
+production = {'old': ['a', 'b'], 'record': {'accepted_trial_count': 24, 'adapter_physical_evaluation_count': 432, 'ajlr_forward_eva...oduction0'), 'split': {'k': 3, 'new_count': 1, 'receiver': 'synthetic_rx', 'registered_classes': ['a', 'b', 'z'], ...}}
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000200E9935F30>
+
+    def test_real_candidate_complete_trace_independent_summary_without_candidate_calls(production, monkeypatch):
+        from cvsrffi import d92_conditional_joint_local_ridge as core
+        from cvsrffi import d92_conditional_affine_kernel as kernel
+        from cvsrffi import d92_affine_joint_local_ridge as affine
+        def forbidden(*args, **kwargs): raise AssertionError('Candidate math cannot validate itself')
+        for module, names in ((core, ('prepare_conditional_joint_training', 'evaluate_conditional_joint_objective', 'fit_conditional_joint_local_ridge', '_forward', '_backward')),
+                              (kernel, ('fit_conditional_affine', 'conditional_affine_adjoint')),
+                              (affine, ('_solve_affine_head', '_affine_adjoint'))):
+            for name in names: monkeypatch.setattr(module, name, forbidden)
+        monkeypatch.setattr(core.ConditionalJointState, 'score', forbidden)
+>       resolver = summary.StateResolver(production['root']); logs, events, metrics, training = _verify(production, resolver)
+
+tests\test_summarize_d92_conditional_joint_probe.py:83: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_summarize_d92_conditional_joint_probe.py:57: in _verify
+    return summary.verify_record(case['record'] if record is None else record, case['split'], case['old'],
+tools\summarize_d92_conditional_joint_probe.py:689: in verify_record
+    scores = head_score(resolver(stage['final_state_ref']), {key: value[subset] for key, value in raw.items()})
+tools\summarize_d92_conditional_joint_probe.py:105: in head_score
+    _array_close(affine_analysis.head_score(part, raw), scores, 'R0 deployment gauge differs from independent centered function')
+tools\summarize_d92_affine_joint_probe.py:226: in _array_close
+    check(float(np.linalg.norm(a-b)) <= tol, message)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+condition = np.False_
+message = 'R0 deployment gauge differs from independent centered function'
+
+    def check(condition, message):
+        if not condition:
+>           raise ValueError(message)
+E           ValueError: R0 deployment gauge differs from independent centered function
+
+tools\evaluate_d92_branch_support_probe.py:34: ValueError
+_______________ test_legacy_plus_Z_coordinate_gradient_rejected _______________
+
+production = {'old': ['a', 'b'], 'record': {'accepted_trial_count': 24, 'adapter_physical_evaluation_count': 432, 'ajlr_forward_eva...oduction0'), 'split': {'k': 3, 'new_count': 1, 'receiver': 'synthetic_rx', 'registered_classes': ['a', 'b', 'z'], ...}}
+
+    def test_legacy_plus_Z_coordinate_gradient_rejected(production):
+        resolver = summary.StateResolver(production['root']); target = None
+        for fold in production['record']['folds']:
+            for stage in fold['candidate_stages']:
+                for gradient in stage['gradients']:
+                    ref = gradient['state_ref']
+                    if np.linalg.norm(resolver(ref)['Z']) > 1e-8: target = ref; break
+                if target is not None: break
+            if target is not None: break
+        assert target is not None, 'Synthetic trace must include an accepted nonzero coordinate state'
+        def mutate(data): data['g_Z'] += data['Z']
+        with pytest.raises(ValueError, match='gradient'):
+>           _verify(production, ChangedResolver(production['root'], target, mutate))
+
+tests\test_summarize_d92_conditional_joint_probe.py:125: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_summarize_d92_conditional_joint_probe.py:57: in _verify
+    return summary.verify_record(case['record'] if record is None else record, case['split'], case['old'],
+tools\summarize_d92_conditional_joint_probe.py:689: in verify_record
+    scores = head_score(resolver(stage['final_state_ref']), {key: value[subset] for key, value in raw.items()})
+tools\summarize_d92_conditional_joint_probe.py:105: in head_score
+    _array_close(affine_analysis.head_score(part, raw), scores, 'R0 deployment gauge differs from independent centered function')
+tools\summarize_d92_affine_joint_probe.py:226: in _array_close
+    check(float(np.linalg.norm(a-b)) <= tol, message)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+condition = np.False_
+message = 'R0 deployment gauge differs from independent centered function'
+
+    def check(condition, message):
+        if not condition:
+>           raise ValueError(message)
+E           ValueError: R0 deployment gauge differs from independent centered function
+
+tools\evaluate_d92_branch_support_probe.py:34: ValueError
+
+During handling of the above exception, another exception occurred:
+
+production = {'old': ['a', 'b'], 'record': {'accepted_trial_count': 24, 'adapter_physical_evaluation_count': 432, 'ajlr_forward_eva...oduction0'), 'split': {'k': 3, 'new_count': 1, 'receiver': 'synthetic_rx', 'registered_classes': ['a', 'b', 'z'], ...}}
+
+    def test_legacy_plus_Z_coordinate_gradient_rejected(production):
+        resolver = summary.StateResolver(production['root']); target = None
+        for fold in production['record']['folds']:
+            for stage in fold['candidate_stages']:
+                for gradient in stage['gradients']:
+                    ref = gradient['state_ref']
+                    if np.linalg.norm(resolver(ref)['Z']) > 1e-8: target = ref; break
+                if target is not None: break
+            if target is not None: break
+        assert target is not None, 'Synthetic trace must include an accepted nonzero coordinate state'
+        def mutate(data): data['g_Z'] += data['Z']
+>       with pytest.raises(ValueError, match='gradient'):
+E       AssertionError: Regex pattern did not match.
+E        Regex: 'gradient'
+E        Input: 'R0 deployment gauge differs from independent centered function'
+
+tests\test_summarize_d92_conditional_joint_probe.py:124: AssertionError
+_________ test_incomplete_archive_is_rejected_before_numeric_loading __________
+
+tmp_path = WindowsPath('E:/type10-7/.codex_tmp/pytest_temp_1790820880710915000/basetemp/test_incomplete_archive_is_rej0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000200E76BD450>
+
+    def test_incomplete_archive_is_rejected_before_numeric_loading(tmp_path, monkeypatch):
+        archive = entry.StateArchive(tmp_path); archive('empty_scope/one', dict(value=np.ones(1)))
+>       archive.finalize('INCOMPLETE')
+
+tests\test_summarize_d92_conditional_joint_probe.py:177: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tools\evaluate_d92_conditional_joint_probe.py:98: in finalize
+    phase = json.loads(ref['namespace'])['state'] if ref['namespace'] else 'unscoped'
+..\..\..\local_envs\ssr-gpu\lib\json\__init__.py:346: in loads
+    return _default_decoder.decode(s)
+..\..\..\local_envs\ssr-gpu\lib\json\decoder.py:337: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <json.decoder.JSONDecoder object at 0x00000200B31B6E60>
+s = 'empty_scope', idx = 0
+
+    def raw_decode(self, s, idx=0):
+        """Decode a JSON document from ``s`` (a ``str`` beginning with
+        a JSON document) and return a 2-tuple of the Python
+        representation and the index in ``s`` where the document ended.
+    
+        This can be used to decode a JSON document from a string that may
+        have extraneous data at the end.
+    
+        """
+        try:
+            obj, end = self.scan_once(s, idx)
+        except StopIteration as err:
+>           raise JSONDecodeError("Expecting value", s, err.value) from None
+E           json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+..\..\..\local_envs\ssr-gpu\lib\json\decoder.py:355: JSONDecodeError
+=========================== short test summary info ===========================
+FAILED tests/test_summarize_d92_conditional_joint_probe.py::test_real_candidate_complete_trace_independent_summary_without_candidate_calls
+FAILED tests/test_summarize_d92_conditional_joint_probe.py::test_legacy_plus_Z_coordinate_gradient_rejected
+FAILED tests/test_summarize_d92_conditional_joint_probe.py::test_incomplete_archive_is_rejected_before_numeric_loading
+3 failed, 28 passed in 15.44s

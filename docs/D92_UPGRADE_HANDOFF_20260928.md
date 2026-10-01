@@ -1,3 +1,9 @@
+## 最新状态：条件联合完整支持集链验证，准备唯一新launch（2026-10-01）
+
+VERIFIED：新Conditional独立summary/analyzer31项、完整报告/训练诊断18项和隔离白名单bundle4项检查通过。真实合成训练trace在禁candidate数学/score条件下独立重建通过；首轮归一化original几何和namespace问题已修、原失败保留。唯一独立P1发布传递依赖已补齐并回归验证，未发现P0。实际4row/160parent/1800path支持集实验保持预登记，尚未publish/launch；真实性能/A及B−A仍N/A。只root可启动，新方法不修改健康Affineanalysis，目标ACTIVE。
+
+Conditional核心/ENTRY37、完整KKT63、独立summary31、report/collector18、隔离bundle4均通过。新spec configs/d92_conditional_joint_support_20261001.json；publisherCPU2lane/BLAS2，无GPU或checkpoint加载。新release/run当前不存在，metadata_preflight_20261001_r01.json已有4row source-only/capsule binding证据。root完成本提交及远端OID核对后可唯一launch；恢复先读launch证据和远端进程，不能盲目重复publisher。当前旧Affineanalysis仅handle2931/PID501716/start5870553/source1acc83a活跃，最新health1790820688559687000证明推进且无summary；保留运行，不重复analysis。AJLR及安装/本轮Conda测试全部结束；不得再poll60237/46271/56243/2851/61558/81979。A还缺实际source head行绑定/scale/weight包；不可用R0代替。
+
 ## 最新状态：条件联合核心/入口验证，实验已预登记未启动（2026-10-01）
 
 VERIFIED：独立完整KKT证书63项及核心与5ENTRY联合37项合成检查通过，首次具体失败修复后通过且原日志保留。固定Phase1、合法support缓存4row/160parent已预登记，metadata-only preflight核实；独立summary/analyzer/report/collector在实现。未publish/launch，暂无真实性能结果；A/B−A仍N/A，目标ACTIVE。

@@ -1,6 +1,9 @@
 """Release capability/whitelist only; no Git, SSH, archive or launch executed."""
 import json
 from pathlib import Path
+import shutil
+import subprocess
+import sys
 from unittest.mock import patch
 
 import pytest
@@ -30,3 +33,29 @@ def test_declared_spec_path_must_match_publication_input(tmp_path):
     with patch.object(publish.importlib.util,'spec_from_file_location') as loader:
         with pytest.raises(ValueError,match='declared spec_path'):publish.dispatch('different.json',tmp_path)
     loader.assert_not_called()
+
+
+def test_declared_bundle_imports_analysis_and_reporting_without_workspace_fallback(tmp_path):
+    """A present summary must also carry its real transitive imports."""
+    bundle=tmp_path/'isolated_bundle';bundle.mkdir()
+    for name in publish.PATHS:
+        source=publish.ROOT/name
+        assert source.is_file(),name
+        target=bundle/name;target.parent.mkdir(parents=True,exist_ok=True)
+        shutil.copyfile(source,target)
+    smoke=bundle/'import_smoke.py'
+    smoke.write_text(
+        'import importlib,json,pathlib,sys\n'
+        'root=pathlib.Path(__file__).resolve().parent\n'
+        'sys.path[:0]=[str(root/"code"),str(root/"tools")]\n'
+        'names=["summarize_d92_conditional_joint_probe","analyze_d92_conditional_joint_probe",'
+        '"report_d92_conditional_joint_support","collect_d92_conditional_joint_training_diagnostics"]\n'
+        'for name in names:\n'
+        ' module=importlib.import_module(name)\n'
+        ' assert pathlib.Path(module.__file__).resolve().is_relative_to(root),name\n'
+        'print(json.dumps({"imports":names,"network_or_launch":False}))\n',encoding='utf-8')
+    result=subprocess.run([sys.executable,'-I','-X','utf8',str(smoke)],cwd=bundle,
+        text=True,encoding='utf-8',capture_output=True,timeout=60)
+    assert result.returncode==0,result.stderr
+    observed=json.loads(result.stdout)
+    assert observed['network_or_launch'] is False and len(observed['imports'])==4

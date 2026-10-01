@@ -29,3 +29,5 @@
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
 
 VERIFIED：独立完整KKT证书63项及核心与5ENTRY联合37项合成检查通过；C q-gauge审计、JSON标量口径和Training.audit_dict ABI缺口已修，原失败保留。固定Phase1、合法support缓存的4row/160parent声明已预登记，只读元数据preflight核实缓存/来源/输出未占用，不读取query或源样本。新方法独立summary/analyzer/report/collector仍在实现；没有publish/launch或真实性能结果。A与B−A仍N/A，R0不得替代A；理想目标为soft，目标ACTIVE。
+
+VERIFIED：新Conditional独立summary/analyzer31项、完整报告/训练诊断18项和隔离白名单bundle4项检查通过。真实合成训练trace在禁candidate数学/score条件下独立重建通过；首轮归一化original几何和namespace问题已修、原失败保留。唯一独立P1发布传递依赖已补齐并回归验证，未发现P0。实际4row/160parent/1800path支持集实验保持预登记，尚未publish/launch；真实性能/A及B−A仍N/A。只root可启动，新方法不修改健康Affineanalysis，目标ACTIVE。

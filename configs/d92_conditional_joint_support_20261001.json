@@ -117,14 +117,14 @@
     "feature_cache_producer_role": "support-only raw frozen features; no learned state"
   },
   "code": {
-    "commit": "6945035036b05d833dc4c75b633a9500fe6159cf",
+    "commit": "a2d74325cacb4de8996223dd33d1be7af81a7861",
     "checkout": "E:\\type10-7\\code\\snapshots\\d92_support_upgrade_20260928_wt",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_conditional_joint_support_20261001_r01",
     "base_recipe": "experiments/adv3b02_xuc/configs/rc4_practical_residual_noeq_20260918.json",
     "native_code_base": "b63734157",
     "native_training_commit": "9b1ddd939fcabc74c77c94a62fef8e5aad07c0e9",
-    "commit_note": "Preparation parent only; publisher independently records actual committed/pushed release commit."
+    "commit_note": "Preparation parent only. Final committed/pushed release OID is independently recorded by publisher startup and runtime records."
   },
   "execution": {
     "host": "N607",
@@ -2808,7 +2808,7 @@
     "prediction_ref": "Held legal support predictions fixed before independent support-truth join; no query",
     "interpretation": "Paired support-only structural joint pilot; supervised inner loss is training, outer support holdout is diagnostic performance. No independent query or new-data validation claim."
   },
-  "implementation_status": "DRAFT_INDEPENDENT_SUMMARY_NOT_YET_INTEGRATED",
+  "implementation_status": "SYNTHETIC_PIPELINE_VERIFIED_NOT_LAUNCHED",
   "actual_A": null,
   "adaptation_gain_B_minus_A": null,
   "performance_gate": null,
