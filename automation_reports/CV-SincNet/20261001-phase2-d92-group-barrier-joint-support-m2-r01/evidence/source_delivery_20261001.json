@@ -1,0 +1,14 @@
+{
+  "status": "VERIFIED",
+  "local_head": "9518d46d2f763e5b080b5337e23155c9de883e09",
+  "remote_branch_oid": "9518d46d2f763e5b080b5337e23155c9de883e09",
+  "branch": "codex/d92-support-upgrade-20260928",
+  "ahead": 0,
+  "behind": 0,
+  "source_commit_parent": "2668386ac483c28e8654cdf26897fe61392d1cca",
+  "observed": "Independent git ls-remote returned exact commit after push, with rev-list 0/0.",
+  "source_validation": "../../../docs/D92_GROUP_BARRIER_JOINT_PIPELINE_VALIDATION_20261001.json",
+  "source_spec": "configs/d92_group_barrier_joint_support_20261001.json",
+  "scope": "Exact source delivery before launch; not experiment completion",
+  "goal_complete": false
+}

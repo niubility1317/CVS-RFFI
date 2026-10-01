@@ -1,6 +1,6 @@
 # D92 GroupBarrierJoint：解析注册与小适配器联合学习
 
-当前状态：LOCAL_VERIFIED／已预登记，尚未远端启动。没有本候选的真实准确率结果。
+当前状态：RUNNING／首次发布与运行状态 VERIFIED。尚无完整诊断或 query 准确率结论。
 
 - run_id：`20261001-phase2-d92-group-barrier-joint-support-m2-r01`；唯一 launch owner：`root`。
 - [逐行配置、数据和继承记录](experiment.json)；[状态事件](events.jsonl)。
@@ -53,8 +53,10 @@ N607 普通用户，CPU 两 lane，每 lane 两 BLAS threads，CUDA_VISIBLE_DEVI
 
 保留 CVS 风格详细训练文本、完整数组档案、逐步完整事件、去大数组的 compact JSONL/CSV、每阶段训练/预测成本、峰值过程 RSS、实际可训练坐标和驻留／部署状态字节。实际新传输字节与地面包文件字节分别报告；未知的真实通信、星载训练/推理耗时、内存和能耗写 N/A。参数较少和解析内层不自动等于总计算量较小。
 
-远端尚未启动，因此 PID、实际 argv、实际 runtime OID 和实际成本为 N/A。source preparation parent 不冒称执行版本；第一次独立远端读回后只追加实际绑定。一个 run 只有 root 启动。每行独占目录；技术失败只失败该 lane，保留完整产物并让健康行按原计划结束，不自动重试，不因性能弱停止。
+首次独立读回（2026-10-01T15:04:28Z）：supervisor PID1004125，start_ticks11465111；rx3两个模型PID1004188/1004189实时训练，rx1两行等待原排程。实际 argv/CWD/CPU2环境、每行resolved config和启动输入来源见[evidence/runtime_readback_1790867129563692100.json](evidence/runtime_readback_1790867129563692100.json)。immutable runtime为 `9518d46d2f763e5b080b5337e23155c9de883e09`，source preparation parent仍81985ed；之后的记录/分析器提交不改变这个运行。完整成本尚N/A，当前进程RSS只作途中证据，不代表星载或最终峰值。一个 run 只有 root 启动。每行独占目录；技术失败只失败该 lane，保留完整产物并让健康行按原计划结束，不自动重试，不因性能弱停止。
 
 ## 下一步
 
-源代码和本记录提交、push 并独立核对远端 OID 后，唯一发布启动；从 live PID/argv/CWD、resolved config 和产物核实状态。诊断／完整 query 的执行、评分、报告和 Git 交付分别记录。Goal 仍 ACTIVE。
+固定源码push/独立OID、唯一publication及live process读回均已完成。继续原排程；诊断产物闭合后详细分析，完整query入口在盲态源码并行准备。query测试、独立truth-last评分、报告及Git交付分别记录，成绩不回流调参。Goal仍ACTIVE。
+
+发布证据：[evidence/publication_20261001.json](evidence/publication_20261001.json)；源码交付证据：[evidence/source_delivery_20261001.json](evidence/source_delivery_20261001.json)。初次运行时未访问query、truth或源样本，checkpoint/encoder未reload，既有数据未重建/重验。

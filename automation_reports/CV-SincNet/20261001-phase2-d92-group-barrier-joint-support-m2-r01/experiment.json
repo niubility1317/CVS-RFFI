@@ -124,8 +124,9 @@
     "base_recipe": "experiments/adv3b02_xuc/configs/rc4_practical_residual_noeq_20260918.json",
     "native_code_base": "b63734157",
     "native_training_commit": "9b1ddd939fcabc74c77c94a62fef8e5aad07c0e9",
-    "commit_note": "Fixed preparation parent; actual committed/pushed release OID is first recorded separately at launch.",
-    "preparation_parent_commit": "81985ed377ca2bbb1bc9e6295dbaf9cc208d242f"
+    "commit_note": "Historical preparation parent retained; actual_runtime_commit is the independently verified immutable execution version. Later record/source commits do not change it.",
+    "preparation_parent_commit": "81985ed377ca2bbb1bc9e6295dbaf9cc208d242f",
+    "actual_runtime_commit": "9518d46d2f763e5b080b5337e23155c9de883e09"
   },
   "execution": {
     "host": "N607",
@@ -141,8 +142,58 @@
     "export_device": null,
     "export_batch_size": null,
     "implementation_validation": "docs/D92_GROUP_BARRIER_JOINT_PIPELINE_VALIDATION_20261001.json",
-    "actual_runtime_commit": null,
-    "actual_runtime_commit_note": "First recorded from independent remote launch readback; preparation parent is not execution version."
+    "actual_runtime_commit": "9518d46d2f763e5b080b5337e23155c9de883e09",
+    "actual_runtime_commit_note": "First recorded from independent remote launch readback; preparation parent is not execution version.",
+    "supervisor_pid": 1004125,
+    "supervisor_start_ticks": 11465111,
+    "launch_observed_utc": "2026-10-01T15:04:28Z",
+    "publication_status": "VERIFIED",
+    "publication_ref": "evidence/publication_20261001.json",
+    "source_delivery_ref": "evidence/source_delivery_20261001.json",
+    "runtime_readback_ref": "evidence/runtime_readback_1790867129563692100.json",
+    "actual_supervisor_argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_group_barrier_joint_support_20261001_r01/tools/run_d92_group_barrier_joint_probe.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_group_barrier_joint_support_20261001_r01/configs/d92_group_barrier_joint_support_20261001.json",
+      "--commit",
+      "9518d46d2f763e5b080b5337e23155c9de883e09"
+    ],
+    "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_group_barrier_joint_support_20261001_r01",
+    "actual_environment": {
+      "OMP_NUM_THREADS": "2",
+      "MKL_NUM_THREADS": "2",
+      "OPENBLAS_NUM_THREADS": "2",
+      "NUMEXPR_NUM_THREADS": "2",
+      "CUDA_VISIBLE_DEVICES": "",
+      "PYTHONUNBUFFERED": "1"
+    },
+    "current_row_statuses": {
+      "rx3-cvs-daot-rc4-s2026092701": "TRAINING_ON_SUPPORT",
+      "rx3-cvs-daot-rc4-s2026092702": "TRAINING_ON_SUPPORT",
+      "rx1-cvs-daot-rc4-s2026092701": "PENDING",
+      "rx1-cvs-daot-rc4-s2026092702": "PENDING"
+    },
+    "row_pids": {
+      "rx3-cvs-daot-rc4-s2026092701": 1004188,
+      "rx3-cvs-daot-rc4-s2026092702": 1004189,
+      "rx1-cvs-daot-rc4-s2026092701": null,
+      "rx1-cvs-daot-rc4-s2026092702": null
+    },
+    "current_log_bytes": {
+      "rx3-cvs-daot-rc4-s2026092701": 49796277,
+      "rx3-cvs-daot-rc4-s2026092702": 47986106,
+      "rx1-cvs-daot-rc4-s2026092701": null,
+      "rx1-cvs-daot-rc4-s2026092702": null
+    },
+    "completed_rows_observed": 0,
+    "truth_read": false,
+    "scorer_invoked": false,
+    "query_access": false,
+    "local_publication_execution_prefix": "ssr_native_command_1790867000790623100",
+    "local_publication_session_state": "DONE_DO_NOT_REPUBLISH",
+    "automatic_retry": false
   },
   "rows": [
     {
@@ -555,7 +606,7 @@
   ],
   "parent_run_ids": [],
   "claim_scope": "SUPPORT_INFORMATION_DIAGNOSTIC_NOT_QUERY_PERFORMANCE",
-  "status": "LOCAL_VERIFIED",
+  "status": "RUNNING",
   "spec_path": "configs/d92_group_barrier_joint_support_20261001.json",
   "input_identity_source": "Fixed source-only cache/capsule/model/split metadata; no scored output, adapted state or index supplied to fitting",
   "probe": {
@@ -4913,7 +4964,7 @@
     "each row/probe/fixed_predictions.jsonl",
     "each row/probe/artifact_manifest.json"
   ],
-  "implementation_status": "FOCUSED_SYNTHETIC_AND_SOURCE_REVIEW_VERIFIED_NOT_LAUNCHED",
+  "implementation_status": "VERIFIED_IMMUTABLE_RELEASE_RUNNING_ON_LEGAL_SUPPORT",
   "actual_A": null,
   "adaptation_gain_B_minus_A": null,
   "performance_gate": null,
