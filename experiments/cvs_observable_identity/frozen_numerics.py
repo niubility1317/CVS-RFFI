@@ -22,16 +22,21 @@ def diagnose(source_root, expected_contract, expected_commit, output, gpu=False)
             actual=json.loads((folder/'source_contract.json').read_text())
             initial=json.loads((folder/'initialization.json').read_text())
             done=json.loads((folder/'completion.json').read_text())
-            assert all(actual[k]==contract[k] for k in ('classes','role_ids','source_rxs','source_days','ratios','split_seed'))
+            assert actual==contract
+            assert all(k in actual for k in ('classes','role_ids','source_rxs','source_days','ratios','split_seed','equalized','out_len','normalize'))
             assert resolved['commit']==expected_commit and resolved['method']=='cvs_observable_identity'
             assert resolved['variant']==variant and resolved['model_seed']==seed
-            assert resolved['observables_actual']==observable_contract(variant) and resolved['observables_active']
-            assert not resolved['target_access'] and not resolved['augmentation'] and not resolved['domain_backbone']
+            assert resolved['observables_actual']==observable_contract(variant) and resolved['observables']==observable_contract(variant) and resolved['observables_active']
+            assert resolved['selection']=='fixed_last_epoch' and resolved['classifier_scale']==30.0
+            assert not resolved['target_access'] and not resolved['augmentation'] and not resolved['domain_backbone'] and not resolved['extra_losses']
             assert initial['scratch_only'] and not initial['ancestors'] and not initial['checkpoint_sources'] and not initial['target_access']
+            assert initial['checkpoint'] is None and not initial['target_contact'] and initial['selection']=='fixed_last_epoch'
             assert done['epoch']==200 and done['steps']==10000 and not done['target_evaluated']
             payload=torch.load(folder/'last.pt',map_location='cpu')
             assert payload['source_contract']==actual and payload['initialization']==initial
             assert payload['config']==resolved and payload['epoch']==200 and payload['variant']==variant
+            assert payload['method']=='cvs_observable_identity' and payload['selection']=='fixed_last_epoch'
+            assert payload['classes']==actual['classes'] and payload['num_classes']==6
             model=build(variant).eval();model.load_state_dict(payload['model'],strict=True)
             state={k:v.clone() for k,v in model.state_dict().items()}
             results=dict(cpu_float32=frozen_synthetic_diagnostics(model),

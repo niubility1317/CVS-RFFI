@@ -27,5 +27,7 @@
   "source_selection_changed": false,
   "training": false,
   "source_evaluation_reused": true,
-  "original_failure_preserved": true
+  "original_failure_preserved": true,
+  "expected_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-observable-identity-manysig-m8-r01/observable_phase-s2026092701/source/source_contract.json",
+  "contract_check": "Full runtime source contract exact equality including preprocessing;payload/initialization/selection/source commit exact match before load_state_dict."
 }
