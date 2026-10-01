@@ -1,0 +1,49 @@
+{
+  "status": "VERIFIED_SYNTHETIC_SOFTWARE_COST_HARNESS",
+  "at": "2026-10-01T12:37:32.918889+00:00",
+  "source_parent_commit": "80317479fdf90106452eb83c41fa7dcecdb53d41",
+  "passed": 8,
+  "failed": 0,
+  "execution": {
+    "identity": {
+      "executable": "E:\\type10-7\\local_envs\\ssr-gpu\\python.exe",
+      "prefix": "E:\\type10-7\\local_envs\\ssr-gpu",
+      "conda_prefix": "E:\\type10-7\\local_envs\\ssr-gpu",
+      "conda_shlvl": "2",
+      "threads": {
+        "OMP_NUM_THREADS": "2",
+        "MKL_NUM_THREADS": "2",
+        "OPENBLAS_NUM_THREADS": "2",
+        "NUMEXPR_NUM_THREADS": "2"
+      }
+    },
+    "argv": [
+      "E:\\type10-7\\local_envs\\ssr-gpu\\python.exe",
+      "-X",
+      "utf8",
+      "-s",
+      "-m",
+      "pytest",
+      "-q",
+      "-rA",
+      "--tb=short",
+      "-p",
+      "no:cacheprovider",
+      "--basetemp",
+      "E:\\type10-7\\.codex_tmp\\pytest_margin_cost_1790858101336941600",
+      "tests/test_measure_d92_margin_single_query_reuse.py"
+    ],
+    "cwd": "E:\\type10-7\\code\\snapshots\\d92_support_upgrade_20260928_wt",
+    "process_pid": 33336,
+    "exit_code": 0,
+    "elapsed_seconds": 1.0436492000008002,
+    "activation_hooks": 0,
+    "conda_cli_or_wrapper_started": false,
+    "mode": "test"
+  },
+  "output_prefix": "E:\\type10-7\\.codex_tmp\\margin_cost_native_1790858101337309900",
+  "scope": "fixed six-old/twenty-new synthetic scoring expansions, actual call-count comparison, full float64 bit equality, thread rejection, exclusive artifacts and late failure preservation",
+  "real_data_or_checkpoint_access": false,
+  "actual_measurement_launched": false,
+  "actual_query_runtime_unchanged": "d86edc3235ec0ca0e1925223970e07373256fb9c"
+}

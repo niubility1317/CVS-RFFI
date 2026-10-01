@@ -1,0 +1,566 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261001-d92-margin-single-query-cost-synthetic-r01",
+  "group_id": "d92-margin-single-query-software-cost",
+  "display_name": "Margin单样本prior复用：固定合成本机计算测量",
+  "description": "对固定六旧类、二十新类与四个K的完整评分展开，逐位核对原路径和复用路径，测量PAIR与C_ONLY两种使用情形的真实开销；不训练、不调参、不读取真实数据，不替代实际Phase2准确率基准。",
+  "kind": "diagnostic",
+  "stage": "Synthetic-software-inference-cost",
+  "aliases": [],
+  "tags": [
+    "d92",
+    "margin-joint",
+    "synthetic-only",
+    "software-cost",
+    "no-training",
+    "no-query"
+  ],
+  "comparison_group_id": "d92-margin-single-query-software-cost",
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "Existing user D92 optimization and measured star-resource request; root sole local launch owner. Fixed synthetic software measurement only.",
+  "code": {
+    "commit": "80317479fdf90106452eb83c41fa7dcecdb53d41",
+    "checkout": "E:\\type10-7\\code\\snapshots\\d92_support_upgrade_20260928_wt",
+    "environment": "E:\\type10-7\\local_envs\\ssr-gpu",
+    "cwd": "E:\\type10-7\\code\\snapshots\\d92_support_upgrade_20260928_wt",
+    "commit_note": "Preparation parent. Exact committed/pushed harness OID is bound before the unique measurement."
+  },
+  "data": {
+    "dataset": "In-memory deterministic synthetic scoring expansions",
+    "version": "v1",
+    "representation": "five float64 blocks:160/96/160/160/160",
+    "contract_ref": "tools/measure_d92_margin_single_query_reuse.py",
+    "physical_ids_ref": "tools/measure_d92_margin_single_query_reuse.py:synthetic same-old-support identities",
+    "label_map_ref": "six old and twenty new synthetic class IDs only",
+    "source_receivers": [],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": null,
+      "U_s": null,
+      "V": null
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "No received dataset, capsule, or VALIDATED_ONCE access",
+    "support_query_ref": "Fixed in-memory support shapes and eight synthetic score inputs, no truth",
+    "leo_config_ref": null,
+    "null_notes": "No real receiver/TX/day/channel/Phase1 or training split is applicable"
+  },
+  "permissions": {
+    "regime": "synthetic_software_measurement",
+    "query_use": "No actual query file or labels",
+    "source_samples": false,
+    "source_per_record_features": false,
+    "checkpoint_files": false,
+    "external_method_exception": null,
+    "claim_scope": "LOCAL_SYNTHETIC_SOFTWARE_COST_NOT_SATELLITE_OR_ACCURACY"
+  },
+  "checkpoint": {
+    "initialization": "No checkpoint; prespecified synthetic scoring coefficients",
+    "sources": [],
+    "contract_check_ref": "N/A: no initialization/resume/teacher/EMA/distillation/ground prototype loaded",
+    "provenance_verdict": "NO_CHECKPOINT_OR_TRAINED_STATE_REUSE",
+    "selection_rule": "No fitting, selection, tuning or target feedback"
+  },
+  "execution": {
+    "host": "Local-Windows",
+    "launch_owner": "root",
+    "gpu_policy": "CPU / BLAS2 / CUDA empty",
+    "remote_run_root": null,
+    "remote_log_root": null,
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\d92_margin_single_query_cost\\20261001-d92-margin-single-query-cost-synthetic-r01",
+    "launch_command": [
+      "E:\\type10-7\\local_envs\\ssr-gpu\\python.exe",
+      "-X",
+      "utf8",
+      "-s",
+      "E:\\type10-7\\code\\snapshots\\d92_support_upgrade_20260928_wt\\tools\\measure_d92_margin_single_query_reuse.py",
+      "--run-id",
+      "20261001-d92-margin-single-query-cost-synthetic-r01",
+      "--code-commit",
+      "ACTUAL_PUSHED_SOURCE_HEAD",
+      "--output-root",
+      "E:\\type10-7\\local_artifacts\\d92_margin_single_query_cost\\20261001-d92-margin-single-query-cost-synthetic-r01"
+    ],
+    "stop_rule": "Technical failure preserves rows and failed.json; no automatic retry or result-driven rerun",
+    "process_pid": null,
+    "runtime_commit": null,
+    "fixed_configuration": {
+      "old_class_count": 6,
+      "new_class_count": 20,
+      "k_values": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "use_cases": [
+        "pair",
+        "c_only"
+      ],
+      "query_count": 8,
+      "warmup_repetitions": 1,
+      "timed_repetitions": 3,
+      "threads": 2,
+      "rank": 8,
+      "input_dim": 736,
+      "fixture_role": "Deterministic scoring expansions, not trained or fitted models",
+      "source_query_or_checkpoint_files_read": false,
+      "trainable_parameter_updates": 0,
+      "tau": 1.3,
+      "gamma": 0.7,
+      "U_random_scale": 0.002,
+      "alpha_random_scale": 0.05,
+      "intercept_interval": [
+        -0.23,
+        0.41
+      ],
+      "dtype": "float64",
+      "support_generator": "SeedSequence([2026100102,K]); all old support physically shared by B/C",
+      "model_generator": "SeedSequence([2026100101,0/1]) for B/C",
+      "evaluation_generator": "default_rng(2026100103); same eight inputs across all K"
+    },
+    "harness_validation_ref": "docs/D92_MARGIN_SINGLE_QUERY_COST_VALIDATION_20261001.json"
+  },
+  "expected_artifacts": [
+    "E:\\type10-7\\local_artifacts\\d92_margin_single_query_cost\\20261001-d92-margin-single-query-cost-synthetic-r01\\startup.json",
+    "E:\\type10-7\\local_artifacts\\d92_margin_single_query_cost\\20261001-d92-margin-single-query-cost-synthetic-r01\\summary.json",
+    "E:\\type10-7\\local_artifacts\\d92_margin_single_query_cost\\20261001-d92-margin-single-query-cost-synthetic-r01\\complete.json",
+    "E:\\type10-7\\local_artifacts\\d92_margin_single_query_cost\\20261001-d92-margin-single-query-cost-synthetic-r01\\measurement.log",
+    "E:\\type10-7\\local_artifacts\\d92_margin_single_query_cost\\20261001-d92-margin-single-query-cost-synthetic-r01\\measurements.jsonl",
+    "E:\\type10-7\\local_artifacts\\d92_margin_single_query_cost\\20261001-d92-margin-single-query-cost-synthetic-r01\\measurements.csv"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "full_scores_bitwise_equal",
+      "actual_work_counters",
+      "original_seconds",
+      "reuse_seconds",
+      "median_ratio",
+      "packet_preparation_seconds",
+      "cache_validation_seconds",
+      "process_peak_working_set_bytes"
+    ],
+    "dimensions": [
+      "K",
+      "use_case",
+      "path",
+      "timed_repeat"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": null,
+    "accuracy_metrics": "A/B/C accuracies, H, forgetting and gap are all N/A: no truth or real model",
+    "memory_scope": "Whole local measurement process peak includes imports, states and warmups; no per-row/device claim",
+    "new_ground_payload_bytes": 0,
+    "actual_transmission_bytes": null
+  },
+  "rows": [
+    {
+      "row_id": "k1-pair",
+      "method": "Frozen Margin scoring / optional single-query reuse",
+      "purpose": "Fixed synthetic software-cost comparison",
+      "config_ref": "tools/measure_d92_margin_single_query_reuse.py:PLAN and build_states",
+      "resolved_config_ref": "E:\\type10-7\\local_artifacts\\d92_margin_single_query_cost\\20261001-d92-margin-single-query-cost-synthetic-r01\\startup.json",
+      "data_overrides": {
+        "old_count": 6,
+        "new_count": 20,
+        "k": 1
+      },
+      "seeds": {
+        "model": 2026100101,
+        "split": null,
+        "data": 2026100102,
+        "augmentation": null,
+        "support": 2026100102,
+        "evaluation": 2026100103
+      },
+      "seed_notes": "split/augmentation null: no partition or augmentation; data/support share the one support generator by design, model and evaluation generators distinct",
+      "k": 1,
+      "scenario": "synthetic",
+      "old_class_count": 6,
+      "new_class_count": 20,
+      "use_case": "pair",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "8 inputs x1 warmup x3 timed repeats per path; no training",
+      "output_root": "E:\\type10-7\\local_artifacts\\d92_margin_single_query_cost\\20261001-d92-margin-single-query-cost-synthetic-r01\\k1-pair",
+      "log_path": "E:\\type10-7\\local_artifacts\\d92_margin_single_query_cost\\20261001-d92-margin-single-query-cost-synthetic-r01\\measurement.log",
+      "command": [
+        "E:\\type10-7\\local_envs\\ssr-gpu\\python.exe",
+        "-X",
+        "utf8",
+        "-s",
+        "E:\\type10-7\\code\\snapshots\\d92_support_upgrade_20260928_wt\\tools\\measure_d92_margin_single_query_reuse.py",
+        "--run-id",
+        "20261001-d92-margin-single-query-cost-synthetic-r01",
+        "--code-commit",
+        "ACTUAL_PUSHED_SOURCE_HEAD",
+        "--output-root",
+        "E:\\type10-7\\local_artifacts\\d92_margin_single_query_cost\\20261001-d92-margin-single-query-cost-synthetic-r01"
+      ],
+      "expected_artifacts": [
+        "E:\\type10-7\\local_artifacts\\d92_margin_single_query_cost\\20261001-d92-margin-single-query-cost-synthetic-r01\\k1-pair\\row.json"
+      ]
+    },
+    {
+      "row_id": "k1-c_only",
+      "method": "Frozen Margin scoring / optional single-query reuse",
+      "purpose": "Fixed synthetic software-cost comparison",
+      "config_ref": "tools/measure_d92_margin_single_query_reuse.py:PLAN and build_states",
+      "resolved_config_ref": "E:\\type10-7\\local_artifacts\\d92_margin_single_query_cost\\20261001-d92-margin-single-query-cost-synthetic-r01\\startup.json",
+      "data_overrides": {
+        "old_count": 6,
+        "new_count": 20,
+        "k": 1
+      },
+      "seeds": {
+        "model": 2026100101,
+        "split": null,
+        "data": 2026100102,
+        "augmentation": null,
+        "support": 2026100102,
+        "evaluation": 2026100103
+      },
+      "seed_notes": "split/augmentation null: no partition or augmentation; data/support share the one support generator by design, model and evaluation generators distinct",
+      "k": 1,
+      "scenario": "synthetic",
+      "old_class_count": 6,
+      "new_class_count": 20,
+      "use_case": "c_only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "8 inputs x1 warmup x3 timed repeats per path; no training",
+      "output_root": "E:\\type10-7\\local_artifacts\\d92_margin_single_query_cost\\20261001-d92-margin-single-query-cost-synthetic-r01\\k1-c_only",
+      "log_path": "E:\\type10-7\\local_artifacts\\d92_margin_single_query_cost\\20261001-d92-margin-single-query-cost-synthetic-r01\\measurement.log",
+      "command": [
+        "E:\\type10-7\\local_envs\\ssr-gpu\\python.exe",
+        "-X",
+        "utf8",
+        "-s",
+        "E:\\type10-7\\code\\snapshots\\d92_support_upgrade_20260928_wt\\tools\\measure_d92_margin_single_query_reuse.py",
+        "--run-id",
+        "20261001-d92-margin-single-query-cost-synthetic-r01",
+        "--code-commit",
+        "ACTUAL_PUSHED_SOURCE_HEAD",
+        "--output-root",
+        "E:\\type10-7\\local_artifacts\\d92_margin_single_query_cost\\20261001-d92-margin-single-query-cost-synthetic-r01"
+      ],
+      "expected_artifacts": [
+        "E:\\type10-7\\local_artifacts\\d92_margin_single_query_cost\\20261001-d92-margin-single-query-cost-synthetic-r01\\k1-c_only\\row.json"
+      ]
+    },
+    {
+      "row_id": "k5-pair",
+      "method": "Frozen Margin scoring / optional single-query reuse",
+      "purpose": "Fixed synthetic software-cost comparison",
+      "config_ref": "tools/measure_d92_margin_single_query_reuse.py:PLAN and build_states",
+      "resolved_config_ref": "E:\\type10-7\\local_artifacts\\d92_margin_single_query_cost\\20261001-d92-margin-single-query-cost-synthetic-r01\\startup.json",
+      "data_overrides": {
+        "old_count": 6,
+        "new_count": 20,
+        "k": 5
+      },
+      "seeds": {
+        "model": 2026100101,
+        "split": null,
+        "data": 2026100102,
+        "augmentation": null,
+        "support": 2026100102,
+        "evaluation": 2026100103
+      },
+      "seed_notes": "split/augmentation null: no partition or augmentation; data/support share the one support generator by design, model and evaluation generators distinct",
+      "k": 5,
+      "scenario": "synthetic",
+      "old_class_count": 6,
+      "new_class_count": 20,
+      "use_case": "pair",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "8 inputs x1 warmup x3 timed repeats per path; no training",
+      "output_root": "E:\\type10-7\\local_artifacts\\d92_margin_single_query_cost\\20261001-d92-margin-single-query-cost-synthetic-r01\\k5-pair",
+      "log_path": "E:\\type10-7\\local_artifacts\\d92_margin_single_query_cost\\20261001-d92-margin-single-query-cost-synthetic-r01\\measurement.log",
+      "command": [
+        "E:\\type10-7\\local_envs\\ssr-gpu\\python.exe",
+        "-X",
+        "utf8",
+        "-s",
+        "E:\\type10-7\\code\\snapshots\\d92_support_upgrade_20260928_wt\\tools\\measure_d92_margin_single_query_reuse.py",
+        "--run-id",
+        "20261001-d92-margin-single-query-cost-synthetic-r01",
+        "--code-commit",
+        "ACTUAL_PUSHED_SOURCE_HEAD",
+        "--output-root",
+        "E:\\type10-7\\local_artifacts\\d92_margin_single_query_cost\\20261001-d92-margin-single-query-cost-synthetic-r01"
+      ],
+      "expected_artifacts": [
+        "E:\\type10-7\\local_artifacts\\d92_margin_single_query_cost\\20261001-d92-margin-single-query-cost-synthetic-r01\\k5-pair\\row.json"
+      ]
+    },
+    {
+      "row_id": "k5-c_only",
+      "method": "Frozen Margin scoring / optional single-query reuse",
+      "purpose": "Fixed synthetic software-cost comparison",
+      "config_ref": "tools/measure_d92_margin_single_query_reuse.py:PLAN and build_states",
+      "resolved_config_ref": "E:\\type10-7\\local_artifacts\\d92_margin_single_query_cost\\20261001-d92-margin-single-query-cost-synthetic-r01\\startup.json",
+      "data_overrides": {
+        "old_count": 6,
+        "new_count": 20,
+        "k": 5
+      },
+      "seeds": {
+        "model": 2026100101,
+        "split": null,
+        "data": 2026100102,
+        "augmentation": null,
+        "support": 2026100102,
+        "evaluation": 2026100103
+      },
+      "seed_notes": "split/augmentation null: no partition or augmentation; data/support share the one support generator by design, model and evaluation generators distinct",
+      "k": 5,
+      "scenario": "synthetic",
+      "old_class_count": 6,
+      "new_class_count": 20,
+      "use_case": "c_only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "8 inputs x1 warmup x3 timed repeats per path; no training",
+      "output_root": "E:\\type10-7\\local_artifacts\\d92_margin_single_query_cost\\20261001-d92-margin-single-query-cost-synthetic-r01\\k5-c_only",
+      "log_path": "E:\\type10-7\\local_artifacts\\d92_margin_single_query_cost\\20261001-d92-margin-single-query-cost-synthetic-r01\\measurement.log",
+      "command": [
+        "E:\\type10-7\\local_envs\\ssr-gpu\\python.exe",
+        "-X",
+        "utf8",
+        "-s",
+        "E:\\type10-7\\code\\snapshots\\d92_support_upgrade_20260928_wt\\tools\\measure_d92_margin_single_query_reuse.py",
+        "--run-id",
+        "20261001-d92-margin-single-query-cost-synthetic-r01",
+        "--code-commit",
+        "ACTUAL_PUSHED_SOURCE_HEAD",
+        "--output-root",
+        "E:\\type10-7\\local_artifacts\\d92_margin_single_query_cost\\20261001-d92-margin-single-query-cost-synthetic-r01"
+      ],
+      "expected_artifacts": [
+        "E:\\type10-7\\local_artifacts\\d92_margin_single_query_cost\\20261001-d92-margin-single-query-cost-synthetic-r01\\k5-c_only\\row.json"
+      ]
+    },
+    {
+      "row_id": "k10-pair",
+      "method": "Frozen Margin scoring / optional single-query reuse",
+      "purpose": "Fixed synthetic software-cost comparison",
+      "config_ref": "tools/measure_d92_margin_single_query_reuse.py:PLAN and build_states",
+      "resolved_config_ref": "E:\\type10-7\\local_artifacts\\d92_margin_single_query_cost\\20261001-d92-margin-single-query-cost-synthetic-r01\\startup.json",
+      "data_overrides": {
+        "old_count": 6,
+        "new_count": 20,
+        "k": 10
+      },
+      "seeds": {
+        "model": 2026100101,
+        "split": null,
+        "data": 2026100102,
+        "augmentation": null,
+        "support": 2026100102,
+        "evaluation": 2026100103
+      },
+      "seed_notes": "split/augmentation null: no partition or augmentation; data/support share the one support generator by design, model and evaluation generators distinct",
+      "k": 10,
+      "scenario": "synthetic",
+      "old_class_count": 6,
+      "new_class_count": 20,
+      "use_case": "pair",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "8 inputs x1 warmup x3 timed repeats per path; no training",
+      "output_root": "E:\\type10-7\\local_artifacts\\d92_margin_single_query_cost\\20261001-d92-margin-single-query-cost-synthetic-r01\\k10-pair",
+      "log_path": "E:\\type10-7\\local_artifacts\\d92_margin_single_query_cost\\20261001-d92-margin-single-query-cost-synthetic-r01\\measurement.log",
+      "command": [
+        "E:\\type10-7\\local_envs\\ssr-gpu\\python.exe",
+        "-X",
+        "utf8",
+        "-s",
+        "E:\\type10-7\\code\\snapshots\\d92_support_upgrade_20260928_wt\\tools\\measure_d92_margin_single_query_reuse.py",
+        "--run-id",
+        "20261001-d92-margin-single-query-cost-synthetic-r01",
+        "--code-commit",
+        "ACTUAL_PUSHED_SOURCE_HEAD",
+        "--output-root",
+        "E:\\type10-7\\local_artifacts\\d92_margin_single_query_cost\\20261001-d92-margin-single-query-cost-synthetic-r01"
+      ],
+      "expected_artifacts": [
+        "E:\\type10-7\\local_artifacts\\d92_margin_single_query_cost\\20261001-d92-margin-single-query-cost-synthetic-r01\\k10-pair\\row.json"
+      ]
+    },
+    {
+      "row_id": "k10-c_only",
+      "method": "Frozen Margin scoring / optional single-query reuse",
+      "purpose": "Fixed synthetic software-cost comparison",
+      "config_ref": "tools/measure_d92_margin_single_query_reuse.py:PLAN and build_states",
+      "resolved_config_ref": "E:\\type10-7\\local_artifacts\\d92_margin_single_query_cost\\20261001-d92-margin-single-query-cost-synthetic-r01\\startup.json",
+      "data_overrides": {
+        "old_count": 6,
+        "new_count": 20,
+        "k": 10
+      },
+      "seeds": {
+        "model": 2026100101,
+        "split": null,
+        "data": 2026100102,
+        "augmentation": null,
+        "support": 2026100102,
+        "evaluation": 2026100103
+      },
+      "seed_notes": "split/augmentation null: no partition or augmentation; data/support share the one support generator by design, model and evaluation generators distinct",
+      "k": 10,
+      "scenario": "synthetic",
+      "old_class_count": 6,
+      "new_class_count": 20,
+      "use_case": "c_only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "8 inputs x1 warmup x3 timed repeats per path; no training",
+      "output_root": "E:\\type10-7\\local_artifacts\\d92_margin_single_query_cost\\20261001-d92-margin-single-query-cost-synthetic-r01\\k10-c_only",
+      "log_path": "E:\\type10-7\\local_artifacts\\d92_margin_single_query_cost\\20261001-d92-margin-single-query-cost-synthetic-r01\\measurement.log",
+      "command": [
+        "E:\\type10-7\\local_envs\\ssr-gpu\\python.exe",
+        "-X",
+        "utf8",
+        "-s",
+        "E:\\type10-7\\code\\snapshots\\d92_support_upgrade_20260928_wt\\tools\\measure_d92_margin_single_query_reuse.py",
+        "--run-id",
+        "20261001-d92-margin-single-query-cost-synthetic-r01",
+        "--code-commit",
+        "ACTUAL_PUSHED_SOURCE_HEAD",
+        "--output-root",
+        "E:\\type10-7\\local_artifacts\\d92_margin_single_query_cost\\20261001-d92-margin-single-query-cost-synthetic-r01"
+      ],
+      "expected_artifacts": [
+        "E:\\type10-7\\local_artifacts\\d92_margin_single_query_cost\\20261001-d92-margin-single-query-cost-synthetic-r01\\k10-c_only\\row.json"
+      ]
+    },
+    {
+      "row_id": "k20-pair",
+      "method": "Frozen Margin scoring / optional single-query reuse",
+      "purpose": "Fixed synthetic software-cost comparison",
+      "config_ref": "tools/measure_d92_margin_single_query_reuse.py:PLAN and build_states",
+      "resolved_config_ref": "E:\\type10-7\\local_artifacts\\d92_margin_single_query_cost\\20261001-d92-margin-single-query-cost-synthetic-r01\\startup.json",
+      "data_overrides": {
+        "old_count": 6,
+        "new_count": 20,
+        "k": 20
+      },
+      "seeds": {
+        "model": 2026100101,
+        "split": null,
+        "data": 2026100102,
+        "augmentation": null,
+        "support": 2026100102,
+        "evaluation": 2026100103
+      },
+      "seed_notes": "split/augmentation null: no partition or augmentation; data/support share the one support generator by design, model and evaluation generators distinct",
+      "k": 20,
+      "scenario": "synthetic",
+      "old_class_count": 6,
+      "new_class_count": 20,
+      "use_case": "pair",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "8 inputs x1 warmup x3 timed repeats per path; no training",
+      "output_root": "E:\\type10-7\\local_artifacts\\d92_margin_single_query_cost\\20261001-d92-margin-single-query-cost-synthetic-r01\\k20-pair",
+      "log_path": "E:\\type10-7\\local_artifacts\\d92_margin_single_query_cost\\20261001-d92-margin-single-query-cost-synthetic-r01\\measurement.log",
+      "command": [
+        "E:\\type10-7\\local_envs\\ssr-gpu\\python.exe",
+        "-X",
+        "utf8",
+        "-s",
+        "E:\\type10-7\\code\\snapshots\\d92_support_upgrade_20260928_wt\\tools\\measure_d92_margin_single_query_reuse.py",
+        "--run-id",
+        "20261001-d92-margin-single-query-cost-synthetic-r01",
+        "--code-commit",
+        "ACTUAL_PUSHED_SOURCE_HEAD",
+        "--output-root",
+        "E:\\type10-7\\local_artifacts\\d92_margin_single_query_cost\\20261001-d92-margin-single-query-cost-synthetic-r01"
+      ],
+      "expected_artifacts": [
+        "E:\\type10-7\\local_artifacts\\d92_margin_single_query_cost\\20261001-d92-margin-single-query-cost-synthetic-r01\\k20-pair\\row.json"
+      ]
+    },
+    {
+      "row_id": "k20-c_only",
+      "method": "Frozen Margin scoring / optional single-query reuse",
+      "purpose": "Fixed synthetic software-cost comparison",
+      "config_ref": "tools/measure_d92_margin_single_query_reuse.py:PLAN and build_states",
+      "resolved_config_ref": "E:\\type10-7\\local_artifacts\\d92_margin_single_query_cost\\20261001-d92-margin-single-query-cost-synthetic-r01\\startup.json",
+      "data_overrides": {
+        "old_count": 6,
+        "new_count": 20,
+        "k": 20
+      },
+      "seeds": {
+        "model": 2026100101,
+        "split": null,
+        "data": 2026100102,
+        "augmentation": null,
+        "support": 2026100102,
+        "evaluation": 2026100103
+      },
+      "seed_notes": "split/augmentation null: no partition or augmentation; data/support share the one support generator by design, model and evaluation generators distinct",
+      "k": 20,
+      "scenario": "synthetic",
+      "old_class_count": 6,
+      "new_class_count": 20,
+      "use_case": "c_only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "8 inputs x1 warmup x3 timed repeats per path; no training",
+      "output_root": "E:\\type10-7\\local_artifacts\\d92_margin_single_query_cost\\20261001-d92-margin-single-query-cost-synthetic-r01\\k20-c_only",
+      "log_path": "E:\\type10-7\\local_artifacts\\d92_margin_single_query_cost\\20261001-d92-margin-single-query-cost-synthetic-r01\\measurement.log",
+      "command": [
+        "E:\\type10-7\\local_envs\\ssr-gpu\\python.exe",
+        "-X",
+        "utf8",
+        "-s",
+        "E:\\type10-7\\code\\snapshots\\d92_support_upgrade_20260928_wt\\tools\\measure_d92_margin_single_query_reuse.py",
+        "--run-id",
+        "20261001-d92-margin-single-query-cost-synthetic-r01",
+        "--code-commit",
+        "ACTUAL_PUSHED_SOURCE_HEAD",
+        "--output-root",
+        "E:\\type10-7\\local_artifacts\\d92_margin_single_query_cost\\20261001-d92-margin-single-query-cost-synthetic-r01"
+      ],
+      "expected_artifacts": [
+        "E:\\type10-7\\local_artifacts\\d92_margin_single_query_cost\\20261001-d92-margin-single-query-cost-synthetic-r01\\k20-c_only\\row.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Source/model seed denotes artificial coefficient generation only; not Phase1 training.",
+    "Same support/evaluation inputs and all score columns are compared; no truth join or accuracy measurement.",
+    "PAIR has a separately completed B output to reuse; C_ONLY still requires one B prior call.",
+    "No independent data validation, model promotion, source migration or remote experiment intervention.",
+    "Fixed matrix before measurements; no alternative K, repeats, seeds or sampled best result."
+  ],
+  "status": "LOCAL_VERIFIED",
+  "claim_scope": "LOCAL_SYNTHETIC_SOFTWARE_COST_NOT_SATELLITE_OR_ACCURACY",
+  "registered_at": "2026-10-01T12:29:52+00:00"
+}

@@ -88,3 +88,7 @@
 - 20261001-phase2-d92-margin-joint-support-m2-r01：ANALYZED；support数学分析、真实A/B/C、全训练诊断与紧凑日志均完成；[结果报告](../docs/D92_MARGIN_JOINT_SUPPORT_RESULT_OVERVIEW_20261001.md)。
 - 20261001-phase2-d92-margin-ground-a-support-m2-r01：ANALYZED，4行/160parent，原数据保留。
 - 20261001-phase2-d92-margin-joint-repeat-m2-r01：RUNNING，supervisor869328，4行/2400parent；[当前报告](../automation_reports/CV-SincNet/20261001-phase2-d92-margin-joint-repeat-m2-r01/report.md)，未评分、非新独立验证。
+
+## D92合成软件开销补充记录（2026-10-01）
+
+- [20261001-d92-margin-single-query-cost-synthetic-r01](../automation_reports/CV-SincNet/20261001-d92-margin-single-query-cost-synthetic-r01/report.md)：LOCAL_VERIFIED，8项软件测试通过；固定8行，纯合成单样本推理成本，不训练或读取真实query，不替代现有完整准确率基准。
