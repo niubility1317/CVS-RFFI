@@ -10,4 +10,5 @@
 |CVS性能优先继续优化：balanced_fusion clean测试报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261001-phase1-cvs-balanced-clean-manysig-m24-r01/report.md)|
 |CVS性能优先继续优化：coherence_phase clean测试报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261001-phase1-cvs-coherence-clean-manysig-m24-r01/report.md)|
 |CVS性能优先继续优化：tf_lowrank32 clean测试报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261001-phase1-cvs-interaction-clean-manysig-m24-r01/report.md)|
+|性能优先等角分类头 CVS：clean 确认实验|managed_run|[打开](../../automation_reports/CV-SincNet/20261001-phase1-cvs-simplex-clean-manysig-m24-r01/report.md)|
 |CVS性能优先继续优化：phase_dsq clean测试报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261001-phase1-cvs-stability-clean-manysig-m24-r01/report.md)|
