@@ -7,5 +7,6 @@
 |名称|记录类型|证据入口|
 |---|---|---|
 |CVS：DAOT＋FastTrust-RC4原始residual_noeq五种子实验|managed_run|[打开](../../automation_reports/CV-SincNet/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/report.md)|
+|冻结CVS源权重的公共合成相位误差：4seed×3精度设置|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01/report.md)|
 |RFF 源域已知激励诊断：预登记|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-diagnostic-rff-known-excitation-source-manysig-m1-r01/report.md)|
 |RFF源域前导码与可观测量诊断|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-diagnostic-rff-preamble-source-manysig-m1-r01/report.md)|

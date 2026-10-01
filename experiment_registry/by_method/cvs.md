@@ -24,6 +24,7 @@
 |CVS 等角身份分类头|managed_run|[打开](../../automation_reports/CV-SincNet/20261001-phase1-cvs-simplex-identity-manysig-m8-r01/report.md)|
 |CVS性能优先继续优化：phase_dsq clean测试报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261001-phase1-cvs-stability-clean-manysig-m24-r01/report.md)|
 |CVS 性能优先研发：物理补充表征|managed_run|[打开](../../automation_reports/CV-SincNet/20261001-phase1-cvs-stability-identity-manysig-m8-r01/report.md)|
+|冻结CVS源权重的公共合成相位误差：4seed×3精度设置|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01/report.md)|
 |RFF物理可辨识性：合成诊断|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-diagnostic-rff-identifiability-synthetic-m1-r01/report.md)|
 |RFF 源域已知激励诊断：预登记|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-diagnostic-rff-known-excitation-source-manysig-m1-r01/report.md)|
 |RFF源域前导码与可观测量诊断|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-diagnostic-rff-preamble-source-manysig-m1-r01/report.md)|

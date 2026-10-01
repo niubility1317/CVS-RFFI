@@ -1,0 +1,527 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01",
+  "group_id": "cvs-equivariant-frozen-public-numerics",
+  "display_name": "冻结CVS源权重的公共合成相位误差：4seed×3精度设置",
+  "description": "基于target访问前已观测源相位误差，仅固定权重/公共合成信号进行单变量精度及逐层归因；无拟合、无正式IQ、无target读写。",
+  "kind": "diagnostic",
+  "stage": "Frozen-source-public-synthetic-numerics",
+  "aliases": [],
+  "tags": [
+    "cvs",
+    "source_only",
+    "public_synthetic",
+    "frozen",
+    "numerical_attribution"
+  ],
+  "comparison_group_id": "manysig-six-source-rx13468-day123-luv076330-residual-noeq-v1",
+  "parent_run_ids": [
+    "20261002-phase1-cvs-equivariant-identity-manysig-m4-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户授权持续优化基础网络，性能第一，真正 RFF physics aware；普通 CE、无增强、clean-only，每次发布默认完成测试。",
+  "code": {
+    "commit": "6a1ba9c253d4feb0775cec92a1812e82edba59aa",
+    "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_equivariant_numerics_20261002_r01",
+    "architecture_base_commit": "583be084d91dc1fd8540bbf1da33b61b91b38975",
+    "note": "Actual diagnostic release commit read back after launch; model implementation pinned independently to immutable clean release, no target paths consumed.",
+    "model_code_commit": "4e3958bcb085a469dd7fb9829e29de544ea95b09"
+  },
+  "data": {
+    "dataset": "Fixed public received(TX_ROWS,RX_ROWS):30 combinations; no formal IQ loaded",
+    "version": "Existing cvs_reference_identity.physics immutable 4e3958bcb085a469dd7fb9829e29de544ea95b09",
+    "representation": "Same controlled source physical audit;2x256/25MHz/packetRMS",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": null,
+    "label_map_ref": "each row/source_contract.json#classes",
+    "source_receivers": [],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": "Public synthetic5TXsettings×6RXsettings;not source identity labels",
+    "roles": {},
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": null,
+    "support_query_ref": null,
+    "leo_config_ref": null,
+    "formal_data_access": false
+  },
+  "permissions": {
+    "regime": "frozen_source_public_synthetic_only",
+    "query_use": "No query/truth/target scores/clean reports/prediction access",
+    "external_method_exception": null,
+    "claim_scope": "Finite-precision phase consistency only; no identity accuracy, no physicalparameterrecovery, no targetretuning"
+  },
+  "checkpoint": {
+    "initialization": "frozen_source_inference_no_training",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-identity-manysig-m4-r01/equivariant_memory-s2026092701/source/last.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-identity-manysig-m4-r01/equivariant_memory-s2026092702/source/last.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-identity-manysig-m4-r01/equivariant_memory-s2026092703/source/last.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-identity-manysig-m4-r01/equivariant_memory-s2026092704/source/last.pt"
+    ],
+    "provenance_verdict": "At launch: verify full original ManySig role/representation/source scratch/payload before strict frozen load",
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "selection_rule": "Reuse fixedE200 source weights, no new selection; numerical outcome never reorders or modifies existing selection/predictions"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/cvs-equivariant-numerics-20261002",
+    "gpu_policy": "One inference worker only;existingchoose_gpu preflight:>=12000MiB free and<2 existing GPU jobs;no other process changes",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01",
+    "local_artifact_root": "automation_reports/CV-SincNet/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01",
+    "launch_command": "python -m experiments.cvs_equivariant_numerics.publish --output local_artifacts/cvs_equivariant_numerics_20261002_r01",
+    "stop_rule": "Own worker nonzero/nonfinite/provenance/collision: preserve results and no retry. Native FP64 runtime incompatibility is retained as UNSUPPORTED_NATIVE_FP64, no dtype repair."
+  },
+  "expected_artifacts": [
+    "resolved_config.json",
+    "12result.json",
+    "completion.json",
+    "stdout.log",
+    "submit.json",
+    "independent readback and numerical report"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "whole_logit_max_abs_error",
+      "whole_unit_embedding_max_distance",
+      "stage_max_abs_error",
+      "stage_rms_error",
+      "synthetic_argmax_change_count"
+    ],
+    "dimensions": [
+      "model_seed",
+      "precision_mode",
+      "phase",
+      "stage"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": null,
+    "primary": "Paired same frozen weights/input/phase:defaultFP32 vs onlycuDNNTF32off;thirdmode requestedFP64 preserving nativeFP32 casts; report all12 including unsupported.",
+    "later_test": "N/A:this explicitly source/public diagnostic has no updated model and cannot rerun already completed clean predictions"
+  },
+  "rows": [
+    {
+      "row_id": "s2026092701-default_fp32",
+      "method": "equivariant_memory_frozen_numerics",
+      "purpose": "fixed_public_synthetic_precision_attribution",
+      "gpu": null,
+      "config_ref": "experiments/cvs_equivariant_numerics/configs/experiment_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01/resolved_config.json",
+      "data_overrides": {
+        "precision_mode": "default_fp32",
+        "model_dtype": "float32"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "No RNG in public chain; frozen source model seed only; originalsplit392005 records provenance.",
+      "k": null,
+      "scenario": "public_synthetic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0optimizersteps;fixed30input×3phase",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01/s2026092701-default_fp32",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_equivariant_numerics_20261002_r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_equivariant_numerics_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "s2026092701-cudnn_tf32_off_fp32",
+      "method": "equivariant_memory_frozen_numerics",
+      "purpose": "fixed_public_synthetic_precision_attribution",
+      "gpu": null,
+      "config_ref": "experiments/cvs_equivariant_numerics/configs/experiment_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01/resolved_config.json",
+      "data_overrides": {
+        "precision_mode": "cudnn_tf32_off_fp32",
+        "model_dtype": "float32"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "No RNG in public chain; frozen source model seed only; originalsplit392005 records provenance.",
+      "k": null,
+      "scenario": "public_synthetic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0optimizersteps;fixed30input×3phase",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01/s2026092701-cudnn_tf32_off_fp32",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_equivariant_numerics_20261002_r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_equivariant_numerics_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "s2026092701-cudnn_tf32_off_fp64",
+      "method": "equivariant_memory_frozen_numerics",
+      "purpose": "fixed_public_synthetic_precision_attribution",
+      "gpu": null,
+      "config_ref": "experiments/cvs_equivariant_numerics/configs/experiment_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01/resolved_config.json",
+      "data_overrides": {
+        "precision_mode": "cudnn_tf32_off_fp64",
+        "model_dtype": "float64_requested_native_casts_retained"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "No RNG in public chain; frozen source model seed only; originalsplit392005 records provenance.",
+      "k": null,
+      "scenario": "public_synthetic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0optimizersteps;fixed30input×3phase",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01/s2026092701-cudnn_tf32_off_fp64",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_equivariant_numerics_20261002_r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_equivariant_numerics_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "s2026092702-default_fp32",
+      "method": "equivariant_memory_frozen_numerics",
+      "purpose": "fixed_public_synthetic_precision_attribution",
+      "gpu": null,
+      "config_ref": "experiments/cvs_equivariant_numerics/configs/experiment_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01/resolved_config.json",
+      "data_overrides": {
+        "precision_mode": "default_fp32",
+        "model_dtype": "float32"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "No RNG in public chain; frozen source model seed only; originalsplit392005 records provenance.",
+      "k": null,
+      "scenario": "public_synthetic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0optimizersteps;fixed30input×3phase",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01/s2026092702-default_fp32",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_equivariant_numerics_20261002_r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_equivariant_numerics_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "s2026092702-cudnn_tf32_off_fp32",
+      "method": "equivariant_memory_frozen_numerics",
+      "purpose": "fixed_public_synthetic_precision_attribution",
+      "gpu": null,
+      "config_ref": "experiments/cvs_equivariant_numerics/configs/experiment_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01/resolved_config.json",
+      "data_overrides": {
+        "precision_mode": "cudnn_tf32_off_fp32",
+        "model_dtype": "float32"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "No RNG in public chain; frozen source model seed only; originalsplit392005 records provenance.",
+      "k": null,
+      "scenario": "public_synthetic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0optimizersteps;fixed30input×3phase",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01/s2026092702-cudnn_tf32_off_fp32",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_equivariant_numerics_20261002_r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_equivariant_numerics_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "s2026092702-cudnn_tf32_off_fp64",
+      "method": "equivariant_memory_frozen_numerics",
+      "purpose": "fixed_public_synthetic_precision_attribution",
+      "gpu": null,
+      "config_ref": "experiments/cvs_equivariant_numerics/configs/experiment_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01/resolved_config.json",
+      "data_overrides": {
+        "precision_mode": "cudnn_tf32_off_fp64",
+        "model_dtype": "float64_requested_native_casts_retained"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "No RNG in public chain; frozen source model seed only; originalsplit392005 records provenance.",
+      "k": null,
+      "scenario": "public_synthetic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0optimizersteps;fixed30input×3phase",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01/s2026092702-cudnn_tf32_off_fp64",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_equivariant_numerics_20261002_r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_equivariant_numerics_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "s2026092703-default_fp32",
+      "method": "equivariant_memory_frozen_numerics",
+      "purpose": "fixed_public_synthetic_precision_attribution",
+      "gpu": null,
+      "config_ref": "experiments/cvs_equivariant_numerics/configs/experiment_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01/resolved_config.json",
+      "data_overrides": {
+        "precision_mode": "default_fp32",
+        "model_dtype": "float32"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "No RNG in public chain; frozen source model seed only; originalsplit392005 records provenance.",
+      "k": null,
+      "scenario": "public_synthetic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0optimizersteps;fixed30input×3phase",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01/s2026092703-default_fp32",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_equivariant_numerics_20261002_r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_equivariant_numerics_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "s2026092703-cudnn_tf32_off_fp32",
+      "method": "equivariant_memory_frozen_numerics",
+      "purpose": "fixed_public_synthetic_precision_attribution",
+      "gpu": null,
+      "config_ref": "experiments/cvs_equivariant_numerics/configs/experiment_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01/resolved_config.json",
+      "data_overrides": {
+        "precision_mode": "cudnn_tf32_off_fp32",
+        "model_dtype": "float32"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "No RNG in public chain; frozen source model seed only; originalsplit392005 records provenance.",
+      "k": null,
+      "scenario": "public_synthetic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0optimizersteps;fixed30input×3phase",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01/s2026092703-cudnn_tf32_off_fp32",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_equivariant_numerics_20261002_r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_equivariant_numerics_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "s2026092703-cudnn_tf32_off_fp64",
+      "method": "equivariant_memory_frozen_numerics",
+      "purpose": "fixed_public_synthetic_precision_attribution",
+      "gpu": null,
+      "config_ref": "experiments/cvs_equivariant_numerics/configs/experiment_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01/resolved_config.json",
+      "data_overrides": {
+        "precision_mode": "cudnn_tf32_off_fp64",
+        "model_dtype": "float64_requested_native_casts_retained"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "No RNG in public chain; frozen source model seed only; originalsplit392005 records provenance.",
+      "k": null,
+      "scenario": "public_synthetic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0optimizersteps;fixed30input×3phase",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01/s2026092703-cudnn_tf32_off_fp64",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_equivariant_numerics_20261002_r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_equivariant_numerics_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "s2026092704-default_fp32",
+      "method": "equivariant_memory_frozen_numerics",
+      "purpose": "fixed_public_synthetic_precision_attribution",
+      "gpu": null,
+      "config_ref": "experiments/cvs_equivariant_numerics/configs/experiment_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01/resolved_config.json",
+      "data_overrides": {
+        "precision_mode": "default_fp32",
+        "model_dtype": "float32"
+      },
+      "seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "No RNG in public chain; frozen source model seed only; originalsplit392005 records provenance.",
+      "k": null,
+      "scenario": "public_synthetic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0optimizersteps;fixed30input×3phase",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01/s2026092704-default_fp32",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_equivariant_numerics_20261002_r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_equivariant_numerics_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "s2026092704-cudnn_tf32_off_fp32",
+      "method": "equivariant_memory_frozen_numerics",
+      "purpose": "fixed_public_synthetic_precision_attribution",
+      "gpu": null,
+      "config_ref": "experiments/cvs_equivariant_numerics/configs/experiment_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01/resolved_config.json",
+      "data_overrides": {
+        "precision_mode": "cudnn_tf32_off_fp32",
+        "model_dtype": "float32"
+      },
+      "seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "No RNG in public chain; frozen source model seed only; originalsplit392005 records provenance.",
+      "k": null,
+      "scenario": "public_synthetic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0optimizersteps;fixed30input×3phase",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01/s2026092704-cudnn_tf32_off_fp32",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_equivariant_numerics_20261002_r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_equivariant_numerics_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "s2026092704-cudnn_tf32_off_fp64",
+      "method": "equivariant_memory_frozen_numerics",
+      "purpose": "fixed_public_synthetic_precision_attribution",
+      "gpu": null,
+      "config_ref": "experiments/cvs_equivariant_numerics/configs/experiment_spec.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01/resolved_config.json",
+      "data_overrides": {
+        "precision_mode": "cudnn_tf32_off_fp64",
+        "model_dtype": "float64_requested_native_casts_retained"
+      },
+      "seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "No RNG in public chain; frozen source model seed only; originalsplit392005 records provenance.",
+      "k": null,
+      "scenario": "public_synthetic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0optimizersteps;fixed30input×3phase",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01/s2026092704-cudnn_tf32_off_fp64",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_equivariant_numerics_20261002_r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_equivariant_numerics_20261002_r01/audit.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Motivated by pre-query source physical audit maxlogiterror0.02684152126312256;target scores excluded from design.",
+    "All4seed×3modes fixed before observation;nooptimizer/nofitting/noaugmentation/noformalIQ/query/truth/scoredreports.",
+    "Third mode requests dtypefloat64 but unmodified native Sinc/head contain explicitFP32:must report mixed precision or unsupported;never claim pureFP64.",
+    "TF32 hypothesis unproven; even a reproduced precision effect is not proof of target regression cause.",
+    "Backend flags changed process-locally and restored;frozenstate exactunchanged;physical tolerance0.001 remains reportonly notselectiongate."
+  ],
+  "registered_at": "2026-10-01T22:50:58+00:00",
+  "status": "PLANNED"
+}

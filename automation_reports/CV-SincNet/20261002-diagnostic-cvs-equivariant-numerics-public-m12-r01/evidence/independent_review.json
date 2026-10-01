@@ -1,0 +1,16 @@
+{
+  "status": "PASS",
+  "agent": "review_identity_ce",
+  "P0_P1": [],
+  "scope": "One scoped prelaunch correctness review",
+  "findings": [
+    "Immutable model base4e395 verified; systemPythonGPUhelpers stdlib AST;CVS-RFFIworker",
+    "Full source physical roles/scratch/E200/payload beforestrictfrozenload",
+    "30publicinputs/3phases,4seed×3precision fixed;noformalIQ/query/truth/targetscore",
+    "OnlycuDNNTF32 singlevariable;flagsrestore;doublemode mixedprecision disclosed",
+    "Observationhooks no output mutation;frozenstate exact check;alloutputs exclusive",
+    "Oneworker freeGPU>=12000MiB/<2 jobs;no otherprocess interference"
+  ],
+  "local_tests_passed": 3,
+  "target_access": false
+}
