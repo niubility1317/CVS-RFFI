@@ -1,0 +1,75 @@
+{
+  "status": "VERIFIED_SYNTHETIC_QUERY_PIPELINE",
+  "at": "2026-10-01T09:44:36.474823+00:00",
+  "source_parent_commit": "8d020384f11a89228aabc744630a3efed11b98f1",
+  "source_paths": [
+    "tools/evaluate_d92_margin_joint_benchmark.py",
+    "tools/score_d92_margin_joint_benchmark.py",
+    "tools/report_d92_margin_joint_benchmark.py",
+    "tools/run_d92_margin_joint_benchmark.py",
+    "tools/publish_d92_margin_joint_benchmark.py",
+    "tests/test_evaluate_d92_margin_joint_benchmark.py",
+    "tests/test_score_d92_margin_joint_benchmark.py",
+    "tests/test_report_d92_margin_joint_benchmark.py",
+    "tests/test_run_d92_margin_joint_benchmark.py",
+    "tests/test_publish_d92_margin_joint_benchmark.py",
+    "docs/D92_MARGIN_JOINT_QUERY_PREDICTOR_20261001.md",
+    "docs/D92_MARGIN_JOINT_QUERY_SCORER_20261001.md",
+    "docs/D92_MARGIN_JOINT_QUERY_ENTRY_20261001.md"
+  ],
+  "validation": {
+    "passed": 99,
+    "failed": 0,
+    "exit_code": 0,
+    "elapsed_seconds": null,
+    "test_files": [
+      "tests/test_evaluate_d92_margin_joint_benchmark.py",
+      "tests/test_score_d92_margin_joint_benchmark.py",
+      "tests/test_report_d92_margin_joint_benchmark.py",
+      "tests/test_run_d92_margin_joint_benchmark.py",
+      "tests/test_publish_d92_margin_joint_benchmark.py"
+    ],
+    "output_prefix": "E:\\type10-7\\.codex_tmp\\pytest_native_activation_1790847454381497000",
+    "environment": {
+      "identity": {
+        "executable": "E:\\type10-7\\local_envs\\ssr-gpu\\python.exe",
+        "prefix": "E:\\type10-7\\local_envs\\ssr-gpu",
+        "conda_prefix": "E:\\type10-7\\local_envs\\ssr-gpu",
+        "conda_shlvl": "2",
+        "numpy": "2.2.6",
+        "scipy": "1.15.3",
+        "torch": "2.1.0+cpu"
+      },
+      "activation_source": "Installed conda.activate.CmdExeActivator.build_stack; all generated variables applied; no hooks",
+      "conda_cli_or_wrapper_started": false,
+      "test_temp": "E:\\type10-7\\.codex_tmp\\pytest_native_temp_1790847432827757200",
+      "pytest_cache_enabled": false
+    },
+    "scopes": [
+      "real core synthetic K3 B-to-C inheritance, archives and query callbacks",
+      "native Ground A and physical IDs",
+      "all-row fixed prediction validation before truth",
+      "full matrices and paired baseline metadata",
+      "isolated runtime whitelist imports",
+      "supervisor artifacts and publisher landing reconciliation"
+    ]
+  },
+  "preserved_failed_attempt": {
+    "prefix": "E:\\type10-7\\.codex_tmp\\pytest_native_activation_1790847190501473100",
+    "passed": 4,
+    "setup_errors": 95,
+    "cause": "WinError 5 in default pytest temp and cache directories; test bodies not entered"
+  },
+  "warning": "Installed Torch 2.1 CPU / NumPy 2 ABI warning retained; scalar/list bridge tests passed. No environment packages changed.",
+  "actual_margin_query_run": null,
+  "actual_query_or_truth_access": false,
+  "performance_claim": null,
+  "active_original_analysis": {
+    "local_session": 79064,
+    "pid": 787831,
+    "start_ticks": 9221520,
+    "source_commit": "ccb7f3469cc1a28ea8bbd7eb7adce937b41a430a",
+    "unchanged": true
+  },
+  "limitation": "Synthetic correctness only; reused query will require new preregistration and must not be called independent validation."
+}

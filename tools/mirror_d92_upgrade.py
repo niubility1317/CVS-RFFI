@@ -355,6 +355,8 @@ paths += ['configs/d92_margin_ground_a_support_20261001.json']
 
 paths += ['tools/export_d92_margin_training_ai_scalars.py', 'tests/test_export_d92_margin_training_ai_scalars.py', 'docs/D92_MARGIN_TRAINING_AI_SCALARS_20261001.md']
 
+paths += ['tools/evaluate_d92_margin_joint_benchmark.py', 'tools/score_d92_margin_joint_benchmark.py', 'tools/report_d92_margin_joint_benchmark.py', 'tools/run_d92_margin_joint_benchmark.py', 'tools/publish_d92_margin_joint_benchmark.py', 'tests/test_evaluate_d92_margin_joint_benchmark.py', 'tests/test_score_d92_margin_joint_benchmark.py', 'tests/test_report_d92_margin_joint_benchmark.py', 'tests/test_run_d92_margin_joint_benchmark.py', 'tests/test_publish_d92_margin_joint_benchmark.py', 'docs/D92_MARGIN_JOINT_QUERY_PREDICTOR_20261001.md', 'docs/D92_MARGIN_JOINT_QUERY_SCORER_20261001.md', 'docs/D92_MARGIN_JOINT_QUERY_ENTRY_20261001.md', 'docs/D92_MARGIN_JOINT_QUERY_VALIDATION_20261001.json']
+
 for name in paths:
     src=ROOT/name;dst=WS/name;dst.parent.mkdir(parents=True,exist_ok=True)
     # Each name is unique to this task; original D92 and shared wrappers are not mirrored.

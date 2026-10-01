@@ -1,3 +1,12 @@
+## 最新交接：Margin query评估流程99项通过，原独立分析继续（2026-10-01）
+
+- Goal ACTIVE。新predictor/scorer/reporter/supervisor/publisher及合成测试已完成；99passed，含真实core的K3 B→C继承、完整archives、all-row truth-last和隔离34文件闭包。证据docs/D92_MARGIN_JOINT_QUERY_VALIDATION_20261001.json。原默认temp权限失败保留，官方CmdExeActivator.build_stack原生激活ssr-gpu、工作区独占temp与禁cache后通过，没有并发Conda包装或环境包改动。
+- 原support训练e50四行完整；唯一数学分析source ccb7，PID787831/start9221520及local79064仍等待，不重复启动、不停/热改健康任务。分析全完成后唯一collector/snapshot/extract/scalar，再接已有Ground A Margin预登记；Ground helper发布前更新expectedHEAD为实际已推送版本。
+- 当前query流程仅合成验证；尚未建立真实query spec/run或启动。固定原Margin数学/方法参数；root后续只根据既有metadata预登记，复用query透明标注非新独立验证，不能回流调参。当前2个model seed配对旧baseline同seed子集，不与旧4seed总体混减。A原生地面头，B仅旧support，C真实继承B并对全部已注册类统一竞争。
+- 原Phase1/practical residual与checkpoint来源契约保持固定；禁止源样本/源逐记录特征/query拟合或评分反馈。全K×new矩阵、同物理旧query三阶段与资源实际口径必须保留。新独立验证仍按用户暂缓。guard/分析RSS不冒充星载成本。
+
+以下为历史状态（不要依据旧段落重复启动）：
+
 ## 最新运行：Margin四行训练完成，唯一数学分析运行（2026-10-01）
 
 - Goal ACTIVE。原run20261001-phase2-d92-margin-joint-support-m2-r01 runtime e50de0ad4已四行COMPLETE，160parents/1800paths/3240stages完整；原supervisor756554及evaluator已退出，不重复启动。
