@@ -15,3 +15,9 @@
 [源控制实时核实](evidence/source_control_preflight.json) · [源数值归因报告](../20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01/report.md) · [既有数学与物理边界](../../../docs/CVS_EQUIVARIANT_IDENTITY_HYPOTHESIS_20261002.md)。
 
 92 项相关检查 PASS，覆盖精度单变量/异常恢复、源实际 flags 与 payload 来源、全部日志状态、合法源冻结与 truth-last 以及控制复用。独立 P0/P1 审查 PASS；条件 clean 矩阵指错的唯一 P1 已修正并定点验证，完整旧矩阵不改写。
+
+## 已发布与实际运行
+
+状态 RUNNING。训练 release commit `be0aec8f2e2a3b50ce41d8ec1778c28c96e7eb6e`；4 个独立 scratch worker 已在 GPU0/1/2/3 运行，PID/CWD/argv 和日志增长独立读回。当前读回轮次为 12,11,10,9，尚未 E200。各模型实际 202553 参数均收到 CE 梯度，sourceL6300/V27000/Uunused；resolved 和 epoch 实测 TF32 均为关闭，其他 flags 与固定策略一致。当前不能作最终选模或性能提升结论。
+
+[启动读回](evidence/launch_readback.json) · [当前交接](evidence/current_handoff.json)。健康训练继续，不重复启动、不热修改。

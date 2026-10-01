@@ -28,12 +28,12 @@
   "replaces_run_id": null,
   "authorization": "用户授权持续优化基础网络，性能第一，真正 RFF physics aware；普通 CE、无增强、clean-only，每次发布默认完成测试。",
   "code": {
-    "commit": "fbdfb5322a20fba3a6ae7eb61ea76766dcd11d44",
+    "commit": "be0aec8f2e2a3b50ce41d8ec1778c28c96e7eb6e",
     "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_equivariant_fp32_identity_20261002_r01",
     "architecture_base_commit": "583be084d91dc1fd8540bbf1da33b61b91b38975",
-    "note": "New release pinned after local validation; previous immutable releases unchanged"
+    "note": "Immutable trainingreleasebe0aec8;actualflags readback verified;later reporting commits do not modify remote release"
   },
   "data": {
     "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
@@ -103,7 +103,17 @@
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01",
     "local_artifact_root": "automation_reports/CV-SincNet/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01",
     "launch_command": "python -m experiments.cvs_equivariant_identity.publish_fp32 --output local_artifacts/cvs_equivariant_fp32_identity_20261002_r01",
-    "stop_rule": "Only own affected row fails on nonfinite/permissions/output collision/nonzero exit; preserve all artifacts; no retry, low-score stop or unrelated process intervention"
+    "stop_rule": "Only own affected row fails on nonfinite/permissions/output collision/nonzero exit; preserve all artifacts; no retry, low-score stop or unrelated process intervention",
+    "actual_pid": 1293823,
+    "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_equivariant_fp32_identity_20261002_r01",
+    "actual_argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_equivariant_identity.dispatch",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_equivariant_fp32_identity_20261002_r01/experiments/cvs_equivariant_identity/configs_fp32/launch_spec.json"
+    ]
   },
   "expected_artifacts": [
     "last.pt",
@@ -149,7 +159,7 @@
       "row_id": "equivariant_memory-s2026092701",
       "method": "equivariant_memory",
       "purpose": "source_scratch_identical_structure_full_fp32",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_equivariant_identity/configs_fp32/equivariant_memory-s2026092701.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092701/source/resolved_config.json",
       "data_overrides": {
@@ -192,13 +202,24 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
+      ],
+      "actual_pid": 1293844,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_equivariant_fp32_identity_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_equivariant_identity.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_equivariant_fp32_identity_20261002_r01/experiments/cvs_equivariant_identity/configs_fp32/equivariant_memory-s2026092701.json",
+        ""
       ]
     },
     {
       "row_id": "equivariant_memory-s2026092702",
       "method": "equivariant_memory",
       "purpose": "source_scratch_identical_structure_full_fp32",
-      "gpu": null,
+      "gpu": 1,
       "config_ref": "experiments/cvs_equivariant_identity/configs_fp32/equivariant_memory-s2026092702.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092702/source/resolved_config.json",
       "data_overrides": {
@@ -241,13 +262,24 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
+      ],
+      "actual_pid": 1293938,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_equivariant_fp32_identity_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_equivariant_identity.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_equivariant_fp32_identity_20261002_r01/experiments/cvs_equivariant_identity/configs_fp32/equivariant_memory-s2026092702.json",
+        ""
       ]
     },
     {
       "row_id": "equivariant_memory-s2026092703",
       "method": "equivariant_memory",
       "purpose": "source_scratch_identical_structure_full_fp32",
-      "gpu": null,
+      "gpu": 2,
       "config_ref": "experiments/cvs_equivariant_identity/configs_fp32/equivariant_memory-s2026092703.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092703/source/resolved_config.json",
       "data_overrides": {
@@ -290,13 +322,24 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
+      ],
+      "actual_pid": 1294086,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_equivariant_fp32_identity_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_equivariant_identity.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_equivariant_fp32_identity_20261002_r01/experiments/cvs_equivariant_identity/configs_fp32/equivariant_memory-s2026092703.json",
+        ""
       ]
     },
     {
       "row_id": "equivariant_memory-s2026092704",
       "method": "equivariant_memory",
       "purpose": "source_scratch_identical_structure_full_fp32",
-      "gpu": null,
+      "gpu": 3,
       "config_ref": "experiments/cvs_equivariant_identity/configs_fp32/equivariant_memory-s2026092704.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092704/source/resolved_config.json",
       "data_overrides": {
@@ -339,6 +382,17 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
+      ],
+      "actual_pid": 1294177,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_equivariant_fp32_identity_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_equivariant_identity.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_equivariant_fp32_identity_20261002_r01/experiments/cvs_equivariant_identity/configs_fp32/equivariant_memory-s2026092704.json",
+        ""
       ]
     }
   ],

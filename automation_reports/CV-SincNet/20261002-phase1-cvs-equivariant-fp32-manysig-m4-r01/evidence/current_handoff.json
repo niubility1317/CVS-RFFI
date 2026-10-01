@@ -1,0 +1,50 @@
+{
+  "status": "RUNNING",
+  "run_id": "20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01",
+  "release": "cvs_equivariant_fp32_identity_20261002_r01",
+  "commit": "be0aec8f2e2a3b50ce41d8ec1778c28c96e7eb6e",
+  "dispatcher_pid": 1293823,
+  "launch_owner": "codex/root/cvs-equivariant-fp32-20261002",
+  "numerical_policy": {
+    "cudnn_allow_tf32": false,
+    "cuda_matmul_allow_tf32": false,
+    "cudnn_benchmark": false,
+    "cudnn_deterministic": false,
+    "matmul_precision": "highest"
+  },
+  "rows": [
+    {
+      "row_id": "equivariant_memory-s2026092701",
+      "pid": 1293844,
+      "gpu": 0,
+      "epoch_at_read": 12
+    },
+    {
+      "row_id": "equivariant_memory-s2026092702",
+      "pid": 1293938,
+      "gpu": 1,
+      "epoch_at_read": 11
+    },
+    {
+      "row_id": "equivariant_memory-s2026092703",
+      "pid": 1294086,
+      "gpu": 2,
+      "epoch_at_read": 10
+    },
+    {
+      "row_id": "equivariant_memory-s2026092704",
+      "pid": 1294177,
+      "gpu": 3,
+      "epoch_at_read": 9
+    }
+  ],
+  "goal_achieved": false,
+  "target_access": false,
+  "confirm_run_id": "20261002-phase1-cvs-equivariant-fp32-clean-manysig-m24-r01",
+  "next_steps": [
+    "Reinspect same existing dispatcher/workers;do not resubmit/restart/hotmodify",
+    "On terminal complete use collect_fp32 and analyze_fp32:full40000/800 audit,sourceonlyranking",
+    "Selectednew only:generate configs_fp32 fromactualsourcefreeze then4new+20old defaultclean andtruthlastreport",
+    "Controlwins retainverifiedoldtest;no unselectedquery;allnegativeartifacts retained"
+  ]
+}

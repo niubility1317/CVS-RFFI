@@ -6,4 +6,4 @@
 
 |名称|记录类型|证据入口|
 |---|---|---|
-|CVS整网复相位约束：关闭cuDNN TF32的4seed从零训练|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/report.md)|
+|CVS 全路径复相位约束：完整 FP32 源实验|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/report.md)|
