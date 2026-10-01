@@ -22,7 +22,7 @@
   "whole_phase_max_unit_embedding_distance": 0.0018618506146594882,
   "report_tolerance": 0.001,
   "numerical_issue_observed_before_new_query": true,
-  "next_action": "Source-only physical representation research;keep completed source/clean model/selection/predictions fixed. Any new numerical training policy preregistered before new source training, no target scores.",
+  "next_action": "Preregister a fresh scratch source-only validation of numerical policy cuDNN.allow_tf32=False, ordinaryCE/noaugmentation/samephysicalroles. All previous source/clean weights, selections/predictions/scores fixed. New source-only selection before any new defaultclean test; no test-score-driven changes or checkpointinheritance.",
   "target_scores_included": false,
   "target_score_based_design_forbidden": true,
   "fresh_precision_environment": {
