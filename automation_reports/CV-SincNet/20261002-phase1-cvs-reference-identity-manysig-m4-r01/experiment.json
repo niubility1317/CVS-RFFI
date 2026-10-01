@@ -149,7 +149,8 @@
     "prediction_ref": "N/A until source_selection.json is frozen",
     "scorer_ref": "N/A: source-only release does not score target",
     "primary": "Complete200epoch sourceCE/V/worstRX and fixedE200 performancefirst ranking; finalTXRXday/embedding geometry; fixed controlled TX/RX cascade diagnosis",
-    "later_test": "New source-selected candidate automatically receives4clean predictions+20frozen controls in 20261002-phase1-cvs-reference-clean-manysig-m24-r01. If original residual wins, retain original verified test; unselected new model testN/A."
+    "later_test": "New source-selected candidate automatically receives4clean predictions+20frozen controls in 20261002-phase1-cvs-reference-clean-manysig-m24-r01. If original residual wins, retain original verified test; unselected new model testN/A.",
+    "actual_test": "New reference N/A by preregistered source rule; residual historical test independently read back, no relaunch"
   },
   "rows": [
     {
@@ -435,6 +436,7 @@
       "8-8"
     ],
     "target_feedback": false,
-    "selection": "source_only"
+    "selection": "source_only",
+    "actual_outcome": "Existing residual source control selected; historical clean independently verified unchanged; unselected reference not queried"
   }
 }
