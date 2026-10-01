@@ -90,3 +90,9 @@ GPU冻结合成诊断的最大全网相位logit误差为0.0268415213，超过预
 源规则选中的4个新模型已冻结，并完成4新+20旧统一24行clean预测与truth-last评分。全部192份混淆矩阵及同seed差分独立复算，旧160条评分不变。本轮clean表现下降，完整负结果见[独立clean报告](../20261002-phase1-cvs-equivariant-clean-manysig-m24-r01/report.md)。这些目标成绩只用于报告，不反馈源规则、结构、超参数、重排或选择性重跑。
 
 状态ANALYZED；本轮发布收尾完成，总体性能/物理感知目标仍未完成。下一步数值定位源于新query前已发现的source物理误差，使用固定源权重和公共合成输入；不据clean分层或分数制定新结构。
+
+## 源数值问题的环境观察
+
+只读同版本N607 Torch2.1.0+cu121的新进程，默认cuDNN允许TF32，CUDA matmul不允许TF32；导入source模块后相同，NVIDIA_TF32_OVERRIDE未设置。此次未加载权重、正式IQ或target。这是新进程默认/模块导入观察，不能代替已终止worker的实际设置读回，也不能证明TF32是相位误差或clean下降的原因。
+
+下一步只对相同冻结source权重/相同公共合成输入做单变量精度复现，先登记矩阵及来源，不改变已有源选择、模型、clean预测或评分。[环境读回](evidence/fresh_precision_environment_readback.json) · [不含目标分数的源交接](evidence/next_source_handoff.json)。

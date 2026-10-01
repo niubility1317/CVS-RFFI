@@ -24,5 +24,29 @@
   "numerical_issue_observed_before_new_query": true,
   "next_action": "Frozen source/public synthetic precision and stage attribution; no architecture/parameter change",
   "target_scores_included": false,
-  "target_score_based_design_forbidden": true
+  "target_score_based_design_forbidden": true,
+  "fresh_precision_environment": {
+    "torch_version": "2.1.0+cu121",
+    "default_flags": {
+      "cudnn_allow_tf32": true,
+      "cuda_matmul_allow_tf32": false,
+      "cudnn_benchmark": false,
+      "cudnn_deterministic": false,
+      "matmul_precision": "highest"
+    },
+    "after_source_module_import": {
+      "cudnn_allow_tf32": true,
+      "cuda_matmul_allow_tf32": false,
+      "cudnn_benchmark": false,
+      "cudnn_deterministic": false,
+      "matmul_precision": "highest"
+    },
+    "nvidia_tf32_override": null,
+    "formal_data_access": false,
+    "checkpoint_loaded": false,
+    "target_access": false,
+    "scope": "Fresh sameversion environment defaults/module import; not a readback of terminated worker flags"
+  },
+  "next_numerical_hypothesis": "cuDNN TF32 contributes to finite-precision phase discrepancy; unproven until same frozen source/public synthetic reproduction and one-variable toggle",
+  "diagnostic_constraints": "Pre-register deterministic4source seeds x source-defaultFP32/cuDNN-TF32-offFP32/float64; source checkpoint full provenance before loading; no formalIQ/query/truth/scored-results; no optimizer/model/selection/prediction changes"
 }

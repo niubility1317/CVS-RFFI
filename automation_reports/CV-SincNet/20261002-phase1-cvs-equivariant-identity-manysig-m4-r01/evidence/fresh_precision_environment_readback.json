@@ -1,0 +1,22 @@
+{
+  "torch_version": "2.1.0+cu121",
+  "default_flags": {
+    "cudnn_allow_tf32": true,
+    "cuda_matmul_allow_tf32": false,
+    "cudnn_benchmark": false,
+    "cudnn_deterministic": false,
+    "matmul_precision": "highest"
+  },
+  "after_source_module_import": {
+    "cudnn_allow_tf32": true,
+    "cuda_matmul_allow_tf32": false,
+    "cudnn_benchmark": false,
+    "cudnn_deterministic": false,
+    "matmul_precision": "highest"
+  },
+  "nvidia_tf32_override": null,
+  "formal_data_access": false,
+  "checkpoint_loaded": false,
+  "target_access": false,
+  "scope": "Fresh sameversion environment defaults/module import; not a readback of terminated worker flags"
+}
