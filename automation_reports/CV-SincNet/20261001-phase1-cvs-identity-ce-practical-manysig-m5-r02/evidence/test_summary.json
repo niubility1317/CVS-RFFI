@@ -1,0 +1,282 @@
+{
+  "rows": [
+    {
+      "seed": 392005,
+      "views": {
+        "clean": {
+          "accuracy": 79.47738095238095,
+          "macro_f1": 79.16364587134913,
+          "count": 168000,
+          "cvcnn_accuracy": 75.86488095238096,
+          "delta_pp": 3.6124999999999963
+        },
+        "practical_high": {
+          "accuracy": 77.03132254723383,
+          "macro_f1": 76.63183699019659,
+          "count": 55998,
+          "cvcnn_accuracy": 75.15268402442943,
+          "delta_pp": 1.8786385228043878
+        },
+        "practical_low_urban": {
+          "accuracy": 49.08289747080318,
+          "macro_f1": 48.807749676591364,
+          "count": 55828,
+          "cvcnn_accuracy": 45.70645554202192,
+          "delta_pp": 3.3764419287812597
+        },
+        "practical_mid": {
+          "accuracy": 74.85847545127639,
+          "macro_f1": 74.40960593150625,
+          "count": 56174,
+          "cvcnn_accuracy": 72.59586285470147,
+          "delta_pp": 2.262612596574931
+        },
+        "satellite": {
+          "accuracy": 67.01726190476191,
+          "macro_f1": 67.00717730891778,
+          "count": 168000,
+          "cvcnn_accuracy": 64.51249999999999,
+          "delta_pp": 2.5047619047619096
+        }
+      }
+    },
+    {
+      "seed": 2026092701,
+      "views": {
+        "clean": {
+          "accuracy": 78.1297619047619,
+          "macro_f1": 77.68520028621886,
+          "count": 168000,
+          "cvcnn_accuracy": 71.84345238095237,
+          "delta_pp": 6.28630952380953
+        },
+        "practical_high": {
+          "accuracy": 72.60795028393872,
+          "macro_f1": 72.56540274925348,
+          "count": 55998,
+          "cvcnn_accuracy": 71.54898389228187,
+          "delta_pp": 1.058966391656846
+        },
+        "practical_low_urban": {
+          "accuracy": 46.52862362971986,
+          "macro_f1": 46.43838540836534,
+          "count": 55828,
+          "cvcnn_accuracy": 43.71283227054525,
+          "delta_pp": 2.8157913591746073
+        },
+        "practical_mid": {
+          "accuracy": 70.3012069640759,
+          "macro_f1": 70.10643649974033,
+          "count": 56174,
+          "cvcnn_accuracy": 68.9518282479439,
+          "delta_pp": 1.3493787161320103
+        },
+        "satellite": {
+          "accuracy": 63.1702380952381,
+          "macro_f1": 63.32676789653821,
+          "count": 168000,
+          "cvcnn_accuracy": 61.43035714285714,
+          "delta_pp": 1.7398809523809566
+        }
+      }
+    },
+    {
+      "seed": 2026092702,
+      "views": {
+        "clean": {
+          "accuracy": 74.47857142857143,
+          "macro_f1": 73.97511320030551,
+          "count": 168000,
+          "cvcnn_accuracy": 74.16904761904762,
+          "delta_pp": 0.309523809523804
+        },
+        "practical_high": {
+          "accuracy": 72.89903210828959,
+          "macro_f1": 72.65864402192705,
+          "count": 55998,
+          "cvcnn_accuracy": 72.24008000285724,
+          "delta_pp": 0.6589521054323422
+        },
+        "practical_low_urban": {
+          "accuracy": 47.1895822884574,
+          "macro_f1": 46.1536477929025,
+          "count": 55828,
+          "cvcnn_accuracy": 43.660887010102456,
+          "delta_pp": 3.528695278354949
+        },
+        "practical_mid": {
+          "accuracy": 70.98479723715599,
+          "macro_f1": 70.57924197219005,
+          "count": 56174,
+          "cvcnn_accuracy": 69.54462918788052,
+          "delta_pp": 1.4401680492754698
+        },
+        "satellite": {
+          "accuracy": 63.715476190476195,
+          "macro_f1": 63.296680841740326,
+          "count": 168000,
+          "cvcnn_accuracy": 61.84166666666666,
+          "delta_pp": 1.8738095238095331
+        }
+      }
+    },
+    {
+      "seed": 2026092703,
+      "views": {
+        "clean": {
+          "accuracy": 77.05357142857143,
+          "macro_f1": 76.73718182209853,
+          "count": 168000,
+          "cvcnn_accuracy": 74.26547619047619,
+          "delta_pp": 2.788095238095245
+        },
+        "practical_high": {
+          "accuracy": 73.8633522625808,
+          "macro_f1": 73.87039620158414,
+          "count": 55998,
+          "cvcnn_accuracy": 73.46155219829281,
+          "delta_pp": 0.40180006428800485
+        },
+        "practical_low_urban": {
+          "accuracy": 46.9603066561582,
+          "macro_f1": 46.69683621412084,
+          "count": 55828,
+          "cvcnn_accuracy": 44.97563946406821,
+          "delta_pp": 1.9846671920899894
+        },
+        "practical_mid": {
+          "accuracy": 71.83216434649482,
+          "macro_f1": 71.70926590710357,
+          "count": 56174,
+          "cvcnn_accuracy": 70.92783138106597,
+          "delta_pp": 0.9043329654288446
+        },
+        "satellite": {
+          "accuracy": 64.24404761904762,
+          "macro_f1": 64.47394372768119,
+          "count": 168000,
+          "cvcnn_accuracy": 63.14821428571429,
+          "delta_pp": 1.0958333333333292
+        }
+      }
+    },
+    {
+      "seed": 2026092704,
+      "views": {
+        "clean": {
+          "accuracy": 76.82559523809523,
+          "macro_f1": 76.23513210190008,
+          "count": 168000,
+          "cvcnn_accuracy": 76.79166666666667,
+          "delta_pp": 0.03392857142856531
+        },
+        "practical_high": {
+          "accuracy": 75.6723454409086,
+          "macro_f1": 75.27695311412464,
+          "count": 55998,
+          "cvcnn_accuracy": 74.60266438087075,
+          "delta_pp": 1.0696810600378637
+        },
+        "practical_low_urban": {
+          "accuracy": 47.757397721573405,
+          "macro_f1": 46.04701899803963,
+          "count": 55828,
+          "cvcnn_accuracy": 44.82875976212653,
+          "delta_pp": 2.9286379594468723
+        },
+        "practical_mid": {
+          "accuracy": 72.8539893901093,
+          "macro_f1": 72.28662080175356,
+          "count": 56174,
+          "cvcnn_accuracy": 71.85352654252857,
+          "delta_pp": 1.0004628475807409
+        },
+        "satellite": {
+          "accuracy": 65.45357142857144,
+          "macro_f1": 64.76238606243662,
+          "count": 168000,
+          "cvcnn_accuracy": 63.78928571428572,
+          "delta_pp": 1.6642857142857181
+        }
+      }
+    }
+  ],
+  "statistics": {
+    "clean": {
+      "accuracy_mean": 76.621875,
+      "accuracy_sd": 1.5378921568933046,
+      "macro_f1_mean": 76.15815685263075,
+      "macro_f1_sd": 1.574667831670043,
+      "cvcnn_accuracy_mean": 74.26741071428572,
+      "cvcnn_accuracy_sd": 2.0213131998574623,
+      "cvcnn_macro_f1_mean": 73.80461800009071,
+      "cvcnn_macro_f1_sd": 1.9209854513490048,
+      "delta_pp": 2.354464285714286,
+      "delta_sd": 2.899086656841702,
+      "count": 168000
+    },
+    "practical_high": {
+      "accuracy_mean": 73.76067002392944,
+      "accuracy_sd": 1.3827785118677252,
+      "macro_f1_mean": 73.59284902172233,
+      "macro_f1_sd": 1.270383650129373,
+      "cvcnn_accuracy_mean": 72.96332011857567,
+      "cvcnn_accuracy_sd": 1.348963557893054,
+      "cvcnn_macro_f1_mean": 72.67230165863523,
+      "cvcnn_macro_f1_sd": 1.3700094018011622,
+      "delta_pp": 0.7973499053537623,
+      "delta_sd": 0.32568956154973927,
+      "count": 55998
+    },
+    "practical_low_urban": {
+      "accuracy_mean": 47.108977573977214,
+      "accuracy_sd": 0.5118136217495953,
+      "macro_f1_mean": 46.33397210335708,
+      "macro_f1_sd": 0.2929342603926529,
+      "cvcnn_accuracy_mean": 44.29452962671061,
+      "cvcnn_accuracy_sd": 0.7045535768327833,
+      "cvcnn_macro_f1_mean": 44.57727195685608,
+      "cvcnn_macro_f1_sd": 0.6574538260421589,
+      "delta_pp": 2.814447947266606,
+      "delta_sd": 0.6355382273489585,
+      "count": 55828
+    },
+    "practical_mid": {
+      "accuracy_mean": 71.493039484459,
+      "accuracy_sd": 1.1024163243116962,
+      "macro_f1_mean": 71.17039129519688,
+      "macro_f1_sd": 1.0029641880498996,
+      "cvcnn_accuracy_mean": 70.31945383985473,
+      "cvcnn_accuracy_sd": 1.315833739585626,
+      "cvcnn_macro_f1_mean": 69.97268239985635,
+      "cvcnn_macro_f1_sd": 1.3049712467742443,
+      "delta_pp": 1.173585644604266,
+      "delta_sd": 0.2610478184610565,
+      "count": 56174
+    },
+    "satellite": {
+      "accuracy_mean": 64.14583333333334,
+      "accuracy_sd": 0.9758446445101815,
+      "macro_f1_mean": 63.96494463209908,
+      "macro_f1_sd": 0.7635092126573555,
+      "cvcnn_accuracy_mean": 62.55238095238095,
+      "cvcnn_accuracy_sd": 1.1028754804586212,
+      "cvcnn_macro_f1_mean": 62.4979838483338,
+      "cvcnn_macro_f1_sd": 1.1161542240142546,
+      "delta_pp": 1.5934523809523853,
+      "delta_sd": 0.34287195459629016,
+      "count": 168000
+    }
+  },
+  "validated": {
+    "records": 200,
+    "seeds": [
+      392005,
+      2026092701,
+      2026092702,
+      2026092703,
+      2026092704
+    ],
+    "confusion_counts_and_accuracy": true
+  }
+}
