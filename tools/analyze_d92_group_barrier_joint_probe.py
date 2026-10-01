@@ -23,6 +23,7 @@ SCHEMA = 'd92_group_barrier_joint_local_ridge_v1'
 METHOD = 'D92-GroupBarrierJointLocalRidge-v1'
 STATUS = 'GROUP_BARRIER_JOINT_PROBE_COMPLETE'
 SCOPE = 'SUPPORT_ONLY_GROUP_BARRIER_JOINT_OOF_AND_PROXY_NOT_QUERY_EVALUATION'
+NATIVE_A_SCOPE = 'CURRENT_LEGAL_OLD_HELD_ONLY_ORIGINAL_SIX_CLASS_COMPETITION'
 ANALYSIS_SCHEMA = 'd92_group_barrier_joint_probe_analysis_v1'
 PATHS = ('R0', 'R_GROUP_BARRIER_seq')
 IDENTITY = ('split_id', 'receiver', 'scenario', 'k', 'support_seed', 'new_count')
@@ -235,6 +236,14 @@ def assess_entry(entry, old, classes, new_count, fixed, resolver=None):
     if entry.get('ground_A') is not None:
         wanted.add('A')
     require(set(fixed) == wanted, 'Fixed prediction streams incomplete or duplicated')
+    require(entry.get('stages'), 'Actual baseline stage binding unavailable')
+    expected_binding={key:entry['stages'][0].get(key) for key in ('run_id','row_id','split_id')}
+    require(all(isinstance(value,str) and value for value in expected_binding.values()), 'Actual baseline parent binding unavailable')
+    for stream in fixed.values():
+        require(all(stream.get(key)==value for key,value in expected_binding.items()), 'Fixed prediction stream parent binding differs')
+        require(_fixed_outer_coords(stream)==_coords(entry)
+                and stream.get('parent_k')==entry['parent_k'] and stream.get('train_k')==entry['train_k'],
+                'Fixed prediction stream outer path coordinates differ')
     values = {}; raw = {}
     archived = None
     if resolver:
@@ -301,6 +310,39 @@ def assess_entry(entry, old, classes, new_count, fixed, resolver=None):
 
 def _coords(entry):
     return (entry['scope'],entry.get('fold'),entry.get('trial'))
+
+
+def _fixed_outer_coords(record):
+    """A's native inference scope overwrites outer scope in the producer callback.
+
+    Only its known native scope is interpreted, with unchanged fold/trial
+    coordinates. No physical IDs or labels are used to guess an outer path.
+    The original record and native scope stay intact for subsequent checks.
+    """
+    if record.get('stream')!='A':
+        require(record.get('scope') in ('support_oof','support_oneshot_proxy'), 'Unknown B/C fixed stream outer scope')
+        return _coords(record)
+    require(record.get('scope')==NATIVE_A_SCOPE, 'Unknown native A inference scope')
+    fold,trial=record.get('fold'),record.get('trial')
+    require((type(fold) is int and fold>=0 and trial is None)
+            or (fold is None and type(trial) is int and trial>=0), 'Native A has ambiguous/missing outer fold/trial')
+    return ('support_oof' if fold is not None else 'support_oneshot_proxy',fold,trial)
+
+
+def index_fixed_predictions(records, *, run_id, row_id):
+    """Index actual callbacks, keeping native A records unchanged and unique."""
+    groups=defaultdict(dict)
+    streams={'A'}|{path+'_'+side for path in PATHS for side in ('B','C')}
+    for record in records:
+        require(record.get('status')=='FIXED_BEFORE_SUPPORT_TRUTH_JOIN' and 'held_labels' not in record
+                and record.get('run_id')==run_id and record.get('row_id')==row_id,
+                'Fixed prediction stream has wrong access/row binding')
+        require(record.get('stream') in streams and isinstance(record.get('split_id'),str)
+                and record['split_id'], 'Unknown fixed prediction stream/parent')
+        key=(record['split_id'],)+_fixed_outer_coords(record)
+        require(record['stream'] not in groups[key], 'Duplicate fixed prediction stream')
+        groups[key][record['stream']]=record
+    return dict(groups)
 
 
 def _entries(record):
@@ -495,14 +537,7 @@ def analyze_run(spec, run_root, *, expected_runtime_commit, verify_numeric_state
         require(len(traces)==len(compact)==40 and {x['split_id'] for x in traces}==set(selection)
                 and len({x['split_id'] for x in traces})==40 and {x['split_id'] for x in compact}==set(selection), 'Complete 40-parent row required')
         resolver.close_references([traces,events],scalar_projected_records=read_jsonl(probe/'fit_stages.jsonl'))
-        frozen=defaultdict(dict)
-        for value in fixed:
-            require(value.get('status')=='FIXED_BEFORE_SUPPORT_TRUTH_JOIN' and 'held_labels' not in value
-                    and value.get('run_id')==spec['run_id'] and value.get('row_id')==row_id,
-                    'Fixed prediction stream has wrong access/row binding')
-            key=(value['split_id'],)+_coords(value)
-            require(value['stream'] not in frozen[key], 'Duplicate fixed prediction stream')
-            frozen[key][value['stream']]=value
+        frozen=index_fixed_predictions(fixed,run_id=spec['run_id'],row_id=row_id)
         consumed=set(); compact_by={x['split_id']:x for x in compact}
         for record in traces:
             sid=record['split_id']; selected=selection[sid]; small=compact_by[sid]

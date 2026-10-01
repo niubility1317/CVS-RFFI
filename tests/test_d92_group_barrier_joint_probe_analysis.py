@@ -144,6 +144,7 @@ def parent_fixture(split,row,spec,archive):
         gb=scores(bids,OLD,labels); gc=gb if not new else scores(held,classes,labels,displace=True,wrong_new=True)
         ga=scores(bids,OLD,labels,wrong_old=True).astype(np.float32)
         ground=dict(physical_ids=bids,classes=OLD,scores=ga.tolist(),score_dtype='float32',
+            scope=analysis.NATIVE_A_SCOPE,
             predictions=[OLD[int(j)] for j in np.argmax(ga,axis=1)],scores_state_ref=save('A_GROUND_FIXED_PREDICTIONS','scores',dict(scores=ga)))
         entry['ground_A']=ground
         common=dict(b_ids=bids,c_ids=held,b_classes=OLD,c_classes=classes,held_labels=entry['held_labels'],ground_A=ground)
@@ -312,7 +313,7 @@ def test_cross_parent_inherited_prior_is_rejected(tmp_path):
 def test_fixed_prediction_mismatch_is_not_scored(tmp_path):
     spec=spec_fixture(); row=spec['rows'][0]; split=next(x for x in spec['probe']['cohorts'][row['cohort']]['selection']['splits'] if x['k']==5 and x['new_count']==2)
     record,fixed=parent_fixture(split,row,spec,producer.StateArchive(tmp_path)); entry=record['folds'][0]
-    streams={x['stream']:x for x in fixed if analysis._coords(x)==analysis._coords(entry)}
+    streams={x['stream']:x for x in fixed if analysis._fixed_outer_coords(x)==analysis._coords(entry)}
     streams['R_GROUP_BARRIER_seq_C']['predictions'][0]='outside_registry'
     with pytest.raises(ValueError,match='Fixed stream differs'): analysis.assess_entry(entry,OLD,record['classes'],2,streams)
 
@@ -382,3 +383,86 @@ def test_unknown_or_tampered_compact_descriptor_is_rejected(nested_descriptor_pr
     else: ref['path']='state_arrays/unregistered.npz'
     with pytest.raises(ValueError,match='state reference projection|Missing state reference'):
         resolver.close_references([full],scalar_projected_records=[bad])
+
+
+@pytest.fixture(scope='module')
+def actual_production_probe_streams(tmp_path_factory):
+    """Execute the actual probe/core on tiny blind synthetic no-information geometry."""
+    import torch
+    from cvsrffi.d92_ground_classifier_a import GroundClassifierA,GroundFeatureContract,GroundHeadMetadata
+    directory=tmp_path_factory.mktemp('actual_production_probe_streams')
+    classes=[f'c{i}' for i in range(8)]; old=classes[:6]; k=2
+    labels=np.repeat(np.arange(8),k); ids=[f'{classes[int(label)]}_{i:02d}' for i,label in enumerate(labels)]
+    raw={name:np.zeros((len(labels),dim),dtype=np.float32)
+         for name,dim in zip(producer.BRANCHES,(160,96,160,160,160))}
+    contract=GroundFeatureContract('1'*64,'z_id','feat_joint','raw','float32',160)
+    metadata=GroundHeadMetadata('1'*64,'id_backbone.cls_head.head.weight',tuple(reversed(old)),16.,1e-4,
+        contract,'MATCHED_SOURCE_ONLY_SCRATCH',False,(),'none')
+    ground=GroundClassifierA(weight=torch.zeros((6,160),dtype=torch.float32),metadata=metadata)
+    archive=producer.StateArchive(directory); predictions=[]
+    resources=dict(max_newton_iterations=100,max_line_search_trials=64,max_factor_buffer_bytes=167772160)
+    result=producer.probe_group_barrier_joint(**raw,support_labels=labels,support_ids=ids,classes=classes,old_classes=old,
+        **resources,context=dict(run_id='synthetic_actual_probe',row_id='row',split_id='split'),
+        ground_head=ground,state_callback=archive,prediction_callback=predictions.append)
+    state=archive.finalize('COMPLETE')
+    marker=dict(state_archive_file_count=state['file_count'],state_archive_file_bytes=state['total_file_bytes'],
+        state_archive_numeric_bytes=state['numeric_array_bytes'])
+    for name in analysis.REQUIRED_ARTIFACTS:
+        if not (directory/name).exists(): (directory/name).write_text('{}',encoding='utf-8')
+    dump(directory/'artifact_manifest.json',dict(schema='d92_group_barrier_joint_artifacts_v1',method=analysis.METHOD,status=analysis.STATUS,
+        files=[dict(path=p.relative_to(directory).as_posix(),file_bytes=p.stat().st_size) for p in sorted(directory.rglob('*')) if p.is_file()]))
+    resolver=analysis.GroupStateResolver(directory,marker)
+    return result,predictions,resolver
+
+
+def _actual_entry_streams(result,predictions,entry):
+    grouped=analysis.index_fixed_predictions(predictions,run_id='synthetic_actual_probe',row_id='row')
+    return grouped[('split',)+analysis._coords(entry)]
+
+
+def test_actual_production_probe_callback_and_assessor_join(actual_production_probe_streams):
+    result,predictions,resolver=actual_production_probe_streams
+    entries=result['folds']+result['oneshot_proxy']['trials']
+    assert len(entries)==4 and len(predictions)==20
+    assert all(record['scope']==analysis.NATIVE_A_SCOPE for record in predictions if record['stream']=='A')
+    for entry in entries:
+        fixed=_actual_entry_streams(result,predictions,entry)
+        assert set(fixed)=={'A','R0_B','R0_C','R_GROUP_BARRIER_seq_B','R_GROUP_BARRIER_seq_C'}
+        metrics,raw=analysis.assess_entry(entry,result['old_classes'],result['classes'],2,fixed,resolver)
+        for path in analysis.PATHS:
+            assert metrics[path]['A_old_accuracy']==pytest.approx(entry['paths'][path]['metrics']['A_old_accuracy'])
+            assert metrics[path]['B_old_accuracy']==pytest.approx(entry['paths'][path]['metrics']['B_old_accuracy'])
+        assert raw['R_GROUP_BARRIER_seq']['ap']==entry['ground_A']['predictions']
+
+
+@pytest.mark.parametrize('missing',('A','R0_B','R0_C','R_GROUP_BARRIER_seq_B','R_GROUP_BARRIER_seq_C'))
+def test_actual_production_missing_stream_cannot_be_completed(actual_production_probe_streams,missing):
+    result,predictions,_=actual_production_probe_streams; entry=result['folds'][0]
+    fixed=_actual_entry_streams(result,predictions,entry); del fixed[missing]
+    with pytest.raises(ValueError,match='streams incomplete'):
+        analysis.assess_entry(entry,result['old_classes'],result['classes'],2,fixed)
+
+
+@pytest.mark.parametrize('alteration',('wrong_fold','ambiguous_coords','wrong_native_scope','wrong_old_ids',
+                                      'wrong_run','wrong_row','wrong_split','wrong_train_k'))
+def test_actual_production_native_A_cannot_cross_outer_path(actual_production_probe_streams,alteration):
+    result,predictions,_=actual_production_probe_streams; entry=result['folds'][0]
+    fixed=copy.deepcopy(_actual_entry_streams(result,predictions,entry)); A=fixed['A']
+    if alteration=='wrong_fold': A['fold']=1
+    elif alteration=='ambiguous_coords': A['trial']=0
+    elif alteration=='wrong_native_scope': A['scope']='some_other_native_view'
+    elif alteration=='wrong_old_ids': A['physical_ids']=list(reversed(A['physical_ids']))
+    elif alteration=='wrong_run': A['run_id']='another_run'
+    elif alteration=='wrong_row': A['row_id']='another_model_row'
+    elif alteration=='wrong_split': A['split_id']='another_parent'
+    else: A['train_k']+=1
+    with pytest.raises(ValueError,match='outer path coordinates|outer fold/trial|native A inference scope|Native A fixed stream|parent binding'):
+        analysis.assess_entry(entry,result['old_classes'],result['classes'],2,fixed)
+
+
+@pytest.mark.parametrize('duplicate',('A','R0_B','R0_C','R_GROUP_BARRIER_seq_B','R_GROUP_BARRIER_seq_C'))
+def test_actual_production_duplicate_callback_is_rejected(actual_production_probe_streams,duplicate):
+    _,predictions,_=actual_production_probe_streams
+    added=next(record for record in predictions if record['stream']==duplicate)
+    with pytest.raises(ValueError,match='Duplicate fixed prediction stream'):
+        analysis.index_fixed_predictions(predictions+[copy.deepcopy(added)],run_id='synthetic_actual_probe',row_id='row')

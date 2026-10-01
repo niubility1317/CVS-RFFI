@@ -1,3 +1,14 @@
+## 当前交接：support 分析两次失败已保留，三阶段连接修复已验证，r03 预登记
+
+- Goal ACTIVE。拟合 runtime9518 完整四 row/160 parent 保持；query runtime73aa 保持健康，17:09:46UTC 独立证据 `automation_reports/CV-SincNet/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01/evidence/query_runtime_1790874648168256500.json`核实 supervisor1049548、rx3 PID1049715/1049721，rx1 两行原排程等待。未读 partial predictions/truth，全部4row/2400parent固定后才独立评分，不 stop/retry/relaunch。
+- analysis r01/source73aa FAILED KeyError shape 已在 attempts[0]；r02/sourcea3d child1074638/wrapper1074632 FAILED 149.303秒、已退出且 summary/files 为空，证据 `automation_reports/CV-SincNet/20261001-phase2-d92-group-barrier-joint-support-m2-r01/evidence/analysis_runtime_1790874130510704500.json`、live及schema证明保留；实际 producer9518与a3d一致，A native scope导致旧连接分组缺A。当前39合成case实际PASS，包括生产probe原始callback，严格同parent/trainK/heldID并拒绝缺失/重复；修复仅analyzer/tests。
+- r03/source实际OID尚N/A、prep a3d，已预登记独占release `d92_group_barrier_joint_analysis_20261002_r03`、新 output `analyses/20261001-phase2-d92-group-barrier-joint-support-m2-r01/support_summary_20261002_r03`。root唯一Git/SSH/launch/numerics/真实analysis；push与独立OID后只launch新attempt，绝对不要重跑已有r01/r02 publisher。失败原目录不覆盖，fit/query不重训不热改。
+- 下一步：source交付→r03一次性独立分析→完整support三阶段与成本报告，不按结果改query方法。原Margin query终态FAILED，保留partial不评分。真实query准确率和完整成本仍N/A；fresh独立验证暂缓。
+
+<!-- GROUP_ANALYSIS_STREAM_FIX_20261002 -->
+
+以下保留历史状态，不据此重复启动：
+
 ## 当前交接：support分析r01格式故障已修复验证，r02预登记；query继续
 
 - Goal ACTIVE。query immutable73aa1b31f/原supervisor1049548与rx3 evaluator1049715/1049721健康继续；最新16:35:36UTC `query_runtime_1790872598242173900.json`（WS-only）仍两行PREDICTING、rx1两行等待。全部4row/2400parent A/B/C固定后才独立truth-last；当前query准确率N/A。不改该runtime/数学参数/预算，不stop/retry/relaunch。
