@@ -1,3 +1,12 @@
+## 当前运行：Margin唯一启动已独立核实（2026-10-01）
+
+- Goal ACTIVE。20261001-phase2-d92-margin-joint-support-m2-r01唯一runtime e50de0ad4e7d0570dce62ba88c3791fdf1c14951；supervisor756554/start8891521，两CPU evaluator756564/756565，另两row PENDING。startup完整spec/argv/CWD/BLAS2/GPU空均独立VERIFIED，证据runtime_readback_1790841357922706700.json。没有complete/成绩。
+- 不要重复publisher、prepare、metadata preflight；frozen configs保持原launch内容，后续报告提交不改变runtime。只读监控精确PID/start_ticks和当前row；健康任务不得干预。
+- Ground A Margin扩展已150passed/12 legacy-only skip；summary49/collector8/analyzer14已通过，旧数学检查不重复。完成四行后独立analyze一次、训练全量collector一次、固定预测Ground A四行补充另预登记，三阶段严格配对。不得拿其他方法B/R0作Margin A。
+- 固定Phase1/practical residual，仅合法support；query、源样本/逐样本源特征与结果反馈禁止。4096/160MiB为技术guard，不保证收敛或星载RSS；独立新数据验证按用户暂缓。
+
+以下为历史记录（旧handle/PID已结束不要重复启动）：
+
 ## 当前执行：Margin已预登记，未启动（2026-10-01）
 
 - Goal ACTIVE。pipeline6d475bc70已push/OID验证；新run 20261001-phase2-d92-margin-joint-support-m2-r01 4row/160parent已按冻结数学结构预登记。resource4096/160MiB是技术guard，不是性能搜索或RSS。下一步root仅metadata preflight、Git交付和唯一publish；尚无PID、性能或设备结论。Ground A扩展source已完成并150passed/12legacy-skip；metadata preflight VERIFIED，新run/release/archive未占用。root待本次精确Git交付后唯一publish，不重复preflight/请求生成。

@@ -1,6 +1,6 @@
 # D92-MarginJointLocalRidge support联合实验预登记
 
-状态：PREPARED_NOT_LAUNCHED。root为唯一launch owner。代码父提交6d475bc70eb338f18599a9ad90fa20223a4e3d78；真实发布OID、PID和resolved config将在独立读回后登记。
+状态：TRAINING_ON_SUPPORT，启动VERIFIED。root唯一launch owner。实际不可变runtime e50de0ad4e7d0570dce62ba88c3791fdf1c14951；supervisor PID756554/start8891521。两CPU evaluator PID756564/756565已启动，另两行PENDING。独立证据见[evidence/runtime_readback_1790841357922706700.json](evidence/runtime_readback_1790841357922706700.json)，frozen startup已绑定原spec。
 
 四行共160个parent；旧类6个，K=1/5/10/20，新增0/2/5/10/20类，两个固定模型seed与两个cohort。矩阵与input身份沿用显式预登记元数据；不依赖成绩选择。practical residual/post_sync/noeq/25MHz。
 
@@ -27,4 +27,6 @@ A、B、C三阶段按同一物理旧类held support配对：本run先固定B/C�
 
 [预登记](experiment.json) · [冻结与容量证据](evidence/method_freeze_and_resource_choice_20261001.json)
 
-远端只读元数据preflight：VERIFIED，四个缓存来源均绑定；新run/release/archive均不存在。未读取特征值、query或源样本。Ground A扩展150项通过，12项为两个旧方法fixture中的Margin专用断言跳过，Margin本身已执行；[证据](evidence/ground_a_entry_validation_20261001.json)。尚未发布或训练。
+远端只读元数据preflight：VERIFIED，四个缓存来源均绑定；新run/release/archive均不存在。未读取特征值、query或源样本。Ground A扩展150项通过，12项为两个旧方法fixture中的Margin专用断言跳过，Margin本身已执行；[证据](evidence/ground_a_entry_validation_20261001.json)。上述为启动前preflight证据；其后已唯一发布，启动状态独立VERIFIED。
+
+当前没有完成marker或实际性能。不能将旧方法A/B/C拼给Margin。待原四行结束后，执行一次独立数学摘要和完整训练诊断，再用同物理held记录做Ground A配对。保留所有失败与健康lane，不重复publisher、preflight或request生成。

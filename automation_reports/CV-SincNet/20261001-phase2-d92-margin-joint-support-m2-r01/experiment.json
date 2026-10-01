@@ -117,14 +117,14 @@
     "feature_cache_producer_role": "support-only raw frozen features; no learned state"
   },
   "code": {
-    "commit": "6d475bc70eb338f18599a9ad90fa20223a4e3d78",
+    "commit": "e50de0ad4e7d0570dce62ba88c3791fdf1c14951",
     "checkout": "E:\\type10-7\\code\\snapshots\\d92_support_upgrade_20260928_wt",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_margin_joint_support_20261001_r01",
     "base_recipe": "experiments/adv3b02_xuc/configs/rc4_practical_residual_noeq_20260918.json",
     "native_code_base": "b63734157",
     "native_training_commit": "9b1ddd939fcabc74c77c94a62fef8e5aad07c0e9",
-    "commit_note": "Preparation source parent only; actual committed/pushed release OID independently recorded at launch",
+    "commit_note": "Actual immutable remote runtime release; later record/report commits do not change it",
     "preparation_parent_commit": "6d475bc70eb338f18599a9ad90fa20223a4e3d78"
   },
   "execution": {
@@ -143,7 +143,103 @@
     "implementation_validation": "docs/D92_MARGIN_JOINT_PIPELINE_VALIDATION_20261001.json",
     "metadata_preflight_ref": "evidence/metadata_preflight_20261001.json",
     "metadata_preflight_status": "VERIFIED",
-    "ground_a_entry_validation_ref": "evidence/ground_a_entry_validation_20261001.json"
+    "ground_a_entry_validation_ref": "evidence/ground_a_entry_validation_20261001.json",
+    "actual_runtime_commit": "e50de0ad4e7d0570dce62ba88c3791fdf1c14951",
+    "supervisor_pid": 756554,
+    "supervisor_start_ticks": 8891521,
+    "launch_readback_ref": "evidence/runtime_readback_1790841357922706700.json",
+    "launch_observed_utc": "2026-10-01T07:54:56Z",
+    "actual_supervisor_argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_margin_joint_support_20261001_r01/tools/run_d92_margin_joint_probe.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_margin_joint_support_20261001_r01/configs/d92_margin_joint_support_20261001.json",
+      "--commit",
+      "e50de0ad4e7d0570dce62ba88c3791fdf1c14951"
+    ],
+    "actual_cpu_environment": {
+      "OMP_NUM_THREADS": "2",
+      "MKL_NUM_THREADS": "2",
+      "OPENBLAS_NUM_THREADS": "2",
+      "CUDA_VISIBLE_DEVICES": ""
+    },
+    "observed_children": [
+      {
+        "pid": 756564,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_margin_joint_support_20261001_r01/tools/evaluate_d92_margin_joint_probe.py",
+          "--support-features",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-support-probe-m4-r01/rx3-cvs-daot-rc4-s2026092701/feature_cache",
+          "--capsule",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule",
+          "--output",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-joint-support-m2-r01/rx3-cvs-daot-rc4-s2026092701/probe",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_margin_joint_support_20261001_r01/configs/d92_margin_joint_support_rx3_20261001.json",
+          "--expected-capsule-id",
+          "residual-noeq-76121e6f34363fa612ec25fb",
+          "--expected-checkpoint-sha256",
+          "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b",
+          "--expected-model-seed",
+          "2026092701",
+          "--run-id",
+          "20261001-phase2-d92-margin-joint-support-m2-r01",
+          "--row-id",
+          "rx3-cvs-daot-rc4-s2026092701"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_margin_joint_support_20261001_r01",
+        "start_ticks": 8891547,
+        "ppid": 756554,
+        "environment": {
+          "OMP_NUM_THREADS": "2",
+          "MKL_NUM_THREADS": "2",
+          "OPENBLAS_NUM_THREADS": "2",
+          "CUDA_VISIBLE_DEVICES": ""
+        }
+      },
+      {
+        "pid": 756565,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_margin_joint_support_20261001_r01/tools/evaluate_d92_margin_joint_probe.py",
+          "--support-features",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-support-probe-m4-r01/rx3-cvs-daot-rc4-s2026092702/feature_cache",
+          "--capsule",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule",
+          "--output",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-joint-support-m2-r01/rx3-cvs-daot-rc4-s2026092702/probe",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_margin_joint_support_20261001_r01/configs/d92_margin_joint_support_rx3_20261001.json",
+          "--expected-capsule-id",
+          "residual-noeq-76121e6f34363fa612ec25fb",
+          "--expected-checkpoint-sha256",
+          "72f26413e495dcf82317898f8729caa3d35499bf0b41e9671ffdceab2c90924b",
+          "--expected-model-seed",
+          "2026092702",
+          "--run-id",
+          "20261001-phase2-d92-margin-joint-support-m2-r01",
+          "--row-id",
+          "rx3-cvs-daot-rc4-s2026092702"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_margin_joint_support_20261001_r01",
+        "start_ticks": 8891547,
+        "ppid": 756554,
+        "environment": {
+          "OMP_NUM_THREADS": "2",
+          "MKL_NUM_THREADS": "2",
+          "OPENBLAS_NUM_THREADS": "2",
+          "CUDA_VISIBLE_DEVICES": ""
+        }
+      }
+    ],
+    "actual_gpu": null,
+    "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-margin-joint-support-m2-r01/startup.json",
+    "frozen_launch_spec_ref": "configs/d92_margin_joint_support_20261001.json",
+    "observed_scope": "Independent startup/argv/CWD/environment/row metadata; no score or feature arrays"
   },
   "rows": [
     {
@@ -525,7 +621,7 @@
   ],
   "parent_run_ids": [],
   "claim_scope": "SUPPORT_INFORMATION_DIAGNOSTIC_NOT_QUERY_PERFORMANCE",
-  "status": "PREPARED_NOT_LAUNCHED",
+  "status": "TRAINING_ON_SUPPORT",
   "spec_path": "configs/d92_margin_joint_support_20261001.json",
   "input_identity_source": "Fixed source-only cache/capsule/model/split metadata; no scored output, adapted state or index supplied to fitting",
   "probe": {
@@ -2933,5 +3029,6 @@
   "actual_A": null,
   "adaptation_gain_B_minus_A": null,
   "performance_gate": null,
-  "automatic_promotion": false
+  "automatic_promotion": false,
+  "launched": true
 }
