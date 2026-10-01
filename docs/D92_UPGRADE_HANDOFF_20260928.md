@@ -1,3 +1,14 @@
+## 当前交接：ProtoFrame 联合 support 诊断已一次发布，运行读回 VERIFIED
+
+- Goal ACTIVE，`20261002-phase2-d92-proto-frame-joint-support-m2-r01` RUNNING，immutable runtime `a9f638d9ea9bd315d6614c6650e95c5f557aed0c`，准备母版2832。发布 VERIFIED，supervisor1159048/start_ticks13008322；2026-10-01T19:21:07Z独立读回 rx3 PID1159112/1159113 TRAINING_ON_SUPPORT、rx1两行PENDING。CPU2/BLAS2/noGPU；源域样本/逐记录特征/query均未读取。`automation_reports/CV-SincNet/20261002-phase2-d92-proto-frame-joint-support-m2-r01/evidence/support_runtime_1790882528737126400.json` 与publication/launch evidence已入库。
+- fixed4rows/160parents，old6，K1/5/10/20×new0/2/5/10/20，实际B→C；111distinct synthetic PASS和直接正确性检查已完成。ground center only/full file payload8,383/8,262B；native wire和星载成本N/A。不要重复发布、自动重试、停健康进程或读部分support指标调参。
+- source-blind worker仅完成独立 support analyzer与synthetic tests；它不在该release中，后续独立Git提交/发布只读analysis，完整4/160close后一次整体分析。原始训练logs/state不可改写。结果须实际配对A/B/C、full K×new和成本；OOF/proxy不称query性能。
+- Group query immutable73aa/supervisor1049548健康排程不变，19:10UTC两rx3 PREDICTING/两rx1等待；正常退避metadata read。全4/2400固定后原release内独立truth-last scorer，无subset评分。Group support已报告、Marginquery FAILED保留、fresh验证暂缓。
+
+<!-- PROTO_FRAME_SUPPORT_LIVE_20261002 -->
+
+以下保留历史状态，不据此重复启动：
+
 ## 当前交接：五维原型切向 GGN1 与 LocalRidge 联合候选，源码和 support 输入已就绪
 
 - Goal ACTIVE。`20261002-phase2-d92-proto-frame-joint-support-m2-r01` READY，尚未发布或启动；fixed 4 rows/160 parents，old6，K1/5/10/20×new0/2/5/10/20。新代码 `configs/d92_proto_frame_joint_support_20261002.json` 与数学推导保持一致，111 distinct synthetic cases PASS；首个收集失败未运行数值，证据保留。限定独立直接正确性检查已完成，没有未解决 P0/P1。两文件 ground payload 为 8,383/8,262 B，center only，无 source observations/query。
