@@ -23,7 +23,7 @@
   "replaces_run_id": null,
   "authorization": "2026-10-01用户要求根据原目标继续改进，并要求每次发布最后默认测试集测试。",
   "code": {
-    "commit": "release_commit.txt resolves runtime commit",
+    "commit": "03f1aa69d81b949fcf0be457164ebc846fe1f8c5",
     "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_simplex_identity_20261001_r01",
@@ -97,7 +97,10 @@
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261001-phase1-cvs-simplex-identity-manysig-m8-r01",
     "local_artifact_root": "automation_reports/CV-SincNet/20261001-phase1-cvs-simplex-identity-manysig-m8-r01",
     "launch_command": "python -m experiments.cvs_simplex_identity.publish --output local_artifacts/cvs_simplex_identity_20261001_r01",
-    "stop_rule": "Only own affected row fails on nonfinite/permissions/output collision/nonzero exit; preserve all artifacts; no retry, low-score stop or unrelated process intervention"
+    "stop_rule": "Only own affected row fails on nonfinite/permissions/output collision/nonzero exit; preserve all artifacts; no retry, low-score stop or unrelated process intervention",
+    "dispatcher_pid": 1035284,
+    "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_simplex_identity_20261001_r01",
+    "dispatcher_log": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_simplex_identity_20261001_r01/dispatcher.stdout.log"
   },
   "expected_artifacts": [
     "last.pt",
@@ -141,7 +144,7 @@
       "row_id": "simplex_learned-s2026092701",
       "method": "simplex_learned",
       "purpose": "source_only_CVS_simplex_classifier_candidate",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_simplex_identity/configs/simplex_learned-s2026092701.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-simplex-identity-manysig-m8-r01/simplex_learned-s2026092701/source/resolved_config.json",
       "data_overrides": {},
@@ -174,13 +177,24 @@
         "epoch_metrics.jsonl",
         "epoch_metrics.csv",
         "step_metrics.jsonl"
+      ],
+      "runtime_pid": 1035301,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_simplex_identity_20261001_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_simplex_identity.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_simplex_identity_20261001_r01/experiments/cvs_simplex_identity/configs/simplex_learned-s2026092701.json",
+        ""
       ]
     },
     {
       "row_id": "simplex_fixed-s2026092701",
       "method": "simplex_fixed",
       "purpose": "source_only_CVS_simplex_classifier_candidate",
-      "gpu": null,
+      "gpu": 1,
       "config_ref": "experiments/cvs_simplex_identity/configs/simplex_fixed-s2026092701.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-simplex-identity-manysig-m8-r01/simplex_fixed-s2026092701/source/resolved_config.json",
       "data_overrides": {},
@@ -213,13 +227,24 @@
         "epoch_metrics.jsonl",
         "epoch_metrics.csv",
         "step_metrics.jsonl"
+      ],
+      "runtime_pid": 1035801,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_simplex_identity_20261001_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_simplex_identity.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_simplex_identity_20261001_r01/experiments/cvs_simplex_identity/configs/simplex_fixed-s2026092701.json",
+        ""
       ]
     },
     {
       "row_id": "simplex_learned-s2026092702",
       "method": "simplex_learned",
       "purpose": "source_only_CVS_simplex_classifier_candidate",
-      "gpu": null,
+      "gpu": 2,
       "config_ref": "experiments/cvs_simplex_identity/configs/simplex_learned-s2026092702.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-simplex-identity-manysig-m8-r01/simplex_learned-s2026092702/source/resolved_config.json",
       "data_overrides": {},
@@ -252,13 +277,24 @@
         "epoch_metrics.jsonl",
         "epoch_metrics.csv",
         "step_metrics.jsonl"
+      ],
+      "runtime_pid": 1035890,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_simplex_identity_20261001_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_simplex_identity.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_simplex_identity_20261001_r01/experiments/cvs_simplex_identity/configs/simplex_learned-s2026092702.json",
+        ""
       ]
     },
     {
       "row_id": "simplex_fixed-s2026092702",
       "method": "simplex_fixed",
       "purpose": "source_only_CVS_simplex_classifier_candidate",
-      "gpu": null,
+      "gpu": 3,
       "config_ref": "experiments/cvs_simplex_identity/configs/simplex_fixed-s2026092702.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-simplex-identity-manysig-m8-r01/simplex_fixed-s2026092702/source/resolved_config.json",
       "data_overrides": {},
@@ -291,13 +327,24 @@
         "epoch_metrics.jsonl",
         "epoch_metrics.csv",
         "step_metrics.jsonl"
+      ],
+      "runtime_pid": 1035977,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_simplex_identity_20261001_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_simplex_identity.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_simplex_identity_20261001_r01/experiments/cvs_simplex_identity/configs/simplex_fixed-s2026092702.json",
+        ""
       ]
     },
     {
       "row_id": "simplex_learned-s2026092703",
       "method": "simplex_learned",
       "purpose": "source_only_CVS_simplex_classifier_candidate",
-      "gpu": null,
+      "gpu": 4,
       "config_ref": "experiments/cvs_simplex_identity/configs/simplex_learned-s2026092703.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-simplex-identity-manysig-m8-r01/simplex_learned-s2026092703/source/resolved_config.json",
       "data_overrides": {},
@@ -330,13 +377,24 @@
         "epoch_metrics.jsonl",
         "epoch_metrics.csv",
         "step_metrics.jsonl"
+      ],
+      "runtime_pid": 1036066,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_simplex_identity_20261001_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_simplex_identity.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_simplex_identity_20261001_r01/experiments/cvs_simplex_identity/configs/simplex_learned-s2026092703.json",
+        ""
       ]
     },
     {
       "row_id": "simplex_fixed-s2026092703",
       "method": "simplex_fixed",
       "purpose": "source_only_CVS_simplex_classifier_candidate",
-      "gpu": null,
+      "gpu": 5,
       "config_ref": "experiments/cvs_simplex_identity/configs/simplex_fixed-s2026092703.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-simplex-identity-manysig-m8-r01/simplex_fixed-s2026092703/source/resolved_config.json",
       "data_overrides": {},
@@ -369,13 +427,24 @@
         "epoch_metrics.jsonl",
         "epoch_metrics.csv",
         "step_metrics.jsonl"
+      ],
+      "runtime_pid": 1036153,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_simplex_identity_20261001_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_simplex_identity.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_simplex_identity_20261001_r01/experiments/cvs_simplex_identity/configs/simplex_fixed-s2026092703.json",
+        ""
       ]
     },
     {
       "row_id": "simplex_learned-s2026092704",
       "method": "simplex_learned",
       "purpose": "source_only_CVS_simplex_classifier_candidate",
-      "gpu": null,
+      "gpu": 6,
       "config_ref": "experiments/cvs_simplex_identity/configs/simplex_learned-s2026092704.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-simplex-identity-manysig-m8-r01/simplex_learned-s2026092704/source/resolved_config.json",
       "data_overrides": {},
@@ -408,13 +477,24 @@
         "epoch_metrics.jsonl",
         "epoch_metrics.csv",
         "step_metrics.jsonl"
+      ],
+      "runtime_pid": 1036299,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_simplex_identity_20261001_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_simplex_identity.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_simplex_identity_20261001_r01/experiments/cvs_simplex_identity/configs/simplex_learned-s2026092704.json",
+        ""
       ]
     },
     {
       "row_id": "simplex_fixed-s2026092704",
       "method": "simplex_fixed",
       "purpose": "source_only_CVS_simplex_classifier_candidate",
-      "gpu": null,
+      "gpu": 7,
       "config_ref": "experiments/cvs_simplex_identity/configs/simplex_fixed-s2026092704.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-simplex-identity-manysig-m8-r01/simplex_fixed-s2026092704/source/resolved_config.json",
       "data_overrides": {},
@@ -447,6 +527,17 @@
         "epoch_metrics.jsonl",
         "epoch_metrics.csv",
         "step_metrics.jsonl"
+      ],
+      "runtime_pid": 1036385,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_simplex_identity_20261001_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_simplex_identity.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_simplex_identity_20261001_r01/experiments/cvs_simplex_identity/configs/simplex_fixed-s2026092704.json",
+        ""
       ]
     }
   ],
