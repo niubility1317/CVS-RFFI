@@ -1,3 +1,12 @@
+## 当前交接：既有Ground A发布源码已核实可复用（2026-10-01）
+
+- Goal ACTIVE。新query源码/配置本地HEAD d2bb4b48f、ahead3，原GitHub push被auto-review拒绝且具体目的地授权仍待用户回答；禁止重试push/用未授权新query源码发布。此前已推送分支8d020384f已只读clone至code/snapshots/d92_published_ground_20261001_clone；clone已COMPLETE，11个Ground A源码/配置与当前canonical Git blob完全一致，clone中没有新query入口。证据Ground run/evidence/published_source_option_20261001.json。不是新代码向GitHub发布。
+- 原analysis仍local79064/PID787831/start9221520/source ccb7，10:09UTC证据analysis_runtime_1790849423948406400.json live且CPU增加，无summary/execution。原训练e50完整。先等同handle完成，完整独立分析后唯一collector/snapshot/extract/scalar；不停止/重跑/热改健康任务。
+- Ground A补测原run20261001-phase2-d92-margin-ground-a-support-m2-r01依旧PREPARED_NOT_LAUNCHED。可显式使用已推送8d源码副本的 .codex_tmp/launch_margin_ground_published_once_20261001.py；须在实际激活ssr-gpu并且完整原summary下载读回后调用，publisher仍独立检查该clone HEAD与远端分支OID/新输出。若远端OID已变，不绕过；重新核对原工作树已授权push与源码后再明确选择。此选项不加载checkpoint、不更改方法、spec、输入或实际B/C预测。
+- 新query run20261001-phase2-d92-margin-joint-repeat-m2-r01仍PLANNED/未启动，源公式冻结，99项和受影响24项已通过，4row/2400parent全矩阵、source-entry P0/P1无问题。真实query/成绩未读，仍待新源码授权推送后按原publisher唯一发布。
+
+以下为历史状态（不要依据旧段落重复启动）：
+
 ## 当前交接：query完整预登记完成，原分析健康运行，push待授权（2026-10-01）
 
 - Goal ACTIVE。当前query run20261001-phase2-d92-margin-joint-repeat-m2-r01已PLANNED，spec configs/d92_margin_joint_repeat_20261001.json；4row/2400parent/两个早已固定model seeds/两个完整capsule，全K×new×receiver×scenario×support seed，无成绩选择。尚未publish/run/PID/实际query读取或成绩。首次新入口P0/P1独立审查无问题，spec仅metadata验证通过；不重复core审查或数值测试。

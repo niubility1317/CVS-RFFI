@@ -15,3 +15,5 @@ A使用已核实的原地面float32分类头packet；不加载checkpoint或encod
 原始输入、训练release和已有输出保持不修改。失败保留，无自动重试；本补充不干预健康Margin任务。
 
 [预登记](experiment.json) · [来源绑定](evidence/prereg_binding_20261001.json)
+
+已核实可继续使用既有已发布源码：独立源码副本 `E:\type10-7\code\snapshots\d92_published_ground_20261001_clone` 的 HEAD 为 `8d020384f11a89228aabc744630a3efed11b98f1`，11个所需源码/配置的 canonical Git blob 与当前版本完全一致；Windows checkout 换行规范化后文本也一致。该副本不含尚未推送的新 query 入口。仅 Ground A 补测可在原完整数学摘要生成后按既有 publisher 执行；启动时仍核实真实远端分支 OID、输入和独占输出，不能根据此准备记录宣称已启动。新 query 推送继续等待具体 GitHub 披露目的地授权。

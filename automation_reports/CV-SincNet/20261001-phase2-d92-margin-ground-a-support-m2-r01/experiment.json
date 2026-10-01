@@ -142,7 +142,16 @@
     "launch_status": "NOT_LAUNCHED_WAITING_FOR_VERIFIED_MARGIN_INDEPENDENT_SUMMARY",
     "prerequisite_source_run": "20261001-phase2-d92-margin-joint-support-m2-r01",
     "prerequisite_status": "COMPLETE_MARGIN_JOINT_PROBE_VERIFIED",
-    "prerequisite_source_runtime_commit": "e50de0ad4e7d0570dce62ba88c3791fdf1c14951"
+    "prerequisite_source_runtime_commit": "e50de0ad4e7d0570dce62ba88c3791fdf1c14951",
+    "existing_published_source_option": {
+      "source_root": "E:\\type10-7\\code\\snapshots\\d92_published_ground_20261001_clone",
+      "published_commit": "8d020384f11a89228aabc744630a3efed11b98f1",
+      "source_proof": "automation_reports/CV-SincNet/20261001-phase2-d92-margin-ground-a-support-m2-r01/evidence/published_source_option_20261001.json",
+      "launcher": "E:/type10-7/.codex_tmp/launch_margin_ground_published_once_20261001.py",
+      "condition": "Only after full original Margin summary is independently COMPLETE; publisher must still match actual remote branch OID",
+      "new_query_code_included": false,
+      "launched": false
+    }
   },
   "metrics_plan": {
     "metric_names": [
