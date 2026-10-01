@@ -41,3 +41,5 @@ ANALYSIS_R02_RUNNING/VERIFIED：使用阶段顺序修复的独立分析已单次
 ANALYSIS_COMPLETE/VERIFIED：AJLR完整独立r02已正常结束，160parent/1800path和版本证据核实，完整80行K×新增类数报告已生成。96个新类存在的可测support持出配置中，R0 B71.0417/C旧63.7674/新54.8464/H58.4168；AJLR B71.1458/C旧62.9253/新57.0938/H58.9841。新类+2.2474pp、H+0.5673pp，但C旧−0.8420pp，注册下降从7.2743增至8.2205pp，不能称全面优于或自动晋级。A/B−A=N/A；非query或独立验证。完整训练快照3240阶段/2673911234B已采集；此前2650592222B是写盘尚未结束的观察值，已按完成后stat更正。只读diagnostics extract首次handle51314已退出，无输出；JSON源码字面量超过Python解析限制，尚未进入提取。仅修复压缩数据传输后复用同一完整snapshot，不重复采集或训练；目标ACTIVE。
 
 DIAGNOSTIC_TRANSPORT_READY/VERIFIED：旧AJLR只读提取源码literal超过Python解析长度，完整snapshot和分析结果保留，仅改为完整JSON→gzip→base64数据载荷；远端仍stdlib解码，没有字段删减、eval/pickle、新拟合/求解或数学变更。14项相关合成检查通过（5.97s），4项新增、10项既有回归。root在Git交付后仅重试extract，完整snapshot不重采，目标ACTIVE。
+
+DIAGNOSTIC_EXTRACT_RETRY_STARTED：root已单次启动压缩JSON只读extract，local handle=60237；完整snapshot为2673911234B，不重采、不重训。首次进程读回尚未看到远端extract进程，本地可能仍在解析/压缩载荷；不能从远端未出现推断失败或完成。原失败51314保留。Affine r02保持PID501716/handle2931，原分析不重复。目标ACTIVE。

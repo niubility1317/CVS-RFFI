@@ -175,8 +175,8 @@
       "summary": "E:\\type10-7\\automation_reports\\CV-SincNet\\20261001-phase2-d92-anchor-joint-support-m2-r01\\results\\support_summary\\summary.json"
     },
     "training_diagnostics": {
-      "status": "TRANSPORT_REPAIRED_RETRY_NOT_STARTED",
-      "local_wait_handle": 51314,
+      "status": "LOCAL_STARTED_REMOTE_NOT_OBSERVED",
+      "local_wait_handle": 60237,
       "process_exited": true,
       "reason": "Snapshot JSON embedded as a Python source literal exceeded parser length; requires data-only compressed transport",
       "source_output_prefix": "ssr_command_1790811442258625900",
@@ -186,7 +186,30 @@
       "outer_scores_or_query_read": false,
       "failed_handle": 51314,
       "failed_before_extract": true,
-      "validation": "diagnostic_transport_validation_20261001.json"
+      "validation": "diagnostic_transport_validation_20261001.json",
+      "retry_source_commit": "015a9c5ec79838e130ec1a4a1cd65f14e56a7797",
+      "retry_runtime_command": [
+        "F:/App/miniconda3/python.exe",
+        "-X",
+        "utf8",
+        "E:\\type10-7\\.codex_tmp\\run_ssr_command_utf8_20261001.py",
+        "tools/collect_d92_anchor_joint_training_diagnostics.py",
+        "--snapshot",
+        "E:\\type10-7\\automation_reports\\CV-SincNet\\20261001-phase2-d92-anchor-joint-support-m2-r01\\results\\training_snapshot.json",
+        "--run-root",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-anchor-joint-support-m2-r01",
+        "--output",
+        "E:\\type10-7\\automation_reports\\CV-SincNet\\20261001-phase2-d92-anchor-joint-support-m2-r01\\results\\training_diagnostics",
+        "--ssh-host",
+        "N607",
+        "--ssh-config",
+        "E:\\type10-7\\tools\\n607_ssh_config",
+        "--remote-python",
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python"
+      ],
+      "retry_evidence": "diagnostic_extract_retry_started_20261001.json",
+      "remote_processes": [],
+      "snapshot_recollected": false
     }
   },
   "expected_artifacts": [

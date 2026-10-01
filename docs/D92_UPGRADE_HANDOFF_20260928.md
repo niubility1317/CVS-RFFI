@@ -1,3 +1,9 @@
+## 最新状态：AJLR只读extract已启动，保留handle60237（2026-10-01）
+
+DIAGNOSTIC_EXTRACT_RETRY_STARTED：root已单次启动压缩JSON只读extract，local handle=60237；完整snapshot为2673911234B，不重采、不重训。首次进程读回尚未看到远端extract进程，本地可能仍在解析/压缩载荷；不能从远端未出现推断失败或完成。原失败51314保留。Affine r02保持PID501716/handle2931，原分析不重复。目标ACTIVE。
+
+恢复先poll 60237和2931并核实实际产物，不重复extract/snapshot/analyze。远端未看到extract进程时也需先检查本地载荷处理状态，不将其判为失败。
+
 ## 最新状态：AJLR传输修复已验证，extract待重试（2026-10-01）
 
 DIAGNOSTIC_TRANSPORT_READY/VERIFIED：旧AJLR只读提取源码literal超过Python解析长度，完整snapshot和分析结果保留，仅改为完整JSON→gzip→base64数据载荷；远端仍stdlib解码，没有字段删减、eval/pickle、新拟合/求解或数学变更。14项相关合成检查通过（5.97s），4项新增、10项既有回归。root在Git交付后仅重试extract，完整snapshot不重采，目标ACTIVE。
