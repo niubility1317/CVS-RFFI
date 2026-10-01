@@ -62,6 +62,11 @@ def _case(root, *, method='conditional', k=2, new=1):
     if method == 'conditional':
         import evaluate_d92_conditional_joint_probe as entry
         probe = entry.probe_conditional_joint
+    elif method == 'margin':
+        import evaluate_d92_margin_joint_probe as entry
+        from functools import partial
+        # Explicit synthetic technical bounds, never a production default.
+        probe = partial(entry.probe_margin_joint,max_transitions=256,max_factor_buffer_bytes=8_000_000)
     else:
         import evaluate_d92_affine_joint_probe as entry
         probe = entry.probe_affine_joint
@@ -81,7 +86,7 @@ def _case(root, *, method='conditional', k=2, new=1):
     return dict(root=root, packet=packet, cache=cache, lane=lane, digest=digest, native=native, old=old, record=record, split=split, binding=binding)
 
 
-@pytest.fixture(scope='module', params=['conditional', 'affine'])
+@pytest.fixture(scope='module', params=['conditional', 'affine', 'margin'])
 def production(tmp_path_factory, request):
     return _case(tmp_path_factory.mktemp('ground_a_support') / request.param, method=request.param)
 
@@ -187,7 +192,43 @@ def test_actual_b_c_pairing_rejects_tampered_trace(production, tmp_path, tamper)
     with pytest.raises(ValueError): scorer.score_fixed_support(predictions=fixed, fit_trace=trace, support_splits=production['cache'] / 'support_splits.json')
 
 
-@pytest.mark.parametrize('method', ['conditional', 'affine'])
+def test_margin_registry_matches_production_source_identity():
+    import evaluate_d92_margin_joint_probe as entry
+    assert scorer.METHODS[entry.SCHEMA]==(entry.METHOD,entry.STATUS,entry.SCOPE,
+        entry.PATHS[1],'B_MARGIN','C_MARGIN_seq')
+
+
+@pytest.mark.parametrize('tamper',['missing_fixed_status','inherited_adapter','inherited_state',
+    'stage_inherited','different_B_prior','nested_different_B_prior'])
+def test_margin_actual_same_path_B_inheritance_is_mandatory(production,tmp_path,tamper):
+    if production['record']['schema']!='d92_margin_joint_local_ridge_v1':pytest.skip('Margin-specific contract')
+    fixed=_fixed(production,tmp_path/'fixed')
+    def mutate(record):
+        entry=record['folds'][0]
+        if tamper=='missing_fixed_status':entry.pop('prediction_status')
+        elif tamper=='inherited_adapter':entry['preparations'][1]['inherited_adapter_from']='B0'
+        elif tamper=='inherited_state':entry['preparations'][1]['inherited_state']=False
+        elif tamper=='stage_inherited':entry['candidate_stages'][1]['inherited_from_B']=False
+        elif tamper=='different_B_prior':entry['preparations'][1]['final_problem']['prior_ref']=entry['candidate_stages'][1]['final_state_ref']
+        else:entry['candidate_stages'][1]['preparation']['final_problem']['prior_ref']=entry['candidate_stages'][1]['final_state_ref']
+    trace=_copied_trace(production,tmp_path/'trace',mutate)
+    with pytest.raises(ValueError):scorer.score_fixed_support(predictions=fixed,fit_trace=trace,support_splits=production['cache']/'support_splits.json')
+
+
+def test_margin_new0_reuses_fixed_actual_B_and_missing_A_never_uses_B0(tmp_path):
+    case=_case(tmp_path/'case',method='margin',k=2,new=0)
+    fixed=_fixed(case,tmp_path/'fixed')
+    result=scorer.score_fixed_support(predictions=fixed,fit_trace=case['lane']/'fit_trace.jsonl',support_splits=case['cache']/'support_splits.json')
+    assert result['adapted_path']=='R_MARGIN_seq'
+    assert result['parents'][0]['oof']['metrics']['total_old_accuracy_drop']==0
+    assert all(p['b']==p['c'] and p['fixed_score_contract']=='margin_explicit_status_and_same_path_actual_B_prior'
+        for p in result['parents'][0]['paired_paths'])
+    missing=tmp_path/'no-A';missing.mkdir()
+    with pytest.raises(FileNotFoundError):scorer.score_fixed_support(predictions=missing,
+        fit_trace=case['lane']/'fit_trace.jsonl',support_splits=case['cache']/'support_splits.json')
+
+
+@pytest.mark.parametrize('method', ['conditional', 'affine', 'margin'])
 @pytest.mark.parametrize('new', [0, 1])
 def test_true_k1_has_no_held_a_or_adaptation_gain(tmp_path, method, new):
     case = _case(tmp_path / 'case', method=method, k=1, new=new)

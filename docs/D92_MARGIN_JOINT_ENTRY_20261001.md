@@ -1,6 +1,6 @@
 # MarginJoint support 入口与发布能力边界
 
-本文说明独立MarginJoint的prepare、preflight、run、publish四个入口及root负责的evaluate集成。五入口已通过34项合成集成检查，联合core接口已冻结。本次没有创建真实spec、选择实际资源预算或任务矩阵，也没有启动该方法实验。入口验证不等于独立分析链已可用，不能推出准确率改善。
+本文说明独立MarginJoint的prepare、preflight、run、publish四个入口及root负责的evaluate集成。五入口已通过34项合成集成检查，联合core接口已冻结。五入口最初完成时没有真实spec。后续root已预登记20261001-phase2-d92-margin-joint-support-m2-r01，显式4row/160parent、QP技术guard4096/160MiB；metadata preflight已VERIFIED，尚未启动。入口或分析链验证不能推出准确率改善。
 
 ## 输入与资源契约
 

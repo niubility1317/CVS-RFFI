@@ -1,0 +1,22 @@
+{
+  "status": "VERIFIED_SYNTHETIC_GROUND_A_MARGIN_EXTENSION",
+  "at": "2026-10-01T07:53:01.711142+00:00",
+  "passed": 150,
+  "skipped": 12,
+  "seconds": 15.73,
+  "prefix": "E:/type10-7/.codex_tmp/pytest_utf8_1790841033042302100",
+  "skipped_scope": "Margin-only assertions for two legacy method fixture variants; Margin variant executed",
+  "warning": "Known Torch2.1/NumPy2 ABI warning; scalar/list bridge paths passed",
+  "source_files": [
+    "tools/score_d92_ground_a_support.py",
+    "tools/run_d92_ground_a_support.py",
+    "tools/report_d92_ground_a_support.py",
+    "tests/test_score_d92_ground_a_support.py",
+    "tests/test_run_d92_ground_a_support.py",
+    "tests/test_report_d92_ground_a_support.py",
+    "docs/D92_MARGIN_GROUND_A_SUPPORT_ENTRY_20261001.md"
+  ],
+  "real_Margin_pairing": null,
+  "real_query_or_source_samples_read": false,
+  "coverage": "Preserve legacy eight rows and explicit Margin single-run four rows; fixed truth-last physical A/B/C and actual B prior binding"
+}

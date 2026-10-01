@@ -1,4 +1,4 @@
-"""Sequential read-only Ground A support supplement for eight declared source rows."""
+"""Ground A supplement: legacy eight rows or one explicit four-row Margin run."""
 import argparse
 import csv
 import json
@@ -16,7 +16,10 @@ STATUS='GROUND_A_SUPPORT_SUPERVISOR_COMPLETE'
 SCHEMA='d92_ground_a_support_supervisor_v1'
 SUMMARY_STATUSES={
     'd92_affine_joint_local_ridge_v1':'COMPLETE_AFFINE_JOINT_PROBE_VERIFIED',
-    'd92_conditional_joint_local_ridge_v1':'COMPLETE_CONDITIONAL_JOINT_PROBE_VERIFIED'}
+    'd92_conditional_joint_local_ridge_v1':'COMPLETE_CONDITIONAL_JOINT_PROBE_VERIFIED',
+    'd92_margin_joint_local_ridge_v1':'COMPLETE_MARGIN_JOINT_PROBE_VERIFIED'}
+LEGACY_SCHEMAS=frozenset(('d92_affine_joint_local_ridge_v1','d92_conditional_joint_local_ridge_v1'))
+MARGIN_SCHEMA='d92_margin_joint_local_ridge_v1'
 SUMMARY_FIELDS={'status','scope','run_id','release_commit','coverage','old_class_count','query_rows_used','source_rows_used','schema','method'}
 LANE_FIELDS={'run_id','row_id','checkpoint_sha256','capsule_id','model_seed','schema','method','scope',
     'query_rows_used','source_rows_used','truth_read','support_features','episodes','sequence_paths','status','config','selection'}
@@ -94,7 +97,7 @@ def validate_spec(spec):
         'One root-owned CPU lane / two BLAS threads required')
     root=PurePosixPath(execution['remote_run_root']);release=PurePosixPath(code['cwd'])
     require(root!=release and root not in release.parents and release not in root.parents,'Release/run paths overlap')
-    require(isinstance(rows,list) and len(rows)==8,'Exactly eight explicitly declared source rows required')
+    require(isinstance(rows,list) and len(rows) in (4,8),'Legacy eight or Margin-only four explicit source rows required')
     seen=set();source_seen=set();groups={}
     for row in rows:
         require(ROW_FIELDS<=set(row),'Incomplete explicit support supplement row')
@@ -114,11 +117,23 @@ def validate_spec(spec):
         require(row['expected_summary_status']==SUMMARY_STATUSES[schema] and row['expected_method']==METHODS[schema][0],'Expected source summary contract mismatch')
         identity=(row['source_run_id'],row['source_row_id']);require(identity not in source_seen,'Repeated source row');source_seen.add(identity)
         groups.setdefault(row['source_run_id'],[]).append(row)
-    require(len(groups)==2 and {group[0]['expected_summary_schema'] for group in groups.values()}==set(METHODS)
-        and all(len(group)==4 for group in groups.values()),'Four rows from each independent Affine/Conditional source run required')
+    schemas={row['expected_summary_schema'] for row in rows}
+    legacy=len(rows)==8 and len(groups)==2 and schemas==LEGACY_SCHEMAS and all(len(group)==4 for group in groups.values())
+    margin=len(rows)==4 and len(groups)==1 and schemas=={MARGIN_SCHEMA}
+    require(legacy or margin,'Only the legacy Affine/Conditional pair or one four-row Margin source run is supported')
     keys=('source_summary','expected_summary_status','expected_summary_schema','expected_method','expected_runtime_commit')
     for group in groups.values():
         require(all(all(row[key]==group[0][key] for key in keys) for row in group),'Inconsistent shared source summary declaration')
+    if margin:
+        seeds={row['expected_model_seed'] for row in rows};capsules={row['expected_capsule_id'] for row in rows}
+        require(len(seeds)==len(capsules)==2 and
+            {(r['expected_model_seed'],r['expected_capsule_id']) for r in rows}=={(s,c) for s in seeds for c in capsules},
+            'Margin requires exactly two declared models by two declared capsules')
+        for seed in seeds:
+            model=[r for r in rows if r['expected_model_seed']==seed]
+            require(len({(r['expected_checkpoint_sha256'],r['packet']) for r in model})==1,
+                'Same Margin model must bind the same original checkpoint and Ground A packet')
+        require(len({r['expected_checkpoint_sha256'] for r in rows})==2,'Distinct Margin models require explicit distinct checkpoint identities')
     return spec
 
 
@@ -178,6 +193,9 @@ def score_row(row,source,score_fn=score_support):
         binding=binding(row),parent_count=source['episodes'],query_rows_used=0,source_rows_used=0,
         training_performed=False,calibration_performed=False,original_summary_modified=False,original_trace_modified=False).items()),
         'Returned pairing result binding/access mismatch')
+    if source.get('schema')==MARGIN_SCHEMA:
+        require(result.get('method_schema')==MARGIN_SCHEMA and result.get('method')==METHODS[MARGIN_SCHEMA][0]
+            and result.get('adapted_path')==METHODS[MARGIN_SCHEMA][3], 'Returned pairing is not the declared fixed Margin method')
     return dict(status=ROW_STATUS,parent_count=result['parent_count'],output_root=row['output_root'],
         resources=result['resources'],source_binding=source)
 

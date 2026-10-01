@@ -16,9 +16,11 @@ def save(path,value):
     path.parent.mkdir(parents=True,exist_ok=True);path.write_text(json.dumps(value),encoding='utf-8')
 
 
-def fixture(tmp_path):
+def fixture(tmp_path,*,margin=False):
     rows=[];output=tmp_path/'supplement'
-    for schema,method_info in runner.METHODS.items():
+    schemas=(runner.MARGIN_SCHEMA,) if margin else tuple(sorted(runner.LEGACY_SCHEMAS))
+    for schema in schemas:
+        method_info=runner.METHODS[schema]
         method,status,scope,*_=method_info;source_run=schema+'_synthetic';source=tmp_path/source_run
         summary=source/'analysis'/'summary.json'
         save(summary,dict(status=runner.SUMMARY_STATUSES[schema],scope=scope,schema=schema,method=method,
@@ -26,11 +28,14 @@ def fixture(tmp_path):
             old_class_count=6,query_rows_used=0,source_rows_used=0,statistics={'DO_NOT_PARSE':[.1,.2]}))
         for index in range(4):
             source_row='source-row-'+str(index);name=schema+'-'+str(index);lane=source/source_row
-            cache=tmp_path/('cache-'+str(index));packet=tmp_path/('packet-'+str(index));cache.mkdir(exist_ok=True);packet.mkdir(exist_ok=True)
+            model=index//2 if margin else index
+            cache=tmp_path/('cache-'+str(index));packet=tmp_path/('packet-'+str(model));cache.mkdir(exist_ok=True);packet.mkdir(exist_ok=True)
             row=dict(row_id=name,source_run_id=source_run,source_row_id=source_row,packet=packet.as_posix(),support_features=cache.as_posix(),
                 fit_trace=(lane/'fit_trace.jsonl').as_posix(),source_summary=summary.as_posix(),expected_summary_status=runner.SUMMARY_STATUSES[schema],
-                expected_summary_schema=schema,expected_method=method,expected_runtime_commit='c'*40,expected_checkpoint_sha256='d'*64,
-                expected_capsule_id='capsule',expected_model_seed=17+index,output_root=(output/name).as_posix())
+                expected_summary_schema=schema,expected_method=method,expected_runtime_commit='c'*40,
+                expected_checkpoint_sha256=(str(model+1)*64 if margin else 'd'*64),
+                expected_capsule_id=('capsule-'+str(index%2) if margin else 'capsule'),
+                expected_model_seed=17+model,output_root=(output/name).as_posix())
             selection=dict(splits=[dict(split_id=f'split-{scene}-{k}-{new}',k=k,new_count=new)
                 for scene in range(2) for k in (1,5,10,20) for new in (0,2,5,10,20)])
             common=dict(runner.binding(row),schema=schema,method=method,scope=scope,query_rows_used=0,source_rows_used=0,
@@ -51,7 +56,9 @@ def fake_score(**kwargs):
     marker=dict(schema=runner.ROW_SCHEMA,status=runner.ROW_STATUS,binding=bound,parent_count=40,query_rows_used=0,
         original_summary_modified=False,prediction_status='GROUND_A_SUPPORT_PREDICTIONS_FIXED')
     save(out/'complete.json',marker)
+    source=json.loads((Path(kwargs['fit_trace']).parent/'startup.json').read_text(encoding='utf-8'))
     return dict(schema=runner.ROW_SCHEMA,status=runner.ROW_STATUS,scope=runner.SCOPE,binding=bound,parent_count=40,
+        method_schema=source['schema'],method=source['method'],adapted_path=runner.METHODS[source['schema']][3],
         query_rows_used=0,source_rows_used=0,training_performed=False,calibration_performed=False,original_summary_modified=False,
         original_trace_modified=False,resources=dict(native_single_record_score_seconds=.01,score_numeric_bytes=120,incremental_transmission_bytes=None))
 
@@ -161,7 +168,7 @@ def test_spec_rejections_before_output_creation(tmp_path,case):
     assert not Path(spec['execution']['remote_run_root']).exists()
 
 
-@pytest.mark.parametrize('method',['affine','conditional'])
+@pytest.mark.parametrize('method',['affine','conditional','margin'])
 def test_row_adapter_uses_real_fixed_scorer_production_trace_and_true_k1(tmp_path,method):
     from test_score_d92_ground_a_support import _case
     case=_case(tmp_path/'source',method=method,k=1,new=0);bound=case['binding']
@@ -174,3 +181,48 @@ def test_row_adapter_uses_real_fixed_scorer_production_trace_and_true_k1(tmp_pat
     paired=json.loads((Path(row['output_root'])/'pairing.json').read_text(encoding='utf-8'))
     assert paired['row_id']==bound['row_id'] and paired['parents'][0]['oof']['metrics']['A_old_accuracy'] is None
     assert paired['parents'][0]['paired_paths']==[]
+
+
+def test_margin_single_source_four_rows_two_models_by_two_capsules(tmp_path):
+    spec=fixture(tmp_path,margin=True);runner.validate_spec(spec)
+    evidence=runner.verify_sources(spec)
+    assert len(evidence['source_summaries'])==1 and len(evidence['lanes'])==4
+    assert evidence['statistics_deserialized'] is False
+    calls=[]
+    def score(**kwargs):calls.append(kwargs);return fake_score(**kwargs)
+    result=runner.run(spec,'a'*40,score_fn=score)
+    assert result['rows']==result['completed_rows']==len(calls)==4 and result['parent_count']==160
+    assert calls==[runner.score_arguments(row) for row in spec['rows']]
+
+
+@pytest.mark.parametrize('case',['mixed_method','split_source','wrong_status','seed_crossing','capsule_crossing',
+    'checkpoint_for_same_model','packet_for_same_model','summary_query','lane_seed','summary_partial'])
+def test_margin_contract_and_metadata_tampering_stop_before_scores(tmp_path,case):
+    spec=fixture(tmp_path,margin=True);row=spec['rows'][0]
+    if case=='mixed_method':
+        schema='d92_affine_joint_local_ridge_v1';row.update(expected_summary_schema=schema,
+            expected_summary_status=runner.SUMMARY_STATUSES[schema],expected_method=runner.METHODS[schema][0])
+    elif case=='split_source':row['source_run_id']='another-run'
+    elif case=='wrong_status':row['expected_summary_status']='COMPLETE_CONDITIONAL_JOINT_PROBE_VERIFIED'
+    elif case=='seed_crossing':row['expected_model_seed']=999
+    elif case=='capsule_crossing':row['expected_capsule_id']=spec['rows'][1]['expected_capsule_id']
+    elif case=='checkpoint_for_same_model':row['expected_checkpoint_sha256']='e'*64
+    elif case=='packet_for_same_model':row['packet']=(tmp_path/'different-packet').as_posix()
+    else:
+        path=Path(row['fit_trace']).parent/'startup.json' if case=='lane_seed' else Path(row['source_summary'])
+        value=json.loads(path.read_text(encoding='utf-8'))
+        if case=='lane_seed':value['model_seed']+=1
+        elif case=='summary_query':value['query_rows_used']=1
+        else:value['status']='PARTIAL'
+        save(path,value)
+    score=Mock()
+    with pytest.raises(ValueError):runner.run(spec,'a'*40,score_fn=score)
+    score.assert_not_called()
+
+
+def test_margin_returned_other_candidate_is_not_verified_by_generic_marker(tmp_path):
+    spec=fixture(tmp_path,margin=True)
+    def score(**kwargs):return dict(fake_score(**kwargs),adapted_path='R0')
+    with pytest.raises(ValueError,match='declared fixed Margin'):runner.run(spec,'a'*40,score_fn=score)
+    root=Path(spec['execution']['remote_run_root'])
+    assert (root/'failed.json').exists() and not (root/'complete.json').exists()

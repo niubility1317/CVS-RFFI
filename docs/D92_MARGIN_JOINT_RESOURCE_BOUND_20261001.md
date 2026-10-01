@@ -149,3 +149,7 @@ K1 或 core 的其他 no-information 分支不执行外层更新，C stage 仍�
 factor 容量候选和 transition 候选属于不同 scope，应分别表达，不能把“可容纳所有 Q factor”写成“能在 T 内成功”。预算失败保留已发生的工作、数值状态和最后接受状态，不证明数学不可行。完整 KKT/gap 证书只确认返回的固定核头，正则 VJP 另需明确资格；结构证明不能代替生产求解器测试。
 
 这些上界不证明星载可行性或省算力。训练/推理时间、RSS/GPU 峰值、常驻状态、归档大小、序列化部署和新增传输，应在各自真实 scope 下测量；未测项保持 N/A。本文完成的是只读源码推导与文档静态检查，没有运行数值环境、测试、真实评分、Git 或远端操作，也没有改动现有方法或运行产物。
+
+## 后续owner容量选择
+
+root为固定4row/160parent的20261001-phase2-d92-margin-joint-support-m2-r01预登记max_transitions=4096、max_factor_buffer_bytes=167772160（160MiB）。容量覆盖上文generic full输入n520/q3000的148326400B自有factor上界；当前outer训练规模界为72679936B。没有用评分选择数值，没有参数网格。4096不保证收敛，160MiB不约束RSS/所有共存cache或BLAS工作区；星载可行性未测。实际配置与证据见对应run的experiment.json和method_freeze_and_resource_choice_20261001.json。

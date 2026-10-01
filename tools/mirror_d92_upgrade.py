@@ -347,6 +347,10 @@ paths += ['tools/summarize_d92_margin_joint_probe.py', 'tests/test_summarize_d92
 
 paths += []
 
+paths += ['configs/d92_margin_joint_support_rx3_20261001.json', 'configs/d92_margin_joint_support_rx1_20261001.json', 'configs/d92_margin_joint_support_20261001.json']
+
+paths += ['docs/D92_MARGIN_GROUND_A_SUPPORT_ENTRY_20261001.md']
+
 for name in paths:
     src=ROOT/name;dst=WS/name;dst.parent.mkdir(parents=True,exist_ok=True)
     # Each name is unique to this task; original D92 and shared wrappers are not mirrored.

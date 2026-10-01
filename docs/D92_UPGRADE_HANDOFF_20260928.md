@@ -1,3 +1,7 @@
+## 当前执行：Margin已预登记，未启动（2026-10-01）
+
+- Goal ACTIVE。pipeline6d475bc70已push/OID验证；新run 20261001-phase2-d92-margin-joint-support-m2-r01 4row/160parent已按冻结数学结构预登记。resource4096/160MiB是技术guard，不是性能搜索或RSS。下一步root仅metadata preflight、Git交付和唯一publish；尚无PID、性能或设备结论。Ground A扩展source已完成并150passed/12legacy-skip；metadata preflight VERIFIED，新run/release/archive未占用。root待本次精确Git交付后唯一publish，不重复preflight/请求生成。
+
 ## 最新交接：Margin独立分析链验证完成，尚未启动（2026-10-01）
 
 - Goal ACTIVE。固定Phase1、practical residual；LocalRidge优先与合法support微调联合，不做参数组合扫描。Margin数学/核心已冻结，完整QP间隔、KKT及自由截距梯度独立核验；core归档碰撞修复，未改变算法。

@@ -11,7 +11,10 @@ NEWS=(0,2,5,10,20)
 METRICS=('A_old_accuracy','B_old_accuracy','C_old_accuracy','C_new_accuracy','C_h',
          'adaptation_gain_B_minus_A','total_old_accuracy_drop','C_abs_new_old_gap')
 METHODS={'D92-AffineJointLocalRidge-v1':'R_AFFINE_seq',
-         'D92-ConditionalJointLocalRidge-v1':'R_CONDITIONAL_seq'}
+         'D92-ConditionalJointLocalRidge-v1':'R_CONDITIONAL_seq',
+         'D92-MarginJointLocalRidge-v1':'R_MARGIN_seq'}
+LEGACY_METHODS=frozenset(('D92-AffineJointLocalRidge-v1','D92-ConditionalJointLocalRidge-v1'))
+MARGIN_METHOD='D92-MarginJointLocalRidge-v1'
 SCOPE='SUPPORT_ONLY_GROUND_A_PAIRED_OLD_HELD_NOT_QUERY_EVALUATION'
 
 def require(condition,message):
@@ -59,6 +62,10 @@ def validate_row(pairing,row):
     method=row['expected_method']
     require(method in METHODS and pairing['method']==method and pairing['binding']==expected
         and pairing['adapted_path']==METHODS[method],'Wrong method/physical binding')
+    if method==MARGIN_METHOD:
+        require(pairing.get('method_schema')==row.get('expected_summary_schema')=='d92_margin_joint_local_ridge_v1'
+            and row.get('expected_summary_status')=='COMPLETE_MARGIN_JOINT_PROBE_VERIFIED',
+            'Wrong fixed Margin method/summary identity')
     require(pairing['query_rows_used']==pairing['source_rows_used']==0
         and not any(pairing[k] for k in ('original_summary_modified','original_trace_modified',
             'training_performed','calibration_performed','model_called_during_truth_join')),'Forbidden behavior')
@@ -78,6 +85,9 @@ def validate_row(pairing,row):
             require(type(n) is int and type(parents) is int and 0<=n<=parents
                 and (mean is None)==(n==0),'Invalid paired mean/count')
             require(mean is None or type(mean) in (int,float) and math.isfinite(mean),'Nonfinite report value')
+            if method==MARGIN_METHOD and table=='by_model_row':
+                require(item.get('model_seed')==row['expected_model_seed'] and item.get('row_id')==row['source_row_id'],
+                    'Margin model table escaped the paired source row')
             if 'k' in item:
                 require(item['k'] in KS and item['new_count'] in NEWS,'Unknown matrix cell')
                 if item['k']==1:require(mean is None and n==0,'True K1 held value fabricated')
@@ -97,13 +107,29 @@ def validate_row(pairing,row):
         require(r['measured_parent_count']==(0 if missing else 2),'Incomplete row measurement')
 
 def assemble(spec,complete,pairings,*,source):
+    rows=spec['rows'];methods={r['expected_method'] for r in rows}
+    legacy=len(rows)==8 and methods==LEGACY_METHODS
+    margin=len(rows)==4 and methods=={MARGIN_METHOD}
+    require(legacy or margin,'Only legacy eight-row or Margin-only four-row reporting is supported')
+    require(len({r['row_id'] for r in rows})==len(rows),'Wrong declared rows')
+    groups=defaultdict(list)
+    for row in rows:groups[row['source_run_id']].append(row)
+    require(len(groups)==(2 if legacy else 1) and all(len(g)==4 and len({r['expected_method'] for r in g})==1 for g in groups.values()),
+        'Each method must have one complete four-row source run')
+    require(len({(r['source_run_id'],r['source_row_id']) for r in rows})==len(rows),'Duplicate original source row')
+    if margin:
+        seeds={r['expected_model_seed'] for r in rows};capsules={r['expected_capsule_id'] for r in rows}
+        require(len(seeds)==len(capsules)==2 and {(r['expected_model_seed'],r['expected_capsule_id']) for r in rows}
+            ==set(itertools.product(seeds,capsules)),'Margin report requires the exact two-model/two-capsule crossing')
+        require(len({r['expected_checkpoint_sha256'] for r in rows})==2 and
+            all(len({r['expected_checkpoint_sha256'] for r in rows if r['expected_model_seed']==seed})==1 for seed in seeds),
+            'Margin model/checkpoint mapping changed')
     require(complete['schema']=='d92_ground_a_support_supervisor_v1'
         and complete['status']=='GROUND_A_SUPPORT_SUPERVISOR_COMPLETE'
-        and complete['run_id']==spec['run_id'] and complete['rows']==complete['completed_rows']==8
-        and complete['parent_count']==320,'Incomplete supervisor')
+        and complete['run_id']==spec['run_id'] and complete['rows']==complete['completed_rows']==len(rows)
+        and complete['parent_count']==40*len(rows),'Incomplete supervisor')
     require(complete['query_rows_used']==complete['source_rows_used']==0
         and not complete['training_performed'] and not complete['original_inputs_modified'],'Forbidden supervisor input')
-    rows=spec['rows'];require(len(rows)==8 and len({r['row_id'] for r in rows})==8,'Wrong declared rows')
     require(set(pairings)=={r['row_id'] for r in rows}==set(complete['row_outputs']),'Missing/extra row output')
     items={name:[] for name in ('overall','by_k_new_count','by_receiver_scene','by_model_row')}
     resources=[]
@@ -111,16 +137,17 @@ def assemble(spec,complete,pairings,*,source):
         pairing=pairings[row['row_id']];validate_row(pairing,row)
         for table in items:items[table].append((pairing['method'],pairing['statistics'][table]))
         resources.append(dict(method=pairing['method'],row_id=row['row_id'],measurements=pairing['resources']))
-    require(all(sum(r['expected_method']==m for r in rows)==4 for m in METHODS),'Unbalanced declared method rows')
+    require(all(sum(r['expected_method']==m for r in rows)==4 for m in methods),'Unbalanced declared method rows')
     dimensions=dict(overall=('diagnostic','path','population'),by_k_new_count=('diagnostic','path','k','new_count'),
         by_receiver_scene=('diagnostic','path','receiver','scenario','k','new_count'),
         by_model_row=('diagnostic','path','model_seed','row_id','k','new_count'))
     tables={name:cells(aggregate(values,dimensions[name]),('method',)+dimensions[name]) for name,values in items.items()}
     overall=[r for r in tables['overall'] if r['diagnostic']=='oof' and r['population']=='new_present']
-    require(len(overall)==2 and all(r['measured_parents']==96 for r in overall),'Incomplete overall paired population')
+    require(len(tables['by_k_new_count'])==40*len(methods),'Incomplete method K/new matrix')
+    require(len(overall)==len(methods) and all(r['measured_parents']==96 for r in overall),'Incomplete overall paired population')
     # Keep parent-first H/abs-gap supplied by the independent scorer.
     lines=['# 原地面A与联合LocalRidge方法：完整三阶段配对','',
-        '全部8行已独立读回完成，共320个parent（每种方法160个）。旧类数6，新增类数0、2、5、10、20；K为1、5、10、20。',
+        f'全部{len(rows)}行已独立读回完成，共{40*len(rows)}个parent（每种方法160个）。旧类数6，新增类数0、2、5、10、20；K为1、5、10、20。',
         'A使用原地面6类float32分类头；A/B/C旧类准确率来自同一source row、split与物理旧held support。B/C为原方法已固定预测，没有重拟合。',
         '本报告是合法support持出诊断，不是query准确率或新增独立验证。A预测先固定，随后连接truth；结果不回流选模、参数或重跑。',
         'H、注册下降、绝对新旧差先逐parent计算，再等parent平均；不以汇总准确率重新计算H或绝对差。true K1无独立held，记N/A。',
@@ -138,7 +165,7 @@ def assemble(spec,complete,pairings,*,source):
         table(name,tables[name],('method',)+dimensions[name]+('measured_parents',))
     lines+=['资源口径','',
         f'唯一supervisor程序墙钟{complete["wall_seconds"]:.6f}s，CPU进程峰值RSS为{complete["peak_process_rss_bytes"]}B；包含配对验证与日志。单条分类头评分计时不代表完整配对耗时。',
-        '原分类头每模型权重3840B，实际packet文件8737B/8735B。文件/数组字节不等于传输字节或部署常驻内存；实际星地传输、GPU峰值、能耗未测，为N/A。',
+        '原分类头及packet文件字节取下表当次pairing.resources的实测值；缺失值为N/A。文件/数组字节不等于传输字节或部署常驻内存；实际星地传输、GPU峰值、能耗未测，为N/A。',
         '| 方法 | 行 | 原始实测资源 |','|---|---|---|']
     for row in resources:lines.append('| '+row['method']+' | '+row['row_id']+' | '+json.dumps(row['measurements'],ensure_ascii=False,allow_nan=False)+' |')
     lines+=['',f'来源：`{source}`；实际runtime commit：`{complete["commit"]}`。','']

@@ -70,3 +70,7 @@
 |原生DAOT＋RC4与仅动力博弈三seed对照|managed_run|[打开](../automation_reports/CV-SincNet/phase1_daot_rc4_pure_game_m3_20260917_r1/report.md)|
 |原生DAOT＋RC4与仅动力博弈三seed对照|managed_run|[打开](../automation_reports/CV-SincNet/phase1_daot_rc4_pure_game_m3_20260917_r2/report.md)|
 |响应博弈矩阵测试评估：VERIFIED|managed_run|[打开](../automation_reports/CV-SincNet/response_matrix_eval_20260917/report.md)|
+
+## 2026-10-01 D92 Margin联合support预登记
+
+- [20261001-phase2-d92-margin-joint-support-m2-r01](../automation_reports/CV-SincNet/20261001-phase2-d92-margin-joint-support-m2-r01/report.md)：PREPARED_NOT_LAUNCHED，4row/160parent，旧6×K4×新增5，冻结数学方法；无真实Margin成绩。

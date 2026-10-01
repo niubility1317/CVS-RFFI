@@ -33,6 +33,8 @@ METHODS = {
         'SUPPORT_ONLY_AFFINE_JOINT_OOF_AND_PROXY_NOT_QUERY_EVALUATION', 'R_AFFINE_seq', 'B_AFFINE', 'C_AFFINE_seq'),
     'd92_conditional_joint_local_ridge_v1': ('D92-ConditionalJointLocalRidge-v1', 'CONDITIONAL_JOINT_PROBE_COMPLETE',
         'SUPPORT_ONLY_CONDITIONAL_JOINT_OOF_AND_PROXY_NOT_QUERY_EVALUATION', 'R_CONDITIONAL_seq', 'B_CONDITIONAL', 'C_CONDITIONAL_seq'),
+    'd92_margin_joint_local_ridge_v1': ('D92-MarginJointLocalRidge-v1', 'MARGIN_JOINT_PROBE_COMPLETE',
+        'SUPPORT_ONLY_MARGIN_JOINT_OOF_AND_PROXY_NOT_QUERY_EVALUATION', 'R_MARGIN_seq', 'B_MARGIN', 'C_MARGIN_seq'),
 }
 METRICS = ('A_old_accuracy', 'B_old_accuracy', 'C_old_accuracy', 'C_new_accuracy', 'C_h',
            'adaptation_gain_B_minus_A', 'total_old_accuracy_drop', 'C_abs_new_old_gap')
@@ -339,7 +341,7 @@ def _path_predictions(entry, train, held, classes, old, truths, context, parent_
             'Actual B/C old-held physical pairing mismatch')
     require(entry['b_classes'] == old and entry['c_classes'] == classes and entry['held_labels'] == {pid: truths[pid] for pid in held}, 'Actual trace ground/held truth mapping mismatch')
     expected_status = 'FIXED_BEFORE_SUPPORT_TRUTH_JOIN' if held else 'NO_HELD_PREDICTIONS'
-    if context['schema'] == 'd92_conditional_joint_local_ridge_v1' or 'prediction_status' in entry:
+    if context['schema'] in ('d92_conditional_joint_local_ridge_v1','d92_margin_joint_local_ridge_v1') or 'prediction_status' in entry:
         require(entry.get('prediction_status') == expected_status, 'Actual B/C predictions were not fixed')
     reuse = classes == old
     require(entry['c_reuses_b_candidates'] is reuse and [stage['state'] for stage in entry['candidate_stages']]
@@ -371,6 +373,26 @@ def _path_predictions(entry, train, held, classes, old, truths, context, parent_
                 and stage['training_physical_ids'] == (bt if is_b else sorted(train)) and stage['final_state_ref'] is not None,
                 'Actual B/C stage inheritance/path binding mismatch')
         _namespace_refs(stage, coords)
+    if context['schema'] == 'd92_margin_joint_local_ridge_v1':
+        preparations=entry['preparations']
+        require([prep['state'] for prep in preparations]==(['B'] if reuse else ['B','C']),
+                'Missing actual Margin B/C preparation')
+        for prep,stage in zip(preparations,entry['candidate_stages']):
+            is_b=prep['state']=='B'
+            require(all(prep.get(key)==item for key,item in coords.items())
+                and prep['training_physical_ids']==(bt if is_b else sorted(train))
+                and prep['inherited_adapter_from']==(None if is_b else context['bstate'])
+                and prep['inherited_state'] is (not is_b)
+                and stage['preparation_ref']==prep['state']
+                and stage['inherited_from_B'] is (not is_b), 'Margin actual B-to-C inheritance mismatch')
+            _namespace_refs(prep,coords)
+        if not reuse:
+            b_ref=entry['candidate_stages'][0]['final_state_ref']
+            c_stage=entry['candidate_stages'][1]
+            require(preparations[1]['final_problem']['prior_source']=='FROZEN_CURRENT_ACTUAL_B'
+                and preparations[1]['final_problem']['prior_ref']==b_ref
+                and c_stage['preparation']['final_problem']['prior_ref']==b_ref,
+                'Margin final prior is not the same-path actual B state')
     scores = entry['paths'].get(context['candidate'])
     require(scores is not None, 'Actual adapted path missing; no R0/B0 fallback')
     b = _scores(scores['b_scores'], len(bh), len(old)); c = _scores(scores['c_scores'], len(held), len(classes))
@@ -378,7 +400,8 @@ def _path_predictions(entry, train, held, classes, old, truths, context, parent_
     return dict(b={pid: old[int(index)] for pid, index in zip(bh, b.argmax(axis=1))},
                 c={pid: classes[int(index)] for pid, index in zip(sorted(held), c.argmax(axis=1))},
                 old_held_ids=bh, held_ids=sorted(held), scope=entry['scope'], fold=entry['fold'], trial=entry['trial'],
-                fixed_score_contract='conditional_explicit_status_plus_archived_final_states' if context['schema'] == 'd92_conditional_joint_local_ridge_v1'
+                fixed_score_contract='margin_explicit_status_and_same_path_actual_B_prior' if context['schema'] == 'd92_margin_joint_local_ridge_v1'
+                    else 'conditional_explicit_status_plus_archived_final_states' if context['schema'] == 'd92_conditional_joint_local_ridge_v1'
                     else 'affine_v1_archived_outer_features_and_final_states_before_assess_paths')
 
 
