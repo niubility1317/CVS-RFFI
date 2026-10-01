@@ -12,7 +12,7 @@ def documents(request, *, commit):
     require(isinstance(commit,str) and len(commit)==40 and all(c in '0123456789abcdef' for c in commit),'Explicit code commit required')
     s=deepcopy(request);spec_path=PurePosixPath(s['spec_path'])
     require(not spec_path.is_absolute() and '..' not in spec_path.parts and spec_path.suffix=='.json','Relative new spec_path required')
-    s.update(status='PREPARED_NOT_LAUNCHED',implementation_status='DRAFT_INDEPENDENT_SUMMARY_NOT_YET_INTEGRATED',
+    s.update(status='PREPARED_NOT_LAUNCHED',implementation_status='FROZEN_MARGIN_CORE_AND_INDEPENDENT_ANALYSIS_SUPPORT_DIAGNOSTIC',
         actual_A=None,adaptation_gain_B_minus_A=None,performance_gate=None,automatic_promotion=False)
     s['code']['commit']=commit
     probe=s['probe'];probe.update(algorithm=deepcopy(PROBE_CONFIG),channel=deepcopy(CHANNEL),candidate='R_MARGIN_seq',controls=['R0'],

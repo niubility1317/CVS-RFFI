@@ -49,7 +49,7 @@ supervisor 成功 row 的累计工作相加，明确峰值字段取最大值。�
 
 ## 发布状态与合成检查
 
-当前独立 Margin summary/analyzer 尚未在本任务实现。publisher 将它们列为 `missing_analysis`，即使四入口和 core 文件齐全，也不宣称正式可启动，且拒绝 dispatch。文件 presence readiness 不是独立数学核验，也不代替真实 import 闭包检查。以后接入分析器时必须使用 Margin 的约束/KKT 审计，不能沿用 Conditional 等式头的数学结论。
+独立 Margin summary、analyzer、完整训练 collector 和纯标量 reporter 已实现并由 root 完成相关合成验证。publisher 明确包含四项分析工具及其实际源码依赖，隔离进程检查九个入口模块的 import 闭包。文件 presence readiness 仍不是独立数学核验；任何缺失分析文件都拒绝 dispatch。Margin 分析器重建自己的约束、KKT 与伴随，不沿用 Conditional 等式头的数学结论。完整验证证据见 [验证记录](D92_MARGIN_JOINT_PIPELINE_VALIDATION_20261001.json)。
 
 纯合成测试入口：
 

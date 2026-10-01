@@ -436,7 +436,10 @@ def _head_arrays_partial(cache):
         original_held_b=p.held_context['original'][:,:256],original_held_a=p.held_context['original'][:,256:],
         train_labels=p.train_labels,held_labels=p.held_labels,q=p.q,old_indices=p.old_indices,new_indices=p.new_indices,
         original_distance=p.d0,original_cross_distance=p.cross_d0,M_train=p.M_train,M_held=p.M_held,
-        tau=_scalar(p.tau),gamma=_scalar(p.gamma),s0=_scalar(p.s0))
+        tau=_scalar(p.tau),gamma=_scalar(p.gamma))
+    # The QP head owns vector s0 (all old-vs-registered constraint slack).
+    # Keep the independent geometric scale under a distinct C-stage name.
+    arrays['s0' if p.mode == 'B' else 'reference_s0'] = _scalar(p.s0)
     for key in ('distance','cross_distance','radial','crossrad','K','L','Y','residual_target','score','train_scores'):
         if key in cache:
             arrays[{'radial':'raw_train','crossrad':'raw_cross','score':'scores'}.get(key,key)] = cache[key]

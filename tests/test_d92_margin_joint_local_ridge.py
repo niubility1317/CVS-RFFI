@@ -476,6 +476,19 @@ def test_transition_and_factor_buffer_failures_preserve_actual_work_and_arrays(s
     assert caught.value.audit['inner_head_fit_count']==1
 
 
+def test_archive_separates_geometry_scale_from_complete_qp_constraint_slack(sequence):
+    bp,_,p,c,_,_ = sequence
+    before = mj._head_arrays_partial(dict(problem=bp.full_problem))
+    after = mj._head_arrays(dict(c.final_cache,problem=p.full_problem))
+    assert before['s0'].shape==() and 'reference_s0' not in before
+    assert after['reference_s0'].shape==()
+    assert after['reference_s0'].item()==p.full_problem.s0
+    q = len(p.full_problem.old_indices)*(len(p.classes)-1)
+    assert after['s0'].shape==(q,)
+    np.testing.assert_array_equal(after['s0'],c.final_cache['numeric']['s0'])
+    assert after['s0'].ndim==1
+
+
 def test_production_callbacks_finite_archive_readback_full_text_and_scalar_surface(sequence,tmp_path):
     _,_,p,_,_,_ = sequence
     seen,events = {},[]
@@ -494,6 +507,8 @@ def test_production_callbacks_finite_archive_readback_full_text_and_scalar_surfa
     audit = json.loads(json.dumps(state.audit_dict(),allow_nan=False))
     assert audit['final_state_ref']['arrays']['s']['shape']==[]
     assert seen['final']['s']==()
+    assert seen['final']['reference_s0']==()
+    assert seen['final']['s0']==(len(p.full_problem.old_indices)*(len(p.classes)-1),)
     assert seen['final']['prior_old_class_indices']==(2,)
     assert {'prior_B_U','prior_B_alpha','prior_B_intercept','M_train','multipliers','working_set',
             'K','L','chol_A','chol_working','margins','delta','P_old','raw_train','adapted_train_b'}<=set(seen['final'])

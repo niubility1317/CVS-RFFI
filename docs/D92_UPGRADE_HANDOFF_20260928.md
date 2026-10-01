@@ -1,3 +1,13 @@
+## 最新交接：Margin独立分析链验证完成，尚未启动（2026-10-01）
+
+- Goal ACTIVE。固定Phase1、practical residual；LocalRidge优先与合法support微调联合，不做参数组合扫描。Margin数学/核心已冻结，完整QP间隔、KKT及自由截距梯度独立核验；core归档碰撞修复，未改变算法。
+- 独立summary49项通过；analyzer14项、collector8项、Margin标量reporter19项通过。相关core21项与新增回归1项通过。准确的分批证据及保留失败见docs/D92_MARGIN_JOINT_PIPELINE_VALIDATION_20261001.json。没有实际Marginrun、性能或星载资源结论。
+- Ground A/Affine+Conditional原8行三阶段配对与全训练诊断均已完成/f95fcbaca1；旧handle/PID均DONE，不再poll、评分或collector。独立新数据验证按用户暂缓。
+- query-blind worker仅扩展Margin固定预测的Ground A补充入口，尚未完成；root负责来源/数值验证及唯一launch。接入前Margin A=N/A，不能把旧方法B或R0冒充A。
+- 下一步：root基于冻结资源推导生成明确Margin request/spec、预登记4row/160parent，核实远端元数据和当前进程再唯一发布。max_transitions/factor_buffer只是技术上限，不等于性能参数或RSS/星载预算。禁止query/源样本/逐样本源特征/成绩反馈，健康任务不干预。
+
+以下为历史记录（不要依据旧段落重复启动）：
+
 ## 最新状态：三阶段配对与全训练诊断均完成（2026-10-01）
 
 - Goal ACTIVE。Ground A/support8row、320parent已完成并独立下载；完整三阶段、80行K×new及receiver/model分层报告见docs/D92_GROUND_A_PAIRED_SUPPORT_RESULT_20261001.md。原Ground PID716759已退出，不再publisher/评分。此报告只为support held，不是query或新独立验证。

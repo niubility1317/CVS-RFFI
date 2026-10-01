@@ -110,6 +110,8 @@ Resident 使用实际 byte-backed ndarray 缓冲去重，包括 MappingProxyType
 
 ## 7. 合成验证与未覆盖项
 
+归档字段区分几何尺度与 QP 约束向量：B 的标量几何尺度保持 `s0`；C 的标量几何尺度保存为 `reference_s0`，`s0` 则保存全部旧类物理行对所有注册类别的 QP 基线松弛向量。独立分析发现并修复了此前同名字段覆盖向量的问题。修复只改变归档，不改变求解状态、数学方法或优化参数；尚无真实 Margin run 使用旧归档。
+
 测试只用固定人工 raw feature 表、有限小矩阵及合法合成 support 标签。覆盖 B/C 实际序列、内层 prior 隔离、固定 prior、全列 margin、解析 B 与独立 feature-primal oracle、完整 U/Z 差分（含 active table）、CE 汇总与合法 held 监督、cache 计费、4×12/硬球/最后接受、拒绝 trial、new0 原对象、K1/no-held/rank0、零核非零自由截距、tau0 保留重复物理行、unsupported Jacobian 与资源失败、真实回调 NPZ 无 pickle 读回、逐样本一致与真实数值 buffer 字节。
 
 Active-table 和正 scale/rank-one 的失败 fixture 是数学边界测试，不冒充从生产 B 生成的注册状态。它们不进入实际序列测试，也不用于选参数。独立 primal 的 active-set 枚举仅在 4 条约束的小例子执行；较大合成序列检查全部 KKT、margin 和完整状态，没有抽样原方法的约束。

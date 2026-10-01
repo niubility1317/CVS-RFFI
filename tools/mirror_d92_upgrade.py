@@ -343,6 +343,10 @@ paths += ['docs/D92_CONDITIONAL_JOINT_SUPPORT_RESULT_20261001.md']
 
 paths += ['tools/report_d92_ground_a_support.py', 'tests/test_report_d92_ground_a_support.py', 'docs/D92_GROUND_A_PAIRED_SUPPORT_RESULT_20261001.md']
 
+paths += ['tools/summarize_d92_margin_joint_probe.py', 'tests/test_summarize_d92_margin_joint_probe.py', 'tests/test_d92_margin_analysis_math.py', 'docs/D92_MARGIN_JOINT_ANALYSIS_IMPLEMENTATION_20261001.md', 'tools/analyze_d92_margin_joint_probe.py', 'tools/collect_d92_margin_joint_training_diagnostics.py', 'tests/test_analyze_d92_margin_joint_probe.py', 'tests/test_collect_d92_margin_joint_training_diagnostics.py', 'docs/D92_MARGIN_JOINT_ANALYSIS_ENTRY_20261001.md', 'docs/D92_MARGIN_JOINT_RESOURCE_BOUND_20261001.md', 'tools/report_d92_margin_joint_support.py', 'tests/test_report_d92_margin_joint_support.py', 'docs/D92_MARGIN_JOINT_PIPELINE_VALIDATION_20261001.json']
+
+paths += []
+
 for name in paths:
     src=ROOT/name;dst=WS/name;dst.parent.mkdir(parents=True,exist_ok=True)
     # Each name is unique to this task; original D92 and shared wrappers are not mirrored.

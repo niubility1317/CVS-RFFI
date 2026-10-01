@@ -40,7 +40,7 @@ def test_declared_spec_path_must_match_publication_input(tmp_path):
 def test_declared_entry_bundle_imports_without_workspace_or_implicit_helper_fallback(tmp_path):
     """Only explicit source files, isolated interpreter; no real data or launch."""
     bundle=tmp_path/'isolated_bundle';bundle.mkdir()
-    for name in publish.PATHS:
+    for name in dict.fromkeys(publish.PATHS+publish.ANALYSIS_PATHS):
         source=publish.ROOT/name
         assert source.is_file(),name
         target=bundle/name;target.parent.mkdir(parents=True,exist_ok=True)
@@ -51,7 +51,9 @@ def test_declared_entry_bundle_imports_without_workspace_or_implicit_helper_fall
         'root=pathlib.Path(__file__).resolve().parent\n'
         'sys.path[:0]=[str(root/"code"),str(root/"tools")]\n'
         'names=["prepare_d92_margin_joint_probe","preflight_d92_margin_joint_probe",'
-        '"run_d92_margin_joint_probe","publish_d92_margin_joint_probe","evaluate_d92_margin_joint_probe"]\n'
+        '"run_d92_margin_joint_probe","publish_d92_margin_joint_probe","evaluate_d92_margin_joint_probe",'
+        '"summarize_d92_margin_joint_probe","analyze_d92_margin_joint_probe",'
+        '"collect_d92_margin_joint_training_diagnostics","report_d92_margin_joint_support"]\n'
         'for name in names:\n'
         ' module=importlib.import_module(name)\n'
         ' assert pathlib.Path(module.__file__).resolve().is_relative_to(root),name\n'
@@ -65,7 +67,7 @@ def test_declared_entry_bundle_imports_without_workspace_or_implicit_helper_fall
         text=True,encoding='utf-8',capture_output=True,timeout=60)
     assert result.returncode==0,result.stderr
     observed=json.loads(result.stdout)
-    assert observed['network_or_launch'] is False and len(observed['imports'])==5
+    assert observed['network_or_launch'] is False and len(observed['imports'])==9
 
 
 def test_complete_entry_files_do_not_claim_analysis_capability(tmp_path):

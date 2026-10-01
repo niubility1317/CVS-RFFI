@@ -1,0 +1,71 @@
+{
+  "status": "VERIFIED_FOCUSED_SYNTHETIC_PIPELINE",
+  "at": "2026-10-01T07:44:27.484883+00:00",
+  "environment": "verified ssr-gpu / Python3.10; serial Conda wrappers",
+  "source_parent_commit": "f95fcbaca1b5418b10ed5d5895be4b0b9beb81b1",
+  "actual_margin_run": null,
+  "query_or_source_samples_read": false,
+  "performance_claim": null,
+  "validations": [
+    {
+      "scope": "analyzer+collector initial",
+      "passed": 21,
+      "failed": 1,
+      "prefix": "pytest_utf8_1790838565909055900",
+      "failure": "numpy bool JSON serialization"
+    },
+    {
+      "scope": "collector after type-source fix",
+      "passed": 8,
+      "failed": 0,
+      "seconds": 20.89,
+      "prefix": "pytest_utf8_1790838772593158500"
+    },
+    {
+      "scope": "summary/math/publisher/prepare initial",
+      "passed": 54,
+      "failed": 9,
+      "prefix": "pytest_utf8_1790839096741655700",
+      "failure": "strict legal metadata ref shape"
+    },
+    {
+      "scope": "summary after ref fix",
+      "passed": 38,
+      "failed": 6,
+      "prefix": "pytest_utf8_1790839516432814900",
+      "failure": "production archive geometric s0 overwrote QP slack vector"
+    },
+    {
+      "scope": "affected core+summary after archive fix",
+      "passed": 70,
+      "failed": 1,
+      "seconds": 86.63,
+      "prefix": "pytest_utf8_1790840309414307200",
+      "summary_passed": 49,
+      "failure": "new root regression omitted problem from reduced final cache"
+    },
+    {
+      "scope": "focused new root regression final",
+      "passed": 1,
+      "failed": 0,
+      "seconds": 1.2,
+      "prefix": "pytest_utf8_1790840419956969500"
+    },
+    {
+      "scope": "Ground+Margin scalar reporters",
+      "passed": 35,
+      "failed": 0,
+      "seconds": 1.49,
+      "prefix": "pytest_utf8_1790838344260653200",
+      "margin_reporter_passed": 19
+    }
+  ],
+  "untouched_math_checks": "Earlier head30/math19 and initial five-entry34 passed; unchanged paths not rerun.",
+  "fixes": [
+    "exact legal three-field/full-five-field metadata view",
+    "C reference_s0 scalar distinct from full QP s0 vector",
+    "native JSON booleans"
+  ],
+  "root_regression_intermediate_failure": "pytest_utf8_1790840404993909200; omitted C problem then corrected; preserved",
+  "limitation": "Synthetic correctness only; no query performance, fresh validation or measured star cost; factor-buffer guard is not RSS"
+}

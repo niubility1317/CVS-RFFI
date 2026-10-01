@@ -7,7 +7,8 @@ from pathlib import Path
 from run_d92_margin_joint_probe import ROOT, validate_spec
 
 SUMMARY='tools/summarize_d92_margin_joint_probe.py'
-ANALYSIS_PATHS=[SUMMARY,'tools/analyze_d92_margin_joint_probe.py']
+ANALYSIS_PATHS=[SUMMARY,'tools/analyze_d92_margin_joint_probe.py',
+    'tools/collect_d92_margin_joint_training_diagnostics.py','tools/report_d92_margin_joint_support.py']
 PATHS=[
     'code/cvsrffi/__init__.py','code/cvsrffi/d92_margin_qp_head.py',
     'code/cvsrffi/d92_margin_joint_local_ridge.py','code/cvsrffi/d92_affine_joint_local_ridge.py',
@@ -29,6 +30,9 @@ PATHS=[
     'tools/prepare_d92_margin_joint_probe.py','tools/run_d92_margin_joint_probe.py',
     'tools/evaluate_d92_margin_joint_probe.py','tools/preflight_d92_margin_joint_probe.py',
     'tools/publish_d92_margin_joint_probe.py','tools/publish_d92_branch_support_probe.py',
+    'tools/summarize_d92_affine_joint_probe.py','tools/evaluate_d92_affine_joint_probe.py',
+    'tools/run_d92_affine_joint_probe.py','tools/d92_affine_analysis_math.py',
+    'tools/collect_d92_affine_joint_training_diagnostics.py',
     'docs/D92_MARGIN_QP_HEAD_IMPLEMENTATION_20261001.md','docs/D92_MARGIN_JOINT_ENTRY_20261001.md']
 
 
