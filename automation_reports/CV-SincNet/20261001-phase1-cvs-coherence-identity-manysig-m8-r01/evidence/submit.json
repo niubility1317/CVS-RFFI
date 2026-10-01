@@ -1,0 +1,16 @@
+{
+  "status": "SUBMITTED",
+  "pid": 908102,
+  "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coherence_identity_20261001_r01",
+  "argv": [
+    "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "-u",
+    "-m",
+    "experiments.cvs_coherence_identity.dispatch",
+    "--spec",
+    "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coherence_identity_20261001_r01/experiments/cvs_coherence_identity/configs/launch_spec.json"
+  ],
+  "log": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coherence_identity_20261001_r01/dispatcher.stdout.log",
+  "commit": "282c456861064670040625ccd12d539659c1f654",
+  "sha256": "a0f3310c4f8a0ac75cd428fa9f23dd1047531d690408f6dcab94198680f2ede2"
+}
