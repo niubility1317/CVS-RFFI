@@ -1,0 +1,26 @@
+[
+  {
+    "method": "native",
+    "training_process_peak_cuda_allocated_bytes_by_seed": [
+      250999808,
+      250999808,
+      250999808,
+      250999808
+    ],
+    "max_bytes": 250999808,
+    "mean_bytes": 250999808.0,
+    "scope": "Process cumulative CUDAallocated peak throughE200 training+sourceV+initial smoke,beforedisposableposttrainingprofile;notentirecard"
+  },
+  {
+    "method": "residual_fusion",
+    "training_process_peak_cuda_allocated_bytes_by_seed": [
+      248282624,
+      248282624,
+      248282624,
+      248282624
+    ],
+    "max_bytes": 248282624,
+    "mean_bytes": 248282624.0,
+    "scope": "Process cumulative CUDAallocated peak throughE200 training+sourceV+initial smoke,beforedisposableposttrainingprofile;notentirecard"
+  }
+]

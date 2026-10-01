@@ -1,0 +1,48 @@
+{
+  "status": "VERIFIED",
+  "scope": "Original goal:matched pureCE,noaugmentation,cleanonly,betterCVSdesignwithlightweightsoftconstraint",
+  "requirements": [
+    {
+      "requirement": "CVS基础身份神经网络结构实际实现",
+      "evidence": "experiments/cvs_residual_identity/model.py;4actualtrainedE200scratchcheckpoints;newhead1760,whole164225"
+    },
+    {
+      "requirement": "同一数据划分与训练预算",
+      "evidence": "source_research_complete.json resolved source_counts6300/56700/27000,split392005,E200x50;runtimecheckpoint_contract fullphysical-role comparison"
+    },
+    {
+      "requirement": "仅身份CE，无星地/数据增强，无域骨干",
+      "evidence": "source.py F.cross_entropy only;actual4 resolved augmentation=false/domain_backbone=false/extra_losses=[];200epoch traces"
+    },
+    {
+      "requirement": "只测clean，预测完整后独立评分",
+      "evidence": "final_readback.json new4completion/provenance/resolved/views;20rowSCORED_COMPLETE;independentP0/P1 and15protocolchecks"
+    },
+    {
+      "requirement": "数学、通信、物理、射频指纹分析及代码相符",
+      "evidence": "docs/CVS_RESIDUAL_IDENTITY_RESEARCH_20261001.md andreport sections;LayerNorm+boundedgain+native time/freq/PA+cosinehead;causal/identifiability limitsdisclosed"
+    },
+    {
+      "requirement": "实测识别性能优于原CVS",
+      "evidence": "clean_summary.json78.454315 vs76.227232;paired+2.227083pp,4/4positive;analysis_validation recomputesconfusions/seedmeans/SD"
+    },
+    {
+      "requirement": "不用叠参数且保持轻量软约束",
+      "evidence": "resource_summary.json164225 vs382146total/317665active;57.03percenttotal/48.30percentactive reduction;MAC1.56percentless;GPUtimes,state,training/predictionpeaksmeasured"
+    },
+    {
+      "requirement": "合法源域冻结与无目标反馈",
+      "evidence": "research_selection.json plus source_completion_validation.json;actualfixed6candidate rule independentlyrecomputed,sourcefinishbeforebaseline launch;noalternativecandidate targettest"
+    },
+    {
+      "requirement": "完整报告、代码配置与实验登记",
+      "evidence": "report.md;experiment.json/events.jsonl;160same-rowmetrics/RX/TX;original128unchanged;Gitcommit/push/OIDverification atdelivery"
+    },
+    {
+      "requirement": "用户追加每次发布默认最终测试",
+      "evidence": "AGENTS.md/tools/optimizer_workflow_contract.md/docs/EXPERIMENT_MANAGEMENT.md new20261001section;currentnew4testcomplete"
+    }
+  ],
+  "limitation": "Onehistoricallyexposed fixedsplit,4modelseeds;overallimprovement,notallRX;noLEO/Phase2/SFT/deploymentclaim;trainingtimeapproximatelyunchanged",
+  "no_remaining_required_work": true
+}

@@ -1,0 +1,22 @@
+{
+  "status": "VERIFIED",
+  "new_predictions": 4,
+  "reused_predictions": 16,
+  "queries_per_row": 168000,
+  "records": 160,
+  "reused_baseline_results": "ALL128 exactly unchanged",
+  "confusion_counts_accuracy": "PASS all160",
+  "mean_sample_sd": "PASS all5",
+  "source_choice": "Six-source-candidate rule frozen beforebaseline launch;recomputed",
+  "target_feedback": false,
+  "native_paired_delta_pp": 2.2270833333333324,
+  "positive_paired_seeds": 4,
+  "resource_reduction_percent": {
+    "total_parameters": 57.02558707928384,
+    "ce_gradient_parameters": 48.30245699085515,
+    "conv_linear_macs_per_sample": 1.5574245551504773,
+    "resident_state_bytes": 57.00127383870115
+  },
+  "improved_clean_accuracy": true,
+  "lighter": true
+}

@@ -9,4 +9,4 @@
 |无信道增强四基准的 clean 测试报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261001-phase1-clean-baselines-manysig-m16-r01/report.md)|
 |CVS 无增强轻量架构与常见网络基准|managed_run|[打开](../../automation_reports/CV-SincNet/20261001-phase1-cvs-clean-architecture-manysig-m32-r01/report.md)|
 |CVS 基础网络研发：残差物理融合|managed_run|[打开](../../automation_reports/CV-SincNet/20261001-phase1-cvs-residual-identity-manysig-m8-r01/report.md)|
-|源域冻结的轻量 CVS：clean 确认测试|managed_run|[打开](../../automation_reports/CV-SincNet/20261001-phase1-cvs-selected-clean-manysig-m20-r01/report.md)|
+|CVS 结构优化：轻量残差融合的 clean 确认报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261001-phase1-cvs-selected-clean-manysig-m20-r01/report.md)|

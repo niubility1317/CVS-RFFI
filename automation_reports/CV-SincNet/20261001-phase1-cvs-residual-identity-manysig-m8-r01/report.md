@@ -65,3 +65,7 @@ run_id：`20261001-phase1-cvs-residual-identity-manysig-m8-r01`。状态：SOURC
 选中模型总参数164225，全部有CE梯度；比原总参数382146少约57.03%，比原有效CE参数317665少约48.30%。Conv/Linear MAC从9862436降到9708836，减少约1.56%，FFT仍为两次；参数减少不代表同比例计算或时间减少。此时 clean 尚未测，目标“结构改进同时提升性能且轻量化”仍待一次冻结确认。
 
 [完整源研发读回](evidence/source_research_complete.json)、[联合冻结](evidence/research_selection.json)、[源选择重算及边界验证](evidence/source_completion_validation.json)。最新用户要求四基准先测试已另行完成；新候选的独立确认将只新增4预测并只读复用原16基准预测。
+
+## 冻结候选最终确认已完成
+
+source-only run自身从未读取目标；其已冻结residual_fusion由独立子run `20261001-phase1-cvs-selected-clean-manysig-m20-r01`完成四seed clean确认，并只读复用16基准预测。最终accuracy78.4543%±0.8436%，较原CVS配对+2.2271个百分点，全部四seed正提升；总参数减少57.03%，有效CE参数少48.30%。完整结果与资源/限制见[确认报告](../20261001-phase1-cvs-selected-clean-manysig-m20-r01/report.md)。未选中的候选不做目标测试，目标成绩不回流source选择。该source矩阵及关联确认现已完成分析。

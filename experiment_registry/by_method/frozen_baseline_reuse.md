@@ -6,4 +6,4 @@
 
 |名称|记录类型|证据入口|
 |---|---|---|
-|源域冻结的轻量 CVS：clean 确认测试|managed_run|[打开](../../automation_reports/CV-SincNet/20261001-phase1-cvs-selected-clean-manysig-m20-r01/report.md)|
+|CVS 结构优化：轻量残差融合的 clean 确认报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261001-phase1-cvs-selected-clean-manysig-m20-r01/report.md)|
