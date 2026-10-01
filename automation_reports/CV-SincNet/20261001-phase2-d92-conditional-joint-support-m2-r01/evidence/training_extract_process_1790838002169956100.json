@@ -1,0 +1,28 @@
+{
+  "observed_unix": 1790837940.6430492,
+  "read_only": true,
+  "data_or_score_read": false,
+  "exact_operation": "--extract-stdout",
+  "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-conditional-joint-support-m2-r01",
+  "matches": [
+    {
+      "pid": 718003,
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-",
+        "--extract-stdout",
+        "--run-root",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-conditional-joint-support-m2-r01"
+      ],
+      "state": "R",
+      "start_ticks": 8515353,
+      "user_cpu_ticks": 756665,
+      "system_cpu_ticks": 38638,
+      "threads": 48,
+      "rss": "8403096 kB",
+      "peak_rss": "9049712 kB",
+      "read_character_bytes": 26354037790,
+      "disk_read_bytes": 0
+    }
+  ]
+}

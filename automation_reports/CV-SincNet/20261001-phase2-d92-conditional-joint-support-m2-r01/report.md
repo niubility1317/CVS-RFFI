@@ -6,7 +6,7 @@
 
 [完整三阶段字段、80行K×新增类数表与分层报告](../../../docs/D92_CONDITIONAL_JOINT_SUPPORT_RESULT_20261001.md)。[独立完成读回](evidence/analysis_readback_1790836114622143600.json)、[分析execution](results/support_summary/analysis_execution.json)、[完整解释记录](results/interpretation.json)。13.5MB原summary及原始训练档案保留本地/远端，Git只保存小型记录与报告。
 
-全训练collector与已预登记8row Ground A/support尚未启动，分别完成后更新本记录；不重训或改变本方法。新MarginJoint已先冻结并完成纯合成验证，此分析结果不发送给query-blind方法worker。目标ACTIVE。
+全训练诊断已VERIFIED_COMPLETE：3240阶段、17496事件、3240准备记录、35856训练档案均完整遍历；local34310 DONE、原PID718003已退出。紧凑AI JSONL/CSV已完整核对；接受RMSCE上升0，平均CE上升未派生=N/A。不要重复collector或poll已结束handle。Ground A/support全部8row已完成并独立下载，配对报告单独交付；不重训或改变本方法。新MarginJoint已先冻结并完成纯合成验证，此分析结果不发送给query-blind方法worker。目标ACTIVE。
 
 以下保留原预登记与历史状态：
 

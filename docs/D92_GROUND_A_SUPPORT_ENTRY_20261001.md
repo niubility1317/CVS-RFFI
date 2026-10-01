@@ -61,4 +61,4 @@ Publisher 自身、既有 `publish_d92_branch_support_probe.py` 与 `run_d92_bra
 
 主Agent在项目ssr-gpu环境串行执行上述两个测试文件，36 passed，6.78 s；输出prefix为 `E:/type10-7/.codex_tmp/pytest_utf8_1790828105225733000`。原有Torch2.1/NumPy2 ABI警告仍在，当前路径采用已有list/scalar桥接并通过合成production scorer用例。直接P0/P1只读审查未发现问题。
 
-实际8行配置 `configs/d92_ground_a_support_20261001.json` 已预登记并经同一纯spec validator核对。新run `20261001-phase2-d92-ground-a-support-m2-r01` 尚未启动；Conditional完整独立summary尚在运行，真实A与B−A保持N/A。来源核对在sole supervisor启动后、任何A评分前完成，不宣称Popen前读取了远端summary。
+实际8行配置 `configs/d92_ground_a_support_20261001.json` 已预登记并经同一纯spec validator核对。新run `20261001-phase2-d92-ground-a-support-m2-r01` 已完成8行/320parent并独立读回下载，runtime9b761828a、原唯一PID716759已退出。真实A与B−A已在同物理旧held support配对测量，完整组合报告单独交付。Conditional完整独立summary已完成，原方法不重拟合。来源核对在sole supervisor启动后、任何A评分前完成，不宣称Popen前读取了远端summary。

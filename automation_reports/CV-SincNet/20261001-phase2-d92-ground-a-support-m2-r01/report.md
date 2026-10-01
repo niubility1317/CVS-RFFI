@@ -1,3 +1,11 @@
+# Ground A三阶段配对已完成
+
+ANALYZED/VERIFIED：8行、320parent（Affine/Conditional各160）全部完成；唯一PID716759/start8502953已退出，runtime9b761828a。原输入不变，无训练、source/query访问；固定A先于truth连接。
+
+实际程序wall224.820874s、CPU峰值RSS1243791360B；非星载资源或链路传输测量。真实A/B−A已测；原始完整行报告与配对表见 `results/raw_support_pairing/<row_id>`；[完整组合三阶段与K×新增类数报告](../../../docs/D92_GROUND_A_PAIRED_SUPPORT_RESULT_20261001.md)已完成，并经35项两reporter合成检查。完整完成证据见 [evidence/supervisor_readback_1790837667387096200.json](evidence/supervisor_readback_1790837667387096200.json) 和 [evidence/support_download_readback_20261001.json](evidence/support_download_readback_20261001.json)。不要重复publisher/评分。
+
+历史预登记：
+
 # D92 Ground A 三阶段配对补充
 
 状态：PLANNED，未启动，A/B−A 尚未测量。

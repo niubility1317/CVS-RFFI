@@ -189,13 +189,41 @@
     "full_support_report_ref": "docs/D92_CONDITIONAL_JOINT_SUPPORT_RESULT_20261001.md",
     "independent_support_summary_ref": "results/support_summary/summary.json",
     "interpretation_ref": "results/interpretation.json",
-    "training_collector_status": "NOT_STARTED",
+    "training_collector_status": "VERIFIED_COMPLETE",
     "analysis_complete_counts": {
       "model_rows": 4,
       "parents": 160,
       "paths": 1800,
       "stages": 3240
-    }
+    },
+    "training_collector_commit": "9b761828abc171b8e6437556aaae36935208e0cf",
+    "training_snapshot_status": "VERIFIED_COMPLETE",
+    "training_snapshot_ref": "results/training_snapshot.json",
+    "training_extract_local_handle": 34310,
+    "training_extract_pid": 718003,
+    "training_extract_start_ticks": 8515353,
+    "training_extract_process_alive": false,
+    "training_extract_argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-",
+      "--extract-stdout",
+      "--run-root",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-conditional-joint-support-m2-r01"
+    ],
+    "training_extract_readback_ref": "evidence/training_extract_process_1790838002169956100.json",
+    "training_diagnostics_output_ref": "results/training_diagnostics",
+    "training_extract_retry": false,
+    "training_extract_local_handle_state": "DONE_DO_NOT_POLL",
+    "training_extract_exit_readback_ref": "evidence/training_extract_process_1790838571372847900.json",
+    "training_diagnostics_counts": {
+      "stages": 3240,
+      "curves": 17496,
+      "preparations": 3240,
+      "archives": 35856
+    },
+    "training_diagnostics_readback_ref": "evidence/training_derived_readback_20261001.json",
+    "training_ai_scalar_ref": "results/training_ai_scalar",
+    "training_ai_scalar_readback_ref": "evidence/training_ai_scalar_readback_20261001.json"
   },
   "expected_artifacts": [
     "startup.json",

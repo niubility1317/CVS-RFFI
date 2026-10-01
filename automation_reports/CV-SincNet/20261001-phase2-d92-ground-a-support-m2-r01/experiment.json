@@ -22,14 +22,15 @@
   ],
   "authorization": "Existing user optimization, data reuse and complete A/B/C reporting authorization; root sole launch owner.",
   "spec_path": "configs/d92_ground_a_support_20261001.json",
-  "status": "PLANNED",
+  "status": "ANALYZED",
   "claim_scope": "SUPPORT_ONLY_GROUND_A_PAIRED_OLD_HELD_NOT_QUERY_EVALUATION",
   "code": {
-    "commit": "71df5dd97f640f2fa2268bea0470ff7e0e951a3f",
+    "commit": "9b761828abc171b8e6437556aaae36935208e0cf",
     "checkout": "E:\\type10-7\\code\\snapshots\\d92_support_upgrade_20260928_wt",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_ground_a_support_20261001_r01",
-    "commit_note": "Preparation parent; publisher/startup record actual new immutable analysis source OID."
+    "commit_note": "Preparation parent; publisher/startup record actual new immutable analysis source OID.",
+    "preparation_parent_commit": "71df5dd97f640f2fa2268bea0470ff7e0e951a3f"
   },
   "data": {
     "dataset": "Existing selected legal support only; original source classifier head packets",
@@ -154,9 +155,40 @@
     "local_artifact_root": "automation_reports/CV-SincNet/20261001-phase2-d92-ground-a-support-m2-r01",
     "launch_command": "E:/type10-7/local_envs/ssr-gpu/python.exe -X utf8 tools/publish_d92_ground_a_support.py --spec configs/d92_ground_a_support_20261001.json",
     "stop_rule": "First direct technical failure terminates only this sequential supplement; no retry/overwrite or intervention in source runs.",
-    "actual_pid": null,
+    "actual_pid": 716759,
     "actual_gpu": null,
-    "launch_status": "NOT_LAUNCHED_WAITING_FOR_FULL_CONDITIONAL_INDEPENDENT_SUMMARY"
+    "launch_status": "VERIFIED_COMPLETE",
+    "actual_runtime_commit": "9b761828abc171b8e6437556aaae36935208e0cf",
+    "actual_start_ticks": 8502953,
+    "actual_process_alive": false,
+    "actual_A_evaluated": true,
+    "actual_runtime_command": [
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_ground_a_support_20261001_r01/tools/run_d92_ground_a_support.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_ground_a_support_20261001_r01/configs/d92_ground_a_support_20261001.json",
+      "--commit",
+      "9b761828abc171b8e6437556aaae36935208e0cf"
+    ],
+    "completed_rows": 8,
+    "paired_parent_count": 320,
+    "actual_run_wall_seconds": 224.8208737870009,
+    "actual_peak_process_rss_bytes": 1243791360,
+    "completion_readback_ref": "evidence/supervisor_readback_1790837667387096200.json",
+    "download_readback_ref": "evidence/support_download_readback_20261001.json",
+    "raw_support_pairing_ref": "results/raw_support_pairing",
+    "combined_report_status": "VERIFIED_COMPLETE",
+    "incremental_star_network_transfer_bytes": null,
+    "hardware": {
+      "platform": "Linux-6.8.0-142-generic-x86_64-with-glibc2.39",
+      "processor": "x86_64",
+      "cpu_count": 96,
+      "gpu_use": false
+    },
+    "combined_report_ref": "docs/D92_GROUND_A_PAIRED_SUPPORT_RESULT_20261001.md",
+    "combined_interpretation_ref": "results/interpretation.json",
+    "scalar_report_test_passed": 35,
+    "scalar_report_test_seconds": 1.49,
+    "scalar_report_test_prefix": "E:/type10-7/.codex_tmp/pytest_utf8_1790838344260653200"
   },
   "metrics_plan": {
     "metric_names": [
@@ -260,7 +292,37 @@
         "summary.json",
         "report.md",
         "complete.json"
-      ]
+      ],
+      "actual_status": "GROUND_A_SUPPORT_PAIRING_COMPLETE",
+      "actual_parent_count": 40,
+      "actual_resources": {
+        "packet_load_seconds": 0.002801285998430103,
+        "raw_cache_read_seconds": 0.17171347700059414,
+        "float32_scalar_list_bridge_seconds": 0.027391060211812146,
+        "native_single_record_score_seconds": 0.14244416494329926,
+        "wall_seconds": 0.35795195199898444,
+        "score_call_count": 1040,
+        "scored_physical_count": 1040,
+        "packet_total_local_file_bytes": 8737,
+        "head_weight_file_bytes": 3840,
+        "raw_z_id_numeric_bytes": 665600,
+        "score_numeric_bytes": 24960,
+        "incremental_transmission_bytes": null,
+        "deployment_peak_memory_bytes": null,
+        "gpu_peak_memory_bytes": null,
+        "energy": null,
+        "unmeasured_reason": "Local packet bytes and CPU timings measured; no network transfer, deployment peak or energy measured",
+        "hardware": {
+          "device": "cpu",
+          "machine": "x86_64",
+          "platform": "Linux-6.8.0-142-generic-x86_64-with-glibc2.39",
+          "torch_version": "2.1.0+cu121"
+        },
+        "byte_scope": "Actual local packet/cache/prediction files and numeric arrays; not measured transmission or resident deployment memory"
+      },
+      "actual_output_ref": "results/raw_support_pairing/affine-rx3-cvs-daot-rc4-s2026092701",
+      "actual_A_evaluated": true,
+      "completion_evidence_ref": "evidence/supervisor_readback_1790837667387096200.json"
     },
     {
       "row_id": "affine-rx3-cvs-daot-rc4-s2026092702",
@@ -305,7 +367,37 @@
         "summary.json",
         "report.md",
         "complete.json"
-      ]
+      ],
+      "actual_status": "GROUND_A_SUPPORT_PAIRING_COMPLETE",
+      "actual_parent_count": 40,
+      "actual_resources": {
+        "packet_load_seconds": 0.0008140549907693639,
+        "raw_cache_read_seconds": 0.05154261499410495,
+        "float32_scalar_list_bridge_seconds": 0.02728782783378847,
+        "native_single_record_score_seconds": 0.14103048690594733,
+        "wall_seconds": 0.23394189499958884,
+        "score_call_count": 1040,
+        "scored_physical_count": 1040,
+        "packet_total_local_file_bytes": 8735,
+        "head_weight_file_bytes": 3840,
+        "raw_z_id_numeric_bytes": 665600,
+        "score_numeric_bytes": 24960,
+        "incremental_transmission_bytes": null,
+        "deployment_peak_memory_bytes": null,
+        "gpu_peak_memory_bytes": null,
+        "energy": null,
+        "unmeasured_reason": "Local packet bytes and CPU timings measured; no network transfer, deployment peak or energy measured",
+        "hardware": {
+          "device": "cpu",
+          "machine": "x86_64",
+          "platform": "Linux-6.8.0-142-generic-x86_64-with-glibc2.39",
+          "torch_version": "2.1.0+cu121"
+        },
+        "byte_scope": "Actual local packet/cache/prediction files and numeric arrays; not measured transmission or resident deployment memory"
+      },
+      "actual_output_ref": "results/raw_support_pairing/affine-rx3-cvs-daot-rc4-s2026092702",
+      "actual_A_evaluated": true,
+      "completion_evidence_ref": "evidence/supervisor_readback_1790837667387096200.json"
     },
     {
       "row_id": "affine-rx1-cvs-daot-rc4-s2026092701",
@@ -350,7 +442,37 @@
         "summary.json",
         "report.md",
         "complete.json"
-      ]
+      ],
+      "actual_status": "GROUND_A_SUPPORT_PAIRING_COMPLETE",
+      "actual_parent_count": 40,
+      "actual_resources": {
+        "packet_load_seconds": 0.0008052190096350387,
+        "raw_cache_read_seconds": 0.01850890000059735,
+        "float32_scalar_list_bridge_seconds": 0.027587452190346085,
+        "native_single_record_score_seconds": 0.14269433497975115,
+        "wall_seconds": 0.20327826699940488,
+        "score_call_count": 1040,
+        "scored_physical_count": 1040,
+        "packet_total_local_file_bytes": 8737,
+        "head_weight_file_bytes": 3840,
+        "raw_z_id_numeric_bytes": 665600,
+        "score_numeric_bytes": 24960,
+        "incremental_transmission_bytes": null,
+        "deployment_peak_memory_bytes": null,
+        "gpu_peak_memory_bytes": null,
+        "energy": null,
+        "unmeasured_reason": "Local packet bytes and CPU timings measured; no network transfer, deployment peak or energy measured",
+        "hardware": {
+          "device": "cpu",
+          "machine": "x86_64",
+          "platform": "Linux-6.8.0-142-generic-x86_64-with-glibc2.39",
+          "torch_version": "2.1.0+cu121"
+        },
+        "byte_scope": "Actual local packet/cache/prediction files and numeric arrays; not measured transmission or resident deployment memory"
+      },
+      "actual_output_ref": "results/raw_support_pairing/affine-rx1-cvs-daot-rc4-s2026092701",
+      "actual_A_evaluated": true,
+      "completion_evidence_ref": "evidence/supervisor_readback_1790837667387096200.json"
     },
     {
       "row_id": "affine-rx1-cvs-daot-rc4-s2026092702",
@@ -395,7 +517,37 @@
         "summary.json",
         "report.md",
         "complete.json"
-      ]
+      ],
+      "actual_status": "GROUND_A_SUPPORT_PAIRING_COMPLETE",
+      "actual_parent_count": 40,
+      "actual_resources": {
+        "packet_load_seconds": 0.000829609009088017,
+        "raw_cache_read_seconds": 0.018608960992423818,
+        "float32_scalar_list_bridge_seconds": 0.027548866855795495,
+        "native_single_record_score_seconds": 0.14300926381838508,
+        "wall_seconds": 0.2037334940105211,
+        "score_call_count": 1040,
+        "scored_physical_count": 1040,
+        "packet_total_local_file_bytes": 8735,
+        "head_weight_file_bytes": 3840,
+        "raw_z_id_numeric_bytes": 665600,
+        "score_numeric_bytes": 24960,
+        "incremental_transmission_bytes": null,
+        "deployment_peak_memory_bytes": null,
+        "gpu_peak_memory_bytes": null,
+        "energy": null,
+        "unmeasured_reason": "Local packet bytes and CPU timings measured; no network transfer, deployment peak or energy measured",
+        "hardware": {
+          "device": "cpu",
+          "machine": "x86_64",
+          "platform": "Linux-6.8.0-142-generic-x86_64-with-glibc2.39",
+          "torch_version": "2.1.0+cu121"
+        },
+        "byte_scope": "Actual local packet/cache/prediction files and numeric arrays; not measured transmission or resident deployment memory"
+      },
+      "actual_output_ref": "results/raw_support_pairing/affine-rx1-cvs-daot-rc4-s2026092702",
+      "actual_A_evaluated": true,
+      "completion_evidence_ref": "evidence/supervisor_readback_1790837667387096200.json"
     },
     {
       "row_id": "conditional-rx3-cvs-daot-rc4-s2026092701",
@@ -440,7 +592,37 @@
         "summary.json",
         "report.md",
         "complete.json"
-      ]
+      ],
+      "actual_status": "GROUND_A_SUPPORT_PAIRING_COMPLETE",
+      "actual_parent_count": 40,
+      "actual_resources": {
+        "packet_load_seconds": 0.0008288349927170202,
+        "raw_cache_read_seconds": 0.05144345998996869,
+        "float32_scalar_list_bridge_seconds": 0.026503090717596933,
+        "native_single_record_score_seconds": 0.13834261006559245,
+        "wall_seconds": 0.2299070809967816,
+        "score_call_count": 1040,
+        "scored_physical_count": 1040,
+        "packet_total_local_file_bytes": 8737,
+        "head_weight_file_bytes": 3840,
+        "raw_z_id_numeric_bytes": 665600,
+        "score_numeric_bytes": 24960,
+        "incremental_transmission_bytes": null,
+        "deployment_peak_memory_bytes": null,
+        "gpu_peak_memory_bytes": null,
+        "energy": null,
+        "unmeasured_reason": "Local packet bytes and CPU timings measured; no network transfer, deployment peak or energy measured",
+        "hardware": {
+          "device": "cpu",
+          "machine": "x86_64",
+          "platform": "Linux-6.8.0-142-generic-x86_64-with-glibc2.39",
+          "torch_version": "2.1.0+cu121"
+        },
+        "byte_scope": "Actual local packet/cache/prediction files and numeric arrays; not measured transmission or resident deployment memory"
+      },
+      "actual_output_ref": "results/raw_support_pairing/conditional-rx3-cvs-daot-rc4-s2026092701",
+      "actual_A_evaluated": true,
+      "completion_evidence_ref": "evidence/supervisor_readback_1790837667387096200.json"
     },
     {
       "row_id": "conditional-rx3-cvs-daot-rc4-s2026092702",
@@ -485,7 +667,37 @@
         "summary.json",
         "report.md",
         "complete.json"
-      ]
+      ],
+      "actual_status": "GROUND_A_SUPPORT_PAIRING_COMPLETE",
+      "actual_parent_count": 40,
+      "actual_resources": {
+        "packet_load_seconds": 0.0008092749922070652,
+        "raw_cache_read_seconds": 0.05146239399618935,
+        "float32_scalar_list_bridge_seconds": 0.027600326036917977,
+        "native_single_record_score_seconds": 0.14109537182957865,
+        "wall_seconds": 0.23410935400170274,
+        "score_call_count": 1040,
+        "scored_physical_count": 1040,
+        "packet_total_local_file_bytes": 8735,
+        "head_weight_file_bytes": 3840,
+        "raw_z_id_numeric_bytes": 665600,
+        "score_numeric_bytes": 24960,
+        "incremental_transmission_bytes": null,
+        "deployment_peak_memory_bytes": null,
+        "gpu_peak_memory_bytes": null,
+        "energy": null,
+        "unmeasured_reason": "Local packet bytes and CPU timings measured; no network transfer, deployment peak or energy measured",
+        "hardware": {
+          "device": "cpu",
+          "machine": "x86_64",
+          "platform": "Linux-6.8.0-142-generic-x86_64-with-glibc2.39",
+          "torch_version": "2.1.0+cu121"
+        },
+        "byte_scope": "Actual local packet/cache/prediction files and numeric arrays; not measured transmission or resident deployment memory"
+      },
+      "actual_output_ref": "results/raw_support_pairing/conditional-rx3-cvs-daot-rc4-s2026092702",
+      "actual_A_evaluated": true,
+      "completion_evidence_ref": "evidence/supervisor_readback_1790837667387096200.json"
     },
     {
       "row_id": "conditional-rx1-cvs-daot-rc4-s2026092701",
@@ -530,7 +742,37 @@
         "summary.json",
         "report.md",
         "complete.json"
-      ]
+      ],
+      "actual_status": "GROUND_A_SUPPORT_PAIRING_COMPLETE",
+      "actual_parent_count": 40,
+      "actual_resources": {
+        "packet_load_seconds": 0.0008188920037355274,
+        "raw_cache_read_seconds": 0.018197686003986746,
+        "float32_scalar_list_bridge_seconds": 0.026703388823079877,
+        "native_single_record_score_seconds": 0.13859946072625462,
+        "wall_seconds": 0.197234669001773,
+        "score_call_count": 1040,
+        "scored_physical_count": 1040,
+        "packet_total_local_file_bytes": 8737,
+        "head_weight_file_bytes": 3840,
+        "raw_z_id_numeric_bytes": 665600,
+        "score_numeric_bytes": 24960,
+        "incremental_transmission_bytes": null,
+        "deployment_peak_memory_bytes": null,
+        "gpu_peak_memory_bytes": null,
+        "energy": null,
+        "unmeasured_reason": "Local packet bytes and CPU timings measured; no network transfer, deployment peak or energy measured",
+        "hardware": {
+          "device": "cpu",
+          "machine": "x86_64",
+          "platform": "Linux-6.8.0-142-generic-x86_64-with-glibc2.39",
+          "torch_version": "2.1.0+cu121"
+        },
+        "byte_scope": "Actual local packet/cache/prediction files and numeric arrays; not measured transmission or resident deployment memory"
+      },
+      "actual_output_ref": "results/raw_support_pairing/conditional-rx1-cvs-daot-rc4-s2026092701",
+      "actual_A_evaluated": true,
+      "completion_evidence_ref": "evidence/supervisor_readback_1790837667387096200.json"
     },
     {
       "row_id": "conditional-rx1-cvs-daot-rc4-s2026092702",
@@ -575,7 +817,37 @@
         "summary.json",
         "report.md",
         "complete.json"
-      ]
+      ],
+      "actual_status": "GROUND_A_SUPPORT_PAIRING_COMPLETE",
+      "actual_parent_count": 40,
+      "actual_resources": {
+        "packet_load_seconds": 0.0008219099981943145,
+        "raw_cache_read_seconds": 0.018569780004327185,
+        "float32_scalar_list_bridge_seconds": 0.027150421155965887,
+        "native_single_record_score_seconds": 0.13992719585075974,
+        "wall_seconds": 0.19956754200393334,
+        "score_call_count": 1040,
+        "scored_physical_count": 1040,
+        "packet_total_local_file_bytes": 8735,
+        "head_weight_file_bytes": 3840,
+        "raw_z_id_numeric_bytes": 665600,
+        "score_numeric_bytes": 24960,
+        "incremental_transmission_bytes": null,
+        "deployment_peak_memory_bytes": null,
+        "gpu_peak_memory_bytes": null,
+        "energy": null,
+        "unmeasured_reason": "Local packet bytes and CPU timings measured; no network transfer, deployment peak or energy measured",
+        "hardware": {
+          "device": "cpu",
+          "machine": "x86_64",
+          "platform": "Linux-6.8.0-142-generic-x86_64-with-glibc2.39",
+          "torch_version": "2.1.0+cu121"
+        },
+        "byte_scope": "Actual local packet/cache/prediction files and numeric arrays; not measured transmission or resident deployment memory"
+      },
+      "actual_output_ref": "results/raw_support_pairing/conditional-rx1-cvs-daot-rc4-s2026092702",
+      "actual_A_evaluated": true,
+      "completion_evidence_ref": "evidence/supervisor_readback_1790837667387096200.json"
     }
   ],
   "notes": [
@@ -585,5 +857,7 @@
     "Actual packet file sizes8737B/8735B; numeric head3840B each; star wire increment unmeasured=N/A.",
     "No score feedback, parameter grid, selective row rerun or highest-training-step selection.",
     "Root-only sequential launch after current healthy independent Conditional analysis completes; no intervention."
-  ]
+  ],
+  "updated_at": "2026-10-01T07:05:06.085748+00:00",
+  "implementation_status": "VERIFIED_PAIRED_SCORER_ROWS_COMPLETE_COMBINED_REPORT_PENDING"
 }

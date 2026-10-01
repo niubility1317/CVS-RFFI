@@ -341,6 +341,8 @@ paths += ['code/cvsrffi/d92_margin_joint_local_ridge.py', 'tests/test_d92_margin
 
 paths += ['docs/D92_CONDITIONAL_JOINT_SUPPORT_RESULT_20261001.md']
 
+paths += ['tools/report_d92_ground_a_support.py', 'tests/test_report_d92_ground_a_support.py', 'docs/D92_GROUND_A_PAIRED_SUPPORT_RESULT_20261001.md']
+
 for name in paths:
     src=ROOT/name;dst=WS/name;dst.parent.mkdir(parents=True,exist_ok=True)
     # Each name is unique to this task; original D92 and shared wrappers are not mirrored.

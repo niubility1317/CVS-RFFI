@@ -1,0 +1,24 @@
+{
+  "status": "VERIFIED_COMPLETE_READONLY_TRAINING_DIAGNOSTICS",
+  "run_id": "20261001-phase2-d92-conditional-joint-support-m2-r01",
+  "counts": {
+    "stages": 3240,
+    "curves": 17496,
+    "preparations": 3240,
+    "archives": 35856
+  },
+  "training_runtime_commit": "7204161b126a9d3a17096aee5c75bce8ccfee6ec",
+  "collector_source_commit": "9b761828abc171b8e6437556aaae36935208e0cf",
+  "collector_local_handle_state": "DONE_DO_NOT_POLL",
+  "collector_local_handle": 34310,
+  "remote_process_alive": false,
+  "exit_readback_ref": "evidence/training_extract_process_1790838571372847900.json",
+  "training_diagnostics_ref": "results/training_diagnostics",
+  "training_ai_scalar_ref": "results/training_ai_scalar",
+  "accepted_RMSCE_trial_count": 2592,
+  "accepted_RMSCE_increase_count": 0,
+  "accepted_mean_CE_increase_count": null,
+  "original_inputs_modified": false,
+  "query_or_source_sample_access": false,
+  "model_updates": 0
+}

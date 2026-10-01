@@ -1,3 +1,20 @@
+## 最新状态：三阶段配对与全训练诊断均完成（2026-10-01）
+
+- Goal ACTIVE。Ground A/support8row、320parent已完成并独立下载；完整三阶段、80行K×new及receiver/model分层报告见docs/D92_GROUND_A_PAIRED_SUPPORT_RESULT_20261001.md。原Ground PID716759已退出，不再publisher/评分。此报告只为support held，不是query或新独立验证。
+- Conditional诊断3240stage/17496curve/3240prep/35856档案完整；紧凑AI JSONL/CSV完成。接受RMSCE上升0，平均CE上升未派生=N/A。extract local34310 DONE、原718003退出，不再collector/poll。snapshot11236/analysis55338也已DONE。
+- Root两个纯reporter35passed/1.49s；真实Ground渲染成功。新Margin数学core/五入口此前85检查通过，独立summary尚由query-blind worker实现；analyzer/collector首次21pass/1fail（np.bool_ JSON scalar），worker仅修自身collector类型源头，root待相关重测。没有真实Marginrun或实际QP预算。
+- 下一步：完成Margin独立数学summary/analysis/collector验证、白名单闭包及Git；按资源推导明确预登记后唯一启动。固定Phase1、practical residual、只用合法support；源样本/逐样本特征/query/成绩回流禁止。新独立数据验证按用户暂缓，当前报告不晋级未全面改善的方法。
+
+以下为历史阶段记录（已结束handle不要照旧段落启动或poll）：
+
+## 当前交接：Ground A配对完成，完整训练extract健康运行（2026-10-01）
+
+- Goal ACTIVE。Margin数学核心与五入口64a14、Conditional完整报告9b761828a均已push/OID一致；Margin无真实run/预算，独立summary/analyzer/collector与资源文档由query-blind子agent补齐，待root串行验证。原85项验证无需重跑。
+- Ground A/support唯一8row run 20261001-phase2-d92-ground-a-support-m2-r01 已完成并独立下载，PID716759/start8502953已退出；runtime9b761828a，320parent，query/source0、无训练/输入修改。不要再publisher/评分。raw228468812B保留results/raw_support_pairing，不进Git。root正写纯标量组合报告/测试，真实A已可测；其成绩不发送方法worker。
+- Conditional全训练snapshot3240已完成；唯一extract local34310 / remote718003/start8515353健康，只读全部训练数组，输出results/training_diagnostics。不要poll已结束11236/55338，不要再extract或并发Conda包装；完成后独立核实并保存全部紧凑AI日志。
+- Margin资源文档仅列技术容量候选及guard未覆盖范围，不代表星载可行。root新增两个纯报告工具/测试尚未验证或交付；等上述唯一Conda包装结束后串行测试。Ground当前完成证据 evidence/supervisor_readback_1790837667387096200.json、evidence/support_download_readback_20261001.json；Conditional当前活动证据 evidence/training_extract_process_1790838002169956100.json。
+- 下一步：接收34310结果、数值验证新summary/analysis/collector与report、整合白名单/Git，然后按数学资源边界明确预登记Margin新实验。固定Phase1/practical residual、仅合法support；query与结果不得回流；独立新数据验证仍按用户暂缓。
+
 ## 当前状态：MarginJoint核心/五入口已验证，Conditional完整分析结束（2026-10-01）
 
 SYNTHETIC_VERIFIED：MarginJoint core21项通过4.64s（pytest_utf8_1790835764364153400），五入口34项通过18.28s（pytest_utf8_1790835922424555700），query-blind独立完整梯度链/继承/退化/成本限定审查无P0/P1。头组件此前30项0.63s已交付8c253ade7/OID一致；联合core/五入口64a14f2bd已push/OID一致；19数学证书与30头测试未重复运行。新方法完整实现与合成正确性不代表真实性能或star资源改善；实际QP预算/矩阵未选择，未创建run，独立Margin summary/analyzer尚未实现，因此publisher当前不dispatch。暂停的residual core和.codex_tmp保留。

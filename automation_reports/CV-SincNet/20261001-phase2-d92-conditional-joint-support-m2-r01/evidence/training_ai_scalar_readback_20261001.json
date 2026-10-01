@@ -1,0 +1,27 @@
+{
+  "status": "VERIFIED_COMPLETE_AI_SCALAR_VIEW",
+  "run_id": "20261001-phase2-d92-conditional-joint-support-m2-r01",
+  "views": {
+    "curves": 17496,
+    "stages": 3240
+  },
+  "by_mode": {
+    "B": {
+      "stages": 1800,
+      "updated_stages": 360,
+      "optimizer_steps": 1440
+    },
+    "C_seq": {
+      "stages": 1440,
+      "updated_stages": 288,
+      "optimizer_steps": 1152
+    }
+  },
+  "accepted_RMSCE_trial_count": 2592,
+  "accepted_RMSCE_increase_count": 0,
+  "accepted_mean_CE_increase_count": null,
+  "model_updates": 0,
+  "outer_or_query_scoring_read": false,
+  "source_summary": "E:\\type10-7\\automation_reports\\CV-SincNet\\20261001-phase2-d92-conditional-joint-support-m2-r01\\results\\training_diagnostics\\summary.json",
+  "output": "E:\\type10-7\\automation_reports\\CV-SincNet\\20261001-phase2-d92-conditional-joint-support-m2-r01\\results\\training_ai_scalar"
+}
