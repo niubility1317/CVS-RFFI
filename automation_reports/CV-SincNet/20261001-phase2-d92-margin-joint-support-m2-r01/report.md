@@ -1,3 +1,9 @@
+## 当前：完整 support 数学分析、三阶段补充和全训练日志均已完成
+
+状态ANALYZED。完整3240阶段、17496事件、3240准备记录与35856档案均处理；原extract875239已退出、local78869已正常结束，不再poll或collector。完整原始JSONL/CSV与紧凑AI JSONL/CSV保留于results/training_diagnostics及results/training_ai_scalar，均已逐文件计数读回。2592个接受trial的实测RMSCE与算术平均CE均无上升，二者分别依据before/after派生，不从接受标记互相推断。
+
+完整诊断、字节与SUM/MAX口径见[evidence/training_derived_readback_20261001.json](evidence/training_derived_readback_20261001.json)。这是训练监督证据，不等于query泛化成功；完整重复query基准仍在原冻结方法中执行，未评分。以下为保留的历史观察。
+
 ## 当前：完整 support 数学分析与三阶段补充完成，训练诊断提取运行中
 
 四行、160 parent、1800条路径、3240阶段的独立分析已COMPLETE_MARGIN_JOINT_PROBE_VERIFIED，原分析PID787831退出，local79064已结束。训练runtime e50de0ad4，分析source ccb7f3469。

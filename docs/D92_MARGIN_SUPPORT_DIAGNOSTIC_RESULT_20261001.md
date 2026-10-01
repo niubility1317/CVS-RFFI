@@ -1,3 +1,5 @@
+全量训练日志更新：原collector已完成并退出。3240阶段、17496事件、3240准备和35856档案全部处理；训练RMSCE与平均CE的2592个接受trial均实测无上升，完整及紧凑JSONL/CSV保存在原run的results/training_diagnostics、results/training_ai_scalar，详见training_derived_readback证据。这些训练损失不能替代泛化指标。
+
 本文件保留原始support摘要中的数学、训练与资源诊断。真实地面A/B/C现已另行补齐，见[完整三阶段报告](D92_MARGIN_GROUND_A_PAIRED_SUPPORT_RESULT_20261001.md)；以下原始摘要的A=N/A表示该原始summary未合入A，不表示当前缺少A证据。
 
 # MarginJoint 完整 support 报告

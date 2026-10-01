@@ -1,3 +1,12 @@
+## 当前交接：Margin全部support分析及日志完成，完整query继续（2026-10-01）
+
+- Goal ACTIVE。当前report source9c16618fd已push/OID=0/0；query immutable runtime仍d86edc323，不热改。完整support训练e50、数学分析ccb7、Ground A补充d86均完成；三阶段和数学解释已交付。保旧单项改善但新类与H下降，不晋级或反馈改参数。
+- 全训练collector local78869 DONE、remote875239退出。完整3240阶段/17496事件/3240准备/35856档案及三组紧凑JSONL/CSV均计数匹配；2592接受trial实测RMSCE与平均CE各自无上升、unknown0。原snapshot/约2GB原始训练表及紧凑日志保持原路径；Git仅small summary/proof。不要再poll旧handles、collector或analyze。
+- 完整query run20261001-phase2-d92-margin-joint-repeat-m2-r01仍原supervisor869328/start10047966，rx3 child869442/start10049751及869448/start10049849健康推进，rx1两行preflight等待原排程。最新query_runtime_1790854633062992600.json（11:36UTC）核实CPU/log增加、complete不存在。local publication38736 DONE，禁止重发/重启。source公式/资源冻结，2400parent全矩阵，全部四行A/B/C固定后独立scorer；同两个baseline seed配对。此基准复用已评分库存，fresh验证仍暂缓。
+- 下一步只读观察原query进程/阶段，在全部完成且独立确认固定输出后唯一score/report；不得读取partial truth、根据结果改参或选择性重跑。固定Phase1/practical residual，合法support，源样本/源逐记录特征/query拟合或role/配额/全局重排和成绩反馈禁止。星载未测项N/A，数学检查与训练损失下降不保证全面准确率目标。
+
+以下为历史状态，不依据旧段落重复启动：
+
 ## 当前交接：Margin数学分析及实际A完成，完整query唯一运行（2026-10-01）
 
 - Goal ACTIVE。Git目的地认证身份/权限已核实，原push经自动审批允许，当前source d86edc323已推送且独立OID=0/0；不是用户新增回答。历史拒绝保留但不再构成block。

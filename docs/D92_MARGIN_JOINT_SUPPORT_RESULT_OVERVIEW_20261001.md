@@ -33,7 +33,7 @@ R0的实际地面A尚未由该路径配对，不能借Margin的A或用R0/B0代�
 | 新增地面样本/统计payload | 0B；原模型头packet复用，其文件/数组字节与真实星地传输分开 |
 | 实际星载时间/内存、完整部署包、传输与能耗 | N/A；尚未在星载硬件或真实星地链路测量 |
 
-完整实测资源与独立数学计数见[原support摘要报告](D92_MARGIN_SUPPORT_DIAGNOSTIC_RESULT_20261001.md)。完整训练-only snapshot已捕获；其唯一extract仍运行，后续派生完整曲线与AI紧凑JSONL/CSV。该离线提取进程的RSS不是方法星载内存，训练目标RMSCE和算术平均CE必须分开。
+完整实测资源与独立数学计数见[原support摘要报告](D92_MARGIN_SUPPORT_DIAGNOSTIC_RESULT_20261001.md)。完整训练-only诊断已完成：3240阶段、17496事件、3240准备和35856档案全部处理，原extract已退出；完整曲线与AI紧凑JSONL/CSV均保留并逐文件计数读回。2592个接受trial的实测训练RMSCE和算术平均CE分别检查，均无上升；这不保证持出或query准确率提升。该离线提取进程的RSS不是方法星载内存，训练目标RMSCE和算术平均CE必须分开。
 
 完整重复基准run：`20261001-phase2-d92-margin-joint-repeat-m2-r01`；4row/2400parent，预先固定同两个最小model seed，覆盖四receiver、三scenario、五support seed以及K1/5/10/20×新增0/2/5/10/20。supervisor869328；全A/B/C固定前不评分，旧baseline仅比较相同seed子集，不能与旧四seed总平均混减。此基准沿用已评分库存，新增独立验证仍按用户要求暂缓。
 

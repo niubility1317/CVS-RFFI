@@ -250,7 +250,7 @@
       "rx1-cvs-daot-rc4-s2026092702": "MARGIN_JOINT_PROBE_COMPLETE"
     },
     "active_evaluator_processes_observed": [],
-    "training_progress_scope": "Training and independent math/performance summary complete; full training-only extraction still running",
+    "training_progress_scope": "Original training, independent mathematical summary, Ground A pairing and complete training-only log derivation all complete",
     "ai_scalar_exporter_validation_ref": "evidence/ai_scalar_exporter_validation_20261001.json",
     "ai_scalar_export_status": "IMPLEMENTED_VERIFIED_SYNTHETIC_WAITING_FOR_COMPLETE_DIAGNOSTICS",
     "training_status": "MARGIN_JOINT_PROBE_COMPLETE",
@@ -286,9 +286,9 @@
     "analysis_process_alive": false,
     "support_summary_ref": "results/support_summary/summary.json",
     "support_interpretation_ref": "results/interpretation.json",
-    "full_training_collector_status": "VERIFIED_RUNNING",
+    "full_training_collector_status": "VERIFIED_COMPLETE",
     "full_training_collector_local_session_id": 78869,
-    "full_training_collector_runtime_ref": "evidence/collector_runtime_1790853818675083800.json",
+    "full_training_collector_runtime_ref": "evidence/collector_runtime_1790854595248165100.json",
     "full_training_collector_process": {
       "pid": 875239,
       "argv": [
@@ -309,7 +309,30 @@
       }
     },
     "paired_ground_A_run": "20261001-phase2-d92-margin-ground-a-support-m2-r01",
-    "paired_ground_A_report": "docs/D92_MARGIN_GROUND_A_PAIRED_SUPPORT_RESULT_20261001.md"
+    "paired_ground_A_report": "docs/D92_MARGIN_GROUND_A_PAIRED_SUPPORT_RESULT_20261001.md",
+    "full_training_collector_local_session_state": "DONE_DO_NOT_POLL_OR_RESTART",
+    "full_training_collector_process_alive": false,
+    "full_training_collector_completion_ref": "evidence/training_derived_readback_20261001.json",
+    "full_training_diagnostics_ref": "results/training_diagnostics",
+    "full_training_ai_scalar_ref": "results/training_ai_scalar",
+    "full_training_diagnostics_counts": {
+      "stages": 3240,
+      "curves": 17496,
+      "preparations": 3240,
+      "archives": 35856
+    },
+    "accepted_increase_observations": {
+      "RMSCE": {
+        "true": 0,
+        "false": 2592,
+        "unknown": 0
+      },
+      "mean_CE": {
+        "true": 0,
+        "false": 2592,
+        "unknown": 0
+      }
+    }
   },
   "rows": [
     {
@@ -691,7 +714,7 @@
   ],
   "parent_run_ids": [],
   "claim_scope": "SUPPORT_INFORMATION_DIAGNOSTIC_NOT_QUERY_PERFORMANCE",
-  "status": "SUPPORT_ANALYZED_TRAINING_DIAGNOSTICS_RUNNING",
+  "status": "ANALYZED",
   "spec_path": "configs/d92_margin_joint_support_20261001.json",
   "input_identity_source": "Fixed source-only cache/capsule/model/split metadata; no scored output, adapted state or index supplied to fitting",
   "probe": {
