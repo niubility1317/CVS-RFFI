@@ -1,6 +1,6 @@
 # CVS整体物理观测身份网络：源训练预登记
 
-状态 PLANNED，尚未发布N607。
+状态 SOURCE_TRAINING，N607正式源训练运行中；clean尚未测试。
 
 仅普通CE、身份网络、无输入/信道增强，scratch、固定L6300/V27000、U56700不使用、split392005；两候选×四modelseed2026092701..04，E200×50/10000更新，batch128、AdamW2e-4、wd1e-4、cosine1e-6、FP32/no clip。无teacher/EMA/继承/域骨干/额外损失。
 
@@ -26,3 +26,7 @@
 定点执行复审发现CPU诊断stdout与提交JSON串联的P1；发布前抑制CPU stdout，保留独立JSON产物，生成远端脚本compile通过。未发生远端重复提交。
 
 首次发布在本地git ls-remote（Schannel）30秒超时，尚未创建archive/SCP/远端run；独立N607读回无pipeline/row。发布器改用单命令OpenSSL后继续同一预登记，未启动或重跑训练。
+
+## N607源训练发布已核实
+
+代码`202aed46748856c16b015d94595ecd5364dca394`已push并独立核对远端OID。新release传输校验、远端compile与Torch2.1冷进程八个一次性CPU模型/24次CE更新及物理变换检查通过。独立读回dispatcher PID1130303的CWD/argv；8行各占一块GPU，进程与resolved/log增长已核实，状态SOURCE_TRAINING。实际6300L/56700Uunused/27000V、每轮50步、纯CE/无增强/域骨干关闭与目标访问关闭一致。发布后源码保持不可变，后续clean按另一个不可覆盖run发布。详见[发布后读回](evidence/source_launch_readback.json)。

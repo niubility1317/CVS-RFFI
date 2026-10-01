@@ -1,0 +1,2087 @@
+{
+  "read_at": 1790879702.7694736,
+  "run_id": "20261002-phase1-cvs-observable-identity-manysig-m8-r01",
+  "identity": {
+    "user": "szu2070436088",
+    "host": "dell-DSS8440"
+  },
+  "submit": {
+    "status": "SUBMITTED",
+    "pid": 1130303,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_identity_20261002_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_observable_identity.dispatch",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_identity_20261002_r01/experiments/cvs_observable_identity/configs/launch_spec.json"
+    ],
+    "log": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_identity_20261002_r01/dispatcher.stdout.log",
+    "commit": "202aed46748856c16b015d94595ecd5364dca394",
+    "sha256": "cceea28d42990065a5a4476faadd3b29dbb95d0be98568af9a6bb8fc5baf8c2e"
+  },
+  "remote_cpu_smoke": {
+    "status": "PASS",
+    "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "torch_version": "2.1.0+cu121",
+    "device": "cpu",
+    "disposable_models": 8,
+    "disposable_ce_updates": 24,
+    "formal_data_access": false,
+    "target_access": false,
+    "checkpoint_access": false,
+    "claim": "Runtime validation only; no formal training or hardware identification.",
+    "rows": [
+      {
+        "seed": 2026092701,
+        "variant": "observable_phase",
+        "contract": {
+          "physics_mode": "amplitude_increment_and_curvature",
+          "lags": [
+            1,
+            2,
+            5,
+            20
+          ],
+          "epsilon": 1e-06,
+          "observation_channels": 21,
+          "amplitude_channels": 5,
+          "increment_channels": 8,
+          "closure_channels": 8,
+          "global_phase_invariant": true,
+          "affine_phase_invariant": false,
+          "raw_iq_bypass": false,
+          "repetition_window": [
+            80,
+            160
+          ],
+          "repetition_period_samples": 20,
+          "repetition_cycles": 4,
+          "temporal_samples": 256,
+          "spectral_signal": "real_physical_observable_time_variations",
+          "sample_rate_hz": 25000000,
+          "input": "received_equalized1_unit_rms_IQ",
+          "parameter_interpretation": "identity_feature_weights_not_identified_TX_hardware"
+        },
+        "losses": [
+          {
+            "input_kind": "random",
+            "ce": 3.061899185180664
+          },
+          {
+            "input_kind": "weak",
+            "ce": 2.8915352821350098
+          },
+          {
+            "input_kind": "constant",
+            "ce": 3.3020637035369873
+          }
+        ],
+        "frozen_synthetic": {
+          "phase_logit_max_abs_error": 5.364418029785156e-07,
+          "affine_logit_max_abs_error": 1.0799988508224487,
+          "affine_invariance_claimed": false,
+          "unit_embedding_distances": {
+            "handset_am_am": 0.029076963663101196,
+            "handset_am_pm": 0.1048804521560669,
+            "rx_iq_counterexample": 0.05011441558599472,
+            "multipath_counterexample": 0.006890253163874149
+          },
+          "synthetic_only": true,
+          "training_augmentation": false,
+          "target_access": false,
+          "physical_parameters": {
+            "positive_amp_compression": 0.12,
+            "amp_phase_beta": 0.17,
+            "rx_iq_scale": [
+              1.08,
+              0.92
+            ],
+            "channel_delay_samples": 2,
+            "channel_tap": 0.2,
+            "constant_phase_radians": 0.731,
+            "affine_phase_slope_radians_per_sample": 0.031
+          },
+          "input_rms_normalized": true,
+          "claim": "Frozen model transform verification and sensitivity only;not TX parameter identification or synthetic identity accuracy."
+        }
+      },
+      {
+        "seed": 2026092701,
+        "variant": "observable_affine",
+        "contract": {
+          "physics_mode": "amplitude_and_phase_curvature",
+          "lags": [
+            1,
+            2,
+            5,
+            20
+          ],
+          "epsilon": 1e-06,
+          "observation_channels": 13,
+          "amplitude_channels": 5,
+          "increment_channels": 0,
+          "closure_channels": 8,
+          "global_phase_invariant": true,
+          "affine_phase_invariant": true,
+          "raw_iq_bypass": false,
+          "repetition_window": [
+            80,
+            160
+          ],
+          "repetition_period_samples": 20,
+          "repetition_cycles": 4,
+          "temporal_samples": 256,
+          "spectral_signal": "real_physical_observable_time_variations",
+          "sample_rate_hz": 25000000,
+          "input": "received_equalized1_unit_rms_IQ",
+          "parameter_interpretation": "identity_feature_weights_not_identified_TX_hardware"
+        },
+        "losses": [
+          {
+            "input_kind": "random",
+            "ce": 2.832646369934082
+          },
+          {
+            "input_kind": "weak",
+            "ce": 3.230513572692871
+          },
+          {
+            "input_kind": "constant",
+            "ce": 3.152717113494873
+          }
+        ],
+        "frozen_synthetic": {
+          "phase_logit_max_abs_error": 1.2367963790893555e-06,
+          "affine_logit_max_abs_error": 1.6093254089355469e-06,
+          "affine_invariance_claimed": true,
+          "unit_embedding_distances": {
+            "handset_am_am": 0.052141111344099045,
+            "handset_am_pm": 0.09564244747161865,
+            "rx_iq_counterexample": 0.07078417390584946,
+            "multipath_counterexample": 0.005607700441032648
+          },
+          "synthetic_only": true,
+          "training_augmentation": false,
+          "target_access": false,
+          "physical_parameters": {
+            "positive_amp_compression": 0.12,
+            "amp_phase_beta": 0.17,
+            "rx_iq_scale": [
+              1.08,
+              0.92
+            ],
+            "channel_delay_samples": 2,
+            "channel_tap": 0.2,
+            "constant_phase_radians": 0.731,
+            "affine_phase_slope_radians_per_sample": 0.031
+          },
+          "input_rms_normalized": true,
+          "claim": "Frozen model transform verification and sensitivity only;not TX parameter identification or synthetic identity accuracy."
+        }
+      },
+      {
+        "seed": 2026092702,
+        "variant": "observable_phase",
+        "contract": {
+          "physics_mode": "amplitude_increment_and_curvature",
+          "lags": [
+            1,
+            2,
+            5,
+            20
+          ],
+          "epsilon": 1e-06,
+          "observation_channels": 21,
+          "amplitude_channels": 5,
+          "increment_channels": 8,
+          "closure_channels": 8,
+          "global_phase_invariant": true,
+          "affine_phase_invariant": false,
+          "raw_iq_bypass": false,
+          "repetition_window": [
+            80,
+            160
+          ],
+          "repetition_period_samples": 20,
+          "repetition_cycles": 4,
+          "temporal_samples": 256,
+          "spectral_signal": "real_physical_observable_time_variations",
+          "sample_rate_hz": 25000000,
+          "input": "received_equalized1_unit_rms_IQ",
+          "parameter_interpretation": "identity_feature_weights_not_identified_TX_hardware"
+        },
+        "losses": [
+          {
+            "input_kind": "random",
+            "ce": 2.0982346534729004
+          },
+          {
+            "input_kind": "weak",
+            "ce": 3.2812743186950684
+          },
+          {
+            "input_kind": "constant",
+            "ce": 2.4484658241271973
+          }
+        ],
+        "frozen_synthetic": {
+          "phase_logit_max_abs_error": 1.9073486328125e-06,
+          "affine_logit_max_abs_error": 0.6178821325302124,
+          "affine_invariance_claimed": false,
+          "unit_embedding_distances": {
+            "handset_am_am": 0.039018210023641586,
+            "handset_am_pm": 0.09156085550785065,
+            "rx_iq_counterexample": 0.07163454592227936,
+            "multipath_counterexample": 0.005174457561224699
+          },
+          "synthetic_only": true,
+          "training_augmentation": false,
+          "target_access": false,
+          "physical_parameters": {
+            "positive_amp_compression": 0.12,
+            "amp_phase_beta": 0.17,
+            "rx_iq_scale": [
+              1.08,
+              0.92
+            ],
+            "channel_delay_samples": 2,
+            "channel_tap": 0.2,
+            "constant_phase_radians": 0.731,
+            "affine_phase_slope_radians_per_sample": 0.031
+          },
+          "input_rms_normalized": true,
+          "claim": "Frozen model transform verification and sensitivity only;not TX parameter identification or synthetic identity accuracy."
+        }
+      },
+      {
+        "seed": 2026092702,
+        "variant": "observable_affine",
+        "contract": {
+          "physics_mode": "amplitude_and_phase_curvature",
+          "lags": [
+            1,
+            2,
+            5,
+            20
+          ],
+          "epsilon": 1e-06,
+          "observation_channels": 13,
+          "amplitude_channels": 5,
+          "increment_channels": 0,
+          "closure_channels": 8,
+          "global_phase_invariant": true,
+          "affine_phase_invariant": true,
+          "raw_iq_bypass": false,
+          "repetition_window": [
+            80,
+            160
+          ],
+          "repetition_period_samples": 20,
+          "repetition_cycles": 4,
+          "temporal_samples": 256,
+          "spectral_signal": "real_physical_observable_time_variations",
+          "sample_rate_hz": 25000000,
+          "input": "received_equalized1_unit_rms_IQ",
+          "parameter_interpretation": "identity_feature_weights_not_identified_TX_hardware"
+        },
+        "losses": [
+          {
+            "input_kind": "random",
+            "ce": 2.1401708126068115
+          },
+          {
+            "input_kind": "weak",
+            "ce": 2.1444547176361084
+          },
+          {
+            "input_kind": "constant",
+            "ce": 3.3531596660614014
+          }
+        ],
+        "frozen_synthetic": {
+          "phase_logit_max_abs_error": 7.152557373046875e-07,
+          "affine_logit_max_abs_error": 1.3113021850585938e-06,
+          "affine_invariance_claimed": true,
+          "unit_embedding_distances": {
+            "handset_am_am": 0.044362545013427734,
+            "handset_am_pm": 0.0648287832736969,
+            "rx_iq_counterexample": 0.04551186412572861,
+            "multipath_counterexample": 0.00486097764223814
+          },
+          "synthetic_only": true,
+          "training_augmentation": false,
+          "target_access": false,
+          "physical_parameters": {
+            "positive_amp_compression": 0.12,
+            "amp_phase_beta": 0.17,
+            "rx_iq_scale": [
+              1.08,
+              0.92
+            ],
+            "channel_delay_samples": 2,
+            "channel_tap": 0.2,
+            "constant_phase_radians": 0.731,
+            "affine_phase_slope_radians_per_sample": 0.031
+          },
+          "input_rms_normalized": true,
+          "claim": "Frozen model transform verification and sensitivity only;not TX parameter identification or synthetic identity accuracy."
+        }
+      },
+      {
+        "seed": 2026092703,
+        "variant": "observable_phase",
+        "contract": {
+          "physics_mode": "amplitude_increment_and_curvature",
+          "lags": [
+            1,
+            2,
+            5,
+            20
+          ],
+          "epsilon": 1e-06,
+          "observation_channels": 21,
+          "amplitude_channels": 5,
+          "increment_channels": 8,
+          "closure_channels": 8,
+          "global_phase_invariant": true,
+          "affine_phase_invariant": false,
+          "raw_iq_bypass": false,
+          "repetition_window": [
+            80,
+            160
+          ],
+          "repetition_period_samples": 20,
+          "repetition_cycles": 4,
+          "temporal_samples": 256,
+          "spectral_signal": "real_physical_observable_time_variations",
+          "sample_rate_hz": 25000000,
+          "input": "received_equalized1_unit_rms_IQ",
+          "parameter_interpretation": "identity_feature_weights_not_identified_TX_hardware"
+        },
+        "losses": [
+          {
+            "input_kind": "random",
+            "ce": 2.7320985794067383
+          },
+          {
+            "input_kind": "weak",
+            "ce": 3.953183650970459
+          },
+          {
+            "input_kind": "constant",
+            "ce": 2.1839358806610107
+          }
+        ],
+        "frozen_synthetic": {
+          "phase_logit_max_abs_error": 9.5367431640625e-07,
+          "affine_logit_max_abs_error": 1.4550788402557373,
+          "affine_invariance_claimed": false,
+          "unit_embedding_distances": {
+            "handset_am_am": 0.028864679858088493,
+            "handset_am_pm": 0.08362119644880295,
+            "rx_iq_counterexample": 0.08120115846395493,
+            "multipath_counterexample": 0.006150972098112106
+          },
+          "synthetic_only": true,
+          "training_augmentation": false,
+          "target_access": false,
+          "physical_parameters": {
+            "positive_amp_compression": 0.12,
+            "amp_phase_beta": 0.17,
+            "rx_iq_scale": [
+              1.08,
+              0.92
+            ],
+            "channel_delay_samples": 2,
+            "channel_tap": 0.2,
+            "constant_phase_radians": 0.731,
+            "affine_phase_slope_radians_per_sample": 0.031
+          },
+          "input_rms_normalized": true,
+          "claim": "Frozen model transform verification and sensitivity only;not TX parameter identification or synthetic identity accuracy."
+        }
+      },
+      {
+        "seed": 2026092703,
+        "variant": "observable_affine",
+        "contract": {
+          "physics_mode": "amplitude_and_phase_curvature",
+          "lags": [
+            1,
+            2,
+            5,
+            20
+          ],
+          "epsilon": 1e-06,
+          "observation_channels": 13,
+          "amplitude_channels": 5,
+          "increment_channels": 0,
+          "closure_channels": 8,
+          "global_phase_invariant": true,
+          "affine_phase_invariant": true,
+          "raw_iq_bypass": false,
+          "repetition_window": [
+            80,
+            160
+          ],
+          "repetition_period_samples": 20,
+          "repetition_cycles": 4,
+          "temporal_samples": 256,
+          "spectral_signal": "real_physical_observable_time_variations",
+          "sample_rate_hz": 25000000,
+          "input": "received_equalized1_unit_rms_IQ",
+          "parameter_interpretation": "identity_feature_weights_not_identified_TX_hardware"
+        },
+        "losses": [
+          {
+            "input_kind": "random",
+            "ce": 3.068607807159424
+          },
+          {
+            "input_kind": "weak",
+            "ce": 3.3774566650390625
+          },
+          {
+            "input_kind": "constant",
+            "ce": 2.642228841781616
+          }
+        ],
+        "frozen_synthetic": {
+          "phase_logit_max_abs_error": 1.1920928955078125e-06,
+          "affine_logit_max_abs_error": 1.0728836059570312e-06,
+          "affine_invariance_claimed": true,
+          "unit_embedding_distances": {
+            "handset_am_am": 0.048228006809949875,
+            "handset_am_pm": 0.15146701037883759,
+            "rx_iq_counterexample": 0.1148194968700409,
+            "multipath_counterexample": 0.007300486322492361
+          },
+          "synthetic_only": true,
+          "training_augmentation": false,
+          "target_access": false,
+          "physical_parameters": {
+            "positive_amp_compression": 0.12,
+            "amp_phase_beta": 0.17,
+            "rx_iq_scale": [
+              1.08,
+              0.92
+            ],
+            "channel_delay_samples": 2,
+            "channel_tap": 0.2,
+            "constant_phase_radians": 0.731,
+            "affine_phase_slope_radians_per_sample": 0.031
+          },
+          "input_rms_normalized": true,
+          "claim": "Frozen model transform verification and sensitivity only;not TX parameter identification or synthetic identity accuracy."
+        }
+      },
+      {
+        "seed": 2026092704,
+        "variant": "observable_phase",
+        "contract": {
+          "physics_mode": "amplitude_increment_and_curvature",
+          "lags": [
+            1,
+            2,
+            5,
+            20
+          ],
+          "epsilon": 1e-06,
+          "observation_channels": 21,
+          "amplitude_channels": 5,
+          "increment_channels": 8,
+          "closure_channels": 8,
+          "global_phase_invariant": true,
+          "affine_phase_invariant": false,
+          "raw_iq_bypass": false,
+          "repetition_window": [
+            80,
+            160
+          ],
+          "repetition_period_samples": 20,
+          "repetition_cycles": 4,
+          "temporal_samples": 256,
+          "spectral_signal": "real_physical_observable_time_variations",
+          "sample_rate_hz": 25000000,
+          "input": "received_equalized1_unit_rms_IQ",
+          "parameter_interpretation": "identity_feature_weights_not_identified_TX_hardware"
+        },
+        "losses": [
+          {
+            "input_kind": "random",
+            "ce": 2.735494613647461
+          },
+          {
+            "input_kind": "weak",
+            "ce": 2.3754053115844727
+          },
+          {
+            "input_kind": "constant",
+            "ce": 2.581210136413574
+          }
+        ],
+        "frozen_synthetic": {
+          "phase_logit_max_abs_error": 8.344650268554688e-07,
+          "affine_logit_max_abs_error": 0.6895313858985901,
+          "affine_invariance_claimed": false,
+          "unit_embedding_distances": {
+            "handset_am_am": 0.039652805775403976,
+            "handset_am_pm": 0.09449413418769836,
+            "rx_iq_counterexample": 0.0908895879983902,
+            "multipath_counterexample": 0.009531502611935139
+          },
+          "synthetic_only": true,
+          "training_augmentation": false,
+          "target_access": false,
+          "physical_parameters": {
+            "positive_amp_compression": 0.12,
+            "amp_phase_beta": 0.17,
+            "rx_iq_scale": [
+              1.08,
+              0.92
+            ],
+            "channel_delay_samples": 2,
+            "channel_tap": 0.2,
+            "constant_phase_radians": 0.731,
+            "affine_phase_slope_radians_per_sample": 0.031
+          },
+          "input_rms_normalized": true,
+          "claim": "Frozen model transform verification and sensitivity only;not TX parameter identification or synthetic identity accuracy."
+        }
+      },
+      {
+        "seed": 2026092704,
+        "variant": "observable_affine",
+        "contract": {
+          "physics_mode": "amplitude_and_phase_curvature",
+          "lags": [
+            1,
+            2,
+            5,
+            20
+          ],
+          "epsilon": 1e-06,
+          "observation_channels": 13,
+          "amplitude_channels": 5,
+          "increment_channels": 0,
+          "closure_channels": 8,
+          "global_phase_invariant": true,
+          "affine_phase_invariant": true,
+          "raw_iq_bypass": false,
+          "repetition_window": [
+            80,
+            160
+          ],
+          "repetition_period_samples": 20,
+          "repetition_cycles": 4,
+          "temporal_samples": 256,
+          "spectral_signal": "real_physical_observable_time_variations",
+          "sample_rate_hz": 25000000,
+          "input": "received_equalized1_unit_rms_IQ",
+          "parameter_interpretation": "identity_feature_weights_not_identified_TX_hardware"
+        },
+        "losses": [
+          {
+            "input_kind": "random",
+            "ce": 2.5705573558807373
+          },
+          {
+            "input_kind": "weak",
+            "ce": 2.67069673538208
+          },
+          {
+            "input_kind": "constant",
+            "ce": 2.8227663040161133
+          }
+        ],
+        "frozen_synthetic": {
+          "phase_logit_max_abs_error": 8.344650268554688e-07,
+          "affine_logit_max_abs_error": 5.960464477539062e-07,
+          "affine_invariance_claimed": true,
+          "unit_embedding_distances": {
+            "handset_am_am": 0.04203904792666435,
+            "handset_am_pm": 0.08705443143844604,
+            "rx_iq_counterexample": 0.05363234877586365,
+            "multipath_counterexample": 0.009115333668887615
+          },
+          "synthetic_only": true,
+          "training_augmentation": false,
+          "target_access": false,
+          "physical_parameters": {
+            "positive_amp_compression": 0.12,
+            "amp_phase_beta": 0.17,
+            "rx_iq_scale": [
+              1.08,
+              0.92
+            ],
+            "channel_delay_samples": 2,
+            "channel_tap": 0.2,
+            "constant_phase_radians": 0.731,
+            "affine_phase_slope_radians_per_sample": 0.031
+          },
+          "input_rms_normalized": true,
+          "claim": "Frozen model transform verification and sensitivity only;not TX parameter identification or synthetic identity accuracy."
+        }
+      }
+    ]
+  },
+  "pipeline": {
+    "status": "SOURCE_TRAINING",
+    "pid": 1130303,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_identity_20261002_r01",
+    "argv": [
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_identity_20261002_r01/experiments/cvs_observable_identity/dispatch.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_identity_20261002_r01/experiments/cvs_observable_identity/configs/launch_spec.json"
+    ],
+    "run_id": "20261002-phase1-cvs-observable-identity-manysig-m8-r01",
+    "launch_owner": "codex/root/cvs-observable-identity-20261002",
+    "commit": "202aed46748856c16b015d94595ecd5364dca394",
+    "target_access": false,
+    "rows": {
+      "observable_phase-s2026092701": {
+        "status": "RUNNING",
+        "variant": "observable_phase",
+        "model_seed": 2026092701,
+        "pid": 1130371,
+        "gpu": 0,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_observable_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_identity_20261002_r01/experiments/cvs_observable_identity/configs/observable_phase-s2026092701.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-observable-identity-manysig-m8-r01/observable_phase-s2026092701.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-observable-identity-manysig-m8-r01/observable_phase-s2026092701/source",
+        "started": 1790879653.2002983
+      },
+      "observable_affine-s2026092701": {
+        "status": "RUNNING",
+        "variant": "observable_affine",
+        "model_seed": 2026092701,
+        "pid": 1130461,
+        "gpu": 1,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_observable_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_identity_20261002_r01/experiments/cvs_observable_identity/configs/observable_affine-s2026092701.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-observable-identity-manysig-m8-r01/observable_affine-s2026092701.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-observable-identity-manysig-m8-r01/observable_affine-s2026092701/source",
+        "started": 1790879658.4542105
+      },
+      "observable_phase-s2026092702": {
+        "status": "RUNNING",
+        "variant": "observable_phase",
+        "model_seed": 2026092702,
+        "pid": 1130606,
+        "gpu": 2,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_observable_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_identity_20261002_r01/experiments/cvs_observable_identity/configs/observable_phase-s2026092702.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-observable-identity-manysig-m8-r01/observable_phase-s2026092702.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-observable-identity-manysig-m8-r01/observable_phase-s2026092702/source",
+        "started": 1790879663.6963696
+      },
+      "observable_affine-s2026092702": {
+        "status": "RUNNING",
+        "variant": "observable_affine",
+        "model_seed": 2026092702,
+        "pid": 1130695,
+        "gpu": 3,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_observable_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_identity_20261002_r01/experiments/cvs_observable_identity/configs/observable_affine-s2026092702.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-observable-identity-manysig-m8-r01/observable_affine-s2026092702.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-observable-identity-manysig-m8-r01/observable_affine-s2026092702/source",
+        "started": 1790879668.9450293
+      },
+      "observable_phase-s2026092703": {
+        "status": "RUNNING",
+        "variant": "observable_phase",
+        "model_seed": 2026092703,
+        "pid": 1130837,
+        "gpu": 4,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_observable_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_identity_20261002_r01/experiments/cvs_observable_identity/configs/observable_phase-s2026092703.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-observable-identity-manysig-m8-r01/observable_phase-s2026092703.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-observable-identity-manysig-m8-r01/observable_phase-s2026092703/source",
+        "started": 1790879674.167921
+      },
+      "observable_affine-s2026092703": {
+        "status": "RUNNING",
+        "variant": "observable_affine",
+        "model_seed": 2026092703,
+        "pid": 1130926,
+        "gpu": 5,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_observable_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_identity_20261002_r01/experiments/cvs_observable_identity/configs/observable_affine-s2026092703.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-observable-identity-manysig-m8-r01/observable_affine-s2026092703.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-observable-identity-manysig-m8-r01/observable_affine-s2026092703/source",
+        "started": 1790879679.41237
+      },
+      "observable_phase-s2026092704": {
+        "status": "RUNNING",
+        "variant": "observable_phase",
+        "model_seed": 2026092704,
+        "pid": 1131015,
+        "gpu": 6,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_observable_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_identity_20261002_r01/experiments/cvs_observable_identity/configs/observable_phase-s2026092704.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-observable-identity-manysig-m8-r01/observable_phase-s2026092704.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-observable-identity-manysig-m8-r01/observable_phase-s2026092704/source",
+        "started": 1790879684.648
+      },
+      "observable_affine-s2026092704": {
+        "status": "RUNNING",
+        "variant": "observable_affine",
+        "model_seed": 2026092704,
+        "pid": 1131102,
+        "gpu": 7,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_observable_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_identity_20261002_r01/experiments/cvs_observable_identity/configs/observable_affine-s2026092704.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-observable-identity-manysig-m8-r01/observable_affine-s2026092704.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-observable-identity-manysig-m8-r01/observable_affine-s2026092704/source",
+        "started": 1790879689.8838146
+      }
+    }
+  },
+  "selection": null,
+  "rows": [
+    {
+      "row_id": "observable_phase-s2026092701",
+      "status": "RUNNING",
+      "gpu": 0,
+      "process": {
+        "pid": 1130371,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_identity_20261002_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_observable_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_identity_20261002_r01/experiments/cvs_observable_identity/configs/observable_phase-s2026092701.json",
+          ""
+        ]
+      },
+      "epoch": {
+        "epoch": 9,
+        "optimizer_steps": 50,
+        "optimizer_steps_total": 450,
+        "source_sample_exposure": 6300,
+        "clean_ce": 0.15559483394026757,
+        "total_loss": 0.15559483394026757,
+        "ce_weight": 1.0,
+        "learning_rate": 0.0001992154127807906,
+        "gradient_norm": 10.00679036140442,
+        "gradient_used_parameters": 196048,
+        "augmentation_active": false,
+        "satellite_sample_exposure": 0,
+        "domain_backbone_active": false,
+        "extra_losses_active": false,
+        "pseudo_labels_active": false,
+        "observables_active": true,
+        "observables_diagnostics": {
+          "repetition_gain_abs_mean": 0.2575124204158783,
+          "spectral_gain_abs_mean": 0.25013357400894165,
+          "fusion_gain_gradient_norm": 0.18756595253944397
+        },
+        "rf_diagnostic_gradient_scope": "last source batch of epoch",
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.915,
+        "source_val_ce": 0.2441414535023548,
+        "source_val_rx_accuracy": {
+          "1": 0.9951851851851852,
+          "3": 0.7562962962962962,
+          "4": 0.9777777777777777,
+          "6": 0.9879629629629629,
+          "8": 0.8577777777777778
+        },
+        "source_val_worst_rx": 0.7562962962962962,
+        "elapsed_seconds": 5.58647048700368,
+        "peak_cuda_allocated_bytes": 141497344
+      },
+      "resolved": {
+        "method": "cvs_observable_identity",
+        "variant": "observable_phase",
+        "model_seed": 2026092701,
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-observable-identity-manysig-m8-r01/observable_phase-s2026092701/source",
+        "epochs": 200,
+        "batch_size": 128,
+        "lr": 0.0002,
+        "lr_min": 1e-06,
+        "weight_decay": 0.0001,
+        "drop_last": false,
+        "augmentation": false,
+        "domain_backbone": false,
+        "extra_losses": [],
+        "selection": "fixed_last_epoch",
+        "split_seed": 392005,
+        "device": "cuda:0",
+        "observables": {
+          "physics_mode": "amplitude_increment_and_curvature",
+          "lags": [
+            1,
+            2,
+            5,
+            20
+          ],
+          "epsilon": 1e-06,
+          "observation_channels": 21,
+          "amplitude_channels": 5,
+          "increment_channels": 8,
+          "closure_channels": 8,
+          "global_phase_invariant": true,
+          "affine_phase_invariant": false,
+          "raw_iq_bypass": false,
+          "repetition_window": [
+            80,
+            160
+          ],
+          "repetition_period_samples": 20,
+          "repetition_cycles": 4,
+          "temporal_samples": 256,
+          "spectral_signal": "real_physical_observable_time_variations",
+          "sample_rate_hz": 25000000,
+          "input": "received_equalized1_unit_rms_IQ",
+          "parameter_interpretation": "identity_feature_weights_not_identified_TX_hardware"
+        },
+        "pid": 1130371,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_identity_20261002_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "commit": "202aed46748856c16b015d94595ecd5364dca394",
+        "torch_version": "2.1.0+cu121",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "source_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "steps_per_epoch": 50,
+        "total_parameters": 196048,
+        "trainable_parameters": 196048,
+        "U_s_use": "unused",
+        "target_access": false,
+        "precision": "float32",
+        "gradient_clipping": null,
+        "optimizer": "AdamW+CosineAnnealingLR",
+        "loader_seed": 2026092701,
+        "observables_actual": {
+          "physics_mode": "amplitude_increment_and_curvature",
+          "lags": [
+            1,
+            2,
+            5,
+            20
+          ],
+          "epsilon": 1e-06,
+          "observation_channels": 21,
+          "amplitude_channels": 5,
+          "increment_channels": 8,
+          "closure_channels": 8,
+          "global_phase_invariant": true,
+          "affine_phase_invariant": false,
+          "raw_iq_bypass": false,
+          "repetition_window": [
+            80,
+            160
+          ],
+          "repetition_period_samples": 20,
+          "repetition_cycles": 4,
+          "temporal_samples": 256,
+          "spectral_signal": "real_physical_observable_time_variations",
+          "sample_rate_hz": 25000000,
+          "input": "received_equalized1_unit_rms_IQ",
+          "parameter_interpretation": "identity_feature_weights_not_identified_TX_hardware"
+        },
+        "observables_active": true,
+        "classifier_scale": 30.0
+      },
+      "completion": null,
+      "profile": null,
+      "log_bytes": 12595,
+      "log_tail": [
+        "EPOCH {\"epoch\": 8, \"optimizer_steps\": 50, \"optimizer_steps_total\": 400, \"source_sample_exposure\": 6300, \"clean_ce\": 0.16782787032425403, \"total_loss\": 0.16782787032425403, \"ce_weight\": 1.0, \"learning_rate\": 0.00019939911506779043, \"gradient_norm\": 8.868650240898132, \"gradient_used_parameters\": 196048, \"augmentation_active\": false, \"satellite_sample_exposure\": 0, \"domain_backbone_active\": false, \"extra_losses_active\": false, \"pseudo_labels_active\": false, \"observables_active\": true, \"observables_diagnostics\": {\"repetition_gain_abs_mean\": 0.256707102060318, \"spectral_gain_abs_mean\": 0.24996376037597656, \"fusion_gain_gradient_norm\": 0.09822908788919449}, \"rf_diagnostic_gradient_scope\": \"last source batch of epoch\", \"source_val_count\": 27000, \"source_val_accuracy\": 0.8897037037037037, \"source_val_ce\": 0.31519804132426227, \"source_val_rx_accuracy\": {\"1\": 0.9635185185185186, \"3\": 0.7346296296296296, \"4\": 0.9722222222222222, \"6\": 0.9742592592592593, \"8\": 0.8038888888888889}, \"source_val_worst_rx\": 0.7346296296296296, \"elapsed_seconds\": 4.805428391002351, \"peak_cuda_allocated_bytes\": 141497344}",
+        "EPOCH {\"epoch\": 9, \"optimizer_steps\": 50, \"optimizer_steps_total\": 450, \"source_sample_exposure\": 6300, \"clean_ce\": 0.15559483394026757, \"total_loss\": 0.15559483394026757, \"ce_weight\": 1.0, \"learning_rate\": 0.0001992154127807906, \"gradient_norm\": 10.00679036140442, \"gradient_used_parameters\": 196048, \"augmentation_active\": false, \"satellite_sample_exposure\": 0, \"domain_backbone_active\": false, \"extra_losses_active\": false, \"pseudo_labels_active\": false, \"observables_active\": true, \"observables_diagnostics\": {\"repetition_gain_abs_mean\": 0.2575124204158783, \"spectral_gain_abs_mean\": 0.25013357400894165, \"fusion_gain_gradient_norm\": 0.18756595253944397}, \"rf_diagnostic_gradient_scope\": \"last source batch of epoch\", \"source_val_count\": 27000, \"source_val_accuracy\": 0.915, \"source_val_ce\": 0.2441414535023548, \"source_val_rx_accuracy\": {\"1\": 0.9951851851851852, \"3\": 0.7562962962962962, \"4\": 0.9777777777777777, \"6\": 0.9879629629629629, \"8\": 0.8577777777777778}, \"source_val_worst_rx\": 0.7562962962962962, \"elapsed_seconds\": 5.58647048700368, \"peak_cuda_allocated_bytes\": 141497344}"
+      ]
+    },
+    {
+      "row_id": "observable_affine-s2026092701",
+      "status": "RUNNING",
+      "gpu": 1,
+      "process": {
+        "pid": 1130461,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_identity_20261002_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_observable_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_identity_20261002_r01/experiments/cvs_observable_identity/configs/observable_affine-s2026092701.json",
+          ""
+        ]
+      },
+      "epoch": {
+        "epoch": 7,
+        "optimizer_steps": 50,
+        "optimizer_steps_total": 350,
+        "source_sample_exposure": 6300,
+        "clean_ce": 0.23990283459424971,
+        "total_loss": 0.23990283459424971,
+        "ce_weight": 1.0,
+        "learning_rate": 0.00019955841547800648,
+        "gradient_norm": 9.671068406105041,
+        "gradient_used_parameters": 188240,
+        "augmentation_active": false,
+        "satellite_sample_exposure": 0,
+        "domain_backbone_active": false,
+        "extra_losses_active": false,
+        "pseudo_labels_active": false,
+        "observables_active": true,
+        "observables_diagnostics": {
+          "repetition_gain_abs_mean": 0.25757941603660583,
+          "spectral_gain_abs_mean": 0.24999316036701202,
+          "fusion_gain_gradient_norm": 0.32674989104270935
+        },
+        "rf_diagnostic_gradient_scope": "last source batch of epoch",
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.8848888888888888,
+        "source_val_ce": 0.3104826107726053,
+        "source_val_rx_accuracy": {
+          "1": 0.9916666666666667,
+          "3": 0.7138888888888889,
+          "4": 0.9761111111111112,
+          "6": 0.9707407407407408,
+          "8": 0.7720370370370371
+        },
+        "source_val_worst_rx": 0.7138888888888889,
+        "elapsed_seconds": 5.145092609003768,
+        "peak_cuda_allocated_bytes": 139552256
+      },
+      "resolved": {
+        "method": "cvs_observable_identity",
+        "variant": "observable_affine",
+        "model_seed": 2026092701,
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-observable-identity-manysig-m8-r01/observable_affine-s2026092701/source",
+        "epochs": 200,
+        "batch_size": 128,
+        "lr": 0.0002,
+        "lr_min": 1e-06,
+        "weight_decay": 0.0001,
+        "drop_last": false,
+        "augmentation": false,
+        "domain_backbone": false,
+        "extra_losses": [],
+        "selection": "fixed_last_epoch",
+        "split_seed": 392005,
+        "device": "cuda:0",
+        "observables": {
+          "physics_mode": "amplitude_and_phase_curvature",
+          "lags": [
+            1,
+            2,
+            5,
+            20
+          ],
+          "epsilon": 1e-06,
+          "observation_channels": 13,
+          "amplitude_channels": 5,
+          "increment_channels": 0,
+          "closure_channels": 8,
+          "global_phase_invariant": true,
+          "affine_phase_invariant": true,
+          "raw_iq_bypass": false,
+          "repetition_window": [
+            80,
+            160
+          ],
+          "repetition_period_samples": 20,
+          "repetition_cycles": 4,
+          "temporal_samples": 256,
+          "spectral_signal": "real_physical_observable_time_variations",
+          "sample_rate_hz": 25000000,
+          "input": "received_equalized1_unit_rms_IQ",
+          "parameter_interpretation": "identity_feature_weights_not_identified_TX_hardware"
+        },
+        "pid": 1130461,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_identity_20261002_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "commit": "202aed46748856c16b015d94595ecd5364dca394",
+        "torch_version": "2.1.0+cu121",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "source_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "steps_per_epoch": 50,
+        "total_parameters": 188240,
+        "trainable_parameters": 188240,
+        "U_s_use": "unused",
+        "target_access": false,
+        "precision": "float32",
+        "gradient_clipping": null,
+        "optimizer": "AdamW+CosineAnnealingLR",
+        "loader_seed": 2026092701,
+        "observables_actual": {
+          "physics_mode": "amplitude_and_phase_curvature",
+          "lags": [
+            1,
+            2,
+            5,
+            20
+          ],
+          "epsilon": 1e-06,
+          "observation_channels": 13,
+          "amplitude_channels": 5,
+          "increment_channels": 0,
+          "closure_channels": 8,
+          "global_phase_invariant": true,
+          "affine_phase_invariant": true,
+          "raw_iq_bypass": false,
+          "repetition_window": [
+            80,
+            160
+          ],
+          "repetition_period_samples": 20,
+          "repetition_cycles": 4,
+          "temporal_samples": 256,
+          "spectral_signal": "real_physical_observable_time_variations",
+          "sample_rate_hz": 25000000,
+          "input": "received_equalized1_unit_rms_IQ",
+          "parameter_interpretation": "identity_feature_weights_not_identified_TX_hardware"
+        },
+        "observables_active": true,
+        "classifier_scale": 30.0
+      },
+      "completion": null,
+      "profile": null,
+      "log_bytes": 10387,
+      "log_tail": [
+        "EPOCH {\"epoch\": 6, \"optimizer_steps\": 50, \"optimizer_steps_total\": 300, \"source_sample_exposure\": 6300, \"clean_ce\": 0.27971730947494505, \"total_loss\": 0.27971730947494505, \"ce_weight\": 1.0, \"learning_rate\": 0.00019969327470644626, \"gradient_norm\": 8.991183710098266, \"gradient_used_parameters\": 188240, \"augmentation_active\": false, \"satellite_sample_exposure\": 0, \"domain_backbone_active\": false, \"extra_losses_active\": false, \"pseudo_labels_active\": false, \"observables_active\": true, \"observables_diagnostics\": {\"repetition_gain_abs_mean\": 0.2565620541572571, \"spectral_gain_abs_mean\": 0.24981355667114258, \"fusion_gain_gradient_norm\": 0.3864675760269165}, \"rf_diagnostic_gradient_scope\": \"last source batch of epoch\", \"source_val_count\": 27000, \"source_val_accuracy\": 0.8605185185185186, \"source_val_ce\": 0.3729146810494087, \"source_val_rx_accuracy\": {\"1\": 0.975925925925926, \"3\": 0.672962962962963, \"4\": 0.9777777777777777, \"6\": 0.955925925925926, \"8\": 0.72}, \"source_val_worst_rx\": 0.672962962962963, \"elapsed_seconds\": 5.101229635998607, \"peak_cuda_allocated_bytes\": 139552256}",
+        "EPOCH {\"epoch\": 7, \"optimizer_steps\": 50, \"optimizer_steps_total\": 350, \"source_sample_exposure\": 6300, \"clean_ce\": 0.23990283459424971, \"total_loss\": 0.23990283459424971, \"ce_weight\": 1.0, \"learning_rate\": 0.00019955841547800648, \"gradient_norm\": 9.671068406105041, \"gradient_used_parameters\": 188240, \"augmentation_active\": false, \"satellite_sample_exposure\": 0, \"domain_backbone_active\": false, \"extra_losses_active\": false, \"pseudo_labels_active\": false, \"observables_active\": true, \"observables_diagnostics\": {\"repetition_gain_abs_mean\": 0.25757941603660583, \"spectral_gain_abs_mean\": 0.24999316036701202, \"fusion_gain_gradient_norm\": 0.32674989104270935}, \"rf_diagnostic_gradient_scope\": \"last source batch of epoch\", \"source_val_count\": 27000, \"source_val_accuracy\": 0.8848888888888888, \"source_val_ce\": 0.3104826107726053, \"source_val_rx_accuracy\": {\"1\": 0.9916666666666667, \"3\": 0.7138888888888889, \"4\": 0.9761111111111112, \"6\": 0.9707407407407408, \"8\": 0.7720370370370371}, \"source_val_worst_rx\": 0.7138888888888889, \"elapsed_seconds\": 5.145092609003768, \"peak_cuda_allocated_bytes\": 139552256}"
+      ]
+    },
+    {
+      "row_id": "observable_phase-s2026092702",
+      "status": "RUNNING",
+      "gpu": 2,
+      "process": {
+        "pid": 1130606,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_identity_20261002_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_observable_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_identity_20261002_r01/experiments/cvs_observable_identity/configs/observable_phase-s2026092702.json",
+          ""
+        ]
+      },
+      "epoch": {
+        "epoch": 6,
+        "optimizer_steps": 50,
+        "optimizer_steps_total": 300,
+        "source_sample_exposure": 6300,
+        "clean_ce": 0.23130421131849288,
+        "total_loss": 0.23130421131849288,
+        "ce_weight": 1.0,
+        "learning_rate": 0.00019969327470644626,
+        "gradient_norm": 9.447076139450074,
+        "gradient_used_parameters": 196048,
+        "augmentation_active": false,
+        "satellite_sample_exposure": 0,
+        "domain_backbone_active": false,
+        "extra_losses_active": false,
+        "pseudo_labels_active": false,
+        "observables_active": true,
+        "observables_diagnostics": {
+          "repetition_gain_abs_mean": 0.25568634271621704,
+          "spectral_gain_abs_mean": 0.24995486438274384,
+          "fusion_gain_gradient_norm": 0.23199984431266785
+        },
+        "rf_diagnostic_gradient_scope": "last source batch of epoch",
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9074074074074074,
+        "source_val_ce": 0.27000664369375615,
+        "source_val_rx_accuracy": {
+          "1": 0.9937037037037038,
+          "3": 0.7511111111111111,
+          "4": 0.975925925925926,
+          "6": 0.9879629629629629,
+          "8": 0.8283333333333334
+        },
+        "source_val_worst_rx": 0.7511111111111111,
+        "elapsed_seconds": 5.1695357440039515,
+        "peak_cuda_allocated_bytes": 141497344
+      },
+      "resolved": {
+        "method": "cvs_observable_identity",
+        "variant": "observable_phase",
+        "model_seed": 2026092702,
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-observable-identity-manysig-m8-r01/observable_phase-s2026092702/source",
+        "epochs": 200,
+        "batch_size": 128,
+        "lr": 0.0002,
+        "lr_min": 1e-06,
+        "weight_decay": 0.0001,
+        "drop_last": false,
+        "augmentation": false,
+        "domain_backbone": false,
+        "extra_losses": [],
+        "selection": "fixed_last_epoch",
+        "split_seed": 392005,
+        "device": "cuda:0",
+        "observables": {
+          "physics_mode": "amplitude_increment_and_curvature",
+          "lags": [
+            1,
+            2,
+            5,
+            20
+          ],
+          "epsilon": 1e-06,
+          "observation_channels": 21,
+          "amplitude_channels": 5,
+          "increment_channels": 8,
+          "closure_channels": 8,
+          "global_phase_invariant": true,
+          "affine_phase_invariant": false,
+          "raw_iq_bypass": false,
+          "repetition_window": [
+            80,
+            160
+          ],
+          "repetition_period_samples": 20,
+          "repetition_cycles": 4,
+          "temporal_samples": 256,
+          "spectral_signal": "real_physical_observable_time_variations",
+          "sample_rate_hz": 25000000,
+          "input": "received_equalized1_unit_rms_IQ",
+          "parameter_interpretation": "identity_feature_weights_not_identified_TX_hardware"
+        },
+        "pid": 1130606,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_identity_20261002_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "commit": "202aed46748856c16b015d94595ecd5364dca394",
+        "torch_version": "2.1.0+cu121",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "source_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "steps_per_epoch": 50,
+        "total_parameters": 196048,
+        "trainable_parameters": 196048,
+        "U_s_use": "unused",
+        "target_access": false,
+        "precision": "float32",
+        "gradient_clipping": null,
+        "optimizer": "AdamW+CosineAnnealingLR",
+        "loader_seed": 2026092702,
+        "observables_actual": {
+          "physics_mode": "amplitude_increment_and_curvature",
+          "lags": [
+            1,
+            2,
+            5,
+            20
+          ],
+          "epsilon": 1e-06,
+          "observation_channels": 21,
+          "amplitude_channels": 5,
+          "increment_channels": 8,
+          "closure_channels": 8,
+          "global_phase_invariant": true,
+          "affine_phase_invariant": false,
+          "raw_iq_bypass": false,
+          "repetition_window": [
+            80,
+            160
+          ],
+          "repetition_period_samples": 20,
+          "repetition_cycles": 4,
+          "temporal_samples": 256,
+          "spectral_signal": "real_physical_observable_time_variations",
+          "sample_rate_hz": 25000000,
+          "input": "received_equalized1_unit_rms_IQ",
+          "parameter_interpretation": "identity_feature_weights_not_identified_TX_hardware"
+        },
+        "observables_active": true,
+        "classifier_scale": 30.0
+      },
+      "completion": null,
+      "profile": null,
+      "log_bytes": 9313,
+      "log_tail": [
+        "EPOCH {\"epoch\": 5, \"optimizer_steps\": 50, \"optimizer_steps_total\": 250, \"source_sample_exposure\": 6300, \"clean_ce\": 0.3017823502421379, \"total_loss\": 0.3017823502421379, \"ce_weight\": 1.0, \"learning_rate\": 0.00019980365947861305, \"gradient_norm\": 11.31544231414795, \"gradient_used_parameters\": 196048, \"augmentation_active\": false, \"satellite_sample_exposure\": 0, \"domain_backbone_active\": false, \"extra_losses_active\": false, \"pseudo_labels_active\": false, \"observables_active\": true, \"observables_diagnostics\": {\"repetition_gain_abs_mean\": 0.25482943654060364, \"spectral_gain_abs_mean\": 0.24979384243488312, \"fusion_gain_gradient_norm\": 0.3145984709262848}, \"rf_diagnostic_gradient_scope\": \"last source batch of epoch\", \"source_val_count\": 27000, \"source_val_accuracy\": 0.8852962962962962, \"source_val_ce\": 0.3203486519069583, \"source_val_rx_accuracy\": {\"1\": 0.9874074074074074, \"3\": 0.7205555555555555, \"4\": 0.9740740740740741, \"6\": 0.9814814814814815, \"8\": 0.762962962962963}, \"source_val_worst_rx\": 0.7205555555555555, \"elapsed_seconds\": 5.058372061001137, \"peak_cuda_allocated_bytes\": 141497344}",
+        "EPOCH {\"epoch\": 6, \"optimizer_steps\": 50, \"optimizer_steps_total\": 300, \"source_sample_exposure\": 6300, \"clean_ce\": 0.23130421131849288, \"total_loss\": 0.23130421131849288, \"ce_weight\": 1.0, \"learning_rate\": 0.00019969327470644626, \"gradient_norm\": 9.447076139450074, \"gradient_used_parameters\": 196048, \"augmentation_active\": false, \"satellite_sample_exposure\": 0, \"domain_backbone_active\": false, \"extra_losses_active\": false, \"pseudo_labels_active\": false, \"observables_active\": true, \"observables_diagnostics\": {\"repetition_gain_abs_mean\": 0.25568634271621704, \"spectral_gain_abs_mean\": 0.24995486438274384, \"fusion_gain_gradient_norm\": 0.23199984431266785}, \"rf_diagnostic_gradient_scope\": \"last source batch of epoch\", \"source_val_count\": 27000, \"source_val_accuracy\": 0.9074074074074074, \"source_val_ce\": 0.27000664369375615, \"source_val_rx_accuracy\": {\"1\": 0.9937037037037038, \"3\": 0.7511111111111111, \"4\": 0.975925925925926, \"6\": 0.9879629629629629, \"8\": 0.8283333333333334}, \"source_val_worst_rx\": 0.7511111111111111, \"elapsed_seconds\": 5.1695357440039515, \"peak_cuda_allocated_bytes\": 141497344}"
+      ]
+    },
+    {
+      "row_id": "observable_affine-s2026092702",
+      "status": "RUNNING",
+      "gpu": 3,
+      "process": {
+        "pid": 1130695,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_identity_20261002_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_observable_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_identity_20261002_r01/experiments/cvs_observable_identity/configs/observable_affine-s2026092702.json",
+          ""
+        ]
+      },
+      "epoch": {
+        "epoch": 5,
+        "optimizer_steps": 50,
+        "optimizer_steps_total": 250,
+        "source_sample_exposure": 6300,
+        "clean_ce": 0.388448383808136,
+        "total_loss": 0.388448383808136,
+        "ce_weight": 1.0,
+        "learning_rate": 0.00019980365947861305,
+        "gradient_norm": 11.039249296188354,
+        "gradient_used_parameters": 188240,
+        "augmentation_active": false,
+        "satellite_sample_exposure": 0,
+        "domain_backbone_active": false,
+        "extra_losses_active": false,
+        "pseudo_labels_active": false,
+        "observables_active": true,
+        "observables_diagnostics": {
+          "repetition_gain_abs_mean": 0.25561749935150146,
+          "spectral_gain_abs_mean": 0.24986159801483154,
+          "fusion_gain_gradient_norm": 0.3736475706100464
+        },
+        "rf_diagnostic_gradient_scope": "last source batch of epoch",
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.8496666666666667,
+        "source_val_ce": 0.4151933760488475,
+        "source_val_rx_accuracy": {
+          "1": 0.9729629629629629,
+          "3": 0.6446296296296297,
+          "4": 0.9677777777777777,
+          "6": 0.9687037037037037,
+          "8": 0.6942592592592592
+        },
+        "source_val_worst_rx": 0.6446296296296297,
+        "elapsed_seconds": 5.0950909679959295,
+        "peak_cuda_allocated_bytes": 139552256
+      },
+      "resolved": {
+        "method": "cvs_observable_identity",
+        "variant": "observable_affine",
+        "model_seed": 2026092702,
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-observable-identity-manysig-m8-r01/observable_affine-s2026092702/source",
+        "epochs": 200,
+        "batch_size": 128,
+        "lr": 0.0002,
+        "lr_min": 1e-06,
+        "weight_decay": 0.0001,
+        "drop_last": false,
+        "augmentation": false,
+        "domain_backbone": false,
+        "extra_losses": [],
+        "selection": "fixed_last_epoch",
+        "split_seed": 392005,
+        "device": "cuda:0",
+        "observables": {
+          "physics_mode": "amplitude_and_phase_curvature",
+          "lags": [
+            1,
+            2,
+            5,
+            20
+          ],
+          "epsilon": 1e-06,
+          "observation_channels": 13,
+          "amplitude_channels": 5,
+          "increment_channels": 0,
+          "closure_channels": 8,
+          "global_phase_invariant": true,
+          "affine_phase_invariant": true,
+          "raw_iq_bypass": false,
+          "repetition_window": [
+            80,
+            160
+          ],
+          "repetition_period_samples": 20,
+          "repetition_cycles": 4,
+          "temporal_samples": 256,
+          "spectral_signal": "real_physical_observable_time_variations",
+          "sample_rate_hz": 25000000,
+          "input": "received_equalized1_unit_rms_IQ",
+          "parameter_interpretation": "identity_feature_weights_not_identified_TX_hardware"
+        },
+        "pid": 1130695,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_identity_20261002_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "commit": "202aed46748856c16b015d94595ecd5364dca394",
+        "torch_version": "2.1.0+cu121",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "source_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "steps_per_epoch": 50,
+        "total_parameters": 188240,
+        "trainable_parameters": 188240,
+        "U_s_use": "unused",
+        "target_access": false,
+        "precision": "float32",
+        "gradient_clipping": null,
+        "optimizer": "AdamW+CosineAnnealingLR",
+        "loader_seed": 2026092702,
+        "observables_actual": {
+          "physics_mode": "amplitude_and_phase_curvature",
+          "lags": [
+            1,
+            2,
+            5,
+            20
+          ],
+          "epsilon": 1e-06,
+          "observation_channels": 13,
+          "amplitude_channels": 5,
+          "increment_channels": 0,
+          "closure_channels": 8,
+          "global_phase_invariant": true,
+          "affine_phase_invariant": true,
+          "raw_iq_bypass": false,
+          "repetition_window": [
+            80,
+            160
+          ],
+          "repetition_period_samples": 20,
+          "repetition_cycles": 4,
+          "temporal_samples": 256,
+          "spectral_signal": "real_physical_observable_time_variations",
+          "sample_rate_hz": 25000000,
+          "input": "received_equalized1_unit_rms_IQ",
+          "parameter_interpretation": "identity_feature_weights_not_identified_TX_hardware"
+        },
+        "observables_active": true,
+        "classifier_scale": 30.0
+      },
+      "completion": null,
+      "profile": null,
+      "log_bytes": 8215,
+      "log_tail": [
+        "EPOCH {\"epoch\": 4, \"optimizer_steps\": 50, \"optimizer_steps_total\": 200, \"source_sample_exposure\": 6300, \"clean_ce\": 0.49301666736602784, \"total_loss\": 0.49301666736602784, \"ce_weight\": 1.0, \"learning_rate\": 0.00019988954255871605, \"gradient_norm\": 11.723052697181702, \"gradient_used_parameters\": 188240, \"augmentation_active\": false, \"satellite_sample_exposure\": 0, \"domain_backbone_active\": false, \"extra_losses_active\": false, \"pseudo_labels_active\": false, \"observables_active\": true, \"observables_diagnostics\": {\"repetition_gain_abs_mean\": 0.25463545322418213, \"spectral_gain_abs_mean\": 0.24976077675819397, \"fusion_gain_gradient_norm\": 0.31904345750808716}, \"rf_diagnostic_gradient_scope\": \"last source batch of epoch\", \"source_val_count\": 27000, \"source_val_accuracy\": 0.8195185185185185, \"source_val_ce\": 0.4927797841540089, \"source_val_rx_accuracy\": {\"1\": 0.9455555555555556, \"3\": 0.5864814814814815, \"4\": 0.9596296296296296, \"6\": 0.9557407407407408, \"8\": 0.6501851851851852}, \"source_val_worst_rx\": 0.5864814814814815, \"elapsed_seconds\": 5.102773568010889, \"peak_cuda_allocated_bytes\": 139552256}",
+        "EPOCH {\"epoch\": 5, \"optimizer_steps\": 50, \"optimizer_steps_total\": 250, \"source_sample_exposure\": 6300, \"clean_ce\": 0.388448383808136, \"total_loss\": 0.388448383808136, \"ce_weight\": 1.0, \"learning_rate\": 0.00019980365947861305, \"gradient_norm\": 11.039249296188354, \"gradient_used_parameters\": 188240, \"augmentation_active\": false, \"satellite_sample_exposure\": 0, \"domain_backbone_active\": false, \"extra_losses_active\": false, \"pseudo_labels_active\": false, \"observables_active\": true, \"observables_diagnostics\": {\"repetition_gain_abs_mean\": 0.25561749935150146, \"spectral_gain_abs_mean\": 0.24986159801483154, \"fusion_gain_gradient_norm\": 0.3736475706100464}, \"rf_diagnostic_gradient_scope\": \"last source batch of epoch\", \"source_val_count\": 27000, \"source_val_accuracy\": 0.8496666666666667, \"source_val_ce\": 0.4151933760488475, \"source_val_rx_accuracy\": {\"1\": 0.9729629629629629, \"3\": 0.6446296296296297, \"4\": 0.9677777777777777, \"6\": 0.9687037037037037, \"8\": 0.6942592592592592}, \"source_val_worst_rx\": 0.6446296296296297, \"elapsed_seconds\": 5.0950909679959295, \"peak_cuda_allocated_bytes\": 139552256}"
+      ]
+    },
+    {
+      "row_id": "observable_phase-s2026092703",
+      "status": "RUNNING",
+      "gpu": 4,
+      "process": {
+        "pid": 1130837,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_identity_20261002_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_observable_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_identity_20261002_r01/experiments/cvs_observable_identity/configs/observable_phase-s2026092703.json",
+          ""
+        ]
+      },
+      "epoch": {
+        "epoch": 4,
+        "optimizer_steps": 50,
+        "optimizer_steps_total": 200,
+        "source_sample_exposure": 6300,
+        "clean_ce": 0.48856886208057404,
+        "total_loss": 0.48856886208057404,
+        "ce_weight": 1.0,
+        "learning_rate": 0.00019988954255871605,
+        "gradient_norm": 13.515272283554078,
+        "gradient_used_parameters": 196048,
+        "augmentation_active": false,
+        "satellite_sample_exposure": 0,
+        "domain_backbone_active": false,
+        "extra_losses_active": false,
+        "pseudo_labels_active": false,
+        "observables_active": true,
+        "observables_diagnostics": {
+          "repetition_gain_abs_mean": 0.252861350774765,
+          "spectral_gain_abs_mean": 0.24993637204170227,
+          "fusion_gain_gradient_norm": 0.483691543340683
+        },
+        "rf_diagnostic_gradient_scope": "last source batch of epoch",
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.8496296296296296,
+        "source_val_ce": 0.42975056665031997,
+        "source_val_rx_accuracy": {
+          "1": 0.9701851851851852,
+          "3": 0.6472222222222223,
+          "4": 0.9316666666666666,
+          "6": 0.957962962962963,
+          "8": 0.7411111111111112
+        },
+        "source_val_worst_rx": 0.6472222222222223,
+        "elapsed_seconds": 5.133064424997428,
+        "peak_cuda_allocated_bytes": 141497344
+      },
+      "resolved": {
+        "method": "cvs_observable_identity",
+        "variant": "observable_phase",
+        "model_seed": 2026092703,
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-observable-identity-manysig-m8-r01/observable_phase-s2026092703/source",
+        "epochs": 200,
+        "batch_size": 128,
+        "lr": 0.0002,
+        "lr_min": 1e-06,
+        "weight_decay": 0.0001,
+        "drop_last": false,
+        "augmentation": false,
+        "domain_backbone": false,
+        "extra_losses": [],
+        "selection": "fixed_last_epoch",
+        "split_seed": 392005,
+        "device": "cuda:0",
+        "observables": {
+          "physics_mode": "amplitude_increment_and_curvature",
+          "lags": [
+            1,
+            2,
+            5,
+            20
+          ],
+          "epsilon": 1e-06,
+          "observation_channels": 21,
+          "amplitude_channels": 5,
+          "increment_channels": 8,
+          "closure_channels": 8,
+          "global_phase_invariant": true,
+          "affine_phase_invariant": false,
+          "raw_iq_bypass": false,
+          "repetition_window": [
+            80,
+            160
+          ],
+          "repetition_period_samples": 20,
+          "repetition_cycles": 4,
+          "temporal_samples": 256,
+          "spectral_signal": "real_physical_observable_time_variations",
+          "sample_rate_hz": 25000000,
+          "input": "received_equalized1_unit_rms_IQ",
+          "parameter_interpretation": "identity_feature_weights_not_identified_TX_hardware"
+        },
+        "pid": 1130837,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_identity_20261002_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "commit": "202aed46748856c16b015d94595ecd5364dca394",
+        "torch_version": "2.1.0+cu121",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "source_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "steps_per_epoch": 50,
+        "total_parameters": 196048,
+        "trainable_parameters": 196048,
+        "U_s_use": "unused",
+        "target_access": false,
+        "precision": "float32",
+        "gradient_clipping": null,
+        "optimizer": "AdamW+CosineAnnealingLR",
+        "loader_seed": 2026092703,
+        "observables_actual": {
+          "physics_mode": "amplitude_increment_and_curvature",
+          "lags": [
+            1,
+            2,
+            5,
+            20
+          ],
+          "epsilon": 1e-06,
+          "observation_channels": 21,
+          "amplitude_channels": 5,
+          "increment_channels": 8,
+          "closure_channels": 8,
+          "global_phase_invariant": true,
+          "affine_phase_invariant": false,
+          "raw_iq_bypass": false,
+          "repetition_window": [
+            80,
+            160
+          ],
+          "repetition_period_samples": 20,
+          "repetition_cycles": 4,
+          "temporal_samples": 256,
+          "spectral_signal": "real_physical_observable_time_variations",
+          "sample_rate_hz": 25000000,
+          "input": "received_equalized1_unit_rms_IQ",
+          "parameter_interpretation": "identity_feature_weights_not_identified_TX_hardware"
+        },
+        "observables_active": true,
+        "classifier_scale": 30.0
+      },
+      "completion": null,
+      "profile": null,
+      "log_bytes": 7116,
+      "log_tail": [
+        "EPOCH {\"epoch\": 3, \"optimizer_steps\": 50, \"optimizer_steps_total\": 150, \"source_sample_exposure\": 6300, \"clean_ce\": 0.648032922744751, \"total_loss\": 0.648032922744751, \"ce_weight\": 1.0, \"learning_rate\": 0.00019995090275639032, \"gradient_norm\": 12.731380233764648, \"gradient_used_parameters\": 196048, \"augmentation_active\": false, \"satellite_sample_exposure\": 0, \"domain_backbone_active\": false, \"extra_losses_active\": false, \"pseudo_labels_active\": false, \"observables_active\": true, \"observables_diagnostics\": {\"repetition_gain_abs_mean\": 0.2519965171813965, \"spectral_gain_abs_mean\": 0.24992716312408447, \"fusion_gain_gradient_norm\": 0.31318455934524536}, \"rf_diagnostic_gradient_scope\": \"last source batch of epoch\", \"source_val_count\": 27000, \"source_val_accuracy\": 0.7540740740740741, \"source_val_ce\": 0.6386097655914448, \"source_val_rx_accuracy\": {\"1\": 0.7764814814814814, \"3\": 0.5662962962962963, \"4\": 0.9022222222222223, \"6\": 0.877962962962963, \"8\": 0.6474074074074074}, \"source_val_worst_rx\": 0.5662962962962963, \"elapsed_seconds\": 4.961557034999714, \"peak_cuda_allocated_bytes\": 141497344}",
+        "EPOCH {\"epoch\": 4, \"optimizer_steps\": 50, \"optimizer_steps_total\": 200, \"source_sample_exposure\": 6300, \"clean_ce\": 0.48856886208057404, \"total_loss\": 0.48856886208057404, \"ce_weight\": 1.0, \"learning_rate\": 0.00019988954255871605, \"gradient_norm\": 13.515272283554078, \"gradient_used_parameters\": 196048, \"augmentation_active\": false, \"satellite_sample_exposure\": 0, \"domain_backbone_active\": false, \"extra_losses_active\": false, \"pseudo_labels_active\": false, \"observables_active\": true, \"observables_diagnostics\": {\"repetition_gain_abs_mean\": 0.252861350774765, \"spectral_gain_abs_mean\": 0.24993637204170227, \"fusion_gain_gradient_norm\": 0.483691543340683}, \"rf_diagnostic_gradient_scope\": \"last source batch of epoch\", \"source_val_count\": 27000, \"source_val_accuracy\": 0.8496296296296296, \"source_val_ce\": 0.42975056665031997, \"source_val_rx_accuracy\": {\"1\": 0.9701851851851852, \"3\": 0.6472222222222223, \"4\": 0.9316666666666666, \"6\": 0.957962962962963, \"8\": 0.7411111111111112}, \"source_val_worst_rx\": 0.6472222222222223, \"elapsed_seconds\": 5.133064424997428, \"peak_cuda_allocated_bytes\": 141497344}"
+      ]
+    },
+    {
+      "row_id": "observable_affine-s2026092703",
+      "status": "RUNNING",
+      "gpu": 5,
+      "process": {
+        "pid": 1130926,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_identity_20261002_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_observable_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_identity_20261002_r01/experiments/cvs_observable_identity/configs/observable_affine-s2026092703.json",
+          ""
+        ]
+      },
+      "epoch": {
+        "epoch": 3,
+        "optimizer_steps": 50,
+        "optimizer_steps_total": 150,
+        "source_sample_exposure": 6300,
+        "clean_ce": 0.6768885821104049,
+        "total_loss": 0.6768885821104049,
+        "ce_weight": 1.0,
+        "learning_rate": 0.00019995090275639032,
+        "gradient_norm": 10.683922863006591,
+        "gradient_used_parameters": 188240,
+        "augmentation_active": false,
+        "satellite_sample_exposure": 0,
+        "domain_backbone_active": false,
+        "extra_losses_active": false,
+        "pseudo_labels_active": false,
+        "observables_active": true,
+        "observables_diagnostics": {
+          "repetition_gain_abs_mean": 0.2524486482143402,
+          "spectral_gain_abs_mean": 0.24985742568969727,
+          "fusion_gain_gradient_norm": 0.37237119674682617
+        },
+        "rf_diagnostic_gradient_scope": "last source batch of epoch",
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.7733333333333333,
+        "source_val_ce": 0.6276597399358396,
+        "source_val_rx_accuracy": {
+          "1": 0.8748148148148148,
+          "3": 0.5557407407407408,
+          "4": 0.9296296296296296,
+          "6": 0.9031481481481481,
+          "8": 0.6033333333333334
+        },
+        "source_val_worst_rx": 0.5557407407407408,
+        "elapsed_seconds": 5.16823598400515,
+        "peak_cuda_allocated_bytes": 139552256
+      },
+      "resolved": {
+        "method": "cvs_observable_identity",
+        "variant": "observable_affine",
+        "model_seed": 2026092703,
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-observable-identity-manysig-m8-r01/observable_affine-s2026092703/source",
+        "epochs": 200,
+        "batch_size": 128,
+        "lr": 0.0002,
+        "lr_min": 1e-06,
+        "weight_decay": 0.0001,
+        "drop_last": false,
+        "augmentation": false,
+        "domain_backbone": false,
+        "extra_losses": [],
+        "selection": "fixed_last_epoch",
+        "split_seed": 392005,
+        "device": "cuda:0",
+        "observables": {
+          "physics_mode": "amplitude_and_phase_curvature",
+          "lags": [
+            1,
+            2,
+            5,
+            20
+          ],
+          "epsilon": 1e-06,
+          "observation_channels": 13,
+          "amplitude_channels": 5,
+          "increment_channels": 0,
+          "closure_channels": 8,
+          "global_phase_invariant": true,
+          "affine_phase_invariant": true,
+          "raw_iq_bypass": false,
+          "repetition_window": [
+            80,
+            160
+          ],
+          "repetition_period_samples": 20,
+          "repetition_cycles": 4,
+          "temporal_samples": 256,
+          "spectral_signal": "real_physical_observable_time_variations",
+          "sample_rate_hz": 25000000,
+          "input": "received_equalized1_unit_rms_IQ",
+          "parameter_interpretation": "identity_feature_weights_not_identified_TX_hardware"
+        },
+        "pid": 1130926,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_identity_20261002_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "commit": "202aed46748856c16b015d94595ecd5364dca394",
+        "torch_version": "2.1.0+cu121",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "source_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "steps_per_epoch": 50,
+        "total_parameters": 188240,
+        "trainable_parameters": 188240,
+        "U_s_use": "unused",
+        "target_access": false,
+        "precision": "float32",
+        "gradient_clipping": null,
+        "optimizer": "AdamW+CosineAnnealingLR",
+        "loader_seed": 2026092703,
+        "observables_actual": {
+          "physics_mode": "amplitude_and_phase_curvature",
+          "lags": [
+            1,
+            2,
+            5,
+            20
+          ],
+          "epsilon": 1e-06,
+          "observation_channels": 13,
+          "amplitude_channels": 5,
+          "increment_channels": 0,
+          "closure_channels": 8,
+          "global_phase_invariant": true,
+          "affine_phase_invariant": true,
+          "raw_iq_bypass": false,
+          "repetition_window": [
+            80,
+            160
+          ],
+          "repetition_period_samples": 20,
+          "repetition_cycles": 4,
+          "temporal_samples": 256,
+          "spectral_signal": "real_physical_observable_time_variations",
+          "sample_rate_hz": 25000000,
+          "input": "received_equalized1_unit_rms_IQ",
+          "parameter_interpretation": "identity_feature_weights_not_identified_TX_hardware"
+        },
+        "observables_active": true,
+        "classifier_scale": 30.0
+      },
+      "completion": null,
+      "profile": null,
+      "log_bytes": 6009,
+      "log_tail": [
+        "EPOCH {\"epoch\": 2, \"optimizer_steps\": 50, \"optimizer_steps_total\": 100, \"source_sample_exposure\": 6300, \"clean_ce\": 1.0461360323429107, \"total_loss\": 1.0461360323429107, \"ce_weight\": 1.0, \"learning_rate\": 0.00019998772493192525, \"gradient_norm\": 7.418781723976135, \"gradient_used_parameters\": 188240, \"augmentation_active\": false, \"satellite_sample_exposure\": 0, \"domain_backbone_active\": false, \"extra_losses_active\": false, \"pseudo_labels_active\": false, \"observables_active\": true, \"observables_diagnostics\": {\"repetition_gain_abs_mean\": 0.25134047865867615, \"spectral_gain_abs_mean\": 0.24985598027706146, \"fusion_gain_gradient_norm\": 0.6269617080688477}, \"rf_diagnostic_gradient_scope\": \"last source batch of epoch\", \"source_val_count\": 27000, \"source_val_accuracy\": 0.7173703703703703, \"source_val_ce\": 0.7912209120061663, \"source_val_rx_accuracy\": {\"1\": 0.8896296296296297, \"3\": 0.43407407407407406, \"4\": 0.8868518518518519, \"6\": 0.8429629629629629, \"8\": 0.5333333333333333}, \"source_val_worst_rx\": 0.43407407407407406, \"elapsed_seconds\": 5.243328238997492, \"peak_cuda_allocated_bytes\": 139552256}",
+        "EPOCH {\"epoch\": 3, \"optimizer_steps\": 50, \"optimizer_steps_total\": 150, \"source_sample_exposure\": 6300, \"clean_ce\": 0.6768885821104049, \"total_loss\": 0.6768885821104049, \"ce_weight\": 1.0, \"learning_rate\": 0.00019995090275639032, \"gradient_norm\": 10.683922863006591, \"gradient_used_parameters\": 188240, \"augmentation_active\": false, \"satellite_sample_exposure\": 0, \"domain_backbone_active\": false, \"extra_losses_active\": false, \"pseudo_labels_active\": false, \"observables_active\": true, \"observables_diagnostics\": {\"repetition_gain_abs_mean\": 0.2524486482143402, \"spectral_gain_abs_mean\": 0.24985742568969727, \"fusion_gain_gradient_norm\": 0.37237119674682617}, \"rf_diagnostic_gradient_scope\": \"last source batch of epoch\", \"source_val_count\": 27000, \"source_val_accuracy\": 0.7733333333333333, \"source_val_ce\": 0.6276597399358396, \"source_val_rx_accuracy\": {\"1\": 0.8748148148148148, \"3\": 0.5557407407407408, \"4\": 0.9296296296296296, \"6\": 0.9031481481481481, \"8\": 0.6033333333333334}, \"source_val_worst_rx\": 0.5557407407407408, \"elapsed_seconds\": 5.16823598400515, \"peak_cuda_allocated_bytes\": 139552256}"
+      ]
+    },
+    {
+      "row_id": "observable_phase-s2026092704",
+      "status": "RUNNING",
+      "gpu": 6,
+      "process": {
+        "pid": 1131015,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_identity_20261002_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_observable_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_identity_20261002_r01/experiments/cvs_observable_identity/configs/observable_phase-s2026092704.json",
+          ""
+        ]
+      },
+      "epoch": {
+        "epoch": 2,
+        "optimizer_steps": 50,
+        "optimizer_steps_total": 100,
+        "source_sample_exposure": 6300,
+        "clean_ce": 0.9090783047676086,
+        "total_loss": 0.9090783047676086,
+        "ce_weight": 1.0,
+        "learning_rate": 0.00019998772493192525,
+        "gradient_norm": 10.857924242019653,
+        "gradient_used_parameters": 196048,
+        "augmentation_active": false,
+        "satellite_sample_exposure": 0,
+        "domain_backbone_active": false,
+        "extra_losses_active": false,
+        "pseudo_labels_active": false,
+        "observables_active": true,
+        "observables_diagnostics": {
+          "repetition_gain_abs_mean": 0.251635879278183,
+          "spectral_gain_abs_mean": 0.2502036988735199,
+          "fusion_gain_gradient_norm": 0.32378241419792175
+        },
+        "rf_diagnostic_gradient_scope": "last source batch of epoch",
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.7489629629629629,
+        "source_val_ce": 0.7082254001652752,
+        "source_val_rx_accuracy": {
+          "1": 0.9018518518518519,
+          "3": 0.5120370370370371,
+          "4": 0.8807407407407407,
+          "6": 0.8644444444444445,
+          "8": 0.5857407407407408
+        },
+        "source_val_worst_rx": 0.5120370370370371,
+        "elapsed_seconds": 5.155268248010543,
+        "peak_cuda_allocated_bytes": 141497344
+      },
+      "resolved": {
+        "method": "cvs_observable_identity",
+        "variant": "observable_phase",
+        "model_seed": 2026092704,
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-observable-identity-manysig-m8-r01/observable_phase-s2026092704/source",
+        "epochs": 200,
+        "batch_size": 128,
+        "lr": 0.0002,
+        "lr_min": 1e-06,
+        "weight_decay": 0.0001,
+        "drop_last": false,
+        "augmentation": false,
+        "domain_backbone": false,
+        "extra_losses": [],
+        "selection": "fixed_last_epoch",
+        "split_seed": 392005,
+        "device": "cuda:0",
+        "observables": {
+          "physics_mode": "amplitude_increment_and_curvature",
+          "lags": [
+            1,
+            2,
+            5,
+            20
+          ],
+          "epsilon": 1e-06,
+          "observation_channels": 21,
+          "amplitude_channels": 5,
+          "increment_channels": 8,
+          "closure_channels": 8,
+          "global_phase_invariant": true,
+          "affine_phase_invariant": false,
+          "raw_iq_bypass": false,
+          "repetition_window": [
+            80,
+            160
+          ],
+          "repetition_period_samples": 20,
+          "repetition_cycles": 4,
+          "temporal_samples": 256,
+          "spectral_signal": "real_physical_observable_time_variations",
+          "sample_rate_hz": 25000000,
+          "input": "received_equalized1_unit_rms_IQ",
+          "parameter_interpretation": "identity_feature_weights_not_identified_TX_hardware"
+        },
+        "pid": 1131015,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_identity_20261002_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "commit": "202aed46748856c16b015d94595ecd5364dca394",
+        "torch_version": "2.1.0+cu121",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "source_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "steps_per_epoch": 50,
+        "total_parameters": 196048,
+        "trainable_parameters": 196048,
+        "U_s_use": "unused",
+        "target_access": false,
+        "precision": "float32",
+        "gradient_clipping": null,
+        "optimizer": "AdamW+CosineAnnealingLR",
+        "loader_seed": 2026092704,
+        "observables_actual": {
+          "physics_mode": "amplitude_increment_and_curvature",
+          "lags": [
+            1,
+            2,
+            5,
+            20
+          ],
+          "epsilon": 1e-06,
+          "observation_channels": 21,
+          "amplitude_channels": 5,
+          "increment_channels": 8,
+          "closure_channels": 8,
+          "global_phase_invariant": true,
+          "affine_phase_invariant": false,
+          "raw_iq_bypass": false,
+          "repetition_window": [
+            80,
+            160
+          ],
+          "repetition_period_samples": 20,
+          "repetition_cycles": 4,
+          "temporal_samples": 256,
+          "spectral_signal": "real_physical_observable_time_variations",
+          "sample_rate_hz": 25000000,
+          "input": "received_equalized1_unit_rms_IQ",
+          "parameter_interpretation": "identity_feature_weights_not_identified_TX_hardware"
+        },
+        "observables_active": true,
+        "classifier_scale": 30.0
+      },
+      "completion": null,
+      "profile": null,
+      "log_bytes": 4912,
+      "log_tail": [
+        "EPOCH {\"epoch\": 1, \"optimizer_steps\": 50, \"optimizer_steps_total\": 50, \"source_sample_exposure\": 6300, \"clean_ce\": 1.6546157431602477, \"total_loss\": 1.6546157431602477, \"ce_weight\": 1.0, \"learning_rate\": 0.0002, \"gradient_norm\": 11.719010906219482, \"gradient_used_parameters\": 196048, \"augmentation_active\": false, \"satellite_sample_exposure\": 0, \"domain_backbone_active\": false, \"extra_losses_active\": false, \"pseudo_labels_active\": false, \"observables_active\": true, \"observables_diagnostics\": {\"repetition_gain_abs_mean\": 0.2501823604106903, \"spectral_gain_abs_mean\": 0.2500729560852051, \"fusion_gain_gradient_norm\": 0.6227773427963257}, \"rf_diagnostic_gradient_scope\": \"last source batch of epoch\", \"source_val_count\": 27000, \"source_val_accuracy\": 0.5955925925925926, \"source_val_ce\": 1.2481274155510795, \"source_val_rx_accuracy\": {\"1\": 0.7951851851851852, \"3\": 0.3603703703703704, \"4\": 0.6937037037037037, \"6\": 0.7301851851851852, \"8\": 0.3985185185185185}, \"source_val_worst_rx\": 0.3603703703703704, \"elapsed_seconds\": 5.368838059002883, \"peak_cuda_allocated_bytes\": 141497344}",
+        "EPOCH {\"epoch\": 2, \"optimizer_steps\": 50, \"optimizer_steps_total\": 100, \"source_sample_exposure\": 6300, \"clean_ce\": 0.9090783047676086, \"total_loss\": 0.9090783047676086, \"ce_weight\": 1.0, \"learning_rate\": 0.00019998772493192525, \"gradient_norm\": 10.857924242019653, \"gradient_used_parameters\": 196048, \"augmentation_active\": false, \"satellite_sample_exposure\": 0, \"domain_backbone_active\": false, \"extra_losses_active\": false, \"pseudo_labels_active\": false, \"observables_active\": true, \"observables_diagnostics\": {\"repetition_gain_abs_mean\": 0.251635879278183, \"spectral_gain_abs_mean\": 0.2502036988735199, \"fusion_gain_gradient_norm\": 0.32378241419792175}, \"rf_diagnostic_gradient_scope\": \"last source batch of epoch\", \"source_val_count\": 27000, \"source_val_accuracy\": 0.7489629629629629, \"source_val_ce\": 0.7082254001652752, \"source_val_rx_accuracy\": {\"1\": 0.9018518518518519, \"3\": 0.5120370370370371, \"4\": 0.8807407407407407, \"6\": 0.8644444444444445, \"8\": 0.5857407407407408}, \"source_val_worst_rx\": 0.5120370370370371, \"elapsed_seconds\": 5.155268248010543, \"peak_cuda_allocated_bytes\": 141497344}"
+      ]
+    },
+    {
+      "row_id": "observable_affine-s2026092704",
+      "status": "RUNNING",
+      "gpu": 7,
+      "process": {
+        "pid": 1131102,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_identity_20261002_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_observable_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_identity_20261002_r01/experiments/cvs_observable_identity/configs/observable_affine-s2026092704.json",
+          ""
+        ]
+      },
+      "epoch": {
+        "epoch": 1,
+        "optimizer_steps": 50,
+        "optimizer_steps_total": 50,
+        "source_sample_exposure": 6300,
+        "clean_ce": 1.5872382497787476,
+        "total_loss": 1.5872382497787476,
+        "ce_weight": 1.0,
+        "learning_rate": 0.0002,
+        "gradient_norm": 12.456344528198242,
+        "gradient_used_parameters": 188240,
+        "augmentation_active": false,
+        "satellite_sample_exposure": 0,
+        "domain_backbone_active": false,
+        "extra_losses_active": false,
+        "pseudo_labels_active": false,
+        "observables_active": true,
+        "observables_diagnostics": {
+          "repetition_gain_abs_mean": 0.250273197889328,
+          "spectral_gain_abs_mean": 0.24992647767066956,
+          "fusion_gain_gradient_norm": 0.6129831075668335
+        },
+        "rf_diagnostic_gradient_scope": "last source batch of epoch",
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.6233333333333333,
+        "source_val_ce": 1.1516910096627695,
+        "source_val_rx_accuracy": {
+          "1": 0.7753703703703704,
+          "3": 0.3812962962962963,
+          "4": 0.7922222222222223,
+          "6": 0.737037037037037,
+          "8": 0.43074074074074076
+        },
+        "source_val_worst_rx": 0.3812962962962963,
+        "elapsed_seconds": 5.463664027993218,
+        "peak_cuda_allocated_bytes": 139552256
+      },
+      "resolved": {
+        "method": "cvs_observable_identity",
+        "variant": "observable_affine",
+        "model_seed": 2026092704,
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-observable-identity-manysig-m8-r01/observable_affine-s2026092704/source",
+        "epochs": 200,
+        "batch_size": 128,
+        "lr": 0.0002,
+        "lr_min": 1e-06,
+        "weight_decay": 0.0001,
+        "drop_last": false,
+        "augmentation": false,
+        "domain_backbone": false,
+        "extra_losses": [],
+        "selection": "fixed_last_epoch",
+        "split_seed": 392005,
+        "device": "cuda:0",
+        "observables": {
+          "physics_mode": "amplitude_and_phase_curvature",
+          "lags": [
+            1,
+            2,
+            5,
+            20
+          ],
+          "epsilon": 1e-06,
+          "observation_channels": 13,
+          "amplitude_channels": 5,
+          "increment_channels": 0,
+          "closure_channels": 8,
+          "global_phase_invariant": true,
+          "affine_phase_invariant": true,
+          "raw_iq_bypass": false,
+          "repetition_window": [
+            80,
+            160
+          ],
+          "repetition_period_samples": 20,
+          "repetition_cycles": 4,
+          "temporal_samples": 256,
+          "spectral_signal": "real_physical_observable_time_variations",
+          "sample_rate_hz": 25000000,
+          "input": "received_equalized1_unit_rms_IQ",
+          "parameter_interpretation": "identity_feature_weights_not_identified_TX_hardware"
+        },
+        "pid": 1131102,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_identity_20261002_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "commit": "202aed46748856c16b015d94595ecd5364dca394",
+        "torch_version": "2.1.0+cu121",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "source_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "steps_per_epoch": 50,
+        "total_parameters": 188240,
+        "trainable_parameters": 188240,
+        "U_s_use": "unused",
+        "target_access": false,
+        "precision": "float32",
+        "gradient_clipping": null,
+        "optimizer": "AdamW+CosineAnnealingLR",
+        "loader_seed": 2026092704,
+        "observables_actual": {
+          "physics_mode": "amplitude_and_phase_curvature",
+          "lags": [
+            1,
+            2,
+            5,
+            20
+          ],
+          "epsilon": 1e-06,
+          "observation_channels": 13,
+          "amplitude_channels": 5,
+          "increment_channels": 0,
+          "closure_channels": 8,
+          "global_phase_invariant": true,
+          "affine_phase_invariant": true,
+          "raw_iq_bypass": false,
+          "repetition_window": [
+            80,
+            160
+          ],
+          "repetition_period_samples": 20,
+          "repetition_cycles": 4,
+          "temporal_samples": 256,
+          "spectral_signal": "real_physical_observable_time_variations",
+          "sample_rate_hz": 25000000,
+          "input": "received_equalized1_unit_rms_IQ",
+          "parameter_interpretation": "identity_feature_weights_not_identified_TX_hardware"
+        },
+        "observables_active": true,
+        "classifier_scale": 30.0
+      },
+      "completion": null,
+      "profile": null,
+      "log_bytes": 3803,
+      "log_tail": [
+        "RESOLVED_CONFIG {\"method\": \"cvs_observable_identity\", \"variant\": \"observable_affine\", \"model_seed\": 2026092704, \"source_contract\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json\", \"dataset\": \"/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl\", \"output_root\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-observable-identity-manysig-m8-r01/observable_affine-s2026092704/source\", \"epochs\": 200, \"batch_size\": 128, \"lr\": 0.0002, \"lr_min\": 1e-06, \"weight_decay\": 0.0001, \"drop_last\": false, \"augmentation\": false, \"domain_backbone\": false, \"extra_losses\": [], \"selection\": \"fixed_last_epoch\", \"split_seed\": 392005, \"device\": \"cuda:0\", \"observables\": {\"physics_mode\": \"amplitude_and_phase_curvature\", \"lags\": [1, 2, 5, 20], \"epsilon\": 1e-06, \"observation_channels\": 13, \"amplitude_channels\": 5, \"increment_channels\": 0, \"closure_channels\": 8, \"global_phase_invariant\": true, \"affine_phase_invariant\": true, \"raw_iq_bypass\": false, \"repetition_window\": [80, 160], \"repetition_period_samples\": 20, \"repetition_cycles\": 4, \"temporal_samples\": 256, \"spectral_signal\": \"real_physical_observable_time_variations\", \"sample_rate_hz\": 25000000, \"input\": \"received_equalized1_unit_rms_IQ\", \"parameter_interpretation\": \"identity_feature_weights_not_identified_TX_hardware\"}, \"pid\": 1131102, \"cwd\": \"/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_identity_20261002_r01\", \"python\": \"/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python\", \"commit\": \"202aed46748856c16b015d94595ecd5364dca394\", \"torch_version\": \"2.1.0+cu121\", \"hardware\": \"NVIDIA GeForce RTX 3090\", \"source_counts\": {\"L_s\": 6300, \"U_s\": 56700, \"V\": 27000}, \"steps_per_epoch\": 50, \"total_parameters\": 188240, \"trainable_parameters\": 188240, \"U_s_use\": \"unused\", \"target_access\": false, \"precision\": \"float32\", \"gradient_clipping\": null, \"optimizer\": \"AdamW+CosineAnnealingLR\", \"loader_seed\": 2026092704, \"observables_actual\": {\"physics_mode\": \"amplitude_and_phase_curvature\", \"lags\": [1, 2, 5, 20], \"epsilon\": 1e-06, \"observation_channels\": 13, \"amplitude_channels\": 5, \"increment_channels\": 0, \"closure_channels\": 8, \"global_phase_invariant\": true, \"affine_phase_invariant\": true, \"raw_iq_bypass\": false, \"repetition_window\": [80, 160], \"repetition_period_samples\": 20, \"repetition_cycles\": 4, \"temporal_samples\": 256, \"spectral_signal\": \"real_physical_observable_time_variations\", \"sample_rate_hz\": 25000000, \"input\": \"received_equalized1_unit_rms_IQ\", \"parameter_interpretation\": \"identity_feature_weights_not_identified_TX_hardware\"}, \"observables_active\": true, \"classifier_scale\": 30.0}",
+        "EPOCH {\"epoch\": 1, \"optimizer_steps\": 50, \"optimizer_steps_total\": 50, \"source_sample_exposure\": 6300, \"clean_ce\": 1.5872382497787476, \"total_loss\": 1.5872382497787476, \"ce_weight\": 1.0, \"learning_rate\": 0.0002, \"gradient_norm\": 12.456344528198242, \"gradient_used_parameters\": 188240, \"augmentation_active\": false, \"satellite_sample_exposure\": 0, \"domain_backbone_active\": false, \"extra_losses_active\": false, \"pseudo_labels_active\": false, \"observables_active\": true, \"observables_diagnostics\": {\"repetition_gain_abs_mean\": 0.250273197889328, \"spectral_gain_abs_mean\": 0.24992647767066956, \"fusion_gain_gradient_norm\": 0.6129831075668335}, \"rf_diagnostic_gradient_scope\": \"last source batch of epoch\", \"source_val_count\": 27000, \"source_val_accuracy\": 0.6233333333333333, \"source_val_ce\": 1.1516910096627695, \"source_val_rx_accuracy\": {\"1\": 0.7753703703703704, \"3\": 0.3812962962962963, \"4\": 0.7922222222222223, \"6\": 0.737037037037037, \"8\": 0.43074074074074076}, \"source_val_worst_rx\": 0.3812962962962963, \"elapsed_seconds\": 5.463664027993218, \"peak_cuda_allocated_bytes\": 139552256}"
+      ]
+    }
+  ],
+  "dispatcher_process": {
+    "pid": 1130303,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_identity_20261002_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_observable_identity.dispatch",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_identity_20261002_r01/experiments/cvs_observable_identity/configs/launch_spec.json",
+      ""
+    ]
+  },
+  "gpu": "1130371, GPU-56adac86-77cd-36c9-8770-dbf002650461, 502 MiB\n1130461, GPU-a2d039ff-1792-4222-2b47-140429e10f94, 502 MiB\n1130606, GPU-4fb45b9a-894a-536b-0e0a-09f7c1341562, 502 MiB\n1130695, GPU-7b4bacb3-4901-6845-a414-0dfdfeeade97, 502 MiB\n1130837, GPU-95d925a1-7218-ca7b-adef-164241f4f491, 502 MiB\n1130926, GPU-ef5f59f2-e03e-fe6e-ea6b-3e03afc9b331, 502 MiB\n1131015, GPU-5463e082-259e-537b-603a-01575d45801c, 502 MiB\n1131102, GPU-9c4eb614-ca19-a390-aaf4-801f8980b6a9, 502 MiB\n"
+}

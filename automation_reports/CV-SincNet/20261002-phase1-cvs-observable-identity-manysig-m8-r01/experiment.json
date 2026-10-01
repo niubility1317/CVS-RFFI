@@ -24,7 +24,7 @@
   "replaces_run_id": null,
   "authorization": "用户要求继续优化CVS，性能优先；2026-10-02明确要求真正的RFF physics aware。沿用CE唯一、身份骨干、无增强、clean-only，每次发布默认最后测试。",
   "code": {
-    "commit": "dd02ce1862b6eafcf7e0d1717bbe48be8d0975f8",
+    "commit": "202aed46748856c16b015d94595ecd5364dca394",
     "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_identity_20261002_r01",
@@ -99,7 +99,10 @@
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-observable-identity-manysig-m8-r01",
     "local_artifact_root": "automation_reports/CV-SincNet/20261002-phase1-cvs-observable-identity-manysig-m8-r01",
     "launch_command": "python -m experiments.cvs_observable_identity.publish --output local_artifacts/cvs_observable_identity_20261002_r01",
-    "stop_rule": "Only own affected row fails on nonfinite/permissions/output collision/nonzero exit; preserve all artifacts; no retry, low-score stop or unrelated process intervention"
+    "stop_rule": "Only own affected row fails on nonfinite/permissions/output collision/nonzero exit; preserve all artifacts; no retry, low-score stop or unrelated process intervention",
+    "dispatcher_pid": 1130303,
+    "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_identity_20261002_r01",
+    "dispatcher_log": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_identity_20261002_r01/dispatcher.stdout.log"
   },
   "expected_artifacts": [
     "last.pt",
@@ -145,7 +148,7 @@
       "row_id": "observable_phase-s2026092701",
       "method": "observable_phase",
       "purpose": "source_only_CVS_whole_observable_candidate",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_observable_identity/configs/observable_phase-s2026092701.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-observable-identity-manysig-m8-r01/observable_phase-s2026092701/source/resolved_config.json",
       "data_overrides": {},
@@ -180,13 +183,24 @@
         "step_metrics.jsonl",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
+      ],
+      "runtime_pid": 1130371,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_identity_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_observable_identity.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_identity_20261002_r01/experiments/cvs_observable_identity/configs/observable_phase-s2026092701.json",
+        ""
       ]
     },
     {
       "row_id": "observable_affine-s2026092701",
       "method": "observable_affine",
       "purpose": "source_only_CVS_whole_observable_candidate",
-      "gpu": null,
+      "gpu": 1,
       "config_ref": "experiments/cvs_observable_identity/configs/observable_affine-s2026092701.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-observable-identity-manysig-m8-r01/observable_affine-s2026092701/source/resolved_config.json",
       "data_overrides": {},
@@ -221,13 +235,24 @@
         "step_metrics.jsonl",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
+      ],
+      "runtime_pid": 1130461,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_identity_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_observable_identity.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_identity_20261002_r01/experiments/cvs_observable_identity/configs/observable_affine-s2026092701.json",
+        ""
       ]
     },
     {
       "row_id": "observable_phase-s2026092702",
       "method": "observable_phase",
       "purpose": "source_only_CVS_whole_observable_candidate",
-      "gpu": null,
+      "gpu": 2,
       "config_ref": "experiments/cvs_observable_identity/configs/observable_phase-s2026092702.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-observable-identity-manysig-m8-r01/observable_phase-s2026092702/source/resolved_config.json",
       "data_overrides": {},
@@ -262,13 +287,24 @@
         "step_metrics.jsonl",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
+      ],
+      "runtime_pid": 1130606,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_identity_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_observable_identity.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_identity_20261002_r01/experiments/cvs_observable_identity/configs/observable_phase-s2026092702.json",
+        ""
       ]
     },
     {
       "row_id": "observable_affine-s2026092702",
       "method": "observable_affine",
       "purpose": "source_only_CVS_whole_observable_candidate",
-      "gpu": null,
+      "gpu": 3,
       "config_ref": "experiments/cvs_observable_identity/configs/observable_affine-s2026092702.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-observable-identity-manysig-m8-r01/observable_affine-s2026092702/source/resolved_config.json",
       "data_overrides": {},
@@ -303,13 +339,24 @@
         "step_metrics.jsonl",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
+      ],
+      "runtime_pid": 1130695,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_identity_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_observable_identity.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_identity_20261002_r01/experiments/cvs_observable_identity/configs/observable_affine-s2026092702.json",
+        ""
       ]
     },
     {
       "row_id": "observable_phase-s2026092703",
       "method": "observable_phase",
       "purpose": "source_only_CVS_whole_observable_candidate",
-      "gpu": null,
+      "gpu": 4,
       "config_ref": "experiments/cvs_observable_identity/configs/observable_phase-s2026092703.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-observable-identity-manysig-m8-r01/observable_phase-s2026092703/source/resolved_config.json",
       "data_overrides": {},
@@ -344,13 +391,24 @@
         "step_metrics.jsonl",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
+      ],
+      "runtime_pid": 1130837,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_identity_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_observable_identity.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_identity_20261002_r01/experiments/cvs_observable_identity/configs/observable_phase-s2026092703.json",
+        ""
       ]
     },
     {
       "row_id": "observable_affine-s2026092703",
       "method": "observable_affine",
       "purpose": "source_only_CVS_whole_observable_candidate",
-      "gpu": null,
+      "gpu": 5,
       "config_ref": "experiments/cvs_observable_identity/configs/observable_affine-s2026092703.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-observable-identity-manysig-m8-r01/observable_affine-s2026092703/source/resolved_config.json",
       "data_overrides": {},
@@ -385,13 +443,24 @@
         "step_metrics.jsonl",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
+      ],
+      "runtime_pid": 1130926,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_identity_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_observable_identity.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_identity_20261002_r01/experiments/cvs_observable_identity/configs/observable_affine-s2026092703.json",
+        ""
       ]
     },
     {
       "row_id": "observable_phase-s2026092704",
       "method": "observable_phase",
       "purpose": "source_only_CVS_whole_observable_candidate",
-      "gpu": null,
+      "gpu": 6,
       "config_ref": "experiments/cvs_observable_identity/configs/observable_phase-s2026092704.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-observable-identity-manysig-m8-r01/observable_phase-s2026092704/source/resolved_config.json",
       "data_overrides": {},
@@ -426,13 +495,24 @@
         "step_metrics.jsonl",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
+      ],
+      "runtime_pid": 1131015,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_identity_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_observable_identity.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_identity_20261002_r01/experiments/cvs_observable_identity/configs/observable_phase-s2026092704.json",
+        ""
       ]
     },
     {
       "row_id": "observable_affine-s2026092704",
       "method": "observable_affine",
       "purpose": "source_only_CVS_whole_observable_candidate",
-      "gpu": null,
+      "gpu": 7,
       "config_ref": "experiments/cvs_observable_identity/configs/observable_affine-s2026092704.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-observable-identity-manysig-m8-r01/observable_affine-s2026092704/source/resolved_config.json",
       "data_overrides": {},
@@ -467,6 +547,17 @@
         "step_metrics.jsonl",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
+      ],
+      "runtime_pid": 1131102,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_identity_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_observable_identity.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_observable_identity_20261002_r01/experiments/cvs_observable_identity/configs/observable_affine-s2026092704.json",
+        ""
       ]
     }
   ],
