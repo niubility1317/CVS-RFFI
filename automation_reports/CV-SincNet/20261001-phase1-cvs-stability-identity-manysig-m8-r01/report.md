@@ -1,6 +1,6 @@
 # CVS 性能优先研发：物理补充表征
 
-run_id：`20261001-phase1-cvs-stability-identity-manysig-m8-r01`。状态 SOURCE_TRAINING，尚无本轮完整 E200 或 clean 结果。此前在读取 attentive clean 结果前固定的两种结构，各四 seed，从零同划分/预算、唯一身份 CE、无增强/域骨干。性能优先，成本次要。
+run_id：`20261001-phase1-cvs-stability-identity-manysig-m8-r01`。状态 TRAINING_COMPLETE，尚无本轮完整 E200 或 clean 结果。此前在读取 attentive clean 结果前固定的两种结构，各四 seed，从零同划分/预算、唯一身份 CE、无增强/域骨干。性能优先，成本次要。
 
 |候选|总参数/有效 CE 参数|Conv/Linear MAC/包|
 |---|---:|---:|
@@ -26,3 +26,7 @@ run_id：`20261001-phase1-cvs-stability-identity-manysig-m8-r01`。状态 SOURCE
 ## 截至当前的完整可用源日志审计
 
 已读八行全部当前完整 step/epoch/CSV 和 stdout，覆盖 47 至 53 轮。实际纯身份 CE、梯度有限、phase/DSQ 激活状态及源角色均符合登记，未发现运行期异常；八个实际训练进程存活。源验证准确率和训练损失只是中途收敛证据，不作选模或 clean 性能确认。持续写入时尚未结束的末行单独记录，不作为完整记录解析，E200 完成后仍执行完整终态审计。见[当前全日志审计](evidence/source_live_full_log_audit.json)。
+
+## 完整源训练与冻结
+
+8 行均完成 E200/10000 步，完整 1600 epoch、80000 step、CSV 和全部 stdout 已解析，无运行期技术异常；实际源数据角色一致，scratch/noaug/nodomain/CE-only 核实。按登记的性能优先规则冻结 `phase_dsq`，源选择独立复算完全一致。源性能完全并列后才考虑参数和计算，不使用测试反馈。确认 run `20261001-phase1-cvs-stability-clean-manysig-m24-r01` 已预登记，默认完成 4 个新预测和 20 个冻结控制预测的独立评分。见[evidence/source_selection.json](evidence/source_selection.json)和[evidence/source_completion_validation.json](evidence/source_completion_validation.json)。
