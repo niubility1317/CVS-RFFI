@@ -64,6 +64,7 @@ def source_fixture(case,cfg):
     done=dict(status='SOURCE_TRAINED',epoch=200,steps=10000,target_access=False,target_evaluated=False)
     resolved=dict(method=contracts.source_method(cfg['variant']),variant=cfg['variant'],model_seed=cfg['model_seed'],augmentation=False,domain_backbone=False,
         extra_losses=[],target_access=False,epochs=200,steps_per_epoch=50,selection='fixed_last_epoch',source_counts={'L_s':6300,'U_s':56700,'V':27000})
+    if cfg['variant'] in contracts.EIGHTH:resolved.update(coherence_phase_active=True,dsq_active=False,coherence_epsilon=1e-6,time_stability_channels=8,freq_stability_channels=0,classifier_scale=30.0,classifier_geometry='learned_rotated_simplex' if cfg['variant']=='simplex_learned' else 'fixed_simplex')
     if cfg['variant'] in contracts.SEVENTH:resolved.update(coherence_phase_active=True,dsq_active=cfg['variant']=='coherence_dsq',coherence_epsilon=1e-6,time_stability_channels=8,freq_stability_channels=4 if cfg['variant']=='coherence_dsq' else 0)
     if cfg['variant'] in contracts.SIXTH:resolved.update(phase_delta_active=True,dsq_active=cfg['variant']=='phase_dsq',time_stability_channels=8,freq_stability_channels=4 if cfg['variant']=='phase_dsq' else 0)
     payload=dict(model=TinyClassifier().state_dict(),epoch=200,source_contract=case['contract'],initialization=initial,selection='fixed_last_epoch',
@@ -626,6 +627,70 @@ def test_coherence_prepare_only_selected4_fixed_capsule(case,monkeypatch):
     monkeypatch.setattr(prepare,'ROOT',case['root'])
     prepare.main(dict(status='SOURCE_SELECTION_FROZEN',target_access=False,target_score_used=False,selected_variant='coherence_dsq'))
     folder=case['root']/'experiments/cvs_coherence_clean/configs';runtime=contracts.read(folder/'launch_spec.json');new=[r for r in runtime['rows'] if not r.get('reuse_from_run')]
+    assert len(new)==4 and len(runtime['rows'])==24
+    for row in new:
+        c=contracts.read(folder/(row['row_id']+'.json'));assert c['p1_capsule']==CAPSULE
+        contracts.validate_predict_config(c,contracts.read(folder/'frozen_selection.json'))
+
+
+def simplex_case(case):
+    from experiments.cvs_simplex_identity.dispatch import select_source_candidate
+    balanced_case(case)
+    case['spec']['rows']=[r for r in case['spec']['rows'] if r['variant'] not in contracts.THIRD]
+    records=[];source_rows=[]
+    for variant in contracts.EIGHTH:
+        for seed in sorted(contracts.SEEDS):
+            rid=variant+'-s'+str(seed);q=case['root']/'simplex_source'/rid/'source'
+            accuracy=.981 if variant=='simplex_fixed' else .98
+            write(q/'completion.json',dict(status='SOURCE_TRAINED',epoch=200,steps=10000,target_access=False,target_evaluated=False,
+                final_source_metrics=dict(source_val_accuracy=accuracy,source_val_worst_rx=.95)))
+            write(q/'resource_profile.json',dict(total_parameters=165521 if variant=='simplex_fixed' else 165393,conv_linear_macs_per_sample=10007588 if variant=='simplex_fixed' else 10003748))
+            source_rows.append(dict(row_id=rid,variant=variant,model_seed=seed,source_output=str(q)))
+            records.append(dict(variant=variant,seed=seed,accuracy=accuracy,worst_rx=.95,parameters=165521 if variant=='simplex_fixed' else 165393,macs=10007588 if variant=='simplex_fixed' else 10003748))
+    matrix=case['root']/'simplex_source_matrix.json';write(matrix,dict(rows=source_rows))
+    selection=dict(select_source_candidate(records),scope='simplex_source',source_matrix_ref=str(matrix))
+    path=case['root']/'simplex_selection.json';write(path,selection)
+    for seed in sorted(contracts.SEEDS):
+        variant=selection['selected_variant'];rid=variant+'-s'+str(seed);out=Path(case['spec']['runtime_root'])/rid/'prediction'
+        cfg=contracts.read(case['spec']['rows'][0]['config']);cfg.update(variant=variant,model_seed=seed,selection_file=str(path),
+            simplex_source_root=str(case['root']/'simplex_source'),source_output=str(case['root']/'simplex_source'/rid/'source'),output_root=str(out))
+        cp=case['root']/'configs'/(rid+'.json');write(cp,cfg)
+        case['spec']['rows'].append(dict(row_id=rid,variant=variant,model_seed=seed,config=str(cp),output_root=str(out)))
+    case['selection']=selection;case['spec']['selection_file']=str(path)
+    return case
+
+
+def test_simplex_actual_source_freeze_and24row_truth_last(case,monkeypatch):
+    simplex_case(case);dispatch.validate_spec(case['spec']);prediction_fixtures(case)
+    assert contracts.frozen_selection(case['spec']['selection_file'])['selected_variant']=='simplex_fixed'
+    opened=[];original=score.read
+    monkeypatch.setattr(score,'read',lambda p:(opened.append(str(p)),original(p))[1])
+    marker=score.score(case['spec']);assert marker['rows']==24 and marker['models']==6
+    at=opened.index(case['spec']['p1_truth']);assert sum(Path(p).name=='clean_complete.json' for p in opened[:at])==24
+
+
+def test_simplex_checkpoint_guards_and_unselected_rejection(case,monkeypatch):
+    simplex_case(case);cfg=contracts.read(case['spec']['rows'][-1]['config'])
+    done,initial,resolved,payload=source_fixture(case,cfg)
+    write(Path(cfg['source_output'])/'completion.json',dict(done,final_source_metrics=dict(source_val_accuracy=.981,source_val_worst_rx=.95)))
+    monkeypatch.setattr(predict,'build_model',lambda v:TinyClassifier())
+    predict.predict(cfg)
+    with pytest.raises(ValueError):contracts.validate_predict_config(dict(cfg,variant='simplex_learned'),case['selection'])
+    args=[cfg,done,initial,case['contract'],case['contract'],resolved,payload]
+    bad=list(args);bad[-1]=dict(payload,method='cvs_balanced_identity')
+    with pytest.raises(ValueError):contracts.checkpoint_contract(*bad)
+    bad=list(args);bad[5]=dict(resolved,classifier_geometry='learned_rotated_simplex')
+    with pytest.raises(ValueError,match='Simplex classifier activation'):contracts.checkpoint_contract(*bad)
+
+
+def test_simplex_prepare_only_selected4_fixed_capsule(case,monkeypatch):
+    from experiments.cvs_simplex_clean import prepare
+    from experiments.cvs_clean_eval.prepare import CAPSULE
+    root=Path(__file__).resolve().parents[1];prefix='experiments/cvs_selected_clean/configs/'
+    for name in ('launch_spec.json','experiment_spec.json'):write(case['root']/prefix/name,contracts.read(root/prefix/name))
+    monkeypatch.setattr(prepare,'ROOT',case['root'])
+    prepare.main(dict(status='SOURCE_SELECTION_FROZEN',target_access=False,target_score_used=False,selected_variant='simplex_fixed'))
+    folder=case['root']/'experiments/cvs_simplex_clean/configs';runtime=contracts.read(folder/'launch_spec.json');new=[r for r in runtime['rows'] if not r.get('reuse_from_run')]
     assert len(new)==4 and len(runtime['rows'])==24
     for row in new:
         c=contracts.read(folder/(row['row_id']+'.json'));assert c['p1_capsule']==CAPSULE
