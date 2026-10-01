@@ -1,6 +1,6 @@
 # 实验总索引
 
-更新：2026-10-01T12:19:30+00:00
+更新：2026-10-01T12:43:22+00:00
 
 先按方法/问题检索，再用run ID读取精确配置与证据。历史组数量不等于独立实验数量。
 
@@ -12,7 +12,7 @@
 
 |记录类型|数量|
 |---|---:|
-|managed_run|32|
+|managed_run|33|
 
 历史状态统一为HISTORICAL_UNVERIFIED；RUNNING等原文声明只供查证，不能证明此刻仍在运行。
 
@@ -20,28 +20,28 @@
 
 |路径标签（定位提示）|证据组数|
 |---|---:|
-|[cvs](by_method/cvs.md)|15|
-|[clean_only](by_method/clean_only.md)|13|
-|[ce_only](by_method/ce_only.md)|13|
+|[cvs](by_method/cvs.md)|16|
+|[clean_only](by_method/clean_only.md)|14|
+|[ce_only](by_method/ce_only.md)|14|
 |[daot](by_method/daot.md)|11|
 |[rc4](by_method/rc4.md)|10|
 |[no_augmentation](by_method/no_augmentation.md)|9|
 |[practical](by_method/practical.md)|7|
 |[residual](by_method/residual.md)|7|
 |[residual_noeq](by_method/residual_noeq.md)|7|
+|[performance_priority](by_method/performance_priority.md)|7|
 |[source_selection](by_method/source_selection.md)|7|
 |[phase1](by_method/phase1.md)|6|
 |[fasttrust](by_method/fasttrust.md)|6|
 |[concat](by_method/concat.md)|6|
-|[performance_priority](by_method/performance_priority.md)|6|
+|[source_selected](by_method/source_selected.md)|6|
 |[lightweight](by_method/lightweight.md)|6|
 |[full](by_method/full.md)|5|
 |[zf](by_method/zf.md)|5|
 |[mmse](by_method/mmse.md)|5|
 |[truth_last](by_method/truth_last.md)|5|
-|[source_selected](by_method/source_selected.md)|5|
+|[frozen_prediction_reuse](by_method/frozen_prediction_reuse.md)|5|
 |[final200](by_method/final200.md)|4|
-|[frozen_prediction_reuse](by_method/frozen_prediction_reuse.md)|4|
 |[d92](by_method/d92.md)|3|
 |[response](by_method/response.md)|3|
 |[core90](by_method/core90.md)|3|
@@ -105,6 +105,7 @@
 |CVS性能优先继续优化：balanced_fusion clean测试报告|managed_run|[打开](../automation_reports/CV-SincNet/20261001-phase1-cvs-balanced-clean-manysig-m24-r01/report.md)|
 |CVS继续研发：分支平衡融合与有符号PA投影|managed_run|[打开](../automation_reports/CV-SincNet/20261001-phase1-cvs-balanced-identity-manysig-m8-r01/report.md)|
 |CVS 无增强轻量架构与常见网络基准|managed_run|[打开](../automation_reports/CV-SincNet/20261001-phase1-cvs-clean-architecture-manysig-m32-r01/report.md)|
+|性能优先连续复相关 CVS：clean 确认实验|managed_run|[打开](../automation_reports/CV-SincNet/20261001-phase1-cvs-coherence-clean-manysig-m24-r01/report.md)|
 |CVS 连续复相关身份表征|managed_run|[打开](../automation_reports/CV-SincNet/20261001-phase1-cvs-coherence-identity-manysig-m8-r01/report.md)|
 |CVS身份骨干交叉熵对照实验|managed_run|[打开](../automation_reports/CV-SincNet/20261001-phase1-cvs-identity-ce-practical-manysig-m5-r01/report.md)|
 |CVS身份骨干交叉熵对照实验|managed_run|[打开](../automation_reports/CV-SincNet/20261001-phase1-cvs-identity-ce-practical-manysig-m5-r02/report.md)|
