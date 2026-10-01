@@ -141,7 +141,8 @@
     "prediction_ref": "N/A until source_selection.json is frozen",
     "scorer_ref": "N/A: source-only release does not score target",
     "primary": "Full 200-epoch source CE/V/worstRX; select via performance first: maximum0.5 mean V+0.5 mean worstRX;costs only after exactly equal performance",
-    "later_test": "If a new gauge is source-selected, automatically register 20261002-phase1-cvs-gauge-clean-manysig-m24-r01: selected4 new clean predictions plus read-only old20 fixed predictions, independent truth-last scoring. If residual control wins, retain its verified historical clean artifacts and do not query unselected gauges."
+    "later_test": "If a new gauge is source-selected, automatically register 20261002-phase1-cvs-gauge-clean-manysig-m24-r01: selected4 new clean predictions plus read-only old20 fixed predictions, independent truth-last scoring. If residual control wins, retain its verified historical clean artifacts and do not query unselected gauges.",
+    "actual_test": "New gauge N/A by preregistered source rule; residual historical test independently read back, no relaunch"
   },
   "rows": [
     {
@@ -638,6 +639,7 @@
       "7-14",
       "7-7",
       "8-8"
-    ]
+    ],
+    "actual_outcome": "Existing residual source control selected; verified historical clean retained; unselected gauges not queried"
   }
 }
