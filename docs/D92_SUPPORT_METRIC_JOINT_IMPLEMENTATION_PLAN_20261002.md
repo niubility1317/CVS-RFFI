@@ -1,6 +1,6 @@
 # LocalRidge 与 support 度量微调的下一步实现范围
 
-日期：2026-10-02。状态：独立数值模块和联合分类器源码已冻结，75项合成用例通过；尚未形成运行配置或启动新实验。现行 ProtoFrame 和 GroupBarrier 的健康 query 任务保持冻结。此计划不把数学设计写成性能提升。
+日期：2026-10-02。状态：独立模块及新入口/分析器/控制已冻结，191项相关合成用例通过；固定support配置READY，尚未启动新实验。现行 ProtoFrame 和 GroupBarrier 的健康 query 任务保持冻结。此计划不把数学设计写成性能提升。
 
 继续保留 LocalRidge 优先：解析 Ridge、自由截距、新类 head、barrier gate 与完整隐式导数是主体；少量目标 support 监督训练的 adapter 只改变合法特征几何。Phase1 与地面原型固定，源样本、源逐样本特征、query 拟合和评分反馈均禁止。
 
@@ -37,7 +37,7 @@ B 在零 anchor、C 在本路径实际 B anchor 构造并冻结该阶段度量�
 
 理想基满足 `U.T@U=I_r`；实际浮点实现必须使用实际 `U.T@U` 作为 `B`，不能遗漏基误差。有效秩 `r≤5` 与名义最大五坐标分开记录。若复用现有固定五方向 primitive，可显式补零列，再仅在前 `r` 个有效方向解度量球。秩为零和没有合法 OOF 时不更新 adapter，解析 final head 仍按原职责拟合。
 
-这属于未来独立候选的新坐标接口。现有 [数值稿](D92_PROTO_FRAME_SUPPORT_METRIC_NUMERICS_NOTE_20261002.md) 讨论的是保留原五坐标并 lift 的方案；不能把两种状态混用，也不能声称新接口已经实现。
+本独立候选的新U坐标接口已完成源码与合成验证。现有 [数值稿](D92_PROTO_FRAME_SUPPORT_METRIC_NUMERICS_NOTE_20261002.md) 保留写作时讨论的原五坐标并lift方案；两种状态不能混用，合成验证不等于实绩或完整head区间认证。
 
 ## 4. 证据和有限验证
 
@@ -52,3 +52,5 @@ B 在零 anchor、C 在本路径实际 B anchor 构造并冻结该阶段度量�
 数学出处与独立推导见 [坐标尺度稿](D92_PROTO_FRAME_GGN_COORDINATE_SCALE_NOTE_20261002.md)、[原组合函数及计算稿](D92_LOCAL_RIDGE_JOINT_GENERALIZATION_COST_NOTE_20261002.md)。本计划没有精度、泛化、时延或性能优势承诺。
 
 当前验证见[实现验证记录](D92_SUPPORT_METRIC_SYNTHETIC_VALIDATION_20261002.md)。实现阶段的有限浮点证据不改变此前数学稿的严格认证未完成边界；原数学稿保留写作时状态。
+
+新入口与完整矩阵分析验证见[补充实现验证](D92_SUPPORT_METRIC_ENTRY_ANALYSIS_VALIDATION_20261002.md)；正式启动及成绩以对应实验记录读回为准。

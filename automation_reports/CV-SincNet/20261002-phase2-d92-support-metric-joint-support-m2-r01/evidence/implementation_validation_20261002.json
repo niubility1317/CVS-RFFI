@@ -1,0 +1,57 @@
+{
+  "status": "VERIFIED_FROZEN_SOURCE_SYNTHETIC_AND_INPUT_METADATA_NOT_PERFORMANCE",
+  "current_candidate_total_synthetic_cases": 191,
+  "unchanged_core_cases": 75,
+  "new_entry_analysis_control_cases": 116,
+  "passes": [
+    {
+      "prefix": "pytest_native_activation_1790893250858494100",
+      "passed": 26,
+      "observed_root_exit_code": 0
+    },
+    {
+      "prefix": "pytest_native_activation_1790893494496368900",
+      "passed": 43,
+      "observed_root_exit_code": 0
+    },
+    {
+      "prefix": "pytest_native_activation_1790893520329190000",
+      "passed": 47,
+      "observed_root_exit_code": 0
+    }
+  ],
+  "core_validation_ref": "docs/D92_SUPPORT_METRIC_SYNTHETIC_VALIDATION_20261002.md",
+  "entry_validation_ref": "docs/D92_SUPPORT_METRIC_ENTRY_ANALYSIS_VALIDATION_20261002.md",
+  "independent_configuration_review_ref": "docs/D92_SUPPORT_METRIC_PREREGISTRATION_REVIEW_20261002.md",
+  "root_limited_new_source_review": "NO_UNRESOLVED_P0_P1; row basis/failure, paired actual B-C, resources/phase closure, exclusive publication and whole-matrix-before-join",
+  "numerical_execution_owner": "root",
+  "activated_environment": "ssr-gpu",
+  "source_only_workers": true,
+  "isolated_import_ref": "docs/D92_SUPPORT_METRIC_SOURCE_BUNDLE_IMPORT_20261002.json",
+  "metadata_preflight_ref": "automation_reports/CV-SincNet/20261002-phase2-d92-support-metric-joint-support-m2-r01/evidence/preflight_20261002.json",
+  "raw_evidence": [
+    "automation_reports/CV-SincNet/20261002-phase2-d92-support-metric-joint-support-m2-r01/evidence/implementation/pytest_native_activation_1790893250858494100.stdout.gz",
+    "automation_reports/CV-SincNet/20261002-phase2-d92-support-metric-joint-support-m2-r01/evidence/implementation/pytest_native_activation_1790893250858494100.stderr.gz",
+    "automation_reports/CV-SincNet/20261002-phase2-d92-support-metric-joint-support-m2-r01/evidence/implementation/pytest_native_activation_1790893250858494100.environment.json",
+    "automation_reports/CV-SincNet/20261002-phase2-d92-support-metric-joint-support-m2-r01/evidence/implementation/pytest_native_activation_1790893494496368900.stdout.gz",
+    "automation_reports/CV-SincNet/20261002-phase2-d92-support-metric-joint-support-m2-r01/evidence/implementation/pytest_native_activation_1790893494496368900.stderr.gz",
+    "automation_reports/CV-SincNet/20261002-phase2-d92-support-metric-joint-support-m2-r01/evidence/implementation/pytest_native_activation_1790893494496368900.environment.json",
+    "automation_reports/CV-SincNet/20261002-phase2-d92-support-metric-joint-support-m2-r01/evidence/implementation/pytest_native_activation_1790893520329190000.stdout.gz",
+    "automation_reports/CV-SincNet/20261002-phase2-d92-support-metric-joint-support-m2-r01/evidence/implementation/pytest_native_activation_1790893520329190000.stderr.gz",
+    "automation_reports/CV-SincNet/20261002-phase2-d92-support-metric-joint-support-m2-r01/evidence/implementation/pytest_native_activation_1790893520329190000.environment.json",
+    "automation_reports/CV-SincNet/20261002-phase2-d92-support-metric-joint-support-m2-r01/evidence/implementation/ssr_native_command_1790893536329104800.stdout.gz",
+    "automation_reports/CV-SincNet/20261002-phase2-d92-support-metric-joint-support-m2-r01/evidence/implementation/ssr_native_command_1790893536329104800.stderr.gz",
+    "automation_reports/CV-SincNet/20261002-phase2-d92-support-metric-joint-support-m2-r01/evidence/implementation/ssr_native_command_1790893536329104800.execution.json",
+    "automation_reports/CV-SincNet/20261002-phase2-d92-support-metric-joint-support-m2-r01/evidence/implementation/ssr_native_command_1790893552475081600.stdout.gz",
+    "automation_reports/CV-SincNet/20261002-phase2-d92-support-metric-joint-support-m2-r01/evidence/implementation/ssr_native_command_1790893552475081600.stderr.gz",
+    "automation_reports/CV-SincNet/20261002-phase2-d92-support-metric-joint-support-m2-r01/evidence/implementation/ssr_native_command_1790893552475081600.execution.json",
+    "automation_reports/CV-SincNet/20261002-phase2-d92-support-metric-joint-support-m2-r01/evidence/implementation/ssr_native_command_1790893606058104600.stdout.gz",
+    "automation_reports/CV-SincNet/20261002-phase2-d92-support-metric-joint-support-m2-r01/evidence/implementation/ssr_native_command_1790893606058104600.stderr.gz",
+    "automation_reports/CV-SincNet/20261002-phase2-d92-support-metric-joint-support-m2-r01/evidence/implementation/ssr_native_command_1790893606058104600.execution.json"
+  ],
+  "warning_scope": "Installed torch2.1 reports NumPy2 ABI initialization warning; exercised native A uses explicit Python-list tensors and passed. This is not a global tensor-NumPy compatibility claim.",
+  "query_or_source_observations_read": false,
+  "new_candidate_launched": false,
+  "performance_evidence": false,
+  "scope": "Relevant source and synthetic validation plus input metadata only; no query accuracy, fresh independent validation or spaceborne cost claim"
+}

@@ -1,3 +1,15 @@
+## 当前交接：物理support度量联合LocalRidge，源码与固定实验已就绪
+
+- Goal ACTIVE。`20261002-phase2-d92-support-metric-joint-support-m2-r01` READY，尚未发布或启动；fixed4row/160parent/1800path，old6，K1/5/10/20×new0/2/5/10/20，既有support缓存与source-only scratch基座固定。新U ABI独立，拒绝旧方法adapter，仅同路径B→C。root单owner，CPU2/BLAS2/noGPU/no retry。
+- 75core与116新entry/analysis/control合成cases PASS，共191；相关独立配置审查与root限定直接源码检查无未解决P0/P1，37模块/46文件隔离import与4row元数据VERIFIED。证据`automation_reports/CV-SincNet/20261002-phase2-d92-support-metric-joint-support-m2-r01/evidence/implementation_validation_20261002.json`。不是性能、泛化或星载省算力证据。
+- 本提交parent `aa951242f0a14dfb7cb3d45742f90730e20111c6`；下一步push/远端OID相同后root只执行一次publisher。独立metadata PID/startup/env/resolved config/source读回后登记实际runtime。不要从READY推断已启动，不重发可能已成功mutation。未出现任何新数值成绩。
+- whole新support4/160/1800全部关闭后，已冻结独立analyzer另行fresh output运行；当前release不带analyzer，普通row basis/certificate/archive是方法产物，不是审批链。OOF/proxy不当query性能；A/B/C配对、K×新增、gain/drop/absGap/H和全部实际cost继续报告。
+- 22:18 UTC readonly：Group原73aa两rx3 COMPLETE、两rx1 PREDICTING；ProtoFrame r02原72663两rx3 PREDICTING、两rx1等待，full markers均无。不给子集评分/读query truth，不热改/停/重启。既有负support报告保留，fresh验证暂缓。
+
+<!-- SUPPORT_METRIC_ENTRY_READY_20261002 -->
+
+以下保留历史状态，不据此重复启动：
+
 ## 当前交接：SupportMetric联合core源码75合成用例通过，尚未新建实验
 
 - Goal ACTIVE。新d92_support_metric_basis/step/joint_local_ridge与3tests均FREEZE；23+34+18=75 distinct PASS。docs/D92_SUPPORT_METRIC_SYNTHETIC_VALIDATION_20261002.md与evidence/implementation_validation.json列明所有原失败与最新通过。有限P0/P1审查已闭合，不新增重复审查。新状态U[r]、actualGram+predictionFisher、eta1固定折半、实际本次B→C；不继承旧adapter，不改健康版本。没有producer/config/run/性能结果。
