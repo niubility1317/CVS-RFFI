@@ -1,3 +1,12 @@
+## 当前交接：跨cohort来源修复24项通过，push待授权（2026-10-01）
+
+- Goal ACTIVE。新query评估流程此前99passed；集成metadata发现各cohort原row_root允许不同，已修监督器且保留checkpoint/ground一致与每row来源核对。单文件24passed，测试独立import已修，原collection失败保留。方法公式/参数/资源/当前运行未修改。
+- 本地提交374da6686保存；push被automatic approval review拒绝，具体GitHub披露目的地尚待用户异步确认，禁止绕过或再次推送直到获得授权。远端与项目主承载origin均核实为https://github.com/niubility1317/CVS-RFFI.git；本任务不上传数据/checkpoint/原始数组。随后源码修复亦精确本地提交保留。
+- 原独立analysis仍local79064、remote PID787831/start9221520、source ccb7，09:46UTC独立只读证据CPU增加/summary未生成。健康任务不停止/重复启动；完成后collector与Ground A原预登记继续。Ground/query发布要求已推送source；不能在push待确认时绕过该要求。
+- Root可继续准备冻结query spec/记录：沿用support前固定最小两个model seed，两个完整capsule900/300split，2400parents，全K1/5/10/20×new0/2/5/10/20×场景×support seeds，非新独立验证，无反馈或score选row。A/B/C同物理query且C实际继承B；实际资源/N/A严格分明。
+
+以下为历史状态（不要依据旧段落重复启动）：
+
 ## 最新交接：Margin query评估流程99项通过，原独立分析继续（2026-10-01）
 
 - Goal ACTIVE。新predictor/scorer/reporter/supervisor/publisher及合成测试已完成；99passed，含真实core的K3 B→C继承、完整archives、all-row truth-last和隔离34文件闭包。证据docs/D92_MARGIN_JOINT_QUERY_VALIDATION_20261001.json。原默认temp权限失败保留，官方CmdExeActivator.build_stack原生激活ssr-gpu、工作区独占temp与禁cache后通过，没有并发Conda包装或环境包改动。

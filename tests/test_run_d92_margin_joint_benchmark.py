@@ -2,8 +2,12 @@
 from copy import deepcopy
 import json
 from pathlib import Path
+import sys
 
 import pytest
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path[:0] = [str(ROOT/'tools'),str(ROOT/'code')]
 
 from cvsrffi.d92_margin_joint_local_ridge import FROZEN_CONFIG
 import run_d92_margin_joint_benchmark as run
@@ -72,7 +76,7 @@ def fixed_output(s,row,p):
     return out
 
 
-@pytest.mark.parametrize('change', ['bool_limit','method','lane','owner','missing_row','overlap','seed_packet'])
+@pytest.mark.parametrize('change', ['bool_limit','method','lane','owner','missing_row','overlap','seed_packet','seed_checkpoint'])
 def test_reject_changed_contract(tmp_path,change):
     s = spec(tmp_path)
     if change=='bool_limit':s['benchmark']['config']['qp_resources']['max_transitions']=True
@@ -81,8 +85,26 @@ def test_reject_changed_contract(tmp_path,change):
     elif change=='owner':s['execution']['launch_owner']='another'
     elif change=='missing_row':s['rows'].pop()
     elif change=='overlap':s['rows'][0]['ground_packet']=s['execution']['remote_run_root']
-    else:s['rows'][2]['ground_packet']+='/changed'
+    elif change=='seed_packet':s['rows'][2]['ground_packet']+='/changed'
+    else:s['rows'][2]['expected_checkpoint_sha256']='c'*64
     with pytest.raises(ValueError):run.validate_spec(s)
+
+
+def test_same_model_allows_cohort_specific_row_roots(tmp_path):
+    s = spec(tmp_path)
+    for row in s['rows']:
+        row['row_root'] += '/'+row['cohort']
+    assert run.validate_spec(s) is s
+    for row in s['rows']:
+        other = next(r for r in s['rows'] if r['expected_model_seed']==row['expected_model_seed'] and r['cohort']!=row['cohort'])
+        assert row['row_root']!=other['row_root']
+        assert row['expected_checkpoint_sha256']==other['expected_checkpoint_sha256']
+        assert row['ground_packet']==other['ground_packet']
+        value = preflight(s,row)
+        assert run.validate_preflight(value,s,row,COMMIT) is value
+        value['run_binding']['row_root'] = other['row_root']
+        with pytest.raises(ValueError,match='Actual preflight source paths differ'):
+            run.validate_preflight(value,s,row,COMMIT)
 
 
 def test_command_actual_commit_and_truth_last(tmp_path):

@@ -109,7 +109,7 @@ def validate_spec(spec):
         require(_path(row['output_root'])==_path(execution['remote_run_root'])/name, 'Row output escaped exclusive run')
         for key in ('row_root','branch_features','ground_packet'):
             require(absolute(row[key]) and _separate(row[key],execution['remote_run_root']), 'Source/output overlap: '+key)
-        model = (row['expected_checkpoint_sha256'],row['row_root'],row['ground_packet'])
+        model = (row['expected_checkpoint_sha256'],row['ground_packet'])
         require(models.setdefault(row['expected_model_seed'],model)==model, 'Same model seed changed source checkpoint/packet')
     require(pairs=={(co,seed) for co in cohorts for seed in models}, 'Declared model/cohort matrix is incomplete')
     require(len({value[0] for value in models.values()})==len(models), 'Different model seeds require distinct checkpoint identities')

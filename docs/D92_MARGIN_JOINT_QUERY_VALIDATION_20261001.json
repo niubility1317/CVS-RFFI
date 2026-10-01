@@ -71,5 +71,31 @@
     "source_commit": "ccb7f3469cc1a28ea8bbd7eb7adce937b41a430a",
     "unchanged": true
   },
-  "limitation": "Synthetic correctness only; reused query will require new preregistration and must not be called independent validation."
+  "limitation": "Synthetic correctness only; reused query will require new preregistration and must not be called independent validation.",
+  "followup_validation": {
+    "at": "2026-10-01T09:52:26.874693+00:00",
+    "parent_commit": "374da668616eacce0d8e8b63a87931e6c3056f9e",
+    "affected_scope": "supervisor cohort path binding",
+    "passed": 24,
+    "failed": 0,
+    "exit_code": 0,
+    "elapsed_seconds": null,
+    "output_prefix": "E:\\type10-7\\.codex_tmp\\pytest_native_activation_1790848259772800100",
+    "test_file": "tests/test_run_d92_margin_joint_benchmark.py",
+    "fixes": [
+      "same model across cohorts binds checkpoint and Ground packet; original row_root may differ",
+      "test file independently imports its explicit workspace tools/code"
+    ],
+    "preserved_collection_failure": {
+      "prefix": "E:\\type10-7\\.codex_tmp\\pytest_native_activation_1790848205425618000",
+      "cause": "isolated test import depended on another test sys.path side effect; no test bodies executed"
+    },
+    "unchanged": "frozen method/core/config/resources and live independent support analysis"
+  },
+  "delivery": {
+    "status": "LOCAL_COMMIT_PRESERVED_PUSH_REJECTED_PENDING_USER_DESTINATION_AUTHORIZATION",
+    "local_commit": "374da668616eacce0d8e8b63a87931e6c3056f9e",
+    "remote": "https://github.com/niubility1317/CVS-RFFI.git",
+    "reason": "Automatic approval review rejected push because disclosure to this specific remote was not confirmed."
+  }
 }

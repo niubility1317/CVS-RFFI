@@ -19,7 +19,7 @@ schema 为 `d92_margin_joint_query_benchmark_v1`，所有字段由本次 root �
 
 `row_root` 是固定 cache loader 所用的原 Phase1 来源目录，供复用既有来源核对；不是新 run。`branch_features` 是同 checkpoint 的固定 received 五分支 cache，`ground_packet` 是 source-only 原 native 六旧类头 packet。监督器和 predictor 不加载 checkpoint 或 encoder。predictor preflight 使用已有 loader 的来源、capsule、cache 和 packet 绑定，不新建数据验证或 receipt 链。
 
-所有声明 model 必须覆盖两个 cohort，禁止重复 model/cohort、漏行或为筛结果删行。同 model 的 checkpoint、原来源目录与 Ground packet 必须一致，不同 model 显式绑定各自 checkpoint。新 run、release、row output 不得与输入重叠，每行 `output_root` 固定为 `remote_run_root/row_id`，prediction 目录固定为其下 `predictions`。现行 source-only、checkpoint 继承和 `p2_min_v1/VALIDATED_ONCE` 边界继续适用，配置变化不触发数据 builder 重验。
+所有声明 model 必须覆盖两个 cohort，禁止重复 model/cohort、漏行或为筛结果删行。同 model 的 checkpoint SHA 与 Ground packet 必须一致；不同 cohort 的 `row_root` 可以不同，每行原 prediction/cache 来源目录仍由 predictor/cache provenance 独立核对。不同 model 显式绑定各自 checkpoint。新 run、release、row output 不得与输入重叠，每行 `output_root` 固定为 `remote_run_root/row_id`，prediction 目录固定为其下 `predictions`。现行 source-only、checkpoint 继承和 `p2_min_v1/VALIDATED_ONCE` 边界继续适用，配置变化不触发数据 builder 重验。
 
 spec 的 `code.commit` 可以早于包含新 spec 的发布 commit。实际 runtime OID 由 publisher 核对 HEAD 与远端分支，再作为 supervisor `--commit` 和 predictor `--release-commit` 传入。startup/complete 首次写明实际 OID，不用 preparation parent 代替，不允许 null 或事后补写。
 
@@ -78,8 +78,8 @@ python tools/publish_d92_margin_joint_benchmark.py --spec <same-spec.json> --rec
 
 ## 5. 本次静态与合成验证范围
 
-[监督器合成测试](../tests/test_run_d92_margin_joint_benchmark.py)覆盖完整显式 config、bool 额度拒绝、输入输出分离、源模型绑定、全 row preflight 顺序、失败 row 隔离、不可覆盖、新0、完整物理三流、C alias、继承 namespace、预测固定性以及零 exit 缺 marker。结构 fixture 不含真实 feature、标签或权重。
+[监督器合成测试](../tests/test_run_d92_margin_joint_benchmark.py)覆盖完整显式 config、bool 额度拒绝、输入输出分离、源模型绑定、同 model 跨 cohort 使用不同 `row_root`、每行 preflight 来源路径错配拒绝、跨 cohort checkpoint/packet 错配拒绝、全 row preflight 顺序、失败 row 隔离、不可覆盖、新0、完整物理三流、C alias、继承 namespace、预测固定性以及零 exit 缺 marker。结构 fixture 不含真实 feature、标签或权重。
 
 [publisher 合成测试](../tests/test_publish_d92_margin_joint_benchmark.py)覆盖 pushed OID/clean 白名单、parent/runtime OID 区分、安全 tar 和 CPU 环境、只读 reconcile、独立 post-state、UNKNOWN 保留及不重试；Git/SSH 均用 fake calls。另有一次精确 source bundle 的 isolated import test，由 root 串行运行，不执行模型、拟合、query 或 truth。
 
-worker 的当前验证为四个 Python 文件的 AST/严格 UTF-8 检查，以及本文的严格 UTF-8 和本地链接检查；数值与合成测试结果应由 root 按实际执行更新。worker 未运行 isolated import 或测试。本文件不填真实运行状态、成绩、时间、内存或传输数，也不将准备好的入口写成已完成 benchmark。
+worker 完成四个 Python 文件的 AST/严格 UTF-8 检查及本文的本地链接检查。随后 root 在实际激活的 ssr-gpu 环境完成新 query 流程的 99 项合成测试，包含 isolated import 和真实核心算法集成，见[验证记录](D92_MARGIN_JOINT_QUERY_VALIDATION_20261001.json)。尚未启动真实 query benchmark；没有 query 成绩或星载资源结论。

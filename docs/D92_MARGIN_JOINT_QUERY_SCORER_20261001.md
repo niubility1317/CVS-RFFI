@@ -1,6 +1,6 @@
 # Margin 冻结 query benchmark 的独立三阶段评分
 
-状态：只实现 scorer、reporter 和人工合成 fixtures，未运行数值测试、未读取真实 cache、packet、权重、预测或成绩，未启动实验。方法、参数、健康运行及既有报告不变。根 Agent 是唯一数值验证、Git、远端和 launch owner。
+状态：root 已完成新 query 流程的 99 项合成测试，包含真实核心算法集成，见[验证记录](D92_MARGIN_JOINT_QUERY_VALIDATION_20261001.json)。本流程尚未读取真实 cache、packet、权重、预测或成绩，未启动 query 实验。方法、参数及健康运行保持冻结。根 Agent 是唯一数值验证、Git、远端和 launch owner。
 
 ## 接口与依赖
 
