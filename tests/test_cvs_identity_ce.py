@@ -95,3 +95,12 @@ def test_frozen_prediction_truth_last_score_and_no_restart(artifact_dir):
     result=score(spec,'p1')
     assert result['status']=='SCORED_COMPLETE' and result['records']==10
     with pytest.raises(FileExistsError):predict(cfg)
+
+
+def test_fresh_source_process_imports_top_level_baseline_package():
+    import subprocess
+    import sys
+    root=Path(__file__).resolve().parents[1]
+    result=subprocess.run([sys.executable,'-m','experiments.cvs_identity_ce.source','--help'],
+        cwd=root,capture_output=True,text=True)
+    assert result.returncode==0,result.stderr

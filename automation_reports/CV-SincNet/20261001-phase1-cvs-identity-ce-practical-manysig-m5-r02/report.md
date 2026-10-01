@@ -1,10 +1,4 @@
-"""Persist the experiment explanation and synchronize its own registration."""
-import json
-from pathlib import Path
-import shutil
-from experiments.cvs_identity_ce.prepare import ROOT,WORKSPACE,RUN
-
-REPORT='''# CVS身份骨干交叉熵对照实验
+# CVS身份骨干交叉熵对照实验
 
 本实验回答：在与CVCNN-CE相同的物理数据划分、交叉熵监督、星地信道增强和优化预算下，CVS的身份网络是否具有优势。
 
@@ -48,20 +42,3 @@ REPORT='''# CVS身份骨干交叉熵对照实验
 实际commit、PID、GPU、有效配置、日志增长及进度由本run的evidence读回记录证明；实验源训练、预测、评分状态分别列出。失败仅处理所属行，保留产物，无性能停机和自动重启；不影响其他实验。
 
 详细配置、六类seed角色、数据来源、命令、路径、launch owner及停止规则见[experiment.json](experiment.json)。日志保存逐步JSONL、每轮紧凑JSONL／CSV及完整文本stdout，记录clean／sat CE、权重、学习率、梯度、源域V、耗时与峰值显存；未启用项明确为false或N/A。
-'''
-
-
-def main():
-    src=WORKSPACE/'automation_reports/CV-SincNet'/RUN
-    dst=ROOT/'automation_reports/CV-SincNet'/RUN
-    dst.mkdir(parents=True,exist_ok=True)
-    for name in ('experiment.json','events.jsonl'):
-        shutil.copyfile(src/name,dst/name)
-    for folder in (src,dst):
-        (folder/'report.md').write_text(REPORT,encoding='utf-8')
-        raw=(folder/'report.md').read_bytes();text=raw.decode('utf-8')
-        assert not raw.startswith(b'\xef\xbb\xbf') and '\ufffd' not in text and '10000' in text
-    print(dst)
-
-
-if __name__=='__main__':main()

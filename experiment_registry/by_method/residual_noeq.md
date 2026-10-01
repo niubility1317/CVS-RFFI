@@ -12,3 +12,4 @@
 |Native comparison source training|managed_run|[打开](../../automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/report.md)|
 |Native comparison paired adaptation and registration|managed_run|[打开](../../automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/report.md)|
 |CVS身份骨干交叉熵对照实验|managed_run|[打开](../../automation_reports/CV-SincNet/20261001-phase1-cvs-identity-ce-practical-manysig-m5-r01/report.md)|
+|CVS身份骨干交叉熵对照实验|managed_run|[打开](../../automation_reports/CV-SincNet/20261001-phase1-cvs-identity-ce-practical-manysig-m5-r02/report.md)|

@@ -4,8 +4,14 @@ import sys
 import torch.nn as nn
 
 NATIVE = Path(__file__).resolve().parents[1] / 'adv3b02_xuc' / 'code'
-sys.path.insert(0, str(NATIVE))
-from model import build_model
+_original_path = list(sys.path)
+try:
+    sys.path.insert(0, str(NATIVE))
+    from model import build_model
+finally:
+    # The native tree contains its own baselines/__init__.py. Keeping it first
+    # would hide the top-level baselines.common package in a fresh process.
+    sys.path[:] = _original_path
 
 
 class IdentityOnlyCVS(nn.Module):

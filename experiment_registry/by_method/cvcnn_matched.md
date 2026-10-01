@@ -7,3 +7,4 @@
 |名称|记录类型|证据入口|
 |---|---|---|
 |CVS身份骨干交叉熵对照实验|managed_run|[打开](../../automation_reports/CV-SincNet/20261001-phase1-cvs-identity-ce-practical-manysig-m5-r01/report.md)|
+|CVS身份骨干交叉熵对照实验|managed_run|[打开](../../automation_reports/CV-SincNet/20261001-phase1-cvs-identity-ce-practical-manysig-m5-r02/report.md)|

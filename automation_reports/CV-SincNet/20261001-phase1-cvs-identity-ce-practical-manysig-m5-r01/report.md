@@ -40,3 +40,9 @@
 实际commit、PID、GPU、有效配置、日志增长及进度由本run的evidence读回记录证明；实验源训练、预测、评分状态分别列出。失败仅处理所属行，保留产物，无性能停机和自动重启；不影响其他实验。
 
 详细配置、六类seed角色、数据来源、命令、路径、launch owner及停止规则见[experiment.json](experiment.json)。日志保存逐步JSONL、每轮紧凑JSONL／CSV及完整文本stdout，记录clean／sat CE、权重、学习率、梯度、源域V、耗时与峰值显存；未启用项明确为false或N/A。
+
+## 首次发布失败
+
+VERIFIED：五行在训练前因ModuleNotFoundError: baselines.common退出，无epoch、checkpoint、prediction或性能结果。发布提交034b6fc5a。原始release/run/log保留，进程已全部退出，无需停止。evidence/readback.json与failure_stack.txt证明该状态。
+
+本地fresh-process回归复现RED；修复native模型导入后恢复sys.path，5项GREEN。同矩阵替代run为20261001-phase1-cvs-identity-ce-practical-manysig-m5-r02，不继承失败权重。

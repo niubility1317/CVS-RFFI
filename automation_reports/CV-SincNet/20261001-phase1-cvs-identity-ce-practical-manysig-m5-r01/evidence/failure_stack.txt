@@ -1,0 +1,21 @@
+Traceback (most recent call last):
+  File "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_ce_20261001_r01/experiments/cvs_identity_ce/source.py", line 19, in <module>
+    from baselines.common.practical_source import build_contract_split, PracticalResidualAugment
+ModuleNotFoundError: No module named 'baselines.common'
+Traceback (most recent call last):
+  File "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_ce_20261001_r01/experiments/cvs_identity_ce/dispatch.py", line 69, in <module>
+    else: worker(a.source_config,a.predict_config)
+  File "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_ce_20261001_r01/experiments/cvs_identity_ce/dispatch.py", line 20, in worker
+    subprocess.run([sys.executable,'-u','-m','experiments.cvs_identity_ce.'+module,
+  File "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/subprocess.py", line 526, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python', '-u', '-m', 'experiments.cvs_identity_ce.source', '--config', '/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_ce_20261001_r01/experiments/cvs_identity_ce/configs/source-s392005.json']' returned non-zero exit status 1.
+

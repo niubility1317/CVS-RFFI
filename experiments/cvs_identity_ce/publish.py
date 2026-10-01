@@ -28,6 +28,7 @@ with tarfile.open(archive) as tar:
 python='/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python'
 env=dict(os.environ,PYTHONPATH=str(release)+os.pathsep+str(release/'code'),OMP_NUM_THREADS='2',MKL_NUM_THREADS='2',OPENBLAS_NUM_THREADS='2')
 subprocess.run([python,'-m','compileall','-q',str(release/'experiments/cvs_identity_ce'),str(release/'experiments/adv3b02_xuc/code'),str(release/'baselines/common'),str(release/'code')],cwd=release,env=env,check=True)
+subprocess.run([python,'-m','experiments.cvs_identity_ce.source','--help'],cwd=release,env=env,stdout=subprocess.DEVNULL,check=True)
 spec=release/'experiments/cvs_identity_ce/configs/launch_spec.json'
 d=json.loads(spec.read_text())
 if d['run_id']!=c['run'] or len(d['rows'])!=5: raise ValueError('Unexpected matrix')

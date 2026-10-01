@@ -5,8 +5,8 @@ from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[2]
 WORKSPACE=Path('E:/type10-7')
-RUN='20261001-phase1-cvs-identity-ce-practical-manysig-m5-r01'
-RELEASE='cvs_identity_ce_20261001_r01'
+RUN='20261001-phase1-cvs-identity-ce-practical-manysig-m5-r02'
+RELEASE='cvs_identity_ce_20261001_r02'
 PROJECT='/home/szu2070436088/2510044040/CV-SincNet'
 SEEDS=[392005,2026092701,2026092702,2026092703,2026092704]
 
@@ -25,7 +25,7 @@ def main():
         description='检验CVS lite_d身份网络在仅CE、同物理划分、同星地增强及同优化预算下是否优于CVCNN-CE。域骨干不实例化，关闭DAOT/FastTrust/PL/MixStyle及所有附加损失；原生cosine分类头不传标签，不启用margin。',
         kind='cvs',stage='Phase1',aliases=[],tags=['cvs_identity_ce','identity_only','cvcnn_matched','ablation','residual_noeq','scratch','final200'],
         authorization='2026-10-01用户：CVS基础网络只使用交叉熵和同样星地信道增强、同样数据划分；跑实验说明；域骨干不启用，只使用身份骨干。',
-        parent_run_ids=[],replaces_run_id=None,status='PLANNED',rows=[])
+        parent_run_ids=[],replaces_run_id='20261001-phase1-cvs-identity-ce-practical-manysig-m5-r01',status='PLANNED',rows=[])
     spec['code']=dict(commit='release_commit.txt resolves the committed runtime version',checkout=str(ROOT),
         environment='/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python',cwd=PROJECT+'/releases/'+RELEASE,
         architecture_base_commit='691a03c7c6559714b3222e3ebce0364e3955302c')
@@ -37,7 +37,7 @@ def main():
         gpu_policy='five separate legal GPU slots, one row/GPU preferred, never more than2 total training jobs/GPU',
         remote_run_root=PROJECT+'/runs/'+RUN,remote_log_root=PROJECT+'/logs/'+RUN,
         local_artifact_root='automation_reports/CV-SincNet/'+RUN,
-        launch_command='python -m experiments.cvs_identity_ce.publish --output local_artifacts/cvs_identity_ce_20261001_r01',
+        launch_command='python -m experiments.cvs_identity_ce.publish --output local_artifacts/cvs_identity_ce_20261001_r02',
         stop_rule='Nonfinite loss/gradient, source or target permission violation, output collision or nonzero exit fails only affected row; no low-performance stop, automatic retry, fallback or unrelated intervention.')
     spec['expected_artifacts']=['launch.json','dispatcher.json','each source/initial_smoke.pt','each source/initialization.json',
         'each source/source_contract.json','each source/resolved_config.json','each source/step_metrics.jsonl',
