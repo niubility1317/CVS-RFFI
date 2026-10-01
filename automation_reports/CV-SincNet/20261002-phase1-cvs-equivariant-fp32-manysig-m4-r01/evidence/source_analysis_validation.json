@@ -1,0 +1,17 @@
+{
+  "status": "VERIFIED",
+  "new_rows": 4,
+  "control_rows": 4,
+  "new_epochs": 800,
+  "new_steps": 40000,
+  "curve_rows": 1600,
+  "source_ranking_recomputed": true,
+  "selected_variant": "equivariant_memory",
+  "new_candidate_selected": true,
+  "target_access": false,
+  "target_scores_used": false,
+  "genuine_RFF_physics_aware_goal_achieved": false,
+  "whole_phase_max_logit_error": 3.387033939361572e-05,
+  "whole_phase_max_unit_embedding_distance": 2.060541419268702e-06,
+  "physical_scope": "Whole constant-phase constraint only; causal memory filters with full-packet RMS/readout; relative phase retained; no universal RX/CFO/channel invariance or unique TX parameter recovery"
+}

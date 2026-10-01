@@ -1,23 +1,89 @@
-# CVS 全路径复相位约束：完整 FP32 源实验
+# CVS 整网复相位约束：完整 FP32 源实验报告
 
-状态 PLANNED，尚未发布。目标仍是普通 CE、无训练增强、仅身份骨干、相同物理划分及 clean-only 的性能提升，参数轻量其次，并取得整网可检验的 RF 物理一致性。
+四个新scratch模型完成E200×50。完整核对800轮、40000步、详细文本、epoch JSONL/CSV，实际为普通CE权重1、无增强、无域骨干、无继承。原物理L6300/V27000、U56700unused，每轮50步覆盖6300样本。原残差四份完整源曲线与实时核实的终值一致。
 
-本轮网络结构保持原整网复相位等变记忆网络，202553 个参数、7199008 实数 Conv/Linear MAC；没有新增结构或参数。依据是新 query 前的源物理问题，以及固定公共输入的冻结单变量诊断：仅关闭 cuDNN TF32，原相位 logit 误差 0.0268415 降到 0.00003433。本轮从零训练，不继承原权重。原训练、源选择、clean 预测和评分均保留；不使用目标成绩、RX/TX 分层或失败幅度制定本轮策略。
+固定源规则选择 `equivariant_memory`。新候选胜出，下一步默认执行冻结后4seed clean测试；源成绩不能证明测试提升。
 
-固定 4 个 seed，L6300/V27000，U56700 不使用；原 source RX13468/day123/all6TX/完整物理ID；equalized1/center256/unitRMS/25MHz。E200×50、batch128、AdamW2e-4/wd1e-4/cosine1e-6、CE 权重1、无裁剪/teacher/EMA/域骨干/额外损失/增强。4 个新 scratch 与 4 个不可变 residual_fusion 源控制按原四seed mean(0.5V+0.5最差源RX)选择，性能最高优先、完全并列后才比较成本。
+|候选|四seed源V均值|最差源RX均值|固定性能分数|参数|
+|---|---:|---:|---:|---:|
+|residual_fusion|98.0694%|94.4954%|96.2824%|164225|
+|equivariant_memory|98.0944%|94.9352%|96.5148%|202553|
 
-数值策略固定为 cuDNN.allow_tf32=False；matmul TF32=False、benchmark=False、deterministic=False、matmul precision=highest 必须与环境默认一致，唯一被切换的标志是 cuDNN TF32。训练、V 验证、冻结物理诊断、profile，以及选中后 clean 预测都采用同一策略。resolved 与 completion 记录实际 flags，40000 步和 800 轮记录实际 TF32 状态；进程内策略结束后恢复。
+分数为四seed的0.5V＋0.5最差源RX均值，最高优先，完全并列后才比V、最差RX、MAC、参数及固定顺序。公共相位数值误差与合成机制不参与排名或停止。
 
-固定公共 30TX/RX 设置、3 相位与真实源 V 的 TX/RX/day 聚合只作机制证据。物理容差 0.001 继续仅报告，不新增选模或停机条件；不声明任意接收机不变或唯一 TX 硬件系数恢复。新候选胜出后默认 20261002-phase1-cvs-equivariant-fp32-clean-manysig-m24-r01：4 个新 clean 预测加20个旧冻结控制复用，168000原query、6TX、7RX，全部固定后独立truth-last评分。若原残差胜出，不测试未选新模型，不重跑历史。原控制使用历史精度，新候选使用全精度，报告明确此差异，不伪称完全同精度控制。
+|模型|seed|E200源V|E200最差源RX|末轮CE|最佳源V（仅诊断）|最佳轮（未选）|
+|---|---:|---:|---:|---:|---:|---:|
+|residual_fusion|2026092701|98.0926%|94.6481%|0.018705|98.1111%|156|
+|residual_fusion|2026092702|98.1963%|94.5741%|0.018651|98.2222%|159|
+|residual_fusion|2026092703|97.9852%|94.4630%|0.016202|98.0185%|177|
+|residual_fusion|2026092704|98.0037%|94.2963%|0.022983|98.0556%|169|
+|equivariant_memory|2026092701|98.2074%|95.3889%|0.000817|98.2704%|184|
+|equivariant_memory|2026092702|98.2852%|95.5556%|0.000780|98.3111%|170|
+|equivariant_memory|2026092703|97.8704%|94.0926%|0.000684|97.9259%|144|
+|equivariant_memory|2026092704|98.0148%|94.7037%|0.000705|98.0889%|137|
 
-每 GPU 至多2个训练任务，只有已授权新实验使用空闲名额；不干预其他进程，不因低性能停机。详细文本与完整stepJSONL/紧凑epochJSONL/CSV均保留，实际成本完成后填入。GPU 训练、源表现、新 clean 结果当前 N/A，尚未证明性能提升或整体目标完成。
+![完整源曲线](evidence/source_curves.png)
 
-[源控制实时核实](evidence/source_control_preflight.json) · [源数值归因报告](../20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01/report.md) · [既有数学与物理边界](../../../docs/CVS_EQUIVARIANT_IDENTITY_HYPOTHESIS_20261002.md)。
+四seed样本SD阴影覆盖完整200轮；[全部1600曲线记录](evidence/source_curves.csv)、[源RX逐seed](evidence/source_rx_by_seed.csv)、[同seed源差分](evidence/source_paired_control.csv)。源RX仍为源验证，不称作未知RX测试。
 
-92 项相关检查 PASS，覆盖精度单变量/异常恢复、源实际 flags 与 payload 来源、全部日志状态、合法源冻结与 truth-last 以及控制复用。独立 P0/P1 审查 PASS；条件 clean 矩阵指错的唯一 P1 已修正并定点验证，完整旧矩阵不改写。
+## 数学约束与物理证据
 
-## 已发布与实际运行
+Sinc使用相同实系数作用于I/Q；时间与received记忆路径的无bias复卷积、逐包复通道RMS、实径向门控均保持公共常相位等变。功率、lag1/2复相关和位置功率形成不变读出，原rawFFT频谱也不变，全部身份输入无未约束IQ旁路。相对相位/CFO仍可进入复相关，未将波形全部取模。行为基底及左padding滤波因果，但RMS/读出使用整包，整体不是在线因果模型。
 
-状态 RUNNING。训练 release commit `be0aec8f2e2a3b50ce41d8ec1778c28c96e7eb6e`；4 个独立 scratch worker 已在 GPU0/1/2/3 运行，PID/CWD/argv 和日志增长独立读回。当前读回轮次为 12,11,10,9，尚未 E200。各模型实际 202553 参数均收到 CE 梯度，sourceL6300/V27000/Uunused；resolved 和 epoch 实测 TF32 均为关闭，其他 flags 与固定策略一致。当前不能作最终选模或性能提升结论。
+冻结后每seed对固定30个TX/RX组合测试3个公共相位，四seed最大logit误差为3.3870339e-05，最大单位嵌入距离为2.0605414e-06。这是90个扰动/seed的实测数值证据，不是身份准确率或任意接收链解耦证据。数值容差1e-3只报告，不作为选模门槛。
 
-[启动读回](evidence/launch_readback.json) · [当前交接](evidence/current_handoff.json)。健康训练继续，不重复启动、不热修改。
+|seed|公共相位rad|全网logit最大绝对误差|单位嵌入最大距离|
+|---|---:|---:|---:|
+|2026092701|0.37|3.3870339e-05|2.0605414e-06|
+|2026092701|-1.2|2.8848648e-05|2.0145908e-06|
+|2026092701|2.9|2.6762486e-05|2.0218074e-06|
+|2026092702|0.37|2.0503998e-05|1.7670488e-06|
+|2026092702|-1.2|2.2888184e-05|1.6907443e-06|
+|2026092702|2.9|1.5258789e-05|1.5258148e-06|
+|2026092703|0.37|1.5646219e-05|1.6862648e-06|
+|2026092703|-1.2|1.6450882e-05|1.521274e-06|
+|2026092703|2.9|1.6987324e-05|1.4843248e-06|
+|2026092704|0.37|2.1934509e-05|1.4854412e-06|
+|2026092704|-1.2|2.1934509e-05|1.6454139e-06|
+|2026092704|2.9|1.7642975e-05|1.51598e-06|
+
+|seed|源V的TX中心间平方距离|同TX各RX中心偏移平方距离|
+|---|---:|---:|
+|2026092701|1.13595|0.105075|
+|2026092702|1.26292|0.122038|
+|2026092703|1.11761|0.110943|
+|2026092704|1.27014|0.0936036|
+
+源V几何覆盖27000包/90个TX×RX×day组；它检验表征关联，不证明硬件因果分离。实际时间/记忆路径权重、径向门控和末batch梯度见[全部800轮](evidence/source_equivariant_by_epoch.csv)，不把非零梯度当作性能归因。
+
+受控链沿用100Msps公共稳态L-STF→TX cubic/image/memory→周期FIR→RX gain/image/cubic→12tone投影→25Msps/相对CFO/RMS。5TX×6RX只用于冻结机制解释，没有增强、正式数据、目标、噪声/瞬态或真实WiSig完整均衡器复现。received多项式也可能表示RX/均衡器影响，不是已辨识TX PA系数。
+
+|固定理想TX的RX/信道变化|全网单位嵌入距离均值（四seed）|
+|---|---:|
+|identity|0|
+|flat_phase_gain|1.17638e-06|
+|relative_cfo|1.00542|
+|lti_channel|0.325295|
+|rx_iq_image|0.13573|
+|rx_cubic|0.0251434|
+
+[全部120组合](evidence/source_physics_cascade.csv)、[孤立TX变化](evidence/source_physics_isolated_tx.csv)保留TX敏感性与RX扰动。TX/RX镜像及三阶相同received波形的反例仍成立，完整证据保留误差。全网公共相位不变、RX干扰稳定性及真实身份性能分别评价；不声称CFO/LTI/RX普遍不变或TX参数唯一恢复。
+
+## 实际资源
+
+|模型|参数|checkpoint模型bytes|实数Conv/Linear MAC/包|batch1推理ms均值|batch128训练ms均值|实际训练峰值bytes最大|
+|---|---:|---:|---:|---:|---:|---:|
+|residual_fusion|164225|657552|9708836|4.7265|29.1454|248282624|
+|equivariant_memory|202553|810844|7199008|6.6150|40.5311|163909120|
+
+新模型202553参数，比原164225增加38328（约23.34%）；成本次要，不据更多或更少参数宣称成功。复卷积实数矩阵实际执行已由Conv计入MAC；FFT/RMS/门控/读出逐元素运算不计入MAC，但实际计时和显存包含它们。RTX3090/Torch2.1/FP32，一次性副本profile；并发条件可能影响细小计时差。checkpoint状态不包括optimizer/临时分配；星载耗时、额外传输bytes和适应训练N/A。[逐seed资源](evidence/source_resource_by_seed.csv)。
+
+尚无本轮新clean成绩。历史已暴露六类clean为代理基准，不扩展LEO/SFT/新类；D92三阶段及K×新增类N/A。任何新测试结果不反馈结构、参数、选模或重跑；负结果全部保留。真正RFF physics aware与实际识别优势仍需独立证据，目标未宣称完成。
+
+[前瞻结构与边界](../../../docs/CVS_EQUIVARIANT_IDENTITY_HYPOTHESIS_20261002.md) · [完整源审计](evidence/source_completion_validation.json) · [固定源选择](evidence/source_selection.json) · [独立分析](evidence/source_analysis_validation.json)。
+
+## 实际精度策略
+
+新模型从零训练，结构/202553 参数和预算不变；训练、V 验证、公共物理诊断、实测 profile 均在 cuDNN.allow_tf32=False 的同一上下文内。实际 matmul TF32=False、benchmark=False、deterministic=False、matmul precision=highest 与固定策略一致，40000 步和 800 轮实际 TF32 状态由完整日志审计核实。原 residual 源控制保留其历史精度，本轮比较不声称控制同为完整 FP32。
+
+若新候选被固定源规则选中，clean 预测继承源 payload 的实际数值策略，在首次 forward 前生效并读回；已有目标预测不修改、不重测，目标成绩不回流。该策略源于新 query 前的源相位问题和公共冻结单变量诊断，尚不能直接证明识别性能提高。

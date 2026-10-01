@@ -1,0 +1,17 @@
+{
+  "status": "PASS",
+  "checks": 92,
+  "focused_matrix_path_check": true,
+  "source_and_conditional_clean_P0_P1_review": "PASS",
+  "new_rows": 4,
+  "reused_rows": 20,
+  "truth_last": true,
+  "target_feedback": false,
+  "numerical_policy": {
+    "cudnn_allow_tf32": false,
+    "cuda_matmul_allow_tf32": false,
+    "cudnn_benchmark": false,
+    "cudnn_deterministic": false,
+    "matmul_precision": "highest"
+  }
+}

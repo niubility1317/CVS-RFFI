@@ -1,5 +1,5 @@
 {
-  "status": "RUNNING",
+  "status": "TRAINING_COMPLETE_AWAITING_FROZEN_CLEAN_TEST",
   "run_id": "20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01",
   "release": "cvs_equivariant_fp32_identity_20261002_r01",
   "commit": "be0aec8f2e2a3b50ce41d8ec1778c28c96e7eb6e",
@@ -17,25 +17,33 @@
       "row_id": "equivariant_memory-s2026092701",
       "pid": 1293844,
       "gpu": 0,
-      "epoch_at_read": 12
+      "epoch_at_read": 12,
+      "status": "SOURCE_TRAINED",
+      "completed_epoch": 200
     },
     {
       "row_id": "equivariant_memory-s2026092702",
       "pid": 1293938,
       "gpu": 1,
-      "epoch_at_read": 11
+      "epoch_at_read": 11,
+      "status": "SOURCE_TRAINED",
+      "completed_epoch": 200
     },
     {
       "row_id": "equivariant_memory-s2026092703",
       "pid": 1294086,
       "gpu": 2,
-      "epoch_at_read": 10
+      "epoch_at_read": 10,
+      "status": "SOURCE_TRAINED",
+      "completed_epoch": 200
     },
     {
       "row_id": "equivariant_memory-s2026092704",
       "pid": 1294177,
       "gpu": 3,
-      "epoch_at_read": 9
+      "epoch_at_read": 9,
+      "status": "SOURCE_TRAINED",
+      "completed_epoch": 200
     }
   ],
   "goal_achieved": false,
@@ -46,5 +54,7 @@
     "On terminal complete use collect_fp32 and analyze_fp32:full40000/800 audit,sourceonlyranking",
     "Selectednew only:generate configs_fp32 fromactualsourcefreeze then4new+20old defaultclean andtruthlastreport",
     "Controlwins retainverifiedoldtest;no unselectedquery;allnegativeartifacts retained"
-  ]
+  ],
+  "formal_performance_result": "Source rule selected fullFP32 variant;defaultclean pending",
+  "clean_run_id": "20261002-phase1-cvs-equivariant-fp32-clean-manysig-m24-r01"
 }
