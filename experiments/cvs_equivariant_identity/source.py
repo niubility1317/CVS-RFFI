@@ -13,6 +13,7 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 from experiments.cvs_equivariant_identity.model import build, VARIANTS, equivariant_contract, frozen_synthetic_diagnostics
+from experiments.cvs_equivariant_identity.precision import numerical_context, actual_flags
 from experiments.cvs_identity_ce.source import source_args, checkpoint_smoke, write
 from baselines.common.practical_source import build_contract_split
 from baselines.common.cvs_data import make_cvs_loader
@@ -27,6 +28,8 @@ def validate_config(c):
     if any(c.get(k)!=v for k,v in required.items()): raise ValueError('Clean matched training contract mismatch')
     if c['variant'] not in VARIANTS: raise ValueError('Unknown variant')
     if c.get('equivariant')!=equivariant_contract(c['variant']):raise ValueError('RF operator contract mismatch')
+    if 'numerical_policy' in c and c['numerical_policy']!=dict(cudnn_allow_tf32=False,cuda_matmul_allow_tf32=False,cudnn_benchmark=False,cudnn_deterministic=False,matmul_precision='highest'):
+        raise ValueError('Unregistered numerical policy')
     return c
 
 
@@ -77,6 +80,12 @@ def final_source_diagnostics(model,loader,device):
 
 
 def train(c):
+    validate_config(c)
+    with numerical_context(c.get('numerical_policy')):
+        return _train(c)
+
+
+def _train(c):
     validate_config(c);out=Path(c['output_root']);out.mkdir(parents=True,exist_ok=False)
     seed=c['model_seed'];random.seed(seed);np.random.seed(seed);torch.manual_seed(seed);torch.cuda.manual_seed_all(seed)
     torch.set_num_threads(2);device=torch.device(c.get('device','cuda:0'))
@@ -100,6 +109,7 @@ def train(c):
         total_parameters=sum(p.numel() for p in model.parameters()),trainable_parameters=sum(p.numel() for p in model.parameters() if p.requires_grad),
         U_s_use='unused',augmentation=False,target_access=False,precision='float32',gradient_clipping=None,
         optimizer='AdamW+CosineAnnealingLR',loader_seed=seed,equivariant_actual=physical.contract(),equivariant_active=True,classifier_scale=30.0)
+    if 'numerical_policy' in c:resolved['backend_flags']=actual_flags()
     write(out/'resolved_config.json',resolved);print('RESOLVED_CONFIG '+json.dumps(resolved),flush=True)
     optimizer=torch.optim.AdamW(model.parameters(),lr=.0002,weight_decay=.0001)
     scheduler=torch.optim.lr_scheduler.CosineAnnealingLR(optimizer,T_max=200,eta_min=1e-6)
@@ -121,6 +131,7 @@ def train(c):
                     learning_rate=lr,gradient_norm=float(norm),gradient_used_parameters=grad_params,
                     source_samples=len(y),satellite_samples=0,augmentation_active=False,domain_backbone_active=False,
                     pseudo_labels_active=False,extra_losses_active=False,equivariant_active=True)
+                if 'numerical_policy' in c:rec['cudnn_allow_tf32']=torch.backends.cudnn.allow_tf32
                 sf.write(json.dumps(rec,allow_nan=False)+'\n')
             if n!=50 or exposure!=6300:raise ValueError('Matched 50-step/6300-sample budget changed')
             scheduler.step();validation=validate(model,val_loader,device)
@@ -131,6 +142,7 @@ def train(c):
                 equivariant_active=True,equivariant_diagnostics=model.diagnostics(x),equivariant_diagnostic_scope='last source batch of epoch',
                 **validation,elapsed_seconds=time.perf_counter()-tic,
                 peak_cuda_allocated_bytes=torch.cuda.max_memory_allocated(device) if device.type=='cuda' else None)
+            if 'numerical_policy' in c:stats['cudnn_allow_tf32']=torch.backends.cudnn.allow_tf32
             line=json.dumps(stats,allow_nan=False);print('EPOCH '+line,flush=True);ef.write(line+'\n');ef.flush();sf.flush()
             compact={k:v for k,v in stats.items() if not isinstance(v,dict)}
             if writer is None:writer=csv.DictWriter(cf,fieldnames=list(compact));writer.writeheader()
@@ -149,8 +161,10 @@ def train(c):
         normalization_state='Per-packet complex RMS only; no mutable source/query moments',
         base_architecture='native_frequency_fusion_cosine_with_complex_time_and_behavior_scratch')
     write(out/'resource_profile.json',profile)
-    write(out/'completion.json',dict(status='SOURCE_TRAINED',epoch=200,steps=step,checkpoint=str(out/'last.pt'),
-        elapsed_seconds=time.perf_counter()-started,target_access=False,target_evaluated=False,final_source_metrics=validation))
+    complete=dict(status='SOURCE_TRAINED',epoch=200,steps=step,checkpoint=str(out/'last.pt'),
+        elapsed_seconds=time.perf_counter()-started,target_access=False,target_evaluated=False,final_source_metrics=validation)
+    if 'numerical_policy' in c:complete['backend_flags']=actual_flags()
+    write(out/'completion.json',complete)
 
 
 if __name__=='__main__':

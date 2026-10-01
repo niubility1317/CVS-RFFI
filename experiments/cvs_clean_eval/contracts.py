@@ -192,6 +192,8 @@ def checkpoint_contract(c,done,initial,contract,expected,resolved,payload):
     if c['variant'] in THIRTEENTH:
         from experiments.cvs_equivariant_identity.source import validate_config
         validate_config(resolved)
+        if 'numerical_policy' in resolved and (resolved.get('backend_flags')!=resolved['numerical_policy'] or done.get('backend_flags')!=resolved['numerical_policy']):
+            raise ValueError('Frozen equivariant source precision provenance mismatch')
         if any(contract.get(k)!=v for k,v in expected.items()):raise ValueError('CHECKPOINT_DATA_CONTRACT_MISMATCH')
         if initial.get('physical_roles')!='EXACT_MATCH' or initial.get('selection')!='fixed_last_epoch':raise ValueError('Equivariant scratch provenance differs')
         if resolved.get('equivariant_active') is not True or resolved.get('equivariant_actual')!=equivariant_contract(c['variant']) or resolved.get('equivariant')!=equivariant_contract(c['variant']) or resolved.get('classifier_scale')!=30.:

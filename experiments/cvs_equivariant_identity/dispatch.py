@@ -45,6 +45,8 @@ def read_source_record(row,original_contract,method):
     if initial!=scratch:raise ValueError('Source provenance is not own scratch')
     if method=='cvs_equivariant_identity':
         validate_config(resolved)
+        if 'numerical_policy' in resolved and (resolved.get('backend_flags')!=resolved['numerical_policy'] or done.get('backend_flags')!=resolved['numerical_policy']):
+            raise ValueError('Actual training/completion precision policy mismatch')
         if resolved.get('equivariant_actual')!=resolved['equivariant'] or resolved.get('equivariant_active') is not True or resolved.get('classifier_scale')!=30.:
             raise ValueError('Actual known-excitation response differs from configuration')
     if any(contract.get(k)!=v for k,v in original_contract.items()):
@@ -76,6 +78,8 @@ def validate_spec(spec):
         output=Path(row['source_output']).resolve()
         if output!=run/row['row_id']/'source':raise ValueError('Output outside exclusive row')
         c=validate_config(json.loads(Path(row['source_config']).read_text(encoding='utf-8')))
+        if 'numerical_policy' in spec and c.get('numerical_policy')!=spec['numerical_policy']:
+            raise ValueError('Source matrix numerical policy differs from row')
         if c['variant']!=row['variant'] or c['model_seed']!=row['model_seed'] or Path(c['output_root']).resolve()!=output:
             raise ValueError('Registered config mismatch')
     return spec

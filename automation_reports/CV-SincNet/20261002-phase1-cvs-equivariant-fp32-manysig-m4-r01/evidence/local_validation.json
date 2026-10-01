@@ -1,0 +1,11 @@
+{
+  "status": "PASS",
+  "agent": "review_identity_ce",
+  "scope": "One new numerical source experiment correctness review plus singleP1fix pointcheck",
+  "P0_P1": [],
+  "resolved_P1": "Conditionalclean source_matrix_ref now exact configs_fp32/launch_spec.json;pointcheckPASS",
+  "checks_passed": 92,
+  "focused_path_check_passed": true,
+  "target_access": false,
+  "architecture_changed": false
+}

@@ -85,3 +85,19 @@ def test_actual_new_response_must_match_registered_execution(tmp_path,corruption
     else:resolved['classifier_scale']=64.
     save()
     with pytest.raises(ValueError):read_source_record(row,original,'cvs_equivariant_identity')
+
+
+@pytest.mark.parametrize('where',['resolved','completion','policy'])
+def test_full_fp32_source_actual_policy_required(tmp_path,where):
+    from experiments.cvs_equivariant_identity.precision import FULL_FP32_POLICY
+    row,original,data,save=fixture(tmp_path/'source');row['variant']='equivariant_memory'
+    resolved=data['resolved_config.json'];resolved.update(method='cvs_equivariant_identity',variant='equivariant_memory',
+        equivariant=equivariant_contract('equivariant_memory'),equivariant_actual=equivariant_contract('equivariant_memory'),equivariant_active=True,classifier_scale=30.,
+        numerical_policy=copy.deepcopy(FULL_FP32_POLICY),backend_flags=copy.deepcopy(FULL_FP32_POLICY))
+    data['completion.json']['backend_flags']=copy.deepcopy(FULL_FP32_POLICY)
+    save();read_source_record(row,original,'cvs_equivariant_identity')
+    if where=='resolved':resolved['backend_flags']['cudnn_allow_tf32']=True
+    elif where=='completion':data['completion.json']['backend_flags']['cudnn_allow_tf32']=True
+    else:resolved['numerical_policy']['cudnn_allow_tf32']=True
+    save()
+    with pytest.raises(ValueError):read_source_record(row,original,'cvs_equivariant_identity')

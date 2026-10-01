@@ -17,6 +17,15 @@ def write(path,value):
 
 
 def predict(c):
+    import torch
+    original=torch.backends.cudnn.allow_tf32
+    try:
+        return _predict(c)
+    finally:
+        torch.backends.cudnn.allow_tf32=original
+
+
+def _predict(c):
     started=time.perf_counter()
     selection=frozen_selection(c['selection_file']);validate_predict_config(c,selection)
     out=Path(c['output_root']);out.mkdir(parents=True,exist_ok=False)
@@ -26,6 +35,11 @@ def predict(c):
     resolved=read(source/'resolved_config.json')
     payload=torch.load(source/'last.pt',map_location='cpu',weights_only=False)
     checkpoint_contract(c,done,initial,contract,expected,resolved,payload)
+    if 'numerical_policy' in resolved:
+        from experiments.cvs_equivariant_identity.precision import FULL_FP32_POLICY,actual_flags
+        if resolved['numerical_policy']!=FULL_FP32_POLICY:raise ValueError('Unregistered frozen numerical policy')
+        torch.backends.cudnn.allow_tf32=False
+        if actual_flags()!=resolved['numerical_policy']:raise ValueError('Frozen prediction numerical policy mismatch')
     model=build_model(c['variant']);model.load_state_dict(payload['model'],strict=True);model.to(device);model.eval()
     with torch.no_grad():scores=model(torch.zeros(2,2,256,device=device))
     if scores.shape!=(2,6) or not torch.isfinite(scores).all():raise ValueError('Frozen checkpoint smoke failed')
@@ -38,10 +52,12 @@ def predict(c):
     if not len(ids) or len(ids)!=len(set(ids.tolist())):raise ValueError('Empty/duplicate physical query IDs')
     array=np.load(capsule/'clean.npy',mmap_mode='r',allow_pickle=False)
     if array.shape!=(len(ids),2,256):raise ValueError('Clean input shape mismatch')
-    write(out/'resolved_config.json',dict(c,pid=os.getpid(),cwd=str(ROOT),python=sys.executable,
+    prediction_resolved=dict(c,pid=os.getpid(),cwd=str(ROOT),python=sys.executable,
         torch_version=torch.__version__,hardware=torch.cuda.get_device_name(device) if device.type=='cuda' else 'cpu',
         source_resolved_ref=str(source/'resolved_config.json'),truth_read=False,query_fit=False,views=['clean'],batch_size=256,
-        commit=(ROOT/'release_commit.txt').read_text().strip() if (ROOT/'release_commit.txt').exists() else 'LOCAL'))
+        commit=(ROOT/'release_commit.txt').read_text().strip() if (ROOT/'release_commit.txt').exists() else 'LOCAL')
+    if 'numerical_policy' in resolved:prediction_resolved.update(numerical_policy=resolved['numerical_policy'],backend_flags=actual_flags())
+    write(out/'resolved_config.json',prediction_resolved)
     if device.type=='cuda':torch.cuda.reset_peak_memory_stats(device);torch.cuda.synchronize(device)
     tic=time.perf_counter();pred=[]
     with torch.no_grad():

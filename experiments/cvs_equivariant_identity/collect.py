@@ -30,10 +30,13 @@ def audit_logs(epochs, steps, csv_text, stdout):
     fixed = dict(ce_weight=1., augmentation_active=False, domain_backbone_active=False,
                  pseudo_labels_active=False, extra_losses_active=False, equivariant_active=True,
                  gradient_used_parameters=202553)
+    full_fp32=any('cudnn_allow_tf32' in r for r in [*epochs,*steps])
     for epoch, compact in zip(epochs, csv_rows):
         number = epoch['epoch']
         batch_steps = steps[(number - 1) * 50:number * 50]
         for rec in [epoch, *batch_steps]:
+            if full_fp32 and rec.get('cudnn_allow_tf32') is not False:
+                raise ValueError('Full FP32 step/epoch policy missing or changed')
             if any(rec.get(k) != v for k, v in fixed.items()):
                 raise ValueError('Plain CE / physical execution flags changed')
             if rec['total_loss'] != rec['clean_ce'] or any(not math.isfinite(rec[k]) for k in ('clean_ce', 'total_loss', 'learning_rate', 'gradient_norm')):
@@ -151,8 +154,9 @@ def validate_completed(data):
     return selection
 
 
-def collect(root, output):
+def collect(root, output, run_id=None):
     from experiments.cvs_equivariant_identity.prepare import PROJECT, RUN
+    RUN=run_id or RUN
     from experiments.cvs_equivariant_identity.publish import ssh
     from experiments.cvs_equivariant_identity.dispatch import read_source_record, control_rows
     from experiments.cvs_equivariant_identity.source import validate_config

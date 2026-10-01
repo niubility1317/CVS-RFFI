@@ -54,3 +54,16 @@ def test_corrupted_complete_artifacts_rejected(complete_logs,kind):
     if kind=='wrong_stdout':stdout=stdout.replace('"gradient_norm": 2.0','"gradient_norm": 3.0',1)
     if kind=='runtime_error':stdout+='\nTraceback (most recent call last)\n'
     with pytest.raises(ValueError):audit_logs(epochs,steps,csv_text,stdout)
+
+
+def test_full_fp32_all10000steps_require_actual_flag(complete_logs):
+    epochs,steps,_,_=copy.deepcopy(complete_logs)
+    for row in [*epochs,*steps]:row['cudnn_allow_tf32']=False
+    compact=[{k:v for k,v in e.items() if not isinstance(v,dict)} for e in epochs]
+    stream=io.StringIO(newline='');writer=csv.DictWriter(stream,fieldnames=list(compact[0]));writer.writeheader();writer.writerows(compact)
+    stdout='RESOLVED_CONFIG {}\n'+'\n'.join('EPOCH '+json.dumps(e) for e in epochs)
+    audit_logs(epochs,steps,stream.getvalue(),stdout)
+    steps[9274]['cudnn_allow_tf32']=True
+    with pytest.raises(ValueError,match='Full FP32'):audit_logs(epochs,steps,stream.getvalue(),stdout)
+    steps[9274].pop('cudnn_allow_tf32')
+    with pytest.raises(ValueError,match='Full FP32'):audit_logs(epochs,steps,stream.getvalue(),stdout)

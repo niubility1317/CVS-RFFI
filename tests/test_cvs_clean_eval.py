@@ -1122,3 +1122,54 @@ def test_equivariant_prepare_only_selected4_fixed_capsule(case,monkeypatch):
     for row in new:
         cfg=contracts.read(folder/(row['row_id']+'.json'));assert cfg['p1_capsule']==CAPSULE
         contracts.validate_predict_config(cfg,contracts.read(folder/'frozen_selection.json'))
+
+
+def set_equivariant_fp32(case,monkeypatch):
+    from experiments.cvs_equivariant_identity.precision import FULL_FP32_POLICY
+    matrix=equivariant_case(case,monkeypatch)
+    matrix['numerical_policy']=FULL_FP32_POLICY
+    write(Path(case['selection']['source_matrix_ref']),matrix)
+    for row in matrix['rows']:
+        source=Path(row['source_output']);cfg=contracts.read(row['source_config']);cfg['numerical_policy']=FULL_FP32_POLICY;write(Path(row['source_config']),cfg)
+        resolved=contracts.read(source/'resolved_config.json');resolved.update(numerical_policy=FULL_FP32_POLICY,backend_flags=FULL_FP32_POLICY);write(source/'resolved_config.json',resolved)
+        done=contracts.read(source/'completion.json');done['backend_flags']=FULL_FP32_POLICY;write(source/'completion.json',done)
+        payload=torch.load(source/'last.pt',weights_only=False);payload['config']=resolved;torch.save(payload,source/'last.pt')
+    return matrix
+
+
+def test_equivariant_fp32_prediction_applies_source_policy_and_restores(case,monkeypatch):
+    set_equivariant_fp32(case,monkeypatch);cfg=contracts.read(case['spec']['rows'][-1]['config'])
+    monkeypatch.setattr(torch.backends.cudnn,'allow_tf32',True)
+    model=TinyClassifier();forward=model.forward
+    def observe(x):
+        assert torch.backends.cudnn.allow_tf32 is False
+        return forward(x)
+    monkeypatch.setattr(model,'forward',observe);monkeypatch.setattr(predict,'build_model',lambda v:model)
+    predict.predict(cfg)
+    assert torch.backends.cudnn.allow_tf32 is True
+    actual=contracts.read(Path(cfg['output_root'])/'resolved_config.json')
+    assert actual['backend_flags']==actual['numerical_policy'] and actual['backend_flags']['cudnn_allow_tf32'] is False
+
+
+@pytest.mark.parametrize('where',['completion','resolved'])
+def test_equivariant_fp32_source_wrong_actual_flags_block_new_query(case,monkeypatch,where):
+    set_equivariant_fp32(case,monkeypatch);cfg=contracts.read(case['spec']['rows'][-1]['config']);source=Path(cfg['source_output'])
+    path=source/('completion.json' if where=='completion' else 'resolved_config.json');data=contracts.read(path)
+    data['backend_flags']['cudnn_allow_tf32']=True;write(path,data)
+    with pytest.raises(ValueError):predict.predict(cfg)
+    assert not (Path(cfg['output_root'])/'clean_predictions.npz').exists()
+
+
+def test_equivariant_fp32_prepare_has_new_exclusive_source_andclean(case,monkeypatch):
+    from experiments.cvs_equivariant_clean import prepare_fp32 as prepare
+    root=Path(__file__).resolve().parents[1];prefix='experiments/cvs_selected_clean/configs/'
+    for name in ('launch_spec.json','experiment_spec.json'):write(case['root']/prefix/name,contracts.read(root/prefix/name))
+    monkeypatch.setattr(prepare,'ROOT',case['root'])
+    prepare.main(dict(status='SOURCE_SELECTION_FROZEN',target_access=False,target_score_used=False,selected_variant='equivariant_memory',new_candidate_selected=True))
+    folder=case['root']/'experiments/cvs_equivariant_clean/configs_fp32';runtime=contracts.read(folder/'launch_spec.json')
+    new=[r for r in runtime['rows'] if not r.get('reuse_from_run')]
+    assert len(new)==4 and len(runtime['rows'])==24 and 'fp32-clean' in runtime['run_id']
+    assert all('cvs_equivariant_fp32_identity_20261002_r01' in contracts.read(folder/'frozen_selection.json')['source_matrix_ref'] for r in new)
+    assert contracts.read(folder/'frozen_selection.json')['source_matrix_ref'].endswith('/experiments/cvs_equivariant_identity/configs_fp32/launch_spec.json')
+    assert all('equivariant-fp32-manysig-m4' in contracts.read(folder/(r['row_id']+'.json'))['source_output'] for r in new)
+    assert not (case['root']/'experiments/cvs_equivariant_clean/configs').exists()
