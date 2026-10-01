@@ -1,0 +1,20 @@
+...........................F.                                            [100%]
+================================== FAILURES ===================================
+___ test_supervisor_all_preflights_first_no_truth_no_retry_healthy_continue ___
+tests\test_d92_group_barrier_joint_benchmark_pipeline.py:467: in test_supervisor_all_preflights_first_no_truth_no_retry_healthy_continue
+    with pytest.raises(RuntimeError,match='healthy rows'):run.run(s,'b'*40,preflight_fn=pre,launch_fn=launch,marker_fn=marker)
+tools\run_d92_group_barrier_joint_benchmark.py:326: in run
+    validate_spec(spec); require(oid(commit), 'Actual publisher runtime commit required')
+tools\run_d92_group_barrier_joint_benchmark.py:90: in validate_spec
+    require(_separate(code['cwd'],execution['remote_run_root']), 'Release/run paths overlap')
+tools\run_d92_group_barrier_joint_benchmark.py:37: in require
+    raise ValueError(message)
+E   ValueError: Release/run paths overlap
+============================== warnings summary ===============================
+..\..\..\local_envs\ssr-gpu\lib\site-packages\torch\nn\modules\transformer.py:20
+  E:\type10-7\local_envs\ssr-gpu\lib\site-packages\torch\nn\modules\transformer.py:20: UserWarning: Failed to initialize NumPy: _ARRAY_API not found (Triggered internally at ..\torch\csrc\utils\tensor_numpy.cpp:84.)
+    device: torch.device = torch.device(torch._C._get_default_device()),  # torch.device('cpu'),
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED tests/test_d92_group_barrier_joint_benchmark_pipeline.py::test_supervisor_all_preflights_first_no_truth_no_retry_healthy_continue

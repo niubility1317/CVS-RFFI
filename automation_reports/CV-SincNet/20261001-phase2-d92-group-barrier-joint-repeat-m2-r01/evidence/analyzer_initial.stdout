@@ -1,0 +1,22 @@
+......F....                                                              [100%]
+================================== FAILURES ===================================
+___________ test_duplicate_inventory_and_nonfinite_npz_are_rejected ___________
+tests\test_d92_group_barrier_joint_probe_analysis.py:271: in test_duplicate_inventory_and_nonfinite_npz_are_rejected
+    manifest=archive.finalize('COMPLETE')
+tools\evaluate_d92_group_barrier_joint_probe.py:119: in finalize
+    phase = json.loads(ref['namespace'])['state'] if ref['namespace'] else 'unscoped'
+..\..\..\local_envs\ssr-gpu\lib\json\__init__.py:346: in loads
+    return _default_decoder.decode(s)
+..\..\..\local_envs\ssr-gpu\lib\json\decoder.py:337: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+..\..\..\local_envs\ssr-gpu\lib\json\decoder.py:355: in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+E   json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+============================== warnings summary ===============================
+..\..\..\local_envs\ssr-gpu\lib\site-packages\torch\nn\modules\transformer.py:20
+  E:\type10-7\local_envs\ssr-gpu\lib\site-packages\torch\nn\modules\transformer.py:20: UserWarning: Failed to initialize NumPy: _ARRAY_API not found (Triggered internally at ..\torch\csrc\utils\tensor_numpy.cpp:84.)
+    device: torch.device = torch.device(torch._C._get_default_device()),  # torch.device('cpu'),
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED tests/test_d92_group_barrier_joint_probe_analysis.py::test_duplicate_inventory_and_nonfinite_npz_are_rejected

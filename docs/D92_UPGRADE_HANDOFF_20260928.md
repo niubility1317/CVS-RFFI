@@ -1,3 +1,14 @@
+## 当前交接：GroupBarrier完整query预登记与源码验证完成，support四行已终态
+
+- Goal ACTIVE。新queryrun `20261001-phase2-d92-group-barrier-joint-repeat-m2-r01` LOCAL_VERIFIED/未启动，四row/2400parent/6old/完整K4×new5×4RX×3scene×5support seed、same actualB-to-C。配置源码在读任何真实support结果前固定；Phase1/practical residual与协议不变。preparation parent9518不是未来runtime。82个不同case（query32/scorer39/analyzer11）在有界调用验证，两处合成fixture失败已修复且原证据保留；双入口/scorer独立P0/P1关闭，38path isolated import无模型/数据访问。待本次source commit/push/OID后唯一querypublication。
+- Group support `20261001-phase2-d92-group-barrier-joint-support-m2-r01` TRAINING_COMPLETE，原immutable9518d46d2；16:00:55UTC独立证据 `evidence/runtime_readback_1790870516458140900.json`核实四row完成、原supervisor/children已退出、无truth/query/scorer。160parent、每row40compact/2430stage。尚未读取真实指标、尚未artifact完整数值分析，不能猜准确率或星载收益。不要republish/retrain；下一步新tested analyzer的只读artifact收集/完整诊断，不回流方法。
+- 原Margin query `20261001-phase2-d92-margin-joint-repeat-m2-r01` FAILED终态；16:09:36UTC证据 `evidence/query_runtime_1790871039149970200.json`，2COMPLETE/2FAILED，所有进程已退出，runtime始终d86edc323。普通C QP求导条件不满足，全部partial原产物保留，无subset truth/score/no retry。此前RUNNING/healthy等待段仅历史，不继续poll/relaunch。
+- Source-blind三worker已冻结各自源码：conditional query5files+scorerreview；branch scorer2files+entryreview；group analyzer2files。root唯一numerics/Git/SSH/launch/实际analysis/scoring。当前parentca6bcafe。本次code/config/docs/records/source证据镜像只涉及owned路径；未知准确率成本N/A。先push再remote写入，query全部预测固定后独立truth-last；fresh验证仍按用户要求暂缓。
+
+<!-- GROUP_BARRIER_QUERY_SOURCE_READY_20261002 -->
+
+以下保留历史状态，不据此重复启动：
+
 ## 当前交接：GroupBarrierJoint support 唯一发布与live runtime已核实，query入口／分析并行准备
 
 - Goal ACTIVE。新run `20261001-phase2-d92-group-barrier-joint-support-m2-r01` RUNNING，immutable runtime **9518d46d2f763e5b080b5337e23155c9de883e09**，preparation parent81985ed不变。第一次独立只读证据 `evidence/runtime_readback_1790867129563692100.json`（2026-10-01T15:04:28Z）：supervisor1004125/start11465111，rx3模型01/02 PID1004188/1004189实时训练，rx1两行PENDING；实际argv/CWD/CPU2+BLAS2/noGPU与startup/preflight/resolved config绑定核实。publication VERIFIED，local nativewrapper ssr_native_command_1790867000790623100 DONE；local publication目录已存在，绝对不要重publish/relaunch。仅原排程继续，失败保留、无auto retry、不干预健康旧run。

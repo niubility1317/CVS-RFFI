@@ -1,0 +1,80 @@
+{
+  "status": "VERIFIED_FOCUSED_SYNTHETIC_SOURCE_VALIDATION",
+  "candidate": "D92-GroupBarrierJointLocalRidge-v1",
+  "query_distinct_cases": 32,
+  "scorer_distinct_cases": 39,
+  "support_analyzer_distinct_cases": 11,
+  "aggregate_scope": "82 distinct cases across focused invocations; not one 82-case command",
+  "test_runs": [
+    {
+      "label": "query_initial",
+      "prefix": "pytest_native_activation_1790869164713039900",
+      "exit_code": 1,
+      "passed": 28,
+      "failed": 1,
+      "scope": "29 distinct original cases; preserved synthetic path overlap failure",
+      "evidence": "automation_reports/CV-SincNet/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01/evidence/query_initial"
+    },
+    {
+      "label": "query_local_fixes",
+      "prefix": "pytest_native_activation_1790869729050579200",
+      "exit_code": 0,
+      "passed": 6,
+      "failed": 0,
+      "scope": "Affected six cases, including three new local failure regressions",
+      "evidence": "automation_reports/CV-SincNet/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01/evidence/query_local_fixes"
+    },
+    {
+      "label": "scorer_full",
+      "prefix": "pytest_native_activation_1790870586543935400",
+      "exit_code": 0,
+      "passed": 39,
+      "failed": 0,
+      "scope": "Full affected scorer file with complete 2400-parent synthetic fixture",
+      "evidence": "automation_reports/CV-SincNet/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01/evidence/scorer_full"
+    },
+    {
+      "label": "analyzer_initial",
+      "prefix": "pytest_native_activation_1790870813091066900",
+      "exit_code": 1,
+      "passed": 10,
+      "failed": 1,
+      "scope": "11 distinct cases; preserved invalid synthetic namespace failure",
+      "evidence": "automation_reports/CV-SincNet/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01/evidence/analyzer_initial"
+    },
+    {
+      "label": "analyzer_fixture_fix",
+      "prefix": "pytest_native_activation_1790871020875465200",
+      "exit_code": 0,
+      "passed": 1,
+      "failed": 0,
+      "scope": "Only affected namespace fixture retested; producer unchanged",
+      "evidence": "automation_reports/CV-SincNet/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01/evidence/analyzer_fixture_fix"
+    }
+  ],
+  "prior_scorer_30_passed": "pytest_native_activation_1790868383981773500 retained; affected full 39 rerun replaces current resource validation",
+  "environment": {
+    "python": "3.10",
+    "numpy": "2.2.6",
+    "scipy": "1.15.3",
+    "torch": "2.1.0+cpu",
+    "prefix": "E:/type10-7/local_envs/ssr-gpu"
+  },
+  "numpy_torch_bridge": "Existing Torch/NumPy ABI warning retained; native float32 classifier uses tested list-to-tensor bridge",
+  "isolated_import_ref": "automation_reports/CV-SincNet/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01/evidence/isolated_query_import_20261002.json",
+  "exact_runtime_source_paths": 38,
+  "data_or_model_access": false,
+  "native_encoder_loaded": false,
+  "reviews": [
+    "docs/D92_GROUP_BARRIER_JOINT_BENCHMARK_ENTRY_REVIEW_20261001.md",
+    "docs/D92_GROUP_BARRIER_JOINT_BENCHMARK_SCORER_REVIEW_20261001.md"
+  ],
+  "review_status": "NO_UNRESOLVED_P0_P1",
+  "review_scope": "Entry and scorer authored/reviewed by different workers; no self-review of owned gate/scorer",
+  "timing_domain": "12-key work ABI; validate finite nonnegative outer markers/internal records; only same-clock C_public_predict seconds sum checked within binary64 bound",
+  "math_limit": "Old conditional winner fixed globally; train pair margins protected, but no query zero-forgetting, accuracy, or starboard compute guarantee",
+  "actual_target_results_used": false,
+  "parameter_selection": false,
+  "query_run_launched": false,
+  "goal_complete": false
+}

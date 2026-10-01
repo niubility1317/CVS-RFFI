@@ -1,3 +1,5 @@
+最新终态：FAILED；[evidence/query_runtime_1790871039149970200.json](evidence/query_runtime_1790871039149970200.json)（2026-10-01T16:09:36Z）。All original Margin processes terminal: two complete/two technical failures. Immutable d86 runtime and partial artifacts preserved; no subset truth/score/retry.
+
 最新只读证据：[evidence/query_runtime_1790867775105886400.json](evidence/query_runtime_1790867775105886400.json)（2026-10-01T15:15:13Z）。两行FAILED、一行COMPLETE、一行实时PREDICTING，supervisor仍实时。rx1模型02的C inner QP同样为`UNSUPPORTED_ACTIVE_JACOBIAN`；普通紧约束求导适用条件未满足。日志不够区分具体依赖／严格互补条件，secondary缺complete文件不是传输故障。保留原runtime和全部产物，不干预健康行，不评分成功子集。
 
 最新只读证据：[evidence/query_runtime_1790866527880152700.json](evidence/query_runtime_1790866527880152700.json)（2026-10-01T14:54:26Z）。一行 COMPLETE、一行 FAILED、两行实时 PREDICTING；原 supervisor 正常推进下一行。全部四行固定条件仍未满足，不评分成功子集，不修改原 runtime。

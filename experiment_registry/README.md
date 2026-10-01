@@ -1,6 +1,6 @@
-当前D92新增：[GroupBarrierJoint完整源码与support预登记](../automation_reports/CV-SincNet/20261001-phase2-d92-group-barrier-joint-support-m2-r01/report.md)，4行／160parents，RUNNING，首次launch/live runtime VERIFIED（9518d46d2，supervisor1004125）。58项相关合成验证不代表性能改善。原Margin query矩阵已观察到两行技术失败、一行完成、一行运行；健康行继续，不评分成功子集。
+当前D92：[GroupBarrier完整query预登记](../automation_reports/CV-SincNet/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01/report.md)，4行/2400parents，LOCAL_VERIFIED，尚未启动；[support诊断](../automation_reports/CV-SincNet/20261001-phase2-d92-group-barrier-joint-support-m2-r01/report.md)四行训练完成，真实指标待完整分析。原Margin query终态2完成/2技术失败，不评分成功子集。合成验证不代表性能改善。
 
-<!-- GROUP_BARRIER_JOINT_ENTRY_20261001 -->
+<!-- GROUP_BARRIER_QUERY_ENTRY_20261002 -->
 
 # 实验总索引
 

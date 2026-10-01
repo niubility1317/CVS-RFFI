@@ -1,0 +1,798 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261001-phase2-d92-group-barrier-joint-repeat-m2-r01",
+  "group_id": "d92-group-barrier-joint-repeated-benchmark",
+  "spec_path": "configs/d92_group_barrier_joint_repeat_20261001.json",
+  "code": {
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_group_barrier_joint_repeat_20261001_r01",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "commit": "9518d46d2f763e5b080b5337e23155c9de883e09",
+    "checkout": "E:\\type10-7\\code\\snapshots\\d92_support_upgrade_20260928_wt",
+    "commit_note": "Fixed source preparation parent; independently verified pushed runtime OID is recorded after the unique launch."
+  },
+  "execution": {
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01",
+    "launch_owner": "root",
+    "cpu_lanes": 2,
+    "blas_threads": 2,
+    "host": "N607",
+    "local_artifact_root": "automation_reports/CV-SincNet/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01",
+    "gpu_policy": "CPU2 / BLAS2 / CUDA_VISIBLE_DEVICES empty; raw caches only",
+    "launch_command": "F:/App/miniconda3/python.exe -X utf8 tools/publish_d92_group_barrier_joint_benchmark.py --spec configs/d92_group_barrier_joint_repeat_20261001.json",
+    "stop_rule": "Technical failure fails only its own row; preserve partial outputs, no automatic retry or low-score stop.",
+    "actual_runtime_commit": null,
+    "implementation_validation": "docs/D92_GROUP_BARRIER_JOINT_QUERY_VALIDATION_20261002.json",
+    "fresh_independent_validation": "Deferred by explicit user request; reuse is not a fresh confirmation"
+  },
+  "benchmark": {
+    "config": {
+      "algorithm": {
+        "schema": "d92_group_barrier_joint_local_ridge_v1",
+        "method": "D92-GroupBarrierJointLocalRidge-v1",
+        "candidate_status": "SOURCE_ONLY_DRAFT_NOT_PUBLISHED",
+        "B": "unchanged_CE_only_hard_ball_MarginJoint_B",
+        "C": "new_only_affine_ridge_plus_all_pair_fixed_positive_barrier_Bernoulli_gate",
+        "B_objective": "RMS_across_classes_of_cross_fold_mean_CE_only",
+        "C_objective": "RMS_class_mean_CE_only",
+        "rank": 8,
+        "input_dim": 736,
+        "dictionary": "first8_orthonormal_DCT_rows",
+        "learn_V": false,
+        "initialization_C": "actual_current_B_U_no_reset",
+        "coordinate_ball_radius": 0.5,
+        "proximal_coefficient": 0.0,
+        "ridge_coefficient": 1.0,
+        "temperature": 1.0,
+        "barrier_average_original_objective_gap": 0.0001,
+        "barrier_law": "zeta=N*1e-4/(old_physical_count*new_class_count)_fixed_per_head",
+        "bandwidth": "fixed_original_old_inner_train",
+        "trace_scale": "fixed_actual_old_prior",
+        "max_iterations": 4,
+        "max_trials": 12,
+        "initial_step_size": 0.125,
+        "backtrack_factor": 0.5,
+        "free_new_intercept": true,
+        "free_gate_intercept": true,
+        "max_coordinates": 5888,
+        "query_decision_policy": "per_physical_sample_all_registered_classes",
+        "tie_break": "physical_class_id_lexicographic",
+        "phase1_frozen": true,
+        "source_inputs": false,
+        "query_fit": false,
+        "encoder_backward": false,
+        "parameter_search": false,
+        "extra_ground_data_stat_payload_bytes": 0,
+        "code_wire_payload_bytes": null,
+        "dtype": "float64"
+      },
+      "group_barrier_resources": {
+        "max_newton_iterations": 100,
+        "max_line_search_trials": 64,
+        "max_factor_buffer_bytes": 167772160
+      }
+    },
+    "cohorts": {
+      "rx3": {
+        "capsule": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule",
+        "truth": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/score_only/truth.json",
+        "expected_capsule_id": "residual-noeq-76121e6f34363fa612ec25fb",
+        "matrix": {
+          "receivers": [
+            "19-1",
+            "8-14",
+            "8-7"
+          ],
+          "scenarios": [
+            "practical_high",
+            "practical_mid",
+            "practical_low_urban"
+          ],
+          "ks": [
+            1,
+            5,
+            10,
+            20
+          ],
+          "new_counts": [
+            0,
+            2,
+            5,
+            10,
+            20
+          ],
+          "support_seeds": [
+            2026092711,
+            2026092712,
+            2026092713,
+            2026092714,
+            2026092715
+          ]
+        },
+        "expected_split_count": 900
+      },
+      "rx1": {
+        "capsule": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-data-manytx-r01/capsule",
+        "truth": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-data-manytx-r01/score_only/truth.json",
+        "expected_capsule_id": "residual-noeq-d0a99fede324159c5a4750fd",
+        "matrix": {
+          "receivers": [
+            "20-19"
+          ],
+          "scenarios": [
+            "practical_high",
+            "practical_mid",
+            "practical_low_urban"
+          ],
+          "ks": [
+            1,
+            5,
+            10,
+            20
+          ],
+          "new_counts": [
+            0,
+            2,
+            5,
+            10,
+            20
+          ],
+          "support_seeds": [
+            2026092711,
+            2026092712,
+            2026092713,
+            2026092714,
+            2026092715
+          ]
+        },
+        "expected_split_count": 300
+      }
+    }
+  },
+  "rows": [
+    {
+      "row_id": "rx3-cvs-daot-rc4-s2026092701",
+      "cohort": "rx3",
+      "expected_model_seed": 2026092701,
+      "expected_checkpoint_sha256": "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b",
+      "row_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092701",
+      "branch_features": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-ridge-repeat-rx3-m4-r01/cvs-daot-rc4-s2026092701/branch_features",
+      "ground_packet": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r02/ground-a-s2026092701",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01/rx3-cvs-daot-rc4-s2026092701",
+      "method": "D92-GroupBarrierJointLocalRidge-v1",
+      "purpose": "Complete repeated query benchmark, actual within-split B to C only",
+      "gpu": "CPU only",
+      "config_ref": "configs/d92_group_barrier_joint_repeat_20261001.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01/rx3-cvs-daot-rc4-s2026092701/resolved_config.json",
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026092705,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original model/split/data/augmentation lineage retained; support seed is a fixed five-seed matrix (null scalar); evaluation deterministic, no random seed.",
+      "support_seed_values": [
+        2026092711,
+        2026092712,
+        2026092713,
+        2026092714,
+        2026092715
+      ],
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "practical_high,practical_mid,practical_low_urban; residual/post_sync/noeq",
+      "optimizer": "B actual unchanged Margin CE-only; C new-only Ridge plus constrained Bernoulli barrier; whitened hard ball; actual-displacement Armijo; max4accepted/max12trials",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "initial_step_size": 0.125,
+      "budget_ref": "benchmark.config.algorithm + group_barrier_resources; each parent max4 accepted/max12 trials, no query tuning",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01/rx3-cvs-daot-rc4-s2026092701/predictions.log",
+      "expected_artifacts": [
+        "resolved_config.json",
+        "row_startup.json",
+        "predictions.log",
+        "predictions/startup.json",
+        "predictions/predictions_A.jsonl",
+        "predictions/predictions_B.jsonl",
+        "predictions/predictions_C.jsonl",
+        "predictions/predictions.jsonl",
+        "predictions/query_score_work.jsonl",
+        "predictions/predictions_complete.json",
+        "predictions/state_manifest.json",
+        "predictions/state_arrays/*.npz",
+        "predictions/fit_trace.jsonl",
+        "predictions/fit_stages.jsonl",
+        "predictions/fit_stages.csv",
+        "predictions/training_events.jsonl",
+        "predictions/training_events_compact.jsonl",
+        "predictions/training_events_compact.csv",
+        "predictions/training.log",
+        "predictions/predictions_failed.json if failure"
+      ],
+      "provenance_refs": {
+        "source_initialization": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701/initialization.json",
+        "source_completion": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701/completion.json"
+      },
+      "source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701",
+      "data_overrides": {
+        "capsule": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule",
+        "capsule_id": "residual-noeq-76121e6f34363fa612ec25fb",
+        "expected_split_count": 900
+      },
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "tools/evaluate_d92_group_barrier_joint_benchmark.py",
+        "--row-root",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092701",
+        "--capsule",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule",
+        "--branch-features",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-ridge-repeat-rx3-m4-r01/cvs-daot-rc4-s2026092701/branch_features",
+        "--ground-packet",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r02/ground-a-s2026092701",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01/rx3-cvs-daot-rc4-s2026092701/predictions",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01/rx3-cvs-daot-rc4-s2026092701/resolved_config.json",
+        "--expected-capsule-id",
+        "residual-noeq-76121e6f34363fa612ec25fb",
+        "--expected-checkpoint-sha256",
+        "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b",
+        "--run-id",
+        "20261001-phase2-d92-group-barrier-joint-repeat-m2-r01",
+        "--row-id",
+        "rx3-cvs-daot-rc4-s2026092701",
+        "--release-commit",
+        "<ROOT_VERIFIED_PUSHED_OID_AT_LAUNCH>"
+      ]
+    },
+    {
+      "row_id": "rx3-cvs-daot-rc4-s2026092702",
+      "cohort": "rx3",
+      "expected_model_seed": 2026092702,
+      "expected_checkpoint_sha256": "72f26413e495dcf82317898f8729caa3d35499bf0b41e9671ffdceab2c90924b",
+      "row_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092702",
+      "branch_features": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-ridge-repeat-rx3-m4-r01/cvs-daot-rc4-s2026092702/branch_features",
+      "ground_packet": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r02/ground-a-s2026092702",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01/rx3-cvs-daot-rc4-s2026092702",
+      "method": "D92-GroupBarrierJointLocalRidge-v1",
+      "purpose": "Complete repeated query benchmark, actual within-split B to C only",
+      "gpu": "CPU only",
+      "config_ref": "configs/d92_group_barrier_joint_repeat_20261001.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01/rx3-cvs-daot-rc4-s2026092702/resolved_config.json",
+      "seeds": {
+        "model": 2026092702,
+        "split": 2026092705,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original model/split/data/augmentation lineage retained; support seed is a fixed five-seed matrix (null scalar); evaluation deterministic, no random seed.",
+      "support_seed_values": [
+        2026092711,
+        2026092712,
+        2026092713,
+        2026092714,
+        2026092715
+      ],
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "practical_high,practical_mid,practical_low_urban; residual/post_sync/noeq",
+      "optimizer": "B actual unchanged Margin CE-only; C new-only Ridge plus constrained Bernoulli barrier; whitened hard ball; actual-displacement Armijo; max4accepted/max12trials",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "initial_step_size": 0.125,
+      "budget_ref": "benchmark.config.algorithm + group_barrier_resources; each parent max4 accepted/max12 trials, no query tuning",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01/rx3-cvs-daot-rc4-s2026092702/predictions.log",
+      "expected_artifacts": [
+        "resolved_config.json",
+        "row_startup.json",
+        "predictions.log",
+        "predictions/startup.json",
+        "predictions/predictions_A.jsonl",
+        "predictions/predictions_B.jsonl",
+        "predictions/predictions_C.jsonl",
+        "predictions/predictions.jsonl",
+        "predictions/query_score_work.jsonl",
+        "predictions/predictions_complete.json",
+        "predictions/state_manifest.json",
+        "predictions/state_arrays/*.npz",
+        "predictions/fit_trace.jsonl",
+        "predictions/fit_stages.jsonl",
+        "predictions/fit_stages.csv",
+        "predictions/training_events.jsonl",
+        "predictions/training_events_compact.jsonl",
+        "predictions/training_events_compact.csv",
+        "predictions/training.log",
+        "predictions/predictions_failed.json if failure"
+      ],
+      "provenance_refs": {
+        "source_initialization": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092702/initialization.json",
+        "source_completion": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092702/completion.json"
+      },
+      "source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092702",
+      "data_overrides": {
+        "capsule": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule",
+        "capsule_id": "residual-noeq-76121e6f34363fa612ec25fb",
+        "expected_split_count": 900
+      },
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "tools/evaluate_d92_group_barrier_joint_benchmark.py",
+        "--row-root",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092702",
+        "--capsule",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule",
+        "--branch-features",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-ridge-repeat-rx3-m4-r01/cvs-daot-rc4-s2026092702/branch_features",
+        "--ground-packet",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r02/ground-a-s2026092702",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01/rx3-cvs-daot-rc4-s2026092702/predictions",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01/rx3-cvs-daot-rc4-s2026092702/resolved_config.json",
+        "--expected-capsule-id",
+        "residual-noeq-76121e6f34363fa612ec25fb",
+        "--expected-checkpoint-sha256",
+        "72f26413e495dcf82317898f8729caa3d35499bf0b41e9671ffdceab2c90924b",
+        "--run-id",
+        "20261001-phase2-d92-group-barrier-joint-repeat-m2-r01",
+        "--row-id",
+        "rx3-cvs-daot-rc4-s2026092702",
+        "--release-commit",
+        "<ROOT_VERIFIED_PUSHED_OID_AT_LAUNCH>"
+      ]
+    },
+    {
+      "row_id": "rx1-cvs-daot-rc4-s2026092701",
+      "cohort": "rx1",
+      "expected_model_seed": 2026092701,
+      "expected_checkpoint_sha256": "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b",
+      "row_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092701",
+      "branch_features": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-ridge-repeat-rx1-m4-r01/cvs-daot-rc4-s2026092701/branch_features",
+      "ground_packet": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r02/ground-a-s2026092701",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01/rx1-cvs-daot-rc4-s2026092701",
+      "method": "D92-GroupBarrierJointLocalRidge-v1",
+      "purpose": "Complete repeated query benchmark, actual within-split B to C only",
+      "gpu": "CPU only",
+      "config_ref": "configs/d92_group_barrier_joint_repeat_20261001.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01/rx1-cvs-daot-rc4-s2026092701/resolved_config.json",
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026092705,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original model/split/data/augmentation lineage retained; support seed is a fixed five-seed matrix (null scalar); evaluation deterministic, no random seed.",
+      "support_seed_values": [
+        2026092711,
+        2026092712,
+        2026092713,
+        2026092714,
+        2026092715
+      ],
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "practical_high,practical_mid,practical_low_urban; residual/post_sync/noeq",
+      "optimizer": "B actual unchanged Margin CE-only; C new-only Ridge plus constrained Bernoulli barrier; whitened hard ball; actual-displacement Armijo; max4accepted/max12trials",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "initial_step_size": 0.125,
+      "budget_ref": "benchmark.config.algorithm + group_barrier_resources; each parent max4 accepted/max12 trials, no query tuning",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01/rx1-cvs-daot-rc4-s2026092701/predictions.log",
+      "expected_artifacts": [
+        "resolved_config.json",
+        "row_startup.json",
+        "predictions.log",
+        "predictions/startup.json",
+        "predictions/predictions_A.jsonl",
+        "predictions/predictions_B.jsonl",
+        "predictions/predictions_C.jsonl",
+        "predictions/predictions.jsonl",
+        "predictions/query_score_work.jsonl",
+        "predictions/predictions_complete.json",
+        "predictions/state_manifest.json",
+        "predictions/state_arrays/*.npz",
+        "predictions/fit_trace.jsonl",
+        "predictions/fit_stages.jsonl",
+        "predictions/fit_stages.csv",
+        "predictions/training_events.jsonl",
+        "predictions/training_events_compact.jsonl",
+        "predictions/training_events_compact.csv",
+        "predictions/training.log",
+        "predictions/predictions_failed.json if failure"
+      ],
+      "provenance_refs": {
+        "source_initialization": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701/initialization.json",
+        "source_completion": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701/completion.json"
+      },
+      "source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701",
+      "data_overrides": {
+        "capsule": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-data-manytx-r01/capsule",
+        "capsule_id": "residual-noeq-d0a99fede324159c5a4750fd",
+        "expected_split_count": 300
+      },
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "tools/evaluate_d92_group_barrier_joint_benchmark.py",
+        "--row-root",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092701",
+        "--capsule",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-data-manytx-r01/capsule",
+        "--branch-features",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-ridge-repeat-rx1-m4-r01/cvs-daot-rc4-s2026092701/branch_features",
+        "--ground-packet",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r02/ground-a-s2026092701",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01/rx1-cvs-daot-rc4-s2026092701/predictions",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01/rx1-cvs-daot-rc4-s2026092701/resolved_config.json",
+        "--expected-capsule-id",
+        "residual-noeq-d0a99fede324159c5a4750fd",
+        "--expected-checkpoint-sha256",
+        "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b",
+        "--run-id",
+        "20261001-phase2-d92-group-barrier-joint-repeat-m2-r01",
+        "--row-id",
+        "rx1-cvs-daot-rc4-s2026092701",
+        "--release-commit",
+        "<ROOT_VERIFIED_PUSHED_OID_AT_LAUNCH>"
+      ]
+    },
+    {
+      "row_id": "rx1-cvs-daot-rc4-s2026092702",
+      "cohort": "rx1",
+      "expected_model_seed": 2026092702,
+      "expected_checkpoint_sha256": "72f26413e495dcf82317898f8729caa3d35499bf0b41e9671ffdceab2c90924b",
+      "row_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092702",
+      "branch_features": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-ridge-repeat-rx1-m4-r01/cvs-daot-rc4-s2026092702/branch_features",
+      "ground_packet": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r02/ground-a-s2026092702",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01/rx1-cvs-daot-rc4-s2026092702",
+      "method": "D92-GroupBarrierJointLocalRidge-v1",
+      "purpose": "Complete repeated query benchmark, actual within-split B to C only",
+      "gpu": "CPU only",
+      "config_ref": "configs/d92_group_barrier_joint_repeat_20261001.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01/rx1-cvs-daot-rc4-s2026092702/resolved_config.json",
+      "seeds": {
+        "model": 2026092702,
+        "split": 2026092705,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original model/split/data/augmentation lineage retained; support seed is a fixed five-seed matrix (null scalar); evaluation deterministic, no random seed.",
+      "support_seed_values": [
+        2026092711,
+        2026092712,
+        2026092713,
+        2026092714,
+        2026092715
+      ],
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "practical_high,practical_mid,practical_low_urban; residual/post_sync/noeq",
+      "optimizer": "B actual unchanged Margin CE-only; C new-only Ridge plus constrained Bernoulli barrier; whitened hard ball; actual-displacement Armijo; max4accepted/max12trials",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "initial_step_size": 0.125,
+      "budget_ref": "benchmark.config.algorithm + group_barrier_resources; each parent max4 accepted/max12 trials, no query tuning",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01/rx1-cvs-daot-rc4-s2026092702/predictions.log",
+      "expected_artifacts": [
+        "resolved_config.json",
+        "row_startup.json",
+        "predictions.log",
+        "predictions/startup.json",
+        "predictions/predictions_A.jsonl",
+        "predictions/predictions_B.jsonl",
+        "predictions/predictions_C.jsonl",
+        "predictions/predictions.jsonl",
+        "predictions/query_score_work.jsonl",
+        "predictions/predictions_complete.json",
+        "predictions/state_manifest.json",
+        "predictions/state_arrays/*.npz",
+        "predictions/fit_trace.jsonl",
+        "predictions/fit_stages.jsonl",
+        "predictions/fit_stages.csv",
+        "predictions/training_events.jsonl",
+        "predictions/training_events_compact.jsonl",
+        "predictions/training_events_compact.csv",
+        "predictions/training.log",
+        "predictions/predictions_failed.json if failure"
+      ],
+      "provenance_refs": {
+        "source_initialization": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092702/initialization.json",
+        "source_completion": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092702/completion.json"
+      },
+      "source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092702",
+      "data_overrides": {
+        "capsule": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-data-manytx-r01/capsule",
+        "capsule_id": "residual-noeq-d0a99fede324159c5a4750fd",
+        "expected_split_count": 300
+      },
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "tools/evaluate_d92_group_barrier_joint_benchmark.py",
+        "--row-root",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092702",
+        "--capsule",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-data-manytx-r01/capsule",
+        "--branch-features",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-ridge-repeat-rx1-m4-r01/cvs-daot-rc4-s2026092702/branch_features",
+        "--ground-packet",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r02/ground-a-s2026092702",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01/rx1-cvs-daot-rc4-s2026092702/predictions",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01/rx1-cvs-daot-rc4-s2026092702/resolved_config.json",
+        "--expected-capsule-id",
+        "residual-noeq-d0a99fede324159c5a4750fd",
+        "--expected-checkpoint-sha256",
+        "72f26413e495dcf82317898f8729caa3d35499bf0b41e9671ffdceab2c90924b",
+        "--run-id",
+        "20261001-phase2-d92-group-barrier-joint-repeat-m2-r01",
+        "--row-id",
+        "rx1-cvs-daot-rc4-s2026092702",
+        "--release-commit",
+        "<ROOT_VERIFIED_PUSHED_OID_AT_LAUNCH>"
+      ]
+    }
+  ],
+  "kind": "diagnostic",
+  "stage": "Phase2-repeated-query-benchmark",
+  "display_name": "GroupBarrierJoint LocalRidge与support监督adapter的完整三阶段重复基准",
+  "description": "固定原数学方案：B仅适应旧support，C真实继承B，以新类解析Ridge和全旧点/新类正障碍Bernoulli门控联合学习小adapter。完整2400父任务固定A/B/C后独立truth-last评分，不根据support或query结果选参。",
+  "status": "LOCAL_VERIFIED",
+  "claim_scope": "REPEATED_BENCHMARK_PREVIOUSLY_SCORED_TARGETS",
+  "comparison_group_id": "d92-group-barrier-joint-support",
+  "authorization": "Existing user joint LocalRidge/target-support SFT and repeated-benchmark authorization; root sole launch owner.",
+  "aliases": [],
+  "tags": [
+    "d92",
+    "group-barrier-joint",
+    "support-sft",
+    "three-stage",
+    "practical-residual",
+    "repeated-query",
+    "truth-last"
+  ],
+  "parent_run_ids": [
+    "20261001-phase2-d92-group-barrier-joint-support-m2-r01"
+  ],
+  "replaces_run_id": null,
+  "ideal_targets": {
+    "adaptation_gain_pp": 10,
+    "registration_old_drop_pp": 1,
+    "absolute_old_new_gap_pp": 3,
+    "status": "SOFT_IDEAL_TARGETS_NOT_LAUNCH_GATES"
+  },
+  "data": {
+    "dataset": "Complete original received capsules; legal support fit and per-sample query inference",
+    "version": "existing_N607_ManyTx_actual19RX",
+    "representation": "Existing immutable raw z_id/fft/t_emb/f_emb/pa_local for one received observation; no cross-run learned state",
+    "contract_ref": "benchmark.cohorts.*.capsule/manifest.json",
+    "physical_ids_ref": "benchmark.cohorts.*.capsule/received.npz#ids metadata only",
+    "label_map_ref": "benchmark.cohorts.*.capsule/splits/*.json#registered_classes,support_labels",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [
+      "19-1",
+      "8-14",
+      "8-7",
+      "20-19"
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "benchmark.cohorts.*.capsule/splits/*.json#registered_classes",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": {
+      "rx3": "residual-noeq-76121e6f34363fa612ec25fb",
+      "rx1": "residual-noeq-d0a99fede324159c5a4750fd"
+    },
+    "split_id": "Complete original 900 rx3 + 300 rx1 splits per model; 2400 parents total",
+    "validation_ref": "Existing cohort capsule manifests; no data rebuild or revalidation",
+    "support_query_ref": "Current split legal support only for fit; original query IDs read one record at a time for A/B/C inference",
+    "leo_config_ref": "experiments/adv3b02_xuc/code/cvsrffi/practical_adapter.py",
+    "k": [
+      1,
+      5,
+      10,
+      20
+    ],
+    "new_class_counts": [
+      0,
+      2,
+      5,
+      10,
+      20
+    ],
+    "support_seeds": [
+      2026092711,
+      2026092712,
+      2026092713,
+      2026092714,
+      2026092715
+    ],
+    "protocol_schema": "p2_min_v1",
+    "phase2_data_status": "VALIDATED_ONCE",
+    "scenarios": [
+      "practical_high",
+      "practical_mid",
+      "practical_low_urban"
+    ],
+    "data_rebuilt": false,
+    "data_revalidated": false,
+    "target_previously_scored": true,
+    "reuse_policy": "VALIDATED_ONCE; runtime artifact identity/binding checks only, no new data validation",
+    "channel": {
+      "route": "residual",
+      "mode": "post_sync",
+      "equalization_enabled": false,
+      "fs_hz": 25000000
+    }
+  },
+  "permissions": {
+    "regime": "legal_target_support_group_barrier_joint_sft",
+    "query_use": "Per-physical-sample read-only inference against all registered classes; no fit, truth/role/count/quota/query statistics",
+    "source_samples": false,
+    "source_per_record_features": false,
+    "source_replay": false,
+    "summary_inputs": false,
+    "old_target_scores_for_adaptation": false,
+    "cross_run_result_tuning": false,
+    "adapted_state_reuse": "within_path_B_to_C_only; no_cross_parent_fold_or_model_reuse",
+    "truth_use": "Independent scorer only after ALL declared A/B/C predictions fixed and read back; no feedback",
+    "claim_scope": "REPEATED_BENCHMARK_PREVIOUSLY_SCORED_TARGETS",
+    "ground_summary_use": "Frozen original native classifier A head; no source samples or per-record features"
+  },
+  "checkpoint": {
+    "initialization": "Exact source-only scratch final200 model; eval and frozen; no changed buffers or weights",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701/final_ssdg.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092702/final_ssdg.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092703/final_ssdg.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092704/final_ssdg.pth"
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "provenance_verdict": "VERIFIED_ALL_FOUR_EXACT_SOURCE_CONTRACT_SCRATCH_FINAL200_SHA_AND_NATIVE_ARCHITECTURE",
+    "selection_rule": "Two smallest fixed source model seeds, final200, selected from metadata before results",
+    "metadata_evidence_ref": "docs/D92_FIXED_PHASE1_BRANCH_METADATA_20260929.json",
+    "runtime_checkpoint_reload": false,
+    "source_training_contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "inheritance_policy": "Only original source-only model; no historical adapted head/cache state",
+    "current_auxiliary_training": "Current legal support only; actual same-split B to GroupBarrier C; no learned state from support probe",
+    "feature_cache_producer_run_id": "20260929-phase2-d92-branch-ridge-repeat-rx3/rx1-m4-r01",
+    "feature_cache_producer_role": "Raw frozen received features; support/query subsets fixed by original physical split, no learned state"
+  },
+  "expected_artifacts": [
+    "startup.json",
+    "state.json",
+    "complete.json",
+    "each row/resolved_config.json",
+    "each row/row_startup.json",
+    "each row/predictions.log",
+    "each row/predictions/startup.json",
+    "each row/predictions/predictions_A.jsonl",
+    "each row/predictions/predictions_B.jsonl",
+    "each row/predictions/predictions_C.jsonl",
+    "each row/predictions/predictions.jsonl",
+    "each row/predictions/query_score_work.jsonl",
+    "each row/predictions/predictions_complete.json",
+    "each row/predictions/state_manifest.json",
+    "each row/predictions/state_arrays/*.npz",
+    "each row/predictions/fit_trace.jsonl",
+    "each row/predictions/fit_stages.jsonl",
+    "each row/predictions/fit_stages.csv",
+    "each row/predictions/training_events.jsonl",
+    "each row/predictions/training_events_compact.jsonl",
+    "each row/predictions/training_events_compact.csv",
+    "each row/predictions/training.log",
+    "each row/predictions/predictions_failed.json if failure",
+    "separate truth-last score/summary.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "A_old_accuracy",
+      "B_old_accuracy",
+      "C_old_accuracy",
+      "C_new_accuracy",
+      "adaptation_gain_B_minus_A",
+      "registration_old_drop_B_minus_C",
+      "C_abs_new_old_gap",
+      "C_H",
+      "old/new_macro_F1"
+    ],
+    "dimensions": [
+      "model_seed",
+      "cohort",
+      "receiver",
+      "scenario",
+      "support_seed",
+      "K",
+      "new_count"
+    ],
+    "old_classes": 6,
+    "k": [
+      1,
+      5,
+      10,
+      20
+    ],
+    "new_class_counts": [
+      0,
+      2,
+      5,
+      10,
+      20
+    ],
+    "prediction_ref": "each row/predictions/predictions_{A,B,C}.jsonl",
+    "scorer_ref": "tools/score_d92_group_barrier_joint_benchmark.py",
+    "physical_pairing": "Same row/split and physical old query at A/B/C, same old support across new counts; C all registered classes compete",
+    "full_matrix_fixed_before_truth": true,
+    "query_accuracy": true,
+    "parameter_selection": false,
+    "automatic_promotion": false,
+    "statistics": "Compute each parent then each model seed mean; equal seed means and descriptive sample SD, not CI",
+    "k1": "Full query accuracy valid; support-held K1 N/A does not transfer here",
+    "new0": "C exactly actual B; new accuracy/H/gap N/A",
+    "resource_scope": "Measured trainable coordinates, fitting/inference wall time, peak RSS and state bytes; unknown satellite hardware/wire/energy N/A"
+  },
+  "notes": [
+    "Frozen math and resources identical to preregistered support method before any real support analysis.",
+    "No source sample/per-record feature, no query fit/truth/count/quota/global reranking/score feedback.",
+    "B source-only ground provenance fixed; no checkpoint load or encoder backward; actual B inherited only in current split.",
+    "Frozen algorithm literal candidate_status is historical source metadata; execution status is recorded separately.",
+    "Full matrix failure preserves healthy rows and forbids scoring successful subsets as a complete benchmark.",
+    "SFT or 5888 coordinates does not establish low starboard compute; report measured scope and N/A.",
+    "Goal remains ACTIVE; complete source validation or publication is not performance success."
+  ],
+  "registered_at": "2026-10-01T16:11:39+00:00"
+}

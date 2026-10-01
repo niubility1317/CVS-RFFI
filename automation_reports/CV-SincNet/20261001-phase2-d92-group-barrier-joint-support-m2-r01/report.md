@@ -1,3 +1,5 @@
+最新终态：TRAINING_COMPLETE；[evidence/runtime_readback_1790870516458140900.json](evidence/runtime_readback_1790870516458140900.json)（2026-10-01T16:00:55Z）。Four support rows complete; immutable9518 runtime unchanged; source-fixed query method; accuracy/OOF/resource analysis not yet read.
+
 # D92 GroupBarrierJoint：解析注册与小适配器联合学习
 
 当前状态：RUNNING／首次发布与运行状态 VERIFIED。尚无完整诊断或 query 准确率结论。
