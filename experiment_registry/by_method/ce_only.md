@@ -6,5 +6,6 @@
 
 |名称|记录类型|证据入口|
 |---|---|---|
+|无信道增强基准的 clean 测试报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261001-phase1-clean-baselines-manysig-m16-r01/report.md)|
 |CVS 无增强轻量架构与常见网络基准|managed_run|[打开](../../automation_reports/CV-SincNet/20261001-phase1-cvs-clean-architecture-manysig-m32-r01/report.md)|
 |CVS 基础网络研发：残差物理融合|managed_run|[打开](../../automation_reports/CV-SincNet/20261001-phase1-cvs-residual-identity-manysig-m8-r01/report.md)|

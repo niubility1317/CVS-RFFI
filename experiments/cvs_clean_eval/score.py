@@ -1,0 +1,117 @@
+"""Independent clean truth-last scoring. No model/training module imports."""
+import argparse
+import csv
+import json
+from collections import defaultdict
+from pathlib import Path
+import numpy as np
+from comparison_suite.score import metrics
+
+SEEDS={2026092701,2026092702,2026092703,2026092704}
+BASELINES=('native','cvcnn','real_cnn','resnet1d')
+CANDIDATES={'orthogonal_pa','moment_pool','orthogonal_moment','shared_complex','residual_fusion','residual_fusion_moment'}
+
+
+def read(path):return json.loads(Path(path).read_text(encoding='utf-8'))
+
+
+def write(path,value):
+    with Path(path).open('x',encoding='utf-8') as f:json.dump(value,f,ensure_ascii=False,allow_nan=False,indent=2)
+
+
+def csvwrite(path,rows):
+    fields=sorted({k for row in rows for k in row})
+    with Path(path).open('x',encoding='utf-8',newline='') as f:
+        writer=csv.DictWriter(f,fieldnames=fields);writer.writeheader();writer.writerows(rows)
+
+
+def validate_matrix(spec):
+    selection=read(spec['selection_file'])
+    if selection.get('scope')=='baseline_only':
+        if selection['status']!='FIXED_BASELINES_FROZEN' or selection.get('test_variants')!=list(BASELINES) or selection.get('model_seeds')!=sorted(SEEDS):
+            raise ValueError('Fixed baseline matrix changed')
+        variants=BASELINES
+    else:
+        if selection['status']!='SOURCE_SELECTION_FROZEN' or selection['selected_variant'] not in CANDIDATES:
+            raise ValueError('No source-only frozen selection')
+        variants=(*BASELINES,selection['selected_variant'])
+    if selection['target_access'] or selection['target_score_used']:raise ValueError('Target feedback forbidden')
+    count=len(variants)*len(SEEDS)
+    rows=spec['rows']
+    if len(rows)!=count or {(r['variant'],r['model_seed']) for r in rows}!={(v,s) for v in variants for s in SEEDS}:
+        raise ValueError('Incomplete registered clean matrix;truth remains closed')
+    if len({r['row_id'] for r in rows})!=count or len({r['output_root'] for r in rows})!=count:
+        raise ValueError('Duplicate clean rows/outputs')
+    return selection
+
+
+def preflight_predictions(spec):
+    selection=validate_matrix(spec);predictions=[];reference=None
+    for row in spec['rows']:
+        cfg=read(row['config']);root=Path(row['output_root'])
+        flag=read(root/'clean_complete.json');resolved=read(root/'resolved_config.json');provenance=read(root/'provenance.json')
+        if (flag['status']!='PREDICTIONS_COMPLETE' or flag['truth_read'] is not False or flag['query_fit'] is not False or flag['views']!=['clean'] or
+            cfg['variant']!=row['variant'] or cfg['model_seed']!=row['model_seed'] or cfg['output_root']!=row['output_root'] or
+            cfg['selection_file']!=spec['selection_file'] or cfg['views']!=['clean'] or resolved['truth_read'] is not False or resolved['query_fit'] is not False or
+            any(resolved.get(k)!=v for k,v in cfg.items()) or provenance['status']!='VERIFIED' or provenance['query_fit'] is not False):
+            raise ValueError('Incomplete/contaminated clean predictions;truth remains closed')
+        capsule=Path(cfg['p1_capsule']);manifest=read(capsule/'manifest.json')
+        with np.load(capsule/'index.npz',allow_pickle=False) as index:ids=index['ids'].copy()
+        with np.load(root/'clean_predictions.npz',allow_pickle=False) as values:
+            if set(values.files)!={'ids','clean'} or not np.array_equal(ids,values['ids']):raise ValueError('Clean identity/view mismatch')
+            pred=values['clean'].copy()
+        if (not len(ids) or len(ids)!=len(set(ids.tolist())) or flag['count']!=len(ids) or pred.shape!=(len(ids),) or pred.dtype.kind not in 'iu' or
+            pred.min()<0 or pred.max()>=len(manifest['classes']) or manifest['status']!='VALIDATED_ONCE'):
+            raise ValueError('Invalid clean predictions')
+        if reference is None:reference=(ids,manifest['classes'])
+        elif not np.array_equal(ids,reference[0]) or manifest['classes']!=reference[1]:raise ValueError('Methods evaluated different physical queries/classes')
+        predictions.append((row,ids,pred))
+    return selection,reference,predictions
+
+
+def score(spec):
+    root=Path(spec['runtime_root'])
+    if (root/'scoring_clean_complete.json').exists():return read(root/'scoring_clean_complete.json')
+    selection,reference,predictions=preflight_predictions(spec)
+    # First truth access in this process occurs only after every frozen file passes.
+    truth=read(spec['p1_truth']);ids,classes=reference
+    targets=[truth[s] for s in ids.tolist()]
+    if any(type(t['label']) is not int or t['label']<0 or t['label']>=len(classes) for t in targets):raise ValueError('Truth label/class mismatch')
+    y=np.asarray([t['label'] for t in targets],dtype=np.int64)
+    receivers=np.asarray([str(t['receiver']) for t in targets])
+    results=[]
+    for row,row_ids,pred in predictions:
+        for receiver in ['ALL',*sorted(set(receivers))]:
+            mask=np.ones(len(ids),dtype=bool) if receiver=='ALL' else receivers==receiver
+            results.append(dict(row_id=row['row_id'],method=row['variant'],model_seed=row['model_seed'],view='clean',receiver=receiver,
+                **metrics(y[mask],pred[mask],len(classes))))
+    groups=defaultdict(list)
+    for row in results:groups[(row['method'],row['receiver'])].append(row)
+    summary=[]
+    for (method,receiver),rows in groups.items():
+        entry=dict(method=method,receiver=receiver,view='clean',model_seeds=sorted(SEEDS),query_count_per_seed=rows[0]['query_count'])
+        for metric in ('accuracy','macro_f1','macro_accuracy'):
+            values=[r[metric] for r in rows]
+            entry[metric+'_mean']=float(np.mean(values));entry[metric+'_seed_sd']=float(np.std(values,ddof=1))
+        summary.append(entry)
+    lookup={(r['method'],r['receiver'],r['model_seed']):r for r in results}
+    paired=[]
+    candidate='native' if selection.get('scope')=='baseline_only' else selection['selected_variant']
+    for receiver in ['ALL',*sorted(set(receivers))]:
+        for baseline in BASELINES:
+            if baseline==candidate:continue
+            deltas=[100*(lookup[(candidate,receiver,s)]['accuracy']-lookup[(baseline,receiver,s)]['accuracy']) for s in sorted(SEEDS)]
+            paired.append(dict(candidate=candidate,baseline=baseline,receiver=receiver,view='clean',model_seeds=sorted(SEEDS),
+                accuracy_delta_pp_by_seed=deltas,accuracy_delta_pp_mean=float(np.mean(deltas)),accuracy_delta_pp_seed_sd=float(np.std(deltas,ddof=1)),positive_seeds=sum(x>0 for x in deltas)))
+    write(root/'clean_scored_results.json',dict(status='SCORED',results=results,target_feedback_forbidden=True))
+    csvwrite(root/'clean_scored_results.csv',[{k:v for k,v in r.items() if k!='confusion'} for r in results])
+    write(root/'clean_summary.json',dict(summary=summary,paired=paired,selection_ref=spec['selection_file'],target_feedback_forbidden=True))
+    csvwrite(root/'clean_summary.csv',summary)
+    csvwrite(root/'clean_paired.csv',[{k:v for k,v in r.items() if k not in {'model_seeds','accuracy_delta_pp_by_seed'}} for r in paired])
+    marker=dict(status='SCORED_COMPLETE',models=len({r['variant'] for r in spec['rows']}),seeds=4,rows=len(spec['rows']),records=len(results),view='clean',query_count=len(ids),target_feedback_forbidden=True)
+    write(root/'scoring_clean_complete.json',marker)
+    return marker
+
+
+if __name__=='__main__':
+    p=argparse.ArgumentParser();p.add_argument('--spec',required=True);a=p.parse_args();print(json.dumps(score(read(a.spec))))

@@ -1,0 +1,20 @@
+{
+  "scope": "baseline_only",
+  "status": "FIXED_BASELINES_FROZEN",
+  "test_variants": [
+    "native",
+    "cvcnn",
+    "real_cnn",
+    "resnet1d"
+  ],
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703,
+    2026092704
+  ],
+  "target_access": false,
+  "target_score_used": false,
+  "source_matrix_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_clean_baseline_eval_20261001_r01/experiments/cvs_clean_design/configs/launch_spec.json",
+  "authorization": "2026-10-01用户要求进行基准的测试集测试，给出报告。固定四基准立即测试；不等待新CVS候选，不允许结果回流候选选择。"
+}

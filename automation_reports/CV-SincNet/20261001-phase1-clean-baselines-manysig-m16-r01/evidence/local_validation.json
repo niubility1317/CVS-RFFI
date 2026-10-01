@@ -1,0 +1,9 @@
+{
+  "status": "PASS",
+  "tests": 13,
+  "test_command": "conda run --no-capture-output -n ssr-gpu python -X utf8 -m pytest tests/test_cvs_clean_eval.py -q -p no:cacheprovider",
+  "registration": "VALID launch-ready",
+  "source": "32 SOURCE_TRAINED/E200;old source_complete_readback evidence retained",
+  "target_predictions": "NOT_STARTED",
+  "p0_p1_review": "One original-schema P1 fixed with regression before launch;no remaining blocker"
+}

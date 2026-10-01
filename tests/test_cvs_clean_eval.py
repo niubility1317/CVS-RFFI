@@ -1,0 +1,218 @@
+"""Synthetic protocol fixtures only; these files are never experiment evidence."""
+import copy
+import json
+from pathlib import Path
+import subprocess
+import sys
+import uuid
+import numpy as np
+import pytest
+import torch
+from experiments.cvs_clean_eval import contracts,predict,score,dispatch
+from experiments.cvs_residual_identity.dispatch import combine_research_selection
+
+
+class TinyClassifier(torch.nn.Module):
+    def __init__(self):
+        super().__init__();self.linear=torch.nn.Linear(512,6)
+    def forward(self,x):return self.linear(x.flatten(1))
+
+
+def write(path,value):
+    path.parent.mkdir(parents=True,exist_ok=True);path.write_text(json.dumps(value),encoding='utf-8')
+
+
+@pytest.fixture
+def case():
+    root=Path(__file__).resolve().parents[1]/'local_artifacts/clean_eval_protocol_fixtures'/str(uuid.uuid4())
+    root.mkdir(parents=True)
+    (root/'SYNTHETIC_TEST_ONLY.txt').write_text('Synthetic unit-test metadata, weights and IQ;not a formal E200 run or benchmark.',encoding='utf-8')
+    stats=dict(score=.90,source_accuracy=.92,worst_rx_accuracy=.88,parameters=382146,conv_linear_macs=9862436)
+    first=dict(status='SOURCE_SELECTION_FROZEN',target_access=False,target_score_used=False,
+        source_summaries={v:copy.deepcopy(stats) for v in ['native','cvcnn','real_cnn','resnet1d','orthogonal_pa','moment_pool','orthogonal_moment','shared_complex']})
+    second=dict(status='SOURCE_SELECTION_FROZEN',target_access=False,target_score_used=False,
+        source_summaries={v:dict(stats,score=.96 if v=='residual_fusion' else .94,parameters=164225,conv_linear_macs=9708836) for v in ['residual_fusion','residual_fusion_moment']})
+    for name,value in [('first.json',first),('second.json',second)]:write(root/name,value)
+    selection=combine_research_selection(first,second);selection['source_selection_refs']=[str(root/'first.json'),str(root/'second.json')]
+    write(root/'selection.json',selection)
+    capsule=root/'capsule';capsule.mkdir();ids=np.asarray(['opaque-'+str(i) for i in range(12)])
+    np.savez(capsule/'index.npz',ids=ids)
+    np.save(capsule/'clean.npy',np.random.default_rng(31).normal(size=(12,2,256)).astype('float32'))
+    classes=['TX'+str(i) for i in range(6)]
+    write(capsule/'manifest.json',dict(status='VALIDATED_ONCE',classes=classes,channel='residual/post_sync/noeq'))
+    truth={sid:dict(label=i%6,receiver=i%2) for i,sid in enumerate(ids.tolist())};write(root/'truth.json',truth)
+    source_contract=dict(role_ids={'L_s':['L'],'U_s':['U'],'V':['V']},source_rxs=[1,3,4,6,8],source_days=[1,2,3],
+        ratios={'L_s':.1},split_seed=392005,num_classes=6,classes=classes,equalized=1,out_len=256,normalize=True)
+    write(root/'expected_source_contract.json',source_contract)
+    runtime=root/'evaluation';runtime.mkdir();rows=[]
+    for seed in sorted(contracts.SEEDS):
+        for variant in ['native','cvcnn','real_cnn','resnet1d','residual_fusion']:
+            rid=variant+'-s'+str(seed);out=runtime/rid/'prediction'
+            cfg=dict(method='cvs_clean_eval',variant=variant,model_seed=seed,selection_file=str(root/'selection.json'),
+                baseline_source_root=str(root/'first_source'),residual_source_root=str(root/'second_source'),
+                source_output=str(root/('second_source' if variant=='residual_fusion' else 'first_source')/rid/'source'),
+                output_root=str(out),source_contract=str(root/'expected_source_contract.json'),p1_capsule=str(capsule),device='cpu',views=['clean'])
+            path=root/'configs'/(rid+'.json');write(path,cfg)
+            rows.append(dict(row_id=rid,variant=variant,model_seed=seed,config=str(path),output_root=str(out)))
+    spec=dict(run_id='synthetic-fixture',runtime_root=str(runtime),log_root=str(root/'logs'),selection_file=str(root/'selection.json'),p1_truth=str(root/'truth.json'),rows=rows)
+    return dict(root=root,ids=ids,classes=classes,truth=truth,selection=selection,spec=spec,contract=source_contract)
+
+
+def source_fixture(case,cfg):
+    folder=Path(cfg['source_output'])
+    initial=dict(status='SCRATCH',scratch_only=True,checkpoint=None,ancestors=[],checkpoint_sources=[],target_access=False,target_contact=False,model_seed=cfg['model_seed'])
+    done=dict(status='SOURCE_TRAINED',epoch=200,steps=10000,target_access=False,target_evaluated=False)
+    resolved=dict(method=contracts.source_method(cfg['variant']),variant=cfg['variant'],model_seed=cfg['model_seed'],augmentation=False,domain_backbone=False,
+        extra_losses=[],target_access=False,epochs=200,steps_per_epoch=50,selection='fixed_last_epoch',source_counts={'L_s':6300,'U_s':56700,'V':27000})
+    payload=dict(model=TinyClassifier().state_dict(),epoch=200,source_contract=case['contract'],initialization=initial,selection='fixed_last_epoch',
+        method=resolved['method'],variant=cfg['variant'],config=resolved,classes=case['classes'],num_classes=6)
+    for name,value in [('initialization.json',initial),('completion.json',done),('source_contract.json',case['contract']),('resolved_config.json',resolved)]:write(folder/name,value)
+    torch.save(payload,folder/'last.pt')
+    return done,initial,resolved,payload
+
+
+def prediction_fixtures(case):
+    for row in case['spec']['rows']:
+        cfg=contracts.read(row['config']);out=Path(row['output_root']);out.mkdir(parents=True)
+        p=np.arange(12)%6
+        if row['variant']=='cvcnn':p[::2]=(p[::2]+1)%6
+        elif row['variant']=='real_cnn':p=(p+1)%6
+        np.savez(out/'clean_predictions.npz',ids=case['ids'],clean=p.astype('int64'))
+        write(out/'clean_complete.json',dict(status='PREDICTIONS_COMPLETE',truth_read=False,query_fit=False,views=['clean'],count=12))
+        write(out/'resolved_config.json',dict(cfg,truth_read=False,query_fit=False))
+        write(out/'provenance.json',dict(status='VERIFIED',query_fit=False))
+
+
+def test_source_frozen_selection_recomputed_and_tampering_rejected(case):
+    assert contracts.frozen_selection(case['root']/'selection.json')['selected_variant']=='residual_fusion'
+    write(case['root']/'selection.json',dict(case['selection'],selected_variant='shared_complex'))
+    with pytest.raises(ValueError):contracts.frozen_selection(case['root']/'selection.json')
+
+
+def test_predict_config_rejects_nonselected_views_and_truth(case):
+    cfg=contracts.read(case['spec']['rows'][-4]['config'])
+    cfg=dict(cfg,variant='residual_fusion',source_output=str(case['root']/'second_source'/('residual_fusion-s'+str(cfg['model_seed']))/'source'))
+    contracts.validate_predict_config(cfg,case['selection'])
+    for change in [dict(variant='shared_complex'),dict(views=['clean','satellite']),dict(p1_truth='truth.json'),dict(source_output='wrong-seed/source')]:
+        with pytest.raises(ValueError):contracts.validate_predict_config(dict(cfg,**change),case['selection'])
+
+
+def test_checkpoint_roles_seed_and_target_contamination_guards(case):
+    cfg=contracts.read(case['spec']['rows'][4]['config']);done,initial,resolved,payload=source_fixture(case,cfg)
+    args=[cfg,done,initial,case['contract'],case['contract'],resolved,payload]
+    contracts.checkpoint_contract(*args)
+    changed=copy.deepcopy(args);changed[4]['role_ids']['L_s']=['different physical data']
+    # Deepcopy preserves shared references; replace expected with an independent copy.
+    changed=list(args);changed[4]=copy.deepcopy(case['contract']);changed[4]['role_ids']['L_s']=['different physical data']
+    with pytest.raises(ValueError):contracts.checkpoint_contract(*changed)
+    changed=list(args);changed[2]=dict(initial,target_contact=True)
+    with pytest.raises(ValueError):contracts.checkpoint_contract(*changed)
+    changed=list(args);changed[1]=dict(done,epoch=199)
+    with pytest.raises(ValueError):contracts.checkpoint_contract(*changed)
+    changed=list(args);changed[6]=dict(payload,variant='residual_fusion_moment')
+    with pytest.raises(ValueError):contracts.checkpoint_contract(*changed)
+
+
+def test_predict_only_clean_without_satellite_file_and_without_truth(case,monkeypatch):
+    cfg=contracts.read(case['spec']['rows'][4]['config']);source_fixture(case,cfg)
+    monkeypatch.setattr(predict,'build_model',lambda variant:TinyClassifier())
+    opened=[];original=np.load
+    def observed(path,*args,**kwargs):
+        opened.append(Path(path).name)
+        assert Path(path).name!='satellite.npy'
+        return original(path,*args,**kwargs)
+    monkeypatch.setattr(predict.np,'load',observed)
+    predict.predict(cfg)
+    marker=contracts.read(Path(cfg['output_root'])/'clean_complete.json')
+    assert marker['views']==['clean'] and not marker['truth_read'] and not marker['query_fit']
+    assert 'clean.npy' in opened and 'satellite.npy' not in opened
+    with original(Path(cfg['output_root'])/'clean_predictions.npz') as values:assert set(values.files)=={'ids','clean'}
+
+
+def test_truth_stays_closed_when_one_prediction_missing(case,monkeypatch):
+    prediction_fixtures(case)
+    marker=Path(case['spec']['rows'][-1]['output_root'])/'clean_complete.json'
+    write(marker,dict(status='INCOMPLETE',truth_read=False,query_fit=False,views=['clean'],count=12))
+    opened=[];original=score.read
+    def observed(path):opened.append(str(path));return original(path)
+    monkeypatch.setattr(score,'read',observed)
+    with pytest.raises(ValueError):score.score(case['spec'])
+    assert case['spec']['p1_truth'] not in opened
+
+
+def test_truth_stays_closed_for_identity_or_method_mismatch(case,monkeypatch):
+    prediction_fixtures(case)
+    row=case['spec']['rows'][-1];out=Path(row['output_root'])
+    np.savez(out/'clean_predictions.npz',ids=case['ids'][::-1],clean=np.arange(12)%6)
+    opened=[];original=score.read
+    monkeypatch.setattr(score,'read',lambda p:(opened.append(str(p)),original(p))[1])
+    with pytest.raises(ValueError):score.score(case['spec'])
+    assert case['spec']['p1_truth'] not in opened
+
+
+def test_complete_truth_last_metrics_and_paired_seeds(case,monkeypatch):
+    prediction_fixtures(case)
+    opened=[];original=score.read
+    monkeypatch.setattr(score,'read',lambda p:(opened.append(str(p)),original(p))[1])
+    marker=score.score(case['spec'])
+    assert marker['rows']==20 and marker['records']==60 and marker['view']=='clean'
+    truth_position=opened.index(case['spec']['p1_truth'])
+    assert sum(p.endswith('clean_complete.json') for p in opened[:truth_position])==20
+    result=contracts.read(Path(case['spec']['runtime_root'])/'clean_summary.json')
+    overall={r['method']:r for r in result['summary'] if r['receiver']=='ALL'}
+    assert overall['residual_fusion']['accuracy_mean']==1.0 and overall['cvcnn']['accuracy_mean']==.5
+    paired=next(r for r in result['paired'] if r['receiver']=='ALL' and r['baseline']=='cvcnn')
+    assert paired['accuracy_delta_pp_mean']==50 and paired['positive_seeds']==4
+
+
+def test_matrix_and_dispatch_reject_missing_registered_seed(case):
+    dispatch.validate_spec(case['spec'])
+    changed=dict(case['spec'],rows=case['spec']['rows'][:-1])
+    with pytest.raises(ValueError):dispatch.validate_spec(changed)
+    with pytest.raises(ValueError):score.validate_matrix(changed)
+
+
+def test_one_evaluator_per_gpu_includes_external_occupancy(monkeypatch):
+    monkeypatch.setattr(dispatch,'occupancy',lambda active:{0:dict(pids={999},free_mb=22000),1:dict(pids=set(),free_mb=15000),2:dict(pids=set(),free_mb=11000)})
+    assert dispatch.choose_gpu({})==1
+
+
+def baseline_case(case):
+    rows=[r for r in case['spec']['rows'] if r['variant'] in contracts.BASELINES]
+    source=dict(rows=[dict(variant=r['variant'],model_seed=r['model_seed']) for r in rows])
+    write(case['root']/'source_matrix.json',source)
+    selection=dict(scope='baseline_only',status='FIXED_BASELINES_FROZEN',test_variants=list(contracts.BASELINES),
+        model_seeds=sorted(contracts.SEEDS),target_access=False,target_score_used=False,source_matrix_ref=str(case['root']/'source_matrix.json'))
+    write(case['root']/'selection.json',selection)
+    case['spec']['rows']=rows;case['selection']=selection
+    return case
+
+
+def test_fixed_baselines_score16_without_candidate_source_selection(case):
+    case=baseline_case(case)
+    assert contracts.frozen_selection(case['root']/'selection.json')['status']=='FIXED_BASELINES_FROZEN'
+    dispatch.validate_spec(case['spec']);prediction_fixtures(case)
+    result=score.score(case['spec'])
+    assert result['rows']==16 and result['models']==4 and result['records']==48
+    summary=contracts.read(Path(case['spec']['runtime_root'])/'clean_summary.json')
+    assert len(summary['paired'])==9 and all(r['candidate']=='native' for r in summary['paired'])
+
+
+def test_fixed_baselines_reject_candidate_and_plan_changes(case):
+    case=baseline_case(case);cfg=contracts.read(case['spec']['rows'][0]['config'])
+    with pytest.raises(ValueError):contracts.validate_predict_config(dict(cfg,variant='residual_fusion'),case['selection'])
+    write(case['root']/'selection.json',dict(case['selection'],model_seeds=[2026092701]))
+    with pytest.raises(ValueError):contracts.frozen_selection(case['root']/'selection.json')
+
+
+def test_original_role_contract_without_runtime_extensions(case):
+    cfg=contracts.read(case['spec']['rows'][0]['config']);done,initial,resolved,payload=source_fixture(case,cfg)
+    expected={k:v for k,v in case['contract'].items() if k not in {'classes','equalized','out_len','normalize'}}
+    contracts.checkpoint_contract(cfg,done,initial,case['contract'],expected,resolved,payload)
+    with pytest.raises(ValueError):contracts.checkpoint_contract(cfg,done,initial,case['contract'],dict(expected,num_classes=5),resolved,payload)
+
+
+def test_fresh_process_imports():
+    root=Path(__file__).resolve().parents[1]
+    for module in ['predict','score','dispatch']:
+        subprocess.run([sys.executable,'-m','experiments.cvs_clean_eval.'+module,'--help'],cwd=root,check=True,capture_output=True)

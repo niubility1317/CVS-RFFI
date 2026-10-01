@@ -10,3 +10,4 @@
 |D92 E0 true256 numerical recovery: all five fixed seeds|managed_run|[打开](../../automation_reports/CV-SincNet/20260928-phase2-cvs-d92-practical-manytx-m5-r02/report.md)|
 |Native comparison source training|managed_run|[打开](../../automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/report.md)|
 |Native comparison paired adaptation and registration|managed_run|[打开](../../automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/report.md)|
+|无信道增强基准的 clean 测试报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261001-phase1-clean-baselines-manysig-m16-r01/report.md)|
