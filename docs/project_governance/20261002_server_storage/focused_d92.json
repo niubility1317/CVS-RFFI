@@ -1,0 +1,1156 @@
+{
+  "observed_at": "2026-10-01T16:08:20.009475+00:00",
+  "runs": [
+    {
+      "run": "20261001-phase2-d92-affine-joint-support-m2-r01",
+      "status": "VERIFIED",
+      "errors": [],
+      "files": 56444,
+      "bytes": 57287838070,
+      "allocated_bytes": 57399521280,
+      "by_name": {
+        "fit_trace.jsonl": {
+          "files": 4,
+          "bytes": 6064604997,
+          "allocated_bytes": 6064627712
+        },
+        "training_events.jsonl": {
+          "files": 4,
+          "bytes": 3748526831,
+          "allocated_bytes": 3748552704
+        },
+        "probe.log": {
+          "files": 4,
+          "bytes": 1827320532,
+          "allocated_bytes": 1827348480
+        },
+        "training.log": {
+          "files": 4,
+          "bytes": 1826087657,
+          "allocated_bytes": 1826111488
+        },
+        "training_events_compact.csv": {
+          "files": 4,
+          "bytes": 1700314283,
+          "allocated_bytes": 1700339712
+        },
+        "training_events_compact.jsonl": {
+          "files": 4,
+          "bytes": 1580426267,
+          "allocated_bytes": 1580445696
+        },
+        "training_objectives.jsonl": {
+          "files": 1,
+          "bytes": 1124982318,
+          "allocated_bytes": 1124986880
+        },
+        "state_manifest.json": {
+          "files": 4,
+          "bytes": 307846932,
+          "allocated_bytes": 307855360
+        },
+        "fit_stages.csv": {
+          "files": 4,
+          "bytes": 253114130,
+          "allocated_bytes": 253120512
+        },
+        "fit_stages.jsonl": {
+          "files": 4,
+          "bytes": 245053642,
+          "allocated_bytes": 245075968
+        },
+        "training_objectives.csv": {
+          "files": 1,
+          "bytes": 141707495,
+          "allocated_bytes": 141709312
+        },
+        "00013763.npz": {
+          "files": 4,
+          "bytes": 23807683,
+          "allocated_bytes": 23814144
+        },
+        "00013819.npz": {
+          "files": 4,
+          "bytes": 23732016,
+          "allocated_bytes": 23736320
+        },
+        "00006415.npz": {
+          "files": 4,
+          "bytes": 23691154,
+          "allocated_bytes": 23699456
+        },
+        "00006695.npz": {
+          "files": 4,
+          "bytes": 22748030,
+          "allocated_bytes": 22757376
+        },
+        "00006379.npz": {
+          "files": 4,
+          "bytes": 22654097,
+          "allocated_bytes": 22659072
+        },
+        "00013816.npz": {
+          "files": 4,
+          "bytes": 21345276,
+          "allocated_bytes": 21356544
+        },
+        "00013814.npz": {
+          "files": 4,
+          "bytes": 20319199,
+          "allocated_bytes": 20324352
+        },
+        "00013759.npz": {
+          "files": 4,
+          "bytes": 20293875,
+          "allocated_bytes": 20299776
+        },
+        "00013847.npz": {
+          "files": 4,
+          "bytes": 20243674,
+          "allocated_bytes": 20250624
+        },
+        "00013838.npz": {
+          "files": 4,
+          "bytes": 20227217,
+          "allocated_bytes": 20234240
+        },
+        "00013754.npz": {
+          "files": 4,
+          "bytes": 19948428,
+          "allocated_bytes": 19955712
+        },
+        "00006400.npz": {
+          "files": 4,
+          "bytes": 19884309,
+          "allocated_bytes": 19890176
+        },
+        "00006396.npz": {
+          "files": 4,
+          "bytes": 19863655,
+          "allocated_bytes": 19869696
+        },
+        "00013728.npz": {
+          "files": 4,
+          "bytes": 19819850,
+          "allocated_bytes": 19824640
+        }
+      },
+      "by_extension": {
+        ".npz": {
+          "files": 56368,
+          "bytes": 38444280105,
+          "allocated_bytes": 38555648000
+        },
+        ".jsonl": {
+          "files": 21,
+          "bytes": 12764818438,
+          "allocated_bytes": 12764938240
+        },
+        ".log": {
+          "files": 8,
+          "bytes": 3653408189,
+          "allocated_bytes": 3653459968
+        },
+        ".csv": {
+          "files": 21,
+          "bytes": 2099055011,
+          "allocated_bytes": 2099134464
+        },
+        ".json": {
+          "files": 25,
+          "bytes": 326262616,
+          "allocated_bytes": 326324224
+        },
+        ".md": {
+          "files": 1,
+          "bytes": 13711,
+          "allocated_bytes": 16384
+        }
+      }
+    },
+    {
+      "run": "20261001-phase2-d92-margin-joint-support-m2-r01",
+      "status": "VERIFIED",
+      "errors": [],
+      "files": 40932,
+      "bytes": 40370895669,
+      "allocated_bytes": 40450768896,
+      "by_name": {
+        "fit_trace.jsonl": {
+          "files": 4,
+          "bytes": 4500053111,
+          "allocated_bytes": 4500078592
+        },
+        "training_events.jsonl": {
+          "files": 4,
+          "bytes": 2566764699,
+          "allocated_bytes": 2566791168
+        },
+        "probe.log": {
+          "files": 4,
+          "bytes": 1308796189,
+          "allocated_bytes": 1308819456
+        },
+        "training.log": {
+          "files": 4,
+          "bytes": 1307310844,
+          "allocated_bytes": 1307336704
+        },
+        "training_events_compact.csv": {
+          "files": 4,
+          "bytes": 1089585370,
+          "allocated_bytes": 1089605632
+        },
+        "training_events_compact.jsonl": {
+          "files": 4,
+          "bytes": 1024197162,
+          "allocated_bytes": 1024221184
+        },
+        "training_objectives.jsonl": {
+          "files": 1,
+          "bytes": 933860473,
+          "allocated_bytes": 933867520
+        },
+        "state_manifest.json": {
+          "files": 4,
+          "bytes": 313214447,
+          "allocated_bytes": 313225216
+        },
+        "fit_stages.csv": {
+          "files": 4,
+          "bytes": 288628855,
+          "allocated_bytes": 288636928
+        },
+        "fit_stages.jsonl": {
+          "files": 4,
+          "bytes": 282644195,
+          "allocated_bytes": 282664960
+        },
+        "training_objectives.csv": {
+          "files": 1,
+          "bytes": 174771717,
+          "allocated_bytes": 174772224
+        },
+        "00004926.npz": {
+          "files": 4,
+          "bytes": 42987508,
+          "allocated_bytes": 42999808
+        },
+        "00010033.npz": {
+          "files": 4,
+          "bytes": 42766243,
+          "allocated_bytes": 42774528
+        },
+        "00004836.npz": {
+          "files": 4,
+          "bytes": 38669960,
+          "allocated_bytes": 38682624
+        },
+        "00004746.npz": {
+          "files": 4,
+          "bytes": 38669908,
+          "allocated_bytes": 38678528
+        },
+        "00009943.npz": {
+          "files": 4,
+          "bytes": 38508389,
+          "allocated_bytes": 38514688
+        },
+        "00009853.npz": {
+          "files": 4,
+          "bytes": 38477773,
+          "allocated_bytes": 38486016
+        },
+        "00004900.npz": {
+          "files": 4,
+          "bytes": 36768823,
+          "allocated_bytes": 36777984
+        },
+        "00004908.npz": {
+          "files": 4,
+          "bytes": 36762737,
+          "allocated_bytes": 36773888
+        },
+        "00004916.npz": {
+          "files": 4,
+          "bytes": 36760752,
+          "allocated_bytes": 36773888
+        },
+        "00004892.npz": {
+          "files": 4,
+          "bytes": 36671971,
+          "allocated_bytes": 36679680
+        },
+        "00010007.npz": {
+          "files": 4,
+          "bytes": 36601699,
+          "allocated_bytes": 36610048
+        },
+        "00010015.npz": {
+          "files": 4,
+          "bytes": 36599188,
+          "allocated_bytes": 36610048
+        },
+        "00010023.npz": {
+          "files": 4,
+          "bytes": 36595945,
+          "allocated_bytes": 36601856
+        },
+        "00009999.npz": {
+          "files": 4,
+          "bytes": 36492007,
+          "allocated_bytes": 36499456
+        }
+      },
+      "by_extension": {
+        ".npz": {
+          "files": 40856,
+          "bytes": 26558114247,
+          "allocated_bytes": 26637688832
+        },
+        ".jsonl": {
+          "files": 21,
+          "bytes": 9308996493,
+          "allocated_bytes": 9309122560
+        },
+        ".log": {
+          "files": 8,
+          "bytes": 2616107033,
+          "allocated_bytes": 2616156160
+        },
+        ".csv": {
+          "files": 21,
+          "bytes": 1557036786,
+          "allocated_bytes": 1557106688
+        },
+        ".json": {
+          "files": 25,
+          "bytes": 330633556,
+          "allocated_bytes": 330686464
+        },
+        ".md": {
+          "files": 1,
+          "bytes": 7554,
+          "allocated_bytes": 8192
+        }
+      }
+    },
+    {
+      "run": "20261001-phase2-d92-anchor-joint-support-m2-r01",
+      "status": "VERIFIED",
+      "errors": [],
+      "files": 57212,
+      "bytes": 56037556766,
+      "allocated_bytes": 56151535616,
+      "by_name": {
+        "fit_trace.jsonl": {
+          "files": 4,
+          "bytes": 5538776794,
+          "allocated_bytes": 5538803712
+        },
+        "training_events.jsonl": {
+          "files": 4,
+          "bytes": 3388391196,
+          "allocated_bytes": 3388420096
+        },
+        "probe.log": {
+          "files": 4,
+          "bytes": 1623520068,
+          "allocated_bytes": 1623547904
+        },
+        "training.log": {
+          "files": 4,
+          "bytes": 1622389635,
+          "allocated_bytes": 1622409216
+        },
+        "training_events_compact.csv": {
+          "files": 4,
+          "bytes": 1511668714,
+          "allocated_bytes": 1511686144
+        },
+        "training_events_compact.jsonl": {
+          "files": 4,
+          "bytes": 1401407092,
+          "allocated_bytes": 1401430016
+        },
+        "training_objectives.jsonl": {
+          "files": 1,
+          "bytes": 984991155,
+          "allocated_bytes": 984997888
+        },
+        "state_manifest.json": {
+          "files": 4,
+          "bytes": 279668793,
+          "allocated_bytes": 279674880
+        },
+        "fit_stages.csv": {
+          "files": 4,
+          "bytes": 228558077,
+          "allocated_bytes": 228564992
+        },
+        "fit_stages.jsonl": {
+          "files": 4,
+          "bytes": 220373533,
+          "allocated_bytes": 220397568
+        },
+        "training_objectives.csv": {
+          "files": 1,
+          "bytes": 127376970,
+          "allocated_bytes": 127377408
+        },
+        "00006703.npz": {
+          "files": 4,
+          "bytes": 24378690,
+          "allocated_bytes": 24391680
+        },
+        "00006535.npz": {
+          "files": 4,
+          "bytes": 22903614,
+          "allocated_bytes": 22913024
+        },
+        "00013927.npz": {
+          "files": 4,
+          "bytes": 22640452,
+          "allocated_bytes": 22646784
+        },
+        "00006387.npz": {
+          "files": 4,
+          "bytes": 22240535,
+          "allocated_bytes": 22245376
+        },
+        "00013839.npz": {
+          "files": 4,
+          "bytes": 22229836,
+          "allocated_bytes": 22237184
+        },
+        "00014007.npz": {
+          "files": 4,
+          "bytes": 22061319,
+          "allocated_bytes": 22069248
+        },
+        "00006375.npz": {
+          "files": 4,
+          "bytes": 21809546,
+          "allocated_bytes": 21815296
+        },
+        "00013811.npz": {
+          "files": 4,
+          "bytes": 21428249,
+          "allocated_bytes": 21434368
+        },
+        "00006698.npz": {
+          "files": 4,
+          "bytes": 21034812,
+          "allocated_bytes": 21049344
+        },
+        "00006694.npz": {
+          "files": 4,
+          "bytes": 19893430,
+          "allocated_bytes": 19906560
+        },
+        "00006682.npz": {
+          "files": 4,
+          "bytes": 19882505,
+          "allocated_bytes": 19894272
+        },
+        "00006512.npz": {
+          "files": 4,
+          "bytes": 19827615,
+          "allocated_bytes": 19836928
+        },
+        "00006687.npz": {
+          "files": 4,
+          "bytes": 19795864,
+          "allocated_bytes": 19804160
+        },
+        "00006508.npz": {
+          "files": 4,
+          "bytes": 19791780,
+          "allocated_bytes": 19800064
+        }
+      },
+      "by_extension": {
+        ".npz": {
+          "files": 57136,
+          "bytes": 39087181807,
+          "allocated_bytes": 39200854016
+        },
+        ".jsonl": {
+          "files": 21,
+          "bytes": 11535061711,
+          "allocated_bytes": 11535196160
+        },
+        ".log": {
+          "files": 8,
+          "bytes": 3245909703,
+          "allocated_bytes": 3245957120
+        },
+        ".csv": {
+          "files": 21,
+          "bytes": 1871441405,
+          "allocated_bytes": 1871507456
+        },
+        ".json": {
+          "files": 25,
+          "bytes": 297949036,
+          "allocated_bytes": 298004480
+        },
+        ".md": {
+          "files": 1,
+          "bytes": 13104,
+          "allocated_bytes": 16384
+        }
+      }
+    },
+    {
+      "run": "20261001-phase2-d92-conditional-joint-support-m2-r01",
+      "status": "VERIFIED",
+      "errors": [],
+      "files": 40932,
+      "bytes": 37214351871,
+      "allocated_bytes": 37294616576,
+      "by_name": {
+        "fit_trace.jsonl": {
+          "files": 4,
+          "bytes": 3255142077,
+          "allocated_bytes": 3255164928
+        },
+        "training_events.jsonl": {
+          "files": 4,
+          "bytes": 1544756674,
+          "allocated_bytes": 1544781824
+        },
+        "probe.log": {
+          "files": 4,
+          "bytes": 981265623,
+          "allocated_bytes": 981291008
+        },
+        "training.log": {
+          "files": 4,
+          "bytes": 979855801,
+          "allocated_bytes": 979877888
+        },
+        "training_events_compact.csv": {
+          "files": 4,
+          "bytes": 788395561,
+          "allocated_bytes": 788402176
+        },
+        "training_events_compact.jsonl": {
+          "files": 4,
+          "bytes": 727322085,
+          "allocated_bytes": 727347200
+        },
+        "training_objectives.jsonl": {
+          "files": 1,
+          "bytes": 702168425,
+          "allocated_bytes": 702173184
+        },
+        "state_manifest.json": {
+          "files": 4,
+          "bytes": 273399886,
+          "allocated_bytes": 273408000
+        },
+        "fit_stages.csv": {
+          "files": 4,
+          "bytes": 258692373,
+          "allocated_bytes": 258703360
+        },
+        "fit_stages.jsonl": {
+          "files": 4,
+          "bytes": 251977905,
+          "allocated_bytes": 252002304
+        },
+        "training_objectives.csv": {
+          "files": 1,
+          "bytes": 135879732,
+          "allocated_bytes": 135880704
+        },
+        "00004926.npz": {
+          "files": 4,
+          "bytes": 47634925,
+          "allocated_bytes": 47644672
+        },
+        "00010033.npz": {
+          "files": 4,
+          "bytes": 47419517,
+          "allocated_bytes": 47427584
+        },
+        "00004746.npz": {
+          "files": 4,
+          "bytes": 42661846,
+          "allocated_bytes": 42668032
+        },
+        "00004836.npz": {
+          "files": 4,
+          "bytes": 42661381,
+          "allocated_bytes": 42672128
+        },
+        "00009943.npz": {
+          "files": 4,
+          "bytes": 42506951,
+          "allocated_bytes": 42512384
+        },
+        "00009853.npz": {
+          "files": 4,
+          "bytes": 42473198,
+          "allocated_bytes": 42479616
+        },
+        "00004900.npz": {
+          "files": 4,
+          "bytes": 39455596,
+          "allocated_bytes": 39464960
+        },
+        "00004908.npz": {
+          "files": 4,
+          "bytes": 39454108,
+          "allocated_bytes": 39464960
+        },
+        "00004916.npz": {
+          "files": 4,
+          "bytes": 39452442,
+          "allocated_bytes": 39460864
+        },
+        "00004892.npz": {
+          "files": 4,
+          "bytes": 39359255,
+          "allocated_bytes": 39366656
+        },
+        "00010007.npz": {
+          "files": 4,
+          "bytes": 39309382,
+          "allocated_bytes": 39321600
+        },
+        "00010015.npz": {
+          "files": 4,
+          "bytes": 39308425,
+          "allocated_bytes": 39317504
+        },
+        "00010023.npz": {
+          "files": 4,
+          "bytes": 39306500,
+          "allocated_bytes": 39313408
+        },
+        "00009999.npz": {
+          "files": 4,
+          "bytes": 39199980,
+          "allocated_bytes": 39211008
+        }
+      },
+      "by_extension": {
+        ".npz": {
+          "files": 40856,
+          "bytes": 27292666071,
+          "allocated_bytes": 27372642304
+        },
+        ".jsonl": {
+          "files": 21,
+          "bytes": 6482768496,
+          "allocated_bytes": 6482894848
+        },
+        ".log": {
+          "files": 8,
+          "bytes": 1961121424,
+          "allocated_bytes": 1961168896
+        },
+        ".csv": {
+          "files": 21,
+          "bytes": 1187070582,
+          "allocated_bytes": 1187135488
+        },
+        ".json": {
+          "files": 25,
+          "bytes": 290717522,
+          "allocated_bytes": 290766848
+        },
+        ".md": {
+          "files": 1,
+          "bytes": 7776,
+          "allocated_bytes": 8192
+        }
+      }
+    },
+    {
+      "run": "20261001-phase2-d92-group-barrier-joint-support-m2-r01",
+      "status": "VERIFIED",
+      "errors": [],
+      "files": 44447,
+      "bytes": 37023607991,
+      "allocated_bytes": 37111754752,
+      "by_name": {
+        "fit_trace.jsonl": {
+          "files": 4,
+          "bytes": 3349128387,
+          "allocated_bytes": 3349151744
+        },
+        "training_events.jsonl": {
+          "files": 4,
+          "bytes": 1876137011,
+          "allocated_bytes": 1876164608
+        },
+        "probe.log": {
+          "files": 4,
+          "bytes": 1169712044,
+          "allocated_bytes": 1169735680
+        },
+        "training.log": {
+          "files": 4,
+          "bytes": 1167746293,
+          "allocated_bytes": 1167769600
+        },
+        "training_events_compact.csv": {
+          "files": 4,
+          "bytes": 955206362,
+          "allocated_bytes": 955211776
+        },
+        "training_events_compact.jsonl": {
+          "files": 4,
+          "bytes": 906459582,
+          "allocated_bytes": 906481664
+        },
+        "state_manifest.json": {
+          "files": 4,
+          "bytes": 327866542,
+          "allocated_bytes": 327872512
+        },
+        "fixed_predictions.jsonl": {
+          "files": 4,
+          "bytes": 296883105,
+          "allocated_bytes": 296906752
+        },
+        "fit_stages.csv": {
+          "files": 4,
+          "bytes": 264569545,
+          "allocated_bytes": 264577024
+        },
+        "fit_stages.jsonl": {
+          "files": 4,
+          "bytes": 260060841,
+          "allocated_bytes": 260083712
+        },
+        "00005324.npz": {
+          "files": 4,
+          "bytes": 44548112,
+          "allocated_bytes": 44556288
+        },
+        "00010871.npz": {
+          "files": 4,
+          "bytes": 44340819,
+          "allocated_bytes": 44347392
+        },
+        "00005232.npz": {
+          "files": 4,
+          "bytes": 40031051,
+          "allocated_bytes": 40042496
+        },
+        "00005140.npz": {
+          "files": 4,
+          "bytes": 40029563,
+          "allocated_bytes": 40034304
+        },
+        "00010779.npz": {
+          "files": 4,
+          "bytes": 39881894,
+          "allocated_bytes": 39886848
+        },
+        "00010687.npz": {
+          "files": 4,
+          "bytes": 39846299,
+          "allocated_bytes": 39854080
+        },
+        "00005298.npz": {
+          "files": 4,
+          "bytes": 37119284,
+          "allocated_bytes": 37126144
+        },
+        "00005306.npz": {
+          "files": 4,
+          "bytes": 37117690,
+          "allocated_bytes": 37126144
+        },
+        "00005314.npz": {
+          "files": 4,
+          "bytes": 37117384,
+          "allocated_bytes": 37126144
+        },
+        "00005290.npz": {
+          "files": 4,
+          "bytes": 37020962,
+          "allocated_bytes": 37027840
+        },
+        "00010845.npz": {
+          "files": 4,
+          "bytes": 36990359,
+          "allocated_bytes": 36995072
+        },
+        "00010853.npz": {
+          "files": 4,
+          "bytes": 36989168,
+          "allocated_bytes": 36995072
+        },
+        "00010861.npz": {
+          "files": 4,
+          "bytes": 36987516,
+          "allocated_bytes": 36995072
+        },
+        "00010837.npz": {
+          "files": 4,
+          "bytes": 36880759,
+          "allocated_bytes": 36888576
+        },
+        "00005296.npz": {
+          "files": 4,
+          "bytes": 34569746,
+          "allocated_bytes": 34578432
+        }
+      },
+      "by_extension": {
+        ".npz": {
+          "files": 44376,
+          "bytes": 26441265482,
+          "allocated_bytes": 26529128448
+        },
+        ".jsonl": {
+          "files": 24,
+          "bytes": 6690626185,
+          "allocated_bytes": 6690762752
+        },
+        ".log": {
+          "files": 8,
+          "bytes": 2337458337,
+          "allocated_bytes": 2337505280
+        },
+        ".csv": {
+          "files": 12,
+          "bytes": 1220781270,
+          "allocated_bytes": 1220820992
+        },
+        ".json": {
+          "files": 27,
+          "bytes": 333476717,
+          "allocated_bytes": 333537280
+        }
+      }
+    },
+    {
+      "run": "20261001-phase2-d92-margin-joint-repeat-m2-r01",
+      "status": "VERIFIED",
+      "errors": [],
+      "files": 100428,
+      "bytes": 163131971444,
+      "allocated_bytes": 163340713984,
+      "by_name": {
+        "training_events.jsonl": {
+          "files": 4,
+          "bytes": 9584615420,
+          "allocated_bytes": 9584644096
+        },
+        "fit_stages.jsonl": {
+          "files": 4,
+          "bytes": 3797704935,
+          "allocated_bytes": 3797725184
+        },
+        "query_score_work.jsonl": {
+          "files": 4,
+          "bytes": 1430519844,
+          "allocated_bytes": 1430544384
+        },
+        "state_manifest.json": {
+          "files": 4,
+          "bytes": 892761552,
+          "allocated_bytes": 892776448
+        },
+        "predictions.jsonl": {
+          "files": 4,
+          "bytes": 434091988,
+          "allocated_bytes": 434118656
+        },
+        "predictions_C.jsonl": {
+          "files": 4,
+          "bytes": 434091988,
+          "allocated_bytes": 434118656
+        },
+        "predictions_B.jsonl": {
+          "files": 4,
+          "bytes": 208081478,
+          "allocated_bytes": 208109568
+        },
+        "predictions_A.jsonl": {
+          "files": 4,
+          "bytes": 201768619,
+          "allocated_bytes": 201797632
+        },
+        "complete.json": {
+          "files": 1,
+          "bytes": 199939869,
+          "allocated_bytes": 199942144
+        },
+        "state.json": {
+          "files": 1,
+          "bytes": 188586987,
+          "allocated_bytes": 188588032
+        },
+        "preparations.jsonl": {
+          "files": 4,
+          "bytes": 176636348,
+          "allocated_bytes": 176660480
+        },
+        "training_events_compact.jsonl": {
+          "files": 4,
+          "bytes": 117424698,
+          "allocated_bytes": 117448704
+        },
+        "events.jsonl": {
+          "files": 1,
+          "bytes": 108137669,
+          "allocated_bytes": 108142592
+        },
+        "predictions_complete.json": {
+          "files": 2,
+          "bytes": 107872487,
+          "allocated_bytes": 107876352
+        },
+        "fit_trace.jsonl": {
+          "files": 4,
+          "bytes": 88736068,
+          "allocated_bytes": 88760320
+        },
+        "technical_failure.json": {
+          "files": 2,
+          "bytes": 75360151,
+          "allocated_bytes": 75362304
+        },
+        "prediction.log": {
+          "files": 4,
+          "bytes": 73055760,
+          "allocated_bytes": 73080832
+        },
+        "startup.json": {
+          "files": 5,
+          "bytes": 58058906,
+          "allocated_bytes": 58068992
+        },
+        "preflight.json": {
+          "files": 4,
+          "bytes": 58012139,
+          "allocated_bytes": 58015744
+        },
+        "preflight.log": {
+          "files": 4,
+          "bytes": 44672243,
+          "allocated_bytes": 44679168
+        },
+        "00000089.npz": {
+          "files": 4,
+          "bytes": 40968583,
+          "allocated_bytes": 40976384
+        },
+        "00000720.npz": {
+          "files": 4,
+          "bytes": 40725202,
+          "allocated_bytes": 40730624
+        },
+        "00000728.npz": {
+          "files": 4,
+          "bytes": 40724607,
+          "allocated_bytes": 40730624
+        },
+        "00000736.npz": {
+          "files": 4,
+          "bytes": 40722686,
+          "allocated_bytes": 40730624
+        },
+        "00000712.npz": {
+          "files": 4,
+          "bytes": 40687148,
+          "allocated_bytes": 40693760
+        }
+      },
+      "by_extension": {
+        ".npz": {
+          "files": 100351,
+          "bytes": 144810527903,
+          "allocated_bytes": 145018904576
+        },
+        ".jsonl": {
+          "files": 41,
+          "bytes": 16581809055,
+          "allocated_bytes": 16582070272
+        },
+        ".json": {
+          "files": 20,
+          "bytes": 1580597403,
+          "allocated_bytes": 1580638208
+        },
+        ".log": {
+          "files": 12,
+          "bytes": 135187001,
+          "allocated_bytes": 135241728
+        },
+        ".csv": {
+          "files": 4,
+          "bytes": 23850082,
+          "allocated_bytes": 23859200
+        }
+      }
+    },
+    {
+      "run": "20260929-phase2-d92-branch-local-margin-support-m4-r01",
+      "status": "VERIFIED",
+      "errors": [],
+      "files": 109,
+      "bytes": 57131428545,
+      "allocated_bytes": 57131909120,
+      "by_name": {
+        "probe.log": {
+          "files": 8,
+          "bytes": 13964564260,
+          "allocated_bytes": 13964607488
+        },
+        "solver_sweeps.log": {
+          "files": 8,
+          "bytes": 13380168037,
+          "allocated_bytes": 13380218880
+        },
+        "fit_trace.jsonl": {
+          "files": 8,
+          "bytes": 12323473558,
+          "allocated_bytes": 12323520512
+        },
+        "solver_sweeps.jsonl": {
+          "files": 8,
+          "bytes": 11441362848,
+          "allocated_bytes": 11441405952
+        },
+        "solver_sweeps.csv": {
+          "files": 8,
+          "bytes": 5124024620,
+          "allocated_bytes": 5124063232
+        },
+        "fit_stages.jsonl": {
+          "files": 8,
+          "bytes": 560104084,
+          "allocated_bytes": 560152576
+        },
+        "fit_stages.csv": {
+          "files": 8,
+          "bytes": 304041076,
+          "allocated_bytes": 304062464
+        },
+        "compact.jsonl": {
+          "files": 8,
+          "bytes": 16667796,
+          "allocated_bytes": 16719872
+        },
+        "compact.csv": {
+          "files": 8,
+          "bytes": 15127748,
+          "allocated_bytes": 15175680
+        },
+        "by_receiver_scene.csv": {
+          "files": 1,
+          "bytes": 517460,
+          "allocated_bytes": 520192
+        },
+        "by_parent_k_newcount.csv": {
+          "files": 1,
+          "bytes": 318744,
+          "allocated_bytes": 319488
+        },
+        "summary.json": {
+          "files": 1,
+          "bytes": 239078,
+          "allocated_bytes": 241664
+        },
+        "by_support_seed.csv": {
+          "files": 1,
+          "bytes": 202202,
+          "allocated_bytes": 204800
+        },
+        "by_model_seed.csv": {
+          "files": 1,
+          "bytes": 160629,
+          "allocated_bytes": 163840
+        },
+        "by_parent_k.csv": {
+          "files": 1,
+          "bytes": 119019,
+          "allocated_bytes": 122880
+        },
+        "startup.json": {
+          "files": 9,
+          "bytes": 108828,
+          "allocated_bytes": 114688
+        },
+        "by_newcount.csv": {
+          "files": 1,
+          "bytes": 100196,
+          "allocated_bytes": 102400
+        },
+        "by_cohort.csv": {
+          "files": 1,
+          "bytes": 76795,
+          "allocated_bytes": 77824
+        },
+        "probe_complete.json": {
+          "files": 8,
+          "bytes": 35459,
+          "allocated_bytes": 65536
+        },
+        "probe.log.process.json": {
+          "files": 8,
+          "bytes": 10231,
+          "allocated_bytes": 32768
+        },
+        "state.json": {
+          "files": 1,
+          "bytes": 2267,
+          "allocated_bytes": 4096
+        },
+        "report.md": {
+          "files": 1,
+          "bytes": 2187,
+          "allocated_bytes": 4096
+        },
+        "analysis_execution.json": {
+          "files": 1,
+          "bytes": 944,
+          "allocated_bytes": 4096
+        },
+        "complete.json": {
+          "files": 1,
+          "bytes": 479,
+          "allocated_bytes": 4096
+        }
+      },
+      "by_extension": {
+        ".log": {
+          "files": 16,
+          "bytes": 27344732297,
+          "allocated_bytes": 27344826368
+        },
+        ".jsonl": {
+          "files": 32,
+          "bytes": 24341608286,
+          "allocated_bytes": 24341798912
+        },
+        ".csv": {
+          "files": 31,
+          "bytes": 5444688489,
+          "allocated_bytes": 5444812800
+        },
+        ".json": {
+          "files": 29,
+          "bytes": 397286,
+          "allocated_bytes": 466944
+        },
+        ".md": {
+          "files": 1,
+          "bytes": 2187,
+          "allocated_bytes": 4096
+        }
+      }
+    }
+  ],
+  "content_reads": false,
+  "scope": "Seven named D92 run trees, metadata only"
+}
