@@ -1,6 +1,6 @@
 # 实验总索引
 
-更新：2026-10-01T05:34:48+00:00
+更新：2026-10-01T06:23:47+00:00
 
 先按方法/问题检索，再用run ID读取精确配置与证据。历史组数量不等于独立实验数量。
 
@@ -12,7 +12,7 @@
 
 |记录类型|数量|
 |---|---:|
-|managed_run|19|
+|managed_run|20|
 
 历史状态统一为HISTORICAL_UNVERIFIED；RUNNING等原文声明只供查证，不能证明此刻仍在运行。
 
@@ -31,9 +31,9 @@
 |[full](by_method/full.md)|5|
 |[zf](by_method/zf.md)|5|
 |[mmse](by_method/mmse.md)|5|
+|[cvs](by_method/cvs.md)|4|
 |[truth_last](by_method/truth_last.md)|4|
 |[final200](by_method/final200.md)|4|
-|[cvs](by_method/cvs.md)|3|
 |[d92](by_method/d92.md)|3|
 |[response](by_method/response.md)|3|
 |[core90](by_method/core90.md)|3|
@@ -58,6 +58,16 @@
 |[d42](by_method/d42.md)|1|
 |[diagnostic](by_method/diagnostic.md)|1|
 |[support_only](by_method/support_only.md)|1|
+|[clean_only](by_method/clean_only.md)|1|
+|[architecture](by_method/architecture.md)|1|
+|[physics](by_method/physics.md)|1|
+|[ce_only](by_method/ce_only.md)|1|
+|[no_augmentation](by_method/no_augmentation.md)|1|
+|[lightweight](by_method/lightweight.md)|1|
+|[cvcnn](by_method/cvcnn.md)|1|
+|[resnet1d](by_method/resnet1d.md)|1|
+|[real_cnn](by_method/real_cnn.md)|1|
+|[source_selection](by_method/source_selection.md)|1|
 
 ## 最近记录入口
 
@@ -77,6 +87,7 @@
 |D92 E0 true256 numerical recovery: all five fixed seeds|managed_run|[打开](../automation_reports/CV-SincNet/20260928-phase2-cvs-d92-practical-manytx-m5-r02/report.md)|
 |Native comparison source training|managed_run|[打开](../automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/report.md)|
 |Native comparison paired adaptation and registration|managed_run|[打开](../automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/report.md)|
+|CVS 无增强轻量架构与常见网络基准|managed_run|[打开](../automation_reports/CV-SincNet/20261001-phase1-cvs-clean-architecture-manysig-m32-r01/report.md)|
 |CVS身份骨干交叉熵对照实验|managed_run|[打开](../automation_reports/CV-SincNet/20261001-phase1-cvs-identity-ce-practical-manysig-m5-r01/report.md)|
 |CVS身份骨干交叉熵对照实验|managed_run|[打开](../automation_reports/CV-SincNet/20261001-phase1-cvs-identity-ce-practical-manysig-m5-r02/report.md)|
 |原生DAOT＋RC4与仅动力博弈三seed对照|managed_run|[打开](../automation_reports/CV-SincNet/phase1_daot_rc4_pure_game_m3_20260917_r1/report.md)|

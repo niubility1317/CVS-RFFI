@@ -1,0 +1,20 @@
+{
+  "method": "cvs_clean_design",
+  "variant": "moment_pool",
+  "model_seed": 2026092703,
+  "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+  "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+  "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-clean-architecture-manysig-m32-r01/moment_pool-s2026092703/source",
+  "epochs": 200,
+  "batch_size": 128,
+  "lr": 0.0002,
+  "lr_min": 1e-06,
+  "weight_decay": 0.0001,
+  "drop_last": false,
+  "augmentation": false,
+  "domain_backbone": false,
+  "extra_losses": [],
+  "selection": "fixed_last_epoch",
+  "split_seed": 392005,
+  "device": "cuda:0"
+}
