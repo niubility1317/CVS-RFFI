@@ -1,0 +1,659 @@
+........FFFFFF.....                                                      [100%]
+================================== FAILURES ===================================
+_ test_actual_production_callback_archives_scope_schema_and_all_fields[True] __
+
+keep = array([False,  True, False,  True, False,  True, False,  True, False,
+        True, False,  True, False,  True, False,  True])
+scope = 'support_oof', index = 0
+
+    def path(keep, scope, index):
+        reuse = classes == old; has_held = bool((~keep).any())
+        entry = dict(scope=scope, fold=index if scope == 'support_oof' else None,
+            trial=index if scope == 'support_oneshot_proxy' else None, parent_k=k,
+            train_k=int(keep.sum())//len(classes), held_k=int((~keep).sum())//len(classes),
+            b_training_ids=[pid for i, pid in enumerate(ids) if keep[i] and is_old[i]],
+            c_training_ids=[pid for i, pid in enumerate(ids) if keep[i]],
+            b_ids=[pid for i, pid in enumerate(ids) if not keep[i] and is_old[i]],
+            c_ids=[pid for i, pid in enumerate(ids) if not keep[i]], b_classes=old, c_classes=classes,
+            held_labels={pid: label_by_id[pid] for i, pid in enumerate(ids) if not keep[i]},
+            stages=[], preparations=[], candidate_stages=[], training_events=[], c_reuses_b0=reuse,
+            c_reuses_b_candidates=reuse, paths={}, outer_features_state_ref=None)
+        coords = dict(context or {}, **{key: entry[key] for key in ('scope', 'fold', 'trial', 'parent_k', 'train_k')})
+        bases, prepared, candidates = {}, {}, {}
+        def emit_event(row, stage):
+            value = dict(row); value.update({key: item for key, item in coords.items() if key != 'trial'},
+                schema=SCHEMA, method=METHOD, outer_trial=coords['trial'], state=stage, source_validation=None,
+                source_validation_reason='SOURCE_ACCESS_FORBIDDEN', objective_scope='INNER_SUPPORT_TRAINING_NOT_VALIDATION')
+            entry['training_events'].append(value)
+            if event_callback: event_callback(value)
+        def archive_callback(stage):
+            if state_callback is None: return None
+            namespace = json.dumps(json_native(dict(coords, state=stage)), sort_keys=True, separators=(',', ':'))
+            return lambda key, arrays: state_callback(namespace+'/'+key, arrays)
+        try:
+            outer_archive = archive_callback('OUTER_SUPPORT_HELD')
+            if outer_archive is not None and has_held:
+                entry['outer_features_state_ref'] = outer_archive('features', {key: np.asarray(value[~keep], dtype=np.float64) for key, value in raw.items()})
+            for name, train, held, registry in (('B0', keep & is_old, ~keep & is_old, old), ('C0', keep, ~keep, classes)):
+                if name == 'C0' and reuse: bases[name] = bases['B0']; continue
+                tids = [pid for i, pid in enumerate(ids) if train[i]]
+                ys = np.asarray([registry.index(label_by_id[pid]) for pid in tids], dtype=np.int64)
+                tick = time.perf_counter()
+                state = fit_branch_local_ridge(**{key: value[train] for key, value in raw.items()},
+                    support_labels=ys, support_ids=tids, classes=registry, old_classes=old, arm='local_ridge')
+                top = state.audit_dict(); audit = top['final_fit']
+                audit.update(coords, state=name, training_physical_ids=tids, all_states_estimated_from_trainfold_only=True,
+                    held_physical_count=int(held.sum()), class_count=len(registry), learning_rate=None,
+                    learning_rate_reason='Closed-form baseline; no optimizer', source_validation=None,
+                    source_validation_reason='SOURCE_ACCESS_FORBIDDEN', score_seconds=0., persistent_state_bytes=top['persistent_state_bytes'])
+                ref = archive_callback(name)
+                audit['final_state_ref'] = None if ref is None else ref('baseline', dict(
+                    original_train_b=state.support_background, original_train_a=state.support_auxiliary,
+                    alpha=state.alpha, reference_kernel=state.reference_kernel,
+                    reference_self=np.asarray(state.reference_self), center_mean=state.center_mean,
+                    center_grand=np.asarray(state.center_grand),
+                    tau=np.asarray([] if state.bandwidth_tau is None else [state.bandwidth_tau], dtype=np.float64),
+                    gamma=np.asarray([] if state.trace_scale is None else [state.trace_scale], dtype=np.float64)))
+                entry['stages'].append(audit); result['baseline_head_fit_count'] += 1
+                result['baseline_factorization_count'] += audit['factorization_calls']
+                result['baseline_head_triangular_solve_count'] += 2*audit['factorization_calls']
+                result['baseline_effective_df_triangular_solve_count'] += audit['effective_degrees_of_freedom_extra_triangular_solves']
+                result['baseline_triangular_solve_count'] = result['baseline_head_triangular_solve_count']+result['baseline_effective_df_triangular_solve_count']
+                bases[name] = dict(state=state, train=train, held=held, registry=registry, labels=ys, ids=tids, scores=np.empty((0, len(registry))))
+                if held.any():
+                    score_start = time.perf_counter(); result['final_score_evaluation_count'] += 1
+                    result['final_score_physical_count'] += int(held.sum())
+                    bases[name]['scores'] = state.score(**{key: value[held] for key, value in raw.items()})
+                    audit['score_seconds'] = time.perf_counter()-score_start
+                audit['fit_and_score_seconds'] = time.perf_counter()-tick
+                if log_callback: log_callback(dict(event='BASE_FIT', **audit))
+            for prep_name, name, mode in (('B', 'B_CONDITIONAL', 'B'), ('C', 'C_CONDITIONAL_seq', 'C_seq')):
+                if prep_name == 'C' and reuse: candidates[name] = candidates['B_CONDITIONAL']; continue
+                base = bases[prep_name+'0']
+                prepared[prep_name] = prepare_conditional_joint_training(**{key: value[base['train']] for key, value in raw.items()},
+                    support_labels=base['labels'], support_ids=base['ids'], classes=base['registry'], old_classes=old,
+                    inherited=None if prep_name == 'B' else candidates['B_CONDITIONAL']['state'], context=dict(coords, stage=prep_name),
+                    log_callback=lambda row, current=prep_name: emit_event(row, current+'_prepare'),
+                    state_callback=archive_callback(prep_name+'_prepare'))
+>               prep = prepared[prep_name].audit_dict()
+E               AttributeError: 'ConditionalJointTraining' object has no attribute 'audit_dict'
+
+tools\evaluate_d92_conditional_joint_probe.py:365: AttributeError
+
+During handling of the above exception, another exception occurred:
+
+tmp_path = WindowsPath('E:/type10-7/.codex_tmp/pytest_temp_1790819571528214600/basetemp/test_actual_production_callbac0')
+new = True
+
+    @pytest.mark.parametrize('new',[True,False])
+    def test_actual_production_callback_archives_scope_schema_and_all_fields(tmp_path,new):
+>       out=tmp_path/'probe';marker=production(out,synthetic(new=new));record=lines(out/'fit_trace.jsonl')[0]
+
+tests\test_evaluate_d92_conditional_joint_probe.py:52: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_evaluate_d92_conditional_joint_probe.py:42: in production
+    return entry.evaluate(support_features='synthetic-cache',capsule='synthetic-capsule',output=out,config=config,
+tools\evaluate_d92_conditional_joint_probe.py:501: in evaluate
+    audit = probe_conditional_joint(**{key: value[positions] for key, value in arrays.items()},
+tools\evaluate_d92_conditional_joint_probe.py:415: in probe_conditional_joint
+    for fold in range(folds): result['folds'].append(path(assignments != fold, 'support_oof', fold))
+tools\evaluate_d92_conditional_joint_probe.py:405: in path
+    completed_preparations={name: value.audit_dict() for name, value in prepared.items()},
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+.0 = <dict_itemiterator object at 0x000002353642A0C0>
+
+>   completed_preparations={name: value.audit_dict() for name, value in prepared.items()},
+    completed_candidate_states={name: value['state'].audit_dict() for name, value in candidates.items()},
+    completed_paths=completed, counters={key: result[key] for key in COUNTERS[4:]}))
+E   AttributeError: 'ConditionalJointTraining' object has no attribute 'audit_dict'
+
+tools\evaluate_d92_conditional_joint_probe.py:405: AttributeError
+_ test_actual_production_callback_archives_scope_schema_and_all_fields[False] _
+
+keep = array([False,  True, False,  True, False,  True, False,  True, False,
+        True, False,  True])
+scope = 'support_oof', index = 0
+
+    def path(keep, scope, index):
+        reuse = classes == old; has_held = bool((~keep).any())
+        entry = dict(scope=scope, fold=index if scope == 'support_oof' else None,
+            trial=index if scope == 'support_oneshot_proxy' else None, parent_k=k,
+            train_k=int(keep.sum())//len(classes), held_k=int((~keep).sum())//len(classes),
+            b_training_ids=[pid for i, pid in enumerate(ids) if keep[i] and is_old[i]],
+            c_training_ids=[pid for i, pid in enumerate(ids) if keep[i]],
+            b_ids=[pid for i, pid in enumerate(ids) if not keep[i] and is_old[i]],
+            c_ids=[pid for i, pid in enumerate(ids) if not keep[i]], b_classes=old, c_classes=classes,
+            held_labels={pid: label_by_id[pid] for i, pid in enumerate(ids) if not keep[i]},
+            stages=[], preparations=[], candidate_stages=[], training_events=[], c_reuses_b0=reuse,
+            c_reuses_b_candidates=reuse, paths={}, outer_features_state_ref=None)
+        coords = dict(context or {}, **{key: entry[key] for key in ('scope', 'fold', 'trial', 'parent_k', 'train_k')})
+        bases, prepared, candidates = {}, {}, {}
+        def emit_event(row, stage):
+            value = dict(row); value.update({key: item for key, item in coords.items() if key != 'trial'},
+                schema=SCHEMA, method=METHOD, outer_trial=coords['trial'], state=stage, source_validation=None,
+                source_validation_reason='SOURCE_ACCESS_FORBIDDEN', objective_scope='INNER_SUPPORT_TRAINING_NOT_VALIDATION')
+            entry['training_events'].append(value)
+            if event_callback: event_callback(value)
+        def archive_callback(stage):
+            if state_callback is None: return None
+            namespace = json.dumps(json_native(dict(coords, state=stage)), sort_keys=True, separators=(',', ':'))
+            return lambda key, arrays: state_callback(namespace+'/'+key, arrays)
+        try:
+            outer_archive = archive_callback('OUTER_SUPPORT_HELD')
+            if outer_archive is not None and has_held:
+                entry['outer_features_state_ref'] = outer_archive('features', {key: np.asarray(value[~keep], dtype=np.float64) for key, value in raw.items()})
+            for name, train, held, registry in (('B0', keep & is_old, ~keep & is_old, old), ('C0', keep, ~keep, classes)):
+                if name == 'C0' and reuse: bases[name] = bases['B0']; continue
+                tids = [pid for i, pid in enumerate(ids) if train[i]]
+                ys = np.asarray([registry.index(label_by_id[pid]) for pid in tids], dtype=np.int64)
+                tick = time.perf_counter()
+                state = fit_branch_local_ridge(**{key: value[train] for key, value in raw.items()},
+                    support_labels=ys, support_ids=tids, classes=registry, old_classes=old, arm='local_ridge')
+                top = state.audit_dict(); audit = top['final_fit']
+                audit.update(coords, state=name, training_physical_ids=tids, all_states_estimated_from_trainfold_only=True,
+                    held_physical_count=int(held.sum()), class_count=len(registry), learning_rate=None,
+                    learning_rate_reason='Closed-form baseline; no optimizer', source_validation=None,
+                    source_validation_reason='SOURCE_ACCESS_FORBIDDEN', score_seconds=0., persistent_state_bytes=top['persistent_state_bytes'])
+                ref = archive_callback(name)
+                audit['final_state_ref'] = None if ref is None else ref('baseline', dict(
+                    original_train_b=state.support_background, original_train_a=state.support_auxiliary,
+                    alpha=state.alpha, reference_kernel=state.reference_kernel,
+                    reference_self=np.asarray(state.reference_self), center_mean=state.center_mean,
+                    center_grand=np.asarray(state.center_grand),
+                    tau=np.asarray([] if state.bandwidth_tau is None else [state.bandwidth_tau], dtype=np.float64),
+                    gamma=np.asarray([] if state.trace_scale is None else [state.trace_scale], dtype=np.float64)))
+                entry['stages'].append(audit); result['baseline_head_fit_count'] += 1
+                result['baseline_factorization_count'] += audit['factorization_calls']
+                result['baseline_head_triangular_solve_count'] += 2*audit['factorization_calls']
+                result['baseline_effective_df_triangular_solve_count'] += audit['effective_degrees_of_freedom_extra_triangular_solves']
+                result['baseline_triangular_solve_count'] = result['baseline_head_triangular_solve_count']+result['baseline_effective_df_triangular_solve_count']
+                bases[name] = dict(state=state, train=train, held=held, registry=registry, labels=ys, ids=tids, scores=np.empty((0, len(registry))))
+                if held.any():
+                    score_start = time.perf_counter(); result['final_score_evaluation_count'] += 1
+                    result['final_score_physical_count'] += int(held.sum())
+                    bases[name]['scores'] = state.score(**{key: value[held] for key, value in raw.items()})
+                    audit['score_seconds'] = time.perf_counter()-score_start
+                audit['fit_and_score_seconds'] = time.perf_counter()-tick
+                if log_callback: log_callback(dict(event='BASE_FIT', **audit))
+            for prep_name, name, mode in (('B', 'B_CONDITIONAL', 'B'), ('C', 'C_CONDITIONAL_seq', 'C_seq')):
+                if prep_name == 'C' and reuse: candidates[name] = candidates['B_CONDITIONAL']; continue
+                base = bases[prep_name+'0']
+                prepared[prep_name] = prepare_conditional_joint_training(**{key: value[base['train']] for key, value in raw.items()},
+                    support_labels=base['labels'], support_ids=base['ids'], classes=base['registry'], old_classes=old,
+                    inherited=None if prep_name == 'B' else candidates['B_CONDITIONAL']['state'], context=dict(coords, stage=prep_name),
+                    log_callback=lambda row, current=prep_name: emit_event(row, current+'_prepare'),
+                    state_callback=archive_callback(prep_name+'_prepare'))
+>               prep = prepared[prep_name].audit_dict()
+E               AttributeError: 'ConditionalJointTraining' object has no attribute 'audit_dict'
+
+tools\evaluate_d92_conditional_joint_probe.py:365: AttributeError
+
+During handling of the above exception, another exception occurred:
+
+tmp_path = WindowsPath('E:/type10-7/.codex_tmp/pytest_temp_1790819571528214600/basetemp/test_actual_production_callbac1')
+new = False
+
+    @pytest.mark.parametrize('new',[True,False])
+    def test_actual_production_callback_archives_scope_schema_and_all_fields(tmp_path,new):
+>       out=tmp_path/'probe';marker=production(out,synthetic(new=new));record=lines(out/'fit_trace.jsonl')[0]
+
+tests\test_evaluate_d92_conditional_joint_probe.py:52: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_evaluate_d92_conditional_joint_probe.py:42: in production
+    return entry.evaluate(support_features='synthetic-cache',capsule='synthetic-capsule',output=out,config=config,
+tools\evaluate_d92_conditional_joint_probe.py:501: in evaluate
+    audit = probe_conditional_joint(**{key: value[positions] for key, value in arrays.items()},
+tools\evaluate_d92_conditional_joint_probe.py:415: in probe_conditional_joint
+    for fold in range(folds): result['folds'].append(path(assignments != fold, 'support_oof', fold))
+tools\evaluate_d92_conditional_joint_probe.py:405: in path
+    completed_preparations={name: value.audit_dict() for name, value in prepared.items()},
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+.0 = <dict_itemiterator object at 0x0000023539753A60>
+
+>   completed_preparations={name: value.audit_dict() for name, value in prepared.items()},
+    completed_candidate_states={name: value['state'].audit_dict() for name, value in candidates.items()},
+    completed_paths=completed, counters={key: result[key] for key in COUNTERS[4:]}))
+E   AttributeError: 'ConditionalJointTraining' object has no attribute 'audit_dict'
+
+tools\evaluate_d92_conditional_joint_probe.py:405: AttributeError
+_______ test_actual_B_object_passed_and_other_row_replacement_rejected ________
+
+keep = array([ True,  True,  True,  True,  True,  True,  True,  True])
+scope = 'support_full_k1', index = None
+
+    def path(keep, scope, index):
+        reuse = classes == old; has_held = bool((~keep).any())
+        entry = dict(scope=scope, fold=index if scope == 'support_oof' else None,
+            trial=index if scope == 'support_oneshot_proxy' else None, parent_k=k,
+            train_k=int(keep.sum())//len(classes), held_k=int((~keep).sum())//len(classes),
+            b_training_ids=[pid for i, pid in enumerate(ids) if keep[i] and is_old[i]],
+            c_training_ids=[pid for i, pid in enumerate(ids) if keep[i]],
+            b_ids=[pid for i, pid in enumerate(ids) if not keep[i] and is_old[i]],
+            c_ids=[pid for i, pid in enumerate(ids) if not keep[i]], b_classes=old, c_classes=classes,
+            held_labels={pid: label_by_id[pid] for i, pid in enumerate(ids) if not keep[i]},
+            stages=[], preparations=[], candidate_stages=[], training_events=[], c_reuses_b0=reuse,
+            c_reuses_b_candidates=reuse, paths={}, outer_features_state_ref=None)
+        coords = dict(context or {}, **{key: entry[key] for key in ('scope', 'fold', 'trial', 'parent_k', 'train_k')})
+        bases, prepared, candidates = {}, {}, {}
+        def emit_event(row, stage):
+            value = dict(row); value.update({key: item for key, item in coords.items() if key != 'trial'},
+                schema=SCHEMA, method=METHOD, outer_trial=coords['trial'], state=stage, source_validation=None,
+                source_validation_reason='SOURCE_ACCESS_FORBIDDEN', objective_scope='INNER_SUPPORT_TRAINING_NOT_VALIDATION')
+            entry['training_events'].append(value)
+            if event_callback: event_callback(value)
+        def archive_callback(stage):
+            if state_callback is None: return None
+            namespace = json.dumps(json_native(dict(coords, state=stage)), sort_keys=True, separators=(',', ':'))
+            return lambda key, arrays: state_callback(namespace+'/'+key, arrays)
+        try:
+            outer_archive = archive_callback('OUTER_SUPPORT_HELD')
+            if outer_archive is not None and has_held:
+                entry['outer_features_state_ref'] = outer_archive('features', {key: np.asarray(value[~keep], dtype=np.float64) for key, value in raw.items()})
+            for name, train, held, registry in (('B0', keep & is_old, ~keep & is_old, old), ('C0', keep, ~keep, classes)):
+                if name == 'C0' and reuse: bases[name] = bases['B0']; continue
+                tids = [pid for i, pid in enumerate(ids) if train[i]]
+                ys = np.asarray([registry.index(label_by_id[pid]) for pid in tids], dtype=np.int64)
+                tick = time.perf_counter()
+                state = fit_branch_local_ridge(**{key: value[train] for key, value in raw.items()},
+                    support_labels=ys, support_ids=tids, classes=registry, old_classes=old, arm='local_ridge')
+                top = state.audit_dict(); audit = top['final_fit']
+                audit.update(coords, state=name, training_physical_ids=tids, all_states_estimated_from_trainfold_only=True,
+                    held_physical_count=int(held.sum()), class_count=len(registry), learning_rate=None,
+                    learning_rate_reason='Closed-form baseline; no optimizer', source_validation=None,
+                    source_validation_reason='SOURCE_ACCESS_FORBIDDEN', score_seconds=0., persistent_state_bytes=top['persistent_state_bytes'])
+                ref = archive_callback(name)
+                audit['final_state_ref'] = None if ref is None else ref('baseline', dict(
+                    original_train_b=state.support_background, original_train_a=state.support_auxiliary,
+                    alpha=state.alpha, reference_kernel=state.reference_kernel,
+                    reference_self=np.asarray(state.reference_self), center_mean=state.center_mean,
+                    center_grand=np.asarray(state.center_grand),
+                    tau=np.asarray([] if state.bandwidth_tau is None else [state.bandwidth_tau], dtype=np.float64),
+                    gamma=np.asarray([] if state.trace_scale is None else [state.trace_scale], dtype=np.float64)))
+                entry['stages'].append(audit); result['baseline_head_fit_count'] += 1
+                result['baseline_factorization_count'] += audit['factorization_calls']
+                result['baseline_head_triangular_solve_count'] += 2*audit['factorization_calls']
+                result['baseline_effective_df_triangular_solve_count'] += audit['effective_degrees_of_freedom_extra_triangular_solves']
+                result['baseline_triangular_solve_count'] = result['baseline_head_triangular_solve_count']+result['baseline_effective_df_triangular_solve_count']
+                bases[name] = dict(state=state, train=train, held=held, registry=registry, labels=ys, ids=tids, scores=np.empty((0, len(registry))))
+                if held.any():
+                    score_start = time.perf_counter(); result['final_score_evaluation_count'] += 1
+                    result['final_score_physical_count'] += int(held.sum())
+                    bases[name]['scores'] = state.score(**{key: value[held] for key, value in raw.items()})
+                    audit['score_seconds'] = time.perf_counter()-score_start
+                audit['fit_and_score_seconds'] = time.perf_counter()-tick
+                if log_callback: log_callback(dict(event='BASE_FIT', **audit))
+            for prep_name, name, mode in (('B', 'B_CONDITIONAL', 'B'), ('C', 'C_CONDITIONAL_seq', 'C_seq')):
+                if prep_name == 'C' and reuse: candidates[name] = candidates['B_CONDITIONAL']; continue
+                base = bases[prep_name+'0']
+                prepared[prep_name] = prepare_conditional_joint_training(**{key: value[base['train']] for key, value in raw.items()},
+                    support_labels=base['labels'], support_ids=base['ids'], classes=base['registry'], old_classes=old,
+                    inherited=None if prep_name == 'B' else candidates['B_CONDITIONAL']['state'], context=dict(coords, stage=prep_name),
+                    log_callback=lambda row, current=prep_name: emit_event(row, current+'_prepare'),
+                    state_callback=archive_callback(prep_name+'_prepare'))
+>               prep = prepared[prep_name].audit_dict()
+E               AttributeError: 'ConditionalJointTraining' object has no attribute 'audit_dict'
+
+tools\evaluate_d92_conditional_joint_probe.py:365: AttributeError
+
+During handling of the above exception, another exception occurred:
+
+    def test_actual_B_object_passed_and_other_row_replacement_rejected():
+        original_prepare=entry.prepare_conditional_joint_training;original_fit=entry.fit_conditional_joint_local_ridge;states=[];calls=[]
+        def prepare(**kwargs):
+            calls.append(('prepare',kwargs['context']['stage']))
+            if kwargs['context']['stage']=='C':assert kwargs['inherited'] is states[-1]
+            return original_prepare(**kwargs)
+        def fit(prepared,**kwargs):
+            calls.append(('fit',kwargs['mode']));state=original_fit(prepared,**kwargs)
+            if kwargs['mode']=='C_seq':assert state.prior is states[-1]
+            states.append(state);return state
+        with patch.object(entry,'prepare_conditional_joint_training',side_effect=prepare),patch.object(entry,'fit_conditional_joint_local_ridge',side_effect=fit):
+>           entry.probe_conditional_joint(**synthetic(k=1),context=scope())
+
+tests\test_evaluate_d92_conditional_joint_probe.py:102: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tools\evaluate_d92_conditional_joint_probe.py:413: in probe_conditional_joint
+    result['full_support'] = path(np.ones(len(ids), dtype=bool), 'support_full_k1', None)
+tools\evaluate_d92_conditional_joint_probe.py:405: in path
+    completed_preparations={name: value.audit_dict() for name, value in prepared.items()},
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+.0 = <dict_itemiterator object at 0x000002353960D990>
+
+>   completed_preparations={name: value.audit_dict() for name, value in prepared.items()},
+    completed_candidate_states={name: value['state'].audit_dict() for name, value in candidates.items()},
+    completed_paths=completed, counters={key: result[key] for key in COUNTERS[4:]}))
+E   AttributeError: 'ConditionalJointTraining' object has no attribute 'audit_dict'
+
+tools\evaluate_d92_conditional_joint_probe.py:405: AttributeError
+___________ test_actual_trained_production_events_and_numeric_refs ____________
+
+keep = array([False,  True,  True, False,  True,  True, False,  True,  True,
+       False,  True,  True, False,  True,  True, False,  True,  True,
+       False,  True,  True, False,  True,  True])
+scope = 'support_oof', index = 0
+
+    def path(keep, scope, index):
+        reuse = classes == old; has_held = bool((~keep).any())
+        entry = dict(scope=scope, fold=index if scope == 'support_oof' else None,
+            trial=index if scope == 'support_oneshot_proxy' else None, parent_k=k,
+            train_k=int(keep.sum())//len(classes), held_k=int((~keep).sum())//len(classes),
+            b_training_ids=[pid for i, pid in enumerate(ids) if keep[i] and is_old[i]],
+            c_training_ids=[pid for i, pid in enumerate(ids) if keep[i]],
+            b_ids=[pid for i, pid in enumerate(ids) if not keep[i] and is_old[i]],
+            c_ids=[pid for i, pid in enumerate(ids) if not keep[i]], b_classes=old, c_classes=classes,
+            held_labels={pid: label_by_id[pid] for i, pid in enumerate(ids) if not keep[i]},
+            stages=[], preparations=[], candidate_stages=[], training_events=[], c_reuses_b0=reuse,
+            c_reuses_b_candidates=reuse, paths={}, outer_features_state_ref=None)
+        coords = dict(context or {}, **{key: entry[key] for key in ('scope', 'fold', 'trial', 'parent_k', 'train_k')})
+        bases, prepared, candidates = {}, {}, {}
+        def emit_event(row, stage):
+            value = dict(row); value.update({key: item for key, item in coords.items() if key != 'trial'},
+                schema=SCHEMA, method=METHOD, outer_trial=coords['trial'], state=stage, source_validation=None,
+                source_validation_reason='SOURCE_ACCESS_FORBIDDEN', objective_scope='INNER_SUPPORT_TRAINING_NOT_VALIDATION')
+            entry['training_events'].append(value)
+            if event_callback: event_callback(value)
+        def archive_callback(stage):
+            if state_callback is None: return None
+            namespace = json.dumps(json_native(dict(coords, state=stage)), sort_keys=True, separators=(',', ':'))
+            return lambda key, arrays: state_callback(namespace+'/'+key, arrays)
+        try:
+            outer_archive = archive_callback('OUTER_SUPPORT_HELD')
+            if outer_archive is not None and has_held:
+                entry['outer_features_state_ref'] = outer_archive('features', {key: np.asarray(value[~keep], dtype=np.float64) for key, value in raw.items()})
+            for name, train, held, registry in (('B0', keep & is_old, ~keep & is_old, old), ('C0', keep, ~keep, classes)):
+                if name == 'C0' and reuse: bases[name] = bases['B0']; continue
+                tids = [pid for i, pid in enumerate(ids) if train[i]]
+                ys = np.asarray([registry.index(label_by_id[pid]) for pid in tids], dtype=np.int64)
+                tick = time.perf_counter()
+                state = fit_branch_local_ridge(**{key: value[train] for key, value in raw.items()},
+                    support_labels=ys, support_ids=tids, classes=registry, old_classes=old, arm='local_ridge')
+                top = state.audit_dict(); audit = top['final_fit']
+                audit.update(coords, state=name, training_physical_ids=tids, all_states_estimated_from_trainfold_only=True,
+                    held_physical_count=int(held.sum()), class_count=len(registry), learning_rate=None,
+                    learning_rate_reason='Closed-form baseline; no optimizer', source_validation=None,
+                    source_validation_reason='SOURCE_ACCESS_FORBIDDEN', score_seconds=0., persistent_state_bytes=top['persistent_state_bytes'])
+                ref = archive_callback(name)
+                audit['final_state_ref'] = None if ref is None else ref('baseline', dict(
+                    original_train_b=state.support_background, original_train_a=state.support_auxiliary,
+                    alpha=state.alpha, reference_kernel=state.reference_kernel,
+                    reference_self=np.asarray(state.reference_self), center_mean=state.center_mean,
+                    center_grand=np.asarray(state.center_grand),
+                    tau=np.asarray([] if state.bandwidth_tau is None else [state.bandwidth_tau], dtype=np.float64),
+                    gamma=np.asarray([] if state.trace_scale is None else [state.trace_scale], dtype=np.float64)))
+                entry['stages'].append(audit); result['baseline_head_fit_count'] += 1
+                result['baseline_factorization_count'] += audit['factorization_calls']
+                result['baseline_head_triangular_solve_count'] += 2*audit['factorization_calls']
+                result['baseline_effective_df_triangular_solve_count'] += audit['effective_degrees_of_freedom_extra_triangular_solves']
+                result['baseline_triangular_solve_count'] = result['baseline_head_triangular_solve_count']+result['baseline_effective_df_triangular_solve_count']
+                bases[name] = dict(state=state, train=train, held=held, registry=registry, labels=ys, ids=tids, scores=np.empty((0, len(registry))))
+                if held.any():
+                    score_start = time.perf_counter(); result['final_score_evaluation_count'] += 1
+                    result['final_score_physical_count'] += int(held.sum())
+                    bases[name]['scores'] = state.score(**{key: value[held] for key, value in raw.items()})
+                    audit['score_seconds'] = time.perf_counter()-score_start
+                audit['fit_and_score_seconds'] = time.perf_counter()-tick
+                if log_callback: log_callback(dict(event='BASE_FIT', **audit))
+            for prep_name, name, mode in (('B', 'B_CONDITIONAL', 'B'), ('C', 'C_CONDITIONAL_seq', 'C_seq')):
+                if prep_name == 'C' and reuse: candidates[name] = candidates['B_CONDITIONAL']; continue
+                base = bases[prep_name+'0']
+                prepared[prep_name] = prepare_conditional_joint_training(**{key: value[base['train']] for key, value in raw.items()},
+                    support_labels=base['labels'], support_ids=base['ids'], classes=base['registry'], old_classes=old,
+                    inherited=None if prep_name == 'B' else candidates['B_CONDITIONAL']['state'], context=dict(coords, stage=prep_name),
+                    log_callback=lambda row, current=prep_name: emit_event(row, current+'_prepare'),
+                    state_callback=archive_callback(prep_name+'_prepare'))
+>               prep = prepared[prep_name].audit_dict()
+E               AttributeError: 'ConditionalJointTraining' object has no attribute 'audit_dict'
+
+tools\evaluate_d92_conditional_joint_probe.py:365: AttributeError
+
+During handling of the above exception, another exception occurred:
+
+tmp_path = WindowsPath('E:/type10-7/.codex_tmp/pytest_temp_1790819571528214600/basetemp/test_actual_trained_production0')
+
+    def test_actual_trained_production_events_and_numeric_refs(tmp_path):
+>       out=tmp_path/'trained';marker=production(out,synthetic(k=3))
+
+tests\test_evaluate_d92_conditional_joint_probe.py:114: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_evaluate_d92_conditional_joint_probe.py:42: in production
+    return entry.evaluate(support_features='synthetic-cache',capsule='synthetic-capsule',output=out,config=config,
+tools\evaluate_d92_conditional_joint_probe.py:501: in evaluate
+    audit = probe_conditional_joint(**{key: value[positions] for key, value in arrays.items()},
+tools\evaluate_d92_conditional_joint_probe.py:415: in probe_conditional_joint
+    for fold in range(folds): result['folds'].append(path(assignments != fold, 'support_oof', fold))
+tools\evaluate_d92_conditional_joint_probe.py:405: in path
+    completed_preparations={name: value.audit_dict() for name, value in prepared.items()},
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+.0 = <dict_itemiterator object at 0x000002353773DDA0>
+
+>   completed_preparations={name: value.audit_dict() for name, value in prepared.items()},
+    completed_candidate_states={name: value['state'].audit_dict() for name, value in candidates.items()},
+    completed_paths=completed, counters={key: result[key] for key in COUNTERS[4:]}))
+E   AttributeError: 'ConditionalJointTraining' object has no attribute 'audit_dict'
+
+tools\evaluate_d92_conditional_joint_probe.py:405: AttributeError
+_________ test_support_truth_join_occurs_after_fixed_all_class_scores _________
+
+keep = array([False,  True, False,  True, False,  True, False,  True, False,
+        True, False,  True, False,  True, False,  True])
+scope = 'support_oof', index = 0
+
+    def path(keep, scope, index):
+        reuse = classes == old; has_held = bool((~keep).any())
+        entry = dict(scope=scope, fold=index if scope == 'support_oof' else None,
+            trial=index if scope == 'support_oneshot_proxy' else None, parent_k=k,
+            train_k=int(keep.sum())//len(classes), held_k=int((~keep).sum())//len(classes),
+            b_training_ids=[pid for i, pid in enumerate(ids) if keep[i] and is_old[i]],
+            c_training_ids=[pid for i, pid in enumerate(ids) if keep[i]],
+            b_ids=[pid for i, pid in enumerate(ids) if not keep[i] and is_old[i]],
+            c_ids=[pid for i, pid in enumerate(ids) if not keep[i]], b_classes=old, c_classes=classes,
+            held_labels={pid: label_by_id[pid] for i, pid in enumerate(ids) if not keep[i]},
+            stages=[], preparations=[], candidate_stages=[], training_events=[], c_reuses_b0=reuse,
+            c_reuses_b_candidates=reuse, paths={}, outer_features_state_ref=None)
+        coords = dict(context or {}, **{key: entry[key] for key in ('scope', 'fold', 'trial', 'parent_k', 'train_k')})
+        bases, prepared, candidates = {}, {}, {}
+        def emit_event(row, stage):
+            value = dict(row); value.update({key: item for key, item in coords.items() if key != 'trial'},
+                schema=SCHEMA, method=METHOD, outer_trial=coords['trial'], state=stage, source_validation=None,
+                source_validation_reason='SOURCE_ACCESS_FORBIDDEN', objective_scope='INNER_SUPPORT_TRAINING_NOT_VALIDATION')
+            entry['training_events'].append(value)
+            if event_callback: event_callback(value)
+        def archive_callback(stage):
+            if state_callback is None: return None
+            namespace = json.dumps(json_native(dict(coords, state=stage)), sort_keys=True, separators=(',', ':'))
+            return lambda key, arrays: state_callback(namespace+'/'+key, arrays)
+        try:
+            outer_archive = archive_callback('OUTER_SUPPORT_HELD')
+            if outer_archive is not None and has_held:
+                entry['outer_features_state_ref'] = outer_archive('features', {key: np.asarray(value[~keep], dtype=np.float64) for key, value in raw.items()})
+            for name, train, held, registry in (('B0', keep & is_old, ~keep & is_old, old), ('C0', keep, ~keep, classes)):
+                if name == 'C0' and reuse: bases[name] = bases['B0']; continue
+                tids = [pid for i, pid in enumerate(ids) if train[i]]
+                ys = np.asarray([registry.index(label_by_id[pid]) for pid in tids], dtype=np.int64)
+                tick = time.perf_counter()
+                state = fit_branch_local_ridge(**{key: value[train] for key, value in raw.items()},
+                    support_labels=ys, support_ids=tids, classes=registry, old_classes=old, arm='local_ridge')
+                top = state.audit_dict(); audit = top['final_fit']
+                audit.update(coords, state=name, training_physical_ids=tids, all_states_estimated_from_trainfold_only=True,
+                    held_physical_count=int(held.sum()), class_count=len(registry), learning_rate=None,
+                    learning_rate_reason='Closed-form baseline; no optimizer', source_validation=None,
+                    source_validation_reason='SOURCE_ACCESS_FORBIDDEN', score_seconds=0., persistent_state_bytes=top['persistent_state_bytes'])
+                ref = archive_callback(name)
+                audit['final_state_ref'] = None if ref is None else ref('baseline', dict(
+                    original_train_b=state.support_background, original_train_a=state.support_auxiliary,
+                    alpha=state.alpha, reference_kernel=state.reference_kernel,
+                    reference_self=np.asarray(state.reference_self), center_mean=state.center_mean,
+                    center_grand=np.asarray(state.center_grand),
+                    tau=np.asarray([] if state.bandwidth_tau is None else [state.bandwidth_tau], dtype=np.float64),
+                    gamma=np.asarray([] if state.trace_scale is None else [state.trace_scale], dtype=np.float64)))
+                entry['stages'].append(audit); result['baseline_head_fit_count'] += 1
+                result['baseline_factorization_count'] += audit['factorization_calls']
+                result['baseline_head_triangular_solve_count'] += 2*audit['factorization_calls']
+                result['baseline_effective_df_triangular_solve_count'] += audit['effective_degrees_of_freedom_extra_triangular_solves']
+                result['baseline_triangular_solve_count'] = result['baseline_head_triangular_solve_count']+result['baseline_effective_df_triangular_solve_count']
+                bases[name] = dict(state=state, train=train, held=held, registry=registry, labels=ys, ids=tids, scores=np.empty((0, len(registry))))
+                if held.any():
+                    score_start = time.perf_counter(); result['final_score_evaluation_count'] += 1
+                    result['final_score_physical_count'] += int(held.sum())
+                    bases[name]['scores'] = state.score(**{key: value[held] for key, value in raw.items()})
+                    audit['score_seconds'] = time.perf_counter()-score_start
+                audit['fit_and_score_seconds'] = time.perf_counter()-tick
+                if log_callback: log_callback(dict(event='BASE_FIT', **audit))
+            for prep_name, name, mode in (('B', 'B_CONDITIONAL', 'B'), ('C', 'C_CONDITIONAL_seq', 'C_seq')):
+                if prep_name == 'C' and reuse: candidates[name] = candidates['B_CONDITIONAL']; continue
+                base = bases[prep_name+'0']
+                prepared[prep_name] = prepare_conditional_joint_training(**{key: value[base['train']] for key, value in raw.items()},
+                    support_labels=base['labels'], support_ids=base['ids'], classes=base['registry'], old_classes=old,
+                    inherited=None if prep_name == 'B' else candidates['B_CONDITIONAL']['state'], context=dict(coords, stage=prep_name),
+                    log_callback=lambda row, current=prep_name: emit_event(row, current+'_prepare'),
+                    state_callback=archive_callback(prep_name+'_prepare'))
+>               prep = prepared[prep_name].audit_dict()
+E               AttributeError: 'ConditionalJointTraining' object has no attribute 'audit_dict'
+
+tools\evaluate_d92_conditional_joint_probe.py:365: AttributeError
+
+During handling of the above exception, another exception occurred:
+
+    def test_support_truth_join_occurs_after_fixed_all_class_scores():
+        seen=[];original=entry.assess_paths
+        def log(row):seen.append((row['event'],row['state']))
+        def scorer(evidence,old):
+            assert seen[-1]==('CANDIDATE_FIT','C_CONDITIONAL_seq')
+            for path in evidence.values():
+                assert isinstance(path['c_scores'],list) and all(len(row)==len(path['c_classes']) for row in path['c_scores'])
+            return original(evidence,old)
+        with patch.object(entry,'assess_paths',side_effect=scorer):
+>           entry.probe_conditional_joint(**synthetic(),context=scope(),log_callback=log)
+
+tests\test_evaluate_d92_conditional_joint_probe.py:137: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tools\evaluate_d92_conditional_joint_probe.py:415: in probe_conditional_joint
+    for fold in range(folds): result['folds'].append(path(assignments != fold, 'support_oof', fold))
+tools\evaluate_d92_conditional_joint_probe.py:405: in path
+    completed_preparations={name: value.audit_dict() for name, value in prepared.items()},
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+.0 = <dict_itemiterator object at 0x00000235377DE5C0>
+
+>   completed_preparations={name: value.audit_dict() for name, value in prepared.items()},
+    completed_candidate_states={name: value['state'].audit_dict() for name, value in candidates.items()},
+    completed_paths=completed, counters={key: result[key] for key in COUNTERS[4:]}))
+E   AttributeError: 'ConditionalJointTraining' object has no attribute 'audit_dict'
+
+tools\evaluate_d92_conditional_joint_probe.py:405: AttributeError
+___________ test_forbidden_inputs_true_k1_and_failure_preservation ____________
+
+keep = array([ True,  True,  True,  True,  True,  True,  True,  True])
+scope = 'support_full_k1', index = None
+
+    def path(keep, scope, index):
+        reuse = classes == old; has_held = bool((~keep).any())
+        entry = dict(scope=scope, fold=index if scope == 'support_oof' else None,
+            trial=index if scope == 'support_oneshot_proxy' else None, parent_k=k,
+            train_k=int(keep.sum())//len(classes), held_k=int((~keep).sum())//len(classes),
+            b_training_ids=[pid for i, pid in enumerate(ids) if keep[i] and is_old[i]],
+            c_training_ids=[pid for i, pid in enumerate(ids) if keep[i]],
+            b_ids=[pid for i, pid in enumerate(ids) if not keep[i] and is_old[i]],
+            c_ids=[pid for i, pid in enumerate(ids) if not keep[i]], b_classes=old, c_classes=classes,
+            held_labels={pid: label_by_id[pid] for i, pid in enumerate(ids) if not keep[i]},
+            stages=[], preparations=[], candidate_stages=[], training_events=[], c_reuses_b0=reuse,
+            c_reuses_b_candidates=reuse, paths={}, outer_features_state_ref=None)
+        coords = dict(context or {}, **{key: entry[key] for key in ('scope', 'fold', 'trial', 'parent_k', 'train_k')})
+        bases, prepared, candidates = {}, {}, {}
+        def emit_event(row, stage):
+            value = dict(row); value.update({key: item for key, item in coords.items() if key != 'trial'},
+                schema=SCHEMA, method=METHOD, outer_trial=coords['trial'], state=stage, source_validation=None,
+                source_validation_reason='SOURCE_ACCESS_FORBIDDEN', objective_scope='INNER_SUPPORT_TRAINING_NOT_VALIDATION')
+            entry['training_events'].append(value)
+            if event_callback: event_callback(value)
+        def archive_callback(stage):
+            if state_callback is None: return None
+            namespace = json.dumps(json_native(dict(coords, state=stage)), sort_keys=True, separators=(',', ':'))
+            return lambda key, arrays: state_callback(namespace+'/'+key, arrays)
+        try:
+            outer_archive = archive_callback('OUTER_SUPPORT_HELD')
+            if outer_archive is not None and has_held:
+                entry['outer_features_state_ref'] = outer_archive('features', {key: np.asarray(value[~keep], dtype=np.float64) for key, value in raw.items()})
+            for name, train, held, registry in (('B0', keep & is_old, ~keep & is_old, old), ('C0', keep, ~keep, classes)):
+                if name == 'C0' and reuse: bases[name] = bases['B0']; continue
+                tids = [pid for i, pid in enumerate(ids) if train[i]]
+                ys = np.asarray([registry.index(label_by_id[pid]) for pid in tids], dtype=np.int64)
+                tick = time.perf_counter()
+                state = fit_branch_local_ridge(**{key: value[train] for key, value in raw.items()},
+                    support_labels=ys, support_ids=tids, classes=registry, old_classes=old, arm='local_ridge')
+                top = state.audit_dict(); audit = top['final_fit']
+                audit.update(coords, state=name, training_physical_ids=tids, all_states_estimated_from_trainfold_only=True,
+                    held_physical_count=int(held.sum()), class_count=len(registry), learning_rate=None,
+                    learning_rate_reason='Closed-form baseline; no optimizer', source_validation=None,
+                    source_validation_reason='SOURCE_ACCESS_FORBIDDEN', score_seconds=0., persistent_state_bytes=top['persistent_state_bytes'])
+                ref = archive_callback(name)
+                audit['final_state_ref'] = None if ref is None else ref('baseline', dict(
+                    original_train_b=state.support_background, original_train_a=state.support_auxiliary,
+                    alpha=state.alpha, reference_kernel=state.reference_kernel,
+                    reference_self=np.asarray(state.reference_self), center_mean=state.center_mean,
+                    center_grand=np.asarray(state.center_grand),
+                    tau=np.asarray([] if state.bandwidth_tau is None else [state.bandwidth_tau], dtype=np.float64),
+                    gamma=np.asarray([] if state.trace_scale is None else [state.trace_scale], dtype=np.float64)))
+                entry['stages'].append(audit); result['baseline_head_fit_count'] += 1
+                result['baseline_factorization_count'] += audit['factorization_calls']
+                result['baseline_head_triangular_solve_count'] += 2*audit['factorization_calls']
+                result['baseline_effective_df_triangular_solve_count'] += audit['effective_degrees_of_freedom_extra_triangular_solves']
+                result['baseline_triangular_solve_count'] = result['baseline_head_triangular_solve_count']+result['baseline_effective_df_triangular_solve_count']
+                bases[name] = dict(state=state, train=train, held=held, registry=registry, labels=ys, ids=tids, scores=np.empty((0, len(registry))))
+                if held.any():
+                    score_start = time.perf_counter(); result['final_score_evaluation_count'] += 1
+                    result['final_score_physical_count'] += int(held.sum())
+                    bases[name]['scores'] = state.score(**{key: value[held] for key, value in raw.items()})
+                    audit['score_seconds'] = time.perf_counter()-score_start
+                audit['fit_and_score_seconds'] = time.perf_counter()-tick
+                if log_callback: log_callback(dict(event='BASE_FIT', **audit))
+            for prep_name, name, mode in (('B', 'B_CONDITIONAL', 'B'), ('C', 'C_CONDITIONAL_seq', 'C_seq')):
+                if prep_name == 'C' and reuse: candidates[name] = candidates['B_CONDITIONAL']; continue
+                base = bases[prep_name+'0']
+                prepared[prep_name] = prepare_conditional_joint_training(**{key: value[base['train']] for key, value in raw.items()},
+                    support_labels=base['labels'], support_ids=base['ids'], classes=base['registry'], old_classes=old,
+                    inherited=None if prep_name == 'B' else candidates['B_CONDITIONAL']['state'], context=dict(coords, stage=prep_name),
+                    log_callback=lambda row, current=prep_name: emit_event(row, current+'_prepare'),
+                    state_callback=archive_callback(prep_name+'_prepare'))
+>               prep = prepared[prep_name].audit_dict()
+E               AttributeError: 'ConditionalJointTraining' object has no attribute 'audit_dict'
+
+tools\evaluate_d92_conditional_joint_probe.py:365: AttributeError
+
+During handling of the above exception, another exception occurred:
+
+tmp_path = WindowsPath('E:/type10-7/.codex_tmp/pytest_temp_1790819571528214600/basetemp/test_forbidden_inputs_true_k1_0')
+
+    def test_forbidden_inputs_true_k1_and_failure_preservation(tmp_path):
+        for name in ('query_features','query_truth','query_roles','source_features','checkpoint','inherited','target_statistics'):
+            with pytest.raises(TypeError):entry.probe_conditional_joint(**synthetic(k=1),**{name:object()})
+>       result=entry.probe_conditional_joint(**synthetic(k=1,zero=True),context=scope())
+
+tests\test_evaluate_d92_conditional_joint_probe.py:143: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tools\evaluate_d92_conditional_joint_probe.py:413: in probe_conditional_joint
+    result['full_support'] = path(np.ones(len(ids), dtype=bool), 'support_full_k1', None)
+tools\evaluate_d92_conditional_joint_probe.py:405: in path
+    completed_preparations={name: value.audit_dict() for name, value in prepared.items()},
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+.0 = <dict_itemiterator object at 0x00000235667DB740>
+
+>   completed_preparations={name: value.audit_dict() for name, value in prepared.items()},
+    completed_candidate_states={name: value['state'].audit_dict() for name, value in candidates.items()},
+    completed_paths=completed, counters={key: result[key] for key in COUNTERS[4:]}))
+E   AttributeError: 'ConditionalJointTraining' object has no attribute 'audit_dict'
+
+tools\evaluate_d92_conditional_joint_probe.py:405: AttributeError
+=========================== short test summary info ===========================
+FAILED tests/test_evaluate_d92_conditional_joint_probe.py::test_actual_production_callback_archives_scope_schema_and_all_fields[True]
+FAILED tests/test_evaluate_d92_conditional_joint_probe.py::test_actual_production_callback_archives_scope_schema_and_all_fields[False]
+FAILED tests/test_evaluate_d92_conditional_joint_probe.py::test_actual_B_object_passed_and_other_row_replacement_rejected
+FAILED tests/test_evaluate_d92_conditional_joint_probe.py::test_actual_trained_production_events_and_numeric_refs
+FAILED tests/test_evaluate_d92_conditional_joint_probe.py::test_support_truth_join_occurs_after_fixed_all_class_scores
+FAILED tests/test_evaluate_d92_conditional_joint_probe.py::test_forbidden_inputs_true_k1_and_failure_preservation
+6 failed, 13 passed in 2.03s

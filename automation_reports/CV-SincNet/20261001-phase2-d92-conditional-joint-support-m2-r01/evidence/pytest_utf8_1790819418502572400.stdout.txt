@@ -1,0 +1,163 @@
+............FF....                                                       [100%]
+================================== FAILURES ===================================
+___________________ test_class_row_permutation_and_q_gauge ____________________
+
+sequence = (ConditionalJointTraining(raw=mappingproxy({'z_id': array([[-1.04584314e+00, -7.70188672e-01, -1.88282956e+00,
+       ...e-01,  7.58333735e-01,
+         5.59919116e-01,  8.14839717e-01,  1.91585674e+00]]), 'old_classes': ('c0', 'c1'), ...})
+
+    def test_class_row_permutation_and_q_gauge(sequence):
+        _,_,p,_,_,_=sequence;Z=np.full((736,p.r),.0001)
+        altered=replace(p,problems=tuple(replace(pr,q=np.ones(len(pr.train_labels))/len(pr.train_labels)) for pr in p.problems))
+>       one=cj.evaluate_conditional_joint_objective(p,Z);two=cj.evaluate_conditional_joint_objective(altered,Z)
+
+tests\test_d92_conditional_joint_local_ridge.py:226: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+code\cvsrffi\d92_conditional_joint_local_ridge.py:538: in evaluate_conditional_joint_objective
+    for p in prepared.problems:partial.append(_forward(p,U))
+code\cvsrffi\d92_conditional_joint_local_ridge.py:304: in _forward
+    try:return _forward_impl(p,U,audit)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+p = ConditionalJointProblem(train_context=mappingproxy({'original': array([[-0.00395552,  0.02261864,  0.00760302, ...,  0... 'nbytes': 8})})}), 'prior_source': 'FROZEN_CURRENT_ACTUAL_B', 'all_head_statistics_from_old_inner_train_only': True}))
+U = array([[-0.19939708,  0.0484787 , -0.07030697, ..., -0.23447593,
+         0.10457349,  0.1988316 ],
+       [ 0.4801914...],
+       [-1.18031209, -0.92434882,  0.14604979, ..., -0.11303236,
+         0.09577099,  1.12015462]], shape=(736, 8))
+progress = {'accepted_trial_count': 0, 'actual_kernel_trace': 7.646275644756627, 'adapter_physical_evaluation_count': 9, 'ajlr_forward_evaluation_count': 1, ...}
+
+    def _forward_impl(p,U,progress=None):
+        start=time.perf_counter();audit={} if progress is None else progress
+        audit.update({key:0 for key in STAGE_COUNTERS});audit.update(_plain(p.audit),head_fit_count=1,factorization_count=0,
+            head_triangular_solve_count=0,intercept_fit_count=1,ajlr_forward_evaluation_count=1)
+        n=len(p.train_labels);h=len(p.held_labels);c=len(p.classes)
+        b,a,bc=fcr._adapt(p.train_context,U,derivative_cache=True);hb,ha,hc=fcr._adapt(p.held_context,U,derivative_cache=True)
+        audit['adapter_physical_evaluation_count']=n+h
+        identity=not np.any(U) or p.tau==0
+        if identity:distance,cross=p.d0,p.cross_d0
+        else:
+            distance=.5*p.d0+.5*local._distances(b,a);cross=.5*p.cross_d0+.5*local._distances(hb,ha,b,a)
+            m=len(p.old_indices)
+            audit.update(raw_distance_evaluation_count=1+int(h>0),raw_distance_pair_count=n*(n-1)//2+h*n,
+                reference_distance_evaluation_count=1+int(h>0),reference_distance_pair_count=m*(m-1)//2+m*(n-m)+h*m)
+        Y=np.eye(c)[np.asarray(p.train_labels,dtype=int)]-1/c;target=Y-p.M_train
+        radial=np.zeros((n,n));crossrad=np.zeros((h,n));numeric={};ks=None
+        if p.gamma is not None:
+            radial=local._radial(distance,p.tau);crossrad=local._radial(cross,p.tau)
+            audit.update(kernel_evaluation_count=1+int(h>0),kernel_pair_count=n*n+h*n)
+        if p.mode=='B':
+            K=np.zeros((n,n));L=np.zeros((h,n));ref=mean=np.zeros(n);rs=grand=0.
+            chol=np.empty((0,0));z=np.ones(n);s=float(n);rhs=np.column_stack((target,np.ones(n)))
+            intercept=target.mean(axis=0)
+            if p.gamma is None and not np.any(p.M_train) and np.all(np.bincount(p.train_labels,minlength=c)==n//c):intercept=np.zeros(c)
+            alpha=target-intercept
+            if p.gamma is not None:
+                center,ref,rs,mean,grand=affine._center_train(local._radial_minus_one(distance,p.tau),p.q)
+                K=p.gamma*center;L=p.gamma*affine._center_cross(local._radial_minus_one(cross,p.tau),p.q,ref,rs,mean,grand)
+                audit['factorization_count']=audit['residual_factorization_count']=1
+                alpha,intercept,z,s,chol,rhs=affine._solve_affine_head(K,target)
+                audit['completed_factorization_count']=1
+                for suffix,value in zip(_SUFFIXES[1:],(2,2*(c+1),2*n*(c+1),2*n*n*(c+1))):audit['residual_'+suffix]=value
+            train=p.M_train+K@alpha+intercept;scores=np.stack([p.M_held[i]+L[i]@alpha+intercept for i in range(h)]) if h else np.empty((0,c))
+            numeric=dict(K=K,L=L,alpha=alpha,intercept=intercept,schur_z=z,schur_s=_scalar(s),chol=chol,combined_rhs=rhs,
+                reference_kernel=ref,reference_self=_scalar(rs),center_mean=mean,center_grand=_scalar(grand))
+            normal=_norm((K+np.eye(n))@alpha+intercept-target)
+            denom=(1+float(np.trace(K)))*_norm(alpha)+np.sqrt(n)*_norm(intercept)+_norm(target)
+            residual=normal/denom if denom else 0.;tol=128*_EPS*max(n,c)
+            if residual>tol or _norm(alpha.sum(axis=0))>tol*max(1.,np.sqrt(n)*_norm(alpha)):
+                raise FloatingPointError('CONDITIONAL_JOINT_B_AFFINE_RESIDUAL')
+            audit.update(normal_equation_residual=residual,normal_equation_absolute_residual=normal,
+                sample_sum_alpha_norm=_norm(alpha.sum(axis=0)),schur_s=s,intercept_norm=_norm(intercept),actual_kernel_trace=float(np.trace(K)),
+                head_training_loss_data=float(.5*np.sum((train-Y)**2)),head_training_loss_ridge=float(.5*np.sum(alpha*(K@alpha))))
+            representatives=p.old_indices.copy();groups=np.arange(len(representatives),dtype=np.int64)
+        else:
+            if not len(p.new_indices):raise ValueError('new0 must reuse actual B before forward')
+            representatives,groups=_representatives(p,b,a,radial,crossrad)
+            oi=representatives;ni=p.new_indices
+            if p.gamma is None:
+                train=p.M_train.copy();scores=p.M_held.copy()
+                numeric=dict(alpha=np.zeros((len(ni),c)),beta=np.zeros((len(oi),c)),v=np.zeros(c),
+                    K_perp=np.zeros((len(ni),len(ni))),L_perp=np.zeros((h,len(ni))),old_residual=np.zeros((len(oi),c)))
+                audit.update(status='ZERO_KERNEL_CONSTRAINT_FORCES_ZERO_RESIDUAL',actual_kernel_trace=0.,constraint_max_abs=0.)
+            else:
+                raw=p.gamma*radial;rc=p.gamma*crossrad
+                blocks=dict(A=raw[np.ix_(oi,oi)],B=raw[np.ix_(oi,ni)],D=raw[np.ix_(ni,ni)],F=rc[:,oi],E=rc[:,ni])
+                head_start=time.perf_counter()
+                try:
+                    ks=conditional.fit_conditional_affine(**blocks,M_O=p.M_train[oi],M_N=p.M_train[ni],M_H=p.M_held,R_N=target[ni])
+                except conditional.NumericalFailure as exc:
+                    audit.update(kernel_failure_audit=dict(exc.audit));_add(audit,exc.audit,_KERNEL_COUNTERS)
+                    audit['factorization_count']=exc.audit.get('factorization_count',0)
+                    exc.joint_failed_head_arrays=dict(blocks,Y=Y,residual_target=target,M_train=p.M_train,M_held=p.M_held,
+                        train_labels=p.train_labels,held_labels=p.held_labels,old_indices=oi,new_indices=ni,
+                        original_train=p.train_context['original'],adapted_train=np.column_stack((b,a)),
+                        original_held=p.held_context['original'],adapted_held=np.column_stack((hb,ha)),
+                        distance=distance,cross_distance=cross,raw_train=radial,raw_cross=crossrad,tau=_scalar(p.tau),gamma=_scalar(p.gamma))
+                    raise
+                audit['conditional_head_seconds']=time.perf_counter()-head_start
+                numeric=dict(ks.arrays);_add(audit,ks.audit,_KERNEL_COUNTERS)
+                audit['factorization_count']=ks.audit['factorization_count'];audit['conditional_kernel_audit']=dict(ks.audit)
+                train=np.stack([ks.expansion.score(k_old=raw[i:i+1,oi],k_new=raw[i:i+1,ni],M=p.M_train[i:i+1])[0] for i in range(n)])
+                scores=ks.arrays['held_scores'].copy()
+                audit.update(normal_equation_residual=ks.audit['ridge_solve_residual'],actual_kernel_trace=float(np.trace(numeric['K_perp'])),
+                    constraint_max_abs=float(np.max(np.abs(train[p.old_indices]-p.M_train[p.old_indices]))),
+                    head_training_loss_data=float(.5*np.sum((train-Y)**2)),
+                    head_training_loss_ridge=float(.5*np.sum(numeric['alpha']*(numeric['K_perp']@numeric['alpha']))))
+        for suffix in _SUFFIXES[1:]:audit['head_'+suffix]=audit['projection_'+suffix]+audit['residual_'+suffix]
+        audit['intercept_addition_count']=(n+h)*c
+        classerr=max(affine._sum_class_error(x) for x in (Y,target,train,scores))
+        tol=128*_EPS*max(n,c);bound=tol*max(1.,_norm(train),_norm(scores))
+        if classerr>bound:raise FloatingPointError('CONDITIONAL_JOINT_CLASS_SUM_RESIDUAL')
+        if p.mode=='C_seq' and audit['constraint_max_abs']>tol*max(1.,_norm(train),_norm(p.M_train)):
+            raise FloatingPointError('CONDITIONAL_JOINT_OLD_CONSTRAINT_RESIDUAL')
+        angles=[];normerr=0.
+        for ctx,ac in ((p.train_context,bc),(p.held_context,hc)):
+            for j,sl in enumerate(fcr._SLICES):
+                valid=ctx['rho'][:,j]>0
+                chord=np.linalg.norm(ac['y'][valid,sl]-ctx['w'][valid,sl],axis=1)
+                angles.extend((2*np.arcsin(np.minimum(1.,chord/2))).tolist())
+                if np.any(valid):normerr=max(normerr,float(np.max(np.abs(np.linalg.norm(ac['y'][valid,sl],axis=1)-1))))
+        reference_error=_norm(p.q@(train-p.M_train)-(numeric['intercept'] if p.mode=='B' else 0.))
+        audit.update(class_sum_max_abs=classerr,class_sum_tolerance=bound,old_physical_constraint_count=len(p.old_indices),
+            old_projection_representative_count=len(representatives),duplicate_old_constraint_count=len(p.old_indices)-len(representatives),
+            old_reference_residual_mean_norm=reference_error,fitted_old_reference_mean=_plain(p.q@train),
+            expected_old_reference_mean=_plain(p.q@p.M_train+(numeric['intercept'] if p.mode=='B' else 0.)),
+            block_angle_radians=fcr._statistics(angles),block_unit_norm_max_error=normerr,
+            condition_bound=1+audit['actual_kernel_trace'],gram_min_eigenvalue_lower_bound=1.,
+            analytic_intercept_parameter_count=c,analytic_intercept_contrast_count=c-1,
+            identity_forward=identity,forward_seconds=time.perf_counter()-start)
+        if reference_error>tol*max(1.,_norm(train),_norm(p.M_train)):
+>           raise FloatingPointError('CONDITIONAL_JOINT_REFERENCE_RESIDUAL_MEAN')
+E           FloatingPointError: CONDITIONAL_JOINT_REFERENCE_RESIDUAL_MEAN
+
+code\cvsrffi\d92_conditional_joint_local_ridge.py:292: FloatingPointError
+__________ test_real_numeric_callback_archive_shapes_refs_and_prior ___________
+
+sequence = (ConditionalJointTraining(raw=mappingproxy({'z_id': array([[-1.04584314e+00, -7.70188672e-01, -1.88282956e+00,
+       ...e-01,  7.58333735e-01,
+         5.59919116e-01,  8.14839717e-01,  1.91585674e+00]]), 'old_classes': ('c0', 'c1'), ...})
+tmp_path = WindowsPath('E:/type10-7/.codex_tmp/pytest_temp_1790819409608400700/basetemp/test_real_numeric_callback_arc0')
+
+    def test_real_numeric_callback_archive_shapes_refs_and_prior(sequence,tmp_path):
+        _,b,p,_,_,_=sequence;records={}
+        def save(key,arrays):
+            records[key]={name:np.array(value,copy=True) for name,value in arrays.items()}
+            np.savez(tmp_path/(key+'.npz'),**arrays)
+            return dict(storage='npz',path=str(tmp_path/(key+'.npz')))
+        # A K1-sized no-update stage still executes and archives its complete C head.
+        quiet=replace(p,problems=(),audit=dict(p.audit,no_information=True,no_information_reason='STATIC_CALLBACK_SYNTHETIC'))
+        state=cj.fit_conditional_joint_local_ridge(quiet,mode='C_seq',state_callback=save)
+        final=records['final'];json.dumps(state.audit_dict(),allow_nan=False)
+        assert final['s'].shape==() and final['train_labels'].dtype==np.int64
+        assert {'A','B','D','F','E','raw_A','raw_D','alpha','beta','v','prior_B_U','prior_old_class_indices'}<=final.keys()
+>       assert state.audit['final_state_ref']['arrays']['s']['shape']==[]
+E       assert () == []
+E         
+E         Use -v to get more diff
+
+tests\test_d92_conditional_joint_local_ridge.py:250: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_d92_conditional_joint_local_ridge.py::test_class_row_permutation_and_q_gauge
+FAILED tests/test_d92_conditional_joint_local_ridge.py::test_real_numeric_callback_archive_shapes_refs_and_prior
+2 failed, 16 passed in 6.62s

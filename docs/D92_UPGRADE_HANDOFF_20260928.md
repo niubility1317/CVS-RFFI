@@ -1,3 +1,9 @@
+## 最新状态：条件联合核心/入口验证，实验已预登记未启动（2026-10-01）
+
+VERIFIED：独立完整KKT证书63项及核心与5ENTRY联合37项合成检查通过，首次具体失败修复后通过且原日志保留。固定Phase1、合法support缓存4row/160parent已预登记，metadata-only preflight核实；独立summary/analyzer/report/collector在实现。未publish/launch，暂无真实性能结果；A/B−A仍N/A，目标ACTIVE。
+
+当前仅Affine独立analysis本地handle2931/远端PID501716/start5870553/source1acc83a保持活跃；最新metadata-only health有推进但无summary。AJLR已完成交付，禁止再poll/repeat60237；安装46271和本轮Conda测试均完成。Conditional新run=20261001-phase2-d92-conditional-joint-support-m2-r01，release d92_conditional_joint_support_20261001_r01 尚不存在；root唯一launch owner。summary/analyzer由conditional_math_certificate继续，report/collector由branch_local_entry继续；未冻结文件不进本提交。恢复先核实worker/分析状态，再整合验证完整链；禁止重复launch/analyze/snapshot/extract。本次恢复将front-door旧索引缺的10个Git已交付run补回，并保留已交付的ANALYZED记录，未读取指标或重新评分。
+
 ## 最新状态：条件核数学核心已验证，联合入口正在实现（2026-10-01）
 
 RELATED_DEVELOPMENT/SYNTHETIC_VERIFIED：正核条件Affine解析头及完整低秩伴随通过20项独立KKT/差分/反例测试；联合SFT上层仍在实现，尚未启动该方法实验、无性能结论。Ground-A原分类头通过43项合成回归，但真实head行绑定、factory/s/weight包未接入，A与B−A仍N/A。实际source_contract classes及dual/no-sat-adapter元数据已只读核实。Affine诊断传输16项检查通过，真实snapshot/extract未启动；当前健康analysis保持PID501716/start5870553/handle2931/源1acc83a，无summary，不修改release或重启。目标ACTIVE。

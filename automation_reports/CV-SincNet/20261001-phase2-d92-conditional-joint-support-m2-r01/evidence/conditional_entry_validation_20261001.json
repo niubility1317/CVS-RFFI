@@ -1,0 +1,60 @@
+{
+  "status": "SYNTHETIC_IMPLEMENTATION_AND_METADATA_VERIFIED_NOT_LAUNCHED",
+  "run_id": "20261001-phase2-d92-conditional-joint-support-m2-r01",
+  "source_files": [
+    "code/cvsrffi/d92_conditional_joint_local_ridge.py",
+    "tests/test_d92_conditional_joint_local_ridge.py",
+    "docs/D92_CONDITIONAL_JOINT_IMPLEMENTATION_20261001.md",
+    "tools/d92_conditional_analysis_math.py",
+    "tests/test_d92_conditional_analysis_math.py",
+    "docs/D92_CONDITIONAL_MATH_CERTIFICATE_20261001.md",
+    "docs/D92_CONDITIONAL_JOINT_ENTRY_20261001.md",
+    "tools/prepare_d92_conditional_joint_probe.py",
+    "tests/test_prepare_d92_conditional_joint_probe.py",
+    "tools/run_d92_conditional_joint_probe.py",
+    "tests/test_run_d92_conditional_joint_probe.py",
+    "tools/evaluate_d92_conditional_joint_probe.py",
+    "tests/test_evaluate_d92_conditional_joint_probe.py",
+    "tools/preflight_d92_conditional_joint_probe.py",
+    "tests/test_preflight_d92_conditional_joint_probe.py",
+    "tools/publish_d92_conditional_joint_probe.py",
+    "tests/test_publish_d92_conditional_joint_probe.py",
+    "configs/d92_conditional_joint_support_20261001.json",
+    "configs/d92_conditional_joint_support_rx3_20261001.json",
+    "configs/d92_conditional_joint_support_rx1_20261001.json"
+  ],
+  "checks": [
+    {
+      "component": "independent_full_KKT",
+      "passed": 63,
+      "seconds": 0.58,
+      "canonical_output": "E:\\type10-7\\.codex_tmp\\pytest_utf8_1790818786669069400"
+    },
+    {
+      "component": "conditional_core_and_five_entries",
+      "passed": 37,
+      "seconds": 16.48,
+      "canonical_output": "E:\\type10-7\\.codex_tmp\\pytest_utf8_1790819674350570000"
+    }
+  ],
+  "metadata_preflight": "metadata_preflight_20261001_r01.json",
+  "complete_analysis_and_reporting_status": "IN_PROGRESS",
+  "new_experiment_launched": false,
+  "actual_A_measured": false,
+  "actual_A_or_B_minus_A": null,
+  "query_or_source_samples_read": false,
+  "performance_result": false,
+  "preparation_parent_commit": "6945035036b05d833dc4c75b633a9500fe6159cf",
+  "failures_preserved": [
+    "pytest_utf8_1790819418502572400",
+    "pytest_utf8_1790819575833823300"
+  ],
+  "index_reconciliation": {
+    "action": "Preserved committed D92 entries and reconciled stale front-door list",
+    "restored_committed_entries": 10,
+    "stale_front_door_status_run": [
+      "20260929-phase2-d92-branch-local-margin-support-m4-r01"
+    ],
+    "prior_status_source": "Committed worktree index and prior delivered artifacts; no history rescoring"
+  }
+}
