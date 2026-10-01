@@ -1,6 +1,6 @@
 # 实验总索引
 
-更新：2026-10-01T12:43:22+00:00
+更新：2026-10-01T13:04:35+00:00
 
 先按方法/问题检索，再用run ID读取精确配置与证据。历史组数量不等于独立实验数量。
 
@@ -105,7 +105,7 @@
 |CVS性能优先继续优化：balanced_fusion clean测试报告|managed_run|[打开](../automation_reports/CV-SincNet/20261001-phase1-cvs-balanced-clean-manysig-m24-r01/report.md)|
 |CVS继续研发：分支平衡融合与有符号PA投影|managed_run|[打开](../automation_reports/CV-SincNet/20261001-phase1-cvs-balanced-identity-manysig-m8-r01/report.md)|
 |CVS 无增强轻量架构与常见网络基准|managed_run|[打开](../automation_reports/CV-SincNet/20261001-phase1-cvs-clean-architecture-manysig-m32-r01/report.md)|
-|性能优先连续复相关 CVS：clean 确认实验|managed_run|[打开](../automation_reports/CV-SincNet/20261001-phase1-cvs-coherence-clean-manysig-m24-r01/report.md)|
+|CVS性能优先继续优化：coherence_phase clean测试报告|managed_run|[打开](../automation_reports/CV-SincNet/20261001-phase1-cvs-coherence-clean-manysig-m24-r01/report.md)|
 |CVS 连续复相关身份表征|managed_run|[打开](../automation_reports/CV-SincNet/20261001-phase1-cvs-coherence-identity-manysig-m8-r01/report.md)|
 |CVS身份骨干交叉熵对照实验|managed_run|[打开](../automation_reports/CV-SincNet/20261001-phase1-cvs-identity-ce-practical-manysig-m5-r01/report.md)|
 |CVS身份骨干交叉熵对照实验|managed_run|[打开](../automation_reports/CV-SincNet/20261001-phase1-cvs-identity-ce-practical-manysig-m5-r02/report.md)|
