@@ -1,6 +1,6 @@
 # CVS 无增强轻量架构与常见网络基准
 
-run_id：`20261001-phase1-cvs-clean-architecture-manysig-m32-r01`。当前状态：RUNNING（独立读回 VERIFIED）；源训练已启动，无本批 clean 测试结果。
+run_id：`20261001-phase1-cvs-clean-architecture-manysig-m32-r01`。当前状态：SOURCE_TRAINING_COMPLETE_AWAITING_SOURCE_REVIEW（独立读回 VERIFIED）；32 行源训练完成，无本批 clean 测试结果。
 
 ## 目的与公平对照
 
@@ -50,3 +50,22 @@ run_id：`20261001-phase1-cvs-clean-architecture-manysig-m32-r01`。当前状态
 本次读回：{'RUNNING': 16, 'QUEUED': 16}。已核实有效配置的行：native-s2026092701, orthogonal_pa-s2026092701, moment_pool-s2026092701, orthogonal_moment-s2026092701, shared_complex-s2026092701, cvcnn-s2026092701, real_cnn-s2026092701, resnet1d-s2026092701, native-s2026092702, orthogonal_pa-s2026092702, moment_pool-s2026092702, orthogonal_moment-s2026092702, shared_complex-s2026092702, cvcnn-s2026092702, real_cnn-s2026092702, resnet1d-s2026092702；实际无增强、无域骨干、无额外损失、target_access=false，6300/56700/27000 源角色计数和每轮 50 步吻合。硬件 RTX 3090，Torch 2.1.0+cu121。当前逐轮进度与 PID/GPU 见 [独立读回](evidence/source_launch_readback.json)。
 
 源训练继续按既有队列执行。下一步只读监控所属 run，完成后核实 E200 checkpoint、完整日志、资源测量与源选择；随后为冻结的五个网络做 clean 测试。尚无新测试准确率，不能宣称任何架构提升。
+
+## 32 行源训练完成
+
+所有行实际完成 E200、10000 次优化，生成 checkpoint、completion 和 GPU resource_profile。独立读回未发现失败行，target_evaluated=false。以下全部是源 V 结果，不能当作 clean 目标测试成绩。
+
+| 架构 | 四 seed 源 V 均值 | 最差源 RX 均值 | 总参数／有效 CE 参数 | MAC/样本 |
+|---|---:|---:|---:|---:|
+| native | 97.931% | 94.134% | 382146/317665 | 9862436 |
+| orthogonal_pa | 97.898% | 93.986% | 382146/317665 | 9862436 |
+| moment_pool | 97.976% | 94.269% | 382338/317857 | 9862436 |
+| orthogonal_moment | 97.892% | 94.032% | 382338/317857 | 9862436 |
+| shared_complex | 94.883% | 86.991% | 168682/168682 | 3119232 |
+| cvcnn | 98.302% | 95.657% | 104646/104646 | 11797248 |
+| real_cnn | 98.386% | 96.056% | 174726/174726 | 11797248 |
+| resnet1d | 98.127% | 95.537% | 167814/167814 | 7955008 |
+
+本矩阵独立源选择为 `orthogonal_pa`。原选择产物保留；用户已追加先研发 CVS，后续将与新残差融合的两候选联合六候选，在任何当前 clean 预测前形成最终冻结结果。当前不据目标成绩更换架构或 seed。
+
+GPU profile 均实际完成；并发环境下平均时间为观察值，不当成隔离资源的速度比。完整逐行资源与完成记录见 [source_complete_readback.json](evidence/source_complete_readback.json)，摘要见 [source_complete_summary.json](evidence/source_complete_summary.json)。原矩阵不再有运行 source 子进程，产物保留；新 CVS-only 8 行继续独立训练。

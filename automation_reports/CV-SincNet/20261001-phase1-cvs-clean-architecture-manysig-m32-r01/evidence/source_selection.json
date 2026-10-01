@@ -1,0 +1,73 @@
+{
+  "status": "SOURCE_SELECTION_FROZEN",
+  "selected_variant": "orthogonal_pa",
+  "source_summaries": {
+    "native": {
+      "score": 0.960324074074074,
+      "source_accuracy": 0.9793055555555555,
+      "worst_rx_accuracy": 0.9413425925925926,
+      "parameters": 382146,
+      "conv_linear_macs": 9862436
+    },
+    "orthogonal_pa": {
+      "score": 0.9594212962962962,
+      "source_accuracy": 0.9789814814814815,
+      "worst_rx_accuracy": 0.9398611111111111,
+      "parameters": 382146,
+      "conv_linear_macs": 9862436
+    },
+    "moment_pool": {
+      "score": 0.9612222222222222,
+      "source_accuracy": 0.9797592592592592,
+      "worst_rx_accuracy": 0.9426851851851852,
+      "parameters": 382338,
+      "conv_linear_macs": 9862436
+    },
+    "orthogonal_moment": {
+      "score": 0.9596203703703703,
+      "source_accuracy": 0.9789166666666667,
+      "worst_rx_accuracy": 0.940324074074074,
+      "parameters": 382338,
+      "conv_linear_macs": 9862436
+    },
+    "shared_complex": {
+      "score": 0.9093703703703704,
+      "source_accuracy": 0.9488333333333333,
+      "worst_rx_accuracy": 0.8699074074074074,
+      "parameters": 168682,
+      "conv_linear_macs": 3119232
+    },
+    "cvcnn": {
+      "score": 0.9697962962962963,
+      "source_accuracy": 0.9830185185185185,
+      "worst_rx_accuracy": 0.9565740740740741,
+      "parameters": 104646,
+      "conv_linear_macs": 11797248
+    },
+    "real_cnn": {
+      "score": 0.9722083333333333,
+      "source_accuracy": 0.9838611111111111,
+      "worst_rx_accuracy": 0.9605555555555556,
+      "parameters": 174726,
+      "conv_linear_macs": 11797248
+    },
+    "resnet1d": {
+      "score": 0.9683194444444445,
+      "source_accuracy": 0.9812685185185185,
+      "worst_rx_accuracy": 0.9553703703703703,
+      "parameters": 167814,
+      "conv_linear_macs": 7955008
+    }
+  },
+  "selection_rule": "four-seed mean of 0.5 source-V accuracy + 0.5 worst-source-RX accuracy; within0.2pp tie lower conv/linear MACs then parameters",
+  "target_access": false,
+  "target_score_used": false,
+  "test_variants": [
+    "native",
+    "cvcnn",
+    "real_cnn",
+    "resnet1d",
+    "orthogonal_pa"
+  ],
+  "test_view": "clean"
+}

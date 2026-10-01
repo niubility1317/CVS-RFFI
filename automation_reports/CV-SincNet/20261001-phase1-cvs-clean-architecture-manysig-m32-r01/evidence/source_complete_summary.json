@@ -1,0 +1,80 @@
+{
+  "status": "VERIFIED",
+  "rows": 32,
+  "source_only": true,
+  "clean_results": null,
+  "summary": {
+    "native": {
+      "source_v_mean": 0.9793055555555555,
+      "worst_rx_mean": 0.9413425925925926,
+      "parameters": 382146,
+      "active_ce_parameters": 317665,
+      "macs": 9862436,
+      "gpu_training_ms_mean": 29.198285000165924,
+      "gpu_inference1_ms_mean": 4.955293462444388
+    },
+    "orthogonal_pa": {
+      "source_v_mean": 0.9789814814814815,
+      "worst_rx_mean": 0.9398611111111111,
+      "parameters": 382146,
+      "active_ce_parameters": 317665,
+      "macs": 9862436,
+      "gpu_training_ms_mean": 24.10910340004193,
+      "gpu_inference1_ms_mean": 5.197491425133194
+    },
+    "moment_pool": {
+      "source_v_mean": 0.9797592592592592,
+      "worst_rx_mean": 0.9426851851851852,
+      "parameters": 382338,
+      "active_ce_parameters": 317857,
+      "macs": 9862436,
+      "gpu_training_ms_mean": 32.65273284960131,
+      "gpu_inference1_ms_mean": 5.231221162466682
+    },
+    "orthogonal_moment": {
+      "source_v_mean": 0.9789166666666667,
+      "worst_rx_mean": 0.940324074074074,
+      "parameters": 382338,
+      "active_ce_parameters": 317857,
+      "macs": 9862436,
+      "gpu_training_ms_mean": 25.89202107519668,
+      "gpu_inference1_ms_mean": 5.423207524836471
+    },
+    "shared_complex": {
+      "source_v_mean": 0.9488333333333333,
+      "worst_rx_mean": 0.8699074074074074,
+      "parameters": 168682,
+      "active_ce_parameters": 168682,
+      "macs": 3119232,
+      "gpu_training_ms_mean": 22.775143099715933,
+      "gpu_inference1_ms_mean": 2.819935312436428
+    },
+    "cvcnn": {
+      "source_v_mean": 0.9830185185185185,
+      "worst_rx_mean": 0.9565740740740741,
+      "parameters": 104646,
+      "active_ce_parameters": 104646,
+      "macs": 11797248,
+      "gpu_training_ms_mean": 7.644789699770627,
+      "gpu_inference1_ms_mean": 0.999427112765261
+    },
+    "real_cnn": {
+      "source_v_mean": 0.9838611111111111,
+      "worst_rx_mean": 0.9605555555555556,
+      "parameters": 174726,
+      "active_ce_parameters": 174726,
+      "macs": 11797248,
+      "gpu_training_ms_mean": 3.3542088745889487,
+      "gpu_inference1_ms_mean": 0.4489316625040374
+    },
+    "resnet1d": {
+      "source_v_mean": 0.9812685185185185,
+      "worst_rx_mean": 0.9553703703703703,
+      "parameters": 167814,
+      "active_ce_parameters": 167814,
+      "macs": 7955008,
+      "gpu_training_ms_mean": 12.285083724418655,
+      "gpu_inference1_ms_mean": 1.451619137515081
+    }
+  }
+}
