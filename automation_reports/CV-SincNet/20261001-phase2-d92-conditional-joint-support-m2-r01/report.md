@@ -3,7 +3,7 @@
 - run_id：`20261001-phase2-d92-conditional-joint-support-m2-r01`
 - group_id：`d92-conditional-joint-support`；类别：`diagnostic`；阶段：`Phase2-support-only-diagnostic`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：RUNNING；独立读回时间：2026-10-01T02:27:27+00:00。训练release固定为`7204161b126a9d3a17096aee5c75bce8ccfee6ec`。
 
 ## 目的与对照
 
@@ -31,3 +31,7 @@
 VERIFIED：独立完整KKT证书63项及核心与5ENTRY联合37项合成检查通过；C q-gauge审计、JSON标量口径和Training.audit_dict ABI缺口已修，原失败保留。固定Phase1、合法support缓存的4row/160parent声明已预登记，只读元数据preflight核实缓存/来源/输出未占用，不读取query或源样本。新方法独立summary/analyzer/report/collector仍在实现；没有publish/launch或真实性能结果。A与B−A仍N/A，R0不得替代A；理想目标为soft，目标ACTIVE。
 
 VERIFIED：新Conditional独立summary/analyzer31项、完整报告/训练诊断18项和隔离白名单bundle4项检查通过。真实合成训练trace在禁candidate数学/score条件下独立重建通过；首轮归一化original几何和namespace问题已修、原失败保留。唯一独立P1发布传递依赖已补齐并回归验证，未发现P0。实际4row/160parent/1800path支持集实验保持预登记，尚未publish/launch；真实性能/A及B−A仍N/A。只root可启动，新方法不修改健康Affineanalysis，目标ACTIVE。
+
+RUNNING/VERIFIED：ConditionalJoint已唯一发布启动，实际训练release为7204161b126a9d3a17096aee5c75bce8ccfee6ec。独立读回核实supervisor578658/start6923770和rx3 workers578671/578672/start6923795的PID、argv、CWD及输入身份；两个rx3训练、两个rx1排队，CPU2lane/BLAS2，不使用GPU、不加载checkpoint、query/源样本0。完整独立summary31、report/collector18、隔离bundle4及核心/ENTRY37、完整KKT63检查已通过。记录中的旧Affine展示字段已按实际Conditional命令与probe预算更正，冻结launch spec及健康进程不变。尚无真实性能，A及B−A仍N/A，旧support恒等式不保证query零遗忘，目标ACTIVE。
+
+当前只做support信息诊断：4个model/cohort row、160个parent、1800条物理顺序路径；旧类6，K=1/5/10/20，新增类0/2/5/10/20，每cohort两个预声明receiver/scenario组合。本轮尚未执行query评估，当前不存在新的最终准确率。完整结束后只对已有产物进行一次独立分析，报告完整矩阵、B/C旧新准确率、H、旧类下降及资源；A需要真实地面classifier包及行映射绑定，不能用R0补齐。

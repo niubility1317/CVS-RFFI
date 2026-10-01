@@ -1,10 +1,10 @@
 # D92：Affine 之后的联合 LocalRidge 数学设计
 
-状态：`DESIGN_FROZEN / CORE_ENTRY_SYNTHETIC_VERIFIED / FULL_ANALYSIS_IN_PROGRESS / PREREGISTERED_NOT_LAUNCHED`。日期：2026-10-01。
+状态：`DESIGN_FROZEN / COMPLETE_SYNTHETIC_PIPELINE_VERIFIED / REAL_SUPPORT_RUN_RUNNING`。日期：2026-10-01。
 
 本文推荐一条后续结构路线：**B 直接优化训练用 RMS CE；C 在解析 LocalRidge 头内部限制完整残差，使其在当前旧 support 上恒为零。** C 的约束覆盖全部注册列，包括新增类列。adapter 仍可更新，保护恒等式对每次当前 U 都成立。该路线保留解析头、实际 B 函数继承、固定旧尺度和现有有限更新预算，不引入 keep 权重、GEM 半空间、类别校准系数或参数网格。
 
-数学设计已落实为独立方法 `D92-ConditionalJointLocalRidge-v1`。root 已完成[正核解析头](D92_CONDITIONAL_AFFINE_KERNEL_IMPLEMENTATION_20261001.md) 20 项、[独立完整 KKT 证书](D92_CONDITIONAL_MATH_CERTIFICATE_20261001.md) 63 项、[联合 SFT 核心与运行入口](D92_CONDITIONAL_JOINT_IMPLEMENTATION_20261001.md) 37 项及[报告与训练诊断](D92_CONDITIONAL_JOINT_REPORTING_20261001.md) 18 项合成检查。实验 `20261001-phase2-d92-conditional-joint-support-m2-r01` 已按实际输入身份预登记，独立 summary/analyzer 尚在接入，未发布或启动，暂无真实准确率、星载资源或 query 零遗忘结论。它不修改正在运行的 Affine。下文的“精确”均指数学上的精确；浮点实现需要独立残差和容差核验。
+数学设计已落实为独立方法 `D92-ConditionalJointLocalRidge-v1`。root 已完成[正核解析头](D92_CONDITIONAL_AFFINE_KERNEL_IMPLEMENTATION_20261001.md) 20 项、[独立完整 KKT 证书](D92_CONDITIONAL_MATH_CERTIFICATE_20261001.md) 63 项、[联合 SFT 核心与运行入口](D92_CONDITIONAL_JOINT_IMPLEMENTATION_20261001.md) 37 项、[独立分析](D92_CONDITIONAL_JOINT_ANALYSIS_20261001.md) 31 项、[报告与训练诊断](D92_CONDITIONAL_JOINT_REPORTING_20261001.md) 18 项及隔离发布包 4 项合成检查。实验 `20261001-phase2-d92-conditional-joint-support-m2-r01` 已唯一启动；训练release为 `7204161b126a9d3a17096aee5c75bce8ccfee6ec`，supervisor 578658 与两个rx3 worker的PID/argv/CWD经独立读回核实。暂无完整真实准确率、星载资源或query零遗忘结论；A与B−A仍N/A。它不修改正在运行的Affine独立分析。下文的“精确”均指数学上的精确；浮点实现需要独立残差和容差核验。
 
 ## 1. 依据、权限与要解决的结构问题
 

@@ -1,0 +1,146 @@
+{
+  "status": "VERIFIED",
+  "observed_unix": 1790821647.3208802,
+  "run_id": "20261001-phase2-d92-conditional-joint-support-m2-r01",
+  "commit": "7204161b126a9d3a17096aee5c75bce8ccfee6ec",
+  "supervisor": {
+    "pid": 578658,
+    "exists": true,
+    "state": "S",
+    "start_ticks": 6923770,
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_conditional_joint_support_20261001_r01/tools/run_d92_conditional_joint_probe.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_conditional_joint_support_20261001_r01/configs/d92_conditional_joint_support_20261001.json",
+      "--commit",
+      "7204161b126a9d3a17096aee5c75bce8ccfee6ec"
+    ],
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_conditional_joint_support_20261001_r01"
+  },
+  "rows": [
+    {
+      "row_id": "rx3-cvs-daot-rc4-s2026092701",
+      "status": "TRAINING_ON_SUPPORT",
+      "pid": 578671,
+      "probe_startup_exists": true,
+      "probe_failure_exists": false,
+      "probe_complete_exists": false,
+      "log_bytes": 40563535,
+      "process": {
+        "pid": 578671,
+        "exists": true,
+        "state": "R",
+        "start_ticks": 6923795,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_conditional_joint_support_20261001_r01/tools/evaluate_d92_conditional_joint_probe.py",
+          "--support-features",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-support-probe-m4-r01/rx3-cvs-daot-rc4-s2026092701/feature_cache",
+          "--capsule",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule",
+          "--output",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-conditional-joint-support-m2-r01/rx3-cvs-daot-rc4-s2026092701/probe",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_conditional_joint_support_20261001_r01/configs/d92_conditional_joint_support_rx3_20261001.json",
+          "--expected-capsule-id",
+          "residual-noeq-76121e6f34363fa612ec25fb",
+          "--expected-checkpoint-sha256",
+          "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b",
+          "--expected-model-seed",
+          "2026092701",
+          "--run-id",
+          "20261001-phase2-d92-conditional-joint-support-m2-r01",
+          "--row-id",
+          "rx3-cvs-daot-rc4-s2026092701"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_conditional_joint_support_20261001_r01"
+      },
+      "startup_fields": {
+        "schema": "d92_conditional_joint_local_ridge_v1",
+        "method": "D92-ConditionalJointLocalRidge-v1",
+        "run_id": "20261001-phase2-d92-conditional-joint-support-m2-r01",
+        "row_id": "rx3-cvs-daot-rc4-s2026092701",
+        "query_rows_used": 0,
+        "source_rows_used": 0,
+        "checkpoint_loaded": false
+      }
+    },
+    {
+      "row_id": "rx3-cvs-daot-rc4-s2026092702",
+      "status": "TRAINING_ON_SUPPORT",
+      "pid": 578672,
+      "probe_startup_exists": true,
+      "probe_failure_exists": false,
+      "probe_complete_exists": false,
+      "log_bytes": 41311093,
+      "process": {
+        "pid": 578672,
+        "exists": true,
+        "state": "R",
+        "start_ticks": 6923795,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_conditional_joint_support_20261001_r01/tools/evaluate_d92_conditional_joint_probe.py",
+          "--support-features",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-support-probe-m4-r01/rx3-cvs-daot-rc4-s2026092702/feature_cache",
+          "--capsule",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule",
+          "--output",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-conditional-joint-support-m2-r01/rx3-cvs-daot-rc4-s2026092702/probe",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_conditional_joint_support_20261001_r01/configs/d92_conditional_joint_support_rx3_20261001.json",
+          "--expected-capsule-id",
+          "residual-noeq-76121e6f34363fa612ec25fb",
+          "--expected-checkpoint-sha256",
+          "72f26413e495dcf82317898f8729caa3d35499bf0b41e9671ffdceab2c90924b",
+          "--expected-model-seed",
+          "2026092702",
+          "--run-id",
+          "20261001-phase2-d92-conditional-joint-support-m2-r01",
+          "--row-id",
+          "rx3-cvs-daot-rc4-s2026092702"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_conditional_joint_support_20261001_r01"
+      },
+      "startup_fields": {
+        "schema": "d92_conditional_joint_local_ridge_v1",
+        "method": "D92-ConditionalJointLocalRidge-v1",
+        "run_id": "20261001-phase2-d92-conditional-joint-support-m2-r01",
+        "row_id": "rx3-cvs-daot-rc4-s2026092702",
+        "query_rows_used": 0,
+        "source_rows_used": 0,
+        "checkpoint_loaded": false
+      }
+    },
+    {
+      "row_id": "rx1-cvs-daot-rc4-s2026092701",
+      "status": "PENDING",
+      "pid": null,
+      "probe_startup_exists": false,
+      "probe_failure_exists": false,
+      "probe_complete_exists": false,
+      "log_bytes": null
+    },
+    {
+      "row_id": "rx1-cvs-daot-rc4-s2026092702",
+      "status": "PENDING",
+      "pid": null,
+      "probe_startup_exists": false,
+      "probe_failure_exists": false,
+      "probe_complete_exists": false,
+      "log_bytes": null
+    }
+  ],
+  "complete_exists": false,
+  "cpu_lanes": 2,
+  "blas_threads_per_lane": 2,
+  "query_access": false,
+  "source_sample_access": false,
+  "checkpoint_loaded": false,
+  "gpu_use": false,
+  "performance_read_or_printed": false
+}

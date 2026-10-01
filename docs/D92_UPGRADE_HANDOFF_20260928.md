@@ -1,3 +1,9 @@
+## 最新状态：条件联合support实验已唯一启动（2026-10-01）
+
+RUNNING/VERIFIED：ConditionalJoint已唯一发布启动，实际训练release为7204161b126a9d3a17096aee5c75bce8ccfee6ec。独立读回核实supervisor578658/start6923770和rx3 workers578671/578672/start6923795的PID、argv、CWD及输入身份；两个rx3训练、两个rx1排队，CPU2lane/BLAS2，不使用GPU、不加载checkpoint、query/源样本0。完整独立summary31、report/collector18、隔离bundle4及核心/ENTRY37、完整KKT63检查已通过。记录中的旧Affine展示字段已按实际Conditional命令与probe预算更正，冻结launch spec及健康进程不变。尚无真实性能，A及B−A仍N/A，旧support恒等式不保证query零遗忘，目标ACTIVE。
+
+run `20261001-phase2-d92-conditional-joint-support-m2-r01`；release `d92_conditional_joint_support_20261001_r01`；runtime `7204161b126a9d3a17096aee5c75bce8ccfee6ec`。supervisor578658/start6923770；两个rx3 worker578671/578672，两个rx1待调度；无本地运行handle。证据 `automation_reports/CV-SincNet/20261001-phase2-d92-conditional-joint-support-m2-r01/evidence/launch_readback_1790821708948902900.json`。恢复先查同一run的只读进程/marker，禁止再次publisher、停止、重启或热修改。完整160parent/1800path与marker/source/runtime核实后，才单次建立新独立analysis release并分析；目前没有Conditional analysis进程或成绩。旧Affine analysis仍仅handle2931/PID501716/start5870553/source1acc83a，最新health1790820688559687000证明推进且summary尚未出；不得重启。AJLR、所有Conda测试及依赖安装已结束，不再poll历史handle或重采AJLR snapshot。A仍缺真实地面head/scale/行映射。
+
 ## 最新状态：条件联合完整支持集链验证，准备唯一新launch（2026-10-01）
 
 VERIFIED：新Conditional独立summary/analyzer31项、完整报告/训练诊断18项和隔离白名单bundle4项检查通过。真实合成训练trace在禁candidate数学/score条件下独立重建通过；首轮归一化original几何和namespace问题已修、原失败保留。唯一独立P1发布传递依赖已补齐并回归验证，未发现P0。实际4row/160parent/1800path支持集实验保持预登记，尚未publish/launch；真实性能/A及B−A仍N/A。只root可启动，新方法不修改健康Affineanalysis，目标ACTIVE。
