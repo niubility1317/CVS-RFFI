@@ -1,0 +1,275 @@
+{
+  "scope": "SOURCE_ONLY_METADATA_FIELDS_NO_SAMPLES_TENSORS_OR_SCORES",
+  "metadata": [
+    {
+      "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701/source_contract.json",
+      "exists": true,
+      "fields": {
+        "/schema": "core90_game_source_roles_v1",
+        "/source_rxs": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "/source_days": [
+          1,
+          2,
+          3
+        ],
+        "/num_classes": 6,
+        "/domain_kind": "rx_day",
+        "/split_rule": "per_tx_rx_day_eq_contiguous_signal_index",
+        "/split_seed": 392005,
+        "/checkpoint_init": "scratch_only",
+        "/target_access_before_freeze": false,
+        "/classes": [
+          "14-10",
+          "14-7",
+          "20-15",
+          "20-19",
+          "6-15",
+          "8-20"
+        ]
+      },
+      "bytes": 3061378
+    },
+    {
+      "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701/initialization.json",
+      "exists": true,
+      "fields": {
+        "/scratch_only": true,
+        "/checkpoint_sources": [],
+        "/target_training_contact": false,
+        "/target_contact": false,
+        "/source_roles": "EXACT_MATCH",
+        "/ema_origin": "this_run_student"
+      },
+      "bytes": 239
+    },
+    {
+      "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701/startup.json",
+      "exists": true,
+      "fields": {
+        "/parsed_launcher_args/commit": "9b1ddd939fcabc74c77c94a62fef8e5aad07c0e9",
+        "/resolved_args/sat_anchor_adapter": false,
+        "/resolved_args/sat_anchor_adapter_rank": 8,
+        "/resolved_args/model_variant": "lite_d",
+        "/resolved_args/representation_mode": "dual",
+        "/resolved_args/id_feature_key": "feat_joint",
+        "/resolved_args/num_classes": 6,
+        "/commit": "9b1ddd939fcabc74c77c94a62fef8e5aad07c0e9",
+        "/torch_version": "2.1.0+cu121",
+        "/method_version": "DAOT_A1_FastTrust_RC4_original_residual_noeq",
+        "/checkpoint_sources": [],
+        "/selection": "final_epoch_200"
+      },
+      "bytes": 34516
+    },
+    {
+      "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701/resolved_config.json",
+      "exists": true,
+      "fields": {
+        "/sat_anchor_adapter": false,
+        "/sat_anchor_adapter_rank": 8,
+        "/model_variant": "lite_d",
+        "/representation_mode": "dual",
+        "/id_feature_key": "feat_joint",
+        "/num_classes": 6,
+        "/sat_protocol_manifest/schema": "phase1_satellite_train_eval_protocol_v1"
+      },
+      "bytes": 33128
+    },
+    {
+      "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701/phase1_training_completion_receipt.json",
+      "exists": true,
+      "fields": {
+        "/prototype_paths": {
+          "prototype_json_path": "",
+          "prototype_path": ""
+        },
+        "/resource_summary/schema": "cvs.phase1.resource_summary.v1",
+        "/schema": "cvs.phase1.training_completion_receipt.v1",
+        "/selected_checkpoint_sha256": "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b",
+        "/source_split_receipt/schema": "cvs.phase1.source_split_receipt.v1",
+        "/source_split_receipt/source_days": [
+          "1",
+          "2",
+          "3"
+        ]
+      },
+      "bytes": 3880
+    },
+    {
+      "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701/phase1_terminal_status.json",
+      "exists": true,
+      "fields": {
+        "/schema": "phase1_terminal_status_v2",
+        "/source_split_receipt/schema": "cvs.phase1.source_split_receipt.v1",
+        "/source_split_receipt/source_days": [
+          "1",
+          "2",
+          "3"
+        ],
+        "/selection_source": "training_final_only",
+        "/selected_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701/final_ssdg.pth",
+        "/selected_checkpoint_sha256": "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b",
+        "/heldout_eval/selection_source": "final_only",
+        "/satellite_protocol/schema": "phase1_satellite_train_eval_protocol_v1",
+        "/zid_leakage_probe/schema": "phase1_zid_source_train_to_val_leakage_probe_v1",
+        "/prototype_export": {
+          "status": "NOT_REQUESTED"
+        },
+        "/resource_summary/schema": "cvs.phase1.resource_summary.v1"
+      },
+      "bytes": 17546
+    },
+    {
+      "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701/completion.json",
+      "exists": true,
+      "fields": {
+        "/commit": "9b1ddd939fcabc74c77c94a62fef8e5aad07c0e9",
+        "/method_version": "DAOT_A1_FastTrust_RC4_original_residual_noeq"
+      },
+      "bytes": 279
+    },
+    {
+      "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092702/source_contract.json",
+      "exists": true,
+      "fields": {
+        "/schema": "core90_game_source_roles_v1",
+        "/source_rxs": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "/source_days": [
+          1,
+          2,
+          3
+        ],
+        "/num_classes": 6,
+        "/domain_kind": "rx_day",
+        "/split_rule": "per_tx_rx_day_eq_contiguous_signal_index",
+        "/split_seed": 392005,
+        "/checkpoint_init": "scratch_only",
+        "/target_access_before_freeze": false,
+        "/classes": [
+          "14-10",
+          "14-7",
+          "20-15",
+          "20-19",
+          "6-15",
+          "8-20"
+        ]
+      },
+      "bytes": 3061378
+    },
+    {
+      "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092702/initialization.json",
+      "exists": true,
+      "fields": {
+        "/scratch_only": true,
+        "/checkpoint_sources": [],
+        "/target_training_contact": false,
+        "/target_contact": false,
+        "/source_roles": "EXACT_MATCH",
+        "/ema_origin": "this_run_student"
+      },
+      "bytes": 239
+    },
+    {
+      "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092702/startup.json",
+      "exists": true,
+      "fields": {
+        "/parsed_launcher_args/commit": "9b1ddd939fcabc74c77c94a62fef8e5aad07c0e9",
+        "/resolved_args/sat_anchor_adapter": false,
+        "/resolved_args/sat_anchor_adapter_rank": 8,
+        "/resolved_args/model_variant": "lite_d",
+        "/resolved_args/representation_mode": "dual",
+        "/resolved_args/id_feature_key": "feat_joint",
+        "/resolved_args/num_classes": 6,
+        "/commit": "9b1ddd939fcabc74c77c94a62fef8e5aad07c0e9",
+        "/torch_version": "2.1.0+cu121",
+        "/method_version": "DAOT_A1_FastTrust_RC4_original_residual_noeq",
+        "/checkpoint_sources": [],
+        "/selection": "final_epoch_200"
+      },
+      "bytes": 34515
+    },
+    {
+      "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092702/resolved_config.json",
+      "exists": true,
+      "fields": {
+        "/sat_anchor_adapter": false,
+        "/sat_anchor_adapter_rank": 8,
+        "/model_variant": "lite_d",
+        "/representation_mode": "dual",
+        "/id_feature_key": "feat_joint",
+        "/num_classes": 6,
+        "/sat_protocol_manifest/schema": "phase1_satellite_train_eval_protocol_v1"
+      },
+      "bytes": 33128
+    },
+    {
+      "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092702/phase1_training_completion_receipt.json",
+      "exists": true,
+      "fields": {
+        "/prototype_paths": {
+          "prototype_json_path": "",
+          "prototype_path": ""
+        },
+        "/resource_summary/schema": "cvs.phase1.resource_summary.v1",
+        "/schema": "cvs.phase1.training_completion_receipt.v1",
+        "/selected_checkpoint_sha256": "72f26413e495dcf82317898f8729caa3d35499bf0b41e9671ffdceab2c90924b",
+        "/source_split_receipt/schema": "cvs.phase1.source_split_receipt.v1",
+        "/source_split_receipt/source_days": [
+          "1",
+          "2",
+          "3"
+        ]
+      },
+      "bytes": 3880
+    },
+    {
+      "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092702/phase1_terminal_status.json",
+      "exists": true,
+      "fields": {
+        "/schema": "phase1_terminal_status_v2",
+        "/source_split_receipt/schema": "cvs.phase1.source_split_receipt.v1",
+        "/source_split_receipt/source_days": [
+          "1",
+          "2",
+          "3"
+        ],
+        "/selection_source": "training_final_only",
+        "/selected_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092702/final_ssdg.pth",
+        "/selected_checkpoint_sha256": "72f26413e495dcf82317898f8729caa3d35499bf0b41e9671ffdceab2c90924b",
+        "/heldout_eval/selection_source": "final_only",
+        "/satellite_protocol/schema": "phase1_satellite_train_eval_protocol_v1",
+        "/zid_leakage_probe/schema": "phase1_zid_source_train_to_val_leakage_probe_v1",
+        "/prototype_export": {
+          "status": "NOT_REQUESTED"
+        },
+        "/resource_summary/schema": "cvs.phase1.resource_summary.v1"
+      },
+      "bytes": 17539
+    },
+    {
+      "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092702/completion.json",
+      "exists": true,
+      "fields": {
+        "/commit": "9b1ddd939fcabc74c77c94a62fef8e5aad07c0e9",
+        "/method_version": "DAOT_A1_FastTrust_RC4_original_residual_noeq"
+      },
+      "bytes": 279
+    }
+  ],
+  "query_read": false,
+  "source_samples_read": false,
+  "checkpoint_weights_loaded": false,
+  "data_or_state_mutation": false
+}

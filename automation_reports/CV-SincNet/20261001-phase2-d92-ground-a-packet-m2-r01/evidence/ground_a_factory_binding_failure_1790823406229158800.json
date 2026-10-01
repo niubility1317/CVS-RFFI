@@ -1,0 +1,10 @@
+{
+  "status": "FAILED_READ_ONLY_FACTORY_BINDING",
+  "remote_exit_code": 1,
+  "stdout": "",
+  "stderr": "Traceback (most recent call last):\n  File \"<stdin>\", line 27, in <module>\n  File \"<stdin>\", line 27, in <dictcomp>\nKeyError: 'arch_family'\n",
+  "checkpoint_loaded": false,
+  "source_sample_access": false,
+  "query_access": false,
+  "remote_mutations": 0
+}

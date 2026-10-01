@@ -1,0 +1,32 @@
+{
+  "status": "VERIFIED",
+  "scope": "SYNTHETIC_ONLY_NOT_REAL_PACKET_EXPORT_A_ACCURACY_OR_STAR_DEPLOYMENT",
+  "tests": [
+    {
+      "passed": 31,
+      "seconds": 2.82,
+      "scope": "packet exporter",
+      "evidence": "evidence/pytest_utf8_1790823054586420100.txt"
+    },
+    {
+      "passed": 71,
+      "seconds": 9.92,
+      "scope": "scorer plus original runner/publisher combined; runner final200 subsequently tightened",
+      "evidence": "evidence/pytest_utf8_1790824652745640300.txt"
+    },
+    {
+      "passed": 34,
+      "seconds": 4.35,
+      "scope": "final200 runner/publisher final revision",
+      "evidence": "evidence/pytest_utf8_1790824855596940700.txt"
+    }
+  ],
+  "retained_failure": "evidence/pytest_utf8_1790824322953885500.txt",
+  "failure_resolution": "Production ENTRY ABI aligned and truth/physical-ID phase tests corrected",
+  "independent_P0_P1": "Exporter no findings; source final200 and scorer production-context P1 corrected and directly rereviewed; no open finding",
+  "actual_packet_export": false,
+  "actual_A_evaluated": false,
+  "query_rows_read": 0,
+  "source_sample_rows_read": 0,
+  "source_feature_rows_read": 0
+}

@@ -1,0 +1,505 @@
+.............F....FFF..FF.F....F...F.F.F.                                [100%]
+================================== FAILURES ===================================
+_ test_truth_mismatch_preserves_fixed_predictions_and_does_not_overwrite[conditional] _
+
+production = {'binding': {'capsule_id': 'synthetic_capsule', 'checkpoint_sha256': 'ac3da62cf8578912e9590058285434900c5edd0f83a61c21...WindowsPath('E:/type10-7/.codex_tmp/pytest_temp_1790824312610149900/basetemp/ground_a_support0/conditional/lane'), ...}
+tmp_path = WindowsPath('E:/type10-7/.codex_tmp/pytest_temp_1790824312610149900/basetemp/test_truth_mismatch_preserves_0')
+
+    def test_truth_mismatch_preserves_fixed_predictions_and_does_not_overwrite(production, tmp_path):
+        cache = tmp_path / 'cache'; shutil.copytree(production['cache'], cache)
+        plan = scorer.read(cache / 'support_splits.json'); plan['splits'][0]['support_ids'][0] = 'missing_physical'
+        (cache / 'support_splits.json').write_text(json.dumps(plan), encoding='utf-8')
+        args = _args(production, tmp_path / 'supplement'); args['support_features'] = cache
+        with pytest.raises(ValueError): scorer.score_support(**args, fit_trace=production['lane'] / 'fit_trace.jsonl')
+>       assert (args['output'] / 'prediction_complete.json').is_file() and (args['output'] / 'scoring_failed.json').is_file()
+E       AssertionError: assert (False)
+E        +  where False = is_file()
+E        +    where is_file = (WindowsPath('E:/type10-7/.codex_tmp/pytest_temp_1790824312610149900/basetemp/test_truth_mismatch_preserves_0/supplement') / 'prediction_complete.json').is_file
+
+tests\test_score_d92_ground_a_support.py:231: AssertionError
+_ test_real_candidate_trace_pairing_original_ground_columns_and_no_old_summary[affine] _
+
+production = {'binding': {'capsule_id': 'synthetic_capsule', 'checkpoint_sha256': 'ac3da62cf8578912e9590058285434900c5edd0f83a61c21...ne': WindowsPath('E:/type10-7/.codex_tmp/pytest_temp_1790824312610149900/basetemp/ground_a_support1/affine/lane'), ...}
+tmp_path = WindowsPath('E:/type10-7/.codex_tmp/pytest_temp_1790824312610149900/basetemp/test_real_candidate_trace_pair1')
+
+    def test_real_candidate_trace_pairing_original_ground_columns_and_no_old_summary(production, tmp_path):
+        old_report = production['lane'] / 'synthetic_existing_report.md'
+        if not old_report.exists(): old_report.write_text('original unchanged', encoding='utf-8')
+        out = tmp_path / 'supplement'
+>       result = scorer.score_support(**_args(production, out), fit_trace=production['lane'] / 'fit_trace.jsonl')
+
+tests\test_score_d92_ground_a_support.py:112: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tools\score_d92_ground_a_support.py:512: in score_support
+    result = score_fixed_support(predictions=out, fit_trace=fit_trace, support_splits=Path(support_features) / 'support_splits.json')
+tools\score_d92_ground_a_support.py:469: in score_fixed_support
+    seen.add(sid); parents.append(_parent(record, splits[sid], truths, fixed, context))
+tools\score_d92_ground_a_support.py:406: in _parent
+    value = _path_predictions(entry, pids - held, held, classes, old, truths, context, k)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+entry = {'b_classes': ['g0', 'g1', 'g2', 'g3', 'g4', 'g5'], 'b_ids': ['physical_000', 'physical_002', 'physical_004', 'physica...cal_005', 'physical_007', 'physical_009', 'physical_011'], 'c_classes': ['g0', 'g1', 'g2', 'g3', 'g4', 'g5', ...], ...}
+train = {'physical_001', 'physical_003', 'physical_005', 'physical_007', 'physical_009', 'physical_011', ...}
+held = {'physical_000', 'physical_002', 'physical_004', 'physical_006', 'physical_008', 'physical_010', ...}
+classes = ['g0', 'g1', 'g2', 'g3', 'g4', 'g5', ...]
+old = ['g0', 'g1', 'g2', 'g3', 'g4', 'g5']
+truths = {'physical_000': 'g0', 'physical_001': 'g0', 'physical_002': 'g1', 'physical_003': 'g1', ...}
+context = {'binding': {'capsule_id': 'synthetic_capsule', 'checkpoint_sha256': 'ac3da62cf8578912e9590058285434900c5edd0f83a61c21...2e9590058285434900c5edd0f83a61c216993676d1032249a', 'episodes': 1, 'method': 'D92-AffineJointLocalRidge-v1', ...}, ...}
+parent_k = 2
+
+    def _path_predictions(entry, train, held, classes, old, truths, context, parent_k):
+        require(entry['parent_k'] == parent_k and entry['train_k'] == len(train) // len(classes)
+                and entry['held_k'] == len(held) // len(classes), 'Actual path physical K mismatch')
+        bt = sorted(pid for pid in train if truths[pid] in old); bh = sorted(pid for pid in held if truths[pid] in old)
+        require(entry['b_training_ids'] == bt and entry['c_training_ids'] == sorted(train) and entry['b_ids'] == bh and entry['c_ids'] == sorted(held),
+                'Actual B/C old-held physical pairing mismatch')
+        require(entry['b_classes'] == old and entry['c_classes'] == classes and entry['held_labels'] == {pid: truths[pid] for pid in held}, 'Actual trace ground/held truth mapping mismatch')
+>       require(entry['prediction_status'] == ('FIXED_BEFORE_SUPPORT_TRUTH_JOIN' if held else 'NO_HELD_PREDICTIONS'), 'Actual B/C predictions were not fixed')
+E       KeyError: 'prediction_status'
+
+tools\score_d92_ground_a_support.py:341: KeyError
+_____ test_scores_are_persisted_before_any_truth_or_trace_access[affine] ______
+
+production = {'binding': {'capsule_id': 'synthetic_capsule', 'checkpoint_sha256': 'ac3da62cf8578912e9590058285434900c5edd0f83a61c21...ne': WindowsPath('E:/type10-7/.codex_tmp/pytest_temp_1790824312610149900/basetemp/ground_a_support1/affine/lane'), ...}
+tmp_path = WindowsPath('E:/type10-7/.codex_tmp/pytest_temp_1790824312610149900/basetemp/test_scores_are_persisted_befo1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000224742BCEB0>
+
+    def test_scores_are_persisted_before_any_truth_or_trace_access(production, tmp_path, monkeypatch):
+        out = tmp_path / 'guarded'
+        original_open = Path.open
+        def guarded_open(path, *args, **kwargs):
+            if path.name == 'fit_trace.jsonl':
+                assert (out / 'prediction_complete.json').is_file(), 'Truth was read before scores were persisted'
+            return original_open(path, *args, **kwargs)
+        original_read = scorer.read
+        class MetadataOnlySplit(dict):
+            def __getitem__(self, key):
+                if key in ('support_labels', 'support_indices'):
+                    assert (out / 'prediction_complete.json').is_file(), 'Manifest truth was indexed while selecting model inputs'
+                return super().__getitem__(key)
+        def guarded_read(path):
+            value = original_read(path)
+            if Path(path).name == 'support_splits.json' and not (out / 'prediction_complete.json').exists():
+                value['splits'] = [MetadataOnlySplit(split) for split in value['splits']]
+            return value
+        with np.load(production['cache'] / scorer.CACHE_NAME, allow_pickle=False) as archive: archive_class = type(archive)
+        original_getitem = archive_class.__getitem__
+        def guarded_getitem(archive, key):
+            if key in ('labels', 'indices'):
+                assert (out / 'prediction_complete.json').is_file(), 'Cache truth was read during model inference'
+            return original_getitem(archive, key)
+        original_score = GroundClassifierA.score; calls = []
+        def single_record(head, *, z_id, feature_contract):
+            assert tuple(z_id.shape) == (1, 160) and z_id.dtype == torch.float32
+            calls.append(z_id.tolist()); return original_score(head, z_id=z_id, feature_contract=feature_contract)
+        monkeypatch.setattr(Path, 'open', guarded_open); monkeypatch.setattr(archive_class, '__getitem__', guarded_getitem)
+        monkeypatch.setattr(scorer, 'read', guarded_read)
+        monkeypatch.setattr(GroundClassifierA, 'score', single_record)
+>       scorer.score_support(**_args(production, out), fit_trace=production['lane'] / 'fit_trace.jsonl')
+
+tests\test_score_d92_ground_a_support.py:158: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tools\score_d92_ground_a_support.py:512: in score_support
+    result = score_fixed_support(predictions=out, fit_trace=fit_trace, support_splits=Path(support_features) / 'support_splits.json')
+tools\score_d92_ground_a_support.py:469: in score_fixed_support
+    seen.add(sid); parents.append(_parent(record, splits[sid], truths, fixed, context))
+tools\score_d92_ground_a_support.py:406: in _parent
+    value = _path_predictions(entry, pids - held, held, classes, old, truths, context, k)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+entry = {'b_classes': ['g0', 'g1', 'g2', 'g3', 'g4', 'g5'], 'b_ids': ['physical_000', 'physical_002', 'physical_004', 'physica...cal_005', 'physical_007', 'physical_009', 'physical_011'], 'c_classes': ['g0', 'g1', 'g2', 'g3', 'g4', 'g5', ...], ...}
+train = {'physical_001', 'physical_003', 'physical_005', 'physical_007', 'physical_009', 'physical_011', ...}
+held = {'physical_000', 'physical_002', 'physical_004', 'physical_006', 'physical_008', 'physical_010', ...}
+classes = ['g0', 'g1', 'g2', 'g3', 'g4', 'g5', ...]
+old = ['g0', 'g1', 'g2', 'g3', 'g4', 'g5']
+truths = {'physical_000': 'g0', 'physical_001': 'g0', 'physical_002': 'g1', 'physical_003': 'g1', ...}
+context = {'binding': {'capsule_id': 'synthetic_capsule', 'checkpoint_sha256': 'ac3da62cf8578912e9590058285434900c5edd0f83a61c21...2e9590058285434900c5edd0f83a61c216993676d1032249a', 'episodes': 1, 'method': 'D92-AffineJointLocalRidge-v1', ...}, ...}
+parent_k = 2
+
+    def _path_predictions(entry, train, held, classes, old, truths, context, parent_k):
+        require(entry['parent_k'] == parent_k and entry['train_k'] == len(train) // len(classes)
+                and entry['held_k'] == len(held) // len(classes), 'Actual path physical K mismatch')
+        bt = sorted(pid for pid in train if truths[pid] in old); bh = sorted(pid for pid in held if truths[pid] in old)
+        require(entry['b_training_ids'] == bt and entry['c_training_ids'] == sorted(train) and entry['b_ids'] == bh and entry['c_ids'] == sorted(held),
+                'Actual B/C old-held physical pairing mismatch')
+        require(entry['b_classes'] == old and entry['c_classes'] == classes and entry['held_labels'] == {pid: truths[pid] for pid in held}, 'Actual trace ground/held truth mapping mismatch')
+>       require(entry['prediction_status'] == ('FIXED_BEFORE_SUPPORT_TRUTH_JOIN' if held else 'NO_HELD_PREDICTIONS'), 'Actual B/C predictions were not fixed')
+E       KeyError: 'prediction_status'
+
+tools\score_d92_ground_a_support.py:341: KeyError
+_________ test_truth_join_is_independent_of_packet_and_model[affine] __________
+
+production = {'binding': {'capsule_id': 'synthetic_capsule', 'checkpoint_sha256': 'ac3da62cf8578912e9590058285434900c5edd0f83a61c21...ne': WindowsPath('E:/type10-7/.codex_tmp/pytest_temp_1790824312610149900/basetemp/ground_a_support1/affine/lane'), ...}
+tmp_path = WindowsPath('E:/type10-7/.codex_tmp/pytest_temp_1790824312610149900/basetemp/test_truth_join_is_independent1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000224742A5B10>
+
+    def test_truth_join_is_independent_of_packet_and_model(production, tmp_path, monkeypatch):
+        fixed = _fixed(production, tmp_path / 'fixed')
+        def forbidden(*args, **kwargs): raise AssertionError('Model/packet cannot run during truth join')
+        monkeypatch.setattr(scorer, 'load_packet', forbidden); monkeypatch.setattr(GroundClassifierA, 'score', forbidden)
+>       result = scorer.score_fixed_support(predictions=fixed, fit_trace=production['lane'] / 'fit_trace.jsonl', support_splits=production['cache'] / 'support_splits.json')
+
+tests\test_score_d92_ground_a_support.py:166: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tools\score_d92_ground_a_support.py:469: in score_fixed_support
+    seen.add(sid); parents.append(_parent(record, splits[sid], truths, fixed, context))
+tools\score_d92_ground_a_support.py:406: in _parent
+    value = _path_predictions(entry, pids - held, held, classes, old, truths, context, k)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+entry = {'b_classes': ['g0', 'g1', 'g2', 'g3', 'g4', 'g5'], 'b_ids': ['physical_000', 'physical_002', 'physical_004', 'physica...cal_005', 'physical_007', 'physical_009', 'physical_011'], 'c_classes': ['g0', 'g1', 'g2', 'g3', 'g4', 'g5', ...], ...}
+train = {'physical_001', 'physical_003', 'physical_005', 'physical_007', 'physical_009', 'physical_011', ...}
+held = {'physical_000', 'physical_002', 'physical_004', 'physical_006', 'physical_008', 'physical_010', ...}
+classes = ['g0', 'g1', 'g2', 'g3', 'g4', 'g5', ...]
+old = ['g0', 'g1', 'g2', 'g3', 'g4', 'g5']
+truths = {'physical_000': 'g0', 'physical_001': 'g0', 'physical_002': 'g1', 'physical_003': 'g1', ...}
+context = {'binding': {'capsule_id': 'synthetic_capsule', 'checkpoint_sha256': 'ac3da62cf8578912e9590058285434900c5edd0f83a61c21...2e9590058285434900c5edd0f83a61c216993676d1032249a', 'episodes': 1, 'method': 'D92-AffineJointLocalRidge-v1', ...}, ...}
+parent_k = 2
+
+    def _path_predictions(entry, train, held, classes, old, truths, context, parent_k):
+        require(entry['parent_k'] == parent_k and entry['train_k'] == len(train) // len(classes)
+                and entry['held_k'] == len(held) // len(classes), 'Actual path physical K mismatch')
+        bt = sorted(pid for pid in train if truths[pid] in old); bh = sorted(pid for pid in held if truths[pid] in old)
+        require(entry['b_training_ids'] == bt and entry['c_training_ids'] == sorted(train) and entry['b_ids'] == bh and entry['c_ids'] == sorted(held),
+                'Actual B/C old-held physical pairing mismatch')
+        require(entry['b_classes'] == old and entry['c_classes'] == classes and entry['held_labels'] == {pid: truths[pid] for pid in held}, 'Actual trace ground/held truth mapping mismatch')
+>       require(entry['prediction_status'] == ('FIXED_BEFORE_SUPPORT_TRUTH_JOIN' if held else 'NO_HELD_PREDICTIONS'), 'Actual B/C predictions were not fixed')
+E       KeyError: 'prediction_status'
+
+tools\score_d92_ground_a_support.py:341: KeyError
+___ test_actual_b_c_pairing_rejects_tampered_trace[affine-state_other_run] ____
+
+production = {'binding': {'capsule_id': 'synthetic_capsule', 'checkpoint_sha256': 'ac3da62cf8578912e9590058285434900c5edd0f83a61c21...ne': WindowsPath('E:/type10-7/.codex_tmp/pytest_temp_1790824312610149900/basetemp/ground_a_support1/affine/lane'), ...}
+tmp_path = WindowsPath('E:/type10-7/.codex_tmp/pytest_temp_1790824312610149900/basetemp/test_actual_b_c_pairing_reject8')
+tamper = 'state_other_run'
+
+    @pytest.mark.parametrize('tamper', ['other_run', 'missing_old_id', 'state_other_run', 'missing_candidate', 'wrong_class_columns', 'nonfinite'])
+    def test_actual_b_c_pairing_rejects_tampered_trace(production, tmp_path, tamper):
+        fixed = _fixed(production, tmp_path / 'fixed')
+        schema = production['record']['schema']; candidate = scorer.METHODS[schema][3]
+        def mutate(record):
+            entry = record['folds'][0]
+            if tamper == 'other_run': record['inheritance_binding']['run_id'] = 'another_run'
+            elif tamper == 'missing_old_id': entry['b_ids'].pop()
+            elif tamper == 'state_other_run':
+                ref = entry['candidate_stages'][0]['final_state_ref']; namespace = json.loads(ref['namespace'])
+                namespace['run_id'] = 'another_run'; ref['namespace'] = json.dumps(namespace)
+            elif tamper == 'missing_candidate': entry['paths'].pop(candidate)
+            elif tamper == 'wrong_class_columns': entry['b_classes'].reverse()
+            else: entry['paths'][candidate]['c_scores'][0][0] = float('nan')
+        trace = _copied_trace(production, tmp_path / 'trace', mutate)
+>       with pytest.raises(ValueError): scorer.score_fixed_support(predictions=fixed, fit_trace=trace, support_splits=production['cache'] / 'support_splits.json')
+
+tests\test_score_d92_ground_a_support.py:185: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tools\score_d92_ground_a_support.py:469: in score_fixed_support
+    seen.add(sid); parents.append(_parent(record, splits[sid], truths, fixed, context))
+tools\score_d92_ground_a_support.py:406: in _parent
+    value = _path_predictions(entry, pids - held, held, classes, old, truths, context, k)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+entry = {'b_classes': ['g0', 'g1', 'g2', 'g3', 'g4', 'g5'], 'b_ids': ['physical_000', 'physical_002', 'physical_004', 'physica...cal_005', 'physical_007', 'physical_009', 'physical_011'], 'c_classes': ['g0', 'g1', 'g2', 'g3', 'g4', 'g5', ...], ...}
+train = {'physical_001', 'physical_003', 'physical_005', 'physical_007', 'physical_009', 'physical_011', ...}
+held = {'physical_000', 'physical_002', 'physical_004', 'physical_006', 'physical_008', 'physical_010', ...}
+classes = ['g0', 'g1', 'g2', 'g3', 'g4', 'g5', ...]
+old = ['g0', 'g1', 'g2', 'g3', 'g4', 'g5']
+truths = {'physical_000': 'g0', 'physical_001': 'g0', 'physical_002': 'g1', 'physical_003': 'g1', ...}
+context = {'binding': {'capsule_id': 'synthetic_capsule', 'checkpoint_sha256': 'ac3da62cf8578912e9590058285434900c5edd0f83a61c21...2e9590058285434900c5edd0f83a61c216993676d1032249a', 'episodes': 1, 'method': 'D92-AffineJointLocalRidge-v1', ...}, ...}
+parent_k = 2
+
+    def _path_predictions(entry, train, held, classes, old, truths, context, parent_k):
+        require(entry['parent_k'] == parent_k and entry['train_k'] == len(train) // len(classes)
+                and entry['held_k'] == len(held) // len(classes), 'Actual path physical K mismatch')
+        bt = sorted(pid for pid in train if truths[pid] in old); bh = sorted(pid for pid in held if truths[pid] in old)
+        require(entry['b_training_ids'] == bt and entry['c_training_ids'] == sorted(train) and entry['b_ids'] == bh and entry['c_ids'] == sorted(held),
+                'Actual B/C old-held physical pairing mismatch')
+        require(entry['b_classes'] == old and entry['c_classes'] == classes and entry['held_labels'] == {pid: truths[pid] for pid in held}, 'Actual trace ground/held truth mapping mismatch')
+>       require(entry['prediction_status'] == ('FIXED_BEFORE_SUPPORT_TRUTH_JOIN' if held else 'NO_HELD_PREDICTIONS'), 'Actual B/C predictions were not fixed')
+E       KeyError: 'prediction_status'
+
+tools\score_d92_ground_a_support.py:341: KeyError
+__ test_actual_b_c_pairing_rejects_tampered_trace[affine-missing_candidate] ___
+
+production = {'binding': {'capsule_id': 'synthetic_capsule', 'checkpoint_sha256': 'ac3da62cf8578912e9590058285434900c5edd0f83a61c21...ne': WindowsPath('E:/type10-7/.codex_tmp/pytest_temp_1790824312610149900/basetemp/ground_a_support1/affine/lane'), ...}
+tmp_path = WindowsPath('E:/type10-7/.codex_tmp/pytest_temp_1790824312610149900/basetemp/test_actual_b_c_pairing_reject9')
+tamper = 'missing_candidate'
+
+    @pytest.mark.parametrize('tamper', ['other_run', 'missing_old_id', 'state_other_run', 'missing_candidate', 'wrong_class_columns', 'nonfinite'])
+    def test_actual_b_c_pairing_rejects_tampered_trace(production, tmp_path, tamper):
+        fixed = _fixed(production, tmp_path / 'fixed')
+        schema = production['record']['schema']; candidate = scorer.METHODS[schema][3]
+        def mutate(record):
+            entry = record['folds'][0]
+            if tamper == 'other_run': record['inheritance_binding']['run_id'] = 'another_run'
+            elif tamper == 'missing_old_id': entry['b_ids'].pop()
+            elif tamper == 'state_other_run':
+                ref = entry['candidate_stages'][0]['final_state_ref']; namespace = json.loads(ref['namespace'])
+                namespace['run_id'] = 'another_run'; ref['namespace'] = json.dumps(namespace)
+            elif tamper == 'missing_candidate': entry['paths'].pop(candidate)
+            elif tamper == 'wrong_class_columns': entry['b_classes'].reverse()
+            else: entry['paths'][candidate]['c_scores'][0][0] = float('nan')
+        trace = _copied_trace(production, tmp_path / 'trace', mutate)
+>       with pytest.raises(ValueError): scorer.score_fixed_support(predictions=fixed, fit_trace=trace, support_splits=production['cache'] / 'support_splits.json')
+
+tests\test_score_d92_ground_a_support.py:185: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tools\score_d92_ground_a_support.py:469: in score_fixed_support
+    seen.add(sid); parents.append(_parent(record, splits[sid], truths, fixed, context))
+tools\score_d92_ground_a_support.py:406: in _parent
+    value = _path_predictions(entry, pids - held, held, classes, old, truths, context, k)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+entry = {'b_classes': ['g0', 'g1', 'g2', 'g3', 'g4', 'g5'], 'b_ids': ['physical_000', 'physical_002', 'physical_004', 'physica...cal_005', 'physical_007', 'physical_009', 'physical_011'], 'c_classes': ['g0', 'g1', 'g2', 'g3', 'g4', 'g5', ...], ...}
+train = {'physical_001', 'physical_003', 'physical_005', 'physical_007', 'physical_009', 'physical_011', ...}
+held = {'physical_000', 'physical_002', 'physical_004', 'physical_006', 'physical_008', 'physical_010', ...}
+classes = ['g0', 'g1', 'g2', 'g3', 'g4', 'g5', ...]
+old = ['g0', 'g1', 'g2', 'g3', 'g4', 'g5']
+truths = {'physical_000': 'g0', 'physical_001': 'g0', 'physical_002': 'g1', 'physical_003': 'g1', ...}
+context = {'binding': {'capsule_id': 'synthetic_capsule', 'checkpoint_sha256': 'ac3da62cf8578912e9590058285434900c5edd0f83a61c21...2e9590058285434900c5edd0f83a61c216993676d1032249a', 'episodes': 1, 'method': 'D92-AffineJointLocalRidge-v1', ...}, ...}
+parent_k = 2
+
+    def _path_predictions(entry, train, held, classes, old, truths, context, parent_k):
+        require(entry['parent_k'] == parent_k and entry['train_k'] == len(train) // len(classes)
+                and entry['held_k'] == len(held) // len(classes), 'Actual path physical K mismatch')
+        bt = sorted(pid for pid in train if truths[pid] in old); bh = sorted(pid for pid in held if truths[pid] in old)
+        require(entry['b_training_ids'] == bt and entry['c_training_ids'] == sorted(train) and entry['b_ids'] == bh and entry['c_ids'] == sorted(held),
+                'Actual B/C old-held physical pairing mismatch')
+        require(entry['b_classes'] == old and entry['c_classes'] == classes and entry['held_labels'] == {pid: truths[pid] for pid in held}, 'Actual trace ground/held truth mapping mismatch')
+>       require(entry['prediction_status'] == ('FIXED_BEFORE_SUPPORT_TRUTH_JOIN' if held else 'NO_HELD_PREDICTIONS'), 'Actual B/C predictions were not fixed')
+E       KeyError: 'prediction_status'
+
+tools\score_d92_ground_a_support.py:341: KeyError
+______ test_actual_b_c_pairing_rejects_tampered_trace[affine-nonfinite] _______
+
+production = {'binding': {'capsule_id': 'synthetic_capsule', 'checkpoint_sha256': 'ac3da62cf8578912e9590058285434900c5edd0f83a61c21...ne': WindowsPath('E:/type10-7/.codex_tmp/pytest_temp_1790824312610149900/basetemp/ground_a_support1/affine/lane'), ...}
+tmp_path = WindowsPath('E:/type10-7/.codex_tmp/pytest_temp_1790824312610149900/basetemp/test_actual_b_c_pairing_reject11')
+tamper = 'nonfinite'
+
+    @pytest.mark.parametrize('tamper', ['other_run', 'missing_old_id', 'state_other_run', 'missing_candidate', 'wrong_class_columns', 'nonfinite'])
+    def test_actual_b_c_pairing_rejects_tampered_trace(production, tmp_path, tamper):
+        fixed = _fixed(production, tmp_path / 'fixed')
+        schema = production['record']['schema']; candidate = scorer.METHODS[schema][3]
+        def mutate(record):
+            entry = record['folds'][0]
+            if tamper == 'other_run': record['inheritance_binding']['run_id'] = 'another_run'
+            elif tamper == 'missing_old_id': entry['b_ids'].pop()
+            elif tamper == 'state_other_run':
+                ref = entry['candidate_stages'][0]['final_state_ref']; namespace = json.loads(ref['namespace'])
+                namespace['run_id'] = 'another_run'; ref['namespace'] = json.dumps(namespace)
+            elif tamper == 'missing_candidate': entry['paths'].pop(candidate)
+            elif tamper == 'wrong_class_columns': entry['b_classes'].reverse()
+            else: entry['paths'][candidate]['c_scores'][0][0] = float('nan')
+        trace = _copied_trace(production, tmp_path / 'trace', mutate)
+>       with pytest.raises(ValueError): scorer.score_fixed_support(predictions=fixed, fit_trace=trace, support_splits=production['cache'] / 'support_splits.json')
+
+tests\test_score_d92_ground_a_support.py:185: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tools\score_d92_ground_a_support.py:469: in score_fixed_support
+    seen.add(sid); parents.append(_parent(record, splits[sid], truths, fixed, context))
+tools\score_d92_ground_a_support.py:406: in _parent
+    value = _path_predictions(entry, pids - held, held, classes, old, truths, context, k)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+entry = {'b_classes': ['g0', 'g1', 'g2', 'g3', 'g4', 'g5'], 'b_ids': ['physical_000', 'physical_002', 'physical_004', 'physica...cal_005', 'physical_007', 'physical_009', 'physical_011'], 'c_classes': ['g0', 'g1', 'g2', 'g3', 'g4', 'g5', ...], ...}
+train = {'physical_001', 'physical_003', 'physical_005', 'physical_007', 'physical_009', 'physical_011', ...}
+held = {'physical_000', 'physical_002', 'physical_004', 'physical_006', 'physical_008', 'physical_010', ...}
+classes = ['g0', 'g1', 'g2', 'g3', 'g4', 'g5', ...]
+old = ['g0', 'g1', 'g2', 'g3', 'g4', 'g5']
+truths = {'physical_000': 'g0', 'physical_001': 'g0', 'physical_002': 'g1', 'physical_003': 'g1', ...}
+context = {'binding': {'capsule_id': 'synthetic_capsule', 'checkpoint_sha256': 'ac3da62cf8578912e9590058285434900c5edd0f83a61c21...2e9590058285434900c5edd0f83a61c216993676d1032249a', 'episodes': 1, 'method': 'D92-AffineJointLocalRidge-v1', ...}, ...}
+parent_k = 2
+
+    def _path_predictions(entry, train, held, classes, old, truths, context, parent_k):
+        require(entry['parent_k'] == parent_k and entry['train_k'] == len(train) // len(classes)
+                and entry['held_k'] == len(held) // len(classes), 'Actual path physical K mismatch')
+        bt = sorted(pid for pid in train if truths[pid] in old); bh = sorted(pid for pid in held if truths[pid] in old)
+        require(entry['b_training_ids'] == bt and entry['c_training_ids'] == sorted(train) and entry['b_ids'] == bh and entry['c_ids'] == sorted(held),
+                'Actual B/C old-held physical pairing mismatch')
+        require(entry['b_classes'] == old and entry['c_classes'] == classes and entry['held_labels'] == {pid: truths[pid] for pid in held}, 'Actual trace ground/held truth mapping mismatch')
+>       require(entry['prediction_status'] == ('FIXED_BEFORE_SUPPORT_TRUTH_JOIN' if held else 'NO_HELD_PREDICTIONS'), 'Actual B/C predictions were not fixed')
+E       KeyError: 'prediction_status'
+
+tools\score_d92_ground_a_support.py:341: KeyError
+_ test_truth_mismatch_preserves_fixed_predictions_and_does_not_overwrite[affine] _
+
+production = {'binding': {'capsule_id': 'synthetic_capsule', 'checkpoint_sha256': 'ac3da62cf8578912e9590058285434900c5edd0f83a61c21...ne': WindowsPath('E:/type10-7/.codex_tmp/pytest_temp_1790824312610149900/basetemp/ground_a_support1/affine/lane'), ...}
+tmp_path = WindowsPath('E:/type10-7/.codex_tmp/pytest_temp_1790824312610149900/basetemp/test_truth_mismatch_preserves_1')
+
+    def test_truth_mismatch_preserves_fixed_predictions_and_does_not_overwrite(production, tmp_path):
+        cache = tmp_path / 'cache'; shutil.copytree(production['cache'], cache)
+        plan = scorer.read(cache / 'support_splits.json'); plan['splits'][0]['support_ids'][0] = 'missing_physical'
+        (cache / 'support_splits.json').write_text(json.dumps(plan), encoding='utf-8')
+        args = _args(production, tmp_path / 'supplement'); args['support_features'] = cache
+        with pytest.raises(ValueError): scorer.score_support(**args, fit_trace=production['lane'] / 'fit_trace.jsonl')
+>       assert (args['output'] / 'prediction_complete.json').is_file() and (args['output'] / 'scoring_failed.json').is_file()
+E       AssertionError: assert (False)
+E        +  where False = is_file()
+E        +    where is_file = (WindowsPath('E:/type10-7/.codex_tmp/pytest_temp_1790824312610149900/basetemp/test_truth_mismatch_preserves_1/supplement') / 'prediction_complete.json').is_file
+
+tests\test_score_d92_ground_a_support.py:231: AssertionError
+_ test_extra_cache_records_and_unselected_splits_never_enter_model_or_statistics[affine] _
+
+production = {'binding': {'capsule_id': 'synthetic_capsule', 'checkpoint_sha256': 'ac3da62cf8578912e9590058285434900c5edd0f83a61c21...ne': WindowsPath('E:/type10-7/.codex_tmp/pytest_temp_1790824312610149900/basetemp/ground_a_support1/affine/lane'), ...}
+tmp_path = WindowsPath('E:/type10-7/.codex_tmp/pytest_temp_1790824312610149900/basetemp/test_extra_cache_records_and_u1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000002243D1D06D0>
+
+    def test_extra_cache_records_and_unselected_splits_never_enter_model_or_statistics(production, tmp_path, monkeypatch):
+        cache = tmp_path / 'cache'; shutil.copytree(production['cache'], cache)
+        extra_ids = ['zz_extra_' + str(i) for i in range(6)]
+        with np.load(cache / scorer.CACHE_NAME, allow_pickle=False) as original: values = {name: original[name] for name in original.files}
+        n = len(values['ids'])
+        for name in ('z_id', 'fft', 't_emb', 'f_emb', 'pa_local'):
+            values[name] = np.concatenate((values[name], np.full((6, values[name].shape[1]), 999., dtype=np.float32)))
+        values['ids'] = np.asarray(values['ids'].astype(str).tolist() + extra_ids)
+        values['indices'] = np.arange(n + 6, dtype=np.int64)
+        values['labels'] = np.asarray(values['labels'].astype(str).tolist() + production['old'])
+        np.savez(cache / scorer.CACHE_NAME, **values)
+        marker = scorer.read(cache / 'features_complete.json'); marker.update(count=n + 6,
+            feature_file_bytes=(cache / scorer.CACHE_NAME).stat().st_size,
+            shapes={name: list(values[name].shape) for name in ('z_id', 'fft', 't_emb', 'f_emb', 'pa_local')})
+        (cache / 'features_complete.json').write_text(json.dumps(marker), encoding='utf-8')
+        plan = scorer.read(cache / 'support_splits.json')
+        plan['splits'].append(dict(split_id='not_selected', receiver='other', scenario='other', k=1, support_seed=91,
+            registered_classes=production['old'], support_ids=extra_ids, support_indices=list(range(n, n + 6)), support_labels=list(range(6))))
+        (cache / 'support_splits.json').write_text(json.dumps(plan), encoding='utf-8')
+        lane = tmp_path / 'lane'; lane.mkdir()
+        shutil.copyfile(production['lane'] / 'fit_trace.jsonl', lane / 'fit_trace.jsonl')
+        for name in ('startup.json', 'probe_complete.json'):
+            metadata = scorer.read(production['lane'] / name); metadata['support_features'] = str(cache.resolve()); scorer.write(lane / name, metadata)
+        original_score = GroundClassifierA.score; calls = []
+        def selected_only(head, *, z_id, feature_contract):
+            assert not bool((z_id == 999.).any()), 'Unauthorized extra cache feature reached the model'
+            calls.append(z_id.tolist()); return original_score(head, z_id=z_id, feature_contract=feature_contract)
+        monkeypatch.setattr(GroundClassifierA, 'score', selected_only)
+        args = _args(production, tmp_path / 'supplement'); args['support_features'] = cache
+>       result = scorer.score_support(**args, fit_trace=lane / 'fit_trace.jsonl')
+
+tests\test_score_d92_ground_a_support.py:292: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tools\score_d92_ground_a_support.py:512: in score_support
+    result = score_fixed_support(predictions=out, fit_trace=fit_trace, support_splits=Path(support_features) / 'support_splits.json')
+tools\score_d92_ground_a_support.py:469: in score_fixed_support
+    seen.add(sid); parents.append(_parent(record, splits[sid], truths, fixed, context))
+tools\score_d92_ground_a_support.py:406: in _parent
+    value = _path_predictions(entry, pids - held, held, classes, old, truths, context, k)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+entry = {'b_classes': ['g0', 'g1', 'g2', 'g3', 'g4', 'g5'], 'b_ids': ['physical_000', 'physical_002', 'physical_004', 'physica...cal_005', 'physical_007', 'physical_009', 'physical_011'], 'c_classes': ['g0', 'g1', 'g2', 'g3', 'g4', 'g5', ...], ...}
+train = {'physical_001', 'physical_003', 'physical_005', 'physical_007', 'physical_009', 'physical_011', ...}
+held = {'physical_000', 'physical_002', 'physical_004', 'physical_006', 'physical_008', 'physical_010', ...}
+classes = ['g0', 'g1', 'g2', 'g3', 'g4', 'g5', ...]
+old = ['g0', 'g1', 'g2', 'g3', 'g4', 'g5']
+truths = {'physical_000': 'g0', 'physical_001': 'g0', 'physical_002': 'g1', 'physical_003': 'g1', ...}
+context = {'binding': {'capsule_id': 'synthetic_capsule', 'checkpoint_sha256': 'ac3da62cf8578912e9590058285434900c5edd0f83a61c21...2e9590058285434900c5edd0f83a61c216993676d1032249a', 'episodes': 1, 'method': 'D92-AffineJointLocalRidge-v1', ...}, ...}
+parent_k = 2
+
+    def _path_predictions(entry, train, held, classes, old, truths, context, parent_k):
+        require(entry['parent_k'] == parent_k and entry['train_k'] == len(train) // len(classes)
+                and entry['held_k'] == len(held) // len(classes), 'Actual path physical K mismatch')
+        bt = sorted(pid for pid in train if truths[pid] in old); bh = sorted(pid for pid in held if truths[pid] in old)
+        require(entry['b_training_ids'] == bt and entry['c_training_ids'] == sorted(train) and entry['b_ids'] == bh and entry['c_ids'] == sorted(held),
+                'Actual B/C old-held physical pairing mismatch')
+        require(entry['b_classes'] == old and entry['c_classes'] == classes and entry['held_labels'] == {pid: truths[pid] for pid in held}, 'Actual trace ground/held truth mapping mismatch')
+>       require(entry['prediction_status'] == ('FIXED_BEFORE_SUPPORT_TRUTH_JOIN' if held else 'NO_HELD_PREDICTIONS'), 'Actual B/C predictions were not fixed')
+E       KeyError: 'prediction_status'
+
+tools\score_d92_ground_a_support.py:341: KeyError
+___________ test_true_k1_has_no_held_a_or_adaptation_gain[0-affine] ___________
+
+tmp_path = WindowsPath('E:/type10-7/.codex_tmp/pytest_temp_1790824312610149900/basetemp/test_true_k1_has_no_held_a_or_1')
+method = 'affine', new = 0
+
+    @pytest.mark.parametrize('method', ['conditional', 'affine'])
+    @pytest.mark.parametrize('new', [0, 1])
+    def test_true_k1_has_no_held_a_or_adaptation_gain(tmp_path, method, new):
+        case = _case(tmp_path / 'case', method=method, k=1, new=new)
+>       result = scorer.score_support(**_args(case, tmp_path / 'supplement'), fit_trace=case['lane'] / 'fit_trace.jsonl')
+
+tests\test_score_d92_ground_a_support.py:192: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tools\score_d92_ground_a_support.py:512: in score_support
+    result = score_fixed_support(predictions=out, fit_trace=fit_trace, support_splits=Path(support_features) / 'support_splits.json')
+tools\score_d92_ground_a_support.py:469: in score_fixed_support
+    seen.add(sid); parents.append(_parent(record, splits[sid], truths, fixed, context))
+tools\score_d92_ground_a_support.py:394: in _parent
+    _path_predictions(entry, pids, set(), classes, old, truths, context, k)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+entry = {'b_classes': ['g0', 'g1', 'g2', 'g3', 'g4', 'g5'], 'b_ids': [], 'b_training_ids': ['physical_000', 'physical_001', 'physical_002', 'physical_003', 'physical_004', 'physical_005'], 'c_classes': ['g0', 'g1', 'g2', 'g3', 'g4', 'g5'], ...}
+train = {'physical_000', 'physical_001', 'physical_002', 'physical_003', 'physical_004', 'physical_005'}
+held = set(), classes = ['g0', 'g1', 'g2', 'g3', 'g4', 'g5']
+old = ['g0', 'g1', 'g2', 'g3', 'g4', 'g5']
+truths = {'physical_000': 'g0', 'physical_001': 'g1', 'physical_002': 'g2', 'physical_003': 'g3', ...}
+context = {'binding': {'capsule_id': 'synthetic_capsule', 'checkpoint_sha256': 'ac3da62cf8578912e9590058285434900c5edd0f83a61c21...2e9590058285434900c5edd0f83a61c216993676d1032249a', 'episodes': 1, 'method': 'D92-AffineJointLocalRidge-v1', ...}, ...}
+parent_k = 1
+
+    def _path_predictions(entry, train, held, classes, old, truths, context, parent_k):
+        require(entry['parent_k'] == parent_k and entry['train_k'] == len(train) // len(classes)
+                and entry['held_k'] == len(held) // len(classes), 'Actual path physical K mismatch')
+        bt = sorted(pid for pid in train if truths[pid] in old); bh = sorted(pid for pid in held if truths[pid] in old)
+        require(entry['b_training_ids'] == bt and entry['c_training_ids'] == sorted(train) and entry['b_ids'] == bh and entry['c_ids'] == sorted(held),
+                'Actual B/C old-held physical pairing mismatch')
+        require(entry['b_classes'] == old and entry['c_classes'] == classes and entry['held_labels'] == {pid: truths[pid] for pid in held}, 'Actual trace ground/held truth mapping mismatch')
+>       require(entry['prediction_status'] == ('FIXED_BEFORE_SUPPORT_TRUTH_JOIN' if held else 'NO_HELD_PREDICTIONS'), 'Actual B/C predictions were not fixed')
+E       KeyError: 'prediction_status'
+
+tools\score_d92_ground_a_support.py:341: KeyError
+___________ test_true_k1_has_no_held_a_or_adaptation_gain[1-affine] ___________
+
+tmp_path = WindowsPath('E:/type10-7/.codex_tmp/pytest_temp_1790824312610149900/basetemp/test_true_k1_has_no_held_a_or_3')
+method = 'affine', new = 1
+
+    @pytest.mark.parametrize('method', ['conditional', 'affine'])
+    @pytest.mark.parametrize('new', [0, 1])
+    def test_true_k1_has_no_held_a_or_adaptation_gain(tmp_path, method, new):
+        case = _case(tmp_path / 'case', method=method, k=1, new=new)
+>       result = scorer.score_support(**_args(case, tmp_path / 'supplement'), fit_trace=case['lane'] / 'fit_trace.jsonl')
+
+tests\test_score_d92_ground_a_support.py:192: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tools\score_d92_ground_a_support.py:512: in score_support
+    result = score_fixed_support(predictions=out, fit_trace=fit_trace, support_splits=Path(support_features) / 'support_splits.json')
+tools\score_d92_ground_a_support.py:469: in score_fixed_support
+    seen.add(sid); parents.append(_parent(record, splits[sid], truths, fixed, context))
+tools\score_d92_ground_a_support.py:394: in _parent
+    _path_predictions(entry, pids, set(), classes, old, truths, context, k)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+entry = {'b_classes': ['g0', 'g1', 'g2', 'g3', 'g4', 'g5'], 'b_ids': [], 'b_training_ids': ['physical_000', 'physical_001', 'p...cal_002', 'physical_003', 'physical_004', 'physical_005'], 'c_classes': ['g0', 'g1', 'g2', 'g3', 'g4', 'g5', ...], ...}
+train = {'physical_000', 'physical_001', 'physical_002', 'physical_003', 'physical_004', 'physical_005', ...}
+held = set(), classes = ['g0', 'g1', 'g2', 'g3', 'g4', 'g5', ...]
+old = ['g0', 'g1', 'g2', 'g3', 'g4', 'g5']
+truths = {'physical_000': 'g0', 'physical_001': 'g1', 'physical_002': 'g2', 'physical_003': 'g3', ...}
+context = {'binding': {'capsule_id': 'synthetic_capsule', 'checkpoint_sha256': 'ac3da62cf8578912e9590058285434900c5edd0f83a61c21...2e9590058285434900c5edd0f83a61c216993676d1032249a', 'episodes': 1, 'method': 'D92-AffineJointLocalRidge-v1', ...}, ...}
+parent_k = 1
+
+    def _path_predictions(entry, train, held, classes, old, truths, context, parent_k):
+        require(entry['parent_k'] == parent_k and entry['train_k'] == len(train) // len(classes)
+                and entry['held_k'] == len(held) // len(classes), 'Actual path physical K mismatch')
+        bt = sorted(pid for pid in train if truths[pid] in old); bh = sorted(pid for pid in held if truths[pid] in old)
+        require(entry['b_training_ids'] == bt and entry['c_training_ids'] == sorted(train) and entry['b_ids'] == bh and entry['c_ids'] == sorted(held),
+                'Actual B/C old-held physical pairing mismatch')
+        require(entry['b_classes'] == old and entry['c_classes'] == classes and entry['held_labels'] == {pid: truths[pid] for pid in held}, 'Actual trace ground/held truth mapping mismatch')
+>       require(entry['prediction_status'] == ('FIXED_BEFORE_SUPPORT_TRUTH_JOIN' if held else 'NO_HELD_PREDICTIONS'), 'Actual B/C predictions were not fixed')
+E       KeyError: 'prediction_status'
+
+tools\score_d92_ground_a_support.py:341: KeyError
+============================== warnings summary ===============================
+..\..\..\local_envs\ssr-gpu\lib\site-packages\torch\nn\modules\transformer.py:20
+  E:\type10-7\local_envs\ssr-gpu\lib\site-packages\torch\nn\modules\transformer.py:20: UserWarning: Failed to initialize NumPy: _ARRAY_API not found (Triggered internally at ..\torch\csrc\utils\tensor_numpy.cpp:84.)
+    device: torch.device = torch.device(torch._C._get_default_device()),  # torch.device('cpu'),
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED tests/test_score_d92_ground_a_support.py::test_truth_mismatch_preserves_fixed_predictions_and_does_not_overwrite[conditional]
+FAILED tests/test_score_d92_ground_a_support.py::test_real_candidate_trace_pairing_original_ground_columns_and_no_old_summary[affine]
+FAILED tests/test_score_d92_ground_a_support.py::test_scores_are_persisted_before_any_truth_or_trace_access[affine]
+FAILED tests/test_score_d92_ground_a_support.py::test_truth_join_is_independent_of_packet_and_model[affine]
+FAILED tests/test_score_d92_ground_a_support.py::test_actual_b_c_pairing_rejects_tampered_trace[affine-state_other_run]
+FAILED tests/test_score_d92_ground_a_support.py::test_actual_b_c_pairing_rejects_tampered_trace[affine-missing_candidate]
+FAILED tests/test_score_d92_ground_a_support.py::test_actual_b_c_pairing_rejects_tampered_trace[affine-nonfinite]
+FAILED tests/test_score_d92_ground_a_support.py::test_truth_mismatch_preserves_fixed_predictions_and_does_not_overwrite[affine]
+FAILED tests/test_score_d92_ground_a_support.py::test_extra_cache_records_and_unselected_splits_never_enter_model_or_statistics[affine]
+FAILED tests/test_score_d92_ground_a_support.py::test_true_k1_has_no_held_a_or_adaptation_gain[0-affine]
+FAILED tests/test_score_d92_ground_a_support.py::test_true_k1_has_no_held_a_or_adaptation_gain[1-affine]
+11 failed, 30 passed, 1 warning in 7.44s

@@ -1,0 +1,106 @@
+{
+  "status": "VERIFIED",
+  "scope": "SOURCE_FACTORY_DEFINITIONS_AND_EXISTING_SOURCE_ONLY_METADATA_NO_ENCODER_WEIGHTS_SAMPLES_FEATURES_OR_SCORES",
+  "observed_unix": 1790823446.2498121,
+  "native_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rc4_matched_20260927_r01",
+  "native_code_commit": "9b1ddd939fcabc74c77c94a62fef8e5aad07c0e9",
+  "actual_single_factory_module": "model",
+  "actual_single_factory_file": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rc4_matched_20260927_r01/code/model.py",
+  "actual_scale": 30.0,
+  "norm_eps": 0.0001,
+  "scale_binding": "Resolved original factory module, no scale override in native factory signatures; exact original constructor propagation and no training scale assignment",
+  "class_binding": "Original train_rc4_matched.py writes actual ctx.class_id_to_tx in row order into source_contract.classes",
+  "actual_cosface_matches_local_oracle": true,
+  "rows": [
+    {
+      "model_seed": 2026092701,
+      "checkpoint_sha256": "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b",
+      "checkpoint_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701/final_ssdg.pth",
+      "ordered_classes": [
+        "14-10",
+        "14-7",
+        "20-15",
+        "20-19",
+        "6-15",
+        "8-20"
+      ],
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701/source_contract.json",
+      "source_role_comparison": "EXACT_MATCH",
+      "target_access_before_freeze": false,
+      "checkpoint_inheritance": [],
+      "initialization": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701/initialization.json",
+      "selected_final_source": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701/phase1_terminal_status.json",
+      "selection_source": "training_final_only",
+      "flags": {
+        "arch_family": "cvsincnet",
+        "representation_mode": "dual",
+        "id_feature_key": "feat_joint",
+        "sat_anchor_adapter": false,
+        "use_a1_r3": false,
+        "a1_response_surface": false,
+        "num_classes": 6,
+        "model_variant": "lite_d"
+      },
+      "flag_resolution": "Original default_data_args plus source CLI merge/_apply_model_cli_args; explicit build_baseline_model fallback for absent fields",
+      "saved_resolved_fields": {
+        "representation_mode": "dual",
+        "id_feature_key": "feat_joint",
+        "sat_anchor_adapter": false,
+        "use_a1_r3": false,
+        "a1_response_surface": false,
+        "num_classes": 6,
+        "model_variant": "lite_d"
+      },
+      "absent_saved_fields": [
+        "arch_family"
+      ]
+    },
+    {
+      "model_seed": 2026092702,
+      "checkpoint_sha256": "72f26413e495dcf82317898f8729caa3d35499bf0b41e9671ffdceab2c90924b",
+      "checkpoint_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092702/final_ssdg.pth",
+      "ordered_classes": [
+        "14-10",
+        "14-7",
+        "20-15",
+        "20-19",
+        "6-15",
+        "8-20"
+      ],
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092702/source_contract.json",
+      "source_role_comparison": "EXACT_MATCH",
+      "target_access_before_freeze": false,
+      "checkpoint_inheritance": [],
+      "initialization": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092702/initialization.json",
+      "selected_final_source": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092702/phase1_terminal_status.json",
+      "selection_source": "training_final_only",
+      "flags": {
+        "arch_family": "cvsincnet",
+        "representation_mode": "dual",
+        "id_feature_key": "feat_joint",
+        "sat_anchor_adapter": false,
+        "use_a1_r3": false,
+        "a1_response_surface": false,
+        "num_classes": 6,
+        "model_variant": "lite_d"
+      },
+      "flag_resolution": "Original default_data_args plus source CLI merge/_apply_model_cli_args; explicit build_baseline_model fallback for absent fields",
+      "saved_resolved_fields": {
+        "representation_mode": "dual",
+        "id_feature_key": "feat_joint",
+        "sat_anchor_adapter": false,
+        "use_a1_r3": false,
+        "a1_response_surface": false,
+        "num_classes": 6,
+        "model_variant": "lite_d"
+      },
+      "absent_saved_fields": [
+        "arch_family"
+      ]
+    }
+  ],
+  "encoder_constructed": false,
+  "checkpoint_loaded": false,
+  "source_sample_access": false,
+  "query_access": false
+}
