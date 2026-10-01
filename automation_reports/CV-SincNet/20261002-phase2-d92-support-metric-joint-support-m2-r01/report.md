@@ -1,6 +1,6 @@
 # 物理 support 度量与 LocalRidge 联合诊断预登记
 
-状态 READY。独立 core 的75项及新入口/分析器/控制的116项合成验证通过，共191项；只读输入元数据与隔离源码导入已核实，尚未发布或启动。此候选由数学结构定义，不扫描参数组合，也不读取 query 成绩选模。固定 Phase1 和地面原型，practical residual/post_sync/noeq/25 MHz。
+状态 RUNNING。独立 core 的75项及新入口/分析器/控制的116项合成验证通过，共191项；只读输入元数据与隔离源码导入已核实，一次发布及独立启动读回VERIFIED，完整实验尚未完成。此候选由数学结构定义，不扫描参数组合，也不读取 query 成绩选模。固定 Phase1 和地面原型，practical residual/post_sync/noeq/25 MHz。
 
 保留 BranchLocalRidge 解析分类器、自由截距、新类 head 和 barrier gate。新 adapter 使用已存地面原型差字典的精确秩与物理基 U，名义最多 5 坐标，实际秩 r≤5；不继承现行 ProtoFrame 或历史方法的 adapter。旧类 B 从零开始，C 只继承本次同路径实际 B，并冻结该 B 的旧条件函数。全部注册类统一竞争，结构冻结不保证旧类胜率不下降。
 
@@ -17,3 +17,7 @@ basis 每 row 只由冻结地面 Q 构建一次，归档普通方法数据证据
 本次相关验证与预登记审查已完成，无未解决P0/P1；37模块/46文件隔离导入，四row预检VERIFIED且输出未存在。验证记录见 [implementation_validation](evidence/implementation_validation_20261002.json)。后续实际runtime commit、PID、resolved config和新方法成绩必须由产物读回，不从READY推断运行。
 
 配置审查发现的非阻断记录已修正：固定预测产物指向fixed_predictions.jsonl，记录中的旧验证pending文字更新为本次191项通过。检查时状态与审查原文保留，不触发重复审核。
+
+实际不可变runtime为`3c3eb6c513aaf20fe84514dcbeab3584bad1f238`，supervisor1276233/start_ticks14215164；2026-10-01T22:42:14Z只读PID/argv/cwd/environment/resolved config均匹配。rx3两row PID1276296/1276297 TRAINING_ON_SUPPORT，rx1两row PENDING。原始源码与spec冻结，不热改，不重发。完整四row诊断尚未关闭，没有新方法准确率结果。
+
+两个已启动row的冻结地面字典均精确秩5；各构建一次，测得0.2081s/0.1986s，各26519次Fraction调用，basis数值buffer各32000B。普通研究证据JSON为442565B/396128B，是卫星本地可派生字典证据，不能当作新增星地传输或整方法训练成本；峰值RSS、全部拟合/推理与星载成本待完整产物，未测项N/A。

@@ -1,3 +1,14 @@
+## 当前交接：物理support度量联合LocalRidge已一次启动，读回VERIFIED
+
+- Goal ACTIVE，`20261002-phase2-d92-support-metric-joint-support-m2-r01` RUNNING，immutable runtime `3c3eb6c513aaf20fe84514dcbeab3584bad1f238`（preparation aa951）。唯一publisher已完成，supervisor1276233/start_ticks14215164；2026-10-01T22:42:14Z两rx3 PID1276296/1276297 TRAINING_ON_SUPPORT，两rx1 PENDING。CPU2/BLAS2/noGPU，四row源/query读0；live proof `automation_reports/CV-SincNet/20261002-phase2-d92-support-metric-joint-support-m2-r01/evidence/support_runtime_1790894595333428100.json` 与publication证据已归档。不得再次发布或启动。
+- old6，K1/5/10/20×new0/2/5/10/20，4row/160parent/1800path；新U ABI，实际同路径B→C，无旧adapter，191相关synthetic PASS，相关独立配置与限定源码检查已完成。两初始basis实际rank5，各26519 Fraction操作、约0.20s构建；这只是地面Q的本地几何构建成本，不是方法总成本或星地传输。
+- 下一步常规只读metadata退避核实新support完整关闭；全部4/160/1800完成才将已冻结独立analyzer以fresh output执行一次（它不在训练release中）。分析source现已pushed3c3，closure后再独立analysis发布；不重训/重放head/JVP，不做部分评分/参数选择。原始日志/state/cert都保留，不热改、不自动重试。A/B/C配对、K×新增、gain/drop/absGap/H和真实cost仍必须完整报告。
+- 当前22:47UTC Git记录只是已观察的运行状态，不代表完成。原Group query73aa在22:44UTC两rx3 COMPLETE/两rx1 PREDICTING，原ProtoFrame r02 72663两rx3 PREDICTING/两rx1等待；supervisors1049548/1204372正常，full4/2400 markers均无。只能全矩阵原不可变release scorer truth-last，禁止subset/query反馈/热改/停机。原负support报告保留，fresh验证暂缓。
+
+<!-- SUPPORT_METRIC_LIVE_VERIFIED_20261002 -->
+
+以下保留历史状态，不据此重复启动：
+
 ## 当前交接：物理support度量联合LocalRidge，源码与固定实验已就绪
 
 - Goal ACTIVE。`20261002-phase2-d92-support-metric-joint-support-m2-r01` READY，尚未发布或启动；fixed4row/160parent/1800path，old6，K1/5/10/20×new0/2/5/10/20，既有support缓存与source-only scratch基座固定。新U ABI独立，拒绝旧方法adapter，仅同路径B→C。root单owner，CPU2/BLAS2/noGPU/no retry。

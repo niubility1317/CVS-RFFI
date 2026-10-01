@@ -8,7 +8,7 @@
   "name": "D92 physical support metric GGN1 + LocalRidge joint support diagnostic",
   "description": "One derived rank-aware U-coordinate candidate, fixed 4 rows/160 physical parents and 1800 paths, paired A/B/C; no parameter grid",
   "authorization": "Existing user LocalRidge-priority joint target-support SFT/frozen summaries/subagent authorization; root sole launch owner",
-  "status": "READY",
+  "status": "RUNNING",
   "created_at": "2026-10-01T22:25:36.848251+00:00",
   "data": {
     "dataset": "Support slices only from the two existing VALIDATED_ONCE capsules",
@@ -133,7 +133,8 @@
     "commit": "aa951242f0a14dfb7cb3d45742f90730e20111c6",
     "preparation_parent_commit": "aa951242f0a14dfb7cb3d45742f90730e20111c6",
     "checkout": "E:\\type10-7\\code\\snapshots\\d92_support_upgrade_20260928_wt",
-    "commit_note": "Preparation parent; actual immutable pushed runtime OID recorded after unique launch"
+    "commit_note": "Preparation parent; actual immutable pushed runtime OID recorded after unique launch",
+    "actual_runtime_commit": "3c3eb6c513aaf20fe84514dcbeab3584bad1f238"
   },
   "execution": {
     "host": "N607",
@@ -148,12 +149,125 @@
     "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-support-metric-joint-support-m2-r01",
     "local_artifact_root": "automation_reports/CV-SincNet/20261002-phase2-d92-support-metric-joint-support-m2-r01",
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-support-metric-joint-support-m2-r01",
-    "actual_runtime_commit": null,
-    "publication_status": "SOURCE_VERIFIED_NOT_LAUNCHED",
+    "actual_runtime_commit": "3c3eb6c513aaf20fe84514dcbeab3584bad1f238",
+    "publication_status": "VERIFIED",
     "implementation_validation": "VERIFIED_FROZEN_SOURCE_SYNTHETIC_AND_INPUT_METADATA_NOT_PERFORMANCE",
     "launch_command": "F:/App/miniconda3/python.exe -X utf8 E:/type10-7/.codex_tmp/run_ssr_command_native_activation_20261001.py E:\\type10-7\\code\\snapshots\\d92_support_upgrade_20260928_wt\\tools\\publish_d92_support_metric_joint_probe.py --spec configs/d92_support_metric_joint_support_20261002.json",
     "implementation_validation_ref": "automation_reports/CV-SincNet/20261002-phase2-d92-support-metric-joint-support-m2-r01/evidence/implementation_validation_20261002.json",
-    "metadata_preflight_ref": "automation_reports/CV-SincNet/20261002-phase2-d92-support-metric-joint-support-m2-r01/evidence/preflight_20261002.json"
+    "metadata_preflight_ref": "automation_reports/CV-SincNet/20261002-phase2-d92-support-metric-joint-support-m2-r01/evidence/preflight_20261002.json",
+    "publication_ref": "evidence/publication/publication.json",
+    "actual_supervisor_command": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_support_metric_joint_support_20261002_r01/tools/run_d92_support_metric_joint_probe.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_support_metric_joint_support_20261002_r01/configs/d92_support_metric_joint_support_20261002.json",
+      "--commit",
+      "3c3eb6c513aaf20fe84514dcbeab3584bad1f238"
+    ],
+    "supervisor_pid": 1276233,
+    "supervisor_start_ticks": 14215164,
+    "latest_runtime_observed_utc": "2026-10-01T22:42:14Z",
+    "latest_runtime_readback_ref": "evidence/support_runtime_1790894595333428100.json",
+    "current_row_statuses": {
+      "rx3-cvs-daot-rc4-s2026092701": "TRAINING_ON_SUPPORT",
+      "rx3-cvs-daot-rc4-s2026092702": "TRAINING_ON_SUPPORT",
+      "rx1-cvs-daot-rc4-s2026092701": "PENDING",
+      "rx1-cvs-daot-rc4-s2026092702": "PENDING"
+    },
+    "row_pids": {
+      "rx3-cvs-daot-rc4-s2026092701": 1276296,
+      "rx3-cvs-daot-rc4-s2026092702": 1276297,
+      "rx1-cvs-daot-rc4-s2026092701": null,
+      "rx1-cvs-daot-rc4-s2026092702": null
+    },
+    "actual_commands_by_row": {
+      "rx3-cvs-daot-rc4-s2026092701": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_support_metric_joint_support_20261002_r01/tools/evaluate_d92_support_metric_joint_probe.py",
+        "--support-features",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-support-probe-m4-r01/rx3-cvs-daot-rc4-s2026092701/feature_cache",
+        "--capsule",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-support-metric-joint-support-m2-r01/rx3-cvs-daot-rc4-s2026092701/probe",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-support-metric-joint-support-m2-r01/rx3-cvs-daot-rc4-s2026092701/resolved_config.json",
+        "--expected-capsule-id",
+        "residual-noeq-76121e6f34363fa612ec25fb",
+        "--expected-checkpoint-sha256",
+        "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b",
+        "--expected-model-seed",
+        "2026092701",
+        "--run-id",
+        "20261002-phase2-d92-support-metric-joint-support-m2-r01",
+        "--row-id",
+        "rx3-cvs-daot-rc4-s2026092701",
+        "--release-commit",
+        "3c3eb6c513aaf20fe84514dcbeab3584bad1f238",
+        "--ground-packet",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r02/ground-a-s2026092701",
+        "--ground-summary",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-cvs-d92-practical-manytx-m5-r01/cvs-daot-rc4-s2026092701/ground",
+        "--ground-summary-already-deployed",
+        "false"
+      ],
+      "rx3-cvs-daot-rc4-s2026092702": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_support_metric_joint_support_20261002_r01/tools/evaluate_d92_support_metric_joint_probe.py",
+        "--support-features",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-support-probe-m4-r01/rx3-cvs-daot-rc4-s2026092702/feature_cache",
+        "--capsule",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-support-metric-joint-support-m2-r01/rx3-cvs-daot-rc4-s2026092702/probe",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-support-metric-joint-support-m2-r01/rx3-cvs-daot-rc4-s2026092702/resolved_config.json",
+        "--expected-capsule-id",
+        "residual-noeq-76121e6f34363fa612ec25fb",
+        "--expected-checkpoint-sha256",
+        "72f26413e495dcf82317898f8729caa3d35499bf0b41e9671ffdceab2c90924b",
+        "--expected-model-seed",
+        "2026092702",
+        "--run-id",
+        "20261002-phase2-d92-support-metric-joint-support-m2-r01",
+        "--row-id",
+        "rx3-cvs-daot-rc4-s2026092702",
+        "--release-commit",
+        "3c3eb6c513aaf20fe84514dcbeab3584bad1f238",
+        "--ground-packet",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r02/ground-a-s2026092702",
+        "--ground-summary",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-cvs-d92-practical-manytx-m5-r01/cvs-daot-rc4-s2026092702/ground",
+        "--ground-summary-already-deployed",
+        "false"
+      ],
+      "rx1-cvs-daot-rc4-s2026092701": null,
+      "rx1-cvs-daot-rc4-s2026092702": null
+    },
+    "row_startup_refs": {
+      "rx3-cvs-daot-rc4-s2026092701": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-support-metric-joint-support-m2-r01/rx3-cvs-daot-rc4-s2026092701/row_startup.json",
+      "rx3-cvs-daot-rc4-s2026092702": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-support-metric-joint-support-m2-r01/rx3-cvs-daot-rc4-s2026092702/row_startup.json"
+    },
+    "actual_remote_environment": {
+      "CUDA_VISIBLE_DEVICES": "",
+      "OMP_NUM_THREADS": "2",
+      "OPENBLAS_NUM_THREADS": "2",
+      "MKL_NUM_THREADS": "2",
+      "NUMEXPR_NUM_THREADS": "2",
+      "PYTHONUNBUFFERED": "1"
+    },
+    "automatic_retry": false,
+    "source_delivery": {
+      "status": "VERIFIED",
+      "branch": "codex/d92-support-upgrade-20260928",
+      "local_head": "3c3eb6c513aaf20fe84514dcbeab3584bad1f238",
+      "independent_remote_oid": "3c3eb6c513aaf20fe84514dcbeab3584bad1f238",
+      "ahead": 0,
+      "behind": 0
+    }
   },
   "probe": {
     "cohorts": {
