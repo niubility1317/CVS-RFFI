@@ -25,3 +25,7 @@ PA非线性、记忆效应、振荡器等信号差异仍通过原观测路径编
 两个候选各原四seed2026092701至2026092704，同source物理划分L6300/U56700unused/V27000、split392005，同scratch E200×50、batch128/drop_lastFalse、AdamW2e−4/wd1e−4/cosine1e−6、FP32/no clip。无域骨干、输入或信道增强、teacher、EMA、resume或额外损失。每轮50步完整遍历6300个L样本，最后一批28个；总10000次更新，不增加预算。
 
 完整四seed E200 sourceV/最差sourceRX等权最高值冻结一个，只有完全并列后才考虑成本。默认进行选中四份clean测试，原20控制预测只读复用，所有24份对齐/固定后才由独立scorer接入truth，保留四seed、全部RX/TX、F1、混淆矩阵和资源成本及负结果。历史固定clean基准168000物理query、7RX、6类，不宣称新盲测、LEO、support适应或新增类性能；相关指标N/A。target结果不回流重选、调参或重跑。
+
+## N607运行版本读回
+
+2026-10-01以普通账号只读执行提交版本的分类头源码，在实际Torch2.1.0+cu121 CPU上完成两候选×4seed各3次合成CE更新。QR梯度、满秩、原型Gram、有效参数、单包推理及零/常量有限输出均通过。使用的是内存中的组件源码与此前immutable编码器，未向远程文件交付新版本，未访问正式数据、加载checkpoint或启动GPU训练。该证据只解决版本数值兼容性；完整训练与目标性能仍待正式发布。详细数据保存在本轮run报告的remote_cpu_simplex_validation.json。

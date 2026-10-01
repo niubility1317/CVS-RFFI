@@ -1,0 +1,154 @@
+{
+  "status": "VERIFIED_SYNTHETIC_COMPONENT_ONLY",
+  "torch_version": "2.1.0+cu121",
+  "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+  "device": "cpu",
+  "threads": 2,
+  "rows": [
+    {
+      "model_seed": 2026092701,
+      "variant": "simplex_learned",
+      "updates": 3,
+      "total_parameters": 165233,
+      "active_parameters": 165233,
+      "max_gram_error": 1.7881393432617188e-07,
+      "frame_min_singular": 1.2110857963562012,
+      "finite_gradient_norms": [
+        31.894521713256836,
+        31.78034019470215,
+        28.978252410888672
+      ],
+      "packet_independence": true,
+      "zero_constant_finite": true
+    },
+    {
+      "model_seed": 2026092701,
+      "variant": "simplex_fixed",
+      "updates": 3,
+      "total_parameters": 164433,
+      "active_parameters": 164433,
+      "max_gram_error": 2.384185791015625e-07,
+      "frame_min_singular": null,
+      "finite_gradient_norms": [
+        28.478111267089844,
+        29.544841766357422,
+        27.021289825439453
+      ],
+      "packet_independence": true,
+      "zero_constant_finite": true
+    },
+    {
+      "model_seed": 2026092702,
+      "variant": "simplex_learned",
+      "updates": 3,
+      "total_parameters": 165233,
+      "active_parameters": 165233,
+      "max_gram_error": 3.5762786865234375e-07,
+      "frame_min_singular": 1.3316000699996948,
+      "finite_gradient_norms": [
+        22.675077438354492,
+        26.680072784423828,
+        23.139802932739258
+      ],
+      "packet_independence": true,
+      "zero_constant_finite": true
+    },
+    {
+      "model_seed": 2026092702,
+      "variant": "simplex_fixed",
+      "updates": 3,
+      "total_parameters": 164433,
+      "active_parameters": 164433,
+      "max_gram_error": 1.1920928955078125e-07,
+      "frame_min_singular": null,
+      "finite_gradient_norms": [
+        20.188434600830078,
+        24.851346969604492,
+        21.474679946899414
+      ],
+      "packet_independence": true,
+      "zero_constant_finite": true
+    },
+    {
+      "model_seed": 2026092703,
+      "variant": "simplex_learned",
+      "updates": 3,
+      "total_parameters": 165233,
+      "active_parameters": 165233,
+      "max_gram_error": 3.5762786865234375e-07,
+      "frame_min_singular": 1.1541322469711304,
+      "finite_gradient_norms": [
+        33.15961456298828,
+        34.2081413269043,
+        27.43668556213379
+      ],
+      "packet_independence": true,
+      "zero_constant_finite": true
+    },
+    {
+      "model_seed": 2026092703,
+      "variant": "simplex_fixed",
+      "updates": 3,
+      "total_parameters": 164433,
+      "active_parameters": 164433,
+      "max_gram_error": 1.1920928955078125e-07,
+      "frame_min_singular": null,
+      "finite_gradient_norms": [
+        31.01481056213379,
+        32.21817398071289,
+        25.093019485473633
+      ],
+      "packet_independence": true,
+      "zero_constant_finite": true
+    },
+    {
+      "model_seed": 2026092704,
+      "variant": "simplex_learned",
+      "updates": 3,
+      "total_parameters": 165233,
+      "active_parameters": 165233,
+      "max_gram_error": 1.7881393432617188e-07,
+      "frame_min_singular": 1.1955360174179077,
+      "finite_gradient_norms": [
+        24.482646942138672,
+        29.918127059936523,
+        29.402877807617188
+      ],
+      "packet_independence": true,
+      "zero_constant_finite": true
+    },
+    {
+      "model_seed": 2026092704,
+      "variant": "simplex_fixed",
+      "updates": 3,
+      "total_parameters": 164433,
+      "active_parameters": 164433,
+      "max_gram_error": 1.1920928955078125e-07,
+      "frame_min_singular": null,
+      "finite_gradient_norms": [
+        22.02631187438965,
+        26.27680015563965,
+        27.02040672302246
+      ],
+      "packet_independence": true,
+      "zero_constant_finite": true
+    }
+  ],
+  "paired_initial_prototypes_equal": true,
+  "synthetic_inputs_only": true,
+  "checkpoint_loaded": false,
+  "target_inputs_used": false,
+  "formal_training_started": false,
+  "identity": {
+    "user": "szu2070436088",
+    "host": "dell-DSS8440"
+  },
+  "formal_paths_exist": {
+    "runs": false,
+    "logs": false,
+    "releases": false
+  },
+  "local_code_commit": "c1adb8d7d619fcb4fce43f7959d0214e3a6b1dd0",
+  "execution": "Exact committed head component source executed in memory against immutable coherence parent;no remote file changes;no GPU job",
+  "scientific_scope": "Runtime correctness only, not source or target performance"
+}
