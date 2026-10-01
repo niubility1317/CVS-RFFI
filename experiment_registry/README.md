@@ -1,6 +1,6 @@
 # 实验总索引
 
-更新：2026-10-01T20:17:49+00:00
+更新：2026-10-01T20:33:52+00:00
 
 先按方法/问题检索，再用run ID读取精确配置与证据。历史组数量不等于独立实验数量。
 
@@ -12,7 +12,7 @@
 
 |记录类型|数量|
 |---|---:|
-|managed_run|42|
+|managed_run|43|
 
 历史状态统一为HISTORICAL_UNVERIFIED；RUNNING等原文声明只供查证，不能证明此刻仍在运行。
 
@@ -20,10 +20,10 @@
 
 |路径标签（定位提示）|证据组数|
 |---|---:|
-|[cvs](by_method/cvs.md)|25|
+|[cvs](by_method/cvs.md)|26|
 |[clean_only](by_method/clean_only.md)|21|
 |[ce_only](by_method/ce_only.md)|21|
-|[no_augmentation](by_method/no_augmentation.md)|14|
+|[no_augmentation](by_method/no_augmentation.md)|15|
 |[performance_priority](by_method/performance_priority.md)|14|
 |[daot](by_method/daot.md)|11|
 |[source_selection](by_method/source_selection.md)|11|
@@ -42,12 +42,13 @@
 |[mmse](by_method/mmse.md)|5|
 |[truth_last](by_method/truth_last.md)|5|
 |[final200](by_method/final200.md)|4|
+|[source_only](by_method/source_only.md)|3|
 |[d92](by_method/d92.md)|3|
+|[rff_physics](by_method/rff_physics.md)|3|
 |[response](by_method/response.md)|3|
 |[core90](by_method/core90.md)|3|
 |[sixscene](by_method/sixscene.md)|2|
 |[evaluation](by_method/evaluation.md)|2|
-|[source_only](by_method/source_only.md)|2|
 |[true256](by_method/true256.md)|2|
 |[final_eval](by_method/final_eval.md)|2|
 |[source_scratch](by_method/source_scratch.md)|2|
@@ -58,7 +59,7 @@
 |[cvcnn_matched](by_method/cvcnn_matched.md)|2|
 |[ablation](by_method/ablation.md)|2|
 |[scratch](by_method/scratch.md)|2|
-|[rff_physics](by_method/rff_physics.md)|2|
+|[preamble](by_method/preamble.md)|2|
 |[three_seed](by_method/three_seed.md)|2|
 |[adv3b02](by_method/adv3b02.md)|1|
 |[original_leo](by_method/original_leo.md)|1|
@@ -84,7 +85,6 @@
 |[physical_stability](by_method/physical_stability.md)|1|
 |[synthetic_only](by_method/synthetic_only.md)|1|
 |[no_target_access](by_method/no_target_access.md)|1|
-|[preamble](by_method/preamble.md)|1|
 |[whole_identity_gauge](by_method/whole_identity_gauge.md)|1|
 |[whole_identity_observables](by_method/whole_identity_observables.md)|1|
 |[rf_behavior_operator](by_method/rf_behavior_operator.md)|1|
@@ -126,6 +126,7 @@
 |CVS性能优先继续优化：phase_dsq clean测试报告|managed_run|[打开](../automation_reports/CV-SincNet/20261001-phase1-cvs-stability-clean-manysig-m24-r01/report.md)|
 |CVS 性能优先研发：物理补充表征|managed_run|[打开](../automation_reports/CV-SincNet/20261001-phase1-cvs-stability-identity-manysig-m8-r01/report.md)|
 |RFF物理可辨识性：合成诊断|managed_run|[打开](../automation_reports/CV-SincNet/20261002-diagnostic-rff-identifiability-synthetic-m1-r01/report.md)|
+|RFF 源域已知 Wi-Fi 激励对应关系诊断|managed_run|[打开](../automation_reports/CV-SincNet/20261002-diagnostic-rff-known-excitation-source-manysig-m1-r01/report.md)|
 |RFF源域前导码与可观测量诊断|managed_run|[打开](../automation_reports/CV-SincNet/20261002-diagnostic-rff-preamble-source-manysig-m1-r01/report.md)|
 |完整 IQ 相位规范化 CVS：完整源实验报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-gauge-identity-manysig-m8-r01/report.md)|
 |CVS性能优先继续优化：observable_phase clean测试报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-observable-clean-manysig-m24-r01/report.md)|

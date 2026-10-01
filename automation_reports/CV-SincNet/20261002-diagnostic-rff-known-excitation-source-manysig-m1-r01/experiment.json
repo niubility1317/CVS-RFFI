@@ -1,0 +1,159 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261002-diagnostic-rff-known-excitation-source-manysig-m1-r01",
+  "group_id": "cvs-rff-physics-source-observables",
+  "display_name": "RFF 源域已知 Wi-Fi 激励对应关系诊断",
+  "description": "全量源L6300/V27000逐包检查标准L-STF模板相似性与12tone支撑；只拟合包内频偏/时移/复增益，不训练、不识别TX硬件参数、不访问target。",
+  "kind": "diagnostic",
+  "stage": "Phase1-source-observable-diagnostic",
+  "aliases": [],
+  "tags": [
+    "cvs",
+    "rff_physics",
+    "source_only",
+    "no_augmentation",
+    "preamble"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261002-diagnostic-rff-preamble-source-manysig-m1-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户要求从物理和RFF原理继续优化CVS；本诊断服务于新身份表征的源域研发。",
+  "code": {
+    "commit": "939861e65c055a3f471eef2c65a44c4d44abc12a",
+    "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rff_known_excitation_source_20261002_r01",
+    "note": "Preparation base; immutable actual launch commit recorded after publish."
+  },
+  "data": {
+    "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+    "version": "existing_N607_ManySig_6tx_12rx_4day",
+    "representation": "equalized1;center256;unitpacketRMS;25Msps",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#role_ids",
+    "label_map_ref": "source/source_contract.json#classes",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": null,
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only_CVS",
+    "query_use": "None;no target dataset/view constructed",
+    "external_method_exception": null,
+    "claim_scope": "Source received-IQ correspondence only; template residual includes RX/channel/equalization/noise; not identified TX."
+  },
+  "checkpoint": {
+    "initialization": "not_applicable_no_model",
+    "sources": [],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "provenance_verdict": "NO_CHECKPOINT_ACCESS",
+    "selection_rule": "No model/candidate. All L_s/V; fixed 3 windows; wrapped CFO;320 delay grid at1/16 sample; least-squares complex gain."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/rff-known-excitation-20261002",
+    "gpu_policy": "CPU-only;CUDA_VISIBLE_DEVICES empty;preserve everyotherprocess",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-rff-known-excitation-source-manysig-m1-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-diagnostic-rff-known-excitation-source-manysig-m1-r01",
+    "local_artifact_root": "local_artifacts/cvs_rff_known_excitation_source_20261002_r01",
+    "launch_command": "python -m experiments.cvs_rff_physics.publish_known_excitation --output local_artifacts/cvs_rff_known_excitation_source_20261002_r01",
+    "stop_rule": "Fail only own process on nonfinite/rolecontract/outputcollision;no restart or low-statistic intervention"
+  },
+  "expected_artifacts": [
+    "source_contract.json",
+    "resolved_config.json",
+    "excitation_statistics.json",
+    "completion.json",
+    "source.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "template_correlation",
+      "occupied_tone_fraction",
+      "dc_fraction",
+      "lag20_coherence",
+      "coherent_cycle_fraction",
+      "wrapped_offset_hz",
+      "best_delay_samples"
+    ],
+    "dimensions": [
+      "L_s/V",
+      "TX",
+      "source_RX",
+      "source_day",
+      "fixedwindow"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": null
+  },
+  "rows": [
+    {
+      "row_id": "source-full-l-v",
+      "method": "rff_known_excitation",
+      "purpose": "source_diagnostic",
+      "config_ref": "experiments/cvs_rff_physics/configs/known_excitation.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-rff-known-excitation-source-manysig-m1-r01/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": null,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Onlysplit392005 identifiesexistingphysicalroles;noRNG/model/augmentation/support/targetevaluation.",
+      "k": null,
+      "scenario": "clean source only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "One CPU pass L6300+V27000; U unused; 3 fixed80-sample windows; 320 periodic delays; no training/target",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-rff-known-excitation-source-manysig-m1-r01/source",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-diagnostic-rff-known-excitation-source-manysig-m1-r01/source.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.cvs_rff_physics.known_excitation --config /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rff_known_excitation_source_20261002_r01/experiments/cvs_rff_physics/configs/known_excitation.json",
+      "expected_artifacts": [
+        "source_contract.json",
+        "resolved_config.json",
+        "excitation_statistics.json",
+        "completion.json",
+        "source.log"
+      ]
+    }
+  ],
+  "notes": [
+    "Source-only communications diagnostic, not a released classifier. Test-set score N/A; no classifier or selected checkpoint.",
+    "Source physical roles unchanged; original dataset container loaded by existing builder but U samples not iterated.",
+    "Per-packet CFO/time/complex-gain nuisance fit only; no persistent across-packet fitted state, identity fit, RX calibration, or query access.",
+    "Standard L-STF conjugation equals -j times10-sample shift at25Msps; I/Q convention not identified. CFO wrappedmod1.25MHz is TX-RX relative offset.",
+    "Known template residual is not identified TX hardware. Repetition/tone support alone can also arise from arbitrary periodic signals/LTI channel; synthetic negative controls preserve this distinction.",
+    "Reference coefficients independently parsed from pinned author implementation commit ad0598e4a874f4b8e1f391a1e0323e80df2b34ff. Mathematical20MHz tone spacing312.5kHz sampled at25Msps; author10MHz example sample rate not copied."
+  ],
+  "registered_at": "2026-10-01T20:33:52+00:00"
+}
