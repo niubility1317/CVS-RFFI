@@ -1,6 +1,6 @@
 # 实验总索引
 
-更新：2026-09-28T06:32:12+00:00
+更新：2026-10-01T04:23:57+00:00
 
 先按方法/问题检索，再用run ID读取精确配置与证据。历史组数量不等于独立实验数量。
 
@@ -12,7 +12,7 @@
 
 |记录类型|数量|
 |---|---:|
-|managed_run|15|
+|managed_run|18|
 
 历史状态统一为HISTORICAL_UNVERIFIED；RUNNING等原文声明只供查证，不能证明此刻仍在运行。
 
@@ -27,19 +27,22 @@
 |[phase1](by_method/phase1.md)|6|
 |[fasttrust](by_method/fasttrust.md)|6|
 |[concat](by_method/concat.md)|6|
+|[residual_noeq](by_method/residual_noeq.md)|6|
 |[full](by_method/full.md)|5|
 |[zf](by_method/zf.md)|5|
 |[mmse](by_method/mmse.md)|5|
+|[truth_last](by_method/truth_last.md)|4|
 |[cvs](by_method/cvs.md)|3|
-|[residual_noeq](by_method/residual_noeq.md)|3|
 |[d92](by_method/d92.md)|3|
+|[final200](by_method/final200.md)|3|
 |[response](by_method/response.md)|3|
 |[core90](by_method/core90.md)|3|
 |[sixscene](by_method/sixscene.md)|2|
 |[evaluation](by_method/evaluation.md)|2|
 |[true256](by_method/true256.md)|2|
 |[final_eval](by_method/final_eval.md)|2|
-|[truth_last](by_method/truth_last.md)|2|
+|[source_scratch](by_method/source_scratch.md)|2|
+|[native_methods](by_method/native_methods.md)|2|
 |[three_seed](by_method/three_seed.md)|2|
 |[adv3b02](by_method/adv3b02.md)|1|
 |[original_leo](by_method/original_leo.md)|1|
@@ -50,6 +53,11 @@
 |[d42](by_method/d42.md)|1|
 |[diagnostic](by_method/diagnostic.md)|1|
 |[support_only](by_method/support_only.md)|1|
+|[cvs_identity_ce](by_method/cvs_identity_ce.md)|1|
+|[identity_only](by_method/identity_only.md)|1|
+|[cvcnn_matched](by_method/cvcnn_matched.md)|1|
+|[ablation](by_method/ablation.md)|1|
+|[scratch](by_method/scratch.md)|1|
 
 ## 最近记录入口
 
@@ -67,11 +75,9 @@
 |CVS最终clean/星地测试与D92 E0真实256维注册|managed_run|[打开](../automation_reports/CV-SincNet/20260927-phase2-cvs-d92-practical-manytx-m5-r01/report.md)|
 |D42 support-only技术诊断|managed_run|[打开](../automation_reports/CV-SincNet/20260928-diagnostic-d42-support-manytx-m2-r01/report.md)|
 |D92 E0 true256 numerical recovery: all five fixed seeds|managed_run|[打开](../automation_reports/CV-SincNet/20260928-phase2-cvs-d92-practical-manytx-m5-r02/report.md)|
+|Native comparison source training|managed_run|[打开](../automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/report.md)|
+|Native comparison paired adaptation and registration|managed_run|[打开](../automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/report.md)|
+|CVS身份骨干交叉熵对照实验|managed_run|[打开](../automation_reports/CV-SincNet/20261001-phase1-cvs-identity-ce-practical-manysig-m5-r01/report.md)|
 |原生DAOT＋RC4与仅动力博弈三seed对照|managed_run|[打开](../automation_reports/CV-SincNet/phase1_daot_rc4_pure_game_m3_20260917_r1/report.md)|
 |原生DAOT＋RC4与仅动力博弈三seed对照|managed_run|[打开](../automation_reports/CV-SincNet/phase1_daot_rc4_pure_game_m3_20260917_r2/report.md)|
 |响应博弈矩阵测试评估：VERIFIED|managed_run|[打开](../automation_reports/CV-SincNet/response_matrix_eval_20260917/report.md)|
-
-## Native comparison registrations 2026-09-30
-
-- [20260930-phase1-native-baselines-practical-manysig-m5-r01](../automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/report.md)
-- [20260930-phase12-native-baselines-practical-m5-r01](../automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/report.md)

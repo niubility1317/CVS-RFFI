@@ -1,10 +1,10 @@
 {
   "schema": "experiment_registry_coverage_v1",
-  "indexed_at": "2026-09-28T06:32:12+00:00",
+  "indexed_at": "2026-10-01T04:23:57+00:00",
   "workspace": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
   "mode": "managed_only",
   "record_counts": {
-    "managed_run": 17
+    "managed_run": 18
   },
   "surfaces": [],
   "remote_snapshots": [],
@@ -16,10 +16,5 @@
     "仅完整读取不超过2MB的UTF-8/带BOM UTF-16元数据与Markdown；大文件与编码错误仍保留locator。",
     "reported_statuses是原文声明，可能包含历史过程或嵌套row，不能作为当前状态。",
     "目录不存在、旧索引记录未重见、结构化读取失败都在此披露，不宣称已完成全量性能审计。"
-  ],
-  "native_comparison_registration_refs": [
-    "20260930-phase1-native-baselines-practical-manysig-m5-r01",
-    "20260930-phase12-native-baselines-practical-m5-r01"
-  ],
-  "native_comparison_authority": "E:\\type10-7\\experiment_registry"
+  ]
 }
