@@ -1,0 +1,257 @@
+{
+  "status": "VERIFIED_SYNTHETIC_COMPONENT_ONLY",
+  "torch_version": "2.1.0+cu121",
+  "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+  "device": "cpu",
+  "threads": 2,
+  "rows": [
+    {
+      "seed": 2026092701,
+      "variant": "rf_mp",
+      "updates": 3,
+      "total_parameters": 167153,
+      "active_parameters": 167153,
+      "rotation_observation_max_abs_error": 1.1958181858062744e-05,
+      "finite_gradient_norms": [
+        36.02361297607422,
+        31.820409774780273,
+        22.961137771606445
+      ],
+      "physical_diagnostics": {
+        "physics_mode": "causal_complex_mp",
+        "basis_terms": 12,
+        "direct_coefficient_norm": 1.657232642173767,
+        "image_coefficient_norm": 1.8063992261886597,
+        "direct_gradient_norm": 0.09999018162488937,
+        "image_gradient_norm": 0.1019839346408844,
+        "order_coefficient_norm": {
+          "1": 1.4064595699310303,
+          "3": 1.3995263576507568,
+          "5": 1.4396858215332031
+        },
+        "cross_memory_coefficient_norm": null
+      },
+      "packet_independence": true,
+      "zero_constant_finite": true
+    },
+    {
+      "seed": 2026092701,
+      "variant": "rf_gmp",
+      "updates": 3,
+      "total_parameters": 167665,
+      "active_parameters": 167665,
+      "rotation_observation_max_abs_error": 5.9604644775390625e-06,
+      "finite_gradient_norms": [
+        35.99674987792969,
+        31.778921127319336,
+        22.975278854370117
+      ],
+      "physical_diagnostics": {
+        "physics_mode": "causal_complex_lag_gmp",
+        "basis_terms": 28,
+        "direct_coefficient_norm": 2.819484233856201,
+        "image_coefficient_norm": 2.8595588207244873,
+        "direct_gradient_norm": 0.07991485297679901,
+        "image_gradient_norm": 0.07149150222539902,
+        "order_coefficient_norm": {
+          "1": 1.4069750308990479,
+          "3": 2.5229575634002686,
+          "5": 2.789564847946167
+        },
+        "cross_memory_coefficient_norm": 3.1806914806365967
+      },
+      "packet_independence": true,
+      "zero_constant_finite": true
+    },
+    {
+      "seed": 2026092702,
+      "variant": "rf_mp",
+      "updates": 3,
+      "total_parameters": 167153,
+      "active_parameters": 167153,
+      "rotation_observation_max_abs_error": 3.829598426818848e-06,
+      "finite_gradient_norms": [
+        31.272830963134766,
+        26.23409080505371,
+        27.75043487548828
+      ],
+      "physical_diagnostics": {
+        "physics_mode": "causal_complex_mp",
+        "basis_terms": 12,
+        "direct_coefficient_norm": 1.8420382738113403,
+        "image_coefficient_norm": 1.8383864164352417,
+        "direct_gradient_norm": 0.09065879136323929,
+        "image_gradient_norm": 0.09104475378990173,
+        "order_coefficient_norm": {
+          "1": 1.411133885383606,
+          "3": 1.6095155477523804,
+          "5": 1.4801791906356812
+        },
+        "cross_memory_coefficient_norm": null
+      },
+      "packet_independence": true,
+      "zero_constant_finite": true
+    },
+    {
+      "seed": 2026092702,
+      "variant": "rf_gmp",
+      "updates": 3,
+      "total_parameters": 167665,
+      "active_parameters": 167665,
+      "rotation_observation_max_abs_error": 1.0728836059570312e-05,
+      "finite_gradient_norms": [
+        31.273059844970703,
+        26.24553108215332,
+        27.75925064086914
+      ],
+      "physical_diagnostics": {
+        "physics_mode": "causal_complex_lag_gmp",
+        "basis_terms": 28,
+        "direct_coefficient_norm": 2.936267137527466,
+        "image_coefficient_norm": 2.7710776329040527,
+        "direct_gradient_norm": 0.09389213472604752,
+        "image_gradient_norm": 0.08196879923343658,
+        "order_coefficient_norm": {
+          "1": 1.4116950035095215,
+          "3": 2.6267921924591064,
+          "5": 2.721693515777588
+        },
+        "cross_memory_coefficient_norm": 3.08695650100708
+      },
+      "packet_independence": true,
+      "zero_constant_finite": true
+    },
+    {
+      "seed": 2026092703,
+      "variant": "rf_mp",
+      "updates": 3,
+      "total_parameters": 167153,
+      "active_parameters": 167153,
+      "rotation_observation_max_abs_error": 5.7220458984375e-06,
+      "finite_gradient_norms": [
+        36.98440170288086,
+        35.52660369873047,
+        34.38848114013672
+      ],
+      "physical_diagnostics": {
+        "physics_mode": "causal_complex_mp",
+        "basis_terms": 12,
+        "direct_coefficient_norm": 1.8579270839691162,
+        "image_coefficient_norm": 1.8781317472457886,
+        "direct_gradient_norm": 0.10993856936693192,
+        "image_gradient_norm": 0.09783998131752014,
+        "order_coefficient_norm": {
+          "1": 1.6032179594039917,
+          "3": 1.4742183685302734,
+          "5": 1.4952070713043213
+        },
+        "cross_memory_coefficient_norm": null
+      },
+      "packet_independence": true,
+      "zero_constant_finite": true
+    },
+    {
+      "seed": 2026092703,
+      "variant": "rf_gmp",
+      "updates": 3,
+      "total_parameters": 167665,
+      "active_parameters": 167665,
+      "rotation_observation_max_abs_error": 7.510185241699219e-06,
+      "finite_gradient_norms": [
+        37.00645065307617,
+        35.516502380371094,
+        34.384910583496094
+      ],
+      "physical_diagnostics": {
+        "physics_mode": "causal_complex_lag_gmp",
+        "basis_terms": 28,
+        "direct_coefficient_norm": 2.6667544841766357,
+        "image_coefficient_norm": 2.7845232486724854,
+        "direct_gradient_norm": 0.11827437579631805,
+        "image_gradient_norm": 0.101216621696949,
+        "order_coefficient_norm": {
+          "1": 1.6034342050552368,
+          "3": 2.430263042449951,
+          "5": 2.5274431705474854
+        },
+        "cross_memory_coefficient_norm": 2.8086376190185547
+      },
+      "packet_independence": true,
+      "zero_constant_finite": true
+    },
+    {
+      "seed": 2026092704,
+      "variant": "rf_mp",
+      "updates": 3,
+      "total_parameters": 167153,
+      "active_parameters": 167153,
+      "rotation_observation_max_abs_error": 3.3080577850341797e-06,
+      "finite_gradient_norms": [
+        28.82769775390625,
+        29.655855178833008,
+        18.896167755126953
+      ],
+      "physical_diagnostics": {
+        "physics_mode": "causal_complex_mp",
+        "basis_terms": 12,
+        "direct_coefficient_norm": 1.7909730672836304,
+        "image_coefficient_norm": 1.8328684568405151,
+        "direct_gradient_norm": 0.12408855557441711,
+        "image_gradient_norm": 0.11134984344244003,
+        "order_coefficient_norm": {
+          "1": 1.504302740097046,
+          "3": 1.4783891439437866,
+          "5": 1.455482840538025
+        },
+        "cross_memory_coefficient_norm": null
+      },
+      "packet_independence": true,
+      "zero_constant_finite": true
+    },
+    {
+      "seed": 2026092704,
+      "variant": "rf_gmp",
+      "updates": 3,
+      "total_parameters": 167665,
+      "active_parameters": 167665,
+      "rotation_observation_max_abs_error": 5.27501106262207e-06,
+      "finite_gradient_norms": [
+        28.804597854614258,
+        29.679210662841797,
+        18.91339874267578
+      ],
+      "physical_diagnostics": {
+        "physics_mode": "causal_complex_lag_gmp",
+        "basis_terms": 28,
+        "direct_coefficient_norm": 2.7669644355773926,
+        "image_coefficient_norm": 2.7691104412078857,
+        "direct_gradient_norm": 0.09206266701221466,
+        "image_gradient_norm": 0.10755636543035507,
+        "order_coefficient_norm": {
+          "1": 1.5047305822372437,
+          "3": 2.554115056991577,
+          "5": 2.5566279888153076
+        },
+        "cross_memory_coefficient_norm": 2.958693265914917
+      },
+      "packet_independence": true,
+      "zero_constant_finite": true
+    }
+  ],
+  "synthetic_inputs_only": true,
+  "checkpoint_loaded": false,
+  "target_inputs_used": false,
+  "formal_training_started": false,
+  "identity": {
+    "user": "szu2070436088",
+    "host": "dell-DSS8440"
+  },
+  "formal_paths_exist": {
+    "runs": false,
+    "logs": false,
+    "releases": false
+  },
+  "model_source_sha256": "41c458278e10f1da6e299e39328272d9e3e3f7efc2e845b688302f3d63e11db0",
+  "execution": "Exact local RF model source executed in memory against immutable residual dependencies;no remote file changes;no GPU job",
+  "scientific_scope": "Runtime and physical-constraint correctness only,not identification performance"
+}

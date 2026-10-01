@@ -1,6 +1,6 @@
 # 实验总索引
 
-更新：2026-10-01T16:35:24+00:00
+更新：2026-10-01T16:49:13+00:00
 
 先按方法/问题检索，再用run ID读取精确配置与证据。历史组数量不等于独立实验数量。
 
@@ -12,7 +12,7 @@
 
 |记录类型|数量|
 |---|---:|
-|managed_run|35|
+|managed_run|36|
 
 历史状态统一为HISTORICAL_UNVERIFIED；RUNNING等原文声明只供查证，不能证明此刻仍在运行。
 
@@ -20,14 +20,14 @@
 
 |路径标签（定位提示）|证据组数|
 |---|---:|
-|[cvs](by_method/cvs.md)|18|
-|[clean_only](by_method/clean_only.md)|16|
-|[ce_only](by_method/ce_only.md)|16|
+|[cvs](by_method/cvs.md)|19|
+|[clean_only](by_method/clean_only.md)|17|
+|[ce_only](by_method/ce_only.md)|17|
 |[daot](by_method/daot.md)|11|
+|[no_augmentation](by_method/no_augmentation.md)|11|
 |[rc4](by_method/rc4.md)|10|
-|[no_augmentation](by_method/no_augmentation.md)|10|
-|[performance_priority](by_method/performance_priority.md)|9|
-|[source_selection](by_method/source_selection.md)|8|
+|[performance_priority](by_method/performance_priority.md)|10|
+|[source_selection](by_method/source_selection.md)|9|
 |[practical](by_method/practical.md)|7|
 |[residual](by_method/residual.md)|7|
 |[residual_noeq](by_method/residual_noeq.md)|7|
@@ -81,6 +81,7 @@
 |[frozen_baseline_reuse](by_method/frozen_baseline_reuse.md)|1|
 |[simplex_classifier](by_method/simplex_classifier.md)|1|
 |[physical_stability](by_method/physical_stability.md)|1|
+|[rf_behavior_operator](by_method/rf_behavior_operator.md)|1|
 
 ## 最近记录入口
 
@@ -118,6 +119,7 @@
 |CVS 等角身份分类头|managed_run|[打开](../automation_reports/CV-SincNet/20261001-phase1-cvs-simplex-identity-manysig-m8-r01/report.md)|
 |CVS性能优先继续优化：phase_dsq clean测试报告|managed_run|[打开](../automation_reports/CV-SincNet/20261001-phase1-cvs-stability-clean-manysig-m24-r01/report.md)|
 |CVS 性能优先研发：物理补充表征|managed_run|[打开](../automation_reports/CV-SincNet/20261001-phase1-cvs-stability-identity-manysig-m8-r01/report.md)|
+|CVS 受约束射频行为算子|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-rf-operator-identity-manysig-m8-r01/report.md)|
 |原生DAOT＋RC4与仅动力博弈三seed对照|managed_run|[打开](../automation_reports/CV-SincNet/phase1_daot_rc4_pure_game_m3_20260917_r1/report.md)|
 |原生DAOT＋RC4与仅动力博弈三seed对照|managed_run|[打开](../automation_reports/CV-SincNet/phase1_daot_rc4_pure_game_m3_20260917_r2/report.md)|
 |响应博弈矩阵测试评估：VERIFIED|managed_run|[打开](../automation_reports/CV-SincNet/response_matrix_eval_20260917/report.md)|

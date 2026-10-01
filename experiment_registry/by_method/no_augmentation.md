@@ -16,3 +16,4 @@
 |CVS 结构优化：轻量残差融合的 clean 确认报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261001-phase1-cvs-selected-clean-manysig-m20-r01/report.md)|
 |CVS 等角身份分类头|managed_run|[打开](../../automation_reports/CV-SincNet/20261001-phase1-cvs-simplex-identity-manysig-m8-r01/report.md)|
 |CVS 性能优先研发：物理补充表征|managed_run|[打开](../../automation_reports/CV-SincNet/20261001-phase1-cvs-stability-identity-manysig-m8-r01/report.md)|
+|CVS 受约束射频行为算子|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-rf-operator-identity-manysig-m8-r01/report.md)|
