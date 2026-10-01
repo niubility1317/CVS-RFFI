@@ -1,4 +1,14 @@
-## 最新状态：实际地面A包已完成，Conditional独立分析进行中（2026-10-01）
+## 当前状态：margin解析头组件已验证，联合核心在实现（2026-10-01）
+
+COMPONENT_SYNTHETIC_VERIFIED：新margin解析头及规则活动集伴随已完成，独立只读审查发现的失败快照混态P1已修复；root串行30项合成检查通过0.63s，证据pytest_utf8_1790834175912648700。数学19项旧证书未重复运行。尚无完整MarginJoint方法、实际run或性能/星载结论；不把组件通过误报为整个方法通过。query-blind anchor_joint_core仅拥有新joint core/test/doc，其文件尚在开发，不进入组件提交；暂停的d92_support_residual_local_ridge.py及.codex_tmp无关内容保留。
+
+ANALYSIS_RUNNING/VERIFIED：Conditional仍原PID617023/start7407753/analysis源0145234、训练源7204161、local handle55338。最新只读证据analysis_readback_1790834135312987300.json核实CPU及读取字节持续增加，summary尚无，不重复analysis、停止或热修改。完成后才生成完整报告、收集全训练档案，并启动已预登记的8row Ground A/support配对。Ground support run 20261001-phase2-d92-ground-a-support-m2-r01已PLANNED，源289282已交付，但尚未launch；packet r02已完整结束，两包8737/8735B，A仍未评分。
+
+ANALYZED/VERIFIED：Affine完整分析及3240stage/20564curve训练诊断已交付6373f7f。仅results/training_ai_scalar_r02是已纠正且独立读回的AI标量摘要；旧r01缺失字段被默认0的问题已保留为无效产物。1944为CE与近端梯度冲突事件，不能称为已接受CE升高次数。当前没有Affine采集进程或Conda包装，不重复snapshot/extract。上次数学文档提交1625da0已push/OID核实；本轮组件交付后继续联合核心验证。目标ACTIVE，无新增审批或独立数据要求。
+
+以下为保留的历史状态，不能据其旧RUNNING/未登记描述重新启动。
+
+## 历史状态：实际地面A包已完成，Conditional独立分析进行中（2026-10-01）
 
 ARTIFACTS_COMPLETE/VERIFIED：r02实际runtime0145234，supervisor617603正常退出；两个源分类头包经独立loader、checkpoint/class/scale/eps/source lineage/文件统计读回核实，实际文件8737B与8735B，其中各3840B为原float32权重。两包已下载并核对metadata/complete及各文件字节。query/support/源样本/源逐记录特征0，encoder未构造/执行，A仍未评分。ground export程序内计时0.306050687s，进程峰值RSS450482176B；不含Python/Torch启动耗时，不代表星载资源或链路传输，实际星地增量传输N/A。
 

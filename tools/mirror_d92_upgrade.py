@@ -336,6 +336,7 @@ paths += ['tools/run_d92_ground_a_support.py', 'tools/publish_d92_ground_a_suppo
 paths += ['docs/D92_JOINT_SFT_PAPER_MAPPING_20261001.md']
 
 paths += ['docs/D92_MARGIN_JOINT_STRUCTURAL_DERIVATION_20261001.md', 'docs/D92_MARGIN_JOINT_SOLVER_FEASIBILITY_20261001.md', 'tests/test_d92_margin_joint_math_certificate.py']
+paths += ['code/cvsrffi/d92_margin_qp_head.py', 'tests/test_d92_margin_qp_head.py', 'docs/D92_MARGIN_QP_HEAD_IMPLEMENTATION_20261001.md']
 
 for name in paths:
     src=ROOT/name;dst=WS/name;dst.parent.mkdir(parents=True,exist_ok=True)
