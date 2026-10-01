@@ -163,12 +163,12 @@
     "actual_process_alive": false,
     "analysis_release": "d92_conditional_joint_analysis_20261001_r01",
     "analysis_launch_owner": "root",
-    "analysis_status": "RUNNING",
+    "analysis_status": "VERIFIED_COMPLETE",
     "analysis_command": "E:/type10-7/local_envs/ssr-gpu/python.exe -X utf8 tools/analyze_d92_conditional_joint_probe.py --spec configs/d92_conditional_joint_support_20261001.json --analysis-release d92_conditional_joint_analysis_20261001_r01",
     "analysis_pid": 617023,
     "analysis_start_ticks": 7407753,
     "analysis_commit": "0145234e381b5799306acfb3d36a4e17865c1814",
-    "analysis_process_alive": true,
+    "analysis_process_alive": false,
     "analysis_local_handle": 55338,
     "analysis_actual_argv": [
       "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
@@ -182,7 +182,20 @@
       "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-conditional-joint-support-m2-r01/results/support_summary"
     ],
     "analysis_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_conditional_joint_analysis_20261001_r01",
-    "analysis_readback_ref": "evidence/analysis_readback_1790826528974606200.json"
+    "analysis_readback_ref": "evidence/analysis_readback_1790836114622143600.json",
+    "analysis_completed_at": "2026-10-01T06:39:39.310289+00:00",
+    "analysis_local_handle_state": "DONE_DO_NOT_POLL",
+    "independent_analysis_status": "VERIFIED_COMPLETE",
+    "full_support_report_ref": "docs/D92_CONDITIONAL_JOINT_SUPPORT_RESULT_20261001.md",
+    "independent_support_summary_ref": "results/support_summary/summary.json",
+    "interpretation_ref": "results/interpretation.json",
+    "training_collector_status": "NOT_STARTED",
+    "analysis_complete_counts": {
+      "model_rows": 4,
+      "parents": 160,
+      "paths": 1800,
+      "stages": 3240
+    }
   },
   "expected_artifacts": [
     "startup.json",
@@ -697,7 +710,7 @@
   ],
   "parent_run_ids": [],
   "claim_scope": "SUPPORT_INFORMATION_DIAGNOSTIC_NOT_QUERY_PERFORMANCE",
-  "status": "TRAINING_COMPLETE",
+  "status": "ANALYZED",
   "spec_path": "configs/d92_conditional_joint_support_20261001.json",
   "input_identity_source": "Declared cache/capsule/model/physical split metadata from the Affine config; no learned state, result or scoring file read",
   "probe": {
@@ -3069,5 +3082,6 @@
   "adaptation_gain_B_minus_A": null,
   "performance_gate": null,
   "automatic_promotion": false,
-  "registered_at": "2026-10-01T01:58:38+00:00"
+  "registered_at": "2026-10-01T01:58:38+00:00",
+  "updated_at": "2026-10-01T06:39:39.310289+00:00"
 }

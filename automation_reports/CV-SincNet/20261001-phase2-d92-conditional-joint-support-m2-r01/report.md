@@ -1,3 +1,15 @@
+# ConditionalJoint完整分析完成
+
+当前状态：ANALYZED/VERIFIED。完整4row、160parent、1800path、3240stage，原分析进程已退出；分析0145234、原训练7204161未变。禁止再次analysis或poll已结束55338。
+
+合法support OOF（K5/10/20，新增2/5/10/20，96parent）相对R0：B旧−0.8333pp、C旧−2.4392pp、C新+2.7630pp、H−0.2752pp；注册旧类下降增加1.6059pp，平均绝对新旧差增加1.5842pp。未全面优于BranchLocalRidge，不晋级；这不是query或新增独立验证。A/B−A仍N/A，不用R0补齐。
+
+[完整三阶段字段、80行K×新增类数表与分层报告](../../../docs/D92_CONDITIONAL_JOINT_SUPPORT_RESULT_20261001.md)。[独立完成读回](evidence/analysis_readback_1790836114622143600.json)、[分析execution](results/support_summary/analysis_execution.json)、[完整解释记录](results/interpretation.json)。13.5MB原summary及原始训练档案保留本地/远端，Git只保存小型记录与报告。
+
+全训练collector与已预登记8row Ground A/support尚未启动，分别完成后更新本记录；不重训或改变本方法。新MarginJoint已先冻结并完成纯合成验证，此分析结果不发送给query-blind方法worker。目标ACTIVE。
+
+以下保留原预登记与历史状态：
+
 # 旧点函数约束的条件核LocalRidge与support监督adapter联合适应注册
 
 - run_id：`20261001-phase2-d92-conditional-joint-support-m2-r01`
