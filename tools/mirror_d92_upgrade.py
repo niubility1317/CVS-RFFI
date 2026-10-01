@@ -337,6 +337,7 @@ paths += ['docs/D92_JOINT_SFT_PAPER_MAPPING_20261001.md']
 
 paths += ['docs/D92_MARGIN_JOINT_STRUCTURAL_DERIVATION_20261001.md', 'docs/D92_MARGIN_JOINT_SOLVER_FEASIBILITY_20261001.md', 'tests/test_d92_margin_joint_math_certificate.py']
 paths += ['code/cvsrffi/d92_margin_qp_head.py', 'tests/test_d92_margin_qp_head.py', 'docs/D92_MARGIN_QP_HEAD_IMPLEMENTATION_20261001.md']
+paths += ['code/cvsrffi/d92_margin_joint_local_ridge.py', 'tests/test_d92_margin_joint_local_ridge.py', 'docs/D92_MARGIN_JOINT_IMPLEMENTATION_20261001.md', 'docs/D92_MARGIN_JOINT_ENTRY_20261001.md', 'tools/prepare_d92_margin_joint_probe.py', 'tools/preflight_d92_margin_joint_probe.py', 'tools/run_d92_margin_joint_probe.py', 'tools/publish_d92_margin_joint_probe.py', 'tools/evaluate_d92_margin_joint_probe.py', 'tests/test_prepare_d92_margin_joint_probe.py', 'tests/test_preflight_d92_margin_joint_probe.py', 'tests/test_run_d92_margin_joint_probe.py', 'tests/test_publish_d92_margin_joint_probe.py', 'tests/test_evaluate_d92_margin_joint_probe.py']
 
 for name in paths:
     src=ROOT/name;dst=WS/name;dst.parent.mkdir(parents=True,exist_ok=True)

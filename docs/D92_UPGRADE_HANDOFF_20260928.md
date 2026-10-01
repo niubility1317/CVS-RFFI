@@ -1,4 +1,10 @@
-## 当前状态：margin解析头组件已验证，联合核心在实现（2026-10-01）
+## 当前状态：MarginJoint核心/五入口已验证，Conditional完整分析结束（2026-10-01）
+
+SYNTHETIC_VERIFIED：MarginJoint core21项通过4.64s（pytest_utf8_1790835764364153400），五入口34项通过18.28s（pytest_utf8_1790835922424555700），query-blind独立完整梯度链/继承/退化/成本限定审查无P0/P1。头组件此前30项0.63s已交付8c253ade7/OID一致；19数学证书与30头测试未重复运行。新方法完整实现与合成正确性不代表真实性能或star资源改善；实际QP预算/矩阵未选择，未创建run，独立Margin summary/analyzer尚未实现，因此publisher当前不dispatch。暂停的residual core和.codex_tmp保留。
+
+ANALYSIS_COMPLETE/VERIFIED：Conditional同一local55338已结束并下载完整summary；独立只读证据analysis_readback_1790836114622143600.json核实PID617023退出、summary存在、analysis0145234/训练7204161与execution VERIFIED。完整4row/160parent/1800path/3240stage和query/source0经local读回核实，完整报告已生成docs/D92_CONDITIONAL_JOINT_SUPPORT_RESULT_20261001.md，canonical记录/Git交付待更新，原训练不改。禁止再poll55338或再次analyze；本轮报告A仍N/A。下一步更新原记录、只读全训练collector，并按已预登记8row Ground A/support唯一launch；尚未snapshot/extract或Ground支持集launch。目标ACTIVE，无活跃Conda包装。
+
+## 历史状态：margin解析头组件已验证，联合核心在实现（2026-10-01）
 
 COMPONENT_SYNTHETIC_VERIFIED：新margin解析头及规则活动集伴随已完成，独立只读审查发现的失败快照混态P1已修复；root串行30项合成检查通过0.63s，证据pytest_utf8_1790834175912648700。数学19项旧证书未重复运行。尚无完整MarginJoint方法、实际run或性能/星载结论；不把组件通过误报为整个方法通过。query-blind anchor_joint_core仅拥有新joint core/test/doc，其文件尚在开发，不进入组件提交；暂停的d92_support_residual_local_ridge.py及.codex_tmp无关内容保留。
 
