@@ -19,7 +19,7 @@
   "replaces_run_id": null,
   "authorization": "用户要求从物理和RFF原理继续优化CVS；本诊断服务于新身份表征的源域研发。",
   "code": {
-    "commit": "726ec5053b034ba6f63a99722b021a4af45ea287",
+    "commit": "4645a84524fc3d994cb6977586ba72fb059221a1",
     "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rff_preamble_source_20261002_r01",
@@ -80,7 +80,17 @@
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-diagnostic-rff-preamble-source-manysig-m1-r01",
     "local_artifact_root": "local_artifacts/cvs_rff_preamble_source_20261002_r01",
     "launch_command": "python -m experiments.cvs_rff_physics.publish_source_preamble --output local_artifacts/cvs_rff_preamble_source_20261002_r01",
-    "stop_rule": "Fail only own process on nonfinite/rolecontract/outputcollision;no restart or low-statistic intervention"
+    "stop_rule": "Fail only own process on nonfinite/rolecontract/outputcollision;no restart or low-statistic intervention",
+    "actual_pid": 1108871,
+    "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rff_preamble_source_20261002_r01",
+    "actual_argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_rff_physics.source_preamble",
+      "--config",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rff_preamble_source_20261002_r01/experiments/cvs_rff_physics/configs/source_preamble.json"
+    ]
   },
   "expected_artifacts": [
     "source_contract.json",
@@ -142,7 +152,9 @@
         "preamble_statistics.json",
         "completion.json",
         "source.log"
-      ]
+      ],
+      "actual_pid": 1108871,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rff_preamble_source_20261002_r01"
     }
   ],
   "notes": [

@@ -1,0 +1,16 @@
+{
+  "status": "SUBMITTED",
+  "pid": 1108871,
+  "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rff_preamble_source_20261002_r01",
+  "argv": [
+    "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "-u",
+    "-m",
+    "experiments.cvs_rff_physics.source_preamble",
+    "--config",
+    "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rff_preamble_source_20261002_r01/experiments/cvs_rff_physics/configs/source_preamble.json"
+  ],
+  "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-diagnostic-rff-preamble-source-manysig-m1-r01/source.log",
+  "commit": "4645a84524fc3d994cb6977586ba72fb059221a1",
+  "cpu_only": true
+}
