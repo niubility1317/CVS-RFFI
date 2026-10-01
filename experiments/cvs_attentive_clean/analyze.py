@@ -107,6 +107,19 @@ def analyze(root):
     for method,st in selection['source_summaries'].items():s+=f"|{method}|{pct(st['source_accuracy'])}|{pct(st['worst_rx_accuracy'])}|{pct(st['score'])}|\n"
     s+='\n本轮登记开始即遵守用户“性能优先，轻量次要”。源选择以0.5源V＋0.5最差源RX最高分优先，源性能完全并列后才比较成本；没有0.2个百分点成本优先容差。保持E200权重和原source_selection，确认记录引用同一冻结结果。实际8行源产物重算与冻结一致，未选候选不测试；test成绩不回流研发/选择/重训。\n\n'
     s+='结构保留原time/frequency/PA提取器、投影、dropout、稠密时频融合和残差PA余弦头，仅改变三个分支的全局池化。attentive_mean用包内有界softmax加权均值，attentive_moments再合成可退化的加权标准差；权重评分只用包内标准化特征，聚合原特征值，评分和波动增益初始化0，整个模型初始等价原残差CVS。数学上凸权重并限制权重比，保留原宽度和直接梯度；通信上不增加节点或独立样本，不强制IQ相位不变；物理上保留PA记忆与包络响应，只假设局部波动可能包含信息；RFFI上检验非均匀聚合对身份信息压缩的影响。注意力可能同样强调接收机/信道，结果不证明单一机制因果或TX/RX解耦。详见[设计分析](../../../docs/CVS_ATTENTIVE_IDENTITY_RESEARCH_20261001.md)。\n'
+    pool_rows=[]
+    for row in source['rows']:
+        for pool,values in row.get('pool_parameters',{}).items():
+            pool_rows.append(dict(row_id=row['row_id'],variant=row['resolved']['variant'],model_seed=row['resolved']['model_seed'],pool=pool,**values))
+    if len(pool_rows)!=24 or not all(np.isfinite(row['score_l2_norm']) and np.isfinite(row['score_abs_max']) and all(value is None or np.isfinite(value) for value in (row['mix_gain_mean'],row['mix_gain_min'],row['mix_gain_max'])) for row in pool_rows):
+        raise ValueError('Actual complete source pooling evidence missing or nonfinite')
+    csvwrite(e/'source_pool_parameters.csv',pool_rows)
+    write(e/'source_pool_parameters.json',pool_rows)
+    s+='\n## 池化机制实际学习状态\n\n以下仅来自本轮已经完成的scratch E200权重，不运行模型或拟合任何输入，不参与源选择。a范数来自score.weight，g来自门控标准差参数tanh值。它们是网络坐标，不能解释成硬件失真系数；a非零也不保证每个包权重都不同。\n\n|row|分支|注意力a的L2范数|波动增益g最小/均值/最大|\n|---|---|---:|---|\n'
+    for row in pool_rows:
+        g='N/A（仅均值候选）' if row['mix_gain_mean'] is None else f"{row['mix_gain_min']:.6f}/{row['mix_gain_mean']:.6f}/{row['mix_gain_max']:.6f}"
+        s+=f"|{row['row_id']}|{row['pool']}|{row['score_l2_norm']:.6f}|{g}|\n"
+    s+='\n完整[池化参数JSON](evidence/source_pool_parameters.json)和[CSV](evidence/source_pool_parameters.csv)包含两个候选所有8行、共24个分支记录。未选候选仅源权重状态，不测试。\n'
     s+='\n## 实测资源成本\n\n|指标|原CVS|上轮残差CVS|本轮CVS|\n|---|---:|---:|---:|\n'
     for field,label in [('total_parameters','总参数'),('gradient_used_parameters','实际CE梯度参数'),('resident_state_bytes','常驻模型状态字节'),('conv_linear_macs_per_sample','Conv/Linear MAC/包'),('fft_calls_per_sample','FFT次数/包'),('inference_batch1_ms','合成batch1推理ms'),('inference_batch128_ms','合成batch128推理ms'),('training_batch128_ms','合成batch128训练步ms'),('actual_training_peak_max_bytes','实际训练进程峰值allocated显存bytes'),('actual_prediction_peak_max_bytes','实际预测进程峰值allocated显存bytes'),('full_test_prediction_seconds_mean','168000query预测秒数（4seed均值）')]:
         vals=[res[m][field] for m in ('native','residual_fusion',candidate)];s+=f"|{label}|"+'|'.join('N/A' if v is None else f'{v:.3f}' if isinstance(v,float) and not v.is_integer() else str(int(v)) for v in vals)+'|\n'

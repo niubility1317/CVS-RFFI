@@ -22,3 +22,7 @@ run_id：`20261001-phase1-cvs-attentive-identity-manysig-m8-r01`。状态 LOCAL_
 源 dispatcher PID `846967`，实际源代码提交 `c2a2a8d827f3037157fa8b696d8a7f41e7a94137`。已独立核实 8 行进程、GPU、实际配置和日志增长。后续 clean 协议独立 P0/P1 审查 PASS，3 个新增协议检查由审查者独立通过，本地总计 30 项聚焦检查通过。见[确认路径审查](evidence/independent_clean_protocol_review.json)。尚无本轮目标成绩，正式 clean 配置和登记等待真实 8 行 E200 完成后按源规则冻结；不从中途性能提前选择，也不重复启动或热改已发布训练。
 
 恢复先只读 inspect 本 run，核实 dispatcher/row 进程或完整终态；本地 `.codex_tmp/read_attentive_source_complete.py` 会完整核对 1600 epoch、80000 step、实际角色与源规则。真实冻结后由 `.codex_tmp/prepare_attentive_confirmation.py` 建立选中 4 行新预测＋旧 20 行只读控制的确认 run `20261001-phase1-cvs-attentive-clean-manysig-m24-r01`，Git 提交推送核对后发布，最后独立评分并完整报告。目标仍 ACTIVE，当前仅完成新设计、验证、审查、发布及健康训练启动，没有证明性能提升。
+
+## 零初始化数学核对
+
+对当前实际实现进行合成 float64 自动求导核对，零注意力的均值参数 Jacobian 等于包内交叉协方差，零波动增益的 Jacobian 等于通道标准差对角矩阵，两者最大绝对误差均为 2.22e-16。它属于结构实现的数学验证，不是正式数据训练或测试结果，不修改源训练、选模和已发布 release。见[数学核对](evidence/math_derivative_verification.json)及设计分析中“零初始化为何仍能学习”。确认报告将只读完成的本 run scratch 权重，补充全部 24 个池化分支的参数学习状态；不作物理系数或测试性能结论。
