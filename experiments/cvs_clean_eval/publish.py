@@ -95,7 +95,9 @@ def publish(output,run=RUN,release=RELEASE,spec_ref='experiments/cvs_clean_eval/
     prefixes=('experiments/cvs_balanced_clean/','experiments/cvs_balanced_identity/','experiments/cvs_selected_clean/','experiments/cvs_clean_eval/','experiments/cvs_residual_identity/','experiments/cvs_clean_design/','experiments/cvs_identity_ce/',
         'experiments/adv3b02_xuc/code/','baselines/cvcnn_ce/','baselines/common/','code/leo_practical/')
     selected=[n for n in names if (n.startswith(prefixes) or n in {'code/dataset_wisig.py','comparison_suite/score.py','comparison_suite/__init__.py','baselines/__init__.py'}) and Path(n).suffix in {'.py','.json'}]
-    if subprocess.check_output(['git','status','--porcelain','--',*selected],cwd=ROOT,text=True).strip():raise ValueError('Uncommitted release')
+    # Directory pathspecs bound the command line on Windows even as the package grows.
+    status_paths=[*prefixes,'code/dataset_wisig.py','comparison_suite/score.py','comparison_suite/__init__.py','baselines/__init__.py']
+    if subprocess.check_output(['git','status','--porcelain','--',*status_paths],cwd=ROOT,text=True).strip():raise ValueError('Uncommitted release')
     output.mkdir(parents=True,exist_ok=True);archive=output/(release+'.tar.gz')
     if archive.exists():raise FileExistsError('Existing package;reconcile before retry')
     with tarfile.open(archive,'w:gz') as tar:

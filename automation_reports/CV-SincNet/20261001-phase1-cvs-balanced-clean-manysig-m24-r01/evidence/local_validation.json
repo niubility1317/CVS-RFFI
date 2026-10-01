@@ -1,6 +1,6 @@
 {
   "status": "PASS",
-  "tests": 25,
+  "tests": 26,
   "environment": "C:\\Users\\lh594\\.conda\\envs\\ssr-gpu\\python.exe",
   "source_freeze": {
     "status": "SOURCE_SELECTION_FROZEN",
@@ -30,5 +30,6 @@
   "truth_last_fixture_rows": 24,
   "user_priority_test": "Higher performance wins even with more parameters/MAC;target score ignored",
   "reused_old_rows": 20,
-  "new_rows": 4
+  "new_rows": 4,
+  "publisher_windows_boundary_regression": "PASS1000filesboundedargv"
 }

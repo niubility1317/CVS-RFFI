@@ -356,3 +356,23 @@ def test_balanced_prepare_emits_only_four_new_rows_with_fixed_capsule(case,monke
         cfg=contracts.read(folder/(row['row_id']+'.json'))
         assert cfg['p1_capsule']==CAPSULE and cfg['views']==['clean']
         contracts.validate_predict_config(cfg,enriched)
+
+
+def test_large_release_status_uses_bounded_windows_pathspecs(case,monkeypatch):
+    from experiments.cvs_clean_eval import publish
+    names=['experiments/cvs_balanced_identity/configs/large-name-'+str(i)+'.json' for i in range(1000)]
+    calls=[]
+    def output(command,**kwargs):
+        if command[1:]==['rev-parse','HEAD']:return 'abc\n'
+        if command[1:]==['branch','--show-current']:return 'codex/test\n'
+        if 'ls-remote' in command:return 'abc refs/heads/codex/test\n'
+        if command[1:]==['ls-files']:return '\n'.join(names)
+        if command[1]=='status':
+            calls.append(command)
+            assert len(' '.join(command))<32000
+            # Stop before package/remote work; the test concerns this boundary.
+            return ' M experiments/cvs_balanced_identity/model.py\n'
+        raise AssertionError(command)
+    monkeypatch.setattr(publish.subprocess,'check_output',output)
+    with pytest.raises(ValueError,match='Uncommitted release'):publish.publish(case['root']/'package')
+    assert calls

@@ -7,3 +7,5 @@ run_id：`20261001-phase1-cvs-balanced-clean-manysig-m24-r01`。状态：LOCAL_V
 代码与实际权重的完整来源、物理数据角色、类别与runtime配置在query前核对；任何来源不明/跨数据/目标污染均拒绝。默认每GPU只用一个空闲卡的评估进程，健康任务保持。原source release的训练与原选择从未热改；用户性能优先是在新target访问前显式更新的独立确认选择，不依据测试反馈。
 
 本地25项聚焦检查PASS，其中source model5项、clean协议20项，独立审查PASS。见[验证](evidence/local_validation.json)、[审查](evidence/independent_review.json)、[源完成审计](evidence/source_completion_validation.json)、[逐行配置](experiment.json)和[设计及原理](../../../docs/CVS_BALANCED_IDENTITY_RESEARCH_20261001.md)。后续完整结果包括accuracy/Macro-F1/各RX/TX/CM/paired seed、参数/MAC/状态/时间/实测内存，以及全部负收益和声明边界。
+
+发布前本地Git状态命令因Windows参数长度上限失败（WinError206），尚未生成归档、SCP或submit。已独立核实远端release/archive/run/log全部不存在，修正为有界目录pathspec并验证1000文件回归。权重、选择、seed、数据与输出未变；同一尚未落地run继续发布，详见[evidence/prepackage_failure_reconciliation.json](evidence/prepackage_failure_reconciliation.json)。
