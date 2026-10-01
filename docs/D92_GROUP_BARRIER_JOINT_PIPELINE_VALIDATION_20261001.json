@@ -1,0 +1,161 @@
+{
+  "schema": "d92_group_barrier_joint_pipeline_validation_v1",
+  "status": "VERIFIED_FOCUSED_SYNTHETIC_SOURCE_VALIDATION",
+  "observed_utc": "2026-10-01T14:54:38.761900+00:00",
+  "method": "D92-GroupBarrierJointLocalRidge-v1",
+  "gate_scale": {
+    "output_prefix": "E:\\type10-7\\.codex_tmp\\pytest_native_activation_1790864090119972200",
+    "passed_test_cases": 32,
+    "environment": {
+      "identity": {
+        "executable": "E:\\type10-7\\local_envs\\ssr-gpu\\python.exe",
+        "prefix": "E:\\type10-7\\local_envs\\ssr-gpu",
+        "conda_prefix": "E:\\type10-7\\local_envs\\ssr-gpu",
+        "conda_shlvl": "2",
+        "numpy": "2.2.6",
+        "scipy": "1.15.3",
+        "torch": "2.1.0+cpu"
+      },
+      "activation_source": "Installed conda.activate.CmdExeActivator.build_stack; all generated variables applied; no hooks",
+      "conda_cli_or_wrapper_started": false,
+      "test_temp": "E:\\type10-7\\.codex_tmp\\pytest_native_temp_1790864086674602500",
+      "pytest_cache_enabled": false
+    },
+    "current_component_cases": 21,
+    "explanation": "That call contained 21 gate/scale and 11 then-current joint cases. Joint checks are superseded by the final 16-case core call; gate/scale unchanged."
+  },
+  "joint_core": {
+    "output_prefix": "E:\\type10-7\\.codex_tmp\\pytest_native_activation_1790866340064246400",
+    "passed_test_cases": 16,
+    "environment": {
+      "identity": {
+        "executable": "E:\\type10-7\\local_envs\\ssr-gpu\\python.exe",
+        "prefix": "E:\\type10-7\\local_envs\\ssr-gpu",
+        "conda_prefix": "E:\\type10-7\\local_envs\\ssr-gpu",
+        "conda_shlvl": "2",
+        "numpy": "2.2.6",
+        "scipy": "1.15.3",
+        "torch": "2.1.0+cpu"
+      },
+      "activation_source": "Installed conda.activate.CmdExeActivator.build_stack; all generated variables applied; no hooks",
+      "conda_cli_or_wrapper_started": false,
+      "test_temp": "E:\\type10-7\\.codex_tmp\\pytest_native_temp_1790866336912464900",
+      "pytest_cache_enabled": false
+    }
+  },
+  "entry_pipeline": {
+    "output_prefix": "E:\\type10-7\\.codex_tmp\\pytest_native_activation_1790866022687514400",
+    "passed_test_cases": 21,
+    "environment": {
+      "identity": {
+        "executable": "E:\\type10-7\\local_envs\\ssr-gpu\\python.exe",
+        "prefix": "E:\\type10-7\\local_envs\\ssr-gpu",
+        "conda_prefix": "E:\\type10-7\\local_envs\\ssr-gpu",
+        "conda_shlvl": "2",
+        "numpy": "2.2.6",
+        "scipy": "1.15.3",
+        "torch": "2.1.0+cpu"
+      },
+      "activation_source": "Installed conda.activate.CmdExeActivator.build_stack; all generated variables applied; no hooks",
+      "conda_cli_or_wrapper_started": false,
+      "test_temp": "E:\\type10-7\\.codex_tmp\\pytest_native_temp_1790866019449505400",
+      "pytest_cache_enabled": false
+    }
+  },
+  "distinct_current_cases": 58,
+  "one_combined_58_case_call": false,
+  "isolated_import": {
+    "evidence": "E:\\type10-7\\.codex_tmp\\group_barrier_isolated_import_1790866070283006100.json",
+    "status": "VERIFIED",
+    "module_files": [
+      "code/cvsrffi/__init__.py",
+      "code/cvsrffi/d92_affine_joint_local_ridge.py",
+      "code/cvsrffi/d92_branch_interaction.py",
+      "code/cvsrffi/d92_branch_local_ridge.py",
+      "code/cvsrffi/d92_branch_ridge.py",
+      "code/cvsrffi/d92_branch_support_probe.py",
+      "code/cvsrffi/d92_conditional_affine_kernel.py",
+      "code/cvsrffi/d92_conditional_joint_local_ridge.py",
+      "code/cvsrffi/d92_function_coordinate_residual8_local_ridge.py",
+      "code/cvsrffi/d92_ground_classifier_a.py",
+      "code/cvsrffi/d92_group_barrier_gate.py",
+      "code/cvsrffi/d92_group_barrier_joint_local_ridge.py",
+      "code/cvsrffi/d92_joint_channel_local_ridge.py",
+      "code/cvsrffi/d92_margin_constrained_residual8_local_ridge.py",
+      "code/cvsrffi/d92_margin_joint_local_ridge.py",
+      "code/cvsrffi/d92_margin_qp_head.py",
+      "code/cvsrffi/d92_prototype_transport_local_ridge.py",
+      "tools/cvs_native_artifacts.py",
+      "tools/d92_registration_score_diagnostics.py",
+      "tools/evaluate_d92_branch_local_ridge_probe.py",
+      "tools/evaluate_d92_branch_support_probe.py",
+      "tools/evaluate_d92_group_barrier_joint_probe.py",
+      "tools/evaluate_d92_registration_diagnostic.py",
+      "tools/export_d92_branch_support_features.py",
+      "tools/export_d92_ground_classifier_a_packet.py",
+      "tools/preflight_d92_group_barrier_joint_probe.py",
+      "tools/run_d92_branch_support_probe.py",
+      "tools/run_d92_group_barrier_joint_probe.py",
+      "tools/run_d92_margin_joint_probe.py",
+      "tools/run_d92_registration_diagnostic.py"
+    ],
+    "data_access": false,
+    "native_encoder_loaded": false,
+    "scope": "LOCAL_ISOLATED_SOURCE_IMPORT_NOT_REMOTE_RUNTIME_OR_NUMERICAL_VALIDATION"
+  },
+  "isolated_import_note": "Checked explicit source closure with np.load/torch.load forbidden. Later core-only failure recorder change adds no imports; exact release import is checked again by publisher.",
+  "entry_review_ref": "docs/D92_GROUP_BARRIER_JOINT_ENTRY_REVIEW_20261001.md",
+  "entry_review_resolved": true,
+  "actual_target_or_source_data_read": false,
+  "query_truth_or_scores_read": false,
+  "method_integration_complete": true,
+  "experiment_launched": false,
+  "goal_complete": false,
+  "fixed_barrier_rule": "zeta=N*1e-4/(m_old*n_new_classes)",
+  "fixed_exact_center_average_hard_objective_gap": 0.0001,
+  "actual_B": "Original Margin CE-only whitened hard-ball B; actual same run/row/split/path B inherited by C",
+  "measured_scope": [
+    "Independent finite-feature/scalar oracle and K/L/all-pair bound derivatives",
+    "Singular/zero kernel, all 2400 tied bounds at N=520, freely fitted intercept",
+    "New-only Ridge/free intercept/full RHS and two kernel-end U/Z gradients",
+    "Single physical sample faces all registered classes; structured all-class argmax",
+    "K1, new0 exact same B object, one new class, zero rank, tau0, gamma0/None",
+    "Actual B lineage/fold isolation; native float32 A and fixed predictions before support truth join",
+    "Full factor/RHS attempts including adjoint and failures; real archive callbacks preserve NaN/Inf and primary cause",
+    "Remote POSIX paths and exact fixed 4 rows/160 parents"
+  ],
+  "numerical_roundoff_rule": {
+    "name": "ROUND_OFF_RESIDUAL_ACCEPTANCE",
+    "scope": "Only predicted reduction inside two objective evaluation error budgets; measured increase inside that budget and strict current-scaled residual/canonical improvement",
+    "objective_exact_nonincrease_claim": false,
+    "barrier_budget_or_residual_tolerance_relaxed": false
+  },
+  "preserved_failure_evidence": [
+    {
+      "prefix": "pytest_native_activation_1790862724293243300",
+      "reason": "Rank1 scaled-adjoint cancellation; stable formula corrected without tolerance relaxation"
+    },
+    {
+      "prefix": "pytest_native_activation_1790863579377490300",
+      "reason": "Actual Margin ABI uses audit old_classes, not a dataclass field; corrected"
+    },
+    {
+      "prefix": "pytest_native_activation_1790863717564354000",
+      "reason": "Near-root Newton objective comparison stagnation; objective-error-budget residual-decrease rule, not loose stationarity"
+    },
+    {
+      "prefix": "pytest_native_activation_1790865245030297900",
+      "reason": "7 entry failures: Windows/POSIX path boundary, incorrect synthetic FFT width and metadata-reference test false positive; corrected, subsequent production A bridge/failure accounting reviewed"
+    }
+  ],
+  "limitations": [
+    "Synthetic/source correctness only; actual accuracy/H/forgetting/gap N/A",
+    "Preserving old conditional ordering and training support margins is not query zero-forgetting",
+    "Finite barrier is a separately named method, not the exact hard constraint optimum",
+    "Theory gap at an exact center is not by itself a finite-precision dual certificate",
+    "Gate factor-buffer guard is not total C state/RSS/device memory",
+    "Current local numerical environment is CPU; satellite runtime, energy and true wire bytes unmeasured",
+    "Existing Torch2.1/NumPy2 warning remains; A uses native float32 list bridge and passes its real test",
+    "Full repeated query benchmark requires all preregistered predictions fixed before independent scoring"
+  ]
+}

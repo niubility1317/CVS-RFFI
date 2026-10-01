@@ -1,3 +1,15 @@
+## 当前交接：GroupBarrierJoint 完整实现已验证预登记，等待本次 source push 与唯一发布
+
+- Goal ACTIVE。新候选 `D92-GroupBarrierJointLocalRidge-v1` 数学／源码固定；gate+scale 21、joint core 16、entry 21，共58个不同合成case通过（分别相关调用），isolated source closure无数据/encoder访问。必要joint/entry审查NO_UNRESOLVED_P0_P1；gate作者身份明确，无额外review/gate。验证与审查见新pipeline_validation/entry_review文档。无真实准确率、星载成本或wire收益结论。
+- 新run `20261001-phase2-d92-group-barrier-joint-support-m2-r01` 已预登记4明确row／160support parents，runtime OID与PID尚N/A。source preparation parent81985ed不是执行版本。Root唯一Git/SSH/Conda/numerics/launch owner，源码push独立OID核实后发布 `d92_group_barrier_joint_support_20261001_r01`；release/run/localpublication独占创建，超时先只读reconcile，不重复launch。固定old6、K1/5/10/20、new0/2/5/10/20、2026092711；2model×2cohort×2selectedscenarios。诊断完成后固定同一方法的完整2400parent query重复基准另建run；不利用成绩调参／选择重跑。
+- B严格沿用原Margin CE-only/白化球；C继承实际B并保留旧条件排序、新类专用解析Ridge、Bernoulli all-pair logbarrier、继承小adapter。ζ=N*1e-4/(m*q)固定理论近似预算，不是准确率超参网格。真实B/自由截距/RHS/两端kernel梯度/退化边界/失败计账已验证。train margin与组内排序保护不保证query零遗忘；C不修复B内部错分。
+- 原query run `20261001-phase2-d92-margin-joint-repeat-m2-r01` runtime仍 `d86edc3235ec0ca0e1925223970e07373256fb9c`。最新只读证据 `evidence/query_runtime_1790866527880152700.json`（2026-10-01T14:54:26Z）：supervisor869328实时；rx3/01 PID869442实时；rx3/02 FAILED C inner QP UNSUPPORTED_ACTIVE_JACOBIAN；rx1/01 COMPLETE；rx1/02 PID994723实时。未读prediction/truth/分数，不停止/重启/热改/重试健康行，不评分成功子集；原矩阵不能冒称完整成功。
+- Phase1 fixed source-only scratch final200/practical residual/post_sync/noeq/25MHz、无源样本／源逐记录特征／query拟合边界不变。既有VALIDATED_ONCE数据不重建不重验，fresh独立验证仍按用户要求暂缓。详细A/B/C同物理配对、完整K×new表、适应gain/注册forget/absGap/H和实测成本；未知N/A。当前准备提交parent `2668386ac483c28e8654cdf26897fe61392d1cca`，下一步commit/push/remoteOID→唯一publication→独立runtime读回与持续监控。
+
+<!-- GROUP_BARRIER_JOINT_SOURCE_READY_20261001 -->
+
+以下保留历史状态，不据此重复启动：
+
 ## 当前交接：Margin 一行梯度失败；GroupBarrier gate 已合成验证，完整集成进行中
 
 - Goal ACTIVE。原 query run `20261001-phase2-d92-margin-joint-repeat-m2-r01` runtime 永远 `d86edc3235ec0ca0e1925223970e07373256fb9c`。最新只读证据 `query_runtime_1790863040880987200.json`（13:56:19 UTC）：supervisor869328实时，rx3/01 PID869442与rx1/01 PID944965实时；rx3/02 PID869448已退出，C inner-head普通KKT梯度`UNSUPPORTED_ACTIVE_JACOBIAN`，rx1/02等待原排程。二级缺complete文件不是SCP故障。全部4行固定条件未满足；不评分子集、不改当前runtime、不重试/重启/停止健康行，保留所有产物。

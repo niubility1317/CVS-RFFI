@@ -1,3 +1,7 @@
+当前D92新增：[GroupBarrierJoint完整源码与support预登记](../automation_reports/CV-SincNet/20261001-phase2-d92-group-barrier-joint-support-m2-r01/report.md)，4行／160parents，LOCAL_VERIFIED，尚未启动。58项相关合成验证不代表性能改善。原Margin query矩阵仍有一行技术失败，健康行继续，不评分成功子集。
+
+<!-- GROUP_BARRIER_JOINT_ENTRY_20261001 -->
+
 # 实验总索引
 
 更新：2026-09-28T06:32:12+00:00

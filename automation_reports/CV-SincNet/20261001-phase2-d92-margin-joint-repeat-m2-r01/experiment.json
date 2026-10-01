@@ -86,7 +86,7 @@
     "publication_status": "VERIFIED",
     "publication_ref": "evidence/publication_20261001.json",
     "source_delivery_ref": "evidence/source_delivery_20261001.json",
-    "runtime_readback_ref": "evidence/query_runtime_1790863040880987200.json",
+    "runtime_readback_ref": "evidence/query_runtime_1790866527880152700.json",
     "supervisor_pid": 869328,
     "supervisor_start_ticks": 10047966,
     "actual_launch_argv": [
@@ -110,16 +110,16 @@
     "current_row_statuses": {
       "rx3-cvs-daot-rc4-s2026092701": "PREDICTING",
       "rx3-cvs-daot-rc4-s2026092702": "FAILED",
-      "rx1-cvs-daot-rc4-s2026092701": "PREDICTING",
-      "rx1-cvs-daot-rc4-s2026092702": "PREFLIGHT_COMPLETE"
+      "rx1-cvs-daot-rc4-s2026092701": "COMPLETE",
+      "rx1-cvs-daot-rc4-s2026092702": "PREDICTING"
     },
-    "completed_rows_observed": 0,
+    "completed_rows_observed": 1,
     "all_predictions_fixed": false,
     "truth_read": false,
     "scorer_invoked": false,
     "local_publication_session_id": 38736,
     "local_publication_session_state": "DONE_DO_NOT_REPUBLISH",
-    "latest_runtime_observed_utc": "2026-10-01T13:56:19Z",
+    "latest_runtime_observed_utc": "2026-10-01T14:54:26Z",
     "failed_row_count_observed": 1,
     "score_readiness": "INCOMPLETE_MATRIX_WITH_TECHNICAL_ROW_FAILURE",
     "failed_rows": [

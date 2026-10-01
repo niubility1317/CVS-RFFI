@@ -79,7 +79,7 @@ def _ledger():
         spectral_checks=0, spectral_cubic_dimension_units=0,
         objective_evaluations=0, logistic_record_evaluations=0,
         barrier_constraint_evaluations=0, line_search_trials=0,
-        newton_iterations=0, accepted_steps=0, peak_factor_buffer_bytes=0,
+        newton_iterations=0, accepted_steps=0, round_off_residual_acceptances=0, peak_factor_buffer_bytes=0,
         peak_explicit_temporary_bytes=0, factorization_seconds=0.,
         triangular_seconds=0., spectral_seconds=0., objective_seconds=0.)
 
@@ -125,8 +125,12 @@ def _evaluate(K, alpha, b, targets, old, bounds, zeta, audit):
             if np.any(curvature <= 0) or not np.isfinite(curvature).all():
                 raise ArithmeticError('INVALID_EFFECTIVE_CURVATURE')
             losses = np.logaddexp(0., np.where(targets == 1, -f, f))
-            primal = .5 * float(alpha @ Ka) + float(losses.sum())
-            objective = primal - zeta * float(np.log(slacks).sum())
+            ridge = .5 * float(alpha @ Ka)
+            loss_sum = float(losses.sum())
+            log_slacks = np.log(slacks)
+            barrier = -zeta * float(log_slacks.sum())
+            primal = ridge + loss_sum
+            objective = primal + barrier
             if not np.isfinite(objective):
                 raise ArithmeticError('NONFINITE_OBJECTIVE')
             # Propagate floating-point dot/subtraction error into q. This is
@@ -135,10 +139,31 @@ def _evaluate(K, alpha, b, targets, old, bounds, zeta, audit):
             q_error = curvature*f_error
             q_error[old] += np.sum(barrier_D*(4*EPS*(np.abs(f[old,None])+np.abs(bounds))),axis=1)
             q_error += 8*EPS*(np.abs(q)+1)
+            # Absolute objective evaluation error model: dot/reduction gamma_k,
+            # elementary-function rounding (8 eps per value), logistic's unit
+            # Lipschitz constant, and log(slack)'s finite perturbation bound.
+            # This decides when objective differences cannot resolve a step;
+            # it does not relax stationarity or modify the mathematical loss.
+            operations = max(3, 2*len(targets)+2, bounds.size+2)
+            if operations*EPS >= 1:
+                raise ArithmeticError('OBJECTIVE_ROUNDOFF_MODEL_UNRESOLVED')
+            gamma = operations*EPS/(1-operations*EPS)
+            slack_error = f_error[old,None]+4*EPS*(np.abs(f[old,None])+np.abs(bounds))
+            relative_slack_error = slack_error/slacks
+            if np.any(relative_slack_error >= 1):
+                raise ArithmeticError('OBJECTIVE_SLACK_ROUNDOFF_UNRESOLVED')
+            ridge_error = .5*gamma*float(np.abs(alpha)@(np.abs(K)@np.abs(alpha)))
+            logistic_error = float(f_error.sum())+(gamma+8*EPS)*float(np.abs(losses).sum())
+            barrier_error = zeta*float((-np.log1p(-relative_slack_error)).sum())
+            barrier_error += zeta*(gamma+8*EPS)*float(np.abs(log_slacks).sum())
+            objective_error = ridge_error+logistic_error+barrier_error
+            objective_error += gamma*(abs(ridge)+abs(loss_sum)+abs(barrier))
+            if not np.isfinite(objective_error):
+                raise ArithmeticError('NONFINITE_OBJECTIVE_ROUNDOFF_BOUND')
             return dict(f=f, slacks=slacks, q=q, D=curvature, objective=objective,
                 primal=primal, multipliers=multipliers, q_roundoff=float(np.max(q_error)),
-                logistic_loss_sum=float(losses.sum()),ridge_penalty=.5*float(alpha@Ka),
-                barrier_term=-zeta*float(np.log(slacks).sum()))
+                logistic_loss_sum=loss_sum,ridge_penalty=ridge,barrier_term=barrier,
+                objective_roundoff_bound=float(objective_error))
     finally:
         audit['objective_seconds'] += time.perf_counter() - tick
 
@@ -291,9 +316,34 @@ def fit_group_barrier_gate(*, K, targets, old_indices, lower_bounds,
                 next_alpha, next_b = alpha + rate * da, b + rate * db
                 candidate = _evaluate(K, next_alpha, next_b, t, old, bounds, zeta, audit)
                 bound = value['objective'] + ARMIJO * rate * slope
+                predicted_decrease = -rate*slope
+                error_bound = value['objective_roundoff_bound']+candidate['objective_roundoff_bound']
+                increase = candidate['objective']-value['objective']
+                _, _, candidate_residuals = _residuals(K,next_alpha,candidate)
+                # Compare both states using the SAME current residual scales.
+                # All physical constraints were independently checked above.
+                def merit(measured):
+                    return max(measured['canonical_residual']/tolerance,
+                        measured['intercept_residual']/residuals['intercept_tolerance'],
+                        measured['primal_gradient_residual']/residuals['primal_gradient_tolerance'],
+                        measured['sum_alpha_residual']/residuals['intercept_tolerance'])
+                before_merit, after_merit = merit(residuals), merit(candidate_residuals)
+                roundoff_accept = (0 < predicted_decrease <= error_bound and
+                    increase <= error_bound and after_merit < before_merit and
+                    candidate_residuals['canonical_residual'] < residuals['canonical_residual'])
+                # If the decrease is unresolvable, even floating Armijo equality
+                # is insufficient without a decreasing residual merit.
+                resolvable = predicted_decrease > error_bound
+                armijo_accept = resolvable and candidate['objective'] <= bound
                 audit.update(last_step_size=float(rate), last_directional_derivative=slope,
-                    last_armijo_bound=float(bound), last_trial_objective=candidate['objective'])
-                if candidate['objective'] <= bound:
+                    last_armijo_bound=float(bound), last_trial_objective=candidate['objective'],
+                    last_objective_roundoff_bound=float(error_bound),
+                    last_objective_increase=float(increase),last_objective_increased=bool(increase>0),
+                    last_predicted_decrease=float(predicted_decrease),
+                    last_residual_merit_before=float(before_merit),last_residual_merit_after=float(after_merit))
+                if armijo_accept or roundoff_accept:
+                    audit['last_acceptance_rule'] = 'ROUND_OFF_RESIDUAL_ACCEPTANCE' if roundoff_accept else 'OBJECTIVE_ARMIJO'
+                    audit['round_off_residual_acceptances'] += int(roundoff_accept)
                     alpha, b, value = next_alpha, next_b, candidate
                     accepted = True
                     audit['accepted_steps'] += 1
@@ -317,6 +367,8 @@ def fit_group_barrier_gate(*, K, targets, old_indices, lower_bounds,
         audit.update(status='COMPLETE', zeta=zeta, objective=value['objective'], primal_objective=value['primal'],
             logistic_loss_sum=value['logistic_loss_sum'],ridge_penalty=value['ridge_penalty'],
             barrier_term=value['barrier_term'],
+            objective_roundoff_bound=value['objective_roundoff_bound'],
+            objective_roundoff_scope='gamma_k reductions/dots, 8eps elementary values, propagated log-slack/input errors; not stationarity relaxation',
             minimum_slack=float(value['slacks'].min()), constraint_count=bounds.size,
             theoretical_center_path_gap=float(bounds.size*zeta), theoretical_average_dual_gap=AVERAGE_DUAL_GAP,
             complementarity_gap=float(np.sum(value['multipliers']*value['slacks'])),

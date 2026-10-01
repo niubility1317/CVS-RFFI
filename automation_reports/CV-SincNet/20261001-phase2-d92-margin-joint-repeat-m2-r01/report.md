@@ -1,3 +1,5 @@
+最新只读证据：[evidence/query_runtime_1790866527880152700.json](evidence/query_runtime_1790866527880152700.json)（2026-10-01T14:54:26Z）。一行 COMPLETE、一行 FAILED、两行实时 PREDICTING；原 supervisor 正常推进下一行。全部四行固定条件仍未满足，不评分成功子集，不修改原 runtime。
+
 最新只读证据：[evidence/query_runtime_1790863040880987200.json](evidence/query_runtime_1790863040880987200.json)（2026-10-01 13:56:19 UTC），一行失败，其他两行实时运行，一行等待原排程；整体未完成且未评分。
 
 ## 当前：一行数学梯度失败，其他行继续运行

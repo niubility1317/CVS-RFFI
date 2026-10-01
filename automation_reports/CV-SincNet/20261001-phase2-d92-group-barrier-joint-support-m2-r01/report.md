@@ -1,0 +1,60 @@
+# D92 GroupBarrierJoint：解析注册与小适配器联合学习
+
+当前状态：LOCAL_VERIFIED／已预登记，尚未远端启动。没有本候选的真实准确率结果。
+
+- run_id：`20261001-phase2-d92-group-barrier-joint-support-m2-r01`；唯一 launch owner：`root`。
+- [逐行配置、数据和继承记录](experiment.json)；[状态事件](events.jsonl)。
+- [数学设计](../../../docs/D92_GROUP_FACTORIZED_JOINT_DERIVATION_20261001.md)；[方法解释](../../../docs/D92_GROUP_BARRIER_JOINT_IMPLEMENTATION_DECISIONS_20261001.md)；[相关验证](../../../docs/D92_GROUP_BARRIER_JOINT_PIPELINE_VALIDATION_20261001.json)；[必要源代码审查](../../../docs/D92_GROUP_BARRIER_JOINT_ENTRY_REVIEW_20261001.md)。
+
+本轮机制是保留当前路径实际 Margin B 的旧类条件函数，单独解析拟合新类 Ridge，用全部合法训练 support 学习 Bernoulli gate，并将完整内层梯度传回继承 B 的小 adapter。C 不重新训练旧类列，数学上保留 B 的旧类内部排序；逐旧点／逐新类约束保护训练 support 的原间隔，不保证 query 零遗忘。
+
+有限障碍预算固定为 `ζ=N*1e-4/(m_old*q_new)`。原目标近似界只属于精确中心路径驻点，不能解释为准确率或遗忘界。原 Margin query run 的紧约束隐式梯度失败仍保留在原记录中；这个候选使用独立名称和独立 run，不修改其 runtime，不停止、重启或热修改健康行。
+
+当前先执行固定算法的 support 信息诊断：同一 parent 的 A/B/C 使用配对物理旧类 outer-held support。A 来自匹配的冻结地面模型包；B 仅用 old outer-train；C 继承这一实际 B 后注册 new outer-train。inner-held 参与优化，不能冒称独立验证。K=1 没有独立 held，三阶段 held 准确率为 N/A；oneshot proxy 单独报告。新增 0 类时 C 为同一实际 B，新类准确率、H 和新旧差距为 N/A。
+
+诊断后按已经固定的同一候选另建完整 query 重复基准：4 行、2400 parents、原 5 个 support seeds、全部原 receiver/scenario；所有预测固定后独立 truth-last 评分。support 或 query 成绩均不回流调参或选择性重跑。当前重复使用的基准不能称为全新独立确认；新增独立数据验证按用户要求暂缓。
+
+合规 Phase1 来源仍是 source-only scratch final200，地面权重固定。卫星方法只读取合法目标 support 的冻结 raw 特征和匹配地面汇总包；不读取源域样本或逐样本源特征，不 reload checkpoint，不训练 encoder，不读取 query IQ、标签、truth 或评分。practical residual、post_sync、no equalization、25 MHz 固定，既有 VALIDATED_ONCE 数据不重建、不重验。
+
+四行来自已固定的最小两个源模型 seeds 2026092701/02 与 rx3/rx1 两 cohort 的完整交叉。每行 40 parents：对应 receiver 19-1 或 20-19、practical_high/low_urban 两场景、4 个 K、5 个新增类数、support seed 2026092711。共 160 parents。六种 seed 角色、每行命令、完整 split ID 和缓存身份见 experiment.json，model seed 不代替其他随机性。
+
+## 完整 K×新增类数报告位置
+
+以下是本轮固定矩阵，准确率单位为百分比，变化量为百分点。旧类数固定为 6；support 数为当前完整 split 的标称数量，OOF 子路径实际训练／held 数另存 fit_stages。每格还将按 row、receiver、场景和 model seed 分层。当前均无真实结果，禁止猜填。
+
+| K | 旧类数 | 新增类数 | 注册总类数 | 旧／新 support 数 | A 旧类 | B 旧类 | C 旧类 | C 新类 | B−A | B−C | 新旧绝对差 | H |
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 1 | 6 | 0 | 6 | 6／0 | N/A | N/A | N/A | N/A | N/A | N/A | N/A | N/A |
+| 1 | 6 | 2 | 8 | 6／2 | N/A | N/A | N/A | N/A | N/A | N/A | N/A | N/A |
+| 1 | 6 | 5 | 11 | 6／5 | N/A | N/A | N/A | N/A | N/A | N/A | N/A | N/A |
+| 1 | 6 | 10 | 16 | 6／10 | N/A | N/A | N/A | N/A | N/A | N/A | N/A | N/A |
+| 1 | 6 | 20 | 26 | 6／20 | N/A | N/A | N/A | N/A | N/A | N/A | N/A | N/A |
+| 5 | 6 | 0 | 6 | 30／0 | N/A | N/A | N/A | N/A | N/A | N/A | N/A | N/A |
+| 5 | 6 | 2 | 8 | 30／10 | N/A | N/A | N/A | N/A | N/A | N/A | N/A | N/A |
+| 5 | 6 | 5 | 11 | 30／25 | N/A | N/A | N/A | N/A | N/A | N/A | N/A | N/A |
+| 5 | 6 | 10 | 16 | 30／50 | N/A | N/A | N/A | N/A | N/A | N/A | N/A | N/A |
+| 5 | 6 | 20 | 26 | 30／100 | N/A | N/A | N/A | N/A | N/A | N/A | N/A | N/A |
+| 10 | 6 | 0 | 6 | 60／0 | N/A | N/A | N/A | N/A | N/A | N/A | N/A | N/A |
+| 10 | 6 | 2 | 8 | 60／20 | N/A | N/A | N/A | N/A | N/A | N/A | N/A | N/A |
+| 10 | 6 | 5 | 11 | 60／50 | N/A | N/A | N/A | N/A | N/A | N/A | N/A | N/A |
+| 10 | 6 | 10 | 16 | 60／100 | N/A | N/A | N/A | N/A | N/A | N/A | N/A | N/A |
+| 10 | 6 | 20 | 26 | 60／200 | N/A | N/A | N/A | N/A | N/A | N/A | N/A | N/A |
+| 20 | 6 | 0 | 6 | 120／0 | N/A | N/A | N/A | N/A | N/A | N/A | N/A | N/A |
+| 20 | 6 | 2 | 8 | 120／40 | N/A | N/A | N/A | N/A | N/A | N/A | N/A | N/A |
+| 20 | 6 | 5 | 11 | 120／100 | N/A | N/A | N/A | N/A | N/A | N/A | N/A | N/A |
+| 20 | 6 | 10 | 16 | 120／200 | N/A | N/A | N/A | N/A | N/A | N/A | N/A | N/A |
+| 20 | 6 | 20 | 26 | 120／400 | N/A | N/A | N/A | N/A | N/A | N/A | N/A | N/A |
+
+理想目标保留为：旧类适应提升≥10个百分点、注册后旧类下降≤1个百分点、新旧准确率绝对差≤3个百分点。这些是逐步改进的理想目标，不是每轮启动硬门槛。最终旧类和新类统一面对全部注册类竞争，不能用旧／新 query 的真实角色进行推理分流。
+
+## 执行与成本
+
+N607 普通用户，CPU 两 lane，每 lane 两 BLAS threads，CUDA_VISIBLE_DEVICES 为空。B 与 C 的固定优化预算、实际参数、kernel、gate Newton/line-search 及 buffer guard 见配置。`167772160` 字节 guard 仅覆盖 gate 的 H＋Cholesky 因子缓存；它不是总训练状态、过程 RSS 或星载内存上限。
+
+保留 CVS 风格详细训练文本、完整数组档案、逐步完整事件、去大数组的 compact JSONL/CSV、每阶段训练/预测成本、峰值过程 RSS、实际可训练坐标和驻留／部署状态字节。实际新传输字节与地面包文件字节分别报告；未知的真实通信、星载训练/推理耗时、内存和能耗写 N/A。参数较少和解析内层不自动等于总计算量较小。
+
+远端尚未启动，因此 PID、实际 argv、实际 runtime OID 和实际成本为 N/A。source preparation parent 不冒称执行版本；第一次独立远端读回后只追加实际绑定。一个 run 只有 root 启动。每行独占目录；技术失败只失败该 lane，保留完整产物并让健康行按原计划结束，不自动重试，不因性能弱停止。
+
+## 下一步
+
+源代码和本记录提交、push 并独立核对远端 OID 后，唯一发布启动；从 live PID/argv/CWD、resolved config 和产物核实状态。诊断／完整 query 的执行、评分、报告和 Git 交付分别记录。Goal 仍 ACTIVE。
