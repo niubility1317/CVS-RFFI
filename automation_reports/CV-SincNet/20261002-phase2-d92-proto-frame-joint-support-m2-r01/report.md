@@ -15,3 +15,5 @@ ground 元数据与固定模型 lineage 已匹配；只用现有 center，不重
 2026-10-01T20:17:04Z仅元数据独立读回VERIFIED：{"rx3-cvs-daot-rc4-s2026092701": "PROTO_FRAME_JOINT_PROBE_COMPLETE", "rx3-cvs-daot-rc4-s2026092702": "PROTO_FRAME_JOINT_PROBE_COMPLETE", "rx1-cvs-daot-rc4-s2026092701": "TRAINING_ON_SUPPORT", "rx1-cvs-daot-rc4-s2026092702": "TRAINING_ON_SUPPORT"}。未读取部分预测、标签或训练指标；现有immutable runtime不变。
 
 独立完整support analyzer已通过25个合成用例，分析r01已预登记；等待原4行/160parents整体完成后一次分析，不重新训练或改写原产物。仅两文件源码包，NumPy/stdlib；actual_npz读回，无kernel/gate重放。
+
+2026-10-01T20:26:20Z独立metadata确认完整4行训练完成（TRAINING_COMPLETE），原fit runtime不变；完整support分析r01待一次发布，无query性能结论。

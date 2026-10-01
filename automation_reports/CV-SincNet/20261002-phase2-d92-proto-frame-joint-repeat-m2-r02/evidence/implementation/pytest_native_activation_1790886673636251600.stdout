@@ -1,0 +1,7 @@
+........................                                                 [100%]
+============================== warnings summary ===============================
+..\..\..\local_envs\ssr-gpu\lib\site-packages\torch\nn\modules\transformer.py:20
+  E:\type10-7\local_envs\ssr-gpu\lib\site-packages\torch\nn\modules\transformer.py:20: UserWarning: Failed to initialize NumPy: _ARRAY_API not found (Triggered internally at ..\torch\csrc\utils\tensor_numpy.cpp:84.)
+    device: torch.device = torch.device(torch._C._get_default_device()),  # torch.device('cpu'),
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html

@@ -1,0 +1,41 @@
+......FF................                                                 [100%]
+================================== FAILURES ===================================
+_ test_nonlexical_numeric_class_ids_keep_physical_labels_nonzero_R0_and_standalone_parser[0] _
+tests\test_d92_proto_frame_joint_benchmark.py:255: in test_nonlexical_numeric_class_ids_keep_physical_labels_nonzero_R0_and_standalone_parser
+    np.testing.assert_array_equal(record['scores'],expected)
+E   AssertionError: 
+E   Arrays are not equal
+E   
+E   Mismatched elements: 1 / 6 (16.7%)
+E   Max absolute difference among violations: 1.38777878e-17
+E   Max relative difference among violations: 1.66533454e-16
+E    ACTUAL: array([-0.083333,  0.416667, -0.083333, -0.083333, -0.083333, -0.083333])
+E    DESIRED: array([-0.083333,  0.416667, -0.083333, -0.083333, -0.083333, -0.083333])
+---------------------------- Captured stdout call -----------------------------
+PROTO_FRAME PROTO_FRAME_PREPARED state=B_prepare RMSCE=N/A loss_total=N/A loss_proximal=N/A ridge_weight=1.0 damping=I5 temperature=1 nominal_parameters=5 trainable_parameters=N/A theta=N/A anchor_theta=N/A gradient=N/A direction=N/A GGN_multiplier=N/A lr=N/A accepted=N/A observed_increase=N/A objective_seconds=N/A fit_seconds=N/A resident_bytes=N/A actual_updated_coordinates=N/A source_validation=N/A objective_scope=INNER_SUPPORT_TRAINING_NOT_VALIDATION split=literal-split
+PROTO_FRAME PROTO_FRAME_FINAL state=B_PROTO_FRAME RMSCE=N/A loss_total=N/A loss_proximal=N/A ridge_weight=1.0 damping=I5 temperature=1 nominal_parameters=5 trainable_parameters=0 theta=[0.0, 0.0, 0.0, 0.0, 0.0] anchor_theta=[0.0, 0.0, 0.0, 0.0, 0.0] gradient=N/A direction=N/A GGN_multiplier=N/A lr=N/A accepted=N/A observed_increase=N/A objective_seconds=N/A fit_seconds=0.009468299977015704 resident_bytes=166672 actual_updated_coordinates=0 source_validation=N/A objective_scope=INNER_SUPPORT_TRAINING_NOT_VALIDATION split=literal-split
+_ test_nonlexical_numeric_class_ids_keep_physical_labels_nonzero_R0_and_standalone_parser[2] _
+tests\test_d92_proto_frame_joint_benchmark.py:255: in test_nonlexical_numeric_class_ids_keep_physical_labels_nonzero_R0_and_standalone_parser
+    np.testing.assert_array_equal(record['scores'],expected)
+E   AssertionError: 
+E   Arrays are not equal
+E   
+E   Mismatched elements: 1 / 6 (16.7%)
+E   Max absolute difference among violations: 1.38777878e-17
+E   Max relative difference among violations: 1.66533454e-16
+E    ACTUAL: array([-0.083333,  0.416667, -0.083333, -0.083333, -0.083333, -0.083333])
+E    DESIRED: array([-0.083333,  0.416667, -0.083333, -0.083333, -0.083333, -0.083333])
+---------------------------- Captured stdout call -----------------------------
+PROTO_FRAME PROTO_FRAME_PREPARED state=B_prepare RMSCE=N/A loss_total=N/A loss_proximal=N/A ridge_weight=1.0 damping=I5 temperature=1 nominal_parameters=5 trainable_parameters=N/A theta=N/A anchor_theta=N/A gradient=N/A direction=N/A GGN_multiplier=N/A lr=N/A accepted=N/A observed_increase=N/A objective_seconds=N/A fit_seconds=N/A resident_bytes=N/A actual_updated_coordinates=N/A source_validation=N/A objective_scope=INNER_SUPPORT_TRAINING_NOT_VALIDATION split=literal-split
+PROTO_FRAME PROTO_FRAME_FINAL state=B_PROTO_FRAME RMSCE=N/A loss_total=N/A loss_proximal=N/A ridge_weight=1.0 damping=I5 temperature=1 nominal_parameters=5 trainable_parameters=0 theta=[0.0, 0.0, 0.0, 0.0, 0.0] anchor_theta=[0.0, 0.0, 0.0, 0.0, 0.0] gradient=N/A direction=N/A GGN_multiplier=N/A lr=N/A accepted=N/A observed_increase=N/A objective_seconds=N/A fit_seconds=0.01175659999717027 resident_bytes=166672 actual_updated_coordinates=0 source_validation=N/A objective_scope=INNER_SUPPORT_TRAINING_NOT_VALIDATION split=literal-split
+PROTO_FRAME PROTO_FRAME_PREPARED state=C_prepare RMSCE=N/A loss_total=N/A loss_proximal=N/A ridge_weight=1.0 damping=I5 temperature=1 nominal_parameters=5 trainable_parameters=N/A theta=N/A anchor_theta=N/A gradient=N/A direction=N/A GGN_multiplier=N/A lr=N/A accepted=N/A observed_increase=N/A objective_seconds=N/A fit_seconds=N/A resident_bytes=N/A actual_updated_coordinates=N/A source_validation=N/A objective_scope=INNER_SUPPORT_TRAINING_NOT_VALIDATION split=literal-split
+PROTO_FRAME PROTO_FRAME_FINAL state=C_PROTO_FRAME_seq RMSCE=N/A loss_total=N/A loss_proximal=N/A ridge_weight=1.0 damping=I5 temperature=1 nominal_parameters=5 trainable_parameters=0 theta=[0.0, 0.0, 0.0, 0.0, 0.0] anchor_theta=[0.0, 0.0, 0.0, 0.0, 0.0] gradient=N/A direction=N/A GGN_multiplier=N/A lr=N/A accepted=N/A observed_increase=N/A objective_seconds=N/A fit_seconds=0.019721899996511638 resident_bytes=412544 actual_updated_coordinates=0 source_validation=N/A objective_scope=INNER_SUPPORT_TRAINING_NOT_VALIDATION split=literal-split
+============================== warnings summary ===============================
+..\..\..\local_envs\ssr-gpu\lib\site-packages\torch\nn\modules\transformer.py:20
+  E:\type10-7\local_envs\ssr-gpu\lib\site-packages\torch\nn\modules\transformer.py:20: UserWarning: Failed to initialize NumPy: _ARRAY_API not found (Triggered internally at ..\torch\csrc\utils\tensor_numpy.cpp:84.)
+    device: torch.device = torch.device(torch._C._get_default_device()),  # torch.device('cpu'),
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED tests/test_d92_proto_frame_joint_benchmark.py::test_nonlexical_numeric_class_ids_keep_physical_labels_nonzero_R0_and_standalone_parser[0]
+FAILED tests/test_d92_proto_frame_joint_benchmark.py::test_nonlexical_numeric_class_ids_keep_physical_labels_nonzero_R0_and_standalone_parser[2]

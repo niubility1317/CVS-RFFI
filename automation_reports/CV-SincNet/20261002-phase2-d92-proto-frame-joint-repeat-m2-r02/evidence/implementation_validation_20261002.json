@@ -1,0 +1,25 @@
+{
+  "status": "VERIFIED_R0_ORDERED_COLUMN_INTERFACE_REPAIR_NOT_PERFORMANCE",
+  "latest_producer_cases": 24,
+  "latest_test_prefix": "pytest_native_activation_1790886673636251600",
+  "latest_test_exit_code": 0,
+  "retained_repair_test_failure": {
+    "prefix": "pytest_native_activation_1790886487007798100",
+    "failed": 2,
+    "passed": 22,
+    "reason": "Test oracle bitwise dot expectation; machine-scale1.39e-17 difference, strict coefficients/geometry retained"
+  },
+  "production_change": "Request same classes in canonical order and remap same physical class-ID labels before the original one R0 fit",
+  "method_parameters_changed": false,
+  "source_core_changed": false,
+  "source_scorer_changed": false,
+  "physical_data_changed": false,
+  "query_truth_read": false,
+  "performance_selection": false,
+  "candidate_distinct_synthetic_cases": 215,
+  "prior_validation_ref": "automation_reports/CV-SincNet/20261002-phase2-d92-proto-frame-joint-repeat-m2-r01/evidence/implementation_validation_20261002.json",
+  "source_import_ref": "docs/D92_PROTO_FRAME_QUERY_R02_SOURCE_IMPORT_20261002.json",
+  "root_diff_readback": true,
+  "root_real_parser_integration": true,
+  "oracle_scope": "Exact alpha/geometry/labels/classes and decisions; score differences limited by explicit2gamma_N dot roundoff bound only in test"
+}

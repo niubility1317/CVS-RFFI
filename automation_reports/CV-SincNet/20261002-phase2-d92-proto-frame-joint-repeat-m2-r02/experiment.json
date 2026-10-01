@@ -1,15 +1,15 @@
 {
   "schema": "experiment_record_v1",
-  "run_id": "20261002-phase2-d92-proto-frame-joint-repeat-m2-r01",
+  "run_id": "20261002-phase2-d92-proto-frame-joint-repeat-m2-r02",
   "group_id": "d92-proto-frame-joint-repeated-benchmark",
   "comparison_group_id": "d92-proto-frame-joint-repeated-benchmark",
   "kind": "evaluation",
   "stage": "Phase2-fixed-support-prediction-then-independent-query-score",
-  "name": "D92 ProtoFrame tangent GGN1 joint LocalRidge full repeated benchmark",
-  "description": "One mathematically fixed candidate; actual paired native A, support-only B, inherited C plus full independent R0 B/C on all 4 rows/2400 parents",
+  "name": "ProtoFrame complete benchmark: R0 ordered-column interface repair r02",
+  "description": "Same fixed five-coordinate joint LocalRidge method and full matrix; manual new run after verified terminal ABI failure. No parameter or objective change; original preserved.",
   "authorization": "Existing user continue joint LocalRidge-priority support SFT/practical residual/reused benchmark authorization; independent fresh validation deferred",
-  "status": "FAILED",
-  "created_at": "2026-10-01T19:51:44.777292+00:00",
+  "status": "READY",
+  "created_at": "2026-10-01T20:30:21.185405+00:00",
   "data": {
     "dataset": "Complete original received capsules; legal support fit and per-sample query inference",
     "version": "existing_N607_ManyTx_actual19RX",
@@ -137,12 +137,12 @@
     "automatic_retry": false,
     "healthy_experiment_interference": false
   },
-  "spec_path": "configs/d92_proto_frame_joint_repeat_20261002.json",
+  "spec_path": "configs/d92_proto_frame_joint_repeat_20261002_r02.json",
   "code": {
-    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_proto_frame_joint_repeat_20261002_r01",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_proto_frame_joint_repeat_20261002_r02",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
-    "commit": "f0ab613491cf00fc9110ce685c4937718bc65da1",
-    "actual_runtime_commit": "67587ead4dd34f35de03ba61a20206622951ea73"
+    "commit": "67587ead4dd34f35de03ba61a20206622951ea73",
+    "actual_runtime_commit": null
   },
   "rows": [
     {
@@ -153,7 +153,7 @@
       "row_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092701",
       "branch_features": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-ridge-repeat-rx3-m4-r01/cvs-daot-rc4-s2026092701/branch_features",
       "ground_packet": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r02/ground-a-s2026092701",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-proto-frame-joint-repeat-m2-r01/rx3-cvs-daot-rc4-s2026092701",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-proto-frame-joint-repeat-m2-r02/rx3-cvs-daot-rc4-s2026092701",
       "ground_summary": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-cvs-d92-practical-manytx-m5-r01/cvs-daot-rc4-s2026092701/ground",
       "ground_summary_already_deployed": false
     },
@@ -165,7 +165,7 @@
       "row_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092702",
       "branch_features": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-ridge-repeat-rx3-m4-r01/cvs-daot-rc4-s2026092702/branch_features",
       "ground_packet": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r02/ground-a-s2026092702",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-proto-frame-joint-repeat-m2-r01/rx3-cvs-daot-rc4-s2026092702",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-proto-frame-joint-repeat-m2-r02/rx3-cvs-daot-rc4-s2026092702",
       "ground_summary": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-cvs-d92-practical-manytx-m5-r01/cvs-daot-rc4-s2026092702/ground",
       "ground_summary_already_deployed": false
     },
@@ -177,7 +177,7 @@
       "row_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092701",
       "branch_features": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-ridge-repeat-rx1-m4-r01/cvs-daot-rc4-s2026092701/branch_features",
       "ground_packet": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r02/ground-a-s2026092701",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-proto-frame-joint-repeat-m2-r01/rx1-cvs-daot-rc4-s2026092701",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-proto-frame-joint-repeat-m2-r02/rx1-cvs-daot-rc4-s2026092701",
       "ground_summary": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-cvs-d92-practical-manytx-m5-r01/cvs-daot-rc4-s2026092701/ground",
       "ground_summary_already_deployed": false
     },
@@ -189,7 +189,7 @@
       "row_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092702",
       "branch_features": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-ridge-repeat-rx1-m4-r01/cvs-daot-rc4-s2026092702/branch_features",
       "ground_packet": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r02/ground-a-s2026092702",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-proto-frame-joint-repeat-m2-r01/rx1-cvs-daot-rc4-s2026092702",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-proto-frame-joint-repeat-m2-r02/rx1-cvs-daot-rc4-s2026092702",
       "ground_summary": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-cvs-d92-practical-manytx-m5-r01/cvs-daot-rc4-s2026092702/ground",
       "ground_summary_already_deployed": false
     }
@@ -370,50 +370,18 @@
     "cpu_lanes": 2,
     "blas_threads_per_lane": 2,
     "gpu_use": false,
-    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-proto-frame-joint-repeat-m2-r01",
-    "remote_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_proto_frame_joint_repeat_20261002_r01",
-    "actual_runtime_commit": "67587ead4dd34f35de03ba61a20206622951ea73",
-    "publication_status": "VERIFIED_STARTUP_ONLY_PREDICTION_FAILED",
-    "source_implementation_validation": "VERIFIED_SYNTHETIC_IMPLEMENTATION_AND_ISOLATED_IMPORT_NOT_PERFORMANCE",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-proto-frame-joint-repeat-m2-r02",
+    "remote_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_proto_frame_joint_repeat_20261002_r02",
     "stop_rule": "Technical failure fails owned row; healthy rows retained; no weak-performance stop or auto retry",
     "complete_requirement": "All four rows/2400 physical parents/all five streams fixed before independent truth-last scorer",
     "fresh_independent_validation": "Deferred by explicit user request",
-    "launch_command": "F:/App/miniconda3/python.exe -X utf8 E:/type10-7/.codex_tmp/run_ssr_command_native_activation_20261001.py E:\\type10-7\\code\\snapshots\\d92_support_upgrade_20260928_wt\\tools\\publish_d92_proto_frame_joint_benchmark.py --spec configs/d92_proto_frame_joint_repeat_20261002.json",
-    "implementation_validation_ref": "automation_reports/CV-SincNet/20261002-phase2-d92-proto-frame-joint-repeat-m2-r01/evidence/implementation_validation_20261002.json",
-    "publication_ref": "evidence/publication/publication.json",
-    "terminal_evidence_ref": "evidence/query_failure_compact_20261002.json",
-    "supervisor_pid": 1193954,
-    "supervisor_alive": false,
-    "row_processes_alive": false,
-    "current_row_statuses": {
-      "rx3-cvs-daot-rc4-s2026092701": "FAILED",
-      "rx3-cvs-daot-rc4-s2026092702": "FAILED",
-      "rx1-cvs-daot-rc4-s2026092701": "FAILED",
-      "rx1-cvs-daot-rc4-s2026092702": "FAILED"
-    },
-    "row_pids": {
-      "rx3-cvs-daot-rc4-s2026092701": 1194062,
-      "rx3-cvs-daot-rc4-s2026092702": 1194066,
-      "rx1-cvs-daot-rc4-s2026092701": 1194094,
-      "rx1-cvs-daot-rc4-s2026092702": 1194109
-    },
-    "actual_supervisor_argv": [
-      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
-      "-u",
-      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_proto_frame_joint_repeat_20261002_r01/tools/run_d92_proto_frame_joint_benchmark.py",
-      "--spec",
-      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_proto_frame_joint_repeat_20261002_r01/configs/d92_proto_frame_joint_repeat_20261002.json",
-      "--commit",
-      "67587ead4dd34f35de03ba61a20206622951ea73"
-    ],
-    "latest_runtime_observed_utc": "2026-10-01T20:21:28Z",
-    "all_predictions_fixed": false,
-    "truth_read": false,
-    "scorer_invoked": false,
-    "failure_layer": "PRODUCER_R0_CLASS_COLUMN_CONTRACT",
+    "actual_runtime_commit": null,
+    "publication_status": "NOT_LAUNCHED",
+    "launch_command": "F:/App/miniconda3/python.exe -X utf8 E:/type10-7/.codex_tmp/run_ssr_command_native_activation_20261001.py E:\\type10-7\\code\\snapshots\\d92_support_upgrade_20260928_wt\\tools\\publish_d92_proto_frame_joint_benchmark.py --spec configs/d92_proto_frame_joint_repeat_20261002_r02.json",
+    "source_implementation_validation": "VERIFIED_R0_ORDERED_COLUMN_INTERFACE_REPAIR_NOT_PERFORMANCE",
     "automatic_retry": false,
-    "restart_original_run": false,
-    "raw_runtime_evidence_local_path": "E:\\type10-7\\automation_reports\\CV-SincNet\\20261002-phase2-d92-proto-frame-joint-repeat-m2-r01\\evidence\\query_runtime_1790886151042062500.json"
+    "manual_new_run_reason": "Correct producer ABI only after original terminal evidence; no state reuse or parameter selection",
+    "implementation_validation_ref": "automation_reports/CV-SincNet/20261002-phase2-d92-proto-frame-joint-repeat-m2-r02/evidence/implementation_validation_20261002.json"
   },
   "expected_budget": {
     "episodes": 2400,
@@ -432,7 +400,15 @@
     "parameter_grid": false,
     "query_score_feedback": false,
     "current_support_partial_metrics_read": false,
-    "theoretical_scope": "Complete analytic/JVP chain and PSD ball subproblem; no accuracy, forgetting, transfer-wire or satellite cost guarantee"
+    "theoretical_scope": "Complete analytic/JVP chain and PSD ball subproblem; no accuracy, forgetting, transfer-wire or satellite cost guarantee",
+    "technical_r01_repair": {
+      "failed_run_id": "20261002-phase2-d92-proto-frame-joint-repeat-m2-r01",
+      "method_parameters_changed": false,
+      "physical_support_changed": false,
+      "query_truth_read": false,
+      "partial_score_selected": false,
+      "change": "Canonical requested class list and class-ID label permutation before the original one R0 fit; strict output order preserved"
+    }
   },
   "artifact_plan": {
     "startup": "startup.json",
@@ -448,5 +424,17 @@
     "independent_score": "Fresh score output after complete fixed predictions",
     "report": "Paired actual A/B/C old/new, K x new counts, gain/drop/absGap/H, strata and actual resource/transfer accounting; missing N/A"
   },
-  "results": null
+  "results": {
+    "status": "N/A_NOT_LAUNCHED",
+    "query_truth_read": false,
+    "adaptation_gain": null,
+    "registration_old_drop": null,
+    "C_old_accuracy": null,
+    "C_new_accuracy": null,
+    "H": null
+  },
+  "parent_run_ids": [
+    "20261002-phase2-d92-proto-frame-joint-repeat-m2-r01"
+  ],
+  "replaces_run_id": null
 }

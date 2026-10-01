@@ -305,11 +305,16 @@ def predict(*,run_id,row_id,release_commit,row_root,capsule,output,config,
                     registry=old if old_only else split['registered_classes']
                     ys=np.asarray([old.index(split['registered_classes'][int(y)]) for y in labels[old_mask]],
                         dtype=np.int64) if old_only else labels
+                    # LocalRidge intentionally returns the supplied class order.
+                    # Preserve each physical class ID while requesting the
+                    # canonical columns required by the five-stream protocol.
+                    canonical_registry=sorted(registry)
+                    canonical_ys=np.asarray([canonical_registry.index(registry[int(y)]) for y in ys],dtype=np.int64)
                     active=dict(split_id=sid,phase=name);tick=time.perf_counter()
-                    state=fit_branch_local_ridge(**{k:arrays[k][selected] for k in BRANCHES},support_labels=ys,
-                        support_ids=ids[selected],classes=registry,old_classes=old,arm='local_ridge')
+                    state=fit_branch_local_ridge(**{k:arrays[k][selected] for k in BRANCHES},support_labels=canonical_ys,
+                        support_ids=ids[selected],classes=canonical_registry,old_classes=old,arm='local_ridge')
                     audit=json_native(state.audit_dict());fit=audit['final_fit']
-                    check(list(state.classes)==sorted(registry),'R0 fitted class registry mismatch')
+                    check(list(state.classes)==canonical_registry,'R0 fitted class registry mismatch')
                     save,_=callbacks(name);ref=save('final',_baseline_arrays(state))
                     audit.update(status='COMPLETED',final_state_ref=ref,fit_and_archive_seconds=time.perf_counter()-tick,
                         training_physical_ids=sorted(ids[selected].astype(str).tolist()),train_k=split['k'])

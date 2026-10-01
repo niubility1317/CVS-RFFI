@@ -1,3 +1,12 @@
+## 当前交接：ProtoFrame r01技术失败保留，r02接口修复READY，support训练完成
+
+- Goal ACTIVE；`20261002-phase2-d92-proto-frame-joint-repeat-m2-r01`FAILED，runtime`67587ead4dd34f35de03ba61a20206622951ea73`一次发布/startup VERIFIED但4行在R0 requested/canonical类别列表断言退出；独立metadata确认全部进程已退出，完整预测false、truth/scorerfalse。compact失败证据+publication入库，raw完整metadata保留本地。不要重启/覆盖原run。
+- `20261002-phase2-d92-proto-frame-joint-repeat-m2-r02`READY，手动新run登记，固定同4/2400/old6/K4×new5，唯一production变化是调用原R0前同步canonical class-ID/label排列；数学core、资源、数据和参数不变，215distinct synthetic evidence，最新producer24PASS。初2 oracle舍入失败保留，测试用了推导浮点dot界，生产ordered/tie检查严格。准备母版`67587ead4dd34f35de03ba61a20206622951ea73`，实际runtime由下一次pushed HEAD绑定；未发布。
+- `20261002-phase2-d92-proto-frame-joint-support-m2-r01`TRAINING_COMPLETE，immutablefit a9f638d9...；20:26UTC全4行complete，未读部分metrics。standalone support analyzer25PASS、原4/160/1800闭合后一次分析r01已登记，2文件源包、独立sourcecommit不能冒充fit runtime。不得修改原run。
+- Group query immutable73aa健康仍排程，全4/2400固定后原release独立truth-last scorer；fresh验证暂缓。所有新运行root唯一owner，不自动重试，不干预健康任务，不据任何query/部分loss选择参数。
+
+以下历史交接保留，不据此重复启动：
+
 ## 当前交接：ProtoFrame完整query源码READY，support整体诊断待关闭
 
 - Goal ACTIVE；`20261002-phase2-d92-proto-frame-joint-repeat-m2-r01` READY，固定4rows/2400parents、old6、K1/5/10/20×new0/2/5/10/20。完整102个新synthetic cases PASS，加已记录core111共213distinct；最新scorer42包含两P1修复及实际producer档案接口。49runtime/51files隔离导入VERIFIED。未发布/未启动；发布只能一次，root owner。源准备母版`f0ab613491cf00fc9110ce685c4937718bc65da1`，actual source commit由pushed HEAD绑定。

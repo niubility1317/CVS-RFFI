@@ -1,0 +1,240 @@
+{
+  "runtime_commit": "67587ead4dd34f35de03ba61a20206622951ea73",
+  "preparation_commit": "f0ab613491cf00fc9110ce685c4937718bc65da1",
+  "branch": "codex/d92-support-upgrade-20260928",
+  "remote_oid": "67587ead4dd34f35de03ba61a20206622951ea73",
+  "archive": "E:\\type10-7\\local_artifacts\\d92_proto_frame_joint_query_publication\\d92_proto_frame_joint_repeat_20261002_r01\\d92_proto_frame_joint_repeat_20261002_r01.tar",
+  "sha256": "d0112012ae6a66719ceb2327ae8bad81c11131a0fc460f581b6ab99b36c4dcf4",
+  "paths": [
+    "code/cvsrffi/__init__.py",
+    "code/cvsrffi/d92_ground_classifier_a.py",
+    "code/cvsrffi/d92_margin_qp_head.py",
+    "code/cvsrffi/d92_margin_joint_local_ridge.py",
+    "code/cvsrffi/d92_affine_joint_local_ridge.py",
+    "code/cvsrffi/d92_conditional_joint_local_ridge.py",
+    "code/cvsrffi/d92_conditional_affine_kernel.py",
+    "code/cvsrffi/d92_function_coordinate_residual8_local_ridge.py",
+    "code/cvsrffi/d92_margin_constrained_residual8_local_ridge.py",
+    "code/cvsrffi/d92_joint_channel_local_ridge.py",
+    "code/cvsrffi/d92_prototype_transport_local_ridge.py",
+    "code/cvsrffi/d92_branch_support_probe.py",
+    "code/cvsrffi/d92_branch_ridge.py",
+    "code/cvsrffi/d92_branch_interaction.py",
+    "code/cvsrffi/d92_branch_local_ridge.py",
+    "tools/cvs_native_artifacts.py",
+    "tools/export_d92_branch_support_features.py",
+    "tools/export_d92_branch_features.py",
+    "tools/export_d92_mv_kme_features.py",
+    "tools/d92_orbit_feature_cache.py",
+    "tools/export_d92_ground_classifier_a_packet.py",
+    "tools/evaluate_d92_margin_joint_probe.py",
+    "tools/run_d92_margin_joint_probe.py",
+    "tools/evaluate_d92_branch_support_probe.py",
+    "tools/evaluate_d92_branch_local_ridge_probe.py",
+    "tools/evaluate_d92_registration_diagnostic.py",
+    "tools/run_d92_registration_diagnostic.py",
+    "tools/d92_registration_score_diagnostics.py",
+    "configs/d92_branch_local_ridge_frozen_20260929.json",
+    "tools/run_d92_branch_support_probe.py",
+    "tools/run_d92_group_barrier_joint_probe.py",
+    "tools/evaluate_d92_group_barrier_joint_probe.py",
+    "tools/preflight_d92_group_barrier_joint_probe.py",
+    "code/cvsrffi/d92_group_barrier_joint_local_ridge.py",
+    "code/cvsrffi/d92_group_barrier_gate.py",
+    "tools/evaluate_d92_group_barrier_joint_benchmark.py",
+    "tools/run_d92_group_barrier_joint_benchmark.py",
+    "tools/score_d92_group_barrier_joint_benchmark.py",
+    "code/cvsrffi/d92_proto_frame_primitives.py",
+    "code/cvsrffi/d92_proto_frame_joint_local_ridge.py",
+    "code/cvsrffi/d92_proto_frame_ground_geometry.py",
+    "code/cvsrffi/d92_ground_summary.py",
+    "code/cvsrffi/phase1_center_lowrank_prototype_bundle.py",
+    "tools/run_d92_proto_frame_joint_probe.py",
+    "tools/evaluate_d92_proto_frame_joint_probe.py",
+    "tools/preflight_d92_proto_frame_joint_probe.py",
+    "tools/evaluate_d92_proto_frame_joint_benchmark.py",
+    "tools/run_d92_proto_frame_joint_benchmark.py",
+    "tools/score_d92_proto_frame_joint_benchmark.py",
+    "tools/publish_d92_proto_frame_joint_benchmark.py",
+    "configs/d92_proto_frame_joint_repeat_20261002.json"
+  ],
+  "spec": {
+    "schema": "d92_proto_frame_joint_query_benchmark_v1",
+    "run_id": "20261002-phase2-d92-proto-frame-joint-repeat-m2-r01",
+    "group_id": "d92-proto-frame-joint-repeated-benchmark",
+    "spec_path": "configs/d92_proto_frame_joint_repeat_20261002.json",
+    "code": {
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_proto_frame_joint_repeat_20261002_r01",
+      "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "commit": "f0ab613491cf00fc9110ce685c4937718bc65da1"
+    },
+    "execution": {
+      "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-proto-frame-joint-repeat-m2-r01",
+      "launch_owner": "root",
+      "cpu_lanes": 2,
+      "blas_threads": 2
+    },
+    "benchmark": {
+      "config": {
+        "algorithm": {
+          "schema": "d92_proto_frame_joint_local_ridge_v1",
+          "method": "D92-ProtoFrameTangent-GGN1-LocalRidge",
+          "coordinates": 5,
+          "kappa": 0.25,
+          "ridge_coefficient": 1.0,
+          "objective": "RMS_class_mean_OOF_CE",
+          "damping": "I5",
+          "radius": 0.5,
+          "max_updates": 1,
+          "max_trials": 12,
+          "initial_step": 0.125,
+          "backtrack": 0.5,
+          "armijo": 0.0001,
+          "float_comparison_multiplier": 128,
+          "folds": "physical_ID_class_rank_mod_min_K_3",
+          "prototype_role": "FROZEN_GEOMETRY_ONLY",
+          "C_anchor": "ACTUAL_CURRENT_B_THETA",
+          "old_conditional": "FROZEN_ACTUAL_B_FUNCTION",
+          "kernel": "HALF_ORIGINAL_HALF_TANGENT_DISTANCE_FIXED_ORIGINAL_OLD_TRAIN_TAU_GAMMA",
+          "barrier_average_objective_gap": 0.0001,
+          "phase1_frozen": true,
+          "source_examples": false,
+          "query_fit": false,
+          "parameter_search": false,
+          "encoder_backward": false
+        },
+        "proto_frame_resources": {
+          "max_newton_iterations": 100,
+          "max_line_search_trials": 64,
+          "max_factor_buffer_bytes": 167772160
+        }
+      },
+      "cohorts": {
+        "rx3": {
+          "capsule": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule",
+          "truth": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/score_only/truth.json",
+          "expected_capsule_id": "residual-noeq-76121e6f34363fa612ec25fb",
+          "matrix": {
+            "receivers": [
+              "19-1",
+              "8-14",
+              "8-7"
+            ],
+            "scenarios": [
+              "practical_high",
+              "practical_mid",
+              "practical_low_urban"
+            ],
+            "ks": [
+              1,
+              5,
+              10,
+              20
+            ],
+            "new_counts": [
+              0,
+              2,
+              5,
+              10,
+              20
+            ],
+            "support_seeds": [
+              2026092711,
+              2026092712,
+              2026092713,
+              2026092714,
+              2026092715
+            ]
+          },
+          "expected_split_count": 900
+        },
+        "rx1": {
+          "capsule": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-data-manytx-r01/capsule",
+          "truth": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-data-manytx-r01/score_only/truth.json",
+          "expected_capsule_id": "residual-noeq-d0a99fede324159c5a4750fd",
+          "matrix": {
+            "receivers": [
+              "20-19"
+            ],
+            "scenarios": [
+              "practical_high",
+              "practical_mid",
+              "practical_low_urban"
+            ],
+            "ks": [
+              1,
+              5,
+              10,
+              20
+            ],
+            "new_counts": [
+              0,
+              2,
+              5,
+              10,
+              20
+            ],
+            "support_seeds": [
+              2026092711,
+              2026092712,
+              2026092713,
+              2026092714,
+              2026092715
+            ]
+          },
+          "expected_split_count": 300
+        }
+      }
+    },
+    "rows": [
+      {
+        "row_id": "rx3-cvs-daot-rc4-s2026092701",
+        "cohort": "rx3",
+        "expected_model_seed": 2026092701,
+        "expected_checkpoint_sha256": "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b",
+        "row_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092701",
+        "branch_features": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-ridge-repeat-rx3-m4-r01/cvs-daot-rc4-s2026092701/branch_features",
+        "ground_packet": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r02/ground-a-s2026092701",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-proto-frame-joint-repeat-m2-r01/rx3-cvs-daot-rc4-s2026092701",
+        "ground_summary": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-cvs-d92-practical-manytx-m5-r01/cvs-daot-rc4-s2026092701/ground",
+        "ground_summary_already_deployed": false
+      },
+      {
+        "row_id": "rx3-cvs-daot-rc4-s2026092702",
+        "cohort": "rx3",
+        "expected_model_seed": 2026092702,
+        "expected_checkpoint_sha256": "72f26413e495dcf82317898f8729caa3d35499bf0b41e9671ffdceab2c90924b",
+        "row_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092702",
+        "branch_features": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-ridge-repeat-rx3-m4-r01/cvs-daot-rc4-s2026092702/branch_features",
+        "ground_packet": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r02/ground-a-s2026092702",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-proto-frame-joint-repeat-m2-r01/rx3-cvs-daot-rc4-s2026092702",
+        "ground_summary": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-cvs-d92-practical-manytx-m5-r01/cvs-daot-rc4-s2026092702/ground",
+        "ground_summary_already_deployed": false
+      },
+      {
+        "row_id": "rx1-cvs-daot-rc4-s2026092701",
+        "cohort": "rx1",
+        "expected_model_seed": 2026092701,
+        "expected_checkpoint_sha256": "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b",
+        "row_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092701",
+        "branch_features": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-ridge-repeat-rx1-m4-r01/cvs-daot-rc4-s2026092701/branch_features",
+        "ground_packet": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r02/ground-a-s2026092701",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-proto-frame-joint-repeat-m2-r01/rx1-cvs-daot-rc4-s2026092701",
+        "ground_summary": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-cvs-d92-practical-manytx-m5-r01/cvs-daot-rc4-s2026092701/ground",
+        "ground_summary_already_deployed": false
+      },
+      {
+        "row_id": "rx1-cvs-daot-rc4-s2026092702",
+        "cohort": "rx1",
+        "expected_model_seed": 2026092702,
+        "expected_checkpoint_sha256": "72f26413e495dcf82317898f8729caa3d35499bf0b41e9671ffdceab2c90924b",
+        "row_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092702",
+        "branch_features": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-ridge-repeat-rx1-m4-r01/cvs-daot-rc4-s2026092702/branch_features",
+        "ground_packet": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r02/ground-a-s2026092702",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-proto-frame-joint-repeat-m2-r01/rx1-cvs-daot-rc4-s2026092702",
+        "ground_summary": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-cvs-d92-practical-manytx-m5-r01/cvs-daot-rc4-s2026092702/ground",
+        "ground_summary_already_deployed": false
+      }
+    ]
+  }
+}
