@@ -250,3 +250,109 @@ def test_fresh_process_imports():
     root=Path(__file__).resolve().parents[1]
     for module in ['predict','score','dispatch']:
         subprocess.run([sys.executable,'-m','experiments.cvs_clean_eval.'+module,'--help'],cwd=root,check=True,capture_output=True)
+
+
+def balanced_case(case):
+    from experiments.cvs_balanced_identity.freeze import select_performance_candidate
+    reused_case(case)
+    old=case['root']/contracts.REUSED_RESIDUAL_RUN
+    write(case['root']/'previous_residual_selection.json',case['selection'])
+    write(old/'scoring_clean_complete.json',dict(status='SCORED_COMPLETE',models=5,seeds=4,rows=20))
+    for row in case['spec']['rows']:
+        if row['variant']!='residual_fusion':continue
+        row.update(reuse_from_run=contracts.REUSED_RESIDUAL_RUN,output_root=str(old/row['row_id']/'prediction'))
+        cfg=contracts.read(row['config']);cfg.update(output_root=row['output_root'],selection_file=str(case['root']/'previous_residual_selection.json'))
+        write(Path(row['config']),cfg)
+    records=[];source_rows=[]
+    for variant in contracts.THIRD:
+        for seed in sorted(contracts.SEEDS):
+            rid=variant+'-s'+str(seed);q=case['root']/'balanced_source'/rid/'source'
+            write(q/'completion.json',dict(status='SOURCE_TRAINED',epoch=200,steps=10000,target_access=False,target_evaluated=False,
+                final_source_metrics=dict(source_val_accuracy=.98,source_val_worst_rx=.95)))
+            write(q/'resource_profile.json',dict(total_parameters=113665,conv_linear_macs_per_sample=9657476))
+            source_rows.append(dict(row_id=rid,variant=variant,model_seed=seed,source_output=str(q)))
+            records.append(dict(variant=variant,seed=seed,accuracy=.98,worst_rx=.95,parameters=113665,macs=9657476))
+    write(case['root']/'balanced_source_matrix.json',dict(rows=source_rows))
+    selection=dict(select_performance_candidate(records),scope='balanced_source',source_matrix_ref=str(case['root']/'balanced_source_matrix.json'))
+    selection_path=case['root']/'balanced_selection.json';write(selection_path,selection)
+    for seed in sorted(contracts.SEEDS):
+        variant=selection['selected_variant'];rid=variant+'-s'+str(seed);out=Path(case['spec']['runtime_root'])/rid/'prediction'
+        cfg=contracts.read(case['spec']['rows'][0]['config'])
+        cfg.update(variant=variant,model_seed=seed,selection_file=str(selection_path),balanced_source_root=str(case['root']/'balanced_source'),
+            source_output=str(case['root']/'balanced_source'/rid/'source'),output_root=str(out))
+        config_path=case['root']/'configs'/(rid+'.json');write(config_path,cfg)
+        case['spec']['rows'].append(dict(row_id=rid,variant=variant,model_seed=seed,config=str(config_path),output_root=str(out)))
+    case['spec']['selection_file']=str(selection_path);case['selection']=selection
+    return case
+
+
+def test_balanced_freeze_uses_actual_completed_source_and_rejects_tampering(case):
+    balanced_case(case)
+    selection=contracts.frozen_selection(case['spec']['selection_file'])
+    assert selection['selected_variant']=='balanced_fusion'
+    write(Path(case['spec']['selection_file']),dict(selection,selected_variant='signed_balanced_fusion'))
+    with pytest.raises(ValueError):contracts.frozen_selection(case['spec']['selection_file'])
+    write(Path(case['spec']['selection_file']),selection)
+    q=case['root']/'balanced_source'/'balanced_fusion-s2026092701'/'source'/'completion.json'
+    write(q,dict(contracts.read(q),epoch=199))
+    with pytest.raises(ValueError):contracts.frozen_selection(case['spec']['selection_file'])
+
+
+def test_balanced_reuses20_and_scores4_new_truth_last(case,monkeypatch):
+    balanced_case(case);dispatch.validate_spec(case['spec']);prediction_fixtures(case)
+    opened=[];original=score.read
+    monkeypatch.setattr(score,'read',lambda p:(opened.append(str(p)),original(p))[1])
+    marker=score.score(case['spec'])
+    assert marker['models']==6 and marker['rows']==24 and marker['records']==72
+    assert sum(not r.get('reuse_from_run') for r in case['spec']['rows'])==4
+    at=opened.index(case['spec']['p1_truth'])
+    assert sum(Path(p).name=='clean_complete.json' for p in opened[:at])==24
+    summary=contracts.read(Path(case['spec']['runtime_root'])/'clean_summary.json')
+    assert any(r['baseline']=='residual_fusion' and r['receiver']=='ALL' for r in summary['paired'])
+
+
+def test_balanced_rejects_other_old_variant_missing_marker_and_unselected_candidate(case,monkeypatch):
+    balanced_case(case);prediction_fixtures(case)
+    row=next(r for r in case['spec']['rows'] if r['variant']=='residual_fusion')
+    row['reuse_from_run']='unregistered-run'
+    with pytest.raises(ValueError):dispatch.validate_spec(case['spec'])
+    opened=[];original=score.read
+    monkeypatch.setattr(score,'read',lambda p:(opened.append(str(p)),original(p))[1])
+    with pytest.raises(ValueError):score.score(case['spec'])
+    assert case['spec']['p1_truth'] not in opened
+    row['reuse_from_run']=contracts.REUSED_RESIDUAL_RUN
+    write(case['root']/contracts.REUSED_RESIDUAL_RUN/'scoring_clean_complete.json',dict(status='INCOMPLETE',models=5,seeds=4,rows=20))
+    with pytest.raises(ValueError):dispatch.validate_spec(case['spec'])
+    cfg=contracts.read(case['spec']['rows'][-1]['config'])
+    with pytest.raises(ValueError):contracts.validate_predict_config(dict(cfg,variant='signed_balanced_fusion'),case['selection'])
+
+
+def test_balanced_checkpoint_same_physical_contract_and_clean_prediction(case,monkeypatch):
+    balanced_case(case);cfg=contracts.read(case['spec']['rows'][-1]['config'])
+    done,initial,resolved,payload=source_fixture(case,cfg)
+    write(Path(cfg['source_output'])/'completion.json',dict(done,final_source_metrics=dict(source_val_accuracy=.98,source_val_worst_rx=.95)))
+    monkeypatch.setattr(predict,'build_model',lambda v:TinyClassifier())
+    predict.predict(cfg)
+    marker=contracts.read(Path(cfg['output_root'])/'clean_complete.json')
+    assert marker['count']==12 and marker['truth_read'] is False and marker['query_fit'] is False
+
+
+def test_balanced_prepare_emits_only_four_new_rows_with_fixed_capsule(case,monkeypatch):
+    from experiments.cvs_balanced_clean import prepare
+    from experiments.cvs_clean_eval.prepare import CAPSULE
+    root=Path(__file__).resolve().parents[1]
+    prefix='experiments/cvs_selected_clean/configs/'
+    for name in ('launch_spec.json','experiment_spec.json'):
+        write(case['root']/prefix/name,contracts.read(root/prefix/name))
+    monkeypatch.setattr(prepare,'ROOT',case['root'])
+    selection=dict(status='SOURCE_SELECTION_FROZEN',target_access=False,target_score_used=False,selected_variant='balanced_fusion')
+    prepare.main(selection)
+    folder=case['root']/'experiments/cvs_balanced_clean/configs'
+    runtime=contracts.read(folder/'launch_spec.json')
+    new=[r for r in runtime['rows'] if not r.get('reuse_from_run')]
+    assert len(runtime['rows'])==24 and len(new)==4
+    enriched=contracts.read(folder/'frozen_selection.json')
+    for row in new:
+        cfg=contracts.read(folder/(row['row_id']+'.json'))
+        assert cfg['p1_capsule']==CAPSULE and cfg['views']==['clean']
+        contracts.validate_predict_config(cfg,enriched)

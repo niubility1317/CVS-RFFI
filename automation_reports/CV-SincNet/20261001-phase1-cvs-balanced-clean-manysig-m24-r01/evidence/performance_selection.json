@@ -1,0 +1,25 @@
+{
+  "status": "SOURCE_SELECTION_FROZEN",
+  "selected_variant": "balanced_fusion",
+  "source_summaries": {
+    "balanced_fusion": {
+      "score": 0.9654537037037036,
+      "source_accuracy": 0.9819722222222222,
+      "worst_rx_accuracy": 0.9489351851851853,
+      "parameters": 113665,
+      "conv_linear_macs": 9657476
+    },
+    "signed_balanced_fusion": {
+      "score": 0.9648888888888889,
+      "source_accuracy": 0.981675925925926,
+      "worst_rx_accuracy": 0.9481018518518518,
+      "parameters": 113665,
+      "conv_linear_macs": 9657476
+    }
+  },
+  "selection_rule": "performance first: maximize four-seed E200 0.5 source-V accuracy+0.5 worst source RX; exact score ties use V then worst RX; costs only after equal performance; no 0.2pp cost tolerance",
+  "selection_policy": "performance_first_20261001",
+  "target_access": false,
+  "target_score_used": false,
+  "test_view": "clean"
+}

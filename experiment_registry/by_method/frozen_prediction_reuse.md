@@ -1,4 +1,4 @@
-# source_selected实验与历史证据
+# frozen_prediction_reuse实验与历史证据
 
 [返回总索引](../README.md)
 
@@ -7,4 +7,3 @@
 |名称|记录类型|证据入口|
 |---|---|---|
 |性能优先的CVS结构改进：clean确认实验|managed_run|[打开](../../automation_reports/CV-SincNet/20261001-phase1-cvs-balanced-clean-manysig-m24-r01/report.md)|
-|CVS 结构优化：轻量残差融合的 clean 确认报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261001-phase1-cvs-selected-clean-manysig-m20-r01/report.md)|

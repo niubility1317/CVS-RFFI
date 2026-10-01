@@ -63,3 +63,10 @@
 - For Markdown, JSON, and non-ASCII text, use explicit UTF-8 writes, BOM-aware reads, and Python JSON I/O when payloads are large or encoding-sensitive.
 - Do not assume all PowerShell versions support the same parameters or .NET helpers. Check support before relying on `Tee-Object -Encoding`, `Test-Connection -TimeoutSeconds`, `[IO.Path]::GetRelativePath`, or compression APIs that may require explicit `Add-Type`.
 - After SSH/SCP timeouts or malformed quoting, verify local SSH clients and TCP connections have exited, then use read-only remote process/log evidence before relaunching or declaring failure.
+
+
+## CVS基础网络优化优先级（2026-10-01）
+
+- 用户明确：主要目的是提升识别性能，参数轻量是次要条件。后续基础网络研发以合法源域性能与跨接收机稳定性为主要依据，参数/计算/状态成本作为次要比较，不能为了更少参数默认接受较低性能分数。
+- 参数轻量仍是软约束；不以单纯堆参数替代结构分析，也不把参数减少本身当作性能目标完成。性能实际提升必须由冻结后的独立测试证明，所有负结果保留。
+- 本轮健康源训练不热改或重启。原0.2个百分点内成本优先的source_selection保留为历史记录；新确认在任何新target访问前使用独立performance_selection，按四seed源V/最差源RX性能分数最高优先，性能完全并列后才比较成本。目标测试结果不得回流选模、结构、超参数或重跑。

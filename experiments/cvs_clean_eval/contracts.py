@@ -3,11 +3,13 @@ import json
 from pathlib import Path
 from experiments.cvs_clean_design.model import BASELINES,VARIANTS as FIRST
 from experiments.cvs_residual_identity.model import VARIANTS as SECOND
+from experiments.cvs_balanced_identity.model import VARIANTS as THIRD
 from experiments.cvs_residual_identity.dispatch import combine_research_selection
 
 SEEDS={2026092701,2026092702,2026092703,2026092704}
 CANDIDATES=set(FIRST)-set(BASELINES)|set(SECOND)
 REUSED_BASELINE_RUN='20261001-phase1-clean-baselines-manysig-m16-r01'
+REUSED_RESIDUAL_RUN='20261001-phase1-cvs-selected-clean-manysig-m20-r01'
 
 
 def read(path):return json.loads(Path(path).read_text(encoding='utf-8'))
@@ -15,6 +17,21 @@ def read(path):return json.loads(Path(path).read_text(encoding='utf-8'))
 
 def frozen_selection(path):
     selection=read(path)
+    if selection.get('scope')=='balanced_source':
+        from experiments.cvs_balanced_identity.freeze import select_performance_candidate
+        matrix=read(selection['source_matrix_ref']);records=[]
+        expected={(v,s) for v in THIRD for s in SEEDS}
+        if len(matrix['rows'])!=8 or {(r['variant'],r['model_seed']) for r in matrix['rows']}!=expected:
+            raise ValueError('Balanced source matrix incomplete')
+        for row in matrix['rows']:
+            q=Path(row['source_output']);done=read(q/'completion.json');profile=read(q/'resource_profile.json')
+            if done['status']!='SOURCE_TRAINED' or done['epoch']!=200 or done['steps']!=10000 or done['target_access'] or done['target_evaluated']:
+                raise ValueError('Balanced source selection before completion')
+            m=done['final_source_metrics']
+            records.append(dict(variant=row['variant'],seed=row['model_seed'],accuracy=m['source_val_accuracy'],worst_rx=m['source_val_worst_rx'],parameters=profile['total_parameters'],macs=profile['conv_linear_macs_per_sample']))
+        actual=select_performance_candidate(records)
+        if any(selection.get(k)!=v for k,v in actual.items()):raise ValueError('Balanced selection differs from actual source-only rule')
+        return selection
     if selection.get('scope')=='baseline_only':
         if (selection.get('status')!='FIXED_BASELINES_FROZEN' or selection.get('target_access') is not False or
             selection.get('target_score_used') is not False or selection.get('test_variants')!=list(BASELINES) or
@@ -37,25 +54,30 @@ def frozen_selection(path):
 
 
 def evaluation_variants(selection):
+    if selection.get('scope')=='balanced_source':return [*BASELINES,'residual_fusion',selection['selected_variant']]
     return list(BASELINES) if selection.get('scope')=='baseline_only' else [*BASELINES,selection['selected_variant']]
 
 
 def validate_reused_row(row):
-    if row.get('reuse_from_run')!=REUSED_BASELINE_RUN or row['variant'] not in BASELINES:
-        raise ValueError('Only the fixed completed baseline rows can be reused')
+    residual=row.get('reuse_from_run')==REUSED_RESIDUAL_RUN and row['variant']=='residual_fusion'
+    baseline=row.get('reuse_from_run')==REUSED_BASELINE_RUN and row['variant'] in BASELINES
+    if not (residual or baseline):raise ValueError('Only fixed completed baseline/previous residual rows can be reused')
+    old_run=REUSED_RESIDUAL_RUN if residual else REUSED_BASELINE_RUN
     out=Path(row['output_root'])
-    if out.parts[-3:]!=(REUSED_BASELINE_RUN,row['row_id'],'prediction'):
-        raise ValueError('Reused baseline output outside original run')
+    if out.parts[-3:]!=(old_run,row['row_id'],'prediction'):raise ValueError('Reused output outside original run')
     cfg=read(row['config']);original=frozen_selection(cfg['selection_file'])
-    if original.get('scope')!='baseline_only':raise ValueError('Reused baseline selection changed')
+    if baseline and original.get('scope')!='baseline_only':raise ValueError('Reused baseline selection changed')
+    if residual and (original.get('scope') in ('baseline_only','balanced_source') or original.get('selected_variant')!='residual_fusion'):
+        raise ValueError('Previous residual source selection changed')
     validate_predict_config(cfg,original)
-    marker=read(out.parents[1]/'scoring_clean_complete.json')
-    if marker['status']!='SCORED_COMPLETE' or marker['models']!=4 or marker['seeds']!=4 or marker['rows']!=16:
-        raise ValueError('Original baseline matrix not complete')
+    marker=read(out.parents[1]/'scoring_clean_complete.json');models=5 if residual else 4
+    if marker['status']!='SCORED_COMPLETE' or marker['models']!=models or marker['seeds']!=4 or marker['rows']!=models*4:
+        raise ValueError('Original reused matrix not complete')
     return cfg
 
 
 def source_method(variant):
+    if variant in THIRD:return 'cvs_balanced_identity'
     if variant in SECOND:return 'cvs_residual_identity'
     if variant in FIRST:return 'cvs_clean_design'
     raise ValueError('Unregistered architecture')
@@ -68,7 +90,7 @@ def validate_predict_config(c,selection):
         raise ValueError('Unregistered clean evaluation contract')
     if c['variant'] not in evaluation_variants(selection):
         raise ValueError('Nonselected CVS cannot receive target predictions')
-    expected_parent=c['baseline_source_root'] if c['variant'] in FIRST else c['residual_source_root']
+    expected_parent=c['balanced_source_root'] if c['variant'] in THIRD else (c['baseline_source_root'] if c['variant'] in FIRST else c['residual_source_root'])
     expected=Path(expected_parent)/(c['variant']+'-s'+str(c['model_seed']))/'source'
     if Path(c['source_output'])!=expected:raise ValueError('Source row/seed path mismatch')
     return c
@@ -98,7 +120,9 @@ def checkpoint_contract(c,done,initial,contract,expected,resolved,payload):
 
 
 def build_model(variant):
-    if variant in SECOND:
+    if variant in THIRD:
+        from experiments.cvs_balanced_identity.model import build
+    elif variant in SECOND:
         from experiments.cvs_residual_identity.model import build
     else:
         from experiments.cvs_clean_design.model import build

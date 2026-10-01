@@ -6,4 +6,4 @@
 
 |名称|记录类型|证据入口|
 |---|---|---|
-|CVS继续研发：分支平衡融合与有符号PA身份投影|managed_run|[打开](../../automation_reports/CV-SincNet/20261001-phase1-cvs-balanced-identity-manysig-m8-r01/report.md)|
+|CVS继续研发：分支平衡融合与有符号PA投影|managed_run|[打开](../../automation_reports/CV-SincNet/20261001-phase1-cvs-balanced-identity-manysig-m8-r01/report.md)|

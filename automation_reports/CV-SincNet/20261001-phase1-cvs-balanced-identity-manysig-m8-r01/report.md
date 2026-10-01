@@ -18,3 +18,11 @@ run_id：`20261001-phase1-cvs-balanced-identity-manysig-m8-r01`。状态：LOCAL
 N607已用短连接独立核实普通用户szu2070436088/host dell-DSS8440、项目路径、磁盘及8块GPU均无计算进程。既有PowerShell preflight包装在解析ssh -G时失败；改用Python subprocess argv读取相同配置，核实目标与identity后直接认证成功，未变更SSH配置或身份。
 
 独立P0/P1审查已完成PASS，审查者独立运行4项聚焦检查全部通过，无阻断项，见[审查证据](evidence/independent_review.json)。
+
+## N607源训练发布已核实
+
+代码`691a08df15c5abf256cc531064248a7ba541c196`已push并独立核对远端OID。新release传输校验、远端compile与Torch2.1冷进程双候选CE反向检查通过。独立读回dispatcher PID794084的CWD/argv；8行各占一块GPU，进程与resolved/log增长已核实，状态SOURCE_TRAINING。实际6300L/56700Uunused/27000V、每轮50步、纯CE/无增强/域骨干关闭与目标访问关闭一致。发布后源码保持不可变，后续clean按另一个不可覆盖run发布。详见[发布后读回](evidence/source_launch_readback.json)。
+
+## 完整源训练已完成及用户优先级更新
+
+8行均E200/10000更新，完整1600epoch、80000step、CSV及完整stdout已解析，无技术异常；所有source物理角色和scratch/noaug/nodomain/CE-only核实。源训练原选择未覆盖。用户在新target访问前明确性能优先，另按源性能最高冻结balanced_fusion，费用只在性能完全并列时比较；取消0.2个百分点成本优先容差。详见[evidence/performance_selection.json](evidence/performance_selection.json)与[evidence/source_research_complete.json](evidence/source_research_complete.json)。新确认run 20261001-phase1-cvs-balanced-clean-manysig-m24-r01将默认执行clean24行独立评分，不测试未选候选。

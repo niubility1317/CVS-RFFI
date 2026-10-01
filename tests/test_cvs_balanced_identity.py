@@ -44,3 +44,15 @@ def test_source_guards_and_target_independent_selection():
     result=select_source_candidate(rows);assert result['selected_variant']==VARIANTS[0] and result['target_score_used'] is False
     with pytest.raises(ValueError):select_source_candidate(rows[:-1])
     subprocess.run([sys.executable,'-m','experiments.cvs_balanced_identity.source','--help'],cwd=Path(__file__).resolve().parents[1],capture_output=True,check=True)
+
+
+def test_user_performance_priority_never_trades_accuracy_for_parameters():
+    from experiments.cvs_balanced_identity.freeze import select_performance_candidate
+    rows=[dict(variant=v,seed=s,accuracy=.98,worst_rx=.94,parameters=113665,macs=9657476)
+        for v in VARIANTS for s in (2026092701,2026092702,2026092703,2026092704)]
+    for row in rows:
+        if row['variant']=='signed_balanced_fusion':
+            row.update(accuracy=.981,worst_rx=.941,parameters=160000,macs=9700000)
+    assert select_performance_candidate(rows)['selected_variant']=='signed_balanced_fusion'
+    for row in rows:row['target_accuracy']=0 if row['variant']=='signed_balanced_fusion' else 1
+    assert select_performance_candidate(rows)['selected_variant']=='signed_balanced_fusion'
