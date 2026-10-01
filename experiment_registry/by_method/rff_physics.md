@@ -7,5 +7,5 @@
 |名称|记录类型|证据入口|
 |---|---|---|
 |RFF物理可辨识性：合成诊断|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-diagnostic-rff-identifiability-synthetic-m1-r01/report.md)|
-|RFF 源域已知 Wi-Fi 激励对应关系诊断|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-diagnostic-rff-known-excitation-source-manysig-m1-r01/report.md)|
+|RFF 源域已知激励诊断：预登记|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-diagnostic-rff-known-excitation-source-manysig-m1-r01/report.md)|
 |RFF源域前导码与可观测量诊断|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-diagnostic-rff-preamble-source-manysig-m1-r01/report.md)|

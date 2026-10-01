@@ -21,11 +21,11 @@
   "replaces_run_id": null,
   "authorization": "用户要求从物理和RFF原理继续优化CVS；本诊断服务于新身份表征的源域研发。",
   "code": {
-    "commit": "939861e65c055a3f471eef2c65a44c4d44abc12a",
+    "commit": "d767e1e124ea079a07ba7c3647c3b1c68f4111ab",
     "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rff_known_excitation_source_20261002_r01",
-    "note": "Preparation base; immutable actual launch commit recorded after publish."
+    "note": "Immutable source diagnostic release independently verified; later commits contain analysis only."
   },
   "data": {
     "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
@@ -82,7 +82,17 @@
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-diagnostic-rff-known-excitation-source-manysig-m1-r01",
     "local_artifact_root": "local_artifacts/cvs_rff_known_excitation_source_20261002_r01",
     "launch_command": "python -m experiments.cvs_rff_physics.publish_known_excitation --output local_artifacts/cvs_rff_known_excitation_source_20261002_r01",
-    "stop_rule": "Fail only own process on nonfinite/rolecontract/outputcollision;no restart or low-statistic intervention"
+    "stop_rule": "Fail only own process on nonfinite/rolecontract/outputcollision;no restart or low-statistic intervention",
+    "actual_pid": 1202381,
+    "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rff_known_excitation_source_20261002_r01",
+    "actual_argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_rff_physics.known_excitation",
+      "--config",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rff_known_excitation_source_20261002_r01/experiments/cvs_rff_physics/configs/known_excitation.json"
+    ]
   },
   "expected_artifacts": [
     "source_contract.json",
@@ -144,7 +154,9 @@
         "excitation_statistics.json",
         "completion.json",
         "source.log"
-      ]
+      ],
+      "actual_pid": 1202381,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rff_known_excitation_source_20261002_r01"
     }
   ],
   "notes": [

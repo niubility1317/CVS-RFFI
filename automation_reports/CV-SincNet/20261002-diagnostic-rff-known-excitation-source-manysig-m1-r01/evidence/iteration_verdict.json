@@ -1,0 +1,14 @@
+{
+  "status": "ANALYZED_SOURCE_ONLY",
+  "reference_correspondence": "SUPPORTED_WITH_RX_DEPENDENT_RESIDUAL",
+  "template_correlation_V_mean": 0.915367817221685,
+  "template_correlation_V_median": 0.9974892089513103,
+  "receiver_marginal_range": 0.2113820473943122,
+  "tx_marginal_range": 0.009760810121733798,
+  "identified_TX_hardware": false,
+  "performance_claim": false,
+  "test_result": "N/A: no classifier",
+  "target_access": false,
+  "genuine_RFF_physics_goal_achieved": false,
+  "next_requirement": "Separate TX/RX forward-model interventions; do not label equalized template residual as TX hardware."
+}

@@ -1,0 +1,102 @@
+{
+  "read_at": 1790886954.4209883,
+  "submit": {
+    "status": "SUBMITTED",
+    "pid": 1202381,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rff_known_excitation_source_20261002_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_rff_physics.known_excitation",
+      "--config",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rff_known_excitation_source_20261002_r01/experiments/cvs_rff_physics/configs/known_excitation.json"
+    ],
+    "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-diagnostic-rff-known-excitation-source-manysig-m1-r01/source.log",
+    "commit": "d767e1e124ea079a07ba7c3647c3b1c68f4111ab",
+    "cpu_only": true
+  },
+  "process": null,
+  "resolved": {
+    "method": "rff_known_excitation",
+    "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+    "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-rff-known-excitation-source-manysig-m1-r01/source",
+    "split_seed": 392005,
+    "roles": [
+      "L_s",
+      "V"
+    ],
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "equalized": 1,
+    "out_len": 256,
+    "rms_normalize": true,
+    "augmentation": false,
+    "model": false,
+    "reference": "https://raw.githubusercontent.com/bastibl/gr-ieee802-11/ad0598e4a874f4b8e1f391a1e0323e80df2b34ff/examples/wifi_phy_hier.grc",
+    "pid": 1202381,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rff_known_excitation_source_20261002_r01",
+    "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "torch_version": "2.1.0+cu121",
+    "commit": "d767e1e124ea079a07ba7c3647c3b1c68f4111ab",
+    "device": "cpu",
+    "source_counts": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "V": 27000
+    },
+    "target_constructed": false,
+    "U_s_use": "unused",
+    "checkpoint_access": false,
+    "training": false,
+    "source_roles_exact_match": true,
+    "per_packet_fit": "wrapped CFO, fractional delay grid, complex gain",
+    "iq_convention_identified": false,
+    "conjugation_ambiguity": "s*(n)=-j*s(n-10) at 25 Msps",
+    "cross_packet_fit": false,
+    "identity_fit": false,
+    "hardware_parameter_fit": false,
+    "input_modified": false,
+    "diagnostic_windows": [
+      [
+        0,
+        80
+      ],
+      [
+        80,
+        160
+      ],
+      [
+        160,
+        240
+      ]
+    ],
+    "delay_step_samples": 0.0625,
+    "cfo_alias_period_hz": 1250000,
+    "sample_rate_hz": 25000000,
+    "nominal_wifi_bandwidth_hz": 20000000
+  },
+  "completion": {
+    "status": "SOURCE_DIAGNOSTIC_COMPLETE",
+    "counts": {
+      "L_s": 6300,
+      "V": 27000
+    },
+    "groups": 180,
+    "target_access": false,
+    "elapsed_seconds": 8.488881522993324
+  },
+  "log_bytes": 1923,
+  "log_text": "RESOLVED_CONFIG {\"method\": \"rff_known_excitation\", \"dataset\": \"/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl\", \"source_contract\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json\", \"output_root\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-rff-known-excitation-source-manysig-m1-r01/source\", \"split_seed\": 392005, \"roles\": [\"L_s\", \"V\"], \"source_receivers\": [1, 3, 4, 6, 8], \"source_days\": [1, 2, 3], \"equalized\": 1, \"out_len\": 256, \"rms_normalize\": true, \"augmentation\": false, \"model\": false, \"reference\": \"https://raw.githubusercontent.com/bastibl/gr-ieee802-11/ad0598e4a874f4b8e1f391a1e0323e80df2b34ff/examples/wifi_phy_hier.grc\", \"pid\": 1202381, \"cwd\": \"/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_rff_known_excitation_source_20261002_r01\", \"python\": \"/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python\", \"torch_version\": \"2.1.0+cu121\", \"commit\": \"d767e1e124ea079a07ba7c3647c3b1c68f4111ab\", \"device\": \"cpu\", \"source_counts\": {\"L_s\": 6300, \"U_s\": 56700, \"V\": 27000}, \"target_constructed\": false, \"U_s_use\": \"unused\", \"checkpoint_access\": false, \"training\": false, \"source_roles_exact_match\": true, \"per_packet_fit\": \"wrapped CFO, fractional delay grid, complex gain\", \"iq_convention_identified\": false, \"conjugation_ambiguity\": \"s*(n)=-j*s(n-10) at 25 Msps\", \"cross_packet_fit\": false, \"identity_fit\": false, \"hardware_parameter_fit\": false, \"input_modified\": false, \"diagnostic_windows\": [[0, 80], [80, 160], [160, 240]], \"delay_step_samples\": 0.0625, \"cfo_alias_period_hz\": 1250000, \"sample_rate_hz\": 25000000, \"nominal_wifi_bandwidth_hz\": 20000000}\nROLE {\"role\": \"L_s\", \"count\": 6300, \"elapsed_seconds\": 1.5977320369856898}\nROLE {\"role\": \"V\", \"count\": 27000, \"elapsed_seconds\": 8.464995349990204}\nCOMPLETE {\"counts\": {\"L_s\": 6300, \"V\": 27000}, \"groups\": 180, \"elapsed_seconds\": 8.488881522993324}\n"
+}
