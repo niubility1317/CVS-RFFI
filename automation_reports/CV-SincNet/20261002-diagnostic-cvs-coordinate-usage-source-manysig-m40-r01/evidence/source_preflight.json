@@ -1,0 +1,332 @@
+{
+  "read_at": 1790906669.0219042,
+  "user": "szu2070436088",
+  "host": "dell-DSS8440",
+  "output_exists": {
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-coordinate-usage-source-manysig-m40-r01": false,
+    "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-diagnostic-cvs-coordinate-usage-source-manysig-m40-r01": false,
+    "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coordinate_usage_source_20261002_r01": false
+  },
+  "models": [
+    {
+      "row_id": "coordinate_equivariant-s2026092701",
+      "commit": "ecb268f7b4bcab111f041e177ecc3f967f1cb21a",
+      "completion": {
+        "status": "SOURCE_TRAINED",
+        "epoch": 200,
+        "steps": 10000,
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-coordinate-identity-manysig-m8-r01/coordinate_equivariant-s2026092701/source/last.pt",
+        "elapsed_seconds": 1481.083911802998,
+        "target_access": false,
+        "target_evaluated": false,
+        "final_source_metrics": {
+          "source_val_count": 27000,
+          "source_val_accuracy": 0.9745555555555555,
+          "source_val_ce": 0.1385737716983621,
+          "source_val_rx_accuracy": {
+            "1": 0.9946296296296296,
+            "3": 0.9292592592592592,
+            "4": 0.9868518518518519,
+            "6": 0.9938888888888889,
+            "8": 0.9681481481481482
+          },
+          "source_val_worst_rx": 0.9292592592592592
+        },
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        }
+      },
+      "checkpoint_exists": true
+    },
+    {
+      "row_id": "coordinate_gauge-s2026092701",
+      "commit": "ecb268f7b4bcab111f041e177ecc3f967f1cb21a",
+      "completion": {
+        "status": "SOURCE_TRAINED",
+        "epoch": 200,
+        "steps": 10000,
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-coordinate-identity-manysig-m8-r01/coordinate_gauge-s2026092701/source/last.pt",
+        "elapsed_seconds": 1216.8063086399925,
+        "target_access": false,
+        "target_evaluated": false,
+        "final_source_metrics": {
+          "source_val_count": 27000,
+          "source_val_accuracy": 0.9128888888888889,
+          "source_val_ce": 0.3119157592480985,
+          "source_val_rx_accuracy": {
+            "1": 0.9896296296296296,
+            "3": 0.765,
+            "4": 0.9774074074074074,
+            "6": 0.9805555555555555,
+            "8": 0.8518518518518519
+          },
+          "source_val_worst_rx": 0.765
+        },
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        }
+      },
+      "checkpoint_exists": true
+    },
+    {
+      "row_id": "coordinate_equivariant-s2026092702",
+      "commit": "ecb268f7b4bcab111f041e177ecc3f967f1cb21a",
+      "completion": {
+        "status": "SOURCE_TRAINED",
+        "epoch": 200,
+        "steps": 10000,
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-coordinate-identity-manysig-m8-r01/coordinate_equivariant-s2026092702/source/last.pt",
+        "elapsed_seconds": 1416.3257235150086,
+        "target_access": false,
+        "target_evaluated": false,
+        "final_source_metrics": {
+          "source_val_count": 27000,
+          "source_val_accuracy": 0.9755925925925926,
+          "source_val_ce": 0.13139119274136007,
+          "source_val_rx_accuracy": {
+            "1": 0.9951851851851852,
+            "3": 0.9355555555555556,
+            "4": 0.9879629629629629,
+            "6": 0.9946296296296296,
+            "8": 0.9646296296296296
+          },
+          "source_val_worst_rx": 0.9355555555555556
+        },
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        }
+      },
+      "checkpoint_exists": true
+    },
+    {
+      "row_id": "coordinate_gauge-s2026092702",
+      "commit": "ecb268f7b4bcab111f041e177ecc3f967f1cb21a",
+      "completion": {
+        "status": "SOURCE_TRAINED",
+        "epoch": 200,
+        "steps": 10000,
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-coordinate-identity-manysig-m8-r01/coordinate_gauge-s2026092702/source/last.pt",
+        "elapsed_seconds": 1242.9345178460062,
+        "target_access": false,
+        "target_evaluated": false,
+        "final_source_metrics": {
+          "source_val_count": 27000,
+          "source_val_accuracy": 0.9131481481481482,
+          "source_val_ce": 0.30155213557332927,
+          "source_val_rx_accuracy": {
+            "1": 0.9903703703703703,
+            "3": 0.762962962962963,
+            "4": 0.9703703703703703,
+            "6": 0.9814814814814815,
+            "8": 0.8605555555555555
+          },
+          "source_val_worst_rx": 0.762962962962963
+        },
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        }
+      },
+      "checkpoint_exists": true
+    },
+    {
+      "row_id": "coordinate_equivariant-s2026092703",
+      "commit": "ecb268f7b4bcab111f041e177ecc3f967f1cb21a",
+      "completion": {
+        "status": "SOURCE_TRAINED",
+        "epoch": 200,
+        "steps": 10000,
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-coordinate-identity-manysig-m8-r01/coordinate_equivariant-s2026092703/source/last.pt",
+        "elapsed_seconds": 1495.0459192080016,
+        "target_access": false,
+        "target_evaluated": false,
+        "final_source_metrics": {
+          "source_val_count": 27000,
+          "source_val_accuracy": 0.9707037037037037,
+          "source_val_ce": 0.1587451693909011,
+          "source_val_rx_accuracy": {
+            "1": 0.9957407407407407,
+            "3": 0.922037037037037,
+            "4": 0.9855555555555555,
+            "6": 0.9914814814814815,
+            "8": 0.9587037037037037
+          },
+          "source_val_worst_rx": 0.922037037037037
+        },
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        }
+      },
+      "checkpoint_exists": true
+    },
+    {
+      "row_id": "coordinate_gauge-s2026092703",
+      "commit": "ecb268f7b4bcab111f041e177ecc3f967f1cb21a",
+      "completion": {
+        "status": "SOURCE_TRAINED",
+        "epoch": 200,
+        "steps": 10000,
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-coordinate-identity-manysig-m8-r01/coordinate_gauge-s2026092703/source/last.pt",
+        "elapsed_seconds": 1326.6216083239997,
+        "target_access": false,
+        "target_evaluated": false,
+        "final_source_metrics": {
+          "source_val_count": 27000,
+          "source_val_accuracy": 0.9196296296296296,
+          "source_val_ce": 0.2879029670349512,
+          "source_val_rx_accuracy": {
+            "1": 0.9905555555555555,
+            "3": 0.7883333333333333,
+            "4": 0.9746296296296296,
+            "6": 0.9818518518518519,
+            "8": 0.8627777777777778
+          },
+          "source_val_worst_rx": 0.7883333333333333
+        },
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        }
+      },
+      "checkpoint_exists": true
+    },
+    {
+      "row_id": "coordinate_equivariant-s2026092704",
+      "commit": "ecb268f7b4bcab111f041e177ecc3f967f1cb21a",
+      "completion": {
+        "status": "SOURCE_TRAINED",
+        "epoch": 200,
+        "steps": 10000,
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-coordinate-identity-manysig-m8-r01/coordinate_equivariant-s2026092704/source/last.pt",
+        "elapsed_seconds": 1485.1053599540028,
+        "target_access": false,
+        "target_evaluated": false,
+        "final_source_metrics": {
+          "source_val_count": 27000,
+          "source_val_accuracy": 0.9712592592592593,
+          "source_val_ce": 0.1476290063258523,
+          "source_val_rx_accuracy": {
+            "1": 0.9959259259259259,
+            "3": 0.9235185185185185,
+            "4": 0.99,
+            "6": 0.9927777777777778,
+            "8": 0.9540740740740741
+          },
+          "source_val_worst_rx": 0.9235185185185185
+        },
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        }
+      },
+      "checkpoint_exists": true
+    },
+    {
+      "row_id": "coordinate_gauge-s2026092704",
+      "commit": "ecb268f7b4bcab111f041e177ecc3f967f1cb21a",
+      "completion": {
+        "status": "SOURCE_TRAINED",
+        "epoch": 200,
+        "steps": 10000,
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-coordinate-identity-manysig-m8-r01/coordinate_gauge-s2026092704/source/last.pt",
+        "elapsed_seconds": 1222.2758919920016,
+        "target_access": false,
+        "target_evaluated": false,
+        "final_source_metrics": {
+          "source_val_count": 27000,
+          "source_val_accuracy": 0.9203333333333333,
+          "source_val_ce": 0.2884323552958473,
+          "source_val_rx_accuracy": {
+            "1": 0.987037037037037,
+            "3": 0.787962962962963,
+            "4": 0.9785185185185186,
+            "6": 0.9785185185185186,
+            "8": 0.8696296296296296
+          },
+          "source_val_worst_rx": 0.787962962962963
+        },
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        }
+      },
+      "checkpoint_exists": true
+    }
+  ],
+  "selection": {
+    "status": "SOURCE_SELECTION_FROZEN",
+    "selected_variant": "residual_fusion",
+    "source_summaries": {
+      "residual_fusion": {
+        "score": 0.9628240740740741,
+        "source_accuracy": 0.9806944444444444,
+        "worst_rx_accuracy": 0.9449537037037037,
+        "parameters": 164225,
+        "conv_linear_macs": 9708836
+      },
+      "coordinate_equivariant": {
+        "score": 0.9503101851851852,
+        "source_accuracy": 0.9730277777777778,
+        "worst_rx_accuracy": 0.9275925925925925,
+        "parameters": 203193,
+        "conv_linear_macs": 7199488
+      },
+      "coordinate_gauge": {
+        "score": 0.8462824074074073,
+        "source_accuracy": 0.9165,
+        "worst_rx_accuracy": 0.7760648148148148,
+        "parameters": 164865,
+        "conv_linear_macs": 9710276
+      }
+    },
+    "selection_rule": "performance first: four-seed E200 0.5 sourceV+0.5 worstsourceRX;exact ties V thenworstRX;costs secondary only after equalperformance",
+    "selection_policy": "performance_first_coordinate_with_source_control_20261002",
+    "candidate_universe": [
+      "residual_fusion",
+      "coordinate_equivariant",
+      "coordinate_gauge"
+    ],
+    "new_candidate_selected": false,
+    "exact_cost_tie_order": [
+      "residual_fusion",
+      "coordinate_equivariant",
+      "coordinate_gauge"
+    ],
+    "target_access": false,
+    "target_score_used": false,
+    "test_view": "clean"
+  },
+  "gpu": "0, 24124 MiB\n1, 24124 MiB\n2, 24124 MiB\n3, 24124 MiB\n4, 24124 MiB\n5, 24124 MiB\n6, 24124 MiB\n7, 24124 MiB\n",
+  "apps": "",
+  "free_bytes": 6268942438400,
+  "target_access": false,
+  "checkpoint_loaded": false
+}

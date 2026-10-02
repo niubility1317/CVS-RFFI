@@ -1,4 +1,4 @@
-# diagnostic实验与历史证据
+# coordinate_usage实验与历史证据
 
 [返回总索引](../README.md)
 
@@ -6,5 +6,4 @@
 
 |名称|记录类型|证据入口|
 |---|---|---|
-|D42 support-only技术诊断|managed_run|[打开](../../automation_reports/CV-SincNet/20260928-diagnostic-d42-support-manytx-m2-r01/report.md)|
 |CVS 坐标实际使用：8冻结模型×5内部消融完整源V诊断|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-diagnostic-cvs-coordinate-usage-source-manysig-m40-r01/report.md)|

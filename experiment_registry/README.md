@@ -1,6 +1,6 @@
 # 实验总索引
 
-更新：2026-10-02T01:51:50+00:00
+更新：2026-10-02T02:05:30+00:00
 
 先按方法/问题检索，再用run ID读取精确配置与证据。历史组数量不等于独立实验数量。
 
@@ -12,7 +12,7 @@
 
 |记录类型|数量|
 |---|---:|
-|managed_run|53|
+|managed_run|54|
 
 历史状态统一为HISTORICAL_UNVERIFIED；RUNNING等原文声明只供查证，不能证明此刻仍在运行。
 
@@ -20,7 +20,7 @@
 
 |路径标签（定位提示）|证据组数|
 |---|---:|
-|[cvs](by_method/cvs.md)|36|
+|[cvs](by_method/cvs.md)|37|
 |[clean_only](by_method/clean_only.md)|28|
 |[ce_only](by_method/ce_only.md)|28|
 |[no_augmentation](by_method/no_augmentation.md)|21|
@@ -34,10 +34,10 @@
 |[practical](by_method/practical.md)|7|
 |[residual](by_method/residual.md)|7|
 |[residual_noeq](by_method/residual_noeq.md)|7|
+|[source_only](by_method/source_only.md)|7|
 |[phase1](by_method/phase1.md)|6|
 |[fasttrust](by_method/fasttrust.md)|6|
 |[concat](by_method/concat.md)|6|
-|[source_only](by_method/source_only.md)|6|
 |[lightweight](by_method/lightweight.md)|6|
 |[full](by_method/full.md)|5|
 |[zf](by_method/zf.md)|5|
@@ -52,6 +52,7 @@
 |[evaluation](by_method/evaluation.md)|2|
 |[true256](by_method/true256.md)|2|
 |[final_eval](by_method/final_eval.md)|2|
+|[diagnostic](by_method/diagnostic.md)|2|
 |[source_scratch](by_method/source_scratch.md)|2|
 |[native_methods](by_method/native_methods.md)|2|
 |[architecture](by_method/architecture.md)|2|
@@ -60,6 +61,7 @@
 |[cvcnn_matched](by_method/cvcnn_matched.md)|2|
 |[ablation](by_method/ablation.md)|2|
 |[scratch](by_method/scratch.md)|2|
+|[no_target_access](by_method/no_target_access.md)|2|
 |[frozen](by_method/frozen.md)|2|
 |[preamble](by_method/preamble.md)|2|
 |[packet_synchronization](by_method/packet_synchronization.md)|2|
@@ -72,7 +74,6 @@
 |[fasttrust_rc4](by_method/fasttrust_rc4.md)|1|
 |[d92_parent](by_method/d92_parent.md)|1|
 |[d42](by_method/d42.md)|1|
-|[diagnostic](by_method/diagnostic.md)|1|
 |[support_only](by_method/support_only.md)|1|
 |[baseline](by_method/baseline.md)|1|
 |[four_seeds](by_method/four_seeds.md)|1|
@@ -89,11 +90,12 @@
 |[simplex_classifier](by_method/simplex_classifier.md)|1|
 |[physical_stability](by_method/physical_stability.md)|1|
 |[information_diagnostic](by_method/information_diagnostic.md)|1|
+|[coordinate_usage](by_method/coordinate_usage.md)|1|
+|[frozen_weights](by_method/frozen_weights.md)|1|
 |[public_synthetic](by_method/public_synthetic.md)|1|
 |[numerical_attribution](by_method/numerical_attribution.md)|1|
 |[received_sensitivity](by_method/received_sensitivity.md)|1|
 |[synthetic_only](by_method/synthetic_only.md)|1|
-|[no_target_access](by_method/no_target_access.md)|1|
 |[full_fp32](by_method/full_fp32.md)|1|
 |[numerical_physics_consistency](by_method/numerical_physics_consistency.md)|1|
 |[whole_identity_gauge](by_method/whole_identity_gauge.md)|1|
@@ -138,6 +140,7 @@
 |CVS性能优先继续优化：phase_dsq clean测试报告|managed_run|[打开](../automation_reports/CV-SincNet/20261001-phase1-cvs-stability-clean-manysig-m24-r01/report.md)|
 |CVS 性能优先研发：物理补充表征|managed_run|[打开](../automation_reports/CV-SincNet/20261001-phase1-cvs-stability-identity-manysig-m8-r01/report.md)|
 |CVS 相对频偏坐标：完整源域身份信息诊断|managed_run|[打开](../automation_reports/CV-SincNet/20261002-diagnostic-cvs-cfo-information-source-manysig-m1-r01/report.md)|
+|CVS 坐标实际使用：8冻结模型×5内部消融完整源V诊断|managed_run|[打开](../automation_reports/CV-SincNet/20261002-diagnostic-cvs-coordinate-usage-source-manysig-m40-r01/report.md)|
 |冻结 CVS 源权重的公共合成相位数值归因|managed_run|[打开](../automation_reports/CV-SincNet/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01/report.md)|
 |CVS 完整源 V 接收变换与身份路径诊断|managed_run|[打开](../automation_reports/CV-SincNet/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/report.md)|
 |RFF物理可辨识性：合成诊断|managed_run|[打开](../automation_reports/CV-SincNet/20261002-diagnostic-rff-identifiability-synthetic-m1-r01/report.md)|
