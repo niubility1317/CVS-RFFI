@@ -22,7 +22,7 @@
   "replaces_run_id": null,
   "authorization": "用户要求从物理和RFF原理继续优化CVS；本诊断服务于新身份表征的源域研发。",
   "code": {
-    "commit": "36e16d2a99ddbd739e43a12a5a2520037ee23f06",
+    "commit": "e90e4c55c4f65c637b5c0b3ea5ebcceedb82cd2f",
     "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_cfo_information_source_20261002_r01",
@@ -83,7 +83,17 @@
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-diagnostic-cvs-cfo-information-source-manysig-m1-r01",
     "local_artifact_root": "local_artifacts/cvs_cfo_information_source_20261002_r01",
     "launch_command": "python -m experiments.cvs_cfo_information.publish --output local_artifacts/cvs_cfo_information_source_20261002_r01",
-    "stop_rule": "Fail only own process on nonfinite/rolecontract/outputcollision;no restart or low-statistic intervention"
+    "stop_rule": "Fail only own process on nonfinite/rolecontract/outputcollision;no restart or low-statistic intervention",
+    "actual_pid": 1362057,
+    "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_cfo_information_source_20261002_r01",
+    "actual_argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_cfo_information.audit",
+      "--config",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_cfo_information_source_20261002_r01/experiments/cvs_cfo_information/configs/source.json"
+    ]
   },
   "expected_artifacts": [
     "source_contract.json",
@@ -110,7 +120,8 @@
     ],
     "prediction_ref": null,
     "scorer_ref": null,
-    "later_test": "N/A:source diagnostic not released classifier;no targetquery. A later preregistered CVS candidate follows normal defaultclean completion."
+    "later_test": "N/A:source diagnostic not released classifier;no targetquery. A later preregistered CVS candidate follows normal defaultclean completion.",
+    "actual_outcome": "FullL6300/V27000/180cells/24fixedprobes/independentCMrecompute;5.309sCPU;VfitFalse/targetFalse;noformalCVSmodel;overallgoalunmet"
   },
   "rows": [
     {
@@ -145,7 +156,18 @@
         "information_statistics.json",
         "completion.json",
         "source.log"
-      ]
+      ],
+      "actual_pid": 1362057,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_cfo_information_source_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_cfo_information.audit",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_cfo_information_source_20261002_r01/experiments/cvs_cfo_information/configs/source.json"
+      ],
+      "gpu": null
     }
   ],
   "notes": [

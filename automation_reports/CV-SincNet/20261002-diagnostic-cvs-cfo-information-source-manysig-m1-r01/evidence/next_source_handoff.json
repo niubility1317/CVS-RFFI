@@ -1,0 +1,97 @@
+{
+  "status": "VERIFIED",
+  "source_only": true,
+  "counts": {
+    "L_s": 6300,
+    "V": 27000
+  },
+  "groups": 180,
+  "fits": 24,
+  "all_source_probe_confusions_recomputed": true,
+  "full_text_checked": true,
+  "V_fit": false,
+  "target_access": false,
+  "checkpoint_access": false,
+  "goal_achieved": false,
+  "source_probe_summaries": {
+    "cfo80": {
+      "pooled_accuracy": 0.3382962962962963,
+      "leave_source_rx_accuracy_mean": 0.34925925925925927,
+      "leave_source_rx_accuracy_sd": 0.07679035915568606,
+      "leave_source_rx_accuracies": {
+        "1": 0.4438888888888889,
+        "3": 0.26611111111111113,
+        "4": 0.40925925925925927,
+        "6": 0.3414814814814815,
+        "8": 0.28555555555555556
+      }
+    },
+    "coherence80": {
+      "pooled_accuracy": 0.1822962962962963,
+      "leave_source_rx_accuracy_mean": 0.16014814814814815,
+      "leave_source_rx_accuracy_sd": 0.015847351386063246,
+      "leave_source_rx_accuracies": {
+        "1": 0.16722222222222222,
+        "3": 0.1698148148148148,
+        "4": 0.16407407407407407,
+        "6": 0.1675925925925926,
+        "8": 0.13203703703703704
+      }
+    },
+    "cfo_coherence80": {
+      "pooled_accuracy": 0.4177037037037037,
+      "leave_source_rx_accuracy_mean": 0.32981481481481484,
+      "leave_source_rx_accuracy_sd": 0.048302281780885414,
+      "leave_source_rx_accuracies": {
+        "1": 0.35685185185185186,
+        "3": 0.26666666666666666,
+        "4": 0.37703703703703706,
+        "6": 0.35833333333333334,
+        "8": 0.2901851851851852
+      }
+    },
+    "three_window": {
+      "pooled_accuracy": 0.5188518518518519,
+      "leave_source_rx_accuracy_mean": 0.38462962962962965,
+      "leave_source_rx_accuracy_sd": 0.13509719358549846,
+      "leave_source_rx_accuracies": {
+        "1": 0.5574074074074075,
+        "3": 0.31685185185185183,
+        "4": 0.20425925925925925,
+        "6": 0.4622222222222222,
+        "8": 0.3824074074074074
+      }
+    }
+  },
+  "source_associations": {
+    "L_s": {
+      "total_squared_variation": 148.22162608358983,
+      "association_fraction": {
+        "TX": 0.02301884183980907,
+        "RX": 0.008637662992323478,
+        "day": 0.000542170986316452,
+        "TX_RX_interaction": 0.0069077648358221635,
+        "remaining": 0.9608935593457288
+      },
+      "claim": "Balanced-source circular-coordinate association;not causal hardware decomposition"
+    },
+    "V": {
+      "total_squared_variation": 571.6148432604151,
+      "association_fraction": {
+        "TX": 0.025384358704545324,
+        "RX": 0.007523970114042712,
+        "day": 0.00026823964772419717,
+        "TX_RX_interaction": 0.009289620925358528,
+        "remaining": 0.9575338106083293
+      },
+      "claim": "Balanced-source circular-coordinate association;not causal hardware decomposition"
+    }
+  },
+  "run_id": "20261002-diagnostic-cvs-cfo-information-source-manysig-m1-r01",
+  "source_commit": "e90e4c55c4f65c637b5c0b3ea5ebcceedb82cd2f",
+  "target_scores_included": false,
+  "next_action": "Complete actualsource/dispatch/physicalaudit/prepare/conditionalclean protocol for two coordinate prototypes;preregister before freshscratch launch. Use fixed12source record performance selection;never use target results for design.",
+  "local_next_prototype": "experiments/cvs_coordinate_identity/model.py",
+  "prototype_validation": "8 focused checks PASS;unlaunched/no formalperformance",
+  "prototype_design_ref": "docs/CVS_COORDINATE_IDENTITY_HYPOTHESIS_20261002.md"
+}
