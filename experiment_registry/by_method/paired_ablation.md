@@ -6,4 +6,4 @@
 
 |名称|记录类型|证据入口|
 |---|---|---|
-|CVS曲率修正的源域归因预登记|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/report.md)|
+|CVS相位曲率：冻结源域归因结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/report.md)|

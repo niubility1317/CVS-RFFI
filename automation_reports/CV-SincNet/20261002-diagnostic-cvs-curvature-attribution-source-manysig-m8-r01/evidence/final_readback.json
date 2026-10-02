@@ -1,0 +1,2379 @@
+{
+  "read_at": 1790955838.7817826,
+  "identity": {
+    "user": "szu2070436088",
+    "host": "dell-DSS8440"
+  },
+  "submit": {
+    "status": "SUBMITTED",
+    "pid": 1871487,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_curvature_attribution_source_20261002_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_curvature_attribution_source_20261002_r01/dispatch.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_curvature_attribution_source_20261002_r01/launch_spec.json"
+    ],
+    "log": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_curvature_attribution_source_20261002_r01/dispatcher.log",
+    "commit": "4aca3a7532606c7e9399234902d09d81dd7ed13d",
+    "sha256": "6b8afcae972ed5ba4598e52778284de86ae8991d13937f8bc9e68a9196c473b3",
+    "preflight_gpu": "0, 24124\n1, 24124\n2, 24124\n3, 24124\n4, 24124\n5, 24124\n6, 24124\n7, 24124\n",
+    "preflight_apps": ""
+  },
+  "pipeline": {
+    "status": "COMPLETE",
+    "pid": 1871487,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_curvature_attribution_source_20261002_r01",
+    "launch_owner": "codex/root/cvs-curvature-attribution-20261002",
+    "rows": {
+      "phase_curvature_lag14-s2026092701": {
+        "status": "COMPLETE",
+        "pid": 1871508,
+        "gpu": 0,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_curvature_attribution_source_20261002_r01/run.py",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag14-s2026092701.json"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_curvature_attribution_source_20261002_r01",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag14-s2026092701.log",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag14-s2026092701",
+        "exit_code": 0
+      },
+      "phase_curvature_lag24-s2026092701": {
+        "status": "COMPLETE",
+        "pid": 1871593,
+        "gpu": 1,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_curvature_attribution_source_20261002_r01/run.py",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag24-s2026092701.json"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_curvature_attribution_source_20261002_r01",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag24-s2026092701.log",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag24-s2026092701",
+        "exit_code": 0
+      },
+      "phase_curvature_lag14-s2026092702": {
+        "status": "COMPLETE",
+        "pid": 1871679,
+        "gpu": 2,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_curvature_attribution_source_20261002_r01/run.py",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag14-s2026092702.json"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_curvature_attribution_source_20261002_r01",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag14-s2026092702.log",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag14-s2026092702",
+        "exit_code": 0
+      },
+      "phase_curvature_lag24-s2026092702": {
+        "status": "COMPLETE",
+        "pid": 1872179,
+        "gpu": 3,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_curvature_attribution_source_20261002_r01/run.py",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag24-s2026092702.json"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_curvature_attribution_source_20261002_r01",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag24-s2026092702.log",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag24-s2026092702",
+        "exit_code": 0
+      },
+      "phase_curvature_lag14-s2026092703": {
+        "status": "COMPLETE",
+        "pid": 1872265,
+        "gpu": 4,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_curvature_attribution_source_20261002_r01/run.py",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag14-s2026092703.json"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_curvature_attribution_source_20261002_r01",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag14-s2026092703.log",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag14-s2026092703",
+        "exit_code": 0
+      },
+      "phase_curvature_lag24-s2026092703": {
+        "status": "COMPLETE",
+        "pid": 1872351,
+        "gpu": 5,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_curvature_attribution_source_20261002_r01/run.py",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag24-s2026092703.json"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_curvature_attribution_source_20261002_r01",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag24-s2026092703.log",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag24-s2026092703",
+        "exit_code": 0
+      },
+      "phase_curvature_lag14-s2026092704": {
+        "status": "COMPLETE",
+        "pid": 1872437,
+        "gpu": 6,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_curvature_attribution_source_20261002_r01/run.py",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag14-s2026092704.json"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_curvature_attribution_source_20261002_r01",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag14-s2026092704.log",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag14-s2026092704",
+        "exit_code": 0
+      },
+      "phase_curvature_lag24-s2026092704": {
+        "status": "COMPLETE",
+        "pid": 1872523,
+        "gpu": 7,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_curvature_attribution_source_20261002_r01/run.py",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag24-s2026092704.json"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_curvature_attribution_source_20261002_r01",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag24-s2026092704.log",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag24-s2026092704",
+        "exit_code": 0
+      }
+    }
+  },
+  "dispatcher_process": null,
+  "rows": [
+    {
+      "row_id": "phase_curvature_lag14-s2026092701",
+      "state": {
+        "status": "COMPLETE",
+        "pid": 1871508,
+        "gpu": 0,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_curvature_attribution_source_20261002_r01/run.py",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag14-s2026092701.json"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_curvature_attribution_source_20261002_r01",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag14-s2026092701.log",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag14-s2026092701",
+        "exit_code": 0
+      },
+      "process": null,
+      "resolved": {
+        "source_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_phase_curvature_identity_20261002_r01",
+        "source_commit": "d5a34a105348195c29601c97df248cc4e68fec24",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-phase-curvature-identity-manysig-m8-r01/phase_curvature_lag14-s2026092701/source",
+        "variant": "phase_curvature_lag14",
+        "model_seed": 2026092701,
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag14-s2026092701",
+        "conditions": [
+          "all_on",
+          "curvature_all_off",
+          "curvature_off_0",
+          "curvature_off_1",
+          "curvature_off_2",
+          "curvature_off_3",
+          "curvature_off_4",
+          "curvature_off_5",
+          "input_mix_off"
+        ],
+        "role": "V",
+        "launch_owner": "codex/root/cvs-curvature-attribution-20261002",
+        "pid": 1871508,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_curvature_attribution_source_20261002_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "torch_version": "2.1.0+cu121",
+        "source_record": {
+          "variant": "phase_curvature_lag14",
+          "seed": 2026092701,
+          "accuracy": 0.9852962962962963,
+          "worst_rx": 0.9594444444444444,
+          "parameters": 202561,
+          "macs": 7199008,
+          "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-phase-curvature-identity-manysig-m8-r01/phase_curvature_lag14-s2026092701/source",
+          "provenance": "Own scratch E200; full actual roles/representation/budget independently matched; metrics only, no weight inheritance"
+        },
+        "target_access": false,
+        "optimizer_updates": 0,
+        "source_selection_changed": false
+      },
+      "completion": {
+        "status": "SOURCE_ATTRIBUTION_COMPLETE",
+        "variant": "phase_curvature_lag14",
+        "model_seed": 2026092701,
+        "rows": [
+          {
+            "count": 27000,
+            "accuracy": 0.9852962962962963,
+            "ce": 0.08065424369951318,
+            "rx_accuracy": {
+              "1": 0.9968518518518519,
+              "3": 0.9594444444444444,
+              "4": 0.9894444444444445,
+              "6": 0.997037037037037,
+              "8": 0.9837037037037037
+            },
+            "worst_rx": 0.9594444444444444,
+            "seconds": 4.703510868974263,
+            "condition": "all_on",
+            "accuracy_delta_pp_vs_all_on": 0.0,
+            "all_on_correct_intervention_wrong": 0,
+            "all_on_wrong_intervention_correct": 0,
+            "prediction_changes": 0
+          },
+          {
+            "count": 27000,
+            "accuracy": 0.9851481481481481,
+            "ce": 0.08075902225148834,
+            "rx_accuracy": {
+              "1": 0.9968518518518519,
+              "3": 0.9590740740740741,
+              "4": 0.9894444444444445,
+              "6": 0.997037037037037,
+              "8": 0.9833333333333333
+            },
+            "worst_rx": 0.9590740740740741,
+            "seconds": 4.618123735010158,
+            "condition": "curvature_all_off",
+            "accuracy_delta_pp_vs_all_on": -0.014814814814823052,
+            "all_on_correct_intervention_wrong": 13,
+            "all_on_wrong_intervention_correct": 9,
+            "prediction_changes": 26
+          },
+          {
+            "count": 27000,
+            "accuracy": 0.9852962962962963,
+            "ce": 0.08064433465537203,
+            "rx_accuracy": {
+              "1": 0.9968518518518519,
+              "3": 0.9598148148148148,
+              "4": 0.9894444444444445,
+              "6": 0.9968518518518519,
+              "8": 0.9835185185185186
+            },
+            "worst_rx": 0.9598148148148148,
+            "seconds": 4.581787925999379,
+            "condition": "curvature_off_0",
+            "accuracy_delta_pp_vs_all_on": 0.0,
+            "all_on_correct_intervention_wrong": 2,
+            "all_on_wrong_intervention_correct": 2,
+            "prediction_changes": 5
+          },
+          {
+            "count": 27000,
+            "accuracy": 0.9853703703703703,
+            "ce": 0.08061264164558303,
+            "rx_accuracy": {
+              "1": 0.9968518518518519,
+              "3": 0.9598148148148148,
+              "4": 0.9894444444444445,
+              "6": 0.997037037037037,
+              "8": 0.9837037037037037
+            },
+            "worst_rx": 0.9598148148148148,
+            "seconds": 4.567116288992111,
+            "condition": "curvature_off_1",
+            "accuracy_delta_pp_vs_all_on": 0.007407407407400424,
+            "all_on_correct_intervention_wrong": 5,
+            "all_on_wrong_intervention_correct": 7,
+            "prediction_changes": 14
+          },
+          {
+            "count": 27000,
+            "accuracy": 0.9854444444444445,
+            "ce": 0.08079080630002566,
+            "rx_accuracy": {
+              "1": 0.9968518518518519,
+              "3": 0.96,
+              "4": 0.9894444444444445,
+              "6": 0.997037037037037,
+              "8": 0.9838888888888889
+            },
+            "worst_rx": 0.96,
+            "seconds": 4.583040197001537,
+            "condition": "curvature_off_2",
+            "accuracy_delta_pp_vs_all_on": 0.01481481481481195,
+            "all_on_correct_intervention_wrong": 2,
+            "all_on_wrong_intervention_correct": 6,
+            "prediction_changes": 10
+          },
+          {
+            "count": 27000,
+            "accuracy": 0.9852962962962963,
+            "ce": 0.08057818079558611,
+            "rx_accuracy": {
+              "1": 0.9968518518518519,
+              "3": 0.9594444444444444,
+              "4": 0.9894444444444445,
+              "6": 0.997037037037037,
+              "8": 0.9837037037037037
+            },
+            "worst_rx": 0.9594444444444444,
+            "seconds": 4.6250234109757,
+            "condition": "curvature_off_3",
+            "accuracy_delta_pp_vs_all_on": 0.0,
+            "all_on_correct_intervention_wrong": 1,
+            "all_on_wrong_intervention_correct": 1,
+            "prediction_changes": 3
+          },
+          {
+            "count": 27000,
+            "accuracy": 0.9853333333333333,
+            "ce": 0.08061336709431877,
+            "rx_accuracy": {
+              "1": 0.9968518518518519,
+              "3": 0.9598148148148148,
+              "4": 0.9892592592592593,
+              "6": 0.9968518518518519,
+              "8": 0.9838888888888889
+            },
+            "worst_rx": 0.9598148148148148,
+            "seconds": 4.640466110984562,
+            "condition": "curvature_off_4",
+            "accuracy_delta_pp_vs_all_on": 0.0037037037036946607,
+            "all_on_correct_intervention_wrong": 5,
+            "all_on_wrong_intervention_correct": 6,
+            "prediction_changes": 14
+          },
+          {
+            "count": 27000,
+            "accuracy": 0.9853333333333333,
+            "ce": 0.08069030447495795,
+            "rx_accuracy": {
+              "1": 0.9968518518518519,
+              "3": 0.9598148148148148,
+              "4": 0.9892592592592593,
+              "6": 0.997037037037037,
+              "8": 0.9837037037037037
+            },
+            "worst_rx": 0.9598148148148148,
+            "seconds": 4.687171314988518,
+            "condition": "curvature_off_5",
+            "accuracy_delta_pp_vs_all_on": 0.0037037037036946607,
+            "all_on_correct_intervention_wrong": 1,
+            "all_on_wrong_intervention_correct": 2,
+            "prediction_changes": 4
+          },
+          {
+            "count": 27000,
+            "accuracy": 0.9851851851851852,
+            "ce": 0.08079598617508196,
+            "rx_accuracy": {
+              "1": 0.9962962962962963,
+              "3": 0.9594444444444444,
+              "4": 0.9890740740740741,
+              "6": 0.9968518518518519,
+              "8": 0.9842592592592593
+            },
+            "worst_rx": 0.9594444444444444,
+            "seconds": 4.6195113209832925,
+            "condition": "input_mix_off",
+            "accuracy_delta_pp_vs_all_on": -0.011111111111117289,
+            "all_on_correct_intervention_wrong": 15,
+            "all_on_wrong_intervention_correct": 12,
+            "prediction_changes": 37
+          }
+        ],
+        "source_v_count": 27000,
+        "conditions": [
+          "all_on",
+          "curvature_all_off",
+          "curvature_off_0",
+          "curvature_off_1",
+          "curvature_off_2",
+          "curvature_off_3",
+          "curvature_off_4",
+          "curvature_off_5",
+          "input_mix_off"
+        ],
+        "target_access": false,
+        "optimizer_updates": 0,
+        "source_selection_changed": false,
+        "model_restored": true,
+        "original_curvature_raw": [
+          0.01528115663677454,
+          0.040485624223947525,
+          0.031450480222702026,
+          -0.010632093995809555,
+          -0.02719123102724552,
+          0.01567401923239231
+        ],
+        "original_input_mix_raw": [
+          -0.05119078606367111,
+          -0.01997481659054756
+        ],
+        "peak_cuda_allocated_bytes": 80104448,
+        "claim": "Within-checkpoint source V intervention; not scratch retraining causal effect, not unseen-RX generalization, not unique TX hardware attribution."
+      },
+      "log_bytes": 11075,
+      "conditions_done": 9,
+      "errors": []
+    },
+    {
+      "row_id": "phase_curvature_lag24-s2026092701",
+      "state": {
+        "status": "COMPLETE",
+        "pid": 1871593,
+        "gpu": 1,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_curvature_attribution_source_20261002_r01/run.py",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag24-s2026092701.json"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_curvature_attribution_source_20261002_r01",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag24-s2026092701.log",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag24-s2026092701",
+        "exit_code": 0
+      },
+      "process": null,
+      "resolved": {
+        "source_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_phase_curvature_identity_20261002_r01",
+        "source_commit": "d5a34a105348195c29601c97df248cc4e68fec24",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-phase-curvature-identity-manysig-m8-r01/phase_curvature_lag24-s2026092701/source",
+        "variant": "phase_curvature_lag24",
+        "model_seed": 2026092701,
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag24-s2026092701",
+        "conditions": [
+          "all_on",
+          "curvature_all_off",
+          "curvature_off_0",
+          "curvature_off_1",
+          "curvature_off_2",
+          "curvature_off_3",
+          "curvature_off_4",
+          "curvature_off_5",
+          "input_mix_off"
+        ],
+        "role": "V",
+        "launch_owner": "codex/root/cvs-curvature-attribution-20261002",
+        "pid": 1871593,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_curvature_attribution_source_20261002_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "torch_version": "2.1.0+cu121",
+        "source_record": {
+          "variant": "phase_curvature_lag24",
+          "seed": 2026092701,
+          "accuracy": 0.9856296296296296,
+          "worst_rx": 0.960925925925926,
+          "parameters": 202561,
+          "macs": 7199008,
+          "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-phase-curvature-identity-manysig-m8-r01/phase_curvature_lag24-s2026092701/source",
+          "provenance": "Own scratch E200; full actual roles/representation/budget independently matched; metrics only, no weight inheritance"
+        },
+        "target_access": false,
+        "optimizer_updates": 0,
+        "source_selection_changed": false
+      },
+      "completion": {
+        "status": "SOURCE_ATTRIBUTION_COMPLETE",
+        "variant": "phase_curvature_lag24",
+        "model_seed": 2026092701,
+        "rows": [
+          {
+            "count": 27000,
+            "accuracy": 0.9856296296296296,
+            "ce": 0.08010456700535885,
+            "rx_accuracy": {
+              "1": 0.9966666666666667,
+              "3": 0.960925925925926,
+              "4": 0.9901851851851852,
+              "6": 0.997037037037037,
+              "8": 0.9833333333333333
+            },
+            "worst_rx": 0.960925925925926,
+            "seconds": 4.767498602013802,
+            "condition": "all_on",
+            "accuracy_delta_pp_vs_all_on": 0.0,
+            "all_on_correct_intervention_wrong": 0,
+            "all_on_wrong_intervention_correct": 0,
+            "prediction_changes": 0
+          },
+          {
+            "count": 27000,
+            "accuracy": 0.9853333333333333,
+            "ce": 0.08051750865389584,
+            "rx_accuracy": {
+              "1": 0.9966666666666667,
+              "3": 0.9598148148148148,
+              "4": 0.99,
+              "6": 0.997037037037037,
+              "8": 0.9831481481481481
+            },
+            "worst_rx": 0.9598148148148148,
+            "seconds": 4.621793029975379,
+            "condition": "curvature_all_off",
+            "accuracy_delta_pp_vs_all_on": -0.029629629629635,
+            "all_on_correct_intervention_wrong": 15,
+            "all_on_wrong_intervention_correct": 7,
+            "prediction_changes": 27
+          },
+          {
+            "count": 27000,
+            "accuracy": 0.9857407407407407,
+            "ce": 0.08039191303286686,
+            "rx_accuracy": {
+              "1": 0.9968518518518519,
+              "3": 0.9611111111111111,
+              "4": 0.99,
+              "6": 0.997037037037037,
+              "8": 0.9837037037037037
+            },
+            "worst_rx": 0.9611111111111111,
+            "seconds": 4.621244916983414,
+            "condition": "curvature_off_0",
+            "accuracy_delta_pp_vs_all_on": 0.011111111111106187,
+            "all_on_correct_intervention_wrong": 3,
+            "all_on_wrong_intervention_correct": 6,
+            "prediction_changes": 10
+          },
+          {
+            "count": 27000,
+            "accuracy": 0.9856666666666667,
+            "ce": 0.08000764563616852,
+            "rx_accuracy": {
+              "1": 0.9966666666666667,
+              "3": 0.9611111111111111,
+              "4": 0.9903703703703703,
+              "6": 0.997037037037037,
+              "8": 0.9831481481481481
+            },
+            "worst_rx": 0.9611111111111111,
+            "seconds": 4.610717957984889,
+            "condition": "curvature_off_1",
+            "accuracy_delta_pp_vs_all_on": 0.003703703703705763,
+            "all_on_correct_intervention_wrong": 4,
+            "all_on_wrong_intervention_correct": 5,
+            "prediction_changes": 11
+          },
+          {
+            "count": 27000,
+            "accuracy": 0.9855555555555555,
+            "ce": 0.0800738573821102,
+            "rx_accuracy": {
+              "1": 0.9966666666666667,
+              "3": 0.9607407407407408,
+              "4": 0.9903703703703703,
+              "6": 0.997037037037037,
+              "8": 0.9829629629629629
+            },
+            "worst_rx": 0.9607407407407408,
+            "seconds": 4.611437389015919,
+            "condition": "curvature_off_2",
+            "accuracy_delta_pp_vs_all_on": -0.007407407407411526,
+            "all_on_correct_intervention_wrong": 5,
+            "all_on_wrong_intervention_correct": 3,
+            "prediction_changes": 10
+          },
+          {
+            "count": 27000,
+            "accuracy": 0.9856666666666667,
+            "ce": 0.08015160952998579,
+            "rx_accuracy": {
+              "1": 0.9966666666666667,
+              "3": 0.9611111111111111,
+              "4": 0.9901851851851852,
+              "6": 0.997037037037037,
+              "8": 0.9833333333333333
+            },
+            "worst_rx": 0.9611111111111111,
+            "seconds": 4.599128444999224,
+            "condition": "curvature_off_3",
+            "accuracy_delta_pp_vs_all_on": 0.003703703703705763,
+            "all_on_correct_intervention_wrong": 0,
+            "all_on_wrong_intervention_correct": 1,
+            "prediction_changes": 1
+          },
+          {
+            "count": 27000,
+            "accuracy": 0.9856296296296296,
+            "ce": 0.08013321682666234,
+            "rx_accuracy": {
+              "1": 0.9964814814814815,
+              "3": 0.9611111111111111,
+              "4": 0.9901851851851852,
+              "6": 0.997037037037037,
+              "8": 0.9833333333333333
+            },
+            "worst_rx": 0.9611111111111111,
+            "seconds": 4.604087237996282,
+            "condition": "curvature_off_4",
+            "accuracy_delta_pp_vs_all_on": 0.0,
+            "all_on_correct_intervention_wrong": 3,
+            "all_on_wrong_intervention_correct": 3,
+            "prediction_changes": 7
+          },
+          {
+            "count": 27000,
+            "accuracy": 0.9856296296296296,
+            "ce": 0.08011389027093106,
+            "rx_accuracy": {
+              "1": 0.9966666666666667,
+              "3": 0.960925925925926,
+              "4": 0.9901851851851852,
+              "6": 0.997037037037037,
+              "8": 0.9833333333333333
+            },
+            "worst_rx": 0.960925925925926,
+            "seconds": 4.659195259999251,
+            "condition": "curvature_off_5",
+            "accuracy_delta_pp_vs_all_on": 0.0,
+            "all_on_correct_intervention_wrong": 0,
+            "all_on_wrong_intervention_correct": 0,
+            "prediction_changes": 0
+          },
+          {
+            "count": 27000,
+            "accuracy": 0.9854074074074074,
+            "ce": 0.08029706160386398,
+            "rx_accuracy": {
+              "1": 0.9966666666666667,
+              "3": 0.9605555555555556,
+              "4": 0.9901851851851852,
+              "6": 0.9964814814814815,
+              "8": 0.9831481481481481
+            },
+            "worst_rx": 0.9605555555555556,
+            "seconds": 4.611559206008678,
+            "condition": "input_mix_off",
+            "accuracy_delta_pp_vs_all_on": -0.022222222222223476,
+            "all_on_correct_intervention_wrong": 16,
+            "all_on_wrong_intervention_correct": 10,
+            "prediction_changes": 37
+          }
+        ],
+        "source_v_count": 27000,
+        "conditions": [
+          "all_on",
+          "curvature_all_off",
+          "curvature_off_0",
+          "curvature_off_1",
+          "curvature_off_2",
+          "curvature_off_3",
+          "curvature_off_4",
+          "curvature_off_5",
+          "input_mix_off"
+        ],
+        "target_access": false,
+        "optimizer_updates": 0,
+        "source_selection_changed": false,
+        "model_restored": true,
+        "original_curvature_raw": [
+          0.058016810566186905,
+          0.027311263605952263,
+          0.028169143944978714,
+          0.006130538415163755,
+          0.025164268910884857,
+          0.003604014404118061
+        ],
+        "original_input_mix_raw": [
+          -0.04956190288066864,
+          -0.02061063051223755
+        ],
+        "peak_cuda_allocated_bytes": 80104448,
+        "claim": "Within-checkpoint source V intervention; not scratch retraining causal effect, not unseen-RX generalization, not unique TX hardware attribution."
+      },
+      "log_bytes": 11057,
+      "conditions_done": 9,
+      "errors": []
+    },
+    {
+      "row_id": "phase_curvature_lag14-s2026092702",
+      "state": {
+        "status": "COMPLETE",
+        "pid": 1871679,
+        "gpu": 2,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_curvature_attribution_source_20261002_r01/run.py",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag14-s2026092702.json"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_curvature_attribution_source_20261002_r01",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag14-s2026092702.log",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag14-s2026092702",
+        "exit_code": 0
+      },
+      "process": null,
+      "resolved": {
+        "source_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_phase_curvature_identity_20261002_r01",
+        "source_commit": "d5a34a105348195c29601c97df248cc4e68fec24",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-phase-curvature-identity-manysig-m8-r01/phase_curvature_lag14-s2026092702/source",
+        "variant": "phase_curvature_lag14",
+        "model_seed": 2026092702,
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag14-s2026092702",
+        "conditions": [
+          "all_on",
+          "curvature_all_off",
+          "curvature_off_0",
+          "curvature_off_1",
+          "curvature_off_2",
+          "curvature_off_3",
+          "curvature_off_4",
+          "curvature_off_5",
+          "input_mix_off"
+        ],
+        "role": "V",
+        "launch_owner": "codex/root/cvs-curvature-attribution-20261002",
+        "pid": 1871679,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_curvature_attribution_source_20261002_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "torch_version": "2.1.0+cu121",
+        "source_record": {
+          "variant": "phase_curvature_lag14",
+          "seed": 2026092702,
+          "accuracy": 0.9849259259259259,
+          "worst_rx": 0.9616666666666667,
+          "parameters": 202561,
+          "macs": 7199008,
+          "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-phase-curvature-identity-manysig-m8-r01/phase_curvature_lag14-s2026092702/source",
+          "provenance": "Own scratch E200; full actual roles/representation/budget independently matched; metrics only, no weight inheritance"
+        },
+        "target_access": false,
+        "optimizer_updates": 0,
+        "source_selection_changed": false
+      },
+      "completion": {
+        "status": "SOURCE_ATTRIBUTION_COMPLETE",
+        "variant": "phase_curvature_lag14",
+        "model_seed": 2026092702,
+        "rows": [
+          {
+            "count": 27000,
+            "accuracy": 0.9849259259259259,
+            "ce": 0.07821613247971039,
+            "rx_accuracy": {
+              "1": 0.9959259259259259,
+              "3": 0.9616666666666667,
+              "4": 0.9898148148148148,
+              "6": 0.9962962962962963,
+              "8": 0.980925925925926
+            },
+            "worst_rx": 0.9616666666666667,
+            "seconds": 4.769341383012943,
+            "condition": "all_on",
+            "accuracy_delta_pp_vs_all_on": 0.0,
+            "all_on_correct_intervention_wrong": 0,
+            "all_on_wrong_intervention_correct": 0,
+            "prediction_changes": 0
+          },
+          {
+            "count": 27000,
+            "accuracy": 0.9848888888888889,
+            "ce": 0.07810646502164283,
+            "rx_accuracy": {
+              "1": 0.9959259259259259,
+              "3": 0.9618518518518518,
+              "4": 0.99,
+              "6": 0.9962962962962963,
+              "8": 0.9803703703703703
+            },
+            "worst_rx": 0.9618518518518518,
+            "seconds": 4.526851786999032,
+            "condition": "curvature_all_off",
+            "accuracy_delta_pp_vs_all_on": -0.0037037037036946607,
+            "all_on_correct_intervention_wrong": 10,
+            "all_on_wrong_intervention_correct": 9,
+            "prediction_changes": 23
+          },
+          {
+            "count": 27000,
+            "accuracy": 0.9850740740740741,
+            "ce": 0.07851178359376569,
+            "rx_accuracy": {
+              "1": 0.9959259259259259,
+              "3": 0.962037037037037,
+              "4": 0.9898148148148148,
+              "6": 0.9962962962962963,
+              "8": 0.9812962962962963
+            },
+            "worst_rx": 0.962037037037037,
+            "seconds": 4.585121051990427,
+            "condition": "curvature_off_0",
+            "accuracy_delta_pp_vs_all_on": 0.014814814814823052,
+            "all_on_correct_intervention_wrong": 7,
+            "all_on_wrong_intervention_correct": 11,
+            "prediction_changes": 20
+          },
+          {
+            "count": 27000,
+            "accuracy": 0.9847777777777778,
+            "ce": 0.07818604882113626,
+            "rx_accuracy": {
+              "1": 0.9959259259259259,
+              "3": 0.9616666666666667,
+              "4": 0.9898148148148148,
+              "6": 0.9962962962962963,
+              "8": 0.9801851851851852
+            },
+            "worst_rx": 0.9616666666666667,
+            "seconds": 4.599772360990755,
+            "condition": "curvature_off_1",
+            "accuracy_delta_pp_vs_all_on": -0.01481481481481195,
+            "all_on_correct_intervention_wrong": 9,
+            "all_on_wrong_intervention_correct": 5,
+            "prediction_changes": 15
+          },
+          {
+            "count": 27000,
+            "accuracy": 0.9848518518518519,
+            "ce": 0.07815656168917835,
+            "rx_accuracy": {
+              "1": 0.9959259259259259,
+              "3": 0.962037037037037,
+              "4": 0.9898148148148148,
+              "6": 0.9962962962962963,
+              "8": 0.9801851851851852
+            },
+            "worst_rx": 0.962037037037037,
+            "seconds": 4.653637409006478,
+            "condition": "curvature_off_2",
+            "accuracy_delta_pp_vs_all_on": -0.007407407407400424,
+            "all_on_correct_intervention_wrong": 8,
+            "all_on_wrong_intervention_correct": 6,
+            "prediction_changes": 16
+          },
+          {
+            "count": 27000,
+            "accuracy": 0.9849259259259259,
+            "ce": 0.07823247534528087,
+            "rx_accuracy": {
+              "1": 0.9959259259259259,
+              "3": 0.9616666666666667,
+              "4": 0.9898148148148148,
+              "6": 0.9962962962962963,
+              "8": 0.980925925925926
+            },
+            "worst_rx": 0.9616666666666667,
+            "seconds": 4.652983838983346,
+            "condition": "curvature_off_3",
+            "accuracy_delta_pp_vs_all_on": 0.0,
+            "all_on_correct_intervention_wrong": 0,
+            "all_on_wrong_intervention_correct": 0,
+            "prediction_changes": 0
+          },
+          {
+            "count": 27000,
+            "accuracy": 0.9847037037037037,
+            "ce": 0.07829597154290052,
+            "rx_accuracy": {
+              "1": 0.9959259259259259,
+              "3": 0.9611111111111111,
+              "4": 0.99,
+              "6": 0.9962962962962963,
+              "8": 0.9801851851851852
+            },
+            "worst_rx": 0.9611111111111111,
+            "seconds": 4.58511382699362,
+            "condition": "curvature_off_4",
+            "accuracy_delta_pp_vs_all_on": -0.022222222222212373,
+            "all_on_correct_intervention_wrong": 10,
+            "all_on_wrong_intervention_correct": 4,
+            "prediction_changes": 17
+          },
+          {
+            "count": 27000,
+            "accuracy": 0.9848518518518519,
+            "ce": 0.07825938115760396,
+            "rx_accuracy": {
+              "1": 0.9959259259259259,
+              "3": 0.9616666666666667,
+              "4": 0.9898148148148148,
+              "6": 0.9962962962962963,
+              "8": 0.9805555555555555
+            },
+            "worst_rx": 0.9616666666666667,
+            "seconds": 4.54951740699471,
+            "condition": "curvature_off_5",
+            "accuracy_delta_pp_vs_all_on": -0.007407407407400424,
+            "all_on_correct_intervention_wrong": 2,
+            "all_on_wrong_intervention_correct": 0,
+            "prediction_changes": 2
+          },
+          {
+            "count": 27000,
+            "accuracy": 0.9848888888888889,
+            "ce": 0.07815649855429069,
+            "rx_accuracy": {
+              "1": 0.9959259259259259,
+              "3": 0.9616666666666667,
+              "4": 0.9898148148148148,
+              "6": 0.9962962962962963,
+              "8": 0.9807407407407407
+            },
+            "worst_rx": 0.9616666666666667,
+            "seconds": 4.538301357999444,
+            "condition": "input_mix_off",
+            "accuracy_delta_pp_vs_all_on": -0.0037037037036946607,
+            "all_on_correct_intervention_wrong": 2,
+            "all_on_wrong_intervention_correct": 1,
+            "prediction_changes": 5
+          }
+        ],
+        "source_v_count": 27000,
+        "conditions": [
+          "all_on",
+          "curvature_all_off",
+          "curvature_off_0",
+          "curvature_off_1",
+          "curvature_off_2",
+          "curvature_off_3",
+          "curvature_off_4",
+          "curvature_off_5",
+          "input_mix_off"
+        ],
+        "target_access": false,
+        "optimizer_updates": 0,
+        "source_selection_changed": false,
+        "model_restored": true,
+        "original_curvature_raw": [
+          0.07261067628860474,
+          0.03806493803858757,
+          0.04337545484304428,
+          0.0024124025367200375,
+          -0.040850382298231125,
+          -0.010668650269508362
+        ],
+        "original_input_mix_raw": [
+          -0.010862897150218487,
+          -0.007421153597533703
+        ],
+        "peak_cuda_allocated_bytes": 80104448,
+        "claim": "Within-checkpoint source V intervention; not scratch retraining causal effect, not unseen-RX generalization, not unique TX hardware attribution."
+      },
+      "log_bytes": 11118,
+      "conditions_done": 9,
+      "errors": []
+    },
+    {
+      "row_id": "phase_curvature_lag24-s2026092702",
+      "state": {
+        "status": "COMPLETE",
+        "pid": 1872179,
+        "gpu": 3,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_curvature_attribution_source_20261002_r01/run.py",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag24-s2026092702.json"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_curvature_attribution_source_20261002_r01",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag24-s2026092702.log",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag24-s2026092702",
+        "exit_code": 0
+      },
+      "process": null,
+      "resolved": {
+        "source_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_phase_curvature_identity_20261002_r01",
+        "source_commit": "d5a34a105348195c29601c97df248cc4e68fec24",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-phase-curvature-identity-manysig-m8-r01/phase_curvature_lag24-s2026092702/source",
+        "variant": "phase_curvature_lag24",
+        "model_seed": 2026092702,
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag24-s2026092702",
+        "conditions": [
+          "all_on",
+          "curvature_all_off",
+          "curvature_off_0",
+          "curvature_off_1",
+          "curvature_off_2",
+          "curvature_off_3",
+          "curvature_off_4",
+          "curvature_off_5",
+          "input_mix_off"
+        ],
+        "role": "V",
+        "launch_owner": "codex/root/cvs-curvature-attribution-20261002",
+        "pid": 1872179,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_curvature_attribution_source_20261002_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "torch_version": "2.1.0+cu121",
+        "source_record": {
+          "variant": "phase_curvature_lag24",
+          "seed": 2026092702,
+          "accuracy": 0.9845555555555555,
+          "worst_rx": 0.9603703703703703,
+          "parameters": 202561,
+          "macs": 7199008,
+          "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-phase-curvature-identity-manysig-m8-r01/phase_curvature_lag24-s2026092702/source",
+          "provenance": "Own scratch E200; full actual roles/representation/budget independently matched; metrics only, no weight inheritance"
+        },
+        "target_access": false,
+        "optimizer_updates": 0,
+        "source_selection_changed": false
+      },
+      "completion": {
+        "status": "SOURCE_ATTRIBUTION_COMPLETE",
+        "variant": "phase_curvature_lag24",
+        "model_seed": 2026092702,
+        "rows": [
+          {
+            "count": 27000,
+            "accuracy": 0.9845555555555555,
+            "ce": 0.07894248651947391,
+            "rx_accuracy": {
+              "1": 0.9961111111111111,
+              "3": 0.9603703703703703,
+              "4": 0.99,
+              "6": 0.9961111111111111,
+              "8": 0.9801851851851852
+            },
+            "worst_rx": 0.9603703703703703,
+            "seconds": 4.6559708129789215,
+            "condition": "all_on",
+            "accuracy_delta_pp_vs_all_on": 0.0,
+            "all_on_correct_intervention_wrong": 0,
+            "all_on_wrong_intervention_correct": 0,
+            "prediction_changes": 0
+          },
+          {
+            "count": 27000,
+            "accuracy": 0.9845925925925926,
+            "ce": 0.07915890246682505,
+            "rx_accuracy": {
+              "1": 0.9957407407407407,
+              "3": 0.96,
+              "4": 0.9898148148148148,
+              "6": 0.9961111111111111,
+              "8": 0.9812962962962963
+            },
+            "worst_rx": 0.96,
+            "seconds": 4.554554308997467,
+            "condition": "curvature_all_off",
+            "accuracy_delta_pp_vs_all_on": 0.003703703703705763,
+            "all_on_correct_intervention_wrong": 10,
+            "all_on_wrong_intervention_correct": 11,
+            "prediction_changes": 29
+          },
+          {
+            "count": 27000,
+            "accuracy": 0.9846666666666667,
+            "ce": 0.07916867192663954,
+            "rx_accuracy": {
+              "1": 0.9959259259259259,
+              "3": 0.9607407407407408,
+              "4": 0.99,
+              "6": 0.9961111111111111,
+              "8": 0.9805555555555555
+            },
+            "worst_rx": 0.9607407407407408,
+            "seconds": 4.612742433004314,
+            "condition": "curvature_off_0",
+            "accuracy_delta_pp_vs_all_on": 0.011111111111117289,
+            "all_on_correct_intervention_wrong": 7,
+            "all_on_wrong_intervention_correct": 10,
+            "prediction_changes": 22
+          },
+          {
+            "count": 27000,
+            "accuracy": 0.9845925925925926,
+            "ce": 0.07888934857611025,
+            "rx_accuracy": {
+              "1": 0.9961111111111111,
+              "3": 0.9601851851851851,
+              "4": 0.99,
+              "6": 0.9961111111111111,
+              "8": 0.9805555555555555
+            },
+            "worst_rx": 0.9601851851851851,
+            "seconds": 4.635004990006564,
+            "condition": "curvature_off_1",
+            "accuracy_delta_pp_vs_all_on": 0.003703703703705763,
+            "all_on_correct_intervention_wrong": 5,
+            "all_on_wrong_intervention_correct": 6,
+            "prediction_changes": 13
+          },
+          {
+            "count": 27000,
+            "accuracy": 0.9846296296296296,
+            "ce": 0.07876121906356114,
+            "rx_accuracy": {
+              "1": 0.9961111111111111,
+              "3": 0.96,
+              "4": 0.99,
+              "6": 0.9961111111111111,
+              "8": 0.980925925925926
+            },
+            "worst_rx": 0.96,
+            "seconds": 4.648614672012627,
+            "condition": "curvature_off_2",
+            "accuracy_delta_pp_vs_all_on": 0.007407407407411526,
+            "all_on_correct_intervention_wrong": 6,
+            "all_on_wrong_intervention_correct": 8,
+            "prediction_changes": 16
+          },
+          {
+            "count": 27000,
+            "accuracy": 0.9846296296296296,
+            "ce": 0.07921853091837369,
+            "rx_accuracy": {
+              "1": 0.9961111111111111,
+              "3": 0.9603703703703703,
+              "4": 0.9898148148148148,
+              "6": 0.9962962962962963,
+              "8": 0.9805555555555555
+            },
+            "worst_rx": 0.9603703703703703,
+            "seconds": 4.808873361995211,
+            "condition": "curvature_off_3",
+            "accuracy_delta_pp_vs_all_on": 0.007407407407411526,
+            "all_on_correct_intervention_wrong": 2,
+            "all_on_wrong_intervention_correct": 4,
+            "prediction_changes": 9
+          },
+          {
+            "count": 27000,
+            "accuracy": 0.9845925925925926,
+            "ce": 0.0790388888598233,
+            "rx_accuracy": {
+              "1": 0.9957407407407407,
+              "3": 0.9603703703703703,
+              "4": 0.9898148148148148,
+              "6": 0.9961111111111111,
+              "8": 0.980925925925926
+            },
+            "worst_rx": 0.9603703703703703,
+            "seconds": 4.64045048202388,
+            "condition": "curvature_off_4",
+            "accuracy_delta_pp_vs_all_on": 0.003703703703705763,
+            "all_on_correct_intervention_wrong": 4,
+            "all_on_wrong_intervention_correct": 5,
+            "prediction_changes": 12
+          },
+          {
+            "count": 27000,
+            "accuracy": 0.9845925925925926,
+            "ce": 0.07890066279571033,
+            "rx_accuracy": {
+              "1": 0.9961111111111111,
+              "3": 0.96,
+              "4": 0.99,
+              "6": 0.9962962962962963,
+              "8": 0.9805555555555555
+            },
+            "worst_rx": 0.96,
+            "seconds": 4.670699186972342,
+            "condition": "curvature_off_5",
+            "accuracy_delta_pp_vs_all_on": 0.003703703703705763,
+            "all_on_correct_intervention_wrong": 2,
+            "all_on_wrong_intervention_correct": 3,
+            "prediction_changes": 6
+          },
+          {
+            "count": 27000,
+            "accuracy": 0.9846666666666667,
+            "ce": 0.07891003977489176,
+            "rx_accuracy": {
+              "1": 0.9961111111111111,
+              "3": 0.9605555555555556,
+              "4": 0.99,
+              "6": 0.9961111111111111,
+              "8": 0.9805555555555555
+            },
+            "worst_rx": 0.9605555555555556,
+            "seconds": 4.531859131006058,
+            "condition": "input_mix_off",
+            "accuracy_delta_pp_vs_all_on": 0.011111111111117289,
+            "all_on_correct_intervention_wrong": 2,
+            "all_on_wrong_intervention_correct": 5,
+            "prediction_changes": 9
+          }
+        ],
+        "source_v_count": 27000,
+        "conditions": [
+          "all_on",
+          "curvature_all_off",
+          "curvature_off_0",
+          "curvature_off_1",
+          "curvature_off_2",
+          "curvature_off_3",
+          "curvature_off_4",
+          "curvature_off_5",
+          "input_mix_off"
+        ],
+        "target_access": false,
+        "optimizer_updates": 0,
+        "source_selection_changed": false,
+        "model_restored": true,
+        "original_curvature_raw": [
+          0.054301731288433075,
+          0.021769054234027863,
+          0.033300016075372696,
+          0.03990982472896576,
+          -0.03864298760890961,
+          0.01657791994512081
+        ],
+        "original_input_mix_raw": [
+          -0.01593870110809803,
+          -0.00514014158397913
+        ],
+        "peak_cuda_allocated_bytes": 80104448,
+        "claim": "Within-checkpoint source V intervention; not scratch retraining causal effect, not unseen-RX generalization, not unique TX hardware attribution."
+      },
+      "log_bytes": 10864,
+      "conditions_done": 9,
+      "errors": []
+    },
+    {
+      "row_id": "phase_curvature_lag14-s2026092703",
+      "state": {
+        "status": "COMPLETE",
+        "pid": 1872265,
+        "gpu": 4,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_curvature_attribution_source_20261002_r01/run.py",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag14-s2026092703.json"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_curvature_attribution_source_20261002_r01",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag14-s2026092703.log",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag14-s2026092703",
+        "exit_code": 0
+      },
+      "process": null,
+      "resolved": {
+        "source_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_phase_curvature_identity_20261002_r01",
+        "source_commit": "d5a34a105348195c29601c97df248cc4e68fec24",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-phase-curvature-identity-manysig-m8-r01/phase_curvature_lag14-s2026092703/source",
+        "variant": "phase_curvature_lag14",
+        "model_seed": 2026092703,
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag14-s2026092703",
+        "conditions": [
+          "all_on",
+          "curvature_all_off",
+          "curvature_off_0",
+          "curvature_off_1",
+          "curvature_off_2",
+          "curvature_off_3",
+          "curvature_off_4",
+          "curvature_off_5",
+          "input_mix_off"
+        ],
+        "role": "V",
+        "launch_owner": "codex/root/cvs-curvature-attribution-20261002",
+        "pid": 1872265,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_curvature_attribution_source_20261002_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "torch_version": "2.1.0+cu121",
+        "source_record": {
+          "variant": "phase_curvature_lag14",
+          "seed": 2026092703,
+          "accuracy": 0.9832962962962963,
+          "worst_rx": 0.955925925925926,
+          "parameters": 202561,
+          "macs": 7199008,
+          "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-phase-curvature-identity-manysig-m8-r01/phase_curvature_lag14-s2026092703/source",
+          "provenance": "Own scratch E200; full actual roles/representation/budget independently matched; metrics only, no weight inheritance"
+        },
+        "target_access": false,
+        "optimizer_updates": 0,
+        "source_selection_changed": false
+      },
+      "completion": {
+        "status": "SOURCE_ATTRIBUTION_COMPLETE",
+        "variant": "phase_curvature_lag14",
+        "model_seed": 2026092703,
+        "rows": [
+          {
+            "count": 27000,
+            "accuracy": 0.9832962962962963,
+            "ce": 0.08233065751148375,
+            "rx_accuracy": {
+              "1": 0.997037037037037,
+              "3": 0.955925925925926,
+              "4": 0.9883333333333333,
+              "6": 0.9959259259259259,
+              "8": 0.9792592592592593
+            },
+            "worst_rx": 0.955925925925926,
+            "seconds": 4.8050262659962755,
+            "condition": "all_on",
+            "accuracy_delta_pp_vs_all_on": 0.0,
+            "all_on_correct_intervention_wrong": 0,
+            "all_on_wrong_intervention_correct": 0,
+            "prediction_changes": 0
+          },
+          {
+            "count": 27000,
+            "accuracy": 0.9831851851851852,
+            "ce": 0.08303708943096191,
+            "rx_accuracy": {
+              "1": 0.9975925925925926,
+              "3": 0.955,
+              "4": 0.9885185185185185,
+              "6": 0.9957407407407407,
+              "8": 0.9790740740740741
+            },
+            "worst_rx": 0.955,
+            "seconds": 4.847166384977754,
+            "condition": "curvature_all_off",
+            "accuracy_delta_pp_vs_all_on": -0.011111111111117289,
+            "all_on_correct_intervention_wrong": 14,
+            "all_on_wrong_intervention_correct": 11,
+            "prediction_changes": 30
+          },
+          {
+            "count": 27000,
+            "accuracy": 0.9832962962962963,
+            "ce": 0.08237115632298689,
+            "rx_accuracy": {
+              "1": 0.9972222222222222,
+              "3": 0.9557407407407408,
+              "4": 0.9883333333333333,
+              "6": 0.9959259259259259,
+              "8": 0.9792592592592593
+            },
+            "worst_rx": 0.9557407407407408,
+            "seconds": 4.915660892002052,
+            "condition": "curvature_off_0",
+            "accuracy_delta_pp_vs_all_on": 0.0,
+            "all_on_correct_intervention_wrong": 1,
+            "all_on_wrong_intervention_correct": 1,
+            "prediction_changes": 3
+          },
+          {
+            "count": 27000,
+            "accuracy": 0.9832962962962963,
+            "ce": 0.08248724610863253,
+            "rx_accuracy": {
+              "1": 0.997037037037037,
+              "3": 0.9557407407407408,
+              "4": 0.9883333333333333,
+              "6": 0.9959259259259259,
+              "8": 0.9794444444444445
+            },
+            "worst_rx": 0.9557407407407408,
+            "seconds": 4.806897784990724,
+            "condition": "curvature_off_1",
+            "accuracy_delta_pp_vs_all_on": 0.0,
+            "all_on_correct_intervention_wrong": 3,
+            "all_on_wrong_intervention_correct": 3,
+            "prediction_changes": 7
+          },
+          {
+            "count": 27000,
+            "accuracy": 0.9833333333333333,
+            "ce": 0.08248751752874671,
+            "rx_accuracy": {
+              "1": 0.997037037037037,
+              "3": 0.955925925925926,
+              "4": 0.9883333333333333,
+              "6": 0.9959259259259259,
+              "8": 0.9794444444444445
+            },
+            "worst_rx": 0.955925925925926,
+            "seconds": 4.714696113980608,
+            "condition": "curvature_off_2",
+            "accuracy_delta_pp_vs_all_on": 0.0037037037036946607,
+            "all_on_correct_intervention_wrong": 2,
+            "all_on_wrong_intervention_correct": 3,
+            "prediction_changes": 6
+          },
+          {
+            "count": 27000,
+            "accuracy": 0.983,
+            "ce": 0.08327274137237786,
+            "rx_accuracy": {
+              "1": 0.997037037037037,
+              "3": 0.9548148148148148,
+              "4": 0.9885185185185185,
+              "6": 0.9959259259259259,
+              "8": 0.9787037037037037
+            },
+            "worst_rx": 0.9548148148148148,
+            "seconds": 4.678413394984091,
+            "condition": "curvature_off_3",
+            "accuracy_delta_pp_vs_all_on": -0.029629629629635,
+            "all_on_correct_intervention_wrong": 11,
+            "all_on_wrong_intervention_correct": 3,
+            "prediction_changes": 16
+          },
+          {
+            "count": 27000,
+            "accuracy": 0.9834814814814815,
+            "ce": 0.08195754970509558,
+            "rx_accuracy": {
+              "1": 0.9972222222222222,
+              "3": 0.9562962962962963,
+              "4": 0.9883333333333333,
+              "6": 0.9961111111111111,
+              "8": 0.9794444444444445
+            },
+            "worst_rx": 0.9562962962962963,
+            "seconds": 4.726325166004244,
+            "condition": "curvature_off_4",
+            "accuracy_delta_pp_vs_all_on": 0.018518518518517713,
+            "all_on_correct_intervention_wrong": 8,
+            "all_on_wrong_intervention_correct": 13,
+            "prediction_changes": 25
+          },
+          {
+            "count": 27000,
+            "accuracy": 0.9831851851851852,
+            "ce": 0.08228049932767115,
+            "rx_accuracy": {
+              "1": 0.997037037037037,
+              "3": 0.9553703703703704,
+              "4": 0.9883333333333333,
+              "6": 0.9959259259259259,
+              "8": 0.9792592592592593
+            },
+            "worst_rx": 0.9553703703703704,
+            "seconds": 4.619278669008054,
+            "condition": "curvature_off_5",
+            "accuracy_delta_pp_vs_all_on": -0.011111111111117289,
+            "all_on_correct_intervention_wrong": 6,
+            "all_on_wrong_intervention_correct": 3,
+            "prediction_changes": 10
+          },
+          {
+            "count": 27000,
+            "accuracy": 0.983037037037037,
+            "ce": 0.08237547638332264,
+            "rx_accuracy": {
+              "1": 0.9972222222222222,
+              "3": 0.9548148148148148,
+              "4": 0.9877777777777778,
+              "6": 0.9957407407407407,
+              "8": 0.9796296296296296
+            },
+            "worst_rx": 0.9548148148148148,
+            "seconds": 4.642717448994517,
+            "condition": "input_mix_off",
+            "accuracy_delta_pp_vs_all_on": -0.02592592592592924,
+            "all_on_correct_intervention_wrong": 19,
+            "all_on_wrong_intervention_correct": 12,
+            "prediction_changes": 36
+          }
+        ],
+        "source_v_count": 27000,
+        "conditions": [
+          "all_on",
+          "curvature_all_off",
+          "curvature_off_0",
+          "curvature_off_1",
+          "curvature_off_2",
+          "curvature_off_3",
+          "curvature_off_4",
+          "curvature_off_5",
+          "input_mix_off"
+        ],
+        "target_access": false,
+        "optimizer_updates": 0,
+        "source_selection_changed": false,
+        "model_restored": true,
+        "original_curvature_raw": [
+          0.023151520639657974,
+          0.0359884649515152,
+          0.021475775167346,
+          0.08291762322187424,
+          -0.04988330975174904,
+          -0.01807970553636551
+        ],
+        "original_input_mix_raw": [
+          -0.042983997613191605,
+          0.0040257154032588005
+        ],
+        "peak_cuda_allocated_bytes": 80104448,
+        "claim": "Within-checkpoint source V intervention; not scratch retraining causal effect, not unseen-RX generalization, not unique TX hardware attribution."
+      },
+      "log_bytes": 11047,
+      "conditions_done": 9,
+      "errors": []
+    },
+    {
+      "row_id": "phase_curvature_lag24-s2026092703",
+      "state": {
+        "status": "COMPLETE",
+        "pid": 1872351,
+        "gpu": 5,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_curvature_attribution_source_20261002_r01/run.py",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag24-s2026092703.json"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_curvature_attribution_source_20261002_r01",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag24-s2026092703.log",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag24-s2026092703",
+        "exit_code": 0
+      },
+      "process": null,
+      "resolved": {
+        "source_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_phase_curvature_identity_20261002_r01",
+        "source_commit": "d5a34a105348195c29601c97df248cc4e68fec24",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-phase-curvature-identity-manysig-m8-r01/phase_curvature_lag24-s2026092703/source",
+        "variant": "phase_curvature_lag24",
+        "model_seed": 2026092703,
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag24-s2026092703",
+        "conditions": [
+          "all_on",
+          "curvature_all_off",
+          "curvature_off_0",
+          "curvature_off_1",
+          "curvature_off_2",
+          "curvature_off_3",
+          "curvature_off_4",
+          "curvature_off_5",
+          "input_mix_off"
+        ],
+        "role": "V",
+        "launch_owner": "codex/root/cvs-curvature-attribution-20261002",
+        "pid": 1872351,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_curvature_attribution_source_20261002_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "torch_version": "2.1.0+cu121",
+        "source_record": {
+          "variant": "phase_curvature_lag24",
+          "seed": 2026092703,
+          "accuracy": 0.9833333333333333,
+          "worst_rx": 0.9561111111111111,
+          "parameters": 202561,
+          "macs": 7199008,
+          "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-phase-curvature-identity-manysig-m8-r01/phase_curvature_lag24-s2026092703/source",
+          "provenance": "Own scratch E200; full actual roles/representation/budget independently matched; metrics only, no weight inheritance"
+        },
+        "target_access": false,
+        "optimizer_updates": 0,
+        "source_selection_changed": false
+      },
+      "completion": {
+        "status": "SOURCE_ATTRIBUTION_COMPLETE",
+        "variant": "phase_curvature_lag24",
+        "model_seed": 2026092703,
+        "rows": [
+          {
+            "count": 27000,
+            "accuracy": 0.9833333333333333,
+            "ce": 0.08088522142969728,
+            "rx_accuracy": {
+              "1": 0.997037037037037,
+              "3": 0.9561111111111111,
+              "4": 0.9879629629629629,
+              "6": 0.9961111111111111,
+              "8": 0.9794444444444445
+            },
+            "worst_rx": 0.9561111111111111,
+            "seconds": 5.492847647983581,
+            "condition": "all_on",
+            "accuracy_delta_pp_vs_all_on": 0.0,
+            "all_on_correct_intervention_wrong": 0,
+            "all_on_wrong_intervention_correct": 0,
+            "prediction_changes": 0
+          },
+          {
+            "count": 27000,
+            "accuracy": 0.983,
+            "ce": 0.0820292241400618,
+            "rx_accuracy": {
+              "1": 0.997037037037037,
+              "3": 0.9544444444444444,
+              "4": 0.9877777777777778,
+              "6": 0.9961111111111111,
+              "8": 0.9796296296296296
+            },
+            "worst_rx": 0.9544444444444444,
+            "seconds": 5.343225815013284,
+            "condition": "curvature_all_off",
+            "accuracy_delta_pp_vs_all_on": -0.03333333333332966,
+            "all_on_correct_intervention_wrong": 19,
+            "all_on_wrong_intervention_correct": 10,
+            "prediction_changes": 36
+          },
+          {
+            "count": 27000,
+            "accuracy": 0.9833333333333333,
+            "ce": 0.08089589267109161,
+            "rx_accuracy": {
+              "1": 0.997037037037037,
+              "3": 0.955925925925926,
+              "4": 0.9879629629629629,
+              "6": 0.9962962962962963,
+              "8": 0.9794444444444445
+            },
+            "worst_rx": 0.955925925925926,
+            "seconds": 5.289065190998372,
+            "condition": "curvature_off_0",
+            "accuracy_delta_pp_vs_all_on": 0.0,
+            "all_on_correct_intervention_wrong": 2,
+            "all_on_wrong_intervention_correct": 2,
+            "prediction_changes": 4
+          },
+          {
+            "count": 27000,
+            "accuracy": 0.9831481481481481,
+            "ce": 0.08117027630452146,
+            "rx_accuracy": {
+              "1": 0.9972222222222222,
+              "3": 0.9551851851851851,
+              "4": 0.9877777777777778,
+              "6": 0.9961111111111111,
+              "8": 0.9794444444444445
+            },
+            "worst_rx": 0.9551851851851851,
+            "seconds": 5.260564969998086,
+            "condition": "curvature_off_1",
+            "accuracy_delta_pp_vs_all_on": -0.018518518518517713,
+            "all_on_correct_intervention_wrong": 8,
+            "all_on_wrong_intervention_correct": 3,
+            "prediction_changes": 12
+          },
+          {
+            "count": 27000,
+            "accuracy": 0.9832962962962963,
+            "ce": 0.08112533371275849,
+            "rx_accuracy": {
+              "1": 0.997037037037037,
+              "3": 0.955925925925926,
+              "4": 0.9879629629629629,
+              "6": 0.9961111111111111,
+              "8": 0.9794444444444445
+            },
+            "worst_rx": 0.955925925925926,
+            "seconds": 5.229588173999218,
+            "condition": "curvature_off_2",
+            "accuracy_delta_pp_vs_all_on": -0.0037037037036946607,
+            "all_on_correct_intervention_wrong": 3,
+            "all_on_wrong_intervention_correct": 2,
+            "prediction_changes": 6
+          },
+          {
+            "count": 27000,
+            "accuracy": 0.9828888888888889,
+            "ce": 0.08213381593445572,
+            "rx_accuracy": {
+              "1": 0.9972222222222222,
+              "3": 0.9538888888888889,
+              "4": 0.9874074074074074,
+              "6": 0.9962962962962963,
+              "8": 0.9796296296296296
+            },
+            "worst_rx": 0.9538888888888889,
+            "seconds": 5.270959721994586,
+            "condition": "curvature_off_3",
+            "accuracy_delta_pp_vs_all_on": -0.04444444444443585,
+            "all_on_correct_intervention_wrong": 20,
+            "all_on_wrong_intervention_correct": 8,
+            "prediction_changes": 32
+          },
+          {
+            "count": 27000,
+            "accuracy": 0.9835925925925926,
+            "ce": 0.08047766383861711,
+            "rx_accuracy": {
+              "1": 0.997037037037037,
+              "3": 0.9572222222222222,
+              "4": 0.9883333333333333,
+              "6": 0.9961111111111111,
+              "8": 0.9792592592592593
+            },
+            "worst_rx": 0.9572222222222222,
+            "seconds": 5.252898728998844,
+            "condition": "curvature_off_4",
+            "accuracy_delta_pp_vs_all_on": 0.02592592592592924,
+            "all_on_correct_intervention_wrong": 5,
+            "all_on_wrong_intervention_correct": 12,
+            "prediction_changes": 19
+          },
+          {
+            "count": 27000,
+            "accuracy": 0.9834444444444445,
+            "ce": 0.08085762617862842,
+            "rx_accuracy": {
+              "1": 0.997037037037037,
+              "3": 0.9562962962962963,
+              "4": 0.9881481481481481,
+              "6": 0.9961111111111111,
+              "8": 0.9796296296296296
+            },
+            "worst_rx": 0.9562962962962963,
+            "seconds": 5.293643043987686,
+            "condition": "curvature_off_5",
+            "accuracy_delta_pp_vs_all_on": 0.011111111111117289,
+            "all_on_correct_intervention_wrong": 2,
+            "all_on_wrong_intervention_correct": 5,
+            "prediction_changes": 9
+          },
+          {
+            "count": 27000,
+            "accuracy": 0.9833703703703703,
+            "ce": 0.08127881094827677,
+            "rx_accuracy": {
+              "1": 0.9972222222222222,
+              "3": 0.9557407407407408,
+              "4": 0.9877777777777778,
+              "6": 0.9961111111111111,
+              "8": 0.98
+            },
+            "worst_rx": 0.9557407407407408,
+            "seconds": 5.313963647000492,
+            "condition": "input_mix_off",
+            "accuracy_delta_pp_vs_all_on": 0.003703703703705763,
+            "all_on_correct_intervention_wrong": 13,
+            "all_on_wrong_intervention_correct": 14,
+            "prediction_changes": 31
+          }
+        ],
+        "source_v_count": 27000,
+        "conditions": [
+          "all_on",
+          "curvature_all_off",
+          "curvature_off_0",
+          "curvature_off_1",
+          "curvature_off_2",
+          "curvature_off_3",
+          "curvature_off_4",
+          "curvature_off_5",
+          "input_mix_off"
+        ],
+        "target_access": false,
+        "optimizer_updates": 0,
+        "source_selection_changed": false,
+        "model_restored": true,
+        "original_curvature_raw": [
+          0.033761486411094666,
+          0.04040825366973877,
+          0.027747442945837975,
+          0.08532204478979111,
+          -0.04017215222120285,
+          -0.019185103476047516
+        ],
+        "original_input_mix_raw": [
+          -0.04332782328128815,
+          -0.0003441162407398224
+        ],
+        "peak_cuda_allocated_bytes": 80104448,
+        "claim": "Within-checkpoint source V intervention; not scratch retraining causal effect, not unseen-RX generalization, not unique TX hardware attribution."
+      },
+      "log_bytes": 11109,
+      "conditions_done": 9,
+      "errors": []
+    },
+    {
+      "row_id": "phase_curvature_lag14-s2026092704",
+      "state": {
+        "status": "COMPLETE",
+        "pid": 1872437,
+        "gpu": 6,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_curvature_attribution_source_20261002_r01/run.py",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag14-s2026092704.json"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_curvature_attribution_source_20261002_r01",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag14-s2026092704.log",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag14-s2026092704",
+        "exit_code": 0
+      },
+      "process": null,
+      "resolved": {
+        "source_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_phase_curvature_identity_20261002_r01",
+        "source_commit": "d5a34a105348195c29601c97df248cc4e68fec24",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-phase-curvature-identity-manysig-m8-r01/phase_curvature_lag14-s2026092704/source",
+        "variant": "phase_curvature_lag14",
+        "model_seed": 2026092704,
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag14-s2026092704",
+        "conditions": [
+          "all_on",
+          "curvature_all_off",
+          "curvature_off_0",
+          "curvature_off_1",
+          "curvature_off_2",
+          "curvature_off_3",
+          "curvature_off_4",
+          "curvature_off_5",
+          "input_mix_off"
+        ],
+        "role": "V",
+        "launch_owner": "codex/root/cvs-curvature-attribution-20261002",
+        "pid": 1872437,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_curvature_attribution_source_20261002_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "torch_version": "2.1.0+cu121",
+        "source_record": {
+          "variant": "phase_curvature_lag14",
+          "seed": 2026092704,
+          "accuracy": 0.9821851851851852,
+          "worst_rx": 0.9514814814814815,
+          "parameters": 202561,
+          "macs": 7199008,
+          "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-phase-curvature-identity-manysig-m8-r01/phase_curvature_lag14-s2026092704/source",
+          "provenance": "Own scratch E200; full actual roles/representation/budget independently matched; metrics only, no weight inheritance"
+        },
+        "target_access": false,
+        "optimizer_updates": 0,
+        "source_selection_changed": false
+      },
+      "completion": {
+        "status": "SOURCE_ATTRIBUTION_COMPLETE",
+        "variant": "phase_curvature_lag14",
+        "model_seed": 2026092704,
+        "rows": [
+          {
+            "count": 27000,
+            "accuracy": 0.9821851851851852,
+            "ce": 0.09166907475922724,
+            "rx_accuracy": {
+              "1": 0.9966666666666667,
+              "3": 0.9514814814814815,
+              "4": 0.9907407407407407,
+              "6": 0.9946296296296296,
+              "8": 0.9774074074074074
+            },
+            "worst_rx": 0.9514814814814815,
+            "seconds": 4.821621678012889,
+            "condition": "all_on",
+            "accuracy_delta_pp_vs_all_on": 0.0,
+            "all_on_correct_intervention_wrong": 0,
+            "all_on_wrong_intervention_correct": 0,
+            "prediction_changes": 0
+          },
+          {
+            "count": 27000,
+            "accuracy": 0.9822962962962963,
+            "ce": 0.09231810006161187,
+            "rx_accuracy": {
+              "1": 0.9968518518518519,
+              "3": 0.9516666666666667,
+              "4": 0.9909259259259259,
+              "6": 0.9948148148148148,
+              "8": 0.9772222222222222
+            },
+            "worst_rx": 0.9516666666666667,
+            "seconds": 4.576586112991208,
+            "condition": "curvature_all_off",
+            "accuracy_delta_pp_vs_all_on": 0.011111111111117289,
+            "all_on_correct_intervention_wrong": 6,
+            "all_on_wrong_intervention_correct": 9,
+            "prediction_changes": 16
+          },
+          {
+            "count": 27000,
+            "accuracy": 0.9821851851851852,
+            "ce": 0.09187215961342722,
+            "rx_accuracy": {
+              "1": 0.997037037037037,
+              "3": 0.9516666666666667,
+              "4": 0.9907407407407407,
+              "6": 0.9944444444444445,
+              "8": 0.977037037037037
+            },
+            "worst_rx": 0.9516666666666667,
+            "seconds": 4.602861606981605,
+            "condition": "curvature_off_0",
+            "accuracy_delta_pp_vs_all_on": 0.0,
+            "all_on_correct_intervention_wrong": 5,
+            "all_on_wrong_intervention_correct": 5,
+            "prediction_changes": 13
+          },
+          {
+            "count": 27000,
+            "accuracy": 0.9822222222222222,
+            "ce": 0.0918366847343901,
+            "rx_accuracy": {
+              "1": 0.997037037037037,
+              "3": 0.9514814814814815,
+              "4": 0.9909259259259259,
+              "6": 0.9946296296296296,
+              "8": 0.977037037037037
+            },
+            "worst_rx": 0.9514814814814815,
+            "seconds": 4.521814548992552,
+            "condition": "curvature_off_1",
+            "accuracy_delta_pp_vs_all_on": 0.003703703703705763,
+            "all_on_correct_intervention_wrong": 4,
+            "all_on_wrong_intervention_correct": 5,
+            "prediction_changes": 9
+          },
+          {
+            "count": 27000,
+            "accuracy": 0.9821851851851852,
+            "ce": 0.0918555329967056,
+            "rx_accuracy": {
+              "1": 0.997037037037037,
+              "3": 0.9516666666666667,
+              "4": 0.9907407407407407,
+              "6": 0.9946296296296296,
+              "8": 0.9768518518518519
+            },
+            "worst_rx": 0.9516666666666667,
+            "seconds": 4.5607424059999175,
+            "condition": "curvature_off_2",
+            "accuracy_delta_pp_vs_all_on": 0.0,
+            "all_on_correct_intervention_wrong": 6,
+            "all_on_wrong_intervention_correct": 6,
+            "prediction_changes": 12
+          },
+          {
+            "count": 27000,
+            "accuracy": 0.9822222222222222,
+            "ce": 0.0916413985314256,
+            "rx_accuracy": {
+              "1": 0.9966666666666667,
+              "3": 0.9516666666666667,
+              "4": 0.9907407407407407,
+              "6": 0.9946296296296296,
+              "8": 0.9774074074074074
+            },
+            "worst_rx": 0.9516666666666667,
+            "seconds": 4.571079241024563,
+            "condition": "curvature_off_3",
+            "accuracy_delta_pp_vs_all_on": 0.003703703703705763,
+            "all_on_correct_intervention_wrong": 0,
+            "all_on_wrong_intervention_correct": 1,
+            "prediction_changes": 1
+          },
+          {
+            "count": 27000,
+            "accuracy": 0.9821851851851852,
+            "ce": 0.0918122579363584,
+            "rx_accuracy": {
+              "1": 0.9966666666666667,
+              "3": 0.9512962962962963,
+              "4": 0.9905555555555555,
+              "6": 0.9948148148148148,
+              "8": 0.9775925925925926
+            },
+            "worst_rx": 0.9512962962962963,
+            "seconds": 4.56875667400891,
+            "condition": "curvature_off_4",
+            "accuracy_delta_pp_vs_all_on": 0.0,
+            "all_on_correct_intervention_wrong": 3,
+            "all_on_wrong_intervention_correct": 3,
+            "prediction_changes": 6
+          },
+          {
+            "count": 27000,
+            "accuracy": 0.9821851851851852,
+            "ce": 0.09166992707849042,
+            "rx_accuracy": {
+              "1": 0.9966666666666667,
+              "3": 0.9514814814814815,
+              "4": 0.9907407407407407,
+              "6": 0.9946296296296296,
+              "8": 0.9774074074074074
+            },
+            "worst_rx": 0.9514814814814815,
+            "seconds": 4.563612514000852,
+            "condition": "curvature_off_5",
+            "accuracy_delta_pp_vs_all_on": 0.0,
+            "all_on_correct_intervention_wrong": 0,
+            "all_on_wrong_intervention_correct": 0,
+            "prediction_changes": 0
+          },
+          {
+            "count": 27000,
+            "accuracy": 0.9821851851851852,
+            "ce": 0.09152404108778663,
+            "rx_accuracy": {
+              "1": 0.9966666666666667,
+              "3": 0.9511111111111111,
+              "4": 0.9909259259259259,
+              "6": 0.9946296296296296,
+              "8": 0.9775925925925926
+            },
+            "worst_rx": 0.9511111111111111,
+            "seconds": 4.559643571003107,
+            "condition": "input_mix_off",
+            "accuracy_delta_pp_vs_all_on": 0.0,
+            "all_on_correct_intervention_wrong": 7,
+            "all_on_wrong_intervention_correct": 7,
+            "prediction_changes": 16
+          }
+        ],
+        "source_v_count": 27000,
+        "conditions": [
+          "all_on",
+          "curvature_all_off",
+          "curvature_off_0",
+          "curvature_off_1",
+          "curvature_off_2",
+          "curvature_off_3",
+          "curvature_off_4",
+          "curvature_off_5",
+          "input_mix_off"
+        ],
+        "target_access": false,
+        "optimizer_updates": 0,
+        "source_selection_changed": false,
+        "model_restored": true,
+        "original_curvature_raw": [
+          0.05597548931837082,
+          0.026597317308187485,
+          0.035080019384622574,
+          -0.004569527227431536,
+          -0.015568045899271965,
+          -0.001363612012937665
+        ],
+        "original_input_mix_raw": [
+          0.0014194587711244822,
+          -0.029560601338744164
+        ],
+        "peak_cuda_allocated_bytes": 80104448,
+        "claim": "Within-checkpoint source V intervention; not scratch retraining causal effect, not unseen-RX generalization, not unique TX hardware attribution."
+      },
+      "log_bytes": 11016,
+      "conditions_done": 9,
+      "errors": []
+    },
+    {
+      "row_id": "phase_curvature_lag24-s2026092704",
+      "state": {
+        "status": "COMPLETE",
+        "pid": 1872523,
+        "gpu": 7,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_curvature_attribution_source_20261002_r01/run.py",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag24-s2026092704.json"
+        ],
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_curvature_attribution_source_20261002_r01",
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag24-s2026092704.log",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag24-s2026092704",
+        "exit_code": 0
+      },
+      "process": null,
+      "resolved": {
+        "source_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_phase_curvature_identity_20261002_r01",
+        "source_commit": "d5a34a105348195c29601c97df248cc4e68fec24",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-phase-curvature-identity-manysig-m8-r01/phase_curvature_lag24-s2026092704/source",
+        "variant": "phase_curvature_lag24",
+        "model_seed": 2026092704,
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/phase_curvature_lag24-s2026092704",
+        "conditions": [
+          "all_on",
+          "curvature_all_off",
+          "curvature_off_0",
+          "curvature_off_1",
+          "curvature_off_2",
+          "curvature_off_3",
+          "curvature_off_4",
+          "curvature_off_5",
+          "input_mix_off"
+        ],
+        "role": "V",
+        "launch_owner": "codex/root/cvs-curvature-attribution-20261002",
+        "pid": 1872523,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_curvature_attribution_source_20261002_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "torch_version": "2.1.0+cu121",
+        "source_record": {
+          "variant": "phase_curvature_lag24",
+          "seed": 2026092704,
+          "accuracy": 0.9817777777777777,
+          "worst_rx": 0.9503703703703704,
+          "parameters": 202561,
+          "macs": 7199008,
+          "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-phase-curvature-identity-manysig-m8-r01/phase_curvature_lag24-s2026092704/source",
+          "provenance": "Own scratch E200; full actual roles/representation/budget independently matched; metrics only, no weight inheritance"
+        },
+        "target_access": false,
+        "optimizer_updates": 0,
+        "source_selection_changed": false
+      },
+      "completion": {
+        "status": "SOURCE_ATTRIBUTION_COMPLETE",
+        "variant": "phase_curvature_lag24",
+        "model_seed": 2026092704,
+        "rows": [
+          {
+            "count": 27000,
+            "accuracy": 0.9817777777777777,
+            "ce": 0.09270776687324185,
+            "rx_accuracy": {
+              "1": 0.9968518518518519,
+              "3": 0.9503703703703704,
+              "4": 0.9907407407407407,
+              "6": 0.995,
+              "8": 0.975925925925926
+            },
+            "worst_rx": 0.9503703703703704,
+            "seconds": 4.783228107000468,
+            "condition": "all_on",
+            "accuracy_delta_pp_vs_all_on": 0.0,
+            "all_on_correct_intervention_wrong": 0,
+            "all_on_wrong_intervention_correct": 0,
+            "prediction_changes": 0
+          },
+          {
+            "count": 27000,
+            "accuracy": 0.9817037037037037,
+            "ce": 0.09370176747822491,
+            "rx_accuracy": {
+              "1": 0.9968518518518519,
+              "3": 0.9498148148148148,
+              "4": 0.9905555555555555,
+              "6": 0.9948148148148148,
+              "8": 0.9764814814814815
+            },
+            "worst_rx": 0.9498148148148148,
+            "seconds": 4.59310364202247,
+            "condition": "curvature_all_off",
+            "accuracy_delta_pp_vs_all_on": -0.007407407407400424,
+            "all_on_correct_intervention_wrong": 9,
+            "all_on_wrong_intervention_correct": 7,
+            "prediction_changes": 21
+          },
+          {
+            "count": 27000,
+            "accuracy": 0.9816666666666667,
+            "ce": 0.09300699767583857,
+            "rx_accuracy": {
+              "1": 0.9968518518518519,
+              "3": 0.9498148148148148,
+              "4": 0.9907407407407407,
+              "6": 0.995,
+              "8": 0.975925925925926
+            },
+            "worst_rx": 0.9498148148148148,
+            "seconds": 4.528600694000488,
+            "condition": "curvature_off_0",
+            "accuracy_delta_pp_vs_all_on": -0.011111111111106187,
+            "all_on_correct_intervention_wrong": 7,
+            "all_on_wrong_intervention_correct": 4,
+            "prediction_changes": 15
+          },
+          {
+            "count": 27000,
+            "accuracy": 0.9818148148148148,
+            "ce": 0.0929181740181078,
+            "rx_accuracy": {
+              "1": 0.997037037037037,
+              "3": 0.9503703703703704,
+              "4": 0.9907407407407407,
+              "6": 0.995,
+              "8": 0.975925925925926
+            },
+            "worst_rx": 0.9503703703703704,
+            "seconds": 4.587007922003977,
+            "condition": "curvature_off_1",
+            "accuracy_delta_pp_vs_all_on": 0.003703703703705763,
+            "all_on_correct_intervention_wrong": 2,
+            "all_on_wrong_intervention_correct": 3,
+            "prediction_changes": 10
+          },
+          {
+            "count": 27000,
+            "accuracy": 0.9818148148148148,
+            "ce": 0.09287695697288581,
+            "rx_accuracy": {
+              "1": 0.997037037037037,
+              "3": 0.9501851851851851,
+              "4": 0.9907407407407407,
+              "6": 0.995,
+              "8": 0.9761111111111112
+            },
+            "worst_rx": 0.9501851851851851,
+            "seconds": 4.575118436012417,
+            "condition": "curvature_off_2",
+            "accuracy_delta_pp_vs_all_on": 0.003703703703705763,
+            "all_on_correct_intervention_wrong": 2,
+            "all_on_wrong_intervention_correct": 3,
+            "prediction_changes": 10
+          },
+          {
+            "count": 27000,
+            "accuracy": 0.9817407407407407,
+            "ce": 0.09315828134903528,
+            "rx_accuracy": {
+              "1": 0.997037037037037,
+              "3": 0.9501851851851851,
+              "4": 0.9905555555555555,
+              "6": 0.9948148148148148,
+              "8": 0.9761111111111112
+            },
+            "worst_rx": 0.9501851851851851,
+            "seconds": 4.578162499994505,
+            "condition": "curvature_off_3",
+            "accuracy_delta_pp_vs_all_on": -0.003703703703705763,
+            "all_on_correct_intervention_wrong": 8,
+            "all_on_wrong_intervention_correct": 7,
+            "prediction_changes": 21
+          },
+          {
+            "count": 27000,
+            "accuracy": 0.9814814814814815,
+            "ce": 0.09269194872468312,
+            "rx_accuracy": {
+              "1": 0.9968518518518519,
+              "3": 0.9494444444444444,
+              "4": 0.9905555555555555,
+              "6": 0.9948148148148148,
+              "8": 0.9757407407407407
+            },
+            "worst_rx": 0.9494444444444444,
+            "seconds": 4.674734942003852,
+            "condition": "curvature_off_4",
+            "accuracy_delta_pp_vs_all_on": -0.0296296296296239,
+            "all_on_correct_intervention_wrong": 9,
+            "all_on_wrong_intervention_correct": 1,
+            "prediction_changes": 11
+          },
+          {
+            "count": 27000,
+            "accuracy": 0.9817777777777777,
+            "ce": 0.09268354807775062,
+            "rx_accuracy": {
+              "1": 0.9968518518518519,
+              "3": 0.9503703703703704,
+              "4": 0.9907407407407407,
+              "6": 0.995,
+              "8": 0.975925925925926
+            },
+            "worst_rx": 0.9503703703703704,
+            "seconds": 4.814045113016618,
+            "condition": "curvature_off_5",
+            "accuracy_delta_pp_vs_all_on": 0.0,
+            "all_on_correct_intervention_wrong": 6,
+            "all_on_wrong_intervention_correct": 6,
+            "prediction_changes": 14
+          },
+          {
+            "count": 27000,
+            "accuracy": 0.9817407407407407,
+            "ce": 0.09259160807685321,
+            "rx_accuracy": {
+              "1": 0.9968518518518519,
+              "3": 0.9503703703703704,
+              "4": 0.9907407407407407,
+              "6": 0.9948148148148148,
+              "8": 0.975925925925926
+            },
+            "worst_rx": 0.9503703703703704,
+            "seconds": 4.791651772975456,
+            "condition": "input_mix_off",
+            "accuracy_delta_pp_vs_all_on": -0.003703703703705763,
+            "all_on_correct_intervention_wrong": 4,
+            "all_on_wrong_intervention_correct": 3,
+            "prediction_changes": 8
+          }
+        ],
+        "source_v_count": 27000,
+        "conditions": [
+          "all_on",
+          "curvature_all_off",
+          "curvature_off_0",
+          "curvature_off_1",
+          "curvature_off_2",
+          "curvature_off_3",
+          "curvature_off_4",
+          "curvature_off_5",
+          "input_mix_off"
+        ],
+        "target_access": false,
+        "optimizer_updates": 0,
+        "source_selection_changed": false,
+        "model_restored": true,
+        "original_curvature_raw": [
+          0.06991584599018097,
+          0.035603832453489304,
+          0.0298608485609293,
+          0.04443887993693352,
+          -0.01317361555993557,
+          -0.033930350095033646
+        ],
+        "original_input_mix_raw": [
+          0.00159173714928329,
+          -0.02779417671263218
+        ],
+        "peak_cuda_allocated_bytes": 80104448,
+        "claim": "Within-checkpoint source V intervention; not scratch retraining causal effect, not unseen-RX generalization, not unique TX hardware attribution."
+      },
+      "log_bytes": 11024,
+      "conditions_done": 9,
+      "errors": []
+    }
+  ]
+}

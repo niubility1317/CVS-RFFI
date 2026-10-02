@@ -19,3 +19,5 @@
 参数比原控制增加6；Conv/Linear MAC未包含新增逐元素计算，耗时/显存按实测报告。跨seed只覆盖四次初始化随机性。源V来自同一组已见RX，最差源RX并非留一RX泛化验证。完整历史源分析见[evidence/history_analysis/source_history_analysis.json](evidence/history_analysis/source_history_analysis.json)，含48模型、9600轮，不读取目标评分；已有400000步历史原始日志审计引用保存证据，本轮另审计80000步。
 
 当前源实验与条件测试收尾已闭合：完整日志和自然退出VERIFIED；原控制的4模型clean已在32行矩阵评分完成，本轮仅复用完成证据，无新query。曲率两候选未胜出，性能提升目标未完成。后续进行独立源域机制归因。[控制测试复用](evidence/existing_clean_reuse.json)。
+
+2026-10-02补充：独立源归因72条件已全部完成并逐预测文件复算，见[归因结果](../20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/report.md)。下一轮按用户新强调的边界只改神经网络结构，不增加训练策略或损失。

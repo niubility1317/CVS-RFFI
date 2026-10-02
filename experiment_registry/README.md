@@ -1,6 +1,6 @@
 # 实验总索引
 
-更新：2026-10-02T15:37:41+00:00
+更新：2026-10-02T16:00:56+00:00
 
 先按方法/问题检索，再用run ID读取精确配置与证据。历史组数量不等于独立实验数量。
 
@@ -12,7 +12,7 @@
 
 |记录类型|数量|
 |---|---:|
-|managed_run|71|
+|managed_run|72|
 
 历史状态统一为HISTORICAL_UNVERIFIED；RUNNING等原文声明只供查证，不能证明此刻仍在运行。
 
@@ -20,13 +20,13 @@
 
 |路径标签（定位提示）|证据组数|
 |---|---:|
-|[cvs](by_method/cvs.md)|54|
-|[ce_only](by_method/ce_only.md)|42|
-|[clean_only](by_method/clean_only.md)|41|
-|[performance_priority](by_method/performance_priority.md)|35|
-|[no_augmentation](by_method/no_augmentation.md)|31|
-|[source_selection](by_method/source_selection.md)|26|
-|[rff_physics](by_method/rff_physics.md)|19|
+|[cvs](by_method/cvs.md)|55|
+|[ce_only](by_method/ce_only.md)|43|
+|[clean_only](by_method/clean_only.md)|42|
+|[performance_priority](by_method/performance_priority.md)|36|
+|[no_augmentation](by_method/no_augmentation.md)|32|
+|[source_selection](by_method/source_selection.md)|27|
+|[rff_physics](by_method/rff_physics.md)|20|
 |[source_selected](by_method/source_selected.md)|14|
 |[frozen_prediction_reuse](by_method/frozen_prediction_reuse.md)|13|
 |[daot](by_method/daot.md)|11|
@@ -112,6 +112,8 @@
 |[fractional_synchronization](by_method/fractional_synchronization.md)|1|
 |[whole_identity_gauge](by_method/whole_identity_gauge.md)|1|
 |[packet_moment_residual](by_method/packet_moment_residual.md)|1|
+|[neural_residual](by_method/neural_residual.md)|1|
+|[learned_convolutions](by_method/learned_convolutions.md)|1|
 |[whole_identity_observables](by_method/whole_identity_observables.md)|1|
 |[packet_orthogonal_envelope](by_method/packet_orthogonal_envelope.md)|1|
 |[six_extra_parameters](by_method/six_extra_parameters.md)|1|
@@ -159,7 +161,7 @@
 |CVS 加性坐标实际使用：完整冻结源域消融报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-diagnostic-cvs-additive-usage-source-manysig-m40-r01/report.md)|
 |CVS 相对频偏坐标：完整源域身份信息诊断|managed_run|[打开](../automation_reports/CV-SincNet/20261002-diagnostic-cvs-cfo-information-source-manysig-m1-r01/report.md)|
 |CVS 坐标实际使用：完整冻结源域消融报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-diagnostic-cvs-coordinate-usage-source-manysig-m40-r01/report.md)|
-|CVS曲率修正的源域归因预登记|managed_run|[打开](../automation_reports/CV-SincNet/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/report.md)|
+|CVS相位曲率：冻结源域归因结果|managed_run|[打开](../automation_reports/CV-SincNet/20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01/report.md)|
 |冻结 CVS 源权重的公共合成相位数值归因|managed_run|[打开](../automation_reports/CV-SincNet/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01/report.md)|
 |CVS 完整源 V 接收变换与身份路径诊断|managed_run|[打开](../automation_reports/CV-SincNet/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/report.md)|
 |RFF物理可辨识性：合成诊断|managed_run|[打开](../automation_reports/CV-SincNet/20261002-diagnostic-rff-identifiability-synthetic-m1-r01/report.md)|
@@ -181,6 +183,7 @@
 |CVS 波形层分数频偏校正身份网络：完整源实验报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-fractional-identity-manysig-m8-r01/report.md)|
 |完整 IQ 相位规范化 CVS：完整源实验报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-gauge-identity-manysig-m8-r01/report.md)|
 |CVS可学习包内矩残差：完整源实验报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-moment-residual-identity-manysig-m8-r01/report.md)|
+|CVS可学习复卷积残差：浅深两容量×四seed纯CE|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-neural-residual-identity-manysig-m8-r01/report.md)|
 |CVS性能优先继续优化：observable_phase clean测试报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-observable-clean-manysig-m24-r01/report.md)|
 |CVS整体物理观测身份网络：源训练预登记|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-observable-identity-manysig-m8-r01/report.md)|
 |CVS 包内正交包络输入：完整源实验报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-orthopoly-identity-manysig-m8-r01/report.md)|

@@ -1,0 +1,17 @@
+{
+  "status": "PASS",
+  "P0": 0,
+  "P1": 0,
+  "reviewer": "independent curvature_clean_review",
+  "scope": "source publication",
+  "evidence": [
+    "4 real model tests independently passed",
+    "8 actual configs and permission/budget negative cases",
+    "complete12 source selection and incomplete rejection",
+    "publish/inspect/collector rendered templates compiled",
+    "synthetic complete200epoch/10000step audit both variants and bad gradientcount rejection"
+  ],
+  "target_access": false,
+  "remote_actions": false,
+  "clean_review": "Separate when concrete selected clean exists"
+}

@@ -26,7 +26,17 @@ for rid,row in state['rows'].items():
         if abs(accuracy-expected['accuracy'])>1e-12 or good!=expected['all_on_correct_intervention_wrong'] or bad!=expected['all_on_wrong_intervention_correct'] or changed!=expected['prediction_changes']:raise ValueError('Paired recount differs')
         rx={str(rx):sum(c for c,r in zip(correct,q['receiver']) if r==rx)/sum(r==rx for r in q['receiver']) for rx in set(q['receiver'])}
         if rx!=expected['rx_accuracy']:raise ValueError('RX recount differs')
-        records.append(dict(condition=c,accuracy=accuracy,contribution_pp=100*(sum(baseline['correct'])/27000-accuracy),helped_by_all_on=good,hurt_by_all_on=bad,prediction_changes=changed,rx_accuracy=rx,seconds=expected['seconds']))
+        rx_effects=[];confusions=[]
+        for receiver in sorted(set(q['receiver'])):
+            indices=[i for i,r in enumerate(q['receiver']) if r==receiver]
+            helped=sum(baseline['correct'][i] and not correct[i] for i in indices)
+            hurt=sum(not baseline['correct'][i] and correct[i] for i in indices)
+            rx_effects.append(dict(receiver=receiver,count=len(indices),errors=sum(not correct[i] for i in indices),helped_by_all_on=helped,hurt_by_all_on=hurt,contribution_pp=100*(helped-hurt)/len(indices)))
+            for truth in range(6):
+                for predicted in range(6):
+                    n=sum(q['truth'][i]==truth and q['predictions'][i]==predicted for i in indices)
+                    confusions.append(dict(receiver=receiver,truth=truth,predicted=predicted,count=n))
+        records.append(dict(condition=c,accuracy=accuracy,ce=expected['ce'],ce_source='recorded_full_V_cross_entropy_not_recomputed_from_argmax',contribution_pp=100*(good-bad)/27000,helped_by_all_on=good,hurt_by_all_on=bad,prediction_changes=changed,rx_accuracy=rx,rx_effects=rx_effects,confusions=confusions,seconds=expected['seconds']))
     answer.append(dict(row_id=rid,variant=done['variant'],model_seed=done['model_seed'],records=records,all_prediction_files_reparsed=True,source_V_ids_reconciled=True))
 print(json.dumps(dict(status='VERIFIED',models=8,conditions=72,prediction_decisions=1944000,unique_source_V_physical_samples=27000,rows=answer,target_access=False)))
 '''
@@ -43,7 +53,9 @@ def collect(root,output):
     data=json.loads(ssh(script));e=root/'automation_reports/CV-SincNet'/RUN/'evidence';e.mkdir(parents=True,exist_ok=True)
     for name,value in [('final_readback.json',live),('independent_recount.json',data)]:
         (e/name).write_text(json.dumps(value,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
-    records=[dict(row_id=r['row_id'],variant=r['variant'],seed=r['model_seed'],**{k:v for k,v in s.items() if k!='rx_accuracy'}) for r in data['rows'] for s in r['records']]
+    records=[dict(row_id=r['row_id'],variant=r['variant'],seed=r['model_seed'],**{k:v for k,v in s.items() if k not in ('rx_accuracy','rx_effects','confusions')}) for r in data['rows'] for s in r['records']]
+    for field,filename in [('rx_effects','receiver_attribution.csv'),('confusions','source_confusions.csv')]:
+        csvwrite(e/filename,[dict(variant=r['variant'],seed=r['model_seed'],condition=s['condition'],**item) for r in data['rows'] for s in r['records'] for item in s[field]])
     summary=[]
     for v in sorted({r['variant'] for r in records}):
         for c in CONDITIONS:

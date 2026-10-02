@@ -26,3 +26,17 @@ def test_exception_restores_and_unknown_condition_rejected():
     assert float(model.memory_parameters()[0])==pytest.approx(.3)
     with pytest.raises(ValueError):
         with intervention(model,'unregistered'):pass
+
+
+def test_inspection_does_not_replace_config_inside_log_marker(monkeypatch,tmp_path):
+    import json
+    from experiments.cvs_phase_curvature_attribution import publish
+    scripts=[]
+    def fake_ssh(script):
+        compile(script,'inspect','exec')
+        assert "text.split('RESOLVED_CONFIG',1)" in script
+        scripts.append(script)
+        return json.dumps({'pipeline':None,'rows':[]})
+    monkeypatch.setattr(publish,'ssh',fake_ssh)
+    assert publish.inspect(tmp_path)=={'pipeline':None,'rows':[]}
+    assert len(scripts)==1

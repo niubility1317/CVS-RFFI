@@ -1,0 +1,13 @@
+{
+  "goal": "Neural architecture only; unchanged singleCE and training protocol; improve recognition performance",
+  "status": "ANALYZED",
+  "source_release_commit": "4aca3a7532606c7e9399234902d09d81dd7ed13d",
+  "models": 8,
+  "conditions": 72,
+  "live_workers": 0,
+  "evidence": "evidence/independent_recount.json",
+  "target_access": false,
+  "performance_goal_achieved": false,
+  "next_run": "20261002-phase1-cvs-neural-residual-identity-manysig-m8-r01",
+  "next": "Compare learned residual shallow/deep architecture; source selection then conditional clean test"
+}

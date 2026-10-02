@@ -8,13 +8,11 @@
   "previous_goal_turn": "PROGRESS: model/design19checks implemented; latest sixscene reporting audited fixed models only, not design/selection feedback",
   "goal_scope": "CE only/noaugmentation/identity only/scratch/unchanged split/fullFP32/clean only;performance first; mathematical communication physical RFF evidence",
   "next": [
-    "Run preregistered source-only72condition frozen attribution",
-    "Integrate wholeV attribution with48model/9600epoch history",
-    "Deliver concrete source-grounded optimization direction; no targetfeedback"
+    "Run fixed8 learnedneural shallow/deep architecture source experiment",
+    "Select with fixed12 source records; only selectedcandidate clean test"
   ],
   "missing": [
-    "Full frozen source attribution",
-    "Verified improved network and whole-representation RFF physics evidence"
+    "Verified improved neural architecture under unchanged singleCE training"
   ],
   "release_commit": "d5a34a105348195c29601c97df248cc4e68fec24",
   "dispatcher_pid": 1852325,
@@ -85,5 +83,7 @@
   "source_training_complete": true,
   "live_source_workers": 0,
   "selected_variant": "adaptive_volterra_lag4",
-  "last_evidence": "evidence/final_source_readback.json"
+  "last_evidence": "evidence/final_source_readback.json",
+  "diagnostic_complete": true,
+  "next_run": "20261002-phase1-cvs-neural-residual-identity-manysig-m8-r01"
 }

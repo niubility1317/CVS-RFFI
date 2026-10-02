@@ -58,7 +58,7 @@ print(json.dumps(dict(read_at=time.time(),identity=dict(user=subprocess.check_ou
 '''
 
 def inspect(output):
-    data=json.loads(ssh(INSPECT.replace('CONFIG',repr(dict(project=PROJECT,run=RUN,release=RELEASE)))))
+    data=json.loads(ssh(INSPECT.replace('c=CONFIG', 'c='+repr(dict(project=PROJECT,run=RUN,release=RELEASE)), 1)))
     output.mkdir(parents=True,exist_ok=True);(output/'readback.json').write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
     print(json.dumps(dict(status=data['pipeline']['status'] if data['pipeline'] else 'UNKNOWN',rows=[dict(row_id=r['row_id'],alive=bool(r['process']),conditions=r['conditions_done'],status=r['state']['status'],errors=r['errors']) for r in data['rows']])))
     return data

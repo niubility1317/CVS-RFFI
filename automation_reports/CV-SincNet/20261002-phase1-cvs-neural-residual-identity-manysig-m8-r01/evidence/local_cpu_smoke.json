@@ -1,0 +1,24 @@
+{
+  "status": "VERIFIED",
+  "data_access": false,
+  "records": [
+    {
+      "variant": "neural_residual_shallow",
+      "parameters": 220987,
+      "ce": 2.7372121810913086,
+      "initial_exact": true,
+      "second_step_hidden_CE_gradient": true,
+      "phase_tolerance_pass": true,
+      "checkpoint_source": null
+    },
+    {
+      "variant": "neural_residual_deep",
+      "parameters": 239419,
+      "ce": 2.7162723541259766,
+      "initial_exact": true,
+      "second_step_hidden_CE_gradient": true,
+      "phase_tolerance_pass": true,
+      "checkpoint_source": null
+    }
+  ]
+}
