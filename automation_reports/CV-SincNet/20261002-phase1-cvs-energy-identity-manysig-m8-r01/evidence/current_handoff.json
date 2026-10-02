@@ -59,8 +59,15 @@
   "next_steps": [
     "Inspect same immutable release/live PIDs;no resubmit or restart",
     "At E200 audit all80000 steps/1600 epochs/full logs and recompute12source-record performance selection",
+    "After full source collection/analysis, source-only pair energy_half with oldfractional_half; no ranking or target feedback",
     "After E200 independent source12 ranking: if newwinner freeze actual selection, generate/register selected-only clean configs; if residual wins retain verified history/no newquery",
     "Default onlyselected4new plus20old fixed predictions and independenttruthlast24row report; ifbaselinewins preserve existing clean/no unselected query"
   ],
-  "conditional_clean_support_ready": true
+  "conditional_clean_support_ready": true,
+  "source_comparison_module": "experiments.cvs_energy_identity.compare_prior_source",
+  "completion_helpers": {
+    "baseline_retained": "E:/type10-7/.codex_tmp/finish_energy_baseline_retained.py",
+    "new_selected": "E:/type10-7/.codex_tmp/prepare_energy_confirmation.py",
+    "freeze_commit": "E:/type10-7/.codex_tmp/commit_energy_freeze.py"
+  }
 }

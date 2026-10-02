@@ -23,3 +23,7 @@ VERIFIED：immutable release `4a9170b768bbb39e4c256d377fbe60ff294a2f0d`，dispat
 ## 条件测试路径准备
 
 本地已准备新候选冻结后的独立 clean 路径：source12记录重算、actual完整FP32/物理角色/scratch/E200/payload/strict模型加载核实后才读取query；仅选中4个新模型加20个旧冻结预测，共24行，同seed配对原残差及常见基准。energy17项（含两种真实模型 checkpoint 合成预测回读）与 fractional17项回归检查通过，独立P0/P1审查PASS。没有生成真实clean配置、访问target或修改正在运行的源release。[验证](evidence/conditional_clean_validation.json)。
+
+## 归一化作用的源域配对计划
+
+冻结后只读核实此前fractional_half四个源E200元数据：相同物理角色、scratch、model/loader seed、预算、固定alpha0.5、完整FP32及202553参数，与energy_half比较归一化轴。该分析不改变已登记12记录候选排序，不读取权重或目标。历史独立训练、不同GPU和非确定核仍可能产生数值差异，不称为TX/RX因果辨识。旧raw核心精度策略不同，其单因素配对记N/A。5项配对完整性与百分点单位检查PASS；尚无本轮配对性能结论。[计划](evidence/normalization_comparison_plan.json)。

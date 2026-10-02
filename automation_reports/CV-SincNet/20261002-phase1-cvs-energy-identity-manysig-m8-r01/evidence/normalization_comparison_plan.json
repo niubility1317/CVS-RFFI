@@ -1,0 +1,26 @@
+{
+  "status": "PLANNED_AFTER_SOURCE_COMPLETION",
+  "source_only": true,
+  "target_access": false,
+  "checkpoint_loaded": false,
+  "used_for_selection": false,
+  "source_rule_and_candidate_universe_changed": false,
+  "new_variant": "energy_half",
+  "prior_variant": "fractional_half",
+  "prior_run": "20261002-phase1-cvs-fractional-identity-manysig-m8-r01",
+  "matched_model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703,
+    2026092704
+  ],
+  "normalization_axes_only_structure_difference": true,
+  "physical_roles_budget_scratch_actual_FP32_reverified_before_comparison": true,
+  "parameters": 202553,
+  "fixed_alpha": 0.5,
+  "raw_single_factor_comparison": "N/A: historical raw-core precision policy differs",
+  "public_checks": 5,
+  "checks_status": "PASS",
+  "historical_training_numerics": "Separate historical training/different GPU assignments/nondeterministic kernels; not a TX/RX causal identification",
+  "performance_improvement_proven": false
+}
