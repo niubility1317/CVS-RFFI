@@ -73,11 +73,11 @@
     "latest_runtime_observed_utc": "2026-10-01T23:22:23Z",
     "latest_runtime_readback_ref": "evidence/query_terminal_1790897012642688500_compact.json",
     "query_score": {
-      "status": "PREREGISTERED_NOT_LAUNCHED",
+      "status": "RUNNING",
       "attempt_id": "r02",
       "spec_path": "configs/d92_group_query_score_contract_20261002_r02.json",
       "wrapper_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_group_query_score_contract_20261002_r02",
-      "source_commit": null,
+      "source_commit": "f291990c45f14cf322dfb1c6d2fc5a97e23f5a91",
       "source_preparation_commit": "c7c46558d5eb8f34bb57fb09c12adc7ac2c5109f",
       "original_runtime_commit": "73aa1b31fc68aeddfb3d0ef7882acafb5be5a155",
       "output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01-score-contract-r02/summary.json",
@@ -105,7 +105,12 @@
       "truth_read_policy": "Only full4/2400 fixed prediction closure and independent reread before truth; exact real producer feature contract",
       "correction_scope": "One scorer literal branch_keys excludes fft; predictions/method/matrix/source checkpoints unchanged",
       "previous_attempt_ref": "automation_reports/CV-SincNet/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01/evidence/score_runtime_1790899559122672500.json",
-      "terminal_evidence_ref": "automation_reports/CV-SincNet/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01/evidence/query_terminal_1790897012642688500_compact.json"
+      "terminal_evidence_ref": "automation_reports/CV-SincNet/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01/evidence/query_terminal_1790897012642688500_compact.json",
+      "wrapper_pid": 1333307,
+      "scorer_pid": 1333329,
+      "runtime_evidence_ref": "automation_reports/CV-SincNet/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01/evidence/score_runtime_1790900461250562000.json",
+      "latest_runtime_observed_utc": "2026-10-02T00:20:00Z",
+      "score_result": null
     },
     "prediction_completion": "VERIFIED_FULL_4_ROWS_2400_EPISODES_FIXED_BEFORE_TRUTH",
     "query_score_history": [

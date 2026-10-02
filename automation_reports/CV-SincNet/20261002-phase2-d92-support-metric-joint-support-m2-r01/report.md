@@ -37,3 +37,5 @@ basis 每 row 只由冻结地面 Q 构建一次，归档普通方法数据证据
 <!-- SUPPORT_METRIC_FULL_TRAINING_COMPLETE_20261002 -->
 
 独立analysis r01已发布并读回FAILED，child1324356/wrapper1324346，29.09秒后在结构性Trial arithmetic tolerance changed检查退出；无summary/完整诊断表，无query/源样本读取或重拟合，原训练全4/160/1800仍TRAINING_COMPLETE。当前只核对原保存容差与分析重建公式，禁止放宽容差或改变方法；没有自动重发或重训。
+
+独立scalar-r02已预登记，原r01 FAILED记录保持不变。根因是verifier以NumPy eps重建tol后，比例成为np.float64，被仅接受Python int/float的_equal类型检查拒绝。三个入口数学式均为tol=128ε max(1,|f0|,|ftrial|,|rhs|)，无需扩大容差或改训练。独立clone仅对内部比值加float，字节唯一差已验证；真实非零trial analyzer12、query scorer6、发布11个必要用例通过，原始raw失败与通过均保留。新的analysis-scalar-r02输出/2文件源包未发布；必须全4/160/1800保存档案闭合后才诊断成绩。

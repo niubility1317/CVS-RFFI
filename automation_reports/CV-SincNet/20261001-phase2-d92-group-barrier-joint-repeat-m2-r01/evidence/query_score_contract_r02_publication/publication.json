@@ -1,0 +1,90 @@
+{
+  "status": "DISPATCHED_AWAITING_INDEPENDENT_READBACK",
+  "phase": "REMOTE_EXTRACT_DISPATCH",
+  "binding": {
+    "run_id": "20261001-phase2-d92-group-barrier-joint-repeat-m2-r01",
+    "source_commit": "f291990c45f14cf322dfb1c6d2fc5a97e23f5a91",
+    "record_commit": "f291990c45f14cf322dfb1c6d2fc5a97e23f5a91",
+    "fitted_runtime_commit": "73aa1b31fc68aeddfb3d0ef7882acafb5be5a155",
+    "release": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_group_query_score_contract_20261002_r02",
+    "paths": [
+      "tools/score_d92_group_barrier_joint_benchmark_contract_r02.py",
+      "tools/execute_frozen_d92_group_query_score_contract_r02.py",
+      "configs/d92_group_query_score_contract_20261002_r02.json"
+    ],
+    "archive": "E:\\type10-7\\local_artifacts\\d92_group_query_score_publication\\d92_group_query_score_contract_20261002_r02\\d92_group_query_score_contract_20261002_r02.tar",
+    "remote_archive": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_group_query_score_contract_20261002_r02.tar",
+    "archive_bytes": 71680,
+    "archive_sha256": "4525af84b76d6ff5485f0874da9216e407c84c5c11e1fdbc0ce03cb7973992c2",
+    "original_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_group_barrier_joint_repeat_20261001_r01",
+    "scorer_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_group_query_score_contract_20261002_r02",
+    "original_run": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01",
+    "output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01-score-contract-r02/summary.json",
+    "output_directory": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01-score-contract-r02",
+    "command": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_group_query_score_contract_20261002_r02/tools/execute_frozen_d92_group_query_score_contract_r02.py",
+      "--plan",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_group_query_score_contract_20261002_r02/configs/d92_group_query_score_contract_20261002_r02.json",
+      "--publication-source-commit",
+      "f291990c45f14cf322dfb1c6d2fc5a97e23f5a91"
+    ],
+    "scorer_command": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_group_query_score_contract_20261002_r02/tools/score_d92_group_barrier_joint_benchmark_contract_r02.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_group_barrier_joint_repeat_20261001_r01/configs/d92_group_barrier_joint_repeat_20261001.json",
+      "--run-root",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01",
+      "--output",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01-score-contract-r02/summary.json"
+    ],
+    "environment": {
+      "CUDA_VISIBLE_DEVICES": "",
+      "OMP_NUM_THREADS": "2",
+      "OPENBLAS_NUM_THREADS": "2",
+      "MKL_NUM_THREADS": "2",
+      "NUMEXPR_NUM_THREADS": "2",
+      "PYTHONUNBUFFERED": "1"
+    },
+    "launch_owner": "root",
+    "automatic_retry": false
+  },
+  "launch": {
+    "status": "DISPATCHED_AWAITING_INDEPENDENT_READBACK",
+    "pid": 1333307,
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_group_query_score_contract_20261002_r02/tools/execute_frozen_d92_group_query_score_contract_r02.py",
+      "--plan",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_group_query_score_contract_20261002_r02/configs/d92_group_query_score_contract_20261002_r02.json",
+      "--publication-source-commit",
+      "f291990c45f14cf322dfb1c6d2fc5a97e23f5a91"
+    ],
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_group_query_score_contract_20261002_r02",
+    "source_commit": "f291990c45f14cf322dfb1c6d2fc5a97e23f5a91",
+    "fitted_runtime_commit": "73aa1b31fc68aeddfb3d0ef7882acafb5be5a155",
+    "original_run": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01",
+    "output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01-score-contract-r02/summary.json",
+    "output_directory": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01-score-contract-r02",
+    "environment": {
+      "CUDA_VISIBLE_DEVICES": "",
+      "OMP_NUM_THREADS": "2",
+      "OPENBLAS_NUM_THREADS": "2",
+      "MKL_NUM_THREADS": "2",
+      "NUMEXPR_NUM_THREADS": "2",
+      "PYTHONUNBUFFERED": "1"
+    },
+    "remote_user": "szu2070436088",
+    "fit": false,
+    "training": false,
+    "parameter_selection": false,
+    "automatic_retry": false,
+    "launched": 1790900342.167754
+  },
+  "scope": "ORIGINAL_SCORER_DISPATCH_NOT_SCORE_COMPLETION",
+  "automatic_retry": false
+}

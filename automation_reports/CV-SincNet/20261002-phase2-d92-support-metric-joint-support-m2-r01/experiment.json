@@ -332,7 +332,57 @@
       "sequence_paths": 1800
     },
     "source_runtime_unchanged": true,
-    "support_metrics_read": false
+    "support_metrics_read": false,
+    "support_analysis_scalar_r02": {
+      "status": "PREREGISTERED_NOT_LAUNCHED",
+      "attempt_id": "r02",
+      "source_commit": null,
+      "source_preparation_commit": "f291990c45f14cf322dfb1c6d2fc5a97e23f5a91",
+      "fitted_runtime_commit": "3c3eb6c513aaf20fe84514dcbeab3584bad1f238",
+      "paths": [
+        "tools/analyze_d92_support_metric_joint_probe_scalar_r02.py",
+        "configs/d92_support_metric_joint_support_20261002.json"
+      ],
+      "release": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_support_metric_support_analysis_scalar_20261002_r02",
+      "output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-support-metric-joint-support-m2-r01-analysis-scalar-r02",
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_support_metric_support_analysis_scalar_20261002_r02/analysis.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_support_metric_support_analysis_scalar_20261002_r02/tools/analyze_d92_support_metric_joint_probe_scalar_r02.py",
+        "--spec",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_support_metric_support_analysis_scalar_20261002_r02/configs/d92_support_metric_joint_support_20261002.json",
+        "--run-root",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-support-metric-joint-support-m2-r01",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-support-metric-joint-support-m2-r01-analysis-scalar-r02",
+        "--expected-runtime-commit",
+        "3c3eb6c513aaf20fe84514dcbeab3584bad1f238"
+      ],
+      "query_read": false,
+      "source_sample_read": false,
+      "fit": false,
+      "parameter_selection": false,
+      "launch_owner": "root",
+      "automatic_retry": false,
+      "expected_complete_status": "SUPPORT_METRIC_JOINT_PROBE_COMPLETE",
+      "expected_summary_status": "COMPLETE_SUPPORT_METRIC_JOINT_SUPPORT_ANALYSIS_VERIFIED",
+      "coverage": {
+        "rows": 4,
+        "parents": 160,
+        "sequence_paths": 1800
+      },
+      "numerical_replay": false,
+      "scope": "Read-only complete saved-state analysis; sole internal NumPy/Python scalar boundary correction, not method/tolerance/fit change",
+      "environment": {
+        "CUDA_VISIBLE_DEVICES": "",
+        "OMP_NUM_THREADS": "2",
+        "OPENBLAS_NUM_THREADS": "2",
+        "MKL_NUM_THREADS": "2",
+        "NUMEXPR_NUM_THREADS": "2",
+        "PYTHONUNBUFFERED": "1"
+      }
+    }
   },
   "probe": {
     "cohorts": {

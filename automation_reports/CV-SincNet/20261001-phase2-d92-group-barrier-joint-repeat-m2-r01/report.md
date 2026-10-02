@@ -60,3 +60,5 @@ CPU两lane，每lane BLAS两线程，CUDA为空。最多5888可训练坐标不�
 <!-- GROUP_COMPLETE_QUERY_SCORE_PREREGISTERED_20261002 -->
 
 原评分r01已独立读回FAILED，returncode1，8.49秒，子进程峰值RSS1116221440B；scorer在_source_identity入口因feature_contract失败，未连接truth或生成summary。真实四row producer.branch_keys只有z_id/t_emb/f_emb/pa_local，FFT在fft_dim96独立声明；原scorer字面常量误含fft。原预测、方法、矩阵及source检查保留。独立scorer-contract-r02仅修一处字面列表，strict整个dict相等不放宽；新输出-score-contract-r02，预登记未发布。新11+37=48合成回归通过。
+
+契约修复评分r02已唯一发布并启动，sourcef291；00:20UTC独立PID/argv/cwd/environment读回VERIFIED_RUNNING，wrapper1333307/child1333329，子进程仅原固定预测独立评分。此时summary仍无，尚不声称评分完成或方法改善。

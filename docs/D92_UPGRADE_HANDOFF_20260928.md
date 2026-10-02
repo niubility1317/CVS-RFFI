@@ -1,3 +1,14 @@
+## 当前交接：Group独立评分r02运行，SupportMetric标量修复r02已验证待发布
+
+- Goal ACTIVE。Group原预测full4/2400/73aa不变；契约修复score r02/sourcef291于00:20UTC独立读回RUNNING，wrapper1333307/child1333329；reader read_group_query_score_contract_20261002_r02.py，下一次正常约00:30UTC，完整artifact metadata后才采集报告。不重复dispatch/原r01 FAILED保留。
+- 新support全4/160/1800 TRAINING_COMPLETE/fit3c3；原analysis r01 FAILED并保留。真实原因是内部NumPy float比例遭严格Pythonfloat类型拒绝，公式/128eps无错。独立scalar analyzer仅一处float边界、真实非零trial12+query局部6+publisher11 PASS；execution.support_analysis_scalar_r02唯一r02/sourceprep f291/2file新源包/新output已登记，未发布。提交push/OID后root执行新publisher一次，独立reader从该plan键读回；不得使用原r01 publisher或更改原保存状态。
+- 当前新query c7c/1327506和旧ProtoFrame query72663/1204372持续健康；上次00:10UTC两rx3预测各自rx1等待，下一正常约00:30UTC。新query控制器原verifier也有同类型bug，不能热改；所有row仍按队列执行并在最后写原FAILED完成状态。branch_local_entry拥有独立只读fixed-output closure/scorer新入口与必要tests尚未FREEZE；它必须核全4/2400真实producer COMPLETE、exit0、同具体type失败或原合法COMPLETE、完整档案及二次读回后才truth，保留原FAILED不伪造status/marker，不新的authority/gate/重训。当前只source准备，不可实际部分评分。
+- 后续完整报告仍同物理A/B/C、old6/K×new、gain/drop/absGap/H与实际成本/N/A。科学方法、矩阵、资源、Phase1、practical residual不变，无query反馈或参数grid。真实数值/Git/SSH/launch/scoring root唯一。
+
+<!-- SCALAR_R02_ANALYSIS_READY_AND_GROUP_SCORE_LIVE_20261002 -->
+
+以下历史交接保留，不据此重启：
+
 ## 当前交接：新完整query已启动，两个独立分析接口失败保留并局部修复
 
 - Goal ACTIVE。新query 20261002-phase2-d92-support-metric-joint-repeat-m2-r01 RUNNING，immutable c7c46558；00:10UTC/proc及startup VERIFIED，supervisor1327506/start14743342，rx3 1327618/1327622，rx1预检完成等待，全4/2400五流矩阵固定，global无；下次正常约00:30UTC。不得停止、热修或重复发布。reader read_support_metric_query_runtime_20261002.py。
