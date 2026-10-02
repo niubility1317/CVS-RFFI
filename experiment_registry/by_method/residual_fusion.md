@@ -7,3 +7,4 @@
 |名称|记录类型|证据入口|
 |---|---|---|
 |CVS 基础网络研发：残差物理融合|managed_run|[打开](../../automation_reports/CV-SincNet/20261001-phase1-cvs-residual-identity-manysig-m8-r01/report.md)|
+|residual_fusion：纯 clean 与 mid/low urban 增强的六环境冻结测试|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/report.md)|

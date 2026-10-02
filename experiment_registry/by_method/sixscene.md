@@ -8,3 +8,4 @@
 |---|---|---|
 |DAOT＋FastTrust-RC4 residual环境比例六组|managed_run|[打开](../../automation_reports/CV-SincNet/20260920-phase1-daot-rc4-residual-ratios-manysig-s392005-r01/report.md)|
 |旧Practical四组checkpoint统一六环境测试|managed_run|[打开](../../automation_reports/CV-SincNet/20260920-phase1-practical4-sixscene-eval-s392005-r01/report.md)|
+|residual_fusion：纯 clean 与 mid/low urban 增强的六环境冻结测试|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/report.md)|

@@ -1,0 +1,16 @@
+{
+  "condition": "clean_train",
+  "variant": "residual_fusion",
+  "model_seed": 2026092701,
+  "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092701/source",
+  "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+  "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/clean_train-s2026092701/prediction",
+  "views_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/received_views",
+  "numerical_policy": {
+    "cudnn_allow_tf32": false,
+    "cuda_matmul_allow_tf32": false,
+    "cudnn_benchmark": false,
+    "cudnn_deterministic": false,
+    "matmul_precision": "highest"
+  }
+}

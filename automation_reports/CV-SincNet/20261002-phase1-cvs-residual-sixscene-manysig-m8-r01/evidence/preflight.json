@@ -1,0 +1,545 @@
+{
+  "user": "szu2070436088",
+  "host": "dell-DSS8440",
+  "collisions": {
+    "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_residual_sixscene_20261002_r01": false,
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01": false,
+    "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01": false
+  },
+  "gpu": "0, 24124\n1, 24124\n2, 24124\n3, 24124\n4, 24124\n5, 24124\n6, 24124\n7, 24124\n",
+  "apps": "",
+  "source_rows": [
+    {
+      "run": "20261001-phase1-cvs-residual-identity-manysig-m8-r01",
+      "seed": 2026092701,
+      "done": {
+        "status": "SOURCE_TRAINED",
+        "epoch": 200,
+        "steps": 10000,
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092701/source/last.pt",
+        "elapsed_seconds": 1138.134439454996,
+        "target_access": false,
+        "target_evaluated": false,
+        "final_source_metrics": {
+          "source_val_count": 27000,
+          "source_val_accuracy": 0.980925925925926,
+          "source_val_ce": 0.10111124420751202,
+          "source_val_rx_accuracy": {
+            "1": 0.9948148148148148,
+            "3": 0.9464814814814815,
+            "4": 0.9835185185185186,
+            "6": 0.9964814814814815,
+            "8": 0.9833333333333333
+          },
+          "source_val_worst_rx": 0.9464814814814815
+        }
+      },
+      "initial": {
+        "status": "SCRATCH",
+        "scratch_only": true,
+        "checkpoint": null,
+        "ancestors": [],
+        "checkpoint_sources": [],
+        "target_access": false,
+        "target_contact": false,
+        "model_seed": 2026092701,
+        "physical_roles": "EXACT_MATCH",
+        "selection": "fixed_last_epoch"
+      },
+      "config": {
+        "method": "cvs_residual_identity",
+        "variant": "residual_fusion",
+        "model_seed": 2026092701,
+        "selection": "fixed_last_epoch",
+        "augmentation": false,
+        "domain_backbone": false,
+        "extra_losses": [],
+        "source_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "steps_per_epoch": 50,
+        "target_access": false,
+        "numerical_policy": null,
+        "backend_flags": null
+      },
+      "checkpoint_exists": true
+    },
+    {
+      "run": "20261001-phase1-cvs-residual-identity-manysig-m8-r01",
+      "seed": 2026092702,
+      "done": {
+        "status": "SOURCE_TRAINED",
+        "epoch": 200,
+        "steps": 10000,
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092702/source/last.pt",
+        "elapsed_seconds": 1140.57630539799,
+        "target_access": false,
+        "target_evaluated": false,
+        "final_source_metrics": {
+          "source_val_count": 27000,
+          "source_val_accuracy": 0.9819629629629629,
+          "source_val_ce": 0.09610184188432645,
+          "source_val_rx_accuracy": {
+            "1": 0.9962962962962963,
+            "3": 0.9457407407407408,
+            "4": 0.9864814814814815,
+            "6": 0.997037037037037,
+            "8": 0.9842592592592593
+          },
+          "source_val_worst_rx": 0.9457407407407408
+        }
+      },
+      "initial": {
+        "status": "SCRATCH",
+        "scratch_only": true,
+        "checkpoint": null,
+        "ancestors": [],
+        "checkpoint_sources": [],
+        "target_access": false,
+        "target_contact": false,
+        "model_seed": 2026092702,
+        "physical_roles": "EXACT_MATCH",
+        "selection": "fixed_last_epoch"
+      },
+      "config": {
+        "method": "cvs_residual_identity",
+        "variant": "residual_fusion",
+        "model_seed": 2026092702,
+        "selection": "fixed_last_epoch",
+        "augmentation": false,
+        "domain_backbone": false,
+        "extra_losses": [],
+        "source_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "steps_per_epoch": 50,
+        "target_access": false,
+        "numerical_policy": null,
+        "backend_flags": null
+      },
+      "checkpoint_exists": true
+    },
+    {
+      "run": "20261001-phase1-cvs-residual-identity-manysig-m8-r01",
+      "seed": 2026092703,
+      "done": {
+        "status": "SOURCE_TRAINED",
+        "epoch": 200,
+        "steps": 10000,
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092703/source/last.pt",
+        "elapsed_seconds": 1137.8787764669978,
+        "target_access": false,
+        "target_evaluated": false,
+        "final_source_metrics": {
+          "source_val_count": 27000,
+          "source_val_accuracy": 0.9798518518518519,
+          "source_val_ce": 0.1089848450754929,
+          "source_val_rx_accuracy": {
+            "1": 0.9942592592592593,
+            "3": 0.9446296296296296,
+            "4": 0.985,
+            "6": 0.9962962962962963,
+            "8": 0.9790740740740741
+          },
+          "source_val_worst_rx": 0.9446296296296296
+        }
+      },
+      "initial": {
+        "status": "SCRATCH",
+        "scratch_only": true,
+        "checkpoint": null,
+        "ancestors": [],
+        "checkpoint_sources": [],
+        "target_access": false,
+        "target_contact": false,
+        "model_seed": 2026092703,
+        "physical_roles": "EXACT_MATCH",
+        "selection": "fixed_last_epoch"
+      },
+      "config": {
+        "method": "cvs_residual_identity",
+        "variant": "residual_fusion",
+        "model_seed": 2026092703,
+        "selection": "fixed_last_epoch",
+        "augmentation": false,
+        "domain_backbone": false,
+        "extra_losses": [],
+        "source_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "steps_per_epoch": 50,
+        "target_access": false,
+        "numerical_policy": null,
+        "backend_flags": null
+      },
+      "checkpoint_exists": true
+    },
+    {
+      "run": "20261001-phase1-cvs-residual-identity-manysig-m8-r01",
+      "seed": 2026092704,
+      "done": {
+        "status": "SOURCE_TRAINED",
+        "epoch": 200,
+        "steps": 10000,
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092704/source/last.pt",
+        "elapsed_seconds": 1139.5859742739995,
+        "target_access": false,
+        "target_evaluated": false,
+        "final_source_metrics": {
+          "source_val_count": 27000,
+          "source_val_accuracy": 0.980037037037037,
+          "source_val_ce": 0.10042451041170312,
+          "source_val_rx_accuracy": {
+            "1": 0.995,
+            "3": 0.942962962962963,
+            "4": 0.9848148148148148,
+            "6": 0.9957407407407407,
+            "8": 0.9816666666666667
+          },
+          "source_val_worst_rx": 0.942962962962963
+        }
+      },
+      "initial": {
+        "status": "SCRATCH",
+        "scratch_only": true,
+        "checkpoint": null,
+        "ancestors": [],
+        "checkpoint_sources": [],
+        "target_access": false,
+        "target_contact": false,
+        "model_seed": 2026092704,
+        "physical_roles": "EXACT_MATCH",
+        "selection": "fixed_last_epoch"
+      },
+      "config": {
+        "method": "cvs_residual_identity",
+        "variant": "residual_fusion",
+        "model_seed": 2026092704,
+        "selection": "fixed_last_epoch",
+        "augmentation": false,
+        "domain_backbone": false,
+        "extra_losses": [],
+        "source_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "steps_per_epoch": 50,
+        "target_access": false,
+        "numerical_policy": null,
+        "backend_flags": null
+      },
+      "checkpoint_exists": true
+    },
+    {
+      "run": "20261002-phase1-cvs-selected-concat-manysig-m4-r01",
+      "seed": 2026092701,
+      "done": {
+        "status": "SOURCE_TRAINED",
+        "epoch": 200,
+        "steps": 10000,
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-selected-concat-manysig-m4-r01/residual_fusion-s2026092701/source/last.pt",
+        "elapsed_seconds": 2648.9031906409946,
+        "target_access": false,
+        "target_evaluated": false,
+        "final_source_metrics": {
+          "source_val_count": 27000,
+          "source_val_accuracy": 0.981,
+          "source_val_ce": 0.07410210885512107,
+          "source_val_rx_accuracy": {
+            "1": 0.9961111111111111,
+            "3": 0.9468518518518518,
+            "4": 0.9837037037037037,
+            "6": 0.9964814814814815,
+            "8": 0.9818518518518519
+          },
+          "source_val_worst_rx": 0.9468518518518518
+        },
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        }
+      },
+      "initial": {
+        "status": "SCRATCH",
+        "scratch_only": true,
+        "checkpoint": null,
+        "ancestors": [],
+        "checkpoint_sources": [],
+        "target_access": false,
+        "target_contact": false,
+        "model_seed": 2026092701,
+        "physical_roles": "EXACT_MATCH",
+        "selection": "fixed_last_epoch"
+      },
+      "config": {
+        "method": "cvs_selected_concat",
+        "variant": "residual_fusion",
+        "model_seed": 2026092701,
+        "selection": "fixed_last_epoch",
+        "augmentation": "PracticalResidualAugment; E80 onward only",
+        "domain_backbone": false,
+        "extra_losses": [],
+        "source_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "steps_per_epoch": 50,
+        "target_access": false,
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        }
+      },
+      "checkpoint_exists": true
+    },
+    {
+      "run": "20261002-phase1-cvs-selected-concat-manysig-m4-r01",
+      "seed": 2026092702,
+      "done": {
+        "status": "SOURCE_TRAINED",
+        "epoch": 200,
+        "steps": 10000,
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-selected-concat-manysig-m4-r01/residual_fusion-s2026092702/source/last.pt",
+        "elapsed_seconds": 2612.566915428004,
+        "target_access": false,
+        "target_evaluated": false,
+        "final_source_metrics": {
+          "source_val_count": 27000,
+          "source_val_accuracy": 0.9818888888888889,
+          "source_val_ce": 0.0678775648335699,
+          "source_val_rx_accuracy": {
+            "1": 0.9975925925925926,
+            "3": 0.9475925925925925,
+            "4": 0.9840740740740741,
+            "6": 0.9962962962962963,
+            "8": 0.9838888888888889
+          },
+          "source_val_worst_rx": 0.9475925925925925
+        },
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        }
+      },
+      "initial": {
+        "status": "SCRATCH",
+        "scratch_only": true,
+        "checkpoint": null,
+        "ancestors": [],
+        "checkpoint_sources": [],
+        "target_access": false,
+        "target_contact": false,
+        "model_seed": 2026092702,
+        "physical_roles": "EXACT_MATCH",
+        "selection": "fixed_last_epoch"
+      },
+      "config": {
+        "method": "cvs_selected_concat",
+        "variant": "residual_fusion",
+        "model_seed": 2026092702,
+        "selection": "fixed_last_epoch",
+        "augmentation": "PracticalResidualAugment; E80 onward only",
+        "domain_backbone": false,
+        "extra_losses": [],
+        "source_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "steps_per_epoch": 50,
+        "target_access": false,
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        }
+      },
+      "checkpoint_exists": true
+    },
+    {
+      "run": "20261002-phase1-cvs-selected-concat-manysig-m4-r01",
+      "seed": 2026092703,
+      "done": {
+        "status": "SOURCE_TRAINED",
+        "epoch": 200,
+        "steps": 10000,
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-selected-concat-manysig-m4-r01/residual_fusion-s2026092703/source/last.pt",
+        "elapsed_seconds": 2640.32220244201,
+        "target_access": false,
+        "target_evaluated": false,
+        "final_source_metrics": {
+          "source_val_count": 27000,
+          "source_val_accuracy": 0.9801481481481481,
+          "source_val_ce": 0.0780798877838401,
+          "source_val_rx_accuracy": {
+            "1": 0.9964814814814815,
+            "3": 0.9437037037037037,
+            "4": 0.9842592592592593,
+            "6": 0.9979629629629629,
+            "8": 0.9783333333333334
+          },
+          "source_val_worst_rx": 0.9437037037037037
+        },
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        }
+      },
+      "initial": {
+        "status": "SCRATCH",
+        "scratch_only": true,
+        "checkpoint": null,
+        "ancestors": [],
+        "checkpoint_sources": [],
+        "target_access": false,
+        "target_contact": false,
+        "model_seed": 2026092703,
+        "physical_roles": "EXACT_MATCH",
+        "selection": "fixed_last_epoch"
+      },
+      "config": {
+        "method": "cvs_selected_concat",
+        "variant": "residual_fusion",
+        "model_seed": 2026092703,
+        "selection": "fixed_last_epoch",
+        "augmentation": "PracticalResidualAugment; E80 onward only",
+        "domain_backbone": false,
+        "extra_losses": [],
+        "source_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "steps_per_epoch": 50,
+        "target_access": false,
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        }
+      },
+      "checkpoint_exists": true
+    },
+    {
+      "run": "20261002-phase1-cvs-selected-concat-manysig-m4-r01",
+      "seed": 2026092704,
+      "done": {
+        "status": "SOURCE_TRAINED",
+        "epoch": 200,
+        "steps": 10000,
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-selected-concat-manysig-m4-r01/residual_fusion-s2026092704/source/last.pt",
+        "elapsed_seconds": 2610.4831382920092,
+        "target_access": false,
+        "target_evaluated": false,
+        "final_source_metrics": {
+          "source_val_count": 27000,
+          "source_val_accuracy": 0.981037037037037,
+          "source_val_ce": 0.0715359714811544,
+          "source_val_rx_accuracy": {
+            "1": 0.9959259259259259,
+            "3": 0.9453703703703704,
+            "4": 0.9857407407407407,
+            "6": 0.9948148148148148,
+            "8": 0.9833333333333333
+          },
+          "source_val_worst_rx": 0.9453703703703704
+        },
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        }
+      },
+      "initial": {
+        "status": "SCRATCH",
+        "scratch_only": true,
+        "checkpoint": null,
+        "ancestors": [],
+        "checkpoint_sources": [],
+        "target_access": false,
+        "target_contact": false,
+        "model_seed": 2026092704,
+        "physical_roles": "EXACT_MATCH",
+        "selection": "fixed_last_epoch"
+      },
+      "config": {
+        "method": "cvs_selected_concat",
+        "variant": "residual_fusion",
+        "model_seed": 2026092704,
+        "selection": "fixed_last_epoch",
+        "augmentation": "PracticalResidualAugment; E80 onward only",
+        "domain_backbone": false,
+        "extra_losses": [],
+        "source_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "steps_per_epoch": 50,
+        "target_access": false,
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        }
+      },
+      "checkpoint_exists": true
+    }
+  ]
+}

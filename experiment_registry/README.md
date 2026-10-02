@@ -1,6 +1,6 @@
 # 实验总索引
 
-更新：2026-10-02T05:38:06+00:00
+更新：2026-10-02T07:47:09+00:00
 
 先按方法/问题检索，再用run ID读取精确配置与证据。历史组数量不等于独立实验数量。
 
@@ -12,7 +12,7 @@
 
 |记录类型|数量|
 |---|---:|
-|managed_run|60|
+|managed_run|61|
 
 历史状态统一为HISTORICAL_UNVERIFIED；RUNNING等原文声明只供查证，不能证明此刻仍在运行。
 
@@ -20,7 +20,7 @@
 
 |路径标签（定位提示）|证据组数|
 |---|---:|
-|[cvs](by_method/cvs.md)|43|
+|[cvs](by_method/cvs.md)|44|
 |[ce_only](by_method/ce_only.md)|33|
 |[clean_only](by_method/clean_only.md)|32|
 |[performance_priority](by_method/performance_priority.md)|26|
@@ -38,13 +38,14 @@
 |[residual](by_method/residual.md)|7|
 |[phase1](by_method/phase1.md)|6|
 |[fasttrust](by_method/fasttrust.md)|6|
+|[truth_last](by_method/truth_last.md)|6|
 |[lightweight](by_method/lightweight.md)|6|
 |[full](by_method/full.md)|5|
 |[zf](by_method/zf.md)|5|
 |[mmse](by_method/mmse.md)|5|
-|[truth_last](by_method/truth_last.md)|5|
 |[relative_cfo](by_method/relative_cfo.md)|5|
 |[final200](by_method/final200.md)|4|
+|[sixscene](by_method/sixscene.md)|3|
 |[d92](by_method/d92.md)|3|
 |[diagnostic](by_method/diagnostic.md)|3|
 |[identity_only](by_method/identity_only.md)|3|
@@ -53,7 +54,6 @@
 |[packet_synchronization](by_method/packet_synchronization.md)|3|
 |[response](by_method/response.md)|3|
 |[core90](by_method/core90.md)|3|
-|[sixscene](by_method/sixscene.md)|2|
 |[evaluation](by_method/evaluation.md)|2|
 |[true256](by_method/true256.md)|2|
 |[final_eval](by_method/final_eval.md)|2|
@@ -63,12 +63,14 @@
 |[cvs_identity_ce](by_method/cvs_identity_ce.md)|2|
 |[cvcnn_matched](by_method/cvcnn_matched.md)|2|
 |[ablation](by_method/ablation.md)|2|
+|[residual_fusion](by_method/residual_fusion.md)|2|
 |[coordinate_usage](by_method/coordinate_usage.md)|2|
 |[frozen_weights](by_method/frozen_weights.md)|2|
 |[frozen](by_method/frozen.md)|2|
 |[preamble](by_method/preamble.md)|2|
 |[phase_equivariant](by_method/phase_equivariant.md)|2|
 |[complex_memory](by_method/complex_memory.md)|2|
+|[benchmark_informed](by_method/benchmark_informed.md)|2|
 |[three_seed](by_method/three_seed.md)|2|
 |[adv3b02](by_method/adv3b02.md)|1|
 |[original_leo](by_method/original_leo.md)|1|
@@ -87,7 +89,6 @@
 |[real_cnn](by_method/real_cnn.md)|1|
 |[complex_coherence](by_method/complex_coherence.md)|1|
 |[time_frequency_interaction](by_method/time_frequency_interaction.md)|1|
-|[residual_fusion](by_method/residual_fusion.md)|1|
 |[frozen_baseline_reuse](by_method/frozen_baseline_reuse.md)|1|
 |[simplex_classifier](by_method/simplex_classifier.md)|1|
 |[physical_stability](by_method/physical_stability.md)|1|
@@ -104,9 +105,9 @@
 |[whole_identity_gauge](by_method/whole_identity_gauge.md)|1|
 |[whole_identity_observables](by_method/whole_identity_observables.md)|1|
 |[known_excitation](by_method/known_excitation.md)|1|
+|[frozen_evaluation](by_method/frozen_evaluation.md)|1|
 |[rf_behavior_operator](by_method/rf_behavior_operator.md)|1|
 |[user_fixed_architecture](by_method/user_fixed_architecture.md)|1|
-|[benchmark_informed](by_method/benchmark_informed.md)|1|
 
 ## 最近记录入口
 
@@ -165,6 +166,7 @@
 |CVS性能优先继续优化：observable_phase clean测试报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-observable-clean-manysig-m24-r01/report.md)|
 |CVS整体物理观测身份网络：源训练预登记|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-observable-identity-manysig-m8-r01/report.md)|
 |CVS 已知激励相对响应：完整源实验报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-reference-identity-manysig-m4-r01/report.md)|
+|residual_fusion：纯 clean 与 mid/low urban 增强的六环境冻结测试|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/report.md)|
 |CVS性能优先继续优化：rf_gmp clean测试报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-rf-operator-clean-manysig-m24-r01/report.md)|
 |CVS 受约束射频行为算子|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-rf-operator-identity-manysig-m8-r01/report.md)|
 |CVS 固定身份网络：mid／low urban 拼接增强|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-selected-concat-manysig-m4-r01/report.md)|
