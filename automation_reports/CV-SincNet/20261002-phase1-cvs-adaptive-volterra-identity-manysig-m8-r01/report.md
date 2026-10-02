@@ -71,3 +71,7 @@ RTX3090/Torch2.1/完整FP32。新模型多2个学习参数；Conv/Linear形状�
 [前瞻设计](../../../docs/CVS_ADAPTIVE_VOLTERRA_PHASE_MEMORY_20261002.md) · [预登记](experiment.json) · [全量日志审计](evidence/source_completion_validation.json) · [固定源选择](evidence/source_selection.json) · [独立分析](evidence/source_analysis_validation.json)。
 
 实际源终态 VERIFIED：dispatcher 与8个worker均自然退出，8行各200轮/10000步。源运行commit `db3860587aa6d1c031a9dd9b9226cfc38f51f513`。[终态证据](evidence/final_source_readback.json)。固定源规则选中 `adaptive_volterra_lag4`；选中候选独立clean收尾仍待完成。目标仍未证明完成。
+
+## 默认clean测试收尾已完成
+
+实际冻结候选 `adaptive_volterra_lag4` 的四份新预测与28份原控制统一32行，每行168000物理query；256份混淆矩阵与配对差分独立复算，原224份控制逐字段保持一致。未选候选的测试为N/A，未追加query访问。全部源/预测/scorer进程自然退出，完整产物保留。[独立clean报告](../20261002-phase1-cvs-adaptive-volterra-clean-manysig-m32-r01/report.md)。该轮识别变化见配对报告，整体目标仍须按全部要求证明完成；测试结果仅用于报告，不回流结构、延迟、系数、预算、候选重排或重跑。

@@ -1,0 +1,97 @@
+{
+  "status": "VERIFIED",
+  "candidate": "adaptive_volterra_lag4",
+  "accuracy_mean": 0.6901577380952382,
+  "accuracy_sd": 0.0077147763720602875,
+  "paired_vs_coupled": {
+    "candidate": "adaptive_volterra_lag4",
+    "baseline": "coupled_lag4",
+    "receiver": "ALL",
+    "view": "clean",
+    "model_seeds": [
+      2026092701,
+      2026092702,
+      2026092703,
+      2026092704
+    ],
+    "accuracy_delta_pp_by_seed": [
+      -0.08690476190477137,
+      -0.1898809523809497,
+      0.3773809523809568,
+      -0.25654761904762013
+    ],
+    "accuracy_delta_pp_mean": -0.0389880952380961,
+    "accuracy_delta_pp_seed_sd": 0.28621669616836526,
+    "positive_seeds": 1
+  },
+  "paired_vs_energy": {
+    "candidate": "adaptive_volterra_lag4",
+    "baseline": "energy_equivariant",
+    "receiver": "ALL",
+    "view": "clean",
+    "model_seeds": [
+      2026092701,
+      2026092702,
+      2026092703,
+      2026092704
+    ],
+    "accuracy_delta_pp_by_seed": [
+      -0.730357142857152,
+      -2.4244047619047637,
+      0.6494047619047594,
+      -0.11130952380952186
+    ],
+    "accuracy_delta_pp_mean": -0.6541666666666696,
+    "accuracy_delta_pp_seed_sd": 1.3081208213098552,
+    "positive_seeds": 1
+  },
+  "paired_vs_residual": {
+    "candidate": "adaptive_volterra_lag4",
+    "baseline": "residual_fusion",
+    "receiver": "ALL",
+    "view": "clean",
+    "model_seeds": [
+      2026092701,
+      2026092702,
+      2026092703,
+      2026092704
+    ],
+    "accuracy_delta_pp_by_seed": [
+      -9.913690476190485,
+      -9.350000000000003,
+      -9.93154761904762,
+      -8.55892857142857
+    ],
+    "accuracy_delta_pp_mean": -9.43854166666667,
+    "accuracy_delta_pp_seed_sd": 0.6455953542597738,
+    "positive_seeds": 0
+  },
+  "paired_vs_native": {
+    "candidate": "adaptive_volterra_lag4",
+    "baseline": "native",
+    "receiver": "ALL",
+    "view": "clean",
+    "model_seeds": [
+      2026092701,
+      2026092702,
+      2026092703,
+      2026092704
+    ],
+    "accuracy_delta_pp_by_seed": [
+      -7.305357142857149,
+      -7.857142857142863,
+      -7.112499999999999,
+      -6.570833333333336
+    ],
+    "accuracy_delta_pp_mean": -7.211458333333337,
+    "accuracy_delta_pp_seed_sd": 0.5310111841503392,
+    "positive_seeds": 0
+  },
+  "all256_confusions_recomputed": true,
+  "old224_metrics_exactly_unchanged": true,
+  "all_mean_sd_and_pairs_recomputed": true,
+  "scientific_verdict": "PERFORMANCE_REGRESSION",
+  "genuine_RFF_physics_aware_goal_achieved": false,
+  "physical_scope": "Wholeconstantphase property; delay-balanced complex Volterra phase-memory input; original readout and shared core and two extra CE-trained global residual gates compared with coupled_lag4 control; no whole affine/RX/channel invariance or identified TX parameters",
+  "target_feedback": false
+}

@@ -13,7 +13,7 @@
 |CVS 结构优化：轻量残差融合的 clean 确认报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261001-phase1-cvs-selected-clean-manysig-m20-r01/report.md)|
 |CVS性能优先继续优化：simplex_fixed clean测试报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261001-phase1-cvs-simplex-clean-manysig-m24-r01/report.md)|
 |CVS性能优先继续优化：phase_dsq clean测试报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261001-phase1-cvs-stability-clean-manysig-m24-r01/report.md)|
-|CVS 可学习相位记忆残差：源选候选clean确认预登记|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-adaptive-volterra-clean-manysig-m32-r01/report.md)|
+|CVS 可学习相位记忆残差身份网络：独立 clean 测试报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-adaptive-volterra-clean-manysig-m32-r01/report.md)|
 |CVS 固定参数因果包络耦合身份网络：独立 clean 测试报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-coupled-clean-manysig-m28-r01/report.md)|
 |CVS 相对能量保留身份网络：独立 clean 测试报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-energy-clean-manysig-m24-r01/report.md)|
 |CVS 全路径复相位等变记忆网络：独立 clean 测试报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-equivariant-clean-manysig-m24-r01/report.md)|
