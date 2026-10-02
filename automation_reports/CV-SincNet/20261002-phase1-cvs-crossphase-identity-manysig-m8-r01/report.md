@@ -19,3 +19,7 @@ rho(c,a)=mean(z_c conj(z_a))/sqrt(mean|z_c|²mean|z_a|²+1e-6)。共同常相位
 一个launch owner／独占新输出；每GPU最多2个总训练实验，按实际可用容量发布。保留所有历史产物；不停止、重启或热改其他任务，无低性能停机或自动重试。源指标和合成性质通过均不构成测试提升或原目标完成。
 
 [逐行登记](experiment.json) · [一次preflight](evidence/preflight.json) · [聚焦检查](evidence/local_validation.json) · [本地CPU检查](evidence/local_cpu_smoke.json)。
+
+## 实际发布与启动
+
+状态RUNNING／VERIFIED。发布commit `ded20eebd01f66d1411bc16384cbad0c32029df8`，N607远端CPU验证PASS，独立读回8个实际训练进程、独占输出、GPU0至7及实际source resolved参数，全部已完成至少3轮且日志增长。仅CE、scratch、无增强、identity-only、50步/轮及完整FP32实际生效。此时尚无E200选模或clean结果，不能称性能优化完成。详见[evidence](evidence/running_readback.json)。

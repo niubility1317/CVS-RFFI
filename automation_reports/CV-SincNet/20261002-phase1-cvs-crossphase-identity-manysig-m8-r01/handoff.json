@@ -1,15 +1,14 @@
 {
-  "status": "PLANNED",
+  "status": "RUNNING",
   "run_id": "20261002-phase1-cvs-crossphase-identity-manysig-m8-r01",
   "release": "cvs_crossphase_identity_20261002_r01",
   "goal_scope": "original pureCE/noaugmentation/identityonly/cleanonly;mathcommunicationphysicsRFF structure optimization;performance first",
-  "previous_goal_turn": "Sixscene frozen test delivery changed authoritative evaluation state but did not establish original noaugmentation architecture goal;active goal resumed",
+  "previous_goal_turn": "Sixscene report readback completed; no new architecture performance evidence; resumed original goal",
   "launch_owner": "codex/root/cvs-crossphase-identity-20261002",
   "next": [
-    "Commit and independently verify upstream",
-    "Publish once and read actual processes",
-    "Complete sourceE200/freeze; only new selected candidate receives4clean predictions; retain other24fixedcontrols",
-    "Independent truth-last score and fullreport/Git"
+    "Continue healthy sourceE200",
+    "Recompute fixed source selection from all12 source records",
+    "Only selected new candidate clean test, independent scoring, fullreport/Git"
   ],
   "missing": [
     "Source training",
@@ -17,5 +16,18 @@
     "Conditional clean tests",
     "Final performance verification"
   ],
-  "goal_achieved": false
+  "goal_achieved": false,
+  "commit": "ded20eebd01f66d1411bc16384cbad0c32029df8",
+  "dispatcher_pid": 1618260,
+  "evidence": "evidence/running_readback.json",
+  "last_epochs": {
+    "crossphase_raw-s2026092701": 9,
+    "crossphase_half-s2026092701": 8,
+    "crossphase_raw-s2026092702": 7,
+    "crossphase_half-s2026092702": 6,
+    "crossphase_raw-s2026092703": 6,
+    "crossphase_half-s2026092703": 5,
+    "crossphase_raw-s2026092704": 4,
+    "crossphase_half-s2026092704": 3
+  }
 }

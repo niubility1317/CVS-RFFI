@@ -25,7 +25,7 @@
   "replaces_run_id": null,
   "authorization": "用户授权持续优化基础网络，性能第一，真正 RFF physics aware；普通 CE、无增强、clean-only，每次发布默认完成测试。",
   "code": {
-    "commit": "release_commit.txt records actual committed source runtime",
+    "commit": "ded20eebd01f66d1411bc16384cbad0c32029df8",
     "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_crossphase_identity_20261002_r01",
@@ -182,7 +182,25 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "runtime_evidence": {
+        "status": "RUNNING",
+        "variant": "crossphase_raw",
+        "model_seed": 2026092701,
+        "pid": 1618277,
+        "gpu": 0,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_crossphase_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_crossphase_identity_20261002_r01/experiments/cvs_crossphase_identity/configs/crossphase_raw-s2026092701.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-crossphase-identity-manysig-m8-r01/crossphase_raw-s2026092701.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-crossphase-identity-manysig-m8-r01/crossphase_raw-s2026092701/source",
+        "started": 1790929372.1734746
+      }
     },
     {
       "row_id": "crossphase_half-s2026092701",
@@ -224,7 +242,25 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "runtime_evidence": {
+        "status": "RUNNING",
+        "variant": "crossphase_half",
+        "model_seed": 2026092701,
+        "pid": 1618368,
+        "gpu": 1,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_crossphase_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_crossphase_identity_20261002_r01/experiments/cvs_crossphase_identity/configs/crossphase_half-s2026092701.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-crossphase-identity-manysig-m8-r01/crossphase_half-s2026092701.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-crossphase-identity-manysig-m8-r01/crossphase_half-s2026092701/source",
+        "started": 1790929377.3971949
+      }
     },
     {
       "row_id": "crossphase_raw-s2026092702",
@@ -266,7 +302,25 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "runtime_evidence": {
+        "status": "RUNNING",
+        "variant": "crossphase_raw",
+        "model_seed": 2026092702,
+        "pid": 1618455,
+        "gpu": 2,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_crossphase_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_crossphase_identity_20261002_r01/experiments/cvs_crossphase_identity/configs/crossphase_raw-s2026092702.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-crossphase-identity-manysig-m8-r01/crossphase_raw-s2026092702.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-crossphase-identity-manysig-m8-r01/crossphase_raw-s2026092702/source",
+        "started": 1790929382.6351855
+      }
     },
     {
       "row_id": "crossphase_half-s2026092702",
@@ -308,7 +362,25 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "runtime_evidence": {
+        "status": "RUNNING",
+        "variant": "crossphase_half",
+        "model_seed": 2026092702,
+        "pid": 1618602,
+        "gpu": 3,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_crossphase_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_crossphase_identity_20261002_r01/experiments/cvs_crossphase_identity/configs/crossphase_half-s2026092702.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-crossphase-identity-manysig-m8-r01/crossphase_half-s2026092702.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-crossphase-identity-manysig-m8-r01/crossphase_half-s2026092702/source",
+        "started": 1790929387.8716319
+      }
     },
     {
       "row_id": "crossphase_raw-s2026092703",
@@ -350,7 +422,25 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "runtime_evidence": {
+        "status": "RUNNING",
+        "variant": "crossphase_raw",
+        "model_seed": 2026092703,
+        "pid": 1618691,
+        "gpu": 4,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_crossphase_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_crossphase_identity_20261002_r01/experiments/cvs_crossphase_identity/configs/crossphase_raw-s2026092703.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-crossphase-identity-manysig-m8-r01/crossphase_raw-s2026092703.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-crossphase-identity-manysig-m8-r01/crossphase_raw-s2026092703/source",
+        "started": 1790929393.1121292
+      }
     },
     {
       "row_id": "crossphase_half-s2026092703",
@@ -392,7 +482,25 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "runtime_evidence": {
+        "status": "RUNNING",
+        "variant": "crossphase_half",
+        "model_seed": 2026092703,
+        "pid": 1618778,
+        "gpu": 5,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_crossphase_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_crossphase_identity_20261002_r01/experiments/cvs_crossphase_identity/configs/crossphase_half-s2026092703.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-crossphase-identity-manysig-m8-r01/crossphase_half-s2026092703.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-crossphase-identity-manysig-m8-r01/crossphase_half-s2026092703/source",
+        "started": 1790929398.344824
+      }
     },
     {
       "row_id": "crossphase_raw-s2026092704",
@@ -434,7 +542,25 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "runtime_evidence": {
+        "status": "RUNNING",
+        "variant": "crossphase_raw",
+        "model_seed": 2026092704,
+        "pid": 1619125,
+        "gpu": 6,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_crossphase_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_crossphase_identity_20261002_r01/experiments/cvs_crossphase_identity/configs/crossphase_raw-s2026092704.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-crossphase-identity-manysig-m8-r01/crossphase_raw-s2026092704.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-crossphase-identity-manysig-m8-r01/crossphase_raw-s2026092704/source",
+        "started": 1790929403.5520875
+      }
     },
     {
       "row_id": "crossphase_half-s2026092704",
@@ -476,7 +602,25 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "runtime_evidence": {
+        "status": "RUNNING",
+        "variant": "crossphase_half",
+        "model_seed": 2026092704,
+        "pid": 1619357,
+        "gpu": 7,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_crossphase_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_crossphase_identity_20261002_r01/experiments/cvs_crossphase_identity/configs/crossphase_half-s2026092704.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-crossphase-identity-manysig-m8-r01/crossphase_half-s2026092704.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-crossphase-identity-manysig-m8-r01/crossphase_half-s2026092704/source",
+        "started": 1790929408.773891
+      }
     }
   ],
   "notes": [

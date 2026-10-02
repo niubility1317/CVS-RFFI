@@ -12,6 +12,8 @@ BASELINES=('native','cvcnn','real_cnn','resnet1d')
 CANDIDATES={'orthogonal_pa','moment_pool','orthogonal_moment','shared_complex','residual_fusion','residual_fusion_moment','balanced_fusion','signed_balanced_fusion','tf_lowrank32','tf_bilinear','attentive_mean','attentive_moments','phase_delta','phase_dsq','coherence_phase','coherence_dsq','simplex_learned','simplex_fixed','rf_mp','rf_gmp','observable_phase','observable_affine','gauge_peak','gauge_coherent','reference_response','equivariant_memory','synchronized_equivariant','synchronized_gauge','coordinate_equivariant','coordinate_gauge','additive_equivariant','additive_gauge','fractional_half','fractional_learned','energy_equivariant','energy_half'}
 REUSED_BASELINE_RUN='20261001-phase1-clean-baselines-manysig-m16-r01'
 REUSED_RESIDUAL_RUN='20261001-phase1-cvs-selected-clean-manysig-m20-r01'
+REUSED_ENERGY_RUN='20261002-phase1-cvs-energy-clean-manysig-m24-r01'
+CANDIDATES.update({'crossphase_raw','crossphase_half'})
 
 
 def read(path):return json.loads(Path(path).read_text(encoding='utf-8'))
@@ -37,6 +39,10 @@ def validate_matrix(spec):
         if selection['status']!='SOURCE_SELECTION_FROZEN' or selection['selected_variant'] not in CANDIDATES:
             raise ValueError('No source-only frozen selection')
         variants=(*BASELINES,'residual_fusion',selection['selected_variant']) if selection.get('scope') in ('balanced_source','interaction_source','attentive_source','stability_source','coherence_source','simplex_source','rf_operator_source','observable_source','gauge_source','reference_source','equivariant_source','synchronized_source','coordinate_source','additive_source','fractional_source','energy_source') else (*BASELINES,selection['selected_variant'])
+    if selection.get('scope')=='crossphase_source':
+        if selection['selected_variant'] not in {'crossphase_raw','crossphase_half'} or selection.get('new_candidate_selected') is not True:
+            raise ValueError('Only selected new crossphase candidate can be scored')
+        variants=(*BASELINES,'residual_fusion','energy_equivariant',selection['selected_variant'])
     if selection['target_access'] or selection['target_score_used']:raise ValueError('Target feedback forbidden')
     count=len(variants)*len(SEEDS)
     rows=spec['rows']
@@ -56,14 +62,17 @@ def preflight_predictions(spec):
             original=read(cfg['selection_file']);old_marker=read(root.parents[1]/'scoring_clean_complete.json')
             residual=row['reuse_from_run']==REUSED_RESIDUAL_RUN and row['variant']=='residual_fusion'
             baseline=row['reuse_from_run']==REUSED_BASELINE_RUN and row['variant'] in BASELINES
-            old_run=REUSED_RESIDUAL_RUN if residual else REUSED_BASELINE_RUN
-            models=5 if residual else 4
-            if (not (baseline or residual) or root.parts[-3:]!=(old_run,row['row_id'],'prediction') or
+            energy=row['reuse_from_run']==REUSED_ENERGY_RUN and row['variant']=='energy_equivariant'
+            old_run=REUSED_ENERGY_RUN if energy else REUSED_RESIDUAL_RUN if residual else REUSED_BASELINE_RUN
+            models=6 if energy else 5 if residual else 4
+            if (not (baseline or residual or energy) or root.parts[-3:]!=(old_run,row['row_id'],'prediction') or
                 original['target_access'] or original['target_score_used'] or
                 old_marker['status']!='SCORED_COMPLETE' or old_marker['rows']!=models*4 or old_marker['models']!=models or old_marker['seeds']!=4):
                 raise ValueError('Unauthorized/incomplete frozen reuse;truth remains closed')
             if baseline and (original.get('scope')!='baseline_only' or original['status']!='FIXED_BASELINES_FROZEN' or original['test_variants']!=list(BASELINES) or original['model_seeds']!=sorted(SEEDS)):
                 raise ValueError('Original fixed baseline selection changed')
+            if energy and (original.get('scope')!='energy_source' or original['status']!='SOURCE_SELECTION_FROZEN' or original['selected_variant']!='energy_equivariant'):
+                raise ValueError('Original energy source selection changed')
             if residual and (original.get('scope') in ('baseline_only','balanced_source','interaction_source','attentive_source','stability_source','coherence_source','simplex_source','rf_operator_source','observable_source','gauge_source','reference_source','equivariant_source','synchronized_source','coordinate_source','additive_source','fractional_source','energy_source') or original['status']!='SOURCE_SELECTION_FROZEN' or original['selected_variant']!='residual_fusion'):
                 raise ValueError('Original residual source selection changed')
         flag=read(root/'clean_complete.json');resolved=read(root/'resolved_config.json');provenance=read(root/'provenance.json')
@@ -114,8 +123,12 @@ def score(spec):
     lookup={(r['method'],r['receiver'],r['model_seed']):r for r in results}
     paired=[]
     candidate='native' if selection.get('scope')=='baseline_only' else selection['selected_variant']
+    if selection.get('scope')=='crossphase_source':
+        pair_baselines=(*BASELINES,'residual_fusion','energy_equivariant')
+    else:
+        pair_baselines=(*BASELINES,'residual_fusion') if selection.get('scope') in ('balanced_source','interaction_source','attentive_source','stability_source','coherence_source','simplex_source','rf_operator_source','observable_source','gauge_source','reference_source','equivariant_source','synchronized_source','coordinate_source','additive_source','fractional_source','energy_source') else BASELINES
     for receiver in ['ALL',*sorted(set(receivers))]:
-        for baseline in (*BASELINES,'residual_fusion') if selection.get('scope') in ('balanced_source','interaction_source','attentive_source','stability_source','coherence_source','simplex_source','rf_operator_source','observable_source','gauge_source','reference_source','equivariant_source','synchronized_source','coordinate_source','additive_source','fractional_source','energy_source') else BASELINES:
+        for baseline in pair_baselines:
             if baseline==candidate:continue
             deltas=[100*(lookup[(candidate,receiver,s)]['accuracy']-lookup[(baseline,receiver,s)]['accuracy']) for s in sorted(SEEDS)]
             paired.append(dict(candidate=candidate,baseline=baseline,receiver=receiver,view='clean',model_seeds=sorted(SEEDS),

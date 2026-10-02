@@ -6,4 +6,4 @@
 
 |名称|记录类型|证据入口|
 |---|---|---|
-|CVS 复通道相干读出：固定维度/参数与两个固定相位anchor×四seed纯CE|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-crossphase-identity-manysig-m8-r01/report.md)|
+|CVS 跨复数通道相干读出：源域实验预登记|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-crossphase-identity-manysig-m8-r01/report.md)|
