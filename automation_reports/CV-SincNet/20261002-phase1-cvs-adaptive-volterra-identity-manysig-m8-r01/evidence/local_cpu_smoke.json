@@ -1,0 +1,5541 @@
+{
+  "status": "PASS",
+  "python": "C:\\Users\\lh594\\.conda\\envs\\ssr-gpu\\python.exe",
+  "torch_version": "2.10.0+cu128",
+  "device": "cpu",
+  "disposable_models": 8,
+  "disposable_ce_updates": 24,
+  "formal_data_access": false,
+  "target_access": false,
+  "checkpoint_access": false,
+  "rows": [
+    {
+      "seed": 2026092701,
+      "variant": "adaptive_volterra_lag1",
+      "losses": [
+        {
+          "kind": "random",
+          "ce": 4.649663925170898
+        },
+        {
+          "kind": "weak",
+          "ce": 3.8311960697174072
+        },
+        {
+          "kind": "constant",
+          "ce": 3.724726676940918
+        }
+      ],
+      "contract": {
+        "mode": "adaptive_volterra_lag1",
+        "input": "received_equalized1_unit_rms_IQ",
+        "sample_rate_hz": 25000000,
+        "whole_identity_global_phase_invariant_real_arithmetic": true,
+        "global_phase_equivariant_until_readout": true,
+        "removes_linear_phase": false,
+        "arbitrary_channel_rx_invariant": false,
+        "hardware_parameter_estimation": false,
+        "time_complex_channels": [
+          24,
+          24,
+          32,
+          32
+        ],
+        "time_kernels": [
+          5,
+          5,
+          3
+        ],
+        "time_strides": [
+          2,
+          2,
+          1
+        ],
+        "behavior_orders": [
+          1,
+          3,
+          5
+        ],
+        "behavior_delays": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "radial_clip": 4.0,
+        "order_scale_base": 2.0,
+        "behavior_complex_channels": [
+          12,
+          24,
+          32,
+          32
+        ],
+        "behavior_kernels": [
+          7,
+          5,
+          3
+        ],
+        "behavior_dilations": [
+          1,
+          2,
+          4
+        ],
+        "behavior_causal_filters": true,
+        "per_packet_complex_rms_normalization": true,
+        "complex_bias": false,
+        "radial_gate": "2sigmoid(a*log1p(power)+b)",
+        "invariant_readout": "logpower mean/std,lag1/2 normalized complex correlation,4 positional logpower means",
+        "readout_channels_per_complex_channel": 10,
+        "embedding_dimension": 160,
+        "classifier_scale": 30.0,
+        "original_real_frequency_path_retained": true,
+        "raw_unconstrained_identity_bypass": false,
+        "interpretation": "Received relative filter/polynomial energy is retained by normalization;not recovered TX PA/IQ coefficients or arbitrary RX/channel invariance",
+        "normalization_scope": "one complex power mean across all channels and time per packet per block",
+        "per_channel_sample_dependent_rms_normalization": false,
+        "relative_filter_channel_energy_preserved_by_normalization_only": true,
+        "learned_channel_scales_retained": true,
+        "new_trainable_parameters": 2,
+        "relative_energy_after_gate": "may change through learned radial gate;not fixed",
+        "learned_channel_scales_may_change_energy_ratios": true,
+        "identity_core": "adaptive_volterra_identity",
+        "estimator_window": [
+          80,
+          160
+        ],
+        "estimator_period_samples": 20,
+        "relative_frequency_alias_hz": 1250000,
+        "alignment_strength": 0.0,
+        "alignment_parameters": 0,
+        "alignment_packet_specific": false,
+        "alignment_class_specific": false,
+        "alignment_rx_specific": false,
+        "waveform_operator": "x[n]exp(-j alpha omega n);raw variant returns x exactly",
+        "whole_affine_phase_invariant": false,
+        "alignment_interpretation": "fixed received frequency retention;not TX/RX oscillator proportion",
+        "prototype_only": false,
+        "behavior_input": "lag4 envelope control plus signed tanh-gated delayed cubic residual",
+        "envelope_lag": 4,
+        "actual_envelope_lag": 4,
+        "envelope_average_weights": [
+          0.5,
+          0.5
+        ],
+        "behavior_terms": 12,
+        "original_position_power_readout_retained": true,
+        "no_frequency_correction": true,
+        "full_GMP": false,
+        "hardware_parameter_recovery": false,
+        "phase_lag": 1,
+        "actual_phase_lag": 1,
+        "adaptive_lift_active": true,
+        "mixture_parameter_shape": [
+          2
+        ],
+        "actual_mixture_parameter_shape": [
+          2
+        ],
+        "mixture_initial_raw": [
+          0.0,
+          0.0
+        ],
+        "mixture_rule": "base+tanh(raw)*(proposal-base)",
+        "mixture_scope": "two global identity model parameters trained only by source CE",
+        "mixture_parameter_count": 2,
+        "initial_function": "exact scratch coupled_lag4 function under matching scratch RNG",
+        "cubic_divisor": 4,
+        "cubic_delays": [
+          1,
+          1,
+          2
+        ],
+        "cubic_conjugate_last": true,
+        "lift_affine_phase_covariant": true,
+        "complete_volterra": false
+      },
+      "frozen_synthetic": {
+        "status": "FROZEN_SYNTHETIC_DIAGNOSTIC_COMPLETE",
+        "synthetic_only": true,
+        "training_augmentation": false,
+        "formal_data_access": false,
+        "target_access": false,
+        "model_updated": false,
+        "hardware_parameter_recovery": false,
+        "normalization": {
+          "scope": "Actual conv outputs and one shared normalization gain only;learned scales/gates excluded;not TX/RX causal separation",
+          "records": [
+            {
+              "block": "time.0",
+              "eligible_packets": 30,
+              "relative_energy_fraction_max_error": 3.725290298461914e-08,
+              "relative_energy_fraction_variance_mean": 0.00039335936889983714
+            },
+            {
+              "block": "time.1",
+              "eligible_packets": 30,
+              "relative_energy_fraction_max_error": 2.2351741790771484e-08,
+              "relative_energy_fraction_variance_mean": 0.0003445542242843658
+            },
+            {
+              "block": "time.2",
+              "eligible_packets": 30,
+              "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+              "relative_energy_fraction_variance_mean": 0.00019354077812749892
+            },
+            {
+              "block": "behavior.0",
+              "eligible_packets": 30,
+              "relative_energy_fraction_max_error": 1.862645149230957e-08,
+              "relative_energy_fraction_variance_mean": 9.83714489848353e-05
+            },
+            {
+              "block": "behavior.1",
+              "eligible_packets": 30,
+              "relative_energy_fraction_max_error": 2.2351741790771484e-08,
+              "relative_energy_fraction_variance_mean": 0.0003100106550846249
+            },
+            {
+              "block": "behavior.2",
+              "eligible_packets": 30,
+              "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+              "relative_energy_fraction_variance_mean": 0.0002099036064464599
+            }
+          ],
+          "blocks": 6
+        },
+        "adaptive_input": {
+          "scope": "Actual adaptive input versus lag4 control; source/public IQ only; not identified TX hardware",
+          "active": true,
+          "raw_parameters": [
+            0.0004378928861115128,
+            -0.0004376053693704307
+          ],
+          "coefficients": [
+            0.0004378928570076823,
+            -0.00043760534026660025
+          ],
+          "records": [
+            {
+              "block": "behavior.0.conv",
+              "packets": 30,
+              "complex_terms": 12,
+              "actual_phase_lag": 1,
+              "actual_envelope_lag": 4,
+              "input_formula_max_abs_error": 0.0,
+              "input_abs_max": 1.2937272787094116,
+              "degree3_relative_input_change_mean": 0.00043734462815336883,
+              "degree5_relative_input_change_mean": 0.0004059926432091743
+            }
+          ]
+        },
+        "alignment_strength": 0.0,
+        "phase_audit": [
+          {
+            "theta_radians": 0.37,
+            "received_cfo_hz": 0.0,
+            "whole_logit_max_abs_error": 7.748603820800781e-06,
+            "whole_unit_embedding_max_distance": 2.4889827727747615e-06,
+            "estimated_cfo_principal_branch_crossing_count": 0,
+            "valid_correlation_count": 30,
+            "covariance_eligible_count": 30,
+            "partial_waveform_covariance_max_error": 0.0
+          },
+          {
+            "theta_radians": -1.2,
+            "received_cfo_hz": 80000.0,
+            "whole_logit_max_abs_error": 1.4081844091415405,
+            "whole_unit_embedding_max_distance": 0.3455665409564972,
+            "estimated_cfo_principal_branch_crossing_count": 0,
+            "valid_correlation_count": 30,
+            "covariance_eligible_count": 30,
+            "partial_waveform_covariance_max_error": 0.0
+          },
+          {
+            "theta_radians": 2.9,
+            "received_cfo_hz": -80000.0,
+            "whole_logit_max_abs_error": 0.9746720790863037,
+            "whole_unit_embedding_max_distance": 0.2388637810945511,
+            "estimated_cfo_principal_branch_crossing_count": 0,
+            "valid_correlation_count": 30,
+            "covariance_eligible_count": 30,
+            "partial_waveform_covariance_max_error": 0.0
+          }
+        ],
+        "phase_numeric_tolerance": 0.001,
+        "phase_tolerance_scope": "Report only;not ranking or stopping",
+        "phase_tolerance_pass": true,
+        "whole_affine_phase_invariant_claim": false,
+        "coordinate_reconstruction_max_error": 0.0,
+        "sample_amplitude_max_error": 0.0,
+        "synchronizer": {
+          "relative_cfo_hz_mean": 13333.33203125,
+          "relative_cfo_hz_min": 0.0,
+          "relative_cfo_hz_max": 79999.9921875,
+          "coherence_mean": 1.0,
+          "fallback_fraction": 0.0,
+          "principal_branch_margin_hz_min": 545000.0,
+          "scope": "Last source batch only;relative CFO modulo1.25MHz;not TX oscillator measurement"
+        },
+        "records": [
+          {
+            "tx": "ideal",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              -2.2103896141052246,
+              -1.049654245376587,
+              -0.7982907891273499,
+              -2.738497018814087,
+              -0.7341251969337463,
+              -2.3529324531555176
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 6.415257303160615e-07,
+            "source_classifier_logits": [
+              -2.2103898525238037,
+              -1.0496546030044556,
+              -0.7982890605926514,
+              -2.7385003566741943,
+              -0.7341262102127075,
+              -2.3529324531555176
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.2355974167585373,
+            "source_classifier_logits": [
+              -2.224590301513672,
+              -0.7314221262931824,
+              -0.7449471354484558,
+              -3.709261894226074,
+              -0.9808154106140137,
+              -1.7845032215118408
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.07534240186214447,
+            "source_classifier_logits": [
+              -1.9713250398635864,
+              -1.2109460830688477,
+              -0.6037850379943848,
+              -2.834144353866577,
+              -0.5740878582000732,
+              -2.4780166149139404
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.02858613431453705,
+            "source_classifier_logits": [
+              -2.127779722213745,
+              -1.131661057472229,
+              -0.799686849117279,
+              -2.789238691329956,
+              -0.7665646076202393,
+              -2.422027587890625
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.007337648421525955,
+            "source_classifier_logits": [
+              -2.197122812271118,
+              -1.0584965944290161,
+              -0.7839170694351196,
+              -2.74063777923584,
+              -0.7076126337051392,
+              -2.3536503314971924
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              -2.1971232891082764,
+              -1.0584969520568848,
+              -0.7839171886444092,
+              -2.74063777923584,
+              -0.7076127529144287,
+              -2.3536505699157715
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 7.438607667609176e-07,
+            "source_classifier_logits": [
+              -2.1971237659454346,
+              -1.0584957599639893,
+              -0.783916711807251,
+              -2.740635633468628,
+              -0.7076119184494019,
+              -2.353649616241455
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.23428981006145477,
+            "source_classifier_logits": [
+              -2.2228736877441406,
+              -0.7263823747634888,
+              -0.7467296719551086,
+              -3.701435089111328,
+              -0.962154746055603,
+              -1.773836612701416
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.07137349992990494,
+            "source_classifier_logits": [
+              -1.9732940196990967,
+              -1.2001539468765259,
+              -0.6002556681632996,
+              -2.8180770874023438,
+              -0.5602439641952515,
+              -2.4785704612731934
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.024660037830471992,
+            "source_classifier_logits": [
+              -2.124199628829956,
+              -1.1276719570159912,
+              -0.7899063229560852,
+              -2.784317970275879,
+              -0.7451041340827942,
+              -2.4189469814300537
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.00587743055075407,
+            "source_classifier_logits": [
+              -2.184760093688965,
+              -1.0607341527938843,
+              -0.7738639116287231,
+              -2.745715856552124,
+              -0.6793875098228455,
+              -2.35660457611084
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              -2.2182905673980713,
+              -1.0462877750396729,
+              -0.7928518652915955,
+              -2.732083320617676,
+              -0.7434644103050232,
+              -2.3455650806427
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 5.249104333415744e-07,
+            "source_classifier_logits": [
+              -2.2182891368865967,
+              -1.0462875366210938,
+              -0.7928493022918701,
+              -2.732083559036255,
+              -0.7434631586074829,
+              -2.345564842224121
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.23618638515472412,
+            "source_classifier_logits": [
+              -2.2343177795410156,
+              -0.7319076657295227,
+              -0.7402522563934326,
+              -3.7067549228668213,
+              -0.9858465790748596,
+              -1.7865676879882812
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.07845082134008408,
+            "source_classifier_logits": [
+              -1.9738736152648926,
+              -1.2232427597045898,
+              -0.594389021396637,
+              -2.8488926887512207,
+              -0.5697509050369263,
+              -2.4770829677581787
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.03170909360051155,
+            "source_classifier_logits": [
+              -2.1223161220550537,
+              -1.130473256111145,
+              -0.8030847907066345,
+              -2.7933480739593506,
+              -0.7685282230377197,
+              -2.425694227218628
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.009059503674507141,
+            "source_classifier_logits": [
+              -2.2014193534851074,
+              -1.0589896440505981,
+              -0.7793876528739929,
+              -2.737490653991699,
+              -0.7135610580444336,
+              -2.348848342895508
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              -2.127779722213745,
+              -1.131661057472229,
+              -0.799686849117279,
+              -2.789238691329956,
+              -0.7665646076202393,
+              -2.422027587890625
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 7.721100132584979e-07,
+            "source_classifier_logits": [
+              -2.1277801990509033,
+              -1.1316618919372559,
+              -0.7996853590011597,
+              -2.789238929748535,
+              -0.7665659189224243,
+              -2.422030448913574
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.23886360228061676,
+            "source_classifier_logits": [
+              -2.212996482849121,
+              -0.6032957434654236,
+              -0.7522836923599243,
+              -3.6627306938171387,
+              -0.9086085557937622,
+              -1.7349138259887695
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.06292114406824112,
+            "source_classifier_logits": [
+              -1.907936453819275,
+              -1.2475301027297974,
+              -0.5976604223251343,
+              -2.860057830810547,
+              -0.58953458070755,
+              -2.531538486480713
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.019654618576169014,
+            "source_classifier_logits": [
+              -2.074213981628418,
+              -1.1648274660110474,
+              -0.8117395639419556,
+              -2.8113574981689453,
+              -0.8128405213356018,
+              -2.493297815322876
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0046201483346521854,
+            "source_classifier_logits": [
+              -2.128664493560791,
+              -1.126956582069397,
+              -0.7889742255210876,
+              -2.7829482555389404,
+              -0.744240403175354,
+              -2.4151763916015625
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              -2.225703001022339,
+              -1.1145647764205933,
+              -0.803360641002655,
+              -2.776564359664917,
+              -0.7106411457061768,
+              -2.398535966873169
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 7.403812674056098e-07,
+            "source_classifier_logits": [
+              -2.2257015705108643,
+              -1.114562749862671,
+              -0.8033608794212341,
+              -2.7765657901763916,
+              -0.7106414437294006,
+              -2.3985366821289062
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.2331332564353943,
+            "source_classifier_logits": [
+              -2.1905219554901123,
+              -0.7911038994789124,
+              -0.7404381036758423,
+              -3.686638116836548,
+              -1.0046765804290771,
+              -1.8208836317062378
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.07727152109146118,
+            "source_classifier_logits": [
+              -1.9798506498336792,
+              -1.3205279111862183,
+              -0.5475522875785828,
+              -2.875369071960449,
+              -0.5404050946235657,
+              -2.495422124862671
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.027982963249087334,
+            "source_classifier_logits": [
+              -2.1299889087677,
+              -1.1851378679275513,
+              -0.8218172192573547,
+              -2.8298215866088867,
+              -0.7419627904891968,
+              -2.4746692180633545
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0056552705354988575,
+            "source_classifier_logits": [
+              -2.211491107940674,
+              -1.1105726957321167,
+              -0.8016173839569092,
+              -2.766450881958008,
+              -0.690025806427002,
+              -2.402744770050049
+            ]
+          }
+        ],
+        "isolated_tx_changes": [
+          {
+            "tx": "tx_am_am",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.007337648421525955
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.00343374814838171
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.02858613431453705
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.014122836291790009
+          }
+        ],
+        "confounds": {
+          "iq_tx_rx_waveform_max_error": 0.0,
+          "cubic_tx_rx_waveform_max_error": 3.3306690738754696e-16
+        },
+        "simulated_chain": "Existing100Msps steadyLSTF TX->channel->RX->12toneprojection->25Msps relativeCFO/RMS",
+        "exact_wisig_equalizer": false,
+        "identity_accuracy": "N/A:public TX settings are not actual source identity labels",
+        "claim": "Whole constantphase property and partial waveform frequency covariance when valid/no branch crossing;alpha is not TX/RX oscillator fraction;no arbitraryRX/LTI invariance"
+      }
+    },
+    {
+      "seed": 2026092701,
+      "variant": "adaptive_volterra_lag4",
+      "losses": [
+        {
+          "kind": "random",
+          "ce": 4.649663925170898
+        },
+        {
+          "kind": "weak",
+          "ce": 3.8311960697174072
+        },
+        {
+          "kind": "constant",
+          "ce": 3.724726676940918
+        }
+      ],
+      "contract": {
+        "mode": "adaptive_volterra_lag4",
+        "input": "received_equalized1_unit_rms_IQ",
+        "sample_rate_hz": 25000000,
+        "whole_identity_global_phase_invariant_real_arithmetic": true,
+        "global_phase_equivariant_until_readout": true,
+        "removes_linear_phase": false,
+        "arbitrary_channel_rx_invariant": false,
+        "hardware_parameter_estimation": false,
+        "time_complex_channels": [
+          24,
+          24,
+          32,
+          32
+        ],
+        "time_kernels": [
+          5,
+          5,
+          3
+        ],
+        "time_strides": [
+          2,
+          2,
+          1
+        ],
+        "behavior_orders": [
+          1,
+          3,
+          5
+        ],
+        "behavior_delays": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "radial_clip": 4.0,
+        "order_scale_base": 2.0,
+        "behavior_complex_channels": [
+          12,
+          24,
+          32,
+          32
+        ],
+        "behavior_kernels": [
+          7,
+          5,
+          3
+        ],
+        "behavior_dilations": [
+          1,
+          2,
+          4
+        ],
+        "behavior_causal_filters": true,
+        "per_packet_complex_rms_normalization": true,
+        "complex_bias": false,
+        "radial_gate": "2sigmoid(a*log1p(power)+b)",
+        "invariant_readout": "logpower mean/std,lag1/2 normalized complex correlation,4 positional logpower means",
+        "readout_channels_per_complex_channel": 10,
+        "embedding_dimension": 160,
+        "classifier_scale": 30.0,
+        "original_real_frequency_path_retained": true,
+        "raw_unconstrained_identity_bypass": false,
+        "interpretation": "Received relative filter/polynomial energy is retained by normalization;not recovered TX PA/IQ coefficients or arbitrary RX/channel invariance",
+        "normalization_scope": "one complex power mean across all channels and time per packet per block",
+        "per_channel_sample_dependent_rms_normalization": false,
+        "relative_filter_channel_energy_preserved_by_normalization_only": true,
+        "learned_channel_scales_retained": true,
+        "new_trainable_parameters": 2,
+        "relative_energy_after_gate": "may change through learned radial gate;not fixed",
+        "learned_channel_scales_may_change_energy_ratios": true,
+        "identity_core": "adaptive_volterra_identity",
+        "estimator_window": [
+          80,
+          160
+        ],
+        "estimator_period_samples": 20,
+        "relative_frequency_alias_hz": 1250000,
+        "alignment_strength": 0.0,
+        "alignment_parameters": 0,
+        "alignment_packet_specific": false,
+        "alignment_class_specific": false,
+        "alignment_rx_specific": false,
+        "waveform_operator": "x[n]exp(-j alpha omega n);raw variant returns x exactly",
+        "whole_affine_phase_invariant": false,
+        "alignment_interpretation": "fixed received frequency retention;not TX/RX oscillator proportion",
+        "prototype_only": false,
+        "behavior_input": "lag4 envelope control plus signed tanh-gated delayed cubic residual",
+        "envelope_lag": 4,
+        "actual_envelope_lag": 4,
+        "envelope_average_weights": [
+          0.5,
+          0.5
+        ],
+        "behavior_terms": 12,
+        "original_position_power_readout_retained": true,
+        "no_frequency_correction": true,
+        "full_GMP": false,
+        "hardware_parameter_recovery": false,
+        "phase_lag": 4,
+        "actual_phase_lag": 4,
+        "adaptive_lift_active": true,
+        "mixture_parameter_shape": [
+          2
+        ],
+        "actual_mixture_parameter_shape": [
+          2
+        ],
+        "mixture_initial_raw": [
+          0.0,
+          0.0
+        ],
+        "mixture_rule": "base+tanh(raw)*(proposal-base)",
+        "mixture_scope": "two global identity model parameters trained only by source CE",
+        "mixture_parameter_count": 2,
+        "initial_function": "exact scratch coupled_lag4 function under matching scratch RNG",
+        "cubic_divisor": 4,
+        "cubic_delays": [
+          4,
+          4,
+          8
+        ],
+        "cubic_conjugate_last": true,
+        "lift_affine_phase_covariant": true,
+        "complete_volterra": false
+      },
+      "frozen_synthetic": {
+        "status": "FROZEN_SYNTHETIC_DIAGNOSTIC_COMPLETE",
+        "synthetic_only": true,
+        "training_augmentation": false,
+        "formal_data_access": false,
+        "target_access": false,
+        "model_updated": false,
+        "hardware_parameter_recovery": false,
+        "normalization": {
+          "scope": "Actual conv outputs and one shared normalization gain only;learned scales/gates excluded;not TX/RX causal separation",
+          "records": [
+            {
+              "block": "time.0",
+              "eligible_packets": 30,
+              "relative_energy_fraction_max_error": 3.725290298461914e-08,
+              "relative_energy_fraction_variance_mean": 0.00039335936889983714
+            },
+            {
+              "block": "time.1",
+              "eligible_packets": 30,
+              "relative_energy_fraction_max_error": 2.2351741790771484e-08,
+              "relative_energy_fraction_variance_mean": 0.0003445542242843658
+            },
+            {
+              "block": "time.2",
+              "eligible_packets": 30,
+              "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+              "relative_energy_fraction_variance_mean": 0.00019354077812749892
+            },
+            {
+              "block": "behavior.0",
+              "eligible_packets": 30,
+              "relative_energy_fraction_max_error": 1.862645149230957e-08,
+              "relative_energy_fraction_variance_mean": 9.837794641498476e-05
+            },
+            {
+              "block": "behavior.1",
+              "eligible_packets": 30,
+              "relative_energy_fraction_max_error": 2.2351741790771484e-08,
+              "relative_energy_fraction_variance_mean": 0.00030995404813438654
+            },
+            {
+              "block": "behavior.2",
+              "eligible_packets": 30,
+              "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+              "relative_energy_fraction_variance_mean": 0.00020990311168134212
+            }
+          ],
+          "blocks": 6
+        },
+        "adaptive_input": {
+          "scope": "Actual adaptive input versus lag4 control; source/public IQ only; not identified TX hardware",
+          "active": true,
+          "raw_parameters": [
+            0.00043700268724933267,
+            -0.000436650327173993
+          ],
+          "coefficients": [
+            0.0004370026581455022,
+            -0.00043665029807016253
+          ],
+          "records": [
+            {
+              "block": "behavior.0.conv",
+              "packets": 30,
+              "complex_terms": 12,
+              "actual_phase_lag": 4,
+              "actual_envelope_lag": 4,
+              "input_formula_max_abs_error": 0.0,
+              "input_abs_max": 1.2937272787094116,
+              "degree3_relative_input_change_mean": 0.0007060536299832165,
+              "degree5_relative_input_change_mean": 0.0007228024769574404
+            }
+          ]
+        },
+        "alignment_strength": 0.0,
+        "phase_audit": [
+          {
+            "theta_radians": 0.37,
+            "received_cfo_hz": 0.0,
+            "whole_logit_max_abs_error": 6.794929504394531e-06,
+            "whole_unit_embedding_max_distance": 2.479728664184222e-06,
+            "estimated_cfo_principal_branch_crossing_count": 0,
+            "valid_correlation_count": 30,
+            "covariance_eligible_count": 30,
+            "partial_waveform_covariance_max_error": 0.0
+          },
+          {
+            "theta_radians": -1.2,
+            "received_cfo_hz": 80000.0,
+            "whole_logit_max_abs_error": 1.408233642578125,
+            "whole_unit_embedding_max_distance": 0.34556883573532104,
+            "estimated_cfo_principal_branch_crossing_count": 0,
+            "valid_correlation_count": 30,
+            "covariance_eligible_count": 30,
+            "partial_waveform_covariance_max_error": 0.0
+          },
+          {
+            "theta_radians": 2.9,
+            "received_cfo_hz": -80000.0,
+            "whole_logit_max_abs_error": 0.9746930599212646,
+            "whole_unit_embedding_max_distance": 0.2388659417629242,
+            "estimated_cfo_principal_branch_crossing_count": 0,
+            "valid_correlation_count": 30,
+            "covariance_eligible_count": 30,
+            "partial_waveform_covariance_max_error": 0.0
+          }
+        ],
+        "phase_numeric_tolerance": 0.001,
+        "phase_tolerance_scope": "Report only;not ranking or stopping",
+        "phase_tolerance_pass": true,
+        "whole_affine_phase_invariant_claim": false,
+        "coordinate_reconstruction_max_error": 0.0,
+        "sample_amplitude_max_error": 0.0,
+        "synchronizer": {
+          "relative_cfo_hz_mean": 13333.33203125,
+          "relative_cfo_hz_min": 0.0,
+          "relative_cfo_hz_max": 79999.9921875,
+          "coherence_mean": 1.0,
+          "fallback_fraction": 0.0,
+          "principal_branch_margin_hz_min": 545000.0,
+          "scope": "Last source batch only;relative CFO modulo1.25MHz;not TX oscillator measurement"
+        },
+        "records": [
+          {
+            "tx": "ideal",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              -2.2104101181030273,
+              -1.0496680736541748,
+              -0.7983075380325317,
+              -2.738487958908081,
+              -0.7342408895492554,
+              -2.352978467941284
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 6.726177730342897e-07,
+            "source_classifier_logits": [
+              -2.2104105949401855,
+              -1.0496689081192017,
+              -0.7983043193817139,
+              -2.7384889125823975,
+              -0.7342410087585449,
+              -2.3529787063598633
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.23559942841529846,
+            "source_classifier_logits": [
+              -2.224576234817505,
+              -0.7314240336418152,
+              -0.7450287938117981,
+              -3.7092747688293457,
+              -0.9809542298316956,
+              -1.7845929861068726
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.07534201443195343,
+            "source_classifier_logits": [
+              -1.9713475704193115,
+              -1.210981011390686,
+              -0.603784441947937,
+              -2.834149122238159,
+              -0.5741876363754272,
+              -2.47807240486145
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.028585465624928474,
+            "source_classifier_logits": [
+              -2.1278209686279297,
+              -1.1316665410995483,
+              -0.7996957898139954,
+              -2.78922700881958,
+              -0.7666758298873901,
+              -2.4220759868621826
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.00733772711828351,
+            "source_classifier_logits": [
+              -2.197144031524658,
+              -1.0585120916366577,
+              -0.7839345335960388,
+              -2.740626811981201,
+              -0.7077265977859497,
+              -2.3536972999572754
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              -2.197144031524658,
+              -1.0585124492645264,
+              -0.7839345335960388,
+              -2.740626096725464,
+              -0.707726776599884,
+              -2.3536972999572754
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 7.790474114699464e-07,
+            "source_classifier_logits": [
+              -2.19714617729187,
+              -1.0585103034973145,
+              -0.7839345932006836,
+              -2.7406253814697266,
+              -0.707726001739502,
+              -2.353695869445801
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.23429186642169952,
+            "source_classifier_logits": [
+              -2.22286057472229,
+              -0.7263853549957275,
+              -0.7468113899230957,
+              -3.701449155807495,
+              -0.9622936844825745,
+              -1.7739261388778687
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.07137314230203629,
+            "source_classifier_logits": [
+              -1.973311424255371,
+              -1.2001863718032837,
+              -0.6002557873725891,
+              -2.8180947303771973,
+              -0.5603440999984741,
+              -2.4786126613616943
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.024659406393766403,
+            "source_classifier_logits": [
+              -2.124242067337036,
+              -1.1276777982711792,
+              -0.789914608001709,
+              -2.7843055725097656,
+              -0.7452146410942078,
+              -2.418994665145874
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.005877415183931589,
+            "source_classifier_logits": [
+              -2.184770345687866,
+              -1.0607483386993408,
+              -0.7738674879074097,
+              -2.7457075119018555,
+              -0.679499626159668,
+              -2.356637954711914
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              -2.218310594558716,
+              -1.0463001728057861,
+              -0.7928681969642639,
+              -2.732074022293091,
+              -0.7435789704322815,
+              -2.345609664916992
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 5.436813808046281e-07,
+            "source_classifier_logits": [
+              -2.2183101177215576,
+              -1.0463018417358398,
+              -0.7928661704063416,
+              -2.7320735454559326,
+              -0.7435780167579651,
+              -2.345608949661255
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.2361883670091629,
+            "source_classifier_logits": [
+              -2.2343034744262695,
+              -0.731910228729248,
+              -0.7403356432914734,
+              -3.7067677974700928,
+              -0.9859858751296997,
+              -1.7866559028625488
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.07845047861337662,
+            "source_classifier_logits": [
+              -1.97389554977417,
+              -1.2232773303985596,
+              -0.5943875908851624,
+              -2.8488974571228027,
+              -0.5698488354682922,
+              -2.477138042449951
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.03170941770076752,
+            "source_classifier_logits": [
+              -2.1223466396331787,
+              -1.1304899454116821,
+              -0.8031019568443298,
+              -2.7933316230773926,
+              -0.7686347961425781,
+              -2.425750732421875
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.009059526026248932,
+            "source_classifier_logits": [
+              -2.201439619064331,
+              -1.0590035915374756,
+              -0.7794039845466614,
+              -2.7374820709228516,
+              -0.7136749029159546,
+              -2.3488917350769043
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              -2.1278209686279297,
+              -1.1316665410995483,
+              -0.7996957898139954,
+              -2.78922700881958,
+              -0.7666758298873901,
+              -2.4220759868621826
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 7.637876819899247e-07,
+            "source_classifier_logits": [
+              -2.127822160720825,
+              -1.1316664218902588,
+              -0.7996952533721924,
+              -2.7892260551452637,
+              -0.7666751146316528,
+              -2.4220781326293945
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.23886573314666748,
+            "source_classifier_logits": [
+              -2.2129838466644287,
+              -0.6032955050468445,
+              -0.7523619532585144,
+              -3.662752151489258,
+              -0.9087409973144531,
+              -1.7350038290023804
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.06292080879211426,
+            "source_classifier_logits": [
+              -1.9079748392105103,
+              -1.2475600242614746,
+              -0.5976499319076538,
+              -2.860069751739502,
+              -0.5896238088607788,
+              -2.53159499168396
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.01965491659939289,
+            "source_classifier_logits": [
+              -2.07425594329834,
+              -1.1648328304290771,
+              -0.8117485642433167,
+              -2.8113479614257812,
+              -0.8129414916038513,
+              -2.493346691131592
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.004620214458554983,
+            "source_classifier_logits": [
+              -2.1287055015563965,
+              -1.1269627809524536,
+              -0.7889817357063293,
+              -2.7829365730285645,
+              -0.7443515062332153,
+              -2.4152233600616455
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              -2.2257277965545654,
+              -1.1145806312561035,
+              -0.8033795952796936,
+              -2.7765603065490723,
+              -0.7107647657394409,
+              -2.398581027984619
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 7.174375582508219e-07,
+            "source_classifier_logits": [
+              -2.2257275581359863,
+              -1.114579677581787,
+              -0.8033795356750488,
+              -2.776561975479126,
+              -0.71076500415802,
+              -2.398581027984619
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.23313520848751068,
+            "source_classifier_logits": [
+              -2.1905155181884766,
+              -0.7910962104797363,
+              -0.7405112385749817,
+              -3.686664581298828,
+              -1.0048235654830933,
+              -1.820965051651001
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.07727114111185074,
+            "source_classifier_logits": [
+              -1.9798685312271118,
+              -1.3205612897872925,
+              -0.5475530624389648,
+              -2.8753955364227295,
+              -0.5405133962631226,
+              -2.495464324951172
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.02798321098089218,
+            "source_classifier_logits": [
+              -2.1300227642059326,
+              -1.185155987739563,
+              -0.8218367695808411,
+              -2.8298096656799316,
+              -0.742077648639679,
+              -2.474724769592285
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.00565533060580492,
+            "source_classifier_logits": [
+              -2.2115187644958496,
+              -1.1105895042419434,
+              -0.8016371130943298,
+              -2.766446590423584,
+              -0.6901489496231079,
+              -2.40278959274292
+            ]
+          }
+        ],
+        "isolated_tx_changes": [
+          {
+            "tx": "tx_am_am",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.00733772711828351
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.003433811943978071
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.028585465624928474
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.01412289496511221
+          }
+        ],
+        "confounds": {
+          "iq_tx_rx_waveform_max_error": 0.0,
+          "cubic_tx_rx_waveform_max_error": 3.3306690738754696e-16
+        },
+        "simulated_chain": "Existing100Msps steadyLSTF TX->channel->RX->12toneprojection->25Msps relativeCFO/RMS",
+        "exact_wisig_equalizer": false,
+        "identity_accuracy": "N/A:public TX settings are not actual source identity labels",
+        "claim": "Whole constantphase property and partial waveform frequency covariance when valid/no branch crossing;alpha is not TX/RX oscillator fraction;no arbitraryRX/LTI invariance"
+      }
+    },
+    {
+      "seed": 2026092702,
+      "variant": "adaptive_volterra_lag1",
+      "losses": [
+        {
+          "kind": "random",
+          "ce": 3.7792043685913086
+        },
+        {
+          "kind": "weak",
+          "ce": 4.041120529174805
+        },
+        {
+          "kind": "constant",
+          "ce": 2.8093152046203613
+        }
+      ],
+      "contract": {
+        "mode": "adaptive_volterra_lag1",
+        "input": "received_equalized1_unit_rms_IQ",
+        "sample_rate_hz": 25000000,
+        "whole_identity_global_phase_invariant_real_arithmetic": true,
+        "global_phase_equivariant_until_readout": true,
+        "removes_linear_phase": false,
+        "arbitrary_channel_rx_invariant": false,
+        "hardware_parameter_estimation": false,
+        "time_complex_channels": [
+          24,
+          24,
+          32,
+          32
+        ],
+        "time_kernels": [
+          5,
+          5,
+          3
+        ],
+        "time_strides": [
+          2,
+          2,
+          1
+        ],
+        "behavior_orders": [
+          1,
+          3,
+          5
+        ],
+        "behavior_delays": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "radial_clip": 4.0,
+        "order_scale_base": 2.0,
+        "behavior_complex_channels": [
+          12,
+          24,
+          32,
+          32
+        ],
+        "behavior_kernels": [
+          7,
+          5,
+          3
+        ],
+        "behavior_dilations": [
+          1,
+          2,
+          4
+        ],
+        "behavior_causal_filters": true,
+        "per_packet_complex_rms_normalization": true,
+        "complex_bias": false,
+        "radial_gate": "2sigmoid(a*log1p(power)+b)",
+        "invariant_readout": "logpower mean/std,lag1/2 normalized complex correlation,4 positional logpower means",
+        "readout_channels_per_complex_channel": 10,
+        "embedding_dimension": 160,
+        "classifier_scale": 30.0,
+        "original_real_frequency_path_retained": true,
+        "raw_unconstrained_identity_bypass": false,
+        "interpretation": "Received relative filter/polynomial energy is retained by normalization;not recovered TX PA/IQ coefficients or arbitrary RX/channel invariance",
+        "normalization_scope": "one complex power mean across all channels and time per packet per block",
+        "per_channel_sample_dependent_rms_normalization": false,
+        "relative_filter_channel_energy_preserved_by_normalization_only": true,
+        "learned_channel_scales_retained": true,
+        "new_trainable_parameters": 2,
+        "relative_energy_after_gate": "may change through learned radial gate;not fixed",
+        "learned_channel_scales_may_change_energy_ratios": true,
+        "identity_core": "adaptive_volterra_identity",
+        "estimator_window": [
+          80,
+          160
+        ],
+        "estimator_period_samples": 20,
+        "relative_frequency_alias_hz": 1250000,
+        "alignment_strength": 0.0,
+        "alignment_parameters": 0,
+        "alignment_packet_specific": false,
+        "alignment_class_specific": false,
+        "alignment_rx_specific": false,
+        "waveform_operator": "x[n]exp(-j alpha omega n);raw variant returns x exactly",
+        "whole_affine_phase_invariant": false,
+        "alignment_interpretation": "fixed received frequency retention;not TX/RX oscillator proportion",
+        "prototype_only": false,
+        "behavior_input": "lag4 envelope control plus signed tanh-gated delayed cubic residual",
+        "envelope_lag": 4,
+        "actual_envelope_lag": 4,
+        "envelope_average_weights": [
+          0.5,
+          0.5
+        ],
+        "behavior_terms": 12,
+        "original_position_power_readout_retained": true,
+        "no_frequency_correction": true,
+        "full_GMP": false,
+        "hardware_parameter_recovery": false,
+        "phase_lag": 1,
+        "actual_phase_lag": 1,
+        "adaptive_lift_active": true,
+        "mixture_parameter_shape": [
+          2
+        ],
+        "actual_mixture_parameter_shape": [
+          2
+        ],
+        "mixture_initial_raw": [
+          0.0,
+          0.0
+        ],
+        "mixture_rule": "base+tanh(raw)*(proposal-base)",
+        "mixture_scope": "two global identity model parameters trained only by source CE",
+        "mixture_parameter_count": 2,
+        "initial_function": "exact scratch coupled_lag4 function under matching scratch RNG",
+        "cubic_divisor": 4,
+        "cubic_delays": [
+          1,
+          1,
+          2
+        ],
+        "cubic_conjugate_last": true,
+        "lift_affine_phase_covariant": true,
+        "complete_volterra": false
+      },
+      "frozen_synthetic": {
+        "status": "FROZEN_SYNTHETIC_DIAGNOSTIC_COMPLETE",
+        "synthetic_only": true,
+        "training_augmentation": false,
+        "formal_data_access": false,
+        "target_access": false,
+        "model_updated": false,
+        "hardware_parameter_recovery": false,
+        "normalization": {
+          "scope": "Actual conv outputs and one shared normalization gain only;learned scales/gates excluded;not TX/RX causal separation",
+          "records": [
+            {
+              "block": "time.0",
+              "eligible_packets": 30,
+              "relative_energy_fraction_max_error": 1.862645149230957e-08,
+              "relative_energy_fraction_variance_mean": 0.00039680994814261794
+            },
+            {
+              "block": "time.1",
+              "eligible_packets": 30,
+              "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+              "relative_energy_fraction_variance_mean": 0.00037432878161780536
+            },
+            {
+              "block": "time.2",
+              "eligible_packets": 30,
+              "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+              "relative_energy_fraction_variance_mean": 0.00025585314142517745
+            },
+            {
+              "block": "behavior.0",
+              "eligible_packets": 30,
+              "relative_energy_fraction_max_error": 2.2351741790771484e-08,
+              "relative_energy_fraction_variance_mean": 0.00045594052062369883
+            },
+            {
+              "block": "behavior.1",
+              "eligible_packets": 30,
+              "relative_energy_fraction_max_error": 2.2351741790771484e-08,
+              "relative_energy_fraction_variance_mean": 0.00023596386017743498
+            },
+            {
+              "block": "behavior.2",
+              "eligible_packets": 30,
+              "relative_energy_fraction_max_error": 1.1175870895385742e-08,
+              "relative_energy_fraction_variance_mean": 0.00012899287685286254
+            }
+          ],
+          "blocks": 6
+        },
+        "adaptive_input": {
+          "scope": "Actual adaptive input versus lag4 control; source/public IQ only; not identified TX hardware",
+          "active": true,
+          "raw_parameters": [
+            -0.0004376039723865688,
+            -0.0004376055730972439
+          ],
+          "coefficients": [
+            -0.00043760394328273833,
+            -0.00043760554399341345
+          ],
+          "records": [
+            {
+              "block": "behavior.0.conv",
+              "packets": 30,
+              "complex_terms": 12,
+              "actual_phase_lag": 1,
+              "actual_envelope_lag": 4,
+              "input_formula_max_abs_error": 0.0,
+              "input_abs_max": 1.2937272787094116,
+              "degree3_relative_input_change_mean": 0.0004370581009425223,
+              "degree5_relative_input_change_mean": 0.0004059927014168352
+            }
+          ]
+        },
+        "alignment_strength": 0.0,
+        "phase_audit": [
+          {
+            "theta_radians": 0.37,
+            "received_cfo_hz": 0.0,
+            "whole_logit_max_abs_error": 1.6927719116210938e-05,
+            "whole_unit_embedding_max_distance": 2.8133447358413832e-06,
+            "estimated_cfo_principal_branch_crossing_count": 0,
+            "valid_correlation_count": 30,
+            "covariance_eligible_count": 30,
+            "partial_waveform_covariance_max_error": 0.0
+          },
+          {
+            "theta_radians": -1.2,
+            "received_cfo_hz": 80000.0,
+            "whole_logit_max_abs_error": 2.3619282245635986,
+            "whole_unit_embedding_max_distance": 0.3791170120239258,
+            "estimated_cfo_principal_branch_crossing_count": 0,
+            "valid_correlation_count": 30,
+            "covariance_eligible_count": 30,
+            "partial_waveform_covariance_max_error": 0.0
+          },
+          {
+            "theta_radians": 2.9,
+            "received_cfo_hz": -80000.0,
+            "whole_logit_max_abs_error": 2.197821855545044,
+            "whole_unit_embedding_max_distance": 0.357064425945282,
+            "estimated_cfo_principal_branch_crossing_count": 0,
+            "valid_correlation_count": 30,
+            "covariance_eligible_count": 30,
+            "partial_waveform_covariance_max_error": 0.0
+          }
+        ],
+        "phase_numeric_tolerance": 0.001,
+        "phase_tolerance_scope": "Report only;not ranking or stopping",
+        "phase_tolerance_pass": true,
+        "whole_affine_phase_invariant_claim": false,
+        "coordinate_reconstruction_max_error": 0.0,
+        "sample_amplitude_max_error": 0.0,
+        "synchronizer": {
+          "relative_cfo_hz_mean": 13333.33203125,
+          "relative_cfo_hz_min": 0.0,
+          "relative_cfo_hz_max": 79999.9921875,
+          "coherence_mean": 1.0,
+          "fallback_fraction": 0.0,
+          "principal_branch_margin_hz_min": 545000.0,
+          "scope": "Last source batch only;relative CFO modulo1.25MHz;not TX oscillator measurement"
+        },
+        "records": [
+          {
+            "tx": "ideal",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              2.1382861137390137,
+              -0.030029214918613434,
+              -3.0388400554656982,
+              1.9305188655853271,
+              3.1756184101104736,
+              0.014722757041454315
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 7.097672209965822e-07,
+            "source_classifier_logits": [
+              2.1382839679718018,
+              -0.030026499181985855,
+              -3.0388407707214355,
+              1.9305140972137451,
+              3.1756179332733154,
+              0.014722924679517746
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.34856075048446655,
+            "source_classifier_logits": [
+              1.1239488124847412,
+              -0.3462751507759094,
+              -1.84220290184021,
+              -0.2460746318101883,
+              3.0641958713531494,
+              1.11665940284729
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.09309876710176468,
+            "source_classifier_logits": [
+              2.097729444503784,
+              0.05612345039844513,
+              -2.7001729011535645,
+              1.7511115074157715,
+              3.0478498935699463,
+              0.18651637434959412
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.03145211562514305,
+            "source_classifier_logits": [
+              2.077517509460449,
+              -0.08735685050487518,
+              -3.0524871349334717,
+              1.885329246520996,
+              3.189978837966919,
+              0.05117269232869148
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.010503044351935387,
+            "source_classifier_logits": [
+              2.1226065158843994,
+              -0.027405694127082825,
+              -2.9896554946899414,
+              1.9407449960708618,
+              3.151822328567505,
+              0.04252399504184723
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              2.1226062774658203,
+              -0.027405790984630585,
+              -2.9896554946899414,
+              1.940745234489441,
+              3.151822328567505,
+              0.04252402111887932
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 8.268751798823359e-07,
+            "source_classifier_logits": [
+              2.122605085372925,
+              -0.027407385408878326,
+              -2.989659309387207,
+              1.940745234489441,
+              3.1518237590789795,
+              0.042524553835392
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.34697073698043823,
+            "source_classifier_logits": [
+              1.1122443675994873,
+              -0.3295050859451294,
+              -1.8613256216049194,
+              -0.25043636560440063,
+              3.0601487159729004,
+              1.1138174533843994
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.089730404317379,
+            "source_classifier_logits": [
+              2.0910167694091797,
+              0.06557010859251022,
+              -2.685366630554199,
+              1.7519347667694092,
+              3.0357956886291504,
+              0.18713174760341644
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.027643173933029175,
+            "source_classifier_logits": [
+              2.0722320079803467,
+              -0.07143794000148773,
+              -3.030895709991455,
+              1.8910669088363647,
+              3.180368185043335,
+              0.06424999982118607
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.00823679193854332,
+            "source_classifier_logits": [
+              2.1101746559143066,
+              -0.022827981039881706,
+              -2.9478964805603027,
+              1.9507639408111572,
+              3.130380153656006,
+              0.06170997396111488
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              2.1529738903045654,
+              0.003819814883172512,
+              -3.0747852325439453,
+              1.940534234046936,
+              3.181772232055664,
+              0.012121852487325668
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 6.267457024478063e-07,
+            "source_classifier_logits": [
+              2.152972459793091,
+              0.0038200453855097294,
+              -3.0747833251953125,
+              1.9405319690704346,
+              3.181774139404297,
+              0.012122858315706253
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.3500843048095703,
+            "source_classifier_logits": [
+              1.1197364330291748,
+              -0.3401062786579132,
+              -1.8496652841567993,
+              -0.2493937462568283,
+              3.052838087081909,
+              1.1152727603912354
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.09909817576408386,
+            "source_classifier_logits": [
+              2.0971462726593018,
+              0.06953165680170059,
+              -2.6958837509155273,
+              1.7553812265396118,
+              3.027859926223755,
+              0.1850239485502243
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.03431837633252144,
+            "source_classifier_logits": [
+              2.0884435176849365,
+              -0.06593144685029984,
+              -3.053542375564575,
+              1.8880822658538818,
+              3.1902434825897217,
+              0.05672525614500046
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.013100496493279934,
+            "source_classifier_logits": [
+              2.137782335281372,
+              -0.001201210543513298,
+              -3.0134971141815186,
+              1.945332646369934,
+              3.153285026550293,
+              0.0464344322681427
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              2.077517509460449,
+              -0.08735685050487518,
+              -3.0524871349334717,
+              1.885329246520996,
+              3.189978837966919,
+              0.05117269232869148
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 6.49927585527621e-07,
+            "source_classifier_logits": [
+              2.077516555786133,
+              -0.08735605329275131,
+              -3.0524840354919434,
+              1.8853296041488647,
+              3.189979314804077,
+              0.051172804087400436
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.3570643961429596,
+            "source_classifier_logits": [
+              1.0042455196380615,
+              -0.34421828389167786,
+              -2.2017757892608643,
+              -0.15110687911510468,
+              3.0779294967651367,
+              1.063981533050537
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.08000483363866806,
+            "source_classifier_logits": [
+              2.0988223552703857,
+              0.14201593399047852,
+              -2.8940770626068115,
+              1.6786324977874756,
+              3.1588761806488037,
+              0.22778606414794922
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.023816091939806938,
+            "source_classifier_logits": [
+              2.0293667316436768,
+              -0.11565600335597992,
+              -3.119971513748169,
+              1.828465223312378,
+              3.231170654296875,
+              0.04287566989660263
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.004721493925899267,
+            "source_classifier_logits": [
+              2.074007511138916,
+              -0.06838607043027878,
+              -3.0310921669006348,
+              1.894648790359497,
+              3.1782643795013428,
+              0.06588245928287506
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              2.0047860145568848,
+              -0.17591460049152374,
+              -2.875943660736084,
+              1.8413182497024536,
+              3.146040201187134,
+              0.14046220481395721
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 8.634331720713817e-07,
+            "source_classifier_logits": [
+              2.0047855377197266,
+              -0.17591622471809387,
+              -2.8759443759918213,
+              1.8413176536560059,
+              3.1460421085357666,
+              0.1404595971107483
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.3432866036891937,
+            "source_classifier_logits": [
+              1.114480972290039,
+              -0.3873436152935028,
+              -1.7463359832763672,
+              -0.3565038740634918,
+              3.115518093109131,
+              1.1551584005355835
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.10586296021938324,
+            "source_classifier_logits": [
+              1.9016013145446777,
+              -0.1253202259540558,
+              -2.516012668609619,
+              1.7542147636413574,
+              3.0235183238983154,
+              0.22828331589698792
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.02722104825079441,
+            "source_classifier_logits": [
+              1.9365140199661255,
+              -0.21060486137866974,
+              -2.892277479171753,
+              1.8069099187850952,
+              3.158803939819336,
+              0.1515306681394577
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.009673008695244789,
+            "source_classifier_logits": [
+              1.9970678091049194,
+              -0.16813534498214722,
+              -2.8336124420166016,
+              1.8560763597488403,
+              3.12276029586792,
+              0.15486697852611542
+            ]
+          }
+        ],
+        "isolated_tx_changes": [
+          {
+            "tx": "tx_am_am",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.010503044351935387
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.0064459070563316345
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.03145211562514305
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.03965849056839943
+          }
+        ],
+        "confounds": {
+          "iq_tx_rx_waveform_max_error": 0.0,
+          "cubic_tx_rx_waveform_max_error": 3.3306690738754696e-16
+        },
+        "simulated_chain": "Existing100Msps steadyLSTF TX->channel->RX->12toneprojection->25Msps relativeCFO/RMS",
+        "exact_wisig_equalizer": false,
+        "identity_accuracy": "N/A:public TX settings are not actual source identity labels",
+        "claim": "Whole constantphase property and partial waveform frequency covariance when valid/no branch crossing;alpha is not TX/RX oscillator fraction;no arbitraryRX/LTI invariance"
+      }
+    },
+    {
+      "seed": 2026092702,
+      "variant": "adaptive_volterra_lag4",
+      "losses": [
+        {
+          "kind": "random",
+          "ce": 3.7792043685913086
+        },
+        {
+          "kind": "weak",
+          "ce": 4.041120529174805
+        },
+        {
+          "kind": "constant",
+          "ce": 2.8093149662017822
+        }
+      ],
+      "contract": {
+        "mode": "adaptive_volterra_lag4",
+        "input": "received_equalized1_unit_rms_IQ",
+        "sample_rate_hz": 25000000,
+        "whole_identity_global_phase_invariant_real_arithmetic": true,
+        "global_phase_equivariant_until_readout": true,
+        "removes_linear_phase": false,
+        "arbitrary_channel_rx_invariant": false,
+        "hardware_parameter_estimation": false,
+        "time_complex_channels": [
+          24,
+          24,
+          32,
+          32
+        ],
+        "time_kernels": [
+          5,
+          5,
+          3
+        ],
+        "time_strides": [
+          2,
+          2,
+          1
+        ],
+        "behavior_orders": [
+          1,
+          3,
+          5
+        ],
+        "behavior_delays": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "radial_clip": 4.0,
+        "order_scale_base": 2.0,
+        "behavior_complex_channels": [
+          12,
+          24,
+          32,
+          32
+        ],
+        "behavior_kernels": [
+          7,
+          5,
+          3
+        ],
+        "behavior_dilations": [
+          1,
+          2,
+          4
+        ],
+        "behavior_causal_filters": true,
+        "per_packet_complex_rms_normalization": true,
+        "complex_bias": false,
+        "radial_gate": "2sigmoid(a*log1p(power)+b)",
+        "invariant_readout": "logpower mean/std,lag1/2 normalized complex correlation,4 positional logpower means",
+        "readout_channels_per_complex_channel": 10,
+        "embedding_dimension": 160,
+        "classifier_scale": 30.0,
+        "original_real_frequency_path_retained": true,
+        "raw_unconstrained_identity_bypass": false,
+        "interpretation": "Received relative filter/polynomial energy is retained by normalization;not recovered TX PA/IQ coefficients or arbitrary RX/channel invariance",
+        "normalization_scope": "one complex power mean across all channels and time per packet per block",
+        "per_channel_sample_dependent_rms_normalization": false,
+        "relative_filter_channel_energy_preserved_by_normalization_only": true,
+        "learned_channel_scales_retained": true,
+        "new_trainable_parameters": 2,
+        "relative_energy_after_gate": "may change through learned radial gate;not fixed",
+        "learned_channel_scales_may_change_energy_ratios": true,
+        "identity_core": "adaptive_volterra_identity",
+        "estimator_window": [
+          80,
+          160
+        ],
+        "estimator_period_samples": 20,
+        "relative_frequency_alias_hz": 1250000,
+        "alignment_strength": 0.0,
+        "alignment_parameters": 0,
+        "alignment_packet_specific": false,
+        "alignment_class_specific": false,
+        "alignment_rx_specific": false,
+        "waveform_operator": "x[n]exp(-j alpha omega n);raw variant returns x exactly",
+        "whole_affine_phase_invariant": false,
+        "alignment_interpretation": "fixed received frequency retention;not TX/RX oscillator proportion",
+        "prototype_only": false,
+        "behavior_input": "lag4 envelope control plus signed tanh-gated delayed cubic residual",
+        "envelope_lag": 4,
+        "actual_envelope_lag": 4,
+        "envelope_average_weights": [
+          0.5,
+          0.5
+        ],
+        "behavior_terms": 12,
+        "original_position_power_readout_retained": true,
+        "no_frequency_correction": true,
+        "full_GMP": false,
+        "hardware_parameter_recovery": false,
+        "phase_lag": 4,
+        "actual_phase_lag": 4,
+        "adaptive_lift_active": true,
+        "mixture_parameter_shape": [
+          2
+        ],
+        "actual_mixture_parameter_shape": [
+          2
+        ],
+        "mixture_initial_raw": [
+          0.0,
+          0.0
+        ],
+        "mixture_rule": "base+tanh(raw)*(proposal-base)",
+        "mixture_scope": "two global identity model parameters trained only by source CE",
+        "mixture_parameter_count": 2,
+        "initial_function": "exact scratch coupled_lag4 function under matching scratch RNG",
+        "cubic_divisor": 4,
+        "cubic_delays": [
+          4,
+          4,
+          8
+        ],
+        "cubic_conjugate_last": true,
+        "lift_affine_phase_covariant": true,
+        "complete_volterra": false
+      },
+      "frozen_synthetic": {
+        "status": "FROZEN_SYNTHETIC_DIAGNOSTIC_COMPLETE",
+        "synthetic_only": true,
+        "training_augmentation": false,
+        "formal_data_access": false,
+        "target_access": false,
+        "model_updated": false,
+        "hardware_parameter_recovery": false,
+        "normalization": {
+          "scope": "Actual conv outputs and one shared normalization gain only;learned scales/gates excluded;not TX/RX causal separation",
+          "records": [
+            {
+              "block": "time.0",
+              "eligible_packets": 30,
+              "relative_energy_fraction_max_error": 2.2351741790771484e-08,
+              "relative_energy_fraction_variance_mean": 0.00039680994814261794
+            },
+            {
+              "block": "time.1",
+              "eligible_packets": 30,
+              "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+              "relative_energy_fraction_variance_mean": 0.00037432872341014445
+            },
+            {
+              "block": "time.2",
+              "eligible_packets": 30,
+              "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+              "relative_energy_fraction_variance_mean": 0.00025585314142517745
+            },
+            {
+              "block": "behavior.0",
+              "eligible_packets": 30,
+              "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+              "relative_energy_fraction_variance_mean": 0.0004559870285447687
+            },
+            {
+              "block": "behavior.1",
+              "eligible_packets": 30,
+              "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+              "relative_energy_fraction_variance_mean": 0.00023599278938490897
+            },
+            {
+              "block": "behavior.2",
+              "eligible_packets": 30,
+              "relative_energy_fraction_max_error": 1.1175870895385742e-08,
+              "relative_energy_fraction_variance_mean": 0.0001289582287427038
+            }
+          ],
+          "blocks": 6
+        },
+        "adaptive_input": {
+          "scope": "Actual adaptive input versus lag4 control; source/public IQ only; not identified TX hardware",
+          "active": true,
+          "raw_parameters": [
+            -0.00043729384196922183,
+            0.00043773988727480173
+          ],
+          "coefficients": [
+            -0.0004372938128653914,
+            0.0004377398581709713
+          ],
+          "records": [
+            {
+              "block": "behavior.0.conv",
+              "packets": 30,
+              "complex_terms": 12,
+              "actual_phase_lag": 4,
+              "actual_envelope_lag": 4,
+              "input_formula_max_abs_error": 0.0,
+              "input_abs_max": 1.2937272787094116,
+              "degree3_relative_input_change_mean": 0.0007065227837301791,
+              "degree5_relative_input_change_mean": 0.0007246053428389132
+            }
+          ]
+        },
+        "alignment_strength": 0.0,
+        "phase_audit": [
+          {
+            "theta_radians": 0.37,
+            "received_cfo_hz": 0.0,
+            "whole_logit_max_abs_error": 1.6689300537109375e-05,
+            "whole_unit_embedding_max_distance": 2.7875705654878402e-06,
+            "estimated_cfo_principal_branch_crossing_count": 0,
+            "valid_correlation_count": 30,
+            "covariance_eligible_count": 30,
+            "partial_waveform_covariance_max_error": 0.0
+          },
+          {
+            "theta_radians": -1.2,
+            "received_cfo_hz": 80000.0,
+            "whole_logit_max_abs_error": 2.361912250518799,
+            "whole_unit_embedding_max_distance": 0.3791142404079437,
+            "estimated_cfo_principal_branch_crossing_count": 0,
+            "valid_correlation_count": 30,
+            "covariance_eligible_count": 30,
+            "partial_waveform_covariance_max_error": 0.0
+          },
+          {
+            "theta_radians": 2.9,
+            "received_cfo_hz": -80000.0,
+            "whole_logit_max_abs_error": 2.197782039642334,
+            "whole_unit_embedding_max_distance": 0.3570636510848999,
+            "estimated_cfo_principal_branch_crossing_count": 0,
+            "valid_correlation_count": 30,
+            "covariance_eligible_count": 30,
+            "partial_waveform_covariance_max_error": 0.0
+          }
+        ],
+        "phase_numeric_tolerance": 0.001,
+        "phase_tolerance_scope": "Report only;not ranking or stopping",
+        "phase_tolerance_pass": true,
+        "whole_affine_phase_invariant_claim": false,
+        "coordinate_reconstruction_max_error": 0.0,
+        "sample_amplitude_max_error": 0.0,
+        "synchronizer": {
+          "relative_cfo_hz_mean": 13333.33203125,
+          "relative_cfo_hz_min": 0.0,
+          "relative_cfo_hz_max": 79999.9921875,
+          "coherence_mean": 1.0,
+          "fallback_fraction": 0.0,
+          "principal_branch_margin_hz_min": 545000.0,
+          "scope": "Last source batch only;relative CFO modulo1.25MHz;not TX oscillator measurement"
+        },
+        "records": [
+          {
+            "tx": "ideal",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              2.138261318206787,
+              -0.030060242861509323,
+              -3.038830280303955,
+              1.930566430091858,
+              3.175687551498413,
+              0.014474708586931229
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 7.533193411290995e-07,
+            "source_classifier_logits": [
+              2.1382596492767334,
+              -0.030058754608035088,
+              -3.0388314723968506,
+              1.9305651187896729,
+              3.175689220428467,
+              0.014474429190158844
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.3485613763332367,
+            "source_classifier_logits": [
+              1.1239244937896729,
+              -0.3463921844959259,
+              -1.8423137664794922,
+              -0.24598181247711182,
+              3.0643210411071777,
+              1.1165047883987427
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0931008830666542,
+            "source_classifier_logits": [
+              2.0977399349212646,
+              0.056085046380758286,
+              -2.7000925540924072,
+              1.7512099742889404,
+              3.0479021072387695,
+              0.18628892302513123
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.031452279537916183,
+            "source_classifier_logits": [
+              2.077516794204712,
+              -0.08739772439002991,
+              -3.0524516105651855,
+              1.8853939771652222,
+              3.1900289058685303,
+              0.05090746283531189
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.010503401979804039,
+            "source_classifier_logits": [
+              2.122622489929199,
+              -0.027480509132146835,
+              -2.98962140083313,
+              1.9408131837844849,
+              3.151887893676758,
+              0.04226306453347206
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              2.1226227283477783,
+              -0.027480293065309525,
+              -2.98962140083313,
+              1.9408124685287476,
+              3.151888370513916,
+              0.042263343930244446
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 8.50821834319504e-07,
+            "source_classifier_logits": [
+              2.122621536254883,
+              -0.027481215074658394,
+              -2.989626169204712,
+              1.9408117532730103,
+              3.1518893241882324,
+              0.04226412624120712
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.3469710052013397,
+            "source_classifier_logits": [
+              1.1122143268585205,
+              -0.3296186923980713,
+              -1.8614354133605957,
+              -0.2503453195095062,
+              3.0602798461914062,
+              1.1136618852615356
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.08973181247711182,
+            "source_classifier_logits": [
+              2.091028928756714,
+              0.06553152203559875,
+              -2.685283899307251,
+              1.752036213874817,
+              3.035848617553711,
+              0.18690286576747894
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.027644000947475433,
+            "source_classifier_logits": [
+              2.072232723236084,
+              -0.07147613167762756,
+              -3.0308613777160645,
+              1.8911335468292236,
+              3.1804184913635254,
+              0.0639834851026535
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.008236737921833992,
+            "source_classifier_logits": [
+              2.110189914703369,
+              -0.02290082722902298,
+              -2.947864294052124,
+              1.950832486152649,
+              3.1304473876953125,
+              0.06144792586565018
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              2.152949094772339,
+              0.0037876982241868973,
+              -3.0747766494750977,
+              1.9405804872512817,
+              3.1818408966064453,
+              0.011874642223119736
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 6.310831395239802e-07,
+            "source_classifier_logits": [
+              2.1529462337493896,
+              0.0037877820432186127,
+              -3.0747761726379395,
+              1.9405772686004639,
+              3.1818418502807617,
+              0.011875396594405174
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.35008490085601807,
+            "source_classifier_logits": [
+              1.1197117567062378,
+              -0.34022456407546997,
+              -1.8497787714004517,
+              -0.24930188059806824,
+              3.052961826324463,
+              1.115118145942688
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0991002693772316,
+            "source_classifier_logits": [
+              2.097156047821045,
+              0.0694921538233757,
+              -2.6958038806915283,
+              1.755477786064148,
+              3.02791166305542,
+              0.18479612469673157
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.03431851416826248,
+            "source_classifier_logits": [
+              2.0884463787078857,
+              -0.06597255170345306,
+              -3.0535128116607666,
+              1.8881468772888184,
+              3.190294027328491,
+              0.05645941197872162
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.013100742362439632,
+            "source_classifier_logits": [
+              2.137779474258423,
+              -0.0012595346197485924,
+              -3.0134828090667725,
+              1.9453959465026855,
+              3.153359889984131,
+              0.04619350656867027
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              2.077516794204712,
+              -0.08739772439002991,
+              -3.0524516105651855,
+              1.8853939771652222,
+              3.1900289058685303,
+              0.05090746283531189
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 6.028974439686863e-07,
+            "source_classifier_logits": [
+              2.0775182247161865,
+              -0.08739817887544632,
+              -3.0524489879608154,
+              1.8853944540023804,
+              3.190030097961426,
+              0.050906259566545486
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.3570635914802551,
+            "source_classifier_logits": [
+              1.004207968711853,
+              -0.34434694051742554,
+              -2.201887845993042,
+              -0.15102027356624603,
+              3.07804274559021,
+              1.0638238191604614
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.08000568300485611,
+            "source_classifier_logits": [
+              2.0988495349884033,
+              0.14203695952892303,
+              -2.8940346240997314,
+              1.6786898374557495,
+              3.1589462757110596,
+              0.22754153609275818
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.023815933614969254,
+            "source_classifier_logits": [
+              2.0293471813201904,
+              -0.1157132238149643,
+              -3.1199254989624023,
+              1.8285298347473145,
+              3.231233596801758,
+              0.04261172562837601
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.004721565172076225,
+            "source_classifier_logits": [
+              2.0740087032318115,
+              -0.06842323392629623,
+              -3.0310587882995605,
+              1.8947147130966187,
+              3.1783151626586914,
+              0.06561560928821564
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              2.004772663116455,
+              -0.17596383392810822,
+              -2.875917911529541,
+              1.841374158859253,
+              3.1460931301116943,
+              0.1401895135641098
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 9.469395649830403e-07,
+            "source_classifier_logits": [
+              2.0047731399536133,
+              -0.17596453428268433,
+              -2.8759191036224365,
+              1.8413752317428589,
+              3.14609432220459,
+              0.14018632471561432
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.3432880640029907,
+            "source_classifier_logits": [
+              1.1144591569900513,
+              -0.3874531388282776,
+              -1.7464449405670166,
+              -0.3564065098762512,
+              3.1156370639801025,
+              1.1549959182739258
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.10586567968130112,
+            "source_classifier_logits": [
+              1.901604413986206,
+              -0.12532421946525574,
+              -2.515946388244629,
+              1.754288911819458,
+              3.0235846042633057,
+              0.22803792357444763
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.027221042662858963,
+            "source_classifier_logits": [
+              1.936503529548645,
+              -0.21065212786197662,
+              -2.8922488689422607,
+              1.806971549987793,
+              3.1588544845581055,
+              0.1512654721736908
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.009672853164374828,
+            "source_classifier_logits": [
+              1.9970545768737793,
+              -0.16818422079086304,
+              -2.8335864543914795,
+              1.856135606765747,
+              3.1228108406066895,
+              0.15459319949150085
+            ]
+          }
+        ],
+        "isolated_tx_changes": [
+          {
+            "tx": "tx_am_am",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.010503401979804039
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.006445859558880329
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.031452279537916183
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.03965816646814346
+          }
+        ],
+        "confounds": {
+          "iq_tx_rx_waveform_max_error": 0.0,
+          "cubic_tx_rx_waveform_max_error": 3.3306690738754696e-16
+        },
+        "simulated_chain": "Existing100Msps steadyLSTF TX->channel->RX->12toneprojection->25Msps relativeCFO/RMS",
+        "exact_wisig_equalizer": false,
+        "identity_accuracy": "N/A:public TX settings are not actual source identity labels",
+        "claim": "Whole constantphase property and partial waveform frequency covariance when valid/no branch crossing;alpha is not TX/RX oscillator fraction;no arbitraryRX/LTI invariance"
+      }
+    },
+    {
+      "seed": 2026092703,
+      "variant": "adaptive_volterra_lag1",
+      "losses": [
+        {
+          "kind": "random",
+          "ce": 2.4679529666900635
+        },
+        {
+          "kind": "weak",
+          "ce": 4.507734775543213
+        },
+        {
+          "kind": "constant",
+          "ce": 3.6639950275421143
+        }
+      ],
+      "contract": {
+        "mode": "adaptive_volterra_lag1",
+        "input": "received_equalized1_unit_rms_IQ",
+        "sample_rate_hz": 25000000,
+        "whole_identity_global_phase_invariant_real_arithmetic": true,
+        "global_phase_equivariant_until_readout": true,
+        "removes_linear_phase": false,
+        "arbitrary_channel_rx_invariant": false,
+        "hardware_parameter_estimation": false,
+        "time_complex_channels": [
+          24,
+          24,
+          32,
+          32
+        ],
+        "time_kernels": [
+          5,
+          5,
+          3
+        ],
+        "time_strides": [
+          2,
+          2,
+          1
+        ],
+        "behavior_orders": [
+          1,
+          3,
+          5
+        ],
+        "behavior_delays": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "radial_clip": 4.0,
+        "order_scale_base": 2.0,
+        "behavior_complex_channels": [
+          12,
+          24,
+          32,
+          32
+        ],
+        "behavior_kernels": [
+          7,
+          5,
+          3
+        ],
+        "behavior_dilations": [
+          1,
+          2,
+          4
+        ],
+        "behavior_causal_filters": true,
+        "per_packet_complex_rms_normalization": true,
+        "complex_bias": false,
+        "radial_gate": "2sigmoid(a*log1p(power)+b)",
+        "invariant_readout": "logpower mean/std,lag1/2 normalized complex correlation,4 positional logpower means",
+        "readout_channels_per_complex_channel": 10,
+        "embedding_dimension": 160,
+        "classifier_scale": 30.0,
+        "original_real_frequency_path_retained": true,
+        "raw_unconstrained_identity_bypass": false,
+        "interpretation": "Received relative filter/polynomial energy is retained by normalization;not recovered TX PA/IQ coefficients or arbitrary RX/channel invariance",
+        "normalization_scope": "one complex power mean across all channels and time per packet per block",
+        "per_channel_sample_dependent_rms_normalization": false,
+        "relative_filter_channel_energy_preserved_by_normalization_only": true,
+        "learned_channel_scales_retained": true,
+        "new_trainable_parameters": 2,
+        "relative_energy_after_gate": "may change through learned radial gate;not fixed",
+        "learned_channel_scales_may_change_energy_ratios": true,
+        "identity_core": "adaptive_volterra_identity",
+        "estimator_window": [
+          80,
+          160
+        ],
+        "estimator_period_samples": 20,
+        "relative_frequency_alias_hz": 1250000,
+        "alignment_strength": 0.0,
+        "alignment_parameters": 0,
+        "alignment_packet_specific": false,
+        "alignment_class_specific": false,
+        "alignment_rx_specific": false,
+        "waveform_operator": "x[n]exp(-j alpha omega n);raw variant returns x exactly",
+        "whole_affine_phase_invariant": false,
+        "alignment_interpretation": "fixed received frequency retention;not TX/RX oscillator proportion",
+        "prototype_only": false,
+        "behavior_input": "lag4 envelope control plus signed tanh-gated delayed cubic residual",
+        "envelope_lag": 4,
+        "actual_envelope_lag": 4,
+        "envelope_average_weights": [
+          0.5,
+          0.5
+        ],
+        "behavior_terms": 12,
+        "original_position_power_readout_retained": true,
+        "no_frequency_correction": true,
+        "full_GMP": false,
+        "hardware_parameter_recovery": false,
+        "phase_lag": 1,
+        "actual_phase_lag": 1,
+        "adaptive_lift_active": true,
+        "mixture_parameter_shape": [
+          2
+        ],
+        "actual_mixture_parameter_shape": [
+          2
+        ],
+        "mixture_initial_raw": [
+          0.0,
+          0.0
+        ],
+        "mixture_rule": "base+tanh(raw)*(proposal-base)",
+        "mixture_scope": "two global identity model parameters trained only by source CE",
+        "mixture_parameter_count": 2,
+        "initial_function": "exact scratch coupled_lag4 function under matching scratch RNG",
+        "cubic_divisor": 4,
+        "cubic_delays": [
+          1,
+          1,
+          2
+        ],
+        "cubic_conjugate_last": true,
+        "lift_affine_phase_covariant": true,
+        "complete_volterra": false
+      },
+      "frozen_synthetic": {
+        "status": "FROZEN_SYNTHETIC_DIAGNOSTIC_COMPLETE",
+        "synthetic_only": true,
+        "training_augmentation": false,
+        "formal_data_access": false,
+        "target_access": false,
+        "model_updated": false,
+        "hardware_parameter_recovery": false,
+        "normalization": {
+          "scope": "Actual conv outputs and one shared normalization gain only;learned scales/gates excluded;not TX/RX causal separation",
+          "records": [
+            {
+              "block": "time.0",
+              "eligible_packets": 30,
+              "relative_energy_fraction_max_error": 2.9802322387695312e-08,
+              "relative_energy_fraction_variance_mean": 0.0005085545708425343
+            },
+            {
+              "block": "time.1",
+              "eligible_packets": 30,
+              "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+              "relative_energy_fraction_variance_mean": 0.0002728840918280184
+            },
+            {
+              "block": "time.2",
+              "eligible_packets": 30,
+              "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+              "relative_energy_fraction_variance_mean": 0.00019239954417571425
+            },
+            {
+              "block": "behavior.0",
+              "eligible_packets": 30,
+              "relative_energy_fraction_max_error": 2.2351741790771484e-08,
+              "relative_energy_fraction_variance_mean": 0.0004429926339071244
+            },
+            {
+              "block": "behavior.1",
+              "eligible_packets": 30,
+              "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+              "relative_energy_fraction_variance_mean": 0.00018818359239958227
+            },
+            {
+              "block": "behavior.2",
+              "eligible_packets": 30,
+              "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+              "relative_energy_fraction_variance_mean": 0.00016468900139443576
+            }
+          ],
+          "blocks": 6
+        },
+        "adaptive_input": {
+          "scope": "Actual adaptive input versus lag4 control; source/public IQ only; not identified TX hardware",
+          "active": true,
+          "raw_parameters": [
+            -0.0004419587494339794,
+            -0.00043760697008110583
+          ],
+          "coefficients": [
+            -0.00044195872033014894,
+            -0.00043760694097727537
+          ],
+          "records": [
+            {
+              "block": "behavior.0.conv",
+              "packets": 30,
+              "complex_terms": 12,
+              "actual_phase_lag": 1,
+              "actual_envelope_lag": 4,
+              "input_formula_max_abs_error": 0.0,
+              "input_abs_max": 1.2937272787094116,
+              "degree3_relative_input_change_mean": 0.0004414070281200111,
+              "degree5_relative_input_change_mean": 0.00040599433123134077
+            }
+          ]
+        },
+        "alignment_strength": 0.0,
+        "phase_audit": [
+          {
+            "theta_radians": 0.37,
+            "received_cfo_hz": 0.0,
+            "whole_logit_max_abs_error": 1.2278556823730469e-05,
+            "whole_unit_embedding_max_distance": 2.800572246997035e-06,
+            "estimated_cfo_principal_branch_crossing_count": 0,
+            "valid_correlation_count": 30,
+            "covariance_eligible_count": 30,
+            "partial_waveform_covariance_max_error": 0.0
+          },
+          {
+            "theta_radians": -1.2,
+            "received_cfo_hz": 80000.0,
+            "whole_logit_max_abs_error": 1.2403085231781006,
+            "whole_unit_embedding_max_distance": 0.4000866115093231,
+            "estimated_cfo_principal_branch_crossing_count": 0,
+            "valid_correlation_count": 30,
+            "covariance_eligible_count": 30,
+            "partial_waveform_covariance_max_error": 0.0
+          },
+          {
+            "theta_radians": 2.9,
+            "received_cfo_hz": -80000.0,
+            "whole_logit_max_abs_error": 1.3070378303527832,
+            "whole_unit_embedding_max_distance": 0.35370156168937683,
+            "estimated_cfo_principal_branch_crossing_count": 0,
+            "valid_correlation_count": 30,
+            "covariance_eligible_count": 30,
+            "partial_waveform_covariance_max_error": 0.0
+          }
+        ],
+        "phase_numeric_tolerance": 0.001,
+        "phase_tolerance_scope": "Report only;not ranking or stopping",
+        "phase_tolerance_pass": true,
+        "whole_affine_phase_invariant_claim": false,
+        "coordinate_reconstruction_max_error": 0.0,
+        "sample_amplitude_max_error": 0.0,
+        "synchronizer": {
+          "relative_cfo_hz_mean": 13333.33203125,
+          "relative_cfo_hz_min": 0.0,
+          "relative_cfo_hz_max": 79999.9921875,
+          "coherence_mean": 1.0,
+          "fallback_fraction": 0.0,
+          "principal_branch_margin_hz_min": 545000.0,
+          "scope": "Last source batch only;relative CFO modulo1.25MHz;not TX oscillator measurement"
+        },
+        "records": [
+          {
+            "tx": "ideal",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              1.2192749977111816,
+              -0.6066214442253113,
+              0.7248868942260742,
+              1.2565407752990723,
+              -2.5639278888702393,
+              -0.701292097568512
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 5.918921601733018e-07,
+            "source_classifier_logits": [
+              1.2192736864089966,
+              -0.6066226959228516,
+              0.7248852849006653,
+              1.2565429210662842,
+              -2.5639281272888184,
+              -0.7012923955917358
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.3256429135799408,
+            "source_classifier_logits": [
+              0.6703555583953857,
+              -0.1533251255750656,
+              -0.02669328823685646,
+              0.6843585968017578,
+              -2.571539878845215,
+              -1.5113402605056763
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.08252396434545517,
+            "source_classifier_logits": [
+              1.4055986404418945,
+              -0.684219241142273,
+              0.5902826189994812,
+              1.398624062538147,
+              -2.68404221534729,
+              -0.7374024391174316
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.028064072132110596,
+            "source_classifier_logits": [
+              1.2914332151412964,
+              -0.6193965077400208,
+              0.6980943083763123,
+              1.310619831085205,
+              -2.4231925010681152,
+              -0.6193585395812988
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.004904515575617552,
+            "source_classifier_logits": [
+              1.231673002243042,
+              -0.5924257636070251,
+              0.7276958227157593,
+              1.225151777267456,
+              -2.577120542526245,
+              -0.7164623141288757
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              1.2316735982894897,
+              -0.5924257636070251,
+              0.7276957631111145,
+              1.2251513004302979,
+              -2.577120542526245,
+              -0.7164624333381653
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 9.84732537290256e-07,
+            "source_classifier_logits": [
+              1.231676697731018,
+              -0.5924282073974609,
+              0.7276970744132996,
+              1.2251473665237427,
+              -2.5771231651306152,
+              -0.7164605855941772
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.3263743817806244,
+            "source_classifier_logits": [
+              0.6912327408790588,
+              -0.14944788813591003,
+              -0.04310024902224541,
+              0.6684012413024902,
+              -2.593179702758789,
+              -1.5244336128234863
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.08389794826507568,
+            "source_classifier_logits": [
+              1.4217556715011597,
+              -0.6805955767631531,
+              0.5885903239250183,
+              1.375470757484436,
+              -2.709782361984253,
+              -0.75385582447052
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.026720035821199417,
+            "source_classifier_logits": [
+              1.3088823556900024,
+              -0.6084932088851929,
+              0.697401225566864,
+              1.2852251529693604,
+              -2.4428553581237793,
+              -0.6351920366287231
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.004053606651723385,
+            "source_classifier_logits": [
+              1.2434313297271729,
+              -0.5814263820648193,
+              0.7285102605819702,
+              1.1991738080978394,
+              -2.5903165340423584,
+              -0.7308701276779175
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              1.2069133520126343,
+              -0.600593626499176,
+              0.7296946048736572,
+              1.263088345527649,
+              -2.5593762397766113,
+              -0.7133466601371765
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 4.874993351222656e-07,
+            "source_classifier_logits": [
+              1.2069140672683716,
+              -0.6005947589874268,
+              0.7296940684318542,
+              1.2630876302719116,
+              -2.559377670288086,
+              -0.7133469581604004
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.32419678568840027,
+            "source_classifier_logits": [
+              0.6802005171775818,
+              -0.16208934783935547,
+              -0.021358709782361984,
+              0.6803008317947388,
+              -2.5739214420318604,
+              -1.516876220703125
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.08174611628055573,
+            "source_classifier_logits": [
+              1.3917298316955566,
+              -0.6746265292167664,
+              0.5945330262184143,
+              1.3981590270996094,
+              -2.6792960166931152,
+              -0.7468470335006714
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.02952367626130581,
+            "source_classifier_logits": [
+              1.2715336084365845,
+              -0.6095038652420044,
+              0.7088252902030945,
+              1.3131310939788818,
+              -2.415057420730591,
+              -0.6265153884887695
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.005755432415753603,
+            "source_classifier_logits": [
+              1.2179161310195923,
+              -0.5841967463493347,
+              0.7348542809486389,
+              1.2285834550857544,
+              -2.569119930267334,
+              -0.7272920608520508
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              1.2914332151412964,
+              -0.6193965077400208,
+              0.6980943083763123,
+              1.310619831085205,
+              -2.4231925010681152,
+              -0.6193585395812988
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 8.346681283910584e-07,
+            "source_classifier_logits": [
+              1.2914317846298218,
+              -0.6193943619728088,
+              0.6980936527252197,
+              1.3106192350387573,
+              -2.4231948852539062,
+              -0.6193594336509705
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.35370150208473206,
+            "source_classifier_logits": [
+              0.8549371361732483,
+              -0.08198082447052002,
+              -0.18587541580200195,
+              0.5578652620315552,
+              -2.3440089225769043,
+              -1.5909627676010132
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.09627833962440491,
+            "source_classifier_logits": [
+              1.474866509437561,
+              -0.6855769753456116,
+              0.5181389451026917,
+              1.4670944213867188,
+              -2.5923924446105957,
+              -0.7067670822143555
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.023713568225502968,
+            "source_classifier_logits": [
+              1.387569546699524,
+              -0.6380794048309326,
+              0.6333141326904297,
+              1.3958828449249268,
+              -2.3189468383789062,
+              -0.5621753931045532
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.004486453719437122,
+            "source_classifier_logits": [
+              1.3068302869796753,
+              -0.6079834699630737,
+              0.6982912421226501,
+              1.2816544771194458,
+              -2.4474687576293945,
+              -0.639110267162323
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              1.198232889175415,
+              -0.5911246538162231,
+              0.6964513063430786,
+              1.2857944965362549,
+              -2.5432214736938477,
+              -0.6678900718688965
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 7.044062044769817e-07,
+            "source_classifier_logits": [
+              1.1982299089431763,
+              -0.5911237597465515,
+              0.6964493989944458,
+              1.2857964038848877,
+              -2.543222665786743,
+              -0.6678911447525024
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.31297028064727783,
+            "source_classifier_logits": [
+              0.7298585772514343,
+              -0.20790494978427887,
+              0.07961366325616837,
+              0.838773787021637,
+              -2.620593547821045,
+              -1.5261030197143555
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0822780430316925,
+            "source_classifier_logits": [
+              1.3731274604797363,
+              -0.6558516025543213,
+              0.5715115070343018,
+              1.424311637878418,
+              -2.7004809379577637,
+              -0.7564989328384399
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.02698691561818123,
+            "source_classifier_logits": [
+              1.2863035202026367,
+              -0.5992725491523743,
+              0.6671781539916992,
+              1.3454437255859375,
+              -2.398754119873047,
+              -0.5874714851379395
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0044951667077839375,
+            "source_classifier_logits": [
+              1.210629940032959,
+              -0.5773990154266357,
+              0.6966732740402222,
+              1.2559696435928345,
+              -2.557638168334961,
+              -0.6902945041656494
+            ]
+          }
+        ],
+        "isolated_tx_changes": [
+          {
+            "tx": "tx_am_am",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.004904515575617552
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.0030673188157379627
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.028064072132110596
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.02160809189081192
+          }
+        ],
+        "confounds": {
+          "iq_tx_rx_waveform_max_error": 0.0,
+          "cubic_tx_rx_waveform_max_error": 3.3306690738754696e-16
+        },
+        "simulated_chain": "Existing100Msps steadyLSTF TX->channel->RX->12toneprojection->25Msps relativeCFO/RMS",
+        "exact_wisig_equalizer": false,
+        "identity_accuracy": "N/A:public TX settings are not actual source identity labels",
+        "claim": "Whole constantphase property and partial waveform frequency covariance when valid/no branch crossing;alpha is not TX/RX oscillator fraction;no arbitraryRX/LTI invariance"
+      }
+    },
+    {
+      "seed": 2026092703,
+      "variant": "adaptive_volterra_lag4",
+      "losses": [
+        {
+          "kind": "random",
+          "ce": 2.4679529666900635
+        },
+        {
+          "kind": "weak",
+          "ce": 4.507734775543213
+        },
+        {
+          "kind": "constant",
+          "ce": 3.6639952659606934
+        }
+      ],
+      "contract": {
+        "mode": "adaptive_volterra_lag4",
+        "input": "received_equalized1_unit_rms_IQ",
+        "sample_rate_hz": 25000000,
+        "whole_identity_global_phase_invariant_real_arithmetic": true,
+        "global_phase_equivariant_until_readout": true,
+        "removes_linear_phase": false,
+        "arbitrary_channel_rx_invariant": false,
+        "hardware_parameter_estimation": false,
+        "time_complex_channels": [
+          24,
+          24,
+          32,
+          32
+        ],
+        "time_kernels": [
+          5,
+          5,
+          3
+        ],
+        "time_strides": [
+          2,
+          2,
+          1
+        ],
+        "behavior_orders": [
+          1,
+          3,
+          5
+        ],
+        "behavior_delays": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "radial_clip": 4.0,
+        "order_scale_base": 2.0,
+        "behavior_complex_channels": [
+          12,
+          24,
+          32,
+          32
+        ],
+        "behavior_kernels": [
+          7,
+          5,
+          3
+        ],
+        "behavior_dilations": [
+          1,
+          2,
+          4
+        ],
+        "behavior_causal_filters": true,
+        "per_packet_complex_rms_normalization": true,
+        "complex_bias": false,
+        "radial_gate": "2sigmoid(a*log1p(power)+b)",
+        "invariant_readout": "logpower mean/std,lag1/2 normalized complex correlation,4 positional logpower means",
+        "readout_channels_per_complex_channel": 10,
+        "embedding_dimension": 160,
+        "classifier_scale": 30.0,
+        "original_real_frequency_path_retained": true,
+        "raw_unconstrained_identity_bypass": false,
+        "interpretation": "Received relative filter/polynomial energy is retained by normalization;not recovered TX PA/IQ coefficients or arbitrary RX/channel invariance",
+        "normalization_scope": "one complex power mean across all channels and time per packet per block",
+        "per_channel_sample_dependent_rms_normalization": false,
+        "relative_filter_channel_energy_preserved_by_normalization_only": true,
+        "learned_channel_scales_retained": true,
+        "new_trainable_parameters": 2,
+        "relative_energy_after_gate": "may change through learned radial gate;not fixed",
+        "learned_channel_scales_may_change_energy_ratios": true,
+        "identity_core": "adaptive_volterra_identity",
+        "estimator_window": [
+          80,
+          160
+        ],
+        "estimator_period_samples": 20,
+        "relative_frequency_alias_hz": 1250000,
+        "alignment_strength": 0.0,
+        "alignment_parameters": 0,
+        "alignment_packet_specific": false,
+        "alignment_class_specific": false,
+        "alignment_rx_specific": false,
+        "waveform_operator": "x[n]exp(-j alpha omega n);raw variant returns x exactly",
+        "whole_affine_phase_invariant": false,
+        "alignment_interpretation": "fixed received frequency retention;not TX/RX oscillator proportion",
+        "prototype_only": false,
+        "behavior_input": "lag4 envelope control plus signed tanh-gated delayed cubic residual",
+        "envelope_lag": 4,
+        "actual_envelope_lag": 4,
+        "envelope_average_weights": [
+          0.5,
+          0.5
+        ],
+        "behavior_terms": 12,
+        "original_position_power_readout_retained": true,
+        "no_frequency_correction": true,
+        "full_GMP": false,
+        "hardware_parameter_recovery": false,
+        "phase_lag": 4,
+        "actual_phase_lag": 4,
+        "adaptive_lift_active": true,
+        "mixture_parameter_shape": [
+          2
+        ],
+        "actual_mixture_parameter_shape": [
+          2
+        ],
+        "mixture_initial_raw": [
+          0.0,
+          0.0
+        ],
+        "mixture_rule": "base+tanh(raw)*(proposal-base)",
+        "mixture_scope": "two global identity model parameters trained only by source CE",
+        "mixture_parameter_count": 2,
+        "initial_function": "exact scratch coupled_lag4 function under matching scratch RNG",
+        "cubic_divisor": 4,
+        "cubic_delays": [
+          4,
+          4,
+          8
+        ],
+        "cubic_conjugate_last": true,
+        "lift_affine_phase_covariant": true,
+        "complete_volterra": false
+      },
+      "frozen_synthetic": {
+        "status": "FROZEN_SYNTHETIC_DIAGNOSTIC_COMPLETE",
+        "synthetic_only": true,
+        "training_augmentation": false,
+        "formal_data_access": false,
+        "target_access": false,
+        "model_updated": false,
+        "hardware_parameter_recovery": false,
+        "normalization": {
+          "scope": "Actual conv outputs and one shared normalization gain only;learned scales/gates excluded;not TX/RX causal separation",
+          "records": [
+            {
+              "block": "time.0",
+              "eligible_packets": 30,
+              "relative_energy_fraction_max_error": 2.9802322387695312e-08,
+              "relative_energy_fraction_variance_mean": 0.0005085545708425343
+            },
+            {
+              "block": "time.1",
+              "eligible_packets": 30,
+              "relative_energy_fraction_max_error": 2.2351741790771484e-08,
+              "relative_energy_fraction_variance_mean": 0.0002728840918280184
+            },
+            {
+              "block": "time.2",
+              "eligible_packets": 30,
+              "relative_energy_fraction_max_error": 1.1175870895385742e-08,
+              "relative_energy_fraction_variance_mean": 0.00019239954417571425
+            },
+            {
+              "block": "behavior.0",
+              "eligible_packets": 30,
+              "relative_energy_fraction_max_error": 2.2351741790771484e-08,
+              "relative_energy_fraction_variance_mean": 0.00044295296538621187
+            },
+            {
+              "block": "behavior.1",
+              "eligible_packets": 30,
+              "relative_energy_fraction_max_error": 2.2351741790771484e-08,
+              "relative_energy_fraction_variance_mean": 0.00018818507669493556
+            },
+            {
+              "block": "behavior.2",
+              "eligible_packets": 30,
+              "relative_energy_fraction_max_error": 1.862645149230957e-08,
+              "relative_energy_fraction_variance_mean": 0.00016469255206175148
+            }
+          ],
+          "blocks": 6
+        },
+        "adaptive_input": {
+          "scope": "Actual adaptive input versus lag4 control; source/public IQ only; not identified TX hardware",
+          "active": true,
+          "raw_parameters": [
+            -0.00040994389564730227,
+            -0.0004376110155135393
+          ],
+          "coefficients": [
+            -0.0004099438665434718,
+            -0.00043761098640970886
+          ],
+          "records": [
+            {
+              "block": "behavior.0.conv",
+              "packets": 30,
+              "complex_terms": 12,
+              "actual_phase_lag": 4,
+              "actual_envelope_lag": 4,
+              "input_formula_max_abs_error": 0.0,
+              "input_abs_max": 1.2937272787094116,
+              "degree3_relative_input_change_mean": 0.0006623352528549731,
+              "degree5_relative_input_change_mean": 0.0007243916625156999
+            }
+          ]
+        },
+        "alignment_strength": 0.0,
+        "phase_audit": [
+          {
+            "theta_radians": 0.37,
+            "received_cfo_hz": 0.0,
+            "whole_logit_max_abs_error": 1.2516975402832031e-05,
+            "whole_unit_embedding_max_distance": 2.8156396183476318e-06,
+            "estimated_cfo_principal_branch_crossing_count": 0,
+            "valid_correlation_count": 30,
+            "covariance_eligible_count": 30,
+            "partial_waveform_covariance_max_error": 0.0
+          },
+          {
+            "theta_radians": -1.2,
+            "received_cfo_hz": 80000.0,
+            "whole_logit_max_abs_error": 1.2402909994125366,
+            "whole_unit_embedding_max_distance": 0.4000861346721649,
+            "estimated_cfo_principal_branch_crossing_count": 0,
+            "valid_correlation_count": 30,
+            "covariance_eligible_count": 30,
+            "partial_waveform_covariance_max_error": 0.0
+          },
+          {
+            "theta_radians": 2.9,
+            "received_cfo_hz": -80000.0,
+            "whole_logit_max_abs_error": 1.3070495128631592,
+            "whole_unit_embedding_max_distance": 0.35370397567749023,
+            "estimated_cfo_principal_branch_crossing_count": 0,
+            "valid_correlation_count": 30,
+            "covariance_eligible_count": 30,
+            "partial_waveform_covariance_max_error": 0.0
+          }
+        ],
+        "phase_numeric_tolerance": 0.001,
+        "phase_tolerance_scope": "Report only;not ranking or stopping",
+        "phase_tolerance_pass": true,
+        "whole_affine_phase_invariant_claim": false,
+        "coordinate_reconstruction_max_error": 0.0,
+        "sample_amplitude_max_error": 0.0,
+        "synchronizer": {
+          "relative_cfo_hz_mean": 13333.33203125,
+          "relative_cfo_hz_min": 0.0,
+          "relative_cfo_hz_max": 79999.9921875,
+          "coherence_mean": 1.0,
+          "fallback_fraction": 0.0,
+          "principal_branch_margin_hz_min": 545000.0,
+          "scope": "Last source batch only;relative CFO modulo1.25MHz;not TX oscillator measurement"
+        },
+        "records": [
+          {
+            "tx": "ideal",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              1.2193248271942139,
+              -0.6065577864646912,
+              0.7248466610908508,
+              1.2566471099853516,
+              -2.5639379024505615,
+              -0.70131516456604
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 5.971309064989327e-07,
+            "source_classifier_logits": [
+              1.2193224430084229,
+              -0.6065599918365479,
+              0.724845290184021,
+              1.2566497325897217,
+              -2.5639379024505615,
+              -0.7013147473335266
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.32564565539360046,
+            "source_classifier_logits": [
+              0.6703414916992188,
+              -0.15323370695114136,
+              -0.026744026690721512,
+              0.684407651424408,
+              -2.5715012550354004,
+              -1.5114063024520874
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.08252338320016861,
+            "source_classifier_logits": [
+              1.405684232711792,
+              -0.6841548681259155,
+              0.5902054309844971,
+              1.3986709117889404,
+              -2.68408203125,
+              -0.7374143600463867
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.02806360088288784,
+            "source_classifier_logits": [
+              1.2914842367172241,
+              -0.6193316578865051,
+              0.6980499029159546,
+              1.3107250928878784,
+              -2.423197031021118,
+              -0.6193801760673523
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.004904496483504772,
+            "source_classifier_logits": [
+              1.2317233085632324,
+              -0.5923606157302856,
+              0.7276562452316284,
+              1.2252576351165771,
+              -2.5771303176879883,
+              -0.7164856791496277
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              1.2317230701446533,
+              -0.5923600196838379,
+              0.7276562452316284,
+              1.2252578735351562,
+              -2.5771305561065674,
+              -0.7164857983589172
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 9.725268910187879e-07,
+            "source_classifier_logits": [
+              1.2317267656326294,
+              -0.5923630595207214,
+              0.727656364440918,
+              1.225254774093628,
+              -2.5771310329437256,
+              -0.7164843678474426
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.32637718319892883,
+            "source_classifier_logits": [
+              0.6912183165550232,
+              -0.1493552327156067,
+              -0.04315327852964401,
+              0.6684510707855225,
+              -2.5931403636932373,
+              -1.5244979858398438
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.08389762043952942,
+            "source_classifier_logits": [
+              1.4218400716781616,
+              -0.6805318593978882,
+              0.5885138511657715,
+              1.375518560409546,
+              -2.709820508956909,
+              -0.7538658976554871
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.026719680055975914,
+            "source_classifier_logits": [
+              1.3089333772659302,
+              -0.6084259152412415,
+              0.697356641292572,
+              1.2853333950042725,
+              -2.4428586959838867,
+              -0.635212242603302
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.004053443670272827,
+            "source_classifier_logits": [
+              1.2434773445129395,
+              -0.5813606381416321,
+              0.7284726500511169,
+              1.1992824077606201,
+              -2.590322732925415,
+              -0.7308885455131531
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              1.2069637775421143,
+              -0.6005296111106873,
+              0.7296561598777771,
+              1.2631950378417969,
+              -2.559386730194092,
+              -0.7133683562278748
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 4.257020975728665e-07,
+            "source_classifier_logits": [
+              1.2069631814956665,
+              -0.6005315184593201,
+              0.729655385017395,
+              1.26319420337677,
+              -2.55938720703125,
+              -0.713368833065033
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.32419949769973755,
+            "source_classifier_logits": [
+              0.6801875233650208,
+              -0.16199815273284912,
+              -0.02141011878848076,
+              0.6803511381149292,
+              -2.5738823413848877,
+              -1.5169416666030884
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.08174539357423782,
+            "source_classifier_logits": [
+              1.3918132781982422,
+              -0.6745643615722656,
+              0.5944578051567078,
+              1.3982058763504028,
+              -2.679335117340088,
+              -0.7468593716621399
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.02952324040234089,
+            "source_classifier_logits": [
+              1.271584391593933,
+              -0.6094387769699097,
+              0.7087827920913696,
+              1.3132376670837402,
+              -2.415062189102173,
+              -0.6265358924865723
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.005755429621785879,
+            "source_classifier_logits": [
+              1.2179651260375977,
+              -0.5841319561004639,
+              0.7348147630691528,
+              1.2286920547485352,
+              -2.5691306591033936,
+              -0.7273142337799072
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              1.2914842367172241,
+              -0.6193316578865051,
+              0.6980499029159546,
+              1.3107250928878784,
+              -2.423197031021118,
+              -0.6193801760673523
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 8.838213716444443e-07,
+            "source_classifier_logits": [
+              1.2914808988571167,
+              -0.6193285584449768,
+              0.6980489492416382,
+              1.3107270002365112,
+              -2.4231972694396973,
+              -0.6193796992301941
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.3537038564682007,
+            "source_classifier_logits": [
+              0.8549206256866455,
+              -0.08188381791114807,
+              -0.18592312932014465,
+              0.5579010248184204,
+              -2.3439629077911377,
+              -1.591030240058899
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.09627685695886612,
+            "source_classifier_logits": [
+              1.4749467372894287,
+              -0.6855013370513916,
+              0.5180753469467163,
+              1.4671428203582764,
+              -2.592409133911133,
+              -0.706762433052063
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.023711903020739555,
+            "source_classifier_logits": [
+              1.3876038789749146,
+              -0.6379936933517456,
+              0.633268415927887,
+              1.3959881067276,
+              -2.3189280033111572,
+              -0.5622016191482544
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.004486303776502609,
+            "source_classifier_logits": [
+              1.3068796396255493,
+              -0.6079164147377014,
+              0.6982457041740417,
+              1.2817646265029907,
+              -2.447472095489502,
+              -0.6391289830207825
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              1.1982879638671875,
+              -0.5910600423812866,
+              0.6964159607887268,
+              1.285900354385376,
+              -2.5432326793670654,
+              -0.667900562286377
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 7.178591090450936e-07,
+            "source_classifier_logits": [
+              1.198285698890686,
+              -0.5910575985908508,
+              0.6964150667190552,
+              1.2859008312225342,
+              -2.543234348297119,
+              -0.6679003834724426
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.31297314167022705,
+            "source_classifier_logits": [
+              0.7298380136489868,
+              -0.20781251788139343,
+              0.07956773042678833,
+              0.8388065695762634,
+              -2.6205453872680664,
+              -1.5261579751968384
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0822778269648552,
+            "source_classifier_logits": [
+              1.3732154369354248,
+              -0.6557852625846863,
+              0.5714428424835205,
+              1.424349069595337,
+              -2.7005221843719482,
+              -0.756495475769043
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.02698621340095997,
+            "source_classifier_logits": [
+              1.2863574028015137,
+              -0.5992047190666199,
+              0.6671381592750549,
+              1.345553994178772,
+              -2.39876389503479,
+              -0.5874886512756348
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.004495133645832539,
+            "source_classifier_logits": [
+              1.2106835842132568,
+              -0.577332079410553,
+              0.6966386437416077,
+              1.2560750246047974,
+              -2.5576493740081787,
+              -0.6903022527694702
+            ]
+          }
+        ],
+        "isolated_tx_changes": [
+          {
+            "tx": "tx_am_am",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.004904496483504772
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.0030672335997223854
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.02806360088288784
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.021607983857393265
+          }
+        ],
+        "confounds": {
+          "iq_tx_rx_waveform_max_error": 0.0,
+          "cubic_tx_rx_waveform_max_error": 3.3306690738754696e-16
+        },
+        "simulated_chain": "Existing100Msps steadyLSTF TX->channel->RX->12toneprojection->25Msps relativeCFO/RMS",
+        "exact_wisig_equalizer": false,
+        "identity_accuracy": "N/A:public TX settings are not actual source identity labels",
+        "claim": "Whole constantphase property and partial waveform frequency covariance when valid/no branch crossing;alpha is not TX/RX oscillator fraction;no arbitraryRX/LTI invariance"
+      }
+    },
+    {
+      "seed": 2026092704,
+      "variant": "adaptive_volterra_lag1",
+      "losses": [
+        {
+          "kind": "random",
+          "ce": 3.4989311695098877
+        },
+        {
+          "kind": "weak",
+          "ce": 2.840981960296631
+        },
+        {
+          "kind": "constant",
+          "ce": 1.4833505153656006
+        }
+      ],
+      "contract": {
+        "mode": "adaptive_volterra_lag1",
+        "input": "received_equalized1_unit_rms_IQ",
+        "sample_rate_hz": 25000000,
+        "whole_identity_global_phase_invariant_real_arithmetic": true,
+        "global_phase_equivariant_until_readout": true,
+        "removes_linear_phase": false,
+        "arbitrary_channel_rx_invariant": false,
+        "hardware_parameter_estimation": false,
+        "time_complex_channels": [
+          24,
+          24,
+          32,
+          32
+        ],
+        "time_kernels": [
+          5,
+          5,
+          3
+        ],
+        "time_strides": [
+          2,
+          2,
+          1
+        ],
+        "behavior_orders": [
+          1,
+          3,
+          5
+        ],
+        "behavior_delays": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "radial_clip": 4.0,
+        "order_scale_base": 2.0,
+        "behavior_complex_channels": [
+          12,
+          24,
+          32,
+          32
+        ],
+        "behavior_kernels": [
+          7,
+          5,
+          3
+        ],
+        "behavior_dilations": [
+          1,
+          2,
+          4
+        ],
+        "behavior_causal_filters": true,
+        "per_packet_complex_rms_normalization": true,
+        "complex_bias": false,
+        "radial_gate": "2sigmoid(a*log1p(power)+b)",
+        "invariant_readout": "logpower mean/std,lag1/2 normalized complex correlation,4 positional logpower means",
+        "readout_channels_per_complex_channel": 10,
+        "embedding_dimension": 160,
+        "classifier_scale": 30.0,
+        "original_real_frequency_path_retained": true,
+        "raw_unconstrained_identity_bypass": false,
+        "interpretation": "Received relative filter/polynomial energy is retained by normalization;not recovered TX PA/IQ coefficients or arbitrary RX/channel invariance",
+        "normalization_scope": "one complex power mean across all channels and time per packet per block",
+        "per_channel_sample_dependent_rms_normalization": false,
+        "relative_filter_channel_energy_preserved_by_normalization_only": true,
+        "learned_channel_scales_retained": true,
+        "new_trainable_parameters": 2,
+        "relative_energy_after_gate": "may change through learned radial gate;not fixed",
+        "learned_channel_scales_may_change_energy_ratios": true,
+        "identity_core": "adaptive_volterra_identity",
+        "estimator_window": [
+          80,
+          160
+        ],
+        "estimator_period_samples": 20,
+        "relative_frequency_alias_hz": 1250000,
+        "alignment_strength": 0.0,
+        "alignment_parameters": 0,
+        "alignment_packet_specific": false,
+        "alignment_class_specific": false,
+        "alignment_rx_specific": false,
+        "waveform_operator": "x[n]exp(-j alpha omega n);raw variant returns x exactly",
+        "whole_affine_phase_invariant": false,
+        "alignment_interpretation": "fixed received frequency retention;not TX/RX oscillator proportion",
+        "prototype_only": false,
+        "behavior_input": "lag4 envelope control plus signed tanh-gated delayed cubic residual",
+        "envelope_lag": 4,
+        "actual_envelope_lag": 4,
+        "envelope_average_weights": [
+          0.5,
+          0.5
+        ],
+        "behavior_terms": 12,
+        "original_position_power_readout_retained": true,
+        "no_frequency_correction": true,
+        "full_GMP": false,
+        "hardware_parameter_recovery": false,
+        "phase_lag": 1,
+        "actual_phase_lag": 1,
+        "adaptive_lift_active": true,
+        "mixture_parameter_shape": [
+          2
+        ],
+        "actual_mixture_parameter_shape": [
+          2
+        ],
+        "mixture_initial_raw": [
+          0.0,
+          0.0
+        ],
+        "mixture_rule": "base+tanh(raw)*(proposal-base)",
+        "mixture_scope": "two global identity model parameters trained only by source CE",
+        "mixture_parameter_count": 2,
+        "initial_function": "exact scratch coupled_lag4 function under matching scratch RNG",
+        "cubic_divisor": 4,
+        "cubic_delays": [
+          1,
+          1,
+          2
+        ],
+        "cubic_conjugate_last": true,
+        "lift_affine_phase_covariant": true,
+        "complete_volterra": false
+      },
+      "frozen_synthetic": {
+        "status": "FROZEN_SYNTHETIC_DIAGNOSTIC_COMPLETE",
+        "synthetic_only": true,
+        "training_augmentation": false,
+        "formal_data_access": false,
+        "target_access": false,
+        "model_updated": false,
+        "hardware_parameter_recovery": false,
+        "normalization": {
+          "scope": "Actual conv outputs and one shared normalization gain only;learned scales/gates excluded;not TX/RX causal separation",
+          "records": [
+            {
+              "block": "time.0",
+              "eligible_packets": 30,
+              "relative_energy_fraction_max_error": 2.9802322387695312e-08,
+              "relative_energy_fraction_variance_mean": 0.0005834799376316369
+            },
+            {
+              "block": "time.1",
+              "eligible_packets": 30,
+              "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+              "relative_energy_fraction_variance_mean": 0.0001808694505598396
+            },
+            {
+              "block": "time.2",
+              "eligible_packets": 30,
+              "relative_energy_fraction_max_error": 1.862645149230957e-08,
+              "relative_energy_fraction_variance_mean": 0.000222125556319952
+            },
+            {
+              "block": "behavior.0",
+              "eligible_packets": 30,
+              "relative_energy_fraction_max_error": 2.2351741790771484e-08,
+              "relative_energy_fraction_variance_mean": 0.0002919816761277616
+            },
+            {
+              "block": "behavior.1",
+              "eligible_packets": 30,
+              "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+              "relative_energy_fraction_variance_mean": 0.00017964813741855323
+            },
+            {
+              "block": "behavior.2",
+              "eligible_packets": 30,
+              "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+              "relative_energy_fraction_variance_mean": 0.00021697401825804263
+            }
+          ],
+          "blocks": 6
+        },
+        "adaptive_input": {
+          "scope": "Actual adaptive input versus lag4 control; source/public IQ only; not identified TX hardware",
+          "active": true,
+          "raw_parameters": [
+            0.0004371671820990741,
+            -0.0004376016731839627
+          ],
+          "coefficients": [
+            0.00043716715299524367,
+            -0.00043760164408013225
+          ],
+          "records": [
+            {
+              "block": "behavior.0.conv",
+              "packets": 30,
+              "complex_terms": 12,
+              "actual_phase_lag": 1,
+              "actual_envelope_lag": 4,
+              "input_formula_max_abs_error": 0.0,
+              "input_abs_max": 1.2937272787094116,
+              "degree3_relative_input_change_mean": 0.0004366199136711657,
+              "degree5_relative_input_change_mean": 0.0004059878410771489
+            }
+          ]
+        },
+        "alignment_strength": 0.0,
+        "phase_audit": [
+          {
+            "theta_radians": 0.37,
+            "received_cfo_hz": 0.0,
+            "whole_logit_max_abs_error": 9.059906005859375e-06,
+            "whole_unit_embedding_max_distance": 2.102247435686877e-06,
+            "estimated_cfo_principal_branch_crossing_count": 0,
+            "valid_correlation_count": 30,
+            "covariance_eligible_count": 30,
+            "partial_waveform_covariance_max_error": 0.0
+          },
+          {
+            "theta_radians": -1.2,
+            "received_cfo_hz": 80000.0,
+            "whole_logit_max_abs_error": 1.2106223106384277,
+            "whole_unit_embedding_max_distance": 0.25235414505004883,
+            "estimated_cfo_principal_branch_crossing_count": 0,
+            "valid_correlation_count": 30,
+            "covariance_eligible_count": 30,
+            "partial_waveform_covariance_max_error": 0.0
+          },
+          {
+            "theta_radians": 2.9,
+            "received_cfo_hz": -80000.0,
+            "whole_logit_max_abs_error": 1.1078035831451416,
+            "whole_unit_embedding_max_distance": 0.2190624177455902,
+            "estimated_cfo_principal_branch_crossing_count": 0,
+            "valid_correlation_count": 30,
+            "covariance_eligible_count": 30,
+            "partial_waveform_covariance_max_error": 0.0
+          }
+        ],
+        "phase_numeric_tolerance": 0.001,
+        "phase_tolerance_scope": "Report only;not ranking or stopping",
+        "phase_tolerance_pass": true,
+        "whole_affine_phase_invariant_claim": false,
+        "coordinate_reconstruction_max_error": 0.0,
+        "sample_amplitude_max_error": 0.0,
+        "synchronizer": {
+          "relative_cfo_hz_mean": 13333.33203125,
+          "relative_cfo_hz_min": 0.0,
+          "relative_cfo_hz_max": 79999.9921875,
+          "coherence_mean": 1.0,
+          "fallback_fraction": 0.0,
+          "principal_branch_margin_hz_min": 545000.0,
+          "scope": "Last source batch only;relative CFO modulo1.25MHz;not TX oscillator measurement"
+        },
+        "records": [
+          {
+            "tx": "ideal",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              -1.079095482826233,
+              4.242485046386719,
+              0.6339394450187683,
+              1.999418020248413,
+              -6.136899471282959,
+              -1.1892051696777344
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 6.435510613300721e-07,
+            "source_classifier_logits": [
+              -1.0790973901748657,
+              4.242487907409668,
+              0.6339375376701355,
+              1.9994192123413086,
+              -6.136898040771484,
+              -1.1892064809799194
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.2007034569978714,
+            "source_classifier_logits": [
+              -0.874206006526947,
+              4.536991596221924,
+              -0.3655470907688141,
+              2.0178210735321045,
+              -5.738890171051025,
+              -0.885474443435669
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.07339539378881454,
+            "source_classifier_logits": [
+              -1.0302873849868774,
+              4.187546253204346,
+              0.7190561890602112,
+              2.1197993755340576,
+              -5.918492794036865,
+              -1.0429199934005737
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.03008611872792244,
+            "source_classifier_logits": [
+              -1.052728295326233,
+              4.203022003173828,
+              0.5778733491897583,
+              2.046516180038452,
+              -6.052526950836182,
+              -1.1494669914245605
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.009614990092813969,
+            "source_classifier_logits": [
+              -1.0557751655578613,
+              4.210142135620117,
+              0.655295729637146,
+              2.0110666751861572,
+              -6.11038064956665,
+              -1.1659436225891113
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              -1.0557756423950195,
+              4.210142135620117,
+              0.6552958488464355,
+              2.011066198348999,
+              -6.110381126403809,
+              -1.1659437417984009
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 6.658282813987171e-07,
+            "source_classifier_logits": [
+              -1.0557770729064941,
+              4.210143089294434,
+              0.6552945971488953,
+              2.0110630989074707,
+              -6.110382080078125,
+              -1.1659455299377441
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.19882678985595703,
+            "source_classifier_logits": [
+              -0.883657693862915,
+              4.513106346130371,
+              -0.3653615713119507,
+              2.0171048641204834,
+              -5.745223045349121,
+              -0.8803422451019287
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0681636705994606,
+            "source_classifier_logits": [
+              -1.0255887508392334,
+              4.178586483001709,
+              0.7291844487190247,
+              2.1199586391448975,
+              -5.908346176147461,
+              -1.047257661819458
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.025404363870620728,
+            "source_classifier_logits": [
+              -1.044731855392456,
+              4.194527626037598,
+              0.5901748538017273,
+              2.0534472465515137,
+              -6.02842903137207,
+              -1.1430630683898926
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.007111615035682917,
+            "source_classifier_logits": [
+              -1.0384697914123535,
+              4.187310695648193,
+              0.6701093316078186,
+              2.020606756210327,
+              -6.08811092376709,
+              -1.151023268699646
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              -1.0885539054870605,
+              4.251392364501953,
+              0.6359196901321411,
+              2.0061087608337402,
+              -6.145803928375244,
+              -1.201347827911377
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 4.869476128988026e-07,
+            "source_classifier_logits": [
+              -1.0885549783706665,
+              4.251392364501953,
+              0.6359213590621948,
+              2.006107807159424,
+              -6.145801544189453,
+              -1.201347827911377
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.20155872404575348,
+            "source_classifier_logits": [
+              -0.8734796643257141,
+              4.5338053703308105,
+              -0.36110424995422363,
+              2.0156960487365723,
+              -5.742145538330078,
+              -0.8915586471557617
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.07754697650671005,
+            "source_classifier_logits": [
+              -1.0336438417434692,
+              4.162939071655273,
+              0.7363209128379822,
+              2.1294736862182617,
+              -5.924841403961182,
+              -1.0324119329452515
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0338730663061142,
+            "source_classifier_logits": [
+              -1.0555734634399414,
+              4.189767360687256,
+              0.5935794711112976,
+              2.057581663131714,
+              -6.052709579467773,
+              -1.1465113162994385
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.011997959576547146,
+            "source_classifier_logits": [
+              -1.0592135190963745,
+              4.207755088806152,
+              0.6627965569496155,
+              2.020709276199341,
+              -6.119154930114746,
+              -1.168713092803955
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              -1.052728295326233,
+              4.203022003173828,
+              0.5778733491897583,
+              2.046516180038452,
+              -6.052526950836182,
+              -1.1494669914245605
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 7.651555051779724e-07,
+            "source_classifier_logits": [
+              -1.0527297258377075,
+              4.2030229568481445,
+              0.5778741240501404,
+              2.046513080596924,
+              -6.052526473999023,
+              -1.1494667530059814
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.2190621942281723,
+            "source_classifier_logits": [
+              -0.9709609746932983,
+              4.503834247589111,
+              -0.5299307107925415,
+              2.0280075073242188,
+              -5.85298490524292,
+              -0.8481729626655579
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.06019046530127525,
+            "source_classifier_logits": [
+              -1.0535190105438232,
+              4.209360122680664,
+              0.631843626499176,
+              2.119802474975586,
+              -5.917995452880859,
+              -1.0353871583938599
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.017444852739572525,
+            "source_classifier_logits": [
+              -1.079532504081726,
+              4.212199687957764,
+              0.5003727674484253,
+              2.052302122116089,
+              -6.001142978668213,
+              -1.1692560911178589
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0048835850320756435,
+            "source_classifier_logits": [
+              -1.044646978378296,
+              4.195417404174805,
+              0.5928683280944824,
+              2.053151845932007,
+              -6.031742572784424,
+              -1.1416212320327759
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              -1.1190752983093262,
+              4.298760414123535,
+              0.6623651385307312,
+              2.0062382221221924,
+              -6.097232341766357,
+              -1.167639136314392
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 7.850350129956496e-07,
+            "source_classifier_logits": [
+              -1.119075059890747,
+              4.298761367797852,
+              0.6623625755310059,
+              2.0062410831451416,
+              -6.097229957580566,
+              -1.167640209197998
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.19329816102981567,
+            "source_classifier_logits": [
+              -0.8222007155418396,
+              4.575916290283203,
+              -0.2917855679988861,
+              1.987254023551941,
+              -5.678847789764404,
+              -0.8690503835678101
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.08252894878387451,
+            "source_classifier_logits": [
+              -1.0874078273773193,
+              4.129976272583008,
+              0.7658981680870056,
+              2.1578643321990967,
+              -5.908848762512207,
+              -0.9713245630264282
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.029240259900689125,
+            "source_classifier_logits": [
+              -1.0964999198913574,
+              4.239405632019043,
+              0.6094416975975037,
+              2.0653769969940186,
+              -6.014431476593018,
+              -1.1218522787094116
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.006456529255956411,
+            "source_classifier_logits": [
+              -1.0953269004821777,
+              4.277633190155029,
+              0.6777786016464233,
+              2.0173115730285645,
+              -6.084262847900391,
+              -1.1522550582885742
+            ]
+          }
+        ],
+        "isolated_tx_changes": [
+          {
+            "tx": "tx_am_am",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.009614990092813969
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.003001162549480796
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.03008611872792244
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.01294482871890068
+          }
+        ],
+        "confounds": {
+          "iq_tx_rx_waveform_max_error": 0.0,
+          "cubic_tx_rx_waveform_max_error": 3.3306690738754696e-16
+        },
+        "simulated_chain": "Existing100Msps steadyLSTF TX->channel->RX->12toneprojection->25Msps relativeCFO/RMS",
+        "exact_wisig_equalizer": false,
+        "identity_accuracy": "N/A:public TX settings are not actual source identity labels",
+        "claim": "Whole constantphase property and partial waveform frequency covariance when valid/no branch crossing;alpha is not TX/RX oscillator fraction;no arbitraryRX/LTI invariance"
+      }
+    },
+    {
+      "seed": 2026092704,
+      "variant": "adaptive_volterra_lag4",
+      "losses": [
+        {
+          "kind": "random",
+          "ce": 3.4989311695098877
+        },
+        {
+          "kind": "weak",
+          "ce": 2.840981960296631
+        },
+        {
+          "kind": "constant",
+          "ce": 1.483350396156311
+        }
+      ],
+      "contract": {
+        "mode": "adaptive_volterra_lag4",
+        "input": "received_equalized1_unit_rms_IQ",
+        "sample_rate_hz": 25000000,
+        "whole_identity_global_phase_invariant_real_arithmetic": true,
+        "global_phase_equivariant_until_readout": true,
+        "removes_linear_phase": false,
+        "arbitrary_channel_rx_invariant": false,
+        "hardware_parameter_estimation": false,
+        "time_complex_channels": [
+          24,
+          24,
+          32,
+          32
+        ],
+        "time_kernels": [
+          5,
+          5,
+          3
+        ],
+        "time_strides": [
+          2,
+          2,
+          1
+        ],
+        "behavior_orders": [
+          1,
+          3,
+          5
+        ],
+        "behavior_delays": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "radial_clip": 4.0,
+        "order_scale_base": 2.0,
+        "behavior_complex_channels": [
+          12,
+          24,
+          32,
+          32
+        ],
+        "behavior_kernels": [
+          7,
+          5,
+          3
+        ],
+        "behavior_dilations": [
+          1,
+          2,
+          4
+        ],
+        "behavior_causal_filters": true,
+        "per_packet_complex_rms_normalization": true,
+        "complex_bias": false,
+        "radial_gate": "2sigmoid(a*log1p(power)+b)",
+        "invariant_readout": "logpower mean/std,lag1/2 normalized complex correlation,4 positional logpower means",
+        "readout_channels_per_complex_channel": 10,
+        "embedding_dimension": 160,
+        "classifier_scale": 30.0,
+        "original_real_frequency_path_retained": true,
+        "raw_unconstrained_identity_bypass": false,
+        "interpretation": "Received relative filter/polynomial energy is retained by normalization;not recovered TX PA/IQ coefficients or arbitrary RX/channel invariance",
+        "normalization_scope": "one complex power mean across all channels and time per packet per block",
+        "per_channel_sample_dependent_rms_normalization": false,
+        "relative_filter_channel_energy_preserved_by_normalization_only": true,
+        "learned_channel_scales_retained": true,
+        "new_trainable_parameters": 2,
+        "relative_energy_after_gate": "may change through learned radial gate;not fixed",
+        "learned_channel_scales_may_change_energy_ratios": true,
+        "identity_core": "adaptive_volterra_identity",
+        "estimator_window": [
+          80,
+          160
+        ],
+        "estimator_period_samples": 20,
+        "relative_frequency_alias_hz": 1250000,
+        "alignment_strength": 0.0,
+        "alignment_parameters": 0,
+        "alignment_packet_specific": false,
+        "alignment_class_specific": false,
+        "alignment_rx_specific": false,
+        "waveform_operator": "x[n]exp(-j alpha omega n);raw variant returns x exactly",
+        "whole_affine_phase_invariant": false,
+        "alignment_interpretation": "fixed received frequency retention;not TX/RX oscillator proportion",
+        "prototype_only": false,
+        "behavior_input": "lag4 envelope control plus signed tanh-gated delayed cubic residual",
+        "envelope_lag": 4,
+        "actual_envelope_lag": 4,
+        "envelope_average_weights": [
+          0.5,
+          0.5
+        ],
+        "behavior_terms": 12,
+        "original_position_power_readout_retained": true,
+        "no_frequency_correction": true,
+        "full_GMP": false,
+        "hardware_parameter_recovery": false,
+        "phase_lag": 4,
+        "actual_phase_lag": 4,
+        "adaptive_lift_active": true,
+        "mixture_parameter_shape": [
+          2
+        ],
+        "actual_mixture_parameter_shape": [
+          2
+        ],
+        "mixture_initial_raw": [
+          0.0,
+          0.0
+        ],
+        "mixture_rule": "base+tanh(raw)*(proposal-base)",
+        "mixture_scope": "two global identity model parameters trained only by source CE",
+        "mixture_parameter_count": 2,
+        "initial_function": "exact scratch coupled_lag4 function under matching scratch RNG",
+        "cubic_divisor": 4,
+        "cubic_delays": [
+          4,
+          4,
+          8
+        ],
+        "cubic_conjugate_last": true,
+        "lift_affine_phase_covariant": true,
+        "complete_volterra": false
+      },
+      "frozen_synthetic": {
+        "status": "FROZEN_SYNTHETIC_DIAGNOSTIC_COMPLETE",
+        "synthetic_only": true,
+        "training_augmentation": false,
+        "formal_data_access": false,
+        "target_access": false,
+        "model_updated": false,
+        "hardware_parameter_recovery": false,
+        "normalization": {
+          "scope": "Actual conv outputs and one shared normalization gain only;learned scales/gates excluded;not TX/RX causal separation",
+          "records": [
+            {
+              "block": "time.0",
+              "eligible_packets": 30,
+              "relative_energy_fraction_max_error": 2.9802322387695312e-08,
+              "relative_energy_fraction_variance_mean": 0.0005834799376316369
+            },
+            {
+              "block": "time.1",
+              "eligible_packets": 30,
+              "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+              "relative_energy_fraction_variance_mean": 0.0001808694505598396
+            },
+            {
+              "block": "time.2",
+              "eligible_packets": 30,
+              "relative_energy_fraction_max_error": 1.862645149230957e-08,
+              "relative_energy_fraction_variance_mean": 0.000222125556319952
+            },
+            {
+              "block": "behavior.0",
+              "eligible_packets": 30,
+              "relative_energy_fraction_max_error": 2.2351741790771484e-08,
+              "relative_energy_fraction_variance_mean": 0.00029203647864051163
+            },
+            {
+              "block": "behavior.1",
+              "eligible_packets": 30,
+              "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+              "relative_energy_fraction_variance_mean": 0.00017963979917112738
+            },
+            {
+              "block": "behavior.2",
+              "eligible_packets": 30,
+              "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+              "relative_energy_fraction_variance_mean": 0.00021696618932764977
+            }
+          ],
+          "blocks": 6
+        },
+        "adaptive_input": {
+          "scope": "Actual adaptive input versus lag4 control; source/public IQ only; not identified TX hardware",
+          "active": true,
+          "raw_parameters": [
+            0.0004371732356958091,
+            -0.0004376104916445911
+          ],
+          "coefficients": [
+            0.00043717320659197867,
+            -0.00043761046254076064
+          ],
+          "records": [
+            {
+              "block": "behavior.0.conv",
+              "packets": 30,
+              "complex_terms": 12,
+              "actual_phase_lag": 4,
+              "actual_envelope_lag": 4,
+              "input_formula_max_abs_error": 0.0,
+              "input_abs_max": 1.2937272787094116,
+              "degree3_relative_input_change_mean": 0.0007063262746669352,
+              "degree5_relative_input_change_mean": 0.0007243913714773953
+            }
+          ]
+        },
+        "alignment_strength": 0.0,
+        "phase_audit": [
+          {
+            "theta_radians": 0.37,
+            "received_cfo_hz": 0.0,
+            "whole_logit_max_abs_error": 9.059906005859375e-06,
+            "whole_unit_embedding_max_distance": 2.1027549337304663e-06,
+            "estimated_cfo_principal_branch_crossing_count": 0,
+            "valid_correlation_count": 30,
+            "covariance_eligible_count": 30,
+            "partial_waveform_covariance_max_error": 0.0
+          },
+          {
+            "theta_radians": -1.2,
+            "received_cfo_hz": 80000.0,
+            "whole_logit_max_abs_error": 1.2106475830078125,
+            "whole_unit_embedding_max_distance": 0.25235339999198914,
+            "estimated_cfo_principal_branch_crossing_count": 0,
+            "valid_correlation_count": 30,
+            "covariance_eligible_count": 30,
+            "partial_waveform_covariance_max_error": 0.0
+          },
+          {
+            "theta_radians": 2.9,
+            "received_cfo_hz": -80000.0,
+            "whole_logit_max_abs_error": 1.1078200340270996,
+            "whole_unit_embedding_max_distance": 0.21906307339668274,
+            "estimated_cfo_principal_branch_crossing_count": 0,
+            "valid_correlation_count": 30,
+            "covariance_eligible_count": 30,
+            "partial_waveform_covariance_max_error": 0.0
+          }
+        ],
+        "phase_numeric_tolerance": 0.001,
+        "phase_tolerance_scope": "Report only;not ranking or stopping",
+        "phase_tolerance_pass": true,
+        "whole_affine_phase_invariant_claim": false,
+        "coordinate_reconstruction_max_error": 0.0,
+        "sample_amplitude_max_error": 0.0,
+        "synchronizer": {
+          "relative_cfo_hz_mean": 13333.33203125,
+          "relative_cfo_hz_min": 0.0,
+          "relative_cfo_hz_max": 79999.9921875,
+          "coherence_mean": 1.0,
+          "fallback_fraction": 0.0,
+          "principal_branch_margin_hz_min": 545000.0,
+          "scope": "Last source batch only;relative CFO modulo1.25MHz;not TX oscillator measurement"
+        },
+        "records": [
+          {
+            "tx": "ideal",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              -1.0791090726852417,
+              4.24258279800415,
+              0.6339222192764282,
+              1.999492883682251,
+              -6.136822700500488,
+              -1.1892263889312744
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 6.468791298175347e-07,
+            "source_classifier_logits": [
+              -1.0791107416152954,
+              4.242584705352783,
+              0.6339203119277954,
+              1.9994925260543823,
+              -6.136819839477539,
+              -1.1892268657684326
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.20070426166057587,
+            "source_classifier_logits": [
+              -0.8741577863693237,
+              4.53715181350708,
+              -0.3655770421028137,
+              2.0178840160369873,
+              -5.738821506500244,
+              -0.8855316638946533
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.073396235704422,
+            "source_classifier_logits": [
+              -1.030282735824585,
+              4.187621593475342,
+              0.7190547585487366,
+              2.1198930740356445,
+              -5.918407440185547,
+              -1.0429041385650635
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.030086247250437737,
+            "source_classifier_logits": [
+              -1.052738070487976,
+              4.203116416931152,
+              0.5778594613075256,
+              2.0465893745422363,
+              -6.052454948425293,
+              -1.1494839191436768
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.00961505901068449,
+            "source_classifier_logits": [
+              -1.0557879209518433,
+              4.210237503051758,
+              0.6552810668945312,
+              2.0111405849456787,
+              -6.110302448272705,
+              -1.1659650802612305
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              -1.055787205696106,
+              4.210237979888916,
+              0.6552808880805969,
+              2.011140823364258,
+              -6.110302925109863,
+              -1.165964961051941
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 6.991104442022333e-07,
+            "source_classifier_logits": [
+              -1.0557894706726074,
+              4.210240364074707,
+              0.655278742313385,
+              2.011139154434204,
+              -6.11030387878418,
+              -1.1659661531448364
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.19882763922214508,
+            "source_classifier_logits": [
+              -0.8836085796356201,
+              4.513266563415527,
+              -0.36539050936698914,
+              2.0171663761138916,
+              -5.745152473449707,
+              -0.8804001212120056
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0681646391749382,
+            "source_classifier_logits": [
+              -1.0255811214447021,
+              4.178662300109863,
+              0.7291853427886963,
+              2.120051622390747,
+              -5.908259391784668,
+              -1.0472418069839478
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.025404488667845726,
+            "source_classifier_logits": [
+              -1.0447404384613037,
+              4.194619655609131,
+              0.5901636481285095,
+              2.0535221099853516,
+              -6.028356075286865,
+              -1.1430813074111938
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.00711164902895689,
+            "source_classifier_logits": [
+              -1.0384806394577026,
+              4.187405586242676,
+              0.6700934767723083,
+              2.020681381225586,
+              -6.0880303382873535,
+              -1.1510441303253174
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              -1.0885666608810425,
+              4.251490592956543,
+              0.6359022259712219,
+              2.006183624267578,
+              -6.145725250244141,
+              -1.2013691663742065
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 5.238822495812201e-07,
+            "source_classifier_logits": [
+              -1.0885682106018066,
+              4.251491546630859,
+              0.6359028220176697,
+              2.0061826705932617,
+              -6.145724296569824,
+              -1.2013686895370483
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.20155949890613556,
+            "source_classifier_logits": [
+              -0.8734322786331177,
+              4.533966541290283,
+              -0.3611348569393158,
+              2.0157597064971924,
+              -5.742077350616455,
+              -0.8916150331497192
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.07754784822463989,
+            "source_classifier_logits": [
+              -1.0336377620697021,
+              4.163014888763428,
+              0.7363204956054688,
+              2.1295666694641113,
+              -5.924754619598389,
+              -1.0323946475982666
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.03387312591075897,
+            "source_classifier_logits": [
+              -1.0555849075317383,
+              4.189861297607422,
+              0.593566358089447,
+              2.057657480239868,
+              -6.052637100219727,
+              -1.1465297937393188
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.011997967958450317,
+            "source_classifier_logits": [
+              -1.0592252016067505,
+              4.207850933074951,
+              0.6627790927886963,
+              2.0207839012145996,
+              -6.119075775146484,
+              -1.1687347888946533
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              -1.052738070487976,
+              4.203116416931152,
+              0.5778594613075256,
+              2.0465893745422363,
+              -6.052454948425293,
+              -1.1494839191436768
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 7.851168675188092e-07,
+            "source_classifier_logits": [
+              -1.052740454673767,
+              4.203116416931152,
+              0.5778619050979614,
+              2.0465872287750244,
+              -6.05245304107666,
+              -1.1494847536087036
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.21906282007694244,
+            "source_classifier_logits": [
+              -0.9709116220474243,
+              4.503993988037109,
+              -0.5299592614173889,
+              2.0280699729919434,
+              -5.852926731109619,
+              -0.848229706287384
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0601913183927536,
+            "source_classifier_logits": [
+              -1.0535123348236084,
+              4.209433555603027,
+              0.63184654712677,
+              2.1198983192443848,
+              -5.917908668518066,
+              -1.0353639125823975
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.01744474284350872,
+            "source_classifier_logits": [
+              -1.0795422792434692,
+              4.212285995483398,
+              0.5003791451454163,
+              2.0523862838745117,
+              -6.001075267791748,
+              -1.1692770719528198
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.004883581306785345,
+            "source_classifier_logits": [
+              -1.0446557998657227,
+              4.195509433746338,
+              0.5928563475608826,
+              2.053225517272949,
+              -6.031669616699219,
+              -1.1416395902633667
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              -1.1190904378890991,
+              4.298855781555176,
+              0.6623459458351135,
+              2.0063157081604004,
+              -6.0971527099609375,
+              -1.167661190032959
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 7.533547545790498e-07,
+            "source_classifier_logits": [
+              -1.1190903186798096,
+              4.29885721206665,
+              0.6623438000679016,
+              2.006317377090454,
+              -6.0971503257751465,
+              -1.167661428451538
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.1932990849018097,
+            "source_classifier_logits": [
+              -0.82215416431427,
+              4.576076030731201,
+              -0.2918180823326111,
+              1.9873214960098267,
+              -5.678779602050781,
+              -0.869108259677887
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.08252952247858047,
+            "source_classifier_logits": [
+              -1.087407112121582,
+              4.130062580108643,
+              0.765906035900116,
+              2.157961845397949,
+              -5.9087653160095215,
+              -0.9713221788406372
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.029240360483527184,
+            "source_classifier_logits": [
+              -1.0965137481689453,
+              4.23949670791626,
+              0.6094266176223755,
+              2.0654540061950684,
+              -6.014354705810547,
+              -1.121870756149292
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.006456580013036728,
+            "source_classifier_logits": [
+              -1.095340609550476,
+              4.27772855758667,
+              0.6777611374855042,
+              2.0173885822296143,
+              -6.084183216094971,
+              -1.1522780656814575
+            ]
+          }
+        ],
+        "isolated_tx_changes": [
+          {
+            "tx": "tx_am_am",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.00961505901068449
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.0030010833870619535
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.030086247250437737
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.012944935820996761
+          }
+        ],
+        "confounds": {
+          "iq_tx_rx_waveform_max_error": 0.0,
+          "cubic_tx_rx_waveform_max_error": 3.3306690738754696e-16
+        },
+        "simulated_chain": "Existing100Msps steadyLSTF TX->channel->RX->12toneprojection->25Msps relativeCFO/RMS",
+        "exact_wisig_equalizer": false,
+        "identity_accuracy": "N/A:public TX settings are not actual source identity labels",
+        "claim": "Whole constantphase property and partial waveform frequency covariance when valid/no branch crossing;alpha is not TX/RX oscillator fraction;no arbitraryRX/LTI invariance"
+      }
+    }
+  ]
+}

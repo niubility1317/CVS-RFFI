@@ -1,4 +1,4 @@
-# complex_volterra_memory实验与历史证据
+# two_extra_parameters实验与历史证据
 
 [返回总索引](../README.md)
 
@@ -7,4 +7,3 @@
 |名称|记录类型|证据入口|
 |---|---|---|
 |CVS 可学习相位记忆残差：两零初始化系数，lag1/4×四seed纯CE|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-adaptive-volterra-identity-manysig-m8-r01/report.md)|
-|CVS 复数Volterra延迟相位记忆：完整源实验报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-volterra-identity-manysig-m8-r01/report.md)|

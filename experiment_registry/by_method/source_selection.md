@@ -14,6 +14,7 @@
 |CVS 基础网络研发：残差物理融合|managed_run|[打开](../../automation_reports/CV-SincNet/20261001-phase1-cvs-residual-identity-manysig-m8-r01/report.md)|
 |CVS 等角身份分类头|managed_run|[打开](../../automation_reports/CV-SincNet/20261001-phase1-cvs-simplex-identity-manysig-m8-r01/report.md)|
 |CVS 性能优先研发：物理补充表征|managed_run|[打开](../../automation_reports/CV-SincNet/20261001-phase1-cvs-stability-identity-manysig-m8-r01/report.md)|
+|CVS 可学习相位记忆残差：两零初始化系数，lag1/4×四seed纯CE|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-adaptive-volterra-identity-manysig-m8-r01/report.md)|
 |CVS 加性坐标注入身份网络：完整源实验报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-additive-identity-manysig-m8-r01/report.md)|
 |CVS 同步坐标保留身份网络：完整源实验报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-coordinate-identity-manysig-m8-r01/report.md)|
 |CVS 因果包络耦合：完整源实验报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-coupled-identity-manysig-m8-r01/report.md)|

@@ -1,6 +1,6 @@
 # 实验总索引
 
-更新：2026-10-02T11:06:45+00:00
+更新：2026-10-02T11:28:54+00:00
 
 先按方法/问题检索，再用run ID读取精确配置与证据。历史组数量不等于独立实验数量。
 
@@ -12,7 +12,7 @@
 
 |记录类型|数量|
 |---|---:|
-|managed_run|65|
+|managed_run|66|
 
 历史状态统一为HISTORICAL_UNVERIFIED；RUNNING等原文声明只供查证，不能证明此刻仍在运行。
 
@@ -20,13 +20,13 @@
 
 |路径标签（定位提示）|证据组数|
 |---|---:|
-|[cvs](by_method/cvs.md)|48|
-|[ce_only](by_method/ce_only.md)|37|
-|[clean_only](by_method/clean_only.md)|36|
-|[performance_priority](by_method/performance_priority.md)|30|
-|[no_augmentation](by_method/no_augmentation.md)|27|
-|[source_selection](by_method/source_selection.md)|22|
-|[rff_physics](by_method/rff_physics.md)|15|
+|[cvs](by_method/cvs.md)|49|
+|[ce_only](by_method/ce_only.md)|38|
+|[clean_only](by_method/clean_only.md)|37|
+|[performance_priority](by_method/performance_priority.md)|31|
+|[no_augmentation](by_method/no_augmentation.md)|28|
+|[source_selection](by_method/source_selection.md)|23|
+|[rff_physics](by_method/rff_physics.md)|16|
 |[source_selected](by_method/source_selected.md)|13|
 |[frozen_prediction_reuse](by_method/frozen_prediction_reuse.md)|12|
 |[daot](by_method/daot.md)|11|
@@ -68,6 +68,7 @@
 |[frozen_weights](by_method/frozen_weights.md)|2|
 |[frozen](by_method/frozen.md)|2|
 |[preamble](by_method/preamble.md)|2|
+|[complex_volterra_memory](by_method/complex_volterra_memory.md)|2|
 |[fixed_parameter_budget](by_method/fixed_parameter_budget.md)|2|
 |[phase_equivariant](by_method/phase_equivariant.md)|2|
 |[complex_memory](by_method/complex_memory.md)|2|
@@ -98,6 +99,7 @@
 |[numerical_attribution](by_method/numerical_attribution.md)|1|
 |[received_sensitivity](by_method/received_sensitivity.md)|1|
 |[synthetic_only](by_method/synthetic_only.md)|1|
+|[two_extra_parameters](by_method/two_extra_parameters.md)|1|
 |[causal_envelope_memory](by_method/causal_envelope_memory.md)|1|
 |[cross_channel_phase](by_method/cross_channel_phase.md)|1|
 |[fixed_readout_dimensions](by_method/fixed_readout_dimensions.md)|1|
@@ -112,7 +114,6 @@
 |[frozen_evaluation](by_method/frozen_evaluation.md)|1|
 |[rf_behavior_operator](by_method/rf_behavior_operator.md)|1|
 |[user_fixed_architecture](by_method/user_fixed_architecture.md)|1|
-|[complex_volterra_memory](by_method/complex_volterra_memory.md)|1|
 
 ## 最近记录入口
 
@@ -158,6 +159,7 @@
 |RFF物理可辨识性：合成诊断|managed_run|[打开](../automation_reports/CV-SincNet/20261002-diagnostic-rff-identifiability-synthetic-m1-r01/report.md)|
 |RFF 源域已知激励诊断：预登记|managed_run|[打开](../automation_reports/CV-SincNet/20261002-diagnostic-rff-known-excitation-source-manysig-m1-r01/report.md)|
 |RFF源域前导码与可观测量诊断|managed_run|[打开](../automation_reports/CV-SincNet/20261002-diagnostic-rff-preamble-source-manysig-m1-r01/report.md)|
+|CVS 可学习相位记忆残差：两零初始化系数，lag1/4×四seed纯CE|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-adaptive-volterra-identity-manysig-m8-r01/report.md)|
 |CVS 加性坐标注入身份网络：完整源实验报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-additive-identity-manysig-m8-r01/report.md)|
 |CVS 同步坐标保留身份网络：完整源实验报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-coordinate-identity-manysig-m8-r01/report.md)|
 |CVS 固定参数因果包络耦合身份网络：独立 clean 测试报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-coupled-clean-manysig-m28-r01/report.md)|
