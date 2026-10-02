@@ -8,4 +8,4 @@
 |---|---|---|
 |CVS身份骨干交叉熵对照实验|managed_run|[打开](../../automation_reports/CV-SincNet/20261001-phase1-cvs-identity-ce-practical-manysig-m5-r01/report.md)|
 |CVS身份骨干交叉熵对照实验|managed_run|[打开](../../automation_reports/CV-SincNet/20261001-phase1-cvs-identity-ce-practical-manysig-m5-r02/report.md)|
-|CVS 已探索测试较优身份网络：practical 拼接星地增强|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-selected-concat-manysig-m4-r01/report.md)|
+|CVS 固定身份网络：mid／low urban 拼接增强|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-selected-concat-manysig-m4-r01/report.md)|

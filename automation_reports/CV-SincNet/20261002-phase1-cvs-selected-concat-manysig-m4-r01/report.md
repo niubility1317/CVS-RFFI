@@ -19,3 +19,17 @@ AdamW，lr=0.0002，wd=0.0001，cosine至0.000001，batch128且保留末批。�
 唯一launch owner，独占新run／输出，每GPU最多2训练任务且至少12GB空闲。不停止、重启或热改其他健康任务。失败保留产物，无性能停机或自动重试。初始checkpoint往返无query smoke通过后直接继续。
 
 [逐行配置与测试预登记](experiment.json) · [只读实时preflight](evidence/preflight.json) · [聚焦验证](evidence/local_validation.json)。正式启动和完成状态以独立PID／CWD／argv／GPU／日志及artifact读回补充。
+
+
+## 启动读回：VERIFIED
+
+发布commit `3fb08ffb148bff03309dfeb167d013bae778033b`，dispatcher PID 1520025。4个worker在GPU0至3持续运行，源训练均达到E12，实际164225参数、50步/轮、target_access=false；checkpoint从零往返smoke已通过、物理角色EXACT_MATCH，日志持续增长，无failure。E80前satellite_ce=null／augmentation_active=false符合预登记。
+
+| 模型seed | GPU | 源PID | 读回epoch |
+|---:|---:|---:|---:|
+| 2026092701 | 0 | 1520050 | 12 |
+| 2026092702 | 1 | 1520060 | 12 |
+| 2026092703 | 2 | 1520071 | 12 |
+| 2026092704 | 3 | 1520082 | 12 |
+
+[独立启动证据](evidence/launch_readback.json)。训练、预测和评分尚未完成，不能据源域指标判断测试性能。唯一dispatcher将继续E200→冻结→4行clean/satellite预测→独立truth-last评分。

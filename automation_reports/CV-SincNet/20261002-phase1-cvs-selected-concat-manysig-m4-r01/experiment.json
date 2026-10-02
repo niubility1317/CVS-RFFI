@@ -26,7 +26,7 @@
   "replaces_run_id": null,
   "authorization": "用户2026-10-02：使用探索过最好的神经网络，使用拼接星地信道增强跑实验；用户补充：这次只使用mid low urban环境增强，而且具体性能看测试集不是源域；按已说明的residual_fusion固定网络和matched practical增强口径执行，发布后默认测试。",
   "code": {
-    "commit": "release_commit.txt fixes actual committed runtime, verified before launch",
+    "commit": "3fb08ffb148bff03309dfeb167d013bae778033b",
     "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_selected_concat_20261002_r01",
@@ -100,7 +100,17 @@
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-selected-concat-manysig-m4-r01",
     "local_artifact_root": "automation_reports/CV-SincNet/20261002-phase1-cvs-selected-concat-manysig-m4-r01",
     "launch_command": "python -m experiments.cvs_selected_concat.publish --output local_artifacts/cvs_selected_concat_20261002_r01",
-    "stop_rule": "Nonfinite loss/gradient, source or target permission violation, output collision or nonzero exit fails only affected row; no low-performance stop, automatic retry, fallback or unrelated intervention."
+    "stop_rule": "Nonfinite loss/gradient, source or target permission violation, output collision or nonzero exit fails only affected row; no low-performance stop, automatic retry, fallback or unrelated intervention.",
+    "actual_pid": 1520025,
+    "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_selected_concat_20261002_r01",
+    "actual_argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_selected_concat.dispatch",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_selected_concat_20261002_r01/experiments/cvs_selected_concat/configs/launch_spec.json"
+    ]
   },
   "expected_artifacts": [
     "initial_smoke.pt",
@@ -149,7 +159,7 @@
       "row_id": "residual_fusion-s2026092701",
       "method": "cvs_selected_concat",
       "purpose": "user_fixed_residual_CVS_midurban_concat",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_selected_concat/configs/source-s2026092701.json",
       "prediction_config_ref": "experiments/cvs_selected_concat/configs/predict-s2026092701.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-selected-concat-manysig-m4-r01/residual_fusion-s2026092701/source/resolved_config.json",
@@ -192,13 +202,24 @@
         "phase1_summary.json",
         "scoring_p1_complete.json",
         "completion.json"
+      ],
+      "actual_pid": 1520050,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_selected_concat_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_selected_concat.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_selected_concat_20261002_r01/experiments/cvs_selected_concat/configs/source-s2026092701.json",
+        ""
       ]
     },
     {
       "row_id": "residual_fusion-s2026092702",
       "method": "cvs_selected_concat",
       "purpose": "user_fixed_residual_CVS_midurban_concat",
-      "gpu": null,
+      "gpu": 1,
       "config_ref": "experiments/cvs_selected_concat/configs/source-s2026092702.json",
       "prediction_config_ref": "experiments/cvs_selected_concat/configs/predict-s2026092702.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-selected-concat-manysig-m4-r01/residual_fusion-s2026092702/source/resolved_config.json",
@@ -241,13 +262,24 @@
         "phase1_summary.json",
         "scoring_p1_complete.json",
         "completion.json"
+      ],
+      "actual_pid": 1520060,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_selected_concat_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_selected_concat.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_selected_concat_20261002_r01/experiments/cvs_selected_concat/configs/source-s2026092702.json",
+        ""
       ]
     },
     {
       "row_id": "residual_fusion-s2026092703",
       "method": "cvs_selected_concat",
       "purpose": "user_fixed_residual_CVS_midurban_concat",
-      "gpu": null,
+      "gpu": 2,
       "config_ref": "experiments/cvs_selected_concat/configs/source-s2026092703.json",
       "prediction_config_ref": "experiments/cvs_selected_concat/configs/predict-s2026092703.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-selected-concat-manysig-m4-r01/residual_fusion-s2026092703/source/resolved_config.json",
@@ -290,13 +322,24 @@
         "phase1_summary.json",
         "scoring_p1_complete.json",
         "completion.json"
+      ],
+      "actual_pid": 1520071,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_selected_concat_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_selected_concat.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_selected_concat_20261002_r01/experiments/cvs_selected_concat/configs/source-s2026092703.json",
+        ""
       ]
     },
     {
       "row_id": "residual_fusion-s2026092704",
       "method": "cvs_selected_concat",
       "purpose": "user_fixed_residual_CVS_midurban_concat",
-      "gpu": null,
+      "gpu": 3,
       "config_ref": "experiments/cvs_selected_concat/configs/source-s2026092704.json",
       "prediction_config_ref": "experiments/cvs_selected_concat/configs/predict-s2026092704.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-selected-concat-manysig-m4-r01/residual_fusion-s2026092704/source/resolved_config.json",
@@ -339,6 +382,17 @@
         "phase1_summary.json",
         "scoring_p1_complete.json",
         "completion.json"
+      ],
+      "actual_pid": 1520082,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_selected_concat_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_selected_concat.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_selected_concat_20261002_r01/experiments/cvs_selected_concat/configs/source-s2026092704.json",
+        ""
       ]
     }
   ],
