@@ -1,0 +1,9 @@
+{
+  "status": "PASS",
+  "tests": 56,
+  "command": "conda run --no-capture-output -n ssr-gpu python -X utf8 -m pytest tests/test_cvs_volterra_identity.py tests/test_cvs_volterra_source_protocol.py tests/test_cvs_volterra_log_audit.py tests/test_cvs_volterra_physics.py -q -ra -o addopts= -p no:cacheprovider",
+  "scope": "Public formula/causal/phase/state/parameter/CE/full log negative fixtures, actual8config/sourcepermission/budget/ranking, verifiedcollectorPython/release/remote scripts; no formal data/query",
+  "local_python": "C:\\Users\\lh594\\.conda\\envs\\ssr-gpu\\python.exe",
+  "torch": "2.10.0+cu128",
+  "numerical_note": "Initial whole-network FP64-only tolerance was invalid because retained native Sinc explicitly uses FP32. Runtime unchanged; lift independently FP64, whole actual FP32 numerical tolerance1e-3/1e-4 as existing protocol."
+}

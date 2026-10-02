@@ -1,6 +1,6 @@
 # 实验总索引
 
-更新：2026-10-02T10:09:51+00:00
+更新：2026-10-02T10:26:29+00:00
 
 先按方法/问题检索，再用run ID读取精确配置与证据。历史组数量不等于独立实验数量。
 
@@ -12,7 +12,7 @@
 
 |记录类型|数量|
 |---|---:|
-|managed_run|64|
+|managed_run|65|
 
 历史状态统一为HISTORICAL_UNVERIFIED；RUNNING等原文声明只供查证，不能证明此刻仍在运行。
 
@@ -20,13 +20,13 @@
 
 |路径标签（定位提示）|证据组数|
 |---|---:|
-|[cvs](by_method/cvs.md)|47|
-|[ce_only](by_method/ce_only.md)|36|
-|[clean_only](by_method/clean_only.md)|35|
-|[performance_priority](by_method/performance_priority.md)|29|
-|[no_augmentation](by_method/no_augmentation.md)|26|
-|[source_selection](by_method/source_selection.md)|21|
-|[rff_physics](by_method/rff_physics.md)|14|
+|[cvs](by_method/cvs.md)|48|
+|[ce_only](by_method/ce_only.md)|37|
+|[clean_only](by_method/clean_only.md)|36|
+|[performance_priority](by_method/performance_priority.md)|30|
+|[no_augmentation](by_method/no_augmentation.md)|27|
+|[source_selection](by_method/source_selection.md)|22|
+|[rff_physics](by_method/rff_physics.md)|15|
 |[source_selected](by_method/source_selected.md)|13|
 |[frozen_prediction_reuse](by_method/frozen_prediction_reuse.md)|12|
 |[daot](by_method/daot.md)|11|
@@ -68,6 +68,7 @@
 |[frozen_weights](by_method/frozen_weights.md)|2|
 |[frozen](by_method/frozen.md)|2|
 |[preamble](by_method/preamble.md)|2|
+|[fixed_parameter_budget](by_method/fixed_parameter_budget.md)|2|
 |[phase_equivariant](by_method/phase_equivariant.md)|2|
 |[complex_memory](by_method/complex_memory.md)|2|
 |[benchmark_informed](by_method/benchmark_informed.md)|2|
@@ -98,7 +99,6 @@
 |[received_sensitivity](by_method/received_sensitivity.md)|1|
 |[synthetic_only](by_method/synthetic_only.md)|1|
 |[causal_envelope_memory](by_method/causal_envelope_memory.md)|1|
-|[fixed_parameter_budget](by_method/fixed_parameter_budget.md)|1|
 |[cross_channel_phase](by_method/cross_channel_phase.md)|1|
 |[fixed_readout_dimensions](by_method/fixed_readout_dimensions.md)|1|
 |[shared_energy_normalization](by_method/shared_energy_normalization.md)|1|
@@ -112,6 +112,7 @@
 |[frozen_evaluation](by_method/frozen_evaluation.md)|1|
 |[rf_behavior_operator](by_method/rf_behavior_operator.md)|1|
 |[user_fixed_architecture](by_method/user_fixed_architecture.md)|1|
+|[complex_volterra_memory](by_method/complex_volterra_memory.md)|1|
 
 ## 最近记录入口
 
@@ -178,6 +179,7 @@
 |CVS 受约束射频行为算子|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-rf-operator-identity-manysig-m8-r01/report.md)|
 |CVS 固定身份网络：mid／low urban 拼接增强|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-selected-concat-manysig-m4-r01/report.md)|
 |CVS 全路径逐包同步身份网络：完整源实验报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-synchronized-identity-manysig-m8-r01/report.md)|
+|CVS 复数相位记忆：固定12项Volterra输入，lag1/4×四seed纯CE|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-volterra-identity-manysig-m8-r01/report.md)|
 |原生DAOT＋RC4与仅动力博弈三seed对照|managed_run|[打开](../automation_reports/CV-SincNet/phase1_daot_rc4_pure_game_m3_20260917_r1/report.md)|
 |原生DAOT＋RC4与仅动力博弈三seed对照|managed_run|[打开](../automation_reports/CV-SincNet/phase1_daot_rc4_pure_game_m3_20260917_r2/report.md)|
 |响应博弈矩阵测试评估：VERIFIED|managed_run|[打开](../automation_reports/CV-SincNet/response_matrix_eval_20260917/report.md)|
