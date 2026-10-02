@@ -25,7 +25,7 @@
   "replaces_run_id": null,
   "authorization": "用户持续授权优化基础神经网络：性能第一，数学/通信/物理/RFF原理；CE唯一、无信道增强、clean-only，默认测试收尾。",
   "code": {
-    "commit": "1138c97c47f2fc27091351f9b77a522e12a85323",
+    "commit": "ed6bdf431c4bad584fef774ea12ff23e9d20167a",
     "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_volterra_identity_20261002_r01",
@@ -182,7 +182,25 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "runtime_evidence": {
+        "status": "RUNNING",
+        "variant": "volterra_lag1",
+        "model_seed": 2026092701,
+        "pid": 1696411,
+        "gpu": 0,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_volterra_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_volterra_identity_20261002_r01/experiments/cvs_volterra_identity/configs/volterra_lag1-s2026092701.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-volterra-identity-manysig-m8-r01/volterra_lag1-s2026092701.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-volterra-identity-manysig-m8-r01/volterra_lag1-s2026092701/source",
+        "started": 1790937404.7482107
+      }
     },
     {
       "row_id": "volterra_lag4-s2026092701",
@@ -224,7 +242,25 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "runtime_evidence": {
+        "status": "RUNNING",
+        "variant": "volterra_lag4",
+        "model_seed": 2026092701,
+        "pid": 1696500,
+        "gpu": 1,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_volterra_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_volterra_identity_20261002_r01/experiments/cvs_volterra_identity/configs/volterra_lag4-s2026092701.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-volterra-identity-manysig-m8-r01/volterra_lag4-s2026092701.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-volterra-identity-manysig-m8-r01/volterra_lag4-s2026092701/source",
+        "started": 1790937409.9956899
+      }
     },
     {
       "row_id": "volterra_lag1-s2026092702",
@@ -266,7 +302,25 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "runtime_evidence": {
+        "status": "RUNNING",
+        "variant": "volterra_lag1",
+        "model_seed": 2026092702,
+        "pid": 1696590,
+        "gpu": 2,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_volterra_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_volterra_identity_20261002_r01/experiments/cvs_volterra_identity/configs/volterra_lag1-s2026092702.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-volterra-identity-manysig-m8-r01/volterra_lag1-s2026092702.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-volterra-identity-manysig-m8-r01/volterra_lag1-s2026092702/source",
+        "started": 1790937415.2070816
+      }
     },
     {
       "row_id": "volterra_lag4-s2026092702",
@@ -308,7 +362,25 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "runtime_evidence": {
+        "status": "RUNNING",
+        "variant": "volterra_lag4",
+        "model_seed": 2026092702,
+        "pid": 1697082,
+        "gpu": 3,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_volterra_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_volterra_identity_20261002_r01/experiments/cvs_volterra_identity/configs/volterra_lag4-s2026092702.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-volterra-identity-manysig-m8-r01/volterra_lag4-s2026092702.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-volterra-identity-manysig-m8-r01/volterra_lag4-s2026092702/source",
+        "started": 1790937420.447929
+      }
     },
     {
       "row_id": "volterra_lag1-s2026092703",
@@ -350,7 +422,25 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "runtime_evidence": {
+        "status": "RUNNING",
+        "variant": "volterra_lag1",
+        "model_seed": 2026092703,
+        "pid": 1697231,
+        "gpu": 4,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_volterra_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_volterra_identity_20261002_r01/experiments/cvs_volterra_identity/configs/volterra_lag1-s2026092703.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-volterra-identity-manysig-m8-r01/volterra_lag1-s2026092703.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-volterra-identity-manysig-m8-r01/volterra_lag1-s2026092703/source",
+        "started": 1790937425.6858795
+      }
     },
     {
       "row_id": "volterra_lag4-s2026092703",
@@ -392,7 +482,25 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "runtime_evidence": {
+        "status": "RUNNING",
+        "variant": "volterra_lag4",
+        "model_seed": 2026092703,
+        "pid": 1697316,
+        "gpu": 5,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_volterra_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_volterra_identity_20261002_r01/experiments/cvs_volterra_identity/configs/volterra_lag4-s2026092703.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-volterra-identity-manysig-m8-r01/volterra_lag4-s2026092703.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-volterra-identity-manysig-m8-r01/volterra_lag4-s2026092703/source",
+        "started": 1790937430.8966255
+      }
     },
     {
       "row_id": "volterra_lag1-s2026092704",
@@ -434,7 +542,25 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "runtime_evidence": {
+        "status": "RUNNING",
+        "variant": "volterra_lag1",
+        "model_seed": 2026092704,
+        "pid": 1697407,
+        "gpu": 6,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_volterra_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_volterra_identity_20261002_r01/experiments/cvs_volterra_identity/configs/volterra_lag1-s2026092704.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-volterra-identity-manysig-m8-r01/volterra_lag1-s2026092704.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-volterra-identity-manysig-m8-r01/volterra_lag1-s2026092704/source",
+        "started": 1790937436.1287394
+      }
     },
     {
       "row_id": "volterra_lag4-s2026092704",
@@ -476,7 +602,25 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "runtime_evidence": {
+        "status": "RUNNING",
+        "variant": "volterra_lag4",
+        "model_seed": 2026092704,
+        "pid": 1697492,
+        "gpu": 7,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_volterra_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_volterra_identity_20261002_r01/experiments/cvs_volterra_identity/configs/volterra_lag4-s2026092704.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-volterra-identity-manysig-m8-r01/volterra_lag4-s2026092704.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-volterra-identity-manysig-m8-r01/volterra_lag4-s2026092704/source",
+        "started": 1790937441.3569326
+      }
     }
   ],
   "notes": [

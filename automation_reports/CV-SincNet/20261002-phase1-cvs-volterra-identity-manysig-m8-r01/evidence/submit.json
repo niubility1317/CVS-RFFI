@@ -1,0 +1,16 @@
+{
+  "status": "SUBMITTED",
+  "pid": 1696395,
+  "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_volterra_identity_20261002_r01",
+  "argv": [
+    "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "-u",
+    "-m",
+    "experiments.cvs_volterra_identity.dispatch",
+    "--spec",
+    "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_volterra_identity_20261002_r01/experiments/cvs_volterra_identity/configs/launch_spec.json"
+  ],
+  "log": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_volterra_identity_20261002_r01/dispatcher.stdout.log",
+  "commit": "ed6bdf431c4bad584fef774ea12ff23e9d20167a",
+  "sha256": "83f71246f7987c87adad45e88ba316aec7dd3d088feaa837f6ef912b17247c3a"
+}

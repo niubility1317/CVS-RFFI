@@ -41,4 +41,4 @@
 |CVS性能优先继续优化：rf_gmp clean测试报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-rf-operator-clean-manysig-m24-r01/report.md)|
 |CVS 受约束射频行为算子|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-rf-operator-identity-manysig-m8-r01/report.md)|
 |CVS 全路径逐包同步身份网络：完整源实验报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-synchronized-identity-manysig-m8-r01/report.md)|
-|CVS 复数相位记忆：固定12项Volterra输入，lag1/4×四seed纯CE|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-volterra-identity-manysig-m8-r01/report.md)|
+|CVS 复数相位记忆：源实验预登记|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-volterra-identity-manysig-m8-r01/report.md)|

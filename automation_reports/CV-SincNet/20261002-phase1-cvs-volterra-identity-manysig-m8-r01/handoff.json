@@ -1,22 +1,35 @@
 {
-  "status": "LOCAL_VERIFIED",
+  "status": "RUNNING",
   "run_id": "20261002-phase1-cvs-volterra-identity-manysig-m8-r01",
   "release": "cvs_volterra_identity_20261002_r01",
   "goal_scope": "CE only/noaugmentation/identity only/scratch/unchanged split/clean only; mathematical communication physics RFF structure; performance first",
-  "previous_goal_turn": "PROGRESS: coupled selected-only source/clean closure completed; objective remains unproven",
+  "previous_goal_turn": "PROGRESS: committed/pushed source, published once, independent live8worker and actual Volterra execution readback",
   "launch_owner": "codex/root/cvs-volterra-identity-20261002",
   "goal_achieved": false,
   "target_feedback": false,
   "next": [
-    "Complete source local verification/one independentP0P1/source-onlypreflight",
-    "Commit/push/OID; publish newsource8 exactly once",
-    "Read actual PID/CWD/GPU/log; fullE200 collect and fixedsource freeze",
-    "Only actual selectednew receives independentclean closure; fullreports/index/Git"
+    "Continue healthy immutable source E200",
+    "Recompute fixed selection from all12 fullsource records",
+    "Only selected new candidate: four clean predictions plus28 reused controls, separate truth-last scoring",
+    "Full analysis and Git; goal remains unproven until actual improvement and physical interpretation"
   ],
   "missing": [
     "Actual source execution",
     "Full source-only frozen ranking",
     "Conditional frozen clean confirmation",
     "Performance and genuineRFFphysics-aware goal proof"
-  ]
+  ],
+  "commit": "ed6bdf431c4bad584fef774ea12ff23e9d20167a",
+  "dispatcher_pid": 1696395,
+  "evidence": "evidence/running_readback.json",
+  "last_epochs": {
+    "volterra_lag1-s2026092701": 9,
+    "volterra_lag4-s2026092701": 7,
+    "volterra_lag1-s2026092702": 7,
+    "volterra_lag4-s2026092702": 6,
+    "volterra_lag1-s2026092703": 5,
+    "volterra_lag4-s2026092703": 5,
+    "volterra_lag1-s2026092704": 4,
+    "volterra_lag4-s2026092704": 3
+  }
 }
