@@ -1,6 +1,6 @@
 # 实验总索引
 
-更新：2026-10-02T17:31:09+00:00
+更新：2026-10-02T17:59:22+00:00
 
 先按方法/问题检索，再用run ID读取精确配置与证据。历史组数量不等于独立实验数量。
 
@@ -12,7 +12,7 @@
 
 |记录类型|数量|
 |---|---:|
-|managed_run|74|
+|managed_run|75|
 
 历史状态统一为HISTORICAL_UNVERIFIED；RUNNING等原文声明只供查证，不能证明此刻仍在运行。
 
@@ -20,12 +20,12 @@
 
 |路径标签（定位提示）|证据组数|
 |---|---:|
-|[cvs](by_method/cvs.md)|57|
-|[ce_only](by_method/ce_only.md)|45|
-|[clean_only](by_method/clean_only.md)|44|
-|[performance_priority](by_method/performance_priority.md)|38|
-|[no_augmentation](by_method/no_augmentation.md)|33|
-|[source_selection](by_method/source_selection.md)|28|
+|[cvs](by_method/cvs.md)|58|
+|[ce_only](by_method/ce_only.md)|46|
+|[clean_only](by_method/clean_only.md)|45|
+|[performance_priority](by_method/performance_priority.md)|39|
+|[no_augmentation](by_method/no_augmentation.md)|34|
+|[source_selection](by_method/source_selection.md)|29|
 |[rff_physics](by_method/rff_physics.md)|20|
 |[source_selected](by_method/source_selected.md)|15|
 |[frozen_prediction_reuse](by_method/frozen_prediction_reuse.md)|14|
@@ -121,6 +121,8 @@
 |[frozen_evaluation](by_method/frozen_evaluation.md)|1|
 |[rf_behavior_operator](by_method/rf_behavior_operator.md)|1|
 |[user_fixed_architecture](by_method/user_fixed_architecture.md)|1|
+|[channel_order](by_method/channel_order.md)|1|
+|[packet_compensation](by_method/packet_compensation.md)|1|
 |[neural_readout](by_method/neural_readout.md)|1|
 |[context_attention](by_method/context_attention.md)|1|
 
@@ -198,6 +200,7 @@
 |CVS 固定身份网络：mid／low urban 拼接增强|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-selected-concat-manysig-m4-r01/report.md)|
 |CVS 全路径逐包同步身份网络：完整源实验报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-synchronized-identity-manysig-m8-r01/report.md)|
 |CVS 复数Volterra延迟相位记忆：完整源实验报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-volterra-identity-manysig-m8-r01/report.md)|
+|CVS信道补偿与非线性交互：源实验|managed_run|[打开](../automation_reports/CV-SincNet/20261003-phase1-cvs-channel-order-identity-manysig-m16-r01/report.md)|
 |CVS纯网络读出优化：源实验预登记|managed_run|[打开](../automation_reports/CV-SincNet/20261003-phase1-cvs-neural-readout-identity-manysig-m8-r01/report.md)|
 |原生DAOT＋RC4与仅动力博弈三seed对照|managed_run|[打开](../automation_reports/CV-SincNet/phase1_daot_rc4_pure_game_m3_20260917_r1/report.md)|
 |原生DAOT＋RC4与仅动力博弈三seed对照|managed_run|[打开](../automation_reports/CV-SincNet/phase1_daot_rc4_pure_game_m3_20260917_r2/report.md)|

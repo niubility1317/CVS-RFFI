@@ -1,0 +1,70 @@
+{
+  "status": "PASS",
+  "reviewer": "source_architecture_audit",
+  "review_type": "one independent P0/P1 correctness review",
+  "reviewed_at_utc": "2026-10-02T17:58:47.115937+00:00",
+  "workspace": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
+  "head_before_commit": "b99877913858392fb19b14714b42c279d5d6beb1",
+  "scope": "Prospective local channel-order source release and conditional source-winner-only clean pipeline; working tree review before parent commit",
+  "p0_p1_findings": [],
+  "remote_access": false,
+  "target_data_or_results_access": false,
+  "formal_data_access": false,
+  "training_started": false,
+  "code_modified_by_reviewer": false,
+  "review_evidence": {
+    "actual_source_configs": 16,
+    "new_source_matrix": "4 variants x 4 seeds",
+    "source_controls": 4,
+    "conditional_clean_matrix": "4 selected new predictions + 36 immutable frozen predictions",
+    "actual_parameters": {
+      "channel_capacity": 247451,
+      "channel_compensated": 234587,
+      "channel_dual": 247387,
+      "channel_order": 249947
+    },
+    "actual_model_contracts_match": true,
+    "independent_focused_tests": [
+      "test_baseline_source_record_without_readout_uses_its_own_validator",
+      "test_registered16_rows_and_generated_remote_templates"
+    ],
+    "independent_focused_test_result": "2 PASS",
+    "model_smoke": {
+      "path": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_channel_order_identity_20261003_r01\\local_cpu_smoke.json",
+      "status": "VERIFIED",
+      "rows": 16,
+      "ce_steps": 48,
+      "initial_function_and_state_exact": true,
+      "strict_roundtrip": true,
+      "all_new_parameters_reachable_by_step": 3,
+      "order_filter_exit_reachable_at_step": 1
+    },
+    "isolated_source_package": {
+      "path": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\local_artifacts\\cvs_channel_order_source_validation_20261003_r01.json",
+      "status": "VERIFIED",
+      "files": 763,
+      "source_tests_reported": 101
+    }
+  },
+  "checks": [
+    "Full-rate G and F with one same packet coefficient tensor and crop 5, before downsampling",
+    "Complex-modulus L1 bounds imply operator delta bound <= 0.25",
+    "Order readout linear in D near zero; nonzero D exit avoids dead gate",
+    "Base plus auxiliary features flow through complete model, including final source diagnostics and physics",
+    "Actual parameter counts/contracts equal sixteen registered configurations",
+    "Inactive G/D diagnostics use null and collector enforces activation-specific semantics",
+    "Source selection recomputed from twenty source-only records; historical controls delegate their own metadata reader",
+    "Only selected new four-seed variant can receive query; baseline retained means no new query",
+    "Scratch provenance/full role contract/payload config equality and strict state loading precede query",
+    "All forty prediction artifacts pass scorer preflight before truth read; no target fitting or feedback",
+    "Publication source dependency closure includes cpu_smoke and source/dispatch/collect/physics"
+  ],
+  "withdrawn_observations": [
+    {
+      "issue": "Initial suspicion that historical neural control reached channel-only parameter fields",
+      "disposition": "WITHDRAWN",
+      "reason": "Complete readback showed existing method-specific delegation and immediate return; independent no-channel fixture passed; no code change requested"
+    }
+  ],
+  "limits": "Local pre-release review only; it does not claim a remote launch or completed experiment. Future actual clean configs are intentionally conditional on source freeze."
+}

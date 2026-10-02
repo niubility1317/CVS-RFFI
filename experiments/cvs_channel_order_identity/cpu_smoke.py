@@ -1,0 +1,139 @@
+"""Public synthetic CPU smoke: four channel variants, four seeds, three CE steps."""
+import argparse
+import json
+from pathlib import Path
+
+import torch
+from torch.nn import functional as F
+
+from experiments.cvs_equivariant_identity.model import rotate_pair
+from experiments.cvs_neural_residual_identity.model import build as control
+from experiments.cvs_channel_order_identity.model import BASE_VARIANT, VARIANTS, build, channel_contract
+
+
+SEEDS = (2026092701, 2026092702, 2026092703, 2026092704)
+
+
+def public_synthetic_input():
+    generator = torch.Generator().manual_seed(2026100300)
+    x = torch.randn(4, 2, 256, generator=generator)
+    x[0].zero_()
+    x[1].fill_(1.)
+    t = torch.arange(256, dtype=x.dtype)
+    x[2] = torch.stack((torch.cos(.13 * t) + .15 * torch.cos(.39 * t),
+                        torch.sin(.13 * t) + .15 * torch.sin(.39 * t)))
+    return x, torch.tensor([0, 1, 2, 3])
+
+
+def run(output):
+    output = Path(output)
+    if output.exists():
+        raise FileExistsError('Preserve prior smoke evidence; choose a new output path')
+    torch.set_num_threads(2)
+    x, labels = public_synthetic_input()
+    records = []
+    for variant in VARIANTS:
+        for seed in SEEDS:
+            torch.manual_seed(seed)
+            base = control(BASE_VARIANT).eval()
+            rng = torch.get_rng_state().clone()
+            torch.manual_seed(seed)
+            model = build(variant).eval()
+            initial_rng_exact = torch.equal(torch.get_rng_state(), rng)
+            old_state_exact = all(torch.equal(value, model.state_dict()[name])
+                                  for name, value in base.state_dict().items())
+            with torch.no_grad():
+                initial_features_exact = torch.equal(model.features(x), base.features(x))
+                initial_logits_exact = torch.equal(model(x), base(x))
+            assert model.contract() == channel_contract(variant)
+            assert initial_rng_exact and old_state_exact and initial_features_exact and initial_logits_exact
+            model.train()
+            optimizer = torch.optim.AdamW(model.parameters(), lr=.0002, weight_decay=.0001)
+            steps = []
+            for step in range(3):
+                optimizer.zero_grad(set_to_none=True)
+                loss = F.cross_entropy(model(x), labels)
+                loss.backward()
+                assert all(p.grad is not None and torch.isfinite(p.grad).all() for p in model.parameters())
+                branch = model.channel_branch
+                gradients = {name: float(parameter.grad.norm())
+                             for name, parameter in branch.named_parameters()}
+                if step == 0 and variant == 'channel_order':
+                    assert branch.compensation.context[-1].weight.grad.norm() > 0
+                    assert branch.compensation.context[-1].bias.grad.norm() > 0
+                    assert branch.last_d_gradient_norm > 0
+                if step == 1 and branch.compensation is not None:
+                    assert branch.compensation.context[-1].weight.grad.norm() > 0
+                if step == 2:
+                    assert all(parameter.grad.norm() > 0 for parameter in model.channel_parameters())
+                optimizer.step()
+                steps.append(dict(step=step + 1, cross_entropy=float(loss.detach()),
+                                  all_gradients_present_finite=True, channel_gradient_norms=gradients,
+                                  d_activation_gradient_norm=branch.last_d_gradient_norm))
+            model.eval()
+            state = {name: value.clone() for name, value in model.state_dict().items()}
+            flags = [module.training for module in model.modules()]
+            rng = torch.get_rng_state().clone()
+            diagnostics = model.diagnostics(x)
+            assert torch.equal(rng, torch.get_rng_state())
+            assert flags == [module.training for module in model.modules()]
+            assert all(torch.equal(value, model.state_dict()[name]) for name, value in state.items())
+            actual_diagnostic = diagnostics['channel_order']
+            assert actual_diagnostic['active'] and actual_diagnostic['valid_tokens'] == 246
+            assert actual_diagnostic['residual_relative_output_mean'] > 0
+            if variant == 'channel_capacity':
+                assert all(actual_diagnostic[key] is None for key in actual_diagnostic if key.startswith(('g_', 'd_')))
+            else:
+                assert actual_diagnostic['g_magnitude_mean'] > 0
+                assert actual_diagnostic['g_operator_delta_bound_max'] <= .2500001
+                assert actual_diagnostic['g_basis_l1_max'] <= 1 + 4 * torch.finfo(x.dtype).eps
+                assert actual_diagnostic['g_coefficient_l1_max'] <= 1 + 4 * torch.finfo(x.dtype).eps
+            if variant == 'channel_order':
+                assert actual_diagnostic['d_relative_output_mean'] > 0
+                assert actual_diagnostic['d_gradient_norm'] > 0
+            else:
+                assert actual_diagnostic['d_relative_output_mean'] is None
+            permutation = torch.tensor([2, 0, 3, 1])
+            with torch.no_grad():
+                actual = model(x)
+                singleton = torch.cat([model(packet[None]) for packet in x])
+                phase = model(rotate_pair(x, torch.tensor([.43, -.6, 1.2, -2.])))
+                permuted = model(x[permutation])
+                torch.testing.assert_close(actual, singleton, atol=2e-4, rtol=2e-4)
+                torch.testing.assert_close(actual, phase, atol=2e-3, rtol=2e-3)
+                torch.testing.assert_close(actual[permutation], permuted, atol=2e-4, rtol=2e-4)
+            replica = build(variant).eval()
+            replica.load_state_dict(model.state_dict(), strict=True)
+            with torch.no_grad():
+                assert torch.equal(replica(x), actual)
+            records.append(dict(
+                variant=variant, model_seed=seed, status='VERIFIED',
+                parameters=sum(p.numel() for p in model.parameters()), contract=model.contract(),
+                new_trainable_parameters=sum(p.numel() for p in model.channel_parameters()),
+                initial_features_exact=initial_features_exact, initial_logits_exact=initial_logits_exact,
+                old_state_exact=old_state_exact, cpu_rng_preserved=initial_rng_exact,
+                steps=steps, diagnostics=diagnostics,
+                packet_independence_max_abs_error=float((actual - singleton).abs().max()),
+                common_phase_max_abs_error=float((actual - phase).abs().max()),
+                batch_permutation_max_abs_error=float((actual[permutation] - permuted).abs().max()),
+                inference_state_unchanged=True, strict_state_roundtrip=True, checkpoint_source=None,
+            ))
+    result = dict(status='VERIFIED', data_access=False, target_access=False,
+                  public_synthetic_input=True, checkpoint_loading=False,
+                  optimizer='AdamW(lr=0.0002, weight_decay=0.0001)', loss='single cross_entropy',
+                  steps_per_row=3, expected_rows=16, records=records,
+                  startup='order G exit reachable at CE step 1; all new parameters reachable by step 3')
+    output.parent.mkdir(parents=True, exist_ok=True)
+    with output.open('x', encoding='utf-8', newline='\n') as stream:
+        json.dump(result, stream, indent=2, ensure_ascii=False, allow_nan=False)
+        stream.write('\n')
+    reread = json.loads(output.read_text(encoding='utf-8'))
+    assert reread['status'] == 'VERIFIED' and len(reread['records']) == 16
+    print(output)
+    return result
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--output', required=True, type=Path)
+    run(parser.parse_args().output)

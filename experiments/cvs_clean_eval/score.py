@@ -22,6 +22,7 @@ CANDIDATES.update({'orthopoly_instant','orthopoly_memory4'})
 CANDIDATES.update({'moment_residual_instant','moment_residual_memory4'})
 CANDIDATES.update({'phase_curvature_lag14','phase_curvature_lag24','neural_residual_shallow','neural_residual_deep'})
 CANDIDATES.update({'readout_attention','readout_complex_attention'})
+CANDIDATES.update({'channel_capacity','channel_compensated','channel_dual','channel_order'})
 
 
 def read(path):return json.loads(Path(path).read_text(encoding='utf-8'))
@@ -47,6 +48,10 @@ def validate_matrix(spec):
         if selection['status']!='SOURCE_SELECTION_FROZEN' or selection['selected_variant'] not in CANDIDATES:
             raise ValueError('No source-only frozen selection')
         variants=(*BASELINES,'residual_fusion',selection['selected_variant']) if selection.get('scope') in ('balanced_source','interaction_source','attentive_source','stability_source','coherence_source','simplex_source','rf_operator_source','observable_source','gauge_source','reference_source','equivariant_source','synchronized_source','coordinate_source','additive_source','fractional_source','energy_source') else (*BASELINES,selection['selected_variant'])
+    if selection.get('scope')=='channel_order_source':
+        if selection['selected_variant'] not in {'channel_capacity','channel_compensated','channel_dual','channel_order'} or selection.get('new_candidate_selected') is not True:
+            raise ValueError('Only selected new channel order candidate can be scored')
+        variants=(*BASELINES,'residual_fusion','energy_equivariant','coupled_lag4','adaptive_volterra_lag4','neural_residual_shallow',selection['selected_variant'])
     if selection.get('scope')=='neural_readout_source':
         if selection['selected_variant'] not in {'readout_attention','readout_complex_attention'} or selection.get('new_candidate_selected') is not True:
             raise ValueError('Only selected new neural readout candidate can be scored')
@@ -87,10 +92,10 @@ def validate_matrix(spec):
         raise ValueError('Incomplete registered clean matrix;truth remains closed')
     if len({r['row_id'] for r in rows})!=count or len({r['output_root'] for r in rows})!=count:
         raise ValueError('Duplicate clean rows/outputs')
-    if selection.get('scope')=='neural_readout_source':
+    if selection.get('scope') in ('neural_readout_source','channel_order_source'):
         candidate=selection['selected_variant']
         if any(bool(r.get('reuse_from_run'))==(r['variant']==candidate) for r in rows):
-            raise ValueError('Readout confirmation requires four new selected rows and thirty-six frozen reused rows')
+            raise ValueError('Source-selected confirmation requires four new selected rows and thirty-six frozen reused rows')
     return selection
 
 
@@ -173,7 +178,7 @@ def score(spec):
     lookup={(r['method'],r['receiver'],r['model_seed']):r for r in results}
     paired=[]
     candidate='native' if selection.get('scope')=='baseline_only' else selection['selected_variant']
-    if selection.get('scope')=='neural_readout_source':
+    if selection.get('scope') in ('neural_readout_source','channel_order_source'):
         pair_baselines=(*BASELINES,'residual_fusion','energy_equivariant','coupled_lag4','adaptive_volterra_lag4','neural_residual_shallow')
     elif selection.get('scope') in ('orthopoly_source','moment_source','curvature_source','neural_source'):
         pair_baselines=(*BASELINES,'residual_fusion','energy_equivariant','coupled_lag4','adaptive_volterra_lag4')

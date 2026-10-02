@@ -1,0 +1,27 @@
+{
+  "status": "VERIFIED",
+  "scope": "Local implementation and protocol correctness; no trained performance claim",
+  "model_tests_passed": 16,
+  "public_smoke_models": 16,
+  "public_smoke_ce_steps_per_model": 3,
+  "source_protocol_tests_passed": 101,
+  "clean_and_readout_compatibility_tests_passed": 210,
+  "independent_p0p1_review": "PASS",
+  "independent_review_ref": "independent_review.json",
+  "outstanding_p0p1": 0,
+  "isolated_source_package_files": 763,
+  "actual_total_parameters": {
+    "channel_capacity": 247451,
+    "channel_compensated": 234587,
+    "channel_dual": 247387,
+    "channel_order": 249947
+  },
+  "training": "Original single CE, scratch, E200, unchanged data and optimizer",
+  "step_gradient_note": "Order G exit/D reachable at step1; all variant new parameters have nonzero gradients by step3. No extra loss.",
+  "maximum_phase_error": 0.00000620,
+  "maximum_packet_independence_error": 0.00000319,
+  "remote_training_started": false,
+  "target_access": false,
+  "formal_clean_configs_generated": false,
+  "test_counts_note": "Separate scoped invocations; public smoke cases are not added to pytest totals. Clean count includes 90 readout compatibility tests."
+}

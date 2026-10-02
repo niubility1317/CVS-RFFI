@@ -1,0 +1,18 @@
+{
+  "run_id": "20261003-phase1-cvs-channel-order-identity-manysig-m16-r01",
+  "status": "LOCAL_VERIFIED",
+  "goal": "Phase1 channel/order architecture optimization;original single CE;source freeze then conditional independent clean",
+  "launch_owner": "codex/root/cvs-channel-order-identity-20261003",
+  "live_workers": 0,
+  "performance_goal_achieved": false,
+  "code_commit_before_release": null,
+  "evidence": [
+    "evidence/local_validation.json",
+    "evidence/public_cpu_smoke.json"
+  ],
+  "next": [
+    "Commit/push and independently verify remote OID",
+    "Publish exactly once and verify process/output evidence",
+    "Complete E200/source freeze and the registered conditional clean test"
+  ]
+}
