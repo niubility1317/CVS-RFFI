@@ -1,0 +1,22 @@
+{
+  "status": "LOCAL_VERIFIED",
+  "run_id": "20261002-phase1-cvs-phase-curvature-identity-manysig-m8-r01",
+  "release": "cvs_phase_curvature_identity_20261002_r01",
+  "launch_owner": "codex/root/cvs-phase-curvature-identity-20261002",
+  "goal_achieved": false,
+  "target_feedback": false,
+  "previous_goal_turn": "PROGRESS: model/design19checks implemented; latest sixscene reporting audited fixed models only, not design/selection feedback",
+  "goal_scope": "CE only/noaugmentation/identity only/scratch/unchanged split/fullFP32/clean only;performance first; mathematical communication physical RFF evidence",
+  "next": [
+    "One actual source P0/P1 review and fresh source/control/resource/collision preflight",
+    "Mirror/Git commit/push/OID then immutable source publish once",
+    "Read back actual8 process PID/cwd/argv/GPU/log/config; full E200 source-only freeze",
+    "If new selected:prepareactual4clean+32controls, review andtruthlast;otherwise retain control clean, newqueryN/A"
+  ],
+  "missing": [
+    "Actual source execution",
+    "Full E200 fixed source ranking",
+    "Conditional clean completion",
+    "Actual performance improvement and full RFF goal evidence"
+  ]
+}

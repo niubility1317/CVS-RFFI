@@ -1,6 +1,6 @@
 # 实验总索引
 
-更新：2026-10-02T14:19:55+00:00
+更新：2026-10-02T14:59:25+00:00
 
 先按方法/问题检索，再用run ID读取精确配置与证据。历史组数量不等于独立实验数量。
 
@@ -12,7 +12,7 @@
 
 |记录类型|数量|
 |---|---:|
-|managed_run|69|
+|managed_run|70|
 
 历史状态统一为HISTORICAL_UNVERIFIED；RUNNING等原文声明只供查证，不能证明此刻仍在运行。
 
@@ -20,13 +20,13 @@
 
 |路径标签（定位提示）|证据组数|
 |---|---:|
-|[cvs](by_method/cvs.md)|52|
-|[ce_only](by_method/ce_only.md)|41|
-|[clean_only](by_method/clean_only.md)|40|
-|[performance_priority](by_method/performance_priority.md)|34|
-|[no_augmentation](by_method/no_augmentation.md)|30|
-|[source_selection](by_method/source_selection.md)|25|
-|[rff_physics](by_method/rff_physics.md)|18|
+|[cvs](by_method/cvs.md)|53|
+|[ce_only](by_method/ce_only.md)|42|
+|[clean_only](by_method/clean_only.md)|41|
+|[performance_priority](by_method/performance_priority.md)|35|
+|[no_augmentation](by_method/no_augmentation.md)|31|
+|[source_selection](by_method/source_selection.md)|26|
+|[rff_physics](by_method/rff_physics.md)|19|
 |[source_selected](by_method/source_selected.md)|14|
 |[frozen_prediction_reuse](by_method/frozen_prediction_reuse.md)|13|
 |[daot](by_method/daot.md)|11|
@@ -112,6 +112,8 @@
 |[packet_moment_residual](by_method/packet_moment_residual.md)|1|
 |[whole_identity_observables](by_method/whole_identity_observables.md)|1|
 |[packet_orthogonal_envelope](by_method/packet_orthogonal_envelope.md)|1|
+|[phase_curvature](by_method/phase_curvature.md)|1|
+|[six_extra_parameters](by_method/six_extra_parameters.md)|1|
 |[known_excitation](by_method/known_excitation.md)|1|
 |[frozen_evaluation](by_method/frozen_evaluation.md)|1|
 |[rf_behavior_operator](by_method/rf_behavior_operator.md)|1|
@@ -180,6 +182,7 @@
 |CVS性能优先继续优化：observable_phase clean测试报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-observable-clean-manysig-m24-r01/report.md)|
 |CVS整体物理观测身份网络：源训练预登记|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-observable-identity-manysig-m8-r01/report.md)|
 |CVS 包内正交包络输入：完整源实验报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-orthopoly-identity-manysig-m8-r01/report.md)|
+|CVS 六层相位曲率残差：混合延迟14/24×四seed纯CE|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-phase-curvature-identity-manysig-m8-r01/report.md)|
 |CVS 已知激励相对响应：完整源实验报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-reference-identity-manysig-m4-r01/report.md)|
 |residual_fusion 完整六环境测试结果|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/report.md)|
 |CVS性能优先继续优化：rf_gmp clean测试报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-rf-operator-clean-manysig-m24-r01/report.md)|

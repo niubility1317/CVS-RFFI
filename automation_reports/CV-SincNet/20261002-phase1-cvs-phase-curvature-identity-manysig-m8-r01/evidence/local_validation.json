@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "tests": 72,
+  "seconds": 25.97,
+  "python": "C:\\Users\\lh594\\.conda\\envs\\ssr-gpu\\python.exe",
+  "torch": "2.10.0+cu128",
+  "test_command": "python -X utf8 -m pytest tests/test_cvs_phase_curvature_identity.py tests/test_cvs_phase_curvature_source_protocol.py tests/test_cvs_phase_curvature_log_audit.py -q -ra -o addopts= -p no:cacheprovider",
+  "scope": "Exact own-scratch initial state/train-eval function; analytic affine covariance/pure-tone null/quadratic phase response/delta bound; all8 actual gates CE gradients; source inheritance/query/budget/FP32 permissions;8 actual configs/12record performance ranking; all10000step sixgate/input/normalization/CSV/stdout corruption checks",
+  "independent_review": "PASS",
+  "formal_data_access": false,
+  "target_access": false
+}
