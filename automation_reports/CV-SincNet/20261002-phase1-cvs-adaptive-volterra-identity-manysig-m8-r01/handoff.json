@@ -1,22 +1,40 @@
 {
-  "status": "LOCAL_VERIFIED",
+  "status": "RUNNING",
   "run_id": "20261002-phase1-cvs-adaptive-volterra-identity-manysig-m8-r01",
   "release": "cvs_adaptive_volterra_identity_20261002_r01",
   "goal_scope": "CE only/noaugmentation/identity only/scratch/unchanged split/clean only; mathematical communication physics RFF structure; performance first",
-  "previous_goal_turn": "NO_PROGRESS toward optimization: sixscene request answered from existing artifacts; current turn implements and verifies new actual adaptive source runtime",
+  "previous_goal_turn": "PROGRESS:actual adaptive model/62checks/8publicCPU24CE/oneP0P1/design/pre-reg/GitOID/exclusive source8 publication/live8workers and actual gategradient/input/fullFP32 verified;new fullsource analyzer ready",
   "launch_owner": "codex/root/cvs-adaptive-volterra-identity-20261002",
   "goal_achieved": false,
   "target_feedback": false,
   "next": [
-    "One independent source P0/P1 review and source-only preflight",
-    "Mirror/Git commit/push/OID then publish source8 once",
-    "Independent process/cwd/GPU/log readback;fullE200 collect and frozen source selection",
-    "Selectednew only frozen clean confirmation/report/Git"
+    "Keep immutable healthy8source workers running;never restart due observation timeout",
+    "Use experiments.cvs_adaptive_volterra_identity.collect to audit full80ksteps/1600epochs then source-only freeze",
+    "Use experiments.cvs_adaptive_volterra_identity.analyze for allsource/gates/physics/resources;no target input",
+    "If newsourcewinner:implement/verify one actual clean path,4new+28reused/allpred fixed/truthlast;otherwise originalcontrolcleanmetadata closure",
+    "Final reports/registry/Git;full performance/RFF goal remains unproven"
   ],
   "missing": [
     "Actual source execution",
     "Full fixed source selection",
     "Conditional clean confirmation",
     "Performance improvement/RFF goal proof"
-  ]
+  ],
+  "commit": "db3860587aa6d1c031a9dd9b9226cfc38f51f513",
+  "dispatcher_pid": 1728043,
+  "evidence": "evidence/running_readback.json",
+  "last_epochs": {
+    "adaptive_volterra_lag1-s2026092701": 57,
+    "adaptive_volterra_lag4-s2026092701": 56,
+    "adaptive_volterra_lag1-s2026092702": 54,
+    "adaptive_volterra_lag4-s2026092702": 55,
+    "adaptive_volterra_lag1-s2026092703": 54,
+    "adaptive_volterra_lag4-s2026092703": 51,
+    "adaptive_volterra_lag1-s2026092704": 52,
+    "adaptive_volterra_lag4-s2026092704": 50
+  },
+  "latest_evidence": "evidence/progress_readback.json",
+  "source_runtime_commit": "db3860587aa6d1c031a9dd9b9226cfc38f51f513",
+  "live_source_workers": 8,
+  "source_analyzer": "LOCAL_VERIFIED:syntax/import passed;fullE200 source artifacts required"
 }

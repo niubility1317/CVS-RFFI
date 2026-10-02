@@ -25,7 +25,7 @@
   "replaces_run_id": null,
   "authorization": "用户持续授权优化基础神经网络：性能第一，数学/通信/物理/RFF原理；CE唯一、无信道增强、clean-only，默认测试收尾。",
   "code": {
-    "commit": "f58c02be4f192b996ed5a3dc4f6fa96e93a7a39a",
+    "commit": "db3860587aa6d1c031a9dd9b9226cfc38f51f513",
     "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_adaptive_volterra_identity_20261002_r01",
@@ -182,7 +182,25 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "runtime_evidence": {
+        "status": "RUNNING",
+        "variant": "adaptive_volterra_lag1",
+        "model_seed": 2026092701,
+        "pid": 1728062,
+        "gpu": 0,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_adaptive_volterra_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_adaptive_volterra_identity_20261002_r01/experiments/cvs_adaptive_volterra_identity/configs/adaptive_volterra_lag1-s2026092701.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-adaptive-volterra-identity-manysig-m8-r01/adaptive_volterra_lag1-s2026092701.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-adaptive-volterra-identity-manysig-m8-r01/adaptive_volterra_lag1-s2026092701/source",
+        "started": 1790940636.715565
+      }
     },
     {
       "row_id": "adaptive_volterra_lag4-s2026092701",
@@ -224,7 +242,25 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "runtime_evidence": {
+        "status": "RUNNING",
+        "variant": "adaptive_volterra_lag4",
+        "model_seed": 2026092701,
+        "pid": 1728151,
+        "gpu": 1,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_adaptive_volterra_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_adaptive_volterra_identity_20261002_r01/experiments/cvs_adaptive_volterra_identity/configs/adaptive_volterra_lag4-s2026092701.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-adaptive-volterra-identity-manysig-m8-r01/adaptive_volterra_lag4-s2026092701.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-adaptive-volterra-identity-manysig-m8-r01/adaptive_volterra_lag4-s2026092701/source",
+        "started": 1790940641.9614313
+      }
     },
     {
       "row_id": "adaptive_volterra_lag1-s2026092702",
@@ -266,7 +302,25 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "runtime_evidence": {
+        "status": "RUNNING",
+        "variant": "adaptive_volterra_lag1",
+        "model_seed": 2026092702,
+        "pid": 1728238,
+        "gpu": 2,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_adaptive_volterra_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_adaptive_volterra_identity_20261002_r01/experiments/cvs_adaptive_volterra_identity/configs/adaptive_volterra_lag1-s2026092702.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-adaptive-volterra-identity-manysig-m8-r01/adaptive_volterra_lag1-s2026092702.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-adaptive-volterra-identity-manysig-m8-r01/adaptive_volterra_lag1-s2026092702/source",
+        "started": 1790940647.2067869
+      }
     },
     {
       "row_id": "adaptive_volterra_lag4-s2026092702",
@@ -308,7 +362,25 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "runtime_evidence": {
+        "status": "RUNNING",
+        "variant": "adaptive_volterra_lag4",
+        "model_seed": 2026092702,
+        "pid": 1728387,
+        "gpu": 3,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_adaptive_volterra_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_adaptive_volterra_identity_20261002_r01/experiments/cvs_adaptive_volterra_identity/configs/adaptive_volterra_lag4-s2026092702.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-adaptive-volterra-identity-manysig-m8-r01/adaptive_volterra_lag4-s2026092702.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-adaptive-volterra-identity-manysig-m8-r01/adaptive_volterra_lag4-s2026092702/source",
+        "started": 1790940652.4484365
+      }
     },
     {
       "row_id": "adaptive_volterra_lag1-s2026092703",
@@ -350,7 +422,25 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "runtime_evidence": {
+        "status": "RUNNING",
+        "variant": "adaptive_volterra_lag1",
+        "model_seed": 2026092703,
+        "pid": 1728473,
+        "gpu": 4,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_adaptive_volterra_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_adaptive_volterra_identity_20261002_r01/experiments/cvs_adaptive_volterra_identity/configs/adaptive_volterra_lag1-s2026092703.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-adaptive-volterra-identity-manysig-m8-r01/adaptive_volterra_lag1-s2026092703.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-adaptive-volterra-identity-manysig-m8-r01/adaptive_volterra_lag1-s2026092703/source",
+        "started": 1790940657.6713774
+      }
     },
     {
       "row_id": "adaptive_volterra_lag4-s2026092703",
@@ -392,7 +482,25 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "runtime_evidence": {
+        "status": "RUNNING",
+        "variant": "adaptive_volterra_lag4",
+        "model_seed": 2026092703,
+        "pid": 1728564,
+        "gpu": 5,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_adaptive_volterra_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_adaptive_volterra_identity_20261002_r01/experiments/cvs_adaptive_volterra_identity/configs/adaptive_volterra_lag4-s2026092703.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-adaptive-volterra-identity-manysig-m8-r01/adaptive_volterra_lag4-s2026092703.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-adaptive-volterra-identity-manysig-m8-r01/adaptive_volterra_lag4-s2026092703/source",
+        "started": 1790940662.9060037
+      }
     },
     {
       "row_id": "adaptive_volterra_lag1-s2026092704",
@@ -434,7 +542,25 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "runtime_evidence": {
+        "status": "RUNNING",
+        "variant": "adaptive_volterra_lag1",
+        "model_seed": 2026092704,
+        "pid": 1728653,
+        "gpu": 6,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_adaptive_volterra_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_adaptive_volterra_identity_20261002_r01/experiments/cvs_adaptive_volterra_identity/configs/adaptive_volterra_lag1-s2026092704.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-adaptive-volterra-identity-manysig-m8-r01/adaptive_volterra_lag1-s2026092704.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-adaptive-volterra-identity-manysig-m8-r01/adaptive_volterra_lag1-s2026092704/source",
+        "started": 1790940668.133087
+      }
     },
     {
       "row_id": "adaptive_volterra_lag4-s2026092704",
@@ -476,7 +602,25 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "runtime_evidence": {
+        "status": "RUNNING",
+        "variant": "adaptive_volterra_lag4",
+        "model_seed": 2026092704,
+        "pid": 1729148,
+        "gpu": 7,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_adaptive_volterra_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_adaptive_volterra_identity_20261002_r01/experiments/cvs_adaptive_volterra_identity/configs/adaptive_volterra_lag4-s2026092704.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-adaptive-volterra-identity-manysig-m8-r01/adaptive_volterra_lag4-s2026092704.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-adaptive-volterra-identity-manysig-m8-r01/adaptive_volterra_lag4-s2026092704/source",
+        "started": 1790940673.3400297
+      }
     }
   ],
   "notes": [

@@ -6,4 +6,4 @@
 
 |名称|记录类型|证据入口|
 |---|---|---|
-|CVS 可学习相位记忆残差：两零初始化系数，lag1/4×四seed纯CE|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-adaptive-volterra-identity-manysig-m8-r01/report.md)|
+|CVS 可学习相位记忆残差：源实验预登记|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-adaptive-volterra-identity-manysig-m8-r01/report.md)|

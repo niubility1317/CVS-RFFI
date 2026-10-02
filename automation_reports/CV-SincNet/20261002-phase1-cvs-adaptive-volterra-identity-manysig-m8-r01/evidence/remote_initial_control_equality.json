@@ -1,0 +1,84 @@
+{
+  "status": "VERIFIED",
+  "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+  "torch_version": "2.1.0+cu121",
+  "device": "cpu",
+  "rows": [
+    {
+      "variant": "adaptive_volterra_lag1",
+      "seed": 2026092701,
+      "shared_state_equal": true,
+      "zero_raw": true,
+      "initial_logits_exact": true,
+      "public_packets": 3,
+      "logit_max_abs_error": 0.0
+    },
+    {
+      "variant": "adaptive_volterra_lag4",
+      "seed": 2026092701,
+      "shared_state_equal": true,
+      "zero_raw": true,
+      "initial_logits_exact": true,
+      "public_packets": 3,
+      "logit_max_abs_error": 0.0
+    },
+    {
+      "variant": "adaptive_volterra_lag1",
+      "seed": 2026092702,
+      "shared_state_equal": true,
+      "zero_raw": true,
+      "initial_logits_exact": true,
+      "public_packets": 3,
+      "logit_max_abs_error": 0.0
+    },
+    {
+      "variant": "adaptive_volterra_lag4",
+      "seed": 2026092702,
+      "shared_state_equal": true,
+      "zero_raw": true,
+      "initial_logits_exact": true,
+      "public_packets": 3,
+      "logit_max_abs_error": 0.0
+    },
+    {
+      "variant": "adaptive_volterra_lag1",
+      "seed": 2026092703,
+      "shared_state_equal": true,
+      "zero_raw": true,
+      "initial_logits_exact": true,
+      "public_packets": 3,
+      "logit_max_abs_error": 0.0
+    },
+    {
+      "variant": "adaptive_volterra_lag4",
+      "seed": 2026092703,
+      "shared_state_equal": true,
+      "zero_raw": true,
+      "initial_logits_exact": true,
+      "public_packets": 3,
+      "logit_max_abs_error": 0.0
+    },
+    {
+      "variant": "adaptive_volterra_lag1",
+      "seed": 2026092704,
+      "shared_state_equal": true,
+      "zero_raw": true,
+      "initial_logits_exact": true,
+      "public_packets": 3,
+      "logit_max_abs_error": 0.0
+    },
+    {
+      "variant": "adaptive_volterra_lag4",
+      "seed": 2026092704,
+      "shared_state_equal": true,
+      "zero_raw": true,
+      "initial_logits_exact": true,
+      "public_packets": 3,
+      "logit_max_abs_error": 0.0
+    }
+  ],
+  "formal_data_access": false,
+  "checkpoint_access": false,
+  "target_access": false,
+  "remote_files_written": false
+}

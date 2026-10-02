@@ -9,3 +9,11 @@
 [本地验证](evidence/local_validation.json) · [公共运行](evidence/local_cpu_smoke.json) · [公共汇总](evidence/public_probe_summary.json)。当前没有正式训练或新clean成绩，目标未达到。
 
 发布前独立P0/P1审查PASS，23项直接检查通过；只读preflight核实原源控制、身份、资源及无输出碰撞。[审查](evidence/independent_review.json) · [preflight](evidence/preflight.json)。
+
+## 实际发布与启动
+
+状态RUNNING／VERIFIED。发布commit `db3860587aa6d1c031a9dd9b9226cfc38f51f513`，远端CPU检查PASS。独立读回dispatcher PID 1728043 和8个source进程、CWD/argv/独占输出/GPU0至7，全部已有实际epoch及日志增长。实际仅CE、scratch、无增强、身份骨干、固定50步/轮和完整FP32；202555参数均参与梯度，两个候选alpha0，实际12项可学习相位记忆输入、phase lag1/4和固定envelope lag4与配置一致；两个新增系数和梯度已实际记录。当前轮数 {'adaptive_volterra_lag1-s2026092701': 21, 'adaptive_volterra_lag4-s2026092701': 20, 'adaptive_volterra_lag1-s2026092702': 19, 'adaptive_volterra_lag4-s2026092702': 19, 'adaptive_volterra_lag1-s2026092703': 18, 'adaptive_volterra_lag4-s2026092703': 17, 'adaptive_volterra_lag1-s2026092704': 16, 'adaptive_volterra_lag4-s2026092704': 15}。尚无E200冻结或新clean成绩，不能宣称性能提升。[实际证据](evidence/running_readback.json)。
+
+当前独立读回8个进程均存活，已完成 50 至 57 轮。实际两门系数/梯度、202555梯度参数和公式输入均已测量；完整源分析工具已就绪，但完整E200与固定源选择尚未完成。[当前读回](evidence/progress_readback.json) · [简表](evidence/progress_summary.json)。
+
+实际远端Torch2.1下，8个独立公共scratch模型共享state与控制逐项相同，零门初始logits完全相同；未访问正式数据/weights/query。[远端初始化验证](evidence/remote_initial_control_equality.json)。
