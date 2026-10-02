@@ -1,5 +1,5 @@
 {
-  "status": "RUNNING",
+  "status": "ANALYZED",
   "run_id": "20261002-phase1-cvs-phase-curvature-identity-manysig-m8-r01",
   "release": "cvs_phase_curvature_identity_20261002_r01",
   "launch_owner": "codex/root/cvs-phase-curvature-identity-20261002",
@@ -8,15 +8,13 @@
   "previous_goal_turn": "PROGRESS: model/design19checks implemented; latest sixscene reporting audited fixed models only, not design/selection feedback",
   "goal_scope": "CE only/noaugmentation/identity only/scratch/unchanged split/fullFP32/clean only;performance first; mathematical communication physical RFF evidence",
   "next": [
-    "Complete original healthy8 source runs; collect full80000step audit and fixedE200selection",
-    "Source-only frozen72-condition attribution after E200; do not change fixedselection",
-    "Run selected-onlyclean if new candidate wins;otherwise reuse completedcontrol",
-    "Deliver cross-run source mechanism findings and concrete next research direction"
+    "Run preregistered source-only72condition frozen attribution",
+    "Integrate wholeV attribution with48model/9600epoch history",
+    "Deliver concrete source-grounded optimization direction; no targetfeedback"
   ],
   "missing": [
-    "Full E200 fixed source selection",
-    "Conditional clean completion",
-    "Performance improvement and full RFF objective proof"
+    "Full frozen source attribution",
+    "Verified improved network and whole-representation RFF physics evidence"
   ],
   "release_commit": "d5a34a105348195c29601c97df248cc4e68fec24",
   "dispatcher_pid": 1852325,
@@ -25,55 +23,67 @@
   "rows": [
     {
       "row_id": "phase_curvature_lag14-s2026092701",
-      "pid": 1852342,
+      "pid": null,
       "gpu": 0,
-      "verified_epoch": 27
+      "verified_epoch": 200,
+      "status": "SOURCE_TRAINED"
     },
     {
       "row_id": "phase_curvature_lag24-s2026092701",
-      "pid": 1852431,
+      "pid": null,
       "gpu": 1,
-      "verified_epoch": 27
+      "verified_epoch": 200,
+      "status": "SOURCE_TRAINED"
     },
     {
       "row_id": "phase_curvature_lag14-s2026092702",
-      "pid": 1852520,
+      "pid": null,
       "gpu": 2,
-      "verified_epoch": 26
+      "verified_epoch": 200,
+      "status": "SOURCE_TRAINED"
     },
     {
       "row_id": "phase_curvature_lag24-s2026092702",
-      "pid": 1852611,
+      "pid": null,
       "gpu": 3,
-      "verified_epoch": 25
+      "verified_epoch": 200,
+      "status": "SOURCE_TRAINED"
     },
     {
       "row_id": "phase_curvature_lag14-s2026092703",
-      "pid": 1852698,
+      "pid": null,
       "gpu": 4,
-      "verified_epoch": 25
+      "verified_epoch": 200,
+      "status": "SOURCE_TRAINED"
     },
     {
       "row_id": "phase_curvature_lag24-s2026092703",
-      "pid": 1852787,
+      "pid": null,
       "gpu": 5,
-      "verified_epoch": 24
+      "verified_epoch": 200,
+      "status": "SOURCE_TRAINED"
     },
     {
       "row_id": "phase_curvature_lag14-s2026092704",
-      "pid": 1852874,
+      "pid": null,
       "gpu": 6,
-      "verified_epoch": 23
+      "verified_epoch": 200,
+      "status": "SOURCE_TRAINED"
     },
     {
       "row_id": "phase_curvature_lag24-s2026092704",
-      "pid": 1852963,
+      "pid": null,
       "gpu": 7,
-      "verified_epoch": 22
+      "verified_epoch": 200,
+      "status": "SOURCE_TRAINED"
     }
   ],
   "recovery_chat": "User clarified poor optimization effect; analyze source mechanisms, not just interrupted execution",
   "diagnostic_run": "20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01",
   "conditional_clean_implemented": true,
-  "conditional_clean_review": "PASS"
+  "conditional_clean_review": "PASS",
+  "source_training_complete": true,
+  "live_source_workers": 0,
+  "selected_variant": "adaptive_volterra_lag4",
+  "last_evidence": "evidence/final_source_readback.json"
 }

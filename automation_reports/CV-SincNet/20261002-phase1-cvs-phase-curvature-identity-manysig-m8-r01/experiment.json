@@ -203,7 +203,23 @@
         "--config",
         "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_phase_curvature_identity_20261002_r01/experiments/cvs_phase_curvature_identity/configs/phase_curvature_lag14-s2026092701.json",
         ""
-      ]
+      ],
+      "completed_epoch": 200,
+      "completed_steps": 10000,
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9852962962962963,
+        "source_val_ce": 0.08065424369951318,
+        "source_val_rx_accuracy": {
+          "1": 0.9968518518518519,
+          "3": 0.9594444444444444,
+          "4": 0.9894444444444445,
+          "6": 0.997037037037037,
+          "8": 0.9837037037037037
+        },
+        "source_val_worst_rx": 0.9594444444444444
+      },
+      "test_status": "N/A_NOT_SOURCE_SELECTED"
     },
     {
       "row_id": "phase_curvature_lag24-s2026092701",
@@ -256,7 +272,23 @@
         "--config",
         "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_phase_curvature_identity_20261002_r01/experiments/cvs_phase_curvature_identity/configs/phase_curvature_lag24-s2026092701.json",
         ""
-      ]
+      ],
+      "completed_epoch": 200,
+      "completed_steps": 10000,
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9856296296296296,
+        "source_val_ce": 0.08010456700535885,
+        "source_val_rx_accuracy": {
+          "1": 0.9966666666666667,
+          "3": 0.960925925925926,
+          "4": 0.9901851851851852,
+          "6": 0.997037037037037,
+          "8": 0.9833333333333333
+        },
+        "source_val_worst_rx": 0.960925925925926
+      },
+      "test_status": "N/A_NOT_SOURCE_SELECTED"
     },
     {
       "row_id": "phase_curvature_lag14-s2026092702",
@@ -309,7 +341,23 @@
         "--config",
         "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_phase_curvature_identity_20261002_r01/experiments/cvs_phase_curvature_identity/configs/phase_curvature_lag14-s2026092702.json",
         ""
-      ]
+      ],
+      "completed_epoch": 200,
+      "completed_steps": 10000,
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9849259259259259,
+        "source_val_ce": 0.07821613247971039,
+        "source_val_rx_accuracy": {
+          "1": 0.9959259259259259,
+          "3": 0.9616666666666667,
+          "4": 0.9898148148148148,
+          "6": 0.9962962962962963,
+          "8": 0.980925925925926
+        },
+        "source_val_worst_rx": 0.9616666666666667
+      },
+      "test_status": "N/A_NOT_SOURCE_SELECTED"
     },
     {
       "row_id": "phase_curvature_lag24-s2026092702",
@@ -362,7 +410,23 @@
         "--config",
         "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_phase_curvature_identity_20261002_r01/experiments/cvs_phase_curvature_identity/configs/phase_curvature_lag24-s2026092702.json",
         ""
-      ]
+      ],
+      "completed_epoch": 200,
+      "completed_steps": 10000,
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9845555555555555,
+        "source_val_ce": 0.07894248651947391,
+        "source_val_rx_accuracy": {
+          "1": 0.9961111111111111,
+          "3": 0.9603703703703703,
+          "4": 0.99,
+          "6": 0.9961111111111111,
+          "8": 0.9801851851851852
+        },
+        "source_val_worst_rx": 0.9603703703703703
+      },
+      "test_status": "N/A_NOT_SOURCE_SELECTED"
     },
     {
       "row_id": "phase_curvature_lag14-s2026092703",
@@ -415,7 +479,23 @@
         "--config",
         "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_phase_curvature_identity_20261002_r01/experiments/cvs_phase_curvature_identity/configs/phase_curvature_lag14-s2026092703.json",
         ""
-      ]
+      ],
+      "completed_epoch": 200,
+      "completed_steps": 10000,
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9832962962962963,
+        "source_val_ce": 0.08233065751148375,
+        "source_val_rx_accuracy": {
+          "1": 0.997037037037037,
+          "3": 0.955925925925926,
+          "4": 0.9883333333333333,
+          "6": 0.9959259259259259,
+          "8": 0.9792592592592593
+        },
+        "source_val_worst_rx": 0.955925925925926
+      },
+      "test_status": "N/A_NOT_SOURCE_SELECTED"
     },
     {
       "row_id": "phase_curvature_lag24-s2026092703",
@@ -468,7 +548,23 @@
         "--config",
         "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_phase_curvature_identity_20261002_r01/experiments/cvs_phase_curvature_identity/configs/phase_curvature_lag24-s2026092703.json",
         ""
-      ]
+      ],
+      "completed_epoch": 200,
+      "completed_steps": 10000,
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9833333333333333,
+        "source_val_ce": 0.08088522142969728,
+        "source_val_rx_accuracy": {
+          "1": 0.997037037037037,
+          "3": 0.9561111111111111,
+          "4": 0.9879629629629629,
+          "6": 0.9961111111111111,
+          "8": 0.9794444444444445
+        },
+        "source_val_worst_rx": 0.9561111111111111
+      },
+      "test_status": "N/A_NOT_SOURCE_SELECTED"
     },
     {
       "row_id": "phase_curvature_lag14-s2026092704",
@@ -521,7 +617,23 @@
         "--config",
         "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_phase_curvature_identity_20261002_r01/experiments/cvs_phase_curvature_identity/configs/phase_curvature_lag14-s2026092704.json",
         ""
-      ]
+      ],
+      "completed_epoch": 200,
+      "completed_steps": 10000,
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9821851851851852,
+        "source_val_ce": 0.09166907475922724,
+        "source_val_rx_accuracy": {
+          "1": 0.9966666666666667,
+          "3": 0.9514814814814815,
+          "4": 0.9907407407407407,
+          "6": 0.9946296296296296,
+          "8": 0.9774074074074074
+        },
+        "source_val_worst_rx": 0.9514814814814815
+      },
+      "test_status": "N/A_NOT_SOURCE_SELECTED"
     },
     {
       "row_id": "phase_curvature_lag24-s2026092704",
@@ -574,7 +686,23 @@
         "--config",
         "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_phase_curvature_identity_20261002_r01/experiments/cvs_phase_curvature_identity/configs/phase_curvature_lag24-s2026092704.json",
         ""
-      ]
+      ],
+      "completed_epoch": 200,
+      "completed_steps": 10000,
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9817777777777777,
+        "source_val_ce": 0.09270776687324185,
+        "source_val_rx_accuracy": {
+          "1": 0.9968518518518519,
+          "3": 0.9503703703703704,
+          "4": 0.9907407407407407,
+          "6": 0.995,
+          "8": 0.975925925925926
+        },
+        "source_val_worst_rx": 0.9503703703703704
+      },
+      "test_status": "N/A_NOT_SOURCE_SELECTED"
     }
   ],
   "notes": [
@@ -653,5 +781,67 @@
     ],
     "target_feedback": false,
     "selection": "source_only"
+  },
+  "results": {
+    "source_training_status": "VERIFIED_COMPLETE",
+    "source_selection": {
+      "status": "SOURCE_SELECTION_FROZEN",
+      "selected_variant": "adaptive_volterra_lag4",
+      "source_summaries": {
+        "adaptive_volterra_lag4": {
+          "score": 0.9708055555555555,
+          "source_accuracy": 0.9840185185185185,
+          "worst_rx_accuracy": 0.9575925925925926,
+          "parameters": 202555,
+          "conv_linear_macs": 7199008
+        },
+        "phase_curvature_lag14": {
+          "score": 0.9705277777777778,
+          "source_accuracy": 0.9839259259259259,
+          "worst_rx_accuracy": 0.9571296296296297,
+          "parameters": 202561,
+          "conv_linear_macs": 7199008
+        },
+        "phase_curvature_lag24": {
+          "score": 0.9703842592592592,
+          "source_accuracy": 0.983824074074074,
+          "worst_rx_accuracy": 0.9569444444444445,
+          "parameters": 202561,
+          "conv_linear_macs": 7199008
+        }
+      },
+      "selection_rule": "performance first: four-seed E200 0.5 sourceV+0.5 worstsourceRX;exact ties V thenworstRX;costs secondary only after equalperformance",
+      "selection_policy": "performance_first_phase_curvature_with_current_source_winner_20261002",
+      "candidate_universe": [
+        "adaptive_volterra_lag4",
+        "phase_curvature_lag14",
+        "phase_curvature_lag24"
+      ],
+      "new_candidate_selected": false,
+      "exact_cost_tie_order": [
+        "adaptive_volterra_lag4",
+        "phase_curvature_lag14",
+        "phase_curvature_lag24"
+      ],
+      "target_access": false,
+      "target_score_used": false,
+      "test_view": "clean"
+    },
+    "source_epochs": 1600,
+    "source_steps": 80000,
+    "clean_status": "EXISTING_CONTROL_RETAINED_NO_NEW_QUERY",
+    "existing_clean_reuse": {
+      "status": "VERIFIED",
+      "selected_variant": "adaptive_volterra_lag4",
+      "prior_clean_run": "20261002-phase1-cvs-adaptive-volterra-clean-manysig-m32-r01",
+      "models": 4,
+      "query_count": 168000,
+      "prior_matrix": 32,
+      "new_query_access": false,
+      "unselected_clean": "N/A_NOT_SOURCE_SELECTED",
+      "target_scores_used": false
+    },
+    "goal_achieved": false,
+    "diagnostic_run": "20261002-diagnostic-cvs-curvature-attribution-source-manysig-m8-r01"
   }
 }
