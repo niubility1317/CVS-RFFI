@@ -23,7 +23,7 @@ def analyze(root):
         actual=next(a for a in data['source_controls'] if a['seed']==r['resolved']['model_seed'])
         if any(actual[k]!=r['completion']['final_source_metrics'][v] for k,v in [('accuracy','source_val_accuracy'),('worst_rx','source_val_worst_rx')]):
             raise ValueError('Historical source curves differ from independently verified fixed source controls')
-    curves=[];final=[];rx=[];resources=[];sync=[];cells=[];geometry=[];cascade=[];tx=[];phases=[];paired=[];conditioner=[];normalizations=[];public_normalizations=[]
+    curves=[];final=[];rx=[];resources=[];sync=[];cells=[];geometry=[];cascade=[];tx=[];phases=[];paired=[];conditioner=[];normalizations=[];public_normalizations=[];readouts=[]
     for r in controls+data['rows']:
         c=r['resolved'];v=c['variant'];seed=c['model_seed'];epochs=r['epochs'];p=r['profile']
         if [a['epoch'] for a in epochs]!=list(range(1,201)):raise ValueError('Incomplete source curve')
@@ -35,6 +35,7 @@ def analyze(root):
                 sync.append(dict(variant=v,seed=seed,epoch=a['epoch'],**flat))
                 conditioner.append(dict(variant=v,seed=seed,epoch=a['epoch'],gradient_used_parameters=a['alignment_gradient_used_parameters'],gradient_norm=a['alignment_gradient_norm'],alignment_strength=a['alignment_strength'],whole_gradient_norm=a['gradient_norm']))
                 normalizations.extend(dict(variant=v,seed=seed,epoch=a['epoch'],**record) for record in d['normalization']['records'])
+                readouts.extend(dict(variant=v,seed=seed,epoch=a['epoch'],**record) for record in d.get('cross_channel_readout',{}).get('records',[]))
         f=epochs[-1];best=max(epochs,key=lambda a:a['source_val_accuracy'])
         final.append(dict(variant=v,seed=seed,V=f['source_val_accuracy'],worst_RX=f['source_val_worst_rx'],CE=f['clean_ce'],best_V=best['source_val_accuracy'],best_epoch=best['epoch'],best_epoch_selected=False))
         rx.extend(dict(variant=v,seed=seed,receiver=k,accuracy=val) for k,val in f['source_val_rx_accuracy'].items())
@@ -51,6 +52,7 @@ def analyze(root):
             paired.append(dict(variant=v,seed=seed,V_delta_pp=100*(f['source_val_accuracy']-base['accuracy']),worst_RX_delta_pp=100*(f['source_val_worst_rx']-base['worst_rx'])))
     if len(curves)!=2400 or len(sync)!=1600 or len(conditioner)!=1600 or len(cells)!=720 or len(phases)!=24 or len(normalizations)!=9600 or len(public_normalizations)!=48:raise ValueError('Incomplete complete source report dimensions')
     table(e/'source_energy_normalization_all9600.csv',normalizations);table(e/'source_public_normalization_all48.csv',public_normalizations)
+    if readouts:table(e/'source_crosschannel_readout_by_epoch.csv',readouts)
     for name,rows in dict(source_curves=curves,source_fixed_last_and_best=final,source_RX=rx,source_resources=resources,source_energy_by_epoch=sync,source_alignment_optimization=conditioner,source_all720_cells=cells,source_geometry=geometry,source_physics_cascade=cascade,source_isolated_TX=tx,source_affine_phase_audit=phases,source_paired_control=paired).items():table(e/(name+'.csv'),rows)
     import matplotlib
     matplotlib.use('Agg')
@@ -70,6 +72,7 @@ def analyze(root):
         whole_affine_max_logit_error=max(a['whole_logit_max_abs_error'] for a in phases if a['received_cfo_hz']!=0.),
         coordinate_reconstruction_max_error=max(r['physical_diagnostics']['coordinate_reconstruction_max_error'] for r in data['rows']),
         source_normalization_measurements=9600,public_normalization_measurements=48,
+        measured_crosschannel_readout_records=len(readouts),
         scope='Wholeconstantphase property only;affinecoordinate retained;relative CFO modulo1.25MHz;not uniqueTX or arbitraryRX/LTI invariance')
     write(e/'source_analysis_validation.json',validation)
     text='# CVS 跨复数通道相干读出：完整源实验报告\n\n'
@@ -80,6 +83,13 @@ def analyze(root):
     text+='\n四 seed mean(0.5V+0.5最差源RX)最高优先；完全并列后才比较V、最差RX和成本。物理误差不参与选模，最佳轮只作诊断，所有选模使用E200。\n\n| 模型 | seed | E200 V（%） | E200 最差RX（%） | 末轮CE | 最佳V（%） | 最佳轮（未选） |\n|---|---:|---:|---:|---:|---:|---:|\n'
     for a in final:text+=f"| {a['variant']} | {a['seed']} | {100*a['V']:.4f} | {100*a['worst_RX']:.4f} | {a['CE']:.6f} | {100*a['best_V']:.4f} | {a['best_epoch']} |\n"
     text+='\n![完整源曲线](evidence/source_curves.png)\n\n四seed样本SD阴影覆盖全部200轮。[2400条曲线](evidence/source_curves.csv)、[1600轮同步测量](evidence/source_energy_by_epoch.csv)、[全部720个源单元](evidence/source_all720_cells.csv)、[同seed源差分](evidence/source_paired_control.csv)。源RX是源验证，不称未知RX测试。\n\n'
+    text+='## 跨通道相干的实际执行\n\n每个复通道相对固定anchor的统计为 `rho(c,a)=mean(z_c*conj(z_a))/sqrt(mean|z_c|²*mean|z_a|²+1e-6)`。全部通道乘同一个常相位时分子相位抵消；不同通道分别旋转时相干相位变化。每通道读出维度仍为10，两个anchor的实部/虚部替代四段位置功率。这个读出性质明确保留跨通道关系，但不证明旧整网没有通过前层把相位信息编码到功率，也不证明学得的通道等于可辨识的硬件参数。\n\n'
+    if readouts:
+        text+=f"逐轮实际记录{len(readouts)}个anchor测量，来自时间和行为两条路径，各使用channel0与channel floor(C/2)。anchor功率小于1e-6时会被epsilon压低，舍弃位置功率也可能损失非平稳信息；以下是E200源末batch的实际测量，不是全部源V的统计，也没有真TX/RX参数标签。\n\n|模型|seed|路径|anchor|通道数|读出维度|anchor平均功率|低功率包比例|相干幅值均值|相干幅值最大|\n|---|---:|---|---:|---:|---:|---:|---:|---:|---:|\n"
+        for a in readouts:
+            if a['epoch']==200:text+=f"|{a['variant']}|{a['seed']}|{a['path']}|{a['anchor']}|{a['channels']}|{a['output_dimensions']}|{a['anchor_mean_power']:.6g}|{a['low_anchor_packet_fraction']:.6g}|{a['actual_coherence_abs_mean']:.6g}|{a['actual_coherence_abs_max']:.6g}|\n"
+        text+='\n[全部逐轮读出测量](evidence/source_crosschannel_readout_by_epoch.csv)。测量只解释执行与可能的信息瓶颈，不参与候选排序。\n\n'
+    else:text+='实际anchor测量N/A；不根据公式猜补执行值。\n\n'
     text+='## 整体物理性质与边界\n\n全部六个复数时间/行为block采用一个跨通道/时间共享的包内RMS分母，归一化本身保留相对通道能量。原学习尺度与径向门可能改变比例，不承诺门后比例固定。两版本核心、深宽及202553参数相同：raw版本直接使用原received输入，half版本在所有身份波形路径前执行固定alpha0.5频偏校正。lag20/window80:160相对CFO主值±625kHz、歧义1.25MHz，无效相关安全回退零。保留整体常相位性质，部分波形频率协变仅在相关有效且不跨分支时成立，不声明整网仿射/RX/LTI不变、唯一TX参数或TX/RX因果分离。alpha不是晶振贡献比例。\n\n'
     text+=f"冻结公共链每模型5TX×6RX，检查公共相位及±80kHz仿射相位。全8权重最大公共相位logit误差{validation['whole_phase_max_logit_error']:.8g}，最大仿射logit误差{validation['whole_affine_max_logit_error']:.8g}；坐标逐点重建最大误差{validation['coordinate_reconstruction_max_error']:.8g}。常相位容差1e-3只报告，不是选模或停机门槛；附加频偏响应不称不变性误差。\n\n| 模型 | seed | 相位rad | 附加相对CFO Hz | 整网logit响应 | 单位嵌入距离 | 主值跨界数 | 有效相关数 |\n|---|---:|---:|---:|---:|---:|---:|---:|\n"
     for a in phases:text+=f"| {a['variant']} | {a['seed']} | {a['theta_radians']} | {a['received_cfo_hz']} | {a['whole_logit_max_abs_error']:.8g} | {a['whole_unit_embedding_max_distance']:.8g} | {a['estimated_cfo_principal_branch_crossing_count']} | {a['valid_correlation_count']} |\n"
