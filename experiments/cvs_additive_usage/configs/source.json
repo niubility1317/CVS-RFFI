@@ -1,0 +1,51 @@
+{
+  "method": "cvs_additive_usage_source",
+  "run_id": "20261002-diagnostic-cvs-additive-usage-source-manysig-m40-r01",
+  "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+  "source_matrix": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_additive_identity_20261002_r01/experiments/cvs_additive_identity/configs/launch_spec.json",
+  "source_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-additive-identity-manysig-m8-r01",
+  "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+  "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-additive-usage-source-manysig-m40-r01/source",
+  "modes": [
+    "trained",
+    "frequency_reference",
+    "quality_reference",
+    "coordinate_reference",
+    "zero_delta"
+  ],
+  "variants": [
+    "additive_equivariant",
+    "additive_gauge"
+  ],
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703,
+    2026092704
+  ],
+  "split_seed": 392005,
+  "source_receivers": [
+    1,
+    3,
+    4,
+    6,
+    8
+  ],
+  "source_days": [
+    1,
+    2,
+    3
+  ],
+  "numerical_policy": {
+    "cudnn_allow_tf32": false,
+    "cuda_matmul_allow_tf32": false,
+    "cudnn_benchmark": false,
+    "cudnn_deterministic": false,
+    "matmul_precision": "highest"
+  },
+  "source_selection_frozen": true,
+  "used_for_selection": false,
+  "optimizer_steps": 0,
+  "augmentation": false,
+  "device": "cuda:0"
+}

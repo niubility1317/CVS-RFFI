@@ -1,6 +1,6 @@
 # 实验总索引
 
-更新：2026-10-02T02:53:49+00:00
+更新：2026-10-02T02:54:57+00:00
 
 先按方法/问题检索，再用run ID读取精确配置与证据。历史组数量不等于独立实验数量。
 
@@ -12,7 +12,7 @@
 
 |记录类型|数量|
 |---|---:|
-|managed_run|55|
+|managed_run|56|
 
 历史状态统一为HISTORICAL_UNVERIFIED；RUNNING等原文声明只供查证，不能证明此刻仍在运行。
 
@@ -20,7 +20,7 @@
 
 |路径标签（定位提示）|证据组数|
 |---|---:|
-|[cvs](by_method/cvs.md)|38|
+|[cvs](by_method/cvs.md)|39|
 |[clean_only](by_method/clean_only.md)|29|
 |[ce_only](by_method/ce_only.md)|29|
 |[no_augmentation](by_method/no_augmentation.md)|22|
@@ -31,10 +31,10 @@
 |[rc4](by_method/rc4.md)|10|
 |[frozen_prediction_reuse](by_method/frozen_prediction_reuse.md)|10|
 |[rff_physics](by_method/rff_physics.md)|10|
+|[source_only](by_method/source_only.md)|8|
 |[practical](by_method/practical.md)|7|
 |[residual](by_method/residual.md)|7|
 |[residual_noeq](by_method/residual_noeq.md)|7|
-|[source_only](by_method/source_only.md)|7|
 |[phase1](by_method/phase1.md)|6|
 |[fasttrust](by_method/fasttrust.md)|6|
 |[concat](by_method/concat.md)|6|
@@ -46,6 +46,8 @@
 |[final200](by_method/final200.md)|4|
 |[relative_cfo](by_method/relative_cfo.md)|4|
 |[d92](by_method/d92.md)|3|
+|[diagnostic](by_method/diagnostic.md)|3|
+|[no_target_access](by_method/no_target_access.md)|3|
 |[packet_synchronization](by_method/packet_synchronization.md)|3|
 |[response](by_method/response.md)|3|
 |[core90](by_method/core90.md)|3|
@@ -53,7 +55,6 @@
 |[evaluation](by_method/evaluation.md)|2|
 |[true256](by_method/true256.md)|2|
 |[final_eval](by_method/final_eval.md)|2|
-|[diagnostic](by_method/diagnostic.md)|2|
 |[source_scratch](by_method/source_scratch.md)|2|
 |[native_methods](by_method/native_methods.md)|2|
 |[architecture](by_method/architecture.md)|2|
@@ -62,7 +63,8 @@
 |[cvcnn_matched](by_method/cvcnn_matched.md)|2|
 |[ablation](by_method/ablation.md)|2|
 |[scratch](by_method/scratch.md)|2|
-|[no_target_access](by_method/no_target_access.md)|2|
+|[coordinate_usage](by_method/coordinate_usage.md)|2|
+|[frozen_weights](by_method/frozen_weights.md)|2|
 |[frozen](by_method/frozen.md)|2|
 |[preamble](by_method/preamble.md)|2|
 |[phase_equivariant](by_method/phase_equivariant.md)|2|
@@ -90,8 +92,6 @@
 |[simplex_classifier](by_method/simplex_classifier.md)|1|
 |[physical_stability](by_method/physical_stability.md)|1|
 |[information_diagnostic](by_method/information_diagnostic.md)|1|
-|[coordinate_usage](by_method/coordinate_usage.md)|1|
-|[frozen_weights](by_method/frozen_weights.md)|1|
 |[public_synthetic](by_method/public_synthetic.md)|1|
 |[numerical_attribution](by_method/numerical_attribution.md)|1|
 |[received_sensitivity](by_method/received_sensitivity.md)|1|
@@ -139,6 +139,7 @@
 |CVS 等角身份分类头|managed_run|[打开](../automation_reports/CV-SincNet/20261001-phase1-cvs-simplex-identity-manysig-m8-r01/report.md)|
 |CVS性能优先继续优化：phase_dsq clean测试报告|managed_run|[打开](../automation_reports/CV-SincNet/20261001-phase1-cvs-stability-clean-manysig-m24-r01/report.md)|
 |CVS 性能优先研发：物理补充表征|managed_run|[打开](../automation_reports/CV-SincNet/20261001-phase1-cvs-stability-identity-manysig-m8-r01/report.md)|
+|CVS 加性坐标实际使用：8冻结模型×5内部消融完整源V诊断|managed_run|[打开](../automation_reports/CV-SincNet/20261002-diagnostic-cvs-additive-usage-source-manysig-m40-r01/report.md)|
 |CVS 相对频偏坐标：完整源域身份信息诊断|managed_run|[打开](../automation_reports/CV-SincNet/20261002-diagnostic-cvs-cfo-information-source-manysig-m1-r01/report.md)|
 |CVS 坐标实际使用：完整冻结源域消融报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-diagnostic-cvs-coordinate-usage-source-manysig-m40-r01/report.md)|
 |冻结 CVS 源权重的公共合成相位数值归因|managed_run|[打开](../automation_reports/CV-SincNet/20261002-diagnostic-cvs-equivariant-numerics-public-m12-r01/report.md)|

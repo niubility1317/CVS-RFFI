@@ -1,0 +1,332 @@
+{
+  "read_at": 1790909635.4649956,
+  "user": "szu2070436088",
+  "host": "dell-DSS8440",
+  "output_exists": {
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-additive-usage-source-manysig-m40-r01": false,
+    "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-diagnostic-cvs-additive-usage-source-manysig-m40-r01": false,
+    "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_additive_usage_source_20261002_r01": false
+  },
+  "models": [
+    {
+      "row_id": "additive_equivariant-s2026092701",
+      "commit": "d6c29b2bfbc5921a5ff654735253df21b1b1f709",
+      "completion": {
+        "status": "SOURCE_TRAINED",
+        "epoch": 200,
+        "steps": 10000,
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-additive-identity-manysig-m8-r01/additive_equivariant-s2026092701/source/last.pt",
+        "elapsed_seconds": 1435.3924198000168,
+        "target_access": false,
+        "target_evaluated": false,
+        "final_source_metrics": {
+          "source_val_count": 27000,
+          "source_val_accuracy": 0.9754444444444444,
+          "source_val_ce": 0.13944893715824933,
+          "source_val_rx_accuracy": {
+            "1": 0.9951851851851852,
+            "3": 0.9312962962962963,
+            "4": 0.9874074074074074,
+            "6": 0.9938888888888889,
+            "8": 0.9694444444444444
+          },
+          "source_val_worst_rx": 0.9312962962962963
+        },
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        }
+      },
+      "checkpoint_exists": true
+    },
+    {
+      "row_id": "additive_gauge-s2026092701",
+      "commit": "d6c29b2bfbc5921a5ff654735253df21b1b1f709",
+      "completion": {
+        "status": "SOURCE_TRAINED",
+        "epoch": 200,
+        "steps": 10000,
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-additive-identity-manysig-m8-r01/additive_gauge-s2026092701/source/last.pt",
+        "elapsed_seconds": 1253.2777370900149,
+        "target_access": false,
+        "target_evaluated": false,
+        "final_source_metrics": {
+          "source_val_count": 27000,
+          "source_val_accuracy": 0.912962962962963,
+          "source_val_ce": 0.31727474944696427,
+          "source_val_rx_accuracy": {
+            "1": 0.99,
+            "3": 0.7662962962962963,
+            "4": 0.9785185185185186,
+            "6": 0.9825925925925926,
+            "8": 0.8474074074074074
+          },
+          "source_val_worst_rx": 0.7662962962962963
+        },
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        }
+      },
+      "checkpoint_exists": true
+    },
+    {
+      "row_id": "additive_equivariant-s2026092702",
+      "commit": "d6c29b2bfbc5921a5ff654735253df21b1b1f709",
+      "completion": {
+        "status": "SOURCE_TRAINED",
+        "epoch": 200,
+        "steps": 10000,
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-additive-identity-manysig-m8-r01/additive_equivariant-s2026092702/source/last.pt",
+        "elapsed_seconds": 1434.6811635470076,
+        "target_access": false,
+        "target_evaluated": false,
+        "final_source_metrics": {
+          "source_val_count": 27000,
+          "source_val_accuracy": 0.975925925925926,
+          "source_val_ce": 0.1309890666257728,
+          "source_val_rx_accuracy": {
+            "1": 0.9944444444444445,
+            "3": 0.9362962962962963,
+            "4": 0.9888888888888889,
+            "6": 0.9946296296296296,
+            "8": 0.9653703703703703
+          },
+          "source_val_worst_rx": 0.9362962962962963
+        },
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        }
+      },
+      "checkpoint_exists": true
+    },
+    {
+      "row_id": "additive_gauge-s2026092702",
+      "commit": "d6c29b2bfbc5921a5ff654735253df21b1b1f709",
+      "completion": {
+        "status": "SOURCE_TRAINED",
+        "epoch": 200,
+        "steps": 10000,
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-additive-identity-manysig-m8-r01/additive_gauge-s2026092702/source/last.pt",
+        "elapsed_seconds": 1225.3689504840004,
+        "target_access": false,
+        "target_evaluated": false,
+        "final_source_metrics": {
+          "source_val_count": 27000,
+          "source_val_accuracy": 0.9144074074074074,
+          "source_val_ce": 0.2939969330087123,
+          "source_val_rx_accuracy": {
+            "1": 0.9905555555555555,
+            "3": 0.77,
+            "4": 0.9687037037037037,
+            "6": 0.9825925925925926,
+            "8": 0.8601851851851852
+          },
+          "source_val_worst_rx": 0.77
+        },
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        }
+      },
+      "checkpoint_exists": true
+    },
+    {
+      "row_id": "additive_equivariant-s2026092703",
+      "commit": "d6c29b2bfbc5921a5ff654735253df21b1b1f709",
+      "completion": {
+        "status": "SOURCE_TRAINED",
+        "epoch": 200,
+        "steps": 10000,
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-additive-identity-manysig-m8-r01/additive_equivariant-s2026092703/source/last.pt",
+        "elapsed_seconds": 1477.5724829410028,
+        "target_access": false,
+        "target_evaluated": false,
+        "final_source_metrics": {
+          "source_val_count": 27000,
+          "source_val_accuracy": 0.9711851851851852,
+          "source_val_ce": 0.16120266363793956,
+          "source_val_rx_accuracy": {
+            "1": 0.9961111111111111,
+            "3": 0.9218518518518518,
+            "4": 0.9853703703703703,
+            "6": 0.9914814814814815,
+            "8": 0.9611111111111111
+          },
+          "source_val_worst_rx": 0.9218518518518518
+        },
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        }
+      },
+      "checkpoint_exists": true
+    },
+    {
+      "row_id": "additive_gauge-s2026092703",
+      "commit": "d6c29b2bfbc5921a5ff654735253df21b1b1f709",
+      "completion": {
+        "status": "SOURCE_TRAINED",
+        "epoch": 200,
+        "steps": 10000,
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-additive-identity-manysig-m8-r01/additive_gauge-s2026092703/source/last.pt",
+        "elapsed_seconds": 1289.769111282978,
+        "target_access": false,
+        "target_evaluated": false,
+        "final_source_metrics": {
+          "source_val_count": 27000,
+          "source_val_accuracy": 0.9221111111111111,
+          "source_val_ce": 0.2866372214050088,
+          "source_val_rx_accuracy": {
+            "1": 0.9903703703703703,
+            "3": 0.7938888888888889,
+            "4": 0.9757407407407407,
+            "6": 0.9827777777777778,
+            "8": 0.8677777777777778
+          },
+          "source_val_worst_rx": 0.7938888888888889
+        },
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        }
+      },
+      "checkpoint_exists": true
+    },
+    {
+      "row_id": "additive_equivariant-s2026092704",
+      "commit": "d6c29b2bfbc5921a5ff654735253df21b1b1f709",
+      "completion": {
+        "status": "SOURCE_TRAINED",
+        "epoch": 200,
+        "steps": 10000,
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-additive-identity-manysig-m8-r01/additive_equivariant-s2026092704/source/last.pt",
+        "elapsed_seconds": 1483.0078402269864,
+        "target_access": false,
+        "target_evaluated": false,
+        "final_source_metrics": {
+          "source_val_count": 27000,
+          "source_val_accuracy": 0.9707777777777777,
+          "source_val_ce": 0.15453106160843216,
+          "source_val_rx_accuracy": {
+            "1": 0.9959259259259259,
+            "3": 0.9211111111111111,
+            "4": 0.99,
+            "6": 0.9922222222222222,
+            "8": 0.9546296296296296
+          },
+          "source_val_worst_rx": 0.9211111111111111
+        },
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        }
+      },
+      "checkpoint_exists": true
+    },
+    {
+      "row_id": "additive_gauge-s2026092704",
+      "commit": "d6c29b2bfbc5921a5ff654735253df21b1b1f709",
+      "completion": {
+        "status": "SOURCE_TRAINED",
+        "epoch": 200,
+        "steps": 10000,
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-additive-identity-manysig-m8-r01/additive_gauge-s2026092704/source/last.pt",
+        "elapsed_seconds": 1246.8927015170048,
+        "target_access": false,
+        "target_evaluated": false,
+        "final_source_metrics": {
+          "source_val_count": 27000,
+          "source_val_accuracy": 0.9212962962962963,
+          "source_val_ce": 0.28421434112341054,
+          "source_val_rx_accuracy": {
+            "1": 0.9866666666666667,
+            "3": 0.7905555555555556,
+            "4": 0.9783333333333334,
+            "6": 0.9792592592592593,
+            "8": 0.8716666666666667
+          },
+          "source_val_worst_rx": 0.7905555555555556
+        },
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        }
+      },
+      "checkpoint_exists": true
+    }
+  ],
+  "selection": {
+    "status": "SOURCE_SELECTION_FROZEN",
+    "selected_variant": "residual_fusion",
+    "source_summaries": {
+      "residual_fusion": {
+        "score": 0.9628240740740741,
+        "source_accuracy": 0.9806944444444444,
+        "worst_rx_accuracy": 0.9449537037037037,
+        "parameters": 164225,
+        "conv_linear_macs": 9708836
+      },
+      "additive_equivariant": {
+        "score": 0.9504861111111111,
+        "source_accuracy": 0.9733333333333334,
+        "worst_rx_accuracy": 0.9276388888888889,
+        "parameters": 203193,
+        "conv_linear_macs": 7199488
+      },
+      "additive_gauge": {
+        "score": 0.8489398148148148,
+        "source_accuracy": 0.9176944444444445,
+        "worst_rx_accuracy": 0.7801851851851852,
+        "parameters": 164865,
+        "conv_linear_macs": 9710276
+      }
+    },
+    "selection_rule": "performance first: four-seed E200 0.5 sourceV+0.5 worstsourceRX;exact ties V thenworstRX;costs secondary only after equalperformance",
+    "selection_policy": "performance_first_additive_with_source_control_20261002",
+    "candidate_universe": [
+      "residual_fusion",
+      "additive_equivariant",
+      "additive_gauge"
+    ],
+    "new_candidate_selected": false,
+    "exact_cost_tie_order": [
+      "residual_fusion",
+      "additive_equivariant",
+      "additive_gauge"
+    ],
+    "target_access": false,
+    "target_score_used": false,
+    "test_view": "clean"
+  },
+  "gpu": "0, 24124 MiB\n1, 24124 MiB\n2, 24124 MiB\n3, 24124 MiB\n4, 24124 MiB\n5, 24124 MiB\n6, 24124 MiB\n7, 24124 MiB\n",
+  "apps": "",
+  "free_bytes": 6239009263616,
+  "target_access": false,
+  "checkpoint_loaded": false
+}
