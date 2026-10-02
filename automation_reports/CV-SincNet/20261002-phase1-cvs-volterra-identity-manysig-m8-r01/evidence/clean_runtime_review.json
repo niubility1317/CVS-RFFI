@@ -1,0 +1,14 @@
+{
+  "status": "PASS",
+  "reviewer": "/root/review_clean_architecture",
+  "scope": "One independent P0/P1 of new clean execution path",
+  "initial_findings": [
+    {
+      "priority": "P1",
+      "issue": "TX denominator check accidentally 32000 instead of 28000"
+    }
+  ],
+  "fix": "28000; public full256CM/32row actual analyze regression test passed",
+  "focused_rereview": "PASS; independent actual analyze synthetic32/256/224 old closure verified",
+  "target_data_weights_scores_remote_access": false
+}

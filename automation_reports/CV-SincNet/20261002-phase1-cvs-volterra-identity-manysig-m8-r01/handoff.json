@@ -8,10 +8,11 @@
   "goal_achieved": false,
   "target_feedback": false,
   "next": [
-    "Continue healthy immutable source E200",
-    "Recompute fixed selection from all12 fullsource records",
-    "Only selected new candidate: four clean predictions plus28 reused controls, separate truth-last scoring",
-    "Full analysis and Git; goal remains unproven until actual improvement and physical interpretation"
+    "Inspect same live run; do not restart",
+    "FullE200 collect/analyze and fixedsource-only freeze",
+    "If new selected generate4actualcleanconfigs/register32rowmatrix;Git/push/OID/publish once;independent prediction/truth-last/analysis",
+    "If coupled control retained reuse completed cleanmetadata;newunselectedtestsN/A",
+    "Retain goal until actual performance improvement and RFF interpretation verified"
   ],
   "missing": [
     "Actual source execution",
@@ -23,13 +24,15 @@
   "dispatcher_pid": 1696395,
   "evidence": "evidence/running_readback.json",
   "last_epochs": {
-    "volterra_lag1-s2026092701": 9,
-    "volterra_lag4-s2026092701": 7,
-    "volterra_lag1-s2026092702": 7,
-    "volterra_lag4-s2026092702": 6,
-    "volterra_lag1-s2026092703": 5,
-    "volterra_lag4-s2026092703": 5,
-    "volterra_lag1-s2026092704": 4,
-    "volterra_lag4-s2026092704": 3
-  }
+    "volterra_lag1-s2026092701": 123,
+    "volterra_lag4-s2026092701": 121,
+    "volterra_lag1-s2026092702": 121,
+    "volterra_lag4-s2026092702": 120,
+    "volterra_lag1-s2026092703": 119,
+    "volterra_lag4-s2026092703": 118,
+    "volterra_lag1-s2026092704": 117,
+    "volterra_lag4-s2026092704": 118
+  },
+  "latest_evidence": "evidence/progress_readback.json",
+  "clean_runtime": "LOCAL_VERIFIED:69contractchecks+1fullanalysisfixture+oneP0P1withsinglepointrepairPASS;actualselection/configs/publish pending"
 }

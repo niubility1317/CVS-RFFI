@@ -13,7 +13,8 @@ CANDIDATES={'orthogonal_pa','moment_pool','orthogonal_moment','shared_complex','
 REUSED_BASELINE_RUN='20261001-phase1-clean-baselines-manysig-m16-r01'
 REUSED_RESIDUAL_RUN='20261001-phase1-cvs-selected-clean-manysig-m20-r01'
 REUSED_ENERGY_RUN='20261002-phase1-cvs-energy-clean-manysig-m24-r01'
-CANDIDATES.update({'crossphase_raw','crossphase_half','coupled_lag1','coupled_lag4'})
+REUSED_COUPLED_RUN='20261002-phase1-cvs-coupled-clean-manysig-m28-r01'
+CANDIDATES.update({'crossphase_raw','crossphase_half','coupled_lag1','coupled_lag4','volterra_lag1','volterra_lag4'})
 
 
 def read(path):return json.loads(Path(path).read_text(encoding='utf-8'))
@@ -39,6 +40,10 @@ def validate_matrix(spec):
         if selection['status']!='SOURCE_SELECTION_FROZEN' or selection['selected_variant'] not in CANDIDATES:
             raise ValueError('No source-only frozen selection')
         variants=(*BASELINES,'residual_fusion',selection['selected_variant']) if selection.get('scope') in ('balanced_source','interaction_source','attentive_source','stability_source','coherence_source','simplex_source','rf_operator_source','observable_source','gauge_source','reference_source','equivariant_source','synchronized_source','coordinate_source','additive_source','fractional_source','energy_source') else (*BASELINES,selection['selected_variant'])
+    if selection.get('scope')=='volterra_source':
+        if selection['selected_variant'] not in {'volterra_lag1','volterra_lag4'} or selection.get('new_candidate_selected') is not True:
+            raise ValueError('Only selected new Volterra candidate can be scored')
+        variants=(*BASELINES,'residual_fusion','energy_equivariant','coupled_lag4',selection['selected_variant'])
     if selection.get('scope')=='coupled_source':
         if selection['selected_variant'] not in {'coupled_lag1','coupled_lag4'} or selection.get('new_candidate_selected') is not True:
             raise ValueError('Only selected new coupled candidate can be scored')
@@ -67,9 +72,10 @@ def preflight_predictions(spec):
             residual=row['reuse_from_run']==REUSED_RESIDUAL_RUN and row['variant']=='residual_fusion'
             baseline=row['reuse_from_run']==REUSED_BASELINE_RUN and row['variant'] in BASELINES
             energy=row['reuse_from_run']==REUSED_ENERGY_RUN and row['variant']=='energy_equivariant'
-            old_run=REUSED_ENERGY_RUN if energy else REUSED_RESIDUAL_RUN if residual else REUSED_BASELINE_RUN
-            models=6 if energy else 5 if residual else 4
-            if (not (baseline or residual or energy) or root.parts[-3:]!=(old_run,row['row_id'],'prediction') or
+            coupled=row['reuse_from_run']==REUSED_COUPLED_RUN and row['variant']=='coupled_lag4'
+            old_run=REUSED_COUPLED_RUN if coupled else REUSED_ENERGY_RUN if energy else REUSED_RESIDUAL_RUN if residual else REUSED_BASELINE_RUN
+            models=7 if coupled else 6 if energy else 5 if residual else 4
+            if (not (baseline or residual or energy or coupled) or root.parts[-3:]!=(old_run,row['row_id'],'prediction') or
                 original['target_access'] or original['target_score_used'] or
                 old_marker['status']!='SCORED_COMPLETE' or old_marker['rows']!=models*4 or old_marker['models']!=models or old_marker['seeds']!=4):
                 raise ValueError('Unauthorized/incomplete frozen reuse;truth remains closed')
@@ -77,6 +83,8 @@ def preflight_predictions(spec):
                 raise ValueError('Original fixed baseline selection changed')
             if energy and (original.get('scope')!='energy_source' or original['status']!='SOURCE_SELECTION_FROZEN' or original['selected_variant']!='energy_equivariant'):
                 raise ValueError('Original energy source selection changed')
+            if coupled and (original.get('scope')!='coupled_source' or original['status']!='SOURCE_SELECTION_FROZEN' or original['selected_variant']!='coupled_lag4' or original.get('new_candidate_selected') is not True):
+                raise ValueError('Original coupled source selection changed')
             if residual and (original.get('scope') in ('baseline_only','balanced_source','interaction_source','attentive_source','stability_source','coherence_source','simplex_source','rf_operator_source','observable_source','gauge_source','reference_source','equivariant_source','synchronized_source','coordinate_source','additive_source','fractional_source','energy_source') or original['status']!='SOURCE_SELECTION_FROZEN' or original['selected_variant']!='residual_fusion'):
                 raise ValueError('Original residual source selection changed')
         flag=read(root/'clean_complete.json');resolved=read(root/'resolved_config.json');provenance=read(root/'provenance.json')
@@ -127,7 +135,9 @@ def score(spec):
     lookup={(r['method'],r['receiver'],r['model_seed']):r for r in results}
     paired=[]
     candidate='native' if selection.get('scope')=='baseline_only' else selection['selected_variant']
-    if selection.get('scope') in ('crossphase_source','coupled_source'):
+    if selection.get('scope')=='volterra_source':
+        pair_baselines=(*BASELINES,'residual_fusion','energy_equivariant','coupled_lag4')
+    elif selection.get('scope') in ('crossphase_source','coupled_source'):
         pair_baselines=(*BASELINES,'residual_fusion','energy_equivariant')
     else:
         pair_baselines=(*BASELINES,'residual_fusion') if selection.get('scope') in ('balanced_source','interaction_source','attentive_source','stability_source','coherence_source','simplex_source','rf_operator_source','observable_source','gauge_source','reference_source','equivariant_source','synchronized_source','coordinate_source','additive_source','fractional_source','energy_source') else BASELINES

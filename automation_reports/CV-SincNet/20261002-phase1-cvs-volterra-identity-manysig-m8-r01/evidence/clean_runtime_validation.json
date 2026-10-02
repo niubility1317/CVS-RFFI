@@ -1,0 +1,16 @@
+{
+  "status": "PASS",
+  "scope": "Conditional selected-only clean runtime; no formal target inputs accessed",
+  "tests": 69,
+  "additional_full_analysis_test": 1,
+  "command": "conda run -n ssr-gpu python -m pytest tests/test_cvs_volterra_clean_contract.py tests/test_cvs_coupled_clean_contract.py tests/test_cvs_energy_clean_contract.py -q -ra -o addopts= -p no:cacheprovider",
+  "analysis_test": "tests/test_cvs_volterra_clean_analysis.py",
+  "new_predictions": 4,
+  "reused_predictions": 28,
+  "total": 32,
+  "real_expected_scored_records": 256,
+  "old_records_unchanged_expected": 224,
+  "source_training_immutable": true,
+  "target_access": false,
+  "goal_achieved": false
+}
