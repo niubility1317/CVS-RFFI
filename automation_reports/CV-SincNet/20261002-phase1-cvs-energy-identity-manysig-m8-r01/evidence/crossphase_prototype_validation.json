@@ -1,0 +1,28 @@
+{
+  "status": "PASS",
+  "synthetic_checks": 8,
+  "variants": [
+    "crossphase_raw",
+    "crossphase_half"
+  ],
+  "parameters_per_variant": 202553,
+  "new_parameters": 0,
+  "readout_dimensions": 320,
+  "information_loss_counterexample": true,
+  "common_phase_and_all_finite_gradients_checked": true,
+  "same_own_initial_parameter_states": true,
+  "strict_roundtrip": true,
+  "design_inputs": [
+    "Actual InvariantReadout per-channel energy/time-coherence expressions",
+    "Public inter-channel phase counterexample",
+    "Existing shared-energy source-only contract"
+  ],
+  "formal_data_access": false,
+  "checkpoint_access": false,
+  "target_access": false,
+  "target_score_used_for_design": false,
+  "formal_training": false,
+  "performance_improvement_proven": false,
+  "module": "experiments.cvs_crossphase_identity.model",
+  "design": "docs/CVS_CROSSPHASE_IDENTITY_HYPOTHESIS_20261002.md"
+}
