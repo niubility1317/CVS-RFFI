@@ -1,0 +1,147 @@
+{
+  "observed_utc": "2026-10-02T00:32:12Z",
+  "launch": {
+    "status": "DISPATCHED_AWAITING_READBACK",
+    "pid": 1341024,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_support_metric_support_analysis_scalar_20261002_r02",
+    "source_commit": "e0eb4041937bc16fc242651185b6c384f44821b0",
+    "fitted_runtime_commit": "3c3eb6c513aaf20fe84514dcbeab3584bad1f238",
+    "run_id": "20261002-phase2-d92-support-metric-joint-support-m2-r01",
+    "output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-support-metric-joint-support-m2-r01-analysis-scalar-r02",
+    "original_run": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-support-metric-joint-support-m2-r01",
+    "log": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_support_metric_support_analysis_scalar_20261002_r02/analysis.log",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_support_metric_support_analysis_scalar_20261002_r02/tools/analyze_d92_support_metric_joint_probe_scalar_r02.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_support_metric_support_analysis_scalar_20261002_r02/configs/d92_support_metric_joint_support_20261002.json",
+      "--run-root",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-support-metric-joint-support-m2-r01",
+      "--output",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-support-metric-joint-support-m2-r01-analysis-scalar-r02",
+      "--expected-runtime-commit",
+      "3c3eb6c513aaf20fe84514dcbeab3584bad1f238"
+    ],
+    "launch_owner": "root",
+    "remote_user": "szu2070436088",
+    "environment": {
+      "CUDA_VISIBLE_DEVICES": "",
+      "OMP_NUM_THREADS": "2",
+      "OPENBLAS_NUM_THREADS": "2",
+      "MKL_NUM_THREADS": "2",
+      "NUMEXPR_NUM_THREADS": "2",
+      "PYTHONUNBUFFERED": "1"
+    },
+    "query_read": false,
+    "source_sample_read": false,
+    "fit": false,
+    "parameter_selection": false,
+    "automatic_retry": false
+  },
+  "startup": {
+    "schema": "d92_support_analysis_execution_v1",
+    "status": "RUNNING",
+    "pid": 1341030,
+    "wrapper_pid": 1341024,
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_support_metric_support_analysis_scalar_20261002_r02/tools/analyze_d92_support_metric_joint_probe_scalar_r02.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_support_metric_support_analysis_scalar_20261002_r02/configs/d92_support_metric_joint_support_20261002.json",
+      "--run-root",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-support-metric-joint-support-m2-r01",
+      "--output",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-support-metric-joint-support-m2-r01-analysis-scalar-r02",
+      "--expected-runtime-commit",
+      "3c3eb6c513aaf20fe84514dcbeab3584bad1f238"
+    ],
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_support_metric_support_analysis_scalar_20261002_r02",
+    "source_commit": "e0eb4041937bc16fc242651185b6c384f44821b0",
+    "fitted_runtime_commit": "3c3eb6c513aaf20fe84514dcbeab3584bad1f238",
+    "output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-support-metric-joint-support-m2-r01-analysis-scalar-r02",
+    "original_run": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-support-metric-joint-support-m2-r01",
+    "environment": {
+      "CUDA_VISIBLE_DEVICES": "",
+      "OMP_NUM_THREADS": "2",
+      "OPENBLAS_NUM_THREADS": "2",
+      "MKL_NUM_THREADS": "2",
+      "NUMEXPR_NUM_THREADS": "2",
+      "PYTHONUNBUFFERED": "1"
+    },
+    "started": 1790901073.098863,
+    "launch_owner": "root",
+    "fit": false,
+    "query_read": false,
+    "source_sample_read": false,
+    "parameter_selection": false,
+    "automatic_retry": false
+  },
+  "execution": null,
+  "wrapper_live": {
+    "pid": 1341024,
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-c",
+      "\nimport getpass,json,os,subprocess,sys,time\nfrom pathlib import Path\nc=json.loads(sys.argv[1]);release=Path(c['release'])\nif getpass.getuser()!=c['expected_remote_user']:raise PermissionError('Ordinary N607 user required; administrator wrapper forbidden')\ndef write(name,value):\n with (release/name).open('x',encoding='utf-8') as stream:json.dump(value,stream,allow_nan=False);stream.write('\\n')\nstarted=time.time()\nchild=subprocess.Popen(c['command'],cwd=release,env=dict(os.environ,**c['environment']),stdin=subprocess.DEVNULL)\nwrite('analysis_startup.json',dict(schema='d92_support_analysis_execution_v1',status='RUNNING',\n pid=child.pid,wrapper_pid=os.getpid(),argv=c['command'],cwd=str(release),source_commit=c['source_commit'],\n fitted_runtime_commit=c['fitted_runtime_commit'],output=c['output'],original_run=c['original_run'],\n environment=c['environment'],started=started,launch_owner='root',fit=False,query_read=False,\n source_sample_read=False,parameter_selection=False,automatic_retry=False))\ncode=child.wait()\nwrite('analysis_execution.json',dict(schema='d92_support_analysis_execution_v1',\n status='PROCESS_EXITED_AWAITING_ARTIFACT_READBACK' if code==0 else 'FAILED',\n pid=child.pid,wrapper_pid=os.getpid(),returncode=code,elapsed_seconds=time.time()-started,\n finished=time.time(),source_commit=c['source_commit'],fitted_runtime_commit=c['fitted_runtime_commit'],\n output=c['output'],original_run=c['original_run'],fit=False,query_read=False,\n source_sample_read=False,parameter_selection=False,automatic_retry=False))\n",
+      "{\"status\": \"PREREGISTERED_NOT_LAUNCHED\", \"attempt_id\": \"r02\", \"source_commit\": \"e0eb4041937bc16fc242651185b6c384f44821b0\", \"source_preparation_commit\": \"f291990c45f14cf322dfb1c6d2fc5a97e23f5a91\", \"fitted_runtime_commit\": \"3c3eb6c513aaf20fe84514dcbeab3584bad1f238\", \"paths\": [\"tools/analyze_d92_support_metric_joint_probe_scalar_r02.py\", \"configs/d92_support_metric_joint_support_20261002.json\"], \"release\": \"/home/szu2070436088/2510044040/CV-SincNet/releases/d92_support_metric_support_analysis_scalar_20261002_r02\", \"output\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-support-metric-joint-support-m2-r01-analysis-scalar-r02\", \"log\": \"/home/szu2070436088/2510044040/CV-SincNet/releases/d92_support_metric_support_analysis_scalar_20261002_r02/analysis.log\", \"command\": [\"/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python\", \"-u\", \"/home/szu2070436088/2510044040/CV-SincNet/releases/d92_support_metric_support_analysis_scalar_20261002_r02/tools/analyze_d92_support_metric_joint_probe_scalar_r02.py\", \"--spec\", \"/home/szu2070436088/2510044040/CV-SincNet/releases/d92_support_metric_support_analysis_scalar_20261002_r02/configs/d92_support_metric_joint_support_20261002.json\", \"--run-root\", \"/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-support-metric-joint-support-m2-r01\", \"--output\", \"/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-support-metric-joint-support-m2-r01-analysis-scalar-r02\", \"--expected-runtime-commit\", \"3c3eb6c513aaf20fe84514dcbeab3584bad1f238\"], \"query_read\": false, \"source_sample_read\": false, \"fit\": false, \"parameter_selection\": false, \"launch_owner\": \"root\", \"automatic_retry\": false, \"expected_complete_status\": \"SUPPORT_METRIC_JOINT_PROBE_COMPLETE\", \"expected_summary_status\": \"COMPLETE_SUPPORT_METRIC_JOINT_SUPPORT_ANALYSIS_VERIFIED\", \"coverage\": {\"rows\": 4, \"parents\": 160, \"sequence_paths\": 1800}, \"numerical_replay\": false, \"scope\": \"Read-only complete saved-state analysis; sole internal NumPy/Python scalar boundary correction, not method/tolerance/fit change\", \"environment\": {\"CUDA_VISIBLE_DEVICES\": \"\", \"OMP_NUM_THREADS\": \"2\", \"OPENBLAS_NUM_THREADS\": \"2\", \"MKL_NUM_THREADS\": \"2\", \"NUMEXPR_NUM_THREADS\": \"2\", \"PYTHONUNBUFFERED\": \"1\"}, \"run_id\": \"20261002-phase2-d92-support-metric-joint-support-m2-r01\", \"original_run\": \"/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-support-metric-joint-support-m2-r01\", \"remote_archive\": \"/home/szu2070436088/2510044040/CV-SincNet/releases/d92_support_metric_support_analysis_scalar_20261002_r02.tar\", \"expected_remote_user\": \"szu2070436088\", \"record_commit\": \"e0eb4041937bc16fc242651185b6c384f44821b0\", \"branch\": \"codex/d92-support-upgrade-20260928\", \"remote_oid\": \"e0eb4041937bc16fc242651185b6c384f44821b0\", \"archive\": \"E:\\\\type10-7\\\\local_artifacts\\\\d92_support_metric_joint_support_analysis\\\\d92_support_metric_support_analysis_scalar_20261002_r02\\\\d92_support_metric_support_analysis_scalar_20261002_r02.tar\", \"archive_bytes\": 225280, \"archive_sha256\": \"505b488464bd5d8cf0b803e57b9a035f489473329731eeef5f68f1e2f746e6b0\", \"wrapper\": \"\\nimport getpass,json,os,subprocess,sys,time\\nfrom pathlib import Path\\nc=json.loads(sys.argv[1]);release=Path(c['release'])\\nif getpass.getuser()!=c['expected_remote_user']:raise PermissionError('Ordinary N607 user required; administrator wrapper forbidden')\\ndef write(name,value):\\n with (release/name).open('x',encoding='utf-8') as stream:json.dump(value,stream,allow_nan=False);stream.write('\\\\n')\\nstarted=time.time()\\nchild=subprocess.Popen(c['command'],cwd=release,env=dict(os.environ,**c['environment']),stdin=subprocess.DEVNULL)\\nwrite('analysis_startup.json',dict(schema='d92_support_analysis_execution_v1',status='RUNNING',\\n pid=child.pid,wrapper_pid=os.getpid(),argv=c['command'],cwd=str(release),source_commit=c['source_commit'],\\n fitted_runtime_commit=c['fitted_runtime_commit'],output=c['output'],original_run=c['original_run'],\\n environment=c['environment'],started=started,launch_owner='root',fit=False,query_read=False,\\n source_sample_read=False,parameter_selection=False,automatic_retry=False))\\ncode=child.wait()\\nwrite('analysis_execution.json',dict(schema='d92_support_analysis_execution_v1',\\n status='PROCESS_EXITED_AWAITING_ARTIFACT_READBACK' if code==0 else 'FAILED',\\n pid=child.pid,wrapper_pid=os.getpid(),returncode=code,elapsed_seconds=time.time()-started,\\n finished=time.time(),source_commit=c['source_commit'],fitted_runtime_commit=c['fitted_runtime_commit'],\\n output=c['output'],original_run=c['original_run'],fit=False,query_read=False,\\n source_sample_read=False,parameter_selection=False,automatic_retry=False))\\n\"}"
+    ],
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_support_metric_support_analysis_scalar_20261002_r02",
+    "start_ticks": 14877749,
+    "user_cpu_ticks": 2,
+    "system_cpu_ticks": 0,
+    "memory": {
+      "VmHWM": "10500 kB",
+      "VmRSS": "10500 kB"
+    },
+    "environment": {
+      "OMP_NUM_THREADS": "2",
+      "OPENBLAS_NUM_THREADS": "2",
+      "MKL_NUM_THREADS": "2",
+      "NUMEXPR_NUM_THREADS": "2",
+      "CUDA_VISIBLE_DEVICES": "",
+      "PYTHONUNBUFFERED": "1"
+    }
+  },
+  "child_live": {
+    "pid": 1341030,
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_support_metric_support_analysis_scalar_20261002_r02/tools/analyze_d92_support_metric_joint_probe_scalar_r02.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_support_metric_support_analysis_scalar_20261002_r02/configs/d92_support_metric_joint_support_20261002.json",
+      "--run-root",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-support-metric-joint-support-m2-r01",
+      "--output",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-support-metric-joint-support-m2-r01-analysis-scalar-r02",
+      "--expected-runtime-commit",
+      "3c3eb6c513aaf20fe84514dcbeab3584bad1f238"
+    ],
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_support_metric_support_analysis_scalar_20261002_r02",
+    "start_ticks": 14877752,
+    "user_cpu_ticks": 3652,
+    "system_cpu_ticks": 177,
+    "memory": {
+      "VmHWM": "164788 kB",
+      "VmRSS": "164788 kB"
+    },
+    "environment": {
+      "OMP_NUM_THREADS": "2",
+      "OPENBLAS_NUM_THREADS": "2",
+      "MKL_NUM_THREADS": "2",
+      "NUMEXPR_NUM_THREADS": "2",
+      "CUDA_VISIBLE_DEVICES": "",
+      "PYTHONUNBUFFERED": "1"
+    }
+  },
+  "summary_meta": null,
+  "files": [],
+  "log_bytes": 0,
+  "read_only": true,
+  "metrics_read": false,
+  "query_read": false,
+  "verification": "VERIFIED_RUNNING"
+}

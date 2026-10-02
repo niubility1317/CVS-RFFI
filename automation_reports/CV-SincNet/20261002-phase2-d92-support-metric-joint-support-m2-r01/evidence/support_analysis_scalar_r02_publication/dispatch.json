@@ -1,0 +1,39 @@
+{
+  "status": "DISPATCHED_AWAITING_READBACK",
+  "pid": 1341024,
+  "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_support_metric_support_analysis_scalar_20261002_r02",
+  "source_commit": "e0eb4041937bc16fc242651185b6c384f44821b0",
+  "fitted_runtime_commit": "3c3eb6c513aaf20fe84514dcbeab3584bad1f238",
+  "run_id": "20261002-phase2-d92-support-metric-joint-support-m2-r01",
+  "output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-support-metric-joint-support-m2-r01-analysis-scalar-r02",
+  "original_run": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-support-metric-joint-support-m2-r01",
+  "log": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_support_metric_support_analysis_scalar_20261002_r02/analysis.log",
+  "argv": [
+    "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "-u",
+    "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_support_metric_support_analysis_scalar_20261002_r02/tools/analyze_d92_support_metric_joint_probe_scalar_r02.py",
+    "--spec",
+    "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_support_metric_support_analysis_scalar_20261002_r02/configs/d92_support_metric_joint_support_20261002.json",
+    "--run-root",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-support-metric-joint-support-m2-r01",
+    "--output",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-support-metric-joint-support-m2-r01-analysis-scalar-r02",
+    "--expected-runtime-commit",
+    "3c3eb6c513aaf20fe84514dcbeab3584bad1f238"
+  ],
+  "launch_owner": "root",
+  "remote_user": "szu2070436088",
+  "environment": {
+    "CUDA_VISIBLE_DEVICES": "",
+    "OMP_NUM_THREADS": "2",
+    "OPENBLAS_NUM_THREADS": "2",
+    "MKL_NUM_THREADS": "2",
+    "NUMEXPR_NUM_THREADS": "2",
+    "PYTHONUNBUFFERED": "1"
+  },
+  "query_read": false,
+  "source_sample_read": false,
+  "fit": false,
+  "parameter_selection": false,
+  "automatic_retry": false
+}

@@ -15,3 +15,5 @@
 只修正登记文字：cohort引用为benchmark.cohorts，feature cache producer来自各row实际branch_features路径，属于原始冻结表征供support拟合及只读query推断；没有继承历史适应状态。算法、矩阵、数据和角色不变。入口34、scorer70、control43个distinct用例已通过；57文件精确source bundle隔离导入成功且无数据/encoder读取，独立P0/P1审查闭合。状态READY，尚未发布、启动或评分。最初合成测试失败与修复后原始输出全部保留；详情见D92_SUPPORT_METRIC_QUERY_SOURCE_VALIDATION_20261002.md。
 
 完整query r01已唯一发布并启动，runtime c7c46558d5eb8f34bb57fb09c12adc7ac2c5109f；2026-10-02T00:10:28Z独立/proc argv/cwd/start_ticks/environment读回VERIFIED：supervisor1327506/start14743342，rx3 PID1327618/1327622 PREDICTING，rx1两行PREFLIGHT_COMPLETE等待。全四行直接预检完成，global marker无，尚未truth/评分。原公式、数据、六项资源和矩阵不变。
+
+独立只读fixed-output评分入口已准备，12项定向测试通过并由独立source P0/P1审查闭合。正常原控制器可能因np.float64类型拒绝在producer exit0后记FAILED，原状态不修改；新入口仅接受此精确错误或原合法COMPLETE行，逐行从真实marker核全4/2400并用原独立数值校验器及二次读回闭合后，最后才接truth。新独占closure/summary不是authority，不重预测、不fit、不接受partial。r01计划已登记，原query仍运行，评分尚未发布或启动。

@@ -1,0 +1,71 @@
+{
+  "schema": "d92_support_metric_fixed_output_score_execution_v1",
+  "run_id": "20261002-phase2-d92-support-metric-joint-repeat-m2-r01",
+  "attempt_id": "r01",
+  "status": "PREREGISTERED_AWAITING_COMPLETE_PRODUCER_OUTPUTS",
+  "source_commit": null,
+  "source_preparation_commit": "e0eb4041937bc16fc242651185b6c384f44821b0",
+  "original_predictions_runtime_commit": "c7c46558d5eb8f34bb57fb09c12adc7ac2c5109f",
+  "original_run": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-support-metric-joint-repeat-m2-r01",
+  "original_spec_path": "configs/d92_support_metric_joint_repeat_20261002.json",
+  "release": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_support_metric_fixed_outputs_score_20261002_r01",
+  "output_directory": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-support-metric-joint-repeat-m2-r01-fixed-outputs-score-r01",
+  "source_paths": [
+    "tools/score_d92_support_metric_fixed_outputs_after_scalar_failure.py",
+    "tools/score_d92_support_metric_joint_benchmark_scalar_r02.py",
+    "configs/d92_support_metric_joint_repeat_20261002.json"
+  ],
+  "command": [
+    "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "-u",
+    "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_support_metric_fixed_outputs_score_20261002_r01/tools/score_d92_support_metric_fixed_outputs_after_scalar_failure.py",
+    "--spec",
+    "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_support_metric_fixed_outputs_score_20261002_r01/configs/d92_support_metric_joint_repeat_20261002.json",
+    "--run-root",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-support-metric-joint-repeat-m2-r01",
+    "--output",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-support-metric-joint-repeat-m2-r01-fixed-outputs-score-r01"
+  ],
+  "launch_owner": "root",
+  "automatic_retry": false,
+  "fit": false,
+  "training": false,
+  "model_called": false,
+  "parameter_selection": false,
+  "expected_rows": 4,
+  "expected_parents": 2400,
+  "old_classes": 6,
+  "k": [
+    1,
+    5,
+    10,
+    20
+  ],
+  "new_counts": [
+    0,
+    2,
+    5,
+    10,
+    20
+  ],
+  "expected_original_terminal_status": "SUPPORT_METRIC_QUERY_BENCHMARK_PREDICTIONS_FAILED",
+  "accepted_original_verifier_failure": {
+    "phase": "PREDICTION",
+    "error_type": "ValueError",
+    "error": "Trial float tolerance differs",
+    "producer_returncode": 0
+  },
+  "expected_closure_status": "INDEPENDENT_FIXED_OUTPUT_CLOSURE_COMPLETE",
+  "expected_score_status": "SUPPORT_METRIC_JOINT_QUERY_SCORE_COMPLETE",
+  "original_status_changes": false,
+  "scope": "Read-only independently verified complete fixed outputs; scalar-verifier interface repair, not new model or authority",
+  "truth_read_policy": "Full4/2400 actual producer COMPLETE, all source/physical/basis/B/numeric/five-stream closure, independent reread and original control unchanged before truth",
+  "environment": {
+    "CUDA_VISIBLE_DEVICES": "",
+    "OMP_NUM_THREADS": "2",
+    "OPENBLAS_NUM_THREADS": "2",
+    "MKL_NUM_THREADS": "2",
+    "NUMEXPR_NUM_THREADS": "2",
+    "PYTHONUNBUFFERED": "1"
+  }
+}

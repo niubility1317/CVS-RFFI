@@ -1,3 +1,15 @@
+## 当前交接：四个健康任务继续，独立完整固定输出评分入口就绪
+
+- Goal ACTIVE。00:32UTC独立metadata：新SupportMetric query c7c supervisor1327506/start14743342、rx3 1327618/1327622正常预测，rx1等待；旧ProtoFrame query72663/supervisor1204372/rx3 1204902/1204908正常预测，rx1等待；global均无。下一正常query读回约00:52UTC，不停止/热改/重复发布。
+- Group原全4/2400/73aa不可变；独立契约修复scorer r02/sourcef291、wrapper1333307/child1333329在00:32UTC VERIFIED_RUNNING、summary无。reader read_group_query_score_contract_20261002_r02.py，下一正常约00:42UTC；完整metadata后才采集全summary/表，不dump大JSON或反馈调参。r01 FAILED保留。
+- SupportMetric原support全4/160/1800 TRAINING_COMPLETE/fit3c3；独立scalar-r02 analysis已一次启动sourcee0eb4041、wrapper1341024/child1341030，在00:32UTC VERIFIED_RUNNING无产物。reader read_support_metric_support_analysis_scalar_r02_20261002.py，只execution.support_analysis_scalar_r02；下一约00:42UTC完整metadata后采20文件/完整OOF/proxy/资源报告，原r01 FAILED保留，不重训/扩大tol。
+- 新只读fixed-output scoring入口/test12/独立P0P1 review已PASS，configs/d92_support_metric_fixed_outputs_score_20261002.json预登记r01，未发布/启动。原query控制器在producer exit0后可因原类型bug记FAILED，全队列仍会跑；终态必须全4/2400真实COMPLETE outputs、具体同错误或原合法COMPLETE、原PID/source/state/actualB/basis/fiveflow数值闭合和第二读回才truth。新closure是ordinaryderived非authority，原FAILED不变，不伪造marker/不重预测/不partial。只有全真实终态才能root后续发布独立3file源码包；实际评分runtime另从届时pushedHEAD绑定，不要用原buggy scorer或直接scalar.score_benchmark。
+- 科学方法/Phase1/practical residual/六资源和矩阵固定，无query反馈/参数grid/fresh确认。完整报告必须同物理A/B/C、old6/K×新增、gain/drop/absGap/H及实际成本/N/A。数学/测试不证明性能提升或省星载算力；目标仍未达成。root唯一真实数值/Git/SSH/launch/scoring。
+
+<!-- FIXED_OUTPUT_SCORE_READY_AND_FOUR_LIVE_TASKS_20261002 -->
+
+以下历史交接保留，不据此重启：
+
 ## 当前交接：Group独立评分r02运行，SupportMetric标量修复r02已验证待发布
 
 - Goal ACTIVE。Group原预测full4/2400/73aa不变；契约修复score r02/sourcef291于00:20UTC独立读回RUNNING，wrapper1333307/child1333329；reader read_group_query_score_contract_20261002_r02.py，下一次正常约00:30UTC，完整artifact metadata后才采集报告。不重复dispatch/原r01 FAILED保留。

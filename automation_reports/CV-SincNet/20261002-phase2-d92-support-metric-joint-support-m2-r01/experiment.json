@@ -334,9 +334,9 @@
     "source_runtime_unchanged": true,
     "support_metrics_read": false,
     "support_analysis_scalar_r02": {
-      "status": "PREREGISTERED_NOT_LAUNCHED",
+      "status": "RUNNING",
       "attempt_id": "r02",
-      "source_commit": null,
+      "source_commit": "e0eb4041937bc16fc242651185b6c384f44821b0",
       "source_preparation_commit": "f291990c45f14cf322dfb1c6d2fc5a97e23f5a91",
       "fitted_runtime_commit": "3c3eb6c513aaf20fe84514dcbeab3584bad1f238",
       "paths": [
@@ -381,7 +381,12 @@
         "MKL_NUM_THREADS": "2",
         "NUMEXPR_NUM_THREADS": "2",
         "PYTHONUNBUFFERED": "1"
-      }
+      },
+      "wrapper_pid": 1341024,
+      "child_pid": 1341030,
+      "runtime_evidence_ref": "automation_reports/CV-SincNet/20261002-phase2-d92-support-metric-joint-support-m2-r01/evidence/analysis_runtime_1790901193142688000.json",
+      "latest_runtime_observed_utc": "2026-10-02T00:32:12Z",
+      "analysis_verified": false
     }
   },
   "probe": {
