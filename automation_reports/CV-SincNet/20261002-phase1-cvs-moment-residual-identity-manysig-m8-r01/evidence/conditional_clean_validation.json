@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "tests": 62,
+  "seconds": 12.4,
+  "test_command": "python -X utf8 -m pytest tests/test_cvs_moment_residual_clean_contract.py tests/test_cvs_orthopoly_clean_contract.py -q -ra -o addopts= -p no:cacheprovider",
+  "scope": "Synthetic own-scratch checkpoint fixtures;12source ranking/selected-only freeze;36row all-predictions-before-truth;current adaptive32control reuse;old orthopoly compatibility",
+  "formal_data_access": false,
+  "formal_checkpoint_access": false,
+  "target_access": false,
+  "formal_clean_configs": false,
+  "formal_clean_launch": false
+}

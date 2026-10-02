@@ -1,0 +1,18 @@
+{
+  "status": "VERIFIED",
+  "public_models": 8,
+  "public_ce_updates": 24,
+  "parameters": 202557,
+  "control_parameters": 202555,
+  "raw_order1_max_error": 0.0,
+  "actual_input_formula_max_error": 0.0,
+  "actual_moment_lags": [
+    0,
+    4
+  ],
+  "phase_max_logit_error": 1.7404556274414062e-05,
+  "scope": "Eight disposable CPU models after24publicCEupdates;30publiccascade packets each; no identity accuracy or real hardware identification",
+  "formal_data_access": false,
+  "target_access": false,
+  "goal_achieved": false
+}

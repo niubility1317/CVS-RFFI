@@ -1,6 +1,6 @@
 # 实验总索引
 
-更新：2026-10-02T13:14:13+00:00
+更新：2026-10-02T13:35:39+00:00
 
 先按方法/问题检索，再用run ID读取精确配置与证据。历史组数量不等于独立实验数量。
 
@@ -12,7 +12,7 @@
 
 |记录类型|数量|
 |---|---:|
-|managed_run|68|
+|managed_run|69|
 
 历史状态统一为HISTORICAL_UNVERIFIED；RUNNING等原文声明只供查证，不能证明此刻仍在运行。
 
@@ -20,13 +20,13 @@
 
 |路径标签（定位提示）|证据组数|
 |---|---:|
-|[cvs](by_method/cvs.md)|51|
-|[ce_only](by_method/ce_only.md)|40|
-|[clean_only](by_method/clean_only.md)|39|
-|[performance_priority](by_method/performance_priority.md)|33|
-|[no_augmentation](by_method/no_augmentation.md)|29|
-|[source_selection](by_method/source_selection.md)|24|
-|[rff_physics](by_method/rff_physics.md)|17|
+|[cvs](by_method/cvs.md)|52|
+|[ce_only](by_method/ce_only.md)|41|
+|[clean_only](by_method/clean_only.md)|40|
+|[performance_priority](by_method/performance_priority.md)|34|
+|[no_augmentation](by_method/no_augmentation.md)|30|
+|[source_selection](by_method/source_selection.md)|25|
+|[rff_physics](by_method/rff_physics.md)|18|
 |[source_selected](by_method/source_selected.md)|14|
 |[frozen_prediction_reuse](by_method/frozen_prediction_reuse.md)|13|
 |[daot](by_method/daot.md)|11|
@@ -70,6 +70,7 @@
 |[frozen](by_method/frozen.md)|2|
 |[preamble](by_method/preamble.md)|2|
 |[complex_volterra_memory](by_method/complex_volterra_memory.md)|2|
+|[two_extra_parameters](by_method/two_extra_parameters.md)|2|
 |[phase_equivariant](by_method/phase_equivariant.md)|2|
 |[complex_memory](by_method/complex_memory.md)|2|
 |[benchmark_informed](by_method/benchmark_informed.md)|2|
@@ -99,7 +100,6 @@
 |[numerical_attribution](by_method/numerical_attribution.md)|1|
 |[received_sensitivity](by_method/received_sensitivity.md)|1|
 |[synthetic_only](by_method/synthetic_only.md)|1|
-|[two_extra_parameters](by_method/two_extra_parameters.md)|1|
 |[causal_envelope_memory](by_method/causal_envelope_memory.md)|1|
 |[cross_channel_phase](by_method/cross_channel_phase.md)|1|
 |[fixed_readout_dimensions](by_method/fixed_readout_dimensions.md)|1|
@@ -109,6 +109,7 @@
 |[numerical_physics_consistency](by_method/numerical_physics_consistency.md)|1|
 |[fractional_synchronization](by_method/fractional_synchronization.md)|1|
 |[whole_identity_gauge](by_method/whole_identity_gauge.md)|1|
+|[packet_moment_residual](by_method/packet_moment_residual.md)|1|
 |[whole_identity_observables](by_method/whole_identity_observables.md)|1|
 |[packet_orthogonal_envelope](by_method/packet_orthogonal_envelope.md)|1|
 |[known_excitation](by_method/known_excitation.md)|1|
@@ -175,6 +176,7 @@
 |CVS 全路径复相位等变记忆网络：完整源实验报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-equivariant-identity-manysig-m4-r01/report.md)|
 |CVS 波形层分数频偏校正身份网络：完整源实验报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-fractional-identity-manysig-m8-r01/report.md)|
 |完整 IQ 相位规范化 CVS：完整源实验报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-gauge-identity-manysig-m8-r01/report.md)|
+|CVS 可学习矩残差：保留相位记忆控制，瞬时/记忆4×四seed纯CE|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-moment-residual-identity-manysig-m8-r01/report.md)|
 |CVS性能优先继续优化：observable_phase clean测试报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-observable-clean-manysig-m24-r01/report.md)|
 |CVS整体物理观测身份网络：源训练预登记|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-observable-identity-manysig-m8-r01/report.md)|
 |CVS 包内正交包络输入：完整源实验报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-orthopoly-identity-manysig-m8-r01/report.md)|

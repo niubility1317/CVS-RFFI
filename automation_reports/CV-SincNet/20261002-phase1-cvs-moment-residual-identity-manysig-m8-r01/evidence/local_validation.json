@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "tests": 66,
+  "seconds": 16.66,
+  "python": "C:\\Users\\lh594\\.conda\\envs\\ssr-gpu\\python.exe",
+  "torch": "2.10.0+cu128",
+  "scope": "Matching own-scratch shared state and train/eval initial function; allfour actual CE gradients/updates; input phase/delay covariance, degeneracy, samepacket only, immutable diagnostics;8configs and12source ranking; inherited checkpoint/query/budget/precision negative cases; all10000step source log/CSV/stdout/fourgates corruption cases",
+  "test_command": "python -X utf8 -m pytest tests/test_cvs_moment_residual_identity.py tests/test_cvs_moment_residual_source_protocol.py tests/test_cvs_moment_residual_log_audit.py -q -ra -o addopts= -p no:cacheprovider",
+  "independent_review": "PASS",
+  "formal_data_access": false,
+  "target_access": false
+}

@@ -1,0 +1,101 @@
+{
+  "read_at": 1790948935.358171,
+  "identity": {
+    "user": "szu2070436088",
+    "host": "dell-DSS8440"
+  },
+  "collisions": {
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-moment-residual-identity-manysig-m8-r01": false,
+    "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-moment-residual-identity-manysig-m8-r01": false,
+    "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_moment_residual_identity_20261002_r01": false
+  },
+  "controls": [
+    {
+      "variant": "adaptive_volterra_lag4",
+      "seed": 2026092701,
+      "accuracy": 0.9853333333333333,
+      "worst_rx": 0.96,
+      "parameters": 202555,
+      "macs": 7199008,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-adaptive-volterra-identity-manysig-m8-r01/adaptive_volterra_lag4-s2026092701/source",
+      "provenance": "Own scratch E200; full actual roles/representation/budget independently matched; metrics only, no weight inheritance"
+    },
+    {
+      "variant": "adaptive_volterra_lag4",
+      "seed": 2026092702,
+      "accuracy": 0.985,
+      "worst_rx": 0.9612962962962963,
+      "parameters": 202555,
+      "macs": 7199008,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-adaptive-volterra-identity-manysig-m8-r01/adaptive_volterra_lag4-s2026092702/source",
+      "provenance": "Own scratch E200; full actual roles/representation/budget independently matched; metrics only, no weight inheritance"
+    },
+    {
+      "variant": "adaptive_volterra_lag4",
+      "seed": 2026092703,
+      "accuracy": 0.9837777777777778,
+      "worst_rx": 0.957962962962963,
+      "parameters": 202555,
+      "macs": 7199008,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-adaptive-volterra-identity-manysig-m8-r01/adaptive_volterra_lag4-s2026092703/source",
+      "provenance": "Own scratch E200; full actual roles/representation/budget independently matched; metrics only, no weight inheritance"
+    },
+    {
+      "variant": "adaptive_volterra_lag4",
+      "seed": 2026092704,
+      "accuracy": 0.9819629629629629,
+      "worst_rx": 0.9511111111111111,
+      "parameters": 202555,
+      "macs": 7199008,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-adaptive-volterra-identity-manysig-m8-r01/adaptive_volterra_lag4-s2026092704/source",
+      "provenance": "Own scratch E200; full actual roles/representation/budget independently matched; metrics only, no weight inheritance"
+    }
+  ],
+  "source_selection": {
+    "status": "SOURCE_SELECTION_FROZEN",
+    "selected_variant": "adaptive_volterra_lag4",
+    "source_summaries": {
+      "coupled_lag4": {
+        "score": 0.970287037037037,
+        "source_accuracy": 0.9839074074074075,
+        "worst_rx_accuracy": 0.9566666666666667,
+        "parameters": 202553,
+        "conv_linear_macs": 7199008
+      },
+      "adaptive_volterra_lag1": {
+        "score": 0.9700046296296296,
+        "source_accuracy": 0.9837592592592592,
+        "worst_rx_accuracy": 0.95625,
+        "parameters": 202555,
+        "conv_linear_macs": 7199008
+      },
+      "adaptive_volterra_lag4": {
+        "score": 0.9708055555555555,
+        "source_accuracy": 0.9840185185185185,
+        "worst_rx_accuracy": 0.9575925925925926,
+        "parameters": 202555,
+        "conv_linear_macs": 7199008
+      }
+    },
+    "selection_rule": "performance first: four-seed E200 0.5 sourceV+0.5 worstsourceRX;exact ties V thenworstRX;costs secondary only after equalperformance",
+    "selection_policy": "performance_first_adaptive_volterra_with_current_source_winner_20261002",
+    "candidate_universe": [
+      "coupled_lag4",
+      "adaptive_volterra_lag1",
+      "adaptive_volterra_lag4"
+    ],
+    "new_candidate_selected": true,
+    "exact_cost_tie_order": [
+      "coupled_lag4",
+      "adaptive_volterra_lag1",
+      "adaptive_volterra_lag4"
+    ],
+    "target_access": false,
+    "target_score_used": false,
+    "test_view": "clean"
+  },
+  "gpu": "0, 24124\n1, 24124\n2, 24124\n3, 24124\n4, 24124\n5, 24124\n6, 24124\n7, 24124\n",
+  "apps": "",
+  "disk": "Filesystem      Size  Used Avail Use% Mounted on\n/dev/sdb         11T  4.9T  5.5T  47% /home\n",
+  "scope": "Source metadata/actual full roles/provenance/budget/precision and resources/paths; no IQ, checkpoint, target score, query,truth or prediction array read"
+}
