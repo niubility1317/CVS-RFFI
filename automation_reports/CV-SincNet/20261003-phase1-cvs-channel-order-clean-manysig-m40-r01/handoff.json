@@ -1,14 +1,22 @@
 {
   "run_id": "20261003-phase1-cvs-channel-order-clean-manysig-m40-r01",
-  "status": "PLANNED",
-  "source_run": "20261003-phase1-cvs-channel-order-identity-manysig-m16-r01",
-  "selected_variant": "channel_dual",
-  "live_workers": 0,
-  "goal": "Complete frozen 40-row predictions and independent truth-last scoring",
+  "status": "ANALYZED",
+  "task_scope_complete": true,
   "performance_goal_achieved": false,
+  "live_workers": 0,
+  "selected_variant": "channel_dual",
+  "code_commit": "3c88013b1713d26735b30a6a0c616a7df336fe32",
+  "source_run": "20261003-phase1-cvs-channel-order-identity-manysig-m16-r01",
+  "clean_run": "20261003-phase1-cvs-channel-order-clean-manysig-m40-r01",
+  "scientific_verdict": "NO_MEAN_IMPROVEMENT_ON_FIXED_CLEAN_BENCHMARK",
+  "clean_accuracy": 0.6943467261904761,
+  "paired_delta_pp": -0.4220238095238138,
+  "evidence": [
+    "evidence/final_readback.json",
+    "evidence/analysis_validation.json"
+  ],
   "next": [
-    "Commit/push actual selected clean configs",
-    "Publish exactly once, verify real checkpoint smoke and processes",
-    "Collect full320scores/80summary/72paired and write same-row report"
+    "No queued work or rerun; preserve all outcomes",
+    "This iteration does not establish performance gain or channel robustness; future design must not use target feedback"
   ]
 }

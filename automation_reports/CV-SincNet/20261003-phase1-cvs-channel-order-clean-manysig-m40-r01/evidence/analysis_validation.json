@@ -1,0 +1,37 @@
+{
+  "status": "VERIFIED",
+  "candidate": "channel_dual",
+  "accuracy_mean": 0.6943467261904761,
+  "accuracy_seed_sd": 0.017911797560571832,
+  "paired_vs_neural_shallow": {
+    "candidate": "channel_dual",
+    "baseline": "neural_residual_shallow",
+    "receiver": "ALL",
+    "view": "clean",
+    "model_seeds": [
+      2026092701,
+      2026092702,
+      2026092703,
+      2026092704
+    ],
+    "accuracy_delta_pp_by_seed": [
+      -0.1839285714285821,
+      -1.0351190476190486,
+      -1.0303571428571523,
+      0.5613095238095278
+    ],
+    "accuracy_delta_pp_mean": -0.4220238095238138,
+    "accuracy_delta_pp_seed_sd": 0.76802539069738,
+    "positive_seeds": 1
+  },
+  "all320_confusions_recomputed": true,
+  "old288_metrics_exactly_unchanged": true,
+  "all80_summaries_recomputed": true,
+  "all72_pairs_recomputed": true,
+  "all_RX_sums_match": true,
+  "target_feedback": false,
+  "channel_compensation_active": true,
+  "channel_order_active": false,
+  "scientific_verdict": "NO_MEAN_IMPROVEMENT_ON_FIXED_CLEAN_BENCHMARK",
+  "scope": "Four model seeds on historically exposed clean benchmark; not broad statistical or deployment proof"
+}

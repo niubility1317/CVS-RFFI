@@ -1,6 +1,6 @@
 # CVS信道补偿与非线性交互：Phase1结构实验
 
-2026-10-03。用户明确授权依据[架构设计](CVS_PHASE1_CHANNEL_ROBUST_ARCHITECTURE_20261003.md)实现并运行实验。本轮固定以下结构与科学判定，尚无性能结果。
+2026-10-03。用户明确授权依据[架构设计](CVS_PHASE1_CHANNEL_ROBUST_ARCHITECTURE_20261003.md)实现并运行实验。本轮已完成16份E200训练及冻结候选的独立clean测试。以下设计与规则保留发布前约定；结果为未取得测试提升。
 
 ## 实现范围
 
@@ -50,3 +50,9 @@ u/v采用原统计读出，各80维映射到160维。d采用与u的归一化复�
 每步/每epoch保留测量到的CE、LR、梯度、实际模块启用情况、G幅度与交互输出、源V/RX和资源；capacity无G、非order无d的相应字段为N/A，不能用虚构的0冒充测量。诊断作用于最后一个源训练batch，明确口径，不当作整个V分布。
 
 执行状态与真实证据保存在[源run报告](../automation_reports/CV-SincNet/20261003-phase1-cvs-channel-order-identity-manysig-m16-r01/report.md)，本设计不追加目标评分。
+
+## 完成结果（2026-10-03）
+
+双路按固定源规则以97.1301%的综合分入选，比shallow高0.0083个百分点；完整order为97.0963%，未入选。入选双路clean为69.4347%±1.7912%，同核心控制为69.8567%±1.1881%，配对差−0.4220±0.7680个百分点，仅1/4个seed为正。原native为76.2272%，冻结residual_fusion为78.4543%。实现、训练、评分和记录完成；本轮架构性能假设未得到支持，不据目标结果换测候选或重跑。
+
+[源报告](../automation_reports/CV-SincNet/20261003-phase1-cvs-channel-order-identity-manysig-m16-r01/report.md) · [源机制分析](../automation_reports/CV-SincNet/20261003-phase1-cvs-channel-order-identity-manysig-m16-r01/mechanism_report.md) · [完整独立测试](../automation_reports/CV-SincNet/20261003-phase1-cvs-channel-order-clean-manysig-m40-r01/report.md)。

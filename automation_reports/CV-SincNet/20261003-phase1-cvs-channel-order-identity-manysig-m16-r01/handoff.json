@@ -1,18 +1,22 @@
 {
   "run_id": "20261003-phase1-cvs-channel-order-identity-manysig-m16-r01",
-  "status": "TRAINING_COMPLETE",
-  "live_workers": 0,
-  "code_commit": "8d9600a432f9dcb80e2bfcc9dc90cbb1847e1908",
-  "selected_variant": "channel_dual",
-  "clean_run": "20261003-phase1-cvs-channel-order-clean-manysig-m40-r01",
+  "status": "ANALYZED",
+  "task_scope_complete": true,
   "performance_goal_achieved": false,
+  "live_workers": 0,
+  "selected_variant": "channel_dual",
+  "code_commit": "8d9600a432f9dcb80e2bfcc9dc90cbb1847e1908",
+  "source_run": "20261003-phase1-cvs-channel-order-identity-manysig-m16-r01",
+  "clean_run": "20261003-phase1-cvs-channel-order-clean-manysig-m40-r01",
+  "scientific_verdict": "NO_MEAN_IMPROVEMENT_ON_FIXED_CLEAN_BENCHMARK",
+  "clean_accuracy": 0.6943467261904761,
+  "paired_delta_pp": -0.4220238095238138,
   "evidence": [
     "evidence/source_completion_validation.json",
-    "evidence/source_analysis_validation.json"
+    "evidence/mechanism_summary.json"
   ],
   "next": [
-    "Publish actual frozen four clean predictions",
-    "Complete independent forty-row truth-last scoring and analysis",
-    "Preserve all negative source outcomes"
+    "No queued work or rerun; preserve all outcomes",
+    "This iteration does not establish performance gain or channel robustness; future design must not use target feedback"
   ]
 }

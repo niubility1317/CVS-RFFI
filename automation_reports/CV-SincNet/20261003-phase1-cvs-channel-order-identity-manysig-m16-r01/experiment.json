@@ -101,7 +101,9 @@
     "launch_command": "python -m experiments.cvs_channel_order_identity.publish --output local_artifacts/cvs_channel_order_identity_20261003_r01",
     "stop_rule": "Only own affected row fails on nonfinite/permissions/output collision/nonzero exit; preserve all artifacts; no retry, low-score stop or unrelated process intervention",
     "dispatcher_pid": 1945717,
-    "launch_verified_at": "2026-10-02T18:02:56.692212+00:00"
+    "launch_verified_at": "2026-10-02T18:02:56.692212+00:00",
+    "completed_verified_at": "2026-10-02T18:42:36.403842+00:00",
+    "live_workers": 0
   },
   "expected_artifacts": [
     "last.pt",
@@ -877,7 +879,7 @@
     "Detailed step/epoch/compactJSONL/CSV/text reports measuredCE/LR/gradients/channelG/orderD/sourceV/time/memory. InactiveG/D metrics are N/A,never fabricated0. MAC conv/matmul only,not totalFLOPs. Negativeoutcomes preserved."
   ],
   "registered_at": "2026-10-02T17:59:16+00:00",
-  "status": "TRAINING_COMPLETE",
+  "status": "ANALYZED",
   "source_controls": [
     {
       "variant": "neural_residual_shallow",
@@ -942,7 +944,9 @@
     ],
     "target_feedback": false,
     "selection": "source_only",
-    "status": "PLANNED_FROZEN_SELECTION"
+    "status": "ANALYZED",
+    "completed_test_run": "20261003-phase1-cvs-channel-order-clean-manysig-m40-r01",
+    "results_ref": "../20261003-phase1-cvs-channel-order-clean-manysig-m40-r01/report.md"
   },
   "source_selection": {
     "status": "SOURCE_SELECTION_FROZEN",
@@ -1004,5 +1008,14 @@
     "target_access": false,
     "target_score_used": false,
     "test_view": "clean"
+  },
+  "outcome": {
+    "execution_complete": true,
+    "performance_goal_achieved": false,
+    "scientific_verdict": "NO_MEAN_IMPROVEMENT_ON_FIXED_CLEAN_BENCHMARK",
+    "selected_variant": "channel_dual",
+    "clean_accuracy": 0.6943467261904761,
+    "paired_delta_pp": -0.4220238095238138,
+    "evidence_ref": "../20261003-phase1-cvs-channel-order-clean-manysig-m40-r01/evidence/analysis_validation.json"
   }
 }

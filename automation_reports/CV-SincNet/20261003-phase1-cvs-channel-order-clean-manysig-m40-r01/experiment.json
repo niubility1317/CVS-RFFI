@@ -23,12 +23,13 @@
   "replaces_run_id": null,
   "authorization": "用户授权信道相关架构实现与实验；原训练方案与单一 CE；源规则选中后完成 clean 测试。",
   "code": {
-    "commit": "17103966d104d3af9c868292635f8b6159856100",
+    "commit": "3c88013b1713d26735b30a6a0c616a7df336fe32",
     "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_channel_order_clean_eval_20261003_r01",
     "architecture_base_commit": "f929f4d1116640474d324844e2f0824f97ca7dd0",
-    "note": "Preparation base; actual immutable clean release commit recorded after submission; actual source FP32 and phase lag frozen before query"
+    "note": "Preparation base; actual immutable clean release commit recorded after submission; actual source FP32 and phase lag frozen before query",
+    "commit_scope": "Actual immutable clean release, independent process readback"
   },
   "data": {
     "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
@@ -139,7 +140,11 @@
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-phase1-cvs-channel-order-clean-manysig-m40-r01",
     "local_artifact_root": "automation_reports/CV-SincNet/20261003-phase1-cvs-channel-order-clean-manysig-m40-r01",
     "launch_command": "python -m experiments.cvs_channel_order_clean.publish --output local_artifacts/cvs_channel_order_clean_eval_20261003_r01",
-    "stop_rule": "Only own affected row fails on nonfinite/permissions/output collision/nonzero exit; preserve all artifacts; no retry, low-score stop or unrelated process intervention"
+    "stop_rule": "Only own affected row fails on nonfinite/permissions/output collision/nonzero exit; preserve all artifacts; no retry, low-score stop or unrelated process intervention",
+    "dispatcher_pid": 1965510,
+    "launch_verified_at": "2026-10-02T18:38:11.275718+00:00",
+    "completed_verified_at": "2026-10-02T18:42:36.403842+00:00",
+    "live_workers": 0
   },
   "expected_artifacts": [
     "pipeline_state.json",
@@ -210,7 +215,8 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01"
+      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "cvcnn-s2026092701",
@@ -245,7 +251,8 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01"
+      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "real_cnn-s2026092701",
@@ -280,7 +287,8 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01"
+      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "resnet1d-s2026092701",
@@ -315,7 +323,8 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01"
+      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "native-s2026092702",
@@ -350,7 +359,8 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01"
+      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "cvcnn-s2026092702",
@@ -385,7 +395,8 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01"
+      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "real_cnn-s2026092702",
@@ -420,7 +431,8 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01"
+      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "resnet1d-s2026092702",
@@ -455,7 +467,8 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01"
+      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "native-s2026092703",
@@ -490,7 +503,8 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01"
+      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "cvcnn-s2026092703",
@@ -525,7 +539,8 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01"
+      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "real_cnn-s2026092703",
@@ -560,7 +575,8 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01"
+      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "resnet1d-s2026092703",
@@ -595,7 +611,8 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01"
+      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "native-s2026092704",
@@ -630,7 +647,8 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01"
+      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "cvcnn-s2026092704",
@@ -665,7 +683,8 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01"
+      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "real_cnn-s2026092704",
@@ -700,7 +719,8 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01"
+      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "resnet1d-s2026092704",
@@ -735,7 +755,8 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01"
+      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "residual_fusion-s2026092701",
@@ -770,7 +791,8 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-cvs-selected-clean-manysig-m20-r01"
+      "reuse_from_run": "20261001-phase1-cvs-selected-clean-manysig-m20-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "residual_fusion-s2026092702",
@@ -805,7 +827,8 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-cvs-selected-clean-manysig-m20-r01"
+      "reuse_from_run": "20261001-phase1-cvs-selected-clean-manysig-m20-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "residual_fusion-s2026092703",
@@ -840,7 +863,8 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-cvs-selected-clean-manysig-m20-r01"
+      "reuse_from_run": "20261001-phase1-cvs-selected-clean-manysig-m20-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "residual_fusion-s2026092704",
@@ -875,7 +899,8 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-cvs-selected-clean-manysig-m20-r01"
+      "reuse_from_run": "20261001-phase1-cvs-selected-clean-manysig-m20-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "energy_equivariant-s2026092701",
@@ -910,7 +935,8 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261002-phase1-cvs-energy-clean-manysig-m24-r01"
+      "reuse_from_run": "20261002-phase1-cvs-energy-clean-manysig-m24-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "energy_equivariant-s2026092702",
@@ -945,7 +971,8 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261002-phase1-cvs-energy-clean-manysig-m24-r01"
+      "reuse_from_run": "20261002-phase1-cvs-energy-clean-manysig-m24-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "energy_equivariant-s2026092703",
@@ -980,7 +1007,8 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261002-phase1-cvs-energy-clean-manysig-m24-r01"
+      "reuse_from_run": "20261002-phase1-cvs-energy-clean-manysig-m24-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "energy_equivariant-s2026092704",
@@ -1015,7 +1043,8 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261002-phase1-cvs-energy-clean-manysig-m24-r01"
+      "reuse_from_run": "20261002-phase1-cvs-energy-clean-manysig-m24-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "coupled_lag4-s2026092701",
@@ -1050,7 +1079,8 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261002-phase1-cvs-coupled-clean-manysig-m28-r01"
+      "reuse_from_run": "20261002-phase1-cvs-coupled-clean-manysig-m28-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "coupled_lag4-s2026092702",
@@ -1085,7 +1115,8 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261002-phase1-cvs-coupled-clean-manysig-m28-r01"
+      "reuse_from_run": "20261002-phase1-cvs-coupled-clean-manysig-m28-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "coupled_lag4-s2026092703",
@@ -1120,7 +1151,8 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261002-phase1-cvs-coupled-clean-manysig-m28-r01"
+      "reuse_from_run": "20261002-phase1-cvs-coupled-clean-manysig-m28-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "coupled_lag4-s2026092704",
@@ -1155,7 +1187,8 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261002-phase1-cvs-coupled-clean-manysig-m28-r01"
+      "reuse_from_run": "20261002-phase1-cvs-coupled-clean-manysig-m28-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "adaptive_volterra_lag4-s2026092701",
@@ -1190,7 +1223,8 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261002-phase1-cvs-adaptive-volterra-clean-manysig-m32-r01"
+      "reuse_from_run": "20261002-phase1-cvs-adaptive-volterra-clean-manysig-m32-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "adaptive_volterra_lag4-s2026092702",
@@ -1225,7 +1259,8 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261002-phase1-cvs-adaptive-volterra-clean-manysig-m32-r01"
+      "reuse_from_run": "20261002-phase1-cvs-adaptive-volterra-clean-manysig-m32-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "adaptive_volterra_lag4-s2026092703",
@@ -1260,7 +1295,8 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261002-phase1-cvs-adaptive-volterra-clean-manysig-m32-r01"
+      "reuse_from_run": "20261002-phase1-cvs-adaptive-volterra-clean-manysig-m32-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "adaptive_volterra_lag4-s2026092704",
@@ -1295,7 +1331,8 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261002-phase1-cvs-adaptive-volterra-clean-manysig-m32-r01"
+      "reuse_from_run": "20261002-phase1-cvs-adaptive-volterra-clean-manysig-m32-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "neural_residual_shallow-s2026092701",
@@ -1330,7 +1367,8 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261002-phase1-cvs-neural-residual-clean-manysig-m36-r01"
+      "reuse_from_run": "20261002-phase1-cvs-neural-residual-clean-manysig-m36-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "neural_residual_shallow-s2026092702",
@@ -1365,7 +1403,8 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261002-phase1-cvs-neural-residual-clean-manysig-m36-r01"
+      "reuse_from_run": "20261002-phase1-cvs-neural-residual-clean-manysig-m36-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "neural_residual_shallow-s2026092703",
@@ -1400,7 +1439,8 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261002-phase1-cvs-neural-residual-clean-manysig-m36-r01"
+      "reuse_from_run": "20261002-phase1-cvs-neural-residual-clean-manysig-m36-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "neural_residual_shallow-s2026092704",
@@ -1435,13 +1475,14 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261002-phase1-cvs-neural-residual-clean-manysig-m36-r01"
+      "reuse_from_run": "20261002-phase1-cvs-neural-residual-clean-manysig-m36-r01",
+      "status": "PREDICTIONS_COMPLETE"
     },
     {
       "row_id": "channel_dual-s2026092701",
       "method": "channel_dual",
       "purpose": "single_source_selected_new_CVS_confirmation",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_channel_order_clean/configs/channel_dual-s2026092701.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-channel-order-clean-manysig-m40-r01/channel_dual-s2026092701/prediction/resolved_config.json",
       "data_overrides": {},
@@ -1469,13 +1510,16 @@
         "resolved_config.json",
         "clean_predictions.npz",
         "clean_complete.json"
-      ]
+      ],
+      "status": "PREDICTIONS_COMPLETE",
+      "pid": 1965527,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-phase1-cvs-channel-order-clean-manysig-m40-r01/channel_dual-s2026092701.log"
     },
     {
       "row_id": "channel_dual-s2026092702",
       "method": "channel_dual",
       "purpose": "single_source_selected_new_CVS_confirmation",
-      "gpu": null,
+      "gpu": 1,
       "config_ref": "experiments/cvs_channel_order_clean/configs/channel_dual-s2026092702.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-channel-order-clean-manysig-m40-r01/channel_dual-s2026092702/prediction/resolved_config.json",
       "data_overrides": {},
@@ -1503,13 +1547,16 @@
         "resolved_config.json",
         "clean_predictions.npz",
         "clean_complete.json"
-      ]
+      ],
+      "status": "PREDICTIONS_COMPLETE",
+      "pid": 1965605,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-phase1-cvs-channel-order-clean-manysig-m40-r01/channel_dual-s2026092702.log"
     },
     {
       "row_id": "channel_dual-s2026092703",
       "method": "channel_dual",
       "purpose": "single_source_selected_new_CVS_confirmation",
-      "gpu": null,
+      "gpu": 2,
       "config_ref": "experiments/cvs_channel_order_clean/configs/channel_dual-s2026092703.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-channel-order-clean-manysig-m40-r01/channel_dual-s2026092703/prediction/resolved_config.json",
       "data_overrides": {},
@@ -1537,13 +1584,16 @@
         "resolved_config.json",
         "clean_predictions.npz",
         "clean_complete.json"
-      ]
+      ],
+      "status": "PREDICTIONS_COMPLETE",
+      "pid": 1965681,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-phase1-cvs-channel-order-clean-manysig-m40-r01/channel_dual-s2026092703.log"
     },
     {
       "row_id": "channel_dual-s2026092704",
       "method": "channel_dual",
       "purpose": "single_source_selected_new_CVS_confirmation",
-      "gpu": null,
+      "gpu": 3,
       "config_ref": "experiments/cvs_channel_order_clean/configs/channel_dual-s2026092704.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261003-phase1-cvs-channel-order-clean-manysig-m40-r01/channel_dual-s2026092704/prediction/resolved_config.json",
       "data_overrides": {},
@@ -1571,7 +1621,10 @@
         "resolved_config.json",
         "clean_predictions.npz",
         "clean_complete.json"
-      ]
+      ],
+      "status": "PREDICTIONS_COMPLETE",
+      "pid": 1965757,
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261003-phase1-cvs-channel-order-clean-manysig-m40-r01/channel_dual-s2026092704.log"
     }
   ],
   "notes": [
@@ -1581,5 +1634,14 @@
     "Actual source FP32 policy is enforced before new prediction; historical control precision remains recorded"
   ],
   "registered_at": "2026-10-02T18:34:20+00:00",
-  "status": "PLANNED"
+  "status": "ANALYZED",
+  "outcome": {
+    "execution_complete": true,
+    "performance_goal_achieved": false,
+    "scientific_verdict": "NO_MEAN_IMPROVEMENT_ON_FIXED_CLEAN_BENCHMARK",
+    "selected_variant": "channel_dual",
+    "clean_accuracy": 0.6943467261904761,
+    "paired_delta_pp": -0.4220238095238138,
+    "evidence_ref": "../20261003-phase1-cvs-channel-order-clean-manysig-m40-r01/evidence/analysis_validation.json"
+  }
 }

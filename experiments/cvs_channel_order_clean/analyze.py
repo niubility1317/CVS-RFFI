@@ -134,7 +134,7 @@ def analyze(root):
     text='# CVS 信道与非线性运算次序：独立 clean 结果\n\n'
     text+=f"源规则选中 `{candidate}`。四 seed 准确率为 {pct(candidate_all['accuracy_mean'])}% ± {pct(candidate_all['accuracy_seed_sd'])}%，较同核心浅层神经残差控制 {control['accuracy_delta_pp_mean']:+.4f} 个百分点。结论：`{verdict['scientific_verdict']}`。\n\n"
     text+=f"本候选实际启用补偿分支：`{architecture['channel_compensation_active']}`；运算次序差分支：`{architecture['channel_order_active']}`。归因限于该实际结构，未选候选不访问 query。\n\n"
-    text+='四 seed 仅覆盖模型初始化差异；小幅均值改善不证明普遍、显著或稳定的性能提升。下表保留所有负差值，不据此调整候选、超参数或选择性重跑。\n\n'
+    text+='四 seed 使用同一物理划分，覆盖模型与加载器随机性，不能替代独立数据域重复。本轮均值和配对差值仅描述该固定基准。下表保留所有负差值，不据此调整候选、超参数或选择性重跑。\n\n'
     text+='|模型|准确率/% ± seed SD|Macro-F1/% ± seed SD|\n|---|---:|---:|\n'
     for method in methods:
         r=by[method,'ALL'];text+=f"|{method}|{pct(r['accuracy_mean'])} ± {pct(r['accuracy_seed_sd'])}|{pct(r['macro_f1_mean'])} ± {pct(r['macro_f1_seed_sd'])}|\n"
