@@ -23,3 +23,9 @@ rho(c,a)=mean(z_c conj(z_a))/sqrt(mean|z_c|²mean|z_a|²+1e-6)。共同常相位
 ## 实际发布与启动
 
 状态RUNNING／VERIFIED。发布commit `ded20eebd01f66d1411bc16384cbad0c32029df8`，N607远端CPU验证PASS，独立读回8个实际训练进程、独占输出、GPU0至7及实际source resolved参数，全部已完成至少3轮且日志增长。仅CE、scratch、无增强、identity-only、50步/轮及完整FP32实际生效。此时尚无E200选模或clean结果，不能称性能优化完成。详见[evidence](evidence/running_readback.json)。
+
+## 本轮交接
+
+最新独立读回8进程均存活，E93至E99，无失败；健康任务保持不变。条件clean入口已实现并通过相关95项回归、新扩展25项检查及一次独立P0/P1审查，两组测试有重叠，不合称120项。source-selected新候选只生成4份clean预测，原24份固定控制只读复用，共28行先预测后评分；energy控制保留则新候选测试N/A。当前没有新clean成绩，性能目标继续保持未完成。
+
+[最新进程与日志证据](evidence/latest_source_readback.json) · [评估入口验证](evidence/clean_path_validation.json) · [下一步交接](handoff.json)。

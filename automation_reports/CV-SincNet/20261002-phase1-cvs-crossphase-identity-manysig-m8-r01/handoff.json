@@ -11,23 +11,32 @@
     "Only selected new candidate clean test, independent scoring, fullreport/Git"
   ],
   "missing": [
-    "Source training",
-    "Frozen source selection",
-    "Conditional clean tests",
-    "Final performance verification"
+    "Source E200 completion",
+    "Actual frozen selection",
+    "Conditional selected-candidate clean confirmation",
+    "Verified performance improvement"
   ],
   "goal_achieved": false,
   "commit": "ded20eebd01f66d1411bc16384cbad0c32029df8",
   "dispatcher_pid": 1618260,
-  "evidence": "evidence/running_readback.json",
+  "evidence": "evidence/latest_source_readback.json",
   "last_epochs": {
-    "crossphase_raw-s2026092701": 9,
-    "crossphase_half-s2026092701": 8,
-    "crossphase_raw-s2026092702": 7,
-    "crossphase_half-s2026092702": 6,
-    "crossphase_raw-s2026092703": 6,
-    "crossphase_half-s2026092703": 5,
-    "crossphase_raw-s2026092704": 4,
-    "crossphase_half-s2026092704": 3
-  }
+    "crossphase_raw-s2026092701": 99,
+    "crossphase_half-s2026092701": 96,
+    "crossphase_raw-s2026092702": 97,
+    "crossphase_half-s2026092702": 95,
+    "crossphase_raw-s2026092703": 96,
+    "crossphase_half-s2026092703": 93,
+    "crossphase_raw-s2026092704": 94,
+    "crossphase_half-s2026092704": 93
+  },
+  "clean_path": "Local conditional28matrix implemented,validated,P0/P1PASS,committed;not generated or published before sourcefreeze",
+  "code_commit": "19b1f234b277906f71cbedb07b3a78cc4d8785a7",
+  "next_commands": [
+    "python -m experiments.cvs_crossphase_identity.publish --inspect --output local_artifacts/cvs_crossphase_identity_20261002_r01/next_readback",
+    "Only after all8 SOURCE_TRAINED: python -m experiments.cvs_crossphase_identity.collect --root . --output local_artifacts/cvs_crossphase_identity_20261002_r01/completion",
+    "python -m experiments.cvs_crossphase_identity.analyze --root .",
+    "If new_candidate_selected: prepare crossphase_clean from actual independently recomputed source_selection;register;commit/push/readback;preflight;publish once;predict4+reuse24;independentscore/analyze/report/Git",
+    "If energy source winner retained: preserve original verifiedclean;unselectedcrossphase test N/A;no target-informed newdesign or selective rerun"
+  ]
 }
