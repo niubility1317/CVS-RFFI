@@ -23,7 +23,7 @@
   "replaces_run_id": null,
   "authorization": "用户授权持续优化，性能优先且真正RFF physics aware；源规则选中才默认clean测试。",
   "code": {
-    "commit": "aaee193fb28bc395baeb63d4b5326fdc6011bde8",
+    "commit": "a05ab35996e496dd75c9b428e836c3227c6fe50d",
     "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_energy_clean_eval_20261002_r01",
@@ -123,7 +123,17 @@
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-energy-clean-manysig-m24-r01",
     "local_artifact_root": "automation_reports/CV-SincNet/20261002-phase1-cvs-energy-clean-manysig-m24-r01",
     "launch_command": "python -m experiments.cvs_energy_clean.publish --output local_artifacts/cvs_energy_clean_eval_20261002_r01",
-    "stop_rule": "Only own affected row fails on nonfinite/permissions/output collision/nonzero exit; preserve all artifacts; no retry, low-score stop or unrelated process intervention"
+    "stop_rule": "Only own affected row fails on nonfinite/permissions/output collision/nonzero exit; preserve all artifacts; no retry, low-score stop or unrelated process intervention",
+    "actual_pid": 1498092,
+    "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_energy_clean_eval_20261002_r01",
+    "actual_argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_clean_eval.dispatch",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_energy_clean_eval_20261002_r01/experiments/cvs_energy_clean/configs/launch_spec.json"
+    ]
   },
   "expected_artifacts": [
     "pipeline_state.json",
@@ -865,7 +875,7 @@
       "row_id": "energy_equivariant-s2026092701",
       "method": "energy_equivariant",
       "purpose": "single_source_selected_new_CVS_confirmation",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_energy_clean/configs/energy_equivariant-s2026092701.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-energy-clean-manysig-m24-r01/energy_equivariant-s2026092701/prediction/resolved_config.json",
       "data_overrides": {},
@@ -899,7 +909,7 @@
       "row_id": "energy_equivariant-s2026092702",
       "method": "energy_equivariant",
       "purpose": "single_source_selected_new_CVS_confirmation",
-      "gpu": null,
+      "gpu": 1,
       "config_ref": "experiments/cvs_energy_clean/configs/energy_equivariant-s2026092702.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-energy-clean-manysig-m24-r01/energy_equivariant-s2026092702/prediction/resolved_config.json",
       "data_overrides": {},
@@ -933,7 +943,7 @@
       "row_id": "energy_equivariant-s2026092703",
       "method": "energy_equivariant",
       "purpose": "single_source_selected_new_CVS_confirmation",
-      "gpu": null,
+      "gpu": 2,
       "config_ref": "experiments/cvs_energy_clean/configs/energy_equivariant-s2026092703.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-energy-clean-manysig-m24-r01/energy_equivariant-s2026092703/prediction/resolved_config.json",
       "data_overrides": {},
@@ -967,7 +977,7 @@
       "row_id": "energy_equivariant-s2026092704",
       "method": "energy_equivariant",
       "purpose": "single_source_selected_new_CVS_confirmation",
-      "gpu": null,
+      "gpu": 3,
       "config_ref": "experiments/cvs_energy_clean/configs/energy_equivariant-s2026092704.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-energy-clean-manysig-m24-r01/energy_equivariant-s2026092704/prediction/resolved_config.json",
       "data_overrides": {},

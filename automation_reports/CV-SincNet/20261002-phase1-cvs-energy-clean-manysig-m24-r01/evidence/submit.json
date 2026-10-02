@@ -1,0 +1,16 @@
+{
+  "status": "SUBMITTED",
+  "pid": 1498092,
+  "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_energy_clean_eval_20261002_r01",
+  "argv": [
+    "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "-u",
+    "-m",
+    "experiments.cvs_clean_eval.dispatch",
+    "--spec",
+    "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_energy_clean_eval_20261002_r01/experiments/cvs_energy_clean/configs/launch_spec.json"
+  ],
+  "log": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_energy_clean_eval_20261002_r01/dispatcher.stdout.log",
+  "commit": "a05ab35996e496dd75c9b428e836c3227c6fe50d",
+  "sha256": "27201face068d366d59e62ff9d9acd3d3b513cfbb2ffc145d90d43da4d2e5ed4"
+}
