@@ -1,0 +1,17 @@
+{
+  "status": "VERIFIED",
+  "retained_control": "energy_equivariant",
+  "test_run": "20261002-phase1-cvs-energy-clean-manysig-m24-r01",
+  "marker": {
+    "status": "SCORED_COMPLETE",
+    "models": 6,
+    "seeds": 4,
+    "rows": 24,
+    "records": 192,
+    "view": "clean",
+    "query_count": 168000,
+    "target_feedback_forbidden": true
+  },
+  "pipeline_status": "ANALYZED",
+  "scope": "Only completion metadata;no target scores,IQ,predictions,truth or model weights read"
+}

@@ -1,34 +1,30 @@
 {
-  "status": "RUNNING",
+  "status": "ANALYZED",
   "run_id": "20261002-phase1-cvs-crossphase-identity-manysig-m8-r01",
   "release": "cvs_crossphase_identity_20261002_r01",
   "goal_scope": "original pureCE/noaugmentation/identityonly/cleanonly;mathcommunicationphysicsRFF structure optimization;performance first",
   "previous_goal_turn": "Sixscene report readback completed; no new architecture performance evidence; resumed original goal",
   "launch_owner": "codex/root/cvs-crossphase-identity-20261002",
   "next": [
-    "Continue healthy sourceE200",
-    "Recompute fixed source selection from all12 source records",
-    "Only selected new candidate clean test, independent scoring, fullreport/Git"
+    "Use complete source diagnostics and math/RFF priors for next design;do not consume target scores for design/ranking",
+    "Retain all negative crossphase results;no additional unselected clean tests"
   ],
   "missing": [
-    "Source E200 completion",
-    "Actual frozen selection",
-    "Conditional selected-candidate clean confirmation",
-    "Verified performance improvement"
+    "New architecture performance improvement not established"
   ],
   "goal_achieved": false,
   "commit": "ded20eebd01f66d1411bc16384cbad0c32029df8",
-  "dispatcher_pid": 1618260,
-  "evidence": "evidence/latest_source_readback.json",
+  "dispatcher_pid": null,
+  "evidence": "evidence/final_source_readback.json",
   "last_epochs": {
-    "crossphase_raw-s2026092701": 99,
-    "crossphase_half-s2026092701": 96,
-    "crossphase_raw-s2026092702": 97,
-    "crossphase_half-s2026092702": 95,
-    "crossphase_raw-s2026092703": 96,
-    "crossphase_half-s2026092703": 93,
-    "crossphase_raw-s2026092704": 94,
-    "crossphase_half-s2026092704": 93
+    "crossphase_raw-s2026092701": 200,
+    "crossphase_half-s2026092701": 200,
+    "crossphase_raw-s2026092702": 200,
+    "crossphase_half-s2026092702": 200,
+    "crossphase_raw-s2026092703": 200,
+    "crossphase_half-s2026092703": 200,
+    "crossphase_raw-s2026092704": 200,
+    "crossphase_half-s2026092704": 200
   },
   "clean_path": "Local conditional28matrix implemented,validated,P0/P1PASS,committed;not generated or published before sourcefreeze",
   "code_commit": "19b1f234b277906f71cbedb07b3a78cc4d8785a7",
@@ -38,5 +34,8 @@
     "python -m experiments.cvs_crossphase_identity.analyze --root .",
     "If new_candidate_selected: prepare crossphase_clean from actual independently recomputed source_selection;register;commit/push/readback;preflight;publish once;predict4+reuse24;independentscore/analyze/report/Git",
     "If energy source winner retained: preserve original verifiedclean;unselectedcrossphase test N/A;no target-informed newdesign or selective rerun"
-  ]
+  ],
+  "live_workers": 0,
+  "scientific_verdict": "SOURCE_BASELINE_RETAINED",
+  "conditional_clean": "No new candidate selected;no new query;existing energy clean marker reverified"
 }

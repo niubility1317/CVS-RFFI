@@ -1,0 +1,23 @@
+{
+  "status": "VERIFIED",
+  "new_rows": 8,
+  "new_epochs": 1600,
+  "new_steps": 80000,
+  "control_rows": 4,
+  "curve_records": 2400,
+  "source_selection_recomputed": true,
+  "selected_variant": "energy_equivariant",
+  "new_candidate_selected": false,
+  "actual_fullFP32_training_validation_physics_profile": true,
+  "all720_source_cells_complete": true,
+  "target_access": false,
+  "target_scores_used": false,
+  "goal_achieved": false,
+  "whole_phase_max_logit_error": 2.5928020477294922e-05,
+  "whole_affine_max_logit_error": 29.956356048583984,
+  "coordinate_reconstruction_max_error": 2.384185791015625e-07,
+  "source_normalization_measurements": 9600,
+  "public_normalization_measurements": 48,
+  "measured_crosschannel_readout_records": 6400,
+  "scope": "Wholeconstantphase property only;affinecoordinate retained;relative CFO modulo1.25MHz;not uniqueTX or arbitraryRX/LTI invariance"
+}

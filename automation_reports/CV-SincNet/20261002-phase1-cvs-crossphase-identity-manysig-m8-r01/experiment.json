@@ -200,7 +200,23 @@
         "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-crossphase-identity-manysig-m8-r01/crossphase_raw-s2026092701.log",
         "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-crossphase-identity-manysig-m8-r01/crossphase_raw-s2026092701/source",
         "started": 1790929372.1734746
-      }
+      },
+      "status": "ANALYZED",
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9788888888888889,
+        "source_val_ce": 0.12495221274421824,
+        "source_val_rx_accuracy": {
+          "1": 0.9962962962962963,
+          "3": 0.9455555555555556,
+          "4": 0.9905555555555555,
+          "6": 0.9962962962962963,
+          "8": 0.9657407407407408
+        },
+        "source_val_worst_rx": 0.9455555555555556
+      },
+      "test_status": "N/A_NOT_SOURCE_SELECTED",
+      "test_reason": "Fixed source rule retained existing energy control;no unselected candidate query"
     },
     {
       "row_id": "crossphase_half-s2026092701",
@@ -260,7 +276,23 @@
         "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-crossphase-identity-manysig-m8-r01/crossphase_half-s2026092701.log",
         "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-crossphase-identity-manysig-m8-r01/crossphase_half-s2026092701/source",
         "started": 1790929377.3971949
-      }
+      },
+      "status": "ANALYZED",
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9695185185185186,
+        "source_val_ce": 0.17300376194725092,
+        "source_val_rx_accuracy": {
+          "1": 0.9953703703703703,
+          "3": 0.9205555555555556,
+          "4": 0.9888888888888889,
+          "6": 0.9946296296296296,
+          "8": 0.9481481481481482
+        },
+        "source_val_worst_rx": 0.9205555555555556
+      },
+      "test_status": "N/A_NOT_SOURCE_SELECTED",
+      "test_reason": "Fixed source rule retained existing energy control;no unselected candidate query"
     },
     {
       "row_id": "crossphase_raw-s2026092702",
@@ -320,7 +352,23 @@
         "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-crossphase-identity-manysig-m8-r01/crossphase_raw-s2026092702.log",
         "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-crossphase-identity-manysig-m8-r01/crossphase_raw-s2026092702/source",
         "started": 1790929382.6351855
-      }
+      },
+      "status": "ANALYZED",
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9796666666666667,
+        "source_val_ce": 0.11149966348285657,
+        "source_val_rx_accuracy": {
+          "1": 0.9964814814814815,
+          "3": 0.9518518518518518,
+          "4": 0.9883333333333333,
+          "6": 0.9962962962962963,
+          "8": 0.9653703703703703
+        },
+        "source_val_worst_rx": 0.9518518518518518
+      },
+      "test_status": "N/A_NOT_SOURCE_SELECTED",
+      "test_reason": "Fixed source rule retained existing energy control;no unselected candidate query"
     },
     {
       "row_id": "crossphase_half-s2026092702",
@@ -380,7 +428,23 @@
         "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-crossphase-identity-manysig-m8-r01/crossphase_half-s2026092702.log",
         "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-crossphase-identity-manysig-m8-r01/crossphase_half-s2026092702/source",
         "started": 1790929387.8716319
-      }
+      },
+      "status": "ANALYZED",
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9706296296296296,
+        "source_val_ce": 0.15487501713070295,
+        "source_val_rx_accuracy": {
+          "1": 0.9957407407407407,
+          "3": 0.9222222222222223,
+          "4": 0.9898148148148148,
+          "6": 0.9935185185185185,
+          "8": 0.9518518518518518
+        },
+        "source_val_worst_rx": 0.9222222222222223
+      },
+      "test_status": "N/A_NOT_SOURCE_SELECTED",
+      "test_reason": "Fixed source rule retained existing energy control;no unselected candidate query"
     },
     {
       "row_id": "crossphase_raw-s2026092703",
@@ -440,7 +504,23 @@
         "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-crossphase-identity-manysig-m8-r01/crossphase_raw-s2026092703.log",
         "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-crossphase-identity-manysig-m8-r01/crossphase_raw-s2026092703/source",
         "started": 1790929393.1121292
-      }
+      },
+      "status": "ANALYZED",
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9788888888888889,
+        "source_val_ce": 0.12503982741568767,
+        "source_val_rx_accuracy": {
+          "1": 0.9975925925925926,
+          "3": 0.9446296296296296,
+          "4": 0.9888888888888889,
+          "6": 0.9957407407407407,
+          "8": 0.9675925925925926
+        },
+        "source_val_worst_rx": 0.9446296296296296
+      },
+      "test_status": "N/A_NOT_SOURCE_SELECTED",
+      "test_reason": "Fixed source rule retained existing energy control;no unselected candidate query"
     },
     {
       "row_id": "crossphase_half-s2026092703",
@@ -500,7 +580,23 @@
         "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-crossphase-identity-manysig-m8-r01/crossphase_half-s2026092703.log",
         "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-crossphase-identity-manysig-m8-r01/crossphase_half-s2026092703/source",
         "started": 1790929398.344824
-      }
+      },
+      "status": "ANALYZED",
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9683703703703703,
+        "source_val_ce": 0.17849771173855258,
+        "source_val_rx_accuracy": {
+          "1": 0.9959259259259259,
+          "3": 0.917037037037037,
+          "4": 0.9892592592592593,
+          "6": 0.9935185185185185,
+          "8": 0.9461111111111111
+        },
+        "source_val_worst_rx": 0.917037037037037
+      },
+      "test_status": "N/A_NOT_SOURCE_SELECTED",
+      "test_reason": "Fixed source rule retained existing energy control;no unselected candidate query"
     },
     {
       "row_id": "crossphase_raw-s2026092704",
@@ -560,7 +656,23 @@
         "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-crossphase-identity-manysig-m8-r01/crossphase_raw-s2026092704.log",
         "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-crossphase-identity-manysig-m8-r01/crossphase_raw-s2026092704/source",
         "started": 1790929403.5520875
-      }
+      },
+      "status": "ANALYZED",
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9814444444444445,
+        "source_val_ce": 0.09907533784393274,
+        "source_val_rx_accuracy": {
+          "1": 0.9968518518518519,
+          "3": 0.9496296296296296,
+          "4": 0.9905555555555555,
+          "6": 0.9959259259259259,
+          "8": 0.9742592592592593
+        },
+        "source_val_worst_rx": 0.9496296296296296
+      },
+      "test_status": "N/A_NOT_SOURCE_SELECTED",
+      "test_reason": "Fixed source rule retained existing energy control;no unselected candidate query"
     },
     {
       "row_id": "crossphase_half-s2026092704",
@@ -620,7 +732,23 @@
         "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-crossphase-identity-manysig-m8-r01/crossphase_half-s2026092704.log",
         "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-crossphase-identity-manysig-m8-r01/crossphase_half-s2026092704/source",
         "started": 1790929408.773891
-      }
+      },
+      "status": "ANALYZED",
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9724074074074074,
+        "source_val_ce": 0.14856524672342958,
+        "source_val_rx_accuracy": {
+          "1": 0.9966666666666667,
+          "3": 0.9266666666666666,
+          "4": 0.9898148148148148,
+          "6": 0.9929629629629629,
+          "8": 0.955925925925926
+        },
+        "source_val_worst_rx": 0.9266666666666666
+      },
+      "test_status": "N/A_NOT_SOURCE_SELECTED",
+      "test_reason": "Fixed source rule retained existing energy control;no unselected candidate query"
     }
   ],
   "notes": [
@@ -699,5 +827,56 @@
     ],
     "target_feedback": false,
     "selection": "source_only"
+  },
+  "result": {
+    "scientific_verdict": "SOURCE_BASELINE_RETAINED",
+    "source_selection": {
+      "status": "SOURCE_SELECTION_FROZEN",
+      "selected_variant": "energy_equivariant",
+      "source_summaries": {
+        "energy_equivariant": {
+          "score": 0.9672777777777778,
+          "source_accuracy": 0.9822407407407407,
+          "worst_rx_accuracy": 0.9523148148148148,
+          "parameters": 202553,
+          "conv_linear_macs": 7199008
+        },
+        "crossphase_raw": {
+          "score": 0.9638194444444445,
+          "source_accuracy": 0.9797222222222223,
+          "worst_rx_accuracy": 0.9479166666666666,
+          "parameters": 202553,
+          "conv_linear_macs": 7199008
+        },
+        "crossphase_half": {
+          "score": 0.945925925925926,
+          "source_accuracy": 0.9702314814814814,
+          "worst_rx_accuracy": 0.9216203703703704,
+          "parameters": 202553,
+          "conv_linear_macs": 7199008
+        }
+      },
+      "selection_rule": "performance first: four-seed E200 0.5 sourceV+0.5 worstsourceRX;exact ties V thenworstRX;costs secondary only after equalperformance",
+      "selection_policy": "performance_first_crossphase_with_current_source_winner_20261002",
+      "candidate_universe": [
+        "energy_equivariant",
+        "crossphase_raw",
+        "crossphase_half"
+      ],
+      "new_candidate_selected": false,
+      "exact_cost_tie_order": [
+        "energy_equivariant",
+        "crossphase_raw",
+        "crossphase_half"
+      ],
+      "target_access": false,
+      "target_score_used": false,
+      "test_view": "clean"
+    },
+    "source_epochs": 1600,
+    "source_steps": 80000,
+    "new_clean_predictions": 0,
+    "retained_clean_run": "20261002-phase1-cvs-energy-clean-manysig-m24-r01",
+    "goal_achieved": false
   }
 }

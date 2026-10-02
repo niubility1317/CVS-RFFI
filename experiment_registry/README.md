@@ -1,6 +1,6 @@
 # 实验总索引
 
-更新：2026-10-02T08:25:49+00:00
+更新：2026-10-02T08:53:43+00:00
 
 先按方法/问题检索，再用run ID读取精确配置与证据。历史组数量不等于独立实验数量。
 
@@ -157,7 +157,7 @@
 |RFF源域前导码与可观测量诊断|managed_run|[打开](../automation_reports/CV-SincNet/20261002-diagnostic-rff-preamble-source-manysig-m1-r01/report.md)|
 |CVS 加性坐标注入身份网络：完整源实验报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-additive-identity-manysig-m8-r01/report.md)|
 |CVS 同步坐标保留身份网络：完整源实验报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-coordinate-identity-manysig-m8-r01/report.md)|
-|CVS 跨复数通道相干读出：源域实验预登记|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-crossphase-identity-manysig-m8-r01/report.md)|
+|CVS 跨复数通道相干读出：完整源实验报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-crossphase-identity-manysig-m8-r01/report.md)|
 |CVS 相对能量保留身份网络：独立 clean 测试报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-energy-clean-manysig-m24-r01/report.md)|
 |CVS 相对滤波能量保留身份网络：完整源实验报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-energy-identity-manysig-m8-r01/report.md)|
 |CVS 全路径复相位等变记忆网络：独立 clean 测试报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-equivariant-clean-manysig-m24-r01/report.md)|
