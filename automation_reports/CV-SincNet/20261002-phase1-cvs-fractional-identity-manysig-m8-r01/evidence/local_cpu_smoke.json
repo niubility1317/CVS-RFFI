@@ -1,0 +1,4293 @@
+{
+  "status": "PASS",
+  "python": "C:\\Users\\lh594\\.conda\\envs\\ssr-gpu\\python.exe",
+  "torch_version": "2.10.0+cu128",
+  "device": "cpu",
+  "disposable_models": 8,
+  "disposable_ce_updates": 24,
+  "formal_data_access": false,
+  "target_access": false,
+  "checkpoint_access": false,
+  "rows": [
+    {
+      "seed": 2026092701,
+      "variant": "fractional_half",
+      "losses": [
+        {
+          "kind": "random",
+          "ce": 4.420007228851318
+        },
+        {
+          "kind": "weak",
+          "ce": 4.036528587341309
+        },
+        {
+          "kind": "constant",
+          "ce": 3.1613216400146484
+        }
+      ],
+      "contract": {
+        "mode": "fractional_half",
+        "input": "received_equalized1_unit_rms_IQ",
+        "sample_rate_hz": 25000000,
+        "estimator_window": [
+          80,
+          160
+        ],
+        "period_samples": 20,
+        "relative_frequency_alias_hz": 1250000,
+        "waveform_operator": "x[n]*exp(-j*alpha*omega(x)*n)",
+        "alpha": "0.5",
+        "alpha_initial": 0.5,
+        "alpha_numeric_interval": [
+          0.0,
+          1.0
+        ],
+        "alpha_parameters": 0,
+        "alpha_packet_specific": false,
+        "alpha_identity_class_specific": false,
+        "alpha_RX_specific": false,
+        "all_identity_paths_after_fractional_correction": true,
+        "preserved_sample_amplitudes": true,
+        "waveform_reconstruction": "rotate(partial_aligned,+alpha*estimated_omega)",
+        "residual_frequency_transform": "additional_nu -> (1-alpha)*nu when estimator valid and principal branch not crossed",
+        "constant_phase_invariant_real_arithmetic": true,
+        "whole_affine_phase_invariant": false,
+        "principal_branch_crossing": "not covered by residual-frequency covariance equation",
+        "degenerate_behavior": "estimated omega zero before atan2;no frequency correction",
+        "identity_core": "equivariant_memory",
+        "embedding_dimension": 160,
+        "classifier_scale": 30.0,
+        "feature_conditioner": false,
+        "domain_backbone": false,
+        "arbitrary_channel_rx_invariant": false,
+        "hardware_parameter_estimation": false,
+        "interpretation": "Received frequency coordinate acts on the waveform before RF features;alpha is discrimination tradeoff,not identified TX/RX fraction"
+      },
+      "frozen_synthetic": {
+        "status": "FROZEN_SYNTHETIC_DIAGNOSTIC_COMPLETE",
+        "synthetic_only": true,
+        "training_augmentation": false,
+        "formal_data_access": false,
+        "target_access": false,
+        "model_updated": false,
+        "hardware_parameter_recovery": false,
+        "alignment_strength": 0.5,
+        "phase_audit": [
+          {
+            "theta_radians": 0.37,
+            "received_cfo_hz": 0.0,
+            "whole_logit_max_abs_error": 5.0067901611328125e-06,
+            "whole_unit_embedding_max_distance": 9.138744303527346e-07,
+            "estimated_cfo_principal_branch_crossing_count": 0,
+            "valid_correlation_count": 30,
+            "covariance_eligible_count": 30,
+            "partial_waveform_covariance_max_error": 2.384185791015625e-07
+          },
+          {
+            "theta_radians": -1.2,
+            "received_cfo_hz": 80000.0,
+            "whole_logit_max_abs_error": 0.7249181270599365,
+            "whole_unit_embedding_max_distance": 0.24970489740371704,
+            "estimated_cfo_principal_branch_crossing_count": 0,
+            "valid_correlation_count": 30,
+            "covariance_eligible_count": 30,
+            "partial_waveform_covariance_max_error": 5.960464477539062e-07
+          },
+          {
+            "theta_radians": 2.9,
+            "received_cfo_hz": -80000.0,
+            "whole_logit_max_abs_error": 1.5049879550933838,
+            "whole_unit_embedding_max_distance": 0.3295421004295349,
+            "estimated_cfo_principal_branch_crossing_count": 0,
+            "valid_correlation_count": 30,
+            "covariance_eligible_count": 30,
+            "partial_waveform_covariance_max_error": 4.172325134277344e-07
+          }
+        ],
+        "phase_numeric_tolerance": 0.001,
+        "phase_tolerance_scope": "Report only;not ranking or stopping",
+        "phase_tolerance_pass": true,
+        "whole_affine_phase_invariant_claim": false,
+        "coordinate_reconstruction_max_error": 1.7881393432617188e-07,
+        "sample_amplitude_max_error": 3.5762786865234375e-07,
+        "synchronizer": {
+          "relative_cfo_hz_mean": 13333.33203125,
+          "relative_cfo_hz_min": 0.0,
+          "relative_cfo_hz_max": 79999.9921875,
+          "coherence_mean": 1.0,
+          "fallback_fraction": 0.0,
+          "principal_branch_margin_hz_min": 545000.0,
+          "scope": "Last source batch only;relative CFO modulo1.25MHz;not TX oscillator measurement"
+        },
+        "records": [
+          {
+            "tx": "ideal",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              -2.1262059211730957,
+              -0.03328844904899597,
+              -1.3212908506393433,
+              -2.899657964706421,
+              -0.9419516921043396,
+              -0.9611282348632812
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 7.161940516198229e-07,
+            "source_classifier_logits": [
+              -2.1262073516845703,
+              -0.03328979015350342,
+              -1.3212909698486328,
+              -2.899661064147949,
+              -0.9419497847557068,
+              -0.9611273407936096
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.18872517347335815,
+            "source_classifier_logits": [
+              -1.8894519805908203,
+              0.4384757876396179,
+              -0.8905224204063416,
+              -2.9427080154418945,
+              -0.547847330570221,
+              -0.7951275706291199
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0762585923075676,
+            "source_classifier_logits": [
+              -1.8833296298980713,
+              -0.17118796706199646,
+              -1.282395601272583,
+              -3.07535457611084,
+              -0.7507197856903076,
+              -1.1415411233901978
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.028829151764512062,
+            "source_classifier_logits": [
+              -2.0425055027008057,
+              -0.0984351709485054,
+              -1.2950838804244995,
+              -2.999419689178467,
+              -0.9475165009498596,
+              -1.0699872970581055
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.006871476303786039,
+            "source_classifier_logits": [
+              -2.112416982650757,
+              -0.03760010004043579,
+              -1.3147625923156738,
+              -2.904163122177124,
+              -0.9269827008247375,
+              -0.962254524230957
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              -2.1124167442321777,
+              -0.0376003235578537,
+              -1.3147625923156738,
+              -2.9041635990142822,
+              -0.9269822239875793,
+              -0.9622547626495361
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 6.581532261407119e-07,
+            "source_classifier_logits": [
+              -2.112417221069336,
+              -0.03759942948818207,
+              -1.3147624731063843,
+              -2.904162645339966,
+              -0.9269824028015137,
+              -0.9622552394866943
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.18791188299655914,
+            "source_classifier_logits": [
+              -1.8805782794952393,
+              0.43416616320610046,
+              -0.883367657661438,
+              -2.950269937515259,
+              -0.5426088571548462,
+              -0.8009248375892639
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.07245931029319763,
+            "source_classifier_logits": [
+              -1.889183521270752,
+              -0.15915635228157043,
+              -1.2829517126083374,
+              -3.0603346824645996,
+              -0.7470439672470093,
+              -1.141489863395691
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.02466512657701969,
+            "source_classifier_logits": [
+              -2.0415093898773193,
+              -0.0926683098077774,
+              -1.289553165435791,
+              -2.9977383613586426,
+              -0.9386142492294312,
+              -1.0664914846420288
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.005450107157230377,
+            "source_classifier_logits": [
+              -2.100116014480591,
+              -0.03636348992586136,
+              -1.3078911304473877,
+              -2.913437843322754,
+              -0.9089908599853516,
+              -0.9657638072967529
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              -2.1402382850646973,
+              -0.03036394715309143,
+              -1.324112057685852,
+              -2.8856077194213867,
+              -0.9506014585494995,
+              -0.9560747146606445
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 5.895549861634208e-07,
+            "source_classifier_logits": [
+              -2.140237808227539,
+              -0.030365735292434692,
+              -1.3241108655929565,
+              -2.8856089115142822,
+              -0.9506011605262756,
+              -0.9560739398002625
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.1911201924085617,
+            "source_classifier_logits": [
+              -1.8904541730880737,
+              0.4390451908111572,
+              -0.8742712736129761,
+              -2.925713062286377,
+              -0.5448763370513916,
+              -0.7812357544898987
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.07971695810556412,
+            "source_classifier_logits": [
+              -1.880861520767212,
+              -0.18132761120796204,
+              -1.277284860610962,
+              -3.0820417404174805,
+              -0.746897280216217,
+              -1.1415128707885742
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.032503608614206314,
+            "source_classifier_logits": [
+              -2.0394203662872314,
+              -0.09649571031332016,
+              -1.3045858144760132,
+              -2.9968018531799316,
+              -0.9469437003135681,
+              -1.0772011280059814
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.008887422271072865,
+            "source_classifier_logits": [
+              -2.1211869716644287,
+              -0.0391344353556633,
+              -1.318957805633545,
+              -2.893066167831421,
+              -0.9321694374084473,
+              -0.9577592611312866
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              -2.0425055027008057,
+              -0.0984351709485054,
+              -1.2950838804244995,
+              -2.999419689178467,
+              -0.9475165009498596,
+              -1.0699872970581055
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 7.575771405754494e-07,
+            "source_classifier_logits": [
+              -2.042506456375122,
+              -0.09843304753303528,
+              -1.29508638381958,
+              -2.999420642852783,
+              -0.9475167989730835,
+              -1.0699896812438965
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.1861668974161148,
+            "source_classifier_logits": [
+              -1.9043891429901123,
+              0.4488825500011444,
+              -0.938183605670929,
+              -3.0018346309661865,
+              -0.5839143395423889,
+              -0.8547064661979675
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.06467758864164352,
+            "source_classifier_logits": [
+              -1.829778790473938,
+              -0.2016100287437439,
+              -1.2521958351135254,
+              -3.1623120307922363,
+              -0.7565330862998962,
+              -1.2099971771240234
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.019514037296175957,
+            "source_classifier_logits": [
+              -1.9907008409500122,
+              -0.13620972633361816,
+              -1.2747492790222168,
+              -3.0806760787963867,
+              -0.9703246355056763,
+              -1.1693798303604126
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0034824463073164225,
+            "source_classifier_logits": [
+              -2.0461270809173584,
+              -0.09214147925376892,
+              -1.2904741764068604,
+              -2.9942991733551025,
+              -0.9390078783035278,
+              -1.0607361793518066
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              -2.1367268562316895,
+              -0.08995961397886276,
+              -1.3432623147964478,
+              -2.9539542198181152,
+              -0.9405488967895508,
+              -0.9956855177879333
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 6.311586275842274e-07,
+            "source_classifier_logits": [
+              -2.136725664138794,
+              -0.0899578258395195,
+              -1.3432600498199463,
+              -2.9539568424224854,
+              -0.9405485391616821,
+              -0.9956855773925781
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.18312151730060577,
+            "source_classifier_logits": [
+              -1.8993712663650513,
+              0.38068580627441406,
+              -0.8937790989875793,
+              -3.004246234893799,
+              -0.5907875895500183,
+              -0.8539043664932251
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.07727152109146118,
+            "source_classifier_logits": [
+              -1.8854708671569824,
+              -0.26611632108688354,
+              -1.2488936185836792,
+              -3.120842218399048,
+              -0.7312842011451721,
+              -1.160452127456665
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.027730567380785942,
+            "source_classifier_logits": [
+              -2.0417399406433105,
+              -0.145537331700325,
+              -1.3239771127700806,
+              -3.054461717605591,
+              -0.9427584409713745,
+              -1.1102876663208008
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.005026515573263168,
+            "source_classifier_logits": [
+              -2.125706195831299,
+              -0.08356880396604538,
+              -1.3424807786941528,
+              -2.948854684829712,
+              -0.9301868677139282,
+              -0.9991777539253235
+            ]
+          }
+        ],
+        "isolated_tx_changes": [
+          {
+            "tx": "tx_am_am",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.006871476303786039
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.003696766449138522
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.028829151764512062
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.014140259474515915
+          }
+        ],
+        "confounds": {
+          "iq_tx_rx_waveform_max_error": 0.0,
+          "cubic_tx_rx_waveform_max_error": 3.3306690738754696e-16
+        },
+        "simulated_chain": "Existing100Msps steadyLSTF TX->channel->RX->12toneprojection->25Msps relativeCFO/RMS",
+        "exact_wisig_equalizer": false,
+        "identity_accuracy": "N/A:public TX settings are not actual source identity labels",
+        "claim": "Whole constantphase property and partial waveform frequency covariance when valid/no branch crossing;alpha is not TX/RX oscillator fraction;no arbitraryRX/LTI invariance"
+      }
+    },
+    {
+      "seed": 2026092701,
+      "variant": "fractional_learned",
+      "losses": [
+        {
+          "kind": "random",
+          "ce": 4.420007228851318
+        },
+        {
+          "kind": "weak",
+          "ce": 4.036528587341309
+        },
+        {
+          "kind": "constant",
+          "ce": 3.1613216400146484
+        }
+      ],
+      "contract": {
+        "mode": "fractional_learned",
+        "input": "received_equalized1_unit_rms_IQ",
+        "sample_rate_hz": 25000000,
+        "estimator_window": [
+          80,
+          160
+        ],
+        "period_samples": 20,
+        "relative_frequency_alias_hz": 1250000,
+        "waveform_operator": "x[n]*exp(-j*alpha*omega(x)*n)",
+        "alpha": "sigmoid(classshared_scalar)",
+        "alpha_initial": 0.5,
+        "alpha_numeric_interval": [
+          0.0,
+          1.0
+        ],
+        "alpha_parameters": 1,
+        "alpha_packet_specific": false,
+        "alpha_identity_class_specific": false,
+        "alpha_RX_specific": false,
+        "all_identity_paths_after_fractional_correction": true,
+        "preserved_sample_amplitudes": true,
+        "waveform_reconstruction": "rotate(partial_aligned,+alpha*estimated_omega)",
+        "residual_frequency_transform": "additional_nu -> (1-alpha)*nu when estimator valid and principal branch not crossed",
+        "constant_phase_invariant_real_arithmetic": true,
+        "whole_affine_phase_invariant": false,
+        "principal_branch_crossing": "not covered by residual-frequency covariance equation",
+        "degenerate_behavior": "estimated omega zero before atan2;no frequency correction",
+        "identity_core": "equivariant_memory",
+        "embedding_dimension": 160,
+        "classifier_scale": 30.0,
+        "feature_conditioner": false,
+        "domain_backbone": false,
+        "arbitrary_channel_rx_invariant": false,
+        "hardware_parameter_estimation": false,
+        "interpretation": "Received frequency coordinate acts on the waveform before RF features;alpha is discrimination tradeoff,not identified TX/RX fraction"
+      },
+      "frozen_synthetic": {
+        "status": "FROZEN_SYNTHETIC_DIAGNOSTIC_COMPLETE",
+        "synthetic_only": true,
+        "training_augmentation": false,
+        "formal_data_access": false,
+        "target_access": false,
+        "model_updated": false,
+        "hardware_parameter_recovery": false,
+        "alignment_strength": 0.49989059567451477,
+        "phase_audit": [
+          {
+            "theta_radians": 0.37,
+            "received_cfo_hz": 0.0,
+            "whole_logit_max_abs_error": 3.4570693969726562e-06,
+            "whole_unit_embedding_max_distance": 8.12691268947674e-07,
+            "estimated_cfo_principal_branch_crossing_count": 0,
+            "valid_correlation_count": 30,
+            "covariance_eligible_count": 30,
+            "partial_waveform_covariance_max_error": 2.384185791015625e-07
+          },
+          {
+            "theta_radians": -1.2,
+            "received_cfo_hz": 80000.0,
+            "whole_logit_max_abs_error": 0.7236111164093018,
+            "whole_unit_embedding_max_distance": 0.24963590502738953,
+            "estimated_cfo_principal_branch_crossing_count": 0,
+            "valid_correlation_count": 30,
+            "covariance_eligible_count": 30,
+            "partial_waveform_covariance_max_error": 1.0728836059570312e-06
+          },
+          {
+            "theta_radians": 2.9,
+            "received_cfo_hz": -80000.0,
+            "whole_logit_max_abs_error": 1.5041183233261108,
+            "whole_unit_embedding_max_distance": 0.3293609023094177,
+            "estimated_cfo_principal_branch_crossing_count": 0,
+            "valid_correlation_count": 30,
+            "covariance_eligible_count": 30,
+            "partial_waveform_covariance_max_error": 9.834766387939453e-07
+          }
+        ],
+        "phase_numeric_tolerance": 0.001,
+        "phase_tolerance_scope": "Report only;not ranking or stopping",
+        "phase_tolerance_pass": true,
+        "whole_affine_phase_invariant_claim": false,
+        "coordinate_reconstruction_max_error": 2.384185791015625e-07,
+        "sample_amplitude_max_error": 4.76837158203125e-07,
+        "synchronizer": {
+          "relative_cfo_hz_mean": 13333.33203125,
+          "relative_cfo_hz_min": 0.0,
+          "relative_cfo_hz_max": 79999.9921875,
+          "coherence_mean": 1.0,
+          "fallback_fraction": 0.0,
+          "principal_branch_margin_hz_min": 545000.0,
+          "scope": "Last source batch only;relative CFO modulo1.25MHz;not TX oscillator measurement"
+        },
+        "records": [
+          {
+            "tx": "ideal",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              -2.1262059211730957,
+              -0.03328844904899597,
+              -1.3212908506393433,
+              -2.899657964706421,
+              -0.9419516921043396,
+              -0.9611282348632812
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 7.161940516198229e-07,
+            "source_classifier_logits": [
+              -2.1262073516845703,
+              -0.03328979015350342,
+              -1.3212909698486328,
+              -2.899661064147949,
+              -0.9419497847557068,
+              -0.9611273407936096
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.18864944577217102,
+            "source_classifier_logits": [
+              -1.8879152536392212,
+              0.4370223879814148,
+              -0.8887103796005249,
+              -2.9441256523132324,
+              -0.5481269955635071,
+              -0.7948601841926575
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0762585923075676,
+            "source_classifier_logits": [
+              -1.8833296298980713,
+              -0.17118796706199646,
+              -1.282395601272583,
+              -3.07535457611084,
+              -0.7507197856903076,
+              -1.1415411233901978
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.028829151764512062,
+            "source_classifier_logits": [
+              -2.0425055027008057,
+              -0.0984351709485054,
+              -1.2950838804244995,
+              -2.999419689178467,
+              -0.9475165009498596,
+              -1.0699872970581055
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.006871476303786039,
+            "source_classifier_logits": [
+              -2.112416982650757,
+              -0.03760010004043579,
+              -1.3147625923156738,
+              -2.904163122177124,
+              -0.9269827008247375,
+              -0.962254524230957
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              -2.1124167442321777,
+              -0.0376003235578537,
+              -1.3147625923156738,
+              -2.9041635990142822,
+              -0.9269822239875793,
+              -0.9622547626495361
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 6.581532261407119e-07,
+            "source_classifier_logits": [
+              -2.112417221069336,
+              -0.03759942948818207,
+              -1.3147624731063843,
+              -2.904162645339966,
+              -0.9269824028015137,
+              -0.9622552394866943
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.1878472864627838,
+            "source_classifier_logits": [
+              -1.8792966604232788,
+              0.4327971637248993,
+              -0.8816869258880615,
+              -2.951529026031494,
+              -0.5430248379707336,
+              -0.8006025552749634
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.07245931029319763,
+            "source_classifier_logits": [
+              -1.889183521270752,
+              -0.15915635228157043,
+              -1.2829517126083374,
+              -3.0603346824645996,
+              -0.7470439672470093,
+              -1.141489863395691
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.02466512657701969,
+            "source_classifier_logits": [
+              -2.0415093898773193,
+              -0.0926683098077774,
+              -1.289553165435791,
+              -2.9977383613586426,
+              -0.9386142492294312,
+              -1.0664914846420288
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.005450107157230377,
+            "source_classifier_logits": [
+              -2.100116014480591,
+              -0.03636348992586136,
+              -1.3078911304473877,
+              -2.913437843322754,
+              -0.9089908599853516,
+              -0.9657638072967529
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              -2.1402382850646973,
+              -0.03036394715309143,
+              -1.324112057685852,
+              -2.8856077194213867,
+              -0.9506014585494995,
+              -0.9560747146606445
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 5.895549861634208e-07,
+            "source_classifier_logits": [
+              -2.140237808227539,
+              -0.030365735292434692,
+              -1.3241108655929565,
+              -2.8856089115142822,
+              -0.9506011605262756,
+              -0.9560739398002625
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.19105228781700134,
+            "source_classifier_logits": [
+              -1.8887850046157837,
+              0.43776583671569824,
+              -0.8724483847618103,
+              -2.9271767139434814,
+              -0.5449560284614563,
+              -0.7809794545173645
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.07971695810556412,
+            "source_classifier_logits": [
+              -1.880861520767212,
+              -0.18132761120796204,
+              -1.277284860610962,
+              -3.0820417404174805,
+              -0.746897280216217,
+              -1.1415128707885742
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.032503608614206314,
+            "source_classifier_logits": [
+              -2.0394203662872314,
+              -0.09649571031332016,
+              -1.3045858144760132,
+              -2.9968018531799316,
+              -0.9469437003135681,
+              -1.0772011280059814
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.008887422271072865,
+            "source_classifier_logits": [
+              -2.1211869716644287,
+              -0.0391344353556633,
+              -1.318957805633545,
+              -2.893066167831421,
+              -0.9321694374084473,
+              -0.9577592611312866
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              -2.0425055027008057,
+              -0.0984351709485054,
+              -1.2950838804244995,
+              -2.999419689178467,
+              -0.9475165009498596,
+              -1.0699872970581055
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 7.575771405754494e-07,
+            "source_classifier_logits": [
+              -2.042506456375122,
+              -0.09843304753303528,
+              -1.29508638381958,
+              -2.999420642852783,
+              -0.9475167989730835,
+              -1.0699896812438965
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.18610824644565582,
+            "source_classifier_logits": [
+              -1.9032899141311646,
+              0.4477666914463043,
+              -0.9368183016777039,
+              -3.002622127532959,
+              -0.5842368602752686,
+              -0.8540168404579163
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.06467758864164352,
+            "source_classifier_logits": [
+              -1.829778790473938,
+              -0.2016100287437439,
+              -1.2521958351135254,
+              -3.1623120307922363,
+              -0.7565330862998962,
+              -1.2099971771240234
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.019514037296175957,
+            "source_classifier_logits": [
+              -1.9907008409500122,
+              -0.13620972633361816,
+              -1.2747492790222168,
+              -3.0806760787963867,
+              -0.9703246355056763,
+              -1.1693798303604126
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0034824463073164225,
+            "source_classifier_logits": [
+              -2.0461270809173584,
+              -0.09214147925376892,
+              -1.2904741764068604,
+              -2.9942991733551025,
+              -0.9390078783035278,
+              -1.0607361793518066
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              -2.1367268562316895,
+              -0.08995961397886276,
+              -1.3432623147964478,
+              -2.9539542198181152,
+              -0.9405488967895508,
+              -0.9956855177879333
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 6.311586275842274e-07,
+            "source_classifier_logits": [
+              -2.136725664138794,
+              -0.0899578258395195,
+              -1.3432600498199463,
+              -2.9539568424224854,
+              -0.9405485391616821,
+              -0.9956855773925781
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.18305423855781555,
+            "source_classifier_logits": [
+              -1.8981599807739258,
+              0.3790040612220764,
+              -0.892225980758667,
+              -3.005793333053589,
+              -0.5912167429924011,
+              -0.8535719513893127
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.07727152109146118,
+            "source_classifier_logits": [
+              -1.8854708671569824,
+              -0.26611632108688354,
+              -1.2488936185836792,
+              -3.120842218399048,
+              -0.7312842011451721,
+              -1.160452127456665
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.027730567380785942,
+            "source_classifier_logits": [
+              -2.0417399406433105,
+              -0.145537331700325,
+              -1.3239771127700806,
+              -3.054461717605591,
+              -0.9427584409713745,
+              -1.1102876663208008
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.005026515573263168,
+            "source_classifier_logits": [
+              -2.125706195831299,
+              -0.08356880396604538,
+              -1.3424807786941528,
+              -2.948854684829712,
+              -0.9301868677139282,
+              -0.9991777539253235
+            ]
+          }
+        ],
+        "isolated_tx_changes": [
+          {
+            "tx": "tx_am_am",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.006871476303786039
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.003696766449138522
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.028829151764512062
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.014140259474515915
+          }
+        ],
+        "confounds": {
+          "iq_tx_rx_waveform_max_error": 0.0,
+          "cubic_tx_rx_waveform_max_error": 3.3306690738754696e-16
+        },
+        "simulated_chain": "Existing100Msps steadyLSTF TX->channel->RX->12toneprojection->25Msps relativeCFO/RMS",
+        "exact_wisig_equalizer": false,
+        "identity_accuracy": "N/A:public TX settings are not actual source identity labels",
+        "claim": "Whole constantphase property and partial waveform frequency covariance when valid/no branch crossing;alpha is not TX/RX oscillator fraction;no arbitraryRX/LTI invariance"
+      }
+    },
+    {
+      "seed": 2026092702,
+      "variant": "fractional_half",
+      "losses": [
+        {
+          "kind": "random",
+          "ce": 3.4788341522216797
+        },
+        {
+          "kind": "weak",
+          "ce": 4.252054691314697
+        },
+        {
+          "kind": "constant",
+          "ce": 2.2649033069610596
+        }
+      ],
+      "contract": {
+        "mode": "fractional_half",
+        "input": "received_equalized1_unit_rms_IQ",
+        "sample_rate_hz": 25000000,
+        "estimator_window": [
+          80,
+          160
+        ],
+        "period_samples": 20,
+        "relative_frequency_alias_hz": 1250000,
+        "waveform_operator": "x[n]*exp(-j*alpha*omega(x)*n)",
+        "alpha": "0.5",
+        "alpha_initial": 0.5,
+        "alpha_numeric_interval": [
+          0.0,
+          1.0
+        ],
+        "alpha_parameters": 0,
+        "alpha_packet_specific": false,
+        "alpha_identity_class_specific": false,
+        "alpha_RX_specific": false,
+        "all_identity_paths_after_fractional_correction": true,
+        "preserved_sample_amplitudes": true,
+        "waveform_reconstruction": "rotate(partial_aligned,+alpha*estimated_omega)",
+        "residual_frequency_transform": "additional_nu -> (1-alpha)*nu when estimator valid and principal branch not crossed",
+        "constant_phase_invariant_real_arithmetic": true,
+        "whole_affine_phase_invariant": false,
+        "principal_branch_crossing": "not covered by residual-frequency covariance equation",
+        "degenerate_behavior": "estimated omega zero before atan2;no frequency correction",
+        "identity_core": "equivariant_memory",
+        "embedding_dimension": 160,
+        "classifier_scale": 30.0,
+        "feature_conditioner": false,
+        "domain_backbone": false,
+        "arbitrary_channel_rx_invariant": false,
+        "hardware_parameter_estimation": false,
+        "interpretation": "Received frequency coordinate acts on the waveform before RF features;alpha is discrimination tradeoff,not identified TX/RX fraction"
+      },
+      "frozen_synthetic": {
+        "status": "FROZEN_SYNTHETIC_DIAGNOSTIC_COMPLETE",
+        "synthetic_only": true,
+        "training_augmentation": false,
+        "formal_data_access": false,
+        "target_access": false,
+        "model_updated": false,
+        "hardware_parameter_recovery": false,
+        "alignment_strength": 0.5,
+        "phase_audit": [
+          {
+            "theta_radians": 0.37,
+            "received_cfo_hz": 0.0,
+            "whole_logit_max_abs_error": 5.602836608886719e-06,
+            "whole_unit_embedding_max_distance": 1.0130136161023984e-06,
+            "estimated_cfo_principal_branch_crossing_count": 0,
+            "valid_correlation_count": 30,
+            "covariance_eligible_count": 30,
+            "partial_waveform_covariance_max_error": 2.384185791015625e-07
+          },
+          {
+            "theta_radians": -1.2,
+            "received_cfo_hz": 80000.0,
+            "whole_logit_max_abs_error": 1.9371137619018555,
+            "whole_unit_embedding_max_distance": 0.39290645718574524,
+            "estimated_cfo_principal_branch_crossing_count": 0,
+            "valid_correlation_count": 30,
+            "covariance_eligible_count": 30,
+            "partial_waveform_covariance_max_error": 5.960464477539062e-07
+          },
+          {
+            "theta_radians": 2.9,
+            "received_cfo_hz": -80000.0,
+            "whole_logit_max_abs_error": 1.9306974411010742,
+            "whole_unit_embedding_max_distance": 0.4101566970348358,
+            "estimated_cfo_principal_branch_crossing_count": 0,
+            "valid_correlation_count": 30,
+            "covariance_eligible_count": 30,
+            "partial_waveform_covariance_max_error": 4.172325134277344e-07
+          }
+        ],
+        "phase_numeric_tolerance": 0.001,
+        "phase_tolerance_scope": "Report only;not ranking or stopping",
+        "phase_tolerance_pass": true,
+        "whole_affine_phase_invariant_claim": false,
+        "coordinate_reconstruction_max_error": 1.7881393432617188e-07,
+        "sample_amplitude_max_error": 3.5762786865234375e-07,
+        "synchronizer": {
+          "relative_cfo_hz_mean": 13333.33203125,
+          "relative_cfo_hz_min": 0.0,
+          "relative_cfo_hz_max": 79999.9921875,
+          "coherence_mean": 1.0,
+          "fallback_fraction": 0.0,
+          "principal_branch_margin_hz_min": 545000.0,
+          "scope": "Last source batch only;relative CFO modulo1.25MHz;not TX oscillator measurement"
+        },
+        "records": [
+          {
+            "tx": "ideal",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              1.2964766025543213,
+              -0.23989689350128174,
+              -2.02805495262146,
+              1.861846923828125,
+              2.1977877616882324,
+              0.29128700494766235
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 7.458524464709626e-07,
+            "source_classifier_logits": [
+              1.2964763641357422,
+              -0.23989689350128174,
+              -2.0280568599700928,
+              1.8618463277816772,
+              2.197791337966919,
+              0.29128706455230713
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.3900725543498993,
+            "source_classifier_logits": [
+              0.4815555214881897,
+              -0.34794944524765015,
+              -1.0282788276672363,
+              0.08933337032794952,
+              1.9283223152160645,
+              2.195854663848877
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.1013646274805069,
+            "source_classifier_logits": [
+              1.1315991878509521,
+              -0.329542338848114,
+              -1.8193649053573608,
+              1.7175908088684082,
+              1.8274106979370117,
+              0.4568180739879608
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.03125663101673126,
+            "source_classifier_logits": [
+              1.2921292781829834,
+              -0.30118557810783386,
+              -2.051394462585449,
+              1.7951269149780273,
+              2.15773868560791,
+              0.3145665228366852
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.010507096536457539,
+            "source_classifier_logits": [
+              1.302671194076538,
+              -0.2503455877304077,
+              -1.9794362783432007,
+              1.876052737236023,
+              2.157841682434082,
+              0.32360538840293884
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              1.3026717901229858,
+              -0.2503458857536316,
+              -1.9794362783432007,
+              1.8760532140731812,
+              2.157841205596924,
+              0.32360538840293884
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 8.00938437350851e-07,
+            "source_classifier_logits": [
+              1.3026694059371948,
+              -0.25034692883491516,
+              -1.9794403314590454,
+              1.8760504722595215,
+              2.157843589782715,
+              0.32360878586769104
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.3853546977043152,
+            "source_classifier_logits": [
+              0.4641953408718109,
+              -0.34237203001976013,
+              -1.0219630002975464,
+              0.08825333416461945,
+              1.9239102602005005,
+              2.1920411586761475
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.09820402413606644,
+            "source_classifier_logits": [
+              1.1252435445785522,
+              -0.32807299494743347,
+              -1.812380313873291,
+              1.7169040441513062,
+              1.812619924545288,
+              0.4603410065174103
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.02711104415357113,
+            "source_classifier_logits": [
+              1.2924089431762695,
+              -0.29187288880348206,
+              -2.0378832817077637,
+              1.7997232675552368,
+              2.1445553302764893,
+              0.33208027482032776
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.008268059231340885,
+            "source_classifier_logits": [
+              1.305100679397583,
+              -0.2567143440246582,
+              -1.9423153400421143,
+              1.8889135122299194,
+              2.1277265548706055,
+              0.3468146026134491
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              1.3004063367843628,
+              -0.20271515846252441,
+              -2.064356803894043,
+              1.8713009357452393,
+              2.2179272174835205,
+              0.28147178888320923
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 6.046183784746972e-07,
+            "source_classifier_logits": [
+              1.300405502319336,
+              -0.20271632075309753,
+              -2.064359426498413,
+              1.8712977170944214,
+              2.217928409576416,
+              0.2814725637435913
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.3929064869880676,
+            "source_classifier_logits": [
+              0.4764879047870636,
+              -0.3386187255382538,
+              -1.0342408418655396,
+              0.10059250891208649,
+              1.91199791431427,
+              2.20043683052063
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.10644017904996872,
+            "source_classifier_logits": [
+              1.1455763578414917,
+              -0.3160499334335327,
+              -1.8046073913574219,
+              1.7317343950271606,
+              1.8032035827636719,
+              0.45167213678359985
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0345306321978569,
+            "source_classifier_logits": [
+              1.3046461343765259,
+              -0.28550276160240173,
+              -2.0478579998016357,
+              1.8030046224594116,
+              2.1558640003204346,
+              0.31240716576576233
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.013180965557694435,
+            "source_classifier_logits": [
+              1.3149083852767944,
+              -0.222916379570961,
+              -2.0007245540618896,
+              1.8821009397506714,
+              2.166378974914551,
+              0.3216301202774048
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              1.2921292781829834,
+              -0.30118557810783386,
+              -2.051394462585449,
+              1.7951269149780273,
+              2.15773868560791,
+              0.3145665228366852
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 6.811094408476492e-07,
+            "source_classifier_logits": [
+              1.2921311855316162,
+              -0.30118340253829956,
+              -2.0513906478881836,
+              1.7951253652572632,
+              2.157738208770752,
+              0.3145660161972046
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.38068875670433044,
+            "source_classifier_logits": [
+              0.46891653537750244,
+              -0.3777919411659241,
+              -1.121254563331604,
+              0.017525944858789444,
+              2.0442633628845215,
+              2.1564152240753174
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0906401127576828,
+            "source_classifier_logits": [
+              1.0740519762039185,
+              -0.24665287137031555,
+              -2.0478639602661133,
+              1.5835953950881958,
+              1.9331746101379395,
+              0.47204330563545227
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.02408098801970482,
+            "source_classifier_logits": [
+              1.2544333934783936,
+              -0.3124319911003113,
+              -2.1630568504333496,
+              1.6908366680145264,
+              2.163327217102051,
+              0.29701173305511475
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.004846340510994196,
+            "source_classifier_logits": [
+              1.2934776544570923,
+              -0.289272278547287,
+              -2.036707639694214,
+              1.8041123151779175,
+              2.1442880630493164,
+              0.3337573707103729
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              1.2167677879333496,
+              -0.40087515115737915,
+              -1.8720649480819702,
+              1.8058117628097534,
+              2.0753183364868164,
+              0.4040347933769226
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 8.307384860017919e-07,
+            "source_classifier_logits": [
+              1.2167694568634033,
+              -0.40087783336639404,
+              -1.8720650672912598,
+              1.8058111667633057,
+              2.0753207206726074,
+              0.40403226017951965
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.37800419330596924,
+            "source_classifier_logits": [
+              0.3877934515476227,
+              -0.3709554374217987,
+              -1.0141953229904175,
+              0.09522814303636551,
+              1.938610553741455,
+              2.1743383407592773
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.11150083690881729,
+            "source_classifier_logits": [
+              1.0164750814437866,
+              -0.5209610462188721,
+              -1.6093084812164307,
+              1.7792258262634277,
+              1.7278101444244385,
+              0.4805328845977783
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.026774937286973,
+            "source_classifier_logits": [
+              1.1901640892028809,
+              -0.4325975775718689,
+              -1.9069768190383911,
+              1.7424890995025635,
+              2.0434470176696777,
+              0.3962351977825165
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.009659802541136742,
+            "source_classifier_logits": [
+              1.2276978492736816,
+              -0.40532615780830383,
+              -1.8324918746948242,
+              1.824867844581604,
+              2.039551258087158,
+              0.4234507381916046
+            ]
+          }
+        ],
+        "isolated_tx_changes": [
+          {
+            "tx": "tx_am_am",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.010507096536457539
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.006375309079885483
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.03125663101673126
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.03832082822918892
+          }
+        ],
+        "confounds": {
+          "iq_tx_rx_waveform_max_error": 0.0,
+          "cubic_tx_rx_waveform_max_error": 3.3306690738754696e-16
+        },
+        "simulated_chain": "Existing100Msps steadyLSTF TX->channel->RX->12toneprojection->25Msps relativeCFO/RMS",
+        "exact_wisig_equalizer": false,
+        "identity_accuracy": "N/A:public TX settings are not actual source identity labels",
+        "claim": "Whole constantphase property and partial waveform frequency covariance when valid/no branch crossing;alpha is not TX/RX oscillator fraction;no arbitraryRX/LTI invariance"
+      }
+    },
+    {
+      "seed": 2026092702,
+      "variant": "fractional_learned",
+      "losses": [
+        {
+          "kind": "random",
+          "ce": 3.4788341522216797
+        },
+        {
+          "kind": "weak",
+          "ce": 4.252054691314697
+        },
+        {
+          "kind": "constant",
+          "ce": 2.2649033069610596
+        }
+      ],
+      "contract": {
+        "mode": "fractional_learned",
+        "input": "received_equalized1_unit_rms_IQ",
+        "sample_rate_hz": 25000000,
+        "estimator_window": [
+          80,
+          160
+        ],
+        "period_samples": 20,
+        "relative_frequency_alias_hz": 1250000,
+        "waveform_operator": "x[n]*exp(-j*alpha*omega(x)*n)",
+        "alpha": "sigmoid(classshared_scalar)",
+        "alpha_initial": 0.5,
+        "alpha_numeric_interval": [
+          0.0,
+          1.0
+        ],
+        "alpha_parameters": 1,
+        "alpha_packet_specific": false,
+        "alpha_identity_class_specific": false,
+        "alpha_RX_specific": false,
+        "all_identity_paths_after_fractional_correction": true,
+        "preserved_sample_amplitudes": true,
+        "waveform_reconstruction": "rotate(partial_aligned,+alpha*estimated_omega)",
+        "residual_frequency_transform": "additional_nu -> (1-alpha)*nu when estimator valid and principal branch not crossed",
+        "constant_phase_invariant_real_arithmetic": true,
+        "whole_affine_phase_invariant": false,
+        "principal_branch_crossing": "not covered by residual-frequency covariance equation",
+        "degenerate_behavior": "estimated omega zero before atan2;no frequency correction",
+        "identity_core": "equivariant_memory",
+        "embedding_dimension": 160,
+        "classifier_scale": 30.0,
+        "feature_conditioner": false,
+        "domain_backbone": false,
+        "arbitrary_channel_rx_invariant": false,
+        "hardware_parameter_estimation": false,
+        "interpretation": "Received frequency coordinate acts on the waveform before RF features;alpha is discrimination tradeoff,not identified TX/RX fraction"
+      },
+      "frozen_synthetic": {
+        "status": "FROZEN_SYNTHETIC_DIAGNOSTIC_COMPLETE",
+        "synthetic_only": true,
+        "training_augmentation": false,
+        "formal_data_access": false,
+        "target_access": false,
+        "model_updated": false,
+        "hardware_parameter_recovery": false,
+        "alignment_strength": 0.49989059567451477,
+        "phase_audit": [
+          {
+            "theta_radians": 0.37,
+            "received_cfo_hz": 0.0,
+            "whole_logit_max_abs_error": 5.602836608886719e-06,
+            "whole_unit_embedding_max_distance": 1.0130136161023984e-06,
+            "estimated_cfo_principal_branch_crossing_count": 0,
+            "valid_correlation_count": 30,
+            "covariance_eligible_count": 30,
+            "partial_waveform_covariance_max_error": 2.384185791015625e-07
+          },
+          {
+            "theta_radians": -1.2,
+            "received_cfo_hz": 80000.0,
+            "whole_logit_max_abs_error": 1.9338998794555664,
+            "whole_unit_embedding_max_distance": 0.3929501473903656,
+            "estimated_cfo_principal_branch_crossing_count": 0,
+            "valid_correlation_count": 30,
+            "covariance_eligible_count": 30,
+            "partial_waveform_covariance_max_error": 1.0728836059570312e-06
+          },
+          {
+            "theta_radians": 2.9,
+            "received_cfo_hz": -80000.0,
+            "whole_logit_max_abs_error": 1.9299499988555908,
+            "whole_unit_embedding_max_distance": 0.40999695658683777,
+            "estimated_cfo_principal_branch_crossing_count": 0,
+            "valid_correlation_count": 30,
+            "covariance_eligible_count": 30,
+            "partial_waveform_covariance_max_error": 9.834766387939453e-07
+          }
+        ],
+        "phase_numeric_tolerance": 0.001,
+        "phase_tolerance_scope": "Report only;not ranking or stopping",
+        "phase_tolerance_pass": true,
+        "whole_affine_phase_invariant_claim": false,
+        "coordinate_reconstruction_max_error": 2.384185791015625e-07,
+        "sample_amplitude_max_error": 4.76837158203125e-07,
+        "synchronizer": {
+          "relative_cfo_hz_mean": 13333.33203125,
+          "relative_cfo_hz_min": 0.0,
+          "relative_cfo_hz_max": 79999.9921875,
+          "coherence_mean": 1.0,
+          "fallback_fraction": 0.0,
+          "principal_branch_margin_hz_min": 545000.0,
+          "scope": "Last source batch only;relative CFO modulo1.25MHz;not TX oscillator measurement"
+        },
+        "records": [
+          {
+            "tx": "ideal",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              1.2964766025543213,
+              -0.23989689350128174,
+              -2.02805495262146,
+              1.861846923828125,
+              2.1977877616882324,
+              0.29128700494766235
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 7.458524464709626e-07,
+            "source_classifier_logits": [
+              1.2964763641357422,
+              -0.23989689350128174,
+              -2.0280568599700928,
+              1.8618463277816772,
+              2.197791337966919,
+              0.29128706455230713
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.39012929797172546,
+            "source_classifier_logits": [
+              0.4806760549545288,
+              -0.347347617149353,
+              -1.0261690616607666,
+              0.09072806686162949,
+              1.9269551038742065,
+              2.1954565048217773
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.1013646274805069,
+            "source_classifier_logits": [
+              1.1315991878509521,
+              -0.329542338848114,
+              -1.8193649053573608,
+              1.7175908088684082,
+              1.8274106979370117,
+              0.4568180739879608
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.03125663101673126,
+            "source_classifier_logits": [
+              1.2921292781829834,
+              -0.30118557810783386,
+              -2.051394462585449,
+              1.7951269149780273,
+              2.15773868560791,
+              0.3145665228366852
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.010507096536457539,
+            "source_classifier_logits": [
+              1.302671194076538,
+              -0.2503455877304077,
+              -1.9794362783432007,
+              1.876052737236023,
+              2.157841682434082,
+              0.32360538840293884
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              1.3026717901229858,
+              -0.2503458857536316,
+              -1.9794362783432007,
+              1.8760532140731812,
+              2.157841205596924,
+              0.32360538840293884
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 8.00938437350851e-07,
+            "source_classifier_logits": [
+              1.3026694059371948,
+              -0.25034692883491516,
+              -1.9794403314590454,
+              1.8760504722595215,
+              2.157843589782715,
+              0.32360878586769104
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.38542431592941284,
+            "source_classifier_logits": [
+              0.46318498253822327,
+              -0.3417430520057678,
+              -1.0199722051620483,
+              0.08953475952148438,
+              1.9227017164230347,
+              2.1916680335998535
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.09820402413606644,
+            "source_classifier_logits": [
+              1.1252435445785522,
+              -0.32807299494743347,
+              -1.812380313873291,
+              1.7169040441513062,
+              1.812619924545288,
+              0.4603410065174103
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.02711104415357113,
+            "source_classifier_logits": [
+              1.2924089431762695,
+              -0.29187288880348206,
+              -2.0378832817077637,
+              1.7997232675552368,
+              2.1445553302764893,
+              0.33208027482032776
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.008268059231340885,
+            "source_classifier_logits": [
+              1.305100679397583,
+              -0.2567143440246582,
+              -1.9423153400421143,
+              1.8889135122299194,
+              2.1277265548706055,
+              0.3468146026134491
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              1.3004063367843628,
+              -0.20271515846252441,
+              -2.064356803894043,
+              1.8713009357452393,
+              2.2179272174835205,
+              0.28147178888320923
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 6.046183784746972e-07,
+            "source_classifier_logits": [
+              1.300405502319336,
+              -0.20271632075309753,
+              -2.064359426498413,
+              1.8712977170944214,
+              2.217928409576416,
+              0.2814725637435913
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.39295047521591187,
+            "source_classifier_logits": [
+              0.47564390301704407,
+              -0.3380429446697235,
+              -1.0322405099868774,
+              0.10205475986003876,
+              1.9106613397598267,
+              2.2000694274902344
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.10644017904996872,
+            "source_classifier_logits": [
+              1.1455763578414917,
+              -0.3160499334335327,
+              -1.8046073913574219,
+              1.7317343950271606,
+              1.8032035827636719,
+              0.45167213678359985
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0345306321978569,
+            "source_classifier_logits": [
+              1.3046461343765259,
+              -0.28550276160240173,
+              -2.0478579998016357,
+              1.8030046224594116,
+              2.1558640003204346,
+              0.31240716576576233
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.013180965557694435,
+            "source_classifier_logits": [
+              1.3149083852767944,
+              -0.222916379570961,
+              -2.0007245540618896,
+              1.8821009397506714,
+              2.166378974914551,
+              0.3216301202774048
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              1.2921292781829834,
+              -0.30118557810783386,
+              -2.051394462585449,
+              1.7951269149780273,
+              2.15773868560791,
+              0.3145665228366852
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 6.811094408476492e-07,
+            "source_classifier_logits": [
+              1.2921311855316162,
+              -0.30118340253829956,
+              -2.0513906478881836,
+              1.7951253652572632,
+              2.157738208770752,
+              0.3145660161972046
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.3807770311832428,
+            "source_classifier_logits": [
+              0.4675699472427368,
+              -0.37702056765556335,
+              -1.1197082996368408,
+              0.01833999529480934,
+              2.0434136390686035,
+              2.1560397148132324
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0906401127576828,
+            "source_classifier_logits": [
+              1.0740519762039185,
+              -0.24665287137031555,
+              -2.0478639602661133,
+              1.5835953950881958,
+              1.9331746101379395,
+              0.47204330563545227
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.02408098801970482,
+            "source_classifier_logits": [
+              1.2544333934783936,
+              -0.3124319911003113,
+              -2.1630568504333496,
+              1.6908366680145264,
+              2.163327217102051,
+              0.29701173305511475
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.004846340510994196,
+            "source_classifier_logits": [
+              1.2934776544570923,
+              -0.289272278547287,
+              -2.036707639694214,
+              1.8041123151779175,
+              2.1442880630493164,
+              0.3337573707103729
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              1.2167677879333496,
+              -0.40087515115737915,
+              -1.8720649480819702,
+              1.8058117628097534,
+              2.0753183364868164,
+              0.4040347933769226
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 8.307384860017919e-07,
+            "source_classifier_logits": [
+              1.2167694568634033,
+              -0.40087783336639404,
+              -1.8720650672912598,
+              1.8058111667633057,
+              2.0753207206726074,
+              0.40403226017951965
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.3780621290206909,
+            "source_classifier_logits": [
+              0.38698869943618774,
+              -0.37037160992622375,
+              -1.0122900009155273,
+              0.09665161371231079,
+              1.9372847080230713,
+              2.173823118209839
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.11150083690881729,
+            "source_classifier_logits": [
+              1.0164750814437866,
+              -0.5209610462188721,
+              -1.6093084812164307,
+              1.7792258262634277,
+              1.7278101444244385,
+              0.4805328845977783
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.026774937286973,
+            "source_classifier_logits": [
+              1.1901640892028809,
+              -0.4325975775718689,
+              -1.9069768190383911,
+              1.7424890995025635,
+              2.0434470176696777,
+              0.3962351977825165
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.009659802541136742,
+            "source_classifier_logits": [
+              1.2276978492736816,
+              -0.40532615780830383,
+              -1.8324918746948242,
+              1.824867844581604,
+              2.039551258087158,
+              0.4234507381916046
+            ]
+          }
+        ],
+        "isolated_tx_changes": [
+          {
+            "tx": "tx_am_am",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.010507096536457539
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.006375309079885483
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.03125663101673126
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.03832082822918892
+          }
+        ],
+        "confounds": {
+          "iq_tx_rx_waveform_max_error": 0.0,
+          "cubic_tx_rx_waveform_max_error": 3.3306690738754696e-16
+        },
+        "simulated_chain": "Existing100Msps steadyLSTF TX->channel->RX->12toneprojection->25Msps relativeCFO/RMS",
+        "exact_wisig_equalizer": false,
+        "identity_accuracy": "N/A:public TX settings are not actual source identity labels",
+        "claim": "Whole constantphase property and partial waveform frequency covariance when valid/no branch crossing;alpha is not TX/RX oscillator fraction;no arbitraryRX/LTI invariance"
+      }
+    },
+    {
+      "seed": 2026092703,
+      "variant": "fractional_half",
+      "losses": [
+        {
+          "kind": "random",
+          "ce": 1.715591311454773
+        },
+        {
+          "kind": "weak",
+          "ce": 4.88566780090332
+        },
+        {
+          "kind": "constant",
+          "ce": 2.944443464279175
+        }
+      ],
+      "contract": {
+        "mode": "fractional_half",
+        "input": "received_equalized1_unit_rms_IQ",
+        "sample_rate_hz": 25000000,
+        "estimator_window": [
+          80,
+          160
+        ],
+        "period_samples": 20,
+        "relative_frequency_alias_hz": 1250000,
+        "waveform_operator": "x[n]*exp(-j*alpha*omega(x)*n)",
+        "alpha": "0.5",
+        "alpha_initial": 0.5,
+        "alpha_numeric_interval": [
+          0.0,
+          1.0
+        ],
+        "alpha_parameters": 0,
+        "alpha_packet_specific": false,
+        "alpha_identity_class_specific": false,
+        "alpha_RX_specific": false,
+        "all_identity_paths_after_fractional_correction": true,
+        "preserved_sample_amplitudes": true,
+        "waveform_reconstruction": "rotate(partial_aligned,+alpha*estimated_omega)",
+        "residual_frequency_transform": "additional_nu -> (1-alpha)*nu when estimator valid and principal branch not crossed",
+        "constant_phase_invariant_real_arithmetic": true,
+        "whole_affine_phase_invariant": false,
+        "principal_branch_crossing": "not covered by residual-frequency covariance equation",
+        "degenerate_behavior": "estimated omega zero before atan2;no frequency correction",
+        "identity_core": "equivariant_memory",
+        "embedding_dimension": 160,
+        "classifier_scale": 30.0,
+        "feature_conditioner": false,
+        "domain_backbone": false,
+        "arbitrary_channel_rx_invariant": false,
+        "hardware_parameter_estimation": false,
+        "interpretation": "Received frequency coordinate acts on the waveform before RF features;alpha is discrimination tradeoff,not identified TX/RX fraction"
+      },
+      "frozen_synthetic": {
+        "status": "FROZEN_SYNTHETIC_DIAGNOSTIC_COMPLETE",
+        "synthetic_only": true,
+        "training_augmentation": false,
+        "formal_data_access": false,
+        "target_access": false,
+        "model_updated": false,
+        "hardware_parameter_recovery": false,
+        "alignment_strength": 0.5,
+        "phase_audit": [
+          {
+            "theta_radians": 0.37,
+            "received_cfo_hz": 0.0,
+            "whole_logit_max_abs_error": 5.841255187988281e-06,
+            "whole_unit_embedding_max_distance": 1.0752524985946366e-06,
+            "estimated_cfo_principal_branch_crossing_count": 0,
+            "valid_correlation_count": 30,
+            "covariance_eligible_count": 30,
+            "partial_waveform_covariance_max_error": 2.384185791015625e-07
+          },
+          {
+            "theta_radians": -1.2,
+            "received_cfo_hz": 80000.0,
+            "whole_logit_max_abs_error": 1.9153423309326172,
+            "whole_unit_embedding_max_distance": 0.33793649077415466,
+            "estimated_cfo_principal_branch_crossing_count": 0,
+            "valid_correlation_count": 30,
+            "covariance_eligible_count": 30,
+            "partial_waveform_covariance_max_error": 5.960464477539062e-07
+          },
+          {
+            "theta_radians": 2.9,
+            "received_cfo_hz": -80000.0,
+            "whole_logit_max_abs_error": 1.7363333702087402,
+            "whole_unit_embedding_max_distance": 0.4421673119068146,
+            "estimated_cfo_principal_branch_crossing_count": 0,
+            "valid_correlation_count": 30,
+            "covariance_eligible_count": 30,
+            "partial_waveform_covariance_max_error": 4.172325134277344e-07
+          }
+        ],
+        "phase_numeric_tolerance": 0.001,
+        "phase_tolerance_scope": "Report only;not ranking or stopping",
+        "phase_tolerance_pass": true,
+        "whole_affine_phase_invariant_claim": false,
+        "coordinate_reconstruction_max_error": 1.7881393432617188e-07,
+        "sample_amplitude_max_error": 3.5762786865234375e-07,
+        "synchronizer": {
+          "relative_cfo_hz_mean": 13333.33203125,
+          "relative_cfo_hz_min": 0.0,
+          "relative_cfo_hz_max": 79999.9921875,
+          "coherence_mean": 1.0,
+          "fallback_fraction": 0.0,
+          "principal_branch_margin_hz_min": 545000.0,
+          "scope": "Last source batch only;relative CFO modulo1.25MHz;not TX oscillator measurement"
+        },
+        "records": [
+          {
+            "tx": "ideal",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              1.5280213356018066,
+              -1.4094244241714478,
+              1.1419906616210938,
+              1.058410406112671,
+              -2.638685703277588,
+              -0.4580151438713074
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 5.617178544525814e-07,
+            "source_classifier_logits": [
+              1.5280214548110962,
+              -1.4094233512878418,
+              1.1419893503189087,
+              1.0584099292755127,
+              -2.638686180114746,
+              -0.4580172002315521
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.330733984708786,
+            "source_classifier_logits": [
+              1.8677501678466797,
+              -0.6072474122047424,
+              0.01575484871864319,
+              0.8663206696510315,
+              -2.3600640296936035,
+              -2.142592430114746
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.07940126955509186,
+            "source_classifier_logits": [
+              1.7171114683151245,
+              -1.416446566581726,
+              0.7475705146789551,
+              1.178308367729187,
+              -2.8609070777893066,
+              -0.5043267011642456
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.024622661992907524,
+            "source_classifier_logits": [
+              1.5985678434371948,
+              -1.4988183975219727,
+              1.136766791343689,
+              1.08466637134552,
+              -2.5323379039764404,
+              -0.3112679123878479
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.004855782724916935,
+            "source_classifier_logits": [
+              1.5390033721923828,
+              -1.3999693393707275,
+              1.1475303173065186,
+              1.0364046096801758,
+              -2.646507501602173,
+              -0.46519455313682556
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              1.5390028953552246,
+              -1.399969220161438,
+              1.147530198097229,
+              1.0364048480987549,
+              -2.646507501602173,
+              -0.46519461274147034
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 9.905367051032954e-07,
+            "source_classifier_logits": [
+              1.5390102863311768,
+              -1.3999720811843872,
+              1.147528052330017,
+              1.036402940750122,
+              -2.6465067863464355,
+              -0.4651937782764435
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.3313736915588379,
+            "source_classifier_logits": [
+              1.8625836372375488,
+              -0.5976966619491577,
+              0.016344375908374786,
+              0.8585845232009888,
+              -2.3788676261901855,
+              -2.1475443840026855
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.08076216280460358,
+            "source_classifier_logits": [
+              1.728288173675537,
+              -1.4103363752365112,
+              0.7434030771255493,
+              1.166176438331604,
+              -2.884469509124756,
+              -0.5188128352165222
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.02322734333574772,
+            "source_classifier_logits": [
+              1.6134063005447388,
+              -1.4869543313980103,
+              1.137622356414795,
+              1.0676794052124023,
+              -2.544746160507202,
+              -0.32170569896698
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.004097105003893375,
+            "source_classifier_logits": [
+              1.5510344505310059,
+              -1.392122745513916,
+              1.1514201164245605,
+              1.0184738636016846,
+              -2.655271053314209,
+              -0.4710026681423187
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              1.5190458297729492,
+              -1.398229718208313,
+              1.144403100013733,
+              1.0654548406600952,
+              -2.637721061706543,
+              -0.47113466262817383
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 4.701294926690025e-07,
+            "source_classifier_logits": [
+              1.5190463066101074,
+              -1.398231029510498,
+              1.1444039344787598,
+              1.0654540061950684,
+              -2.6377198696136475,
+              -0.4711334705352783
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.33086520433425903,
+            "source_classifier_logits": [
+              1.8954042196273804,
+              -0.6048935651779175,
+              0.028006061911582947,
+              0.8599648475646973,
+              -2.361093044281006,
+              -2.1480040550231934
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.07908549159765244,
+            "source_classifier_logits": [
+              1.7112925052642822,
+              -1.409466028213501,
+              0.7513071298599243,
+              1.1803354024887085,
+              -2.8604369163513184,
+              -0.5131673216819763
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.026627209037542343,
+            "source_classifier_logits": [
+              1.5831316709518433,
+              -1.4890849590301514,
+              1.1474604606628418,
+              1.0897250175476074,
+              -2.530336856842041,
+              -0.31597161293029785
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.005956228822469711,
+            "source_classifier_logits": [
+              1.5298020839691162,
+              -1.3887745141983032,
+              1.1535508632659912,
+              1.040216088294983,
+              -2.6427595615386963,
+              -0.47512316703796387
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              1.5985678434371948,
+              -1.4988183975219727,
+              1.136766791343689,
+              1.08466637134552,
+              -2.5323379039764404,
+              -0.3112679123878479
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 8.235606401285622e-07,
+            "source_classifier_logits": [
+              1.5985667705535889,
+              -1.49881911277771,
+              1.1367683410644531,
+              1.0846669673919678,
+              -2.532336711883545,
+              -0.31126824021339417
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.33678680658340454,
+            "source_classifier_logits": [
+              1.8338301181793213,
+              -0.6835287809371948,
+              0.001993328332901001,
+              0.8944915533065796,
+              -2.2386136054992676,
+              -2.0476036071777344
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.09131809324026108,
+            "source_classifier_logits": [
+              1.8058274984359741,
+              -1.4497740268707275,
+              0.6775970458984375,
+              1.2311714887619019,
+              -2.8075356483459473,
+              -0.41657209396362305
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.019892819225788116,
+            "source_classifier_logits": [
+              1.6873598098754883,
+              -1.5738545656204224,
+              1.0834181308746338,
+              1.1449323892593384,
+              -2.4597349166870117,
+              -0.1993223875761032
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0038880035281181335,
+            "source_classifier_logits": [
+              1.6120651960372925,
+              -1.483968734741211,
+              1.1377208232879639,
+              1.0654268264770508,
+              -2.5478339195251465,
+              -0.3276267945766449
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              1.5101102590560913,
+              -1.3771278858184814,
+              1.1017217636108398,
+              1.1017416715621948,
+              -2.594998359680176,
+              -0.43511056900024414
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 7.596949558319466e-07,
+            "source_classifier_logits": [
+              1.5101042985916138,
+              -1.3771276473999023,
+              1.1017203330993652,
+              1.1017426252365112,
+              -2.5950002670288086,
+              -0.4351117014884949
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.32402756810188293,
+            "source_classifier_logits": [
+              1.8675447702407837,
+              -0.6696131229400635,
+              0.0104590505361557,
+              0.9214274287223816,
+              -2.3441686630249023,
+              -2.115353584289551
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.08065211027860641,
+            "source_classifier_logits": [
+              1.709526777267456,
+              -1.39169180393219,
+              0.7334952354431152,
+              1.2019836902618408,
+              -2.8695788383483887,
+              -0.5340760946273804
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0230318121612072,
+            "source_classifier_logits": [
+              1.5931081771850586,
+              -1.4578555822372437,
+              1.0928573608398438,
+              1.1353689432144165,
+              -2.4834582805633545,
+              -0.29339802265167236
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.004217824432998896,
+            "source_classifier_logits": [
+              1.5224038362503052,
+              -1.3678333759307861,
+              1.105116844177246,
+              1.0814939737319946,
+              -2.604008674621582,
+              -0.4477384686470032
+            ]
+          }
+        ],
+        "isolated_tx_changes": [
+          {
+            "tx": "tx_am_am",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.004855782724916935
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.0031830603256821632
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.024622661992907524
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.020009737461805344
+          }
+        ],
+        "confounds": {
+          "iq_tx_rx_waveform_max_error": 0.0,
+          "cubic_tx_rx_waveform_max_error": 3.3306690738754696e-16
+        },
+        "simulated_chain": "Existing100Msps steadyLSTF TX->channel->RX->12toneprojection->25Msps relativeCFO/RMS",
+        "exact_wisig_equalizer": false,
+        "identity_accuracy": "N/A:public TX settings are not actual source identity labels",
+        "claim": "Whole constantphase property and partial waveform frequency covariance when valid/no branch crossing;alpha is not TX/RX oscillator fraction;no arbitraryRX/LTI invariance"
+      }
+    },
+    {
+      "seed": 2026092703,
+      "variant": "fractional_learned",
+      "losses": [
+        {
+          "kind": "random",
+          "ce": 1.715591311454773
+        },
+        {
+          "kind": "weak",
+          "ce": 4.88566780090332
+        },
+        {
+          "kind": "constant",
+          "ce": 2.944443464279175
+        }
+      ],
+      "contract": {
+        "mode": "fractional_learned",
+        "input": "received_equalized1_unit_rms_IQ",
+        "sample_rate_hz": 25000000,
+        "estimator_window": [
+          80,
+          160
+        ],
+        "period_samples": 20,
+        "relative_frequency_alias_hz": 1250000,
+        "waveform_operator": "x[n]*exp(-j*alpha*omega(x)*n)",
+        "alpha": "sigmoid(classshared_scalar)",
+        "alpha_initial": 0.5,
+        "alpha_numeric_interval": [
+          0.0,
+          1.0
+        ],
+        "alpha_parameters": 1,
+        "alpha_packet_specific": false,
+        "alpha_identity_class_specific": false,
+        "alpha_RX_specific": false,
+        "all_identity_paths_after_fractional_correction": true,
+        "preserved_sample_amplitudes": true,
+        "waveform_reconstruction": "rotate(partial_aligned,+alpha*estimated_omega)",
+        "residual_frequency_transform": "additional_nu -> (1-alpha)*nu when estimator valid and principal branch not crossed",
+        "constant_phase_invariant_real_arithmetic": true,
+        "whole_affine_phase_invariant": false,
+        "principal_branch_crossing": "not covered by residual-frequency covariance equation",
+        "degenerate_behavior": "estimated omega zero before atan2;no frequency correction",
+        "identity_core": "equivariant_memory",
+        "embedding_dimension": 160,
+        "classifier_scale": 30.0,
+        "feature_conditioner": false,
+        "domain_backbone": false,
+        "arbitrary_channel_rx_invariant": false,
+        "hardware_parameter_estimation": false,
+        "interpretation": "Received frequency coordinate acts on the waveform before RF features;alpha is discrimination tradeoff,not identified TX/RX fraction"
+      },
+      "frozen_synthetic": {
+        "status": "FROZEN_SYNTHETIC_DIAGNOSTIC_COMPLETE",
+        "synthetic_only": true,
+        "training_augmentation": false,
+        "formal_data_access": false,
+        "target_access": false,
+        "model_updated": false,
+        "hardware_parameter_recovery": false,
+        "alignment_strength": 0.49989059567451477,
+        "phase_audit": [
+          {
+            "theta_radians": 0.37,
+            "received_cfo_hz": 0.0,
+            "whole_logit_max_abs_error": 5.841255187988281e-06,
+            "whole_unit_embedding_max_distance": 1.0752524985946366e-06,
+            "estimated_cfo_principal_branch_crossing_count": 0,
+            "valid_correlation_count": 30,
+            "covariance_eligible_count": 30,
+            "partial_waveform_covariance_max_error": 2.384185791015625e-07
+          },
+          {
+            "theta_radians": -1.2,
+            "received_cfo_hz": 80000.0,
+            "whole_logit_max_abs_error": 1.9112951755523682,
+            "whole_unit_embedding_max_distance": 0.337880939245224,
+            "estimated_cfo_principal_branch_crossing_count": 0,
+            "valid_correlation_count": 30,
+            "covariance_eligible_count": 30,
+            "partial_waveform_covariance_max_error": 1.0728836059570312e-06
+          },
+          {
+            "theta_radians": 2.9,
+            "received_cfo_hz": -80000.0,
+            "whole_logit_max_abs_error": 1.7359328269958496,
+            "whole_unit_embedding_max_distance": 0.44215860962867737,
+            "estimated_cfo_principal_branch_crossing_count": 0,
+            "valid_correlation_count": 30,
+            "covariance_eligible_count": 30,
+            "partial_waveform_covariance_max_error": 9.834766387939453e-07
+          }
+        ],
+        "phase_numeric_tolerance": 0.001,
+        "phase_tolerance_scope": "Report only;not ranking or stopping",
+        "phase_tolerance_pass": true,
+        "whole_affine_phase_invariant_claim": false,
+        "coordinate_reconstruction_max_error": 2.384185791015625e-07,
+        "sample_amplitude_max_error": 4.76837158203125e-07,
+        "synchronizer": {
+          "relative_cfo_hz_mean": 13333.33203125,
+          "relative_cfo_hz_min": 0.0,
+          "relative_cfo_hz_max": 79999.9921875,
+          "coherence_mean": 1.0,
+          "fallback_fraction": 0.0,
+          "principal_branch_margin_hz_min": 545000.0,
+          "scope": "Last source batch only;relative CFO modulo1.25MHz;not TX oscillator measurement"
+        },
+        "records": [
+          {
+            "tx": "ideal",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              1.5280213356018066,
+              -1.4094244241714478,
+              1.1419906616210938,
+              1.058410406112671,
+              -2.638685703277588,
+              -0.4580151438713074
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 5.617178544525814e-07,
+            "source_classifier_logits": [
+              1.5280214548110962,
+              -1.4094233512878418,
+              1.1419893503189087,
+              1.0584099292755127,
+              -2.638686180114746,
+              -0.4580172002315521
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.330623984336853,
+            "source_classifier_logits": [
+              1.8667778968811035,
+              -0.6069642305374146,
+              0.016009770333766937,
+              0.8660487532615662,
+              -2.361098527908325,
+              -2.1418747901916504
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.07940126955509186,
+            "source_classifier_logits": [
+              1.7171114683151245,
+              -1.416446566581726,
+              0.7475705146789551,
+              1.178308367729187,
+              -2.8609070777893066,
+              -0.5043267011642456
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.024622661992907524,
+            "source_classifier_logits": [
+              1.5985678434371948,
+              -1.4988183975219727,
+              1.136766791343689,
+              1.08466637134552,
+              -2.5323379039764404,
+              -0.3112679123878479
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.004855782724916935,
+            "source_classifier_logits": [
+              1.5390033721923828,
+              -1.3999693393707275,
+              1.1475303173065186,
+              1.0364046096801758,
+              -2.646507501602173,
+              -0.46519455313682556
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              1.5390028953552246,
+              -1.399969220161438,
+              1.147530198097229,
+              1.0364048480987549,
+              -2.646507501602173,
+              -0.46519461274147034
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 9.905367051032954e-07,
+            "source_classifier_logits": [
+              1.5390102863311768,
+              -1.3999720811843872,
+              1.147528052330017,
+              1.036402940750122,
+              -2.6465067863464355,
+              -0.4651937782764435
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.33127275109291077,
+            "source_classifier_logits": [
+              1.8618022203445435,
+              -0.597743034362793,
+              0.01630939543247223,
+              0.8582082986831665,
+              -2.379957437515259,
+              -2.147067070007324
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.08076216280460358,
+            "source_classifier_logits": [
+              1.728288173675537,
+              -1.4103363752365112,
+              0.7434030771255493,
+              1.166176438331604,
+              -2.884469509124756,
+              -0.5188128352165222
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.02322734333574772,
+            "source_classifier_logits": [
+              1.6134063005447388,
+              -1.4869543313980103,
+              1.137622356414795,
+              1.0676794052124023,
+              -2.544746160507202,
+              -0.32170569896698
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.004097105003893375,
+            "source_classifier_logits": [
+              1.5510344505310059,
+              -1.392122745513916,
+              1.1514201164245605,
+              1.0184738636016846,
+              -2.655271053314209,
+              -0.4710026681423187
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              1.5190458297729492,
+              -1.398229718208313,
+              1.144403100013733,
+              1.0654548406600952,
+              -2.637721061706543,
+              -0.47113466262817383
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 4.701294926690025e-07,
+            "source_classifier_logits": [
+              1.5190463066101074,
+              -1.398231029510498,
+              1.1444039344787598,
+              1.0654540061950684,
+              -2.6377198696136475,
+              -0.4711334705352783
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.33076727390289307,
+            "source_classifier_logits": [
+              1.8946733474731445,
+              -0.6049847602844238,
+              0.028161965310573578,
+              0.859708309173584,
+              -2.3621881008148193,
+              -2.147505521774292
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.07908549159765244,
+            "source_classifier_logits": [
+              1.7112925052642822,
+              -1.409466028213501,
+              0.7513071298599243,
+              1.1803354024887085,
+              -2.8604369163513184,
+              -0.5131673216819763
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.026627209037542343,
+            "source_classifier_logits": [
+              1.5831316709518433,
+              -1.4890849590301514,
+              1.1474604606628418,
+              1.0897250175476074,
+              -2.530336856842041,
+              -0.31597161293029785
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.005956228822469711,
+            "source_classifier_logits": [
+              1.5298020839691162,
+              -1.3887745141983032,
+              1.1535508632659912,
+              1.040216088294983,
+              -2.6427595615386963,
+              -0.47512316703796387
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              1.5985678434371948,
+              -1.4988183975219727,
+              1.136766791343689,
+              1.08466637134552,
+              -2.5323379039764404,
+              -0.3112679123878479
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 8.235606401285622e-07,
+            "source_classifier_logits": [
+              1.5985667705535889,
+              -1.49881911277771,
+              1.1367683410644531,
+              1.0846669673919678,
+              -2.532336711883545,
+              -0.31126824021339417
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.3367129862308502,
+            "source_classifier_logits": [
+              1.83328115940094,
+              -0.6840268969535828,
+              0.0017063319683074951,
+              0.8939310908317566,
+              -2.239070415496826,
+              -2.0472030639648438
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.09131809324026108,
+            "source_classifier_logits": [
+              1.8058274984359741,
+              -1.4497740268707275,
+              0.6775970458984375,
+              1.2311714887619019,
+              -2.8075356483459473,
+              -0.41657209396362305
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.019892819225788116,
+            "source_classifier_logits": [
+              1.6873598098754883,
+              -1.5738545656204224,
+              1.0834181308746338,
+              1.1449323892593384,
+              -2.4597349166870117,
+              -0.1993223875761032
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0038880035281181335,
+            "source_classifier_logits": [
+              1.6120651960372925,
+              -1.483968734741211,
+              1.1377208232879639,
+              1.0654268264770508,
+              -2.5478339195251465,
+              -0.3276267945766449
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              1.5101102590560913,
+              -1.3771278858184814,
+              1.1017217636108398,
+              1.1017416715621948,
+              -2.594998359680176,
+              -0.43511056900024414
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 7.596949558319466e-07,
+            "source_classifier_logits": [
+              1.5101042985916138,
+              -1.3771276473999023,
+              1.1017203330993652,
+              1.1017426252365112,
+              -2.5950002670288086,
+              -0.4351117014884949
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.32390880584716797,
+            "source_classifier_logits": [
+              1.8664135932922363,
+              -0.6693971157073975,
+              0.010530240833759308,
+              0.9210949540138245,
+              -2.345102310180664,
+              -2.1146976947784424
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.08065211027860641,
+            "source_classifier_logits": [
+              1.709526777267456,
+              -1.39169180393219,
+              0.7334952354431152,
+              1.2019836902618408,
+              -2.8695788383483887,
+              -0.5340760946273804
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0230318121612072,
+            "source_classifier_logits": [
+              1.5931081771850586,
+              -1.4578555822372437,
+              1.0928573608398438,
+              1.1353689432144165,
+              -2.4834582805633545,
+              -0.29339802265167236
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.004217824432998896,
+            "source_classifier_logits": [
+              1.5224038362503052,
+              -1.3678333759307861,
+              1.105116844177246,
+              1.0814939737319946,
+              -2.604008674621582,
+              -0.4477384686470032
+            ]
+          }
+        ],
+        "isolated_tx_changes": [
+          {
+            "tx": "tx_am_am",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.004855782724916935
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.0031830603256821632
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.024622661992907524
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.020009737461805344
+          }
+        ],
+        "confounds": {
+          "iq_tx_rx_waveform_max_error": 0.0,
+          "cubic_tx_rx_waveform_max_error": 3.3306690738754696e-16
+        },
+        "simulated_chain": "Existing100Msps steadyLSTF TX->channel->RX->12toneprojection->25Msps relativeCFO/RMS",
+        "exact_wisig_equalizer": false,
+        "identity_accuracy": "N/A:public TX settings are not actual source identity labels",
+        "claim": "Whole constantphase property and partial waveform frequency covariance when valid/no branch crossing;alpha is not TX/RX oscillator fraction;no arbitraryRX/LTI invariance"
+      }
+    },
+    {
+      "seed": 2026092704,
+      "variant": "fractional_half",
+      "losses": [
+        {
+          "kind": "random",
+          "ce": 3.631127119064331
+        },
+        {
+          "kind": "weak",
+          "ce": 3.9498910903930664
+        },
+        {
+          "kind": "constant",
+          "ce": 1.5536305904388428
+        }
+      ],
+      "contract": {
+        "mode": "fractional_half",
+        "input": "received_equalized1_unit_rms_IQ",
+        "sample_rate_hz": 25000000,
+        "estimator_window": [
+          80,
+          160
+        ],
+        "period_samples": 20,
+        "relative_frequency_alias_hz": 1250000,
+        "waveform_operator": "x[n]*exp(-j*alpha*omega(x)*n)",
+        "alpha": "0.5",
+        "alpha_initial": 0.5,
+        "alpha_numeric_interval": [
+          0.0,
+          1.0
+        ],
+        "alpha_parameters": 0,
+        "alpha_packet_specific": false,
+        "alpha_identity_class_specific": false,
+        "alpha_RX_specific": false,
+        "all_identity_paths_after_fractional_correction": true,
+        "preserved_sample_amplitudes": true,
+        "waveform_reconstruction": "rotate(partial_aligned,+alpha*estimated_omega)",
+        "residual_frequency_transform": "additional_nu -> (1-alpha)*nu when estimator valid and principal branch not crossed",
+        "constant_phase_invariant_real_arithmetic": true,
+        "whole_affine_phase_invariant": false,
+        "principal_branch_crossing": "not covered by residual-frequency covariance equation",
+        "degenerate_behavior": "estimated omega zero before atan2;no frequency correction",
+        "identity_core": "equivariant_memory",
+        "embedding_dimension": 160,
+        "classifier_scale": 30.0,
+        "feature_conditioner": false,
+        "domain_backbone": false,
+        "arbitrary_channel_rx_invariant": false,
+        "hardware_parameter_estimation": false,
+        "interpretation": "Received frequency coordinate acts on the waveform before RF features;alpha is discrimination tradeoff,not identified TX/RX fraction"
+      },
+      "frozen_synthetic": {
+        "status": "FROZEN_SYNTHETIC_DIAGNOSTIC_COMPLETE",
+        "synthetic_only": true,
+        "training_augmentation": false,
+        "formal_data_access": false,
+        "target_access": false,
+        "model_updated": false,
+        "hardware_parameter_recovery": false,
+        "alignment_strength": 0.5,
+        "phase_audit": [
+          {
+            "theta_radians": 0.37,
+            "received_cfo_hz": 0.0,
+            "whole_logit_max_abs_error": 4.5299530029296875e-06,
+            "whole_unit_embedding_max_distance": 1.16357580282056e-06,
+            "estimated_cfo_principal_branch_crossing_count": 0,
+            "valid_correlation_count": 30,
+            "covariance_eligible_count": 30,
+            "partial_waveform_covariance_max_error": 2.384185791015625e-07
+          },
+          {
+            "theta_radians": -1.2,
+            "received_cfo_hz": 80000.0,
+            "whole_logit_max_abs_error": 1.3231587409973145,
+            "whole_unit_embedding_max_distance": 0.2305334061384201,
+            "estimated_cfo_principal_branch_crossing_count": 0,
+            "valid_correlation_count": 30,
+            "covariance_eligible_count": 30,
+            "partial_waveform_covariance_max_error": 5.960464477539062e-07
+          },
+          {
+            "theta_radians": 2.9,
+            "received_cfo_hz": -80000.0,
+            "whole_logit_max_abs_error": 1.0278379917144775,
+            "whole_unit_embedding_max_distance": 0.3391454815864563,
+            "estimated_cfo_principal_branch_crossing_count": 0,
+            "valid_correlation_count": 30,
+            "covariance_eligible_count": 30,
+            "partial_waveform_covariance_max_error": 4.172325134277344e-07
+          }
+        ],
+        "phase_numeric_tolerance": 0.001,
+        "phase_tolerance_scope": "Report only;not ranking or stopping",
+        "phase_tolerance_pass": true,
+        "whole_affine_phase_invariant_claim": false,
+        "coordinate_reconstruction_max_error": 1.7881393432617188e-07,
+        "sample_amplitude_max_error": 3.5762786865234375e-07,
+        "synchronizer": {
+          "relative_cfo_hz_mean": 13333.33203125,
+          "relative_cfo_hz_min": 0.0,
+          "relative_cfo_hz_max": 79999.9921875,
+          "coherence_mean": 1.0,
+          "fallback_fraction": 0.0,
+          "principal_branch_margin_hz_min": 545000.0,
+          "scope": "Last source batch only;relative CFO modulo1.25MHz;not TX oscillator measurement"
+        },
+        "records": [
+          {
+            "tx": "ideal",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              -0.9320729374885559,
+              3.4108498096466064,
+              0.832613468170166,
+              1.8988778591156006,
+              -6.571858882904053,
+              -1.3780245780944824
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 6.404748660315818e-07,
+            "source_classifier_logits": [
+              -0.9320725202560425,
+              3.4108521938323975,
+              0.8326117992401123,
+              1.898879885673523,
+              -6.571859359741211,
+              -1.3780262470245361
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.21821795403957367,
+            "source_classifier_logits": [
+              -1.469860315322876,
+              3.473497152328491,
+              0.7247211337089539,
+              2.4094762802124023,
+              -7.423923492431641,
+              -0.9118663668632507
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.08160150796175003,
+            "source_classifier_logits": [
+              -0.7442132830619812,
+              3.278514862060547,
+              0.9644784331321716,
+              2.1549484729766846,
+              -6.3181376457214355,
+              -1.3546297550201416
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.03151530772447586,
+            "source_classifier_logits": [
+              -0.9132822155952454,
+              3.3771207332611084,
+              0.7795451879501343,
+              1.9654722213745117,
+              -6.485806465148926,
+              -1.3563951253890991
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.009504469111561775,
+            "source_classifier_logits": [
+              -0.9170917272567749,
+              3.371035575866699,
+              0.8402209877967834,
+              1.9148913621902466,
+              -6.537566184997559,
+              -1.3554067611694336
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              -0.9170914888381958,
+              3.371035575866699,
+              0.8402209877967834,
+              1.9148911237716675,
+              -6.537566184997559,
+              -1.3554067611694336
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 6.888774350954918e-07,
+            "source_classifier_logits": [
+              -0.9170924425125122,
+              3.37103533744812,
+              0.840218186378479,
+              1.9148911237716675,
+              -6.537567138671875,
+              -1.3554078340530396
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.21726450324058533,
+            "source_classifier_logits": [
+              -1.4912002086639404,
+              3.4759232997894287,
+              0.728401780128479,
+              2.4068264961242676,
+              -7.434993267059326,
+              -0.9043363928794861
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.07657177746295929,
+            "source_classifier_logits": [
+              -0.7352466583251953,
+              3.263089656829834,
+              0.9682900905609131,
+              2.1569225788116455,
+              -6.302412033081055,
+              -1.3604626655578613
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.02663285844027996,
+            "source_classifier_logits": [
+              -0.9030813574790955,
+              3.357255697250366,
+              0.7785493731498718,
+              1.9742274284362793,
+              -6.4619669914245605,
+              -1.3528939485549927
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.007057646289467812,
+            "source_classifier_logits": [
+              -0.9044100046157837,
+              3.3387699127197266,
+              0.8450243473052979,
+              1.9283685684204102,
+              -6.511189937591553,
+              -1.3423622846603394
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              -0.9378581047058105,
+              3.4159059524536133,
+              0.8290401697158813,
+              1.89876389503479,
+              -6.580343723297119,
+              -1.384519338607788
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 5.779799039373756e-07,
+            "source_classifier_logits": [
+              -0.9378578662872314,
+              3.415904998779297,
+              0.8290407657623291,
+              1.8987621068954468,
+              -6.580346584320068,
+              -1.3845182657241821
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.22157344222068787,
+            "source_classifier_logits": [
+              -1.4807662963867188,
+              3.4653420448303223,
+              0.7161517143249512,
+              2.4054250717163086,
+              -7.428830146789551,
+              -0.9023141860961914
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.08573851734399796,
+            "source_classifier_logits": [
+              -0.741441011428833,
+              3.259007453918457,
+              0.97215336561203,
+              2.16990327835083,
+              -6.314223289489746,
+              -1.3421173095703125
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.035383060574531555,
+            "source_classifier_logits": [
+              -0.9141198396682739,
+              3.3556268215179443,
+              0.7844977378845215,
+              1.9792346954345703,
+              -6.488039970397949,
+              -1.3509533405303955
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.011875062249600887,
+            "source_classifier_logits": [
+              -0.9207672476768494,
+              3.3665411472320557,
+              0.8407992124557495,
+              1.9207689762115479,
+              -6.5442047119140625,
+              -1.353049635887146
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              -0.9132822155952454,
+              3.3771207332611084,
+              0.7795451879501343,
+              1.9654722213745117,
+              -6.485806465148926,
+              -1.3563951253890991
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 6.659980726908543e-07,
+            "source_classifier_logits": [
+              -0.9132806658744812,
+              3.377122402191162,
+              0.7795469760894775,
+              1.9654713869094849,
+              -6.485805034637451,
+              -1.3563944101333618
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.20297172665596008,
+            "source_classifier_logits": [
+              -1.4305461645126343,
+              3.492367744445801,
+              0.7297373414039612,
+              2.3923659324645996,
+              -7.397833824157715,
+              -0.9322227239608765
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.06791038066148758,
+            "source_classifier_logits": [
+              -0.7799861431121826,
+              3.295525074005127,
+              0.8730485439300537,
+              2.1638729572296143,
+              -6.320189952850342,
+              -1.3605618476867676
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.01918577402830124,
+            "source_classifier_logits": [
+              -0.9114134907722473,
+              3.418998956680298,
+              0.702752411365509,
+              1.9813026189804077,
+              -6.423462390899658,
+              -1.3953454494476318
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.004582258872687817,
+            "source_classifier_logits": [
+              -0.9037537574768066,
+              3.358098268508911,
+              0.7806591987609863,
+              1.973548412322998,
+              -6.464671611785889,
+              -1.3508777618408203
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              -0.9728990197181702,
+              3.4172651767730713,
+              0.84298175573349,
+              1.9273200035095215,
+              -6.5628790855407715,
+              -1.3846814632415771
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 6.786809763070778e-07,
+            "source_classifier_logits": [
+              -0.9729002714157104,
+              3.4172677993774414,
+              0.8429816365242004,
+              1.9273200035095215,
+              -6.562878131866455,
+              -1.384682536125183
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.21447566151618958,
+            "source_classifier_logits": [
+              -1.4642444849014282,
+              3.476172924041748,
+              0.7529456615447998,
+              2.41507625579834,
+              -7.441871166229248,
+              -0.9090108275413513
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.092422254383564,
+            "source_classifier_logits": [
+              -0.7830365896224976,
+              3.186321258544922,
+              0.9865496754646301,
+              2.2385897636413574,
+              -6.320094108581543,
+              -1.3248947858810425
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.030363257974386215,
+            "source_classifier_logits": [
+              -0.9562233686447144,
+              3.36102294921875,
+              0.7923818826675415,
+              2.0094099044799805,
+              -6.4848127365112305,
+              -1.3664017915725708
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.006208142731338739,
+            "source_classifier_logits": [
+              -0.9580555558204651,
+              3.388810634613037,
+              0.847850501537323,
+              1.939399003982544,
+              -6.545248985290527,
+              -1.3721195459365845
+            ]
+          }
+        ],
+        "isolated_tx_changes": [
+          {
+            "tx": "tx_am_am",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.009504469111561775
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.0030349385924637318
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.03151530772447586
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.011844406835734844
+          }
+        ],
+        "confounds": {
+          "iq_tx_rx_waveform_max_error": 0.0,
+          "cubic_tx_rx_waveform_max_error": 3.3306690738754696e-16
+        },
+        "simulated_chain": "Existing100Msps steadyLSTF TX->channel->RX->12toneprojection->25Msps relativeCFO/RMS",
+        "exact_wisig_equalizer": false,
+        "identity_accuracy": "N/A:public TX settings are not actual source identity labels",
+        "claim": "Whole constantphase property and partial waveform frequency covariance when valid/no branch crossing;alpha is not TX/RX oscillator fraction;no arbitraryRX/LTI invariance"
+      }
+    },
+    {
+      "seed": 2026092704,
+      "variant": "fractional_learned",
+      "losses": [
+        {
+          "kind": "random",
+          "ce": 3.631127119064331
+        },
+        {
+          "kind": "weak",
+          "ce": 3.9498910903930664
+        },
+        {
+          "kind": "constant",
+          "ce": 1.5536305904388428
+        }
+      ],
+      "contract": {
+        "mode": "fractional_learned",
+        "input": "received_equalized1_unit_rms_IQ",
+        "sample_rate_hz": 25000000,
+        "estimator_window": [
+          80,
+          160
+        ],
+        "period_samples": 20,
+        "relative_frequency_alias_hz": 1250000,
+        "waveform_operator": "x[n]*exp(-j*alpha*omega(x)*n)",
+        "alpha": "sigmoid(classshared_scalar)",
+        "alpha_initial": 0.5,
+        "alpha_numeric_interval": [
+          0.0,
+          1.0
+        ],
+        "alpha_parameters": 1,
+        "alpha_packet_specific": false,
+        "alpha_identity_class_specific": false,
+        "alpha_RX_specific": false,
+        "all_identity_paths_after_fractional_correction": true,
+        "preserved_sample_amplitudes": true,
+        "waveform_reconstruction": "rotate(partial_aligned,+alpha*estimated_omega)",
+        "residual_frequency_transform": "additional_nu -> (1-alpha)*nu when estimator valid and principal branch not crossed",
+        "constant_phase_invariant_real_arithmetic": true,
+        "whole_affine_phase_invariant": false,
+        "principal_branch_crossing": "not covered by residual-frequency covariance equation",
+        "degenerate_behavior": "estimated omega zero before atan2;no frequency correction",
+        "identity_core": "equivariant_memory",
+        "embedding_dimension": 160,
+        "classifier_scale": 30.0,
+        "feature_conditioner": false,
+        "domain_backbone": false,
+        "arbitrary_channel_rx_invariant": false,
+        "hardware_parameter_estimation": false,
+        "interpretation": "Received frequency coordinate acts on the waveform before RF features;alpha is discrimination tradeoff,not identified TX/RX fraction"
+      },
+      "frozen_synthetic": {
+        "status": "FROZEN_SYNTHETIC_DIAGNOSTIC_COMPLETE",
+        "synthetic_only": true,
+        "training_augmentation": false,
+        "formal_data_access": false,
+        "target_access": false,
+        "model_updated": false,
+        "hardware_parameter_recovery": false,
+        "alignment_strength": 0.5001093745231628,
+        "phase_audit": [
+          {
+            "theta_radians": 0.37,
+            "received_cfo_hz": 0.0,
+            "whole_logit_max_abs_error": 4.5299530029296875e-06,
+            "whole_unit_embedding_max_distance": 1.030665202961245e-06,
+            "estimated_cfo_principal_branch_crossing_count": 0,
+            "valid_correlation_count": 30,
+            "covariance_eligible_count": 30,
+            "partial_waveform_covariance_max_error": 2.384185791015625e-07
+          },
+          {
+            "theta_radians": -1.2,
+            "received_cfo_hz": 80000.0,
+            "whole_logit_max_abs_error": 1.3193631172180176,
+            "whole_unit_embedding_max_distance": 0.22977498173713684,
+            "estimated_cfo_principal_branch_crossing_count": 0,
+            "valid_correlation_count": 30,
+            "covariance_eligible_count": 30,
+            "partial_waveform_covariance_max_error": 8.344650268554688e-07
+          },
+          {
+            "theta_radians": 2.9,
+            "received_cfo_hz": -80000.0,
+            "whole_logit_max_abs_error": 1.0285630226135254,
+            "whole_unit_embedding_max_distance": 0.33922079205513,
+            "estimated_cfo_principal_branch_crossing_count": 0,
+            "valid_correlation_count": 30,
+            "covariance_eligible_count": 30,
+            "partial_waveform_covariance_max_error": 6.556510925292969e-07
+          }
+        ],
+        "phase_numeric_tolerance": 0.001,
+        "phase_tolerance_scope": "Report only;not ranking or stopping",
+        "phase_tolerance_pass": true,
+        "whole_affine_phase_invariant_claim": false,
+        "coordinate_reconstruction_max_error": 1.1920928955078125e-07,
+        "sample_amplitude_max_error": 3.5762786865234375e-07,
+        "synchronizer": {
+          "relative_cfo_hz_mean": 13333.33203125,
+          "relative_cfo_hz_min": 0.0,
+          "relative_cfo_hz_max": 79999.9921875,
+          "coherence_mean": 1.0,
+          "fallback_fraction": 0.0,
+          "principal_branch_margin_hz_min": 545000.0,
+          "scope": "Last source batch only;relative CFO modulo1.25MHz;not TX oscillator measurement"
+        },
+        "records": [
+          {
+            "tx": "ideal",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              -0.9320729374885559,
+              3.4108498096466064,
+              0.832613468170166,
+              1.8988778591156006,
+              -6.571858882904053,
+              -1.3780245780944824
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 6.404748660315818e-07,
+            "source_classifier_logits": [
+              -0.9320725202560425,
+              3.4108521938323975,
+              0.8326117992401123,
+              1.898879885673523,
+              -6.571859359741211,
+              -1.3780262470245361
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.21819442510604858,
+            "source_classifier_logits": [
+              -1.4670820236206055,
+              3.470966339111328,
+              0.7246218919754028,
+              2.410205364227295,
+              -7.4221649169921875,
+              -0.9136863350868225
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.08160150796175003,
+            "source_classifier_logits": [
+              -0.7442132830619812,
+              3.278514862060547,
+              0.9644784331321716,
+              2.1549484729766846,
+              -6.3181376457214355,
+              -1.3546297550201416
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.03151530772447586,
+            "source_classifier_logits": [
+              -0.9132822155952454,
+              3.3771207332611084,
+              0.7795451879501343,
+              1.9654722213745117,
+              -6.485806465148926,
+              -1.3563951253890991
+            ]
+          },
+          {
+            "tx": "ideal",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.009504469111561775,
+            "source_classifier_logits": [
+              -0.9170917272567749,
+              3.371035575866699,
+              0.8402209877967834,
+              1.9148913621902466,
+              -6.537566184997559,
+              -1.3554067611694336
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              -0.9170914888381958,
+              3.371035575866699,
+              0.8402209877967834,
+              1.9148911237716675,
+              -6.537566184997559,
+              -1.3554067611694336
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 6.888774350954918e-07,
+            "source_classifier_logits": [
+              -0.9170924425125122,
+              3.37103533744812,
+              0.840218186378479,
+              1.9148911237716675,
+              -6.537567138671875,
+              -1.3554078340530396
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.21720968186855316,
+            "source_classifier_logits": [
+              -1.4874343872070312,
+              3.473351240158081,
+              0.7278127074241638,
+              2.4081954956054688,
+              -7.433491230010986,
+              -0.90645432472229
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.07657177746295929,
+            "source_classifier_logits": [
+              -0.7352466583251953,
+              3.263089656829834,
+              0.9682900905609131,
+              2.1569225788116455,
+              -6.302412033081055,
+              -1.3604626655578613
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.02663285844027996,
+            "source_classifier_logits": [
+              -0.9030813574790955,
+              3.357255697250366,
+              0.7785493731498718,
+              1.9742274284362793,
+              -6.4619669914245605,
+              -1.3528939485549927
+            ]
+          },
+          {
+            "tx": "tx_am_am",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.007057646289467812,
+            "source_classifier_logits": [
+              -0.9044100046157837,
+              3.3387699127197266,
+              0.8450243473052979,
+              1.9283685684204102,
+              -6.511189937591553,
+              -1.3423622846603394
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              -0.9378581047058105,
+              3.4159059524536133,
+              0.8290401697158813,
+              1.89876389503479,
+              -6.580343723297119,
+              -1.384519338607788
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 5.779799039373756e-07,
+            "source_classifier_logits": [
+              -0.9378578662872314,
+              3.415904998779297,
+              0.8290407657623291,
+              1.8987621068954468,
+              -6.580346584320068,
+              -1.3845182657241821
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.22155149281024933,
+            "source_classifier_logits": [
+              -1.4769465923309326,
+              3.462341070175171,
+              0.7153491973876953,
+              2.4068942070007324,
+              -7.4274821281433105,
+              -0.9043962955474854
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.08573851734399796,
+            "source_classifier_logits": [
+              -0.741441011428833,
+              3.259007453918457,
+              0.97215336561203,
+              2.16990327835083,
+              -6.314223289489746,
+              -1.3421173095703125
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.035383060574531555,
+            "source_classifier_logits": [
+              -0.9141198396682739,
+              3.3556268215179443,
+              0.7844977378845215,
+              1.9792346954345703,
+              -6.488039970397949,
+              -1.3509533405303955
+            ]
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.011875062249600887,
+            "source_classifier_logits": [
+              -0.9207672476768494,
+              3.3665411472320557,
+              0.8407992124557495,
+              1.9207689762115479,
+              -6.5442047119140625,
+              -1.353049635887146
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              -0.9132822155952454,
+              3.3771207332611084,
+              0.7795451879501343,
+              1.9654722213745117,
+              -6.485806465148926,
+              -1.3563951253890991
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 6.659980726908543e-07,
+            "source_classifier_logits": [
+              -0.9132806658744812,
+              3.377122402191162,
+              0.7795469760894775,
+              1.9654713869094849,
+              -6.485805034637451,
+              -1.3563944101333618
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.2028484344482422,
+            "source_classifier_logits": [
+              -1.4278355836868286,
+              3.4903926849365234,
+              0.7295821905136108,
+              2.3929059505462646,
+              -7.394967555999756,
+              -0.932192862033844
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.06791038066148758,
+            "source_classifier_logits": [
+              -0.7799861431121826,
+              3.295525074005127,
+              0.8730485439300537,
+              2.1638729572296143,
+              -6.320189952850342,
+              -1.3605618476867676
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.01918577402830124,
+            "source_classifier_logits": [
+              -0.9114134907722473,
+              3.418998956680298,
+              0.702752411365509,
+              1.9813026189804077,
+              -6.423462390899658,
+              -1.3953454494476318
+            ]
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.004582258872687817,
+            "source_classifier_logits": [
+              -0.9037537574768066,
+              3.358098268508911,
+              0.7806591987609863,
+              1.973548412322998,
+              -6.464671611785889,
+              -1.3508777618408203
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "identity",
+            "unit_embedding_distance_same_tx_identity_rx": 0.0,
+            "source_classifier_logits": [
+              -0.9728990197181702,
+              3.4172651767730713,
+              0.84298175573349,
+              1.9273200035095215,
+              -6.5628790855407715,
+              -1.3846814632415771
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "flat_phase_gain",
+            "unit_embedding_distance_same_tx_identity_rx": 6.786809763070778e-07,
+            "source_classifier_logits": [
+              -0.9729002714157104,
+              3.4172677993774414,
+              0.8429816365242004,
+              1.9273200035095215,
+              -6.562878131866455,
+              -1.384682536125183
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "relative_cfo",
+            "unit_embedding_distance_same_tx_identity_rx": 0.21446357667446136,
+            "source_classifier_logits": [
+              -1.4603371620178223,
+              3.4737601280212402,
+              0.752362847328186,
+              2.4163904190063477,
+              -7.440325736999512,
+              -0.9112890362739563
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "lti_channel",
+            "unit_embedding_distance_same_tx_identity_rx": 0.092422254383564,
+            "source_classifier_logits": [
+              -0.7830365896224976,
+              3.186321258544922,
+              0.9865496754646301,
+              2.2385897636413574,
+              -6.320094108581543,
+              -1.3248947858810425
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "rx_iq_image",
+            "unit_embedding_distance_same_tx_identity_rx": 0.030363257974386215,
+            "source_classifier_logits": [
+              -0.9562233686447144,
+              3.36102294921875,
+              0.7923818826675415,
+              2.0094099044799805,
+              -6.4848127365112305,
+              -1.3664017915725708
+            ]
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "rx_cubic",
+            "unit_embedding_distance_same_tx_identity_rx": 0.006208142731338739,
+            "source_classifier_logits": [
+              -0.9580555558204651,
+              3.388810634613037,
+              0.847850501537323,
+              1.939399003982544,
+              -6.545248985290527,
+              -1.3721195459365845
+            ]
+          }
+        ],
+        "isolated_tx_changes": [
+          {
+            "tx": "tx_am_am",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.009504469111561775
+          },
+          {
+            "tx": "tx_first_order_am_pm",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.0030349385924637318
+          },
+          {
+            "tx": "tx_iq_image",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.03151530772447586
+          },
+          {
+            "tx": "tx_cubic_memory",
+            "rx": "identity",
+            "unit_embedding_distance_to_ideal_tx": 0.011844406835734844
+          }
+        ],
+        "confounds": {
+          "iq_tx_rx_waveform_max_error": 0.0,
+          "cubic_tx_rx_waveform_max_error": 3.3306690738754696e-16
+        },
+        "simulated_chain": "Existing100Msps steadyLSTF TX->channel->RX->12toneprojection->25Msps relativeCFO/RMS",
+        "exact_wisig_equalizer": false,
+        "identity_accuracy": "N/A:public TX settings are not actual source identity labels",
+        "claim": "Whole constantphase property and partial waveform frequency covariance when valid/no branch crossing;alpha is not TX/RX oscillator fraction;no arbitraryRX/LTI invariance"
+      }
+    }
+  ]
+}

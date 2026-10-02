@@ -1,6 +1,6 @@
 # 实验总索引
 
-更新：2026-10-02T03:01:59+00:00
+更新：2026-10-02T03:30:08+00:00
 
 先按方法/问题检索，再用run ID读取精确配置与证据。历史组数量不等于独立实验数量。
 
@@ -12,7 +12,7 @@
 
 |记录类型|数量|
 |---|---:|
-|managed_run|56|
+|managed_run|57|
 
 历史状态统一为HISTORICAL_UNVERIFIED；RUNNING等原文声明只供查证，不能证明此刻仍在运行。
 
@@ -20,17 +20,17 @@
 
 |路径标签（定位提示）|证据组数|
 |---|---:|
-|[cvs](by_method/cvs.md)|39|
-|[clean_only](by_method/clean_only.md)|29|
-|[ce_only](by_method/ce_only.md)|29|
-|[no_augmentation](by_method/no_augmentation.md)|22|
-|[performance_priority](by_method/performance_priority.md)|22|
-|[source_selection](by_method/source_selection.md)|17|
+|[cvs](by_method/cvs.md)|40|
+|[clean_only](by_method/clean_only.md)|30|
+|[ce_only](by_method/ce_only.md)|30|
+|[no_augmentation](by_method/no_augmentation.md)|23|
+|[performance_priority](by_method/performance_priority.md)|23|
+|[source_selection](by_method/source_selection.md)|18|
 |[daot](by_method/daot.md)|11|
 |[source_selected](by_method/source_selected.md)|11|
+|[rff_physics](by_method/rff_physics.md)|11|
 |[rc4](by_method/rc4.md)|10|
 |[frozen_prediction_reuse](by_method/frozen_prediction_reuse.md)|10|
-|[rff_physics](by_method/rff_physics.md)|10|
 |[source_only](by_method/source_only.md)|8|
 |[practical](by_method/practical.md)|7|
 |[residual](by_method/residual.md)|7|
@@ -43,8 +43,8 @@
 |[zf](by_method/zf.md)|5|
 |[mmse](by_method/mmse.md)|5|
 |[truth_last](by_method/truth_last.md)|5|
+|[relative_cfo](by_method/relative_cfo.md)|5|
 |[final200](by_method/final200.md)|4|
-|[relative_cfo](by_method/relative_cfo.md)|4|
 |[d92](by_method/d92.md)|3|
 |[diagnostic](by_method/diagnostic.md)|3|
 |[no_target_access](by_method/no_target_access.md)|3|
@@ -98,6 +98,7 @@
 |[synthetic_only](by_method/synthetic_only.md)|1|
 |[full_fp32](by_method/full_fp32.md)|1|
 |[numerical_physics_consistency](by_method/numerical_physics_consistency.md)|1|
+|[fractional_synchronization](by_method/fractional_synchronization.md)|1|
 |[whole_identity_gauge](by_method/whole_identity_gauge.md)|1|
 |[whole_identity_observables](by_method/whole_identity_observables.md)|1|
 |[known_excitation](by_method/known_excitation.md)|1|
@@ -153,6 +154,7 @@
 |CVS 整网复相位约束：完整 FP32 独立 clean 报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-equivariant-fp32-clean-manysig-m24-r01/report.md)|
 |CVS 整网复相位约束：完整 FP32 源实验报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/report.md)|
 |CVS 全路径复相位等变记忆网络：完整源实验报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-equivariant-identity-manysig-m4-r01/report.md)|
+|CVS 波形层分数频偏校正：固定半校正与一标量学习×四seed纯CE|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-fractional-identity-manysig-m8-r01/report.md)|
 |完整 IQ 相位规范化 CVS：完整源实验报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-gauge-identity-manysig-m8-r01/report.md)|
 |CVS性能优先继续优化：observable_phase clean测试报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-observable-clean-manysig-m24-r01/report.md)|
 |CVS整体物理观测身份网络：源训练预登记|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-observable-identity-manysig-m8-r01/report.md)|
