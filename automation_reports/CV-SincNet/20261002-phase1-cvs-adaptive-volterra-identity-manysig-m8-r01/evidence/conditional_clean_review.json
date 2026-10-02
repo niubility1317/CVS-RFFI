@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "reviewer": "/root/review_identity_ce",
+  "scope": "One actual new adaptive conditional clean P0/P1 path",
+  "blockers": [],
+  "changes": false,
+  "formal_data_access": false,
+  "checkpoint_access": false,
+  "target_score_access": false,
+  "remote_action": false,
+  "findings": "12 full source records and exact fixed ranking; selected-only query; strict 2-gate checkpoint/full physical roles/scratch/budget/FP32/202555;4 exclusive new plus28 immutable reused predictions; all32 fixed before independent truth-last scoring;256CM analysis and +2 parameter accounting;publication dependency closure",
+  "static_compile": "PASS"
+}

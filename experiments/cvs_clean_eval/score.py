@@ -15,6 +15,7 @@ REUSED_RESIDUAL_RUN='20261001-phase1-cvs-selected-clean-manysig-m20-r01'
 REUSED_ENERGY_RUN='20261002-phase1-cvs-energy-clean-manysig-m24-r01'
 REUSED_COUPLED_RUN='20261002-phase1-cvs-coupled-clean-manysig-m28-r01'
 CANDIDATES.update({'crossphase_raw','crossphase_half','coupled_lag1','coupled_lag4','volterra_lag1','volterra_lag4'})
+CANDIDATES.update({'adaptive_volterra_lag1','adaptive_volterra_lag4'})
 
 
 def read(path):return json.loads(Path(path).read_text(encoding='utf-8'))
@@ -40,8 +41,9 @@ def validate_matrix(spec):
         if selection['status']!='SOURCE_SELECTION_FROZEN' or selection['selected_variant'] not in CANDIDATES:
             raise ValueError('No source-only frozen selection')
         variants=(*BASELINES,'residual_fusion',selection['selected_variant']) if selection.get('scope') in ('balanced_source','interaction_source','attentive_source','stability_source','coherence_source','simplex_source','rf_operator_source','observable_source','gauge_source','reference_source','equivariant_source','synchronized_source','coordinate_source','additive_source','fractional_source','energy_source') else (*BASELINES,selection['selected_variant'])
-    if selection.get('scope')=='volterra_source':
-        if selection['selected_variant'] not in {'volterra_lag1','volterra_lag4'} or selection.get('new_candidate_selected') is not True:
+    if selection.get('scope') in ('volterra_source','adaptive_volterra_source'):
+        selected_family={'adaptive_volterra_lag1','adaptive_volterra_lag4'} if selection['scope']=='adaptive_volterra_source' else {'volterra_lag1','volterra_lag4'}
+        if selection['selected_variant'] not in selected_family or selection.get('new_candidate_selected') is not True:
             raise ValueError('Only selected new Volterra candidate can be scored')
         variants=(*BASELINES,'residual_fusion','energy_equivariant','coupled_lag4',selection['selected_variant'])
     if selection.get('scope')=='coupled_source':
@@ -135,7 +137,7 @@ def score(spec):
     lookup={(r['method'],r['receiver'],r['model_seed']):r for r in results}
     paired=[]
     candidate='native' if selection.get('scope')=='baseline_only' else selection['selected_variant']
-    if selection.get('scope')=='volterra_source':
+    if selection.get('scope') in ('volterra_source','adaptive_volterra_source'):
         pair_baselines=(*BASELINES,'residual_fusion','energy_equivariant','coupled_lag4')
     elif selection.get('scope') in ('crossphase_source','coupled_source'):
         pair_baselines=(*BASELINES,'residual_fusion','energy_equivariant')

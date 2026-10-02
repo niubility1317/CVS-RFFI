@@ -17,3 +17,13 @@
 当前独立读回8个进程均存活，已完成 50 至 57 轮。实际两门系数/梯度、202555梯度参数和公式输入均已测量；完整源分析工具已就绪，但完整E200与固定源选择尚未完成。[当前读回](evidence/progress_readback.json) · [简表](evidence/progress_summary.json)。
 
 实际远端Torch2.1下，8个独立公共scratch模型共享state与控制逐项相同，零门初始logits完全相同；未访问正式数据/weights/query。[远端初始化验证](evidence/remote_initial_control_equality.json)。
+
+## 条件 clean 执行路径验证
+
+已实现可学习相位记忆模型的条件 clean 路径。必须重读4条coupled控制与8条新源记录、复算固定规则并冻结后才允许生成新预测配置；旧控制保留时拒绝给未选新模型读取query。新候选胜出时只生成4条新预测，复用28条原冻结预测；32条全部固定后由独立scorer评分。严格核对完整物理数据角色、scratch继承、E200预算、FP32、202555参数与两门实际状态。
+
+新增30项公共fixture检查PASS，旧70项在同次初始调用全部PASS。初始3个新检查因配置字段名不一致失败，已将factory及fixture统一为adaptive_source_root，并在prepare检查中验证全部4条生成配置；修复后新增30项全部PASS。仅使用公共合成fixture，未访问正式数据、checkpoint或query。独立P0/P1 clean路径审查PASS，发布依赖与静态编译通过；没有生成真实clean配置、登记或发布clean任务。完整源选择与条件测试仍未完成，性能与RFF目标未证明。
+
+当前独立读回8个源进程均存活，完成154至161轮。实际202555参数、两门梯度/系数、输入公式与完整FP32一致；保持远端不可变release与健康任务。
+
+[公共验证](evidence/conditional_clean_validation.json) · [独立审查](evidence/conditional_clean_review.json) · [源进程读回](evidence/conditional_clean_source_readback.json)。

@@ -1,0 +1,90 @@
+{
+  "status": "VERIFIED",
+  "read_at": 1790941799.144901,
+  "dispatcher_pid": 1728043,
+  "rows": [
+    {
+      "row_id": "adaptive_volterra_lag1-s2026092701",
+      "pid": 1728062,
+      "gpu": 0,
+      "epoch": 160,
+      "steps": 8000,
+      "a3": 0.004211029503494501,
+      "a5": -0.0030996098648756742,
+      "gate_gradient_norm": 0.0034375045279739424
+    },
+    {
+      "row_id": "adaptive_volterra_lag4-s2026092701",
+      "pid": 1728151,
+      "gpu": 1,
+      "epoch": 160,
+      "steps": 8000,
+      "a3": -0.05048317462205887,
+      "a5": -0.026144757866859436,
+      "gate_gradient_norm": 0.0037897907863225556
+    },
+    {
+      "row_id": "adaptive_volterra_lag1-s2026092702",
+      "pid": 1728238,
+      "gpu": 2,
+      "epoch": 157,
+      "steps": 7850,
+      "a3": -0.0060196733102202415,
+      "a5": -0.015371977351605892,
+      "gate_gradient_norm": 0.0038937987444296594
+    },
+    {
+      "row_id": "adaptive_volterra_lag4-s2026092702",
+      "pid": 1728387,
+      "gpu": 3,
+      "epoch": 161,
+      "steps": 8050,
+      "a3": -0.01302607636898756,
+      "a5": -0.0068861194886267185,
+      "gate_gradient_norm": 0.003298630673089065
+    },
+    {
+      "row_id": "adaptive_volterra_lag1-s2026092703",
+      "pid": 1728473,
+      "gpu": 4,
+      "epoch": 160,
+      "steps": 8000,
+      "a3": -0.041272591799497604,
+      "a5": 0.03226267546415329,
+      "gate_gradient_norm": 0.002883035988343181
+    },
+    {
+      "row_id": "adaptive_volterra_lag4-s2026092703",
+      "pid": 1728564,
+      "gpu": 5,
+      "epoch": 156,
+      "steps": 7800,
+      "a3": -0.044039271771907806,
+      "a5": -0.0012480169534683228,
+      "gate_gradient_norm": 0.0023942591150989756
+    },
+    {
+      "row_id": "adaptive_volterra_lag1-s2026092704",
+      "pid": 1728653,
+      "gpu": 6,
+      "epoch": 157,
+      "steps": 7850,
+      "a3": 0.049023039638996124,
+      "a5": 0.020769041031599045,
+      "gate_gradient_norm": 0.002479652901092777
+    },
+    {
+      "row_id": "adaptive_volterra_lag4-s2026092704",
+      "pid": 1729148,
+      "gpu": 7,
+      "epoch": 154,
+      "steps": 7700,
+      "a3": 0.001228789216838777,
+      "a5": -0.02829669415950775,
+      "gate_gradient_norm": 0.0032540413737297057
+    }
+  ],
+  "target_access": false,
+  "source_selection": null,
+  "goal_achieved": false
+}
