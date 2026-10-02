@@ -1,4 +1,4 @@
-"""Public-input prototype: coupled causal envelope memory, fixed parameter budget."""
+"""Causal coupled-envelope memory under the existing fixed parameter budget."""
 import torch
 from torch.nn import functional as F
 from experiments.cvs_energy_identity.model import EnergyCVS,GlobalEnergyBlock,energy_contract
@@ -40,10 +40,11 @@ class CoupledInputBlock(GlobalEnergyBlock):
 
 
 def coupled_contract(variant):
-    if variant not in VARIANTS:raise ValueError('Unknown coupled-envelope prototype')
-    return dict(energy_contract('energy_equivariant'),mode=variant,prototype_only=True,
+    if variant not in VARIANTS:raise ValueError('Unknown coupled-envelope candidate')
+    lag=1 if variant==VARIANTS[0] else 4
+    return dict(energy_contract('energy_equivariant'),mode=variant,prototype_only=False,
                 behavior_input='clipped z(n-m) times averaged causal envelope powers0/1/2',
-                envelope_lag=1 if variant==VARIANTS[0] else 4,
+                envelope_lag=lag,coupled_lift_active=True,actual_envelope_lag=lag,
                 envelope_average_weights=[.5,.5],behavior_terms=12,
                 original_position_power_readout_retained=True,
                 no_frequency_correction=True,new_trainable_parameters=0,
@@ -57,9 +58,36 @@ class CoupledCVS(EnergyCVS):
         self.core.behavior[0]=CoupledInputBlock(self.core.behavior[0],contract['envelope_lag'])
     def contract(self):
         d=dict(super().contract(),**coupled_contract(self.coupled_variant))
+        d['per_channel_sample_dependent_rms_normalization']=super().contract()['per_channel_sample_dependent_rms_normalization']
         d['coupled_lift_active']=isinstance(self.core.behavior[0],CoupledInputBlock)
         d['actual_envelope_lag']=getattr(self.core.behavior[0],'envelope_lag',None)
         return d
+
+    @torch.no_grad()
+    def input_diagnostics(self,x):
+        """Measure the actual input of behavior.0.conv, without persistent state."""
+        from experiments.cvs_equivariant_identity.model import behavior_basis
+        records=[];block=self.core.behavior[0]
+        def capture(module,inputs,output):
+            actual=inputs[0];z=actual[:,:,0]
+            expected=coupled_basis_from_clipped(z,block.envelope_lag)
+            original=behavior_basis(x)
+            changes={}
+            for degree,slots in ((3,[1,4,7,10]),(5,[2,5,8,11])):
+                delta=(actual[:,:,slots]-original[:,:,slots]).square().sum((1,2,3)).sqrt()
+                base=original[:,:,slots].square().sum((1,2,3)).sqrt().clamp_min(1e-12)
+                changes['degree'+str(degree)+'_relative_input_change_mean']=float((delta/base).mean())
+            records.append(dict(block='behavior.0.conv',packets=len(actual),complex_terms=actual.shape[2],
+                actual_envelope_lag=block.envelope_lag,input_formula_max_abs_error=float((actual-expected).abs().max()),
+                input_abs_max=float(actual.abs().max()),**changes))
+        hook=block.conv.register_forward_hook(capture)
+        try:self.features(x)
+        finally:hook.remove()
+        return dict(scope='Actual coupled behavior input; last source batch/public IQ only; no identified hardware',
+                    active=isinstance(block,CoupledInputBlock),records=records)
+
+    @torch.no_grad()
+    def diagnostics(self,x):return dict(super().diagnostics(x),coupled_input=self.input_diagnostics(x))
 
 
 def build(variant):return CoupledCVS(variant)

@@ -1,7 +1,7 @@
 """Public algebra/synthetic IQ only; no formal dataset, weight or target evidence."""
 import torch
 import pytest
-from experiments.cvs_coupled_identity.model import VARIANTS,build,coupled_basis_from_clipped,delay
+from experiments.cvs_coupled_identity.model import VARIANTS,build,coupled_basis_from_clipped,delay,coupled_contract
 from experiments.cvs_energy_identity.model import build as control
 from experiments.cvs_equivariant_identity.model import behavior_basis,rotate_pair
 
@@ -17,7 +17,10 @@ def test_same_initial_state_dimensions_and_parameters(variant):
     assert all(torch.equal(a,base.state_dict()[k]) for k,a in new.state_dict().items())
     assert new.core.readout.__class__==base.core.readout.__class__
     assert new.core.behavior[0].conv.cin==12
-    assert new.contract()['prototype_only'] and new.contract()['coupled_lift_active']
+    assert not new.contract()['prototype_only'] and new.contract()['coupled_lift_active']
+    assert new.contract()==coupled_contract(variant)
+    new.core.behavior[0].envelope_lag=4 if variant=='coupled_lag1' else 1
+    assert new.contract()!=coupled_contract(variant)
 
 
 @pytest.mark.parametrize('lag',[1,4])
@@ -69,3 +72,15 @@ def test_ce_gradients_degenerate_inputs_and_state_roundtrip(variant,kind):
     clone=build(variant);clone.load_state_dict(m.state_dict(),strict=True)
     m.eval();clone.eval()
     with torch.no_grad():assert torch.equal(m(x),clone(x))
+
+@pytest.mark.parametrize('variant',VARIANTS)
+def test_actual_behavior_conv_input_diagnostic_does_not_update_state(variant):
+    model=build(variant).eval();state={k:v.clone() for k,v in model.state_dict().items()}
+    x=torch.randn(4,2,256);diagnostic=model.input_diagnostics(x)
+    assert diagnostic['active'] and len(diagnostic['records'])==1
+    record=diagnostic['records'][0]
+    assert record['actual_envelope_lag']==coupled_contract(variant)['envelope_lag']
+    assert record['packets']==4 and record['complex_terms']==12 and record['input_formula_max_abs_error']==0.
+    assert record['degree3_relative_input_change_mean']>0 and record['degree5_relative_input_change_mean']>0
+    assert all(torch.equal(v,model.state_dict()[k]) for k,v in state.items())
+    assert not model.core.behavior[0].conv._forward_hooks
