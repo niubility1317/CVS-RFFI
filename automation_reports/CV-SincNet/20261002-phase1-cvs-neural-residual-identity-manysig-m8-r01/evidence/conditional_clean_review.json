@@ -1,0 +1,20 @@
+{
+  "status": "PASS",
+  "P0": 0,
+  "P1": 0,
+  "reviewer": "independent curvature_clean_review",
+  "scope": "conditional selected-only clean integration",
+  "tests": 47,
+  "additional_checks": [
+    "36-row collector valid fixture",
+    "7 terminal/class rejection cases",
+    "nonterminal returns false",
+    "remote publisher/inspect templates compiled"
+  ],
+  "source_freeze": "12 source records independently recomputed; onlyselected4",
+  "prediction_contract": "scratch/physicalroles/FP32/strictload/220987or239419",
+  "scoring": "32readonly old predictions +4new; all36complete before separate truthlast;288confusions/64pairs",
+  "target_access": false,
+  "remote_actions": false,
+  "fixture_repair": "Deep candidate synthetic resource count corrected before final passing run"
+}

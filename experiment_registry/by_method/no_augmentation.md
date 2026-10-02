@@ -30,7 +30,7 @@
 |CVS 波形层分数频偏校正身份网络：完整源实验报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-fractional-identity-manysig-m8-r01/report.md)|
 |完整 IQ 相位规范化 CVS：完整源实验报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-gauge-identity-manysig-m8-r01/report.md)|
 |CVS可学习包内矩残差：完整源实验报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-moment-residual-identity-manysig-m8-r01/report.md)|
-|CVS可学习复卷积残差：浅深两容量×四seed纯CE|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-neural-residual-identity-manysig-m8-r01/report.md)|
+|CVS可学习复卷积残差：浅深结构纯CE实验|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-neural-residual-identity-manysig-m8-r01/report.md)|
 |CVS整体物理观测身份网络：源训练预登记|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-observable-identity-manysig-m8-r01/report.md)|
 |CVS 包内正交包络输入：完整源实验报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-orthopoly-identity-manysig-m8-r01/report.md)|
 |CVS六层相位曲率残差：完整源实验结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-phase-curvature-identity-manysig-m8-r01/report.md)|

@@ -25,7 +25,7 @@
   "replaces_run_id": null,
   "authorization": "2026-10-02用户明确只靠神经网络能力，不借助其他训练策略或额外损失；继续完成性能优化目标。沿用原数据/训练方案/固定源选模，仅clean测试。",
   "code": {
-    "commit": "4aca3a7532606c7e9399234902d09d81dd7ed13d",
+    "commit": "f929f4d1116640474d324844e2f0824f97ca7dd0",
     "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_neural_residual_identity_20261002_r01",
@@ -99,7 +99,17 @@
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-neural-residual-identity-manysig-m8-r01",
     "local_artifact_root": "automation_reports/CV-SincNet/20261002-phase1-cvs-neural-residual-identity-manysig-m8-r01",
     "launch_command": "python -m experiments.cvs_neural_residual_identity.publish --output local_artifacts/cvs_neural_residual_identity_20261002_r01",
-    "stop_rule": "Only own affected row fails on nonfinite/permissions/output collision/nonzero exit; preserve all artifacts; no retry, low-score stop or unrelated process intervention"
+    "stop_rule": "Only own affected row fails on nonfinite/permissions/output collision/nonzero exit; preserve all artifacts; no retry, low-score stop or unrelated process intervention",
+    "actual_pid": 1886983,
+    "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_neural_residual_identity_20261002_r01",
+    "actual_argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_neural_residual_identity.dispatch",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_neural_residual_identity_20261002_r01/experiments/cvs_neural_residual_identity/configs/launch_spec.json"
+    ]
   },
   "expected_artifacts": [
     "last.pt",
@@ -146,7 +156,7 @@
       "row_id": "neural_residual_shallow-s2026092701",
       "method": "neural_residual_shallow",
       "purpose": "source_only_CVS_learned_neural_residual_candidate",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_neural_residual_identity/configs/neural_residual_shallow-s2026092701.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-neural-residual-identity-manysig-m8-r01/neural_residual_shallow-s2026092701/source/resolved_config.json",
       "data_overrides": {},
@@ -182,13 +192,36 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "actual_pid": 1887413,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_neural_residual_identity_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_neural_residual_identity.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_neural_residual_identity_20261002_r01/experiments/cvs_neural_residual_identity/configs/neural_residual_shallow-s2026092701.json"
+      ],
+      "verified_epoch": 10,
+      "runtime_environment": {
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "torch_version": "2.1.0+cu121",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        }
+      }
     },
     {
       "row_id": "neural_residual_deep-s2026092701",
       "method": "neural_residual_deep",
       "purpose": "source_only_CVS_learned_neural_residual_candidate",
-      "gpu": null,
+      "gpu": 1,
       "config_ref": "experiments/cvs_neural_residual_identity/configs/neural_residual_deep-s2026092701.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-neural-residual-identity-manysig-m8-r01/neural_residual_deep-s2026092701/source/resolved_config.json",
       "data_overrides": {},
@@ -224,13 +257,36 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "actual_pid": 1887502,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_neural_residual_identity_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_neural_residual_identity.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_neural_residual_identity_20261002_r01/experiments/cvs_neural_residual_identity/configs/neural_residual_deep-s2026092701.json"
+      ],
+      "verified_epoch": 8,
+      "runtime_environment": {
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "torch_version": "2.1.0+cu121",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        }
+      }
     },
     {
       "row_id": "neural_residual_shallow-s2026092702",
       "method": "neural_residual_shallow",
       "purpose": "source_only_CVS_learned_neural_residual_candidate",
-      "gpu": null,
+      "gpu": 2,
       "config_ref": "experiments/cvs_neural_residual_identity/configs/neural_residual_shallow-s2026092702.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-neural-residual-identity-manysig-m8-r01/neural_residual_shallow-s2026092702/source/resolved_config.json",
       "data_overrides": {},
@@ -266,13 +322,36 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "actual_pid": 1887585,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_neural_residual_identity_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_neural_residual_identity.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_neural_residual_identity_20261002_r01/experiments/cvs_neural_residual_identity/configs/neural_residual_shallow-s2026092702.json"
+      ],
+      "verified_epoch": 8,
+      "runtime_environment": {
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "torch_version": "2.1.0+cu121",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        }
+      }
     },
     {
       "row_id": "neural_residual_deep-s2026092702",
       "method": "neural_residual_deep",
       "purpose": "source_only_CVS_learned_neural_residual_candidate",
-      "gpu": null,
+      "gpu": 3,
       "config_ref": "experiments/cvs_neural_residual_identity/configs/neural_residual_deep-s2026092702.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-neural-residual-identity-manysig-m8-r01/neural_residual_deep-s2026092702/source/resolved_config.json",
       "data_overrides": {},
@@ -308,13 +387,36 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "actual_pid": 1887674,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_neural_residual_identity_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_neural_residual_identity.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_neural_residual_identity_20261002_r01/experiments/cvs_neural_residual_identity/configs/neural_residual_deep-s2026092702.json"
+      ],
+      "verified_epoch": 7,
+      "runtime_environment": {
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "torch_version": "2.1.0+cu121",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        }
+      }
     },
     {
       "row_id": "neural_residual_shallow-s2026092703",
       "method": "neural_residual_shallow",
       "purpose": "source_only_CVS_learned_neural_residual_candidate",
-      "gpu": null,
+      "gpu": 4,
       "config_ref": "experiments/cvs_neural_residual_identity/configs/neural_residual_shallow-s2026092703.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-neural-residual-identity-manysig-m8-r01/neural_residual_shallow-s2026092703/source/resolved_config.json",
       "data_overrides": {},
@@ -350,13 +452,36 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "actual_pid": 1887761,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_neural_residual_identity_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_neural_residual_identity.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_neural_residual_identity_20261002_r01/experiments/cvs_neural_residual_identity/configs/neural_residual_shallow-s2026092703.json"
+      ],
+      "verified_epoch": 7,
+      "runtime_environment": {
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "torch_version": "2.1.0+cu121",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        }
+      }
     },
     {
       "row_id": "neural_residual_deep-s2026092703",
       "method": "neural_residual_deep",
       "purpose": "source_only_CVS_learned_neural_residual_candidate",
-      "gpu": null,
+      "gpu": 5,
       "config_ref": "experiments/cvs_neural_residual_identity/configs/neural_residual_deep-s2026092703.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-neural-residual-identity-manysig-m8-r01/neural_residual_deep-s2026092703/source/resolved_config.json",
       "data_overrides": {},
@@ -392,13 +517,36 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "actual_pid": 1887848,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_neural_residual_identity_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_neural_residual_identity.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_neural_residual_identity_20261002_r01/experiments/cvs_neural_residual_identity/configs/neural_residual_deep-s2026092703.json"
+      ],
+      "verified_epoch": 6,
+      "runtime_environment": {
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "torch_version": "2.1.0+cu121",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        }
+      }
     },
     {
       "row_id": "neural_residual_shallow-s2026092704",
       "method": "neural_residual_shallow",
       "purpose": "source_only_CVS_learned_neural_residual_candidate",
-      "gpu": null,
+      "gpu": 6,
       "config_ref": "experiments/cvs_neural_residual_identity/configs/neural_residual_shallow-s2026092704.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-neural-residual-identity-manysig-m8-r01/neural_residual_shallow-s2026092704/source/resolved_config.json",
       "data_overrides": {},
@@ -434,13 +582,36 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "actual_pid": 1887935,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_neural_residual_identity_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_neural_residual_identity.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_neural_residual_identity_20261002_r01/experiments/cvs_neural_residual_identity/configs/neural_residual_shallow-s2026092704.json"
+      ],
+      "verified_epoch": 6,
+      "runtime_environment": {
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "torch_version": "2.1.0+cu121",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        }
+      }
     },
     {
       "row_id": "neural_residual_deep-s2026092704",
       "method": "neural_residual_deep",
       "purpose": "source_only_CVS_learned_neural_residual_candidate",
-      "gpu": null,
+      "gpu": 7,
       "config_ref": "experiments/cvs_neural_residual_identity/configs/neural_residual_deep-s2026092704.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-neural-residual-identity-manysig-m8-r01/neural_residual_deep-s2026092704/source/resolved_config.json",
       "data_overrides": {},
@@ -476,7 +647,30 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "actual_pid": 1888022,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_neural_residual_identity_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_neural_residual_identity.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_neural_residual_identity_20261002_r01/experiments/cvs_neural_residual_identity/configs/neural_residual_deep-s2026092704.json"
+      ],
+      "verified_epoch": 5,
+      "runtime_environment": {
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "torch_version": "2.1.0+cu121",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        }
+      }
     }
   ],
   "notes": [
@@ -490,7 +684,8 @@
     "12 source ranking records=8new+4immutable adaptive metadata controls. Highest four-seed mean0.5V+0.5worstRX; exact performance ties then costs; fixedE200. Never pick bestepoch or use target feedback.",
     "Selectednewcandidate only:4newclean predictions+32existing frozencontrols=36rows/288ALL+RXrecords;168000samephysicalquery/6TX/7RX; fixedpredictions thenindependenttruthlast. Ifcontrolretained,reuse completedclean and no newquery. NoLEO/support/SFT/newclasses.",
     "Fullstep,epoch,compactJSONL/CSV and text record measuredCE/weight/LR/gradients/neuralnorms/outputchanges/sourcevalidation/time/memory. ResourceMAC counter excludes functionalcomplex convolution; actualwalltime andCUDApeak measured and limitsreported.",
-    "SourceVsharesfiveRXwithsourceL. This study doesnotclaim unseenRXgeneralization until frozenindependentclean evaluation. Negativeoutcomespreserved."
+    "SourceVsharesfiveRXwithsourceL. This study doesnotclaim unseenRXgeneralization until frozenindependentclean evaluation. Negativeoutcomespreserved.",
+    "Reporting clarification after inspecting existing profiler: aten.convolution is counted, including functionalcomplex/depthwise kernels. FFT/normalization/pooling/gates/elementwise ops remain excluded. Training code/config/output are unchanged in immutable release f929f4d11."
   ],
   "registered_at": "2026-10-02T15:59:31+00:00",
   "status": "PLANNED",
