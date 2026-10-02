@@ -1,0 +1,72 @@
+{
+  "status": "ANALYZED",
+  "run_id": "20261002-phase1-cvs-residual-sixscene-manysig-m8-r01",
+  "release": "cvs_residual_sixscene_20261002_r01",
+  "release_commit": "7669a6de973959290089a04293cc542db26e5fe1",
+  "launch_owner": "codex/root/residual-sixscene-20261002",
+  "dispatcher_pid": 1597975,
+  "rows": [
+    {
+      "row_id": "clean_train-s2026092701",
+      "pid": 1599122,
+      "gpu": 0,
+      "complete": true,
+      "alive": false
+    },
+    {
+      "row_id": "clean_train-s2026092702",
+      "pid": 1599133,
+      "gpu": 1,
+      "complete": true,
+      "alive": false
+    },
+    {
+      "row_id": "clean_train-s2026092703",
+      "pid": 1599143,
+      "gpu": 2,
+      "complete": true,
+      "alive": false
+    },
+    {
+      "row_id": "clean_train-s2026092704",
+      "pid": 1599218,
+      "gpu": 3,
+      "complete": true,
+      "alive": false
+    },
+    {
+      "row_id": "mid_low_aug-s2026092701",
+      "pid": 1599301,
+      "gpu": 4,
+      "complete": true,
+      "alive": false
+    },
+    {
+      "row_id": "mid_low_aug-s2026092702",
+      "pid": 1599454,
+      "gpu": 5,
+      "complete": true,
+      "alive": false
+    },
+    {
+      "row_id": "mid_low_aug-s2026092703",
+      "pid": 1599535,
+      "gpu": 6,
+      "complete": true,
+      "alive": false
+    },
+    {
+      "row_id": "mid_low_aug-s2026092704",
+      "pid": 1599549,
+      "gpu": 7,
+      "complete": true,
+      "alive": false
+    }
+  ],
+  "evidence": "evidence/final/readback.json",
+  "analysis": "analysis.json",
+  "report": "report.md",
+  "missing": [],
+  "next": [],
+  "target_feedback_forbidden": true
+}

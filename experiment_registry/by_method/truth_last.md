@@ -11,4 +11,4 @@
 |Native comparison source training|managed_run|[打开](../../automation_reports/CV-SincNet/20260930-phase1-native-baselines-practical-manysig-m5-r01/report.md)|
 |Native comparison paired adaptation and registration|managed_run|[打开](../../automation_reports/CV-SincNet/20260930-phase12-native-baselines-practical-m5-r01/report.md)|
 |无信道增强四基准的 clean 测试报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261001-phase1-clean-baselines-manysig-m16-r01/report.md)|
-|residual_fusion：纯 clean 与 mid/low urban 增强的六环境冻结测试|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/report.md)|
+|residual_fusion 完整六环境测试结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/report.md)|

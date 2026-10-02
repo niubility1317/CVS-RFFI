@@ -1,0 +1,58 @@
+{
+  "status": "VERIFIED",
+  "summary": [
+    {
+      "view": "clean",
+      "accuracy_mean": 0.7904568452380952,
+      "accuracy_seed_sd": 0.008140387306150871,
+      "macro_f1_mean": 0.7860848809335644,
+      "macro_f1_seed_sd": 0.00949482759897143,
+      "delta_native_CVS_CE_mean_pp": 2.4238095238095223,
+      "delta_CVCNN_CE_mean_pp": 4.778273809523808
+    },
+    {
+      "view": "satellite",
+      "accuracy_mean": 0.6568258928571429,
+      "accuracy_seed_sd": 0.007902640598839704,
+      "macro_f1_mean": 0.652757952522838,
+      "macro_f1_seed_sd": 0.008535725455565373,
+      "delta_native_CVS_CE_mean_pp": 1.53675595238095,
+      "delta_CVCNN_CE_mean_pp": 3.1302083333333344
+    },
+    {
+      "view": "practical_high",
+      "accuracy_mean": 0.7546117718489946,
+      "accuracy_seed_sd": 0.010446373025082221,
+      "macro_f1_mean": 0.7504103471052312,
+      "macro_f1_seed_sd": 0.011310611791206326,
+      "delta_native_CVS_CE_mean_pp": 1.7005071609700328,
+      "delta_CVCNN_CE_mean_pp": 2.497857066323797
+    },
+    {
+      "view": "practical_mid",
+      "accuracy_mean": 0.7294477872325276,
+      "accuracy_seed_sd": 0.009308399718786806,
+      "macro_f1_mean": 0.7240117878345746,
+      "macro_f1_seed_sd": 0.009850748060681223,
+      "delta_native_CVS_CE_mean_pp": 1.4517392387937478,
+      "delta_CVCNN_CE_mean_pp": 2.6253248833980143
+    },
+    {
+      "view": "practical_low_urban",
+      "accuracy_mean": 0.4856702729812997,
+      "accuracy_seed_sd": 0.004011950377906503,
+      "macro_f1_mean": 0.4806394275723796,
+      "macro_f1_seed_sd": 0.0046856437407739,
+      "delta_native_CVS_CE_mean_pp": 1.4580497241527546,
+      "delta_CVCNN_CE_mean_pp": 4.272497671419359
+    }
+  ],
+  "pure_clean_delta_mean_pp": 0.5913690476190447,
+  "pure_clean_delta_sd_pp": 0.8242596285062032,
+  "all_cm_recomputed": 160,
+  "full_step_records": 40000,
+  "epoch_records": 800,
+  "release_commit": "3fb08ffb148bff03309dfeb167d013bae778033b",
+  "target_feedback": false,
+  "claim_scope": "BENCHMARK_INFORMED_FIXED_DESIGN"
+}

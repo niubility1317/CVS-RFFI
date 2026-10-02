@@ -6,5 +6,5 @@
 
 |名称|记录类型|证据入口|
 |---|---|---|
-|residual_fusion：纯 clean 与 mid/low urban 增强的六环境冻结测试|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/report.md)|
+|residual_fusion 完整六环境测试结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/report.md)|
 |CVS 固定身份网络：mid／low urban 拼接增强|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-selected-concat-manysig-m4-r01/report.md)|
