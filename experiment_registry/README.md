@@ -1,6 +1,6 @@
 # 实验总索引
 
-更新：2026-10-02T03:59:19+00:00
+更新：2026-10-02T04:27:53+00:00
 
 先按方法/问题检索，再用run ID读取精确配置与证据。历史组数量不等于独立实验数量。
 
@@ -12,7 +12,7 @@
 
 |记录类型|数量|
 |---|---:|
-|managed_run|57|
+|managed_run|58|
 
 历史状态统一为HISTORICAL_UNVERIFIED；RUNNING等原文声明只供查证，不能证明此刻仍在运行。
 
@@ -20,15 +20,15 @@
 
 |路径标签（定位提示）|证据组数|
 |---|---:|
-|[cvs](by_method/cvs.md)|40|
-|[clean_only](by_method/clean_only.md)|30|
-|[ce_only](by_method/ce_only.md)|30|
-|[no_augmentation](by_method/no_augmentation.md)|23|
-|[performance_priority](by_method/performance_priority.md)|23|
-|[source_selection](by_method/source_selection.md)|18|
+|[cvs](by_method/cvs.md)|41|
+|[clean_only](by_method/clean_only.md)|31|
+|[ce_only](by_method/ce_only.md)|31|
+|[no_augmentation](by_method/no_augmentation.md)|24|
+|[performance_priority](by_method/performance_priority.md)|24|
+|[source_selection](by_method/source_selection.md)|19|
+|[rff_physics](by_method/rff_physics.md)|12|
 |[daot](by_method/daot.md)|11|
 |[source_selected](by_method/source_selected.md)|11|
-|[rff_physics](by_method/rff_physics.md)|11|
 |[rc4](by_method/rc4.md)|10|
 |[frozen_prediction_reuse](by_method/frozen_prediction_reuse.md)|10|
 |[source_only](by_method/source_only.md)|8|
@@ -96,6 +96,8 @@
 |[numerical_attribution](by_method/numerical_attribution.md)|1|
 |[received_sensitivity](by_method/received_sensitivity.md)|1|
 |[synthetic_only](by_method/synthetic_only.md)|1|
+|[shared_energy_normalization](by_method/shared_energy_normalization.md)|1|
+|[relative_filter_energy](by_method/relative_filter_energy.md)|1|
 |[full_fp32](by_method/full_fp32.md)|1|
 |[numerical_physics_consistency](by_method/numerical_physics_consistency.md)|1|
 |[fractional_synchronization](by_method/fractional_synchronization.md)|1|
@@ -150,6 +152,7 @@
 |RFF源域前导码与可观测量诊断|managed_run|[打开](../automation_reports/CV-SincNet/20261002-diagnostic-rff-preamble-source-manysig-m1-r01/report.md)|
 |CVS 加性坐标注入身份网络：完整源实验报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-additive-identity-manysig-m8-r01/report.md)|
 |CVS 同步坐标保留身份网络：完整源实验报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-coordinate-identity-manysig-m8-r01/report.md)|
+|CVS 相对滤波能量保留：共享RMS核心与固定半校正×四seed纯CE|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-energy-identity-manysig-m8-r01/report.md)|
 |CVS 全路径复相位等变记忆网络：独立 clean 测试报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-equivariant-clean-manysig-m24-r01/report.md)|
 |CVS 整网复相位约束：完整 FP32 独立 clean 报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-equivariant-fp32-clean-manysig-m24-r01/report.md)|
 |CVS 整网复相位约束：完整 FP32 源实验报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/report.md)|
