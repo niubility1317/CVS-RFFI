@@ -20,4 +20,4 @@
 |CVS 波形层分数频偏校正身份网络：完整源实验报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-fractional-identity-manysig-m8-r01/report.md)|
 |CVS 已知激励相对响应：完整源实验报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-reference-identity-manysig-m4-r01/report.md)|
 |CVS 全路径逐包同步身份网络：完整源实验报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-synchronized-identity-manysig-m8-r01/report.md)|
-|CVS 复数相位记忆：源实验预登记|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-volterra-identity-manysig-m8-r01/report.md)|
+|CVS 复数Volterra延迟相位记忆：完整源实验报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-volterra-identity-manysig-m8-r01/report.md)|

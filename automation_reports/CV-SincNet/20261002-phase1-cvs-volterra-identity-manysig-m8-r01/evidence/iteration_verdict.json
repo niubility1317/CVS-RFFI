@@ -1,0 +1,18 @@
+{
+  "status": "VERIFIED",
+  "source_selected": "coupled_lag4",
+  "new_candidate_selected": false,
+  "new_training_rows": 8,
+  "new_source_steps": 80000,
+  "new_clean_predictions": 0,
+  "unselected_variants": [
+    "volterra_lag1",
+    "volterra_lag4"
+  ],
+  "unselected_clean_status": "N/A_NOT_SOURCE_SELECTED",
+  "retained_control_clean_run": "20261002-phase1-cvs-coupled-clean-manysig-m28-r01",
+  "retained_control_clean_status": "VERIFIED_EXISTING_COMPLETE",
+  "scientific_verdict": "NO_SOURCE_SELECTED_IMPROVEMENT",
+  "target_feedback": false,
+  "goal_achieved": false
+}

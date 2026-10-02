@@ -6,4 +6,4 @@
 
 |名称|记录类型|证据入口|
 |---|---|---|
-|CVS 复数相位记忆：源实验预登记|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-volterra-identity-manysig-m8-r01/report.md)|
+|CVS 复数Volterra延迟相位记忆：完整源实验报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-volterra-identity-manysig-m8-r01/report.md)|

@@ -1,38 +1,39 @@
 {
-  "status": "RUNNING",
+  "status": "ANALYZED",
   "run_id": "20261002-phase1-cvs-volterra-identity-manysig-m8-r01",
   "release": "cvs_volterra_identity_20261002_r01",
   "goal_scope": "CE only/noaugmentation/identity only/scratch/unchanged split/clean only; mathematical communication physics RFF structure; performance first",
-  "previous_goal_turn": "PROGRESS: committed/pushed source, published once, independent live8worker and actual Volterra execution readback",
+  "previous_goal_turn": "PROGRESS:8sourceE200/full80000step audit/2400curve/720cells/actualinputandphysics/source-onlyfreeze complete;currentcontrol retained and originalcleanmetadata independently reverified;newunselectedtestsN/A",
   "launch_owner": "codex/root/cvs-volterra-identity-20261002",
   "goal_achieved": false,
   "target_feedback": false,
   "next": [
-    "Inspect same live run; do not restart",
-    "FullE200 collect/analyze and fixedsource-only freeze",
-    "If new selected generate4actualcleanconfigs/register32rowmatrix;Git/push/OID/publish once;independent prediction/truth-last/analysis",
-    "If coupled control retained reuse completed cleanmetadata;newunselectedtestsN/A",
-    "Retain goal until actual performance improvement and RFF interpretation verified"
+    "Mirror/commit/push and verify final report delivery",
+    "Next design only from source/public evidence; no target feedback",
+    "Keep full performance/RFF goal active"
   ],
-  "missing": [
-    "Actual source execution",
-    "Full source-only frozen ranking",
-    "Conditional frozen clean confirmation",
-    "Performance and genuineRFFphysics-aware goal proof"
-  ],
+  "missing": [],
   "commit": "ed6bdf431c4bad584fef774ea12ff23e9d20167a",
   "dispatcher_pid": 1696395,
   "evidence": "evidence/running_readback.json",
   "last_epochs": {
-    "volterra_lag1-s2026092701": 123,
-    "volterra_lag4-s2026092701": 121,
-    "volterra_lag1-s2026092702": 121,
-    "volterra_lag4-s2026092702": 120,
-    "volterra_lag1-s2026092703": 119,
-    "volterra_lag4-s2026092703": 118,
-    "volterra_lag1-s2026092704": 117,
-    "volterra_lag4-s2026092704": 118
+    "volterra_lag1-s2026092701": 200,
+    "volterra_lag4-s2026092701": 200,
+    "volterra_lag1-s2026092702": 200,
+    "volterra_lag4-s2026092702": 200,
+    "volterra_lag1-s2026092703": 200,
+    "volterra_lag4-s2026092703": 200,
+    "volterra_lag1-s2026092704": 200,
+    "volterra_lag4-s2026092704": 200
   },
   "latest_evidence": "evidence/progress_readback.json",
-  "clean_runtime": "LOCAL_VERIFIED:69contractchecks+1fullanalysisfixture+oneP0P1withsinglepointrepairPASS;actualselection/configs/publish pending"
+  "clean_runtime": "LOCAL_VERIFIED:69contractchecks+1fullanalysisfixture+oneP0P1withsinglepointrepairPASS;actualselection/configs/publish pending",
+  "selected_variant": "coupled_lag4",
+  "live_source_workers": 0,
+  "last_evidence": "evidence/final_source_readback.json",
+  "clean_confirmation_run": null,
+  "goal_requirements_remaining": [
+    "Verified performance improvement on frozen clean test",
+    "Full mathematical/communication/physics/RFF mechanism and cost evidence"
+  ]
 }
