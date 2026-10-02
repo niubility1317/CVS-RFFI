@@ -11,7 +11,7 @@ OLD_RUN='20261002-phase1-cvs-adaptive-volterra-clean-manysig-m32-r01'
 SOURCE=PROJECT+'/runs/'+SOURCE_RUN
 
 def main(selection):
-    if selection.get('new_candidate_selected') is not True:raise ValueError('No selected new orthopoly identity; retain existing adaptive baseline without unselected query')
+    if selection.get('new_candidate_selected') is not True:raise ValueError('No selected new moment-residual identity; retain existing adaptive baseline without unselected query')
     if selection['status']!='SOURCE_SELECTION_FROZEN' or selection['target_access'] or selection['target_score_used'] or selection['selected_variant'] not in VARIANTS:
         raise ValueError('Source-only freeze required')
     variant=selection['selected_variant'];prefix='experiments/cvs_moment_residual_clean/configs/';remote=PROJECT+'/releases/'+RELEASE+'/'

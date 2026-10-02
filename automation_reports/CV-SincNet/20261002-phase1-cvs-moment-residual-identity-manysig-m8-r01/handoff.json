@@ -5,7 +5,7 @@
   "launch_owner": "codex/root/cvs-moment-residual-identity-20261002",
   "goal_achieved": false,
   "target_feedback": false,
-  "previous_goal_turn": "PROGRESS: full orthopoly source negative result and public inverse coordinate/convolution diagnostic delivered; no unselected query",
+  "previous_goal_turn": "PROGRESS: scratch8 source candidates committed/pushed/independentlylaunched;actual process/CE/FP32/fourgates/input evidence;full analysis and conditional36row clean implemented",
   "goal_scope": "CE only/noaugmentation/identity only/scratch/unchanged split/fullFP32/clean only;performance first; mathematical communication physical RFF evidence",
   "next": [
     "Read back same8 healthy processes without restart/hotpatch",
@@ -14,9 +14,9 @@
     "Report full results and resources; Git mirror/push/OID"
   ],
   "missing": [
-    "Full E200 fixed source selection",
-    "Conditional clean completion",
-    "Performance improvement and full RFF objective proof"
+    "FullE200 source training and fixed-source selection",
+    "Conditionalselected-only clean prediction and truth-last scoring",
+    "Verified network performance improvement/full RFF goal proof"
   ],
   "release_commit": "a31fd318996be20f030aeccd7ed6ed614ce7048d",
   "dispatcher_pid": 1808300,
@@ -71,5 +71,20 @@
       "gpu": 7,
       "verified_epoch": 25
     }
-  ]
+  ],
+  "report_commit": "85ed39c533279702b2895930e7440705b6f3d31a",
+  "source_launch_verified": true,
+  "last_live_readback": 1790949563.7415483,
+  "last_epochs": {
+    "moment_residual_instant-s2026092701": 66,
+    "moment_residual_memory4-s2026092701": 65,
+    "moment_residual_instant-s2026092702": 64,
+    "moment_residual_memory4-s2026092702": 63,
+    "moment_residual_instant-s2026092703": 62,
+    "moment_residual_memory4-s2026092703": 62,
+    "moment_residual_instant-s2026092704": 62,
+    "moment_residual_memory4-s2026092704": 61
+  },
+  "live_source_workers": 8,
+  "source_training_complete": false
 }
