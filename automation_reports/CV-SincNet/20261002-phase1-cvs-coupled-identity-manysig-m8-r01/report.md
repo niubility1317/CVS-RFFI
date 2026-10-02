@@ -19,3 +19,13 @@
 一个launch owner，独占输出；每GPU最多两个总训练任务、至少12GB空闲。保留历史和partial；不干预其他健康任务，不以低性能停机，不自动重复启动。源分数和公共数学性质不等于clean提升，原目标尚未完成。
 
 [逐行登记](experiment.json) · [资源和路径preflight](evidence/preflight.json) · [本地验证](evidence/local_validation.json) · [独立审查](evidence/independent_review.json)。
+
+## 实际发布与启动
+
+状态RUNNING／VERIFIED。发布commit `2ca8a8dc4ef21ca063bdf6499da0e638d517685d`，远端CPU检查PASS。独立读回dispatcher PID 1654804 和8个source进程、CWD/argv/独占输出/GPU0至7，全部已有实际epoch及日志增长。实际仅CE、scratch、无增强、身份骨干、固定50步/轮和完整FP32；202553参数均参与梯度，两个候选alpha0，实际12项coupled输入及lag与配置一致。当前轮数 {'coupled_lag1-s2026092701': 15, 'coupled_lag4-s2026092701': 14, 'coupled_lag1-s2026092702': 13, 'coupled_lag4-s2026092702': 12, 'coupled_lag1-s2026092703': 11, 'coupled_lag4-s2026092703': 10, 'coupled_lag1-s2026092704': 10, 'coupled_lag4-s2026092704': 9}。尚无E200冻结或新clean成绩，不能宣称性能提升。[实际证据](evidence/running_readback.json)。
+
+## 条件clean收尾准备与当前进度
+
+后续clean加载/冻结/复用/评分路径已实现，69项相关检查（新coupled27、crossphase回归25、energy回归17）通过，一次独立P0/P1审查PASS。仅使用公共合成fixture，没有实际clean配置、query或评分访问，源immutable release保持不变。全源曲线/720单元/1600+8实际coupled输入的分析工具已准备，须在E200完整产物上执行后才有实际分析结论。[路径验证](evidence/conditional_clean_local_validation.json)。
+
+独立最新读回8个进程存活，全部epoch和日志较启动读回增长；当前轮数 {'coupled_lag1-s2026092701': 62, 'coupled_lag4-s2026092701': 60, 'coupled_lag1-s2026092702': 60, 'coupled_lag4-s2026092702': 59, 'coupled_lag1-s2026092703': 58, 'coupled_lag4-s2026092703': 57, 'coupled_lag1-s2026092704': 57, 'coupled_lag4-s2026092704': 53}，状态SOURCE_TRAINING，无E200冻结或新clean成绩。[最新进程证据](evidence/latest_running_readback.json)。本轮属于PROGRESS（新增已验证实现并发布实际训练），原目标继续保持active。

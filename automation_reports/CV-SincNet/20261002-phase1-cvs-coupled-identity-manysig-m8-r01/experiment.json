@@ -25,7 +25,7 @@
   "replaces_run_id": null,
   "authorization": "用户授权持续优化基础网络，性能第一，真正 RFF physics aware；普通 CE、无增强、clean-only，每次发布默认完成测试。",
   "code": {
-    "commit": "release_commit.txt records actual committed source runtime",
+    "commit": "2ca8a8dc4ef21ca063bdf6499da0e638d517685d",
     "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coupled_identity_20261002_r01",
@@ -182,7 +182,25 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "runtime_evidence": {
+        "status": "RUNNING",
+        "variant": "coupled_lag1",
+        "model_seed": 2026092701,
+        "pid": 1654826,
+        "gpu": 0,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_coupled_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coupled_identity_20261002_r01/experiments/cvs_coupled_identity/configs/coupled_lag1-s2026092701.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-coupled-identity-manysig-m8-r01/coupled_lag1-s2026092701.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-coupled-identity-manysig-m8-r01/coupled_lag1-s2026092701/source",
+        "started": 1790933156.514549
+      }
     },
     {
       "row_id": "coupled_lag4-s2026092701",
@@ -224,7 +242,25 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "runtime_evidence": {
+        "status": "RUNNING",
+        "variant": "coupled_lag4",
+        "model_seed": 2026092701,
+        "pid": 1654911,
+        "gpu": 1,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_coupled_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coupled_identity_20261002_r01/experiments/cvs_coupled_identity/configs/coupled_lag4-s2026092701.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-coupled-identity-manysig-m8-r01/coupled_lag4-s2026092701.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-coupled-identity-manysig-m8-r01/coupled_lag4-s2026092701/source",
+        "started": 1790933161.760266
+      }
     },
     {
       "row_id": "coupled_lag1-s2026092702",
@@ -266,7 +302,25 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "runtime_evidence": {
+        "status": "RUNNING",
+        "variant": "coupled_lag1",
+        "model_seed": 2026092702,
+        "pid": 1655002,
+        "gpu": 2,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_coupled_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coupled_identity_20261002_r01/experiments/cvs_coupled_identity/configs/coupled_lag1-s2026092702.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-coupled-identity-manysig-m8-r01/coupled_lag1-s2026092702.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-coupled-identity-manysig-m8-r01/coupled_lag1-s2026092702/source",
+        "started": 1790933167.001964
+      }
     },
     {
       "row_id": "coupled_lag4-s2026092702",
@@ -308,7 +362,25 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "runtime_evidence": {
+        "status": "RUNNING",
+        "variant": "coupled_lag4",
+        "model_seed": 2026092702,
+        "pid": 1655087,
+        "gpu": 3,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_coupled_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coupled_identity_20261002_r01/experiments/cvs_coupled_identity/configs/coupled_lag4-s2026092702.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-coupled-identity-manysig-m8-r01/coupled_lag4-s2026092702.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-coupled-identity-manysig-m8-r01/coupled_lag4-s2026092702/source",
+        "started": 1790933172.245595
+      }
     },
     {
       "row_id": "coupled_lag1-s2026092703",
@@ -350,7 +422,25 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "runtime_evidence": {
+        "status": "RUNNING",
+        "variant": "coupled_lag1",
+        "model_seed": 2026092703,
+        "pid": 1655237,
+        "gpu": 4,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_coupled_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coupled_identity_20261002_r01/experiments/cvs_coupled_identity/configs/coupled_lag1-s2026092703.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-coupled-identity-manysig-m8-r01/coupled_lag1-s2026092703.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-coupled-identity-manysig-m8-r01/coupled_lag1-s2026092703/source",
+        "started": 1790933177.4846973
+      }
     },
     {
       "row_id": "coupled_lag4-s2026092703",
@@ -392,7 +482,25 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "runtime_evidence": {
+        "status": "RUNNING",
+        "variant": "coupled_lag4",
+        "model_seed": 2026092703,
+        "pid": 1655322,
+        "gpu": 5,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_coupled_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coupled_identity_20261002_r01/experiments/cvs_coupled_identity/configs/coupled_lag4-s2026092703.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-coupled-identity-manysig-m8-r01/coupled_lag4-s2026092703.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-coupled-identity-manysig-m8-r01/coupled_lag4-s2026092703/source",
+        "started": 1790933182.7192996
+      }
     },
     {
       "row_id": "coupled_lag1-s2026092704",
@@ -434,7 +542,25 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "runtime_evidence": {
+        "status": "RUNNING",
+        "variant": "coupled_lag1",
+        "model_seed": 2026092704,
+        "pid": 1655413,
+        "gpu": 6,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_coupled_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coupled_identity_20261002_r01/experiments/cvs_coupled_identity/configs/coupled_lag1-s2026092704.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-coupled-identity-manysig-m8-r01/coupled_lag1-s2026092704.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-coupled-identity-manysig-m8-r01/coupled_lag1-s2026092704/source",
+        "started": 1790933187.94685
+      }
     },
     {
       "row_id": "coupled_lag4-s2026092704",
@@ -476,7 +602,25 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
-      ]
+      ],
+      "runtime_evidence": {
+        "status": "RUNNING",
+        "variant": "coupled_lag4",
+        "model_seed": 2026092704,
+        "pid": 1655501,
+        "gpu": 7,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_coupled_identity.source",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coupled_identity_20261002_r01/experiments/cvs_coupled_identity/configs/coupled_lag4-s2026092704.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-coupled-identity-manysig-m8-r01/coupled_lag4-s2026092704.log",
+        "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-coupled-identity-manysig-m8-r01/coupled_lag4-s2026092704/source",
+        "started": 1790933193.1746845
+      }
     }
   ],
   "notes": [
