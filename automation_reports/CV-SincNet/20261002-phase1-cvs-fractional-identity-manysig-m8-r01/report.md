@@ -1,6 +1,6 @@
 # CVS 波形层分数频偏校正：正式源实验预登记
 
-状态 PLANNED，尚未发布或证明性能提升。普通 CE、无训练增强、仅身份骨干，性能优先。
+状态 RUNNING，8 个源训练已核实健康运行，尚未证明性能提升。普通 CE、无训练增强、仅身份骨干，性能优先。
 
 [数学假设与源证据](../../../docs/CVS_FRACTIONAL_IDENTITY_HYPOTHESIS_20261002.md)。已有加性源实验与40行内部消融提示后置坐标注入贡献有限；本轮把received相对频率直接保留在波形作用位置，不把混合频偏当唯一TX参数。
 
@@ -15,3 +15,11 @@
 每GPU最多两个训练任务，仅使用空闲容量；唯一launch owner。不热改、停止或重启健康任务。55项针对性检查和一次独立P0/P1审查PASS；8个一次性CPU模型/24次CE验证PASS，未访问正式数据或权重。
 
 [本地验证](evidence/local_validation.json) · [实时源控制/输出不存在](evidence/source_control_preflight.json) · [CPU smoke](evidence/local_cpu_smoke.json)。
+
+## 实际启动核实
+
+VERIFIED：immutable release `8f33975232e0416704eee74468324a8977cdd966`，dispatcher PID 1446408，8 个 worker 分别在 GPU0..7；CWD/argv/run-root/实际 resolved/config、每轮50步/6300样本和日志增长已独立读回。各实际 backend flags 与固定完整 FP32 一致，源数据角色相同、无 target/增强/域骨干。远端一次 CPU 8 模型运行/梯度/物理 smoke 完成，真实初始 checkpoint roundtrip 在各源 worker 内完成。当前仅训练进度，无最终源或新测试结论；不热改、停机或重启健康任务。
+
+## 条件测试路径准备
+
+本地已准备新候选冻结后的独立 clean 路径：source12记录重算、actual完整FP32/物理角色/scratch/E200/payload/strict模型加载核实后才读取query；仅选中4个新模型加20个旧冻结预测，共24行，同seed配对原残差及常见基准。fractional17项（含两种真实模型 checkpoint 合成预测回读）与 additive17项回归检查通过，独立P0/P1审查PASS。没有生成真实clean配置、访问target或修改正在运行的源release。[验证](evidence/conditional_clean_validation.json)。

@@ -28,7 +28,7 @@
   "replaces_run_id": null,
   "authorization": "用户授权持续优化基础网络，性能第一，真正 RFF physics aware；普通 CE、无增强、clean-only，每次发布默认完成测试。",
   "code": {
-    "commit": "f6c12e0e5ab2da57de1f40804f53ab18664075df",
+    "commit": "8f33975232e0416704eee74468324a8977cdd966",
     "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_fractional_identity_20261002_r01",
@@ -102,7 +102,17 @@
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-fractional-identity-manysig-m8-r01",
     "local_artifact_root": "automation_reports/CV-SincNet/20261002-phase1-cvs-fractional-identity-manysig-m8-r01",
     "launch_command": "python -m experiments.cvs_fractional_identity.publish --output local_artifacts/cvs_fractional_identity_20261002_r01",
-    "stop_rule": "Only own affected row fails on nonfinite/permissions/output collision/nonzero exit; preserve all artifacts; no retry, low-score stop or unrelated process intervention"
+    "stop_rule": "Only own affected row fails on nonfinite/permissions/output collision/nonzero exit; preserve all artifacts; no retry, low-score stop or unrelated process intervention",
+    "actual_pid": 1446408,
+    "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_fractional_identity_20261002_r01",
+    "actual_argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_fractional_identity.dispatch",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_fractional_identity_20261002_r01/experiments/cvs_fractional_identity/configs/launch_spec.json"
+    ]
   },
   "expected_artifacts": [
     "last.pt",
@@ -148,7 +158,7 @@
       "row_id": "fractional_half-s2026092701",
       "method": "fractional_half",
       "purpose": "source_only_CVS_fractional_waveform_candidate",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_fractional_identity/configs/fractional_half-s2026092701.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-fractional-identity-manysig-m8-r01/fractional_half-s2026092701/source/resolved_config.json",
       "data_overrides": {},
@@ -183,13 +193,24 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
+      ],
+      "actual_pid": 1446424,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_fractional_identity_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_fractional_identity.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_fractional_identity_20261002_r01/experiments/cvs_fractional_identity/configs/fractional_half-s2026092701.json",
+        ""
       ]
     },
     {
       "row_id": "fractional_learned-s2026092701",
       "method": "fractional_learned",
       "purpose": "source_only_CVS_fractional_waveform_candidate",
-      "gpu": null,
+      "gpu": 1,
       "config_ref": "experiments/cvs_fractional_identity/configs/fractional_learned-s2026092701.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-fractional-identity-manysig-m8-r01/fractional_learned-s2026092701/source/resolved_config.json",
       "data_overrides": {},
@@ -224,13 +245,24 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
+      ],
+      "actual_pid": 1446513,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_fractional_identity_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_fractional_identity.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_fractional_identity_20261002_r01/experiments/cvs_fractional_identity/configs/fractional_learned-s2026092701.json",
+        ""
       ]
     },
     {
       "row_id": "fractional_half-s2026092702",
       "method": "fractional_half",
       "purpose": "source_only_CVS_fractional_waveform_candidate",
-      "gpu": null,
+      "gpu": 2,
       "config_ref": "experiments/cvs_fractional_identity/configs/fractional_half-s2026092702.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-fractional-identity-manysig-m8-r01/fractional_half-s2026092702/source/resolved_config.json",
       "data_overrides": {},
@@ -265,13 +297,24 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
+      ],
+      "actual_pid": 1446602,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_fractional_identity_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_fractional_identity.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_fractional_identity_20261002_r01/experiments/cvs_fractional_identity/configs/fractional_half-s2026092702.json",
+        ""
       ]
     },
     {
       "row_id": "fractional_learned-s2026092702",
       "method": "fractional_learned",
       "purpose": "source_only_CVS_fractional_waveform_candidate",
-      "gpu": null,
+      "gpu": 3,
       "config_ref": "experiments/cvs_fractional_identity/configs/fractional_learned-s2026092702.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-fractional-identity-manysig-m8-r01/fractional_learned-s2026092702/source/resolved_config.json",
       "data_overrides": {},
@@ -306,13 +349,24 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
+      ],
+      "actual_pid": 1446689,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_fractional_identity_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_fractional_identity.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_fractional_identity_20261002_r01/experiments/cvs_fractional_identity/configs/fractional_learned-s2026092702.json",
+        ""
       ]
     },
     {
       "row_id": "fractional_half-s2026092703",
       "method": "fractional_half",
       "purpose": "source_only_CVS_fractional_waveform_candidate",
-      "gpu": null,
+      "gpu": 4,
       "config_ref": "experiments/cvs_fractional_identity/configs/fractional_half-s2026092703.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-fractional-identity-manysig-m8-r01/fractional_half-s2026092703/source/resolved_config.json",
       "data_overrides": {},
@@ -347,13 +401,24 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
+      ],
+      "actual_pid": 1446777,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_fractional_identity_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_fractional_identity.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_fractional_identity_20261002_r01/experiments/cvs_fractional_identity/configs/fractional_half-s2026092703.json",
+        ""
       ]
     },
     {
       "row_id": "fractional_learned-s2026092703",
       "method": "fractional_learned",
       "purpose": "source_only_CVS_fractional_waveform_candidate",
-      "gpu": null,
+      "gpu": 5,
       "config_ref": "experiments/cvs_fractional_identity/configs/fractional_learned-s2026092703.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-fractional-identity-manysig-m8-r01/fractional_learned-s2026092703/source/resolved_config.json",
       "data_overrides": {},
@@ -388,13 +453,24 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
+      ],
+      "actual_pid": 1446866,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_fractional_identity_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_fractional_identity.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_fractional_identity_20261002_r01/experiments/cvs_fractional_identity/configs/fractional_learned-s2026092703.json",
+        ""
       ]
     },
     {
       "row_id": "fractional_half-s2026092704",
       "method": "fractional_half",
       "purpose": "source_only_CVS_fractional_waveform_candidate",
-      "gpu": null,
+      "gpu": 6,
       "config_ref": "experiments/cvs_fractional_identity/configs/fractional_half-s2026092704.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-fractional-identity-manysig-m8-r01/fractional_half-s2026092704/source/resolved_config.json",
       "data_overrides": {},
@@ -429,13 +505,24 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
+      ],
+      "actual_pid": 1447008,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_fractional_identity_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_fractional_identity.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_fractional_identity_20261002_r01/experiments/cvs_fractional_identity/configs/fractional_half-s2026092704.json",
+        ""
       ]
     },
     {
       "row_id": "fractional_learned-s2026092704",
       "method": "fractional_learned",
       "purpose": "source_only_CVS_fractional_waveform_candidate",
-      "gpu": null,
+      "gpu": 7,
       "config_ref": "experiments/cvs_fractional_identity/configs/fractional_learned-s2026092704.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-fractional-identity-manysig-m8-r01/fractional_learned-s2026092704/source/resolved_config.json",
       "data_overrides": {},
@@ -470,6 +557,17 @@
         "epoch_metrics.csv",
         "source_final_diagnostics.json",
         "source_physical_diagnostics.json"
+      ],
+      "actual_pid": 1447097,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_fractional_identity_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_fractional_identity.source",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_fractional_identity_20261002_r01/experiments/cvs_fractional_identity/configs/fractional_learned-s2026092704.json",
+        ""
       ]
     }
   ],
