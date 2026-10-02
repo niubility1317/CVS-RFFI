@@ -1,0 +1,297 @@
+{
+  "candidate": "coupled_lag4",
+  "parameters": 202553,
+  "trainable_parameters": 202553,
+  "gradient_parameters": 202553,
+  "resident_model_state_bytes": 810844,
+  "conv_linear_macs": 7199008,
+  "inference_batch1_ms_mean": 7.0621817005303456,
+  "train_batch128_ms_mean": 41.088806049810955,
+  "actual_training_peak_bytes": 163559936,
+  "full_clean_prediction_seconds_mean": 12.389159867991111,
+  "actual_prediction_peak_bytes": 57385984,
+  "hardware": "NVIDIA GeForce RTX 3090",
+  "torch_version": "2.1.0+cu121",
+  "mac_scope": "Conv1d/Conv2d and matrix multiplication only; excludes FFT, normalization, pooling, physical lifts and elementwise arithmetic",
+  "fft_calls_per_sample": 2,
+  "whole_phase_max_logit_error": 2.703070640563965e-05,
+  "whole_phase_max_unit_embedding_distance": 1.7831276863944368e-06,
+  "new_onboard_transmission_bytes": null,
+  "coupled_contract": {
+    "mode": "coupled_lag4",
+    "input": "received_equalized1_unit_rms_IQ",
+    "sample_rate_hz": 25000000,
+    "whole_identity_global_phase_invariant_real_arithmetic": true,
+    "global_phase_equivariant_until_readout": true,
+    "removes_linear_phase": false,
+    "arbitrary_channel_rx_invariant": false,
+    "hardware_parameter_estimation": false,
+    "time_complex_channels": [
+      24,
+      24,
+      32,
+      32
+    ],
+    "time_kernels": [
+      5,
+      5,
+      3
+    ],
+    "time_strides": [
+      2,
+      2,
+      1
+    ],
+    "behavior_orders": [
+      1,
+      3,
+      5
+    ],
+    "behavior_delays": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "radial_clip": 4.0,
+    "order_scale_base": 2.0,
+    "behavior_complex_channels": [
+      12,
+      24,
+      32,
+      32
+    ],
+    "behavior_kernels": [
+      7,
+      5,
+      3
+    ],
+    "behavior_dilations": [
+      1,
+      2,
+      4
+    ],
+    "behavior_causal_filters": true,
+    "per_packet_complex_rms_normalization": true,
+    "complex_bias": false,
+    "radial_gate": "2sigmoid(a*log1p(power)+b)",
+    "invariant_readout": "logpower mean/std,lag1/2 normalized complex correlation,4 positional logpower means",
+    "readout_channels_per_complex_channel": 10,
+    "embedding_dimension": 160,
+    "classifier_scale": 30.0,
+    "original_real_frequency_path_retained": true,
+    "raw_unconstrained_identity_bypass": false,
+    "interpretation": "Received relative filter/polynomial energy is retained by normalization;not recovered TX PA/IQ coefficients or arbitrary RX/channel invariance",
+    "normalization_scope": "one complex power mean across all channels and time per packet per block",
+    "per_channel_sample_dependent_rms_normalization": false,
+    "relative_filter_channel_energy_preserved_by_normalization_only": true,
+    "learned_channel_scales_retained": true,
+    "new_trainable_parameters": 0,
+    "relative_energy_after_gate": "may change through learned radial gate;not fixed",
+    "learned_channel_scales_may_change_energy_ratios": true,
+    "identity_core": "energy_equivariant",
+    "estimator_window": [
+      80,
+      160
+    ],
+    "estimator_period_samples": 20,
+    "relative_frequency_alias_hz": 1250000,
+    "alignment_strength": 0.0,
+    "alignment_parameters": 0,
+    "alignment_packet_specific": false,
+    "alignment_class_specific": false,
+    "alignment_rx_specific": false,
+    "waveform_operator": "x[n]exp(-j alpha omega n);raw variant returns x exactly",
+    "whole_affine_phase_invariant": false,
+    "alignment_interpretation": "fixed received frequency retention;not TX/RX oscillator proportion",
+    "prototype_only": false,
+    "behavior_input": "clipped z(n-m) times averaged causal envelope powers0/1/2",
+    "envelope_lag": 4,
+    "coupled_lift_active": true,
+    "actual_envelope_lag": 4,
+    "envelope_average_weights": [
+      0.5,
+      0.5
+    ],
+    "behavior_terms": 12,
+    "original_position_power_readout_retained": true,
+    "no_frequency_correction": true,
+    "full_GMP": false,
+    "hardware_parameter_recovery": false
+  },
+  "normalization_scope": "Actual six conv outputs, before/after shared denominator only; learned scales/radial gates excluded",
+  "public_normalization": [
+    {
+      "model_seed": 2026092701,
+      "scope": "Actual conv outputs and one shared normalization gain only;learned scales/gates excluded;not TX/RX causal separation",
+      "records": [
+        {
+          "block": "time.0",
+          "eligible_packets": 30,
+          "relative_energy_fraction_max_error": 2.9802322387695312e-08,
+          "relative_energy_fraction_variance_mean": 0.00047290229122154415
+        },
+        {
+          "block": "time.1",
+          "eligible_packets": 30,
+          "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+          "relative_energy_fraction_variance_mean": 0.00021733346511609852
+        },
+        {
+          "block": "time.2",
+          "eligible_packets": 30,
+          "relative_energy_fraction_max_error": 2.2351741790771484e-08,
+          "relative_energy_fraction_variance_mean": 0.0005029883468523622
+        },
+        {
+          "block": "behavior.0",
+          "eligible_packets": 30,
+          "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+          "relative_energy_fraction_variance_mean": 0.0001304565666941926
+        },
+        {
+          "block": "behavior.1",
+          "eligible_packets": 30,
+          "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+          "relative_energy_fraction_variance_mean": 0.00015262998931575567
+        },
+        {
+          "block": "behavior.2",
+          "eligible_packets": 30,
+          "relative_energy_fraction_max_error": 2.2351741790771484e-08,
+          "relative_energy_fraction_variance_mean": 0.0006007386837154627
+        }
+      ],
+      "blocks": 6
+    },
+    {
+      "model_seed": 2026092702,
+      "scope": "Actual conv outputs and one shared normalization gain only;learned scales/gates excluded;not TX/RX causal separation",
+      "records": [
+        {
+          "block": "time.0",
+          "eligible_packets": 30,
+          "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+          "relative_energy_fraction_variance_mean": 0.0003048049984499812
+        },
+        {
+          "block": "time.1",
+          "eligible_packets": 30,
+          "relative_energy_fraction_max_error": 2.2351741790771484e-08,
+          "relative_energy_fraction_variance_mean": 0.00029157227254472673
+        },
+        {
+          "block": "time.2",
+          "eligible_packets": 30,
+          "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+          "relative_energy_fraction_variance_mean": 0.0006172566791065037
+        },
+        {
+          "block": "behavior.0",
+          "eligible_packets": 30,
+          "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+          "relative_energy_fraction_variance_mean": 0.0003478500875644386
+        },
+        {
+          "block": "behavior.1",
+          "eligible_packets": 30,
+          "relative_energy_fraction_max_error": 2.2351741790771484e-08,
+          "relative_energy_fraction_variance_mean": 0.000252895406447351
+        },
+        {
+          "block": "behavior.2",
+          "eligible_packets": 30,
+          "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+          "relative_energy_fraction_variance_mean": 0.0005107832257635891
+        }
+      ],
+      "blocks": 6
+    },
+    {
+      "model_seed": 2026092703,
+      "scope": "Actual conv outputs and one shared normalization gain only;learned scales/gates excluded;not TX/RX causal separation",
+      "records": [
+        {
+          "block": "time.0",
+          "eligible_packets": 30,
+          "relative_energy_fraction_max_error": 2.2351741790771484e-08,
+          "relative_energy_fraction_variance_mean": 0.00046098759048618376
+        },
+        {
+          "block": "time.1",
+          "eligible_packets": 30,
+          "relative_energy_fraction_max_error": 1.1175870895385742e-08,
+          "relative_energy_fraction_variance_mean": 0.0002567658666521311
+        },
+        {
+          "block": "time.2",
+          "eligible_packets": 30,
+          "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+          "relative_energy_fraction_variance_mean": 0.00032083888072520494
+        },
+        {
+          "block": "behavior.0",
+          "eligible_packets": 30,
+          "relative_energy_fraction_max_error": 2.2351741790771484e-08,
+          "relative_energy_fraction_variance_mean": 0.00037009993684478104
+        },
+        {
+          "block": "behavior.1",
+          "eligible_packets": 30,
+          "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+          "relative_energy_fraction_variance_mean": 0.00021257375192362815
+        },
+        {
+          "block": "behavior.2",
+          "eligible_packets": 30,
+          "relative_energy_fraction_max_error": 2.2351741790771484e-08,
+          "relative_energy_fraction_variance_mean": 0.0004513737221714109
+        }
+      ],
+      "blocks": 6
+    },
+    {
+      "model_seed": 2026092704,
+      "scope": "Actual conv outputs and one shared normalization gain only;learned scales/gates excluded;not TX/RX causal separation",
+      "records": [
+        {
+          "block": "time.0",
+          "eligible_packets": 30,
+          "relative_energy_fraction_max_error": 2.2351741790771484e-08,
+          "relative_energy_fraction_variance_mean": 0.00045441268594004214
+        },
+        {
+          "block": "time.1",
+          "eligible_packets": 30,
+          "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+          "relative_energy_fraction_variance_mean": 0.00022580100630875677
+        },
+        {
+          "block": "time.2",
+          "eligible_packets": 30,
+          "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+          "relative_energy_fraction_variance_mean": 0.00024722469970583916
+        },
+        {
+          "block": "behavior.0",
+          "eligible_packets": 30,
+          "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+          "relative_energy_fraction_variance_mean": 0.0002453189517837018
+        },
+        {
+          "block": "behavior.1",
+          "eligible_packets": 30,
+          "relative_energy_fraction_max_error": 1.4901161193847656e-08,
+          "relative_energy_fraction_variance_mean": 0.00013757341366726905
+        },
+        {
+          "block": "behavior.2",
+          "eligible_packets": 30,
+          "relative_energy_fraction_max_error": 2.2351741790771484e-08,
+          "relative_energy_fraction_variance_mean": 0.00056715018581599
+        }
+      ],
+      "blocks": 6
+    }
+  ]
+}

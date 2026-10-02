@@ -294,7 +294,7 @@
       "completed_epoch": 200,
       "completed_steps": 10000,
       "source_completion_ref": "evidence/final_source_readback.json",
-      "test_status": "AWAITING_FROZEN_CLEAN_TEST"
+      "test_status": "VERIFIED_ANALYZED"
     },
     {
       "row_id": "coupled_lag1-s2026092702",
@@ -448,7 +448,7 @@
       "completed_epoch": 200,
       "completed_steps": 10000,
       "source_completion_ref": "evidence/final_source_readback.json",
-      "test_status": "AWAITING_FROZEN_CLEAN_TEST"
+      "test_status": "VERIFIED_ANALYZED"
     },
     {
       "row_id": "coupled_lag1-s2026092703",
@@ -602,7 +602,7 @@
       "completed_epoch": 200,
       "completed_steps": 10000,
       "source_completion_ref": "evidence/final_source_readback.json",
-      "test_status": "AWAITING_FROZEN_CLEAN_TEST"
+      "test_status": "VERIFIED_ANALYZED"
     },
     {
       "row_id": "coupled_lag1-s2026092704",
@@ -756,7 +756,7 @@
       "completed_epoch": 200,
       "completed_steps": 10000,
       "source_completion_ref": "evidence/final_source_readback.json",
-      "test_status": "AWAITING_FROZEN_CLEAN_TEST"
+      "test_status": "VERIFIED_ANALYZED"
     }
   ],
   "notes": [
@@ -886,7 +886,8 @@
     "source_epochs": 1600,
     "source_analysis": "evidence/source_analysis_validation.json",
     "clean_confirmation_run": "20261002-phase1-cvs-coupled-clean-manysig-m28-r01",
-    "clean_status": "REGISTERED_NOT_PUBLISHED",
-    "goal_achieved": false
+    "clean_status": "VERIFIED_ANALYZED",
+    "goal_achieved": false,
+    "clean_report_ref": "../20261002-phase1-cvs-coupled-clean-manysig-m28-r01/report.md"
   }
 }

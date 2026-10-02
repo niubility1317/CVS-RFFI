@@ -23,7 +23,7 @@
   "replaces_run_id": null,
   "authorization": "用户授权持续优化，性能优先且真正RFF physics aware；源规则选中才默认clean测试。",
   "code": {
-    "commit": "65d4a48214739686ee167d11122780ea08bb2624",
+    "commit": "4f15f548cb34cedf6cc1f9758629a92540f3536d",
     "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coupled_clean_eval_20261002_r01",
@@ -127,7 +127,17 @@
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-coupled-clean-manysig-m28-r01",
     "local_artifact_root": "automation_reports/CV-SincNet/20261002-phase1-cvs-coupled-clean-manysig-m28-r01",
     "launch_command": "python -m experiments.cvs_coupled_clean.publish --output local_artifacts/cvs_coupled_clean_eval_20261002_r01",
-    "stop_rule": "Only own affected row fails on nonfinite/permissions/output collision/nonzero exit; preserve all artifacts; no retry, low-score stop or unrelated process intervention"
+    "stop_rule": "Only own affected row fails on nonfinite/permissions/output collision/nonzero exit; preserve all artifacts; no retry, low-score stop or unrelated process intervention",
+    "actual_pid": 1677520,
+    "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coupled_clean_eval_20261002_r01",
+    "actual_argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_clean_eval.dispatch",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coupled_clean_eval_20261002_r01/experiments/cvs_coupled_clean/configs/launch_spec.json"
+    ]
   },
   "expected_artifacts": [
     "pipeline_state.json",
@@ -198,7 +208,10 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01"
+      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "prediction_status": "PREDICTIONS_COMPLETE",
+      "scoring_status": "SCORED_COMPLETE",
+      "analysis_status": "VERIFIED"
     },
     {
       "row_id": "cvcnn-s2026092701",
@@ -233,7 +246,10 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01"
+      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "prediction_status": "PREDICTIONS_COMPLETE",
+      "scoring_status": "SCORED_COMPLETE",
+      "analysis_status": "VERIFIED"
     },
     {
       "row_id": "real_cnn-s2026092701",
@@ -268,7 +284,10 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01"
+      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "prediction_status": "PREDICTIONS_COMPLETE",
+      "scoring_status": "SCORED_COMPLETE",
+      "analysis_status": "VERIFIED"
     },
     {
       "row_id": "resnet1d-s2026092701",
@@ -303,7 +322,10 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01"
+      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "prediction_status": "PREDICTIONS_COMPLETE",
+      "scoring_status": "SCORED_COMPLETE",
+      "analysis_status": "VERIFIED"
     },
     {
       "row_id": "native-s2026092702",
@@ -338,7 +360,10 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01"
+      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "prediction_status": "PREDICTIONS_COMPLETE",
+      "scoring_status": "SCORED_COMPLETE",
+      "analysis_status": "VERIFIED"
     },
     {
       "row_id": "cvcnn-s2026092702",
@@ -373,7 +398,10 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01"
+      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "prediction_status": "PREDICTIONS_COMPLETE",
+      "scoring_status": "SCORED_COMPLETE",
+      "analysis_status": "VERIFIED"
     },
     {
       "row_id": "real_cnn-s2026092702",
@@ -408,7 +436,10 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01"
+      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "prediction_status": "PREDICTIONS_COMPLETE",
+      "scoring_status": "SCORED_COMPLETE",
+      "analysis_status": "VERIFIED"
     },
     {
       "row_id": "resnet1d-s2026092702",
@@ -443,7 +474,10 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01"
+      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "prediction_status": "PREDICTIONS_COMPLETE",
+      "scoring_status": "SCORED_COMPLETE",
+      "analysis_status": "VERIFIED"
     },
     {
       "row_id": "native-s2026092703",
@@ -478,7 +512,10 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01"
+      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "prediction_status": "PREDICTIONS_COMPLETE",
+      "scoring_status": "SCORED_COMPLETE",
+      "analysis_status": "VERIFIED"
     },
     {
       "row_id": "cvcnn-s2026092703",
@@ -513,7 +550,10 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01"
+      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "prediction_status": "PREDICTIONS_COMPLETE",
+      "scoring_status": "SCORED_COMPLETE",
+      "analysis_status": "VERIFIED"
     },
     {
       "row_id": "real_cnn-s2026092703",
@@ -548,7 +588,10 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01"
+      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "prediction_status": "PREDICTIONS_COMPLETE",
+      "scoring_status": "SCORED_COMPLETE",
+      "analysis_status": "VERIFIED"
     },
     {
       "row_id": "resnet1d-s2026092703",
@@ -583,7 +626,10 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01"
+      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "prediction_status": "PREDICTIONS_COMPLETE",
+      "scoring_status": "SCORED_COMPLETE",
+      "analysis_status": "VERIFIED"
     },
     {
       "row_id": "native-s2026092704",
@@ -618,7 +664,10 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01"
+      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "prediction_status": "PREDICTIONS_COMPLETE",
+      "scoring_status": "SCORED_COMPLETE",
+      "analysis_status": "VERIFIED"
     },
     {
       "row_id": "cvcnn-s2026092704",
@@ -653,7 +702,10 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01"
+      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "prediction_status": "PREDICTIONS_COMPLETE",
+      "scoring_status": "SCORED_COMPLETE",
+      "analysis_status": "VERIFIED"
     },
     {
       "row_id": "real_cnn-s2026092704",
@@ -688,7 +740,10 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01"
+      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "prediction_status": "PREDICTIONS_COMPLETE",
+      "scoring_status": "SCORED_COMPLETE",
+      "analysis_status": "VERIFIED"
     },
     {
       "row_id": "resnet1d-s2026092704",
@@ -723,7 +778,10 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01"
+      "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "prediction_status": "PREDICTIONS_COMPLETE",
+      "scoring_status": "SCORED_COMPLETE",
+      "analysis_status": "VERIFIED"
     },
     {
       "row_id": "residual_fusion-s2026092701",
@@ -758,7 +816,10 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-cvs-selected-clean-manysig-m20-r01"
+      "reuse_from_run": "20261001-phase1-cvs-selected-clean-manysig-m20-r01",
+      "prediction_status": "PREDICTIONS_COMPLETE",
+      "scoring_status": "SCORED_COMPLETE",
+      "analysis_status": "VERIFIED"
     },
     {
       "row_id": "residual_fusion-s2026092702",
@@ -793,7 +854,10 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-cvs-selected-clean-manysig-m20-r01"
+      "reuse_from_run": "20261001-phase1-cvs-selected-clean-manysig-m20-r01",
+      "prediction_status": "PREDICTIONS_COMPLETE",
+      "scoring_status": "SCORED_COMPLETE",
+      "analysis_status": "VERIFIED"
     },
     {
       "row_id": "residual_fusion-s2026092703",
@@ -828,7 +892,10 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-cvs-selected-clean-manysig-m20-r01"
+      "reuse_from_run": "20261001-phase1-cvs-selected-clean-manysig-m20-r01",
+      "prediction_status": "PREDICTIONS_COMPLETE",
+      "scoring_status": "SCORED_COMPLETE",
+      "analysis_status": "VERIFIED"
     },
     {
       "row_id": "residual_fusion-s2026092704",
@@ -863,7 +930,10 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261001-phase1-cvs-selected-clean-manysig-m20-r01"
+      "reuse_from_run": "20261001-phase1-cvs-selected-clean-manysig-m20-r01",
+      "prediction_status": "PREDICTIONS_COMPLETE",
+      "scoring_status": "SCORED_COMPLETE",
+      "analysis_status": "VERIFIED"
     },
     {
       "row_id": "energy_equivariant-s2026092701",
@@ -898,7 +968,10 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261002-phase1-cvs-energy-clean-manysig-m24-r01"
+      "reuse_from_run": "20261002-phase1-cvs-energy-clean-manysig-m24-r01",
+      "prediction_status": "PREDICTIONS_COMPLETE",
+      "scoring_status": "SCORED_COMPLETE",
+      "analysis_status": "VERIFIED"
     },
     {
       "row_id": "energy_equivariant-s2026092702",
@@ -933,7 +1006,10 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261002-phase1-cvs-energy-clean-manysig-m24-r01"
+      "reuse_from_run": "20261002-phase1-cvs-energy-clean-manysig-m24-r01",
+      "prediction_status": "PREDICTIONS_COMPLETE",
+      "scoring_status": "SCORED_COMPLETE",
+      "analysis_status": "VERIFIED"
     },
     {
       "row_id": "energy_equivariant-s2026092703",
@@ -968,7 +1044,10 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261002-phase1-cvs-energy-clean-manysig-m24-r01"
+      "reuse_from_run": "20261002-phase1-cvs-energy-clean-manysig-m24-r01",
+      "prediction_status": "PREDICTIONS_COMPLETE",
+      "scoring_status": "SCORED_COMPLETE",
+      "analysis_status": "VERIFIED"
     },
     {
       "row_id": "energy_equivariant-s2026092704",
@@ -1003,13 +1082,16 @@
         "clean_predictions.npz",
         "clean_complete.json"
       ],
-      "reuse_from_run": "20261002-phase1-cvs-energy-clean-manysig-m24-r01"
+      "reuse_from_run": "20261002-phase1-cvs-energy-clean-manysig-m24-r01",
+      "prediction_status": "PREDICTIONS_COMPLETE",
+      "scoring_status": "SCORED_COMPLETE",
+      "analysis_status": "VERIFIED"
     },
     {
       "row_id": "coupled_lag4-s2026092701",
       "method": "coupled_lag4",
       "purpose": "single_source_selected_new_CVS_confirmation",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_coupled_clean/configs/coupled_lag4-s2026092701.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-coupled-clean-manysig-m28-r01/coupled_lag4-s2026092701/prediction/resolved_config.json",
       "data_overrides": {},
@@ -1037,13 +1119,26 @@
         "resolved_config.json",
         "clean_predictions.npz",
         "clean_complete.json"
-      ]
+      ],
+      "actual_pid": 1677542,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coupled_clean_eval_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_clean_eval.predict",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coupled_clean_eval_20261002_r01/experiments/cvs_coupled_clean/configs/coupled_lag4-s2026092701.json"
+      ],
+      "prediction_status": "PREDICTIONS_COMPLETE",
+      "scoring_status": "SCORED_COMPLETE",
+      "analysis_status": "VERIFIED"
     },
     {
       "row_id": "coupled_lag4-s2026092702",
       "method": "coupled_lag4",
       "purpose": "single_source_selected_new_CVS_confirmation",
-      "gpu": null,
+      "gpu": 1,
       "config_ref": "experiments/cvs_coupled_clean/configs/coupled_lag4-s2026092702.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-coupled-clean-manysig-m28-r01/coupled_lag4-s2026092702/prediction/resolved_config.json",
       "data_overrides": {},
@@ -1071,13 +1166,26 @@
         "resolved_config.json",
         "clean_predictions.npz",
         "clean_complete.json"
-      ]
+      ],
+      "actual_pid": 1677624,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coupled_clean_eval_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_clean_eval.predict",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coupled_clean_eval_20261002_r01/experiments/cvs_coupled_clean/configs/coupled_lag4-s2026092702.json"
+      ],
+      "prediction_status": "PREDICTIONS_COMPLETE",
+      "scoring_status": "SCORED_COMPLETE",
+      "analysis_status": "VERIFIED"
     },
     {
       "row_id": "coupled_lag4-s2026092703",
       "method": "coupled_lag4",
       "purpose": "single_source_selected_new_CVS_confirmation",
-      "gpu": null,
+      "gpu": 2,
       "config_ref": "experiments/cvs_coupled_clean/configs/coupled_lag4-s2026092703.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-coupled-clean-manysig-m28-r01/coupled_lag4-s2026092703/prediction/resolved_config.json",
       "data_overrides": {},
@@ -1105,13 +1213,26 @@
         "resolved_config.json",
         "clean_predictions.npz",
         "clean_complete.json"
-      ]
+      ],
+      "actual_pid": 1677704,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coupled_clean_eval_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_clean_eval.predict",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coupled_clean_eval_20261002_r01/experiments/cvs_coupled_clean/configs/coupled_lag4-s2026092703.json"
+      ],
+      "prediction_status": "PREDICTIONS_COMPLETE",
+      "scoring_status": "SCORED_COMPLETE",
+      "analysis_status": "VERIFIED"
     },
     {
       "row_id": "coupled_lag4-s2026092704",
       "method": "coupled_lag4",
       "purpose": "single_source_selected_new_CVS_confirmation",
-      "gpu": null,
+      "gpu": 3,
       "config_ref": "experiments/cvs_coupled_clean/configs/coupled_lag4-s2026092704.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-coupled-clean-manysig-m28-r01/coupled_lag4-s2026092704/prediction/resolved_config.json",
       "data_overrides": {},
@@ -1139,7 +1260,20 @@
         "resolved_config.json",
         "clean_predictions.npz",
         "clean_complete.json"
-      ]
+      ],
+      "actual_pid": 1677784,
+      "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coupled_clean_eval_20261002_r01",
+      "actual_argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_clean_eval.predict",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coupled_clean_eval_20261002_r01/experiments/cvs_coupled_clean/configs/coupled_lag4-s2026092704.json"
+      ],
+      "prediction_status": "PREDICTIONS_COMPLETE",
+      "scoring_status": "SCORED_COMPLETE",
+      "analysis_status": "VERIFIED"
     }
   ],
   "notes": [
@@ -1150,5 +1284,92 @@
     "Freeze numerical_policy from actual source payload;prediction disablescuDNNTF32 before model forward and records actualflags;not a rerun of previous target predictions"
   ],
   "registered_at": "2026-10-02T09:52:30+00:00",
-  "status": "PLANNED"
+  "status": "PLANNED",
+  "results": {
+    "scoring_status": "VERIFIED_COMPLETE",
+    "clean_rows": 28,
+    "query_count_per_row": 168000,
+    "records": 224,
+    "analysis_verdict": {
+      "status": "VERIFIED",
+      "candidate": "coupled_lag4",
+      "accuracy_mean": 0.6905476190476191,
+      "accuracy_sd": 0.007297225772048865,
+      "paired_vs_energy": {
+        "candidate": "coupled_lag4",
+        "baseline": "energy_equivariant",
+        "receiver": "ALL",
+        "view": "clean",
+        "model_seeds": [
+          2026092701,
+          2026092702,
+          2026092703,
+          2026092704
+        ],
+        "accuracy_delta_pp_by_seed": [
+          -0.6434523809523807,
+          -2.234523809523814,
+          0.27202380952380256,
+          0.14523809523809827
+        ],
+        "accuracy_delta_pp_mean": -0.6151785714285735,
+        "accuracy_delta_pp_seed_sd": 1.1530307859663789,
+        "positive_seeds": 2
+      },
+      "paired_vs_residual": {
+        "candidate": "coupled_lag4",
+        "baseline": "residual_fusion",
+        "receiver": "ALL",
+        "view": "clean",
+        "model_seeds": [
+          2026092701,
+          2026092702,
+          2026092703,
+          2026092704
+        ],
+        "accuracy_delta_pp_by_seed": [
+          -9.826785714285712,
+          -9.160119047619053,
+          -10.308928571428577,
+          -8.30238095238095
+        ],
+        "accuracy_delta_pp_mean": -9.399553571428573,
+        "accuracy_delta_pp_seed_sd": 0.8699821533983751,
+        "positive_seeds": 0
+      },
+      "paired_vs_native": {
+        "candidate": "coupled_lag4",
+        "baseline": "native",
+        "receiver": "ALL",
+        "view": "clean",
+        "model_seeds": [
+          2026092701,
+          2026092702,
+          2026092703,
+          2026092704
+        ],
+        "accuracy_delta_pp_by_seed": [
+          -7.218452380952378,
+          -7.667261904761913,
+          -7.489880952380956,
+          -6.314285714285717
+        ],
+        "accuracy_delta_pp_mean": -7.172470238095241,
+        "accuracy_delta_pp_seed_sd": 0.6011553846036993,
+        "positive_seeds": 0
+      },
+      "all224_confusions_recomputed": true,
+      "old192_metrics_exactly_unchanged": true,
+      "all_mean_sd_and_pairs_recomputed": true,
+      "scientific_verdict": "PERFORMANCE_REGRESSION",
+      "genuine_RFF_physics_aware_goal_achieved": false,
+      "physical_scope": "Wholeconstantphase property; causal averaged-envelope lagged memory input; original readout and matched parameters to energy control; no whole affine/RX/channel invariance or identified TX parameters",
+      "target_feedback": false
+    },
+    "resource_summary_ref": "evidence/resource_summary.json",
+    "final_readback_ref": "evidence/final_readback.json",
+    "source_selection_ref": "evidence/performance_selection.json",
+    "target_feedback": false,
+    "goal_achieved": false
+  }
 }

@@ -1,5 +1,5 @@
 {
-  "status": "LOCAL_VERIFIED",
+  "status": "ANALYZED",
   "run_id": "20261002-phase1-cvs-coupled-clean-manysig-m28-r01",
   "release": "cvs_coupled_clean_eval_20261002_r01",
   "source_run": "20261002-phase1-cvs-coupled-identity-manysig-m8-r01",
@@ -10,9 +10,19 @@
   "target_feedback": false,
   "goal_achieved": false,
   "next": [
-    "Commit/push and independent OID; publish actual selected clean once",
-    "Verify four new predictions and24 reused controls, all28 truth-last score",
-    "Full224CM/192unchangedcontrol/meanSD/pairs/TX/resources report andGit"
+    "Complete report/index/Git independent OID delivery",
+    "Future structure research must use source/public evidence only; target scores are report-only, no feedback/reselection/rerun",
+    "Keep full original goal active until actual performance and principled mechanism requirements proven"
   ],
-  "preflight": "evidence/preflight.json"
+  "preflight": "evidence/preflight.json",
+  "release_commit": "4f15f548cb34cedf6cc1f9758629a92540f3536d",
+  "dispatcher_pid": 1677520,
+  "launch_evidence": "evidence/launch_readback.json",
+  "clean_run_id": "20261002-phase1-cvs-coupled-clean-manysig-m28-r01",
+  "missing": [],
+  "goal_requirements_remaining": [
+    "Verified performance improvement by neural network design under CE-only/noaugmentation/cleanonly",
+    "Full requested mathematical communication physical and RFF mechanism evidence"
+  ],
+  "previous_goal_turn": "PROGRESS: actual frozen source-selected4 clean predictions,24 readonly controls, independent28row scoring and full224CM analysis complete; performance objective remains unproven"
 }

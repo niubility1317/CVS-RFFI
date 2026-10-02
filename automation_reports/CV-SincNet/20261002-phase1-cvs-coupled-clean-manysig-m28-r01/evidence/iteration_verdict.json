@@ -1,0 +1,76 @@
+{
+  "status": "VERIFIED",
+  "candidate": "coupled_lag4",
+  "accuracy_mean": 0.6905476190476191,
+  "accuracy_sd": 0.007297225772048865,
+  "paired_vs_energy": {
+    "candidate": "coupled_lag4",
+    "baseline": "energy_equivariant",
+    "receiver": "ALL",
+    "view": "clean",
+    "model_seeds": [
+      2026092701,
+      2026092702,
+      2026092703,
+      2026092704
+    ],
+    "accuracy_delta_pp_by_seed": [
+      -0.6434523809523807,
+      -2.234523809523814,
+      0.27202380952380256,
+      0.14523809523809827
+    ],
+    "accuracy_delta_pp_mean": -0.6151785714285735,
+    "accuracy_delta_pp_seed_sd": 1.1530307859663789,
+    "positive_seeds": 2
+  },
+  "paired_vs_residual": {
+    "candidate": "coupled_lag4",
+    "baseline": "residual_fusion",
+    "receiver": "ALL",
+    "view": "clean",
+    "model_seeds": [
+      2026092701,
+      2026092702,
+      2026092703,
+      2026092704
+    ],
+    "accuracy_delta_pp_by_seed": [
+      -9.826785714285712,
+      -9.160119047619053,
+      -10.308928571428577,
+      -8.30238095238095
+    ],
+    "accuracy_delta_pp_mean": -9.399553571428573,
+    "accuracy_delta_pp_seed_sd": 0.8699821533983751,
+    "positive_seeds": 0
+  },
+  "paired_vs_native": {
+    "candidate": "coupled_lag4",
+    "baseline": "native",
+    "receiver": "ALL",
+    "view": "clean",
+    "model_seeds": [
+      2026092701,
+      2026092702,
+      2026092703,
+      2026092704
+    ],
+    "accuracy_delta_pp_by_seed": [
+      -7.218452380952378,
+      -7.667261904761913,
+      -7.489880952380956,
+      -6.314285714285717
+    ],
+    "accuracy_delta_pp_mean": -7.172470238095241,
+    "accuracy_delta_pp_seed_sd": 0.6011553846036993,
+    "positive_seeds": 0
+  },
+  "all224_confusions_recomputed": true,
+  "old192_metrics_exactly_unchanged": true,
+  "all_mean_sd_and_pairs_recomputed": true,
+  "scientific_verdict": "PERFORMANCE_REGRESSION",
+  "genuine_RFF_physics_aware_goal_achieved": false,
+  "physical_scope": "Wholeconstantphase property; causal averaged-envelope lagged memory input; original readout and matched parameters to energy control; no whole affine/RX/channel invariance or identified TX parameters",
+  "target_feedback": false
+}

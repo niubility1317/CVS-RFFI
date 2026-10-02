@@ -1,19 +1,16 @@
 {
-  "status": "SOURCE_TRAINING_COMPLETE_AWAITING_FROZEN_CLEAN_TEST",
+  "status": "ANALYZED",
   "run_id": "20261002-phase1-cvs-coupled-identity-manysig-m8-r01",
   "release": "cvs_coupled_identity_20261002_r01",
   "goal_scope": "CE only/no augmentation/identity only/scratch/unchanged split/clean only; mathematical communication physics and RFF structure; performance first",
-  "previous_goal_turn": "PROGRESS: full E200 source training and full logs analyzed; fixed rule selected coupled_lag4; actual clean registration and preflight verified",
+  "previous_goal_turn": "PROGRESS: actual frozen source-selected4 clean predictions,24 readonly controls, independent28row scoring and full224CM analysis complete; performance objective remains unproven",
   "launch_owner": "codex/root/cvs-coupled-identity-20261002",
   "next": [
-    "Commit/push actual source freeze and selected clean registration",
-    "Publish selected four clean models once; reuse24 immutable controls",
-    "Verify all28 prediction and truth-last score, full224CM report andGit"
+    "Complete report/index/Git independent OID delivery",
+    "Future structure research must use source/public evidence only; target scores are report-only, no feedback/reselection/rerun",
+    "Keep full original goal active until actual performance and principled mechanism requirements proven"
   ],
-  "missing": [
-    "Frozen selected clean prediction and independent score",
-    "Verified clean performance improvement"
-  ],
+  "missing": [],
   "goal_achieved": false,
   "commit": "2ca8a8dc4ef21ca063bdf6499da0e638d517685d",
   "dispatcher_pid": 1654804,
@@ -35,5 +32,11 @@
   "verified_implementation_commit": "34d54b86d09b0daf716afb0797f38ac4e28c607a",
   "selected_variant": "coupled_lag4",
   "live_source_workers": 0,
-  "clean_confirmation_run": "20261002-phase1-cvs-coupled-clean-manysig-m28-r01"
+  "clean_confirmation_run": "20261002-phase1-cvs-coupled-clean-manysig-m28-r01",
+  "clean_run_id": "20261002-phase1-cvs-coupled-clean-manysig-m28-r01",
+  "target_feedback": false,
+  "goal_requirements_remaining": [
+    "Verified performance improvement by neural network design under CE-only/noaugmentation/cleanonly",
+    "Full requested mathematical communication physical and RFF mechanism evidence"
+  ]
 }

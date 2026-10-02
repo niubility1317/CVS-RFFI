@@ -132,3 +132,7 @@ RTX3090/Torch2.1/FP32；两个新候选和四份energy控制均采用显式完�
 [前瞻设计](../../../docs/CVS_COUPLED_ENVELOPE_HYPOTHESIS_20261002.md) · [全量日志审计](evidence/source_completion_validation.json) · [源选择](evidence/source_selection.json) · [独立分析](evidence/source_analysis_validation.json)。
 
 实际终态独立读回：dispatcher 及全部8个源 worker 已自然退出，8行各200轮/10000步。源执行commit `2ca8a8dc4ef21ca063bdf6499da0e638d517685d`。[终态证据](evidence/final_source_readback.json)。本轮实际选中候选clean配置和预登记已生成，4份新预测＋24份冻结控制；只读元数据与资源preflight通过，尚未发布或读取本轮新query。
+
+## 默认clean测试收尾已完成
+
+实际冻结候选 `coupled_lag4` 的四份新预测与24份原控制统一28行，每行168000物理query；224份混淆矩阵与配对差分独立复算，原192份控制逐字段保持一致。未选 `coupled_lag1` 的测试为N/A，未追加query访问。全部源/预测/scorer进程自然退出，完整产物保留。[独立clean报告](../20261002-phase1-cvs-coupled-clean-manysig-m28-r01/report.md)。该候选未证明进一步识别性能提升，整体目标保持未完成；测试结果仅用于报告，不回流结构、延迟、系数、预算、候选重排或重跑。
