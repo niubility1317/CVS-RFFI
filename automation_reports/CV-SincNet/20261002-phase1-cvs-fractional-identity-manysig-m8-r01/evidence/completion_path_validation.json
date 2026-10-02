@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "checks": 93,
+  "source_tests": 55,
+  "fractional_clean_tests": 17,
+  "additive_clean_regression": 17,
+  "source_comparison_tests": 4,
+  "source_review": "review_identity_ce:PASS before launch",
+  "clean_review": "review_clean_architecture:PASS conditional path",
+  "full_source_analysis_verified": true,
+  "target_feedback": false,
+  "goal_achieved": false
+}

@@ -1,0 +1,241 @@
+{
+  "status": "VERIFIED",
+  "source_only": true,
+  "used_for_selection": false,
+  "target_access": false,
+  "checkpoint_loaded": false,
+  "prior_run": "20261002-phase1-cvs-synchronized-identity-manysig-m8-r01",
+  "prior_actual_records": [
+    {
+      "variant": "synchronized_equivariant",
+      "seed": 2026092701,
+      "accuracy": 0.9758888888888889,
+      "worst_rx": 0.9331481481481482,
+      "parameters": 202553,
+      "macs": 7199008,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-synchronized-identity-manysig-m8-r01/synchronized_equivariant-s2026092701/source",
+      "provenance": "Own scratch E200; full actual roles/representation/budget independently matched; metrics only, no weight inheritance",
+      "actual_commit": "fe7a3bc9a8d069635fdcbf72e2d7e91ed9b43118"
+    },
+    {
+      "variant": "synchronized_equivariant",
+      "seed": 2026092702,
+      "accuracy": 0.9754814814814815,
+      "worst_rx": 0.9351851851851852,
+      "parameters": 202553,
+      "macs": 7199008,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-synchronized-identity-manysig-m8-r01/synchronized_equivariant-s2026092702/source",
+      "provenance": "Own scratch E200; full actual roles/representation/budget independently matched; metrics only, no weight inheritance",
+      "actual_commit": "fe7a3bc9a8d069635fdcbf72e2d7e91ed9b43118"
+    },
+    {
+      "variant": "synchronized_equivariant",
+      "seed": 2026092703,
+      "accuracy": 0.9705185185185186,
+      "worst_rx": 0.9207407407407407,
+      "parameters": 202553,
+      "macs": 7199008,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-synchronized-identity-manysig-m8-r01/synchronized_equivariant-s2026092703/source",
+      "provenance": "Own scratch E200; full actual roles/representation/budget independently matched; metrics only, no weight inheritance",
+      "actual_commit": "fe7a3bc9a8d069635fdcbf72e2d7e91ed9b43118"
+    },
+    {
+      "variant": "synchronized_equivariant",
+      "seed": 2026092704,
+      "accuracy": 0.9713333333333334,
+      "worst_rx": 0.922962962962963,
+      "parameters": 202553,
+      "macs": 7199008,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-synchronized-identity-manysig-m8-r01/synchronized_equivariant-s2026092704/source",
+      "provenance": "Own scratch E200; full actual roles/representation/budget independently matched; metrics only, no weight inheritance",
+      "actual_commit": "fe7a3bc9a8d069635fdcbf72e2d7e91ed9b43118"
+    }
+  ],
+  "new_run": "20261002-phase1-cvs-fractional-identity-manysig-m8-r01",
+  "rows": [
+    {
+      "variant": "fractional_half",
+      "prior_variant": "synchronized_equivariant",
+      "model_seed": 2026092701,
+      "parameters": 202553,
+      "prior_parameters": 202553,
+      "alignment_strength": 0.5,
+      "prior_alignment_strength": 1.0,
+      "V": 0.9772962962962963,
+      "prior_V": 0.9758888888888889,
+      "V_delta_pp": 0.14074074074074128,
+      "worst_RX": 0.9394444444444444,
+      "prior_worst_RX": 0.9331481481481482,
+      "worst_RX_delta_pp": 0.6296296296296244
+    },
+    {
+      "variant": "fractional_learned",
+      "prior_variant": "synchronized_equivariant",
+      "model_seed": 2026092701,
+      "parameters": 202554,
+      "prior_parameters": 202553,
+      "alignment_strength": 0.4731968343257904,
+      "prior_alignment_strength": 1.0,
+      "V": 0.9777037037037037,
+      "prior_V": 0.9758888888888889,
+      "V_delta_pp": 0.18148148148148247,
+      "worst_RX": 0.9394444444444444,
+      "prior_worst_RX": 0.9331481481481482,
+      "worst_RX_delta_pp": 0.6296296296296244
+    },
+    {
+      "variant": "fractional_half",
+      "prior_variant": "synchronized_equivariant",
+      "model_seed": 2026092702,
+      "parameters": 202553,
+      "prior_parameters": 202553,
+      "alignment_strength": 0.5,
+      "prior_alignment_strength": 1.0,
+      "V": 0.9756666666666667,
+      "prior_V": 0.9754814814814815,
+      "V_delta_pp": 0.018518518518517713,
+      "worst_RX": 0.9368518518518518,
+      "prior_worst_RX": 0.9351851851851852,
+      "worst_RX_delta_pp": 0.1666666666666594
+    },
+    {
+      "variant": "fractional_learned",
+      "prior_variant": "synchronized_equivariant",
+      "model_seed": 2026092702,
+      "parameters": 202554,
+      "prior_parameters": 202553,
+      "alignment_strength": 0.4818991720676422,
+      "prior_alignment_strength": 1.0,
+      "V": 0.9760740740740741,
+      "prior_V": 0.9754814814814815,
+      "V_delta_pp": 0.0592592592592589,
+      "worst_RX": 0.9377777777777778,
+      "prior_worst_RX": 0.9351851851851852,
+      "worst_RX_delta_pp": 0.2592592592592591
+    },
+    {
+      "variant": "fractional_half",
+      "prior_variant": "synchronized_equivariant",
+      "model_seed": 2026092703,
+      "parameters": 202553,
+      "prior_parameters": 202553,
+      "alignment_strength": 0.5,
+      "prior_alignment_strength": 1.0,
+      "V": 0.9722592592592593,
+      "prior_V": 0.9705185185185186,
+      "V_delta_pp": 0.17407407407407094,
+      "worst_RX": 0.9238888888888889,
+      "prior_worst_RX": 0.9207407407407407,
+      "worst_RX_delta_pp": 0.3148148148148122
+    },
+    {
+      "variant": "fractional_learned",
+      "prior_variant": "synchronized_equivariant",
+      "model_seed": 2026092703,
+      "parameters": 202554,
+      "prior_parameters": 202553,
+      "alignment_strength": 0.49344658851623535,
+      "prior_alignment_strength": 1.0,
+      "V": 0.9725555555555555,
+      "prior_V": 0.9705185185185186,
+      "V_delta_pp": 0.20370370370369484,
+      "worst_RX": 0.9242592592592592,
+      "prior_worst_RX": 0.9207407407407407,
+      "worst_RX_delta_pp": 0.35185185185184764
+    },
+    {
+      "variant": "fractional_half",
+      "prior_variant": "synchronized_equivariant",
+      "model_seed": 2026092704,
+      "parameters": 202553,
+      "prior_parameters": 202553,
+      "alignment_strength": 0.5,
+      "prior_alignment_strength": 1.0,
+      "V": 0.972925925925926,
+      "prior_V": 0.9713333333333334,
+      "V_delta_pp": 0.159259259259259,
+      "worst_RX": 0.9281481481481482,
+      "prior_worst_RX": 0.922962962962963,
+      "worst_RX_delta_pp": 0.5185185185185182
+    },
+    {
+      "variant": "fractional_learned",
+      "prior_variant": "synchronized_equivariant",
+      "model_seed": 2026092704,
+      "parameters": 202554,
+      "prior_parameters": 202553,
+      "alignment_strength": 0.48262736201286316,
+      "prior_alignment_strength": 1.0,
+      "V": 0.972925925925926,
+      "prior_V": 0.9713333333333334,
+      "V_delta_pp": 0.159259259259259,
+      "worst_RX": 0.9285185185185185,
+      "prior_worst_RX": 0.922962962962963,
+      "worst_RX_delta_pp": 0.5555555555555536
+    }
+  ],
+  "summary": [
+    {
+      "variant": "fractional_half",
+      "prior_variant": "synchronized_equivariant",
+      "V_delta_pp_mean": 0.12314814814814723,
+      "V_delta_pp_seed_sd": 0.07107348541627923,
+      "worst_RX_delta_pp_mean": 0.40740740740740355,
+      "worst_RX_delta_pp_seed_sd": 0.20676708919067074,
+      "alignment_strength_mean": 0.5
+    },
+    {
+      "variant": "fractional_learned",
+      "prior_variant": "synchronized_equivariant",
+      "V_delta_pp_mean": 0.1509259259259238,
+      "V_delta_pp_seed_sd": 0.06374783140021456,
+      "worst_RX_delta_pp_mean": 0.4490740740740712,
+      "worst_RX_delta_pp_seed_sd": 0.17264649717218378,
+      "alignment_strength_mean": 0.4827924892306328
+    }
+  ],
+  "frozen_selection_unchanged": {
+    "status": "SOURCE_SELECTION_FROZEN",
+    "selected_variant": "residual_fusion",
+    "source_summaries": {
+      "residual_fusion": {
+        "score": 0.9628240740740741,
+        "source_accuracy": 0.9806944444444444,
+        "worst_rx_accuracy": 0.9449537037037037,
+        "parameters": 164225,
+        "conv_linear_macs": 9708836
+      },
+      "fractional_half": {
+        "score": 0.9533101851851852,
+        "source_accuracy": 0.9745370370370371,
+        "worst_rx_accuracy": 0.9320833333333334,
+        "parameters": 202553,
+        "conv_linear_macs": 7199008
+      },
+      "fractional_learned": {
+        "score": 0.9536574074074073,
+        "source_accuracy": 0.9748148148148148,
+        "worst_rx_accuracy": 0.9325,
+        "parameters": 202554,
+        "conv_linear_macs": 7199008
+      }
+    },
+    "selection_rule": "performance first: four-seed E200 0.5 sourceV+0.5 worstsourceRX;exact ties V thenworstRX;costs secondary only after equalperformance",
+    "selection_policy": "performance_first_fractional_with_source_control_20261002",
+    "candidate_universe": [
+      "residual_fusion",
+      "fractional_half",
+      "fractional_learned"
+    ],
+    "new_candidate_selected": false,
+    "exact_cost_tie_order": [
+      "residual_fusion",
+      "fractional_half",
+      "fractional_learned"
+    ],
+    "target_access": false,
+    "target_score_used": false,
+    "test_view": "clean"
+  },
+  "interpretation": "Same equivariant_memory core, physical source roles, model/loader seed, E200x50, CE/noaugmentation and fullFP32;fixedhalf same parameter count, learned +one scalar. Separate historical training,not hardware causal separation or blind RX test."
+}

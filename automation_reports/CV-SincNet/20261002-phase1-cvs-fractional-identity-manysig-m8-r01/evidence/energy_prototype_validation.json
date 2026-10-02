@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "synthetic_tests": 7,
+  "parameters": 202553,
+  "new_parameters": 0,
+  "exact_initial_parameter_states_with_original_core": true,
+  "relative_channel_power_math_and_common_phase_checked": true,
+  "formal_data_access": false,
+  "checkpoint_access": false,
+  "formal_training": false,
+  "performance_improvement_proven": false,
+  "module": "experiments.cvs_energy_identity.model"
+}

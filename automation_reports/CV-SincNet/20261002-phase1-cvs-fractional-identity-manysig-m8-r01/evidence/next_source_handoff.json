@@ -1,0 +1,61 @@
+{
+  "status": "SOURCE_ONLY_HANDOFF",
+  "run_id": "20261002-phase1-cvs-fractional-identity-manysig-m8-r01",
+  "source_commit": "8f33975232e0416704eee74468324a8977cdd966",
+  "source_summaries": {
+    "residual_fusion": {
+      "score": 0.9628240740740741,
+      "source_accuracy": 0.9806944444444444,
+      "worst_rx_accuracy": 0.9449537037037037,
+      "parameters": 164225,
+      "conv_linear_macs": 9708836
+    },
+    "fractional_half": {
+      "score": 0.9533101851851852,
+      "source_accuracy": 0.9745370370370371,
+      "worst_rx_accuracy": 0.9320833333333334,
+      "parameters": 202553,
+      "conv_linear_macs": 7199008
+    },
+    "fractional_learned": {
+      "score": 0.9536574074074073,
+      "source_accuracy": 0.9748148148148148,
+      "worst_rx_accuracy": 0.9325,
+      "parameters": 202554,
+      "conv_linear_macs": 7199008
+    }
+  },
+  "source_analysis": {
+    "status": "VERIFIED",
+    "new_rows": 8,
+    "new_epochs": 1600,
+    "new_steps": 80000,
+    "control_rows": 4,
+    "curve_records": 2400,
+    "source_selection_recomputed": true,
+    "selected_variant": "residual_fusion",
+    "new_candidate_selected": false,
+    "actual_fullFP32_training_validation_physics_profile": true,
+    "all720_source_cells_complete": true,
+    "target_access": false,
+    "target_scores_used": false,
+    "goal_achieved": false,
+    "whole_phase_max_logit_error": 4.291534423828125e-05,
+    "whole_affine_max_logit_error": 14.429116249084473,
+    "coordinate_reconstruction_max_error": 2.384185791015625e-07,
+    "scope": "Wholeconstantphase property only;affinecoordinate retained;relative CFO modulo1.25MHz;not uniqueTX or arbitraryRX/LTI invariance"
+  },
+  "target_scores_included": false,
+  "goal_achieved": false,
+  "next_action": "Source-only inspect actual learned alpha/scalar gradients, full residual-frequency formula/embedding geometry, and frozen public TX/RX interventions. Fractional waveform correction has not beaten residual source control if baseline retained. Do not use historical target results for model design or reruns.",
+  "next_source_prototype": {
+    "module": "experiments.cvs_energy_identity.model",
+    "design": "docs/CVS_ENERGY_IDENTITY_HYPOTHESIS_20261002.md",
+    "synthetic_tests": 7,
+    "parameters": 202553,
+    "new_parameters": 0,
+    "formal_data_access": false,
+    "formal_training": false,
+    "claim": "Preserve relative filter channel energy by one cross-channel RMS; no identified TX/RX hardware or performance proof"
+  }
+}
