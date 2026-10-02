@@ -1,0 +1,47 @@
+{
+  "status": "VERIFIED",
+  "already_completed": true,
+  "conditional_rerun_needed": false,
+  "baseline_training_run": "20261001-phase1-cvs-residual-identity-manysig-m8-r01",
+  "baseline_test_run": "20261001-phase1-cvs-selected-clean-manysig-m20-r01",
+  "report_ref": "automation_reports/CV-SincNet/20261001-phase1-cvs-selected-clean-manysig-m20-r01/report.md",
+  "rows": [
+    {
+      "seed": 2026092701,
+      "accuracy": 0.7861071428571429,
+      "macro_f1": 0.7836381943660681,
+      "count": 168000,
+      "augmentation": false,
+      "source_config": "experiments/cvs_residual_identity/configs/residual_fusion-s2026092701.json"
+    },
+    {
+      "seed": 2026092702,
+      "accuracy": 0.7742976190476191,
+      "macro_f1": 0.7712312107909199,
+      "count": 168000,
+      "augmentation": false,
+      "source_config": "experiments/cvs_residual_identity/configs/residual_fusion-s2026092702.json"
+    },
+    {
+      "seed": 2026092703,
+      "accuracy": 0.7947321428571429,
+      "macro_f1": 0.7940799226742413,
+      "count": 168000,
+      "augmentation": false,
+      "source_config": "experiments/cvs_residual_identity/configs/residual_fusion-s2026092703.json"
+    },
+    {
+      "seed": 2026092704,
+      "accuracy": 0.7830357142857143,
+      "macro_f1": 0.7793184805223836,
+      "count": 168000,
+      "augmentation": false,
+      "source_config": "experiments/cvs_residual_identity/configs/residual_fusion-s2026092704.json"
+    }
+  ],
+  "accuracy_mean": 0.7845431547619048,
+  "accuracy_sd": 0.008436130946291115,
+  "macro_f1_mean": 0.7820669520884033,
+  "macro_f1_sd": 0.009517486538061327,
+  "claim": "Pure received-clean training without injected channel augmentation and clean-only frozen testing. New fullFP32/explicitloader policy may differ from historical run; descriptive benchmark reference, not isolated augmentation causality."
+}

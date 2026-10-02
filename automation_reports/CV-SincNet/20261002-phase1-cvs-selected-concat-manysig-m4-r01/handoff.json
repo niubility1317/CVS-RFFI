@@ -1,0 +1,34 @@
+{
+  "status": "RUNNING",
+  "run_id": "20261002-phase1-cvs-selected-concat-manysig-m4-r01",
+  "release": "cvs_selected_concat_20261002_r01",
+  "release_commit": "3fb08ffb148bff03309dfeb167d013bae778033b",
+  "launch_owner": "codex/root/cvs-selected-concat-20261002",
+  "dispatcher_pid": 1520025,
+  "source_pids": [
+    1520050,
+    1520060,
+    1520071,
+    1520082
+  ],
+  "gpus": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "latest_evidence": "evidence/launch_readback.json",
+  "goal": "fixed residual_fusion, scratch4seeds,E200x50,ordinary identity CE,mid/urban concat only; final clean+3practical scene testing; performance assessed on tests",
+  "pure_clean_baseline": "evidence/pure_clean_baseline_reference.json",
+  "next": [
+    "Read actual remote run before acting; never duplicate launch or resume paused noaugmentation research.",
+    "Unique running dispatcher automatically finishes E200 freeze→all4 clean/satellite predictions→independent truth-last scorer.",
+    "After actual completion use python -m experiments.cvs_selected_concat.collect --output automation_reports/CV-SincNet/20261002-phase1-cvs-selected-concat-manysig-m4-r01/evidence/final, verify all40ksteps/800epochs/160metricrecords and produce paired report/registry/Git delivery."
+  ],
+  "missing": [
+    "New run source training completion",
+    "New run frozen predictions and independent scoring",
+    "New run final local analytical report"
+  ],
+  "scope": "Previously exposed benchmark/user-fixed design; no new target feedback to structure, weights, hyperparameters or selective rerun; no high in training. No need or authorization to retrain completed pureclean baseline."
+}

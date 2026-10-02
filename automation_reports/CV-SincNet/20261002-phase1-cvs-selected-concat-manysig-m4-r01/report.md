@@ -33,3 +33,10 @@ AdamW，lr=0.0002，wd=0.0001，cosine至0.000001，batch128且保留末批。�
 | 2026092704 | 3 | 1520082 | 12 |
 
 [独立启动证据](evidence/launch_readback.json)。训练、预测和评分尚未完成，不能据源域指标判断测试性能。唯一dispatcher将继续E200→冻结→4行clean/satellite预测→独立truth-last评分。
+
+
+## 纯 clean 基准已完成，无需补跑
+
+用户询问是否已有无星地增强训练、clean测试的residual_fusion：已完成。原run `20261001-phase1-cvs-residual-identity-manysig-m8-r01` 四行配置全部 augmentation=false、domain_backbone=false、extra_losses=[]、E200；冻结clean测试run `20261001-phase1-cvs-selected-clean-manysig-m20-r01`，每seed168000包。4个总体混淆矩阵独立重算：accuracy=78.4543%±0.8436%，Macro-F1=78.2067%±0.9517%。保留既有产物，不重复训练或测试。
+
+[基准配置与独立重算证据](evidence/pure_clean_baseline_reference.json) · [原报告](../20261001-phase1-cvs-selected-clean-manysig-m20-r01/report.md)。后续本run完成后报告与该基准的clean配对差值；历史无增强实验没有对应星地目标测试，本次不追溯追加其卫星测试。新run显式backend／loader与旧run可能不同，差值不单独证明增强场景因果贡献。
