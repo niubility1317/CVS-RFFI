@@ -8,7 +8,7 @@
   "name": "D92 physical support metric GGN1 + LocalRidge joint support diagnostic",
   "description": "One derived rank-aware U-coordinate candidate, fixed 4 rows/160 physical parents and 1800 paths, paired A/B/C; no parameter grid",
   "authorization": "Existing user LocalRidge-priority joint target-support SFT/frozen summaries/subagent authorization; root sole launch owner",
-  "status": "RUNNING",
+  "status": "TRAINING_COMPLETE",
   "created_at": "2026-10-01T22:25:36.848251+00:00",
   "data": {
     "dataset": "Support slices only from the two existing VALIDATED_ONCE capsules",
@@ -167,19 +167,19 @@
     ],
     "supervisor_pid": 1276233,
     "supervisor_start_ticks": 14215164,
-    "latest_runtime_observed_utc": "2026-10-01T23:08:38Z",
-    "latest_runtime_readback_ref": "evidence/support_runtime_1790896179402285400.json",
+    "latest_runtime_observed_utc": "2026-10-01T23:51:44Z",
+    "latest_runtime_readback_ref": "evidence/support_runtime_1790898765325100100.json",
     "current_row_statuses": {
-      "rx3-cvs-daot-rc4-s2026092701": "TRAINING_ON_SUPPORT",
-      "rx3-cvs-daot-rc4-s2026092702": "TRAINING_ON_SUPPORT",
-      "rx1-cvs-daot-rc4-s2026092701": "PENDING",
-      "rx1-cvs-daot-rc4-s2026092702": "PENDING"
+      "rx3-cvs-daot-rc4-s2026092701": "SUPPORT_METRIC_JOINT_PROBE_COMPLETE",
+      "rx3-cvs-daot-rc4-s2026092702": "SUPPORT_METRIC_JOINT_PROBE_COMPLETE",
+      "rx1-cvs-daot-rc4-s2026092701": "SUPPORT_METRIC_JOINT_PROBE_COMPLETE",
+      "rx1-cvs-daot-rc4-s2026092702": "SUPPORT_METRIC_JOINT_PROBE_COMPLETE"
     },
     "row_pids": {
       "rx3-cvs-daot-rc4-s2026092701": 1276296,
       "rx3-cvs-daot-rc4-s2026092702": 1276297,
-      "rx1-cvs-daot-rc4-s2026092701": null,
-      "rx1-cvs-daot-rc4-s2026092702": null
+      "rx1-cvs-daot-rc4-s2026092701": 1295473,
+      "rx1-cvs-daot-rc4-s2026092702": 1296017
     },
     "actual_commands_by_row": {
       "rx3-cvs-daot-rc4-s2026092701": [
@@ -319,7 +319,15 @@
       }
     },
     "analysis_route_validation": "49_OFFLINE_PUBLICATION_CASES_PASS_ACTUAL_RUNNING_PLAN_REFUSED",
-    "analysis_route_validation_ref": "docs/D92_SUPPORT_METRIC_ANALYSIS_ROUTE_VALIDATION_20261002.md"
+    "analysis_route_validation_ref": "docs/D92_SUPPORT_METRIC_ANALYSIS_ROUTE_VALIDATION_20261002.md",
+    "training_completion_verified": true,
+    "completion_coverage": {
+      "rows": 4,
+      "parents": 160,
+      "sequence_paths": 1800
+    },
+    "source_runtime_unchanged": true,
+    "support_metrics_read": false
   },
   "probe": {
     "cohorts": {

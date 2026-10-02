@@ -1,0 +1,41 @@
+{
+  "schema": "d92_frozen_group_query_score_execution_v1",
+  "run_id": "20261001-phase2-d92-group-barrier-joint-repeat-m2-r01",
+  "attempt_id": "r01",
+  "fitted_runtime_commit": "73aa1b31fc68aeddfb3d0ef7882acafb5be5a155",
+  "source_preparation_commit": "19ad08a90d610feeccd3ecc42990e0db919a3edb",
+  "launch_owner": "root",
+  "automatic_retry": false,
+  "training": false,
+  "fit": false,
+  "parameter_selection": false,
+  "original_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_group_barrier_joint_repeat_20261001_r01",
+  "original_run": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01",
+  "spec_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_group_barrier_joint_repeat_20261001_r01/configs/d92_group_barrier_joint_repeat_20261001.json",
+  "output_directory": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01-score-r01",
+  "output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01-score-r01/summary.json",
+  "expected_score_status": "GROUP_BARRIER_JOINT_QUERY_SCORE_COMPLETE",
+  "expected_rows": 4,
+  "expected_parents": 2400,
+  "environment": {
+    "CUDA_VISIBLE_DEVICES": "",
+    "OMP_NUM_THREADS": "2",
+    "OPENBLAS_NUM_THREADS": "2",
+    "MKL_NUM_THREADS": "2",
+    "NUMEXPR_NUM_THREADS": "2",
+    "PYTHONUNBUFFERED": "1"
+  },
+  "cpu_lanes": 2,
+  "blas_threads": 2,
+  "command": [
+    "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "-u",
+    "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_group_barrier_joint_repeat_20261001_r01/tools/score_d92_group_barrier_joint_benchmark.py",
+    "--spec",
+    "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_group_barrier_joint_repeat_20261001_r01/configs/d92_group_barrier_joint_repeat_20261001.json",
+    "--run-root",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01",
+    "--output",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01-score-r01/summary.json"
+  ]
+}

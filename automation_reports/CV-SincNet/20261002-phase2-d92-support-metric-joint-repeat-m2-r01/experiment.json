@@ -1,0 +1,430 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261002-phase2-d92-support-metric-joint-repeat-m2-r01",
+  "group_id": "d92-support-metric-joint-repeated-benchmark",
+  "comparison_group_id": "d92-support-metric-joint-repeated-benchmark",
+  "kind": "comparison",
+  "stage": "Phase2-repeated-query-benchmark",
+  "name": "D92 SupportMetric GGN1 + LocalRidge complete repeated benchmark",
+  "description": "Fixed derived candidate, five actual streams, paired same-split A/B/C; no parameter grid or query feedback",
+  "authorization": "User permits benchmark reuse and joint legal target-support SFT with LocalRidge priority; root sole launch owner",
+  "status": "READY",
+  "created_at": "2026-10-01T23:26:56.236110+00:00",
+  "data": {
+    "dataset": "Existing complete VALIDATED_ONCE received capsules; transparent repeat benchmark",
+    "version": "existing_N607_ManyTx_actual19RX",
+    "representation": "Immutable frozen z_id/fft/t_emb/f_emb/pa_local; selected support fitting, query inference read-only; one received observation",
+    "contract_ref": "benchmark.cohorts.*.capsule/manifest.json",
+    "physical_ids_ref": "benchmark.cohorts.*.capsule/received.npz#ids metadata only",
+    "label_map_ref": "benchmark.cohorts.*.capsule/splits/*.json#registered_classes,support_labels",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [
+      "19-1",
+      "8-14",
+      "8-7",
+      "20-19"
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "benchmark.cohorts.*.capsule/splits/*.json#registered_classes",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": {
+      "rx3": "residual-noeq-76121e6f34363fa612ec25fb",
+      "rx1": "residual-noeq-d0a99fede324159c5a4750fd"
+    },
+    "split_id": "Complete original producer matrices: rx3 900/rx1 300 per model",
+    "validation_ref": "Existing cohort capsule manifests; no data rebuild or revalidation",
+    "support_query_ref": "Immutable selected support/query physical IDs in existing complete capsule split manifests",
+    "leo_config_ref": "experiments/adv3b02_xuc/code/cvsrffi/practical_adapter.py",
+    "k": [
+      1,
+      5,
+      10,
+      20
+    ],
+    "new_class_counts": [
+      0,
+      2,
+      5,
+      10,
+      20
+    ],
+    "support_seeds": [
+      2026092711,
+      2026092712,
+      2026092713,
+      2026092714,
+      2026092715
+    ],
+    "protocol_schema": "p2_min_v1",
+    "phase2_data_status": "VALIDATED_ONCE",
+    "scenarios": [
+      "practical_high",
+      "practical_mid",
+      "practical_low_urban"
+    ],
+    "data_rebuilt": false,
+    "data_revalidated": false,
+    "target_previously_scored": true,
+    "reuse_policy": "VALIDATED_ONCE; runtime artifact identity/binding checks only, no new data validation",
+    "channel": {
+      "route": "residual",
+      "mode": "post_sync",
+      "equalization_enabled": false,
+      "fs_hz": 25000000
+    },
+    "producer_matrix_ref": "configs/d92_support_metric_joint_repeat_20261002.json#benchmark.cohorts.*.matrix",
+    "old_class_count": 6,
+    "actual_parent_count": 2400,
+    "query_representation": "Read-only frozen branch feature cache; singleton all-registered-class inference",
+    "independent_confirmation": false
+  },
+  "checkpoint": {
+    "initialization": "Exact source-only scratch final200 model; eval and frozen; no changed buffers or weights",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701/final_ssdg.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092702/final_ssdg.pth"
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "provenance_verdict": "VERIFIED_CURRENT_TWO_FIXED_EXACT_SOURCE_CONTRACT_SCRATCH_FINAL200_SHA_AND_NATIVE_ARCHITECTURE; four-model producer verification retained separately",
+    "selection_rule": "Two smallest fixed source model seeds, final200, selected from metadata before results",
+    "metadata_evidence_ref": "docs/D92_FIXED_PHASE1_BRANCH_METADATA_20260929.json",
+    "runtime_checkpoint_reload": false,
+    "source_training_contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "inheritance_policy": "Only original source-only model; no historical adapted head/cache state",
+    "current_auxiliary_training": "Frozen declared SupportMetric U-coordinate method; each split starts B from zero, C inherits only that actual B; no historical support-probe adapter or head reused",
+    "feature_cache_producer_run_id": {
+      "rx3": "20260929-phase2-d92-branch-ridge-repeat-rx3-m4-r01",
+      "rx1": "20260929-phase2-d92-branch-ridge-repeat-rx1-m4-r01"
+    },
+    "feature_cache_producer_role": "Immutable raw source-only frozen-model branch features; support fitting and read-only query inference; no learned adaptation state",
+    "verified_producer_sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092701/final_ssdg.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092702/final_ssdg.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092703/final_ssdg.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/cvs-daot-rc4-s2026092704/final_ssdg.pth"
+    ]
+  },
+  "permissions": {
+    "regime": "frozen_legal_target_support_SupportMetric_joint_repeat_query_benchmark",
+    "query_use": "Read-only singleton predictions after support fitting; no truth/role/quota/global reordering or query fit",
+    "source_samples": false,
+    "source_per_record_features": false,
+    "source_replay": false,
+    "summary_inputs": true,
+    "old_target_scores_for_adaptation": false,
+    "cross_run_result_tuning": false,
+    "adapted_state_reuse": "within_actual_same_split_B_to_C_only",
+    "truth_use": "Independent scorer only after every declared row and fixed stream close",
+    "claim_scope": "TRANSPARENT_REPEATED_BENCHMARK_NOT_FRESH_INDEPENDENT_CONFIRMATION",
+    "prototype_use": "frozen_center_feature_dictionary_only_no_teacher_targets_or_extra_support"
+  },
+  "code": {
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_support_metric_joint_repeat_20261002_r01",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "commit": "19ad08a90d610feeccd3ecc42990e0db919a3edb"
+  },
+  "execution": {
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-support-metric-joint-repeat-m2-r01",
+    "launch_owner": "root",
+    "cpu_lanes": 2,
+    "blas_threads": 2,
+    "host": "N607",
+    "gpu_policy": "CPU2/BLAS2/CUDA empty; no existing healthy run intervention",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-support-metric-joint-repeat-m2-r01",
+    "local_artifact_root": "automation_reports/CV-SincNet/20261002-phase2-d92-support-metric-joint-repeat-m2-r01",
+    "actual_runtime_commit": null,
+    "publication_status": "NOT_LAUNCHED",
+    "automatic_retry": false,
+    "implementation_validation": "147_DISTINCT_QUERY_CASES_PASS_34_ENTRY_70_SCORER_43_CONTROL",
+    "stop_rule": "Technical failure preserves its row; healthy rows finish; no automatic retry or score-driven stop",
+    "launch_command": "publish_d92_support_metric_joint_benchmark.py --spec configs/d92_support_metric_joint_repeat_20261002.json",
+    "scorer_command": "score_d92_support_metric_joint_benchmark.py --spec configs/d92_support_metric_joint_repeat_20261002.json --output <fresh-independent-score-directory>/summary.json",
+    "score_publication": "Original immutable release scorer; full 4/2400 closure and all fixed streams before truth",
+    "declaration_timing": "Candidate formula and complete query matrix frozen before current candidate support or query scores",
+    "frozen_method_source_runtime": "3c3eb6c513aaf20fe84514dcbeab3584bad1f238",
+    "metadata_provenance_text_corrected": true,
+    "implementation_validation_ref": "docs/D92_SUPPORT_METRIC_QUERY_SOURCE_VALIDATION_20261002.md",
+    "source_integration_ref": "automation_reports/CV-SincNet/20261002-phase2-d92-support-metric-joint-repeat-m2-r01/evidence/query_source_validation_20261002/frozen_source_integration.json",
+    "independent_p0_p1_review_ref": "docs/D92_SUPPORT_METRIC_QUERY_PREREGISTRATION_REVIEW_20261002.md"
+  },
+  "benchmark": {
+    "config": {
+      "algorithm": {
+        "schema": "d92_support_metric_joint_local_ridge_v1",
+        "method": "D92-ProtoFrameSupportMetric-GGN1-LocalRidge",
+        "nominal_coordinates": 5,
+        "coordinates": "EXACT_STORED_Q_RANK_PHYSICAL_U",
+        "kappa": 0.25,
+        "ridge_coefficient": 1.0,
+        "objective": "RMS_class_mean_OOF_CE",
+        "damping": "ACTUAL_U_GRAM_PLUS_CLASS_BALANCED_PREDICTION_FISHER",
+        "radius": 0.5,
+        "max_updates": 1,
+        "max_trials": 12,
+        "initial_step": 1.0,
+        "backtrack": 0.5,
+        "armijo": 0.0001,
+        "float_comparison_multiplier": 128,
+        "folds": "physical_ID_class_rank_mod_min_K_3",
+        "prototype_role": "FROZEN_GEOMETRY_ONLY",
+        "C_anchor": "ACTUAL_CURRENT_B_U_THETA",
+        "old_conditional": "FROZEN_ACTUAL_B_FUNCTION",
+        "kernel": "HALF_ORIGINAL_HALF_TANGENT_DISTANCE_FIXED_ORIGINAL_OLD_TRAIN_TAU_GAMMA",
+        "barrier_average_objective_gap": 0.0001,
+        "phase1_frozen": true,
+        "source_examples": false,
+        "query_fit": false,
+        "parameter_search": false,
+        "encoder_backward": false,
+        "coordinate_lift_from_prior_methods": false,
+        "evidence_level": "FLOAT64_SUBPROBLEM_DIAGNOSTIC_NOT_COMPLETE_HEAD_CERTIFICATE"
+      },
+      "support_metric_resources": {
+        "max_newton_iterations": 100,
+        "max_line_search_trials": 64,
+        "max_factor_buffer_bytes": 167772160,
+        "max_integer_bits": 65536,
+        "max_fraction_operations": 65536,
+        "max_secular_iterations": 128
+      }
+    },
+    "cohorts": {
+      "rx3": {
+        "capsule": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/capsule",
+        "truth": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-confirmation-data-manytx-r01/score_only/truth.json",
+        "expected_capsule_id": "residual-noeq-76121e6f34363fa612ec25fb",
+        "matrix": {
+          "receivers": [
+            "19-1",
+            "8-14",
+            "8-7"
+          ],
+          "scenarios": [
+            "practical_high",
+            "practical_mid",
+            "practical_low_urban"
+          ],
+          "ks": [
+            1,
+            5,
+            10,
+            20
+          ],
+          "new_counts": [
+            0,
+            2,
+            5,
+            10,
+            20
+          ],
+          "support_seeds": [
+            2026092711,
+            2026092712,
+            2026092713,
+            2026092714,
+            2026092715
+          ]
+        },
+        "expected_split_count": 900
+      },
+      "rx1": {
+        "capsule": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-data-manytx-r01/capsule",
+        "truth": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-data-manytx-r01/score_only/truth.json",
+        "expected_capsule_id": "residual-noeq-d0a99fede324159c5a4750fd",
+        "matrix": {
+          "receivers": [
+            "20-19"
+          ],
+          "scenarios": [
+            "practical_high",
+            "practical_mid",
+            "practical_low_urban"
+          ],
+          "ks": [
+            1,
+            5,
+            10,
+            20
+          ],
+          "new_counts": [
+            0,
+            2,
+            5,
+            10,
+            20
+          ],
+          "support_seeds": [
+            2026092711,
+            2026092712,
+            2026092713,
+            2026092714,
+            2026092715
+          ]
+        },
+        "expected_split_count": 300
+      }
+    }
+  },
+  "rows": [
+    {
+      "row_id": "rx3-cvs-daot-rc4-s2026092701",
+      "cohort": "rx3",
+      "expected_model_seed": 2026092701,
+      "expected_checkpoint_sha256": "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b",
+      "row_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092701",
+      "branch_features": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-ridge-repeat-rx3-m4-r01/cvs-daot-rc4-s2026092701/branch_features",
+      "ground_packet": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r02/ground-a-s2026092701",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-support-metric-joint-repeat-m2-r01/rx3-cvs-daot-rc4-s2026092701",
+      "ground_summary": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-cvs-d92-practical-manytx-m5-r01/cvs-daot-rc4-s2026092701/ground",
+      "ground_summary_already_deployed": false,
+      "method": "D92-ProtoFrameSupportMetric-GGN1-LocalRidge",
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026092705,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": [
+          2026092711,
+          2026092712,
+          2026092713,
+          2026092714,
+          2026092715
+        ],
+        "evaluation": null
+      }
+    },
+    {
+      "row_id": "rx3-cvs-daot-rc4-s2026092702",
+      "cohort": "rx3",
+      "expected_model_seed": 2026092702,
+      "expected_checkpoint_sha256": "72f26413e495dcf82317898f8729caa3d35499bf0b41e9671ffdceab2c90924b",
+      "row_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-scv-confirmation-manytx-m4-r02/cvs-daot-rc4-s2026092702",
+      "branch_features": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-ridge-repeat-rx3-m4-r01/cvs-daot-rc4-s2026092702/branch_features",
+      "ground_packet": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r02/ground-a-s2026092702",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-support-metric-joint-repeat-m2-r01/rx3-cvs-daot-rc4-s2026092702",
+      "ground_summary": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-cvs-d92-practical-manytx-m5-r01/cvs-daot-rc4-s2026092702/ground",
+      "ground_summary_already_deployed": false,
+      "method": "D92-ProtoFrameSupportMetric-GGN1-LocalRidge",
+      "seeds": {
+        "model": 2026092702,
+        "split": 2026092705,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": [
+          2026092711,
+          2026092712,
+          2026092713,
+          2026092714,
+          2026092715
+        ],
+        "evaluation": null
+      }
+    },
+    {
+      "row_id": "rx1-cvs-daot-rc4-s2026092701",
+      "cohort": "rx1",
+      "expected_model_seed": 2026092701,
+      "expected_checkpoint_sha256": "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b",
+      "row_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092701",
+      "branch_features": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-ridge-repeat-rx1-m4-r01/cvs-daot-rc4-s2026092701/branch_features",
+      "ground_packet": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r02/ground-a-s2026092701",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-support-metric-joint-repeat-m2-r01/rx1-cvs-daot-rc4-s2026092701",
+      "ground_summary": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-cvs-d92-practical-manytx-m5-r01/cvs-daot-rc4-s2026092701/ground",
+      "ground_summary_already_deployed": false,
+      "method": "D92-ProtoFrameSupportMetric-GGN1-LocalRidge",
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026092705,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": [
+          2026092711,
+          2026092712,
+          2026092713,
+          2026092714,
+          2026092715
+        ],
+        "evaluation": null
+      }
+    },
+    {
+      "row_id": "rx1-cvs-daot-rc4-s2026092702",
+      "cohort": "rx1",
+      "expected_model_seed": 2026092702,
+      "expected_checkpoint_sha256": "72f26413e495dcf82317898f8729caa3d35499bf0b41e9671ffdceab2c90924b",
+      "row_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260928-phase2-d92-sfhead-confirmation-manytx-m4-r01/cvs-daot-rc4-s2026092702",
+      "branch_features": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260929-phase2-d92-branch-ridge-repeat-rx1-m4-r01/cvs-daot-rc4-s2026092702/branch_features",
+      "ground_packet": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-ground-a-packet-m2-r02/ground-a-s2026092702",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-support-metric-joint-repeat-m2-r01/rx1-cvs-daot-rc4-s2026092702",
+      "ground_summary": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-cvs-d92-practical-manytx-m5-r01/cvs-daot-rc4-s2026092702/ground",
+      "ground_summary_already_deployed": false,
+      "method": "D92-ProtoFrameSupportMetric-GGN1-LocalRidge",
+      "seeds": {
+        "model": 2026092702,
+        "split": 2026092705,
+        "data": 2026092705,
+        "augmentation": 2026092707,
+        "support": [
+          2026092711,
+          2026092712,
+          2026092713,
+          2026092714,
+          2026092715
+        ],
+        "evaluation": null
+      }
+    }
+  ],
+  "spec_path": "configs/d92_support_metric_joint_repeat_20261002.json",
+  "results": null,
+  "optimization_basis": {
+    "derivation_ref": "docs/D92_PROTO_FRAME_GGN_COORDINATE_SCALE_NOTE_20261002.md",
+    "implementation_plan_ref": "docs/D92_SUPPORT_METRIC_JOINT_IMPLEMENTATION_PLAN_20261002.md",
+    "synthetic_core_ref": "docs/D92_SUPPORT_METRIC_SYNTHETIC_VALIDATION_20261002.md",
+    "source_blind_design": true,
+    "parameter_selection": false,
+    "query_score_feedback": false,
+    "direction": "g^T d + .5 d^T(G+M)d with d^T M d<=.25; M=actual U^TU+class-balanced prediction Fisher",
+    "primary_sources": [
+      "https://arxiv.org/abs/1805.08136",
+      "https://icml.cc/Conferences/2010/papers/458.pdf",
+      "https://jmlr.org/papers/v21/17-678.html"
+    ],
+    "theoretical_scope": "Coordinate-aware SPD trust subproblem and complete implicit score derivatives; no query accuracy, forgetting, generalization or spaceborne cost guarantee"
+  },
+  "artifact_plan": {
+    "fixed_prediction_streams": [
+      "A",
+      "R0_B",
+      "R0_C",
+      "B",
+      "C"
+    ],
+    "row_basis": "Once per row from frozen Q; ordinary numeric/certificate archive, actual costs",
+    "row_marker": "<row>/predictions/predictions_complete.json",
+    "supervisor_marker": "complete.json",
+    "score_output": "Fresh independent all-matrix output; no original overwrite",
+    "report": "Paired actual A/B/C old/new, complete K x new count, parent-first gain/drop/absGap/H, strata and actual costs/N/A"
+  }
+}

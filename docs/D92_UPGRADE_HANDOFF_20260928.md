@@ -1,3 +1,14 @@
+## 当前交接：完整support完成，原Group完整query评分r01待发布
+
+- Goal ACTIVE；新support 20261002-phase2-d92-support-metric-joint-support-m2-r01 TRAINING_COMPLETE，原fit3c3不变。2026-10-01T23:51:44Z全4/160/1800完成、所有进程正常退出，成绩未读；原support analysis r01预登记/source准备20c91未发布。下一步当前Git提交/push/OID后明确调用已验证publisher一次，独立PID/argv/完整artifact metadata读回后才采集20文件和报告。
+- 原Group query 20261001-phase2-d92-group-barrier-joint-repeat-m2-r01 PREDICTIONS_COMPLETE，原runtime73aa/full4/2400/allfixed，原truth/scorer flags false。35项wrapper测试PASS；新2-file wrapper+score plan r01待发布，仅调用原immutable scorer。执行一次后用read_group_query_score_once_20261002.py独立读回，不以exit0声明评分完成，不dump全summary/原160MBmetadata。
+- 新query 20261002-phase2-d92-support-metric-joint-repeat-m2-r01 READY，公式、六项资源、4/2400及五流A/R0_B/R0_C/B/C在当前support/query评分前已固定。producer34、修复后scorer70、control42+受影响1 PASS，147 distinct；57source bundle隔离导入无数据/encoder。独立P0/P1审查闭合、getpass与timeout raw保存均修复，登记引用/feature cache provenance文字同步。actualruntime null未发布；本次提交push/OID后唯一r01 root调用publisher，完整终态前禁止subset评分；原健康运行不修改。
+- ProtoFrame query r02 runtime72663在23:43UTC两rx3正常预测、rx1等待，global无；下次metadata约00:03UTC，只允许全4/2400后原scorer。fresh独立验证依用户授权暂缓。所有真实Git/SSH/launch/scoring由root唯一执行；无参数grid或query反馈。
+
+<!-- CLOSED_SUPPORT_GROUP_SCORE_PLAN_READY_20261002 -->
+
+以下保留历史交接，不据此重复启动：
+
 ## 当前交接：独立分析入口已验证，原support仍运行
 
 - Goal ACTIVE；`20261002-phase2-d92-support-metric-joint-support-m2-r01` RUNNING，runtime3c3不变。2026-10-01T23:08:38Z supervisor1276233/start14215164与两rx3 PID1276296/1276297正常训练，两rx1等待，global complete无。下一次正常metadata读回约23:28UTC；不重复发布或改动健康任务。

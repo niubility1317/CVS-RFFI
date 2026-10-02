@@ -53,8 +53,8 @@
     "current_row_statuses": {
       "rx3-cvs-daot-rc4-s2026092701": "COMPLETE",
       "rx3-cvs-daot-rc4-s2026092702": "COMPLETE",
-      "rx1-cvs-daot-rc4-s2026092701": "PREDICTING",
-      "rx1-cvs-daot-rc4-s2026092702": "PREDICTING"
+      "rx1-cvs-daot-rc4-s2026092701": "COMPLETE",
+      "rx1-cvs-daot-rc4-s2026092702": "COMPLETE"
     },
     "row_pids": {
       "rx3-cvs-daot-rc4-s2026092701": 1049715,
@@ -70,8 +70,41 @@
     "automatic_retry": false,
     "metadata_reader_reconciliation": "Initial reader incorrectly expected support row_startup.json and predictions.log; query runner uses state PID/argv and prediction.log. Local read-only helper fixed, subsequent full independent process binding VERIFIED; no runtime or launch changes.",
     "reader_unknown_evidence_ref": "evidence/query_runtime_1790871663173950300.json",
-    "latest_runtime_observed_utc": "2026-10-01T23:00:15Z",
-    "latest_runtime_readback_ref": "evidence/query_runtime_1790895677687598000.json"
+    "latest_runtime_observed_utc": "2026-10-01T23:22:23Z",
+    "latest_runtime_readback_ref": "evidence/query_terminal_1790897012642688500_compact.json",
+    "query_score": {
+      "status": "PREREGISTERED_NOT_LAUNCHED",
+      "attempt_id": "r01",
+      "spec_path": "configs/d92_group_query_score_20261002.json",
+      "wrapper_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_group_query_score_20261002_r01",
+      "source_commit": null,
+      "source_preparation_commit": "19ad08a90d610feeccd3ecc42990e0db919a3edb",
+      "original_runtime_commit": "73aa1b31fc68aeddfb3d0ef7882acafb5be5a155",
+      "output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01-score-r01/summary.json",
+      "output_directory": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01-score-r01",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_group_barrier_joint_repeat_20261001_r01/tools/score_d92_group_barrier_joint_benchmark.py",
+        "--spec",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_group_barrier_joint_repeat_20261001_r01/configs/d92_group_barrier_joint_repeat_20261001.json",
+        "--run-root",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01",
+        "--output",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01-score-r01/summary.json"
+      ],
+      "source_paths": [
+        "tools/execute_frozen_d92_group_query_score.py",
+        "configs/d92_group_query_score_20261002.json"
+      ],
+      "launch_owner": "root",
+      "automatic_retry": false,
+      "fit": false,
+      "parameter_selection": false,
+      "truth_read_policy": "Original immutable scorer validates all 4/2400 fixed predictions before independent truth join",
+      "terminal_evidence_ref": "automation_reports/CV-SincNet/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01/evidence/query_terminal_1790897012642688500_compact.json"
+    },
+    "prediction_completion": "VERIFIED_FULL_4_ROWS_2400_EPISODES_FIXED_BEFORE_TRUTH"
   },
   "benchmark": {
     "config": {
@@ -619,7 +652,7 @@
   "stage": "Phase2-repeated-query-benchmark",
   "display_name": "GroupBarrierJoint LocalRidge与support监督adapter的完整三阶段重复基准",
   "description": "固定原数学方案：B仅适应旧support，C真实继承B，以新类解析Ridge和全旧点/新类正障碍Bernoulli门控联合学习小adapter。完整2400父任务固定A/B/C后独立truth-last评分，不根据support或query结果选参。",
-  "status": "RUNNING",
+  "status": "PREDICTIONS_COMPLETE",
   "claim_scope": "REPEATED_BENCHMARK_PREVIOUSLY_SCORED_TARGETS",
   "comparison_group_id": "d92-group-barrier-joint-support",
   "authorization": "Existing user joint LocalRidge/target-support SFT and repeated-benchmark authorization; root sole launch owner.",

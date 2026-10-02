@@ -54,3 +54,7 @@ CPU两lane，每lane BLAS两线程，CUDA为空。最多5888可训练坐标不�
 发布证据：[evidence/publication_20261002.json](evidence/publication_20261002.json)；源码push独立OID证据：[evidence/source_delivery_20261002.json](evidence/source_delivery_20261002.json)。log实际为每row `prediction.log`，runner在`state.json`记录row PID/argv；原登记的support-style row_startup/log名称只作本地元数据纠正，没有更改或重复远端执行。
 
 2026-10-01T20:17:05Z仅元数据独立读回VERIFIED：{"rx3-cvs-daot-rc4-s2026092701": "PREDICTING", "rx3-cvs-daot-rc4-s2026092702": "PREDICTING", "rx1-cvs-daot-rc4-s2026092701": "PREFLIGHT_COMPLETE", "rx1-cvs-daot-rc4-s2026092702": "PREFLIGHT_COMPLETE"}。未读取部分预测、标签或训练指标；现有immutable runtime不变。
+
+状态更新：PREDICTIONS_COMPLETE。2026-10-01T23:22:23Z原不可变runtime73aa的4条row、2400episode已全部完成并固定，尚未读取truth或调用scorer。独立原scorer的一次r01执行已预登记，输出为全新独立summary.json；不重训练、不改原预测/源码、不根据评分改参数或重跑。发布与完整评分结果仍待独立读回，不能以退出码推定成功。原大量完整terminal metadata保留本地原路径，Git登记紧凑字段及来源，不复制固定预测或truth。
+
+<!-- GROUP_COMPLETE_QUERY_SCORE_PREREGISTERED_20261002 -->

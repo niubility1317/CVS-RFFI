@@ -31,3 +31,7 @@ basis 每 row 只由冻结地面 Q 构建一次，归档普通方法数据证据
 独立分析发布工具的49项离线测试通过；真实RUNNING记录在任何Git/SSH或目录创建前被拒绝，分析尚未派发。2026-10-01T23:08:38ZPID/argv/cwd/environment读回VERIFIED，当前两rx3训练、两rx1等待，完整marker仍不存在。新增数学说明给出固定旧条件后的精确竞争损失恒等式，不构成性能保证，也不改变本轮参数。
 
 <!-- SUPPORT_METRIC_ANALYSIS_ROUTE_VALIDATED_20261002 -->
+
+2026-10-01T23:51:44Z独立metadata读回VERIFIED：全部4 row、160 parent、1800 path完成，supervisor与四worker均正常退出。原runtime3c3不变；完整marker的query_access/truth_read/source_sample_access均false。记录转为TRAINING_COMPLETE，原预登记独立analysis r01仍未发布。此处未读取support成绩或query，不声称方法改善。
+
+<!-- SUPPORT_METRIC_FULL_TRAINING_COMPLETE_20261002 -->
