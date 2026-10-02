@@ -21,7 +21,7 @@
   "replaces_run_id": null,
   "authorization": "用户授权持续优化基础网络，性能第一，真正 RFF physics aware；普通 CE、无增强、clean-only，每次发布默认完成测试。",
   "code": {
-    "commit": "5eb07b152832f4314bd4ded6aefff49e6a7b4c6a",
+    "commit": "636fa61d928442919b4bb67e3697bf0afd6f0d35",
     "checkout": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01",
@@ -101,7 +101,19 @@
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01",
     "local_artifact_root": "automation_reports/CV-SincNet/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01",
     "launch_command": "python -m experiments.cvs_source_sensitivity.publish --output local_artifacts/cvs_received_sensitivity_source_20261002_r01",
-    "stop_rule": "Own worker provenance/nonfinite/incomplete/state mutation/identity accuracy mismatch: preserve evidence, no automatic resubmit. No other processes modified."
+    "stop_rule": "Own worker provenance/nonfinite/incomplete/state mutation/identity accuracy mismatch: preserve evidence, no automatic resubmit. No other processes modified.",
+    "actual_pid": 1322824,
+    "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01",
+    "actual_argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_received_sensitivity_source_20261002_r01/audit.py",
+      "--output",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01",
+      "--device",
+      "cuda:0"
+    ],
+    "actual_gpu": 0
   },
   "expected_artifacts": [
     "resolved_config.json",
@@ -133,14 +145,15 @@
     "prediction_ref": null,
     "scorer_ref": null,
     "primary": "All56rows complete sourceV/90cells; independently weighted by counts; no rank/selection/target feedback.",
-    "later_test": "N/A: no new training/candidate; original models already completed frozen clean tests and are not rerun."
+    "later_test": "N/A: no new training/candidate; original models already completed frozen clean tests and are not rerun.",
+    "actual_outcome": "All56rows/5040cells complete and independently recomputed;models unchanged;0 optimizer;source E200 accuracy exact reproduced;no target"
   },
   "rows": [
     {
       "row_id": "residual_fusion-s2026092701-identity",
       "method": "residual_fusion",
       "purpose": "frozen_full_source_V_received_sensitivity",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
       "data_overrides": {
@@ -195,13 +208,14 @@
       "expected_artifacts": [
         "result.json"
       ],
-      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092701/source/last.pt"
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092701/source/last.pt",
+      "actual_pid": 1322824
     },
     {
       "row_id": "residual_fusion-s2026092701-constant_phase",
       "method": "residual_fusion",
       "purpose": "frozen_full_source_V_received_sensitivity",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
       "data_overrides": {
@@ -256,13 +270,14 @@
       "expected_artifacts": [
         "result.json"
       ],
-      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092701/source/last.pt"
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092701/source/last.pt",
+      "actual_pid": 1322824
     },
     {
       "row_id": "residual_fusion-s2026092701-cfo_plus",
       "method": "residual_fusion",
       "purpose": "frozen_full_source_V_received_sensitivity",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
       "data_overrides": {
@@ -317,13 +332,14 @@
       "expected_artifacts": [
         "result.json"
       ],
-      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092701/source/last.pt"
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092701/source/last.pt",
+      "actual_pid": 1322824
     },
     {
       "row_id": "residual_fusion-s2026092701-cfo_minus",
       "method": "residual_fusion",
       "purpose": "frozen_full_source_V_received_sensitivity",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
       "data_overrides": {
@@ -378,13 +394,14 @@
       "expected_artifacts": [
         "result.json"
       ],
-      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092701/source/last.pt"
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092701/source/last.pt",
+      "actual_pid": 1322824
     },
     {
       "row_id": "residual_fusion-s2026092701-received_lti",
       "method": "residual_fusion",
       "purpose": "frozen_full_source_V_received_sensitivity",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
       "data_overrides": {
@@ -439,13 +456,14 @@
       "expected_artifacts": [
         "result.json"
       ],
-      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092701/source/last.pt"
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092701/source/last.pt",
+      "actual_pid": 1322824
     },
     {
       "row_id": "residual_fusion-s2026092701-received_image",
       "method": "residual_fusion",
       "purpose": "frozen_full_source_V_received_sensitivity",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
       "data_overrides": {
@@ -500,13 +518,14 @@
       "expected_artifacts": [
         "result.json"
       ],
-      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092701/source/last.pt"
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092701/source/last.pt",
+      "actual_pid": 1322824
     },
     {
       "row_id": "residual_fusion-s2026092701-received_cubic",
       "method": "residual_fusion",
       "purpose": "frozen_full_source_V_received_sensitivity",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
       "data_overrides": {
@@ -561,13 +580,14 @@
       "expected_artifacts": [
         "result.json"
       ],
-      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092701/source/last.pt"
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092701/source/last.pt",
+      "actual_pid": 1322824
     },
     {
       "row_id": "residual_fusion-s2026092702-identity",
       "method": "residual_fusion",
       "purpose": "frozen_full_source_V_received_sensitivity",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
       "data_overrides": {
@@ -622,13 +642,14 @@
       "expected_artifacts": [
         "result.json"
       ],
-      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092702/source/last.pt"
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092702/source/last.pt",
+      "actual_pid": 1322824
     },
     {
       "row_id": "residual_fusion-s2026092702-constant_phase",
       "method": "residual_fusion",
       "purpose": "frozen_full_source_V_received_sensitivity",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
       "data_overrides": {
@@ -683,13 +704,14 @@
       "expected_artifacts": [
         "result.json"
       ],
-      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092702/source/last.pt"
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092702/source/last.pt",
+      "actual_pid": 1322824
     },
     {
       "row_id": "residual_fusion-s2026092702-cfo_plus",
       "method": "residual_fusion",
       "purpose": "frozen_full_source_V_received_sensitivity",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
       "data_overrides": {
@@ -744,13 +766,14 @@
       "expected_artifacts": [
         "result.json"
       ],
-      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092702/source/last.pt"
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092702/source/last.pt",
+      "actual_pid": 1322824
     },
     {
       "row_id": "residual_fusion-s2026092702-cfo_minus",
       "method": "residual_fusion",
       "purpose": "frozen_full_source_V_received_sensitivity",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
       "data_overrides": {
@@ -805,13 +828,14 @@
       "expected_artifacts": [
         "result.json"
       ],
-      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092702/source/last.pt"
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092702/source/last.pt",
+      "actual_pid": 1322824
     },
     {
       "row_id": "residual_fusion-s2026092702-received_lti",
       "method": "residual_fusion",
       "purpose": "frozen_full_source_V_received_sensitivity",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
       "data_overrides": {
@@ -866,13 +890,14 @@
       "expected_artifacts": [
         "result.json"
       ],
-      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092702/source/last.pt"
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092702/source/last.pt",
+      "actual_pid": 1322824
     },
     {
       "row_id": "residual_fusion-s2026092702-received_image",
       "method": "residual_fusion",
       "purpose": "frozen_full_source_V_received_sensitivity",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
       "data_overrides": {
@@ -927,13 +952,14 @@
       "expected_artifacts": [
         "result.json"
       ],
-      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092702/source/last.pt"
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092702/source/last.pt",
+      "actual_pid": 1322824
     },
     {
       "row_id": "residual_fusion-s2026092702-received_cubic",
       "method": "residual_fusion",
       "purpose": "frozen_full_source_V_received_sensitivity",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
       "data_overrides": {
@@ -988,13 +1014,14 @@
       "expected_artifacts": [
         "result.json"
       ],
-      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092702/source/last.pt"
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092702/source/last.pt",
+      "actual_pid": 1322824
     },
     {
       "row_id": "residual_fusion-s2026092703-identity",
       "method": "residual_fusion",
       "purpose": "frozen_full_source_V_received_sensitivity",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
       "data_overrides": {
@@ -1049,13 +1076,14 @@
       "expected_artifacts": [
         "result.json"
       ],
-      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092703/source/last.pt"
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092703/source/last.pt",
+      "actual_pid": 1322824
     },
     {
       "row_id": "residual_fusion-s2026092703-constant_phase",
       "method": "residual_fusion",
       "purpose": "frozen_full_source_V_received_sensitivity",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
       "data_overrides": {
@@ -1110,13 +1138,14 @@
       "expected_artifacts": [
         "result.json"
       ],
-      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092703/source/last.pt"
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092703/source/last.pt",
+      "actual_pid": 1322824
     },
     {
       "row_id": "residual_fusion-s2026092703-cfo_plus",
       "method": "residual_fusion",
       "purpose": "frozen_full_source_V_received_sensitivity",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
       "data_overrides": {
@@ -1171,13 +1200,14 @@
       "expected_artifacts": [
         "result.json"
       ],
-      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092703/source/last.pt"
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092703/source/last.pt",
+      "actual_pid": 1322824
     },
     {
       "row_id": "residual_fusion-s2026092703-cfo_minus",
       "method": "residual_fusion",
       "purpose": "frozen_full_source_V_received_sensitivity",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
       "data_overrides": {
@@ -1232,13 +1262,14 @@
       "expected_artifacts": [
         "result.json"
       ],
-      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092703/source/last.pt"
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092703/source/last.pt",
+      "actual_pid": 1322824
     },
     {
       "row_id": "residual_fusion-s2026092703-received_lti",
       "method": "residual_fusion",
       "purpose": "frozen_full_source_V_received_sensitivity",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
       "data_overrides": {
@@ -1293,13 +1324,14 @@
       "expected_artifacts": [
         "result.json"
       ],
-      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092703/source/last.pt"
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092703/source/last.pt",
+      "actual_pid": 1322824
     },
     {
       "row_id": "residual_fusion-s2026092703-received_image",
       "method": "residual_fusion",
       "purpose": "frozen_full_source_V_received_sensitivity",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
       "data_overrides": {
@@ -1354,13 +1386,14 @@
       "expected_artifacts": [
         "result.json"
       ],
-      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092703/source/last.pt"
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092703/source/last.pt",
+      "actual_pid": 1322824
     },
     {
       "row_id": "residual_fusion-s2026092703-received_cubic",
       "method": "residual_fusion",
       "purpose": "frozen_full_source_V_received_sensitivity",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
       "data_overrides": {
@@ -1415,13 +1448,14 @@
       "expected_artifacts": [
         "result.json"
       ],
-      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092703/source/last.pt"
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092703/source/last.pt",
+      "actual_pid": 1322824
     },
     {
       "row_id": "residual_fusion-s2026092704-identity",
       "method": "residual_fusion",
       "purpose": "frozen_full_source_V_received_sensitivity",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
       "data_overrides": {
@@ -1476,13 +1510,14 @@
       "expected_artifacts": [
         "result.json"
       ],
-      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092704/source/last.pt"
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092704/source/last.pt",
+      "actual_pid": 1322824
     },
     {
       "row_id": "residual_fusion-s2026092704-constant_phase",
       "method": "residual_fusion",
       "purpose": "frozen_full_source_V_received_sensitivity",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
       "data_overrides": {
@@ -1537,13 +1572,14 @@
       "expected_artifacts": [
         "result.json"
       ],
-      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092704/source/last.pt"
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092704/source/last.pt",
+      "actual_pid": 1322824
     },
     {
       "row_id": "residual_fusion-s2026092704-cfo_plus",
       "method": "residual_fusion",
       "purpose": "frozen_full_source_V_received_sensitivity",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
       "data_overrides": {
@@ -1598,13 +1634,14 @@
       "expected_artifacts": [
         "result.json"
       ],
-      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092704/source/last.pt"
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092704/source/last.pt",
+      "actual_pid": 1322824
     },
     {
       "row_id": "residual_fusion-s2026092704-cfo_minus",
       "method": "residual_fusion",
       "purpose": "frozen_full_source_V_received_sensitivity",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
       "data_overrides": {
@@ -1659,13 +1696,14 @@
       "expected_artifacts": [
         "result.json"
       ],
-      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092704/source/last.pt"
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092704/source/last.pt",
+      "actual_pid": 1322824
     },
     {
       "row_id": "residual_fusion-s2026092704-received_lti",
       "method": "residual_fusion",
       "purpose": "frozen_full_source_V_received_sensitivity",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
       "data_overrides": {
@@ -1720,13 +1758,14 @@
       "expected_artifacts": [
         "result.json"
       ],
-      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092704/source/last.pt"
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092704/source/last.pt",
+      "actual_pid": 1322824
     },
     {
       "row_id": "residual_fusion-s2026092704-received_image",
       "method": "residual_fusion",
       "purpose": "frozen_full_source_V_received_sensitivity",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
       "data_overrides": {
@@ -1781,13 +1820,14 @@
       "expected_artifacts": [
         "result.json"
       ],
-      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092704/source/last.pt"
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092704/source/last.pt",
+      "actual_pid": 1322824
     },
     {
       "row_id": "residual_fusion-s2026092704-received_cubic",
       "method": "residual_fusion",
       "purpose": "frozen_full_source_V_received_sensitivity",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
       "data_overrides": {
@@ -1842,13 +1882,14 @@
       "expected_artifacts": [
         "result.json"
       ],
-      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092704/source/last.pt"
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092704/source/last.pt",
+      "actual_pid": 1322824
     },
     {
       "row_id": "equivariant_memory-s2026092701-identity",
       "method": "equivariant_memory",
       "purpose": "frozen_full_source_V_received_sensitivity",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
       "data_overrides": {
@@ -1903,13 +1944,14 @@
       "expected_artifacts": [
         "result.json"
       ],
-      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092701/source/last.pt"
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092701/source/last.pt",
+      "actual_pid": 1322824
     },
     {
       "row_id": "equivariant_memory-s2026092701-constant_phase",
       "method": "equivariant_memory",
       "purpose": "frozen_full_source_V_received_sensitivity",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
       "data_overrides": {
@@ -1964,13 +2006,14 @@
       "expected_artifacts": [
         "result.json"
       ],
-      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092701/source/last.pt"
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092701/source/last.pt",
+      "actual_pid": 1322824
     },
     {
       "row_id": "equivariant_memory-s2026092701-cfo_plus",
       "method": "equivariant_memory",
       "purpose": "frozen_full_source_V_received_sensitivity",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
       "data_overrides": {
@@ -2025,13 +2068,14 @@
       "expected_artifacts": [
         "result.json"
       ],
-      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092701/source/last.pt"
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092701/source/last.pt",
+      "actual_pid": 1322824
     },
     {
       "row_id": "equivariant_memory-s2026092701-cfo_minus",
       "method": "equivariant_memory",
       "purpose": "frozen_full_source_V_received_sensitivity",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
       "data_overrides": {
@@ -2086,13 +2130,14 @@
       "expected_artifacts": [
         "result.json"
       ],
-      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092701/source/last.pt"
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092701/source/last.pt",
+      "actual_pid": 1322824
     },
     {
       "row_id": "equivariant_memory-s2026092701-received_lti",
       "method": "equivariant_memory",
       "purpose": "frozen_full_source_V_received_sensitivity",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
       "data_overrides": {
@@ -2147,13 +2192,14 @@
       "expected_artifacts": [
         "result.json"
       ],
-      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092701/source/last.pt"
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092701/source/last.pt",
+      "actual_pid": 1322824
     },
     {
       "row_id": "equivariant_memory-s2026092701-received_image",
       "method": "equivariant_memory",
       "purpose": "frozen_full_source_V_received_sensitivity",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
       "data_overrides": {
@@ -2208,13 +2254,14 @@
       "expected_artifacts": [
         "result.json"
       ],
-      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092701/source/last.pt"
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092701/source/last.pt",
+      "actual_pid": 1322824
     },
     {
       "row_id": "equivariant_memory-s2026092701-received_cubic",
       "method": "equivariant_memory",
       "purpose": "frozen_full_source_V_received_sensitivity",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
       "data_overrides": {
@@ -2269,13 +2316,14 @@
       "expected_artifacts": [
         "result.json"
       ],
-      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092701/source/last.pt"
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092701/source/last.pt",
+      "actual_pid": 1322824
     },
     {
       "row_id": "equivariant_memory-s2026092702-identity",
       "method": "equivariant_memory",
       "purpose": "frozen_full_source_V_received_sensitivity",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
       "data_overrides": {
@@ -2330,13 +2378,14 @@
       "expected_artifacts": [
         "result.json"
       ],
-      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092702/source/last.pt"
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092702/source/last.pt",
+      "actual_pid": 1322824
     },
     {
       "row_id": "equivariant_memory-s2026092702-constant_phase",
       "method": "equivariant_memory",
       "purpose": "frozen_full_source_V_received_sensitivity",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
       "data_overrides": {
@@ -2391,13 +2440,14 @@
       "expected_artifacts": [
         "result.json"
       ],
-      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092702/source/last.pt"
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092702/source/last.pt",
+      "actual_pid": 1322824
     },
     {
       "row_id": "equivariant_memory-s2026092702-cfo_plus",
       "method": "equivariant_memory",
       "purpose": "frozen_full_source_V_received_sensitivity",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
       "data_overrides": {
@@ -2452,13 +2502,14 @@
       "expected_artifacts": [
         "result.json"
       ],
-      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092702/source/last.pt"
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092702/source/last.pt",
+      "actual_pid": 1322824
     },
     {
       "row_id": "equivariant_memory-s2026092702-cfo_minus",
       "method": "equivariant_memory",
       "purpose": "frozen_full_source_V_received_sensitivity",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
       "data_overrides": {
@@ -2513,13 +2564,14 @@
       "expected_artifacts": [
         "result.json"
       ],
-      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092702/source/last.pt"
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092702/source/last.pt",
+      "actual_pid": 1322824
     },
     {
       "row_id": "equivariant_memory-s2026092702-received_lti",
       "method": "equivariant_memory",
       "purpose": "frozen_full_source_V_received_sensitivity",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
       "data_overrides": {
@@ -2574,13 +2626,14 @@
       "expected_artifacts": [
         "result.json"
       ],
-      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092702/source/last.pt"
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092702/source/last.pt",
+      "actual_pid": 1322824
     },
     {
       "row_id": "equivariant_memory-s2026092702-received_image",
       "method": "equivariant_memory",
       "purpose": "frozen_full_source_V_received_sensitivity",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
       "data_overrides": {
@@ -2635,13 +2688,14 @@
       "expected_artifacts": [
         "result.json"
       ],
-      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092702/source/last.pt"
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092702/source/last.pt",
+      "actual_pid": 1322824
     },
     {
       "row_id": "equivariant_memory-s2026092702-received_cubic",
       "method": "equivariant_memory",
       "purpose": "frozen_full_source_V_received_sensitivity",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
       "data_overrides": {
@@ -2696,13 +2750,14 @@
       "expected_artifacts": [
         "result.json"
       ],
-      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092702/source/last.pt"
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092702/source/last.pt",
+      "actual_pid": 1322824
     },
     {
       "row_id": "equivariant_memory-s2026092703-identity",
       "method": "equivariant_memory",
       "purpose": "frozen_full_source_V_received_sensitivity",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
       "data_overrides": {
@@ -2757,13 +2812,14 @@
       "expected_artifacts": [
         "result.json"
       ],
-      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092703/source/last.pt"
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092703/source/last.pt",
+      "actual_pid": 1322824
     },
     {
       "row_id": "equivariant_memory-s2026092703-constant_phase",
       "method": "equivariant_memory",
       "purpose": "frozen_full_source_V_received_sensitivity",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
       "data_overrides": {
@@ -2818,13 +2874,14 @@
       "expected_artifacts": [
         "result.json"
       ],
-      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092703/source/last.pt"
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092703/source/last.pt",
+      "actual_pid": 1322824
     },
     {
       "row_id": "equivariant_memory-s2026092703-cfo_plus",
       "method": "equivariant_memory",
       "purpose": "frozen_full_source_V_received_sensitivity",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
       "data_overrides": {
@@ -2879,13 +2936,14 @@
       "expected_artifacts": [
         "result.json"
       ],
-      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092703/source/last.pt"
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092703/source/last.pt",
+      "actual_pid": 1322824
     },
     {
       "row_id": "equivariant_memory-s2026092703-cfo_minus",
       "method": "equivariant_memory",
       "purpose": "frozen_full_source_V_received_sensitivity",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
       "data_overrides": {
@@ -2940,13 +2998,14 @@
       "expected_artifacts": [
         "result.json"
       ],
-      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092703/source/last.pt"
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092703/source/last.pt",
+      "actual_pid": 1322824
     },
     {
       "row_id": "equivariant_memory-s2026092703-received_lti",
       "method": "equivariant_memory",
       "purpose": "frozen_full_source_V_received_sensitivity",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
       "data_overrides": {
@@ -3001,13 +3060,14 @@
       "expected_artifacts": [
         "result.json"
       ],
-      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092703/source/last.pt"
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092703/source/last.pt",
+      "actual_pid": 1322824
     },
     {
       "row_id": "equivariant_memory-s2026092703-received_image",
       "method": "equivariant_memory",
       "purpose": "frozen_full_source_V_received_sensitivity",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
       "data_overrides": {
@@ -3062,13 +3122,14 @@
       "expected_artifacts": [
         "result.json"
       ],
-      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092703/source/last.pt"
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092703/source/last.pt",
+      "actual_pid": 1322824
     },
     {
       "row_id": "equivariant_memory-s2026092703-received_cubic",
       "method": "equivariant_memory",
       "purpose": "frozen_full_source_V_received_sensitivity",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
       "data_overrides": {
@@ -3123,13 +3184,14 @@
       "expected_artifacts": [
         "result.json"
       ],
-      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092703/source/last.pt"
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092703/source/last.pt",
+      "actual_pid": 1322824
     },
     {
       "row_id": "equivariant_memory-s2026092704-identity",
       "method": "equivariant_memory",
       "purpose": "frozen_full_source_V_received_sensitivity",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
       "data_overrides": {
@@ -3184,13 +3246,14 @@
       "expected_artifacts": [
         "result.json"
       ],
-      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092704/source/last.pt"
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092704/source/last.pt",
+      "actual_pid": 1322824
     },
     {
       "row_id": "equivariant_memory-s2026092704-constant_phase",
       "method": "equivariant_memory",
       "purpose": "frozen_full_source_V_received_sensitivity",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
       "data_overrides": {
@@ -3245,13 +3308,14 @@
       "expected_artifacts": [
         "result.json"
       ],
-      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092704/source/last.pt"
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092704/source/last.pt",
+      "actual_pid": 1322824
     },
     {
       "row_id": "equivariant_memory-s2026092704-cfo_plus",
       "method": "equivariant_memory",
       "purpose": "frozen_full_source_V_received_sensitivity",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
       "data_overrides": {
@@ -3306,13 +3370,14 @@
       "expected_artifacts": [
         "result.json"
       ],
-      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092704/source/last.pt"
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092704/source/last.pt",
+      "actual_pid": 1322824
     },
     {
       "row_id": "equivariant_memory-s2026092704-cfo_minus",
       "method": "equivariant_memory",
       "purpose": "frozen_full_source_V_received_sensitivity",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
       "data_overrides": {
@@ -3367,13 +3432,14 @@
       "expected_artifacts": [
         "result.json"
       ],
-      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092704/source/last.pt"
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092704/source/last.pt",
+      "actual_pid": 1322824
     },
     {
       "row_id": "equivariant_memory-s2026092704-received_lti",
       "method": "equivariant_memory",
       "purpose": "frozen_full_source_V_received_sensitivity",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
       "data_overrides": {
@@ -3428,13 +3494,14 @@
       "expected_artifacts": [
         "result.json"
       ],
-      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092704/source/last.pt"
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092704/source/last.pt",
+      "actual_pid": 1322824
     },
     {
       "row_id": "equivariant_memory-s2026092704-received_image",
       "method": "equivariant_memory",
       "purpose": "frozen_full_source_V_received_sensitivity",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
       "data_overrides": {
@@ -3489,13 +3556,14 @@
       "expected_artifacts": [
         "result.json"
       ],
-      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092704/source/last.pt"
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092704/source/last.pt",
+      "actual_pid": 1322824
     },
     {
       "row_id": "equivariant_memory-s2026092704-received_cubic",
       "method": "equivariant_memory",
       "purpose": "frozen_full_source_V_received_sensitivity",
-      "gpu": null,
+      "gpu": 0,
       "config_ref": "experiments/cvs_source_sensitivity/configs/experiment_spec.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-diagnostic-cvs-received-sensitivity-source-manysig-m56-r01/resolved_config.json",
       "data_overrides": {
@@ -3550,7 +3618,8 @@
       "expected_artifacts": [
         "result.json"
       ],
-      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092704/source/last.pt"
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-equivariant-fp32-manysig-m4-r01/equivariant_memory-s2026092704/source/last.pt",
+      "actual_pid": 1322824
     }
   ],
   "notes": [
