@@ -1,0 +1,14 @@
+{
+  "status": "PASS",
+  "focused_tests": 24,
+  "command": "conda run --no-capture-output -n ssr-gpu python -X utf8 -m pytest tests/test_cvs_synchronized_identity.py tests/test_cvs_synchronized_source_protocol.py -q -ra -o addopts= -p no:cacheprovider",
+  "scope": "CFO units/conditional covariance/amplitudes/principal alias counterexample/zero and cancellation finite gradients/whole-network physical audits/CE gradients/per-packet independence/parameter counts/source negative tests/exclusive8rows/sourceperformance12records",
+  "independent_P0_P1_review": {
+    "synchronized_equivariant": "PASS",
+    "synchronized_gauge": "PASS"
+  },
+  "retained_initial_test_failure": "Exact0 comparison to syntheticcubic TX/RX floatingerror3.33e-16 corrected to alreadyfixed1e-12 public simulation tolerance;no method or physics threshold changed",
+  "zero_correlation_fix": "Coherence telemetry uses unfloored magnitude;zero C withnonzeroenergy safely fallsback,finitegradients tested",
+  "helper_preflight_failure": "Read-only stdlib AST missing PROJECT corrected before registration/remote launch;no remote mutation occurred",
+  "target_access": false
+}

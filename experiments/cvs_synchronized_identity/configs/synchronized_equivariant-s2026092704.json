@@ -1,0 +1,61 @@
+{
+  "method": "cvs_synchronized_identity",
+  "variant": "synchronized_equivariant",
+  "model_seed": 2026092704,
+  "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+  "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+  "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-synchronized-identity-manysig-m8-r01/synchronized_equivariant-s2026092704/source",
+  "epochs": 200,
+  "batch_size": 128,
+  "lr": 0.0002,
+  "lr_min": 1e-06,
+  "weight_decay": 0.0001,
+  "drop_last": false,
+  "augmentation": false,
+  "domain_backbone": false,
+  "extra_losses": [],
+  "selection": "fixed_last_epoch",
+  "split_seed": 392005,
+  "device": "cuda:0",
+  "synchronized": {
+    "mode": "synchronized_equivariant",
+    "input": "received_equalized1_unit_rms_IQ",
+    "sample_rate_hz": 25000000,
+    "estimator_window": [
+      80,
+      160
+    ],
+    "period_samples": 20,
+    "repeated_cycles": 4,
+    "correlation_pairs": 60,
+    "coherence_fallback_threshold": 1e-06,
+    "energy_floor": 1e-12,
+    "estimator": "arg(sum(x[n]conj(x[n-20])))/20;all3 adjacent cycle pairs",
+    "relative_cfo_principal_interval_hz": [
+      -625000,
+      625000
+    ],
+    "relative_cfo_ambiguity_hz": 1250000,
+    "synchronizer_learned_parameters": 0,
+    "all_identity_paths_after_synchronization": true,
+    "preserved_sample_amplitudes": true,
+    "original_temporal_samples": 256,
+    "constant_phase_invariant_real_arithmetic": true,
+    "affine_phase_invariant_when_correlation_valid_and_no_principal_branch_crossing": true,
+    "degenerate_behavior": "no frequency correction;constant phase properties remain;no affine claim",
+    "waveforms_preserved_up_to_packet_affine_phase": true,
+    "identity_core": "equivariant_memory",
+    "arbitrary_channel_rx_invariant": false,
+    "hardware_parameter_estimation": false,
+    "embedding_dimension": 160,
+    "classifier_scale": 30.0,
+    "interpretation": "Relative received carrier synchronization before existing identity network;not recovered TX CFO/PA/IQ hardware parameters"
+  },
+  "numerical_policy": {
+    "cudnn_allow_tf32": false,
+    "cuda_matmul_allow_tf32": false,
+    "cudnn_benchmark": false,
+    "cudnn_deterministic": false,
+    "matmul_precision": "highest"
+  }
+}
