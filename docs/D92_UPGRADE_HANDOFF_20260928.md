@@ -1,3 +1,11 @@
+## 2026-10-02 组均衡门控联合微调源码已验证
+
+- 新方法 D92-GroupBalancedSupportMetric-GGN1-LocalRidge，仅 C gate 使用当前训练 support 的 `N/(2*C_group*n_class)`；B、实际 B→C、物理 U/Gram/Fisher GGN、全部原常数和六资源边界保持不变。依据仅 support 数学诊断，不读取 query 结果调参。
+- 新 run `20261002-phase2-d92-group-balanced-support-metric-joint-support-m2-r01` 为 LOCAL_VERIFIED，唯一 launch owner=root；4/160/1800 support-only，尚未发布/拟合/评分。配置 `configs/d92_group_balanced_support_metric_joint_support_20261002.json`。
+- 合成不同病例 86 PASS；原 zero-K 饱和试探失败保存，仅新 gate 有界未接受试探缩步修复，10 gate 回归通过。entry/control66与joint10通过；46文件隔离源导入、实际配置和已有来源 metadata 通过；独立初审+原问题一次定点复审 NO_UNRESOLVED_P0_P1。
+- 证据 `automation_reports/CV-SincNet/20261002-phase2-d92-group-balanced-support-metric-joint-support-m2-r01/evidence/implementation_validation_20261002.json`、数学 `docs/D92_GROUP_BALANCED_SUPPORT_METRIC_DERIVATION_20261002.md`。没有真实新方法性能/星载省算力结论。
+- 下一步：仅提交本次 source/config/records，push独立OID读回后 root 唯一发布 fresh namespace。两个旧 query 健康任务继续；完整终态后按已有独立 scorer 路径，无子集评分/热改/重启。
+
 ## 当前交接：Group完整query与SupportMetric完整support已报告，两个query继续
 
 - Goal ACTIVE，性能目标未实现。Groupquery原73aa完整4/2400，独立r02f291已VERIFIED_COMPLETE，877.322秒、评分RSS35,046,842,368B仅存证评分成本；完整summary578,462,770B已采集一次到local_artifacts/d92_group_query_score_results/d92_group_query_score_contract_20261002_r02，禁止重采/重评分/重预测。实际方法成本另读回complete_query_costs_1790902994992999700.json。

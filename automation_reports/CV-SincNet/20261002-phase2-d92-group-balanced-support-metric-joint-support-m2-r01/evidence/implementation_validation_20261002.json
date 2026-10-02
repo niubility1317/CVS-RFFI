@@ -1,0 +1,88 @@
+{
+  "status": "VERIFIED",
+  "scope": "FROZEN_SOURCE_SYNTHETIC_AND_EXISTING_INPUT_METADATA_NOT_PERFORMANCE",
+  "observed_utc": "2026-10-02T01:47:48.026679+00:00",
+  "preparation_parent_commit": "a60dbf7de4162da8c4f461a94ef45b1b130af933",
+  "actual_pushed_runtime_commit": null,
+  "source_paths": [
+    "code/cvsrffi/d92_group_balanced_barrier_gate.py",
+    "code/cvsrffi/d92_group_balanced_support_metric_joint_local_ridge.py",
+    "tests/test_d92_group_balanced_barrier_gate.py",
+    "tests/test_d92_group_balanced_support_metric_joint_local_ridge.py",
+    "tests/test_d92_group_balanced_support_metric_joint_probe.py",
+    "tests/test_d92_group_balanced_support_metric_joint_analysis.py",
+    "tests/test_d92_group_balanced_support_metric_joint_control.py",
+    "tools/evaluate_d92_group_balanced_support_metric_joint_probe.py",
+    "tools/analyze_d92_group_balanced_support_metric_joint_probe.py",
+    "tools/run_d92_group_balanced_support_metric_joint_probe.py",
+    "tools/preflight_d92_group_balanced_support_metric_joint_probe.py",
+    "tools/publish_d92_group_balanced_support_metric_joint_probe.py",
+    "docs/D92_GROUP_BALANCED_SUPPORT_METRIC_DERIVATION_20261002.md"
+  ],
+  "tests": {
+    "first_core": {
+      "passed": 18,
+      "failed": 1,
+      "reason": "Unaccepted zero-kernel Newton trial logistic curvature underflow; preserved"
+    },
+    "repaired_gate": {
+      "passed": 10,
+      "failed": 0
+    },
+    "joint": {
+      "passed": 10,
+      "failed": 0,
+      "source_unchanged_after_first_execution": true
+    },
+    "entry_and_control": {
+      "passed": 66,
+      "failed": 0
+    },
+    "final_distinct_passed_cases": 86,
+    "no_blanket_old_suite_reexecution": true
+  },
+  "numerical_fix": "Only unaccepted trial finite/curvature/slack domain errors consume trial and halve; current/final errors remain failures; no constants/jitter/global change",
+  "environment": {
+    "executable": "E:/type10-7/local_envs/ssr-gpu/python.exe",
+    "native_activation": true,
+    "conda_cli_or_wrapper_started": false,
+    "numpy": "2.2.6",
+    "scipy": "1.15.3",
+    "torch": "2.1.0+cpu"
+  },
+  "independent_review": {
+    "status": "NO_UNRESOLVED_P0_P1",
+    "ref": "docs/D92_GROUP_BALANCED_SUPPORT_METRIC_DERIVATION_20261002.md",
+    "initial_rounds": 1,
+    "original_issue_point_rechecks": 1
+  },
+  "source_imports": {
+    "runtime_paths": 46,
+    "isolated": true,
+    "no_data": true,
+    "no_native_encoder": true
+  },
+  "metadata_preflight_ref": "automation_reports/CV-SincNet/20261002-phase2-d92-group-balanced-support-metric-joint-support-m2-r01/evidence/preflight_20261002.json",
+  "raw_evidence": [
+    "automation_reports/CV-SincNet/20261002-phase2-d92-group-balanced-support-metric-joint-support-m2-r01/evidence/core_first_failed.stdout",
+    "automation_reports/CV-SincNet/20261002-phase2-d92-group-balanced-support-metric-joint-support-m2-r01/evidence/core_first_failed.stderr",
+    "automation_reports/CV-SincNet/20261002-phase2-d92-group-balanced-support-metric-joint-support-m2-r01/evidence/core_first_failed.environment.json",
+    "automation_reports/CV-SincNet/20261002-phase2-d92-group-balanced-support-metric-joint-support-m2-r01/evidence/entry_control_pass.stdout",
+    "automation_reports/CV-SincNet/20261002-phase2-d92-group-balanced-support-metric-joint-support-m2-r01/evidence/entry_control_pass.stderr",
+    "automation_reports/CV-SincNet/20261002-phase2-d92-group-balanced-support-metric-joint-support-m2-r01/evidence/entry_control_pass.environment.json",
+    "automation_reports/CV-SincNet/20261002-phase2-d92-group-balanced-support-metric-joint-support-m2-r01/evidence/gate_repair_pass.stdout",
+    "automation_reports/CV-SincNet/20261002-phase2-d92-group-balanced-support-metric-joint-support-m2-r01/evidence/gate_repair_pass.stderr",
+    "automation_reports/CV-SincNet/20261002-phase2-d92-group-balanced-support-metric-joint-support-m2-r01/evidence/gate_repair_pass.environment.json",
+    "automation_reports/CV-SincNet/20261002-phase2-d92-group-balanced-support-metric-joint-support-m2-r01/evidence/isolated_imports_pass.stdout",
+    "automation_reports/CV-SincNet/20261002-phase2-d92-group-balanced-support-metric-joint-support-m2-r01/evidence/isolated_imports_pass.stderr",
+    "automation_reports/CV-SincNet/20261002-phase2-d92-group-balanced-support-metric-joint-support-m2-r01/evidence/isolated_imports_pass.execution.json",
+    "automation_reports/CV-SincNet/20261002-phase2-d92-group-balanced-support-metric-joint-support-m2-r01/evidence/metadata_preflight_pass.stdout",
+    "automation_reports/CV-SincNet/20261002-phase2-d92-group-balanced-support-metric-joint-support-m2-r01/evidence/metadata_preflight_pass.stderr",
+    "automation_reports/CV-SincNet/20261002-phase2-d92-group-balanced-support-metric-joint-support-m2-r01/evidence/metadata_preflight_pass.execution.json"
+  ],
+  "query_data_access": false,
+  "source_data_access": false,
+  "real_fit_started": false,
+  "performance_claim": false,
+  "known_environment_warning": "Torch 2.1 binary NumPy API warning under NumPy 2.2.6; no tensor/NumPy conversion or encoder training exercised; source/cache support paths passed"
+}

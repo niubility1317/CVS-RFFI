@@ -1,0 +1,19 @@
+...F...............                                                      [100%]
+================================== FAILURES ===================================
+_______ test_zero_kernel_six_old_one_new_free_b_not_sample_count_prior ________
+code\cvsrffi\d92_group_balanced_barrier_gate.py:249: in fit_group_balanced_barrier_gate
+    candidate = _evaluate(K, next_alpha, next_b, t, old, bounds, zeta, weights, audit)
+code\cvsrffi\d92_group_balanced_barrier_gate.py:103: in _evaluate
+    raise ArithmeticError('LOGISTIC_CURVATURE_UNDERFLOW')
+E   ArithmeticError: LOGISTIC_CURVATURE_UNDERFLOW
+
+The above exception was the direct cause of the following exception:
+tests\test_d92_group_balanced_barrier_gate.py:139: in test_zero_kernel_six_old_one_new_free_b_not_sample_count_prior
+    state=fit(args)
+tests\test_d92_group_balanced_barrier_gate.py:33: in fit
+    return gate.fit_group_balanced_barrier_gate(**args,**dict(LIMITS,**limits))
+code\cvsrffi\d92_group_balanced_barrier_gate.py:330: in fit_group_balanced_barrier_gate
+    raise GroupBalancedBarrierFailure(str(exc), dict(audit,schema=SCHEMA), arrays) from exc
+E   cvsrffi.d92_group_balanced_barrier_gate.GroupBalancedBarrierFailure: LOGISTIC_CURVATURE_UNDERFLOW
+=========================== short test summary info ===========================
+FAILED tests/test_d92_group_balanced_barrier_gate.py::test_zero_kernel_six_old_one_new_free_b_not_sample_count_prior
