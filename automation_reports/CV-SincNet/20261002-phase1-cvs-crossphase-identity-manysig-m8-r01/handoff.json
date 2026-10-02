@@ -6,8 +6,9 @@
   "previous_goal_turn": "Sixscene report readback completed; no new architecture performance evidence; resumed original goal",
   "launch_owner": "codex/root/cvs-crossphase-identity-20261002",
   "next": [
-    "Use complete source diagnostics and math/RFF priors for next design;do not consume target scores for design/ranking",
-    "Retain all negative crossphase results;no additional unselected clean tests"
+    "Formalize coupled_lag1/lag4 source experiment from E200energy control;fixed parameter budget and original readout",
+    "Preserve same physical source roles/scratch/CEonly/noaugmentation/fourmodelseeds/fullFP32/E200x50;sourcefreeze then selectedclean only",
+    "Use required one P0/P1 runtime review;commit/push/preflight/publish once;no historical target score input"
   ],
   "missing": [
     "New architecture performance improvement not established"
@@ -37,5 +38,8 @@
   ],
   "live_workers": 0,
   "scientific_verdict": "SOURCE_BASELINE_RETAINED",
-  "conditional_clean": "No new candidate selected;no new query;existing energy clean marker reverified"
+  "conditional_clean": "No new candidate selected;no new query;existing energy clean marker reverified",
+  "prototype": "experiments/cvs_coupled_identity/model.py",
+  "prototype_tests": "15 PASS;public only;not source/test performance",
+  "prototype_design": "docs/CVS_COUPLED_ENVELOPE_HYPOTHESIS_20261002.md"
 }
