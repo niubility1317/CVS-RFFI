@@ -1,6 +1,6 @@
 # CVS 完整源 V 接收变换与身份路径诊断
 
-状态 PLANNED，尚未发布。这是零优化的冻结源诊断，没有新模型或新候选，不重跑既有 clean。总体识别性能与真正 RFF physics aware 目标仍未完成。
+状态 ANALYZED，完整源诊断和独立复算已完成。这是零优化的冻结源诊断，没有新模型或新候选，不重跑既有 clean。总体识别性能与真正 RFF physics aware 目标仍未完成。
 
 依据是新 query 之前已经完成的公共源物理诊断：整体相位约束成立，但固定 80 kHz CFO、两径、镜像及三阶接收失真仍改变表征。本轮检查这些性质在完整真实源 V 上是否成立，使用源标签，不使用 target 成绩或分层。固定 residual_fusion 与全 FP32 equivariant_memory 各 4 个 E200 权重，不更新、继承训练、重选或改写原产物。加载前逐个核对完整 source 契约与 scratch/resolved/completion/payload。
 
