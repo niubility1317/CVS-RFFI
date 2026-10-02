@@ -1,0 +1,9 @@
+# Group原完整query契约修复评分r02
+
+2026-10-02，VERIFIED_LOCAL_SCORER_CONTRACT_CORRECTION_NOT_DISPATCHED。原预测全4/2400已固定，原scorer r01在连接truth前因错误feature_contract失败。失败输出独立保存，没有成绩或选择反馈。
+
+独立四row actual producer source metadata与公开exporter逐字段一致：branch_keys为四native分支，FFT在fft_dim96另列。新score_d92_group_barrier_joint_benchmark_contract_r02.py逐字克隆原scorer，仅从该字面列表删除fft；原schema/method/完整预测校验、独立重读和truth-last逻辑全部不变。完整dict相等检查继续严格执行。源代码字节替换与真实exporter AST相等回归证明没有增加aliases或接受旧错误契约。
+
+新wrapper r02仍核原release/spec/run及runtime73aa/full4/2400；只将scorer release/cwd和独立输出绑定到新r02，原r01及全部预测不修改。11契约+37执行离线cases在激活ssr-gpu中全部通过，原始日志以gzip保存。未访问query/truth/features、拟合、调用模型或自动重跑。此处预登记仅评分接口修复；不是新方法或性能试验。
+
+当前原support分析r01另在Trial arithmetic tolerance changed结构检查失败，原因仍在源码核对；未输出完整诊断，不放宽容差，不改变训练方法。新SupportMetric完整query runtime c7c46558 已独立启动VERIFIED，旧ProtoFrame query保持运行。后续完整评分或诊断成绩不回流当前冻结方法。

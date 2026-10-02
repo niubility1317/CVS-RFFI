@@ -13,3 +13,5 @@
 每row仅构建一次固定ground Q的U basis，归档普通方法状态并计入真实成本；prepare绑定/Gram与阶段训练、推理分别记账，不重复收取构建成本。保留CVS风格详细文本和compact JSONL/CSV实际损失、权重、梯度、方法状态与耗时；source validation因Phase2禁读为N/A。实际更新坐标、解析head状态、CPU硬件、训练/推理耗时、RSS、常驻状态与新增传输字节单列；星载实测、能耗、native wire及其他未测量项N/A。参数少不等于训练总计算少。
 
 只修正登记文字：cohort引用为benchmark.cohorts，feature cache producer来自各row实际branch_features路径，属于原始冻结表征供support拟合及只读query推断；没有继承历史适应状态。算法、矩阵、数据和角色不变。入口34、scorer70、control43个distinct用例已通过；57文件精确source bundle隔离导入成功且无数据/encoder读取，独立P0/P1审查闭合。状态READY，尚未发布、启动或评分。最初合成测试失败与修复后原始输出全部保留；详情见D92_SUPPORT_METRIC_QUERY_SOURCE_VALIDATION_20261002.md。
+
+完整query r01已唯一发布并启动，runtime c7c46558d5eb8f34bb57fb09c12adc7ac2c5109f；2026-10-02T00:10:28Z独立/proc argv/cwd/start_ticks/environment读回VERIFIED：supervisor1327506/start14743342，rx3 PID1327618/1327622 PREDICTING，rx1两行PREFLIGHT_COMPLETE等待。全四行直接预检完成，global marker无，尚未truth/评分。原公式、数据、六项资源和矩阵不变。

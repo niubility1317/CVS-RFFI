@@ -74,37 +74,82 @@
     "latest_runtime_readback_ref": "evidence/query_terminal_1790897012642688500_compact.json",
     "query_score": {
       "status": "PREREGISTERED_NOT_LAUNCHED",
-      "attempt_id": "r01",
-      "spec_path": "configs/d92_group_query_score_20261002.json",
-      "wrapper_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_group_query_score_20261002_r01",
+      "attempt_id": "r02",
+      "spec_path": "configs/d92_group_query_score_contract_20261002_r02.json",
+      "wrapper_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_group_query_score_contract_20261002_r02",
       "source_commit": null,
-      "source_preparation_commit": "19ad08a90d610feeccd3ecc42990e0db919a3edb",
+      "source_preparation_commit": "c7c46558d5eb8f34bb57fb09c12adc7ac2c5109f",
       "original_runtime_commit": "73aa1b31fc68aeddfb3d0ef7882acafb5be5a155",
-      "output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01-score-r01/summary.json",
-      "output_directory": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01-score-r01",
+      "output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01-score-contract-r02/summary.json",
+      "output_directory": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01-score-contract-r02",
       "command": [
         "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
         "-u",
-        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_group_barrier_joint_repeat_20261001_r01/tools/score_d92_group_barrier_joint_benchmark.py",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_group_query_score_contract_20261002_r02/tools/score_d92_group_barrier_joint_benchmark_contract_r02.py",
         "--spec",
         "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_group_barrier_joint_repeat_20261001_r01/configs/d92_group_barrier_joint_repeat_20261001.json",
         "--run-root",
         "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01",
         "--output",
-        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01-score-r01/summary.json"
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01-score-contract-r02/summary.json"
       ],
       "source_paths": [
-        "tools/execute_frozen_d92_group_query_score.py",
-        "configs/d92_group_query_score_20261002.json"
+        "tools/score_d92_group_barrier_joint_benchmark_contract_r02.py",
+        "tools/execute_frozen_d92_group_query_score_contract_r02.py",
+        "configs/d92_group_query_score_contract_20261002_r02.json"
       ],
       "launch_owner": "root",
       "automatic_retry": false,
       "fit": false,
       "parameter_selection": false,
-      "truth_read_policy": "Original immutable scorer validates all 4/2400 fixed predictions before independent truth join",
+      "truth_read_policy": "Only full4/2400 fixed prediction closure and independent reread before truth; exact real producer feature contract",
+      "correction_scope": "One scorer literal branch_keys excludes fft; predictions/method/matrix/source checkpoints unchanged",
+      "previous_attempt_ref": "automation_reports/CV-SincNet/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01/evidence/score_runtime_1790899559122672500.json",
       "terminal_evidence_ref": "automation_reports/CV-SincNet/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01/evidence/query_terminal_1790897012642688500_compact.json"
     },
-    "prediction_completion": "VERIFIED_FULL_4_ROWS_2400_EPISODES_FIXED_BEFORE_TRUTH"
+    "prediction_completion": "VERIFIED_FULL_4_ROWS_2400_EPISODES_FIXED_BEFORE_TRUTH",
+    "query_score_history": [
+      {
+        "status": "FAILED_SOURCE_CONTRACT_BEFORE_TRUTH",
+        "attempt_id": "r01",
+        "spec_path": "configs/d92_group_query_score_20261002.json",
+        "wrapper_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_group_query_score_20261002_r01",
+        "source_commit": "c7c46558d5eb8f34bb57fb09c12adc7ac2c5109f",
+        "source_preparation_commit": "19ad08a90d610feeccd3ecc42990e0db919a3edb",
+        "original_runtime_commit": "73aa1b31fc68aeddfb3d0ef7882acafb5be5a155",
+        "output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01-score-r01/summary.json",
+        "output_directory": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01-score-r01",
+        "command": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_group_barrier_joint_repeat_20261001_r01/tools/score_d92_group_barrier_joint_benchmark.py",
+          "--spec",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_group_barrier_joint_repeat_20261001_r01/configs/d92_group_barrier_joint_repeat_20261001.json",
+          "--run-root",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01",
+          "--output",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01-score-r01/summary.json"
+        ],
+        "source_paths": [
+          "tools/execute_frozen_d92_group_query_score.py",
+          "configs/d92_group_query_score_20261002.json"
+        ],
+        "launch_owner": "root",
+        "automatic_retry": false,
+        "fit": false,
+        "parameter_selection": false,
+        "truth_read_policy": "Original immutable scorer validates all 4/2400 fixed predictions before independent truth join",
+        "terminal_evidence_ref": "automation_reports/CV-SincNet/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01/evidence/query_terminal_1790897012642688500_compact.json",
+        "wrapper_pid": 1325022,
+        "scorer_pid": 1325049,
+        "returncode": 1,
+        "failure_evidence_ref": "automation_reports/CV-SincNet/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01/evidence/score_runtime_1790899559122672500.json",
+        "score_result": null,
+        "truth_join_reached": false,
+        "original_predictions_changed": false
+      }
+    ],
+    "query_score_result": null
   },
   "benchmark": {
     "config": {

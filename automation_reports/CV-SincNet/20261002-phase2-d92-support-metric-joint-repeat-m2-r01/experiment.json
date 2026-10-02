@@ -8,7 +8,7 @@
   "name": "D92 SupportMetric GGN1 + LocalRidge complete repeated benchmark",
   "description": "Fixed derived candidate, five actual streams, paired same-split A/B/C; no parameter grid or query feedback",
   "authorization": "User permits benchmark reuse and joint legal target-support SFT with LocalRidge priority; root sole launch owner",
-  "status": "READY",
+  "status": "RUNNING",
   "created_at": "2026-10-01T23:26:56.236110+00:00",
   "data": {
     "dataset": "Existing complete VALIDATED_ONCE received capsules; transparent repeat benchmark",
@@ -153,8 +153,8 @@
     "gpu_policy": "CPU2/BLAS2/CUDA empty; no existing healthy run intervention",
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase2-d92-support-metric-joint-repeat-m2-r01",
     "local_artifact_root": "automation_reports/CV-SincNet/20261002-phase2-d92-support-metric-joint-repeat-m2-r01",
-    "actual_runtime_commit": null,
-    "publication_status": "NOT_LAUNCHED",
+    "actual_runtime_commit": "c7c46558d5eb8f34bb57fb09c12adc7ac2c5109f",
+    "publication_status": "VERIFIED",
     "automatic_retry": false,
     "implementation_validation": "147_DISTINCT_QUERY_CASES_PASS_34_ENTRY_70_SCORER_43_CONTROL",
     "stop_rule": "Technical failure preserves its row; healthy rows finish; no automatic retry or score-driven stop",
@@ -166,7 +166,24 @@
     "metadata_provenance_text_corrected": true,
     "implementation_validation_ref": "docs/D92_SUPPORT_METRIC_QUERY_SOURCE_VALIDATION_20261002.md",
     "source_integration_ref": "automation_reports/CV-SincNet/20261002-phase2-d92-support-metric-joint-repeat-m2-r01/evidence/query_source_validation_20261002/frozen_source_integration.json",
-    "independent_p0_p1_review_ref": "docs/D92_SUPPORT_METRIC_QUERY_PREREGISTRATION_REVIEW_20261002.md"
+    "independent_p0_p1_review_ref": "docs/D92_SUPPORT_METRIC_QUERY_PREREGISTRATION_REVIEW_20261002.md",
+    "latest_runtime_observed_utc": "2026-10-02T00:10:28Z",
+    "latest_runtime_readback_ref": "automation_reports/CV-SincNet/20261002-phase2-d92-support-metric-joint-repeat-m2-r01/evidence/query_runtime_1790899889422663100.json",
+    "supervisor_pid": 1327506,
+    "supervisor_start_ticks": 14743342,
+    "current_row_statuses": {
+      "rx3-cvs-daot-rc4-s2026092701": "PREDICTING",
+      "rx3-cvs-daot-rc4-s2026092702": "PREDICTING",
+      "rx1-cvs-daot-rc4-s2026092701": "PREFLIGHT_COMPLETE",
+      "rx1-cvs-daot-rc4-s2026092702": "PREFLIGHT_COMPLETE"
+    },
+    "row_pids": {
+      "rx3-cvs-daot-rc4-s2026092701": 1327618,
+      "rx3-cvs-daot-rc4-s2026092702": 1327622,
+      "rx1-cvs-daot-rc4-s2026092701": null,
+      "rx1-cvs-daot-rc4-s2026092702": null
+    },
+    "query_or_truth_metrics_read": false
   },
   "benchmark": {
     "config": {

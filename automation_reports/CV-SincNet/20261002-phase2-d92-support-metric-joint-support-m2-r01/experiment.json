@@ -269,9 +269,9 @@
       "behind": 0
     },
     "support_analysis": {
-      "status": "PREREGISTERED_NOT_LAUNCHED",
+      "status": "FAILED_STRUCTURAL_TRIAL_TOLERANCE_BEFORE_DIAGNOSTIC_SCORE",
       "attempt_id": "r01",
-      "source_commit": null,
+      "source_commit": "c7c46558d5eb8f34bb57fb09c12adc7ac2c5109f",
       "source_preparation_commit": "20c91c59f78619edb113eedae78c129d45ea0820",
       "fitted_runtime_commit": "3c3eb6c513aaf20fe84514dcbeab3584bad1f238",
       "paths": [
@@ -316,7 +316,12 @@
         "NUMEXPR_NUM_THREADS": "2",
         "CUDA_VISIBLE_DEVICES": "",
         "PYTHONUNBUFFERED": "1"
-      }
+      },
+      "wrapper_pid": 1324346,
+      "child_pid": 1324356,
+      "returncode": 1,
+      "runtime_evidence_ref": "automation_reports/CV-SincNet/20261002-phase2-d92-support-metric-joint-support-m2-r01/evidence/analysis_runtime_1790899888531292700.json",
+      "metrics_read": false
     },
     "analysis_route_validation": "49_OFFLINE_PUBLICATION_CASES_PASS_ACTUAL_RUNNING_PLAN_REFUSED",
     "analysis_route_validation_ref": "docs/D92_SUPPORT_METRIC_ANALYSIS_ROUTE_VALIDATION_20261002.md",

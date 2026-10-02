@@ -1,0 +1,163 @@
+{
+  "observed_utc": "2026-10-02T00:06:22Z",
+  "rows": {
+    "rx3-cvs-daot-rc4-s2026092701": {
+      "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01/rx3-cvs-daot-rc4-s2026092701/predictions/startup.json",
+      "source_identity": {
+        "checkpoint_sha256": "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b",
+        "model_seed": 2026092701,
+        "source_only_verdict": "MATCHED_SOURCE_ONLY_SCRATCH",
+        "source_role_comparison": "EXACT_MATCH",
+        "checkpoint_epoch": 200,
+        "checkpoint_inheritance": [],
+        "target_access_before_freeze": false,
+        "cache_schema": "d92_branch_received_features_v1",
+        "feature_contract": {
+          "input_shape": [
+            2,
+            256
+          ],
+          "view": "original_received_observation",
+          "view_count": 1,
+          "identity_feature_key": "feat_joint",
+          "branch_keys": [
+            "z_id",
+            "t_emb",
+            "f_emb",
+            "pa_local"
+          ],
+          "branch_dim": 160,
+          "fft_dim": 96,
+          "fft": "historical_spectral_logmag_sketch",
+          "fft_norm_floor": 1e-08,
+          "cache_dtype": "float32",
+          "normalization": "raw_native_aux_no_additional_branch_normalization"
+        }
+      },
+      "schema": "d92_group_barrier_joint_query_predictions_v1",
+      "method": "D92-GroupBarrierJointLocalRidge-v1",
+      "run_id": "20261001-phase2-d92-group-barrier-joint-repeat-m2-r01",
+      "row_id": "rx3-cvs-daot-rc4-s2026092701",
+      "release_commit": "73aa1b31fc68aeddfb3d0ef7882acafb5be5a155"
+    },
+    "rx3-cvs-daot-rc4-s2026092702": {
+      "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01/rx3-cvs-daot-rc4-s2026092702/predictions/startup.json",
+      "source_identity": {
+        "checkpoint_sha256": "72f26413e495dcf82317898f8729caa3d35499bf0b41e9671ffdceab2c90924b",
+        "model_seed": 2026092702,
+        "source_only_verdict": "MATCHED_SOURCE_ONLY_SCRATCH",
+        "source_role_comparison": "EXACT_MATCH",
+        "checkpoint_epoch": 200,
+        "checkpoint_inheritance": [],
+        "target_access_before_freeze": false,
+        "cache_schema": "d92_branch_received_features_v1",
+        "feature_contract": {
+          "input_shape": [
+            2,
+            256
+          ],
+          "view": "original_received_observation",
+          "view_count": 1,
+          "identity_feature_key": "feat_joint",
+          "branch_keys": [
+            "z_id",
+            "t_emb",
+            "f_emb",
+            "pa_local"
+          ],
+          "branch_dim": 160,
+          "fft_dim": 96,
+          "fft": "historical_spectral_logmag_sketch",
+          "fft_norm_floor": 1e-08,
+          "cache_dtype": "float32",
+          "normalization": "raw_native_aux_no_additional_branch_normalization"
+        }
+      },
+      "schema": "d92_group_barrier_joint_query_predictions_v1",
+      "method": "D92-GroupBarrierJointLocalRidge-v1",
+      "run_id": "20261001-phase2-d92-group-barrier-joint-repeat-m2-r01",
+      "row_id": "rx3-cvs-daot-rc4-s2026092702",
+      "release_commit": "73aa1b31fc68aeddfb3d0ef7882acafb5be5a155"
+    },
+    "rx1-cvs-daot-rc4-s2026092701": {
+      "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01/rx1-cvs-daot-rc4-s2026092701/predictions/startup.json",
+      "source_identity": {
+        "checkpoint_sha256": "f7ea5064d56711c3173b16636a52af27018ba11a459f0205de950c134362e53b",
+        "model_seed": 2026092701,
+        "source_only_verdict": "MATCHED_SOURCE_ONLY_SCRATCH",
+        "source_role_comparison": "EXACT_MATCH",
+        "checkpoint_epoch": 200,
+        "checkpoint_inheritance": [],
+        "target_access_before_freeze": false,
+        "cache_schema": "d92_branch_received_features_v1",
+        "feature_contract": {
+          "input_shape": [
+            2,
+            256
+          ],
+          "view": "original_received_observation",
+          "view_count": 1,
+          "identity_feature_key": "feat_joint",
+          "branch_keys": [
+            "z_id",
+            "t_emb",
+            "f_emb",
+            "pa_local"
+          ],
+          "branch_dim": 160,
+          "fft_dim": 96,
+          "fft": "historical_spectral_logmag_sketch",
+          "fft_norm_floor": 1e-08,
+          "cache_dtype": "float32",
+          "normalization": "raw_native_aux_no_additional_branch_normalization"
+        }
+      },
+      "schema": "d92_group_barrier_joint_query_predictions_v1",
+      "method": "D92-GroupBarrierJointLocalRidge-v1",
+      "run_id": "20261001-phase2-d92-group-barrier-joint-repeat-m2-r01",
+      "row_id": "rx1-cvs-daot-rc4-s2026092701",
+      "release_commit": "73aa1b31fc68aeddfb3d0ef7882acafb5be5a155"
+    },
+    "rx1-cvs-daot-rc4-s2026092702": {
+      "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01/rx1-cvs-daot-rc4-s2026092702/predictions/startup.json",
+      "source_identity": {
+        "checkpoint_sha256": "72f26413e495dcf82317898f8729caa3d35499bf0b41e9671ffdceab2c90924b",
+        "model_seed": 2026092702,
+        "source_only_verdict": "MATCHED_SOURCE_ONLY_SCRATCH",
+        "source_role_comparison": "EXACT_MATCH",
+        "checkpoint_epoch": 200,
+        "checkpoint_inheritance": [],
+        "target_access_before_freeze": false,
+        "cache_schema": "d92_branch_received_features_v1",
+        "feature_contract": {
+          "input_shape": [
+            2,
+            256
+          ],
+          "view": "original_received_observation",
+          "view_count": 1,
+          "identity_feature_key": "feat_joint",
+          "branch_keys": [
+            "z_id",
+            "t_emb",
+            "f_emb",
+            "pa_local"
+          ],
+          "branch_dim": 160,
+          "fft_dim": 96,
+          "fft": "historical_spectral_logmag_sketch",
+          "fft_norm_floor": 1e-08,
+          "cache_dtype": "float32",
+          "normalization": "raw_native_aux_no_additional_branch_normalization"
+        }
+      },
+      "schema": "d92_group_barrier_joint_query_predictions_v1",
+      "method": "D92-GroupBarrierJointLocalRidge-v1",
+      "run_id": "20261001-phase2-d92-group-barrier-joint-repeat-m2-r01",
+      "row_id": "rx1-cvs-daot-rc4-s2026092702",
+      "release_commit": "73aa1b31fc68aeddfb3d0ef7882acafb5be5a155"
+    }
+  },
+  "read_only": true,
+  "predictions_truth_features_or_metrics_read": false
+}

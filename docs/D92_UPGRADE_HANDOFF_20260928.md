@@ -1,3 +1,14 @@
+## 当前交接：新完整query已启动，两个独立分析接口失败保留并局部修复
+
+- Goal ACTIVE。新query 20261002-phase2-d92-support-metric-joint-repeat-m2-r01 RUNNING，immutable c7c46558；00:10UTC/proc及startup VERIFIED，supervisor1327506/start14743342，rx3 1327618/1327622，rx1预检完成等待，全4/2400五流矩阵固定，global无；下次正常约00:30UTC。不得停止、热修或重复发布。reader read_support_metric_query_runtime_20261002.py。
+- 原Group全4/2400 PREDICTIONS_COMPLETE；评分r01/wrapper1325022/child1325049 exit1，原契约branch_keys误含fft，未truth。源码和四row来源metadata已核实；独立clone scorer仅该literal修正、11+37=48用例PASS，r02计划configs/d92_group_query_score_contract_20261002_r02.json已登记、3-file archive/newrelease/output-score-contract-r02尚未发布。当前提交push/OID后root唯一launch，独立artifact读回，不重预测/无自动retry。
+- 新support 20261002-phase2-d92-support-metric-joint-support-m2-r01全4/160/1800 TRAINING_COMPLETE/fit3c3。analysis r01/sourcec7c/wrapper1324346/child1324356 exit1，29.09秒在trial arithmetic tolerance closure失败，仅analysis_failed.json无summary；记录与原产物保留，无query/成绩。anchor_joint_core仅源码比较producer记录/独立analyzer重建公式及query scorer，root待有界结构标量核实；未修复、未登记或发布r02，严禁简单扩大tolerance。
+- 旧ProtoFrame query r02/72663在00:10UTC健康正常；下一约00:30UTC，完整终态后原独立scorer。所有完整query评分必须同物理A/B/C、old6/K×new、gain/drop/absGap/H和成本。目标未实现，无query反馈/参数grid/fresh确认；root唯一Git/SSH/真实数值/launch/scoring。
+
+<!-- GROUP_SCORE_CONTRACT_R02_AND_SUPPORT_METRIC_QUERY_LIVE_20261002 -->
+
+以下历史交接保留，不据此重启：
+
 ## 当前交接：完整support完成，原Group完整query评分r01待发布
 
 - Goal ACTIVE；新support 20261002-phase2-d92-support-metric-joint-support-m2-r01 TRAINING_COMPLETE，原fit3c3不变。2026-10-01T23:51:44Z全4/160/1800完成、所有进程正常退出，成绩未读；原support analysis r01预登记/source准备20c91未发布。下一步当前Git提交/push/OID后明确调用已验证publisher一次，独立PID/argv/完整artifact metadata读回后才采集20文件和报告。

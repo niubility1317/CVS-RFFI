@@ -35,3 +35,5 @@ basis 每 row 只由冻结地面 Q 构建一次，归档普通方法数据证据
 2026-10-01T23:51:44Z独立metadata读回VERIFIED：全部4 row、160 parent、1800 path完成，supervisor与四worker均正常退出。原runtime3c3不变；完整marker的query_access/truth_read/source_sample_access均false。记录转为TRAINING_COMPLETE，原预登记独立analysis r01仍未发布。此处未读取support成绩或query，不声称方法改善。
 
 <!-- SUPPORT_METRIC_FULL_TRAINING_COMPLETE_20261002 -->
+
+独立analysis r01已发布并读回FAILED，child1324356/wrapper1324346，29.09秒后在结构性Trial arithmetic tolerance changed检查退出；无summary/完整诊断表，无query/源样本读取或重拟合，原训练全4/160/1800仍TRAINING_COMPLETE。当前只核对原保存容差与分析重建公式，禁止放宽容差或改变方法；没有自动重发或重训。

@@ -58,3 +58,5 @@ CPU两lane，每lane BLAS两线程，CUDA为空。最多5888可训练坐标不�
 状态更新：PREDICTIONS_COMPLETE。2026-10-01T23:22:23Z原不可变runtime73aa的4条row、2400episode已全部完成并固定，尚未读取truth或调用scorer。独立原scorer的一次r01执行已预登记，输出为全新独立summary.json；不重训练、不改原预测/源码、不根据评分改参数或重跑。发布与完整评分结果仍待独立读回，不能以退出码推定成功。原大量完整terminal metadata保留本地原路径，Git登记紧凑字段及来源，不复制固定预测或truth。
 
 <!-- GROUP_COMPLETE_QUERY_SCORE_PREREGISTERED_20261002 -->
+
+原评分r01已独立读回FAILED，returncode1，8.49秒，子进程峰值RSS1116221440B；scorer在_source_identity入口因feature_contract失败，未连接truth或生成summary。真实四row producer.branch_keys只有z_id/t_emb/f_emb/pa_local，FFT在fft_dim96独立声明；原scorer字面常量误含fft。原预测、方法、矩阵及source检查保留。独立scorer-contract-r02仅修一处字面列表，strict整个dict相等不放宽；新输出-score-contract-r02，预登记未发布。新11+37=48合成回归通过。
