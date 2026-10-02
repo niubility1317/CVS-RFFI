@@ -1,0 +1,66 @@
+{
+  "status": "SOURCE_TRAINING",
+  "run_id": "20261002-phase1-cvs-energy-identity-manysig-m8-r01",
+  "release_commit": "4a9170b768bbb39e4c256d377fbe60ff294a2f0d",
+  "dispatcher_pid": 1480567,
+  "launch_owner": "codex/root/cvs-energy-identity-20261002",
+  "workers": [
+    {
+      "row_id": "energy_equivariant-s2026092701",
+      "pid": 1480586,
+      "gpu": 0,
+      "epoch": 7
+    },
+    {
+      "row_id": "energy_half-s2026092701",
+      "pid": 1480675,
+      "gpu": 1,
+      "epoch": 5
+    },
+    {
+      "row_id": "energy_equivariant-s2026092702",
+      "pid": 1480761,
+      "gpu": 2,
+      "epoch": 5
+    },
+    {
+      "row_id": "energy_half-s2026092702",
+      "pid": 1480851,
+      "gpu": 3,
+      "epoch": 4
+    },
+    {
+      "row_id": "energy_equivariant-s2026092703",
+      "pid": 1481399,
+      "gpu": 4,
+      "epoch": 3
+    },
+    {
+      "row_id": "energy_half-s2026092703",
+      "pid": 1481490,
+      "gpu": 5,
+      "epoch": 2
+    },
+    {
+      "row_id": "energy_equivariant-s2026092704",
+      "pid": 1481577,
+      "gpu": 6,
+      "epoch": 2
+    },
+    {
+      "row_id": "energy_half-s2026092704",
+      "pid": 1481666,
+      "gpu": 7,
+      "epoch": 1
+    }
+  ],
+  "goal_achieved": false,
+  "target_access": false,
+  "next_steps": [
+    "Inspect same immutable release/live PIDs;no resubmit or restart",
+    "At E200 audit all80000 steps/1600 epochs/full logs and recompute12source-record performance selection",
+    "After E200 independent source12 ranking: if newwinner freeze actual selection, generate/register selected-only clean configs; if residual wins retain verified history/no newquery",
+    "Default onlyselected4new plus20old fixed predictions and independenttruthlast24row report; ifbaselinewins preserve existing clean/no unselected query"
+  ],
+  "conditional_clean_support_ready": true
+}

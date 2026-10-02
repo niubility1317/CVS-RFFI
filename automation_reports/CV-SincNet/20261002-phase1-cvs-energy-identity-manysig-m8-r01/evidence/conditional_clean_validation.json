@@ -1,0 +1,11 @@
+{
+  "status": "PASS",
+  "energy_tests": 17,
+  "fractional_regression_tests": 17,
+  "real_model_checkpoint_predictor_roundtrip": true,
+  "independent_P0_P1_review": "PASS",
+  "reviewer": "/root/review_clean_architecture",
+  "scope": "source12 records recomputed, fullFP32/source provenance beforequery, selected4+fixed20 matrix/scorer/pairs/reuse, actualmodelstrictload, publisherdependencyclosure, explicitconstantphaseonly",
+  "actual_clean_configs_generated": false,
+  "target_access": false
+}
