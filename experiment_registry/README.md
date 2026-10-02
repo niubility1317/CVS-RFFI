@@ -1,6 +1,6 @@
 # 实验总索引
 
-更新：2026-10-02T11:34:33+00:00
+更新：2026-10-02T11:58:58+00:00
 
 先按方法/问题检索，再用run ID读取精确配置与证据。历史组数量不等于独立实验数量。
 
@@ -12,7 +12,7 @@
 
 |记录类型|数量|
 |---|---:|
-|managed_run|66|
+|managed_run|67|
 
 历史状态统一为HISTORICAL_UNVERIFIED；RUNNING等原文声明只供查证，不能证明此刻仍在运行。
 
@@ -20,15 +20,15 @@
 
 |路径标签（定位提示）|证据组数|
 |---|---:|
-|[cvs](by_method/cvs.md)|49|
-|[ce_only](by_method/ce_only.md)|38|
-|[clean_only](by_method/clean_only.md)|37|
-|[performance_priority](by_method/performance_priority.md)|31|
+|[cvs](by_method/cvs.md)|50|
+|[ce_only](by_method/ce_only.md)|39|
+|[clean_only](by_method/clean_only.md)|38|
+|[performance_priority](by_method/performance_priority.md)|32|
 |[no_augmentation](by_method/no_augmentation.md)|28|
 |[source_selection](by_method/source_selection.md)|23|
 |[rff_physics](by_method/rff_physics.md)|16|
-|[source_selected](by_method/source_selected.md)|13|
-|[frozen_prediction_reuse](by_method/frozen_prediction_reuse.md)|12|
+|[source_selected](by_method/source_selected.md)|14|
+|[frozen_prediction_reuse](by_method/frozen_prediction_reuse.md)|13|
 |[daot](by_method/daot.md)|11|
 |[rc4](by_method/rc4.md)|10|
 |[practical](by_method/practical.md)|8|
@@ -159,7 +159,8 @@
 |RFF物理可辨识性：合成诊断|managed_run|[打开](../automation_reports/CV-SincNet/20261002-diagnostic-rff-identifiability-synthetic-m1-r01/report.md)|
 |RFF 源域已知激励诊断：预登记|managed_run|[打开](../automation_reports/CV-SincNet/20261002-diagnostic-rff-known-excitation-source-manysig-m1-r01/report.md)|
 |RFF源域前导码与可观测量诊断|managed_run|[打开](../automation_reports/CV-SincNet/20261002-diagnostic-rff-preamble-source-manysig-m1-r01/report.md)|
-|CVS 可学习相位记忆残差：源实验预登记|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-adaptive-volterra-identity-manysig-m8-r01/report.md)|
+|CVS 可学习相位记忆残差：源选候选clean确认预登记|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-adaptive-volterra-clean-manysig-m32-r01/report.md)|
+|CVS 可学习相位记忆残差：完整源实验报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-adaptive-volterra-identity-manysig-m8-r01/report.md)|
 |CVS 加性坐标注入身份网络：完整源实验报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-additive-identity-manysig-m8-r01/report.md)|
 |CVS 同步坐标保留身份网络：完整源实验报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-coordinate-identity-manysig-m8-r01/report.md)|
 |CVS 固定参数因果包络耦合身份网络：独立 clean 测试报告|managed_run|[打开](../automation_reports/CV-SincNet/20261002-phase1-cvs-coupled-clean-manysig-m28-r01/report.md)|

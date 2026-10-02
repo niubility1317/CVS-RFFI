@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "new_public_checks": 30,
+  "existing_public_checks": 70,
+  "existing_checks_result": "PASS in initial combined invocation; unchanged by new-only field repair",
+  "initial_new_failures": 3,
+  "repair": "Factory and public config fixtures now use adaptive_source_root matching contracts; prepare fixture validates all four generated configs",
+  "final_new_checks": "30 passed",
+  "independent_review": "PASS",
+  "actual_clean_configuration_created": false,
+  "actual_clean_run_registered": false,
+  "actual_clean_published": false,
+  "formal_query_access": false,
+  "goal_achieved": false
+}

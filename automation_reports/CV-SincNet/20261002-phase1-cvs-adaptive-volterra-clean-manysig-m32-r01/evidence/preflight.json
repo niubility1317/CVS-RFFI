@@ -1,0 +1,2161 @@
+{
+  "read_at": 1790942318.492829,
+  "user": "szu2070436088",
+  "host": "dell-DSS8440",
+  "gpu": "0, 24124\n1, 24124\n2, 24124\n3, 24124\n4, 24124\n5, 24124\n6, 24124\n7, 24124\n",
+  "apps": "",
+  "collisions": {
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-adaptive-volterra-clean-manysig-m32-r01": false,
+    "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-adaptive-volterra-clean-manysig-m32-r01": false,
+    "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_adaptive_volterra_clean_eval_20261002_r01": false
+  },
+  "reused": [
+    {
+      "row_id": "native-s2026092701",
+      "original_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "prediction_seconds": 10.443141604991979,
+        "total_seconds": 11.521400190991699,
+        "peak_cuda_allocated_bytes": 193225216
+      },
+      "marker": {
+        "status": "SCORED_COMPLETE",
+        "models": 4,
+        "seeds": 4,
+        "rows": 16,
+        "records": 128,
+        "view": "clean",
+        "query_count": 168000,
+        "target_feedback_forbidden": true
+      }
+    },
+    {
+      "row_id": "cvcnn-s2026092701",
+      "original_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "prediction_seconds": 8.15388660300232,
+        "total_seconds": 8.97230104499613,
+        "peak_cuda_allocated_bytes": 68295168
+      },
+      "marker": {
+        "status": "SCORED_COMPLETE",
+        "models": 4,
+        "seeds": 4,
+        "rows": 16,
+        "records": 128,
+        "view": "clean",
+        "query_count": 168000,
+        "target_feedback_forbidden": true
+      }
+    },
+    {
+      "row_id": "real_cnn-s2026092701",
+      "original_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "prediction_seconds": 7.671802273995127,
+        "total_seconds": 8.465035238012206,
+        "peak_cuda_allocated_bytes": 60481536
+      },
+      "marker": {
+        "status": "SCORED_COMPLETE",
+        "models": 4,
+        "seeds": 4,
+        "rows": 16,
+        "records": 128,
+        "view": "clean",
+        "query_count": 168000,
+        "target_feedback_forbidden": true
+      }
+    },
+    {
+      "row_id": "resnet1d-s2026092701",
+      "original_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "prediction_seconds": 8.135144598010811,
+        "total_seconds": 9.005098860012367,
+        "peak_cuda_allocated_bytes": 26641920
+      },
+      "marker": {
+        "status": "SCORED_COMPLETE",
+        "models": 4,
+        "seeds": 4,
+        "rows": 16,
+        "records": 128,
+        "view": "clean",
+        "query_count": 168000,
+        "target_feedback_forbidden": true
+      }
+    },
+    {
+      "row_id": "native-s2026092702",
+      "original_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "prediction_seconds": 10.18713313000626,
+        "total_seconds": 11.177648169003078,
+        "peak_cuda_allocated_bytes": 193225216
+      },
+      "marker": {
+        "status": "SCORED_COMPLETE",
+        "models": 4,
+        "seeds": 4,
+        "rows": 16,
+        "records": 128,
+        "view": "clean",
+        "query_count": 168000,
+        "target_feedback_forbidden": true
+      }
+    },
+    {
+      "row_id": "cvcnn-s2026092702",
+      "original_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "prediction_seconds": 8.21225556700665,
+        "total_seconds": 9.064925836995826,
+        "peak_cuda_allocated_bytes": 68295168
+      },
+      "marker": {
+        "status": "SCORED_COMPLETE",
+        "models": 4,
+        "seeds": 4,
+        "rows": 16,
+        "records": 128,
+        "view": "clean",
+        "query_count": 168000,
+        "target_feedback_forbidden": true
+      }
+    },
+    {
+      "row_id": "real_cnn-s2026092702",
+      "original_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "prediction_seconds": 7.586740277009085,
+        "total_seconds": 8.29860410701076,
+        "peak_cuda_allocated_bytes": 60481536
+      },
+      "marker": {
+        "status": "SCORED_COMPLETE",
+        "models": 4,
+        "seeds": 4,
+        "rows": 16,
+        "records": 128,
+        "view": "clean",
+        "query_count": 168000,
+        "target_feedback_forbidden": true
+      }
+    },
+    {
+      "row_id": "resnet1d-s2026092702",
+      "original_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "prediction_seconds": 8.22013227599382,
+        "total_seconds": 9.123719114999403,
+        "peak_cuda_allocated_bytes": 26641920
+      },
+      "marker": {
+        "status": "SCORED_COMPLETE",
+        "models": 4,
+        "seeds": 4,
+        "rows": 16,
+        "records": 128,
+        "view": "clean",
+        "query_count": 168000,
+        "target_feedback_forbidden": true
+      }
+    },
+    {
+      "row_id": "native-s2026092703",
+      "original_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "prediction_seconds": 10.379808316996787,
+        "total_seconds": 11.35107654199237,
+        "peak_cuda_allocated_bytes": 193225216
+      },
+      "marker": {
+        "status": "SCORED_COMPLETE",
+        "models": 4,
+        "seeds": 4,
+        "rows": 16,
+        "records": 128,
+        "view": "clean",
+        "query_count": 168000,
+        "target_feedback_forbidden": true
+      }
+    },
+    {
+      "row_id": "cvcnn-s2026092703",
+      "original_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "prediction_seconds": 8.260531321997405,
+        "total_seconds": 9.089339990998269,
+        "peak_cuda_allocated_bytes": 68295168
+      },
+      "marker": {
+        "status": "SCORED_COMPLETE",
+        "models": 4,
+        "seeds": 4,
+        "rows": 16,
+        "records": 128,
+        "view": "clean",
+        "query_count": 168000,
+        "target_feedback_forbidden": true
+      }
+    },
+    {
+      "row_id": "real_cnn-s2026092703",
+      "original_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "prediction_seconds": 7.602655142007279,
+        "total_seconds": 8.245891544996994,
+        "peak_cuda_allocated_bytes": 60481536
+      },
+      "marker": {
+        "status": "SCORED_COMPLETE",
+        "models": 4,
+        "seeds": 4,
+        "rows": 16,
+        "records": 128,
+        "view": "clean",
+        "query_count": 168000,
+        "target_feedback_forbidden": true
+      }
+    },
+    {
+      "row_id": "resnet1d-s2026092703",
+      "original_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "prediction_seconds": 8.534146685997257,
+        "total_seconds": 9.322047745998134,
+        "peak_cuda_allocated_bytes": 26641920
+      },
+      "marker": {
+        "status": "SCORED_COMPLETE",
+        "models": 4,
+        "seeds": 4,
+        "rows": 16,
+        "records": 128,
+        "view": "clean",
+        "query_count": 168000,
+        "target_feedback_forbidden": true
+      }
+    },
+    {
+      "row_id": "native-s2026092704",
+      "original_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "prediction_seconds": 10.132318164003664,
+        "total_seconds": 11.041616375994636,
+        "peak_cuda_allocated_bytes": 193225216
+      },
+      "marker": {
+        "status": "SCORED_COMPLETE",
+        "models": 4,
+        "seeds": 4,
+        "rows": 16,
+        "records": 128,
+        "view": "clean",
+        "query_count": 168000,
+        "target_feedback_forbidden": true
+      }
+    },
+    {
+      "row_id": "cvcnn-s2026092704",
+      "original_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "prediction_seconds": 8.123211719997926,
+        "total_seconds": 8.90721659900737,
+        "peak_cuda_allocated_bytes": 68295168
+      },
+      "marker": {
+        "status": "SCORED_COMPLETE",
+        "models": 4,
+        "seeds": 4,
+        "rows": 16,
+        "records": 128,
+        "view": "clean",
+        "query_count": 168000,
+        "target_feedback_forbidden": true
+      }
+    },
+    {
+      "row_id": "real_cnn-s2026092704",
+      "original_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "prediction_seconds": 7.355240353994304,
+        "total_seconds": 8.016957911997451,
+        "peak_cuda_allocated_bytes": 60481536
+      },
+      "marker": {
+        "status": "SCORED_COMPLETE",
+        "models": 4,
+        "seeds": 4,
+        "rows": 16,
+        "records": 128,
+        "view": "clean",
+        "query_count": 168000,
+        "target_feedback_forbidden": true
+      }
+    },
+    {
+      "row_id": "resnet1d-s2026092704",
+      "original_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "prediction_seconds": 7.987988573004259,
+        "total_seconds": 8.797780266002519,
+        "peak_cuda_allocated_bytes": 26641920
+      },
+      "marker": {
+        "status": "SCORED_COMPLETE",
+        "models": 4,
+        "seeds": 4,
+        "rows": 16,
+        "records": 128,
+        "view": "clean",
+        "query_count": 168000,
+        "target_feedback_forbidden": true
+      }
+    },
+    {
+      "row_id": "residual_fusion-s2026092701",
+      "original_run": "20261001-phase1-cvs-selected-clean-manysig-m20-r01",
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "prediction_seconds": 10.008488701001625,
+        "total_seconds": 11.054693974991096,
+        "peak_cuda_allocated_bytes": 192348160
+      },
+      "marker": {
+        "status": "SCORED_COMPLETE",
+        "models": 5,
+        "seeds": 4,
+        "rows": 20,
+        "records": 160,
+        "view": "clean",
+        "query_count": 168000,
+        "target_feedback_forbidden": true
+      }
+    },
+    {
+      "row_id": "residual_fusion-s2026092702",
+      "original_run": "20261001-phase1-cvs-selected-clean-manysig-m20-r01",
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "prediction_seconds": 10.895088956007385,
+        "total_seconds": 11.92965137900319,
+        "peak_cuda_allocated_bytes": 192348160
+      },
+      "marker": {
+        "status": "SCORED_COMPLETE",
+        "models": 5,
+        "seeds": 4,
+        "rows": 20,
+        "records": 160,
+        "view": "clean",
+        "query_count": 168000,
+        "target_feedback_forbidden": true
+      }
+    },
+    {
+      "row_id": "residual_fusion-s2026092703",
+      "original_run": "20261001-phase1-cvs-selected-clean-manysig-m20-r01",
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "prediction_seconds": 10.03755235800054,
+        "total_seconds": 11.086365227005444,
+        "peak_cuda_allocated_bytes": 192348160
+      },
+      "marker": {
+        "status": "SCORED_COMPLETE",
+        "models": 5,
+        "seeds": 4,
+        "rows": 20,
+        "records": 160,
+        "view": "clean",
+        "query_count": 168000,
+        "target_feedback_forbidden": true
+      }
+    },
+    {
+      "row_id": "residual_fusion-s2026092704",
+      "original_run": "20261001-phase1-cvs-selected-clean-manysig-m20-r01",
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "prediction_seconds": 9.928016747013316,
+        "total_seconds": 10.933893702997011,
+        "peak_cuda_allocated_bytes": 192348160
+      },
+      "marker": {
+        "status": "SCORED_COMPLETE",
+        "models": 5,
+        "seeds": 4,
+        "rows": 20,
+        "records": 160,
+        "view": "clean",
+        "query_count": 168000,
+        "target_feedback_forbidden": true
+      }
+    },
+    {
+      "row_id": "energy_equivariant-s2026092701",
+      "original_run": "20261002-phase1-cvs-energy-clean-manysig-m24-r01",
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "prediction_seconds": 11.553419750998728,
+        "total_seconds": 12.8636598699959,
+        "peak_cuda_allocated_bytes": 50947072
+      },
+      "marker": {
+        "status": "SCORED_COMPLETE",
+        "models": 6,
+        "seeds": 4,
+        "rows": 24,
+        "records": 192,
+        "view": "clean",
+        "query_count": 168000,
+        "target_feedback_forbidden": true
+      }
+    },
+    {
+      "row_id": "energy_equivariant-s2026092702",
+      "original_run": "20261002-phase1-cvs-energy-clean-manysig-m24-r01",
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "prediction_seconds": 11.569146551017184,
+        "total_seconds": 12.964495501975762,
+        "peak_cuda_allocated_bytes": 50947072
+      },
+      "marker": {
+        "status": "SCORED_COMPLETE",
+        "models": 6,
+        "seeds": 4,
+        "rows": 24,
+        "records": 192,
+        "view": "clean",
+        "query_count": 168000,
+        "target_feedback_forbidden": true
+      }
+    },
+    {
+      "row_id": "energy_equivariant-s2026092703",
+      "original_run": "20261002-phase1-cvs-energy-clean-manysig-m24-r01",
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "prediction_seconds": 11.952851807989646,
+        "total_seconds": 13.154804744990543,
+        "peak_cuda_allocated_bytes": 50947072
+      },
+      "marker": {
+        "status": "SCORED_COMPLETE",
+        "models": 6,
+        "seeds": 4,
+        "rows": 24,
+        "records": 192,
+        "view": "clean",
+        "query_count": 168000,
+        "target_feedback_forbidden": true
+      }
+    },
+    {
+      "row_id": "energy_equivariant-s2026092704",
+      "original_run": "20261002-phase1-cvs-energy-clean-manysig-m24-r01",
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "prediction_seconds": 12.081961726973532,
+        "total_seconds": 13.406143750995398,
+        "peak_cuda_allocated_bytes": 50947072
+      },
+      "marker": {
+        "status": "SCORED_COMPLETE",
+        "models": 6,
+        "seeds": 4,
+        "rows": 24,
+        "records": 192,
+        "view": "clean",
+        "query_count": 168000,
+        "target_feedback_forbidden": true
+      }
+    },
+    {
+      "row_id": "coupled_lag4-s2026092701",
+      "original_run": "20261002-phase1-cvs-coupled-clean-manysig-m28-r01",
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "prediction_seconds": 12.144205413991585,
+        "total_seconds": 13.388042851991486,
+        "peak_cuda_allocated_bytes": 57385984
+      },
+      "marker": {
+        "status": "SCORED_COMPLETE",
+        "models": 7,
+        "seeds": 4,
+        "rows": 28,
+        "records": 224,
+        "view": "clean",
+        "query_count": 168000,
+        "target_feedback_forbidden": true
+      }
+    },
+    {
+      "row_id": "coupled_lag4-s2026092702",
+      "original_run": "20261002-phase1-cvs-coupled-clean-manysig-m28-r01",
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "prediction_seconds": 11.961653236998245,
+        "total_seconds": 13.222272927989252,
+        "peak_cuda_allocated_bytes": 57385984
+      },
+      "marker": {
+        "status": "SCORED_COMPLETE",
+        "models": 7,
+        "seeds": 4,
+        "rows": 28,
+        "records": 224,
+        "view": "clean",
+        "query_count": 168000,
+        "target_feedback_forbidden": true
+      }
+    },
+    {
+      "row_id": "coupled_lag4-s2026092703",
+      "original_run": "20261002-phase1-cvs-coupled-clean-manysig-m28-r01",
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "prediction_seconds": 11.952955790999113,
+        "total_seconds": 13.178560152999125,
+        "peak_cuda_allocated_bytes": 57385984
+      },
+      "marker": {
+        "status": "SCORED_COMPLETE",
+        "models": 7,
+        "seeds": 4,
+        "rows": 28,
+        "records": 224,
+        "view": "clean",
+        "query_count": 168000,
+        "target_feedback_forbidden": true
+      }
+    },
+    {
+      "row_id": "coupled_lag4-s2026092704",
+      "original_run": "20261002-phase1-cvs-coupled-clean-manysig-m28-r01",
+      "completion": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "query_fit": false,
+        "prediction_seconds": 13.497825029975502,
+        "total_seconds": 14.695945194020169,
+        "peak_cuda_allocated_bytes": 57385984
+      },
+      "marker": {
+        "status": "SCORED_COMPLETE",
+        "models": 7,
+        "seeds": 4,
+        "rows": 28,
+        "records": 224,
+        "view": "clean",
+        "query_count": 168000,
+        "target_feedback_forbidden": true
+      }
+    }
+  ],
+  "new_sources": [
+    {
+      "row_id": "adaptive_volterra_lag4-s2026092701",
+      "completion": {
+        "status": "SOURCE_TRAINED",
+        "epoch": 200,
+        "steps": 10000,
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-adaptive-volterra-identity-manysig-m8-r01/adaptive_volterra_lag4-s2026092701/source/last.pt",
+        "elapsed_seconds": 1443.7672441820032,
+        "target_access": false,
+        "target_evaluated": false,
+        "final_source_metrics": {
+          "source_val_count": 27000,
+          "source_val_accuracy": 0.9853333333333333,
+          "source_val_ce": 0.08141359493408204,
+          "source_val_rx_accuracy": {
+            "1": 0.997037037037037,
+            "3": 0.96,
+            "4": 0.9894444444444445,
+            "6": 0.997037037037037,
+            "8": 0.9831481481481481
+          },
+          "source_val_worst_rx": 0.96
+        },
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        }
+      },
+      "initialization": {
+        "status": "SCRATCH",
+        "scratch_only": true,
+        "checkpoint": null,
+        "ancestors": [],
+        "checkpoint_sources": [],
+        "target_access": false,
+        "target_contact": false,
+        "model_seed": 2026092701,
+        "physical_roles": "EXACT_MATCH",
+        "selection": "fixed_last_epoch"
+      },
+      "resolved": {
+        "method": "cvs_adaptive_volterra_identity",
+        "variant": "adaptive_volterra_lag4",
+        "model_seed": 2026092701,
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-adaptive-volterra-identity-manysig-m8-r01/adaptive_volterra_lag4-s2026092701/source",
+        "epochs": 200,
+        "batch_size": 128,
+        "lr": 0.0002,
+        "lr_min": 1e-06,
+        "weight_decay": 0.0001,
+        "drop_last": false,
+        "augmentation": false,
+        "domain_backbone": false,
+        "extra_losses": [],
+        "selection": "fixed_last_epoch",
+        "split_seed": 392005,
+        "device": "cuda:0",
+        "adaptive": {
+          "mode": "adaptive_volterra_lag4",
+          "input": "received_equalized1_unit_rms_IQ",
+          "sample_rate_hz": 25000000,
+          "whole_identity_global_phase_invariant_real_arithmetic": true,
+          "global_phase_equivariant_until_readout": true,
+          "removes_linear_phase": false,
+          "arbitrary_channel_rx_invariant": false,
+          "hardware_parameter_estimation": false,
+          "time_complex_channels": [
+            24,
+            24,
+            32,
+            32
+          ],
+          "time_kernels": [
+            5,
+            5,
+            3
+          ],
+          "time_strides": [
+            2,
+            2,
+            1
+          ],
+          "behavior_orders": [
+            1,
+            3,
+            5
+          ],
+          "behavior_delays": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "radial_clip": 4.0,
+          "order_scale_base": 2.0,
+          "behavior_complex_channels": [
+            12,
+            24,
+            32,
+            32
+          ],
+          "behavior_kernels": [
+            7,
+            5,
+            3
+          ],
+          "behavior_dilations": [
+            1,
+            2,
+            4
+          ],
+          "behavior_causal_filters": true,
+          "per_packet_complex_rms_normalization": true,
+          "complex_bias": false,
+          "radial_gate": "2sigmoid(a*log1p(power)+b)",
+          "invariant_readout": "logpower mean/std,lag1/2 normalized complex correlation,4 positional logpower means",
+          "readout_channels_per_complex_channel": 10,
+          "embedding_dimension": 160,
+          "classifier_scale": 30.0,
+          "original_real_frequency_path_retained": true,
+          "raw_unconstrained_identity_bypass": false,
+          "interpretation": "Received relative filter/polynomial energy is retained by normalization;not recovered TX PA/IQ coefficients or arbitrary RX/channel invariance",
+          "normalization_scope": "one complex power mean across all channels and time per packet per block",
+          "per_channel_sample_dependent_rms_normalization": false,
+          "relative_filter_channel_energy_preserved_by_normalization_only": true,
+          "learned_channel_scales_retained": true,
+          "new_trainable_parameters": 2,
+          "relative_energy_after_gate": "may change through learned radial gate;not fixed",
+          "learned_channel_scales_may_change_energy_ratios": true,
+          "identity_core": "adaptive_volterra_identity",
+          "estimator_window": [
+            80,
+            160
+          ],
+          "estimator_period_samples": 20,
+          "relative_frequency_alias_hz": 1250000,
+          "alignment_strength": 0.0,
+          "alignment_parameters": 0,
+          "alignment_packet_specific": false,
+          "alignment_class_specific": false,
+          "alignment_rx_specific": false,
+          "waveform_operator": "x[n]exp(-j alpha omega n);raw variant returns x exactly",
+          "whole_affine_phase_invariant": false,
+          "alignment_interpretation": "fixed received frequency retention;not TX/RX oscillator proportion",
+          "prototype_only": false,
+          "behavior_input": "lag4 envelope control plus signed tanh-gated delayed cubic residual",
+          "envelope_lag": 4,
+          "actual_envelope_lag": 4,
+          "envelope_average_weights": [
+            0.5,
+            0.5
+          ],
+          "behavior_terms": 12,
+          "original_position_power_readout_retained": true,
+          "no_frequency_correction": true,
+          "full_GMP": false,
+          "hardware_parameter_recovery": false,
+          "phase_lag": 4,
+          "actual_phase_lag": 4,
+          "adaptive_lift_active": true,
+          "mixture_parameter_shape": [
+            2
+          ],
+          "actual_mixture_parameter_shape": [
+            2
+          ],
+          "mixture_initial_raw": [
+            0.0,
+            0.0
+          ],
+          "mixture_rule": "base+tanh(raw)*(proposal-base)",
+          "mixture_scope": "two global identity model parameters trained only by source CE",
+          "mixture_parameter_count": 2,
+          "initial_function": "exact scratch coupled_lag4 function under matching scratch RNG",
+          "cubic_divisor": 4,
+          "cubic_delays": [
+            4,
+            4,
+            8
+          ],
+          "cubic_conjugate_last": true,
+          "lift_affine_phase_covariant": true,
+          "complete_volterra": false
+        },
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "pid": 1728151,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_adaptive_volterra_identity_20261002_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "commit": "db3860587aa6d1c031a9dd9b9226cfc38f51f513",
+        "torch_version": "2.1.0+cu121",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "source_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "steps_per_epoch": 50,
+        "total_parameters": 202555,
+        "trainable_parameters": 202555,
+        "U_s_use": "unused",
+        "target_access": false,
+        "precision": "float32",
+        "gradient_clipping": null,
+        "optimizer": "AdamW+CosineAnnealingLR",
+        "loader_seed": 2026092701,
+        "adaptive_actual": {
+          "mode": "adaptive_volterra_lag4",
+          "input": "received_equalized1_unit_rms_IQ",
+          "sample_rate_hz": 25000000,
+          "whole_identity_global_phase_invariant_real_arithmetic": true,
+          "global_phase_equivariant_until_readout": true,
+          "removes_linear_phase": false,
+          "arbitrary_channel_rx_invariant": false,
+          "hardware_parameter_estimation": false,
+          "time_complex_channels": [
+            24,
+            24,
+            32,
+            32
+          ],
+          "time_kernels": [
+            5,
+            5,
+            3
+          ],
+          "time_strides": [
+            2,
+            2,
+            1
+          ],
+          "behavior_orders": [
+            1,
+            3,
+            5
+          ],
+          "behavior_delays": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "radial_clip": 4.0,
+          "order_scale_base": 2.0,
+          "behavior_complex_channels": [
+            12,
+            24,
+            32,
+            32
+          ],
+          "behavior_kernels": [
+            7,
+            5,
+            3
+          ],
+          "behavior_dilations": [
+            1,
+            2,
+            4
+          ],
+          "behavior_causal_filters": true,
+          "per_packet_complex_rms_normalization": true,
+          "complex_bias": false,
+          "radial_gate": "2sigmoid(a*log1p(power)+b)",
+          "invariant_readout": "logpower mean/std,lag1/2 normalized complex correlation,4 positional logpower means",
+          "readout_channels_per_complex_channel": 10,
+          "embedding_dimension": 160,
+          "classifier_scale": 30.0,
+          "original_real_frequency_path_retained": true,
+          "raw_unconstrained_identity_bypass": false,
+          "interpretation": "Received relative filter/polynomial energy is retained by normalization;not recovered TX PA/IQ coefficients or arbitrary RX/channel invariance",
+          "normalization_scope": "one complex power mean across all channels and time per packet per block",
+          "per_channel_sample_dependent_rms_normalization": false,
+          "relative_filter_channel_energy_preserved_by_normalization_only": true,
+          "learned_channel_scales_retained": true,
+          "new_trainable_parameters": 2,
+          "relative_energy_after_gate": "may change through learned radial gate;not fixed",
+          "learned_channel_scales_may_change_energy_ratios": true,
+          "identity_core": "adaptive_volterra_identity",
+          "estimator_window": [
+            80,
+            160
+          ],
+          "estimator_period_samples": 20,
+          "relative_frequency_alias_hz": 1250000,
+          "alignment_strength": 0.0,
+          "alignment_parameters": 0,
+          "alignment_packet_specific": false,
+          "alignment_class_specific": false,
+          "alignment_rx_specific": false,
+          "waveform_operator": "x[n]exp(-j alpha omega n);raw variant returns x exactly",
+          "whole_affine_phase_invariant": false,
+          "alignment_interpretation": "fixed received frequency retention;not TX/RX oscillator proportion",
+          "prototype_only": false,
+          "behavior_input": "lag4 envelope control plus signed tanh-gated delayed cubic residual",
+          "envelope_lag": 4,
+          "actual_envelope_lag": 4,
+          "envelope_average_weights": [
+            0.5,
+            0.5
+          ],
+          "behavior_terms": 12,
+          "original_position_power_readout_retained": true,
+          "no_frequency_correction": true,
+          "full_GMP": false,
+          "hardware_parameter_recovery": false,
+          "phase_lag": 4,
+          "actual_phase_lag": 4,
+          "adaptive_lift_active": true,
+          "mixture_parameter_shape": [
+            2
+          ],
+          "actual_mixture_parameter_shape": [
+            2
+          ],
+          "mixture_initial_raw": [
+            0.0,
+            0.0
+          ],
+          "mixture_rule": "base+tanh(raw)*(proposal-base)",
+          "mixture_scope": "two global identity model parameters trained only by source CE",
+          "mixture_parameter_count": 2,
+          "initial_function": "exact scratch coupled_lag4 function under matching scratch RNG",
+          "cubic_divisor": 4,
+          "cubic_delays": [
+            4,
+            4,
+            8
+          ],
+          "cubic_conjugate_last": true,
+          "lift_affine_phase_covariant": true,
+          "complete_volterra": false
+        },
+        "adaptive_active": true,
+        "classifier_scale": 30.0,
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        }
+      }
+    },
+    {
+      "row_id": "adaptive_volterra_lag4-s2026092702",
+      "completion": {
+        "status": "SOURCE_TRAINED",
+        "epoch": 200,
+        "steps": 10000,
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-adaptive-volterra-identity-manysig-m8-r01/adaptive_volterra_lag4-s2026092702/source/last.pt",
+        "elapsed_seconds": 1428.6444167940062,
+        "target_access": false,
+        "target_evaluated": false,
+        "final_source_metrics": {
+          "source_val_count": 27000,
+          "source_val_accuracy": 0.985,
+          "source_val_ce": 0.0789402038974595,
+          "source_val_rx_accuracy": {
+            "1": 0.9961111111111111,
+            "3": 0.9612962962962963,
+            "4": 0.9901851851851852,
+            "6": 0.9961111111111111,
+            "8": 0.9812962962962963
+          },
+          "source_val_worst_rx": 0.9612962962962963
+        },
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        }
+      },
+      "initialization": {
+        "status": "SCRATCH",
+        "scratch_only": true,
+        "checkpoint": null,
+        "ancestors": [],
+        "checkpoint_sources": [],
+        "target_access": false,
+        "target_contact": false,
+        "model_seed": 2026092702,
+        "physical_roles": "EXACT_MATCH",
+        "selection": "fixed_last_epoch"
+      },
+      "resolved": {
+        "method": "cvs_adaptive_volterra_identity",
+        "variant": "adaptive_volterra_lag4",
+        "model_seed": 2026092702,
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-adaptive-volterra-identity-manysig-m8-r01/adaptive_volterra_lag4-s2026092702/source",
+        "epochs": 200,
+        "batch_size": 128,
+        "lr": 0.0002,
+        "lr_min": 1e-06,
+        "weight_decay": 0.0001,
+        "drop_last": false,
+        "augmentation": false,
+        "domain_backbone": false,
+        "extra_losses": [],
+        "selection": "fixed_last_epoch",
+        "split_seed": 392005,
+        "device": "cuda:0",
+        "adaptive": {
+          "mode": "adaptive_volterra_lag4",
+          "input": "received_equalized1_unit_rms_IQ",
+          "sample_rate_hz": 25000000,
+          "whole_identity_global_phase_invariant_real_arithmetic": true,
+          "global_phase_equivariant_until_readout": true,
+          "removes_linear_phase": false,
+          "arbitrary_channel_rx_invariant": false,
+          "hardware_parameter_estimation": false,
+          "time_complex_channels": [
+            24,
+            24,
+            32,
+            32
+          ],
+          "time_kernels": [
+            5,
+            5,
+            3
+          ],
+          "time_strides": [
+            2,
+            2,
+            1
+          ],
+          "behavior_orders": [
+            1,
+            3,
+            5
+          ],
+          "behavior_delays": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "radial_clip": 4.0,
+          "order_scale_base": 2.0,
+          "behavior_complex_channels": [
+            12,
+            24,
+            32,
+            32
+          ],
+          "behavior_kernels": [
+            7,
+            5,
+            3
+          ],
+          "behavior_dilations": [
+            1,
+            2,
+            4
+          ],
+          "behavior_causal_filters": true,
+          "per_packet_complex_rms_normalization": true,
+          "complex_bias": false,
+          "radial_gate": "2sigmoid(a*log1p(power)+b)",
+          "invariant_readout": "logpower mean/std,lag1/2 normalized complex correlation,4 positional logpower means",
+          "readout_channels_per_complex_channel": 10,
+          "embedding_dimension": 160,
+          "classifier_scale": 30.0,
+          "original_real_frequency_path_retained": true,
+          "raw_unconstrained_identity_bypass": false,
+          "interpretation": "Received relative filter/polynomial energy is retained by normalization;not recovered TX PA/IQ coefficients or arbitrary RX/channel invariance",
+          "normalization_scope": "one complex power mean across all channels and time per packet per block",
+          "per_channel_sample_dependent_rms_normalization": false,
+          "relative_filter_channel_energy_preserved_by_normalization_only": true,
+          "learned_channel_scales_retained": true,
+          "new_trainable_parameters": 2,
+          "relative_energy_after_gate": "may change through learned radial gate;not fixed",
+          "learned_channel_scales_may_change_energy_ratios": true,
+          "identity_core": "adaptive_volterra_identity",
+          "estimator_window": [
+            80,
+            160
+          ],
+          "estimator_period_samples": 20,
+          "relative_frequency_alias_hz": 1250000,
+          "alignment_strength": 0.0,
+          "alignment_parameters": 0,
+          "alignment_packet_specific": false,
+          "alignment_class_specific": false,
+          "alignment_rx_specific": false,
+          "waveform_operator": "x[n]exp(-j alpha omega n);raw variant returns x exactly",
+          "whole_affine_phase_invariant": false,
+          "alignment_interpretation": "fixed received frequency retention;not TX/RX oscillator proportion",
+          "prototype_only": false,
+          "behavior_input": "lag4 envelope control plus signed tanh-gated delayed cubic residual",
+          "envelope_lag": 4,
+          "actual_envelope_lag": 4,
+          "envelope_average_weights": [
+            0.5,
+            0.5
+          ],
+          "behavior_terms": 12,
+          "original_position_power_readout_retained": true,
+          "no_frequency_correction": true,
+          "full_GMP": false,
+          "hardware_parameter_recovery": false,
+          "phase_lag": 4,
+          "actual_phase_lag": 4,
+          "adaptive_lift_active": true,
+          "mixture_parameter_shape": [
+            2
+          ],
+          "actual_mixture_parameter_shape": [
+            2
+          ],
+          "mixture_initial_raw": [
+            0.0,
+            0.0
+          ],
+          "mixture_rule": "base+tanh(raw)*(proposal-base)",
+          "mixture_scope": "two global identity model parameters trained only by source CE",
+          "mixture_parameter_count": 2,
+          "initial_function": "exact scratch coupled_lag4 function under matching scratch RNG",
+          "cubic_divisor": 4,
+          "cubic_delays": [
+            4,
+            4,
+            8
+          ],
+          "cubic_conjugate_last": true,
+          "lift_affine_phase_covariant": true,
+          "complete_volterra": false
+        },
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "pid": 1728387,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_adaptive_volterra_identity_20261002_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "commit": "db3860587aa6d1c031a9dd9b9226cfc38f51f513",
+        "torch_version": "2.1.0+cu121",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "source_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "steps_per_epoch": 50,
+        "total_parameters": 202555,
+        "trainable_parameters": 202555,
+        "U_s_use": "unused",
+        "target_access": false,
+        "precision": "float32",
+        "gradient_clipping": null,
+        "optimizer": "AdamW+CosineAnnealingLR",
+        "loader_seed": 2026092702,
+        "adaptive_actual": {
+          "mode": "adaptive_volterra_lag4",
+          "input": "received_equalized1_unit_rms_IQ",
+          "sample_rate_hz": 25000000,
+          "whole_identity_global_phase_invariant_real_arithmetic": true,
+          "global_phase_equivariant_until_readout": true,
+          "removes_linear_phase": false,
+          "arbitrary_channel_rx_invariant": false,
+          "hardware_parameter_estimation": false,
+          "time_complex_channels": [
+            24,
+            24,
+            32,
+            32
+          ],
+          "time_kernels": [
+            5,
+            5,
+            3
+          ],
+          "time_strides": [
+            2,
+            2,
+            1
+          ],
+          "behavior_orders": [
+            1,
+            3,
+            5
+          ],
+          "behavior_delays": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "radial_clip": 4.0,
+          "order_scale_base": 2.0,
+          "behavior_complex_channels": [
+            12,
+            24,
+            32,
+            32
+          ],
+          "behavior_kernels": [
+            7,
+            5,
+            3
+          ],
+          "behavior_dilations": [
+            1,
+            2,
+            4
+          ],
+          "behavior_causal_filters": true,
+          "per_packet_complex_rms_normalization": true,
+          "complex_bias": false,
+          "radial_gate": "2sigmoid(a*log1p(power)+b)",
+          "invariant_readout": "logpower mean/std,lag1/2 normalized complex correlation,4 positional logpower means",
+          "readout_channels_per_complex_channel": 10,
+          "embedding_dimension": 160,
+          "classifier_scale": 30.0,
+          "original_real_frequency_path_retained": true,
+          "raw_unconstrained_identity_bypass": false,
+          "interpretation": "Received relative filter/polynomial energy is retained by normalization;not recovered TX PA/IQ coefficients or arbitrary RX/channel invariance",
+          "normalization_scope": "one complex power mean across all channels and time per packet per block",
+          "per_channel_sample_dependent_rms_normalization": false,
+          "relative_filter_channel_energy_preserved_by_normalization_only": true,
+          "learned_channel_scales_retained": true,
+          "new_trainable_parameters": 2,
+          "relative_energy_after_gate": "may change through learned radial gate;not fixed",
+          "learned_channel_scales_may_change_energy_ratios": true,
+          "identity_core": "adaptive_volterra_identity",
+          "estimator_window": [
+            80,
+            160
+          ],
+          "estimator_period_samples": 20,
+          "relative_frequency_alias_hz": 1250000,
+          "alignment_strength": 0.0,
+          "alignment_parameters": 0,
+          "alignment_packet_specific": false,
+          "alignment_class_specific": false,
+          "alignment_rx_specific": false,
+          "waveform_operator": "x[n]exp(-j alpha omega n);raw variant returns x exactly",
+          "whole_affine_phase_invariant": false,
+          "alignment_interpretation": "fixed received frequency retention;not TX/RX oscillator proportion",
+          "prototype_only": false,
+          "behavior_input": "lag4 envelope control plus signed tanh-gated delayed cubic residual",
+          "envelope_lag": 4,
+          "actual_envelope_lag": 4,
+          "envelope_average_weights": [
+            0.5,
+            0.5
+          ],
+          "behavior_terms": 12,
+          "original_position_power_readout_retained": true,
+          "no_frequency_correction": true,
+          "full_GMP": false,
+          "hardware_parameter_recovery": false,
+          "phase_lag": 4,
+          "actual_phase_lag": 4,
+          "adaptive_lift_active": true,
+          "mixture_parameter_shape": [
+            2
+          ],
+          "actual_mixture_parameter_shape": [
+            2
+          ],
+          "mixture_initial_raw": [
+            0.0,
+            0.0
+          ],
+          "mixture_rule": "base+tanh(raw)*(proposal-base)",
+          "mixture_scope": "two global identity model parameters trained only by source CE",
+          "mixture_parameter_count": 2,
+          "initial_function": "exact scratch coupled_lag4 function under matching scratch RNG",
+          "cubic_divisor": 4,
+          "cubic_delays": [
+            4,
+            4,
+            8
+          ],
+          "cubic_conjugate_last": true,
+          "lift_affine_phase_covariant": true,
+          "complete_volterra": false
+        },
+        "adaptive_active": true,
+        "classifier_scale": 30.0,
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        }
+      }
+    },
+    {
+      "row_id": "adaptive_volterra_lag4-s2026092703",
+      "completion": {
+        "status": "SOURCE_TRAINED",
+        "epoch": 200,
+        "steps": 10000,
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-adaptive-volterra-identity-manysig-m8-r01/adaptive_volterra_lag4-s2026092703/source/last.pt",
+        "elapsed_seconds": 1456.936647849012,
+        "target_access": false,
+        "target_evaluated": false,
+        "final_source_metrics": {
+          "source_val_count": 27000,
+          "source_val_accuracy": 0.9837777777777778,
+          "source_val_ce": 0.0803555927080656,
+          "source_val_rx_accuracy": {
+            "1": 0.9974074074074074,
+            "3": 0.957962962962963,
+            "4": 0.9881481481481481,
+            "6": 0.9959259259259259,
+            "8": 0.9794444444444445
+          },
+          "source_val_worst_rx": 0.957962962962963
+        },
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        }
+      },
+      "initialization": {
+        "status": "SCRATCH",
+        "scratch_only": true,
+        "checkpoint": null,
+        "ancestors": [],
+        "checkpoint_sources": [],
+        "target_access": false,
+        "target_contact": false,
+        "model_seed": 2026092703,
+        "physical_roles": "EXACT_MATCH",
+        "selection": "fixed_last_epoch"
+      },
+      "resolved": {
+        "method": "cvs_adaptive_volterra_identity",
+        "variant": "adaptive_volterra_lag4",
+        "model_seed": 2026092703,
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-adaptive-volterra-identity-manysig-m8-r01/adaptive_volterra_lag4-s2026092703/source",
+        "epochs": 200,
+        "batch_size": 128,
+        "lr": 0.0002,
+        "lr_min": 1e-06,
+        "weight_decay": 0.0001,
+        "drop_last": false,
+        "augmentation": false,
+        "domain_backbone": false,
+        "extra_losses": [],
+        "selection": "fixed_last_epoch",
+        "split_seed": 392005,
+        "device": "cuda:0",
+        "adaptive": {
+          "mode": "adaptive_volterra_lag4",
+          "input": "received_equalized1_unit_rms_IQ",
+          "sample_rate_hz": 25000000,
+          "whole_identity_global_phase_invariant_real_arithmetic": true,
+          "global_phase_equivariant_until_readout": true,
+          "removes_linear_phase": false,
+          "arbitrary_channel_rx_invariant": false,
+          "hardware_parameter_estimation": false,
+          "time_complex_channels": [
+            24,
+            24,
+            32,
+            32
+          ],
+          "time_kernels": [
+            5,
+            5,
+            3
+          ],
+          "time_strides": [
+            2,
+            2,
+            1
+          ],
+          "behavior_orders": [
+            1,
+            3,
+            5
+          ],
+          "behavior_delays": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "radial_clip": 4.0,
+          "order_scale_base": 2.0,
+          "behavior_complex_channels": [
+            12,
+            24,
+            32,
+            32
+          ],
+          "behavior_kernels": [
+            7,
+            5,
+            3
+          ],
+          "behavior_dilations": [
+            1,
+            2,
+            4
+          ],
+          "behavior_causal_filters": true,
+          "per_packet_complex_rms_normalization": true,
+          "complex_bias": false,
+          "radial_gate": "2sigmoid(a*log1p(power)+b)",
+          "invariant_readout": "logpower mean/std,lag1/2 normalized complex correlation,4 positional logpower means",
+          "readout_channels_per_complex_channel": 10,
+          "embedding_dimension": 160,
+          "classifier_scale": 30.0,
+          "original_real_frequency_path_retained": true,
+          "raw_unconstrained_identity_bypass": false,
+          "interpretation": "Received relative filter/polynomial energy is retained by normalization;not recovered TX PA/IQ coefficients or arbitrary RX/channel invariance",
+          "normalization_scope": "one complex power mean across all channels and time per packet per block",
+          "per_channel_sample_dependent_rms_normalization": false,
+          "relative_filter_channel_energy_preserved_by_normalization_only": true,
+          "learned_channel_scales_retained": true,
+          "new_trainable_parameters": 2,
+          "relative_energy_after_gate": "may change through learned radial gate;not fixed",
+          "learned_channel_scales_may_change_energy_ratios": true,
+          "identity_core": "adaptive_volterra_identity",
+          "estimator_window": [
+            80,
+            160
+          ],
+          "estimator_period_samples": 20,
+          "relative_frequency_alias_hz": 1250000,
+          "alignment_strength": 0.0,
+          "alignment_parameters": 0,
+          "alignment_packet_specific": false,
+          "alignment_class_specific": false,
+          "alignment_rx_specific": false,
+          "waveform_operator": "x[n]exp(-j alpha omega n);raw variant returns x exactly",
+          "whole_affine_phase_invariant": false,
+          "alignment_interpretation": "fixed received frequency retention;not TX/RX oscillator proportion",
+          "prototype_only": false,
+          "behavior_input": "lag4 envelope control plus signed tanh-gated delayed cubic residual",
+          "envelope_lag": 4,
+          "actual_envelope_lag": 4,
+          "envelope_average_weights": [
+            0.5,
+            0.5
+          ],
+          "behavior_terms": 12,
+          "original_position_power_readout_retained": true,
+          "no_frequency_correction": true,
+          "full_GMP": false,
+          "hardware_parameter_recovery": false,
+          "phase_lag": 4,
+          "actual_phase_lag": 4,
+          "adaptive_lift_active": true,
+          "mixture_parameter_shape": [
+            2
+          ],
+          "actual_mixture_parameter_shape": [
+            2
+          ],
+          "mixture_initial_raw": [
+            0.0,
+            0.0
+          ],
+          "mixture_rule": "base+tanh(raw)*(proposal-base)",
+          "mixture_scope": "two global identity model parameters trained only by source CE",
+          "mixture_parameter_count": 2,
+          "initial_function": "exact scratch coupled_lag4 function under matching scratch RNG",
+          "cubic_divisor": 4,
+          "cubic_delays": [
+            4,
+            4,
+            8
+          ],
+          "cubic_conjugate_last": true,
+          "lift_affine_phase_covariant": true,
+          "complete_volterra": false
+        },
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "pid": 1728564,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_adaptive_volterra_identity_20261002_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "commit": "db3860587aa6d1c031a9dd9b9226cfc38f51f513",
+        "torch_version": "2.1.0+cu121",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "source_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "steps_per_epoch": 50,
+        "total_parameters": 202555,
+        "trainable_parameters": 202555,
+        "U_s_use": "unused",
+        "target_access": false,
+        "precision": "float32",
+        "gradient_clipping": null,
+        "optimizer": "AdamW+CosineAnnealingLR",
+        "loader_seed": 2026092703,
+        "adaptive_actual": {
+          "mode": "adaptive_volterra_lag4",
+          "input": "received_equalized1_unit_rms_IQ",
+          "sample_rate_hz": 25000000,
+          "whole_identity_global_phase_invariant_real_arithmetic": true,
+          "global_phase_equivariant_until_readout": true,
+          "removes_linear_phase": false,
+          "arbitrary_channel_rx_invariant": false,
+          "hardware_parameter_estimation": false,
+          "time_complex_channels": [
+            24,
+            24,
+            32,
+            32
+          ],
+          "time_kernels": [
+            5,
+            5,
+            3
+          ],
+          "time_strides": [
+            2,
+            2,
+            1
+          ],
+          "behavior_orders": [
+            1,
+            3,
+            5
+          ],
+          "behavior_delays": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "radial_clip": 4.0,
+          "order_scale_base": 2.0,
+          "behavior_complex_channels": [
+            12,
+            24,
+            32,
+            32
+          ],
+          "behavior_kernels": [
+            7,
+            5,
+            3
+          ],
+          "behavior_dilations": [
+            1,
+            2,
+            4
+          ],
+          "behavior_causal_filters": true,
+          "per_packet_complex_rms_normalization": true,
+          "complex_bias": false,
+          "radial_gate": "2sigmoid(a*log1p(power)+b)",
+          "invariant_readout": "logpower mean/std,lag1/2 normalized complex correlation,4 positional logpower means",
+          "readout_channels_per_complex_channel": 10,
+          "embedding_dimension": 160,
+          "classifier_scale": 30.0,
+          "original_real_frequency_path_retained": true,
+          "raw_unconstrained_identity_bypass": false,
+          "interpretation": "Received relative filter/polynomial energy is retained by normalization;not recovered TX PA/IQ coefficients or arbitrary RX/channel invariance",
+          "normalization_scope": "one complex power mean across all channels and time per packet per block",
+          "per_channel_sample_dependent_rms_normalization": false,
+          "relative_filter_channel_energy_preserved_by_normalization_only": true,
+          "learned_channel_scales_retained": true,
+          "new_trainable_parameters": 2,
+          "relative_energy_after_gate": "may change through learned radial gate;not fixed",
+          "learned_channel_scales_may_change_energy_ratios": true,
+          "identity_core": "adaptive_volterra_identity",
+          "estimator_window": [
+            80,
+            160
+          ],
+          "estimator_period_samples": 20,
+          "relative_frequency_alias_hz": 1250000,
+          "alignment_strength": 0.0,
+          "alignment_parameters": 0,
+          "alignment_packet_specific": false,
+          "alignment_class_specific": false,
+          "alignment_rx_specific": false,
+          "waveform_operator": "x[n]exp(-j alpha omega n);raw variant returns x exactly",
+          "whole_affine_phase_invariant": false,
+          "alignment_interpretation": "fixed received frequency retention;not TX/RX oscillator proportion",
+          "prototype_only": false,
+          "behavior_input": "lag4 envelope control plus signed tanh-gated delayed cubic residual",
+          "envelope_lag": 4,
+          "actual_envelope_lag": 4,
+          "envelope_average_weights": [
+            0.5,
+            0.5
+          ],
+          "behavior_terms": 12,
+          "original_position_power_readout_retained": true,
+          "no_frequency_correction": true,
+          "full_GMP": false,
+          "hardware_parameter_recovery": false,
+          "phase_lag": 4,
+          "actual_phase_lag": 4,
+          "adaptive_lift_active": true,
+          "mixture_parameter_shape": [
+            2
+          ],
+          "actual_mixture_parameter_shape": [
+            2
+          ],
+          "mixture_initial_raw": [
+            0.0,
+            0.0
+          ],
+          "mixture_rule": "base+tanh(raw)*(proposal-base)",
+          "mixture_scope": "two global identity model parameters trained only by source CE",
+          "mixture_parameter_count": 2,
+          "initial_function": "exact scratch coupled_lag4 function under matching scratch RNG",
+          "cubic_divisor": 4,
+          "cubic_delays": [
+            4,
+            4,
+            8
+          ],
+          "cubic_conjugate_last": true,
+          "lift_affine_phase_covariant": true,
+          "complete_volterra": false
+        },
+        "adaptive_active": true,
+        "classifier_scale": 30.0,
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        }
+      }
+    },
+    {
+      "row_id": "adaptive_volterra_lag4-s2026092704",
+      "completion": {
+        "status": "SOURCE_TRAINED",
+        "epoch": 200,
+        "steps": 10000,
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-adaptive-volterra-identity-manysig-m8-r01/adaptive_volterra_lag4-s2026092704/source/last.pt",
+        "elapsed_seconds": 1455.8432413040136,
+        "target_access": false,
+        "target_evaluated": false,
+        "final_source_metrics": {
+          "source_val_count": 27000,
+          "source_val_accuracy": 0.9819629629629629,
+          "source_val_ce": 0.09219297338310342,
+          "source_val_rx_accuracy": {
+            "1": 0.997037037037037,
+            "3": 0.9511111111111111,
+            "4": 0.9909259259259259,
+            "6": 0.9948148148148148,
+            "8": 0.975925925925926
+          },
+          "source_val_worst_rx": 0.9511111111111111
+        },
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        }
+      },
+      "initialization": {
+        "status": "SCRATCH",
+        "scratch_only": true,
+        "checkpoint": null,
+        "ancestors": [],
+        "checkpoint_sources": [],
+        "target_access": false,
+        "target_contact": false,
+        "model_seed": 2026092704,
+        "physical_roles": "EXACT_MATCH",
+        "selection": "fixed_last_epoch"
+      },
+      "resolved": {
+        "method": "cvs_adaptive_volterra_identity",
+        "variant": "adaptive_volterra_lag4",
+        "model_seed": 2026092704,
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-adaptive-volterra-identity-manysig-m8-r01/adaptive_volterra_lag4-s2026092704/source",
+        "epochs": 200,
+        "batch_size": 128,
+        "lr": 0.0002,
+        "lr_min": 1e-06,
+        "weight_decay": 0.0001,
+        "drop_last": false,
+        "augmentation": false,
+        "domain_backbone": false,
+        "extra_losses": [],
+        "selection": "fixed_last_epoch",
+        "split_seed": 392005,
+        "device": "cuda:0",
+        "adaptive": {
+          "mode": "adaptive_volterra_lag4",
+          "input": "received_equalized1_unit_rms_IQ",
+          "sample_rate_hz": 25000000,
+          "whole_identity_global_phase_invariant_real_arithmetic": true,
+          "global_phase_equivariant_until_readout": true,
+          "removes_linear_phase": false,
+          "arbitrary_channel_rx_invariant": false,
+          "hardware_parameter_estimation": false,
+          "time_complex_channels": [
+            24,
+            24,
+            32,
+            32
+          ],
+          "time_kernels": [
+            5,
+            5,
+            3
+          ],
+          "time_strides": [
+            2,
+            2,
+            1
+          ],
+          "behavior_orders": [
+            1,
+            3,
+            5
+          ],
+          "behavior_delays": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "radial_clip": 4.0,
+          "order_scale_base": 2.0,
+          "behavior_complex_channels": [
+            12,
+            24,
+            32,
+            32
+          ],
+          "behavior_kernels": [
+            7,
+            5,
+            3
+          ],
+          "behavior_dilations": [
+            1,
+            2,
+            4
+          ],
+          "behavior_causal_filters": true,
+          "per_packet_complex_rms_normalization": true,
+          "complex_bias": false,
+          "radial_gate": "2sigmoid(a*log1p(power)+b)",
+          "invariant_readout": "logpower mean/std,lag1/2 normalized complex correlation,4 positional logpower means",
+          "readout_channels_per_complex_channel": 10,
+          "embedding_dimension": 160,
+          "classifier_scale": 30.0,
+          "original_real_frequency_path_retained": true,
+          "raw_unconstrained_identity_bypass": false,
+          "interpretation": "Received relative filter/polynomial energy is retained by normalization;not recovered TX PA/IQ coefficients or arbitrary RX/channel invariance",
+          "normalization_scope": "one complex power mean across all channels and time per packet per block",
+          "per_channel_sample_dependent_rms_normalization": false,
+          "relative_filter_channel_energy_preserved_by_normalization_only": true,
+          "learned_channel_scales_retained": true,
+          "new_trainable_parameters": 2,
+          "relative_energy_after_gate": "may change through learned radial gate;not fixed",
+          "learned_channel_scales_may_change_energy_ratios": true,
+          "identity_core": "adaptive_volterra_identity",
+          "estimator_window": [
+            80,
+            160
+          ],
+          "estimator_period_samples": 20,
+          "relative_frequency_alias_hz": 1250000,
+          "alignment_strength": 0.0,
+          "alignment_parameters": 0,
+          "alignment_packet_specific": false,
+          "alignment_class_specific": false,
+          "alignment_rx_specific": false,
+          "waveform_operator": "x[n]exp(-j alpha omega n);raw variant returns x exactly",
+          "whole_affine_phase_invariant": false,
+          "alignment_interpretation": "fixed received frequency retention;not TX/RX oscillator proportion",
+          "prototype_only": false,
+          "behavior_input": "lag4 envelope control plus signed tanh-gated delayed cubic residual",
+          "envelope_lag": 4,
+          "actual_envelope_lag": 4,
+          "envelope_average_weights": [
+            0.5,
+            0.5
+          ],
+          "behavior_terms": 12,
+          "original_position_power_readout_retained": true,
+          "no_frequency_correction": true,
+          "full_GMP": false,
+          "hardware_parameter_recovery": false,
+          "phase_lag": 4,
+          "actual_phase_lag": 4,
+          "adaptive_lift_active": true,
+          "mixture_parameter_shape": [
+            2
+          ],
+          "actual_mixture_parameter_shape": [
+            2
+          ],
+          "mixture_initial_raw": [
+            0.0,
+            0.0
+          ],
+          "mixture_rule": "base+tanh(raw)*(proposal-base)",
+          "mixture_scope": "two global identity model parameters trained only by source CE",
+          "mixture_parameter_count": 2,
+          "initial_function": "exact scratch coupled_lag4 function under matching scratch RNG",
+          "cubic_divisor": 4,
+          "cubic_delays": [
+            4,
+            4,
+            8
+          ],
+          "cubic_conjugate_last": true,
+          "lift_affine_phase_covariant": true,
+          "complete_volterra": false
+        },
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "pid": 1729148,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_adaptive_volterra_identity_20261002_r01",
+        "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "commit": "db3860587aa6d1c031a9dd9b9226cfc38f51f513",
+        "torch_version": "2.1.0+cu121",
+        "hardware": "NVIDIA GeForce RTX 3090",
+        "source_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "steps_per_epoch": 50,
+        "total_parameters": 202555,
+        "trainable_parameters": 202555,
+        "U_s_use": "unused",
+        "target_access": false,
+        "precision": "float32",
+        "gradient_clipping": null,
+        "optimizer": "AdamW+CosineAnnealingLR",
+        "loader_seed": 2026092704,
+        "adaptive_actual": {
+          "mode": "adaptive_volterra_lag4",
+          "input": "received_equalized1_unit_rms_IQ",
+          "sample_rate_hz": 25000000,
+          "whole_identity_global_phase_invariant_real_arithmetic": true,
+          "global_phase_equivariant_until_readout": true,
+          "removes_linear_phase": false,
+          "arbitrary_channel_rx_invariant": false,
+          "hardware_parameter_estimation": false,
+          "time_complex_channels": [
+            24,
+            24,
+            32,
+            32
+          ],
+          "time_kernels": [
+            5,
+            5,
+            3
+          ],
+          "time_strides": [
+            2,
+            2,
+            1
+          ],
+          "behavior_orders": [
+            1,
+            3,
+            5
+          ],
+          "behavior_delays": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "radial_clip": 4.0,
+          "order_scale_base": 2.0,
+          "behavior_complex_channels": [
+            12,
+            24,
+            32,
+            32
+          ],
+          "behavior_kernels": [
+            7,
+            5,
+            3
+          ],
+          "behavior_dilations": [
+            1,
+            2,
+            4
+          ],
+          "behavior_causal_filters": true,
+          "per_packet_complex_rms_normalization": true,
+          "complex_bias": false,
+          "radial_gate": "2sigmoid(a*log1p(power)+b)",
+          "invariant_readout": "logpower mean/std,lag1/2 normalized complex correlation,4 positional logpower means",
+          "readout_channels_per_complex_channel": 10,
+          "embedding_dimension": 160,
+          "classifier_scale": 30.0,
+          "original_real_frequency_path_retained": true,
+          "raw_unconstrained_identity_bypass": false,
+          "interpretation": "Received relative filter/polynomial energy is retained by normalization;not recovered TX PA/IQ coefficients or arbitrary RX/channel invariance",
+          "normalization_scope": "one complex power mean across all channels and time per packet per block",
+          "per_channel_sample_dependent_rms_normalization": false,
+          "relative_filter_channel_energy_preserved_by_normalization_only": true,
+          "learned_channel_scales_retained": true,
+          "new_trainable_parameters": 2,
+          "relative_energy_after_gate": "may change through learned radial gate;not fixed",
+          "learned_channel_scales_may_change_energy_ratios": true,
+          "identity_core": "adaptive_volterra_identity",
+          "estimator_window": [
+            80,
+            160
+          ],
+          "estimator_period_samples": 20,
+          "relative_frequency_alias_hz": 1250000,
+          "alignment_strength": 0.0,
+          "alignment_parameters": 0,
+          "alignment_packet_specific": false,
+          "alignment_class_specific": false,
+          "alignment_rx_specific": false,
+          "waveform_operator": "x[n]exp(-j alpha omega n);raw variant returns x exactly",
+          "whole_affine_phase_invariant": false,
+          "alignment_interpretation": "fixed received frequency retention;not TX/RX oscillator proportion",
+          "prototype_only": false,
+          "behavior_input": "lag4 envelope control plus signed tanh-gated delayed cubic residual",
+          "envelope_lag": 4,
+          "actual_envelope_lag": 4,
+          "envelope_average_weights": [
+            0.5,
+            0.5
+          ],
+          "behavior_terms": 12,
+          "original_position_power_readout_retained": true,
+          "no_frequency_correction": true,
+          "full_GMP": false,
+          "hardware_parameter_recovery": false,
+          "phase_lag": 4,
+          "actual_phase_lag": 4,
+          "adaptive_lift_active": true,
+          "mixture_parameter_shape": [
+            2
+          ],
+          "actual_mixture_parameter_shape": [
+            2
+          ],
+          "mixture_initial_raw": [
+            0.0,
+            0.0
+          ],
+          "mixture_rule": "base+tanh(raw)*(proposal-base)",
+          "mixture_scope": "two global identity model parameters trained only by source CE",
+          "mixture_parameter_count": 2,
+          "initial_function": "exact scratch coupled_lag4 function under matching scratch RNG",
+          "cubic_divisor": 4,
+          "cubic_delays": [
+            4,
+            4,
+            8
+          ],
+          "cubic_conjugate_last": true,
+          "lift_affine_phase_covariant": true,
+          "complete_volterra": false
+        },
+        "adaptive_active": true,
+        "classifier_scale": 30.0,
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        }
+      }
+    }
+  ],
+  "scope": "Completion/config/path/resource metadata only; no target score,truth,IQ,prediction array or model weight read"
+}

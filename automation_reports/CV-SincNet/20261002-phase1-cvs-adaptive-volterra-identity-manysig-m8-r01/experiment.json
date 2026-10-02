@@ -184,7 +184,7 @@
         "source_physical_diagnostics.json"
       ],
       "runtime_evidence": {
-        "status": "RUNNING",
+        "status": "SOURCE_TRAINED",
         "variant": "adaptive_volterra_lag1",
         "model_seed": 2026092701,
         "pid": 1728062,
@@ -199,8 +199,27 @@
         ],
         "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-adaptive-volterra-identity-manysig-m8-r01/adaptive_volterra_lag1-s2026092701.log",
         "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-adaptive-volterra-identity-manysig-m8-r01/adaptive_volterra_lag1-s2026092701/source",
-        "started": 1790940636.715565
-      }
+        "started": 1790940636.715565,
+        "exit_code": 0,
+        "finished": 1790942094.7337582
+      },
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9854074074074074,
+        "source_val_ce": 0.08157131959750269,
+        "source_val_rx_accuracy": {
+          "1": 0.9968518518518519,
+          "3": 0.9594444444444444,
+          "4": 0.9901851851851852,
+          "6": 0.9972222222222222,
+          "8": 0.9833333333333333
+        },
+        "source_val_worst_rx": 0.9594444444444444
+      },
+      "completed_epoch": 200,
+      "completed_steps": 10000,
+      "source_completion_ref": "evidence/final_source_readback.json",
+      "test_status": "N/A_NOT_SOURCE_SELECTED"
     },
     {
       "row_id": "adaptive_volterra_lag4-s2026092701",
@@ -244,7 +263,7 @@
         "source_physical_diagnostics.json"
       ],
       "runtime_evidence": {
-        "status": "RUNNING",
+        "status": "SOURCE_TRAINED",
         "variant": "adaptive_volterra_lag4",
         "model_seed": 2026092701,
         "pid": 1728151,
@@ -259,8 +278,27 @@
         ],
         "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-adaptive-volterra-identity-manysig-m8-r01/adaptive_volterra_lag4-s2026092701.log",
         "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-adaptive-volterra-identity-manysig-m8-r01/adaptive_volterra_lag4-s2026092701/source",
-        "started": 1790940641.9614313
-      }
+        "started": 1790940641.9614313,
+        "exit_code": 0,
+        "finished": 1790942094.7350268
+      },
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9853333333333333,
+        "source_val_ce": 0.08141359493408204,
+        "source_val_rx_accuracy": {
+          "1": 0.997037037037037,
+          "3": 0.96,
+          "4": 0.9894444444444445,
+          "6": 0.997037037037037,
+          "8": 0.9831481481481481
+        },
+        "source_val_worst_rx": 0.96
+      },
+      "completed_epoch": 200,
+      "completed_steps": 10000,
+      "source_completion_ref": "evidence/final_source_readback.json",
+      "test_status": "AWAITING_FROZEN_CLEAN_TEST"
     },
     {
       "row_id": "adaptive_volterra_lag1-s2026092702",
@@ -304,7 +342,7 @@
         "source_physical_diagnostics.json"
       ],
       "runtime_evidence": {
-        "status": "RUNNING",
+        "status": "SOURCE_TRAINED",
         "variant": "adaptive_volterra_lag1",
         "model_seed": 2026092702,
         "pid": 1728238,
@@ -319,8 +357,27 @@
         ],
         "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-adaptive-volterra-identity-manysig-m8-r01/adaptive_volterra_lag1-s2026092702.log",
         "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-adaptive-volterra-identity-manysig-m8-r01/adaptive_volterra_lag1-s2026092702/source",
-        "started": 1790940647.2067869
-      }
+        "started": 1790940647.2067869,
+        "exit_code": 0,
+        "finished": 1790942119.7627394
+      },
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9844814814814815,
+        "source_val_ce": 0.08119470199324105,
+        "source_val_rx_accuracy": {
+          "1": 0.9959259259259259,
+          "3": 0.9607407407407408,
+          "4": 0.9890740740740741,
+          "6": 0.9961111111111111,
+          "8": 0.9805555555555555
+        },
+        "source_val_worst_rx": 0.9607407407407408
+      },
+      "completed_epoch": 200,
+      "completed_steps": 10000,
+      "source_completion_ref": "evidence/final_source_readback.json",
+      "test_status": "N/A_NOT_SOURCE_SELECTED"
     },
     {
       "row_id": "adaptive_volterra_lag4-s2026092702",
@@ -364,7 +421,7 @@
         "source_physical_diagnostics.json"
       ],
       "runtime_evidence": {
-        "status": "RUNNING",
+        "status": "SOURCE_TRAINED",
         "variant": "adaptive_volterra_lag4",
         "model_seed": 2026092702,
         "pid": 1728387,
@@ -379,8 +436,27 @@
         ],
         "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-adaptive-volterra-identity-manysig-m8-r01/adaptive_volterra_lag4-s2026092702.log",
         "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-adaptive-volterra-identity-manysig-m8-r01/adaptive_volterra_lag4-s2026092702/source",
-        "started": 1790940652.4484365
-      }
+        "started": 1790940652.4484365,
+        "exit_code": 0,
+        "finished": 1790942089.7263494
+      },
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.985,
+        "source_val_ce": 0.0789402038974595,
+        "source_val_rx_accuracy": {
+          "1": 0.9961111111111111,
+          "3": 0.9612962962962963,
+          "4": 0.9901851851851852,
+          "6": 0.9961111111111111,
+          "8": 0.9812962962962963
+        },
+        "source_val_worst_rx": 0.9612962962962963
+      },
+      "completed_epoch": 200,
+      "completed_steps": 10000,
+      "source_completion_ref": "evidence/final_source_readback.json",
+      "test_status": "AWAITING_FROZEN_CLEAN_TEST"
     },
     {
       "row_id": "adaptive_volterra_lag1-s2026092703",
@@ -424,7 +500,7 @@
         "source_physical_diagnostics.json"
       ],
       "runtime_evidence": {
-        "status": "RUNNING",
+        "status": "SOURCE_TRAINED",
         "variant": "adaptive_volterra_lag1",
         "model_seed": 2026092703,
         "pid": 1728473,
@@ -439,8 +515,27 @@
         ],
         "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-adaptive-volterra-identity-manysig-m8-r01/adaptive_volterra_lag1-s2026092703.log",
         "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-adaptive-volterra-identity-manysig-m8-r01/adaptive_volterra_lag1-s2026092703/source",
-        "started": 1790940657.6713774
-      }
+        "started": 1790940657.6713774,
+        "exit_code": 0,
+        "finished": 1790942089.7276142
+      },
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9827777777777778,
+        "source_val_ce": 0.0843993067534195,
+        "source_val_rx_accuracy": {
+          "1": 0.997037037037037,
+          "3": 0.9538888888888889,
+          "4": 0.9875925925925926,
+          "6": 0.9957407407407407,
+          "8": 0.9796296296296296
+        },
+        "source_val_worst_rx": 0.9538888888888889
+      },
+      "completed_epoch": 200,
+      "completed_steps": 10000,
+      "source_completion_ref": "evidence/final_source_readback.json",
+      "test_status": "N/A_NOT_SOURCE_SELECTED"
     },
     {
       "row_id": "adaptive_volterra_lag4-s2026092703",
@@ -484,7 +579,7 @@
         "source_physical_diagnostics.json"
       ],
       "runtime_evidence": {
-        "status": "RUNNING",
+        "status": "SOURCE_TRAINED",
         "variant": "adaptive_volterra_lag4",
         "model_seed": 2026092703,
         "pid": 1728564,
@@ -499,8 +594,27 @@
         ],
         "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-adaptive-volterra-identity-manysig-m8-r01/adaptive_volterra_lag4-s2026092703.log",
         "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-adaptive-volterra-identity-manysig-m8-r01/adaptive_volterra_lag4-s2026092703/source",
-        "started": 1790940662.9060037
-      }
+        "started": 1790940662.9060037,
+        "exit_code": 0,
+        "finished": 1790942129.7736826
+      },
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9837777777777778,
+        "source_val_ce": 0.0803555927080656,
+        "source_val_rx_accuracy": {
+          "1": 0.9974074074074074,
+          "3": 0.957962962962963,
+          "4": 0.9881481481481481,
+          "6": 0.9959259259259259,
+          "8": 0.9794444444444445
+        },
+        "source_val_worst_rx": 0.957962962962963
+      },
+      "completed_epoch": 200,
+      "completed_steps": 10000,
+      "source_completion_ref": "evidence/final_source_readback.json",
+      "test_status": "AWAITING_FROZEN_CLEAN_TEST"
     },
     {
       "row_id": "adaptive_volterra_lag1-s2026092704",
@@ -544,7 +658,7 @@
         "source_physical_diagnostics.json"
       ],
       "runtime_evidence": {
-        "status": "RUNNING",
+        "status": "SOURCE_TRAINED",
         "variant": "adaptive_volterra_lag1",
         "model_seed": 2026092704,
         "pid": 1728653,
@@ -559,8 +673,27 @@
         ],
         "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-adaptive-volterra-identity-manysig-m8-r01/adaptive_volterra_lag1-s2026092704.log",
         "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-adaptive-volterra-identity-manysig-m8-r01/adaptive_volterra_lag1-s2026092704/source",
-        "started": 1790940668.133087
-      }
+        "started": 1790940668.133087,
+        "exit_code": 0,
+        "finished": 1790942114.7564101
+      },
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9823703703703703,
+        "source_val_ce": 0.09021569907294462,
+        "source_val_rx_accuracy": {
+          "1": 0.997037037037037,
+          "3": 0.950925925925926,
+          "4": 0.9911111111111112,
+          "6": 0.9951851851851852,
+          "8": 0.9775925925925926
+        },
+        "source_val_worst_rx": 0.950925925925926
+      },
+      "completed_epoch": 200,
+      "completed_steps": 10000,
+      "source_completion_ref": "evidence/final_source_readback.json",
+      "test_status": "N/A_NOT_SOURCE_SELECTED"
     },
     {
       "row_id": "adaptive_volterra_lag4-s2026092704",
@@ -604,7 +737,7 @@
         "source_physical_diagnostics.json"
       ],
       "runtime_evidence": {
-        "status": "RUNNING",
+        "status": "SOURCE_TRAINED",
         "variant": "adaptive_volterra_lag4",
         "model_seed": 2026092704,
         "pid": 1729148,
@@ -619,8 +752,27 @@
         ],
         "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-adaptive-volterra-identity-manysig-m8-r01/adaptive_volterra_lag4-s2026092704.log",
         "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-adaptive-volterra-identity-manysig-m8-r01/adaptive_volterra_lag4-s2026092704/source",
-        "started": 1790940673.3400297
-      }
+        "started": 1790940673.3400297,
+        "exit_code": 0,
+        "finished": 1790942134.7800877
+      },
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9819629629629629,
+        "source_val_ce": 0.09219297338310342,
+        "source_val_rx_accuracy": {
+          "1": 0.997037037037037,
+          "3": 0.9511111111111111,
+          "4": 0.9909259259259259,
+          "6": 0.9948148148148148,
+          "8": 0.975925925925926
+        },
+        "source_val_worst_rx": 0.9511111111111111
+      },
+      "completed_epoch": 200,
+      "completed_steps": 10000,
+      "source_completion_ref": "evidence/final_source_readback.json",
+      "test_status": "AWAITING_FROZEN_CLEAN_TEST"
     }
   ],
   "notes": [
@@ -701,5 +853,57 @@
     ],
     "target_feedback": false,
     "selection": "source_only"
+  },
+  "results": {
+    "source_selection": {
+      "status": "SOURCE_SELECTION_FROZEN",
+      "selected_variant": "adaptive_volterra_lag4",
+      "source_summaries": {
+        "coupled_lag4": {
+          "score": 0.970287037037037,
+          "source_accuracy": 0.9839074074074075,
+          "worst_rx_accuracy": 0.9566666666666667,
+          "parameters": 202553,
+          "conv_linear_macs": 7199008
+        },
+        "adaptive_volterra_lag1": {
+          "score": 0.9700046296296296,
+          "source_accuracy": 0.9837592592592592,
+          "worst_rx_accuracy": 0.95625,
+          "parameters": 202555,
+          "conv_linear_macs": 7199008
+        },
+        "adaptive_volterra_lag4": {
+          "score": 0.9708055555555555,
+          "source_accuracy": 0.9840185185185185,
+          "worst_rx_accuracy": 0.9575925925925926,
+          "parameters": 202555,
+          "conv_linear_macs": 7199008
+        }
+      },
+      "selection_rule": "performance first: four-seed E200 0.5 sourceV+0.5 worstsourceRX;exact ties V thenworstRX;costs secondary only after equalperformance",
+      "selection_policy": "performance_first_adaptive_volterra_with_current_source_winner_20261002",
+      "candidate_universe": [
+        "coupled_lag4",
+        "adaptive_volterra_lag1",
+        "adaptive_volterra_lag4"
+      ],
+      "new_candidate_selected": true,
+      "exact_cost_tie_order": [
+        "coupled_lag4",
+        "adaptive_volterra_lag1",
+        "adaptive_volterra_lag4"
+      ],
+      "target_access": false,
+      "target_score_used": false,
+      "test_view": "clean"
+    },
+    "source_training_status": "VERIFIED_COMPLETE",
+    "source_steps": 80000,
+    "source_epochs": 1600,
+    "source_analysis": "evidence/source_analysis_validation.json",
+    "clean_confirmation_run": "20261002-phase1-cvs-adaptive-volterra-clean-manysig-m32-r01",
+    "clean_status": "PENDING_SELECTED_ONLY",
+    "goal_achieved": false
   }
 }

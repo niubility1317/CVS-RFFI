@@ -1,0 +1,18 @@
+{
+  "status": "LOCAL_VERIFIED",
+  "run_id": "20261002-phase1-cvs-adaptive-volterra-clean-manysig-m32-r01",
+  "release": "cvs_adaptive_volterra_clean_eval_20261002_r01",
+  "source_run": "20261002-phase1-cvs-adaptive-volterra-identity-manysig-m8-r01",
+  "selected_variant": "adaptive_volterra_lag4",
+  "launch_owner": "codex/root/cvs-adaptive-volterra-clean-20261002",
+  "new_predictions": 4,
+  "reused_predictions": 28,
+  "target_feedback": false,
+  "goal_achieved": false,
+  "next": [
+    "Read-only path/resources and frozen-source/control metadata preflight",
+    "Commit/push/independent OID; publish once",
+    "Read actual4workers and28reuse; complete all32 prediction+independenttruthlast",
+    "Full256CM/224unchangedcontrol/meanSD/pairs/TX/resources report andGit"
+  ]
+}
