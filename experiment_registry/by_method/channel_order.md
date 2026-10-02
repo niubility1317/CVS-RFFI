@@ -6,4 +6,4 @@
 
 |名称|记录类型|证据入口|
 |---|---|---|
-|CVS信道补偿与非线性交互：源实验|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-phase1-cvs-channel-order-identity-manysig-m16-r01/report.md)|
+|CVS信道补偿与顺序差值：完整源训练结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-phase1-cvs-channel-order-identity-manysig-m16-r01/report.md)|

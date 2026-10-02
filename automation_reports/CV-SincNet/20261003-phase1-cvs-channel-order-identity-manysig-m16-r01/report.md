@@ -1,15 +1,29 @@
-# CVS信道补偿与非线性交互：源实验
+# CVS信道补偿与顺序差值：完整源训练结果
 
-状态LOCAL_VERIFIED，尚未发布训练。用户于2026-10-03授权依据新架构落地实现并跑实验。4种结构各4个modelseed，共16个从零训练模型；原单一CE、E200及数据/优化器/预算保持不变。
+16个scratch模型完成200轮×50步。源选择由完整20记录独立重算，训练策略和单一CE保持不变。以下是源验证指标，不是测试结果。
 
-对照为channel_capacity、channel_compensated、channel_dual与channel_order。所有候选保留原始浅层RFF主干；补偿及交互位于新增的全采样率辅助路径。只用既有shallow四份源元数据作为控制，不继承权重。实际结构和参数见[设计及判定](../../../docs/CVS_CHANNEL_ORDER_EXPERIMENT_20261003.md)、[逐行配置](experiment.json)。
+|结构|源V/%|最差源RX/%|固定源分数/%|相对控制/百分点±配对SD|正提升seed|参数|
+|---|---:|---:|---:|---:|---:|---:|
+|neural_residual_shallow|98.4426|95.8009|97.1218|+0.0000±0.0000|0/4|220987|
+|channel_capacity|98.3954|95.6852|97.0403|-0.0815±0.0890|0/4|247451|
+|channel_compensated|98.4148|95.8241|97.1194|-0.0023±0.0502|2/4|234587|
+|channel_dual|98.4269|95.8333|97.1301|+0.0083±0.0488|2/4|247387|
+|channel_order|98.4148|95.7778|97.0963|-0.0255±0.0704|2/4|249947|
 
-固定20行源记录的四seed平均0.5V+0.5最差源RX最大者胜出；容量对照也可胜出。新候选胜出后只对其4个冻结模型做clean测试，复用36份旧冻结预测形成40行矩阵；全部预测固定后独立truth-last评分。若旧控制胜出，复用它的完成测试。源报告不接收目标评分。
+固定规则选中`channel_dual`。后续只对该候选4模型执行预登记clean测试。
 
-当前输入为equalized=1、center256、unitRMS，结果不直接证明原始多径鲁棒性或TX/RX分离。历史确认benchmark已有暴露，不称首次盲测。没有LEO、额外增强、support、SFT或新类。
+![完整4000轮含控制曲线](evidence/source_curves.png)
 
-本地模型/协议验证及一次独立P0/P1审查已通过，见[本地证据](evidence/local_validation.json)与[公开输入烟测](evidence/public_cpu_smoke.json)。训练、冻结、测试和评分尚未完成；低性能不触发技术停止，所有负结果保留。
+|结构|batch1推理/ms|batch128训练/ms|
+|---|---:|---:|
+|neural_residual_shallow|9.8971|51.4826|
+|channel_capacity|11.8754|56.3286|
+|channel_compensated|12.6479|56.0110|
+|channel_dual|13.5561|62.3477|
+|channel_order|15.2996|69.8064|
 
-## 远端启动VERIFIED
+资源在实际RTX3090/FP32环境测量，并行运行可能影响时间。MAC计数包含实际aten卷积（包括功能式复卷积）及矩阵乘法，未计FFT、归一化、门控、池化、动态FIR的unfold及逐元素乘加；不是总FLOPs。实际训练与推理耗时包含全部算子。峰值内存与常驻状态保留逐seed值。新模块同样只由CE更新；零出口的首步内部零梯度是初始化性质，不能与训练后失活混同。
 
-16个任务均已完成至少1轮，分布于8张RTX3090，每卡2个。进程父子关系、CWD/argv、实际配置、日志增长、单一CE与无增强均已独立读回。执行提交`8d9600a432f9dcb80e2bfcc9dc90cbb1847e1908`。训练/测试结果尚未完成，源checkpoint按固定E200选择。
+源V使用已见源RX；四seed不是独立数据集。新增容量是否提高独立clean识别必须由冻结测试证明。没有追加损失、增强、重加权、采样策略、teacher或目标适应。D92的适应三阶段/K×新增类为N/A。
+
+[逐seed](evidence/source_final.csv) · [完整曲线](evidence/source_curves.csv) · [实际新增分支输出](evidence/channel_outputs.csv) · [全部TX/RX/day单元](evidence/source_cells.csv) · [资源](evidence/source_resources.csv) · [160000步审计](evidence/source_completion_validation.json) · [原设计](../../../docs/CVS_CHANNEL_ORDER_EXPERIMENT_20261003.md)。
