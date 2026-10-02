@@ -15,3 +15,5 @@
 正式发布与运行 VERIFIED：release `a31fd318996be20f030aeccd7ed6ed614ce7048d`，dispatcher PID 1808300；独立读回8个worker真实PID/CWD/argv/GPU、实际202557参数/完整FP32/alpha0/CE唯一/全参数梯度与28包输入测量，进度E25至E30。远端8公共模型24次CE smoke PASS。完整E200源冻结及条件clean尚未完成，不称识别性能提升。[启动读回](evidence/launch_readback.json)。
 
 本地完整源分析入口已实现；8份实际源遥测的四系数及四delay矩CSV转换核对通过，尚不是完整E200分析。正式源训练release保持不变。[分析入口](../../../experiments/cvs_moment_residual_identity/analyze.py) · [schema核对](evidence/analysis_schema_validation.json)。
+
+条件clean完整分析入口已补齐，15项合成矩阵检查通过：288个CM、72组均值/SD、64组配对、RX求和及256旧控制不变；同时拒绝漏项、重复、指标不符和越界场景。尚无实际新测试结果。[分析验证](evidence/conditional_clean_analysis_validation.json)。

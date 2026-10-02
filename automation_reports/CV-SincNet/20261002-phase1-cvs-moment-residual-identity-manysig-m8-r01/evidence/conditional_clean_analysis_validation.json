@@ -1,0 +1,11 @@
+{
+  "status": "PASS",
+  "tests": 15,
+  "seconds": 2.91,
+  "test_command": "python -X utf8 -m pytest tests/test_cvs_moment_residual_clean_analysis.py -q -ra -o addopts= -p no:cacheprovider",
+  "scope": "Synthetic complete36row/288CM/72summary/64pair fixtures;negative missing/duplicate/noninteger/wrongmetrics/RXsums/oldcontrol/summary/pairedseed/sign/targetfeedback/unselected/nonclean cases",
+  "formal_data_access": false,
+  "checkpoint_access": false,
+  "target_access": false,
+  "actual_clean_results": false
+}
