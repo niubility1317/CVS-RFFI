@@ -211,7 +211,17 @@
       "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
       "prediction_status": "PREDICTIONS_COMPLETE",
       "scoring_status": "SCORED_COMPLETE",
-      "analysis_status": "VERIFIED"
+      "analysis_status": "VERIFIED",
+      "status": "ANALYZED",
+      "runtime_evidence": {
+        "status": "PREDICTIONS_COMPLETE",
+        "variant": "native",
+        "model_seed": 2026092701,
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-clean-baselines-manysig-m16-r01/native-s2026092701/prediction",
+        "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+        "process_alive": false,
+        "final_evidence_ref": "evidence/final_readback.json"
+      }
     },
     {
       "row_id": "cvcnn-s2026092701",
@@ -249,7 +259,17 @@
       "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
       "prediction_status": "PREDICTIONS_COMPLETE",
       "scoring_status": "SCORED_COMPLETE",
-      "analysis_status": "VERIFIED"
+      "analysis_status": "VERIFIED",
+      "status": "ANALYZED",
+      "runtime_evidence": {
+        "status": "PREDICTIONS_COMPLETE",
+        "variant": "cvcnn",
+        "model_seed": 2026092701,
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-clean-baselines-manysig-m16-r01/cvcnn-s2026092701/prediction",
+        "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+        "process_alive": false,
+        "final_evidence_ref": "evidence/final_readback.json"
+      }
     },
     {
       "row_id": "real_cnn-s2026092701",
@@ -287,7 +307,17 @@
       "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
       "prediction_status": "PREDICTIONS_COMPLETE",
       "scoring_status": "SCORED_COMPLETE",
-      "analysis_status": "VERIFIED"
+      "analysis_status": "VERIFIED",
+      "status": "ANALYZED",
+      "runtime_evidence": {
+        "status": "PREDICTIONS_COMPLETE",
+        "variant": "real_cnn",
+        "model_seed": 2026092701,
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-clean-baselines-manysig-m16-r01/real_cnn-s2026092701/prediction",
+        "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+        "process_alive": false,
+        "final_evidence_ref": "evidence/final_readback.json"
+      }
     },
     {
       "row_id": "resnet1d-s2026092701",
@@ -325,7 +355,17 @@
       "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
       "prediction_status": "PREDICTIONS_COMPLETE",
       "scoring_status": "SCORED_COMPLETE",
-      "analysis_status": "VERIFIED"
+      "analysis_status": "VERIFIED",
+      "status": "ANALYZED",
+      "runtime_evidence": {
+        "status": "PREDICTIONS_COMPLETE",
+        "variant": "resnet1d",
+        "model_seed": 2026092701,
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-clean-baselines-manysig-m16-r01/resnet1d-s2026092701/prediction",
+        "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+        "process_alive": false,
+        "final_evidence_ref": "evidence/final_readback.json"
+      }
     },
     {
       "row_id": "native-s2026092702",
@@ -363,7 +403,17 @@
       "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
       "prediction_status": "PREDICTIONS_COMPLETE",
       "scoring_status": "SCORED_COMPLETE",
-      "analysis_status": "VERIFIED"
+      "analysis_status": "VERIFIED",
+      "status": "ANALYZED",
+      "runtime_evidence": {
+        "status": "PREDICTIONS_COMPLETE",
+        "variant": "native",
+        "model_seed": 2026092702,
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-clean-baselines-manysig-m16-r01/native-s2026092702/prediction",
+        "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+        "process_alive": false,
+        "final_evidence_ref": "evidence/final_readback.json"
+      }
     },
     {
       "row_id": "cvcnn-s2026092702",
@@ -401,7 +451,17 @@
       "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
       "prediction_status": "PREDICTIONS_COMPLETE",
       "scoring_status": "SCORED_COMPLETE",
-      "analysis_status": "VERIFIED"
+      "analysis_status": "VERIFIED",
+      "status": "ANALYZED",
+      "runtime_evidence": {
+        "status": "PREDICTIONS_COMPLETE",
+        "variant": "cvcnn",
+        "model_seed": 2026092702,
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-clean-baselines-manysig-m16-r01/cvcnn-s2026092702/prediction",
+        "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+        "process_alive": false,
+        "final_evidence_ref": "evidence/final_readback.json"
+      }
     },
     {
       "row_id": "real_cnn-s2026092702",
@@ -439,7 +499,17 @@
       "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
       "prediction_status": "PREDICTIONS_COMPLETE",
       "scoring_status": "SCORED_COMPLETE",
-      "analysis_status": "VERIFIED"
+      "analysis_status": "VERIFIED",
+      "status": "ANALYZED",
+      "runtime_evidence": {
+        "status": "PREDICTIONS_COMPLETE",
+        "variant": "real_cnn",
+        "model_seed": 2026092702,
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-clean-baselines-manysig-m16-r01/real_cnn-s2026092702/prediction",
+        "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+        "process_alive": false,
+        "final_evidence_ref": "evidence/final_readback.json"
+      }
     },
     {
       "row_id": "resnet1d-s2026092702",
@@ -477,7 +547,17 @@
       "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
       "prediction_status": "PREDICTIONS_COMPLETE",
       "scoring_status": "SCORED_COMPLETE",
-      "analysis_status": "VERIFIED"
+      "analysis_status": "VERIFIED",
+      "status": "ANALYZED",
+      "runtime_evidence": {
+        "status": "PREDICTIONS_COMPLETE",
+        "variant": "resnet1d",
+        "model_seed": 2026092702,
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-clean-baselines-manysig-m16-r01/resnet1d-s2026092702/prediction",
+        "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+        "process_alive": false,
+        "final_evidence_ref": "evidence/final_readback.json"
+      }
     },
     {
       "row_id": "native-s2026092703",
@@ -515,7 +595,17 @@
       "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
       "prediction_status": "PREDICTIONS_COMPLETE",
       "scoring_status": "SCORED_COMPLETE",
-      "analysis_status": "VERIFIED"
+      "analysis_status": "VERIFIED",
+      "status": "ANALYZED",
+      "runtime_evidence": {
+        "status": "PREDICTIONS_COMPLETE",
+        "variant": "native",
+        "model_seed": 2026092703,
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-clean-baselines-manysig-m16-r01/native-s2026092703/prediction",
+        "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+        "process_alive": false,
+        "final_evidence_ref": "evidence/final_readback.json"
+      }
     },
     {
       "row_id": "cvcnn-s2026092703",
@@ -553,7 +643,17 @@
       "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
       "prediction_status": "PREDICTIONS_COMPLETE",
       "scoring_status": "SCORED_COMPLETE",
-      "analysis_status": "VERIFIED"
+      "analysis_status": "VERIFIED",
+      "status": "ANALYZED",
+      "runtime_evidence": {
+        "status": "PREDICTIONS_COMPLETE",
+        "variant": "cvcnn",
+        "model_seed": 2026092703,
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-clean-baselines-manysig-m16-r01/cvcnn-s2026092703/prediction",
+        "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+        "process_alive": false,
+        "final_evidence_ref": "evidence/final_readback.json"
+      }
     },
     {
       "row_id": "real_cnn-s2026092703",
@@ -591,7 +691,17 @@
       "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
       "prediction_status": "PREDICTIONS_COMPLETE",
       "scoring_status": "SCORED_COMPLETE",
-      "analysis_status": "VERIFIED"
+      "analysis_status": "VERIFIED",
+      "status": "ANALYZED",
+      "runtime_evidence": {
+        "status": "PREDICTIONS_COMPLETE",
+        "variant": "real_cnn",
+        "model_seed": 2026092703,
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-clean-baselines-manysig-m16-r01/real_cnn-s2026092703/prediction",
+        "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+        "process_alive": false,
+        "final_evidence_ref": "evidence/final_readback.json"
+      }
     },
     {
       "row_id": "resnet1d-s2026092703",
@@ -629,7 +739,17 @@
       "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
       "prediction_status": "PREDICTIONS_COMPLETE",
       "scoring_status": "SCORED_COMPLETE",
-      "analysis_status": "VERIFIED"
+      "analysis_status": "VERIFIED",
+      "status": "ANALYZED",
+      "runtime_evidence": {
+        "status": "PREDICTIONS_COMPLETE",
+        "variant": "resnet1d",
+        "model_seed": 2026092703,
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-clean-baselines-manysig-m16-r01/resnet1d-s2026092703/prediction",
+        "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+        "process_alive": false,
+        "final_evidence_ref": "evidence/final_readback.json"
+      }
     },
     {
       "row_id": "native-s2026092704",
@@ -667,7 +787,17 @@
       "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
       "prediction_status": "PREDICTIONS_COMPLETE",
       "scoring_status": "SCORED_COMPLETE",
-      "analysis_status": "VERIFIED"
+      "analysis_status": "VERIFIED",
+      "status": "ANALYZED",
+      "runtime_evidence": {
+        "status": "PREDICTIONS_COMPLETE",
+        "variant": "native",
+        "model_seed": 2026092704,
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-clean-baselines-manysig-m16-r01/native-s2026092704/prediction",
+        "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+        "process_alive": false,
+        "final_evidence_ref": "evidence/final_readback.json"
+      }
     },
     {
       "row_id": "cvcnn-s2026092704",
@@ -705,7 +835,17 @@
       "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
       "prediction_status": "PREDICTIONS_COMPLETE",
       "scoring_status": "SCORED_COMPLETE",
-      "analysis_status": "VERIFIED"
+      "analysis_status": "VERIFIED",
+      "status": "ANALYZED",
+      "runtime_evidence": {
+        "status": "PREDICTIONS_COMPLETE",
+        "variant": "cvcnn",
+        "model_seed": 2026092704,
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-clean-baselines-manysig-m16-r01/cvcnn-s2026092704/prediction",
+        "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+        "process_alive": false,
+        "final_evidence_ref": "evidence/final_readback.json"
+      }
     },
     {
       "row_id": "real_cnn-s2026092704",
@@ -743,7 +883,17 @@
       "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
       "prediction_status": "PREDICTIONS_COMPLETE",
       "scoring_status": "SCORED_COMPLETE",
-      "analysis_status": "VERIFIED"
+      "analysis_status": "VERIFIED",
+      "status": "ANALYZED",
+      "runtime_evidence": {
+        "status": "PREDICTIONS_COMPLETE",
+        "variant": "real_cnn",
+        "model_seed": 2026092704,
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-clean-baselines-manysig-m16-r01/real_cnn-s2026092704/prediction",
+        "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+        "process_alive": false,
+        "final_evidence_ref": "evidence/final_readback.json"
+      }
     },
     {
       "row_id": "resnet1d-s2026092704",
@@ -781,7 +931,17 @@
       "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
       "prediction_status": "PREDICTIONS_COMPLETE",
       "scoring_status": "SCORED_COMPLETE",
-      "analysis_status": "VERIFIED"
+      "analysis_status": "VERIFIED",
+      "status": "ANALYZED",
+      "runtime_evidence": {
+        "status": "PREDICTIONS_COMPLETE",
+        "variant": "resnet1d",
+        "model_seed": 2026092704,
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-clean-baselines-manysig-m16-r01/resnet1d-s2026092704/prediction",
+        "reuse_from_run": "20261001-phase1-clean-baselines-manysig-m16-r01",
+        "process_alive": false,
+        "final_evidence_ref": "evidence/final_readback.json"
+      }
     },
     {
       "row_id": "residual_fusion-s2026092701",
@@ -819,7 +979,17 @@
       "reuse_from_run": "20261001-phase1-cvs-selected-clean-manysig-m20-r01",
       "prediction_status": "PREDICTIONS_COMPLETE",
       "scoring_status": "SCORED_COMPLETE",
-      "analysis_status": "VERIFIED"
+      "analysis_status": "VERIFIED",
+      "status": "ANALYZED",
+      "runtime_evidence": {
+        "status": "PREDICTIONS_COMPLETE",
+        "variant": "residual_fusion",
+        "model_seed": 2026092701,
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-selected-clean-manysig-m20-r01/residual_fusion-s2026092701/prediction",
+        "reuse_from_run": "20261001-phase1-cvs-selected-clean-manysig-m20-r01",
+        "process_alive": false,
+        "final_evidence_ref": "evidence/final_readback.json"
+      }
     },
     {
       "row_id": "residual_fusion-s2026092702",
@@ -857,7 +1027,17 @@
       "reuse_from_run": "20261001-phase1-cvs-selected-clean-manysig-m20-r01",
       "prediction_status": "PREDICTIONS_COMPLETE",
       "scoring_status": "SCORED_COMPLETE",
-      "analysis_status": "VERIFIED"
+      "analysis_status": "VERIFIED",
+      "status": "ANALYZED",
+      "runtime_evidence": {
+        "status": "PREDICTIONS_COMPLETE",
+        "variant": "residual_fusion",
+        "model_seed": 2026092702,
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-selected-clean-manysig-m20-r01/residual_fusion-s2026092702/prediction",
+        "reuse_from_run": "20261001-phase1-cvs-selected-clean-manysig-m20-r01",
+        "process_alive": false,
+        "final_evidence_ref": "evidence/final_readback.json"
+      }
     },
     {
       "row_id": "residual_fusion-s2026092703",
@@ -895,7 +1075,17 @@
       "reuse_from_run": "20261001-phase1-cvs-selected-clean-manysig-m20-r01",
       "prediction_status": "PREDICTIONS_COMPLETE",
       "scoring_status": "SCORED_COMPLETE",
-      "analysis_status": "VERIFIED"
+      "analysis_status": "VERIFIED",
+      "status": "ANALYZED",
+      "runtime_evidence": {
+        "status": "PREDICTIONS_COMPLETE",
+        "variant": "residual_fusion",
+        "model_seed": 2026092703,
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-selected-clean-manysig-m20-r01/residual_fusion-s2026092703/prediction",
+        "reuse_from_run": "20261001-phase1-cvs-selected-clean-manysig-m20-r01",
+        "process_alive": false,
+        "final_evidence_ref": "evidence/final_readback.json"
+      }
     },
     {
       "row_id": "residual_fusion-s2026092704",
@@ -933,7 +1123,17 @@
       "reuse_from_run": "20261001-phase1-cvs-selected-clean-manysig-m20-r01",
       "prediction_status": "PREDICTIONS_COMPLETE",
       "scoring_status": "SCORED_COMPLETE",
-      "analysis_status": "VERIFIED"
+      "analysis_status": "VERIFIED",
+      "status": "ANALYZED",
+      "runtime_evidence": {
+        "status": "PREDICTIONS_COMPLETE",
+        "variant": "residual_fusion",
+        "model_seed": 2026092704,
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-selected-clean-manysig-m20-r01/residual_fusion-s2026092704/prediction",
+        "reuse_from_run": "20261001-phase1-cvs-selected-clean-manysig-m20-r01",
+        "process_alive": false,
+        "final_evidence_ref": "evidence/final_readback.json"
+      }
     },
     {
       "row_id": "energy_equivariant-s2026092701",
@@ -971,7 +1171,17 @@
       "reuse_from_run": "20261002-phase1-cvs-energy-clean-manysig-m24-r01",
       "prediction_status": "PREDICTIONS_COMPLETE",
       "scoring_status": "SCORED_COMPLETE",
-      "analysis_status": "VERIFIED"
+      "analysis_status": "VERIFIED",
+      "status": "ANALYZED",
+      "runtime_evidence": {
+        "status": "PREDICTIONS_COMPLETE",
+        "variant": "energy_equivariant",
+        "model_seed": 2026092701,
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-energy-clean-manysig-m24-r01/energy_equivariant-s2026092701/prediction",
+        "reuse_from_run": "20261002-phase1-cvs-energy-clean-manysig-m24-r01",
+        "process_alive": false,
+        "final_evidence_ref": "evidence/final_readback.json"
+      }
     },
     {
       "row_id": "energy_equivariant-s2026092702",
@@ -1009,7 +1219,17 @@
       "reuse_from_run": "20261002-phase1-cvs-energy-clean-manysig-m24-r01",
       "prediction_status": "PREDICTIONS_COMPLETE",
       "scoring_status": "SCORED_COMPLETE",
-      "analysis_status": "VERIFIED"
+      "analysis_status": "VERIFIED",
+      "status": "ANALYZED",
+      "runtime_evidence": {
+        "status": "PREDICTIONS_COMPLETE",
+        "variant": "energy_equivariant",
+        "model_seed": 2026092702,
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-energy-clean-manysig-m24-r01/energy_equivariant-s2026092702/prediction",
+        "reuse_from_run": "20261002-phase1-cvs-energy-clean-manysig-m24-r01",
+        "process_alive": false,
+        "final_evidence_ref": "evidence/final_readback.json"
+      }
     },
     {
       "row_id": "energy_equivariant-s2026092703",
@@ -1047,7 +1267,17 @@
       "reuse_from_run": "20261002-phase1-cvs-energy-clean-manysig-m24-r01",
       "prediction_status": "PREDICTIONS_COMPLETE",
       "scoring_status": "SCORED_COMPLETE",
-      "analysis_status": "VERIFIED"
+      "analysis_status": "VERIFIED",
+      "status": "ANALYZED",
+      "runtime_evidence": {
+        "status": "PREDICTIONS_COMPLETE",
+        "variant": "energy_equivariant",
+        "model_seed": 2026092703,
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-energy-clean-manysig-m24-r01/energy_equivariant-s2026092703/prediction",
+        "reuse_from_run": "20261002-phase1-cvs-energy-clean-manysig-m24-r01",
+        "process_alive": false,
+        "final_evidence_ref": "evidence/final_readback.json"
+      }
     },
     {
       "row_id": "energy_equivariant-s2026092704",
@@ -1085,7 +1315,17 @@
       "reuse_from_run": "20261002-phase1-cvs-energy-clean-manysig-m24-r01",
       "prediction_status": "PREDICTIONS_COMPLETE",
       "scoring_status": "SCORED_COMPLETE",
-      "analysis_status": "VERIFIED"
+      "analysis_status": "VERIFIED",
+      "status": "ANALYZED",
+      "runtime_evidence": {
+        "status": "PREDICTIONS_COMPLETE",
+        "variant": "energy_equivariant",
+        "model_seed": 2026092704,
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-energy-clean-manysig-m24-r01/energy_equivariant-s2026092704/prediction",
+        "reuse_from_run": "20261002-phase1-cvs-energy-clean-manysig-m24-r01",
+        "process_alive": false,
+        "final_evidence_ref": "evidence/final_readback.json"
+      }
     },
     {
       "row_id": "coupled_lag4-s2026092701",
@@ -1132,7 +1372,31 @@
       ],
       "prediction_status": "PREDICTIONS_COMPLETE",
       "scoring_status": "SCORED_COMPLETE",
-      "analysis_status": "VERIFIED"
+      "analysis_status": "VERIFIED",
+      "status": "ANALYZED",
+      "runtime_evidence": {
+        "status": "PREDICTIONS_COMPLETE",
+        "variant": "coupled_lag4",
+        "model_seed": 2026092701,
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-coupled-clean-manysig-m28-r01/coupled_lag4-s2026092701/prediction",
+        "reuse_from_run": null,
+        "pid": 1677542,
+        "gpu": 0,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_clean_eval.predict",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coupled_clean_eval_20261002_r01/experiments/cvs_coupled_clean/configs/coupled_lag4-s2026092701.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-coupled-clean-manysig-m28-r01/coupled_lag4-s2026092701.log",
+        "started": 1790935435.2268243,
+        "exit_code": 0,
+        "finished": 1790935452.0445585,
+        "process_alive": false,
+        "final_evidence_ref": "evidence/final_readback.json"
+      }
     },
     {
       "row_id": "coupled_lag4-s2026092702",
@@ -1179,7 +1443,31 @@
       ],
       "prediction_status": "PREDICTIONS_COMPLETE",
       "scoring_status": "SCORED_COMPLETE",
-      "analysis_status": "VERIFIED"
+      "analysis_status": "VERIFIED",
+      "status": "ANALYZED",
+      "runtime_evidence": {
+        "status": "PREDICTIONS_COMPLETE",
+        "variant": "coupled_lag4",
+        "model_seed": 2026092702,
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-coupled-clean-manysig-m28-r01/coupled_lag4-s2026092702/prediction",
+        "reuse_from_run": null,
+        "pid": 1677624,
+        "gpu": 1,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_clean_eval.predict",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coupled_clean_eval_20261002_r01/experiments/cvs_coupled_clean/configs/coupled_lag4-s2026092702.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-coupled-clean-manysig-m28-r01/coupled_lag4-s2026092702.log",
+        "started": 1790935437.503439,
+        "exit_code": 0,
+        "finished": 1790935454.0482025,
+        "process_alive": false,
+        "final_evidence_ref": "evidence/final_readback.json"
+      }
     },
     {
       "row_id": "coupled_lag4-s2026092703",
@@ -1226,7 +1514,31 @@
       ],
       "prediction_status": "PREDICTIONS_COMPLETE",
       "scoring_status": "SCORED_COMPLETE",
-      "analysis_status": "VERIFIED"
+      "analysis_status": "VERIFIED",
+      "status": "ANALYZED",
+      "runtime_evidence": {
+        "status": "PREDICTIONS_COMPLETE",
+        "variant": "coupled_lag4",
+        "model_seed": 2026092703,
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-coupled-clean-manysig-m28-r01/coupled_lag4-s2026092703/prediction",
+        "reuse_from_run": null,
+        "pid": 1677704,
+        "gpu": 2,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_clean_eval.predict",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coupled_clean_eval_20261002_r01/experiments/cvs_coupled_clean/configs/coupled_lag4-s2026092703.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-coupled-clean-manysig-m28-r01/coupled_lag4-s2026092703.log",
+        "started": 1790935439.784413,
+        "exit_code": 0,
+        "finished": 1790935456.0513926,
+        "process_alive": false,
+        "final_evidence_ref": "evidence/final_readback.json"
+      }
     },
     {
       "row_id": "coupled_lag4-s2026092704",
@@ -1273,7 +1585,31 @@
       ],
       "prediction_status": "PREDICTIONS_COMPLETE",
       "scoring_status": "SCORED_COMPLETE",
-      "analysis_status": "VERIFIED"
+      "analysis_status": "VERIFIED",
+      "status": "ANALYZED",
+      "runtime_evidence": {
+        "status": "PREDICTIONS_COMPLETE",
+        "variant": "coupled_lag4",
+        "model_seed": 2026092704,
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-coupled-clean-manysig-m28-r01/coupled_lag4-s2026092704/prediction",
+        "reuse_from_run": null,
+        "pid": 1677784,
+        "gpu": 3,
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_clean_eval.predict",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_coupled_clean_eval_20261002_r01/experiments/cvs_coupled_clean/configs/coupled_lag4-s2026092704.json"
+        ],
+        "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-coupled-clean-manysig-m28-r01/coupled_lag4-s2026092704.log",
+        "started": 1790935442.0339565,
+        "exit_code": 0,
+        "finished": 1790935460.0570767,
+        "process_alive": false,
+        "final_evidence_ref": "evidence/final_readback.json"
+      }
     }
   ],
   "notes": [
@@ -1284,7 +1620,7 @@
     "Freeze numerical_policy from actual source payload;prediction disablescuDNNTF32 before model forward and records actualflags;not a rerun of previous target predictions"
   ],
   "registered_at": "2026-10-02T09:52:30+00:00",
-  "status": "PLANNED",
+  "status": "ANALYZED",
   "results": {
     "scoring_status": "VERIFIED_COMPLETE",
     "clean_rows": 28,

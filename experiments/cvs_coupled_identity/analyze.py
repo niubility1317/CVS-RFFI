@@ -85,7 +85,7 @@ def analyze(root):
     text+='\n四 seed mean(0.5V+0.5最差源RX)最高优先；完全并列后才比较V、最差RX和成本。物理误差不参与选模，最佳轮只作诊断，所有选模使用E200。\n\n| 模型 | seed | E200 V（%） | E200 最差RX（%） | 末轮CE | 最佳V（%） | 最佳轮（未选） |\n|---|---:|---:|---:|---:|---:|---:|\n'
     for a in final:text+=f"| {a['variant']} | {a['seed']} | {100*a['V']:.4f} | {100*a['worst_RX']:.4f} | {a['CE']:.6f} | {100*a['best_V']:.4f} | {a['best_epoch']} |\n"
     text+='\n![完整源曲线](evidence/source_curves.png)\n\n四seed样本SD阴影覆盖全部200轮。[2400条曲线](evidence/source_curves.csv)、[1600轮同步测量](evidence/source_energy_by_epoch.csv)、[全部720个源单元](evidence/source_all720_cells.csv)、[同seed源差分](evidence/source_paired_control.csv)。源RX是源验证，不称未知RX测试。\n\n'
-    text+='## 因果包络输入的实际执行\n\n输入仍12项：z[n-m]((P[n-m]+P[n-m-lag])/8)^q，m0至3/q0至2。lag1或4使用因果补零，三阶项含滞后功率，五阶项含两时刻功率乘积。保留原四段位置功率读出、网络深宽和202553参数，同seed初始state与energy控制一致。新增的是lift线性空间中的交互，不证明旧全网无法近似它们。共同常相位不改变功率，新基函数保持charge1；不宣称任意received CFO或RX不变。\n\n'
+    text+='## 因果包络输入的实际执行\n\n输入仍12项：`z[n-m]((P[n-m]+P[n-m-lag])/8)^q`，m0至3/q0至2。lag1或4使用因果补零，三阶项含滞后功率，五阶项含两时刻功率乘积。保留原四段位置功率读出、网络深宽和202553参数，同seed初始state与energy控制一致。新增的是lift线性空间中的交互，不证明旧全网无法近似它们。共同常相位不改变功率，新基函数保持charge1；不宣称任意received CFO或RX不变。\n\n'
     text+=f"全部1600轮源末batch和8个冻结公共输入均测量实际behavior.0.conv输入，共{len(inputs)}+{len(public_inputs)}条；三阶/五阶相对变化的分母是原aligned项L2范数clamp至1e-12。它是输入变化，不是恢复TX器件参数，也不参与候选排序。\n\n|模型|seed|实际lag|复数项数|公式最大误差|三阶相对变化均值|五阶相对变化均值|\n|---|---:|---:|---:|---:|---:|---:|\n"
     for a in inputs:
         if a['epoch']==200:text+=f"|{a['variant']}|{a['seed']}|{a['actual_envelope_lag']}|{a['complex_terms']}|{a['input_formula_max_abs_error']:.6g}|{a['degree3_relative_input_change_mean']:.6g}|{a['degree5_relative_input_change_mean']:.6g}|\n"

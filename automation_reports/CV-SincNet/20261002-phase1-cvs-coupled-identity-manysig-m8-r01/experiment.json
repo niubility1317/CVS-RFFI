@@ -184,7 +184,7 @@
         "source_physical_diagnostics.json"
       ],
       "runtime_evidence": {
-        "status": "RUNNING",
+        "status": "SOURCE_TRAINED",
         "variant": "coupled_lag1",
         "model_seed": 2026092701,
         "pid": 1654826,
@@ -199,7 +199,11 @@
         ],
         "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-coupled-identity-manysig-m8-r01/coupled_lag1-s2026092701.log",
         "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-coupled-identity-manysig-m8-r01/coupled_lag1-s2026092701/source",
-        "started": 1790933156.514549
+        "started": 1790933156.514549,
+        "exit_code": 0,
+        "finished": 1790934549.534513,
+        "process_alive": false,
+        "final_evidence_ref": "evidence/final_source_readback.json"
       },
       "final_source_metrics": {
         "source_val_count": 27000,
@@ -217,7 +221,8 @@
       "completed_epoch": 200,
       "completed_steps": 10000,
       "source_completion_ref": "evidence/final_source_readback.json",
-      "test_status": "N/A_NOT_SOURCE_SELECTED"
+      "test_status": "N/A_NOT_SOURCE_SELECTED",
+      "status": "ANALYZED"
     },
     {
       "row_id": "coupled_lag4-s2026092701",
@@ -261,7 +266,7 @@
         "source_physical_diagnostics.json"
       ],
       "runtime_evidence": {
-        "status": "RUNNING",
+        "status": "SOURCE_TRAINED",
         "variant": "coupled_lag4",
         "model_seed": 2026092701,
         "pid": 1654911,
@@ -276,7 +281,11 @@
         ],
         "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-coupled-identity-manysig-m8-r01/coupled_lag4-s2026092701.log",
         "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-coupled-identity-manysig-m8-r01/coupled_lag4-s2026092701/source",
-        "started": 1790933161.760266
+        "started": 1790933161.760266,
+        "exit_code": 0,
+        "finished": 1790934574.5608816,
+        "process_alive": false,
+        "final_evidence_ref": "evidence/final_source_readback.json"
       },
       "final_source_metrics": {
         "source_val_count": 27000,
@@ -294,7 +303,8 @@
       "completed_epoch": 200,
       "completed_steps": 10000,
       "source_completion_ref": "evidence/final_source_readback.json",
-      "test_status": "VERIFIED_ANALYZED"
+      "test_status": "VERIFIED_ANALYZED",
+      "status": "ANALYZED"
     },
     {
       "row_id": "coupled_lag1-s2026092702",
@@ -338,7 +348,7 @@
         "source_physical_diagnostics.json"
       ],
       "runtime_evidence": {
-        "status": "RUNNING",
+        "status": "SOURCE_TRAINED",
         "variant": "coupled_lag1",
         "model_seed": 2026092702,
         "pid": 1655002,
@@ -353,7 +363,11 @@
         ],
         "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-coupled-identity-manysig-m8-r01/coupled_lag1-s2026092702.log",
         "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-coupled-identity-manysig-m8-r01/coupled_lag1-s2026092702/source",
-        "started": 1790933167.001964
+        "started": 1790933167.001964,
+        "exit_code": 0,
+        "finished": 1790934584.572923,
+        "process_alive": false,
+        "final_evidence_ref": "evidence/final_source_readback.json"
       },
       "final_source_metrics": {
         "source_val_count": 27000,
@@ -371,7 +385,8 @@
       "completed_epoch": 200,
       "completed_steps": 10000,
       "source_completion_ref": "evidence/final_source_readback.json",
-      "test_status": "N/A_NOT_SOURCE_SELECTED"
+      "test_status": "N/A_NOT_SOURCE_SELECTED",
+      "status": "ANALYZED"
     },
     {
       "row_id": "coupled_lag4-s2026092702",
@@ -415,7 +430,7 @@
         "source_physical_diagnostics.json"
       ],
       "runtime_evidence": {
-        "status": "RUNNING",
+        "status": "SOURCE_TRAINED",
         "variant": "coupled_lag4",
         "model_seed": 2026092702,
         "pid": 1655087,
@@ -430,7 +445,11 @@
         ],
         "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-coupled-identity-manysig-m8-r01/coupled_lag4-s2026092702.log",
         "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-coupled-identity-manysig-m8-r01/coupled_lag4-s2026092702/source",
-        "started": 1790933172.245595
+        "started": 1790933172.245595,
+        "exit_code": 0,
+        "finished": 1790934579.5664375,
+        "process_alive": false,
+        "final_evidence_ref": "evidence/final_source_readback.json"
       },
       "final_source_metrics": {
         "source_val_count": 27000,
@@ -448,7 +467,8 @@
       "completed_epoch": 200,
       "completed_steps": 10000,
       "source_completion_ref": "evidence/final_source_readback.json",
-      "test_status": "VERIFIED_ANALYZED"
+      "test_status": "VERIFIED_ANALYZED",
+      "status": "ANALYZED"
     },
     {
       "row_id": "coupled_lag1-s2026092703",
@@ -492,7 +512,7 @@
         "source_physical_diagnostics.json"
       ],
       "runtime_evidence": {
-        "status": "RUNNING",
+        "status": "SOURCE_TRAINED",
         "variant": "coupled_lag1",
         "model_seed": 2026092703,
         "pid": 1655237,
@@ -507,7 +527,11 @@
         ],
         "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-coupled-identity-manysig-m8-r01/coupled_lag1-s2026092703.log",
         "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-coupled-identity-manysig-m8-r01/coupled_lag1-s2026092703/source",
-        "started": 1790933177.4846973
+        "started": 1790933177.4846973,
+        "exit_code": 0,
+        "finished": 1790934594.5838552,
+        "process_alive": false,
+        "final_evidence_ref": "evidence/final_source_readback.json"
       },
       "final_source_metrics": {
         "source_val_count": 27000,
@@ -525,7 +549,8 @@
       "completed_epoch": 200,
       "completed_steps": 10000,
       "source_completion_ref": "evidence/final_source_readback.json",
-      "test_status": "N/A_NOT_SOURCE_SELECTED"
+      "test_status": "N/A_NOT_SOURCE_SELECTED",
+      "status": "ANALYZED"
     },
     {
       "row_id": "coupled_lag4-s2026092703",
@@ -569,7 +594,7 @@
         "source_physical_diagnostics.json"
       ],
       "runtime_evidence": {
-        "status": "RUNNING",
+        "status": "SOURCE_TRAINED",
         "variant": "coupled_lag4",
         "model_seed": 2026092703,
         "pid": 1655322,
@@ -584,7 +609,11 @@
         ],
         "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-coupled-identity-manysig-m8-r01/coupled_lag4-s2026092703.log",
         "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-coupled-identity-manysig-m8-r01/coupled_lag4-s2026092703/source",
-        "started": 1790933182.7192996
+        "started": 1790933182.7192996,
+        "exit_code": 0,
+        "finished": 1790934604.5954673,
+        "process_alive": false,
+        "final_evidence_ref": "evidence/final_source_readback.json"
       },
       "final_source_metrics": {
         "source_val_count": 27000,
@@ -602,7 +631,8 @@
       "completed_epoch": 200,
       "completed_steps": 10000,
       "source_completion_ref": "evidence/final_source_readback.json",
-      "test_status": "VERIFIED_ANALYZED"
+      "test_status": "VERIFIED_ANALYZED",
+      "status": "ANALYZED"
     },
     {
       "row_id": "coupled_lag1-s2026092704",
@@ -646,7 +676,7 @@
         "source_physical_diagnostics.json"
       ],
       "runtime_evidence": {
-        "status": "RUNNING",
+        "status": "SOURCE_TRAINED",
         "variant": "coupled_lag1",
         "model_seed": 2026092704,
         "pid": 1655413,
@@ -661,7 +691,11 @@
         ],
         "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-coupled-identity-manysig-m8-r01/coupled_lag1-s2026092704.log",
         "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-coupled-identity-manysig-m8-r01/coupled_lag1-s2026092704/source",
-        "started": 1790933187.94685
+        "started": 1790933187.94685,
+        "exit_code": 0,
+        "finished": 1790934604.5967975,
+        "process_alive": false,
+        "final_evidence_ref": "evidence/final_source_readback.json"
       },
       "final_source_metrics": {
         "source_val_count": 27000,
@@ -679,7 +713,8 @@
       "completed_epoch": 200,
       "completed_steps": 10000,
       "source_completion_ref": "evidence/final_source_readback.json",
-      "test_status": "N/A_NOT_SOURCE_SELECTED"
+      "test_status": "N/A_NOT_SOURCE_SELECTED",
+      "status": "ANALYZED"
     },
     {
       "row_id": "coupled_lag4-s2026092704",
@@ -723,7 +758,7 @@
         "source_physical_diagnostics.json"
       ],
       "runtime_evidence": {
-        "status": "RUNNING",
+        "status": "SOURCE_TRAINED",
         "variant": "coupled_lag4",
         "model_seed": 2026092704,
         "pid": 1655501,
@@ -738,7 +773,11 @@
         ],
         "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-coupled-identity-manysig-m8-r01/coupled_lag4-s2026092704.log",
         "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-coupled-identity-manysig-m8-r01/coupled_lag4-s2026092704/source",
-        "started": 1790933193.1746845
+        "started": 1790933193.1746845,
+        "exit_code": 0,
+        "finished": 1790934649.6436756,
+        "process_alive": false,
+        "final_evidence_ref": "evidence/final_source_readback.json"
       },
       "final_source_metrics": {
         "source_val_count": 27000,
@@ -756,7 +795,8 @@
       "completed_epoch": 200,
       "completed_steps": 10000,
       "source_completion_ref": "evidence/final_source_readback.json",
-      "test_status": "VERIFIED_ANALYZED"
+      "test_status": "VERIFIED_ANALYZED",
+      "status": "ANALYZED"
     }
   ],
   "notes": [
@@ -773,7 +813,7 @@
     "Ifnewselected freeze4newclean+24oldcontrols=28truthlastrows;sourcecontrolwinner retains original verifiedtest, no newquery;unselectedN/A. No targetfeedback/selectivererun/LEO/SFT/newclasses."
   ],
   "registered_at": "2026-10-02T09:24:48+00:00",
-  "status": "PLANNED",
+  "status": "ANALYZED",
   "source_controls": [
     {
       "variant": "energy_equivariant",
