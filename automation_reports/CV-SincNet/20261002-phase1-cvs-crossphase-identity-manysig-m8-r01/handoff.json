@@ -1,0 +1,21 @@
+{
+  "status": "PLANNED",
+  "run_id": "20261002-phase1-cvs-crossphase-identity-manysig-m8-r01",
+  "release": "cvs_crossphase_identity_20261002_r01",
+  "goal_scope": "original pureCE/noaugmentation/identityonly/cleanonly;mathcommunicationphysicsRFF structure optimization;performance first",
+  "previous_goal_turn": "Sixscene frozen test delivery changed authoritative evaluation state but did not establish original noaugmentation architecture goal;active goal resumed",
+  "launch_owner": "codex/root/cvs-crossphase-identity-20261002",
+  "next": [
+    "Commit and independently verify upstream",
+    "Publish once and read actual processes",
+    "Complete sourceE200/freeze; only new selected candidate receives4clean predictions; retain other24fixedcontrols",
+    "Independent truth-last score and fullreport/Git"
+  ],
+  "missing": [
+    "Source training",
+    "Frozen source selection",
+    "Conditional clean tests",
+    "Final performance verification"
+  ],
+  "goal_achieved": false
+}

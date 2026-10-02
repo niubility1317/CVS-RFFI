@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "initial_focused_suite": 57,
+  "source_protocol_after_collector_fix": 17,
+  "checks_scope": "Readout invariance/information counterexample/strict state/equalparameter/CE allgradients/degenerateinputs;physicalcascade;sourceguards;200epoch10000step logaudit;fixed source ranking;verified collector Python route",
+  "independent_source_review": "PASS after targeted collector P1 repair review",
+  "independent_release_review": "all other runtime checks PASS;shared collector P1 resolved",
+  "local_cpu_smoke_models": 8,
+  "formal_data_access": false,
+  "target_access": false,
+  "checkpoint_access": false
+}
