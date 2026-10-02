@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "tests": 65,
+  "python": "C:\\Users\\lh594\\.conda\\envs\\ssr-gpu\\python.exe",
+  "torch": "2.10.0+cu128",
+  "scope": "Exact packet algebra/rawIQ/reconstruction/phase/affine-delay covariance/degenerate input/batch independence/CE allgrad/state; actual sourceconfigs/12ranking/budget/permissions;fullE200 logs plus corrupt Gram/energy/eligibility/packet evidence; public30cascade and remote script/runtime dependency checks",
+  "test_command": "python -X utf8 -m pytest tests/test_cvs_orthopoly_identity.py tests/test_cvs_orthopoly_source_protocol.py tests/test_cvs_orthopoly_log_audit.py tests/test_cvs_orthopoly_physics.py -q -ra -o addopts= -p no:cacheprovider",
+  "public_disposable_models": 8,
+  "public_ce_updates": 24,
+  "independent_review": "PASS",
+  "formal_data_access": false,
+  "target_access": false
+}

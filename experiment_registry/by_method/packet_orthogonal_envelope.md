@@ -1,4 +1,4 @@
-# fixed_parameter_budget实验与历史证据
+# packet_orthogonal_envelope实验与历史证据
 
 [返回总索引](../README.md)
 
@@ -6,6 +6,4 @@
 
 |名称|记录类型|证据入口|
 |---|---|---|
-|CVS 因果包络耦合：完整源实验报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-coupled-identity-manysig-m8-r01/report.md)|
 |CVS 包内正交包络输入：原 IQ 保留，瞬时/记忆4×四seed纯CE|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-orthopoly-identity-manysig-m8-r01/report.md)|
-|CVS 复数Volterra延迟相位记忆：完整源实验报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-volterra-identity-manysig-m8-r01/report.md)|

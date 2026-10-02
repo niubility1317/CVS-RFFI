@@ -1,0 +1,17 @@
+{
+  "status": "VERIFIED",
+  "scope": "Eight public disposable models, fixed30synthetic packets/four delay/order blocks per model; not formal source accuracy",
+  "models": 8,
+  "updates": 24,
+  "parameters": 202553,
+  "control_parameters": 202555,
+  "raw_order1_max_abs_error": 0.0,
+  "reconstruction_max_abs_error": 5.960464477539063e-08,
+  "original_gram_offdiag_mean_min": 0.9458553837174046,
+  "original_gram_offdiag_mean_max": 0.9499672402029593,
+  "orthogonal_gram_offdiag_max": 1.0223101082843398e-06,
+  "delay_order_records": 32,
+  "constant_phase_max_logit_error": 1.7642974853515625e-05,
+  "goal_achieved": false,
+  "accuracy": "N/A: public settings are not actual source TX labels"
+}
