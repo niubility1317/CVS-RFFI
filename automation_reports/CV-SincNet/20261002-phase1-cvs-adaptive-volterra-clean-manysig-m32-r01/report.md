@@ -79,3 +79,5 @@
 仅原划分、四model seed、CE唯一、无增强、身份骨干、clean闭集代理基准；历史已暴露，不能称新盲测。不声明LEO、未知类、新类注册或部署适应。D92三阶段与K×新增类指标为N/A。目标结果不回流结构、超参数、选模、重排或选择性重跑。
 
 [全256条评分与混淆矩阵](evidence/clean_scored_results.json) · [评分CSV](evidence/clean_scored_results.csv) · [全模型TX表](evidence/per_transmitter_summary.csv) · [分析复算](evidence/analysis_validation.json) · [资源JSON](evidence/resource_summary.json) · [最终独立读回](evidence/final_readback.json)。状态ANALYZED；实际commit/PID/输出见独立读回，Git最终交付另行读回确认。
+
+报告与完整分析Git交付已独立核实：报告提交 `22a938bb3229d68560418df4a073c9b8ca25a743` 与远端分支OID一致。[交付证据](delivery.json)。完整性能/RFF目标仍未完成。
