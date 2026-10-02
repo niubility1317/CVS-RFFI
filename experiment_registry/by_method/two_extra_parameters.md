@@ -7,4 +7,4 @@
 |名称|记录类型|证据入口|
 |---|---|---|
 |CVS 可学习相位记忆残差：完整源实验报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-adaptive-volterra-identity-manysig-m8-r01/report.md)|
-|CVS 可学习矩残差：保留相位记忆控制，瞬时/记忆4×四seed纯CE|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-moment-residual-identity-manysig-m8-r01/report.md)|
+|CVS可学习包内矩残差：源实验预登记|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-moment-residual-identity-manysig-m8-r01/report.md)|

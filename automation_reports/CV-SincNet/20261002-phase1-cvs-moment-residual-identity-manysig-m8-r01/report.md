@@ -1,6 +1,6 @@
 # CVS可学习包内矩残差：源实验预登记
 
-状态LOCAL_VERIFIED／未发布。瞬时与记忆4两种固定矩定义各4seed，共8行。沿用adaptive_lag4相位记忆输入，加入两个零初始化全局tanh系数，由源交叉熵学习三阶、五阶包内矩残差。202557参数，比控制增加2；原通道、深宽、读出、物理划分、scratch E200×50、CE唯一、无增强、身份骨干、FP32不变。当前控制仅读取4份adaptive源元数据，不继承权重或使用目标分数。
+状态RUNNING／发布 VERIFIED。瞬时与记忆4两种固定矩定义各4seed，共8行。沿用adaptive_lag4相位记忆输入，加入两个零初始化全局tanh系数，由源交叉熵学习三阶、五阶包内矩残差。202557参数，比控制增加2；原通道、深宽、读出、物理划分、scratch E200×50、CE唯一、无增强、身份骨干、FP32不变。当前控制仅读取4份adaptive源元数据，不继承权重或使用目标分数。
 
 [数学、通信、物理及RFF设计](../../../docs/CVS_LEARNED_MOMENT_RESIDUAL_20261002.md)。66项聚焦检查及8个公共模型24次CE更新通过。保留原参照和初始函数，使非零新系数能够改变网络；是否改善源性能和独立clean性能尚待验证。包内矩不是TX硬件系数，不宣称完整混合输入正交、CFO/RX/LTI不变或实测在轨验证。
 
@@ -11,3 +11,7 @@
 [本地检查](evidence/local_validation.json) · [公共运行](evidence/local_cpu_smoke.json) · [公共汇总](evidence/public_probe_summary.json)。尚无正式训练或新测试成绩，总体目标未完成。
 
 发布前独立P0/P1审查 PASS，无阻断项。实际源 preflight 核实4份控制的完整角色、来源、预算与FP32，确认用户/主机、8张GPU空闲、磁盘容量和新输出无碰撞。条件clean路径与既有兼容路径62项合成fixture检查通过，尚未创建正式clean配置或访问目标。[审查](evidence/independent_review.json) · [preflight](evidence/preflight.json) · [条件clean检查](evidence/conditional_clean_validation.json)。
+
+正式发布与运行 VERIFIED：release `a31fd318996be20f030aeccd7ed6ed614ce7048d`，dispatcher PID 1808300；独立读回8个worker真实PID/CWD/argv/GPU、实际202557参数/完整FP32/alpha0/CE唯一/全参数梯度与28包输入测量，进度E25至E30。远端8公共模型24次CE smoke PASS。完整E200源冻结及条件clean尚未完成，不称识别性能提升。[启动读回](evidence/launch_readback.json)。
+
+本地完整源分析入口已实现；8份实际源遥测的四系数及四delay矩CSV转换核对通过，尚不是完整E200分析。正式源训练release保持不变。[分析入口](../../../experiments/cvs_moment_residual_identity/analyze.py) · [schema核对](evidence/analysis_schema_validation.json)。
