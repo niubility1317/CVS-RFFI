@@ -1,0 +1,35 @@
+{
+  "status": "LOCAL_PROTOTYPE_VERIFIED",
+  "tests": 14,
+  "python": "C:\\Users\\lh594\\.conda\\envs\\ssr-gpu\\python.exe",
+  "torch_version": "2.10.0+cu128",
+  "method": "fractional received-frequency correction before equivariant_memory",
+  "formal_training": false,
+  "source_IQ_access": false,
+  "target_access": false,
+  "checkpoint_access": false,
+  "performance_claim": false,
+  "goal_achieved": false,
+  "variants": {
+    "fractional_half": {
+      "parameters": 202553,
+      "new_trainable_parameters": 0,
+      "initial_alpha": 0.5
+    },
+    "fractional_learned": {
+      "parameters": 202554,
+      "new_trainable_parameters": 1,
+      "initial_alpha": 0.5
+    }
+  },
+  "verification": [
+    "same exact initial core output",
+    "sample amplitude preservation and reconstruction",
+    "residual frequency covariance without branch crossing",
+    "whole constant-phase property",
+    "zero/weak/cancelled/random finite CE and all-parameter gradients",
+    "nonzero scalar CE gradient",
+    "strict synthetic state roundtrip"
+  ],
+  "scientific_scope": "alpha discrimination tradeoff only;not identified TX/RX fraction, arbitraryRX/LTI invariance or test improvement"
+}

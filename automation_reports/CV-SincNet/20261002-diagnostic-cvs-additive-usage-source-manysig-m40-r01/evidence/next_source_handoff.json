@@ -167,6 +167,13 @@
     "goal_achieved": false
   },
   "target_scores_included": false,
-  "next_action": "Use source-only mode effects and original source geometry to design next physics-grounded CE architecture;no target scores, same split, scratch, performancefirst selection/defaultselectedclean",
-  "goal_achieved": false
+  "next_action": "Prepare/register 2fractional-equvariant candidates x4seeds source-only scratch E200x50, originalroles/CE/noaug/fullFP32/source12performance ranking/defaultselectedclean;do not use target results",
+  "goal_achieved": false,
+  "next_prototype": {
+    "module": "experiments.cvs_fractional_identity.model",
+    "design": "docs/CVS_FRACTIONAL_IDENTITY_HYPOTHESIS_20261002.md",
+    "validation": "fractional_prototype_validation.json",
+    "status": "LOCAL_PROTOTYPE_ONLY",
+    "formal_training": false
+  }
 }

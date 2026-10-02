@@ -8,8 +8,44 @@
   "target_access": false,
   "process_absent": true,
   "next_steps": [
-    "Preserve all40 source-only negative results;no new target evaluation for this diagnostic",
-    "Use frozen additive source-only mode effects to interpret actual information usage;no target feedback",
-    "New formal candidates must train from scratch;freeze source-only performance selection before selected-only independent clean testing"
-  ]
+    "Source and40rowadditive diagnostic complete;all actualprocesses absent;no resubmit",
+    "New fractional prototype local14PASS only;no formalweights/data/test evidence",
+    "Prepare newsource matrix and preregistration, then proportionalchecks/requiredindependentP0P1;immutablelocalGitbefore remote launch",
+    "Use next_source_handoff only (no target scores);samecontract scratch/E200/CE/noaug/performancefirst;sourcefreeze then defaultselectedclean"
+  ],
+  "next_prototype": {
+    "status": "LOCAL_PROTOTYPE_VERIFIED",
+    "tests": 14,
+    "python": "C:\\Users\\lh594\\.conda\\envs\\ssr-gpu\\python.exe",
+    "torch_version": "2.10.0+cu128",
+    "method": "fractional received-frequency correction before equivariant_memory",
+    "formal_training": false,
+    "source_IQ_access": false,
+    "target_access": false,
+    "checkpoint_access": false,
+    "performance_claim": false,
+    "goal_achieved": false,
+    "variants": {
+      "fractional_half": {
+        "parameters": 202553,
+        "new_trainable_parameters": 0,
+        "initial_alpha": 0.5
+      },
+      "fractional_learned": {
+        "parameters": 202554,
+        "new_trainable_parameters": 1,
+        "initial_alpha": 0.5
+      }
+    },
+    "verification": [
+      "same exact initial core output",
+      "sample amplitude preservation and reconstruction",
+      "residual frequency covariance without branch crossing",
+      "whole constant-phase property",
+      "zero/weak/cancelled/random finite CE and all-parameter gradients",
+      "nonzero scalar CE gradient",
+      "strict synthetic state roundtrip"
+    ],
+    "scientific_scope": "alpha discrimination tradeoff only;not identified TX/RX fraction, arbitraryRX/LTI invariance or test improvement"
+  }
 }

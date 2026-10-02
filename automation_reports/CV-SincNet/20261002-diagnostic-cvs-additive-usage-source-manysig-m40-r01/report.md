@@ -26,3 +26,7 @@
 本次明确source-only诊断，不产生新clean预测/评分；不追加LEO、support、SFT、新类或D92三阶段。全部负结果保留，目标反馈禁令不变。
 
 [40行结果](evidence/all40_rows.csv) · [3600源单元](evidence/all3600_source_cells.csv) · [全部源RX效应](evidence/all50_source_RX_effects.csv) · [独立核对](evidence/analysis_validation.json) · [实际远端读回](evidence/final_readback.json)。
+
+## 下一步结构原型
+
+40行源消融证明加性模型更多地利用坐标，但尚不足以超过原残差源分数。已形成波形层分数频偏校正原型：固定半校正与全类别共享一标量学习α，在现有等变核心前以exp(−jαωn)作用于全部波形；不增加层宽/深度/头或特征conditioner。14项本地数学/梯度/状态检查通过，原型没有正式训练、数据访问或测试收益。α不是TX/RX晶振占比估计，也不宣称整网频偏/任意RX不变。后续仍需新预登记、scratch和独立测试证明。[前瞻设计](../../../docs/CVS_FRACTIONAL_IDENTITY_HYPOTHESIS_20261002.md) · [本地检查](evidence/fractional_prototype_validation.json)。
