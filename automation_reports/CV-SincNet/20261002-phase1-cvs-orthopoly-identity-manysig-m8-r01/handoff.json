@@ -1,5 +1,5 @@
 {
-  "status": "LOCAL_VERIFIED",
+  "status": "RUNNING",
   "run_id": "20261002-phase1-cvs-orthopoly-identity-manysig-m8-r01",
   "release": "cvs_orthopoly_identity_20261002_r01",
   "goal_scope": "CE only/noaugmentation/identity only/scratch/unchanged split/clean only; mathematical communication physics RFF structure; performance first",
@@ -8,15 +8,69 @@
   "goal_achieved": false,
   "target_feedback": false,
   "next": [
-    "One independent actual source P0/P1 review and source-only preflight",
-    "Mirror and Git commit/push/OID then immutable publish source8 once",
-    "Verify actual processes/epochs/GPU/contracts; fullE200 collection and fixed sourcefreeze",
-    "If new selected frozen4clean+32controls/truthlast/report/Git; else retain baseline without newquery"
+    "Read back same8 healthy processes without restart/hotpatch",
+    "Full E200 collect then analyze source2400curves/6400input/720cells and fixed12ranking",
+    "Only if newselected prepare reviewed frozen4clean+32controls=36truthlast rows;else retainedcontroltest/N/A unselected",
+    "Report full results and resources; Git mirror/push/OID"
   ],
   "missing": [
-    "Actual source execution",
-    "Full fixed source ranking/freeze",
+    "Full E200 fixed source selection",
     "Conditional clean completion",
     "Performance improvement and full RFF objective proof"
-  ]
+  ],
+  "release_commit": "541889b1ec5982773d20f17315d0e0d6300ecee1",
+  "dispatcher_pid": 1765080,
+  "live_readback_at": 1790944732.6876428,
+  "launch_evidence": "evidence/launch_readback.json",
+  "rows": [
+    {
+      "row_id": "orthopoly_instant-s2026092701",
+      "pid": 1765096,
+      "gpu": 0,
+      "verified_epoch": 37
+    },
+    {
+      "row_id": "orthopoly_memory4-s2026092701",
+      "pid": 1765183,
+      "gpu": 1,
+      "verified_epoch": 36
+    },
+    {
+      "row_id": "orthopoly_instant-s2026092702",
+      "pid": 1765274,
+      "gpu": 2,
+      "verified_epoch": 34
+    },
+    {
+      "row_id": "orthopoly_memory4-s2026092702",
+      "pid": 1765361,
+      "gpu": 3,
+      "verified_epoch": 34
+    },
+    {
+      "row_id": "orthopoly_instant-s2026092703",
+      "pid": 1765450,
+      "gpu": 4,
+      "verified_epoch": 33
+    },
+    {
+      "row_id": "orthopoly_memory4-s2026092703",
+      "pid": 1765537,
+      "gpu": 5,
+      "verified_epoch": 33
+    },
+    {
+      "row_id": "orthopoly_instant-s2026092704",
+      "pid": 1765628,
+      "gpu": 6,
+      "verified_epoch": 32
+    },
+    {
+      "row_id": "orthopoly_memory4-s2026092704",
+      "pid": 1765716,
+      "gpu": 7,
+      "verified_epoch": 30
+    }
+  ],
+  "progress_evidence": "evidence/progress_readback.json"
 }

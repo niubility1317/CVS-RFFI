@@ -11,3 +11,5 @@
 [本地验证](evidence/local_validation.json) · [公共运行](evidence/local_cpu_smoke.json) · [公共汇总](evidence/public_probe_summary.json)。当前没有正式源训练或新clean成绩，目标未达到。
 
 发布前独立P0/P1审查 PASS，无阻断项。源侧 preflight 核实实际四份源控制完整角色/来源/预算/FP32、身份、GPU容量、磁盘及无新输出碰撞。[审查](evidence/independent_review.json) · [preflight](evidence/preflight.json)。
+
+正式发布与运行 VERIFIED：release `541889b1ec5982773d20f17315d0e0d6300ecee1`，dispatcher PID 1765080；独立读回8个worker真实PID/CWD/argv/GPU、实际202553参数/完整FP32/alpha0/CE唯一/全参数梯度与28包输入测量，进度E14至E20。远端8公共模型24次CE smoke PASS。完整E200源冻结及条件clean尚未完成，不称识别性能提升。[启动读回](evidence/launch_readback.json)。
