@@ -1,0 +1,58 @@
+{
+  "read_at": 1790907844.1607857,
+  "user": "szu2070436088",
+  "host": "dell-DSS8440",
+  "disk_free_bytes": 6257853190144,
+  "gpu": "0, 24124 MiB\n1, 24124 MiB\n2, 24124 MiB\n3, 24124 MiB\n4, 24124 MiB\n5, 24124 MiB\n6, 24124 MiB\n7, 24124 MiB\n",
+  "apps": "",
+  "output_exists": {
+    "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_additive_identity_20261002_r01": false,
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-additive-identity-manysig-m8-r01": false,
+    "/home/szu2070436088/2510044040/CV-SincNet/logs/20261002-phase1-cvs-additive-identity-manysig-m8-r01": false
+  },
+  "controls": [
+    {
+      "variant": "residual_fusion",
+      "seed": 2026092701,
+      "accuracy": 0.980925925925926,
+      "worst_rx": 0.9464814814814815,
+      "parameters": 164225,
+      "macs": 9708836,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092701/source",
+      "provenance": "Own scratch E200; full actual roles/representation/budget independently matched; metrics only, no weight inheritance"
+    },
+    {
+      "variant": "residual_fusion",
+      "seed": 2026092702,
+      "accuracy": 0.9819629629629629,
+      "worst_rx": 0.9457407407407408,
+      "parameters": 164225,
+      "macs": 9708836,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092702/source",
+      "provenance": "Own scratch E200; full actual roles/representation/budget independently matched; metrics only, no weight inheritance"
+    },
+    {
+      "variant": "residual_fusion",
+      "seed": 2026092703,
+      "accuracy": 0.9798518518518519,
+      "worst_rx": 0.9446296296296296,
+      "parameters": 164225,
+      "macs": 9708836,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092703/source",
+      "provenance": "Own scratch E200; full actual roles/representation/budget independently matched; metrics only, no weight inheritance"
+    },
+    {
+      "variant": "residual_fusion",
+      "seed": 2026092704,
+      "accuracy": 0.980037037037037,
+      "worst_rx": 0.942962962962963,
+      "parameters": 164225,
+      "macs": 9708836,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261001-phase1-cvs-residual-identity-manysig-m8-r01/residual_fusion-s2026092704/source",
+      "provenance": "Own scratch E200; full actual roles/representation/budget independently matched; metrics only, no weight inheritance"
+    }
+  ],
+  "physical_roles": "EXACT_MATCH_FULL_ACTUAL_SOURCE_CONTRACT",
+  "target_access": false,
+  "checkpoint_loaded": false
+}

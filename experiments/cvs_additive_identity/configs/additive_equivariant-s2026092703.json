@@ -1,0 +1,61 @@
+{
+  "method": "cvs_additive_identity",
+  "variant": "additive_equivariant",
+  "model_seed": 2026092703,
+  "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+  "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+  "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-additive-identity-manysig-m8-r01/additive_equivariant-s2026092703/source",
+  "epochs": 200,
+  "batch_size": 128,
+  "lr": 0.0002,
+  "lr_min": 1e-06,
+  "weight_decay": 0.0001,
+  "drop_last": false,
+  "augmentation": false,
+  "domain_backbone": false,
+  "extra_losses": [],
+  "selection": "fixed_last_epoch",
+  "split_seed": 392005,
+  "device": "cuda:0",
+  "coordinate": {
+    "mode": "additive_equivariant",
+    "input": "received_equalized1_unit_rms_IQ",
+    "sample_rate_hz": 25000000,
+    "estimator_window": [
+      80,
+      160
+    ],
+    "period_samples": 20,
+    "relative_frequency_alias_hz": 1250000,
+    "all_waveform_identity_paths_after_alignment": true,
+    "relative_coordinate_retained": true,
+    "retained_coordinates": [
+      "cos(20omega)-1",
+      "sin(20omega)",
+      "clamp(coherence,0,1)-1"
+    ],
+    "conditioner_parameters": 640,
+    "conditioner_identity_class_specific": false,
+    "quality_input_gradient": "detached; observed perpacket quality conditions learned additive feature direction",
+    "constant_phase_invariant_real_arithmetic": true,
+    "whole_affine_phase_invariant": false,
+    "identity_core": "equivariant_memory",
+    "embedding_dimension": 160,
+    "classifier_scale": 30.0,
+    "arbitrary_channel_rx_invariant": false,
+    "hardware_parameter_estimation": false,
+    "interpretation": "Aligned received features plus shared additive direction from retained relative-frequency/quality;not TX hardware recovery",
+    "feature_injection": "u+0.25*norm(u,2)*tanh(Linear3to160(coordinates))",
+    "initial_delta": 0.0,
+    "per_component_delta_bound_relative_to_core_norm": 0.25,
+    "vector_delta_bound_relative_to_core_norm": 3.1622776601683795,
+    "exact_zero_initialized_core_equivalence": true
+  },
+  "numerical_policy": {
+    "cudnn_allow_tf32": false,
+    "cuda_matmul_allow_tf32": false,
+    "cudnn_benchmark": false,
+    "cudnn_deterministic": false,
+    "matmul_precision": "highest"
+  }
+}
