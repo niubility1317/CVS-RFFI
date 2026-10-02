@@ -1,0 +1,252 @@
+{
+  "status": "VERIFIED",
+  "source_only": true,
+  "used_for_selection": false,
+  "target_access": false,
+  "checkpoint_loaded": false,
+  "prior_run": "20261002-phase1-cvs-coordinate-identity-manysig-m8-r01",
+  "prior_commit": "ecb268f7b4bcab111f041e177ecc3f967f1cb21a",
+  "new_run": "20261002-phase1-cvs-additive-identity-manysig-m8-r01",
+  "prior_actual_records": [
+    {
+      "variant": "coordinate_equivariant",
+      "seed": 2026092701,
+      "accuracy": 0.9745555555555555,
+      "worst_rx": 0.9292592592592592,
+      "parameters": 203193,
+      "macs": 7199488,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-coordinate-identity-manysig-m8-r01/coordinate_equivariant-s2026092701/source",
+      "provenance": "Own scratch E200; full actual roles/representation/budget independently matched; metrics only, no weight inheritance"
+    },
+    {
+      "variant": "coordinate_equivariant",
+      "seed": 2026092702,
+      "accuracy": 0.9755925925925926,
+      "worst_rx": 0.9355555555555556,
+      "parameters": 203193,
+      "macs": 7199488,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-coordinate-identity-manysig-m8-r01/coordinate_equivariant-s2026092702/source",
+      "provenance": "Own scratch E200; full actual roles/representation/budget independently matched; metrics only, no weight inheritance"
+    },
+    {
+      "variant": "coordinate_equivariant",
+      "seed": 2026092703,
+      "accuracy": 0.9707037037037037,
+      "worst_rx": 0.922037037037037,
+      "parameters": 203193,
+      "macs": 7199488,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-coordinate-identity-manysig-m8-r01/coordinate_equivariant-s2026092703/source",
+      "provenance": "Own scratch E200; full actual roles/representation/budget independently matched; metrics only, no weight inheritance"
+    },
+    {
+      "variant": "coordinate_equivariant",
+      "seed": 2026092704,
+      "accuracy": 0.9712592592592593,
+      "worst_rx": 0.9235185185185185,
+      "parameters": 203193,
+      "macs": 7199488,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-coordinate-identity-manysig-m8-r01/coordinate_equivariant-s2026092704/source",
+      "provenance": "Own scratch E200; full actual roles/representation/budget independently matched; metrics only, no weight inheritance"
+    },
+    {
+      "variant": "coordinate_gauge",
+      "seed": 2026092701,
+      "accuracy": 0.9128888888888889,
+      "worst_rx": 0.765,
+      "parameters": 164865,
+      "macs": 9710276,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-coordinate-identity-manysig-m8-r01/coordinate_gauge-s2026092701/source",
+      "provenance": "Own scratch E200; full actual roles/representation/budget independently matched; metrics only, no weight inheritance"
+    },
+    {
+      "variant": "coordinate_gauge",
+      "seed": 2026092702,
+      "accuracy": 0.9131481481481482,
+      "worst_rx": 0.762962962962963,
+      "parameters": 164865,
+      "macs": 9710276,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-coordinate-identity-manysig-m8-r01/coordinate_gauge-s2026092702/source",
+      "provenance": "Own scratch E200; full actual roles/representation/budget independently matched; metrics only, no weight inheritance"
+    },
+    {
+      "variant": "coordinate_gauge",
+      "seed": 2026092703,
+      "accuracy": 0.9196296296296296,
+      "worst_rx": 0.7883333333333333,
+      "parameters": 164865,
+      "macs": 9710276,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-coordinate-identity-manysig-m8-r01/coordinate_gauge-s2026092703/source",
+      "provenance": "Own scratch E200; full actual roles/representation/budget independently matched; metrics only, no weight inheritance"
+    },
+    {
+      "variant": "coordinate_gauge",
+      "seed": 2026092704,
+      "accuracy": 0.9203333333333333,
+      "worst_rx": 0.787962962962963,
+      "parameters": 164865,
+      "macs": 9710276,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-coordinate-identity-manysig-m8-r01/coordinate_gauge-s2026092704/source",
+      "provenance": "Own scratch E200; full actual roles/representation/budget independently matched; metrics only, no weight inheritance"
+    }
+  ],
+  "rows": [
+    {
+      "variant": "additive_equivariant",
+      "prior_variant": "coordinate_equivariant",
+      "model_seed": 2026092701,
+      "parameters": 203193,
+      "prior_V": 0.9745555555555555,
+      "V": 0.9754444444444444,
+      "V_delta_pp": 0.0888888888888939,
+      "prior_worst_RX": 0.9292592592592592,
+      "worst_RX": 0.9312962962962963,
+      "worst_RX_delta_pp": 0.20370370370370594
+    },
+    {
+      "variant": "additive_gauge",
+      "prior_variant": "coordinate_gauge",
+      "model_seed": 2026092701,
+      "parameters": 164865,
+      "prior_V": 0.9128888888888889,
+      "V": 0.912962962962963,
+      "V_delta_pp": 0.007407407407411526,
+      "prior_worst_RX": 0.765,
+      "worst_RX": 0.7662962962962963,
+      "worst_RX_delta_pp": 0.129629629629624
+    },
+    {
+      "variant": "additive_equivariant",
+      "prior_variant": "coordinate_equivariant",
+      "model_seed": 2026092702,
+      "parameters": 203193,
+      "prior_V": 0.9755925925925926,
+      "V": 0.975925925925926,
+      "V_delta_pp": 0.033333333333340764,
+      "prior_worst_RX": 0.9355555555555556,
+      "worst_RX": 0.9362962962962963,
+      "worst_RX_delta_pp": 0.07407407407407085
+    },
+    {
+      "variant": "additive_gauge",
+      "prior_variant": "coordinate_gauge",
+      "model_seed": 2026092702,
+      "parameters": 164865,
+      "prior_V": 0.9131481481481482,
+      "V": 0.9144074074074074,
+      "V_delta_pp": 0.12592592592592933,
+      "prior_worst_RX": 0.762962962962963,
+      "worst_RX": 0.77,
+      "worst_RX_delta_pp": 0.7037037037037064
+    },
+    {
+      "variant": "additive_equivariant",
+      "prior_variant": "coordinate_equivariant",
+      "model_seed": 2026092703,
+      "parameters": 203193,
+      "prior_V": 0.9707037037037037,
+      "V": 0.9711851851851852,
+      "V_delta_pp": 0.04814814814814161,
+      "prior_worst_RX": 0.922037037037037,
+      "worst_RX": 0.9218518518518518,
+      "worst_RX_delta_pp": -0.018518518518517713
+    },
+    {
+      "variant": "additive_gauge",
+      "prior_variant": "coordinate_gauge",
+      "model_seed": 2026092703,
+      "parameters": 164865,
+      "prior_V": 0.9196296296296296,
+      "V": 0.9221111111111111,
+      "V_delta_pp": 0.2481481481481529,
+      "prior_worst_RX": 0.7883333333333333,
+      "worst_RX": 0.7938888888888889,
+      "worst_RX_delta_pp": 0.5555555555555536
+    },
+    {
+      "variant": "additive_equivariant",
+      "prior_variant": "coordinate_equivariant",
+      "model_seed": 2026092704,
+      "parameters": 203193,
+      "prior_V": 0.9712592592592593,
+      "V": 0.9707777777777777,
+      "V_delta_pp": -0.048148148148152714,
+      "prior_worst_RX": 0.9235185185185185,
+      "worst_RX": 0.9211111111111111,
+      "worst_RX_delta_pp": -0.24074074074074137
+    },
+    {
+      "variant": "additive_gauge",
+      "prior_variant": "coordinate_gauge",
+      "model_seed": 2026092704,
+      "parameters": 164865,
+      "prior_V": 0.9203333333333333,
+      "V": 0.9212962962962963,
+      "V_delta_pp": 0.09629629629629433,
+      "prior_worst_RX": 0.787962962962963,
+      "worst_RX": 0.7905555555555556,
+      "worst_RX_delta_pp": 0.2592592592592591
+    }
+  ],
+  "summary": [
+    {
+      "variant": "additive_equivariant",
+      "prior_variant": "coordinate_equivariant",
+      "V_delta_pp_mean": 0.03055555555555589,
+      "V_delta_pp_seed_sd": 0.0574870017713307,
+      "worst_RX_delta_pp_mean": 0.004629629629629428,
+      "worst_RX_delta_pp_seed_sd": 0.1872569297792292
+    },
+    {
+      "variant": "additive_gauge",
+      "prior_variant": "coordinate_gauge",
+      "V_delta_pp_mean": 0.11944444444444702,
+      "V_delta_pp_seed_sd": 0.09949001186044255,
+      "worst_RX_delta_pp_mean": 0.41203703703703576,
+      "worst_RX_delta_pp_seed_sd": 0.26379411336841746
+    }
+  ],
+  "frozen_selection_unchanged": {
+    "status": "SOURCE_SELECTION_FROZEN",
+    "selected_variant": "residual_fusion",
+    "source_summaries": {
+      "residual_fusion": {
+        "score": 0.9628240740740741,
+        "source_accuracy": 0.9806944444444444,
+        "worst_rx_accuracy": 0.9449537037037037,
+        "parameters": 164225,
+        "conv_linear_macs": 9708836
+      },
+      "additive_equivariant": {
+        "score": 0.9504861111111111,
+        "source_accuracy": 0.9733333333333334,
+        "worst_rx_accuracy": 0.9276388888888889,
+        "parameters": 203193,
+        "conv_linear_macs": 7199488
+      },
+      "additive_gauge": {
+        "score": 0.8489398148148148,
+        "source_accuracy": 0.9176944444444445,
+        "worst_rx_accuracy": 0.7801851851851852,
+        "parameters": 164865,
+        "conv_linear_macs": 9710276
+      }
+    },
+    "selection_rule": "performance first: four-seed E200 0.5 sourceV+0.5 worstsourceRX;exact ties V thenworstRX;costs secondary only after equalperformance",
+    "selection_policy": "performance_first_additive_with_source_control_20261002",
+    "candidate_universe": [
+      "residual_fusion",
+      "additive_equivariant",
+      "additive_gauge"
+    ],
+    "new_candidate_selected": false,
+    "exact_cost_tie_order": [
+      "residual_fusion",
+      "additive_equivariant",
+      "additive_gauge"
+    ],
+    "target_access": false,
+    "target_score_used": false,
+    "test_view": "clean"
+  },
+  "interpretation": "Same physical source roles, E200, model seeds, fullFP32 and parameter counts;paired source diagnostic,not new blind RX test or proof of identified TX causality"
+}

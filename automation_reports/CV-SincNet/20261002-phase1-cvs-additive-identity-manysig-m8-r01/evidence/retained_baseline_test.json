@@ -1,0 +1,19 @@
+{
+  "status": "VERIFIED_EXISTING_FROZEN_TEST_RETAINED",
+  "source_selected_variant": "residual_fusion",
+  "original_test_run": "20261001-phase1-cvs-selected-clean-manysig-m20-r01",
+  "original_prediction_and_scoring": true,
+  "queries_per_row": 168000,
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703,
+    2026092704
+  ],
+  "accuracy_mean": 0.7845431547619048,
+  "accuracy_sample_sd": 0.008436130946291115,
+  "new_target_access": false,
+  "unselected_new_candidates_test": "N/A:not selected by fixed source rule",
+  "control_test_used_for_selection_or_design": false,
+  "original_evidence_ref": "E:\\type10-7\\code\\snapshots\\daot_practical_three_20260918_wt\\automation_reports\\CV-SincNet\\20261001-phase1-cvs-selected-clean-manysig-m20-r01\\evidence\\final_readback.json"
+}
