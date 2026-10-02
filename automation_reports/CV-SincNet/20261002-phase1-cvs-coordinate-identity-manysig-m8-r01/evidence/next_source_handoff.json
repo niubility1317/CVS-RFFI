@@ -1,0 +1,67 @@
+{
+  "status": "SOURCE_ONLY_HANDOFF",
+  "run_id": "20261002-phase1-cvs-coordinate-identity-manysig-m8-r01",
+  "source_commit": "ecb268f7b4bcab111f041e177ecc3f967f1cb21a",
+  "source_summaries": {
+    "residual_fusion": {
+      "score": 0.9628240740740741,
+      "source_accuracy": 0.9806944444444444,
+      "worst_rx_accuracy": 0.9449537037037037,
+      "parameters": 164225,
+      "conv_linear_macs": 9708836
+    },
+    "coordinate_equivariant": {
+      "score": 0.9503101851851852,
+      "source_accuracy": 0.9730277777777778,
+      "worst_rx_accuracy": 0.9275925925925925,
+      "parameters": 203193,
+      "conv_linear_macs": 7199488
+    },
+    "coordinate_gauge": {
+      "score": 0.8462824074074073,
+      "source_accuracy": 0.9165,
+      "worst_rx_accuracy": 0.7760648148148148,
+      "parameters": 164865,
+      "conv_linear_macs": 9710276
+    }
+  },
+  "source_analysis": {
+    "status": "VERIFIED",
+    "new_rows": 8,
+    "new_epochs": 1600,
+    "new_steps": 80000,
+    "control_rows": 4,
+    "curve_records": 2400,
+    "source_selection_recomputed": true,
+    "selected_variant": "residual_fusion",
+    "new_candidate_selected": false,
+    "actual_fullFP32_training_validation_physics_profile": true,
+    "all720_source_cells_complete": true,
+    "target_access": false,
+    "target_scores_used": false,
+    "goal_achieved": false,
+    "whole_phase_max_logit_error": 3.337860107421875e-05,
+    "whole_affine_max_logit_error": 0.2078990936279297,
+    "coordinate_reconstruction_max_error": 2.384185791015625e-07,
+    "scope": "Wholeconstantphase property only;affinecoordinate retained;relative CFO modulo1.25MHz;not uniqueTX or arbitraryRX/LTI invariance"
+  },
+  "target_scores_included": false,
+  "goal_achieved": false,
+  "next_action": "Source-only inspect full conditioner gradients/gain, source geometry and public TX/RX interventions. Coordinate retention has no sourceperformance benefit if baseline retained. Do not use historical target results for model design or reruns.",
+  "internal_usage_prototype": {
+    "module": "experiments.cvs_coordinate_identity.usage",
+    "synthetic_tests": 5,
+    "actual_data_access": false,
+    "modes": [
+      "trained",
+      "frequency_reference",
+      "quality_reference",
+      "coordinate_reference",
+      "unit_gain"
+    ],
+    "planned_rows": 40,
+    "source_selection_already_frozen": true,
+    "used_for_selection": false,
+    "claim": "Internal model ablation only;not physical TX/RX intervention or causal identification"
+  }
+}

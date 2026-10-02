@@ -23,7 +23,7 @@ def analyze(root):
         actual=next(a for a in data['source_controls'] if a['seed']==r['resolved']['model_seed'])
         if any(actual[k]!=r['completion']['final_source_metrics'][v] for k,v in [('accuracy','source_val_accuracy'),('worst_rx','source_val_worst_rx')]):
             raise ValueError('Historical source curves differ from independently verified fixed source controls')
-    curves=[];final=[];rx=[];resources=[];sync=[];cells=[];geometry=[];cascade=[];tx=[];phases=[];paired=[]
+    curves=[];final=[];rx=[];resources=[];sync=[];cells=[];geometry=[];cascade=[];tx=[];phases=[];paired=[];conditioner=[]
     for r in controls+data['rows']:
         c=r['resolved'];v=c['variant'];seed=c['model_seed'];epochs=r['epochs'];p=r['profile']
         if [a['epoch'] for a in epochs]!=list(range(1,201)):raise ValueError('Incomplete source curve')
@@ -33,6 +33,7 @@ def analyze(root):
                 d=a['coordinate_diagnostics'];flat={k:value for k,value in d.items() if not isinstance(value,dict)}
                 flat.update({'core_'+k:value for k,value in d.get('core',{}).items()})
                 sync.append(dict(variant=v,seed=seed,epoch=a['epoch'],**flat))
+                conditioner.append(dict(variant=v,seed=seed,epoch=a['epoch'],gradient_used_parameters=a['conditioner_gradient_used_parameters'],gradient_norm=a['conditioner_gradient_norm'],whole_gradient_norm=a['gradient_norm']))
         f=epochs[-1];best=max(epochs,key=lambda a:a['source_val_accuracy'])
         final.append(dict(variant=v,seed=seed,V=f['source_val_accuracy'],worst_RX=f['source_val_worst_rx'],CE=f['clean_ce'],best_V=best['source_val_accuracy'],best_epoch=best['epoch'],best_epoch_selected=False))
         rx.extend(dict(variant=v,seed=seed,receiver=k,accuracy=val) for k,val in f['source_val_rx_accuracy'].items())
@@ -46,8 +47,8 @@ def analyze(root):
             phases.extend(dict(variant=v,seed=seed,**a) for a in ph['phase_audit'])
             base=next(a for a in data['source_controls'] if a['seed']==seed)
             paired.append(dict(variant=v,seed=seed,V_delta_pp=100*(f['source_val_accuracy']-base['accuracy']),worst_RX_delta_pp=100*(f['source_val_worst_rx']-base['worst_rx'])))
-    if len(curves)!=2400 or len(sync)!=1600 or len(cells)!=720 or len(phases)!=24:raise ValueError('Incomplete complete source report dimensions')
-    for name,rows in dict(source_curves=curves,source_fixed_last_and_best=final,source_RX=rx,source_resources=resources,source_coordinate_by_epoch=sync,source_all720_cells=cells,source_geometry=geometry,source_physics_cascade=cascade,source_isolated_TX=tx,source_affine_phase_audit=phases,source_paired_control=paired).items():table(e/(name+'.csv'),rows)
+    if len(curves)!=2400 or len(sync)!=1600 or len(conditioner)!=1600 or len(cells)!=720 or len(phases)!=24:raise ValueError('Incomplete complete source report dimensions')
+    for name,rows in dict(source_curves=curves,source_fixed_last_and_best=final,source_RX=rx,source_resources=resources,source_coordinate_by_epoch=sync,source_conditioner_optimization=conditioner,source_all720_cells=cells,source_geometry=geometry,source_physics_cascade=cascade,source_isolated_TX=tx,source_affine_phase_audit=phases,source_paired_control=paired).items():table(e/(name+'.csv'),rows)
     import matplotlib
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt
@@ -64,6 +65,7 @@ def analyze(root):
         actual_fullFP32_training_validation_physics_profile=True,all720_source_cells_complete=True,target_access=False,target_scores_used=False,goal_achieved=False,
         whole_phase_max_logit_error=max(a['whole_logit_max_abs_error'] for a in phases if a['received_cfo_hz']==0.),
         whole_affine_max_logit_error=max(a['whole_logit_max_abs_error'] for a in phases if a['received_cfo_hz']!=0.),
+        coordinate_reconstruction_max_error=max(r['physical_diagnostics']['coordinate_reconstruction_max_error'] for r in data['rows']),
         scope='Wholeconstantphase property only;affinecoordinate retained;relative CFO modulo1.25MHz;not uniqueTX or arbitraryRX/LTI invariance')
     write(e/'source_analysis_validation.json',validation)
     text='# CVS 同步坐标保留身份网络：完整源实验报告\n\n'
@@ -75,12 +77,16 @@ def analyze(root):
     for a in final:text+=f"| {a['variant']} | {a['seed']} | {100*a['V']:.4f} | {100*a['worst_RX']:.4f} | {a['CE']:.6f} | {100*a['best_V']:.4f} | {a['best_epoch']} |\n"
     text+='\n![完整源曲线](evidence/source_curves.png)\n\n四seed样本SD阴影覆盖全部200轮。[2400条曲线](evidence/source_curves.csv)、[1600轮同步测量](evidence/source_coordinate_by_epoch.csv)、[全部720个源单元](evidence/source_all720_cells.csv)、[同seed源差分](evidence/source_paired_control.csv)。源RX是源验证，不称未知RX测试。\n\n'
     text+='## 整体物理性质与边界\n\n80:160内60对重复相关给出arg(C)/20，全部波形身份路径位于逐包同步后，同时保留频率圆周坐标和重复相干度，以640参数有界gain条件化160维身份特征。整体不宣称仿射相位不变；同步形状与omega可逐点重建原received输入，本轮未把坐标保留自动当作身份收益。主值±625kHz、歧义1.25MHz，完整模型不宣称仿射不变，无效相关回退零校正；退化输入在atan2前替换，零校正与有限梯度已经测试。全部实现与正式训练无随机增强。\n\n'
-    text+=f"冻结公共链每模型5TX×6RX，检查公共相位及±80kHz仿射相位。全8权重最大公共相位logit误差{validation['whole_phase_max_logit_error']:.8g}，最大仿射logit误差{validation['whole_affine_max_logit_error']:.8g}；容差1e-3只报告，不是选模或停机门槛。\n\n| 模型 | seed | 相位rad | 附加相对CFO Hz | 整网logit误差 | 单位嵌入距离 | 主值跨界数 | 有效相关数 |\n|---|---:|---:|---:|---:|---:|---:|---:|\n"
+    text+=f"冻结公共链每模型5TX×6RX，检查公共相位及±80kHz仿射相位。全8权重最大公共相位logit误差{validation['whole_phase_max_logit_error']:.8g}，最大仿射logit误差{validation['whole_affine_max_logit_error']:.8g}；坐标逐点重建最大误差{validation['coordinate_reconstruction_max_error']:.8g}。常相位容差1e-3只报告，不是选模或停机门槛；附加频偏响应不称不变性误差。\n\n| 模型 | seed | 相位rad | 附加相对CFO Hz | 整网logit响应 | 单位嵌入距离 | 主值跨界数 | 有效相关数 |\n|---|---:|---:|---:|---:|---:|---:|---:|\n"
     for a in phases:text+=f"| {a['variant']} | {a['seed']} | {a['theta_radians']} | {a['received_cfo_hz']} | {a['whole_logit_max_abs_error']:.8g} | {a['whole_unit_embedding_max_distance']:.8g} | {a['estimated_cfo_principal_branch_crossing_count']} | {a['valid_correlation_count']} |\n"
     text+='\n源V同步统计是27000包/90单元全部覆盖，估计均为received相对CFO；没有真频偏标签，不能把偏差称为晶振测量误差。\n\n| 模型 | seed | 相对CFO范围 Hz | 相干度均值 | fallback比例 | TX中心间平方距离 | 同TX跨RX中心偏移 |\n|---|---:|---:|---:|---:|---:|---:|\n'
     for a in geometry:
         rr=[c for c in cells if c['variant']==a['variant'] and c['seed']==a['seed']]
         text+=f"| {a['variant']} | {a['seed']} | {min(c['relative_cfo_hz_min'] for c in rr):.3f} 至 {max(c['relative_cfo_hz_max'] for c in rr):.3f} | {statistics.mean(c['coherence_mean'] for c in rr):.6f} | {statistics.mean(c['fallback_fraction'] for c in rr):.6g} | {a['between_TX']:.6g} | {a['within_TX_RX']:.6g} |\n"
+    text+='\n## 坐标模块实际执行\n\n全部80000步均记录640个conditioner参数的实际梯度。[1600轮完整梯度表](evidence/source_conditioner_optimization.csv)与50步均值逐轮核对；下表覆盖各模型全部200轮及源V全部90单元。非零梯度或增益变化只证明模块参与执行，不证明唯一TX身份或识别收益。\n\n| 模型 | seed | 200轮conditioner梯度范数均值 | 最后一轮梯度范数 | 全源V gain最小 | gain均值 | gain最大 |\n|---|---:|---:|---:|---:|---:|---:|\n'
+    for a in geometry:
+        cc=[c for c in conditioner if c['variant']==a['variant'] and c['seed']==a['seed']];rr=[c for c in cells if c['variant']==a['variant'] and c['seed']==a['seed']]
+        text+=f"| {a['variant']} | {a['seed']} | {statistics.mean(c['gradient_norm'] for c in cc):.6g} | {cc[-1]['gradient_norm']:.6g} | {min(c['gain_min'] for c in rr):.6f} | {statistics.mean(c['gain_mean'] for c in rr):.6f} | {max(c['gain_max'] for c in rr):.6f} |\n"
     text+='\nTX/RX 镜像及三阶相同波形反例保留。LTI/RX影响不承诺消除，公共合成链不是精确WiSig均衡器、真实硬件采集或完整瞬态/噪声仿真。源嵌入几何只说明关联，不证明TX/RX因果分离。[全部240个公共组合](evidence/source_physics_cascade.csv)、[32个孤立TX变化](evidence/source_isolated_TX.csv)。\n\n## 实测成本\n\n| 模型 | 参数 | 常驻模型bytes | Conv/Linear MAC/包 | batch1推理ms均值 | batch128训练ms均值 | 源训练峰值bytes最大 |\n|---|---:|---:|---:|---:|---:|---:|\n'
     for v in selection['candidate_universe']:
         rr=[a for a in resources if a['variant']==v];a=rr[0]
