@@ -73,7 +73,7 @@
     "latest_runtime_observed_utc": "2026-10-01T23:22:23Z",
     "latest_runtime_readback_ref": "evidence/query_terminal_1790897012642688500_compact.json",
     "query_score": {
-      "status": "RUNNING",
+      "status": "VERIFIED_COMPLETE_QUERY_SCORE",
       "attempt_id": "r02",
       "spec_path": "configs/d92_group_query_score_contract_20261002_r02.json",
       "wrapper_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/d92_group_query_score_contract_20261002_r02",
@@ -108,9 +108,21 @@
       "terminal_evidence_ref": "automation_reports/CV-SincNet/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01/evidence/query_terminal_1790897012642688500_compact.json",
       "wrapper_pid": 1333307,
       "scorer_pid": 1333329,
-      "runtime_evidence_ref": "automation_reports/CV-SincNet/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01/evidence/score_runtime_1790901193153612300.json",
-      "latest_runtime_observed_utc": "2026-10-02T00:32:12Z",
-      "score_result": null
+      "runtime_evidence_ref": "automation_reports/CV-SincNet/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01/evidence/score_runtime_1790901751519621000.json",
+      "latest_runtime_observed_utc": "2026-10-02T00:41:28Z",
+      "score_result": "GROUP_BARRIER_JOINT_QUERY_SCORE_COMPLETE",
+      "process_returncode": 0,
+      "elapsed_seconds": 877.3216342469968,
+      "scorer_invoked": true,
+      "truth_join_after_complete_closure": true,
+      "summary_downloaded": true,
+      "collection_ref": "automation_reports/CV-SincNet/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01/evidence/query_score_collection.json",
+      "report_ref": "automation_reports/CV-SincNet/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01/query_result_20261002.md",
+      "report_metrics_ref": "automation_reports/CV-SincNet/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01/query_report_metrics.json",
+      "summary_file_bytes": 578462770,
+      "current_processes_live": false,
+      "automatic_promotion": false,
+      "method_runtime_unchanged": true
     },
     "prediction_completion": "VERIFIED_FULL_4_ROWS_2400_EPISODES_FIXED_BEFORE_TRUTH",
     "query_score_history": [
@@ -154,7 +166,9 @@
         "original_predictions_changed": false
       }
     ],
-    "query_score_result": null
+    "query_score_result": "GROUP_BARRIER_JOINT_QUERY_SCORE_COMPLETE",
+    "producer_flags_scope": "truth_read/scorer_invoked retain immutable original supervisor flags; separate query_score records independent scorer",
+    "measured_cost_ref": "automation_reports/CV-SincNet/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01/evidence/complete_query_costs_1790902994992999700.json"
   },
   "benchmark": {
     "config": {
@@ -702,7 +716,7 @@
   "stage": "Phase2-repeated-query-benchmark",
   "display_name": "GroupBarrierJoint LocalRidge与support监督adapter的完整三阶段重复基准",
   "description": "固定原数学方案：B仅适应旧support，C真实继承B，以新类解析Ridge和全旧点/新类正障碍Bernoulli门控联合学习小adapter。完整2400父任务固定A/B/C后独立truth-last评分，不根据support或query结果选参。",
-  "status": "PREDICTIONS_COMPLETE",
+  "status": "ANALYZED",
   "claim_scope": "REPEATED_BENCHMARK_PREVIOUSLY_SCORED_TARGETS",
   "comparison_group_id": "d92-group-barrier-joint-support",
   "authorization": "Existing user joint LocalRidge/target-support SFT and repeated-benchmark authorization; root sole launch owner.",
@@ -924,5 +938,20 @@
     "SFT or 5888 coordinates does not establish low starboard compute; report measured scope and N/A.",
     "Goal remains ACTIVE; complete source validation or publication is not performance success."
   ],
-  "registered_at": "2026-10-01T16:11:39+00:00"
+  "registered_at": "2026-10-01T16:11:39+00:00",
+  "status_detail": "Whole4/2400 repeated benchmark independently scored and reported; no selection feedback or fresh validation",
+  "completed_at": "2026-10-02T01:09:21.845987+00:00",
+  "results": {
+    "independent_query_score": {
+      "status": "VERIFIED_COMPLETE_QUERY_SCORE",
+      "row_count": 4,
+      "parent_count": 2400,
+      "report_ref": "automation_reports/CV-SincNet/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01/query_result_20261002.md",
+      "metrics_ref": "automation_reports/CV-SincNet/20261001-phase2-d92-group-barrier-joint-repeat-m2-r01/query_report_metrics.json",
+      "scope": "REPEATED_BENCHMARK_REPORT_ONLY",
+      "automatic_promotion": false,
+      "parameter_selection": false,
+      "independent_validation": false
+    }
+  }
 }

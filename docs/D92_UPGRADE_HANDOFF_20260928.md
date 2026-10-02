@@ -1,3 +1,17 @@
+## 当前交接：Group完整query与SupportMetric完整support已报告，两个query继续
+
+- Goal ACTIVE，性能目标未实现。Groupquery原73aa完整4/2400，独立r02f291已VERIFIED_COMPLETE，877.322秒、评分RSS35,046,842,368B仅存证评分成本；完整summary578,462,770B已采集一次到local_artifacts/d92_group_query_score_results/d92_group_query_score_contract_20261002_r02，禁止重采/重评分/重预测。实际方法成本另读回complete_query_costs_1790902994992999700.json。
+- Group登记ANALYZED，完整query_result_20261002.md/全部K×新增/分层CSV/实际成本已交付。含新类1920任务A60.42/B66.73/C旧59.13/C新42.97/H48.83、gain6.31/drop7.60/absGap16.89pp；无同矩阵R0_B/R0_C流，因此配对R0query差N/A。query结果仅报告，无反馈选参/晋级。原r01契约失败保留。
+- 新SupportMetric support原fit3c3完整4/160/1800，独立scalar-r02e0eb已完整分析776.753秒；20文件12,372,776B一次采集local_artifacts/d92_support_metric_joint_support_analysis_results/d92_support_metric_support_analysis_scalar_20261002_r02，不重训/重分析/重采。ANALYZED及support_diagnostic_20261002.md：96新>0 OOF A62.64/B71.04/C旧64.89/C新50.18/H56.00 vsR0 H58.42，下降2.42pp，不晋级、不作query结论。全部三阶段/K×new/OOF/proxy/成本已交付，K1 held=N/A，fit/inference存储计时已读回complete_support_clocks_1790902572172190800.json。
+- 现有两完整query在00:49UTC metadata均VERIFIED健康：新SupportMetric c7c supervisor1327506/start14743342/rx3 1327618/1327622，旧ProtoFrame72663 supervisor1204372/rx3 1204902/1204908；rx1各等待/global无。下一正常读回约01:09UTC，不停止、热改或重复启动。
+- 新query原controller同scalar类型bug可能在producer exit0后记FAILED，继续全队列。fixed-output score新入口/test12已36f验证并登记configs/d92_support_metric_fixed_outputs_score_20261002.json，尚未发布；必须全4/2400正常终态、每producerCOMPLETE/exit0、具体同类型失败/原合法COMPLETE、全状态物理数值闭合和二次读回后才能truth。原FAILED不改，不伪造marker，不部分评分。root后续从已push源码发布独立3file scorer包一次，不直接调用scalar.score_benchmark。
+- branch_local_entry源码核实旧ProtoFrame scorer没有同scalar bug，未编辑，完整终态后原scorer即可；不新增r03修复。root唯一真实数值/Git/SSH/launch/scoring。
+- support-only数学诊断D92_SUPPORT_METRIC_SUPPORT_MATH_FINDINGS_20261002.md已FREEZE并交付；基于明确传入的96parent合法support汇总与源码，未读query结果。唯一下一假说gate两组各N/2、组内类均监督保留barrier/实际B/解析头/外层RMSCE；未实施，不保证H提高或省算力，无参数grid。Bartlett作者稿风险关系链接已由root web核实。branch_local_entry完成旧ProtoFrame scorer无同bug与Group成本字段源码定位，无代码编辑。
+
+<!-- COMPLETE_GROUP_QUERY_AND_SUPPORT_METRIC_SUPPORT_REPORTS_20261002 -->
+
+以下历史保留，不据此重启：
+
 ## 当前交接：四个健康任务继续，独立完整固定输出评分入口就绪
 
 - Goal ACTIVE。00:32UTC独立metadata：新SupportMetric query c7c supervisor1327506/start14743342、rx3 1327618/1327622正常预测，rx1等待；旧ProtoFrame query72663/supervisor1204372/rx3 1204902/1204908正常预测，rx1等待；global均无。下一正常query读回约00:52UTC，不停止/热改/重复发布。

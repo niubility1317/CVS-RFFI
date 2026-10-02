@@ -8,7 +8,7 @@
   "name": "D92 physical support metric GGN1 + LocalRidge joint support diagnostic",
   "description": "One derived rank-aware U-coordinate candidate, fixed 4 rows/160 physical parents and 1800 paths, paired A/B/C; no parameter grid",
   "authorization": "Existing user LocalRidge-priority joint target-support SFT/frozen summaries/subagent authorization; root sole launch owner",
-  "status": "TRAINING_COMPLETE",
+  "status": "ANALYZED",
   "created_at": "2026-10-01T22:25:36.848251+00:00",
   "data": {
     "dataset": "Support slices only from the two existing VALIDATED_ONCE capsules",
@@ -332,9 +332,9 @@
       "sequence_paths": 1800
     },
     "source_runtime_unchanged": true,
-    "support_metrics_read": false,
+    "support_metrics_read": true,
     "support_analysis_scalar_r02": {
-      "status": "RUNNING",
+      "status": "VERIFIED_COMPLETE_SUPPORT_DIAGNOSTIC",
       "attempt_id": "r02",
       "source_commit": "e0eb4041937bc16fc242651185b6c384f44821b0",
       "source_preparation_commit": "f291990c45f14cf322dfb1c6d2fc5a97e23f5a91",
@@ -370,7 +370,9 @@
       "coverage": {
         "rows": 4,
         "parents": 160,
-        "sequence_paths": 1800
+        "sequence_paths": 1800,
+        "metric_parent_rows": 560,
+        "metric_path_rows": 3600
       },
       "numerical_replay": false,
       "scope": "Read-only complete saved-state analysis; sole internal NumPy/Python scalar boundary correction, not method/tolerance/fit change",
@@ -384,10 +386,21 @@
       },
       "wrapper_pid": 1341024,
       "child_pid": 1341030,
-      "runtime_evidence_ref": "automation_reports/CV-SincNet/20261002-phase2-d92-support-metric-joint-support-m2-r01/evidence/analysis_runtime_1790901193142688000.json",
-      "latest_runtime_observed_utc": "2026-10-02T00:32:12Z",
-      "analysis_verified": false
-    }
+      "runtime_evidence_ref": "automation_reports/CV-SincNet/20261002-phase2-d92-support-metric-joint-support-m2-r01/evidence/analysis_runtime_1790902231281940700.json",
+      "latest_runtime_observed_utc": "2026-10-02T00:49:30Z",
+      "analysis_verified": true,
+      "process_returncode": 0,
+      "elapsed_seconds": 776.7527458667755,
+      "summary_downloaded": true,
+      "metrics_read": true,
+      "collection_ref": "automation_reports/CV-SincNet/20261002-phase2-d92-support-metric-joint-support-m2-r01/evidence/support_analysis_collection.json",
+      "report_ref": "automation_reports/CV-SincNet/20261002-phase2-d92-support-metric-joint-support-m2-r01/support_diagnostic_20261002.md",
+      "current_processes_live": false,
+      "query_performance": false,
+      "automatic_promotion": false
+    },
+    "analysis_complete": true,
+    "measured_cost_ref": "automation_reports/CV-SincNet/20261002-phase2-d92-support-metric-joint-support-m2-r01/evidence/complete_support_clocks_1790902572172190800.json"
   },
   "probe": {
     "cohorts": {
@@ -4762,7 +4775,24 @@
     }
   ],
   "spec_path": "configs/d92_support_metric_joint_support_20261002.json",
-  "results": null,
+  "results": {
+    "independent_analysis": {
+      "status": "VERIFIED_COMPLETE_SUPPORT_DIAGNOSTIC",
+      "coverage": {
+        "rows": 4,
+        "parents": 160,
+        "sequence_paths": 1800,
+        "metric_parent_rows": 560,
+        "metric_path_rows": 3600
+      },
+      "report_ref": "automation_reports/CV-SincNet/20261002-phase2-d92-support-metric-joint-support-m2-r01/support_diagnostic_20261002.md",
+      "summary_ref": "automation_reports/CV-SincNet/20261002-phase2-d92-support-metric-joint-support-m2-r01/diagnostic_summary.json",
+      "metrics_ref": "automation_reports/CV-SincNet/20261002-phase2-d92-support-metric-joint-support-m2-r01/diagnostic_report_metrics.json",
+      "query_performance": false,
+      "automatic_promotion": false,
+      "parameter_selection": false
+    }
+  },
   "optimization_basis": {
     "derivation_ref": "docs/D92_PROTO_FRAME_GGN_COORDINATE_SCALE_NOTE_20261002.md",
     "implementation_plan_ref": "docs/D92_SUPPORT_METRIC_JOINT_IMPLEMENTATION_PLAN_20261002.md",
@@ -4794,5 +4824,7 @@
     "supervisor_marker": "complete.json",
     "independent_analysis": "Fresh independent analysis after all four declared rows close",
     "report": "Paired A/B/C, full K x new class count, gain/drop/absGap/H, receiver/model strata and actual measured costs; missing N/A"
-  }
+  },
+  "status_detail": "Complete4/160/1800 support OOF/proxy diagnosis; no H improvement or query claim",
+  "completed_at": "2026-10-02T01:09:21.845987+00:00"
 }

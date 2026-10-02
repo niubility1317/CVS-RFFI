@@ -1,0 +1,160 @@
+{
+  "status": "VERIFIED_COMPLETE_SUPPORT_CLOCK_READBACK",
+  "rows": [
+    {
+      "row_id": "rx3-cvs-daot-rc4-s2026092701",
+      "hardware": {
+        "platform": "Linux-6.8.0-142-generic-x86_64-with-glibc2.39",
+        "processor": "x86_64",
+        "cpu_count": 96,
+        "dtype": "float64",
+        "gpu_use": false
+      },
+      "blas_environment": {
+        "OMP_NUM_THREADS": "2",
+        "OPENBLAS_NUM_THREADS": "2",
+        "MKL_NUM_THREADS": "2"
+      },
+      "counts": {
+        "BASE_FIT/B0": 450,
+        "SUPPORT_METRIC_PREPARATION/B": 450,
+        "CANDIDATE_FIT/B_SUPPORT_METRIC": 450,
+        "BASE_FIT/C0": 360,
+        "SUPPORT_METRIC_PREPARATION/C": 360,
+        "CANDIDATE_FIT/C_SUPPORT_METRIC_seq": 360
+      },
+      "seconds_sums": {
+        "BASE_FIT/B0/fit_seconds": 3.3023020152759273,
+        "BASE_FIT/B0/fit_and_score_seconds": 14.802351991762407,
+        "BASE_FIT/B0/score_seconds": 9.232731946016429,
+        "SUPPORT_METRIC_PREPARATION/B/preparation_seconds": 7.9877422231656965,
+        "CANDIDATE_FIT/B_SUPPORT_METRIC/fit_seconds": 63.49366207094863,
+        "CANDIDATE_FIT/B_SUPPORT_METRIC/score_seconds": 132.96526071606786,
+        "BASE_FIT/C0/fit_seconds": 10.954122803086648,
+        "BASE_FIT/C0/fit_and_score_seconds": 44.609563870646525,
+        "BASE_FIT/C0/score_seconds": 30.264562298776582,
+        "SUPPORT_METRIC_PREPARATION/C/preparation_seconds": 56.223112175939605,
+        "CANDIDATE_FIT/C_SUPPORT_METRIC_seq/fit_seconds": 241.7855735773337,
+        "CANDIDATE_FIT/C_SUPPORT_METRIC_seq/score_seconds": 541.5307813110994,
+        "CANDIDATE_FIT/C_SUPPORT_METRIC_seq/structural_predict_seconds": 507.27876937162364
+      }
+    },
+    {
+      "row_id": "rx3-cvs-daot-rc4-s2026092702",
+      "hardware": {
+        "platform": "Linux-6.8.0-142-generic-x86_64-with-glibc2.39",
+        "processor": "x86_64",
+        "cpu_count": 96,
+        "dtype": "float64",
+        "gpu_use": false
+      },
+      "blas_environment": {
+        "OMP_NUM_THREADS": "2",
+        "OPENBLAS_NUM_THREADS": "2",
+        "MKL_NUM_THREADS": "2"
+      },
+      "counts": {
+        "BASE_FIT/B0": 450,
+        "SUPPORT_METRIC_PREPARATION/B": 450,
+        "CANDIDATE_FIT/B_SUPPORT_METRIC": 450,
+        "BASE_FIT/C0": 360,
+        "SUPPORT_METRIC_PREPARATION/C": 360,
+        "CANDIDATE_FIT/C_SUPPORT_METRIC_seq": 360
+      },
+      "seconds_sums": {
+        "BASE_FIT/B0/fit_seconds": 3.227415877045132,
+        "BASE_FIT/B0/fit_and_score_seconds": 14.334072620229563,
+        "BASE_FIT/B0/score_seconds": 8.896125907253008,
+        "SUPPORT_METRIC_PREPARATION/B/preparation_seconds": 7.6372366667492315,
+        "CANDIDATE_FIT/B_SUPPORT_METRIC/fit_seconds": 61.41221050298191,
+        "CANDIDATE_FIT/B_SUPPORT_METRIC/score_seconds": 130.05241772797308,
+        "BASE_FIT/C0/fit_seconds": 10.680840402143076,
+        "BASE_FIT/C0/fit_and_score_seconds": 43.3361372652289,
+        "BASE_FIT/C0/score_seconds": 29.291762423119508,
+        "SUPPORT_METRIC_PREPARATION/C/preparation_seconds": 54.85137204785133,
+        "CANDIDATE_FIT/C_SUPPORT_METRIC_seq/fit_seconds": 240.13460988702718,
+        "CANDIDATE_FIT/C_SUPPORT_METRIC_seq/score_seconds": 527.0687365012709,
+        "CANDIDATE_FIT/C_SUPPORT_METRIC_seq/structural_predict_seconds": 492.65412407612894
+      }
+    },
+    {
+      "row_id": "rx1-cvs-daot-rc4-s2026092701",
+      "hardware": {
+        "platform": "Linux-6.8.0-142-generic-x86_64-with-glibc2.39",
+        "processor": "x86_64",
+        "cpu_count": 96,
+        "dtype": "float64",
+        "gpu_use": false
+      },
+      "blas_environment": {
+        "OMP_NUM_THREADS": "2",
+        "OPENBLAS_NUM_THREADS": "2",
+        "MKL_NUM_THREADS": "2"
+      },
+      "counts": {
+        "BASE_FIT/B0": 450,
+        "SUPPORT_METRIC_PREPARATION/B": 450,
+        "CANDIDATE_FIT/B_SUPPORT_METRIC": 450,
+        "BASE_FIT/C0": 360,
+        "SUPPORT_METRIC_PREPARATION/C": 360,
+        "CANDIDATE_FIT/C_SUPPORT_METRIC_seq": 360
+      },
+      "seconds_sums": {
+        "BASE_FIT/B0/fit_seconds": 3.302023883734364,
+        "BASE_FIT/B0/fit_and_score_seconds": 14.596549510053592,
+        "BASE_FIT/B0/score_seconds": 9.071654820727417,
+        "SUPPORT_METRIC_PREPARATION/B/preparation_seconds": 7.927552797103999,
+        "CANDIDATE_FIT/B_SUPPORT_METRIC/fit_seconds": 63.14428986317944,
+        "CANDIDATE_FIT/B_SUPPORT_METRIC/score_seconds": 130.84389029021258,
+        "BASE_FIT/C0/fit_seconds": 10.943020974082174,
+        "BASE_FIT/C0/fit_and_score_seconds": 44.23682433049544,
+        "BASE_FIT/C0/score_seconds": 29.92411347696907,
+        "SUPPORT_METRIC_PREPARATION/C/preparation_seconds": 55.94439296002383,
+        "CANDIDATE_FIT/C_SUPPORT_METRIC_seq/fit_seconds": 244.65517568131327,
+        "CANDIDATE_FIT/C_SUPPORT_METRIC_seq/score_seconds": 535.524105340708,
+        "CANDIDATE_FIT/C_SUPPORT_METRIC_seq/structural_predict_seconds": 499.8185783964291
+      }
+    },
+    {
+      "row_id": "rx1-cvs-daot-rc4-s2026092702",
+      "hardware": {
+        "platform": "Linux-6.8.0-142-generic-x86_64-with-glibc2.39",
+        "processor": "x86_64",
+        "cpu_count": 96,
+        "dtype": "float64",
+        "gpu_use": false
+      },
+      "blas_environment": {
+        "OMP_NUM_THREADS": "2",
+        "OPENBLAS_NUM_THREADS": "2",
+        "MKL_NUM_THREADS": "2"
+      },
+      "counts": {
+        "BASE_FIT/B0": 450,
+        "SUPPORT_METRIC_PREPARATION/B": 450,
+        "CANDIDATE_FIT/B_SUPPORT_METRIC": 450,
+        "BASE_FIT/C0": 360,
+        "SUPPORT_METRIC_PREPARATION/C": 360,
+        "CANDIDATE_FIT/C_SUPPORT_METRIC_seq": 360
+      },
+      "seconds_sums": {
+        "BASE_FIT/B0/fit_seconds": 3.361722055269638,
+        "BASE_FIT/B0/fit_and_score_seconds": 14.701017885643523,
+        "BASE_FIT/B0/score_seconds": 9.080248298763763,
+        "SUPPORT_METRIC_PREPARATION/B/preparation_seconds": 8.077410218014847,
+        "CANDIDATE_FIT/B_SUPPORT_METRIC/fit_seconds": 63.62436041305773,
+        "CANDIDATE_FIT/B_SUPPORT_METRIC/score_seconds": 130.0191461747745,
+        "BASE_FIT/C0/fit_seconds": 11.216475810128031,
+        "BASE_FIT/C0/fit_and_score_seconds": 45.07855834017391,
+        "BASE_FIT/C0/score_seconds": 30.447482405084884,
+        "SUPPORT_METRIC_PREPARATION/C/preparation_seconds": 56.402558356086956,
+        "CANDIDATE_FIT/C_SUPPORT_METRIC_seq/fit_seconds": 247.04745058575645,
+        "CANDIDATE_FIT/C_SUPPORT_METRIC_seq/score_seconds": 532.5280491996382,
+        "CANDIDATE_FIT/C_SUPPORT_METRIC_seq/structural_predict_seconds": 497.4955361550383
+      }
+    }
+  ],
+  "scope": "STORED_MEASURED_FINAL_PATH_CLOCKS; FIT_INCLUDES_STATE_CALLBACK_ARCHIVING; PREPARATION_SEPARATE; NO_REPLAY",
+  "query_or_source_read": false,
+  "training_rerun": false
+}

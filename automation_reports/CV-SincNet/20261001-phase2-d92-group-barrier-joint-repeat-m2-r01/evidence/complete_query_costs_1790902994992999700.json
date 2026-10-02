@@ -1,0 +1,1949 @@
+{
+  "status": "VERIFIED_COMPLETE_GROUP_QUERY_COST_READBACK",
+  "rows": [
+    {
+      "row_id": "rx3-cvs-daot-rc4-s2026092701",
+      "parent_count": 900,
+      "stage_measurements": {
+        "B_MARGIN": {
+          "stage_count": 900,
+          "measurements": {
+            "fit_seconds": {
+              "measured_count": 900,
+              "missing_count": 0,
+              "sum": 2162.180740072261,
+              "minimum": 0.019649530004244298,
+              "maximum": 7.156322670998634
+            },
+            "trainable_parameter_count": {
+              "measured_count": 900,
+              "missing_count": 0,
+              "sum": 3974400,
+              "minimum": 0,
+              "maximum": 5888
+            },
+            "declared_coordinate_scalar_count": {
+              "measured_count": 900,
+              "missing_count": 0,
+              "sum": 4968000,
+              "minimum": 4416,
+              "maximum": 5888
+            },
+            "active_parameter_count": {
+              "measured_count": 900,
+              "missing_count": 0,
+              "sum": 3974400,
+              "minimum": 0,
+              "maximum": 5888
+            },
+            "optimizer_steps": {
+              "measured_count": 900,
+              "missing_count": 0,
+              "sum": 2700,
+              "minimum": 0,
+              "maximum": 4
+            },
+            "resident_numeric_state_bytes": {
+              "measured_count": 900,
+              "missing_count": 0,
+              "sum": 1947312000,
+              "minimum": 407552,
+              "maximum": 4774256
+            },
+            "deployment_numeric_state_bytes": {
+              "measured_count": 900,
+              "missing_count": 0,
+              "sum": 660643200,
+              "minimum": 165344,
+              "maximum": 1516016
+            },
+            "retained_vector_record_bytes": {
+              "measured_count": 900,
+              "missing_count": 0,
+              "sum": 0,
+              "minimum": 0,
+              "maximum": 0
+            },
+            "analytic_coefficient_parameter_count": {
+              "measured_count": 900,
+              "missing_count": 0,
+              "sum": 291600,
+              "minimum": 36,
+              "maximum": 720
+            },
+            "analytic_intercept_parameter_count": {
+              "measured_count": 900,
+              "missing_count": 0,
+              "sum": 5400,
+              "minimum": 6,
+              "maximum": 6
+            },
+            "analytic_head_parameter_count": {
+              "measured_count": 900,
+              "missing_count": 0,
+              "sum": 297000,
+              "minimum": 42,
+              "maximum": 726
+            },
+            "analytic_new_coefficient_count": {
+              "measured_count": 0,
+              "missing_count": 900,
+              "sum": 0,
+              "minimum": null,
+              "maximum": null
+            },
+            "analytic_new_intercept_count": {
+              "measured_count": 0,
+              "missing_count": 900,
+              "sum": 0,
+              "minimum": null,
+              "maximum": null
+            },
+            "analytic_gate_coefficient_count": {
+              "measured_count": 0,
+              "missing_count": 900,
+              "sum": 0,
+              "minimum": null,
+              "maximum": null
+            },
+            "analytic_gate_intercept_count": {
+              "measured_count": 0,
+              "missing_count": 900,
+              "sum": 0,
+              "minimum": null,
+              "maximum": null
+            },
+            "extra_ground_data_stat_payload_bytes": {
+              "measured_count": 0,
+              "missing_count": 900,
+              "sum": 0,
+              "minimum": null,
+              "maximum": null
+            },
+            "code_wire_payload_bytes": {
+              "measured_count": 0,
+              "missing_count": 900,
+              "sum": 0,
+              "minimum": null,
+              "maximum": null
+            },
+            "serialized_deployment_bytes": {
+              "measured_count": 0,
+              "missing_count": 900,
+              "sum": 0,
+              "minimum": null,
+              "maximum": null
+            },
+            "incremental_transmission_bytes": {
+              "measured_count": 0,
+              "missing_count": 900,
+              "sum": 0,
+              "minimum": null,
+              "maximum": null
+            }
+          },
+          "parameter_changed_count": 675
+        },
+        "C_GROUP_BARRIER_seq": {
+          "stage_count": 720,
+          "measurements": {
+            "fit_seconds": {
+              "measured_count": 720,
+              "missing_count": 0,
+              "sum": 7555.4514856559545,
+              "minimum": 0.039729501004330814,
+              "maximum": 69.16954711401195
+            },
+            "trainable_parameter_count": {
+              "measured_count": 720,
+              "missing_count": 0,
+              "sum": 3179520,
+              "minimum": 0,
+              "maximum": 5888
+            },
+            "declared_coordinate_scalar_count": {
+              "measured_count": 720,
+              "missing_count": 0,
+              "sum": 4239360,
+              "minimum": 5888,
+              "maximum": 5888
+            },
+            "active_parameter_count": {
+              "measured_count": 720,
+              "missing_count": 0,
+              "sum": 3179520,
+              "minimum": 0,
+              "maximum": 5888
+            },
+            "optimizer_steps": {
+              "measured_count": 720,
+              "missing_count": 0,
+              "sum": 2160,
+              "minimum": 0,
+              "maximum": 4
+            },
+            "resident_numeric_state_bytes": {
+              "measured_count": 720,
+              "missing_count": 0,
+              "sum": 5855525280,
+              "minimum": 838400,
+              "maximum": 33058016
+            },
+            "deployment_numeric_state_bytes": {
+              "measured_count": 720,
+              "missing_count": 0,
+              "sum": 1733839200,
+              "minimum": 306776,
+              "maximum": 7754968
+            },
+            "retained_vector_record_bytes": {
+              "measured_count": 720,
+              "missing_count": 0,
+              "sum": 0,
+              "minimum": 0,
+              "maximum": 0
+            },
+            "analytic_coefficient_parameter_count": {
+              "measured_count": 0,
+              "missing_count": 720,
+              "sum": 0,
+              "minimum": null,
+              "maximum": null
+            },
+            "analytic_intercept_parameter_count": {
+              "measured_count": 0,
+              "missing_count": 720,
+              "sum": 0,
+              "minimum": null,
+              "maximum": null
+            },
+            "analytic_head_parameter_count": {
+              "measured_count": 0,
+              "missing_count": 720,
+              "sum": 0,
+              "minimum": null,
+              "maximum": null
+            },
+            "analytic_new_coefficient_count": {
+              "measured_count": 720,
+              "missing_count": 0,
+              "sum": 856980,
+              "minimum": 4,
+              "maximum": 8000
+            },
+            "analytic_new_intercept_count": {
+              "measured_count": 720,
+              "missing_count": 0,
+              "sum": 6660,
+              "minimum": 2,
+              "maximum": 20
+            },
+            "analytic_gate_coefficient_count": {
+              "measured_count": 720,
+              "missing_count": 0,
+              "sum": 98820,
+              "minimum": 8,
+              "maximum": 520
+            },
+            "analytic_gate_intercept_count": {
+              "measured_count": 720,
+              "missing_count": 0,
+              "sum": 720,
+              "minimum": 1,
+              "maximum": 1
+            },
+            "extra_ground_data_stat_payload_bytes": {
+              "measured_count": 720,
+              "missing_count": 0,
+              "sum": 0,
+              "minimum": 0,
+              "maximum": 0
+            },
+            "code_wire_payload_bytes": {
+              "measured_count": 0,
+              "missing_count": 720,
+              "sum": 0,
+              "minimum": null,
+              "maximum": null
+            },
+            "serialized_deployment_bytes": {
+              "measured_count": 0,
+              "missing_count": 720,
+              "sum": 0,
+              "minimum": null,
+              "maximum": null
+            },
+            "incremental_transmission_bytes": {
+              "measured_count": 0,
+              "missing_count": 720,
+              "sum": 0,
+              "minimum": null,
+              "maximum": null
+            }
+          },
+          "parameter_changed_count": 540
+        }
+      },
+      "preparations": {
+        "B_prepare": {
+          "count": 900,
+          "seconds": 112.69005837441364
+        },
+        "C_prepare": {
+          "count": 720,
+          "seconds": 1705.3540168108739
+        }
+      },
+      "resources": {
+        "actual_training_counters": {
+          "ajlr_preparation_count": 1620,
+          "latent_svd_count": 1620,
+          "dictionary_physical_evaluation_count": 147420,
+          "prepared_distance_evaluation_count": 12150,
+          "original_distance_pair_count": 60421815,
+          "prior_head_fit_count": 1620,
+          "prior_factorization_count": 1620,
+          "prior_triangular_solve_count": 3240,
+          "prior_triangular_rhs_count": 22680,
+          "prior_triangular_rhs_element_count": 1058400,
+          "prior_triangular_dense_work_unit_count": 63685440,
+          "prior_intercept_fit_count": 1620,
+          "prior_intercept_addition_count": 3002670,
+          "prior_score_evaluation_count": 3960,
+          "prior_score_physical_count": 387045,
+          "reference_distance_evaluation_count": 812745,
+          "reference_distance_pair_count": 169921395,
+          "raw_distance_evaluation_count": 808200,
+          "raw_distance_pair_count": 269292240,
+          "kernel_evaluation_count": 428355,
+          "kernel_pair_count": 369876960,
+          "adapter_physical_evaluation_count": 2797740,
+          "ajlr_stage_count": 1620,
+          "optimizer_steps": 4860,
+          "optimizer_iterations": 4860,
+          "inner_objective_evaluation_count": 6075,
+          "inner_head_fit_count": 18225,
+          "inner_factorization_count": 10125,
+          "final_head_fit_count": 1620,
+          "final_factorization_count": 900,
+          "head_triangular_solve_count": 22050,
+          "head_triangular_rhs_count": 154350,
+          "head_triangular_rhs_element_count": 7295400,
+          "head_triangular_dense_work_unit_count": 457682400,
+          "intercept_fit_count": 11025,
+          "intercept_addition_count": 4544100,
+          "derivative_triangular_solve_count": 16200,
+          "ce_adjoint_solve_count": 8100,
+          "derivative_triangular_rhs_count": 97200,
+          "derivative_triangular_rhs_element_count": 4536000,
+          "derivative_triangular_dense_work_unit_count": 272937600,
+          "backward_evaluation_count": 4860,
+          "accepted_trial_count": 4860,
+          "rejected_trial_count": 0,
+          "trial_count": 4860,
+          "trial_attempt_count": 4860,
+          "ajlr_forward_evaluation_count": 11025,
+          "completed_factorization_count": 11025,
+          "margin_qp_forward_transitions": 0,
+          "margin_qp_forward_full_constraint_scans": 0,
+          "margin_qp_forward_spectral_checks": 0,
+          "margin_qp_forward_compact_snapshot_rebuilds": 0,
+          "margin_qp_forward_compact_snapshot_dense_work_units": 0,
+          "margin_qp_forward_spectral_cubic_dimension_units": 0,
+          "margin_qp_forward_independence_checks": 0,
+          "margin_qp_forward_factorization_attempts": 0,
+          "margin_qp_forward_factorizations_completed": 0,
+          "margin_qp_forward_condition_estimation_calls": 0,
+          "margin_qp_forward_triangular_calls": 0,
+          "margin_qp_forward_triangular_rhs_columns": 0,
+          "margin_qp_forward_triangular_rhs_elements": 0,
+          "margin_qp_forward_triangular_dense_work_units": 0,
+          "margin_qp_adjoint_transitions": 0,
+          "margin_qp_adjoint_full_constraint_scans": 0,
+          "margin_qp_adjoint_spectral_checks": 0,
+          "margin_qp_adjoint_compact_snapshot_rebuilds": 0,
+          "margin_qp_adjoint_compact_snapshot_dense_work_units": 0,
+          "margin_qp_adjoint_spectral_cubic_dimension_units": 0,
+          "margin_qp_adjoint_independence_checks": 0,
+          "margin_qp_adjoint_factorization_attempts": 0,
+          "margin_qp_adjoint_factorizations_completed": 0,
+          "margin_qp_adjoint_condition_estimation_calls": 0,
+          "margin_qp_adjoint_triangular_calls": 0,
+          "margin_qp_adjoint_triangular_rhs_columns": 0,
+          "margin_qp_adjoint_triangular_rhs_elements": 0,
+          "margin_qp_adjoint_triangular_dense_work_units": 0,
+          "new_ridge_fit_count": 8820,
+          "new_ridge_factorization_count": 8820,
+          "new_ridge_factorization_attempts": 8820,
+          "new_ridge_factorizations_completed": 8820,
+          "new_ridge_triangular_calls": 17640,
+          "new_ridge_triangular_completed_calls": 17640,
+          "new_ridge_triangular_rhs_columns": 180810,
+          "new_ridge_triangular_rhs_elements": 19662840,
+          "new_ridge_triangular_dense_work_units": 3509624880,
+          "new_ridge_adjoint_calls": 6480,
+          "new_ridge_adjoint_triangular_calls": 12960,
+          "new_ridge_adjoint_triangular_completed_calls": 12960,
+          "new_ridge_adjoint_rhs_columns": 119880,
+          "new_ridge_adjoint_rhs_elements": 13330800,
+          "new_ridge_adjoint_dense_work_units": 2308091760,
+          "new_ridge_seconds": 3.8916244555439334,
+          "new_ridge_adjoint_seconds": 1.4655654127564048,
+          "group_gate_forward_factorization_attempts": 113346,
+          "group_gate_forward_factorizations_completed": 113346,
+          "group_gate_forward_condition_estimation_calls": 113346,
+          "group_gate_forward_triangular_calls": 226692,
+          "group_gate_forward_triangular_rhs_columns": 453384,
+          "group_gate_forward_triangular_rhs_elements": 61690776,
+          "group_gate_forward_triangular_dense_work_units": 12606118936,
+          "group_gate_forward_spectral_checks": 8820,
+          "group_gate_forward_spectral_cubic_dimension_units": 52819863300,
+          "group_gate_forward_objective_evaluations": 130986,
+          "group_gate_forward_logistic_record_evaluations": 18601404,
+          "group_gate_forward_barrier_constraint_evaluations": 63202284,
+          "group_gate_forward_line_search_trials": 113346,
+          "group_gate_forward_newton_iterations": 113346,
+          "group_gate_forward_accepted_steps": 113346,
+          "group_gate_forward_factorization_seconds": 33.479436615729355,
+          "group_gate_forward_triangular_seconds": 15.602141246083193,
+          "group_gate_forward_spectral_seconds": 10.778056895214831,
+          "group_gate_forward_objective_seconds": 42.6486010136432,
+          "group_gate_forward_wall_seconds": 181.25747259052878,
+          "group_gate_adjoint_factorization_attempts": 6480,
+          "group_gate_adjoint_factorizations_completed": 6480,
+          "group_gate_adjoint_condition_estimation_calls": 6480,
+          "group_gate_adjoint_triangular_calls": 12960,
+          "group_gate_adjoint_triangular_rhs_columns": 25920,
+          "group_gate_adjoint_triangular_rhs_elements": 3074400,
+          "group_gate_adjoint_triangular_dense_work_units": 564576480,
+          "group_gate_adjoint_spectral_checks": 0,
+          "group_gate_adjoint_spectral_cubic_dimension_units": 0,
+          "group_gate_adjoint_objective_evaluations": 0,
+          "group_gate_adjoint_logistic_record_evaluations": 0,
+          "group_gate_adjoint_barrier_constraint_evaluations": 0,
+          "group_gate_adjoint_line_search_trials": 0,
+          "group_gate_adjoint_newton_iterations": 0,
+          "group_gate_adjoint_accepted_steps": 0,
+          "group_gate_adjoint_factorization_seconds": 1.794010403129505,
+          "group_gate_adjoint_triangular_seconds": 0.9700621239171596,
+          "group_gate_adjoint_spectral_seconds": 0.0,
+          "group_gate_adjoint_objective_seconds": 0.0,
+          "group_gate_adjoint_wall_seconds": 8.301350968045881,
+          "margin_qp_peak_factor_buffer_bytes": 0,
+          "margin_qp_peak_explicit_solve_temporary_bytes": 0,
+          "gate_peak_factor_buffer_bytes": 4326400,
+          "gate_peak_explicit_temporary_bytes": 24960,
+          "forward_cache_bytes": 53453344
+        },
+        "actual_factorization_attempts": 141291,
+        "work_aggregation": "SUM",
+        "peak_aggregation": "MAX",
+        "counter_scope": "COMPLETED_PREPARATIONS_AND_COMPLETED_STAGE_AUDITS_ONLY",
+        "query_score_calls": {
+          "A": 361800,
+          "B": 361800,
+          "C": 329400
+        },
+        "query_score_seconds": {
+          "A": 120.43991757539334,
+          "B": 922.8613651541382,
+          "C": 2300.7097857680783
+        },
+        "C_public_predict_calls": 329400,
+        "C_public_predict_seconds": 2263.5132734540966,
+        "C_public_predict_internal_work": null,
+        "C_public_predict_internal_work_unavailable_reason": "PUBLIC_PREDICT_HAS_NO_WORK_AUDIT",
+        "query_score_call_semantics": {
+          "A": "native_float32_score",
+          "B": "actual_B_score_with_audit",
+          "C": "same_core_score_geometry_as_score_with_audit; public_predict_separate"
+        },
+        "decision_certificate_json_bytes": 449771306,
+        "query_score_work_file_bytes": 1313721032,
+        "decision_certificate_byte_scope": "ACTUAL_NESTED_JSON_FRAGMENT_UTF8_BYTES; EXCLUDES_WORK_FIELD_NAMES_CONTAINERS_AND_NEWLINES; NOT_WIRE_BYTES",
+        "wall_seconds": 18222.385129388,
+        "state_archive_file_bytes": 76413848191,
+        "state_archive_numeric_bytes": 93067312680,
+        "peak_process_rss_bytes": 4291698688,
+        "peak_gpu_memory_bytes": null,
+        "incremental_transfer_bytes": null,
+        "energy": null,
+        "hardware": {
+          "device": "cpu",
+          "platform": "Linux-6.8.0-142-generic-x86_64-with-glibc2.39",
+          "machine": "x86_64",
+          "torch_version": "2.1.0+cu121"
+        },
+        "peak_process_rss_scope": "Linux current CPU process lifetime high-water RSS; not GPU or satellite deployment measurement",
+        "ground_packet_file_bytes": 8737,
+        "ground_weight_file_bytes": 3840,
+        "ground_weight_numeric_bytes": 3840
+      },
+      "hardware": {
+        "device": "cpu",
+        "platform": "Linux-6.8.0-142-generic-x86_64-with-glibc2.39",
+        "machine": "x86_64",
+        "torch_version": "2.1.0+cu121"
+      }
+    },
+    {
+      "row_id": "rx3-cvs-daot-rc4-s2026092702",
+      "parent_count": 900,
+      "stage_measurements": {
+        "B_MARGIN": {
+          "stage_count": 900,
+          "measurements": {
+            "fit_seconds": {
+              "measured_count": 900,
+              "missing_count": 0,
+              "sum": 2131.0570215346524,
+              "minimum": 0.0193232599995099,
+              "maximum": 7.394751954998355
+            },
+            "trainable_parameter_count": {
+              "measured_count": 900,
+              "missing_count": 0,
+              "sum": 3974400,
+              "minimum": 0,
+              "maximum": 5888
+            },
+            "declared_coordinate_scalar_count": {
+              "measured_count": 900,
+              "missing_count": 0,
+              "sum": 4968000,
+              "minimum": 4416,
+              "maximum": 5888
+            },
+            "active_parameter_count": {
+              "measured_count": 900,
+              "missing_count": 0,
+              "sum": 3974400,
+              "minimum": 0,
+              "maximum": 5888
+            },
+            "optimizer_steps": {
+              "measured_count": 900,
+              "missing_count": 0,
+              "sum": 2700,
+              "minimum": 0,
+              "maximum": 4
+            },
+            "resident_numeric_state_bytes": {
+              "measured_count": 900,
+              "missing_count": 0,
+              "sum": 1947312000,
+              "minimum": 407552,
+              "maximum": 4774256
+            },
+            "deployment_numeric_state_bytes": {
+              "measured_count": 900,
+              "missing_count": 0,
+              "sum": 660643200,
+              "minimum": 165344,
+              "maximum": 1516016
+            },
+            "retained_vector_record_bytes": {
+              "measured_count": 900,
+              "missing_count": 0,
+              "sum": 0,
+              "minimum": 0,
+              "maximum": 0
+            },
+            "analytic_coefficient_parameter_count": {
+              "measured_count": 900,
+              "missing_count": 0,
+              "sum": 291600,
+              "minimum": 36,
+              "maximum": 720
+            },
+            "analytic_intercept_parameter_count": {
+              "measured_count": 900,
+              "missing_count": 0,
+              "sum": 5400,
+              "minimum": 6,
+              "maximum": 6
+            },
+            "analytic_head_parameter_count": {
+              "measured_count": 900,
+              "missing_count": 0,
+              "sum": 297000,
+              "minimum": 42,
+              "maximum": 726
+            },
+            "analytic_new_coefficient_count": {
+              "measured_count": 0,
+              "missing_count": 900,
+              "sum": 0,
+              "minimum": null,
+              "maximum": null
+            },
+            "analytic_new_intercept_count": {
+              "measured_count": 0,
+              "missing_count": 900,
+              "sum": 0,
+              "minimum": null,
+              "maximum": null
+            },
+            "analytic_gate_coefficient_count": {
+              "measured_count": 0,
+              "missing_count": 900,
+              "sum": 0,
+              "minimum": null,
+              "maximum": null
+            },
+            "analytic_gate_intercept_count": {
+              "measured_count": 0,
+              "missing_count": 900,
+              "sum": 0,
+              "minimum": null,
+              "maximum": null
+            },
+            "extra_ground_data_stat_payload_bytes": {
+              "measured_count": 0,
+              "missing_count": 900,
+              "sum": 0,
+              "minimum": null,
+              "maximum": null
+            },
+            "code_wire_payload_bytes": {
+              "measured_count": 0,
+              "missing_count": 900,
+              "sum": 0,
+              "minimum": null,
+              "maximum": null
+            },
+            "serialized_deployment_bytes": {
+              "measured_count": 0,
+              "missing_count": 900,
+              "sum": 0,
+              "minimum": null,
+              "maximum": null
+            },
+            "incremental_transmission_bytes": {
+              "measured_count": 0,
+              "missing_count": 900,
+              "sum": 0,
+              "minimum": null,
+              "maximum": null
+            }
+          },
+          "parameter_changed_count": 675
+        },
+        "C_GROUP_BARRIER_seq": {
+          "stage_count": 720,
+          "measurements": {
+            "fit_seconds": {
+              "measured_count": 720,
+              "missing_count": 0,
+              "sum": 7480.9806026519655,
+              "minimum": 0.039473629993153736,
+              "maximum": 66.6979976069997
+            },
+            "trainable_parameter_count": {
+              "measured_count": 720,
+              "missing_count": 0,
+              "sum": 3179520,
+              "minimum": 0,
+              "maximum": 5888
+            },
+            "declared_coordinate_scalar_count": {
+              "measured_count": 720,
+              "missing_count": 0,
+              "sum": 4239360,
+              "minimum": 5888,
+              "maximum": 5888
+            },
+            "active_parameter_count": {
+              "measured_count": 720,
+              "missing_count": 0,
+              "sum": 3179520,
+              "minimum": 0,
+              "maximum": 5888
+            },
+            "optimizer_steps": {
+              "measured_count": 720,
+              "missing_count": 0,
+              "sum": 2160,
+              "minimum": 0,
+              "maximum": 4
+            },
+            "resident_numeric_state_bytes": {
+              "measured_count": 720,
+              "missing_count": 0,
+              "sum": 5855525280,
+              "minimum": 838400,
+              "maximum": 33058016
+            },
+            "deployment_numeric_state_bytes": {
+              "measured_count": 720,
+              "missing_count": 0,
+              "sum": 1733839200,
+              "minimum": 306776,
+              "maximum": 7754968
+            },
+            "retained_vector_record_bytes": {
+              "measured_count": 720,
+              "missing_count": 0,
+              "sum": 0,
+              "minimum": 0,
+              "maximum": 0
+            },
+            "analytic_coefficient_parameter_count": {
+              "measured_count": 0,
+              "missing_count": 720,
+              "sum": 0,
+              "minimum": null,
+              "maximum": null
+            },
+            "analytic_intercept_parameter_count": {
+              "measured_count": 0,
+              "missing_count": 720,
+              "sum": 0,
+              "minimum": null,
+              "maximum": null
+            },
+            "analytic_head_parameter_count": {
+              "measured_count": 0,
+              "missing_count": 720,
+              "sum": 0,
+              "minimum": null,
+              "maximum": null
+            },
+            "analytic_new_coefficient_count": {
+              "measured_count": 720,
+              "missing_count": 0,
+              "sum": 856980,
+              "minimum": 4,
+              "maximum": 8000
+            },
+            "analytic_new_intercept_count": {
+              "measured_count": 720,
+              "missing_count": 0,
+              "sum": 6660,
+              "minimum": 2,
+              "maximum": 20
+            },
+            "analytic_gate_coefficient_count": {
+              "measured_count": 720,
+              "missing_count": 0,
+              "sum": 98820,
+              "minimum": 8,
+              "maximum": 520
+            },
+            "analytic_gate_intercept_count": {
+              "measured_count": 720,
+              "missing_count": 0,
+              "sum": 720,
+              "minimum": 1,
+              "maximum": 1
+            },
+            "extra_ground_data_stat_payload_bytes": {
+              "measured_count": 720,
+              "missing_count": 0,
+              "sum": 0,
+              "minimum": 0,
+              "maximum": 0
+            },
+            "code_wire_payload_bytes": {
+              "measured_count": 0,
+              "missing_count": 720,
+              "sum": 0,
+              "minimum": null,
+              "maximum": null
+            },
+            "serialized_deployment_bytes": {
+              "measured_count": 0,
+              "missing_count": 720,
+              "sum": 0,
+              "minimum": null,
+              "maximum": null
+            },
+            "incremental_transmission_bytes": {
+              "measured_count": 0,
+              "missing_count": 720,
+              "sum": 0,
+              "minimum": null,
+              "maximum": null
+            }
+          },
+          "parameter_changed_count": 540
+        }
+      },
+      "preparations": {
+        "B_prepare": {
+          "count": 900,
+          "seconds": 111.01292044398724
+        },
+        "C_prepare": {
+          "count": 720,
+          "seconds": 1679.4736177889863
+        }
+      },
+      "resources": {
+        "actual_training_counters": {
+          "ajlr_preparation_count": 1620,
+          "latent_svd_count": 1620,
+          "dictionary_physical_evaluation_count": 147420,
+          "prepared_distance_evaluation_count": 12150,
+          "original_distance_pair_count": 60421815,
+          "prior_head_fit_count": 1620,
+          "prior_factorization_count": 1620,
+          "prior_triangular_solve_count": 3240,
+          "prior_triangular_rhs_count": 22680,
+          "prior_triangular_rhs_element_count": 1058400,
+          "prior_triangular_dense_work_unit_count": 63685440,
+          "prior_intercept_fit_count": 1620,
+          "prior_intercept_addition_count": 3002670,
+          "prior_score_evaluation_count": 3960,
+          "prior_score_physical_count": 387045,
+          "reference_distance_evaluation_count": 812745,
+          "reference_distance_pair_count": 169921395,
+          "raw_distance_evaluation_count": 808200,
+          "raw_distance_pair_count": 269292240,
+          "kernel_evaluation_count": 428355,
+          "kernel_pair_count": 369876960,
+          "adapter_physical_evaluation_count": 2797740,
+          "ajlr_stage_count": 1620,
+          "optimizer_steps": 4860,
+          "optimizer_iterations": 4860,
+          "inner_objective_evaluation_count": 6075,
+          "inner_head_fit_count": 18225,
+          "inner_factorization_count": 10125,
+          "final_head_fit_count": 1620,
+          "final_factorization_count": 900,
+          "head_triangular_solve_count": 22050,
+          "head_triangular_rhs_count": 154350,
+          "head_triangular_rhs_element_count": 7295400,
+          "head_triangular_dense_work_unit_count": 457682400,
+          "intercept_fit_count": 11025,
+          "intercept_addition_count": 4544100,
+          "derivative_triangular_solve_count": 16200,
+          "ce_adjoint_solve_count": 8100,
+          "derivative_triangular_rhs_count": 97200,
+          "derivative_triangular_rhs_element_count": 4536000,
+          "derivative_triangular_dense_work_unit_count": 272937600,
+          "backward_evaluation_count": 4860,
+          "accepted_trial_count": 4860,
+          "rejected_trial_count": 0,
+          "trial_count": 4860,
+          "trial_attempt_count": 4860,
+          "ajlr_forward_evaluation_count": 11025,
+          "completed_factorization_count": 11025,
+          "margin_qp_forward_transitions": 0,
+          "margin_qp_forward_full_constraint_scans": 0,
+          "margin_qp_forward_spectral_checks": 0,
+          "margin_qp_forward_compact_snapshot_rebuilds": 0,
+          "margin_qp_forward_compact_snapshot_dense_work_units": 0,
+          "margin_qp_forward_spectral_cubic_dimension_units": 0,
+          "margin_qp_forward_independence_checks": 0,
+          "margin_qp_forward_factorization_attempts": 0,
+          "margin_qp_forward_factorizations_completed": 0,
+          "margin_qp_forward_condition_estimation_calls": 0,
+          "margin_qp_forward_triangular_calls": 0,
+          "margin_qp_forward_triangular_rhs_columns": 0,
+          "margin_qp_forward_triangular_rhs_elements": 0,
+          "margin_qp_forward_triangular_dense_work_units": 0,
+          "margin_qp_adjoint_transitions": 0,
+          "margin_qp_adjoint_full_constraint_scans": 0,
+          "margin_qp_adjoint_spectral_checks": 0,
+          "margin_qp_adjoint_compact_snapshot_rebuilds": 0,
+          "margin_qp_adjoint_compact_snapshot_dense_work_units": 0,
+          "margin_qp_adjoint_spectral_cubic_dimension_units": 0,
+          "margin_qp_adjoint_independence_checks": 0,
+          "margin_qp_adjoint_factorization_attempts": 0,
+          "margin_qp_adjoint_factorizations_completed": 0,
+          "margin_qp_adjoint_condition_estimation_calls": 0,
+          "margin_qp_adjoint_triangular_calls": 0,
+          "margin_qp_adjoint_triangular_rhs_columns": 0,
+          "margin_qp_adjoint_triangular_rhs_elements": 0,
+          "margin_qp_adjoint_triangular_dense_work_units": 0,
+          "new_ridge_fit_count": 8820,
+          "new_ridge_factorization_count": 8820,
+          "new_ridge_factorization_attempts": 8820,
+          "new_ridge_factorizations_completed": 8820,
+          "new_ridge_triangular_calls": 17640,
+          "new_ridge_triangular_completed_calls": 17640,
+          "new_ridge_triangular_rhs_columns": 180810,
+          "new_ridge_triangular_rhs_elements": 19662840,
+          "new_ridge_triangular_dense_work_units": 3509624880,
+          "new_ridge_adjoint_calls": 6480,
+          "new_ridge_adjoint_triangular_calls": 12960,
+          "new_ridge_adjoint_triangular_completed_calls": 12960,
+          "new_ridge_adjoint_rhs_columns": 119880,
+          "new_ridge_adjoint_rhs_elements": 13330800,
+          "new_ridge_adjoint_dense_work_units": 2308091760,
+          "new_ridge_seconds": 3.82836989351199,
+          "new_ridge_adjoint_seconds": 1.423716491815867,
+          "group_gate_forward_factorization_attempts": 110576,
+          "group_gate_forward_factorizations_completed": 110576,
+          "group_gate_forward_condition_estimation_calls": 110576,
+          "group_gate_forward_triangular_calls": 221152,
+          "group_gate_forward_triangular_rhs_columns": 442304,
+          "group_gate_forward_triangular_rhs_elements": 59889200,
+          "group_gate_forward_triangular_dense_work_units": 12202293880,
+          "group_gate_forward_spectral_checks": 8820,
+          "group_gate_forward_spectral_cubic_dimension_units": 52819863300,
+          "group_gate_forward_objective_evaluations": 128216,
+          "group_gate_forward_logistic_record_evaluations": 18151010,
+          "group_gate_forward_barrier_constraint_evaluations": 61265316,
+          "group_gate_forward_line_search_trials": 110576,
+          "group_gate_forward_newton_iterations": 110576,
+          "group_gate_forward_accepted_steps": 110576,
+          "group_gate_forward_factorization_seconds": 31.41177531586436,
+          "group_gate_forward_triangular_seconds": 14.698577502247645,
+          "group_gate_forward_spectral_seconds": 10.407195962165133,
+          "group_gate_forward_objective_seconds": 40.07262258029368,
+          "group_gate_forward_wall_seconds": 171.7054329754028,
+          "group_gate_adjoint_factorization_attempts": 6480,
+          "group_gate_adjoint_factorizations_completed": 6480,
+          "group_gate_adjoint_condition_estimation_calls": 6480,
+          "group_gate_adjoint_triangular_calls": 12960,
+          "group_gate_adjoint_triangular_rhs_columns": 25920,
+          "group_gate_adjoint_triangular_rhs_elements": 3074400,
+          "group_gate_adjoint_triangular_dense_work_units": 564576480,
+          "group_gate_adjoint_spectral_checks": 0,
+          "group_gate_adjoint_spectral_cubic_dimension_units": 0,
+          "group_gate_adjoint_objective_evaluations": 0,
+          "group_gate_adjoint_logistic_record_evaluations": 0,
+          "group_gate_adjoint_barrier_constraint_evaluations": 0,
+          "group_gate_adjoint_line_search_trials": 0,
+          "group_gate_adjoint_newton_iterations": 0,
+          "group_gate_adjoint_accepted_steps": 0,
+          "group_gate_adjoint_factorization_seconds": 1.7283858208102174,
+          "group_gate_adjoint_triangular_seconds": 0.9200951814709697,
+          "group_gate_adjoint_spectral_seconds": 0.0,
+          "group_gate_adjoint_objective_seconds": 0.0,
+          "group_gate_adjoint_wall_seconds": 8.01690697367303,
+          "margin_qp_peak_factor_buffer_bytes": 0,
+          "margin_qp_peak_explicit_solve_temporary_bytes": 0,
+          "gate_peak_factor_buffer_bytes": 4326400,
+          "gate_peak_explicit_temporary_bytes": 24960,
+          "forward_cache_bytes": 53453344
+        },
+        "actual_factorization_attempts": 138521,
+        "work_aggregation": "SUM",
+        "peak_aggregation": "MAX",
+        "counter_scope": "COMPLETED_PREPARATIONS_AND_COMPLETED_STAGE_AUDITS_ONLY",
+        "query_score_calls": {
+          "A": 361800,
+          "B": 361800,
+          "C": 329400
+        },
+        "query_score_seconds": {
+          "A": 116.09298529264925,
+          "B": 893.1049137539085,
+          "C": 2241.900947114933
+        },
+        "C_public_predict_calls": 329400,
+        "C_public_predict_seconds": 2202.3151785716036,
+        "C_public_predict_internal_work": null,
+        "C_public_predict_internal_work_unavailable_reason": "PUBLIC_PREDICT_HAS_NO_WORK_AUDIT",
+        "query_score_call_semantics": {
+          "A": "native_float32_score",
+          "B": "actual_B_score_with_audit",
+          "C": "same_core_score_geometry_as_score_with_audit; public_predict_separate"
+        },
+        "decision_certificate_json_bytes": 449782631,
+        "query_score_work_file_bytes": 1313759077,
+        "decision_certificate_byte_scope": "ACTUAL_NESTED_JSON_FRAGMENT_UTF8_BYTES; EXCLUDES_WORK_FIELD_NAMES_CONTAINERS_AND_NEWLINES; NOT_WIRE_BYTES",
+        "wall_seconds": 17938.098673875007,
+        "state_archive_file_bytes": 76485127177,
+        "state_archive_numeric_bytes": 93067312680,
+        "peak_process_rss_bytes": 4268105728,
+        "peak_gpu_memory_bytes": null,
+        "incremental_transfer_bytes": null,
+        "energy": null,
+        "hardware": {
+          "device": "cpu",
+          "platform": "Linux-6.8.0-142-generic-x86_64-with-glibc2.39",
+          "machine": "x86_64",
+          "torch_version": "2.1.0+cu121"
+        },
+        "peak_process_rss_scope": "Linux current CPU process lifetime high-water RSS; not GPU or satellite deployment measurement",
+        "ground_packet_file_bytes": 8735,
+        "ground_weight_file_bytes": 3840,
+        "ground_weight_numeric_bytes": 3840
+      },
+      "hardware": {
+        "device": "cpu",
+        "platform": "Linux-6.8.0-142-generic-x86_64-with-glibc2.39",
+        "machine": "x86_64",
+        "torch_version": "2.1.0+cu121"
+      }
+    },
+    {
+      "row_id": "rx1-cvs-daot-rc4-s2026092701",
+      "parent_count": 300,
+      "stage_measurements": {
+        "B_MARGIN": {
+          "stage_count": 300,
+          "measurements": {
+            "fit_seconds": {
+              "measured_count": 300,
+              "missing_count": 0,
+              "sum": 709.6974939171632,
+              "minimum": 0.019289515010314062,
+              "maximum": 6.394235501007643
+            },
+            "trainable_parameter_count": {
+              "measured_count": 300,
+              "missing_count": 0,
+              "sum": 1324800,
+              "minimum": 0,
+              "maximum": 5888
+            },
+            "declared_coordinate_scalar_count": {
+              "measured_count": 300,
+              "missing_count": 0,
+              "sum": 1656000,
+              "minimum": 4416,
+              "maximum": 5888
+            },
+            "active_parameter_count": {
+              "measured_count": 300,
+              "missing_count": 0,
+              "sum": 1324800,
+              "minimum": 0,
+              "maximum": 5888
+            },
+            "optimizer_steps": {
+              "measured_count": 300,
+              "missing_count": 0,
+              "sum": 900,
+              "minimum": 0,
+              "maximum": 4
+            },
+            "resident_numeric_state_bytes": {
+              "measured_count": 300,
+              "missing_count": 0,
+              "sum": 649104000,
+              "minimum": 407552,
+              "maximum": 4774256
+            },
+            "deployment_numeric_state_bytes": {
+              "measured_count": 300,
+              "missing_count": 0,
+              "sum": 220214400,
+              "minimum": 165344,
+              "maximum": 1516016
+            },
+            "retained_vector_record_bytes": {
+              "measured_count": 300,
+              "missing_count": 0,
+              "sum": 0,
+              "minimum": 0,
+              "maximum": 0
+            },
+            "analytic_coefficient_parameter_count": {
+              "measured_count": 300,
+              "missing_count": 0,
+              "sum": 97200,
+              "minimum": 36,
+              "maximum": 720
+            },
+            "analytic_intercept_parameter_count": {
+              "measured_count": 300,
+              "missing_count": 0,
+              "sum": 1800,
+              "minimum": 6,
+              "maximum": 6
+            },
+            "analytic_head_parameter_count": {
+              "measured_count": 300,
+              "missing_count": 0,
+              "sum": 99000,
+              "minimum": 42,
+              "maximum": 726
+            },
+            "analytic_new_coefficient_count": {
+              "measured_count": 0,
+              "missing_count": 300,
+              "sum": 0,
+              "minimum": null,
+              "maximum": null
+            },
+            "analytic_new_intercept_count": {
+              "measured_count": 0,
+              "missing_count": 300,
+              "sum": 0,
+              "minimum": null,
+              "maximum": null
+            },
+            "analytic_gate_coefficient_count": {
+              "measured_count": 0,
+              "missing_count": 300,
+              "sum": 0,
+              "minimum": null,
+              "maximum": null
+            },
+            "analytic_gate_intercept_count": {
+              "measured_count": 0,
+              "missing_count": 300,
+              "sum": 0,
+              "minimum": null,
+              "maximum": null
+            },
+            "extra_ground_data_stat_payload_bytes": {
+              "measured_count": 0,
+              "missing_count": 300,
+              "sum": 0,
+              "minimum": null,
+              "maximum": null
+            },
+            "code_wire_payload_bytes": {
+              "measured_count": 0,
+              "missing_count": 300,
+              "sum": 0,
+              "minimum": null,
+              "maximum": null
+            },
+            "serialized_deployment_bytes": {
+              "measured_count": 0,
+              "missing_count": 300,
+              "sum": 0,
+              "minimum": null,
+              "maximum": null
+            },
+            "incremental_transmission_bytes": {
+              "measured_count": 0,
+              "missing_count": 300,
+              "sum": 0,
+              "minimum": null,
+              "maximum": null
+            }
+          },
+          "parameter_changed_count": 225
+        },
+        "C_GROUP_BARRIER_seq": {
+          "stage_count": 240,
+          "measurements": {
+            "fit_seconds": {
+              "measured_count": 240,
+              "missing_count": 0,
+              "sum": 2519.1528643022757,
+              "minimum": 0.03992757998639718,
+              "maximum": 68.97656767402077
+            },
+            "trainable_parameter_count": {
+              "measured_count": 240,
+              "missing_count": 0,
+              "sum": 1059840,
+              "minimum": 0,
+              "maximum": 5888
+            },
+            "declared_coordinate_scalar_count": {
+              "measured_count": 240,
+              "missing_count": 0,
+              "sum": 1413120,
+              "minimum": 5888,
+              "maximum": 5888
+            },
+            "active_parameter_count": {
+              "measured_count": 240,
+              "missing_count": 0,
+              "sum": 1059840,
+              "minimum": 0,
+              "maximum": 5888
+            },
+            "optimizer_steps": {
+              "measured_count": 240,
+              "missing_count": 0,
+              "sum": 720,
+              "minimum": 0,
+              "maximum": 4
+            },
+            "resident_numeric_state_bytes": {
+              "measured_count": 240,
+              "missing_count": 0,
+              "sum": 1951841760,
+              "minimum": 838400,
+              "maximum": 33058016
+            },
+            "deployment_numeric_state_bytes": {
+              "measured_count": 240,
+              "missing_count": 0,
+              "sum": 577946400,
+              "minimum": 306776,
+              "maximum": 7754968
+            },
+            "retained_vector_record_bytes": {
+              "measured_count": 240,
+              "missing_count": 0,
+              "sum": 0,
+              "minimum": 0,
+              "maximum": 0
+            },
+            "analytic_coefficient_parameter_count": {
+              "measured_count": 0,
+              "missing_count": 240,
+              "sum": 0,
+              "minimum": null,
+              "maximum": null
+            },
+            "analytic_intercept_parameter_count": {
+              "measured_count": 0,
+              "missing_count": 240,
+              "sum": 0,
+              "minimum": null,
+              "maximum": null
+            },
+            "analytic_head_parameter_count": {
+              "measured_count": 0,
+              "missing_count": 240,
+              "sum": 0,
+              "minimum": null,
+              "maximum": null
+            },
+            "analytic_new_coefficient_count": {
+              "measured_count": 240,
+              "missing_count": 0,
+              "sum": 285660,
+              "minimum": 4,
+              "maximum": 8000
+            },
+            "analytic_new_intercept_count": {
+              "measured_count": 240,
+              "missing_count": 0,
+              "sum": 2220,
+              "minimum": 2,
+              "maximum": 20
+            },
+            "analytic_gate_coefficient_count": {
+              "measured_count": 240,
+              "missing_count": 0,
+              "sum": 32940,
+              "minimum": 8,
+              "maximum": 520
+            },
+            "analytic_gate_intercept_count": {
+              "measured_count": 240,
+              "missing_count": 0,
+              "sum": 240,
+              "minimum": 1,
+              "maximum": 1
+            },
+            "extra_ground_data_stat_payload_bytes": {
+              "measured_count": 240,
+              "missing_count": 0,
+              "sum": 0,
+              "minimum": 0,
+              "maximum": 0
+            },
+            "code_wire_payload_bytes": {
+              "measured_count": 0,
+              "missing_count": 240,
+              "sum": 0,
+              "minimum": null,
+              "maximum": null
+            },
+            "serialized_deployment_bytes": {
+              "measured_count": 0,
+              "missing_count": 240,
+              "sum": 0,
+              "minimum": null,
+              "maximum": null
+            },
+            "incremental_transmission_bytes": {
+              "measured_count": 0,
+              "missing_count": 240,
+              "sum": 0,
+              "minimum": null,
+              "maximum": null
+            }
+          },
+          "parameter_changed_count": 180
+        }
+      },
+      "preparations": {
+        "B_prepare": {
+          "count": 300,
+          "seconds": 37.7854880040104
+        },
+        "C_prepare": {
+          "count": 240,
+          "seconds": 559.8748841558408
+        }
+      },
+      "resources": {
+        "actual_training_counters": {
+          "ajlr_preparation_count": 540,
+          "latent_svd_count": 540,
+          "dictionary_physical_evaluation_count": 49140,
+          "prepared_distance_evaluation_count": 4050,
+          "original_distance_pair_count": 20140605,
+          "prior_head_fit_count": 540,
+          "prior_factorization_count": 540,
+          "prior_triangular_solve_count": 1080,
+          "prior_triangular_rhs_count": 7560,
+          "prior_triangular_rhs_element_count": 352800,
+          "prior_triangular_dense_work_unit_count": 21228480,
+          "prior_intercept_fit_count": 540,
+          "prior_intercept_addition_count": 1000890,
+          "prior_score_evaluation_count": 1320,
+          "prior_score_physical_count": 129015,
+          "reference_distance_evaluation_count": 270915,
+          "reference_distance_pair_count": 56640465,
+          "raw_distance_evaluation_count": 269400,
+          "raw_distance_pair_count": 89764080,
+          "kernel_evaluation_count": 142785,
+          "kernel_pair_count": 123292320,
+          "adapter_physical_evaluation_count": 932580,
+          "ajlr_stage_count": 540,
+          "optimizer_steps": 1620,
+          "optimizer_iterations": 1620,
+          "inner_objective_evaluation_count": 2025,
+          "inner_head_fit_count": 6075,
+          "inner_factorization_count": 3375,
+          "final_head_fit_count": 540,
+          "final_factorization_count": 300,
+          "head_triangular_solve_count": 7350,
+          "head_triangular_rhs_count": 51450,
+          "head_triangular_rhs_element_count": 2431800,
+          "head_triangular_dense_work_unit_count": 152560800,
+          "intercept_fit_count": 3675,
+          "intercept_addition_count": 1514700,
+          "derivative_triangular_solve_count": 5400,
+          "ce_adjoint_solve_count": 2700,
+          "derivative_triangular_rhs_count": 32400,
+          "derivative_triangular_rhs_element_count": 1512000,
+          "derivative_triangular_dense_work_unit_count": 90979200,
+          "backward_evaluation_count": 1620,
+          "accepted_trial_count": 1620,
+          "rejected_trial_count": 0,
+          "trial_count": 1620,
+          "trial_attempt_count": 1620,
+          "ajlr_forward_evaluation_count": 3675,
+          "completed_factorization_count": 3675,
+          "margin_qp_forward_transitions": 0,
+          "margin_qp_forward_full_constraint_scans": 0,
+          "margin_qp_forward_spectral_checks": 0,
+          "margin_qp_forward_compact_snapshot_rebuilds": 0,
+          "margin_qp_forward_compact_snapshot_dense_work_units": 0,
+          "margin_qp_forward_spectral_cubic_dimension_units": 0,
+          "margin_qp_forward_independence_checks": 0,
+          "margin_qp_forward_factorization_attempts": 0,
+          "margin_qp_forward_factorizations_completed": 0,
+          "margin_qp_forward_condition_estimation_calls": 0,
+          "margin_qp_forward_triangular_calls": 0,
+          "margin_qp_forward_triangular_rhs_columns": 0,
+          "margin_qp_forward_triangular_rhs_elements": 0,
+          "margin_qp_forward_triangular_dense_work_units": 0,
+          "margin_qp_adjoint_transitions": 0,
+          "margin_qp_adjoint_full_constraint_scans": 0,
+          "margin_qp_adjoint_spectral_checks": 0,
+          "margin_qp_adjoint_compact_snapshot_rebuilds": 0,
+          "margin_qp_adjoint_compact_snapshot_dense_work_units": 0,
+          "margin_qp_adjoint_spectral_cubic_dimension_units": 0,
+          "margin_qp_adjoint_independence_checks": 0,
+          "margin_qp_adjoint_factorization_attempts": 0,
+          "margin_qp_adjoint_factorizations_completed": 0,
+          "margin_qp_adjoint_condition_estimation_calls": 0,
+          "margin_qp_adjoint_triangular_calls": 0,
+          "margin_qp_adjoint_triangular_rhs_columns": 0,
+          "margin_qp_adjoint_triangular_rhs_elements": 0,
+          "margin_qp_adjoint_triangular_dense_work_units": 0,
+          "new_ridge_fit_count": 2940,
+          "new_ridge_factorization_count": 2940,
+          "new_ridge_factorization_attempts": 2940,
+          "new_ridge_factorizations_completed": 2940,
+          "new_ridge_triangular_calls": 5880,
+          "new_ridge_triangular_completed_calls": 5880,
+          "new_ridge_triangular_rhs_columns": 60270,
+          "new_ridge_triangular_rhs_elements": 6554280,
+          "new_ridge_triangular_dense_work_units": 1169874960,
+          "new_ridge_adjoint_calls": 2160,
+          "new_ridge_adjoint_triangular_calls": 4320,
+          "new_ridge_adjoint_triangular_completed_calls": 4320,
+          "new_ridge_adjoint_rhs_columns": 39960,
+          "new_ridge_adjoint_rhs_elements": 4443600,
+          "new_ridge_adjoint_dense_work_units": 769363920,
+          "new_ridge_seconds": 1.3853664670023136,
+          "new_ridge_adjoint_seconds": 0.49593426927458495,
+          "group_gate_forward_factorization_attempts": 40115,
+          "group_gate_forward_factorizations_completed": 40115,
+          "group_gate_forward_condition_estimation_calls": 40115,
+          "group_gate_forward_triangular_calls": 80230,
+          "group_gate_forward_triangular_rhs_columns": 160460,
+          "group_gate_forward_triangular_rhs_elements": 21143916,
+          "group_gate_forward_triangular_dense_work_units": 4208643380,
+          "group_gate_forward_spectral_checks": 2940,
+          "group_gate_forward_spectral_cubic_dimension_units": 17606621100,
+          "group_gate_forward_objective_evaluations": 45995,
+          "group_gate_forward_logistic_record_evaluations": 6345549,
+          "group_gate_forward_barrier_constraint_evaluations": 21792330,
+          "group_gate_forward_line_search_trials": 40115,
+          "group_gate_forward_newton_iterations": 40115,
+          "group_gate_forward_accepted_steps": 40115,
+          "group_gate_forward_factorization_seconds": 12.389008138037752,
+          "group_gate_forward_triangular_seconds": 5.728662453999277,
+          "group_gate_forward_spectral_seconds": 3.614529727550689,
+          "group_gate_forward_objective_seconds": 14.472246002609609,
+          "group_gate_forward_wall_seconds": 62.818975977337686,
+          "group_gate_adjoint_factorization_attempts": 2160,
+          "group_gate_adjoint_factorizations_completed": 2160,
+          "group_gate_adjoint_condition_estimation_calls": 2160,
+          "group_gate_adjoint_triangular_calls": 4320,
+          "group_gate_adjoint_triangular_rhs_columns": 8640,
+          "group_gate_adjoint_triangular_rhs_elements": 1024800,
+          "group_gate_adjoint_triangular_dense_work_units": 188192160,
+          "group_gate_adjoint_spectral_checks": 0,
+          "group_gate_adjoint_spectral_cubic_dimension_units": 0,
+          "group_gate_adjoint_objective_evaluations": 0,
+          "group_gate_adjoint_logistic_record_evaluations": 0,
+          "group_gate_adjoint_barrier_constraint_evaluations": 0,
+          "group_gate_adjoint_line_search_trials": 0,
+          "group_gate_adjoint_newton_iterations": 0,
+          "group_gate_adjoint_accepted_steps": 0,
+          "group_gate_adjoint_factorization_seconds": 0.6547538423619699,
+          "group_gate_adjoint_triangular_seconds": 0.35315726706176065,
+          "group_gate_adjoint_spectral_seconds": 0.0,
+          "group_gate_adjoint_objective_seconds": 0.0,
+          "group_gate_adjoint_wall_seconds": 2.9544871399120893,
+          "margin_qp_peak_factor_buffer_bytes": 0,
+          "margin_qp_peak_explicit_solve_temporary_bytes": 0,
+          "gate_peak_factor_buffer_bytes": 4326400,
+          "gate_peak_explicit_temporary_bytes": 24960,
+          "forward_cache_bytes": 53453344
+        },
+        "actual_factorization_attempts": 49430,
+        "work_aggregation": "SUM",
+        "peak_aggregation": "MAX",
+        "counter_scope": "COMPLETED_PREPARATIONS_AND_COMPLETED_STAGE_AUDITS_ONLY",
+        "query_score_calls": {
+          "A": 120600,
+          "B": 120600,
+          "C": 109800
+        },
+        "query_score_seconds": {
+          "A": 46.91947452511522,
+          "B": 309.5338818792661,
+          "C": 787.7331185450021
+        },
+        "C_public_predict_calls": 109800,
+        "C_public_predict_seconds": 774.5812287458975,
+        "C_public_predict_internal_work": null,
+        "C_public_predict_internal_work_unavailable_reason": "PUBLIC_PREDICT_HAS_NO_WORK_AUDIT",
+        "query_score_call_semantics": {
+          "A": "native_float32_score",
+          "B": "actual_B_score_with_audit",
+          "C": "same_core_score_geometry_as_score_with_audit; public_predict_separate"
+        },
+        "decision_certificate_json_bytes": 149883545,
+        "query_score_work_file_bytes": 437867008,
+        "decision_certificate_byte_scope": "ACTUAL_NESTED_JSON_FRAGMENT_UTF8_BYTES; EXCLUDES_WORK_FIELD_NAMES_CONTAINERS_AND_NEWLINES; NOT_WIRE_BYTES",
+        "wall_seconds": 6111.821738363011,
+        "state_archive_file_bytes": 25316721071,
+        "state_archive_numeric_bytes": 31022437560,
+        "peak_process_rss_bytes": 7615467520,
+        "peak_gpu_memory_bytes": null,
+        "incremental_transfer_bytes": null,
+        "energy": null,
+        "hardware": {
+          "device": "cpu",
+          "platform": "Linux-6.8.0-142-generic-x86_64-with-glibc2.39",
+          "machine": "x86_64",
+          "torch_version": "2.1.0+cu121"
+        },
+        "peak_process_rss_scope": "Linux current CPU process lifetime high-water RSS; not GPU or satellite deployment measurement",
+        "ground_packet_file_bytes": 8737,
+        "ground_weight_file_bytes": 3840,
+        "ground_weight_numeric_bytes": 3840
+      },
+      "hardware": {
+        "device": "cpu",
+        "platform": "Linux-6.8.0-142-generic-x86_64-with-glibc2.39",
+        "machine": "x86_64",
+        "torch_version": "2.1.0+cu121"
+      }
+    },
+    {
+      "row_id": "rx1-cvs-daot-rc4-s2026092702",
+      "parent_count": 300,
+      "stage_measurements": {
+        "B_MARGIN": {
+          "stage_count": 300,
+          "measurements": {
+            "fit_seconds": {
+              "measured_count": 300,
+              "missing_count": 0,
+              "sum": 697.423547403072,
+              "minimum": 0.019129166001221165,
+              "maximum": 5.9989994170027785
+            },
+            "trainable_parameter_count": {
+              "measured_count": 300,
+              "missing_count": 0,
+              "sum": 1324800,
+              "minimum": 0,
+              "maximum": 5888
+            },
+            "declared_coordinate_scalar_count": {
+              "measured_count": 300,
+              "missing_count": 0,
+              "sum": 1656000,
+              "minimum": 4416,
+              "maximum": 5888
+            },
+            "active_parameter_count": {
+              "measured_count": 300,
+              "missing_count": 0,
+              "sum": 1324800,
+              "minimum": 0,
+              "maximum": 5888
+            },
+            "optimizer_steps": {
+              "measured_count": 300,
+              "missing_count": 0,
+              "sum": 900,
+              "minimum": 0,
+              "maximum": 4
+            },
+            "resident_numeric_state_bytes": {
+              "measured_count": 300,
+              "missing_count": 0,
+              "sum": 649104000,
+              "minimum": 407552,
+              "maximum": 4774256
+            },
+            "deployment_numeric_state_bytes": {
+              "measured_count": 300,
+              "missing_count": 0,
+              "sum": 220214400,
+              "minimum": 165344,
+              "maximum": 1516016
+            },
+            "retained_vector_record_bytes": {
+              "measured_count": 300,
+              "missing_count": 0,
+              "sum": 0,
+              "minimum": 0,
+              "maximum": 0
+            },
+            "analytic_coefficient_parameter_count": {
+              "measured_count": 300,
+              "missing_count": 0,
+              "sum": 97200,
+              "minimum": 36,
+              "maximum": 720
+            },
+            "analytic_intercept_parameter_count": {
+              "measured_count": 300,
+              "missing_count": 0,
+              "sum": 1800,
+              "minimum": 6,
+              "maximum": 6
+            },
+            "analytic_head_parameter_count": {
+              "measured_count": 300,
+              "missing_count": 0,
+              "sum": 99000,
+              "minimum": 42,
+              "maximum": 726
+            },
+            "analytic_new_coefficient_count": {
+              "measured_count": 0,
+              "missing_count": 300,
+              "sum": 0,
+              "minimum": null,
+              "maximum": null
+            },
+            "analytic_new_intercept_count": {
+              "measured_count": 0,
+              "missing_count": 300,
+              "sum": 0,
+              "minimum": null,
+              "maximum": null
+            },
+            "analytic_gate_coefficient_count": {
+              "measured_count": 0,
+              "missing_count": 300,
+              "sum": 0,
+              "minimum": null,
+              "maximum": null
+            },
+            "analytic_gate_intercept_count": {
+              "measured_count": 0,
+              "missing_count": 300,
+              "sum": 0,
+              "minimum": null,
+              "maximum": null
+            },
+            "extra_ground_data_stat_payload_bytes": {
+              "measured_count": 0,
+              "missing_count": 300,
+              "sum": 0,
+              "minimum": null,
+              "maximum": null
+            },
+            "code_wire_payload_bytes": {
+              "measured_count": 0,
+              "missing_count": 300,
+              "sum": 0,
+              "minimum": null,
+              "maximum": null
+            },
+            "serialized_deployment_bytes": {
+              "measured_count": 0,
+              "missing_count": 300,
+              "sum": 0,
+              "minimum": null,
+              "maximum": null
+            },
+            "incremental_transmission_bytes": {
+              "measured_count": 0,
+              "missing_count": 300,
+              "sum": 0,
+              "minimum": null,
+              "maximum": null
+            }
+          },
+          "parameter_changed_count": 225
+        },
+        "C_GROUP_BARRIER_seq": {
+          "stage_count": 240,
+          "measurements": {
+            "fit_seconds": {
+              "measured_count": 240,
+              "missing_count": 0,
+              "sum": 2484.43868314079,
+              "minimum": 0.03896333399461582,
+              "maximum": 69.62086290001753
+            },
+            "trainable_parameter_count": {
+              "measured_count": 240,
+              "missing_count": 0,
+              "sum": 1059840,
+              "minimum": 0,
+              "maximum": 5888
+            },
+            "declared_coordinate_scalar_count": {
+              "measured_count": 240,
+              "missing_count": 0,
+              "sum": 1413120,
+              "minimum": 5888,
+              "maximum": 5888
+            },
+            "active_parameter_count": {
+              "measured_count": 240,
+              "missing_count": 0,
+              "sum": 1059840,
+              "minimum": 0,
+              "maximum": 5888
+            },
+            "optimizer_steps": {
+              "measured_count": 240,
+              "missing_count": 0,
+              "sum": 720,
+              "minimum": 0,
+              "maximum": 4
+            },
+            "resident_numeric_state_bytes": {
+              "measured_count": 240,
+              "missing_count": 0,
+              "sum": 1951841760,
+              "minimum": 838400,
+              "maximum": 33058016
+            },
+            "deployment_numeric_state_bytes": {
+              "measured_count": 240,
+              "missing_count": 0,
+              "sum": 577946400,
+              "minimum": 306776,
+              "maximum": 7754968
+            },
+            "retained_vector_record_bytes": {
+              "measured_count": 240,
+              "missing_count": 0,
+              "sum": 0,
+              "minimum": 0,
+              "maximum": 0
+            },
+            "analytic_coefficient_parameter_count": {
+              "measured_count": 0,
+              "missing_count": 240,
+              "sum": 0,
+              "minimum": null,
+              "maximum": null
+            },
+            "analytic_intercept_parameter_count": {
+              "measured_count": 0,
+              "missing_count": 240,
+              "sum": 0,
+              "minimum": null,
+              "maximum": null
+            },
+            "analytic_head_parameter_count": {
+              "measured_count": 0,
+              "missing_count": 240,
+              "sum": 0,
+              "minimum": null,
+              "maximum": null
+            },
+            "analytic_new_coefficient_count": {
+              "measured_count": 240,
+              "missing_count": 0,
+              "sum": 285660,
+              "minimum": 4,
+              "maximum": 8000
+            },
+            "analytic_new_intercept_count": {
+              "measured_count": 240,
+              "missing_count": 0,
+              "sum": 2220,
+              "minimum": 2,
+              "maximum": 20
+            },
+            "analytic_gate_coefficient_count": {
+              "measured_count": 240,
+              "missing_count": 0,
+              "sum": 32940,
+              "minimum": 8,
+              "maximum": 520
+            },
+            "analytic_gate_intercept_count": {
+              "measured_count": 240,
+              "missing_count": 0,
+              "sum": 240,
+              "minimum": 1,
+              "maximum": 1
+            },
+            "extra_ground_data_stat_payload_bytes": {
+              "measured_count": 240,
+              "missing_count": 0,
+              "sum": 0,
+              "minimum": 0,
+              "maximum": 0
+            },
+            "code_wire_payload_bytes": {
+              "measured_count": 0,
+              "missing_count": 240,
+              "sum": 0,
+              "minimum": null,
+              "maximum": null
+            },
+            "serialized_deployment_bytes": {
+              "measured_count": 0,
+              "missing_count": 240,
+              "sum": 0,
+              "minimum": null,
+              "maximum": null
+            },
+            "incremental_transmission_bytes": {
+              "measured_count": 0,
+              "missing_count": 240,
+              "sum": 0,
+              "minimum": null,
+              "maximum": null
+            }
+          },
+          "parameter_changed_count": 180
+        }
+      },
+      "preparations": {
+        "B_prepare": {
+          "count": 300,
+          "seconds": 36.58589902333915
+        },
+        "C_prepare": {
+          "count": 240,
+          "seconds": 550.9345838089066
+        }
+      },
+      "resources": {
+        "actual_training_counters": {
+          "ajlr_preparation_count": 540,
+          "latent_svd_count": 540,
+          "dictionary_physical_evaluation_count": 49140,
+          "prepared_distance_evaluation_count": 4050,
+          "original_distance_pair_count": 20140605,
+          "prior_head_fit_count": 540,
+          "prior_factorization_count": 540,
+          "prior_triangular_solve_count": 1080,
+          "prior_triangular_rhs_count": 7560,
+          "prior_triangular_rhs_element_count": 352800,
+          "prior_triangular_dense_work_unit_count": 21228480,
+          "prior_intercept_fit_count": 540,
+          "prior_intercept_addition_count": 1000890,
+          "prior_score_evaluation_count": 1320,
+          "prior_score_physical_count": 129015,
+          "reference_distance_evaluation_count": 270915,
+          "reference_distance_pair_count": 56640465,
+          "raw_distance_evaluation_count": 269400,
+          "raw_distance_pair_count": 89764080,
+          "kernel_evaluation_count": 142785,
+          "kernel_pair_count": 123292320,
+          "adapter_physical_evaluation_count": 932580,
+          "ajlr_stage_count": 540,
+          "optimizer_steps": 1620,
+          "optimizer_iterations": 1620,
+          "inner_objective_evaluation_count": 2025,
+          "inner_head_fit_count": 6075,
+          "inner_factorization_count": 3375,
+          "final_head_fit_count": 540,
+          "final_factorization_count": 300,
+          "head_triangular_solve_count": 7350,
+          "head_triangular_rhs_count": 51450,
+          "head_triangular_rhs_element_count": 2431800,
+          "head_triangular_dense_work_unit_count": 152560800,
+          "intercept_fit_count": 3675,
+          "intercept_addition_count": 1514700,
+          "derivative_triangular_solve_count": 5400,
+          "ce_adjoint_solve_count": 2700,
+          "derivative_triangular_rhs_count": 32400,
+          "derivative_triangular_rhs_element_count": 1512000,
+          "derivative_triangular_dense_work_unit_count": 90979200,
+          "backward_evaluation_count": 1620,
+          "accepted_trial_count": 1620,
+          "rejected_trial_count": 0,
+          "trial_count": 1620,
+          "trial_attempt_count": 1620,
+          "ajlr_forward_evaluation_count": 3675,
+          "completed_factorization_count": 3675,
+          "margin_qp_forward_transitions": 0,
+          "margin_qp_forward_full_constraint_scans": 0,
+          "margin_qp_forward_spectral_checks": 0,
+          "margin_qp_forward_compact_snapshot_rebuilds": 0,
+          "margin_qp_forward_compact_snapshot_dense_work_units": 0,
+          "margin_qp_forward_spectral_cubic_dimension_units": 0,
+          "margin_qp_forward_independence_checks": 0,
+          "margin_qp_forward_factorization_attempts": 0,
+          "margin_qp_forward_factorizations_completed": 0,
+          "margin_qp_forward_condition_estimation_calls": 0,
+          "margin_qp_forward_triangular_calls": 0,
+          "margin_qp_forward_triangular_rhs_columns": 0,
+          "margin_qp_forward_triangular_rhs_elements": 0,
+          "margin_qp_forward_triangular_dense_work_units": 0,
+          "margin_qp_adjoint_transitions": 0,
+          "margin_qp_adjoint_full_constraint_scans": 0,
+          "margin_qp_adjoint_spectral_checks": 0,
+          "margin_qp_adjoint_compact_snapshot_rebuilds": 0,
+          "margin_qp_adjoint_compact_snapshot_dense_work_units": 0,
+          "margin_qp_adjoint_spectral_cubic_dimension_units": 0,
+          "margin_qp_adjoint_independence_checks": 0,
+          "margin_qp_adjoint_factorization_attempts": 0,
+          "margin_qp_adjoint_factorizations_completed": 0,
+          "margin_qp_adjoint_condition_estimation_calls": 0,
+          "margin_qp_adjoint_triangular_calls": 0,
+          "margin_qp_adjoint_triangular_rhs_columns": 0,
+          "margin_qp_adjoint_triangular_rhs_elements": 0,
+          "margin_qp_adjoint_triangular_dense_work_units": 0,
+          "new_ridge_fit_count": 2940,
+          "new_ridge_factorization_count": 2940,
+          "new_ridge_factorization_attempts": 2940,
+          "new_ridge_factorizations_completed": 2940,
+          "new_ridge_triangular_calls": 5880,
+          "new_ridge_triangular_completed_calls": 5880,
+          "new_ridge_triangular_rhs_columns": 60270,
+          "new_ridge_triangular_rhs_elements": 6554280,
+          "new_ridge_triangular_dense_work_units": 1169874960,
+          "new_ridge_adjoint_calls": 2160,
+          "new_ridge_adjoint_triangular_calls": 4320,
+          "new_ridge_adjoint_triangular_completed_calls": 4320,
+          "new_ridge_adjoint_rhs_columns": 39960,
+          "new_ridge_adjoint_rhs_elements": 4443600,
+          "new_ridge_adjoint_dense_work_units": 769363920,
+          "new_ridge_seconds": 1.3041247999062762,
+          "new_ridge_adjoint_seconds": 0.4749710760952439,
+          "group_gate_forward_factorization_attempts": 38929,
+          "group_gate_forward_factorizations_completed": 38929,
+          "group_gate_forward_condition_estimation_calls": 38929,
+          "group_gate_forward_triangular_calls": 77858,
+          "group_gate_forward_triangular_rhs_columns": 155716,
+          "group_gate_forward_triangular_rhs_elements": 20272924,
+          "group_gate_forward_triangular_dense_work_units": 3997426564,
+          "group_gate_forward_spectral_checks": 2940,
+          "group_gate_forward_spectral_cubic_dimension_units": 17606621100,
+          "group_gate_forward_objective_evaluations": 44809,
+          "group_gate_forward_logistic_record_evaluations": 6127801,
+          "group_gate_forward_barrier_constraint_evaluations": 20886090,
+          "group_gate_forward_line_search_trials": 38929,
+          "group_gate_forward_newton_iterations": 38929,
+          "group_gate_forward_accepted_steps": 38929,
+          "group_gate_forward_factorization_seconds": 10.537748864619061,
+          "group_gate_forward_triangular_seconds": 4.945088679232867,
+          "group_gate_forward_spectral_seconds": 3.635739734338131,
+          "group_gate_forward_objective_seconds": 13.79969550203532,
+          "group_gate_forward_wall_seconds": 58.12803313773475,
+          "group_gate_adjoint_factorization_attempts": 2160,
+          "group_gate_adjoint_factorizations_completed": 2160,
+          "group_gate_adjoint_condition_estimation_calls": 2160,
+          "group_gate_adjoint_triangular_calls": 4320,
+          "group_gate_adjoint_triangular_rhs_columns": 8640,
+          "group_gate_adjoint_triangular_rhs_elements": 1024800,
+          "group_gate_adjoint_triangular_dense_work_units": 188192160,
+          "group_gate_adjoint_spectral_checks": 0,
+          "group_gate_adjoint_spectral_cubic_dimension_units": 0,
+          "group_gate_adjoint_objective_evaluations": 0,
+          "group_gate_adjoint_logistic_record_evaluations": 0,
+          "group_gate_adjoint_barrier_constraint_evaluations": 0,
+          "group_gate_adjoint_line_search_trials": 0,
+          "group_gate_adjoint_newton_iterations": 0,
+          "group_gate_adjoint_accepted_steps": 0,
+          "group_gate_adjoint_factorization_seconds": 0.5961325011739973,
+          "group_gate_adjoint_triangular_seconds": 0.3141581470554229,
+          "group_gate_adjoint_spectral_seconds": 0.0,
+          "group_gate_adjoint_objective_seconds": 0.0,
+          "group_gate_adjoint_wall_seconds": 2.7683884326252155,
+          "margin_qp_peak_factor_buffer_bytes": 0,
+          "margin_qp_peak_explicit_solve_temporary_bytes": 0,
+          "gate_peak_factor_buffer_bytes": 4326400,
+          "gate_peak_explicit_temporary_bytes": 24960,
+          "forward_cache_bytes": 53453344
+        },
+        "actual_factorization_attempts": 48244,
+        "work_aggregation": "SUM",
+        "peak_aggregation": "MAX",
+        "counter_scope": "COMPLETED_PREPARATIONS_AND_COMPLETED_STAGE_AUDITS_ONLY",
+        "query_score_calls": {
+          "A": 120600,
+          "B": 120600,
+          "C": 109800
+        },
+        "query_score_seconds": {
+          "A": 42.97458538672072,
+          "B": 299.2511076776136,
+          "C": 761.4935357515351
+        },
+        "C_public_predict_calls": 109800,
+        "C_public_predict_seconds": 749.108406925574,
+        "C_public_predict_internal_work": null,
+        "C_public_predict_internal_work_unavailable_reason": "PUBLIC_PREDICT_HAS_NO_WORK_AUDIT",
+        "query_score_call_semantics": {
+          "A": "native_float32_score",
+          "B": "actual_B_score_with_audit",
+          "C": "same_core_score_geometry_as_score_with_audit; public_predict_separate"
+        },
+        "decision_certificate_json_bytes": 149896977,
+        "query_score_work_file_bytes": 437887974,
+        "decision_certificate_byte_scope": "ACTUAL_NESTED_JSON_FRAGMENT_UTF8_BYTES; EXCLUDES_WORK_FIELD_NAMES_CONTAINERS_AND_NEWLINES; NOT_WIRE_BYTES",
+        "wall_seconds": 5976.280074927985,
+        "state_archive_file_bytes": 25377843410,
+        "state_archive_numeric_bytes": 31022437560,
+        "peak_process_rss_bytes": 14433783808,
+        "peak_gpu_memory_bytes": null,
+        "incremental_transfer_bytes": null,
+        "energy": null,
+        "hardware": {
+          "device": "cpu",
+          "platform": "Linux-6.8.0-142-generic-x86_64-with-glibc2.39",
+          "machine": "x86_64",
+          "torch_version": "2.1.0+cu121"
+        },
+        "peak_process_rss_scope": "Linux current CPU process lifetime high-water RSS; not GPU or satellite deployment measurement",
+        "ground_packet_file_bytes": 8735,
+        "ground_weight_file_bytes": 3840,
+        "ground_weight_numeric_bytes": 3840
+      },
+      "hardware": {
+        "device": "cpu",
+        "platform": "Linux-6.8.0-142-generic-x86_64-with-glibc2.39",
+        "machine": "x86_64",
+        "torch_version": "2.1.0+cu121"
+      }
+    }
+  ],
+  "scope": "STORED_MEASURED_FIT/PREPARATION/OUTER_QUERY_SCORE_AND_PUBLIC_PREDICT_CLOCKS; CALLBACK_INCLUDED; NO_REPLAY",
+  "query_truth_or_source_read": false,
+  "query_prediction_vectors_read": false,
+  "training_rerun": false
+}

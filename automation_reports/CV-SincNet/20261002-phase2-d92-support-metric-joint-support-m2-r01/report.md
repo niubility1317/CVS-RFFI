@@ -1,3 +1,5 @@
+当前状态：ANALYZED。完整4row/160parent/1,800路径、20文件已读回，合法support OOF含新类96任务A旧62.64%、B旧71.04%、C旧64.89%、C新50.18%、H56.00%；R0 H58.42%，未显示综合改善。详见[完整三阶段、K×新增类数与实测成本](support_diagnostic_20261002.md)。这是support诊断，不能作为query性能。以下保留历史预登记、执行及原r01失败记录。
+
 # 物理 support 度量与 LocalRidge 联合诊断预登记
 
 状态 RUNNING。独立 core 的75项及新入口/分析器/控制的116项合成验证通过，共191项；只读输入元数据与隔离源码导入已核实，一次发布及独立启动读回VERIFIED，完整实验尚未完成。此候选由数学结构定义，不扫描参数组合，也不读取 query 成绩选模。固定 Phase1 和地面原型，practical residual/post_sync/noeq/25 MHz。
@@ -41,3 +43,5 @@ basis 每 row 只由冻结地面 Q 构建一次，归档普通方法数据证据
 独立scalar-r02已预登记，原r01 FAILED记录保持不变。根因是verifier以NumPy eps重建tol后，比例成为np.float64，被仅接受Python int/float的_equal类型检查拒绝。三个入口数学式均为tol=128ε max(1,|f0|,|ftrial|,|rhs|)，无需扩大容差或改训练。独立clone仅对内部比值加float，字节唯一差已验证；真实非零trial analyzer12、query scorer6、发布11个必要用例通过，原始raw失败与通过均保留。新的analysis-scalar-r02输出/2文件源包未发布；必须全4/160/1800保存档案闭合后才诊断成绩。
 
 scalar-r02已唯一发布，sourcee0eb4041；2026-10-02T00:32:12Z独立proc/startup/argv/cwd/environment读回VERIFIED_RUNNING，wrapper1341024/child1341030，原fit3c3和全部保存状态不变。此时完整分析产物仍无，未读诊断或query，不以dispatch/进程正常声称分析完成。
+
+<!-- SUPPORT_METRIC_COMPLETE_SUPPORT_RESULT_REPORTED_20261002 -->
